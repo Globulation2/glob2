@@ -1,0 +1,73 @@
+{
+  "reviewer": "/root/hindi_online_review",
+  "author": "/root/swahili_translation",
+  "editor": "/root",
+  "supplemental_finding_reviewer": "/root/translation_kit",
+  "scope": "Additional independent original-old-Swahili reviewer recheck of exactly4 retained native radius keys. Not209 new Swahili authorship review and not full catalog rereading.",
+  "review_sha256": "1d15307d77970bc87948e4c573ec01191fa9ea01abfd0a36fb6a210e6af22a2a",
+  "editor_sha256": "ab51d98802bee35d68a08ff160c5b075861bebc524c3b78fd0e43b24a20d3e18",
+  "edited_sha256": "3bd89e822d9377ce6d468ce746284d9f694aca65a9adc8b53870de7452e3ff93",
+  "supplemental_recheck_sha256": "862689bd14d33a596cdad8b3844a3ee1a661223d958c54572f5b5c7860c61904",
+  "source_delta_sha256": "8884639e28a0f409f558951e5b1d9774772ec801330404218280f7a2cb653d4c",
+  "base_catalog_sha256": "d23c1b75c4ae209b85a6dbd9f2fb0ab084ab7bb21b7544ec8a4a5ad545129cc5",
+  "keys_checked_exactly_once": [
+    "[settings Adjust assigned units with the wheel. When off, hold Ctrl. Shift adjusts flag radius. Also controls wheel input in other menus.]",
+    "[settings Starting unit counts and radius for newly placed flags.]",
+    "[Hill radius]",
+    "[flag settings explanation]"
+  ],
+  "resolved_keys": [
+    "[settings Adjust assigned units with the wheel. When off, hold Ctrl. Shift adjusts flag radius. Also controls wheel input in other menus.]",
+    "[settings Starting unit counts and radius for newly placed flags.]",
+    "[Hill radius]",
+    "[flag settings explanation]"
+  ],
+  "final_values": {
+    "[settings Adjust assigned units with the wheel. When off, hold Ctrl. Shift adjusts flag radius. Also controls wheel input in other menus.]": "Rekebisha idadi ya viumbe waliopangiwa kwa gurudumu la kipanya. Chaguo likizimwa, shikilia Ctrl. Shift hurekebisha thamani ya nusukipenyo kwa bendera. Pia hudhibiti gurudumu katika menyu nyingine.",
+    "[settings Starting unit counts and radius for newly placed flags.]": "Thamani za awali za idadi ya viumbe na nusukipenyo kwa bendera mpya.",
+    "[Hill radius]": "Kilima: nusukipenyo",
+    "[flag settings explanation]": "Thamani ya awali ya nusukipenyo kwa bendera"
+  },
+  "resolutions": [
+    {
+      "key": "[settings Adjust assigned units with the wheel. When off, hold Ctrl. Shift adjusts flag radius. Also controls wheel input in other menus.]",
+      "status": "resolved",
+      "final_target": "Rekebisha idadi ya viumbe waliopangiwa kwa gurudumu la kipanya. Chaguo likizimwa, shikilia Ctrl. Shift hurekebisha thamani ya nusukipenyo kwa bendera. Pia hudhibiti gurudumu katika menyu nyingine.",
+      "rationale": "Neutral syntax preserves numeric radius/property meaning and avoids selecting a disputed compound noun-class concord. Ctrl/Shift literals and wheel behavior preserved."
+    },
+    {
+      "key": "[settings Starting unit counts and radius for newly placed flags.]",
+      "status": "resolved",
+      "final_target": "Thamani za awali za idadi ya viumbe na nusukipenyo kwa bendera mpya.",
+      "rationale": "Neutral value/topic structure preserves exact radius/default/flag/hill meaning without requiring disputed compound agreement."
+    },
+    {
+      "key": "[Hill radius]",
+      "status": "resolved",
+      "final_target": "Kilima: nusukipenyo",
+      "rationale": "Neutral value/topic structure preserves exact radius/default/flag/hill meaning without requiring disputed compound agreement."
+    },
+    {
+      "key": "[flag settings explanation]",
+      "status": "resolved",
+      "final_target": "Thamani ya awali ya nusukipenyo kwa bendera",
+      "rationale": "Neutral value/topic structure preserves exact radius/default/flag/hill meaning without requiring disputed compound agreement."
+    }
+  ],
+  "open_findings": 0,
+  "open_critical": 0,
+  "open_major": 0,
+  "open_minor": 0,
+  "unresolved_linguistic_uncertainties": [],
+  "context": {
+    "[settings Starting unit counts and radius for newly placed flags.]": "Read SettingsScreenBuildings.cpp flags-tab explanation; starting counts and radius values, not current staffing.",
+    "[Hill radius]": "Read HillsGenerator.cpp GeneratorControl hill-radius numeric Layout property.",
+    "remaining_two": "Reviewed exact retained English source semantics and original targets; no current direct literal caller located by bounded src search, so no claim of current runtime display for these legacy retained strings."
+  },
+  "limitations": [
+    "OriginalKi compound usage is not categorically declared ungrammatical; neutral forms avoid unresolved variant uncertainty.",
+    "These4exactfinal values require integration into full current catalog; fullcatalog hash not yet assembled here.",
+    "No rendering/build/platform verification or native-human approval."
+  ],
+  "production_edits_by_reviewer": false
+}

@@ -1,0 +1,446 @@
+{
+  "reviewer": "/root/pilot_context",
+  "locale": "ur",
+  "status": "actual-Urdu-WASM-ten-image-visual-review-pass-with-explicit-limits",
+  "source_run": "browser-wasm-final-v5",
+  "results_sha256": "a60f9112b344bcb010d8e0ea5ff1bf4d6fb247a26a7d47a911854527681fb1d0",
+  "validation_sha256": "99a5605332eca17099c02027c2e1a83cf7e79d492d2dc6fdc4f8bd4366203825",
+  "identity_sha256": "f2f2d4a6b782b2849031832620d62da3c4ba742b74901a66e7920f0a222245fc",
+  "checker_sha256": "d990c5c69cd79b6d34fc085a72442b2ed01cc3e3d2e5cbf9d39dbd713c208c5d",
+  "identity": {
+    "started_utc": "2026-10-31T18:09:11.297Z",
+    "origin": "http://127.0.0.1:4331",
+    "checker_sha256": "d990c5c69cd79b6d34fc085a72442b2ed01cc3e3d2e5cbf9d39dbd713c208c5d",
+    "served_files": {
+      "index.html": {
+        "sha256": "9710535a4826a19042e7bb2c14e9a0bdb29cc579f60297db2a089baaf67d9c03",
+        "bytes": 58084
+      },
+      "index.js": {
+        "sha256": "b9b34780590780c94cf9fdaecfb4aa7c110dd3bec8a23c667648494fc1eef512",
+        "bytes": 1207471
+      },
+      "index.wasm": {
+        "sha256": "ea97092d507c6f5fe75781ece4668c1205bf39494f450866d952ca92cd570fb0",
+        "bytes": 50575252
+      },
+      "asset-manifest.js": {
+        "sha256": "9597fff70ccb08beb24f672c886af524de651b03391dbc842730ade44680b161",
+        "bytes": 411419
+      },
+      "loader.js": {
+        "sha256": "c06c9a252d1080d41cda582bd78aaaa3a5bda8ec36a4251b9255013d83fd43b1",
+        "bytes": 5767
+      },
+      "script-fonts.css": {
+        "sha256": "b54671afa3ef114cd11c01cbb68ef9da2008e89872f1039563be66c8590fb1fc",
+        "bytes": 3485
+      },
+      "presentation-surface.js": {
+        "sha256": "a0dc7dbde4cf5e29986174bc3ae4b6be0b2e90b62fe881a62794c7087bf50637",
+        "bytes": 6238
+      },
+      "identity.json": {
+        "sha256": "ff8b6801ee6ebef7e28d8d89f99c69f84c504ec88870cd1e95caed4ebbe18e45",
+        "bytes": 376
+      },
+      "runtime-assets.json": {
+        "sha256": "a23443981a98d6bc18cb6de7480c633b0bec2a1dfb15b81017ebacc506abdee4",
+        "bytes": 6771451
+      }
+    },
+    "build_identity": {
+      "client_features": {
+        "authoring_links": true,
+        "commander": true,
+        "community_ai": true,
+        "community_generators": true
+      },
+      "client_profile": "full",
+      "dev_fast": true,
+      "distribution": "browser",
+      "linker": "auto",
+      "mode": "debug",
+      "native_wss": false,
+      "role": "client",
+      "target": "web",
+      "toolchain": "emscripten",
+      "web_variant": "serial"
+    },
+    "source_bundle_sha256": "7583e9f8f0a03186eec456ed3b7a9c187509056b91f931551c3b7dc0e6b53457",
+    "runtime_sha256": "9f8021aaf97bfeea74e16c4751014eaa490943529de3697cf8cd4861f36e9061",
+    "runtime_override": "integration-stage/browser/i18n.js",
+    "font_manifest_sha256": "4dd7f1c0770d812fd9ddb6231e622dbe6e1d26588b2fec002650b6e7af1994cc",
+    "font_source_commit": "ffebf8c1ee449e544955a7e813c54f9b73848eac",
+    "catalog_sha256": {
+      "hi": {
+        "native": "a65477c9ac654c44a08531b6a5ee53f76d7aa6454c2f776c43382ed4f2e321e8",
+        "online": "d80bdd87f3502c34e45ae744d8e0f8bac3cafd93755a5ef87e0bed8bec3d74c4"
+      },
+      "ur": {
+        "native": "5cb88fac67663fc436f6bfa60388382c24665755ee481514c002bc92e9a29837",
+        "online": "db375ee564c39cf02dfb4ce08d6a4dbaecb8cd69d5bc7f167b4c7f779e246587"
+      },
+      "sw": {
+        "native": "d23c1b75c4ae209b85a6dbd9f2fb0ab084ab7bb21b7544ec8a4a5ad545129cc5",
+        "online": "6914cbf226adebd70d3ff401cfda759b62b62cc8af621b25f4ba994a8e0bec0a"
+      }
+    }
+  },
+  "served_current_file_checks": [
+    {
+      "file": "/Users/bradley/.codex/worktrees/ed62/glob2/build/emscripten/client/debug/dev-dev_fast-true-linker-auto-web_variant-serial/index.html",
+      "sha256": "9710535a4826a19042e7bb2c14e9a0bdb29cc579f60297db2a089baaf67d9c03",
+      "bytes": 58084,
+      "current_matches": true
+    },
+    {
+      "file": "/Users/bradley/.codex/worktrees/ed62/glob2/build/emscripten/client/debug/dev-dev_fast-true-linker-auto-web_variant-serial/index.js",
+      "sha256": "b9b34780590780c94cf9fdaecfb4aa7c110dd3bec8a23c667648494fc1eef512",
+      "bytes": 1207471,
+      "current_matches": true
+    },
+    {
+      "file": "/Users/bradley/.codex/worktrees/ed62/glob2/build/emscripten/client/debug/dev-dev_fast-true-linker-auto-web_variant-serial/index.wasm",
+      "sha256": "ea97092d507c6f5fe75781ece4668c1205bf39494f450866d952ca92cd570fb0",
+      "bytes": 50575252,
+      "current_matches": true
+    },
+    {
+      "file": "/Users/bradley/.codex/worktrees/ed62/glob2/build/emscripten/client/debug/dev-dev_fast-true-linker-auto-web_variant-serial/asset-manifest.js",
+      "sha256": "9597fff70ccb08beb24f672c886af524de651b03391dbc842730ade44680b161",
+      "bytes": 411419,
+      "current_matches": true
+    },
+    {
+      "file": "/Users/bradley/.codex/worktrees/ed62/glob2/build/emscripten/client/debug/dev-dev_fast-true-linker-auto-web_variant-serial/loader.js",
+      "sha256": "c06c9a252d1080d41cda582bd78aaaa3a5bda8ec36a4251b9255013d83fd43b1",
+      "bytes": 5767,
+      "current_matches": true
+    },
+    {
+      "file": "/Users/bradley/.codex/worktrees/ed62/glob2/build/emscripten/client/debug/dev-dev_fast-true-linker-auto-web_variant-serial/script-fonts.css",
+      "sha256": "b54671afa3ef114cd11c01cbb68ef9da2008e89872f1039563be66c8590fb1fc",
+      "bytes": 3485,
+      "current_matches": true
+    },
+    {
+      "file": "/Users/bradley/.codex/worktrees/ed62/glob2/build/emscripten/client/debug/dev-dev_fast-true-linker-auto-web_variant-serial/presentation-surface.js",
+      "sha256": "a0dc7dbde4cf5e29986174bc3ae4b6be0b2e90b62fe881a62794c7087bf50637",
+      "bytes": 6238,
+      "current_matches": true
+    },
+    {
+      "file": "/Users/bradley/.codex/worktrees/ed62/glob2/build/emscripten/client/debug/dev-dev_fast-true-linker-auto-web_variant-serial/identity.json",
+      "sha256": "ff8b6801ee6ebef7e28d8d89f99c69f84c504ec88870cd1e95caed4ebbe18e45",
+      "bytes": 376,
+      "current_matches": true
+    },
+    {
+      "file": "/Users/bradley/.codex/worktrees/ed62/glob2/build/emscripten/client/debug/dev-dev_fast-true-linker-auto-web_variant-serial/runtime-assets.json",
+      "sha256": "a23443981a98d6bc18cb6de7480c633b0bec2a1dfb15b81017ebacc506abdee4",
+      "bytes": 6771451,
+      "current_matches": true
+    }
+  ],
+  "catalogs_current_match": true,
+  "current_stage_browser_runtime_match": true,
+  "current_font_manifest_match": true,
+  "images": [
+    {
+      "path": "ur-1200-input.png",
+      "sha256": "d9d08ca3c8ceae671f904d7c2e42c86f6cfceadfca66f660cdc110709462fb89",
+      "bytes": 479052,
+      "onboarding": false,
+      "actually_read": true,
+      "archive": "images/ur-1200-input.png"
+    },
+    {
+      "path": "ur-1200-lobby.png",
+      "sha256": "90f97b21b2cbfa4853bbe17eec0cbe53813ea70b213a5b7160d761be5d59fd93",
+      "bytes": 241940,
+      "onboarding": false,
+      "actually_read": true,
+      "archive": "images/ur-1200-lobby.png"
+    },
+    {
+      "path": "ur-1200-main.png",
+      "sha256": "100854679174d9d5823d557508474b15cd720c773f2620682924f8900594d6f2",
+      "bytes": 1062660,
+      "onboarding": false,
+      "actually_read": true,
+      "archive": "images/ur-1200-main.png"
+    },
+    {
+      "path": "ur-1200-settings.png",
+      "sha256": "2ca30e88c33e4b63b69573eca665289ca7a36252e4e3a6d087b093569d4c9ab6",
+      "bytes": 495300,
+      "onboarding": false,
+      "actually_read": true,
+      "archive": "images/ur-1200-settings.png"
+    },
+    {
+      "path": "ur-390-AudioPreferenceScreen.png",
+      "sha256": "5f34fabcdaa23f838e84065fbd764abf7202370b4524962c2983aab36932808e",
+      "bytes": 245003,
+      "onboarding": true,
+      "actually_read": true,
+      "archive": "images/ur-390-AudioPreferenceScreen.png"
+    },
+    {
+      "path": "ur-390-HandPreferenceScreen.png",
+      "sha256": "de5b2f33e459dac593fb5220dd02a5fb30bcaebe6d93404927faba40df0f48e7",
+      "bytes": 183308,
+      "onboarding": true,
+      "actually_read": true,
+      "archive": "images/ur-390-HandPreferenceScreen.png"
+    },
+    {
+      "path": "ur-390-input.png",
+      "sha256": "88f96c228320800b18f81a66eed1a1da56e14abe299e464d56c180658e54814d",
+      "bytes": 26445,
+      "onboarding": false,
+      "actually_read": true,
+      "archive": "images/ur-390-input.png"
+    },
+    {
+      "path": "ur-390-lobby.png",
+      "sha256": "7d27a91e7afb4e583f5bc70c168531e042e6474ae5d06be9859801a35bf51db7",
+      "bytes": 49292,
+      "onboarding": false,
+      "actually_read": true,
+      "archive": "images/ur-390-lobby.png"
+    },
+    {
+      "path": "ur-390-main.png",
+      "sha256": "159ff45b0a45eb0a9ac2b4a60b95534b305e6574bf970ee7b068f35ff401af59",
+      "bytes": 318766,
+      "onboarding": false,
+      "actually_read": true,
+      "archive": "images/ur-390-main.png"
+    },
+    {
+      "path": "ur-390-settings.png",
+      "sha256": "0a937d118fbe1dca6c7652d41cae7043a376b628872d5e8c641a6948e350f4f1",
+      "bytes": 47884,
+      "onboarding": false,
+      "actually_read": true,
+      "archive": "images/ur-390-settings.png"
+    }
+  ],
+  "case_evidence": [
+    {
+      "width": 1200,
+      "packaged_FS_fonts": [
+        {
+          "path": "/data/fonts/scripts/NotoSansDevanagari-Regular.ttf",
+          "bytes": 219212,
+          "sha256": "385e78e6359a9d88a0f243d53b1209d7548361ba2194e2b9ec779bcaa7e8949d"
+        },
+        {
+          "path": "/data/fonts/scripts/NotoSansBengali-Regular.ttf",
+          "bytes": 200048,
+          "sha256": "6300c5370cd688b0641343de4c786de6d412bb6c578d129dae75e93a0322dcab"
+        },
+        {
+          "path": "/data/fonts/scripts/NotoSansGujarati-Regular.ttf",
+          "bytes": 208452,
+          "sha256": "8d5c22d7b729ef2839e6d1fe2cde77b2d083907be3659bca63676baa76e01fd6"
+        },
+        {
+          "path": "/data/fonts/scripts/NotoSansGurmukhi-Regular.ttf",
+          "bytes": 53000,
+          "sha256": "bbde4d85fdfb998eff6921cb2c7a9a7924a1c95560a6aa9a06172530e4f596da"
+        },
+        {
+          "path": "/data/fonts/scripts/NotoSansTamil-Regular.ttf",
+          "bytes": 74248,
+          "sha256": "6532db33b8b264abe3a098a40619feb489b5ddf5ab1d2b46e72b51eeb548001b"
+        },
+        {
+          "path": "/data/fonts/scripts/NotoSansTelugu-Regular.ttf",
+          "bytes": 197228,
+          "sha256": "2c05072e8018a9be1cb0582953d9edf9a0cf129cdfb74e611de763b09c411f7f"
+        },
+        {
+          "path": "/data/fonts/scripts/NotoSansKannada-Regular.ttf",
+          "bytes": 151940,
+          "sha256": "5c804033c57f2c2844b1cd425f45b9a78d81d2f71bf358351b24258ebe168aea"
+        },
+        {
+          "path": "/data/fonts/scripts/NotoSansMalayalam-Regular.ttf",
+          "bytes": 111724,
+          "sha256": "42eb462ff13e820ebbeaaec4e7b426bd1de145d02cef8b634f5a3efd376b513c"
+        },
+        {
+          "path": "/data/fonts/scripts/NotoSansOriya-Regular.ttf",
+          "bytes": 95776,
+          "sha256": "b8d8bd784b9d09c0668233437359913c93a3a83bf37d92ecde859e2bc728a0e0"
+        },
+        {
+          "path": "/data/fonts/scripts/NotoSansThai-Regular.ttf",
+          "bytes": 37752,
+          "sha256": "404ddfb5ed0aaa6b6ec8a85700d682978992062d67da93903967b56cbd9a4acc"
+        },
+        {
+          "path": "/data/fonts/scripts/NotoSansMyanmar-Regular.ttf",
+          "bytes": 195408,
+          "sha256": "9dd2bc76a822a974efce803a4b07302d14d01d5c1fa9e33a258d15a9cb513a7d"
+        },
+        {
+          "path": "/data/fonts/scripts/NotoSansEthiopic-Regular.ttf",
+          "bytes": 344328,
+          "sha256": "e3a81ca66eb6d6b1a50a287c1dba18195541f69e0986f8b49a42658aa592ff0d"
+        },
+        {
+          "path": "/data/fonts/scripts/NotoSansArabic-Regular.ttf",
+          "bytes": 240456,
+          "sha256": "ceea25b464a656dc3b26849bab9356740401af62aedf1bfa8b7f0d9b75925b1b"
+        }
+      ],
+      "input_bridge": {
+        "value": "کھیل 12/100 a.co",
+        "selectionStart": 0,
+        "selectionEnd": 16,
+        "dir": "auto",
+        "aria": "کھیل میں متن درج کرنے کا خانہ",
+        "font": "\"Glob2 Scripts\", \"Nunito Variable\", Nunito, ui-rounded, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif"
+      },
+      "actual_FS_commit": {
+        "sample": "کھیل 12/100 a.co",
+        "sampleUtf8Bytes": 20,
+        "savedUsername": "کھیل 12/100 a.co",
+        "preferences_sha256": "06295068ae16ef04d689db69ee3acffa350a52762cdef5d290ae0d0a069ebafe",
+        "escape_bridge_hidden": true,
+        "composition_two_frames": true,
+        "enter_bridge_hidden": true,
+        "done_saved": true,
+        "limits": "Synthetic DOM composition events test bridge sequencing; not a physical IME or mobile-keyboard certification."
+      },
+      "warnings": [
+        "Failed to load resource: the server responded with a status of 404 (Not Found)",
+        "WARNING: using emscripten GL emulation. This is a collection of limited workarounds, do not expect it to work.",
+        "WARNING: using emscripten GL emulation unsafe opts. If weirdness happens, try -sGL_UNSAFE_OPTS=0",
+        "readlink() error: No such file or directory",
+        "WARNING: using emscripten GL immediate mode emulation. This is very limited in what it supports"
+      ]
+    },
+    {
+      "width": 390,
+      "packaged_FS_fonts": [
+        {
+          "path": "/data/fonts/scripts/NotoSansDevanagari-Regular.ttf",
+          "bytes": 219212,
+          "sha256": "385e78e6359a9d88a0f243d53b1209d7548361ba2194e2b9ec779bcaa7e8949d"
+        },
+        {
+          "path": "/data/fonts/scripts/NotoSansBengali-Regular.ttf",
+          "bytes": 200048,
+          "sha256": "6300c5370cd688b0641343de4c786de6d412bb6c578d129dae75e93a0322dcab"
+        },
+        {
+          "path": "/data/fonts/scripts/NotoSansGujarati-Regular.ttf",
+          "bytes": 208452,
+          "sha256": "8d5c22d7b729ef2839e6d1fe2cde77b2d083907be3659bca63676baa76e01fd6"
+        },
+        {
+          "path": "/data/fonts/scripts/NotoSansGurmukhi-Regular.ttf",
+          "bytes": 53000,
+          "sha256": "bbde4d85fdfb998eff6921cb2c7a9a7924a1c95560a6aa9a06172530e4f596da"
+        },
+        {
+          "path": "/data/fonts/scripts/NotoSansTamil-Regular.ttf",
+          "bytes": 74248,
+          "sha256": "6532db33b8b264abe3a098a40619feb489b5ddf5ab1d2b46e72b51eeb548001b"
+        },
+        {
+          "path": "/data/fonts/scripts/NotoSansTelugu-Regular.ttf",
+          "bytes": 197228,
+          "sha256": "2c05072e8018a9be1cb0582953d9edf9a0cf129cdfb74e611de763b09c411f7f"
+        },
+        {
+          "path": "/data/fonts/scripts/NotoSansKannada-Regular.ttf",
+          "bytes": 151940,
+          "sha256": "5c804033c57f2c2844b1cd425f45b9a78d81d2f71bf358351b24258ebe168aea"
+        },
+        {
+          "path": "/data/fonts/scripts/NotoSansMalayalam-Regular.ttf",
+          "bytes": 111724,
+          "sha256": "42eb462ff13e820ebbeaaec4e7b426bd1de145d02cef8b634f5a3efd376b513c"
+        },
+        {
+          "path": "/data/fonts/scripts/NotoSansOriya-Regular.ttf",
+          "bytes": 95776,
+          "sha256": "b8d8bd784b9d09c0668233437359913c93a3a83bf37d92ecde859e2bc728a0e0"
+        },
+        {
+          "path": "/data/fonts/scripts/NotoSansThai-Regular.ttf",
+          "bytes": 37752,
+          "sha256": "404ddfb5ed0aaa6b6ec8a85700d682978992062d67da93903967b56cbd9a4acc"
+        },
+        {
+          "path": "/data/fonts/scripts/NotoSansMyanmar-Regular.ttf",
+          "bytes": 195408,
+          "sha256": "9dd2bc76a822a974efce803a4b07302d14d01d5c1fa9e33a258d15a9cb513a7d"
+        },
+        {
+          "path": "/data/fonts/scripts/NotoSansEthiopic-Regular.ttf",
+          "bytes": 344328,
+          "sha256": "e3a81ca66eb6d6b1a50a287c1dba18195541f69e0986f8b49a42658aa592ff0d"
+        },
+        {
+          "path": "/data/fonts/scripts/NotoSansArabic-Regular.ttf",
+          "bytes": 240456,
+          "sha256": "ceea25b464a656dc3b26849bab9356740401af62aedf1bfa8b7f0d9b75925b1b"
+        }
+      ],
+      "input_bridge": {
+        "value": "کھیل 12/100 a.co",
+        "selectionStart": 0,
+        "selectionEnd": 16,
+        "dir": "auto",
+        "aria": "کھیل میں متن درج کرنے کا خانہ",
+        "font": "\"Glob2 Scripts\", \"Nunito Variable\", Nunito, ui-rounded, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif"
+      },
+      "actual_FS_commit": {
+        "sample": "کھیل 12/100 a.co",
+        "sampleUtf8Bytes": 20,
+        "savedUsername": "کھیل 12/100 a.co",
+        "preferences_sha256": "b40d0527aee85e8b02a2deeaecfa6123ffe5c7e7e391e54e43220ce5eefaeace",
+        "escape_bridge_hidden": true,
+        "composition_two_frames": true,
+        "enter_bridge_hidden": true,
+        "done_saved": true,
+        "limits": "Synthetic DOM composition events test bridge sequencing; not a physical IME or mobile-keyboard certification."
+      },
+      "warnings": [
+        "Failed to load resource: the server responded with a status of 404 (Not Found)",
+        "WARNING: using emscripten GL emulation. This is a collection of limited workarounds, do not expect it to work.",
+        "WARNING: using emscripten GL emulation unsafe opts. If weirdness happens, try -sGL_UNSAFE_OPTS=0",
+        "readlink() error: No such file or directory",
+        "WARNING: using emscripten GL immediate mode emulation. This is very limited in what it supports"
+      ]
+    }
+  ],
+  "findings": [],
+  "observations": [
+    "All10actualUrduPNGread:desktopmain/settings/input/lobby andphone main/settings/input/lobby/handpreference/audiopreference.",
+    "Urdujoins/dots/marks legible, labels wrap andvisiblecontrolsfit; no observedtofu or malformedbrackets. Desktopscaleparenthesized100percentbalanced. Phonegraphicssettingsfixtureomitswindow/scalesectionbydesign.",
+    "DOMinput visiblyholdslogicalکھیل12/100a.co withRTLUrduword andatomicLTRratio/domain; dirauto, localizedARIA and scriptfont verifiedfromactualrecord.",
+    "Syntheticcomposition/Enter/Done sequence actuallypersisted20-byteUrduplayernameinvirtualFS atbothwidths; independentreview verifiedidentity andoutputmetadata, nofalsereexecutionclaim.",
+    "WASMlobbycompletedmapthumbnailpresent atbothwidths, wrappedhelpcaptionandnext/backfit. Nativependingthumbnailfixtureisaseparatelimit.",
+    "Handpreferenceandquiet/soundonboardingUrduinstructions/buttonsreadable.",
+    "All13runtimepackagedTTFhashes atbothUrduwidths matchlocalpinnedfonts;unloadedirrelevantCSSscriptfacesarenotmissingUrdufont."
+  ],
+  "limits": [
+    "Independentagentreview,nothuman nativespeakerapproval.",
+    "SerialsoftwareWebAssemblydevelopmentbuildunderlocalChromiumdesktop+phoneviewport,notnativeAndroid/iOS/physicalmobile orreleaseperformance.",
+    "Only10capturedsurfaces; noWASMgameplay/tutorialHUDcaptureorfullcatalogvisuallabelclaim. NativeSDLandWASMarenotseamlesslyinterchangeableevidence.",
+    "SyntheticDOMcompositionevents+FSsaveproven,notphysicalIME/mobilekeyboardcertification.",
+    "Isolated36locale stagebrowserruntime andpreRunfullhiurswcatalogFSoverlay,notshippedregistration.",
+    "saveData skipsoptionalmedia; noaudio/skins/HDassetverificationinferred.",
+    "RunrecordsservedJS/WASM/filehashidentity,notnativeproduceridentity. No fullcurrentC++sourceTreecompiledWASMattestationinferredfromnative55fdproducer.",
+    "Recordedresource404/GLemulation/readlinkwarnings retained; emptycaseerrorsandvisibleexecutionverified,notblanketerror-freeclaim.",
+    "No production/catalog edits byreviewer."
+  ]
+}

@@ -1,0 +1,303 @@
+{
+  "catalog_sha256": "a2398e2e0776ad8828db86173bbeb849a119949401ec444c46ef0b8a8e6d179d",
+  "count": 37,
+  "every_equal_entry_examined": true,
+  "entries": [
+    {
+      "key": "[AICastor]",
+      "source": "Castor",
+      "target": "Castor",
+      "reason": "Specificcontroller/product/technology propername retained deliberately.",
+      "state": "accepted_source_equality",
+      "reviewer": "/root/pilot_context"
+    },
+    {
+      "key": "[AIMaxima]",
+      "source": "Maxima",
+      "target": "Maxima",
+      "reason": "Specificcontroller/product/technology propername retained deliberately.",
+      "state": "accepted_source_equality",
+      "reviewer": "/root/pilot_context"
+    },
+    {
+      "key": "[AICortex]",
+      "source": "Cortex",
+      "target": "Cortex",
+      "reason": "Specificcontroller/product/technology propername retained deliberately.",
+      "state": "accepted_source_equality",
+      "reviewer": "/root/pilot_context"
+    },
+    {
+      "key": "[AINicowar]",
+      "source": "Nicowar",
+      "target": "Nicowar",
+      "reason": "Specificcontroller/product/technology propername retained deliberately.",
+      "state": "accepted_source_equality",
+      "reviewer": "/root/pilot_context"
+    },
+    {
+      "key": "[AINumbi]",
+      "source": "Numbi",
+      "target": "Numbi",
+      "reason": "Specificcontroller/product/technology propername retained deliberately.",
+      "state": "accepted_source_equality",
+      "reviewer": "/root/pilot_context"
+    },
+    {
+      "key": "[AIEcono]",
+      "source": "Econo",
+      "target": "Econo",
+      "reason": "Specificcontroller/product/technology propername retained deliberately.",
+      "state": "accepted_source_equality",
+      "reviewer": "/root/pilot_context"
+    },
+    {
+      "key": "[AIWarrush]",
+      "source": "Warrush",
+      "target": "Warrush",
+      "reason": "Specificcontroller/product/technology propername retained deliberately.",
+      "state": "accepted_source_equality",
+      "reviewer": "/root/pilot_context"
+    },
+    {
+      "key": "[AICabino]",
+      "source": "Cabino",
+      "target": "Cabino",
+      "reason": "Specificcontroller/product/technology propername retained deliberately.",
+      "state": "accepted_source_equality",
+      "reviewer": "/root/pilot_context"
+    },
+    {
+      "key": "[AIJavaScript]",
+      "source": "JavaScript",
+      "target": "JavaScript",
+      "reason": "Specificcontroller/product/technology propername retained deliberately.",
+      "state": "accepted_source_equality",
+      "reviewer": "/root/pilot_context"
+    },
+    {
+      "key": "[alt %0]",
+      "source": "alt-%0",
+      "target": "alt-%0",
+      "reason": "Physicalkeyboardmodifier andplaceholder; Latin keynotation specified in consultedMozillaUrdustyleguide.",
+      "state": "accepted_source_equality",
+      "reviewer": "/root/pilot_context"
+    },
+    {
+      "key": "[clearingflag explanation 2]",
+      "source": "",
+      "target": "",
+      "reason": "Intentionally empty sourcecontinuation row; preserveblank ratherthaninventprose.",
+      "state": "accepted_source_equality",
+      "reviewer": "/root/pilot_context"
+    },
+    {
+      "key": "[explorationflag explanation 2]",
+      "source": "",
+      "target": "",
+      "reason": "Intentionally empty sourcecontinuation row; preserveblank ratherthaninventprose.",
+      "state": "accepted_source_equality",
+      "reviewer": "/root/pilot_context"
+    },
+    {
+      "key": "[hospital explanation 2]",
+      "source": "",
+      "target": "",
+      "reason": "Intentionally empty sourcecontinuation row; preserveblank ratherthaninventprose.",
+      "state": "accepted_source_equality",
+      "reviewer": "/root/pilot_context"
+    },
+    {
+      "key": "[hp]",
+      "source": "HP",
+      "target": "HP",
+      "reason": "Standardhitpointabbreviation HP withnumeric/placeholdernotation, alreadydefinedintranslated surroundinglabels.",
+      "state": "accepted_source_equality",
+      "reviewer": "/root/pilot_context"
+    },
+    {
+      "key": "[inn explanation 2]",
+      "source": "",
+      "target": "",
+      "reason": "Intentionally empty sourcecontinuation row; preserveblank ratherthaninventprose.",
+      "state": "accepted_source_equality",
+      "reviewer": "/root/pilot_context"
+    },
+    {
+      "key": "[OpenGL]",
+      "source": "OpenGL",
+      "target": "OpenGL",
+      "reason": "Specificcontroller/product/technology propername retained deliberately.",
+      "state": "accepted_source_equality",
+      "reviewer": "/root/pilot_context"
+    },
+    {
+      "key": "[swarm explanation 2]",
+      "source": "",
+      "target": "",
+      "reason": "Intentionally empty sourcecontinuation row; preserveblank ratherthaninventprose.",
+      "state": "accepted_source_equality",
+      "reviewer": "/root/pilot_context"
+    },
+    {
+      "key": "[warflag explanation 2]",
+      "source": "",
+      "target": "",
+      "reason": "Intentionally empty sourcecontinuation row; preserveblank ratherthaninventprose.",
+      "state": "accepted_source_equality",
+      "reviewer": "/root/pilot_context"
+    },
+    {
+      "key": "[Stats low HP ranges]",
+      "source": "HP ≤25/50/75%",
+      "target": "HP ≤25/50/75%",
+      "reason": "Standardhitpointabbreviation HP withnumeric/placeholdernotation, alreadydefinedintranslated surroundinglabels.",
+      "state": "accepted_source_equality",
+      "reviewer": "/root/pilot_context"
+    },
+    {
+      "key": "[zoom factor %0]",
+      "source": "%0×",
+      "target": "%0×",
+      "reason": "Onlynumericplaceholders/numerals/math/navigationpunctuation; noEnglishprose.",
+      "state": "accepted_source_equality",
+      "reviewer": "/root/pilot_context"
+    },
+    {
+      "key": "[%0 / %1 HP · %2]",
+      "source": "%0 / %1 HP · %2",
+      "target": "%0 / %1 HP · %2",
+      "reason": "Standardhitpointabbreviation HP withnumeric/placeholdernotation, alreadydefinedintranslated surroundinglabels.",
+      "state": "accepted_source_equality",
+      "reviewer": "/root/pilot_context"
+    },
+    {
+      "key": "[P %0/%1/%2]",
+      "source": "P %0/%1/%2",
+      "target": "P %0/%1/%2",
+      "reason": "Sourcecompactdiagnostic P abbreviation; preservewithoutguessingexpansion wherecurrentcallerunlocated.",
+      "state": "accepted_source_equality",
+      "reviewer": "/root/pilot_context"
+    },
+    {
+      "key": "[CPU load %0]",
+      "source": "CPU %0%",
+      "target": "CPU %0%",
+      "reason": "StandardCPU technicalabbreviation, numericplaceholder preserved.",
+      "state": "accepted_source_equality",
+      "reviewer": "/root/pilot_context"
+    },
+    {
+      "key": "[%0 · %1]",
+      "source": "%0 · %1",
+      "target": "%0 · %1",
+      "reason": "Onlynumericplaceholders/numerals/math/navigationpunctuation; noEnglishprose.",
+      "state": "accepted_source_equality",
+      "reviewer": "/root/pilot_context"
+    },
+    {
+      "key": "[%0 %1]",
+      "source": "%0 %1",
+      "target": "%0 %1",
+      "reason": "Onlynumericplaceholders/numerals/math/navigationpunctuation; noEnglishprose.",
+      "state": "accepted_source_equality",
+      "reviewer": "/root/pilot_context"
+    },
+    {
+      "key": "[conn ai]",
+      "source": "AI",
+      "target": "AI",
+      "reason": "EstablishedAI abbreviation usedforcomputeropponents; no Englishproseleft.",
+      "state": "accepted_source_equality",
+      "reviewer": "/root/pilot_context"
+    },
+    {
+      "key": "[hub sim %0]",
+      "source": "sim %0",
+      "target": "sim %0",
+      "reason": "Source simulationrevisioncodeprefix sim andinterpolatedidentifier retained; not an unfilledprosesentence.",
+      "state": "accepted_source_equality",
+      "reviewer": "/root/pilot_context"
+    },
+    {
+      "key": "[match ai]",
+      "source": "AI",
+      "target": "AI",
+      "reason": "EstablishedAI abbreviation usedforcomputeropponents; no Englishproseleft.",
+      "state": "accepted_source_equality",
+      "reviewer": "/root/pilot_context"
+    },
+    {
+      "key": "[room ai %0]",
+      "source": "AI: %0",
+      "target": "AI: %0",
+      "reason": "EstablishedAI abbreviation usedforcomputeropponents; no Englishproseleft.",
+      "state": "accepted_source_equality",
+      "reviewer": "/root/pilot_context"
+    },
+    {
+      "key": "[qm ai]",
+      "source": "AI",
+      "target": "AI",
+      "reason": "EstablishedAI abbreviation usedforcomputeropponents; no Englishproseleft.",
+      "state": "accepted_source_equality",
+      "reviewer": "/root/pilot_context"
+    },
+    {
+      "key": "[qm ai badge]",
+      "source": "AI",
+      "target": "AI",
+      "reason": "EstablishedAI abbreviation usedforcomputeropponents; no Englishproseleft.",
+      "state": "accepted_source_equality",
+      "reviewer": "/root/pilot_context"
+    },
+    {
+      "key": "[profile draw letter]",
+      "source": "–",
+      "target": "–",
+      "reason": "Onlynumericplaceholders/numerals/math/navigationpunctuation; noEnglishprose.",
+      "state": "accepted_source_equality",
+      "reviewer": "/root/pilot_context"
+    },
+    {
+      "key": "[maps 256]",
+      "source": "256 × 256",
+      "target": "256 × 256",
+      "reason": "Onlynumericplaceholders/numerals/math/navigationpunctuation; noEnglishprose.",
+      "state": "accepted_source_equality",
+      "reviewer": "/root/pilot_context"
+    },
+    {
+      "key": "[maps %0 kb]",
+      "source": "%0 KB",
+      "target": "%0 KB",
+      "reason": "Standardstorageunit KB andnumericplaceholder preserved.",
+      "state": "accepted_source_equality",
+      "reviewer": "/root/pilot_context"
+    },
+    {
+      "key": "[settings Hive Mind]",
+      "source": "Hive Mind",
+      "target": "Hive Mind",
+      "reason": "Specificcontroller/product/technology propername retained deliberately.",
+      "state": "accepted_source_equality",
+      "reviewer": "/root/pilot_context"
+    },
+    {
+      "key": "[stat page %0 of %1]",
+      "source": "%0/%1  >",
+      "target": "%0/%1  >",
+      "reason": "Onlynumericplaceholders/numerals/math/navigationpunctuation; noEnglishprose.",
+      "state": "accepted_source_equality",
+      "reviewer": "/root/pilot_context"
+    },
+    {
+      "key": "[Globulation 2 Discord]",
+      "source": "Globulation 2 Discord",
+      "target": "Globulation 2 Discord",
+      "reason": "Specificcontroller/product/technology propername retained deliberately.",
+      "state": "accepted_source_equality",
+      "reviewer": "/root/pilot_context"
+    }
+  ]
+}

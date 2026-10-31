@@ -1,0 +1,1319 @@
+{
+  "kind": "actual-app-three-draft-overlay",
+  "run_identity": {
+    "started_utc": "2026-10-31T16:34:34.276Z",
+    "catalog_sha256": {
+      "hi": "d80bdd87f3502c34e45ae744d8e0f8bac3cafd93755a5ef87e0bed8bec3d74c4",
+      "ur": "db375ee564c39cf02dfb4ce08d6a4dbaecb8cd69d5bc7f167b4c7f779e246587",
+      "sw": "59a34af2d4ac447e4183db0bc2cea2825c93758925fb519d10df0eeed0f4847a"
+    },
+    "build_identity_sha256": "3ca79e6bec285dd95d7fa8b37edbd26b41bcbae89d8d0f3a610e88f8d01f5e3f",
+    "server": {
+      "catalog_sha256": {
+        "hi": "d80bdd87f3502c34e45ae744d8e0f8bac3cafd93755a5ef87e0bed8bec3d74c4",
+        "ur": "db375ee564c39cf02dfb4ce08d6a4dbaecb8cd69d5bc7f167b4c7f779e246587",
+        "sw": "59a34af2d4ac447e4183db0bc2cea2825c93758925fb519d10df0eeed0f4847a"
+      },
+      "source_sha256": {
+        "../../../platform/packages/i18n/src/index.ts": "5f01c60c26795b599218c781194bdafb060b742f1b1ae04a16617dd5f2a1080e",
+        "../../../platform/apps/api/src/web/pages.ts": "8465498fcaeaa877efc77c903bfe86d139918cae0c8bd7697239cfc1ca7f132b",
+        "../../../platform/apps/api/src/routes/signin.ts": "ca8a806ca5dbc356de5e1aec2cc35e43d81f6fa4be1b6c09e1a8dfbbbe077835",
+        "../../../platform/apps/api/test/historySeed.ts": "2132adfd455661cc26e7328ddabdfe9d3c78cd51e6979b56f71fe7fbae7a6244"
+      }
+    }
+  },
+  "results": [
+    {
+      "locale": "hi",
+      "width": 1200,
+      "name": "home-first-visit",
+      "url": "http://127.0.0.1:4322/",
+      "screenshot": "hi-1200-home-first-visit.png",
+      "screenshot_sha256": "69d43bf5ced3eb3a23e70d18a9a32931569580404813797262136f419fd8f096",
+      "lang": "hi",
+      "dir": "ltr",
+      "heading": [
+        "बस्ती में स्वागत है"
+      ],
+      "font": {
+        "loaded": true,
+        "body": "\"Glob2 Scripts\", \"Nunito Variable\", Nunito, ui-rounded, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif",
+        "heading": "\"Glob2 Scripts\", \"Glob2 Sans\", \"DejaVu Sans\", Verdana, sans-serif"
+      },
+      "overflow": 0,
+      "axe": []
+    },
+    {
+      "locale": "hi",
+      "width": 1200,
+      "name": "signin",
+      "url": "http://127.0.0.1:4322/signin",
+      "screenshot": "hi-1200-signin.png",
+      "screenshot_sha256": "cc7269c93d79ed1de9486d009344b1fda89a0b13714dc5a66b900d7c37add901",
+      "lang": "hi",
+      "dir": "ltr",
+      "heading": [
+        "साइन इन करें"
+      ],
+      "font": {
+        "loaded": true,
+        "body": "\"Glob2 Scripts\", \"Nunito Variable\", Nunito, ui-rounded, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif",
+        "heading": "\"Glob2 Scripts\", \"Glob2 Sans\", \"DejaVu Sans\", Verdana, sans-serif"
+      },
+      "overflow": 0,
+      "axe": []
+    },
+    {
+      "locale": "hi",
+      "width": 1200,
+      "name": "signin-error",
+      "url": "http://127.0.0.1:4322/signin/local",
+      "screenshot": "hi-1200-signin-error.png",
+      "screenshot_sha256": "3409625a69af8e183cffca77df312c62fcdfa1290f23972332fb26d2391a3789",
+      "lang": "hi",
+      "dir": "ltr",
+      "heading": [
+        "साइन इन करें"
+      ],
+      "font": {
+        "loaded": true,
+        "body": "\"Glob2 Scripts\", \"Nunito Variable\", Nunito, ui-rounded, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif",
+        "heading": "\"Glob2 Scripts\", \"Glob2 Sans\", \"DejaVu Sans\", Verdana, sans-serif"
+      },
+      "overflow": 0,
+      "axe": []
+    },
+    {
+      "locale": "hi",
+      "width": 1200,
+      "name": "account",
+      "url": "http://127.0.0.1:4322/account",
+      "screenshot": "hi-1200-account.png",
+      "screenshot_sha256": "f3edcf165d8a3e3964dd0eeb13c7f2dfb758f6f46b80d62ddc846ea11126f07b",
+      "lang": "hi",
+      "dir": "ltr",
+      "heading": [
+        "आपका खाता"
+      ],
+      "font": {
+        "loaded": true,
+        "body": "\"Glob2 Scripts\", \"Nunito Variable\", Nunito, ui-rounded, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif",
+        "heading": "\"Glob2 Scripts\", \"Glob2 Sans\", \"DejaVu Sans\", Verdana, sans-serif"
+      },
+      "overflow": 0,
+      "axe": []
+    },
+    {
+      "locale": "hi",
+      "width": 1200,
+      "name": "matches",
+      "url": "http://127.0.0.1:4322/matches",
+      "screenshot": "hi-1200-matches.png",
+      "screenshot_sha256": "76c0d7e9b53dd36d55596c139a11613b04780392027e37e804c5ec21c48d9ff2",
+      "lang": "hi",
+      "dir": "ltr",
+      "heading": [
+        "हाल के मैच"
+      ],
+      "font": {
+        "loaded": true,
+        "body": "\"Glob2 Scripts\", \"Nunito Variable\", Nunito, ui-rounded, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif",
+        "heading": "\"Glob2 Scripts\", \"Glob2 Sans\", \"DejaVu Sans\", Verdana, sans-serif"
+      },
+      "overflow": 0,
+      "axe": []
+    },
+    {
+      "locale": "hi",
+      "width": 1200,
+      "name": "match",
+      "url": "http://127.0.0.1:4322/matches/4746469e-2a79-400d-afb4-6740c3899a1c",
+      "screenshot": "hi-1200-match.png",
+      "screenshot_sha256": "5db42d8ba34cdbbe475b5c6eb34c6c0ee5f8008477d1ddfb896b25ce13cf4c5e",
+      "lang": "hi",
+      "dir": "ltr",
+      "heading": [
+        "1 vs 1 ranked · Even Ground Classic"
+      ],
+      "font": {
+        "loaded": true,
+        "body": "\"Glob2 Scripts\", \"Nunito Variable\", Nunito, ui-rounded, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif",
+        "heading": "\"Glob2 Scripts\", \"Glob2 Sans\", \"DejaVu Sans\", Verdana, sans-serif"
+      },
+      "overflow": 0,
+      "axe": []
+    },
+    {
+      "locale": "hi",
+      "width": 1200,
+      "name": "profile",
+      "url": "http://127.0.0.1:4322/players/b88dcfc9-b3e2-4291-8294-03769941aad0",
+      "screenshot": "hi-1200-profile.png",
+      "screenshot_sha256": "219f3c6accd6f072b611c5b2bd7da1e67da37eb78756b8eb88b9c9a694611e7b",
+      "lang": "hi",
+      "dir": "ltr",
+      "heading": [
+        "Bradley"
+      ],
+      "font": {
+        "loaded": true,
+        "body": "\"Glob2 Scripts\", \"Nunito Variable\", Nunito, ui-rounded, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif",
+        "heading": "\"Glob2 Scripts\", \"Glob2 Sans\", \"DejaVu Sans\", Verdana, sans-serif"
+      },
+      "overflow": 0,
+      "axe": []
+    },
+    {
+      "locale": "hi",
+      "width": 1200,
+      "name": "leaderboard",
+      "url": "http://127.0.0.1:4322/leaderboard/ranked-1v1",
+      "screenshot": "hi-1200-leaderboard.png",
+      "screenshot_sha256": "302439584474ef543e5b4f82e7be172216e3a85a11de2d8b6964f29bda1bc155",
+      "lang": "hi",
+      "dir": "ltr",
+      "heading": [
+        "रैंकिंग"
+      ],
+      "font": {
+        "loaded": true,
+        "body": "\"Glob2 Scripts\", \"Nunito Variable\", Nunito, ui-rounded, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif",
+        "heading": "\"Glob2 Scripts\", \"Glob2 Sans\", \"DejaVu Sans\", Verdana, sans-serif"
+      },
+      "overflow": 0,
+      "axe": []
+    },
+    {
+      "locale": "hi",
+      "width": 1200,
+      "name": "maps",
+      "url": "http://127.0.0.1:4322/maps",
+      "screenshot": "hi-1200-maps.png",
+      "screenshot_sha256": "358090c21dc062d395f019dedd0b6b570582929ca793fa2814a6fbb773462727",
+      "lang": "hi",
+      "dir": "ltr",
+      "heading": [
+        "नक्शे"
+      ],
+      "font": {
+        "loaded": true,
+        "body": "\"Glob2 Scripts\", \"Nunito Variable\", Nunito, ui-rounded, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif",
+        "heading": "\"Glob2 Scripts\", \"Glob2 Sans\", \"DejaVu Sans\", Verdana, sans-serif"
+      },
+      "overflow": 0,
+      "axe": []
+    },
+    {
+      "locale": "hi",
+      "width": 1200,
+      "name": "invite",
+      "url": "http://127.0.0.1:4322/j/GLOBJOIN",
+      "screenshot": "hi-1200-invite.png",
+      "screenshot_sha256": "52ea97dd6ee20f11c2309bc2dfd972bfca52d2f3d48418e8db990da1998b62c9",
+      "lang": "hi",
+      "dir": "ltr",
+      "heading": [
+        "आपको आमंत्रण मिला है"
+      ],
+      "font": {
+        "loaded": true,
+        "body": "\"Glob2 Scripts\", \"Nunito Variable\", Nunito, ui-rounded, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif",
+        "heading": "\"Glob2 Scripts\", \"Glob2 Sans\", \"DejaVu Sans\", Verdana, sans-serif"
+      },
+      "overflow": 0,
+      "axe": []
+    },
+    {
+      "locale": "hi",
+      "width": 390,
+      "name": "home-first-visit",
+      "url": "http://127.0.0.1:4322/",
+      "screenshot": "hi-390-home-first-visit.png",
+      "screenshot_sha256": "1c16115b4dfed984959ea4c07ffed4bf61e0b707c8ad3cac0bab665f0df32a4a",
+      "lang": "hi",
+      "dir": "ltr",
+      "heading": [
+        "बस्ती में स्वागत है"
+      ],
+      "font": {
+        "loaded": true,
+        "body": "\"Glob2 Scripts\", \"Nunito Variable\", Nunito, ui-rounded, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif",
+        "heading": "\"Glob2 Scripts\", \"Glob2 Sans\", \"DejaVu Sans\", Verdana, sans-serif"
+      },
+      "overflow": 0,
+      "axe": []
+    },
+    {
+      "locale": "hi",
+      "width": 390,
+      "name": "signin",
+      "url": "http://127.0.0.1:4322/signin",
+      "screenshot": "hi-390-signin.png",
+      "screenshot_sha256": "a45a7a7c47f38581ecc6d242f590e96ad05ffc4dd5d089fc8f9f89d137e2c9f5",
+      "lang": "hi",
+      "dir": "ltr",
+      "heading": [
+        "साइन इन करें"
+      ],
+      "font": {
+        "loaded": true,
+        "body": "\"Glob2 Scripts\", \"Nunito Variable\", Nunito, ui-rounded, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif",
+        "heading": "\"Glob2 Scripts\", \"Glob2 Sans\", \"DejaVu Sans\", Verdana, sans-serif"
+      },
+      "overflow": 0,
+      "axe": []
+    },
+    {
+      "locale": "hi",
+      "width": 390,
+      "name": "signin-error",
+      "url": "http://127.0.0.1:4322/signin/local",
+      "screenshot": "hi-390-signin-error.png",
+      "screenshot_sha256": "bc56b913d7ff42f34025049b4925d3de860c5131be1cb4774c75e9a8f577870b",
+      "lang": "hi",
+      "dir": "ltr",
+      "heading": [
+        "साइन इन करें"
+      ],
+      "font": {
+        "loaded": true,
+        "body": "\"Glob2 Scripts\", \"Nunito Variable\", Nunito, ui-rounded, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif",
+        "heading": "\"Glob2 Scripts\", \"Glob2 Sans\", \"DejaVu Sans\", Verdana, sans-serif"
+      },
+      "overflow": 0,
+      "axe": []
+    },
+    {
+      "locale": "hi",
+      "width": 390,
+      "name": "account",
+      "url": "http://127.0.0.1:4322/account",
+      "screenshot": "hi-390-account.png",
+      "screenshot_sha256": "47a7ee3e3412489943accc294ce4768bc85b30f531071f5714bb48ed7b83ce61",
+      "lang": "hi",
+      "dir": "ltr",
+      "heading": [
+        "आपका खाता"
+      ],
+      "font": {
+        "loaded": true,
+        "body": "\"Glob2 Scripts\", \"Nunito Variable\", Nunito, ui-rounded, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif",
+        "heading": "\"Glob2 Scripts\", \"Glob2 Sans\", \"DejaVu Sans\", Verdana, sans-serif"
+      },
+      "overflow": 0,
+      "axe": []
+    },
+    {
+      "locale": "hi",
+      "width": 390,
+      "name": "matches",
+      "url": "http://127.0.0.1:4322/matches",
+      "screenshot": "hi-390-matches.png",
+      "screenshot_sha256": "c07fee9c113896b5c35d14b3fa9cb432bc3cb2bcfdbb291972eb5dc17c1c77b9",
+      "lang": "hi",
+      "dir": "ltr",
+      "heading": [
+        "हाल के मैच"
+      ],
+      "font": {
+        "loaded": true,
+        "body": "\"Glob2 Scripts\", \"Nunito Variable\", Nunito, ui-rounded, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif",
+        "heading": "\"Glob2 Scripts\", \"Glob2 Sans\", \"DejaVu Sans\", Verdana, sans-serif"
+      },
+      "overflow": 0,
+      "axe": []
+    },
+    {
+      "locale": "hi",
+      "width": 390,
+      "name": "match",
+      "url": "http://127.0.0.1:4322/matches/4746469e-2a79-400d-afb4-6740c3899a1c",
+      "screenshot": "hi-390-match.png",
+      "screenshot_sha256": "36d2ccfbcc85755f43dcc82162dcdf94de77e1ff44c4e18cef72aef2b0351b9d",
+      "lang": "hi",
+      "dir": "ltr",
+      "heading": [
+        "1 vs 1 ranked · Even Ground Classic"
+      ],
+      "font": {
+        "loaded": true,
+        "body": "\"Glob2 Scripts\", \"Nunito Variable\", Nunito, ui-rounded, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif",
+        "heading": "\"Glob2 Scripts\", \"Glob2 Sans\", \"DejaVu Sans\", Verdana, sans-serif"
+      },
+      "overflow": 0,
+      "axe": []
+    },
+    {
+      "locale": "hi",
+      "width": 390,
+      "name": "profile",
+      "url": "http://127.0.0.1:4322/players/b88dcfc9-b3e2-4291-8294-03769941aad0",
+      "screenshot": "hi-390-profile.png",
+      "screenshot_sha256": "fe7ef8ecb553c60156425f6447c9c2cf3e67cec3c45c151c08b8c7fb19c9f5e1",
+      "lang": "hi",
+      "dir": "ltr",
+      "heading": [
+        "Bradley"
+      ],
+      "font": {
+        "loaded": true,
+        "body": "\"Glob2 Scripts\", \"Nunito Variable\", Nunito, ui-rounded, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif",
+        "heading": "\"Glob2 Scripts\", \"Glob2 Sans\", \"DejaVu Sans\", Verdana, sans-serif"
+      },
+      "overflow": 0,
+      "axe": []
+    },
+    {
+      "locale": "hi",
+      "width": 390,
+      "name": "leaderboard",
+      "url": "http://127.0.0.1:4322/leaderboard/ranked-1v1",
+      "screenshot": "hi-390-leaderboard.png",
+      "screenshot_sha256": "8897f02e4d5785504f1c3ed78694573352621cb705619946a4be0392fdb8c477",
+      "lang": "hi",
+      "dir": "ltr",
+      "heading": [
+        "रैंकिंग"
+      ],
+      "font": {
+        "loaded": true,
+        "body": "\"Glob2 Scripts\", \"Nunito Variable\", Nunito, ui-rounded, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif",
+        "heading": "\"Glob2 Scripts\", \"Glob2 Sans\", \"DejaVu Sans\", Verdana, sans-serif"
+      },
+      "overflow": 0,
+      "axe": []
+    },
+    {
+      "locale": "hi",
+      "width": 390,
+      "name": "maps",
+      "url": "http://127.0.0.1:4322/maps",
+      "screenshot": "hi-390-maps.png",
+      "screenshot_sha256": "e1f5fd4b8a9be106d29ebe08a3abef1dc163f22c20f4823388ddb243e4f05aa1",
+      "lang": "hi",
+      "dir": "ltr",
+      "heading": [
+        "नक्शे"
+      ],
+      "font": {
+        "loaded": true,
+        "body": "\"Glob2 Scripts\", \"Nunito Variable\", Nunito, ui-rounded, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif",
+        "heading": "\"Glob2 Scripts\", \"Glob2 Sans\", \"DejaVu Sans\", Verdana, sans-serif"
+      },
+      "overflow": 0,
+      "axe": []
+    },
+    {
+      "locale": "hi",
+      "width": 390,
+      "name": "invite",
+      "url": "http://127.0.0.1:4322/j/GLOBJOIN",
+      "screenshot": "hi-390-invite.png",
+      "screenshot_sha256": "d33d8d65713b366fa36a6338c1a03a73dca03b392381ae87952070167fdab22f",
+      "lang": "hi",
+      "dir": "ltr",
+      "heading": [
+        "आपको आमंत्रण मिला है"
+      ],
+      "font": {
+        "loaded": true,
+        "body": "\"Glob2 Scripts\", \"Nunito Variable\", Nunito, ui-rounded, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif",
+        "heading": "\"Glob2 Scripts\", \"Glob2 Sans\", \"DejaVu Sans\", Verdana, sans-serif"
+      },
+      "overflow": 0,
+      "axe": []
+    },
+    {
+      "locale": "ur",
+      "width": 1200,
+      "name": "home-first-visit",
+      "url": "http://127.0.0.1:4322/",
+      "screenshot": "ur-1200-home-first-visit.png",
+      "screenshot_sha256": "0b7a479bf3f9e28edf495236b8bf6380933123650e866aa0b738bed8ae3f607f",
+      "lang": "ur",
+      "dir": "rtl",
+      "heading": [
+        "بستی میں خوش آمدید"
+      ],
+      "font": {
+        "loaded": true,
+        "body": "\"Glob2 Scripts\", \"Nunito Variable\", Nunito, ui-rounded, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif",
+        "heading": "\"Glob2 Scripts\", \"Glob2 Sans\", \"DejaVu Sans\", Verdana, sans-serif"
+      },
+      "overflow": 0,
+      "axe": []
+    },
+    {
+      "locale": "ur",
+      "width": 1200,
+      "name": "signin",
+      "url": "http://127.0.0.1:4322/signin",
+      "screenshot": "ur-1200-signin.png",
+      "screenshot_sha256": "ee96c9aca69167ccb537fbfed01c28427755be62ae08223951c52a27be1e0e90",
+      "lang": "ur",
+      "dir": "rtl",
+      "heading": [
+        "سائن ان کریں"
+      ],
+      "font": {
+        "loaded": true,
+        "body": "\"Glob2 Scripts\", \"Nunito Variable\", Nunito, ui-rounded, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif",
+        "heading": "\"Glob2 Scripts\", \"Glob2 Sans\", \"DejaVu Sans\", Verdana, sans-serif"
+      },
+      "overflow": 0,
+      "axe": []
+    },
+    {
+      "locale": "ur",
+      "width": 1200,
+      "name": "signin-error",
+      "url": "http://127.0.0.1:4322/signin/local",
+      "screenshot": "ur-1200-signin-error.png",
+      "screenshot_sha256": "e856778026d3ab869578656a652ebda4eedce93ea0627bff307a9c89b0906e5c",
+      "lang": "ur",
+      "dir": "rtl",
+      "heading": [
+        "سائن ان کریں"
+      ],
+      "font": {
+        "loaded": true,
+        "body": "\"Glob2 Scripts\", \"Nunito Variable\", Nunito, ui-rounded, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif",
+        "heading": "\"Glob2 Scripts\", \"Glob2 Sans\", \"DejaVu Sans\", Verdana, sans-serif"
+      },
+      "overflow": 0,
+      "axe": []
+    },
+    {
+      "locale": "ur",
+      "width": 1200,
+      "name": "account",
+      "url": "http://127.0.0.1:4322/account",
+      "screenshot": "ur-1200-account.png",
+      "screenshot_sha256": "f6faf12420dedff92d580b6e5e7c53e26994f65170d398ecb668ac6763df9671",
+      "lang": "ur",
+      "dir": "rtl",
+      "heading": [
+        "آپ کا اکاؤنٹ"
+      ],
+      "font": {
+        "loaded": true,
+        "body": "\"Glob2 Scripts\", \"Nunito Variable\", Nunito, ui-rounded, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif",
+        "heading": "\"Glob2 Scripts\", \"Glob2 Sans\", \"DejaVu Sans\", Verdana, sans-serif"
+      },
+      "overflow": 0,
+      "axe": []
+    },
+    {
+      "locale": "ur",
+      "width": 1200,
+      "name": "matches",
+      "url": "http://127.0.0.1:4322/matches",
+      "screenshot": "ur-1200-matches.png",
+      "screenshot_sha256": "cb7fbba0553617b9cc3d777c2527ed4c5f314a379c09c0a0860f9abe8ba7eaa9",
+      "lang": "ur",
+      "dir": "rtl",
+      "heading": [
+        "حالیہ میچ"
+      ],
+      "font": {
+        "loaded": true,
+        "body": "\"Glob2 Scripts\", \"Nunito Variable\", Nunito, ui-rounded, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif",
+        "heading": "\"Glob2 Scripts\", \"Glob2 Sans\", \"DejaVu Sans\", Verdana, sans-serif"
+      },
+      "overflow": 0,
+      "axe": []
+    },
+    {
+      "locale": "ur",
+      "width": 1200,
+      "name": "match",
+      "url": "http://127.0.0.1:4322/matches/4746469e-2a79-400d-afb4-6740c3899a1c",
+      "screenshot": "ur-1200-match.png",
+      "screenshot_sha256": "03c2388e8367ed39cb1b86e19696324d6514ce349f094fbe6aae5be264341cb5",
+      "lang": "ur",
+      "dir": "rtl",
+      "heading": [
+        "1 vs 1 ranked · Even Ground Classic"
+      ],
+      "font": {
+        "loaded": true,
+        "body": "\"Glob2 Scripts\", \"Nunito Variable\", Nunito, ui-rounded, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif",
+        "heading": "\"Glob2 Scripts\", \"Glob2 Sans\", \"DejaVu Sans\", Verdana, sans-serif"
+      },
+      "overflow": 0,
+      "axe": []
+    },
+    {
+      "locale": "ur",
+      "width": 1200,
+      "name": "profile",
+      "url": "http://127.0.0.1:4322/players/b88dcfc9-b3e2-4291-8294-03769941aad0",
+      "screenshot": "ur-1200-profile.png",
+      "screenshot_sha256": "fd341541196717ecaa15dd1bd5df2188958f844dc284a49e59bf0db73676e717",
+      "lang": "ur",
+      "dir": "rtl",
+      "heading": [
+        "Bradley"
+      ],
+      "font": {
+        "loaded": true,
+        "body": "\"Glob2 Scripts\", \"Nunito Variable\", Nunito, ui-rounded, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif",
+        "heading": "\"Glob2 Scripts\", \"Glob2 Sans\", \"DejaVu Sans\", Verdana, sans-serif"
+      },
+      "overflow": 0,
+      "axe": []
+    },
+    {
+      "locale": "ur",
+      "width": 1200,
+      "name": "leaderboard",
+      "url": "http://127.0.0.1:4322/leaderboard/ranked-1v1",
+      "screenshot": "ur-1200-leaderboard.png",
+      "screenshot_sha256": "6b2199919b7944b7d812108868b6d7c0235783e747dfda3f38c7dc4584e13ce2",
+      "lang": "ur",
+      "dir": "rtl",
+      "heading": [
+        "درجہ بندی"
+      ],
+      "font": {
+        "loaded": true,
+        "body": "\"Glob2 Scripts\", \"Nunito Variable\", Nunito, ui-rounded, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif",
+        "heading": "\"Glob2 Scripts\", \"Glob2 Sans\", \"DejaVu Sans\", Verdana, sans-serif"
+      },
+      "overflow": 0,
+      "axe": []
+    },
+    {
+      "locale": "ur",
+      "width": 1200,
+      "name": "maps",
+      "url": "http://127.0.0.1:4322/maps",
+      "screenshot": "ur-1200-maps.png",
+      "screenshot_sha256": "485a8964b4b6a5ee2b63021ba8622691e78a846938cb315010a3d5cb2a7afc2a",
+      "lang": "ur",
+      "dir": "rtl",
+      "heading": [
+        "نقشے"
+      ],
+      "font": {
+        "loaded": true,
+        "body": "\"Glob2 Scripts\", \"Nunito Variable\", Nunito, ui-rounded, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif",
+        "heading": "\"Glob2 Scripts\", \"Glob2 Sans\", \"DejaVu Sans\", Verdana, sans-serif"
+      },
+      "overflow": 0,
+      "axe": []
+    },
+    {
+      "locale": "ur",
+      "width": 1200,
+      "name": "invite",
+      "url": "http://127.0.0.1:4322/j/GLOBJOIN",
+      "screenshot": "ur-1200-invite.png",
+      "screenshot_sha256": "d501bbb58daebc04b3365d5808f1d0d0845184e250cc7a05e61c910e26ada062",
+      "lang": "ur",
+      "dir": "rtl",
+      "heading": [
+        "آپ کو دعوت ہے"
+      ],
+      "font": {
+        "loaded": true,
+        "body": "\"Glob2 Scripts\", \"Nunito Variable\", Nunito, ui-rounded, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif",
+        "heading": "\"Glob2 Scripts\", \"Glob2 Sans\", \"DejaVu Sans\", Verdana, sans-serif"
+      },
+      "overflow": 0,
+      "axe": []
+    },
+    {
+      "locale": "ur",
+      "width": 390,
+      "name": "home-first-visit",
+      "url": "http://127.0.0.1:4322/",
+      "screenshot": "ur-390-home-first-visit.png",
+      "screenshot_sha256": "47ea39e1888acc4436353bd54756185c329348eb5b5b74a85e1acabc87d9352d",
+      "lang": "ur",
+      "dir": "rtl",
+      "heading": [
+        "بستی میں خوش آمدید"
+      ],
+      "font": {
+        "loaded": true,
+        "body": "\"Glob2 Scripts\", \"Nunito Variable\", Nunito, ui-rounded, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif",
+        "heading": "\"Glob2 Scripts\", \"Glob2 Sans\", \"DejaVu Sans\", Verdana, sans-serif"
+      },
+      "overflow": 0,
+      "axe": []
+    },
+    {
+      "locale": "ur",
+      "width": 390,
+      "name": "signin",
+      "url": "http://127.0.0.1:4322/signin",
+      "screenshot": "ur-390-signin.png",
+      "screenshot_sha256": "d858c36ba2057db4d5530b20f3051997be133698af15613c8e27f7556c2c9310",
+      "lang": "ur",
+      "dir": "rtl",
+      "heading": [
+        "سائن ان کریں"
+      ],
+      "font": {
+        "loaded": true,
+        "body": "\"Glob2 Scripts\", \"Nunito Variable\", Nunito, ui-rounded, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif",
+        "heading": "\"Glob2 Scripts\", \"Glob2 Sans\", \"DejaVu Sans\", Verdana, sans-serif"
+      },
+      "overflow": 0,
+      "axe": []
+    },
+    {
+      "locale": "ur",
+      "width": 390,
+      "name": "signin-error",
+      "url": "http://127.0.0.1:4322/signin/local",
+      "screenshot": "ur-390-signin-error.png",
+      "screenshot_sha256": "96200b497c900afbe53f8c2ff051c5c330112efb57848934fdfa6e7d03ae2a5b",
+      "lang": "ur",
+      "dir": "rtl",
+      "heading": [
+        "سائن ان کریں"
+      ],
+      "font": {
+        "loaded": true,
+        "body": "\"Glob2 Scripts\", \"Nunito Variable\", Nunito, ui-rounded, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif",
+        "heading": "\"Glob2 Scripts\", \"Glob2 Sans\", \"DejaVu Sans\", Verdana, sans-serif"
+      },
+      "overflow": 0,
+      "axe": []
+    },
+    {
+      "locale": "ur",
+      "width": 390,
+      "name": "account",
+      "url": "http://127.0.0.1:4322/account",
+      "screenshot": "ur-390-account.png",
+      "screenshot_sha256": "1d4880450eee5943ed170e4bc17b43a16faa5c2e8f6ae16cfbb612d5cfb54418",
+      "lang": "ur",
+      "dir": "rtl",
+      "heading": [
+        "آپ کا اکاؤنٹ"
+      ],
+      "font": {
+        "loaded": true,
+        "body": "\"Glob2 Scripts\", \"Nunito Variable\", Nunito, ui-rounded, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif",
+        "heading": "\"Glob2 Scripts\", \"Glob2 Sans\", \"DejaVu Sans\", Verdana, sans-serif"
+      },
+      "overflow": 0,
+      "axe": []
+    },
+    {
+      "locale": "ur",
+      "width": 390,
+      "name": "matches",
+      "url": "http://127.0.0.1:4322/matches",
+      "screenshot": "ur-390-matches.png",
+      "screenshot_sha256": "e63a6a0df3e23835b7e4aa8f8e28048c5cf32517ea492d831f801afa0e3e67ec",
+      "lang": "ur",
+      "dir": "rtl",
+      "heading": [
+        "حالیہ میچ"
+      ],
+      "font": {
+        "loaded": true,
+        "body": "\"Glob2 Scripts\", \"Nunito Variable\", Nunito, ui-rounded, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif",
+        "heading": "\"Glob2 Scripts\", \"Glob2 Sans\", \"DejaVu Sans\", Verdana, sans-serif"
+      },
+      "overflow": 0,
+      "axe": []
+    },
+    {
+      "locale": "ur",
+      "width": 390,
+      "name": "match",
+      "url": "http://127.0.0.1:4322/matches/4746469e-2a79-400d-afb4-6740c3899a1c",
+      "screenshot": "ur-390-match.png",
+      "screenshot_sha256": "28d5b85fbee9dad11eaee82ae290797d386177f427986dcae0d7b53d7a0431d5",
+      "lang": "ur",
+      "dir": "rtl",
+      "heading": [
+        "1 vs 1 ranked · Even Ground Classic"
+      ],
+      "font": {
+        "loaded": true,
+        "body": "\"Glob2 Scripts\", \"Nunito Variable\", Nunito, ui-rounded, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif",
+        "heading": "\"Glob2 Scripts\", \"Glob2 Sans\", \"DejaVu Sans\", Verdana, sans-serif"
+      },
+      "overflow": 0,
+      "axe": []
+    },
+    {
+      "locale": "ur",
+      "width": 390,
+      "name": "profile",
+      "url": "http://127.0.0.1:4322/players/b88dcfc9-b3e2-4291-8294-03769941aad0",
+      "screenshot": "ur-390-profile.png",
+      "screenshot_sha256": "496bdcc799f7eaf89fe8539723a79f80022329056d05e818f4cd4dcd62bf3d7d",
+      "lang": "ur",
+      "dir": "rtl",
+      "heading": [
+        "Bradley"
+      ],
+      "font": {
+        "loaded": true,
+        "body": "\"Glob2 Scripts\", \"Nunito Variable\", Nunito, ui-rounded, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif",
+        "heading": "\"Glob2 Scripts\", \"Glob2 Sans\", \"DejaVu Sans\", Verdana, sans-serif"
+      },
+      "overflow": 0,
+      "axe": []
+    },
+    {
+      "locale": "ur",
+      "width": 390,
+      "name": "leaderboard",
+      "url": "http://127.0.0.1:4322/leaderboard/ranked-1v1",
+      "screenshot": "ur-390-leaderboard.png",
+      "screenshot_sha256": "200adaa90f8424d6a46200a7f7e640c18908d132c01be51f5f62bbe972fd91df",
+      "lang": "ur",
+      "dir": "rtl",
+      "heading": [
+        "درجہ بندی"
+      ],
+      "font": {
+        "loaded": true,
+        "body": "\"Glob2 Scripts\", \"Nunito Variable\", Nunito, ui-rounded, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif",
+        "heading": "\"Glob2 Scripts\", \"Glob2 Sans\", \"DejaVu Sans\", Verdana, sans-serif"
+      },
+      "overflow": 0,
+      "axe": []
+    },
+    {
+      "locale": "ur",
+      "width": 390,
+      "name": "maps",
+      "url": "http://127.0.0.1:4322/maps",
+      "screenshot": "ur-390-maps.png",
+      "screenshot_sha256": "78d0bff7832743dbd30d921032d458ad3ea20da55e08c35e868e675374479638",
+      "lang": "ur",
+      "dir": "rtl",
+      "heading": [
+        "نقشے"
+      ],
+      "font": {
+        "loaded": true,
+        "body": "\"Glob2 Scripts\", \"Nunito Variable\", Nunito, ui-rounded, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif",
+        "heading": "\"Glob2 Scripts\", \"Glob2 Sans\", \"DejaVu Sans\", Verdana, sans-serif"
+      },
+      "overflow": 0,
+      "axe": []
+    },
+    {
+      "locale": "ur",
+      "width": 390,
+      "name": "invite",
+      "url": "http://127.0.0.1:4322/j/GLOBJOIN",
+      "screenshot": "ur-390-invite.png",
+      "screenshot_sha256": "03839bc2fb49547dbd779ea63d4568737190d1e24033766b6b2c526af650aa4b",
+      "lang": "ur",
+      "dir": "rtl",
+      "heading": [
+        "آپ کو دعوت ہے"
+      ],
+      "font": {
+        "loaded": true,
+        "body": "\"Glob2 Scripts\", \"Nunito Variable\", Nunito, ui-rounded, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif",
+        "heading": "\"Glob2 Scripts\", \"Glob2 Sans\", \"DejaVu Sans\", Verdana, sans-serif"
+      },
+      "overflow": 0,
+      "axe": []
+    },
+    {
+      "locale": "sw",
+      "width": 1200,
+      "name": "home-first-visit",
+      "url": "http://127.0.0.1:4322/",
+      "screenshot": "sw-1200-home-first-visit.png",
+      "screenshot_sha256": "272ff7fbd0d4b2053166f220544ca07f35ed919ac57eb9144f8c7a372aea1162",
+      "lang": "sw",
+      "dir": "ltr",
+      "heading": [
+        "Karibu kwenye makazi"
+      ],
+      "font": {
+        "loaded": true,
+        "body": "\"Nunito Variable\", Nunito, ui-rounded, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif",
+        "heading": "\"Glob2 Sans\", \"DejaVu Sans\", Verdana, sans-serif"
+      },
+      "overflow": 0,
+      "axe": []
+    },
+    {
+      "locale": "sw",
+      "width": 1200,
+      "name": "signin",
+      "url": "http://127.0.0.1:4322/signin",
+      "screenshot": "sw-1200-signin.png",
+      "screenshot_sha256": "76370b63b16bd374b7b73d0df2816c6df15cc9be8ede161fcdfdb164fb90f181",
+      "lang": "sw",
+      "dir": "ltr",
+      "heading": [
+        "Ingia"
+      ],
+      "font": {
+        "loaded": true,
+        "body": "\"Nunito Variable\", ui-rounded, system-ui, -apple-system, \"Segoe UI\", sans-serif",
+        "heading": "\"Glob2 Sans\", \"DejaVu Sans\", Verdana, sans-serif"
+      },
+      "overflow": 0,
+      "axe": []
+    },
+    {
+      "locale": "sw",
+      "width": 1200,
+      "name": "signin-error",
+      "url": "http://127.0.0.1:4322/signin/local",
+      "screenshot": "sw-1200-signin-error.png",
+      "screenshot_sha256": "b1b5b84afbe93f32cef7505cb1517dd9bcae49ff30d56bd69c4bc81f8de80150",
+      "lang": "sw",
+      "dir": "ltr",
+      "heading": [
+        "Ingia"
+      ],
+      "font": {
+        "loaded": true,
+        "body": "\"Nunito Variable\", ui-rounded, system-ui, -apple-system, \"Segoe UI\", sans-serif",
+        "heading": "\"Glob2 Sans\", \"DejaVu Sans\", Verdana, sans-serif"
+      },
+      "overflow": 0,
+      "axe": []
+    },
+    {
+      "locale": "sw",
+      "width": 1200,
+      "name": "account",
+      "url": "http://127.0.0.1:4322/account",
+      "screenshot": "sw-1200-account.png",
+      "screenshot_sha256": "51f70bfcc55622f4bed43802f1422d5b377fc0378ae684610e03bc797d60c4f6",
+      "lang": "sw",
+      "dir": "ltr",
+      "heading": [
+        "Akaunti yako"
+      ],
+      "font": {
+        "loaded": true,
+        "body": "\"Nunito Variable\", Nunito, ui-rounded, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif",
+        "heading": "\"Glob2 Sans\", \"DejaVu Sans\", Verdana, sans-serif"
+      },
+      "overflow": 0,
+      "axe": []
+    },
+    {
+      "locale": "sw",
+      "width": 1200,
+      "name": "matches",
+      "url": "http://127.0.0.1:4322/matches",
+      "screenshot": "sw-1200-matches.png",
+      "screenshot_sha256": "93870f523e6cb329e644f42bf155cd60de9a17dc2d38d49d30b72b75a0567694",
+      "lang": "sw",
+      "dir": "ltr",
+      "heading": [
+        "Mechi za hivi karibuni"
+      ],
+      "font": {
+        "loaded": true,
+        "body": "\"Nunito Variable\", Nunito, ui-rounded, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif",
+        "heading": "\"Glob2 Sans\", \"DejaVu Sans\", Verdana, sans-serif"
+      },
+      "overflow": 0,
+      "axe": []
+    },
+    {
+      "locale": "sw",
+      "width": 1200,
+      "name": "match",
+      "url": "http://127.0.0.1:4322/matches/4746469e-2a79-400d-afb4-6740c3899a1c",
+      "screenshot": "sw-1200-match.png",
+      "screenshot_sha256": "c535b2854146dd7b30b6649d386d54b0ac083729ef6ee029f1b70548b8ed55ef",
+      "lang": "sw",
+      "dir": "ltr",
+      "heading": [
+        "1 vs 1 ranked · Even Ground Classic"
+      ],
+      "font": {
+        "loaded": true,
+        "body": "\"Nunito Variable\", Nunito, ui-rounded, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif",
+        "heading": "\"Glob2 Sans\", \"DejaVu Sans\", Verdana, sans-serif"
+      },
+      "overflow": 0,
+      "axe": []
+    },
+    {
+      "locale": "sw",
+      "width": 1200,
+      "name": "profile",
+      "url": "http://127.0.0.1:4322/players/b88dcfc9-b3e2-4291-8294-03769941aad0",
+      "screenshot": "sw-1200-profile.png",
+      "screenshot_sha256": "8924aa4a65c8ab03fb45d2bcc0dae3ef3a3c39397bf79e9719b1a9c6b63a4736",
+      "lang": "sw",
+      "dir": "ltr",
+      "heading": [
+        "Bradley"
+      ],
+      "font": {
+        "loaded": true,
+        "body": "\"Nunito Variable\", Nunito, ui-rounded, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif",
+        "heading": "\"Glob2 Sans\", \"DejaVu Sans\", Verdana, sans-serif"
+      },
+      "overflow": 0,
+      "axe": []
+    },
+    {
+      "locale": "sw",
+      "width": 1200,
+      "name": "leaderboard",
+      "url": "http://127.0.0.1:4322/leaderboard/ranked-1v1",
+      "screenshot": "sw-1200-leaderboard.png",
+      "screenshot_sha256": "6cf40dd6b277fbb8001f4740f279476c7559e7a898efc92fbbaad7d1585255d5",
+      "lang": "sw",
+      "dir": "ltr",
+      "heading": [
+        "Ubao wa viwango"
+      ],
+      "font": {
+        "loaded": true,
+        "body": "\"Nunito Variable\", Nunito, ui-rounded, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif",
+        "heading": "\"Glob2 Sans\", \"DejaVu Sans\", Verdana, sans-serif"
+      },
+      "overflow": 0,
+      "axe": []
+    },
+    {
+      "locale": "sw",
+      "width": 1200,
+      "name": "maps",
+      "url": "http://127.0.0.1:4322/maps",
+      "screenshot": "sw-1200-maps.png",
+      "screenshot_sha256": "fd6edb1ae9227b6b8ff4c04440fad5b3c76664336344ec902950ff2b1f8668d2",
+      "lang": "sw",
+      "dir": "ltr",
+      "heading": [
+        "Ramani"
+      ],
+      "font": {
+        "loaded": true,
+        "body": "\"Nunito Variable\", Nunito, ui-rounded, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif",
+        "heading": "\"Glob2 Sans\", \"DejaVu Sans\", Verdana, sans-serif"
+      },
+      "overflow": 0,
+      "axe": []
+    },
+    {
+      "locale": "sw",
+      "width": 1200,
+      "name": "invite",
+      "url": "http://127.0.0.1:4322/j/GLOBJOIN",
+      "screenshot": "sw-1200-invite.png",
+      "screenshot_sha256": "9ff66c0476719d980cec34bcf9cef0e4b18457cdfe7ce36f53172a87d2a1106b",
+      "lang": "sw",
+      "dir": "ltr",
+      "heading": [
+        "Umealikwa"
+      ],
+      "font": {
+        "loaded": true,
+        "body": "\"Nunito Variable\", ui-rounded, system-ui, -apple-system, \"Segoe UI\", sans-serif",
+        "heading": "\"Glob2 Sans\", \"DejaVu Sans\", Verdana, sans-serif"
+      },
+      "overflow": 0,
+      "axe": []
+    },
+    {
+      "locale": "sw",
+      "width": 390,
+      "name": "home-first-visit",
+      "url": "http://127.0.0.1:4322/",
+      "screenshot": "sw-390-home-first-visit.png",
+      "screenshot_sha256": "d8ed617a05b5d113e98230c0ff1cb296071467dbaa5db9f1403858092919ac4f",
+      "lang": "sw",
+      "dir": "ltr",
+      "heading": [
+        "Karibu kwenye makazi"
+      ],
+      "font": {
+        "loaded": true,
+        "body": "\"Nunito Variable\", Nunito, ui-rounded, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif",
+        "heading": "\"Glob2 Sans\", \"DejaVu Sans\", Verdana, sans-serif"
+      },
+      "overflow": 0,
+      "axe": []
+    },
+    {
+      "locale": "sw",
+      "width": 390,
+      "name": "signin",
+      "url": "http://127.0.0.1:4322/signin",
+      "screenshot": "sw-390-signin.png",
+      "screenshot_sha256": "8bf6ac9042bfb60309b64eb65180a6a6c5382237864b89a8580c8ba181d7b90b",
+      "lang": "sw",
+      "dir": "ltr",
+      "heading": [
+        "Ingia"
+      ],
+      "font": {
+        "loaded": true,
+        "body": "\"Nunito Variable\", ui-rounded, system-ui, -apple-system, \"Segoe UI\", sans-serif",
+        "heading": "\"Glob2 Sans\", \"DejaVu Sans\", Verdana, sans-serif"
+      },
+      "overflow": 0,
+      "axe": []
+    },
+    {
+      "locale": "sw",
+      "width": 390,
+      "name": "signin-error",
+      "url": "http://127.0.0.1:4322/signin/local",
+      "screenshot": "sw-390-signin-error.png",
+      "screenshot_sha256": "bd75c90a5a861dcc66ecc7ec186c8196dbe07fa2917c38a1e693113eed71057d",
+      "lang": "sw",
+      "dir": "ltr",
+      "heading": [
+        "Ingia"
+      ],
+      "font": {
+        "loaded": true,
+        "body": "\"Nunito Variable\", ui-rounded, system-ui, -apple-system, \"Segoe UI\", sans-serif",
+        "heading": "\"Glob2 Sans\", \"DejaVu Sans\", Verdana, sans-serif"
+      },
+      "overflow": 0,
+      "axe": []
+    },
+    {
+      "locale": "sw",
+      "width": 390,
+      "name": "account",
+      "url": "http://127.0.0.1:4322/account",
+      "screenshot": "sw-390-account.png",
+      "screenshot_sha256": "689ac513608156e76567ce8c13f0cf92af70110058edd466c52570d40d276a36",
+      "lang": "sw",
+      "dir": "ltr",
+      "heading": [
+        "Akaunti yako"
+      ],
+      "font": {
+        "loaded": true,
+        "body": "\"Nunito Variable\", Nunito, ui-rounded, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif",
+        "heading": "\"Glob2 Sans\", \"DejaVu Sans\", Verdana, sans-serif"
+      },
+      "overflow": 0,
+      "axe": []
+    },
+    {
+      "locale": "sw",
+      "width": 390,
+      "name": "matches",
+      "url": "http://127.0.0.1:4322/matches",
+      "screenshot": "sw-390-matches.png",
+      "screenshot_sha256": "a02aa48713d638e5efb9199d34fbdd8903748e551968fa948769c4397d4d4a7f",
+      "lang": "sw",
+      "dir": "ltr",
+      "heading": [
+        "Mechi za hivi karibuni"
+      ],
+      "font": {
+        "loaded": true,
+        "body": "\"Nunito Variable\", Nunito, ui-rounded, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif",
+        "heading": "\"Glob2 Sans\", \"DejaVu Sans\", Verdana, sans-serif"
+      },
+      "overflow": 0,
+      "axe": []
+    },
+    {
+      "locale": "sw",
+      "width": 390,
+      "name": "match",
+      "url": "http://127.0.0.1:4322/matches/4746469e-2a79-400d-afb4-6740c3899a1c",
+      "screenshot": "sw-390-match.png",
+      "screenshot_sha256": "73727d121e2ecc3c1333070fa17520b1295bd69755021e87594a0a30c7d696d8",
+      "lang": "sw",
+      "dir": "ltr",
+      "heading": [
+        "1 vs 1 ranked · Even Ground Classic"
+      ],
+      "font": {
+        "loaded": true,
+        "body": "\"Nunito Variable\", Nunito, ui-rounded, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif",
+        "heading": "\"Glob2 Sans\", \"DejaVu Sans\", Verdana, sans-serif"
+      },
+      "overflow": 0,
+      "axe": []
+    },
+    {
+      "locale": "sw",
+      "width": 390,
+      "name": "profile",
+      "url": "http://127.0.0.1:4322/players/b88dcfc9-b3e2-4291-8294-03769941aad0",
+      "screenshot": "sw-390-profile.png",
+      "screenshot_sha256": "c53426db26f87ca809f9f84eb1b63a1762525fef51f11f9adacb3532278c129d",
+      "lang": "sw",
+      "dir": "ltr",
+      "heading": [
+        "Bradley"
+      ],
+      "font": {
+        "loaded": true,
+        "body": "\"Nunito Variable\", Nunito, ui-rounded, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif",
+        "heading": "\"Glob2 Sans\", \"DejaVu Sans\", Verdana, sans-serif"
+      },
+      "overflow": 0,
+      "axe": []
+    },
+    {
+      "locale": "sw",
+      "width": 390,
+      "name": "leaderboard",
+      "url": "http://127.0.0.1:4322/leaderboard/ranked-1v1",
+      "screenshot": "sw-390-leaderboard.png",
+      "screenshot_sha256": "47f01eba56f622419781116a4652a9c9aad85ce2bc735af1b8df8dba310fa596",
+      "lang": "sw",
+      "dir": "ltr",
+      "heading": [
+        "Ubao wa viwango"
+      ],
+      "font": {
+        "loaded": true,
+        "body": "\"Nunito Variable\", Nunito, ui-rounded, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif",
+        "heading": "\"Glob2 Sans\", \"DejaVu Sans\", Verdana, sans-serif"
+      },
+      "overflow": 0,
+      "axe": []
+    },
+    {
+      "locale": "sw",
+      "width": 390,
+      "name": "maps",
+      "url": "http://127.0.0.1:4322/maps",
+      "screenshot": "sw-390-maps.png",
+      "screenshot_sha256": "10d6cb9acb2b3de3a862ab01d22f24dd20ab49e326fa97a114773675375301cc",
+      "lang": "sw",
+      "dir": "ltr",
+      "heading": [
+        "Ramani"
+      ],
+      "font": {
+        "loaded": true,
+        "body": "\"Nunito Variable\", Nunito, ui-rounded, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif",
+        "heading": "\"Glob2 Sans\", \"DejaVu Sans\", Verdana, sans-serif"
+      },
+      "overflow": 0,
+      "axe": []
+    },
+    {
+      "locale": "sw",
+      "width": 390,
+      "name": "invite",
+      "url": "http://127.0.0.1:4322/j/GLOBJOIN",
+      "screenshot": "sw-390-invite.png",
+      "screenshot_sha256": "0097deacdaf25ff48169d87f0933cd53ac3d5f92ad515a22127d06a7d130d051",
+      "lang": "sw",
+      "dir": "ltr",
+      "heading": [
+        "Umealikwa"
+      ],
+      "font": {
+        "loaded": true,
+        "body": "\"Nunito Variable\", ui-rounded, system-ui, -apple-system, \"Segoe UI\", sans-serif",
+        "heading": "\"Glob2 Sans\", \"DejaVu Sans\", Verdana, sans-serif"
+      },
+      "overflow": 0,
+      "axe": []
+    },
+    {
+      "name": "catalog-download-failure-retry",
+      "locale": "hi",
+      "passed": true
+    },
+    {
+      "name": "catalog-download-failure-retry",
+      "locale": "ur",
+      "passed": true
+    },
+    {
+      "name": "catalog-download-failure-retry",
+      "locale": "sw",
+      "passed": true
+    },
+    {
+      "name": "written-script-first-visit",
+      "tag": "hi-Deva-IN",
+      "expected": "hi",
+      "actual_navigator": [
+        "hi-Deva-IN"
+      ],
+      "passed": true
+    },
+    {
+      "name": "written-script-first-visit",
+      "tag": "hi-Latn",
+      "expected": "en",
+      "actual_navigator": [
+        "hi-Latn"
+      ],
+      "passed": true
+    },
+    {
+      "name": "written-script-first-visit",
+      "tag": "hi-u-nu-latn",
+      "expected": "hi",
+      "actual_navigator": [
+        "hi-u-nu-latn"
+      ],
+      "passed": true
+    },
+    {
+      "name": "written-script-first-visit",
+      "tag": "ur-Arab-PK",
+      "expected": "ur",
+      "actual_navigator": [
+        "ur-Arab-PK"
+      ],
+      "passed": true
+    },
+    {
+      "name": "written-script-first-visit",
+      "tag": "ur-Latn",
+      "expected": "en",
+      "actual_navigator": [
+        "ur-Latn"
+      ],
+      "passed": true
+    },
+    {
+      "name": "written-script-first-visit",
+      "tag": "sw-Latn-KE",
+      "expected": "sw",
+      "actual_navigator": [
+        "sw-Latn-KE"
+      ],
+      "passed": true
+    },
+    {
+      "name": "written-script-first-visit",
+      "tag": "sw-Arab",
+      "expected": "en",
+      "actual_navigator": [
+        "sw-Arab"
+      ],
+      "passed": true
+    },
+    {
+      "name": "font-download-failure-recovery",
+      "locale": "ur",
+      "font_errors": 1,
+      "passed": true,
+      "limits": "Fallback glyph appearance is not certified when a font download is deliberately blocked."
+    }
+  ],
+  "completed_utc": "2026-10-31T16:40:34.549Z",
+  "limits": [
+    "Desktop Chromium with phone viewports, not native mobile verification.",
+    "Seeded local API/test accounts; no external messages, purchases or account deletions.",
+    "Exact build/catalog/server/screenshot hashes bind this run.",
+    "No game WASM/HUD/tutorial proof here; standalone game tests are separate."
+  ]
+}

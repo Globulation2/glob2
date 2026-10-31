@@ -1,0 +1,23 @@
+{
+  "reviewer": "/root/hindi_online_review",
+  "scope": "Independent source and test review of written-script rejection for hi/ur/sw; no code edits by reviewer.",
+  "source_sha256": {
+    "platform/packages/i18n/src/index.ts": "5f01c60c26795b599218c781194bdafb060b742f1b1ae04a16617dd5f2a1080e",
+    "platform/packages/i18n/test/runtime.test.ts": "23d423c7e1323da9a925bec0b40f278d5323ffb7241b9259b123e6545e6aee90"
+  },
+  "conclusions": [
+    "Explicit script mismatches are skipped so next Accept-Language candidate may resolve; compatible script and omitted script continue normal base fallback.",
+    "Script detection stops before singleton extension/private-use subtags, preserving hi-u-nu-latn and hi-x-arab behavior.",
+    "Exact matching precedes fallback and existing33 locale branches are unchanged. No new catalog keys or simulation state touched.",
+    "Temporary test locale inventory is restored in finally;8 assertions exercise3 scripts and extension handling."
+  ],
+  "findings": [],
+  "validation": {
+    "command": "/opt/homebrew/opt/node@26/bin/node node_modules/vitest/vitest.mjs run packages/i18n/test/runtime.test.ts",
+    "cwd": "platform",
+    "result": "1 file passed;15 tests passed"
+  },
+  "limits": [
+    "App screenshot run predates this core resolver change and does not establish refreshed startup/browser script selection coverage. Root coordinates new browser proof and generation."
+  ]
+}

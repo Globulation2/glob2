@@ -1,0 +1,51 @@
+{
+  "reviewer": "/root/pilot_context",
+  "author": "/root/hindi_translation",
+  "surface": "native",
+  "batch_id": "native-general-016",
+  "source_json_sha256": "a214fc4c9ce4d90fb29d572e3b9d96987eb61af8d0f7bda5050d7d1309d488a9",
+  "native_catalog_sha256": "027e686622a7758c5ee7633372aeb33533ecd1a36633b5e6f043bd18581b8cea",
+  "author_batch_sha256": "28f58f3ffe7f5ae35aeb9636ba24c35e95041265e8e00df8adbc957fc357dd37",
+  "reviewed_subset_sha256": "227598f856cf81ebd9e05295d30e8c640a8b3cb7ab3687f04e45582a5d784ded",
+  "keys_examined": [
+    "[library Release %0]",
+    "[library Remove %0]",
+    "[library Seed: %0]",
+    "[library %0 · revision %1]",
+    "[library Fit]",
+    "[library GL only]",
+    "[Sound or silence?]",
+    "[Silence]",
+    "[Sound]",
+    "[audio preference explanation]",
+    "[audio preference change later]",
+    "[audio preference save failed]",
+    "[audio choices description]",
+    "[Grassland]",
+    "[Kopjes]",
+    "[Game trails]",
+    "[Fish amount]",
+    "[Camp-site amount]"
+  ],
+  "all_batch_keys_examined": true,
+  "findings": [
+    {
+      "key": "[Game trails]",
+      "severity": "major",
+      "source": "Game trails",
+      "target": "खेल की पगडंडियाँ",
+      "problem": "Game is mistranslated as खेल (the sport/game) rather than wildlife. SavannahGenerator.cpp:388 trails lead to wateringholes in savannahtheme. Use animaltraildescription withoutsuggesting playablegamepaths.",
+      "suggested_edit": "वन्य जीवों की पगडंडियाँ",
+      "state": "open"
+    }
+  ],
+  "context_notes": [
+    "All18 examined. Kopjes is rockyhilllandform; चट्टानी टीलियाँ accepted provisional descriptiveHindi; no universaltermclaim. Game trails context verified directly in SavannahGenerator.cpp:388–410 and generator option:885. Sound/silence initialdisabledstate and savefailurewarning preserved."
+  ],
+  "result": "changes_requested",
+  "limits": [
+    "Agent source-to-target review; no native-human certification.",
+    "Rendering/length/style in actual game must be checked separately.",
+    "Not a full-locale or release signoff."
+  ]
+}

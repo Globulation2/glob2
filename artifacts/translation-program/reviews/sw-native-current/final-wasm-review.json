@@ -1,0 +1,211 @@
+{
+  "reviewer": "/root/sw_visual_independent",
+  "authored_or_edited_any_sw_translation": false,
+  "scope": "All22freshSwWebAssemblyPNGimages at1200/390; independent actual pixel reading",
+  "status": "passed-for-tested-browser-visual-scope",
+  "results_path": "artifacts/translation-program/browser-wasm-current/results.json",
+  "results_sha256": "7f32eb0ba8e059047330aaa88d8ba6cb1e91289efb2093786f3d29f42d2de26c",
+  "source_revision": "92205aae687b650ed8b9aea4b31265f0ff6b7301",
+  "wasm_sha256": "c922528ad6485ee5137a998e5bb40f568452c2c7eedd65d47a146c0e297ce9a2",
+  "canonical_sw_native_sha256": "ccb1751ebc28116d3d7510f5fe48e7bb3ded222aec088772019fb9a78d646ef6",
+  "canonical_sw_online_sha256": "6914cbf226adebd70d3ff401cfda759b62b62cc8af621b25f4ba994a8e0bec0a",
+  "images": [
+    {
+      "path": "artifacts/translation-program/browser-wasm-current/sw-1200-IntroductionOfferScreen.png",
+      "sha256": "f082cfd71635631d036ff49cedb004c22b738562301d3f706336f178874f3fed",
+      "width": 1200,
+      "name": "IntroductionOfferScreen",
+      "manually_read": true,
+      "result": "pass"
+    },
+    {
+      "path": "artifacts/translation-program/browser-wasm-current/sw-1200-main.png",
+      "sha256": "c2572d6d2fc3be17e8192f3d468b8bb80ca0a5885071df0106b6e0cf3051c113",
+      "width": 1200,
+      "name": "main",
+      "manually_read": true,
+      "result": "pass"
+    },
+    {
+      "path": "artifacts/translation-program/browser-wasm-current/sw-1200-settings.png",
+      "sha256": "d077d56556290ba470eb74a4423ab5ae5544b69a9297619e5a03bcc748b22dab",
+      "width": 1200,
+      "name": "settings",
+      "manually_read": true,
+      "result": "pass"
+    },
+    {
+      "path": "artifacts/translation-program/browser-wasm-current/sw-1200-input.png",
+      "sha256": "5b663f9a956f6a27eedddc79b03fc0d88f64a73d13b7018cb8933a4b06810df3",
+      "width": 1200,
+      "name": "input",
+      "manually_read": true,
+      "result": "pass"
+    },
+    {
+      "path": "artifacts/translation-program/browser-wasm-current/sw-1200-saved-language-reload.png",
+      "sha256": "50c85f6a7623819da6091497d0c214625bd8ae3cc0cf7b32f2a6f99a7cda1e55",
+      "width": 1200,
+      "name": "saved-language-reload",
+      "manually_read": true,
+      "result": "pass"
+    },
+    {
+      "path": "artifacts/translation-program/browser-wasm-current/sw-1200-lobby.png",
+      "sha256": "bcb2a0aec9af9466274085a41c1e1f0f52d33e1ad9bf3cb8e7cdffdef3790bd9",
+      "width": 1200,
+      "name": "lobby",
+      "manually_read": true,
+      "result": "pass"
+    },
+    {
+      "path": "artifacts/translation-program/browser-wasm-current/sw-1200-tutorial-catalog.png",
+      "sha256": "076b0179c09d10223a24d71dfb933f1adc3b178bbc88e78bf29946b6cd6e6857",
+      "width": 1200,
+      "name": "tutorial-catalog",
+      "manually_read": true,
+      "result": "pass"
+    },
+    {
+      "path": "artifacts/translation-program/browser-wasm-current/sw-1200-tutorial-introduction.png",
+      "sha256": "d26383e681a6d5a0f20d14def75a73e288532e8f651e1fce56dd7f4d9ceb5a34",
+      "width": 1200,
+      "name": "tutorial-introduction",
+      "manually_read": true,
+      "result": "pass"
+    },
+    {
+      "path": "artifacts/translation-program/browser-wasm-current/sw-1200-tutorial-help.png",
+      "sha256": "9b4b4c96752020315f0a2e1e75a1423a5c1c39945092ca173951782c314590ae",
+      "width": 1200,
+      "name": "tutorial-help",
+      "manually_read": true,
+      "result": "pass"
+    },
+    {
+      "path": "artifacts/translation-program/browser-wasm-current/sw-1200-tutorial-collapsed.png",
+      "sha256": "beab5659a12616cd9fb939b2ceb382d5eaa331e0ce1e58769a73b637c6172a79",
+      "width": 1200,
+      "name": "tutorial-collapsed",
+      "manually_read": true,
+      "result": "pass"
+    },
+    {
+      "path": "artifacts/translation-program/browser-wasm-current/sw-390-AudioPreferenceScreen.png",
+      "sha256": "9daca0535d7c16650aa42000811e4430a07597f4a00c6b12d5af93098e16dc67",
+      "width": 390,
+      "name": "AudioPreferenceScreen",
+      "manually_read": true,
+      "result": "pass"
+    },
+    {
+      "path": "artifacts/translation-program/browser-wasm-current/sw-390-HandPreferenceScreen.png",
+      "sha256": "d699c73a4e8808b812048cbea761d38cfdc7d345003519b7dd0992826a868cc8",
+      "width": 390,
+      "name": "HandPreferenceScreen",
+      "manually_read": true,
+      "result": "pass"
+    },
+    {
+      "path": "artifacts/translation-program/browser-wasm-current/sw-390-IntroductionOfferScreen.png",
+      "sha256": "14eedfd90fe596e0cfeaf6edb4583cfae4f04fd380b138ddc38e560699467a42",
+      "width": 390,
+      "name": "IntroductionOfferScreen",
+      "manually_read": true,
+      "result": "pass"
+    },
+    {
+      "path": "artifacts/translation-program/browser-wasm-current/sw-390-main.png",
+      "sha256": "a5d33d8dab646aaf77cf331b39355ddfc8684ef70f2586718e0209c174df4559",
+      "width": 390,
+      "name": "main",
+      "manually_read": true,
+      "result": "pass"
+    },
+    {
+      "path": "artifacts/translation-program/browser-wasm-current/sw-390-settings.png",
+      "sha256": "b99008ec06b8411f118720f9da876675c0969fa72e9b854312c08060f9795a1f",
+      "width": 390,
+      "name": "settings",
+      "manually_read": true,
+      "result": "pass"
+    },
+    {
+      "path": "artifacts/translation-program/browser-wasm-current/sw-390-input.png",
+      "sha256": "4fdfc1d98218aeb6865812d79058bce1c8d43aadc16dcecf8073bbec5d7b116c",
+      "width": 390,
+      "name": "input",
+      "manually_read": true,
+      "result": "pass"
+    },
+    {
+      "path": "artifacts/translation-program/browser-wasm-current/sw-390-saved-language-reload.png",
+      "sha256": "15f2ca4dfdc685a4aa9f91caf016ece5aecc53bc15539e68e57b327c9585c10e",
+      "width": 390,
+      "name": "saved-language-reload",
+      "manually_read": true,
+      "result": "pass"
+    },
+    {
+      "path": "artifacts/translation-program/browser-wasm-current/sw-390-lobby.png",
+      "sha256": "7eaa9cb0f7c97b1de1d359738b30a4d24a2f48cd53d68c519c87a0311220d472",
+      "width": 390,
+      "name": "lobby",
+      "manually_read": true,
+      "result": "pass"
+    },
+    {
+      "path": "artifacts/translation-program/browser-wasm-current/sw-390-tutorial-catalog.png",
+      "sha256": "3c2fc08b44c276195a9de2d9721a7ae64089ea6036098529fee145c4eb598bfc",
+      "width": 390,
+      "name": "tutorial-catalog",
+      "manually_read": true,
+      "result": "pass"
+    },
+    {
+      "path": "artifacts/translation-program/browser-wasm-current/sw-390-tutorial-introduction.png",
+      "sha256": "2e28ea2f921a01b7b820521713307ffa21c6b03dc4630e0ee74f005aebebd070",
+      "width": 390,
+      "name": "tutorial-introduction",
+      "manually_read": true,
+      "result": "pass"
+    },
+    {
+      "path": "artifacts/translation-program/browser-wasm-current/sw-390-tutorial-help.png",
+      "sha256": "9a251f4a0c78f2219a5adf50da5d00107f3a459e9ebcf0ddbcefcc4dce522dab",
+      "width": 390,
+      "name": "tutorial-help",
+      "manually_read": true,
+      "result": "pass"
+    },
+    {
+      "path": "artifacts/translation-program/browser-wasm-current/sw-390-tutorial-collapsed.png",
+      "sha256": "e5242d8222aae9e7c39a1fb7893ea03ff7d853b494e27c9cc5401931c15f48c6",
+      "width": 390,
+      "name": "tutorial-collapsed",
+      "manually_read": true,
+      "result": "pass"
+    }
+  ],
+  "observations": [
+    "Read all visible onboarding, introduction offer, main, settings, text input, saved-language reload, lobby, lesson catalog, introduction expanded/help/collapsed text.",
+    "Latin shaping and punctuation clear. Rightward workflow arrows correct in LTR;1/5 and12/100retain intended order. Mfanyakazi/Mgunduzi/Shujaa/Kiota/Nyumba ya wageni concepts remain consistent where visible.",
+    "Help and catalog are deliberately scrollable; bottom edge cuts offscreen content behind viewport while scrollbar signals continuation. No unexpected clipped glyphs or overlapped controls in visible labels.",
+    "Desktop input screenshot horizontally scrolls selection to trailing content in narrow field; phone shows full Mchezo12/100a.co. Recorded DOM value/selection/commit evidence separately retains complete input; pixel viewport alone does not prove input semantics.",
+    "Source meanings checked for visible introduction/currentlesson prose against frozen English and approved terminology; this is not a full catalog semantic review."
+  ],
+  "findings": [],
+  "open_blockers": 0,
+  "native_human_certified": false,
+  "limits": [
+    "Actual serial software WebAssembly game from canonical shipped build; no browser i18n/catalog/roster/preRun FS overlay.",
+    "Fresh navigator-locale first visit and real UI saved-language reload are distinct checks; browser chrome and native game profile are intentionally independent.",
+    "saveData=true skips optional media; does not waive normal core/game/translations dependencies.",
+    "Chromium desktop/phone viewport is not native Android/iOS, physical touch/keyboard/IME or screen-reader certification.",
+    "Tutorial introduction/help/collapse is one lesson/sample; not full3416entry or all10lesson visual proof.",
+    "Capture driver does not approve translations; Sw new209 author must not sign off own Sw tutorial pixels.",
+    "Reviewer read existing fresh checker PNGs and identity records; did not execute browser interactions independently.",
+    "Only introduction actual gameplay UI sampled inbrowser; otherlesson titles/briefings visible only where catalog viewport shows them.",
+    "No Android/iOS/physicalkeyboard/IME/screenreader certification."
+  ]
+}

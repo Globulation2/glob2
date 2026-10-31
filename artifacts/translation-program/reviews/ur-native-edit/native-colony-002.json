@@ -1,0 +1,45 @@
+{
+  "editor": "/root/swahili_translation",
+  "author": "/root/urdu_translation",
+  "independent_reviewer": "/root/pilot_context",
+  "batch_id": "native-colony-002",
+  "source_contract_sha256": "aacd8a342e9e734ba47f902a161ac1a45badff5842a617bcd68bf8e2275d6013",
+  "original_target_subset_sha256": "a4bfb86e7533660d8bc8296e5ac395a8cfc23fc7f0a65e4d33a993b8e10532c3",
+  "final_target_subset_sha256": "a4bfb86e7533660d8bc8296e5ac395a8cfc23fc7f0a65e4d33a993b8e10532c3",
+  "final_catalog_sha256": "ec78fb33247244bf783461e0410ef11fe48e45644c3c6500419d9060e967d458",
+  "entries": [
+    {
+      "key": "[library Loading building families]",
+      "source": "Loading building families",
+      "before": "عمارتوں کے خاندان لوڈ ہو رہے ہیں",
+      "after": "عمارتوں کے خاندان لوڈ ہو رہے ہیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[library No building families installed.]",
+      "source": "No building families installed.",
+      "before": "عمارتوں کا کوئی خاندان نصب نہیں۔",
+      "after": "عمارتوں کا کوئی خاندان نصب نہیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[library No public building families yet]",
+      "source": "No public building families yet",
+      "before": "ابھی عمارتوں کا کوئی عوامی خاندان نہیں",
+      "after": "ابھی عمارتوں کا کوئی عوامی خاندان نہیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[library Opening building family]",
+      "source": "Opening building family",
+      "before": "عمارت کا خاندان کھل رہا ہے",
+      "after": "عمارت کا خاندان کھل رہا ہے",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    }
+  ],
+  "status": "edited-awaiting-independent-recheck"
+}

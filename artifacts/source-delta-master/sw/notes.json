@@ -1,0 +1,61 @@
+{
+  "author": "/root/hindi_online_review",
+  "scope": "209 native source additions only; no existing 3207 retained values edited; no product edits",
+  "status": "Awaiting full independent review, separate editor and original reviewer recheck. Author is not eligible to approve own new209.",
+  "terminology": {
+    "Swarm": "Kiota / Viota",
+    "Inn": "Nyumba ya wageni",
+    "Training Camp": "Kambi ya jeshi (matches existing [barracks], not newly invented literal camp translation)",
+    "Hospital": "Hospitali",
+    "Racetrack": "Uwanja wa mbio",
+    "Swimming Pool": "Bwawa la kuogelea",
+    "School": "Shule",
+    "colony": "makazi (plural concord)",
+    "unit": "kiumbe / viumbe (animate agreement)",
+    "worker": "mfanyakazi / wafanyakazi",
+    "explorer": "mgunduzi / wagunduzi",
+    "warrior": "shujaa / mashujaa",
+    "harvesting": "ukusanyaji wa malighafi (not crop harvesting)",
+    "radius": "nusukipenyo (existing [settings Radius])",
+    "ammunition": "risasi (existing [stat band ammunition], tower uses stone explicitly in same instructions)",
+    "guard": "Ulinzi (exact [Guard])",
+    "clearing zone": "eneo la kusafisha (exact existing [clear area])",
+    "Build": "Jenga (exact [Build])",
+    "Flags": "Bendera (exact [Flags])",
+    "Upgrade": "Boresha (exact [upgrade])"
+  },
+  "context_method": "Read all209 English values and old Swahili labels. Inspected current lesson definitions/target filters for unit roles, supplies/construct distinction, schooling/training/upgrades, guard-zone and radius goals, and common JavaScript tutorial presentation publication. Hint translations reuse exact independently authored instruction+help sentences only where their English sources concatenate exactly; duplicate source strings reuse the exact target. This does not count as independent review.",
+  "review_priorities": [
+    "Check compact messages fit actual HUD and keep essential counts and directions.",
+    "Confirm natural phrasing of assigned target vs requested count; does not assert units already present.",
+    "Check arrows reference actual UI nouns and every numeric goal (1/2/3/4, ≤4, levels1–3).",
+    "Check lessons about harvesting mean generic resource gathering; food still wheat, fruit prestige only.",
+    "Risasi is existing ammunition glossary, but source explicitly says tower uses stone; if clarity needs refinement coordinate both old/new terminology rather than change one isolated label."
+  ],
+  "english_retentions": [],
+  "uncertainties": "No deliberate unresolved lexical item left unexpressed; author confidence is not independent acceptance, especially concise UI naturalness.",
+  "source_files_sha256": {
+    "artifacts/source-delta-master/catalog-delta.json": "8884639e28a0f409f558951e5b1d9774772ec801330404218280f7a2cb653d4c",
+    "scripts/introduction.js": "04a37caf7cd7c21b62395861626bf93eaf1b49c983e1a8f2c57b306fd4c27769",
+    "scripts/tutorials/introduction.json": "0decd2a83899e9863b7364032f2df841498959514eaeed265d63450bebbb11a2",
+    "scripts/tutorials/schools.json": "779ebdbc4d5238adc970ea94aef5c958852d6d6a10048be6ba529ec7eb06a3d6",
+    "scripts/tutorials/fortifications.json": "ec5fd7a07e2e2e8352b62507fa79149776191994f595ebfacf1b85565c859276",
+    "scripts/tutorials/warrior-training.json": "169434e29911c9e4bb6c4eff7af550c0f50c67382ba87ea8484a8bab4e848f6f",
+    "scripts/tutorials/upgrades.json": "1ffb1085e770b48c9691008c3a8c308a6fc18876b6ee00d61ff826f089de79f1",
+    "scripts/tutorials/food-supply.json": "44f94a25d59cfa525087b40a4af838a6fe54153e34c9652581017274a4d2daff",
+    "scripts/tutorials/swimming.json": "1ed9b1d90a8f7902b8bbe8c5cf8d57f316288f77cf979cae5c77b68606fa0bb6",
+    "scripts/tutorials/catalog.json": "8a045ae1d34a279e72b466ea1c138b352d8cdbf97ec6623c00f4ad970d3620e2",
+    "scripts/tutorials/walking-training.json": "3ad30989585ae26d9efd03aee8092a6cf2eae540f5ade0ca4cc0f4a2475ac683",
+    "scripts/tutorials/healing.json": "54d72efe481a8c7f854607077b1e5165f3588d10cf90e14230f22dddb7afcfde",
+    "scripts/tutorials/defensive-tactics.json": "be3a7ead9293e00fc15d49c24d7e880ffd6985c717a75a8d3f091c4806bae9a2"
+  },
+  "draft_sha256": "d146d456347a738ddd99e26c06bbf452fe15025726fef9834cb06b0f6f643947",
+  "checks": {
+    "count": 209,
+    "exact_key_set": true,
+    "nonempty": true,
+    "placeholder_sequence_preserved": true,
+    "no_accidental_Devanagari": true,
+    "rendered": false
+  }
+}

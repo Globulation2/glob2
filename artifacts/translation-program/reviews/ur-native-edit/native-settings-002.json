@@ -1,0 +1,1293 @@
+{
+  "editor": "/root/swahili_translation",
+  "author": "/root/urdu_translation",
+  "independent_reviewer": "/root/pilot_context",
+  "batch_id": "native-settings-002",
+  "source_contract_sha256": "aacd8a342e9e734ba47f902a161ac1a45badff5842a617bcd68bf8e2275d6013",
+  "original_target_subset_sha256": "ec4e524e6862491b49e93997834b1d80554ebce486d152e2779478358ce16608",
+  "final_target_subset_sha256": "da46a714958a313449bb9a034e69d2a0d77977947144ea64d370ac3b54803ed0",
+  "final_catalog_sha256": "ec78fb33247244bf783461e0410ef11fe48e45644c3c6500419d9060e967d458",
+  "entries": [
+    {
+      "key": "[settings Right]",
+      "source": "Right",
+      "before": "دایاں",
+      "after": "دایاں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Left]",
+      "source": "Left",
+      "before": "بایاں",
+      "after": "بایاں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Back]",
+      "source": "Back",
+      "before": "واپس",
+      "after": "واپس",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Save the game automatically about every minute.]",
+      "source": "Save the game automatically about every minute.",
+      "before": "تقریباً ہر منٹ بعد کھیل خود محفوظ کریں۔",
+      "after": "تقریباً ہر منٹ بعد کھیل خود محفوظ کریں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[No other players have editable diplomatic settings in this match.]",
+      "source": "No other players have editable diplomatic settings in this match.",
+      "before": "اس میچ میں دوسرے کھلاڑیوں کی سفارتی ترتیبات بدلی نہیں جا سکتیں۔",
+      "after": "اس میچ میں دوسرے کھلاڑیوں کی سفارتی ترتیبات بدلی نہیں جا سکتیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings %0 · %1 Units]",
+      "source": "%0 · %1 Units",
+      "before": "%0 · %1 یونٹ",
+      "after": "%0 · %1 یونٹ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Level %0]",
+      "source": "Level %0",
+      "before": "سطح %0",
+      "after": "سطح %0",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Match the desktop %0]",
+      "source": "Match the desktop (%0)",
+      "before": "ڈیسک ٹاپ کے مطابق (%0)",
+      "after": "ڈیسک ٹاپ کے مطابق (%0)",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Current display %0 %1 %2 %3]",
+      "source": "Current display: %0 × %1 · %2 · %3",
+      "before": "موجودہ اسکرین: %0 × %1 · %2 · %3",
+      "after": "موجودہ اسکرین: %0 × %1 · %2 · %3",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Experiments]",
+      "source": "Experiments",
+      "before": "تجربات",
+      "after": "تجربات",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Custom AIs]",
+      "source": "Custom AIs",
+      "before": "اپنی مرضی کے AI",
+      "after": "اپنی مرضی کے AI",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Try features we are still testing. They can change balance and pacing.]",
+      "source": "Try features we are still testing. They can change balance and pacing.",
+      "before": "وہ خصوصیات آزمائیں جن کی ابھی جانچ ہو رہی ہے۔ یہ توازن اور کھیل کی رفتار بدل سکتی ہیں۔",
+      "after": "وہ خصوصیات آزمائیں جن کی ابھی جانچ ہو رہی ہے۔ یہ توازن اور کھیل کی رفتار بدل سکتی ہیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Experiments apply to new games you start or host, never to campaign missions. A saved game keeps the ones it started with.]",
+      "source": "Experiments apply to new games you start or host, never to campaign missions. A saved game keeps the ones it started with.",
+      "before": "تجربات آپ کے شروع یا میزبان کیے گئے نئے کھیلوں پر لاگو ہوتے ہیں، مہم کی منزلوں پر کبھی نہیں۔ محفوظ کھیل اپنی ابتدائی ترتیبات رکھتے ہیں۔",
+      "after": "تجربات آپ کے شروع کیے گئے یا آپ کی میزبانی میں کھیلے گئے نئے کھیلوں پر لاگو ہوتے ہیں، مہم کے مشنوں پر کبھی نہیں۔ محفوظ کھیل اپنے آغاز کے تجربات برقرار رکھتا ہے۔",
+      "editorially_read": true,
+      "disposition": "edited-pending-recheck"
+    },
+    {
+      "key": "[settings No experiments in this build.]",
+      "source": "No experiments in this build.",
+      "before": "اس بلڈ میں کوئی تجربہ نہیں۔",
+      "after": "اس بلڈ میں کوئی تجربہ نہیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Touch scrolling]",
+      "source": "Touch scrolling",
+      "before": "ٹچ سے اسکرول",
+      "after": "ٹچ سے اسکرول",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings List momentum]",
+      "source": "List momentum",
+      "before": "فہرست کی روانی",
+      "after": "فہرست کی روانی",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings How far lists and panels keep scrolling after a flick.]",
+      "source": "How far lists and panels keep scrolling after a flick.",
+      "before": "ہلکے جھٹکے کے بعد فہرستیں اور پینل کتنی دور تک چلتے رہیں۔",
+      "after": "ہلکے جھٹکے کے بعد فہرستیں اور پینل کتنی دور تک چلتے رہیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings List bounce]",
+      "source": "List bounce",
+      "before": "فہرست کا اچھال",
+      "after": "فہرست کا اچھال",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings How much lists and panels stretch past their ends and spring back.]",
+      "source": "How much lists and panels stretch past their ends and spring back.",
+      "before": "فہرستیں اور پینل کنارے سے کتنا آگے کھنچ کر واپس آئیں۔",
+      "after": "فہرستیں اور پینل کنارے سے کتنا آگے کھنچ کر واپس آئیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Map momentum]",
+      "source": "Map momentum",
+      "before": "نقشے کی روانی",
+      "after": "نقشے کی روانی",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings How far the map keeps panning after a flick.]",
+      "source": "How far the map keeps panning after a flick.",
+      "before": "ہلکے جھٹکے کے بعد نقشہ کتنی دور کھسکتا رہے۔",
+      "after": "ہلکے جھٹکے کے بعد نقشہ کتنی دور کھسکتا رہے۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Touch scrolling feel. 0 turns an effect off; 50 is the default.]",
+      "source": "Touch scrolling feel. 0 turns an effect off; 50 is the default.",
+      "before": "ٹچ اسکرول کا احساس۔ 0 سے اثر بند؛ 50 طے شدہ قدر ہے۔",
+      "after": "ٹچ اسکرول کا احساس۔ 0 سے اثر بند؛ 50 طے شدہ قدر ہے۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Artwork]",
+      "source": "Artwork",
+      "before": "تصاویر",
+      "after": "تصاویر",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Original]",
+      "source": "Original",
+      "before": "اصل",
+      "after": "اصل",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings High resolution]",
+      "source": "High resolution",
+      "before": "اعلیٰ ریزولیوشن",
+      "after": "اعلیٰ ریزولیوشن",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Clouds]",
+      "source": "Clouds",
+      "before": "بادل",
+      "after": "بادل",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Show cloud cover above the map.]",
+      "source": "Show cloud cover above the map.",
+      "before": "نقشے کے اوپر بادل دکھائیں۔",
+      "after": "نقشے کے اوپر بادل دکھائیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Cloud shadows]",
+      "source": "Cloud shadows",
+      "before": "بادلوں کے سائے",
+      "after": "بادلوں کے سائے",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Show cloud shadows on the ground independently of cloud cover.]",
+      "source": "Show cloud shadows on the ground independently of cloud cover.",
+      "before": "بادل دکھانے کی ترتیب سے الگ، زمین پر ان کے سائے دکھائیں۔",
+      "after": "بادل دکھانے کی ترتیب سے الگ، زمین پر ان کے سائے دکھائیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Building particles]",
+      "source": "Building particles",
+      "before": "عمارتوں کے ذرات",
+      "after": "عمارتوں کے ذرات",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Show smoke and other building particles.]",
+      "source": "Show smoke and other building particles.",
+      "before": "دھواں اور عمارتوں کے دوسرے ذرات دکھائیں۔",
+      "after": "دھواں اور عمارتوں کے دوسرے ذرات دکھائیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Magic effects]",
+      "source": "Magic effects",
+      "before": "جادوئی اثرات",
+      "after": "جادوئی اثرات",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Choose animated magic effects or a simple visible effect.]",
+      "source": "Choose animated magic effects or a simple visible effect.",
+      "before": "متحرک جادوئی اثرات یا سادہ نظر آنے والا اثر چنیں۔",
+      "after": "متحرک جادوئی اثرات یا سادہ نظر آنے والا اثر چنیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Simple]",
+      "source": "Simple",
+      "before": "سادہ",
+      "after": "سادہ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Requires the OpenGL renderer. Your saved choice is retained.]",
+      "source": "Requires the OpenGL renderer. Your saved choice is retained.",
+      "before": "OpenGL رینڈرر درکار ہے۔ آپ کا محفوظ انتخاب برقرار رہتا ہے۔",
+      "after": "OpenGL رینڈرر درکار ہے۔ آپ کا محفوظ انتخاب برقرار رہتا ہے۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Interface appearance]",
+      "source": "Interface appearance",
+      "before": "انٹرفیس کی صورت",
+      "after": "انٹرفیس کی صورت",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Panels]",
+      "source": "Panels",
+      "before": "پینل",
+      "after": "پینل",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Choose translucent or opaque interface panels.]",
+      "source": "Choose translucent or opaque interface panels.",
+      "before": "شفاف یا غیر شفاف انٹرفیس پینل چنیں۔",
+      "after": "نیم شفاف یا غیر شفاف انٹرفیس پینل چنیں۔",
+      "editorially_read": true,
+      "disposition": "edited-pending-recheck"
+    },
+    {
+      "key": "[settings Opaque]",
+      "source": "Opaque",
+      "before": "غیر شفاف",
+      "after": "غیر شفاف",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Translucent]",
+      "source": "Translucent",
+      "before": "نیم شفاف",
+      "after": "نیم شفاف",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Advanced graphics]",
+      "source": "Advanced graphics",
+      "before": "اعلیٰ گرافکس",
+      "after": "اعلیٰ گرافکس",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Path lines]",
+      "source": "Path lines",
+      "before": "راستوں کی لکیریں",
+      "after": "راستوں کی لکیریں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Choose translucent or opaque unit path lines.]",
+      "source": "Choose translucent or opaque unit path lines.",
+      "before": "یونٹوں کے راستوں کی شفاف یا غیر شفاف لکیریں چنیں۔",
+      "after": "یونٹوں کے راستوں کی نیم شفاف یا غیر شفاف لکیریں چنیں۔",
+      "editorially_read": true,
+      "disposition": "edited-pending-recheck"
+    },
+    {
+      "key": "[settings Smooth progress indicators]",
+      "source": "Smooth progress indicators",
+      "before": "ہموار پیش رفت کے اشارے",
+      "after": "ہموار پیش رفت کے اشارے",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Smooth the moving edges of progress indicators.]",
+      "source": "Smooth the moving edges of progress indicators.",
+      "before": "پیش رفت کے اشاروں کے چلتے کنارے ہموار کریں۔",
+      "after": "پیش رفت کے اشاروں کے چلتے کنارے ہموار کریں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Decorative interface animation]",
+      "source": "Decorative interface animation",
+      "before": "آرائشی انٹرفیس حرکت",
+      "after": "آرائشی انٹرفیس حرکت",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Animate victory artwork. Reduced motion also disables this animation.]",
+      "source": "Animate victory artwork. Reduced motion also disables this animation.",
+      "before": "فتح کی تصویر متحرک کریں۔ کم حرکت کی ترتیب بھی یہ حرکت بند کرتی ہے۔",
+      "after": "فتح کی تصویر متحرک کریں۔ کم حرکت کی ترتیب بھی یہ حرکت بند کرتی ہے۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Smooth unit motion]",
+      "source": "Smooth unit motion",
+      "before": "یونٹوں کی ہموار حرکت",
+      "after": "یونٹوں کی ہموار حرکت",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Experimental: move and animate units between game ticks.]",
+      "source": "Experimental: move and animate units between game ticks.",
+      "before": "تجرباتی: کھیل کے ٹکوں کے درمیان یونٹوں کی حرکت اور اینیمیشن دکھائیں۔",
+      "after": "تجرباتی: کھیل کے ٹکوں کے درمیان یونٹوں کی حرکت اور اینیمیشن دکھائیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Smooth fog of war]",
+      "source": "Smooth fog of war",
+      "before": "جنگ کی ہموار دھند",
+      "after": "جنگ کی ہموار دھند",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Fade the map into and out of the fog of war gradually.]",
+      "source": "Fade the map into and out of the fog of war gradually.",
+      "before": "نقشہ جنگ کی دھند میں بتدریج ظاہر اور غائب ہو۔",
+      "after": "نقشہ جنگ کی دھند میں بتدریج ظاہر اور غائب ہو۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Adaptive zoom detail]",
+      "source": "Adaptive zoom detail",
+      "before": "زوم کے مطابق تفصیل",
+      "after": "زوم کے مطابق تفصیل",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Simplify bars, zones, terrain and units as the map zooms out, and keep them small zoomed in.]",
+      "source": "Simplify bars, zones, terrain and units as the map zooms out, and keep them small zoomed in.",
+      "before": "نقشہ دور کرنے پر پٹیاں، علاقے، زمین اور یونٹ سادہ کریں؛ قریب کرنے پر انہیں چھوٹا رکھیں۔",
+      "after": "نقشہ دور کرنے پر پٹیاں، علاقے، زمین اور یونٹ سادہ کریں؛ قریب کرنے پر انہیں چھوٹا رکھیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Text size]",
+      "source": "Text size",
+      "before": "متن کی جسامت",
+      "after": "متن کی جسامت",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Enlarge interface text without changing the map scale.]",
+      "source": "Enlarge interface text without changing the map scale.",
+      "before": "نقشے کا پیمانہ بدلے بغیر انٹرفیس کا متن بڑا کریں۔",
+      "after": "نقشے کا پیمانہ بدلے بغیر انٹرفیس کا متن بڑا کریں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Online]",
+      "source": "Online",
+      "before": "آن لائن",
+      "after": "آن لائن",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Another server]",
+      "source": "Another server",
+      "before": "دوسرا سرور",
+      "after": "دوسرا سرور",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Check]",
+      "source": "Check",
+      "before": "جانچیں",
+      "after": "جانچیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Checking…]",
+      "source": "Checking…",
+      "before": "جانچ ہو رہی ہے…",
+      "after": "جانچ ہو رہی ہے…",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Choose which server you play on and how you sign in to it.]",
+      "source": "Choose which server you play on and how you sign in to it.",
+      "before": "کھیلنے کا سرور اور اس پر سائن اِن کا طریقہ چنیں۔",
+      "after": "کھیلنے کا سرور اور اس پر سائن اِن کا طریقہ چنیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Connecting…]",
+      "source": "Connecting…",
+      "before": "رابطہ ہو رہا ہے…",
+      "after": "رابطہ ہو رہا ہے…",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Could not reach this server.]",
+      "source": "Could not reach this server.",
+      "before": "اس سرور سے رابطہ نہیں ہو سکا۔",
+      "after": "اس سرور سے رابطہ نہیں ہو سکا۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Display name saved.]",
+      "source": "Display name saved.",
+      "before": "ظاہری نام محفوظ ہو گیا۔",
+      "after": "ظاہری نام محفوظ ہو گیا۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Display name]",
+      "source": "Display name",
+      "before": "ظاہری نام",
+      "after": "ظاہری نام",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Download or delete my data]",
+      "source": "Delete my account",
+      "before": "میرا اکاؤنٹ حذف کریں",
+      "after": "میرا اکاؤنٹ حذف کریں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Enter an https:// address.]",
+      "source": "Enter an https:// address.",
+      "before": "https:// سے شروع ہونے والا پتہ درج کریں۔",
+      "after": "https:// سے شروع ہونے والا پتہ درج کریں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Forget]",
+      "source": "Forget",
+      "before": "بھول جائیں",
+      "after": "بھول جائیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Guests keep a generated name; sign in to choose one.]",
+      "source": "Guests keep a generated name; sign in to choose one.",
+      "before": "مہمانوں کا خود بنایا ہوا نام رہتا ہے؛ نام چننے کے لیے سائن اِن کریں۔",
+      "after": "مہمانوں کے نام خود بخود بنائے جاتے ہیں؛ اپنا نام چننے کے لیے سائن اِن کریں۔",
+      "editorially_read": true,
+      "disposition": "edited-pending-recheck"
+    },
+    {
+      "key": "[settings Link]",
+      "source": "Link",
+      "before": "منسلک کریں",
+      "after": "منسلک کریں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Not a Globulation 2 server.]",
+      "source": "Not a Globulation 2 server.",
+      "before": "یہ Globulation 2 کا سرور نہیں۔",
+      "after": "یہ Globulation 2 کا سرور نہیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Not linked]",
+      "source": "Not linked",
+      "before": "منسلک نہیں",
+      "after": "منسلک نہیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Not signed in.]",
+      "source": "Not signed in.",
+      "before": "سائن اِن نہیں۔",
+      "after": "سائن اِن نہیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Open]",
+      "source": "Open",
+      "before": "کھولیں",
+      "after": "کھولیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Opens your account page on %0.]",
+      "source": "Opens your account page on %0, where you can delete it.",
+      "before": "%0 پر آپ کے اکاؤنٹ کا صفحہ کھولتا ہے، جہاں اسے حذف کر سکتے ہیں۔",
+      "after": "%0 پر آپ کے اکاؤنٹ کا صفحہ کھولتا ہے، جہاں اسے حذف کر سکتے ہیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Run by a community, a club or yourself. Paste its address.]",
+      "source": "Run by a community, a club or yourself. Paste its address.",
+      "before": "کسی برادری، کلب یا آپ کا اپنا چلایا ہوا سرور۔ اس کا پتہ چسپاں کریں۔",
+      "after": "کسی برادری، کلب یا آپ کا اپنا چلایا ہوا سرور۔ اس کا پتہ چسپاں کریں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Save]",
+      "source": "Save",
+      "before": "محفوظ کریں",
+      "after": "محفوظ کریں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Server]",
+      "source": "Server",
+      "before": "سرور",
+      "after": "سرور",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Shown in rooms, matches and the leaderboard. Change once every 30 days.]",
+      "source": "Shown in rooms, matches and the leaderboard. Change once every 30 days.",
+      "before": "کمروں، میچوں اور درجہ بندی میں دکھایا جاتا ہے۔ ہر 30 دن میں ایک بار بدلیں۔",
+      "after": "کمروں، میچوں اور درجہ بندی میں دکھایا جاتا ہے۔ ہر 30 دن میں ایک بار بدلیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Sign in with: %0 · queues: %1]",
+      "source": "Sign in with: %0 · queues: %1",
+      "before": "سائن اِن کا طریقہ: %0 · قطاریں: %1",
+      "after": "سائن اِن کا طریقہ: %0 · قطاریں: %1",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Sign out on this device]",
+      "source": "Sign out on this device",
+      "before": "اس آلے پر سائن آؤٹ کریں",
+      "after": "اس آلے پر سائن آؤٹ کریں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Sign out]",
+      "source": "Sign out",
+      "before": "سائن آؤٹ",
+      "after": "سائن آؤٹ کریں",
+      "editorially_read": true,
+      "disposition": "edited-pending-recheck"
+    },
+    {
+      "key": "[settings Switch to this server]",
+      "source": "Switch to this server",
+      "before": "اس سرور پر منتقل ہوں",
+      "after": "اس سرور پر منتقل ہوں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings The last sign-in method can't be unlinked.]",
+      "source": "The last sign-in method can't be unlinked.",
+      "before": "سائن اِن کا آخری طریقہ الگ نہیں کیا جا سکتا۔",
+      "after": "سائن اِن کا آخری طریقہ الگ نہیں کیا جا سکتا۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings The official Globulation 2 server · ranked queues, leaderboards, map catalog]",
+      "source": "The official Globulation 2 server · ranked queues, leaderboards, map catalog",
+      "before": "Globulation 2 کا سرکاری سرور · درجہ بند قطاریں، درجہ بندی، نقشوں کی فہرست",
+      "after": "Globulation 2 کا سرکاری سرور · درجہ بند قطاریں، درجہ بندی، نقشوں کی فہرست",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Unlink]",
+      "source": "Unlink",
+      "before": "الگ کریں",
+      "after": "الگ کریں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Unlinking is done on the account page.]",
+      "source": "Unlinking is done on the account page.",
+      "before": "اکاؤنٹ کے صفحے پر جا کر الگ کریں۔",
+      "after": "اکاؤنٹ کے صفحے پر جا کر الگ کریں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings You'll be a new guest until you sign in again. Your account and matches stay on the server.]",
+      "source": "You'll be a new guest until you sign in again. Your account and matches stay on the server.",
+      "before": "دوبارہ سائن اِن ہونے تک آپ نئے مہمان ہوں گے۔ آپ کا اکاؤنٹ اور میچ سرور پر رہیں گے۔",
+      "after": "دوبارہ سائن اِن ہونے تک آپ نئے مہمان ہوں گے۔ آپ کا اکاؤنٹ اور میچ سرور پر رہیں گے۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Your account on %0]",
+      "source": "Your account on %0",
+      "before": "%0 پر آپ کا اکاؤنٹ",
+      "after": "%0 پر آپ کا اکاؤنٹ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings compatible with this version]",
+      "source": "compatible with this version",
+      "before": "اس نسخے کے ساتھ مطابقت رکھتا ہے",
+      "after": "اس نسخے کے ساتھ مطابقت رکھتا ہے",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings connected]",
+      "source": "connected",
+      "before": "متصل",
+      "after": "متصل",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings connecting…]",
+      "source": "connecting…",
+      "before": "رابطہ ہو رہا ہے…",
+      "after": "رابطہ ہو رہا ہے…",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings guest]",
+      "source": "guest",
+      "before": "مہمان",
+      "after": "مہمان",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings linked]",
+      "source": "linked",
+      "before": "منسلک",
+      "after": "منسلک",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings plays another version]",
+      "source": "plays another version",
+      "before": "دوسرا نسخہ چلاتا ہے",
+      "after": "دوسرا نسخہ چلاتا ہے",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings trusted]",
+      "source": "trusted",
+      "before": "قابلِ اعتماد",
+      "after": "قابلِ اعتماد",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings used before]",
+      "source": "used before",
+      "before": "پہلے استعمال شدہ",
+      "after": "پہلے استعمال شدہ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings you were %0 there]",
+      "source": "you were %0 there",
+      "before": "وہاں آپ %0 تھے",
+      "after": "وہاں آپ %0 تھے",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings not connected]",
+      "source": "not connected",
+      "before": "متصل نہیں",
+      "after": "متصل نہیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Open Play online to connect.]",
+      "source": "Open Play online to connect.",
+      "before": "رابطے کے لیے آن لائن کھیلیں کھولیں۔",
+      "after": "رابطے کے لیے آن لائن کھیلیں کھولیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings %0 is no longer linked.]",
+      "source": "%0 is no longer linked.",
+      "before": "%0 اب منسلک نہیں۔",
+      "after": "%0 اب منسلک نہیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Show colony skins]",
+      "source": "Show colony skins",
+      "before": "بستی کی اسکن دکھائیں",
+      "after": "بستی کی اسکن دکھائیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Turn off to use classic units, swarms and building colors on this device.]",
+      "source": "Turn off to use classic units, swarms and building colors on this device.",
+      "before": "اس آلے پر روایتی یونٹ، چھتے اور عمارتوں کے رنگ استعمال کرنے کے لیے بند کریں۔",
+      "after": "اس آلے پر روایتی یونٹ، چھتے اور عمارتوں کے رنگ استعمال کرنے کے لیے بند کریں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Hive Mind]",
+      "source": "Hive Mind",
+      "before": "Hive Mind",
+      "after": "Hive Mind",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Enable commander shortcuts]",
+      "source": "Enable commander shortcuts",
+      "before": "کمانڈر کے شارٹ کٹ چالو",
+      "after": "کمانڈر کے شارٹ کٹ چالو",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Command your colony without opening a menu.]",
+      "source": "Command your colony without opening a menu.",
+      "before": "مینو کھولے بغیر بستی کو حکم دیں۔",
+      "after": "مینو کھولے بغیر بستی کو حکم دیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Allow supervision for new commands]",
+      "source": "Allow supervision for new commands",
+      "before": "نئے احکامات کی نگرانی کی اجازت",
+      "after": "نئے احکامات کی نگرانی کی اجازت",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings The commander may follow up on standing orders. Follow-ups use credits; installed orders keep running without credits.]",
+      "source": "The commander may follow up on standing orders. Follow-ups use credits; installed orders keep running without credits.",
+      "before": "کمانڈر مستقل احکامات پر بعد میں کام کر سکتا ہے۔ اس کام میں کریڈٹ لگتے ہیں؛ نصب احکامات کریڈٹ کے بغیر بھی چلتے رہتے ہیں۔",
+      "after": "کمانڈر مستقل احکامات پر بعد میں کام کر سکتا ہے۔ اس کام میں کریڈٹ لگتے ہیں؛ نصب احکامات کریڈٹ کے بغیر بھی چلتے رہتے ہیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Default shortcuts: Ctrl+Enter to give an order; Ctrl+Shift+Enter to stop commander work. Change them under Controls. Standing-order cards have separate pause and cancel controls.]",
+      "source": "Default shortcuts: Ctrl+Enter to give an order; Ctrl+Shift+Enter to stop commander work. Change them under Controls. Standing-order cards have separate pause and cancel controls.",
+      "before": "طے شدہ شارٹ کٹ: حکم کے لیے Ctrl+Enter؛ کمانڈر کا کام روکنے کے لیے Ctrl+Shift+Enter۔ انہیں کنٹرولز میں بدلیں۔ مستقل حکم کے کارڈ پر رکنے اور منسوخ کرنے کے الگ کنٹرول ہیں۔",
+      "after": "طے شدہ شارٹ کٹ: حکم کے لیے Ctrl+Enter؛ کمانڈر کا کام روکنے کے لیے Ctrl+Shift+Enter۔ انہیں کنٹرولز میں بدلیں۔ مستقل حکم کے کارڈ پر رکنے اور منسوخ کرنے کے الگ کنٹرول ہیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Commander account and credits]",
+      "source": "Commander account and credits",
+      "before": "کمانڈر اکاؤنٹ اور کریڈٹ",
+      "after": "کمانڈر اکاؤنٹ اور کریڈٹ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Manage credits and purchases in your browser. Commander assistance is permitted in ranked play.]",
+      "source": "Manage credits and purchases in your browser. Commander assistance is permitted in ranked play.",
+      "before": "براؤزر میں کریڈٹ اور خریداری سنبھالیں۔ درجہ بند کھیل میں کمانڈر کی مدد جائز ہے۔",
+      "after": "براؤزر میں کریڈٹ اور خریداری سنبھالیں۔ درجہ بند کھیل میں کمانڈر کی مدد جائز ہے۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Recording]",
+      "source": "Recording",
+      "before": "ریکارڈنگ",
+      "after": "ریکارڈنگ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Record your games as MP4 videos with sound. Recording needs FFmpeg with the libx264 and AAC encoders.]",
+      "source": "Record your games as MP4 videos with sound. Recording needs FFmpeg with the libx264 and AAC encoders.",
+      "before": "کھیل آواز کے ساتھ MP4 ویڈیو میں ریکارڈ کریں۔ ریکارڈنگ کے لیے libx264 اور AAC انکوڈر والا FFmpeg چاہیے۔",
+      "after": "کھیل آواز کے ساتھ MP4 ویڈیو میں ریکارڈ کریں۔ ریکارڈنگ کے لیے libx264 اور AAC انکوڈر والا FFmpeg چاہیے۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Record your games as MP4 videos with sound.]",
+      "source": "Record your games as MP4 videos with sound.",
+      "before": "کھیل آواز کے ساتھ MP4 ویڈیو میں ریکارڈ کریں۔",
+      "after": "کھیل آواز کے ساتھ MP4 ویڈیو میں ریکارڈ کریں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Recording uses the full rendered resolution at 30 FPS.]",
+      "source": "Recording uses the full rendered resolution at 30 FPS.",
+      "before": "ریکارڈنگ مکمل دکھائی گئی ریزولیوشن پر 30 FPS استعمال کرتی ہے۔",
+      "after": "ریکارڈنگ مکمل دکھائی گئی ریزولیوشن پر 30 FPS استعمال کرتی ہے۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings FFmpeg is ready.]",
+      "source": "FFmpeg is ready.",
+      "before": "FFmpeg تیار ہے۔",
+      "after": "FFmpeg تیار ہے۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings FFmpeg is not available, so recording is turned off. Install FFmpeg and make sure it is on your PATH, then check again.]",
+      "source": "FFmpeg is not available, so recording is turned off. Install FFmpeg and make sure it is on your PATH, then check again.",
+      "before": "FFmpeg دستیاب نہیں، اس لیے ریکارڈنگ بند ہے۔ اسے نصب کریں، PATH میں موجودگی یقینی بنائیں، پھر جانچیں۔",
+      "after": "FFmpeg دستیاب نہیں، اس لیے ریکارڈنگ بند ہے۔ اسے نصب کریں، PATH میں موجودگی یقینی بنائیں، پھر جانچیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Check for FFmpeg again]",
+      "source": "Check for FFmpeg again",
+      "before": "FFmpeg دوبارہ جانچیں",
+      "after": "FFmpeg دوبارہ جانچیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Checking for FFmpeg…]",
+      "source": "Checking for FFmpeg…",
+      "before": "FFmpeg کی جانچ ہو رہی ہے…",
+      "after": "FFmpeg کی جانچ ہو رہی ہے…",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Hotkey: %0. It also works in menus and the editor.]",
+      "source": "Hotkey: %0. It also works in menus and the editor.",
+      "before": "شارٹ کٹ: %0۔ یہ مینو اور ایڈیٹر میں بھی چلتا ہے۔",
+      "after": "شارٹ کٹ: %0۔ یہ مینو اور ایڈیٹر میں بھی چلتا ہے۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Change the hotkey]",
+      "source": "Change the hotkey",
+      "before": "شارٹ کٹ بدلیں",
+      "after": "شارٹ کٹ بدلیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Recordings are saved in %0]",
+      "source": "Recordings are saved in %0",
+      "before": "ریکارڈنگ یہاں محفوظ ہوتی ہیں: %0",
+      "after": "ریکارڈنگ یہاں محفوظ ہوتی ہیں: %0",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Add JavaScript AIs in Settings → Custom AIs. They appear in each colony’s AI selector.]",
+      "source": "Add JavaScript AIs in Settings → Custom AIs. They appear in each colony’s AI selector.",
+      "before": "ترتیبات → اپنی مرضی کے AI میں JavaScript کے AI شامل کریں۔ وہ ہر بستی کے AI انتخاب میں دکھائی دیتے ہیں۔",
+      "after": "ترتیبات → اپنی مرضی کے AI میں JavaScript کے AI شامل کریں۔ وہ ہر بستی کے AI انتخاب میں دکھائی دیتے ہیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Music set]",
+      "source": "Music set",
+      "before": "موسیقی کا مجموعہ",
+      "after": "موسیقی کا مجموعہ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Random each match]",
+      "source": "Choose Random to select a soundtrack at each match start.",
+      "before": "ہر میچ کے آغاز پر صوتی مجموعہ خود چننے کے لیے بے ترتیب منتخب کریں۔",
+      "after": "ہر میچ کے آغاز پر صوتی مجموعہ خود چننے کے لیے بے ترتیب منتخب کریں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Sign in through Online settings to like and favourite AIs.]",
+      "source": "Sign in through Online settings to like and favourite AIs.",
+      "before": "AI کو پسند اور پسندیدہ کرنے کے لیے آن لائن ترتیبات سے سائن اِن کریں۔",
+      "after": "AI کو پسند اور پسندیدہ کرنے کے لیے آن لائن ترتیبات سے سائن اِن کریں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[music 2–5 minutes]",
+      "source": "2–5 minutes",
+      "before": "2–5 منٹ",
+      "after": "2–5 منٹ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[music 5–15 minutes]",
+      "source": "5–15 minutes",
+      "before": "5–15 منٹ",
+      "after": "5–15 منٹ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[music AI-generated]",
+      "source": "AI-generated",
+      "before": "AI کی بنائی ہوئی",
+      "after": "AI کی بنائی ہوئی",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[music All music]",
+      "source": "All music",
+      "before": "تمام موسیقی",
+      "after": "تمام موسیقی",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[music All open licences]",
+      "source": "All open licences",
+      "before": "تمام آزاد لائسنس",
+      "after": "تمام آزاد لائسنس",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[music Any duration]",
+      "source": "Any duration",
+      "before": "کوئی بھی دورانیہ",
+      "after": "کوئی بھی دورانیہ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[music Audition each mood for eight seconds]",
+      "source": "Audition each mood for eight seconds",
+      "before": "ہر کیفیت آٹھ سیکنڈ سنیں",
+      "after": "ہر کیفیت آٹھ سیکنڈ سنیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[music Back]",
+      "source": "Back",
+      "before": "واپس",
+      "after": "واپس",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[music Browse]",
+      "source": "Browse",
+      "before": "دیکھیں",
+      "after": "دیکھیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[music Building]",
+      "source": "Building",
+      "before": "تعمیر",
+      "after": "تعمیر",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[music Calm]",
+      "source": "Calm",
+      "before": "پرسکون",
+      "after": "پرسکون",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[music Calm → Building → Combat]",
+      "source": "Calm → Building → Combat",
+      "before": "پرسکون → تعمیر → لڑائی",
+      "after": "پرسکون → تعمیر → لڑائی",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[music Choose Building]",
+      "source": "Choose Building",
+      "before": "تعمیر چنیں",
+      "after": "تعمیر چنیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[music Choose Calm]",
+      "source": "Choose Calm",
+      "before": "پرسکون چنیں",
+      "after": "پرسکون چنیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[music Choose Combat]",
+      "source": "Choose Combat",
+      "before": "لڑائی چنیں",
+      "after": "لڑائی چنیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[music Choose ZIP]",
+      "source": "Choose ZIP",
+      "before": "ZIP چنیں",
+      "after": "ZIP چنیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[music Choose a music file.]",
+      "source": "Choose a music file.",
+      "before": "موسیقی کی فائل چنیں۔",
+      "after": "موسیقی کی فائل چنیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[music Combat]",
+      "source": "Combat",
+      "before": "لڑائی",
+      "after": "لڑائی",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[music Could not open this music set.]",
+      "source": "Could not open this music set.",
+      "before": "موسیقی کا یہ مجموعہ نہیں کھل سکا۔",
+      "after": "موسیقی کا یہ مجموعہ نہیں کھل سکا۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[music Credits, downloads and reporting]",
+      "source": "Credits, downloads and reporting",
+      "before": "تخلیق کار، ڈاؤن لوڈ اور رپورٹ",
+      "after": "تخلیق کار، ڈاؤن لوڈ اور رپورٹ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[music Downloading music…]",
+      "source": "Downloading music…",
+      "before": "موسیقی ڈاؤن لوڈ ہو رہی ہے…",
+      "after": "موسیقی ڈاؤن لوڈ ہو رہی ہے…",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[music Export recovery files]",
+      "source": "Export recovery files",
+      "before": "بحالی کی فائلیں برآمد کریں",
+      "after": "بحالی کی فائلیں برآمد کریں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[music Fade duration]",
+      "source": "Fade duration",
+      "before": "آواز بدلنے کا دورانیہ",
+      "after": "آواز بدلنے کا دورانیہ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[music File selection cancelled or failed.]",
+      "source": "File selection cancelled or failed.",
+      "before": "فائل کا انتخاب منسوخ ہوا یا ناکام رہا۔",
+      "after": "فائل کا انتخاب منسوخ ہوا یا ناکام رہا۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[music Import ZIP]",
+      "source": "Import ZIP",
+      "before": "ZIP درآمد کریں",
+      "after": "ZIP درآمد کریں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[music Import ZIP or three tracks]",
+      "source": "Import ZIP or three tracks",
+      "before": "ZIP یا تین ٹریک درآمد کریں",
+      "after": "ZIP یا تین ٹریک درآمد کریں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[music Import music]",
+      "source": "Import music",
+      "before": "موسیقی درآمد کریں",
+      "after": "موسیقی درآمد کریں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[music Import three tracks]",
+      "source": "Import three tracks",
+      "before": "تین ٹریک درآمد کریں",
+      "after": "تین ٹریک درآمد کریں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[music Includes AI-generated audio]",
+      "source": "Includes AI-generated audio",
+      "before": "AI کی بنائی ہوئی آواز شامل ہے",
+      "after": "AI کی بنائی ہوئی آواز شامل ہے",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[music Install]",
+      "source": "Install",
+      "before": "نصب کریں",
+      "after": "نصب کریں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[music Install selected]",
+      "source": "Install selected",
+      "before": "منتخب شدہ نصب کریں",
+      "after": "منتخب شدہ نصب کریں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[music Installed]",
+      "source": "Installed",
+      "before": "نصب شدہ",
+      "after": "نصب شدہ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[music Load more]",
+      "source": "Load more",
+      "before": "مزید لوڈ کریں",
+      "after": "مزید لوڈ کریں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[music Loading music…]",
+      "source": "Loading music…",
+      "before": "موسیقی لوڈ ہو رہی ہے…",
+      "after": "موسیقی لوڈ ہو رہی ہے…",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[music Most downloaded]",
+      "source": "Most downloaded",
+      "before": "سب سے زیادہ ڈاؤن لوڈ شدہ",
+      "after": "سب سے زیادہ ڈاؤن لوڈ شدہ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    }
+  ],
+  "status": "edited-awaiting-independent-recheck"
+}

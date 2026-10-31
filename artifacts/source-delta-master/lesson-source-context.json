@@ -1,0 +1,3369 @@
+{
+  "revision": "e7613e93b08234dbf785ceef3bd9b884cbb73221",
+  "lessons": [
+    {
+      "entry": {
+        "definition": "scripts/tutorials/introduction.json",
+        "script": "scripts/introduction.js",
+        "setup": 0
+      },
+      "definition_sha256": "0decd2a83899e9863b7364032f2df841498959514eaeed265d63450bebbb11a2",
+      "script_sha256": "04a37caf7cd7c21b62395861626bf93eaf1b49c983e1a8f2c57b306fd4c27769",
+      "definition": {
+        "schema": 1,
+        "id": "introduction",
+        "version": 1,
+        "map": "campaigns/introduction.map.gz",
+        "title": "[intro menu]",
+        "briefing": "[intro briefing]",
+        "completionTitle": "[intro complete]",
+        "completionBody": "[intro complete body]",
+        "confirmTicks": 90,
+        "hintTicks": 1350,
+        "targets": {
+          "landmark": {
+            "kind": "area",
+            "region": "landmark"
+          },
+          "enemyBase": {
+            "kind": "area",
+            "region": "enemyOutpost"
+          },
+          "attackRoute": {
+            "kind": "area",
+            "region": "enemyApproach"
+          },
+          "workers": {
+            "kind": "unit",
+            "team": 0,
+            "type": 0
+          },
+          "swarm": {
+            "kind": "building",
+            "team": 0,
+            "type": 0,
+            "filters": [
+              {
+                "field": "construction",
+                "op": "eq",
+                "value": 0
+              }
+            ]
+          },
+          "productiveSwarm": {
+            "kind": "building",
+            "from": "swarm",
+            "filters": [
+              {
+                "field": "workers",
+                "op": "gte",
+                "value": 2
+              },
+              {
+                "field": "production.0",
+                "op": "gte",
+                "value": 1
+              },
+              {
+                "field": "production.1",
+                "op": "eq",
+                "value": 0
+              },
+              {
+                "field": "production.2",
+                "op": "eq",
+                "value": 0
+              }
+            ]
+          },
+          "newWorkers": {
+            "kind": "unit",
+            "from": "workers",
+            "baseline": "step"
+          },
+          "newInns": {
+            "kind": "building",
+            "team": 0,
+            "type": 1,
+            "baseline": "lesson"
+          },
+          "finishedInns": {
+            "kind": "building",
+            "from": "newInns",
+            "filters": [
+              {
+                "field": "construction",
+                "op": "eq",
+                "value": 0
+              }
+            ]
+          },
+          "suppliedInns": {
+            "kind": "building",
+            "from": "finishedInns",
+            "filters": [
+              {
+                "field": "resources.1",
+                "op": "gte",
+                "value": 1
+              }
+            ]
+          },
+          "staffedInns": {
+            "kind": "building",
+            "from": "newInns",
+            "filters": [
+              {
+                "field": "workers",
+                "op": "gte",
+                "value": 1
+              }
+            ]
+          },
+          "scoutFlags": {
+            "kind": "building",
+            "team": 0,
+            "type": 8,
+            "filters": [
+              {
+                "field": "workers",
+                "op": "gte",
+                "value": 1
+              }
+            ]
+          },
+          "scoutsAtLandmark": {
+            "kind": "unit",
+            "team": 0,
+            "type": 1,
+            "within": "landmark",
+            "assignedTo": "scoutFlags"
+          },
+          "warFlags": {
+            "kind": "building",
+            "team": 0,
+            "type": 9,
+            "within": "enemyBase",
+            "filters": [
+              {
+                "field": "workers",
+                "op": "gte",
+                "value": 1
+              }
+            ]
+          },
+          "directedWarriors": {
+            "kind": "unit",
+            "team": 0,
+            "type": 2,
+            "within": "attackRoute",
+            "assignedTo": "warFlags"
+          },
+          "enemySwarm": {
+            "kind": "building",
+            "team": 1,
+            "type": 0
+          }
+        },
+        "steps": [
+          {
+            "id": "scout",
+            "title": "[intro goal scout]",
+            "instruction": "[intro instruction scout]",
+            "touchInstruction": "[intro compact scout]",
+            "help": "[intro help scout]",
+            "touchHelp": "[intro help touch scout]",
+            "complete": {
+              "type": "exists",
+              "target": "scoutsAtLandmark",
+              "latch": true
+            },
+            "activeOnly": false,
+            "highlights": [
+              "palette",
+              "flag:exploration"
+            ],
+            "hint": 0,
+            "milestones": [
+              {
+                "target": "scoutFlags"
+              }
+            ],
+            "destination": {
+              "target": "landmark",
+              "label": "[intro scout destination]"
+            },
+            "recovery": [
+              {
+                "hint": 5,
+                "when": {
+                  "type": "none",
+                  "target": "scoutFlags"
+                }
+              }
+            ]
+          },
+          {
+            "id": "build",
+            "title": "[intro goal build]",
+            "instruction": "[intro instruction build]",
+            "touchInstruction": "[intro compact build]",
+            "help": "[intro help build]",
+            "touchHelp": "[intro help touch build]",
+            "complete": {
+              "type": "exists",
+              "target": "finishedInns",
+              "latch": true
+            },
+            "activeOnly": false,
+            "highlights": [
+              "palette",
+              "build:inn"
+            ],
+            "hint": 1,
+            "milestones": [
+              {
+                "target": "newInns"
+              },
+              {
+                "target": "finishedInns"
+              }
+            ],
+            "recovery": [
+              {
+                "hint": 6,
+                "when": {
+                  "type": "all",
+                  "conditions": [
+                    {
+                      "type": "exists",
+                      "target": "newInns"
+                    },
+                    {
+                      "type": "none",
+                      "target": "staffedInns"
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "id": "supply",
+            "title": "[intro goal supply]",
+            "instruction": "[intro instruction supply]",
+            "touchInstruction": "[intro compact supply]",
+            "help": "[intro help supply]",
+            "touchHelp": "[intro help touch supply]",
+            "complete": {
+              "type": "exists",
+              "target": "suppliedInns",
+              "latch": true
+            },
+            "activeOnly": false,
+            "highlights": [
+              "workers"
+            ],
+            "hint": 2,
+            "milestones": [
+              {
+                "target": "staffedInns"
+              },
+              {
+                "target": "suppliedInns"
+              }
+            ],
+            "recovery": [
+              {
+                "hint": 1,
+                "when": {
+                  "type": "none",
+                  "target": "finishedInns"
+                }
+              },
+              {
+                "hint": 6,
+                "when": {
+                  "type": "all",
+                  "conditions": [
+                    {
+                      "type": "exists",
+                      "target": "newInns"
+                    },
+                    {
+                      "type": "none",
+                      "target": "staffedInns"
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "id": "grow",
+            "title": "[intro goal grow]",
+            "instruction": "[intro instruction grow]",
+            "touchInstruction": "[intro compact grow]",
+            "help": "[intro help grow]",
+            "touchHelp": "[intro help touch grow]",
+            "complete": {
+              "type": "all",
+              "conditions": [
+                {
+                  "type": "exists",
+                  "target": "productiveSwarm"
+                },
+                {
+                  "type": "exists",
+                  "target": "newWorkers"
+                }
+              ]
+            },
+            "activeOnly": true,
+            "highlights": [
+              "workers",
+              "production"
+            ],
+            "hint": 3,
+            "milestones": [
+              {
+                "target": "productiveSwarm"
+              },
+              {
+                "target": "workers"
+              }
+            ]
+          },
+          {
+            "id": "attack",
+            "title": "[intro goal attack]",
+            "instruction": "[intro instruction attack]",
+            "touchInstruction": "[intro compact attack]",
+            "help": "[intro help attack]",
+            "touchHelp": "[intro help touch attack]",
+            "complete": {
+              "type": "all",
+              "conditions": [
+                {
+                  "type": "exists",
+                  "target": "directedWarriors",
+                  "latch": true
+                },
+                {
+                  "type": "none",
+                  "target": "enemySwarm"
+                }
+              ]
+            },
+            "activeOnly": false,
+            "highlights": [
+              "flag:war"
+            ],
+            "hint": 4,
+            "milestones": [
+              {
+                "target": "warFlags"
+              },
+              {
+                "target": "directedWarriors"
+              },
+              {
+                "target": "enemySwarm"
+              }
+            ],
+            "destination": {
+              "target": "enemySwarm",
+              "offsetX": 1.5,
+              "offsetY": 1.5,
+              "label": "[intro attack destination]"
+            },
+            "recovery": [
+              {
+                "hint": 7,
+                "when": {
+                  "type": "none",
+                  "target": "warFlags"
+                }
+              }
+            ],
+            "onEnter": [
+              {
+                "type": "scenarioOrder",
+                "team": 0,
+                "order": {
+                  "type": "alliance",
+                  "allies": [
+                    0
+                  ],
+                  "enemies": [
+                    1
+                  ]
+                }
+              },
+              {
+                "type": "scenarioOrder",
+                "team": 1,
+                "order": {
+                  "type": "alliance",
+                  "allies": [
+                    1
+                  ],
+                  "enemies": [
+                    0
+                  ]
+                }
+              },
+              {
+                "type": "flagChoice",
+                "name": "warflag",
+                "enabled": true
+              }
+            ]
+          }
+        ],
+        "hints": [
+          "[intro hint scout]",
+          "[intro hint build]",
+          "[intro hint supply]",
+          "[intro hint grow]",
+          "[intro hint attack]",
+          "[intro hint no scout flag]",
+          "[intro hint no suppliers]",
+          "[intro hint no war flag]",
+          "[intro hint retry]"
+        ],
+        "recovery": [
+          {
+            "hint": 8,
+            "when": {
+              "type": "any",
+              "conditions": [
+                {
+                  "type": "none",
+                  "target": "swarm"
+                },
+                {
+                  "type": "none",
+                  "target": "workers"
+                }
+              ]
+            }
+          }
+        ],
+        "onStart": [
+          {
+            "type": "scenarioOrder",
+            "team": 0,
+            "order": {
+              "type": "alliance",
+              "allies": [
+                0
+              ],
+              "enemies": []
+            }
+          },
+          {
+            "type": "scenarioOrder",
+            "team": 1,
+            "order": {
+              "type": "alliance",
+              "allies": [
+                1
+              ],
+              "enemies": []
+            }
+          },
+          {
+            "type": "buildingChoice",
+            "name": "swarm",
+            "enabled": false
+          },
+          {
+            "type": "buildingChoice",
+            "name": "hospital",
+            "enabled": false
+          },
+          {
+            "type": "buildingChoice",
+            "name": "racetrack",
+            "enabled": false
+          },
+          {
+            "type": "buildingChoice",
+            "name": "swimmingpool",
+            "enabled": false
+          },
+          {
+            "type": "buildingChoice",
+            "name": "barracks",
+            "enabled": false
+          },
+          {
+            "type": "buildingChoice",
+            "name": "school",
+            "enabled": false
+          },
+          {
+            "type": "buildingChoice",
+            "name": "defencetower",
+            "enabled": false
+          },
+          {
+            "type": "buildingChoice",
+            "name": "stonewall",
+            "enabled": false
+          },
+          {
+            "type": "buildingChoice",
+            "name": "market",
+            "enabled": false
+          },
+          {
+            "type": "flagChoice",
+            "name": "warflag",
+            "enabled": false
+          },
+          {
+            "type": "flagChoice",
+            "name": "clearingflag",
+            "enabled": false
+          }
+        ],
+        "name": "Introduction"
+      }
+    },
+    {
+      "entry": {
+        "definition": "scripts/tutorials/food-supply.json",
+        "script": "scripts/food-supply.js",
+        "setup": 1
+      },
+      "definition_sha256": "44f94a25d59cfa525087b40a4af838a6fe54153e34c9652581017274a4d2daff",
+      "script_sha256": "7f92897987b08b9da462b2e282bdd43853548699ca406fb51a51f1a6c41c5bfd",
+      "definition": {
+        "schema": 1,
+        "id": "food-supply",
+        "version": 1,
+        "map": "campaigns/food-supply.map.gz",
+        "title": "[tutorial food title]",
+        "briefing": "[tutorial food briefing]",
+        "completionTitle": "[tutorial complete]",
+        "completionBody": "[tutorial food complete]",
+        "confirmTicks": 90,
+        "hintTicks": 1350,
+        "targets": {
+          "workers": {
+            "kind": "unit",
+            "team": 0,
+            "type": 0
+          },
+          "swarm": {
+            "kind": "building",
+            "team": 0,
+            "type": 0,
+            "filters": [
+              {
+                "field": "construction",
+                "op": "eq",
+                "value": 0
+              }
+            ]
+          },
+          "newInns": {
+            "kind": "building",
+            "team": 0,
+            "type": 1,
+            "baseline": "lesson"
+          },
+          "finishedInns": {
+            "kind": "building",
+            "from": "newInns",
+            "filters": [
+              {
+                "field": "construction",
+                "op": "eq",
+                "value": 0
+              }
+            ]
+          },
+          "suppliedInns": {
+            "kind": "building",
+            "from": "finishedInns",
+            "filters": [
+              {
+                "field": "resources.1",
+                "op": "gte",
+                "value": 1
+              }
+            ]
+          },
+          "staffedInns": {
+            "kind": "building",
+            "from": "newInns",
+            "filters": [
+              {
+                "field": "workers",
+                "op": "gte",
+                "value": 1
+              }
+            ]
+          }
+        },
+        "steps": [
+          {
+            "id": "build",
+            "title": "[intro goal build]",
+            "instruction": "[intro instruction build]",
+            "touchInstruction": "[intro compact build]",
+            "help": "[intro help build]",
+            "touchHelp": "[intro help touch build]",
+            "complete": {
+              "type": "exists",
+              "target": "finishedInns",
+              "latch": true
+            },
+            "activeOnly": false,
+            "highlights": [
+              "palette",
+              "build:inn"
+            ],
+            "hint": 1,
+            "milestones": [
+              {
+                "target": "newInns"
+              },
+              {
+                "target": "finishedInns"
+              }
+            ],
+            "recovery": [
+              {
+                "hint": 6,
+                "when": {
+                  "type": "all",
+                  "conditions": [
+                    {
+                      "type": "exists",
+                      "target": "newInns"
+                    },
+                    {
+                      "type": "none",
+                      "target": "staffedInns"
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "id": "supply",
+            "title": "[intro goal supply]",
+            "instruction": "[intro instruction supply]",
+            "touchInstruction": "[intro compact supply]",
+            "help": "[intro help supply]",
+            "touchHelp": "[intro help touch supply]",
+            "complete": {
+              "type": "exists",
+              "target": "suppliedInns",
+              "latch": true
+            },
+            "activeOnly": false,
+            "highlights": [
+              "workers"
+            ],
+            "hint": 2,
+            "milestones": [
+              {
+                "target": "staffedInns"
+              },
+              {
+                "target": "suppliedInns"
+              }
+            ],
+            "recovery": [
+              {
+                "hint": 1,
+                "when": {
+                  "type": "none",
+                  "target": "finishedInns"
+                }
+              },
+              {
+                "hint": 6,
+                "when": {
+                  "type": "all",
+                  "conditions": [
+                    {
+                      "type": "exists",
+                      "target": "newInns"
+                    },
+                    {
+                      "type": "none",
+                      "target": "staffedInns"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        ],
+        "hints": [
+          "[intro hint scout]",
+          "[intro hint build]",
+          "[intro hint supply]",
+          "[intro hint grow]",
+          "[intro hint attack]",
+          "[intro hint no scout flag]",
+          "[intro hint no suppliers]",
+          "[intro hint no war flag]",
+          "[intro hint retry]"
+        ],
+        "recovery": [
+          {
+            "hint": 8,
+            "when": {
+              "type": "any",
+              "conditions": [
+                {
+                  "type": "none",
+                  "target": "swarm"
+                },
+                {
+                  "type": "none",
+                  "target": "workers"
+                }
+              ]
+            }
+          }
+        ],
+        "onStart": [
+          {
+            "type": "scenarioOrder",
+            "team": 0,
+            "order": {
+              "type": "alliance",
+              "allies": [
+                0
+              ],
+              "enemies": []
+            }
+          },
+          {
+            "type": "scenarioOrder",
+            "team": 1,
+            "order": {
+              "type": "alliance",
+              "allies": [
+                1
+              ],
+              "enemies": []
+            }
+          },
+          {
+            "type": "buildingChoice",
+            "name": "swarm",
+            "enabled": false
+          },
+          {
+            "type": "buildingChoice",
+            "name": "hospital",
+            "enabled": false
+          },
+          {
+            "type": "buildingChoice",
+            "name": "racetrack",
+            "enabled": false
+          },
+          {
+            "type": "buildingChoice",
+            "name": "swimmingpool",
+            "enabled": false
+          },
+          {
+            "type": "buildingChoice",
+            "name": "barracks",
+            "enabled": false
+          },
+          {
+            "type": "buildingChoice",
+            "name": "school",
+            "enabled": false
+          },
+          {
+            "type": "buildingChoice",
+            "name": "defencetower",
+            "enabled": false
+          },
+          {
+            "type": "buildingChoice",
+            "name": "stonewall",
+            "enabled": false
+          },
+          {
+            "type": "buildingChoice",
+            "name": "market",
+            "enabled": false
+          },
+          {
+            "type": "flagChoice",
+            "name": "warflag",
+            "enabled": false
+          },
+          {
+            "type": "flagChoice",
+            "name": "clearingflag",
+            "enabled": false
+          }
+        ],
+        "name": "Food supply practice"
+      }
+    },
+    {
+      "entry": {
+        "definition": "scripts/tutorials/healing.json",
+        "script": "scripts/healing.js",
+        "setup": 2
+      },
+      "definition_sha256": "54d72efe481a8c7f854607077b1e5165f3588d10cf90e14230f22dddb7afcfde",
+      "script_sha256": "8fc12e722b82565c38683ceccb5e5bee9bc870618c5b504a6f52366441aea5c0",
+      "definition": {
+        "schema": 1,
+        "id": "healing",
+        "version": 1,
+        "map": "campaigns/healing.map.gz",
+        "name": "Hospitals and healing",
+        "title": "[lesson healing title]",
+        "briefing": "[lesson healing briefing]",
+        "completionTitle": "[tutorial complete]",
+        "completionBody": "[lesson healing complete]",
+        "confirmTicks": 90,
+        "hintTicks": 1350,
+        "targets": {
+          "workers": {
+            "kind": "unit",
+            "team": 0,
+            "type": 0
+          },
+          "swarm": {
+            "kind": "building",
+            "team": 0,
+            "type": 0
+          },
+          "buildArea": {
+            "kind": "area",
+            "region": "home"
+          },
+          "patient": {
+            "kind": "unit",
+            "team": 0,
+            "type": 0,
+            "bind": "lesson",
+            "filters": [
+              {
+                "field": "hp",
+                "op": "lte",
+                "value": {
+                  "field": "maxHp",
+                  "scale": 0.5
+                }
+              }
+            ]
+          },
+          "hospital": {
+            "kind": "building",
+            "team": 0,
+            "type": 2,
+            "baseline": "lesson"
+          },
+          "hospitalReady": {
+            "kind": "building",
+            "from": "hospital",
+            "filters": [
+              {
+                "field": "construction",
+                "op": "eq",
+                "value": 0
+              }
+            ]
+          },
+          "recovered": {
+            "kind": "unit",
+            "from": "patient",
+            "filters": [
+              {
+                "field": "hp",
+                "op": "gte",
+                "value": {
+                  "field": "maxHp",
+                  "scale": 0.95
+                }
+              }
+            ]
+          }
+        },
+        "steps": [
+          {
+            "id": "build",
+            "title": "[lesson healing build title]",
+            "instruction": "[lesson healing build instruction]",
+            "touchInstruction": "[lesson healing build compact]",
+            "help": "[lesson healing build help]",
+            "touchHelp": "[lesson healing build help]",
+            "complete": {
+              "type": "exists",
+              "target": "hospitalReady"
+            },
+            "activeOnly": true,
+            "highlights": [
+              "palette",
+              "build:hospital"
+            ],
+            "hint": 0,
+            "milestones": [
+              {
+                "condition": {
+                  "type": "exists",
+                  "target": "hospitalReady"
+                }
+              }
+            ],
+            "destination": {
+              "target": "buildArea",
+              "label": "[lesson healing build marker]"
+            }
+          },
+          {
+            "id": "heal",
+            "title": "[lesson healing heal title]",
+            "instruction": "[lesson healing heal instruction]",
+            "touchInstruction": "[lesson healing heal compact]",
+            "help": "[lesson healing heal help]",
+            "touchHelp": "[lesson healing heal help]",
+            "complete": {
+              "type": "all",
+              "conditions": [
+                {
+                  "type": "exists",
+                  "target": "hospitalReady"
+                },
+                {
+                  "type": "exists",
+                  "target": "recovered"
+                },
+                {
+                  "type": "increased",
+                  "target": "patient",
+                  "field": "hp",
+                  "baseline": "lesson"
+                }
+              ]
+            },
+            "activeOnly": true,
+            "highlights": [
+              "build:hospital"
+            ],
+            "hint": 1,
+            "milestones": [
+              {
+                "condition": {
+                  "type": "all",
+                  "conditions": [
+                    {
+                      "type": "exists",
+                      "target": "hospitalReady"
+                    },
+                    {
+                      "type": "exists",
+                      "target": "recovered"
+                    },
+                    {
+                      "type": "increased",
+                      "target": "patient",
+                      "field": "hp",
+                      "baseline": "lesson"
+                    }
+                  ]
+                }
+              }
+            ],
+            "destination": {
+              "target": "patient",
+              "label": "[lesson healing heal marker]"
+            }
+          }
+        ],
+        "hints": [
+          "[lesson healing build hint]",
+          "[lesson healing heal hint]",
+          "[intro hint retry]"
+        ],
+        "onStart": [
+          {
+            "type": "scenarioOrder",
+            "team": 0,
+            "order": {
+              "type": "alliance",
+              "allies": [
+                0
+              ],
+              "enemies": []
+            }
+          },
+          {
+            "type": "scenarioOrder",
+            "team": 1,
+            "order": {
+              "type": "alliance",
+              "allies": [
+                1
+              ],
+              "enemies": []
+            }
+          },
+          {
+            "type": "buildingChoice",
+            "name": "swarm",
+            "enabled": false
+          },
+          {
+            "type": "buildingChoice",
+            "name": "inn",
+            "enabled": true
+          },
+          {
+            "type": "buildingChoice",
+            "name": "hospital",
+            "enabled": true
+          },
+          {
+            "type": "buildingChoice",
+            "name": "racetrack",
+            "enabled": false
+          },
+          {
+            "type": "buildingChoice",
+            "name": "swimmingpool",
+            "enabled": false
+          },
+          {
+            "type": "buildingChoice",
+            "name": "barracks",
+            "enabled": false
+          },
+          {
+            "type": "buildingChoice",
+            "name": "school",
+            "enabled": false
+          },
+          {
+            "type": "buildingChoice",
+            "name": "defencetower",
+            "enabled": false
+          },
+          {
+            "type": "buildingChoice",
+            "name": "stonewall",
+            "enabled": false
+          },
+          {
+            "type": "buildingChoice",
+            "name": "market",
+            "enabled": false
+          },
+          {
+            "type": "flagChoice",
+            "name": "explorationflag",
+            "enabled": false
+          },
+          {
+            "type": "flagChoice",
+            "name": "warflag",
+            "enabled": false
+          },
+          {
+            "type": "flagChoice",
+            "name": "clearingflag",
+            "enabled": false
+          }
+        ],
+        "recovery": [
+          {
+            "hint": 2,
+            "when": {
+              "type": "any",
+              "conditions": [
+                {
+                  "type": "none",
+                  "target": "swarm"
+                },
+                {
+                  "type": "none",
+                  "target": "workers"
+                },
+                {
+                  "type": "none",
+                  "target": "patient"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "entry": {
+        "definition": "scripts/tutorials/walking-training.json",
+        "script": "scripts/walking-training.js",
+        "setup": 3
+      },
+      "definition_sha256": "3ad30989585ae26d9efd03aee8092a6cf2eae540f5ade0ca4cc0f4a2475ac683",
+      "script_sha256": "437e7a5f47ebb8cc33711a59426701be6514bd07bc243fa2d0b938fc3c4aee24",
+      "definition": {
+        "schema": 1,
+        "id": "walking-training",
+        "version": 1,
+        "map": "campaigns/walking-training.map.gz",
+        "name": "Walking training",
+        "title": "[lesson walking-training title]",
+        "briefing": "[lesson walking-training briefing]",
+        "completionTitle": "[tutorial complete]",
+        "completionBody": "[lesson walking-training complete]",
+        "confirmTicks": 90,
+        "hintTicks": 1350,
+        "targets": {
+          "workers": {
+            "kind": "unit",
+            "team": 0,
+            "type": 0
+          },
+          "swarm": {
+            "kind": "building",
+            "team": 0,
+            "type": 0
+          },
+          "trainees": {
+            "kind": "unit",
+            "team": 0,
+            "type": 0,
+            "bind": "lesson"
+          },
+          "buildArea": {
+            "kind": "area",
+            "region": "home"
+          },
+          "track": {
+            "kind": "building",
+            "team": 0,
+            "type": 3,
+            "baseline": "lesson"
+          },
+          "trackReady": {
+            "kind": "building",
+            "from": "track",
+            "filters": [
+              {
+                "field": "construction",
+                "op": "eq",
+                "value": 0
+              }
+            ]
+          }
+        },
+        "steps": [
+          {
+            "id": "build",
+            "title": "[lesson walking-training build title]",
+            "instruction": "[lesson walking-training build instruction]",
+            "touchInstruction": "[lesson walking-training build compact]",
+            "help": "[lesson walking-training build help]",
+            "touchHelp": "[lesson walking-training build help]",
+            "complete": {
+              "type": "exists",
+              "target": "trackReady"
+            },
+            "activeOnly": true,
+            "highlights": [
+              "palette",
+              "build:racetrack"
+            ],
+            "hint": 0,
+            "milestones": [
+              {
+                "condition": {
+                  "type": "exists",
+                  "target": "trackReady"
+                }
+              }
+            ],
+            "destination": {
+              "target": "buildArea",
+              "label": "[lesson walking-training build marker]"
+            }
+          },
+          {
+            "id": "train",
+            "title": "[lesson walking-training train title]",
+            "instruction": "[lesson walking-training train instruction]",
+            "touchInstruction": "[lesson walking-training train compact]",
+            "help": "[lesson walking-training train help]",
+            "touchHelp": "[lesson walking-training train help]",
+            "complete": {
+              "type": "increased",
+              "target": "trainees",
+              "field": "levels.3",
+              "baseline": "lesson"
+            },
+            "activeOnly": true,
+            "highlights": [
+              "build:racetrack"
+            ],
+            "hint": 1,
+            "milestones": [
+              {
+                "condition": {
+                  "type": "increased",
+                  "target": "trainees",
+                  "field": "levels.3",
+                  "baseline": "lesson"
+                }
+              }
+            ],
+            "recovery": [
+              {
+                "hint": 2,
+                "when": {
+                  "type": "none",
+                  "target": "trainees"
+                }
+              }
+            ]
+          }
+        ],
+        "hints": [
+          "[lesson walking-training build hint]",
+          "[lesson walking-training train hint]",
+          "[intro hint retry]"
+        ],
+        "onStart": [
+          {
+            "type": "scenarioOrder",
+            "team": 0,
+            "order": {
+              "type": "alliance",
+              "allies": [
+                0
+              ],
+              "enemies": []
+            }
+          },
+          {
+            "type": "scenarioOrder",
+            "team": 1,
+            "order": {
+              "type": "alliance",
+              "allies": [
+                1
+              ],
+              "enemies": []
+            }
+          },
+          {
+            "type": "buildingChoice",
+            "name": "swarm",
+            "enabled": false
+          },
+          {
+            "type": "buildingChoice",
+            "name": "inn",
+            "enabled": true
+          },
+          {
+            "type": "buildingChoice",
+            "name": "hospital",
+            "enabled": false
+          },
+          {
+            "type": "buildingChoice",
+            "name": "racetrack",
+            "enabled": true
+          },
+          {
+            "type": "buildingChoice",
+            "name": "swimmingpool",
+            "enabled": false
+          },
+          {
+            "type": "buildingChoice",
+            "name": "barracks",
+            "enabled": false
+          },
+          {
+            "type": "buildingChoice",
+            "name": "school",
+            "enabled": false
+          },
+          {
+            "type": "buildingChoice",
+            "name": "defencetower",
+            "enabled": false
+          },
+          {
+            "type": "buildingChoice",
+            "name": "stonewall",
+            "enabled": false
+          },
+          {
+            "type": "buildingChoice",
+            "name": "market",
+            "enabled": false
+          },
+          {
+            "type": "flagChoice",
+            "name": "explorationflag",
+            "enabled": false
+          },
+          {
+            "type": "flagChoice",
+            "name": "warflag",
+            "enabled": false
+          },
+          {
+            "type": "flagChoice",
+            "name": "clearingflag",
+            "enabled": false
+          }
+        ],
+        "recovery": [
+          {
+            "hint": 2,
+            "when": {
+              "type": "any",
+              "conditions": [
+                {
+                  "type": "none",
+                  "target": "swarm"
+                },
+                {
+                  "type": "none",
+                  "target": "workers"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "entry": {
+        "definition": "scripts/tutorials/swimming.json",
+        "script": "scripts/swimming.js",
+        "setup": 4
+      },
+      "definition_sha256": "1ed9b1d90a8f7902b8bbe8c5cf8d57f316288f77cf979cae5c77b68606fa0bb6",
+      "script_sha256": "b049824b8a90295dfcf7619d8c59fd66421b139c3b51d0f17f843c650c7f3d6a",
+      "definition": {
+        "schema": 1,
+        "id": "swimming",
+        "version": 1,
+        "map": "campaigns/swimming.map.gz",
+        "name": "Swimming and water resources",
+        "title": "[lesson swimming title]",
+        "briefing": "[lesson swimming briefing]",
+        "completionTitle": "[tutorial complete]",
+        "completionBody": "[lesson swimming complete]",
+        "confirmTicks": 90,
+        "hintTicks": 1350,
+        "targets": {
+          "workers": {
+            "kind": "unit",
+            "team": 0,
+            "type": 0
+          },
+          "swarm": {
+            "kind": "building",
+            "team": 0,
+            "type": 0
+          },
+          "trainees": {
+            "kind": "unit",
+            "team": 0,
+            "type": 0,
+            "bind": "lesson"
+          },
+          "poolArea": {
+            "kind": "area",
+            "region": "lakeShore"
+          },
+          "pool": {
+            "kind": "building",
+            "team": 0,
+            "type": 4,
+            "baseline": "lesson"
+          },
+          "poolReady": {
+            "kind": "building",
+            "from": "pool",
+            "filters": [
+              {
+                "field": "construction",
+                "op": "eq",
+                "value": 0
+              }
+            ]
+          },
+          "school": {
+            "kind": "building",
+            "team": 0,
+            "type": 6,
+            "baseline": "lesson"
+          },
+          "schoolReady": {
+            "kind": "building",
+            "from": "school",
+            "filters": [
+              {
+                "field": "construction",
+                "op": "eq",
+                "value": 0
+              }
+            ]
+          },
+          "schoolArea": {
+            "kind": "area",
+            "region": "schoolSite"
+          }
+        },
+        "steps": [
+          {
+            "id": "build",
+            "title": "[lesson swimming build title]",
+            "instruction": "[lesson swimming build instruction]",
+            "touchInstruction": "[lesson swimming build compact]",
+            "help": "[lesson swimming build help]",
+            "touchHelp": "[lesson swimming build help]",
+            "complete": {
+              "type": "exists",
+              "target": "poolReady"
+            },
+            "activeOnly": true,
+            "highlights": [
+              "palette",
+              "build:swimmingpool"
+            ],
+            "hint": 0,
+            "milestones": [
+              {
+                "condition": {
+                  "type": "exists",
+                  "target": "poolReady"
+                }
+              }
+            ],
+            "destination": {
+              "target": "poolArea",
+              "label": "[lesson swimming build marker]"
+            }
+          },
+          {
+            "id": "train",
+            "title": "[lesson swimming train title]",
+            "instruction": "[lesson swimming train instruction]",
+            "touchInstruction": "[lesson swimming train compact]",
+            "help": "[lesson swimming train help]",
+            "touchHelp": "[lesson swimming train help]",
+            "complete": {
+              "type": "increased",
+              "target": "trainees",
+              "field": "levels.4",
+              "baseline": "lesson"
+            },
+            "activeOnly": true,
+            "highlights": [
+              "build:swimmingpool"
+            ],
+            "hint": 1,
+            "milestones": [
+              {
+                "condition": {
+                  "type": "increased",
+                  "target": "trainees",
+                  "field": "levels.4",
+                  "baseline": "lesson"
+                }
+              }
+            ],
+            "recovery": [
+              {
+                "hint": 3,
+                "when": {
+                  "type": "none",
+                  "target": "trainees"
+                }
+              }
+            ]
+          },
+          {
+            "id": "water-job",
+            "title": "[lesson swimming water-job title]",
+            "instruction": "[lesson swimming water-job instruction]",
+            "touchInstruction": "[lesson swimming water-job compact]",
+            "help": "[lesson swimming water-job help]",
+            "touchHelp": "[lesson swimming water-job help]",
+            "complete": {
+              "type": "exists",
+              "target": "schoolReady"
+            },
+            "activeOnly": true,
+            "highlights": [
+              "build:school",
+              "workers"
+            ],
+            "hint": 2,
+            "milestones": [
+              {
+                "condition": {
+                  "type": "exists",
+                  "target": "schoolReady"
+                }
+              }
+            ],
+            "destination": {
+              "target": "schoolArea",
+              "label": "[lesson swimming water-job marker]"
+            }
+          }
+        ],
+        "hints": [
+          "[lesson swimming build hint]",
+          "[lesson swimming train hint]",
+          "[lesson swimming water-job hint]",
+          "[intro hint retry]"
+        ],
+        "onStart": [
+          {
+            "type": "scenarioOrder",
+            "team": 0,
+            "order": {
+              "type": "alliance",
+              "allies": [
+                0
+              ],
+              "enemies": []
+            }
+          },
+          {
+            "type": "scenarioOrder",
+            "team": 1,
+            "order": {
+              "type": "alliance",
+              "allies": [
+                1
+              ],
+              "enemies": []
+            }
+          },
+          {
+            "type": "buildingChoice",
+            "name": "swarm",
+            "enabled": false
+          },
+          {
+            "type": "buildingChoice",
+            "name": "inn",
+            "enabled": true
+          },
+          {
+            "type": "buildingChoice",
+            "name": "hospital",
+            "enabled": false
+          },
+          {
+            "type": "buildingChoice",
+            "name": "racetrack",
+            "enabled": false
+          },
+          {
+            "type": "buildingChoice",
+            "name": "swimmingpool",
+            "enabled": true
+          },
+          {
+            "type": "buildingChoice",
+            "name": "barracks",
+            "enabled": false
+          },
+          {
+            "type": "buildingChoice",
+            "name": "school",
+            "enabled": true
+          },
+          {
+            "type": "buildingChoice",
+            "name": "defencetower",
+            "enabled": false
+          },
+          {
+            "type": "buildingChoice",
+            "name": "stonewall",
+            "enabled": false
+          },
+          {
+            "type": "buildingChoice",
+            "name": "market",
+            "enabled": false
+          },
+          {
+            "type": "flagChoice",
+            "name": "explorationflag",
+            "enabled": false
+          },
+          {
+            "type": "flagChoice",
+            "name": "warflag",
+            "enabled": false
+          },
+          {
+            "type": "flagChoice",
+            "name": "clearingflag",
+            "enabled": false
+          }
+        ],
+        "recovery": [
+          {
+            "hint": 3,
+            "when": {
+              "type": "any",
+              "conditions": [
+                {
+                  "type": "none",
+                  "target": "swarm"
+                },
+                {
+                  "type": "none",
+                  "target": "workers"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "entry": {
+        "definition": "scripts/tutorials/schools.json",
+        "script": "scripts/schools.js",
+        "setup": 5
+      },
+      "definition_sha256": "779ebdbc4d5238adc970ea94aef5c958852d6d6a10048be6ba529ec7eb06a3d6",
+      "script_sha256": "6cef011ca1cdb7b071c3b1e9d418690a8d88d1da5d019a888b0fcfe3d60679e6",
+      "definition": {
+        "schema": 1,
+        "id": "schools",
+        "version": 1,
+        "map": "campaigns/schools.map.gz",
+        "name": "Schools and worker skills",
+        "title": "[lesson schools title]",
+        "briefing": "[lesson schools briefing]",
+        "completionTitle": "[tutorial complete]",
+        "completionBody": "[lesson schools complete]",
+        "confirmTicks": 90,
+        "hintTicks": 1350,
+        "targets": {
+          "workers": {
+            "kind": "unit",
+            "team": 0,
+            "type": 0
+          },
+          "swarm": {
+            "kind": "building",
+            "team": 0,
+            "type": 0
+          },
+          "trainees": {
+            "kind": "unit",
+            "team": 0,
+            "type": 0,
+            "bind": "lesson"
+          },
+          "buildArea": {
+            "kind": "area",
+            "region": "home"
+          },
+          "school": {
+            "kind": "building",
+            "team": 0,
+            "type": 6,
+            "baseline": "lesson"
+          },
+          "schoolReady": {
+            "kind": "building",
+            "from": "school",
+            "filters": [
+              {
+                "field": "construction",
+                "op": "eq",
+                "value": 0
+              }
+            ]
+          }
+        },
+        "steps": [
+          {
+            "id": "build",
+            "title": "[lesson schools build title]",
+            "instruction": "[lesson schools build instruction]",
+            "touchInstruction": "[lesson schools build compact]",
+            "help": "[lesson schools build help]",
+            "touchHelp": "[lesson schools build help]",
+            "complete": {
+              "type": "exists",
+              "target": "schoolReady"
+            },
+            "activeOnly": true,
+            "highlights": [
+              "palette",
+              "build:school"
+            ],
+            "hint": 0,
+            "milestones": [
+              {
+                "condition": {
+                  "type": "exists",
+                  "target": "schoolReady"
+                }
+              }
+            ],
+            "destination": {
+              "target": "buildArea",
+              "label": "[lesson schools build marker]"
+            }
+          },
+          {
+            "id": "learn",
+            "title": "[lesson schools learn title]",
+            "instruction": "[lesson schools learn instruction]",
+            "touchInstruction": "[lesson schools learn compact]",
+            "help": "[lesson schools learn help]",
+            "touchHelp": "[lesson schools learn help]",
+            "complete": {
+              "type": "all",
+              "conditions": [
+                {
+                  "type": "increased",
+                  "target": "trainees",
+                  "field": "levels.6",
+                  "baseline": "lesson"
+                },
+                {
+                  "type": "increased",
+                  "target": "trainees",
+                  "field": "levels.7",
+                  "baseline": "lesson"
+                }
+              ]
+            },
+            "activeOnly": true,
+            "highlights": [
+              "build:school"
+            ],
+            "hint": 1,
+            "milestones": [
+              {
+                "condition": {
+                  "type": "all",
+                  "conditions": [
+                    {
+                      "type": "increased",
+                      "target": "trainees",
+                      "field": "levels.6",
+                      "baseline": "lesson"
+                    },
+                    {
+                      "type": "increased",
+                      "target": "trainees",
+                      "field": "levels.7",
+                      "baseline": "lesson"
+                    }
+                  ]
+                }
+              }
+            ],
+            "recovery": [
+              {
+                "hint": 2,
+                "when": {
+                  "type": "none",
+                  "target": "trainees"
+                }
+              }
+            ]
+          }
+        ],
+        "hints": [
+          "[lesson schools build hint]",
+          "[lesson schools learn hint]",
+          "[intro hint retry]"
+        ],
+        "onStart": [
+          {
+            "type": "scenarioOrder",
+            "team": 0,
+            "order": {
+              "type": "alliance",
+              "allies": [
+                0
+              ],
+              "enemies": []
+            }
+          },
+          {
+            "type": "scenarioOrder",
+            "team": 1,
+            "order": {
+              "type": "alliance",
+              "allies": [
+                1
+              ],
+              "enemies": []
+            }
+          },
+          {
+            "type": "buildingChoice",
+            "name": "swarm",
+            "enabled": false
+          },
+          {
+            "type": "buildingChoice",
+            "name": "inn",
+            "enabled": true
+          },
+          {
+            "type": "buildingChoice",
+            "name": "hospital",
+            "enabled": false
+          },
+          {
+            "type": "buildingChoice",
+            "name": "racetrack",
+            "enabled": false
+          },
+          {
+            "type": "buildingChoice",
+            "name": "swimmingpool",
+            "enabled": false
+          },
+          {
+            "type": "buildingChoice",
+            "name": "barracks",
+            "enabled": false
+          },
+          {
+            "type": "buildingChoice",
+            "name": "school",
+            "enabled": true
+          },
+          {
+            "type": "buildingChoice",
+            "name": "defencetower",
+            "enabled": false
+          },
+          {
+            "type": "buildingChoice",
+            "name": "stonewall",
+            "enabled": false
+          },
+          {
+            "type": "buildingChoice",
+            "name": "market",
+            "enabled": false
+          },
+          {
+            "type": "flagChoice",
+            "name": "explorationflag",
+            "enabled": false
+          },
+          {
+            "type": "flagChoice",
+            "name": "warflag",
+            "enabled": false
+          },
+          {
+            "type": "flagChoice",
+            "name": "clearingflag",
+            "enabled": false
+          }
+        ],
+        "recovery": [
+          {
+            "hint": 2,
+            "when": {
+              "type": "any",
+              "conditions": [
+                {
+                  "type": "none",
+                  "target": "swarm"
+                },
+                {
+                  "type": "none",
+                  "target": "workers"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "entry": {
+        "definition": "scripts/tutorials/upgrades.json",
+        "script": "scripts/upgrades.js",
+        "setup": 6
+      },
+      "definition_sha256": "1ffb1085e770b48c9691008c3a8c308a6fc18876b6ee00d61ff826f089de79f1",
+      "script_sha256": "b998903ad942387e973b94cf72a2401b313e8672d12718f5bb3b260a1ae5356f",
+      "definition": {
+        "schema": 1,
+        "id": "upgrades",
+        "version": 1,
+        "map": "campaigns/upgrades.map.gz",
+        "name": "Upgrading buildings",
+        "title": "[lesson upgrades title]",
+        "briefing": "[lesson upgrades briefing]",
+        "completionTitle": "[tutorial complete]",
+        "completionBody": "[lesson upgrades complete]",
+        "confirmTicks": 90,
+        "hintTicks": 1350,
+        "targets": {
+          "workers": {
+            "kind": "unit",
+            "team": 0,
+            "type": 0
+          },
+          "swarm": {
+            "kind": "building",
+            "team": 0,
+            "type": 0
+          },
+          "trainees": {
+            "kind": "unit",
+            "team": 0,
+            "type": 0,
+            "bind": "lesson"
+          },
+          "track": {
+            "kind": "building",
+            "team": 0,
+            "type": 3,
+            "bind": "lesson"
+          },
+          "upgraded": {
+            "kind": "building",
+            "team": 0,
+            "type": 3,
+            "filters": [
+              {
+                "field": "level",
+                "op": "gte",
+                "value": 1
+              },
+              {
+                "field": "construction",
+                "op": "eq",
+                "value": 0
+              }
+            ]
+          }
+        },
+        "steps": [
+          {
+            "id": "upgrade",
+            "title": "[lesson upgrades upgrade title]",
+            "instruction": "[lesson upgrades upgrade instruction]",
+            "touchInstruction": "[lesson upgrades upgrade compact]",
+            "help": "[lesson upgrades upgrade help]",
+            "touchHelp": "[lesson upgrades upgrade help]",
+            "complete": {
+              "type": "exists",
+              "target": "upgraded"
+            },
+            "activeOnly": true,
+            "highlights": [
+              "upgrade",
+              "workers"
+            ],
+            "hint": 0,
+            "milestones": [
+              {
+                "condition": {
+                  "type": "exists",
+                  "target": "upgraded"
+                }
+              }
+            ],
+            "destination": {
+              "target": "track",
+              "label": "[lesson upgrades upgrade marker]"
+            }
+          },
+          {
+            "id": "train",
+            "title": "[lesson upgrades train title]",
+            "instruction": "[lesson upgrades train instruction]",
+            "touchInstruction": "[lesson upgrades train compact]",
+            "help": "[lesson upgrades train help]",
+            "touchHelp": "[lesson upgrades train help]",
+            "complete": {
+              "type": "all",
+              "conditions": [
+                {
+                  "type": "exists",
+                  "target": "upgraded"
+                },
+                {
+                  "type": "increased",
+                  "target": "trainees",
+                  "field": "levels.3",
+                  "baseline": "lesson"
+                }
+              ]
+            },
+            "activeOnly": true,
+            "highlights": [
+              "build:racetrack"
+            ],
+            "hint": 1,
+            "milestones": [
+              {
+                "condition": {
+                  "type": "all",
+                  "conditions": [
+                    {
+                      "type": "exists",
+                      "target": "upgraded"
+                    },
+                    {
+                      "type": "increased",
+                      "target": "trainees",
+                      "field": "levels.3",
+                      "baseline": "lesson"
+                    }
+                  ]
+                }
+              }
+            ],
+            "recovery": [
+              {
+                "hint": 2,
+                "when": {
+                  "type": "none",
+                  "target": "trainees"
+                }
+              }
+            ]
+          }
+        ],
+        "hints": [
+          "[lesson upgrades upgrade hint]",
+          "[lesson upgrades train hint]",
+          "[intro hint retry]"
+        ],
+        "onStart": [
+          {
+            "type": "scenarioOrder",
+            "team": 0,
+            "order": {
+              "type": "alliance",
+              "allies": [
+                0
+              ],
+              "enemies": []
+            }
+          },
+          {
+            "type": "scenarioOrder",
+            "team": 1,
+            "order": {
+              "type": "alliance",
+              "allies": [
+                1
+              ],
+              "enemies": []
+            }
+          },
+          {
+            "type": "buildingChoice",
+            "name": "swarm",
+            "enabled": false
+          },
+          {
+            "type": "buildingChoice",
+            "name": "inn",
+            "enabled": true
+          },
+          {
+            "type": "buildingChoice",
+            "name": "hospital",
+            "enabled": false
+          },
+          {
+            "type": "buildingChoice",
+            "name": "racetrack",
+            "enabled": true
+          },
+          {
+            "type": "buildingChoice",
+            "name": "swimmingpool",
+            "enabled": false
+          },
+          {
+            "type": "buildingChoice",
+            "name": "barracks",
+            "enabled": false
+          },
+          {
+            "type": "buildingChoice",
+            "name": "school",
+            "enabled": false
+          },
+          {
+            "type": "buildingChoice",
+            "name": "defencetower",
+            "enabled": false
+          },
+          {
+            "type": "buildingChoice",
+            "name": "stonewall",
+            "enabled": false
+          },
+          {
+            "type": "buildingChoice",
+            "name": "market",
+            "enabled": false
+          },
+          {
+            "type": "flagChoice",
+            "name": "explorationflag",
+            "enabled": false
+          },
+          {
+            "type": "flagChoice",
+            "name": "warflag",
+            "enabled": false
+          },
+          {
+            "type": "flagChoice",
+            "name": "clearingflag",
+            "enabled": false
+          }
+        ],
+        "recovery": [
+          {
+            "hint": 2,
+            "when": {
+              "type": "any",
+              "conditions": [
+                {
+                  "type": "none",
+                  "target": "swarm"
+                },
+                {
+                  "type": "none",
+                  "target": "workers"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "entry": {
+        "definition": "scripts/tutorials/warrior-training.json",
+        "script": "scripts/warrior-training.js",
+        "setup": 7
+      },
+      "definition_sha256": "169434e29911c9e4bb6c4eff7af550c0f50c67382ba87ea8484a8bab4e848f6f",
+      "script_sha256": "ccef8026d94a905b82ee1cacae552fc225d79363f47080d10207c4c7e0a75123",
+      "definition": {
+        "schema": 1,
+        "id": "warrior-training",
+        "version": 1,
+        "map": "campaigns/warrior-training.map.gz",
+        "name": "Producing and training warriors",
+        "title": "[lesson warrior-training title]",
+        "briefing": "[lesson warrior-training briefing]",
+        "completionTitle": "[tutorial complete]",
+        "completionBody": "[lesson warrior-training complete]",
+        "confirmTicks": 90,
+        "hintTicks": 1350,
+        "targets": {
+          "workers": {
+            "kind": "unit",
+            "team": 0,
+            "type": 0
+          },
+          "swarm": {
+            "kind": "building",
+            "team": 0,
+            "type": 0
+          },
+          "buildArea": {
+            "kind": "area",
+            "region": "home"
+          },
+          "warriors": {
+            "kind": "unit",
+            "team": 0,
+            "type": 2,
+            "baseline": "lesson"
+          },
+          "militaryTrainees": {
+            "kind": "unit",
+            "from": "warriors",
+            "filters": [
+              {
+                "field": "levels.9",
+                "op": "gte",
+                "value": 1
+              }
+            ]
+          },
+          "camp": {
+            "kind": "building",
+            "team": 0,
+            "type": 5,
+            "baseline": "lesson"
+          },
+          "campReady": {
+            "kind": "building",
+            "from": "camp",
+            "filters": [
+              {
+                "field": "construction",
+                "op": "eq",
+                "value": 0
+              }
+            ]
+          }
+        },
+        "steps": [
+          {
+            "id": "produce",
+            "title": "[lesson warrior-training produce title]",
+            "instruction": "[lesson warrior-training produce instruction]",
+            "touchInstruction": "[lesson warrior-training produce compact]",
+            "help": "[lesson warrior-training produce help]",
+            "touchHelp": "[lesson warrior-training produce help]",
+            "complete": {
+              "type": "count",
+              "target": "warriors",
+              "minimum": 2
+            },
+            "activeOnly": true,
+            "highlights": [
+              "production",
+              "workers"
+            ],
+            "hint": 0,
+            "milestones": [
+              {
+                "condition": {
+                  "type": "count",
+                  "target": "warriors",
+                  "minimum": 2
+                }
+              }
+            ],
+            "destination": {
+              "target": "swarm",
+              "label": "[lesson warrior-training produce marker]"
+            }
+          },
+          {
+            "id": "build",
+            "title": "[lesson warrior-training build title]",
+            "instruction": "[lesson warrior-training build instruction]",
+            "touchInstruction": "[lesson warrior-training build compact]",
+            "help": "[lesson warrior-training build help]",
+            "touchHelp": "[lesson warrior-training build help]",
+            "complete": {
+              "type": "exists",
+              "target": "campReady"
+            },
+            "activeOnly": true,
+            "highlights": [
+              "palette",
+              "build:barracks"
+            ],
+            "hint": 1,
+            "milestones": [
+              {
+                "condition": {
+                  "type": "exists",
+                  "target": "campReady"
+                }
+              }
+            ],
+            "destination": {
+              "target": "buildArea",
+              "label": "[lesson warrior-training build marker]"
+            }
+          },
+          {
+            "id": "train",
+            "title": "[lesson warrior-training train title]",
+            "instruction": "[lesson warrior-training train instruction]",
+            "touchInstruction": "[lesson warrior-training train compact]",
+            "help": "[lesson warrior-training train help]",
+            "touchHelp": "[lesson warrior-training train help]",
+            "complete": {
+              "type": "exists",
+              "target": "militaryTrainees"
+            },
+            "activeOnly": true,
+            "highlights": [
+              "build:barracks"
+            ],
+            "hint": 2,
+            "milestones": [
+              {
+                "condition": {
+                  "type": "exists",
+                  "target": "militaryTrainees"
+                }
+              }
+            ]
+          }
+        ],
+        "hints": [
+          "[lesson warrior-training produce hint]",
+          "[lesson warrior-training build hint]",
+          "[lesson warrior-training train hint]",
+          "[intro hint retry]"
+        ],
+        "onStart": [
+          {
+            "type": "scenarioOrder",
+            "team": 0,
+            "order": {
+              "type": "alliance",
+              "allies": [
+                0
+              ],
+              "enemies": []
+            }
+          },
+          {
+            "type": "scenarioOrder",
+            "team": 1,
+            "order": {
+              "type": "alliance",
+              "allies": [
+                1
+              ],
+              "enemies": []
+            }
+          },
+          {
+            "type": "buildingChoice",
+            "name": "swarm",
+            "enabled": false
+          },
+          {
+            "type": "buildingChoice",
+            "name": "inn",
+            "enabled": true
+          },
+          {
+            "type": "buildingChoice",
+            "name": "hospital",
+            "enabled": false
+          },
+          {
+            "type": "buildingChoice",
+            "name": "racetrack",
+            "enabled": false
+          },
+          {
+            "type": "buildingChoice",
+            "name": "swimmingpool",
+            "enabled": false
+          },
+          {
+            "type": "buildingChoice",
+            "name": "barracks",
+            "enabled": true
+          },
+          {
+            "type": "buildingChoice",
+            "name": "school",
+            "enabled": false
+          },
+          {
+            "type": "buildingChoice",
+            "name": "defencetower",
+            "enabled": false
+          },
+          {
+            "type": "buildingChoice",
+            "name": "stonewall",
+            "enabled": false
+          },
+          {
+            "type": "buildingChoice",
+            "name": "market",
+            "enabled": false
+          },
+          {
+            "type": "flagChoice",
+            "name": "explorationflag",
+            "enabled": false
+          },
+          {
+            "type": "flagChoice",
+            "name": "warflag",
+            "enabled": false
+          },
+          {
+            "type": "flagChoice",
+            "name": "clearingflag",
+            "enabled": false
+          }
+        ],
+        "recovery": [
+          {
+            "hint": 3,
+            "when": {
+              "type": "any",
+              "conditions": [
+                {
+                  "type": "none",
+                  "target": "swarm"
+                },
+                {
+                  "type": "none",
+                  "target": "workers"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "entry": {
+        "definition": "scripts/tutorials/fortifications.json",
+        "script": "scripts/fortifications.js",
+        "setup": 8
+      },
+      "definition_sha256": "ec5fd7a07e2e2e8352b62507fa79149776191994f595ebfacf1b85565c859276",
+      "script_sha256": "49ecf1573d785cb38b0bf9637a715657215020c20d76d0d4d95e992a529f6216",
+      "definition": {
+        "schema": 1,
+        "id": "fortifications",
+        "version": 1,
+        "map": "campaigns/fortifications.map.gz",
+        "name": "Towers and protective walls",
+        "title": "[lesson fortifications title]",
+        "briefing": "[lesson fortifications briefing]",
+        "completionTitle": "[tutorial complete]",
+        "completionBody": "[lesson fortifications complete]",
+        "confirmTicks": 90,
+        "hintTicks": 1350,
+        "targets": {
+          "workers": {
+            "kind": "unit",
+            "team": 0,
+            "type": 0
+          },
+          "swarm": {
+            "kind": "building",
+            "team": 0,
+            "type": 0
+          },
+          "enemyWarriors": {
+            "kind": "unit",
+            "team": 1,
+            "type": 2
+          },
+          "defense": {
+            "kind": "area",
+            "region": "defense"
+          },
+          "towerArea": {
+            "kind": "area",
+            "region": "towerSite"
+          },
+          "tower": {
+            "kind": "building",
+            "team": 0,
+            "type": 7,
+            "baseline": "lesson"
+          },
+          "towerReady": {
+            "kind": "building",
+            "from": "tower",
+            "filters": [
+              {
+                "field": "construction",
+                "op": "eq",
+                "value": 0
+              }
+            ],
+            "within": "defense"
+          },
+          "walls": {
+            "kind": "building",
+            "team": 0,
+            "type": 11,
+            "baseline": "lesson"
+          },
+          "wallsReady": {
+            "kind": "building",
+            "from": "walls",
+            "filters": [
+              {
+                "field": "construction",
+                "op": "eq",
+                "value": 0
+              }
+            ]
+          },
+          "wallsInDefense": {
+            "kind": "building",
+            "from": "wallsReady",
+            "within": "defense"
+          },
+          "accessLane": {
+            "kind": "area",
+            "region": "defense",
+            "offsetX": 2,
+            "width": 1
+          },
+          "blockedLane": {
+            "kind": "building",
+            "team": 0,
+            "type": 11,
+            "within": "accessLane"
+          },
+          "loadedTower": {
+            "kind": "building",
+            "from": "towerReady",
+            "filters": [
+              {
+                "field": "resources.3",
+                "op": "gte",
+                "value": 2
+              }
+            ]
+          },
+          "practiceFlag": {
+            "kind": "building",
+            "team": 1,
+            "type": 9,
+            "bind": "lesson"
+          },
+          "healthyRaiders": {
+            "kind": "unit",
+            "from": "enemyWarriors",
+            "filters": [
+              {
+                "field": "hp",
+                "op": "gte",
+                "value": {
+                  "field": "maxHp",
+                  "scale": 0.95
+                }
+              }
+            ]
+          },
+          "raidersAtDefense": {
+            "kind": "unit",
+            "from": "enemyWarriors",
+            "within": "defense"
+          }
+        },
+        "steps": [
+          {
+            "id": "tower",
+            "title": "[lesson fortifications tower title]",
+            "instruction": "[lesson fortifications tower instruction]",
+            "touchInstruction": "[lesson fortifications tower compact]",
+            "help": "[lesson fortifications tower help]",
+            "touchHelp": "[lesson fortifications tower help]",
+            "complete": {
+              "type": "exists",
+              "target": "towerReady"
+            },
+            "activeOnly": true,
+            "highlights": [
+              "palette",
+              "build:defencetower"
+            ],
+            "hint": 0,
+            "milestones": [
+              {
+                "condition": {
+                  "type": "exists",
+                  "target": "towerReady"
+                }
+              }
+            ],
+            "destination": {
+              "target": "towerArea",
+              "label": "[lesson fortifications tower marker]"
+            }
+          },
+          {
+            "id": "walls",
+            "title": "[lesson fortifications walls title]",
+            "instruction": "[lesson fortifications walls instruction]",
+            "touchInstruction": "[lesson fortifications walls compact]",
+            "help": "[lesson fortifications walls help]",
+            "touchHelp": "[lesson fortifications walls help]",
+            "complete": {
+              "type": "all",
+              "conditions": [
+                {
+                  "type": "count",
+                  "target": "wallsInDefense",
+                  "minimum": 2
+                },
+                {
+                  "type": "none",
+                  "target": "blockedLane"
+                }
+              ]
+            },
+            "activeOnly": true,
+            "highlights": [
+              "build:stonewall"
+            ],
+            "hint": 1,
+            "milestones": [
+              {
+                "condition": {
+                  "type": "all",
+                  "conditions": [
+                    {
+                      "type": "count",
+                      "target": "wallsInDefense",
+                      "minimum": 2
+                    },
+                    {
+                      "type": "none",
+                      "target": "blockedLane"
+                    }
+                  ]
+                }
+              }
+            ],
+            "destination": {
+              "target": "accessLane",
+              "label": "[lesson fortifications walls marker]"
+            }
+          },
+          {
+            "id": "supply",
+            "title": "[lesson fortifications supply title]",
+            "instruction": "[lesson fortifications supply instruction]",
+            "touchInstruction": "[lesson fortifications supply compact]",
+            "help": "[lesson fortifications supply help]",
+            "touchHelp": "[lesson fortifications supply help]",
+            "complete": {
+              "type": "exists",
+              "target": "loadedTower"
+            },
+            "activeOnly": true,
+            "highlights": [
+              "workers"
+            ],
+            "hint": 2,
+            "milestones": [
+              {
+                "condition": {
+                  "type": "exists",
+                  "target": "loadedTower"
+                }
+              }
+            ],
+            "destination": {
+              "target": "towerReady",
+              "label": "[lesson fortifications supply marker]"
+            }
+          },
+          {
+            "id": "hold",
+            "title": "[lesson fortifications hold title]",
+            "instruction": "[lesson fortifications hold instruction]",
+            "touchInstruction": "[lesson fortifications hold compact]",
+            "help": "[lesson fortifications hold help]",
+            "touchHelp": "[lesson fortifications hold help]",
+            "complete": {
+              "type": "all",
+              "conditions": [
+                {
+                  "type": "none",
+                  "target": "healthyRaiders",
+                  "latch": true
+                },
+                {
+                  "type": "none",
+                  "target": "raidersAtDefense"
+                }
+              ]
+            },
+            "activeOnly": true,
+            "highlights": [
+              "workers"
+            ],
+            "hint": 3,
+            "milestones": [
+              {
+                "condition": {
+                  "type": "all",
+                  "conditions": [
+                    {
+                      "type": "none",
+                      "target": "healthyRaiders",
+                      "latch": true
+                    },
+                    {
+                      "type": "none",
+                      "target": "raidersAtDefense"
+                    }
+                  ]
+                }
+              }
+            ],
+            "destination": {
+              "target": "defense",
+              "label": "[lesson fortifications hold marker]"
+            },
+            "onEnter": [
+              {
+                "type": "scenarioOrder",
+                "team": 0,
+                "order": {
+                  "type": "alliance",
+                  "allies": [
+                    0
+                  ],
+                  "enemies": [
+                    1
+                  ]
+                }
+              },
+              {
+                "type": "scenarioOrder",
+                "team": 1,
+                "order": {
+                  "type": "alliance",
+                  "allies": [
+                    1
+                  ],
+                  "enemies": [
+                    0
+                  ]
+                }
+              },
+              {
+                "type": "scenarioOrder",
+                "team": 1,
+                "order": {
+                  "type": "moveFlag",
+                  "buildingTarget": "practiceFlag",
+                  "destination": "defense"
+                }
+              }
+            ]
+          }
+        ],
+        "hints": [
+          "[lesson fortifications tower hint]",
+          "[lesson fortifications walls hint]",
+          "[lesson fortifications supply hint]",
+          "[lesson fortifications hold hint]",
+          "[intro hint retry]"
+        ],
+        "onStart": [
+          {
+            "type": "scenarioOrder",
+            "team": 0,
+            "order": {
+              "type": "alliance",
+              "allies": [
+                0
+              ],
+              "enemies": []
+            }
+          },
+          {
+            "type": "scenarioOrder",
+            "team": 1,
+            "order": {
+              "type": "alliance",
+              "allies": [
+                1
+              ],
+              "enemies": []
+            }
+          },
+          {
+            "type": "buildingChoice",
+            "name": "swarm",
+            "enabled": false
+          },
+          {
+            "type": "buildingChoice",
+            "name": "inn",
+            "enabled": true
+          },
+          {
+            "type": "buildingChoice",
+            "name": "hospital",
+            "enabled": false
+          },
+          {
+            "type": "buildingChoice",
+            "name": "racetrack",
+            "enabled": false
+          },
+          {
+            "type": "buildingChoice",
+            "name": "swimmingpool",
+            "enabled": false
+          },
+          {
+            "type": "buildingChoice",
+            "name": "barracks",
+            "enabled": false
+          },
+          {
+            "type": "buildingChoice",
+            "name": "school",
+            "enabled": false
+          },
+          {
+            "type": "buildingChoice",
+            "name": "defencetower",
+            "enabled": true
+          },
+          {
+            "type": "buildingChoice",
+            "name": "stonewall",
+            "enabled": true
+          },
+          {
+            "type": "buildingChoice",
+            "name": "market",
+            "enabled": false
+          },
+          {
+            "type": "flagChoice",
+            "name": "explorationflag",
+            "enabled": false
+          },
+          {
+            "type": "flagChoice",
+            "name": "warflag",
+            "enabled": false
+          },
+          {
+            "type": "flagChoice",
+            "name": "clearingflag",
+            "enabled": false
+          }
+        ],
+        "recovery": [
+          {
+            "hint": 4,
+            "when": {
+              "type": "any",
+              "conditions": [
+                {
+                  "type": "none",
+                  "target": "swarm"
+                },
+                {
+                  "type": "none",
+                  "target": "workers"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "entry": {
+        "definition": "scripts/tutorials/defensive-tactics.json",
+        "script": "scripts/defensive-tactics.js",
+        "setup": 9
+      },
+      "definition_sha256": "be3a7ead9293e00fc15d49c24d7e880ffd6985c717a75a8d3f091c4806bae9a2",
+      "script_sha256": "3a87add25c63443d44b5baf70a94d86c8cf94b63b64605e76253942cc0997909",
+      "definition": {
+        "schema": 1,
+        "id": "defensive-tactics",
+        "version": 1,
+        "map": "campaigns/defensive-tactics.map.gz",
+        "name": "Guard zones and flag tactics",
+        "title": "[lesson defensive-tactics title]",
+        "briefing": "[lesson defensive-tactics briefing]",
+        "completionTitle": "[tutorial complete]",
+        "completionBody": "[lesson defensive-tactics complete]",
+        "confirmTicks": 90,
+        "hintTicks": 1350,
+        "targets": {
+          "workers": {
+            "kind": "unit",
+            "team": 0,
+            "type": 0
+          },
+          "swarm": {
+            "kind": "building",
+            "team": 0,
+            "type": 0
+          },
+          "enemyWarriors": {
+            "kind": "unit",
+            "team": 1,
+            "type": 2
+          },
+          "defense": {
+            "kind": "area",
+            "region": "defense"
+          },
+          "enemyBase": {
+            "kind": "area",
+            "region": "enemyOutpost"
+          },
+          "scoutFlags": {
+            "kind": "building",
+            "team": 0,
+            "type": 8,
+            "filters": [
+              {
+                "field": "workers",
+                "op": "gte",
+                "value": 1
+              }
+            ]
+          },
+          "scouts": {
+            "kind": "unit",
+            "team": 0,
+            "type": 1,
+            "within": "enemyBase",
+            "assignedTo": "scoutFlags"
+          },
+          "guards": {
+            "kind": "unit",
+            "team": 0,
+            "type": 2,
+            "within": "defense"
+          },
+          "enemySwarm": {
+            "kind": "building",
+            "team": 1,
+            "type": 0
+          },
+          "warFlags": {
+            "kind": "building",
+            "team": 0,
+            "type": 9,
+            "within": "enemyBase",
+            "filters": [
+              {
+                "field": "workers",
+                "op": "gte",
+                "value": 3
+              },
+              {
+                "field": "range",
+                "op": "lte",
+                "value": 4
+              }
+            ]
+          },
+          "attackers": {
+            "kind": "unit",
+            "team": 0,
+            "type": 2,
+            "assignedTo": "warFlags"
+          },
+          "practiceFlag": {
+            "kind": "building",
+            "team": 1,
+            "type": 9,
+            "bind": "lesson"
+          },
+          "healthyRaiders": {
+            "kind": "unit",
+            "from": "enemyWarriors",
+            "filters": [
+              {
+                "field": "hp",
+                "op": "gte",
+                "value": {
+                  "field": "maxHp",
+                  "scale": 0.95
+                }
+              }
+            ]
+          },
+          "raidersAtDefense": {
+            "kind": "unit",
+            "from": "enemyWarriors",
+            "within": "defense"
+          }
+        },
+        "steps": [
+          {
+            "id": "scout",
+            "title": "[lesson defensive-tactics scout title]",
+            "instruction": "[lesson defensive-tactics scout instruction]",
+            "touchInstruction": "[lesson defensive-tactics scout compact]",
+            "help": "[lesson defensive-tactics scout help]",
+            "touchHelp": "[lesson defensive-tactics scout help]",
+            "complete": {
+              "type": "exists",
+              "target": "scouts"
+            },
+            "activeOnly": true,
+            "highlights": [
+              "flag:exploration"
+            ],
+            "hint": 0,
+            "milestones": [
+              {
+                "condition": {
+                  "type": "exists",
+                  "target": "scouts"
+                }
+              }
+            ],
+            "destination": {
+              "target": "enemyBase",
+              "label": "[lesson defensive-tactics scout marker]"
+            }
+          },
+          {
+            "id": "guard",
+            "title": "[lesson defensive-tactics guard title]",
+            "instruction": "[lesson defensive-tactics guard instruction]",
+            "touchInstruction": "[lesson defensive-tactics guard compact]",
+            "help": "[lesson defensive-tactics guard help]",
+            "touchHelp": "[lesson defensive-tactics guard help]",
+            "complete": {
+              "type": "all",
+              "conditions": [
+                {
+                  "type": "zoneCoverage",
+                  "area": "defense",
+                  "zone": "guard",
+                  "team": 0,
+                  "minimum": 4
+                },
+                {
+                  "type": "count",
+                  "target": "guards",
+                  "minimum": 2
+                }
+              ]
+            },
+            "activeOnly": true,
+            "highlights": [
+              "zone:guard",
+              "brush"
+            ],
+            "hint": 1,
+            "milestones": [
+              {
+                "condition": {
+                  "type": "all",
+                  "conditions": [
+                    {
+                      "type": "zoneCoverage",
+                      "area": "defense",
+                      "zone": "guard",
+                      "team": 0,
+                      "minimum": 4
+                    },
+                    {
+                      "type": "count",
+                      "target": "guards",
+                      "minimum": 2
+                    }
+                  ]
+                }
+              }
+            ],
+            "destination": {
+              "target": "defense",
+              "label": "[lesson defensive-tactics guard marker]"
+            }
+          },
+          {
+            "id": "repel",
+            "title": "[lesson defensive-tactics repel title]",
+            "instruction": "[lesson defensive-tactics repel instruction]",
+            "touchInstruction": "[lesson defensive-tactics repel compact]",
+            "help": "[lesson defensive-tactics repel help]",
+            "touchHelp": "[lesson defensive-tactics repel help]",
+            "complete": {
+              "type": "all",
+              "conditions": [
+                {
+                  "type": "none",
+                  "target": "healthyRaiders",
+                  "latch": true
+                },
+                {
+                  "type": "none",
+                  "target": "raidersAtDefense"
+                }
+              ]
+            },
+            "activeOnly": true,
+            "highlights": [
+              "zone:guard"
+            ],
+            "hint": 2,
+            "milestones": [
+              {
+                "condition": {
+                  "type": "all",
+                  "conditions": [
+                    {
+                      "type": "none",
+                      "target": "healthyRaiders",
+                      "latch": true
+                    },
+                    {
+                      "type": "none",
+                      "target": "raidersAtDefense"
+                    }
+                  ]
+                }
+              }
+            ],
+            "destination": {
+              "target": "defense",
+              "label": "[lesson defensive-tactics repel marker]"
+            },
+            "onEnter": [
+              {
+                "type": "scenarioOrder",
+                "team": 0,
+                "order": {
+                  "type": "alliance",
+                  "allies": [
+                    0
+                  ],
+                  "enemies": [
+                    1
+                  ]
+                }
+              },
+              {
+                "type": "scenarioOrder",
+                "team": 1,
+                "order": {
+                  "type": "alliance",
+                  "allies": [
+                    1
+                  ],
+                  "enemies": [
+                    0
+                  ]
+                }
+              },
+              {
+                "type": "scenarioOrder",
+                "team": 1,
+                "order": {
+                  "type": "moveFlag",
+                  "buildingTarget": "practiceFlag",
+                  "destination": "defense"
+                }
+              }
+            ]
+          },
+          {
+            "id": "counterattack",
+            "title": "[lesson defensive-tactics counterattack title]",
+            "instruction": "[lesson defensive-tactics counterattack instruction]",
+            "touchInstruction": "[lesson defensive-tactics counterattack compact]",
+            "help": "[lesson defensive-tactics counterattack help]",
+            "touchHelp": "[lesson defensive-tactics counterattack help]",
+            "complete": {
+              "type": "all",
+              "conditions": [
+                {
+                  "type": "exists",
+                  "target": "attackers",
+                  "latch": true
+                },
+                {
+                  "type": "none",
+                  "target": "enemySwarm"
+                }
+              ]
+            },
+            "activeOnly": true,
+            "highlights": [
+              "flag:war",
+              "workers"
+            ],
+            "hint": 3,
+            "milestones": [
+              {
+                "condition": {
+                  "type": "all",
+                  "conditions": [
+                    {
+                      "type": "exists",
+                      "target": "attackers",
+                      "latch": true
+                    },
+                    {
+                      "type": "none",
+                      "target": "enemySwarm"
+                    }
+                  ]
+                }
+              }
+            ],
+            "destination": {
+              "target": "enemyBase",
+              "label": "[lesson defensive-tactics counterattack marker]"
+            },
+            "onEnter": [
+              {
+                "type": "flagChoice",
+                "name": "warflag",
+                "enabled": true
+              }
+            ]
+          }
+        ],
+        "hints": [
+          "[lesson defensive-tactics scout hint]",
+          "[lesson defensive-tactics guard hint]",
+          "[lesson defensive-tactics repel hint]",
+          "[lesson defensive-tactics counterattack hint]",
+          "[intro hint retry]"
+        ],
+        "onStart": [
+          {
+            "type": "scenarioOrder",
+            "team": 0,
+            "order": {
+              "type": "alliance",
+              "allies": [
+                0
+              ],
+              "enemies": []
+            }
+          },
+          {
+            "type": "scenarioOrder",
+            "team": 1,
+            "order": {
+              "type": "alliance",
+              "allies": [
+                1
+              ],
+              "enemies": []
+            }
+          },
+          {
+            "type": "buildingChoice",
+            "name": "swarm",
+            "enabled": false
+          },
+          {
+            "type": "buildingChoice",
+            "name": "inn",
+            "enabled": true
+          },
+          {
+            "type": "buildingChoice",
+            "name": "hospital",
+            "enabled": false
+          },
+          {
+            "type": "buildingChoice",
+            "name": "racetrack",
+            "enabled": false
+          },
+          {
+            "type": "buildingChoice",
+            "name": "swimmingpool",
+            "enabled": false
+          },
+          {
+            "type": "buildingChoice",
+            "name": "barracks",
+            "enabled": false
+          },
+          {
+            "type": "buildingChoice",
+            "name": "school",
+            "enabled": false
+          },
+          {
+            "type": "buildingChoice",
+            "name": "defencetower",
+            "enabled": false
+          },
+          {
+            "type": "buildingChoice",
+            "name": "stonewall",
+            "enabled": false
+          },
+          {
+            "type": "buildingChoice",
+            "name": "market",
+            "enabled": false
+          },
+          {
+            "type": "flagChoice",
+            "name": "explorationflag",
+            "enabled": true
+          },
+          {
+            "type": "flagChoice",
+            "name": "warflag",
+            "enabled": false
+          },
+          {
+            "type": "flagChoice",
+            "name": "clearingflag",
+            "enabled": false
+          }
+        ],
+        "recovery": [
+          {
+            "hint": 4,
+            "when": {
+              "type": "any",
+              "conditions": [
+                {
+                  "type": "none",
+                  "target": "swarm"
+                },
+                {
+                  "type": "none",
+                  "target": "workers"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,1293 @@
+{
+  "editor": "/root/swahili_translation",
+  "author": "/root/urdu_translation",
+  "independent_reviewer": "/root/pilot_context",
+  "batch_id": "native-general-013",
+  "source_contract_sha256": "aacd8a342e9e734ba47f902a161ac1a45badff5842a617bcd68bf8e2275d6013",
+  "original_target_subset_sha256": "e55a34b0cbc4dff97c5cfa86a39c2b7d11c7da8c131f6e5d67d13a190e476fe5",
+  "final_target_subset_sha256": "95f1768dac6908607de8c93e7b49b8294d0e805a1f640d01cebae03ebe809d97",
+  "final_catalog_sha256": "ec78fb33247244bf783461e0410ef11fe48e45644c3c6500419d9060e967d458",
+  "entries": [
+    {
+      "key": "[stat band trapped]",
+      "source": "Trapped",
+      "before": "پھنسے ہوئے",
+      "after": "پھنسے ہوئے",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat band other]",
+      "source": "Other",
+      "before": "دیگر",
+      "after": "دیگر",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat band starving]",
+      "source": "Nearly empty",
+      "before": "تقریباً خالی",
+      "after": "تقریباً خالی",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat band hungry]",
+      "source": "Low",
+      "before": "کم",
+      "after": "کم",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat band peckish]",
+      "source": "Half full",
+      "before": "آدھا بھرا",
+      "after": "آدھا بھرا",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat band fed]",
+      "source": "Well fed",
+      "before": "پیٹ بھرے",
+      "after": "پیٹ بھرے",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat band critical]",
+      "source": "Critical",
+      "before": "نازک حالت",
+      "after": "نازک حالت",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat band wounded]",
+      "source": "Wounded",
+      "before": "زخمی",
+      "after": "زخمی",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat band hurt]",
+      "source": "Hurt",
+      "before": "چوٹ زدہ",
+      "after": "چوٹ زدہ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat band healthy]",
+      "source": "Healthy",
+      "before": "صحت مند",
+      "after": "صحت مند",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat band weakening]",
+      "source": "Weakening",
+      "before": "کمزور ہوتے ہوئے",
+      "after": "کمزور ہوتے ہوئے",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat band looking]",
+      "source": "Looking for an inn",
+      "before": "سرائے کی تلاش میں",
+      "after": "سرائے کی تلاش میں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat band eating]",
+      "source": "Eating",
+      "before": "کھاتے ہوئے",
+      "after": "کھاتے ہوئے",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat band healing]",
+      "source": "Healing",
+      "before": "علاج پاتے ہوئے",
+      "after": "علاج پاتے ہوئے",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat band meals]",
+      "source": "Meals",
+      "before": "کھانے",
+      "after": "کھانے",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat band new units]",
+      "source": "New units",
+      "before": "نئے یونٹ",
+      "after": "نئے یونٹ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat band ammunition]",
+      "source": "Ammunition",
+      "before": "گولہ بارود",
+      "after": "گولہ بارود",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat band construction]",
+      "source": "New buildings",
+      "before": "نئی عمارتیں",
+      "after": "نئی عمارتیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat band upgrades]",
+      "source": "Upgrades",
+      "before": "ترقیاں",
+      "after": "اپ گریڈ",
+      "editorially_read": true,
+      "disposition": "edited-pending-recheck"
+    },
+    {
+      "key": "[stat band built]",
+      "source": "Built",
+      "before": "تعمیر شدہ",
+      "after": "تعمیر شدہ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat band upgraded]",
+      "source": "Upgraded",
+      "before": "ترقی یافتہ",
+      "after": "اپ گریڈ شدہ",
+      "editorially_read": true,
+      "disposition": "edited-pending-recheck"
+    },
+    {
+      "key": "[stat band repaired]",
+      "source": "Repaired",
+      "before": "مرمت شدہ",
+      "after": "مرمت شدہ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat band destroyed]",
+      "source": "Destroyed",
+      "before": "تباہ شدہ",
+      "after": "تباہ شدہ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat band demolished]",
+      "source": "Demolished",
+      "before": "مسمار شدہ",
+      "after": "مسمار شدہ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat band melee]",
+      "source": "Warriors",
+      "before": "جنگجو",
+      "after": "جنگجو",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat band magic]",
+      "source": "Magic",
+      "before": "جادو",
+      "after": "جادو",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat band towers]",
+      "source": "Towers",
+      "before": "مینار",
+      "after": "مینار",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat band within 8]",
+      "source": "Within 8 squares",
+      "before": "8 خانوں کے اندر",
+      "after": "8 خانوں کے اندر",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat band 8 to 16]",
+      "source": "8 to 16 squares",
+      "before": "8 سے 16 خانے",
+      "after": "8 سے 16 خانے",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat band 16 to 32]",
+      "source": "16 to 32 squares",
+      "before": "16 سے 32 خانے",
+      "after": "16 سے 32 خانے",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat unit units]",
+      "source": "units",
+      "before": "یونٹ",
+      "after": "یونٹ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat unit wheat]",
+      "source": "food",
+      "before": "خوراک",
+      "after": "خوراک",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat unit meals]",
+      "source": "meals",
+      "before": "کھانے",
+      "after": "کھانے",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat unit hit points]",
+      "source": "hit points",
+      "before": "صحت کے پوائنٹس",
+      "after": "صحت کے پوائنٹس",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat unit resources]",
+      "source": "units",
+      "before": "اکائیاں",
+      "after": "اکائیاں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat unit strength]",
+      "source": "score",
+      "before": "اسکور",
+      "after": "اسکور",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat unit damage]",
+      "source": "damage",
+      "before": "نقصان",
+      "after": "نقصان",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat unit shots]",
+      "source": "shots",
+      "before": "وار",
+      "after": "وار",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat unit visits]",
+      "source": "visits",
+      "before": "حاضریاں",
+      "after": "حاضریاں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat unit skills]",
+      "source": "skill levels",
+      "before": "ہنر کی سطحیں",
+      "after": "ہنر کی سطحیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat unit prestige]",
+      "source": "prestige",
+      "before": "وقار",
+      "after": "وقار",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat axis percent of %0]",
+      "source": "% of %0",
+      "before": "%0 کا %",
+      "after": "%0 کا %",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat axis share of all teams]",
+      "source": "% of all colonies",
+      "before": "تمام بستیوں کا %",
+      "after": "تمام بستیوں کا %",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat axis percent of units]",
+      "source": "% of the colony's units",
+      "before": "بستی کے یونٹوں کا %",
+      "after": "بستی کے یونٹوں کا %",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat axis %0 per minute per 100 units]",
+      "source": "%0 per minute, per 100 units in the colony",
+      "before": "بستی کے ہر 100 یونٹوں کے لیے فی منٹ %0",
+      "after": "بستی کے ہر 100 یونٹوں کے لیے فی منٹ %0",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat axis %0 per 100 units]",
+      "source": "%0 per 100 units in the colony",
+      "before": "بستی کے ہر 100 یونٹوں کے لیے %0",
+      "after": "بستی کے ہر 100 یونٹوں کے لیے %0",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat axis %0 per minute]",
+      "source": "%0 per minute",
+      "before": "فی منٹ %0",
+      "after": "فی منٹ %0",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat axis %0 so far]",
+      "source": "%0, running total",
+      "before": "%0، جاری مجموعہ",
+      "after": "%0، جاری مجموعہ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat axis %0 minute average]",
+      "source": "%0-minute average",
+      "before": "%0 منٹ کی اوسط",
+      "after": "%0 منٹ کی اوسط",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat view per minute]",
+      "source": "Per minute",
+      "before": "فی منٹ",
+      "after": "فی منٹ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat view total]",
+      "source": "Total",
+      "before": "کل",
+      "after": "کل",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat view %0 min]",
+      "source": "%0 min",
+      "before": "%0 منٹ",
+      "after": "%0 منٹ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat view split]",
+      "source": "Split by kind",
+      "before": "قسم کے لحاظ سے تقسیم",
+      "after": "قسم کے لحاظ سے تقسیم",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat view percentages]",
+      "source": "As % of total",
+      "before": "کل کے % کے طور پر",
+      "after": "کل کے % کے طور پر",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat view percent of units]",
+      "source": "As % of colony",
+      "before": "بستی کے % کے طور پر",
+      "after": "بستی کے % کے طور پر",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat view per 100 units]",
+      "source": "Relative to colony size",
+      "before": "بستی کے سائز کے تناسب سے",
+      "after": "بستی کے سائز کے تناسب سے",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat view share]",
+      "source": "Share of all colonies",
+      "before": "تمام بستیوں میں حصہ",
+      "after": "تمام بستیوں میں حصہ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat view highlight none]",
+      "source": "Highlight: none",
+      "before": "نمایاں: کوئی نہیں",
+      "after": "نمایاں: کوئی نہیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat column peak units]",
+      "source": "Peak units",
+      "before": "سب سے زیادہ یونٹ",
+      "after": "سب سے زیادہ یونٹ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat column born]",
+      "source": "Born",
+      "before": "پیدائشیں",
+      "after": "پیدائشیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat column lost]",
+      "source": "Lost",
+      "before": "ضائع ہوئے",
+      "after": "ضائع ہوئے",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat column wheat]",
+      "source": "Food",
+      "before": "خوراک",
+      "after": "خوراک",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat column damage dealt]",
+      "source": "Damage dealt",
+      "before": "پہنچایا گیا نقصان",
+      "after": "پہنچایا گیا نقصان",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat column damage taken]",
+      "source": "Damage taken",
+      "before": "موصولہ نقصان",
+      "after": "موصولہ نقصان",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat column built]",
+      "source": "Built",
+      "before": "تعمیر شدہ",
+      "after": "تعمیر شدہ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat column prestige]",
+      "source": "Prestige",
+      "before": "وقار",
+      "after": "وقار",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat marker wiped out]",
+      "source": "last unit lost",
+      "before": "آخری یونٹ ضائع ہوا",
+      "after": "آخری یونٹ ضائع ہوا",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat marker first combat death]",
+      "source": "first unit killed in combat",
+      "before": "لڑائی میں پہلا یونٹ مارا گیا",
+      "after": "لڑائی میں پہلا یونٹ مارا گیا",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat not recorded for this match]",
+      "source": "This statistic was not recorded for this match.",
+      "before": "اس میچ کے لیے یہ عدد درج نہیں کیا گیا تھا۔",
+      "after": "اس میچ کے لیے یہ عدد درج نہیں کیا گیا تھا۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[results reason beyond doubt]",
+      "source": "The result was no longer in doubt.",
+      "before": "نتیجے میں اب کوئی شک باقی نہیں تھا۔",
+      "after": "نتیجے میں اب کوئی شک باقی نہیں تھا۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat per minute short]",
+      "source": "/min",
+      "before": "/منٹ",
+      "after": "/منٹ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat page colony]",
+      "source": "Colony",
+      "before": "بستی",
+      "after": "بستی",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat page %0 of %1]",
+      "source": "%0/%1  >",
+      "before": "%0/%1  >",
+      "after": "%0/%1  >",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat unit deaths]",
+      "source": "deaths",
+      "before": "اموات",
+      "after": "اموات",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat unit growth]",
+      "source": "growth",
+      "before": "افزائش",
+      "after": "افزائش",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat view by unit type]",
+      "source": "By unit type",
+      "before": "یونٹ کی قسم کے لحاظ سے",
+      "after": "یونٹ کی قسم کے لحاظ سے",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat view by state]",
+      "source": "By state",
+      "before": "حالت کے لحاظ سے",
+      "after": "حالت کے لحاظ سے",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat view by resource]",
+      "source": "By material",
+      "before": "مواد کے لحاظ سے",
+      "after": "مواد کے لحاظ سے",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat view by work]",
+      "source": "By kind of work",
+      "before": "کام کی قسم کے لحاظ سے",
+      "after": "کام کی قسم کے لحاظ سے",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat view by cause]",
+      "source": "By cause",
+      "before": "وجہ کے لحاظ سے",
+      "after": "وجہ کے لحاظ سے",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat view by weapon]",
+      "source": "By weapon",
+      "before": "ہتھیار کے لحاظ سے",
+      "after": "ہتھیار کے لحاظ سے",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat view by distance]",
+      "source": "By distance",
+      "before": "فاصلے کے لحاظ سے",
+      "after": "فاصلے کے لحاظ سے",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat nothing to show]",
+      "source": "Nothing to show: this did not happen in this match.",
+      "before": "دکھانے کو کچھ نہیں: اس میچ میں یہ نہیں ہوا۔",
+      "after": "دکھانے کو کچھ نہیں: اس میچ میں یہ نہیں ہوا۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat %0 nothing]",
+      "source": "%0 (none)",
+      "before": "%0 (کوئی نہیں)",
+      "after": "%0 (کوئی نہیں)",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Match]",
+      "source": "Match",
+      "before": "میچ",
+      "after": "میچ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Time limit]",
+      "source": "Time limit",
+      "before": "وقت کی حد",
+      "after": "وقت کی حد",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Alliances can change]",
+      "source": "Alliances can change",
+      "before": "اتحاد بدل سکتے ہیں",
+      "after": "اتحاد بدل سکتے ہیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Starting unit level]",
+      "source": "Starting unit level",
+      "before": "ابتدائی یونٹوں کی سطح",
+      "after": "ابتدائی یونٹوں کی سطح",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Starting stockpile]",
+      "source": "Starting stockpile",
+      "before": "ابتدائی ذخیرہ",
+      "after": "ابتدائی ذخیرہ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Regrowth]",
+      "source": "Regrowth",
+      "before": "دوبارہ افزائش",
+      "after": "دوبارہ افزائش",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Wounded units retreat]",
+      "source": "Wounded units retreat",
+      "before": "زخمی یونٹ پسپا ہوتے ہیں",
+      "after": "زخمی یونٹ پسپا ہوتے ہیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Units can die]",
+      "source": "Units can die",
+      "before": "یونٹ مر سکتے ہیں",
+      "after": "یونٹ مر سکتے ہیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Upgrades]",
+      "source": "Upgrades",
+      "before": "ترقیاں",
+      "after": "اپ گریڈ",
+      "editorially_read": true,
+      "disposition": "edited-pending-recheck"
+    },
+    {
+      "key": "[No stockpile]",
+      "source": "None",
+      "before": "کوئی نہیں",
+      "after": "کوئی نہیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[No glass cannon]",
+      "source": "Off",
+      "before": "بند",
+      "after": "بند",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[How quickly harvested resources grow back and spread.]",
+      "source": "How quickly harvested resources grow back and spread.",
+      "before": "کاٹے گئے وسائل کتنی جلدی دوبارہ اگتے اور پھیلتے ہیں۔",
+      "after": "جمع کیے گئے وسائل کتنی جلدی دوبارہ اگتے اور پھیلتے ہیں۔",
+      "editorially_read": true,
+      "disposition": "edited-pending-recheck"
+    },
+    {
+      "key": "[Units must eat to keep working.]",
+      "source": "Units must eat to keep working.",
+      "before": "کام جاری رکھنے کے لیے یونٹوں کو کھانا ضروری ہے۔",
+      "after": "کام جاری رکھنے کے لیے یونٹوں کو کھانا ضروری ہے۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Summary]",
+      "source": "Summary",
+      "before": "خلاصہ",
+      "after": "خلاصہ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[All rules]",
+      "source": "All rules",
+      "before": "تمام قواعد",
+      "after": "تمام قواعد",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Show all rules]",
+      "source": "Show all rules",
+      "before": "تمام قواعد دکھائیں",
+      "after": "تمام قواعد دکھائیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Choose a ruleset]",
+      "source": "Choose a ruleset",
+      "before": "قواعد کا مجموعہ منتخب کریں",
+      "after": "قواعد کا مجموعہ منتخب کریں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Reset to %0]",
+      "source": "Reset to %0",
+      "before": "%0 بحال کریں",
+      "after": "%0 بحال کریں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[ruleset one change %0]",
+      "source": "%0 + 1 change",
+      "before": "%0 + 1 تبدیلی",
+      "after": "%0 + 1 تبدیلی",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[ruleset changes %0 %1]",
+      "source": "%0 + %1 changes",
+      "before": "%0 + %1 تبدیلیاں",
+      "after": "%0 + %1 تبدیلیاں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[This match cannot end. Turn on prestige victory or set a time limit.]",
+      "source": "This match cannot end. Turn on prestige victory or set a time limit.",
+      "before": "یہ میچ ختم نہیں ہو سکتا۔ وقار کے ذریعے فتح فعال کریں یا وقت کی حد مقرر کریں۔",
+      "after": "یہ میچ ختم نہیں ہو سکتا۔ وقار کے ذریعے فتح فعال کریں یا وقت کی حد مقرر کریں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Prestige usually appears after 13 to 28 minutes, so a 30-minute limit often ends in a tie.]",
+      "source": "Prestige usually appears after 13 to 28 minutes, so a 30-minute limit often ends in a tie.",
+      "before": "وقار عموماً 13 سے 28 منٹ کے بعد ملتا ہے، اس لیے 30 منٹ کی حد اکثر برابری پر ختم ہوتی ہے۔",
+      "after": "وقار عموماً 13 سے 28 منٹ کے بعد ملتا ہے، اس لیے 30 منٹ کی حد اکثر برابری پر ختم ہوتی ہے۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Blitz]",
+      "source": "Blitz",
+      "before": "برق رفتار",
+      "after": "برق رفتار",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[ruleset blitz description]",
+      "source": "Fast start, early finish",
+      "before": "تیز ابتدا، جلد اختتام",
+      "after": "تیز ابتدا، جلد اختتام",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Gentle]",
+      "source": "Gentle",
+      "before": "آسان",
+      "after": "آسان",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[ruleset gentle description]",
+      "source": "Forgiving rules for a first match",
+      "before": "پہلے میچ کے لیے رعایتی قواعد",
+      "after": "پہلے میچ کے لیے رعایتی قواعد",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Sandbox]",
+      "source": "Sandbox",
+      "before": "آزاد تجربہ",
+      "after": "آزاد تجربہ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[ruleset sandbox description]",
+      "source": "No fighting, no starving, build anything",
+      "before": "لڑائی نہیں، فاقہ کشی نہیں، جو چاہیں بنائیں",
+      "after": "لڑائی نہیں، فاقہ کشی نہیں، جو چاہیں بنائیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Bloodbath]",
+      "source": "Bloodbath",
+      "before": "خون ریزی",
+      "after": "خون ریزی",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[ruleset bloodbath description]",
+      "source": "Fragile, fearless armies",
+      "before": "نازک، بے خوف فوجیں",
+      "after": "نازک، بے خوف فوجیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Siege]",
+      "source": "Siege",
+      "before": "محاصرہ",
+      "after": "محاصرہ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[ruleset siege description]",
+      "source": "Fortress walls and long wars",
+      "before": "قلعے کی دیواریں اور طویل جنگیں",
+      "after": "قلعے کی دیواریں اور طویل جنگیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Lean years]",
+      "source": "Lean years",
+      "before": "تنگی کے سال",
+      "after": "تنگی کے سال",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[ruleset lean years description]",
+      "source": "Resources barely come back",
+      "before": "وسائل بمشکل دوبارہ اگتے ہیں",
+      "after": "وسائل بمشکل دوبارہ اگتے ہیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Gold rush]",
+      "source": "Gold rush",
+      "before": "سونے کی دوڑ",
+      "after": "سونے کی دوڑ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[ruleset gold rush description]",
+      "source": "What's on the map is all there is",
+      "before": "نقشے پر جتنا ہے، بس اتنا ہی ہے",
+      "after": "نقشے پر جتنا ہے، بس اتنا ہی ہے",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Elite ranks]",
+      "source": "Elite ranks",
+      "before": "اعلیٰ صفیں",
+      "after": "اعلیٰ صفیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[ruleset elite ranks description]",
+      "source": "Start trained, train no further",
+      "before": "تربیت یافتہ آغاز، مزید تربیت نہیں",
+      "after": "تربیت یافتہ آغاز، مزید تربیت نہیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Shifting alliances]",
+      "source": "Shifting alliances",
+      "before": "بدلتے اتحاد",
+      "after": "بدلتے اتحاد",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[ruleset shifting alliances description]",
+      "source": "Teams can change in a 60-minute race",
+      "before": "60 منٹ کی دوڑ میں ٹیمیں بدل سکتی ہیں",
+      "after": "60 منٹ کی دوڑ میں ٹیمیں بدل سکتی ہیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Changed from %0: %1]",
+      "source": "Changed from %0: %1",
+      "before": "%0 سے تبدیلی: %1",
+      "after": "%0 سے تبدیلی: %1",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Combat is off, so the rules below have no effect.]",
+      "source": "Combat is off, so the rules below have no effect.",
+      "before": "لڑائی بند ہے، اس لیے نیچے کے قواعد کا کوئی اثر نہیں۔",
+      "after": "لڑائی بند ہے، اس لیے نیچے کے قواعد کا کوئی اثر نہیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[%0 more rules are at their Standard values.]",
+      "source": "%0 more rules are at their Standard values.",
+      "before": "مزید %0 قواعد اپنی معیاری قدروں پر ہیں۔",
+      "after": "مزید %0 قواعد اپنی معیاری قدروں پر ہیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Each team starts with extra resources in its shared pool.]",
+      "source": "Each team starts with extra materials in its shared pool.",
+      "before": "ہر ٹیم اپنے مشترکہ ذخیرے میں اضافی مواد کے ساتھ شروع کرتی ہے۔",
+      "after": "ہر ٹیم اپنے مشترکہ ذخیرے میں اضافی مواد کے ساتھ شروع کرتی ہے۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Units hit harder but have less HP and armor.]",
+      "source": "Units hit harder but have less HP and armor.",
+      "before": "یونٹ زیادہ زور سے وار کرتے ہیں مگر HP اور زرہ کم ہوتی ہے۔",
+      "after": "یونٹ زیادہ زور سے وار کرتے ہیں مگر HP اور زرہ کم ہوتی ہے۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Teams can attack each other. Turn off for a peaceful match.]",
+      "source": "Teams can attack each other. Turn off for a peaceful match.",
+      "before": "ٹیمیں ایک دوسرے پر حملہ کر سکتی ہیں۔ پُرامن میچ کے لیے بند کریں۔",
+      "after": "ٹیمیں ایک دوسرے پر حملہ کر سکتی ہیں۔ پُرامن میچ کے لیے بند کریں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Hurt units go back to heal instead of fighting to the death.]",
+      "source": "Hurt units go back to heal instead of fighting to the death.",
+      "before": "چوٹ زدہ یونٹ مرتے دم تک لڑنے کے بجائے علاج کے لیے واپس جاتے ہیں۔",
+      "after": "چوٹ زدہ یونٹ مرتے دم تک لڑنے کے بجائے علاج کے لیے واپس جاتے ہیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Units die when they run out of HP. Turn off to stop them at 1 HP.]",
+      "source": "Units die when they run out of HP. Turn off to stop them at 1 HP.",
+      "before": "HP ختم ہونے پر یونٹ مر جاتے ہیں۔ انہیں 1 HP پر روکنے کے لیے بند کریں۔",
+      "after": "HP ختم ہونے پر یونٹ مر جاتے ہیں۔ انہیں 1 HP پر روکنے کے لیے بند کریں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat group work]",
+      "source": "Workers' time",
+      "before": "کارکنوں کا وقت",
+      "after": "کارکنوں کا وقت",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat work by job]",
+      "source": "What workers were working on",
+      "before": "کارکن کس کام پر تھے",
+      "after": "کارکن کس کام پر تھے",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat work by job about]",
+      "source": "How many workers were supplying each kind of building: swarms (to make new units), inns (to make meals), buildings being built or upgraded, or other buildings such as towers, schools and barracks.",
+      "before": "کتنے کارکن ہر قسم کی عمارت کو رسد پہنچا رہے تھے: چھتے (نئے یونٹ بنانے کے لیے)، سرائے (کھانے بنانے کے لیے)، زیرِ تعمیر یا زیرِ ترقی عمارتیں، یا مینار، اسکول اور بیرک جیسی دیگر عمارتیں۔",
+      "after": "کتنے کارکن ہر قسم کی عمارت کو رسد پہنچا رہے تھے: چھتے (نئے یونٹ بنانے کے لیے)، سرائے (کھانے بنانے کے لیے)، زیرِ تعمیر یا اپ گریڈ ہوتی عمارتیں، یا مینار، اسکول اور بیرک جیسی دیگر عمارتیں۔",
+      "editorially_read": true,
+      "disposition": "edited-pending-recheck"
+    },
+    {
+      "key": "[stat haul distance]",
+      "source": "Distance to resources",
+      "before": "وسائل تک فاصلہ",
+      "after": "وسائل تک فاصلہ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat haul distance about]",
+      "source": "How far, on average, a harvesting worker was from the building it was supplying, in map squares in a straight line.",
+      "before": "فصل کاٹنے والا کارکن اس عمارت سے اوسطاً کتنا دور تھا جسے وہ رسد دے رہا تھا، نقشے کے خانوں میں سیدھے فاصلے کے حساب سے۔",
+      "after": "وسائل جمع کرنے والا کارکن اس عمارت سے اوسطاً کتنا دور تھا جسے وہ رسد دے رہا تھا، نقشے کے خانوں میں سیدھے فاصلے کے حساب سے۔",
+      "editorially_read": true,
+      "disposition": "edited-pending-recheck"
+    },
+    {
+      "key": "[stat hauling]",
+      "source": "Fetching and carrying",
+      "before": "لانا اور لے جانا",
+      "after": "لانا اور لے جانا",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat hauling about]",
+      "source": "How the workers supplying buildings divided between walking to a resource, harvesting it, carrying materials back, and delivering it or waiting for a resource they can reach. Most of it is walking, so the closer the resources, the more gets done.",
+      "before": "عمارتوں کو رسد دینے والے کارکن وسائل تک چلنے، کاٹنے، مواد واپس لانے، اور پہنچانے یا قابلِ رسائی وسیلے کے انتظار میں کیسے بٹے تھے۔ زیادہ وقت چلنے میں لگتا ہے، اس لیے قریب وسائل سے زیادہ کام ہوتا ہے۔",
+      "after": "عمارتوں کو رسد دینے والے کارکن وسائل تک چلنے، انہیں جمع کرنے، مواد واپس لانے، اور پہنچانے یا قابلِ رسائی وسیلے کے انتظار میں کیسے بٹے تھے۔ زیادہ وقت چلنے میں لگتا ہے، اس لیے قریب وسائل سے زیادہ کام ہوتا ہے۔",
+      "editorially_read": true,
+      "disposition": "edited-pending-recheck"
+    },
+    {
+      "key": "[stat eating time]",
+      "source": "Workers going to eat",
+      "before": "کھانے کے لیے جاتے کارکن",
+      "after": "کھانے کے لیے جاتے کارکن",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat eating time about]",
+      "source": "How many workers were away from work to eat: walking to an inn, eating inside one, or hungry with no inn that could take them. Workers left with no inn means the colony has outgrown its inns or their food.",
+      "before": "کتنے کارکن کھانے کے لیے کام سے دور تھے: سرائے کی طرف چلتے، اندر کھاتے، یا بھوکے مگر ایسی سرائے کے بغیر جو انہیں لے سکے۔ سرائے نہ پانے والے کارکن بتاتے ہیں کہ بستی اپنی سراؤں یا ان کی خوراک کی گنجائش سے بڑھ گئی ہے۔",
+      "after": "کتنے کارکن کھانے کے لیے کام سے دور تھے: سرائے کی طرف چلتے، اندر کھاتے، یا بھوکے مگر ایسی سرائے کے بغیر جو انہیں لے سکے۔ سرائے نہ پانے والے کارکن بتاتے ہیں کہ بستی اپنی سراؤں یا ان کی خوراک کی گنجائش سے بڑھ گئی ہے۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat intruders]",
+      "source": "Enemy warriors at home",
+      "before": "بستی میں دشمن جنگجو",
+      "after": "بستی میں دشمن جنگجو",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat intruders about]",
+      "source": "How many enemy warriors were within 16 squares of the colony's buildings. Where two colonies are close together, each counts the other's defenders.",
+      "before": "بستی کی عمارتوں سے 16 خانوں کے اندر کتنے دشمن جنگجو تھے۔ دو بستیاں قریب ہوں تو ہر ایک دوسری کے محافظ بھی شمار کرتی ہے۔",
+      "after": "بستی کی عمارتوں سے 16 خانوں کے اندر کتنے دشمن جنگجو تھے۔ دو بستیاں قریب ہوں تو ہر ایک دوسری کے محافظ بھی شمار کرتی ہے۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat home defence]",
+      "source": "Home defence strength margin",
+      "before": "بستی کی دفاعی طاقت کا فرق",
+      "after": "بستی کی دفاعی طاقت کا فرق",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat home defence about]",
+      "source": "The strength of the colony's own warriors near its buildings minus that of the enemy warriors there, counting each warrior and each of its attack levels. Below zero the colony was outmatched at home.",
+      "before": "بستی کی عمارتوں کے قریب اپنے جنگجوؤں کی طاقت منفی وہاں کے دشمن جنگجوؤں کی طاقت، ہر جنگجو اور اس کی حملے کی ہر سطح شمار کر کے۔ صفر سے نیچے بستی اپنے علاقے میں کمزور پڑ رہی تھی۔",
+      "after": "بستی کی عمارتوں کے قریب اپنے جنگجوؤں کی طاقت منفی وہاں کے دشمن جنگجوؤں کی طاقت، ہر جنگجو اور اس کی حملے کی ہر سطح شمار کر کے۔ صفر سے نیچے بستی اپنے علاقے میں کمزور پڑ رہی تھی۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat combat death places]",
+      "source": "Where units fell in combat",
+      "before": "لڑائی میں یونٹ کہاں گرے",
+      "after": "لڑائی میں یونٹ کہاں گرے",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat combat death places about]",
+      "source": "Where the colony's units were when they were killed: near its own buildings, near an enemy's buildings, or in open ground between colonies. Losses at home mean the colony was being attacked; losses at an enemy colony mean it was attacking. Ground close to both colonies counts as home.",
+      "before": "بستی کے یونٹ مارے جاتے وقت کہاں تھے: اپنی عمارتوں کے قریب، دشمن کی عمارتوں کے قریب، یا بستیوں کے درمیان کھلی زمین پر۔ اپنی بستی میں نقصان کا مطلب اس پر حملہ تھا؛ دشمن کی بستی میں نقصان کا مطلب وہ حملہ کر رہی تھی۔ دونوں بستیوں کے قریب زمین اپنی بستی شمار ہوتی ہے۔",
+      "after": "بستی کے یونٹ مارے جاتے وقت کہاں تھے: اپنی عمارتوں کے قریب، دشمن کی عمارتوں کے قریب، یا بستیوں کے درمیان کھلی زمین پر۔ اپنی بستی میں نقصان کا مطلب اس پر حملہ تھا؛ دشمن کی بستی میں نقصان کا مطلب وہ حملہ کر رہی تھی۔ دونوں بستیوں کے قریب زمین اپنی بستی شمار ہوتی ہے۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat band working]",
+      "source": "Working",
+      "before": "کام پر",
+      "after": "کام پر",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat band idle]",
+      "source": "Idle",
+      "before": "فارغ",
+      "after": "فارغ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat band training]",
+      "source": "Training",
+      "before": "تربیت میں",
+      "after": "تربیت میں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat band unserved]",
+      "source": "No inn or hospital free",
+      "before": "کوئی سرائے یا ہسپتال خالی نہیں",
+      "after": "کوئی سرائے یا ہسپتال خالی نہیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat band inns]",
+      "source": "Inns",
+      "before": "سرائے",
+      "after": "سرائے",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat band sites]",
+      "source": "Building and upgrading",
+      "before": "تعمیر اور ترقی",
+      "after": "تعمیر اور اپ گریڈ",
+      "editorially_read": true,
+      "disposition": "edited-pending-recheck"
+    },
+    {
+      "key": "[stat band to resource]",
+      "source": "Walking to a resource",
+      "before": "وسیلے کی طرف چلنا",
+      "after": "وسیلے کی طرف چلنا",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat band harvesting]",
+      "source": "Harvesting",
+      "before": "فصل کاٹنا",
+      "after": "وسائل جمع کرنا",
+      "editorially_read": true,
+      "disposition": "edited-pending-recheck"
+    },
+    {
+      "key": "[stat band carrying]",
+      "source": "Carrying it back",
+      "before": "واپس لانا",
+      "after": "واپس لانا",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat band delivering]",
+      "source": "Delivering or waiting",
+      "before": "پہنچانا یا انتظار",
+      "after": "پہنچانا یا انتظار",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat band walking to inn]",
+      "source": "Walking to an inn",
+      "before": "سرائے کی طرف چلنا",
+      "after": "سرائے کی طرف چلنا",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat band no inn]",
+      "source": "No inn free",
+      "before": "کوئی سرائے خالی نہیں",
+      "after": "کوئی سرائے خالی نہیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat band at home]",
+      "source": "At home",
+      "before": "اپنی بستی میں",
+      "after": "اپنی بستی میں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    }
+  ],
+  "status": "edited-awaiting-independent-recheck"
+}

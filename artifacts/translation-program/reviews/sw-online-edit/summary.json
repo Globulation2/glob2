@@ -1,0 +1,99 @@
+{
+  "editor": "/root/urdu_translation",
+  "locale": "sw",
+  "surface": "online",
+  "status": "frozen-edited-awaiting-independent-recheck",
+  "author": "/root/swahili_translation",
+  "reviewer": "/root/hindi_online_review",
+  "source_sha256": "aacd8a342e9e734ba47f902a161ac1a45badff5842a617bcd68bf8e2275d6013",
+  "baseline_file_sha256": "d20d52adddc3ab0449f41475d3b0959fe9fac518e1d287babc9d1c67dba25613",
+  "final_file_sha256": "663e69ca40b04f70a35e9261266a0440a3dd1b8159699b1fb370f86f09232989",
+  "keys_read_exactly_once": 2835,
+  "batches_read": 18,
+  "plural_families_read": 27,
+  "source_plural_branches_compared": true,
+  "changed_keys": 80,
+  "original_findings_edited": 29,
+  "original_finding_severity_counts": {
+    "major": 21,
+    "minor": 8
+  },
+  "original_findings_open_for_recheck": 29,
+  "validation": {
+    "command": "python3 tools/localization/translation_program.py check-draft --locale sw",
+    "errors": [],
+    "untranslated": [],
+    "meaning_or_visual_certification": false
+  },
+  "terminology_decisions": [
+    {
+      "term": "3D shader Material/material map/unwrap",
+      "decision": "Nyenzo/nyenzo; this represents a surface finish or surface-material ID, not harvested raw goods. Changed twelve exact keys; retained numeric material IDs and 512×512/8-bit limits.",
+      "context": [
+        "platform/apps/web/src/pages/Skins.tsx:487",
+        "platform/apps/web/src/skins/StudioControls.tsx:323",
+        "platform/apps/web/src/skins/PatternDialog.tsx:321",
+        "platform/apps/web/src/skins/binaryAsset.ts"
+      ]
+    },
+    {
+      "term": "Main material / Material yields",
+      "decision": "Retain Malighafi kuu / Mazao ya malighafi because TerrainStudio property primaryMaterial and resource yields refer to harvested game materials.",
+      "context": [
+        "platform/apps/web/src/pages/TerrainStudio.tsx:969"
+      ]
+    },
+    {
+      "term": "Equipment/reference resources",
+      "decision": "vifaa for physical equipment; nyenzo for authoring/reference resources. Do not globally replace all nyenzo with malighafi."
+    },
+    {
+      "term": "Shared native game glossary",
+      "decision": "Heshima=prestige, Kiota/Viota=unit-producing Swarm building, malighafi=harvested materials, kitalu/vitalu=geographic blocks, Kuvumwani=moss. Only prestige appears in online entries needing change; no unrelated native edits."
+    },
+    {
+      "term": "Credits",
+      "decision": "Krediti for wallet balance/purchases; shukrani for attribution. Corrected Map credits and Terrain credits; kept attribution labels Credits & sources, Artwork and font credits, Custom content credits, Releases & credits, Development credits."
+    },
+    {
+      "term": "Mute/Unmute",
+      "decision": "Specific admin restriction labels now say zuia kutuma ujumbe wa gumzo. Shared audio/admin Unmute remains neutral Ondoa kunyamazisha; standalone Mute used by audio player remains Nyamazisha."
+    },
+    {
+      "term": "Light/Dense vs light theme",
+      "decision": "PatternDialog density options use Msongamano mdogo/mkubwa; theme uses angavu/yenye giza. Neither density nor theme means physical weight."
+    },
+    {
+      "term": "Failed-check fragments",
+      "decision": "Coordinated all three keys: singular Kipengele cha ukaguzi kinachohitaji kushughulikiwa; plural Vipengele vya ukaguzi vinavyohitaji kushughulikiwa; template {value1}: {value0}. Keeps both placeholders and grammatical composed count."
+    }
+  ],
+  "references": [
+    {
+      "url": "https://mozilla-l10n.github.io/styleguides/sw/",
+      "use": "Clear contemporary wording, concise headings, noun agreement, stable technical format names; not a source certifying these specific game terms."
+    },
+    {
+      "path": "references/google-translate-sw-geology.json",
+      "use": "Read comparative evidence only; geology terms absent from online scope, no online substitution based on it."
+    },
+    {
+      "path": "references/google-translate-sw-clover.json",
+      "use": "Read comparative evidence only; clover term absent from online scope."
+    }
+  ],
+  "accepted_without_paraphrase": [
+    "All 27 plural families preserve required one/other branches; invariant Swahili nouns legitimately share text.",
+    "Current/previous reporting-period actual source objects take priority over outdated key text.",
+    "Existing accepted English proper names, technical identifiers, licenses, URLs and symbol-only values remain unchanged.",
+    "Source whitespace not blanket modified; leading/trailing spaces retained where relevant and caller separators respected."
+  ],
+  "limits": [
+    "No native catalog or Urdu catalog writes.",
+    "No native-human approval claimed.",
+    "No full visual/application/platform verification claimed.",
+    "All 80 changes, including extra editorial fixes, require original reviewer recheck before resolution/finalization."
+  ],
+  "locale_finalized": false,
+  "catalog_registered": false
+}

@@ -1,0 +1,290 @@
+{
+  "final_sha256": "de1091d2df613ac22bf2a9c46d1e3704712912c57e299e4171402aa002918d5e",
+  "original_findings": [
+    {
+      "finding_id": "UR-O-001-01",
+      "key": "3 to 32 letters, digits, dots, dashes or underscores. Other players see it.",
+      "original_severity": "major",
+      "result": "resolved-after-distinct-editor-change",
+      "final_target": "3 سے 32 انگریزی حروف (A–Z، a–z)، ہندسے (0–9)، نقطے، ڈیش یا انڈر اسکور۔ دوسرے کھلاڑی اسے دیکھتے ہیں۔",
+      "rationale": "Source meaning, relevant caller context, grammar, placeholders and shared native glossary independently rechecked."
+    },
+    {
+      "finding_id": "UR-O-001-02",
+      "key": " Terrain credits",
+      "original_severity": "minor",
+      "result": "resolved-after-distinct-editor-change",
+      "final_target": " زمین کے کریڈٹ",
+      "rationale": "Source meaning, relevant caller context, grammar, placeholders and shared native glossary independently rechecked."
+    },
+    {
+      "finding_id": "UR-O-002-01",
+      "key": "Brush paints",
+      "original_severity": "minor",
+      "result": "resolved-after-distinct-editor-change",
+      "final_target": "برش سے لگانے کی چیز",
+      "rationale": "Source meaning, relevant caller context, grammar, placeholders and shared native glossary independently rechecked."
+    },
+    {
+      "finding_id": "UR-O-002-02",
+      "key": "Buildings and upgrade stages",
+      "original_severity": "minor",
+      "result": "resolved-after-distinct-editor-change",
+      "final_target": "عمارتیں اور اپ گریڈ کے مراحل",
+      "rationale": "Source meaning, relevant caller context, grammar, placeholders and shared native glossary independently rechecked."
+    },
+    {
+      "finding_id": "UR-O-004-01",
+      "key": "Create a building or an upgrade family with custom artwork.",
+      "original_severity": "minor",
+      "result": "resolved-after-distinct-editor-change",
+      "final_target": "حسبِ پسند فن پارے سے عمارت یا اپ گریڈ کا خاندان بنائیں۔",
+      "rationale": "Source meaning, relevant caller context, grammar, placeholders and shared native glossary independently rechecked."
+    },
+    {
+      "finding_id": "UR-O-004-02",
+      "key": "Diverged",
+      "original_severity": "major",
+      "result": "resolved-after-distinct-editor-change",
+      "final_target": "کھیل کی حالت مختلف ہو گئی",
+      "rationale": "Source meaning, relevant caller context, grammar, placeholders and shared native glossary independently rechecked."
+    },
+    {
+      "finding_id": "UR-O-005-01",
+      "key": "Duplicate rig clip",
+      "original_severity": "major",
+      "result": "resolved-after-distinct-editor-change",
+      "final_target": "رِگ کلپ کی ID دہرائی گئی ہے",
+      "rationale": "Source meaning, relevant caller context, grammar, placeholders and shared native glossary independently rechecked."
+    },
+    {
+      "finding_id": "UR-O-005-02",
+      "key": "Duplicate shape clip",
+      "original_severity": "major",
+      "result": "resolved-after-distinct-editor-change",
+      "final_target": "شکل کے کلپ کی ID دہرائی گئی ہے",
+      "rationale": "Source meaning, relevant caller context, grammar, placeholders and shared native glossary independently rechecked."
+    },
+    {
+      "finding_id": "UR-O-007-01",
+      "key": "Invalid {value0} normal camera",
+      "original_severity": "major",
+      "result": "resolved-after-distinct-editor-change",
+      "final_target": "{value0} کے سطحی عمودوں کو کیمرے کے مختصات میں بدلنے کی میٹرکس درست نہیں",
+      "rationale": "Source meaning, relevant caller context, grammar, placeholders and shared native glossary independently rechecked."
+    },
+    {
+      "finding_id": "UR-O-009-01",
+      "key": "Prepare Calm, Building, and Combat arrangements of the same piece. Each must last 10 seconds to 15 minutes. Originals are deleted after conversion; keep your own source files.",
+      "original_severity": "minor",
+      "result": "resolved-after-distinct-editor-change",
+      "final_target": "اسی دھن کی سکون، تعمیر اور لڑائی کی کیفیتوں کے لیے الگ موسیقی ترتیب دیں۔ ہر ترتیب کا دورانیہ 10 سیکنڈ سے 15 منٹ ہونا چاہیے۔ تبدیلی کے بعد اصل فائلیں حذف ہو جاتی ہیں؛ اپنی ماخذ فائلیں اپنے پاس رکھیں۔",
+      "rationale": "Source meaning, relevant caller context, grammar, placeholders and shared native glossary independently rechecked."
+    },
+    {
+      "finding_id": "UR-O-010-01",
+      "key": "Questions and brainstorming are free and require an available credit. A creation or revision request starts one build of up to 12 entries. Failed generations return their reservation.",
+      "original_severity": "minor",
+      "result": "resolved-after-distinct-editor-change",
+      "final_target": "سوال اور خیالات پر غور مفت ہیں اور دستیاب کریڈٹ درکار ہے۔ تخلیق یا ترمیم کی درخواست زیادہ سے زیادہ 12 اندراجات کی ایک تیاری شروع کرتی ہے۔ ناکام تخلیقات کے لیے مختص کریڈٹ واپس کر دیے جاتے ہیں۔",
+      "rationale": "Source meaning, relevant caller context, grammar, placeholders and shared native glossary independently rechecked."
+    },
+    {
+      "finding_id": "UR-O-010-02",
+      "key": "Questions and brainstorming are free. A creation or revision request starts one build of up to 12 building variants. Failed generations return their reservation.",
+      "original_severity": "minor",
+      "result": "resolved-after-distinct-editor-change",
+      "final_target": "سوال اور خیالات پر غور مفت ہیں۔ تخلیق یا ترمیم کی درخواست عمارت کی زیادہ سے زیادہ 12 صورتوں کی ایک تیاری شروع کرتی ہے۔ ناکام تخلیقات کے لیے مختص کریڈٹ واپس کر دیے جاتے ہیں۔",
+      "rationale": "Source meaning, relevant caller context, grammar, placeholders and shared native glossary independently rechecked."
+    },
+    {
+      "finding_id": "UR-O-011-01",
+      "key": "Set the goals and your globs get to work. Feed your colony, train your units and explore together.",
+      "original_severity": "minor",
+      "result": "resolved-after-distinct-editor-change",
+      "final_target": "اہداف مقرر کریں اور آپ کے گلوب کام پر لگ جائیں گے۔ بستی کو کھانا دیں، یونٹوں کو تربیت دیں اور مل کر کھوج کریں۔",
+      "rationale": "Source meaning, relevant caller context, grammar, placeholders and shared native glossary independently rechecked."
+    },
+    {
+      "finding_id": "UR-O-012-01",
+      "key": "Start with one building, add stages for upgrades, then save and publish. Artwork uploads are saved immediately; choose their sprite keys in gameSprite and miniSprite.",
+      "original_severity": "minor",
+      "result": "resolved-after-distinct-editor-change",
+      "final_target": "ایک عمارت سے شروع کریں، اپ گریڈ کے لیے مراحل شامل کریں، پھر محفوظ اور شائع کریں۔ فن پارے کے اپ لوڈ فوراً محفوظ ہوتے ہیں؛ ان کی اسپرائٹ کلیدیں gameSprite اور miniSprite میں منتخب کریں۔",
+      "rationale": "Source meaning, relevant caller context, grammar, placeholders and shared native glossary independently rechecked."
+    },
+    {
+      "finding_id": "UR-O-012-02",
+      "key": "Synth · warm bells, pads & pulse",
+      "original_severity": "minor",
+      "result": "resolved-after-distinct-editor-change",
+      "final_target": "سنتھیسائزر · نرم اور بھرپور آہنگ والی گھنٹیاں، پھیلے سُر اور دھڑکن",
+      "rationale": "Source meaning, relevant caller context, grammar, placeholders and shared native glossary independently rechecked."
+    },
+    {
+      "finding_id": "UR-O-014-01",
+      "key": "Usernames can only use letters, digits, dots, dashes and underscores (no spaces).",
+      "original_severity": "major",
+      "result": "resolved-after-distinct-editor-change",
+      "final_target": "صارف نام میں صرف انگریزی حروف (A–Z، a–z)، ہندسے (0–9)، نقطے، ڈیش اور انڈر اسکور ہو سکتے ہیں (خالی جگہ نہیں)۔",
+      "rationale": "Source meaning, relevant caller context, grammar, placeholders and shared native glossary independently rechecked."
+    },
+    {
+      "finding_id": "UR-O-014-02",
+      "key": "Undo",
+      "original_severity": "minor",
+      "result": "resolved-after-distinct-editor-change",
+      "final_target": "کالعدم کریں",
+      "rationale": "Source meaning, relevant caller context, grammar, placeholders and shared native glossary independently rechecked."
+    },
+    {
+      "finding_id": "UR-O-014-03",
+      "key": "Undo revision",
+      "original_severity": "minor",
+      "result": "resolved-after-distinct-editor-change",
+      "final_target": "ترمیم کالعدم کریں",
+      "rationale": "Source meaning, relevant caller context, grammar, placeholders and shared native glossary independently rechecked."
+    },
+    {
+      "finding_id": "UR-O-015-01",
+      "key": "You can only ban accounts with a lower role.",
+      "original_severity": "minor",
+      "result": "resolved-after-distinct-editor-change",
+      "final_target": "آپ صرف اپنے سے کم اختیارات والے اکاؤنٹس پر پابندی لگا سکتے ہیں۔",
+      "rationale": "Source meaning, relevant caller context, grammar, placeholders and shared native glossary independently rechecked."
+    },
+    {
+      "finding_id": "UR-O-015-02",
+      "key": "You can only delete accounts with a lower role.",
+      "original_severity": "minor",
+      "result": "resolved-after-distinct-editor-change",
+      "final_target": "آپ صرف اپنے سے کم اختیارات والے اکاؤنٹس حذف کر سکتے ہیں۔",
+      "rationale": "Source meaning, relevant caller context, grammar, placeholders and shared native glossary independently rechecked."
+    },
+    {
+      "finding_id": "UR-O-015-03",
+      "key": "You can only mute accounts with a lower role.",
+      "original_severity": "minor",
+      "result": "resolved-after-distinct-editor-change",
+      "final_target": "آپ صرف اپنے سے کم اختیارات والے اکاؤنٹس کی چیٹ پر پابندی لگا سکتے ہیں۔",
+      "rationale": "Source meaning, relevant caller context, grammar, placeholders and shared native glossary independently rechecked."
+    },
+    {
+      "finding_id": "UR-O-015-04",
+      "key": "Your creation will appear here. You can inspect, edit, compare, and publish saved versions.",
+      "original_severity": "minor",
+      "result": "resolved-after-distinct-editor-change",
+      "final_target": "آپ کی تخلیق یہاں ظاہر ہو گی۔ آپ محفوظ ورژن دیکھ سکتے ہیں، ان میں ترمیم اور ان کا موازنہ کر سکتے ہیں، اور انہیں شائع کر سکتے ہیں۔",
+      "rationale": "Source meaning, relevant caller context, grammar, placeholders and shared native glossary independently rechecked."
+    },
+    {
+      "finding_id": "UR-O-015-05",
+      "key": "check needs",
+      "original_severity": "major",
+      "result": "resolved-after-distinct-editor-change",
+      "final_target": "جانچ",
+      "rationale": "Source meaning, relevant caller context, grammar, placeholders and shared native glossary independently rechecked."
+    },
+    {
+      "finding_id": "UR-O-016-01",
+      "key": "checks need",
+      "original_severity": "major",
+      "result": "resolved-after-distinct-editor-change",
+      "final_target": "جانچوں",
+      "rationale": "Source meaning, relevant caller context, grammar, placeholders and shared native glossary independently rechecked."
+    },
+    {
+      "finding_id": "UR-O-016-02",
+      "key": "diverged",
+      "original_severity": "major",
+      "result": "resolved-after-distinct-editor-change",
+      "final_target": "کھیل کی حالت مختلف ہو گئی",
+      "rationale": "Source meaning, relevant caller context, grammar, placeholders and shared native glossary independently rechecked."
+    },
+    {
+      "finding_id": "UR-O-016-03",
+      "key": "{slot0} and resolve",
+      "original_severity": "minor",
+      "result": "resolved-after-distinct-editor-change",
+      "final_target": "{slot0} اور رپورٹ حل کریں",
+      "rationale": "Source meaning, relevant caller context, grammar, placeholders and shared native glossary independently rechecked."
+    },
+    {
+      "finding_id": "UR-O-017-01",
+      "key": "Comparison with ",
+      "original_severity": "minor",
+      "result": "resolved-after-distinct-editor-change",
+      "final_target": "موازنے کی بنیاد: ",
+      "rationale": "Source meaning, relevant caller context, grammar, placeholders and shared native glossary independently rechecked."
+    },
+    {
+      "finding_id": "UR-O-017-02",
+      "key": "Example of ",
+      "original_severity": "minor",
+      "result": "resolved-after-distinct-editor-change",
+      "final_target": "مثال: ",
+      "rationale": "Source meaning, relevant caller context, grammar, placeholders and shared native glossary independently rechecked."
+    },
+    {
+      "finding_id": "UR-O-017-03",
+      "key": "Good under {value0}, fair under {value1}, poor from {value2}.",
+      "original_severity": "major",
+      "result": "resolved-after-distinct-editor-change",
+      "final_target": "{value0} سے کم: اچھا؛ {value1} سے کم: مناسب؛ {value2} یا اس سے زیادہ: خراب۔",
+      "rationale": "Source meaning, relevant caller context, grammar, placeholders and shared native glossary independently rechecked."
+    },
+    {
+      "finding_id": "UR-O-018-01",
+      "key": "The provider outcome needs reconciliation. Your reserved {value0} credits remain held; new requests are paused. Manual editing and export remain available.",
+      "original_severity": "minor",
+      "result": "resolved-after-distinct-editor-change",
+      "final_target": "فراہم کنندہ کے نتیجے کا حساب ملانا ضروری ہے۔ آپ کے مختص {value0} کریڈٹ روک کر رکھے جاتے ہیں؛ نئی درخواستیں رکی ہیں۔ دستی ترمیم اور برآمد دستیاب ہیں۔",
+      "rationale": "Source meaning, relevant caller context, grammar, placeholders and shared native glossary independently rechecked."
+    },
+    {
+      "finding_id": "UR-O-018-02",
+      "key": "one unit per harvest",
+      "original_severity": "major",
+      "result": "resolved-after-distinct-editor-change",
+      "final_target": "وسائل جمع کرنے کی ہر باری میں ایک اکائی",
+      "rationale": "Source meaning, relevant caller context, grammar, placeholders and shared native glossary independently rechecked."
+    },
+    {
+      "finding_id": "UR-O-018-03",
+      "key": "stock remains available after harvesting",
+      "original_severity": "major",
+      "result": "resolved-after-distinct-editor-change",
+      "final_target": "وسائل جمع کرنے کے بعد ذخیرہ دستیاب رہتا ہے",
+      "rationale": "Source meaning, relevant caller context, grammar, placeholders and shared native glossary independently rechecked."
+    },
+    {
+      "finding_id": "UR-O-018-04",
+      "key": "the whole stock per harvest",
+      "original_severity": "major",
+      "result": "resolved-after-distinct-editor-change",
+      "final_target": "وسائل جمع کرنے کی ہر باری میں پورا ذخیرہ",
+      "rationale": "Source meaning, relevant caller context, grammar, placeholders and shared native glossary independently rechecked."
+    },
+    {
+      "finding_id": "UR-O-018-05",
+      "key": "{value0} {value1} attention",
+      "original_severity": "major",
+      "result": "resolved-after-distinct-editor-change",
+      "final_target": "{value0} {value1} پر توجہ درکار ہے",
+      "rationale": "Source meaning, relevant caller context, grammar, placeholders and shared native glossary independently rechecked."
+    }
+  ],
+  "supplemental_findings": [
+    {
+      "key": "{value0} playing",
+      "before": "{value0} کھیل رہے ہیں",
+      "after": "{value0} کی موسیقی چل رہی ہے",
+      "source": "{value0} playing",
+      "editor": "/root",
+      "finding_id": "UR-O-R2-001",
+      "id": "UR-O-R2-001",
+      "result": "independently-rechecked-pass"
+    }
+  ],
+  "open_findings": []
+}

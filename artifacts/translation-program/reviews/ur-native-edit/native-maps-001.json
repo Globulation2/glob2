@@ -1,0 +1,1293 @@
+{
+  "editor": "/root/swahili_translation",
+  "author": "/root/urdu_translation",
+  "independent_reviewer": "/root/pilot_context",
+  "batch_id": "native-maps-001",
+  "source_contract_sha256": "aacd8a342e9e734ba47f902a161ac1a45badff5842a617bcd68bf8e2275d6013",
+  "original_target_subset_sha256": "44ec5f41b86da783df2afba568a3ad2bc84339e93eb187b67df3326c3d448b01",
+  "final_target_subset_sha256": "c3397feee163967254d3c8c88ab1654888e6dacb890e6caaa24e696da8514e06",
+  "final_catalog_sha256": "ec78fb33247244bf783461e0410ef11fe48e45644c3c6500419d9060e967d458",
+  "entries": [
+    {
+      "key": "[concrete islands terrain]",
+      "source": "Separate Islands",
+      "before": "الگ جزیرے",
+      "after": "الگ جزیرے",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[crater lakes terrain]",
+      "source": "Crater Lakes",
+      "before": "گڑھوں کی جھیلیں",
+      "after": "گڑھوں کی جھیلیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[extra islands]",
+      "source": "empty islands",
+      "before": "خالی جزیرے",
+      "after": "خالی جزیرے",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[islands size]",
+      "source": "island size",
+      "before": "جزیرے کی جسامت",
+      "after": "جزیرے کی جسامت",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[islands terrain]",
+      "source": "Islands",
+      "before": "جزیرے",
+      "after": "جزیرے",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[isles terrain]",
+      "source": "Isles",
+      "before": "چھوٹے جزیرے",
+      "after": "چھوٹے جزیرے",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[map description]",
+      "source": "Description",
+      "before": "تفصیل",
+      "after": "تفصیل",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Map Discovered]",
+      "source": "Map Discovered",
+      "before": "دریافت شدہ نقشہ",
+      "after": "دریافت شدہ نقشہ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[map name]",
+      "source": "Name",
+      "before": "نام",
+      "after": "نام",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[map script]",
+      "source": "Map Script",
+      "before": "نقشے کا اسکرپٹ",
+      "after": "نقشے کا اسکرپٹ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[map size x]",
+      "source": "Map width",
+      "before": "نقشے کی چوڑائی",
+      "after": "نقشے کی چوڑائی",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[map size y]",
+      "source": "Map height",
+      "before": "نقشے کی اونچائی",
+      "after": "نقشے کی اونچائی",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[old islands terrain]",
+      "source": "Rugged Archipelago",
+      "before": "ناہموار جزائر",
+      "after": "ناہموار جزائر",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[old random terrain]",
+      "source": "Shattered Coast",
+      "before": "ٹوٹا پھوٹا ساحل",
+      "after": "ٹوٹا پھوٹا ساحل",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[river diameter]",
+      "source": "width of river",
+      "before": "دریا کی چوڑائی",
+      "after": "دریا کی چوڑائی",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[river terrain]",
+      "source": "River",
+      "before": "دریا",
+      "after": "دریا",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Reroll terrain look]",
+      "source": "Reroll terrain look",
+      "before": "زمین کی صورت دوبارہ بدلیں",
+      "after": "زمین کی صورت دوبارہ بدلیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[swamp terrain]",
+      "source": "Swamp",
+      "before": "دلدل",
+      "after": "دلدل",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[switch to terrain view]",
+      "source": "Switch to Terrain view",
+      "before": "زمین کے منظر پر جائیں",
+      "after": "زمین کے منظر پر جائیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[uniform terrain]",
+      "source": "Uniform terrain",
+      "before": "یکساں زمین",
+      "after": "یکساں زمین",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Concrete islands]",
+      "source": "Concrete islands",
+      "before": "الگ جزیرے",
+      "after": "الگ جزیرے",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Could not load this map. Choose another map or retry.]",
+      "source": "Could not load this map. Choose another map or retry.",
+      "before": "یہ نقشہ لوڈ نہیں ہو سکا۔ دوسرا چنیں یا دوبارہ کوشش کریں۔",
+      "after": "یہ نقشہ لوڈ نہیں ہو سکا۔ دوسرا چنیں یا دوبارہ کوشش کریں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Crater lakes]",
+      "source": "Crater lakes",
+      "before": "گڑھوں کی جھیلیں",
+      "after": "گڑھوں کی جھیلیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Extra islands]",
+      "source": "Extra islands",
+      "before": "اضافی جزیرے",
+      "after": "اضافی جزیرے",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Give at least one terrain type a nonzero weight.]",
+      "source": "Give at least one terrain type a nonzero weight.",
+      "before": "کم از کم ایک قسم کی زمین کو صفر سے زیادہ وزن دیں۔",
+      "after": "کم از کم ایک قسم کی زمین کو صفر سے زیادہ وزن دیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Island size]",
+      "source": "Island size",
+      "before": "جزیرے کی جسامت",
+      "after": "جزیرے کی جسامت",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Islands]",
+      "source": "Islands",
+      "before": "جزیرے",
+      "after": "جزیرے",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Lake density]",
+      "source": "Lake density",
+      "before": "جھیلوں کی کثرت",
+      "after": "جھیلوں کی کثرت",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Old islands]",
+      "source": "Rugged Archipelago",
+      "before": "ناہموار جزائر",
+      "after": "ناہموار جزائر",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Each landscape is shown as a real map at your current size and colony count. Use one to play the map shown.]",
+      "source": "Each landscape is shown as a real map at your current size and colony count. Use one to play the map shown.",
+      "before": "ہر منظرنامہ موجودہ جسامت اور بستیوں کی تعداد پر اصل نقشے کے طور پر دکھتا ہے۔ دکھائے گئے نقشے پر کھیلنے کے لیے اسے چنیں۔",
+      "after": "ہر منظرنامہ موجودہ جسامت اور بستیوں کی تعداد پر اصل نقشے کے طور پر دکھتا ہے۔ دکھائے گئے نقشے پر کھیلنے کے لیے اسے چنیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[River]",
+      "source": "River",
+      "before": "دریا",
+      "after": "دریا",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[River width]",
+      "source": "River width",
+      "before": "دریا کی چوڑائی",
+      "after": "دریا کی چوڑائی",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Terrain]",
+      "source": "Terrain",
+      "before": "زمین",
+      "after": "زمین",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Start with terrain known]",
+      "source": "Start with terrain known",
+      "before": "شروع سے زمین معلوم ہو",
+      "after": "ابتدا ہی سے زمین معلوم ہو",
+      "editorially_read": true,
+      "disposition": "edited-pending-recheck"
+    },
+    {
+      "key": "[This landscape uses a fixed terrain recipe.]",
+      "source": "This landscape uses a fixed terrain recipe.",
+      "before": "اس منظرنامے کی زمین بنانے کا طریقہ مقرر ہے۔",
+      "after": "اس منظرنامے کی زمین بنانے کا طریقہ مقرر ہے۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Updating map preview...]",
+      "source": "Updating map preview...",
+      "before": "نقشے کا پیش منظر تازہ ہو رہا ہے…",
+      "after": "نقشے کا پیش منظر تازہ ہو رہا ہے…",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Conquest only removes prestige victory; map scripts still apply.]",
+      "source": "Conquest only removes prestige victory; map scripts still apply.",
+      "before": "فتح کا موڈ صرف وقار سے جیت کو ہٹاتا ہے؛ نقشے کے اسکرپٹ پھر بھی لاگو ہوتے ہیں۔",
+      "after": "فتح کا موڈ صرف وقار سے جیت کو ہٹاتا ہے؛ نقشے کے اسکرپٹ پھر بھی لاگو ہوتے ہیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Map source]",
+      "source": "Map source",
+      "before": "نقشے کا ماخذ",
+      "after": "نقشے کا ماخذ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Select a map from the library.]",
+      "source": "Select a map from the library.",
+      "before": "لائبریری سے نقشہ چنیں۔",
+      "after": "لائبریری سے نقشہ چنیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Lake size]",
+      "source": "Lake size",
+      "before": "جھیل کی جسامت",
+      "after": "جھیل کی جسامت",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[The maze needs at least two cells across and down; use a bigger map or smaller cells.]",
+      "source": "The maze needs at least two cells across and down; use a bigger map or smaller cells.",
+      "before": "بھول بھلیوں میں افقی اور عمودی طور پر کم از کم دو خانے چاہیے؛ بڑا نقشہ یا چھوٹے خانے چنیں۔",
+      "after": "بھول بھلیوں میں افقی اور عمودی طور پر کم از کم دو خانے چاہیے؛ بڑا نقشہ یا چھوٹے خانے چنیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[The maze has too few cul-de-sacs for this many colonies; use a bigger map or smaller cells.]",
+      "source": "The maze has too few cul-de-sacs for this many colonies; use a bigger map or smaller cells.",
+      "before": "اتنی بستیوں کے لیے بھول بھلیوں میں بند گلیاں کم ہیں؛ بڑا نقشہ یا چھوٹے خانے چنیں۔",
+      "after": "اتنی بستیوں کے لیے بھول بھلیوں میں بند گلیاں کم ہیں؛ بڑا نقشہ یا چھوٹے خانے چنیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Home island size]",
+      "source": "Home island size",
+      "before": "آبائی جزیرے کی جسامت",
+      "after": "آبائی جزیرے کی جسامت",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Lake connects to fjords]",
+      "source": "Lake connects to fjords",
+      "before": "جھیل فیورڈ سے ملتی ہے",
+      "after": "جھیل فیورڈ سے ملتی ہے",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Resource islands]",
+      "source": "Resource islands",
+      "before": "وسائل کے جزیرے",
+      "after": "وسائل کے جزیرے",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[River density]",
+      "source": "River density",
+      "before": "دریاؤں کی کثرت",
+      "after": "دریاؤں کی کثرت",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[The watershed has too little floodplain for this many colonies; use a bigger map or fewer colonies.]",
+      "source": "The watershed has too little floodplain for this many colonies; use a bigger map or fewer colonies.",
+      "before": "اتنی بستیوں کے لیے دریائی طاس میں سیلابی میدان کم ہے؛ بڑا نقشہ یا کم بستیاں چنیں۔",
+      "after": "اتنی بستیوں کے لیے دریائی طاس میں سیلابی میدان کم ہے؛ بڑا نقشہ یا کم بستیاں چنیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[These valleys are too big for the map; use a bigger map or smaller valleys.]",
+      "source": "These valleys are too big for the map; use a bigger map or smaller valleys.",
+      "before": "وادیوں کی جسامت نقشے کے لیے بہت بڑی ہے؛ بڑا نقشہ یا چھوٹی وادیاں چنیں۔",
+      "after": "وادیوں کی جسامت نقشے کے لیے بہت بڑی ہے؛ بڑا نقشہ یا چھوٹی وادیاں چنیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[The highlands have too little room for this many colonies; use a bigger map or fewer colonies.]",
+      "source": "The highlands have too little room for this many colonies; use a bigger map or fewer colonies.",
+      "before": "بلند علاقوں میں اتنی بستیوں کی جگہ کم ہے؛ بڑا نقشہ یا کم بستیاں چنیں۔",
+      "after": "بلند علاقوں میں اتنی بستیوں کی جگہ کم ہے؛ بڑا نقشہ یا کم بستیاں چنیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Lakes]",
+      "source": "Lakes",
+      "before": "جھیلیں",
+      "after": "جھیلیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Eight colonies need a square map in the symmetric arena.]",
+      "source": "Eight colonies need a square map in the symmetric arena.",
+      "before": "متناسب میدان میں آٹھ بستیوں کے لیے مربع نقشہ چاہیے۔",
+      "after": "متناسب میدان میں آٹھ بستیوں کے لیے مربع نقشہ چاہیے۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[The belt is too short for this many colonies; use a longer map or fewer colonies.]",
+      "source": "The belt is too short for this many colonies; use a longer map or fewer colonies.",
+      "before": "اتنی بستیوں کے لیے پٹی بہت چھوٹی ہے؛ لمبا نقشہ یا کم بستیاں چنیں۔",
+      "after": "اتنی بستیوں کے لیے پٹی بہت چھوٹی ہے؛ لمبا نقشہ یا کم بستیاں چنیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Too many colonies for this map; use a bigger map or fewer colonies.]",
+      "source": "Too many colonies for this map; use a bigger map or fewer colonies.",
+      "before": "اس نقشے کے لیے بستیاں بہت زیادہ ہیں؛ بڑا نقشہ یا کم بستیاں چنیں۔",
+      "after": "اس نقشے کے لیے بستیاں بہت زیادہ ہیں؛ بڑا نقشہ یا کم بستیاں چنیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Coral needs a map at least 128 tiles across.]",
+      "source": "Coral needs a map at least 128 tiles across.",
+      "before": "مرجانی منظر کے لیے کم از کم 128 خانوں چوڑا نقشہ چاہیے۔",
+      "after": "مرجانی منظر کے لیے کم از کم 128 خانوں چوڑا نقشہ چاہیے۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Sandbars]",
+      "source": "Sandbars",
+      "before": "ریت کی پٹیاں",
+      "after": "ریت کی پٹیاں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Central island]",
+      "source": "Central island",
+      "before": "مرکزی جزیرہ",
+      "after": "مرکزی جزیرہ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[The home islands do not fit on this map; use a bigger map, fewer colonies or smaller islands.]",
+      "source": "The home islands do not fit on this map; use a bigger map, fewer colonies or smaller islands.",
+      "before": "آبائی جزیرے نقشے میں نہیں سما سکتے؛ بڑا نقشہ، کم بستیاں یا چھوٹے جزیرے چنیں۔",
+      "after": "آبائی جزیرے نقشے میں نہیں سما سکتے؛ بڑا نقشہ، کم بستیاں یا چھوٹے جزیرے چنیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Winding river]",
+      "source": "Winding river",
+      "before": "بل کھاتا دریا",
+      "after": "بل کھاتا دریا",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Sandy lake shore]",
+      "source": "Sandy lake shore",
+      "before": "جھیل کا ریتیلا کنارا",
+      "after": "جھیل کا ریتیلا کنارا",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[River delta]",
+      "source": "River delta",
+      "before": "دریائی ڈیلٹا",
+      "after": "دریائی ڈیلٹا",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Meandering rivers]",
+      "source": "Meandering rivers",
+      "before": "بل کھاتے دریا",
+      "after": "بل کھاتے دریا",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Inland lakes]",
+      "source": "Inland lakes",
+      "before": "اندرونِ خشکی جھیلیں",
+      "after": "اندرونِ خشکی جھیلیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Map preview controls]",
+      "source": "Drag to wrap. Wheel to zoom. Right-click or double-click to reset.",
+      "before": "لپیٹ کر گھمانے کے لیے کھینچیں۔ پہیے سے زوم کریں۔ بحالی کے لیے دایاں یا دوہرا کلک کریں۔",
+      "after": "لپیٹ کر گھمانے کے لیے کھینچیں۔ پہیے سے زوم کریں۔ بحالی کے لیے دایاں یا دوہرا کلک کریں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Map preview drag help]",
+      "source": "Drag to wrap; wheel to zoom.",
+      "before": "لپیٹ کر گھمانے کے لیے کھینچیں؛ پہیے سے زوم کریں۔",
+      "after": "لپیٹ کر گھمانے کے لیے کھینچیں؛ پہیے سے زوم کریں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Map preview loading]",
+      "source": "Loading...",
+      "before": "لوڈ ہو رہا ہے…",
+      "after": "لوڈ ہو رہا ہے…",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Map preview failed]",
+      "source": "Preview failed",
+      "before": "پیش منظر ناکام رہا",
+      "after": "پیش منظر ناکام رہا",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Map preview retry]",
+      "source": "Click to retry",
+      "before": "دوبارہ کوشش کے لیے کلک کریں",
+      "after": "دوبارہ کوشش کے لیے کلک کریں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Map preview please wait]",
+      "source": "Please wait",
+      "before": "انتظار کریں",
+      "after": "انتظار کریں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Map preview choose another]",
+      "source": "Choose a map",
+      "before": "نقشہ چنیں",
+      "after": "نقشہ چنیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Emoji terrain]",
+      "source": "Emoji terrain",
+      "before": "ایموجی کی زمین",
+      "after": "ایموجی کی زمین",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[A fort cannot reach its ford; use a bigger map or fewer colonies.]",
+      "source": "A fort cannot reach its ford; use a bigger map or fewer colonies.",
+      "before": "قلعے سے اس کے پایاب راستے تک رسائی نہیں؛ بڑا نقشہ یا کم بستیاں چنیں۔",
+      "after": "قلعے سے اس کے پایاب راستے تک رسائی نہیں؛ بڑا نقشہ یا کم بستیاں چنیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Braided river]",
+      "source": "Braided river",
+      "before": "شاخ دار دریا",
+      "after": "شاخ دار دریا",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[The braid leaves too little terrace for the homes; use a bigger map or a narrower braid.]",
+      "source": "The braid leaves too little terrace for the homes; use a bigger map or a narrower braid.",
+      "before": "دریا کی شاخیں آبادیوں کے لیے بہت کم ہموار کنارا چھوڑتی ہیں؛ بڑا نقشہ یا کم چوڑی شاخیں چنیں۔",
+      "after": "دریا کی شاخیں آبادیوں کے لیے بہت کم ہموار کنارا چھوڑتی ہیں؛ بڑا نقشہ یا کم چوڑی شاخیں چنیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[The map is too narrow across for a braid; use a bigger map.]",
+      "source": "The map is too narrow across for a braid; use a bigger map.",
+      "before": "شاخ دار دریا کے لیے نقشہ بہت تنگ ہے؛ بڑا نقشہ چنیں۔",
+      "after": "شاخ دار دریا کے لیے نقشہ بہت تنگ ہے؛ بڑا نقشہ چنیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Mountain ranges]",
+      "source": "Mountain ranges",
+      "before": "پہاڑی سلسلے",
+      "after": "پہاڑی سلسلے",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Great rivers]",
+      "source": "Great rivers",
+      "before": "عظیم دریا",
+      "after": "عظیم دریا",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[The map is too small to hold a continent.]",
+      "source": "The map is too small to hold a continent.",
+      "before": "نقشہ براعظم کے لیے بہت چھوٹا ہے۔",
+      "after": "نقشہ براعظم کے لیے بہت چھوٹا ہے۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[This continent has no room for that many colonies at this map size; use a bigger map or fewer colonies.]",
+      "source": "This continent has no room for that many colonies at this map size; use a bigger map or fewer colonies.",
+      "before": "اس جسامت کے براعظم پر اتنی بستیوں کی جگہ نہیں؛ بڑا نقشہ یا کم بستیاں چنیں۔",
+      "after": "اس جسامت کے براعظم پر اتنی بستیوں کی جگہ نہیں؛ بڑا نقشہ یا کم بستیاں چنیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Valley river]",
+      "source": "Valley river",
+      "before": "وادی کا دریا",
+      "after": "وادی کا دریا",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Islands per colony]",
+      "source": "Islands per colony",
+      "before": "فی بستی جزیرے",
+      "after": "فی بستی جزیرے",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[The islands are too small for their plots; use a bigger map, a smaller plot or fewer colonies.]",
+      "source": "The islands are too small for their plots; use a bigger map, a smaller plot or fewer colonies.",
+      "before": "قطعوں کے لیے جزیرے بہت چھوٹے ہیں؛ بڑا نقشہ، چھوٹا قطعہ یا کم بستیاں چنیں۔",
+      "after": "قطعوں کے لیے جزیرے بہت چھوٹے ہیں؛ بڑا نقشہ، چھوٹا قطعہ یا کم بستیاں چنیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Hilbert River]",
+      "source": "Hilbert River",
+      "before": "ہلبرٹ دریا",
+      "after": "ہلبرٹ دریا",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[The rivers found no way between the homes; use a bigger map or fewer colonies.]",
+      "source": "The rivers found no way between the homes; use a bigger map or fewer colonies.",
+      "before": "دریاؤں کو آبادیوں کے درمیان راستہ نہیں ملا؛ بڑا نقشہ یا کم بستیاں چنیں۔",
+      "after": "دریاؤں کو آبادیوں کے درمیان راستہ نہیں ملا؛ بڑا نقشہ یا کم بستیاں چنیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[River meander]",
+      "source": "River meander",
+      "before": "دریا کے بل",
+      "after": "دریا کے بل",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[The lake does not fit this map; use a smaller lake or a bigger map.]",
+      "source": "The lake does not fit this map; use a smaller lake or a bigger map.",
+      "before": "جھیل نقشے میں نہیں سماتی؛ چھوٹی جھیل یا بڑا نقشہ چنیں۔",
+      "after": "جھیل نقشے میں نہیں سماتی؛ چھوٹی جھیل یا بڑا نقشہ چنیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[A sand bar did not reach the island.]",
+      "source": "A sand bar did not reach the island.",
+      "before": "ریت کی پٹی جزیرے تک نہیں پہنچی۔",
+      "after": "ریت کی پٹی جزیرے تک نہیں پہنچی۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[This map has no room for that many colonies; use a bigger map or fewer colonies.]",
+      "source": "This map has no room for that many colonies; use a bigger map or fewer colonies.",
+      "before": "نقشے پر اتنی بستیوں کی جگہ نہیں؛ بڑا نقشہ یا کم بستیاں چنیں۔",
+      "after": "نقشے پر اتنی بستیوں کی جگہ نہیں؛ بڑا نقشہ یا کم بستیاں چنیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[The island has no room for its quarry; use a bigger island.]",
+      "source": "The island has no room for its quarry; use a bigger island.",
+      "before": "جزیرے پر کان کی جگہ نہیں؛ بڑا جزیرہ چنیں۔",
+      "after": "جزیرے پر کان کی جگہ نہیں؛ بڑا جزیرہ چنیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[The massif does not fit this map; use a bigger map or fewer colonies.]",
+      "source": "The massif does not fit this map; use a bigger map or fewer colonies.",
+      "before": "پہاڑی مجموعہ نقشے میں نہیں سماتا؛ بڑا نقشہ یا کم بستیاں چنیں۔",
+      "after": "پہاڑی مجموعہ نقشے میں نہیں سماتا؛ بڑا نقشہ یا کم بستیاں چنیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[This map is too small to solve on; use a bigger map.]",
+      "source": "This map is too small to solve on; use a bigger map.",
+      "before": "حل تلاش کرنے کے لیے نقشہ بہت چھوٹا ہے؛ بڑا نقشہ چنیں۔",
+      "after": "حل تلاش کرنے کے لیے نقشہ بہت چھوٹا ہے؛ بڑا نقشہ چنیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Too many colonies to balance on a map this size; use a bigger map or fewer colonies.]",
+      "source": "Too many colonies to balance on a map this size; use a bigger map or fewer colonies.",
+      "before": "اس جسامت کے نقشے پر اتنی بستیوں میں توازن ممکن نہیں؛ بڑا نقشہ یا کم بستیاں چنیں۔",
+      "after": "اس جسامت کے نقشے پر اتنی بستیوں میں توازن ممکن نہیں؛ بڑا نقشہ یا کم بستیاں چنیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Too many colonies for this map to give each a homeland; use a bigger map or fewer colonies.]",
+      "source": "Too many colonies for this map to give each a homeland; use a bigger map or fewer colonies.",
+      "before": "ہر بستی کو آبائی علاقہ دینے کے لیے بستیاں زیادہ ہیں؛ بڑا نقشہ یا کم بستیاں چنیں۔",
+      "after": "ہر بستی کو آبائی علاقہ دینے کے لیے بستیاں زیادہ ہیں؛ بڑا نقشہ یا کم بستیاں چنیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[This map has no room to spread the colonies out; use a bigger map or fewer colonies.]",
+      "source": "This map has no room to spread the colonies out; use a bigger map or fewer colonies.",
+      "before": "بستیوں کو پھیلانے کے لیے جگہ نہیں؛ بڑا نقشہ یا کم بستیاں چنیں۔",
+      "after": "بستیوں کو پھیلانے کے لیے جگہ نہیں؛ بڑا نقشہ یا کم بستیاں چنیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[A colony's homeland has no way out onto the march; use a bigger map or a narrower march.]",
+      "source": "A colony's homeland has no way out onto the march; use a bigger map or a narrower march.",
+      "before": "ایک بستی کے آبائی علاقے سے سرحدی پٹی تک نکلنے کا راستہ نہیں؛ بڑا نقشہ یا تنگ سرحدی پٹی چنیں۔",
+      "after": "ایک بستی کے آبائی علاقے سے سرحدی پٹی تک نکلنے کا راستہ نہیں؛ بڑا نقشہ یا تنگ سرحدی پٹی چنیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[The Gauntlet needs a larger map or fewer colonies to fit its two guarded fronts.]",
+      "source": "The Gauntlet needs a larger map or fewer colonies to fit its two guarded fronts.",
+      "before": "کٹھن راہ کے دو پہرے دار محاذ سمانے کے لیے بڑا نقشہ یا کم بستیاں چاہیے۔",
+      "after": "کٹھن راہ کے دو پہرے دار محاذ سمانے کے لیے بڑا نقشہ یا کم بستیاں چاہیے۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Portage Lakes]",
+      "source": "Portage Lakes",
+      "before": "پورٹیج جھیلیں",
+      "after": "پورٹیج جھیلیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Lake elongation]",
+      "source": "Lake elongation",
+      "before": "جھیل کا لمبا پن",
+      "after": "جھیل کا لمبا پن",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Portage Lakes needs sides between 64 and 512 tiles.]",
+      "source": "Portage Lakes needs sides between 64 and 512 tiles.",
+      "before": "پورٹیج جھیلوں کے لیے ہر سمت 64 سے 512 خانے چاہیے۔",
+      "after": "پورٹیج جھیلوں کے لیے ہر سمت 64 سے 512 خانے چاہیے۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Portage Lakes cannot fit shoreline settlements on this seed.]",
+      "source": "Portage Lakes cannot fit shoreline settlements on this seed.",
+      "before": "اس سیڈ پر پورٹیج جھیلوں کے کنارے بستیاں نہیں سما سکتیں۔",
+      "after": "اس سیڈ پر پورٹیج جھیلوں کے کنارے بستیاں نہیں سما سکتیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Portage Lakes cannot fit renewable shore fields beside every settlement.]",
+      "source": "Portage Lakes cannot fit renewable shore fields beside every settlement.",
+      "before": "پورٹیج جھیلوں میں ہر بستی کے پاس دوبارہ اگنے والے ساحلی کھیت نہیں سما سکتے۔",
+      "after": "پورٹیج جھیلوں میں ہر بستی کے پاس دوبارہ اگنے والے ساحلی کھیت نہیں سما سکتے۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Portage Lakes cannot connect its shoreline trails.]",
+      "source": "Portage Lakes cannot connect its shoreline trails.",
+      "before": "پورٹیج جھیلوں کے ساحلی راستے نہیں جڑ سکتے۔",
+      "after": "پورٹیج جھیلوں کے ساحلی راستے نہیں جڑ سکتے۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Portage Lakes needs separate swimming lakes on this seed.]",
+      "source": "Portage Lakes needs separate swimming lakes on this seed.",
+      "before": "اس سیڈ پر پورٹیج جھیلوں کے لیے الگ تیراکی والی جھیلیں چاہیے۔",
+      "after": "اس سیڈ پر پورٹیج جھیلوں کے لیے الگ تیراکی والی جھیلیں چاہیے۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Sandbar connections]",
+      "source": "Sandbar connections",
+      "before": "ریت کی پٹیوں کے رابطے",
+      "after": "ریت کی پٹیوں کے رابطے",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Outlying islands]",
+      "source": "Outlying islands",
+      "before": "دور کے جزیرے",
+      "after": "دور کے جزیرے",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Loading terrain]",
+      "source": "Loading terrain...",
+      "before": "زمین لوڈ ہو رہی ہے…",
+      "after": "زمین لوڈ ہو رہی ہے…",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Map settings]",
+      "source": "Map settings",
+      "before": "نقشے کی ترتیبات",
+      "after": "نقشے کی ترتیبات",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Release on valid terrain to place]",
+      "source": "Release on valid terrain to place",
+      "before": "درست زمین پر رکھ کر چھوڑیں",
+      "after": "درست زمین پر رکھ کر چھوڑیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Mark map for allies]",
+      "source": "Mark map for allies",
+      "before": "اتحادیوں کے لیے نقشے پر نشان لگائیں",
+      "after": "اتحادیوں کے لیے نقشے پر نشان لگائیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Tap to write the map script]",
+      "source": "Tap to write the map script",
+      "before": "نقشے کا اسکرپٹ لکھنے کے لیے چھوئیں",
+      "after": "نقشے کا اسکرپٹ لکھنے کے لیے چھوئیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Starting terrain]",
+      "source": "Starting terrain",
+      "before": "ابتدائی زمین",
+      "after": "ابتدائی زمین",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Map momentum]",
+      "source": "Map momentum",
+      "before": "نقشے کی روانی",
+      "after": "نقشے کی روانی",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[match downloading map %0]",
+      "source": "Downloading map %0",
+      "before": "نقشہ %0 ڈاؤن لوڈ ہو رہا ہے",
+      "after": "نقشہ %0 ڈاؤن لوڈ ہو رہا ہے",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[match map cached]",
+      "source": "already on this device",
+      "before": "اس آلے پر پہلے سے موجود",
+      "after": "اس آلے پر پہلے سے موجود",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[room map changed %0]",
+      "source": "The map changed to %0.",
+      "before": "نقشہ %0 ہو گیا۔",
+      "after": "نقشہ %0 ہو گیا۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[room map failed]",
+      "source": "The map could not be prepared",
+      "before": "نقشہ تیار نہیں ہو سکا",
+      "after": "نقشہ تیار نہیں ہو سکا",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[maps map page]",
+      "source": "Map page",
+      "before": "نقشے کا صفحہ",
+      "after": "نقشے کا صفحہ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[maps upload a map title]",
+      "source": "Upload a map",
+      "before": "نقشہ اپ لوڈ کریں",
+      "after": "نقشہ اپ لوڈ کریں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[maps update map title]",
+      "source": "Update a map",
+      "before": "نقشہ تازہ کریں",
+      "after": "نقشہ تازہ کریں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[room map read failed]",
+      "source": "This map file could not be read.",
+      "before": "نقشے کی یہ فائل پڑھی نہیں جا سکی۔",
+      "after": "نقشے کی یہ فائل پڑھی نہیں جا سکی۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[room map upload failed]",
+      "source": "The map could not be shared with the room.",
+      "before": "نقشہ کمرے میں بانٹا نہیں جا سکا۔",
+      "after": "نقشہ کمرے میں بانٹا نہیں جا سکا۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[room map upload failed %0]",
+      "source": "The map could not be shared with the room: %0",
+      "before": "نقشہ کمرے میں بانٹا نہیں جا سکا: %0",
+      "after": "نقشہ کمرے میں بانٹا نہیں جا سکا: %0",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[room premade map shared]",
+      "source": "Everyone in the room plays this map file; it downloads before the match.",
+      "before": "کمرے کے سب کھلاڑی اس نقشے کی فائل پر کھیلتے ہیں؛ میچ سے پہلے یہ ڈاؤن لوڈ ہوتی ہے۔",
+      "after": "کمرے کے سب کھلاڑی اس نقشے کی فائل پر کھیلتے ہیں؛ میچ سے پہلے یہ ڈاؤن لوڈ ہوتی ہے۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[room map ready title %0]",
+      "source": "Play %0",
+      "before": "%0 کھیلیں",
+      "after": "%0 کھیلیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[room map ready unnamed]",
+      "source": "this map",
+      "before": "یہ نقشہ",
+      "after": "یہ نقشہ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[room map ready body]",
+      "source": "Create a room and invite your friends: the room plays this map.",
+      "before": "کمرہ بنا کر دوستوں کو بلائیں: کمرہ اس نقشے پر کھیلتا ہے۔",
+      "after": "کمرہ بنا کر دوستوں کو بلائیں: کمرہ اس نقشے پر کھیلتا ہے۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Map repetition failed]",
+      "source": "Cannot repeat this map. Use an unscripted starting map, or reduce the repeats and bases.",
+      "before": "یہ نقشہ دہرایا نہیں جا سکتا۔ بغیر اسکرپٹ کا ابتدائی نقشہ چنیں، یا تکرار اور مراکز کم کریں۔",
+      "after": "یہ نقشہ دہرایا نہیں جا سکتا۔ بغیر اسکرپٹ کا ابتدائی نقشہ چنیں، یا تکرار اور مراکز کم کریں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[repeat map horizontally]",
+      "source": "Repeat map horizontally",
+      "before": "نقشہ افقی طور پر دہرائیں",
+      "after": "نقشہ افقی طور پر دہرائیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[repeat map vertically]",
+      "source": "Repeat map vertically",
+      "before": "نقشہ عمودی طور پر دہرائیں",
+      "after": "نقشہ عمودی طور پر دہرائیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat growth map about]",
+      "source": "How much material stock grew in resources anywhere on the map, in growth points rather than harvested loads. This is the same for every colony.",
+      "before": "نقشے بھر کے وسائل میں مواد کا ذخیرہ کتنا بڑھا؛ کٹی ہوئی کھیپوں کے بجائے افزائش کے پوائنٹ میں۔ یہ ہر بستی کے لیے یکساں ہے۔",
+      "after": "نقشے بھر کے وسائل میں مواد کا ذخیرہ کتنا بڑھا؛ جمع کی گئی کھیپوں کے بجائے افزائش کے پوائنٹ میں۔ یہ ہر بستی کے لیے یکساں ہے۔",
+      "editorially_read": true,
+      "disposition": "edited-pending-recheck"
+    },
+    {
+      "key": "[Reveal terrain]",
+      "source": "Reveal terrain",
+      "before": "زمین ظاہر کریں",
+      "after": "زمین ظاہر کریں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Players see the map's terrain from the start; enemy units stay hidden.]",
+      "source": "Players see the map's terrain from the start; enemy units stay hidden.",
+      "before": "کھلاڑی ابتدا سے نقشے کی زمین دیکھتے ہیں؛ دشمن یونٹ چھپے رہتے ہیں۔",
+      "after": "کھلاڑی ابتدا سے نقشے کی زمین دیکھتے ہیں؛ دشمن یونٹ چھپے رہتے ہیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[experiment ice-terrain]",
+      "source": "Ice terrain",
+      "before": "برفیلی زمین",
+      "after": "برفیلی زمین",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[experiment ice-terrain help]",
+      "source": "Adds ice to the map editor. Ground units move at half speed and lose one health point per 32 exposed ticks. Ice cannot hold buildings or resources.",
+      "before": "نقشہ ایڈیٹر میں برف شامل کرتا ہے۔ زمینی یونٹ آدھی رفتار سے چلتے اور عمارت سے باہر ہر 32 ٹک پر ایک صحت پوائنٹ کھوتے ہیں۔ برف پر عمارتیں یا وسائل نہیں ہوتے۔",
+      "after": "نقشہ ایڈیٹر میں برف شامل کرتا ہے۔ زمینی یونٹ آدھی رفتار سے چلتے اور عمارت سے باہر ہر 32 ٹک پر ایک صحت پوائنٹ کھوتے ہیں۔ برف پر عمارتیں یا وسائل نہیں ہوتے۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[experiment road-terrain]",
+      "source": "Trail terrain",
+      "before": "پگڈنڈی کی زمین",
+      "after": "پگڈنڈی کی زمین",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[experiment road-terrain help]",
+      "source": "Adds weathered trails to the map editor. Ground units move at double speed. Trails support buildings but no resources. Flying units are unaffected.",
+      "before": "نقشہ ایڈیٹر میں پرانی پگڈنڈیاں شامل کرتا ہے۔ زمینی یونٹ دوگنی رفتار سے چلتے ہیں۔ عمارتیں بن سکتی ہیں، وسائل نہیں۔ اڑنے والے یونٹ متاثر نہیں ہوتے۔",
+      "after": "نقشہ ایڈیٹر میں پرانی پگڈنڈیاں شامل کرتا ہے۔ زمینی یونٹ دوگنی رفتار سے چلتے ہیں۔ عمارتیں بن سکتی ہیں، وسائل نہیں۔ اڑنے والے یونٹ متاثر نہیں ہوتے۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Import Terrain Definitions]",
+      "source": "Import Terrain Definitions",
+      "before": "زمین کی تعریفیں درآمد کریں",
+      "after": "زمین کی تعریفیں درآمد کریں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Terrain palette]",
+      "source": "Terrain palette",
+      "before": "زمین کا انتخاب",
+      "after": "زمین کا انتخاب",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[terrain group water]",
+      "source": "Water",
+      "before": "پانی",
+      "after": "پانی",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[terrain group sand]",
+      "source": "Sand",
+      "before": "ریت",
+      "after": "ریت",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[terrain group grass]",
+      "source": "Grass",
+      "before": "گھاس",
+      "after": "گھاس",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[terrain group ice]",
+      "source": "Ice",
+      "before": "برف",
+      "after": "برف",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[terrain group paths]",
+      "source": "Paths",
+      "before": "راستے",
+      "after": "راستے",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[terrain group obstacles]",
+      "source": "Obstacles",
+      "before": "رکاوٹیں",
+      "after": "رکاوٹیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[terrain group ridges]",
+      "source": "Ridges",
+      "before": "پہاڑی دھاریں",
+      "after": "پہاڑی دھاریں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[terrain group barren]",
+      "source": "Barren ground",
+      "before": "بنجر زمین",
+      "after": "بنجر زمین",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[terrain group rough]",
+      "source": "Rough ground",
+      "before": "ناہموار زمین",
+      "after": "ناہموار زمین",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[terrain group lava]",
+      "source": "Lava",
+      "before": "لاوا",
+      "after": "لاوا",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[terrain group fertile]",
+      "source": "Fertile ground",
+      "before": "زرخیز زمین",
+      "after": "زرخیز زمین",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[terrain group deep-water]",
+      "source": "Deep water",
+      "before": "گہرا پانی",
+      "after": "گہرا پانی",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[terrain group void]",
+      "source": "Void",
+      "before": "خلا",
+      "after": "خلا",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[experiment obstacle-terrain]",
+      "source": "Obstacle terrain",
+      "before": "رکاوٹوں کی زمین",
+      "after": "رکاوٹوں کی زمین",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[experiment obstacle-terrain help]",
+      "source": "Adds boulders, hedges and thickets to the map editor. Ground units cannot cross them and they stop projectiles; flying units pass over. They hold neither buildings nor resources.",
+      "before": "نقشہ ایڈیٹر میں بڑے پتھر، باڑیں اور گھنے جھاڑ شامل کرتا ہے۔ زمینی یونٹ پار نہیں جا سکتے اور گولے رک جاتے ہیں؛ اڑنے والے اوپر گزر جاتے ہیں۔ ان پر عمارتیں یا وسائل نہیں ہوتے۔",
+      "after": "نقشہ ایڈیٹر میں بڑے پتھر، باڑیں اور گھنے جھاڑ شامل کرتا ہے۔ زمینی یونٹ پار نہیں جا سکتے اور گولے رک جاتے ہیں؛ اڑنے والے اوپر گزر جاتے ہیں۔ ان پر عمارتیں یا وسائل نہیں ہوتے۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[experiment ridge-terrain]",
+      "source": "Ridge terrain",
+      "before": "پہاڑی دھاروں کی زمین",
+      "after": "پہاڑی دھاروں کی زمین",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[experiment ridge-terrain help]",
+      "source": "Adds rock ridges and outcrops to the map editor. Ground units cannot cross them, but towers shoot over them and flying units pass. They hold neither buildings nor resources.",
+      "before": "نقشہ ایڈیٹر میں چٹانی دھاریں اور ابھار شامل کرتا ہے۔ زمینی یونٹ نہیں گزر سکتے، مگر مینار اوپر سے گولے چلاتے اور اڑنے والے پار جاتے ہیں۔ ان پر عمارتیں یا وسائل نہیں ہوتے۔",
+      "after": "نقشہ ایڈیٹر میں چٹانی دھاریں اور ابھار شامل کرتا ہے۔ زمینی یونٹ نہیں گزر سکتے، مگر مینار اوپر سے گولے چلاتے اور اڑنے والے پار جاتے ہیں۔ ان پر عمارتیں یا وسائل نہیں ہوتے۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[experiment barren-terrain]",
+      "source": "Barren ground",
+      "before": "بنجر زمین",
+      "after": "بنجر زمین",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[experiment barren-terrain help]",
+      "source": "Adds dirt, clay, gravel and flower meadows to the map editor. Buildings can stand on them, nothing grows on or next to them, and they do not count as shoreline.",
+      "before": "نقشہ ایڈیٹر میں مٹی، چکنی مٹی، بجری اور پھولوں کے میدان شامل کرتا ہے۔ عمارتیں بن سکتی ہیں، ان پر یا پاس کچھ نہیں اگتا، اور یہ ساحل شمار نہیں ہوتیں۔",
+      "after": "نقشہ ایڈیٹر میں مٹی، چکنی مٹی، بجری اور پھولوں کے میدان شامل کرتا ہے۔ عمارتیں بن سکتی ہیں، ان پر یا پاس کچھ نہیں اگتا، اور یہ ساحل شمار نہیں ہوتیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[experiment rough-terrain]",
+      "source": "Rough ground",
+      "before": "ناہموار زمین",
+      "after": "ناہموار زمین",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[experiment rough-terrain help]",
+      "source": "Adds mud, marsh, deep snow and scree to the map editor. Ground units move at about two thirds speed. Rough ground holds neither buildings nor resources.",
+      "before": "نقشہ ایڈیٹر میں کیچڑ، دلدل، گہری برف اور پتھریلی ڈھلوان شامل کرتا ہے۔ زمینی یونٹ تقریباً دو تہائی رفتار سے چلتے ہیں۔ عمارتیں یا وسائل نہیں ہوتے۔",
+      "after": "نقشہ ایڈیٹر میں کیچڑ، دلدل، گہری برف اور پتھریلی ڈھلوان شامل کرتا ہے۔ زمینی یونٹ تقریباً دو تہائی رفتار سے چلتے ہیں۔ عمارتیں یا وسائل نہیں ہوتے۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[experiment path-terrain]",
+      "source": "Path terrain",
+      "before": "پگڈنڈی کی زمین",
+      "after": "پگڈنڈی کی زمین",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[experiment path-terrain help]",
+      "source": "Adds dirt tracks and boardwalks to the map editor. Like trails, ground units move at double speed and buildings are allowed, but nothing grows.",
+      "before": "نقشہ ایڈیٹر میں کچے اور تختوں والے راستے شامل کرتا ہے۔ پگڈنڈیوں کی طرح زمینی یونٹ دوگنی رفتار سے چلتے اور عمارتیں بن سکتی ہیں، مگر کچھ نہیں اگتا۔",
+      "after": "نقشہ ایڈیٹر میں کچے اور تختوں والے راستے شامل کرتا ہے۔ پگڈنڈیوں کی طرح زمینی یونٹ دوگنی رفتار سے چلتے اور عمارتیں بن سکتی ہیں، مگر کچھ نہیں اگتا۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    }
+  ],
+  "status": "edited-awaiting-independent-recheck"
+}

@@ -1,0 +1,53 @@
+{
+  "reviewer": "/root/translation_kit",
+  "role": "Independent source reviewer; did not author either reviewed control change",
+  "status": "no blocking source findings; actual Swahili captures and zoom hit-sequence probe pending",
+  "source_sha256": {
+    "src/render/overlay/MapZoomControls.h": "6d5b99d9f77853315ddd7298ce77b2ecbf54e470c406ce07c5d9fd1ee152e2d3",
+    "src/game/screens/CustomGameScreen.cpp": "0cdbf52d68ec731f12aabff02f0576057423eca6d1d3d64e92ae68ceb6df21bd",
+    "libgag/src/ui/Controls.cpp": "02383f8d401c239e4d39ca51e36a84a540de83be1040b1be1778bae8af497306",
+    "libgag/src/GraphicContextMobile.cpp": "d3b4085c4fca9186e4d8e27cfdf156629e4233cdaaa99963dc794fb30f0a3e05",
+    "src/hud/input/GameGUIInput.cpp": "cfabe4d239a45a0afa86438b05cfce1f65349014ade41b289e9d73eb4d29394b",
+    "src/hud/draw/GameGUIDraw.cpp": "1192e00eb86b977b1f0a9b4d3c58294f29dc8dc3f36dc88755162e06b44aeeed",
+    "src/map/editor/MapEditEvents.cpp": "33569fbfd5e3cd21789bc58fe3aca951b6ebfee541521a66b0ef95a307aec900",
+    "src/map/editor/MapEditDraw.cpp": "12e06cf1962705464985e4e5ee27ef7f956b7afbab076a3e011d67c9dd26d218",
+    "src/map/editor/MapEditDock.cpp": "3fe8baa0674fd440e0a7af195fa76d5918e2adbfa6b48b3c5505813a9c382d11"
+  },
+  "reviewed_changes": {
+    "MapZoomControls.h": [
+      "Width clamps to available viewport margin and144 maximum; below92 hides drawing and click handling consistently.",
+      "For width>=92, gap/tail bounds keep middle>=44, three button extents inside width and readout remainder nonnegative. Both Fit and100% contribute to middle width; fixed representative readout and measured lineheight make positions independent of camera.zoom.",
+      "Draw and click use same layout. +/- boundaries change together with middle width, middle toggles Fit/100%, readout tail consumes click without zoom as previously. Anchor preservation and camera algorithms unchanged.",
+      "Caption fit scale is positive or skipped; measures both axes, centers tall scripts, intersects per-caption clip with bar clip. Every transform resets; GraphicContext restores saved clip and map callers end map transform before overlay. Final clipping resets as callers expect.",
+      "Original144width remains fixed; font-aware height may grow upward. Native actual visual fit remains necessary, especially readout at several-digit zoom and reduced captions."
+    ],
+    "CustomGameScreen.cpp": [
+      "Only p.touch||narrow branch changes. Narrow is compact or safe width<720pt; wide pointer layout remains content-sized.",
+      "segments expands buttons equally within bounded row and CrossAlign::Stretch. Button::measure wraps at actual available text width accounting for icon/insets and reserves measured block height.",
+      "Option keys remain key/index, icon refs and selected state preserved; callbacks dispatch same integer and setup state functions. Both premade/random mode and built-in/user library rows take same path.",
+      "No simulation calculations, serialization, parser or version changes."
+    ]
+  },
+  "blocking_findings": [],
+  "minor_findings": [
+    {
+      "key": "src/map/editor/MapEditDock.cpp:58",
+      "severity": "minor",
+      "problem": "Adjacent status-strip comment still describes zoom controls as always22high; new controls can be taller with font metrics.",
+      "suggestion": "Update comment to fixed144width/font-aware height when next touching this documentation comment.",
+      "disposition": "Nonblocking stale source comment; no overlapping status geometry observed from source because status margin begins after144width."
+    }
+  ],
+  "pending_actual_evidence": [
+    "Root zoom hit sequence: stable coordinates across Fit→100%→plus/minus, disabled stretched-sprite path, gutter edges.",
+    "Swahili narrow pointer custom map screen (mode and map-library segments) at actual font size, with wrapped captions and selected-state interaction.",
+    "Swahili desktop map zoom: Fit/100%, plus/minus, readout at min/max zoom; verify readable scale, complete glyphs and adjacent status controls."
+  ],
+  "limits": [
+    "Source review only. No native build/window/test or screenshot executed by this reviewer in this pass.",
+    "No readability claim from width arithmetic alone; very long captions scale down, and extremely narrow remaining widths deliberately omit readout.",
+    "No platform verification inferred."
+  ],
+  "product_files_edited": false,
+  "self_approval": false
+}

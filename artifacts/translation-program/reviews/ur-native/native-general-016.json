@@ -1,0 +1,41 @@
+{
+  "reviewer": "/root/pilot_context",
+  "author": "/root/urdu_translation",
+  "batch_id": "native-general-016",
+  "source_contract_sha256": "aacd8a342e9e734ba47f902a161ac1a45badff5842a617bcd68bf8e2275d6013",
+  "source_json_sha256": "a214fc4c9ce4d90fb29d572e3b9d96987eb61af8d0f7bda5050d7d1309d488a9",
+  "native_catalog_sha256": "a2398e2e0776ad8828db86173bbeb849a119949401ec444c46ef0b8a8e6d179d",
+  "author_batch_sha256": "914bf3acd8ad05de49b22d0e67bc670594235d065cc34468915cde74b665d12f",
+  "target_subset_sha256": "6b76058bdad10535aabfa2dbc904ec03779742c428e0ca28736733be611784bf",
+  "reviewed_keys": [
+    "[library Release %0]",
+    "[library Remove %0]",
+    "[library Seed: %0]",
+    "[library %0 · revision %1]",
+    "[library Fit]",
+    "[library GL only]",
+    "[Sound or silence?]",
+    "[Silence]",
+    "[Sound]",
+    "[audio preference explanation]",
+    "[audio preference change later]",
+    "[audio preference save failed]",
+    "[audio choices description]",
+    "[Grassland]",
+    "[Kopjes]",
+    "[Game trails]",
+    "[Fish amount]",
+    "[Camp-site amount]"
+  ],
+  "all_keys_examined": true,
+  "findings": [],
+  "context_notes": [
+    "All18read. Game trails correctlywildanimalpaths, not کھیلکیپگڈنڈیاں. Kopjes چٹانی ٹیلے descriptiveaccuratelandform, norequirementforceexoticpropername. Audioinitiallyoffsavefailure preserved; exactSettingsآواز reference matchesUIlabel; localizedRTLarrowrequiresrenderverification."
+  ],
+  "status": "read_no_actionable_findings",
+  "limits": [
+    "Independent agent review, not nativehuman certification.",
+    "No catalogediting or rendered/platform approval.",
+    "Meaning uncertainty must be resolved before finalization."
+  ]
+}

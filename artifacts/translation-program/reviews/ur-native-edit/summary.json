@@ -1,0 +1,40 @@
+{
+  "editor": "/root/swahili_translation",
+  "author": "/root/urdu_translation",
+  "reviewer_to_recheck": "/root/pilot_context",
+  "status": "edited-awaiting-original-reviewer-recheck",
+  "author_catalog_sha256": "a2398e2e0776ad8828db86173bbeb849a119949401ec444c46ef0b8a8e6d179d",
+  "edited_catalog_sha256": "ec78fb33247244bf783461e0410ef11fe48e45644c3c6500419d9060e967d458",
+  "keys_editorially_read": 3328,
+  "batches": 24,
+  "profile_bodies_read": 9,
+  "tutorial_entries_read": 126,
+  "changed_keys": 114,
+  "findings_dispositioned": 98,
+  "review_suggestions_revised": 97,
+  "source_scope_disagreements": 1,
+  "placeholder_mismatches": 0,
+  "profile_contract_mismatches": 0,
+  "research": [
+    {
+      "url": "https://mozilla-l10n.github.io/styleguides/ur/",
+      "method": "Opened and read full tool-returned guide",
+      "use": "Contemporary respectful Urdu, concise phrasing, postpositions, identifiers/shortcuts/Latin numerals; do not manually reverse punctuation based on example."
+    },
+    {
+      "url": "https://oup.com.pk/media/teaching-guides/Math%20Understood/Math%20Understood%20TG-8.pdf",
+      "method": "Search indexed excerpt only",
+      "use": "Urdu educational excerpt mentions reflective and rotational symmetry in English, but does not attest a better exact Urdu term; not used to claim lexical proof."
+    }
+  ],
+  "retained_uncertainties": [
+    "Symmetric arena متناسب میدانِ جنگ retained as understandable provisional existing label; exact mathematical Urdu terminology not authoritatively resolved by available primary excerpt. Reviewer/orchestrator decision still needed.",
+    "Native Building Studio caption aligned to current online عمارت اسٹوڈیو; final online glossary reconciliation remains necessary.",
+    "RTL/mixed Latin URL/numeric and paired-description rendered layout not verified here."
+  ],
+  "limitations": [
+    "Agent editorial work; not native-human approval",
+    "Original reviewer must recheck all substantive edits and resolve source-scope disagreement",
+    "No integration, rendering or platform-finalized claim"
+  ]
+}

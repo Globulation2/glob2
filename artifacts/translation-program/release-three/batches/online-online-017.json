@@ -1,0 +1,821 @@
+{
+  "id": "online-online-017",
+  "source_sha256": "7583e9f8f0a03186eec456ed3b7a9c187509056b91f931551c3b7dc0e6b53457",
+  "surface": "online",
+  "domain": "online",
+  "context": "Account, multiplayer, upload and browser workflows. Preserve URLs, licences, paths, format tokens and product names.",
+  "entries": [
+    {
+      "id": "online:{slot0} · {slot1}{slot2}",
+      "key": "{slot0} · {slot1}{slot2}",
+      "source": "{slot0} · {slot1}{slot2}"
+    },
+    {
+      "id": "online:{slot0} · {slot1}×{slot2}",
+      "key": "{slot0} · {slot1}×{slot2}",
+      "source": "{slot0} · {slot1}×{slot2}"
+    },
+    {
+      "id": "online:{slot0} × {slot1}  {slot2} UNCHARTED TERRITORY",
+      "key": "{slot0} × {slot1}  {slot2} UNCHARTED TERRITORY",
+      "source": "{slot0} × {slot1}  {slot2} UNCHARTED TERRITORY"
+    },
+    {
+      "id": "online:{slot0} × {slot1} · {slot2} player",
+      "key": "{slot0} × {slot1} · {slot2} player",
+      "source": {
+        "one": "{slot0} × {slot1} · {slot2} player",
+        "other": "{slot0} × {slot1} · {slot2} players"
+      }
+    },
+    {
+      "id": "online:{slot0} × {slot1} · {slot2} player · Private until published",
+      "key": "{slot0} × {slot1} · {slot2} player · Private until published",
+      "source": {
+        "one": "{slot0} × {slot1} · {slot2} player · Private until published",
+        "other": "{slot0} × {slot1} · {slot2} players · Private until published"
+      }
+    },
+    {
+      "id": "online:{slot0} × {slot1} · {slot2} players",
+      "key": "{slot0} × {slot1} · {slot2} players",
+      "source": "{slot0} × {slot1} · {slot2} players"
+    },
+    {
+      "id": "online:{slot0} × {slot1} · {slot2} players · Private until published",
+      "key": "{slot0} × {slot1} · {slot2} players · Private until published",
+      "source": "{slot0} × {slot1} · {slot2} players · Private until published"
+    },
+    {
+      "id": "online:{slot0} ↗",
+      "key": "{slot0} ↗",
+      "source": "{slot0} ↗"
+    },
+    {
+      "id": "online:{slot0}%",
+      "key": "{slot0}%",
+      "source": "{slot0}%"
+    },
+    {
+      "id": "online:{slot0}/32",
+      "key": "{slot0}/32",
+      "source": "{slot0}/32"
+    },
+    {
+      "id": "online:{slot0}: collected {slot1} · refunded {slot2} · collected less refunds {slot3}",
+      "key": "{slot0}: collected {slot1} · refunded {slot2} · collected less refunds {slot3}",
+      "source": "{slot0}: collected {slot1} · refunded {slot2} · collected less refunds {slot3}"
+    },
+    {
+      "id": "online:{slot0}: default {slot1}{slot2}",
+      "key": "{slot0}: default {slot1}{slot2}",
+      "source": "{slot0}: default {slot1}{slot2}"
+    },
+    {
+      "id": "online:{slot0}: since {slot1}{slot2}",
+      "key": "{slot0}: since {slot1}{slot2}",
+      "source": "{slot0}: since {slot1}{slot2}"
+    },
+    {
+      "id": "online:{slot0}: starts at {slot1}, holds {slot2}; {slot3}",
+      "key": "{slot0}: starts at {slot1}, holds {slot2}; {slot3}",
+      "source": "{slot0}: starts at {slot1}, holds {slot2}; {slot3}"
+    },
+    {
+      "id": "online:{slot0}: {slot1}",
+      "key": "{slot0}: {slot1}",
+      "source": "{slot0}: {slot1}"
+    },
+    {
+      "id": "online:{slot0}: {slot1} · {slot2}",
+      "key": "{slot0}: {slot1} · {slot2}",
+      "source": "{slot0}: {slot1} · {slot2}"
+    },
+    {
+      "id": "online:{slot0}: {slot1} · {slot2} credit",
+      "key": "{slot0}: {slot1} · {slot2} credit",
+      "source": {
+        "one": "{slot0}: {slot1} · {slot2} credit",
+        "other": "{slot0}: {slot1} · {slot2} credits"
+      }
+    },
+    {
+      "id": "online:{slot0}: {slot1} · {slot2} credits",
+      "key": "{slot0}: {slot1} · {slot2} credits",
+      "source": "{slot0}: {slot1} · {slot2} credits"
+    },
+    {
+      "id": "online:{slot0}by {slot1} · ♥ {slot2}",
+      "key": "{slot0}by {slot1} · ♥ {slot2}",
+      "source": "{slot0}by {slot1} · ♥ {slot2}"
+    },
+    {
+      "id": "online:{slot0}{slot1} · ♥ {slot2}{slot3}",
+      "key": "{slot0}{slot1} · ♥ {slot2}{slot3}",
+      "source": "{slot0}{slot1} · ♥ {slot2}{slot3}"
+    },
+    {
+      "id": "online:{slot0}{slot1}% chat",
+      "key": "{slot0}{slot1}% chat",
+      "source": "{slot0}{slot1}% chat"
+    },
+    {
+      "id": "online:{slot0}°",
+      "key": "{slot0}°",
+      "source": "{slot0}°"
+    },
+    {
+      "id": "online:{slot0}×{slot1}",
+      "key": "{slot0}×{slot1}",
+      "source": "{slot0}×{slot1}"
+    },
+    {
+      "id": "online:{slot0}–{slot1}",
+      "key": "{slot0}–{slot1}",
+      "source": "{slot0}–{slot1}"
+    },
+    {
+      "id": "online:{value0} (no preview)",
+      "key": "{value0} (no preview)",
+      "source": "{value0} (no preview)"
+    },
+    {
+      "id": "online:{value0} Map credits",
+      "key": "{value0} Map credits",
+      "source": "{value0} Map credits"
+    },
+    {
+      "id": "online:{value0} Music credits",
+      "key": "{value0} Music credits",
+      "source": "{value0} Music credits"
+    },
+    {
+      "id": "online:{value0} Stripe minor units",
+      "key": "{value0} Stripe minor units",
+      "source": "{value0} Stripe minor units"
+    },
+    {
+      "id": "online:{value0} artwork",
+      "key": "{value0} artwork",
+      "source": "{value0} artwork"
+    },
+    {
+      "id": "online:{value0} conversation",
+      "key": "{value0} conversation",
+      "source": "{value0} conversation"
+    },
+    {
+      "id": "online:{value0} cover",
+      "key": "{value0} cover",
+      "source": "{value0} cover"
+    },
+    {
+      "id": "online:{value0} credits",
+      "key": "{value0} credits",
+      "source": "{value0} credits"
+    },
+    {
+      "id": "online:{value0} hue",
+      "key": "{value0} hue",
+      "source": "{value0} hue"
+    },
+    {
+      "id": "online:{value0} rendered preview",
+      "key": "{value0} rendered preview",
+      "source": "{value0} rendered preview"
+    },
+    {
+      "id": "online:{value0} saturation and brightness",
+      "key": "{value0} saturation and brightness",
+      "source": "{value0} saturation and brightness"
+    },
+    {
+      "id": "online:{value0} swatches",
+      "key": "{value0} swatches",
+      "source": "{value0} swatches"
+    },
+    {
+      "id": "online:{value0} terrain illustration",
+      "key": "{value0} terrain illustration",
+      "source": "{value0} terrain illustration"
+    },
+    {
+      "id": "online:{value0} waveform",
+      "key": "{value0} waveform",
+      "source": "{value0} waveform"
+    },
+    {
+      "id": "online:{value0} {value1} · {value2} likes",
+      "key": "{value0} {value1} · {value2} likes",
+      "source": "{value0} {value1} · {value2} likes"
+    },
+    {
+      "id": "online:{value0}, frame {value1}",
+      "key": "{value0}, frame {value1}",
+      "source": "{value0}, frame {value1}"
+    },
+    {
+      "id": "online:{value0}, frame {value1}, team color layer",
+      "key": "{value0}, frame {value1}, team color layer",
+      "source": "{value0}, frame {value1}, team color layer"
+    },
+    {
+      "id": "online:{value0}, home",
+      "key": "{value0}, home",
+      "source": "{value0}, home"
+    },
+    {
+      "id": "online:{value0}. Change theme",
+      "key": "{value0}. Change theme",
+      "source": "{value0}. Change theme"
+    },
+    {
+      "id": "online:{value0}: terrain and resource previews",
+      "key": "{value0}: terrain and resource previews",
+      "source": "{value0}: terrain and resource previews"
+    },
+    {
+      "id": "online:{value0}: units in this match and on average over recent matches",
+      "key": "{value0}: units in this match and on average over recent matches",
+      "source": "{value0}: units in this match and on average over recent matches"
+    },
+    {
+      "id": "online:{value0}vs {value1}",
+      "key": "{value0}vs {value1}",
+      "source": "{value0}vs {value1}"
+    },
+    {
+      "id": "online:×",
+      "key": "×",
+      "source": "×"
+    },
+    {
+      "id": "online:–",
+      "key": "–",
+      "source": "–"
+    },
+    {
+      "id": "online:•••",
+      "key": "•••",
+      "source": "•••"
+    },
+    {
+      "id": "online:…",
+      "key": "…",
+      "source": "…"
+    },
+    {
+      "id": "online:← Music library",
+      "key": "← Music library",
+      "source": "← Music library"
+    },
+    {
+      "id": "online:← Set library",
+      "key": "← Set library",
+      "source": "← Set library"
+    },
+    {
+      "id": "online:← {slot0}",
+      "key": "← {slot0}",
+      "source": "← {slot0}"
+    },
+    {
+      "id": "online:← → saturation · ↑ ↓ brightness",
+      "key": "← → saturation · ↑ ↓ brightness",
+      "source": "← → saturation · ↑ ↓ brightness"
+    },
+    {
+      "id": "online:↑",
+      "key": "↑",
+      "source": "↑"
+    },
+    {
+      "id": "online:→",
+      "key": "→",
+      "source": "→"
+    },
+    {
+      "id": "online:↓ {slot0} downloads",
+      "key": "↓ {slot0} downloads",
+      "source": "↓ {slot0} downloads"
+    },
+    {
+      "id": "online:↗",
+      "key": "↗",
+      "source": "↗"
+    },
+    {
+      "id": "online:↻ Continuous loop",
+      "key": "↻ Continuous loop",
+      "source": "↻ Continuous loop"
+    },
+    {
+      "id": "online:−",
+      "key": "−",
+      "source": "−"
+    },
+    {
+      "id": "online:⌄",
+      "key": "⌄",
+      "source": "⌄"
+    },
+    {
+      "id": "online:◎",
+      "key": "◎",
+      "source": "◎"
+    },
+    {
+      "id": "online:●",
+      "key": "●",
+      "source": "●"
+    },
+    {
+      "id": "online:★",
+      "key": "★",
+      "source": "★"
+    },
+    {
+      "id": "online:♥ {slot0}",
+      "key": "♥ {slot0}",
+      "source": "♥ {slot0}"
+    },
+    {
+      "id": "online:♥ {slot0} likes",
+      "key": "♥ {slot0} likes",
+      "source": "♥ {slot0} likes"
+    },
+    {
+      "id": "online:♥ {slot0} · {slot1}",
+      "key": "♥ {slot0} · {slot1}",
+      "source": "♥ {slot0} · {slot1}"
+    },
+    {
+      "id": "online:✓ verified",
+      "key": "✓ verified",
+      "source": "✓ verified"
+    },
+    {
+      "id": "online:✕",
+      "key": "✕",
+      "source": "✕"
+    },
+    {
+      "id": "online:✧ Map designer",
+      "key": "✧ Map designer",
+      "source": "✧ Map designer"
+    },
+    {
+      "id": "online:⠿ {slot0}",
+      "key": "⠿ {slot0}",
+      "source": "⠿ {slot0}"
+    },
+    {
+      "id": "online:＋",
+      "key": "＋",
+      "source": "＋"
+    },
+    {
+      "id": "online: (draw)",
+      "key": " (draw)",
+      "source": " (draw)"
+    },
+    {
+      "id": "online: (log₂ tiles)",
+      "key": " (log₂ tiles)",
+      "source": " (log₂ tiles)"
+    },
+    {
+      "id": "online: (lost)",
+      "key": " (lost)",
+      "source": " (lost)"
+    },
+    {
+      "id": "online: (won)",
+      "key": " (won)",
+      "source": " (won)"
+    },
+    {
+      "id": "online: ({value0}–{value1}, step {value2})",
+      "key": " ({value0}–{value1}, step {value2})",
+      "source": " ({value0}–{value1}, step {value2})"
+    },
+    {
+      "id": "online: Colony {value0}.",
+      "key": " Colony {value0}.",
+      "source": " Colony {value0}."
+    },
+    {
+      "id": "online: Location: {value0}, {value1}.",
+      "key": " Location: {value0}, {value1}.",
+      "source": " Location: {value0}, {value1}."
+    },
+    {
+      "id": "online: properties",
+      "key": " properties",
+      "source": " properties"
+    },
+    {
+      "id": "online: · AI-generated",
+      "key": " · AI-generated",
+      "source": " · AI-generated"
+    },
+    {
+      "id": "online: · Changes not applied",
+      "key": " · Changes not applied",
+      "source": " · Changes not applied"
+    },
+    {
+      "id": "online: · Used for your next match",
+      "key": " · Used for your next match",
+      "source": " · Used for your next match"
+    },
+    {
+      "id": "online: · construction",
+      "key": " · construction",
+      "source": " · construction"
+    },
+    {
+      "id": "online: · first at {value0}",
+      "key": " · first at {value0}",
+      "source": " · first at {value0}"
+    },
+    {
+      "id": "online: · rated",
+      "key": " · rated",
+      "source": " · rated"
+    },
+    {
+      "id": "online: · unrated",
+      "key": " · unrated",
+      "source": " · unrated"
+    },
+    {
+      "id": "online: · {count} recorded downloads",
+      "key": " · {count} recorded downloads",
+      "source": " · {count} recorded downloads"
+    },
+    {
+      "id": "online: · {count} team",
+      "key": " · {count} team",
+      "source": {
+        "one": " · {count} team",
+        "other": " · {count} teams"
+      }
+    },
+    {
+      "id": "online: · {count} teams",
+      "key": " · {count} teams",
+      "source": " · {count} teams"
+    },
+    {
+      "id": "online: · {value0} unresolved",
+      "key": " · {value0} unresolved",
+      "source": " · {value0} unresolved"
+    },
+    {
+      "id": "online:(current)",
+      "key": "(current)",
+      "source": "(current)"
+    },
+    {
+      "id": "online:(older version)",
+      "key": "(older version)",
+      "source": "(older version)"
+    },
+    {
+      "id": "online:A community-created colony controller.",
+      "key": "A community-created colony controller.",
+      "source": "A community-created colony controller."
+    },
+    {
+      "id": "online:AI Colony Studio",
+      "key": "AI Colony Studio",
+      "source": "AI Colony Studio"
+    },
+    {
+      "id": "online:AI coding conversation",
+      "key": "AI coding conversation",
+      "source": "AI coding conversation"
+    },
+    {
+      "id": "online:Add islands and sheltered starting colonies…",
+      "key": "Add islands and sheltered starting colonies…",
+      "source": "Add islands and sheltered starting colonies…"
+    },
+    {
+      "id": "online:Applied to the draft",
+      "key": "Applied to the draft",
+      "source": "Applied to the draft"
+    },
+    {
+      "id": "online:Building designer",
+      "key": "Building designer",
+      "source": "Building designer"
+    },
+    {
+      "id": "online:COMPOSER",
+      "key": "COMPOSER",
+      "source": "COMPOSER"
+    },
+    {
+      "id": "online:CREATION IN PROGRESS",
+      "key": "CREATION IN PROGRESS",
+      "source": "CREATION IN PROGRESS"
+    },
+    {
+      "id": "online:Coding requests use up to {value0} {value1} credits. Manual editing and local playtests are free.",
+      "key": "Coding requests use up to {value0} {value1} credits. Manual editing and local playtests are free.",
+      "source": "Coding requests use up to {value0} {value1} credits. Manual editing and local playtests are free."
+    },
+    {
+      "id": "online:Coding requests use up to {value0} {value1} credits. Source acceptance does not mean engine checks passed.",
+      "key": "Coding requests use up to {value0} {value1} credits. Source acceptance does not mean engine checks passed.",
+      "source": "Coding requests use up to {value0} {value1} credits. Source acceptance does not mean engine checks passed."
+    },
+    {
+      "id": "online:Collapse sidebar",
+      "key": "Collapse sidebar",
+      "source": "Collapse sidebar"
+    },
+    {
+      "id": "online:Collapse toolbox",
+      "key": "Collapse toolbox",
+      "source": "Collapse toolbox"
+    },
+    {
+      "id": "online:Comparison with ",
+      "key": "Comparison with ",
+      "source": "Comparison with "
+    },
+    {
+      "id": "online:Copy my library version",
+      "key": "Copy my library version",
+      "source": "Copy my library version"
+    },
+    {
+      "id": "online:Definition validation failed.",
+      "key": "Definition validation failed.",
+      "source": "Definition validation failed."
+    },
+    {
+      "id": "online:Definition validation passed.",
+      "key": "Definition validation passed.",
+      "source": "Definition validation passed."
+    },
+    {
+      "id": "online:Deleting…",
+      "key": "Deleting…",
+      "source": "Deleting…"
+    },
+    {
+      "id": "online:Delivered to draft",
+      "key": "Delivered to draft",
+      "source": "Delivered to draft"
+    },
+    {
+      "id": "online:Describe the landscape you have in mind. Watch its journey from first idea to a world you can play.",
+      "key": "Describe the landscape you have in mind. Watch its journey from first idea to a world you can play.",
+      "source": "Describe the landscape you have in mind. Watch its journey from first idea to a world you can play."
+    },
+    {
+      "id": "online:Editing saved revision {value0}",
+      "key": "Editing saved revision {value0}",
+      "source": "Editing saved revision {value0}"
+    },
+    {
+      "id": "online:Engine validation failed.",
+      "key": "Engine validation failed.",
+      "source": "Engine validation failed."
+    },
+    {
+      "id": "online:Engine validation passed",
+      "key": "Engine validation passed",
+      "source": "Engine validation passed"
+    },
+    {
+      "id": "online:Engine validation passed.",
+      "key": "Engine validation passed.",
+      "source": "Engine validation passed."
+    },
+    {
+      "id": "online:Enter usage verified against provider evidence. Input totals include cache creation/write tokens. Unknown usage must not be entered as zero.",
+      "key": "Enter usage verified against provider evidence. Input totals include cache creation/write tokens. Unknown usage must not be entered as zero.",
+      "source": "Enter usage verified against provider evidence. Input totals include cache creation/write tokens. Unknown usage must not be entered as zero."
+    },
+    {
+      "id": "online:Example of ",
+      "key": "Example of ",
+      "source": "Example of "
+    },
+    {
+      "id": "online:Expand sidebar",
+      "key": "Expand sidebar",
+      "source": "Expand sidebar"
+    },
+    {
+      "id": "online:Expand toolbox",
+      "key": "Expand toolbox",
+      "source": "Expand toolbox"
+    },
+    {
+      "id": "online:Explore this step.",
+      "key": "Explore this step.",
+      "source": "Explore this step."
+    },
+    {
+      "id": "online:Fix this",
+      "key": "Fix this",
+      "source": "Fix this"
+    },
+    {
+      "id": "online:Fixed-point units: 256 = 1, 128 = 0.5, 512 = 2.",
+      "key": "Fixed-point units: 256 = 1, 128 = 0.5, 512 = 2.",
+      "source": "Fixed-point units: 256 = 1, 128 = 0.5, 512 = 2."
+    },
+    {
+      "id": "online:Follow latest generation",
+      "key": "Follow latest generation",
+      "source": "Follow latest generation"
+    },
+    {
+      "id": "online:Following latest generation",
+      "key": "Following latest generation",
+      "source": "Following latest generation"
+    },
+    {
+      "id": "online:Generation needs attention",
+      "key": "Generation needs attention",
+      "source": "Generation needs attention"
+    },
+    {
+      "id": "online:Generator coding conversation",
+      "key": "Generator coding conversation",
+      "source": "Generator coding conversation"
+    },
+    {
+      "id": "online:Generator package",
+      "key": "Generator package",
+      "source": "Generator package"
+    },
+    {
+      "id": "online:Good under {value0}, fair under {value1}, poor from {value2}.",
+      "key": "Good under {value0}, fair under {value1}, poor from {value2}.",
+      "source": "Good under {value0}, fair under {value1}, poor from {value2}."
+    },
+    {
+      "id": "online:IMAGINATION, MEET POSSIBILITY",
+      "key": "IMAGINATION, MEET POSSIBILITY",
+      "source": "IMAGINATION, MEET POSSIBILITY"
+    },
+    {
+      "id": "online:Images appear here as this stage completes.",
+      "key": "Images appear here as this stage completes.",
+      "source": "Images appear here as this stage completes."
+    },
+    {
+      "id": "online:Import .js",
+      "key": "Import .js",
+      "source": "Import .js"
+    },
+    {
+      "id": "online:Import JavaScript",
+      "key": "Import JavaScript",
+      "source": "Import JavaScript"
+    },
+    {
+      "id": "online:Import generator package",
+      "key": "Import generator package",
+      "source": "Import generator package"
+    },
+    {
+      "id": "online:Loading workspace…",
+      "key": "Loading workspace…",
+      "source": "Loading workspace…"
+    },
+    {
+      "id": "online:Make my colony more defensive…",
+      "key": "Make my colony more defensive…",
+      "source": "Make my colony more defensive…"
+    },
+    {
+      "id": "online:Mute",
+      "key": "Mute",
+      "source": "Mute"
+    },
+    {
+      "id": "online:No",
+      "key": "No",
+      "source": "No"
+    },
+    {
+      "id": "online:No account needed for rooms and casual games; sign in to be ranked.",
+      "key": "No account needed for rooms and casual games; sign in to be ranked.",
+      "source": "No account needed for rooms and casual games; sign in to be ranked."
+    },
+    {
+      "id": "online:No additional details were recorded.",
+      "key": "No additional details were recorded.",
+      "source": "No additional details were recorded."
+    },
+    {
+      "id": "online:No release notes.",
+      "key": "No release notes.",
+      "source": "No release notes."
+    },
+    {
+      "id": "online:One JavaScript file.",
+      "key": "One JavaScript file.",
+      "source": "One JavaScript file."
+    },
+    {
+      "id": "online:One manifest and one JavaScript module.",
+      "key": "One manifest and one JavaScript module.",
+      "source": "One manifest and one JavaScript module."
+    },
+    {
+      "id": "online:Pause animation",
+      "key": "Pause animation",
+      "source": "Pause animation"
+    },
+    {
+      "id": "online:Play animation",
+      "key": "Play animation",
+      "source": "Play animation"
+    },
+    {
+      "id": "online:Play music",
+      "key": "Play music",
+      "source": "Play music"
+    },
+    {
+      "id": "online:Playtest",
+      "key": "Playtest",
+      "source": "Playtest"
+    },
+    {
+      "id": "online:Preparing your soundtrack…",
+      "key": "Preparing your soundtrack…",
+      "source": "Preparing your soundtrack…"
+    },
+    {
+      "id": "online:Publish to music library",
+      "key": "Publish to music library",
+      "source": "Publish to music library"
+    },
+    {
+      "id": "online:Publishing…",
+      "key": "Publishing…",
+      "source": "Publishing…"
+    },
+    {
+      "id": "online:Refine your soundtrack",
+      "key": "Refine your soundtrack",
+      "source": "Refine your soundtrack"
+    },
+    {
+      "id": "online:Replace generator package",
+      "key": "Replace generator package",
+      "source": "Replace generator package"
+    },
+    {
+      "id": "online:Replace source with JavaScript file",
+      "key": "Replace source with JavaScript file",
+      "source": "Replace source with JavaScript file"
+    },
+    {
+      "id": "online:Retry saved request",
+      "key": "Retry saved request",
+      "source": "Retry saved request"
+    },
+    {
+      "id": "online:Review the technical results for this finding.",
+      "key": "Review the technical results for this finding.",
+      "source": "Review the technical results for this finding."
+    },
+    {
+      "id": "online:Run current revision",
+      "key": "Run current revision",
+      "source": "Run current revision"
+    },
+    {
+      "id": "online:Saved candidate",
+      "key": "Saved candidate",
+      "source": "Saved candidate"
+    },
+    {
+      "id": "online:Saved privately. Publishing shares only this version.",
+      "key": "Saved privately. Publishing shares only this version.",
+      "source": "Saved privately. Publishing shares only this version."
+    },
+    {
+      "id": "online:Saving…",
+      "key": "Saving…",
+      "source": "Saving…"
+    },
+    {
+      "id": "online:Send",
+      "key": "Send",
+      "source": "Send"
+    }
+  ]
+}

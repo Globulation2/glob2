@@ -1,0 +1,23 @@
+{
+  "kind": "isolated-app-draft-preview",
+  "locale": "hi",
+  "catalog_sha256": "748ed6f83bbb1e55f66af93e24c61a02ad50c75222adac731e3ae104356baf60",
+  "patches": [
+    {
+      "file": "/Users/bradley/.codex/worktrees/ed62/glob2/platform/packages/i18n/src/index.ts",
+      "before": "8fe6bd1ed8b74c5504694a24f30d9c477cdaf23e30cedafff7a1df2a05230cf3",
+      "after": "e46683335f095f6344b735b72a8a1d1bde334aa141812a1947247345e52170e2",
+      "purpose": "Preview-only lazy import of exact agent-reviewed draft"
+    },
+    {
+      "file": "/Users/bradley/.codex/worktrees/ed62/glob2/platform/packages/i18n/src/locales.ts",
+      "before": "5478f66b7d9fa451160d3964784c4651148afda1c22b86ec2f56e755756fe0e0",
+      "after": "94a9eb10498039222e34365a3c938b0a1a08cbfb8eeff5417921ca8387043b61",
+      "purpose": "Isolated preview-only registration; live inventory untouched"
+    }
+  ],
+  "limits": [
+    "Only isolated preview output includes Hindi; shipped locale registries unchanged.",
+    "Draft overlay exercises actual components and lazy-loading runtime, not a final release artifact."
+  ]
+}

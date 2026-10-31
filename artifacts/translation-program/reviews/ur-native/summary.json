@@ -1,0 +1,47 @@
+{
+  "reviewer": "/root/pilot_context",
+  "author": "/root/urdu_translation",
+  "surface": "native",
+  "locale": "ur",
+  "frozen_catalog_sha256": "a2398e2e0776ad8828db86173bbeb849a119949401ec444c46ef0b8a8e6d179d",
+  "freeze_record_sha256": "d79dc38c0ee6c78736b8676ecf9ec7271b57ee0823a0b0926440475000e2837c",
+  "source_json_sha256": "a214fc4c9ce4d90fb29d572e3b9d96987eb61af8d0f7bda5050d7d1309d488a9",
+  "source_contract_sha256": "aacd8a342e9e734ba47f902a161ac1a45badff5842a617bcd68bf8e2275d6013",
+  "batches_reviewed": 24,
+  "keys_reviewed": 3328,
+  "every_key_examined_exactly_once": true,
+  "profiles_read_fully": 9,
+  "tutorial_entries_read": 126,
+  "findings": 98,
+  "severity_counts": {
+    "major": 35,
+    "minor": 63
+  },
+  "exact_English_equality_entries_dispositioned": 37,
+  "all_Latin_token_entries_dispositioned": 247,
+  "catalog_edited": false,
+  "status": "changes_requested",
+  "terminology_notes": {
+    "Swarm": "چھتہ/چھتے",
+    "worker": "کارکن",
+    "explorer": "کھوجی",
+    "warrior": "جنگجو",
+    "colony": "بستی",
+    "Inn": "سرائے",
+    "School": "اسکول; existingselectorمدرسہmustalign",
+    "upgrades": "Concreteoperationاپگریڈ; preserveترقیforgeneraldevelopment",
+    "reservedunits": "مختص correctinCabino/Maxima; no safe/heldconfusion foundthere",
+    "visibility": "حدِ نگاہ; broadنظرsharinglabelsmustalign"
+  },
+  "uncertainties_for_editor": [
+    "Symmetric arena متناسب broadlybalanced/proportionate; no definitivewrongmeaningestablished. Decide mathematicallymoreexplicitterm onlywithsupportedUrducontext, notPersiansearchsubstitution.",
+    "FinalonlineUrduglossarynotyetfrozen; BuildingStudio reference mustrecheckagainstfinalonlinecaption.",
+    "RTLlocalizedarrowsandEnglishnumeral/URLmix requireactualproductionrendering, notmanualbidiassumptions."
+  ],
+  "limits": [
+    "Independentagentsemanticreview, notnativehumanapproval.",
+    "Anotheragentmusteditallfindings; originalreviewermustrechecksubstantivechanges.",
+    "No rendering/platform/fullregisteredtechnicalacceptanceclaimed.",
+    "No locale-finalizedlabel; unresolvedlinguisticorvisualquestionsremaingates."
+  ]
+}

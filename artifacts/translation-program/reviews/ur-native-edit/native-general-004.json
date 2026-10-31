@@ -1,0 +1,1293 @@
+{
+  "editor": "/root/swahili_translation",
+  "author": "/root/urdu_translation",
+  "independent_reviewer": "/root/pilot_context",
+  "batch_id": "native-general-004",
+  "source_contract_sha256": "aacd8a342e9e734ba47f902a161ac1a45badff5842a617bcd68bf8e2275d6013",
+  "original_target_subset_sha256": "5f1c0bc6b9aeb024d6d54f8356f30af14b2fd34033ab70c26c6bc2e94eeea46d",
+  "final_target_subset_sha256": "8cdd4295d403c6eff4afc82fd046fdadbd72818b58e8b9dae749cae030969485",
+  "final_catalog_sha256": "ec78fb33247244bf783461e0410ef11fe48e45644c3c6500419d9060e967d458",
+  "entries": [
+    {
+      "key": "[Gray]",
+      "source": "Gray",
+      "before": "سرمئی",
+      "after": "سرمئی",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Green]",
+      "source": "Green",
+      "before": "سبز",
+      "after": "سبز",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Hard]",
+      "source": "Hard",
+      "before": "مشکل",
+      "after": "مشکل",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Height]",
+      "source": "Height",
+      "before": "اونچائی",
+      "after": "اونچائی",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Invalid colony count.]",
+      "source": "Invalid colony count.",
+      "before": "بستیوں کی تعداد درست نہیں۔",
+      "after": "بستیوں کی تعداد درست نہیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Isles]",
+      "source": "Isles",
+      "before": "چھوٹے جزیرے",
+      "after": "چھوٹے جزیرے",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Landscape]",
+      "source": "Landscape",
+      "before": "منظرنامہ",
+      "after": "منظرنامہ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Last colony standing]",
+      "source": "Last colony standing",
+      "before": "آخری باقی بستی",
+      "after": "آخری باقی بستی",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Layout]",
+      "source": "Layout",
+      "before": "بناوٹ",
+      "after": "بناوٹ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Magenta]",
+      "source": "Magenta",
+      "before": "ارغوانی",
+      "after": "ارغوانی",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Map]",
+      "source": "Map",
+      "before": "نقشہ",
+      "after": "نقشہ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Match finished]",
+      "source": "Match finished",
+      "before": "میچ ختم ہو گیا",
+      "after": "میچ ختم ہو گیا",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Medium]",
+      "source": "Medium",
+      "before": "درمیانہ",
+      "after": "درمیانہ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Medium - Experimental]",
+      "source": "Medium - Experimental",
+      "before": "درمیانہ - تجرباتی",
+      "after": "درمیانہ - تجرباتی",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[No AI orders]",
+      "source": "No AI orders",
+      "before": "AI کا کوئی حکم نہیں",
+      "after": "AI کا کوئی حکم نہیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Old random]",
+      "source": "Shattered Coast",
+      "before": "ٹوٹا پھوٹا ساحل",
+      "after": "ٹوٹا پھوٹا ساحل",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Open at least one colony to start a match.]",
+      "source": "Open at least one colony to start a match.",
+      "before": "میچ شروع کرنے کے لیے کم از کم ایک بستی کھولیں۔",
+      "after": "میچ شروع کرنے کے لیے کم از کم ایک بستی کھولیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Open book]",
+      "source": "Open book",
+      "before": "کھلی کتاب",
+      "after": "کھلی کتاب",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Pink]",
+      "source": "Pink",
+      "before": "گلابی",
+      "after": "گلابی",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Play this map]",
+      "source": "Play this map",
+      "before": "اس نقشے پر کھیلیں",
+      "after": "اس نقشے پر کھیلیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Players & Teams]",
+      "source": "Players & Teams",
+      "before": "کھلاڑی اور ٹیمیں",
+      "after": "کھلاڑی اور ٹیمیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Premade maps]",
+      "source": "Premade maps",
+      "before": "تیار نقشے",
+      "after": "تیار نقشے",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Preview ready. Start plays this exact map.]",
+      "source": "Preview ready. Start plays this exact map.",
+      "before": "پیش منظر تیار ہے۔ شروع کرنے پر یہی نقشہ کھیلا جائے گا۔",
+      "after": "پیش منظر تیار ہے۔ شروع کرنے پر یہی نقشہ کھیلا جائے گا۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Regenerate all]",
+      "source": "Regenerate all",
+      "before": "سب دوبارہ بنائیں",
+      "after": "سب دوبارہ بنائیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Generating preview...]",
+      "source": "Generating preview...",
+      "before": "پیش منظر بن رہا ہے...",
+      "after": "پیش منظر بن رہا ہے...",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Preview unavailable]",
+      "source": "Preview unavailable",
+      "before": "پیش منظر دستیاب نہیں",
+      "after": "پیش منظر دستیاب نہیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Purple]",
+      "source": "Purple",
+      "before": "جامنی",
+      "after": "جامنی",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Quick clash]",
+      "source": "Quick clash",
+      "before": "فوری ٹکراؤ",
+      "after": "فوری ٹکراؤ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Random map]",
+      "source": "Random map",
+      "before": "اتفاقی نقشہ",
+      "after": "اتفاقی نقشہ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Red]",
+      "source": "Red",
+      "before": "سرخ",
+      "after": "سرخ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Repeat landscape]",
+      "source": "Repeat landscape",
+      "before": "منظرنامہ دہرائیں",
+      "after": "منظرنامہ دہرائیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Resources]",
+      "source": "Resources",
+      "before": "وسائل",
+      "after": "وسائل",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Sand weight]",
+      "source": "Sand weight",
+      "before": "ریت کا وزن",
+      "after": "ریت کا وزن",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Select a valid map.]",
+      "source": "Select a valid map.",
+      "before": "درست نقشہ منتخب کریں۔",
+      "after": "درست نقشہ منتخب کریں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Shared control needs a free controller slot (maximum %0).]",
+      "source": "Shared control needs a free controller slot (maximum %0).",
+      "before": "مشترکہ کنٹرول کے لیے کنٹرولر کی ایک خالی جگہ درکار ہے (زیادہ سے زیادہ %0)۔",
+      "after": "مشترکہ کنٹرول کے لیے کنٹرولر کی ایک خالی جگہ درکار ہے (زیادہ سے زیادہ %0)۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Smoothing]",
+      "source": "Smoothing",
+      "before": "ہموار کرنا",
+      "after": "ہموار کرنا",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Standard]",
+      "source": "Standard",
+      "before": "معیاری",
+      "after": "معیاری",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Start game]",
+      "source": "Start game",
+      "before": "کھیل شروع کریں",
+      "after": "کھیل شروع کریں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Swamp]",
+      "source": "Swamp",
+      "before": "دلدل",
+      "after": "دلدل",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Team]",
+      "source": "Team",
+      "before": "ٹیم",
+      "after": "ٹیم",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Victory]",
+      "source": "Victory",
+      "before": "فتح",
+      "after": "فتح",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Watch game]",
+      "source": "Watch game",
+      "before": "کھیل دیکھیں",
+      "after": "کھیل دیکھیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Water weight]",
+      "source": "Water weight",
+      "before": "پانی کا وزن",
+      "after": "پانی کا وزن",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[White]",
+      "source": "White",
+      "before": "سفید",
+      "after": "سفید",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Width]",
+      "source": "Width",
+      "before": "چوڑائی",
+      "after": "چوڑائی",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Yellow]",
+      "source": "Yellow",
+      "before": "پیلا",
+      "after": "پیلا",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[You]",
+      "source": "You",
+      "before": "آپ",
+      "after": "آپ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[You + AI]",
+      "source": "You + AI",
+      "before": "آپ + AI",
+      "after": "آپ + AI",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[You and the AI both issue orders. Uses two controller slots.]",
+      "source": "You and the AI both issue orders. Uses two controller slots.",
+      "before": "آپ اور AI دونوں احکامات دیتے ہیں۔ کنٹرولر کی دو جگہیں استعمال ہوتی ہیں۔",
+      "after": "آپ اور AI دونوں احکامات دیتے ہیں۔ کنٹرولر کی دو جگہیں استعمال ہوتی ہیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[You vs all]",
+      "source": "You vs all",
+      "before": "آپ بمقابلہ سب",
+      "after": "آپ بمقابلہ سب",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[%0 vs %1]",
+      "source": "%0 vs %1",
+      "before": "%0 بمقابلہ %1",
+      "after": "%0 بمقابلہ %1",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[%0 vs all]",
+      "source": "%0 vs all",
+      "before": "%0 بمقابلہ سب",
+      "after": "%0 بمقابلہ سب",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[You will watch this match.]",
+      "source": "You will watch this match.",
+      "before": "آپ یہ میچ دیکھیں گے۔",
+      "after": "آپ یہ میچ دیکھیں گے۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Your maps]",
+      "source": "Your maps",
+      "before": "آپ کے نقشے",
+      "after": "آپ کے نقشے",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[colonies]",
+      "source": "colonies",
+      "before": "بستیاں",
+      "after": "بستیاں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Inactive]",
+      "source": "Inactive",
+      "before": "غیر فعال",
+      "after": "غیر فعال",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Changes the pace of the whole simulation.]",
+      "source": "Changes the pace of the whole simulation.",
+      "before": "پوری سیمولیشن کی رفتار بدلتا ہے۔",
+      "after": "پوری سیمولیشن کی رفتار بدلتا ہے۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Choose whether teams can change during the match.]",
+      "source": "Choose whether teams can change during the match.",
+      "before": "منتخب کریں کہ میچ کے دوران ٹیمیں بدل سکتی ہیں یا نہیں۔",
+      "after": "منتخب کریں کہ میچ کے دوران ٹیمیں بدل سکتی ہیں یا نہیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Dimensions and colony count are set above.]",
+      "source": "Dimensions and colony count are set above.",
+      "before": "ابعاد اور بستیوں کی تعداد اوپر مقرر ہیں۔",
+      "after": "ابعاد اور بستیوں کی تعداد اوپر مقرر ہیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Generate & watch]",
+      "source": "Generate & watch",
+      "before": "بنائیں اور دیکھیں",
+      "after": "بنائیں اور دیکھیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Info]",
+      "source": "Info",
+      "before": "معلومات",
+      "after": "معلومات",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Map-defined starting units]",
+      "source": "Map-defined starting units",
+      "before": "نقشے میں طے کردہ ابتدائی یونٹ",
+      "after": "نقشے میں طے کردہ ابتدائی یونٹ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[No maps in this library.]",
+      "source": "No maps in this library.",
+      "before": "اس لائبریری میں کوئی نقشہ نہیں۔",
+      "after": "اس لائبریری میں کوئی نقشہ نہیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Premade maps retain their authored starting units.]",
+      "source": "Premade maps retain their authored starting units.",
+      "before": "تیار نقشوں میں مصنف کے مقرر کردہ ابتدائی یونٹ برقرار رہتے ہیں۔",
+      "after": "تیار نقشوں میں مصنف کے مقرر کردہ ابتدائی یونٹ برقرار رہتے ہیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[This colony will not join the match.]",
+      "source": "This colony will not join the match.",
+      "before": "یہ بستی میچ میں شامل نہیں ہو گی۔",
+      "after": "یہ بستی میچ میں شامل نہیں ہو گی۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[This landscape uses fixed resource placement.]",
+      "source": "This landscape uses fixed resource placement.",
+      "before": "اس منظرنامے میں وسائل کے مقامات طے ہیں۔",
+      "after": "اس منظرنامے میں وسائل کے مقامات طے ہیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Win through conquest]",
+      "source": "Win through conquest",
+      "before": "فتحِ علاقہ کے ذریعے جیتیں",
+      "after": "حریف بستیوں کو شکست دے کر جیتیں",
+      "editorially_read": true,
+      "disposition": "edited-pending-recheck"
+    },
+    {
+      "key": "[You control this colony.]",
+      "source": "You control this colony.",
+      "before": "آپ اس بستی کو کنٹرول کرتے ہیں۔",
+      "after": "آپ اس بستی کو کنٹرول کرتے ہیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[controllers]",
+      "source": "controllers",
+      "before": "کنٹرولرز",
+      "after": "کنٹرولرز",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Use]",
+      "source": "Use",
+      "before": "استعمال کریں",
+      "after": "استعمال کریں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Lime]",
+      "source": "Lime",
+      "before": "لیموں جیسا سبز",
+      "after": "لیموں جیسا سبز",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Teal]",
+      "source": "Teal",
+      "before": "سبزی مائل نیلا",
+      "after": "سبزی مائل نیلا",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Azure]",
+      "source": "Azure",
+      "before": "آسمانی",
+      "after": "آسمانی",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[automatic torus view]",
+      "source": "Automatic torus view",
+      "before": "خودکار ٹورس منظر",
+      "after": "خودکار ٹورس منظر",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[toggle torus view]",
+      "source": "Toggle 2D / torus view",
+      "before": "2D / ٹورس منظر بدلیں",
+      "after": "2D / ٹورس منظر بدلیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Alliance]",
+      "source": "Alliance",
+      "before": "اتحاد",
+      "after": "اتحاد",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Choose a rule to change it.]",
+      "source": "Choose a rule to change it.",
+      "before": "بدلنے کے لیے کوئی قاعدہ منتخب کریں۔",
+      "after": "بدلنے کے لیے کوئی قاعدہ منتخب کریں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Control]",
+      "source": "Control",
+      "before": "کنٹرول",
+      "after": "کنٹرول",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Controller]",
+      "source": "Controller",
+      "before": "کنٹرولر",
+      "after": "کنٹرولر",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Generate preview]",
+      "source": "Generate preview",
+      "before": "پیش منظر بنائیں",
+      "after": "پیش منظر بنائیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Map-defined]",
+      "source": "Map-defined",
+      "before": "نقشے میں طے کردہ",
+      "after": "نقشے میں طے کردہ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Match format]",
+      "source": "Match format",
+      "before": "میچ کا انداز",
+      "after": "میچ کا انداز",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[No current preview]",
+      "source": "No current preview",
+      "before": "کوئی موجودہ پیش منظر نہیں",
+      "after": "کوئی موجودہ پیش منظر نہیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Reroll]",
+      "source": "Reroll",
+      "before": "دوبارہ قرعہ ڈالیں",
+      "after": "دوبارہ قرعہ ڈالیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Randomize]",
+      "source": "Randomize",
+      "before": "اتفاقی بنائیں",
+      "after": "اتفاقی بنائیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Reset to defaults]",
+      "source": "Reset to defaults",
+      "before": "طے شدہ ترتیبات بحال کریں",
+      "after": "طے شدہ ترتیبات بحال کریں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Ruleset]",
+      "source": "Ruleset",
+      "before": "قواعد کا مجموعہ",
+      "after": "قواعد کا مجموعہ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Unavailable]",
+      "source": "Unavailable",
+      "before": "دستیاب نہیں",
+      "after": "دستیاب نہیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Use selection]",
+      "source": "Use selection",
+      "before": "منتخب چیز استعمال کریں",
+      "after": "منتخب چیز استعمال کریں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Quick clash on premade maps: only speed changes (2x).]",
+      "source": "Quick clash on premade maps: only speed changes (2x).",
+      "before": "تیار نقشوں پر فوری ٹکراؤ: صرف رفتار بدلتی ہے (2x)۔",
+      "after": "تیار نقشوں پر فوری ٹکراؤ: صرف رفتار بدلتی ہے (2x)۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Generate a preview to explore this world.]",
+      "source": "Generate a preview to explore this world.",
+      "before": "اس دنیا کو دیکھنے کے لیے پیش منظر بنائیں۔",
+      "after": "اس دنیا کو دیکھنے کے لیے پیش منظر بنائیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Channel width]",
+      "source": "Channel width",
+      "before": "آبی گزرگاہ کی چوڑائی",
+      "after": "آبی گزرگاہ کی چوڑائی",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Land bridge width]",
+      "source": "Land bridge width",
+      "before": "زمینی پل کی چوڑائی",
+      "after": "زمینی پل کی چوڑائی",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Contested commons]",
+      "source": "Contested commons",
+      "before": "متنازع مشترکہ میدان",
+      "after": "متنازع مشترکہ میدان",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Maze]",
+      "source": "Maze",
+      "before": "بھول بھلیاں",
+      "after": "بھول بھلیاں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Fjord continent]",
+      "source": "Fjord continent",
+      "before": "فیورڈ براعظم",
+      "after": "فیورڈ براعظم",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Cell size]",
+      "source": "Cell size",
+      "before": "خانے کا سائز",
+      "after": "خانے کا سائز",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Loopiness]",
+      "source": "Loopiness",
+      "before": "حلقہ دار راستوں کی مقدار",
+      "after": "حلقہ دار راستوں کی مقدار",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Channels this wide leave too little grass in each cell; use narrower channels or bigger cells.]",
+      "source": "Channels this wide leave too little grass in each cell; use narrower channels or bigger cells.",
+      "before": "اتنی چوڑی آبی گزرگاہیں ہر خانے میں بہت کم گھاس چھوڑتی ہیں؛ تنگ گزرگاہیں یا بڑے خانے استعمال کریں۔",
+      "after": "اتنی چوڑی آبی گزرگاہیں ہر خانے میں بہت کم گھاس چھوڑتی ہیں؛ تنگ گزرگاہیں یا بڑے خانے استعمال کریں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Commons size]",
+      "source": "Commons size",
+      "before": "مشترکہ میدان کا سائز",
+      "after": "مشترکہ میدان کا سائز",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Moat width]",
+      "source": "Moat width",
+      "before": "خندق کی چوڑائی",
+      "after": "خندق کی چوڑائی",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Bridge count]",
+      "source": "Bridge count",
+      "before": "پلوں کی تعداد",
+      "after": "پلوں کی تعداد",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Continent size]",
+      "source": "Continent size",
+      "before": "براعظم کا سائز",
+      "after": "براعظم کا سائز",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Coast roughness]",
+      "source": "Coast roughness",
+      "before": "ساحل کی ناہمواری",
+      "after": "ساحل کی ناہمواری",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Fjord width]",
+      "source": "Fjord width",
+      "before": "فیورڈ کی چوڑائی",
+      "after": "فیورڈ کی چوڑائی",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Watershed]",
+      "source": "Watershed",
+      "before": "آبی تقسیم",
+      "after": "دریائی طاس",
+      "editorially_read": true,
+      "disposition": "edited-pending-recheck"
+    },
+    {
+      "key": "[Dryness]",
+      "source": "Dryness",
+      "before": "خشکی",
+      "after": "خشکی",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Fords]",
+      "source": "Fords",
+      "before": "کم گہرے راستے",
+      "after": "کم گہرے راستے",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Stone highlands]",
+      "source": "Stone highlands",
+      "before": "پتھریلی بلندیاں",
+      "after": "پتھریلی بلندیاں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Valley size]",
+      "source": "Valley size",
+      "before": "وادی کا سائز",
+      "after": "وادی کا سائز",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Pass width]",
+      "source": "Pass width",
+      "before": "درے کی چوڑائی",
+      "after": "درے کی چوڑائی",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Pond size]",
+      "source": "Pond size",
+      "before": "تالاب کا سائز",
+      "after": "تالاب کا سائز",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Symmetric arena]",
+      "source": "Symmetric arena",
+      "before": "متناسب میدانِ جنگ",
+      "after": "متناسب میدانِ جنگ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Centre size]",
+      "source": "Centre size",
+      "before": "مرکز کا سائز",
+      "after": "مرکز کا سائز",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Causeway width]",
+      "source": "Causeway width",
+      "before": "بند نما راستے کی چوڑائی",
+      "after": "بند نما راستے کی چوڑائی",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Causeways]",
+      "source": "Causeways",
+      "before": "بند نما راستے",
+      "after": "بند نما راستے",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Resource richness]",
+      "source": "Resource richness",
+      "before": "وسائل کی فراوانی",
+      "after": "وسائل کی فراوانی",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Symmetric arena needs 2, 4 or 8 colonies.]",
+      "source": "Symmetric arena needs 2, 4 or 8 colonies.",
+      "before": "متناسب میدانِ جنگ کے لیے 2، 4 یا 8 بستیاں درکار ہیں۔",
+      "after": "متناسب میدانِ جنگ کے لیے 2، 4 یا 8 بستیاں درکار ہیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[The centre is too small for an orchard on this map; use a bigger centre or a bigger map.]",
+      "source": "The centre is too small for an orchard on this map; use a bigger centre or a bigger map.",
+      "before": "اس نقشے پر مرکز باغ کے لیے بہت چھوٹا ہے؛ بڑا مرکز یا بڑا نقشہ استعمال کریں۔",
+      "after": "اس نقشے پر مرکز باغ کے لیے بہت چھوٹا ہے؛ بڑا مرکز یا بڑا نقشہ استعمال کریں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[The arena leaves too little room for every colony; use a bigger map, a smaller centre or a narrower moat.]",
+      "source": "The arena leaves too little room for every colony; use a bigger map, a smaller centre or a narrower moat.",
+      "before": "میدان میں ہر بستی کے لیے جگہ بہت کم ہے؛ بڑا نقشہ، چھوٹا مرکز یا تنگ خندق استعمال کریں۔",
+      "after": "میدان میں ہر بستی کے لیے جگہ بہت کم ہے؛ بڑا نقشہ، چھوٹا مرکز یا تنگ خندق استعمال کریں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[The causeways are too close together; use fewer or narrower causeways, or a bigger centre.]",
+      "source": "The causeways are too close together; use fewer or narrower causeways, or a bigger centre.",
+      "before": "بند نما راستے بہت قریب ہیں؛ کم یا تنگ راستے، یا بڑا مرکز استعمال کریں۔",
+      "after": "بند نما راستے بہت قریب ہیں؛ کم یا تنگ راستے، یا بڑا مرکز استعمال کریں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Ring world]",
+      "source": "Ring world",
+      "before": "حلقہ نما دنیا",
+      "after": "حلقہ نما دنیا",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Belt width]",
+      "source": "Belt width",
+      "before": "پٹی کی چوڑائی",
+      "after": "پٹی کی چوڑائی",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[City states]",
+      "source": "City states",
+      "before": "شہری ریاستیں",
+      "after": "شہری ریاستیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Strait width]",
+      "source": "Strait width",
+      "before": "آبنائے کی چوڑائی",
+      "after": "آبنائے کی چوڑائی",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Valleys]",
+      "source": "Valleys",
+      "before": "وادیاں",
+      "after": "وادیاں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Frontier richness]",
+      "source": "Frontier richness",
+      "before": "سرحدی پٹی کی فراوانی",
+      "after": "سرحدی پٹی کی فراوانی",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[City states need at least one colony.]",
+      "source": "City states need at least one colony.",
+      "before": "شہری ریاستوں کے لیے کم از کم ایک بستی درکار ہے۔",
+      "after": "شہری ریاستوں کے لیے کم از کم ایک بستی درکار ہے۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Stone walls]",
+      "source": "Stone walls",
+      "before": "پتھر کی دیواریں",
+      "after": "پتھر کی دیواریں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Sand patches]",
+      "source": "Sand patches",
+      "before": "ریت کے قطعے",
+      "after": "ریت کے قطعے",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Tidal flats]",
+      "source": "Tidal flats",
+      "before": "مدوجزر کے ہموار علاقے",
+      "after": "مدوجزر کے ہموار علاقے",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Everglades]",
+      "source": "Everglades",
+      "before": "ایورگلیڈز",
+      "after": "ایورگلیڈز",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Pool spacing]",
+      "source": "Pool spacing",
+      "before": "تالابوں کا درمیانی فاصلہ",
+      "after": "تالابوں کا درمیانی فاصلہ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Pool size]",
+      "source": "Pool size",
+      "before": "تالاب کا سائز",
+      "after": "تالاب کا سائز",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Clearing size]",
+      "source": "Clearing size",
+      "before": "کھلی جگہ کا سائز",
+      "after": "کھلی جگہ کا سائز",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Levee]",
+      "source": "Levee",
+      "before": "کنارے کا بند",
+      "after": "کنارے کا بند",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Sloughs]",
+      "source": "Sloughs",
+      "before": "دلدلی نالے",
+      "after": "دلدلی نالے",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Everglades need at least one colony.]",
+      "source": "Everglades need at least one colony.",
+      "before": "ایورگلیڈز کے لیے کم از کم ایک بستی درکار ہے۔",
+      "after": "ایورگلیڈز کے لیے کم از کم ایک بستی درکار ہے۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Coral]",
+      "source": "Coral",
+      "before": "مرجان",
+      "after": "مرجان",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Fork angle]",
+      "source": "Fork angle",
+      "before": "شاخوں کا زاویہ",
+      "after": "شاخوں کا زاویہ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Lean]",
+      "source": "Lean",
+      "before": "جھکاؤ",
+      "after": "جھکاؤ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Home size]",
+      "source": "Home size",
+      "before": "ابتدائی علاقے کا سائز",
+      "after": "ابتدائی علاقے کا سائز",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[The coral does not fit this map; use a bigger map, narrower straits or fewer colonies.]",
+      "source": "The coral does not fit this map; use a bigger map, narrower straits or fewer colonies.",
+      "before": "مرجان اس نقشے میں نہیں سما سکتا؛ بڑا نقشہ، تنگ آبنائیں یا کم بستیاں استعمال کریں۔",
+      "after": "مرجان اس نقشے میں نہیں سما سکتا؛ بڑا نقشہ، تنگ آبنائیں یا کم بستیاں استعمال کریں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Branching]",
+      "source": "Branching",
+      "before": "شاخیں بننا",
+      "after": "شاخیں بننا",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Branch width]",
+      "source": "Branch width",
+      "before": "شاخ کی چوڑائی",
+      "after": "شاخ کی چوڑائی",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Coral needs at least one colony.]",
+      "source": "Coral needs at least one colony.",
+      "before": "مرجان کے لیے کم از کم ایک بستی درکار ہے۔",
+      "after": "مرجان کے لیے کم از کم ایک بستی درکار ہے۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Carousel]",
+      "source": "Carousel",
+      "before": "گھومتا جھولا",
+      "after": "گھومتا جھولا",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Amphitheatre]",
+      "source": "Amphitheatre",
+      "before": "نیم دائرہ میدان",
+      "after": "حلقہ دار میدان",
+      "editorially_read": true,
+      "disposition": "edited-pending-recheck"
+    },
+    {
+      "key": "[Switchbacks]",
+      "source": "Switchbacks",
+      "before": "بل کھاتے راستے",
+      "after": "بل کھاتے راستے",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Corridor width]",
+      "source": "Corridor width",
+      "before": "راہداری کی چوڑائی",
+      "after": "راہداری کی چوڑائی",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Spoke width]",
+      "source": "Spoke width",
+      "before": "شعاعی راستے کی چوڑائی",
+      "after": "شعاعی راستے کی چوڑائی",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Court size]",
+      "source": "Court size",
+      "before": "احاطے کا سائز",
+      "after": "احاطے کا سائز",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Court wall]",
+      "source": "Court wall",
+      "before": "احاطے کی دیوار",
+      "after": "احاطے کی دیوار",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Plaza size]",
+      "source": "Plaza size",
+      "before": "چوک کا سائز",
+      "after": "چوک کا سائز",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Starting tower level]",
+      "source": "Starting tower level",
+      "before": "ابتدائی مینار کی سطح",
+      "after": "ابتدائی مینار کی سطح",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Towers per colony]",
+      "source": "Towers per colony",
+      "before": "فی بستی مینار",
+      "after": "فی بستی مینار",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Rings]",
+      "source": "Rings",
+      "before": "حلقے",
+      "after": "حلقے",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Ramp width]",
+      "source": "Ramp width",
+      "before": "ڈھلوان راستے کی چوڑائی",
+      "after": "ڈھلوان راستے کی چوڑائی",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Pit size]",
+      "source": "Pit size",
+      "before": "گڑھے کا سائز",
+      "after": "گڑھے کا سائز",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Terrace width]",
+      "source": "Terrace width",
+      "before": "زینے کی چوڑائی",
+      "after": "ہموار زمینی پٹی کی چوڑائی",
+      "editorially_read": true,
+      "disposition": "edited-pending-recheck"
+    }
+  ],
+  "status": "edited-awaiting-independent-recheck"
+}

@@ -1,0 +1,29 @@
+{
+  "reviewer": "/root/hindi_online_review",
+  "status": "no credential material detected in exact scanned allowlist",
+  "allowlist_sha256": "b752405fb046926a945e6c9a39e1068c79eeec8fdab0f8035c2fd14731e614e3",
+  "scan_manifest": "artifacts/translation-program/public-evidence-scan.json",
+  "scan_manifest_sha256": "4b05f9e5a98447534f0c336d2dfbec6ed35b1aab4eaf4850b7b3a2cdedb83b60",
+  "file_count": 1563,
+  "actual_bytes": 251150661,
+  "declared_allowlist_bytes": 251134179,
+  "extensions": {
+    ".json": 1090,
+    ".png": 451,
+    ".log": 1,
+    ".txt": 21
+  },
+  "method": [
+    "All1563 exact selected files checked for repository-contained regular non-symlink paths; full perfileSHA manifest.",
+    "All1112UTF8JSON/TXT/log files scanned for private-key blocks, GitHub/Google/OAuth/AWS tokens,JWT,Bearer material,URLcredentials,andsecret/password assignments.",
+    "All48candidate matches individually classified:12distinctcatalogsource/translation lines repeated across frozen snapshots; Password/Choose a password/Username and password are UI labels, not account credentials.",
+    "All451PNG files parsed: onlyIHDR/IDAT/IEND chunks, no text/EXIF metadata. CurrentHi/Swonline+UrWASM/native screenshots were independently visually read; otherlocale screenshots are bounded synthetic/localfixture evidence, not production accounts."
+  ],
+  "actual_credentials_found": [],
+  "candidate_disposition": "48/48 harmless catalog labels. No credential/token matches in other pattern classes.",
+  "limits": [
+    "Pattern inspection cannot prove absence of every possible opaque secret; no unexplained binary files or highriskcredentialforms detected.",
+    "Approval binds exact fileSHAs in scan manifest. Rescan changed files/allowlist before publishing. Localabsolute paths/usernames remain visible by explicit taskcontext; nottreatedascredentials.",
+    "Allowlist declaredbytes are stale vs current filebytes (251150661); refreshmetadata or preserveactual scanned hashes."
+  ]
+}

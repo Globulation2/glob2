@@ -1,0 +1,3846 @@
+{
+  "reviewer": "/root/pilot_context",
+  "locale": "hi",
+  "status": "pass-in-captured-scope",
+  "independence": "No Hindi native translation authorship or editing; author Kit, distinct editor root. Reviewer read every new production image.",
+  "production_images": [
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/hi/1200/main.png",
+      "sha256": "8ba80d7c546b1dad32cc50edb45a4d5a282f4569f99973f3cb29396f7490579e",
+      "bytes": 1151830,
+      "width": 1200,
+      "height": 844,
+      "actually_read": true,
+      "archive": "artifacts/translation-program/reviews/hi-native-visual/release-final-archive/hi/1200/main.png"
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/hi/1200/settings.png",
+      "sha256": "e7bc37663cb2b658059b2a78011ab81249921d723584feb0311f9d9199f16dc6",
+      "bytes": 546592,
+      "width": 1200,
+      "height": 844,
+      "actually_read": true,
+      "archive": "artifacts/translation-program/reviews/hi-native-visual/release-final-archive/hi/1200/settings.png"
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/hi/1200/settings-audio.png",
+      "sha256": "6c4df0680a6bee014920730678b86f8d0f2681480a7bcd0ea21e0c04e88a33da",
+      "bytes": 524613,
+      "width": 1200,
+      "height": 844,
+      "actually_read": true,
+      "archive": "artifacts/translation-program/reviews/hi-native-visual/release-final-archive/hi/1200/settings-audio.png"
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/hi/1200/lobby.png",
+      "sha256": "cd5ead87ffac814b6f63f7a6c82ff2170944264ba27a2b785483d5279a5e5c9a",
+      "bytes": 232475,
+      "width": 1200,
+      "height": 844,
+      "actually_read": true,
+      "archive": "artifacts/translation-program/reviews/hi-native-visual/release-final-archive/hi/1200/lobby.png"
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/hi/1200/lobby-players.png",
+      "sha256": "5f7f2d5b34329363814292afd5a23fe9be1bb7918e89dbb3e4791751758df372",
+      "bytes": 237522,
+      "width": 1200,
+      "height": 844,
+      "actually_read": true,
+      "archive": "artifacts/translation-program/reviews/hi-native-visual/release-final-archive/hi/1200/lobby-players.png"
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/hi/1200/gameplay-dialog.png",
+      "sha256": "bf6f38de18fd3ea65b4955a02cf3d5bb447e37280331f1b8ae851ec63823a93b",
+      "bytes": 539730,
+      "width": 2400,
+      "height": 1688,
+      "actually_read": true,
+      "archive": "artifacts/translation-program/reviews/hi-native-visual/release-final-archive/hi/1200/gameplay-dialog.png"
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/hi/1200/gameplay-zoom-fit.png",
+      "sha256": "362948990bbec88dbde3635d3a2b6e36fbd14cab84e37363c4d0b2d8205cf7c0",
+      "bytes": 110232,
+      "width": 2400,
+      "height": 1688,
+      "actually_read": true,
+      "archive": "artifacts/translation-program/reviews/hi-native-visual/release-final-archive/hi/1200/gameplay-zoom-fit.png"
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/hi/1200/gameplay-zoom-plus.png",
+      "sha256": "fe85a7cc28ebeccff21580b65b1c4f226b47ef9a960f6f78ad9cca32073a3d06",
+      "bytes": 919061,
+      "width": 2400,
+      "height": 1688,
+      "actually_read": true,
+      "archive": "artifacts/translation-program/reviews/hi-native-visual/release-final-archive/hi/1200/gameplay-zoom-plus.png"
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/hi/1200/gameplay.png",
+      "sha256": "8531b677dcb31663e653162612cd99e014419ca657a8cd4942898f1dd4bbfa81",
+      "bytes": 725628,
+      "width": 2400,
+      "height": 1688,
+      "actually_read": true,
+      "archive": "artifacts/translation-program/reviews/hi-native-visual/release-final-archive/hi/1200/gameplay.png"
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/hi/1200/tutorial-introduction-briefing.png",
+      "sha256": "ca397ed8257a982a02ff79a5fa5b189d480ace58bce22d09fc2b0c8ee276cd3b",
+      "bytes": 934348,
+      "width": 2400,
+      "height": 1688,
+      "actually_read": true,
+      "archive": "artifacts/translation-program/reviews/hi-native-visual/release-final-archive/hi/1200/tutorial-introduction-briefing.png"
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/hi/1200/tutorial-introduction-dialog.png",
+      "sha256": "381fd51dfad3352298128e5fe0880239b47585bbc161c36ece6c250fd2820e21",
+      "bytes": 524897,
+      "width": 2400,
+      "height": 1688,
+      "actually_read": true,
+      "archive": "artifacts/translation-program/reviews/hi-native-visual/release-final-archive/hi/1200/tutorial-introduction-dialog.png"
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/hi/1200/tutorial-introduction.png",
+      "sha256": "dc6b7985dfb9d6dcf0f52f02333af19c011334bd0b0d189f9acbb696ec728a3d",
+      "bytes": 983635,
+      "width": 2400,
+      "height": 1688,
+      "actually_read": true,
+      "archive": "artifacts/translation-program/reviews/hi-native-visual/release-final-archive/hi/1200/tutorial-introduction.png"
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/hi/1200/tutorial-food-supply-briefing.png",
+      "sha256": "c0de220c119a90fd3dd68530881d71a713fc739914e29feafabc4fa7bba2ff8e",
+      "bytes": 916946,
+      "width": 2400,
+      "height": 1688,
+      "actually_read": true,
+      "archive": "artifacts/translation-program/reviews/hi-native-visual/release-final-archive/hi/1200/tutorial-food-supply-briefing.png"
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/hi/1200/tutorial-food-supply-dialog.png",
+      "sha256": "b630d2eed3e3896c1ef8ff8836c7aea6e9f4e4a711002699cac553a88dd88ef5",
+      "bytes": 525851,
+      "width": 2400,
+      "height": 1688,
+      "actually_read": true,
+      "archive": "artifacts/translation-program/reviews/hi-native-visual/release-final-archive/hi/1200/tutorial-food-supply-dialog.png"
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/hi/1200/tutorial-food-supply.png",
+      "sha256": "2579e1f3c8f4274b867bd542a198c53412e80760383704f112cbc0815c0300d2",
+      "bytes": 973390,
+      "width": 2400,
+      "height": 1688,
+      "actually_read": true,
+      "archive": "artifacts/translation-program/reviews/hi-native-visual/release-final-archive/hi/1200/tutorial-food-supply.png"
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/hi/1200/tutorial-healing-briefing.png",
+      "sha256": "3d09746eb4d005c79d52a3793aada19c5cd10a7935cf6e16060f8cdff1f5763b",
+      "bytes": 932254,
+      "width": 2400,
+      "height": 1688,
+      "actually_read": true,
+      "archive": "artifacts/translation-program/reviews/hi-native-visual/release-final-archive/hi/1200/tutorial-healing-briefing.png"
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/hi/1200/tutorial-healing-dialog.png",
+      "sha256": "36307b335903222ac4a91a9595d829e45acafce55aef3fe1f7b5c90b9085bc07",
+      "bytes": 529645,
+      "width": 2400,
+      "height": 1688,
+      "actually_read": true,
+      "archive": "artifacts/translation-program/reviews/hi-native-visual/release-final-archive/hi/1200/tutorial-healing-dialog.png"
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/hi/1200/tutorial-healing.png",
+      "sha256": "6de36fcac26b2640b5f5a6d3a5d2ef867012eb5c98c1b7429c3dafd88d1b0641",
+      "bytes": 975664,
+      "width": 2400,
+      "height": 1688,
+      "actually_read": true,
+      "archive": "artifacts/translation-program/reviews/hi-native-visual/release-final-archive/hi/1200/tutorial-healing.png"
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/hi/1200/tutorial-walking-training-briefing.png",
+      "sha256": "d644da001148b7f9eb09980818600c01418fe71401c1b077bdf055e7b4142f1f",
+      "bytes": 943297,
+      "width": 2400,
+      "height": 1688,
+      "actually_read": true,
+      "archive": "artifacts/translation-program/reviews/hi-native-visual/release-final-archive/hi/1200/tutorial-walking-training-briefing.png"
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/hi/1200/tutorial-walking-training-dialog.png",
+      "sha256": "25c6134f2f5bed478e8cdd0154ee2a3fc34079e4c6b2abcccdd0786f30db9958",
+      "bytes": 530695,
+      "width": 2400,
+      "height": 1688,
+      "actually_read": true,
+      "archive": "artifacts/translation-program/reviews/hi-native-visual/release-final-archive/hi/1200/tutorial-walking-training-dialog.png"
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/hi/1200/tutorial-walking-training.png",
+      "sha256": "8c5b2dfa25509aa85ed9c3c3852dd6322b093bee855898ca0547b394547a1ff1",
+      "bytes": 981368,
+      "width": 2400,
+      "height": 1688,
+      "actually_read": true,
+      "archive": "artifacts/translation-program/reviews/hi-native-visual/release-final-archive/hi/1200/tutorial-walking-training.png"
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/hi/1200/tutorial-swimming-briefing.png",
+      "sha256": "d6716dd8d7cebafd7525acaaac75dbeb86fdec9ca82a6c56879e507f8408efc5",
+      "bytes": 944397,
+      "width": 2400,
+      "height": 1688,
+      "actually_read": true,
+      "archive": "artifacts/translation-program/reviews/hi-native-visual/release-final-archive/hi/1200/tutorial-swimming-briefing.png"
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/hi/1200/tutorial-swimming-dialog.png",
+      "sha256": "f4afee0f7420e457e3a73f9c4d006d032846aa0a1c1302cb8c1423e205b92dcd",
+      "bytes": 534480,
+      "width": 2400,
+      "height": 1688,
+      "actually_read": true,
+      "archive": "artifacts/translation-program/reviews/hi-native-visual/release-final-archive/hi/1200/tutorial-swimming-dialog.png"
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/hi/1200/tutorial-swimming.png",
+      "sha256": "aba1a096b073d7150167d71592cf407ac5bc16dedcb6c49eda50845a4d069907",
+      "bytes": 978398,
+      "width": 2400,
+      "height": 1688,
+      "actually_read": true,
+      "archive": "artifacts/translation-program/reviews/hi-native-visual/release-final-archive/hi/1200/tutorial-swimming.png"
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/hi/1200/tutorial-schools-briefing.png",
+      "sha256": "db1edc2af0aeede9d382c403ed91b6dd2700d131ff0faaf8d1df04f8d3c261fd",
+      "bytes": 947991,
+      "width": 2400,
+      "height": 1688,
+      "actually_read": true,
+      "archive": "artifacts/translation-program/reviews/hi-native-visual/release-final-archive/hi/1200/tutorial-schools-briefing.png"
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/hi/1200/tutorial-schools-dialog.png",
+      "sha256": "16d668c0392bf5a4c29a61602d8b7784086e27cb9f1ca450fb404dd8f1fc8792",
+      "bytes": 530993,
+      "width": 2400,
+      "height": 1688,
+      "actually_read": true,
+      "archive": "artifacts/translation-program/reviews/hi-native-visual/release-final-archive/hi/1200/tutorial-schools-dialog.png"
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/hi/1200/tutorial-schools.png",
+      "sha256": "a8c0f5d2f05cfa010a818b690c700cfe9efc3a86bd608201133678e33042d60f",
+      "bytes": 977359,
+      "width": 2400,
+      "height": 1688,
+      "actually_read": true,
+      "archive": "artifacts/translation-program/reviews/hi-native-visual/release-final-archive/hi/1200/tutorial-schools.png"
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/hi/1200/tutorial-upgrades-briefing.png",
+      "sha256": "387f804bf9406ed2c67ac02ef396b30cc85e393a2fa99889b823b5de2ef0da18",
+      "bytes": 983693,
+      "width": 2400,
+      "height": 1688,
+      "actually_read": true,
+      "archive": "artifacts/translation-program/reviews/hi-native-visual/release-final-archive/hi/1200/tutorial-upgrades-briefing.png"
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/hi/1200/tutorial-upgrades-dialog.png",
+      "sha256": "871e5983dee237e209b76435fcd7ab9ab3c280c9757dabd126a319c9f3e32fed",
+      "bytes": 535193,
+      "width": 2400,
+      "height": 1688,
+      "actually_read": true,
+      "archive": "artifacts/translation-program/reviews/hi-native-visual/release-final-archive/hi/1200/tutorial-upgrades-dialog.png"
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/hi/1200/tutorial-upgrades.png",
+      "sha256": "2595880d8c7e090056ca2b78531280c9b89097edfb04200eeb4c6319d6e16cc8",
+      "bytes": 1029739,
+      "width": 2400,
+      "height": 1688,
+      "actually_read": true,
+      "archive": "artifacts/translation-program/reviews/hi-native-visual/release-final-archive/hi/1200/tutorial-upgrades.png"
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/hi/1200/tutorial-warrior-training-briefing.png",
+      "sha256": "7bfe631d656990cdf8b6fd34cc5773d3217dc05fdcfb9402ddfabc9f00bea92e",
+      "bytes": 945651,
+      "width": 2400,
+      "height": 1688,
+      "actually_read": true,
+      "archive": "artifacts/translation-program/reviews/hi-native-visual/release-final-archive/hi/1200/tutorial-warrior-training-briefing.png"
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/hi/1200/tutorial-warrior-training-dialog.png",
+      "sha256": "4e263a434bd0de451f6f2662d3843c1ecd2898222fab1bf549f33461268f54fc",
+      "bytes": 526191,
+      "width": 2400,
+      "height": 1688,
+      "actually_read": true,
+      "archive": "artifacts/translation-program/reviews/hi-native-visual/release-final-archive/hi/1200/tutorial-warrior-training-dialog.png"
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/hi/1200/tutorial-warrior-training.png",
+      "sha256": "3c7584e14c9257280d5267097619e916e7241267b227296cc0345d8719802d24",
+      "bytes": 994901,
+      "width": 2400,
+      "height": 1688,
+      "actually_read": true,
+      "archive": "artifacts/translation-program/reviews/hi-native-visual/release-final-archive/hi/1200/tutorial-warrior-training.png"
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/hi/1200/tutorial-fortifications-briefing.png",
+      "sha256": "e26ed90526149de48bfb6a1a24c7914345dfee7184f8b97b7fc7103b4ad23acc",
+      "bytes": 946931,
+      "width": 2400,
+      "height": 1688,
+      "actually_read": true,
+      "archive": "artifacts/translation-program/reviews/hi-native-visual/release-final-archive/hi/1200/tutorial-fortifications-briefing.png"
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/hi/1200/tutorial-fortifications-dialog.png",
+      "sha256": "d27e6d4f53d237105c6c7f06432f010a9756f876de938131131179d4fdb5361e",
+      "bytes": 533783,
+      "width": 2400,
+      "height": 1688,
+      "actually_read": true,
+      "archive": "artifacts/translation-program/reviews/hi-native-visual/release-final-archive/hi/1200/tutorial-fortifications-dialog.png"
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/hi/1200/tutorial-fortifications.png",
+      "sha256": "006dfec78dc16aab24f9027cd6c0ffb906857f77b4f7d3015466e3df5b5f19a1",
+      "bytes": 972536,
+      "width": 2400,
+      "height": 1688,
+      "actually_read": true,
+      "archive": "artifacts/translation-program/reviews/hi-native-visual/release-final-archive/hi/1200/tutorial-fortifications.png"
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/hi/1200/tutorial-defensive-tactics-briefing.png",
+      "sha256": "97ea876bdddeaa8d1050d1315dda1f7c26462339c27076b7032d01602d02217f",
+      "bytes": 961491,
+      "width": 2400,
+      "height": 1688,
+      "actually_read": true,
+      "archive": "artifacts/translation-program/reviews/hi-native-visual/release-final-archive/hi/1200/tutorial-defensive-tactics-briefing.png"
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/hi/1200/tutorial-defensive-tactics-dialog.png",
+      "sha256": "13b4287199f21b2ed54bc6c4faaddd357dbe937cebc629612539a078343aafda",
+      "bytes": 539824,
+      "width": 2400,
+      "height": 1688,
+      "actually_read": true,
+      "archive": "artifacts/translation-program/reviews/hi-native-visual/release-final-archive/hi/1200/tutorial-defensive-tactics-dialog.png"
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/hi/1200/tutorial-defensive-tactics.png",
+      "sha256": "e4f264338940cbc529f2a7613295b98c5dc84786f26bb71f08d0a009baa442fb",
+      "bytes": 990292,
+      "width": 2400,
+      "height": 1688,
+      "actually_read": true,
+      "archive": "artifacts/translation-program/reviews/hi-native-visual/release-final-archive/hi/1200/tutorial-defensive-tactics.png"
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/hi/390/main.png",
+      "sha256": "f24f5e01c0cc8dc0e5070bfd8514b1a556c6824b8d96c4bcd8ca2e8ba0119d80",
+      "bytes": 339138,
+      "width": 390,
+      "height": 844,
+      "actually_read": true,
+      "archive": "artifacts/translation-program/reviews/hi-native-visual/release-final-archive/hi/390/main.png"
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/hi/390/settings.png",
+      "sha256": "1e3001ceb62e92c8a73ed634e83645e0d6c14d8e311e5625a579a6404f044c7b",
+      "bytes": 52334,
+      "width": 390,
+      "height": 844,
+      "actually_read": true,
+      "archive": "artifacts/translation-program/reviews/hi-native-visual/release-final-archive/hi/390/settings.png"
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/hi/390/settings-audio.png",
+      "sha256": "4bfcea85863831ea30959e271ef9ec8ac610af6cf3d7ebcf32449b020f7db139",
+      "bytes": 31967,
+      "width": 390,
+      "height": 844,
+      "actually_read": true,
+      "archive": "artifacts/translation-program/reviews/hi-native-visual/release-final-archive/hi/390/settings-audio.png"
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/hi/390/lobby.png",
+      "sha256": "d024c0e1e99e23d7669e41c74f5cdb1e3d129ba78151a804d55fdc3bacbcde05",
+      "bytes": 38799,
+      "width": 390,
+      "height": 844,
+      "actually_read": true,
+      "archive": "artifacts/translation-program/reviews/hi-native-visual/release-final-archive/hi/390/lobby.png"
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/hi/390/lobby-players.png",
+      "sha256": "b9093f007be42bea53a7c093106ec33330ae62e0784f9242926c986127d635a6",
+      "bytes": 37720,
+      "width": 390,
+      "height": 844,
+      "actually_read": true,
+      "archive": "artifacts/translation-program/reviews/hi-native-visual/release-final-archive/hi/390/lobby-players.png"
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/hi/390/gameplay-dialog.png",
+      "sha256": "c2be7b392194c56e0f98483cd498a2dce1211ad462e4fc0662210d335f759df3",
+      "bytes": 82702,
+      "width": 780,
+      "height": 1688,
+      "actually_read": true,
+      "archive": "artifacts/translation-program/reviews/hi-native-visual/release-final-archive/hi/390/gameplay-dialog.png"
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/hi/390/gameplay.png",
+      "sha256": "b4d69abd828463ec482bede09c4140c144f547647d3d02768825756deaaa134e",
+      "bytes": 256539,
+      "width": 780,
+      "height": 1688,
+      "actually_read": true,
+      "archive": "artifacts/translation-program/reviews/hi-native-visual/release-final-archive/hi/390/gameplay.png"
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/hi/390/tutorial-introduction-briefing.png",
+      "sha256": "131104a5f1009d3df2b9f74fac4540a7c0659efb2c483f7cf1bb10cdde8b743c",
+      "bytes": 341661,
+      "width": 780,
+      "height": 1688,
+      "actually_read": true,
+      "archive": "artifacts/translation-program/reviews/hi-native-visual/release-final-archive/hi/390/tutorial-introduction-briefing.png"
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/hi/390/tutorial-introduction-dialog.png",
+      "sha256": "702aa101fd00b6d32b0f7e505efdd6ca48b644cab0f75345e68e60e646fcd0ae",
+      "bytes": 101403,
+      "width": 780,
+      "height": 1688,
+      "actually_read": true,
+      "archive": "artifacts/translation-program/reviews/hi-native-visual/release-final-archive/hi/390/tutorial-introduction-dialog.png"
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/hi/390/tutorial-introduction.png",
+      "sha256": "40f3abe0f585a12c9e102b18557900c9a37708c30112168cff719c0fea2bd602",
+      "bytes": 377568,
+      "width": 780,
+      "height": 1688,
+      "actually_read": true,
+      "archive": "artifacts/translation-program/reviews/hi-native-visual/release-final-archive/hi/390/tutorial-introduction.png"
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/hi/390/tutorial-food-supply-briefing.png",
+      "sha256": "16dfbe5850f94e25563dc549b26789c9222e7381748c40f6bcfae1fbb46617e7",
+      "bytes": 342699,
+      "width": 780,
+      "height": 1688,
+      "actually_read": true,
+      "archive": "artifacts/translation-program/reviews/hi-native-visual/release-final-archive/hi/390/tutorial-food-supply-briefing.png"
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/hi/390/tutorial-food-supply-dialog.png",
+      "sha256": "8bf10935f834dd468f72bf899ac4f685685dec4f4aef6baf43bde0ec8d37a24a",
+      "bytes": 101597,
+      "width": 780,
+      "height": 1688,
+      "actually_read": true,
+      "archive": "artifacts/translation-program/reviews/hi-native-visual/release-final-archive/hi/390/tutorial-food-supply-dialog.png"
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/hi/390/tutorial-food-supply.png",
+      "sha256": "4f43ecca7bfdfb60316f0f7529f38053d2208b162d7685086aa3c1842219218f",
+      "bytes": 382148,
+      "width": 780,
+      "height": 1688,
+      "actually_read": true,
+      "archive": "artifacts/translation-program/reviews/hi-native-visual/release-final-archive/hi/390/tutorial-food-supply.png"
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/hi/390/tutorial-healing-briefing.png",
+      "sha256": "065ab0d08ffc696cd680614a5b94773a3b08d6b416f492de1a1ca68bfbf63232",
+      "bytes": 346977,
+      "width": 780,
+      "height": 1688,
+      "actually_read": true,
+      "archive": "artifacts/translation-program/reviews/hi-native-visual/release-final-archive/hi/390/tutorial-healing-briefing.png"
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/hi/390/tutorial-healing-dialog.png",
+      "sha256": "6b10dc014b4579bc4e68359f191067f3de55e0ae658fa4a76c3bd50e81434813",
+      "bytes": 102427,
+      "width": 780,
+      "height": 1688,
+      "actually_read": true,
+      "archive": "artifacts/translation-program/reviews/hi-native-visual/release-final-archive/hi/390/tutorial-healing-dialog.png"
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/hi/390/tutorial-healing.png",
+      "sha256": "53e98f9d6ec181a860a762561b69fb6bdf91053fe1ff97d199e5ae419665957e",
+      "bytes": 386791,
+      "width": 780,
+      "height": 1688,
+      "actually_read": true,
+      "archive": "artifacts/translation-program/reviews/hi-native-visual/release-final-archive/hi/390/tutorial-healing.png"
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/hi/390/tutorial-walking-training-briefing.png",
+      "sha256": "b5dd619f32926a830f2d4ca2a1b64dbd2cfb6e9301a9beb548d9823af48328f4",
+      "bytes": 344570,
+      "width": 780,
+      "height": 1688,
+      "actually_read": true,
+      "archive": "artifacts/translation-program/reviews/hi-native-visual/release-final-archive/hi/390/tutorial-walking-training-briefing.png"
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/hi/390/tutorial-walking-training-dialog.png",
+      "sha256": "6b10dc014b4579bc4e68359f191067f3de55e0ae658fa4a76c3bd50e81434813",
+      "bytes": 102427,
+      "width": 780,
+      "height": 1688,
+      "actually_read": true,
+      "archive": "artifacts/translation-program/reviews/hi-native-visual/release-final-archive/hi/390/tutorial-walking-training-dialog.png"
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/hi/390/tutorial-walking-training.png",
+      "sha256": "8235285338170d22e4dc09b45c7fd3fbb8307912cd042bd4cece85f3281cda1c",
+      "bytes": 386563,
+      "width": 780,
+      "height": 1688,
+      "actually_read": true,
+      "archive": "artifacts/translation-program/reviews/hi-native-visual/release-final-archive/hi/390/tutorial-walking-training.png"
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/hi/390/tutorial-swimming-briefing.png",
+      "sha256": "0c697fba8d57a1042422d4b5a168646baa4dae2f124a832eabe8d463314b2f96",
+      "bytes": 339049,
+      "width": 780,
+      "height": 1688,
+      "actually_read": true,
+      "archive": "artifacts/translation-program/reviews/hi-native-visual/release-final-archive/hi/390/tutorial-swimming-briefing.png"
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/hi/390/tutorial-swimming-dialog.png",
+      "sha256": "0a11a7a2160b5b3f64c0058f61747223e6545690c7d1c60c5052174612b040f9",
+      "bytes": 101818,
+      "width": 780,
+      "height": 1688,
+      "actually_read": true,
+      "archive": "artifacts/translation-program/reviews/hi-native-visual/release-final-archive/hi/390/tutorial-swimming-dialog.png"
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/hi/390/tutorial-swimming.png",
+      "sha256": "61edbfd802192c2b3c223a019be9e7a7d32b4585b445c1161fec400fba2e2c3e",
+      "bytes": 386071,
+      "width": 780,
+      "height": 1688,
+      "actually_read": true,
+      "archive": "artifacts/translation-program/reviews/hi-native-visual/release-final-archive/hi/390/tutorial-swimming.png"
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/hi/390/tutorial-schools-dialog.png",
+      "sha256": "7f9b9e147367449d3ca62096ea88fcb92a35f851bc460533ad332386ac70d45d",
+      "bytes": 102489,
+      "width": 780,
+      "height": 1688,
+      "actually_read": true,
+      "archive": "artifacts/translation-program/reviews/hi-native-visual/release-final-archive/hi/390/tutorial-schools-dialog.png"
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/hi/390/tutorial-schools.png",
+      "sha256": "b71c2b81607c5261383e276db5f6d2f8b831eb08b50549b820b9bfa10fa34319",
+      "bytes": 375511,
+      "width": 780,
+      "height": 1688,
+      "actually_read": true,
+      "archive": "artifacts/translation-program/reviews/hi-native-visual/release-final-archive/hi/390/tutorial-schools.png"
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/hi/390/tutorial-upgrades-briefing.png",
+      "sha256": "d5050f48ce36b294b45c52bef91ace37ac86beb2bf56b3cd33635910d1fb7ea5",
+      "bytes": 348332,
+      "width": 780,
+      "height": 1688,
+      "actually_read": true,
+      "archive": "artifacts/translation-program/reviews/hi-native-visual/release-final-archive/hi/390/tutorial-upgrades-briefing.png"
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/hi/390/tutorial-upgrades-dialog.png",
+      "sha256": "ba9f7e4a242f2f5ef9d086fef44f0e4cdb288b5150e9aca87ecd128dc4192c87",
+      "bytes": 103172,
+      "width": 780,
+      "height": 1688,
+      "actually_read": true,
+      "archive": "artifacts/translation-program/reviews/hi-native-visual/release-final-archive/hi/390/tutorial-upgrades-dialog.png"
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/hi/390/tutorial-upgrades.png",
+      "sha256": "d975dece40b1640eab9434c6e819278b16b226e306fce50c6168e65cdbc00c7d",
+      "bytes": 383483,
+      "width": 780,
+      "height": 1688,
+      "actually_read": true,
+      "archive": "artifacts/translation-program/reviews/hi-native-visual/release-final-archive/hi/390/tutorial-upgrades.png"
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/hi/390/tutorial-warrior-training-briefing.png",
+      "sha256": "6fe82612343252e7328604d2b0a88daeff7af4c5b246e3cc514bb9221131801b",
+      "bytes": 351404,
+      "width": 780,
+      "height": 1688,
+      "actually_read": true,
+      "archive": "artifacts/translation-program/reviews/hi-native-visual/release-final-archive/hi/390/tutorial-warrior-training-briefing.png"
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/hi/390/tutorial-warrior-training-dialog.png",
+      "sha256": "df9de4e387c427efbe6bf277a5402428c651ac25ae35c9e37cf8ccfba368cb15",
+      "bytes": 102343,
+      "width": 780,
+      "height": 1688,
+      "actually_read": true,
+      "archive": "artifacts/translation-program/reviews/hi-native-visual/release-final-archive/hi/390/tutorial-warrior-training-dialog.png"
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/hi/390/tutorial-warrior-training.png",
+      "sha256": "a42bc850904935d55ffbcfef3e627e951bfb60fe12d48d4f93f99f2103f04106",
+      "bytes": 393639,
+      "width": 780,
+      "height": 1688,
+      "actually_read": true,
+      "archive": "artifacts/translation-program/reviews/hi-native-visual/release-final-archive/hi/390/tutorial-warrior-training.png"
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/hi/390/tutorial-fortifications-dialog.png",
+      "sha256": "b84fcd813cbca523b1fa70f43c8ca006c37b8c826e65071cb4b33675034c0836",
+      "bytes": 100490,
+      "width": 780,
+      "height": 1688,
+      "actually_read": true,
+      "archive": "artifacts/translation-program/reviews/hi-native-visual/release-final-archive/hi/390/tutorial-fortifications-dialog.png"
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/hi/390/tutorial-fortifications.png",
+      "sha256": "ad09d7b60d05e31ec7255fd962451ec4e1a9798c12c191ee3ca890ceee59f113",
+      "bytes": 396094,
+      "width": 780,
+      "height": 1688,
+      "actually_read": true,
+      "archive": "artifacts/translation-program/reviews/hi-native-visual/release-final-archive/hi/390/tutorial-fortifications.png"
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/hi/390/tutorial-defensive-tactics-briefing.png",
+      "sha256": "e43ed8dd7d84fee59daa2fb7d7ea70a441ea5f8ebd4c9f9d336caa1a09b69d08",
+      "bytes": 339389,
+      "width": 780,
+      "height": 1688,
+      "actually_read": true,
+      "archive": "artifacts/translation-program/reviews/hi-native-visual/release-final-archive/hi/390/tutorial-defensive-tactics-briefing.png"
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/hi/390/tutorial-defensive-tactics-dialog.png",
+      "sha256": "db81ae5a72ca0e65f402d1a223c38629b481654bfcad87a6840438527258a519",
+      "bytes": 102579,
+      "width": 780,
+      "height": 1688,
+      "actually_read": true,
+      "archive": "artifacts/translation-program/reviews/hi-native-visual/release-final-archive/hi/390/tutorial-defensive-tactics-dialog.png"
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/hi/390/tutorial-defensive-tactics.png",
+      "sha256": "9655fb5c1bf55946bddb9a19077e0e1a274b72ead499feca59bba22db0d344f2",
+      "bytes": 388367,
+      "width": 780,
+      "height": 1688,
+      "actually_read": true,
+      "archive": "artifacts/translation-program/reviews/hi-native-visual/release-final-archive/hi/390/tutorial-defensive-tactics.png"
+    }
+  ],
+  "production_images_actually_read": 74,
+  "desktop_production_count": 39,
+  "phone_production_count": 35,
+  "representative_font_pages_actually_read": 12,
+  "font_diagnostics": [
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/hi/1200/matrix/font-10-scale-1-page-001.png",
+      "sha256": "1d4e559f6bf78110b3a2ffa75846b38126a38ad4edad2c17055d615119335a69",
+      "bytes": 126398,
+      "width": 1200,
+      "height": 844,
+      "actually_read": true,
+      "archive": "artifacts/translation-program/reviews/hi-native-visual/release-final-archive/hi/1200/matrix/font-10-scale-1-page-001.png"
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/hi/1200/matrix/font-10-scale-1-page-002.png",
+      "sha256": "a0aa0e4ae0aebc34c6fd0327db4722d104d50e11bf7a93ead876018b5f264514",
+      "bytes": 24834,
+      "width": 1200,
+      "height": 844,
+      "actually_read": false
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/hi/1200/matrix/font-10-scale-2-page-001.png",
+      "sha256": "8dffb3a0f62286f5d3d0d81363ee8e77d0a0ec8de35069d8678988e4de072b91",
+      "bytes": 656592,
+      "width": 2400,
+      "height": 1688,
+      "actually_read": true,
+      "archive": "artifacts/translation-program/reviews/hi-native-visual/release-final-archive/hi/1200/matrix/font-10-scale-2-page-001.png"
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/hi/1200/matrix/font-10-scale-2-page-002.png",
+      "sha256": "62868f1dd22b992889d931b376158710469dc9a6691b111c9210e484537de420",
+      "bytes": 102176,
+      "width": 2400,
+      "height": 1688,
+      "actually_read": false
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/hi/1200/matrix/font-13-scale-1-page-001.png",
+      "sha256": "819c083225237cc1d29fe48b0bc021595e9287cb4d033aafe08cf25727b3ca75",
+      "bytes": 137195,
+      "width": 1200,
+      "height": 844,
+      "actually_read": true,
+      "archive": "artifacts/translation-program/reviews/hi-native-visual/release-final-archive/hi/1200/matrix/font-13-scale-1-page-001.png"
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/hi/1200/matrix/font-13-scale-1-page-002.png",
+      "sha256": "c3ed5b040ec3b0dc12a6c753155590a8eca9e5379d29f0f2f8491e3cbc4958f3",
+      "bytes": 61928,
+      "width": 1200,
+      "height": 844,
+      "actually_read": false
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/hi/1200/matrix/font-13-scale-2-page-001.png",
+      "sha256": "cf13c08472e4a54eedc281ac8b449d1602b64bb8e89a13ea026640c584e996b6",
+      "bytes": 685137,
+      "width": 2400,
+      "height": 1688,
+      "actually_read": true,
+      "archive": "artifacts/translation-program/reviews/hi-native-visual/release-final-archive/hi/1200/matrix/font-13-scale-2-page-001.png"
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/hi/1200/matrix/font-13-scale-2-page-002.png",
+      "sha256": "74fb3b95200996d4a9ebd9f7fcadd66cb074ce17587cf10411b92d1f63b11993",
+      "bytes": 236767,
+      "width": 2400,
+      "height": 1688,
+      "actually_read": false
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/hi/1200/matrix/font-20-scale-1-page-001.png",
+      "sha256": "bcd3f4867af27d3bec6528eb42f946ce78d5218585d02c618537b5080d4d3b84",
+      "bytes": 149322,
+      "width": 1200,
+      "height": 844,
+      "actually_read": true,
+      "archive": "artifacts/translation-program/reviews/hi-native-visual/release-final-archive/hi/1200/matrix/font-20-scale-1-page-001.png"
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/hi/1200/matrix/font-20-scale-1-page-002.png",
+      "sha256": "812c9bdab188a2af24cb312fe1307a8e60838b7e37c84cdb0b5b9dc16dfc8f51",
+      "bytes": 186876,
+      "width": 1200,
+      "height": 844,
+      "actually_read": false
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/hi/1200/matrix/font-20-scale-1-page-003.png",
+      "sha256": "dc25c2f88c874fdf7248f7180af9b82395f6d7783e4322b286337860753156ca",
+      "bytes": 44693,
+      "width": 1200,
+      "height": 844,
+      "actually_read": false
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/hi/1200/matrix/font-20-scale-2-page-001.png",
+      "sha256": "52cd72212ffb0211264aa0ea1d995bf377ed7c713c0be79747cbad7b19bc631f",
+      "bytes": 592261,
+      "width": 2400,
+      "height": 1688,
+      "actually_read": true,
+      "archive": "artifacts/translation-program/reviews/hi-native-visual/release-final-archive/hi/1200/matrix/font-20-scale-2-page-001.png"
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/hi/1200/matrix/font-20-scale-2-page-002.png",
+      "sha256": "fd0ab2c340942b5a8c09f8c161ad989a63942943c716cb89ebb0b2bd6db7f2ab",
+      "bytes": 843235,
+      "width": 2400,
+      "height": 1688,
+      "actually_read": false
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/hi/1200/matrix/font-20-scale-2-page-003.png",
+      "sha256": "8d67461bd6c6420d2b00459d2459a33bffe6f9fb2d49b2006e41c69648c183a9",
+      "bytes": 65338,
+      "width": 2400,
+      "height": 1688,
+      "actually_read": false
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/hi/390/matrix/font-10-scale-1-page-001.png",
+      "sha256": "a5f9af7f22e141afa186044fa9a3e3739224fc530b5d6fdf1d7790685f46d27f",
+      "bytes": 90994,
+      "width": 390,
+      "height": 844,
+      "actually_read": true,
+      "archive": "artifacts/translation-program/reviews/hi-native-visual/release-final-archive/hi/390/matrix/font-10-scale-1-page-001.png"
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/hi/390/matrix/font-10-scale-1-page-002.png",
+      "sha256": "efef91e7a07afc533fd3f9ab01279382004678fcf6791687b49036a7a1f3a2cf",
+      "bytes": 60046,
+      "width": 390,
+      "height": 844,
+      "actually_read": false
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/hi/390/matrix/font-10-scale-2-page-001.png",
+      "sha256": "c097af4eaa84346ba2d8692e07ab11bd7c88e33c72ccdf037edb530e17f0c3c5",
+      "bytes": 453075,
+      "width": 780,
+      "height": 1688,
+      "actually_read": true,
+      "archive": "artifacts/translation-program/reviews/hi-native-visual/release-final-archive/hi/390/matrix/font-10-scale-2-page-001.png"
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/hi/390/matrix/font-10-scale-2-page-002.png",
+      "sha256": "56d1825b1f30189d6dab367c50f56edda2b87b531484da4b957313b286812107",
+      "bytes": 287952,
+      "width": 780,
+      "height": 1688,
+      "actually_read": false
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/hi/390/matrix/font-13-scale-1-page-001.png",
+      "sha256": "e3e7c110552758af7008326d517858d0912720319045e96b3e112f55e409ee67",
+      "bytes": 111304,
+      "width": 390,
+      "height": 844,
+      "actually_read": true,
+      "archive": "artifacts/translation-program/reviews/hi-native-visual/release-final-archive/hi/390/matrix/font-13-scale-1-page-001.png"
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/hi/390/matrix/font-13-scale-1-page-002.png",
+      "sha256": "7926baa25cd99bca18f506d285230884a5633a72c3a30f7085c89b56e80459c9",
+      "bytes": 114542,
+      "width": 390,
+      "height": 844,
+      "actually_read": false
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/hi/390/matrix/font-13-scale-1-page-003.png",
+      "sha256": "eac3b9c4e2e09a43e9259c0cd5151ae7f248e5c391ebc4facc833086da0e7c4b",
+      "bytes": 17172,
+      "width": 390,
+      "height": 844,
+      "actually_read": false
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/hi/390/matrix/font-13-scale-2-page-001.png",
+      "sha256": "72b14a52464decc7f5da3d4eace51235cd2f74ee7325045c3d350a7d798baa54",
+      "bytes": 427902,
+      "width": 780,
+      "height": 1688,
+      "actually_read": true,
+      "archive": "artifacts/translation-program/reviews/hi-native-visual/release-final-archive/hi/390/matrix/font-13-scale-2-page-001.png"
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/hi/390/matrix/font-13-scale-2-page-002.png",
+      "sha256": "b47d914832085d4fedf0be400bb7ca44f3c2550ea97d14626d8fe65f1908cefc",
+      "bytes": 453228,
+      "width": 780,
+      "height": 1688,
+      "actually_read": false
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/hi/390/matrix/font-13-scale-2-page-003.png",
+      "sha256": "478ea5ec08435e40fd4d845551c55b22f0d355482c4a8730b2ad1770e45b7ed7",
+      "bytes": 30609,
+      "width": 780,
+      "height": 1688,
+      "actually_read": false
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/hi/390/matrix/font-20-scale-1-page-001.png",
+      "sha256": "8ecade74481b84c2070003dec244edcfd64370884f04ed17192569401622b5df",
+      "bytes": 91376,
+      "width": 390,
+      "height": 844,
+      "actually_read": true,
+      "archive": "artifacts/translation-program/reviews/hi-native-visual/release-final-archive/hi/390/matrix/font-20-scale-1-page-001.png"
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/hi/390/matrix/font-20-scale-1-page-002.png",
+      "sha256": "350288f1500e6e2ece6991179a336d7a5d3d12f3e53c9673e8927fe7fb8210f0",
+      "bytes": 118350,
+      "width": 390,
+      "height": 844,
+      "actually_read": false
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/hi/390/matrix/font-20-scale-1-page-003.png",
+      "sha256": "7201f267976a22bd925731b6d793ac5229f9e916d25b3a5d0b18e9594046d7ba",
+      "bytes": 130816,
+      "width": 390,
+      "height": 844,
+      "actually_read": false
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/hi/390/matrix/font-20-scale-1-page-004.png",
+      "sha256": "a9f31d69ebe647c5f32ebdce084593933c195b267e52243ee3a07cafe9cb13e0",
+      "bytes": 111205,
+      "width": 390,
+      "height": 844,
+      "actually_read": false
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/hi/390/matrix/font-20-scale-1-page-005.png",
+      "sha256": "d087919545e1a9c20b003e522dbfd73838ea658c776c2bcc475b3ffee5e784d1",
+      "bytes": 33168,
+      "width": 390,
+      "height": 844,
+      "actually_read": false
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/hi/390/matrix/font-20-scale-2-page-001.png",
+      "sha256": "063b2632fac9e580949ca4b2e562c4a73149ad8e6d46c515b4f2e050249036be",
+      "bytes": 264058,
+      "width": 780,
+      "height": 1688,
+      "actually_read": true,
+      "archive": "artifacts/translation-program/reviews/hi-native-visual/release-final-archive/hi/390/matrix/font-20-scale-2-page-001.png"
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/hi/390/matrix/font-20-scale-2-page-002.png",
+      "sha256": "fc4e908e7403acff6017406ef8a7e0ea8791acd8160e33254417f2f018c3deab",
+      "bytes": 363027,
+      "width": 780,
+      "height": 1688,
+      "actually_read": false
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/hi/390/matrix/font-20-scale-2-page-003.png",
+      "sha256": "5d56d09003bd0cd9e2d1ad1e16f3ddd5549e5e0ea765087e8c372a3c71d08d85",
+      "bytes": 445262,
+      "width": 780,
+      "height": 1688,
+      "actually_read": false
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/hi/390/matrix/font-20-scale-2-page-004.png",
+      "sha256": "84251472b88175ce4b11a9745036984f0060bcd21cd77f3da7fb13d5be41e269",
+      "bytes": 345322,
+      "width": 780,
+      "height": 1688,
+      "actually_read": false
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/hi/390/matrix/font-20-scale-2-page-005.png",
+      "sha256": "86b2ab5fa981999593d53a40ba78afa4b977c064be29c75c266b42450bfba41d",
+      "bytes": 64790,
+      "width": 780,
+      "height": 1688,
+      "actually_read": false
+    }
+  ],
+  "metadata": [
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/hi/1200/matrix/font-matrix.json",
+      "sha256": "551bf75ed17f5df789c7fe6c361948fb47e6b8464d09d2d0244a3c69127324ef",
+      "archive": "artifacts/translation-program/reviews/hi-native-visual/release-final-archive/hi/1200/matrix/font-matrix.json"
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/hi/1200/main.json",
+      "sha256": "98a22a1e387579c3f73cae62072f0cbce7d0d1b877f04433e02e3a4715967b39",
+      "archive": "artifacts/translation-program/reviews/hi-native-visual/release-final-archive/hi/1200/main.json"
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/hi/1200/settings.json",
+      "sha256": "8e8d8c5f7ade98eeffddd87612eb0da0106ba4f3140ced97dd4a5ed06d2ed6d8",
+      "archive": "artifacts/translation-program/reviews/hi-native-visual/release-final-archive/hi/1200/settings.json"
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/hi/1200/settings-audio.json",
+      "sha256": "c19a5dad3c06cfbcbcc4cee980b1709f5d0b2236a7e5c0f91cd784a80b0f9dab",
+      "archive": "artifacts/translation-program/reviews/hi-native-visual/release-final-archive/hi/1200/settings-audio.json"
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/hi/1200/lobby.json",
+      "sha256": "bad92b5014a3f6d623cd534795c1a49ffbb6d42b9cff8751e7d19b057909393b",
+      "archive": "artifacts/translation-program/reviews/hi-native-visual/release-final-archive/hi/1200/lobby.json"
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/hi/1200/lobby-players.json",
+      "sha256": "d3a968091dc5b79edb6876146d286ef85f4e164160c8c2159c9268a654f28b8a",
+      "archive": "artifacts/translation-program/reviews/hi-native-visual/release-final-archive/hi/1200/lobby-players.json"
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/hi/1200/gameplay.json",
+      "sha256": "3989a99b87ce07a165a612faf1417f82ffb8abb3209aa45a4adf5bd7595969b6",
+      "archive": "artifacts/translation-program/reviews/hi-native-visual/release-final-archive/hi/1200/gameplay.json"
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/hi/1200/tutorial-introduction.json",
+      "sha256": "2b0cbf70fa7aa88a62807e1f7f0944ff9fc5c3b9092ca1f39e4782358aeba9fe",
+      "archive": "artifacts/translation-program/reviews/hi-native-visual/release-final-archive/hi/1200/tutorial-introduction.json"
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/hi/1200/tutorial-food-supply.json",
+      "sha256": "fdb7902ec4f3b4ece52b58bf85ccc5e9319134c5c63091d63de3b4a8deb0a395",
+      "archive": "artifacts/translation-program/reviews/hi-native-visual/release-final-archive/hi/1200/tutorial-food-supply.json"
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/hi/1200/tutorial-healing.json",
+      "sha256": "a932fca6d34576ebeaf6c6fab5c9ed56e1203adb3d3745a09718ca4525114672",
+      "archive": "artifacts/translation-program/reviews/hi-native-visual/release-final-archive/hi/1200/tutorial-healing.json"
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/hi/1200/tutorial-walking-training.json",
+      "sha256": "181d7f68ba3e10eebe5fddbf18faf5c467e103ee69ee0a89cdc8fde2539a0408",
+      "archive": "artifacts/translation-program/reviews/hi-native-visual/release-final-archive/hi/1200/tutorial-walking-training.json"
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/hi/1200/tutorial-swimming.json",
+      "sha256": "36a06a3ea84e80bd8975da52ba367c54a665980e3d4cea8dc45b108f4ef5c70b",
+      "archive": "artifacts/translation-program/reviews/hi-native-visual/release-final-archive/hi/1200/tutorial-swimming.json"
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/hi/1200/tutorial-schools.json",
+      "sha256": "7742c12eeb5564327eca60c0914314a15786213a7046da283ad9af9c8c16422f",
+      "archive": "artifacts/translation-program/reviews/hi-native-visual/release-final-archive/hi/1200/tutorial-schools.json"
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/hi/1200/tutorial-upgrades.json",
+      "sha256": "485561c79e213c5165f20675c9d07af4d38209db3155d852f061f73156cefe15",
+      "archive": "artifacts/translation-program/reviews/hi-native-visual/release-final-archive/hi/1200/tutorial-upgrades.json"
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/hi/1200/tutorial-warrior-training.json",
+      "sha256": "bf95a31d85c5fc8ac2906649a263e6e911e1d0e7fe4c87fc05b4bc8dbdb67acd",
+      "archive": "artifacts/translation-program/reviews/hi-native-visual/release-final-archive/hi/1200/tutorial-warrior-training.json"
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/hi/1200/tutorial-fortifications.json",
+      "sha256": "77c15fc86008b2060daebdfd9f1f3f4683de811e28f2ae91b2ef163d78093675",
+      "archive": "artifacts/translation-program/reviews/hi-native-visual/release-final-archive/hi/1200/tutorial-fortifications.json"
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/hi/1200/tutorial-defensive-tactics.json",
+      "sha256": "44f95939d902ddb8c1dc03e450dccff89966fc20fb094d32d202d273023f7434",
+      "archive": "artifacts/translation-program/reviews/hi-native-visual/release-final-archive/hi/1200/tutorial-defensive-tactics.json"
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/hi/390/matrix/font-matrix.json",
+      "sha256": "4d0389cfaf589d835f1fe8659a0a0e615151f5df6434dbd8351066deaab78017",
+      "archive": "artifacts/translation-program/reviews/hi-native-visual/release-final-archive/hi/390/matrix/font-matrix.json"
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/hi/390/main.json",
+      "sha256": "6e5e0bf2d9e724cc4724482cabb5628afe9906566b6161c05c0d56c776ac0189",
+      "archive": "artifacts/translation-program/reviews/hi-native-visual/release-final-archive/hi/390/main.json"
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/hi/390/settings.json",
+      "sha256": "01836257c6e2ed1a887f73c8fa8c99b571e3b2b256728e25850575bb8fa2b423",
+      "archive": "artifacts/translation-program/reviews/hi-native-visual/release-final-archive/hi/390/settings.json"
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/hi/390/settings-audio.json",
+      "sha256": "4b009c6147f367e1f2e68c11f0ef147c07b8df22309525cb2e74164461948fa1",
+      "archive": "artifacts/translation-program/reviews/hi-native-visual/release-final-archive/hi/390/settings-audio.json"
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/hi/390/lobby.json",
+      "sha256": "dec9f9afd15623345949dc1719e3604904af0e85a5aeec368b8536a157c4f433",
+      "archive": "artifacts/translation-program/reviews/hi-native-visual/release-final-archive/hi/390/lobby.json"
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/hi/390/lobby-players.json",
+      "sha256": "0e8c3772cf4757b33e5a34454dfd6928d2edc6992c030f1a8f66ceabd896bd41",
+      "archive": "artifacts/translation-program/reviews/hi-native-visual/release-final-archive/hi/390/lobby-players.json"
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/hi/390/gameplay.json",
+      "sha256": "6af76dfb6f26235e5fd3951d915fe43f1a2f76f8bb7358b259ce812aa31addc6",
+      "archive": "artifacts/translation-program/reviews/hi-native-visual/release-final-archive/hi/390/gameplay.json"
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/hi/390/tutorial-introduction.json",
+      "sha256": "8237fc5217c7605f587c8c1c81eda3ba9237c003c15b94fd9d9514a1dddac9db",
+      "archive": "artifacts/translation-program/reviews/hi-native-visual/release-final-archive/hi/390/tutorial-introduction.json"
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/hi/390/tutorial-food-supply.json",
+      "sha256": "2f7c201b486c16115447bde81d1acb771c4fc9e873f1cfc4d9c76909554b068f",
+      "archive": "artifacts/translation-program/reviews/hi-native-visual/release-final-archive/hi/390/tutorial-food-supply.json"
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/hi/390/tutorial-healing.json",
+      "sha256": "8ed592598404e9324bf1c146353a4efe670a2cf8aec087e0eab1eb7702c759f8",
+      "archive": "artifacts/translation-program/reviews/hi-native-visual/release-final-archive/hi/390/tutorial-healing.json"
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/hi/390/tutorial-walking-training.json",
+      "sha256": "69f47eca6cbec1168400fec4a76c4f9ee3cfa798902b193711a4933ffd70e21a",
+      "archive": "artifacts/translation-program/reviews/hi-native-visual/release-final-archive/hi/390/tutorial-walking-training.json"
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/hi/390/tutorial-swimming.json",
+      "sha256": "3567ad4c9ea829abb0357fdfde51dcde891b7551e31ed611eddd1c317d2f8929",
+      "archive": "artifacts/translation-program/reviews/hi-native-visual/release-final-archive/hi/390/tutorial-swimming.json"
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/hi/390/tutorial-schools.json",
+      "sha256": "0387b5c76519dacfd2aa92535644a83454bee5c2ffdca6ddc78ab917d16b8951",
+      "archive": "artifacts/translation-program/reviews/hi-native-visual/release-final-archive/hi/390/tutorial-schools.json"
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/hi/390/tutorial-upgrades.json",
+      "sha256": "c8d67e35379357804a860ccd2b58611a7d4e9d5a6b71e0dbb68a2b80e12d6277",
+      "archive": "artifacts/translation-program/reviews/hi-native-visual/release-final-archive/hi/390/tutorial-upgrades.json"
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/hi/390/tutorial-warrior-training.json",
+      "sha256": "5c7e3836c4f5269fa908de935a3a2cfe31b43956ad991e01d7b34fb4ea7f5dc1",
+      "archive": "artifacts/translation-program/reviews/hi-native-visual/release-final-archive/hi/390/tutorial-warrior-training.json"
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/hi/390/tutorial-fortifications.json",
+      "sha256": "3a697f88db60b1fa8417ab9130fb13e39ad91dd7463ba223dba3b54a50a3be07",
+      "archive": "artifacts/translation-program/reviews/hi-native-visual/release-final-archive/hi/390/tutorial-fortifications.json"
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/hi/390/tutorial-defensive-tactics.json",
+      "sha256": "90a0f5e1d731990e65e83b64fb7def98aee9cd6b8465cad722d3c3fec1363380",
+      "archive": "artifacts/translation-program/reviews/hi-native-visual/release-final-archive/hi/390/tutorial-defensive-tactics.json"
+    }
+  ],
+  "evidence_identity": {
+    "locale": "hi",
+    "source_revision": "6a16670c6daafa34f1f86a47014f23e0d05fd4e3",
+    "source_revision_origin": "Frozen translation kit; executable and code hashes identify the actual dirty build.",
+    "executable": "/Users/bradley/.codex/worktrees/ed62/glob2/build/darwin/client/debug/dev-dev_fast-true-linker-auto/test/TranslationPreviewHarness",
+    "executable_sha256": "0cc55b27ae690334c60178a8de2fe8454a2eee1c3623fefbef51875b4ce83fca",
+    "producer": {
+      "compiler": "g++",
+      "dirty": false,
+      "flags": {
+        "CCFLAGS": "-O0 -g1 -fdebug-prefix-map=/Users/bradley/.codex/worktrees/ed62/glob2=.",
+        "CPPDEFINES": "GLOB2_OFFICIAL_INSTANCE_ORIGIN \\\"https://app.glob2.online\\\" GLOB2_OFFICIAL_INSTANCE_FORMER_ORIGINS \\\"https://glob2online.com https://app.glob2online.com\\\" HAVE_CONFIG_H GL_SILENCE_DEPRECATION GLOB2_RENDER_SHADER_DIR \\\"/Users/bradley/.codex/worktrees/ed62/glob2/build/darwin/client/debug/dev-dev_fast-true-linker-auto/shaders\\\" SDL_MAIN_HANDLED",
+        "CXXFLAGS": "-std=gnu++20 -Wall -fPIC",
+        "LINKFLAGS": "-Wall -Wl,-rpath,/opt/homebrew/lib"
+      },
+      "revision": "92205aae687b650ed8b9aea4b31265f0ff6b7301",
+      "sourceStatus": [],
+      "sourceTreeSha256": "f769966128e5998dbcaec839271dc2a451dcd58b15e114e61ac2935857345de2"
+    },
+    "source_sha256": {
+      "data/texts.en.txt": "429014652f15665df69f07eec8ccd3823ec605c836bc29726a21c650c0808129",
+      "data/texts.keys.txt": "336cbb1d41604ebc8b616b4a64eabdd9bc0848fe48878df1c3c65212d75a8f79",
+      "platform/packages/i18n/locales/en.json": "63017714064b5a2659aa8e2da27a43af117d3f1e60acbbb44ae5d73d80cd7d69",
+      "libgag/src/TrueTypeFont.cpp": "fa461f1852e80b1a763a14183ea7522d9c1725bd5ce0fbba19e769defb5d334b",
+      "libgag/src/BidiText.cpp": "0813cc512aafd71bb45257090b37f2180b5a36a44965891ba1961c12e1869fc7",
+      "libgag/src/ui/TextLayout.cpp": "72140e6df1636805f71b193c6a84b8e445ca638f0711563d839da8403f0601bd",
+      "src/hud/draw/GameGUIDraw.cpp": "e09cc4698c7b2f9e7a8d856b2a9c2beafca723431f6107f000e6308d3551891b",
+      "src/hud/touch/GameGUITouchView.cpp": "4130e0e49bf32bf325a1c5607cc4edafb6309ce54109107f5e90b1334fa12f8e",
+      "src/hud/touch/GameGUITouch.cpp": "32f0ddea06cb53cbc574e6e5dc7c3b0785efdd650fc1bd348f24275da0244333",
+      "src/hud/touch/GameGUITouch.h": "db39db778997c0cccb65248279b46d55a7f9178580438d92d258db83ed8432bb",
+      "libgag/include/TouchText.h": "71eb059abd12e090a6c0674cec761a7041339e89dcfadfdae8904f570c6d97cb",
+      "libgag/include/TrueTypeFont.h": "3493258a24d4021ef978310aea26f3a832842ff57dd7185d9ff1ecf15854246c",
+      "libgag/include/ui/TextLayout.h": "6cb805b24332bb38bde8525eeea77fa0917cea3b88ae4561bc44c00b08975969",
+      "libgag/src/DrawableSurfaceCompound.cpp": "a6174d18c8b0a62d8ca3a65c606b57cf0e1962408cd5e47642b8fdabd27b8810",
+      "src/game/screens/CustomGameScreen.cpp": "0cdbf52d68ec731f12aabff02f0576057423eca6d1d3d64e92ae68ceb6df21bd",
+      "src/render/overlay/MapZoomControls.h": "6d5b99d9f77853315ddd7298ce77b2ecbf54e470c406ce07c5d9fd1ee152e2d3",
+      "tools/TranslationPreviewHarness.cpp": "65bc3a8f564fc18cf80efe7b640bcfde736f7a2dd3f4dad6bef76b06315236db"
+    },
+    "catalog_sha256": {
+      "native": "5fcaad1a1f7854df5dcd53661c8dcd594f80842694fa437e594b5553214fe7a3",
+      "online": "d80bdd87f3502c34e45ae744d8e0f8bac3cafd93755a5ef87e0bed8bec3d74c4"
+    },
+    "runtime_fonts": [
+      {
+        "virtual_path": "data/fonts/sans.ttf",
+        "path": "/Users/bradley/.codex/worktrees/ed62/glob2/build/darwin/client/debug/dev-dev_fast-true-linker-auto/runtime-assets/data/fonts/sans.ttf",
+        "sha256": "5701af44225833421b6f59a7ecaadf93c0f2630dbbdfc4ac59c794f5c5d889c1"
+      },
+      {
+        "virtual_path": "data/fonts/scripts/NotoSansArabic-Regular.ttf",
+        "path": "/Users/bradley/.codex/worktrees/ed62/glob2/build/darwin/client/debug/dev-dev_fast-true-linker-auto/runtime-assets/data/fonts/scripts/NotoSansArabic-Regular.ttf",
+        "sha256": "ceea25b464a656dc3b26849bab9356740401af62aedf1bfa8b7f0d9b75925b1b"
+      },
+      {
+        "virtual_path": "data/fonts/scripts/NotoSansBengali-Regular.ttf",
+        "path": "/Users/bradley/.codex/worktrees/ed62/glob2/build/darwin/client/debug/dev-dev_fast-true-linker-auto/runtime-assets/data/fonts/scripts/NotoSansBengali-Regular.ttf",
+        "sha256": "6300c5370cd688b0641343de4c786de6d412bb6c578d129dae75e93a0322dcab"
+      },
+      {
+        "virtual_path": "data/fonts/scripts/NotoSansDevanagari-Regular.ttf",
+        "path": "/Users/bradley/.codex/worktrees/ed62/glob2/build/darwin/client/debug/dev-dev_fast-true-linker-auto/runtime-assets/data/fonts/scripts/NotoSansDevanagari-Regular.ttf",
+        "sha256": "385e78e6359a9d88a0f243d53b1209d7548361ba2194e2b9ec779bcaa7e8949d"
+      },
+      {
+        "virtual_path": "data/fonts/scripts/NotoSansEthiopic-Regular.ttf",
+        "path": "/Users/bradley/.codex/worktrees/ed62/glob2/build/darwin/client/debug/dev-dev_fast-true-linker-auto/runtime-assets/data/fonts/scripts/NotoSansEthiopic-Regular.ttf",
+        "sha256": "e3a81ca66eb6d6b1a50a287c1dba18195541f69e0986f8b49a42658aa592ff0d"
+      },
+      {
+        "virtual_path": "data/fonts/scripts/NotoSansGujarati-Regular.ttf",
+        "path": "/Users/bradley/.codex/worktrees/ed62/glob2/build/darwin/client/debug/dev-dev_fast-true-linker-auto/runtime-assets/data/fonts/scripts/NotoSansGujarati-Regular.ttf",
+        "sha256": "8d5c22d7b729ef2839e6d1fe2cde77b2d083907be3659bca63676baa76e01fd6"
+      },
+      {
+        "virtual_path": "data/fonts/scripts/NotoSansGurmukhi-Regular.ttf",
+        "path": "/Users/bradley/.codex/worktrees/ed62/glob2/build/darwin/client/debug/dev-dev_fast-true-linker-auto/runtime-assets/data/fonts/scripts/NotoSansGurmukhi-Regular.ttf",
+        "sha256": "bbde4d85fdfb998eff6921cb2c7a9a7924a1c95560a6aa9a06172530e4f596da"
+      },
+      {
+        "virtual_path": "data/fonts/scripts/NotoSansKannada-Regular.ttf",
+        "path": "/Users/bradley/.codex/worktrees/ed62/glob2/build/darwin/client/debug/dev-dev_fast-true-linker-auto/runtime-assets/data/fonts/scripts/NotoSansKannada-Regular.ttf",
+        "sha256": "5c804033c57f2c2844b1cd425f45b9a78d81d2f71bf358351b24258ebe168aea"
+      },
+      {
+        "virtual_path": "data/fonts/scripts/NotoSansMalayalam-Regular.ttf",
+        "path": "/Users/bradley/.codex/worktrees/ed62/glob2/build/darwin/client/debug/dev-dev_fast-true-linker-auto/runtime-assets/data/fonts/scripts/NotoSansMalayalam-Regular.ttf",
+        "sha256": "42eb462ff13e820ebbeaaec4e7b426bd1de145d02cef8b634f5a3efd376b513c"
+      },
+      {
+        "virtual_path": "data/fonts/scripts/NotoSansMyanmar-Regular.ttf",
+        "path": "/Users/bradley/.codex/worktrees/ed62/glob2/build/darwin/client/debug/dev-dev_fast-true-linker-auto/runtime-assets/data/fonts/scripts/NotoSansMyanmar-Regular.ttf",
+        "sha256": "9dd2bc76a822a974efce803a4b07302d14d01d5c1fa9e33a258d15a9cb513a7d"
+      },
+      {
+        "virtual_path": "data/fonts/scripts/NotoSansOriya-Regular.ttf",
+        "path": "/Users/bradley/.codex/worktrees/ed62/glob2/build/darwin/client/debug/dev-dev_fast-true-linker-auto/runtime-assets/data/fonts/scripts/NotoSansOriya-Regular.ttf",
+        "sha256": "b8d8bd784b9d09c0668233437359913c93a3a83bf37d92ecde859e2bc728a0e0"
+      },
+      {
+        "virtual_path": "data/fonts/scripts/NotoSansTamil-Regular.ttf",
+        "path": "/Users/bradley/.codex/worktrees/ed62/glob2/build/darwin/client/debug/dev-dev_fast-true-linker-auto/runtime-assets/data/fonts/scripts/NotoSansTamil-Regular.ttf",
+        "sha256": "6532db33b8b264abe3a098a40619feb489b5ddf5ab1d2b46e72b51eeb548001b"
+      },
+      {
+        "virtual_path": "data/fonts/scripts/NotoSansTelugu-Regular.ttf",
+        "path": "/Users/bradley/.codex/worktrees/ed62/glob2/build/darwin/client/debug/dev-dev_fast-true-linker-auto/runtime-assets/data/fonts/scripts/NotoSansTelugu-Regular.ttf",
+        "sha256": "2c05072e8018a9be1cb0582953d9edf9a0cf129cdfb74e611de763b09c411f7f"
+      },
+      {
+        "virtual_path": "data/fonts/scripts/NotoSansThai-Regular.ttf",
+        "path": "/Users/bradley/.codex/worktrees/ed62/glob2/build/darwin/client/debug/dev-dev_fast-true-linker-auto/runtime-assets/data/fonts/scripts/NotoSansThai-Regular.ttf",
+        "sha256": "404ddfb5ed0aaa6b6ec8a85700d682978992062d67da93903967b56cbd9a4acc"
+      }
+    ],
+    "runtime_search_paths": [
+      "/Users/bradley/.codex/worktrees/ed62/glob2/artifacts/translation-program/native-preview/release-final/profiles/hi-1200-main",
+      "/Users/bradley/.codex/worktrees/ed62/glob2/build/darwin/client/debug/dev-dev_fast-true-linker-auto/test/",
+      "/Users/bradley/.codex/worktrees/ed62/glob2/build/darwin/client/debug/dev-dev_fast-true-linker-auto/runtime-assets",
+      ".",
+      "/usr/local/share../Resources/",
+      "/Users/bradley/.codex/worktrees/ed62/glob2",
+      "/Users/bradley/.codex/worktrees/ed62/glob2"
+    ],
+    "input_metadata": {
+      "locale": "hi",
+      "kind": "complete-current-draft-overlay",
+      "source_sha256": "a016e71957f16bbb880475c49b1d22dc8cbb7ae285fbbaa963464e0ea491fe0b",
+      "original_catalog_sha256": {
+        "native": "f31431ad0a4f51ddd3313a0726847f0ac0c1183ca644b9d80da4e030c444ce5c",
+        "online": "d80bdd87f3502c34e45ae744d8e0f8bac3cafd93755a5ef87e0bed8bec3d74c4"
+      },
+      "native_keys": 3416,
+      "online_keys": 2836,
+      "state": "independent-linguistic-evidence-exists; technical-platform-gates-pending",
+      "limits": [
+        "Harness overlay retains installed inventory and replaces exact target code once; driver never registers a canonical locale.",
+        "No finalization or native-human certification inferred."
+      ]
+    },
+    "sdl_library_path": "/opt/homebrew/Cellar/sdl3/3.4.18/lib/libSDL3.0.dylib",
+    "sdl_ttf_library_path": "/Users/bradley/.codex/worktrees/ed62/glob2/artifacts/translation-program/script-support/prefix/lib/libSDL3_ttf.0.2.2.dylib",
+    "sdl_version": 3004018,
+    "sdl_ttf_version": 3002002,
+    "harfbuzz_version": [
+      10,
+      1,
+      0
+    ]
+  },
+  "native_inputs_before_after_equal": true,
+  "current_native_input_hashes_verified": 2582,
+  "current17critical_source_hashes_verified": 17,
+  "current14runtime_fonts_verified": true,
+  "producer_git_revision": "92205aae687b650ed8b9aea4b31265f0ff6b7301",
+  "producer_source_tree_sha256": "f769966128e5998dbcaec839271dc2a451dcd58b15e114e61ac2935857345de2",
+  "executable_sha256": "0cc55b27ae690334c60178a8de2fe8454a2eee1c3623fefbef51875b4ce83fca",
+  "native_catalog_sha256": "f31431ad0a4f51ddd3313a0726847f0ac0c1183ca644b9d80da4e030c444ce5c",
+  "online_catalog_sha256": "d80bdd87f3502c34e45ae744d8e0f8bac3cafd93755a5ef87e0bed8bec3d74c4",
+  "all3416_native_input_values_equal_canonical": true,
+  "build_proof_sha256": "699b3507082ef24037b6708edc110f07cfa512a4dc62380a9cb045877512d67e",
+  "results_snapshot_sha256": "eface659351a14af9f623fe649019160a22c0ee5791add7e241b58e7186bcf8c",
+  "all34_hindi_invocations_exit0_metadata_png_hashes_verified": true,
+  "global_capture_run_complete_at_snapshot": false,
+  "initial_guidance_panels": [
+    {
+      "width": "1200",
+      "lesson": "introduction",
+      "image": "hi/1200/tutorial-introduction.png",
+      "key": "[intro instruction scout]",
+      "active_initial_guidance_actually_visible": true
+    },
+    {
+      "width": "1200",
+      "lesson": "food-supply",
+      "image": "hi/1200/tutorial-food-supply.png",
+      "key": "[intro instruction build]",
+      "active_initial_guidance_actually_visible": true
+    },
+    {
+      "width": "1200",
+      "lesson": "healing",
+      "image": "hi/1200/tutorial-healing.png",
+      "key": "[lesson healing build instruction]",
+      "active_initial_guidance_actually_visible": true
+    },
+    {
+      "width": "1200",
+      "lesson": "walking-training",
+      "image": "hi/1200/tutorial-walking-training.png",
+      "key": "[lesson walking-training build instruction]",
+      "active_initial_guidance_actually_visible": true
+    },
+    {
+      "width": "1200",
+      "lesson": "swimming",
+      "image": "hi/1200/tutorial-swimming.png",
+      "key": "[lesson swimming build instruction]",
+      "active_initial_guidance_actually_visible": true
+    },
+    {
+      "width": "1200",
+      "lesson": "schools",
+      "image": "hi/1200/tutorial-schools.png",
+      "key": "[lesson schools build instruction]",
+      "active_initial_guidance_actually_visible": true
+    },
+    {
+      "width": "1200",
+      "lesson": "upgrades",
+      "image": "hi/1200/tutorial-upgrades.png",
+      "key": "[lesson upgrades upgrade instruction]",
+      "active_initial_guidance_actually_visible": true
+    },
+    {
+      "width": "1200",
+      "lesson": "warrior-training",
+      "image": "hi/1200/tutorial-warrior-training.png",
+      "key": "[lesson warrior-training produce instruction]",
+      "active_initial_guidance_actually_visible": true
+    },
+    {
+      "width": "1200",
+      "lesson": "fortifications",
+      "image": "hi/1200/tutorial-fortifications.png",
+      "key": "[lesson fortifications tower instruction]",
+      "active_initial_guidance_actually_visible": true
+    },
+    {
+      "width": "1200",
+      "lesson": "defensive-tactics",
+      "image": "hi/1200/tutorial-defensive-tactics.png",
+      "key": "[lesson defensive-tactics scout instruction]",
+      "active_initial_guidance_actually_visible": true
+    },
+    {
+      "width": "390",
+      "lesson": "introduction",
+      "image": "hi/390/tutorial-introduction.png",
+      "key": "[intro compact scout]",
+      "active_initial_guidance_actually_visible": true
+    },
+    {
+      "width": "390",
+      "lesson": "food-supply",
+      "image": "hi/390/tutorial-food-supply.png",
+      "key": "[intro compact build]",
+      "active_initial_guidance_actually_visible": true
+    },
+    {
+      "width": "390",
+      "lesson": "healing",
+      "image": "hi/390/tutorial-healing.png",
+      "key": "[lesson healing build compact]",
+      "active_initial_guidance_actually_visible": true
+    },
+    {
+      "width": "390",
+      "lesson": "walking-training",
+      "image": "hi/390/tutorial-walking-training.png",
+      "key": "[lesson walking-training build compact]",
+      "active_initial_guidance_actually_visible": true
+    },
+    {
+      "width": "390",
+      "lesson": "swimming",
+      "image": "hi/390/tutorial-swimming.png",
+      "key": "[lesson swimming build compact]",
+      "active_initial_guidance_actually_visible": true
+    },
+    {
+      "width": "390",
+      "lesson": "schools",
+      "image": "hi/390/tutorial-schools.png",
+      "key": "[lesson schools build compact]",
+      "active_initial_guidance_actually_visible": true
+    },
+    {
+      "width": "390",
+      "lesson": "upgrades",
+      "image": "hi/390/tutorial-upgrades.png",
+      "key": "[lesson upgrades upgrade compact]",
+      "active_initial_guidance_actually_visible": true
+    },
+    {
+      "width": "390",
+      "lesson": "warrior-training",
+      "image": "hi/390/tutorial-warrior-training.png",
+      "key": "[lesson warrior-training produce compact]",
+      "active_initial_guidance_actually_visible": true
+    },
+    {
+      "width": "390",
+      "lesson": "fortifications",
+      "image": "hi/390/tutorial-fortifications.png",
+      "key": "[lesson fortifications tower compact]",
+      "active_initial_guidance_actually_visible": true
+    },
+    {
+      "width": "390",
+      "lesson": "defensive-tactics",
+      "image": "hi/390/tutorial-defensive-tactics.png",
+      "key": "[lesson defensive-tactics scout compact]",
+      "active_initial_guidance_actually_visible": true
+    }
+  ],
+  "draw_checksums_and_simulation_steps": [
+    {
+      "id": "hi-1200-gameplay",
+      "checksums": [
+        {
+          "name": "gameplay",
+          "checksum_before_draw": 3828636654,
+          "checksum_after_draw": 3828636654,
+          "image_width": 2400,
+          "image_height": 1688
+        },
+        {
+          "name": "gameplay-zoom-plus",
+          "checksum_before_draw": 3828636654,
+          "checksum_after_draw": 3828636654,
+          "image_width": 2400,
+          "image_height": 1688
+        },
+        {
+          "name": "gameplay-zoom-fit",
+          "checksum_before_draw": 3828636654,
+          "checksum_after_draw": 3828636654,
+          "image_width": 2400,
+          "image_height": 1688
+        },
+        {
+          "name": "gameplay-dialog",
+          "checksum_before_draw": 3828636654,
+          "checksum_after_draw": 3828636654,
+          "image_width": 2400,
+          "image_height": 1688
+        }
+      ],
+      "simulation_steps": [
+        {
+          "tick": 1,
+          "checksum": 488519661
+        },
+        {
+          "tick": 2,
+          "checksum": 239455904
+        },
+        {
+          "tick": 3,
+          "checksum": 2342655463
+        },
+        {
+          "tick": 4,
+          "checksum": 1448693384
+        },
+        {
+          "tick": 5,
+          "checksum": 2383970093
+        },
+        {
+          "tick": 6,
+          "checksum": 240711042
+        },
+        {
+          "tick": 7,
+          "checksum": 1476558731
+        },
+        {
+          "tick": 8,
+          "checksum": 1610118548
+        },
+        {
+          "tick": 9,
+          "checksum": 3682992799
+        },
+        {
+          "tick": 10,
+          "checksum": 4281023702
+        },
+        {
+          "tick": 11,
+          "checksum": 687465296
+        },
+        {
+          "tick": 12,
+          "checksum": 4022557372
+        },
+        {
+          "tick": 13,
+          "checksum": 4156513797
+        },
+        {
+          "tick": 14,
+          "checksum": 3450370349
+        },
+        {
+          "tick": 15,
+          "checksum": 1579608020
+        },
+        {
+          "tick": 16,
+          "checksum": 961700865
+        },
+        {
+          "tick": 17,
+          "checksum": 716797530
+        },
+        {
+          "tick": 18,
+          "checksum": 1860788331
+        },
+        {
+          "tick": 19,
+          "checksum": 332734974
+        },
+        {
+          "tick": 20,
+          "checksum": 3828636654
+        }
+      ]
+    },
+    {
+      "id": "hi-1200-tutorial-introduction",
+      "checksums": [
+        {
+          "name": "tutorial-introduction-briefing",
+          "checksum_before_draw": 1049833793,
+          "checksum_after_draw": 1049833793,
+          "image_width": 2400,
+          "image_height": 1688
+        },
+        {
+          "name": "tutorial-introduction",
+          "checksum_before_draw": 1049833793,
+          "checksum_after_draw": 1049833793,
+          "image_width": 2400,
+          "image_height": 1688
+        },
+        {
+          "name": "tutorial-introduction-dialog",
+          "checksum_before_draw": 1049833793,
+          "checksum_after_draw": 1049833793,
+          "image_width": 2400,
+          "image_height": 1688
+        }
+      ],
+      "simulation_steps": [
+        {
+          "tick": 1,
+          "checksum": 4262294236
+        },
+        {
+          "tick": 2,
+          "checksum": 915527530
+        },
+        {
+          "tick": 3,
+          "checksum": 603497412
+        },
+        {
+          "tick": 4,
+          "checksum": 644549656
+        },
+        {
+          "tick": 5,
+          "checksum": 1876278499
+        },
+        {
+          "tick": 6,
+          "checksum": 1249779458
+        },
+        {
+          "tick": 7,
+          "checksum": 3064679841
+        },
+        {
+          "tick": 8,
+          "checksum": 39086070
+        },
+        {
+          "tick": 9,
+          "checksum": 3727652543
+        },
+        {
+          "tick": 10,
+          "checksum": 3771874540
+        },
+        {
+          "tick": 11,
+          "checksum": 1656779048
+        },
+        {
+          "tick": 12,
+          "checksum": 2259380713
+        },
+        {
+          "tick": 13,
+          "checksum": 4251545278
+        },
+        {
+          "tick": 14,
+          "checksum": 1681041918
+        },
+        {
+          "tick": 15,
+          "checksum": 152650161
+        },
+        {
+          "tick": 16,
+          "checksum": 1736629634
+        },
+        {
+          "tick": 17,
+          "checksum": 3217437604
+        },
+        {
+          "tick": 18,
+          "checksum": 2068341872
+        },
+        {
+          "tick": 19,
+          "checksum": 2400299356
+        },
+        {
+          "tick": 20,
+          "checksum": 1049833793
+        }
+      ]
+    },
+    {
+      "id": "hi-1200-tutorial-food-supply",
+      "checksums": [
+        {
+          "name": "tutorial-food-supply-briefing",
+          "checksum_before_draw": 3319321240,
+          "checksum_after_draw": 3319321240,
+          "image_width": 2400,
+          "image_height": 1688
+        },
+        {
+          "name": "tutorial-food-supply",
+          "checksum_before_draw": 3319321240,
+          "checksum_after_draw": 3319321240,
+          "image_width": 2400,
+          "image_height": 1688
+        },
+        {
+          "name": "tutorial-food-supply-dialog",
+          "checksum_before_draw": 3319321240,
+          "checksum_after_draw": 3319321240,
+          "image_width": 2400,
+          "image_height": 1688
+        }
+      ],
+      "simulation_steps": [
+        {
+          "tick": 1,
+          "checksum": 2523738775
+        },
+        {
+          "tick": 2,
+          "checksum": 196453409
+        },
+        {
+          "tick": 3,
+          "checksum": 4058054030
+        },
+        {
+          "tick": 4,
+          "checksum": 2982625683
+        },
+        {
+          "tick": 5,
+          "checksum": 1933960299
+        },
+        {
+          "tick": 6,
+          "checksum": 61494410
+        },
+        {
+          "tick": 7,
+          "checksum": 272832616
+        },
+        {
+          "tick": 8,
+          "checksum": 3236438844
+        },
+        {
+          "tick": 9,
+          "checksum": 800007541
+        },
+        {
+          "tick": 10,
+          "checksum": 1209384421
+        },
+        {
+          "tick": 11,
+          "checksum": 1325121825
+        },
+        {
+          "tick": 12,
+          "checksum": 660928225
+        },
+        {
+          "tick": 13,
+          "checksum": 3210404855
+        },
+        {
+          "tick": 14,
+          "checksum": 855978423
+        },
+        {
+          "tick": 15,
+          "checksum": 1389546232
+        },
+        {
+          "tick": 16,
+          "checksum": 160438747
+        },
+        {
+          "tick": 17,
+          "checksum": 4102202429
+        },
+        {
+          "tick": 18,
+          "checksum": 183903977
+        },
+        {
+          "tick": 19,
+          "checksum": 870103236
+        },
+        {
+          "tick": 20,
+          "checksum": 3319321240
+        }
+      ]
+    },
+    {
+      "id": "hi-1200-tutorial-healing",
+      "checksums": [
+        {
+          "name": "tutorial-healing-briefing",
+          "checksum_before_draw": 3954456980,
+          "checksum_after_draw": 3954456980,
+          "image_width": 2400,
+          "image_height": 1688
+        },
+        {
+          "name": "tutorial-healing",
+          "checksum_before_draw": 3954456980,
+          "checksum_after_draw": 3954456980,
+          "image_width": 2400,
+          "image_height": 1688
+        },
+        {
+          "name": "tutorial-healing-dialog",
+          "checksum_before_draw": 3954456980,
+          "checksum_after_draw": 3954456980,
+          "image_width": 2400,
+          "image_height": 1688
+        }
+      ],
+      "simulation_steps": [
+        {
+          "tick": 1,
+          "checksum": 4145759064
+        },
+        {
+          "tick": 2,
+          "checksum": 3533962734
+        },
+        {
+          "tick": 3,
+          "checksum": 1624677952
+        },
+        {
+          "tick": 4,
+          "checksum": 403782237
+        },
+        {
+          "tick": 5,
+          "checksum": 4071850407
+        },
+        {
+          "tick": 6,
+          "checksum": 977021254
+        },
+        {
+          "tick": 7,
+          "checksum": 1643476901
+        },
+        {
+          "tick": 8,
+          "checksum": 2294174960
+        },
+        {
+          "tick": 9,
+          "checksum": 265899193
+        },
+        {
+          "tick": 10,
+          "checksum": 1885457451
+        },
+        {
+          "tick": 11,
+          "checksum": 4239366383
+        },
+        {
+          "tick": 12,
+          "checksum": 198219055
+        },
+        {
+          "tick": 13,
+          "checksum": 3519977528
+        },
+        {
+          "tick": 14,
+          "checksum": 2213631096
+        },
+        {
+          "tick": 15,
+          "checksum": 2819012407
+        },
+        {
+          "tick": 16,
+          "checksum": 1683183368
+        },
+        {
+          "tick": 17,
+          "checksum": 3589796590
+        },
+        {
+          "tick": 18,
+          "checksum": 2254007866
+        },
+        {
+          "tick": 19,
+          "checksum": 2671634454
+        },
+        {
+          "tick": 20,
+          "checksum": 2596514378
+        }
+      ]
+    },
+    {
+      "id": "hi-1200-tutorial-walking-training",
+      "checksums": [
+        {
+          "name": "tutorial-walking-training-briefing",
+          "checksum_before_draw": 1707143331,
+          "checksum_after_draw": 1707143331,
+          "image_width": 2400,
+          "image_height": 1688
+        },
+        {
+          "name": "tutorial-walking-training",
+          "checksum_before_draw": 1707143331,
+          "checksum_after_draw": 1707143331,
+          "image_width": 2400,
+          "image_height": 1688
+        },
+        {
+          "name": "tutorial-walking-training-dialog",
+          "checksum_before_draw": 1707143331,
+          "checksum_after_draw": 1707143331,
+          "image_width": 2400,
+          "image_height": 1688
+        }
+      ],
+      "simulation_steps": [
+        {
+          "tick": 1,
+          "checksum": 135928241
+        },
+        {
+          "tick": 2,
+          "checksum": 765634311
+        },
+        {
+          "tick": 3,
+          "checksum": 2681717929
+        },
+        {
+          "tick": 4,
+          "checksum": 3876610228
+        },
+        {
+          "tick": 5,
+          "checksum": 229825358
+        },
+        {
+          "tick": 6,
+          "checksum": 3309138863
+        },
+        {
+          "tick": 7,
+          "checksum": 2666802508
+        },
+        {
+          "tick": 8,
+          "checksum": 2009009689
+        },
+        {
+          "tick": 9,
+          "checksum": 4040693328
+        },
+        {
+          "tick": 10,
+          "checksum": 2405471938
+        },
+        {
+          "tick": 11,
+          "checksum": 61784582
+        },
+        {
+          "tick": 12,
+          "checksum": 4107390918
+        },
+        {
+          "tick": 13,
+          "checksum": 785367761
+        },
+        {
+          "tick": 14,
+          "checksum": 2096107153
+        },
+        {
+          "tick": 15,
+          "checksum": 1460137438
+        },
+        {
+          "tick": 16,
+          "checksum": 2605714913
+        },
+        {
+          "tick": 17,
+          "checksum": 720676871
+        },
+        {
+          "tick": 18,
+          "checksum": 2035954899
+        },
+        {
+          "tick": 19,
+          "checksum": 1614721791
+        },
+        {
+          "tick": 20,
+          "checksum": 1707143331
+        }
+      ]
+    },
+    {
+      "id": "hi-1200-tutorial-swimming",
+      "checksums": [
+        {
+          "name": "tutorial-swimming-briefing",
+          "checksum_before_draw": 2814019762,
+          "checksum_after_draw": 2814019762,
+          "image_width": 2400,
+          "image_height": 1688
+        },
+        {
+          "name": "tutorial-swimming",
+          "checksum_before_draw": 2814019762,
+          "checksum_after_draw": 2814019762,
+          "image_width": 2400,
+          "image_height": 1688
+        },
+        {
+          "name": "tutorial-swimming-dialog",
+          "checksum_before_draw": 2814019762,
+          "checksum_after_draw": 2814019762,
+          "image_width": 2400,
+          "image_height": 1688
+        }
+      ],
+      "simulation_steps": [
+        {
+          "tick": 1,
+          "checksum": 3395314080
+        },
+        {
+          "tick": 2,
+          "checksum": 4023967510
+        },
+        {
+          "tick": 3,
+          "checksum": 1571667128
+        },
+        {
+          "tick": 4,
+          "checksum": 627710117
+        },
+        {
+          "tick": 5,
+          "checksum": 3486032735
+        },
+        {
+          "tick": 6,
+          "checksum": 122096574
+        },
+        {
+          "tick": 7,
+          "checksum": 1552831837
+        },
+        {
+          "tick": 8,
+          "checksum": 3049616904
+        },
+        {
+          "tick": 9,
+          "checksum": 849505857
+        },
+        {
+          "tick": 10,
+          "checksum": 1293610707
+        },
+        {
+          "tick": 11,
+          "checksum": 3251943959
+        },
+        {
+          "tick": 12,
+          "checksum": 917223383
+        },
+        {
+          "tick": 13,
+          "checksum": 3971332800
+        },
+        {
+          "tick": 14,
+          "checksum": 3196745344
+        },
+        {
+          "tick": 15,
+          "checksum": 2508035535
+        },
+        {
+          "tick": 16,
+          "checksum": 1495954928
+        },
+        {
+          "tick": 17,
+          "checksum": 3901673494
+        },
+        {
+          "tick": 18,
+          "checksum": 3139456194
+        },
+        {
+          "tick": 19,
+          "checksum": 2722417390
+        },
+        {
+          "tick": 20,
+          "checksum": 2814019762
+        }
+      ]
+    },
+    {
+      "id": "hi-1200-tutorial-schools",
+      "checksums": [
+        {
+          "name": "tutorial-schools-briefing",
+          "checksum_before_draw": 1303168951,
+          "checksum_after_draw": 1303168951,
+          "image_width": 2400,
+          "image_height": 1688
+        },
+        {
+          "name": "tutorial-schools",
+          "checksum_before_draw": 1303168951,
+          "checksum_after_draw": 1303168951,
+          "image_width": 2400,
+          "image_height": 1688
+        },
+        {
+          "name": "tutorial-schools-dialog",
+          "checksum_before_draw": 1303168951,
+          "checksum_after_draw": 1303168951,
+          "image_width": 2400,
+          "image_height": 1688
+        }
+      ],
+      "simulation_steps": [
+        {
+          "tick": 1,
+          "checksum": 544616101
+        },
+        {
+          "tick": 2,
+          "checksum": 97423379
+        },
+        {
+          "tick": 3,
+          "checksum": 3082548157
+        },
+        {
+          "tick": 4,
+          "checksum": 3481032608
+        },
+        {
+          "tick": 5,
+          "checksum": 635366490
+        },
+        {
+          "tick": 6,
+          "checksum": 3981526203
+        },
+        {
+          "tick": 7,
+          "checksum": 3063421528
+        },
+        {
+          "tick": 8,
+          "checksum": 1607678221
+        },
+        {
+          "tick": 9,
+          "checksum": 3635683652
+        },
+        {
+          "tick": 10,
+          "checksum": 2802622934
+        },
+        {
+          "tick": 11,
+          "checksum": 734197010
+        },
+        {
+          "tick": 12,
+          "checksum": 3703437522
+        },
+        {
+          "tick": 13,
+          "checksum": 111408581
+        },
+        {
+          "tick": 14,
+          "checksum": 1419524485
+        },
+        {
+          "tick": 15,
+          "checksum": 2137774794
+        },
+        {
+          "tick": 16,
+          "checksum": 3007068917
+        },
+        {
+          "tick": 17,
+          "checksum": 43556627
+        },
+        {
+          "tick": 18,
+          "checksum": 1362494407
+        },
+        {
+          "tick": 19,
+          "checksum": 1213367787
+        },
+        {
+          "tick": 20,
+          "checksum": 1303168951
+        }
+      ]
+    },
+    {
+      "id": "hi-1200-tutorial-upgrades",
+      "checksums": [
+        {
+          "name": "tutorial-upgrades-briefing",
+          "checksum_before_draw": 3091340388,
+          "checksum_after_draw": 3091340388,
+          "image_width": 2400,
+          "image_height": 1688
+        },
+        {
+          "name": "tutorial-upgrades",
+          "checksum_before_draw": 3091340388,
+          "checksum_after_draw": 3091340388,
+          "image_width": 2400,
+          "image_height": 1688
+        },
+        {
+          "name": "tutorial-upgrades-dialog",
+          "checksum_before_draw": 3091340388,
+          "checksum_after_draw": 3091340388,
+          "image_width": 2400,
+          "image_height": 1688
+        }
+      ],
+      "simulation_steps": [
+        {
+          "tick": 1,
+          "checksum": 707359224
+        },
+        {
+          "tick": 2,
+          "checksum": 1453644622
+        },
+        {
+          "tick": 3,
+          "checksum": 1136829920
+        },
+        {
+          "tick": 4,
+          "checksum": 779881981
+        },
+        {
+          "tick": 5,
+          "checksum": 3419781382
+        },
+        {
+          "tick": 6,
+          "checksum": 1115102695
+        },
+        {
+          "tick": 7,
+          "checksum": 3909437956
+        },
+        {
+          "tick": 8,
+          "checksum": 3657917777
+        },
+        {
+          "tick": 9,
+          "checksum": 1785950744
+        },
+        {
+          "tick": 10,
+          "checksum": 754974347
+        },
+        {
+          "tick": 11,
+          "checksum": 4190289487
+        },
+        {
+          "tick": 12,
+          "checksum": 1729408655
+        },
+        {
+          "tick": 13,
+          "checksum": 3706183650
+        },
+        {
+          "tick": 14,
+          "checksum": 3943832738
+        },
+        {
+          "tick": 15,
+          "checksum": 4003197933
+        },
+        {
+          "tick": 16,
+          "checksum": 2573400614
+        },
+        {
+          "tick": 17,
+          "checksum": 227169216
+        },
+        {
+          "tick": 18,
+          "checksum": 487112724
+        },
+        {
+          "tick": 19,
+          "checksum": 3913828920
+        },
+        {
+          "tick": 20,
+          "checksum": 3091340388
+        }
+      ]
+    },
+    {
+      "id": "hi-1200-tutorial-warrior-training",
+      "checksums": [
+        {
+          "name": "tutorial-warrior-training-briefing",
+          "checksum_before_draw": 222620682,
+          "checksum_after_draw": 222620682,
+          "image_width": 2400,
+          "image_height": 1688
+        },
+        {
+          "name": "tutorial-warrior-training",
+          "checksum_before_draw": 222620682,
+          "checksum_after_draw": 222620682,
+          "image_width": 2400,
+          "image_height": 1688
+        },
+        {
+          "name": "tutorial-warrior-training-dialog",
+          "checksum_before_draw": 222620682,
+          "checksum_after_draw": 222620682,
+          "image_width": 2400,
+          "image_height": 1688
+        }
+      ],
+      "simulation_steps": [
+        {
+          "tick": 1,
+          "checksum": 1620968728
+        },
+        {
+          "tick": 2,
+          "checksum": 1160166318
+        },
+        {
+          "tick": 3,
+          "checksum": 4149467136
+        },
+        {
+          "tick": 4,
+          "checksum": 2408872989
+        },
+        {
+          "tick": 5,
+          "checksum": 1698088935
+        },
+        {
+          "tick": 6,
+          "checksum": 2914610950
+        },
+        {
+          "tick": 7,
+          "checksum": 4134547941
+        },
+        {
+          "tick": 8,
+          "checksum": 523965104
+        },
+        {
+          "tick": 9,
+          "checksum": 2556168953
+        },
+        {
+          "tick": 10,
+          "checksum": 3890514539
+        },
+        {
+          "tick": 11,
+          "checksum": 1797971631
+        },
+        {
+          "tick": 12,
+          "checksum": 2622870383
+        },
+        {
+          "tick": 13,
+          "checksum": 1179377272
+        },
+        {
+          "tick": 14,
+          "checksum": 343151160
+        },
+        {
+          "tick": 15,
+          "checksum": 1065611639
+        },
+        {
+          "tick": 16,
+          "checksum": 4090761544
+        },
+        {
+          "tick": 17,
+          "checksum": 1114682542
+        },
+        {
+          "tick": 18,
+          "checksum": 299772026
+        },
+        {
+          "tick": 19,
+          "checksum": 146452054
+        },
+        {
+          "tick": 20,
+          "checksum": 222620682
+        }
+      ]
+    },
+    {
+      "id": "hi-1200-tutorial-fortifications",
+      "checksums": [
+        {
+          "name": "tutorial-fortifications-briefing",
+          "checksum_before_draw": 1455014497,
+          "checksum_after_draw": 1455014497,
+          "image_width": 2400,
+          "image_height": 1688
+        },
+        {
+          "name": "tutorial-fortifications",
+          "checksum_before_draw": 1455014497,
+          "checksum_after_draw": 1455014497,
+          "image_width": 2400,
+          "image_height": 1688
+        },
+        {
+          "name": "tutorial-fortifications-dialog",
+          "checksum_before_draw": 1455014497,
+          "checksum_after_draw": 1455014497,
+          "image_width": 2400,
+          "image_height": 1688
+        }
+      ],
+      "simulation_steps": [
+        {
+          "tick": 1,
+          "checksum": 4071152866
+        },
+        {
+          "tick": 2,
+          "checksum": 1448088149
+        },
+        {
+          "tick": 3,
+          "checksum": 1692737019
+        },
+        {
+          "tick": 4,
+          "checksum": 2657282533
+        },
+        {
+          "tick": 5,
+          "checksum": 4093642271
+        },
+        {
+          "tick": 6,
+          "checksum": 3184525055
+        },
+        {
+          "tick": 7,
+          "checksum": 1724316700
+        },
+        {
+          "tick": 8,
+          "checksum": 198020942
+        },
+        {
+          "tick": 9,
+          "checksum": 208323335
+        },
+        {
+          "tick": 10,
+          "checksum": 4069659540
+        },
+        {
+          "tick": 11,
+          "checksum": 4271650640
+        },
+        {
+          "tick": 12,
+          "checksum": 2342737555
+        },
+        {
+          "tick": 13,
+          "checksum": 3514633092
+        },
+        {
+          "tick": 14,
+          "checksum": 33723333
+        },
+        {
+          "tick": 15,
+          "checksum": 2838831242
+        },
+        {
+          "tick": 16,
+          "checksum": 2549685027
+        },
+        {
+          "tick": 17,
+          "checksum": 699002565
+        },
+        {
+          "tick": 18,
+          "checksum": 1780164113
+        },
+        {
+          "tick": 19,
+          "checksum": 194768956
+        },
+        {
+          "tick": 20,
+          "checksum": 1455014497
+        }
+      ]
+    },
+    {
+      "id": "hi-1200-tutorial-defensive-tactics",
+      "checksums": [
+        {
+          "name": "tutorial-defensive-tactics-briefing",
+          "checksum_before_draw": 2870547155,
+          "checksum_after_draw": 2870547155,
+          "image_width": 2400,
+          "image_height": 1688
+        },
+        {
+          "name": "tutorial-defensive-tactics",
+          "checksum_before_draw": 2870547155,
+          "checksum_after_draw": 2870547155,
+          "image_width": 2400,
+          "image_height": 1688
+        },
+        {
+          "name": "tutorial-defensive-tactics-dialog",
+          "checksum_before_draw": 2870547155,
+          "checksum_after_draw": 2870547155,
+          "image_width": 2400,
+          "image_height": 1688
+        }
+      ],
+      "simulation_steps": [
+        {
+          "tick": 1,
+          "checksum": 587268155
+        },
+        {
+          "tick": 2,
+          "checksum": 3095133964
+        },
+        {
+          "tick": 3,
+          "checksum": 1907416610
+        },
+        {
+          "tick": 4,
+          "checksum": 256719836
+        },
+        {
+          "tick": 5,
+          "checksum": 3394356903
+        },
+        {
+          "tick": 6,
+          "checksum": 3659280327
+        },
+        {
+          "tick": 7,
+          "checksum": 2959812101
+        },
+        {
+          "tick": 8,
+          "checksum": 1693080023
+        },
+        {
+          "tick": 9,
+          "checksum": 1983054366
+        },
+        {
+          "tick": 10,
+          "checksum": 4249364460
+        },
+        {
+          "tick": 11,
+          "checksum": 3352830888
+        },
+        {
+          "tick": 12,
+          "checksum": 3871171051
+        },
+        {
+          "tick": 13,
+          "checksum": 1898022447
+        },
+        {
+          "tick": 14,
+          "checksum": 2256275694
+        },
+        {
+          "tick": 15,
+          "checksum": 22392353
+        },
+        {
+          "tick": 16,
+          "checksum": 3333256272
+        },
+        {
+          "tick": 17,
+          "checksum": 1371578454
+        },
+        {
+          "tick": 18,
+          "checksum": 531956226
+        },
+        {
+          "tick": 19,
+          "checksum": 945972654
+        },
+        {
+          "tick": 20,
+          "checksum": 2870547155
+        }
+      ]
+    },
+    {
+      "id": "hi-390-gameplay",
+      "checksums": [
+        {
+          "name": "gameplay",
+          "checksum_before_draw": 3828636654,
+          "checksum_after_draw": 3828636654,
+          "image_width": 780,
+          "image_height": 1688
+        },
+        {
+          "name": "gameplay-dialog",
+          "checksum_before_draw": 3828636654,
+          "checksum_after_draw": 3828636654,
+          "image_width": 780,
+          "image_height": 1688
+        }
+      ],
+      "simulation_steps": [
+        {
+          "tick": 1,
+          "checksum": 488519661
+        },
+        {
+          "tick": 2,
+          "checksum": 239455904
+        },
+        {
+          "tick": 3,
+          "checksum": 2342655463
+        },
+        {
+          "tick": 4,
+          "checksum": 1448693384
+        },
+        {
+          "tick": 5,
+          "checksum": 2383970093
+        },
+        {
+          "tick": 6,
+          "checksum": 240711042
+        },
+        {
+          "tick": 7,
+          "checksum": 1476558731
+        },
+        {
+          "tick": 8,
+          "checksum": 1610118548
+        },
+        {
+          "tick": 9,
+          "checksum": 3682992799
+        },
+        {
+          "tick": 10,
+          "checksum": 4281023702
+        },
+        {
+          "tick": 11,
+          "checksum": 687465296
+        },
+        {
+          "tick": 12,
+          "checksum": 4022557372
+        },
+        {
+          "tick": 13,
+          "checksum": 4156513797
+        },
+        {
+          "tick": 14,
+          "checksum": 3450370349
+        },
+        {
+          "tick": 15,
+          "checksum": 1579608020
+        },
+        {
+          "tick": 16,
+          "checksum": 961700865
+        },
+        {
+          "tick": 17,
+          "checksum": 716797530
+        },
+        {
+          "tick": 18,
+          "checksum": 1860788331
+        },
+        {
+          "tick": 19,
+          "checksum": 332734974
+        },
+        {
+          "tick": 20,
+          "checksum": 3828636654
+        }
+      ]
+    },
+    {
+      "id": "hi-390-tutorial-introduction",
+      "checksums": [
+        {
+          "name": "tutorial-introduction-briefing",
+          "checksum_before_draw": 1049833793,
+          "checksum_after_draw": 1049833793,
+          "image_width": 780,
+          "image_height": 1688
+        },
+        {
+          "name": "tutorial-introduction",
+          "checksum_before_draw": 1049833793,
+          "checksum_after_draw": 1049833793,
+          "image_width": 780,
+          "image_height": 1688
+        },
+        {
+          "name": "tutorial-introduction-dialog",
+          "checksum_before_draw": 1049833793,
+          "checksum_after_draw": 1049833793,
+          "image_width": 780,
+          "image_height": 1688
+        }
+      ],
+      "simulation_steps": [
+        {
+          "tick": 1,
+          "checksum": 4262294236
+        },
+        {
+          "tick": 2,
+          "checksum": 915527530
+        },
+        {
+          "tick": 3,
+          "checksum": 603497412
+        },
+        {
+          "tick": 4,
+          "checksum": 644549656
+        },
+        {
+          "tick": 5,
+          "checksum": 1876278499
+        },
+        {
+          "tick": 6,
+          "checksum": 1249779458
+        },
+        {
+          "tick": 7,
+          "checksum": 3064679841
+        },
+        {
+          "tick": 8,
+          "checksum": 39086070
+        },
+        {
+          "tick": 9,
+          "checksum": 3727652543
+        },
+        {
+          "tick": 10,
+          "checksum": 3771874540
+        },
+        {
+          "tick": 11,
+          "checksum": 1656779048
+        },
+        {
+          "tick": 12,
+          "checksum": 2259380713
+        },
+        {
+          "tick": 13,
+          "checksum": 4251545278
+        },
+        {
+          "tick": 14,
+          "checksum": 1681041918
+        },
+        {
+          "tick": 15,
+          "checksum": 152650161
+        },
+        {
+          "tick": 16,
+          "checksum": 1736629634
+        },
+        {
+          "tick": 17,
+          "checksum": 3217437604
+        },
+        {
+          "tick": 18,
+          "checksum": 2068341872
+        },
+        {
+          "tick": 19,
+          "checksum": 2400299356
+        },
+        {
+          "tick": 20,
+          "checksum": 1049833793
+        }
+      ]
+    },
+    {
+      "id": "hi-390-tutorial-food-supply",
+      "checksums": [
+        {
+          "name": "tutorial-food-supply-briefing",
+          "checksum_before_draw": 507083590,
+          "checksum_after_draw": 507083590,
+          "image_width": 780,
+          "image_height": 1688
+        },
+        {
+          "name": "tutorial-food-supply",
+          "checksum_before_draw": 507083590,
+          "checksum_after_draw": 507083590,
+          "image_width": 780,
+          "image_height": 1688
+        },
+        {
+          "name": "tutorial-food-supply-dialog",
+          "checksum_before_draw": 507083590,
+          "checksum_after_draw": 507083590,
+          "image_width": 780,
+          "image_height": 1688
+        }
+      ],
+      "simulation_steps": [
+        {
+          "tick": 1,
+          "checksum": 2523738775
+        },
+        {
+          "tick": 2,
+          "checksum": 196453409
+        },
+        {
+          "tick": 3,
+          "checksum": 4058054030
+        },
+        {
+          "tick": 4,
+          "checksum": 2982625683
+        },
+        {
+          "tick": 5,
+          "checksum": 1933960299
+        },
+        {
+          "tick": 6,
+          "checksum": 61494410
+        },
+        {
+          "tick": 7,
+          "checksum": 272832616
+        },
+        {
+          "tick": 8,
+          "checksum": 3236438844
+        },
+        {
+          "tick": 9,
+          "checksum": 800007541
+        },
+        {
+          "tick": 10,
+          "checksum": 1209384421
+        },
+        {
+          "tick": 11,
+          "checksum": 1325121825
+        },
+        {
+          "tick": 12,
+          "checksum": 660928225
+        },
+        {
+          "tick": 13,
+          "checksum": 3210404855
+        },
+        {
+          "tick": 14,
+          "checksum": 855978423
+        },
+        {
+          "tick": 15,
+          "checksum": 1389546232
+        },
+        {
+          "tick": 16,
+          "checksum": 160438747
+        },
+        {
+          "tick": 17,
+          "checksum": 4102202429
+        },
+        {
+          "tick": 18,
+          "checksum": 183903977
+        },
+        {
+          "tick": 19,
+          "checksum": 870103236
+        },
+        {
+          "tick": 20,
+          "checksum": 3319321240
+        }
+      ]
+    },
+    {
+      "id": "hi-390-tutorial-healing",
+      "checksums": [
+        {
+          "name": "tutorial-healing-briefing",
+          "checksum_before_draw": 2596514378,
+          "checksum_after_draw": 2596514378,
+          "image_width": 780,
+          "image_height": 1688
+        },
+        {
+          "name": "tutorial-healing",
+          "checksum_before_draw": 2596514378,
+          "checksum_after_draw": 2596514378,
+          "image_width": 780,
+          "image_height": 1688
+        },
+        {
+          "name": "tutorial-healing-dialog",
+          "checksum_before_draw": 2596514378,
+          "checksum_after_draw": 2596514378,
+          "image_width": 780,
+          "image_height": 1688
+        }
+      ],
+      "simulation_steps": [
+        {
+          "tick": 1,
+          "checksum": 4145759064
+        },
+        {
+          "tick": 2,
+          "checksum": 3533962734
+        },
+        {
+          "tick": 3,
+          "checksum": 1624677952
+        },
+        {
+          "tick": 4,
+          "checksum": 403782237
+        },
+        {
+          "tick": 5,
+          "checksum": 4071850407
+        },
+        {
+          "tick": 6,
+          "checksum": 977021254
+        },
+        {
+          "tick": 7,
+          "checksum": 1643476901
+        },
+        {
+          "tick": 8,
+          "checksum": 2294174960
+        },
+        {
+          "tick": 9,
+          "checksum": 265899193
+        },
+        {
+          "tick": 10,
+          "checksum": 1885457451
+        },
+        {
+          "tick": 11,
+          "checksum": 4239366383
+        },
+        {
+          "tick": 12,
+          "checksum": 198219055
+        },
+        {
+          "tick": 13,
+          "checksum": 3519977528
+        },
+        {
+          "tick": 14,
+          "checksum": 2213631096
+        },
+        {
+          "tick": 15,
+          "checksum": 2819012407
+        },
+        {
+          "tick": 16,
+          "checksum": 1683183368
+        },
+        {
+          "tick": 17,
+          "checksum": 3589796590
+        },
+        {
+          "tick": 18,
+          "checksum": 2254007866
+        },
+        {
+          "tick": 19,
+          "checksum": 2671634454
+        },
+        {
+          "tick": 20,
+          "checksum": 2596514378
+        }
+      ]
+    },
+    {
+      "id": "hi-390-tutorial-walking-training",
+      "checksums": [
+        {
+          "name": "tutorial-walking-training-briefing",
+          "checksum_before_draw": 1707143331,
+          "checksum_after_draw": 1707143331,
+          "image_width": 780,
+          "image_height": 1688
+        },
+        {
+          "name": "tutorial-walking-training",
+          "checksum_before_draw": 1707143331,
+          "checksum_after_draw": 1707143331,
+          "image_width": 780,
+          "image_height": 1688
+        },
+        {
+          "name": "tutorial-walking-training-dialog",
+          "checksum_before_draw": 1707143331,
+          "checksum_after_draw": 1707143331,
+          "image_width": 780,
+          "image_height": 1688
+        }
+      ],
+      "simulation_steps": [
+        {
+          "tick": 1,
+          "checksum": 135928241
+        },
+        {
+          "tick": 2,
+          "checksum": 765634311
+        },
+        {
+          "tick": 3,
+          "checksum": 2681717929
+        },
+        {
+          "tick": 4,
+          "checksum": 3876610228
+        },
+        {
+          "tick": 5,
+          "checksum": 229825358
+        },
+        {
+          "tick": 6,
+          "checksum": 3309138863
+        },
+        {
+          "tick": 7,
+          "checksum": 2666802508
+        },
+        {
+          "tick": 8,
+          "checksum": 2009009689
+        },
+        {
+          "tick": 9,
+          "checksum": 4040693328
+        },
+        {
+          "tick": 10,
+          "checksum": 2405471938
+        },
+        {
+          "tick": 11,
+          "checksum": 61784582
+        },
+        {
+          "tick": 12,
+          "checksum": 4107390918
+        },
+        {
+          "tick": 13,
+          "checksum": 785367761
+        },
+        {
+          "tick": 14,
+          "checksum": 2096107153
+        },
+        {
+          "tick": 15,
+          "checksum": 1460137438
+        },
+        {
+          "tick": 16,
+          "checksum": 2605714913
+        },
+        {
+          "tick": 17,
+          "checksum": 720676871
+        },
+        {
+          "tick": 18,
+          "checksum": 2035954899
+        },
+        {
+          "tick": 19,
+          "checksum": 1614721791
+        },
+        {
+          "tick": 20,
+          "checksum": 1707143331
+        }
+      ]
+    },
+    {
+      "id": "hi-390-tutorial-swimming",
+      "checksums": [
+        {
+          "name": "tutorial-swimming-briefing",
+          "checksum_before_draw": 2814019762,
+          "checksum_after_draw": 2814019762,
+          "image_width": 780,
+          "image_height": 1688
+        },
+        {
+          "name": "tutorial-swimming",
+          "checksum_before_draw": 2814019762,
+          "checksum_after_draw": 2814019762,
+          "image_width": 780,
+          "image_height": 1688
+        },
+        {
+          "name": "tutorial-swimming-dialog",
+          "checksum_before_draw": 2814019762,
+          "checksum_after_draw": 2814019762,
+          "image_width": 780,
+          "image_height": 1688
+        }
+      ],
+      "simulation_steps": [
+        {
+          "tick": 1,
+          "checksum": 3395314080
+        },
+        {
+          "tick": 2,
+          "checksum": 4023967510
+        },
+        {
+          "tick": 3,
+          "checksum": 1571667128
+        },
+        {
+          "tick": 4,
+          "checksum": 627710117
+        },
+        {
+          "tick": 5,
+          "checksum": 3486032735
+        },
+        {
+          "tick": 6,
+          "checksum": 122096574
+        },
+        {
+          "tick": 7,
+          "checksum": 1552831837
+        },
+        {
+          "tick": 8,
+          "checksum": 3049616904
+        },
+        {
+          "tick": 9,
+          "checksum": 849505857
+        },
+        {
+          "tick": 10,
+          "checksum": 1293610707
+        },
+        {
+          "tick": 11,
+          "checksum": 3251943959
+        },
+        {
+          "tick": 12,
+          "checksum": 917223383
+        },
+        {
+          "tick": 13,
+          "checksum": 3971332800
+        },
+        {
+          "tick": 14,
+          "checksum": 3196745344
+        },
+        {
+          "tick": 15,
+          "checksum": 2508035535
+        },
+        {
+          "tick": 16,
+          "checksum": 1495954928
+        },
+        {
+          "tick": 17,
+          "checksum": 3901673494
+        },
+        {
+          "tick": 18,
+          "checksum": 3139456194
+        },
+        {
+          "tick": 19,
+          "checksum": 2722417390
+        },
+        {
+          "tick": 20,
+          "checksum": 2814019762
+        }
+      ]
+    },
+    {
+      "id": "hi-390-tutorial-schools",
+      "checksums": [
+        {
+          "name": "tutorial-schools",
+          "checksum_before_draw": 1303168951,
+          "checksum_after_draw": 1303168951,
+          "image_width": 780,
+          "image_height": 1688
+        },
+        {
+          "name": "tutorial-schools-dialog",
+          "checksum_before_draw": 1303168951,
+          "checksum_after_draw": 1303168951,
+          "image_width": 780,
+          "image_height": 1688
+        }
+      ],
+      "simulation_steps": [
+        {
+          "tick": 1,
+          "checksum": 544616101
+        },
+        {
+          "tick": 2,
+          "checksum": 97423379
+        },
+        {
+          "tick": 3,
+          "checksum": 3082548157
+        },
+        {
+          "tick": 4,
+          "checksum": 3481032608
+        },
+        {
+          "tick": 5,
+          "checksum": 635366490
+        },
+        {
+          "tick": 6,
+          "checksum": 3981526203
+        },
+        {
+          "tick": 7,
+          "checksum": 3063421528
+        },
+        {
+          "tick": 8,
+          "checksum": 1607678221
+        },
+        {
+          "tick": 9,
+          "checksum": 3635683652
+        },
+        {
+          "tick": 10,
+          "checksum": 2802622934
+        },
+        {
+          "tick": 11,
+          "checksum": 734197010
+        },
+        {
+          "tick": 12,
+          "checksum": 3703437522
+        },
+        {
+          "tick": 13,
+          "checksum": 111408581
+        },
+        {
+          "tick": 14,
+          "checksum": 1419524485
+        },
+        {
+          "tick": 15,
+          "checksum": 2137774794
+        },
+        {
+          "tick": 16,
+          "checksum": 3007068917
+        },
+        {
+          "tick": 17,
+          "checksum": 43556627
+        },
+        {
+          "tick": 18,
+          "checksum": 1362494407
+        },
+        {
+          "tick": 19,
+          "checksum": 1213367787
+        },
+        {
+          "tick": 20,
+          "checksum": 1303168951
+        }
+      ]
+    },
+    {
+      "id": "hi-390-tutorial-upgrades",
+      "checksums": [
+        {
+          "name": "tutorial-upgrades-briefing",
+          "checksum_before_draw": 3097072314,
+          "checksum_after_draw": 3097072314,
+          "image_width": 780,
+          "image_height": 1688
+        },
+        {
+          "name": "tutorial-upgrades",
+          "checksum_before_draw": 3097072314,
+          "checksum_after_draw": 3097072314,
+          "image_width": 780,
+          "image_height": 1688
+        },
+        {
+          "name": "tutorial-upgrades-dialog",
+          "checksum_before_draw": 3097072314,
+          "checksum_after_draw": 3097072314,
+          "image_width": 780,
+          "image_height": 1688
+        }
+      ],
+      "simulation_steps": [
+        {
+          "tick": 1,
+          "checksum": 707359224
+        },
+        {
+          "tick": 2,
+          "checksum": 1453644622
+        },
+        {
+          "tick": 3,
+          "checksum": 1136829920
+        },
+        {
+          "tick": 4,
+          "checksum": 779881981
+        },
+        {
+          "tick": 5,
+          "checksum": 3419781382
+        },
+        {
+          "tick": 6,
+          "checksum": 1115102695
+        },
+        {
+          "tick": 7,
+          "checksum": 3909437956
+        },
+        {
+          "tick": 8,
+          "checksum": 3657917777
+        },
+        {
+          "tick": 9,
+          "checksum": 1785950744
+        },
+        {
+          "tick": 10,
+          "checksum": 754974347
+        },
+        {
+          "tick": 11,
+          "checksum": 4190289487
+        },
+        {
+          "tick": 12,
+          "checksum": 1729408655
+        },
+        {
+          "tick": 13,
+          "checksum": 3706183650
+        },
+        {
+          "tick": 14,
+          "checksum": 3943832738
+        },
+        {
+          "tick": 15,
+          "checksum": 4003197933
+        },
+        {
+          "tick": 16,
+          "checksum": 2573400614
+        },
+        {
+          "tick": 17,
+          "checksum": 227169216
+        },
+        {
+          "tick": 18,
+          "checksum": 487112724
+        },
+        {
+          "tick": 19,
+          "checksum": 3913828920
+        },
+        {
+          "tick": 20,
+          "checksum": 3091340388
+        }
+      ]
+    },
+    {
+      "id": "hi-390-tutorial-warrior-training",
+      "checksums": [
+        {
+          "name": "tutorial-warrior-training-briefing",
+          "checksum_before_draw": 222620682,
+          "checksum_after_draw": 222620682,
+          "image_width": 780,
+          "image_height": 1688
+        },
+        {
+          "name": "tutorial-warrior-training",
+          "checksum_before_draw": 222620682,
+          "checksum_after_draw": 222620682,
+          "image_width": 780,
+          "image_height": 1688
+        },
+        {
+          "name": "tutorial-warrior-training-dialog",
+          "checksum_before_draw": 222620682,
+          "checksum_after_draw": 222620682,
+          "image_width": 780,
+          "image_height": 1688
+        }
+      ],
+      "simulation_steps": [
+        {
+          "tick": 1,
+          "checksum": 1620968728
+        },
+        {
+          "tick": 2,
+          "checksum": 1160166318
+        },
+        {
+          "tick": 3,
+          "checksum": 4149467136
+        },
+        {
+          "tick": 4,
+          "checksum": 2408872989
+        },
+        {
+          "tick": 5,
+          "checksum": 1698088935
+        },
+        {
+          "tick": 6,
+          "checksum": 2914610950
+        },
+        {
+          "tick": 7,
+          "checksum": 4134547941
+        },
+        {
+          "tick": 8,
+          "checksum": 523965104
+        },
+        {
+          "tick": 9,
+          "checksum": 2556168953
+        },
+        {
+          "tick": 10,
+          "checksum": 3890514539
+        },
+        {
+          "tick": 11,
+          "checksum": 1797971631
+        },
+        {
+          "tick": 12,
+          "checksum": 2622870383
+        },
+        {
+          "tick": 13,
+          "checksum": 1179377272
+        },
+        {
+          "tick": 14,
+          "checksum": 343151160
+        },
+        {
+          "tick": 15,
+          "checksum": 1065611639
+        },
+        {
+          "tick": 16,
+          "checksum": 4090761544
+        },
+        {
+          "tick": 17,
+          "checksum": 1114682542
+        },
+        {
+          "tick": 18,
+          "checksum": 299772026
+        },
+        {
+          "tick": 19,
+          "checksum": 146452054
+        },
+        {
+          "tick": 20,
+          "checksum": 222620682
+        }
+      ]
+    },
+    {
+      "id": "hi-390-tutorial-fortifications",
+      "checksums": [
+        {
+          "name": "tutorial-fortifications",
+          "checksum_before_draw": 1455014497,
+          "checksum_after_draw": 1455014497,
+          "image_width": 780,
+          "image_height": 1688
+        },
+        {
+          "name": "tutorial-fortifications-dialog",
+          "checksum_before_draw": 1455014497,
+          "checksum_after_draw": 1455014497,
+          "image_width": 780,
+          "image_height": 1688
+        }
+      ],
+      "simulation_steps": [
+        {
+          "tick": 1,
+          "checksum": 4071152866
+        },
+        {
+          "tick": 2,
+          "checksum": 1448088149
+        },
+        {
+          "tick": 3,
+          "checksum": 1692737019
+        },
+        {
+          "tick": 4,
+          "checksum": 2657282533
+        },
+        {
+          "tick": 5,
+          "checksum": 4093642271
+        },
+        {
+          "tick": 6,
+          "checksum": 3184525055
+        },
+        {
+          "tick": 7,
+          "checksum": 1724316700
+        },
+        {
+          "tick": 8,
+          "checksum": 198020942
+        },
+        {
+          "tick": 9,
+          "checksum": 208323335
+        },
+        {
+          "tick": 10,
+          "checksum": 4069659540
+        },
+        {
+          "tick": 11,
+          "checksum": 4271650640
+        },
+        {
+          "tick": 12,
+          "checksum": 2342737555
+        },
+        {
+          "tick": 13,
+          "checksum": 3514633092
+        },
+        {
+          "tick": 14,
+          "checksum": 33723333
+        },
+        {
+          "tick": 15,
+          "checksum": 2838831242
+        },
+        {
+          "tick": 16,
+          "checksum": 2549685027
+        },
+        {
+          "tick": 17,
+          "checksum": 699002565
+        },
+        {
+          "tick": 18,
+          "checksum": 1780164113
+        },
+        {
+          "tick": 19,
+          "checksum": 194768956
+        },
+        {
+          "tick": 20,
+          "checksum": 1455014497
+        }
+      ]
+    },
+    {
+      "id": "hi-390-tutorial-defensive-tactics",
+      "checksums": [
+        {
+          "name": "tutorial-defensive-tactics-briefing",
+          "checksum_before_draw": 2870547155,
+          "checksum_after_draw": 2870547155,
+          "image_width": 780,
+          "image_height": 1688
+        },
+        {
+          "name": "tutorial-defensive-tactics",
+          "checksum_before_draw": 2870547155,
+          "checksum_after_draw": 2870547155,
+          "image_width": 780,
+          "image_height": 1688
+        },
+        {
+          "name": "tutorial-defensive-tactics-dialog",
+          "checksum_before_draw": 2870547155,
+          "checksum_after_draw": 2870547155,
+          "image_width": 780,
+          "image_height": 1688
+        }
+      ],
+      "simulation_steps": [
+        {
+          "tick": 1,
+          "checksum": 587268155
+        },
+        {
+          "tick": 2,
+          "checksum": 3095133964
+        },
+        {
+          "tick": 3,
+          "checksum": 1907416610
+        },
+        {
+          "tick": 4,
+          "checksum": 256719836
+        },
+        {
+          "tick": 5,
+          "checksum": 3394356903
+        },
+        {
+          "tick": 6,
+          "checksum": 3659280327
+        },
+        {
+          "tick": 7,
+          "checksum": 2959812101
+        },
+        {
+          "tick": 8,
+          "checksum": 1693080023
+        },
+        {
+          "tick": 9,
+          "checksum": 1983054366
+        },
+        {
+          "tick": 10,
+          "checksum": 4249364460
+        },
+        {
+          "tick": 11,
+          "checksum": 3352830888
+        },
+        {
+          "tick": 12,
+          "checksum": 3871171051
+        },
+        {
+          "tick": 13,
+          "checksum": 1898022447
+        },
+        {
+          "tick": 14,
+          "checksum": 2256275694
+        },
+        {
+          "tick": 15,
+          "checksum": 22392353
+        },
+        {
+          "tick": 16,
+          "checksum": 3333256272
+        },
+        {
+          "tick": 17,
+          "checksum": 1371578454
+        },
+        {
+          "tick": 18,
+          "checksum": 531956226
+        },
+        {
+          "tick": 19,
+          "checksum": 945972654
+        },
+        {
+          "tick": 20,
+          "checksum": 2870547155
+        }
+      ]
+    }
+  ],
+  "zoom_probe": {
+    "x": 1048,
+    "y": 817,
+    "width": 144,
+    "height": 23,
+    "middle_width": 44,
+    "plus_offset": 68,
+    "repeated_plus_point": [
+      1128,
+      828
+    ],
+    "fit_zoom": 0.25390625,
+    "checksum_before_ui": 3828636654,
+    "checksum_after_ui": 3828636654,
+    "limits": "Exercises the actual shared click helper and real draws, not physical pointer hardware."
+  },
+  "resolved_prior_findings": [
+    {
+      "id": "HI-CURRENT-COVERAGE-001",
+      "status": "resolved",
+      "reason": "All20 actual active initial guidance panels now unobstructed, separately saved briefing images and pause menus do not substitute for HUD evidence."
+    }
+  ],
+  "findings": [],
+  "observations": [
+    "All74 new production images freshly viewed:5frontends each width, gameplay and pause each width,2desktop zoom states,20initial tutorial guidance,20tutorial pause menus,18optional initial briefings.",
+    "All ten initial lesson step panels genuinely visible at both sizes; lesson denominators5/2/2/2/3/2/2/3/4/4 readable. Introduction and defensive-tactics narrow title wraps remain separate from map/help/collapse controls.",
+    "390 game and active tutorial views show six complete bottom captions:बनाएँ,झंडे,औज़ार,लक्ष्य,टीमें,मेनू. HUD ratios0/0 and desktop0/0/500 remain readable; settings100percent parentheses balanced,74percent audio values fit.",
+    "Devanagari matras, nasal marks, conjuncts and words around arrows/numbers remain readable in actual pictures. Existing proper names and Software runtime diagnostics retained legitimately.",
+    "All captured before/afterdraw simulation checksums equal and20tick traces match corresponding desktop/narrow lessons. Zoom110percent and fit25percent actually visible; checksum-preserving sharedhelper probe recorded.",
+    "All matrix240samples each width glyph and line-bounds checks independently inspected. Twelve page1 PNG freshly viewed across10/13/20 scales1/2 and both widths; matrix32native+8online diagnostic subset only."
+  ],
+  "limits": [
+    "Agent-reviewed, not human native-speaker approval.",
+    "Actual macOS desktop game with phone presentation at390, not physical mobile/nativeAndroid/iOS, browserWASM or release-build verification.",
+    "Only first active step of each10lesson, not all29steps or tutorial completion/playthrough. Not all3416 messages visually exercised.",
+    "Only visible frontend scroll rows and pause states; map preview remains pending-generation fixture. No IME/network/account/audio interaction claim.",
+    "Fonts and compiler/runtime exact metadata bound; this is development build, not shipping release readiness.",
+    "Source_revision6a16670 in harness is frozen-kit provenance, distinct from actual embedded producer92205aae.",
+    "Other locale capture jobs still running at snapshot; only34Hindi invocation coverage asserted."
+  ]
+}

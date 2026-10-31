@@ -1,0 +1,59 @@
+{
+  "editor": "/root/translation_kit",
+  "author": "/root/hindi_translation",
+  "reviewer": "/root/pilot_context",
+  "batch_id": "native-general-016",
+  "source_json_sha256": "a214fc4c9ce4d90fb29d572e3b9d96987eb61af8d0f7bda5050d7d1309d488a9",
+  "before_native_catalog_sha256": "027e686622a7758c5ee7633372aeb33533ecd1a36633b5e6f043bd18581b8cea",
+  "before_target_sha256": "c5384b9add7cd18c9570ce8e77f439b6b55184a7d63c0fcb21276138b2b116f6",
+  "after_target_sha256": "8c4d807d059cf2ce5ba1dc40b1b5c54acaf15ca270ab19db7164c5d23526007a",
+  "editor_read_keys": [
+    "[library Release %0]",
+    "[library Remove %0]",
+    "[library Seed: %0]",
+    "[library %0 · revision %1]",
+    "[library Fit]",
+    "[library GL only]",
+    "[Sound or silence?]",
+    "[Silence]",
+    "[Sound]",
+    "[audio preference explanation]",
+    "[audio preference change later]",
+    "[audio preference save failed]",
+    "[audio choices description]",
+    "[Grassland]",
+    "[Kopjes]",
+    "[Game trails]",
+    "[Fish amount]",
+    "[Camp-site amount]"
+  ],
+  "editor_read_count": 18,
+  "edits": [
+    {
+      "key": "[Game trails]",
+      "before": "खेल की पगडंडियाँ",
+      "after": "वन्य जीवों की पगडंडियाँ"
+    },
+    {
+      "key": "[Kopjes]",
+      "before": "चट्टानी टीलियाँ",
+      "after": "चट्टानी टीले"
+    }
+  ],
+  "finding_dispositions": [
+    {
+      "key": "[Game trails]",
+      "severity": "major",
+      "problem": "Game is mistranslated as खेल (the sport/game) rather than wildlife. SavannahGenerator.cpp:388 trails lead to wateringholes in savannahtheme. Use animaltraildescription withoutsuggesting playablegamepaths.",
+      "decision": "Edited as independently requested; awaiting original reviewer recheck",
+      "after": "वन्य जीवों की पगडंडियाँ"
+    }
+  ],
+  "editor_notes": [
+    "Read all18entries, source-specific revision/audio/onboarding and savannah wildlife controls.",
+    "Game trails means wildlife tracks (Savannah generator theme), not playablegame paths. Kopjes expressed as natural rockyhill label.",
+    "Release/version/revision distinction retained in metadata as रिलीज़/संस्करण/संशोधन."
+  ],
+  "status": "editor-pass-complete-awaiting-original-reviewer-recheck",
+  "certification": "Agent edited; not native-human-certified; rendering/platform gates separate"
+}

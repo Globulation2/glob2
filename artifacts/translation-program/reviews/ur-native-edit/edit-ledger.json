@@ -1,0 +1,1042 @@
+[
+  {
+    "key": "[barracks explanation 2]",
+    "source": "level of your warriors",
+    "before": "جنگجوؤں کی سطح بہتر بناتی ہے",
+    "after": "جنگی سطح بہتر بناتی ہے",
+    "reasons": [
+      "Joined secondrow repeats جنگجوؤں andloses readable fightingtraininglevel expression. Subject بیرک feminine fitsبناتی."
+    ]
+  },
+  {
+    "key": "[barracks explanation]",
+    "source": "Improves the fighting",
+    "before": "آپ کے جنگجوؤں کی لڑائی کی",
+    "after": "آپ کے جنگجوؤں کی",
+    "reasons": [
+      "Pairedrows join as آپ کے جنگجوؤں کی لڑائی کی جنگجوؤں کی سطح...; جنگجوؤں possession duplicated and broken grammar. Revise pair together."
+    ]
+  },
+  {
+    "key": "[cancel upgrade]",
+    "source": "Cancel upgrade",
+    "before": "ترقی منسوخ کریں",
+    "after": "اپ گریڈ منسوخ کریں",
+    "reasons": [
+      "ترقی differs from actual Upgrade اپ گریڈ in buildingcontrols; player action should match namedupgradeoperation."
+    ]
+  },
+  {
+    "key": "[Cancel]",
+    "source": "Cancel",
+    "before": "منسوخ",
+    "after": "منسوخ کریں",
+    "reasons": [
+      "منسوخ adjective usedforaction; align politeimperative and settingsbutton."
+    ]
+  },
+  {
+    "key": "[combined vision]",
+    "source": "Combined vision",
+    "before": "مشترکہ نظر",
+    "after": "مشترکہ حدِ نگاہ",
+    "reasons": [
+      "مشترکہ نظر is understandable but differs from established visibilityglossary حدِ نگاہ (V/fV/mV and sharingcontrols)."
+    ]
+  },
+  {
+    "key": "[edit map]",
+    "source": "Edit Map",
+    "before": "نقشہ ترمیم کریں",
+    "after": "نقشے میں ترمیم کریں",
+    "reasons": [
+      "نقشہ ترمیم کریں lacks requiredpostposition for ترمیم; use naturalinstruction."
+    ]
+  },
+  {
+    "key": "[Harvest]",
+    "source": "Harvest",
+    "before": "فصل کاٹیں",
+    "after": "وسائل جمع کرنا",
+    "reasons": [
+      "Abilitylabel فصل کاٹیں narrows allmaterialharvesting to crops and makes an abilitylevelstat an imperative. TeamStat.cpp:780 displays generic HARVEST skilllevels; wood/stone alsoincluded."
+    ]
+  },
+  {
+    "key": "[hungry]",
+    "source": "hungry",
+    "before": "بھوکا",
+    "after": "بھوکے",
+    "reasons": [
+      "بھوکا singularmasculine conflicts with aggregateunitslegend at TeamStat.cpp:850; pluralبھوکے matchesیونٹ."
+    ]
+  },
+  {
+    "key": "[inn explanation]",
+    "source": "Feeds your units",
+    "before": "آپ کے یونٹوں کو کھانا کھلاتا ہے",
+    "after": "آپ کے یونٹوں کو کھانا کھلاتی ہے",
+    "reasons": [
+      "سرائے is treated feminine in existing finishedmessage مکمل ہو گئی; tooltip male کھلاتا disagrees."
+    ]
+  },
+  {
+    "key": "[no ressources growth areas]",
+    "source": "No Growth Areas",
+    "before": "افزائش کے علاقے نہیں",
+    "after": "افزائش روکنے کے علاقے",
+    "reasons": [
+      "افزائش کے علاقے نہیں says there are no growthareas, not zonespaintedtostopgrowth. BrushCatalog.cpp:281 names nogrowthbrush."
+    ]
+  },
+  {
+    "key": "[select school building]",
+    "source": "Select School",
+    "before": "مدرسہ منتخب کریں",
+    "after": "اسکول منتخب کریں",
+    "reasons": [
+      "Selector says مدرسہ while actual [school] label is اسکول. Player sees two different school names; مدرسہ can also imply a religiousschool notgame-specific constructiontraining. Author independently noted inconsistency."
+    ]
+  },
+  {
+    "key": "[Uncontrolled]",
+    "source": "Uncontrolled",
+    "before": "بے قابو",
+    "after": "بغیر کھلاڑی",
+    "reasons": [
+      "بے قابو means outofcontrol/uncontrollable; actual TeamDisplay.cpp:17–21 uses this when playernameempty, notrampagingbehavior."
+    ]
+  },
+  {
+    "key": "[Upgrade Defaults]",
+    "source": "Upgrade Defaults",
+    "before": "ترقی کی طے شدہ ترتیبات",
+    "after": "اپ گریڈ کی طے شدہ ترتیبات",
+    "reasons": [
+      "ترقی is generaldevelopment/promotion; differs from actual Start/StopUpgrade اپ گریڈ, settingsUpgrade اپ گریڈ and most concretecontrols. Standardize operationterm, preserving ترقی for genuinegeneraldevelopment."
+    ]
+  },
+  {
+    "key": "[upgrade]",
+    "source": "Upgrade",
+    "before": "ترقی دیں",
+    "after": "اپ گریڈ کریں",
+    "reasons": [
+      "Concretebuildingupgradeaction should match اپ گریڈ operationterm usedelsewhere, ratherthan general ترقی دیں."
+    ]
+  },
+  {
+    "key": "[Your %0 are under attack]",
+    "source": "Your %0 is under attack",
+    "before": "آپ کی %0 پر حملہ ہو رہا ہے",
+    "after": "آپ کے %0 پر حملہ ہو رہا ہے",
+    "reasons": [
+      "آپ کی disagrees with masculineunitnames کارکن/کھوجی/جنگجو. GameEvent.cpp:54 passes getUnitName(typeNum), not femininebuildingname."
+    ]
+  },
+  {
+    "key": "[AICastor-Profile]",
+    "source": "Core strategy: Invests in a productive colony and technology before committing substantial attacks. Prioritized construction projects build up its settlement; development, military infrastructure and time increase war readiness.\\n\\nEconomy and development: Studies hydration, food-source growth, obstacles and worker reach. Manages food expansion, upgrades and defenses alongside production.\\n\\nAttack and defense: Estimates healthy warriors' attack power and begins strikes when power or timing conditions are met. Favors previously seen, accessible buildings, especially barracks and schools, and moves its attack flags toward valuable targets.\\n\\nCompared with other AIs: More deliberate about terrain and target value than Numbi. More patient than Warrush, trading early pressure for a developed base and stronger troops.\\n\\nStrengths and weaknesses: Broad infrastructure planning and valuable military targets give its strikes purpose. Preparation takes time, allowing faster opponents to contest resources before its main force is ready.\\n\\nCounterplay to try: Contest expansion early. Protect barracks and schools as well as food, and keep a reserve when attacking its developed settlement.",
+    "before": "بنیادی حکمتِ عملی: بڑے حملے کرنے سے پہلے پیداواری بستی اور ٹیکنالوجی میں سرمایہ لگاتا ہے۔ ترجیحی تعمیراتی منصوبے اس کی بستی کو بڑھاتے ہیں؛ ترقی، فوجی سہولیات اور وقت کے ساتھ اس کی جنگی تیاری بڑھتی ہے۔\\n\\nمعیشت اور ترقی: آب رسانی، خوراک کے ذرائع کی افزائش، رکاوٹوں اور کارکنوں کی رسائی کا جائزہ لیتا ہے۔ پیداوار کے ساتھ خوراک کی توسیع، ترقی اور دفاع سنبھالتا ہے۔\\n\\nحملہ اور دفاع: صحت مند جنگجوؤں کی حملہ آور طاقت کا اندازہ لگا کر طاقت یا وقت کی شرائط پوری ہونے پر حملہ کرتا ہے۔ پہلے دیکھی ہوئی، قابلِ رسائی عمارتوں، خصوصاً بیرکوں اور اسکولوں کو ترجیح دیتا ہے اور حملے کے جھنڈے قیمتی اہداف کی طرف بڑھاتا ہے۔\\n\\nدیگر AI سے موازنہ: Numbi کی نسبت زمین اور ہدف کی اہمیت پر زیادہ غور کرتا ہے۔ Warrush سے زیادہ صبر کرتا ہے؛ ابتدائی دباؤ کے بجائے ترقی یافتہ اڈے اور مضبوط فوج کو ترجیح دیتا ہے۔\\n\\nخوبیاں اور کمزوریاں: وسیع تعمیراتی منصوبہ بندی اور اہم فوجی اہداف اس کے حملوں کو بامقصد بناتے ہیں۔ تیاری میں وقت لگتا ہے، اس لیے تیز حریف اس کی مرکزی فوج تیار ہونے سے پہلے وسائل پر مقابلہ کر سکتے ہیں۔\\n\\nآزمانے کے لیے مقابلے کا طریقہ: ابتدا ہی میں اس کی توسیع کو روکیں۔ خوراک کے ساتھ بیرکوں اور اسکولوں کی بھی حفاظت کریں اور اس کی ترقی یافتہ بستی پر حملہ کرتے وقت کچھ فوج محفوظ رکھیں۔",
+    "after": "بنیادی حکمتِ عملی: بڑے حملے کرنے سے پہلے پیداواری بستی اور ٹیکنالوجی میں سرمایہ لگاتا ہے۔ ترجیحی تعمیراتی منصوبے اس کی بستی کو بڑھاتے ہیں؛ ترقی، فوجی سہولیات اور وقت کے ساتھ اس کی جنگی تیاری بڑھتی ہے۔\\n\\nمعیشت اور ترقی: زمین کی نمی، خوراک کے ذرائع کی افزائش، رکاوٹوں اور کارکنوں کی رسائی کا جائزہ لیتا ہے۔ پیداوار کے ساتھ خوراک کی فراہمی میں اضافہ، عمارتوں کی اپ گریڈنگ اور دفاع سنبھالتا ہے۔\\n\\nحملہ اور دفاع: صحت مند جنگجوؤں کی حملہ آور طاقت کا اندازہ لگا کر طاقت یا وقت کی شرائط پوری ہونے پر حملہ کرتا ہے۔ پہلے دیکھی ہوئی، قابلِ رسائی عمارتوں، خصوصاً بیرکوں اور اسکولوں کو ترجیح دیتا ہے اور حملے کے جھنڈے قیمتی اہداف کی طرف بڑھاتا ہے۔\\n\\nدیگر AI سے موازنہ: Numbi کی نسبت زمین اور ہدف کی اہمیت پر زیادہ غور کرتا ہے۔ Warrush سے زیادہ صبر کرتا ہے؛ ابتدائی دباؤ کے بجائے ترقی یافتہ اڈے اور مضبوط فوج کو ترجیح دیتا ہے۔\\n\\nخوبیاں اور کمزوریاں: وسیع تعمیراتی منصوبہ بندی اور اہم فوجی اہداف اس کے حملوں کو بامقصد بناتے ہیں۔ تیاری میں وقت لگتا ہے، اس لیے تیز حریف اس کی مرکزی فوج تیار ہونے سے پہلے وسائل پر مقابلہ کر سکتے ہیں۔\\n\\nآزمانے کے لیے مقابلے کا طریقہ: ابتدا ہی میں اس کی توسیع کو روکیں۔ خوراک کے ساتھ بیرکوں اور اسکولوں کی بھی حفاظت کریں اور اس کی ترقی یافتہ بستی پر حملہ کرتے وقت کچھ فوج محفوظ رکھیں۔",
+    "reasons": [
+      "Editorial correction after independent reviewer finding; preserve remaining source meaning.",
+      "Editorial correction after independent reviewer finding; preserve remaining source meaning."
+    ]
+  },
+  {
+    "key": "[AICortex-Profile]",
+    "source": "Core strategy: Uses reactive priorities to grow a working economy and turn spare labor into food, technology and military pressure. Its normal policy is rule-based; learned-policy experiments require separate configuration.\\n\\nEconomy and development: Adjusts worker production to staffing demand and keeps births going. Food trouble suppresses expansion and technology spending. Adds swimming when water access materially helps.\\n\\nAttack and defense: Prepares attacks using observed enemy technology and available troops. Water-crossing campaigns need swimming-capable warriors. Supports long campaigns with forward inns and hospitals, and can stage forces before advancing.\\n\\nCommitment and emergencies: Holds an offensive through minor harassment instead of repeatedly marching home. Serious attacks can recall defenders. Early emergencies can trigger warrior-only production and a hospital; famine can trigger a smaller desperation attack.\\n\\nCompared with other AIs: More concerned with forward support than Warrush. Maxima goes further in budgeting sustainable births, training and deployment against estimated enemy strength.\\n\\nStrengths and weaknesses: Connects pressure to food, healing and reachability. Forward infrastructure must stay supplied, and continued births can keep pressure on limited food. Emergency priorities force tradeoffs between growth and survival.\\n\\nCounterplay to try: Contest forward inns, hospitals and food sources. Keep defenders together against its push; minor harassment may not persuade it to retreat.\\n\\nScouting: Uses discovered enemy buildings and observed enemy troops.",
+    "before": "بنیادی حکمتِ عملی: حالات کے مطابق ترجیحات بدل کر فعال معیشت بڑھاتا اور اضافی محنت کو خوراک، ٹیکنالوجی اور فوجی دباؤ میں لگاتا ہے۔ اس کی عام پالیسی قواعد پر مبنی ہے؛ سیکھی ہوئی پالیسی کے تجربات کے لیے الگ ترتیب درکار ہے۔\\n\\nمعیشت اور ترقی: عملے کی ضرورت کے مطابق کارکنوں کی پیداوار بدلتا اور پیدائشیں جاری رکھتا ہے۔ خوراک کی مشکلات توسیع اور ٹیکنالوجی کے اخراجات کم کرتی ہیں۔ جہاں پانی تک رسائی سے نمایاں فائدہ ہو، وہاں تیراکی کی تربیت شامل کرتا ہے۔\\n\\nحملہ اور دفاع: دشمن کی دیکھی گئی ٹیکنالوجی اور دستیاب فوج کے مطابق حملوں کی تیاری کرتا ہے۔ پانی عبور کرنے والی مہموں کے لیے تیرنے والے جنگجو ضروری ہیں۔ اگلے مورچوں پر سرائے اور ہسپتال بنا کر طویل مہموں کو سہارا دیتا ہے اور پیش قدمی سے پہلے فوج جمع کر سکتا ہے۔\\n\\nحملہ جاری رکھنا اور ہنگامی حالات: معمولی چھیڑ چھاڑ پر بار بار واپس آنے کے بجائے حملہ جاری رکھتا ہے۔ سنگین حملہ محافظوں کو واپس بلا سکتا ہے۔ ابتدا کی ہنگامی حالت میں صرف جنگجو پیدا کیے جا سکتے ہیں اور ہسپتال بنایا جا سکتا ہے؛ قحط ایک چھوٹا، آخری کوشش والا حملہ شروع کر سکتا ہے۔\\n\\nدیگر AI سے موازنہ: Warrush سے زیادہ اگلے مورچوں کی مدد پر توجہ دیتا ہے۔ Maxima پائیدار پیدائشوں، تربیت اور تعیناتی کے وسائل کا دشمن کی اندازاً طاقت کے مقابلے میں زیادہ تفصیلی حساب کرتا ہے۔\\n\\nخوبیاں اور کمزوریاں: دباؤ کو خوراک، علاج اور رسائی سے جوڑتا ہے۔ اگلے مورچوں کی عمارتوں تک رسد جاری رہنی چاہیے اور مسلسل پیدائشیں محدود خوراک پر دباؤ برقرار رکھ سکتی ہیں۔ ہنگامی ترجیحات میں ترقی اور بقا کے درمیان انتخاب کرنا پڑتا ہے۔\\n\\nآزمانے کے لیے مقابلے کا طریقہ: اگلے مورچوں کی سراؤں، ہسپتالوں اور خوراک کے ذرائع کو چیلنج کریں۔ اس کی پیش قدمی کے مقابل محافظوں کو اکٹھا رکھیں؛ معمولی چھیڑ چھاڑ اسے پسپا ہونے پر مجبور نہیں بھی کر سکتی۔\\n\\nکھوج: دریافت شدہ دشمن عمارتوں اور دیکھی گئی دشمن فوج کو استعمال کرتا ہے۔",
+    "after": "بنیادی حکمتِ عملی: حالات کے مطابق ترجیحات بدل کر فعال معیشت بڑھاتا اور اضافی محنت کو خوراک، ٹیکنالوجی اور فوجی دباؤ میں لگاتا ہے۔ اس کی عام پالیسی قواعد پر مبنی ہے؛ سیکھی ہوئی پالیسی کے تجربات کے لیے الگ ترتیب درکار ہے۔\\n\\nمعیشت اور ترقی: عملے کی ضرورت کے مطابق کارکنوں کی پیداوار بدلتا اور پیدائشیں جاری رکھتا ہے۔ خوراک کی مشکلات توسیع اور ٹیکنالوجی کے اخراجات کم کرتی ہیں۔ جہاں پانی تک رسائی سے نمایاں فائدہ ہو، وہاں تیراکی کی تربیت شامل کرتا ہے۔\\n\\nحملہ اور دفاع: دشمن کی دیکھی گئی ٹیکنالوجی اور دستیاب فوج کے مطابق حملوں کی تیاری کرتا ہے۔ پانی عبور کرنے والی مہموں کے لیے تیرنے والے جنگجو ضروری ہیں۔ اگلے مورچوں پر سرائے اور ہسپتال بنا کر طویل مہموں کو سہارا دیتا ہے اور پیش قدمی سے پہلے فوج جمع کر سکتا ہے۔\\n\\nحملہ جاری رکھنا اور ہنگامی حالات: معمولی چھیڑ چھاڑ پر بار بار واپس آنے کے بجائے حملہ جاری رکھتا ہے۔ سنگین حملہ محافظوں کو واپس بلا سکتا ہے۔ ابتدا کی ہنگامی حالت میں صرف جنگجو پیدا کیے جا سکتے ہیں اور ہسپتال بنایا جا سکتا ہے؛ قحط کی حالت میں مجبوراً ایک چھوٹا حملہ کر سکتا ہے۔\\n\\nدیگر AI سے موازنہ: Warrush سے زیادہ اگلے مورچوں کی مدد پر توجہ دیتا ہے۔ Maxima پائیدار پیدائشوں، تربیت اور تعیناتی کے وسائل کا دشمن کی اندازاً طاقت کے مقابلے میں زیادہ تفصیلی حساب کرتا ہے۔\\n\\nخوبیاں اور کمزوریاں: دباؤ کو خوراک، علاج اور رسائی سے جوڑتا ہے۔ اگلے مورچوں کی عمارتوں تک رسد جاری رہنی چاہیے اور مسلسل پیدائشیں محدود خوراک پر دباؤ برقرار رکھ سکتی ہیں۔ ہنگامی ترجیحات میں ترقی اور بقا کے درمیان انتخاب کرنا پڑتا ہے۔\\n\\nآزمانے کے لیے مقابلے کا طریقہ: اگلے مورچوں کی سراؤں، ہسپتالوں اور خوراک کے ذرائع کو چیلنج کریں۔ اس کی پیش قدمی کے مقابل محافظوں کو اکٹھا رکھیں؛ معمولی چھیڑ چھاڑ اسے پسپا ہونے پر مجبور نہیں بھی کر سکتی۔\\n\\nکھوج: دریافت شدہ دشمن عمارتوں اور دیکھی گئی دشمن فوج کی معلومات استعمال کرتا ہے۔",
+    "reasons": [
+      "Editorial correction after independent reviewer finding; preserve remaining source meaning.",
+      "Editorial correction after independent reviewer finding; preserve remaining source meaning."
+    ]
+  },
+  {
+    "key": "[AINicowar-Profile]",
+    "source": "Core strategy: Combines growth, training, upgrades and warfare through overlapping conditions. Can attack while expanding, and redirect economic effort toward recovery when feeding fails.\\n\\nOpening: The shipped aggressive profile begins war preparation at five total units and permits war at five warriors, counting level-zero warriors too. Aims for three attack flags with five warriors each. Custom strategy files can change these thresholds.\\n\\nEconomy and development: Expands food and birth capacity, trains workers, develops swimming and movement, and upgrades buildings. Adjusts food staffing, responds to starvation and pursues fruit.\\n\\nAttack and defense: Samples reachable enemy buildings for attacks. Can use clearing flags to open resource-blocked routes. Defensive flags cover clusters of threatened units and buildings. Later, trained ground-attacking explorers target enemy unit groups.\\n\\nCompared with other AIs: Shares Warrush's early aggression but has more follow-through. Unlike Cabino, does not consistently prioritize hospitals and inns.\\n\\nStrengths and weaknesses: Broad tactical coverage combines early pressure with continued development. Random target selection can spend effort on less valuable buildings. Its thresholds do not provide Maxima's detailed estimate of opposing fighting power.\\n\\nCounterplay to try: Expect an early attack. Protect food and workers, contest expansion, and prepare for explorer attacks if it reaches advanced training.",
+    "before": "بنیادی حکمتِ عملی: باہم مربوط شرائط کے ذریعے آبادی بڑھانے، تربیت، ترقی اور جنگ کو ملاتا ہے۔ توسیع کے دوران حملہ کر سکتا ہے اور خوراک کی فراہمی ناکام ہونے پر معاشی کوشش بحالی کی طرف موڑ سکتا ہے۔\\n\\nابتدا: فراہم کردہ جارحانہ پروفائل کل پانچ یونٹوں پر جنگ کی تیاری شروع کرتا ہے اور پانچ جنگجوؤں پر جنگ کی اجازت دیتا ہے، جس میں سطح صفر کے جنگجو بھی شمار ہوتے ہیں۔ اس کا ہدف تین حملہ آور جھنڈے ہیں، ہر ایک کے ساتھ پانچ جنگجو۔ حسبِ پسند حکمتِ عملی کی فائلیں یہ حدیں بدل سکتی ہیں۔\\n\\nمعیشت اور ترقی: خوراک اور پیدائش کی گنجائش بڑھاتا، کارکنوں کو تربیت دیتا، تیراکی اور حرکت بہتر کرتا اور عمارتوں کو ترقی دیتا ہے۔ خوراک کے عملے کو بدلتا، فاقہ کشی کا جواب دیتا اور پھل حاصل کرنے کی کوشش کرتا ہے۔\\n\\nحملہ اور دفاع: قابلِ رسائی دشمن عمارتوں میں سے حملے کے ہدف چنتا ہے۔ وسائل سے بند راستے کھولنے کے لیے صفائی کے جھنڈے استعمال کر سکتا ہے۔ دفاعی جھنڈے خطرے میں موجود یونٹوں اور عمارتوں کے گروہوں کو ڈھانپتے ہیں۔ بعد میں زمینی حملے کی تربیت یافتہ کھوجی دشمن یونٹوں کے گروہوں کو نشانہ بناتے ہیں۔\\n\\nدیگر AI سے موازنہ: Warrush کی طرح ابتدا میں جارحانہ ہے، مگر بعد کی کارروائی زیادہ وسیع ہے۔ Cabino کے برعکس ہسپتالوں اور سراؤں کو مسلسل ترجیح نہیں دیتا۔\\n\\nخوبیاں اور کمزوریاں: وسیع حربی صلاحیت ابتدائی دباؤ کو مسلسل ترقی کے ساتھ جوڑتی ہے۔ اتفاقی ہدف چننے سے کم اہم عمارتوں پر محنت خرچ ہو سکتی ہے۔ اس کی حدیں دشمن کی لڑنے کی طاقت کا Maxima جیسا تفصیلی تخمینہ نہیں دیتیں۔\\n\\nآزمانے کے لیے مقابلے کا طریقہ: جلد حملے کی توقع رکھیں۔ خوراک اور کارکنوں کی حفاظت کریں، توسیع کو چیلنج کریں اور اگر یہ اعلیٰ تربیت تک پہنچ جائے تو کھوجیوں کے حملوں کے لیے تیار رہیں۔",
+    "after": "بنیادی حکمتِ عملی: باہم مربوط شرائط کے ذریعے آبادی بڑھانے، تربیت، اپ گریڈ اور جنگ کو ملاتا ہے۔ توسیع کے دوران حملہ کر سکتا ہے اور خوراک کی فراہمی ناکام ہونے پر معاشی کوشش بحالی کی طرف موڑ سکتا ہے۔\\n\\nابتدا: فراہم کردہ جارحانہ پروفائل کل پانچ یونٹوں پر جنگ کی تیاری شروع کرتا ہے اور پانچ جنگجوؤں پر جنگ کی اجازت دیتا ہے، جس میں سطح صفر کے جنگجو بھی شمار ہوتے ہیں۔ اس کا ہدف تین حملہ آور جھنڈے ہیں، ہر ایک کے ساتھ پانچ جنگجو۔ حسبِ پسند حکمتِ عملی کی فائلیں یہ حدیں بدل سکتی ہیں۔\\n\\nمعیشت اور ترقی: خوراک اور پیدائش کی گنجائش بڑھاتا، کارکنوں کو تربیت دیتا، تیراکی اور حرکت بہتر کرتا اور عمارتوں کو اپ گریڈ کرتا ہے۔ خوراک کے عملے کو بدلتا، فاقہ کشی کا جواب دیتا اور پھل حاصل کرنے کی کوشش کرتا ہے۔\\n\\nحملہ اور دفاع: قابلِ رسائی دشمن عمارتوں میں سے حملے کے ہدف چنتا ہے۔ وسائل سے بند راستے کھولنے کے لیے صفائی کے جھنڈے استعمال کر سکتا ہے۔ دفاعی جھنڈے خطرے میں موجود یونٹوں اور عمارتوں کے گروہوں کی حفاظت کرتے ہیں۔ بعد میں زمینی حملے کی تربیت یافتہ کھوجی دشمن یونٹوں کے گروہوں کو نشانہ بناتے ہیں۔\\n\\nدیگر AI سے موازنہ: Warrush کی طرح ابتدا میں جارحانہ ہے، مگر بعد کی کارروائی زیادہ وسیع ہے۔ Cabino کے برعکس ہسپتالوں اور سراؤں کو مسلسل ترجیح نہیں دیتا۔\\n\\nخوبیاں اور کمزوریاں: وسیع حربی صلاحیت ابتدائی دباؤ کو مسلسل ترقی کے ساتھ جوڑتی ہے۔ اتفاقی ہدف چننے سے کم اہم عمارتوں پر محنت خرچ ہو سکتی ہے۔ اس کی حدیں دشمن کی لڑنے کی طاقت کا Maxima جیسا تفصیلی تخمینہ نہیں دیتیں۔\\n\\nآزمانے کے لیے مقابلے کا طریقہ: جلد حملے کی توقع رکھیں۔ خوراک اور کارکنوں کی حفاظت کریں، توسیع کو چیلنج کریں اور اگر یہ اعلیٰ تربیت تک پہنچ جائے تو کھوجیوں کے حملوں کے لیے تیار رہیں۔",
+    "reasons": [
+      "Editorial correction after independent reviewer finding; preserve remaining source meaning.",
+      "Editorial correction after independent reviewer finding; preserve remaining source meaning.",
+      "Editorial correction after independent reviewer finding; preserve remaining source meaning."
+    ]
+  },
+  {
+    "key": "[AINicowar-Summary]",
+    "source": "An early rush supported by farming, upgrades, defense and explorer attacks.",
+    "before": "ابتدائی یلغار جسے کھیتی، ترقی، دفاع اور کھوجیوں کے حملے سہارا دیتے ہیں۔",
+    "after": "ابتدائی یلغار جسے کھیتی، اپ گریڈ، دفاع اور کھوجیوں کے حملے سہارا دیتے ہیں۔",
+    "reasons": [
+      "Concrete upgrades consistent with controls and full profile."
+    ]
+  },
+  {
+    "key": "[AINumbi-Profile]",
+    "source": "Core strategy: Builds food and population first, adds healing, science and training, then shifts toward warfare. Its broad phases advance with time rather than with the opponent's progress.\\n\\nEconomy and development: Scales building demand with population and estimates nearby food sources. Later phases add upgrades, defenses and expansion to support its growing army.\\n\\nAttack and defense: Attacks when enough healthy fighters exist or a timeout expires. Places war flags on sampled enemy buildings. When its fighting force falls too low, removes attack flags and raises the thresholds for another attempt.\\n\\nCompared with other AIs: More predictable than Castor or Nicowar. Castor considers terrain and target value more carefully; Nicowar applies pressure much earlier.\\n\\nStrengths and weaknesses: Broad supporting infrastructure can make it dangerous after an uninterrupted buildup, but its timetable may not match the battle. Simple target selection and longer pauses after losses make its attacks easier to anticipate.\\n\\nCounterplay to try: Apply pressure before its military phase. Grow food and training behind your attacks, and exploit the pause after defeating an assault.\\n\\nScouting: Its attack routine reads enemy building positions directly without a visibility check.",
+    "before": "بنیادی حکمتِ عملی: پہلے خوراک اور آبادی بڑھاتا، پھر علاج، سائنس اور تربیت شامل کرتا، اور آخر میں جنگ کی طرف جاتا ہے۔ اس کے بڑے مرحلے حریف کی ترقی کے بجائے وقت کے ساتھ آگے بڑھتے ہیں۔\\n\\nمعیشت اور ترقی: آبادی کے مطابق عمارتوں کی ضرورت بڑھاتا اور قریبی خوراک کے ذرائع کا اندازہ لگاتا ہے۔ بعد کے مراحل میں بڑھتی فوج کی مدد کے لیے ترقی، دفاع اور توسیع شامل ہوتی ہے۔\\n\\nحملہ اور دفاع: کافی صحت مند جنگجو موجود ہوں یا مقررہ وقت گزر جائے تو حملہ کرتا ہے۔ منتخب دشمن عمارتوں پر جنگی جھنڈے لگاتا ہے۔ لڑنے والی فوج بہت کم ہو جائے تو حملے کے جھنڈے ہٹا کر اگلی کوشش کی حدیں بڑھا دیتا ہے۔\\n\\nدیگر AI سے موازنہ: Castor یا Nicowar سے زیادہ قابلِ پیش گوئی ہے۔ Castor زمین اور ہدف کی اہمیت پر زیادہ غور کرتا ہے؛ Nicowar کہیں پہلے دباؤ ڈالتا ہے۔\\n\\nخوبیاں اور کمزوریاں: مددگار عمارتوں کا وسیع نظام بلا رکاوٹ تیاری کے بعد اسے خطرناک بنا سکتا ہے، مگر اس کا وقت نامہ لڑائی کے حالات سے میل نہیں بھی کھا سکتا۔ سادہ ہدف چننے اور نقصان کے بعد لمبے وقفوں کی وجہ سے اس کے حملوں کا اندازہ لگانا آسان ہے۔\\n\\nآزمانے کے لیے مقابلے کا طریقہ: فوجی مرحلے سے پہلے دباؤ ڈالیں۔ حملوں کے دوران اپنے پیچھے خوراک اور تربیت بڑھائیں اور اس کا حملہ شکست دینے کے بعد وقفے سے فائدہ اٹھائیں۔\\n\\nکھوج: اس کا حملہ کرنے والا معمول نظر آنے کی جانچ کے بغیر دشمن عمارتوں کے مقامات براہِ راست پڑھتا ہے۔",
+    "after": "بنیادی حکمتِ عملی: پہلے خوراک اور آبادی بڑھاتا، پھر علاج، سائنس اور تربیت شامل کرتا، اور آخر میں جنگ کی طرف جاتا ہے۔ اس کے بڑے مرحلے حریف کی ترقی کے بجائے وقت کے ساتھ آگے بڑھتے ہیں۔\\n\\nمعیشت اور ترقی: آبادی کے مطابق عمارتوں کی ضرورت بڑھاتا اور قریبی خوراک کے ذرائع کا اندازہ لگاتا ہے۔ بعد کے مراحل میں بڑھتی فوج کی مدد کے لیے اپ گریڈ، دفاع اور توسیع شامل ہوتی ہے۔\\n\\nحملہ اور دفاع: کافی صحت مند جنگجو موجود ہوں یا مقررہ وقت گزر جائے تو حملہ کرتا ہے۔ منتخب دشمن عمارتوں پر جنگی جھنڈے لگاتا ہے۔ لڑنے والی فوج بہت کم ہو جائے تو حملے کے جھنڈے ہٹا کر اگلی کوشش کی حدیں بڑھا دیتا ہے۔\\n\\nدیگر AI سے موازنہ: Castor یا Nicowar سے زیادہ قابلِ پیش گوئی ہے۔ Castor زمین اور ہدف کی اہمیت پر زیادہ غور کرتا ہے؛ Nicowar کہیں پہلے دباؤ ڈالتا ہے۔\\n\\nخوبیاں اور کمزوریاں: مددگار عمارتوں کا وسیع نظام بلا رکاوٹ تیاری کے بعد اسے خطرناک بنا سکتا ہے، مگر اس کا وقت نامہ لڑائی کے حالات سے میل نہیں بھی کھا سکتا۔ سادہ ہدف چننے اور نقصان کے بعد لمبے وقفوں کی وجہ سے اس کے حملوں کا اندازہ لگانا آسان ہے۔\\n\\nآزمانے کے لیے مقابلے کا طریقہ: فوجی مرحلے سے پہلے دباؤ ڈالیں۔ حملوں کے دوران اپنے پیچھے خوراک اور تربیت بڑھائیں اور اس کا حملہ شکست دینے کے بعد وقفے سے فائدہ اٹھائیں۔\\n\\nکھوج: اس کا حملہ کرنے والا معمول نظر آنے کی جانچ کے بغیر دشمن عمارتوں کے مقامات براہِ راست پڑھتا ہے۔",
+    "reasons": [
+      "Editorial correction after independent reviewer finding; preserve remaining source meaning."
+    ]
+  },
+  {
+    "key": "[AIEcono-Profile]",
+    "source": "Core strategy: Produces workers and explorers, expands its economy, and attracts enemy units through food and fruit. Has no conventional warrior offensive.\\n\\nEconomy and development: Builds inns and swarms near food sources, adds education and movement training, and upgrades infrastructure. Tracks food supplies and retains its buildings and exploration flags even when supplies deteriorate or targets disappear.\\n\\nFarming and conversion: Protects renewable food and wood sources near water. Sends explorers to fruit deposits and enemy colonies, and advertises food to enemies when pursuing fruit supply. Better food and fruit can help attract converts.\\n\\nCompared with other AIs: The most specialized economic opponent. Cabino and Maxima pursue fruit too, but combine it with armies.\\n\\nStrengths and weaknesses: Can grow while military opponents exhaust themselves, with conversion providing another form of competition. Produces no warriors to answer a sustained assault. Food, fruit, geography and victory rules strongly affect its opportunities.\\n\\nCounterplay to try: Pressure exposed expansion. Keep your own inns supplied with food and fruit to retain units. Avoid exhausting your colony in unnecessary fights while it grows.",
+    "before": "بنیادی حکمتِ عملی: کارکن اور کھوجی پیدا کرتا، معیشت پھیلاتا اور خوراک و پھل سے دشمن یونٹوں کو اپنی طرف لاتا ہے۔ جنگجوؤں کا روایتی حملہ نہیں کرتا۔\\n\\nمعیشت اور ترقی: خوراک کے ذرائع کے قریب سرائے اور چھتے بناتا، تعلیم اور حرکت کی تربیت شامل کرتا اور عمارتوں کو ترقی دیتا ہے۔ خوراک کی رسد پر نظر رکھتا ہے اور رسد خراب ہونے یا ہدف غائب ہونے پر بھی عمارتیں اور کھوج کے جھنڈے برقرار رکھتا ہے۔\\n\\nکھیتی اور وفاداری کی تبدیلی: پانی کے قریب دوبارہ اگنے والی خوراک اور لکڑی کے ذرائع کی حفاظت کرتا ہے۔ کھوجیوں کو پھل کے ذخائر اور دشمن بستیوں کی طرف بھیجتا ہے اور پھل کی رسد حاصل کرتے وقت دشمنوں کو خوراک کی دعوت دیتا ہے۔ بہتر خوراک اور پھل یونٹوں کو اپنی طرف لانے میں مدد دے سکتے ہیں۔\\n\\nدیگر AI سے موازنہ: سب سے زیادہ مخصوص معاشی حریف۔ Cabino اور Maxima بھی پھل حاصل کرتے ہیں، مگر ساتھ فوج بھی رکھتے ہیں۔\\n\\nخوبیاں اور کمزوریاں: فوجی حریفوں کے تھکنے کے دوران بڑھ سکتا ہے؛ وفاداری کی تبدیلی مقابلے کا ایک اور طریقہ دیتی ہے۔ مسلسل حملے کا جواب دینے کے لیے جنگجو پیدا نہیں کرتا۔ خوراک، پھل، جغرافیہ اور فتح کے قواعد اس کے مواقع پر بہت اثر ڈالتے ہیں۔\\n\\nآزمانے کے لیے مقابلے کا طریقہ: اس کی کھلی توسیع پر دباؤ ڈالیں۔ اپنے یونٹوں کو برقرار رکھنے کے لیے اپنی سراؤں میں خوراک اور پھل پہنچاتے رہیں۔ اس کے بڑھنے کے دوران غیر ضروری لڑائیوں میں اپنی بستی کو تھکانے سے بچیں۔",
+    "after": "بنیادی حکمتِ عملی: کارکن اور کھوجی پیدا کرتا، معیشت پھیلاتا اور خوراک و پھل سے دشمن یونٹوں کو اپنی طرف لاتا ہے۔ جنگجوؤں کا روایتی حملہ نہیں کرتا۔\\n\\nمعیشت اور ترقی: خوراک کے ذرائع کے قریب سرائے اور چھتے بناتا، تعلیم اور حرکت کی تربیت شامل کرتا اور عمارتوں کو اپ گریڈ کرتا ہے۔ خوراک کی رسد پر نظر رکھتا ہے اور رسد خراب ہونے یا ہدف غائب ہونے پر بھی عمارتیں اور کھوج کے جھنڈے برقرار رکھتا ہے۔\\n\\nکھیتی اور وفاداری کی تبدیلی: پانی کے قریب دوبارہ اگنے والی خوراک اور لکڑی کے ذرائع کی حفاظت کرتا ہے۔ کھوجیوں کو پھل کے ذخائر اور دشمن بستیوں کی طرف بھیجتا ہے اور پھل کی رسد حاصل کرتے وقت دشمنوں کو خوراک کی دعوت دیتا ہے۔ بہتر خوراک اور پھل یونٹوں کو اپنی طرف لانے میں مدد دے سکتے ہیں۔\\n\\nدیگر AI سے موازنہ: سب سے زیادہ مخصوص معاشی حریف۔ Cabino اور Maxima بھی پھل حاصل کرتے ہیں، مگر ساتھ فوج بھی رکھتے ہیں۔\\n\\nخوبیاں اور کمزوریاں: فوجی حریفوں کے تھکنے کے دوران بڑھ سکتا ہے؛ وفاداری کی تبدیلی مقابلے کا ایک اور طریقہ دیتی ہے۔ مسلسل حملے کا جواب دینے کے لیے جنگجو پیدا نہیں کرتا۔ خوراک، پھل، جغرافیہ اور فتح کے قواعد اس کے مواقع پر بہت اثر ڈالتے ہیں۔\\n\\nآزمانے کے لیے مقابلے کا طریقہ: اس کی کھلی توسیع پر دباؤ ڈالیں۔ اپنے یونٹوں کو برقرار رکھنے کے لیے اپنی سراؤں میں خوراک اور پھل پہنچاتے رہیں۔ اس کے بڑھنے کے دوران غیر ضروری لڑائیوں میں اپنی بستی کو تھکانے سے بچیں۔",
+    "reasons": [
+      "Editorial correction after independent reviewer finding; preserve remaining source meaning."
+    ]
+  },
+  {
+    "key": "[AIWarrush-Profile]",
+    "source": "Core strategy: Attacks before opponents finish a long economic or technological buildup. Expects combat to decide the game before a large support network becomes necessary.\\n\\nEconomy and development: Once six units can harvest, sets production to four workers, one explorer and three warriors. Adds barracks as training fills up, but restricts new inns. Spare construction often goes toward hospitals and movement training.\\n\\nAttack and defense: Marks discovered enemy buildings with guard areas so warriors apply continuing pressure. Does not wait for a carefully assembled wave. Clears obstructing resources and protects some renewable sources.\\n\\nFruit policy: Forbids fruit harvesting, avoiding fruit-related armor penalties and declining Econo's conversion strategy.\\n\\nCompared with other AIs: More committed to early pressure than Numbi or Castor. Nicowar also opens aggressively, but follows through with a broader upgrade and tactical program.\\n\\nStrengths and weaknesses: Punishes slow openings and forces early defensive spending. Limited systematic upgrading and lean food support make a stalled offensive costly. Terrain and long journeys can erode its early advantage.\\n\\nCounterplay to try: Protect inns and swarms early. Replace workers as well as defenders, develop training, then counterattack once its rush loses momentum.\\n\\nScouting: Opening exploration flags use enemy starting locations directly. Later attack-area placement requires visibility.",
+    "before": "بنیادی حکمتِ عملی: حریفوں کی طویل معاشی یا تکنیکی تیاری مکمل ہونے سے پہلے حملہ کرتا ہے۔ توقع رکھتا ہے کہ بڑے امدادی نظام کی ضرورت پڑنے سے پہلے لڑائی کھیل کا فیصلہ کر دے گی۔\\n\\nمعیشت اور ترقی: جب چھ یونٹ فصل کاٹ سکیں تو پیداوار چار کارکن، ایک کھوجی اور تین جنگجو مقرر کرتا ہے۔ تربیت بھرنے پر بیرکیں بڑھاتا ہے، مگر نئی سراؤں کو محدود رکھتا ہے۔ بچ جانے والی تعمیراتی گنجائش اکثر ہسپتالوں اور حرکت کی تربیت پر لگتی ہے۔\\n\\nحملہ اور دفاع: دریافت شدہ دشمن عمارتوں پر پہرے کے علاقے لگاتا ہے تاکہ جنگجو مسلسل دباؤ ڈالیں۔ احتیاط سے جمع کی گئی لہر کا انتظار نہیں کرتا۔ رکاوٹ بننے والے وسائل صاف کرتا اور کچھ دوبارہ اگنے والے ذرائع کی حفاظت کرتا ہے۔\\n\\nپھل کی پالیسی: پھل کاٹنے سے روکتا ہے، یوں پھل سے زرہ پر پڑنے والی کمی سے بچتا اور Econo کی وفاداری بدلنے کی حکمتِ عملی نہیں اپناتا۔\\n\\nدیگر AI سے موازنہ: Numbi یا Castor سے زیادہ ابتدائی دباؤ پر قائم رہتا ہے۔ Nicowar بھی جارحانہ ابتدا کرتا ہے، مگر بعد میں زیادہ وسیع ترقی اور حربی منصوبہ اپناتا ہے۔\\n\\nخوبیاں اور کمزوریاں: سست ابتدا کو سزا دیتا اور جلد دفاع پر خرچ کرنے پر مجبور کرتا ہے۔ محدود منظم ترقی اور کم خوراکی سہارا رک جانے والے حملے کو مہنگا بناتے ہیں۔ زمین اور لمبے سفر اس کی ابتدائی برتری گھٹا سکتے ہیں۔\\n\\nآزمانے کے لیے مقابلے کا طریقہ: ابتدا ہی میں سراؤں اور چھتوں کی حفاظت کریں۔ محافظوں کے ساتھ کارکنوں کی جگہ بھی نئے یونٹ لائیں، تربیت بڑھائیں، پھر یلغار کی رفتار ٹوٹنے پر جوابی حملہ کریں۔\\n\\nکھوج: ابتدائی کھوج کے جھنڈے دشمن کے شروع کے مقامات براہِ راست استعمال کرتے ہیں۔ بعد کے حملہ آور علاقوں کے لیے نظر آنا ضروری ہے۔",
+    "after": "بنیادی حکمتِ عملی: حریفوں کی طویل معاشی یا تکنیکی تیاری مکمل ہونے سے پہلے حملہ کرتا ہے۔ توقع رکھتا ہے کہ بڑے امدادی نظام کی ضرورت پڑنے سے پہلے لڑائی کھیل کا فیصلہ کر دے گی۔\\n\\nمعیشت اور ترقی: جب چھ یونٹ وسائل جمع کر سکیں تو پیداوار چار کارکن، ایک کھوجی اور تین جنگجو مقرر کرتا ہے۔ تربیت بھرنے پر بیرکیں بڑھاتا ہے، مگر نئی سراؤں کو محدود رکھتا ہے۔ بچ جانے والی تعمیراتی گنجائش اکثر ہسپتالوں اور حرکت کی تربیت پر لگتی ہے۔\\n\\nحملہ اور دفاع: دریافت شدہ دشمن عمارتوں پر پہرے کے علاقے لگاتا ہے تاکہ جنگجو مسلسل دباؤ ڈالیں۔ احتیاط سے جمع کی گئی لہر کا انتظار نہیں کرتا۔ رکاوٹ بننے والے وسائل صاف کرتا اور کچھ دوبارہ اگنے والے ذرائع کی حفاظت کرتا ہے۔\\n\\nپھل کی پالیسی: پھل کاٹنے سے روکتا ہے، یوں پھل سے زرہ پر پڑنے والی کمی سے بچتا اور Econo کی وفاداری بدلنے کی حکمتِ عملی نہیں اپناتا۔\\n\\nدیگر AI سے موازنہ: Numbi یا Castor سے زیادہ ابتدائی دباؤ پر قائم رہتا ہے۔ Nicowar بھی جارحانہ ابتدا کرتا ہے، مگر بعد میں زیادہ وسیع اپ گریڈ اور حربی منصوبہ اپناتا ہے۔\\n\\nخوبیاں اور کمزوریاں: سست ابتدا کو سزا دیتا اور جلد دفاع پر خرچ کرنے پر مجبور کرتا ہے۔ محدود منظم اپ گریڈ اور کم خوراکی سہارا رک جانے والے حملے کو مہنگا بناتے ہیں۔ زمین اور لمبے سفر اس کی ابتدائی برتری گھٹا سکتے ہیں۔\\n\\nآزمانے کے لیے مقابلے کا طریقہ: ابتدا ہی میں سراؤں اور چھتوں کی حفاظت کریں۔ محافظوں کے ساتھ کارکنوں کی جگہ بھی نئے یونٹ لائیں، تربیت بڑھائیں، پھر یلغار کی رفتار ٹوٹنے پر جوابی حملہ کریں۔\\n\\nکھوج: ابتدائی کھوج کے جھنڈے دشمن کے شروع کے مقامات براہِ راست استعمال کرتے ہیں۔ بعد کے حملہ آور علاقوں کے لیے نظر آنا ضروری ہے۔",
+    "reasons": [
+      "Editorial correction after independent reviewer finding; preserve remaining source meaning.",
+      "Editorial correction after independent reviewer finding; preserve remaining source meaning.",
+      "Editorial correction after independent reviewer finding; preserve remaining source meaning."
+    ]
+  },
+  {
+    "key": "[AICabino-Profile]",
+    "source": "Core strategy: Shares unit production among construction, upgrades, defense, attacks and exploration. Separate managers request and reserve units, developing economy and military together.\\n\\nEconomy and development: Builds and upgrades a broad settlement, manages inn and tower staffing, clears building surroundings and protects renewable resources. Scouts fruit and advertises food to compete for converts.\\n\\nAttack and defense: Chooses an enemy and prioritizes hospitals, then inns, then barracks. Supports up to four attacks, generally assigning eight to twenty warriors per target according to availability and nearby enemies. Uses separate defensive flags around threatened buildings.\\n\\nTraining: Requires enough suitable warriors and a completed barracks to attack, but does not wait for maximum technology. Continued upgrades and training strengthen later attacks.\\n\\nCompared with other AIs: More purposeful about dismantling support buildings than Nicowar. Spreads attacks more than Maxima's gathered waves, using unit reservations to manage competing demands.\\n\\nStrengths and weaknesses: Combines growth, training, defense and several attacks. Destroying food and healing can weaken an entire colony. Random opponent selection and fixed building priorities may miss opportunities; multiple attacks can divide its force.\\n\\nCounterplay to try: Defend hospitals and inns. Contest exposed expansion and concentrate defenders against individual attacks. Damage food or training before it sustains several fronts.\\n\\nScouting: Its attack selector reads enemy building lists without an explicit visibility check. Some economic comparisons use enemy statistics directly.",
+    "before": "بنیادی حکمتِ عملی: یونٹوں کی پیداوار کو تعمیر، ترقی، دفاع، حملوں اور کھوج میں بانٹتا ہے۔ الگ منتظم یونٹ مانگتے اور مختص کرتے ہیں، یوں معیشت اور فوج ساتھ ترقی کرتی ہیں۔\\n\\nمعیشت اور ترقی: وسیع بستی تعمیر اور ترقی کرتا، سراؤں اور میناروں کا عملہ سنبھالتا، عمارتوں کے اردگرد صفائی کرتا اور دوبارہ اگنے والے وسائل بچاتا ہے۔ پھل کی کھوج کرتا اور وفاداری بدلوانے کے لیے خوراک کی دعوت دیتا ہے۔\\n\\nحملہ اور دفاع: ایک دشمن چنتا اور پہلے ہسپتالوں، پھر سراؤں، پھر بیرکوں کو ترجیح دیتا ہے۔ بیک وقت چار تک حملے سنبھالتا ہے؛ دستیابی اور قریبی دشمنوں کے مطابق عموماً ہر ہدف کو آٹھ سے بیس جنگجو دیتا ہے۔ خطرے میں موجود عمارتوں کے اردگرد الگ دفاعی جھنڈے لگاتا ہے۔\\n\\nتربیت: حملے کے لیے کافی موزوں جنگجو اور مکمل بیرک درکار ہے، مگر اعلیٰ ترین ٹیکنالوجی کا انتظار نہیں کرتا۔ مسلسل ترقی اور تربیت بعد کے حملے مضبوط بناتی ہیں۔\\n\\nدیگر AI سے موازنہ: Nicowar سے زیادہ باقاعدگی سے امدادی عمارتیں تباہ کرتا ہے۔ Maxima کی جمع شدہ لہروں کے مقابل اپنے حملے زیادہ پھیلاتا اور مختلف ضرورتوں کو سنبھالنے کے لیے یونٹ مختص کرتا ہے۔\\n\\nخوبیاں اور کمزوریاں: ترقی، تربیت، دفاع اور کئی حملے یکجا کرتا ہے۔ خوراک اور علاج تباہ کرنا پوری بستی کمزور کر سکتا ہے۔ اتفاقی حریف چننے اور عمارتوں کی طے شدہ ترجیحات سے مواقع چھوٹ سکتے ہیں؛ کئی حملے اس کی فوج بانٹ سکتے ہیں۔\\n\\nآزمانے کے لیے مقابلے کا طریقہ: ہسپتالوں اور سراؤں کی حفاظت کریں۔ کھلی توسیع کو چیلنج کریں اور ہر الگ حملے کے خلاف محافظ جمع کریں۔ کئی محاذ سنبھالنے کے قابل ہونے سے پہلے اس کی خوراک یا تربیت کو نقصان پہنچائیں۔\\n\\nکھوج: حملہ چننے والا نظام واضح طور پر نظر آنے کی جانچ کیے بغیر دشمن عمارتوں کی فہرست پڑھتا ہے۔ بعض معاشی موازنے دشمن کے اعداد و شمار براہِ راست استعمال کرتے ہیں۔",
+    "after": "بنیادی حکمتِ عملی: یونٹوں کی پیداوار کو تعمیر، اپ گریڈ، دفاع، حملوں اور کھوج میں بانٹتا ہے۔ الگ منتظم یونٹ مانگتے اور مختص کرتے ہیں، یوں معیشت اور فوج ساتھ ترقی کرتی ہیں۔\\n\\nمعیشت اور ترقی: ایک وسیع بستی بناتا اور اس کی عمارتوں کو اپ گریڈ کرتا ہے، سراؤں اور میناروں کا عملہ سنبھالتا ہے، عمارتوں کے اردگرد صفائی کرتا اور دوبارہ اگنے والے وسائل بچاتا ہے۔ پھل کی کھوج کرتا اور وفاداری بدلوانے کے لیے خوراک کی دعوت دیتا ہے۔\\n\\nحملہ اور دفاع: ایک دشمن چنتا اور پہلے ہسپتالوں، پھر سراؤں، پھر بیرکوں کو ترجیح دیتا ہے۔ بیک وقت چار تک حملے سنبھالتا ہے؛ دستیابی اور قریبی دشمنوں کے مطابق عموماً ہر ہدف کو آٹھ سے بیس جنگجو دیتا ہے۔ خطرے میں موجود عمارتوں کے اردگرد الگ دفاعی جھنڈے لگاتا ہے۔\\n\\nتربیت: حملے کے لیے کافی موزوں جنگجو اور مکمل بیرک درکار ہے، مگر اعلیٰ ترین ٹیکنالوجی کا انتظار نہیں کرتا۔ مسلسل اپ گریڈ اور تربیت بعد کے حملے مضبوط بناتی ہیں۔\\n\\nدیگر AI سے موازنہ: Nicowar سے زیادہ باقاعدگی سے امدادی عمارتیں تباہ کرتا ہے۔ Maxima کی جمع شدہ لہروں کے مقابل اپنے حملے زیادہ پھیلاتا اور مختلف ضرورتوں کو سنبھالنے کے لیے یونٹ مختص کرتا ہے۔\\n\\nخوبیاں اور کمزوریاں: ترقی، تربیت، دفاع اور کئی حملے یکجا کرتا ہے۔ خوراک اور علاج تباہ کرنا پوری بستی کمزور کر سکتا ہے۔ اتفاقی حریف چننے اور عمارتوں کی طے شدہ ترجیحات سے مواقع چھوٹ سکتے ہیں؛ کئی حملے اس کی فوج بانٹ سکتے ہیں۔\\n\\nآزمانے کے لیے مقابلے کا طریقہ: ہسپتالوں اور سراؤں کی حفاظت کریں۔ کھلی توسیع کو چیلنج کریں اور ہر الگ حملے کے خلاف محافظ جمع کریں۔ کئی محاذ سنبھالنے کے قابل ہونے سے پہلے اس کی خوراک یا تربیت کو نقصان پہنچائیں۔\\n\\nکھوج: حملہ چننے والا نظام واضح طور پر نظر آنے کی جانچ کیے بغیر دشمن عمارتوں کی فہرست پڑھتا ہے۔ بعض معاشی موازنے دشمن کے اعداد و شمار براہِ راست استعمال کرتے ہیں۔",
+    "reasons": [
+      "Editorial correction after independent reviewer finding; preserve remaining source meaning.",
+      "Editorial correction after independent reviewer finding; preserve remaining source meaning.",
+      "Editorial correction after independent reviewer finding; preserve remaining source meaning."
+    ]
+  },
+  {
+    "key": "[Conquest only]",
+    "source": "Conquest only",
+    "before": "صرف فتحِ علاقہ",
+    "after": "صرف حریف بستیوں کی شکست سے فتح",
+    "reasons": [
+      "فتحِ علاقہ adds territorialcaptureobjective. Current rules victorydefeatsopposingcolonies; territoryannexation notrequired. Clarify actualcondition."
+    ]
+  },
+  {
+    "key": "[Conquest or prestige]",
+    "source": "Conquest or prestige",
+    "before": "فتحِ علاقہ یا وقار",
+    "after": "حریف بستیوں کی شکست یا وقار سے فتح",
+    "reasons": [
+      "Same addedterritorialcaptureimplication; distinguish colonydefeatfromprestigecondition."
+    ]
+  },
+  {
+    "key": "[Start with terrain known]",
+    "source": "Start with terrain known",
+    "before": "شروع سے زمین معلوم ہو",
+    "after": "ابتدا ہی سے زمین معلوم ہو",
+    "reasons": [
+      "Natural compact option label for revealed terrain."
+    ]
+  },
+  {
+    "key": "[Win through conquest]",
+    "source": "Win through conquest",
+    "before": "فتحِ علاقہ کے ذریعے جیتیں",
+    "after": "حریف بستیوں کو شکست دے کر جیتیں",
+    "reasons": [
+      "فتحِ علاقہ adds territorialcapture aswincondition, unlike actualcolonydefeat. Match Conquestlabels correction."
+    ]
+  },
+  {
+    "key": "[settings Cancel]",
+    "source": "Cancel",
+    "before": "منسوخ",
+    "after": "منسوخ کریں",
+    "reasons": [
+      "Actionbutton currently adjective منسوخ ratherthan respectful imperative used elsewhere."
+    ]
+  },
+  {
+    "key": "[settings Press a key. Escape cancels capture. Use Bind Escape to assign Escape.]",
+    "source": "Press a key. Escape cancels capture. Use Bind Escape to assign Escape.",
+    "before": "کلید دبائیں۔ Escape سے گرفت منسوخ ہوتی ہے۔ Escape مقرر کرنے کے لیے Escape مقرر کریں استعمال کریں۔",
+    "after": "کلید دبائیں۔ Escape سے کلید درج کرنا منسوخ ہو جاتا ہے۔ Escape کو شارٹ کٹ کے طور پر مقرر کرنے کے لیے «Escape مقرر کریں» استعمال کریں۔",
+    "reasons": [
+      "گرفت is a literal physicalgrip/capture and unclear for listeningtoakey. Namedbutton reference also lacks punctuationseparation; preserve exactEscape label."
+    ]
+  },
+  {
+    "key": "[settings Retry]",
+    "source": "Retry",
+    "before": "دوبارہ کوشش",
+    "after": "دوبارہ کوشش کریں",
+    "reasons": [
+      "Respectful action imperative rather than noun label."
+    ]
+  },
+  {
+    "key": "[Watershed]",
+    "source": "Watershed",
+    "before": "آبی تقسیم",
+    "after": "دریائی طاس",
+    "reasons": [
+      "Align generator label with its existing floodplain error and drainage-basin context."
+    ]
+  },
+  {
+    "key": "[Amphitheatre]",
+    "source": "Amphitheatre",
+    "before": "نیم دائرہ میدان",
+    "after": "حلقہ دار میدان",
+    "reasons": [
+      "نیم دائرہ میدان explicitly semicircle, but AmphitheatreGenerator.cpp:30–50,152–154 builds concentricfullrings allroundcentralpit. Misdescribes selectorlandscapegeometry."
+    ]
+  },
+  {
+    "key": "[Terrace width]",
+    "source": "Terrace width",
+    "before": "زینے کی چوڑائی",
+    "after": "ہموار زمینی پٹی کی چوڑائی",
+    "reasons": [
+      "زینے means stair, but controlchangeswidth ofgroundterracebetweenconcentricwalls, not stairs/ramps (separateRampwidth)."
+    ]
+  },
+  {
+    "key": "[An amphitheatre needs at least two colonies.]",
+    "source": "An amphitheatre needs at least two colonies.",
+    "before": "نیم دائرہ میدان کے لیے کم از کم دو بستیاں درکار ہیں۔",
+    "after": "حلقہ دار میدان کے لیے کم از کم دو بستیاں درکار ہیں۔",
+    "reasons": [
+      "Match proposed حلقہ دار میدان selector; current نیم دائرہ explicitlysemicircle contraryfullringgeometry."
+    ]
+  },
+  {
+    "key": "[The amphitheatre does not fit this map; use a bigger map, fewer rings, narrower terraces or fewer colonies.]",
+    "source": "The amphitheatre does not fit this map; use a bigger map, fewer rings, narrower terraces or fewer colonies.",
+    "before": "نیم دائرہ میدان اس نقشے میں نہیں سما سکتا؛ بڑا نقشہ، کم حلقے، تنگ زینے یا کم بستیاں استعمال کریں۔",
+    "after": "حلقہ دار میدان اس نقشے میں نہیں سما سکتا؛ بڑا نقشہ، کم حلقے، تنگ ہموار زمینی پٹیاں یا کم بستیاں استعمال کریں۔",
+    "reasons": [
+      "Samehalf-circle mislabel plus terraces translated stairs; keepgeometrylabel andgroundterrace meaning."
+    ]
+  },
+  {
+    "key": "[Grain]",
+    "source": "Grain",
+    "before": "رخ",
+    "after": "شکل کا کھنچاؤ",
+    "reasons": [
+      "رخ meansdirection; sharedcontrol in Fingerprint is numericshapeelongation/stretch (stretchX grows withgrain), not orientationonly. Drumlin directionchoices can be understood as directionofstretch."
+    ]
+  },
+  {
+    "key": "[No upgrades]",
+    "source": "No upgrades",
+    "before": "ترقی نہیں",
+    "after": "اپ گریڈ بند",
+    "reasons": [
+      "Generic ترقی نہیں can mean no development atall, while onlytraining/buildingupgradesdisabled. Match concreteoperation اپ گریڈ."
+    ]
+  },
+  {
+    "key": "[Stats upgrades]",
+    "source": "Upgrades",
+    "before": "ترقیاں",
+    "after": "اپ گریڈ",
+    "reasons": [
+      "ترقیاں ambiguouslygeneralprogress; count is completedconcreteupgrades. Alignterm اپ گریڈ."
+    ]
+  },
+  {
+    "key": "[Stats blocked units]",
+    "source": "Units blocked S/C",
+    "before": "رکے ہوئے یونٹ S/C",
+    "after": "پھنسے ہوئے یونٹ S/C",
+    "reasons": [
+      "رکے ہوئے merelystopped includesidle/pausedunits, while thisstat specificallyblockedmovement/congestion. Use stuckunits terminology."
+    ]
+  },
+  {
+    "key": "[Stats current blocked units]",
+    "source": "Currently blocked units",
+    "before": "فی الحال رکے ہوئے یونٹ",
+    "after": "اس وقت پھنسے ہوئے یونٹ",
+    "reasons": [
+      "Same stoppedvsblockedsemantic distinction; notall stationaryunits."
+    ]
+  },
+  {
+    "key": "[Stats structural units]",
+    "source": "Structurally blocked units",
+    "before": "بناوٹ کی وجہ سے رکے یونٹ",
+    "after": "بناوٹ کی وجہ سے پھنسے ہوئے یونٹ",
+    "reasons": [
+      "Align blockedmovement terminology with linkedS/Cblockedlegend, preserving structuralcause."
+    ]
+  },
+  {
+    "key": "[Stats structural buildings]",
+    "source": "Structurally blocked buildings",
+    "before": "ساخت کی وجہ سے بند عمارتیں",
+    "after": "ساخت کی وجہ سے بند راستوں والی عمارتیں",
+    "reasons": [
+      "ساخت کی وجہ سے بند عمارتیں can mean closedbuildings, while neighboringstatlabels explicitlydescribe blocked entrances. Preserve accessblockage terminology consistently."
+    ]
+  },
+  {
+    "key": "[Minimum terminal district side]",
+    "source": "Minimum terminal district side",
+    "before": "آخری ضلع کی کم از کم ضلع کی لمبائی",
+    "after": "آخری قطعے کے کنارے کی کم از کم لمبائی",
+    "reasons": [
+      "آخری ضلع کی کم از کم ضلع کی لمبائی repeats ضلع with twosenses (district/geometryside), making label hardtounderstand. Sourceleafdistrict minimumsidelength."
+    ]
+  },
+  {
+    "key": "[Paddy depth]",
+    "source": "Paddy depth",
+    "before": "دھان کی گہرائی",
+    "after": "کنارے کے کھیتوں کی چوڑائی",
+    "reasons": [
+      "دھان کی گہرائی suggests crop/waterdepth. KarstTowersGenerator.cpp:827 computes squaredgrounddistance fromriver usingpaddyDepth; itwidensbankfieldribbon, notverticaldepth."
+    ]
+  },
+  {
+    "key": "[Flooded terraces]",
+    "source": "Flooded terraces",
+    "before": "پانی بھرے زینے",
+    "after": "پانی بھرے کھیت",
+    "reasons": [
+      "پانی بھرے زینے meanswaterfilledstairs; actualKarstcontrolfloodspaddyfieldribbons (KarstTowersGenerator.cpp:89–95,898–904), notstairs."
+    ]
+  },
+  {
+    "key": "[Stream reach]",
+    "source": "Stream reach",
+    "before": "ندی کی رسائی",
+    "after": "ندی کی لمبائی",
+    "reasons": [
+      "ندی کی رسائی can sound like unitaccess tostream; controlsetsstreamextent/length alongalluvialfan (BajadaGenerator.cpp reachfactor)."
+    ]
+  },
+  {
+    "key": "[Fault displacement]",
+    "source": "Fault displacement",
+    "before": "درار کی سرکاؤ مقدار",
+    "after": "درار کے ساتھ سرکاؤ کی مقدار",
+    "reasons": [
+      "درار کی سرکاؤ مقدار has unnaturalnoun/genitiveorder."
+    ]
+  },
+  {
+    "key": "[Portage depth]",
+    "source": "Portage depth",
+    "before": "پورٹیج کی گہرائی",
+    "after": "کاٹے جانے والے جنگل کی موٹائی",
+    "reasons": [
+      "پورٹیج کی گہرائی leaves misleadingwaterdepthreading inlakelandscape. PortageLakesGenerator.cpp:650–693 leavesdepthrows ofstructuralwood tocut; parameterforestplugthickness."
+    ]
+  },
+  {
+    "key": "[AIMaxima-Profile]",
+    "source": "Core strategy: Treats food, workers, births, training, construction and combat as competing demands. Sizes its army partly against estimated enemy strength, then tries to deliver that army effectively.\\n\\nEconomy and development: Budgets births against food and labor, preserves idle opportunities for training, and stops adding surplus workers when military production is needed. Scales training capacity and avoids taking too much infrastructure offline for upgrades.\\n\\nScouting and decisions: Estimates enemy forces from visible units and remembered sightings using a fitted model. Targets depend on value, distance, towers, exposed workers and persistence. Fruit missions support food variety and conversion.\\n\\nAttack and defense: Reserves warriors for training and defense, then gathers eligible land forces near friendly food infrastructure before launching waves. Uses local defensive responses and evaluates approaches to the colony.\\n\\nWhen attacks stall: After four consecutive wave-delivery failures, switches to continuously reinforced attack flags. Amphibious attacks can also use continuous reinforcement. This fallback does not solve every blockage before a rally can form.\\n\\nCompared with other AIs: Integrates food, training, intelligence and deployment more tightly. Cabino emphasizes several building attacks; Maxima emphasizes estimated demand and delivering gathered forces.\\n\\nStrengths and weaknesses: Sustains growth and military replacement while adapting to food pressure and observed threats. Needs food, training capacity and open gathering space; congestion and long routes can undermine delivery.\\n\\nCounterplay to try: Contest exposed food sources, inns and barracks before waves gather. Keep a supplied defensive force together and disrupt reinforcement routes. Expect repeated pressure after the first wave.\\n\\nScouting: Force estimates use sightings and observation history, rather than hidden enemy troop totals.",
+    "before": "بنیادی حکمتِ عملی: خوراک، کارکن، پیدائش، تربیت، تعمیر اور لڑائی کو ایک دوسرے سے مقابل ضرورتیں سمجھتا ہے۔ اپنی فوج کا سائز جزوی طور پر دشمن کی اندازاً طاقت کے مطابق رکھتا ہے، پھر اس فوج کو مؤثر انداز سے ہدف تک پہنچانے کی کوشش کرتا ہے۔\\n\\nمعیشت اور ترقی: خوراک اور محنت کے مطابق پیدائشوں کا حساب رکھتا، تربیت کے لیے فارغ مواقع بچاتا اور فوجی پیداوار کی ضرورت پر اضافی کارکن بڑھانا روک دیتا ہے۔ تربیتی گنجائش بڑھاتا ہے اور ترقی کے لیے بیک وقت بہت سی عمارتیں بند کرنے سے بچتا ہے۔\\n\\nکھوج اور فیصلے: دیکھی گئی یونٹوں اور سابقہ مشاہدات کی مدد سے، تیار کردہ ماڈل کے ذریعے دشمن فوج کا تخمینہ لگاتا ہے۔ ہدف کی اہمیت، فاصلہ، مینار، کھلے کارکن اور ہدف پر قائم رہنا فیصلے میں شامل ہیں۔ پھل کی مہمیں خوراک کے تنوع اور وفاداری کی تبدیلی میں مدد دیتی ہیں۔\\n\\nحملہ اور دفاع: تربیت اور دفاع کے لیے جنگجو مختص کرتا ہے، پھر لہریں بھیجنے سے پہلے موزوں زمینی فوج کو دوست خوراکی عمارتوں کے قریب جمع کرتا ہے۔ مقامی دفاعی ردِعمل استعمال کرتا اور بستی تک آنے والے راستوں کا جائزہ لیتا ہے۔\\n\\nحملے رکنے پر: مسلسل چار بار لہر ہدف تک نہ پہنچے تو مسلسل کمک پانے والے حملہ آور جھنڈوں پر منتقل ہو جاتا ہے۔ پانی اور زمین پر ہونے والے حملے بھی مسلسل کمک استعمال کر سکتے ہیں۔ یہ متبادل طریقہ فوج جمع ہونے سے پہلے ہر رکاوٹ حل نہیں کرتا۔\\n\\nدیگر AI سے موازنہ: خوراک، تربیت، معلومات اور تعیناتی کو زیادہ مضبوطی سے جوڑتا ہے۔ Cabino کئی عمارتوں پر حملوں پر زور دیتا ہے؛ Maxima اندازاً ضرورت اور جمع شدہ فوج پہنچانے پر زور دیتا ہے۔\\n\\nخوبیاں اور کمزوریاں: خوراک کے دباؤ اور دیکھی گئی دھمکیوں کے مطابق بدلتے ہوئے ترقی اور فوجی نقصان کا متبادل برقرار رکھتا ہے۔ اسے خوراک، تربیتی گنجائش اور جمع ہونے کے لیے کھلی جگہ چاہیے؛ ہجوم اور لمبے راستے فوج کی ترسیل خراب کر سکتے ہیں۔\\n\\nآزمانے کے لیے مقابلے کا طریقہ: لہریں جمع ہونے سے پہلے کھلے خوراکی ذرائع، سراؤں اور بیرکوں کو چیلنج کریں۔ رسد پانے والے محافظ اکٹھے رکھیں اور کمک کے راستے توڑیں۔ پہلی لہر کے بعد بھی بار بار دباؤ کی توقع رکھیں۔\\n\\nکھوج: فوج کے تخمینے دیکھی گئی معلومات اور مشاہدات کی تاریخ استعمال کرتے ہیں، دشمن کی پوشیدہ کل فوج نہیں۔",
+    "after": "بنیادی حکمتِ عملی: خوراک، کارکن، پیدائش، تربیت، تعمیر اور لڑائی کو ایک دوسرے سے مقابل ضرورتیں سمجھتا ہے۔ اپنی فوج کا سائز جزوی طور پر دشمن کی اندازاً طاقت کے مطابق رکھتا ہے، پھر اس فوج کو مؤثر انداز سے ہدف تک پہنچانے کی کوشش کرتا ہے۔\\n\\nمعیشت اور ترقی: خوراک اور محنت کے مطابق پیدائشوں کا حساب رکھتا، تربیت کے لیے خالی وقت بچاتا اور فوجی پیداوار کی ضرورت پر اضافی کارکن بڑھانا روک دیتا ہے۔ تربیتی گنجائش بڑھاتا ہے اور اپ گریڈ کے لیے بیک وقت بہت سی عمارتیں بند کرنے سے بچتا ہے۔\\n\\nکھوج اور فیصلے: دیکھے گئے یونٹوں اور سابقہ مشاہدات کی مدد سے، تیار کردہ ماڈل کے ذریعے دشمن فوج کا تخمینہ لگاتا ہے۔ ہدف کی اہمیت، فاصلہ، مینار، کھلے کارکن اور ہدف پر قائم رہنا فیصلے میں شامل ہیں۔ پھل کی مہمیں خوراک کے تنوع اور وفاداری کی تبدیلی میں مدد دیتی ہیں۔\\n\\nحملہ اور دفاع: تربیت اور دفاع کے لیے جنگجو مختص کرتا ہے، پھر لہریں بھیجنے سے پہلے موزوں زمینی فوج کو اپنی یا اتحادی خوراکی عمارتوں کے قریب جمع کرتا ہے۔ مقامی دفاعی ردِعمل استعمال کرتا اور بستی تک آنے والے راستوں کا جائزہ لیتا ہے۔\\n\\nحملے رکنے پر: مسلسل چار بار لہر ہدف تک نہ پہنچے تو مسلسل کمک پانے والے حملہ آور جھنڈوں پر منتقل ہو جاتا ہے۔ پانی اور زمین پر ہونے والے حملے بھی مسلسل کمک استعمال کر سکتے ہیں۔ یہ متبادل طریقہ فوج جمع ہونے سے پہلے ہر رکاوٹ حل نہیں کرتا۔\\n\\nدیگر AI سے موازنہ: خوراک، تربیت، معلومات اور تعیناتی کو زیادہ مضبوطی سے جوڑتا ہے۔ Cabino کئی عمارتوں پر حملوں پر زور دیتا ہے؛ Maxima اندازاً ضرورت اور جمع شدہ فوج پہنچانے پر زور دیتا ہے۔\\n\\nخوبیاں اور کمزوریاں: خوراک کے دباؤ اور دیکھی گئی دھمکیوں کے مطابق بدلتے ہوئے آبادی کی بڑھوتری اور فوجی نقصانات کی تلافی جاری رکھتا ہے۔ اسے خوراک، تربیتی گنجائش اور جمع ہونے کے لیے کھلی جگہ چاہیے؛ ہجوم اور لمبے راستے فوج کی ترسیل خراب کر سکتے ہیں۔\\n\\nآزمانے کے لیے مقابلے کا طریقہ: لہریں جمع ہونے سے پہلے کھلے خوراکی ذرائع، سراؤں اور بیرکوں کو چیلنج کریں۔ رسد پانے والے محافظ اکٹھے رکھیں اور کمک کے راستے توڑیں۔ پہلی لہر کے بعد بھی بار بار دباؤ کی توقع رکھیں۔\\n\\nکھوج: فوج کے تخمینے دیکھی گئی معلومات اور مشاہدات کی تاریخ استعمال کرتے ہیں، دشمن کی پوشیدہ کل فوج نہیں۔",
+    "reasons": [
+      "Editorial correction after independent reviewer finding; preserve remaining source meaning.",
+      "Editorial correction after independent reviewer finding; preserve remaining source meaning.",
+      "Editorial correction after independent reviewer finding; preserve remaining source meaning.",
+      "Editorial correction after independent reviewer finding; preserve remaining source meaning.",
+      "Editorial correction after independent reviewer finding; preserve remaining source meaning."
+    ]
+  },
+  {
+    "key": "[campaign editor save failed]",
+    "source": "Save not confirmed. OK retries; Cancel returns to the editor menu.",
+    "before": "محفوظ ہونے کی تصدیق نہیں ہوئی۔ ٹھیک ہے سے دوبارہ کوشش ہوتی ہے؛ منسوخ سے ایڈیٹر مینیو پر واپسی ہوتی ہے۔",
+    "after": "محفوظ ہونے کی تصدیق نہیں ہوئی۔ «ٹھیک ہے» سے دوبارہ کوشش ہوتی ہے؛ «منسوخ کریں» سے ایڈیٹر مینیو پر واپسی ہوتی ہے۔",
+    "reasons": [
+      "Align localized OK/Cancel button references after imperative correction."
+    ]
+  },
+  {
+    "key": "[Edit map]",
+    "source": "Edit map",
+    "before": "نقشہ ترمیم کریں",
+    "after": "نقشے میں ترمیم کریں",
+    "reasons": [
+      "نقشہ ترمیم کریں lacks postposition, sameissue lowercaseeditmap."
+    ]
+  },
+  {
+    "key": "[settings Drag up zooms in]",
+    "source": "Drag up zooms in",
+    "before": "اوپر کھینچنے سے قریب",
+    "after": "اوپر کھینچنے پر زوم اِن",
+    "reasons": [
+      "اوپر کھینچنے سے قریب is an incomplete phrase (nearwhat); settingsoptionshouldexplicitlyidentify zoom."
+    ]
+  },
+  {
+    "key": "[settings Drag down zooms in]",
+    "source": "Drag down zooms in",
+    "before": "نیچے کھینچنے سے قریب",
+    "after": "نیچے کھینچنے پر زوم اِن",
+    "reasons": [
+      "نیچے کھینچنے سے قریب is incomplete; clarify zoomdirection while preserving dragdirection."
+    ]
+  },
+  {
+    "key": "[Alliance and shared vision are fixed for this match.]",
+    "source": "Alliance and shared vision are fixed for this match.",
+    "before": "اس میچ کے لیے اتحاد اور مشترکہ نظر طے ہیں۔",
+    "after": "اس میچ کے لیے اتحاد اور مشترکہ حدِ نگاہ طے ہیں۔",
+    "reasons": [
+      "Align sharedvisionwith establishedحدِ نگاہ ratherthan genericنظر."
+    ]
+  },
+  {
+    "key": "[Share vision]",
+    "source": "Share vision",
+    "before": "نظر بانٹیں",
+    "after": "حدِ نگاہ بانٹیں",
+    "reasons": [
+      "نظر differs from establishedV/fV/mV حدِ نگاہ; use consistentvisibilityterm."
+    ]
+  },
+  {
+    "key": "[Share food vision]",
+    "source": "Share food vision",
+    "before": "خوراک کی نظر بانٹیں",
+    "after": "خوراک دینے والی عمارتوں کی حدِ نگاہ بانٹیں",
+    "reasons": [
+      "خوراک کی نظر means seeingfood/content ratherthanvisibilityaroundfeedingbuildings; Team.h sharedVisionFood andfV explanation identify buildingvision."
+    ]
+  },
+  {
+    "key": "[Show palette]",
+    "source": "Show palette",
+    "before": "رنگوں کی تختی دکھائیں",
+    "after": "برشوں کا پینل دکھائیں",
+    "reasons": [
+      "رنگوں کی تختی makes thisacolorpalette, butPhoneEditor opens terrain/resource/building/unitbrushpalette. Actualfunctionnotcolorpicker."
+    ]
+  },
+  {
+    "key": "[settings Experiments apply to new games you start or host, never to campaign missions. A saved game keeps the ones it started with.]",
+    "source": "Experiments apply to new games you start or host, never to campaign missions. A saved game keeps the ones it started with.",
+    "before": "تجربات آپ کے شروع یا میزبان کیے گئے نئے کھیلوں پر لاگو ہوتے ہیں، مہم کی منزلوں پر کبھی نہیں۔ محفوظ کھیل اپنی ابتدائی ترتیبات رکھتے ہیں۔",
+    "after": "تجربات آپ کے شروع کیے گئے یا آپ کی میزبانی میں کھیلے گئے نئے کھیلوں پر لاگو ہوتے ہیں، مہم کے مشنوں پر کبھی نہیں۔ محفوظ کھیل اپنے آغاز کے تجربات برقرار رکھتا ہے۔",
+    "reasons": [
+      "Campaign mission is a mission, not destination; preserve exact experimental-settings persistence meaning."
+    ]
+  },
+  {
+    "key": "[settings Choose translucent or opaque interface panels.]",
+    "source": "Choose translucent or opaque interface panels.",
+    "before": "شفاف یا غیر شفاف انٹرفیس پینل چنیں۔",
+    "after": "نیم شفاف یا غیر شفاف انٹرفیس پینل چنیں۔",
+    "reasons": [
+      "Help says transparent شفاف while actual Translucent option is correctly نیم شفاف. Align opacitylevel."
+    ]
+  },
+  {
+    "key": "[settings Choose translucent or opaque unit path lines.]",
+    "source": "Choose translucent or opaque unit path lines.",
+    "before": "یونٹوں کے راستوں کی شفاف یا غیر شفاف لکیریں چنیں۔",
+    "after": "یونٹوں کے راستوں کی نیم شفاف یا غیر شفاف لکیریں چنیں۔",
+    "reasons": [
+      "Same transluent/transparent mismatch; actual option is نیم شفاف."
+    ]
+  },
+  {
+    "key": "[turn waiting for players]",
+    "source": "Waiting for every player to load...",
+    "before": "ہر کھلاڑی کے لوڈ ہونے کا انتظار ہے...",
+    "after": "تمام کھلاڑیوں کے کھیل لوڈ ہونے کا انتظار ہے…",
+    "reasons": [
+      "ہر کھلاڑی کے لوڈ ہونے treats actualpeopleasloadingassets. Sourceinformalplayerloadmeans theirgame."
+    ]
+  },
+  {
+    "key": "[conn card input paused]",
+    "source": "You are catching up · input paused",
+    "before": "آپ موجودہ حالت تک پہنچ رہے ہیں · احکامات رکے ہوئے ہیں",
+    "after": "آپ موجودہ حالت تک پہنچ رہے ہیں · نئے احکامات دینا موقوف ہے",
+    "reasons": [
+      "احکامات رکے ہوئے can imply existingstandingorders stop; sourceonly pausesnewplayerinput duringcatchup while colonycontinues."
+    ]
+  },
+  {
+    "key": "[conn delay explanation %0 %1]",
+    "source": "Delay: the time from your click until it happens, for everyone. It follows your own connection, not the other players'. Good under %0, poor from %1.",
+    "before": "تاخیر: آپ کے کلک سے اس کے سب کے لیے نافذ ہونے تک کا وقت۔ یہ آپ کے رابطے پر منحصر ہے، دوسرے کھلاڑیوں کے نہیں۔ %0 سے کم اچھی، %1 سے خراب۔",
+    "after": "تاخیر: آپ کے کلک سے اس کے سب کے لیے نافذ ہونے تک کا وقت۔ یہ آپ کے رابطے پر منحصر ہے، دوسرے کھلاڑیوں کے نہیں۔ %0 سے کم: اچھا؛ %1 یا اس سے زیادہ: خراب۔",
+    "reasons": [
+      "Editorial correction after independent reviewer finding; preserve remaining source meaning."
+    ]
+  },
+  {
+    "key": "[conn ping explanation %0 %1]",
+    "source": "Ping: the round trip between a player and the relay. Good under %0, poor from %1.",
+    "before": "پنگ: کھلاڑی اور ریلے کے درمیان آنے جانے کا وقت۔ %0 سے کم اچھا، %1 سے خراب۔",
+    "after": "پنگ: کھلاڑی اور ریلے کے درمیان آنے جانے کا وقت۔ %0 سے کم: اچھا؛ %1 یا اس سے زیادہ: خراب۔",
+    "reasons": [
+      "Samecategorythreshold ambiguity; giveexplicitcategoricalpredicates andinclusivepoorfrom."
+    ]
+  },
+  {
+    "key": "[hub also search %0]",
+    "source": "Also search %0",
+    "before": "%0 بھی تلاش کریں",
+    "after": "%0 میں بھی تلاش کریں",
+    "reasons": [
+      "Searchqueue is location/destination ofsearch, notobjectbeingsearchedfor; addمیں aslocative."
+    ]
+  },
+  {
+    "key": "[settings Guests keep a generated name; sign in to choose one.]",
+    "source": "Guests keep a generated name; sign in to choose one.",
+    "before": "مہمانوں کا خود بنایا ہوا نام رہتا ہے؛ نام چننے کے لیے سائن اِن کریں۔",
+    "after": "مہمانوں کے نام خود بخود بنائے جاتے ہیں؛ اپنا نام چننے کے لیے سائن اِن کریں۔",
+    "reasons": [
+      "خود بنایا ہوا نام can mean a name guestcreated themselves, while guestname is automaticallygenerated and signin requiredtochoose."
+    ]
+  },
+  {
+    "key": "[settings Sign out]",
+    "source": "Sign out",
+    "before": "سائن آؤٹ",
+    "after": "سائن آؤٹ کریں",
+    "reasons": [
+      "Respectful action imperative consistent with other account actions."
+    ]
+  },
+  {
+    "key": "[trust not official]",
+    "source": "This server isn't run by the Globulation 2 project.",
+    "before": "یہ سرور Globulation 2 منصوبہ نہیں چلاتا۔",
+    "after": "یہ سرور Globulation 2 منصوبے کے زیرِ انتظام نہیں ہے۔",
+    "reasons": [
+      "Targetwordorderwithoutکو makes server theactor notrunningproject; trustwarningmustsayprojectdoesnotoperateserver."
+    ]
+  },
+  {
+    "key": "[qm solo queue]",
+    "source": "solo queue",
+    "before": "اکیلی قطار",
+    "after": "اکیلے کھلاڑیوں کی قطار",
+    "reasons": [
+      "اکیلی قطار meansalonequeue ratherthanqueueforsoloplayers."
+    ]
+  },
+  {
+    "key": "[qm cancel]",
+    "source": "Cancel",
+    "before": "منسوخ",
+    "after": "منسوخ کریں",
+    "reasons": [
+      "Match politeactionlabel withgeneralCancel/settingsCancel."
+    ]
+  },
+  {
+    "key": "[profile replays note]",
+    "source": "Replays are downloaded from the server when you open them; ones you saved locally stay in Load game → Replays.",
+    "before": "ری پلے کھولنے پر سرور سے ڈاؤن لوڈ ہوتے ہیں؛ مقامی طور پر محفوظ کیے ہوئے ری پلے لوڈ کھیل ← ری پلے میں رہتے ہیں۔",
+    "after": "ری پلے کھولنے پر سرور سے ڈاؤن لوڈ ہوتے ہیں؛ مقامی طور پر محفوظ کیے ہوئے ری پلے «کھیل لوڈ کریں ← ری پلے» میں رہتے ہیں۔",
+    "reasons": [
+      "Menu reference لوڈ کھیل doesnotmatch actualLoadgamelabel کھیل لوڈ کریں and has reversedwordorder. Preserve realmenunames; arrowdirection must be checked inRTLrendering."
+    ]
+  },
+  {
+    "key": "[stat overview about]",
+    "source": "Each colony's figures for the whole match. The highest is highlighted where more is better; click a column heading to see how it changed over time.",
+    "before": "پورے میچ میں ہر بستی کے اعداد۔ جہاں زیادہ بہتر ہو، سب سے بڑی قدر نمایاں ہے؛ وقت کے ساتھ تبدیلی دیکھنے کے لیے کالم کا عنوان کلک کریں۔",
+    "after": "پورے میچ میں ہر بستی کے اعداد۔ جہاں زیادہ بہتر ہو، سب سے بڑی قدر نمایاں ہے؛ وقت کے ساتھ تبدیلی دیکھنے کے لیے کالم کے عنوان پر کلک کریں۔",
+    "reasons": [
+      "Editorial correction after independent reviewer finding; preserve remaining source meaning."
+    ]
+  },
+  {
+    "key": "[stat wheat harvested]",
+    "source": "Food harvested",
+    "before": "کاٹی گئی خوراک",
+    "after": "جمع کی گئی خوراک",
+    "reasons": [
+      "کاٹی گئی خوراک narrows genericfoodresourceharvesting tocropcutting, whereas foodcancomefromfish/othercustomresources."
+    ]
+  },
+  {
+    "key": "[stat wheat harvested about]",
+    "source": "Loads of food harvested by workers from food-producing resources. Inns turn food into meals.",
+    "before": "کارکنوں کی خوراک پیدا کرنے والے وسائل سے کاٹی ہوئی کھیپیں۔ سرائے خوراک کو کھانوں میں بدلتی ہیں۔",
+    "after": "خوراک پیدا کرنے والے وسائل سے کارکنوں کی جمع کی ہوئی کھیپیں۔ سرائے خوراک کو کھانوں میں بدلتی ہیں۔",
+    "reasons": [
+      "Samecuttingnarrowing plus nounorder can make کارکنوں کی modifyfood-producingresources ratherthanharvestactor."
+    ]
+  },
+  {
+    "key": "[stat gathered about]",
+    "source": "Loads of every material harvested by workers. Split it to see each material.",
+    "before": "کارکنوں کی کاٹی ہوئی ہر مواد کی کھیپیں۔ ہر مواد الگ دیکھنے کے لیے تقسیم کریں۔",
+    "after": "کارکنوں نے ہر قسم کے مواد کی کتنی کھیپیں جمع کیں۔ ہر قسم الگ دیکھنے کے لیے تقسیم کریں۔",
+    "reasons": [
+      "کاٹی ہوئی everymaterial iscropcuttingnotgenericgathering; nounphrase ہر مواد awkwardforanymaterialtype."
+    ]
+  },
+  {
+    "key": "[stat spending about]",
+    "source": "Where delivered materials went: meals, new units, tower ammunition, new buildings or upgrades.",
+    "before": "پہنچایا گیا مواد کہاں استعمال ہوا: کھانوں، نئے یونٹوں، مینار کی گولیوں، نئی عمارتوں یا ترقی پر۔",
+    "after": "پہنچایا گیا مواد کہاں استعمال ہوا: کھانوں، نئے یونٹوں، مینار کی گولیوں، نئی عمارتوں یا اپ گریڈ پر۔",
+    "reasons": [
+      "Editorial correction after independent reviewer finding; preserve remaining source meaning."
+    ]
+  },
+  {
+    "key": "[stat construction about]",
+    "source": "Building work completed: new buildings, upgrades and repairs.",
+    "before": "مکمل تعمیراتی کام: نئی عمارتیں، ترقی اور مرمت۔",
+    "after": "مکمل تعمیراتی کام: نئی عمارتیں، اپ گریڈ اور مرمت۔",
+    "reasons": [
+      "Buildingworkcategoriesupgrades shouldmatchاپگریڈ ratherthangeneraldevelopment ترقی."
+    ]
+  },
+  {
+    "key": "[stat attack about]",
+    "source": "A score for the combined fighting power of the colony's warriors: how hard and how fast they hit.",
+    "before": "بستی کے جنگجوؤں کی مجموعی لڑنے کی طاقت کا اسکور: وہ کتنی زور سے اور کتنی تیزی سے وار کرتے ہیں۔",
+    "after": "بستی کے جنگجوؤں کی مجموعی لڑنے کی طاقت کا اسکور: وہ کتنے زور سے اور کتنی تیزی سے وار کرتے ہیں۔",
+    "reasons": [
+      "Editorial correction after independent reviewer finding; preserve remaining source meaning."
+    ]
+  },
+  {
+    "key": "[stat growth nearby about]",
+    "source": "How much material stock grew in resources within 32 squares of the colony's buildings, in growth points rather than harvested loads. Split it to see how close to home they grew.",
+    "before": "بستی کی عمارتوں سے 32 خانوں کے اندر وسائل کے ذخائر میں کتنا مواد بڑھا، کاٹی ہوئی کھیپوں کے بجائے افزائش کے پوائنٹس میں۔ بستی سے کتنی قربت پر افزائش ہوئی، یہ دیکھنے کے لیے تقسیم کریں۔",
+    "after": "بستی کی عمارتوں سے 32 خانوں کے اندر وسائل کے ذخائر میں کتنا مواد بڑھا، جمع کی گئی کھیپوں کے بجائے افزائش کے پوائنٹس میں۔ بستی سے کتنی قربت پر افزائش ہوئی، یہ دیکھنے کے لیے تقسیم کریں۔",
+    "reasons": [
+      "Editorial correction after independent reviewer finding; preserve remaining source meaning."
+    ]
+  },
+  {
+    "key": "[stat growth map about]",
+    "source": "How much material stock grew in resources anywhere on the map, in growth points rather than harvested loads. This is the same for every colony.",
+    "before": "نقشے بھر کے وسائل میں مواد کا ذخیرہ کتنا بڑھا؛ کٹی ہوئی کھیپوں کے بجائے افزائش کے پوائنٹ میں۔ یہ ہر بستی کے لیے یکساں ہے۔",
+    "after": "نقشے بھر کے وسائل میں مواد کا ذخیرہ کتنا بڑھا؛ جمع کی گئی کھیپوں کے بجائے افزائش کے پوائنٹ میں۔ یہ ہر بستی کے لیے یکساں ہے۔",
+    "reasons": [
+      "کٹی ہوئی کھیپوں is unnatural and suggests cutcrops; statistic covers harvestedloads ofallmaterials."
+    ]
+  },
+  {
+    "key": "[stat band upgrades]",
+    "source": "Upgrades",
+    "before": "ترقیاں",
+    "after": "اپ گریڈ",
+    "reasons": [
+      "Use concreteupgradeoperationterm اپ گریڈ, notgeneralprogress ترقیاں."
+    ]
+  },
+  {
+    "key": "[stat band upgraded]",
+    "source": "Upgraded",
+    "before": "ترقی یافتہ",
+    "after": "اپ گریڈ شدہ",
+    "reasons": [
+      "ترقی یافتہ canmean generallydeveloped; chartcounter is completedbuildingupgrades."
+    ]
+  },
+  {
+    "key": "[Upgrades]",
+    "source": "Upgrades",
+    "before": "ترقیاں",
+    "after": "اپ گریڈ",
+    "reasons": [
+      "Align operationheading with standardاپگریڈ, preserveترقیforgeneraldevelopment."
+    ]
+  },
+  {
+    "key": "[How quickly harvested resources grow back and spread.]",
+    "source": "How quickly harvested resources grow back and spread.",
+    "before": "کاٹے گئے وسائل کتنی جلدی دوبارہ اگتے اور پھیلتے ہیں۔",
+    "after": "جمع کیے گئے وسائل کتنی جلدی دوبارہ اگتے اور پھیلتے ہیں۔",
+    "reasons": [
+      "Generic harvesting includes renewable materials; avoid limiting it to cutting crops."
+    ]
+  },
+  {
+    "key": "[stat work by job about]",
+    "source": "How many workers were supplying each kind of building: swarms (to make new units), inns (to make meals), buildings being built or upgraded, or other buildings such as towers, schools and barracks.",
+    "before": "کتنے کارکن ہر قسم کی عمارت کو رسد پہنچا رہے تھے: چھتے (نئے یونٹ بنانے کے لیے)، سرائے (کھانے بنانے کے لیے)، زیرِ تعمیر یا زیرِ ترقی عمارتیں، یا مینار، اسکول اور بیرک جیسی دیگر عمارتیں۔",
+    "after": "کتنے کارکن ہر قسم کی عمارت کو رسد پہنچا رہے تھے: چھتے (نئے یونٹ بنانے کے لیے)، سرائے (کھانے بنانے کے لیے)، زیرِ تعمیر یا اپ گریڈ ہوتی عمارتیں، یا مینار، اسکول اور بیرک جیسی دیگر عمارتیں۔",
+    "reasons": [
+      "Editorial correction after independent reviewer finding; preserve remaining source meaning."
+    ]
+  },
+  {
+    "key": "[stat haul distance about]",
+    "source": "How far, on average, a harvesting worker was from the building it was supplying, in map squares in a straight line.",
+    "before": "فصل کاٹنے والا کارکن اس عمارت سے اوسطاً کتنا دور تھا جسے وہ رسد دے رہا تھا، نقشے کے خانوں میں سیدھے فاصلے کے حساب سے۔",
+    "after": "وسائل جمع کرنے والا کارکن اس عمارت سے اوسطاً کتنا دور تھا جسے وہ رسد دے رہا تھا، نقشے کے خانوں میں سیدھے فاصلے کے حساب سے۔",
+    "reasons": [
+      "فصل کاٹنے والا narrows genericresourceharvestingworker tocrops; allmaterialworkertransportdistanceincluded."
+    ]
+  },
+  {
+    "key": "[stat hauling about]",
+    "source": "How the workers supplying buildings divided between walking to a resource, harvesting it, carrying materials back, and delivering it or waiting for a resource they can reach. Most of it is walking, so the closer the resources, the more gets done.",
+    "before": "عمارتوں کو رسد دینے والے کارکن وسائل تک چلنے، کاٹنے، مواد واپس لانے، اور پہنچانے یا قابلِ رسائی وسیلے کے انتظار میں کیسے بٹے تھے۔ زیادہ وقت چلنے میں لگتا ہے، اس لیے قریب وسائل سے زیادہ کام ہوتا ہے۔",
+    "after": "عمارتوں کو رسد دینے والے کارکن وسائل تک چلنے، انہیں جمع کرنے، مواد واپس لانے، اور پہنچانے یا قابلِ رسائی وسیلے کے انتظار میں کیسے بٹے تھے۔ زیادہ وقت چلنے میں لگتا ہے، اس لیے قریب وسائل سے زیادہ کام ہوتا ہے۔",
+    "reasons": [
+      "Editorial correction after independent reviewer finding; preserve remaining source meaning."
+    ]
+  },
+  {
+    "key": "[stat band sites]",
+    "source": "Building and upgrading",
+    "before": "تعمیر اور ترقی",
+    "after": "تعمیر اور اپ گریڈ",
+    "reasons": [
+      "Samebuildingupgradeoperationconsistency."
+    ]
+  },
+  {
+    "key": "[stat band harvesting]",
+    "source": "Harvesting",
+    "before": "فصل کاٹنا",
+    "after": "وسائل جمع کرنا",
+    "reasons": [
+      "فصل کاٹنا misidentifies genericmaterialcollection ascropcutting."
+    ]
+  },
+  {
+    "key": "[settings Finish in your browser. The game continues by itself.]",
+    "source": "Finish in your browser. The game continues by itself.",
+    "before": "اپنے براؤزر میں کارروائی مکمل کریں۔ کھیل خود بخود جاری ہو جائے گا۔",
+    "after": "اپنے براؤزر میں کارروائی مکمل کریں۔ کھیل خود چلتا رہتا ہے۔",
+    "reasons": [
+      "Source game continues now, rather than will resume automatically in future."
+    ]
+  },
+  {
+    "key": "[music Some catalogue entries could not be read.]",
+    "source": "Some catalogue entries could not be read.",
+    "before": "فہرست کی کچھ اندراجات پڑھی نہیں جا سکیں۔",
+    "after": "فہرست کے کچھ اندراجات پڑھے نہیں جا سکے۔",
+    "reasons": [
+      "اندراجات is masculineplural; کی and feminine readagreement mismatch."
+    ]
+  },
+  {
+    "key": "[music Storage could not be saved. Retry or export your files before leaving.]",
+    "source": "Storage could not be saved. Retry or export your files before leaving.",
+    "before": "ذخیرہ محفوظ نہیں ہو سکا۔ جانے سے پہلے دوبارہ کوشش یا فائلیں برآمد کریں۔",
+    "after": "ذخیرہ محفوظ نہیں ہو سکا۔ جانے سے پہلے دوبارہ کوشش کریں یا اپنی فائلیں برآمد کر لیں۔",
+    "reasons": [
+      "دوبارہ کوشش یا فائلیں برآمد کریں coordinates noun کوشش with exportverb; add retryverb."
+    ]
+  },
+  {
+    "key": "[Gold ore]",
+    "source": "Gold ore",
+    "before": "سونے کی دھات",
+    "after": "سونے کی کچ دھات",
+    "reasons": [
+      "دھات namesmetal, notore; depositresource shouldbedistinct fromprocessedGold/Metal. PrimaryDelhiEducation scienceUrdu classX uses کچ دھات forore, https://www.edudel.nic.in/welcome_folder/support_material_2021_22/10/10sm_science_urdu_2021_22.pdf."
+    ]
+  },
+  {
+    "key": "[Iron ore]",
+    "source": "Iron ore",
+    "before": "لوہے کی دھات",
+    "after": "لوہے کی کچ دھات",
+    "reasons": [
+      "دھات namesmetal, notore; depositresource shouldbedistinct fromprocessedGold/Metal. PrimaryDelhiEducation scienceUrdu classX uses کچ دھات forore, https://www.edudel.nic.in/welcome_folder/support_material_2021_22/10/10sm_science_urdu_2021_22.pdf."
+    ]
+  },
+  {
+    "key": "[editor unsaved title]",
+    "source": "Unsaved changes",
+    "before": "غیر محفوظ تبدیلیاں",
+    "after": "ابھی محفوظ نہ کی گئی تبدیلیاں",
+    "reasons": [
+      "غیر محفوظ can imply unsafe; express unsaved explicitly."
+    ]
+  },
+  {
+    "key": "[editor share unsaved]",
+    "source": "This map has changes that are not saved yet. Sharing uploads the saved file.",
+    "before": "اس نقشے میں ابھی غیر محفوظ تبدیلیاں ہیں۔ بانٹنے سے محفوظ فائل اپ لوڈ ہوتی ہے۔",
+    "after": "اس نقشے میں ایسی تبدیلیاں ہیں جو ابھی محفوظ نہیں ہوئیں۔ بانٹنے سے محفوظ فائل اپ لوڈ ہوتی ہے۔",
+    "reasons": [
+      "Clarify unsaved versus unsafe and saved-file upload behavior."
+    ]
+  },
+  {
+    "key": "[settings Map generators]",
+    "source": "Map generators",
+    "before": "نقشہ بنانے والے",
+    "after": "نقشہ جنریٹر",
+    "reasons": [
+      "نقشہ بنانے والے can sound like people and differs from library/header نقشہ جنریٹر, which instructions must reference consistently."
+    ]
+  },
+  {
+    "key": "[settings All choices compute the same exact field.]",
+    "source": "All choices compute the same exact field.",
+    "before": "تمام انتخاب بالکل ایک ہی میدان حساب کرتے ہیں۔",
+    "after": "تمام طریقوں سے بالکل ایک ہی فاصلاتی نقشہ حاصل ہوتا ہے۔",
+    "reasons": [
+      "میدان حساب کرتے ہیں is grammatically incomplete and calls a computedpathfindingfield a physicalfield. Use existing فاصلاتی نقشے terminology fromBuildinggradients."
+    ]
+  },
+  {
+    "key": "[settings GPU fields]",
+    "source": "GPU fields",
+    "before": "GPU کے میدان",
+    "after": "GPU کے فاصلاتی نقشے",
+    "reasons": [
+      "GPU کے میدان sounds like physicalplayingfields; thisdiagnostic counts computedgradientfields."
+    ]
+  },
+  {
+    "key": "[tutorial part1 message 1]",
+    "source": "Welcome to Globulation 2! This tutorial teaches colony management over four missions. You can save your progress from the game menu and load it later from the main menu. Press Space to continue, or tap OK on a touch screen. Some messages disappear after you continue; use Message history to read them again.",
+    "before": "Globulation 2 میں خوش آمدید! یہ تربیت چار مہمات میں بستی چلانا سکھاتی ہے۔ کھیل کے مینو سے پیش رفت محفوظ اور بعد میں مرکزی مینو سے لوڈ کر سکتے ہیں۔ جاری رکھنے کے لیے Space دبائیں، یا ٹچ اسکرین پر OK کو چھوئیں۔ آگے بڑھنے کے بعد کچھ پیغامات غائب ہو جاتے ہیں؛ انہیں دوبارہ پڑھنے کے لیے پیغامات کی سرگزشت کھولیں۔",
+    "after": "Globulation 2 میں خوش آمدید! یہ تربیت چار مشنوں میں بستی چلانا سکھاتی ہے۔ کھیل کے مینو سے پیش رفت محفوظ اور بعد میں مرکزی مینو سے لوڈ کر سکتے ہیں۔ جاری رکھنے کے لیے Space دبائیں، یا ٹچ اسکرین پر «ٹھیک ہے» کو چھوئیں۔ آگے بڑھنے کے بعد کچھ پیغامات غائب ہو جاتے ہیں؛ انہیں دوبارہ پڑھنے کے لیے «پیغامات کا سابقہ ریکارڈ» کھولیں۔",
+    "reasons": [
+      "Editorial correction after independent reviewer finding; preserve remaining source meaning.",
+      "Editorial correction after independent reviewer finding; preserve remaining source meaning.",
+      "Editorial correction after independent reviewer finding; preserve remaining source meaning."
+    ]
+  },
+  {
+    "key": "[tutorial part1 message 7]",
+    "source": "Open the building controls, choose Inn, and place it near wheat. Follow your worker's harvesting route if you cannot spot the wheat. On touch screens, use Build and confirm a valid placement. When finished, leave placement mode with a right-click or the touch Cancel control.",
+    "before": "عمارتوں کے کنٹرول کھولیں، سرائے منتخب کریں اور اسے گندم کے قریب رکھیں۔ گندم نظر نہ آئے تو اپنے کارکن کے فصل کاٹنے کے راستے کو دیکھیں۔ ٹچ اسکرین پر تعمیر استعمال کریں اور درست جگہ کی تصدیق کریں۔ آخر میں دائیں کلک یا ٹچ کے منسوخ کنٹرول سے جگہ رکھنے کے موڈ سے نکلیں۔",
+    "after": "عمارتوں کے کنٹرول کھولیں، سرائے منتخب کریں اور اسے گندم کے قریب رکھیں۔ گندم نظر نہ آئے تو اپنے کارکن کے فصل کاٹنے کے راستے کو دیکھیں۔ ٹچ اسکرین پر تعمیر استعمال کریں اور درست جگہ کی تصدیق کریں۔ آخر میں دائیں کلک یا ٹچ کے «منسوخ کریں» کنٹرول سے جگہ رکھنے کے موڈ سے نکلیں۔",
+    "reasons": [
+      "Editorial correction after independent reviewer finding; preserve remaining source meaning."
+    ]
+  },
+  {
+    "key": "[tutorial part1 message 9]",
+    "source": "A worker from the Swarm can now build the Inn. The worker gathers wood from nearby trees and brings it to the site. Wait for construction to finish.",
+    "before": "چھتے کا کارکن اب سرائے بنا سکتا ہے۔ وہ قریب کے درختوں سے لکڑی جمع کر کے تعمیراتی جگہ لاتا ہے۔ تعمیر مکمل ہونے کا انتظار کریں۔",
+    "after": "چھتے کا کارکن اب سرائے بنا سکتا ہے۔ وہ قریب کے درختوں سے لکڑی جمع کر کے تعمیراتی جگہ پر لاتا ہے۔ تعمیر مکمل ہونے کا انتظار کریں۔",
+    "reasons": [
+      "Editorial correction after independent reviewer finding; preserve remaining source meaning."
+    ]
+  },
+  {
+    "key": "[tutorial part2 message 2]",
+    "source": "The trees south of the stone are orange trees. Select them to see their resource information. We will return to fruit later; for now, focus on the Swarm.",
+    "before": "پتھر کے جنوب میں درخت سنگترے کے ہیں۔ وسائل کی معلومات دیکھنے کے لیے انہیں منتخب کریں۔ پھلوں پر بعد میں آئیں گے؛ ابھی چھتے پر توجہ دیں۔",
+    "after": "پتھر کے جنوب میں سنترے کے درخت ہیں۔ وسائل کی معلومات دیکھنے کے لیے انہیں منتخب کریں۔ پھلوں پر بعد میں آئیں گے؛ ابھی چھتے پر توجہ دیں۔",
+    "reasons": [
+      "Editorial correction after independent reviewer finding; preserve remaining source meaning."
+    ]
+  },
+  {
+    "key": "[tutorial part2 message 7]",
+    "source": "A new worker costs 5 wheat. Carrying wheat from a distant field takes time, so a Swarm often needs more suppliers than an Inn. Place food-dependent buildings near wheat when possible.",
+    "before": "ایک نئے کارکن کی قیمت 5 گندم ہے۔ دور کے کھیت سے گندم لانے میں وقت لگتا ہے، اس لیے چھتے کو اکثر سرائے سے زیادہ رسد لانے والے چاہیے ہوتے ہیں۔ جہاں ممکن ہو، خوراک پر منحصر عمارتیں گندم کے قریب رکھیں۔",
+    "after": "ایک نیا کارکن پیدا کرنے کے لیے گندم کی 5 اکائیاں درکار ہیں۔ دور کے کھیت سے گندم لانے میں وقت لگتا ہے، اس لیے چھتے کو اکثر سرائے سے زیادہ رسد لانے والے کارکن چاہیے ہوتے ہیں۔ جہاں ممکن ہو، خوراک پر منحصر عمارتیں گندم کے قریب رکھیں۔",
+    "reasons": [
+      "Make counted material unit and suppliers explicit without changing numeric quantities."
+    ]
+  },
+  {
+    "key": "[tutorial part2 message 10]",
+    "source": "Assign free workers to the new Inn's construction site. It needs only 3 wood, so more than 3 builders will not help much.",
+    "before": "نئی سرائے کی تعمیراتی جگہ پر فارغ کارکن مقرر کریں۔ اسے صرف 3 لکڑی چاہیے، اس لیے 3 سے زیادہ معمار زیادہ فائدہ نہیں دیں گے۔",
+    "after": "نئی سرائے کی تعمیراتی جگہ پر فارغ کارکن مقرر کریں۔ اسے لکڑی کی صرف 3 اکائیاں درکار ہیں، اس لیے 3 سے زیادہ معمار زیادہ فائدہ نہیں دیں گے۔",
+    "reasons": [
+      "Material quantity is three units of wood, not three wood types."
+    ]
+  },
+  {
+    "key": "[tutorial part2 message 16]",
+    "source": "Set the Racetrack construction site's worker target between 5 and 7. It needs 7 construction materials in total.",
+    "before": "دوڑ کے میدان کی تعمیراتی جگہ پر کارکنوں کا ہدف 5 سے 7 کے درمیان رکھیں۔ اسے کل 7 تعمیراتی مواد چاہیے۔",
+    "after": "دوڑ کے میدان کی تعمیراتی جگہ پر کارکنوں کا ہدف 5 سے 7 کے درمیان رکھیں۔ اسے تعمیراتی مواد کی کل 7 اکائیاں درکار ہیں۔",
+    "reasons": [
+      "Editorial correction after independent reviewer finding; preserve remaining source meaning."
+    ]
+  },
+  {
+    "key": "[tutorial part2 message 19]",
+    "source": "Select the Racetrack to inspect training progress. Its progress indicators show how close the units inside are to finishing.",
+    "before": "تربیت کی پیش رفت دیکھنے کے لیے دوڑ کا میدان منتخب کریں۔ اس کے اشارے بتاتے ہیں کہ اندر کے یونٹ کتنے قریب ہیں۔",
+    "after": "تربیت کی پیش رفت دیکھنے کے لیے دوڑ کا میدان منتخب کریں۔ اس کے پیش رفت کے اشارے بتاتے ہیں کہ اندر موجود یونٹوں کی تربیت مکمل ہونے میں کتنا باقی ہے۔",
+    "reasons": [
+      "HowcloseunitstoFINISHING becomes merelyhowclosetheyare کتنے قریب ہیں, which sounds physicaldistance. Progressindicatorcompletionmeaning omitted."
+    ]
+  },
+  {
+    "key": "[tutorial part2 message 24]",
+    "source": "Two Inns will not support a growing colony forever. Build extra feeding capacity before shortages turn into starvation.",
+    "before": "دو سرائے بڑھتی بستی کو ہمیشہ نہیں چلا سکتیں۔ کمی کے بھوک میں بدلنے سے پہلے کھلانے کی مزید گنجائش بنائیں۔",
+    "after": "دو سرائے بڑھتی بستی کو ہمیشہ نہیں چلا سکتیں۔ خوراک کی کمی فاقہ کشی میں بدلنے سے پہلے کھلانے کی مزید گنجائش بنائیں۔",
+    "reasons": [
+      "Starvation فاقہ کشی distinctfromordinaryhungerبھوک; earlierlesson normalunitshungry. Keepthatdistinctioninshortagewarning."
+    ]
+  },
+  {
+    "key": "[tutorial part2 message 32]",
+    "source": "Select the Swimming Pool to inspect training progress. A basic Pool trains 2 globules at a time, just like a basic Racetrack.",
+    "before": "تربیت کی پیش رفت دیکھنے کے لیے تالاب منتخب کریں۔ ابتدائی تالاب، ابتدائی دوڑ کے میدان کی طرح، ایک وقت میں 2 گلوبیول تربیت دیتا ہے۔",
+    "after": "تربیت کی پیش رفت دیکھنے کے لیے تالاب منتخب کریں۔ ابتدائی تالاب، ابتدائی دوڑ کے میدان کی طرح، ایک وقت میں 2 گلوبیولوں کو تربیت دیتا ہے۔",
+    "reasons": [
+      "Add missing object marker and oblique plural agreement."
+    ]
+  },
+  {
+    "key": "[tutorial part3 message 12]",
+    "source": "Workers trained at the School can construct upgrades. Select an eligible building and look for Upgrade in its building controls. Damaged buildings may need Repair first.",
+    "before": "اسکول میں تربیت یافتہ کارکن اپ گریڈ بنا سکتے ہیں۔ اہل عمارت منتخب کر کے عمارتوں کے کنٹرول میں اپ گریڈ تلاش کریں۔ زخمی عمارت کو پہلے مرمت چاہیے ہو سکتی ہے۔",
+    "after": "اسکول میں تربیت یافتہ کارکن اپ گریڈ بنا سکتے ہیں۔ اہل عمارت منتخب کر کے عمارتوں کے کنٹرول میں اپ گریڈ تلاش کریں۔ نقصان زدہ عمارت کو پہلے مرمت چاہیے ہو سکتی ہے۔",
+    "reasons": [
+      "Editorial correction after independent reviewer finding; preserve remaining source meaning."
+    ]
+  },
+  {
+    "key": "[tutorial part4 message 7]",
+    "source": "The outline around the flag shows its working radius. An assigned explorer will scout that area. Check your explorer count if none arrives, and produce another at the Swarm if needed. Press Space or tap OK once the explorer reaches the area.",
+    "before": "جھنڈے کے گرد دائرہ کام کا رداس دکھاتا ہے۔ مقرر کھوجی اس علاقے کی کھوج کرے گا۔ کوئی نہ آئے تو کھوجیوں کی تعداد دیکھیں اور ضرورت پر چھتے سے نیا بنائیں۔ کھوجی علاقے میں پہنچے تو Space دبائیں یا OK چھوئیں۔",
+    "after": "جھنڈے کے گرد دائرہ کام کا رداس دکھاتا ہے۔ مقرر کھوجی اس علاقے کی کھوج کرے گا۔ کوئی نہ آئے تو کھوجیوں کی تعداد دیکھیں اور ضرورت پر چھتے سے نیا بنائیں۔ کھوجی علاقے میں پہنچے تو Space دبائیں یا «ٹھیک ہے» چھوئیں۔",
+    "reasons": [
+      "Editorial correction after independent reviewer finding; preserve remaining source meaning."
+    ]
+  },
+  {
+    "key": "[tutorial part4 message 8]",
+    "source": "The enemy has many workers and a gathered army. Let's prepare our defenses before it attacks.",
+    "before": "دشمن کے بہت سے کارکن اور جمع شدہ فوج ہے۔ حملے سے پہلے اپنا دفاع تیار کریں۔",
+    "after": "دشمن کے پاس بہت سے کارکن اور جمع شدہ فوج ہے۔ اس کے حملے سے پہلے اپنا دفاع تیار کریں۔",
+    "reasons": [
+      "دشمن کے بہت سے کارکن اور جمع شدہ فوج ہے has awkwardmixedpossessiveagreement; stateenemyhasforceswithپاس."
+    ]
+  },
+  {
+    "key": "[tutorial part4 message 18]",
+    "source": "Your warriors have reached the enemy base. Keep the attack focused on the Swarm.",
+    "before": "جنگجو دشمن مرکز پہنچ گئے ہیں۔ حملہ چھتے پر مرکوز رکھیں۔",
+    "after": "آپ کے جنگجو دشمن کے مرکز تک پہنچ گئے ہیں۔ حملہ چھتے پر مرکوز رکھیں۔",
+    "reasons": [
+      "Natural possessive and destination marking."
+    ]
+  },
+  {
+    "key": "[library Create in Building Studio]",
+    "source": "Create in Building Studio",
+    "before": "Building Studio میں بنائیں",
+    "after": "عمارت اسٹوڈیو میں بنائیں",
+    "reasons": [
+      "Englishnamedfeature conflicts with currentonlineUrdu Building Studio label عمارت اسٹوڈیو; actualUIreference shouldalign, notleave unreviewedpartialEnglishfallback. Onlineisnotyetfrozen, so editor/reviewer mustbindfinalglossary."
+    ]
+  }
+]

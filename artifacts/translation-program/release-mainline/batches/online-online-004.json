@@ -1,0 +1,823 @@
+{
+  "id": "online-online-004",
+  "source_sha256": "0ac44b4cdfb03e688983d6e3fb1e484cca57589665bff19c5c65388e649b292a",
+  "surface": "online",
+  "domain": "online",
+  "context": "Account, multiplayer, upload and browser workflows. Preserve URLs, licences, paths, format tokens and product names.",
+  "entries": [
+    {
+      "id": "online:Correct the invalid JSON before saving.",
+      "key": "Correct the invalid JSON before saving.",
+      "source": "Correct the invalid JSON before saving."
+    },
+    {
+      "id": "online:Cortex",
+      "key": "Cortex",
+      "source": "Cortex"
+    },
+    {
+      "id": "online:Could not check payment.",
+      "key": "Could not check payment.",
+      "source": "Could not check payment."
+    },
+    {
+      "id": "online:Could not crop this photo.",
+      "key": "Could not crop this photo.",
+      "source": "Could not crop this photo."
+    },
+    {
+      "id": "online:Could not delete this skin.",
+      "key": "Could not delete this skin.",
+      "source": "Could not delete this skin."
+    },
+    {
+      "id": "online:Could not load test map.",
+      "key": "Could not load test map.",
+      "source": "Could not load test map."
+    },
+    {
+      "id": "online:Could not load the material unwrap.",
+      "key": "Could not load the material unwrap.",
+      "source": "Could not load the material unwrap."
+    },
+    {
+      "id": "online:Could not load this language. Please try again.",
+      "key": "Could not load this language. Please try again.",
+      "source": "Could not load this language. Please try again."
+    },
+    {
+      "id": "online:Could not load this model. Please retry.",
+      "key": "Could not load this model. Please retry.",
+      "source": "Could not load this model. Please retry."
+    },
+    {
+      "id": "online:Could not load this {value0}",
+      "key": "Could not load this {value0}",
+      "source": "Could not load this {value0}"
+    },
+    {
+      "id": "online:Could not load your project.",
+      "key": "Could not load your project.",
+      "source": "Could not load your project."
+    },
+    {
+      "id": "online:Could not load {value0}.{value1}",
+      "key": "Could not load {value0}.{value1}",
+      "source": "Could not load {value0}.{value1}"
+    },
+    {
+      "id": "online:Could not open this photo.",
+      "key": "Could not open this photo.",
+      "source": "Could not open this photo."
+    },
+    {
+      "id": "online:Could not save · retrying",
+      "key": "Could not save · retrying",
+      "source": "Could not save · retrying"
+    },
+    {
+      "id": "online:Could not send report.",
+      "key": "Could not send report.",
+      "source": "Could not send report."
+    },
+    {
+      "id": "online:Could not update report.",
+      "key": "Could not update report.",
+      "source": "Could not update report."
+    },
+    {
+      "id": "online:Could not use this skin.",
+      "key": "Could not use this skin.",
+      "source": "Could not use this skin."
+    },
+    {
+      "id": "online:Count",
+      "key": "Count",
+      "source": "Count"
+    },
+    {
+      "id": "online:Cover",
+      "key": "Cover",
+      "source": "Cover"
+    },
+    {
+      "id": "online:Create",
+      "key": "Create",
+      "source": "Create"
+    },
+    {
+      "id": "online:Create a building family",
+      "key": "Create a building family",
+      "source": "Create a building family"
+    },
+    {
+      "id": "online:Create a building or an upgrade family with custom artwork.",
+      "key": "Create a building or an upgrade family with custom artwork.",
+      "source": "Create a building or an upgrade family with custom artwork."
+    },
+    {
+      "id": "online:Create a colony AI through conversation.",
+      "key": "Create a colony AI through conversation.",
+      "source": "Create a colony AI through conversation."
+    },
+    {
+      "id": "online:Create a family",
+      "key": "Create a family",
+      "source": "Create a family"
+    },
+    {
+      "id": "online:Create a fungal swamp with slow marsh, glowing wood trees, and renewable mushroom food.",
+      "key": "Create a fungal swamp with slow marsh, glowing wood trees, and renewable mushroom food.",
+      "source": "Create a fungal swamp with slow marsh, glowing wood trees, and renewable mushroom food."
+    },
+    {
+      "id": "online:Create a look. Use it in your next match.",
+      "key": "Create a look. Use it in your next match.",
+      "source": "Create a look. Use it in your next match."
+    },
+    {
+      "id": "online:Create a map generator through conversation.",
+      "key": "Create a map generator through conversation.",
+      "source": "Create a map generator through conversation."
+    },
+    {
+      "id": "online:Create a mushroom hospital that heals workers and warriors, costs 10 wood, and holds four units.",
+      "key": "Create a mushroom hospital that heals workers and warriors, costs 10 wood, and holds four units.",
+      "source": "Create a mushroom hospital that heals workers and warriors, costs 10 wood, and holds four units."
+    },
+    {
+      "id": "online:Create a new room with this map and invite friends.",
+      "key": "Create a new room with this map and invite friends.",
+      "source": "Create a new room with this map and invite friends."
+    },
+    {
+      "id": "online:Create a ring of islands around a shared lagoon",
+      "key": "Create a ring of islands around a shared lagoon",
+      "source": "Create a ring of islands around a shared lagoon"
+    },
+    {
+      "id": "online:Create a set",
+      "key": "Create a set",
+      "source": "Create a set"
+    },
+    {
+      "id": "online:Create a winding river with room to grow",
+      "key": "Create a winding river with room to grow",
+      "source": "Create a winding river with room to grow"
+    },
+    {
+      "id": "online:Create account",
+      "key": "Create account",
+      "source": "Create account"
+    },
+    {
+      "id": "online:Create artwork",
+      "key": "Create artwork",
+      "source": "Create artwork"
+    },
+    {
+      "id": "online:Create new release",
+      "key": "Create new release",
+      "source": "Create new release"
+    },
+    {
+      "id": "online:Create with AI",
+      "key": "Create with AI",
+      "source": "Create with AI"
+    },
+    {
+      "id": "online:Create your own room",
+      "key": "Create your own room",
+      "source": "Create your own room"
+    },
+    {
+      "id": "online:Created",
+      "key": "Created",
+      "source": "Created"
+    },
+    {
+      "id": "online:Created in {value0} Studio, revision {value1}",
+      "key": "Created in {value0} Studio, revision {value1}",
+      "source": "Created in {value0} Studio, revision {value1}"
+    },
+    {
+      "id": "online:Creating accounts is turned off on this server.",
+      "key": "Creating accounts is turned off on this server.",
+      "source": "Creating accounts is turned off on this server."
+    },
+    {
+      "id": "online:Creation needs attention.",
+      "key": "Creation needs attention.",
+      "source": "Creation needs attention."
+    },
+    {
+      "id": "online:Creation ready.",
+      "key": "Creation ready.",
+      "source": "Creation ready."
+    },
+    {
+      "id": "online:Creation workspace",
+      "key": "Creation workspace",
+      "source": "Creation workspace"
+    },
+    {
+      "id": "online:Creator credit",
+      "key": "Creator credit",
+      "source": "Creator credit"
+    },
+    {
+      "id": "online:Credit activity",
+      "key": "Credit activity",
+      "source": "Credit activity"
+    },
+    {
+      "id": "online:Credit flows and provider estimates include all recorded activity in this period, regardless of payment mode. Payment fees, hosting, exchange rates and profit are excluded.",
+      "key": "Credit flows and provider estimates include all recorded activity in this period, regardless of payment mode. Payment fees, hosting, exchange rates and profit are excluded.",
+      "source": "Credit flows and provider estimates include all recorded activity in this period, regardless of payment mode. Payment fees, hosting, exchange rates and profit are excluded."
+    },
+    {
+      "id": "online:Credit purchase",
+      "key": "Credit purchase",
+      "source": "Credit purchase"
+    },
+    {
+      "id": "online:Credit purchases are currently unavailable.",
+      "key": "Credit purchases are currently unavailable.",
+      "source": "Credit purchases are currently unavailable."
+    },
+    {
+      "id": "online:Credit purchases are not available on this instance.",
+      "key": "Credit purchases are not available on this instance.",
+      "source": "Credit purchases are not available on this instance."
+    },
+    {
+      "id": "online:Credit purchases are not available.",
+      "key": "Credit purchases are not available.",
+      "source": "Credit purchases are not available."
+    },
+    {
+      "id": "online:Credits",
+      "key": "Credits",
+      "source": "Credits"
+    },
+    {
+      "id": "online:Credits & sources",
+      "key": "Credits & sources",
+      "source": "Credits & sources"
+    },
+    {
+      "id": "online:Credits pay for your commander’s thinking and follow-ups. Standing orders keep running when credits run out.",
+      "key": "Credits pay for your commander’s thinking and follow-ups. Standing orders keep running when credits run out.",
+      "source": "Credits pay for your commander’s thinking and follow-ups. Standing orders keep running when credits run out."
+    },
+    {
+      "id": "online:Crop",
+      "key": "Crop",
+      "source": "Crop"
+    },
+    {
+      "id": "online:Crop selection",
+      "key": "Crop selection",
+      "source": "Crop selection"
+    },
+    {
+      "id": "online:Crop your photo",
+      "key": "Crop your photo",
+      "source": "Crop your photo"
+    },
+    {
+      "id": "online:Cross-site request refused.",
+      "key": "Cross-site request refused.",
+      "source": "Cross-site request refused."
+    },
+    {
+      "id": "online:Crossfade to {value0}",
+      "key": "Crossfade to {value0}",
+      "source": "Crossfade to {value0}"
+    },
+    {
+      "id": "online:Currency",
+      "key": "Currency",
+      "source": "Currency"
+    },
+    {
+      "id": "online:Current AI JavaScript source",
+      "key": "Current AI JavaScript source",
+      "source": "Current AI JavaScript source"
+    },
+    {
+      "id": "online:Current custom terrain and resource sprites rendered by the game",
+      "key": "Current custom terrain and resource sprites rendered by the game",
+      "source": "Current custom terrain and resource sprites rendered by the game"
+    },
+    {
+      "id": "online:Current mean",
+      "key": "Current mean",
+      "source": "Current mean"
+    },
+    {
+      "id": "online:Current recorded",
+      "key": "Current recorded",
+      "source": "Current recorded"
+    },
+    {
+      "id": "online:Current samples",
+      "key": "Current samples",
+      "source": "Current samples"
+    },
+    {
+      "id": "online:Current saved draft",
+      "key": "Current saved draft",
+      "source": "Current saved draft"
+    },
+    {
+      "id": "online:Current {slot0} day and previous {slot1} days. Activity totals count account-days; the active-account cards count distinct accounts. Studio/job statuses use request creation dates. Publications count versions; recorded downloads use each library’s existing counting rules.",
+      "key": "Current {slot0} day and previous {slot1} days. Activity totals count account-days; the active-account cards count distinct accounts. Studio/job statuses use request creation dates. Publications count versions; recorded downloads use each library’s existing counting rules.",
+      "source": {
+        "one": "Current and previous reporting periods, in days: {slot0} and {slot1}. Activity totals count account-days; the active-account cards count distinct accounts. Studio/job statuses use request creation dates. Publications count versions; recorded downloads use each library’s existing counting rules.",
+        "other": "Current and previous reporting periods, in days: {slot0} and {slot1}. Activity totals count account-days; the active-account cards count distinct accounts. Studio/job statuses use request creation dates. Publications count versions; recorded downloads use each library’s existing counting rules."
+      }
+    },
+    {
+      "id": "online:Current {slot0} days and previous {slot1} days. Activity totals count account-days; the active-account cards count distinct accounts. Studio/job statuses use request creation dates. Publications count versions; recorded downloads use each library’s existing counting rules.",
+      "key": "Current {slot0} days and previous {slot1} days. Activity totals count account-days; the active-account cards count distinct accounts. Studio/job statuses use request creation dates. Publications count versions; recorded downloads use each library’s existing counting rules.",
+      "source": "Current {slot0} days and previous {slot1} days. Activity totals count account-days; the active-account cards count distinct accounts. Studio/job statuses use request creation dates. Publications count versions; recorded downloads use each library’s existing counting rules."
+    },
+    {
+      "id": "online:Current: {slot0} through {slot1} (UTC; today is partial). Previous: {slot2} through {slot3}. Historical coverage may differ between periods.",
+      "key": "Current: {slot0} through {slot1} (UTC; today is partial). Previous: {slot2} through {slot3}. Historical coverage may differ between periods.",
+      "source": "Current: {slot0} through {slot1} (UTC; today is partial). Previous: {slot2} through {slot3}. Historical coverage may differ between periods."
+    },
+    {
+      "id": "online:Custom content credits",
+      "key": "Custom content credits",
+      "source": "Custom content credits"
+    },
+    {
+      "id": "online:Custom map",
+      "key": "Custom map",
+      "source": "Custom map"
+    },
+    {
+      "id": "online:Custom mood blend",
+      "key": "Custom mood blend",
+      "source": "Custom mood blend"
+    },
+    {
+      "id": "online:Customize",
+      "key": "Customize",
+      "source": "Customize"
+    },
+    {
+      "id": "online:Daily active accounts",
+      "key": "Daily active accounts",
+      "source": "Daily active accounts"
+    },
+    {
+      "id": "online:Daily activity table",
+      "key": "Daily activity table",
+      "source": "Daily activity table"
+    },
+    {
+      "id": "online:Daily values",
+      "key": "Daily values",
+      "source": "Daily values"
+    },
+    {
+      "id": "online:Default colony",
+      "key": "Default colony",
+      "source": "Default colony"
+    },
+    {
+      "id": "online:Defence power",
+      "key": "Defence power",
+      "source": "Defence power"
+    },
+    {
+      "id": "online:Degraded",
+      "key": "Degraded",
+      "source": "Degraded"
+    },
+    {
+      "id": "online:Delayed orders",
+      "key": "Delayed orders",
+      "source": "Delayed orders"
+    },
+    {
+      "id": "online:Delete",
+      "key": "Delete",
+      "source": "Delete"
+    },
+    {
+      "id": "online:Delete AI",
+      "key": "Delete AI",
+      "source": "Delete AI"
+    },
+    {
+      "id": "online:Delete account",
+      "key": "Delete account",
+      "source": "Delete account"
+    },
+    {
+      "id": "online:Delete conversation history",
+      "key": "Delete conversation history",
+      "source": "Delete conversation history"
+    },
+    {
+      "id": "online:Delete draft",
+      "key": "Delete draft",
+      "source": "Delete draft"
+    },
+    {
+      "id": "online:Delete history permanently",
+      "key": "Delete history permanently",
+      "source": "Delete history permanently"
+    },
+    {
+      "id": "online:Delete map",
+      "key": "Delete map",
+      "source": "Delete map"
+    },
+    {
+      "id": "online:Delete my account",
+      "key": "Delete my account",
+      "source": "Delete my account"
+    },
+    {
+      "id": "online:Delete my account for good",
+      "key": "Delete my account for good",
+      "source": "Delete my account for good"
+    },
+    {
+      "id": "online:Delete private release",
+      "key": "Delete private release",
+      "source": "Delete private release"
+    },
+    {
+      "id": "online:Delete project",
+      "key": "Delete project",
+      "source": "Delete project"
+    },
+    {
+      "id": "online:Delete project history",
+      "key": "Delete project history",
+      "source": "Delete project history"
+    },
+    {
+      "id": "online:Delete skin",
+      "key": "Delete skin",
+      "source": "Delete skin"
+    },
+    {
+      "id": "online:Delete skin?",
+      "key": "Delete skin?",
+      "source": "Delete skin?"
+    },
+    {
+      "id": "online:Delete this project’s conversation, references and generated revisions permanently?",
+      "key": "Delete this project’s conversation, references and generated revisions permanently?",
+      "source": "Delete this project’s conversation, references and generated revisions permanently?"
+    },
+    {
+      "id": "online:Delete {slot0}?{slot1}",
+      "key": "Delete {slot0}?{slot1}",
+      "source": "Delete {slot0}?{slot1}"
+    },
+    {
+      "id": "online:Delete “{value0}” and all its versions?",
+      "key": "Delete “{value0}” and all its versions?",
+      "source": "Delete “{value0}” and all its versions?"
+    },
+    {
+      "id": "online:Deleted",
+      "key": "Deleted",
+      "source": "Deleted"
+    },
+    {
+      "id": "online:Deletes sign-in identities, sessions, personal information and owned content. Match history remains anonymized. This cannot be undone.",
+      "key": "Deletes sign-in identities, sessions, personal information and owned content. Match history remains anonymized. This cannot be undone.",
+      "source": "Deletes sign-in identities, sessions, personal information and owned content. Match history remains anonymized. This cannot be undone."
+    },
+    {
+      "id": "online:Delivered",
+      "key": "Delivered",
+      "source": "Delivered"
+    },
+    {
+      "id": "online:Delivered map",
+      "key": "Delivered map",
+      "source": "Delivered map"
+    },
+    {
+      "id": "online:Dense",
+      "key": "Dense",
+      "source": "Dense"
+    },
+    {
+      "id": "online:Density",
+      "key": "Density",
+      "source": "Density"
+    },
+    {
+      "id": "online:Describe a building. Create its artwork and the way it works.",
+      "key": "Describe a building. Create its artwork and the way it works.",
+      "source": "Describe a building. Create its artwork and the way it works."
+    },
+    {
+      "id": "online:Describe a change or ask a question",
+      "key": "Describe a change or ask a question",
+      "source": "Describe a change or ask a question"
+    },
+    {
+      "id": "online:Describe a map to build, ask a question, or explore an idea together.",
+      "key": "Describe a map to build, ask a question, or explore an idea together.",
+      "source": "Describe a map to build, ask a question, or explore an idea together."
+    },
+    {
+      "id": "online:Describe a world. Create its terrain and resources.",
+      "key": "Describe a world. Create its terrain and resources.",
+      "source": "Describe a world. Create its terrain and resources."
+    },
+    {
+      "id": "online:Describe what your building should do and how it should look. You can also brainstorm before creating it.",
+      "key": "Describe what your building should do and how it should look. You can also brainstorm before creating it.",
+      "source": "Describe what your building should do and how it should look. You can also brainstorm before creating it."
+    },
+    {
+      "id": "online:Describe your creation or ask a question",
+      "key": "Describe your creation or ask a question",
+      "source": "Describe your creation or ask a question"
+    },
+    {
+      "id": "online:Describe your idea, request a creation, or ask a question. Your project and its history stay private until you publish.",
+      "key": "Describe your idea, request a creation, or ask a question. Your project and its history stay private until you publish.",
+      "source": "Describe your idea, request a creation, or ask a question. Your project and its history stay private until you publish."
+    },
+    {
+      "id": "online:Describe your landscape, or dream up a change…",
+      "key": "Describe your landscape, or dream up a change…",
+      "source": "Describe your landscape, or dream up a change…"
+    },
+    {
+      "id": "online:Describe your map or discuss changes",
+      "key": "Describe your map or discuss changes",
+      "source": "Describe your map or discuss changes"
+    },
+    {
+      "id": "online:Description",
+      "key": "Description",
+      "source": "Description"
+    },
+    {
+      "id": "online:Design",
+      "key": "Design",
+      "source": "Design"
+    },
+    {
+      "id": "online:Design brief {slot0}",
+      "key": "Design brief {slot0}",
+      "source": "Design brief {slot0}"
+    },
+    {
+      "id": "online:Design conversation",
+      "key": "Design conversation",
+      "source": "Design conversation"
+    },
+    {
+      "id": "online:Design the building",
+      "key": "Design the building",
+      "source": "Design the building"
+    },
+    {
+      "id": "online:Design the set",
+      "key": "Design the set",
+      "source": "Design the set"
+    },
+    {
+      "id": "online:Designer reply awaiting reconciliation",
+      "key": "Designer reply awaiting reconciliation",
+      "source": "Designer reply awaiting reconciliation"
+    },
+    {
+      "id": "online:Designer request failed",
+      "key": "Designer request failed",
+      "source": "Designer request failed"
+    },
+    {
+      "id": "online:Designer request status",
+      "key": "Designer request status",
+      "source": "Designer request status"
+    },
+    {
+      "id": "online:Designer status",
+      "key": "Designer status",
+      "source": "Designer status"
+    },
+    {
+      "id": "online:Destination: {slot0} library. Run checks before publication.",
+      "key": "Destination: {slot0} library. Run checks before publication.",
+      "source": "Destination: {slot0} library. Run checks before publication."
+    },
+    {
+      "id": "online:Detailed usage rates",
+      "key": "Detailed usage rates",
+      "source": "Detailed usage rates"
+    },
+    {
+      "id": "online:Details",
+      "key": "Details",
+      "source": "Details"
+    },
+    {
+      "id": "online:Development credits",
+      "key": "Development credits",
+      "source": "Development credits"
+    },
+    {
+      "id": "online:Dimension",
+      "key": "Dimension",
+      "source": "Dimension"
+    },
+    {
+      "id": "online:Disable",
+      "key": "Disable",
+      "source": "Disable"
+    },
+    {
+      "id": "online:Disable skin and resolve",
+      "key": "Disable skin and resolve",
+      "source": "Disable skin and resolve"
+    },
+    {
+      "id": "online:Disabled",
+      "key": "Disabled",
+      "source": "Disabled"
+    },
+    {
+      "id": "online:Discard local retry",
+      "key": "Discard local retry",
+      "source": "Discard local retry"
+    },
+    {
+      "id": "online:Discard manual edits and load saved revision",
+      "key": "Discard manual edits and load saved revision",
+      "source": "Discard manual edits and load saved revision"
+    },
+    {
+      "id": "online:Disconnected",
+      "key": "Disconnected",
+      "source": "Disconnected"
+    },
+    {
+      "id": "online:Disconnects",
+      "key": "Disconnects",
+      "source": "Disconnects"
+    },
+    {
+      "id": "online:Discover",
+      "key": "Discover",
+      "source": "Discover"
+    },
+    {
+      "id": "online:Discover a new opponent. Find a new way to play.",
+      "key": "Discover a new opponent. Find a new way to play.",
+      "source": "Discover a new opponent. Find a new way to play."
+    },
+    {
+      "id": "online:Discussion spends no credits; 1 available Building credit is required. Creation and edit requests start automatically and cost 1 credit on delivery.",
+      "key": "Discussion spends no credits; 1 available Building credit is required. Creation and edit requests start automatically and cost 1 credit on delivery.",
+      "source": "Discussion spends no credits; 1 available Building credit is required. Creation and edit requests start automatically and cost 1 credit on delivery."
+    },
+    {
+      "id": "online:Dismiss",
+      "key": "Dismiss",
+      "source": "Dismiss"
+    },
+    {
+      "id": "online:Dismiss notification",
+      "key": "Dismiss notification",
+      "source": "Dismiss notification"
+    },
+    {
+      "id": "online:Dismiss report",
+      "key": "Dismiss report",
+      "source": "Dismiss report"
+    },
+    {
+      "id": "online:Dismissed",
+      "key": "Dismissed",
+      "source": "Dismissed"
+    },
+    {
+      "id": "online:Display names are at most {p0} bytes.",
+      "key": "Display names are at most {p0} bytes.",
+      "source": "Display names are at most {p0} bytes."
+    },
+    {
+      "id": "online:Display names can only be changed once per interval.",
+      "key": "Display names can only be changed once per interval.",
+      "source": "Display names can only be changed once per interval."
+    },
+    {
+      "id": "online:Display names cannot contain control characters.",
+      "key": "Display names cannot contain control characters.",
+      "source": "Display names cannot contain control characters."
+    },
+    {
+      "id": "online:Display names cannot start or end with spaces.",
+      "key": "Display names cannot start or end with spaces.",
+      "source": "Display names cannot start or end with spaces."
+    },
+    {
+      "id": "online:Diverged",
+      "key": "Diverged",
+      "source": "Diverged"
+    },
+    {
+      "id": "online:Download",
+      "key": "Download",
+      "source": "Download"
+    },
+    {
+      "id": "online:Download JavaScript (.js)",
+      "key": "Download JavaScript (.js)",
+      "source": "Download JavaScript (.js)"
+    },
+    {
+      "id": "online:Download SHA-256: {slot0}",
+      "key": "Download SHA-256: {slot0}",
+      "source": "Download SHA-256: {slot0}"
+    },
+    {
+      "id": "online:Download ZIP",
+      "key": "Download ZIP",
+      "source": "Download ZIP"
+    },
+    {
+      "id": "online:Download candidate",
+      "key": "Download candidate",
+      "source": "Download candidate"
+    },
+    {
+      "id": "online:Download exact package",
+      "key": "Download exact package",
+      "source": "Download exact package"
+    },
+    {
+      "id": "online:Download family",
+      "key": "Download family",
+      "source": "Download family"
+    },
+    {
+      "id": "online:Download local changes",
+      "key": "Download local changes",
+      "source": "Download local changes"
+    },
+    {
+      "id": "online:Download local edits",
+      "key": "Download local edits",
+      "source": "Download local edits"
+    },
+    {
+      "id": "online:Download my data",
+      "key": "Download my data",
+      "source": "Download my data"
+    },
+    {
+      "id": "online:Download progress",
+      "key": "Download progress",
+      "source": "Download progress"
+    },
+    {
+      "id": "online:Download replay",
+      "key": "Download replay",
+      "source": "Download replay"
+    },
+    {
+      "id": "online:Download saved draft",
+      "key": "Download saved draft",
+      "source": "Download saved draft"
+    },
+    {
+      "id": "online:Download selected",
+      "key": "Download selected",
+      "source": "Download selected"
+    },
+    {
+      "id": "online:Download set",
+      "key": "Download set",
+      "source": "Download set"
+    }
+  ],
+  "carryforward": {
+    "prior_manifest": {
+      "path": "../release-three/manifest.json",
+      "sha256": "4fd5e1faff01b7eb0e95db7eac33105ab557101742f6ef1a889e7b73210eb977"
+    },
+    "prior_batch": {
+      "path": "../release-three/batches/online-online-004.json",
+      "sha256": "0fa3ddedecf7c0a1307d0fd1b1558c3ce2d05d174a045dabbe39ee43850f68c3"
+    },
+    "method": "Partition retained keys by original ownership; radius supplement receives separate Sw correction chain, unchanged Hi/Ur retain original chain. No fresh reading inferred."
+  }
+}

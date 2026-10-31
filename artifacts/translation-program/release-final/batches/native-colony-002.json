@@ -1,0 +1,40 @@
+{
+  "id": "native-colony-002",
+  "source_sha256": "a016e71957f16bbb880475c49b1d22dc8cbb7ae285fbbaa963464e0ea491fe0b",
+  "surface": "native",
+  "domain": "colony",
+  "context": "Workers autonomously gather/build; explorers scout; warriors fight. Flags assign work or military attention, not direct unit movement.",
+  "entries": [
+    {
+      "id": "native:[library Loading building families]",
+      "key": "[library Loading building families]",
+      "source": "Loading building families"
+    },
+    {
+      "id": "native:[library No building families installed.]",
+      "key": "[library No building families installed.]",
+      "source": "No building families installed."
+    },
+    {
+      "id": "native:[library No public building families yet]",
+      "key": "[library No public building families yet]",
+      "source": "No public building families yet"
+    },
+    {
+      "id": "native:[library Opening building family]",
+      "key": "[library Opening building family]",
+      "source": "Opening building family"
+    }
+  ],
+  "carryforward": {
+    "prior_manifest": {
+      "path": "../release-three/manifest.json",
+      "sha256": "4fd5e1faff01b7eb0e95db7eac33105ab557101742f6ef1a889e7b73210eb977"
+    },
+    "prior_batch": {
+      "path": "../release-three/batches/native-colony-002.json",
+      "sha256": "dfb5290a72ec262ce4efe2a95cc5304bacb2a5c1f1c494a00830d392af3985a8"
+    },
+    "method": "Partition retained keys by original ownership; radius supplement receives separate Sw correction chain, unchanged Hi/Ur retain original chain. No fresh reading inferred."
+  }
+}

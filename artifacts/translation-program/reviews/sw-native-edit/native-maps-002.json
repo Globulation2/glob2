@@ -1,0 +1,88 @@
+{
+  "editor": "/root/translation_kit",
+  "author": "/root/swahili_translation",
+  "reviewer": "/root/hindi_online_review",
+  "batch_id": "native-maps-002",
+  "source_sha256": "aacd8a342e9e734ba47f902a161ac1a45badff5842a617bcd68bf8e2275d6013",
+  "before_native_catalog_sha256": "4f19c506d6d7d4bfd22c576ad1797e21a7a71a92d693e06c1a48a034585ceead",
+  "before_target_sha256": "da4f13e3d4c0eecb93d7d3f58ee739cd9e2b5d2efd1d5f2a08b8d3c1619a56a5",
+  "after_target_sha256": "e32467f52aff9164d621b10ec74f6a57bba149305ecaefbc13f48af47e2c1244",
+  "editor_read_keys": [
+    "[experiment lava-terrain]",
+    "[experiment lava-terrain help]",
+    "[experiment fertile-terrain]",
+    "[experiment fertile-terrain help]",
+    "[experiment deep-water-terrain]",
+    "[experiment deep-water-terrain help]",
+    "[experiment void-terrain]",
+    "[experiment void-terrain help]",
+    "[terrain group custom]",
+    "[terrain group classic]",
+    "[terrain rule walkable]",
+    "[terrain rule swimmable]",
+    "[terrain rule impassable]",
+    "[terrain rule no flying]",
+    "[terrain rule buildable]",
+    "[terrain rule speed %0]",
+    "[terrain rule crops grow]",
+    "[terrain rule irrigates]",
+    "[terrain rule stops nearby growth]",
+    "[terrain rule blocks shots]",
+    "[terrain rule hurts walkers]",
+    "[terrain rule hurts fliers]",
+    "[terrain palette hint]",
+    "[terrain rule algae grow]",
+    "[terrain palette experiments hint]",
+    "[editor map saved]",
+    "[editor map shared]",
+    "[editor menu import terrain]",
+    "[library All generators]",
+    "[library Downloading generator…]",
+    "[library Each landscape is shown as a real map at the size and colony count below, which you can change here. Use one to play the map shown.]",
+    "[library Editor tool: generates terrain for the map editor.]",
+    "[library Enable installed families below. Selection is saved in this local profile; existing maps and saves keep their own buildings. For online play, generate a map with these families, publish it in the map library, then choose that map in your room.]",
+    "[library Generator file hash mismatch]",
+    "[library Generator installed. Future selections use this release.]",
+    "[library Generator package identity mismatch]",
+    "[library Generators]",
+    "[library Map generators]",
+    "[library My generators]",
+    "[library Playable generator]",
+    "[library Saving generator library…]"
+  ],
+  "editor_read_count": 41,
+  "edits": [
+    {
+      "key": "[editor menu import terrain]",
+      "before": "Ingiza ufafanuzi wa ardhi…",
+      "after": "Ingiza fasili za ardhi…",
+      "rationale": "Align import action with Ingiza and data definitions with Fasili across editor/library controls, retaining object and action."
+    },
+    {
+      "key": "[terrain palette hint]",
+      "before": "Chagua brashi. Makundi hushiriki kanuni moja; aina zilizo ndani hutofautiana kwa mwonekano tu.",
+      "after": "Chagua brashi. Aina zote katika kila kundi hufuata seti moja ya kanuni na hutofautiana kwa mwonekano tu.",
+      "rationale": "Members within each group share a set of rules; do not claim all groups share a single rule."
+    },
+    {
+      "key": "[library Enable installed families below. Selection is saved in this local profile; existing maps and saves keep their own buildings. For online play, generate a map with these families, publish it in the map library, then choose that map in your room.]",
+      "before": "Wezesha makundi yaliyosakinishwa hapa chini. Uchaguzi huhifadhiwa katika wasifu huu wa kifaa; ramani na faili zilizohifadhiwa hudumisha majengo yake. Kwa mchezo mtandaoni, zalisha ramani yenye makundi haya, ichapishe katika maktaba ya ramani, kisha uichague chumbani.",
+      "after": "Wezesha familia zilizosakinishwa hapa chini. Uchaguzi huhifadhiwa katika wasifu huu wa kifaa; ramani na faili zilizohifadhiwa hudumisha majengo yake. Kwa mchezo mtandaoni, zalisha ramani yenye familia hizi, ichapishe katika maktaba ya ramani, kisha uichague chumbani.",
+      "rationale": "Align library family with Familia; use matching plural zi-/hizi concord, retain per-map buildings and publish workflow."
+    },
+    {
+      "key": "[library Generator installed. Future selections use this release.]",
+      "before": "Kizalishaji kimesakinishwa. Chaguo zijazo hutumia toleo hili.",
+      "after": "Kizalishaji kimesakinishwa. Machaguo yajayo yatatumia toleo hili.",
+      "rationale": "Use an explicit machaguo plural and matching ma-class concord instead of inconsistent chaguo with zi-/nyingine."
+    }
+  ],
+  "finding_dispositions": [],
+  "editor_notes": [
+    "All41 entries read against source. Clarified rules are shared within each group, not a single rule shared by every group. Family terminology aligned with library Familia; import definition Fasili; plural machaguo agreement corrected. Kuvumwani preserved per primary glossary review.",
+    "Final editorial self-check: family plural noun-class zi-/hizi, and closed-ended maze passages expressed as njia zenye mwisho uliofungwa; original independent reviewer must recheck these substantive edits."
+  ],
+  "status": "editor-pass-complete-awaiting-original-reviewer-recheck",
+  "certification": "Agent edited; not native-human-certified; rendering/platform gates separate",
+  "after_native_catalog_sha256": "11f177f2792592cdc2a0dfb1edb0d7b5efbead7487efa1d7249fea657d8f85ec"
+}

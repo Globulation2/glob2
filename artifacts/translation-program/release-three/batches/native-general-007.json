@@ -1,0 +1,809 @@
+{
+  "id": "native-general-007",
+  "source_sha256": "7583e9f8f0a03186eec456ed3b7a9c187509056b91f931551c3b7dc0e6b53457",
+  "surface": "native",
+  "domain": "general",
+  "context": "Read neighbouring source entries and inspect usage before translating ambiguous short labels.",
+  "entries": [
+    {
+      "id": "native:[Bridges]",
+      "key": "[Bridges]",
+      "source": "Bridges"
+    },
+    {
+      "id": "native:[Karst towers]",
+      "key": "[Karst towers]",
+      "source": "Karst towers"
+    },
+    {
+      "id": "native:[Tower spacing]",
+      "key": "[Tower spacing]",
+      "source": "Tower spacing"
+    },
+    {
+      "id": "native:[Tower density]",
+      "key": "[Tower density]",
+      "source": "Tower density"
+    },
+    {
+      "id": "native:[Paddy depth]",
+      "key": "[Paddy depth]",
+      "source": "Paddy depth"
+    },
+    {
+      "id": "native:[Home design]",
+      "key": "[Home design]",
+      "source": "Home design"
+    },
+    {
+      "id": "native:[Horseshoe]",
+      "key": "[Horseshoe]",
+      "source": "Horseshoe"
+    },
+    {
+      "id": "native:[Twin gates]",
+      "key": "[Twin gates]",
+      "source": "Twin gates"
+    },
+    {
+      "id": "native:[Three gates]",
+      "key": "[Three gates]",
+      "source": "Three gates"
+    },
+    {
+      "id": "native:[Four gates]",
+      "key": "[Four gates]",
+      "source": "Four gates"
+    },
+    {
+      "id": "native:[Flooded terraces]",
+      "key": "[Flooded terraces]",
+      "source": "Flooded terraces"
+    },
+    {
+      "id": "native:[Sinkholes]",
+      "key": "[Sinkholes]",
+      "source": "Sinkholes"
+    },
+    {
+      "id": "native:[Bajada]",
+      "key": "[Bajada]",
+      "source": "Bajada"
+    },
+    {
+      "id": "native:[Range spacing]",
+      "key": "[Range spacing]",
+      "source": "Range spacing"
+    },
+    {
+      "id": "native:[Ridge width]",
+      "key": "[Ridge width]",
+      "source": "Ridge width"
+    },
+    {
+      "id": "native:[Passes]",
+      "key": "[Passes]",
+      "source": "Passes"
+    },
+    {
+      "id": "native:[Fans per range]",
+      "key": "[Fans per range]",
+      "source": "Fans per range"
+    },
+    {
+      "id": "native:[Stream reach]",
+      "key": "[Stream reach]",
+      "source": "Stream reach"
+    },
+    {
+      "id": "native:[Playa]",
+      "key": "[Playa]",
+      "source": "Playa"
+    },
+    {
+      "id": "native:[Broad fan]",
+      "key": "[Broad fan]",
+      "source": "Broad fan"
+    },
+    {
+      "id": "native:[Long fan]",
+      "key": "[Long fan]",
+      "source": "Long fan"
+    },
+    {
+      "id": "native:[Twin springs]",
+      "key": "[Twin springs]",
+      "source": "Twin springs"
+    },
+    {
+      "id": "native:[The bajadas are too narrow for the homes; use a bigger map, a wider range spacing, narrower ridges or a smaller playa.]",
+      "key": "[The bajadas are too narrow for the homes; use a bigger map, a wider range spacing, narrower ridges or a smaller playa.]",
+      "source": "The bajadas are too narrow for the homes; use a bigger map, a wider range spacing, narrower ridges or a smaller playa."
+    },
+    {
+      "id": "native:[Central Quarry]",
+      "key": "[Central Quarry]",
+      "source": "Central Quarry"
+    },
+    {
+      "id": "native:[Quarry size]",
+      "key": "[Quarry size]",
+      "source": "Quarry size"
+    },
+    {
+      "id": "native:[Sand bars]",
+      "key": "[Sand bars]",
+      "source": "Sand bars"
+    },
+    {
+      "id": "native:[Woodland]",
+      "key": "[Woodland]",
+      "source": "Woodland"
+    },
+    {
+      "id": "native:[Central Quarry needs at least two colonies.]",
+      "key": "[Central Quarry needs at least two colonies.]",
+      "source": "Central Quarry needs at least two colonies."
+    },
+    {
+      "id": "native:[Hidden Oasis]",
+      "key": "[Hidden Oasis]",
+      "source": "Hidden Oasis"
+    },
+    {
+      "id": "native:[Pond algae]",
+      "key": "[Pond algae]",
+      "source": "Pond algae"
+    },
+    {
+      "id": "native:[Starting towers]",
+      "key": "[Starting towers]",
+      "source": "Starting towers"
+    },
+    {
+      "id": "native:[Starting school]",
+      "key": "[Starting school]",
+      "source": "Starting school"
+    },
+    {
+      "id": "native:[Mesas]",
+      "key": "[Mesas]",
+      "source": "Mesas"
+    },
+    {
+      "id": "native:[Springs]",
+      "key": "[Springs]",
+      "source": "Springs"
+    },
+    {
+      "id": "native:[Hidden Oasis needs at least two colonies.]",
+      "key": "[Hidden Oasis needs at least two colonies.]",
+      "source": "Hidden Oasis needs at least two colonies."
+    },
+    {
+      "id": "native:[Hidden Oasis holds at most eight colonies.]",
+      "key": "[Hidden Oasis holds at most eight colonies.]",
+      "source": "Hidden Oasis holds at most eight colonies."
+    },
+    {
+      "id": "native:[The pond has no room for that much algae; use a bigger pond.]",
+      "key": "[The pond has no room for that much algae; use a bigger pond.]",
+      "source": "The pond has no room for that much algae; use a bigger pond."
+    },
+    {
+      "id": "native:[Even Ground]",
+      "key": "[Even Ground]",
+      "source": "Even Ground"
+    },
+    {
+      "id": "native:[Balance]",
+      "key": "[Balance]",
+      "source": "Balance"
+    },
+    {
+      "id": "native:[Tight passes]",
+      "key": "[Tight passes]",
+      "source": "Tight passes"
+    },
+    {
+      "id": "native:[Solver effort]",
+      "key": "[Solver effort]",
+      "source": "Solver effort"
+    },
+    {
+      "id": "native:[Brief]",
+      "key": "[Brief]",
+      "source": "Brief"
+    },
+    {
+      "id": "native:[Patient]",
+      "key": "[Patient]",
+      "source": "Patient"
+    },
+    {
+      "id": "native:[The colonies could not be spread out on this map.]",
+      "key": "[The colonies could not be spread out on this map.]",
+      "source": "The colonies could not be spread out on this map."
+    },
+    {
+      "id": "native:[Marchland]",
+      "key": "[Marchland]",
+      "source": "Marchland"
+    },
+    {
+      "id": "native:[Prizes on the rope]",
+      "key": "[Prizes on the rope]",
+      "source": "Prizes on the rope"
+    },
+    {
+      "id": "native:[March width]",
+      "key": "[March width]",
+      "source": "March width"
+    },
+    {
+      "id": "native:[Levelling]",
+      "key": "[Levelling]",
+      "source": "Levelling"
+    },
+    {
+      "id": "native:[A march needs a country on each side; use at least two colonies.]",
+      "key": "[A march needs a country on each side; use at least two colonies.]",
+      "source": "A march needs a country on each side; use at least two colonies."
+    },
+    {
+      "id": "native:[The march has too little contested ground for that many prizes; use fewer prizes, a wider march or a bigger map.]",
+      "key": "[The march has too little contested ground for that many prizes; use fewer prizes, a wider march or a bigger map.]",
+      "source": "The march has too little contested ground for that many prizes; use fewer prizes, a wider march or a bigger map."
+    },
+    {
+      "id": "native:[The march has no room for a prize; use a bigger map, fewer colonies or a wider march.]",
+      "key": "[The march has no room for a prize; use a bigger map, fewer colonies or a wider march.]",
+      "source": "The march has no room for a prize; use a bigger map, fewer colonies or a wider march."
+    },
+    {
+      "id": "native:[Orchard Commons]",
+      "key": "[Orchard Commons]",
+      "source": "Orchard Commons"
+    },
+    {
+      "id": "native:[Orchard spacing]",
+      "key": "[Orchard spacing]",
+      "source": "Orchard spacing"
+    },
+    {
+      "id": "native:[Compact]",
+      "key": "[Compact]",
+      "source": "Compact"
+    },
+    {
+      "id": "native:[Balanced]",
+      "key": "[Balanced]",
+      "source": "Balanced"
+    },
+    {
+      "id": "native:[Spread]",
+      "key": "[Spread]",
+      "source": "Spread"
+    },
+    {
+      "id": "native:[The Gauntlet]",
+      "key": "[The Gauntlet]",
+      "source": "The Gauntlet"
+    },
+    {
+      "id": "native:[Partition thickness]",
+      "key": "[Partition thickness]",
+      "source": "Partition thickness"
+    },
+    {
+      "id": "native:[The Comb]",
+      "key": "[The Comb]",
+      "source": "The Comb"
+    },
+    {
+      "id": "native:[Peninsulas per shore]",
+      "key": "[Peninsulas per shore]",
+      "source": "Peninsulas per shore"
+    },
+    {
+      "id": "native:[Encircled Kingdom]",
+      "key": "[Encircled Kingdom]",
+      "source": "Encircled Kingdom"
+    },
+    {
+      "id": "native:[Fortress plan]",
+      "key": "[Fortress plan]",
+      "source": "Fortress plan"
+    },
+    {
+      "id": "native:[Automatic]",
+      "key": "[Automatic]",
+      "source": "Automatic"
+    },
+    {
+      "id": "native:[Elongated enclosure]",
+      "key": "[Elongated enclosure]",
+      "source": "Elongated enclosure"
+    },
+    {
+      "id": "native:[Bastioned enclosure]",
+      "key": "[Bastioned enclosure]",
+      "source": "Bastioned enclosure"
+    },
+    {
+      "id": "native:[Paired courtyards]",
+      "key": "[Paired courtyards]",
+      "source": "Paired courtyards"
+    },
+    {
+      "id": "native:[Heartland farmland]",
+      "key": "[Heartland farmland]",
+      "source": "Heartland farmland"
+    },
+    {
+      "id": "native:[The Faulted City]",
+      "key": "[The Faulted City]",
+      "source": "The Faulted City"
+    },
+    {
+      "id": "native:[Fault displacement]",
+      "key": "[Fault displacement]",
+      "source": "Fault displacement"
+    },
+    {
+      "id": "native:[Fault width]",
+      "key": "[Fault width]",
+      "source": "Fault width"
+    },
+    {
+      "id": "native:[Ruin density]",
+      "key": "[Ruin density]",
+      "source": "Ruin density"
+    },
+    {
+      "id": "native:[Surviving junctions]",
+      "key": "[Surviving junctions]",
+      "source": "Surviving junctions"
+    },
+    {
+      "id": "native:[The Faulted City needs 256 or 512 tiles per side and one to twelve colonies.]",
+      "key": "[The Faulted City needs 256 or 512 tiles per side and one to twelve colonies.]",
+      "source": "The Faulted City needs 256 or 512 tiles per side and one to twelve colonies."
+    },
+    {
+      "id": "native:[The city has too few usable junctions.]",
+      "key": "[The city has too few usable junctions.]",
+      "source": "The city has too few usable junctions."
+    },
+    {
+      "id": "native:[The city neighbourhoods are too unequal; try another seed.]",
+      "key": "[The city neighbourhoods are too unequal; try another seed.]",
+      "source": "The city neighbourhoods are too unequal; try another seed."
+    },
+    {
+      "id": "native:[The fractured civic plaza did not survive.]",
+      "key": "[The fractured civic plaza did not survive.]",
+      "source": "The fractured civic plaza did not survive."
+    },
+    {
+      "id": "native:[Who Ate the Map?]",
+      "key": "[Who Ate the Map?]",
+      "source": "Who Ate the Map?"
+    },
+    {
+      "id": "native:[Appetite]",
+      "key": "[Appetite]",
+      "source": "Appetite"
+    },
+    {
+      "id": "native:[A Little Nibble]",
+      "key": "[A Little Nibble]",
+      "source": "A Little Nibble"
+    },
+    {
+      "id": "native:[Hungry]",
+      "key": "[Hungry]",
+      "source": "Hungry"
+    },
+    {
+      "id": "native:[Portage depth]",
+      "key": "[Portage depth]",
+      "source": "Portage depth"
+    },
+    {
+      "id": "native:[Extra trails]",
+      "key": "[Extra trails]",
+      "source": "Extra trails"
+    },
+    {
+      "id": "native:[Drowned Forest]",
+      "key": "[Drowned Forest]",
+      "source": "Drowned Forest"
+    },
+    {
+      "id": "native:[Wooded neck thickness]",
+      "key": "[Wooded neck thickness]",
+      "source": "Wooded neck thickness"
+    },
+    {
+      "id": "native:[Neutral clearing size]",
+      "key": "[Neutral clearing size]",
+      "source": "Neutral clearing size"
+    },
+    {
+      "id": "native:[Bastion Keys]",
+      "key": "[Bastion Keys]",
+      "source": "Bastion Keys"
+    },
+    {
+      "id": "native:[Plantation size]",
+      "key": "[Plantation size]",
+      "source": "Plantation size"
+    },
+    {
+      "id": "native:[The Hungry Marches]",
+      "key": "[The Hungry Marches]",
+      "source": "The Hungry Marches"
+    },
+    {
+      "id": "native:[Opening ration]",
+      "key": "[Opening ration]",
+      "source": "Opening ration"
+    },
+    {
+      "id": "native:[Central concentration]",
+      "key": "[Central concentration]",
+      "source": "Central concentration"
+    },
+    {
+      "id": "native:[The Last Treeline]",
+      "key": "[The Last Treeline]",
+      "source": "The Last Treeline"
+    },
+    {
+      "id": "native:[Woodland depth]",
+      "key": "[Woodland depth]",
+      "source": "Woodland depth"
+    },
+    {
+      "id": "native:[AI strategy]",
+      "key": "[AI strategy]",
+      "source": "AI strategy"
+    },
+    {
+      "id": "native:[AIMaxima-Summary]",
+      "key": "[AIMaxima-Summary]",
+      "source": "Balances sustainable growth and training, then gathers armies into waves."
+    },
+    {
+      "id": "native:[AIMaxima-Profile]",
+      "key": "[AIMaxima-Profile]",
+      "source": "Core strategy: Treats food, workers, births, training, construction and combat as competing demands. Sizes its army partly against estimated enemy strength, then tries to deliver that army effectively.\\n\\nEconomy and development: Budgets births against food and labor, preserves idle opportunities for training, and stops adding surplus workers when military production is needed. Scales training capacity and avoids taking too much infrastructure offline for upgrades.\\n\\nScouting and decisions: Estimates enemy forces from visible units and remembered sightings using a fitted model. Targets depend on value, distance, towers, exposed workers and persistence. Fruit missions support food variety and conversion.\\n\\nAttack and defense: Reserves warriors for training and defense, then gathers eligible land forces near friendly food infrastructure before launching waves. Uses local defensive responses and evaluates approaches to the colony.\\n\\nWhen attacks stall: After four consecutive wave-delivery failures, switches to continuously reinforced attack flags. Amphibious attacks can also use continuous reinforcement. This fallback does not solve every blockage before a rally can form.\\n\\nCompared with other AIs: Integrates food, training, intelligence and deployment more tightly. Cabino emphasizes several building attacks; Maxima emphasizes estimated demand and delivering gathered forces.\\n\\nStrengths and weaknesses: Sustains growth and military replacement while adapting to food pressure and observed threats. Needs food, training capacity and open gathering space; congestion and long routes can undermine delivery.\\n\\nCounterplay to try: Contest exposed food sources, inns and barracks before waves gather. Keep a supplied defensive force together and disrupt reinforcement routes. Expect repeated pressure after the first wave.\\n\\nScouting: Force estimates use sightings and observation history, rather than hidden enemy troop totals."
+    },
+    {
+      "id": "native:[Fertility]",
+      "key": "[Fertility]",
+      "source": "Fertility"
+    },
+    {
+      "id": "native:[Deposits]",
+      "key": "[Deposits]",
+      "source": "Deposits"
+    },
+    {
+      "id": "native:[Room]",
+      "key": "[Room]",
+      "source": "Room"
+    },
+    {
+      "id": "native:[Isolation]",
+      "key": "[Isolation]",
+      "source": "Isolation"
+    },
+    {
+      "id": "native:[ERROR_CANT_SAVE_MAP]",
+      "key": "[ERROR_CANT_SAVE_MAP]",
+      "source": "The map could not be saved. Check the destination and available space. Your edits are still open."
+    },
+    {
+      "id": "native:[Loading headers]",
+      "key": "[Loading headers]",
+      "source": "Loading headers..."
+    },
+    {
+      "id": "native:[Loading teams]",
+      "key": "[Loading teams]",
+      "source": "Loading teams..."
+    },
+    {
+      "id": "native:[Loading players]",
+      "key": "[Loading players]",
+      "source": "Loading players..."
+    },
+    {
+      "id": "native:[Loading scripts]",
+      "key": "[Loading scripts]",
+      "source": "Loading scripts..."
+    },
+    {
+      "id": "native:[Generating map]",
+      "key": "[Generating map]",
+      "source": "Generating map..."
+    },
+    {
+      "id": "native:[ERROR_CANT_GENERATE_MAP]",
+      "key": "[ERROR_CANT_GENERATE_MAP]",
+      "source": "The map could not be generated. Try different generation settings."
+    },
+    {
+      "id": "native:[Loading units]",
+      "key": "[Loading units]",
+      "source": "Loading units..."
+    },
+    {
+      "id": "native:[Resolving team links]",
+      "key": "[Resolving team links]",
+      "source": "Resolving team links..."
+    },
+    {
+      "id": "native:[saving to storage]",
+      "key": "[saving to storage]",
+      "source": "Saving..."
+    },
+    {
+      "id": "native:[save failed retry]",
+      "key": "[save failed retry]",
+      "source": "Save failed. Retry."
+    },
+    {
+      "id": "native:[export save]",
+      "key": "[export save]",
+      "source": "Export save"
+    },
+    {
+      "id": "native:[storage restore failed]",
+      "key": "[storage restore failed]",
+      "source": "Browser storage could not be restored. Existing saved data has not been changed. You can continue this session, but local changes cannot be persisted. Export important saves from the save-failure dialog. Reload to try restoring storage again."
+    },
+    {
+      "id": "native:[continue]",
+      "key": "[continue]",
+      "source": "Continue"
+    },
+    {
+      "id": "native:[export file]",
+      "key": "[export file]",
+      "source": "Export file"
+    },
+    {
+      "id": "native:[export failed]",
+      "key": "[export failed]",
+      "source": "File export failed"
+    },
+    {
+      "id": "native:[import file]",
+      "key": "[import file]",
+      "source": "Import"
+    },
+    {
+      "id": "native:[select import file]",
+      "key": "[select import file]",
+      "source": "Choose a file to import"
+    },
+    {
+      "id": "native:[validating import]",
+      "key": "[validating import]",
+      "source": "Validating file..."
+    },
+    {
+      "id": "native:[import succeeded]",
+      "key": "[import succeeded]",
+      "source": "File imported"
+    },
+    {
+      "id": "native:[import cancelled]",
+      "key": "[import cancelled]",
+      "source": "Import cancelled"
+    },
+    {
+      "id": "native:[import failed]",
+      "key": "[import failed]",
+      "source": "Import failed: invalid or unsupported file"
+    },
+    {
+      "id": "native:[import persistence failed]",
+      "key": "[import persistence failed]",
+      "source": "Not saved: select Import to retry or Export file"
+    },
+    {
+      "id": "native:[import progress]",
+      "key": "[import progress]",
+      "source": "Import progress"
+    },
+    {
+      "id": "native:[export progress]",
+      "key": "[export progress]",
+      "source": "Export progress"
+    },
+    {
+      "id": "native:[retry save]",
+      "key": "[retry save]",
+      "source": "Retry save"
+    },
+    {
+      "id": "native:[campaign save failed]",
+      "key": "[campaign save failed]",
+      "source": "Campaign progress not saved. Retry or export a backup."
+    },
+    {
+      "id": "native:[leave without saving]",
+      "key": "[leave without saving]",
+      "source": "Leave without saving"
+    },
+    {
+      "id": "native:[campaign import failed]",
+      "key": "[campaign import failed]",
+      "source": "Invalid progress file or different campaign version"
+    },
+    {
+      "id": "native:[shutdown save failed]",
+      "key": "[shutdown save failed]",
+      "source": "Final save not confirmed. Retry, or quit without saving."
+    },
+    {
+      "id": "native:[quit without saving]",
+      "key": "[quit without saving]",
+      "source": "Quit without saving"
+    },
+    {
+      "id": "native:[game closed]",
+      "key": "[game closed]",
+      "source": "Game closed. You can close this window or reload to play again."
+    },
+    {
+      "id": "native:[campaign editor save failed]",
+      "key": "[campaign editor save failed]",
+      "source": "Save not confirmed. OK retries; Cancel returns to the editor menu."
+    },
+    {
+      "id": "native:[Actions]",
+      "key": "[Actions]",
+      "source": "Actions"
+    },
+    {
+      "id": "native:[Minimap]",
+      "key": "[Minimap]",
+      "source": "Minimap"
+    },
+    {
+      "id": "native:[Fast forward]",
+      "key": "[Fast forward]",
+      "source": "Fast forward"
+    },
+    {
+      "id": "native:[Player slot]",
+      "key": "[Player slot]",
+      "source": "Player slot"
+    },
+    {
+      "id": "native:[Team color]",
+      "key": "[Team color]",
+      "source": "Team color"
+    },
+    {
+      "id": "native:[Alliance group]",
+      "key": "[Alliance group]",
+      "source": "Alliance group"
+    },
+    {
+      "id": "native:[menu]",
+      "key": "[menu]",
+      "source": "Menu"
+    },
+    {
+      "id": "native:[Editor tools]",
+      "key": "[Editor tools]",
+      "source": "Tools"
+    },
+    {
+      "id": "native:[Pan map]",
+      "key": "[Pan map]",
+      "source": "Pan map"
+    },
+    {
+      "id": "native:[Edit map]",
+      "key": "[Edit map]",
+      "source": "Edit map"
+    },
+    {
+      "id": "native:[Editor map]",
+      "key": "[Editor map]",
+      "source": "Map"
+    },
+    {
+      "id": "native:[Pause]",
+      "key": "[Pause]",
+      "source": "Pause"
+    },
+    {
+      "id": "native:[Speed]",
+      "key": "[Speed]",
+      "source": "Speed"
+    },
+    {
+      "id": "native:[Objectives]",
+      "key": "[Objectives]",
+      "source": "Objectives"
+    },
+    {
+      "id": "native:[Menu]",
+      "key": "[Menu]",
+      "source": "Menu"
+    },
+    {
+      "id": "native:[Goals]",
+      "key": "[Goals]",
+      "source": "Goals"
+    },
+    {
+      "id": "native:[Teams]",
+      "key": "[Teams]",
+      "source": "Teams"
+    },
+    {
+      "id": "native:[Use this landscape]",
+      "key": "[Use this landscape]",
+      "source": "Use this landscape"
+    },
+    {
+      "id": "native:[Reset]",
+      "key": "[Reset]",
+      "source": "Reset"
+    },
+    {
+      "id": "native:[Generating...]",
+      "key": "[Generating...]",
+      "source": "Generating..."
+    },
+    {
+      "id": "native:[Players]",
+      "key": "[Players]",
+      "source": "Players"
+    },
+    {
+      "id": "native:[Rules]",
+      "key": "[Rules]",
+      "source": "Rules"
+    },
+    {
+      "id": "native:[Undo stroke]",
+      "key": "[Undo stroke]",
+      "source": "Undo"
+    },
+    {
+      "id": "native:[No overlay]",
+      "key": "[No overlay]",
+      "source": "No overlay"
+    },
+    {
+      "id": "native:[zoom factor %0]",
+      "key": "[zoom factor %0]",
+      "source": "%0×"
+    },
+    {
+      "id": "native:[More]",
+      "key": "[More]",
+      "source": "More"
+    },
+    {
+      "id": "native:[No items]",
+      "key": "[No items]",
+      "source": "No items"
+    },
+    {
+      "id": "native:[Review & Play]",
+      "key": "[Review & Play]",
+      "source": "Review & Play"
+    }
+  ]
+}

@@ -1,0 +1,546 @@
+{
+  "reviewer": "/root/hindi_online_review",
+  "locale": "sw",
+  "review_scope": "All20 actual screenshots manually viewed in full; visible Swahili read for semantics, grammar, wrapping, clipping and control usability. Original-resolution images used for tall phone pages.",
+  "run_identity": {
+    "started_utc": "2026-10-31T16:34:34.276Z",
+    "catalog_sha256": {
+      "hi": "d80bdd87f3502c34e45ae744d8e0f8bac3cafd93755a5ef87e0bed8bec3d74c4",
+      "ur": "db375ee564c39cf02dfb4ce08d6a4dbaecb8cd69d5bc7f167b4c7f779e246587",
+      "sw": "59a34af2d4ac447e4183db0bc2cea2825c93758925fb519d10df0eeed0f4847a"
+    },
+    "build_identity_sha256": "3ca79e6bec285dd95d7fa8b37edbd26b41bcbae89d8d0f3a610e88f8d01f5e3f",
+    "server": {
+      "catalog_sha256": {
+        "hi": "d80bdd87f3502c34e45ae744d8e0f8bac3cafd93755a5ef87e0bed8bec3d74c4",
+        "ur": "db375ee564c39cf02dfb4ce08d6a4dbaecb8cd69d5bc7f167b4c7f779e246587",
+        "sw": "59a34af2d4ac447e4183db0bc2cea2825c93758925fb519d10df0eeed0f4847a"
+      },
+      "source_sha256": {
+        "../../../platform/packages/i18n/src/index.ts": "5f01c60c26795b599218c781194bdafb060b742f1b1ae04a16617dd5f2a1080e",
+        "../../../platform/apps/api/src/web/pages.ts": "8465498fcaeaa877efc77c903bfe86d139918cae0c8bd7697239cfc1ca7f132b",
+        "../../../platform/apps/api/src/routes/signin.ts": "ca8a806ca5dbc356de5e1aec2cc35e43d81f6fa4be1b6c09e1a8dfbbbe077835",
+        "../../../platform/apps/api/test/historySeed.ts": "2132adfd455661cc26e7328ddabdfe9d3c78cd51e6979b56f71fe7fbae7a6244"
+      }
+    }
+  },
+  "completed_utc": "2026-10-31T16:40:34.549Z",
+  "provenance_verification": [
+    "Before manual image reading, independently verified build-identity file hash matches run; all catalog hashes agree between run/build/server; current Sw draft SHA matches bound59a34a… snapshot.",
+    "Independently verified every build.source_sha256 and server.source_sha256 path against repository files before root fixes; all matched.",
+    "Independently verified all20 Sw PNG file SHA before reading and archiving. Later root changes are not assumed to be captured."
+  ],
+  "images": [
+    {
+      "file": "initial-captures/sw-1200-home-first-visit.png",
+      "sha256": "272ff7fbd0d4b2053166f220544ca07f35ed919ac57eb9144f8c7a372aea1162",
+      "width": 1200,
+      "manual_read": true,
+      "surface": "home-first-visit"
+    },
+    {
+      "file": "initial-captures/sw-1200-signin.png",
+      "sha256": "76370b63b16bd374b7b73d0df2816c6df15cc9be8ede161fcdfdb164fb90f181",
+      "width": 1200,
+      "manual_read": true,
+      "surface": "signin"
+    },
+    {
+      "file": "initial-captures/sw-1200-signin-error.png",
+      "sha256": "b1b5b84afbe93f32cef7505cb1517dd9bcae49ff30d56bd69c4bc81f8de80150",
+      "width": 1200,
+      "manual_read": true,
+      "surface": "signin-error"
+    },
+    {
+      "file": "initial-captures/sw-1200-account.png",
+      "sha256": "51f70bfcc55622f4bed43802f1422d5b377fc0378ae684610e03bc797d60c4f6",
+      "width": 1200,
+      "manual_read": true,
+      "surface": "account"
+    },
+    {
+      "file": "initial-captures/sw-1200-matches.png",
+      "sha256": "93870f523e6cb329e644f42bf155cd60de9a17dc2d38d49d30b72b75a0567694",
+      "width": 1200,
+      "manual_read": true,
+      "surface": "matches"
+    },
+    {
+      "file": "initial-captures/sw-1200-match.png",
+      "sha256": "c535b2854146dd7b30b6649d386d54b0ac083729ef6ee029f1b70548b8ed55ef",
+      "width": 1200,
+      "manual_read": true,
+      "surface": "match"
+    },
+    {
+      "file": "initial-captures/sw-1200-profile.png",
+      "sha256": "8924aa4a65c8ab03fb45d2bcc0dae3ef3a3c39397bf79e9719b1a9c6b63a4736",
+      "width": 1200,
+      "manual_read": true,
+      "surface": "profile"
+    },
+    {
+      "file": "initial-captures/sw-1200-leaderboard.png",
+      "sha256": "6cf40dd6b277fbb8001f4740f279476c7559e7a898efc92fbbaad7d1585255d5",
+      "width": 1200,
+      "manual_read": true,
+      "surface": "leaderboard"
+    },
+    {
+      "file": "initial-captures/sw-1200-maps.png",
+      "sha256": "fd6edb1ae9227b6b8ff4c04440fad5b3c76664336344ec902950ff2b1f8668d2",
+      "width": 1200,
+      "manual_read": true,
+      "surface": "maps"
+    },
+    {
+      "file": "initial-captures/sw-1200-invite.png",
+      "sha256": "9ff66c0476719d980cec34bcf9cef0e4b18457cdfe7ce36f53172a87d2a1106b",
+      "width": 1200,
+      "manual_read": true,
+      "surface": "invite"
+    },
+    {
+      "file": "initial-captures/sw-390-home-first-visit.png",
+      "sha256": "d8ed617a05b5d113e98230c0ff1cb296071467dbaa5db9f1403858092919ac4f",
+      "width": 390,
+      "manual_read": true,
+      "surface": "home-first-visit"
+    },
+    {
+      "file": "initial-captures/sw-390-signin.png",
+      "sha256": "8bf6ac9042bfb60309b64eb65180a6a6c5382237864b89a8580c8ba181d7b90b",
+      "width": 390,
+      "manual_read": true,
+      "surface": "signin"
+    },
+    {
+      "file": "initial-captures/sw-390-signin-error.png",
+      "sha256": "bd75c90a5a861dcc66ecc7ec186c8196dbe07fa2917c38a1e693113eed71057d",
+      "width": 390,
+      "manual_read": true,
+      "surface": "signin-error"
+    },
+    {
+      "file": "initial-captures/sw-390-account.png",
+      "sha256": "689ac513608156e76567ce8c13f0cf92af70110058edd466c52570d40d276a36",
+      "width": 390,
+      "manual_read": true,
+      "surface": "account"
+    },
+    {
+      "file": "initial-captures/sw-390-matches.png",
+      "sha256": "a02aa48713d638e5efb9199d34fbdd8903748e551968fa948769c4397d4d4a7f",
+      "width": 390,
+      "manual_read": true,
+      "surface": "matches"
+    },
+    {
+      "file": "initial-captures/sw-390-match.png",
+      "sha256": "73727d121e2ecc3c1333070fa17520b1295bd69755021e87594a0a30c7d696d8",
+      "width": 390,
+      "manual_read": true,
+      "surface": "match"
+    },
+    {
+      "file": "initial-captures/sw-390-profile.png",
+      "sha256": "c53426db26f87ca809f9f84eb1b63a1762525fef51f11f9adacb3532278c129d",
+      "width": 390,
+      "manual_read": true,
+      "surface": "profile"
+    },
+    {
+      "file": "initial-captures/sw-390-leaderboard.png",
+      "sha256": "47f01eba56f622419781116a4652a9c9aad85ce2bc735af1b8df8dba310fa596",
+      "width": 390,
+      "manual_read": true,
+      "surface": "leaderboard"
+    },
+    {
+      "file": "initial-captures/sw-390-maps.png",
+      "sha256": "10d6cb9acb2b3de3a862ab01d22f24dd20ab49e326fa97a114773675375301cc",
+      "width": 390,
+      "manual_read": true,
+      "surface": "maps"
+    },
+    {
+      "file": "initial-captures/sw-390-invite.png",
+      "sha256": "0097deacdaf25ff48169d87f0933cd53ac3d5f92ad515a22127d06a7d130d051",
+      "width": 390,
+      "manual_read": true,
+      "surface": "invite"
+    }
+  ],
+  "findings": [
+    {
+      "id": "SW-VIS-001",
+      "key": "Play in browser",
+      "caller": "platform/apps/web/src/styles/home.css .hero-actions .btn; Home.tsx",
+      "severity": "minor",
+      "viewports": [
+        390
+      ],
+      "problem": "Gold primary CTA extends beyond220px action container and is clipped by hero. Document overflow0 missed local clipping.",
+      "correction": "Allow CTA shrink and normal wrapping with height auto; retain full translated meaning.",
+      "geometry": {
+        "parent_left": 121,
+        "parent_right": 341,
+        "button_left": 121,
+        "button_right": 388.3125,
+        "computed_whiteSpace": "nowrap"
+      },
+      "catalog_sha256": "59a34af2d4ac447e4183db0bc2cea2825c93758925fb519d10df0eeed0f4847a",
+      "state": "resolved-independently-rechecked-in-final-captures",
+      "final_catalog_sha256": "6914cbf226adebd70d3ff401cfda759b62b62cc8af621b25f4ba994a8e0bec0a",
+      "final_evidence": "final-captures; catalog-recheck.json and runtime-edited-cases.json"
+    },
+    {
+      "id": "SW-VIS-002",
+      "key": " on {p0}",
+      "caller": "platform/apps/api/src/routes/invite.ts:95–108",
+      "severity": "major",
+      "viewports": [
+        1200,
+        390
+      ],
+      "problem": "Leading-space source fragment translated without leading space: actual concatenation reads Globulation 2kwenye Glob2 Online (test).",
+      "current": "kwenye {p0}",
+      "suggested": " kwenye {p0}",
+      "catalog_sha256": "59a34af2d4ac447e4183db0bc2cea2825c93758925fb519d10df0eeed0f4847a",
+      "state": "resolved-independently-rechecked-in-final-captures",
+      "new_catalog_sha256": "6914cbf226adebd70d3ff401cfda759b62b62cc8af621b25f4ba994a8e0bec0a",
+      "final_catalog_sha256": "6914cbf226adebd70d3ff401cfda759b62b62cc8af621b25f4ba994a8e0bec0a",
+      "final_evidence": "final-captures; catalog-recheck.json and runtime-edited-cases.json"
+    },
+    {
+      "id": "SW-VIS-003",
+      "key": "Change",
+      "caller": "platform/apps/web/src/pages/Match.tsx; admin/Overview.tsx numeric delta headings",
+      "severity": "minor",
+      "viewports": [
+        1200
+      ],
+      "problem": "Imperative Badilisha tells user to change something; this is a static numeric change heading.",
+      "current": "Badilisha",
+      "suggested": "Mabadiliko",
+      "catalog_sha256": "59a34af2d4ac447e4183db0bc2cea2825c93758925fb519d10df0eeed0f4847a",
+      "state": "resolved-independently-rechecked-in-final-captures",
+      "new_catalog_sha256": "6914cbf226adebd70d3ff401cfda759b62b62cc8af621b25f4ba994a8e0bec0a",
+      "final_catalog_sha256": "6914cbf226adebd70d3ff401cfda759b62b62cc8af621b25f4ba994a8e0bec0a",
+      "final_evidence": "final-captures; catalog-recheck.json and runtime-edited-cases.json"
+    },
+    {
+      "id": "SW-VIS-004",
+      "key": "Best {slot0}",
+      "caller": "platform/apps/web/src/pages/Player.tsx:251",
+      "severity": "minor",
+      "viewports": [
+        1200,
+        390
+      ],
+      "problem": "Visible Bora Ramani preserves English modifier order; natural Swahili places bora after noun.",
+      "current": "Bora {slot0}",
+      "suggested": "{slot0} bora",
+      "expected_render": "Ramani bora; Kizalishaji bora; authored queue name followed by bora.",
+      "catalog_sha256": "59a34af2d4ac447e4183db0bc2cea2825c93758925fb519d10df0eeed0f4847a",
+      "state": "resolved-independently-rechecked-in-final-captures",
+      "new_catalog_sha256": "6914cbf226adebd70d3ff401cfda759b62b62cc8af621b25f4ba994a8e0bec0a",
+      "final_catalog_sha256": "6914cbf226adebd70d3ff401cfda759b62b62cc8af621b25f4ba994a8e0bec0a",
+      "final_evidence": "final-captures; catalog-recheck.json and runtime-edited-cases.json"
+    },
+    {
+      "id": "SW-VIS-005",
+      "key": "Open in the Globulation 2 app",
+      "caller": "platform/apps/api/src/routes/invite.ts app button; src/web/pages.ts a.button,button CSS",
+      "severity": "minor",
+      "viewports": [
+        390
+      ],
+      "problem": "App-open label overhangs its button border by8.77px on each side due nowrap.",
+      "correction": "Use existing SSR a.button,button rule to permit wrapping; preserve min-height and width.",
+      "geometry": {
+        "button_left": 51,
+        "button_right": 339,
+        "text_left": 42.234375,
+        "text_right": 347.765625,
+        "computed_whiteSpace": "nowrap"
+      },
+      "catalog_sha256": "59a34af2d4ac447e4183db0bc2cea2825c93758925fb519d10df0eeed0f4847a",
+      "state": "resolved-independently-rechecked-in-final-captures",
+      "final_catalog_sha256": "6914cbf226adebd70d3ff401cfda759b62b62cc8af621b25f4ba994a8e0bec0a",
+      "final_evidence": "final-captures; catalog-recheck.json and runtime-edited-cases.json"
+    }
+  ],
+  "open_findings": 0,
+  "review_status": "passed-for-tested-isolated-app-scope-with-transparent-stability-supplement",
+  "accepted_contextual_observations": [
+    {
+      "key": "All",
+      "translation": "Vyote",
+      "decision": "Retain generic standalone all-items/categories label; no forced global rewrite.",
+      "rationale": "Six exact t(All) callers span statuses, operational types, match records and participant categories. Standalone label can elide generic vitu/vipengele; it does not explicitly claim agreement with wachezaji or mechi. All matches=Mechi zote is available but not necessary to resolve an actual meaning error. Explicit phrases would require context concord, so do not claim Vyote agrees with people.",
+      "callers": [
+        "admin/Moderation.tsx:253",
+        "admin/Operations.tsx:320",
+        "pages/Player.tsx:310",
+        "pages/Players.tsx:142",
+        "pages/Matches.tsx:30",
+        "pages/Leaderboard.tsx:134"
+      ],
+      "grammar_reference": "https://wisc.pb.unizin.org/dini/back-matter/appendix-noun-class/",
+      "reference_read": "Opened full noun-class appendix; class agreement and animate distinction read. Ellipsis application is reviewer judgment, not a quote/claim from that reference."
+    },
+    "Player/queue/map names and product/version identifiers are authored data/proper names, not untranslated fallback prose.",
+    "Profile compact W/L/D notation retains localized accessibility text; short U/K labels in statistic pills reflect translated Ushindi/Kushindwa.",
+    "Intentional authored title/name ellipses preserve responsive layout.",
+    "Account irreversible-deletion, public-avatar, password omission and replay-username caveats remain accurately expressed; no action was submitted."
+  ],
+  "independent_readonly_browser": {
+    "viewport": {
+      "width": 390,
+      "height": 860
+    },
+    "leaderboard_region": {
+      "name": "Washiriki wa ubao wa viwango",
+      "clientWidth": 284,
+      "scrollWidth": 474,
+      "tabIndex": 0,
+      "programmatic_horizontal_scroll": true
+    },
+    "table_note": "Offscreen rank/rating columns are reachable in a named focusable horizontal region; not inaccessible clipping."
+  },
+  "automation_report": "Parent71check run includes20Sw captures each fontloadedtrue,langsw,dirltr,0 document overflow,0 axe violations. Automation does not substitute for manual reading.",
+  "limits": [
+    "Actual app components with isolated draft registration and seeded local API, not shipped release registration.",
+    "Chromium emulated desktop1200/phone390 viewports, not Android/iOS physical devices.",
+    "No native-human fluency certification, real screen-reader announcement, native game render or platform finalization claim."
+  ],
+  "catalog_edits_by_reviewer": false,
+  "locale_finalized": false,
+  "catalog_recheck": "catalog-recheck.json",
+  "final_run_identity": {
+    "checker_sha256": "958fe8f1c7cd2e45559a10efa9da1a67d521b6768ebb88ddf787e081851b59b1",
+    "started_utc": "2026-10-31T17:13:19.165Z",
+    "catalog_sha256": {
+      "hi": "d80bdd87f3502c34e45ae744d8e0f8bac3cafd93755a5ef87e0bed8bec3d74c4",
+      "ur": "db375ee564c39cf02dfb4ce08d6a4dbaecb8cd69d5bc7f167b4c7f779e246587",
+      "sw": "6914cbf226adebd70d3ff401cfda759b62b62cc8af621b25f4ba994a8e0bec0a"
+    },
+    "build_identity_sha256": "6445c77f4b8e480eb49e3dcc7ff97de623069c3a6f15d1a5075797f03c9094c5",
+    "server": {
+      "catalog_sha256": {
+        "hi": "d80bdd87f3502c34e45ae744d8e0f8bac3cafd93755a5ef87e0bed8bec3d74c4",
+        "ur": "db375ee564c39cf02dfb4ce08d6a4dbaecb8cd69d5bc7f167b4c7f779e246587",
+        "sw": "6914cbf226adebd70d3ff401cfda759b62b62cc8af621b25f4ba994a8e0bec0a"
+      },
+      "source_sha256": {
+        "../../../platform/packages/i18n/src/index.ts": "5f01c60c26795b599218c781194bdafb060b742f1b1ae04a16617dd5f2a1080e",
+        "../../../platform/apps/api/src/web/pages.ts": "be26854babcf09335c422fc2e08007d3013bfc8e356b2238b0f08551ae20b104",
+        "../../../platform/apps/api/src/routes/signin.ts": "a5711937ceb02407ffccd313b4aa2fd074e7eae828614d77b7ff939def025721",
+        "../../../platform/apps/api/test/historySeed.ts": "2132adfd455661cc26e7328ddabdfe9d3c78cd51e6979b56f71fe7fbae7a6244"
+      }
+    }
+  },
+  "final_completed_utc": "2026-10-31T17:15:22.204Z",
+  "final_results_sha256": "a0aa6ba50aa2b18616b229a1a07750d9b459c30fdd1e23114963954e46187fec",
+  "final_images": [
+    {
+      "file": "final-captures/sw-1200-home-first-visit.png",
+      "sha256": "316785841d016a1d7b01f10212571d5d508dd1b6235ef178c3f4cb1068fe45ef",
+      "width": 1200,
+      "surface": "home-first-visit",
+      "manual_read": true,
+      "result": "pass"
+    },
+    {
+      "file": "final-captures/sw-1200-signin.png",
+      "sha256": "76370b63b16bd374b7b73d0df2816c6df15cc9be8ede161fcdfdb164fb90f181",
+      "width": 1200,
+      "surface": "signin",
+      "manual_read": true,
+      "result": "pass"
+    },
+    {
+      "file": "final-captures/sw-1200-signin-error.png",
+      "sha256": "cdd34fd02eb34485224d574d1b9d74046fd95684ff77b4d1c68272de2d6eaf7b",
+      "width": 1200,
+      "surface": "signin-error",
+      "manual_read": true,
+      "result": "pass"
+    },
+    {
+      "file": "final-captures/sw-1200-account.png",
+      "sha256": "58d99436c727859fee20b90f96e3eb5c1f7e782bc22c04e0a1fe13200c78a634",
+      "width": 1200,
+      "surface": "account",
+      "manual_read": true,
+      "result": "pass"
+    },
+    {
+      "file": "final-captures/sw-1200-matches.png",
+      "sha256": "442118b434394c5a7aa03bfacab69dac6a8067e0c022197fd039d48b8f926104",
+      "width": 1200,
+      "surface": "matches",
+      "manual_read": true,
+      "result": "pass"
+    },
+    {
+      "file": "final-captures/sw-1200-match.png",
+      "sha256": "317fc1d0ea7651eb0a64cf06c945f4f8cbd8ef8ac7bdb72486c9767e84dc9fdc",
+      "width": 1200,
+      "surface": "match",
+      "manual_read": true,
+      "result": "pass"
+    },
+    {
+      "file": "final-captures/sw-1200-profile.png",
+      "sha256": "5ff75d69cac5aaa40b9d0e8d64be81464eb88c3d4ba920f0a51864ed57d5a90b",
+      "width": 1200,
+      "surface": "profile",
+      "manual_read": true,
+      "result": "Original5issues resolved; see separate profile chart transient-capture observation."
+    },
+    {
+      "file": "final-captures/sw-1200-leaderboard.png",
+      "sha256": "696dbfd761350d26d61dde54557ea0feb4f10f186a04d9267804d5bb9a865f07",
+      "width": 1200,
+      "surface": "leaderboard",
+      "manual_read": true,
+      "result": "pass"
+    },
+    {
+      "file": "final-captures/sw-1200-maps.png",
+      "sha256": "2f30e89228d6268a8030beea65a1c106692b091f02fb1fe3748778dfd04ab88a",
+      "width": 1200,
+      "surface": "maps",
+      "manual_read": true,
+      "result": "pass"
+    },
+    {
+      "file": "final-captures/sw-1200-invite.png",
+      "sha256": "2772e837e5d7d41a718244acdf22e62312e310fe039e0e078afd601eccd0baee",
+      "width": 1200,
+      "surface": "invite",
+      "manual_read": true,
+      "result": "pass"
+    },
+    {
+      "file": "final-captures/sw-390-home-first-visit.png",
+      "sha256": "2b42ba62010b0116004e5a404d79e79570c3613f607cde19ad7aae21d882a015",
+      "width": 390,
+      "surface": "home-first-visit",
+      "manual_read": true,
+      "result": "pass"
+    },
+    {
+      "file": "final-captures/sw-390-signin.png",
+      "sha256": "8bf6ac9042bfb60309b64eb65180a6a6c5382237864b89a8580c8ba181d7b90b",
+      "width": 390,
+      "surface": "signin",
+      "manual_read": true,
+      "result": "pass"
+    },
+    {
+      "file": "final-captures/sw-390-signin-error.png",
+      "sha256": "bd75c90a5a861dcc66ecc7ec186c8196dbe07fa2917c38a1e693113eed71057d",
+      "width": 390,
+      "surface": "signin-error",
+      "manual_read": true,
+      "result": "pass"
+    },
+    {
+      "file": "final-captures/sw-390-account.png",
+      "sha256": "35827b54b814f4a83de36f8903dde23fe0d21ac8cb3a1cab18f604c8fe132bb1",
+      "width": 390,
+      "surface": "account",
+      "manual_read": true,
+      "result": "pass"
+    },
+    {
+      "file": "final-captures/sw-390-matches.png",
+      "sha256": "c6eab6d8a7b5a8485471ad5a5a7fb866d51f273206819360fef1f1076c285372",
+      "width": 390,
+      "surface": "matches",
+      "manual_read": true,
+      "result": "pass"
+    },
+    {
+      "file": "final-captures/sw-390-match.png",
+      "sha256": "ecab607759e51d9399e515038ad4ef17a9a87228a6b452875804cd364bc9bfb8",
+      "width": 390,
+      "surface": "match",
+      "manual_read": true,
+      "result": "pass"
+    },
+    {
+      "file": "final-captures/sw-390-profile.png",
+      "sha256": "2febcac80d749a87be008531c0ab8a1b70fddb92074b4aadf524a5f9702181ae",
+      "width": 390,
+      "surface": "profile",
+      "manual_read": true,
+      "result": "pass"
+    },
+    {
+      "file": "final-captures/sw-390-leaderboard.png",
+      "sha256": "d0fea7af91028ce837c2a471697689cd9bb4cb34d575f20a8abfc7884428bf65",
+      "width": 390,
+      "surface": "leaderboard",
+      "manual_read": true,
+      "result": "pass"
+    },
+    {
+      "file": "final-captures/sw-390-maps.png",
+      "sha256": "10d6cb9acb2b3de3a862ab01d22f24dd20ab49e326fa97a114773675375301cc",
+      "width": 390,
+      "surface": "maps",
+      "manual_read": true,
+      "result": "pass"
+    },
+    {
+      "file": "final-captures/sw-390-invite.png",
+      "sha256": "22f4ded01d07e138914c42283e85e68718fcd6ac6a90275b6a5a9fa3dfeeb87e",
+      "width": 390,
+      "surface": "invite",
+      "manual_read": true,
+      "result": "pass"
+    }
+  ],
+  "final_standard_images_manually_read": 20,
+  "final_pan_images_manually_read": 2,
+  "final_observations": [
+    "Phone Home CTA wraps into2lines wholly within card; SSRinvite appbutton wraps within button, retains full label.",
+    "Invitation now separates Globulation2 and kwenye; ratingdelta headingMabadiliko and Ramani bora are natural in actual callers.",
+    "All20standard screenshots freshly manually read, not carried forward by automation. Both actualkeyboard-panned table screenshots manually read: ratings becomefullyvisible atArrowRight. Hide-phone Change column intentionally absent.",
+    "Current Matches/Player filter uses explicitMechi zote viaexistingAll matches; retainedLeaderboard standaloneVyote acceptance rationale remains."
+  ],
+  "capture_anomaly": {
+    "screenshot": "final-captures/sw-1200-profile.png",
+    "observation": "Rating dots visibly detached from line; one outside card in rootcapture. Preserved as observed, not claimed clean.",
+    "investigation": "Live DOM all8circlecx/cy exactly equal polyline coordinates, computedCSScx/cy andCTM inspected; same source afterfonts+1000ms+2RAF ownactualfullpagecapture has dots aligned. Supports transient capture/ResizeObserver repaint rather than reproducible productcoordinate error.",
+    "evidence": [
+      "chart-stability-probe.json",
+      "sw-profile-stability-probe.png"
+    ],
+    "supplementary_probe_sha256": "e2f3f4f08906161bbd07b913c3529291f90354a5ac8c4de96cc5b131ce42d55c",
+    "parent_notified": true,
+    "root_bound_supplemental_capture": "requested",
+    "state": "resolved-for-tested-evidence-by-same-build-stability-supplement",
+    "supplement": "../app-profile-stability/results.json",
+    "supplement_sha256": "ec8cea904001334cd6d5aa7482183c7619fdde487ceb0335fd4830c5d99f944f",
+    "supplement_png_sha256": "e2f3f4f08906161bbd07b913c3529291f90354a5ac8c4de96cc5b131ce42d55c",
+    "cause": "Unknown; earlier anomalous screenshot retained. Font-ready plus2RAF and5stable geometry frames yielded aligned marker positions in actual independently viewed new image; no product patch."
+  },
+  "open_capture_observations": 0,
+  "axis_fix_targeted_followup": {
+    "record": "../app-axis-fix/results.json",
+    "record_sha256": "5bba523aa51cb7b3c8cafcc55d9d2fc2a5b0a5d96223e51e180cd6458ee84576",
+    "new_build_identity_sha256": "aceea0a44174817466736959aa6ce4959dd056729246f3e8ea226db3c6ce2260",
+    "base_108_run_build_sha256": "6445c77f4b8e480eb49e3dcc7ff97de623069c3a6f15d1a5075797f03c9094c5",
+    "unchanged_other_source_files": 148,
+    "changed_source_file": "platform/apps/web/src/components/LineChart.tsx",
+    "exact_single_attribute_reversal_proof": true,
+    "own_locale_four_new_images_manual_result": "pass",
+    "scope": "Only affectedprofile+matchviews at1200/390 rechecked in newbuild; original20image broadreview remains explicitly priorbuild, not falsely relabelled."
+  }
+}

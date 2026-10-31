@@ -1,0 +1,392 @@
+{
+  "reviewer": "/root/sw_visual_independent",
+  "authored_or_edited_any_sw_translation": false,
+  "status": "passed-for-tested-final-native-visual-scope",
+  "locale": "sw",
+  "source_revision": "92205aae687b650ed8b9aea4b31265f0ff6b7301",
+  "source_tree_sha256": "f769966128e5998dbcaec839271dc2a451dcd58b15e114e61ac2935857345de2",
+  "executable_sha256": "0cc55b27ae690334c60178a8de2fe8454a2eee1c3623fefbef51875b4ce83fca",
+  "source_sha256": "a016e71957f16bbb880475c49b1d22dc8cbb7ae285fbbaa963464e0ea491fe0b",
+  "catalog_sha256": {
+    "native": "ccb1751ebc28116d3d7510f5fe48e7bb3ded222aec088772019fb9a78d646ef6",
+    "online": "6914cbf226adebd70d3ff401cfda759b62b62cc8af621b25f4ba994a8e0bec0a"
+  },
+  "results_path": "artifacts/translation-program/native-preview/release-final/results.json",
+  "results_sha256": "ef0e7501b50328ee4bb083bec3ef5646542e1437703335e7ac0eab814e6e5df6",
+  "proof_path": "artifacts/translation-program/native-final-build-proof.json",
+  "proof_sha256": "699b3507082ef24037b6708edc110f07cfa512a4dc62380a9cb045877512d67e",
+  "image_inventory_path": "artifacts/translation-program/reviews/sw-native-current/final-image-reads.json",
+  "image_inventory_sha256": "97bec791ab54bbbd07a62f5195dfb6548ccefa863891e67726d7f6cccba7efde",
+  "images_freshly_manually_read": 106,
+  "image_counts": {
+    "production": 70,
+    "diagnostic": 36
+  },
+  "native_invocations_verified": 34,
+  "all_locale_execution_count": 102,
+  "tutorials": [
+    {
+      "job": "sw-1200-tutorial-introduction",
+      "dialog_free": true,
+      "automatic_briefing_preserved": false,
+      "captures": [
+        "tutorial-introduction",
+        "tutorial-introduction-dialog"
+      ]
+    },
+    {
+      "job": "sw-1200-tutorial-food-supply",
+      "dialog_free": true,
+      "automatic_briefing_preserved": true,
+      "captures": [
+        "tutorial-food-supply-briefing",
+        "tutorial-food-supply",
+        "tutorial-food-supply-dialog"
+      ]
+    },
+    {
+      "job": "sw-1200-tutorial-healing",
+      "dialog_free": true,
+      "automatic_briefing_preserved": true,
+      "captures": [
+        "tutorial-healing-briefing",
+        "tutorial-healing",
+        "tutorial-healing-dialog"
+      ]
+    },
+    {
+      "job": "sw-1200-tutorial-walking-training",
+      "dialog_free": true,
+      "automatic_briefing_preserved": true,
+      "captures": [
+        "tutorial-walking-training-briefing",
+        "tutorial-walking-training",
+        "tutorial-walking-training-dialog"
+      ]
+    },
+    {
+      "job": "sw-1200-tutorial-swimming",
+      "dialog_free": true,
+      "automatic_briefing_preserved": true,
+      "captures": [
+        "tutorial-swimming-briefing",
+        "tutorial-swimming",
+        "tutorial-swimming-dialog"
+      ]
+    },
+    {
+      "job": "sw-1200-tutorial-schools",
+      "dialog_free": true,
+      "automatic_briefing_preserved": true,
+      "captures": [
+        "tutorial-schools-briefing",
+        "tutorial-schools",
+        "tutorial-schools-dialog"
+      ]
+    },
+    {
+      "job": "sw-1200-tutorial-upgrades",
+      "dialog_free": true,
+      "automatic_briefing_preserved": false,
+      "captures": [
+        "tutorial-upgrades",
+        "tutorial-upgrades-dialog"
+      ]
+    },
+    {
+      "job": "sw-1200-tutorial-warrior-training",
+      "dialog_free": true,
+      "automatic_briefing_preserved": true,
+      "captures": [
+        "tutorial-warrior-training-briefing",
+        "tutorial-warrior-training",
+        "tutorial-warrior-training-dialog"
+      ]
+    },
+    {
+      "job": "sw-1200-tutorial-fortifications",
+      "dialog_free": true,
+      "automatic_briefing_preserved": true,
+      "captures": [
+        "tutorial-fortifications-briefing",
+        "tutorial-fortifications",
+        "tutorial-fortifications-dialog"
+      ]
+    },
+    {
+      "job": "sw-1200-tutorial-defensive-tactics",
+      "dialog_free": true,
+      "automatic_briefing_preserved": true,
+      "captures": [
+        "tutorial-defensive-tactics-briefing",
+        "tutorial-defensive-tactics",
+        "tutorial-defensive-tactics-dialog"
+      ]
+    },
+    {
+      "job": "sw-390-tutorial-introduction",
+      "dialog_free": true,
+      "automatic_briefing_preserved": true,
+      "captures": [
+        "tutorial-introduction-briefing",
+        "tutorial-introduction",
+        "tutorial-introduction-dialog"
+      ]
+    },
+    {
+      "job": "sw-390-tutorial-food-supply",
+      "dialog_free": true,
+      "automatic_briefing_preserved": false,
+      "captures": [
+        "tutorial-food-supply",
+        "tutorial-food-supply-dialog"
+      ]
+    },
+    {
+      "job": "sw-390-tutorial-healing",
+      "dialog_free": true,
+      "automatic_briefing_preserved": false,
+      "captures": [
+        "tutorial-healing",
+        "tutorial-healing-dialog"
+      ]
+    },
+    {
+      "job": "sw-390-tutorial-walking-training",
+      "dialog_free": true,
+      "automatic_briefing_preserved": true,
+      "captures": [
+        "tutorial-walking-training-briefing",
+        "tutorial-walking-training",
+        "tutorial-walking-training-dialog"
+      ]
+    },
+    {
+      "job": "sw-390-tutorial-swimming",
+      "dialog_free": true,
+      "automatic_briefing_preserved": false,
+      "captures": [
+        "tutorial-swimming",
+        "tutorial-swimming-dialog"
+      ]
+    },
+    {
+      "job": "sw-390-tutorial-schools",
+      "dialog_free": true,
+      "automatic_briefing_preserved": false,
+      "captures": [
+        "tutorial-schools",
+        "tutorial-schools-dialog"
+      ]
+    },
+    {
+      "job": "sw-390-tutorial-upgrades",
+      "dialog_free": true,
+      "automatic_briefing_preserved": true,
+      "captures": [
+        "tutorial-upgrades-briefing",
+        "tutorial-upgrades",
+        "tutorial-upgrades-dialog"
+      ]
+    },
+    {
+      "job": "sw-390-tutorial-warrior-training",
+      "dialog_free": true,
+      "automatic_briefing_preserved": true,
+      "captures": [
+        "tutorial-warrior-training-briefing",
+        "tutorial-warrior-training",
+        "tutorial-warrior-training-dialog"
+      ]
+    },
+    {
+      "job": "sw-390-tutorial-fortifications",
+      "dialog_free": true,
+      "automatic_briefing_preserved": true,
+      "captures": [
+        "tutorial-fortifications-briefing",
+        "tutorial-fortifications",
+        "tutorial-fortifications-dialog"
+      ]
+    },
+    {
+      "job": "sw-390-tutorial-defensive-tactics",
+      "dialog_free": true,
+      "automatic_briefing_preserved": true,
+      "captures": [
+        "tutorial-defensive-tactics-briefing",
+        "tutorial-defensive-tactics",
+        "tutorial-defensive-tactics-dialog"
+      ]
+    }
+  ],
+  "metadata": [
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/sw/1200/matrix/font-matrix.json",
+      "sha256": "974c76cf48db12ec8d9683a67db76a41a4d3af2336f1d9f45258365c1f2fcb55"
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/sw/1200/main.json",
+      "sha256": "8c1ded947a0b3f190f6811a521f9c5ab7f91e6e15b74dddd667446000b56f0bc"
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/sw/1200/settings.json",
+      "sha256": "e62b9dea3256b046b513b4e82972e64ad2d9842611f5cd567940e8a29f7c14d3"
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/sw/1200/settings-audio.json",
+      "sha256": "806753484a54d29dc295141154aa6af37ad71daa3ed18ced09846271c27b0fa0"
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/sw/1200/lobby.json",
+      "sha256": "ae70693b6bd4ba6ffec0fe53afa228255c90ffb47f7d9d8904a7742f833c1341"
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/sw/1200/lobby-players.json",
+      "sha256": "0afc9affb18fdc8801757a684199e919104b1e6ddba369f289274f90ad9fc09b"
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/sw/1200/gameplay.json",
+      "sha256": "60fbc4874f98f39ccfec0d2e2ae71eb62dd2595d46d895b1f3224ed13443f333"
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/sw/1200/tutorial-introduction.json",
+      "sha256": "859780509be387e880f69ff76dc8d95bf0c89d639a8b4b83899dbdfae3c23ef6"
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/sw/1200/tutorial-food-supply.json",
+      "sha256": "0a87987e67cb469f1c83c954bd3447026d63df1a994ebd291e2d9f7d499d0cdd"
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/sw/1200/tutorial-healing.json",
+      "sha256": "f8004cc335ffb4baea178acf2fb66b94ce1a5183fdef3aeff17e2666eed02365"
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/sw/1200/tutorial-walking-training.json",
+      "sha256": "3a2ab71f459c89d501d401c8574626f1301c9d27daced6db91fe7ccf9e37d3c3"
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/sw/1200/tutorial-swimming.json",
+      "sha256": "670fa52b1da746404223d37db77b65225f601462abb2a84e4a0f33b9ab9bcd60"
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/sw/1200/tutorial-schools.json",
+      "sha256": "171e503b005e057a436ee9287a05361a468df8cd4a0942ec101665a1502d0129"
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/sw/1200/tutorial-upgrades.json",
+      "sha256": "45a38e21cd8f448ff4bb28995dd717ffbcf7a3e707d6d8259addb1a59c1192a6"
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/sw/1200/tutorial-warrior-training.json",
+      "sha256": "0580b36f1f9f950a5f405d8fe26f4bffb558466b0bb1c980a439341cee4607b1"
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/sw/1200/tutorial-fortifications.json",
+      "sha256": "e923ba88eeca3efaa2c7838163d968d7224bb931dd85076e1414a3ef2399f280"
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/sw/1200/tutorial-defensive-tactics.json",
+      "sha256": "f47e15d44ead10baa8e532c40269654310f0ef6521862f45ada2df35c0fb145e"
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/sw/390/matrix/font-matrix.json",
+      "sha256": "e8a9c27491714fbfc4e76f5df4aef26978fd73f78a49dec1a7b1cc52751ea5cf"
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/sw/390/main.json",
+      "sha256": "26099a2beb5beadb11a0ffceb6f0a8fa6c5477d1ca56136dccbb835f679214b9"
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/sw/390/settings.json",
+      "sha256": "fd72fe93339a1d8a02368998a97968a7ee9499044f2dea8388545790668942db"
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/sw/390/settings-audio.json",
+      "sha256": "de25d4e5164abbc72f097f54093b4610bf95840a43846b1aa7c57c8346becf12"
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/sw/390/lobby.json",
+      "sha256": "9b73aa12dd846b8f9b206047e00655ef8b04b38f3faec3fdae51be2cd0ba89de"
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/sw/390/lobby-players.json",
+      "sha256": "4f3b06cfd1f9f6143d2424f8b3b44ce05b1b7dc69904246191829e81693d13b2"
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/sw/390/gameplay.json",
+      "sha256": "0fece57a6d3053b824a674f3099d2db2a059d13d60bdc2b45fbdef9293f618e8"
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/sw/390/tutorial-introduction.json",
+      "sha256": "cfbe7810bd71839a09b6a39d890c6659ec4d1269b09289ef4ac384d9c664bd3c"
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/sw/390/tutorial-food-supply.json",
+      "sha256": "4059469230f03f8803a86d94ff8448340c317ddd898d006037d4e7bcfb64b1eb"
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/sw/390/tutorial-healing.json",
+      "sha256": "1da81b3f88e97a125c971c84501cae029d8909cfa955aaff9a267e24b4eaba9c"
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/sw/390/tutorial-walking-training.json",
+      "sha256": "c5df8f735e1fe421200036f29cd316b3757422da7b61b1c608f8b7042f4842b5"
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/sw/390/tutorial-swimming.json",
+      "sha256": "1ce27fa87ba36fdfdb6a031f2bd1291a4db3e74bc602df07f60409f8e8be30bc"
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/sw/390/tutorial-schools.json",
+      "sha256": "0770d848581234977d9f1af827a175133d4173a7d36c5fae6bdfb33be497fbb5"
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/sw/390/tutorial-upgrades.json",
+      "sha256": "16f72cf6a92fa29020ea4cb77d03d0a3fa3b92aa6af86208763261bfcb42b9f0"
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/sw/390/tutorial-warrior-training.json",
+      "sha256": "6317d1c62aedc1b1ee96111b2e4a61aa8259cc32ff1963ede096ec4a2cdfe922"
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/sw/390/tutorial-fortifications.json",
+      "sha256": "16b38ee1a99d5506a64fcc1b26188e7755ec29a00432b77928f3310ba05ced04"
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/sw/390/tutorial-defensive-tactics.json",
+      "sha256": "2701c827e127a9b6aaeb94b9518b28a1676e315a0cf1c562eced144e920102a3"
+    }
+  ],
+  "findings": [
+    {
+      "id": "sw-final-cosmetic-001",
+      "key": "[briefing]",
+      "severity": "minor",
+      "state": "accepted",
+      "image": "artifacts/translation-program/native-preview/release-final/sw/390/tutorial-introduction-briefing.png",
+      "reason": "Narrow three-column phone briefing tab wraps Maelekezo as Maelekez/o. Every letter remains visible, tab height expands and no content/control overlaps. Cosmetic word continuation does not obstruct task or change meaning.",
+      "suggestion": "Optional future responsive tab layout improvement; do not shorten otherwise-correct catalog text to compensate."
+    }
+  ],
+  "open_critical": 0,
+  "open_major": 0,
+  "open_blockers": 0,
+  "unresolved_linguistic_uncertainties": [],
+  "observations": [
+    "Read every Sw PNG actually emitted by34jobs, matched filenames and SHA256; no image-reading claims carried from older releases.",
+    "Actual initial guidance exposed after optional real briefing close. Desktop expanded prose and phone compact workflows read for all10lessons, plus allmenus/briefings/zoom views emitted.",
+    "Latin glyphs and punctuation intact; LTR workflow arrows, numeral order and ≤4 diagnostic comparison correct. Word wrapping generally occurs at spaces; no unexpected clipped glyphs or overlapping controls.",
+    "Visible meanings preserve requested workers/builders versus existing count, production versus supply, fed versus injured, pond direction, School algae requirements, upgrade skill and scout/defense roles. Existing approved terminology retained.",
+    "Scroll viewport boundary clips offscreen rows intentionally; not claimed fully displayed. Diagnostic page continuation is not gameplay UI."
+  ],
+  "native_human_certified": false,
+  "limits": [
+    "macOS desktop native build at1200/390logicalwidth; phone dimensions do not verify nativeAndroid/iOS or physicalmobile.",
+    "10initial lesson states, not all29steps/help/recovery/completion paths. Complete3416native+2836online overlay does not mean everycatalog entry rendered.",
+    "Bounded32native+8online diagnostics×6size/scale settings; not fullcatalog glyph coverage.",
+    "Separate4retainedradiusfontdiagnostics were prepared but not run per latestroot/userpriority; no fresh4label-font/render signoff claimed. Semantic reviews remain separate.",
+    "All capture evidence belongs to frozen92205aae revision; futureintegration requires explicit relevance/identity assessment, not relabeling.",
+    "No nativeWindows/Linux rendering, screenreader, physicalkeyboard/IME certification."
+  ]
+}

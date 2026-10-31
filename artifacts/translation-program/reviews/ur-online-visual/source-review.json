@@ -1,0 +1,186 @@
+{
+  "reviewer": "/root/pilot_context",
+  "author": "/root",
+  "scope": "Independent source review of RTL corrections only; no edits or test/build execution by reviewer.",
+  "status": "source-review-pass-awaiting-actual-render-validation",
+  "source_snapshot_sha256": {
+    "platform/apps/web/src/pages/Match.tsx": "9ecfe57216a0b539dcb64234d964f60200988e61d4bb0bee51c14703d0bd0e21",
+    "platform/apps/web/src/i18n.tsx": "a90eaa655944970ab021a89d3898daf54087a95140b400526c17e94292a081cc",
+    "platform/apps/api/src/web/pages.ts": "be26854babcf09335c422fc2e08007d3013bfc8e356b2238b0f08551ae20b104",
+    "platform/apps/api/src/routes/signin.ts": "a5711937ceb02407ffccd313b4aa2fd074e7eae828614d77b7ff939def025721",
+    "platform/apps/web/src/pages/Home.tsx": "18e10ec6d25492108454399ad6babc71a07290bd703754f9f52b34b41b893faa",
+    "platform/apps/web/src/pages/Matches.tsx": "dcbbbda1399270292b272a9da21f3457824dfbab26c6d9ecb25eeea357b9a3d1",
+    "platform/apps/web/src/pages/Leaderboard.tsx": "333761b338b9bdb80529378283bd9e8b72c822b1bb925a0d82fbf9db638ae976",
+    "platform/apps/web/src/pages/Player.tsx": "c23c551ef24034bb8572d8497ddade262641073bf4e793b55c8f7ce980be0c96",
+    "platform/apps/web/src/components/common.tsx": "3776d67b58610f5a50745846f12f4ef6ca61c5328448dd047897fa3273699298",
+    "platform/apps/web/test/i18n.test.tsx": "7a4ab4df67b92aebebc47b5c2b5639f69ada1c4dafa1daac7566261a97a64fcf",
+    "platform/apps/api/test/pages.test.ts": "92ab958bc7a21944b84778b53f6a76c0dbd775202438e72e0ff2d033b1a61bf0"
+  },
+  "resolved_at_source": [
+    {
+      "finding": "UR-VIS-001 Match Participants rating transition",
+      "decision": "Whole before→after is inside one bdi dir=ltr, preserving operand order and rightward arrow. Signed delta in same Participants table also one bdi dir=ltr.",
+      "path": "platform/apps/web/src/pages/Match.tsx175–193"
+    },
+    {
+      "finding": "UR-VIS-001 ordered win/loss values",
+      "decision": "RichMessage groups contiguous number-valued slots separated solely by /,×,en-dash into a single LTR isolate; original row.wins and games-minus-wins are numeric and now retain source order. Mixed authored string slots are not incorrectly grouped.",
+      "path": "platform/apps/web/src/i18n.tsx"
+    },
+    {
+      "finding": "UR-VIS-002 registration digit range",
+      "decision": "isolateNumericRanges applies only to complete Unicode-digit chains; generated bdi receives escaped text, and surrounding split parts also flow through escapeHtml via html array interpolation. No untrusted markup is promoted to Html. signin hint calls helper after translating pageText.",
+      "path": "platform/apps/api/src/web/pages.ts and routes/signin.ts"
+    },
+    {
+      "finding": "UR-VIS-003 selected queue labels",
+      "decision": "Home ladder titles, Matches filter names, Leaderboard queue tabs/title and Player rating-tile labels have appropriate bdi dir=auto data boundaries."
+    }
+  ],
+  "remaining_findings": [],
+  "nonblocking_behavior_note": "RichMessage now omits explicit null/undefined React slots while preserving truly missing placeholders with Object.hasOwn. This differs from former ??placeholder behavior; newly inspected tests explicitly assert the distinction. No harmful caller identified.",
+  "tests_read_not_run": [
+    "web/test/i18n.test.tsx: numeric12/100,64×128,5–3 ratios; repeatedn/n; mixed model identifiers; missing inherited slots; explicit empty Reactslots.",
+    "api/test/pages.test.ts: Urdu0–9 plus Persian digits3/9 preserve numeric text while script-tag and ampersand are escaped."
+  ],
+  "required_followup": [
+    "Focused tests/build by root; this source review does not claim their outcome.",
+    "Targeted DOM token geometry and phone table horizontal-pan proof.",
+    "Fresh exactbuild screenshots and independent visual recheck before visual gate approval."
+  ],
+  "catalog_changes": [],
+  "limits": [
+    "Source-level acceptance cannot establish actual bidi rendering or touch table usability.",
+    "Prior20screens remain initial evidence; fixes are not visually certified here."
+  ],
+  "resolved_followup_findings": [
+    {
+      "id": "UR-SRC-001",
+      "severity": "major",
+      "path": "platform/apps/web/src/components/common.tsx",
+      "caller": "MatchRow signed(change)",
+      "problem": "Shared profile/history row still uses ordinary span for signed numeric delta, so visible29−/91+ problem remains after fixing Participants alone.",
+      "proposal": "Wrap complete signed(change) in bdi dir=ltr, preserving existing class.",
+      "state": "resolved-at-source-after-distinct-root-edit",
+      "independent_recheck": "Exact caller reread: whole signed delta is bdi LTR; whole queue/map label is bdi AUTO, with existing class, Link, fallbacks and event handlers preserved as applicable."
+    },
+    {
+      "id": "UR-SRC-002",
+      "severity": "minor",
+      "path": "platform/apps/web/src/components/common.tsx",
+      "caller": "MatchRow queueName caption",
+      "problem": "Queue captions in home/matches/profile list rows are still unisolated, so screenshot queue-order problem remains.",
+      "proposal": "Wrap complete queueName/Room authored value with bdi dir=auto.",
+      "state": "resolved-at-source-after-distinct-root-edit",
+      "independent_recheck": "Exact caller reread: whole signed delta is bdi LTR; whole queue/map label is bdi AUTO, with existing class, Link, fallbacks and event handlers preserved as applicable."
+    },
+    {
+      "id": "UR-SRC-003",
+      "severity": "minor",
+      "path": "platform/apps/web/src/pages/Player.tsx",
+      "callers": [
+        "Matches profile filter f.name",
+        "WinRates row.label/row.key"
+      ],
+      "problem": "Profile filter queue names and queue/English map labels in win-rate tables retain inherited RTL context.",
+      "proposal": "Isolate complete dynamic label with bdi dir=auto, keeping any map Link around or inside the isolate.",
+      "state": "resolved-at-source-after-distinct-root-edit",
+      "independent_recheck": "Exact caller reread: whole signed delta is bdi LTR; whole queue/map label is bdi AUTO, with existing class, Link, fallbacks and event handlers preserved as applicable."
+    }
+  ],
+  "initial_review_snapshot_sha256": {
+    "platform/apps/web/src/pages/Match.tsx": "9ecfe57216a0b539dcb64234d964f60200988e61d4bb0bee51c14703d0bd0e21",
+    "platform/apps/web/src/i18n.tsx": "a90eaa655944970ab021a89d3898daf54087a95140b400526c17e94292a081cc",
+    "platform/apps/api/src/web/pages.ts": "be26854babcf09335c422fc2e08007d3013bfc8e356b2238b0f08551ae20b104",
+    "platform/apps/api/src/routes/signin.ts": "a5711937ceb02407ffccd313b4aa2fd074e7eae828614d77b7ff939def025721",
+    "platform/apps/web/src/pages/Home.tsx": "18e10ec6d25492108454399ad6babc71a07290bd703754f9f52b34b41b893faa",
+    "platform/apps/web/src/pages/Matches.tsx": "dcbbbda1399270292b272a9da21f3457824dfbab26c6d9ecb25eeea357b9a3d1",
+    "platform/apps/web/src/pages/Leaderboard.tsx": "333761b338b9bdb80529378283bd9e8b72c822b1bb925a0d82fbf9db638ae976",
+    "platform/apps/web/src/pages/Player.tsx": "c23c551ef24034bb8572d8497ddade262641073bf4e793b55c8f7ce980be0c96",
+    "platform/apps/web/src/components/common.tsx": "3776d67b58610f5a50745846f12f4ef6ca61c5328448dd047897fa3273699298",
+    "platform/apps/web/test/i18n.test.tsx": "7a4ab4df67b92aebebc47b5c2b5639f69ada1c4dafa1daac7566261a97a64fcf",
+    "platform/apps/api/test/pages.test.ts": "92ab958bc7a21944b84778b53f6a76c0dbd775202438e72e0ff2d033b1a61bf0"
+  },
+  "final_source_snapshot_sha256": {
+    "platform/apps/web/src/pages/Match.tsx": "9ecfe57216a0b539dcb64234d964f60200988e61d4bb0bee51c14703d0bd0e21",
+    "platform/apps/web/src/i18n.tsx": "a90eaa655944970ab021a89d3898daf54087a95140b400526c17e94292a081cc",
+    "platform/apps/api/src/web/pages.ts": "be26854babcf09335c422fc2e08007d3013bfc8e356b2238b0f08551ae20b104",
+    "platform/apps/api/src/routes/signin.ts": "a5711937ceb02407ffccd313b4aa2fd074e7eae828614d77b7ff939def025721",
+    "platform/apps/web/src/pages/Home.tsx": "18e10ec6d25492108454399ad6babc71a07290bd703754f9f52b34b41b893faa",
+    "platform/apps/web/src/pages/Matches.tsx": "dcbbbda1399270292b272a9da21f3457824dfbab26c6d9ecb25eeea357b9a3d1",
+    "platform/apps/web/src/pages/Leaderboard.tsx": "333761b338b9bdb80529378283bd9e8b72c822b1bb925a0d82fbf9db638ae976",
+    "platform/apps/web/src/pages/Player.tsx": "c23c551ef24034bb8572d8497ddade262641073bf4e793b55c8f7ce980be0c96",
+    "platform/apps/web/src/components/common.tsx": "3776d67b58610f5a50745846f12f4ef6ca61c5328448dd047897fa3273699298",
+    "platform/apps/web/test/i18n.test.tsx": "7a4ab4df67b92aebebc47b5c2b5639f69ada1c4dafa1daac7566261a97a64fcf",
+    "platform/apps/api/test/pages.test.ts": "92ab958bc7a21944b84778b53f6a76c0dbd775202438e72e0ff2d033b1a61bf0"
+  },
+  "before_after_sha256": [
+    {
+      "path": "platform/apps/web/src/pages/Match.tsx",
+      "before": "9ecfe57216a0b539dcb64234d964f60200988e61d4bb0bee51c14703d0bd0e21",
+      "after": "9ecfe57216a0b539dcb64234d964f60200988e61d4bb0bee51c14703d0bd0e21",
+      "changed": false
+    },
+    {
+      "path": "platform/apps/web/src/i18n.tsx",
+      "before": "a90eaa655944970ab021a89d3898daf54087a95140b400526c17e94292a081cc",
+      "after": "a90eaa655944970ab021a89d3898daf54087a95140b400526c17e94292a081cc",
+      "changed": false
+    },
+    {
+      "path": "platform/apps/api/src/web/pages.ts",
+      "before": "be26854babcf09335c422fc2e08007d3013bfc8e356b2238b0f08551ae20b104",
+      "after": "be26854babcf09335c422fc2e08007d3013bfc8e356b2238b0f08551ae20b104",
+      "changed": false
+    },
+    {
+      "path": "platform/apps/api/src/routes/signin.ts",
+      "before": "a5711937ceb02407ffccd313b4aa2fd074e7eae828614d77b7ff939def025721",
+      "after": "a5711937ceb02407ffccd313b4aa2fd074e7eae828614d77b7ff939def025721",
+      "changed": false
+    },
+    {
+      "path": "platform/apps/web/src/pages/Home.tsx",
+      "before": "18e10ec6d25492108454399ad6babc71a07290bd703754f9f52b34b41b893faa",
+      "after": "18e10ec6d25492108454399ad6babc71a07290bd703754f9f52b34b41b893faa",
+      "changed": false
+    },
+    {
+      "path": "platform/apps/web/src/pages/Matches.tsx",
+      "before": "dcbbbda1399270292b272a9da21f3457824dfbab26c6d9ecb25eeea357b9a3d1",
+      "after": "dcbbbda1399270292b272a9da21f3457824dfbab26c6d9ecb25eeea357b9a3d1",
+      "changed": false
+    },
+    {
+      "path": "platform/apps/web/src/pages/Leaderboard.tsx",
+      "before": "333761b338b9bdb80529378283bd9e8b72c822b1bb925a0d82fbf9db638ae976",
+      "after": "333761b338b9bdb80529378283bd9e8b72c822b1bb925a0d82fbf9db638ae976",
+      "changed": false
+    },
+    {
+      "path": "platform/apps/web/src/pages/Player.tsx",
+      "before": "c23c551ef24034bb8572d8497ddade262641073bf4e793b55c8f7ce980be0c96",
+      "after": "c23c551ef24034bb8572d8497ddade262641073bf4e793b55c8f7ce980be0c96",
+      "changed": false
+    },
+    {
+      "path": "platform/apps/web/src/components/common.tsx",
+      "before": "3776d67b58610f5a50745846f12f4ef6ca61c5328448dd047897fa3273699298",
+      "after": "3776d67b58610f5a50745846f12f4ef6ca61c5328448dd047897fa3273699298",
+      "changed": false
+    },
+    {
+      "path": "platform/apps/web/test/i18n.test.tsx",
+      "before": "7a4ab4df67b92aebebc47b5c2b5639f69ada1c4dafa1daac7566261a97a64fcf",
+      "after": "7a4ab4df67b92aebebc47b5c2b5639f69ada1c4dafa1daac7566261a97a64fcf",
+      "changed": false
+    },
+    {
+      "path": "platform/apps/api/test/pages.test.ts",
+      "before": "92ab958bc7a21944b84778b53f6a76c0dbd775202438e72e0ff2d033b1a61bf0",
+      "after": "92ab958bc7a21944b84778b53f6a76c0dbd775202438e72e0ff2d033b1a61bf0",
+      "changed": false
+    }
+  ],
+  "followup_scope": "Original reviewer independently reread all3 requested missing caller fixes in common.tsx/Player.tsx; no catalog edits, test run, build or visual acceptance claimed."
+}

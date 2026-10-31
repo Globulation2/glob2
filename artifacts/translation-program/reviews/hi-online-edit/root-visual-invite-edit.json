@@ -1,0 +1,15 @@
+{
+  "editor": "/root",
+  "requested_by": "/root/hindi_online_review",
+  "before_sha256": "748ed6f83bbb1e55f66af93e24c61a02ad50c75222adac731e3ae104356baf60",
+  "after_sha256": "b5bad83ba5dcd630775cbe55b4557493347a74c222e766a0435074e398b88d5c",
+  "changes": [
+    {
+      "key": "{p0} invited you to their Globulation 2 room{p1}.",
+      "before": "{p0} ने अपने Globulation 2 कमरे{p1} में आपको बुलाया है।",
+      "after": "{p0} ने{p1} अपने Globulation 2 कमरे में आपको बुलाया है।",
+      "reason": "Actual server invite p1 has translated server+पर; place optional location before room clause so present/absent server cases remain grammatical."
+    }
+  ],
+  "state": "pending-original-reviewer-recheck"
+}

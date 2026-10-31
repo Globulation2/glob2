@@ -1,0 +1,809 @@
+{
+  "id": "online-online-013",
+  "source_sha256": "7583e9f8f0a03186eec456ed3b7a9c187509056b91f931551c3b7dc0e6b53457",
+  "surface": "online",
+  "domain": "online",
+  "context": "Account, multiplayer, upload and browser workflows. Preserve URLs, licences, paths, format tokens and product names.",
+  "entries": [
+    {
+      "id": "online:Take a seat first.",
+      "key": "Take a seat first.",
+      "source": "Take a seat first."
+    },
+    {
+      "id": "online:Target ID or type",
+      "key": "Target ID or type",
+      "source": "Target ID or type"
+    },
+    {
+      "id": "online:Team",
+      "key": "Team",
+      "source": "Team"
+    },
+    {
+      "id": "online:Team color",
+      "key": "Team color",
+      "source": "Team color"
+    },
+    {
+      "id": "online:Team color layers must match the base frame dimensions.",
+      "key": "Team color layers must match the base frame dimensions.",
+      "source": "Team color layers must match the base frame dimensions."
+    },
+    {
+      "id": "online:Team {value0}",
+      "key": "Team {value0}",
+      "source": "Team {value0}"
+    },
+    {
+      "id": "online:Teams",
+      "key": "Teams",
+      "source": "Teams"
+    },
+    {
+      "id": "online:Technical checks do not establish balance or fun.",
+      "key": "Technical checks do not establish balance or fun.",
+      "source": "Technical checks do not establish balance or fun."
+    },
+    {
+      "id": "online:Technical checks passed",
+      "key": "Technical checks passed",
+      "source": "Technical checks passed"
+    },
+    {
+      "id": "online:Technical details",
+      "key": "Technical details",
+      "source": "Technical details"
+    },
+    {
+      "id": "online:Tell me about the world you want to hear. We’ll shape the melody, instruments and three moods together.",
+      "key": "Tell me about the world you want to hear. We’ll shape the melody, instruments and three moods together.",
+      "source": "Tell me about the world you want to hear. We’ll shape the melody, instruments and three moods together."
+    },
+    {
+      "id": "online:Terrain",
+      "key": "Terrain",
+      "source": "Terrain"
+    },
+    {
+      "id": "online:Terrain & resource sets",
+      "key": "Terrain & resource sets",
+      "source": "Terrain & resource sets"
+    },
+    {
+      "id": "online:Terrain & resources",
+      "key": "Terrain & resources",
+      "source": "Terrain & resources"
+    },
+    {
+      "id": "online:Terrain Studio",
+      "key": "Terrain Studio",
+      "source": "Terrain Studio"
+    },
+    {
+      "id": "online:Terrain Studio is disabled on this instance. Your saved projects remain available.",
+      "key": "Terrain Studio is disabled on this instance. Your saved projects remain available.",
+      "source": "Terrain Studio is disabled on this instance. Your saved projects remain available."
+    },
+    {
+      "id": "online:Terrain Studio is disabled.",
+      "key": "Terrain Studio is disabled.",
+      "source": "Terrain Studio is disabled."
+    },
+    {
+      "id": "online:Terrain design conversation",
+      "key": "Terrain design conversation",
+      "source": "Terrain design conversation"
+    },
+    {
+      "id": "online:Terrain frames are 32×32. Resource and decor frames can be up to 64×64. Reupload the same PNG with new dimensions to replace its frame grid; then check its frame mappings.",
+      "key": "Terrain frames are 32×32. Resource and decor frames can be up to 64×64. Reupload the same PNG with new dimensions to replace its frame grid; then check its frame mappings.",
+      "source": "Terrain frames are 32×32. Resource and decor frames can be up to 64×64. Reupload the same PNG with new dimensions to replace its frame grid; then check its frame mappings."
+    },
+    {
+      "id": "online:Terrain projects",
+      "key": "Terrain projects",
+      "source": "Terrain projects"
+    },
+    {
+      "id": "online:Terrain-credit sales are not enabled.",
+      "key": "Terrain-credit sales are not enabled.",
+      "source": "Terrain-credit sales are not enabled."
+    },
+    {
+      "id": "online:Test diagnostics attached.",
+      "key": "Test diagnostics attached.",
+      "source": "Test diagnostics attached."
+    },
+    {
+      "id": "online:Test store — real-money checkout is not enabled.",
+      "key": "Test store — real-money checkout is not enabled.",
+      "source": "Test store — real-money checkout is not enabled."
+    },
+    {
+      "id": "online:That account cannot sign in.",
+      "key": "That account cannot sign in.",
+      "source": "That account cannot sign in."
+    },
+    {
+      "id": "online:That display name is taken.",
+      "key": "That display name is taken.",
+      "source": "That display name is taken."
+    },
+    {
+      "id": "online:That password is not right for this username. Try again.",
+      "key": "That password is not right for this username. Try again.",
+      "source": "That password is not right for this username. Try again."
+    },
+    {
+      "id": "online:That player is not in this room.",
+      "key": "That player is not in this room.",
+      "source": "That player is not in this room."
+    },
+    {
+      "id": "online:That seat is not open.",
+      "key": "That seat is not open.",
+      "source": "That seat is not open."
+    },
+    {
+      "id": "online:That username is taken.",
+      "key": "That username is taken.",
+      "source": "That username is taken."
+    },
+    {
+      "id": "online:The 3D canvas could not start.",
+      "key": "The 3D canvas could not start.",
+      "source": "The 3D canvas could not start."
+    },
+    {
+      "id": "online:The 3D canvas was interrupted. Your painting is safe.",
+      "key": "The 3D canvas was interrupted. Your painting is safe.",
+      "source": "The 3D canvas was interrupted. Your painting is safe."
+    },
+    {
+      "id": "online:The 3D shader could not compile.",
+      "key": "The 3D shader could not compile.",
+      "source": "The 3D shader could not compile."
+    },
+    {
+      "id": "online:The JavaScript file must use UTF-8.",
+      "key": "The JavaScript file must use UTF-8.",
+      "source": "The JavaScript file must use UTF-8."
+    },
+    {
+      "id": "online:The access token is invalid.",
+      "key": "The access token is invalid.",
+      "source": "The access token is invalid."
+    },
+    {
+      "id": "online:The account no longer exists.",
+      "key": "The account no longer exists.",
+      "source": "The account no longer exists."
+    },
+    {
+      "id": "online:The app didn’t open.",
+      "key": "The app didn’t open.",
+      "source": "The app didn’t open."
+    },
+    {
+      "id": "online:The artwork artifact is not available.",
+      "key": "The artwork artifact is not available.",
+      "source": "The artwork artifact is not available."
+    },
+    {
+      "id": "online:The browser kept the page from opening.",
+      "key": "The browser kept the page from opening.",
+      "source": "The browser kept the page from opening."
+    },
+    {
+      "id": "online:The current draft changed. Close this panel and review the new revision.",
+      "key": "The current draft changed. Close this panel and review the new revision.",
+      "source": "The current draft changed. Close this panel and review the new revision."
+    },
+    {
+      "id": "online:The designer reply needs reconciliation. No map build has started.",
+      "key": "The designer reply needs reconciliation. No map build has started.",
+      "source": "The designer reply needs reconciliation. No map build has started."
+    },
+    {
+      "id": "online:The draft changed during publication. Reload it.",
+      "key": "The draft changed during publication. Reload it.",
+      "source": "The draft changed during publication. Reload it."
+    },
+    {
+      "id": "online:The draft changed elsewhere. Download your local edits before reloading.",
+      "key": "The draft changed elsewhere. Download your local edits before reloading.",
+      "source": "The draft changed elsewhere. Download your local edits before reloading."
+    },
+    {
+      "id": "online:The edit target changed. Choose a saved version in history.",
+      "key": "The edit target changed. Choose a saved version in history.",
+      "source": "The edit target changed. Choose a saved version in history."
+    },
+    {
+      "id": "online:The file is missing from storage.",
+      "key": "The file is missing from storage.",
+      "source": "The file is missing from storage."
+    },
+    {
+      "id": "online:The file is missing.",
+      "key": "The file is missing.",
+      "source": "The file is missing."
+    },
+    {
+      "id": "online:The file must be no larger than 128 KiB.",
+      "key": "The file must be no larger than 128 KiB.",
+      "source": "The file must be no larger than 128 KiB."
+    },
+    {
+      "id": "online:The first visit downloads the game once. Later visits start from this device's copy.",
+      "key": "The first visit downloads the game once. Later visits start from this device's copy.",
+      "source": "The first visit downloads the game once. Later visits start from this device's copy."
+    },
+    {
+      "id": "online:The game could not be downloaded.",
+      "key": "The game could not be downloaded.",
+      "source": "The game could not be downloaded."
+    },
+    {
+      "id": "online:The game will switch to",
+      "key": "The game will switch to",
+      "source": "The game will switch to"
+    },
+    {
+      "id": "online:The generator package must fit the 256 KiB draft limit.",
+      "key": "The generator package must fit the 256 KiB draft limit.",
+      "source": "The generator package must fit the 256 KiB draft limit."
+    },
+    {
+      "id": "online:The generator package must use UTF-8.",
+      "key": "The generator package must use UTF-8.",
+      "source": "The generator package must use UTF-8."
+    },
+    {
+      "id": "online:The host removed you from this room; try again later.",
+      "key": "The host removed you from this room; try again later.",
+      "source": "The host removed you from this room; try again later."
+    },
+    {
+      "id": "online:The job is leased by another engine agent.",
+      "key": "The job is leased by another engine agent.",
+      "source": "The job is leased by another engine agent."
+    },
+    {
+      "id": "online:The lease expired or the job was already reported.",
+      "key": "The lease expired or the job was already reported.",
+      "source": "The lease expired or the job was already reported."
+    },
+    {
+      "id": "online:The leased job does not use this blob.",
+      "key": "The leased job does not use this blob.",
+      "source": "The leased job does not use this blob."
+    },
+    {
+      "id": "online:The map designer is replying",
+      "key": "The map designer is replying",
+      "source": "The map designer is replying"
+    },
+    {
+      "id": "online:The map designer is replying…",
+      "key": "The map designer is replying…",
+      "source": "The map designer is replying…"
+    },
+    {
+      "id": "online:The map file is missing from storage.",
+      "key": "The map file is missing from storage.",
+      "source": "The map file is missing from storage."
+    },
+    {
+      "id": "online:The map is fine. Saving it.",
+      "key": "The map is fine. Saving it.",
+      "source": "The map is fine. Saving it."
+    },
+    {
+      "id": "online:The map was created but its file did not upload. Upload it again below.",
+      "key": "The map was created but its file did not upload. Upload it again below.",
+      "source": "The map was created but its file did not upload. Upload it again below."
+    },
+    {
+      "id": "online:The match already ended with a different record.",
+      "key": "The match already ended with a different record.",
+      "source": "The match already ended with a different record."
+    },
+    {
+      "id": "online:The match has not ended yet.",
+      "key": "The match has not ended yet.",
+      "source": "The match has not ended yet."
+    },
+    {
+      "id": "online:The match is placed on another relay.",
+      "key": "The match is placed on another relay.",
+      "source": "The match is placed on another relay."
+    },
+    {
+      "id": "online:The match was played with another game version.",
+      "key": "The match was played with another game version.",
+      "source": "The match was played with another game version."
+    },
+    {
+      "id": "online:The music decoder could not be loaded.",
+      "key": "The music decoder could not be loaded.",
+      "source": "The music decoder could not be loaded."
+    },
+    {
+      "id": "online:The operation could not finish.",
+      "key": "The operation could not finish.",
+      "source": "The operation could not finish."
+    },
+    {
+      "id": "online:The original swarm: spires ringed around an egg.",
+      "key": "The original swarm: spires ringed around an egg.",
+      "source": "The original swarm: spires ringed around an egg."
+    },
+    {
+      "id": "online:The platform is unavailable: {slot0}",
+      "key": "The platform is unavailable: {slot0}",
+      "source": "The platform is unavailable: {slot0}"
+    },
+    {
+      "id": "online:The preview engine did not finish. Check the game runtime and try again.",
+      "key": "The preview engine did not finish. Check the game runtime and try again.",
+      "source": "The preview engine did not finish. Check the game runtime and try again."
+    },
+    {
+      "id": "online:The proposal is over.",
+      "key": "The proposal is over.",
+      "source": "The proposal is over."
+    },
+    {
+      "id": "online:The provider outcome must be reconciled before cancellation.",
+      "key": "The provider outcome must be reconciled before cancellation.",
+      "source": "The provider outcome must be reconciled before cancellation."
+    },
+    {
+      "id": "online:The refresh token is not valid.",
+      "key": "The refresh token is not valid.",
+      "source": "The refresh token is not valid."
+    },
+    {
+      "id": "online:The replay is available once the server has verified the match.",
+      "key": "The replay is available once the server has verified the match.",
+      "source": "The replay is available once the server has verified the match."
+    },
+    {
+      "id": "online:The request could not be completed.",
+      "key": "The request could not be completed.",
+      "source": "The request could not be completed."
+    },
+    {
+      "id": "online:The room changed; apply your change to the latest state.",
+      "key": "The room changed; apply your change to the latest state.",
+      "source": "The room changed; apply your change to the latest state."
+    },
+    {
+      "id": "online:The room has no seat {p0}.",
+      "key": "The room has no seat {p0}.",
+      "source": "The room has no seat {p0}."
+    },
+    {
+      "id": "online:The room is already starting.",
+      "key": "The room is already starting.",
+      "source": "The room is already starting."
+    },
+    {
+      "id": "online:The room is full.",
+      "key": "The room is full.",
+      "source": "The room is full."
+    },
+    {
+      "id": "online:The room is starting a match.",
+      "key": "The room is starting a match.",
+      "source": "The room is starting a match."
+    },
+    {
+      "id": "online:The saved draft could not be restored.",
+      "key": "The saved draft could not be restored.",
+      "source": "The saved draft could not be restored."
+    },
+    {
+      "id": "online:The selected generator release is no longer available for this room.",
+      "key": "The selected generator release is no longer available for this room.",
+      "source": "The selected generator release is no longer available for this room."
+    },
+    {
+      "id": "online:The server first loads the file with the game to check it; the map page is created only if it loads. Unlisted maps are reachable by link only; you can make a map public later.",
+      "key": "The server first loads the file with the game to check it; the map page is created only if it loads. Unlisted maps are reachable by link only; you can make a map public later.",
+      "source": "The server first loads the file with the game to check it; the map page is created only if it loads. Unlisted maps are reachable by link only; you can make a map public later."
+    },
+    {
+      "id": "online:The server’s verified replay. Open it in the game (Load game → Replays) or watch it here.",
+      "key": "The server’s verified replay. Open it in the game (Load game → Replays) or watch it here.",
+      "source": "The server’s verified replay. Open it in the game (Load game → Replays) or watch it here."
+    },
+    {
+      "id": "online:The session has ended.",
+      "key": "The session has ended.",
+      "source": "The session has ended."
+    },
+    {
+      "id": "online:The sheet must be at most 2048×2048 and fit its frame grid exactly.",
+      "key": "The sheet must be at most 2048×2048 and fit its frame grid exactly.",
+      "source": "The sheet must be at most 2048×2048 and fit its frame grid exactly."
+    },
+    {
+      "id": "online:The sign-in response is missing its state.",
+      "key": "The sign-in response is missing its state.",
+      "source": "The sign-in response is missing its state."
+    },
+    {
+      "id": "online:The single JavaScript file must be at most 128 KiB.",
+      "key": "The single JavaScript file must be at most 128 KiB.",
+      "source": "The single JavaScript file must be at most 128 KiB."
+    },
+    {
+      "id": "online:The stage audio is not available.",
+      "key": "The stage audio is not available.",
+      "source": "The stage audio is not available."
+    },
+    {
+      "id": "online:The stage image is not available.",
+      "key": "The stage image is not available.",
+      "source": "The stage image is not available."
+    },
+    {
+      "id": "online:The ticket is no longer waiting.",
+      "key": "The ticket is no longer waiting.",
+      "source": "The ticket is no longer waiting."
+    },
+    {
+      "id": "online:The upload is not ready for this action.",
+      "key": "The upload is not ready for this action.",
+      "source": "The upload is not ready for this action."
+    },
+    {
+      "id": "online:The uploaded file is not usable: {p0}.",
+      "key": "The uploaded file is not usable: {p0}.",
+      "source": "The uploaded file is not usable: {p0}."
+    },
+    {
+      "id": "online:The username {p0} is taken. Choose another one, or sign in above if it is yours.",
+      "key": "The username {p0} is taken. Choose another one, or sign in above if it is yours.",
+      "source": "The username {p0} is taken. Choose another one, or sign in above if it is yours."
+    },
+    {
+      "id": "online:The validation receipt expired. Run checks again.",
+      "key": "The validation receipt expired. Run checks again.",
+      "source": "The validation receipt expired. Run checks again."
+    },
+    {
+      "id": "online:The workspace is still loading.",
+      "key": "The workspace is still loading.",
+      "source": "The workspace is still loading."
+    },
+    {
+      "id": "online:Theme, title or creator",
+      "key": "Theme, title or creator",
+      "source": "Theme, title or creator"
+    },
+    {
+      "id": "online:Theme: dark (night colony)",
+      "key": "Theme: dark (night colony)",
+      "source": "Theme: dark (night colony)"
+    },
+    {
+      "id": "online:Theme: light (meadow)",
+      "key": "Theme: light (meadow)",
+      "source": "Theme: light (meadow)"
+    },
+    {
+      "id": "online:Theme: same as this device",
+      "key": "Theme: same as this device",
+      "source": "Theme: same as this device"
+    },
+    {
+      "id": "online:There is no account called {p0}.",
+      "key": "There is no account called {p0}.",
+      "source": "There is no account called {p0}."
+    },
+    {
+      "id": "online:There is no account called {p0}. Check the spelling{p1}.",
+      "key": "There is no account called {p0}. Check the spelling{p1}.",
+      "source": "There is no account called {p0}. Check the spelling{p1}."
+    },
+    {
+      "id": "online:These details apply to every release. Changing visibility also changes who can download them. Edit building definitions in your Studio draft and publish a new release.",
+      "key": "These details apply to every release. Changing visibility also changes who can download them. Edit building definitions in your Studio draft and publish a new release.",
+      "source": "These details apply to every release. Changing visibility also changes who can download them. Edit building definitions in your Studio draft and publish a new release."
+    },
+    {
+      "id": "online:They are playing a match right now; you can join the room and wait for the next one.",
+      "key": "They are playing a match right now; you can join the room and wait for the next one.",
+      "source": "They are playing a match right now; you can join the room and wait for the next one."
+    },
+    {
+      "id": "online:Thin",
+      "key": "Thin",
+      "source": "Thin"
+    },
+    {
+      "id": "online:This AI has reached its version limit.",
+      "key": "This AI has reached its version limit.",
+      "source": "This AI has reached its version limit."
+    },
+    {
+      "id": "online:This PNG exceeds the sheet upload limit.",
+      "key": "This PNG exceeds the sheet upload limit.",
+      "source": "This PNG exceeds the sheet upload limit."
+    },
+    {
+      "id": "online:This account cannot publish generators.",
+      "key": "This account cannot publish generators.",
+      "source": "This account cannot publish generators."
+    },
+    {
+      "id": "online:This account cannot upload generators.",
+      "key": "This account cannot upload generators.",
+      "source": "This account cannot upload generators."
+    },
+    {
+      "id": "online:This account does not own this colony skin.",
+      "key": "This account does not own this colony skin.",
+      "source": "This account does not own this colony skin."
+    },
+    {
+      "id": "online:This account is banned.",
+      "key": "This account is banned.",
+      "source": "This account is banned."
+    },
+    {
+      "id": "online:This account was deleted.",
+      "key": "This account was deleted.",
+      "source": "This account was deleted."
+    },
+    {
+      "id": "online:This building uses installed game artwork. Create or revise its appearance to preview custom artwork here.",
+      "key": "This building uses installed game artwork. Create or revise its appearance to preview custom artwork here.",
+      "source": "This building uses installed game artwork. Create or revise its appearance to preview custom artwork here."
+    },
+    {
+      "id": "online:This cannot be undone. Deleting your account:",
+      "key": "This cannot be undone. Deleting your account:",
+      "source": "This cannot be undone. Deleting your account:"
+    },
+    {
+      "id": "online:This changes the map’s visibility. Conversation history remains private.",
+      "key": "This changes the map’s visibility. Conversation history remains private.",
+      "source": "This changes the map’s visibility. Conversation history remains private."
+    },
+    {
+      "id": "online:This checkout is already finished.",
+      "key": "This checkout is already finished.",
+      "source": "This checkout is already finished."
+    },
+    {
+      "id": "online:This checkout is being recovered. Check your purchase status before trying again.",
+      "key": "This checkout is being recovered. Check your purchase status before trying again.",
+      "source": "This checkout is being recovered. Check your purchase status before trying again."
+    },
+    {
+      "id": "online:This checkout request was already used for another product.",
+      "key": "This checkout request was already used for another product.",
+      "source": "This checkout request was already used for another product."
+    },
+    {
+      "id": "online:This colony skin is unavailable.",
+      "key": "This colony skin is unavailable.",
+      "source": "This colony skin is unavailable."
+    },
+    {
+      "id": "online:This custom skin belongs to another account.",
+      "key": "This custom skin belongs to another account.",
+      "source": "This custom skin belongs to another account."
+    },
+    {
+      "id": "online:This device has a recovery copy.",
+      "key": "This device has a recovery copy.",
+      "source": "This device has a recovery copy."
+    },
+    {
+      "id": "online:This draft already exists. Open it to continue.",
+      "key": "This draft already exists. Open it to continue.",
+      "source": "This draft already exists. Open it to continue."
+    },
+    {
+      "id": "online:This draft changed or was published. Reload it before saving.",
+      "key": "This draft changed or was published. Reload it before saving.",
+      "source": "This draft changed or was published. Reload it before saving."
+    },
+    {
+      "id": "online:This draft changed. Check it again.",
+      "key": "This draft changed. Check it again.",
+      "source": "This draft changed. Check it again."
+    },
+    {
+      "id": "online:This draft changed. Reload it before saving again.",
+      "key": "This draft changed. Reload it before saving again.",
+      "source": "This draft changed. Reload it before saving again."
+    },
+    {
+      "id": "online:This draft changed. Save and check its current revision.",
+      "key": "This draft changed. Save and check its current revision.",
+      "source": "This draft changed. Save and check its current revision."
+    },
+    {
+      "id": "online:This family has 50 releases.",
+      "key": "This family has 50 releases.",
+      "source": "This family has 50 releases."
+    },
+    {
+      "id": "online:This family has been hidden by a moderator.",
+      "key": "This family has been hidden by a moderator.",
+      "source": "This family has been hidden by a moderator."
+    },
+    {
+      "id": "online:This family uses stock artwork.",
+      "key": "This family uses stock artwork.",
+      "source": "This family uses stock artwork."
+    },
+    {
+      "id": "online:This file is too big: uploads are limited to {p0}.",
+      "key": "This file is too big: uploads are limited to {p0}.",
+      "source": "This file is too big: uploads are limited to {p0}."
+    },
+    {
+      "id": "online:This game version is not supported here; update the game.",
+      "key": "This game version is not supported here; update the game.",
+      "source": "This game version is not supported here; update the game."
+    },
+    {
+      "id": "online:This generator has reached its version limit.",
+      "key": "This generator has reached its version limit.",
+      "source": "This generator has reached its version limit."
+    },
+    {
+      "id": "online:This generator release is unavailable, editor-only, or not validated for this engine.",
+      "key": "This generator release is unavailable, editor-only, or not validated for this engine.",
+      "source": "This generator release is unavailable, editor-only, or not validated for this engine."
+    },
+    {
+      "id": "online:This image could not be loaded.",
+      "key": "This image could not be loaded.",
+      "source": "This image could not be loaded."
+    },
+    {
+      "id": "online:This instance",
+      "key": "This instance",
+      "source": "This instance"
+    },
+    {
+      "id": "online:This instance cannot validate files of that version.",
+      "key": "This instance cannot validate files of that version.",
+      "source": "This instance cannot validate files of that version."
+    },
+    {
+      "id": "online:This instance cannot validate maps of that version.",
+      "key": "This instance cannot validate maps of that version.",
+      "source": "This instance cannot validate maps of that version."
+    },
+    {
+      "id": "online:This instance has no rated queues.",
+      "key": "This instance has no rated queues.",
+      "source": "This instance has no rated queues."
+    },
+    {
+      "id": "online:This invite has expired or does not exist.",
+      "key": "This invite has expired or does not exist.",
+      "source": "This invite has expired or does not exist."
+    },
+    {
+      "id": "online:This invite has expired or does not exist. Ask for a new link.",
+      "key": "This invite has expired or does not exist. Ask for a new link.",
+      "source": "This invite has expired or does not exist. Ask for a new link."
+    },
+    {
+      "id": "online:This is the last way to sign in to this account; link another method first.",
+      "key": "This is the last way to sign in to this account; link another method first.",
+      "source": "This is the last way to sign in to this account; link another method first."
+    },
+    {
+      "id": "online:This key belongs to engine agent {p0}.",
+      "key": "This key belongs to engine agent {p0}.",
+      "source": "This key belongs to engine agent {p0}."
+    },
+    {
+      "id": "online:This key belongs to relay {p0}.",
+      "key": "This key belongs to relay {p0}.",
+      "source": "This key belongs to relay {p0}."
+    },
+    {
+      "id": "online:This match is still being played.",
+      "key": "This match is still being played.",
+      "source": "This match is still being played."
+    },
+    {
+      "id": "online:This music includes AI-generated audio",
+      "key": "This music includes AI-generated audio",
+      "source": "This music includes AI-generated audio"
+    },
+    {
+      "id": "online:This namespace belongs to another author. Fork the family first.",
+      "key": "This namespace belongs to another author. Fork the family first.",
+      "source": "This namespace belongs to another author. Fork the family first."
+    },
+    {
+      "id": "online:This namespace was claimed by another author. Fork it first.",
+      "key": "This namespace was claimed by another author. Fork it first.",
+      "source": "This namespace was claimed by another author. Fork it first."
+    },
+    {
+      "id": "online:This older generation has limited stage history. Available images are preserved.",
+      "key": "This older generation has limited stage history. Available images are preserved.",
+      "source": "This older generation has limited stage history. Available images are preserved."
+    },
+    {
+      "id": "online:This package ID is already reserved. Forks need a new ID.",
+      "key": "This package ID is already reserved. Forks need a new ID.",
+      "source": "This package ID is already reserved. Forks need a new ID."
+    },
+    {
+      "id": "online:This page is for moderators.",
+      "key": "This page is for moderators.",
+      "source": "This page is for moderators."
+    },
+    {
+      "id": "online:This password is too short: it has {p0} characters, and passwords need at least {p1}.",
+      "key": "This password is too short: it has {p0} characters, and passwords need at least {p1}.",
+      "source": "This password is too short: it has {p0} characters, and passwords need at least {p1}."
+    },
+    {
+      "id": "online:This preview could not be loaded.",
+      "key": "This preview could not be loaded.",
+      "source": "This preview could not be loaded."
+    },
+    {
+      "id": "online:This product is not available for purchase yet.",
+      "key": "This product is not available for purchase yet.",
+      "source": "This product is not available for purchase yet."
+    },
+    {
+      "id": "online:This release label or package is already published.",
+      "key": "This release label or package is already published.",
+      "source": "This release label or package is already published."
+    },
+    {
+      "id": "online:This release no longer accepts uploads.",
+      "key": "This release no longer accepts uploads.",
+      "source": "This release no longer accepts uploads."
+    },
+    {
+      "id": "online:This release uses the current saved draft. Unsaved edits are not included.",
+      "key": "This release uses the current saved draft. Unsaved edits are not included.",
+      "source": "This release uses the current saved draft. Unsaved edits are not included."
+    },
+    {
+      "id": "online:This room has closed",
+      "key": "This room has closed",
+      "source": "This room has closed"
+    },
+    {
+      "id": "online:This room has closed. Ask the host for a new invite.",
+      "key": "This room has closed. Ask the host for a new invite.",
+      "source": "This room has closed. Ask the host for a new invite."
+    },
+    {
+      "id": "online:This room is for another game version.",
+      "key": "This room is for another game version.",
+      "source": "This room is for another game version."
+    },
+    {
+      "id": "online:This set has reached its 100-draft limit. Delete unused drafts first.",
+      "key": "This set has reached its 100-draft limit. Delete unused drafts first.",
+      "source": "This set has reached its 100-draft limit. Delete unused drafts first."
+    },
+    {
+      "id": "online:This set has reached its 50-release limit.",
+      "key": "This set has reached its 50-release limit.",
+      "source": "This set has reached its 50-release limit."
+    }
+  ]
+}

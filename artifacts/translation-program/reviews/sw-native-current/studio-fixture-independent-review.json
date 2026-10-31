@@ -1,0 +1,34 @@
+{
+  "reviewer": "/root/sw_visual_independent",
+  "scope": "Read-only review of Studio fixture adaptation for intentional nested numeric bidi markup",
+  "status": "proposed-fix-approved-for-application-and-test",
+  "read_files": [
+    {
+      "path": "platform/apps/web/test/studio.test.tsx",
+      "sha256": "a8fb425a8aadf995d7769b05546e0124e7fea7d621c438df8b833db4edd0b773"
+    },
+    {
+      "path": "platform/apps/web/src/i18n.tsx",
+      "sha256": "a90eaa655944970ab021a89d3898daf54087a95140b400526c17e94292a081cc"
+    },
+    {
+      "path": "platform/apps/web/src/pages/studio/StudioWorkspace.tsx",
+      "sha256": "727adbf59945df061b0a1d086580d84bb97c44649da073584e7335ef1f594269"
+    },
+    {
+      "path": "platform/apps/web/test/i18n.test.tsx",
+      "sha256": "7a4ab4df67b92aebebc47b5c2b5639f69ada1c4dafa1daac7566261a97a64fcf"
+    }
+  ],
+  "finding": "RichMessage coalesces numeric slots separated by multiplication into one bdi dir=ltr; StudioWorkspace passes numeric width/height and pluralized players, so summary descendant textContent remains 256 \u00d7 128 \u00b7 4 players while the direct text-node query no longer matches.",
+  "proposal": "Use getByText((_content, element) => element?.tagName === \"SUMMARY\" && /256 \u00d7 128 \u00b7 4 players/.test(element.textContent ?? \"\")).",
+  "rationale": [
+    "Retains exact existing dimension and player-count expectation, limits matching to SUMMARY, retains unique-match behavior of getByText and performs the same click.",
+    "Height=128 and resetting revision selection after Players change remain asserted.",
+    "Existing i18n tests separately assert numeric-isolate text order and bdi dir=ltr; fixture fix does not suppress those checks."
+  ],
+  "limits": [
+    "Read-only source review; no files edited and proposed fixture not executed by this reviewer.",
+    "Regex preserves original substring-match strictness; exact equality is optional but not necessary to restore the existing test contract."
+  ]
+}

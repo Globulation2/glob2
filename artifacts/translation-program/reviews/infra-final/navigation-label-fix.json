@@ -1,0 +1,43 @@
+{
+  "author": "/root/translation_kit",
+  "status": "source freeze ready for independent root review and build; no test executed",
+  "reported_evidence": "native-preview/release-three/ur/390/gameplay.png",
+  "finding": "Actual Urdu bottom captions clipped by hardcoded16pt slot at32pt below the48pt actionbar top. Normal Urdu script line is taller than16/.86.",
+  "change": "Measure all six translated wrapped captions using active font default, Ag and actual line heights; scale by .86 and text growth; ceil caption extent before integer clipping. Preserve48pt minimum for captions fitting16pt; taller captions reserve4pt bottompadding. Grow strip upward and share geometry with world bounds and input. Icon band unchanged. Only navigation opts into actual line pitch in drawPointLabel; other callers preserve existing behavior.",
+  "test": "GameGUITouch/phone navigation contains actual Urdu labels at normal and enlarged text sizes [display]",
+  "test_intent": "Actual authored Urdu captions and13px font at390x844, text growth1/1.5; all6wrappedfont extents fitcaption rectangle,4pt bottompaddinginside safe bounds, actionhitmapping agrees, directlabeldraw leaves game checksum unchanged.",
+  "build_command": "PYTHONPATH=$PWD python3 tools/dev_build.py engine-tests translation-preview-harness",
+  "test_command": "DYLD_LIBRARY_PATH=$PWD/artifacts/translation-program/script-support/prefix/lib GLOB2_SIM_THREAD=0 python3 test/run_tests.py --build-dir build/darwin/client/debug/dev-dev_fast-true-linker-auto --binary engine --filter 'GameGUITouch/phone navigation contains*' --timeout 180 --jobs 1 --display-jobs 1",
+  "source_sha256": {
+    "src/hud/touch/GameGUITouch.cpp": "96d342744a5048fd38042b8ea3276bc0d8ddd8b6de0e96ac35914833c6f19eb4",
+    "src/hud/touch/GameGUITouch.h": "e299d68dfd081f587230c8049aba19a99c553d1f8747a409bfe468342f1bd221",
+    "src/hud/touch/GameGUITouchView.cpp": "6548dc32b515c083ed34d81acacfee411c26a4a8005e68051ffb777ab3dd8f63",
+    "src/hud/touch/GameGUITouchHarness.cpp": "13d1a7953b8c7fe3433825868b957470b64d5293828a270ebcd169225ee6f328",
+    "docs/development/ui-framework.md": "656aedcd923f78a51100e6dd90e0632570cd360f6ba86522d42dc4d97d11916c",
+    "libgag/include/TouchText.h": "71eb059abd12e090a6c0674cec761a7041339e89dcfadfdae8904f570c6d97cb"
+  },
+  "checks_completed": [
+    "git diff --check"
+  ],
+  "pending": [
+    "Native build and focused test after root capture batch releases lock.",
+    "Independent actual Urdu390 gameplay capture and default/enlarged label rendering recheck.",
+    "Existing Hindi/Sw ordinary bar geometry and affected interaction regression."
+  ],
+  "product_simulation_changed": false,
+  "self_approved": false,
+  "cache_audit": {
+    "path": "layout → navigationLabelHeight → pointLines → inline wrapTouchText in TouchText.h; UTF-8 codepoint/prefix-width loop, not tutorial clusterEnds/HarfBuzz cluster path. TrueTypeFont width/height metrics cache already bounds/reuses prefix metrics, but loop/string construction repeats.",
+    "correction": "Earlier commentary incorrectly inferred shared cluster wrapping; exact source audit corrected this to parent. No repeated-HB-cluster or measured speedup claim.",
+    "bounded_cache": "Single optional last NavigationMeasurement per HUD. Key: font pointer, whole-caption width/height probes under normal TextStyle, default/Ag lineheight, six actual translated values, language, replay mode, width, logical unit, textGrowth. Changed same-object reload metrics invalidate.",
+    "focused_regression": "Counting actual font tracks width and cluster calls: ten repeated identical measurements require exactly60 whole-caption width probes and zero additional cluster calls. Font reload/width/replay/language changes require wrap recomputation. Actual Hindi क्षि cluster remains whole at width1, with blank paragraphs; Latin repeated spaces/blank lines retained. Actual Urdu1/1.5 caption containment/hit/checksum tests remain.",
+    "limits": "No build, test execution or performance measurement yet; source freeze for root. Same-metric font reload cannot be distinguished by generic Font metric probes; unchanged pinned font does not need a layout rebuild.",
+    "subsequent_authorized_wrapper_fix": "Root explicitly authorized TouchText.h to preserve shaped clusters. pointLines now obtains font clusterEnds per paragraph; validates strictly increasing complete UTF-8 boundaries, falling back to codepoints on malformed provider output. Original whitespace/newline and last-space break algorithm preserved. Cache now also avoids repeated cluster shaping on hits."
+  },
+  "build_correction": {
+    "root_build_session": 64664,
+    "previous_outcome": "Failed compilation: two Font::getDefaultLineHeight calls unavailable on generic Font interface.",
+    "fix": "Both use existing Font::getStringHeight(\"\") baseline metric, max with Ag and actual captions. No Font API added. CountingFont width override matches existing by-value signature.",
+    "status": "Source fixed and frozen; next root build/test pending."
+  }
+}

@@ -1,0 +1,7 @@
+{
+  "baseline": "HEAD",
+  "baseline_revision": "6a16670c6daafa34f1f86a47014f23e0d05fd4e3",
+  "current_run_body_same_as_HEAD": true,
+  "run_body_sha256": "93ab37e4d83fa19938f8b68be89e2eaf17aea6cc6bfffdbda71a91e4a88a8eef",
+  "meaning": "Only source equality of monolithic harness run() body, not baseline runtime or product equivalence; no checkout/reset or baseline binary run performed."
+}

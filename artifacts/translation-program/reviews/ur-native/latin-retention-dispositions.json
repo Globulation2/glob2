@@ -1,0 +1,2290 @@
+{
+  "catalog_sha256": "a2398e2e0776ad8828db86173bbeb849a119949401ec444c46ef0b8a8e6d179d",
+  "entries": [
+    {
+      "key": "[abreaviation explanation A]",
+      "target": "A: اتحادی",
+      "tokens": [
+        "A:"
+      ],
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[abreaviation explanation C]",
+      "target": "C: انہیں چیٹ پیغامات بھیجیں",
+      "tokens": [
+        "C:"
+      ],
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[abreaviation explanation fV]",
+      "target": "fV: سرائے کی عمارتوں کی حدِ نگاہ دکھائیں (دوسری ٹیموں کے یونٹ اپنی ٹیم میں لانے کے لیے)",
+      "tokens": [
+        "fV:"
+      ],
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[abreaviation explanation mV]",
+      "target": "mV: بازاروں کی حدِ نگاہ دکھائیں (پھلوں کے تبادلے کے لیے)",
+      "tokens": [
+        "mV:"
+      ],
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[abreaviation explanation V]",
+      "target": "V: تمام عمارتوں کی حدِ نگاہ دکھائیں",
+      "tokens": [
+        "V:"
+      ],
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[AICastor]",
+      "target": "Castor",
+      "tokens": [
+        "Castor"
+      ],
+      "reason": "NamedAIcontrollers/JavaScript/AI heading abbreviations retained; all narrativeUrdu reviewedagainstfullEnglishprofile.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[AIMaxima]",
+      "target": "Maxima",
+      "tokens": [
+        "Maxima"
+      ],
+      "reason": "NamedAIcontrollers/JavaScript/AI heading abbreviations retained; all narrativeUrdu reviewedagainstfullEnglishprofile.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[AICortex]",
+      "target": "Cortex",
+      "tokens": [
+        "Cortex"
+      ],
+      "reason": "NamedAIcontrollers/JavaScript/AI heading abbreviations retained; all narrativeUrdu reviewedagainstfullEnglishprofile.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[AINicowar]",
+      "target": "Nicowar",
+      "tokens": [
+        "Nicowar"
+      ],
+      "reason": "NamedAIcontrollers/JavaScript/AI heading abbreviations retained; all narrativeUrdu reviewedagainstfullEnglishprofile.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[AINumbi]",
+      "target": "Numbi",
+      "tokens": [
+        "Numbi"
+      ],
+      "reason": "NamedAIcontrollers/JavaScript/AI heading abbreviations retained; all narrativeUrdu reviewedagainstfullEnglishprofile.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[AIEcono]",
+      "target": "Econo",
+      "tokens": [
+        "Econo"
+      ],
+      "reason": "NamedAIcontrollers/JavaScript/AI heading abbreviations retained; all narrativeUrdu reviewedagainstfullEnglishprofile.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[AIWarrush]",
+      "target": "Warrush",
+      "tokens": [
+        "Warrush"
+      ],
+      "reason": "NamedAIcontrollers/JavaScript/AI heading abbreviations retained; all narrativeUrdu reviewedagainstfullEnglishprofile.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[AICabino]",
+      "target": "Cabino",
+      "tokens": [
+        "Cabino"
+      ],
+      "reason": "NamedAIcontrollers/JavaScript/AI heading abbreviations retained; all narrativeUrdu reviewedagainstfullEnglishprofile.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[AIJavaScript]",
+      "target": "JavaScript",
+      "tokens": [
+        "JavaScript"
+      ],
+      "reason": "NamedAIcontrollers/JavaScript/AI heading abbreviations retained; all narrativeUrdu reviewedagainstfullEnglishprofile.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[AIJavaScript-Description]",
+      "target": "اندرونی JavaScript ماخذ ماڈیول استعمال کرنے والا کنٹرولر۔",
+      "tokens": [
+        "JavaScript"
+      ],
+      "reason": "NamedAIcontrollers/JavaScript/AI heading abbreviations retained; all narrativeUrdu reviewedagainstfullEnglishprofile.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[alt %0]",
+      "target": "alt-%0",
+      "tokens": [
+        "alt-"
+      ],
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[backspace]",
+      "target": "Backspace",
+      "tokens": [
+        "Backspace"
+      ],
+      "reason": "Physicalkeyboardkeyname; preserveLatin keycaption perconsultedMozillaUrduguide. Compose iskeyboardkey, notmusiccomposition.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[break]",
+      "target": "Break",
+      "tokens": [
+        "Break"
+      ],
+      "reason": "Physicalkeyboardkeyname; preserveLatin keycaption perconsultedMozillaUrduguide. Compose iskeyboardkey, notmusiccomposition.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[Building Tool Box Explanation]",
+      "target": "Shift + کھینچیں = خانہ",
+      "tokens": [
+        "Shift"
+      ],
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[Building Tool Line Explanation]",
+      "target": "Ctrl + کھینچیں = لکیر",
+      "tokens": [
+        "Ctrl"
+      ],
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[caps lock]",
+      "target": "Caps Lock",
+      "tokens": [
+        "Caps",
+        "Lock"
+      ],
+      "reason": "Physicalkeyboardkeyname; preserveLatin keycaption perconsultedMozillaUrduguide. Compose iskeyboardkey, notmusiccomposition.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[compose]",
+      "target": "Compose",
+      "tokens": [
+        "Compose"
+      ],
+      "reason": "Physicalkeyboardkeyname; preserveLatin keycaption perconsultedMozillaUrduguide. Compose iskeyboardkey, notmusiccomposition.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[control %0]",
+      "target": "Ctrl-%0",
+      "tokens": [
+        "Ctrl-"
+      ],
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[ctrl - line]",
+      "target": "Ctrl - لکیر",
+      "tokens": [
+        "Ctrl"
+      ],
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[end]",
+      "target": "End",
+      "tokens": [
+        "End"
+      ],
+      "reason": "Physicalkeyboardkeyname; preserveLatin keycaption perconsultedMozillaUrduguide. Compose iskeyboardkey, notmusiccomposition.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[enter]",
+      "target": "Enter",
+      "tokens": [
+        "Enter"
+      ],
+      "reason": "Physicalkeyboardkeyname; preserveLatin keycaption perconsultedMozillaUrduguide. Compose iskeyboardkey, notmusiccomposition.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[escape]",
+      "target": "Escape",
+      "tokens": [
+        "Escape"
+      ],
+      "reason": "Physicalkeyboardkeyname; preserveLatin keycaption perconsultedMozillaUrduguide. Compose iskeyboardkey, notmusiccomposition.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[f10]",
+      "target": "F10",
+      "tokens": [
+        "F10"
+      ],
+      "reason": "Physicalkeyboardkeyname; preserveLatin keycaption perconsultedMozillaUrduguide. Compose iskeyboardkey, notmusiccomposition.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[f11]",
+      "target": "F11",
+      "tokens": [
+        "F11"
+      ],
+      "reason": "Physicalkeyboardkeyname; preserveLatin keycaption perconsultedMozillaUrduguide. Compose iskeyboardkey, notmusiccomposition.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[f12]",
+      "target": "F12",
+      "tokens": [
+        "F12"
+      ],
+      "reason": "Physicalkeyboardkeyname; preserveLatin keycaption perconsultedMozillaUrduguide. Compose iskeyboardkey, notmusiccomposition.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[f13]",
+      "target": "F13",
+      "tokens": [
+        "F13"
+      ],
+      "reason": "Physicalkeyboardkeyname; preserveLatin keycaption perconsultedMozillaUrduguide. Compose iskeyboardkey, notmusiccomposition.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[f14]",
+      "target": "F14",
+      "tokens": [
+        "F14"
+      ],
+      "reason": "Physicalkeyboardkeyname; preserveLatin keycaption perconsultedMozillaUrduguide. Compose iskeyboardkey, notmusiccomposition.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[f15]",
+      "target": "F15",
+      "tokens": [
+        "F15"
+      ],
+      "reason": "Physicalkeyboardkeyname; preserveLatin keycaption perconsultedMozillaUrduguide. Compose iskeyboardkey, notmusiccomposition.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[f1]",
+      "target": "F1",
+      "tokens": [
+        "F1"
+      ],
+      "reason": "Physicalkeyboardkeyname; preserveLatin keycaption perconsultedMozillaUrduguide. Compose iskeyboardkey, notmusiccomposition.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[f2]",
+      "target": "F2",
+      "tokens": [
+        "F2"
+      ],
+      "reason": "Physicalkeyboardkeyname; preserveLatin keycaption perconsultedMozillaUrduguide. Compose iskeyboardkey, notmusiccomposition.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[f3]",
+      "target": "F3",
+      "tokens": [
+        "F3"
+      ],
+      "reason": "Physicalkeyboardkeyname; preserveLatin keycaption perconsultedMozillaUrduguide. Compose iskeyboardkey, notmusiccomposition.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[f4]",
+      "target": "F4",
+      "tokens": [
+        "F4"
+      ],
+      "reason": "Physicalkeyboardkeyname; preserveLatin keycaption perconsultedMozillaUrduguide. Compose iskeyboardkey, notmusiccomposition.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[f5]",
+      "target": "F5",
+      "tokens": [
+        "F5"
+      ],
+      "reason": "Physicalkeyboardkeyname; preserveLatin keycaption perconsultedMozillaUrduguide. Compose iskeyboardkey, notmusiccomposition.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[f6]",
+      "target": "F6",
+      "tokens": [
+        "F6"
+      ],
+      "reason": "Physicalkeyboardkeyname; preserveLatin keycaption perconsultedMozillaUrduguide. Compose iskeyboardkey, notmusiccomposition.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[f7]",
+      "target": "F7",
+      "tokens": [
+        "F7"
+      ],
+      "reason": "Physicalkeyboardkeyname; preserveLatin keycaption perconsultedMozillaUrduguide. Compose iskeyboardkey, notmusiccomposition.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[f8]",
+      "target": "F8",
+      "tokens": [
+        "F8"
+      ],
+      "reason": "Physicalkeyboardkeyname; preserveLatin keycaption perconsultedMozillaUrduguide. Compose iskeyboardkey, notmusiccomposition.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[f9]",
+      "target": "F9",
+      "tokens": [
+        "F9"
+      ],
+      "reason": "Physicalkeyboardkeyname; preserveLatin keycaption perconsultedMozillaUrduguide. Compose iskeyboardkey, notmusiccomposition.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[home]",
+      "target": "Home",
+      "tokens": [
+        "Home"
+      ],
+      "reason": "Physicalkeyboardkeyname; preserveLatin keycaption perconsultedMozillaUrduguide. Compose iskeyboardkey, notmusiccomposition.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[hp]",
+      "target": "HP",
+      "tokens": [
+        "HP"
+      ],
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[insert]",
+      "target": "Insert",
+      "tokens": [
+        "Insert"
+      ],
+      "reason": "Physicalkeyboardkeyname; preserveLatin keycaption perconsultedMozillaUrduguide. Compose iskeyboardkey, notmusiccomposition.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[lan]",
+      "target": "LAN کھیل",
+      "tokens": [
+        "LAN"
+      ],
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[language-code]",
+      "target": "ur",
+      "tokens": [
+        "ur"
+      ],
+      "reason": "ur is stable technicalgamecatalogcode, notvisibleEnglishlanguageword.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[left meta]",
+      "target": "بایاں Meta",
+      "tokens": [
+        "Meta"
+      ],
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[left super]",
+      "target": "بائیں طرف کی Windows کلید",
+      "tokens": [
+        "Windows"
+      ],
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[meta %0]",
+      "target": "Meta-%0",
+      "tokens": [
+        "Meta-"
+      ],
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[numlock]",
+      "target": "Num Lock",
+      "tokens": [
+        "Num",
+        "Lock"
+      ],
+      "reason": "Physicalkeyboardkeyname; preserveLatin keycaption perconsultedMozillaUrduguide. Compose iskeyboardkey, notmusiccomposition.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[OpenGL]",
+      "target": "OpenGL",
+      "tokens": [
+        "OpenGL"
+      ],
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[page down]",
+      "target": "Page Down",
+      "tokens": [
+        "Page",
+        "Down"
+      ],
+      "reason": "Physicalkeyboardkeyname; preserveLatin keycaption perconsultedMozillaUrduguide. Compose iskeyboardkey, notmusiccomposition.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[page up]",
+      "target": "Page Up",
+      "tokens": [
+        "Page",
+        "Up"
+      ],
+      "reason": "Physicalkeyboardkeyname; preserveLatin keycaption perconsultedMozillaUrduguide. Compose iskeyboardkey, notmusiccomposition.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[press space]",
+      "target": "جاری رکھنے کے لیے Space دبائیں۔",
+      "tokens": [
+        "Space"
+      ],
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[print screen]",
+      "target": "Print Screen",
+      "tokens": [
+        "Print",
+        "Screen"
+      ],
+      "reason": "Physicalkeyboardkeyname; preserveLatin keycaption perconsultedMozillaUrduguide. Compose iskeyboardkey, notmusiccomposition.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[return]",
+      "target": "Enter",
+      "tokens": [
+        "Enter"
+      ],
+      "reason": "Physicalkeyboardkeyname; preserveLatin keycaption perconsultedMozillaUrduguide. Compose iskeyboardkey, notmusiccomposition.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[right meta]",
+      "target": "دایاں Meta",
+      "tokens": [
+        "Meta"
+      ],
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[right super]",
+      "target": "دائیں طرف کی Windows کلید",
+      "tokens": [
+        "Windows"
+      ],
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[scroll lock]",
+      "target": "Scroll Lock",
+      "tokens": [
+        "Scroll",
+        "Lock"
+      ],
+      "reason": "Physicalkeyboardkeyname; preserveLatin keycaption perconsultedMozillaUrduguide. Compose iskeyboardkey, notmusiccomposition.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[shift %0]",
+      "target": "Shift-%0",
+      "tokens": [
+        "Shift-"
+      ],
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[shortcut explanation enter]",
+      "target": "Enter: چیٹ پیغام بھیجیں",
+      "tokens": [
+        "Enter:"
+      ],
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[shortcut explanation v]",
+      "target": "V: بولنے کے لیے دبائے رکھیں",
+      "tokens": [
+        "V:"
+      ],
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[space]",
+      "target": "Space",
+      "tokens": [
+        "Space"
+      ],
+      "reason": "Physicalkeyboardkeyname; preserveLatin keycaption perconsultedMozillaUrduguide. Compose iskeyboardkey, notmusiccomposition.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[sys req]",
+      "target": "SysRq",
+      "tokens": [
+        "SysRq"
+      ],
+      "reason": "Physicalkeyboardkeyname; preserveLatin keycaption perconsultedMozillaUrduguide. Compose iskeyboardkey, notmusiccomposition.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[tab]",
+      "target": "Tab",
+      "tokens": [
+        "Tab"
+      ],
+      "reason": "Physicalkeyboardkeyname; preserveLatin keycaption perconsultedMozillaUrduguide. Compose iskeyboardkey, notmusiccomposition.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[tutorial text 1]",
+      "target": "Globulation 2 کی ابتدائی تربیت میں خوش آمدید! یہاں سرائے بنانا، علاقوں کی کھوج اور دشمن کو تباہ کرنا سیکھیں گے۔ مفید معلومات کی کوئی کمی نہیں!",
+      "tokens": [
+        "Globulation"
+      ],
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[tutorial text 4]",
+      "target": "آپ تقریباً مکمل کر چکے ہیں۔ صرف جھنڈے اور حملہ باقی ہیں۔ پھر آپ اپنی مرضی کے کھیل آزمانے اور آخرکار Globulation 2 کے بہترین کھلاڑیوں سے آن لائن مقابلہ کرنے کے لیے تیار ہوں گے۔",
+      "tokens": [
+        "Globulation"
+      ],
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD]",
+      "target": "YOG میٹا سرور نے رابطہ مسترد کر دیا ہے کیونکہ آپ کا Globulation 2 کلائنٹ پرانا ہے۔ آن لائن کھیلنے کے لیے www.globulation2.org سے تازہ ترین ورژن حاصل کریں۔",
+      "tokens": [
+        "YOG",
+        "Globulation",
+        "www.globulation2.org"
+      ],
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[game speed help]",
+      "target": "صرف اکیلے کھیل اور ری پلے کے لیے۔ ملٹی پلیئر 1x رفتار پر چلتا ہے۔",
+      "tokens": [
+        "x"
+      ],
+      "reason": "Numeric scale/2D notation preserves source; no Englishprose.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[multiplayer game speed]",
+      "target": "کھیل کی رفتار: 1x (ملٹی پلیئر)",
+      "tokens": [
+        "x"
+      ],
+      "reason": "Numeric scale/2D notation preserves source; no Englishprose.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[AI strategy & counterplay]",
+      "target": "AI کی حکمتِ عملی اور مقابلے کے طریقے",
+      "tokens": [
+        "AI"
+      ],
+      "reason": "NamedAIcontrollers/JavaScript/AI heading abbreviations retained; all narrativeUrdu reviewedagainstfullEnglishprofile.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[AICastor-Profile]",
+      "target": "بنیادی حکمتِ عملی: بڑے حملے کرنے سے پہلے پیداواری بستی اور ٹیکنالوجی میں سرمایہ لگاتا ہے۔ ترجیحی تعمیراتی منصوبے اس کی بستی کو بڑھاتے ہیں؛ ترقی، فوجی سہولیات اور وقت کے ساتھ اس کی جنگی تیاری بڑھتی ہے۔\\n\\nمعیشت اور ترقی: آب رسانی، خوراک کے ذرائع کی افزائش، رکاوٹوں اور کارکنوں کی رسائی کا جائزہ لیتا ہے۔ پیداوار کے ساتھ خوراک کی توسیع، ترقی اور دفاع سنبھالتا ہے۔\\n\\nحملہ اور دفاع: صحت مند جنگجوؤں کی حملہ آور طاقت کا اندازہ لگا کر طاقت یا وقت کی شرائط پوری ہونے پر حملہ کرتا ہے۔ پہلے دیکھی ہوئی، قابلِ رسائی عمارتوں، خصوصاً بیرکوں اور اسکولوں کو ترجیح دیتا ہے اور حملے کے جھنڈے قیمتی اہداف کی طرف بڑھاتا ہے۔\\n\\nدیگر AI سے موازنہ: Numbi کی نسبت زمین اور ہدف کی اہمیت پر زیادہ غور کرتا ہے۔ Warrush سے زیادہ صبر کرتا ہے؛ ابتدائی دباؤ کے بجائے ترقی یافتہ اڈے اور مضبوط فوج کو ترجیح دیتا ہے۔\\n\\nخوبیاں اور کمزوریاں: وسیع تعمیراتی منصوبہ بندی اور اہم فوجی اہداف اس کے حملوں کو بامقصد بناتے ہیں۔ تیاری میں وقت لگتا ہے، اس لیے تیز حریف اس کی مرکزی فوج تیار ہونے سے پہلے وسائل پر مقابلہ کر سکتے ہیں۔\\n\\nآزمانے کے لیے مقابلے کا طریقہ: ابتدا ہی میں اس کی توسیع کو روکیں۔ خوراک کے ساتھ بیرکوں اور اسکولوں کی بھی حفاظت کریں اور اس کی ترقی یافتہ بستی پر حملہ کرتے وقت کچھ فوج محفوظ رکھیں۔",
+      "tokens": [
+        "AI",
+        "Numbi",
+        "Warrush"
+      ],
+      "reason": "NamedAIcontrollers/JavaScript/AI heading abbreviations retained; all narrativeUrdu reviewedagainstfullEnglishprofile.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[AICortex-Profile]",
+      "target": "بنیادی حکمتِ عملی: حالات کے مطابق ترجیحات بدل کر فعال معیشت بڑھاتا اور اضافی محنت کو خوراک، ٹیکنالوجی اور فوجی دباؤ میں لگاتا ہے۔ اس کی عام پالیسی قواعد پر مبنی ہے؛ سیکھی ہوئی پالیسی کے تجربات کے لیے الگ ترتیب درکار ہے۔\\n\\nمعیشت اور ترقی: عملے کی ضرورت کے مطابق کارکنوں کی پیداوار بدلتا اور پیدائشیں جاری رکھتا ہے۔ خوراک کی مشکلات توسیع اور ٹیکنالوجی کے اخراجات کم کرتی ہیں۔ جہاں پانی تک رسائی سے نمایاں فائدہ ہو، وہاں تیراکی کی تربیت شامل کرتا ہے۔\\n\\nحملہ اور دفاع: دشمن کی دیکھی گئی ٹیکنالوجی اور دستیاب فوج کے مطابق حملوں کی تیاری کرتا ہے۔ پانی عبور کرنے والی مہموں کے لیے تیرنے والے جنگجو ضروری ہیں۔ اگلے مورچوں پر سرائے اور ہسپتال بنا کر طویل مہموں کو سہارا دیتا ہے اور پیش قدمی سے پہلے فوج جمع کر سکتا ہے۔\\n\\nحملہ جاری رکھنا اور ہنگامی حالات: معمولی چھیڑ چھاڑ پر بار بار واپس آنے کے بجائے حملہ جاری رکھتا ہے۔ سنگین حملہ محافظوں کو واپس بلا سکتا ہے۔ ابتدا کی ہنگامی حالت میں صرف جنگجو پیدا کیے جا سکتے ہیں اور ہسپتال بنایا جا سکتا ہے؛ قحط ایک چھوٹا، آخری کوشش والا حملہ شروع کر سکتا ہے۔\\n\\nدیگر AI سے موازنہ: Warrush سے زیادہ اگلے مورچوں کی مدد پر توجہ دیتا ہے۔ Maxima پائیدار پیدائشوں، تربیت اور تعیناتی کے وسائل کا دشمن کی اندازاً طاقت کے مقابلے میں زیادہ تفصیلی حساب کرتا ہے۔\\n\\nخوبیاں اور کمزوریاں: دباؤ کو خوراک، علاج اور رسائی سے جوڑتا ہے۔ اگلے مورچوں کی عمارتوں تک رسد جاری رہنی چاہیے اور مسلسل پیدائشیں محدود خوراک پر دباؤ برقرار رکھ سکتی ہیں۔ ہنگامی ترجیحات میں ترقی اور بقا کے درمیان انتخاب کرنا پڑتا ہے۔\\n\\nآزمانے کے لیے مقابلے کا طریقہ: اگلے مورچوں کی سراؤں، ہسپتالوں اور خوراک کے ذرائع کو چیلنج کریں۔ اس کی پیش قدمی کے مقابل محافظوں کو اکٹھا رکھیں؛ معمولی چھیڑ چھاڑ اسے پسپا ہونے پر مجبور نہیں بھی کر سکتی۔\\n\\nکھوج: دریافت شدہ دشمن عمارتوں اور دیکھی گئی دشمن فوج کو استعمال کرتا ہے۔",
+      "tokens": [
+        "AI",
+        "Warrush",
+        "Maxima"
+      ],
+      "reason": "NamedAIcontrollers/JavaScript/AI heading abbreviations retained; all narrativeUrdu reviewedagainstfullEnglishprofile.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[AINicowar-Profile]",
+      "target": "بنیادی حکمتِ عملی: باہم مربوط شرائط کے ذریعے آبادی بڑھانے، تربیت، ترقی اور جنگ کو ملاتا ہے۔ توسیع کے دوران حملہ کر سکتا ہے اور خوراک کی فراہمی ناکام ہونے پر معاشی کوشش بحالی کی طرف موڑ سکتا ہے۔\\n\\nابتدا: فراہم کردہ جارحانہ پروفائل کل پانچ یونٹوں پر جنگ کی تیاری شروع کرتا ہے اور پانچ جنگجوؤں پر جنگ کی اجازت دیتا ہے، جس میں سطح صفر کے جنگجو بھی شمار ہوتے ہیں۔ اس کا ہدف تین حملہ آور جھنڈے ہیں، ہر ایک کے ساتھ پانچ جنگجو۔ حسبِ پسند حکمتِ عملی کی فائلیں یہ حدیں بدل سکتی ہیں۔\\n\\nمعیشت اور ترقی: خوراک اور پیدائش کی گنجائش بڑھاتا، کارکنوں کو تربیت دیتا، تیراکی اور حرکت بہتر کرتا اور عمارتوں کو ترقی دیتا ہے۔ خوراک کے عملے کو بدلتا، فاقہ کشی کا جواب دیتا اور پھل حاصل کرنے کی کوشش کرتا ہے۔\\n\\nحملہ اور دفاع: قابلِ رسائی دشمن عمارتوں میں سے حملے کے ہدف چنتا ہے۔ وسائل سے بند راستے کھولنے کے لیے صفائی کے جھنڈے استعمال کر سکتا ہے۔ دفاعی جھنڈے خطرے میں موجود یونٹوں اور عمارتوں کے گروہوں کو ڈھانپتے ہیں۔ بعد میں زمینی حملے کی تربیت یافتہ کھوجی دشمن یونٹوں کے گروہوں کو نشانہ بناتے ہیں۔\\n\\nدیگر AI سے موازنہ: Warrush کی طرح ابتدا میں جارحانہ ہے، مگر بعد کی کارروائی زیادہ وسیع ہے۔ Cabino کے برعکس ہسپتالوں اور سراؤں کو مسلسل ترجیح نہیں دیتا۔\\n\\nخوبیاں اور کمزوریاں: وسیع حربی صلاحیت ابتدائی دباؤ کو مسلسل ترقی کے ساتھ جوڑتی ہے۔ اتفاقی ہدف چننے سے کم اہم عمارتوں پر محنت خرچ ہو سکتی ہے۔ اس کی حدیں دشمن کی لڑنے کی طاقت کا Maxima جیسا تفصیلی تخمینہ نہیں دیتیں۔\\n\\nآزمانے کے لیے مقابلے کا طریقہ: جلد حملے کی توقع رکھیں۔ خوراک اور کارکنوں کی حفاظت کریں، توسیع کو چیلنج کریں اور اگر یہ اعلیٰ تربیت تک پہنچ جائے تو کھوجیوں کے حملوں کے لیے تیار رہیں۔",
+      "tokens": [
+        "AI",
+        "Warrush",
+        "Cabino",
+        "Maxima"
+      ],
+      "reason": "NamedAIcontrollers/JavaScript/AI heading abbreviations retained; all narrativeUrdu reviewedagainstfullEnglishprofile.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[AINone-Profile]",
+      "target": "بنیادی حکمتِ عملی: AI کا کوئی حکم جاری نہیں کرتا۔\\n\\nخوبیاں: تجربات کے لیے ایک غیر متحرک اور قابلِ پیش گوئی حریف۔\\n\\nکمزوریاں: نہ توسیع کرتا ہے نہ حالات کے مطابق بدلتا ہے۔",
+      "tokens": [
+        "AI"
+      ],
+      "reason": "NamedAIcontrollers/JavaScript/AI heading abbreviations retained; all narrativeUrdu reviewedagainstfullEnglishprofile.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[AINumbi-Profile]",
+      "target": "بنیادی حکمتِ عملی: پہلے خوراک اور آبادی بڑھاتا، پھر علاج، سائنس اور تربیت شامل کرتا، اور آخر میں جنگ کی طرف جاتا ہے۔ اس کے بڑے مرحلے حریف کی ترقی کے بجائے وقت کے ساتھ آگے بڑھتے ہیں۔\\n\\nمعیشت اور ترقی: آبادی کے مطابق عمارتوں کی ضرورت بڑھاتا اور قریبی خوراک کے ذرائع کا اندازہ لگاتا ہے۔ بعد کے مراحل میں بڑھتی فوج کی مدد کے لیے ترقی، دفاع اور توسیع شامل ہوتی ہے۔\\n\\nحملہ اور دفاع: کافی صحت مند جنگجو موجود ہوں یا مقررہ وقت گزر جائے تو حملہ کرتا ہے۔ منتخب دشمن عمارتوں پر جنگی جھنڈے لگاتا ہے۔ لڑنے والی فوج بہت کم ہو جائے تو حملے کے جھنڈے ہٹا کر اگلی کوشش کی حدیں بڑھا دیتا ہے۔\\n\\nدیگر AI سے موازنہ: Castor یا Nicowar سے زیادہ قابلِ پیش گوئی ہے۔ Castor زمین اور ہدف کی اہمیت پر زیادہ غور کرتا ہے؛ Nicowar کہیں پہلے دباؤ ڈالتا ہے۔\\n\\nخوبیاں اور کمزوریاں: مددگار عمارتوں کا وسیع نظام بلا رکاوٹ تیاری کے بعد اسے خطرناک بنا سکتا ہے، مگر اس کا وقت نامہ لڑائی کے حالات سے میل نہیں بھی کھا سکتا۔ سادہ ہدف چننے اور نقصان کے بعد لمبے وقفوں کی وجہ سے اس کے حملوں کا اندازہ لگانا آسان ہے۔\\n\\nآزمانے کے لیے مقابلے کا طریقہ: فوجی مرحلے سے پہلے دباؤ ڈالیں۔ حملوں کے دوران اپنے پیچھے خوراک اور تربیت بڑھائیں اور اس کا حملہ شکست دینے کے بعد وقفے سے فائدہ اٹھائیں۔\\n\\nکھوج: اس کا حملہ کرنے والا معمول نظر آنے کی جانچ کے بغیر دشمن عمارتوں کے مقامات براہِ راست پڑھتا ہے۔",
+      "tokens": [
+        "AI",
+        "Castor",
+        "Nicowar",
+        "Castor",
+        "Nicowar"
+      ],
+      "reason": "NamedAIcontrollers/JavaScript/AI heading abbreviations retained; all narrativeUrdu reviewedagainstfullEnglishprofile.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[AIEcono-Profile]",
+      "target": "بنیادی حکمتِ عملی: کارکن اور کھوجی پیدا کرتا، معیشت پھیلاتا اور خوراک و پھل سے دشمن یونٹوں کو اپنی طرف لاتا ہے۔ جنگجوؤں کا روایتی حملہ نہیں کرتا۔\\n\\nمعیشت اور ترقی: خوراک کے ذرائع کے قریب سرائے اور چھتے بناتا، تعلیم اور حرکت کی تربیت شامل کرتا اور عمارتوں کو ترقی دیتا ہے۔ خوراک کی رسد پر نظر رکھتا ہے اور رسد خراب ہونے یا ہدف غائب ہونے پر بھی عمارتیں اور کھوج کے جھنڈے برقرار رکھتا ہے۔\\n\\nکھیتی اور وفاداری کی تبدیلی: پانی کے قریب دوبارہ اگنے والی خوراک اور لکڑی کے ذرائع کی حفاظت کرتا ہے۔ کھوجیوں کو پھل کے ذخائر اور دشمن بستیوں کی طرف بھیجتا ہے اور پھل کی رسد حاصل کرتے وقت دشمنوں کو خوراک کی دعوت دیتا ہے۔ بہتر خوراک اور پھل یونٹوں کو اپنی طرف لانے میں مدد دے سکتے ہیں۔\\n\\nدیگر AI سے موازنہ: سب سے زیادہ مخصوص معاشی حریف۔ Cabino اور Maxima بھی پھل حاصل کرتے ہیں، مگر ساتھ فوج بھی رکھتے ہیں۔\\n\\nخوبیاں اور کمزوریاں: فوجی حریفوں کے تھکنے کے دوران بڑھ سکتا ہے؛ وفاداری کی تبدیلی مقابلے کا ایک اور طریقہ دیتی ہے۔ مسلسل حملے کا جواب دینے کے لیے جنگجو پیدا نہیں کرتا۔ خوراک، پھل، جغرافیہ اور فتح کے قواعد اس کے مواقع پر بہت اثر ڈالتے ہیں۔\\n\\nآزمانے کے لیے مقابلے کا طریقہ: اس کی کھلی توسیع پر دباؤ ڈالیں۔ اپنے یونٹوں کو برقرار رکھنے کے لیے اپنی سراؤں میں خوراک اور پھل پہنچاتے رہیں۔ اس کے بڑھنے کے دوران غیر ضروری لڑائیوں میں اپنی بستی کو تھکانے سے بچیں۔",
+      "tokens": [
+        "AI",
+        "Cabino",
+        "Maxima"
+      ],
+      "reason": "NamedAIcontrollers/JavaScript/AI heading abbreviations retained; all narrativeUrdu reviewedagainstfullEnglishprofile.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[AIWarrush-Profile]",
+      "target": "بنیادی حکمتِ عملی: حریفوں کی طویل معاشی یا تکنیکی تیاری مکمل ہونے سے پہلے حملہ کرتا ہے۔ توقع رکھتا ہے کہ بڑے امدادی نظام کی ضرورت پڑنے سے پہلے لڑائی کھیل کا فیصلہ کر دے گی۔\\n\\nمعیشت اور ترقی: جب چھ یونٹ فصل کاٹ سکیں تو پیداوار چار کارکن، ایک کھوجی اور تین جنگجو مقرر کرتا ہے۔ تربیت بھرنے پر بیرکیں بڑھاتا ہے، مگر نئی سراؤں کو محدود رکھتا ہے۔ بچ جانے والی تعمیراتی گنجائش اکثر ہسپتالوں اور حرکت کی تربیت پر لگتی ہے۔\\n\\nحملہ اور دفاع: دریافت شدہ دشمن عمارتوں پر پہرے کے علاقے لگاتا ہے تاکہ جنگجو مسلسل دباؤ ڈالیں۔ احتیاط سے جمع کی گئی لہر کا انتظار نہیں کرتا۔ رکاوٹ بننے والے وسائل صاف کرتا اور کچھ دوبارہ اگنے والے ذرائع کی حفاظت کرتا ہے۔\\n\\nپھل کی پالیسی: پھل کاٹنے سے روکتا ہے، یوں پھل سے زرہ پر پڑنے والی کمی سے بچتا اور Econo کی وفاداری بدلنے کی حکمتِ عملی نہیں اپناتا۔\\n\\nدیگر AI سے موازنہ: Numbi یا Castor سے زیادہ ابتدائی دباؤ پر قائم رہتا ہے۔ Nicowar بھی جارحانہ ابتدا کرتا ہے، مگر بعد میں زیادہ وسیع ترقی اور حربی منصوبہ اپناتا ہے۔\\n\\nخوبیاں اور کمزوریاں: سست ابتدا کو سزا دیتا اور جلد دفاع پر خرچ کرنے پر مجبور کرتا ہے۔ محدود منظم ترقی اور کم خوراکی سہارا رک جانے والے حملے کو مہنگا بناتے ہیں۔ زمین اور لمبے سفر اس کی ابتدائی برتری گھٹا سکتے ہیں۔\\n\\nآزمانے کے لیے مقابلے کا طریقہ: ابتدا ہی میں سراؤں اور چھتوں کی حفاظت کریں۔ محافظوں کے ساتھ کارکنوں کی جگہ بھی نئے یونٹ لائیں، تربیت بڑھائیں، پھر یلغار کی رفتار ٹوٹنے پر جوابی حملہ کریں۔\\n\\nکھوج: ابتدائی کھوج کے جھنڈے دشمن کے شروع کے مقامات براہِ راست استعمال کرتے ہیں۔ بعد کے حملہ آور علاقوں کے لیے نظر آنا ضروری ہے۔",
+      "tokens": [
+        "Econo",
+        "AI",
+        "Numbi",
+        "Castor",
+        "Nicowar"
+      ],
+      "reason": "NamedAIcontrollers/JavaScript/AI heading abbreviations retained; all narrativeUrdu reviewedagainstfullEnglishprofile.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[AICabino-Profile]",
+      "target": "بنیادی حکمتِ عملی: یونٹوں کی پیداوار کو تعمیر، ترقی، دفاع، حملوں اور کھوج میں بانٹتا ہے۔ الگ منتظم یونٹ مانگتے اور مختص کرتے ہیں، یوں معیشت اور فوج ساتھ ترقی کرتی ہیں۔\\n\\nمعیشت اور ترقی: وسیع بستی تعمیر اور ترقی کرتا، سراؤں اور میناروں کا عملہ سنبھالتا، عمارتوں کے اردگرد صفائی کرتا اور دوبارہ اگنے والے وسائل بچاتا ہے۔ پھل کی کھوج کرتا اور وفاداری بدلوانے کے لیے خوراک کی دعوت دیتا ہے۔\\n\\nحملہ اور دفاع: ایک دشمن چنتا اور پہلے ہسپتالوں، پھر سراؤں، پھر بیرکوں کو ترجیح دیتا ہے۔ بیک وقت چار تک حملے سنبھالتا ہے؛ دستیابی اور قریبی دشمنوں کے مطابق عموماً ہر ہدف کو آٹھ سے بیس جنگجو دیتا ہے۔ خطرے میں موجود عمارتوں کے اردگرد الگ دفاعی جھنڈے لگاتا ہے۔\\n\\nتربیت: حملے کے لیے کافی موزوں جنگجو اور مکمل بیرک درکار ہے، مگر اعلیٰ ترین ٹیکنالوجی کا انتظار نہیں کرتا۔ مسلسل ترقی اور تربیت بعد کے حملے مضبوط بناتی ہیں۔\\n\\nدیگر AI سے موازنہ: Nicowar سے زیادہ باقاعدگی سے امدادی عمارتیں تباہ کرتا ہے۔ Maxima کی جمع شدہ لہروں کے مقابل اپنے حملے زیادہ پھیلاتا اور مختلف ضرورتوں کو سنبھالنے کے لیے یونٹ مختص کرتا ہے۔\\n\\nخوبیاں اور کمزوریاں: ترقی، تربیت، دفاع اور کئی حملے یکجا کرتا ہے۔ خوراک اور علاج تباہ کرنا پوری بستی کمزور کر سکتا ہے۔ اتفاقی حریف چننے اور عمارتوں کی طے شدہ ترجیحات سے مواقع چھوٹ سکتے ہیں؛ کئی حملے اس کی فوج بانٹ سکتے ہیں۔\\n\\nآزمانے کے لیے مقابلے کا طریقہ: ہسپتالوں اور سراؤں کی حفاظت کریں۔ کھلی توسیع کو چیلنج کریں اور ہر الگ حملے کے خلاف محافظ جمع کریں۔ کئی محاذ سنبھالنے کے قابل ہونے سے پہلے اس کی خوراک یا تربیت کو نقصان پہنچائیں۔\\n\\nکھوج: حملہ چننے والا نظام واضح طور پر نظر آنے کی جانچ کیے بغیر دشمن عمارتوں کی فہرست پڑھتا ہے۔ بعض معاشی موازنے دشمن کے اعداد و شمار براہِ راست استعمال کرتے ہیں۔",
+      "tokens": [
+        "AI",
+        "Nicowar",
+        "Maxima"
+      ],
+      "reason": "NamedAIcontrollers/JavaScript/AI heading abbreviations retained; all narrativeUrdu reviewedagainstfullEnglishprofile.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[No AI orders]",
+      "target": "AI کا کوئی حکم نہیں",
+      "tokens": [
+        "AI"
+      ],
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[You + AI]",
+      "target": "آپ + AI",
+      "tokens": [
+        "AI"
+      ],
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[You and the AI both issue orders. Uses two controller slots.]",
+      "target": "آپ اور AI دونوں احکامات دیتے ہیں۔ کنٹرولر کی دو جگہیں استعمال ہوتی ہیں۔",
+      "tokens": [
+        "AI"
+      ],
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[toggle torus view]",
+      "target": "2D / ٹورس منظر بدلیں",
+      "tokens": [
+        "D"
+      ],
+      "reason": "Numeric scale/2D notation preserves source; no Englishprose.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[Quick clash on premade maps: only speed changes (2x).]",
+      "target": "تیار نقشوں پر فوری ٹکراؤ: صرف رفتار بدلتی ہے (2x)۔",
+      "tokens": [
+        "x"
+      ],
+      "reason": "Numeric scale/2D notation preserves source; no Englishprose.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[settings Adjust assigned units with the wheel. When off, hold Ctrl. Shift adjusts flag radius. Also controls wheel input in other menus.]",
+      "target": "پہیے سے مقرر یونٹ بدلیں۔ بند ہو تو Ctrl دبائے رکھیں۔ Shift سے جھنڈے کا رداس بدلتا ہے۔ یہ دوسرے مینو میں پہیے کو بھی قابو کرتا ہے۔",
+      "tokens": [
+        "Ctrl",
+        "Shift"
+      ],
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[settings Bind Escape]",
+      "target": "Escape مقرر کریں",
+      "tokens": [
+        "Escape"
+      ],
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[settings Display the Globulation 2 cursor.]",
+      "target": "Globulation 2 کا کرسر دکھائیں۔",
+      "tokens": [
+        "Globulation"
+      ],
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[settings OpenGL is not available in this build.]",
+      "target": "اس بلڈ میں OpenGL دستیاب نہیں۔",
+      "tokens": [
+        "OpenGL"
+      ],
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[settings Press a key. Escape cancels capture. Use Bind Escape to assign Escape.]",
+      "target": "کلید دبائیں۔ Escape سے گرفت منسوخ ہوتی ہے۔ Escape مقرر کرنے کے لیے Escape مقرر کریں استعمال کریں۔",
+      "tokens": [
+        "Escape",
+        "Escape",
+        "Escape"
+      ],
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[settings Apply artwork on the next game or editor load (OpenGL).]",
+      "target": "اگلی بار کھیل یا ایڈیٹر لوڈ ہونے پر تصاویر لاگو کریں (OpenGL)۔",
+      "tokens": [
+        "OpenGL"
+      ],
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[settings Automatically show the torus overview while moving around the map (OpenGL).]",
+      "target": "نقشے پر حرکت کے دوران ٹورس کا مجموعی منظر خود دکھائیں (OpenGL)۔",
+      "tokens": [
+        "OpenGL"
+      ],
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[Scarce (2x slower)]",
+      "target": "کم یاب (2x سست)",
+      "tokens": [
+        "x"
+      ],
+      "reason": "Numeric scale/2D notation preserves source; no Englishprose.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[Very scarce (4x slower)]",
+      "target": "بہت کم یاب (4x سست)",
+      "tokens": [
+        "x"
+      ],
+      "reason": "Numeric scale/2D notation preserves source; no Englishprose.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[Extremely scarce (8x slower)]",
+      "target": "انتہائی کم یاب (8x سست)",
+      "tokens": [
+        "x"
+      ],
+      "reason": "Numeric scale/2D notation preserves source; no Englishprose.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[Glass cannon x2]",
+      "target": "نازک مگر طاقتور x2",
+      "tokens": [
+        "x2"
+      ],
+      "reason": "Numeric scale/2D notation preserves source; no Englishprose.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[Glass cannon x3]",
+      "target": "نازک مگر طاقتور x3",
+      "tokens": [
+        "x3"
+      ],
+      "reason": "Numeric scale/2D notation preserves source; no Englishprose.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[Fortress x5]",
+      "target": "قلعہ x5",
+      "tokens": [
+        "x5"
+      ],
+      "reason": "Numeric scale/2D notation preserves source; no Englishprose.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[Fortress x10]",
+      "target": "قلعہ x10",
+      "tokens": [
+        "x10"
+      ],
+      "reason": "Numeric scale/2D notation preserves source; no Englishprose.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[Stats HP restored]",
+      "target": "بحال کردہ HP",
+      "tokens": [
+        "HP"
+      ],
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[Stats next page]",
+      "target": "صفحہ (P)",
+      "tokens": [
+        "P"
+      ],
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[Stats blocked units]",
+      "target": "رکے ہوئے یونٹ S/C",
+      "tokens": [
+        "S/C"
+      ],
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[Stats blocked buildings]",
+      "target": "بند راستوں والی عمارتیں S/C",
+      "tokens": [
+        "S/C"
+      ],
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[Stats blocked buildings swim]",
+      "target": "تیراکی کے بند راستے S/C",
+      "tokens": [
+        "S/C"
+      ],
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[Stats low HP 25]",
+      "target": "25% HP والے یونٹ",
+      "tokens": [
+        "HP"
+      ],
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[Stats low HP 50]",
+      "target": "50% HP والے یونٹ",
+      "tokens": [
+        "HP"
+      ],
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[Stats low HP 75]",
+      "target": "75% HP والے یونٹ",
+      "tokens": [
+        "HP"
+      ],
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[Stats low HP ranges]",
+      "target": "HP ≤25/50/75%",
+      "tokens": [
+        "HP"
+      ],
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[AI strategy]",
+      "target": "AI کی حکمتِ عملی",
+      "tokens": [
+        "AI"
+      ],
+      "reason": "NamedAIcontrollers/JavaScript/AI heading abbreviations retained; all narrativeUrdu reviewedagainstfullEnglishprofile.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[AIMaxima-Profile]",
+      "target": "بنیادی حکمتِ عملی: خوراک، کارکن، پیدائش، تربیت، تعمیر اور لڑائی کو ایک دوسرے سے مقابل ضرورتیں سمجھتا ہے۔ اپنی فوج کا سائز جزوی طور پر دشمن کی اندازاً طاقت کے مطابق رکھتا ہے، پھر اس فوج کو مؤثر انداز سے ہدف تک پہنچانے کی کوشش کرتا ہے۔\\n\\nمعیشت اور ترقی: خوراک اور محنت کے مطابق پیدائشوں کا حساب رکھتا، تربیت کے لیے فارغ مواقع بچاتا اور فوجی پیداوار کی ضرورت پر اضافی کارکن بڑھانا روک دیتا ہے۔ تربیتی گنجائش بڑھاتا ہے اور ترقی کے لیے بیک وقت بہت سی عمارتیں بند کرنے سے بچتا ہے۔\\n\\nکھوج اور فیصلے: دیکھی گئی یونٹوں اور سابقہ مشاہدات کی مدد سے، تیار کردہ ماڈل کے ذریعے دشمن فوج کا تخمینہ لگاتا ہے۔ ہدف کی اہمیت، فاصلہ، مینار، کھلے کارکن اور ہدف پر قائم رہنا فیصلے میں شامل ہیں۔ پھل کی مہمیں خوراک کے تنوع اور وفاداری کی تبدیلی میں مدد دیتی ہیں۔\\n\\nحملہ اور دفاع: تربیت اور دفاع کے لیے جنگجو مختص کرتا ہے، پھر لہریں بھیجنے سے پہلے موزوں زمینی فوج کو دوست خوراکی عمارتوں کے قریب جمع کرتا ہے۔ مقامی دفاعی ردِعمل استعمال کرتا اور بستی تک آنے والے راستوں کا جائزہ لیتا ہے۔\\n\\nحملے رکنے پر: مسلسل چار بار لہر ہدف تک نہ پہنچے تو مسلسل کمک پانے والے حملہ آور جھنڈوں پر منتقل ہو جاتا ہے۔ پانی اور زمین پر ہونے والے حملے بھی مسلسل کمک استعمال کر سکتے ہیں۔ یہ متبادل طریقہ فوج جمع ہونے سے پہلے ہر رکاوٹ حل نہیں کرتا۔\\n\\nدیگر AI سے موازنہ: خوراک، تربیت، معلومات اور تعیناتی کو زیادہ مضبوطی سے جوڑتا ہے۔ Cabino کئی عمارتوں پر حملوں پر زور دیتا ہے؛ Maxima اندازاً ضرورت اور جمع شدہ فوج پہنچانے پر زور دیتا ہے۔\\n\\nخوبیاں اور کمزوریاں: خوراک کے دباؤ اور دیکھی گئی دھمکیوں کے مطابق بدلتے ہوئے ترقی اور فوجی نقصان کا متبادل برقرار رکھتا ہے۔ اسے خوراک، تربیتی گنجائش اور جمع ہونے کے لیے کھلی جگہ چاہیے؛ ہجوم اور لمبے راستے فوج کی ترسیل خراب کر سکتے ہیں۔\\n\\nآزمانے کے لیے مقابلے کا طریقہ: لہریں جمع ہونے سے پہلے کھلے خوراکی ذرائع، سراؤں اور بیرکوں کو چیلنج کریں۔ رسد پانے والے محافظ اکٹھے رکھیں اور کمک کے راستے توڑیں۔ پہلی لہر کے بعد بھی بار بار دباؤ کی توقع رکھیں۔\\n\\nکھوج: فوج کے تخمینے دیکھی گئی معلومات اور مشاہدات کی تاریخ استعمال کرتے ہیں، دشمن کی پوشیدہ کل فوج نہیں۔",
+      "tokens": [
+        "AI",
+        "Cabino",
+        "Maxima"
+      ],
+      "reason": "NamedAIcontrollers/JavaScript/AI heading abbreviations retained; all narrativeUrdu reviewedagainstfullEnglishprofile.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[AI opponents]",
+      "target": "AI حریف",
+      "tokens": [
+        "AI"
+      ],
+      "reason": "NamedAIcontrollers/JavaScript/AI heading abbreviations retained; all narrativeUrdu reviewedagainstfullEnglishprofile.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[%0 / %1 HP · %2]",
+      "target": "%0 / %1 HP · %2",
+      "tokens": [
+        "HP"
+      ],
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[P %0/%1/%2]",
+      "target": "P %0/%1/%2",
+      "tokens": [
+        "P"
+      ],
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[CPU load %0]",
+      "target": "CPU %0%",
+      "tokens": [
+        "CPU"
+      ],
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[Brush %0x%1]",
+      "target": "برش %0x%1",
+      "tokens": [
+        "x"
+      ],
+      "reason": "Numeric scale/2D notation preserves source; no Englishprose.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[Player / AI]",
+      "target": "کھلاڑی / AI",
+      "tokens": [
+        "AI"
+      ],
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[%0 colonies · %1 AI]",
+      "target": "%0 بستیاں · %1 AI",
+      "tokens": [
+        "AI"
+      ],
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[Add AI]",
+      "target": "AI شامل کریں",
+      "tokens": [
+        "AI"
+      ],
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[settings Custom AIs]",
+      "target": "اپنی مرضی کے AI",
+      "tokens": [
+        "AI"
+      ],
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[settings Requires the OpenGL renderer. Your saved choice is retained.]",
+      "target": "OpenGL رینڈرر درکار ہے۔ آپ کا محفوظ انتخاب برقرار رہتا ہے۔",
+      "tokens": [
+        "OpenGL"
+      ],
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[lan pairing field]",
+      "target": "میزبان کی جوڑنے والی عبارت (یا قابلِ اعتماد WSS URL)",
+      "tokens": [
+        "WSS",
+        "URL"
+      ],
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[lan discovery unavailable]",
+      "target": "LAN پر تلاش دستیاب نہیں۔ مقامی نیٹ ورک کی اجازت دیکھیں یا میزبان کی جوڑنے والی عبارت چسپاں کریں۔",
+      "tokens": [
+        "LAN"
+      ],
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[lan connection unavailable]",
+      "target": "LAN میزبان تک رسائی نہیں ہو سکی۔ مقامی نیٹ ورک کی اجازت اور میزبان کی جوڑنے والی عبارت دیکھیں۔",
+      "tokens": [
+        "LAN"
+      ],
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[lan connection verification failed %0]",
+      "target": "LAN میزبان کی تصدیق یا اس سے رابطہ نہیں ہو سکا: %0",
+      "tokens": [
+        "LAN"
+      ],
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[lan version mismatch %0]",
+      "target": "میزبان Globulation 2 کا مختلف ورژن چلا رہا ہے (%0)۔",
+      "tokens": [
+        "Globulation"
+      ],
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[lan cannot host %0]",
+      "target": "LAN کھیل کی میزبانی نہیں ہو سکی: %0",
+      "tokens": [
+        "LAN"
+      ],
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[conn ai]",
+      "target": "AI",
+      "tokens": [
+        "AI"
+      ],
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[hub ai joins after %0]",
+      "target": "%0 کے بعد AI شامل ہو گا",
+      "tokens": [
+        "AI"
+      ],
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[hub offline detail %0]",
+      "target": "%0 سیکنڈ میں دوبارہ کوشش ہو گی۔ فوری میچ اور آن لائن کمرے دستیاب نہیں۔ مرکزی مینیو کے LAN کھیل کو اس سرور کی ضرورت نہیں۔",
+      "tokens": [
+        "LAN"
+      ],
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[hub sim %0]",
+      "target": "sim %0",
+      "tokens": [
+        "sim"
+      ],
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[hub update required detail %0]",
+      "target": "%0 نیا ورژن چلاتا ہے، اس لیے یہ نقل اپ ڈیٹ ہونے تک آن لائن کھیلوں میں شامل نہیں ہو سکتی۔ LAN کھیل اب بھی چلتے ہیں۔",
+      "tokens": [
+        "LAN"
+      ],
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[hub server behind detail %0]",
+      "target": "یہ نقل %0 سے نئی ہے، جسے ابھی اس ورژن پر اپ ڈیٹ نہیں کیا گیا۔ سرور اپ ڈیٹ ہونے پر آن لائن کھیل کھل جائیں گے۔ LAN کھیل اب بھی چلتے ہیں۔",
+      "tokens": [
+        "LAN"
+      ],
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[hub version mismatch detail %0]",
+      "target": "%0 کھیل کا مختلف ورژن چلاتا ہے، اس لیے یہ نقل آن لائن کھیلوں میں شامل نہیں ہو سکتی۔ LAN کھیل اب بھی چلتے ہیں۔",
+      "tokens": [
+        "LAN"
+      ],
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[match ai]",
+      "target": "AI",
+      "tokens": [
+        "AI"
+      ],
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[room ai %0]",
+      "target": "AI: %0",
+      "tokens": [
+        "AI:"
+      ],
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[room humans vs ai]",
+      "target": "انسان بمقابلہ AI",
+      "tokens": [
+        "AI"
+      ],
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[room lan list hint %0]",
+      "target": "اسی نیٹ ورک کے دوسرے لوگ مرکزی مینیو کی LAN کھیل فہرست میں %0 دیکھتے ہیں۔",
+      "tokens": [
+        "LAN"
+      ],
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[room needs two seats]",
+      "target": "شروع کرنے کے لیے دوست کو بلائیں یا AI شامل کریں",
+      "tokens": [
+        "AI"
+      ],
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[room seats summary %0 %1 %2]",
+      "target": "%0 کھلاڑی · %1 AI · %2 کھلی",
+      "tokens": [
+        "AI"
+      ],
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[room share text %0]",
+      "target": "میرے Globulation 2 کمرے میں شامل ہوں: %0",
+      "tokens": [
+        "Globulation"
+      ],
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[settings Enter an https:// address.]",
+      "target": "https:// سے شروع ہونے والا پتہ درج کریں۔",
+      "tokens": [
+        "https://"
+      ],
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[settings Not a Globulation 2 server.]",
+      "target": "یہ Globulation 2 کا سرور نہیں۔",
+      "tokens": [
+        "Globulation"
+      ],
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[settings The official Globulation 2 server · ranked queues, leaderboards, map catalog]",
+      "target": "Globulation 2 کا سرکاری سرور · درجہ بند قطاریں، درجہ بندی، نقشوں کی فہرست",
+      "tokens": [
+        "Globulation"
+      ],
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[trust not official]",
+      "target": "یہ سرور Globulation 2 منصوبہ نہیں چلاتا۔",
+      "tokens": [
+        "Globulation"
+      ],
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[qm ai joins after %0]",
+      "target": "%0 کے بعد AI شامل ہو گا",
+      "tokens": [
+        "AI"
+      ],
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[qm waiting for a person]",
+      "target": "کسی شخص کا انتظار ہے: AI حریف بند ہیں۔",
+      "tokens": [
+        "AI"
+      ],
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[qm ai in %0 rated]",
+      "target": "کوئی نہ ملا تو %0 میں آپ کی ریٹنگ کے قریب ترین AI کے ساتھ کھیلیں گے",
+      "tokens": [
+        "AI"
+      ],
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[qm ai in %0]",
+      "target": "کوئی نہ ملا تو %0 میں AI شامل ہو گا",
+      "tokens": [
+        "AI"
+      ],
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[qm ai after %0]",
+      "target": "کوئی نہ ملا تو %0 کے بعد AI نشست لے گا",
+      "tokens": [
+        "AI"
+      ],
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[qm allow ai short]",
+      "target": "AI کی اجازت دیں",
+      "tokens": [
+        "AI"
+      ],
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[qm allow ai]",
+      "target": "AI حریف کی اجازت دیں",
+      "tokens": [
+        "AI"
+      ],
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[qm ais are rated]",
+      "target": "(ریٹنگ شامل ہے: AI کی بھی ریٹنگ ہوتی ہے)",
+      "tokens": [
+        "AI"
+      ],
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[qm ai]",
+      "target": "AI",
+      "tokens": [
+        "AI"
+      ],
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[qm ai badge]",
+      "target": "AI",
+      "tokens": [
+        "AI"
+      ],
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[qm playing an ai]",
+      "target": "AI کے خلاف کھیل",
+      "tokens": [
+        "AI"
+      ],
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[qm ai explanation rated]",
+      "target": "آپ کی ریٹنگ کے دائرے میں کوئی تلاش نہیں کر رہا تھا۔ آپ اپنی ریٹنگ کے قریب ترین AI سے کھیلیں گے؛ نتیجہ آپ اور AI دونوں کی ریٹنگ میں شمار ہو گا۔",
+      "tokens": [
+        "AI",
+        "AI"
+      ],
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[qm ai explanation]",
+      "target": "کوئی تلاش نہیں کر رہا تھا۔ آپ اپنی ریٹنگ کے قریب ترین AI سے کھیلیں گے؛ اس کھیل کی ریٹنگ نہیں ہو گی۔",
+      "tokens": [
+        "AI"
+      ],
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[profile ai filled]",
+      "target": "AI نے جگہ پُر کی",
+      "tokens": [
+        "AI"
+      ],
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[profile vs ai]",
+      "target": "بمقابلہ AI",
+      "tokens": [
+        "AI"
+      ],
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[maps upload hint]",
+      "target": "آپ کے نقشوں کے فولڈر یا ایڈیٹر کی .map فائلیں",
+      "tokens": [
+        "map"
+      ],
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[maps %0 kb]",
+      "target": "%0 KB",
+      "tokens": [
+        "KB"
+      ],
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[leave lan title]",
+      "target": "یہ LAN کھیل چھوڑیں؟",
+      "tokens": [
+        "LAN"
+      ],
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[room seats one person %0 %1]",
+      "target": "1 کھلاڑی · %0 AI · %1 کھلی",
+      "tokens": [
+        "AI"
+      ],
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[room copy by hand keys]",
+      "target": "لنک منتخب ہے: Ctrl+C دبائیں (Mac پر ⌘C)۔",
+      "tokens": [
+        "Ctrl+C",
+        "Mac",
+        "C"
+      ],
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[qm ai opponent %0]",
+      "target": "AI حریف: %0",
+      "tokens": [
+        "AI"
+      ],
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[settings Hive Mind]",
+      "target": "Hive Mind",
+      "tokens": [
+        "Hive",
+        "Mind"
+      ],
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[settings Default shortcuts: Ctrl+Enter to give an order; Ctrl+Shift+Enter to stop commander work. Change them under Controls. Standing-order cards have separate pause and cancel controls.]",
+      "target": "طے شدہ شارٹ کٹ: حکم کے لیے Ctrl+Enter؛ کمانڈر کا کام روکنے کے لیے Ctrl+Shift+Enter۔ انہیں کنٹرولز میں بدلیں۔ مستقل حکم کے کارڈ پر رکنے اور منسوخ کرنے کے الگ کنٹرول ہیں۔",
+      "tokens": [
+        "Ctrl+Enter",
+        "Ctrl+Shift+Enter"
+      ],
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[settings Record your games as MP4 videos with sound. Recording needs FFmpeg with the libx264 and AAC encoders.]",
+      "target": "کھیل آواز کے ساتھ MP4 ویڈیو میں ریکارڈ کریں۔ ریکارڈنگ کے لیے libx264 اور AAC انکوڈر والا FFmpeg چاہیے۔",
+      "tokens": [
+        "MP4",
+        "libx264",
+        "AAC",
+        "FFmpeg"
+      ],
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[settings Record your games as MP4 videos with sound.]",
+      "target": "کھیل آواز کے ساتھ MP4 ویڈیو میں ریکارڈ کریں۔",
+      "tokens": [
+        "MP4"
+      ],
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[settings Recording uses the full rendered resolution at 30 FPS.]",
+      "target": "ریکارڈنگ مکمل دکھائی گئی ریزولیوشن پر 30 FPS استعمال کرتی ہے۔",
+      "tokens": [
+        "FPS"
+      ],
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[settings FFmpeg is ready.]",
+      "target": "FFmpeg تیار ہے۔",
+      "tokens": [
+        "FFmpeg"
+      ],
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[settings FFmpeg is not available, so recording is turned off. Install FFmpeg and make sure it is on your PATH, then check again.]",
+      "target": "FFmpeg دستیاب نہیں، اس لیے ریکارڈنگ بند ہے۔ اسے نصب کریں، PATH میں موجودگی یقینی بنائیں، پھر جانچیں۔",
+      "tokens": [
+        "FFmpeg",
+        "PATH"
+      ],
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[settings Check for FFmpeg again]",
+      "target": "FFmpeg دوبارہ جانچیں",
+      "tokens": [
+        "FFmpeg"
+      ],
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[settings Checking for FFmpeg…]",
+      "target": "FFmpeg کی جانچ ہو رہی ہے…",
+      "tokens": [
+        "FFmpeg"
+      ],
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[Saving custom AI…]",
+      "target": "حسبِ پسند AI محفوظ ہو رہا ہے…",
+      "tokens": [
+        "AI"
+      ],
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[Could not read the selected JavaScript file.]",
+      "target": "منتخب JavaScript فائل پڑھی نہیں جا سکی۔",
+      "tokens": [
+        "JavaScript"
+      ],
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[Custom AI library saved.]",
+      "target": "حسبِ پسند AI کی لائبریری محفوظ ہو گئی۔",
+      "tokens": [
+        "AI"
+      ],
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[Import a single JavaScript AI file, then select it when setting up a local game.]",
+      "target": "JavaScript AI کی ایک فائل درآمد کریں، پھر مقامی کھیل ترتیب دیتے وقت اسے منتخب کریں۔",
+      "tokens": [
+        "JavaScript",
+        "AI"
+      ],
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[Imports keep a copy in Glob2. Update replaces that copy for future games; saves keep their original AI.]",
+      "target": "درآمد کرنے سے Glob2 میں نقل رکھی جاتی ہے۔ اپ ڈیٹ آئندہ کھیلوں کے لیے وہ نقل بدلتا ہے؛ محفوظ کھیل اپنا اصل AI رکھتے ہیں۔",
+      "tokens": [
+        "Glob2",
+        "AI"
+      ],
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[Import JavaScript AI]",
+      "target": "JavaScript AI درآمد کریں",
+      "tokens": [
+        "JavaScript",
+        "AI"
+      ],
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[Example AI and authoring guide]",
+      "target": "مثالی AI اور تخلیق کی رہنمائی",
+      "tokens": [
+        "AI"
+      ],
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[No custom AIs yet. Import a bundled .js file to get started.]",
+      "target": "ابھی کوئی حسبِ پسند AI نہیں۔ شروع کرنے کے لیے بنڈل کی گئی .js فائل درآمد کریں۔",
+      "tokens": [
+        "AI",
+        "js"
+      ],
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[AI startup and persistent globals are valid.]",
+      "target": "AI کا آغاز اور مستقل عالمی متغیرات درست ہیں۔",
+      "tokens": [
+        "AI"
+      ],
+      "reason": "NamedAIcontrollers/JavaScript/AI heading abbreviations retained; all narrativeUrdu reviewedagainstfullEnglishprofile.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[AI telemetry]",
+      "target": "AI کی ٹیلی میٹری",
+      "tokens": [
+        "AI"
+      ],
+      "reason": "NamedAIcontrollers/JavaScript/AI heading abbreviations retained; all narrativeUrdu reviewedagainstfullEnglishprofile.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[No accessible AI telemetry.]",
+      "target": "AI کی قابلِ رسائی ٹیلی میٹری نہیں۔",
+      "tokens": [
+        "AI"
+      ],
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[Add JavaScript AIs in Settings → Custom AIs. They appear in each colony’s AI selector.]",
+      "target": "ترتیبات → اپنی مرضی کے AI میں JavaScript کے AI شامل کریں۔ وہ ہر بستی کے AI انتخاب میں دکھائی دیتے ہیں۔",
+      "tokens": [
+        "AI",
+        "JavaScript",
+        "AI",
+        "AI"
+      ],
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[Missing custom AI]",
+      "target": "حسبِ پسند AI موجود نہیں",
+      "tokens": [
+        "AI"
+      ],
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[Units hit harder but have less HP and armor.]",
+      "target": "یونٹ زیادہ زور سے وار کرتے ہیں مگر HP اور زرہ کم ہوتی ہے۔",
+      "tokens": [
+        "HP"
+      ],
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[Units die when they run out of HP. Turn off to stop them at 1 HP.]",
+      "target": "HP ختم ہونے پر یونٹ مر جاتے ہیں۔ انہیں 1 HP پر روکنے کے لیے بند کریں۔",
+      "tokens": [
+        "HP",
+        "HP"
+      ],
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[AI Library]",
+      "target": "AI لائبریری",
+      "tokens": [
+        "AI"
+      ],
+      "reason": "NamedAIcontrollers/JavaScript/AI heading abbreviations retained; all narrativeUrdu reviewedagainstfullEnglishprofile.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[Downloading AI…]",
+      "target": "AI ڈاؤن لوڈ ہو رہا ہے…",
+      "tokens": [
+        "AI"
+      ],
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[How AIs work]",
+      "target": "AI کیسے کام کرتے ہیں",
+      "tokens": [
+        "AI"
+      ],
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[Invalid AI catalogue response]",
+      "target": "AI کیٹلاگ کا جواب درست نہیں",
+      "tokens": [
+        "AI"
+      ],
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[JavaScript API reference]",
+      "target": "JavaScript API کا حوالہ",
+      "tokens": [
+        "JavaScript",
+        "API"
+      ],
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[Loading AI library…]",
+      "target": "AI لائبریری لوڈ ہو رہی ہے…",
+      "tokens": [
+        "AI"
+      ],
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[No AIs match these filters.]",
+      "target": "کوئی AI ان فلٹرز سے میل نہیں کھاتا۔",
+      "tokens": [
+        "AI"
+      ],
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[Open AI Library]",
+      "target": "AI لائبریری کھولیں",
+      "tokens": [
+        "AI"
+      ],
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[Open AI page]",
+      "target": "AI کا صفحہ کھولیں",
+      "tokens": [
+        "AI"
+      ],
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[Share your AI]",
+      "target": "اپنا AI بانٹیں",
+      "tokens": [
+        "AI"
+      ],
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[Sign in through Online settings to like and favourite AIs.]",
+      "target": "AI کو پسند اور پسندیدہ کرنے کے لیے آن لائن ترتیبات سے سائن اِن کریں۔",
+      "tokens": [
+        "AI"
+      ],
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[Download an AI, then choose it for a computer seat in a local game. Installed versions work offline. Updates affect future games; saves keep their original code.]",
+      "target": "AI ڈاؤن لوڈ کریں، پھر مقامی کھیل میں کمپیوٹر کی نشست کے لیے منتخب کریں۔ نصب شدہ ورژن آف لائن چلتے ہیں۔ اپ ڈیٹ آئندہ کھیلوں کو بدلتی ہے؛ محفوظ کھیل اپنا اصل کوڈ رکھتے ہیں۔",
+      "tokens": [
+        "AI"
+      ],
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[music AI-generated]",
+      "target": "AI کی بنائی ہوئی",
+      "tokens": [
+        "AI"
+      ],
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[music Choose ZIP]",
+      "target": "ZIP چنیں",
+      "tokens": [
+        "ZIP"
+      ],
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[music Import ZIP]",
+      "target": "ZIP درآمد کریں",
+      "tokens": [
+        "ZIP"
+      ],
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[music Import ZIP or three tracks]",
+      "target": "ZIP یا تین ٹریک درآمد کریں",
+      "tokens": [
+        "ZIP"
+      ],
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[music Includes AI-generated audio]",
+      "target": "AI کی بنائی ہوئی آواز شامل ہے",
+      "tokens": [
+        "AI"
+      ],
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[music Not AI-generated]",
+      "target": "AI کی بنائی ہوئی نہیں",
+      "tokens": [
+        "AI"
+      ],
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[music Import a downloaded music ZIP or the three Opus tracks. Metadata and cover art are read from Calm; no extra files are required.]",
+      "target": "ڈاؤن لوڈ شدہ موسیقی کا ZIP یا تین Opus ٹریک درآمد کریں۔ معلومات اور سرورق پرسکون ٹریک سے پڑھے جاتے ہیں؛ مزید فائلیں درکار نہیں۔",
+      "tokens": [
+        "ZIP",
+        "Opus"
+      ],
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[settings Target render FPS]",
+      "target": "رینڈرنگ کا مطلوب FPS",
+      "tokens": [
+        "FPS"
+      ],
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[experiment markets-v2]",
+      "target": "بازار V2",
+      "tokens": [
+        "V2"
+      ],
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[set library definition]",
+      "target": "خواص کی تعریف (JSON)",
+      "tokens": [
+        "JSON"
+      ],
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[set library artwork]",
+      "target": "زمین کے فن پاروں کی نقشہ بندی (JSON)",
+      "tokens": [
+        "JSON"
+      ],
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[Discord community]",
+      "target": "Discord برادری",
+      "tokens": [
+        "Discord"
+      ],
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[Globulation 2 Discord]",
+      "target": "Globulation 2 Discord",
+      "tokens": [
+        "Globulation",
+        "Discord"
+      ],
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[discord community intro]",
+      "target": "Globulation 2 کی برادری کے ساتھ حریف تلاش کریں، مدد مانگیں اور اپنے نقشے بانٹیں۔",
+      "tokens": [
+        "Globulation"
+      ],
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[discord opens externally]",
+      "target": "ہمارے Discord سرور میں شامل ہوں۔ اس سے Discord یا آپ کا براؤزر کھلتا ہے۔",
+      "tokens": [
+        "Discord",
+        "Discord"
+      ],
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[Join Discord]",
+      "target": "Discord میں شامل ہوں",
+      "tokens": [
+        "Discord"
+      ],
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[discord opened]",
+      "target": "Discord کھل گیا۔ آپ کسی بھی وقت کھیل میں واپس آ سکتے ہیں۔",
+      "tokens": [
+        "Discord"
+      ],
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[discord open failed]",
+      "target": "Discord نہیں کھل سکا۔ دعوت کا لنک نقل کر کے اپنے براؤزر میں کھولیں۔",
+      "tokens": [
+        "Discord"
+      ],
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[settings CPU automatic]",
+      "target": "خودکار CPU",
+      "tokens": [
+        "CPU"
+      ],
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[settings Applies at the next simulation boundary. Unsupported work uses CPU automatic; rendering is independent.]",
+      "target": "اگلی سمیولیشن حد پر لاگو ہو گا۔ غیر معاون کام کے لیے خودکار CPU استعمال ہوتا ہے؛ رینڈرنگ الگ ہے۔",
+      "tokens": [
+        "CPU"
+      ],
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[settings Compare GPU results with scalar CPU before publication. Adds computation and stops the game on a mismatch.]",
+      "target": "لاگو کرنے سے پہلے GPU کے نتائج اسکیلر CPU سے ملائیں۔ حساب بڑھتا ہے اور فرق آنے پر کھیل رک جاتا ہے۔",
+      "tokens": [
+        "GPU",
+        "CPU"
+      ],
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[settings CPU fallback]",
+      "target": "CPU پر متبادل عمل",
+      "tokens": [
+        "CPU"
+      ],
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[settings GPU fields]",
+      "target": "GPU کے میدان",
+      "tokens": [
+        "GPU"
+      ],
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[settings CPU fallbacks]",
+      "target": "CPU پر متبادل اعمال",
+      "tokens": [
+        "CPU"
+      ],
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[settings MCP server]",
+      "target": "MCP سرور",
+      "tokens": [
+        "MCP"
+      ],
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[settings Enabling the MCP server permits local clients to see and operate the game.]",
+      "target": "MCP سرور چالو کرنے سے مقامی کلائنٹ کھیل دیکھ اور چلا سکتے ہیں۔",
+      "tokens": [
+        "MCP"
+      ],
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[settings Enable MCP server]",
+      "target": "MCP سرور چالو کریں",
+      "tokens": [
+        "MCP"
+      ],
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[settings MCP server unavailable in this application]",
+      "target": "اس ایپ میں MCP سرور دستیاب نہیں",
+      "tokens": [
+        "MCP"
+      ],
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[stat ground movement about]",
+      "target": "زندہ زمینی یونٹ، رفتار کے اندازاً تناسب کے مطابق۔ 'تیراکی 2x' کا مطلب دوڑنے سے دوگنی تیز تیراکی ہے۔ اڑنے والے اور غیر متحرک یونٹ شامل نہیں۔",
+      "tokens": [
+        "x"
+      ],
+      "reason": "Numeric scale/2D notation preserves source; no Englishprose.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[stat band swim twice run]",
+      "target": "تیراکی 2x",
+      "tokens": [
+        "x"
+      ],
+      "reason": "Numeric scale/2D notation preserves source; no Englishprose.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[stat band swim faster run]",
+      "target": "تیراکی 1.4x",
+      "tokens": [
+        "x"
+      ],
+      "reason": "Numeric scale/2D notation preserves source; no Englishprose.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[stat band run faster swim]",
+      "target": "دوڑ 1.3x",
+      "tokens": [
+        "x"
+      ],
+      "reason": "Numeric scale/2D notation preserves source; no Englishprose.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[stat band run twice swim]",
+      "target": "دوڑ 2x",
+      "tokens": [
+        "x"
+      ],
+      "reason": "Numeric scale/2D notation preserves source; no Englishprose.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[stat band run triple swim]",
+      "target": "دوڑ 3x",
+      "tokens": [
+        "x"
+      ],
+      "reason": "Numeric scale/2D notation preserves source; no Englishprose.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[settings Touch and Mac gesture scrolling. 0 turns an effect off; 50 is the touch default.]",
+      "target": "ٹچ اور Mac اشاروں کی اسکرولنگ۔ 0 سے اثر بند؛ ٹچ کی طے شدہ قدر 50 ہے۔",
+      "tokens": [
+        "Mac"
+      ],
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[settings How far lists and panels keep scrolling after a touch flick. Mac gestures use system momentum; zero disables their glide.]",
+      "target": "ٹچ کے ہلکے جھٹکے کے بعد فہرستیں اور پینل کتنی دور چلتے رہیں۔ Mac اشارے نظام کی روانی استعمال کرتے ہیں؛ صفر سے یہ روانی بند ہوتی ہے۔",
+      "tokens": [
+        "Mac"
+      ],
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[settings How much lists and panels stretch past their ends and spring back. Mac gestures use a gentler stretch.]",
+      "target": "فہرستیں اور پینل کناروں سے کتنا آگے کھنچ کر واپس آئیں۔ Mac اشاروں میں کھنچاؤ نرم ہے۔",
+      "tokens": [
+        "Mac"
+      ],
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[tutorial part1 message 1]",
+      "target": "Globulation 2 میں خوش آمدید! یہ تربیت چار مہمات میں بستی چلانا سکھاتی ہے۔ کھیل کے مینو سے پیش رفت محفوظ اور بعد میں مرکزی مینو سے لوڈ کر سکتے ہیں۔ جاری رکھنے کے لیے Space دبائیں، یا ٹچ اسکرین پر OK کو چھوئیں۔ آگے بڑھنے کے بعد کچھ پیغامات غائب ہو جاتے ہیں؛ انہیں دوبارہ پڑھنے کے لیے پیغامات کی سرگزشت کھولیں۔",
+      "tokens": [
+        "Globulation",
+        "Space",
+        "OK"
+      ],
+      "reason": "OK islocalized touchbutton, notphysicalkeyboard; replacewithactualٹھیک ہے per exacttutorialfinding. OtherLatinpropernames/Spaceinentry remainvalid.",
+      "state": "changes_requested"
+    },
+    {
+      "key": "[tutorial part4 message 7]",
+      "target": "جھنڈے کے گرد دائرہ کام کا رداس دکھاتا ہے۔ مقرر کھوجی اس علاقے کی کھوج کرے گا۔ کوئی نہ آئے تو کھوجیوں کی تعداد دیکھیں اور ضرورت پر چھتے سے نیا بنائیں۔ کھوجی علاقے میں پہنچے تو Space دبائیں یا OK چھوئیں۔",
+      "tokens": [
+        "Space",
+        "OK"
+      ],
+      "reason": "OK islocalized touchbutton, notphysicalkeyboard; replacewithactualٹھیک ہے per exacttutorialfinding. OtherLatinpropernames/Spaceinentry remainvalid.",
+      "state": "changes_requested"
+    },
+    {
+      "key": "[library Create in Building Studio]",
+      "target": "Building Studio میں بنائیں",
+      "tokens": [
+        "Building",
+        "Studio"
+      ],
+      "reason": "AlignnamedfeaturewithfinalonlineUrduglossary عمارت اسٹوڈیو; currentpartialEnglishlabelnotblanketapproved.",
+      "state": "changes_requested"
+    },
+    {
+      "key": "[library Enter a building family ID or a link to its family page.]",
+      "target": "عمارت کے خاندان کی ID یا اس کے صفحے کا لنک درج کریں۔",
+      "tokens": [
+        "ID"
+      ],
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[library Family link or ID]",
+      "target": "خاندان کا لنک یا ID",
+      "tokens": [
+        "ID"
+      ],
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[library Invalid building family ID.]",
+      "target": "عمارت کے خاندان کی ID درست نہیں۔",
+      "tokens": [
+        "ID"
+      ],
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[library Open an unlisted family by its link or ID. For private families, sign in through Online first.]",
+      "target": "غیر فہرست شدہ خاندان اس کے لنک یا ID سے کھولیں۔ نجی خاندانوں کے لیے پہلے آن لائن کے ذریعے سائن ان کریں۔",
+      "tokens": [
+        "ID"
+      ],
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[library This package ID is installed. Confirm replacement to use the selected release.]",
+      "target": "اس پیکیج کی ID نصب ہے۔ منتخب ریلیز استعمال کرنے کے لیے بدلنے کی تصدیق کریں۔",
+      "tokens": [
+        "ID"
+      ],
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch.",
+      "state": "accepted_latin_tokens"
+    },
+    {
+      "key": "[library GL only]",
+      "target": "صرف GL",
+      "tokens": [
+        "GL"
+      ],
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch.",
+      "state": "accepted_latin_tokens"
+    }
+  ],
+  "count": 247,
+  "all_latin_entry_tokens_examined": true,
+  "limits": "Lexicalretentiondispositions, notautomaticEnglishequalitybypass;3entriesrequirechanges asmarked."
+}

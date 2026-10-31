@@ -1,0 +1,805 @@
+{
+  "editor": "/root/swahili_translation",
+  "author": "/root/urdu_translation",
+  "independent_reviewer": "/root/pilot_context",
+  "batch_id": "native-settings-003",
+  "source_contract_sha256": "aacd8a342e9e734ba47f902a161ac1a45badff5842a617bcd68bf8e2275d6013",
+  "original_target_subset_sha256": "68070a2a02cef56b185d3eef400ae383eed991e9ea081e6186a6770e035f3870",
+  "final_target_subset_sha256": "0959a12830b1dcd512b74296b2c4aded80f40357bd6ace6c95745a8210a7a4f2",
+  "final_catalog_sha256": "ec78fb33247244bf783461e0410ef11fe48e45644c3c6500419d9060e967d458",
+  "entries": [
+    {
+      "key": "[music Most liked]",
+      "source": "Most liked",
+      "before": "سب سے زیادہ پسند کی گئی",
+      "after": "سب سے زیادہ پسند کی گئی",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[music Music decoding failed.]",
+      "source": "Music decoding failed.",
+      "before": "موسیقی ڈی کوڈ نہیں ہو سکی۔",
+      "after": "موسیقی ڈی کوڈ نہیں ہو سکی۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[music Music download failed.]",
+      "source": "Music download failed.",
+      "before": "موسیقی ڈاؤن لوڈ نہیں ہو سکی۔",
+      "after": "موسیقی ڈاؤن لوڈ نہیں ہو سکی۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[music Music installed.]",
+      "source": "Music installed.",
+      "before": "موسیقی نصب ہو گئی۔",
+      "after": "موسیقی نصب ہو گئی۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[music Music installed. It is now available in Audio settings.]",
+      "source": "Music installed. It is now available in Audio settings.",
+      "before": "موسیقی نصب ہو گئی۔ اب آواز کی ترتیبات میں دستیاب ہے۔",
+      "after": "موسیقی نصب ہو گئی۔ اب آواز کی ترتیبات میں دستیاب ہے۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[music Music is not yet saved permanently. Retry saving before leaving.]",
+      "source": "Music is not yet saved permanently. Retry saving before leaving.",
+      "before": "موسیقی ابھی مستقل محفوظ نہیں ہوئی۔ جانے سے پہلے دوبارہ محفوظ کریں۔",
+      "after": "موسیقی ابھی مستقل محفوظ نہیں ہوئی۔ جانے سے پہلے دوبارہ محفوظ کریں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[music Music library]",
+      "source": "Music library",
+      "before": "موسیقی کی لائبریری",
+      "after": "موسیقی کی لائبریری",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[music Music request failed.]",
+      "source": "Music request failed.",
+      "before": "موسیقی کی درخواست ناکام رہی۔",
+      "after": "موسیقی کی درخواست ناکام رہی۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[music Newest]",
+      "source": "Newest",
+      "before": "تازہ ترین",
+      "after": "تازہ ترین",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[music No community music installed yet. Import files or browse the online library.]",
+      "source": "No community music installed yet. Import files or browse the online library.",
+      "before": "ابھی برادری کی موسیقی نصب نہیں۔ فائلیں درآمد کریں یا آن لائن لائبریری دیکھیں۔",
+      "after": "ابھی برادری کی موسیقی نصب نہیں۔ فائلیں درآمد کریں یا آن لائن لائبریری دیکھیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[music No music found.]",
+      "source": "No music found.",
+      "before": "کوئی موسیقی نہیں ملی۔",
+      "after": "کوئی موسیقی نہیں ملی۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[music Not AI-generated]",
+      "source": "Not AI-generated",
+      "before": "AI کی بنائی ہوئی نہیں",
+      "after": "AI کی بنائی ہوئی نہیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[music Pause]",
+      "source": "Pause",
+      "before": "روکیں",
+      "after": "روکیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[music Play]",
+      "source": "Play",
+      "before": "چلائیں",
+      "after": "چلائیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[music Playback position]",
+      "source": "Playback position",
+      "before": "چلانے کی موجودہ جگہ",
+      "after": "چلانے کی موجودہ جگہ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[music Preview]",
+      "source": "Preview",
+      "before": "پیش منظر",
+      "after": "پیش منظر",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[music Ready to import.]",
+      "source": "Ready to import.",
+      "before": "درآمد کے لیے تیار۔",
+      "after": "درآمد کے لیے تیار۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[music Remove]",
+      "source": "Remove",
+      "before": "ہٹائیں",
+      "after": "ہٹائیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[music Reset to game behavior]",
+      "source": "Reset to game behavior",
+      "before": "کھیل کا طے شدہ رویہ بحال کریں",
+      "after": "کھیل کا طے شدہ رویہ بحال کریں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[music Retry saving]",
+      "source": "Retry saving",
+      "before": "دوبارہ محفوظ کریں",
+      "after": "دوبارہ محفوظ کریں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[music Saved.]",
+      "source": "Saved.",
+      "before": "محفوظ ہو گیا۔",
+      "after": "محفوظ ہو گیا۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[music Saving music…]",
+      "source": "Saving music…",
+      "before": "موسیقی محفوظ ہو رہی ہے…",
+      "after": "موسیقی محفوظ ہو رہی ہے…",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[music Search]",
+      "source": "Search",
+      "before": "تلاش",
+      "after": "تلاش",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[music Search title, artist, description…]",
+      "source": "Search title, artist, description…",
+      "before": "عنوان، فنکار یا تفصیل تلاش کریں…",
+      "after": "عنوان، فنکار یا تفصیل تلاش کریں…",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[music Select for installation]",
+      "source": "Select for installation",
+      "before": "نصب کرنے کے لیے منتخب کریں",
+      "after": "نصب کرنے کے لیے منتخب کریں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[music Share music on the web]",
+      "source": "Share music on the web",
+      "before": "ویب پر موسیقی بانٹیں",
+      "after": "ویب پر موسیقی بانٹیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[music Some catalogue entries could not be read.]",
+      "source": "Some catalogue entries could not be read.",
+      "before": "فہرست کی کچھ اندراجات پڑھی نہیں جا سکیں۔",
+      "after": "فہرست کے کچھ اندراجات پڑھے نہیں جا سکے۔",
+      "editorially_read": true,
+      "disposition": "edited-pending-recheck"
+    },
+    {
+      "key": "[music Storage could not be saved. Retry or export your files before leaving.]",
+      "source": "Storage could not be saved. Retry or export your files before leaving.",
+      "before": "ذخیرہ محفوظ نہیں ہو سکا۔ جانے سے پہلے دوبارہ کوشش یا فائلیں برآمد کریں۔",
+      "after": "ذخیرہ محفوظ نہیں ہو سکا۔ جانے سے پہلے دوبارہ کوشش کریں یا اپنی فائلیں برآمد کر لیں۔",
+      "editorially_read": true,
+      "disposition": "edited-pending-recheck"
+    },
+    {
+      "key": "[music Tag]",
+      "source": "Tag",
+      "before": "ٹیگ",
+      "after": "ٹیگ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[music Test crossfades]",
+      "source": "Test crossfades",
+      "before": "آوازوں کی باہمی تبدیلی آزمائیں",
+      "after": "آوازوں کی باہمی تبدیلی آزمائیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[music Up to 2 minutes]",
+      "source": "Up to 2 minutes",
+      "before": "2 منٹ تک",
+      "after": "2 منٹ تک",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[music Use this music]",
+      "source": "Use this music",
+      "before": "یہ موسیقی استعمال کریں",
+      "after": "یہ موسیقی استعمال کریں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[music Validating music…]",
+      "source": "Validating music…",
+      "before": "موسیقی کی جانچ ہو رہی ہے…",
+      "after": "موسیقی کی جانچ ہو رہی ہے…",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Music library · Browse, install and import]",
+      "source": "Music library · Browse, install and import",
+      "before": "موسیقی کی لائبریری · دیکھیں، نصب اور درآمد کریں",
+      "after": "موسیقی کی لائبریری · دیکھیں، نصب اور درآمد کریں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[music Filters]",
+      "source": "Filters",
+      "before": "فلٹر",
+      "after": "فلٹر",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[music Leave without saving]",
+      "source": "Leave without saving",
+      "before": "محفوظ کیے بغیر جائیں",
+      "after": "محفوظ کیے بغیر جائیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[music Import a downloaded music ZIP or the three Opus tracks. Metadata and cover art are read from Calm; no extra files are required.]",
+      "source": "Import a downloaded music ZIP or the three Opus tracks. Metadata and cover art are read from Calm; no extra files are required.",
+      "before": "ڈاؤن لوڈ شدہ موسیقی کا ZIP یا تین Opus ٹریک درآمد کریں۔ معلومات اور سرورق پرسکون ٹریک سے پڑھے جاتے ہیں؛ مزید فائلیں درکار نہیں۔",
+      "after": "ڈاؤن لوڈ شدہ موسیقی کا ZIP یا تین Opus ٹریک درآمد کریں۔ معلومات اور سرورق پرسکون ٹریک سے پڑھے جاتے ہیں؛ مزید فائلیں درکار نہیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Target render FPS]",
+      "source": "Target render FPS",
+      "before": "رینڈرنگ کا مطلوب FPS",
+      "after": "رینڈرنگ کا مطلوب FPS",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Unlimited]",
+      "source": "Unlimited",
+      "before": "بلا حد",
+      "after": "بلا حد",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Limit drawing across the application. Lower values reduce rendering work. Game speed is unchanged.]",
+      "source": "Limit drawing across the application. Lower values reduce rendering work. Game speed is unchanged.",
+      "before": "پوری ایپ میں منظر بنانے کی رفتار محدود کریں۔ کم قدر سے رینڈرنگ کا کام گھٹتا ہے۔ کھیل کی رفتار نہیں بدلتی۔",
+      "after": "پوری ایپ میں منظر بنانے کی رفتار محدود کریں۔ کم قدر سے رینڈرنگ کا کام گھٹتا ہے۔ کھیل کی رفتار نہیں بدلتی۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Map generators]",
+      "source": "Map generators",
+      "before": "نقشہ بنانے والے",
+      "after": "نقشہ جنریٹر",
+      "editorially_read": true,
+      "disposition": "edited-pending-recheck"
+    },
+    {
+      "key": "[settings Import a generator package, then select its landscape when creating a map or game.]",
+      "source": "Import a generator package, then select its landscape when creating a map or game.",
+      "before": "جنریٹر پیکیج درآمد کریں، پھر نقشہ یا کھیل بناتے وقت اس کا منظرنامہ چنیں۔",
+      "after": "جنریٹر پیکیج درآمد کریں، پھر نقشہ یا کھیل بناتے وقت اس کا منظرنامہ چنیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Import map generator]",
+      "source": "Import map generator",
+      "before": "نقشہ جنریٹر درآمد کریں",
+      "after": "نقشہ جنریٹر درآمد کریں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings No custom map generators installed.]",
+      "source": "No custom map generators installed.",
+      "before": "کوئی اپنا نقشہ جنریٹر نصب نہیں۔",
+      "after": "کوئی اپنا نقشہ جنریٹر نصب نہیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Replace package]",
+      "source": "Replace package",
+      "before": "پیکیج بدلیں",
+      "after": "پیکیج بدلیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Export package]",
+      "source": "Export package",
+      "before": "پیکیج برآمد کریں",
+      "after": "پیکیج برآمد کریں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Remove generator]",
+      "source": "Remove generator",
+      "before": "جنریٹر ہٹائیں",
+      "after": "جنریٹر ہٹائیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Saving generator library…]",
+      "source": "Saving generator library…",
+      "before": "جنریٹروں کی لائبریری محفوظ ہو رہی ہے…",
+      "after": "جنریٹروں کی لائبریری محفوظ ہو رہی ہے…",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Could not read generator package.]",
+      "source": "Could not read generator package.",
+      "before": "جنریٹر پیکیج پڑھا نہیں جا سکا۔",
+      "after": "جنریٹر پیکیج پڑھا نہیں جا سکا۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Generator library saved.]",
+      "source": "Generator library saved.",
+      "before": "جنریٹروں کی لائبریری محفوظ ہو گئی۔",
+      "after": "جنریٹروں کی لائبریری محفوظ ہو گئی۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Storage could not be saved. The previous library is retained.]",
+      "source": "Storage could not be saved. The previous library is retained.",
+      "before": "ذخیرہ محفوظ نہیں ہو سکا۔ پچھلی لائبریری برقرار ہے۔",
+      "after": "ذخیرہ محفوظ نہیں ہو سکا۔ پچھلی لائبریری برقرار ہے۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Waiting for file selection or storage…]",
+      "source": "Waiting for file selection or storage…",
+      "before": "فائل کے انتخاب یا ذخیرے کا انتظار ہے…",
+      "after": "فائل کے انتخاب یا ذخیرے کا انتظار ہے…",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings File selection is unavailable.]",
+      "source": "File selection is unavailable.",
+      "before": "فائل کا انتخاب دستیاب نہیں۔",
+      "after": "فائل کا انتخاب دستیاب نہیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Package export is unavailable.]",
+      "source": "Package export is unavailable.",
+      "before": "پیکیج برآمد کرنا دستیاب نہیں۔",
+      "after": "پیکیج برآمد کرنا دستیاب نہیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings CPU automatic]",
+      "source": "CPU automatic",
+      "before": "خودکار CPU",
+      "after": "خودکار CPU",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Scalar]",
+      "source": "Scalar",
+      "before": "اسکیلر",
+      "after": "اسکیلر",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Unavailable]",
+      "source": "Unavailable",
+      "before": "دستیاب نہیں",
+      "after": "دستیاب نہیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Initializing]",
+      "source": "Initializing",
+      "before": "ابتدا ہو رہی ہے",
+      "after": "ابتدا ہو رہی ہے",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Gradient backend]",
+      "source": "Gradient backend",
+      "before": "گریڈینٹ کا بیک اینڈ",
+      "after": "گریڈینٹ کا بیک اینڈ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Applies at the next simulation boundary. Unsupported work uses CPU automatic; rendering is independent.]",
+      "source": "Applies at the next simulation boundary. Unsupported work uses CPU automatic; rendering is independent.",
+      "before": "اگلی سمیولیشن حد پر لاگو ہو گا۔ غیر معاون کام کے لیے خودکار CPU استعمال ہوتا ہے؛ رینڈرنگ الگ ہے۔",
+      "after": "اگلی سمیولیشن حد پر لاگو ہو گا۔ غیر معاون کام کے لیے خودکار CPU استعمال ہوتا ہے؛ رینڈرنگ الگ ہے۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Gradient algorithm]",
+      "source": "Gradient algorithm",
+      "before": "گریڈینٹ کا الگورتھم",
+      "after": "گریڈینٹ کا الگورتھم",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings All choices compute the same exact field.]",
+      "source": "All choices compute the same exact field.",
+      "before": "تمام انتخاب بالکل ایک ہی میدان حساب کرتے ہیں۔",
+      "after": "تمام طریقوں سے بالکل ایک ہی فاصلاتی نقشہ حاصل ہوتا ہے۔",
+      "editorially_read": true,
+      "disposition": "edited-pending-recheck"
+    },
+    {
+      "key": "[settings Bucket propagation]",
+      "source": "Bucket propagation",
+      "before": "بکٹ کے ذریعے پھیلاؤ",
+      "after": "بکٹ کے ذریعے پھیلاؤ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Verify gradient results]",
+      "source": "Verify gradient results",
+      "before": "گریڈینٹ کے نتائج کی تصدیق",
+      "after": "گریڈینٹ کے نتائج کی تصدیق",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Compare GPU results with scalar CPU before publication. Adds computation and stops the game on a mismatch.]",
+      "source": "Compare GPU results with scalar CPU before publication. Adds computation and stops the game on a mismatch.",
+      "before": "لاگو کرنے سے پہلے GPU کے نتائج اسکیلر CPU سے ملائیں۔ حساب بڑھتا ہے اور فرق آنے پر کھیل رک جاتا ہے۔",
+      "after": "لاگو کرنے سے پہلے GPU کے نتائج اسکیلر CPU سے ملائیں۔ حساب بڑھتا ہے اور فرق آنے پر کھیل رک جاتا ہے۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Gradient computation]",
+      "source": "Gradient computation",
+      "before": "گریڈینٹ کا حساب",
+      "after": "گریڈینٹ کا حساب",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings CPU fallback]",
+      "source": "CPU fallback",
+      "before": "CPU پر متبادل عمل",
+      "after": "CPU پر متبادل عمل",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings GPU fields]",
+      "source": "GPU fields",
+      "before": "GPU کے میدان",
+      "after": "GPU کے فاصلاتی نقشے",
+      "editorially_read": true,
+      "disposition": "edited-pending-recheck"
+    },
+    {
+      "key": "[settings CPU fallbacks]",
+      "source": "CPU fallbacks",
+      "before": "CPU پر متبادل اعمال",
+      "after": "CPU پر متبادل اعمال",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings MCP server]",
+      "source": "MCP server",
+      "before": "MCP سرور",
+      "after": "MCP سرور",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Enabling the MCP server permits local clients to see and operate the game.]",
+      "source": "Enabling the MCP server permits local clients to see and operate the game.",
+      "before": "MCP سرور چالو کرنے سے مقامی کلائنٹ کھیل دیکھ اور چلا سکتے ہیں۔",
+      "after": "MCP سرور چالو کرنے سے مقامی کلائنٹ کھیل دیکھ اور چلا سکتے ہیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Enable MCP server]",
+      "source": "Enable MCP server",
+      "before": "MCP سرور چالو کریں",
+      "after": "MCP سرور چالو کریں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Port]",
+      "source": "Port",
+      "before": "پورٹ",
+      "after": "پورٹ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Current controller: %0]",
+      "source": "Current controller: %0",
+      "before": "موجودہ کنٹرول کنندہ: %0",
+      "after": "موجودہ کنٹرول کنندہ: %0",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Copy endpoint]",
+      "source": "Copy endpoint",
+      "before": "رابطے کا پتہ کاپی کریں",
+      "after": "رابطے کا پتہ کاپی کریں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Retry listener]",
+      "source": "Retry listener",
+      "before": "سننے والا رابطہ دوبارہ شروع کریں",
+      "after": "سننے والا رابطہ دوبارہ شروع کریں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Revoke control]",
+      "source": "Revoke control",
+      "before": "کنٹرول واپس لیں",
+      "after": "کنٹرول واپس لیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings MCP server unavailable in this application]",
+      "source": "MCP server unavailable in this application",
+      "before": "اس ایپ میں MCP سرور دستیاب نہیں",
+      "after": "اس ایپ میں MCP سرور دستیاب نہیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Disabled]",
+      "source": "Disabled",
+      "before": "بند",
+      "after": "بند",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Running]",
+      "source": "Running",
+      "before": "چل رہا ہے",
+      "after": "چل رہا ہے",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Error: %0]",
+      "source": "Error: %0",
+      "before": "خرابی: %0",
+      "after": "خرابی: %0",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings None]",
+      "source": "None",
+      "before": "کوئی نہیں",
+      "after": "کوئی نہیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Starting]",
+      "source": "Starting",
+      "before": "شروع ہو رہا ہے",
+      "after": "شروع ہو رہا ہے",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Browse shared generators]",
+      "source": "Browse shared generators",
+      "before": "مشترک جنریٹر دیکھیں",
+      "after": "مشترک جنریٹر دیکھیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Apply artwork on the next game or editor load.]",
+      "source": "Apply artwork on the next game or editor load.",
+      "before": "اگلی بار کھیل یا ایڈیٹر لوڈ ہونے پر تصاویر لاگو کریں۔",
+      "after": "اگلی بار کھیل یا ایڈیٹر لوڈ ہونے پر تصاویر لاگو کریں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Requires a renderer with texture filtering. Your saved choice is retained.]",
+      "source": "Requires a renderer with texture filtering. Your saved choice is retained.",
+      "before": "ٹیکسچر فلٹرنگ والا رینڈرر چاہیے۔ محفوظ انتخاب برقرار ہے۔",
+      "after": "ٹیکسچر فلٹرنگ والا رینڈرر چاہیے۔ محفوظ انتخاب برقرار ہے۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Automatically show the torus overview while moving around the map.]",
+      "source": "Automatically show the torus overview while moving around the map.",
+      "before": "نقشے پر حرکت کے دوران ٹورس کا مجموعی منظر خود دکھائیں۔",
+      "after": "نقشے پر حرکت کے دوران ٹورس کا مجموعی منظر خود دکھائیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Requires a renderer with torus support. Your saved choice is retained.]",
+      "source": "Requires a renderer with torus support. Your saved choice is retained.",
+      "before": "ٹورس کی سہولت والا رینڈرر چاہیے۔ محفوظ انتخاب برقرار ہے۔",
+      "after": "ٹورس کی سہولت والا رینڈرر چاہیے۔ محفوظ انتخاب برقرار ہے۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Move and animate units between game ticks.]",
+      "source": "Move and animate units between game ticks.",
+      "before": "کھیل کے ٹکوں کے درمیان یونٹوں کی حرکت اور اینیمیشن دکھائیں۔",
+      "after": "کھیل کے ٹکوں کے درمیان یونٹوں کی حرکت اور اینیمیشن دکھائیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Renderer unavailable]",
+      "source": "Renderer unavailable",
+      "before": "رینڈرر دستیاب نہیں",
+      "after": "رینڈرر دستیاب نہیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Apply at the next completed frame. Your game stays running.]",
+      "source": "Apply at the next completed frame. Your game stays running.",
+      "before": "اگلا فریم مکمل ہونے پر لاگو کریں۔ کھیل چلتا رہے گا۔",
+      "after": "اگلا فریم مکمل ہونے پر لاگو کریں۔ کھیل چلتا رہے گا۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Active renderer: %0]",
+      "source": "Active renderer: %0",
+      "before": "فعال رینڈرر: %0",
+      "after": "فعال رینڈرر: %0",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Changing renderer…]",
+      "source": "Changing renderer…",
+      "before": "رینڈرر بدل رہا ہے…",
+      "after": "رینڈرر بدل رہا ہے…",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Menu scroll wheel enabled]",
+      "source": "Menu scroll wheel enabled",
+      "before": "مینو کا اسکرول پہیہ چالو",
+      "after": "مینو کا اسکرول پہیہ چالو",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Controls wheel scrolling in menus. The wheel always zooms the game and editor maps.]",
+      "source": "Controls wheel scrolling in menus. The wheel always zooms the game and editor maps.",
+      "before": "مینو میں پہیے کی اسکرولنگ قابو کرتا ہے۔ پہیہ کھیل اور ایڈیٹر کے نقشوں کو ہمیشہ زوم کرتا ہے۔",
+      "after": "مینو میں پہیے کی اسکرولنگ قابو کرتا ہے۔ پہیہ کھیل اور ایڈیٹر کے نقشوں کو ہمیشہ زوم کرتا ہے۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Gesture scrolling]",
+      "source": "Gesture scrolling",
+      "before": "اشاروں سے اسکرول",
+      "after": "اشاروں سے اسکرول",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Touch and Mac gesture scrolling. 0 turns an effect off; 50 is the touch default.]",
+      "source": "Touch and Mac gesture scrolling. 0 turns an effect off; 50 is the touch default.",
+      "before": "ٹچ اور Mac اشاروں کی اسکرولنگ۔ 0 سے اثر بند؛ ٹچ کی طے شدہ قدر 50 ہے۔",
+      "after": "ٹچ اور Mac اشاروں کی اسکرولنگ۔ 0 سے اثر بند؛ ٹچ کی طے شدہ قدر 50 ہے۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings How far lists and panels keep scrolling after a touch flick. Mac gestures use system momentum; zero disables their glide.]",
+      "source": "How far lists and panels keep scrolling after a touch flick. Mac gestures use system momentum; zero disables their glide.",
+      "before": "ٹچ کے ہلکے جھٹکے کے بعد فہرستیں اور پینل کتنی دور چلتے رہیں۔ Mac اشارے نظام کی روانی استعمال کرتے ہیں؛ صفر سے یہ روانی بند ہوتی ہے۔",
+      "after": "ٹچ کے ہلکے جھٹکے کے بعد فہرستیں اور پینل کتنی دور چلتے رہیں۔ Mac اشارے نظام کی روانی استعمال کرتے ہیں؛ صفر سے یہ روانی بند ہوتی ہے۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings How much lists and panels stretch past their ends and spring back. Mac gestures use a gentler stretch.]",
+      "source": "How much lists and panels stretch past their ends and spring back. Mac gestures use a gentler stretch.",
+      "before": "فہرستیں اور پینل کناروں سے کتنا آگے کھنچ کر واپس آئیں۔ Mac اشاروں میں کھنچاؤ نرم ہے۔",
+      "after": "فہرستیں اور پینل کناروں سے کتنا آگے کھنچ کر واپس آئیں۔ Mac اشاروں میں کھنچاؤ نرم ہے۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    }
+  ],
+  "status": "edited-awaiting-independent-recheck"
+}

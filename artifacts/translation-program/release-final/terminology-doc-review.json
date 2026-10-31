@@ -1,0 +1,46 @@
+{
+  "reviewer": "/root/hindi_online_review",
+  "path": "docs/development/ui-framework.md",
+  "sha256": "c0ca5fb74d1249f231692be31a81370e1d9f377978cd78e4179c85d90bca5229",
+  "scope": "Read small Hindi/Urdu/Swahili canonical terminology table plus worker-target/operating-target prose, compared all18 actual canonical catalog scalars.",
+  "term_keys_and_hi_ur_sw_values": {
+    "[Worker]": [
+      "श्रमिक",
+      "کارکن",
+      "Mfanyakazi"
+    ],
+    "[Explorer]": [
+      "खोजी",
+      "کھوجی",
+      "Mgunduzi"
+    ],
+    "[Warrior]": [
+      "योद्धा",
+      "جنگجو",
+      "Shujaa"
+    ],
+    "[inn]": [
+      "सराय",
+      "سرائے",
+      "Nyumba ya wageni"
+    ],
+    "[swarm]": [
+      "छत्ता",
+      "چھتہ",
+      "Kiota"
+    ],
+    "[market]": [
+      "बाज़ार",
+      "بازار",
+      "Soko"
+    ]
+  },
+  "canonical_catalog_sha256": {
+    "hi": "f31431ad0a4f51ddd3313a0726847f0ac0c1183ca644b9d80da4e030c444ce5c",
+    "ur": "00a9a60ebcee4730851744cf91fb5320c91ecbcc378ead36aaae2644500a19bc",
+    "sw": "ccb1751ebc28116d3d7510f5fe48e7bb3ded222aec088772019fb9a78d646ef6"
+  },
+  "status": "accepted; all6terms×3locales exact canonical matches; target/request semantics accurate",
+  "findings": [],
+  "limits": "Documentation source review only, no new rendering or independent translation approval of own Sw209."
+}

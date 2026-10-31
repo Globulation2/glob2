@@ -1,0 +1,52 @@
+{
+  "reviewer": "/root/hindi_online_review",
+  "author": "/root/hindi_translation",
+  "locale": "hi",
+  "surface": "online",
+  "source_sha256": "aacd8a342e9e734ba47f902a161ac1a45badff5842a617bcd68bf8e2275d6013",
+  "catalog_snapshot_sha256": {
+    "native": "bab260327e721c0260b9524086a5d282b17e1e7403332fa57d727a92bb35a5a4",
+    "online": "71736314f32c38490dc29630b9a118f232b725de770ce0c5adbe4a9d69223a26"
+  },
+  "batches_reviewed": 18,
+  "keys_reviewed": 2835,
+  "plural_families": 27,
+  "all_source_plural_values_compared": true,
+  "findings": 57,
+  "major": 46,
+  "minor": 11,
+  "accepted_english_entries": 85,
+  "references": [
+    {
+      "url": "https://mozilla-l10n.github.io/styleguides/hi-IN/",
+      "use": "Honorific software register, technical key names, source logic/consistency; guidance considered critically rather than blanket authority."
+    },
+    {
+      "url": "https://learn.microsoft.com/hi-in/ai-builder/credit-management",
+      "use": "Primary Hindi software usage of आरक्षित for reserved credit/capacity semantics."
+    },
+    {
+      "url": "https://support.google.com/meet/answer/10620276?co=GENIE.Platform%3DDesktop&hl=hi",
+      "use": "Attests Hindi software loanword म्यूट/अनम्यूट; shared-key audio/chat distinction remains established from code."
+    }
+  ],
+  "accepted_context_decisions": [
+    "Play and Play {slot0} are game-navigation/host-map actions, not audio playback; खेलें is correct there. Separate Play music/Play animation use चलाएँ correctly.",
+    "Building is an in-progress build/mood label at inspected callers, so निर्माण is correct; do not change it to इमारत indiscriminately.",
+    "AI library views is a LibraryNav heading, not a view-count metric, so दृश्य is defensible rather than a count mistranslation.",
+    "Current-period plural source VALUES intentionally differ from key; Hindi matches values, so no correction is needed merely to match the key.",
+    "All privacy, deletion irreversibility, guest/recoverable-account distinctions and numeric bounds were read; no additional specific defect identified.",
+    "Native glossary is Swarm building=छत्ता, colony=बस्ती, workers=श्रमिक, warriors=योद्धा, explorers=खोजी, credits=क्रेडिट, reserved=आरक्षित. Five online building references need alignment; literal swarm API/model identifiers remain unchanged."
+  ],
+  "limitations": [
+    "No in-app rendered context, native-human certification or full-locale signoff is claimed.",
+    "Full online rendering, accessibility and platform checks remain separate acceptance gates; this is linguistic review, not locale finalization."
+  ],
+  "catalog_edited": false,
+  "locale_finalized": false,
+  "editor_recheck": "editor-recheck.json",
+  "final_online_catalog_sha256": "18bc06269a91e48ed90b9c08372bbff2c218c245b2823e5aaf6738588a6f9954",
+  "open_linguistic_findings": 0,
+  "before_visual_context_catalog_sha256": "748ed6f83bbb1e55f66af93e24c61a02ad50c75222adac731e3ae104356baf60",
+  "visual_context_followup": "../hi-online-visual/summary.json"
+}

@@ -1,0 +1,689 @@
+{
+  "reviewer": "/root/hindi_online_review",
+  "author": "/root/swahili_translation",
+  "primary_editor": "/root/translation_kit",
+  "surface": "native",
+  "source_sha256": "aacd8a342e9e734ba47f902a161ac1a45badff5842a617bcd68bf8e2275d6013",
+  "before_sha256": "4f19c506d6d7d4bfd22c576ad1797e21a7a71a92d693e06c1a48a034585ceead",
+  "reviewed_after_sha256": "11f177f2792592cdc2a0dfb1edb0d7b5efbead7487efa1d7249fea657d8f85ec",
+  "changed_keys_rechecked": 125,
+  "unchanged_keys_proven": 3203,
+  "method": "Read each of125 after-values against actual English source VALUES and editor before-values/rationales. For profiles, reread each changed source/target paragraph; unchanged paragraphs carried from original full review. Inspected Fingerprint stretchX code and PortageLakes forest plug thickness, TeamStat plural legend callers, material metric source contexts. Actual Google clover/geology comparison artifacts read as comparative evidence only. Verified original before.txt raw hash equals original reviewed frozen hash; parsed exact125-key diff matches ledger before/after, with no other changed values.",
+  "all_original_findings_editorially_resolved": 32,
+  "accepted_edits": 125,
+  "remaining_findings": [],
+  "per_key_dispositions": [
+    {
+      "key": "[Read-only building]",
+      "result": "accepted",
+      "rationale": "Read-only is a restriction on editing, not a building to read aloud."
+    },
+    {
+      "key": "[Each colony's start is measured on the finished map: the walk to wheat and to wood, how well its ground regrows, the deposits and building sites within reach, and its distance from rivals. Every factor scores from 0 to 1 against a fixed bar, the total weighs them, fairness is the worst colony's total over the best, and the score is the worst total times the fairness.]",
+      "result": "accepted after root supplemental food-vs-wheat correction",
+      "rationale": "Weighted total is the sum of factor scores according to their weights; avoid an illogical total that assigns weights. Explicit wheat distance is ngano rather than generic chakula."
+    },
+    {
+      "key": "[experiment markets-v2 help]",
+      "result": "accepted",
+      "rationale": "Align harvested, stored and delivered material inventory with Malighafi; update noun-class concord, distinguish quantities from creatures and genuine equipment/vifaa."
+    },
+    {
+      "key": "[%0 units can't access resource]",
+      "result": "accepted",
+      "rationale": "Align harvested, stored and delivered material inventory with Malighafi; update noun-class concord, distinguish quantities from creatures and genuine equipment/vifaa."
+    },
+    {
+      "key": "[%0 units too far from resource]",
+      "result": "accepted",
+      "rationale": "Align harvested, stored and delivered material inventory with Malighafi; update noun-class concord, distinguish quantities from creatures and genuine equipment/vifaa."
+    },
+    {
+      "key": "[seeking a job]",
+      "result": "accepted",
+      "rationale": "Statistical count/legend refers to multiple creatures (TeamStat.cpp), requiring plural animate wanatafuta."
+    },
+    {
+      "key": "[seeking]",
+      "result": "accepted",
+      "rationale": "Statistical count/legend refers to multiple creatures (TeamStat.cpp), requiring plural animate wanatafuta."
+    },
+    {
+      "key": "[Other Options]",
+      "result": "accepted",
+      "rationale": "Use an explicit machaguo plural and matching ma-class concord instead of inconsistent chaguo with zi-/nyingine."
+    },
+    {
+      "key": "[AICortex-Profile]",
+      "result": "accepted",
+      "rationale": "Surplus labor produces food/technology/pressure, workers are not turned into food; scouting uses intelligence about enemies, not enemy units as own tools; desperation attack not invented final attack."
+    },
+    {
+      "key": "[AINicowar-Profile]",
+      "result": "accepted",
+      "rationale": "Restore active prioritization of food/healing buildings rather than passive statement that they are not given priority by others."
+    },
+    {
+      "key": "[AIEcono-Profile]",
+      "result": "accepted",
+      "rationale": "Food supplies, not demand for food, dwindle; preserve opponent exploitation tactic."
+    },
+    {
+      "key": "[AINumbi-Profile]",
+      "result": "accepted",
+      "rationale": "Opening grows food supply, rather than literally building food."
+    },
+    {
+      "key": "[AIWarrush-Profile]",
+      "result": "accepted",
+      "rationale": "Production ratio made explicit; replace lost workers/defenders and counterattack when opponent rush loses pace, not attack the attack momentum."
+    },
+    {
+      "key": "[AICabino-Profile]",
+      "result": "accepted",
+      "rationale": "Managers reserve creatures for jobs, not places for creatures; trained forces conduct attacks, the attacks themselves are not trained."
+    },
+    {
+      "key": "[AICabino-Summary]",
+      "result": "accepted",
+      "rationale": "Trained describes the forces conducting attacks, not the attacks themselves."
+    },
+    {
+      "key": "[AICortex-Summary]",
+      "result": "accepted",
+      "rationale": "Forward healing means medical support in forward positions, not an opaque phrase for front treatments."
+    },
+    {
+      "key": "[Maze]",
+      "result": "accepted",
+      "rationale": "Maze means complex corridors, not crossroads. Error references agree with Njia tata; cul-de-sacs have closed ends, not through routes."
+    },
+    {
+      "key": "[Fords]",
+      "result": "accepted",
+      "rationale": "Ford is shallow-water crossing, not short crossing."
+    },
+    {
+      "key": "[Branching]",
+      "result": "accepted",
+      "rationale": "Describe number/abundance of branches instead of opaque coined Utagawi."
+    },
+    {
+      "key": "[Coast roughness]",
+      "result": "accepted",
+      "rationale": "Ukwaru is surface roughness; ukwaruzo denotes scraping."
+    },
+    {
+      "key": "[Lagoons]",
+      "result": "accepted",
+      "rationale": "Lagoons are coastal water bodies, not rasi/peninsulas."
+    },
+    {
+      "key": "[Spiral]",
+      "result": "accepted",
+      "rationale": "Describe coiling shape without an unexplained ond fragment."
+    },
+    {
+      "key": "[Every colony's start is measured on the finished map, and a model fitted to thousands of games between equal opponents turns those measurements into a fitness. The fitness says how likely that colony is to win. Fairness is how evenly those chances are shared: 1 when every colony is as likely to win as any other, 0 when one colony would take the map.]",
+      "result": "accepted",
+      "rationale": "Collective makazi takes ya- concord, not singular li-; preserve measured fitness and fairness explanation."
+    },
+    {
+      "key": "[Block size]",
+      "result": "accepted",
+      "rationale": "Geographic/city block is kitalu, not kizuizi/obstacle; inspect generator controls, not key polysemy."
+    },
+    {
+      "key": "[Block shape]",
+      "result": "accepted",
+      "rationale": "Geographic/city block is kitalu, not kizuizi/obstacle; inspect generator controls, not key polysemy."
+    },
+    {
+      "key": "[Grain]",
+      "result": "accepted",
+      "rationale": "Generator geometric grain controls stretch and orientation, not food/particle grain; Unyooshaji wa umbo proposed for independent linguistic recheck."
+    },
+    {
+      "key": "[Four-leaf clover]",
+      "result": "accepted",
+      "rationale": "Clover is not cloves/karafuu. Proposed loan klova matches parent actual Google UI dictionary alternative; comparison is not authority."
+    },
+    {
+      "key": "[Bar size]",
+      "result": "accepted",
+      "rationale": "Sandbar is a sand deposit/fungu la mchanga, not threshold or barrier; preserve singular/plural concord across controls and errors."
+    },
+    {
+      "key": "[Breachable highlands]",
+      "result": "accepted",
+      "rationale": "The highlands have paths that can be opened; do not imply every path is already passable."
+    },
+    {
+      "key": "[Extra riffles]",
+      "result": "accepted",
+      "rationale": "Riffles are fast shallow currents, not necessarily short currents."
+    },
+    {
+      "key": "[Moraine hummocks]",
+      "result": "accepted",
+      "rationale": "Describe debris left by glacial ice, retaining geological origin rather than arbitrary rubble hills."
+    },
+    {
+      "key": "[Drumlin field]",
+      "result": "accepted",
+      "rationale": "Describe elongated glacially formed hills, not merely round arbitrary hills; descriptive terminology pending reviewer confirmation."
+    },
+    {
+      "key": "[Minimum terminal district side]",
+      "result": "accepted",
+      "rationale": "Minimum side is a length constraint on final region, not its bottom side or administrative county."
+    },
+    {
+      "key": "[Optional local crossings per parent]",
+      "result": "accepted",
+      "rationale": "Parent is a subdivided geographic region, not a person."
+    },
+    {
+      "key": "[Lava shield]",
+      "result": "accepted",
+      "rationale": "Generator is a broad gently sloping shield volcano, not protective equipment. Descriptive label avoids unsupported technical borrowing."
+    },
+    {
+      "key": "[AIMaxima-Profile]",
+      "result": "accepted",
+      "rationale": "A supplied defense has adequate food/equipment; idle training opportunities and reinforcing flags/assaults mean available time and additional forces, not unmet needs or flag upgrades."
+    },
+    {
+      "key": "[Sand bars]",
+      "result": "accepted",
+      "rationale": "Sandbar is a sand deposit/fungu la mchanga, not threshold or barrier; preserve singular/plural concord across controls and errors."
+    },
+    {
+      "key": "[Playa]",
+      "result": "accepted",
+      "rationale": "Playa is a dry salt lake basin, not any salt lake."
+    },
+    {
+      "key": "[Bajada]",
+      "result": "accepted",
+      "rationale": "Bajada is a sediment plain at mountain feet; match constraint message with label and dry playa term."
+    },
+    {
+      "key": "[Fans per range]",
+      "result": "accepted",
+      "rationale": "Explicit fan-shaped sediment deposits avoid implying mechanical fans; retain broad/long/count distinction."
+    },
+    {
+      "key": "[Broad fan]",
+      "result": "accepted",
+      "rationale": "Explicit fan-shaped sediment deposits avoid implying mechanical fans; retain broad/long/count distinction."
+    },
+    {
+      "key": "[Long fan]",
+      "result": "accepted",
+      "rationale": "Explicit fan-shaped sediment deposits avoid implying mechanical fans; retain broad/long/count distinction."
+    },
+    {
+      "key": "[The bajadas are too narrow for the homes; use a bigger map, a wider range spacing, narrower ridges or a smaller playa.]",
+      "result": "accepted",
+      "rationale": "Bajada is a sediment plain at mountain feet; match constraint message with label and dry playa term."
+    },
+    {
+      "key": "[Portage depth]",
+      "result": "accepted",
+      "rationale": "Actual PortageLakesGenerator.cpp thickness is a cuttable forest plug, not water depth; use Unene wa msitu wa kukatwa."
+    },
+    {
+      "key": "[Even Ground]",
+      "result": "accepted",
+      "rationale": "Fair/even opportunities need not imply physically levelled terrain."
+    },
+    {
+      "key": "[ERROR_CANT_SAVE_MAP]",
+      "result": "accepted",
+      "rationale": "Unsaved edits remain in editor; they are not literally open changes."
+    },
+    {
+      "key": "[turn waiting for players]",
+      "result": "accepted",
+      "rationale": "Waiting for each player to finish loading the game, not perform an unspecified upload."
+    },
+    {
+      "key": "[hub all rooms]",
+      "result": "accepted",
+      "rationale": "All agrees with vyumba: Vyote."
+    },
+    {
+      "key": "[room closed seat]",
+      "result": "accepted",
+      "rationale": "Closed seat agrees with nafasi (i-), distinct from chumba (ki-)."
+    },
+    {
+      "key": "[room closed seat detail]",
+      "result": "accepted",
+      "rationale": "Closed seat agrees with nafasi (i-), distinct from chumba (ki-)."
+    },
+    {
+      "key": "[room invite not found]",
+      "result": "accepted",
+      "rationale": "Invitation expiration needs clear muda wake umeisha clause, preserving missing-or-expired alternatives."
+    },
+    {
+      "key": "[room seat options]",
+      "result": "accepted",
+      "rationale": "Use an explicit machaguo plural and matching ma-class concord instead of inconsistent chaguo with zi-/nyingine."
+    },
+    {
+      "key": "[trust separate identity %0]",
+      "result": "accepted",
+      "rationale": "Account is main location-bearing subject; attach rating/history with pamoja na to avoid singular agreement on three mixed nouns."
+    },
+    {
+      "key": "[maps stats %0 %1 %2]",
+      "result": "accepted",
+      "rationale": "Counts are repetitions/times played or downloaded; add mara for natural count interpretation."
+    },
+    {
+      "key": "[maps %0 plays]",
+      "result": "accepted",
+      "rationale": "Counts are repetitions/times played or downloaded; add mara for natural count interpretation."
+    },
+    {
+      "key": "[stat hunger about]",
+      "result": "accepted",
+      "rationale": "Half-full reserve is imejaa nusu, not contradictory nusu kamili; retain thresholds."
+    },
+    {
+      "key": "[stat health about]",
+      "result": "accepted",
+      "rationale": "Critical is a poor health condition, not dangerous creature; align with Hali mbaya sana band label."
+    },
+    {
+      "key": "[stat group resources]",
+      "result": "accepted",
+      "rationale": "Align harvested, stored and delivered material inventory with Malighafi; update noun-class concord, distinguish quantities from creatures and genuine equipment/vifaa."
+    },
+    {
+      "key": "[stat gathered]",
+      "result": "accepted",
+      "rationale": "Align harvested, stored and delivered material inventory with Malighafi; update noun-class concord, distinguish quantities from creatures and genuine equipment/vifaa."
+    },
+    {
+      "key": "[stat gathered about]",
+      "result": "accepted",
+      "rationale": "Align harvested, stored and delivered material inventory with Malighafi; update noun-class concord, distinguish quantities from creatures and genuine equipment/vifaa."
+    },
+    {
+      "key": "[stat stored]",
+      "result": "accepted",
+      "rationale": "Align harvested, stored and delivered material inventory with Malighafi; update noun-class concord, distinguish quantities from creatures and genuine equipment/vifaa."
+    },
+    {
+      "key": "[stat stored about]",
+      "result": "accepted",
+      "rationale": "Align harvested, stored and delivered material inventory with Malighafi; update noun-class concord, distinguish quantities from creatures and genuine equipment/vifaa."
+    },
+    {
+      "key": "[stat spending]",
+      "result": "accepted",
+      "rationale": "Align harvested, stored and delivered material inventory with Malighafi; update noun-class concord, distinguish quantities from creatures and genuine equipment/vifaa."
+    },
+    {
+      "key": "[stat spending about]",
+      "result": "accepted",
+      "rationale": "Align harvested, stored and delivered material inventory with Malighafi; update noun-class concord, distinguish quantities from creatures and genuine equipment/vifaa."
+    },
+    {
+      "key": "[stat delivered]",
+      "result": "accepted",
+      "rationale": "Align harvested, stored and delivered material inventory with Malighafi; update noun-class concord, distinguish quantities from creatures and genuine equipment/vifaa."
+    },
+    {
+      "key": "[stat traded about]",
+      "result": "accepted",
+      "rationale": "Align harvested, stored and delivered material inventory with Malighafi; update noun-class concord, distinguish quantities from creatures and genuine equipment/vifaa."
+    },
+    {
+      "key": "[stat growth nearby about]",
+      "result": "accepted",
+      "rationale": "Align harvested, stored and delivered material inventory with Malighafi; update noun-class concord, distinguish quantities from creatures and genuine equipment/vifaa."
+    },
+    {
+      "key": "[stat unit resources]",
+      "result": "accepted",
+      "rationale": "Unit of material quantity is vipimo vya malighafi, never a count of living creatures."
+    },
+    {
+      "key": "[stat unit shots]",
+      "result": "accepted",
+      "rationale": "Shots count projectiles/risasi, not every attack."
+    },
+    {
+      "key": "[All rules]",
+      "result": "accepted",
+      "rationale": "Align game rules with established Kanuni UI; gentle first-match preset does not promise a special teaching behavior."
+    },
+    {
+      "key": "[Show all rules]",
+      "result": "accepted",
+      "rationale": "Align game rules with established Kanuni UI; gentle first-match preset does not promise a special teaching behavior."
+    },
+    {
+      "key": "[Choose a ruleset]",
+      "result": "accepted",
+      "rationale": "Align game rules with established Kanuni UI; gentle first-match preset does not promise a special teaching behavior."
+    },
+    {
+      "key": "[ruleset gentle description]",
+      "result": "accepted",
+      "rationale": "Align game rules with established Kanuni UI; gentle first-match preset does not promise a special teaching behavior."
+    },
+    {
+      "key": "[Combat is off, so the rules below have no effect.]",
+      "result": "accepted",
+      "rationale": "Align game rules with established Kanuni UI; gentle first-match preset does not promise a special teaching behavior."
+    },
+    {
+      "key": "[%0 more rules are at their Standard values.]",
+      "result": "accepted",
+      "rationale": "Align game rules with established Kanuni UI; gentle first-match preset does not promise a special teaching behavior."
+    },
+    {
+      "key": "[stat unit prestige]",
+      "result": "accepted",
+      "rationale": "Align all prestige points/victory references with canonical Heshima, not alternating Fahari."
+    },
+    {
+      "key": "[stat column prestige]",
+      "result": "accepted",
+      "rationale": "Align all prestige points/victory references with canonical Heshima, not alternating Fahari."
+    },
+    {
+      "key": "[This match cannot end. Turn on prestige victory or set a time limit.]",
+      "result": "accepted",
+      "rationale": "Align all prestige points/victory references with canonical Heshima, not alternating Fahari."
+    },
+    {
+      "key": "[Prestige usually appears after 13 to 28 minutes, so a 30-minute limit often ends in a tie.]",
+      "result": "accepted",
+      "rationale": "Align all prestige points/victory references with canonical Heshima, not alternating Fahari."
+    },
+    {
+      "key": "[stat eating time about]",
+      "result": "accepted",
+      "rationale": "Inn unavailability includes inadequate food/service as well as capacity; do not narrow all unserved workers to lack of free places."
+    },
+    {
+      "key": "[stat band free]",
+      "result": "accepted",
+      "rationale": "Free warriors are unassigned/available, not without monetary cost."
+    },
+    {
+      "key": "[Prunes]",
+      "result": "accepted",
+      "rationale": "Resource grows on a fruit tree and singular English source is Plum. Align raw fruit and tree with Plamu, not dried prunes."
+    },
+    {
+      "key": "[Prune tree]",
+      "result": "accepted",
+      "rationale": "Resource grows on a fruit tree and singular English source is Plum. Align raw fruit and tree with Plamu, not dried prunes."
+    },
+    {
+      "key": "[Import Resource Definitions]",
+      "result": "accepted",
+      "rationale": "Align import action with Ingiza and data definitions with Fasili across editor/library controls, retaining object and action."
+    },
+    {
+      "key": "[editor menu import resources]",
+      "result": "accepted",
+      "rationale": "Align import action with Ingiza and data definitions with Fasili across editor/library controls, retaining object and action."
+    },
+    {
+      "key": "[brush clearing area]",
+      "result": "accepted",
+      "rationale": "Clearing zone also removes nonvegetation resources; align general Eneo la kusafisha rather than vegetation-only kufyeka."
+    },
+    {
+      "key": "[dock brush paint]",
+      "result": "accepted",
+      "rationale": "Align dock Paint with existing phone/tutorial Chora visible action."
+    },
+    {
+      "key": "[editor menu import set]",
+      "result": "accepted",
+      "rationale": "Align import action with Ingiza and data definitions with Fasili across editor/library controls, retaining object and action."
+    },
+    {
+      "key": "[set library selection help]",
+      "result": "accepted",
+      "rationale": "Align import action with Ingiza and data definitions with Fasili across editor/library controls, retaining object and action."
+    },
+    {
+      "key": "[set library release help]",
+      "result": "accepted",
+      "rationale": "Align import action with Ingiza and data definitions with Fasili across editor/library controls, retaining object and action."
+    },
+    {
+      "key": "[set library import]",
+      "result": "accepted",
+      "rationale": "Align import action with Ingiza and data definitions with Fasili across editor/library controls, retaining object and action."
+    },
+    {
+      "key": "[set library local help]",
+      "result": "accepted",
+      "rationale": "Negative present of sasisha is hayasasishi; retain original credits and nonpropagation to other maps/releases."
+    },
+    {
+      "key": "[outcome reason prestige]",
+      "result": "accepted",
+      "rationale": "Align all prestige points/victory references with canonical Heshima, not alternating Fahari."
+    },
+    {
+      "key": "[outcome reason scenario]",
+      "result": "accepted",
+      "rationale": "Align game rules with established Kanuni UI; gentle first-match preset does not promise a special teaching behavior."
+    },
+    {
+      "key": "[outcome reason ally won]",
+      "result": "accepted",
+      "rationale": "Express allied colony as Makazi ya mshirika, preserving collective ya- agreement and avoiding ambiguous adjectival plural."
+    },
+    {
+      "key": "[The maze needs at least two cells across and down; use a bigger map or smaller cells.]",
+      "result": "accepted",
+      "rationale": "Maze means complex corridors, not crossroads. Error references agree with Njia tata; cul-de-sacs have closed ends, not through routes."
+    },
+    {
+      "key": "[The maze has too few cul-de-sacs for this many colonies; use a bigger map or smaller cells.]",
+      "result": "accepted",
+      "rationale": "Maze means complex corridors, not crossroads. Error references agree with Njia tata; cul-de-sacs have closed ends, not through routes."
+    },
+    {
+      "key": "[Sandbars]",
+      "result": "accepted",
+      "rationale": "Sandbar is a sand deposit/fungu la mchanga, not threshold or barrier; preserve singular/plural concord across controls and errors."
+    },
+    {
+      "key": "[A sand bar did not reach the island.]",
+      "result": "accepted",
+      "rationale": "Sandbar is a sand deposit/fungu la mchanga, not threshold or barrier; preserve singular/plural concord across controls and errors."
+    },
+    {
+      "key": "[Sandbar connections]",
+      "result": "accepted",
+      "rationale": "Sandbar is a sand deposit/fungu la mchanga, not threshold or barrier; preserve singular/plural concord across controls and errors."
+    },
+    {
+      "key": "[Import Terrain Definitions]",
+      "result": "accepted",
+      "rationale": "Align import action with Ingiza and data definitions with Fasili across editor/library controls, retaining object and action."
+    },
+    {
+      "key": "[The braid leaves too little terrace for the homes; use a bigger map or a narrower braid.]",
+      "result": "accepted",
+      "rationale": "River terrace is elevated flat ground, not merely hills or highlands."
+    },
+    {
+      "key": "[experiment barren-terrain help]",
+      "result": "accepted",
+      "rationale": "Clay is udongo wa mfinyanzi; mfinyanzi alone names a potter."
+    },
+    {
+      "key": "[experiment ridge-terrain help]",
+      "result": "accepted",
+      "rationale": "Towers shoot projectiles over ridges; add risasi to the otherwise underspecified kupiga."
+    },
+    {
+      "key": "[experiment path-terrain help]",
+      "result": "accepted",
+      "rationale": "Boardwalks are wooden paths; they need not be bridges across gaps."
+    },
+    {
+      "key": "[stat growth map about]",
+      "result": "accepted",
+      "rationale": "Align harvested, stored and delivered material inventory with Malighafi; update noun-class concord, distinguish quantities from creatures and genuine equipment/vifaa."
+    },
+    {
+      "key": "[editor menu import terrain]",
+      "result": "accepted",
+      "rationale": "Align import action with Ingiza and data definitions with Fasili across editor/library controls, retaining object and action."
+    },
+    {
+      "key": "[terrain palette hint]",
+      "result": "accepted",
+      "rationale": "Members within each group share a set of rules; do not claim all groups share a single rule."
+    },
+    {
+      "key": "[library Enable installed families below. Selection is saved in this local profile; existing maps and saves keep their own buildings. For online play, generate a map with these families, publish it in the map library, then choose that map in your room.]",
+      "result": "accepted",
+      "rationale": "Align library family with Familia; use matching plural zi-/hizi concord, retain per-map buildings and publish workflow."
+    },
+    {
+      "key": "[library Generator installed. Future selections use this release.]",
+      "result": "accepted",
+      "rationale": "Use an explicit machaguo plural and matching ma-class concord instead of inconsistent chaguo with zi-/nyingine."
+    },
+    {
+      "key": "[settings Graphics detail]",
+      "result": "accepted",
+      "rationale": "Visual detail is Undani, not an explanation/Ufafanuzi; retain reduced visual effects and zoom-dependent behavior."
+    },
+    {
+      "key": "[settings Reduced detail disables clouds and their shadows, simplifies magic effects, and reduces transparency.]",
+      "result": "accepted",
+      "rationale": "Visual detail is Undani, not an explanation/Ufafanuzi; retain reduced visual effects and zoom-dependent behavior."
+    },
+    {
+      "key": "[settings Adjust assigned units with the wheel. When off, hold Ctrl. Shift adjusts flag radius. Also controls wheel input in other menus.]",
+      "result": "accepted",
+      "rationale": "Wheel changes assigned creature count, not the creatures themselves; Ctrl/Shift and menu behavior preserved."
+    },
+    {
+      "key": "[settings Adaptive zoom detail]",
+      "result": "accepted",
+      "rationale": "Visual detail is Undani, not an explanation/Ufafanuzi; retain reduced visual effects and zoom-dependent behavior."
+    },
+    {
+      "key": "[settings Fade the map into and out of the fog of war gradually.]",
+      "result": "accepted",
+      "rationale": "Explicitly include gradual appearance and disappearance, not only fading away in both directions."
+    },
+    {
+      "key": "[settings All choices compute the same exact field.]",
+      "result": "accepted",
+      "rationale": "Use an explicit machaguo plural and matching ma-class concord instead of inconsistent chaguo with zi-/nyingine."
+    },
+    {
+      "key": "[settings CPU fallback]",
+      "result": "accepted",
+      "rationale": "Fallback uses CPU as substitute route, not a repeated CPU attempt; plural label describes event count."
+    },
+    {
+      "key": "[settings CPU fallbacks]",
+      "result": "accepted",
+      "rationale": "Fallback uses CPU as substitute route, not a repeated CPU attempt; plural label describes event count."
+    },
+    {
+      "key": "[music Music is not yet saved permanently. Retry saving before leaving.]",
+      "result": "accepted",
+      "rationale": "Permanent storage uses idiomatic kwa kudumu rather than daima/always."
+    },
+    {
+      "key": "[tutorial part3 message 6]",
+      "result": "accepted",
+      "rationale": "Warriors receive training to improve their own attack skills; kufunza incorrectly makes them teach."
+    },
+    {
+      "key": "[tutorial part3 message 10]",
+      "result": "accepted",
+      "rationale": "Warriors receive training to improve their own attack skills; kufunza incorrectly makes them teach."
+    },
+    {
+      "key": "[tutorial part3 message 12]",
+      "result": "accepted",
+      "rationale": "Refer to actual Repair button Rekebisha with choose verb, not a mismatched Ukarabati noun label."
+    },
+    {
+      "key": "[tutorial part3 message 30]",
+      "result": "accepted",
+      "rationale": "Use singular construction as subject to avoid incorrect agreement across minara and vipande; preserve tower/wall timing."
+    },
+    {
+      "key": "[tutorial part2 message 16]",
+      "result": "accepted",
+      "rationale": "Align harvested, stored and delivered material inventory with Malighafi; update noun-class concord, distinguish quantities from creatures and genuine equipment/vifaa."
+    },
+    {
+      "key": "[tutorial part2 message 17]",
+      "result": "accepted",
+      "rationale": "Align harvested, stored and delivered material inventory with Malighafi; update noun-class concord, distinguish quantities from creatures and genuine equipment/vifaa."
+    }
+  ],
+  "native_structural_errors": [],
+  "native_untranslated": [],
+  "original_46_English_exceptions_unchanged": true,
+  "terminology_decisions": {
+    "Grain": "Unyooshaji wa umbo describes actual along-axis stretch, not edible grain. Accepted game-control paraphrase.",
+    "geology": "Descriptive glacial origin/sediment/volcanic slope terminology accepted; not asserted canonical geological dictionary terms.",
+    "Klova": "Accepted proposed plant loan, correctly distinguishes clover from cloves; actual Google translation/dictionary alternative is corroborating comparison only, not native-human authority.",
+    "Machaguo": "Explicit plural ma-class agrees with mengine/yote/yajayo; consistent with singular chaguo.",
+    "maze": "Njia tata with zi- plural and njia zenye mwisho uliofungwa preserves closed-end maze passages."
+  },
+  "catalog_edited": false,
+  "locale_finalized": false,
+  "supplemental_editor": "/root",
+  "final_native_sha256": "d23c1b75c4ae209b85a6dbd9f2fb0ab084ab7bb21b7544ec8a4a5ad545129cc5",
+  "result": "All125 changed keys accepted, original32 findings resolved. Root supplemental correction restores source-value food scope; all other edited wording and exact unchanged3203 entries verified.",
+  "final_target_subset_hashes": {
+    "native-colony-001": "b4941ef6db8cb0d6e7e0f0f92a2d1cc30669cc8e2ff4ea183be3fcfc0c78392a",
+    "native-colony-002": "c7eed2922ca9e3d28a320a5c8be7ff9b5a4d87d9482659ca14e7d24720f500ff",
+    "native-general-001": "7dafb43d7c70f9128c72f666212e36d5100e64cb6968946b2acaf31cbc75e821",
+    "native-general-002": "f119487acb635449c209b954e06e6298305ed4d3e2d75dd9a6111a7b123296ae",
+    "native-general-003": "1bf971236afe74237abed3b51637c603318ceba6b586bda05ff7bb1b4e1c623d",
+    "native-general-004": "5f1c62a17b2c4024b32410b8912550819257c14a87c65cba0aa6ab4318fb3786",
+    "native-general-005": "4b54afa7f17fc8047a2bb4e37edb88ef7e6d25580ecb64f53130c5e3c74bfbf2",
+    "native-general-006": "10a2e8d801cf8e4fa74d00a2abccdfff919888779a51a9bccbd879525b0ec739",
+    "native-general-007": "66b3c002ea96719078303256f3d9680fcab723f38fa72d9fc662dc060b5cfcad",
+    "native-general-008": "2160f455abaceaa8c9707a377cf2c27d8a1f84a78e812365b1eae284f9b0d1ec",
+    "native-general-009": "02569d73ea1ff340935020b54125663fd16561871f846537c461d40f82a191a3",
+    "native-general-010": "4353c77a59893ef49ea5960662fe7a6a18cd5040ba65e85e7f6d43fca7f5b450",
+    "native-general-011": "1ec717d28cd26a64c6efa4c9faee46dbe9387242523a67caf0f9785a9896f88c",
+    "native-general-012": "eb24e1af36806077f107f334ff6ce9e5e3230ba3a16e454b0396d3ceeee7387a",
+    "native-general-013": "a2648ce76e741e32a31b2c1094d83336e58a9c6359faa056d849777bb6bc8c15",
+    "native-general-014": "d99fa37c9a5703ec2c7f2fb0846ddca5f917b004da937a3909509021f4a3dc5d",
+    "native-general-015": "213af393af063770d38e1f07d473ef67ff77f6e51128862b3a3fccf0298b7c5c",
+    "native-general-016": "7e78f1cbd35b241b69683bd68a15cffd9a746a7016b1269182abfa76638ca5c3",
+    "native-maps-001": "bf1ed41bc3a31084c68df164e9cf51b847584dcb8e191d36d748b4534a28dcbe",
+    "native-maps-002": "e32467f52aff9164d621b10ec74f6a57bba149305ecaefbc13f48af47e2c1244",
+    "native-settings-001": "5f8427380ee5aa9e497bdd9f64f25d127b2e0e080698527438d47d5169c3b5c4",
+    "native-settings-002": "9b81fab5cfe2cc85951286c9a96deb059cd061edd6a0bf5e60e8bb50b4037a4c",
+    "native-settings-003": "df9340c90a8446e44c4985e60d11fd546d0d1933902c57fee47b8f9678af5607",
+    "native-tutorial-001": "5fb3c2f228815b9cbed15400ca3b363cef5e60c84e2c63f393bf2a8c79142498"
+  },
+  "supplemental_correction": {
+    "key": "[Each colony's start is measured on the finished map: the walk to wheat and to wood, how well its ground regrows, the deposits and building sites within reach, and its distance from rivals. Every factor scores from 0 to 1 against a fixed bar, the total weighs them, fairness is the worst colony's total over the best, and the score is the worst total times the fairness.]",
+    "after": "Mwanzo wa kila makazi hupimwa katika ramani iliyokamilika: umbali wa kutembea hadi chakula na kuni, uwezo wa ardhi kuota tena, akiba na maeneo ya ujenzi yanayofikika, na umbali kutoka kwa wapinzani. Kila kipengele hupata alama kati ya 0 na 1 kulingana na kiwango maalumu; jumla hupatikana kwa kujumlisha alama kulingana na uzito wa kila kipengele. Usawa ni jumla ya makazi dhaifu zaidi ikigawanywa kwa ya makazi bora zaidi, na alama ya mwisho ni jumla dhaifu zaidi ikizidishwa kwa usawa.",
+    "rechecked": true,
+    "only_difference_from_primary_editor_values": true
+  }
+}

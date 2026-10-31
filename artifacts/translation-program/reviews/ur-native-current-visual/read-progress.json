@@ -1,0 +1,171 @@
+{
+  "reviewer": "/root/hindi_online_review",
+  "production_images_actually_read": [
+    {
+      "job": "ur-1200-main",
+      "viewport": 1200,
+      "path": "artifacts/translation-program/native-preview/release-current/ur/1200/main.png",
+      "sha256": "24998f1c9f8147f49e4771f8b34ce36ab6b03ee9da8b531c063d3ca604066649",
+      "bytes": 1148511,
+      "width": 1200,
+      "height": 844,
+      "actually_read": true,
+      "archived_path": "artifacts/translation-program/reviews/ur-native-current-visual/initial-captures/ur/1200/main.png"
+    },
+    {
+      "job": "ur-1200-settings",
+      "viewport": 1200,
+      "path": "artifacts/translation-program/native-preview/release-current/ur/1200/settings.png",
+      "sha256": "3a32117c321ce89f5ca141974e37b994395e00aaa63a5a2864491a1ddab36993",
+      "bytes": 540840,
+      "width": 1200,
+      "height": 844,
+      "actually_read": true,
+      "archived_path": "artifacts/translation-program/reviews/ur-native-current-visual/initial-captures/ur/1200/settings.png"
+    },
+    {
+      "job": "ur-1200-settings-audio",
+      "viewport": 1200,
+      "path": "artifacts/translation-program/native-preview/release-current/ur/1200/settings-audio.png",
+      "sha256": "d444f6ab2f2bb379ecbba5cb31e4b750559be94540fc0e8b08f4a379a9c75d7a",
+      "bytes": 528983,
+      "width": 1200,
+      "height": 844,
+      "actually_read": true,
+      "archived_path": "artifacts/translation-program/reviews/ur-native-current-visual/initial-captures/ur/1200/settings-audio.png"
+    },
+    {
+      "job": "ur-1200-lobby",
+      "viewport": 1200,
+      "path": "artifacts/translation-program/native-preview/release-current/ur/1200/lobby.png",
+      "sha256": "9fab0fe7c935e75c29e7c3baa0d4874e740845f5ab6dc304b48fe05987b82062",
+      "bytes": 231773,
+      "width": 1200,
+      "height": 844,
+      "actually_read": true,
+      "archived_path": "artifacts/translation-program/reviews/ur-native-current-visual/initial-captures/ur/1200/lobby.png"
+    },
+    {
+      "job": "ur-1200-lobby-players",
+      "viewport": 1200,
+      "path": "artifacts/translation-program/native-preview/release-current/ur/1200/lobby-players.png",
+      "sha256": "d99eaa43cad6e78464390b5341cd1f7b492473ce248d593f34630d9a5611b06e",
+      "bytes": 240801,
+      "width": 1200,
+      "height": 844,
+      "actually_read": true,
+      "archived_path": "artifacts/translation-program/reviews/ur-native-current-visual/initial-captures/ur/1200/lobby-players.png"
+    },
+    {
+      "job": "ur-1200-gameplay",
+      "viewport": 1200,
+      "path": "artifacts/translation-program/native-preview/release-current/ur/1200/gameplay-dialog.png",
+      "sha256": "93f9bbb51111196e8fbd04864cd153afc9a2990cd6a46baa5561142bc98b3e0e",
+      "bytes": 544889,
+      "width": 2400,
+      "height": 1688,
+      "actually_read": true,
+      "archived_path": "artifacts/translation-program/reviews/ur-native-current-visual/initial-captures/ur/1200/gameplay-dialog.png"
+    },
+    {
+      "job": "ur-1200-gameplay",
+      "viewport": 1200,
+      "path": "artifacts/translation-program/native-preview/release-current/ur/1200/gameplay-zoom-fit.png",
+      "sha256": "01c8532afe55dfaab1ca1af65459818d572e3337b4ef05f674f1bfacd0a344b7",
+      "bytes": 110275,
+      "width": 2400,
+      "height": 1688,
+      "actually_read": true,
+      "archived_path": "artifacts/translation-program/reviews/ur-native-current-visual/initial-captures/ur/1200/gameplay-zoom-fit.png"
+    },
+    {
+      "job": "ur-1200-gameplay",
+      "viewport": 1200,
+      "path": "artifacts/translation-program/native-preview/release-current/ur/1200/gameplay-zoom-plus.png",
+      "sha256": "4bd817b2f60c0ba9c1ee8eba868b2659b0baa58d1707c8fed3ea37ab7e79d19a",
+      "bytes": 918985,
+      "width": 2400,
+      "height": 1688,
+      "actually_read": true,
+      "archived_path": "artifacts/translation-program/reviews/ur-native-current-visual/initial-captures/ur/1200/gameplay-zoom-plus.png"
+    },
+    {
+      "job": "ur-1200-gameplay",
+      "viewport": 1200,
+      "path": "artifacts/translation-program/native-preview/release-current/ur/1200/gameplay.png",
+      "sha256": "499e4c94dcee4fd3ed380d2d88ebffde3da03e90a022279c4c183f0f9d4c7de0",
+      "bytes": 725805,
+      "width": 2400,
+      "height": 1688,
+      "actually_read": true,
+      "archived_path": "artifacts/translation-program/reviews/ur-native-current-visual/initial-captures/ur/1200/gameplay.png"
+    },
+    {
+      "job": "ur-1200-tutorial-introduction",
+      "viewport": 1200,
+      "path": "artifacts/translation-program/native-preview/release-current/ur/1200/tutorial-introduction-dialog.png",
+      "sha256": "6464f6d22ef1da8b631849ab4f1b65aec5006bf60ccd0551e2eb9282dd0a3daf",
+      "bytes": 522112,
+      "width": 2400,
+      "height": 1688,
+      "actually_read": true,
+      "archived_path": "artifacts/translation-program/reviews/ur-native-current-visual/initial-captures/ur/1200/tutorial-introduction-dialog.png"
+    },
+    {
+      "job": "ur-1200-tutorial-introduction",
+      "viewport": 1200,
+      "path": "artifacts/translation-program/native-preview/release-current/ur/1200/tutorial-introduction.png",
+      "sha256": "219ff007560398d072264b60697ff7429a2fc5a8e090b95a7f667914a28ad6bd",
+      "bytes": 898268,
+      "width": 2400,
+      "height": 1688,
+      "actually_read": true,
+      "archived_path": "artifacts/translation-program/reviews/ur-native-current-visual/initial-captures/ur/1200/tutorial-introduction.png"
+    },
+    {
+      "job": "ur-1200-tutorial-food-supply",
+      "viewport": 1200,
+      "path": "artifacts/translation-program/native-preview/release-current/ur/1200/tutorial-food-supply-dialog.png",
+      "sha256": "313b8aed487c14d1339fa8dfe14fdafb9e1ee1ce673845bfa75e8290f3cc1180",
+      "bytes": 522446,
+      "width": 2400,
+      "height": 1688,
+      "actually_read": true,
+      "archived_path": "artifacts/translation-program/reviews/ur-native-current-visual/initial-captures/ur/1200/tutorial-food-supply-dialog.png"
+    },
+    {
+      "job": "ur-1200-tutorial-food-supply",
+      "viewport": 1200,
+      "path": "artifacts/translation-program/native-preview/release-current/ur/1200/tutorial-food-supply.png",
+      "sha256": "37510b7ed8e6fc57e3df4edb9573ba82af37fe8c8a3568f1f6499040877602de",
+      "bytes": 974062,
+      "width": 2400,
+      "height": 1688,
+      "actually_read": true,
+      "archived_path": "artifacts/translation-program/reviews/ur-native-current-visual/initial-captures/ur/1200/tutorial-food-supply.png"
+    }
+  ],
+  "representative_matrix_images_actually_read": [
+    "ur/1200/matrix/font-10-scale-1-page-001.png",
+    "ur/1200/matrix/font-10-scale-2-page-001.png",
+    "ur/1200/matrix/font-13-scale-1-page-001.png",
+    "ur/1200/matrix/font-13-scale-2-page-001.png",
+    "ur/1200/matrix/font-20-scale-1-page-001.png",
+    "ur/1200/matrix/font-20-scale-2-page-001.png",
+    "ur/1200/matrix/font-20-scale-1-page-002.png"
+  ],
+  "open_findings_file": "initial-findings.json",
+  "notes": [
+    "Introduction first capture shows initial mission briefing modal, not claimed as full active-step instruction proof.",
+    "Lobby initial preview is still generating, so blank preview is not a completed generator rendering verification."
+  ],
+  "representative_matrix_archived_sha256": {
+    "ur/1200/matrix/font-10-scale-1-page-001.png": "31657d08dfc7c664a587c0e6342686321b740ce3a1cde562917c57968d77cece",
+    "ur/1200/matrix/font-10-scale-2-page-001.png": "4ba9d618900d2802f1fc527b011717c7bb8b762e49706e91c3980141ff98af8e",
+    "ur/1200/matrix/font-13-scale-1-page-001.png": "0bd6b124a1c39340c7e4d31d287529775860550644ca78b5d7e63aa84e97367b",
+    "ur/1200/matrix/font-13-scale-2-page-001.png": "16641c866d5ef8c69ec2cc26aa6c864785e9e1dac72a7b692f1e831dfaf6a821",
+    "ur/1200/matrix/font-20-scale-1-page-001.png": "498f0dd1e09154657f9114fa3e4312ec0a14ad53f2bf26ef35e30480b0ae222d",
+    "ur/1200/matrix/font-20-scale-2-page-001.png": "7a181db6e4ceb64a6b31f09e7da2cec5df1d1ef171a33b996f9cb2bdb7091d75",
+    "ur/1200/matrix/font-20-scale-1-page-002.png": "b79482d66ff919ad9e51f7238291ac7da10e90772c271b7f5ebb95c5722425f4"
+  }
+}

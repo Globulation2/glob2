@@ -1,0 +1,800 @@
+{
+  "locale": "sw",
+  "surface": "native",
+  "editor": "/root/translation_kit",
+  "author": "/root/swahili_translation",
+  "original_reviewer": "/root/hindi_online_review",
+  "source_sha256": "aacd8a342e9e734ba47f902a161ac1a45badff5842a617bcd68bf8e2275d6013",
+  "before_native_sha256": "4f19c506d6d7d4bfd22c576ad1797e21a7a71a92d693e06c1a48a034585ceead",
+  "after_native_sha256": "11f177f2792592cdc2a0dfb1edb0d7b5efbead7487efa1d7249fea657d8f85ec",
+  "keys_editor_read_exactly_once": 3328,
+  "batches_read": 24,
+  "complete_AI_profiles_read": 9,
+  "tutorial_keys_read": 126,
+  "changed_keys": 125,
+  "changes": [
+    {
+      "key": "[Read-only building]",
+      "before": "Jengo la kusomwa tu",
+      "after": "Jengo lisiloweza kuhaririwa",
+      "rationale": "Read-only is a restriction on editing, not a building to read aloud."
+    },
+    {
+      "key": "[Each colony's start is measured on the finished map: the walk to wheat and to wood, how well its ground regrows, the deposits and building sites within reach, and its distance from rivals. Every factor scores from 0 to 1 against a fixed bar, the total weighs them, fairness is the worst colony's total over the best, and the score is the worst total times the fairness.]",
+      "before": "Mwanzo wa kila makazi hupimwa katika ramani iliyokamilika: umbali wa kutembea hadi chakula na kuni, uwezo wa ardhi kuota tena, akiba na maeneo ya ujenzi yanayofikika, na umbali kutoka kwa wapinzani. Kila kipengele hupata alama kati ya 0 na 1 kulingana na kiwango maalumu; jumla huzipa uzito. Usawa ni jumla ya makazi dhaifu zaidi ikigawanywa kwa ya makazi bora zaidi, na alama ya mwisho ni jumla dhaifu zaidi ikizidishwa kwa usawa.",
+      "after": "Mwanzo wa kila makazi hupimwa katika ramani iliyokamilika: umbali wa kutembea hadi ngano na kuni, uwezo wa ardhi kuota tena, akiba na maeneo ya ujenzi yanayofikika, na umbali kutoka kwa wapinzani. Kila kipengele hupata alama kati ya 0 na 1 kulingana na kiwango maalumu; jumla hupatikana kwa kujumlisha alama kulingana na uzito wa kila kipengele. Usawa ni jumla ya makazi dhaifu zaidi ikigawanywa kwa ya makazi bora zaidi, na alama ya mwisho ni jumla dhaifu zaidi ikizidishwa kwa usawa.",
+      "rationale": "Weighted total is the sum of factor scores according to their weights; avoid an illogical total that assigns weights. Explicit wheat distance is ngano rather than generic chakula."
+    },
+    {
+      "key": "[experiment markets-v2 help]",
+      "before": "Wafanyakazi wanaweza kuchukua vifaa katika akiba ya soko inayoshirikiwa. Masoko yanaweza kuboreshwa kuhifadhi chakula na kuni, kisha kila aina ya vifaa. Biashara kati ya timu inaendelea kuwa ya matunda pekee. Huathiri michezo mipya; faili zilizohifadhiwa hubaki na mpangilio wake wa awali.",
+      "after": "Wafanyakazi wanaweza kuchukua malighafi katika akiba ya soko inayoshirikiwa. Masoko yanaweza kuboreshwa kuhifadhi chakula na kuni, kisha kila aina ya malighafi. Biashara kati ya timu inaendelea kuwa ya matunda pekee. Huathiri michezo mipya; faili zilizohifadhiwa hubaki na mpangilio wake wa awali.",
+      "rationale": "Align harvested, stored and delivered material inventory with Malighafi; update noun-class concord, distinguish quantities from creatures and genuine equipment/vifaa."
+    },
+    {
+      "key": "[%0 units can't access resource]",
+      "before": "Viumbe %0 hawawezi kufikia vifaa vinavyohitajika",
+      "after": "Viumbe %0 hawawezi kufikia malighafi zinazohitajika",
+      "rationale": "Align harvested, stored and delivered material inventory with Malighafi; update noun-class concord, distinguish quantities from creatures and genuine equipment/vifaa."
+    },
+    {
+      "key": "[%0 units too far from resource]",
+      "before": "Viumbe %0 wako mbali mno na vifaa vinavyohitajika",
+      "after": "Viumbe %0 wako mbali mno na malighafi zinazohitajika",
+      "rationale": "Align harvested, stored and delivered material inventory with Malighafi; update noun-class concord, distinguish quantities from creatures and genuine equipment/vifaa."
+    },
+    {
+      "key": "[seeking a job]",
+      "before": "anatafuta kazi",
+      "after": "wanatafuta kazi",
+      "rationale": "Statistical count/legend refers to multiple creatures (TeamStat.cpp), requiring plural animate wanatafuta."
+    },
+    {
+      "key": "[seeking]",
+      "before": "anatafuta",
+      "after": "wanatafuta",
+      "rationale": "Statistical count/legend refers to multiple creatures (TeamStat.cpp), requiring plural animate wanatafuta."
+    },
+    {
+      "key": "[Other Options]",
+      "before": "Chaguo nyingine",
+      "after": "Machaguo mengine",
+      "rationale": "Use an explicit machaguo plural and matching ma-class concord instead of inconsistent chaguo with zi-/nyingine."
+    },
+    {
+      "key": "[AICortex-Profile]",
+      "before": "Mkakati mkuu: Hutumia vipaumbele vinavyoitikia hali kukuza uchumi unaofanya kazi na kubadili wafanyakazi wa ziada kuwa chakula, teknolojia na shinikizo la kijeshi. Sera yake ya kawaida hutegemea kanuni; majaribio ya sera iliyojifunza yanahitaji usanidi tofauti.\\n\\nUchumi na maendeleo: Hurekebisha uzalishaji wa wafanyakazi kulingana na mahitaji ya kazi na kuendeleza kuzaliwa. Matatizo ya chakula hupunguza upanuzi na matumizi ya teknolojia. Huongeza mafunzo ya kuogelea kama ufikiaji wa maji una manufaa makubwa.\\n\\nMashambulizi na ulinzi: Huandaa mashambulizi kwa teknolojia ya adui iliyoonekana na wanajeshi waliopo. Kampeni za kuvuka maji zinahitaji mashujaa wanaojua kuogelea. Hutegemeza kampeni ndefu kwa nyumba za wageni na hospitali za mbele, na inaweza kukusanya jeshi kabla ya kusonga.\\n\\nKuendelea kushambulia na dharura: Hudumisha shambulio licha ya usumbufu mdogo badala ya kurudi nyumbani mara kwa mara. Mashambulizi makubwa yanaweza kuwarudisha watetezi. Dharura za mapema zinaweza kuanzisha uzalishaji wa mashujaa pekee na hospitali; njaa kali inaweza kuchochea shambulio dogo la mwisho.\\n\\nIkilinganishwa na AI nyingine: Hujali msaada wa mbele zaidi ya Warrush. Maxima ina mipango ya kina zaidi ya kuendeleza kuzaliwa, mafunzo na upelekaji wa jeshi kulingana na makadirio ya nguvu ya adui.\\n\\nNguvu na udhaifu: Huunganisha shinikizo na chakula, tiba na ufikiaji. Miundombinu ya mbele lazima iendelee kusambaziwa, na kuzaliwa bila kukoma kunaweza kubana chakula kidogo. Vipaumbele vya dharura hulazimisha kuchagua kati ya ukuaji na kuishi.\\n\\nMbinu za kujaribu dhidi yake: Gombea nyumba za wageni, hospitali na vyanzo vya chakula vya mbele. Wakusanye watetezi dhidi ya msukumo wake; usumbufu mdogo huenda usiishawishi kurudi nyuma.\\n\\nUchunguzi: Hutumia majengo ya adui yaliyogunduliwa na wanajeshi wa adui walioonekana.",
+      "after": "Mkakati mkuu: Hutumia vipaumbele vinavyoitikia hali kukuza uchumi unaofanya kazi na kutumia nguvu kazi ya ziada kuzalisha chakula, kuendeleza teknolojia na kuongeza shinikizo la kijeshi. Sera yake ya kawaida hutegemea kanuni; majaribio ya sera iliyojifunza yanahitaji usanidi tofauti.\\n\\nUchumi na maendeleo: Hurekebisha uzalishaji wa wafanyakazi kulingana na mahitaji ya kazi na kuendeleza kuzaliwa. Matatizo ya chakula hupunguza upanuzi na matumizi ya teknolojia. Huongeza mafunzo ya kuogelea kama ufikiaji wa maji una manufaa makubwa.\\n\\nMashambulizi na ulinzi: Huandaa mashambulizi kwa teknolojia ya adui iliyoonekana na wanajeshi waliopo. Kampeni za kuvuka maji zinahitaji mashujaa wanaojua kuogelea. Hutegemeza kampeni ndefu kwa nyumba za wageni na hospitali za mbele, na inaweza kukusanya jeshi kabla ya kusonga.\\n\\nKuendelea kushambulia na dharura: Hudumisha shambulio licha ya usumbufu mdogo badala ya kurudi nyumbani mara kwa mara. Mashambulizi makubwa yanaweza kuwarudisha watetezi. Dharura za mapema zinaweza kuanzisha uzalishaji wa mashujaa pekee na hospitali; njaa kali inaweza kuichochea kushambulia kwa kikosi kidogo ili kujinusuru.\\n\\nIkilinganishwa na AI nyingine: Hujali msaada wa mbele zaidi ya Warrush. Maxima ina mipango ya kina zaidi ya kuendeleza kuzaliwa, mafunzo na upelekaji wa jeshi kulingana na makadirio ya nguvu ya adui.\\n\\nNguvu na udhaifu: Huunganisha shinikizo na chakula, tiba na ufikiaji. Miundombinu ya mbele lazima iendelee kusambaziwa, na kuzaliwa bila kukoma kunaweza kubana chakula kidogo. Vipaumbele vya dharura hulazimisha kuchagua kati ya ukuaji na kuishi.\\n\\nMbinu za kujaribu dhidi yake: Gombea nyumba za wageni, hospitali na vyanzo vya chakula vya mbele. Wakusanye watetezi dhidi ya msukumo wake; usumbufu mdogo huenda usiishawishi kurudi nyuma.\\n\\nUchunguzi: Hutumia taarifa za majengo ya adui yaliyogunduliwa na za wanajeshi wa adui walioonekana.",
+      "rationale": "Surplus labor produces food/technology/pressure, workers are not turned into food; scouting uses intelligence about enemies, not enemy units as own tools; desperation attack not invented final attack."
+    },
+    {
+      "key": "[AINicowar-Profile]",
+      "before": "Mkakati mkuu: Huunganisha ukuaji, mafunzo, maboresho na vita kwa masharti yanayopishana. Inaweza kushambulia huku ikipanuka, na kuelekeza kazi za uchumi katika kupona chakula kinapokosekana.\\n\\nMwanzo: Wasifu mkali unaosambazwa huanza kuandaa vita ikiwa na jumla ya viumbe watano na huruhusu vita ikiwa na mashujaa watano, ikihesabu hata mashujaa wa kiwango cha sifuri. Hulenga bendera tatu za mashambulizi zenye mashujaa watano kila moja. Faili maalumu za mikakati zinaweza kubadili viwango hivi.\\n\\nUchumi na maendeleo: Hupanua uwezo wa chakula na kuzaliwa, hufunza wafanyakazi, huendeleza kuogelea na mwendo, na huboresha majengo. Hurekebisha wafanyakazi wa chakula, huitikia njaa kali na kufuatilia matunda.\\n\\nMashambulizi na ulinzi: Huchagua sampuli ya majengo ya adui yanayofikika kushambulia. Inaweza kutumia bendera za kusafisha kufungua njia zilizozibwa na rasilimali. Bendera za ulinzi hufunika makundi ya viumbe na majengo yanayotishiwa. Baadaye, wagunduzi waliofunzwa kushambulia ardhini hulenga makundi ya viumbe wa adui.\\n\\nIkilinganishwa na AI nyingine: Ina ukali wa mapema wa Warrush lakini huendelea kwa kina zaidi. Tofauti na Cabino, haipewi kipaumbele kila mara kwa hospitali na nyumba za wageni.\\n\\nNguvu na udhaifu: Mbinu nyingi huunganisha shinikizo la mapema na maendeleo endelevu. Uchaguzi wa malengo bila mpangilio unaweza kupoteza juhudi kwa majengo yasiyo muhimu. Viwango vyake havitoi makadirio ya kina ya Maxima ya nguvu za kupigana za adui.\\n\\nMbinu za kujaribu dhidi yake: Tarajia shambulio la mapema. Linda chakula na wafanyakazi, gombea upanuzi, na jiandae kwa mashambulizi ya wagunduzi ikifikia mafunzo ya juu.",
+      "after": "Mkakati mkuu: Huunganisha ukuaji, mafunzo, maboresho na vita kwa masharti yanayopishana. Inaweza kushambulia huku ikipanuka, na kuelekeza kazi za uchumi katika kupona chakula kinapokosekana.\\n\\nMwanzo: Wasifu mkali unaosambazwa huanza kuandaa vita ikiwa na jumla ya viumbe watano na huruhusu vita ikiwa na mashujaa watano, ikihesabu hata mashujaa wa kiwango cha sifuri. Hulenga bendera tatu za mashambulizi zenye mashujaa watano kila moja. Faili maalumu za mikakati zinaweza kubadili viwango hivi.\\n\\nUchumi na maendeleo: Hupanua uwezo wa chakula na kuzaliwa, hufunza wafanyakazi, huendeleza kuogelea na mwendo, na huboresha majengo. Hurekebisha wafanyakazi wa chakula, huitikia njaa kali na kufuatilia matunda.\\n\\nMashambulizi na ulinzi: Huchagua sampuli ya majengo ya adui yanayofikika kushambulia. Inaweza kutumia bendera za kusafisha kufungua njia zilizozibwa na rasilimali. Bendera za ulinzi hufunika makundi ya viumbe na majengo yanayotishiwa. Baadaye, wagunduzi waliofunzwa kushambulia ardhini hulenga makundi ya viumbe wa adui.\\n\\nIkilinganishwa na AI nyingine: Ina ukali wa mapema wa Warrush lakini huendelea kwa kina zaidi. Tofauti na Cabino, haizipi hospitali na nyumba za wageni kipaumbele kila mara.\\n\\nNguvu na udhaifu: Mbinu nyingi huunganisha shinikizo la mapema na maendeleo endelevu. Uchaguzi wa malengo bila mpangilio unaweza kupoteza juhudi kwa majengo yasiyo muhimu. Viwango vyake havitoi makadirio ya kina ya Maxima ya nguvu za kupigana za adui.\\n\\nMbinu za kujaribu dhidi yake: Tarajia shambulio la mapema. Linda chakula na wafanyakazi, gombea upanuzi, na jiandae kwa mashambulizi ya wagunduzi ikifikia mafunzo ya juu.",
+      "rationale": "Restore active prioritization of food/healing buildings rather than passive statement that they are not given priority by others."
+    },
+    {
+      "key": "[AIEcono-Profile]",
+      "before": "Mkakati mkuu: Huzalisha wafanyakazi na wagunduzi, hupanua uchumi, na kuwavutia viumbe wa adui kwa chakula na matunda. Haina shambulio la kawaida la mashujaa.\\n\\nUchumi na maendeleo: Hujenga nyumba za wageni na viota karibu na chakula, huongeza elimu na mafunzo ya mwendo, na huboresha miundombinu. Hufuatilia chakula na hudumisha majengo na bendera za uchunguzi hata mahitaji yakipungua au malengo yakitoweka.\\n\\nKilimo na uhamaji wa viumbe: Hulinda vyanzo vya chakula na kuni vinavyoota tena karibu na maji. Hutuma wagunduzi kwenye akiba ya matunda na makazi ya adui, na hutangaza chakula kwa adui inapofuatilia ugavi wa matunda. Chakula bora na matunda vinaweza kuwavutia viumbe wahamie.\\n\\nIkilinganishwa na AI nyingine: Ndiyo mpinzani aliyebobea zaidi katika uchumi. Cabino na Maxima pia hufuata matunda, lakini huyachanganya na majeshi.\\n\\nNguvu na udhaifu: Inaweza kukua wakati wapinzani wa kijeshi wanajichosha, huku kuvutia viumbe kukitoa njia nyingine ya ushindani. Haizalishi mashujaa kujibu shambulio endelevu. Chakula, matunda, jiografia na kanuni za ushindi huathiri sana fursa zake.\\n\\nMbinu za kujaribu dhidi yake: Shambulia upanuzi usiolindwa. Hakikisha nyumba zako za wageni zina chakula na matunda ili viumbe wabaki. Epuka kuchosha makazi yako kwa mapigano yasiyo muhimu wakati inakua.",
+      "after": "Mkakati mkuu: Huzalisha wafanyakazi na wagunduzi, hupanua uchumi, na kuwavutia viumbe wa adui kwa chakula na matunda. Haina shambulio la kawaida la mashujaa.\\n\\nUchumi na maendeleo: Hujenga nyumba za wageni na viota karibu na chakula, huongeza elimu na mafunzo ya mwendo, na huboresha miundombinu. Hufuatilia chakula na hudumisha majengo na bendera za uchunguzi hata ugavi wa chakula unapopungua au malengo yakitoweka.\\n\\nKilimo na uhamaji wa viumbe: Hulinda vyanzo vya chakula na kuni vinavyoota tena karibu na maji. Hutuma wagunduzi kwenye akiba ya matunda na makazi ya adui, na hutangaza chakula kwa adui inapofuatilia ugavi wa matunda. Chakula bora na matunda vinaweza kuwavutia viumbe wahamie.\\n\\nIkilinganishwa na AI nyingine: Ndiyo mpinzani aliyebobea zaidi katika uchumi. Cabino na Maxima pia hufuata matunda, lakini huyachanganya na majeshi.\\n\\nNguvu na udhaifu: Inaweza kukua wakati wapinzani wa kijeshi wanajichosha, huku kuvutia viumbe kukitoa njia nyingine ya ushindani. Haizalishi mashujaa kujibu shambulio endelevu. Chakula, matunda, jiografia na kanuni za ushindi huathiri sana fursa zake.\\n\\nMbinu za kujaribu dhidi yake: Shambulia upanuzi usiolindwa. Hakikisha nyumba zako za wageni zina chakula na matunda ili viumbe wabaki. Epuka kuchosha makazi yako kwa mapigano yasiyo muhimu wakati inakua.",
+      "rationale": "Food supplies, not demand for food, dwindle; preserve opponent exploitation tactic."
+    },
+    {
+      "key": "[AINumbi-Profile]",
+      "before": "Mkakati mkuu: Hujenga chakula na idadi ya viumbe kwanza, huongeza tiba, sayansi na mafunzo, kisha huelekea vitani. Hatua zake kuu husonga kwa muda badala ya maendeleo ya mpinzani.\\n\\nUchumi na maendeleo: Hulinganisha mahitaji ya majengo na idadi ya viumbe, na hukadiria vyanzo vya chakula vya karibu. Hatua za baadaye huongeza maboresho, ulinzi na upanuzi kusaidia jeshi linalokua.\\n\\nMashambulizi na ulinzi: Hushambulia ikiwa na wapiganaji wenye afya wa kutosha au muda wa kusubiri ukiisha. Huweka bendera za vita kwenye sampuli ya majengo ya adui. Jeshi likipungua sana, huondoa bendera za mashambulizi na kupandisha masharti ya jaribio lingine.\\n\\nIkilinganishwa na AI nyingine: Inatabirika zaidi ya Castor au Nicowar. Castor huzingatia ardhi na thamani ya malengo kwa makini zaidi; Nicowar huleta shinikizo mapema sana.\\n\\nNguvu na udhaifu: Miundombinu mipana inaweza kuifanya hatari ikijijenga bila kusumbuliwa, lakini ratiba yake huenda isiendane na mapigano. Uchaguzi rahisi wa malengo na mapumziko marefu baada ya hasara hufanya mashambulizi yake yatabirike.\\n\\nMbinu za kujaribu dhidi yake: Iweke chini ya shinikizo kabla ya hatua yake ya kijeshi. Kuza chakula na mafunzo nyuma ya mashambulizi yako, na tumia mapumziko baada ya kuzuia shambulio lake.\\n\\nUchunguzi: Utaratibu wake wa kushambulia husoma nafasi za majengo ya adui moja kwa moja bila kukagua uonekano.",
+      "after": "Mkakati mkuu: Huongeza ugavi wa chakula na idadi ya viumbe kwanza, huongeza tiba, sayansi na mafunzo, kisha huelekea vitani. Hatua zake kuu husonga kwa muda badala ya maendeleo ya mpinzani.\\n\\nUchumi na maendeleo: Hulinganisha mahitaji ya majengo na idadi ya viumbe, na hukadiria vyanzo vya chakula vya karibu. Hatua za baadaye huongeza maboresho, ulinzi na upanuzi kusaidia jeshi linalokua.\\n\\nMashambulizi na ulinzi: Hushambulia ikiwa na wapiganaji wenye afya wa kutosha au muda wa kusubiri ukiisha. Huweka bendera za vita kwenye sampuli ya majengo ya adui. Jeshi likipungua sana, huondoa bendera za mashambulizi na kupandisha masharti ya jaribio lingine.\\n\\nIkilinganishwa na AI nyingine: Inatabirika zaidi ya Castor au Nicowar. Castor huzingatia ardhi na thamani ya malengo kwa makini zaidi; Nicowar huleta shinikizo mapema sana.\\n\\nNguvu na udhaifu: Miundombinu mipana inaweza kuifanya hatari ikijijenga bila kusumbuliwa, lakini ratiba yake huenda isiendane na mapigano. Uchaguzi rahisi wa malengo na mapumziko marefu baada ya hasara hufanya mashambulizi yake yatabirike.\\n\\nMbinu za kujaribu dhidi yake: Iweke chini ya shinikizo kabla ya hatua yake ya kijeshi. Kuza chakula na mafunzo nyuma ya mashambulizi yako, na tumia mapumziko baada ya kuzuia shambulio lake.\\n\\nUchunguzi: Utaratibu wake wa kushambulia husoma nafasi za majengo ya adui moja kwa moja bila kukagua uonekano.",
+      "rationale": "Opening grows food supply, rather than literally building food."
+    },
+    {
+      "key": "[AIWarrush-Profile]",
+      "before": "Mkakati mkuu: Hushambulia kabla wapinzani hawajakamilisha kujenga uchumi au teknolojia kwa muda mrefu. Hutarajia mapigano yaamue mchezo kabla mtandao mkubwa wa msaada haujahitajika.\\n\\nUchumi na maendeleo: Viumbe sita wakiweza kuvuna, huweka uzalishaji kuwa wafanyakazi wanne, mgunduzi mmoja na mashujaa watatu. Huongeza kambi za jeshi nafasi za mafunzo zikijaa, lakini hudhibiti nyumba mpya za wageni. Ujenzi wa ziada mara nyingi huenda kwa hospitali na mafunzo ya mwendo.\\n\\nMashambulizi na ulinzi: Huweka maeneo ya ulinzi kwenye majengo ya adui yaliyogunduliwa ili mashujaa wadumishe shinikizo. Haisubiri kundi lililokusanywa kwa makini. Huondoa rasilimali zinazoziba njia na kulinda baadhi ya vyanzo vinavyoota tena.\\n\\nSera ya matunda: Hukataza kuvuna matunda, ikiepuka kupungua kwa kinga kunakohusiana na matunda na kukataa mkakati wa Econo wa kuwavutia viumbe wahamie.\\n\\nIkilinganishwa na AI nyingine: Inazingatia shinikizo la mapema zaidi ya Numbi au Castor. Nicowar pia huanza kwa ukali, lakini hufuata kwa programu pana ya maboresho na mbinu.\\n\\nNguvu na udhaifu: Huadhibu mwanzo wa polepole na kulazimisha matumizi ya mapema kwa ulinzi. Maboresho machache ya kimfumo na msaada mdogo wa chakula hufanya shambulio linalokwama kuwa ghali. Ardhi na safari ndefu vinaweza kuondoa faida yake ya mapema.\\n\\nMbinu za kujaribu dhidi yake: Linda nyumba za wageni na viota mapema. Badilisha wafanyakazi pamoja na watetezi wanaopotea, kuza mafunzo, kisha shambulia mwendo wa shambulio lake unapopungua.\\n\\nUchunguzi: Bendera za uchunguzi za mwanzo hutumia mahali pa kuanzia pa maadui moja kwa moja. Uwekaji wa maeneo ya mashambulizi baadaye huhitaji uonekano.",
+      "after": "Mkakati mkuu: Hushambulia kabla wapinzani hawajakamilisha kujenga uchumi au teknolojia kwa muda mrefu. Hutarajia mapigano yaamue mchezo kabla mtandao mkubwa wa msaada haujahitajika.\\n\\nUchumi na maendeleo: Viumbe sita wakiweza kuvuna, huweka uwiano wa uzalishaji kuwa wafanyakazi wanne, mgunduzi mmoja na mashujaa watatu. Huongeza kambi za jeshi nafasi za mafunzo zikijaa, lakini hudhibiti nyumba mpya za wageni. Ujenzi wa ziada mara nyingi huenda kwa hospitali na mafunzo ya mwendo.\\n\\nMashambulizi na ulinzi: Huweka maeneo ya ulinzi kwenye majengo ya adui yaliyogunduliwa ili mashujaa wadumishe shinikizo. Haisubiri kundi lililokusanywa kwa makini. Huondoa rasilimali zinazoziba njia na kulinda baadhi ya vyanzo vinavyoota tena.\\n\\nSera ya matunda: Hukataza kuvuna matunda, ikiepuka kupungua kwa kinga kunakohusiana na matunda na kukataa mkakati wa Econo wa kuwavutia viumbe wahamie.\\n\\nIkilinganishwa na AI nyingine: Inazingatia shinikizo la mapema zaidi ya Numbi au Castor. Nicowar pia huanza kwa ukali, lakini hufuata kwa programu pana ya maboresho na mbinu.\\n\\nNguvu na udhaifu: Huadhibu mwanzo wa polepole na kulazimisha matumizi ya mapema kwa ulinzi. Maboresho machache ya kimfumo na msaada mdogo wa chakula hufanya shambulio linalokwama kuwa ghali. Ardhi na safari ndefu vinaweza kuondoa faida yake ya mapema.\\n\\nMbinu za kujaribu dhidi yake: Linda nyumba za wageni na viota mapema. Zalisha wafanyakazi na watetezi wapya kuchukua nafasi ya waliopotea, kuza mafunzo, kisha fanya shambulio la kujibu pale kasi ya shambulio lake inapopungua.\\n\\nUchunguzi: Bendera za uchunguzi za mwanzo hutumia mahali pa kuanzia pa maadui moja kwa moja. Uwekaji wa maeneo ya mashambulizi baadaye huhitaji uonekano.",
+      "rationale": "Production ratio made explicit; replace lost workers/defenders and counterattack when opponent rush loses pace, not attack the attack momentum."
+    },
+    {
+      "key": "[AICabino-Profile]",
+      "before": "Mkakati mkuu: Hugawa uzalishaji wa viumbe kati ya ujenzi, maboresho, ulinzi, mashambulizi na uchunguzi. Wasimamizi tofauti huomba na kuwawekea viumbe nafasi, wakiendeleza uchumi na jeshi pamoja.\\n\\nUchumi na maendeleo: Hujenga na kuboresha makazi mapana, husimamia wafanyakazi wa nyumba za wageni na minara, husafisha kuzunguka majengo na kulinda rasilimali zinazoota tena. Huchunguza matunda na kutangaza chakula ili kugombea viumbe wanaohamia.\\n\\nMashambulizi na ulinzi: Huchagua adui na kuzipa kipaumbele hospitali, kisha nyumba za wageni, kisha kambi za jeshi. Hutegemeza hadi mashambulizi manne, kwa kawaida ikipangia mashujaa wanane hadi ishirini kila lengo kulingana na waliopo na maadui wa karibu. Hutumia bendera tofauti za ulinzi kuzunguka majengo yanayotishiwa.\\n\\nMafunzo: Huhitaji mashujaa wanaofaa wa kutosha na kambi ya jeshi iliyokamilika kushambulia, lakini haisubiri teknolojia ya juu kabisa. Maboresho na mafunzo endelevu huimarisha mashambulizi ya baadaye.\\n\\nIkilinganishwa na AI nyingine: Ina kusudi la kuondoa majengo ya msaada kuliko Nicowar. Hutawanya mashambulizi zaidi ya mawimbi yaliyokusanywa ya Maxima, ikitumia uwekaji wa viumbe akiba kusimamia mahitaji yanayoshindana.\\n\\nNguvu na udhaifu: Huunganisha ukuaji, mafunzo, ulinzi na mashambulizi kadhaa. Kuharibu chakula na tiba kunaweza kudhoofisha makazi yote. Uchaguzi wa mpinzani bila mpangilio na vipaumbele visivyobadilika vya majengo vinaweza kukosa fursa; mashambulizi mengi yanaweza kugawanya jeshi lake.\\n\\nMbinu za kujaribu dhidi yake: Linda hospitali na nyumba za wageni. Gombea upanuzi ulio wazi na wakusanye watetezi dhidi ya kila shambulio. Haribu chakula au mafunzo kabla haijategemeza mapigano pande kadhaa.\\n\\nUchunguzi: Kichaguzi chake cha mashambulizi husoma orodha za majengo ya adui bila ukaguzi dhahiri wa uonekano. Baadhi ya milinganisho ya uchumi hutumia takwimu za adui moja kwa moja.",
+      "after": "Mkakati mkuu: Hugawa uzalishaji wa viumbe kati ya ujenzi, maboresho, ulinzi, mashambulizi na uchunguzi. Wasimamizi tofauti huomba viumbe na kuwatenga kwa kazi zao, wakiendeleza uchumi na jeshi pamoja.\\n\\nUchumi na maendeleo: Hujenga na kuboresha makazi mapana, husimamia wafanyakazi wa nyumba za wageni na minara, husafisha kuzunguka majengo na kulinda rasilimali zinazoota tena. Huchunguza matunda na kutangaza chakula ili kugombea viumbe wanaohamia.\\n\\nMashambulizi na ulinzi: Huchagua adui na kuzipa kipaumbele hospitali, kisha nyumba za wageni, kisha kambi za jeshi. Hutegemeza hadi mashambulizi manne, kwa kawaida ikipangia mashujaa wanane hadi ishirini kila lengo kulingana na waliopo na maadui wa karibu. Hutumia bendera tofauti za ulinzi kuzunguka majengo yanayotishiwa.\\n\\nMafunzo: Huhitaji mashujaa wanaofaa wa kutosha na kambi ya jeshi iliyokamilika kushambulia, lakini haisubiri teknolojia ya juu kabisa. Maboresho na mafunzo endelevu huimarisha mashambulizi ya baadaye.\\n\\nIkilinganishwa na AI nyingine: Ina kusudi la kuondoa majengo ya msaada kuliko Nicowar. Hutawanya mashambulizi zaidi ya mawimbi yaliyokusanywa ya Maxima, ikitenga viumbe kwa kazi maalumu ili kusimamia mahitaji yanayoshindana.\\n\\nNguvu na udhaifu: Huunganisha ukuaji, mafunzo, ulinzi na mashambulizi kadhaa. Kuharibu chakula na tiba kunaweza kudhoofisha makazi yote. Uchaguzi wa mpinzani bila mpangilio na vipaumbele visivyobadilika vya majengo vinaweza kukosa fursa; mashambulizi mengi yanaweza kugawanya jeshi lake.\\n\\nMbinu za kujaribu dhidi yake: Linda hospitali na nyumba za wageni. Gombea upanuzi ulio wazi na wakusanye watetezi dhidi ya kila shambulio. Haribu chakula au mafunzo kabla haijategemeza mapigano pande kadhaa.\\n\\nUchunguzi: Kichaguzi chake cha mashambulizi husoma orodha za majengo ya adui bila ukaguzi dhahiri wa uonekano. Baadhi ya milinganisho ya uchumi hutumia takwimu za adui moja kwa moja.",
+      "rationale": "Managers reserve creatures for jobs, not places for creatures; trained forces conduct attacks, the attacks themselves are not trained."
+    },
+    {
+      "key": "[AICabino-Summary]",
+      "before": "Huratibu ukuaji wa makazi na mashambulizi yaliyofunzwa, ikilenga tiba na chakula kwanza.",
+      "after": "Huratibu ukuaji wa makazi na mashambulizi ya vikosi vilivyofunzwa, ikilenga tiba na chakula kwanza.",
+      "rationale": "Trained describes the forces conducting attacks, not the attacks themselves."
+    },
+    {
+      "key": "[AICortex-Summary]",
+      "before": "Hutegemeza mashambulizi endelevu kwa chakula na tiba za mbele.",
+      "after": "Hutegemeza mashambulizi endelevu kwa chakula na huduma za tiba katika maeneo ya mbele.",
+      "rationale": "Forward healing means medical support in forward positions, not an opaque phrase for front treatments."
+    },
+    {
+      "key": "[Maze]",
+      "before": "Njia panda",
+      "after": "Njia tata",
+      "rationale": "Maze means complex corridors, not crossroads. Error references agree with Njia tata; cul-de-sacs have closed ends, not through routes."
+    },
+    {
+      "key": "[Fords]",
+      "before": "Vivuko vifupi",
+      "after": "Vivuko vya maji mafupi",
+      "rationale": "Ford is shallow-water crossing, not short crossing."
+    },
+    {
+      "key": "[Branching]",
+      "before": "Utagawi",
+      "after": "Wingi wa matawi",
+      "rationale": "Describe number/abundance of branches instead of opaque coined Utagawi."
+    },
+    {
+      "key": "[Coast roughness]",
+      "before": "Ukwaruzo wa pwani",
+      "after": "Ukwaru wa pwani",
+      "rationale": "Ukwaru is surface roughness; ukwaruzo denotes scraping."
+    },
+    {
+      "key": "[Lagoons]",
+      "before": "Rasi za maji",
+      "after": "Maziwa ya pwani",
+      "rationale": "Lagoons are coastal water bodies, not rasi/peninsulas."
+    },
+    {
+      "key": "[Spiral]",
+      "before": "Mzunguko wa ond",
+      "after": "Mzunguko unaojikunja",
+      "rationale": "Describe coiling shape without an unexplained ond fragment."
+    },
+    {
+      "key": "[Every colony's start is measured on the finished map, and a model fitted to thousands of games between equal opponents turns those measurements into a fitness. The fitness says how likely that colony is to win. Fairness is how evenly those chances are shared: 1 when every colony is as likely to win as any other, 0 when one colony would take the map.]",
+      "before": "Mwanzo wa kila makazi hupimwa katika ramani iliyokamilika, kisha modeli iliyofunzwa kwa maelfu ya michezo kati ya wapinzani sawa hubadili vipimo hivi kuwa ufanisi. Ufanisi huonyesha uwezekano wa makazi hayo kushinda. Usawa huonyesha mgawanyo wa nafasi hizo: 1 kama kila makazi lina nafasi sawa ya kushinda na mengine, 0 kama makazi moja lingetawala ramani.",
+      "after": "Mwanzo wa kila makazi hupimwa katika ramani iliyokamilika, kisha modeli iliyofunzwa kwa maelfu ya michezo kati ya wapinzani sawa hubadili vipimo hivi kuwa ufanisi. Ufanisi huonyesha uwezekano wa makazi hayo kushinda. Usawa huonyesha mgawanyo wa nafasi hizo: 1 kama kila makazi yana nafasi sawa ya kushinda na mengine, 0 kama makazi moja yangetawala ramani.",
+      "rationale": "Collective makazi takes ya- concord, not singular li-; preserve measured fitness and fairness explanation."
+    },
+    {
+      "key": "[Block size]",
+      "before": "Ukubwa wa kizuizi",
+      "after": "Ukubwa wa kitalu",
+      "rationale": "Geographic/city block is kitalu, not kizuizi/obstacle; inspect generator controls, not key polysemy."
+    },
+    {
+      "key": "[Block shape]",
+      "before": "Umbo la kizuizi",
+      "after": "Umbo la kitalu",
+      "rationale": "Geographic/city block is kitalu, not kizuizi/obstacle; inspect generator controls, not key polysemy."
+    },
+    {
+      "key": "[Grain]",
+      "before": "Mwelekeo wa muundo",
+      "after": "Unyooshaji wa umbo",
+      "rationale": "Generator geometric grain controls stretch and orientation, not food/particle grain; Unyooshaji wa umbo proposed for independent linguistic recheck."
+    },
+    {
+      "key": "[Four-leaf clover]",
+      "before": "Karafuu yenye majani manne",
+      "after": "Klova yenye majani manne",
+      "rationale": "Clover is not cloves/karafuu. Proposed loan klova matches parent actual Google UI dictionary alternative; comparison is not authority."
+    },
+    {
+      "key": "[Bar size]",
+      "before": "Ukubwa wa kizingiti",
+      "after": "Ukubwa wa fungu la mchanga",
+      "rationale": "Sandbar is a sand deposit/fungu la mchanga, not threshold or barrier; preserve singular/plural concord across controls and errors."
+    },
+    {
+      "key": "[Breachable highlands]",
+      "before": "Nyanda za juu zinazopitika",
+      "after": "Nyanda za juu zenye njia zinazoweza kufunguliwa",
+      "rationale": "The highlands have paths that can be opened; do not imply every path is already passable."
+    },
+    {
+      "key": "[Extra riffles]",
+      "before": "Mikondo ya ziada mifupi ya kasi",
+      "after": "Mikondo ya ziada ya kasi yenye maji mafupi",
+      "rationale": "Riffles are fast shallow currents, not necessarily short currents."
+    },
+    {
+      "key": "[Moraine hummocks]",
+      "before": "Vilima vya vifusi",
+      "after": "Vilima vya vifusi vilivyoachwa na barafu",
+      "rationale": "Describe debris left by glacial ice, retaining geological origin rather than arbitrary rubble hills."
+    },
+    {
+      "key": "[Drumlin field]",
+      "before": "Vilima virefu vya mviringo",
+      "after": "Vilima virefu vilivyoumbwa na barafu",
+      "rationale": "Describe elongated glacially formed hills, not merely round arbitrary hills; descriptive terminology pending reviewer confirmation."
+    },
+    {
+      "key": "[Minimum terminal district side]",
+      "before": "Upande wa chini wa wilaya ya mwisho",
+      "after": "Urefu wa chini wa upande wa eneo la mwisho",
+      "rationale": "Minimum side is a length constraint on final region, not its bottom side or administrative county."
+    },
+    {
+      "key": "[Optional local crossings per parent]",
+      "before": "Vivuko vya eneo vya hiari kwa kila mzazi",
+      "after": "Vivuko vya hiari kwa kila eneo linalogawanywa",
+      "rationale": "Parent is a subdivided geographic region, not a person."
+    },
+    {
+      "key": "[Lava shield]",
+      "before": "Ngao ya lava",
+      "after": "Volkeno pana yenye miteremko laini",
+      "rationale": "Generator is a broad gently sloping shield volcano, not protective equipment. Descriptive label avoids unsupported technical borrowing."
+    },
+    {
+      "key": "[AIMaxima-Profile]",
+      "before": "Mkakati mkuu: Huchukulia chakula, wafanyakazi, kuzaliwa, mafunzo, ujenzi na mapigano kuwa mahitaji yanayoshindana. Hupanga ukubwa wa jeshi kwa sehemu kulingana na makadirio ya nguvu ya adui, kisha hujaribu kulifikisha kwa ufanisi.\\n\\nUchumi na maendeleo: Hupanga kuzaliwa kulingana na chakula na nguvu kazi, hudumisha fursa za muda bila kazi kwa mafunzo, na huacha kuongeza wafanyakazi wa ziada uzalishaji wa jeshi unapohitajika. Hupanua uwezo wa mafunzo na huepuka kufunga miundombinu mingi kwa maboresho kwa wakati mmoja.\\n\\nUchunguzi na maamuzi: Hukadiria jeshi la adui kutokana na viumbe wanaoonekana na kumbukumbu za walioonekana, kwa kutumia modeli iliyofunzwa. Malengo hutegemea thamani, umbali, minara, wafanyakazi walio wazi na udumifu. Misheni za matunda husaidia aina mbalimbali za chakula na kuvutia viumbe wahamie.\\n\\nMashambulizi na ulinzi: Huweka mashujaa akiba kwa mafunzo na ulinzi, kisha hukusanya jeshi la ardhini linalostahiki karibu na miundombinu rafiki ya chakula kabla ya kutuma mawimbi. Huitikia vitisho vya karibu na kutathmini njia za kuingia makazini.\\n\\nMashambulizi yanapokwama: Baada ya kushindwa kufikisha wimbi mara nne mfululizo, hubadili kwenda bendera za mashambulizi zinazoimarishwa daima. Mashambulizi ya kuvuka maji pia yanaweza kutumia uimarishaji endelevu. Njia hii ya ziada haitatui kila kizuizi kabla mkusanyiko haujaweza kuundwa.\\n\\nIkilinganishwa na AI nyingine: Huunganisha chakula, mafunzo, taarifa za uchunguzi na upelekaji wa jeshi kwa karibu zaidi. Cabino husisitiza mashambulizi kadhaa ya majengo; Maxima husisitiza makadirio ya mahitaji na kufikisha majeshi yaliyokusanywa.\\n\\nNguvu na udhaifu: Hudumisha ukuaji na kujaza jeshi huku ikibadilika kulingana na shinikizo la chakula na vitisho vinavyoonekana. Inahitaji chakula, nafasi za mafunzo na eneo wazi la kukusanyika; msongamano na njia ndefu vinaweza kuzuia kufika.\\n\\nMbinu za kujaribu dhidi yake: Gombea vyanzo vya chakula vilivyo wazi, nyumba za wageni na kambi za jeshi kabla mawimbi hayajakusanyika. Dumisha jeshi la ulinzi lililo pamoja na lenye mahitaji, na vuruga njia za uimarishaji. Tarajia shinikizo linalorudiwa baada ya wimbi la kwanza.\\n\\nUchunguzi: Makadirio ya jeshi hutumia walioonekana na historia ya uchunguzi, si jumla iliyofichwa ya wanajeshi wa adui.",
+      "after": "Mkakati mkuu: Huchukulia chakula, wafanyakazi, kuzaliwa, mafunzo, ujenzi na mapigano kuwa mahitaji yanayoshindana. Hupanga ukubwa wa jeshi kwa sehemu kulingana na makadirio ya nguvu ya adui, kisha hujaribu kulifikisha kwa ufanisi.\\n\\nUchumi na maendeleo: Hupanga kuzaliwa kulingana na chakula na nguvu kazi, huhifadhi nafasi za kufanya mafunzo wakati viumbe hawana kazi nyingine, na huacha kuongeza wafanyakazi wa ziada uzalishaji wa jeshi unapohitajika. Hupanua uwezo wa mafunzo na huepuka kufunga miundombinu mingi kwa maboresho kwa wakati mmoja.\\n\\nUchunguzi na maamuzi: Hukadiria jeshi la adui kutokana na viumbe wanaoonekana na kumbukumbu za walioonekana, kwa kutumia modeli iliyofunzwa. Malengo hutegemea thamani, umbali, minara, wafanyakazi walio wazi na udumifu. Misheni za matunda husaidia aina mbalimbali za chakula na kuvutia viumbe wahamie.\\n\\nMashambulizi na ulinzi: Huweka mashujaa akiba kwa mafunzo na ulinzi, kisha hukusanya jeshi la ardhini linalostahiki karibu na miundombinu ya chakula ya upande wake kabla ya kutuma mawimbi. Huitikia vitisho vya karibu na kutathmini njia za kuingia makazini.\\n\\nMashambulizi yanapokwama: Baada ya kushindwa kufikisha wimbi mara nne mfululizo, hubadili kwenda bendera za mashambulizi zinazopelekewa vikosi vya ziada mfululizo. Mashambulizi ya kuvuka maji pia yanaweza kuongezewa vikosi mfululizo. Njia hii ya ziada haitatui kila kizuizi kabla mkusanyiko haujaweza kuundwa.\\n\\nIkilinganishwa na AI nyingine: Huunganisha chakula, mafunzo, taarifa za uchunguzi na upelekaji wa jeshi kwa karibu zaidi. Cabino husisitiza mashambulizi kadhaa ya majengo; Maxima husisitiza makadirio ya mahitaji na kufikisha majeshi yaliyokusanywa.\\n\\nNguvu na udhaifu: Hudumisha ukuaji na kujaza jeshi huku ikibadilika kulingana na shinikizo la chakula na vitisho vinavyoonekana. Inahitaji chakula, nafasi za mafunzo na eneo wazi la kukusanyika; msongamano na njia ndefu vinaweza kuzuia kufika.\\n\\nMbinu za kujaribu dhidi yake: Gombea vyanzo vya chakula vilivyo wazi, nyumba za wageni na kambi za jeshi kabla mawimbi hayajakusanyika. Dumisha jeshi la ulinzi lililo pamoja na lenye vifaa na chakula vya kutosha, na vuruga njia za uimarishaji. Tarajia shinikizo linalorudiwa baada ya wimbi la kwanza.\\n\\nUchunguzi: Makadirio ya jeshi hutumia walioonekana na historia ya uchunguzi, si jumla iliyofichwa ya wanajeshi wa adui.",
+      "rationale": "A supplied defense has adequate food/equipment; idle training opportunities and reinforcing flags/assaults mean available time and additional forces, not unmet needs or flag upgrades."
+    },
+    {
+      "key": "[Sand bars]",
+      "before": "Vizingiti vya mchanga",
+      "after": "Mafungu ya mchanga",
+      "rationale": "Sandbar is a sand deposit/fungu la mchanga, not threshold or barrier; preserve singular/plural concord across controls and errors."
+    },
+    {
+      "key": "[Playa]",
+      "before": "Ziwa la chumvi",
+      "after": "Ziwa kavu la chumvi",
+      "rationale": "Playa is a dry salt lake basin, not any salt lake."
+    },
+    {
+      "key": "[Bajada]",
+      "before": "Tambarare za mashapo",
+      "after": "Tambarare za mashapo chini ya milima",
+      "rationale": "Bajada is a sediment plain at mountain feet; match constraint message with label and dry playa term."
+    },
+    {
+      "key": "[Fans per range]",
+      "before": "Feni za mashapo kwa kila safu",
+      "after": "Mashapo ya umbo la feni kwa kila safu",
+      "rationale": "Explicit fan-shaped sediment deposits avoid implying mechanical fans; retain broad/long/count distinction."
+    },
+    {
+      "key": "[Broad fan]",
+      "before": "Feni pana ya mashapo",
+      "after": "Mashapo mapana ya umbo la feni",
+      "rationale": "Explicit fan-shaped sediment deposits avoid implying mechanical fans; retain broad/long/count distinction."
+    },
+    {
+      "key": "[Long fan]",
+      "before": "Feni ndefu ya mashapo",
+      "after": "Mashapo marefu ya umbo la feni",
+      "rationale": "Explicit fan-shaped sediment deposits avoid implying mechanical fans; retain broad/long/count distinction."
+    },
+    {
+      "key": "[The bajadas are too narrow for the homes; use a bigger map, a wider range spacing, narrower ridges or a smaller playa.]",
+      "before": "Tambarare za mashapo ni nyembamba mno kwa makazi; tumia ramani kubwa, nafasi kubwa kati ya safu za milima, miinuko myembamba au ziwa dogo la chumvi.",
+      "after": "Tambarare za mashapo chini ya milima ni nyembamba mno kwa makazi; tumia ramani kubwa, nafasi kubwa kati ya safu za milima, miinuko myembamba au ziwa dogo kavu la chumvi.",
+      "rationale": "Bajada is a sediment plain at mountain feet; match constraint message with label and dry playa term."
+    },
+    {
+      "key": "[Portage depth]",
+      "before": "Kina cha njia ya nchi kavu",
+      "after": "Unene wa msitu wa kukatwa",
+      "rationale": "Actual PortageLakesGenerator.cpp thickness is a cuttable forest plug, not water depth; use Unene wa msitu wa kukatwa."
+    },
+    {
+      "key": "[Even Ground]",
+      "before": "Ardhi iliyosawazishwa",
+      "after": "Ardhi yenye usawa",
+      "rationale": "Fair/even opportunities need not imply physically levelled terrain."
+    },
+    {
+      "key": "[ERROR_CANT_SAVE_MAP]",
+      "before": "Ramani haikuweza kuhifadhiwa. Kagua mahali lengwa na nafasi iliyopo. Mabadiliko yako bado yamefunguliwa.",
+      "after": "Ramani haikuweza kuhifadhiwa. Kagua mahali lengwa na nafasi iliyopo. Mabadiliko yako bado yapo katika kihariri.",
+      "rationale": "Unsaved edits remain in editor; they are not literally open changes."
+    },
+    {
+      "key": "[turn waiting for players]",
+      "before": "Inasubiri kila mchezaji apakie…",
+      "after": "Inasubiri kila mchezaji amalize kupakia mchezo…",
+      "rationale": "Waiting for each player to finish loading the game, not perform an unspecified upload."
+    },
+    {
+      "key": "[hub all rooms]",
+      "before": "Zote",
+      "after": "Vyote",
+      "rationale": "All agrees with vyumba: Vyote."
+    },
+    {
+      "key": "[room closed seat]",
+      "before": "Kimefungwa",
+      "after": "Imefungwa",
+      "rationale": "Closed seat agrees with nafasi (i-), distinct from chumba (ki-)."
+    },
+    {
+      "key": "[room closed seat detail]",
+      "before": "Kimefungwa na mwenyeji",
+      "after": "Imefungwa na mwenyeji",
+      "rationale": "Closed seat agrees with nafasi (i-), distinct from chumba (ki-)."
+    },
+    {
+      "key": "[room invite not found]",
+      "before": "Mwaliko huu umeisha muda au haupo.",
+      "after": "Mwaliko huu haupo au muda wake umeisha.",
+      "rationale": "Invitation expiration needs clear muda wake umeisha clause, preserving missing-or-expired alternatives."
+    },
+    {
+      "key": "[room seat options]",
+      "before": "Chaguo za nafasi",
+      "after": "Machaguo ya nafasi",
+      "rationale": "Use an explicit machaguo plural and matching ma-class concord instead of inconsistent chaguo with zi-/nyingine."
+    },
+    {
+      "key": "[trust separate identity %0]",
+      "before": "Utajiunga humo kama mgeni. Akaunti, tathmini na historia yako ya %0 hubaki ilipo.",
+      "after": "Utajiunga humo kama mgeni. Akaunti yako ya %0 hubaki ilipo, pamoja na tathmini na historia yako.",
+      "rationale": "Account is main location-bearing subject; attach rating/history with pamoja na to avoid singular agreement on three mixed nouns."
+    },
+    {
+      "key": "[maps stats %0 %1 %2]",
+      "before": "▶ Imechezwa %0 · ⬇ imepakuliwa %1 · ♥ %2",
+      "after": "▶ Imechezwa mara %0 · ⬇ imepakuliwa mara %1 · ♥ %2",
+      "rationale": "Counts are repetitions/times played or downloaded; add mara for natural count interpretation."
+    },
+    {
+      "key": "[maps %0 plays]",
+      "before": "imechezwa %0",
+      "after": "imechezwa mara %0",
+      "rationale": "Counts are repetitions/times played or downloaded; add mara for natural count interpretation."
+    },
+    {
+      "key": "[stat hunger about]",
+      "before": "Chakula kilichokuwa ndani ya miili ya viumbe wa makazi. Kila kiumbe huainishwa kwa akiba iliyobaki: karibu tupu (robo au chini), kidogo (hadi nusu), nusu kamili (hadi robo tatu) au ameshiba. Viumbe hutafuta nyumba ya wageni akiba inapopungua, hivyo daima baadhi huwa na akiba kidogo.",
+      "after": "Chakula kilichokuwa ndani ya miili ya viumbe wa makazi. Kila kiumbe huainishwa kwa akiba iliyobaki: karibu tupu (robo au chini), kidogo (hadi nusu), imejaa nusu (hadi robo tatu) au ameshiba. Viumbe hutafuta nyumba ya wageni akiba inapopungua, hivyo daima baadhi huwa na akiba kidogo.",
+      "rationale": "Half-full reserve is imejaa nusu, not contradictory nusu kamili; retain thresholds."
+    },
+    {
+      "key": "[stat health about]",
+      "before": "Afya ya viumbe wa makazi. Kila kiumbe huainishwa kwa pointi za afya zilizobaki: hatari (robo au chini), amejeruhiwa (hadi nusu), ameumia (hadi robo tatu) au mwenye afya.",
+      "after": "Afya ya viumbe wa makazi. Kila kiumbe huainishwa kwa pointi za afya zilizobaki: hali mbaya sana (robo au chini), amejeruhiwa (hadi nusu), ameumia (hadi robo tatu) au mwenye afya.",
+      "rationale": "Critical is a poor health condition, not dangerous creature; align with Hali mbaya sana band label."
+    },
+    {
+      "key": "[stat group resources]",
+      "before": "Vifaa",
+      "after": "Malighafi",
+      "rationale": "Align harvested, stored and delivered material inventory with Malighafi; update noun-class concord, distinguish quantities from creatures and genuine equipment/vifaa."
+    },
+    {
+      "key": "[stat gathered]",
+      "before": "Vifaa vilivyokusanywa",
+      "after": "Malighafi zilizokusanywa",
+      "rationale": "Align harvested, stored and delivered material inventory with Malighafi; update noun-class concord, distinguish quantities from creatures and genuine equipment/vifaa."
+    },
+    {
+      "key": "[stat gathered about]",
+      "before": "Mizigo ya kila aina ya vifaa iliyokusanywa na wafanyakazi. Gawanya uone kila aina.",
+      "after": "Mizigo ya kila aina ya malighafi iliyokusanywa na wafanyakazi. Gawanya uone kila aina.",
+      "rationale": "Align harvested, stored and delivered material inventory with Malighafi; update noun-class concord, distinguish quantities from creatures and genuine equipment/vifaa."
+    },
+    {
+      "key": "[stat stored]",
+      "before": "Vifaa vilivyohifadhiwa",
+      "after": "Malighafi zilizohifadhiwa",
+      "rationale": "Align harvested, stored and delivered material inventory with Malighafi; update noun-class concord, distinguish quantities from creatures and genuine equipment/vifaa."
+    },
+    {
+      "key": "[stat stored about]",
+      "before": "Vifaa vilivyo katika majengo ya makazi. Gawanya uone kila aina.",
+      "after": "Malighafi zilizo katika majengo ya makazi. Gawanya uone kila aina.",
+      "rationale": "Align harvested, stored and delivered material inventory with Malighafi; update noun-class concord, distinguish quantities from creatures and genuine equipment/vifaa."
+    },
+    {
+      "key": "[stat spending]",
+      "before": "Matumizi ya vifaa",
+      "after": "Matumizi ya malighafi",
+      "rationale": "Align harvested, stored and delivered material inventory with Malighafi; update noun-class concord, distinguish quantities from creatures and genuine equipment/vifaa."
+    },
+    {
+      "key": "[stat spending about]",
+      "before": "Mahali vifaa vilivyofikishwa vilipotumiwa: milo, viumbe wapya, risasi za minara, majengo mapya au maboresho.",
+      "after": "Mahali malighafi zilizofikishwa zilipotumiwa: milo, viumbe wapya, risasi za minara, majengo mapya au maboresho.",
+      "rationale": "Align harvested, stored and delivered material inventory with Malighafi; update noun-class concord, distinguish quantities from creatures and genuine equipment/vifaa."
+    },
+    {
+      "key": "[stat delivered]",
+      "before": "Vifaa vilivyofikishwa",
+      "after": "Malighafi zilizofikishwa",
+      "rationale": "Align harvested, stored and delivered material inventory with Malighafi; update noun-class concord, distinguish quantities from creatures and genuine equipment/vifaa."
+    },
+    {
+      "key": "[stat traded about]",
+      "before": "Vifaa vilivyopokelewa kupitia masoko ukiondoa vilivyotolewa.",
+      "after": "Malighafi zilizopokelewa kupitia masoko ukiondoa zilizotolewa.",
+      "rationale": "Align harvested, stored and delivered material inventory with Malighafi; update noun-class concord, distinguish quantities from creatures and genuine equipment/vifaa."
+    },
+    {
+      "key": "[stat growth nearby about]",
+      "before": "Ongezeko la akiba ya vifaa katika rasilimali zilizo ndani ya miraba 32 kutoka majengo ya makazi, kwa pointi za ukuaji badala ya mizigo iliyovunwa. Gawanya uone umbali wa ukuaji kutoka nyumbani.",
+      "after": "Ongezeko la akiba ya malighafi katika rasilimali zilizo ndani ya miraba 32 kutoka majengo ya makazi, kwa pointi za ukuaji badala ya mizigo iliyovunwa. Gawanya uone umbali wa ukuaji kutoka nyumbani.",
+      "rationale": "Align harvested, stored and delivered material inventory with Malighafi; update noun-class concord, distinguish quantities from creatures and genuine equipment/vifaa."
+    },
+    {
+      "key": "[stat unit resources]",
+      "before": "viumbe",
+      "after": "vipimo vya malighafi",
+      "rationale": "Unit of material quantity is vipimo vya malighafi, never a count of living creatures."
+    },
+    {
+      "key": "[stat unit shots]",
+      "before": "mashambulizi",
+      "after": "risasi",
+      "rationale": "Shots count projectiles/risasi, not every attack."
+    },
+    {
+      "key": "[All rules]",
+      "before": "Sheria zote",
+      "after": "Kanuni zote",
+      "rationale": "Align game rules with established Kanuni UI; gentle first-match preset does not promise a special teaching behavior."
+    },
+    {
+      "key": "[Show all rules]",
+      "before": "Onyesha sheria zote",
+      "after": "Onyesha kanuni zote",
+      "rationale": "Align game rules with established Kanuni UI; gentle first-match preset does not promise a special teaching behavior."
+    },
+    {
+      "key": "[Choose a ruleset]",
+      "before": "Chagua seti ya sheria",
+      "after": "Chagua seti ya kanuni",
+      "rationale": "Align game rules with established Kanuni UI; gentle first-match preset does not promise a special teaching behavior."
+    },
+    {
+      "key": "[ruleset gentle description]",
+      "before": "Sheria zinazompa anayeanza nafasi ya kujifunza",
+      "after": "Kanuni rahisi kwa mechi ya kwanza",
+      "rationale": "Align game rules with established Kanuni UI; gentle first-match preset does not promise a special teaching behavior."
+    },
+    {
+      "key": "[Combat is off, so the rules below have no effect.]",
+      "before": "Mapigano yamezimwa, hivyo sheria zilizo hapa chini hazina athari.",
+      "after": "Mapigano yamezimwa, hivyo kanuni zilizo hapa chini hazina athari.",
+      "rationale": "Align game rules with established Kanuni UI; gentle first-match preset does not promise a special teaching behavior."
+    },
+    {
+      "key": "[%0 more rules are at their Standard values.]",
+      "before": "Sheria nyingine %0 zina thamani zake za Kawaida.",
+      "after": "Kanuni nyingine %0 zina thamani zake za Kawaida.",
+      "rationale": "Align game rules with established Kanuni UI; gentle first-match preset does not promise a special teaching behavior."
+    },
+    {
+      "key": "[stat unit prestige]",
+      "before": "fahari",
+      "after": "heshima",
+      "rationale": "Align all prestige points/victory references with canonical Heshima, not alternating Fahari."
+    },
+    {
+      "key": "[stat column prestige]",
+      "before": "Fahari",
+      "after": "Heshima",
+      "rationale": "Align all prestige points/victory references with canonical Heshima, not alternating Fahari."
+    },
+    {
+      "key": "[This match cannot end. Turn on prestige victory or set a time limit.]",
+      "before": "Mechi hii haiwezi kuisha. Washa ushindi wa fahari au weka kikomo cha muda.",
+      "after": "Mechi hii haiwezi kuisha. Washa ushindi wa heshima au weka kikomo cha muda.",
+      "rationale": "Align all prestige points/victory references with canonical Heshima, not alternating Fahari."
+    },
+    {
+      "key": "[Prestige usually appears after 13 to 28 minutes, so a 30-minute limit often ends in a tie.]",
+      "before": "Fahari kwa kawaida huanza kuonekana baada ya dakika 13 hadi 28, hivyo kikomo cha dakika 30 mara nyingi huleta sare.",
+      "after": "Heshima kwa kawaida huanza kuonekana baada ya dakika 13 hadi 28, hivyo kikomo cha dakika 30 mara nyingi huleta sare.",
+      "rationale": "Align all prestige points/victory references with canonical Heshima, not alternating Fahari."
+    },
+    {
+      "key": "[stat eating time about]",
+      "before": "Idadi ya wafanyakazi waliokuwa wameacha kazi ili wale: wakitembea kwenda nyumba ya wageni, wakila humo, au wakiwa na njaa bila nyumba ya wageni yenye nafasi. Wafanyakazi wanaobaki bila nafasi humaanisha kwamba makazi yamezidi uwezo wa nyumba zake za wageni au chakula chao.",
+      "after": "Idadi ya wafanyakazi waliokuwa wameacha kazi ili wale: wakitembea kwenda nyumba ya wageni, wakila humo, au wakiwa na njaa bila nyumba ya wageni inayoweza kuwahudumia. Wafanyakazi wasiopata huduma katika nyumba ya wageni humaanisha kwamba makazi yamezidi uwezo wa nyumba zake za wageni au chakula chao.",
+      "rationale": "Inn unavailability includes inadequate food/service as well as capacity; do not narrow all unserved workers to lack of free places."
+    },
+    {
+      "key": "[stat band free]",
+      "before": "Bure",
+      "after": "Walio huru",
+      "rationale": "Free warriors are unassigned/available, not without monetary cost."
+    },
+    {
+      "key": "[Prunes]",
+      "before": "Pruni",
+      "after": "Plamu",
+      "rationale": "Resource grows on a fruit tree and singular English source is Plum. Align raw fruit and tree with Plamu, not dried prunes."
+    },
+    {
+      "key": "[Prune tree]",
+      "before": "Mti wa pruni",
+      "after": "Mti wa plamu",
+      "rationale": "Resource grows on a fruit tree and singular English source is Plum. Align raw fruit and tree with Plamu, not dried prunes."
+    },
+    {
+      "key": "[Import Resource Definitions]",
+      "before": "Leta fasili za rasilimali",
+      "after": "Ingiza fasili za rasilimali",
+      "rationale": "Align import action with Ingiza and data definitions with Fasili across editor/library controls, retaining object and action."
+    },
+    {
+      "key": "[editor menu import resources]",
+      "before": "Leta fasili za rasilimali…",
+      "after": "Ingiza fasili za rasilimali…",
+      "rationale": "Align import action with Ingiza and data definitions with Fasili across editor/library controls, retaining object and action."
+    },
+    {
+      "key": "[brush clearing area]",
+      "before": "Eneo la kufyeka",
+      "after": "Eneo la kusafisha",
+      "rationale": "Clearing zone also removes nonvegetation resources; align general Eneo la kusafisha rather than vegetation-only kufyeka."
+    },
+    {
+      "key": "[dock brush paint]",
+      "before": "Paka",
+      "after": "Chora",
+      "rationale": "Align dock Paint with existing phone/tutorial Chora visible action."
+    },
+    {
+      "key": "[editor menu import set]",
+      "before": "Leta seti ya ardhi na rasilimali",
+      "after": "Ingiza seti ya ardhi na rasilimali",
+      "rationale": "Align import action with Ingiza and data definitions with Fasili across editor/library controls, retaining object and action."
+    },
+    {
+      "key": "[set library selection help]",
+      "before": "Chagua vipengee vya kuleta. Rasilimali maalumu zinazohitajika hujumuishwa kiotomatiki.",
+      "after": "Chagua vipengee vya kuingiza. Rasilimali maalumu zinazohitajika hujumuishwa kiotomatiki.",
+      "rationale": "Align import action with Ingiza and data definitions with Fasili across editor/library controls, retaining object and action."
+    },
+    {
+      "key": "[set library release help]",
+      "before": "Chagua toleo mahususi la kukagua na kuleta.",
+      "after": "Chagua toleo mahususi la kukagua na kuingiza.",
+      "rationale": "Align import action with Ingiza and data definitions with Fasili across editor/library controls, retaining object and action."
+    },
+    {
+      "key": "[set library import]",
+      "before": "Leta vipengee vilivyochaguliwa",
+      "after": "Ingiza vipengee vilivyochaguliwa",
+      "rationale": "Align import action with Ingiza and data definitions with Fasili across editor/library controls, retaining object and action."
+    },
+    {
+      "key": "[set library local help]",
+      "before": "Hariri nakala ya ramani hii. Shukrani za toleo la awali hubaki zimeambatishwa. Mabadiliko hayasasi ramani nyingine au toleo la mtandaoni.",
+      "after": "Hariri nakala ya ramani hii. Shukrani za toleo la awali hubaki zimeambatishwa. Mabadiliko hayasasishi ramani nyingine au toleo la mtandaoni.",
+      "rationale": "Negative present of sasisha is hayasasishi; retain original credits and nonpropagation to other maps/releases."
+    },
+    {
+      "key": "[outcome reason prestige]",
+      "before": "Lengo la fahari limefikiwa.",
+      "after": "Lengo la heshima limefikiwa.",
+      "rationale": "Align all prestige points/victory references with canonical Heshima, not alternating Fahari."
+    },
+    {
+      "key": "[outcome reason scenario]",
+      "before": "Sheria za kisa zimeamua matokeo.",
+      "after": "Kanuni za kisa zimeamua matokeo.",
+      "rationale": "Align game rules with established Kanuni UI; gentle first-match preset does not promise a special teaching behavior."
+    },
+    {
+      "key": "[outcome reason ally won]",
+      "before": "Makazi washirika yameshinda.",
+      "after": "Makazi ya mshirika yameshinda.",
+      "rationale": "Express allied colony as Makazi ya mshirika, preserving collective ya- agreement and avoiding ambiguous adjectival plural."
+    },
+    {
+      "key": "[The maze needs at least two cells across and down; use a bigger map or smaller cells.]",
+      "before": "Njia panda inahitaji angalau seli mbili kwa upana na urefu; tumia ramani kubwa au seli ndogo zaidi.",
+      "after": "Njia tata zinahitaji angalau seli mbili kwa upana na urefu; tumia ramani kubwa au seli ndogo zaidi.",
+      "rationale": "Maze means complex corridors, not crossroads. Error references agree with Njia tata; cul-de-sacs have closed ends, not through routes."
+    },
+    {
+      "key": "[The maze has too few cul-de-sacs for this many colonies; use a bigger map or smaller cells.]",
+      "before": "Njia panda haina njia za mwisho za kutosha kwa makazi haya mengi; tumia ramani kubwa au seli ndogo zaidi.",
+      "after": "Njia tata hazina njia za kutosha zenye mwisho uliofungwa kwa makazi haya mengi; tumia ramani kubwa au seli ndogo zaidi.",
+      "rationale": "Maze means complex corridors, not crossroads. Error references agree with Njia tata; cul-de-sacs have closed ends, not through routes."
+    },
+    {
+      "key": "[Sandbars]",
+      "before": "Vizingiti vya mchanga",
+      "after": "Mafungu ya mchanga",
+      "rationale": "Sandbar is a sand deposit/fungu la mchanga, not threshold or barrier; preserve singular/plural concord across controls and errors."
+    },
+    {
+      "key": "[A sand bar did not reach the island.]",
+      "before": "Kizingiti cha mchanga hakikufikia kisiwa.",
+      "after": "Fungu la mchanga halikufikia kisiwa.",
+      "rationale": "Sandbar is a sand deposit/fungu la mchanga, not threshold or barrier; preserve singular/plural concord across controls and errors."
+    },
+    {
+      "key": "[Sandbar connections]",
+      "before": "Miunganisho ya vizingiti vya mchanga",
+      "after": "Miunganisho ya mafungu ya mchanga",
+      "rationale": "Sandbar is a sand deposit/fungu la mchanga, not threshold or barrier; preserve singular/plural concord across controls and errors."
+    },
+    {
+      "key": "[Import Terrain Definitions]",
+      "before": "Ingiza ufafanuzi wa ardhi",
+      "after": "Ingiza fasili za ardhi",
+      "rationale": "Align import action with Ingiza and data definitions with Fasili across editor/library controls, retaining object and action."
+    },
+    {
+      "key": "[The braid leaves too little terrace for the homes; use a bigger map or a narrower braid.]",
+      "before": "Mikondo inaacha eneo dogo mno la miinuko kwa makazi; tumia ramani kubwa au mikondo myembamba zaidi.",
+      "after": "Mikondo inaacha maeneo machache mno ya ardhi tambarare iliyoinuka kwa makazi; tumia ramani kubwa au mikondo myembamba zaidi.",
+      "rationale": "River terrace is elevated flat ground, not merely hills or highlands."
+    },
+    {
+      "key": "[experiment barren-terrain help]",
+      "before": "Huongeza udongo, mfinyanzi, kokoto na nyanda za maua katika kihariri cha ramani. Majengo yanaweza kuwekwa humo, hakuna kinachoota juu au kando yake, na haihesabiwi kuwa ufukwe.",
+      "after": "Huongeza udongo, udongo wa mfinyanzi, kokoto na nyanda za maua katika kihariri cha ramani. Majengo yanaweza kuwekwa humo, hakuna kinachoota juu au kando yake, na haihesabiwi kuwa ufukwe.",
+      "rationale": "Clay is udongo wa mfinyanzi; mfinyanzi alone names a potter."
+    },
+    {
+      "key": "[experiment ridge-terrain help]",
+      "before": "Huongeza miinuko na miamba inayojitokeza katika kihariri cha ramani. Viumbe wa ardhini hawawezi kuvivuka, lakini minara hupiga juu yake na wanaoruka hupita. Haviruhusu majengo wala rasilimali.",
+      "after": "Huongeza miinuko na miamba inayojitokeza katika kihariri cha ramani. Viumbe wa ardhini hawawezi kuvivuka, lakini minara hurusha risasi juu yake na wanaoruka hupita. Haviruhusu majengo wala rasilimali.",
+      "rationale": "Towers shoot projectiles over ridges; add risasi to the otherwise underspecified kupiga."
+    },
+    {
+      "key": "[experiment path-terrain help]",
+      "before": "Huongeza njia za udongo na madaraja ya mbao katika kihariri cha ramani. Kama vijia, viumbe wa ardhini huenda kwa kasi mara mbili na majengo yanaruhusiwa, lakini hakuna kinachoota.",
+      "after": "Huongeza njia za udongo na njia za mbao katika kihariri cha ramani. Kama vijia, viumbe wa ardhini huenda kwa kasi mara mbili na majengo yanaruhusiwa, lakini hakuna kinachoota.",
+      "rationale": "Boardwalks are wooden paths; they need not be bridges across gaps."
+    },
+    {
+      "key": "[stat growth map about]",
+      "before": "Ongezeko la akiba ya vifaa katika rasilimali popote ramani nzima, kwa pointi za ukuaji badala ya mizigo iliyovunwa. Hii ni sawa kwa kila makazi.",
+      "after": "Ongezeko la akiba ya malighafi katika rasilimali popote ramani nzima, kwa pointi za ukuaji badala ya mizigo iliyovunwa. Hii ni sawa kwa kila makazi.",
+      "rationale": "Align harvested, stored and delivered material inventory with Malighafi; update noun-class concord, distinguish quantities from creatures and genuine equipment/vifaa."
+    },
+    {
+      "key": "[editor menu import terrain]",
+      "before": "Ingiza ufafanuzi wa ardhi…",
+      "after": "Ingiza fasili za ardhi…",
+      "rationale": "Align import action with Ingiza and data definitions with Fasili across editor/library controls, retaining object and action."
+    },
+    {
+      "key": "[terrain palette hint]",
+      "before": "Chagua brashi. Makundi hushiriki kanuni moja; aina zilizo ndani hutofautiana kwa mwonekano tu.",
+      "after": "Chagua brashi. Aina zote katika kila kundi hufuata seti moja ya kanuni na hutofautiana kwa mwonekano tu.",
+      "rationale": "Members within each group share a set of rules; do not claim all groups share a single rule."
+    },
+    {
+      "key": "[library Enable installed families below. Selection is saved in this local profile; existing maps and saves keep their own buildings. For online play, generate a map with these families, publish it in the map library, then choose that map in your room.]",
+      "before": "Wezesha makundi yaliyosakinishwa hapa chini. Uchaguzi huhifadhiwa katika wasifu huu wa kifaa; ramani na faili zilizohifadhiwa hudumisha majengo yake. Kwa mchezo mtandaoni, zalisha ramani yenye makundi haya, ichapishe katika maktaba ya ramani, kisha uichague chumbani.",
+      "after": "Wezesha familia zilizosakinishwa hapa chini. Uchaguzi huhifadhiwa katika wasifu huu wa kifaa; ramani na faili zilizohifadhiwa hudumisha majengo yake. Kwa mchezo mtandaoni, zalisha ramani yenye familia hizi, ichapishe katika maktaba ya ramani, kisha uichague chumbani.",
+      "rationale": "Align library family with Familia; use matching plural zi-/hizi concord, retain per-map buildings and publish workflow."
+    },
+    {
+      "key": "[library Generator installed. Future selections use this release.]",
+      "before": "Kizalishaji kimesakinishwa. Chaguo zijazo hutumia toleo hili.",
+      "after": "Kizalishaji kimesakinishwa. Machaguo yajayo yatatumia toleo hili.",
+      "rationale": "Use an explicit machaguo plural and matching ma-class concord instead of inconsistent chaguo with zi-/nyingine."
+    },
+    {
+      "key": "[settings Graphics detail]",
+      "before": "Ufafanuzi wa michoro",
+      "after": "Undani wa michoro",
+      "rationale": "Visual detail is Undani, not an explanation/Ufafanuzi; retain reduced visual effects and zoom-dependent behavior."
+    },
+    {
+      "key": "[settings Reduced detail disables clouds and their shadows, simplifies magic effects, and reduces transparency.]",
+      "before": "Ufafanuzi uliopunguzwa huzima mawingu na vivuli vyake, hurahisisha athari za uchawi na hupunguza uwazi.",
+      "after": "Undani uliopunguzwa huzima mawingu na vivuli vyake, hurahisisha athari za uchawi na hupunguza uwazi.",
+      "rationale": "Visual detail is Undani, not an explanation/Ufafanuzi; retain reduced visual effects and zoom-dependent behavior."
+    },
+    {
+      "key": "[settings Adjust assigned units with the wheel. When off, hold Ctrl. Shift adjusts flag radius. Also controls wheel input in other menus.]",
+      "before": "Rekebisha viumbe waliopangiwa kwa gurudumu la kipanya. Chaguo likizimwa, shikilia Ctrl. Shift hurekebisha nusukipenyo cha bendera. Pia hudhibiti gurudumu katika menyu nyingine.",
+      "after": "Rekebisha idadi ya viumbe waliopangiwa kwa gurudumu la kipanya. Chaguo likizimwa, shikilia Ctrl. Shift hurekebisha nusukipenyo cha bendera. Pia hudhibiti gurudumu katika menyu nyingine.",
+      "rationale": "Wheel changes assigned creature count, not the creatures themselves; Ctrl/Shift and menu behavior preserved."
+    },
+    {
+      "key": "[settings Adaptive zoom detail]",
+      "before": "Ufafanuzi unaobadilika na ukuzaji",
+      "after": "Undani unaobadilika kulingana na ukuzaji",
+      "rationale": "Visual detail is Undani, not an explanation/Ufafanuzi; retain reduced visual effects and zoom-dependent behavior."
+    },
+    {
+      "key": "[settings Fade the map into and out of the fog of war gradually.]",
+      "before": "Fifisha ramani hatua kwa hatua inapoingia au kutoka katika ukungu wa vita.",
+      "after": "Fanya ramani itoweke au ionekane hatua kwa hatua inapoingia au kutoka katika ukungu wa vita.",
+      "rationale": "Explicitly include gradual appearance and disappearance, not only fading away in both directions."
+    },
+    {
+      "key": "[settings All choices compute the same exact field.]",
+      "before": "Chaguo zote hukokotoa uga uleule sahihi.",
+      "after": "Machaguo yote hukokotoa uga uleule sahihi.",
+      "rationale": "Use an explicit machaguo plural and matching ma-class concord instead of inconsistent chaguo with zi-/nyingine."
+    },
+    {
+      "key": "[settings CPU fallback]",
+      "before": "Kurudia CPU",
+      "after": "Kutumia CPU kama mbadala",
+      "rationale": "Fallback uses CPU as substitute route, not a repeated CPU attempt; plural label describes event count."
+    },
+    {
+      "key": "[settings CPU fallbacks]",
+      "before": "Marudio ya CPU",
+      "after": "Mara za kutumia CPU kama mbadala",
+      "rationale": "Fallback uses CPU as substitute route, not a repeated CPU attempt; plural label describes event count."
+    },
+    {
+      "key": "[music Music is not yet saved permanently. Retry saving before leaving.]",
+      "before": "Muziki bado haujahifadhiwa daima. Jaribu kuhifadhi tena kabla ya kuondoka.",
+      "after": "Muziki bado haujahifadhiwa kwa kudumu. Jaribu kuhifadhi tena kabla ya kuondoka.",
+      "rationale": "Permanent storage uses idiomatic kwa kudumu rather than daima/always."
+    },
+    {
+      "key": "[tutorial part3 message 6]",
+      "before": "Mashujaa hutumia uwanja wa mbio na bwawa la kuogelea pia. Wanaweza pia kufunza ujuzi wa kushambulia katika kambi za jeshi.",
+      "after": "Mashujaa hutumia uwanja wa mbio na bwawa la kuogelea pia. Wanaweza pia kupata mafunzo ya kushambulia katika kambi za jeshi.",
+      "rationale": "Warriors receive training to improve their own attack skills; kufunza incorrectly makes them teach."
+    },
+    {
+      "key": "[tutorial part3 message 10]",
+      "before": "Kambi ya jeshi iko tayari. Mashujaa sasa wanaweza kufunza ujuzi wao wa kushambulia humo.",
+      "after": "Kambi ya jeshi iko tayari. Mashujaa sasa wanaweza kupata mafunzo ya kushambulia humo.",
+      "rationale": "Warriors receive training to improve their own attack skills; kufunza incorrectly makes them teach."
+    },
+    {
+      "key": "[tutorial part3 message 12]",
+      "before": "Wafanyakazi waliofunzwa shuleni wanaweza kujenga maboresho. Chagua jengo linalostahiki na utafute Boresha katika vidhibiti vyake. Majengo yaliyoharibika yanaweza kuhitaji Ukarabati kwanza.",
+      "after": "Wafanyakazi waliofunzwa shuleni wanaweza kujenga maboresho. Chagua jengo linalostahiki na utafute Boresha katika vidhibiti vyake. Majengo yaliyoharibika yanaweza kuhitaji uchague Rekebisha kwanza.",
+      "rationale": "Refer to actual Repair button Rekebisha with choose verb, not a mismatched Ukarabati noun label."
+    },
+    {
+      "key": "[tutorial part3 message 30]",
+      "before": "Subiri minara yote miwili na vipande kadhaa vya ukuta vikamilike. Minara pia inahitaji mawe ya risasi; machimbo ya mbali hufanya usafirishaji uwe wa polepole. Ongeza malengo yake ya wafanyakazi ukiwa na walio huru.",
+      "after": "Subiri ujenzi wa minara yote miwili na vipande kadhaa vya ukuta ukamilike. Minara pia inahitaji mawe ya risasi; machimbo ya mbali hufanya usafirishaji uwe wa polepole. Ongeza malengo yake ya wafanyakazi ukiwa na walio huru.",
+      "rationale": "Use singular construction as subject to avoid incorrect agreement across minara and vipande; preserve tower/wall timing."
+    },
+    {
+      "key": "[tutorial part2 message 16]",
+      "before": "Weka lengo la wafanyakazi wa eneo la ujenzi wa uwanja wa mbio kati ya 5 na 7. Unahitaji jumla ya vifaa 7 vya ujenzi.",
+      "after": "Weka lengo la wafanyakazi wa eneo la ujenzi wa uwanja wa mbio kati ya 5 na 7. Unahitaji jumla ya vipimo 7 vya malighafi za ujenzi.",
+      "rationale": "Align harvested, stored and delivered material inventory with Malighafi; update noun-class concord, distinguish quantities from creatures and genuine equipment/vifaa."
+    },
+    {
+      "key": "[tutorial part2 message 17]",
+      "before": "Uwanja wa mbio ukikamilika, huwafunza viumbe wanaofika bila kuhitaji usambazaji wa kudumu wa vifaa au ngano.",
+      "after": "Uwanja wa mbio ukikamilika, huwafunza viumbe wanaofika bila kuhitaji usambazaji wa kudumu wa malighafi za ujenzi au ngano.",
+      "rationale": "Align harvested, stored and delivered material inventory with Malighafi; update noun-class concord, distinguish quantities from creatures and genuine equipment/vifaa."
+    }
+  ],
+  "findings_disposed_for_recheck": 32,
+  "all_review_findings_changed": true,
+  "accepted_english_and_optional_entries_preserved": 46,
+  "checks": {
+    "exact_source_keyset": true,
+    "no_table_parse_errors": true,
+    "placeholder_multiplicities": true,
+    "percent_contract": true,
+    "no_unapproved_blanks": true,
+    "no_replacement_or_NUL": true,
+    "AI_profile_paragraph_and_ASCII_colon_counts": true,
+    "every_batch_hash_matches_standard_helper": true,
+    "changed_key_ledger_exact": true
+  },
+  "status": "full-editor-read-and-revision-complete-awaiting-original-independent-reviewer-recheck",
+  "locale_finalized": false,
+  "native_human_certified": false,
+  "uncertainty_for_reviewer": [
+    "Grain proposed Unyooshaji wa umbo covers stretch/orientation of geometry; confirm comprehensibility in actual control context.",
+    "Descriptive moraine/drumlin/esker/bajada/fan/shield-volcano names avoid untranslated terminology but technical idiom and long-label fit require reviewer/render checks.",
+    "Explicit machaguo plural and closed-ended maze passage formulation require original reviewer recheck as substantive editorial proposals.",
+    "Klova is a proposed plant loan supported only comparatively by actual provider UI, not asserted native lexical certification."
+  ],
+  "pending_gates": [
+    "Original reviewer rechecks every substantive edit and records exact tested hash.",
+    "Any reviewer linguistic uncertainty blocks finalization.",
+    "Integrated registered catalog, font, browser, visual and platform gates are orchestrator-owned and not established by these draft-only checks."
+  ],
+  "references": {
+    "prior_independent_research": "../sw-native/summary.json",
+    "Google_comparison": "../../references/google-translate-sw-geology.json",
+    "Google_clover_comparison": "Actual completed parent Google UI lookup: Clover → Kloveri; dictionary alternative klova; https://translate.google.com/?sl=en&tl=sw&text=Clover&op=translate; comparative only, no lexical authority inferred."
+  }
+}

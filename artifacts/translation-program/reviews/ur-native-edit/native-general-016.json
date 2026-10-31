@@ -1,0 +1,157 @@
+{
+  "editor": "/root/swahili_translation",
+  "author": "/root/urdu_translation",
+  "independent_reviewer": "/root/pilot_context",
+  "batch_id": "native-general-016",
+  "source_contract_sha256": "aacd8a342e9e734ba47f902a161ac1a45badff5842a617bcd68bf8e2275d6013",
+  "original_target_subset_sha256": "6b76058bdad10535aabfa2dbc904ec03779742c428e0ca28736733be611784bf",
+  "final_target_subset_sha256": "6b76058bdad10535aabfa2dbc904ec03779742c428e0ca28736733be611784bf",
+  "final_catalog_sha256": "ec78fb33247244bf783461e0410ef11fe48e45644c3c6500419d9060e967d458",
+  "entries": [
+    {
+      "key": "[library Release %0]",
+      "source": "Release %0",
+      "before": "ریلیز %0",
+      "after": "ریلیز %0",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[library Remove %0]",
+      "source": "Remove %0",
+      "before": "%0 ہٹائیں",
+      "after": "%0 ہٹائیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[library Seed: %0]",
+      "source": "Seed: %0",
+      "before": "سیڈ: %0",
+      "after": "سیڈ: %0",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[library %0 · revision %1]",
+      "source": "%0 · revision %1",
+      "before": "%0 · ترمیم %1",
+      "after": "%0 · ترمیم %1",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[library Fit]",
+      "source": "Fit",
+      "before": "سمائیں",
+      "after": "سمائیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[library GL only]",
+      "source": "GL only",
+      "before": "صرف GL",
+      "after": "صرف GL",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Sound or silence?]",
+      "source": "Sound or silence?",
+      "before": "آواز یا خاموشی؟",
+      "after": "آواز یا خاموشی؟",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Silence]",
+      "source": "Silence",
+      "before": "خاموشی",
+      "after": "خاموشی",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Sound]",
+      "source": "Sound",
+      "before": "آواز",
+      "after": "آواز",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[audio preference explanation]",
+      "source": "The game starts quietly. Would you like silence, or music and game audio?",
+      "before": "کھیل خاموشی سے شروع ہوتا ہے۔ کیا آپ خاموشی پسند کریں گے یا موسیقی اور کھیل کی آواز؟",
+      "after": "کھیل خاموشی سے شروع ہوتا ہے۔ کیا آپ خاموشی پسند کریں گے یا موسیقی اور کھیل کی آواز؟",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[audio preference change later]",
+      "source": "You can change this anytime in Settings → Audio.",
+      "before": "آپ اسے کسی بھی وقت ترتیبات ← آواز میں بدل سکتے ہیں۔",
+      "after": "آپ اسے کسی بھی وقت ترتیبات ← آواز میں بدل سکتے ہیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[audio preference save failed]",
+      "source": "Your choice could not be saved. Audio is still off. Please try again.",
+      "before": "آپ کا انتخاب محفوظ نہیں ہو سکا۔ آواز اب بھی بند ہے۔ دوبارہ کوشش کریں۔",
+      "after": "آپ کا انتخاب محفوظ نہیں ہو سکا۔ آواز اب بھی بند ہے۔ دوبارہ کوشش کریں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[audio choices description]",
+      "source": "Silence: a muted speaker. Sound: a speaker with sound waves.",
+      "before": "خاموشی: آواز بند اسپیکر۔ آواز: صوتی لہروں والا اسپیکر۔",
+      "after": "خاموشی: آواز بند اسپیکر۔ آواز: صوتی لہروں والا اسپیکر۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Grassland]",
+      "source": "Grassland",
+      "before": "گھاس کا میدان",
+      "after": "گھاس کا میدان",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Kopjes]",
+      "source": "Kopjes",
+      "before": "چٹانی ٹیلے",
+      "after": "چٹانی ٹیلے",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Game trails]",
+      "source": "Game trails",
+      "before": "جنگلی جانوروں کی پگڈنڈیاں",
+      "after": "جنگلی جانوروں کی پگڈنڈیاں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Fish amount]",
+      "source": "Fish amount",
+      "before": "مچھلی کی مقدار",
+      "after": "مچھلی کی مقدار",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Camp-site amount]",
+      "source": "Camp-site amount",
+      "before": "خیمہ گاہوں کی تعداد",
+      "after": "خیمہ گاہوں کی تعداد",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    }
+  ],
+  "status": "edited-awaiting-independent-recheck"
+}

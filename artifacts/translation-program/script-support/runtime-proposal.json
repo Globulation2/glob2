@@ -1,0 +1,52 @@
+{
+  "status": "proposal-not-integrated",
+  "harfbuzz": {
+    "version": "10.1.0",
+    "license": "Old MIT (vcpkg SPDX MIT-Modern-Variant)",
+    "source": {
+      "version": "10.1.0",
+      "url": "https://github.com/harfbuzz/harfbuzz/releases/download/10.1.0/harfbuzz-10.1.0.tar.xz",
+      "sha256": "6ce3520f2d089a33cef0fc48321334b8e0b72141f6a763719aaaecd2779ecb82",
+      "archive": "harfbuzz-10.1.0.tar.xz"
+    },
+    "local_unstripped_arm64_release_bytes": 1307200,
+    "binary_sha256": "aa3834581f46ebed0def91d0ce9889c63a530384135ef006ceea265c30c19fc1"
+  },
+  "noto": {
+    "license": "SIL Open Font License1.1",
+    "commit": "ffebf8c1ee449e544955a7e813c54f9b73848eac",
+    "fonts": 13,
+    "total_bytes": 2129572
+  },
+  "sdl_ttf": {
+    "version": "3.2.2",
+    "local_unstripped_arm64_release_bytes": 167976
+  },
+  "prototype": {
+    "cases": 111,
+    "sizes": [
+      10,
+      13,
+      20
+    ],
+    "locale_count": 37,
+    "algorithm": "FriBidi embedding levels and logical-to-visual maps; logical runs shaped by SDL_ttf/HarfBuzz; numeric ratios isolated with LRI/PDI; script font primary and original font fallback",
+    "limits": [
+      "Not integrated into game renderer.",
+      "Does not establish pixel identity for existing Arabic/Persian routes.",
+      "No packaged browser/mobile/Windows/Linux evidence.",
+      "Unstripped local dylib sizes are not cross-platform package-size estimates.",
+      "Font metrics can increase line heights; actual UI fitting remains required.",
+      "Captured phrases are technical probes, not independent linguistic certification."
+    ]
+  },
+  "configuration_patch": "artifacts/translation-program/script-support/runtime-dependency-proposal.patch",
+  "platform": "macOS-27.2-arm64-arm-64bit-Mach-O",
+  "approval_required_before_integration": true,
+  "approval": {
+    "status": "explicitly-approved",
+    "source": "User reply to dependency approval question in this chat",
+    "scope": "HarfBuzz 10.1.0 and 13 pinned Noto fonts described in this proposal",
+    "date": "2026-10-31"
+  }
+}

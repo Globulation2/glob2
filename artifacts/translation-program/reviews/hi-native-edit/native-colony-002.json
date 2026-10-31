@@ -1,0 +1,24 @@
+{
+  "editor": "/root/translation_kit",
+  "author": "/root/hindi_translation",
+  "reviewer": "/root/pilot_context",
+  "batch_id": "native-colony-002",
+  "source_json_sha256": "a214fc4c9ce4d90fb29d572e3b9d96987eb61af8d0f7bda5050d7d1309d488a9",
+  "before_native_catalog_sha256": "027e686622a7758c5ee7633372aeb33533ecd1a36633b5e6f043bd18581b8cea",
+  "before_target_sha256": "5f153d85d4bf3c465363617087ba7f2e5d067a9c07f2538dbf31a59cfd50dae8",
+  "after_target_sha256": "5f153d85d4bf3c465363617087ba7f2e5d067a9c07f2538dbf31a59cfd50dae8",
+  "editor_read_keys": [
+    "[library Loading building families]",
+    "[library No building families installed.]",
+    "[library No public building families yet]",
+    "[library Opening building family]"
+  ],
+  "editor_read_count": 4,
+  "edits": [],
+  "finding_dispositions": [],
+  "editor_notes": [
+    "Read all4library-family labels; terse compound इमारत परिवार consistent across library surfaces; no grammar or meaning edits needed."
+  ],
+  "status": "editor-pass-complete-awaiting-original-reviewer-recheck",
+  "certification": "Agent edited; not native-human-certified; rendering/platform gates separate"
+}

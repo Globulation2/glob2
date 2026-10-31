@@ -1,0 +1,35 @@
+{
+  "reviewer": "/root/hindi_online_review",
+  "scope": "Read-only new tutorial briefing dismissal capture-harness diff, docs, actual open/close/step/draw call paths; no runtime rendering claim.",
+  "source_sha256": {
+    "tools/TranslationPreviewHarness.cpp": "65bc3a8f564fc18cf80efe7b640bcfde736f7a2dd3f4dad6bef76b06315236db",
+    "docs/development/ui-framework.md": "3c51d212ec061c00fb48174b948ed287401506fde0680475a74a47af65ad72f6",
+    "src/hud/input/GameGUIInputMenu.cpp": "5a376746e706b1ff498d7f7b97a967ae6bb20af5b6da7196d873f09094c5b383",
+    "src/hud/GameGUIStep.cpp": "273d910640fcde5ac19e51cddaa659daf9c196f1096616e09d2cdb8613c4f78a",
+    "src/engine/EngineRun.cpp": "6262f2351ca13d915ee8fc9d9e94c2c4eb662301a3ba7f193480fae2ae2983d3",
+    "src/hud/draw/GameGUIDraw.cpp": "e09cc4698c7b2f9e7a8d856b2a9c2beafca723431f6107f000e6308d3551891b",
+    "src/tutorial/Tutorial.cpp": "aeff5f3b79bc5e2d788ff701f344cbcd98ba945540ace5dff056c714201fb7c8"
+  },
+  "assessments": [
+    "Automatic objective briefing opens in GameGUI::step only when drawnScene.tick==12, missionBriefing exists/nonempty. Initial harness admission advances then freezes simulation/current scene before capture.",
+    "closeDialog resets inGameMenu to IGM_NONE and releases gameMenuScreen; refusal applies only a persisting SAVE dialog, not OBJECTIVES. No order or world mutation in this path; new before/after simulation checksum enforces unchanged state.",
+    "capture renders after changed UI state before printScreen and checks simulation draw checksum. Engine::drawSession acquires/prepares scene and draws; it does not call GameGUI::step. updateTutorial constructs/updates guidance but opens dialogs only through user callbacks. Thus draw-only capture cannot trigger the tick12 briefing-open condition again.",
+    "Initial briefing is saved separately only when actually open; active guidance image now distinct from initial briefing. Docs correctly state published model alone does not establish visible text.",
+    "Harness frame/capture code change requires new final compiled binary and refreshed captures; old Hi34/b366images remain prior harness evidence."
+  ],
+  "findings": [
+    {
+      "id": "harness-dialog-free-predicate",
+      "severity": "minor",
+      "path": "tools/TranslationPreviewHarness.cpp",
+      "problem": "dialogOpen checks enum only, while actual GameGUI::activeDialog includes gameMenuScreen, typingInputScreen and scrollableText. Claimed fully dialog-free invariant should cover the same active-dialog guard used to draw tutorial guidance.",
+      "suggested_correction": "return gui.inGameMenu != GameGUI::IGM_NONE || gui.activeDialog() != nullptr;",
+      "status": "resolved: distinct root editor applied exact full active-dialog predicate; original reviewer rechecked actual source line"
+    }
+  ],
+  "status": "source review accepted after exact predicate correction; final rebuild/new102capture rendering verification pending",
+  "product_edits_by_reviewer": false,
+  "initial_reviewed_harness_sha256": "65bc3a8f564fc18cf80efe7b640bcfde736f7a2dd3f4dad6bef76b06315236db",
+  "open_findings": 0,
+  "supplemental_recheck": "Freshly read exact dialogOpen definition; now checks both in-game menu enum and actual dialog pointer used by tutorial visibility guard."
+}

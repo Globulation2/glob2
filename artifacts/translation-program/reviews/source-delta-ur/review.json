@@ -1,0 +1,59 @@
+{
+  "reviewer": "/root/pilot_context",
+  "locale": "ur",
+  "author": "/root/swahili_translation",
+  "editor": "/root/translation_kit",
+  "key": "Game text field",
+  "English_source": "Game text field",
+  "Urdu_target": "کھیل میں متن درج کرنے کا خانہ",
+  "status": "supplemental-independent-linguistic-review-pass",
+  "review_scope": {
+    "new_entries_independently_read": 1,
+    "prior_entries_carried_forward_by_exact_identity": 2835,
+    "prior_entries_claimed_freshly_reread": false,
+    "prior_plural_families_preserved": 27,
+    "prior_full_review": "reviews/ur-online-recheck/summary.json",
+    "prior_full_review_record_sha256": "ff16cc7d1ad4ee12b5593302970b1d1cbae17664993b82f94e12f768f16e5d51"
+  },
+  "linguistic_reason": "کھیل میں locates the control in the game. متن درج کرنے کا خانہ is a clear, grammatical Urdu noun phrase identifying the text-entry box, not terrain, a document file or a whole message. It preserves the generic accessible control name and contains no unapproved English fallback, placeholders or technical syntax. Read-only copy use is still a text box; the label does not assert that every instance is editable.",
+  "actual_source_context": {
+    "path": "browser/shell.html",
+    "sha256": "556ba59567d5f685797d1ecb840313ce5500d818fb38606c004fec5b46e2c4af",
+    "lines_read": "630–705, plus browserText and refreshBrowserLanguage around84–100",
+    "mechanism": "Module.textBridge.field creates real DOM input. Type is password or text. Password branch uses Password; non-password branch sets data-i18n-aria and aria-label from browserText(Game text field). refreshBrowserLanguage updates data-i18n-aria labels when locale changes. The control bridges native game text controls and can select a read-only value for copying.",
+    "proof_limit": "Production source inspected; no browser, screen-reader or assistive-technology execution claimed."
+  },
+  "identity_proof": {
+    "old_source_count": 2835,
+    "old_target_count": 2835,
+    "new_source_count": 2836,
+    "new_target_count": 2836,
+    "old_source_equals_before_integration_en": true,
+    "every_old_English_value_unchanged": true,
+    "every_old_Urdu_value_unchanged": true,
+    "native_source_unchanged": true,
+    "only_source_key_added": "Game text field",
+    "only_target_key_added": "Game text field",
+    "changed_old_source_keys": [],
+    "changed_old_target_keys": [],
+    "removed_keys": []
+  },
+  "hashes": {
+    "old_source_file": "d7c8f06c7f023e77a027389d7decfa74bfd05c66ba151401317d67cc8bab1538",
+    "before_integration_English": "d7c8f06c7f023e77a027389d7decfa74bfd05c66ba151401317d67cc8bab1538",
+    "before_integration_Urdu": "de1091d2df613ac22bf2a9c46d1e3704712912c57e299e4171402aa002918d5e",
+    "new_release_source": "63017714064b5a2659aa8e2da27a43af117d3f1e60acbbb44ae5d73d80cd7d69",
+    "new_Urdu_target": "db375ee564c39cf02dfb4ce08d6a4dbaecb8cd69d5bc7f167b4c7f779e246587",
+    "source_kit_manifest": "4fd5e1faff01b7eb0e95db7eac33105ab557101742f6ef1a889e7b73210eb977",
+    "accessibility_edited_record": "2a2fee0967f44b7cc275c97a7b5ad1266de6805e1b8b2947fdba977f0cbad5f0",
+    "integration_record": "1a18d9052d891c6a71db506494b80c83e44b7b857c40bf16cb8a0ff77721786f",
+    "final_native_target": "5cb88fac67663fc436f6bfa60388382c24665755ee481514c002bc92e9a29837"
+  },
+  "findings": [],
+  "unresolved_linguistic_uncertainties": [],
+  "acceptance": "Accept carrying all prior independently reviewed Urdu online keys, branches and English-retention dispositions forward because every old source and target value is identical; this one new label is separately reviewed here.",
+  "limits": [
+    "No locale finalization/registration/rendering/platform approval.",
+    "This record updates source/catalog lineage only; actual app desktop/phone visual and screen-reader behavior remain separate validation gates."
+  ]
+}

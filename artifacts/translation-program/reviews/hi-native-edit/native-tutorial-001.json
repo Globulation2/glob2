@@ -1,0 +1,348 @@
+{
+  "editor": "/root/translation_kit",
+  "author": "/root/hindi_translation",
+  "reviewer": "/root/pilot_context",
+  "batch_id": "native-tutorial-001",
+  "source_json_sha256": "a214fc4c9ce4d90fb29d572e3b9d96987eb61af8d0f7bda5050d7d1309d488a9",
+  "before_native_catalog_sha256": "027e686622a7758c5ee7633372aeb33533ecd1a36633b5e6f043bd18581b8cea",
+  "before_target_sha256": "dbf0ec653e7a86ba3212e7265a20d4eded6e7fc9d085e58e91950281250c0512",
+  "after_target_sha256": "fc3cc5a32348c79b27fc590610f01df133e0b4fa4c9d88e7d6f6aece13efec9d",
+  "editor_read_keys": [
+    "[tutorial text 1]",
+    "[tutorial text 2]",
+    "[tutorial text 3]",
+    "[tutorial text 4]",
+    "[tutorial]",
+    "[Tutorial ▸]",
+    "[tutorial part1 message 1]",
+    "[tutorial part1 message 2]",
+    "[tutorial part1 message 3]",
+    "[tutorial part1 message 4]",
+    "[tutorial part1 message 5]",
+    "[tutorial part1 message 6]",
+    "[tutorial part1 message 7]",
+    "[tutorial part1 message 8]",
+    "[tutorial part1 message 9]",
+    "[tutorial part1 message 10]",
+    "[tutorial part1 message 11]",
+    "[tutorial part1 message 12]",
+    "[tutorial part1 message 13]",
+    "[tutorial part1 message 14]",
+    "[tutorial part1 message 15]",
+    "[tutorial part1 message 16]",
+    "[tutorial part1 message 17]",
+    "[tutorial part1 message 18]",
+    "[tutorial part1 message 19]",
+    "[tutorial part1 message 20]",
+    "[tutorial part1 message 21]",
+    "[tutorial part1 message 22]",
+    "[tutorial part1 message 23]",
+    "[tutorial part1 message 24]",
+    "[tutorial part1 message 25]",
+    "[tutorial part1 message 26]",
+    "[tutorial part1 message 27]",
+    "[tutorial part1 message 28]",
+    "[tutorial part2 message 1]",
+    "[tutorial part2 message 2]",
+    "[tutorial part2 message 3]",
+    "[tutorial part2 message 4]",
+    "[tutorial part2 message 5]",
+    "[tutorial part2 message 6]",
+    "[tutorial part2 message 7]",
+    "[tutorial part2 message 8]",
+    "[tutorial part2 message 9]",
+    "[tutorial part2 message 10]",
+    "[tutorial part2 message 11]",
+    "[tutorial part2 message 12]",
+    "[tutorial part2 message 13]",
+    "[tutorial part2 message 14]",
+    "[tutorial part2 message 15]",
+    "[tutorial part2 message 16]",
+    "[tutorial part2 message 17]",
+    "[tutorial part2 message 18]",
+    "[tutorial part2 message 19]",
+    "[tutorial part2 message 20]",
+    "[tutorial part2 message 21]",
+    "[tutorial part2 message 22]",
+    "[tutorial part2 message 23]",
+    "[tutorial part2 message 24]",
+    "[tutorial part2 message 25]",
+    "[tutorial part2 message 26]",
+    "[tutorial part2 message 27]",
+    "[tutorial part2 message 28]",
+    "[tutorial part2 message 29]",
+    "[tutorial part2 message 30]",
+    "[tutorial part2 message 31]",
+    "[tutorial part2 message 32]",
+    "[tutorial part2 message 33]",
+    "[tutorial part2 message 34]",
+    "[tutorial part2 message 35]",
+    "[tutorial part2 message 36]",
+    "[tutorial part2 message 37]",
+    "[tutorial part2 message 38]",
+    "[tutorial part2 message 39]",
+    "[tutorial part3 message 1]",
+    "[tutorial part3 message 2]",
+    "[tutorial part3 message 3]",
+    "[tutorial part3 message 4]",
+    "[tutorial part3 message 5]",
+    "[tutorial part3 message 6]",
+    "[tutorial part3 message 7]",
+    "[tutorial part3 message 8]",
+    "[tutorial part3 message 9]",
+    "[tutorial part3 message 10]",
+    "[tutorial part3 message 11]",
+    "[tutorial part3 message 12]",
+    "[tutorial part3 message 13]",
+    "[tutorial part3 message 14]",
+    "[tutorial part3 message 15]",
+    "[tutorial part3 message 16]",
+    "[tutorial part3 message 17]",
+    "[tutorial part3 message 18]",
+    "[tutorial part3 message 19]",
+    "[tutorial part3 message 20]",
+    "[tutorial part3 message 21]",
+    "[tutorial part3 message 22]",
+    "[tutorial part3 message 23]",
+    "[tutorial part3 message 24]",
+    "[tutorial part3 message 25]",
+    "[tutorial part3 message 26]",
+    "[tutorial part3 message 27]",
+    "[tutorial part3 message 28]",
+    "[tutorial part3 message 29]",
+    "[tutorial part3 message 30]",
+    "[tutorial part4 message 1]",
+    "[tutorial part4 message 2]",
+    "[tutorial part4 message 3]",
+    "[tutorial part4 message 4]",
+    "[tutorial part4 message 5]",
+    "[tutorial part4 message 6]",
+    "[tutorial part4 message 7]",
+    "[tutorial part4 message 8]",
+    "[tutorial part4 message 9]",
+    "[tutorial part4 message 10]",
+    "[tutorial part4 message 11]",
+    "[tutorial part4 message 12]",
+    "[tutorial part4 message 13]",
+    "[tutorial part4 message 14]",
+    "[tutorial part4 message 15]",
+    "[tutorial part4 message 16]",
+    "[tutorial part4 message 17]",
+    "[tutorial part4 message 18]",
+    "[tutorial part4 message 19]",
+    "[tutorial mission basics]",
+    "[tutorial mission development]",
+    "[tutorial mission training]",
+    "[tutorial mission flags]"
+  ],
+  "editor_read_count": 126,
+  "edits": [
+    {
+      "key": "[tutorial part1 message 2]",
+      "before": "शुरुआत में आपके पास एक झुंड और एक श्रमिक है। आइए देखें कि दोनों साथ कैसे काम करते हैं।",
+      "after": "शुरुआत में आपके पास एक छत्ता और एक श्रमिक है। आइए देखें कि दोनों साथ कैसे काम करते हैं।"
+    },
+    {
+      "key": "[tutorial part1 message 3]",
+      "before": "आपका श्रमिक गेहूँ काटकर झुंड तक पहुँचाता है। झुंड गेहूँ का उपयोग नई इकाइयाँ बनाने में करता है, इसलिए यह आपकी बस्ती के लिए बहुत ज़रूरी है।",
+      "after": "आपका श्रमिक गेहूँ काटकर छत्ते तक पहुँचाता है। छत्ता गेहूँ का उपयोग नई इकाइयाँ बनाने में करता है, इसलिए यह आपकी बस्ती के लिए बहुत ज़रूरी है।"
+    },
+    {
+      "key": "[tutorial part1 message 9]",
+      "before": "अब झुंड का एक श्रमिक सराय बना सकता है। वह पास के पेड़ों से लकड़ी इकट्ठी करके निर्माण स्थल पर लाता है। निर्माण पूरा होने की प्रतीक्षा करें।",
+      "after": "अब छत्ते का एक श्रमिक सराय बना सकता है। वह पास के पेड़ों से लकड़ी इकट्ठी करके निर्माण स्थल पर लाता है। निर्माण पूरा होने की प्रतीक्षा करें।"
+    },
+    {
+      "key": "[tutorial part1 message 10]",
+      "before": "बनने के बाद सराय को गेहूँ चाहिए। नियुक्त श्रमिक उसे इकट्ठा करेगा, ठीक वैसे ही जैसे कोई श्रमिक झुंड को आपूर्ति करता है।",
+      "after": "बनने के बाद सराय को गेहूँ चाहिए। नियुक्त श्रमिक उसे इकट्ठा करेगा, ठीक वैसे ही जैसे कोई श्रमिक छत्ते को आपूर्ति करता है।"
+    },
+    {
+      "key": "[tutorial part1 message 13]",
+      "before": "एक श्रमिक झुंड को और दूसरा सराय को आपूर्ति करता है। दोनों में से कोई भी सराय में खाने के लिए रुक सकता है। यह सामान्य है।",
+      "after": "एक श्रमिक छत्ते को और दूसरा सराय को आपूर्ति करता है। दोनों में से कोई भी सराय में खाने के लिए रुक सकता है। यह सामान्य है।"
+    },
+    {
+      "key": "[tutorial part1 message 14]",
+      "before": "झुंड चुनें और श्रमिक नियुक्त करने वाला नियंत्रण खोजें। डेस्कटॉप पर इसका नाम काम कर रहे है; टच स्क्रीन पर नियुक्त श्रमिक और लक्ष्य का नियंत्रण उपयोग करें। लक्ष्य बताता है कि आप इस इमारत पर कितने श्रमिक चाहते हैं।",
+      "after": "छत्ता चुनें और श्रमिक नियुक्त करने वाला नियंत्रण खोजें। डेस्कटॉप पर इसका नाम कार्यरत है; टच स्क्रीन पर नियुक्त श्रमिक और लक्ष्य का नियंत्रण उपयोग करें। लक्ष्य बताता है कि आप इस इमारत पर कितने श्रमिक चाहते हैं।"
+    },
+    {
+      "key": "[tutorial part1 message 15]",
+      "before": "नियुक्ति नियंत्रण से झुंड का श्रमिक लक्ष्य 0 करें। फिर सराय चुनकर उसका लक्ष्य भी 0 करें।",
+      "after": "नियुक्ति नियंत्रण से छत्ते का श्रमिक लक्ष्य 0 करें। फिर सराय चुनकर उसका लक्ष्य भी 0 करें।"
+    },
+    {
+      "key": "[tutorial part1 message 18]",
+      "before": "इमारतों के नियंत्रण से अस्पताल बनाएँ। इसे गेहूँ नहीं चाहिए, इसलिए लकड़ी के पास या झुंड के पास बीच की जगह पर रखें।",
+      "after": "इमारतों के नियंत्रण से अस्पताल बनाएँ। इसे गेहूँ नहीं चाहिए, इसलिए लकड़ी के पास या छत्ते के पास बीच की जगह पर रखें।"
+    },
+    {
+      "key": "[tutorial part1 message 22]",
+      "before": "झुंड चुनें और श्रमिकों, खोजियों व योद्धाओं के उत्पादन अनुपात खोजें। खोजियों का अनुपात बढ़ाकर 1 करें।",
+      "after": "छत्ता चुनें और श्रमिकों, खोजियों व योद्धाओं के उत्पादन अनुपात खोजें। खोजियों का अनुपात बढ़ाकर 1 करें।"
+    },
+    {
+      "key": "[tutorial part1 message 23]",
+      "before": "श्रमिक और खोजी, दोनों का अनुपात 1 होने पर झुंड समय के साथ दोनों की बराबर संख्या बनाता है। अभी केवल खोजी बनाने के लिए श्रमिक अनुपात 0 करें।",
+      "after": "श्रमिक और खोजी, दोनों का अनुपात 1 होने पर छत्ता समय के साथ दोनों की बराबर संख्या बनाता है। अभी केवल खोजी बनाने के लिए श्रमिक अनुपात 0 करें।"
+    },
+    {
+      "key": "[tutorial part1 message 24]",
+      "before": "झुंड का श्रमिक नियुक्ति लक्ष्य फिर से 1 करें, ताकि कोई श्रमिक वहाँ गेहूँ ला सके।",
+      "after": "छत्ते का श्रमिक नियुक्ति लक्ष्य फिर से 1 करें, ताकि कोई श्रमिक वहाँ गेहूँ ला सके।"
+    },
+    {
+      "key": "[tutorial part1 message 26]",
+      "before": "अब झुंड में एक खोजी बनने की प्रतीक्षा करें।",
+      "after": "अब छत्ते में एक खोजी बनने की प्रतीक्षा करें।"
+    },
+    {
+      "key": "[tutorial part1 message 27]",
+      "before": "आपका खोजी बस्ती के आसपास उड़कर और ज़मीन उजागर करता है। आगे बढ़ने से पहले झुंड में दूसरा खोजी बनने दें।",
+      "after": "आपका खोजी बस्ती के आसपास उड़कर और ज़मीन उजागर करता है। आगे बढ़ने से पहले छत्ते में दूसरा खोजी बनने दें।"
+    },
+    {
+      "key": "[tutorial part1 message 28]",
+      "before": "झुंड फिर चुनें। श्रमिकों का उत्पादन दोबारा शुरू करने के लिए खोजियों का उत्पादन अनुपात 0 और श्रमिकों का अनुपात 1 करें।",
+      "after": "छत्ता फिर चुनें। श्रमिकों का उत्पादन दोबारा शुरू करने के लिए खोजियों का उत्पादन अनुपात 0 और श्रमिकों का अनुपात 1 करें।"
+    },
+    {
+      "key": "[tutorial part2 message 2]",
+      "before": "पत्थर के दक्षिण में संतरे के पेड़ हैं। उनकी संसाधन जानकारी देखने के लिए उन्हें चुनें। फलों पर बाद में लौटेंगे; अभी झुंड पर ध्यान दें।",
+      "after": "पत्थर के दक्षिण में संतरे के पेड़ हैं। उनकी संसाधन जानकारी देखने के लिए उन्हें चुनें। फलों पर बाद में लौटेंगे; अभी छत्ते पर ध्यान दें।"
+    },
+    {
+      "key": "[tutorial part2 message 3]",
+      "before": "झुंड को केवल श्रमिक बनाने के लिए सेट करें: श्रमिक अनुपात 1, खोजी और योद्धा अनुपात 0।",
+      "after": "छत्ते को केवल श्रमिक बनाने के लिए सेट करें: श्रमिक अनुपात 1, खोजी और योद्धा अनुपात 0।"
+    },
+    {
+      "key": "[tutorial part2 message 4]",
+      "before": "आइए बस्ती को तेज़ी से बढ़ाएँ। झुंड चुनकर उसका श्रमिक नियुक्ति लक्ष्य 6 करें। हो सकता है अभी छह श्रमिक न हों; नए श्रमिक उपलब्ध होते ही खाली काम सँभाल लेंगे।",
+      "after": "आइए बस्ती को तेज़ी से बढ़ाएँ। छत्ता चुनकर उसका श्रमिक नियुक्ति लक्ष्य 6 करें। हो सकता है अभी छह श्रमिक न हों; नए श्रमिक उपलब्ध होते ही खाली काम सँभाल लेंगे।"
+    },
+    {
+      "key": "[tutorial part2 message 5]",
+      "before": "आपके पास 8 श्रमिक होने पर अगले काम शुरू करेंगे। आबादी बढ़ते समय झुंड और सराय की आपूर्ति बनाए रखें।",
+      "after": "आपके पास 8 श्रमिक होने पर अगले काम शुरू करेंगे। आबादी बढ़ते समय छत्ते और सराय की आपूर्ति बनाए रखें।"
+    },
+    {
+      "key": "[tutorial part2 message 6]",
+      "before": "अब कई श्रमिक झुंड को आपूर्ति कर रहे हैं। अधिक गेहूँ पहुँचने पर यह नई इकाइयाँ जल्दी बना सकता है।",
+      "after": "अब कई श्रमिक छत्ते को आपूर्ति कर रहे हैं। अधिक गेहूँ पहुँचने पर यह नई इकाइयाँ जल्दी बना सकता है।"
+    },
+    {
+      "key": "[tutorial part2 message 7]",
+      "before": "एक नया श्रमिक बनाने में 5 गेहूँ लगता है। दूर के खेत से गेहूँ लाने में समय लगता है, इसलिए झुंड को अक्सर सराय से अधिक आपूर्तिकर्ता चाहिए। भोजन पर निर्भर इमारतों को जहाँ संभव हो, गेहूँ के पास रखें।",
+      "after": "एक नया श्रमिक बनाने में 5 गेहूँ लगता है। दूर के खेत से गेहूँ लाने में समय लगता है, इसलिए छत्ते को अक्सर सराय से अधिक आपूर्तिकर्ता चाहिए। भोजन पर निर्भर इमारतों को जहाँ संभव हो, गेहूँ के पास रखें।"
+    },
+    {
+      "key": "[tutorial part2 message 8]",
+      "before": "अब आपके पास कम से कम 8 श्रमिक हैं। निर्माण के दौरान आबादी धीरे बढ़े, इसके लिए झुंड चुनकर उसका श्रमिक नियुक्ति लक्ष्य घटाकर 1 करें।",
+      "after": "अब आपके पास कम से कम 8 श्रमिक हैं। निर्माण के दौरान आबादी धीरे बढ़े, इसके लिए छत्ता चुनकर उसका श्रमिक नियुक्ति लक्ष्य घटाकर 1 करें।"
+    },
+    {
+      "key": "[tutorial part2 message 15]",
+      "before": "दौड़ का मैदान बनाएँ, जैसे झुंड के दक्षिण में। आसपास खाली जगह छोड़ें: उन्नयन के समय प्रशिक्षण इमारतों को फैलने के लिए जगह चाहिए।",
+      "after": "दौड़ का मैदान बनाएँ, जैसे छत्ते के दक्षिण में। आसपास खाली जगह छोड़ें: उन्नयन के समय प्रशिक्षण इमारतों को फैलने के लिए जगह चाहिए।"
+    },
+    {
+      "key": "[tutorial part2 message 38]",
+      "before": "किसी सुरक्षित जगह पर विद्यालय बनाएँ, जैसे तरणताल के पीछे या झुंड के दक्षिण-पश्चिम में दौड़ के मैदान के पास। उपलब्ध श्रमिकों को निर्माण पर लगाएँ।",
+      "after": "किसी सुरक्षित जगह पर विद्यालय बनाएँ, जैसे तरणताल के पीछे या छत्ते के दक्षिण-पश्चिम में दौड़ के मैदान के पास। उपलब्ध श्रमिकों को निर्माण पर लगाएँ।"
+    },
+    {
+      "key": "[tutorial part3 message 3]",
+      "before": "झुंड चुनें और योद्धाओं का उत्पादन अनुपात 2 करें। श्रमिक अनुपात 1 रखें, ताकि बस्ती में श्रमिक भी बनते रहें।",
+      "after": "छत्ता चुनें और योद्धाओं का उत्पादन अनुपात 2 करें। श्रमिक अनुपात 1 रखें, ताकि बस्ती में श्रमिक भी बनते रहें।"
+    },
+    {
+      "key": "[tutorial part3 message 4]",
+      "before": "अब झुंड लगभग हर एक श्रमिक के बदले 2 योद्धा बनाएगा। तेज़ उत्पादन चाहिए तो आपूर्ति के लिए अधिक श्रमिक लगाएँ।",
+      "after": "अब छत्ता लगभग हर एक श्रमिक के बदले 2 योद्धा बनाएगा। तेज़ उत्पादन चाहिए तो आपूर्ति के लिए अधिक श्रमिक लगाएँ।"
+    },
+    {
+      "key": "[tutorial part4 message 7]",
+      "before": "झंडे की बाहरी रेखा उसकी कार्य-त्रिज्या बताती है। नियुक्त खोजी उस क्षेत्र की खोजबीन करेगा। कोई न आए तो खोजियों की संख्या देखें और ज़रूरत हो तो झुंड में दूसरा बनाएँ। खोजी क्षेत्र में पहुँचने पर Space दबाएँ या ठीक है टैप करें।",
+      "after": "झंडे की बाहरी रेखा उसकी कार्य-त्रिज्या बताती है। नियुक्त खोजी उस क्षेत्र की खोजबीन करेगा। कोई न आए तो खोजियों की संख्या देखें और ज़रूरत हो तो छत्ते में दूसरा बनाएँ। खोजी क्षेत्र में पहुँचने पर Space दबाएँ या ठीक है टैप करें।"
+    },
+    {
+      "key": "[tutorial part4 message 15]",
+      "before": "आप बच गए! अब झंडे खोलें और काँटेदार युद्ध का झंडा चुनें। दुश्मन के झुंड पर रखकर वहाँ हमला करने का निर्देश दें।",
+      "after": "आप बच गए! अब झंडे खोलें और काँटेदार युद्ध का झंडा चुनें। दुश्मन के छत्ते पर रखकर वहाँ हमला करने का निर्देश दें।"
+    },
+    {
+      "key": "[tutorial part4 message 16]",
+      "before": "जगह चुनने का मोड छोड़ें और युद्ध का झंडा चुनें। 1 से अधिक योद्धा नियुक्त करें, फिर त्रिज्या घटाकर हमले को दुश्मन के झुंड के आसपास केंद्रित करें। योद्धाओं के पहुँचने की प्रतीक्षा करें।",
+      "after": "जगह चुनने का मोड छोड़ें और युद्ध का झंडा चुनें। 1 से अधिक योद्धा नियुक्त करें, फिर त्रिज्या घटाकर हमले को दुश्मन के छत्ते के आसपास केंद्रित करें। योद्धाओं के पहुँचने की प्रतीक्षा करें।"
+    },
+    {
+      "key": "[tutorial part4 message 17]",
+      "before": "हमला शुरू हो गया है। दुश्मन के झुंड तक पहुँचने के लिए आपके योद्धाओं को उसकी मीनारों से आगे निकलना होगा।",
+      "after": "हमला शुरू हो गया है। दुश्मन के छत्ते तक पहुँचने के लिए आपके योद्धाओं को उसकी मीनारों से आगे निकलना होगा।"
+    },
+    {
+      "key": "[tutorial part4 message 18]",
+      "before": "आपके योद्धा दुश्मन के आधार पर पहुँच गए हैं। हमला झुंड पर केंद्रित रखें।",
+      "after": "आपके योद्धा दुश्मन के आधार पर पहुँच गए हैं। हमला छत्ते पर केंद्रित रखें।"
+    },
+    {
+      "key": "[tutorial part4 message 19]",
+      "before": "आपने दुश्मन का झुंड नष्ट कर दिया। बधाई! आपने प्रशिक्षण पूरा करके भोजन आपूर्ति, नियुक्तियों, प्रशिक्षण, उन्नयन, खोजबीन और युद्ध की बुनियादी बातें सीख ली हैं।",
+      "after": "आपने दुश्मन का छत्ता नष्ट कर दिया। बधाई! आपने प्रशिक्षण पूरा करके भोजन आपूर्ति, नियुक्तियों, प्रशिक्षण, उन्नयन, खोजबीन और युद्ध की बुनियादी बातें सीख ली हैं।"
+    },
+    {
+      "key": "[tutorial part1 message 1]",
+      "before": "Globulation 2 में आपका स्वागत है! यह प्रशिक्षण चार अभियानों में बस्ती का प्रबंधन सिखाता है। आप खेल मेनू से अपनी प्रगति सहेजकर बाद में मुख्य मेनू से लोड कर सकते हैं। आगे बढ़ने के लिए Space दबाएँ या टच स्क्रीन पर ठीक है टैप करें। आगे बढ़ने के बाद कुछ संदेश हट जाते हैं; उन्हें फिर पढ़ने के लिए संदेश इतिहास खोलें।",
+      "after": "Globulation 2 में आपका स्वागत है! यह प्रशिक्षण चार मिशनों में बस्ती का प्रबंधन सिखाता है। आप खेल मेनू से अपनी प्रगति सहेजकर बाद में मुख्य मेनू से लोड कर सकते हैं। आगे बढ़ने के लिए Space दबाएँ या टच स्क्रीन पर ठीक है टैप करें। आगे बढ़ने के बाद कुछ संदेश हट जाते हैं; उन्हें फिर पढ़ने के लिए संदेश इतिहास खोलें।"
+    },
+    {
+      "key": "[tutorial part2 message 16]",
+      "before": "दौड़ के मैदान के निर्माण स्थल का श्रमिक लक्ष्य 5 से 7 के बीच रखें। इसे कुल 7 निर्माण सामग्री चाहिए।",
+      "after": "दौड़ के मैदान के निर्माण स्थल का श्रमिक लक्ष्य 5 से 7 के बीच रखें। इसे निर्माण सामग्री की कुल 7 इकाइयाँ चाहिए।"
+    },
+    {
+      "key": "[tutorial part3 message 7]",
+      "before": "बैरक हमले की ताकत और गति बढ़ाती हैं। ताकत बढ़ने पर हर वार अधिक नुकसान करता है; गति बढ़ने पर योद्धा अधिक बार हमला करता है। अच्छे प्रशिक्षित योद्धा अप्रशिक्षित दुश्मनों के बहुत बड़े समूहों को हरा सकते हैं।",
+      "after": "बैरक हमले की ताकत और गति बढ़ाती है। ताकत बढ़ने पर हर वार अधिक नुकसान करता है; गति बढ़ने पर योद्धा अधिक बार हमला करता है। अच्छी तरह प्रशिक्षित योद्धा अप्रशिक्षित दुश्मनों के बहुत बड़े समूहों को हरा सकते हैं।"
+    },
+    {
+      "key": "[tutorial part4 message 10]",
+      "before": "ब्रश का आकार और माप चुनें। छोटा, सघन रक्षा क्षेत्र रंगने के लिए बड़ा वर्ग उपयोगी है।",
+      "after": "ब्रश की आकृति और आकार चुनें। सघन रक्षा क्षेत्र रंगने के लिए बड़ा वर्ग उपयोगी है।"
+    }
+  ],
+  "finding_dispositions": [
+    {
+      "key": "[tutorial part1 message 1]",
+      "severity": "minor",
+      "problem": "चार अभियानों conflicts with Campaign अभियान and prior Missionbriefing findings. Source specifically four missions in a tutorial campaign.",
+      "decision": "Edited as independently requested; awaiting original reviewer recheck",
+      "after": "Globulation 2 में आपका स्वागत है! यह प्रशिक्षण चार मिशनों में बस्ती का प्रबंधन सिखाता है। आप खेल मेनू से अपनी प्रगति सहेजकर बाद में मुख्य मेनू से लोड कर सकते हैं। आगे बढ़ने के लिए Space दबाएँ या टच स्क्रीन पर ठीक है टैप करें। आगे बढ़ने के बाद कुछ संदेश हट जाते हैं; उन्हें फिर पढ़ने के लिए संदेश इतिहास खोलें।"
+    },
+    {
+      "key": "[tutorial part4 message 10]",
+      "severity": "minor",
+      "problem": "compact defensivearea is rendered छोटा, सघन (small,dense), adding smallness despite source large-square recommendation; shape/size rendered आकार/माप, inconsistent with proposed आकृति/आकार elsewhere.",
+      "decision": "Edited as independently requested; awaiting original reviewer recheck",
+      "after": "ब्रश की आकृति और आकार चुनें। सघन रक्षा क्षेत्र रंगने के लिए बड़ा वर्ग उपयोगी है।"
+    },
+    {
+      "key": "[tutorial part3 message 7]",
+      "severity": "minor",
+      "problem": "अच्छे प्रशिक्षित is unidiomatic for well-trained; use अच्छी तरह प्रशिक्षित. Barracks feminine singular is used elsewhere, but here plural बढ़ाती हैं; standardize completebuildingreference ratherthanEnglishpluralcopying.",
+      "decision": "Edited as independently requested; awaiting original reviewer recheck",
+      "after": "बैरक हमले की ताकत और गति बढ़ाती है। ताकत बढ़ने पर हर वार अधिक नुकसान करता है; गति बढ़ने पर योद्धा अधिक बार हमला करता है। अच्छी तरह प्रशिक्षित योद्धा अप्रशिक्षित दुश्मनों के बहुत बड़े समूहों को हरा सकते हैं।"
+    }
+  ],
+  "editor_notes": [
+    "Read all126tutorial overview/messages/missiontitles in full against source; repeated poolinstructions retained identically.",
+    "AllSwarmreferences replaced with छत्ता and case-correct छत्ते before का/के/को/तक/में/पर; exact buildinglabel aligns tutorialselectors/status.",
+    "Fourmissions distinct from campaign; brushshape आकृति/size आकार; welltrained warriors अच्छी तरह प्रशिक्षित and singular बैरक agreement.",
+    "Workinglabel now gender-neutral कार्यरत after confirming GameGUIDrawBuildingHelpers.cpp:205 uses it for buildingworker assignment; tutorial explicit label matches.",
+    "Construction total7 means materialunits, not seven different constructionmaterials. All numerictargets/directions/keyboardinstructions preserved."
+  ],
+  "status": "editor-pass-complete-awaiting-original-reviewer-recheck",
+  "certification": "Agent edited; not native-human-certified; rendering/platform gates separate"
+}

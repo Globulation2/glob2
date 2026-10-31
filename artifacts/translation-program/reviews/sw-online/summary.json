@@ -1,0 +1,54 @@
+{
+  "reviewer": "/root/hindi_online_review",
+  "author": "/root/swahili_translation",
+  "locale": "sw",
+  "surface": "online",
+  "source_sha256": "aacd8a342e9e734ba47f902a161ac1a45badff5842a617bcd68bf8e2275d6013",
+  "online_snapshot_sha256": "d20d52adddc3ab0449f41475d3b0959fe9fac518e1d287babc9d1c67dba25613",
+  "batches_read": 18,
+  "keys_read_exactly_once": 2835,
+  "plural_families_read": 27,
+  "all_source_plural_values_compared": true,
+  "nonplural_sources_equal_keys_verified": true,
+  "findings": 29,
+  "severity_counts": {
+    "major": 21,
+    "minor": 8
+  },
+  "accepted_english_entries": 88,
+  "method": "Independently read all18 full batches source-to-target. Read all27 full English plural objects and Swahili branches, rather than relying on source labels. Existing Hindi review supplied already-inspected shared caller context; reinspected Swahili-risk callers for wallet Terrain credits, duplicate clip errors, normal-camera matrices, art patterns, chat mute, technical identifier prefix, theme colors, status mappings and failed-check fragment composition.",
+  "accepted_context_decisions": [
+    "Swarm Kiota/Viota and Moss Kuvumwani follow accepted native glossary; no online troop-group confusion found.",
+    "Source reservation/held credits are correctly distinguished from safe/preserved work; no blanket replacement of salama is warranted.",
+    "Current-period plural source values intentionally differ from key; Swahili matches actual values.",
+    "Play and Play {slot0} are game actions; music/animation have separate keys. Swahili Cheza is legitimate for either with object.",
+    "Singular {value0} camera correctly says matrix cannot be inverted mathematically; not falsely translated as a single camera.",
+    "Reteaming names team ... uses kunataja (refers to), not naming a team, and is acceptable.",
+    "All privacy, account deletion permanence/anonymized history, device-local guests, permission/higher-role denial and finance numeric bounds read; no further specific defect identified.",
+    "Leading whitespace is often supplied explicitly by React callers (Maps.tsx, CodingStudio.tsx, music/Player.tsx); do not blindly restore every source-leading space without caller context."
+  ],
+  "editor_terminology_questions": [
+    {
+      "term": "3D Material / material map",
+      "current": "Malighafi",
+      "question": "Native canonical resource materials=malighafi is accepted. Shader surface finish is a distinct context; editor should explicitly approve this term or choose Nyenzo / sifa za uso consistently for 3D paint materials, without changing actual resource-output malighafi.",
+      "status": "Resolved: Nyenzo for 3D shader finish, Malighafi for harvested materials; independently rechecked."
+    }
+  ],
+  "references": [
+    "https://wisc.pb.unizin.org/dini/back-matter/appendix-noun-class/",
+    "https://mozilla-l10n.github.io/styleguides/sw/",
+    "https://docs.steinhardt.nyu.edu/pdfs/metrocenter/atn293/biology/hs_living_environment_swahili.pdf"
+  ],
+  "limits": [
+    "No native-human approval claimed.",
+    "No rendered full-app, mobile/browser or full registered-checker verification claimed.",
+    "Native catalog is being edited by another agent and is outside this online snapshot review."
+  ],
+  "catalog_edited": false,
+  "locale_finalized": false,
+  "final_online_sha256": "78627bc06a884a784f239b17008727562e3571c756b934559b9f6d3dad9286f4",
+  "open_linguistic_findings": 0,
+  "editor_recheck": "editor-recheck.json",
+  "status": "linguistic-recheck-complete-awaiting-other-gates"
+}

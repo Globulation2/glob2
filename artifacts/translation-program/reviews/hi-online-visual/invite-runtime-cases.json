@@ -1,0 +1,15 @@
+{
+  "node": "v26.0.0",
+  "method": "Actual @glob2/i18n t() with final reviewed draft registered in isolated process; invite.ts95–109 branch inspected. No-location HTTP server route not independently launched.",
+  "locale": "hi",
+  "cases": [
+    {
+      "case": "location_present",
+      "text": "Mirelle ने Glob2 Online (test) पर अपने Globulation 2 कमरे में आपको बुलाया है।"
+    },
+    {
+      "case": "location_absent",
+      "text": "Mirelle ने अपने Globulation 2 कमरे में आपको बुलाया है।"
+    }
+  ]
+}

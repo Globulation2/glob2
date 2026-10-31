@@ -1,0 +1,50 @@
+{
+  "status": "passed",
+  "native_input_count": 2582,
+  "before_after_native_inputs_equal": true,
+  "producer": {
+    "compiler": "g++",
+    "dirty": false,
+    "flags": {
+      "CCFLAGS": "-O0 -g1 -fdebug-prefix-map=/Users/bradley/.codex/worktrees/ed62/glob2=.",
+      "CPPDEFINES": "GLOB2_OFFICIAL_INSTANCE_ORIGIN \\\"https://app.glob2.online\\\" GLOB2_OFFICIAL_INSTANCE_FORMER_ORIGINS \\\"https://glob2online.com https://app.glob2online.com\\\" HAVE_CONFIG_H GL_SILENCE_DEPRECATION GLOB2_RENDER_SHADER_DIR \\\"/Users/bradley/.codex/worktrees/ed62/glob2/build/darwin/client/debug/dev-dev_fast-true-linker-auto/shaders\\\" SDL_MAIN_HANDLED",
+      "CXXFLAGS": "-std=gnu++20 -Wall -fPIC",
+      "LINKFLAGS": "-Wall -Wl,-rpath,/opt/homebrew/lib"
+    },
+    "revision": "b3669e5e08219bb90874895a6c8b1d3185c3effd",
+    "sourceStatus": [],
+    "sourceTreeSha256": "881e73f0678bc9ce4fb4affd83b1952ad8948e575826ca5356b3b93ec7674cb8"
+  },
+  "source_identity": {
+    "revision": "b3669e5e08219bb90874895a6c8b1d3185c3effd",
+    "dirty": false,
+    "sourceStatus": [],
+    "sourceTreeSha256": "881e73f0678bc9ce4fb4affd83b1952ad8948e575826ca5356b3b93ec7674cb8"
+  },
+  "executable_sha256": "042665b85330da9821555a141b063a7e25517bcee387ef643024fb3efbbedd2c",
+  "source_snapshot_before_sha256": "4f2320285fee69602802dd4378c5d4969a03e6297315d5845c8a516488e5db20",
+  "source_snapshot_after_sha256": "4f2320285fee69602802dd4378c5d4969a03e6297315d5845c8a516488e5db20",
+  "compiled_header_sha256": "63857b185208b2e1cdb82c1f24452233782bae9ec8ae46ab8532f74610d0a066",
+  "build_log": "native-current-final-build.log",
+  "build_log_sha256": "38e230bf60d95909d0ec7a01e929b9e42177a90eb690d40cf3a1516a50ee992b",
+  "build_exit_code": 0,
+  "command": "PYTHONPATH=$PWD python3 tools/dev_build.py translation-preview-harness engine-tests -j3",
+  "runtime_prefix": "artifacts/translation-program/script-support/prefix",
+  "expected_runtime_versions": {
+    "SDL_ttf": [
+      3,
+      2,
+      2
+    ],
+    "HarfBuzz": [
+      10,
+      1,
+      0
+    ]
+  },
+  "limits": [
+    "macOS arm64 fast-development build; no release performance claim.",
+    "Earlier pre-incremental native build was source-intermediate; this proof binds the final regenerated/compiled producer.",
+    "Actual runtime library paths, versions and fonts are checked separately by each capture."
+  ]
+}

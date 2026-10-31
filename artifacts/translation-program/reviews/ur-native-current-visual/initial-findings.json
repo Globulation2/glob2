@@ -1,0 +1,68 @@
+{
+  "reviewer": "/root/hindi_online_review",
+  "author_of_Urdu_native": false,
+  "status": "open actual-render findings; no product edits",
+  "tested_binary_sha256": "042665b85330da9821555a141b063a7e25517bcee387ef643024fb3efbbedd2c",
+  "tested_native_sha256": "00a9a60ebcee4730851744cf91fb5320c91ecbcc378ead36aaae2644500a19bc",
+  "completed_job": "ur-1200-matrix",
+  "matrix_metadata_sha256": "22924695e69c5826d9fd574e9504d4297eea275e41ad70444ab6e6fc6fdf943b",
+  "actual_read_image": "artifacts/translation-program/native-preview/release-current/ur/1200/matrix/font-20-scale-1-page-002.png",
+  "image_sha256": "b79482d66ff919ad9e51f7238291ac7da10e90772c271b7f5ebb95c5722425f4",
+  "findings": [
+    {
+      "id": "ur-native-rtl-workflow-arrows",
+      "severity": "major",
+      "keys": [
+        "[intro compact scout]",
+        "[intro compact build]",
+        "[intro compact attack]",
+        "[lesson healing build compact]",
+        "[lesson walking-training build compact]",
+        "[lesson swimming build compact]",
+        "[lesson swimming water-job compact]",
+        "[lesson schools build compact]",
+        "[lesson upgrades upgrade compact]",
+        "[lesson warrior-training produce compact]",
+        "[lesson warrior-training build compact]",
+        "[lesson fortifications tower compact]",
+        "[lesson fortifications supply compact]",
+        "[lesson defensive-tactics scout compact]",
+        "[lesson defensive-tactics guard compact]",
+        "[lesson defensive-tactics counterattack compact]"
+      ],
+      "problem": "Actual RTL line places operation start on right and next action on left, but literal U2192 points right toward the starting action. Example War Flag→enemy Swarm therefore visually contradicts intended menu/action progression.",
+      "proposal": {
+        "[intro compact scout]": "جھنڈے ← کھوج کا جھنڈا۔ پتھروں پر لگائیں؛ 1 کھوجی مقرر کریں۔",
+        "[intro compact build]": "تعمیر ← سرائے۔ گندم کے قریب جگہ مقرر کریں؛ تعمیر کے لیے 2 کارکن لگائیں۔",
+        "[intro compact attack]": "جھنڈے ← جنگی جھنڈا۔ دشمن کے چھتے پر لگائیں؛ جنگجو مقرر کریں۔",
+        "[lesson healing build compact]": "تعمیر ← ہسپتال۔ راستہ چھوڑیں؛ تعمیر کے لیے کارکن مقرر کریں۔",
+        "[lesson walking-training build compact]": "تعمیر ← دوڑ کا میدان۔ کناروں کے گرد جگہ چھوڑیں۔",
+        "[lesson swimming build compact]": "تعمیر ← تیراکی کا تالاب، پانی کے تالاب کے مغرب میں۔",
+        "[lesson swimming water-job compact]": "تعمیر ← اسکول۔ لکڑی اور کائی کے لیے تعمیراتی کارکن مقرر کریں۔",
+        "[lesson schools build compact]": "تعمیر ← اسکول۔ لکڑی اور کائی کے لیے تعمیراتی کارکن مقرر کریں۔",
+        "[lesson upgrades upgrade compact]": "دوڑ کا میدان منتخب کریں ← اپ گریڈ کریں۔ ماہر تعمیراتی کارکن مقرر کریں۔",
+        "[lesson warrior-training produce compact]": "چھتہ ← صرف جنگجو۔ 2 جنگجوؤں کے لیے گندم پہنچائیں۔",
+        "[lesson warrior-training build compact]": "تعمیر ← بیرک۔ کناروں کے گرد جگہ چھوڑیں۔",
+        "[lesson fortifications tower compact]": "تعمیر ← مینار۔ نشان زدہ جگہ میں بنائیں۔",
+        "[lesson fortifications supply compact]": "مینار منتخب کریں ← رسد پہنچانے والے کارکن۔ 2 پتھر آنے کا انتظار کریں۔",
+        "[lesson defensive-tactics scout compact]": "جھنڈے ← کھوج۔ دشمن کے پاس لگائیں؛ 1 کھوجی مقرر کریں۔",
+        "[lesson defensive-tactics guard compact]": "جھنڈے ← پہرا۔ 4 خانے رنگیں؛ 2 جنگجوؤں کو آنے دیں۔",
+        "[lesson defensive-tactics counterattack compact]": "جنگی جھنڈا ← دشمن کا چھتہ۔ 3 جنگجوؤں کی درخواست کریں؛ رداس ≤4۔"
+      },
+      "rationale": "Translate presentation-direction arrows, not technical identifiers; preserve execution-sensitive keys and numeric operands. Existing BidiText mirror map does not mirror U2192.",
+      "proof_source": "libgag/src/BidiText.cpp mirror table; actual font matrix screenshot, not inferred from string storage.",
+      "status": "awaiting distinct root editor and actual fresh native rendering recheck"
+    },
+    {
+      "id": "ur-native-radius-comparator-readability",
+      "severity": "minor",
+      "key": "[lesson defensive-tactics counterattack compact]",
+      "problem": "Actual matrix renders logical ≤4 as visually4≥ beside RTL radius. Reordered mirrored mathematical expression can be equivalent, but short mixed-direction command is avoidably ambiguous for readers.",
+      "proposal": "جنگی جھنڈا ← دشمن کا چھتہ۔ 3 جنگجوؤں کی درخواست کریں؛ رداس 4 یا کم۔",
+      "rationale": "Use the already fully reviewed full instruction wording 4 یا کم instead of relying on mirrored bare comparator; numeric bound remains exactly4orless.",
+      "status": "awaiting distinct root editor and actual fresh native rendering recheck"
+    }
+  ],
+  "affected_new_keys_count": 16,
+  "remaining_native_review": "Other completed production screenshots and representative matrix pages still being read. No whole-catalog or platform pass claimed."
+}

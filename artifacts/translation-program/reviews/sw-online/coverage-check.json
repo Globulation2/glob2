@@ -1,0 +1,14 @@
+{
+  "source_sha256": "aacd8a342e9e734ba47f902a161ac1a45badff5842a617bcd68bf8e2275d6013",
+  "online_sha256": "78627bc06a884a784f239b17008727562e3571c756b934559b9f6d3dad9286f4",
+  "keys": 2835,
+  "batches": 18,
+  "plural_families": 27,
+  "exactly_once": true,
+  "subset_hashes_match": true,
+  "online_errors": [],
+  "online_untranslated": [],
+  "english_equal_exactly_dispositioned": 88,
+  "initial_online_sha256": "d20d52adddc3ab0449f41475d3b0959fe9fac518e1d287babc9d1c67dba25613",
+  "final_recheck": "editor-recheck.json"
+}

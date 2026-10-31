@@ -1,0 +1,13 @@
+{
+  "editor": "/root",
+  "reviewer": "/root/hindi_online_review",
+  "primary_editor": "/root/pilot_context",
+  "scope": "One reviewer-requested passive-voice correction only",
+  "key": "The provider outcome needs reconciliation. Your reserved {value0} credits remain held; new requests are paused. Manual editing and export remain available.",
+  "before": "प्रदाता के परिणाम का मिलान चाहिए। आपके {value0} आरक्षित क्रेडिट रोके रहते हैं; नए अनुरोध रुके हैं। हाथ से संपादन और निर्यात उपलब्ध हैं।",
+  "after": "प्रदाता के परिणाम का मिलान चाहिए। आपके {value0} आरक्षित क्रेडिट रोके रखे जाते हैं; नए अनुरोध रुके हैं। हाथ से संपादन और निर्यात उपलब्ध हैं।",
+  "before_catalog_sha256": "eb475877004dd1621921452dd5ff0dc5e564a98f7504d0d9d7c7a1c9462a3fac",
+  "after_catalog_sha256": "748ed6f83bbb1e55f66af93e24c61a02ad50c75222adac731e3ae104356baf60",
+  "reason": "Reserved credits are being held; passive voice clarifies this state without implying the credit balance acts independently.",
+  "status": "awaiting-original-reviewer-recheck"
+}

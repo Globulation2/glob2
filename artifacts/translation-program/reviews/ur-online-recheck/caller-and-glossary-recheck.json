@@ -1,0 +1,95 @@
+{
+  "online_final_sha256": "de1091d2df613ac22bf2a9c46d1e3704712912c57e299e4171402aa002918d5e",
+  "native_final_sha256": "5cb88fac67663fc436f6bfa60388382c24665755ee481514c002bc92e9a29837",
+  "caller_sources": [
+    {
+      "path": "platform/apps/web/src/music/Player.tsx",
+      "sha256": "2a627fa0a75c8c291071e2d80c4e25f98cf64d0f3942eb16bce6ed8eee7b27d9"
+    },
+    {
+      "path": "platform/apps/web/src/pages/music-studio/Workspace.tsx",
+      "sha256": "b7dcc1d15dcde6c8a4f0664f0c55e5f025f05a8463e70bc696daf15daacb5177"
+    },
+    {
+      "path": "platform/apps/web/src/pages/studio/Conversation.tsx",
+      "sha256": "cf9d04d566b4cd5a6888a8ee71d850520d50ab3aa27862bbebc374522819c4da"
+    },
+    {
+      "path": "platform/apps/web/src/components/studio/Studio.tsx",
+      "sha256": "2e33a6f9d1a570c239df9ed63df2734a25df25b9541be145c11e7976c905cb40"
+    },
+    {
+      "path": "platform/apps/web/src/skins/binaryAsset.ts",
+      "sha256": "78c19fb9ee6916a3e2f0160012ebe6f2414e6a4b1d756ea05ac0307f8490166b"
+    },
+    {
+      "path": "platform/apps/web/src/music/Library.tsx",
+      "sha256": "1c0a854f8a7bbd0118a766605d7e5094921e4a72a471b0c74ecc2ed7d1176701"
+    },
+    {
+      "path": "platform/apps/web/src/skins/CopyPaintDialog.tsx",
+      "sha256": "4288a89d3cfc74b4e9f7428552c32aaf20083507d082c45335879fdd058c179e"
+    },
+    {
+      "path": "platform/apps/web/src/admin/Moderation.tsx",
+      "sha256": "4775f66616cc37f4a1aca93b4c48cc14ffe631ea7eb876229c89ff00bbe5b0b2"
+    },
+    {
+      "path": "platform/apps/web/src/admin/presentation.ts",
+      "sha256": "6a0012d1800655612003ac5c4e915dc6c270a9741546acf94635e973557c382b"
+    },
+    {
+      "path": "platform/apps/web/src/pages/studio/ValidationPanel.tsx",
+      "sha256": "22407407755e2dedce970fd170e6698d511a04ebc1e4f8434eb6d0f44cdf3cff"
+    }
+  ],
+  "Building_decision": "تعمیر is construction mood/status at Workspace447-448 and Conversation151. CreditPanel domain Building is an untranslated explicit product identifier, not a call to t(Building); this catalog change does not rename building entities.",
+  "music_playing_decision": "Player189 is exclusively audio mood playback; سکون/تعمیر/لڑائی + کی موسیقی چل رہی ہے is grammatical for each mood and removes game-playing confusion.",
+  "warm_timbre_decision": "نرم اور بھرپور آہنگ describes warm timbre naturally; no physical heat or assertion of machine-provider authority.",
+  "normal_camera_decision": "binaryAsset.ts defines normalToCamera orthonormal vector matrix, not vertical camera; singular means noninvertible matrix and edited explicit description is correct.",
+  "plural_decision": "All54 branches reread; only Last-day family changed, with correct singular/plural modifier agreement.",
+  "assembled_sentences": {
+    "single_check": "1 جانچ پر توجہ درکار ہے",
+    "multiple_checks": "2 جانچوں پر توجہ درکار ہے",
+    "disable_and_resolve": "بند کریں اور رپورٹ حل کریں",
+    "hide_and_resolve": "چھپائیں اور رپورٹ حل کریں"
+  },
+  "cross_surface_glossary": [
+    {
+      "online_key": "Swarm shape",
+      "target": "چھتے کی شکل",
+      "result": "matches-final-native-glossary"
+    },
+    {
+      "online_key": "Workers",
+      "target": "کارکن",
+      "result": "matches-final-native-glossary"
+    },
+    {
+      "online_key": "Explorers",
+      "target": "کھوجی",
+      "result": "matches-final-native-glossary"
+    },
+    {
+      "online_key": "Warriors",
+      "target": "جنگجو",
+      "result": "matches-final-native-glossary"
+    },
+    {
+      "online_key": "Building Studio",
+      "target": "عمارت اسٹوڈیو",
+      "result": "matches-final-native-glossary"
+    },
+    {
+      "online_key": "Reserved",
+      "target": "مختص",
+      "result": "matches-final-native-glossary"
+    },
+    {
+      "online_key": "Map generators",
+      "target": "نقشہ جنریٹر",
+      "result": "matches-final-native-glossary"
+    }
+  ],
+  "upstream_english_leaks": "Raw MOODS in waveform/mix readout were reported to root separately. Root owns shared-code fixes and verification; no automatic approval inferred from catalog recheck."
+}

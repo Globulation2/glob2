@@ -1,0 +1,11 @@
+{
+  "reviewer": "/root/pilot_context",
+  "original_review_native_sha256": "027e686622a7758c5ee7633372aeb33533ecd1a36633b5e6f043bd18581b8cea",
+  "primary_editor_native_sha256": "42091e6a2b708b36c2c5794fd927e54ef415f005e4cf0642892d3d11f01c2e11",
+  "changes": 179,
+  "unchanged_keys": 3149,
+  "reversing_all_recorded_edits_reconstructs_exact_original_bytes": true,
+  "all_original_review_batch_subset_hashes_match": true,
+  "all_editor_batch_subset_hashes_match": true,
+  "limits": "Original all3328key review carried forward for3149unchangedkeys byexacthash, not falsely claimedreread. Every179changedentry independentlyexamined in thisrecheck."
+}

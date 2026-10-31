@@ -1,0 +1,15 @@
+{
+  "source_sha256": "a016e71957f16bbb880475c49b1d22dc8cbb7ae285fbbaa963464e0ea491fe0b",
+  "locales": [
+    "hi",
+    "ur",
+    "sw"
+  ],
+  "batches": 46,
+  "technical_gates_promoted": false,
+  "review_sha256": {
+    "hi": "6cc276f5f0177e9a7212d08284f5e3c9dc034b3b3ee9f016f7605dff10eaad3b",
+    "ur": "f3959c6b25919b975753c968faaa14236d696d5d657f5f84190c2636c92cf09a",
+    "sw": "50d15d0fd0f9eaaee0ce86266aa8c5ec8c81f9704d13155fbc10e9cc35b54ea1"
+  }
+}

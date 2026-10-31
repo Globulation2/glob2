@@ -1,0 +1,1293 @@
+{
+  "editor": "/root/swahili_translation",
+  "author": "/root/urdu_translation",
+  "independent_reviewer": "/root/pilot_context",
+  "batch_id": "native-general-012",
+  "source_contract_sha256": "aacd8a342e9e734ba47f902a161ac1a45badff5842a617bcd68bf8e2275d6013",
+  "original_target_subset_sha256": "2c10faf7e66d8ff64557b8a6e360f208d9b729f2674d9d7533ccb40a63d4d096",
+  "final_target_subset_sha256": "ad0bfe3b7ca4abdb4f2fe5fa558eac4160feead6ff9e97876c72c9beed973d9e",
+  "final_catalog_sha256": "ec78fb33247244bf783461e0410ef11fe48e45644c3c6500419d9060e967d458",
+  "entries": [
+    {
+      "key": "[room browser link hint]",
+      "source": "Players in a browser paste this link to join.",
+      "before": "براؤزر میں کھلاڑی شامل ہونے کے لیے یہ لنک چسپاں کرتے ہیں۔",
+      "after": "براؤزر میں کھلاڑی شامل ہونے کے لیے یہ لنک چسپاں کرتے ہیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[room browser link code %0]",
+      "source": "Players in a browser paste this link to join. Their game shows code %0.",
+      "before": "براؤزر میں کھلاڑی شامل ہونے کے لیے یہ لنک چسپاں کرتے ہیں۔ ان کا کھیل کوڈ %0 دکھاتا ہے۔",
+      "after": "براؤزر میں کھلاڑی شامل ہونے کے لیے یہ لنک چسپاں کرتے ہیں۔ ان کا کھیل کوڈ %0 دکھاتا ہے۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[room copy link]",
+      "source": "Copy link",
+      "before": "لنک نقل کریں",
+      "after": "لنک نقل کریں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[room lan open seat detail]",
+      "source": "Anyone on this network can take it",
+      "before": "اس نیٹ ورک پر کوئی بھی یہ نشست لے سکتا ہے",
+      "after": "اس نیٹ ورک پر کوئی بھی یہ نشست لے سکتا ہے",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[room close title]",
+      "source": "Close the room?",
+      "before": "کمرہ بند کریں؟",
+      "after": "کمرہ بند کریں؟",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[room close body one]",
+      "source": "Leaving closes the room for everyone, including the other player in it.",
+      "before": "نکلنے سے سب کے لیے کمرہ بند ہو جاتا ہے، اس میں موجود دوسرے کھلاڑی کے لیے بھی۔",
+      "after": "نکلنے سے سب کے لیے کمرہ بند ہو جاتا ہے، اس میں موجود دوسرے کھلاڑی کے لیے بھی۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[room close body %0]",
+      "source": "Leaving closes the room for everyone, including the %0 other players in it.",
+      "before": "نکلنے سے سب کے لیے کمرہ بند ہو جاتا ہے، اس میں موجود دوسرے %0 کھلاڑیوں کے لیے بھی۔",
+      "after": "نکلنے سے سب کے لیے کمرہ بند ہو جاتا ہے، اس میں موجود دوسرے %0 کھلاڑیوں کے لیے بھی۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[room close confirm]",
+      "source": "Close room",
+      "before": "کمرہ بند کریں",
+      "after": "کمرہ بند کریں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[room stay]",
+      "source": "Stay",
+      "before": "رہیں",
+      "after": "رہیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[room colours changed]",
+      "source": "The new map gave the seats new colours. Check yours before you start.",
+      "before": "نئے نقشے نے نشستوں کو نئے رنگ دیے ہیں۔ شروع کرنے سے پہلے اپنا رنگ دیکھیں۔",
+      "after": "نئے نقشے نے نشستوں کو نئے رنگ دیے ہیں۔ شروع کرنے سے پہلے اپنا رنگ دیکھیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[room copy by hand]",
+      "source": "Copying didn't work. Copy the invite yourself:",
+      "before": "نقل نہیں ہو سکی۔ دعوت خود نقل کریں:",
+      "after": "نقل نہیں ہو سکی۔ دعوت خود نقل کریں:",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[room copy by hand close]",
+      "source": "Close",
+      "before": "بند کریں",
+      "after": "بند کریں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[room copy by hand touch]",
+      "source": "Touch and hold the link, then choose Copy.",
+      "before": "لنک کو چھو کر دبائے رکھیں، پھر نقل کریں منتخب کریں۔",
+      "after": "لنک کو چھو کر دبائے رکھیں، پھر نقل کریں منتخب کریں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[room copy by hand keys]",
+      "source": "The link is selected: press Ctrl+C (⌘C on a Mac).",
+      "before": "لنک منتخب ہے: Ctrl+C دبائیں (Mac پر ⌘C)۔",
+      "after": "لنک منتخب ہے: Ctrl+C دبائیں (Mac پر ⌘C)۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[room code]",
+      "source": "Code",
+      "before": "کوڈ",
+      "after": "کوڈ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[online under a minute]",
+      "source": "under a minute",
+      "before": "ایک منٹ سے کم",
+      "after": "ایک منٹ سے کم",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[online about %0 min]",
+      "source": "about %0 min",
+      "before": "تقریباً %0 منٹ",
+      "after": "تقریباً %0 منٹ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[online %0 s]",
+      "source": "%0 s",
+      "before": "%0 سیکنڈ",
+      "after": "%0 سیکنڈ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[online %0 min %1 s]",
+      "source": "%0 min %1 s",
+      "before": "%0 منٹ %1 سیکنڈ",
+      "after": "%0 منٹ %1 سیکنڈ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[qm ai opponent %0]",
+      "source": "AI opponent: %0",
+      "before": "AI حریف: %0",
+      "after": "AI حریف: %0",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[match relay connected]",
+      "source": "Connected to the game server",
+      "before": "کھیل کے سرور سے رابطہ ہے",
+      "after": "کھیل کے سرور سے رابطہ ہے",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[room picker title]",
+      "source": "Choose a map",
+      "before": "نقشہ منتخب کریں",
+      "after": "نقشہ منتخب کریں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[room picker for one]",
+      "source": "For the 1 player in the room",
+      "before": "کمرے میں موجود 1 کھلاڑی کے لیے",
+      "after": "کمرے میں موجود 1 کھلاڑی کے لیے",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[room picker for %0]",
+      "source": "For the %0 players in the room",
+      "before": "کمرے میں موجود %0 کھلاڑیوں کے لیے",
+      "after": "کمرے میں موجود %0 کھلاڑیوں کے لیے",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[room picker generated]",
+      "source": "Generated",
+      "before": "تیار کردہ",
+      "after": "تیار کردہ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[room picker premade]",
+      "source": "Premade",
+      "before": "پہلے سے تیار",
+      "after": "پہلے سے تیار",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[room picker catalog]",
+      "source": "Catalog",
+      "before": "کیٹلاگ",
+      "after": "کیٹلاگ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[room picker size]",
+      "source": "Size",
+      "before": "سائز",
+      "after": "سائز",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[room picker colonies]",
+      "source": "Colonies",
+      "before": "بستیاں",
+      "after": "بستیاں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[room picker fair]",
+      "source": "Fair start for every colony",
+      "before": "ہر بستی کے لیے برابر ابتدائی موقع",
+      "after": "ہر بستی کے لیے برابر ابتدائی موقع",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[room picker does not fit]",
+      "source": "Does not fit this size; try another",
+      "before": "اس سائز میں نہیں سماتا؛ دوسرا آزمائیں",
+      "after": "اس سائز میں نہیں سماتا؛ دوسرا آزمائیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[room picker preparing]",
+      "source": "Preparing the preview…",
+      "before": "پیش منظر تیار ہو رہا ہے…",
+      "after": "پیش منظر تیار ہو رہا ہے…",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[room picker generated note]",
+      "source": "Each landscape gives every colony an equally good start, and the server makes the same map for everyone.",
+      "before": "ہر منظرنامہ ہر بستی کو یکساں اچھی ابتدا دیتا ہے اور سرور سب کے لیے ایک ہی نقشہ بناتا ہے۔",
+      "after": "ہر منظرنامہ ہر بستی کو یکساں اچھی ابتدا دیتا ہے اور سرور سب کے لیے ایک ہی نقشہ بناتا ہے۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[room picker players %0]",
+      "source": "%0 players",
+      "before": "%0 کھلاڑی",
+      "after": "%0 کھلاڑی",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[room picker unreadable]",
+      "source": "can't be read",
+      "before": "پڑھا نہیں جا سکتا",
+      "after": "پڑھا نہیں جا سکتا",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[room picker no premade]",
+      "source": "No premade maps were found.",
+      "before": "کوئی پہلے سے تیار نقشہ نہیں ملا۔",
+      "after": "کوئی پہلے سے تیار نقشہ نہیں ملا۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[room picker too small %0]",
+      "source": "This map has fewer colonies than the %0 players in the room.",
+      "before": "اس نقشے میں کمرے کے %0 کھلاڑیوں سے کم بستیاں ہیں۔",
+      "after": "اس نقشے میں کمرے کے %0 کھلاڑیوں سے کم بستیاں ہیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[room picker pick premade]",
+      "source": "Pick a map to see it here.",
+      "before": "یہاں دیکھنے کے لیے نقشہ چنیں۔",
+      "after": "یہاں دیکھنے کے لیے نقشہ چنیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[room picker catalog intro]",
+      "source": "Maps other players shared. Open one and choose Use in a room.",
+      "before": "دوسرے کھلاڑیوں کے بانٹے ہوئے نقشے۔ کوئی نقشہ کھولیں اور کمرے میں استعمال کریں منتخب کریں۔",
+      "after": "دوسرے کھلاڑیوں کے بانٹے ہوئے نقشے۔ کوئی نقشہ کھولیں اور کمرے میں استعمال کریں منتخب کریں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[room picker browse catalog]",
+      "source": "Browse shared maps",
+      "before": "بانٹے ہوئے نقشے براؤز کریں",
+      "after": "بانٹے ہوئے نقشے براؤز کریں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[room picker more options]",
+      "source": "More options…",
+      "before": "مزید اختیارات…",
+      "after": "مزید اختیارات…",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[room picker use]",
+      "source": "Use this map",
+      "before": "یہ نقشہ استعمال کریں",
+      "after": "یہ نقشہ استعمال کریں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[game draw]",
+      "source": "Draw",
+      "before": "برابری",
+      "after": "برابری",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[open commander]",
+      "source": "Open commander",
+      "before": "کمانڈر کھولیں",
+      "after": "کمانڈر کھولیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stop commander]",
+      "source": "Stop commander",
+      "before": "کمانڈر روکیں",
+      "after": "کمانڈر روکیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[toggle recording]",
+      "source": "Start or stop recording",
+      "before": "ریکارڈنگ شروع یا بند کریں",
+      "after": "ریکارڈنگ شروع یا بند کریں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[File selection is unavailable.]",
+      "source": "File selection is unavailable.",
+      "before": "فائل منتخب کرنا دستیاب نہیں۔",
+      "after": "فائل منتخب کرنا دستیاب نہیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Saving custom AI…]",
+      "source": "Saving custom AI…",
+      "before": "حسبِ پسند AI محفوظ ہو رہا ہے…",
+      "after": "حسبِ پسند AI محفوظ ہو رہا ہے…",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Could not read the selected JavaScript file.]",
+      "source": "Could not read the selected JavaScript file.",
+      "before": "منتخب JavaScript فائل پڑھی نہیں جا سکی۔",
+      "after": "منتخب JavaScript فائل پڑھی نہیں جا سکی۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Custom AI library saved.]",
+      "source": "Custom AI library saved.",
+      "before": "حسبِ پسند AI کی لائبریری محفوظ ہو گئی۔",
+      "after": "حسبِ پسند AI کی لائبریری محفوظ ہو گئی۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Storage could not be saved. The previous library is retained.]",
+      "source": "Storage could not be saved. The previous library is retained.",
+      "before": "ذخیرہ محفوظ نہیں ہو سکا۔ پچھلی لائبریری برقرار ہے۔",
+      "after": "ذخیرہ محفوظ نہیں ہو سکا۔ پچھلی لائبریری برقرار ہے۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Import a single JavaScript AI file, then select it when setting up a local game.]",
+      "source": "Import a single JavaScript AI file, then select it when setting up a local game.",
+      "before": "JavaScript AI کی ایک فائل درآمد کریں، پھر مقامی کھیل ترتیب دیتے وقت اسے منتخب کریں۔",
+      "after": "JavaScript AI کی ایک فائل درآمد کریں، پھر مقامی کھیل ترتیب دیتے وقت اسے منتخب کریں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Imports keep a copy in Glob2. Update replaces that copy for future games; saves keep their original AI.]",
+      "source": "Imports keep a copy in Glob2. Update replaces that copy for future games; saves keep their original AI.",
+      "before": "درآمد کرنے سے Glob2 میں نقل رکھی جاتی ہے۔ اپ ڈیٹ آئندہ کھیلوں کے لیے وہ نقل بدلتا ہے؛ محفوظ کھیل اپنا اصل AI رکھتے ہیں۔",
+      "after": "درآمد کرنے سے Glob2 میں نقل رکھی جاتی ہے۔ اپ ڈیٹ آئندہ کھیلوں کے لیے وہ نقل بدلتا ہے؛ محفوظ کھیل اپنا اصل AI رکھتے ہیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Waiting for file selection or storage…]",
+      "source": "Waiting for file selection or storage…",
+      "before": "فائل کے انتخاب یا ذخیرے کا انتظار ہے…",
+      "after": "فائل کے انتخاب یا ذخیرے کا انتظار ہے…",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Import JavaScript AI]",
+      "source": "Import JavaScript AI",
+      "before": "JavaScript AI درآمد کریں",
+      "after": "JavaScript AI درآمد کریں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Link development file]",
+      "source": "Link development file",
+      "before": "ترقیاتی فائل جوڑیں",
+      "after": "ترقیاتی فائل جوڑیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Linked files are read at game start. Rebuild before starting a new game. Removing a link never deletes your file.]",
+      "source": "Linked files are read at game start. Rebuild before starting a new game. Removing a link never deletes your file.",
+      "before": "منسلک فائلیں کھیل شروع ہوتے وقت پڑھی جاتی ہیں۔ نیا کھیل شروع کرنے سے پہلے دوبارہ بلڈ کریں۔ لنک ہٹانے سے آپ کی فائل کبھی حذف نہیں ہوتی۔",
+      "after": "منسلک فائلیں کھیل شروع ہوتے وقت پڑھی جاتی ہیں۔ نیا کھیل شروع کرنے سے پہلے دوبارہ بلڈ کریں۔ لنک ہٹانے سے آپ کی فائل کبھی حذف نہیں ہوتی۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Example AI and authoring guide]",
+      "source": "Example AI and authoring guide",
+      "before": "مثالی AI اور تخلیق کی رہنمائی",
+      "after": "مثالی AI اور تخلیق کی رہنمائی",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[No custom AIs yet. Import a bundled .js file to get started.]",
+      "source": "No custom AIs yet. Import a bundled .js file to get started.",
+      "before": "ابھی کوئی حسبِ پسند AI نہیں۔ شروع کرنے کے لیے بنڈل کی گئی .js فائل درآمد کریں۔",
+      "after": "ابھی کوئی حسبِ پسند AI نہیں۔ شروع کرنے کے لیے بنڈل کی گئی .js فائل درآمد کریں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Relink]",
+      "source": "Relink",
+      "before": "دوبارہ جوڑیں",
+      "after": "دوبارہ جوڑیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Update]",
+      "source": "Update",
+      "before": "تازہ کریں",
+      "after": "تازہ کریں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Validate]",
+      "source": "Validate",
+      "before": "توثیق کریں",
+      "after": "توثیق کریں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[AI startup and persistent globals are valid.]",
+      "source": "AI startup and persistent globals are valid.",
+      "before": "AI کا آغاز اور مستقل عالمی متغیرات درست ہیں۔",
+      "after": "AI کا آغاز اور مستقل عالمی متغیرات درست ہیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Remove from library]",
+      "source": "Remove from library",
+      "before": "لائبریری سے ہٹائیں",
+      "after": "لائبریری سے ہٹائیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[AI telemetry]",
+      "source": "AI telemetry",
+      "before": "AI کی ٹیلی میٹری",
+      "after": "AI کی ٹیلی میٹری",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[No accessible AI telemetry.]",
+      "source": "No accessible AI telemetry.",
+      "before": "AI کی قابلِ رسائی ٹیلی میٹری نہیں۔",
+      "after": "AI کی قابلِ رسائی ٹیلی میٹری نہیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Search fields]",
+      "source": "Search fields",
+      "before": "فیلڈ تلاش کریں",
+      "after": "فیلڈ تلاش کریں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Telemetry unavailable for this recording or controller.]",
+      "source": "Telemetry unavailable for this recording or controller.",
+      "before": "اس ریکارڈنگ یا کنٹرولر کے لیے ٹیلی میٹری دستیاب نہیں۔",
+      "after": "اس ریکارڈنگ یا کنٹرولر کے لیے ٹیلی میٹری دستیاب نہیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Linked]",
+      "source": "Linked",
+      "before": "منسلک",
+      "after": "منسلک",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Imported]",
+      "source": "Imported",
+      "before": "درآمد شدہ",
+      "after": "درآمد شدہ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Player]",
+      "source": "Player",
+      "before": "کھلاڑی",
+      "after": "کھلاڑی",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Updated at tick %0]",
+      "source": "Updated at tick %0",
+      "before": "ٹک %0 پر تازہ کیا گیا",
+      "after": "ٹک %0 پر تازہ کیا گیا",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[No values published yet.]",
+      "source": "No values published yet.",
+      "before": "ابھی کوئی قدر شائع نہیں ہوئی۔",
+      "after": "ابھی کوئی قدر شائع نہیں ہوئی۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[No fields match your search.]",
+      "source": "No fields match your search.",
+      "before": "کوئی فیلڈ آپ کی تلاش سے میل نہیں کھاتی۔",
+      "after": "کوئی فیلڈ آپ کی تلاش سے میل نہیں کھاتی۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Missing custom AI]",
+      "source": "Missing custom AI",
+      "before": "حسبِ پسند AI موجود نہیں",
+      "after": "حسبِ پسند AI موجود نہیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[bases]",
+      "source": "bases",
+      "before": "اڈے",
+      "after": "اڈے",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[bases per colony]",
+      "source": "Bases per colony; a base is one team of the map as drawn, its buildings and units",
+      "before": "فی بستی اڈے؛ اڈا بنائے گئے نقشے کی ایک ٹیم، اس کی عمارتیں اور یونٹ ہے",
+      "after": "فی بستی اڈے؛ اڈا بنائے گئے نقشے کی ایک ٹیم، اس کی عمارتیں اور یونٹ ہے",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Ends the match when the model reaches the selected confidence. Spectators can see the predicted win chances in statistics.]",
+      "source": "Ends the match when the model reaches the selected confidence. Spectators can see the predicted win chances in statistics.",
+      "before": "منتخب اعتماد تک ماڈل پہنچنے پر میچ ختم کرتا ہے۔ تماشائی اعداد و شمار میں جیت کے پیش گوئی کردہ امکانات دیکھ سکتے ہیں۔",
+      "after": "منتخب اعتماد تک ماڈل پہنچنے پر میچ ختم کرتا ہے۔ تماشائی اعداد و شمار میں جیت کے پیش گوئی کردہ امکانات دیکھ سکتے ہیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat group population]",
+      "source": "Population",
+      "before": "آبادی",
+      "after": "آبادی",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat group food]",
+      "source": "Food and wellbeing",
+      "before": "خوراک اور بہبود",
+      "after": "خوراک اور بہبود",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat group resources]",
+      "source": "Materials",
+      "before": "مواد",
+      "after": "مواد",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat group military]",
+      "source": "Military",
+      "before": "فوج",
+      "after": "فوج",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat group map]",
+      "source": "Land",
+      "before": "زمین",
+      "after": "زمین",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat group score]",
+      "source": "Score",
+      "before": "اسکور",
+      "after": "اسکور",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat overview]",
+      "source": "Overview",
+      "before": "مجموعی جائزہ",
+      "after": "مجموعی جائزہ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat overview about]",
+      "source": "Each colony's figures for the whole match. The highest is highlighted where more is better; click a column heading to see how it changed over time.",
+      "before": "پورے میچ میں ہر بستی کے اعداد۔ جہاں زیادہ بہتر ہو، سب سے بڑی قدر نمایاں ہے؛ وقت کے ساتھ تبدیلی دیکھنے کے لیے کالم کا عنوان کلک کریں۔",
+      "after": "پورے میچ میں ہر بستی کے اعداد۔ جہاں زیادہ بہتر ہو، سب سے بڑی قدر نمایاں ہے؛ وقت کے ساتھ تبدیلی دیکھنے کے لیے کالم کے عنوان پر کلک کریں۔",
+      "editorially_read": true,
+      "disposition": "edited-pending-recheck"
+    },
+    {
+      "key": "[stat population]",
+      "source": "Population",
+      "before": "آبادی",
+      "after": "آبادی",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat population about]",
+      "source": "How many units the colony had alive: workers, explorers and warriors together.",
+      "before": "بستی میں کتنے زندہ یونٹ تھے: کارکن، کھوجی اور جنگجو سب ملا کر۔",
+      "after": "بستی میں کتنے زندہ یونٹ تھے: کارکن، کھوجی اور جنگجو سب ملا کر۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat births]",
+      "source": "Units born",
+      "before": "پیدا ہوئے یونٹ",
+      "after": "پیدا ہوئے یونٹ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat births about]",
+      "source": "How fast swarms were producing new units. Split it to see workers, explorers and warriors separately.",
+      "before": "چھتے کتنی تیزی سے نئے یونٹ پیدا کر رہے تھے۔ کارکن، کھوجی اور جنگجو الگ دیکھنے کے لیے تقسیم کریں۔",
+      "after": "چھتے کتنی تیزی سے نئے یونٹ پیدا کر رہے تھے۔ کارکن، کھوجی اور جنگجو الگ دیکھنے کے لیے تقسیم کریں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat deaths]",
+      "source": "Units lost",
+      "before": "ضائع ہوئے یونٹ",
+      "after": "ضائع ہوئے یونٹ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat deaths about]",
+      "source": "How fast the colony was losing units, whatever the cause: combat, starvation, injuries while clearing, or being trapped.",
+      "before": "بستی کتنی تیزی سے یونٹ کھو رہی تھی، خواہ وجہ لڑائی، فاقہ کشی، صفائی کی چوٹ یا پھنسنا ہو۔",
+      "after": "بستی کتنی تیزی سے یونٹ کھو رہی تھی، خواہ وجہ لڑائی، فاقہ کشی، صفائی کی چوٹ یا پھنسنا ہو۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat net growth]",
+      "source": "Population growth",
+      "before": "آبادی میں اضافہ",
+      "after": "آبادی میں اضافہ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat net growth about]",
+      "source": "Units born minus units lost. Above zero the colony was growing; below zero it was shrinking.",
+      "before": "پیدا ہوئے یونٹ منفی ضائع ہوئے یونٹ۔ صفر سے اوپر بستی بڑھ رہی تھی؛ صفر سے نیچے سکڑ رہی تھی۔",
+      "after": "پیدا ہوئے یونٹ منفی ضائع ہوئے یونٹ۔ صفر سے اوپر بستی بڑھ رہی تھی؛ صفر سے نیچے سکڑ رہی تھی۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat death causes]",
+      "source": "Causes of death",
+      "before": "موت کی وجوہ",
+      "after": "موت کی وجوہ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat death causes about]",
+      "source": "What the colony's units died of: fighting, starvation, injuries while clearing resources, being trapped with no way out, or other causes.",
+      "before": "بستی کے یونٹ کن وجوہ سے مرے: لڑائی، فاقہ کشی، وسائل صاف کرتے ہوئے چوٹ، نکلنے کا راستہ نہ ہونے کی وجہ سے پھنسنا یا دوسری وجوہ۔",
+      "after": "بستی کے یونٹ کن وجوہ سے مرے: لڑائی، فاقہ کشی، وسائل صاف کرتے ہوئے چوٹ، نکلنے کا راستہ نہ ہونے کی وجہ سے پھنسنا یا دوسری وجوہ۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat conversions]",
+      "source": "Net conversions",
+      "before": "وفاداری کی تبدیلی کا خالص نتیجہ",
+      "after": "وفاداری کی تبدیلی کا خالص نتیجہ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat conversions about]",
+      "source": "Units won over from other colonies minus units lost to them. Units change sides when another colony feeds them better.",
+      "before": "دوسری بستیوں سے حاصل کیے گئے یونٹ منفی ان کی طرف گئے یونٹ۔ جب دوسری بستی بہتر خوراک دے تو یونٹ وفاداری بدلتے ہیں۔",
+      "after": "دوسری بستیوں سے حاصل کیے گئے یونٹ منفی ان کی طرف گئے یونٹ۔ جب دوسری بستی بہتر خوراک دے تو یونٹ وفاداری بدلتے ہیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat hunger]",
+      "source": "Food reserves",
+      "before": "غذائی ذخائر",
+      "after": "غذائی ذخائر",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat hunger about]",
+      "source": "How much food the colony's units were carrying inside them. Each unit is placed by how much of its food reserve is left: nearly empty (a quarter or less), low (up to half), half full (up to three quarters) or well fed. Units go looking for an inn as their reserve runs down, so a colony always has some that are low.",
+      "before": "بستی کے یونٹوں کے جسموں میں کتنی خوراک تھی۔ ہر یونٹ باقی غذائی ذخیرے کے مطابق شمار ہوتا ہے: تقریباً خالی (چوتھائی یا کم)، کم (نصف تک)، آدھا بھرا (تین چوتھائی تک) یا پیٹ بھرا۔ ذخیرہ کم ہونے پر یونٹ سرائے ڈھونڈتے ہیں، اس لیے بستی میں کچھ کا ذخیرہ ہمیشہ کم ہوتا ہے۔",
+      "after": "بستی کے یونٹوں کے جسموں میں کتنی خوراک تھی۔ ہر یونٹ باقی غذائی ذخیرے کے مطابق شمار ہوتا ہے: تقریباً خالی (چوتھائی یا کم)، کم (نصف تک)، آدھا بھرا (تین چوتھائی تک) یا پیٹ بھرا۔ ذخیرہ کم ہونے پر یونٹ سرائے ڈھونڈتے ہیں، اس لیے بستی میں کچھ کا ذخیرہ ہمیشہ کم ہوتا ہے۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat health]",
+      "source": "Health",
+      "before": "صحت",
+      "after": "صحت",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat health about]",
+      "source": "How healthy the colony's units were. Each unit is placed by how many of its hit points are left: critical (a quarter or less), wounded (up to half), hurt (up to three quarters) or healthy.",
+      "before": "بستی کے یونٹ کتنے صحت مند تھے۔ ہر یونٹ باقی صحت کے پوائنٹس کے مطابق شمار ہوتا ہے: نازک حالت (چوتھائی یا کم)، زخمی (نصف تک)، چوٹ زدہ (تین چوتھائی تک) یا صحت مند۔",
+      "after": "بستی کے یونٹ کتنے صحت مند تھے۔ ہر یونٹ باقی صحت کے پوائنٹس کے مطابق شمار ہوتا ہے: نازک حالت (چوتھائی یا کم)، زخمی (نصف تک)، چوٹ زدہ (تین چوتھائی تک) یا صحت مند۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat seeking food]",
+      "source": "Units looking for food",
+      "before": "خوراک تلاش کرتے یونٹ",
+      "after": "خوراک تلاش کرتے یونٹ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat seeking food about]",
+      "source": "Units that had stopped work to find an inn. Those that are also below full health are counted as weakening.",
+      "before": "وہ یونٹ جو کام چھوڑ کر سرائے ڈھونڈ رہے تھے۔ جن کی صحت بھی پوری نہیں، وہ کمزور ہوتے ہوئے شمار ہوتے ہیں۔",
+      "after": "وہ یونٹ جو کام چھوڑ کر سرائے ڈھونڈ رہے تھے۔ جن کی صحت بھی پوری نہیں، وہ کمزور ہوتے ہوئے شمار ہوتے ہیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat in care]",
+      "source": "Units eating or healing",
+      "before": "کھاتے یا علاج پاتے یونٹ",
+      "after": "کھاتے یا علاج پاتے یونٹ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat in care about]",
+      "source": "Units inside an inn eating or inside a hospital being healed, and so not working.",
+      "before": "سرائے میں کھانا کھاتے یا ہسپتال میں علاج پاتے یونٹ، جو اس وقت کام نہیں کر رہے۔",
+      "after": "سرائے میں کھانا کھاتے یا ہسپتال میں علاج پاتے یونٹ، جو اس وقت کام نہیں کر رہے۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat wheat harvested]",
+      "source": "Food harvested",
+      "before": "کاٹی گئی خوراک",
+      "after": "جمع کی گئی خوراک",
+      "editorially_read": true,
+      "disposition": "edited-pending-recheck"
+    },
+    {
+      "key": "[stat wheat harvested about]",
+      "source": "Loads of food harvested by workers from food-producing resources. Inns turn food into meals.",
+      "before": "کارکنوں کی خوراک پیدا کرنے والے وسائل سے کاٹی ہوئی کھیپیں۔ سرائے خوراک کو کھانوں میں بدلتی ہیں۔",
+      "after": "خوراک پیدا کرنے والے وسائل سے کارکنوں کی جمع کی ہوئی کھیپیں۔ سرائے خوراک کو کھانوں میں بدلتی ہیں۔",
+      "editorially_read": true,
+      "disposition": "edited-pending-recheck"
+    },
+    {
+      "key": "[stat wheat stored]",
+      "source": "Food in storage",
+      "before": "ذخیرے میں خوراک",
+      "after": "ذخیرے میں خوراک",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat wheat stored about]",
+      "source": "Food sitting in the colony's buildings, ready to be served or used.",
+      "before": "بستی کی عمارتوں میں رکھی خوراک، جو پیش یا استعمال ہونے کے لیے تیار ہے۔",
+      "after": "بستی کی عمارتوں میں رکھی خوراک، جو پیش یا استعمال ہونے کے لیے تیار ہے۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat meals]",
+      "source": "Meals served",
+      "before": "پیش کیے گئے کھانے",
+      "after": "پیش کیے گئے کھانے",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat meals about]",
+      "source": "Meals the colony's inns served, to its own units and to visitors from other colonies.",
+      "before": "بستی کی سراؤں کے اپنے یونٹوں اور دوسری بستیوں کے مہمانوں کو پیش کیے گئے کھانے۔",
+      "after": "بستی کی سراؤں کے اپنے یونٹوں اور دوسری بستیوں کے مہمانوں کو پیش کیے گئے کھانے۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat starvation]",
+      "source": "Starvation deaths",
+      "before": "فاقہ کشی سے اموات",
+      "after": "فاقہ کشی سے اموات",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat starvation about]",
+      "source": "Units that died because they could not find food in time.",
+      "before": "وہ یونٹ جو وقت پر خوراک نہ ملنے سے مر گئے۔",
+      "after": "وہ یونٹ جو وقت پر خوراک نہ ملنے سے مر گئے۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat healing]",
+      "source": "Health restored",
+      "before": "بحال کردہ صحت",
+      "after": "بحال کردہ صحت",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat healing about]",
+      "source": "Hit points the colony's hospitals gave back to wounded units.",
+      "before": "بستی کے ہسپتالوں کے زخمی یونٹوں کو واپس دیے گئے صحت کے پوائنٹس۔",
+      "after": "بستی کے ہسپتالوں کے زخمی یونٹوں کو واپس دیے گئے صحت کے پوائنٹس۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat gathered]",
+      "source": "Materials gathered",
+      "before": "جمع کیا گیا مواد",
+      "after": "جمع کیا گیا مواد",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat gathered about]",
+      "source": "Loads of every material harvested by workers. Split it to see each material.",
+      "before": "کارکنوں کی کاٹی ہوئی ہر مواد کی کھیپیں۔ ہر مواد الگ دیکھنے کے لیے تقسیم کریں۔",
+      "after": "کارکنوں نے ہر قسم کے مواد کی کتنی کھیپیں جمع کیں۔ ہر قسم الگ دیکھنے کے لیے تقسیم کریں۔",
+      "editorially_read": true,
+      "disposition": "edited-pending-recheck"
+    },
+    {
+      "key": "[stat stored]",
+      "source": "Materials in storage",
+      "before": "ذخیرے میں مواد",
+      "after": "ذخیرے میں مواد",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat stored about]",
+      "source": "Materials sitting in the colony's buildings. Split it to see each material.",
+      "before": "بستی کی عمارتوں میں رکھا مواد۔ ہر مواد الگ دیکھنے کے لیے تقسیم کریں۔",
+      "after": "بستی کی عمارتوں میں رکھا مواد۔ ہر مواد الگ دیکھنے کے لیے تقسیم کریں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat spending]",
+      "source": "Material spending",
+      "before": "مواد کا خرچ",
+      "after": "مواد کا خرچ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat spending about]",
+      "source": "Where delivered materials went: meals, new units, tower ammunition, new buildings or upgrades.",
+      "before": "پہنچایا گیا مواد کہاں استعمال ہوا: کھانوں، نئے یونٹوں، مینار کی گولیوں، نئی عمارتوں یا ترقی پر۔",
+      "after": "پہنچایا گیا مواد کہاں استعمال ہوا: کھانوں، نئے یونٹوں، مینار کی گولیوں، نئی عمارتوں یا اپ گریڈ پر۔",
+      "editorially_read": true,
+      "disposition": "edited-pending-recheck"
+    },
+    {
+      "key": "[stat delivered]",
+      "source": "Materials delivered",
+      "before": "پہنچایا گیا مواد",
+      "after": "پہنچایا گیا مواد",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat delivered about]",
+      "source": "Loads workers carried into buildings.",
+      "before": "کارکنوں کی عمارتوں میں لائی ہوئی کھیپیں۔",
+      "after": "کارکنوں کی عمارتوں میں لائی ہوئی کھیپیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat traded]",
+      "source": "Net trade",
+      "before": "خالص تجارت",
+      "after": "خالص تجارت",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat traded about]",
+      "source": "Materials received through markets minus materials given away.",
+      "before": "بازاروں سے ملنے والا مواد منفی دیا گیا مواد۔",
+      "after": "بازاروں سے ملنے والا مواد منفی دیا گیا مواد۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat construction]",
+      "source": "Building work completed",
+      "before": "مکمل تعمیراتی کام",
+      "after": "مکمل تعمیراتی کام",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat construction about]",
+      "source": "Building work completed: new buildings, upgrades and repairs.",
+      "before": "مکمل تعمیراتی کام: نئی عمارتیں، ترقی اور مرمت۔",
+      "after": "مکمل تعمیراتی کام: نئی عمارتیں، اپ گریڈ اور مرمت۔",
+      "editorially_read": true,
+      "disposition": "edited-pending-recheck"
+    },
+    {
+      "key": "[stat attack]",
+      "source": "Attack strength",
+      "before": "حملے کی طاقت",
+      "after": "حملے کی طاقت",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat attack about]",
+      "source": "A score for the combined fighting power of the colony's warriors: how hard and how fast they hit.",
+      "before": "بستی کے جنگجوؤں کی مجموعی لڑنے کی طاقت کا اسکور: وہ کتنی زور سے اور کتنی تیزی سے وار کرتے ہیں۔",
+      "after": "بستی کے جنگجوؤں کی مجموعی لڑنے کی طاقت کا اسکور: وہ کتنے زور سے اور کتنی تیزی سے وار کرتے ہیں۔",
+      "editorially_read": true,
+      "disposition": "edited-pending-recheck"
+    },
+    {
+      "key": "[stat defence]",
+      "source": "Defence strength",
+      "before": "دفاع کی طاقت",
+      "after": "دفاع کی طاقت",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat defence about]",
+      "source": "A score for the combined firepower of the colony's defence towers.",
+      "before": "بستی کے دفاعی میناروں کی مجموعی گولہ باری کی طاقت کا اسکور۔",
+      "after": "بستی کے دفاعی میناروں کی مجموعی گولہ باری کی طاقت کا اسکور۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat hit points]",
+      "source": "Total hit points",
+      "before": "کل صحت کے پوائنٹس",
+      "after": "کل صحت کے پوائنٹس",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat hit points about]",
+      "source": "The hit points of all the colony's units and buildings added together.",
+      "before": "بستی کے تمام یونٹوں اور عمارتوں کے صحت کے پوائنٹس کا مجموعہ۔",
+      "after": "بستی کے تمام یونٹوں اور عمارتوں کے صحت کے پوائنٹس کا مجموعہ۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat damage dealt]",
+      "source": "Damage dealt",
+      "before": "پہنچایا گیا نقصان",
+      "after": "پہنچایا گیا نقصان",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat damage dealt about]",
+      "source": "Damage the colony did to enemy units and buildings. Split it to see warriors, magic and towers.",
+      "before": "بستی کے دشمن یونٹوں اور عمارتوں کو پہنچایا گیا نقصان۔ جنگجو، جادو اور مینار الگ دیکھنے کے لیے تقسیم کریں۔",
+      "after": "بستی کے دشمن یونٹوں اور عمارتوں کو پہنچایا گیا نقصان۔ جنگجو، جادو اور مینار الگ دیکھنے کے لیے تقسیم کریں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat damage taken]",
+      "source": "Damage taken",
+      "before": "موصولہ نقصان",
+      "after": "موصولہ نقصان",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat damage taken about]",
+      "source": "Damage enemies did to the colony's units and buildings.",
+      "before": "دشمنوں کے بستی کے یونٹوں اور عمارتوں کو پہنچایا گیا نقصان۔",
+      "after": "دشمنوں کے بستی کے یونٹوں اور عمارتوں کو پہنچایا گیا نقصان۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat damage traded]",
+      "source": "Damage balance",
+      "before": "نقصان کا توازن",
+      "after": "نقصان کا توازن",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat damage traded about]",
+      "source": "Damage dealt minus damage taken. Above zero the colony was winning its fights.",
+      "before": "پہنچایا گیا نقصان منفی موصولہ نقصان۔ صفر سے اوپر بستی اپنی لڑائیاں جیت رہی تھی۔",
+      "after": "پہنچایا گیا نقصان منفی موصولہ نقصان۔ صفر سے اوپر بستی اپنی لڑائیاں جیت رہی تھی۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat combat deaths]",
+      "source": "Units killed in combat",
+      "before": "لڑائی میں مرنے والے یونٹ",
+      "after": "لڑائی میں مرنے والے یونٹ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat combat deaths about]",
+      "source": "Units of this colony killed by enemies. Split it to see workers, explorers and warriors separately.",
+      "before": "اس بستی کے دشمنوں کے ہاتھوں مرنے والے یونٹ۔ کارکن، کھوجی اور جنگجو الگ دیکھنے کے لیے تقسیم کریں۔",
+      "after": "اس بستی کے دشمنوں کے ہاتھوں مرنے والے یونٹ۔ کارکن، کھوجی اور جنگجو الگ دیکھنے کے لیے تقسیم کریں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat accuracy]",
+      "source": "Shots that hit",
+      "before": "نشانے پر لگنے والے وار",
+      "after": "نشانے پر لگنے والے وار",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat accuracy about]",
+      "source": "The share of shots fired by the colony's towers and explorers that hit their target.",
+      "before": "بستی کے میناروں اور کھوجیوں کے چلائے گئے واروں کا وہ حصہ جو نشانے پر لگا۔",
+      "after": "بستی کے میناروں اور کھوجیوں کے چلائے گئے واروں کا وہ حصہ جو نشانے پر لگا۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat training]",
+      "source": "Training",
+      "before": "تربیت",
+      "after": "تربیت",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat training about]",
+      "source": "Visits by units to schools, barracks, racetracks and swimming pools to learn a skill.",
+      "before": "ہنر سیکھنے کے لیے یونٹوں کی اسکولوں، بیرکوں، دوڑ کے میدانوں اور تیراکی کے تالابوں میں حاضریاں۔",
+      "after": "ہنر سیکھنے کے لیے یونٹوں کی اسکولوں، بیرکوں، دوڑ کے میدانوں اور تیراکی کے تالابوں میں حاضریاں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat skills]",
+      "source": "Skills gained",
+      "before": "حاصل کردہ ہنر",
+      "after": "حاصل کردہ ہنر",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat skills about]",
+      "source": "Skill levels the colony's units gained through training.",
+      "before": "تربیت سے بستی کے یونٹوں کی حاصل کردہ ہنر کی سطحیں۔",
+      "after": "تربیت سے بستی کے یونٹوں کی حاصل کردہ ہنر کی سطحیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat growth nearby]",
+      "source": "Resource growth near the colony",
+      "before": "بستی کے قریب وسائل کی افزائش",
+      "after": "بستی کے قریب وسائل کی افزائش",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat growth nearby about]",
+      "source": "How much material stock grew in resources within 32 squares of the colony's buildings, in growth points rather than harvested loads. Split it to see how close to home they grew.",
+      "before": "بستی کی عمارتوں سے 32 خانوں کے اندر وسائل کے ذخائر میں کتنا مواد بڑھا، کاٹی ہوئی کھیپوں کے بجائے افزائش کے پوائنٹس میں۔ بستی سے کتنی قربت پر افزائش ہوئی، یہ دیکھنے کے لیے تقسیم کریں۔",
+      "after": "بستی کی عمارتوں سے 32 خانوں کے اندر وسائل کے ذخائر میں کتنا مواد بڑھا، جمع کی گئی کھیپوں کے بجائے افزائش کے پوائنٹس میں۔ بستی سے کتنی قربت پر افزائش ہوئی، یہ دیکھنے کے لیے تقسیم کریں۔",
+      "editorially_read": true,
+      "disposition": "edited-pending-recheck"
+    },
+    {
+      "key": "[stat growth map]",
+      "source": "Resource growth across the map",
+      "before": "پورے نقشے پر وسائل کی افزائش",
+      "after": "پورے نقشے پر وسائل کی افزائش",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat stranded]",
+      "source": "Units unable to move",
+      "before": "حرکت سے عاجز یونٹ",
+      "after": "حرکت سے عاجز یونٹ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat stranded about]",
+      "source": "Units boxed in with no free square to step onto.",
+      "before": "ایسے گھرے یونٹ جن کے قدم رکھنے کے لیے کوئی خالی خانہ نہیں۔",
+      "after": "ایسے گھرے یونٹ جن کے قدم رکھنے کے لیے کوئی خالی خانہ نہیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat cleared]",
+      "source": "Resources cleared",
+      "before": "صاف کیے گئے وسائل",
+      "after": "صاف کیے گئے وسائل",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat cleared about]",
+      "source": "Resources removed by workers in clearing areas to make room.",
+      "before": "جگہ بنانے کے لیے کارکنوں کے صفائی کے علاقوں میں ہٹائے ہوئے وسائل۔",
+      "after": "جگہ بنانے کے لیے کارکنوں کے صفائی کے علاقوں میں ہٹائے ہوئے وسائل۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat prestige]",
+      "source": "Prestige",
+      "before": "وقار",
+      "after": "وقار",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat prestige about]",
+      "source": "The colony's prestige, earned by top-level buildings. A match with a prestige goal ends when it is reached.",
+      "before": "بستی کا وقار، جو اعلیٰ ترین سطح کی عمارتوں سے ملتا ہے۔ وقار کے ہدف والا میچ ہدف پورا ہونے پر ختم ہو جاتا ہے۔",
+      "after": "بستی کا وقار، جو اعلیٰ ترین سطح کی عمارتوں سے ملتا ہے۔ وقار کے ہدف والا میچ ہدف پورا ہونے پر ختم ہو جاتا ہے۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat band combat]",
+      "source": "Combat",
+      "before": "لڑائی",
+      "after": "لڑائی",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat band starvation]",
+      "source": "Starvation",
+      "before": "فاقہ کشی",
+      "after": "فاقہ کشی",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat band clearing]",
+      "source": "Clearing injuries",
+      "before": "صفائی کی چوٹیں",
+      "after": "صفائی کی چوٹیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    }
+  ],
+  "status": "edited-awaiting-independent-recheck"
+}

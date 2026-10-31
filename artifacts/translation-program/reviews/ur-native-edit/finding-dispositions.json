@@ -1,0 +1,982 @@
+[
+  {
+    "key": "[select school building]",
+    "severity": "major",
+    "problem": "Selector says مدرسہ while actual [school] label is اسکول. Player sees two different school names; مدرسہ can also imply a religiousschool notgame-specific constructiontraining. Author independently noted inconsistency.",
+    "suggestion": "اسکول منتخب کریں",
+    "disposition": "edited-pending-original-reviewer-recheck",
+    "before": "مدرسہ منتخب کریں",
+    "after": "اسکول منتخب کریں",
+    "reason": "Revised against English source value and relevant glossary/context; original reviewer must recheck."
+  },
+  {
+    "key": "[inn explanation]",
+    "severity": "minor",
+    "problem": "سرائے is treated feminine in existing finishedmessage مکمل ہو گئی; tooltip male کھلاتا disagrees.",
+    "suggestion": "آپ کے یونٹوں کو کھانا کھلاتی ہے",
+    "disposition": "edited-pending-original-reviewer-recheck",
+    "before": "آپ کے یونٹوں کو کھانا کھلاتا ہے",
+    "after": "آپ کے یونٹوں کو کھانا کھلاتی ہے",
+    "reason": "Revised against English source value and relevant glossary/context; original reviewer must recheck."
+  },
+  {
+    "key": "[Stats structural buildings]",
+    "severity": "minor",
+    "problem": "ساخت کی وجہ سے بند عمارتیں can mean closedbuildings, while neighboringstatlabels explicitlydescribe blocked entrances. Preserve accessblockage terminology consistently.",
+    "suggestion": "ساخت کی وجہ سے بند راستوں والی عمارتیں",
+    "disposition": "edited-pending-original-reviewer-recheck",
+    "before": "ساخت کی وجہ سے بند عمارتیں",
+    "after": "ساخت کی وجہ سے بند راستوں والی عمارتیں",
+    "reason": "Revised against English source value and relevant glossary/context; original reviewer must recheck."
+  },
+  {
+    "key": "[library Create in Building Studio]",
+    "severity": "minor",
+    "problem": "Englishnamedfeature conflicts with currentonlineUrdu Building Studio label عمارت اسٹوڈیو; actualUIreference shouldalign, notleave unreviewedpartialEnglishfallback. Onlineisnotyetfrozen, so editor/reviewer mustbindfinalglossary.",
+    "suggestion": "عمارت اسٹوڈیو میں بنائیں",
+    "disposition": "edited-pending-original-reviewer-recheck",
+    "before": "Building Studio میں بنائیں",
+    "after": "عمارت اسٹوڈیو میں بنائیں",
+    "reason": "Revised against English source value and relevant glossary/context; original reviewer must recheck."
+  },
+  {
+    "key": "[barracks explanation]",
+    "severity": "major",
+    "problem": "Pairedrows join as آپ کے جنگجوؤں کی لڑائی کی جنگجوؤں کی سطح...; جنگجوؤں possession duplicated and broken grammar. Revise pair together.",
+    "suggestion": "آپ کے جنگجوؤں کی",
+    "disposition": "edited-pending-original-reviewer-recheck",
+    "before": "آپ کے جنگجوؤں کی لڑائی کی",
+    "after": "آپ کے جنگجوؤں کی",
+    "reason": "Revised against English source value and relevant glossary/context; original reviewer must recheck."
+  },
+  {
+    "key": "[barracks explanation 2]",
+    "severity": "major",
+    "problem": "Joined secondrow repeats جنگجوؤں andloses readable fightingtraininglevel expression. Subject بیرک feminine fitsبناتی.",
+    "suggestion": "جنگی سطح بہتر بناتی ہے",
+    "disposition": "edited-pending-original-reviewer-recheck",
+    "before": "جنگجوؤں کی سطح بہتر بناتی ہے",
+    "after": "جنگی سطح بہتر بناتی ہے",
+    "reason": "Revised against English source value and relevant glossary/context; original reviewer must recheck."
+  },
+  {
+    "key": "[cancel upgrade]",
+    "severity": "minor",
+    "problem": "ترقی differs from actual Upgrade اپ گریڈ in buildingcontrols; player action should match namedupgradeoperation.",
+    "suggestion": "اپ گریڈ منسوخ کریں",
+    "disposition": "edited-pending-original-reviewer-recheck",
+    "before": "ترقی منسوخ کریں",
+    "after": "اپ گریڈ منسوخ کریں",
+    "reason": "Revised against English source value and relevant glossary/context; original reviewer must recheck."
+  },
+  {
+    "key": "[Cancel]",
+    "severity": "minor",
+    "problem": "منسوخ adjective usedforaction; align politeimperative and settingsbutton.",
+    "suggestion": "منسوخ کریں",
+    "disposition": "edited-pending-original-reviewer-recheck",
+    "before": "منسوخ",
+    "after": "منسوخ کریں",
+    "reason": "Revised against English source value and relevant glossary/context; original reviewer must recheck."
+  },
+  {
+    "key": "[combined vision]",
+    "severity": "minor",
+    "problem": "مشترکہ نظر is understandable but differs from established visibilityglossary حدِ نگاہ (V/fV/mV and sharingcontrols).",
+    "suggestion": "مشترکہ حدِ نگاہ",
+    "disposition": "edited-pending-original-reviewer-recheck",
+    "before": "مشترکہ نظر",
+    "after": "مشترکہ حدِ نگاہ",
+    "reason": "Revised against English source value and relevant glossary/context; original reviewer must recheck."
+  },
+  {
+    "key": "[edit map]",
+    "severity": "minor",
+    "problem": "نقشہ ترمیم کریں lacks requiredpostposition for ترمیم; use naturalinstruction.",
+    "suggestion": "نقشے میں ترمیم کریں",
+    "disposition": "edited-pending-original-reviewer-recheck",
+    "before": "نقشہ ترمیم کریں",
+    "after": "نقشے میں ترمیم کریں",
+    "reason": "Revised against English source value and relevant glossary/context; original reviewer must recheck."
+  },
+  {
+    "key": "[Harvest]",
+    "severity": "major",
+    "problem": "Abilitylabel فصل کاٹیں narrows allmaterialharvesting to crops and makes an abilitylevelstat an imperative. TeamStat.cpp:780 displays generic HARVEST skilllevels; wood/stone alsoincluded.",
+    "suggestion": "وسائل جمع کرنا",
+    "disposition": "edited-pending-original-reviewer-recheck",
+    "before": "فصل کاٹیں",
+    "after": "وسائل جمع کرنا",
+    "reason": "Revised against English source value and relevant glossary/context; original reviewer must recheck."
+  },
+  {
+    "key": "[no ressources growth areas]",
+    "severity": "major",
+    "problem": "افزائش کے علاقے نہیں says there are no growthareas, not zonespaintedtostopgrowth. BrushCatalog.cpp:281 names nogrowthbrush.",
+    "suggestion": "افزائش روکنے کے علاقے",
+    "disposition": "edited-pending-original-reviewer-recheck",
+    "before": "افزائش کے علاقے نہیں",
+    "after": "افزائش روکنے کے علاقے",
+    "reason": "Revised against English source value and relevant glossary/context; original reviewer must recheck."
+  },
+  {
+    "key": "[hungry]",
+    "severity": "minor",
+    "problem": "بھوکا singularmasculine conflicts with aggregateunitslegend at TeamStat.cpp:850; pluralبھوکے matchesیونٹ.",
+    "suggestion": "بھوکے",
+    "disposition": "edited-pending-original-reviewer-recheck",
+    "before": "بھوکا",
+    "after": "بھوکے",
+    "reason": "Revised against English source value and relevant glossary/context; original reviewer must recheck."
+  },
+  {
+    "key": "[Upgrade Defaults]",
+    "severity": "minor",
+    "problem": "ترقی is generaldevelopment/promotion; differs from actual Start/StopUpgrade اپ گریڈ, settingsUpgrade اپ گریڈ and most concretecontrols. Standardize operationterm, preserving ترقی for genuinegeneraldevelopment.",
+    "suggestion": "اپ گریڈ کی طے شدہ ترتیبات",
+    "disposition": "edited-pending-original-reviewer-recheck",
+    "before": "ترقی کی طے شدہ ترتیبات",
+    "after": "اپ گریڈ کی طے شدہ ترتیبات",
+    "reason": "Revised against English source value and relevant glossary/context; original reviewer must recheck."
+  },
+  {
+    "key": "[upgrade]",
+    "severity": "minor",
+    "problem": "Concretebuildingupgradeaction should match اپ گریڈ operationterm usedelsewhere, ratherthan general ترقی دیں.",
+    "suggestion": "اپ گریڈ کریں",
+    "disposition": "edited-pending-original-reviewer-recheck",
+    "before": "ترقی دیں",
+    "after": "اپ گریڈ کریں",
+    "reason": "Revised against English source value and relevant glossary/context; original reviewer must recheck."
+  },
+  {
+    "key": "[AICastor-Profile]",
+    "severity": "minor",
+    "problem": "Hydration is زمین کی نمی in path/mapanalysis, not آب رسانی (water-supplyservice). Also concretebuildingupgrades in economyparagraphrendered generic ترقی; clarify operation.",
+    "suggestion": "In economyparagraph replace آب رسانی with زمین کی نمی; replace پیداوار کے ساتھ خوراک کی توسیع، ترقی اور دفاع سنبھالتا ہے۔ with پیداوار کے ساتھ خوراک کی فراہمی میں اضافہ، عمارتوں کی اپ گریڈنگ اور دفاع سنبھالتا ہے۔",
+    "disposition": "edited-pending-original-reviewer-recheck",
+    "before": "بنیادی حکمتِ عملی: بڑے حملے کرنے سے پہلے پیداواری بستی اور ٹیکنالوجی میں سرمایہ لگاتا ہے۔ ترجیحی تعمیراتی منصوبے اس کی بستی کو بڑھاتے ہیں؛ ترقی، فوجی سہولیات اور وقت کے ساتھ اس کی جنگی تیاری بڑھتی ہے۔\\n\\nمعیشت اور ترقی: آب رسانی، خوراک کے ذرائع کی افزائش، رکاوٹوں اور کارکنوں کی رسائی کا جائزہ لیتا ہے۔ پیداوار کے ساتھ خوراک کی توسیع، ترقی اور دفاع سنبھالتا ہے۔\\n\\nحملہ اور دفاع: صحت مند جنگجوؤں کی حملہ آور طاقت کا اندازہ لگا کر طاقت یا وقت کی شرائط پوری ہونے پر حملہ کرتا ہے۔ پہلے دیکھی ہوئی، قابلِ رسائی عمارتوں، خصوصاً بیرکوں اور اسکولوں کو ترجیح دیتا ہے اور حملے کے جھنڈے قیمتی اہداف کی طرف بڑھاتا ہے۔\\n\\nدیگر AI سے موازنہ: Numbi کی نسبت زمین اور ہدف کی اہمیت پر زیادہ غور کرتا ہے۔ Warrush سے زیادہ صبر کرتا ہے؛ ابتدائی دباؤ کے بجائے ترقی یافتہ اڈے اور مضبوط فوج کو ترجیح دیتا ہے۔\\n\\nخوبیاں اور کمزوریاں: وسیع تعمیراتی منصوبہ بندی اور اہم فوجی اہداف اس کے حملوں کو بامقصد بناتے ہیں۔ تیاری میں وقت لگتا ہے، اس لیے تیز حریف اس کی مرکزی فوج تیار ہونے سے پہلے وسائل پر مقابلہ کر سکتے ہیں۔\\n\\nآزمانے کے لیے مقابلے کا طریقہ: ابتدا ہی میں اس کی توسیع کو روکیں۔ خوراک کے ساتھ بیرکوں اور اسکولوں کی بھی حفاظت کریں اور اس کی ترقی یافتہ بستی پر حملہ کرتے وقت کچھ فوج محفوظ رکھیں۔",
+    "after": "بنیادی حکمتِ عملی: بڑے حملے کرنے سے پہلے پیداواری بستی اور ٹیکنالوجی میں سرمایہ لگاتا ہے۔ ترجیحی تعمیراتی منصوبے اس کی بستی کو بڑھاتے ہیں؛ ترقی، فوجی سہولیات اور وقت کے ساتھ اس کی جنگی تیاری بڑھتی ہے۔\\n\\nمعیشت اور ترقی: زمین کی نمی، خوراک کے ذرائع کی افزائش، رکاوٹوں اور کارکنوں کی رسائی کا جائزہ لیتا ہے۔ پیداوار کے ساتھ خوراک کی فراہمی میں اضافہ، عمارتوں کی اپ گریڈنگ اور دفاع سنبھالتا ہے۔\\n\\nحملہ اور دفاع: صحت مند جنگجوؤں کی حملہ آور طاقت کا اندازہ لگا کر طاقت یا وقت کی شرائط پوری ہونے پر حملہ کرتا ہے۔ پہلے دیکھی ہوئی، قابلِ رسائی عمارتوں، خصوصاً بیرکوں اور اسکولوں کو ترجیح دیتا ہے اور حملے کے جھنڈے قیمتی اہداف کی طرف بڑھاتا ہے۔\\n\\nدیگر AI سے موازنہ: Numbi کی نسبت زمین اور ہدف کی اہمیت پر زیادہ غور کرتا ہے۔ Warrush سے زیادہ صبر کرتا ہے؛ ابتدائی دباؤ کے بجائے ترقی یافتہ اڈے اور مضبوط فوج کو ترجیح دیتا ہے۔\\n\\nخوبیاں اور کمزوریاں: وسیع تعمیراتی منصوبہ بندی اور اہم فوجی اہداف اس کے حملوں کو بامقصد بناتے ہیں۔ تیاری میں وقت لگتا ہے، اس لیے تیز حریف اس کی مرکزی فوج تیار ہونے سے پہلے وسائل پر مقابلہ کر سکتے ہیں۔\\n\\nآزمانے کے لیے مقابلے کا طریقہ: ابتدا ہی میں اس کی توسیع کو روکیں۔ خوراک کے ساتھ بیرکوں اور اسکولوں کی بھی حفاظت کریں اور اس کی ترقی یافتہ بستی پر حملہ کرتے وقت کچھ فوج محفوظ رکھیں۔",
+    "reason": "Revised against English source value and relevant glossary/context; original reviewer must recheck."
+  },
+  {
+    "key": "[AICortex-Profile]",
+    "severity": "minor",
+    "problem": "Scoutingfinalclause دیکھی گئی دشمن فوج کو استعمال کرتا ہے sounds like AI usesenemyforces themselves ratherthanobservations; clarify information. Smallerdesperationattack آخری کوشش والا alsoaddsfinal-attempt implication absent source.",
+    "suggestion": "Finalclause: دریافت شدہ دشمن عمارتوں اور دیکھی گئی دشمن فوج کی معلومات استعمال کرتا ہے۔ Emergencyclause: قحط کی حالت میں مجبوراً ایک چھوٹا حملہ کر سکتا ہے۔",
+    "disposition": "edited-pending-original-reviewer-recheck",
+    "before": "بنیادی حکمتِ عملی: حالات کے مطابق ترجیحات بدل کر فعال معیشت بڑھاتا اور اضافی محنت کو خوراک، ٹیکنالوجی اور فوجی دباؤ میں لگاتا ہے۔ اس کی عام پالیسی قواعد پر مبنی ہے؛ سیکھی ہوئی پالیسی کے تجربات کے لیے الگ ترتیب درکار ہے۔\\n\\nمعیشت اور ترقی: عملے کی ضرورت کے مطابق کارکنوں کی پیداوار بدلتا اور پیدائشیں جاری رکھتا ہے۔ خوراک کی مشکلات توسیع اور ٹیکنالوجی کے اخراجات کم کرتی ہیں۔ جہاں پانی تک رسائی سے نمایاں فائدہ ہو، وہاں تیراکی کی تربیت شامل کرتا ہے۔\\n\\nحملہ اور دفاع: دشمن کی دیکھی گئی ٹیکنالوجی اور دستیاب فوج کے مطابق حملوں کی تیاری کرتا ہے۔ پانی عبور کرنے والی مہموں کے لیے تیرنے والے جنگجو ضروری ہیں۔ اگلے مورچوں پر سرائے اور ہسپتال بنا کر طویل مہموں کو سہارا دیتا ہے اور پیش قدمی سے پہلے فوج جمع کر سکتا ہے۔\\n\\nحملہ جاری رکھنا اور ہنگامی حالات: معمولی چھیڑ چھاڑ پر بار بار واپس آنے کے بجائے حملہ جاری رکھتا ہے۔ سنگین حملہ محافظوں کو واپس بلا سکتا ہے۔ ابتدا کی ہنگامی حالت میں صرف جنگجو پیدا کیے جا سکتے ہیں اور ہسپتال بنایا جا سکتا ہے؛ قحط ایک چھوٹا، آخری کوشش والا حملہ شروع کر سکتا ہے۔\\n\\nدیگر AI سے موازنہ: Warrush سے زیادہ اگلے مورچوں کی مدد پر توجہ دیتا ہے۔ Maxima پائیدار پیدائشوں، تربیت اور تعیناتی کے وسائل کا دشمن کی اندازاً طاقت کے مقابلے میں زیادہ تفصیلی حساب کرتا ہے۔\\n\\nخوبیاں اور کمزوریاں: دباؤ کو خوراک، علاج اور رسائی سے جوڑتا ہے۔ اگلے مورچوں کی عمارتوں تک رسد جاری رہنی چاہیے اور مسلسل پیدائشیں محدود خوراک پر دباؤ برقرار رکھ سکتی ہیں۔ ہنگامی ترجیحات میں ترقی اور بقا کے درمیان انتخاب کرنا پڑتا ہے۔\\n\\nآزمانے کے لیے مقابلے کا طریقہ: اگلے مورچوں کی سراؤں، ہسپتالوں اور خوراک کے ذرائع کو چیلنج کریں۔ اس کی پیش قدمی کے مقابل محافظوں کو اکٹھا رکھیں؛ معمولی چھیڑ چھاڑ اسے پسپا ہونے پر مجبور نہیں بھی کر سکتی۔\\n\\nکھوج: دریافت شدہ دشمن عمارتوں اور دیکھی گئی دشمن فوج کو استعمال کرتا ہے۔",
+    "after": "بنیادی حکمتِ عملی: حالات کے مطابق ترجیحات بدل کر فعال معیشت بڑھاتا اور اضافی محنت کو خوراک، ٹیکنالوجی اور فوجی دباؤ میں لگاتا ہے۔ اس کی عام پالیسی قواعد پر مبنی ہے؛ سیکھی ہوئی پالیسی کے تجربات کے لیے الگ ترتیب درکار ہے۔\\n\\nمعیشت اور ترقی: عملے کی ضرورت کے مطابق کارکنوں کی پیداوار بدلتا اور پیدائشیں جاری رکھتا ہے۔ خوراک کی مشکلات توسیع اور ٹیکنالوجی کے اخراجات کم کرتی ہیں۔ جہاں پانی تک رسائی سے نمایاں فائدہ ہو، وہاں تیراکی کی تربیت شامل کرتا ہے۔\\n\\nحملہ اور دفاع: دشمن کی دیکھی گئی ٹیکنالوجی اور دستیاب فوج کے مطابق حملوں کی تیاری کرتا ہے۔ پانی عبور کرنے والی مہموں کے لیے تیرنے والے جنگجو ضروری ہیں۔ اگلے مورچوں پر سرائے اور ہسپتال بنا کر طویل مہموں کو سہارا دیتا ہے اور پیش قدمی سے پہلے فوج جمع کر سکتا ہے۔\\n\\nحملہ جاری رکھنا اور ہنگامی حالات: معمولی چھیڑ چھاڑ پر بار بار واپس آنے کے بجائے حملہ جاری رکھتا ہے۔ سنگین حملہ محافظوں کو واپس بلا سکتا ہے۔ ابتدا کی ہنگامی حالت میں صرف جنگجو پیدا کیے جا سکتے ہیں اور ہسپتال بنایا جا سکتا ہے؛ قحط کی حالت میں مجبوراً ایک چھوٹا حملہ کر سکتا ہے۔\\n\\nدیگر AI سے موازنہ: Warrush سے زیادہ اگلے مورچوں کی مدد پر توجہ دیتا ہے۔ Maxima پائیدار پیدائشوں، تربیت اور تعیناتی کے وسائل کا دشمن کی اندازاً طاقت کے مقابلے میں زیادہ تفصیلی حساب کرتا ہے۔\\n\\nخوبیاں اور کمزوریاں: دباؤ کو خوراک، علاج اور رسائی سے جوڑتا ہے۔ اگلے مورچوں کی عمارتوں تک رسد جاری رہنی چاہیے اور مسلسل پیدائشیں محدود خوراک پر دباؤ برقرار رکھ سکتی ہیں۔ ہنگامی ترجیحات میں ترقی اور بقا کے درمیان انتخاب کرنا پڑتا ہے۔\\n\\nآزمانے کے لیے مقابلے کا طریقہ: اگلے مورچوں کی سراؤں، ہسپتالوں اور خوراک کے ذرائع کو چیلنج کریں۔ اس کی پیش قدمی کے مقابل محافظوں کو اکٹھا رکھیں؛ معمولی چھیڑ چھاڑ اسے پسپا ہونے پر مجبور نہیں بھی کر سکتی۔\\n\\nکھوج: دریافت شدہ دشمن عمارتوں اور دیکھی گئی دشمن فوج کی معلومات استعمال کرتا ہے۔",
+    "reason": "Revised against English source value and relevant glossary/context; original reviewer must recheck."
+  },
+  {
+    "key": "[AINicowar-Profile]",
+    "severity": "minor",
+    "problem": "دفاعی جھنڈے ... گروہوں کو ڈھانپتے ہیں is literal physicalcovering; describes protectionofthreatenedunits/buildings.",
+    "suggestion": "دفاعی جھنڈے خطرے میں موجود یونٹوں اور عمارتوں کے گروہوں کی حفاظت کرتے ہیں۔",
+    "disposition": "edited-pending-original-reviewer-recheck",
+    "before": "بنیادی حکمتِ عملی: باہم مربوط شرائط کے ذریعے آبادی بڑھانے، تربیت، ترقی اور جنگ کو ملاتا ہے۔ توسیع کے دوران حملہ کر سکتا ہے اور خوراک کی فراہمی ناکام ہونے پر معاشی کوشش بحالی کی طرف موڑ سکتا ہے۔\\n\\nابتدا: فراہم کردہ جارحانہ پروفائل کل پانچ یونٹوں پر جنگ کی تیاری شروع کرتا ہے اور پانچ جنگجوؤں پر جنگ کی اجازت دیتا ہے، جس میں سطح صفر کے جنگجو بھی شمار ہوتے ہیں۔ اس کا ہدف تین حملہ آور جھنڈے ہیں، ہر ایک کے ساتھ پانچ جنگجو۔ حسبِ پسند حکمتِ عملی کی فائلیں یہ حدیں بدل سکتی ہیں۔\\n\\nمعیشت اور ترقی: خوراک اور پیدائش کی گنجائش بڑھاتا، کارکنوں کو تربیت دیتا، تیراکی اور حرکت بہتر کرتا اور عمارتوں کو ترقی دیتا ہے۔ خوراک کے عملے کو بدلتا، فاقہ کشی کا جواب دیتا اور پھل حاصل کرنے کی کوشش کرتا ہے۔\\n\\nحملہ اور دفاع: قابلِ رسائی دشمن عمارتوں میں سے حملے کے ہدف چنتا ہے۔ وسائل سے بند راستے کھولنے کے لیے صفائی کے جھنڈے استعمال کر سکتا ہے۔ دفاعی جھنڈے خطرے میں موجود یونٹوں اور عمارتوں کے گروہوں کو ڈھانپتے ہیں۔ بعد میں زمینی حملے کی تربیت یافتہ کھوجی دشمن یونٹوں کے گروہوں کو نشانہ بناتے ہیں۔\\n\\nدیگر AI سے موازنہ: Warrush کی طرح ابتدا میں جارحانہ ہے، مگر بعد کی کارروائی زیادہ وسیع ہے۔ Cabino کے برعکس ہسپتالوں اور سراؤں کو مسلسل ترجیح نہیں دیتا۔\\n\\nخوبیاں اور کمزوریاں: وسیع حربی صلاحیت ابتدائی دباؤ کو مسلسل ترقی کے ساتھ جوڑتی ہے۔ اتفاقی ہدف چننے سے کم اہم عمارتوں پر محنت خرچ ہو سکتی ہے۔ اس کی حدیں دشمن کی لڑنے کی طاقت کا Maxima جیسا تفصیلی تخمینہ نہیں دیتیں۔\\n\\nآزمانے کے لیے مقابلے کا طریقہ: جلد حملے کی توقع رکھیں۔ خوراک اور کارکنوں کی حفاظت کریں، توسیع کو چیلنج کریں اور اگر یہ اعلیٰ تربیت تک پہنچ جائے تو کھوجیوں کے حملوں کے لیے تیار رہیں۔",
+    "after": "بنیادی حکمتِ عملی: باہم مربوط شرائط کے ذریعے آبادی بڑھانے، تربیت، اپ گریڈ اور جنگ کو ملاتا ہے۔ توسیع کے دوران حملہ کر سکتا ہے اور خوراک کی فراہمی ناکام ہونے پر معاشی کوشش بحالی کی طرف موڑ سکتا ہے۔\\n\\nابتدا: فراہم کردہ جارحانہ پروفائل کل پانچ یونٹوں پر جنگ کی تیاری شروع کرتا ہے اور پانچ جنگجوؤں پر جنگ کی اجازت دیتا ہے، جس میں سطح صفر کے جنگجو بھی شمار ہوتے ہیں۔ اس کا ہدف تین حملہ آور جھنڈے ہیں، ہر ایک کے ساتھ پانچ جنگجو۔ حسبِ پسند حکمتِ عملی کی فائلیں یہ حدیں بدل سکتی ہیں۔\\n\\nمعیشت اور ترقی: خوراک اور پیدائش کی گنجائش بڑھاتا، کارکنوں کو تربیت دیتا، تیراکی اور حرکت بہتر کرتا اور عمارتوں کو اپ گریڈ کرتا ہے۔ خوراک کے عملے کو بدلتا، فاقہ کشی کا جواب دیتا اور پھل حاصل کرنے کی کوشش کرتا ہے۔\\n\\nحملہ اور دفاع: قابلِ رسائی دشمن عمارتوں میں سے حملے کے ہدف چنتا ہے۔ وسائل سے بند راستے کھولنے کے لیے صفائی کے جھنڈے استعمال کر سکتا ہے۔ دفاعی جھنڈے خطرے میں موجود یونٹوں اور عمارتوں کے گروہوں کی حفاظت کرتے ہیں۔ بعد میں زمینی حملے کی تربیت یافتہ کھوجی دشمن یونٹوں کے گروہوں کو نشانہ بناتے ہیں۔\\n\\nدیگر AI سے موازنہ: Warrush کی طرح ابتدا میں جارحانہ ہے، مگر بعد کی کارروائی زیادہ وسیع ہے۔ Cabino کے برعکس ہسپتالوں اور سراؤں کو مسلسل ترجیح نہیں دیتا۔\\n\\nخوبیاں اور کمزوریاں: وسیع حربی صلاحیت ابتدائی دباؤ کو مسلسل ترقی کے ساتھ جوڑتی ہے۔ اتفاقی ہدف چننے سے کم اہم عمارتوں پر محنت خرچ ہو سکتی ہے۔ اس کی حدیں دشمن کی لڑنے کی طاقت کا Maxima جیسا تفصیلی تخمینہ نہیں دیتیں۔\\n\\nآزمانے کے لیے مقابلے کا طریقہ: جلد حملے کی توقع رکھیں۔ خوراک اور کارکنوں کی حفاظت کریں، توسیع کو چیلنج کریں اور اگر یہ اعلیٰ تربیت تک پہنچ جائے تو کھوجیوں کے حملوں کے لیے تیار رہیں۔",
+    "reason": "Revised against English source value and relevant glossary/context; original reviewer must recheck."
+  },
+  {
+    "key": "[AIWarrush-Profile]",
+    "severity": "major",
+    "problem": "Once sixunits canharvest is mistranslated when sixunitscanharvestcrops (فصل کاٹ سکیں). HARVEST capabilitycoversallmaterials; sourcequantitativetriggernotcropworksubset.",
+    "suggestion": "Replace جب چھ یونٹ فصل کاٹ سکیں with جب چھ یونٹ وسائل جمع کر سکیں. Keep4worker/1explorer/3warrior ratio andotherclauses.",
+    "disposition": "edited-pending-original-reviewer-recheck",
+    "before": "بنیادی حکمتِ عملی: حریفوں کی طویل معاشی یا تکنیکی تیاری مکمل ہونے سے پہلے حملہ کرتا ہے۔ توقع رکھتا ہے کہ بڑے امدادی نظام کی ضرورت پڑنے سے پہلے لڑائی کھیل کا فیصلہ کر دے گی۔\\n\\nمعیشت اور ترقی: جب چھ یونٹ فصل کاٹ سکیں تو پیداوار چار کارکن، ایک کھوجی اور تین جنگجو مقرر کرتا ہے۔ تربیت بھرنے پر بیرکیں بڑھاتا ہے، مگر نئی سراؤں کو محدود رکھتا ہے۔ بچ جانے والی تعمیراتی گنجائش اکثر ہسپتالوں اور حرکت کی تربیت پر لگتی ہے۔\\n\\nحملہ اور دفاع: دریافت شدہ دشمن عمارتوں پر پہرے کے علاقے لگاتا ہے تاکہ جنگجو مسلسل دباؤ ڈالیں۔ احتیاط سے جمع کی گئی لہر کا انتظار نہیں کرتا۔ رکاوٹ بننے والے وسائل صاف کرتا اور کچھ دوبارہ اگنے والے ذرائع کی حفاظت کرتا ہے۔\\n\\nپھل کی پالیسی: پھل کاٹنے سے روکتا ہے، یوں پھل سے زرہ پر پڑنے والی کمی سے بچتا اور Econo کی وفاداری بدلنے کی حکمتِ عملی نہیں اپناتا۔\\n\\nدیگر AI سے موازنہ: Numbi یا Castor سے زیادہ ابتدائی دباؤ پر قائم رہتا ہے۔ Nicowar بھی جارحانہ ابتدا کرتا ہے، مگر بعد میں زیادہ وسیع ترقی اور حربی منصوبہ اپناتا ہے۔\\n\\nخوبیاں اور کمزوریاں: سست ابتدا کو سزا دیتا اور جلد دفاع پر خرچ کرنے پر مجبور کرتا ہے۔ محدود منظم ترقی اور کم خوراکی سہارا رک جانے والے حملے کو مہنگا بناتے ہیں۔ زمین اور لمبے سفر اس کی ابتدائی برتری گھٹا سکتے ہیں۔\\n\\nآزمانے کے لیے مقابلے کا طریقہ: ابتدا ہی میں سراؤں اور چھتوں کی حفاظت کریں۔ محافظوں کے ساتھ کارکنوں کی جگہ بھی نئے یونٹ لائیں، تربیت بڑھائیں، پھر یلغار کی رفتار ٹوٹنے پر جوابی حملہ کریں۔\\n\\nکھوج: ابتدائی کھوج کے جھنڈے دشمن کے شروع کے مقامات براہِ راست استعمال کرتے ہیں۔ بعد کے حملہ آور علاقوں کے لیے نظر آنا ضروری ہے۔",
+    "after": "بنیادی حکمتِ عملی: حریفوں کی طویل معاشی یا تکنیکی تیاری مکمل ہونے سے پہلے حملہ کرتا ہے۔ توقع رکھتا ہے کہ بڑے امدادی نظام کی ضرورت پڑنے سے پہلے لڑائی کھیل کا فیصلہ کر دے گی۔\\n\\nمعیشت اور ترقی: جب چھ یونٹ وسائل جمع کر سکیں تو پیداوار چار کارکن، ایک کھوجی اور تین جنگجو مقرر کرتا ہے۔ تربیت بھرنے پر بیرکیں بڑھاتا ہے، مگر نئی سراؤں کو محدود رکھتا ہے۔ بچ جانے والی تعمیراتی گنجائش اکثر ہسپتالوں اور حرکت کی تربیت پر لگتی ہے۔\\n\\nحملہ اور دفاع: دریافت شدہ دشمن عمارتوں پر پہرے کے علاقے لگاتا ہے تاکہ جنگجو مسلسل دباؤ ڈالیں۔ احتیاط سے جمع کی گئی لہر کا انتظار نہیں کرتا۔ رکاوٹ بننے والے وسائل صاف کرتا اور کچھ دوبارہ اگنے والے ذرائع کی حفاظت کرتا ہے۔\\n\\nپھل کی پالیسی: پھل کاٹنے سے روکتا ہے، یوں پھل سے زرہ پر پڑنے والی کمی سے بچتا اور Econo کی وفاداری بدلنے کی حکمتِ عملی نہیں اپناتا۔\\n\\nدیگر AI سے موازنہ: Numbi یا Castor سے زیادہ ابتدائی دباؤ پر قائم رہتا ہے۔ Nicowar بھی جارحانہ ابتدا کرتا ہے، مگر بعد میں زیادہ وسیع اپ گریڈ اور حربی منصوبہ اپناتا ہے۔\\n\\nخوبیاں اور کمزوریاں: سست ابتدا کو سزا دیتا اور جلد دفاع پر خرچ کرنے پر مجبور کرتا ہے۔ محدود منظم اپ گریڈ اور کم خوراکی سہارا رک جانے والے حملے کو مہنگا بناتے ہیں۔ زمین اور لمبے سفر اس کی ابتدائی برتری گھٹا سکتے ہیں۔\\n\\nآزمانے کے لیے مقابلے کا طریقہ: ابتدا ہی میں سراؤں اور چھتوں کی حفاظت کریں۔ محافظوں کے ساتھ کارکنوں کی جگہ بھی نئے یونٹ لائیں، تربیت بڑھائیں، پھر یلغار کی رفتار ٹوٹنے پر جوابی حملہ کریں۔\\n\\nکھوج: ابتدائی کھوج کے جھنڈے دشمن کے شروع کے مقامات براہِ راست استعمال کرتے ہیں۔ بعد کے حملہ آور علاقوں کے لیے نظر آنا ضروری ہے۔",
+    "reason": "Revised against English source value and relevant glossary/context; original reviewer must recheck."
+  },
+  {
+    "key": "[AICabino-Profile]",
+    "severity": "minor",
+    "problem": "وسیع بستی تعمیر اور ترقی کرتا is malformed coordination and hidesbuildingupgradeoperation; source buildsandupgrades settlement.",
+    "suggestion": "ایک وسیع بستی بناتا اور اس کی عمارتوں کو اپ گریڈ کرتا ہے، سراؤں اور میناروں کا عملہ سنبھالتا ہے، عمارتوں کے اردگرد صفائی کرتا اور دوبارہ اگنے والے وسائل بچاتا ہے۔",
+    "disposition": "edited-pending-original-reviewer-recheck",
+    "before": "بنیادی حکمتِ عملی: یونٹوں کی پیداوار کو تعمیر، ترقی، دفاع، حملوں اور کھوج میں بانٹتا ہے۔ الگ منتظم یونٹ مانگتے اور مختص کرتے ہیں، یوں معیشت اور فوج ساتھ ترقی کرتی ہیں۔\\n\\nمعیشت اور ترقی: وسیع بستی تعمیر اور ترقی کرتا، سراؤں اور میناروں کا عملہ سنبھالتا، عمارتوں کے اردگرد صفائی کرتا اور دوبارہ اگنے والے وسائل بچاتا ہے۔ پھل کی کھوج کرتا اور وفاداری بدلوانے کے لیے خوراک کی دعوت دیتا ہے۔\\n\\nحملہ اور دفاع: ایک دشمن چنتا اور پہلے ہسپتالوں، پھر سراؤں، پھر بیرکوں کو ترجیح دیتا ہے۔ بیک وقت چار تک حملے سنبھالتا ہے؛ دستیابی اور قریبی دشمنوں کے مطابق عموماً ہر ہدف کو آٹھ سے بیس جنگجو دیتا ہے۔ خطرے میں موجود عمارتوں کے اردگرد الگ دفاعی جھنڈے لگاتا ہے۔\\n\\nتربیت: حملے کے لیے کافی موزوں جنگجو اور مکمل بیرک درکار ہے، مگر اعلیٰ ترین ٹیکنالوجی کا انتظار نہیں کرتا۔ مسلسل ترقی اور تربیت بعد کے حملے مضبوط بناتی ہیں۔\\n\\nدیگر AI سے موازنہ: Nicowar سے زیادہ باقاعدگی سے امدادی عمارتیں تباہ کرتا ہے۔ Maxima کی جمع شدہ لہروں کے مقابل اپنے حملے زیادہ پھیلاتا اور مختلف ضرورتوں کو سنبھالنے کے لیے یونٹ مختص کرتا ہے۔\\n\\nخوبیاں اور کمزوریاں: ترقی، تربیت، دفاع اور کئی حملے یکجا کرتا ہے۔ خوراک اور علاج تباہ کرنا پوری بستی کمزور کر سکتا ہے۔ اتفاقی حریف چننے اور عمارتوں کی طے شدہ ترجیحات سے مواقع چھوٹ سکتے ہیں؛ کئی حملے اس کی فوج بانٹ سکتے ہیں۔\\n\\nآزمانے کے لیے مقابلے کا طریقہ: ہسپتالوں اور سراؤں کی حفاظت کریں۔ کھلی توسیع کو چیلنج کریں اور ہر الگ حملے کے خلاف محافظ جمع کریں۔ کئی محاذ سنبھالنے کے قابل ہونے سے پہلے اس کی خوراک یا تربیت کو نقصان پہنچائیں۔\\n\\nکھوج: حملہ چننے والا نظام واضح طور پر نظر آنے کی جانچ کیے بغیر دشمن عمارتوں کی فہرست پڑھتا ہے۔ بعض معاشی موازنے دشمن کے اعداد و شمار براہِ راست استعمال کرتے ہیں۔",
+    "after": "بنیادی حکمتِ عملی: یونٹوں کی پیداوار کو تعمیر، اپ گریڈ، دفاع، حملوں اور کھوج میں بانٹتا ہے۔ الگ منتظم یونٹ مانگتے اور مختص کرتے ہیں، یوں معیشت اور فوج ساتھ ترقی کرتی ہیں۔\\n\\nمعیشت اور ترقی: ایک وسیع بستی بناتا اور اس کی عمارتوں کو اپ گریڈ کرتا ہے، سراؤں اور میناروں کا عملہ سنبھالتا ہے، عمارتوں کے اردگرد صفائی کرتا اور دوبارہ اگنے والے وسائل بچاتا ہے۔ پھل کی کھوج کرتا اور وفاداری بدلوانے کے لیے خوراک کی دعوت دیتا ہے۔\\n\\nحملہ اور دفاع: ایک دشمن چنتا اور پہلے ہسپتالوں، پھر سراؤں، پھر بیرکوں کو ترجیح دیتا ہے۔ بیک وقت چار تک حملے سنبھالتا ہے؛ دستیابی اور قریبی دشمنوں کے مطابق عموماً ہر ہدف کو آٹھ سے بیس جنگجو دیتا ہے۔ خطرے میں موجود عمارتوں کے اردگرد الگ دفاعی جھنڈے لگاتا ہے۔\\n\\nتربیت: حملے کے لیے کافی موزوں جنگجو اور مکمل بیرک درکار ہے، مگر اعلیٰ ترین ٹیکنالوجی کا انتظار نہیں کرتا۔ مسلسل اپ گریڈ اور تربیت بعد کے حملے مضبوط بناتی ہیں۔\\n\\nدیگر AI سے موازنہ: Nicowar سے زیادہ باقاعدگی سے امدادی عمارتیں تباہ کرتا ہے۔ Maxima کی جمع شدہ لہروں کے مقابل اپنے حملے زیادہ پھیلاتا اور مختلف ضرورتوں کو سنبھالنے کے لیے یونٹ مختص کرتا ہے۔\\n\\nخوبیاں اور کمزوریاں: ترقی، تربیت، دفاع اور کئی حملے یکجا کرتا ہے۔ خوراک اور علاج تباہ کرنا پوری بستی کمزور کر سکتا ہے۔ اتفاقی حریف چننے اور عمارتوں کی طے شدہ ترجیحات سے مواقع چھوٹ سکتے ہیں؛ کئی حملے اس کی فوج بانٹ سکتے ہیں۔\\n\\nآزمانے کے لیے مقابلے کا طریقہ: ہسپتالوں اور سراؤں کی حفاظت کریں۔ کھلی توسیع کو چیلنج کریں اور ہر الگ حملے کے خلاف محافظ جمع کریں۔ کئی محاذ سنبھالنے کے قابل ہونے سے پہلے اس کی خوراک یا تربیت کو نقصان پہنچائیں۔\\n\\nکھوج: حملہ چننے والا نظام واضح طور پر نظر آنے کی جانچ کیے بغیر دشمن عمارتوں کی فہرست پڑھتا ہے۔ بعض معاشی موازنے دشمن کے اعداد و شمار براہِ راست استعمال کرتے ہیں۔",
+    "reason": "Revised against English source value and relevant glossary/context; original reviewer must recheck."
+  },
+  {
+    "key": "[Conquest only]",
+    "severity": "major",
+    "problem": "فتحِ علاقہ adds territorialcaptureobjective. Current rules victorydefeatsopposingcolonies; territoryannexation notrequired. Clarify actualcondition.",
+    "suggestion": "صرف حریف بستیوں کی شکست سے فتح",
+    "disposition": "edited-pending-original-reviewer-recheck",
+    "before": "صرف فتحِ علاقہ",
+    "after": "صرف حریف بستیوں کی شکست سے فتح",
+    "reason": "Revised against English source value and relevant glossary/context; original reviewer must recheck."
+  },
+  {
+    "key": "[Conquest or prestige]",
+    "severity": "major",
+    "problem": "Same addedterritorialcaptureimplication; distinguish colonydefeatfromprestigecondition.",
+    "suggestion": "حریف بستیوں کی شکست یا وقار سے فتح",
+    "disposition": "edited-pending-original-reviewer-recheck",
+    "before": "فتحِ علاقہ یا وقار",
+    "after": "حریف بستیوں کی شکست یا وقار سے فتح",
+    "reason": "Revised against English source value and relevant glossary/context; original reviewer must recheck."
+  },
+  {
+    "key": "[Uncontrolled]",
+    "severity": "minor",
+    "problem": "بے قابو means outofcontrol/uncontrollable; actual TeamDisplay.cpp:17–21 uses this when playernameempty, notrampagingbehavior.",
+    "suggestion": "بغیر کھلاڑی",
+    "disposition": "edited-pending-original-reviewer-recheck",
+    "before": "بے قابو",
+    "after": "بغیر کھلاڑی",
+    "reason": "Revised against English source value and relevant glossary/context; original reviewer must recheck."
+  },
+  {
+    "key": "[Your %0 are under attack]",
+    "severity": "minor",
+    "problem": "آپ کی disagrees with masculineunitnames کارکن/کھوجی/جنگجو. GameEvent.cpp:54 passes getUnitName(typeNum), not femininebuildingname.",
+    "suggestion": "آپ کے %0 پر حملہ ہو رہا ہے",
+    "disposition": "edited-pending-original-reviewer-recheck",
+    "before": "آپ کی %0 پر حملہ ہو رہا ہے",
+    "after": "آپ کے %0 پر حملہ ہو رہا ہے",
+    "reason": "Revised against English source value and relevant glossary/context; original reviewer must recheck."
+  },
+  {
+    "key": "[Win through conquest]",
+    "severity": "major",
+    "problem": "فتحِ علاقہ adds territorialcapture aswincondition, unlike actualcolonydefeat. Match Conquestlabels correction.",
+    "suggestion": "حریف بستیوں کو شکست دے کر جیتیں",
+    "disposition": "edited-pending-original-reviewer-recheck",
+    "before": "فتحِ علاقہ کے ذریعے جیتیں",
+    "after": "حریف بستیوں کو شکست دے کر جیتیں",
+    "reason": "Revised against English source value and relevant glossary/context; original reviewer must recheck."
+  },
+  {
+    "key": "[Amphitheatre]",
+    "severity": "major",
+    "problem": "نیم دائرہ میدان explicitly semicircle, but AmphitheatreGenerator.cpp:30–50,152–154 builds concentricfullrings allroundcentralpit. Misdescribes selectorlandscapegeometry.",
+    "suggestion": "حلقہ دار میدان",
+    "disposition": "edited-pending-original-reviewer-recheck",
+    "before": "نیم دائرہ میدان",
+    "after": "حلقہ دار میدان",
+    "reason": "Revised against English source value and relevant glossary/context; original reviewer must recheck."
+  },
+  {
+    "key": "[Terrace width]",
+    "severity": "minor",
+    "problem": "زینے means stair, but controlchangeswidth ofgroundterracebetweenconcentricwalls, not stairs/ramps (separateRampwidth).",
+    "suggestion": "ہموار زمینی پٹی کی چوڑائی",
+    "disposition": "edited-pending-original-reviewer-recheck",
+    "before": "زینے کی چوڑائی",
+    "after": "ہموار زمینی پٹی کی چوڑائی",
+    "reason": "Revised against English source value and relevant glossary/context; original reviewer must recheck."
+  },
+  {
+    "key": "[An amphitheatre needs at least two colonies.]",
+    "severity": "major",
+    "problem": "Match proposed حلقہ دار میدان selector; current نیم دائرہ explicitlysemicircle contraryfullringgeometry.",
+    "suggestion": "حلقہ دار میدان کے لیے کم از کم دو بستیاں درکار ہیں۔",
+    "disposition": "edited-pending-original-reviewer-recheck",
+    "before": "نیم دائرہ میدان کے لیے کم از کم دو بستیاں درکار ہیں۔",
+    "after": "حلقہ دار میدان کے لیے کم از کم دو بستیاں درکار ہیں۔",
+    "reason": "Revised against English source value and relevant glossary/context; original reviewer must recheck."
+  },
+  {
+    "key": "[The amphitheatre does not fit this map; use a bigger map, fewer rings, narrower terraces or fewer colonies.]",
+    "severity": "major",
+    "problem": "Samehalf-circle mislabel plus terraces translated stairs; keepgeometrylabel andgroundterrace meaning.",
+    "suggestion": "حلقہ دار میدان اس نقشے میں نہیں سما سکتا؛ بڑا نقشہ، کم حلقے، تنگ ہموار زمینی پٹیاں یا کم بستیاں استعمال کریں۔",
+    "disposition": "edited-pending-original-reviewer-recheck",
+    "before": "نیم دائرہ میدان اس نقشے میں نہیں سما سکتا؛ بڑا نقشہ، کم حلقے، تنگ زینے یا کم بستیاں استعمال کریں۔",
+    "after": "حلقہ دار میدان اس نقشے میں نہیں سما سکتا؛ بڑا نقشہ، کم حلقے، تنگ ہموار زمینی پٹیاں یا کم بستیاں استعمال کریں۔",
+    "reason": "Revised against English source value and relevant glossary/context; original reviewer must recheck."
+  },
+  {
+    "key": "[Grain]",
+    "severity": "major",
+    "problem": "رخ meansdirection; sharedcontrol in Fingerprint is numericshapeelongation/stretch (stretchX grows withgrain), not orientationonly. Drumlin directionchoices can be understood as directionofstretch.",
+    "suggestion": "شکل کا کھنچاؤ",
+    "disposition": "edited-pending-original-reviewer-recheck",
+    "before": "رخ",
+    "after": "شکل کا کھنچاؤ",
+    "reason": "Revised against English source value and relevant glossary/context; original reviewer must recheck."
+  },
+  {
+    "key": "[No upgrades]",
+    "severity": "minor",
+    "problem": "Generic ترقی نہیں can mean no development atall, while onlytraining/buildingupgradesdisabled. Match concreteoperation اپ گریڈ.",
+    "suggestion": "اپ گریڈ بند",
+    "disposition": "edited-pending-original-reviewer-recheck",
+    "before": "ترقی نہیں",
+    "after": "اپ گریڈ بند",
+    "reason": "Revised against English source value and relevant glossary/context; original reviewer must recheck."
+  },
+  {
+    "key": "[Stats upgrades]",
+    "severity": "minor",
+    "problem": "ترقیاں ambiguouslygeneralprogress; count is completedconcreteupgrades. Alignterm اپ گریڈ.",
+    "suggestion": "اپ گریڈ",
+    "disposition": "edited-pending-original-reviewer-recheck",
+    "before": "ترقیاں",
+    "after": "اپ گریڈ",
+    "reason": "Revised against English source value and relevant glossary/context; original reviewer must recheck."
+  },
+  {
+    "key": "[Stats blocked units]",
+    "severity": "major",
+    "problem": "رکے ہوئے merelystopped includesidle/pausedunits, while thisstat specificallyblockedmovement/congestion. Use stuckunits terminology.",
+    "suggestion": "پھنسے ہوئے یونٹ S/C",
+    "disposition": "edited-pending-original-reviewer-recheck",
+    "before": "رکے ہوئے یونٹ S/C",
+    "after": "پھنسے ہوئے یونٹ S/C",
+    "reason": "Revised against English source value and relevant glossary/context; original reviewer must recheck."
+  },
+  {
+    "key": "[Stats current blocked units]",
+    "severity": "major",
+    "problem": "Same stoppedvsblockedsemantic distinction; notall stationaryunits.",
+    "suggestion": "اس وقت پھنسے ہوئے یونٹ",
+    "disposition": "edited-pending-original-reviewer-recheck",
+    "before": "فی الحال رکے ہوئے یونٹ",
+    "after": "اس وقت پھنسے ہوئے یونٹ",
+    "reason": "Revised against English source value and relevant glossary/context; original reviewer must recheck."
+  },
+  {
+    "key": "[Stats structural units]",
+    "severity": "minor",
+    "problem": "Align blockedmovement terminology with linkedS/Cblockedlegend, preserving structuralcause.",
+    "suggestion": "بناوٹ کی وجہ سے پھنسے ہوئے یونٹ",
+    "disposition": "edited-pending-original-reviewer-recheck",
+    "before": "بناوٹ کی وجہ سے رکے یونٹ",
+    "after": "بناوٹ کی وجہ سے پھنسے ہوئے یونٹ",
+    "reason": "Revised against English source value and relevant glossary/context; original reviewer must recheck."
+  },
+  {
+    "key": "[Minimum terminal district side]",
+    "severity": "minor",
+    "problem": "آخری ضلع کی کم از کم ضلع کی لمبائی repeats ضلع with twosenses (district/geometryside), making label hardtounderstand. Sourceleafdistrict minimumsidelength.",
+    "suggestion": "آخری قطعے کے کنارے کی کم از کم لمبائی",
+    "disposition": "edited-pending-original-reviewer-recheck",
+    "before": "آخری ضلع کی کم از کم ضلع کی لمبائی",
+    "after": "آخری قطعے کے کنارے کی کم از کم لمبائی",
+    "reason": "Revised against English source value and relevant glossary/context; original reviewer must recheck."
+  },
+  {
+    "key": "[Paddy depth]",
+    "severity": "major",
+    "problem": "دھان کی گہرائی suggests crop/waterdepth. KarstTowersGenerator.cpp:827 computes squaredgrounddistance fromriver usingpaddyDepth; itwidensbankfieldribbon, notverticaldepth.",
+    "suggestion": "کنارے کے کھیتوں کی چوڑائی",
+    "disposition": "edited-pending-original-reviewer-recheck",
+    "before": "دھان کی گہرائی",
+    "after": "کنارے کے کھیتوں کی چوڑائی",
+    "reason": "Revised against English source value and relevant glossary/context; original reviewer must recheck."
+  },
+  {
+    "key": "[Flooded terraces]",
+    "severity": "major",
+    "problem": "پانی بھرے زینے meanswaterfilledstairs; actualKarstcontrolfloodspaddyfieldribbons (KarstTowersGenerator.cpp:89–95,898–904), notstairs.",
+    "suggestion": "پانی بھرے کھیت",
+    "disposition": "edited-pending-original-reviewer-recheck",
+    "before": "پانی بھرے زینے",
+    "after": "پانی بھرے کھیت",
+    "reason": "Revised against English source value and relevant glossary/context; original reviewer must recheck."
+  },
+  {
+    "key": "[Portage depth]",
+    "severity": "major",
+    "problem": "پورٹیج کی گہرائی leaves misleadingwaterdepthreading inlakelandscape. PortageLakesGenerator.cpp:650–693 leavesdepthrows ofstructuralwood tocut; parameterforestplugthickness.",
+    "suggestion": "کاٹے جانے والے جنگل کی موٹائی",
+    "disposition": "edited-pending-original-reviewer-recheck",
+    "before": "پورٹیج کی گہرائی",
+    "after": "کاٹے جانے والے جنگل کی موٹائی",
+    "reason": "Revised against English source value and relevant glossary/context; original reviewer must recheck."
+  },
+  {
+    "key": "[Stream reach]",
+    "severity": "minor",
+    "problem": "ندی کی رسائی can sound like unitaccess tostream; controlsetsstreamextent/length alongalluvialfan (BajadaGenerator.cpp reachfactor).",
+    "suggestion": "ندی کی لمبائی",
+    "disposition": "edited-pending-original-reviewer-recheck",
+    "before": "ندی کی رسائی",
+    "after": "ندی کی لمبائی",
+    "reason": "Revised against English source value and relevant glossary/context; original reviewer must recheck."
+  },
+  {
+    "key": "[Fault displacement]",
+    "severity": "minor",
+    "problem": "درار کی سرکاؤ مقدار has unnaturalnoun/genitiveorder.",
+    "suggestion": "درار کے ساتھ سرکاؤ کی مقدار",
+    "disposition": "edited-pending-original-reviewer-recheck",
+    "before": "درار کی سرکاؤ مقدار",
+    "after": "درار کے ساتھ سرکاؤ کی مقدار",
+    "reason": "Revised against English source value and relevant glossary/context; original reviewer must recheck."
+  },
+  {
+    "key": "[AIMaxima-Profile]",
+    "severity": "minor",
+    "problem": "دیکھی گئی یونٹوں has feminineagreement for masculineیونٹ; فارغ مواقع unnatural fortrainingopportunities; دوست خوراکی عمارتوں awkward friendlysidemodifier; فوجی نقصان کا متبادل برقرار incomplete replacementphrase.",
+    "suggestion": "Use دیکھے گئے یونٹوں; تربیت کے لیے خالی وقت; اپنی یا اتحادی خوراکی عمارتوں; in strengthsclause آبادی کی بڑھوتری اور فوجی نقصانات کی تلافی جاری رکھتا ہے. Preserve4consecutivefailures/continuousreinforcement andobserved-vs-hiddenintelligencedistinctions.",
+    "disposition": "edited-pending-original-reviewer-recheck",
+    "before": "بنیادی حکمتِ عملی: خوراک، کارکن، پیدائش، تربیت، تعمیر اور لڑائی کو ایک دوسرے سے مقابل ضرورتیں سمجھتا ہے۔ اپنی فوج کا سائز جزوی طور پر دشمن کی اندازاً طاقت کے مطابق رکھتا ہے، پھر اس فوج کو مؤثر انداز سے ہدف تک پہنچانے کی کوشش کرتا ہے۔\\n\\nمعیشت اور ترقی: خوراک اور محنت کے مطابق پیدائشوں کا حساب رکھتا، تربیت کے لیے فارغ مواقع بچاتا اور فوجی پیداوار کی ضرورت پر اضافی کارکن بڑھانا روک دیتا ہے۔ تربیتی گنجائش بڑھاتا ہے اور ترقی کے لیے بیک وقت بہت سی عمارتیں بند کرنے سے بچتا ہے۔\\n\\nکھوج اور فیصلے: دیکھی گئی یونٹوں اور سابقہ مشاہدات کی مدد سے، تیار کردہ ماڈل کے ذریعے دشمن فوج کا تخمینہ لگاتا ہے۔ ہدف کی اہمیت، فاصلہ، مینار، کھلے کارکن اور ہدف پر قائم رہنا فیصلے میں شامل ہیں۔ پھل کی مہمیں خوراک کے تنوع اور وفاداری کی تبدیلی میں مدد دیتی ہیں۔\\n\\nحملہ اور دفاع: تربیت اور دفاع کے لیے جنگجو مختص کرتا ہے، پھر لہریں بھیجنے سے پہلے موزوں زمینی فوج کو دوست خوراکی عمارتوں کے قریب جمع کرتا ہے۔ مقامی دفاعی ردِعمل استعمال کرتا اور بستی تک آنے والے راستوں کا جائزہ لیتا ہے۔\\n\\nحملے رکنے پر: مسلسل چار بار لہر ہدف تک نہ پہنچے تو مسلسل کمک پانے والے حملہ آور جھنڈوں پر منتقل ہو جاتا ہے۔ پانی اور زمین پر ہونے والے حملے بھی مسلسل کمک استعمال کر سکتے ہیں۔ یہ متبادل طریقہ فوج جمع ہونے سے پہلے ہر رکاوٹ حل نہیں کرتا۔\\n\\nدیگر AI سے موازنہ: خوراک، تربیت، معلومات اور تعیناتی کو زیادہ مضبوطی سے جوڑتا ہے۔ Cabino کئی عمارتوں پر حملوں پر زور دیتا ہے؛ Maxima اندازاً ضرورت اور جمع شدہ فوج پہنچانے پر زور دیتا ہے۔\\n\\nخوبیاں اور کمزوریاں: خوراک کے دباؤ اور دیکھی گئی دھمکیوں کے مطابق بدلتے ہوئے ترقی اور فوجی نقصان کا متبادل برقرار رکھتا ہے۔ اسے خوراک، تربیتی گنجائش اور جمع ہونے کے لیے کھلی جگہ چاہیے؛ ہجوم اور لمبے راستے فوج کی ترسیل خراب کر سکتے ہیں۔\\n\\nآزمانے کے لیے مقابلے کا طریقہ: لہریں جمع ہونے سے پہلے کھلے خوراکی ذرائع، سراؤں اور بیرکوں کو چیلنج کریں۔ رسد پانے والے محافظ اکٹھے رکھیں اور کمک کے راستے توڑیں۔ پہلی لہر کے بعد بھی بار بار دباؤ کی توقع رکھیں۔\\n\\nکھوج: فوج کے تخمینے دیکھی گئی معلومات اور مشاہدات کی تاریخ استعمال کرتے ہیں، دشمن کی پوشیدہ کل فوج نہیں۔",
+    "after": "بنیادی حکمتِ عملی: خوراک، کارکن، پیدائش، تربیت، تعمیر اور لڑائی کو ایک دوسرے سے مقابل ضرورتیں سمجھتا ہے۔ اپنی فوج کا سائز جزوی طور پر دشمن کی اندازاً طاقت کے مطابق رکھتا ہے، پھر اس فوج کو مؤثر انداز سے ہدف تک پہنچانے کی کوشش کرتا ہے۔\\n\\nمعیشت اور ترقی: خوراک اور محنت کے مطابق پیدائشوں کا حساب رکھتا، تربیت کے لیے خالی وقت بچاتا اور فوجی پیداوار کی ضرورت پر اضافی کارکن بڑھانا روک دیتا ہے۔ تربیتی گنجائش بڑھاتا ہے اور اپ گریڈ کے لیے بیک وقت بہت سی عمارتیں بند کرنے سے بچتا ہے۔\\n\\nکھوج اور فیصلے: دیکھے گئے یونٹوں اور سابقہ مشاہدات کی مدد سے، تیار کردہ ماڈل کے ذریعے دشمن فوج کا تخمینہ لگاتا ہے۔ ہدف کی اہمیت، فاصلہ، مینار، کھلے کارکن اور ہدف پر قائم رہنا فیصلے میں شامل ہیں۔ پھل کی مہمیں خوراک کے تنوع اور وفاداری کی تبدیلی میں مدد دیتی ہیں۔\\n\\nحملہ اور دفاع: تربیت اور دفاع کے لیے جنگجو مختص کرتا ہے، پھر لہریں بھیجنے سے پہلے موزوں زمینی فوج کو اپنی یا اتحادی خوراکی عمارتوں کے قریب جمع کرتا ہے۔ مقامی دفاعی ردِعمل استعمال کرتا اور بستی تک آنے والے راستوں کا جائزہ لیتا ہے۔\\n\\nحملے رکنے پر: مسلسل چار بار لہر ہدف تک نہ پہنچے تو مسلسل کمک پانے والے حملہ آور جھنڈوں پر منتقل ہو جاتا ہے۔ پانی اور زمین پر ہونے والے حملے بھی مسلسل کمک استعمال کر سکتے ہیں۔ یہ متبادل طریقہ فوج جمع ہونے سے پہلے ہر رکاوٹ حل نہیں کرتا۔\\n\\nدیگر AI سے موازنہ: خوراک، تربیت، معلومات اور تعیناتی کو زیادہ مضبوطی سے جوڑتا ہے۔ Cabino کئی عمارتوں پر حملوں پر زور دیتا ہے؛ Maxima اندازاً ضرورت اور جمع شدہ فوج پہنچانے پر زور دیتا ہے۔\\n\\nخوبیاں اور کمزوریاں: خوراک کے دباؤ اور دیکھی گئی دھمکیوں کے مطابق بدلتے ہوئے آبادی کی بڑھوتری اور فوجی نقصانات کی تلافی جاری رکھتا ہے۔ اسے خوراک، تربیتی گنجائش اور جمع ہونے کے لیے کھلی جگہ چاہیے؛ ہجوم اور لمبے راستے فوج کی ترسیل خراب کر سکتے ہیں۔\\n\\nآزمانے کے لیے مقابلے کا طریقہ: لہریں جمع ہونے سے پہلے کھلے خوراکی ذرائع، سراؤں اور بیرکوں کو چیلنج کریں۔ رسد پانے والے محافظ اکٹھے رکھیں اور کمک کے راستے توڑیں۔ پہلی لہر کے بعد بھی بار بار دباؤ کی توقع رکھیں۔\\n\\nکھوج: فوج کے تخمینے دیکھی گئی معلومات اور مشاہدات کی تاریخ استعمال کرتے ہیں، دشمن کی پوشیدہ کل فوج نہیں۔",
+    "reason": "Revised against English source value and relevant glossary/context; original reviewer must recheck."
+  },
+  {
+    "key": "[Edit map]",
+    "severity": "minor",
+    "problem": "نقشہ ترمیم کریں lacks postposition, sameissue lowercaseeditmap.",
+    "suggestion": "نقشے میں ترمیم کریں",
+    "disposition": "edited-pending-original-reviewer-recheck",
+    "before": "نقشہ ترمیم کریں",
+    "after": "نقشے میں ترمیم کریں",
+    "reason": "Revised against English source value and relevant glossary/context; original reviewer must recheck."
+  },
+  {
+    "key": "[Share food vision]",
+    "severity": "major",
+    "problem": "خوراک کی نظر means seeingfood/content ratherthanvisibilityaroundfeedingbuildings; Team.h sharedVisionFood andfV explanation identify buildingvision.",
+    "suggestion": "خوراک دینے والی عمارتوں کی حدِ نگاہ بانٹیں",
+    "disposition": "edited-pending-original-reviewer-recheck",
+    "before": "خوراک کی نظر بانٹیں",
+    "after": "خوراک دینے والی عمارتوں کی حدِ نگاہ بانٹیں",
+    "reason": "Revised against English source value and relevant glossary/context; original reviewer must recheck."
+  },
+  {
+    "key": "[Share vision]",
+    "severity": "minor",
+    "problem": "نظر differs from establishedV/fV/mV حدِ نگاہ; use consistentvisibilityterm.",
+    "suggestion": "حدِ نگاہ بانٹیں",
+    "disposition": "edited-pending-original-reviewer-recheck",
+    "before": "نظر بانٹیں",
+    "after": "حدِ نگاہ بانٹیں",
+    "reason": "Revised against English source value and relevant glossary/context; original reviewer must recheck."
+  },
+  {
+    "key": "[Alliance and shared vision are fixed for this match.]",
+    "severity": "minor",
+    "problem": "Align sharedvisionwith establishedحدِ نگاہ ratherthan genericنظر.",
+    "suggestion": "اس میچ کے لیے اتحاد اور مشترکہ حدِ نگاہ طے ہیں۔",
+    "disposition": "edited-pending-original-reviewer-recheck",
+    "before": "اس میچ کے لیے اتحاد اور مشترکہ نظر طے ہیں۔",
+    "after": "اس میچ کے لیے اتحاد اور مشترکہ حدِ نگاہ طے ہیں۔",
+    "reason": "Revised against English source value and relevant glossary/context; original reviewer must recheck."
+  },
+  {
+    "key": "[Show palette]",
+    "severity": "major",
+    "problem": "رنگوں کی تختی makes thisacolorpalette, butPhoneEditor opens terrain/resource/building/unitbrushpalette. Actualfunctionnotcolorpicker.",
+    "suggestion": "برشوں کا پینل دکھائیں",
+    "disposition": "edited-pending-original-reviewer-recheck",
+    "before": "رنگوں کی تختی دکھائیں",
+    "after": "برشوں کا پینل دکھائیں",
+    "reason": "Revised against English source value and relevant glossary/context; original reviewer must recheck."
+  },
+  {
+    "key": "[conn card input paused]",
+    "severity": "major",
+    "problem": "احکامات رکے ہوئے can imply existingstandingorders stop; sourceonly pausesnewplayerinput duringcatchup while colonycontinues.",
+    "suggestion": "آپ موجودہ حالت تک پہنچ رہے ہیں · نئے احکامات دینا موقوف ہے",
+    "disposition": "edited-pending-original-reviewer-recheck",
+    "before": "آپ موجودہ حالت تک پہنچ رہے ہیں · احکامات رکے ہوئے ہیں",
+    "after": "آپ موجودہ حالت تک پہنچ رہے ہیں · نئے احکامات دینا موقوف ہے",
+    "reason": "Revised against English source value and relevant glossary/context; original reviewer must recheck."
+  },
+  {
+    "key": "[turn waiting for players]",
+    "severity": "minor",
+    "problem": "ہر کھلاڑی کے لوڈ ہونے treats actualpeopleasloadingassets. Sourceinformalplayerloadmeans theirgame.",
+    "suggestion": "تمام کھلاڑیوں کے کھیل لوڈ ہونے کا انتظار ہے…",
+    "disposition": "edited-pending-original-reviewer-recheck",
+    "before": "ہر کھلاڑی کے لوڈ ہونے کا انتظار ہے...",
+    "after": "تمام کھلاڑیوں کے کھیل لوڈ ہونے کا انتظار ہے…",
+    "reason": "Revised against English source value and relevant glossary/context; original reviewer must recheck."
+  },
+  {
+    "key": "[conn delay explanation %0 %1]",
+    "severity": "major",
+    "problem": "%0 سے کم اچھی can meanlessgood ratherthan delayunderthreshold; %1frompoor boundaryshouldincludeequalvalue unambiguously.",
+    "suggestion": "Keep first2sentences; endwith %0 سے کم: اچھا؛ %1 یا اس سے زیادہ: خراب۔",
+    "disposition": "edited-pending-original-reviewer-recheck",
+    "before": "تاخیر: آپ کے کلک سے اس کے سب کے لیے نافذ ہونے تک کا وقت۔ یہ آپ کے رابطے پر منحصر ہے، دوسرے کھلاڑیوں کے نہیں۔ %0 سے کم اچھی، %1 سے خراب۔",
+    "after": "تاخیر: آپ کے کلک سے اس کے سب کے لیے نافذ ہونے تک کا وقت۔ یہ آپ کے رابطے پر منحصر ہے، دوسرے کھلاڑیوں کے نہیں۔ %0 سے کم: اچھا؛ %1 یا اس سے زیادہ: خراب۔",
+    "reason": "Revised against English source value and relevant glossary/context; original reviewer must recheck."
+  },
+  {
+    "key": "[conn ping explanation %0 %1]",
+    "severity": "major",
+    "problem": "Samecategorythreshold ambiguity; giveexplicitcategoricalpredicates andinclusivepoorfrom.",
+    "suggestion": "پنگ: کھلاڑی اور ریلے کے درمیان آنے جانے کا وقت۔ %0 سے کم: اچھا؛ %1 یا اس سے زیادہ: خراب۔",
+    "disposition": "edited-pending-original-reviewer-recheck",
+    "before": "پنگ: کھلاڑی اور ریلے کے درمیان آنے جانے کا وقت۔ %0 سے کم اچھا، %1 سے خراب۔",
+    "after": "پنگ: کھلاڑی اور ریلے کے درمیان آنے جانے کا وقت۔ %0 سے کم: اچھا؛ %1 یا اس سے زیادہ: خراب۔",
+    "reason": "Revised against English source value and relevant glossary/context; original reviewer must recheck."
+  },
+  {
+    "key": "[hub also search %0]",
+    "severity": "minor",
+    "problem": "Searchqueue is location/destination ofsearch, notobjectbeingsearchedfor; addمیں aslocative.",
+    "suggestion": "%0 میں بھی تلاش کریں",
+    "disposition": "edited-pending-original-reviewer-recheck",
+    "before": "%0 بھی تلاش کریں",
+    "after": "%0 میں بھی تلاش کریں",
+    "reason": "Revised against English source value and relevant glossary/context; original reviewer must recheck."
+  },
+  {
+    "key": "[trust not official]",
+    "severity": "major",
+    "problem": "Targetwordorderwithoutکو makes server theactor notrunningproject; trustwarningmustsayprojectdoesnotoperateserver.",
+    "suggestion": "یہ سرور Globulation 2 منصوبے کے زیرِ انتظام نہیں ہے۔",
+    "disposition": "edited-pending-original-reviewer-recheck",
+    "before": "یہ سرور Globulation 2 منصوبہ نہیں چلاتا۔",
+    "after": "یہ سرور Globulation 2 منصوبے کے زیرِ انتظام نہیں ہے۔",
+    "reason": "Revised against English source value and relevant glossary/context; original reviewer must recheck."
+  },
+  {
+    "key": "[qm solo queue]",
+    "severity": "minor",
+    "problem": "اکیلی قطار meansalonequeue ratherthanqueueforsoloplayers.",
+    "suggestion": "اکیلے کھلاڑیوں کی قطار",
+    "disposition": "edited-pending-original-reviewer-recheck",
+    "before": "اکیلی قطار",
+    "after": "اکیلے کھلاڑیوں کی قطار",
+    "reason": "Revised against English source value and relevant glossary/context; original reviewer must recheck."
+  },
+  {
+    "key": "[qm cancel]",
+    "severity": "minor",
+    "problem": "Match politeactionlabel withgeneralCancel/settingsCancel.",
+    "suggestion": "منسوخ کریں",
+    "disposition": "edited-pending-original-reviewer-recheck",
+    "before": "منسوخ",
+    "after": "منسوخ کریں",
+    "reason": "Revised against English source value and relevant glossary/context; original reviewer must recheck."
+  },
+  {
+    "key": "[profile replays note]",
+    "severity": "major",
+    "problem": "Menu reference لوڈ کھیل doesnotmatch actualLoadgamelabel کھیل لوڈ کریں and has reversedwordorder. Preserve realmenunames; arrowdirection must be checked inRTLrendering.",
+    "suggestion": "ری پلے کھولنے پر سرور سے ڈاؤن لوڈ ہوتے ہیں؛ مقامی طور پر محفوظ کیے ہوئے ری پلے «کھیل لوڈ کریں ← ری پلے» میں رہتے ہیں۔",
+    "disposition": "edited-pending-original-reviewer-recheck",
+    "before": "ری پلے کھولنے پر سرور سے ڈاؤن لوڈ ہوتے ہیں؛ مقامی طور پر محفوظ کیے ہوئے ری پلے لوڈ کھیل ← ری پلے میں رہتے ہیں۔",
+    "after": "ری پلے کھولنے پر سرور سے ڈاؤن لوڈ ہوتے ہیں؛ مقامی طور پر محفوظ کیے ہوئے ری پلے «کھیل لوڈ کریں ← ری پلے» میں رہتے ہیں۔",
+    "reason": "Revised against English source value and relevant glossary/context; original reviewer must recheck."
+  },
+  {
+    "key": "[stat overview about]",
+    "severity": "minor",
+    "problem": "کالم کا عنوان کلک کریں needs locativeپر forclickinginUrdu.",
+    "suggestion": "Keeprest; change کالم کا عنوان کلک کریں to کالم کے عنوان پر کلک کریں.",
+    "disposition": "edited-pending-original-reviewer-recheck",
+    "before": "پورے میچ میں ہر بستی کے اعداد۔ جہاں زیادہ بہتر ہو، سب سے بڑی قدر نمایاں ہے؛ وقت کے ساتھ تبدیلی دیکھنے کے لیے کالم کا عنوان کلک کریں۔",
+    "after": "پورے میچ میں ہر بستی کے اعداد۔ جہاں زیادہ بہتر ہو، سب سے بڑی قدر نمایاں ہے؛ وقت کے ساتھ تبدیلی دیکھنے کے لیے کالم کے عنوان پر کلک کریں۔",
+    "reason": "Revised against English source value and relevant glossary/context; original reviewer must recheck."
+  },
+  {
+    "key": "[stat wheat harvested]",
+    "severity": "major",
+    "problem": "کاٹی گئی خوراک narrows genericfoodresourceharvesting tocropcutting, whereas foodcancomefromfish/othercustomresources.",
+    "suggestion": "جمع کی گئی خوراک",
+    "disposition": "edited-pending-original-reviewer-recheck",
+    "before": "کاٹی گئی خوراک",
+    "after": "جمع کی گئی خوراک",
+    "reason": "Revised against English source value and relevant glossary/context; original reviewer must recheck."
+  },
+  {
+    "key": "[stat wheat harvested about]",
+    "severity": "major",
+    "problem": "Samecuttingnarrowing plus nounorder can make کارکنوں کی modifyfood-producingresources ratherthanharvestactor.",
+    "suggestion": "خوراک پیدا کرنے والے وسائل سے کارکنوں کی جمع کی ہوئی کھیپیں۔ سرائے خوراک کو کھانوں میں بدلتی ہیں۔",
+    "disposition": "edited-pending-original-reviewer-recheck",
+    "before": "کارکنوں کی خوراک پیدا کرنے والے وسائل سے کاٹی ہوئی کھیپیں۔ سرائے خوراک کو کھانوں میں بدلتی ہیں۔",
+    "after": "خوراک پیدا کرنے والے وسائل سے کارکنوں کی جمع کی ہوئی کھیپیں۔ سرائے خوراک کو کھانوں میں بدلتی ہیں۔",
+    "reason": "Revised against English source value and relevant glossary/context; original reviewer must recheck."
+  },
+  {
+    "key": "[stat gathered about]",
+    "severity": "major",
+    "problem": "کاٹی ہوئی everymaterial iscropcuttingnotgenericgathering; nounphrase ہر مواد awkwardforanymaterialtype.",
+    "suggestion": "کارکنوں نے ہر قسم کے مواد کی کتنی کھیپیں جمع کیں۔ ہر قسم الگ دیکھنے کے لیے تقسیم کریں۔",
+    "disposition": "edited-pending-original-reviewer-recheck",
+    "before": "کارکنوں کی کاٹی ہوئی ہر مواد کی کھیپیں۔ ہر مواد الگ دیکھنے کے لیے تقسیم کریں۔",
+    "after": "کارکنوں نے ہر قسم کے مواد کی کتنی کھیپیں جمع کیں۔ ہر قسم الگ دیکھنے کے لیے تقسیم کریں۔",
+    "reason": "Revised against English source value and relevant glossary/context; original reviewer must recheck."
+  },
+  {
+    "key": "[stat growth nearby about]",
+    "severity": "minor",
+    "problem": "Replacecutloads withgatheredloads forconsistentallmaterials explanation.",
+    "suggestion": "Replace کاٹی ہوئی کھیپوں with جمع کی گئی کھیپوں; preserve32squares/growthpoints.",
+    "disposition": "edited-pending-original-reviewer-recheck",
+    "before": "بستی کی عمارتوں سے 32 خانوں کے اندر وسائل کے ذخائر میں کتنا مواد بڑھا، کاٹی ہوئی کھیپوں کے بجائے افزائش کے پوائنٹس میں۔ بستی سے کتنی قربت پر افزائش ہوئی، یہ دیکھنے کے لیے تقسیم کریں۔",
+    "after": "بستی کی عمارتوں سے 32 خانوں کے اندر وسائل کے ذخائر میں کتنا مواد بڑھا، جمع کی گئی کھیپوں کے بجائے افزائش کے پوائنٹس میں۔ بستی سے کتنی قربت پر افزائش ہوئی، یہ دیکھنے کے لیے تقسیم کریں۔",
+    "reason": "Revised against English source value and relevant glossary/context; original reviewer must recheck."
+  },
+  {
+    "key": "[stat spending about]",
+    "severity": "minor",
+    "problem": "Concretebuildingupgrades incorrectlygeneric ترقی, align operationterm.",
+    "suggestion": "Replace آخری ترقی پر with اپ گریڈ پر, keepingallothercategories.",
+    "disposition": "edited-pending-original-reviewer-recheck",
+    "before": "پہنچایا گیا مواد کہاں استعمال ہوا: کھانوں، نئے یونٹوں، مینار کی گولیوں، نئی عمارتوں یا ترقی پر۔",
+    "after": "پہنچایا گیا مواد کہاں استعمال ہوا: کھانوں، نئے یونٹوں، مینار کی گولیوں، نئی عمارتوں یا اپ گریڈ پر۔",
+    "reason": "Revised against English source value and relevant glossary/context; original reviewer must recheck."
+  },
+  {
+    "key": "[stat construction about]",
+    "severity": "minor",
+    "problem": "Buildingworkcategoriesupgrades shouldmatchاپگریڈ ratherthangeneraldevelopment ترقی.",
+    "suggestion": "مکمل تعمیراتی کام: نئی عمارتیں، اپ گریڈ اور مرمت۔",
+    "disposition": "edited-pending-original-reviewer-recheck",
+    "before": "مکمل تعمیراتی کام: نئی عمارتیں، ترقی اور مرمت۔",
+    "after": "مکمل تعمیراتی کام: نئی عمارتیں، اپ گریڈ اور مرمت۔",
+    "reason": "Revised against English source value and relevant glossary/context; original reviewer must recheck."
+  },
+  {
+    "key": "[stat attack about]",
+    "severity": "minor",
+    "problem": "کتنی زور feminineagreement incorrect for masculineزور.",
+    "suggestion": "Replace کتنی زور سے with کتنے زور سے; retaindamageandspeedboth.",
+    "disposition": "edited-pending-original-reviewer-recheck",
+    "before": "بستی کے جنگجوؤں کی مجموعی لڑنے کی طاقت کا اسکور: وہ کتنی زور سے اور کتنی تیزی سے وار کرتے ہیں۔",
+    "after": "بستی کے جنگجوؤں کی مجموعی لڑنے کی طاقت کا اسکور: وہ کتنے زور سے اور کتنی تیزی سے وار کرتے ہیں۔",
+    "reason": "Revised against English source value and relevant glossary/context; original reviewer must recheck."
+  },
+  {
+    "key": "[stat band upgrades]",
+    "severity": "minor",
+    "problem": "Use concreteupgradeoperationterm اپ گریڈ, notgeneralprogress ترقیاں.",
+    "suggestion": "اپ گریڈ",
+    "disposition": "edited-pending-original-reviewer-recheck",
+    "before": "ترقیاں",
+    "after": "اپ گریڈ",
+    "reason": "Revised against English source value and relevant glossary/context; original reviewer must recheck."
+  },
+  {
+    "key": "[stat band upgraded]",
+    "severity": "minor",
+    "problem": "ترقی یافتہ canmean generallydeveloped; chartcounter is completedbuildingupgrades.",
+    "suggestion": "اپ گریڈ شدہ",
+    "disposition": "edited-pending-original-reviewer-recheck",
+    "before": "ترقی یافتہ",
+    "after": "اپ گریڈ شدہ",
+    "reason": "Revised against English source value and relevant glossary/context; original reviewer must recheck."
+  },
+  {
+    "key": "[Upgrades]",
+    "severity": "minor",
+    "problem": "Align operationheading with standardاپگریڈ, preserveترقیforgeneraldevelopment.",
+    "suggestion": "اپ گریڈ",
+    "disposition": "edited-pending-original-reviewer-recheck",
+    "before": "ترقیاں",
+    "after": "اپ گریڈ",
+    "reason": "Revised against English source value and relevant glossary/context; original reviewer must recheck."
+  },
+  {
+    "key": "[stat work by job about]",
+    "severity": "minor",
+    "problem": "زیرِ ترقی عمارتیں means buildingsunderdevelopmentnotclearlylevelupgrade; sourceunderconstruction vsbeingupgraded separate.",
+    "suggestion": "Replace زیرِ تعمیر یا زیرِ ترقی عمارتیں with زیرِ تعمیر یا اپ گریڈ ہوتی عمارتیں.",
+    "disposition": "edited-pending-original-reviewer-recheck",
+    "before": "کتنے کارکن ہر قسم کی عمارت کو رسد پہنچا رہے تھے: چھتے (نئے یونٹ بنانے کے لیے)، سرائے (کھانے بنانے کے لیے)، زیرِ تعمیر یا زیرِ ترقی عمارتیں، یا مینار، اسکول اور بیرک جیسی دیگر عمارتیں۔",
+    "after": "کتنے کارکن ہر قسم کی عمارت کو رسد پہنچا رہے تھے: چھتے (نئے یونٹ بنانے کے لیے)، سرائے (کھانے بنانے کے لیے)، زیرِ تعمیر یا اپ گریڈ ہوتی عمارتیں، یا مینار، اسکول اور بیرک جیسی دیگر عمارتیں۔",
+    "reason": "Revised against English source value and relevant glossary/context; original reviewer must recheck."
+  },
+  {
+    "key": "[stat band sites]",
+    "severity": "minor",
+    "problem": "Samebuildingupgradeoperationconsistency.",
+    "suggestion": "تعمیر اور اپ گریڈ",
+    "disposition": "edited-pending-original-reviewer-recheck",
+    "before": "تعمیر اور ترقی",
+    "after": "تعمیر اور اپ گریڈ",
+    "reason": "Revised against English source value and relevant glossary/context; original reviewer must recheck."
+  },
+  {
+    "key": "[stat haul distance about]",
+    "severity": "major",
+    "problem": "فصل کاٹنے والا narrows genericresourceharvestingworker tocrops; allmaterialworkertransportdistanceincluded.",
+    "suggestion": "وسائل جمع کرنے والا کارکن اس عمارت سے اوسطاً کتنا دور تھا جسے وہ رسد دے رہا تھا، نقشے کے خانوں میں سیدھے فاصلے کے حساب سے۔",
+    "disposition": "edited-pending-original-reviewer-recheck",
+    "before": "فصل کاٹنے والا کارکن اس عمارت سے اوسطاً کتنا دور تھا جسے وہ رسد دے رہا تھا، نقشے کے خانوں میں سیدھے فاصلے کے حساب سے۔",
+    "after": "وسائل جمع کرنے والا کارکن اس عمارت سے اوسطاً کتنا دور تھا جسے وہ رسد دے رہا تھا، نقشے کے خانوں میں سیدھے فاصلے کے حساب سے۔",
+    "reason": "Revised against English source value and relevant glossary/context; original reviewer must recheck."
+  },
+  {
+    "key": "[stat band harvesting]",
+    "severity": "major",
+    "problem": "فصل کاٹنا misidentifies genericmaterialcollection ascropcutting.",
+    "suggestion": "وسائل جمع کرنا",
+    "disposition": "edited-pending-original-reviewer-recheck",
+    "before": "فصل کاٹنا",
+    "after": "وسائل جمع کرنا",
+    "reason": "Revised against English source value and relevant glossary/context; original reviewer must recheck."
+  },
+  {
+    "key": "[stat hauling about]",
+    "severity": "minor",
+    "problem": "Replacecuttingwithgenericgathering forallmaterials; sourcephasecanwood/stone/fish aswellascrops.",
+    "suggestion": "Replace وسائل تک چلنے، کاٹنے، مواد واپس لانے with وسائل تک چلنے، انہیں جمع کرنے، مواد واپس لانے.",
+    "disposition": "edited-pending-original-reviewer-recheck",
+    "before": "عمارتوں کو رسد دینے والے کارکن وسائل تک چلنے، کاٹنے، مواد واپس لانے، اور پہنچانے یا قابلِ رسائی وسیلے کے انتظار میں کیسے بٹے تھے۔ زیادہ وقت چلنے میں لگتا ہے، اس لیے قریب وسائل سے زیادہ کام ہوتا ہے۔",
+    "after": "عمارتوں کو رسد دینے والے کارکن وسائل تک چلنے، انہیں جمع کرنے، مواد واپس لانے، اور پہنچانے یا قابلِ رسائی وسیلے کے انتظار میں کیسے بٹے تھے۔ زیادہ وقت چلنے میں لگتا ہے، اس لیے قریب وسائل سے زیادہ کام ہوتا ہے۔",
+    "reason": "Revised against English source value and relevant glossary/context; original reviewer must recheck."
+  },
+  {
+    "key": "[Gold ore]",
+    "severity": "minor",
+    "problem": "دھات namesmetal, notore; depositresource shouldbedistinct fromprocessedGold/Metal. PrimaryDelhiEducation scienceUrdu classX uses کچ دھات forore, https://www.edudel.nic.in/welcome_folder/support_material_2021_22/10/10sm_science_urdu_2021_22.pdf.",
+    "suggestion": "سونے کی کچ دھات",
+    "disposition": "edited-pending-original-reviewer-recheck",
+    "before": "سونے کی دھات",
+    "after": "سونے کی کچ دھات",
+    "reason": "Revised against English source value and relevant glossary/context; original reviewer must recheck."
+  },
+  {
+    "key": "[Iron ore]",
+    "severity": "minor",
+    "problem": "دھات namesmetal, notore; depositresource shouldbedistinct fromprocessedGold/Metal. PrimaryDelhiEducation scienceUrdu classX uses کچ دھات forore, https://www.edudel.nic.in/welcome_folder/support_material_2021_22/10/10sm_science_urdu_2021_22.pdf.",
+    "suggestion": "لوہے کی کچ دھات",
+    "disposition": "edited-pending-original-reviewer-recheck",
+    "before": "لوہے کی دھات",
+    "after": "لوہے کی کچ دھات",
+    "reason": "Revised against English source value and relevant glossary/context; original reviewer must recheck."
+  },
+  {
+    "key": "[Portage Lakes cannot fit renewable shore fields beside every settlement.]",
+    "severity": "minor",
+    "problem": "Source limits failure to thisseed; target omits اس سیڈ پر and can sound like general impossibility for wholelandscape.",
+    "suggestion": "اس سیڈ پر پورٹیج جھیلوں میں ہر بستی کے پاس دوبارہ اگنے والے ساحلی کھیت نہیں سما سکتے۔",
+    "disposition": "not-applied-source-scope-disagreement",
+    "before": "پورٹیج جھیلوں میں ہر بستی کے پاس دوبارہ اگنے والے ساحلی کھیت نہیں سما سکتے۔",
+    "after": "پورٹیج جھیلوں میں ہر بستی کے پاس دوبارہ اگنے والے ساحلی کھیت نہیں سما سکتے۔",
+    "reason": "Frozen English does not include on this seed. Original target accurately states failure; no broader ability claim is added by an error notification. Orchestrator resolution requested."
+  },
+  {
+    "key": "[stat growth map about]",
+    "severity": "minor",
+    "problem": "کٹی ہوئی کھیپوں is unnatural and suggests cutcrops; statistic covers harvestedloads ofallmaterials.",
+    "suggestion": "نقشے بھر کے وسائل میں مواد کا ذخیرہ کتنا بڑھا؛ جمع کی گئی کھیپوں کے بجائے افزائش کے پوائنٹ میں۔ یہ ہر بستی کے لیے یکساں ہے۔",
+    "disposition": "edited-pending-original-reviewer-recheck",
+    "before": "نقشے بھر کے وسائل میں مواد کا ذخیرہ کتنا بڑھا؛ کٹی ہوئی کھیپوں کے بجائے افزائش کے پوائنٹ میں۔ یہ ہر بستی کے لیے یکساں ہے۔",
+    "after": "نقشے بھر کے وسائل میں مواد کا ذخیرہ کتنا بڑھا؛ جمع کی گئی کھیپوں کے بجائے افزائش کے پوائنٹ میں۔ یہ ہر بستی کے لیے یکساں ہے۔",
+    "reason": "Revised against English source value and relevant glossary/context; original reviewer must recheck."
+  },
+  {
+    "key": "[settings Press a key. Escape cancels capture. Use Bind Escape to assign Escape.]",
+    "severity": "minor",
+    "problem": "گرفت is a literal physicalgrip/capture and unclear for listeningtoakey. Namedbutton reference also lacks punctuationseparation; preserve exactEscape label.",
+    "suggestion": "کلید دبائیں۔ Escape سے کلید درج کرنا منسوخ ہو جاتا ہے۔ Escape کو شارٹ کٹ کے طور پر مقرر کرنے کے لیے «Escape مقرر کریں» استعمال کریں۔",
+    "disposition": "edited-pending-original-reviewer-recheck",
+    "before": "کلید دبائیں۔ Escape سے گرفت منسوخ ہوتی ہے۔ Escape مقرر کرنے کے لیے Escape مقرر کریں استعمال کریں۔",
+    "after": "کلید دبائیں۔ Escape سے کلید درج کرنا منسوخ ہو جاتا ہے۔ Escape کو شارٹ کٹ کے طور پر مقرر کرنے کے لیے «Escape مقرر کریں» استعمال کریں۔",
+    "reason": "Revised against English source value and relevant glossary/context; original reviewer must recheck."
+  },
+  {
+    "key": "[settings Cancel]",
+    "severity": "minor",
+    "problem": "Actionbutton currently adjective منسوخ ratherthan respectful imperative used elsewhere.",
+    "suggestion": "منسوخ کریں",
+    "disposition": "edited-pending-original-reviewer-recheck",
+    "before": "منسوخ",
+    "after": "منسوخ کریں",
+    "reason": "Revised against English source value and relevant glossary/context; original reviewer must recheck."
+  },
+  {
+    "key": "[settings Drag up zooms in]",
+    "severity": "minor",
+    "problem": "اوپر کھینچنے سے قریب is an incomplete phrase (nearwhat); settingsoptionshouldexplicitlyidentify zoom.",
+    "suggestion": "اوپر کھینچنے پر زوم اِن",
+    "disposition": "edited-pending-original-reviewer-recheck",
+    "before": "اوپر کھینچنے سے قریب",
+    "after": "اوپر کھینچنے پر زوم اِن",
+    "reason": "Revised against English source value and relevant glossary/context; original reviewer must recheck."
+  },
+  {
+    "key": "[settings Drag down zooms in]",
+    "severity": "minor",
+    "problem": "نیچے کھینچنے سے قریب is incomplete; clarify zoomdirection while preserving dragdirection.",
+    "suggestion": "نیچے کھینچنے پر زوم اِن",
+    "disposition": "edited-pending-original-reviewer-recheck",
+    "before": "نیچے کھینچنے سے قریب",
+    "after": "نیچے کھینچنے پر زوم اِن",
+    "reason": "Revised against English source value and relevant glossary/context; original reviewer must recheck."
+  },
+  {
+    "key": "[settings Guests keep a generated name; sign in to choose one.]",
+    "severity": "major",
+    "problem": "خود بنایا ہوا نام can mean a name guestcreated themselves, while guestname is automaticallygenerated and signin requiredtochoose.",
+    "suggestion": "مہمانوں کے نام خود بخود بنائے جاتے ہیں؛ اپنا نام چننے کے لیے سائن اِن کریں۔",
+    "disposition": "edited-pending-original-reviewer-recheck",
+    "before": "مہمانوں کا خود بنایا ہوا نام رہتا ہے؛ نام چننے کے لیے سائن اِن کریں۔",
+    "after": "مہمانوں کے نام خود بخود بنائے جاتے ہیں؛ اپنا نام چننے کے لیے سائن اِن کریں۔",
+    "reason": "Revised against English source value and relevant glossary/context; original reviewer must recheck."
+  },
+  {
+    "key": "[settings Choose translucent or opaque interface panels.]",
+    "severity": "minor",
+    "problem": "Help says transparent شفاف while actual Translucent option is correctly نیم شفاف. Align opacitylevel.",
+    "suggestion": "نیم شفاف یا غیر شفاف انٹرفیس پینل چنیں۔",
+    "disposition": "edited-pending-original-reviewer-recheck",
+    "before": "شفاف یا غیر شفاف انٹرفیس پینل چنیں۔",
+    "after": "نیم شفاف یا غیر شفاف انٹرفیس پینل چنیں۔",
+    "reason": "Revised against English source value and relevant glossary/context; original reviewer must recheck."
+  },
+  {
+    "key": "[settings Choose translucent or opaque unit path lines.]",
+    "severity": "minor",
+    "problem": "Same transluent/transparent mismatch; actual option is نیم شفاف.",
+    "suggestion": "یونٹوں کے راستوں کی نیم شفاف یا غیر شفاف لکیریں چنیں۔",
+    "disposition": "edited-pending-original-reviewer-recheck",
+    "before": "یونٹوں کے راستوں کی شفاف یا غیر شفاف لکیریں چنیں۔",
+    "after": "یونٹوں کے راستوں کی نیم شفاف یا غیر شفاف لکیریں چنیں۔",
+    "reason": "Revised against English source value and relevant glossary/context; original reviewer must recheck."
+  },
+  {
+    "key": "[music Some catalogue entries could not be read.]",
+    "severity": "minor",
+    "problem": "اندراجات is masculineplural; کی and feminine readagreement mismatch.",
+    "suggestion": "فہرست کے کچھ اندراجات پڑھے نہیں جا سکے۔",
+    "disposition": "edited-pending-original-reviewer-recheck",
+    "before": "فہرست کی کچھ اندراجات پڑھی نہیں جا سکیں۔",
+    "after": "فہرست کے کچھ اندراجات پڑھے نہیں جا سکے۔",
+    "reason": "Revised against English source value and relevant glossary/context; original reviewer must recheck."
+  },
+  {
+    "key": "[music Storage could not be saved. Retry or export your files before leaving.]",
+    "severity": "minor",
+    "problem": "دوبارہ کوشش یا فائلیں برآمد کریں coordinates noun کوشش with exportverb; add retryverb.",
+    "suggestion": "ذخیرہ محفوظ نہیں ہو سکا۔ جانے سے پہلے دوبارہ کوشش کریں یا اپنی فائلیں برآمد کر لیں۔",
+    "disposition": "edited-pending-original-reviewer-recheck",
+    "before": "ذخیرہ محفوظ نہیں ہو سکا۔ جانے سے پہلے دوبارہ کوشش یا فائلیں برآمد کریں۔",
+    "after": "ذخیرہ محفوظ نہیں ہو سکا۔ جانے سے پہلے دوبارہ کوشش کریں یا اپنی فائلیں برآمد کر لیں۔",
+    "reason": "Revised against English source value and relevant glossary/context; original reviewer must recheck."
+  },
+  {
+    "key": "[settings All choices compute the same exact field.]",
+    "severity": "major",
+    "problem": "میدان حساب کرتے ہیں is grammatically incomplete and calls a computedpathfindingfield a physicalfield. Use existing فاصلاتی نقشے terminology fromBuildinggradients.",
+    "suggestion": "تمام طریقوں سے بالکل ایک ہی فاصلاتی نقشہ حاصل ہوتا ہے۔",
+    "disposition": "edited-pending-original-reviewer-recheck",
+    "before": "تمام انتخاب بالکل ایک ہی میدان حساب کرتے ہیں۔",
+    "after": "تمام طریقوں سے بالکل ایک ہی فاصلاتی نقشہ حاصل ہوتا ہے۔",
+    "reason": "Revised against English source value and relevant glossary/context; original reviewer must recheck."
+  },
+  {
+    "key": "[settings GPU fields]",
+    "severity": "minor",
+    "problem": "GPU کے میدان sounds like physicalplayingfields; thisdiagnostic counts computedgradientfields.",
+    "suggestion": "GPU کے فاصلاتی نقشے",
+    "disposition": "edited-pending-original-reviewer-recheck",
+    "before": "GPU کے میدان",
+    "after": "GPU کے فاصلاتی نقشے",
+    "reason": "Revised against English source value and relevant glossary/context; original reviewer must recheck."
+  },
+  {
+    "key": "[settings Map generators]",
+    "severity": "minor",
+    "problem": "نقشہ بنانے والے can sound like people and differs from library/header نقشہ جنریٹر, which instructions must reference consistently.",
+    "suggestion": "نقشہ جنریٹر",
+    "disposition": "edited-pending-original-reviewer-recheck",
+    "before": "نقشہ بنانے والے",
+    "after": "نقشہ جنریٹر",
+    "reason": "Revised against English source value and relevant glossary/context; original reviewer must recheck."
+  },
+  {
+    "key": "[tutorial part1 message 1]",
+    "severity": "major",
+    "problem": "TouchOK islocalizedactualbuttonٹھیک ہے, whiletutorial saysLatinOK; Messagehistoryreference differsfromactualtitleپیغاماتکاسابقہریکارڈ. Also fourmissions mistranslatedfourcampaignsچارمہمات; sourcecampaign/missions separate.",
+    "suggestion": "Use چار مشنوں میں, ٹچ اسکرین پر «ٹھیک ہے» کو چھوئیں, and «پیغامات کا سابقہ ریکارڈ» کھولیں; preserveSpace/save/load clauses.",
+    "disposition": "edited-pending-original-reviewer-recheck",
+    "before": "Globulation 2 میں خوش آمدید! یہ تربیت چار مہمات میں بستی چلانا سکھاتی ہے۔ کھیل کے مینو سے پیش رفت محفوظ اور بعد میں مرکزی مینو سے لوڈ کر سکتے ہیں۔ جاری رکھنے کے لیے Space دبائیں، یا ٹچ اسکرین پر OK کو چھوئیں۔ آگے بڑھنے کے بعد کچھ پیغامات غائب ہو جاتے ہیں؛ انہیں دوبارہ پڑھنے کے لیے پیغامات کی سرگزشت کھولیں۔",
+    "after": "Globulation 2 میں خوش آمدید! یہ تربیت چار مشنوں میں بستی چلانا سکھاتی ہے۔ کھیل کے مینو سے پیش رفت محفوظ اور بعد میں مرکزی مینو سے لوڈ کر سکتے ہیں۔ جاری رکھنے کے لیے Space دبائیں، یا ٹچ اسکرین پر «ٹھیک ہے» کو چھوئیں۔ آگے بڑھنے کے بعد کچھ پیغامات غائب ہو جاتے ہیں؛ انہیں دوبارہ پڑھنے کے لیے «پیغامات کا سابقہ ریکارڈ» کھولیں۔",
+    "reason": "Revised against English source value and relevant glossary/context; original reviewer must recheck."
+  },
+  {
+    "key": "[tutorial part1 message 7]",
+    "severity": "minor",
+    "problem": "منسوخ کنٹرول meanscancelledcontrol ratherthannamedCancelbutton; match revisedpoliteactionlabel.",
+    "suggestion": "Replace ٹچ کے منسوخ کنٹرول with ٹچ کے «منسوخ کریں» کنٹرول.",
+    "disposition": "edited-pending-original-reviewer-recheck",
+    "before": "عمارتوں کے کنٹرول کھولیں، سرائے منتخب کریں اور اسے گندم کے قریب رکھیں۔ گندم نظر نہ آئے تو اپنے کارکن کے فصل کاٹنے کے راستے کو دیکھیں۔ ٹچ اسکرین پر تعمیر استعمال کریں اور درست جگہ کی تصدیق کریں۔ آخر میں دائیں کلک یا ٹچ کے منسوخ کنٹرول سے جگہ رکھنے کے موڈ سے نکلیں۔",
+    "after": "عمارتوں کے کنٹرول کھولیں، سرائے منتخب کریں اور اسے گندم کے قریب رکھیں۔ گندم نظر نہ آئے تو اپنے کارکن کے فصل کاٹنے کے راستے کو دیکھیں۔ ٹچ اسکرین پر تعمیر استعمال کریں اور درست جگہ کی تصدیق کریں۔ آخر میں دائیں کلک یا ٹچ کے «منسوخ کریں» کنٹرول سے جگہ رکھنے کے موڈ سے نکلیں۔",
+    "reason": "Revised against English source value and relevant glossary/context; original reviewer must recheck."
+  },
+  {
+    "key": "[tutorial part1 message 9]",
+    "severity": "minor",
+    "problem": "لکڑی...تعمیراتی جگہ لاتا lackslocative/togoalpostpositionfornormalfullsentence.",
+    "suggestion": "Replace تعمیراتی جگہ لاتا ہے with تعمیراتی جگہ پر لاتا ہے.",
+    "disposition": "edited-pending-original-reviewer-recheck",
+    "before": "چھتے کا کارکن اب سرائے بنا سکتا ہے۔ وہ قریب کے درختوں سے لکڑی جمع کر کے تعمیراتی جگہ لاتا ہے۔ تعمیر مکمل ہونے کا انتظار کریں۔",
+    "after": "چھتے کا کارکن اب سرائے بنا سکتا ہے۔ وہ قریب کے درختوں سے لکڑی جمع کر کے تعمیراتی جگہ پر لاتا ہے۔ تعمیر مکمل ہونے کا انتظار کریں۔",
+    "reason": "Revised against English source value and relevant glossary/context; original reviewer must recheck."
+  },
+  {
+    "key": "[tutorial part2 message 2]",
+    "severity": "minor",
+    "problem": "سنگترے islegitimateUrduvariant but differsfromallactualOrangeitemlabels سنترہ/سنترے; align referencesratherthanclaimonevariantwrong.",
+    "suggestion": "پتھر کے جنوب میں سنترے کے درخت ہیں۔ Thenretainresourceinfo/focusSwarmclauses.",
+    "disposition": "edited-pending-original-reviewer-recheck",
+    "before": "پتھر کے جنوب میں درخت سنگترے کے ہیں۔ وسائل کی معلومات دیکھنے کے لیے انہیں منتخب کریں۔ پھلوں پر بعد میں آئیں گے؛ ابھی چھتے پر توجہ دیں۔",
+    "after": "پتھر کے جنوب میں سنترے کے درخت ہیں۔ وسائل کی معلومات دیکھنے کے لیے انہیں منتخب کریں۔ پھلوں پر بعد میں آئیں گے؛ ابھی چھتے پر توجہ دیں۔",
+    "reason": "Revised against English source value and relevant glossary/context; original reviewer must recheck."
+  },
+  {
+    "key": "[tutorial part2 message 16]",
+    "severity": "minor",
+    "problem": "7 تعمیراتی مواد reads as7differentmaterials; actualtotal7load/units ofwood+stone. Specifyquantityunit.",
+    "suggestion": "Replace اسے کل 7 تعمیراتی مواد چاہیے۔ with اسے تعمیراتی مواد کی کل 7 اکائیاں درکار ہیں۔",
+    "disposition": "edited-pending-original-reviewer-recheck",
+    "before": "دوڑ کے میدان کی تعمیراتی جگہ پر کارکنوں کا ہدف 5 سے 7 کے درمیان رکھیں۔ اسے کل 7 تعمیراتی مواد چاہیے۔",
+    "after": "دوڑ کے میدان کی تعمیراتی جگہ پر کارکنوں کا ہدف 5 سے 7 کے درمیان رکھیں۔ اسے تعمیراتی مواد کی کل 7 اکائیاں درکار ہیں۔",
+    "reason": "Revised against English source value and relevant glossary/context; original reviewer must recheck."
+  },
+  {
+    "key": "[tutorial part2 message 19]",
+    "severity": "major",
+    "problem": "HowcloseunitstoFINISHING becomes merelyhowclosetheyare کتنے قریب ہیں, which sounds physicaldistance. Progressindicatorcompletionmeaning omitted.",
+    "suggestion": "تربیت کی پیش رفت دیکھنے کے لیے دوڑ کا میدان منتخب کریں۔ اس کے پیش رفت کے اشارے بتاتے ہیں کہ اندر موجود یونٹوں کی تربیت مکمل ہونے میں کتنا باقی ہے۔",
+    "disposition": "edited-pending-original-reviewer-recheck",
+    "before": "تربیت کی پیش رفت دیکھنے کے لیے دوڑ کا میدان منتخب کریں۔ اس کے اشارے بتاتے ہیں کہ اندر کے یونٹ کتنے قریب ہیں۔",
+    "after": "تربیت کی پیش رفت دیکھنے کے لیے دوڑ کا میدان منتخب کریں۔ اس کے پیش رفت کے اشارے بتاتے ہیں کہ اندر موجود یونٹوں کی تربیت مکمل ہونے میں کتنا باقی ہے۔",
+    "reason": "Revised against English source value and relevant glossary/context; original reviewer must recheck."
+  },
+  {
+    "key": "[tutorial part2 message 24]",
+    "severity": "minor",
+    "problem": "Starvation فاقہ کشی distinctfromordinaryhungerبھوک; earlierlesson normalunitshungry. Keepthatdistinctioninshortagewarning.",
+    "suggestion": "دو سرائے بڑھتی بستی کو ہمیشہ نہیں چلا سکتیں۔ خوراک کی کمی فاقہ کشی میں بدلنے سے پہلے کھلانے کی مزید گنجائش بنائیں۔",
+    "disposition": "edited-pending-original-reviewer-recheck",
+    "before": "دو سرائے بڑھتی بستی کو ہمیشہ نہیں چلا سکتیں۔ کمی کے بھوک میں بدلنے سے پہلے کھلانے کی مزید گنجائش بنائیں۔",
+    "after": "دو سرائے بڑھتی بستی کو ہمیشہ نہیں چلا سکتیں۔ خوراک کی کمی فاقہ کشی میں بدلنے سے پہلے کھلانے کی مزید گنجائش بنائیں۔",
+    "reason": "Revised against English source value and relevant glossary/context; original reviewer must recheck."
+  },
+  {
+    "key": "[tutorial part3 message 12]",
+    "severity": "minor",
+    "problem": "زخمی عمارت biologicalinjuredword isawkward; standarddamagedbuilding wording better, sourceUnitinjuryseparatefromrepair.",
+    "suggestion": "Replace زخمی عمارت with نقصان زدہ عمارت; keepSchoolrequiredskill andupgrade/repairinstructions.",
+    "disposition": "edited-pending-original-reviewer-recheck",
+    "before": "اسکول میں تربیت یافتہ کارکن اپ گریڈ بنا سکتے ہیں۔ اہل عمارت منتخب کر کے عمارتوں کے کنٹرول میں اپ گریڈ تلاش کریں۔ زخمی عمارت کو پہلے مرمت چاہیے ہو سکتی ہے۔",
+    "after": "اسکول میں تربیت یافتہ کارکن اپ گریڈ بنا سکتے ہیں۔ اہل عمارت منتخب کر کے عمارتوں کے کنٹرول میں اپ گریڈ تلاش کریں۔ نقصان زدہ عمارت کو پہلے مرمت چاہیے ہو سکتی ہے۔",
+    "reason": "Revised against English source value and relevant glossary/context; original reviewer must recheck."
+  },
+  {
+    "key": "[tutorial part4 message 7]",
+    "severity": "major",
+    "problem": "Second touchOKreferenceleftEnglishinsteadactuallocalizedbutton. GameGUITouchView.cpp:627uses[ok].",
+    "suggestion": "Replace یا OK چھوئیں with یا «ٹھیک ہے» چھوئیں; preserveSpacekeyboardliteral.",
+    "disposition": "edited-pending-original-reviewer-recheck",
+    "before": "جھنڈے کے گرد دائرہ کام کا رداس دکھاتا ہے۔ مقرر کھوجی اس علاقے کی کھوج کرے گا۔ کوئی نہ آئے تو کھوجیوں کی تعداد دیکھیں اور ضرورت پر چھتے سے نیا بنائیں۔ کھوجی علاقے میں پہنچے تو Space دبائیں یا OK چھوئیں۔",
+    "after": "جھنڈے کے گرد دائرہ کام کا رداس دکھاتا ہے۔ مقرر کھوجی اس علاقے کی کھوج کرے گا۔ کوئی نہ آئے تو کھوجیوں کی تعداد دیکھیں اور ضرورت پر چھتے سے نیا بنائیں۔ کھوجی علاقے میں پہنچے تو Space دبائیں یا «ٹھیک ہے» چھوئیں۔",
+    "reason": "Revised against English source value and relevant glossary/context; original reviewer must recheck."
+  },
+  {
+    "key": "[tutorial part4 message 8]",
+    "severity": "minor",
+    "problem": "دشمن کے بہت سے کارکن اور جمع شدہ فوج ہے has awkwardmixedpossessiveagreement; stateenemyhasforceswithپاس.",
+    "suggestion": "دشمن کے پاس بہت سے کارکن اور جمع شدہ فوج ہے۔ اس کے حملے سے پہلے اپنا دفاع تیار کریں۔",
+    "disposition": "edited-pending-original-reviewer-recheck",
+    "before": "دشمن کے بہت سے کارکن اور جمع شدہ فوج ہے۔ حملے سے پہلے اپنا دفاع تیار کریں۔",
+    "after": "دشمن کے پاس بہت سے کارکن اور جمع شدہ فوج ہے۔ اس کے حملے سے پہلے اپنا دفاع تیار کریں۔",
+    "reason": "Revised against English source value and relevant glossary/context; original reviewer must recheck."
+  }
+]

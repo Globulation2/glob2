@@ -1,0 +1,69 @@
+{
+  "reviewer": "/root/translation_kit",
+  "scope": "Independent source review of root integrated preview harness, zoom probe, evidence identity and maintained guidance; no product edits/build/windows",
+  "status": "PASS independent source recheck: both findings fixed; final build identity and actual rendered captures remain pending",
+  "source_sha256_at_review": {
+    "tools/TranslationPreviewHarness.cpp": "7e9ab6b0e31d3f180051dd1c35f569c0b4751e58351183708bc9b947a7848c5c",
+    "test/SConscript": "1d64869c5dc6af1e1d6546b02719ee3bfe38e3991ea604f1239900fc378e4581",
+    "scons/test_provenance.py": "2f58c6b7aa70c425ac11cd9073cce509a13f599dc163d58a72266c3bde1bde96",
+    "test/build_provenance.py": "7c4328d10de89e7e019721126c2a0a801181ef0810d44cb953e33978f7f1331b",
+    "docs/development/ui-framework.md": "264cfc0e9dfc872d1ad4b2429a8b0fd1cf5d18fb5220f74d688be85689f79e77",
+    "src/hud/GameGUI.cpp": "356ac0ef628426f83fbd5a099935c7e2a9489f29d7abeeff1efc05f6cf43e2b2",
+    "src/hud/input/GameGUIInput.cpp": "cfabe4d239a45a0afa86438b05cfce1f65349014ade41b289e9d73eb4d29394b",
+    "libgag/src/GraphicContext.cpp": "186b8d3649a0159d130dff97ea888b7ab76cb0f94635cf2f05e398e0f5891e12",
+    "libgag/src/GraphicContextRenderer.cpp": "a29105b1f31decf0cd972c9cdd48b36abc1e20b32833773ad047cded23508e28"
+  },
+  "findings": [
+    {
+      "id": "capture-current-frame",
+      "file": "tools/TranslationPreviewHarness.cpp",
+      "line": 467,
+      "severity": "major",
+      "problem": "capture queues/saves printScreen before forcing a draw of current UI state. Synchronous software/legacy branch creates BMP immediately, skipping while-loop draw. New zoom-plus/fit and existing dialog captures can contain prior frame although checksum and filename pass. Async renderer wait usually draws; exact active backend not established by this source review.",
+      "suggestion": "Ensure at least one actual draw after UI mutations and before screenshot request; retain asynchronous screenshot wait and checksum boundary around drawing.",
+      "status": "fixed and independently rechecked in source",
+      "resolution": "draw() returns false on denied beginRenderFrame; capture retries until accepted draw or15s deadline before requesting screenshot. Existing asynchronous file wait retained. Ready serial game session has published scene; no turn session in this fixture. Checksum boundary includes pre-capture draw."
+    },
+    {
+      "id": "zoom-camera-viewport-sync",
+      "file": "tools/TranslationPreviewHarness.cpp",
+      "line": 487,
+      "severity": "major",
+      "problem": "Direct shared click helper changes camera origin/zoom but does not mirror production input viewportX/Y updates. drawAll→GameGUI::updateCamera resets origin toward existing viewport tiles. At restoration onlycamera is restored, leaving potentially changed viewport fields; next dialog draw can overwrite restored origin again.",
+      "suggestion": "Mirror production viewport tile sync after each helper click; save and restore camera and viewport coordinates together, then verify restored state survives a draw.",
+      "status": "fixed and independently rechecked in source",
+      "resolution": "clickZoom wraps actual shared helper, then syncZoomViewport copies camera tileX/Y into viewport fields and rebases torus as production input does. Allfour zoom clicks use wrapper. Original camera and viewport pair saved, restored together before dialog capture, then rebaseViewport only avoids clobbering restored origin."
+    }
+  ],
+  "source_checks_passed": [
+    "GLOB2_TEST_PROVENANCE_JSON is parsed from compiled generated header, alongside executable SHA. Current file hashes are clearly separate diagnostics, no longer sole compiled identity claim.",
+    "test/SConscript objects adds generated provenance_header Depends to TranslationPreviewHarness.cpp in same loop as TestMain.cpp. register_test_provenance uses Value(contents) containing source_identity plus compiler/flags, so updated identity regenerates dependency and producer object.",
+    "Evidence identity hashes six relevant headers/controls alongside implementations and catalog/font identities. Whole-tree build manifest and matching compiled source identity are still external acceptance gates.",
+    "Zoom arithmetic checks1.1 then repeated1.21, stable plus/middle box,100%/minimumFit and UI checksums are well bounded; uses production shared helper, explicitly no pointer-hardware claim.",
+    "Maintained guide documents all harness modes and actual native.json/online.json key-value input, metadata/catalog hash preservation, compiled source identity and platform limitations.",
+    "Initial diagnostic sidecar candidly marks old-binary/current-source mismatch; no final-build claim accepted from those48captures."
+  ],
+  "limits": [
+    "Source review only; build3producer equality, before/after manifest equality, actual screenshot content and platform coverage not executed by reviewer.",
+    "Readiness producer/world admission follows prior independent review; current task specifically reviews newly integrated identity and zoom/capture sequence."
+  ],
+  "product_files_edited": false,
+  "actual_render_verified": false,
+  "source_sha256_after_recheck": {
+    "tools/TranslationPreviewHarness.cpp": "1be1cb9faaff248e480f921bb87a4201b4fa6fc7c08287fab3f1a13fe1377a3c",
+    "test/SConscript": "1d64869c5dc6af1e1d6546b02719ee3bfe38e3991ea604f1239900fc378e4581",
+    "scons/test_provenance.py": "2f58c6b7aa70c425ac11cd9073cce509a13f599dc163d58a72266c3bde1bde96",
+    "test/build_provenance.py": "7c4328d10de89e7e019721126c2a0a801181ef0810d44cb953e33978f7f1331b",
+    "docs/development/ui-framework.md": "264cfc0e9dfc872d1ad4b2429a8b0fd1cf5d18fb5220f74d688be85689f79e77",
+    "src/hud/GameGUI.cpp": "356ac0ef628426f83fbd5a099935c7e2a9489f29d7abeeff1efc05f6cf43e2b2",
+    "src/hud/input/GameGUIInput.cpp": "cfabe4d239a45a0afa86438b05cfce1f65349014ade41b289e9d73eb4d29394b",
+    "libgag/src/GraphicContext.cpp": "186b8d3649a0159d130dff97ea888b7ab76cb0f94635cf2f05e398e0f5891e12",
+    "libgag/src/GraphicContextRenderer.cpp": "a29105b1f31decf0cd972c9cdd48b36abc1e20b32833773ad047cded23508e28",
+    "src/engine/EngineRun.cpp": "1807fa9f8d747b29b5e66abb67b900f63a12be01cfd6c99e70dfa7a2096f239f"
+  },
+  "recheck_limits": [
+    "No native windows, builds or screenshot inspection performed in this recheck.",
+    "Source changed after build3 began; root must freeze inputs and rebuild4, verify compiled producer.sourceTreeSha256 equals current source_identity and before/after input manifests before accepting final captures.",
+    "Physical pointer behavior remains outside helper-based hit sequence."
+  ]
+}

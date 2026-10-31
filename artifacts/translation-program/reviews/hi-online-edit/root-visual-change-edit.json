@@ -1,0 +1,15 @@
+{
+  "editor": "/root",
+  "requested_by": "/root/hindi_online_review",
+  "before_sha256": "b5bad83ba5dcd630775cbe55b4557493347a74c222e766a0435074e398b88d5c",
+  "after_sha256": "18bc06269a91e48ed90b9c08372bbff2c218c245b2823e5aaf6738588a6f9954",
+  "changes": [
+    {
+      "key": "Change",
+      "before": "बदलें",
+      "after": "बदलाव",
+      "reason": "All actual callers use noun numeric change-column heading (Match.tsx and admin Overview), not imperative command."
+    }
+  ],
+  "state": "pending-original-reviewer-recheck"
+}

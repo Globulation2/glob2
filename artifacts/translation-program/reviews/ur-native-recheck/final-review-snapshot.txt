@@ -1,0 +1,6656 @@
+[%0 has left the game]
+%0 کھیل سے نکل گئے ہیں۔
+[%0 level %1]
+%0 سطح %1
+[%0 units can't access building]
+%0 یونٹ عمارت تک نہیں پہنچ سکتے
+[%0 units can't access flag]
+%0 یونٹ جھنڈے تک نہیں پہنچ سکتے
+[%0 units can't access fruit]
+%0 یونٹ پھل تک نہیں پہنچ سکتے
+[%0 units can't access resource]
+%0 یونٹ ضروری مواد تک نہیں پہنچ سکتے
+[%0 units not available]
+%0 یونٹ دستیاب نہیں ہیں
+[%0 units too far from building]
+%0 یونٹ عمارت سے بہت دور ہیں
+[%0 units too far from flag]
+%0 یونٹ جھنڈے سے بہت دور ہیں
+[%0 units too far from fruit]
+%0 یونٹ پھل سے بہت دور ہیں
+[%0 units too far from resource]
+%0 یونٹ ضروری مواد سے بہت دور ہیں
+[%0 units too low level]
+%0 یونٹوں کی سطح بہت کم ہے
+[%0% Uploaded]
+%0% اپ لوڈ ہو گیا
+[%0's team unit got converted to your team]
+%0 کی ٹیم کا ایک یونٹ آپ کی ٹیم میں شامل ہو گیا ہے
+[abreaviation explanation A]
+A: اتحادی
+[abreaviation explanation C]
+C: انہیں چیٹ پیغامات بھیجیں
+[abreaviation explanation fV]
+fV: سرائے کی عمارتوں کی حدِ نگاہ دکھائیں (دوسری ٹیموں کے یونٹ اپنی ٹیم میں لانے کے لیے)
+[abreaviation explanation mV]
+mV: بازاروں کی حدِ نگاہ دکھائیں (پھلوں کے تبادلے کے لیے)
+[abreaviation explanation V]
+V: تمام عمارتوں کی حدِ نگاہ دکھائیں
+[add map]
+نقشہ شامل کریں
+[add shortcut]
+شارٹ کٹ شامل کریں
+[AI Descriptions]
+مصنوعی ذہانت کی تفصیلات
+[AI]
+مصنوعی ذہانت
+[ai]
+مصنوعی ذہانت
+[AICastor-Description]
+خوراک کی فراہمی کے مطابق آبادی بڑھاتا، تعمیر کرتا اور تربیت دیتا ہے۔
+[AICastor]
+Castor
+[AICortex-Description]
+خوراک اور علاج کی مدد کے ساتھ جنگجوؤں کی لہریں جمع کرتا ہے۔
+[AIMaxima-Description]
+کھوج لگاتا، خوراک کی فراہمی بڑھاتا اور جنگجوؤں کی لہریں جمع کرتا ہے۔
+[AIMaxima]
+Maxima
+[AICortex]
+Cortex
+[AINicowar-Description]
+آبادی بڑھاتا ہے، جنگجوؤں کو تربیت دیتا ہے، پھر حملہ کرتا ہے۔
+[AINicowar]
+Nicowar
+[AINone-Description]
+کوئی نہیں — کچھ نہیں کرتا۔
+[AINone]
+کوئی نہیں
+[AINumbi-Description]
+ایک نسبتاً آسان حریف جو پھر بھی پھیلتا اور حملہ کرتا ہے۔
+[AINumbi]
+Numbi
+[AIEcono-Description]
+جنگجو پیدا کیے بغیر پھیلتا ہے اور یونٹ اپنی طرف لانے کے لیے مقابلہ کرتا ہے۔
+[AIEcono]
+Econo
+[AIWarrush-Description]
+تیز حملے جو شروع میں آپ کے دفاع کو آزماتے ہیں۔
+[AIWarrush]
+Warrush
+[AICabino-Description]
+ایک مضبوط تعمیر کار جو تربیت یافتہ حملہ آور دستے میدان میں اتارتا ہے۔
+[AICabino]
+Cabino
+[AIJavaScript]
+JavaScript
+[AIJavaScript-Description]
+اندرونی JavaScript ماخذ ماڈیول استعمال کرنے والا کنٹرولر۔
+[Alga]
+کائی
+[algae]
+کائی
+[alliances]
+اتحاد
+[alt %0]
+alt-%0
+[and]
+اور
+[any explorer]
+کوئی بھی کھوجی
+[are dying hungry]
+بھوک سے مر رہے ہیں
+[are hungry]
+بھوکے ہیں
+[are ok]
+ٹھیک ہیں
+[are wonded]
+زخمی ہیں
+[armor]
+زرہ
+[assigned]
+متعین
+[At. speed]
+حملے کی رفتار
+[At. strength]
+حملے کی طاقت
+[Attack]
+حملہ
+[audio]
+آواز
+[auto save]
+خودکار محفوظ کرنا
+[available lan games]
+مقامی نیٹ ورک پر دستیاب کھیل
+[away:]
+غیر حاضر:
+[Back]
+واپس
+[backspace]
+Backspace
+[barracks explanation 2]
+جنگی سطح بہتر بناتی ہے
+[barracks explanation]
+آپ کے جنگجوؤں کی
+[barracks]
+بیرک
+[beach size]
+ساحل کا سائز
+[break]
+Break
+[briefing]
+ابتدائی ہدایات
+[build %0 level %1]
+%0 کی سطح %1 تعمیر کریں
+[Build]
+تعمیر
+[Building Defaults]
+عمارتوں کی طے شدہ ترتیبات
+[building settings]
+عمارت کی ترتیبات
+[building site]
+تعمیراتی جگہ
+[Building Tool Box Explanation]
+Shift + کھینچیں = خانہ
+[Building Tool Line Explanation]
+Ctrl + کھینچیں = لکیر
+[Buildings]
+عمارتیں
+[Bullets]
+گولیاں
+[campaign editor]
+مہم کا ایڈیٹر
+[campaign]
+مہم
+[Can't connect, can't find host]
+رابطہ نہیں ہو سکا، میزبان نہیں ملا
+[Can't host game, port %0 in use]
+کھیل کی میزبانی نہیں ہو سکتی، پورٹ %0 استعمال میں ہے
+[Can't join game, game has started]
+کھیل میں شامل نہیں ہو سکتے، کھیل شروع ہو چکا ہے
+[Can't join game, game is full]
+کھیل میں شامل نہیں ہو سکتے، کھیل میں جگہ نہیں ہے
+[cancel destroy]
+مسمار کرنا منسوخ کریں
+[cancel repair]
+مرمت منسوخ کریں
+[cancel upgrade]
+اپ گریڈ منسوخ کریں
+[Cancel]
+منسوخ کریں
+[caps lock]
+Caps Lock
+[carry]
+اٹھایا ہوا سامان:
+[Change Area Name]
+علاقے کا نام بدلیں
+[Cherry]
+چیری
+[choose campaign]
+مہم منتخب کریں
+[choose game]
+کھیل منتخب کریں
+[choose map]
+نقشہ منتخب کریں
+[clear area]
+صفائی کا علاقہ
+[farm area]
+کھیتی کا علاقہ
+[Clearing:]
+صفائی:
+[clearingflag explanation 2]
+
+[clearingflag explanation]
+وسائل صاف کرتا ہے
+[clearingflag]
+صفائی کا جھنڈا
+[closed]
+بند
+[combined vision]
+مشترکہ حدِ نگاہ
+[compile]
+اسکرپٹ کمپائل کریں
+[compose]
+Compose
+[Computing Fertility]
+زرخیزی کا حساب لگایا جا رہا ہے
+[concrete islands terrain]
+الگ جزیرے
+[connect]
+رابطہ کریں
+[connecting to game]
+کھیل سے رابطہ ہو رہا ہے
+[connecting to]
+رابطہ ہو رہا ہے:
+[Construction Site Defaults]
+تعمیراتی مقامات کی طے شدہ ترتیبات
+[Continue playing]
+کھیل جاری رکھیں
+[control %0]
+Ctrl-%0
+[Corn]
+گندم
+[crater density]
+گڑھوں کی تعداد
+[crater lakes terrain]
+گڑھوں کی جھیلیں
+[create map]
+نقشہ بنائیں
+[credits]
+تخلیق کار
+[ctrl - line]
+Ctrl - لکیر
+[current speed]
+موجودہ رفتار
+[custom game]
+حسبِ پسند کھیل
+[customcur]
+حسبِ پسند کرسر
+[damage]
+نقصان
+[Damaged Map]
+زخمی یونٹوں کا نقشہ
+[decrease game speed]
+کھیل کی رفتار کم کریں
+[decrease units working]
+کام کرنے والے یونٹ کم کریں
+[Defeat Your Oppenents]
+اپنے حریفوں کو شکست دیں
+[defencetower explanation 2]
+یونٹوں یا عمارتوں پر حملہ کرتا ہے
+[defencetower explanation]
+قریب موجود دشمن کے
+[defencetower]
+دفاعی مینار
+[Defense Map]
+دفاعی نقشہ
+[Defense]
+دفاع
+[Delete game]
+منتخب کھیل حذف کریں
+[delete]
+حذف کریں
+[desert]
+صحرا
+[destroy building]
+منتخب عمارت منہدم کریں
+[destroy]
+مسمار کریں
+[display]
+دکھائیں
+[do nothing]
+کچھ نہ کریں
+[don't carry anything]
+کوئی سامان نہیں اٹھایا ہوا
+[down]
+نیچے
+[edit map]
+نقشے میں ترمیم کریں
+[editing map]
+نقشے کی ترمیم
+[editor shortcuts]
+ایڈیٹر کے شارٹ کٹ
+[editor]
+ایڈیٹر
+[end]
+End
+[enter]
+Enter
+[equals]
+برابر
+[ERROR_CANT_LOAD_MAP]
+نقشہ لوڈ نہیں ہو سکا کیونکہ فائل خراب ہے یا اس کا ورژن غیر موافق ہے۔
+[ERROR_CANT_SAVE_CAMPAIGN]
+مہم محفوظ نہیں ہو سکی۔ دیکھیں کہ منزل کا فولڈر موجود ہو، اس میں لکھنے کی اجازت ہو اور خالی جگہ ہو۔
+[escape]
+Escape
+[explorationflag explanation 2]
+
+[explorationflag explanation]
+کھوجیوں کو بلاتا ہے
+[explorationflag]
+کھوج کا جھنڈا
+[Explorer Ratio]
+کھوجیوں کا تناسب
+[Explorer]
+کھوجی
+[explorers]
+کھوجی
+[extra islands]
+خالی جزیرے
+[f10]
+F10
+[f11]
+F11
+[f12]
+F12
+[f13]
+F13
+[f14]
+F14
+[f15]
+F15
+[f1]
+F1
+[f2]
+F2
+[f3]
+F3
+[f4]
+F4
+[f5]
+F5
+[f6]
+F6
+[f7]
+F7
+[f8]
+F8
+[f9]
+F9
+[Fertility Map]
+زرخیزی کا نقشہ
+[Flag Defaults]
+جھنڈوں کی طے شدہ ترتیبات
+[flag settings explanation]
+جھنڈے کا طے شدہ رداس
+[fog of war]
+جنگ کی دھند
+[food]
+خوراک
+[forbidden area]
+ممنوع علاقہ
+[Free]
+صحت مند
+[free]
+آزاد
+[from:]
+از:
+[fruit]
+پھل
+[fullscreen]
+پوری اسکرین
+[game full]
+کھیل میں جگہ نہیں ہے
+[game shortcuts]
+کھیل کے شارٹ کٹ
+[game speed help]
+صرف اکیلے کھیل اور ری پلے کے لیے۔ ملٹی پلیئر 1x رفتار پر چلتا ہے۔
+[music set]
+موسیقی کا مجموعہ
+[random music set]
+ہر میچ میں بے ترتیب انتخاب
+[playing music set %0]
+چل رہا ہے: %0
+[music set failed]
+موسیقی کا یہ مجموعہ لوڈ نہیں ہو سکا۔
+[game speed]
+کھیل کی رفتار
+[Game]
+کھیل
+[general settings]
+عمومی ترتیبات
+[go to event]
+واقعے پر جائیں
+[go to home]
+بستی پر جائیں
+[goto main menu]
+مرکزی مینیو پر واپس جائیں
+[grass]
+گھاس
+[ground attack]
+زمینی حملہ
+[guard area]
+پہرے کا علاقہ
+[GUIMapPreview text 0]
+براہِ کرم
+[GUIMapPreview text 1]
+نقشہ منتخب کریں
+[handmade map]
+ہاتھ سے بنایا گیا نقشہ
+[Happyness]
+خوشی
+[hard pause]
+مکمل توقف
+[Harvest]
+وسائل جمع کرنا
+[high priority]
+زیادہ
+[hints]
+اشارے
+[home]
+Home
+[hospital explanation 2]
+
+[hospital explanation]
+آپ کے یونٹوں کا علاج کرتا ہے
+[hospital]
+ہسپتال
+[host]
+کھیل کی میزبانی کریں
+[hp]
+HP
+[Human]
+انسان
+[human]
+انسان
+[hungry]
+بھوکے
+[hungryness]
+بھوک
+[In way]
+راستے میں
+[increase game speed]
+کھیل کی رفتار بڑھائیں
+[increase units working]
+کام کرنے والے یونٹ بڑھائیں
+[inn explanation 2]
+
+[inn explanation]
+آپ کے یونٹوں کو کھانا کھلاتی ہے
+[inn]
+سرائے
+[insert]
+Insert
+[inside]
+اندر
+[islands size]
+جزیرے کی جسامت
+[islands terrain]
+جزیرے
+[isles terrain]
+چھوٹے جزیرے
+[iterate selection]
+اگلے انتخاب پر جائیں
+[jobs]
+کام
+[join a game]
+کھیل میں شامل ہوں
+[keyboard settings]
+کی بورڈ کی ترتیبات
+[lan]
+LAN کھیل
+[language incomplete]
+اردو - نامکمل
+[language-code]
+ur
+[language-tr]
+زبان
+[language]
+اردو
+[left meta]
+بایاں Meta
+[left super]
+بائیں طرف کی Windows کلید
+[left]
+بائیں
+[level]
+سطح
+[levels]
+سطحیں
+[load campaign]
+مہم لوڈ کریں
+[load game]
+کھیل لوڈ کریں
+[load map]
+نقشہ لوڈ کریں
+[load replay]
+ری پلے لوڈ کریں
+[load script]
+اسکرپٹ لوڈ کریں
+[load]
+لوڈ کریں
+[look around]
+اردگرد دیکھیں
+[Lost : %0 has more prestige than you]
+ہار: %0 کا وقار آپ سے زیادہ ہے
+[Lost : your colony is dead]
+ہار: آپ کی بستی ختم ہو گئی ہے
+[low priority]
+کم
+[lowquality]
+کم معیار
+[Magic At. Air]
+فضائی نقصان
+[Magic At. Ground]
+زمینی نقصان
+[map description]
+تفصیل
+[Map Discovered]
+دریافت شدہ نقشہ
+[map name]
+نام
+[map script]
+نقشے کا اسکرپٹ
+[map size x]
+نقشے کی چوڑائی
+[map size y]
+نقشے کی اونچائی
+[mark map]
+اتحادیوں کے لیے نقشے پر نشان لگائیں
+[market explanation 2]
+دوسروں سے تبادلہ ممکن بناتا ہے
+[market explanation]
+پھلوں کا
+[market]
+بازار
+[maximum game speed]
+زیادہ سے زیادہ
+[medium priority]
+درمیانی
+[meta %0]
+Meta-%0
+[Min required level:]
+کم از کم مطلوبہ سطح:
+[Minimum Level To Flag]
+یونٹ کی کم از کم سطح
+[multiplayer game speed]
+کھیل کی رفتار: 1x (ملٹی پلیئر)
+[Music volume]
+آواز کی سطح (موسیقی)
+[Mute]
+آواز بند کریں
+[mute]
+آواز بند
+[new campaign]
+نئی مہم
+[new map]
+نیا نقشہ
+[no fullscreen]
+* صرف ونڈو وضع میں
+[No Hints]
+کوئی اشارہ نہیں
+[no key]
+ابھی کوئی کلید نہیں
+[No Objectives]
+کوئی مقصد نہیں
+[no ressources growth areas]
+افزائش روکنے کے علاقے
+[No]
+نہیں
+[Number Of Buildings]
+عمارتوں کی تعداد
+[number of teams]
+ٹیموں کی تعداد
+[Number Of Units]
+یونٹوں کی تعداد
+[numlock]
+Num Lock
+[objectives]
+مقاصد
+[of which]
+جن میں سے
+[ok]
+ٹھیک ہے
+[old islands terrain]
+ناہموار جزائر
+[old random terrain]
+ٹوٹا پھوٹا ساحل
+[on press]
+دبانے پر
+[On the spot]
+یہیں
+[on unpress]
+چھوڑنے پر
+[open chat box]
+چیٹ کا خانہ کھولیں
+[open load menu]
+لوڈ مینیو کھولیں
+[open save menu]
+محفوظ کرنے کا مینیو کھولیں
+[open scenario editor]
+منظرنامے کا ایڈیٹر کھولیں
+[open teams editor]
+ٹیموں کا ایڈیٹر کھولیں
+[open]
+کھولیں
+[OpenGL]
+OpenGL
+[Options]
+اختیارات
+[options]
+اختیارات
+[Orange]
+سنترہ
+[Other Options]
+دیگر اختیارات
+[page down]
+Page Down
+[page up]
+Page Up
+[Papyrus]
+پیپرس
+[pause game]
+کھیل روکیں
+[pause]
+توقف
+[Paused]
+رکا ہوا
+[player name]
+کھلاڑی کا نام
+[players]
+کھلاڑی
+[please wait]
+براہِ کرم انتظار کریں
+[power]
+طاقت
+[press space]
+جاری رکھنے کے لیے Space دبائیں۔
+[Prestige Score]
+وقار کا اسکور
+[Prestige Win Enabled]
+وقار کے ذریعے فتح فعال ہے
+[Prestige]
+وقار
+[Primary Objectives]
+بنیادی
+[print screen]
+Print Screen
+[priority]
+ترجیح
+[Prune]
+آلو بخارا
+[quit the editor]
+ایڈیٹر بند کریں
+[quit the game]
+کھیل بند کریں
+[quit the replay]
+ری پلے بند کریں
+[quit]
+بند کریں
+[racetrack explanation 2]
+چلنے کی رفتار بہتر بناتا ہے
+[racetrack explanation]
+آپ کے یونٹوں کی
+[racetrack]
+دوڑ کا میدان
+[range]
+فاصلہ
+[ratios]
+تناسب
+[remember unit]
+یونٹوں کی تعداد یاد رکھیں
+[remove map]
+نقشہ ہٹائیں
+[remove shortcut]
+شارٹ کٹ ہٹائیں
+[repair building]
+مرمت شروع/بند کریں
+[repair]
+مرمت کریں
+[repeat area]
+ایک جیسے منظرنامے کی تکرار
+[replay ended]
+ری پلے ختم ہو گیا
+[restore default shortcuts]
+کی بورڈ کے طے شدہ شارٹ کٹ بحال کریں
+[return to editor]
+ایڈیٹر پر واپس جائیں
+[Reroll terrain look]
+زمین کی صورت دوبارہ بدلیں
+[return to game]
+کھیل میں واپس جائیں
+[return to replay]
+ری پلے پر واپس جائیں
+[return]
+Enter
+[right meta]
+دایاں Meta
+[right super]
+دائیں طرف کی Windows کلید
+[right]
+دائیں
+[river diameter]
+دریا کی چوڑائی
+[river terrain]
+دریا
+[sand]
+ریت
+[save before quit?]
+کیا آپ بند کرنے سے پہلے محفوظ کرنا چاہتے ہیں؟
+[save game]
+کھیل محفوظ کریں
+[save map]
+نقشہ محفوظ کریں
+[save replay]
+ری پلے محفوظ کریں
+[save script]
+اسکرپٹ محفوظ کریں
+[Save]
+محفوظ کریں
+[school explanation 2]
+تعمیر کی سطح بہتر بناتا ہے
+[school explanation]
+آپ کے کارکنوں کی
+[school]
+اسکول
+[Script Areas]
+اسکرپٹ کے علاقے
+[scroll lock]
+Scroll Lock
+[scroll wheel enabled]
+اسکرول کا پہیہ فعال ہے
+[Secondary Objectives]
+ثانوی
+[seeking a job]
+کام کی تلاش میں
+[seeking]
+تلاش میں
+[select barracks building]
+بیرک منتخب کریں
+[select clearingflag]
+صفائی کا جھنڈا منتخب کریں
+[select construct barracks]
+بیرک کی تعمیر منتخب کریں
+[select construct defencetower]
+دفاعی مینار کی تعمیر منتخب کریں
+[select construct hospital]
+ہسپتال کی تعمیر منتخب کریں
+[select construct inn]
+سرائے کی تعمیر منتخب کریں
+[select construct market]
+بازار کی تعمیر منتخب کریں
+[select construct racetrack]
+دوڑ کے میدان کی تعمیر منتخب کریں
+[select construct school]
+اسکول کی تعمیر منتخب کریں
+[select construct stonewall]
+پتھر کی دیوار کی تعمیر منتخب کریں
+[select construct swarm]
+چھتے کی تعمیر منتخب کریں
+[select construct swimmingpool]
+تیراکی کے تالاب کی تعمیر منتخب کریں
+[select delete tool]
+حذف کرنے کا آلہ منتخب کریں
+[select explorationflag]
+کھوج کا جھنڈا منتخب کریں
+[select hospital building]
+ہسپتال منتخب کریں
+[select inn building]
+سرائے منتخب کریں
+[select market building]
+بازار منتخب کریں
+[select place clearing area]
+صفائی کا علاقہ لگانا منتخب کریں
+[select place farm area]
+کھیتی کا علاقہ لگانا منتخب کریں
+[select place clearingflag]
+صفائی کا جھنڈا لگانا منتخب کریں
+[select place explorationflag]
+کھوج کا جھنڈا لگانا منتخب کریں
+[select place forbidden area]
+ممنوع علاقہ لگانا منتخب کریں
+[select place guard area]
+پہرے کا علاقہ لگانا منتخب کریں
+[select place warflag]
+جنگی جھنڈا لگانا منتخب کریں
+[select racetrack building]
+دوڑ کا میدان منتخب کریں
+[select school building]
+اسکول منتخب کریں
+[select swarm building]
+چھتہ منتخب کریں
+[select swimmingpool building]
+تیراکی کا تالاب منتخب کریں
+[select tower building]
+دفاعی مینار منتخب کریں
+[select wall building]
+دیوار منتخب کریں
+[select warflag]
+جنگی جھنڈا منتخب کریں
+[settings]
+ترتیبات
+[shift %0]
+Shift-%0
+[shortcut explanation enter]
+Enter: چیٹ پیغام بھیجیں
+[shortcut explanation v]
+V: بولنے کے لیے دبائے رکھیں
+[show areas]
+علاقے دکھائیں
+[show flags]
+جھنڈے دکھائیں
+[show main menu]
+مرکزی مینیو دکھائیں
+[skin]
+نمائش
+[smoothing]
+ہموار کرنا
+[space]
+Space
+[start mission]
+مشن شروع کریں
+[start new campaign]
+نئی مہم شروع کریں
+[Start]
+شروع کریں
+[Starving Map]
+فاقہ زدہ یونٹوں کا نقشہ
+[starving]
+فاقہ زدہ
+[Statistics]
+اعداد و شمار
+[Still (i)]
+ابھی بھی
+[still (w)]
+ابھی بھی
+[still one unit working]
+ایک یونٹ اب بھی کام پر ہے
+[Still one]
+ابھی ایک
+[Stone]
+پتھر
+[stone]
+پتھر
+[stonewall explanation 2]
+کا ذریعہ
+[stonewall explanation]
+غیر فعال دفاع
+[stonewall]
+پتھر کی دیوار
+[svr hostname]
+سرور کا میزبان نام
+[swamp terrain]
+دلدل
+[swarm explanation 2]
+
+[swarm explanation]
+نئے یونٹ پیدا کرتا ہے
+[swarm]
+چھتہ
+[Swim]
+تیراکی
+[swimmingpool explanation 2]
+تیرنے کی رفتار بہتر بناتا ہے
+[swimmingpool explanation]
+آپ کے یونٹوں کی
+[swimmingpool]
+تیراکی کا تالاب
+[switch to adding areas]
+علاقے شامل کرنے پر جائیں
+[switch to area brush 1]
+علاقے کے برش 1 پر جائیں
+[switch to area brush 2]
+علاقے کے برش 2 پر جائیں
+[switch to area brush 3]
+علاقے کے برش 3 پر جائیں
+[switch to area brush 4]
+علاقے کے برش 4 پر جائیں
+[switch to area brush 5]
+علاقے کے برش 5 پر جائیں
+[switch to area brush 6]
+علاقے کے برش 6 پر جائیں
+[switch to area brush 7]
+علاقے کے برش 7 پر جائیں
+[switch to area brush 8]
+علاقے کے برش 8 پر جائیں
+[switch to building view]
+عمارتوں کے منظر پر جائیں
+[switch to flag view]
+جھنڈوں کے منظر پر جائیں
+[switch to removing areas]
+علاقے ہٹانے پر جائیں
+[switch to teams view]
+ٹیموں کا منظر دکھائیں
+[switch to terrain view]
+زمین کے منظر پر جائیں
+[sys req]
+SysRq
+[tab]
+Tab
+[teams editor]
+ٹیموں کا ایڈیٹر
+[Teams Fixed]
+ٹیمیں طے ہیں
+[teams]
+ ٹیمیں
+[the barracks is finished]
+بیرک مکمل ہو گئی ہے۔
+[the barracks is under attack]
+بیرک پر حملہ ہو رہا ہے۔
+[the building is finished]
+عمارت مکمل ہو گئی ہے۔
+[the building is under attack]
+عمارت پر حملہ ہو رہا ہے۔
+[the clearingflag is finished]
+صفائی کا جھنڈا لگا دیا گیا۔
+[the clearingflag is under attack]
+صفائی کے جھنڈے پر حملہ ہو رہا ہے۔
+[the defencetower is finished]
+دفاعی مینار مکمل ہو گیا ہے۔
+[the defencetower is under attack]
+دفاعی مینار پر حملہ ہو رہا ہے۔
+[the explorationflag is finished]
+کھوج کا جھنڈا لگا دیا گیا۔
+[the explorationflag is under attack]
+کھوج کے جھنڈے پر حملہ ہو رہا ہے۔
+[The game has not been finished]
+کھیل مکمل نہیں ہوا ہے۔
+[the games]
+کھیل
+[the hospital is finished]
+ہسپتال مکمل ہو گیا ہے۔
+[the hospital is under attack]
+ہسپتال پر حملہ ہو رہا ہے۔
+[The host has cancelled the game]
+میزبان نے کھیل منسوخ کر دیا ہے۔
+[the inn is finished]
+سرائے مکمل ہو گئی ہے۔
+[the inn is under attack]
+سرائے پر حملہ ہو رہا ہے۔
+[the maps]
+نقشے
+[the market is finished]
+بازار مکمل ہو گیا ہے۔
+[the market is under attack]
+بازار پر حملہ ہو رہا ہے۔
+[the racetrack is finished]
+دوڑ کا میدان مکمل ہو گیا ہے۔
+[the racetrack is under attack]
+دوڑ کے میدان پر حملہ ہو رہا ہے۔
+[the replays]
+ری پلے
+[the school is finished]
+اسکول مکمل ہو گیا ہے۔
+[the school is under attack]
+اسکول پر حملہ ہو رہا ہے۔
+[the stonewall is finished]
+دیوار کا ایک حصہ مکمل ہو گیا ہے۔
+[the stonewall is under attack]
+دشمن آپ کی دیواروں تک پہنچ گیا ہے۔
+[the swarm is finished]
+چھتہ مکمل ہو گیا ہے۔
+[the swarm is under attack]
+چھتے پر حملہ ہو رہا ہے۔
+[the swimmingpool is finished]
+تیراکی کا تالاب مکمل ہو گیا ہے۔
+[the swimmingpool is under attack]
+تیراکی کے تالاب پر حملہ ہو رہا ہے۔
+[the warflag is finished]
+جنگی جھنڈا لگا دیا گیا۔
+[the warflag is under attack]
+جنگی جھنڈے پر حملہ ہو رہا ہے۔
+[time]
+وقت
+[to:]
+بنام:
+[toggle draw accessibility aids]
+ٹیموں کے نمبر دکھائیں یا چھپائیں
+[toggle draw information]
+معلومات دکھائیں یا چھپائیں
+[toggle draw unit paths]
+یونٹوں کے راستے دکھائیں یا چھپائیں
+[toggle menu screen]
+مینیو اسکرین دکھائیں یا چھپائیں
+[toggle recording voice]
+آواز کی ریکارڈنگ شروع یا بند کریں
+[Total Attack Power]
+کل حملہ آور طاقت
+[Total Defence Power]
+کل دفاعی طاقت
+[Total Hitpoints]
+کل صحت کے پوائنٹس
+[Total prestige reached]
+حاصل کردہ کل وقار
+[Total]
+کل
+[tutorial]
+تربیت
+[tutorial text 1]
+Globulation 2 کی ابتدائی تربیت میں خوش آمدید! یہاں سرائے بنانا، علاقوں کی کھوج اور دشمن کو تباہ کرنا سیکھیں گے۔ مفید معلومات کی کوئی کمی نہیں!
+[tutorial text 2]
+بنیادی باتیں سیکھنے کے بعد اب دوڑ کے میدان، تیراکی کے تالاب اور اسکول جیسی دوسری عمارتوں سے واقف ہوں۔
+[tutorial text 3]
+آپ نے یہاں تک اچھا کام کیا۔ اب جنگجوؤں، بیرکوں اور اپ گریڈ کی طرف چلتے ہیں۔
+[tutorial text 4]
+آپ تقریباً مکمل کر چکے ہیں۔ صرف جھنڈے اور حملہ باقی ہیں۔ پھر آپ اپنی مرضی کے کھیل آزمانے اور آخرکار Globulation 2 کے بہترین کھلاڑیوں سے آن لائن مقابلہ کرنے کے لیے تیار ہوں گے۔
+[Uncontrolled]
+بغیر کھلاڑی
+[undo]
+واپس لیں
+[uniform terrain]
+یکساں زمین
+[Unit editor]
+یونٹ ایڈیٹر
+[unit settings explanation]
+مقرر یونٹوں کی طے شدہ تعداد
+[units working]
+ یونٹ کام پر
+[Units]
+یونٹ
+[unlocked at start]
+آغاز میں دستیاب
+[unlocked by]
+اس کے ذریعے دستیاب
+[Unnamed Area]
+بے نام علاقہ
+[up]
+اوپر
+[upgrade building]
+اپ گریڈ شروع/بند کریں
+[Upgrade Defaults]
+اپ گریڈ کی طے شدہ ترتیبات
+[upgrade]
+اپ گریڈ کریں
+[username]
+صارف نام
+[Version]
+ورژن
+[view history]
+سابقہ ریکارڈ دیکھیں
+[Voice volume]
+آواز کی سطح (گفتگو)
+[waiting for %0]
+%0 کا انتظار ہے
+[waiting for key]
+کلید کا انتظار ہے...
+[Walk]
+چلنا
+[warflag explanation 2]
+
+[warflag explanation]
+جنگجوؤں کو بلاتا ہے
+[warflag]
+جنگی جھنڈا
+[Warning, you need to reboot the game for changes to take effect]
+تنبیہ: تبدیلیاں نافذ کرنے کے لیے کھیل دوبارہ شروع کرنا ہو گا
+[Warrior Ratio]
+جنگجوؤں کا تناسب
+[Warrior]
+جنگجو
+[warriors]
+جنگجو
+[watch again]
+دوبارہ دیکھیں
+[watching:]
+دیکھ رہے ہیں:
+[water]
+پانی
+[Wheat]
+گندم
+[Won : you defeated your opponents]
+فتح: آپ نے اپنے حریفوں کو شکست دی
+[Won : you have the most prestige]
+فتح: آپ کا وقار سب سے زیادہ ہے
+[Won : your ally %0 has the most prestige]
+فتح: آپ کے اتحادی %0 کا وقار سب سے زیادہ ہے
+[Wood]
+لکڑی
+[wood]
+لکڑی
+[Worker Ratio]
+کارکنوں کا تناسب
+[Worker]
+کارکن
+[workers]
+کارکن
+[working]
+کام پر
+[wounded]
+زخمی
+[Yes]
+ہاں
+[YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD]
+YOG میٹا سرور نے رابطہ مسترد کر دیا ہے کیونکہ آپ کا Globulation 2 کلائنٹ پرانا ہے۔ آن لائن کھیلنے کے لیے www.globulation2.org سے تازہ ترین ورژن حاصل کریں۔
+[you have lost]
+آپ ہار گئے!
+[you have won]
+آپ جیت گئے!
+[You where kicked from the game]
+آپ کو کھیل سے نکال دیا گیا
+[Your %0 are under attack]
+آپ کے %0 پر حملہ ہو رہا ہے
+[Your unit got converted to %0's team]
+آپ کا یونٹ %0 کی ٹیم میں شامل ہو گیا ہے
+[Units still inside: %0]
+اب بھی اندر: %0
+[Units still working: %0]
+اب بھی کام پر: %0
+[2 vs 2]
+2 بمقابلہ 2
+[AI strategy & counterplay]
+AI کی حکمتِ عملی اور مقابلے کے طریقے
+[AICastor-Profile]
+بنیادی حکمتِ عملی: بڑے حملے کرنے سے پہلے پیداواری بستی اور ٹیکنالوجی میں سرمایہ لگاتا ہے۔ ترجیحی تعمیراتی منصوبے اس کی بستی کو بڑھاتے ہیں؛ ترقی، فوجی سہولیات اور وقت کے ساتھ اس کی جنگی تیاری بڑھتی ہے۔\n\nمعیشت اور ترقی: زمین کی نمی، خوراک کے ذرائع کی افزائش، رکاوٹوں اور کارکنوں کی رسائی کا جائزہ لیتا ہے۔ پیداوار کے ساتھ خوراک کی فراہمی میں اضافہ، عمارتوں کی اپ گریڈنگ اور دفاع سنبھالتا ہے۔\n\nحملہ اور دفاع: صحت مند جنگجوؤں کی حملہ آور طاقت کا اندازہ لگا کر طاقت یا وقت کی شرائط پوری ہونے پر حملہ کرتا ہے۔ پہلے دیکھی ہوئی، قابلِ رسائی عمارتوں، خصوصاً بیرکوں اور اسکولوں کو ترجیح دیتا ہے اور حملے کے جھنڈے قیمتی اہداف کی طرف بڑھاتا ہے۔\n\nدیگر AI سے موازنہ: Numbi کی نسبت زمین اور ہدف کی اہمیت پر زیادہ غور کرتا ہے۔ Warrush سے زیادہ صبر کرتا ہے؛ ابتدائی دباؤ کے بجائے ترقی یافتہ اڈے اور مضبوط فوج کو ترجیح دیتا ہے۔\n\nخوبیاں اور کمزوریاں: وسیع تعمیراتی منصوبہ بندی اور اہم فوجی اہداف اس کے حملوں کو بامقصد بناتے ہیں۔ تیاری میں وقت لگتا ہے، اس لیے تیز حریف اس کی مرکزی فوج تیار ہونے سے پہلے وسائل پر مقابلہ کر سکتے ہیں۔\n\nآزمانے کے لیے مقابلے کا طریقہ: ابتدا ہی میں اس کی توسیع کو روکیں۔ خوراک کے ساتھ بیرکوں اور اسکولوں کی بھی حفاظت کریں اور اس کی ترقی یافتہ بستی پر حملہ کرتے وقت کچھ فوج محفوظ رکھیں۔
+[AICastor-Summary]
+قلعہ بند بستی بناتا ہے، پھر فوجی اور سائنسی عمارتوں پر حملہ کرتا ہے۔
+[AICortex-Profile]
+بنیادی حکمتِ عملی: حالات کے مطابق ترجیحات بدل کر فعال معیشت بڑھاتا اور اضافی محنت کو خوراک، ٹیکنالوجی اور فوجی دباؤ میں لگاتا ہے۔ اس کی عام پالیسی قواعد پر مبنی ہے؛ سیکھی ہوئی پالیسی کے تجربات کے لیے الگ ترتیب درکار ہے۔\n\nمعیشت اور ترقی: عملے کی ضرورت کے مطابق کارکنوں کی پیداوار بدلتا اور پیدائشیں جاری رکھتا ہے۔ خوراک کی مشکلات توسیع اور ٹیکنالوجی کے اخراجات کم کرتی ہیں۔ جہاں پانی تک رسائی سے نمایاں فائدہ ہو، وہاں تیراکی کی تربیت شامل کرتا ہے۔\n\nحملہ اور دفاع: دشمن کی دیکھی گئی ٹیکنالوجی اور دستیاب فوج کے مطابق حملوں کی تیاری کرتا ہے۔ پانی عبور کرنے والی مہموں کے لیے تیرنے والے جنگجو ضروری ہیں۔ اگلے مورچوں پر سرائے اور ہسپتال بنا کر طویل مہموں کو سہارا دیتا ہے اور پیش قدمی سے پہلے فوج جمع کر سکتا ہے۔\n\nحملہ جاری رکھنا اور ہنگامی حالات: معمولی چھیڑ چھاڑ پر بار بار واپس آنے کے بجائے حملہ جاری رکھتا ہے۔ سنگین حملہ محافظوں کو واپس بلا سکتا ہے۔ ابتدا کی ہنگامی حالت میں صرف جنگجو پیدا کیے جا سکتے ہیں اور ہسپتال بنایا جا سکتا ہے؛ قحط کی حالت میں مجبوراً ایک چھوٹا حملہ کر سکتا ہے۔\n\nدیگر AI سے موازنہ: Warrush سے زیادہ اگلے مورچوں کی مدد پر توجہ دیتا ہے۔ Maxima پائیدار پیدائشوں، تربیت اور تعیناتی کے وسائل کا دشمن کی اندازاً طاقت کے مقابلے میں زیادہ تفصیلی حساب کرتا ہے۔\n\nخوبیاں اور کمزوریاں: دباؤ کو خوراک، علاج اور رسائی سے جوڑتا ہے۔ اگلے مورچوں کی عمارتوں تک رسد جاری رہنی چاہیے اور مسلسل پیدائشیں محدود خوراک پر دباؤ برقرار رکھ سکتی ہیں۔ ہنگامی ترجیحات میں ترقی اور بقا کے درمیان انتخاب کرنا پڑتا ہے۔\n\nآزمانے کے لیے مقابلے کا طریقہ: اگلے مورچوں کی سراؤں، ہسپتالوں اور خوراک کے ذرائع کو چیلنج کریں۔ اس کی پیش قدمی کے مقابل محافظوں کو اکٹھا رکھیں؛ معمولی چھیڑ چھاڑ اسے پسپا ہونے پر مجبور نہیں بھی کر سکتی۔\n\nکھوج: دریافت شدہ دشمن عمارتوں اور دیکھی گئی دشمن فوج کی معلومات استعمال کرتا ہے۔
+[AICortex-Summary]
+اگلے مورچوں پر خوراک اور علاج کے ذریعے مسلسل فوجی پیش قدمی کو سہارا دیتا ہے۔
+[AINicowar-Profile]
+بنیادی حکمتِ عملی: باہم مربوط شرائط کے ذریعے آبادی بڑھانے، تربیت، اپ گریڈ اور جنگ کو ملاتا ہے۔ توسیع کے دوران حملہ کر سکتا ہے اور خوراک کی فراہمی ناکام ہونے پر معاشی کوشش بحالی کی طرف موڑ سکتا ہے۔\n\nابتدا: فراہم کردہ جارحانہ پروفائل کل پانچ یونٹوں پر جنگ کی تیاری شروع کرتا ہے اور پانچ جنگجوؤں پر جنگ کی اجازت دیتا ہے، جس میں سطح صفر کے جنگجو بھی شمار ہوتے ہیں۔ اس کا ہدف تین حملہ آور جھنڈے ہیں، ہر ایک کے ساتھ پانچ جنگجو۔ حسبِ پسند حکمتِ عملی کی فائلیں یہ حدیں بدل سکتی ہیں۔\n\nمعیشت اور ترقی: خوراک اور پیدائش کی گنجائش بڑھاتا، کارکنوں کو تربیت دیتا، تیراکی اور حرکت بہتر کرتا اور عمارتوں کو اپ گریڈ کرتا ہے۔ خوراک کے عملے کو بدلتا، فاقہ کشی کا جواب دیتا اور پھل حاصل کرنے کی کوشش کرتا ہے۔\n\nحملہ اور دفاع: قابلِ رسائی دشمن عمارتوں میں سے حملے کے ہدف چنتا ہے۔ وسائل سے بند راستے کھولنے کے لیے صفائی کے جھنڈے استعمال کر سکتا ہے۔ دفاعی جھنڈے خطرے میں موجود یونٹوں اور عمارتوں کے گروہوں کی حفاظت کرتے ہیں۔ بعد میں زمینی حملے کی تربیت یافتہ کھوجی دشمن یونٹوں کے گروہوں کو نشانہ بناتے ہیں۔\n\nدیگر AI سے موازنہ: Warrush کی طرح ابتدا میں جارحانہ ہے، مگر بعد کی کارروائی زیادہ وسیع ہے۔ Cabino کے برعکس ہسپتالوں اور سراؤں کو مسلسل ترجیح نہیں دیتا۔\n\nخوبیاں اور کمزوریاں: وسیع حربی صلاحیت ابتدائی دباؤ کو مسلسل ترقی کے ساتھ جوڑتی ہے۔ اتفاقی ہدف چننے سے کم اہم عمارتوں پر محنت خرچ ہو سکتی ہے۔ اس کی حدیں دشمن کی لڑنے کی طاقت کا Maxima جیسا تفصیلی تخمینہ نہیں دیتیں۔\n\nآزمانے کے لیے مقابلے کا طریقہ: جلد حملے کی توقع رکھیں۔ خوراک اور کارکنوں کی حفاظت کریں، توسیع کو چیلنج کریں اور اگر یہ اعلیٰ تربیت تک پہنچ جائے تو کھوجیوں کے حملوں کے لیے تیار رہیں۔
+[AINicowar-Summary]
+ابتدائی یلغار جسے کھیتی، اپ گریڈ، دفاع اور کھوجیوں کے حملے سہارا دیتے ہیں۔
+[AINone-Profile]
+بنیادی حکمتِ عملی: AI کا کوئی حکم جاری نہیں کرتا۔\n\nخوبیاں: تجربات کے لیے ایک غیر متحرک اور قابلِ پیش گوئی حریف۔\n\nکمزوریاں: نہ توسیع کرتا ہے نہ حالات کے مطابق بدلتا ہے۔
+[AINone-Summary]
+تجربات کے لیے غیر متحرک بستی۔
+[AINumbi-Profile]
+بنیادی حکمتِ عملی: پہلے خوراک اور آبادی بڑھاتا، پھر علاج، سائنس اور تربیت شامل کرتا، اور آخر میں جنگ کی طرف جاتا ہے۔ اس کے بڑے مرحلے حریف کی ترقی کے بجائے وقت کے ساتھ آگے بڑھتے ہیں۔\n\nمعیشت اور ترقی: آبادی کے مطابق عمارتوں کی ضرورت بڑھاتا اور قریبی خوراک کے ذرائع کا اندازہ لگاتا ہے۔ بعد کے مراحل میں بڑھتی فوج کی مدد کے لیے اپ گریڈ، دفاع اور توسیع شامل ہوتی ہے۔\n\nحملہ اور دفاع: کافی صحت مند جنگجو موجود ہوں یا مقررہ وقت گزر جائے تو حملہ کرتا ہے۔ منتخب دشمن عمارتوں پر جنگی جھنڈے لگاتا ہے۔ لڑنے والی فوج بہت کم ہو جائے تو حملے کے جھنڈے ہٹا کر اگلی کوشش کی حدیں بڑھا دیتا ہے۔\n\nدیگر AI سے موازنہ: Castor یا Nicowar سے زیادہ قابلِ پیش گوئی ہے۔ Castor زمین اور ہدف کی اہمیت پر زیادہ غور کرتا ہے؛ Nicowar کہیں پہلے دباؤ ڈالتا ہے۔\n\nخوبیاں اور کمزوریاں: مددگار عمارتوں کا وسیع نظام بلا رکاوٹ تیاری کے بعد اسے خطرناک بنا سکتا ہے، مگر اس کا وقت نامہ لڑائی کے حالات سے میل نہیں بھی کھا سکتا۔ سادہ ہدف چننے اور نقصان کے بعد لمبے وقفوں کی وجہ سے اس کے حملوں کا اندازہ لگانا آسان ہے۔\n\nآزمانے کے لیے مقابلے کا طریقہ: فوجی مرحلے سے پہلے دباؤ ڈالیں۔ حملوں کے دوران اپنے پیچھے خوراک اور تربیت بڑھائیں اور اس کا حملہ شکست دینے کے بعد وقفے سے فائدہ اٹھائیں۔\n\nکھوج: اس کا حملہ کرنے والا معمول نظر آنے کی جانچ کے بغیر دشمن عمارتوں کے مقامات براہِ راست پڑھتا ہے۔
+[AINumbi-Summary]
+وقت نامے کے مطابق آہستہ آہستہ بستی بڑھاتا ہے، پھر بڑی تعداد میں حملہ کرتا ہے۔
+[AIEcono-Profile]
+بنیادی حکمتِ عملی: کارکن اور کھوجی پیدا کرتا، معیشت پھیلاتا اور خوراک و پھل سے دشمن یونٹوں کو اپنی طرف لاتا ہے۔ جنگجوؤں کا روایتی حملہ نہیں کرتا۔\n\nمعیشت اور ترقی: خوراک کے ذرائع کے قریب سرائے اور چھتے بناتا، تعلیم اور حرکت کی تربیت شامل کرتا اور عمارتوں کو اپ گریڈ کرتا ہے۔ خوراک کی رسد پر نظر رکھتا ہے اور رسد خراب ہونے یا ہدف غائب ہونے پر بھی عمارتیں اور کھوج کے جھنڈے برقرار رکھتا ہے۔\n\nکھیتی اور وفاداری کی تبدیلی: پانی کے قریب دوبارہ اگنے والی خوراک اور لکڑی کے ذرائع کی حفاظت کرتا ہے۔ کھوجیوں کو پھل کے ذخائر اور دشمن بستیوں کی طرف بھیجتا ہے اور پھل کی رسد حاصل کرتے وقت دشمنوں کو خوراک کی دعوت دیتا ہے۔ بہتر خوراک اور پھل یونٹوں کو اپنی طرف لانے میں مدد دے سکتے ہیں۔\n\nدیگر AI سے موازنہ: سب سے زیادہ مخصوص معاشی حریف۔ Cabino اور Maxima بھی پھل حاصل کرتے ہیں، مگر ساتھ فوج بھی رکھتے ہیں۔\n\nخوبیاں اور کمزوریاں: فوجی حریفوں کے تھکنے کے دوران بڑھ سکتا ہے؛ وفاداری کی تبدیلی مقابلے کا ایک اور طریقہ دیتی ہے۔ مسلسل حملے کا جواب دینے کے لیے جنگجو پیدا نہیں کرتا۔ خوراک، پھل، جغرافیہ اور فتح کے قواعد اس کے مواقع پر بہت اثر ڈالتے ہیں۔\n\nآزمانے کے لیے مقابلے کا طریقہ: اس کی کھلی توسیع پر دباؤ ڈالیں۔ اپنے یونٹوں کو برقرار رکھنے کے لیے اپنی سراؤں میں خوراک اور پھل پہنچاتے رہیں۔ اس کے بڑھنے کے دوران غیر ضروری لڑائیوں میں اپنی بستی کو تھکانے سے بچیں۔
+[AIEcono-Summary]
+جنگجو پیدا کیے بغیر خوراک سے بھرپور بستی بڑھاتا اور یونٹوں کی وفاداری کے لیے مقابلہ کرتا ہے۔
+[AIWarrush-Profile]
+بنیادی حکمتِ عملی: حریفوں کی طویل معاشی یا تکنیکی تیاری مکمل ہونے سے پہلے حملہ کرتا ہے۔ توقع رکھتا ہے کہ بڑے امدادی نظام کی ضرورت پڑنے سے پہلے لڑائی کھیل کا فیصلہ کر دے گی۔\n\nمعیشت اور ترقی: جب چھ یونٹ وسائل جمع کر سکیں تو پیداوار چار کارکن، ایک کھوجی اور تین جنگجو مقرر کرتا ہے۔ تربیت بھرنے پر بیرکیں بڑھاتا ہے، مگر نئی سراؤں کو محدود رکھتا ہے۔ بچ جانے والی تعمیراتی گنجائش اکثر ہسپتالوں اور حرکت کی تربیت پر لگتی ہے۔\n\nحملہ اور دفاع: دریافت شدہ دشمن عمارتوں پر پہرے کے علاقے لگاتا ہے تاکہ جنگجو مسلسل دباؤ ڈالیں۔ احتیاط سے جمع کی گئی لہر کا انتظار نہیں کرتا۔ رکاوٹ بننے والے وسائل صاف کرتا اور کچھ دوبارہ اگنے والے ذرائع کی حفاظت کرتا ہے۔\n\nپھل کی پالیسی: پھل کاٹنے سے روکتا ہے، یوں پھل سے زرہ پر پڑنے والی کمی سے بچتا اور Econo کی وفاداری بدلنے کی حکمتِ عملی نہیں اپناتا۔\n\nدیگر AI سے موازنہ: Numbi یا Castor سے زیادہ ابتدائی دباؤ پر قائم رہتا ہے۔ Nicowar بھی جارحانہ ابتدا کرتا ہے، مگر بعد میں زیادہ وسیع اپ گریڈ اور حربی منصوبہ اپناتا ہے۔\n\nخوبیاں اور کمزوریاں: سست ابتدا کو سزا دیتا اور جلد دفاع پر خرچ کرنے پر مجبور کرتا ہے۔ محدود منظم اپ گریڈ اور کم خوراکی سہارا رک جانے والے حملے کو مہنگا بناتے ہیں۔ زمین اور لمبے سفر اس کی ابتدائی برتری گھٹا سکتے ہیں۔\n\nآزمانے کے لیے مقابلے کا طریقہ: ابتدا ہی میں سراؤں اور چھتوں کی حفاظت کریں۔ محافظوں کے ساتھ کارکنوں کی جگہ بھی نئے یونٹ لائیں، تربیت بڑھائیں، پھر یلغار کی رفتار ٹوٹنے پر جوابی حملہ کریں۔\n\nکھوج: ابتدائی کھوج کے جھنڈے دشمن کے شروع کے مقامات براہِ راست استعمال کرتے ہیں۔ بعد کے حملہ آور علاقوں کے لیے نظر آنا ضروری ہے۔
+[AIWarrush-Summary]
+جان بوجھ کر مختصر رکھے گئے امدادی معاشی نظام کے ساتھ ابتدائی جنگجوؤں کا دباؤ۔
+[AICabino-Profile]
+بنیادی حکمتِ عملی: یونٹوں کی پیداوار کو تعمیر، اپ گریڈ، دفاع، حملوں اور کھوج میں بانٹتا ہے۔ الگ منتظم یونٹ مانگتے اور مختص کرتے ہیں، یوں معیشت اور فوج ساتھ ترقی کرتی ہیں۔\n\nمعیشت اور ترقی: ایک وسیع بستی بناتا اور اس کی عمارتوں کو اپ گریڈ کرتا ہے، سراؤں اور میناروں کا عملہ سنبھالتا ہے، عمارتوں کے اردگرد صفائی کرتا اور دوبارہ اگنے والے وسائل بچاتا ہے۔ پھل کی کھوج کرتا اور وفاداری بدلوانے کے لیے خوراک کی دعوت دیتا ہے۔\n\nحملہ اور دفاع: ایک دشمن چنتا اور پہلے ہسپتالوں، پھر سراؤں، پھر بیرکوں کو ترجیح دیتا ہے۔ بیک وقت چار تک حملے سنبھالتا ہے؛ دستیابی اور قریبی دشمنوں کے مطابق عموماً ہر ہدف کو آٹھ سے بیس جنگجو دیتا ہے۔ خطرے میں موجود عمارتوں کے اردگرد الگ دفاعی جھنڈے لگاتا ہے۔\n\nتربیت: حملے کے لیے کافی موزوں جنگجو اور مکمل بیرک درکار ہے، مگر اعلیٰ ترین ٹیکنالوجی کا انتظار نہیں کرتا۔ مسلسل اپ گریڈ اور تربیت بعد کے حملے مضبوط بناتی ہیں۔\n\nدیگر AI سے موازنہ: Nicowar سے زیادہ باقاعدگی سے امدادی عمارتیں تباہ کرتا ہے۔ Maxima کی جمع شدہ لہروں کے مقابل اپنے حملے زیادہ پھیلاتا اور مختلف ضرورتوں کو سنبھالنے کے لیے یونٹ مختص کرتا ہے۔\n\nخوبیاں اور کمزوریاں: ترقی، تربیت، دفاع اور کئی حملے یکجا کرتا ہے۔ خوراک اور علاج تباہ کرنا پوری بستی کمزور کر سکتا ہے۔ اتفاقی حریف چننے اور عمارتوں کی طے شدہ ترجیحات سے مواقع چھوٹ سکتے ہیں؛ کئی حملے اس کی فوج بانٹ سکتے ہیں۔\n\nآزمانے کے لیے مقابلے کا طریقہ: ہسپتالوں اور سراؤں کی حفاظت کریں۔ کھلی توسیع کو چیلنج کریں اور ہر الگ حملے کے خلاف محافظ جمع کریں۔ کئی محاذ سنبھالنے کے قابل ہونے سے پہلے اس کی خوراک یا تربیت کو نقصان پہنچائیں۔\n\nکھوج: حملہ چننے والا نظام واضح طور پر نظر آنے کی جانچ کیے بغیر دشمن عمارتوں کی فہرست پڑھتا ہے۔ بعض معاشی موازنے دشمن کے اعداد و شمار براہِ راست استعمال کرتے ہیں۔
+[AICabino-Summary]
+بستی کی ترقی اور تربیت یافتہ حملے منظم کرتا ہے، پہلے علاج اور خوراک کو نشانہ بناتا ہے۔
+[Algae]
+کائی
+[Beach size]
+ساحل کا سائز
+[Blue]
+نیلا
+[Brown]
+بھورا
+[Built-in maps]
+پہلے سے شامل نقشے
+[Closed]
+بند
+[Colonies]
+بستیاں
+[Colony]
+بستی
+[Concrete islands]
+الگ جزیرے
+[Conquest only]
+صرف حریف بستیوں کی شکست سے فتح
+[Conquest or prestige]
+حریف بستیوں کی شکست یا وقار سے فتح
+[Could not launch this map. Your setup is retained; try again.]
+یہ نقشہ شروع نہیں ہو سکا۔ آپ کی ترتیب برقرار ہے؛ دوبارہ کوشش کریں۔
+[Could not load this map. Choose another map or retry.]
+یہ نقشہ لوڈ نہیں ہو سکا۔ دوسرا چنیں یا دوبارہ کوشش کریں۔
+[Crater lakes]
+گڑھوں کی جھیلیں
+[Custom]
+حسبِ پسند
+[Custom teams]
+حسبِ پسند ٹیمیں
+[Cyan]
+فیروزی
+[Desert weight]
+صحرا کا وزن
+[Easy]
+آسان
+[Extra colony assignments are retained for larger maps.]
+بڑے نقشوں کے لیے اضافی بستیوں کی تفویض برقرار رکھی جاتی ہے۔
+[Extra islands]
+اضافی جزیرے
+[FFA]
+ہر ایک اپنے لیے
+[Fruit]
+پھل
+[Game Rules]
+کھیل کے قواعد
+[Game speed]
+کھیل کی رفتار
+[Generate & play]
+بنائیں اور کھیلیں
+[Give at least one terrain type a nonzero weight.]
+کم از کم ایک قسم کی زمین کو صفر سے زیادہ وزن دیں۔
+[Grass weight]
+گھاس کا وزن
+[Gray]
+سرمئی
+[Green]
+سبز
+[Hard]
+مشکل
+[Height]
+اونچائی
+[Invalid colony count.]
+بستیوں کی تعداد درست نہیں۔
+[Island size]
+جزیرے کی جسامت
+[Islands]
+جزیرے
+[Isles]
+چھوٹے جزیرے
+[Lake density]
+جھیلوں کی کثرت
+[Landscape]
+منظرنامہ
+[Last colony standing]
+آخری باقی بستی
+[Layout]
+بناوٹ
+[Magenta]
+ارغوانی
+[Map]
+نقشہ
+[Match finished]
+میچ ختم ہو گیا
+[Medium]
+درمیانہ
+[Medium - Experimental]
+درمیانہ - تجرباتی
+[No AI orders]
+AI کا کوئی حکم نہیں
+[Old islands]
+ناہموار جزائر
+[Old random]
+ٹوٹا پھوٹا ساحل
+[Open at least one colony to start a match.]
+میچ شروع کرنے کے لیے کم از کم ایک بستی کھولیں۔
+[Open book]
+کھلی کتاب
+[Pink]
+گلابی
+[Play this map]
+اس نقشے پر کھیلیں
+[Players & Teams]
+کھلاڑی اور ٹیمیں
+[Premade maps]
+تیار نقشے
+[Preview ready. Start plays this exact map.]
+پیش منظر تیار ہے۔ شروع کرنے پر یہی نقشہ کھیلا جائے گا۔
+[Regenerate all]
+سب دوبارہ بنائیں
+[Generating preview...]
+پیش منظر بن رہا ہے...
+[Preview unavailable]
+پیش منظر دستیاب نہیں
+[Each landscape is shown as a real map at your current size and colony count. Use one to play the map shown.]
+ہر منظرنامہ موجودہ جسامت اور بستیوں کی تعداد پر اصل نقشے کے طور پر دکھتا ہے۔ دکھائے گئے نقشے پر کھیلنے کے لیے اسے چنیں۔
+[Purple]
+جامنی
+[Quick clash]
+فوری ٹکراؤ
+[Random map]
+اتفاقی نقشہ
+[Red]
+سرخ
+[Repeat landscape]
+منظرنامہ دہرائیں
+[Resources]
+وسائل
+[River]
+دریا
+[River width]
+دریا کی چوڑائی
+[Sand weight]
+ریت کا وزن
+[Select a valid map.]
+درست نقشہ منتخب کریں۔
+[Shared control needs a free controller slot (maximum %0).]
+مشترکہ کنٹرول کے لیے کنٹرولر کی ایک خالی جگہ درکار ہے (زیادہ سے زیادہ %0)۔
+[Smoothing]
+ہموار کرنا
+[Standard]
+معیاری
+[Start game]
+کھیل شروع کریں
+[Starting workers]
+ابتدائی کارکن
+[Starting workers: Game Rules tab.]
+ابتدائی کارکن: کھیل کے قواعد کے ٹیب میں۔
+[Swamp]
+دلدل
+[Team]
+ٹیم
+[Terrain]
+زمین
+[Victory]
+فتح
+[Watch game]
+کھیل دیکھیں
+[Water weight]
+پانی کا وزن
+[White]
+سفید
+[Width]
+چوڑائی
+[Yellow]
+پیلا
+[You]
+آپ
+[You + AI]
+آپ + AI
+[You and the AI both issue orders. Uses two controller slots.]
+آپ اور AI دونوں احکامات دیتے ہیں۔ کنٹرولر کی دو جگہیں استعمال ہوتی ہیں۔
+[You vs all]
+آپ بمقابلہ سب
+[%0 vs %1]
+%0 بمقابلہ %1
+[%0 vs all]
+%0 بمقابلہ سب
+[You will watch this match.]
+آپ یہ میچ دیکھیں گے۔
+[Your maps]
+آپ کے نقشے
+[colonies]
+بستیاں
+[Inactive]
+غیر فعال
+[8 workers / 2x speed]
+8 کارکن / دوگنی رفتار
+[Changes the pace of the whole simulation.]
+پوری سیمولیشن کی رفتار بدلتا ہے۔
+[Choose whether teams can change during the match.]
+منتخب کریں کہ میچ کے دوران ٹیمیں بدل سکتی ہیں یا نہیں۔
+[Classic colony building]
+روایتی بستی سازی
+[Dimensions and colony count are set above.]
+ابعاد اور بستیوں کی تعداد اوپر مقرر ہیں۔
+[Generate & watch]
+بنائیں اور دیکھیں
+[Info]
+معلومات
+[Map-defined starting units]
+نقشے میں طے کردہ ابتدائی یونٹ
+[No maps in this library.]
+اس لائبریری میں کوئی نقشہ نہیں۔
+[Premade maps retain their authored starting units.]
+تیار نقشوں میں مصنف کے مقرر کردہ ابتدائی یونٹ برقرار رہتے ہیں۔
+[Start with terrain known]
+ابتدا ہی سے زمین معلوم ہو
+[This colony will not join the match.]
+یہ بستی میچ میں شامل نہیں ہو گی۔
+[This landscape uses a fixed terrain recipe.]
+اس منظرنامے کی زمین بنانے کا طریقہ مقرر ہے۔
+[This landscape uses fixed resource placement.]
+اس منظرنامے میں وسائل کے مقامات طے ہیں۔
+[Win through conquest]
+حریف بستیوں کو شکست دے کر جیتیں
+[You control this colony.]
+آپ اس بستی کو کنٹرول کرتے ہیں۔
+[controllers]
+کنٹرولرز
+[Use]
+استعمال کریں
+[Lime]
+لیموں جیسا سبز
+[Teal]
+سبزی مائل نیلا
+[Azure]
+آسمانی
+[Updating map preview...]
+نقشے کا پیش منظر تازہ ہو رہا ہے…
+[Generation failed. Adjust settings or press Start to retry.]
+نقشہ نہیں بن سکا۔ ترتیبات بدلیں یا دوبارہ کوشش کے لیے شروع کریں دبائیں۔
+[Preview unavailable. Adjust settings or start to retry.]
+پیش منظر دستیاب نہیں۔ ترتیبات بدلیں یا دوبارہ کوشش کے لیے شروع کریں۔
+[automatic torus view]
+خودکار ٹورس منظر
+[toggle torus view]
+2D / ٹورس منظر بدلیں
+[Alliance]
+اتحاد
+[Choose a rule to change it.]
+بدلنے کے لیے کوئی قاعدہ منتخب کریں۔
+[Conquest only removes prestige victory; map scripts still apply.]
+فتح کا موڈ صرف وقار سے جیت کو ہٹاتا ہے؛ نقشے کے اسکرپٹ پھر بھی لاگو ہوتے ہیں۔
+[Control]
+کنٹرول
+[Controller]
+کنٹرولر
+[Generate preview]
+پیش منظر بنائیں
+[Generation failed. Adjust settings or try again.]
+نقشہ نہیں بن سکا۔ ترتیبات بدلیں یا دوبارہ کوشش کریں۔
+[Map settings changed. Generate a new preview or start.]
+نقشے کی ترتیبات بدل گئی ہیں۔ نیا پیش منظر بنائیں یا شروع کریں۔
+[Map source]
+نقشے کا ماخذ
+[Map-defined]
+نقشے میں طے کردہ
+[Match format]
+میچ کا انداز
+[No current preview]
+کوئی موجودہ پیش منظر نہیں
+[Quick clash: 2x speed; generated maps start with 8 workers.]
+تیز مقابلہ: دوگنی رفتار؛ بنائے گئے نقشوں پر ابتدا میں 8 کارکن ہوتے ہیں۔
+[Reroll]
+دوبارہ قرعہ ڈالیں
+[Randomize]
+اتفاقی بنائیں
+[Reset to defaults]
+طے شدہ ترتیبات بحال کریں
+[Ruleset]
+قواعد کا مجموعہ
+[Select a map from the library.]
+لائبریری سے نقشہ چنیں۔
+[Starting workers affects generated maps only.]
+ابتدائی کارکنوں کی ترتیب صرف بنائے گئے نقشوں پر اثر کرتی ہے۔
+[Unavailable]
+دستیاب نہیں
+[Use selection]
+منتخب چیز استعمال کریں
+[Quick clash on premade maps: only speed changes (2x).]
+تیار نقشوں پر فوری ٹکراؤ: صرف رفتار بدلتی ہے (2x)۔
+[Generate a preview to explore this world.]
+اس دنیا کو دیکھنے کے لیے پیش منظر بنائیں۔
+[More workers jump-start colony growth. Changes the generated map.]
+زیادہ کارکن بستی کی بڑھوتری تیز کرتے ہیں۔ اس سے بننے والا نقشہ بدلتا ہے۔
+[No warriors]
+جنگجو نہیں
+[settings Add key to sequence]
+سلسلے میں کلید شامل کریں
+[settings Add shortcut]
+شارٹ کٹ شامل کریں
+[settings Adjust assigned units with the wheel. When off, hold Ctrl. Shift adjusts flag radius. Also controls wheel input in other menus.]
+پہیے سے مقرر یونٹ بدلیں۔ بند ہو تو Ctrl دبائے رکھیں۔ Shift سے جھنڈے کا رداس بدلتا ہے۔ یہ دوسرے مینو میں پہیے کو بھی قابو کرتا ہے۔
+[settings Adjust music and voice volume.]
+موسیقی اور صوتی گفتگو کی آواز بدلیں۔
+[settings Adjust the pace of play.]
+کھیل کی رفتار بدلیں۔
+[settings Advanced binding]
+اعلیٰ کلیدی ترتیب
+[settings Artwork & effects]
+تصاویر اور اثرات
+[settings Audio]
+آواز
+[settings Bind Escape]
+Escape مقرر کریں
+[settings Building]
+عمارت
+[settings Building defaults]
+عمارتوں کی طے شدہ ترتیبات
+[settings Cancel]
+منسوخ کریں
+[settings Changes saved automatically]
+تبدیلیاں خود بخود محفوظ ہو گئیں
+[settings Changes you make during play update these defaults for future games.]
+کھیل کے دوران کی تبدیلیاں آئندہ کھیلوں کے لیے ان طے شدہ ترتیبات کو بدلتی ہیں۔
+[settings Changing the renderer requires a restart.]
+رینڈرر بدلنے کے لیے دوبارہ شروع کرنا ہو گا۔
+[settings Choose a binding to change it, or add another shortcut for an action.]
+بدلنے کے لیے کلیدی ترتیب چنیں، یا کسی کارروائی کے لیے دوسرا شارٹ کٹ شامل کریں۔
+[settings Choose a window or fill the screen.]
+ونڈو چنیں یا پوری اسکرین استعمال کریں۔
+[settings Choose how the game looks on your screen.]
+اسکرین پر کھیل کی صورت چنیں۔
+[settings Completed]
+مکمل
+[settings Construction]
+تعمیر
+[settings Controls]
+کنٹرولز
+[settings Could not change display mode. The previous mode was restored.]
+اسکرین کا موڈ نہیں بدلا جا سکا۔ پچھلا موڈ بحال کر دیا گیا۔
+[settings Could not save]
+محفوظ نہیں ہو سکا
+[settings Current display]
+موجودہ اسکرین
+[settings Default]
+طے شدہ
+[settings Display]
+اسکرین
+[settings Display & graphics]
+اسکرین اور گرافکس
+[settings Display the Globulation 2 cursor.]
+Globulation 2 کا کرسر دکھائیں۔
+[settings Done]
+مکمل
+[settings Edit shortcut]
+شارٹ کٹ بدلیں
+[settings Multiply the operating system display scale for menus, text and the sidebar.]
+مینو، متن اور ضمنی پینل کے لیے نظام کے اسکرین پیمانے کو اس عدد سے ضرب دیں۔
+[settings Flags]
+جھنڈے
+[settings Full]
+مکمل
+[settings Fullscreen]
+پوری اسکرین
+[settings Game]
+کھیل
+[settings Game speed]
+کھیل کی رفتار
+[settings Gameplay]
+کھیل کا طریقہ
+[settings Graphics detail]
+گرافکس کی تفصیل
+[settings Interface scale]
+انٹرفیس کا پیمانہ
+[settings Keep]
+برقرار رکھیں
+[settings Keep this display mode?]
+اسکرین کا یہ موڈ برقرار رکھیں؟
+[settings Keep your volume levels while silencing audio.]
+آواز بند کرتے وقت سطحوں کی ترتیبات برقرار رکھیں۔
+[settings Key]
+کلید
+[settings Keyboard shortcuts]
+کی بورڈ کے شارٹ کٹ
+[settings Keys form a sequence in order. Each key can trigger on press or release.]
+کلیدیں ترتیب وار سلسلہ بناتی ہیں۔ ہر کلید دبانے یا چھوڑنے پر کارروائی چلا سکتی ہے۔
+[settings Language]
+زبان
+[settings Language & player]
+زبان اور کھلاڑی
+[settings Language used throughout the interface.]
+پورے انٹرفیس کی زبان۔
+[settings Level]
+سطح
+[settings Map editor]
+نقشہ ایڈیٹر
+[settings Match the desktop]
+ڈیسک ٹاپ کے مطابق
+[settings Missing font]
+فونٹ موجود نہیں
+[settings Music volume]
+موسیقی کی آواز
+[settings Mute audio]
+آواز بند کریں
+[settings Name shown to other players.]
+دوسرے کھلاڑیوں کو نظر آنے والا نام۔
+[settings Off]
+بند
+[settings On]
+چالو
+[settings OpenGL is not available in this build.]
+اس بلڈ میں OpenGL دستیاب نہیں۔
+[settings Player name]
+کھلاڑی کا نام
+[settings Press]
+دبانے پر
+[settings Press a key. Escape cancels capture. Use Bind Escape to assign Escape.]
+کلید دبائیں۔ Escape سے کلید درج کرنا منسوخ ہو جاتا ہے۔ Escape کو شارٹ کٹ کے طور پر مقرر کرنے کے لیے «Escape مقرر کریں» استعمال کریں۔
+[settings Radius]
+رداس
+[settings Reduced]
+کم
+[settings Reduced detail disables clouds and their shadows, simplifies magic effects, and reduces transparency.]
+کم تفصیل سے بادل اور ان کے سائے بند، جادوئی اثرات سادہ اور شفافیت کم ہو جاتی ہے۔
+[settings Release]
+چھوڑنے پر
+[settings Remember assignments between games]
+کھیلوں کے درمیان مقررہ تعداد یاد رکھیں
+[settings Remove key]
+کلید ہٹائیں
+[settings Remove shortcut]
+شارٹ کٹ ہٹائیں
+[settings Renderer]
+رینڈرر
+[settings Replace conflicting bindings]
+متصادم کلیدی ترتیبات بدل دیں
+[settings Replace shortcuts in this context with the defaults? This saves immediately.]
+اس سیاق کے شارٹ کٹ طے شدہ ترتیبات سے بدل دیں؟ یہ فوراً محفوظ ہو گا۔
+[settings Resolution]
+ریزولیوشن
+[settings Restore default shortcuts]
+طے شدہ شارٹ کٹ بحال کریں
+[settings Retry]
+دوبارہ کوشش کریں
+[settings Revert]
+پچھلی حالت بحال کریں
+[settings Reverting in]
+پچھلی حالت کی بحالی میں باقی
+[settings Save shortcut]
+شارٹ کٹ محفوظ کریں
+[settings Saved — restart required]
+محفوظ ہو گیا — دوبارہ شروع کریں
+[settings Saving…]
+محفوظ ہو رہا ہے…
+[settings Scroll wheel enabled]
+اسکرول پہیہ چالو
+[settings Set starting unit assignments by building type and level.]
+عمارت کی قسم اور سطح کے لحاظ سے ابتدائی مقرر یونٹ طے کریں۔
+[settings Set your language and player name.]
+اپنی زبان اور کھلاڑی کا نام طے کریں۔
+[settings Settings]
+ترتیبات
+[settings Single-player and replays only. Multiplayer runs at 1x.]
+صرف اکیلے کھیل اور ری پلے کے لیے۔ کئی کھلاڑیوں کا کھیل معمول کی رفتار پر چلتا ہے۔
+[settings Software]
+سافٹ ویئر
+[settings Starting unit counts and radius for newly placed flags.]
+نئے جھنڈوں کے لیے ابتدائی یونٹوں کی تعداد اور رداس۔
+[settings This shortcut conflicts with existing bindings:]
+یہ شارٹ کٹ ان موجودہ کلیدی ترتیبات سے متصادم ہے:
+[settings Trigger]
+چلنے کا موقع
+[settings Unbound]
+غیر مقرر
+[settings Unit counts assigned to new construction sites.]
+نئی تعمیراتی جگہوں پر مقرر یونٹوں کی تعداد۔
+[settings Unit counts for completed buildings.]
+مکمل عمارتوں کے یونٹوں کی تعداد۔
+[settings Unit counts while a building is being upgraded.]
+اپ گریڈ کے دوران عمارت پر یونٹوں کی تعداد۔
+[settings Units]
+یونٹ
+[settings Upgrades]
+اپ گریڈ
+[settings Use game cursor]
+کھیل کا کرسر استعمال کریں
+[settings Voice volume]
+صوتی گفتگو کی آواز
+[settings Window mode]
+ونڈو کا موڈ
+[settings Window-only sizes also switch the game to windowed mode.]
+صرف ونڈو والی جسامت منتخب کرنے سے کھیل بھی ونڈو میں آ جاتا ہے۔
+[settings Windowed]
+ونڈو میں
+[settings Windowed only]
+صرف ونڈو
+[settings seconds]
+سیکنڈ
+[settings Flag]
+جھنڈا
+[settings High-resolution artwork]
+اعلیٰ ریزولیوشن کی تصاویر
+[settings Apply artwork on the next game or editor load (OpenGL).]
+اگلی بار کھیل یا ایڈیٹر لوڈ ہونے پر تصاویر لاگو کریں (OpenGL)۔
+[settings Automatic torus view]
+ٹورس کا خودکار منظر
+[settings Automatically show the torus overview while moving around the map (OpenGL).]
+نقشے پر حرکت کے دوران ٹورس کا مجموعی منظر خود دکھائیں (OpenGL)۔
+[settings Autosave]
+خودکار محفوظ کرنا
+[settings Save the game automatically about every 10 seconds.]
+تقریباً ہر 10 سیکنڈ بعد کھیل خود محفوظ کریں۔
+[Channel width]
+آبی گزرگاہ کی چوڑائی
+[Land bridge width]
+زمینی پل کی چوڑائی
+[Lake size]
+جھیل کی جسامت
+[Contested commons]
+متنازع مشترکہ میدان
+[Maze]
+بھول بھلیاں
+[Fjord continent]
+فیورڈ براعظم
+[Cell size]
+خانے کا سائز
+[Loopiness]
+حلقہ دار راستوں کی مقدار
+[The maze needs at least two cells across and down; use a bigger map or smaller cells.]
+بھول بھلیوں میں افقی اور عمودی طور پر کم از کم دو خانے چاہیے؛ بڑا نقشہ یا چھوٹے خانے چنیں۔
+[Channels this wide leave too little grass in each cell; use narrower channels or bigger cells.]
+اتنی چوڑی آبی گزرگاہیں ہر خانے میں بہت کم گھاس چھوڑتی ہیں؛ تنگ گزرگاہیں یا بڑے خانے استعمال کریں۔
+[The maze has too few cul-de-sacs for this many colonies; use a bigger map or smaller cells.]
+اتنی بستیوں کے لیے بھول بھلیوں میں بند گلیاں کم ہیں؛ بڑا نقشہ یا چھوٹے خانے چنیں۔
+[Home island size]
+آبائی جزیرے کی جسامت
+[Commons size]
+مشترکہ میدان کا سائز
+[Moat width]
+خندق کی چوڑائی
+[Bridge count]
+پلوں کی تعداد
+[Continent size]
+براعظم کا سائز
+[Coast roughness]
+ساحل کی ناہمواری
+[Fjord width]
+فیورڈ کی چوڑائی
+[Lake connects to fjords]
+جھیل فیورڈ سے ملتی ہے
+[Resource islands]
+وسائل کے جزیرے
+[Watershed]
+دریائی طاس
+[River density]
+دریاؤں کی کثرت
+[Dryness]
+خشکی
+[Fords]
+کم گہرے راستے
+[The watershed has too little floodplain for this many colonies; use a bigger map or fewer colonies.]
+اتنی بستیوں کے لیے دریائی طاس میں سیلابی میدان کم ہے؛ بڑا نقشہ یا کم بستیاں چنیں۔
+[Stone highlands]
+پتھریلی بلندیاں
+[Valley size]
+وادی کا سائز
+[Pass width]
+درے کی چوڑائی
+[Pond size]
+تالاب کا سائز
+[These valleys are too big for the map; use a bigger map or smaller valleys.]
+وادیوں کی جسامت نقشے کے لیے بہت بڑی ہے؛ بڑا نقشہ یا چھوٹی وادیاں چنیں۔
+[The highlands have too little room for this many colonies; use a bigger map or fewer colonies.]
+بلند علاقوں میں اتنی بستیوں کی جگہ کم ہے؛ بڑا نقشہ یا کم بستیاں چنیں۔
+[Symmetric arena]
+تشاکلی میدانِ جنگ
+[Centre size]
+مرکز کا سائز
+[Causeway width]
+بند نما راستے کی چوڑائی
+[Causeways]
+بند نما راستے
+[Lakes]
+جھیلیں
+[Resource richness]
+وسائل کی فراوانی
+[Symmetric arena needs 2, 4 or 8 colonies.]
+تشاکلی میدانِ جنگ کے لیے 2، 4 یا 8 بستیاں درکار ہیں۔
+[Eight colonies need a square map in the symmetric arena.]
+تشاکلی میدانِ جنگ میں آٹھ بستیوں کے لیے مربع نقشہ چاہیے۔
+[The centre is too small for an orchard on this map; use a bigger centre or a bigger map.]
+اس نقشے پر مرکز باغ کے لیے بہت چھوٹا ہے؛ بڑا مرکز یا بڑا نقشہ استعمال کریں۔
+[The arena leaves too little room for every colony; use a bigger map, a smaller centre or a narrower moat.]
+میدان میں ہر بستی کے لیے جگہ بہت کم ہے؛ بڑا نقشہ، چھوٹا مرکز یا تنگ خندق استعمال کریں۔
+[The causeways are too close together; use fewer or narrower causeways, or a bigger centre.]
+بند نما راستے بہت قریب ہیں؛ کم یا تنگ راستے، یا بڑا مرکز استعمال کریں۔
+[Ring world]
+حلقہ نما دنیا
+[Belt width]
+پٹی کی چوڑائی
+[The belt is too short for this many colonies; use a longer map or fewer colonies.]
+اتنی بستیوں کے لیے پٹی بہت چھوٹی ہے؛ لمبا نقشہ یا کم بستیاں چنیں۔
+[City states]
+شہری ریاستیں
+[Strait width]
+آبنائے کی چوڑائی
+[Valleys]
+وادیاں
+[Frontier richness]
+سرحدی پٹی کی فراوانی
+[City states need at least one colony.]
+شہری ریاستوں کے لیے کم از کم ایک بستی درکار ہے۔
+[Stone walls]
+پتھر کی دیواریں
+[Sand patches]
+ریت کے قطعے
+[Tidal flats]
+مدوجزر کے ہموار علاقے
+[Everglades]
+ایورگلیڈز
+[Pool spacing]
+تالابوں کا درمیانی فاصلہ
+[Pool size]
+تالاب کا سائز
+[Clearing size]
+کھلی جگہ کا سائز
+[Levee]
+کنارے کا بند
+[Sloughs]
+دلدلی نالے
+[Everglades need at least one colony.]
+ایورگلیڈز کے لیے کم از کم ایک بستی درکار ہے۔
+[Too many colonies for this map; use a bigger map or fewer colonies.]
+اس نقشے کے لیے بستیاں بہت زیادہ ہیں؛ بڑا نقشہ یا کم بستیاں چنیں۔
+[Coral]
+مرجان
+[Fork angle]
+شاخوں کا زاویہ
+[Lean]
+جھکاؤ
+[Home size]
+ابتدائی علاقے کا سائز
+[The coral does not fit this map; use a bigger map, narrower straits or fewer colonies.]
+مرجان اس نقشے میں نہیں سما سکتا؛ بڑا نقشہ، تنگ آبنائیں یا کم بستیاں استعمال کریں۔
+[Branching]
+شاخیں بننا
+[Branch width]
+شاخ کی چوڑائی
+[Coral needs at least one colony.]
+مرجان کے لیے کم از کم ایک بستی درکار ہے۔
+[Coral needs a map at least 128 tiles across.]
+مرجانی منظر کے لیے کم از کم 128 خانوں چوڑا نقشہ چاہیے۔
+[Carousel]
+گھومتا جھولا
+[Amphitheatre]
+حلقہ دار میدان
+[Switchbacks]
+بل کھاتے راستے
+[Corridor width]
+راہداری کی چوڑائی
+[Spoke width]
+شعاعی راستے کی چوڑائی
+[Court size]
+احاطے کا سائز
+[Court wall]
+احاطے کی دیوار
+[Plaza size]
+چوک کا سائز
+[Starting tower level]
+ابتدائی مینار کی سطح
+[Towers per colony]
+فی بستی مینار
+[Rings]
+حلقے
+[Ramp width]
+ڈھلوان راستے کی چوڑائی
+[Pit size]
+گڑھے کا سائز
+[Terrace width]
+ہموار زمینی پٹی کی چوڑائی
+[Bay size]
+خلیج کا سائز
+[Border wall]
+سرحدی دیوار
+[Plateau size]
+سطح مرتفع کا سائز
+[Trail width]
+پگڈنڈی کی چوڑائی
+[Wall between legs]
+راستوں کے بازوؤں کے درمیان دیوار
+[Farm building plots]
+کھیتوں میں تعمیراتی قطعے
+[Sand bridges over water]
+پانی پر ریت کے پل
+[Sand lanes through crops]
+فصلوں میں ریت کی راہیں
+[Carousels need at least two colonies.]
+گھومتے جھولوں کے لیے کم از کم دو بستیاں درکار ہیں۔
+[Switchbacks need at least two colonies.]
+بل کھاتے راستوں کے لیے کم از کم دو بستیاں درکار ہیں۔
+[An amphitheatre needs at least two colonies.]
+حلقہ دار میدان کے لیے کم از کم دو بستیاں درکار ہیں۔
+[The carousel does not fit this map; use a bigger map, smaller homes or fewer colonies.]
+گھومتا جھولا اس نقشے میں نہیں سما سکتا؛ بڑا نقشہ، چھوٹے ابتدائی علاقے یا کم بستیاں استعمال کریں۔
+[The switchbacks do not fit this map; use a bigger map, a smaller plateau, narrower trails or fewer colonies.]
+بل کھاتے راستے اس نقشے میں نہیں سما سکتے؛ بڑا نقشہ، چھوٹا سطح مرتفع، تنگ پگڈنڈیاں یا کم بستیاں استعمال کریں۔
+[The amphitheatre does not fit this map; use a bigger map, fewer rings, narrower terraces or fewer colonies.]
+حلقہ دار میدان اس نقشے میں نہیں سما سکتا؛ بڑا نقشہ، کم حلقے، تنگ ہموار زمینی پٹیاں یا کم بستیاں استعمال کریں۔
+[Spider webs need at least one colony.]
+مکڑی کے جالوں کے لیے کم از کم ایک بستی درکار ہے۔
+[Spiral]
+پیچ دار
+[Dew drops]
+شبنم کے قطرے
+[Hub size]
+مرکزی گانٹھ کا سائز
+[Torn strands]
+ٹوٹے تار
+[Sag]
+جھول
+[Thread width]
+تار کی چوڑائی
+[Ring spacing]
+حلقوں کا درمیانی فاصلہ
+[Spokes per colony]
+فی بستی شعاعی راستے
+[Spider web]
+مکڑی کا جالا
+[Sandbars]
+ریت کی پٹیاں
+[Tide pools]
+مدوجزر کے تالاب
+[Lagoons]
+ساحلی جھیلیں
+[Central island]
+مرکزی جزیرہ
+[Tidal flats need at least one colony.]
+مدوجزر کے ہموار علاقوں کے لیے کم از کم ایک بستی درکار ہے۔
+[The home islands do not fit on this map; use a bigger map, fewer colonies or smaller islands.]
+آبائی جزیرے نقشے میں نہیں سما سکتے؛ بڑا نقشہ، کم بستیاں یا چھوٹے جزیرے چنیں۔
+[The commons and the strait leave too little room for the home bases; use a bigger map, fewer colonies, a smaller commons or a narrower strait.]
+مشترکہ میدان اور آبنائے ابتدائی اڈوں کے لیے بہت کم جگہ چھوڑتے ہیں؛ بڑا نقشہ، کم بستیاں، چھوٹا مشترکہ میدان یا تنگ آبنائے استعمال کریں۔
+[Wheat amount]
+گندم کی مقدار
+[Wood amount]
+لکڑی کی مقدار
+[Stone amount]
+پتھر کی مقدار
+[Algae amount]
+کائی کی مقدار
+[Fruit amount]
+پھلوں کی مقدار
+[Stone on hilltops]
+پہاڑی چوٹیوں پر پتھر
+[Winding river]
+بل کھاتا دریا
+[Sandy beaches]
+ریتلے ساحل
+[Land bridges]
+زمینی پل
+[Colony meadows]
+بستیوں کے مرغزار
+[Extra starting deposit]
+اضافی ابتدائی ذخیرہ
+[Moat bridges]
+خندق کے پل
+[Jagged coastlines]
+دندانے دار ساحل
+[Sand roads]
+ریت کے راستے
+[Treasure in dead ends]
+بند سروں پر خزانہ
+[Fjord bank deposits]
+فیورڈ کے کناروں کے ذخائر
+[Sandy lake shore]
+جھیل کا ریتیلا کنارا
+[River delta]
+دریائی ڈیلٹا
+[Meandering rivers]
+بل کھاتے دریا
+[Fruit in home valleys]
+آبائی وادیوں میں پھل
+[Moat]
+خندق
+[Stone in the orchard]
+باغ میں پتھر
+[Colonies on both coasts]
+دونوں ساحلوں پر بستیاں
+[Winding belt]
+بل کھاتی پٹی
+[Cell shape]
+خانے کی شکل
+[Squares]
+مربع
+[Hexagons]
+مسدس
+[Warp]
+بگاڑ
+[Fingerprint]
+انگلی کا نشان
+[Wavelength]
+طولِ موج
+[Pattern]
+نقش
+[Labyrinth]
+بھول بھلیاں
+[Channels]
+آبی گزرگاہیں
+[Barrier]
+رکاوٹ
+[Water]
+پانی
+[Grain]
+شکل کا کھنچاؤ
+[Rain shadow]
+بارانی سایہ
+[Ridges]
+پہاڑی دھاریں
+[Slant]
+ترچھاپن
+[Ridge thickness]
+پہاڑی دھار کی موٹائی
+[Pass spacing]
+دروں کا درمیانی فاصلہ
+[Lee width]
+ہوا سے اوٹ والے حصے کی چوڑائی
+[Old growth]
+قدیم جنگل
+[Canals]
+نہریں
+[Forest density]
+جنگل کی کثافت
+[Hidden groves]
+چھپے درختوں کے جھنڈ
+[Starting trails]
+ابتدائی پگڈنڈیاں
+[Block size]
+قطعے کا سائز
+[Canal width]
+نہر کی چوڑائی
+[Extra bridges]
+اضافی پل
+[Polder]
+بندوں سے گھری زمین
+[Old town]
+پرانا شہر
+[Anthill]
+چیونٹیوں کا ٹیلہ
+[Row angle]
+قطار کا زاویہ
+[Diagonal]
+ترچھا
+[Dyke spacing]
+بندوں کا درمیانی فاصلہ
+[Village size]
+گاؤں کا سائز
+[Hamlets]
+چھوٹی بستیاں
+[City size]
+شہر کا سائز
+[Street width]
+گلی کی چوڑائی
+[Plazas]
+چوک
+[Chamber spacing]
+کمروں کا درمیانی فاصلہ
+[Chamber size]
+کمرے کا سائز
+[Queen room]
+ملکہ کا کمرہ
+[Tunnel width]
+سرنگ کی چوڑائی
+[Loops]
+حلقے
+[Home pools]
+ابتدائی علاقے کے تالاب
+[Farm plots]
+کھیتوں کے قطعے
+[Tendril roads]
+بیل کی طرح پھیلتے راستے
+[Random]
+اتفاقی
+[Vertical]
+عمودی
+[Horizontal]
+افقی
+[Inland lakes]
+اندرونِ خشکی جھیلیں
+[Block shape]
+قطعے کی شکل
+[Random parameters]
+اتفاقی پیرامیٹرز
+[Randomize parameters]
+پیرامیٹرز اتفاقی بنائیں
+[Start quality]
+ابتدائی حالت کا معیار
+[Fairness]
+برابری
+[Fitness]
+موزونیت
+[Win chance]
+جیتنے کا امکان
+[Coefficient]
+عددی عامل
+[Average]
+اوسط
+[Fitted on games:]
+ان کھیلوں پر ماڈل بنایا گیا:
+[Every colony's start is measured on the finished map, and a model fitted to thousands of games between equal opponents turns those measurements into a fitness. The fitness says how likely that colony is to win. Fairness is how evenly those chances are shared: 1 when every colony is as likely to win as any other, 0 when one colony would take the map.]
+مکمل نقشے پر ہر بستی کی ابتدائی حالت کی پیمائش کی جاتی ہے۔ برابر حریفوں کے درمیان ہزاروں کھیلوں سے تیار کردہ ماڈل ان پیمائشوں کو موزونیت میں بدلتا ہے۔ موزونیت بتاتی ہے کہ اس بستی کی جیت کا کتنا امکان ہے۔ برابری بتاتی ہے کہ یہ امکانات کتنے یکساں ہیں: جب ہر بستی کی جیت کا امکان دوسری جتنا ہو تو 1، اور جب ایک بستی پورے نقشے پر غالب ہو تو 0۔
+[Worst]
+بدترین
+[Best]
+بہترین
+[Map preview controls]
+لپیٹ کر گھمانے کے لیے کھینچیں۔ پہیے سے زوم کریں۔ بحالی کے لیے دایاں یا دوہرا کلک کریں۔
+[Map preview drag help]
+لپیٹ کر گھمانے کے لیے کھینچیں؛ پہیے سے زوم کریں۔
+[Map preview loading]
+لوڈ ہو رہا ہے…
+[Map preview failed]
+پیش منظر ناکام رہا
+[Map preview retry]
+دوبارہ کوشش کے لیے کلک کریں
+[Map preview please wait]
+انتظار کریں
+[Map preview choose another]
+نقشہ چنیں
+[Building sites complete immediately, skipping delivery.]
+سامان پہنچائے بغیر تعمیراتی جگہیں فوراً مکمل ہو جاتی ہیں۔
+[No growth]
+افزائش نہیں
+[Units get hungry]
+یونٹوں کو بھوک لگتی ہے
+[No hunger]
+بھوک نہیں
+[Scarce (2x slower)]
+کم یاب (2x سست)
+[Very scarce (4x slower)]
+بہت کم یاب (4x سست)
+[Extremely scarce (8x slower)]
+انتہائی کم یاب (8x سست)
+[Small (+50 each)]
+چھوٹا (ہر ایک +50)
+[Medium (+150 each)]
+درمیانہ (ہر ایک +150)
+[Large (+300 each)]
+بڑا (ہر ایک +300)
+[No resource growth]
+وسائل کی افزائش نہیں
+[Economy]
+معیشت
+[Instant construction]
+فوری تعمیر
+[Higher tiers give every building much more HP.]
+اونچے درجوں پر ہر عمارت کی صحت بہت زیادہ ہوتی ہے۔
+[Starting units spawn already leveled up. Changes the generated map.]
+ابتدائی یونٹ پہلے ہی بلند سطح کے ساتھ پیدا ہوتے ہیں۔ بننے والا نقشہ بدلتا ہے۔
+[No upgrades]
+اپ گریڈ بند
+[No permadeath]
+مستقل موت نہیں
+[Glass cannon x2]
+نازک مگر طاقتور x2
+[Glass cannon x3]
+نازک مگر طاقتور x3
+[Fortress x5]
+قلعہ x5
+[Fortress x10]
+قلعہ x10
+[Veteran]
+تجربہ کار
+[Elite]
+اعلیٰ تربیت یافتہ
+[Legendary]
+افسانوی
+[Combat]
+لڑائی
+[Glass cannon]
+نازک مگر طاقتور
+[Match ends at the timer; highest prestige at that instant wins.]
+وقت پورا ہونے پر میچ ختم ہوتا ہے؛ اس لمحے سب سے زیادہ وقار والا جیتتا ہے۔
+[Off (no timer)]
+بند (وقت کی حد نہیں)
+[90 minutes]
+90 منٹ
+[30 minutes]
+30 منٹ
+[45 minutes]
+45 منٹ
+[60 minutes]
+60 منٹ
+[Probability victory]
+امکان پر مبنی فتح
+[Off (play it out)]
+بند (آخر تک کھیلیں)
+[95% sure]
+95% یقین
+[97% sure]
+97% یقین
+[99% sure]
+99% یقین
+[Stats births]
+پیدائشیں
+[Stats deaths]
+اموات
+[Stats starvation]
+فاقہ کشی
+[Stats wheat stock]
+خوراک کا ذخیرہ
+[Stats wheat loads]
+خوراک کی کھیپیں
+[Stats meals]
+پیش کیے گئے کھانے
+[Stats new buildings]
+نئی عمارتیں
+[Stats upgrades]
+اپ گریڈ
+[Stats training]
+تربیتی حاضریاں
+[Stats damage dealt]
+پہنچایا گیا نقصان
+[Stats damage received]
+موصولہ نقصان
+[Stats HP restored]
+بحال کردہ HP
+[Stats since tick]
+اس ٹک سے
+[Stats combat deaths]
+لڑائی
+[Stats clearing deaths]
+صفائی کی چوٹ
+[Stats trapped deaths]
+پھنسنا
+[Stats unknown deaths]
+دیگر/نامعلوم
+[Stats conversions]
+آئے / گئے
+[Stats unavailable]
+دستیاب نہیں
+[Stats wheat per minute]
+کھیپیں/منٹ
+[Stats meals per minute]
+خوراک/منٹ
+[Stats occupancy]
+کھانا / علاج
+[Stats page one]
+اعداد و شمار 1/3  >
+[Stats page two]
+اعداد و شمار 2/3  >
+[Stats next page]
+صفحہ (P)
+[Stats page three]
+اعداد و شمار 3/3  >
+[Stats blocked units]
+پھنسے ہوئے یونٹ S/C
+[Stats blocked buildings]
+بند راستوں والی عمارتیں S/C
+[Stats blocked buildings swim]
+تیراکی کے بند راستے S/C
+[Stats current blocked units]
+اس وقت پھنسے ہوئے یونٹ
+[Stats current blocked buildings]
+اس وقت بند راستوں والی عمارتیں
+[Stats growth global]
+افزائش سے بڑھی مقدار
+[Stats growth new tiles]
+وسائل کے نئے خانے
+[Stats growth reductions]
+قدرتی کمی
+[Stats growth per minute]
+خوراک کی افزائش/منٹ
+[Stats growth near 8]
+8 خانوں کے اندر افزائش
+[Stats growth near 16]
+16 خانوں کے اندر افزائش
+[Stats growth near 32]
+32 خانوں کے اندر افزائش
+[Stats low HP 25]
+25% HP والے یونٹ
+[Stats low HP 50]
+50% HP والے یونٹ
+[Stats low HP 75]
+75% HP والے یونٹ
+[Stats low food 25]
+25% غذائی ذخیرے والے یونٹ
+[Stats low food 50]
+50% غذائی ذخیرے والے یونٹ
+[Stats low food 75]
+75% غذائی ذخیرے والے یونٹ
+[Stats structural units]
+بناوٹ کی وجہ سے پھنسے ہوئے یونٹ
+[Stats structural buildings]
+ساخت کی وجہ سے بند راستوں والی عمارتیں
+[Stats low HP ranges]
+HP ≤25/50/75%
+[Stats low food ranges]
+خوراک ≤25/50/75%
+[Emoji]
+ایموجی
+[Emoji character]
+ایموجی حرف
+[Smiley]
+مسکراتا چہرہ
+[Sad face]
+اداس چہرہ
+[Winking face]
+آنکھ مارتا چہرہ
+[Surprised face]
+حیران چہرہ
+[Heart eyes]
+دل والی آنکھیں
+[Sunglasses]
+دھوپ کا چشمہ
+[Heart]
+دل
+[Star]
+ستارہ
+[Neutral face]
+بے تاثر چہرہ
+[Sleeping face]
+سوتا چہرہ
+[Grinning face]
+کھلکھلاتا چہرہ
+[Kissing face]
+بوسہ دیتا چہرہ
+[Angry face]
+غصے والا چہرہ
+[Tongue out]
+نکلی ہوئی زبان
+[Skull]
+کھوپڑی
+[Flower]
+پھول
+[Four-leaf clover]
+چار پتیوں والا شبدر
+[Teardrop]
+آنسو
+[Cloud]
+بادل
+[Gem]
+جواہر
+[Apple]
+سیب
+[Speech bubble]
+گفتگو کا غبارہ
+[Shield]
+ڈھال
+[Emoji style]
+ایموجی کا انداز
+[Outline]
+خاکہ
+[Filled]
+بھرا ہوا
+[Emoji terrain]
+ایموجی کی زمین
+[Regular]
+معمول
+[Inverse]
+الٹ
+[Crossings]
+گزرگاہیں
+[Forts]
+قلعے
+[Gate width]
+دروازے کی چوڑائی
+[Braided Delta]
+باہم گندھی شاخوں والا ڈیلٹا
+[Braid count]
+شاخوں کی تعداد
+[Rejoining frequency]
+دوبارہ ملنے کی شرح
+[Crossing spacing]
+گزرگاہوں کا درمیانی فاصلہ
+[Breachable highlands]
+راستہ بننے والی بلندیاں
+[Ridge depth]
+پہاڑی دھار کی گہرائی
+[Extra open passes]
+اضافی کھلے درے
+[Wooded saddles]
+درختوں والے پہاڑی درے
+[Hedgerow Country]
+باڑوں کا دیس
+[Field size]
+کھیت کا سائز
+[Hedge thickness]
+باڑ کی موٹائی
+[Existing gateways]
+موجودہ داخلی راستے
+[Wooded boundary share]
+درختوں والی سرحد کا حصہ
+[The Glacis]
+قلعے کی بیرونی ڈھلوان
+[Allotments]
+کھیتی کے قطعے
+[Caravanserai]
+کارواں سرائے
+[Mixed]
+ملا جلا
+[Fort size]
+قلعے کا سائز
+[Bastions]
+برج
+[Four-pointed]
+چار نوکوں والا
+[Five-pointed]
+پانچ نوکوں والا
+[Six-pointed]
+چھ نوکوں والا
+[Glacis width]
+بیرونی ڈھلوان کی چوڑائی
+[Gates]
+دروازے
+[Site size]
+مقام کا سائز
+[Plot width]
+قطعے کی چوڑائی
+[Plot mix]
+قطعوں کا امتزاج
+[Tended]
+نگہداشت شدہ
+[Overgrown]
+خود رو پودوں سے بھرا
+[Commons]
+مشترکہ میدان
+[Few]
+تھوڑے
+[Some]
+کچھ
+[Home oasis size]
+ابتدائی نخلستان کا سائز
+[Caravanserais per colony]
+فی بستی کارواں سرائے
+[Desert]
+صحرا
+[Open erg]
+کھلا ریگستان
+[Dunes and mesas]
+ٹیلے اور میز نما پہاڑ
+[Canyon country]
+گہری وادیوں کا دیس
+[A fort cannot reach its ford; use a bigger map or fewer colonies.]
+قلعے سے اس کے پایاب راستے تک رسائی نہیں؛ بڑا نقشہ یا کم بستیاں چنیں۔
+[A wall would stand on a beach; try another seed.]
+دیوار ساحل پر بنے گی؛ دوسرا سیڈ آزمائیں۔
+[The fort is too small for its gardens; raise Fort size.]
+قلعہ اپنے باغوں کے لیے بہت چھوٹا ہے؛ قلعے کا سائز بڑھائیں۔
+[The home oasis is too small; raise Home oasis size.]
+ابتدائی نخلستان بہت چھوٹا ہے؛ ابتدائی نخلستان کا سائز بڑھائیں۔
+[Braided river]
+شاخ دار دریا
+[Braid width]
+شاخ کی چوڑائی
+[Bar size]
+ریت کی پٹی کا سائز
+[Extra riffles]
+اضافی اتھلے بہاؤ
+[Moraine hummocks]
+برفانی ملبے کے ٹیلے
+[The braid leaves too little terrace for the homes; use a bigger map or a narrower braid.]
+دریا کی شاخیں آبادیوں کے لیے بہت کم ہموار کنارا چھوڑتی ہیں؛ بڑا نقشہ یا کم چوڑی شاخیں چنیں۔
+[The map is too narrow across for a braid; use a bigger map.]
+شاخ دار دریا کے لیے نقشہ بہت تنگ ہے؛ بڑا نقشہ چنیں۔
+[Drumlin field]
+برفانی بیضوی ٹیلوں کا میدان
+[Drumlin spacing]
+بیضوی ٹیلوں کا درمیانی فاصلہ
+[Drumlin length]
+بیضوی ٹیلے کی لمبائی
+[Water gap]
+پانی کا خلا
+[Esker loops]
+برفانی ریتلی دھاروں کے حلقے
+[The eskers could not join every drumlin; use a smaller water gap or a bigger map.]
+برفانی ریتلی دھاریں ہر بیضوی ٹیلے کو نہیں جوڑ سکیں؛ پانی کا خلا کم کریں یا بڑا نقشہ استعمال کریں۔
+[Continents]
+براعظم
+[Continent]
+براعظم
+[North America]
+شمالی امریکہ
+[South America]
+جنوبی امریکہ
+[Africa]
+افریقہ
+[Europe]
+یورپ
+[Asia]
+ایشیا
+[Oceania]
+اوشیانا
+[Orientation]
+سمت
+[Turn to fit]
+سمانے کے لیے گھمائیں
+[Upright]
+سیدھا
+[Mountain ranges]
+پہاڑی سلسلے
+[Great rivers]
+عظیم دریا
+[Islets]
+چھوٹے جزیرے
+[Oases]
+نخلستان
+[The world atlas has no such continent.]
+دنیا کے اٹلس میں ایسا کوئی براعظم نہیں۔
+[The map is too small to hold a continent.]
+نقشہ براعظم کے لیے بہت چھوٹا ہے۔
+[This continent has no room for that many colonies at this map size; use a bigger map or fewer colonies.]
+اس جسامت کے براعظم پر اتنی بستیوں کی جگہ نہیں؛ بڑا نقشہ یا کم بستیاں چنیں۔
+[Savannah]
+ساوانا
+[Watering holes]
+جانوروں کے پانی پینے کے تالاب
+[Dry patches]
+خشک قطعے
+[Sparse]
+کم
+[Normal]
+معمول
+[Many]
+زیادہ
+[Rice terraces]
+چاول کے زینہ دار کھیت
+[Unoccupied hills]
+غیر آباد پہاڑیاں
+[Hill radius]
+پہاڑی کا نصف قطر
+[Contour band width]
+ہم ارتفاع پٹی کی چوڑائی
+[Stairs per hill]
+فی پہاڑی زینے
+[Valley river]
+وادی کا دریا
+[Hills]
+پہاڑیاں
+[Hillsides]
+پہاڑی ڈھلوانیں
+[Terraces per slope]
+فی ڈھلوان زینے
+[Waviness]
+لہردار پن
+[Stair spacing]
+زینوں کا درمیانی فاصلہ
+[Locust]
+ٹڈی
+[Plantations]
+باغات
+[Plot size]
+قطعے کا سائز
+[Farm width]
+کھیت کی چوڑائی
+[Islands per colony]
+فی بستی جزیرے
+[Outpost inns]
+چوکی کی سرائے
+[The islands are too small for their plots; use a bigger map, a smaller plot or fewer colonies.]
+قطعوں کے لیے جزیرے بہت چھوٹے ہیں؛ بڑا نقشہ، چھوٹا قطعہ یا کم بستیاں چنیں۔
+[Sierpiński Gardens]
+سیرپنسکی باغات
+[Hilbert River]
+ہلبرٹ دریا
+[Maximum nesting]
+اندرونی درجوں کی زیادہ سے زیادہ تعداد
+[Minimum terminal district side]
+آخری قطعے کے کنارے کی کم از کم لمبائی
+[Major crossing pairs]
+بڑی گزرگاہوں کے جوڑے
+[Maximum fold depth]
+تہوں کی زیادہ سے زیادہ گہرائی
+[Minimum land spacing]
+زمین کا کم از کم درمیانی فاصلہ
+[Optional local crossings per parent]
+فی بنیادی حصے اختیاری مقامی گزرگاہیں
+[Optional major shortcuts]
+اختیاری اہم مختصر راستے
+[Lava shield]
+لاوے کی ڈھال
+[Lava tongues]
+لاوے کی زبانیں
+[Long tongues]
+لمبی زبانیں
+[Crater rim width]
+آتش فشانی گڑھے کے کنارے کی چوڑائی
+[Honeycomb isle]
+شہد کے چھتے جیسا جزیرہ
+[Blocks per colony]
+فی بستی قطعے
+[Rubble]
+ملبہ
+[Outline gaps]
+خاکے کے خلا
+[Craters per colony]
+فی بستی گڑھے
+[Wheat fields]
+گندم کے کھیت
+[Bridges]
+پل
+[Karst towers]
+چونے کے پتھر کے مینار
+[Tower spacing]
+میناروں کا درمیانی فاصلہ
+[Tower density]
+میناروں کی کثافت
+[Paddy depth]
+کنارے کے کھیتوں کی چوڑائی
+[Home design]
+ابتدائی علاقے کا نقشہ
+[Horseshoe]
+گھوڑے کی نعل
+[Twin gates]
+جڑواں دروازے
+[Three gates]
+تین دروازے
+[Four gates]
+چار دروازے
+[The rivers found no way between the homes; use a bigger map or fewer colonies.]
+دریاؤں کو آبادیوں کے درمیان راستہ نہیں ملا؛ بڑا نقشہ یا کم بستیاں چنیں۔
+[River meander]
+دریا کے بل
+[Flooded terraces]
+پانی بھرے کھیت
+[Sinkholes]
+دھنسے گڑھے
+[Bajada]
+ملے ہوئے دامن کوہی پنکھے
+[Range spacing]
+پہاڑی سلسلوں کا درمیانی فاصلہ
+[Ridge width]
+پہاڑی دھار کی چوڑائی
+[Passes]
+درے
+[Fans per range]
+فی سلسلہ پنکھے
+[Stream reach]
+ندی کی لمبائی
+[Playa]
+خشک جھیل کی تہہ
+[Broad fan]
+چوڑا پنکھا
+[Long fan]
+لمبا پنکھا
+[Twin springs]
+جڑواں چشمے
+[The bajadas are too narrow for the homes; use a bigger map, a wider range spacing, narrower ridges or a smaller playa.]
+دامن کوہی پنکھے ابتدائی علاقوں کے لیے بہت تنگ ہیں؛ بڑا نقشہ، سلسلوں کے درمیان زیادہ فاصلہ، تنگ پہاڑی دھاریں یا چھوٹی خشک جھیل استعمال کریں۔
+[Central Quarry]
+مرکزی کان
+[Quarry size]
+کان کا سائز
+[Sand bars]
+ریت کی پٹیاں
+[Woodland]
+جنگلاتی علاقہ
+[Central Quarry needs at least two colonies.]
+مرکزی کان کے لیے کم از کم دو بستیاں درکار ہیں۔
+[The lake does not fit this map; use a smaller lake or a bigger map.]
+جھیل نقشے میں نہیں سماتی؛ چھوٹی جھیل یا بڑا نقشہ چنیں۔
+[A sand bar did not reach the island.]
+ریت کی پٹی جزیرے تک نہیں پہنچی۔
+[This map has no room for that many colonies; use a bigger map or fewer colonies.]
+نقشے پر اتنی بستیوں کی جگہ نہیں؛ بڑا نقشہ یا کم بستیاں چنیں۔
+[The island has no room for its quarry; use a bigger island.]
+جزیرے پر کان کی جگہ نہیں؛ بڑا جزیرہ چنیں۔
+[Hidden Oasis]
+پوشیدہ نخلستان
+[Pond algae]
+تالاب کی کائی
+[Starting towers]
+ابتدائی مینار
+[Starting school]
+ابتدائی اسکول
+[Mesas]
+میز نما پہاڑ
+[Springs]
+چشمے
+[Hidden Oasis needs at least two colonies.]
+پوشیدہ نخلستان کے لیے کم از کم دو بستیاں درکار ہیں۔
+[Hidden Oasis holds at most eight colonies.]
+پوشیدہ نخلستان میں زیادہ سے زیادہ آٹھ بستیاں آ سکتی ہیں۔
+[The massif does not fit this map; use a bigger map or fewer colonies.]
+پہاڑی مجموعہ نقشے میں نہیں سماتا؛ بڑا نقشہ یا کم بستیاں چنیں۔
+[The pond has no room for that much algae; use a bigger pond.]
+تالاب میں اتنی کائی کے لیے جگہ نہیں؛ بڑا تالاب استعمال کریں۔
+[Even Ground]
+برابر زمین
+[Balance]
+توازن
+[Tight passes]
+تنگ درے
+[Solver effort]
+حل نکالنے کی کوشش
+[Brief]
+مختصر
+[Patient]
+صبر سے
+[This map is too small to solve on; use a bigger map.]
+حل تلاش کرنے کے لیے نقشہ بہت چھوٹا ہے؛ بڑا نقشہ چنیں۔
+[Too many colonies to balance on a map this size; use a bigger map or fewer colonies.]
+اس جسامت کے نقشے پر اتنی بستیوں میں توازن ممکن نہیں؛ بڑا نقشہ یا کم بستیاں چنیں۔
+[The colonies could not be spread out on this map.]
+اس نقشے پر بستیاں پھیلائی نہیں جا سکیں۔
+[Marchland]
+سرحدی پٹی
+[Prizes on the rope]
+رسی پر انعام
+[March width]
+سرحدی پٹی کی چوڑائی
+[Levelling]
+برابر کرنا
+[A march needs a country on each side; use at least two colonies.]
+سرحدی پٹی کے دونوں طرف ملک ہونا چاہیے؛ کم از کم دو بستیاں استعمال کریں۔
+[Too many colonies for this map to give each a homeland; use a bigger map or fewer colonies.]
+ہر بستی کو آبائی علاقہ دینے کے لیے بستیاں زیادہ ہیں؛ بڑا نقشہ یا کم بستیاں چنیں۔
+[This map has no room to spread the colonies out; use a bigger map or fewer colonies.]
+بستیوں کو پھیلانے کے لیے جگہ نہیں؛ بڑا نقشہ یا کم بستیاں چنیں۔
+[A colony's homeland has no way out onto the march; use a bigger map or a narrower march.]
+ایک بستی کے آبائی علاقے سے سرحدی پٹی تک نکلنے کا راستہ نہیں؛ بڑا نقشہ یا تنگ سرحدی پٹی چنیں۔
+[A colony's homeland has no room for a swarm; use a bigger map, fewer colonies or a narrower march.]
+ایک بستی کے آبائی علاقے میں چھتے کے لیے جگہ نہیں؛ بڑا نقشہ، کم بستیاں یا تنگ سرحدی پٹی منتخب کریں۔
+[The march has too little contested ground for that many prizes; use fewer prizes, a wider march or a bigger map.]
+سرحدی پٹی میں اتنے انعاموں کے لیے متنازع زمین بہت کم ہے؛ کم انعام، چوڑی پٹی یا بڑا نقشہ استعمال کریں۔
+[The march has no room for a prize; use a bigger map, fewer colonies or a wider march.]
+سرحدی پٹی میں انعام کے لیے جگہ نہیں؛ بڑا نقشہ، کم بستیاں یا چوڑی پٹی استعمال کریں۔
+[Orchard Commons]
+مشترکہ باغ
+[Orchard spacing]
+باغوں کا درمیانی فاصلہ
+[Compact]
+سمٹا ہوا
+[Balanced]
+متوازن
+[Spread]
+پھیلا ہوا
+[The Gauntlet]
+کٹھن راہ
+[Partition thickness]
+تقسیمی دیوار کی موٹائی
+[The Gauntlet needs a larger map or fewer colonies to fit its two guarded fronts.]
+کٹھن راہ کے دو پہرے دار محاذ سمانے کے لیے بڑا نقشہ یا کم بستیاں چاہیے۔
+[The Comb]
+کنگھی
+[Peninsulas per shore]
+فی ساحل جزیرہ نما
+[Encircled Kingdom]
+گھری ہوئی مملکت
+[Fortress plan]
+قلعے کا نقشہ
+[Automatic]
+خودکار
+[Elongated enclosure]
+لمبا احاطہ
+[Bastioned enclosure]
+برجوں والا احاطہ
+[Paired courtyards]
+جوڑے دار صحن
+[Heartland farmland]
+اندرونی علاقے کے کھیت
+[The Faulted City]
+دراروں والا شہر
+[Fault displacement]
+درار کے ساتھ سرکاؤ کی مقدار
+[Fault width]
+درار کی چوڑائی
+[Ruin density]
+کھنڈرات کی کثافت
+[Surviving junctions]
+باقی چوراہے
+[The Faulted City needs 256 or 512 tiles per side and one to twelve colonies.]
+دراروں والے شہر کے لیے ہر طرف 256 یا 512 خانے اور ایک سے بارہ بستیاں درکار ہیں۔
+[The city has too few usable junctions.]
+شہر میں قابلِ استعمال چوراہے بہت کم ہیں۔
+[A city neighbourhood lacks reachable crops or building room.]
+شہر کے ایک محلے میں قابلِ رسائی فصلیں یا تعمیر کی جگہ نہیں ہے۔
+[The city neighbourhoods are too unequal; try another seed.]
+شہر کے محلے بہت غیر مساوی ہیں؛ دوسرا سیڈ آزمائیں۔
+[The fractured civic plaza did not survive.]
+ٹوٹا ہوا شہری چوک باقی نہیں رہا۔
+[Who Ate the Map?]
+نقشہ کس نے کھایا؟
+[Appetite]
+بھوک
+[A Little Nibble]
+ذرا سا لقمہ
+[Hungry]
+بھوکا
+[Portage Lakes]
+پورٹیج جھیلیں
+[Lake elongation]
+جھیل کا لمبا پن
+[Portage depth]
+کاٹے جانے والے جنگل کی موٹائی
+[Extra trails]
+اضافی پگڈنڈیاں
+[Portage Lakes needs sides between 64 and 512 tiles.]
+پورٹیج جھیلوں کے لیے ہر سمت 64 سے 512 خانے چاہیے۔
+[Portage Lakes cannot fit shoreline settlements on this seed.]
+اس سیڈ پر پورٹیج جھیلوں کے کنارے بستیاں نہیں سما سکتیں۔
+[Portage Lakes cannot fit renewable shore fields beside every settlement.]
+پورٹیج جھیلوں میں ہر بستی کے پاس دوبارہ اگنے والے ساحلی کھیت نہیں سما سکتے۔
+[Portage Lakes cannot connect its shoreline trails.]
+پورٹیج جھیلوں کے ساحلی راستے نہیں جڑ سکتے۔
+[Portage Lakes cannot fit a useful dry woodland shortcut on this seed.]
+اس سیڈ پر پورٹیج جھیلوں میں مفید خشک جنگلی مختصر راستہ نہیں بن سکتا۔
+[Portage Lakes cannot fit a useful swimming shortcut on this seed.]
+اس سیڈ پر پورٹیج جھیلوں میں مفید تیراکی کا مختصر راستہ نہیں بن سکتا۔
+[Portage Lakes needs separate swimming lakes on this seed.]
+اس سیڈ پر پورٹیج جھیلوں کے لیے الگ تیراکی والی جھیلیں چاہیے۔
+[Drowned Forest]
+ڈوبا ہوا جنگل
+[Sandbar connections]
+ریت کی پٹیوں کے رابطے
+[Wooded neck thickness]
+درختوں والی زمینی گردن کی موٹائی
+[Neutral clearing size]
+غیر جانب دار کھلی جگہ کا سائز
+[Bastion Keys]
+برجوں والے جزیرے
+[Plantation size]
+باغات کا سائز
+[Outlying islands]
+دور کے جزیرے
+[The Hungry Marches]
+بھوکی سرحدی پٹیاں
+[Opening ration]
+ابتدائی راشن
+[Central concentration]
+مرکز میں اجتماع
+[The Last Treeline]
+آخری درختوں کی قطار
+[Woodland depth]
+جنگلاتی علاقے کی گہرائی
+[AI strategy]
+AI کی حکمتِ عملی
+[AIMaxima-Summary]
+پائیدار ترقی اور تربیت میں توازن رکھتا ہے، پھر فوج کو حملہ آور لہروں میں جمع کرتا ہے۔
+[AIMaxima-Profile]
+بنیادی حکمتِ عملی: خوراک، کارکن، پیدائش، تربیت، تعمیر اور لڑائی کو ایک دوسرے سے مقابل ضرورتیں سمجھتا ہے۔ اپنی فوج کا سائز جزوی طور پر دشمن کی اندازاً طاقت کے مطابق رکھتا ہے، پھر اس فوج کو مؤثر انداز سے ہدف تک پہنچانے کی کوشش کرتا ہے۔\n\nمعیشت اور ترقی: خوراک اور محنت کے مطابق پیدائشوں کا حساب رکھتا، تربیت کے لیے خالی وقت بچاتا اور فوجی پیداوار کی ضرورت پر اضافی کارکن بڑھانا روک دیتا ہے۔ تربیتی گنجائش بڑھاتا ہے اور اپ گریڈ کے لیے بیک وقت بہت سی عمارتیں بند کرنے سے بچتا ہے۔\n\nکھوج اور فیصلے: دیکھے گئے یونٹوں اور سابقہ مشاہدات کی مدد سے، تیار کردہ ماڈل کے ذریعے دشمن فوج کا تخمینہ لگاتا ہے۔ ہدف کی اہمیت، فاصلہ، مینار، کھلے کارکن اور ہدف پر قائم رہنا فیصلے میں شامل ہیں۔ پھل کی مہمیں خوراک کے تنوع اور وفاداری کی تبدیلی میں مدد دیتی ہیں۔\n\nحملہ اور دفاع: تربیت اور دفاع کے لیے جنگجو مختص کرتا ہے، پھر لہریں بھیجنے سے پہلے موزوں زمینی فوج کو اپنی یا اتحادی خوراکی عمارتوں کے قریب جمع کرتا ہے۔ مقامی دفاعی ردِعمل استعمال کرتا اور بستی تک آنے والے راستوں کا جائزہ لیتا ہے۔\n\nحملے رکنے پر: مسلسل چار بار لہر ہدف تک نہ پہنچے تو مسلسل کمک پانے والے حملہ آور جھنڈوں پر منتقل ہو جاتا ہے۔ پانی اور زمین پر ہونے والے حملے بھی مسلسل کمک استعمال کر سکتے ہیں۔ یہ متبادل طریقہ فوج جمع ہونے سے پہلے ہر رکاوٹ حل نہیں کرتا۔\n\nدیگر AI سے موازنہ: خوراک، تربیت، معلومات اور تعیناتی کو زیادہ مضبوطی سے جوڑتا ہے۔ Cabino کئی عمارتوں پر حملوں پر زور دیتا ہے؛ Maxima اندازاً ضرورت اور جمع شدہ فوج پہنچانے پر زور دیتا ہے۔\n\nخوبیاں اور کمزوریاں: خوراک کے دباؤ اور دیکھی گئی دھمکیوں کے مطابق بدلتے ہوئے آبادی کی بڑھوتری اور فوجی نقصانات کی تلافی جاری رکھتا ہے۔ اسے خوراک، تربیتی گنجائش اور جمع ہونے کے لیے کھلی جگہ چاہیے؛ ہجوم اور لمبے راستے فوج کی ترسیل خراب کر سکتے ہیں۔\n\nآزمانے کے لیے مقابلے کا طریقہ: لہریں جمع ہونے سے پہلے کھلے خوراکی ذرائع، سراؤں اور بیرکوں کو چیلنج کریں۔ رسد پانے والے محافظ اکٹھے رکھیں اور کمک کے راستے توڑیں۔ پہلی لہر کے بعد بھی بار بار دباؤ کی توقع رکھیں۔\n\nکھوج: فوج کے تخمینے دیکھی گئی معلومات اور مشاہدات کی تاریخ استعمال کرتے ہیں، دشمن کی پوشیدہ کل فوج نہیں۔
+[Fertility]
+زرخیزی
+[Deposits]
+ذخائر
+[Room]
+جگہ
+[Isolation]
+علیحدگی
+[Each colony's start is measured on the finished map: the walk to wheat and to wood, how well its ground regrows, the deposits and building sites within reach, and its distance from rivals. Every factor scores from 0 to 1 against a fixed bar, the total weighs them, fairness is the worst colony's total over the best, and the score is the worst total times the fairness.]
+مکمل نقشے پر ہر بستی کی ابتدائی حالت جانچی جاتی ہے: خوراک اور لکڑی تک پیدل فاصلہ، زمین کی دوبارہ افزائش، رسائی میں ذخائر اور تعمیراتی جگہیں، اور حریفوں سے فاصلہ۔ ہر پہلو کو ایک مقررہ معیار کے مقابلے میں 0 سے 1 تک اسکور ملتا ہے؛ مجموعے میں ان کے وزن شامل ہوتے ہیں۔ منصفانہ تقسیم کم ترین مجموعے کو بہترین مجموعے سے تقسیم کرنے پر ملتی ہے، اور حتمی اسکور کم ترین مجموعے اور اس تقسیم کا حاصلِ ضرب ہے۔
+[ERROR_CANT_SAVE_MAP]
+نقشہ محفوظ نہیں ہو سکا۔ منزل اور دستیاب جگہ دیکھیں۔ آپ کی ترامیم اب بھی کھلی ہیں۔
+[Loading headers]
+ہیڈر لوڈ ہو رہے ہیں...
+[Loading teams]
+ٹیمیں لوڈ ہو رہی ہیں...
+[Loading terrain]
+زمین لوڈ ہو رہی ہے…
+[Building gradients]
+عمارتوں کے فاصلاتی نقشے بن رہے ہیں…
+[Loading players]
+کھلاڑی لوڈ ہو رہے ہیں...
+[Loading scripts]
+اسکرپٹ لوڈ ہو رہے ہیں...
+[Generating map]
+نقشہ بن رہا ہے...
+[ERROR_CANT_GENERATE_MAP]
+نقشہ نہیں بن سکا۔ نقشہ بنانے کی مختلف ترتیبات آزمائیں۔
+[Loading units]
+یونٹ لوڈ ہو رہے ہیں...
+[Loading buildings]
+عمارتیں لوڈ ہو رہی ہیں…
+[Resolving team links]
+ٹیموں کے روابط حل ہو رہے ہیں...
+[saving to storage]
+محفوظ ہو رہا ہے...
+[save failed retry]
+محفوظ نہیں ہو سکا۔ دوبارہ کوشش کریں۔
+[export save]
+محفوظ کھیل برآمد کریں
+[storage restore failed]
+براؤزر کا ذخیرہ بحال نہیں ہو سکا۔ پہلے سے محفوظ ڈیٹا نہیں بدلا گیا۔ آپ یہ نشست جاری رکھ سکتے ہیں، مگر مقامی تبدیلیاں مستقل محفوظ نہیں ہو سکتیں۔ محفوظ کرنے کی ناکامی والے ڈائیلاگ سے اہم محفوظ کھیل برآمد کریں۔ ذخیرہ بحال کرنے کی دوبارہ کوشش کے لیے صفحہ پھر لوڈ کریں۔
+[continue]
+جاری رکھیں
+[export file]
+فائل برآمد کریں
+[export failed]
+فائل برآمد نہیں ہو سکی
+[import file]
+درآمد کریں
+[select import file]
+درآمد کرنے کے لیے فائل منتخب کریں
+[validating import]
+فائل کی توثیق ہو رہی ہے...
+[import succeeded]
+فائل درآمد ہو گئی
+[import cancelled]
+درآمد منسوخ ہو گئی
+[import failed]
+درآمد ناکام: فائل غلط ہے یا معاونت یافتہ نہیں
+[import persistence failed]
+محفوظ نہیں ہوا: دوبارہ کوشش کے لیے درآمد کریں منتخب کریں یا فائل برآمد کریں
+[import progress]
+درآمد کی پیش رفت
+[export progress]
+برآمد کی پیش رفت
+[retry save]
+دوبارہ محفوظ کریں
+[campaign save failed]
+مہم کی پیش رفت محفوظ نہیں ہوئی۔ دوبارہ کوشش کریں یا بیک اپ برآمد کریں۔
+[leave without saving]
+محفوظ کیے بغیر نکلیں
+[campaign import failed]
+پیش رفت کی فائل غلط ہے یا مہم کا ورژن مختلف ہے
+[settings continue]
+جاری رکھیں
+[settings save failed]
+ترتیبات محفوظ ہونے کی تصدیق نہیں ہوئی۔ دوبارہ کوشش کریں یا جاری رکھیں۔
+[shutdown save failed]
+آخری بار محفوظ ہونے کی تصدیق نہیں ہوئی۔ دوبارہ کوشش کریں یا محفوظ کیے بغیر بند کریں۔
+[quit without saving]
+محفوظ کیے بغیر بند کریں
+[game closed]
+کھیل بند ہو گیا۔ آپ یہ ونڈو بند کر سکتے ہیں یا دوبارہ کھیلنے کے لیے صفحہ پھر لوڈ کر سکتے ہیں۔
+[campaign editor save failed]
+محفوظ ہونے کی تصدیق نہیں ہوئی۔ «ٹھیک ہے» سے دوبارہ کوشش ہوتی ہے؛ «منسوخ کریں» سے ایڈیٹر مینیو پر واپسی ہوتی ہے۔
+[Actions]
+اقدامات
+[Minimap]
+چھوٹا نقشہ
+[Fast forward]
+تیزی سے آگے
+[Hide keyboard]
+کی بورڈ چھپائیں
+[Player slot]
+کھلاڑی کی جگہ
+[Team color]
+ٹیم کا رنگ
+[Alliance group]
+اتحادی گروپ
+[menu]
+مینیو
+[Editor tools]
+آلات
+[Pan map]
+نقشے کا منظر کھسکائیں
+[Edit map]
+نقشے میں ترمیم کریں
+[Editor map]
+نقشہ
+[Flags]
+جھنڈے
+[Pause]
+توقف
+[Speed]
+رفتار
+[Objectives]
+مقاصد
+[Menu]
+مینیو
+[Goals]
+اہداف
+[Teams]
+ٹیمیں
+[Use this landscape]
+یہ منظرنامہ استعمال کریں
+[Reset]
+بحال کریں
+[Generating...]
+بن رہا ہے...
+[Players]
+کھلاڑی
+[Rules]
+قواعد
+[settings Interface layout]
+انٹرفیس کی ترتیب
+[settings Automatic]
+خودکار
+[settings Compact]
+سمٹی ہوئی
+[settings Spacious]
+کشادہ
+[settings Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.]
+جگہ ہو تو کشادہ ترتیب ضمنی پینل استعمال کرتی ہے۔ سمٹی ترتیب ٹول بار اور کھلنے والے پینل استعمال کرتی ہے۔
+[settings Menu theme]
+مینو کا تھیم
+[settings Colours and backdrop of menus, lobbies and results.]
+مینو، لابی اور نتائج کے رنگ اور پس منظر۔
+[settings In-game theme]
+کھیل کا تھیم
+[settings Colours of dialogs and the touch interface during a game and in the editor.]
+کھیل اور ایڈیٹر میں مکالموں اور ٹچ انٹرفیس کے رنگ۔
+[theme light]
+ہلکا
+[theme dark]
+گہرا
+[theme classic]
+روایتی
+[theme ocean]
+سمندر
+[theme dune]
+ریت کا ٹیلہ
+[theme high-contrast]
+نمایاں تضاد
+[settings One-finger zoom]
+ایک انگلی سے زوم
+[settings Double-tap the map, hold, then drag to zoom.]
+نقشے پر دو بار چھوئیں، دبائے رکھیں، پھر زوم کے لیے کھینچیں۔
+[settings Platform default]
+پلیٹ فارم کی طے شدہ ترتیب
+[settings Drag up zooms in]
+اوپر کھینچنے پر زوم اِن
+[settings Drag down zooms in]
+نیچے کھینچنے پر زوم اِن
+[settings Thumb side]
+انگوٹھے کی سمت
+[settings Phone controls gather in this bottom corner.]
+فون کے کنٹرول اس نچلے کونے میں جمع ہوتے ہیں۔
+[settings Right]
+دایاں
+[settings Left]
+بایاں
+[Undo stroke]
+واپس لیں
+[No overlay]
+کوئی تہہ نہیں
+[zoom factor %0]
+%0×
+[More]
+مزید
+[No items]
+کوئی چیز نہیں
+[Review & Play]
+جائزہ لیں اور کھیلیں
+[Edit opponents]
+حریف بدلیں
+[Map settings]
+نقشے کی ترتیبات
+[Next]
+اگلا
+[Done]
+مکمل
+[Contribution]
+حصہ
+[Choose who controls this colony]
+منتخب کریں کہ یہ بستی کون کنٹرول کرے
+[Settings]
+ترتیبات
+[settings Back]
+واپس
+[settings Save the game automatically about every minute.]
+تقریباً ہر منٹ بعد کھیل خود محفوظ کریں۔
+[AI opponents]
+AI حریف
+[Assigned %0 · Target %1]
+مقرر %0 · ہدف %1
+[Range: %0]
+فاصلہ: %0
+[Player %0]
+کھلاڑی %0
+[Brush %0]
+برش %0
+[Team %0]
+ٹیم %0
+[Your colony]
+آپ کی بستی
+[%0 / %1 HP · %2]
+%0 / %1 HP · %2
+[Units: %0]
+یونٹ: %0
+[Buildings: %0]
+عمارتیں: %0
+[Need food: %0]
+خوراک درکار: %0
+[Need healing: %0]
+علاج درکار: %0
+[Attack: %0]
+حملہ: %0
+[Defense: %0]
+دفاع: %0
+[Food: %0 / %1]
+خوراک: %0 / %1
+[View team %0]
+ٹیم %0 دیکھیں
+[P %0/%1/%2]
+P %0/%1/%2
+[CPU load %0]
+CPU %0%
+[Brush %0x%1]
+برش %0x%1
+[Level %0]
+سطح %0
+[Manage teams (%0)]
+ٹیمیں سنبھالیں (%0)
+[Team %0 / Level %1]
+ٹیم %0 / سطح %1
+[Files · %0]
+فائلیں · %0
+[Hint %0]
+اشارہ %0
+[Objective %0]
+مقصد %0
+[Entry %0 of 8 · empty entries are omitted]
+8 میں سے اندراج %0 · خالی اندراجات چھوڑ دیے جاتے ہیں
+[Teams %0/%1]
+ٹیمیں %0/%1
+[Elapsed time · %0]
+گزرا وقت · %0
+[Read-only building]
+صرف دیکھنے کی عمارت
+[Alliance and shared vision are fixed for this match.]
+اس میچ کے لیے اتحاد اور مشترکہ حدِ نگاہ طے ہیں۔
+[Share vision]
+حدِ نگاہ بانٹیں
+[Share food vision]
+خوراک دینے والی عمارتوں کی حدِ نگاہ بانٹیں
+[Share market vision]
+بازار کی حدِ نگاہ بانٹیں
+[Chat]
+چیٹ
+[No other players have editable diplomatic settings in this match.]
+اس میچ میں دوسرے کھلاڑیوں کی سفارتی ترتیبات بدلی نہیں جا سکتیں۔
+[No briefing for this match.]
+اس میچ کی ابتدائی ہدایات نہیں ہیں۔
+[Chat · recipients selected in Teams]
+چیٹ · وصول کنندگان ٹیموں میں منتخب ہیں
+[Filename]
+فائل نام
+[Reduced motion]
+کم حرکت
+[Send]
+بھیجیں
+[Close]
+بند کریں
+[Forbidden]
+ممنوع
+[Guard]
+پہرا
+[Clear]
+صفائی
+[Farm]
+کھیتی
+[Paint]
+رنگیں
+[Erase]
+مٹائیں
+[Release on valid terrain to place]
+درست زمین پر رکھ کر چھوڑیں
+[Paint on the map; two fingers move]
+نقشے پر رنگیں؛ دو انگلیوں سے منظر کھسکائیں
+[Tutorial ▸]
+تربیت ▸
+[Back to tools]
+آلات پر واپس
+[Starvation overlay]
+فاقہ کشی کی تہہ
+[Damage overlay]
+نقصان کی تہہ
+[Defense overlay]
+دفاع کی تہہ
+[Fertility overlay]
+زرخیزی کی تہہ
+[Health and food bars]
+صحت اور خوراک کی پٹیاں
+[Message history]
+پیغامات کا سابقہ ریکارڈ
+[Mark map for allies]
+اتحادیوں کے لیے نقشے پر نشان لگائیں
+[Show zones]
+علاقے دکھائیں
+[Pan]
+منظر کھسکائیں
+[Select]
+منتخب کریں
+[Show palette]
+برشوں کا پینل دکھائیں
+[Release to place]
+لگانے کے لیے چھوڑیں
+[Blocked placement]
+جگہ پر رکاوٹ ہے
+[File name]
+فائل کا نام
+[Load map]
+نقشہ لوڈ کریں
+[Save map]
+نقشہ محفوظ کریں
+[No files in this folder]
+اس فولڈر میں کوئی فائل نہیں
+[No files saved yet]
+ابھی کوئی فائل محفوظ نہیں ہوئی
+[Export]
+برآمد کریں
+[Tap to write the mission briefing]
+مشن کی ابتدائی ہدایات لکھنے کے لیے چھوئیں
+[Tap to write the map script]
+نقشے کا اسکرپٹ لکھنے کے لیے چھوئیں
+[Script]
+اسکرپٹ
+[Previous]
+پچھلا
+[Compile]
+کمپائل کریں
+[Tap to write this hint]
+یہ اشارہ لکھنے کے لیے چھوئیں
+[Tap to write this objective]
+یہ مقصد لکھنے کے لیے چھوئیں
+[Mission briefing · tap to edit, swipe to scroll]
+مشن کی ابتدائی ہدایات · ترمیم کے لیے چھوئیں، اسکرول کے لیے سوائپ کریں
+[Not enough recorded history yet.]
+ابھی کافی سابقہ ریکارڈ موجود نہیں۔
+[Select a team to show its history.]
+کسی ٹیم کا سابقہ ریکارڈ دکھانے کے لیے اسے منتخب کریں۔
+[Back to chart]
+چارٹ پر واپس
+[Expand chart]
+چارٹ پھیلائیں
+[Slot]
+جگہ
+[Color]
+رنگ
+[Player / AI]
+کھلاڑی / AI
+[Group]
+گروپ
+[Forbid]
+ممنوع کریں
+[↓ Low]
+↓ کم
+[= Normal]
+= معمول
+[↑ High]
+↑ زیادہ
+[Details]
+تفصیلات
+[Campaign name]
+مہم کا نام
+[Unlocking]
+دستیاب کرنا
+[Parameters]
+پیرامیٹرز
+[Blank map]
+خالی نقشہ
+[Generated]
+تیار کردہ
+[Preview]
+پیش منظر
+[Selected landscape]
+منتخب منظرنامہ
+[Representative preview]
+نمائندہ پیش منظر
+[Starting terrain]
+ابتدائی زمین
+[Hide parameters]
+پیرامیٹرز چھپائیں
+[Size and parameters]
+سائز اور پیرامیٹرز
+[Choose a landscape]
+منظرنامہ منتخب کریں
+[%0 / Browse]
+%0  /  براؤز کریں
+[%0 colonies · %1]
+%0 بستیاں · %1
+[%0 · Team %1]
+%0 · ٹیم %1
+[Colonies: %0]
+بستیاں: %0
+[%0 colonies · %1 AI]
+%0 بستیاں · %1 AI
+[%0 · %1]
+%0 · %1
+[settings %0 · %1 Units]
+%0 · %1 یونٹ
+[settings Level %0]
+سطح %0
+[settings Match the desktop %0]
+ڈیسک ٹاپ کے مطابق (%0)
+[settings Current display %0 %1 %2 %3]
+موجودہ اسکرین: %0 × %1 · %2 · %3
+[Fairness: %0]
+برابری: %0
+[Colony %0]
+بستی %0
+[Win chance: %0 · Fitness: %1]
+جیتنے کا امکان: %0 · موزونیت: %1
+[%0 · Contribution: %1]
+%0 · حصہ: %1
+[Min required level %0]
+کم از کم مطلوبہ سطح: %0
+[Confirm %0]
+ٹھیک ہے: %0
+[%0 %1]
+%0 %1
+[resume game]
+کھیل بحال کریں
+[Add AI]
+AI شامل کریں
+[settings Experiments]
+تجربات
+[settings Custom AIs]
+اپنی مرضی کے AI
+[settings Try features we are still testing. They can change balance and pacing.]
+وہ خصوصیات آزمائیں جن کی ابھی جانچ ہو رہی ہے۔ یہ توازن اور کھیل کی رفتار بدل سکتی ہیں۔
+[settings Experiments apply to new games you start or host, never to campaign missions. A saved game keeps the ones it started with.]
+تجربات آپ کے شروع کیے گئے یا آپ کی میزبانی میں کھیلے گئے نئے کھیلوں پر لاگو ہوتے ہیں، مہم کے مشنوں پر کبھی نہیں۔ محفوظ کھیل اپنے آغاز کے تجربات برقرار رکھتا ہے۔
+[Experiments set by the host]
+میزبان کے مقرر کردہ تجربات
+[settings No experiments in this build.]
+اس بلڈ میں کوئی تجربہ نہیں۔
+[Experiments]
+تجربات
+[experiment guard-area-balancing]
+پہرے کے علاقوں کا توازن
+[experiment guard-area-balancing help]
+فارغ جنگجو سب سے قریبی علاقے میں جمع ہونے کے بجائے رنگے ہوئے پہرے کے علاقوں میں بٹ جاتے ہیں: بڑے علاقے کو زیادہ جنگجو ملتے ہیں اور ضرورت سے زیادہ بھرے علاقے سے جنگجو دوسرے علاقوں میں چلے جاتے ہیں۔
+[experiment farm-areas]
+کھیتی کے علاقے
+[experiment farm-areas help]
+علاقوں کے برشوں میں کھیتی کا علاقہ شامل کرتا ہے۔ اس کے اندر فصل کاٹنے والے کارکن مربوط کھیت کے سب سے پکے خانے سے لیتے ہیں اور ہر خانے میں ایک دانہ چھوڑتے ہیں، اس لیے کھیت کنارے سے ختم ہونے کے بجائے دوبارہ اگتا ہے۔ کھیت میں اگنے والی لکڑی صاف کر دی جاتی ہے۔
+[settings Touch scrolling]
+ٹچ سے اسکرول
+[settings List momentum]
+فہرست کی روانی
+[settings How far lists and panels keep scrolling after a flick.]
+ہلکے جھٹکے کے بعد فہرستیں اور پینل کتنی دور تک چلتے رہیں۔
+[settings List bounce]
+فہرست کا اچھال
+[settings How much lists and panels stretch past their ends and spring back.]
+فہرستیں اور پینل کنارے سے کتنا آگے کھنچ کر واپس آئیں۔
+[settings Map momentum]
+نقشے کی روانی
+[settings How far the map keeps panning after a flick.]
+ہلکے جھٹکے کے بعد نقشہ کتنی دور کھسکتا رہے۔
+[settings Touch scrolling feel. 0 turns an effect off; 50 is the default.]
+ٹچ اسکرول کا احساس۔ 0 سے اثر بند؛ 50 طے شدہ قدر ہے۔
+[List momentum]
+فہرست کی حرکت کا تسلسل
+[List bounce]
+فہرست کا اچھال
+[Map momentum]
+نقشے کی روانی
+[lan pairing field]
+میزبان کی جوڑنے والی عبارت (یا قابلِ اعتماد WSS URL)
+[lan pairing connect]
+جوڑیں اور رابطہ کریں
+[lan discovery instructions]
+میزبان منتخب کریں، پھر اس کی شناخت کی تصدیق کے لیے اس کی جوڑنے والی عبارت چسپاں کریں۔
+[lan discovery unavailable]
+LAN پر تلاش دستیاب نہیں۔ مقامی نیٹ ورک کی اجازت دیکھیں یا میزبان کی جوڑنے والی عبارت چسپاں کریں۔
+[lan discovered host %0]
+میزبان %0 دریافت ہوا — کھیل دیکھنے کے لیے جوڑیں
+[lan connection unavailable]
+LAN میزبان تک رسائی نہیں ہو سکی۔ مقامی نیٹ ورک کی اجازت اور میزبان کی جوڑنے والی عبارت دیکھیں۔
+[lan connection verification failed %0]
+LAN میزبان کی تصدیق یا اس سے رابطہ نہیں ہو سکا: %0
+[lan lobby endpoint required]
+میزبان کی لابی کا اینڈ پوائنٹ استعمال کریں
+[settings Artwork]
+تصاویر
+[settings Original]
+اصل
+[settings High resolution]
+اعلیٰ ریزولیوشن
+[settings Clouds]
+بادل
+[settings Show cloud cover above the map.]
+نقشے کے اوپر بادل دکھائیں۔
+[settings Cloud shadows]
+بادلوں کے سائے
+[settings Show cloud shadows on the ground independently of cloud cover.]
+بادل دکھانے کی ترتیب سے الگ، زمین پر ان کے سائے دکھائیں۔
+[settings Building particles]
+عمارتوں کے ذرات
+[settings Show smoke and other building particles.]
+دھواں اور عمارتوں کے دوسرے ذرات دکھائیں۔
+[settings Magic effects]
+جادوئی اثرات
+[settings Choose animated magic effects or a simple visible effect.]
+متحرک جادوئی اثرات یا سادہ نظر آنے والا اثر چنیں۔
+[settings Simple]
+سادہ
+[settings Requires the OpenGL renderer. Your saved choice is retained.]
+OpenGL رینڈرر درکار ہے۔ آپ کا محفوظ انتخاب برقرار رہتا ہے۔
+[settings Interface appearance]
+انٹرفیس کی صورت
+[settings Panels]
+پینل
+[settings Choose translucent or opaque interface panels.]
+نیم شفاف یا غیر شفاف انٹرفیس پینل چنیں۔
+[settings Opaque]
+غیر شفاف
+[settings Translucent]
+نیم شفاف
+[settings Advanced graphics]
+اعلیٰ گرافکس
+[settings Path lines]
+راستوں کی لکیریں
+[settings Choose translucent or opaque unit path lines.]
+یونٹوں کے راستوں کی نیم شفاف یا غیر شفاف لکیریں چنیں۔
+[settings Smooth progress indicators]
+ہموار پیش رفت کے اشارے
+[settings Smooth the moving edges of progress indicators.]
+پیش رفت کے اشاروں کے چلتے کنارے ہموار کریں۔
+[settings Decorative interface animation]
+آرائشی انٹرفیس حرکت
+[settings Animate victory artwork. Reduced motion also disables this animation.]
+فتح کی تصویر متحرک کریں۔ کم حرکت کی ترتیب بھی یہ حرکت بند کرتی ہے۔
+[settings Smooth unit motion]
+یونٹوں کی ہموار حرکت
+[settings Experimental: move and animate units between game ticks.]
+تجرباتی: کھیل کے ٹکوں کے درمیان یونٹوں کی حرکت اور اینیمیشن دکھائیں۔
+[settings Smooth fog of war]
+جنگ کی ہموار دھند
+[settings Fade the map into and out of the fog of war gradually.]
+نقشہ جنگ کی دھند میں بتدریج ظاہر اور غائب ہو۔
+[settings Adaptive zoom detail]
+زوم کے مطابق تفصیل
+[settings Simplify bars, zones, terrain and units as the map zooms out, and keep them small zoomed in.]
+نقشہ دور کرنے پر پٹیاں، علاقے، زمین اور یونٹ سادہ کریں؛ قریب کرنے پر انہیں چھوٹا رکھیں۔
+[settings Text size]
+متن کی جسامت
+[settings Enlarge interface text without changing the map scale.]
+نقشے کا پیمانہ بدلے بغیر انٹرفیس کا متن بڑا کریں۔
+[turn reconnecting]
+میزبان سے رابطہ ٹوٹ گیا۔ دوبارہ رابطہ ہو رہا ہے...
+[turn waiting for players]
+تمام کھلاڑیوں کے کھیل لوڈ ہونے کا انتظار ہے…
+[turn rejoining]
+کھیل میں دوبارہ شامل ہو رہے ہیں...
+[turn catching up %0]
+موجودہ حالت تک پہنچ رہے ہیں: %0 باری پیچھے
+[turn player reconnecting %0]
+%0 دوبارہ رابطہ کر رہا ہے...
+[turn player lagging %0]
+%0 پیچھے رہ رہا ہے
+[turn player resyncing %0]
+%0 موجودہ حالت تک پہنچ رہا ہے
+[turn player not connected %0]
+%0 نے ابھی رابطہ نہیں کیا
+[lan host left]
+میزبان کھیل سے نکل گیا۔
+[lan host lost]
+میزبان سے رابطہ ٹوٹ گیا۔
+[lan version mismatch %0]
+میزبان Globulation 2 کا مختلف ورژن چلا رہا ہے (%0)۔
+[lan cannot host %0]
+LAN کھیل کی میزبانی نہیں ہو سکی: %0
+[play online]
+آن لائن کھیلیں
+[Use in room]
+کمرے میں استعمال کریں
+[conn ai]
+AI
+[conn behind %0]
+%0 پیچھے
+[conn behind explanation %0 %1]
+پیچھے: کھلاڑی کا کھیل میچ کی گھڑی سے جتنا پیچھے چل رہا ہے؛ اس میں اس کی تاخیر شامل ہے۔ %0 سے کم معمول ہے؛ %1 سے کھلاڑی سست قرار پاتا ہے۔
+[conn behind]
+پیچھے
+[conn card catching up]
+موجودہ حالت تک پہنچ رہے ہیں
+[conn card colony works]
+آپ کی بستی خود کام کرتی رہتی ہے: یونٹ اپنے کام مکمل کرتے اور عمارتیں چلتی رہتی ہیں۔
+[conn card desync detail]
+میچ کے ریکارڈ سے دوبارہ شامل ہو رہے ہیں تاکہ آپ وہی دیکھیں جو باقی دیکھ رہے ہیں۔ رپورٹ خود بخود بھیج دی گئی۔
+[conn card desync]
+آپ کے کھیل کی ہم وقت سازی بگڑ گئی
+[conn card grace %0]
+آپ کی بستی خود کام کرتی رہتی ہے: یونٹ اپنے کام مکمل کرتے اور عمارتیں چلتی رہتی ہیں۔ میچ سے ہٹائے جانے سے پہلے واپس آنے کے لیے آپ کے پاس %0 ہے۔
+[conn card input paused]
+آپ موجودہ حالت تک پہنچ رہے ہیں · نئے احکامات دینا موقوف ہے
+[conn card lost]
+رابطہ ٹوٹ گیا
+[conn card progress %0 %1 %2]
+%0 % · %2 میں سے %1 ٹک
+[conn card reconnecting %0]
+میچ سے دوبارہ رابطہ ہو رہا ہے… کوشش %0
+[conn card replaying %0]
+آپ کے چھوٹے ہوئے %0 دوبارہ چل رہے ہیں۔ حال تک پہنچنے پر اسکرین تازہ ہو گی۔
+[conn card seconds left %0]
+تقریباً %0 سیکنڈ باقی
+[conn connections]
+رابطے
+[conn connection]
+رابطہ
+[conn delay explanation %0 %1]
+تاخیر: آپ کے کلک سے اس کے سب کے لیے نافذ ہونے تک کا وقت۔ یہ آپ کے رابطے پر منحصر ہے، دوسرے کھلاڑیوں کے نہیں۔ %0 سے کم: اچھا؛ %1 یا اس سے زیادہ: خراب۔
+[conn fair]
+مناسب
+[conn good]
+اچھا
+[conn grid legend]
+چار سے زیادہ کھلاڑی ہوں تو پینل ہر کھلاڑی کا پنگ ملی سیکنڈ میں، یا اس کے پیچھے رہنے کا وقت سیکنڈ میں دکھاتا ہے۔
+[conn jitter %0]
+اتار چڑھاؤ %0
+[conn leave match]
+میچ چھوڑیں
+[conn left]
+نکل گیا
+[conn notice back %0]
+%0 واپس آ گیا۔
+[conn notice left %0]
+%0 میچ سے نکل گیا۔
+[conn notice lost %0 %1]
+%0 کا رابطہ ٹوٹ گیا۔ کھیل جاری ہے؛ دوبارہ رابطے کے دوران اس کی بستی کام کرتی رہتی ہے (%1 باقی)۔
+[conn ping explanation %0 %1]
+پنگ: کھلاڑی اور ریلے کے درمیان آنے جانے کا وقت۔ %0 سے کم: اچھا؛ %1 یا اس سے زیادہ: خراب۔
+[conn ping]
+پنگ
+[conn players]
+کھلاڑی
+[conn poor]
+خراب
+[conn reconnecting]
+دوبارہ رابطہ ہو رہا ہے
+[conn relay %0]
+ریلے: %0
+[conn resyncing]
+دوبارہ شامل ہو رہے ہیں
+[conn slow]
+سست
+[conn unstable]
+غیر مستحکم
+[conn waiting]
+رابطہ ہو رہا ہے…
+[conn you %0]
+%0 (آپ)
+[conn you]
+آپ
+[conn your delay %0]
+آپ کی تاخیر %0
+[hub account menu]
+اکاؤنٹ
+[hub ai joins after %0]
+%0 کے بعد AI شامل ہو گا
+[hub all rooms]
+سب
+[hub cant reach %0]
+%0 تک رسائی نہیں ہو سکی۔
+[hub change server]
+سرور بدلیں…
+[hub code placeholder]
+کوڈ یا دعوت کا لنک
+[hub connecting to %0]
+%0 · رابطہ ہو رہا ہے…
+[hub continue with %0]
+%0 کے ساتھ جاری رکھیں
+[hub create room]
+کمرہ بنائیں
+[hub find match]
+میچ تلاش کریں
+[hub free seat]
+خالی نشست
+[hub get update]
+اپ ڈیٹ حاصل کریں
+[hub guest kept on device]
+مہمان · اس آلے پر رکھا گیا
+[hub invalid code]
+یہ دعوت کا کوڈ یا لنک نہیں ہے۔
+[hub join by code]
+کوڈ کے ذریعے شامل ہوں
+[hub join code]
+شمولیت کا کوڈ
+[hub join]
+شامل ہوں
+[hub leaderboard]
+درجہ بندی
+[hub maps]
+نقشے
+[hub no queues]
+اس سرور پر فوری میچ کی قطاریں نہیں ہیں۔
+[hub no rooms]
+فی الحال کوئی کھلا کمرہ نہیں۔ کمرہ بنائیں اور دعوت بانٹیں۔
+[hub offline at %0]
+%0 · آف لائن
+[hub offline detail %0]
+%0 سیکنڈ میں دوبارہ کوشش ہو گی۔ فوری میچ اور آن لائن کمرے دستیاب نہیں۔ مرکزی مینیو کے LAN کھیل کو اس سرور کی ضرورت نہیں۔
+[hub online at %0]
+%0 · آن لائن
+[hub online settings]
+آن لائن ترتیبات
+[hub online]
+آن لائن
+[hub open page again]
+صفحہ دوبارہ کھولیں
+[hub open rooms]
+کھلے کمرے
+[hub play]
+کھیلیں
+[hub rooms]
+کمرے
+[hub ranks]
+درجے
+[hub play with friends]
+دوستوں کے ساتھ کھیلیں
+[hub also search %0]
+%0 میں بھی تلاش کریں
+[hub online now %0 %1]
+%0 کھلاڑی آن لائن · %1 اس قطار میں تلاش کر رہے ہیں
+[hub show in open rooms]
+کھلے کمروں میں دکھائیں
+[hub last match]
+آخری میچ
+[hub your rank %0 %1]
+آپ کا درجہ #%0 · ریٹنگ %1
+[hub not placed]
+یہاں ابھی آپ کا درجہ نہیں ہے۔ درجہ حاصل کرنے کے لیے درجہ بند میچ کھیلیں۔
+[hub queues unavailable]
+سرور کے جواب دینے پر فوری میچ ظاہر ہوتا ہے۔
+[hub quick match unavailable]
+اس ورژن میں ابھی فوری میچ دستیاب نہیں۔
+[hub quick match]
+فوری میچ
+[hub ranked]
+درجہ بند
+[hub refresh]
+تازہ کریں
+[hub retry now]
+ابھی دوبارہ کوشش کریں
+[hub room match]
+کمرہ
+[hub room name %0]
+%0 کا کمرہ
+[hub room]
+کمرہ
+[hub seats %0 %1]
+%0/%1 نشستیں
+[hub sign in browser]
+سائن ان کا صفحہ کھولیں
+[hub sign in conflict]
+یہ سائن ان پہلے ہی دوسرے اکاؤنٹ سے جڑا ہے۔
+[hub sign in failed %0]
+سائن ان مکمل نہیں ہوا (%0)۔
+[hub sign in intro]
+اپنے براؤزر میں سائن ان کریں یا اکاؤنٹ بنائیں۔ آپ کے مہمان میچ آپ کے ساتھ منتقل ہو جائیں گے۔
+[hub sign in]
+سائن ان کریں
+[hub sign out]
+اس آلے پر سائن آؤٹ کریں
+[hub signed in as %0]
+%0 کے طور پر سائن ان ہے۔
+[hub signed in on %0]
+%0 پر سائن ان ہے
+[hub signing in]
+سائن ان ہو رہا ہے…
+[hub sim %0]
+sim %0
+[hub unrated]
+بغیر ریٹنگ
+[hub update required at %0]
+%0 · اپ ڈیٹ درکار ہے
+[hub update required detail %0]
+%0 نیا ورژن چلاتا ہے، اس لیے یہ نقل اپ ڈیٹ ہونے تک آن لائن کھیلوں میں شامل نہیں ہو سکتی۔ LAN کھیل اب بھی چلتے ہیں۔
+[hub update required]
+اپ ڈیٹ درکار ہے
+[hub server behind]
+سرور کی اپ ڈیٹ باقی ہے
+[hub server behind at %0]
+%0 · سرور کی اپ ڈیٹ باقی ہے
+[hub server behind detail %0]
+یہ نقل %0 سے نئی ہے، جسے ابھی اس ورژن پر اپ ڈیٹ نہیں کیا گیا۔ سرور اپ ڈیٹ ہونے پر آن لائن کھیل کھل جائیں گے۔ LAN کھیل اب بھی چلتے ہیں۔
+[hub version mismatch]
+مختلف ورژن
+[hub version mismatch at %0]
+%0 · مختلف ورژن
+[hub version mismatch detail %0]
+%0 کھیل کا مختلف ورژن چلاتا ہے، اس لیے یہ نقل آن لائن کھیلوں میں شامل نہیں ہو سکتی۔ LAN کھیل اب بھی چلتے ہیں۔
+[hub versus %0]
+بمقابلہ %0
+[match ai]
+AI
+[match downloading map %0]
+نقشہ %0 ڈاؤن لوڈ ہو رہا ہے
+[match failed]
+میچ شروع نہیں ہو سکا۔
+[match leave]
+نکلیں
+[match loading]
+کھیل لوڈ ہو رہا ہے
+[Loading game graphics]
+کھیل کے گرافکس لوڈ ہو رہے ہیں
+[match map cached]
+اس آلے پر پہلے سے موجود
+[match map]
+نقشہ ڈاؤن لوڈ ہو رہا ہے
+[match relay %0]
+ریلے %0 سے رابطہ ہے
+[match seat confirmed]
+نشست کی تصدیق ہو گئی
+[match starting]
+میچ شروع ہو رہا ہے
+[match tip flags]
+مشورہ: کھوج کے جھنڈے کھوجیوں کو نقشہ ظاہر کرنے بھیجتے ہیں؛ جنگی جھنڈے آپ کے جنگجوؤں کو جمع کرتے ہیں۔
+[match tip input]
+اشارہ: آپ کے احکامات آپ کی اپنی ان پٹ تاخیر کے بعد سب تک پہنچتے ہیں؛ دوسرے کھلاڑیوں کے رابطے آپ کو سست نہیں کرتے۔
+[match tip select]
+اشارہ: کسی عمارت پر دو بار کلک کرنے سے اس قسم کی تمام عمارتیں منتخب ہو جاتی ہیں۔
+[match waiting for players]
+ہر کھلاڑی کا انتظار ہے
+[match you %0]
+%0 (آپ)
+[match player map]
+نقشہ
+[match player loading]
+لوڈ ہو رہا ہے
+[match player connecting]
+رابطہ ہو رہا ہے
+[match player ready]
+تیار
+[match player left]
+نکل گیا
+[results back to online]
+آن لائن پر واپس
+[results back to room]
+کمرے پر واپس
+[results find another match]
+دوسرا میچ تلاش کریں
+[results defeat]
+شکست
+[results ladder rating %0]
+%0 ریٹنگ
+[results left]
+آپ میچ سے نکل گئے
+[results match over]
+میچ ختم
+[results match page]
+میچ کا صفحہ
+[results minutes %0]
+%0 منٹ
+[results no change]
+کوئی تبدیلی نہیں
+[results ranked]
+درجہ بند
+[results recording]
+نتیجہ درج ہو رہا ہے…
+[results room unrated]
+کمرے کا میچ · بغیر ریٹنگ
+[results saved to history]
+آپ کے سابقہ ریکارڈ میں محفوظ ہو گیا
+[results seconds %0]
+%0 سیکنڈ
+[results unverifiable]
+سرور یہ میچ دوبارہ یکساں طور پر نہیں چلا سکا، اس لیے یہ کسی کی ریٹنگ میں شمار نہیں ہو گا۔ تحقیق کے لیے رپورٹ ہو گئی ہے؛ آپ کو کچھ کرنے کی ضرورت نہیں۔
+[results verified provisional]
+تصدیق شدہ · عارضی
+[results verified]
+تصدیق شدہ
+[results verifying detail]
+سرور تصدیق کے لیے میچ دوبارہ چلا رہا ہے۔ عموماً ایک منٹ سے کم لگتا ہے۔
+[results verifying]
+نتیجے کی تصدیق ہو رہی ہے…
+[results victory]
+فتح
+[room address]
+پتہ
+[room ai %0]
+AI: %0
+[room browser pairing]
+براؤزر جوڑنا
+[room catalog map]
+کیٹلاگ کا نقشہ
+[room change map]
+نقشہ بدلیں…
+[room change rules]
+قواعد بدلیں…
+[room chat]
+چیٹ
+[room closed seat detail]
+میزبان نے بند کیا
+[room closed seat]
+بند
+[room colonies]
+بستیاں
+[room connecting]
+کمرے سے رابطہ ہو رہا ہے…
+[room copy]
+نقل کریں
+[room disconnected]
+رابطہ منقطع
+[room downloading %0]
+نقشہ ڈاؤن لوڈ ہو رہا ہے %0 %
+[room downloading map]
+نقشہ ڈاؤن لوڈ ہو رہا ہے…
+[room expired]
+کمرہ بند ہو گیا ہے۔
+[room generated on server]
+سرور پر ایک بار بنایا گیا، اس لیے سب بالکل یہی نقشہ کھیلتے ہیں۔
+[room guest]
+مہمان
+[room host %0]
+میزبان %0
+[room host closed]
+میزبان نے کمرہ بند کر دیا۔
+[room host]
+میزبان
+[room humans vs ai]
+انسان بمقابلہ AI
+[room invite code %0]
+کوڈ %0 · ایپ، فون یا براؤزر میں کھلتا ہے
+[room invite not found]
+یہ دعوت ختم ہو چکی ہے یا موجود نہیں۔
+[room invite only]
+صرف دعوت پر
+[room invite]
+دعوت
+[room joining on network]
+اس نیٹ ورک پر شامل ہو رہے ہیں
+[room lan badge]
+مقامی نیٹ ورک · بغیر ریٹنگ
+[room lan list hint %0]
+اسی نیٹ ورک کے دوسرے لوگ مرکزی مینیو کی LAN کھیل فہرست میں %0 دیکھتے ہیں۔
+[room leave]
+نکلیں
+[room map changed %0]
+نقشہ %0 ہو گیا۔
+[room map failed]
+نقشہ تیار نہیں ہو سکا
+[room match label]
+کمرہ
+[room member joined %0]
+%0 شامل ہو گیا۔
+[room member left %0]
+%0 نکل گیا۔
+[room member ready %0]
+%0 تیار ہے۔
+[room needs two seats]
+شروع کرنے کے لیے دوست کو بلائیں یا AI شامل کریں
+[room no map]
+ابھی کوئی نقشہ نہیں
+[room not ready]
+تیار نہیں
+[room open for a person]
+کسی شخص کے لیے کھلا
+[room open seat detail]
+دعوت رکھنے والا کوئی بھی شخص یہ نشست لے سکتا ہے
+[room open seat]
+کھلی نشست
+[room person]
+شخص
+[room preparing map]
+سرور پر نقشہ تیار ہو رہا ہے…
+[room public]
+عوامی
+[room ready?]
+تیار
+[room ready]
+✓ تیار
+[room remove from room]
+کمرے سے ہٹائیں
+[room rule off]
+بند
+[room rule on]
+فعال
+[room rules changed]
+قواعد بدل گئے۔
+[room rules]
+قواعد
+[room say something]
+کچھ کہیں…
+[room seat hint]
+کھلاڑی خود کھلی نشست پر جا سکتے ہیں۔ توازن درست کرنے کے لیے ٹیم بدلیں۔
+[room seat options]
+نشست کے اختیارات
+[room seats summary %0 %1 %2]
+%0 کھلاڑی · %1 AI · %2 کھلی
+[room seats]
+نشستیں
+[room seed]
+سیڈ
+[room send]
+بھیجیں
+[room set by host]
+میزبان نے مقرر کیا
+[room share text %0]
+میرے Globulation 2 کمرے میں شامل ہوں: %0
+[room share]
+بانٹیں…
+[room size]
+سائز
+[room starting match]
+میچ شروع ہو رہا ہے…
+[room take seat]
+نشست لیں
+[room team %0]
+ٹیم %0
+[room update required]
+یہ کمرہ کھیل کا دوسرا ورژن چلاتا ہے۔ شامل ہونے کے لیے اپ ڈیٹ کریں۔
+[room uploaded map]
+اپ لوڈ کردہ نقشہ
+[room waiting for %0]
+%0 کے تیار ہونے کا انتظار ہے
+[room waiting for you]
+جب تیار ہوں تو تیار دبائیں
+[room match over]
+میچ ختم۔ اگلے دور کے لیے تیار ہوں!
+[room waiting for host]
+میزبان کے شروع کرنے کا انتظار ہے
+[room waiting for players %0]
+%0 کھلاڑیوں کے تیار ہونے کا انتظار ہے
+[room who can find it]
+اسے کون تلاش کر سکتا ہے
+[room you created]
+آپ نے کمرہ بنایا۔
+[room you joined %0]
+آپ %0 میں شامل ہو گئے۔
+[room you were removed]
+میزبان نے آپ کو کمرے سے ہٹا دیا۔
+[room you]
+آپ
+[settings Online]
+آن لائن
+[settings Another server]
+دوسرا سرور
+[settings Check]
+جانچیں
+[settings Checking…]
+جانچ ہو رہی ہے…
+[settings Choose which server you play on and how you sign in to it.]
+کھیلنے کا سرور اور اس پر سائن اِن کا طریقہ چنیں۔
+[settings Connecting…]
+رابطہ ہو رہا ہے…
+[settings Could not reach this server.]
+اس سرور سے رابطہ نہیں ہو سکا۔
+[settings Display name saved.]
+ظاہری نام محفوظ ہو گیا۔
+[settings Display name]
+ظاہری نام
+[settings Download or delete my data]
+میرا اکاؤنٹ حذف کریں
+[settings Enter an https:// address.]
+https:// سے شروع ہونے والا پتہ درج کریں۔
+[settings Forget]
+بھول جائیں
+[settings Guests keep a generated name; sign in to choose one.]
+مہمانوں کے نام خود بخود بنائے جاتے ہیں؛ اپنا نام چننے کے لیے سائن اِن کریں۔
+[settings Link]
+منسلک کریں
+[settings Not a Globulation 2 server.]
+یہ Globulation 2 کا سرور نہیں۔
+[settings Not linked]
+منسلک نہیں
+[settings Not signed in.]
+سائن اِن نہیں۔
+[settings Open]
+کھولیں
+[settings Opens your account page on %0.]
+%0 پر آپ کے اکاؤنٹ کا صفحہ کھولتا ہے، جہاں اسے حذف کر سکتے ہیں۔
+[settings Run by a community, a club or yourself. Paste its address.]
+کسی برادری، کلب یا آپ کا اپنا چلایا ہوا سرور۔ اس کا پتہ چسپاں کریں۔
+[settings Save]
+محفوظ کریں
+[settings Server]
+سرور
+[settings Shown in rooms, matches and the leaderboard. Change once every 30 days.]
+کمروں، میچوں اور درجہ بندی میں دکھایا جاتا ہے۔ ہر 30 دن میں ایک بار بدلیں۔
+[settings Sign in with: %0 · queues: %1]
+سائن اِن کا طریقہ: %0 · قطاریں: %1
+[settings Sign out on this device]
+اس آلے پر سائن آؤٹ کریں
+[settings Sign out]
+سائن آؤٹ کریں
+[settings Switch to this server]
+اس سرور پر منتقل ہوں
+[settings The last sign-in method can't be unlinked.]
+سائن اِن کا آخری طریقہ الگ نہیں کیا جا سکتا۔
+[settings The official Globulation 2 server · ranked queues, leaderboards, map catalog]
+Globulation 2 کا سرکاری سرور · درجہ بند قطاریں، درجہ بندی، نقشوں کی فہرست
+[settings Unlink]
+الگ کریں
+[settings Unlinking is done on the account page.]
+اکاؤنٹ کے صفحے پر جا کر الگ کریں۔
+[settings You'll be a new guest until you sign in again. Your account and matches stay on the server.]
+دوبارہ سائن اِن ہونے تک آپ نئے مہمان ہوں گے۔ آپ کا اکاؤنٹ اور میچ سرور پر رہیں گے۔
+[settings Your account on %0]
+%0 پر آپ کا اکاؤنٹ
+[settings compatible with this version]
+اس نسخے کے ساتھ مطابقت رکھتا ہے
+[settings connected]
+متصل
+[settings connecting…]
+رابطہ ہو رہا ہے…
+[settings guest]
+مہمان
+[settings linked]
+منسلک
+[settings plays another version]
+دوسرا نسخہ چلاتا ہے
+[settings trusted]
+قابلِ اعتماد
+[settings used before]
+پہلے استعمال شدہ
+[settings you were %0 there]
+وہاں آپ %0 تھے
+[trust invited to room %0]
+کمرہ %0 کی دعوت
+[trust join as guest]
+مہمان کے طور پر شامل ہوں
+[trust not official]
+یہ سرور Globulation 2 منصوبے کے زیرِ انتظام نہیں ہے۔
+[trust remember]
+یہ سرور یاد رکھیں
+[trust separate identity %0]
+وہاں آپ مہمان کے طور پر شامل ہوں گے۔ آپ کا %0 اکاؤنٹ، ریٹنگ اور سابقہ ریکارڈ اپنی جگہ رہیں گے۔
+[trust title]
+دوسرے سرور پر کھیل میں شامل ہوں؟
+[trust what it sees]
+سرور آپ کا نمایاں نام، آپ کے رابطے کا پتہ اور اس پر آپ کے کھیلے ہوئے کھیل دیکھتا ہے۔
+[settings not connected]
+متصل نہیں
+[settings Open Play online to connect.]
+رابطے کے لیے آن لائن کھیلیں کھولیں۔
+[hub code]
+کوڈ
+[results draw]
+برابری
+[qm 2 vs 2]
+2 بمقابلہ 2
+[qm 1 vs 1]
+1 بمقابلہ 1
+[qm ping about]
+پنگ تقریباً
+[qm ranked]
+درجہ بند
+[qm casual %0]
+عام %0
+[qm rated]
+درجہ بند
+[qm unrated]
+بغیر ریٹنگ
+[qm solo queue]
+اکیلے کھلاڑیوں کی قطار
+[qm ai joins after %0]
+%0 کے بعد AI شامل ہو گا
+[qm fair maps %0]
+نقشے: %0
+[qm cooldown %0]
+آپ نے میچ مسترد کیا۔ %0 میں دوبارہ تلاش کر سکتے ہیں۔
+[qm sign in to play ranked]
+درجہ بند قطاریں سائن ان کیے ہوئے اکاؤنٹس کے لیے ہیں؛ پہلے سائن ان کریں۔
+[online update required]
+کھیل کا یہ ورژن سرور کے لیے بہت پرانا ہے؛ آن لائن کھیلنے کے لیے اپ ڈیٹ کریں۔
+[online server behind]
+سرور ابھی اس ورژن پر اپ ڈیٹ نہیں ہوا؛ اپ ڈیٹ ہونے پر آن لائن کھیل کھلے گا۔
+[online version mismatch]
+سرور کھیل کا مختلف ورژن چلاتا ہے؛ اس نقل سے آن لائن کھیل دستیاب نہیں۔
+[qm already searching]
+آپ پہلے ہی تلاش کر رہے ہیں یا میچ میں ہیں۔
+[online connection problem]
+سرور تک رسائی نہیں ہو سکی۔
+[qm find match]
+میچ تلاش کریں
+[qm opponents rated %0 to %1]
+%0 سے %1 ریٹنگ والے حریف
+[qm region %0]
+خطہ %0
+[qm searching]
+تلاش ہو رہی ہے
+[qm measuring relays]
+ریلوں کی پیمائش ہو رہی ہے
+[qm joining queue]
+قطار میں شامل ہو رہے ہیں
+[qm waiting for a person]
+کسی شخص کا انتظار ہے: AI حریف بند ہیں۔
+[qm ai in %0 rated]
+کوئی نہ ملا تو %0 میں آپ کی ریٹنگ کے قریب ترین AI کے ساتھ کھیلیں گے
+[qm ai in %0]
+کوئی نہ ملا تو %0 میں AI شامل ہو گا
+[qm ai after %0]
+کوئی نہ ملا تو %0 کے بعد AI نشست لے گا
+[qm allow ai short]
+AI کی اجازت دیں
+[qm allow ai]
+AI حریف کی اجازت دیں
+[qm cancel]
+منسوخ کریں
+[qm cancel search]
+تلاش منسوخ کریں
+[qm usual wait %0]
+عام انتظار %0
+[qm widening]
+انتظار کے ساتھ دائرہ بڑھ رہا ہے
+[qm ais are rated]
+(ریٹنگ شامل ہے: AI کی بھی ریٹنگ ہوتی ہے)
+[qm opponent declined]
+آپ کے حریف نے قبول نہیں کیا۔ آپ قطار کے شروع میں واپس آ گئے ہیں۔
+[qm %0 did not accept]
+%0 نے قبول نہیں کیا۔ آپ قطار کے شروع میں واپس آ گئے ہیں۔
+[qm start failed]
+میچ شروع نہیں ہو سکا۔ آپ کی تلاش دوبارہ جاری ہے۔
+[qm you declined]
+آپ نے میچ مسترد کیا۔ مختصر انتظار کے بعد دوبارہ تلاش کر سکتے ہیں۔
+[qm you did not answer]
+آپ نے وقت پر قبول نہیں کیا۔ مختصر انتظار کے بعد دوبارہ تلاش کر سکتے ہیں۔
+[qm search ended]
+تلاش ختم ہو گئی۔
+[qm try again]
+دوبارہ کوشش کریں
+[online connecting]
+رابطہ ہو رہا ہے…
+[qm no queues]
+اس سرور پر فوری میچ کی قطاریں نہیں ہیں۔
+[qm quick match]
+فوری میچ
+[qm phone searching note]
+اس اسکرین سے نکلنے پر بھی تلاش جاری رہتی ہے۔
+[qm phone intro]
+نیچے قطار منتخب کریں؛ براؤز کرتے وقت تلاش جاری رہتی ہے۔
+[qm online]
+آن لائن
+[qm keeps running note]
+اس اسکرین سے نکلنے پر بھی تلاش جاری رہتی ہے۔
+[qm ai]
+AI
+[qm provisional]
+عارضی
+[qm accepted]
+✓ قبول کیا
+[qm declined]
+مسترد کیا
+[qm waiting]
+انتظار ہے…
+[qm ai badge]
+AI
+[qm match found]
+میچ مل گیا
+[qm playing an ai]
+AI کے خلاف کھیل
+[qm vs]
+بمقابلہ
+[qm ai explanation rated]
+آپ کی ریٹنگ کے دائرے میں کوئی تلاش نہیں کر رہا تھا۔ آپ اپنی ریٹنگ کے قریب ترین AI سے کھیلیں گے؛ نتیجہ آپ اور AI دونوں کی ریٹنگ میں شمار ہو گا۔
+[qm ai explanation]
+کوئی تلاش نہیں کر رہا تھا۔ آپ اپنی ریٹنگ کے قریب ترین AI سے کھیلیں گے؛ اس کھیل کی ریٹنگ نہیں ہو گی۔
+[qm casual explanation]
+میچ فوراً شروع ہوتا ہے؛ عام کھیلوں کی ریٹنگ نہیں ہوتی۔
+[qm accepted button]
+قبول کر لیا
+[qm accept]
+قبول کریں
+[qm decline]
+مسترد کریں
+[qm both must accept]
+دونوں کو قبول کرنا ہو گا
+[qm accept explanation]
+دونوں کھلاڑیوں کو قبول کرنا ہو گا۔ مسترد کرنے یا وقت ختم ہونے دینے سے آپ قطار کے آخر میں چلے جاتے ہیں۔
+[qm starting in %0]
+%0 میں شروع ہو رہا ہے…
+[qm preparing match]
+میچ تیار ہو رہا ہے…
+[qm match assigned %0 %1]
+میچ %0، %1 پر تیار ہے، مگر یہ بلڈ ابھی آن لائن میچوں سے رابطہ نہیں کر سکتی۔
+[online jan]
+جنوری
+[online feb]
+فروری
+[online mar]
+مارچ
+[online apr]
+اپریل
+[online may]
+مئی
+[online jun]
+جون
+[online jul]
+جولائی
+[online aug]
+اگست
+[online sep]
+ستمبر
+[online oct]
+اکتوبر
+[online nov]
+نومبر
+[online dec]
+دسمبر
+[profile win letter]
+ج
+[profile loss letter]
+ہ
+[profile draw letter]
+–
+[profile history unavailable]
+یہ سرور ابھی میچوں کا سابقہ ریکارڈ فراہم نہیں کرتا۔
+[profile downloading replay]
+ری پلے ڈاؤن لوڈ ہو رہا ہے…
+[profile no replay]
+اس میچ کا ری پلے دستیاب نہیں۔
+[profile room with %0]
+کمرہ · %0 بستیاں
+[profile with %0 vs %1]
+%0 کے ساتھ بمقابلہ %1
+[profile vs %0]
+بمقابلہ %0
+[profile room]
+کمرہ
+[profile casual]
+عام
+[profile ai filled]
+AI نے جگہ پُر کی
+[profile provisional %0 games]
+عارضی · %0 کھیل
+[profile unrated]
+بغیر ریٹنگ
+[profile checking]
+جانچ ہو رہی ہے…
+[profile %0 min]
+%0 منٹ
+[profile match page]
+میچ کا صفحہ
+[profile replay]
+ری پلے
+[profile win rate last %0]
+جیت کی شرح، آخری %0
+[profile %0 w %1 l %2 d]
+%0 جیت · %1 ہار · %2 برابر
+[profile typical game]
+عام کھیل
+[profile median length]
+آپ کے دورانیے کی میانہ قدر
+[profile best map]
+بہترین نقشہ
+[profile %0 w %1 l]
+%0 جیت · %1 ہار
+[profile no rated games]
+ریٹنگ حاصل کرنے کے لیے درجہ بند میچ کھیلیں۔
+[profile all]
+سب
+[profile rooms]
+کمرے
+[profile vs ai]
+بمقابلہ AI
+[profile matches]
+میچ
+[online loading]
+لوڈ ہو رہا ہے…
+[profile no matches]
+ابھی کوئی میچ نہیں۔
+[online load more]
+مزید لوڈ کریں
+[profile title]
+پروفائل
+[profile guest]
+مہمان
+[profile playing since %0]
+%0 سے کھیل رہے ہیں
+[profile full profile web]
+ویب پر مکمل پروفائل
+[profile replays note]
+ری پلے کھولنے پر سرور سے ڈاؤن لوڈ ہوتے ہیں؛ مقامی طور پر محفوظ کیے ہوئے ری پلے «کھیل لوڈ کریں ← ری پلے» میں رہتے ہیں۔
+[profile web profile]
+ویب پروفائل
+[maps most played]
+سب سے زیادہ کھیلے گئے
+[maps most liked]
+سب سے زیادہ پسند کیے گئے
+[maps newest]
+تازہ ترین
+[maps most downloaded]
+سب سے زیادہ ڈاؤن لوڈ کیے گئے
+[maps any size]
+کوئی بھی سائز
+[maps up to 128]
+128 × 128 تک
+[maps 256]
+256 × 256
+[maps 512 and larger]
+512 اور اس سے بڑے
+[maps report broken]
+یہ کام نہیں کرتا
+[maps report offensive]
+ناگوار مواد
+[maps report copyright]
+کسی اور کا کام
+[maps report other]
+کچھ اور
+[maps public]
+عوامی
+[maps unlisted]
+غیر فہرست شدہ
+[maps private]
+نجی
+[maps cannot read file]
+نقشے کی فائل پڑھی نہیں جا سکی۔
+[maps file too large]
+نقشے کی فائل بانٹنے کے لیے بہت بڑی ہے۔
+[maps saved for next room]
+نقشہ ڈاؤن لوڈ ہو گیا؛ کمرہ کھولنے پر استعمال ہو گا۔
+[maps download failed]
+نقشہ ڈاؤن لوڈ نہیں ہو سکا۔
+[maps %0 colonies]
+%0 بستیاں
+[maps version %0]
+ورژن %0
+[maps updated %0]
+تازہ کیا گیا %0
+[maps downloading]
+نقشہ ڈاؤن لوڈ ہو رہا ہے…
+[maps like needs account]
+نقشے پسند کرنے کے لیے سائن ان کیا ہوا اکاؤنٹ درکار ہے۔
+[maps report sent]
+شکریہ؛ نگران اس کا جائزہ لیں گے۔
+[maps select a map]
+تفصیلات دیکھنے کے لیے نقشہ منتخب کریں۔
+[maps by %0]
+مصنف %0
+[maps stats %0 %1 %2]
+▶ %0 بار کھیلا گیا · ⬇ %1 ڈاؤن لوڈ · ♥ %2
+[maps use in room]
+کمرے میں استعمال کریں
+[maps liked]
+پسند کیا
+[maps like]
+پسند کریں
+[maps map page]
+نقشے کا صفحہ
+[maps reported]
+رپورٹ ہو گئی
+[maps report]
+رپورٹ کریں…
+[maps report why]
+اس نقشے میں کیا مسئلہ ہے؟
+[maps search placeholder]
+نقشے یا مصنف تلاش کریں
+[maps none found]
+کوئی نقشہ تلاش سے میل نہیں کھاتا۔
+[maps catalog empty]
+اس سرور پر ابھی کوئی نقشہ نہیں بانٹا گیا۔
+[maps clear filters]
+فلٹر صاف کریں
+[maps any colonies]
+بستیوں کی کوئی بھی تعداد
+[maps checking]
+جانچ ہو رہی ہے…
+[maps no version yet]
+ابھی کوئی ورژن اپ لوڈ نہیں ہوا۔
+[maps rejected]
+مسترد
+[maps did not load %0]
+نقشہ لوڈ نہیں ہوا: %0
+[maps unknown reason]
+کوئی وجہ نہیں دی گئی
+[maps fix and upload again]
+ایڈیٹر میں درست کریں، پھر دوبارہ اپ لوڈ کریں
+[maps uploaded just now]
+ابھی اپ لوڈ ہوا
+[maps loading on server]
+سرور پر لوڈ ہو رہا ہے
+[maps %0 plays]
+%0 بار کھیلا گیا
+[maps hidden]
+چھپا ہوا
+[maps upload again]
+دوبارہ اپ لوڈ کریں…
+[maps delete]
+حذف کریں
+[maps update]
+تازہ کریں…
+[maps upload a map]
+نقشہ اپ لوڈ کریں…
+[maps upload hint]
+آپ کے نقشوں کے فولڈر یا ایڈیٹر کی .map فائلیں
+[maps no maps yet]
+آپ نے ابھی کوئی نقشہ نہیں بانٹا۔
+[maps my maps]
+میرے نقشے
+[maps my maps %0]
+میرے نقشے (%0)
+[maps browse]
+براؤز کریں
+[maps title]
+نقشے
+[maps browse note %0]
+%0 کیٹلاگ · صرف وہ نقشے دکھتے ہیں جو اس ورژن میں لوڈ ہوتے ہیں
+[maps visibility note]
+عوامی نقشے براؤز میں دکھتے ہیں۔ غیر فہرست شدہ نقشے آپ کے کمروں اور اپنے لنک کے ذریعے چلتے ہیں۔ نجی نقشے صرف آپ کے اپنے کمروں میں چلتے ہیں۔
+[maps use %0]
+%0 استعمال کریں
+[maps %0 kb]
+%0 KB
+[maps field title]
+عنوان
+[maps field description]
+تفصیل
+[maps who can use it]
+اسے کون استعمال کر سکتا ہے
+[maps guests unlisted]
+مہمان غیر فہرست شدہ اور نجی نقشے بانٹ سکتے ہیں؛ براؤز میں شائع کرنے کے لیے سائن ان کریں۔
+[maps visibility help]
+غیر فہرست شدہ نقشے آپ کے کمروں اور اپنے لنک کے ذریعے چلتے ہیں؛ عوامی نقشے براؤز میں بھی دکھتے ہیں۔
+[maps new version of %0]
+یہ فائل %0 کے نئے ورژن کے طور پر اپ لوڈ کریں۔
+[maps upload]
+اپ لوڈ کریں
+[maps uploading]
+اپ لوڈ ہو رہا ہے…
+[maps checking detail]
+سرور نقشہ لوڈ کر کے اس کا پیش منظر بنا رہا ہے۔ تب تک نقشہ استعمال نہیں ہو سکتا۔
+[maps ready]
+تیار
+[maps ready public]
+نقشہ تیار ہے اور براؤز میں فہرست شدہ ہے۔
+[maps ready unlisted]
+نقشہ تیار ہے۔ غیر فہرست شدہ نقشے آپ کے کمروں اور اپنے لنک کے ذریعے چلتے ہیں۔
+[maps ready private]
+نقشہ تیار ہے۔ نجی نقشے صرف آپ کے اپنے کمروں میں چلتے ہیں۔
+[maps upload failed]
+اپ لوڈ ناکام ہو گیا
+[maps server read %0 %1]
+سرور نے اسے %0 اور %1 بستیوں کے ساتھ پڑھا۔
+[maps continue in background]
+بند کریں
+[maps upload a map title]
+نقشہ اپ لوڈ کریں
+[maps update map title]
+نقشہ تازہ کریں
+[maps upload note]
+سرور ہر اپ لوڈ کو استعمال سے پہلے لوڈ کرتا ہے۔
+[online just now]
+ابھی
+[online today %0]
+آج %0
+[online yesterday]
+گزشتہ روز
+[online sun]
+اتوار
+[online mon]
+پیر
+[online tue]
+منگل
+[online wed]
+بدھ
+[online thu]
+جمعرات
+[online fri]
+جمعہ
+[online sat]
+ہفتہ
+[online %0 weeks ago]
+%0 ہفتے پہلے
+[online %0 months ago]
+%0 مہینے پہلے
+[online %0 years ago]
+%0 سال پہلے
+[maps share online]
+آن لائن بانٹیں…
+[maps mine]
+میرے
+[results waiting for players]
+دوسرے کھلاڑیوں کے نکلنے کا انتظار ہے…
+[results waiting detail]
+سب کے میچ سے نکلنے پر نتیجہ درج ہوتا ہے۔
+[results waiting slow]
+رابطہ ٹوٹنے والے کھلاڑی کو واپس آنے کے لیے 3 منٹ تک ملتے ہیں۔ نتیجہ آپ کے سابقہ ریکارڈ اور میچ کے صفحے پر ظاہر ہو گا۔
+[results verifying slow]
+تصدیق میں معمول سے زیادہ وقت لگ رہا ہے۔ نتیجہ آپ کے سابقہ ریکارڈ اور میچ کے صفحے پر ظاہر ہو گا۔
+[results rematch]
+دوبارہ میچ
+[results join rematch %0]
+%0 کے دوبارہ میچ میں شامل ہوں
+[hub profile history]
+پروفائل اور سابقہ ریکارڈ
+[hub leaderboard %0]
+درجہ بندی · %0
+[hub leaderboard empty]
+ابھی کوئی درجہ بند کھلاڑی نہیں۔
+[hub guests not ranked]
+مہمانوں کا درجہ نہیں ہوتا۔ یہاں ظاہر ہونے کے لیے سائن ان کریں۔
+[hub full leaderboard]
+مکمل درجہ بندی
+[settings %0 is no longer linked.]
+%0 اب منسلک نہیں۔
+[room map read failed]
+نقشے کی یہ فائل پڑھی نہیں جا سکی۔
+[room map upload failed]
+نقشہ کمرے میں بانٹا نہیں جا سکا۔
+[room map upload failed %0]
+نقشہ کمرے میں بانٹا نہیں جا سکا: %0
+[room uploading map]
+نقشہ کمرے کے ساتھ بانٹا جا رہا ہے…
+[room premade map shared]
+کمرے کے سب کھلاڑی اس نقشے کی فائل پر کھیلتے ہیں؛ میچ سے پہلے یہ ڈاؤن لوڈ ہوتی ہے۔
+[room take a seat to play]
+کھیلنے کے لیے کھلی نشست لیں
+[room waiting for a seat]
+ہر نشست پُر ہے۔ خالی ہونے پر آپ نشست لے سکتے ہیں۔
+[room not seated]
+نشست نہیں لی
+[room copied]
+نقل ہو گیا
+[room copy failed]
+نقل نہیں ہو سکا
+[room closed title]
+کمرہ بند
+[room removed title]
+کمرے سے ہٹا دیا گیا
+[room back to online]
+آن لائن پر واپس
+[leave match]
+میچ چھوڑیں
+[leave match title]
+یہ میچ چھوڑیں؟
+[leave lan title]
+یہ LAN کھیل چھوڑیں؟
+[leave rated body]
+آپ یہ درجہ بند میچ ہار جائیں گے اور آپ کی ریٹنگ گرے گی۔ دوسرے کھیلتے رہیں گے اور آپ واپس نہیں آ سکیں گے۔
+[leave casual body]
+یہ فوری میچ آپ کی ہار شمار ہو گا۔ دوسرے کھیلتے رہیں گے اور آپ واپس نہیں آ سکیں گے۔
+[leave room body]
+آپ کمرے کا میچ چھوڑ دیں گے اور یہ آپ کے سابقہ ریکارڈ میں ہار شمار ہو گا۔ دوسرے کھیلتے رہیں گے اور آپ واپس نہیں آ سکیں گے۔
+[leave lan body]
+دوسرے آپ کے بغیر کھیلتے رہیں گے اور آپ اس کھیل میں واپس نہیں آ سکیں گے۔
+[leave match confirm]
+میچ چھوڑیں
+[keep playing]
+کھیلتے رہیں
+[results team]
+ٹیم
+[results quick unrated]
+فوری میچ · بغیر ریٹنگ
+[conn card cannot keep up]
+آپ کا آلہ اس میچ کی رفتار کا ساتھ نہیں دے سکتا
+[conn card cannot keep up body]
+یہ میچ کی رفتار سے سست ری پلے چلاتا ہے، اس لیے حال تک نہیں پہنچے گا۔ آپ میچ چھوڑ سکتے ہیں یا گرافکس کی ترتیبات کم کر کے انتظار جاری رکھ سکتے ہیں۔
+[conn card not gaining]
+فرق کم نہیں ہو رہا
+[results reason opponents left]
+آپ کے حریف میچ سے نکل گئے۔
+[results reason victory]
+ہر مخالف بستی کو شکست ہوئی۔
+[results reason defeat]
+آپ کی بستی کو شکست ہوئی۔
+[results reason you left]
+آپ میچ سے نکل گئے۔ یہ ہار شمار ہو گا۔
+[results final after end]
+میچ ختم ہونے کے بعد حتمی نتیجہ۔
+[pause none left]
+توقف باقی نہیں
+[pause game left %0]
+کھیل روکیں (%0 باقی)
+[pause by %0]
+%0 نے روکا
+[pause by %0 resumes in %1]
+%0 نے روکا · %1 میں بحال ہو گا
+[turn too many actions]
+بہت زیادہ اقدامات: کچھ ابھی بھی بھیجے جانے کے منتظر ہیں
+[turn no pauses left]
+اس میچ میں آپ کے توقف ختم ہو گئے ہیں
+[turn pause time used %0]
+%0 نے توقف کا پورا وقت استعمال کر لیا: کھیل بحال ہو رہا ہے
+[room seats one person %0 %1]
+1 کھلاڑی · %0 AI · %1 کھلی
+[room rules otherwise standard]
+ہر دوسرا قاعدہ معیاری کے مطابق ہے۔
+[room browser link]
+براؤزر کے کھلاڑیوں کا لنک
+[room browser link hint]
+براؤزر میں کھلاڑی شامل ہونے کے لیے یہ لنک چسپاں کرتے ہیں۔
+[room browser link code %0]
+براؤزر میں کھلاڑی شامل ہونے کے لیے یہ لنک چسپاں کرتے ہیں۔ ان کا کھیل کوڈ %0 دکھاتا ہے۔
+[room copy link]
+لنک نقل کریں
+[room lan open seat detail]
+اس نیٹ ورک پر کوئی بھی یہ نشست لے سکتا ہے
+[room close title]
+کمرہ بند کریں؟
+[room close body one]
+نکلنے سے سب کے لیے کمرہ بند ہو جاتا ہے، اس میں موجود دوسرے کھلاڑی کے لیے بھی۔
+[room close body %0]
+نکلنے سے سب کے لیے کمرہ بند ہو جاتا ہے، اس میں موجود دوسرے %0 کھلاڑیوں کے لیے بھی۔
+[room close confirm]
+کمرہ بند کریں
+[room stay]
+رہیں
+[room colours changed]
+نئے نقشے نے نشستوں کو نئے رنگ دیے ہیں۔ شروع کرنے سے پہلے اپنا رنگ دیکھیں۔
+[room copy by hand]
+نقل نہیں ہو سکی۔ دعوت خود نقل کریں:
+[room copy by hand close]
+بند کریں
+[room copy by hand touch]
+لنک کو چھو کر دبائے رکھیں، پھر نقل کریں منتخب کریں۔
+[room copy by hand keys]
+لنک منتخب ہے: Ctrl+C دبائیں (Mac پر ⌘C)۔
+[room code]
+کوڈ
+[online under a minute]
+ایک منٹ سے کم
+[online about %0 min]
+تقریباً %0 منٹ
+[online %0 s]
+%0 سیکنڈ
+[online %0 min %1 s]
+%0 منٹ %1 سیکنڈ
+[qm ai opponent %0]
+AI حریف: %0
+[match relay connected]
+کھیل کے سرور سے رابطہ ہے
+[room picker title]
+نقشہ منتخب کریں
+[room picker for one]
+کمرے میں موجود 1 کھلاڑی کے لیے
+[room picker for %0]
+کمرے میں موجود %0 کھلاڑیوں کے لیے
+[room picker generated]
+تیار کردہ
+[room picker premade]
+پہلے سے تیار
+[room picker catalog]
+کیٹلاگ
+[room picker size]
+سائز
+[room picker colonies]
+بستیاں
+[room picker fair]
+ہر بستی کے لیے برابر ابتدائی موقع
+[room picker does not fit]
+اس سائز میں نہیں سماتا؛ دوسرا آزمائیں
+[room picker preparing]
+پیش منظر تیار ہو رہا ہے…
+[room picker generated note]
+ہر منظرنامہ ہر بستی کو یکساں اچھی ابتدا دیتا ہے اور سرور سب کے لیے ایک ہی نقشہ بناتا ہے۔
+[room picker players %0]
+%0 کھلاڑی
+[room picker unreadable]
+پڑھا نہیں جا سکتا
+[room picker no premade]
+کوئی پہلے سے تیار نقشہ نہیں ملا۔
+[room picker too small %0]
+اس نقشے میں کمرے کے %0 کھلاڑیوں سے کم بستیاں ہیں۔
+[room picker pick premade]
+یہاں دیکھنے کے لیے نقشہ چنیں۔
+[room picker catalog intro]
+دوسرے کھلاڑیوں کے بانٹے ہوئے نقشے۔ کوئی نقشہ کھولیں اور کمرے میں استعمال کریں منتخب کریں۔
+[room picker browse catalog]
+بانٹے ہوئے نقشے براؤز کریں
+[room picker more options]
+مزید اختیارات…
+[room picker use]
+یہ نقشہ استعمال کریں
+[room map ready title %0]
+%0 کھیلیں
+[room map ready unnamed]
+یہ نقشہ
+[room map ready body]
+کمرہ بنا کر دوستوں کو بلائیں: کمرہ اس نقشے پر کھیلتا ہے۔
+[game draw]
+برابری
+[settings Show colony skins]
+بستی کی اسکن دکھائیں
+[settings Turn off to use classic units, swarms and building colors on this device.]
+اس آلے پر روایتی یونٹ، چھتے اور عمارتوں کے رنگ استعمال کرنے کے لیے بند کریں۔
+[settings Hive Mind]
+Hive Mind
+[settings Enable commander shortcuts]
+کمانڈر کے شارٹ کٹ چالو
+[settings Command your colony without opening a menu.]
+مینو کھولے بغیر بستی کو حکم دیں۔
+[settings Allow supervision for new commands]
+نئے احکامات کی نگرانی کی اجازت
+[settings The commander may follow up on standing orders. Follow-ups use credits; installed orders keep running without credits.]
+کمانڈر مستقل احکامات پر بعد میں کام کر سکتا ہے۔ اس کام میں کریڈٹ لگتے ہیں؛ نصب احکامات کریڈٹ کے بغیر بھی چلتے رہتے ہیں۔
+[settings Default shortcuts: Ctrl+Enter to give an order; Ctrl+Shift+Enter to stop commander work. Change them under Controls. Standing-order cards have separate pause and cancel controls.]
+طے شدہ شارٹ کٹ: حکم کے لیے Ctrl+Enter؛ کمانڈر کا کام روکنے کے لیے Ctrl+Shift+Enter۔ انہیں کنٹرولز میں بدلیں۔ مستقل حکم کے کارڈ پر رکنے اور منسوخ کرنے کے الگ کنٹرول ہیں۔
+[settings Commander account and credits]
+کمانڈر اکاؤنٹ اور کریڈٹ
+[settings Manage credits and purchases in your browser. Commander assistance is permitted in ranked play.]
+براؤزر میں کریڈٹ اور خریداری سنبھالیں۔ درجہ بند کھیل میں کمانڈر کی مدد جائز ہے۔
+[open commander]
+کمانڈر کھولیں
+[stop commander]
+کمانڈر روکیں
+[start recording]
+ریکارڈنگ شروع کریں
+[stop recording]
+ریکارڈنگ روکیں
+[finalizing recording]
+ریکارڈنگ مکمل کی جا رہی ہے…
+[settings Recording]
+ریکارڈنگ
+[settings Record your games as MP4 videos with sound. Recording needs FFmpeg with the libx264 and AAC encoders.]
+کھیل آواز کے ساتھ MP4 ویڈیو میں ریکارڈ کریں۔ ریکارڈنگ کے لیے libx264 اور AAC انکوڈر والا FFmpeg چاہیے۔
+[settings Record your games as MP4 videos with sound.]
+کھیل آواز کے ساتھ MP4 ویڈیو میں ریکارڈ کریں۔
+[settings Recording uses the full rendered resolution at 30 FPS.]
+ریکارڈنگ مکمل دکھائی گئی ریزولیوشن پر 30 FPS استعمال کرتی ہے۔
+[settings FFmpeg is ready.]
+FFmpeg تیار ہے۔
+[settings FFmpeg is not available, so recording is turned off. Install FFmpeg and make sure it is on your PATH, then check again.]
+FFmpeg دستیاب نہیں، اس لیے ریکارڈنگ بند ہے۔ اسے نصب کریں، PATH میں موجودگی یقینی بنائیں، پھر جانچیں۔
+[settings Check for FFmpeg again]
+FFmpeg دوبارہ جانچیں
+[settings Checking for FFmpeg…]
+FFmpeg کی جانچ ہو رہی ہے…
+[settings Hotkey: %0. It also works in menus and the editor.]
+شارٹ کٹ: %0۔ یہ مینو اور ایڈیٹر میں بھی چلتا ہے۔
+[settings Change the hotkey]
+شارٹ کٹ بدلیں
+[settings Recordings are saved in %0]
+ریکارڈنگ یہاں محفوظ ہوتی ہیں: %0
+[toggle recording]
+ریکارڈنگ شروع یا بند کریں
+[File selection is unavailable.]
+فائل منتخب کرنا دستیاب نہیں۔
+[Saving custom AI…]
+حسبِ پسند AI محفوظ ہو رہا ہے…
+[Could not read the selected JavaScript file.]
+منتخب JavaScript فائل پڑھی نہیں جا سکی۔
+[Custom AI library saved.]
+حسبِ پسند AI کی لائبریری محفوظ ہو گئی۔
+[Storage could not be saved. The previous library is retained.]
+ذخیرہ محفوظ نہیں ہو سکا۔ پچھلی لائبریری برقرار ہے۔
+[Import a single JavaScript AI file, then select it when setting up a local game.]
+JavaScript AI کی ایک فائل درآمد کریں، پھر مقامی کھیل ترتیب دیتے وقت اسے منتخب کریں۔
+[Imports keep a copy in Glob2. Update replaces that copy for future games; saves keep their original AI.]
+درآمد کرنے سے Glob2 میں نقل رکھی جاتی ہے۔ اپ ڈیٹ آئندہ کھیلوں کے لیے وہ نقل بدلتا ہے؛ محفوظ کھیل اپنا اصل AI رکھتے ہیں۔
+[Waiting for file selection or storage…]
+فائل کے انتخاب یا ذخیرے کا انتظار ہے…
+[Import JavaScript AI]
+JavaScript AI درآمد کریں
+[Link development file]
+ترقیاتی فائل جوڑیں
+[Linked files are read at game start. Rebuild before starting a new game. Removing a link never deletes your file.]
+منسلک فائلیں کھیل شروع ہوتے وقت پڑھی جاتی ہیں۔ نیا کھیل شروع کرنے سے پہلے دوبارہ بلڈ کریں۔ لنک ہٹانے سے آپ کی فائل کبھی حذف نہیں ہوتی۔
+[Example AI and authoring guide]
+مثالی AI اور تخلیق کی رہنمائی
+[No custom AIs yet. Import a bundled .js file to get started.]
+ابھی کوئی حسبِ پسند AI نہیں۔ شروع کرنے کے لیے بنڈل کی گئی .js فائل درآمد کریں۔
+[Relink]
+دوبارہ جوڑیں
+[Update]
+تازہ کریں
+[Validate]
+توثیق کریں
+[AI startup and persistent globals are valid.]
+AI کا آغاز اور مستقل عالمی متغیرات درست ہیں۔
+[Remove from library]
+لائبریری سے ہٹائیں
+[AI telemetry]
+AI کی ٹیلی میٹری
+[No accessible AI telemetry.]
+AI کی قابلِ رسائی ٹیلی میٹری نہیں۔
+[Search fields]
+فیلڈ تلاش کریں
+[Telemetry unavailable for this recording or controller.]
+اس ریکارڈنگ یا کنٹرولر کے لیے ٹیلی میٹری دستیاب نہیں۔
+[Linked]
+منسلک
+[Imported]
+درآمد شدہ
+[Player]
+کھلاڑی
+[Updated at tick %0]
+ٹک %0 پر تازہ کیا گیا
+[No values published yet.]
+ابھی کوئی قدر شائع نہیں ہوئی۔
+[No fields match your search.]
+کوئی فیلڈ آپ کی تلاش سے میل نہیں کھاتی۔
+[Add JavaScript AIs in Settings → Custom AIs. They appear in each colony’s AI selector.]
+ترتیبات → اپنی مرضی کے AI میں JavaScript کے AI شامل کریں۔ وہ ہر بستی کے AI انتخاب میں دکھائی دیتے ہیں۔
+[Missing custom AI]
+حسبِ پسند AI موجود نہیں
+[Map repetition failed]
+یہ نقشہ دہرایا نہیں جا سکتا۔ بغیر اسکرپٹ کا ابتدائی نقشہ چنیں، یا تکرار اور مراکز کم کریں۔
+[repeat map horizontally]
+نقشہ افقی طور پر دہرائیں
+[repeat map vertically]
+نقشہ عمودی طور پر دہرائیں
+[bases]
+اڈے
+[bases per colony]
+فی بستی اڈے؛ اڈا بنائے گئے نقشے کی ایک ٹیم، اس کی عمارتیں اور یونٹ ہے
+[Ends the match when the model reaches the selected confidence. Spectators can see the predicted win chances in statistics.]
+منتخب اعتماد تک ماڈل پہنچنے پر میچ ختم کرتا ہے۔ تماشائی اعداد و شمار میں جیت کے پیش گوئی کردہ امکانات دیکھ سکتے ہیں۔
+[stat group population]
+آبادی
+[stat group food]
+خوراک اور بہبود
+[stat group resources]
+مواد
+[stat group buildings]
+عمارتیں
+[stat group military]
+فوج
+[stat group map]
+زمین
+[stat group score]
+اسکور
+[stat overview]
+مجموعی جائزہ
+[stat overview about]
+پورے میچ میں ہر بستی کے اعداد۔ جہاں زیادہ بہتر ہو، سب سے بڑی قدر نمایاں ہے؛ وقت کے ساتھ تبدیلی دیکھنے کے لیے کالم کے عنوان پر کلک کریں۔
+[stat population]
+آبادی
+[stat population about]
+بستی میں کتنے زندہ یونٹ تھے: کارکن، کھوجی اور جنگجو سب ملا کر۔
+[stat births]
+پیدا ہوئے یونٹ
+[stat births about]
+چھتے کتنی تیزی سے نئے یونٹ پیدا کر رہے تھے۔ کارکن، کھوجی اور جنگجو الگ دیکھنے کے لیے تقسیم کریں۔
+[stat deaths]
+ضائع ہوئے یونٹ
+[stat deaths about]
+بستی کتنی تیزی سے یونٹ کھو رہی تھی، خواہ وجہ لڑائی، فاقہ کشی، صفائی کی چوٹ یا پھنسنا ہو۔
+[stat net growth]
+آبادی میں اضافہ
+[stat net growth about]
+پیدا ہوئے یونٹ منفی ضائع ہوئے یونٹ۔ صفر سے اوپر بستی بڑھ رہی تھی؛ صفر سے نیچے سکڑ رہی تھی۔
+[stat death causes]
+موت کی وجوہ
+[stat death causes about]
+بستی کے یونٹ کن وجوہ سے مرے: لڑائی، فاقہ کشی، وسائل صاف کرتے ہوئے چوٹ، نکلنے کا راستہ نہ ہونے کی وجہ سے پھنسنا یا دوسری وجوہ۔
+[stat conversions]
+وفاداری کی تبدیلی کا خالص نتیجہ
+[stat conversions about]
+دوسری بستیوں سے حاصل کیے گئے یونٹ منفی ان کی طرف گئے یونٹ۔ جب دوسری بستی بہتر خوراک دے تو یونٹ وفاداری بدلتے ہیں۔
+[stat hunger]
+غذائی ذخائر
+[stat hunger about]
+بستی کے یونٹوں کے جسموں میں کتنی خوراک تھی۔ ہر یونٹ باقی غذائی ذخیرے کے مطابق شمار ہوتا ہے: تقریباً خالی (چوتھائی یا کم)، کم (نصف تک)، آدھا بھرا (تین چوتھائی تک) یا پیٹ بھرا۔ ذخیرہ کم ہونے پر یونٹ سرائے ڈھونڈتے ہیں، اس لیے بستی میں کچھ کا ذخیرہ ہمیشہ کم ہوتا ہے۔
+[stat health]
+صحت
+[stat health about]
+بستی کے یونٹ کتنے صحت مند تھے۔ ہر یونٹ باقی صحت کے پوائنٹس کے مطابق شمار ہوتا ہے: نازک حالت (چوتھائی یا کم)، زخمی (نصف تک)، چوٹ زدہ (تین چوتھائی تک) یا صحت مند۔
+[stat seeking food]
+خوراک تلاش کرتے یونٹ
+[stat seeking food about]
+وہ یونٹ جو کام چھوڑ کر سرائے ڈھونڈ رہے تھے۔ جن کی صحت بھی پوری نہیں، وہ کمزور ہوتے ہوئے شمار ہوتے ہیں۔
+[stat in care]
+کھاتے یا علاج پاتے یونٹ
+[stat in care about]
+سرائے میں کھانا کھاتے یا ہسپتال میں علاج پاتے یونٹ، جو اس وقت کام نہیں کر رہے۔
+[stat wheat harvested]
+جمع کی گئی خوراک
+[stat wheat harvested about]
+خوراک پیدا کرنے والے وسائل سے کارکنوں کی جمع کی ہوئی کھیپیں۔ سرائے خوراک کو کھانوں میں بدلتی ہیں۔
+[stat wheat stored]
+ذخیرے میں خوراک
+[stat wheat stored about]
+بستی کی عمارتوں میں رکھی خوراک، جو پیش یا استعمال ہونے کے لیے تیار ہے۔
+[stat meals]
+پیش کیے گئے کھانے
+[stat meals about]
+بستی کی سراؤں کے اپنے یونٹوں اور دوسری بستیوں کے مہمانوں کو پیش کیے گئے کھانے۔
+[stat starvation]
+فاقہ کشی سے اموات
+[stat starvation about]
+وہ یونٹ جو وقت پر خوراک نہ ملنے سے مر گئے۔
+[stat healing]
+بحال کردہ صحت
+[stat healing about]
+بستی کے ہسپتالوں کے زخمی یونٹوں کو واپس دیے گئے صحت کے پوائنٹس۔
+[stat gathered]
+جمع کیا گیا مواد
+[stat gathered about]
+کارکنوں نے ہر قسم کے مواد کی کتنی کھیپیں جمع کیں۔ ہر قسم الگ دیکھنے کے لیے تقسیم کریں۔
+[stat stored]
+ذخیرے میں مواد
+[stat stored about]
+بستی کی عمارتوں میں رکھا مواد۔ ہر مواد الگ دیکھنے کے لیے تقسیم کریں۔
+[stat spending]
+مواد کا خرچ
+[stat spending about]
+پہنچایا گیا مواد کہاں استعمال ہوا: کھانوں، نئے یونٹوں، مینار کی گولیوں، نئی عمارتوں یا اپ گریڈ پر۔
+[stat delivered]
+پہنچایا گیا مواد
+[stat delivered about]
+کارکنوں کی عمارتوں میں لائی ہوئی کھیپیں۔
+[stat traded]
+خالص تجارت
+[stat traded about]
+بازاروں سے ملنے والا مواد منفی دیا گیا مواد۔
+[stat buildings]
+کھڑی عمارتیں
+[stat buildings about]
+بستی کی مکمل عمارتیں۔ ہر قسم الگ دیکھنے کے لیے تقسیم کریں۔
+[stat construction]
+مکمل تعمیراتی کام
+[stat construction about]
+مکمل تعمیراتی کام: نئی عمارتیں، اپ گریڈ اور مرمت۔
+[stat buildings lost]
+تباہ شدہ عمارتیں
+[stat buildings lost about]
+دشمن کی تباہ کردہ یا بستی کی خود منہدم کردہ عمارتیں۔
+[stat blocked buildings]
+بند راستوں والی عمارتیں
+[stat blocked buildings about]
+وہ عمارتیں جن کے داخلی راستے بند تھے، اس لیے یونٹ اندر یا باہر نہیں جا سکتے تھے۔
+[stat attack]
+حملے کی طاقت
+[stat attack about]
+بستی کے جنگجوؤں کی مجموعی لڑنے کی طاقت کا اسکور: وہ کتنے زور سے اور کتنی تیزی سے وار کرتے ہیں۔
+[stat defence]
+دفاع کی طاقت
+[stat defence about]
+بستی کے دفاعی میناروں کی مجموعی گولہ باری کی طاقت کا اسکور۔
+[stat hit points]
+کل صحت کے پوائنٹس
+[stat hit points about]
+بستی کے تمام یونٹوں اور عمارتوں کے صحت کے پوائنٹس کا مجموعہ۔
+[stat damage dealt]
+پہنچایا گیا نقصان
+[stat damage dealt about]
+بستی کے دشمن یونٹوں اور عمارتوں کو پہنچایا گیا نقصان۔ جنگجو، جادو اور مینار الگ دیکھنے کے لیے تقسیم کریں۔
+[stat damage taken]
+موصولہ نقصان
+[stat damage taken about]
+دشمنوں کے بستی کے یونٹوں اور عمارتوں کو پہنچایا گیا نقصان۔
+[stat damage traded]
+نقصان کا توازن
+[stat damage traded about]
+پہنچایا گیا نقصان منفی موصولہ نقصان۔ صفر سے اوپر بستی اپنی لڑائیاں جیت رہی تھی۔
+[stat combat deaths]
+لڑائی میں مرنے والے یونٹ
+[stat combat deaths about]
+اس بستی کے دشمنوں کے ہاتھوں مرنے والے یونٹ۔ کارکن، کھوجی اور جنگجو الگ دیکھنے کے لیے تقسیم کریں۔
+[stat accuracy]
+نشانے پر لگنے والے وار
+[stat accuracy about]
+بستی کے میناروں اور کھوجیوں کے چلائے گئے واروں کا وہ حصہ جو نشانے پر لگا۔
+[stat training]
+تربیت
+[stat training about]
+ہنر سیکھنے کے لیے یونٹوں کی اسکولوں، بیرکوں، دوڑ کے میدانوں اور تیراکی کے تالابوں میں حاضریاں۔
+[stat skills]
+حاصل کردہ ہنر
+[stat skills about]
+تربیت سے بستی کے یونٹوں کی حاصل کردہ ہنر کی سطحیں۔
+[stat growth nearby]
+بستی کے قریب وسائل کی افزائش
+[stat growth nearby about]
+بستی کی عمارتوں سے 32 خانوں کے اندر وسائل کے ذخائر میں کتنا مواد بڑھا، جمع کی گئی کھیپوں کے بجائے افزائش کے پوائنٹس میں۔ بستی سے کتنی قربت پر افزائش ہوئی، یہ دیکھنے کے لیے تقسیم کریں۔
+[stat growth map]
+پورے نقشے پر وسائل کی افزائش
+[stat growth map about]
+نقشے بھر کے وسائل میں مواد کا ذخیرہ کتنا بڑھا؛ جمع کی گئی کھیپوں کے بجائے افزائش کے پوائنٹ میں۔ یہ ہر بستی کے لیے یکساں ہے۔
+[stat stranded]
+حرکت سے عاجز یونٹ
+[stat stranded about]
+ایسے گھرے یونٹ جن کے قدم رکھنے کے لیے کوئی خالی خانہ نہیں۔
+[stat cleared]
+صاف کیے گئے وسائل
+[stat cleared about]
+جگہ بنانے کے لیے کارکنوں کے صفائی کے علاقوں میں ہٹائے ہوئے وسائل۔
+[stat prestige]
+وقار
+[stat prestige about]
+بستی کا وقار، جو اعلیٰ ترین سطح کی عمارتوں سے ملتا ہے۔ وقار کے ہدف والا میچ ہدف پورا ہونے پر ختم ہو جاتا ہے۔
+[stat band combat]
+لڑائی
+[stat band starvation]
+فاقہ کشی
+[stat band clearing]
+صفائی کی چوٹیں
+[stat band trapped]
+پھنسے ہوئے
+[stat band other]
+دیگر
+[stat band starving]
+تقریباً خالی
+[stat band hungry]
+کم
+[stat band peckish]
+آدھا بھرا
+[stat band fed]
+پیٹ بھرے
+[stat band critical]
+نازک حالت
+[stat band wounded]
+زخمی
+[stat band hurt]
+چوٹ زدہ
+[stat band healthy]
+صحت مند
+[stat band weakening]
+کمزور ہوتے ہوئے
+[stat band looking]
+سرائے کی تلاش میں
+[stat band eating]
+کھاتے ہوئے
+[stat band healing]
+علاج پاتے ہوئے
+[stat band meals]
+کھانے
+[stat band new units]
+نئے یونٹ
+[stat band ammunition]
+گولہ بارود
+[stat band construction]
+نئی عمارتیں
+[stat band upgrades]
+اپ گریڈ
+[stat band built]
+تعمیر شدہ
+[stat band upgraded]
+اپ گریڈ شدہ
+[stat band repaired]
+مرمت شدہ
+[stat band destroyed]
+تباہ شدہ
+[stat band demolished]
+مسمار شدہ
+[stat band melee]
+جنگجو
+[stat band magic]
+جادو
+[stat band towers]
+مینار
+[stat band within 8]
+8 خانوں کے اندر
+[stat band 8 to 16]
+8 سے 16 خانے
+[stat band 16 to 32]
+16 سے 32 خانے
+[stat unit units]
+یونٹ
+[stat unit wheat]
+خوراک
+[stat unit meals]
+کھانے
+[stat unit hit points]
+صحت کے پوائنٹس
+[stat unit resources]
+اکائیاں
+[stat unit buildings]
+عمارتیں
+[stat unit strength]
+اسکور
+[stat unit damage]
+نقصان
+[stat unit shots]
+وار
+[stat unit visits]
+حاضریاں
+[stat unit skills]
+ہنر کی سطحیں
+[stat unit prestige]
+وقار
+[stat axis percent of %0]
+%0 کا %
+[stat axis share of all teams]
+تمام بستیوں کا %
+[stat axis percent of units]
+بستی کے یونٹوں کا %
+[stat axis %0 per minute per 100 units]
+بستی کے ہر 100 یونٹوں کے لیے فی منٹ %0
+[stat axis %0 per 100 units]
+بستی کے ہر 100 یونٹوں کے لیے %0
+[stat axis %0 per minute]
+فی منٹ %0
+[stat axis %0 so far]
+%0، جاری مجموعہ
+[stat axis %0 minute average]
+%0 منٹ کی اوسط
+[stat view per minute]
+فی منٹ
+[stat view total]
+کل
+[stat view %0 min]
+%0 منٹ
+[stat view split]
+قسم کے لحاظ سے تقسیم
+[stat view percentages]
+کل کے % کے طور پر
+[stat view percent of units]
+بستی کے % کے طور پر
+[stat view per 100 units]
+بستی کے سائز کے تناسب سے
+[stat view share]
+تمام بستیوں میں حصہ
+[stat view highlight none]
+نمایاں: کوئی نہیں
+[stat column peak units]
+سب سے زیادہ یونٹ
+[stat column born]
+پیدائشیں
+[stat column lost]
+ضائع ہوئے
+[stat column wheat]
+خوراک
+[stat column damage dealt]
+پہنچایا گیا نقصان
+[stat column damage taken]
+موصولہ نقصان
+[stat column built]
+تعمیر شدہ
+[stat column buildings lost]
+تباہ شدہ عمارتیں
+[stat column prestige]
+وقار
+[stat marker wiped out]
+آخری یونٹ ضائع ہوا
+[stat marker first combat death]
+لڑائی میں پہلا یونٹ مارا گیا
+[stat marker first building destroyed]
+پہلی عمارت تباہ ہوئی
+[stat not recorded for this match]
+اس میچ کے لیے یہ عدد درج نہیں کیا گیا تھا۔
+[results reason beyond doubt]
+نتیجے میں اب کوئی شک باقی نہیں تھا۔
+[stat per minute short]
+/منٹ
+[stat page colony]
+بستی
+[stat page %0 of %1]
+%0/%1  >
+[stat band workers]
+کارکن
+[stat band explorers]
+کھوجی
+[stat band warriors]
+جنگجو
+[stat unit deaths]
+اموات
+[stat unit growth]
+افزائش
+[stat view by unit type]
+یونٹ کی قسم کے لحاظ سے
+[stat view by state]
+حالت کے لحاظ سے
+[stat view by resource]
+مواد کے لحاظ سے
+[stat view by building]
+عمارت کے لحاظ سے
+[stat view by work]
+کام کی قسم کے لحاظ سے
+[stat view by cause]
+وجہ کے لحاظ سے
+[stat view by weapon]
+ہتھیار کے لحاظ سے
+[stat view by distance]
+فاصلے کے لحاظ سے
+[stat nothing to show]
+دکھانے کو کچھ نہیں: اس میچ میں یہ نہیں ہوا۔
+[stat %0 nothing]
+%0 (کوئی نہیں)
+[Match]
+میچ
+[Time limit]
+وقت کی حد
+[Alliances can change]
+اتحاد بدل سکتے ہیں
+[Reveal terrain]
+زمین ظاہر کریں
+[Starting unit level]
+ابتدائی یونٹوں کی سطح
+[Starting stockpile]
+ابتدائی ذخیرہ
+[Regrowth]
+دوبارہ افزائش
+[Building strength]
+عمارتوں کی مضبوطی
+[Wounded units retreat]
+زخمی یونٹ پسپا ہوتے ہیں
+[Units can die]
+یونٹ مر سکتے ہیں
+[Upgrades]
+اپ گریڈ
+[No stockpile]
+کوئی نہیں
+[No glass cannon]
+بند
+[How quickly harvested resources grow back and spread.]
+جمع کیے گئے وسائل کتنی جلدی دوبارہ اگتے اور پھیلتے ہیں۔
+[Units must eat to keep working.]
+کام جاری رکھنے کے لیے یونٹوں کو کھانا ضروری ہے۔
+[Summary]
+خلاصہ
+[All rules]
+تمام قواعد
+[Show all rules]
+تمام قواعد دکھائیں
+[Choose a ruleset]
+قواعد کا مجموعہ منتخب کریں
+[Reset to %0]
+%0 بحال کریں
+[ruleset one change %0]
+%0 + 1 تبدیلی
+[ruleset changes %0 %1]
+%0 + %1 تبدیلیاں
+[This match cannot end. Turn on prestige victory or set a time limit.]
+یہ میچ ختم نہیں ہو سکتا۔ وقار کے ذریعے فتح فعال کریں یا وقت کی حد مقرر کریں۔
+[Prestige usually appears after 13 to 28 minutes, so a 30-minute limit often ends in a tie.]
+وقار عموماً 13 سے 28 منٹ کے بعد ملتا ہے، اس لیے 30 منٹ کی حد اکثر برابری پر ختم ہوتی ہے۔
+[Blitz]
+برق رفتار
+[ruleset blitz description]
+تیز ابتدا، جلد اختتام
+[Gentle]
+آسان
+[ruleset gentle description]
+پہلے میچ کے لیے رعایتی قواعد
+[Sandbox]
+آزاد تجربہ
+[ruleset sandbox description]
+لڑائی نہیں، فاقہ کشی نہیں، جو چاہیں بنائیں
+[Bloodbath]
+خون ریزی
+[ruleset bloodbath description]
+نازک، بے خوف فوجیں
+[Siege]
+محاصرہ
+[ruleset siege description]
+قلعے کی دیواریں اور طویل جنگیں
+[Lean years]
+تنگی کے سال
+[ruleset lean years description]
+وسائل بمشکل دوبارہ اگتے ہیں
+[Gold rush]
+سونے کی دوڑ
+[ruleset gold rush description]
+نقشے پر جتنا ہے، بس اتنا ہی ہے
+[Elite ranks]
+اعلیٰ صفیں
+[ruleset elite ranks description]
+تربیت یافتہ آغاز، مزید تربیت نہیں
+[Shifting alliances]
+بدلتے اتحاد
+[ruleset shifting alliances description]
+60 منٹ کی دوڑ میں ٹیمیں بدل سکتی ہیں
+[Changed from %0: %1]
+%0 سے تبدیلی: %1
+[Combat is off, so the rules below have no effect.]
+لڑائی بند ہے، اس لیے نیچے کے قواعد کا کوئی اثر نہیں۔
+[%0 more rules are at their Standard values.]
+مزید %0 قواعد اپنی معیاری قدروں پر ہیں۔
+[Players see the map's terrain from the start; enemy units stay hidden.]
+کھلاڑی ابتدا سے نقشے کی زمین دیکھتے ہیں؛ دشمن یونٹ چھپے رہتے ہیں۔
+[Each team starts with extra resources in its shared pool.]
+ہر ٹیم اپنے مشترکہ ذخیرے میں اضافی مواد کے ساتھ شروع کرتی ہے۔
+[Units hit harder but have less HP and armor.]
+یونٹ زیادہ زور سے وار کرتے ہیں مگر HP اور زرہ کم ہوتی ہے۔
+[Teams can attack each other. Turn off for a peaceful match.]
+ٹیمیں ایک دوسرے پر حملہ کر سکتی ہیں۔ پُرامن میچ کے لیے بند کریں۔
+[Hurt units go back to heal instead of fighting to the death.]
+چوٹ زدہ یونٹ مرتے دم تک لڑنے کے بجائے علاج کے لیے واپس جاتے ہیں۔
+[Units die when they run out of HP. Turn off to stop them at 1 HP.]
+HP ختم ہونے پر یونٹ مر جاتے ہیں۔ انہیں 1 HP پر روکنے کے لیے بند کریں۔
+[Units gain levels at training buildings and buildings can be upgraded. Repairs remain available when off.]
+یونٹ تربیتی عمارتوں میں درجے حاصل کرتے ہیں اور عمارتیں اپ گریڈ ہو سکتی ہیں۔ اسے بند کرنے پر بھی مرمت دستیاب رہتی ہے۔
+[stat group work]
+کارکنوں کا وقت
+[stat worker time]
+کارکنوں کا وقت کیسے گزرا
+[stat worker time about]
+بستی کے کارکن ہر لمحے کیا کر رہے تھے: عمارت یا جھنڈے کے لیے کام، تربیت، کھانا، علاج، سرائے یا ہسپتال خالی نہ ہونے پر بھوک یا چوٹ کے ساتھ انتظار، یا کام کے بغیر فارغ۔ صحت مند بستی میں زیادہ تر کارکن کام کرتے ہیں، کم فارغ ہوتے ہیں اور کوئی منتظر نہیں ہوتا۔
+[stat idle workers]
+فارغ کارکن
+[stat idle workers about]
+کارکنوں کے وقت کا وہ حصہ جس میں کوئی کام نہیں تھا۔ زیادہ شرح کا مطلب کام سے زیادہ کارکن ہیں؛ تقریباً صفر کا مطلب ہر کارکن مصروف ہے اور کام انتظار میں ہو سکتے ہیں۔
+[stat work by job]
+کارکن کس کام پر تھے
+[stat work by job about]
+کتنے کارکن ہر قسم کی عمارت کو رسد پہنچا رہے تھے: چھتے (نئے یونٹ بنانے کے لیے)، سرائے (کھانے بنانے کے لیے)، زیرِ تعمیر یا اپ گریڈ ہوتی عمارتیں، یا مینار، اسکول اور بیرک جیسی دیگر عمارتیں۔
+[stat haul distance]
+وسائل تک فاصلہ
+[stat haul distance about]
+وسائل جمع کرنے والا کارکن اس عمارت سے اوسطاً کتنا دور تھا جسے وہ رسد دے رہا تھا، نقشے کے خانوں میں سیدھے فاصلے کے حساب سے۔
+[stat hauling]
+لانا اور لے جانا
+[stat hauling about]
+عمارتوں کو رسد دینے والے کارکن وسائل تک چلنے، انہیں جمع کرنے، مواد واپس لانے، اور پہنچانے یا قابلِ رسائی وسیلے کے انتظار میں کیسے بٹے تھے۔ زیادہ وقت چلنے میں لگتا ہے، اس لیے قریب وسائل سے زیادہ کام ہوتا ہے۔
+[stat eating time]
+کھانے کے لیے جاتے کارکن
+[stat eating time about]
+کتنے کارکن کھانے کے لیے کام سے دور تھے: سرائے کی طرف چلتے، اندر کھاتے، یا بھوکے مگر ایسی سرائے کے بغیر جو انہیں لے سکے۔ سرائے نہ پانے والے کارکن بتاتے ہیں کہ بستی اپنی سراؤں یا ان کی خوراک کی گنجائش سے بڑھ گئی ہے۔
+[stat inn distance]
+سرائے سے فاصلہ
+[stat inn distance about]
+بھوکے کارکن راستے میں اوسطاً اس سرائے سے کتنے دور تھے جہاں وہ جا رہے تھے؛ فاصلہ سیدھی لکیر میں نقشے کے خانوں میں ہے۔ پورا سفر تقریباً اس کا دوگنا ہے۔ زیادہ قدر کا مطلب سرائیں کام کی جگہوں سے دور ہیں۔
+[stat warriors]
+جنگجو
+[stat warriors about]
+بستی کے جنگجوؤں کی تعداد۔ الگ دیکھیں کہ کتنے گھر کے قریب، دشمن بستی کے قریب یا کھلے میدان میں تھے۔ دونوں بستیوں کے قریب زمین گھر میں شمار ہوتی ہے۔
+[stat warrior level]
+جنگجوؤں کے حملے کی اوسط سطح
+[stat warrior level about]
+بستی کے جنگجوؤں کی اوسط حملہ سطح؛ حملے کی رفتار اور طاقت کو برابر وزن دیا جاتا ہے، کھیل کے 1 سے 4 پیمانے پر۔ بیرک اسے بڑھاتی ہے؛ نئے غیر تربیت یافتہ جنگجو اسے گھٹاتے ہیں۔
+[stat warrior duties]
+جنگجو کیا کر رہے تھے
+[stat warrior duties about]
+بستی کے جنگجوؤں کی تقسیم: جنگی جھنڈے پر بھیجے گئے، اتنے زخمی کہ لڑائی چھوڑ کر ہسپتال گئے (زیرِ علاج سمیت)، اور فارغ جنگجو۔
+[stat intruders]
+بستی میں دشمن جنگجو
+[stat intruders about]
+بستی کی عمارتوں سے 16 خانوں کے اندر کتنے دشمن جنگجو تھے۔ دو بستیاں قریب ہوں تو ہر ایک دوسری کے محافظ بھی شمار کرتی ہے۔
+[stat home defence]
+بستی کی دفاعی طاقت کا فرق
+[stat home defence about]
+بستی کی عمارتوں کے قریب اپنے جنگجوؤں کی طاقت منفی وہاں کے دشمن جنگجوؤں کی طاقت، ہر جنگجو اور اس کی حملے کی ہر سطح شمار کر کے۔ صفر سے نیچے بستی اپنے علاقے میں کمزور پڑ رہی تھی۔
+[stat combat death places]
+لڑائی میں یونٹ کہاں گرے
+[stat combat death places about]
+بستی کے یونٹ مارے جاتے وقت کہاں تھے: اپنی عمارتوں کے قریب، دشمن کی عمارتوں کے قریب، یا بستیوں کے درمیان کھلی زمین پر۔ اپنی بستی میں نقصان کا مطلب اس پر حملہ تھا؛ دشمن کی بستی میں نقصان کا مطلب وہ حملہ کر رہی تھی۔ دونوں بستیوں کے قریب زمین اپنی بستی شمار ہوتی ہے۔
+[stat band working]
+کام پر
+[stat band flag work]
+جھنڈے پر
+[stat band idle]
+فارغ
+[stat band training]
+تربیت میں
+[stat band unserved]
+کوئی سرائے یا ہسپتال خالی نہیں
+[stat band swarms]
+چھتے
+[stat band inns]
+سرائے
+[stat band sites]
+تعمیر اور اپ گریڈ
+[stat band other buildings]
+دوسری عمارتیں
+[stat band to resource]
+وسیلے کی طرف چلنا
+[stat band harvesting]
+وسائل جمع کرنا
+[stat band carrying]
+واپس لانا
+[stat band delivering]
+پہنچانا یا انتظار
+[stat band walking to inn]
+سرائے کی طرف چلنا
+[stat band no inn]
+کوئی سرائے خالی نہیں
+[stat band at home]
+اپنی بستی میں
+[stat band at enemy]
+دشمن کی بستی میں
+[stat band in the open]
+کھلی زمین پر
+[stat band war flag]
+جنگی جھنڈے پر
+[stat band seeking healing]
+علاج کی تلاش میں
+[stat band free]
+فارغ
+[stat unit workers]
+کارکن
+[stat unit worker time]
+کارکنوں کا وقت
+[stat unit working workers]
+عمارتوں کو سامان پہنچاتے کارکن
+[stat unit squares]
+خانے
+[stat unit warriors]
+جنگجو
+[stat unit attack level]
+حملے کی سطح
+[stat unit enemy warriors]
+دشمن جنگجو
+[stat unit strength count]
+طاقت
+[stat view by place]
+جگہ کے لحاظ سے
+[settings Music set]
+موسیقی کا مجموعہ
+[settings Random each match]
+ہر میچ کے آغاز پر صوتی مجموعہ خود چننے کے لیے بے ترتیب منتخب کریں۔
+[settings Edge scrolling]
+کنارے پر اسکرول کرنا
+[settings Edge scrolling in fullscreen]
+پوری اسکرین میں کنارے پر اسکرول کرنا
+[settings Edge scrolling in windowed mode]
+ونڈو میں کنارے پر اسکرول کرنا
+[settings Move the game and editor maps when the mouse reaches the window edge.]
+ماؤس کے ونڈو کے کنارے تک پہنچنے پر کھیل اور ایڈیٹر کے نقشوں کو حرکت دیں۔
+[hub finish in browser, game continues]
+اپنے براؤزر میں سائن اِن مکمل کریں۔ آپ کے مکمل کرنے کے بعد کھیل خود بخود جاری ہو جائے گا۔
+[hub browser did not open]
+آپ کا براؤزر نہیں کھلا۔ جاری رکھنے کے لیے سائن اِن کا صفحہ کھولیں۔
+[hub compare code %0]
+اگر صفحے پر تصدیق کے لیے کہا جائے تو دیکھیں کہ وہاں %0 دکھایا گیا ہے۔
+[hub code copied]
+کوڈ کاپی ہو گیا
+[settings Finish in your browser. The game continues by itself.]
+اپنے براؤزر میں کارروائی مکمل کریں۔ کھیل خود چلتا رہتا ہے۔
+[AI Library]
+AI لائبریری
+[Authoring guide]
+تخلیق کی رہنمائی
+[Beginner-friendly]
+نئے کھلاڑیوں کے لیے موزوں
+[Defensive]
+دفاعی
+[Discover]
+دریافت کریں
+[Download & install]
+ڈاؤن لوڈ اور نصب کریں
+[Downloading AI…]
+AI ڈاؤن لوڈ ہو رہا ہے…
+[Expansion]
+توسیع
+[Experimental]
+تجرباتی
+[Favourite]
+پسندیدہ بنائیں
+[Favourited]
+پسندیدہ بنایا گیا
+[Favourites]
+پسندیدہ
+[Got it]
+سمجھ آ گیا
+[How AIs work]
+AI کیسے کام کرتے ہیں
+[Install selected version]
+منتخب ورژن نصب کریں
+[Installed]
+نصب شدہ
+[Invalid AI catalogue response]
+AI کیٹلاگ کا جواب درست نہیں
+[JavaScript API reference]
+JavaScript API کا حوالہ
+[Like]
+پسند کریں
+[Liked]
+پسند کیا
+[Loading AI library…]
+AI لائبریری لوڈ ہو رہی ہے…
+[Most downloaded]
+سب سے زیادہ ڈاؤن لوڈ کیے گئے
+[Most liked]
+سب سے زیادہ پسند کیے گئے
+[Newest]
+تازہ ترین
+[No AIs match these filters.]
+کوئی AI ان فلٹرز سے میل نہیں کھاتا۔
+[Not validated for this game version]
+کھیل کے اس ورژن کے لیے توثیق نہیں ہوئی
+[Open AI Library]
+AI لائبریری کھولیں
+[Open AI page]
+AI کا صفحہ کھولیں
+[Passed compatibility checks]
+مطابقت کی جانچ کامیاب
+[Recently updated]
+حال ہی میں تازہ کیے گئے
+[Rush]
+یلغار
+[Search]
+تلاش کریں
+[Share your AI]
+اپنا AI بانٹیں
+[Show more]
+مزید دکھائیں
+[Sign in through Online settings to like and favourite AIs.]
+AI کو پسند اور پسندیدہ کرنے کے لیے آن لائن ترتیبات سے سائن اِن کریں۔
+[Starter project]
+ابتدائی منصوبہ
+[downloads of this version]
+اس ورژن کے ڈاؤن لوڈ
+[downloads]
+ڈاؤن لوڈ
+[Update available]
+اپ ڈیٹ دستیاب ہے
+[Browse versions]
+ورژن براؤز کریں
+[Download an AI, then choose it for a computer seat in a local game. Installed versions work offline. Updates affect future games; saves keep their original code.]
+AI ڈاؤن لوڈ کریں، پھر مقامی کھیل میں کمپیوٹر کی نشست کے لیے منتخب کریں۔ نصب شدہ ورژن آف لائن چلتے ہیں۔ اپ ڈیٹ آئندہ کھیلوں کو بدلتی ہے؛ محفوظ کھیل اپنا اصل کوڈ رکھتے ہیں۔
+[Compatibility checks do not certify safety or playing strength. Only run code from authors you trust.]
+مطابقت کی جانچ حفاظت یا کھیلنے کی طاقت کی سند نہیں۔ صرف قابلِ اعتماد مصنفوں کا کوڈ چلائیں۔
+[Back to results]
+نتائج پر واپس
+[music 2–5 minutes]
+2–5 منٹ
+[music 5–15 minutes]
+5–15 منٹ
+[music AI-generated]
+AI کی بنائی ہوئی
+[music All music]
+تمام موسیقی
+[music All open licences]
+تمام آزاد لائسنس
+[music Any duration]
+کوئی بھی دورانیہ
+[music Audition each mood for eight seconds]
+ہر کیفیت آٹھ سیکنڈ سنیں
+[music Back]
+واپس
+[music Browse]
+دیکھیں
+[music Building]
+تعمیر
+[music Calm]
+پرسکون
+[music Calm → Building → Combat]
+پرسکون → تعمیر → لڑائی
+[music Choose Building]
+تعمیر چنیں
+[music Choose Calm]
+پرسکون چنیں
+[music Choose Combat]
+لڑائی چنیں
+[music Choose ZIP]
+ZIP چنیں
+[music Choose a music file.]
+موسیقی کی فائل چنیں۔
+[music Combat]
+لڑائی
+[music Could not open this music set.]
+موسیقی کا یہ مجموعہ نہیں کھل سکا۔
+[music Credits, downloads and reporting]
+تخلیق کار، ڈاؤن لوڈ اور رپورٹ
+[music Downloading music…]
+موسیقی ڈاؤن لوڈ ہو رہی ہے…
+[music Export recovery files]
+بحالی کی فائلیں برآمد کریں
+[music Fade duration]
+آواز بدلنے کا دورانیہ
+[music File selection cancelled or failed.]
+فائل کا انتخاب منسوخ ہوا یا ناکام رہا۔
+[music Import ZIP]
+ZIP درآمد کریں
+[music Import ZIP or three tracks]
+ZIP یا تین ٹریک درآمد کریں
+[music Import music]
+موسیقی درآمد کریں
+[music Import three tracks]
+تین ٹریک درآمد کریں
+[music Includes AI-generated audio]
+AI کی بنائی ہوئی آواز شامل ہے
+[music Install]
+نصب کریں
+[music Install selected]
+منتخب شدہ نصب کریں
+[music Installed]
+نصب شدہ
+[music Load more]
+مزید لوڈ کریں
+[music Loading music…]
+موسیقی لوڈ ہو رہی ہے…
+[music Most downloaded]
+سب سے زیادہ ڈاؤن لوڈ شدہ
+[music Most liked]
+سب سے زیادہ پسند کی گئی
+[music Music decoding failed.]
+موسیقی ڈی کوڈ نہیں ہو سکی۔
+[music Music download failed.]
+موسیقی ڈاؤن لوڈ نہیں ہو سکی۔
+[music Music installed.]
+موسیقی نصب ہو گئی۔
+[music Music installed. It is now available in Audio settings.]
+موسیقی نصب ہو گئی۔ اب آواز کی ترتیبات میں دستیاب ہے۔
+[music Music is not yet saved permanently. Retry saving before leaving.]
+موسیقی ابھی مستقل محفوظ نہیں ہوئی۔ جانے سے پہلے دوبارہ محفوظ کریں۔
+[music Music library]
+موسیقی کی لائبریری
+[music Music request failed.]
+موسیقی کی درخواست ناکام رہی۔
+[music Newest]
+تازہ ترین
+[music No community music installed yet. Import files or browse the online library.]
+ابھی برادری کی موسیقی نصب نہیں۔ فائلیں درآمد کریں یا آن لائن لائبریری دیکھیں۔
+[music No music found.]
+کوئی موسیقی نہیں ملی۔
+[music Not AI-generated]
+AI کی بنائی ہوئی نہیں
+[music Pause]
+روکیں
+[music Play]
+چلائیں
+[music Playback position]
+چلانے کی موجودہ جگہ
+[music Preview]
+پیش منظر
+[music Ready to import.]
+درآمد کے لیے تیار۔
+[music Remove]
+ہٹائیں
+[music Reset to game behavior]
+کھیل کا طے شدہ رویہ بحال کریں
+[music Retry saving]
+دوبارہ محفوظ کریں
+[music Saved.]
+محفوظ ہو گیا۔
+[music Saving music…]
+موسیقی محفوظ ہو رہی ہے…
+[music Search]
+تلاش
+[music Search title, artist, description…]
+عنوان، فنکار یا تفصیل تلاش کریں…
+[music Select for installation]
+نصب کرنے کے لیے منتخب کریں
+[music Share music on the web]
+ویب پر موسیقی بانٹیں
+[music Some catalogue entries could not be read.]
+فہرست کے کچھ اندراجات پڑھے نہیں جا سکے۔
+[music Storage could not be saved. Retry or export your files before leaving.]
+ذخیرہ محفوظ نہیں ہو سکا۔ جانے سے پہلے دوبارہ کوشش کریں یا اپنی فائلیں برآمد کر لیں۔
+[music Tag]
+ٹیگ
+[music Test crossfades]
+آوازوں کی باہمی تبدیلی آزمائیں
+[music Up to 2 minutes]
+2 منٹ تک
+[music Use this music]
+یہ موسیقی استعمال کریں
+[music Validating music…]
+موسیقی کی جانچ ہو رہی ہے…
+[settings Music library · Browse, install and import]
+موسیقی کی لائبریری · دیکھیں، نصب اور درآمد کریں
+[music Filters]
+فلٹر
+[music Leave without saving]
+محفوظ کیے بغیر جائیں
+[music Import a downloaded music ZIP or the three Opus tracks. Metadata and cover art are read from Calm; no extra files are required.]
+ڈاؤن لوڈ شدہ موسیقی کا ZIP یا تین Opus ٹریک درآمد کریں۔ معلومات اور سرورق پرسکون ٹریک سے پڑھے جاتے ہیں؛ مزید فائلیں درکار نہیں۔
+[settings Target render FPS]
+رینڈرنگ کا مطلوب FPS
+[settings Unlimited]
+بلا حد
+[settings Limit drawing across the application. Lower values reduce rendering work. Game speed is unchanged.]
+پوری ایپ میں منظر بنانے کی رفتار محدود کریں۔ کم قدر سے رینڈرنگ کا کام گھٹتا ہے۔ کھیل کی رفتار نہیں بدلتی۔
+[ice]
+برف
+[road]
+پگڈنڈی
+[experiment ice-terrain]
+برفیلی زمین
+[experiment ice-terrain help]
+نقشہ ایڈیٹر میں برف شامل کرتا ہے۔ زمینی یونٹ آدھی رفتار سے چلتے اور عمارت سے باہر ہر 32 ٹک پر ایک صحت پوائنٹ کھوتے ہیں۔ برف پر عمارتیں یا وسائل نہیں ہوتے۔
+[experiment road-terrain]
+پگڈنڈی کی زمین
+[experiment road-terrain help]
+نقشہ ایڈیٹر میں پرانی پگڈنڈیاں شامل کرتا ہے۔ زمینی یونٹ دوگنی رفتار سے چلتے ہیں۔ عمارتیں بن سکتی ہیں، وسائل نہیں۔ اڑنے والے یونٹ متاثر نہیں ہوتے۔
+[experiment markets-v2]
+بازار V2
+[experiment markets-v2 help]
+کارکن مشترک بازار کے ذخیرے سے سامان لا سکتے ہیں۔ بازار اپ گریڈ ہو کر پہلے خوراک اور لکڑی، پھر ہر قسم کا مواد ذخیرہ کر سکتے ہیں۔ ٹیموں کے درمیان تجارت صرف پھلوں کی رہتی ہے۔ نئے کھیلوں پر لاگو؛ محفوظ کھیل اپنی اصل ترتیب رکھتے ہیں۔
+[Import Terrain Definitions]
+زمین کی تعریفیں درآمد کریں
+[Terrain palette]
+زمین کا انتخاب
+[Food]
+خوراک
+[Paper]
+کاغذ
+[Cherries]
+چیریاں
+[Oranges]
+سنترے
+[Prunes]
+آلو بخارے
+[Gold]
+سونا
+[Metal]
+دھات
+[Glass]
+شیشہ
+[Fabric]
+کپڑا
+[Import Resource Definitions]
+وسائل کی تعریفیں درآمد کریں
+[Resource palette]
+وسائل کی تختی
+[Trees]
+درخت
+[Rocks]
+چٹانیں
+[Cherry tree]
+چیری کا درخت
+[Orange tree]
+سنترے کا درخت
+[Prune tree]
+آلو بخارے کا درخت
+[Gold ore]
+سونے کی کچ دھات
+[Iron ore]
+لوہے کی کچ دھات
+[Silica]
+سلیکا
+[Cotton]
+کپاس
+[Jungle trees]
+گھنے جنگل کے درخت
+[Pine trees]
+چیڑ کے درخت
+[Dead trees]
+سوکھے درخت
+[Ruins]
+کھنڈرات
+[Camp-site]
+خیمہ گاہ
+[Ancient debris]
+قدیم ملبہ
+[Scrub]
+جھاڑیاں
+[Tall grass]
+لمبی گھاس
+[Maize]
+مکئی
+[Potatoes]
+آلو
+[Rice]
+چاول
+[Fish]
+مچھلی
+[boulders]
+بڑے پتھر
+[hedge]
+باڑ
+[thicket]
+گھنی جھاڑیاں
+[ridge_rock]
+پہاڑی دھار
+[outcrop]
+باہر نکلی چٹان
+[dirt]
+مٹی
+[clay]
+چکنی مٹی
+[gravel]
+بجری
+[flower_meadow]
+پھولوں کا مرغزار
+[mud]
+کیچڑ
+[marsh]
+دلدل
+[deep_snow]
+گہری برف
+[scree]
+پتھریلا ڈھلوانی ملبہ
+[dirt_track]
+کچا راستہ
+[boardwalk]
+تختوں کا راستہ
+[lava]
+لاوا
+[ember_field]
+انگاروں کا میدان
+[loam]
+زرخیز میرا مٹی
+[moss]
+کائی
+[spring_meadow]
+بہاری مرغزار
+[deep_water]
+گہرا پانی
+[dark_water]
+سیاہ پانی
+[void_hole]
+سوراخ
+[chasm]
+گہری کھائی
+[terrain group water]
+پانی
+[terrain group sand]
+ریت
+[terrain group grass]
+گھاس
+[terrain group ice]
+برف
+[terrain group paths]
+راستے
+[terrain group obstacles]
+رکاوٹیں
+[terrain group ridges]
+پہاڑی دھاریں
+[terrain group barren]
+بنجر زمین
+[terrain group rough]
+ناہموار زمین
+[terrain group lava]
+لاوا
+[terrain group fertile]
+زرخیز زمین
+[terrain group deep-water]
+گہرا پانی
+[terrain group void]
+خلا
+[experiment obstacle-terrain]
+رکاوٹوں کی زمین
+[experiment obstacle-terrain help]
+نقشہ ایڈیٹر میں بڑے پتھر، باڑیں اور گھنے جھاڑ شامل کرتا ہے۔ زمینی یونٹ پار نہیں جا سکتے اور گولے رک جاتے ہیں؛ اڑنے والے اوپر گزر جاتے ہیں۔ ان پر عمارتیں یا وسائل نہیں ہوتے۔
+[experiment ridge-terrain]
+پہاڑی دھاروں کی زمین
+[experiment ridge-terrain help]
+نقشہ ایڈیٹر میں چٹانی دھاریں اور ابھار شامل کرتا ہے۔ زمینی یونٹ نہیں گزر سکتے، مگر مینار اوپر سے گولے چلاتے اور اڑنے والے پار جاتے ہیں۔ ان پر عمارتیں یا وسائل نہیں ہوتے۔
+[experiment barren-terrain]
+بنجر زمین
+[experiment barren-terrain help]
+نقشہ ایڈیٹر میں مٹی، چکنی مٹی، بجری اور پھولوں کے میدان شامل کرتا ہے۔ عمارتیں بن سکتی ہیں، ان پر یا پاس کچھ نہیں اگتا، اور یہ ساحل شمار نہیں ہوتیں۔
+[experiment rough-terrain]
+ناہموار زمین
+[experiment rough-terrain help]
+نقشہ ایڈیٹر میں کیچڑ، دلدل، گہری برف اور پتھریلی ڈھلوان شامل کرتا ہے۔ زمینی یونٹ تقریباً دو تہائی رفتار سے چلتے ہیں۔ عمارتیں یا وسائل نہیں ہوتے۔
+[experiment path-terrain]
+پگڈنڈی کی زمین
+[experiment path-terrain help]
+نقشہ ایڈیٹر میں کچے اور تختوں والے راستے شامل کرتا ہے۔ پگڈنڈیوں کی طرح زمینی یونٹ دوگنی رفتار سے چلتے اور عمارتیں بن سکتی ہیں، مگر کچھ نہیں اگتا۔
+[experiment lava-terrain]
+لاوا کی زمین
+[experiment lava-terrain help]
+نقشہ ایڈیٹر میں لاوا اور انگاروں کے میدان شامل کرتا ہے۔ زمینی یونٹ داخل نہیں ہو سکتے؛ اڑ کر گزرنے والے یونٹ تیزی سے صحت کھوتے ہیں۔ گولے اوپر سے گزر جاتے ہیں۔
+[experiment fertile-terrain]
+زرخیز زمین
+[experiment fertile-terrain help]
+نقشہ ایڈیٹر میں زرخیز مٹی، کائی اور بہار کے میدان شامل کرتا ہے۔ ان پر عمارتیں اور فصلیں ہو سکتی ہیں اور یہ اردگرد کی زمین کو پانی سے بھی زیادہ سیراب کرتے ہیں۔
+[experiment deep-water-terrain]
+گہرا پانی
+[experiment deep-water-terrain help]
+نقشہ ایڈیٹر میں گہرا اور تاریک پانی شامل کرتا ہے۔ تیراک آہستہ پار کرتے ہیں، اس میں کائی نہیں اگتی، مگر پاس کے کھیت سیراب ہوتے ہیں۔
+[experiment void-terrain]
+خلا کی زمین
+[experiment void-terrain help]
+نقشہ ایڈیٹر میں گڑھے اور کھائیاں شامل کرتا ہے۔ کوئی، حتیٰ کہ اڑنے والے یونٹ بھی، انہیں پار نہیں کر سکتے؛ گولے کنارے پر رک جاتے ہیں۔
+[terrain group custom]
+اپنی مرضی کی
+[terrain group classic]
+روایتی زمین
+[terrain rule walkable]
+چلنے کے قابل
+[terrain rule swimmable]
+تیرنے کے قابل
+[terrain rule impassable]
+ناقابلِ عبور
+[terrain rule no flying]
+پرواز ممنوع
+[terrain rule buildable]
+تعمیر کے قابل
+[terrain rule speed %0]
+رفتار %0%
+[terrain rule crops grow]
+فصلیں اگتی ہیں
+[terrain rule irrigates]
+پاس کی زمین سیراب کرتا ہے
+[terrain rule stops nearby growth]
+قریب کی افزائش روکتا ہے
+[terrain rule blocks shots]
+گولے روکتا ہے
+[terrain rule hurts walkers]
+چلنے والوں کو نقصان
+[terrain rule hurts fliers]
+اڑنے والوں کو نقصان
+[terrain palette hint]
+برش چنیں۔ ہر گروہ کے قواعد ایک جیسے ہیں؛ اس کے ارکان صرف صورت میں مختلف ہیں۔
+[terrain rule algae grow]
+کائی اگتی ہے
+[terrain palette experiments hint]
+برش چنیں۔ ترتیبات > تجربات میں متعلقہ تجربے چالو کرنے پر مزید زمینی گروہ یہاں آتے ہیں۔
+[brush valid on %0]
+یہاں درست: %0
+[brush valid nowhere]
+اس نقشے کی کسی زمین پر نہیں لگ سکتا
+[brush requires experiment %0]
+%0 تجربہ درکار ہے
+[brush resources custom]
+درآمد شدہ وسائل
+[brush section zones]
+زون
+[brush section areas]
+علاقے
+[brush section tools]
+آلات
+[brush clearing area]
+صفائی کا علاقہ
+[editor unsaved title]
+ابھی محفوظ نہ کی گئی تبدیلیاں
+[editor quit unsaved]
+ایڈیٹر چھوڑنے سے پہلے اس نقشے کی تبدیلیاں محفوظ کریں؟
+[editor load unsaved]
+دوسرا نقشہ کھولنے سے پہلے اس نقشے کی تبدیلیاں محفوظ کریں؟
+[editor save]
+محفوظ کریں…
+[editor discard]
+محفوظ نہ کریں
+[editor share never saved]
+نقشے اپنی محفوظ فائل سے بانٹے جاتے ہیں۔ پہلے یہ نقشہ محفوظ کریں، پھر بانٹیں۔
+[editor share unsaved]
+اس نقشے میں ایسی تبدیلیاں ہیں جو ابھی محفوظ نہیں ہوئیں۔ بانٹنے سے محفوظ فائل اپ لوڈ ہوتی ہے۔
+[editor save and share]
+محفوظ کریں اور بانٹیں…
+[editor share saved version]
+محفوظ ورژن بانٹیں
+[editor reroll confirm]
+زمین کے ہر خانے کو نئی اتفاقی شکل دیں؟ زمین کی قسمیں اور کھیل کا انداز یکساں رہیں گے۔ اسے واپس نہیں لیا جا سکتا۔
+[editor reroll]
+دوبارہ قرعہ ڈالیں
+[editor map saved]
+نقشہ محفوظ ہو گیا
+[editor map shared]
+نقشہ آن لائن بانٹ دیا گیا
+[editor save needs fertility]
+محفوظ کرنے کے لیے زرخیزی کا نقشہ درکار ہے، اس لیے محفوظ کرنا منسوخ ہوا۔ دوبارہ کوشش کے لیے ٹھیک ہے دبائیں۔
+[editor fertility stale]
+زرخیزی کا نقشہ پرانا ہے · تازہ کرنے کے لیے کلک کریں
+[No definition files found in %0]
+%0 میں تعریف کی کوئی فائل نہیں ملی
+[From device…]
+آلے سے…
+[replace existing file %0?]
+"%0" نام کی فائل پہلے سے موجود ہے۔ اسے بدل دیں؟
+[Replace]
+بدل دیں
+[Keep existing file]
+موجودہ فائل رکھیں
+[editor menu save]
+نقشہ محفوظ کریں
+[editor menu load]
+نقشہ کھولیں…
+[editor menu import terrain]
+زمین کی تعریفیں درآمد کریں…
+[editor menu import resources]
+وسائل کی تعریفیں درآمد کریں…
+[editor menu teams]
+ٹیمیں…
+[editor menu scenario]
+منظرنامہ…
+[editor menu reroll]
+زمین کی شکل دوبارہ اتفاقی بنائیں…
+[editor menu file]
+فائل
+[editor menu map]
+نقشہ
+[no resource growth areas]
+افزائش روکنے کے علاقے
+[dock flags and units]
+جھنڈے اور یونٹ
+[dock minimap]
+چھوٹا نقشہ
+[dock search brushes]
+برش تلاش کریں
+[dock brush shape %0]
+برش کی شکل %0
+[dock brush]
+برش
+[dock brush paint]
+رنگیں
+[dock brush erase]
+مٹائیں
+[dock enable for map]
+اس نقشے کے لیے فعال کریں
+[dock enable experiment %0]
+%0 فعال کریں
+[dock enable experiment hint %0]
+صرف اس نقشے کے لیے %0 تجربہ فعال کرتا ہے۔
+[dock area number]
+علاقہ
+[dock building level]
+سطح
+[dock unit level]
+یونٹ کی سطح
+[dock no brushes match]
+کوئی برش تلاش سے میل نہیں کھاتا۔
+[dock active team]
+فعال ٹیم
+[dock team count %0]
+اس نقشے پر ٹیمیں: %0
+[dock add team]
+ٹیم شامل کریں
+[dock remove team]
+ٹیم ہٹائیں
+[dock nothing selected]
+کچھ منتخب نہیں۔
+[dock no properties]
+اس شے کی کوئی خاصیت قابلِ ترمیم نہیں۔
+[focus brush search]
+برش تلاش کریں
+[switch to resources view]
+وسائل کے منظر پر جائیں
+[dock resources base]
+معیاری وسائل
+[dock fertility stale]
+زرخیزی کا نقشہ پرانا ہے۔
+[dock fertility refresh]
+زرخیزی تازہ کریں
+[Enabled %0 for this map]
+اس نقشے کے لیے %0 فعال کر دیا
+[editor fertility tap refresh]
+زرخیزی کا نقشہ پرانا ہے: تازہ کرنے کے لیے چھوئیں
+[editor menu import set]
+زمین اور وسائل کا مجموعہ درآمد کریں
+[editor menu set library]
+مجموعوں کی لائبریری
+[set library loading]
+مجموعے لوڈ ہو رہے ہیں…
+[set library downloading]
+عین منتخب ریلیز ڈاؤن لوڈ ہو رہی ہے…
+[set library connection error]
+مجموعے لوڈ نہیں ہو سکتے۔ رابطہ دیکھیں اور دوبارہ کوشش کریں۔
+[set library hash error]
+ڈاؤن لوڈ کردہ مجموعے کی ہیش جانچ ناکام ہوئی۔
+[set library package error]
+مجموعے کا پیکیج درست نہیں۔
+[set library listing error]
+مجموعے کی فہرست درست نہیں۔
+[set library release error]
+مجموعے کی ریلیز درست نہیں۔
+[set library selection help]
+درآمد کرنے کے لیے اندراجات منتخب کریں۔ درکار حسبِ پسند وسائل خود بخود شامل ہوتے ہیں۔
+[set library empty]
+کوئی مجموعہ نہیں ملا۔
+[set library release help]
+معائنہ اور درآمد کے لیے مخصوص ریلیز منتخب کریں۔
+[set library heading]
+زمین اور وسائل کے مجموعے
+[set library browse]
+آن لائن لائبریری براؤز کریں
+[set library local]
+نقشے کا مواد، تخلیق کار اور مقامی ترامیم
+[set library local help]
+اس نقشے کی نقل بدلیں۔ اصل ریلیز کے تخلیق کاروں کا ذکر ساتھ رہتا ہے۔ تبدیلیاں دوسرے نقشوں یا آن لائن ریلیز کو تازہ نہیں کرتیں۔
+[set library apply]
+مقامی تبدیلیاں نافذ کریں
+[set library updated]
+مقامی مواد تازہ ہو گیا۔
+[set library search hint]
+موضوعات اور تخلیق کار تلاش کریں
+[set library search]
+تلاش کریں
+[set library set]
+مجموعہ
+[set library update help]
+یہ عمل رکھے گئے مماثل زمینی اور وسائل کے اندراجات کو واضح طور پر بدلتا ہے، بشمول مقامی ترامیم۔ ہٹائے گئے اندراجات پرانی ریلیز پر رہتے ہیں۔ موجودہ مواد کی مقداریں نئی گنجائش تک محدود کی جاتی ہیں۔
+[set library import]
+منتخب اندراجات درآمد کریں
+[set library next]
+اگلا صفحہ
+[set library back]
+نتائج پر واپس
+[set library license %0]
+لائسنس: %0
+[set library release %0]
+ریلیز %0
+[set library replace %0]
+ریلیز %0 کے رکھے ہوئے اندراجات بدلیں
+[set library preview limit]
+پہلے 64 اندراجات کے پیش منظر دکھتے ہیں۔ تمام اندراجات منتخب کیے جا سکتے ہیں۔
+[set library definition]
+خواص کی تعریف (JSON)
+[set library artwork]
+زمین کے فن پاروں کی نقشہ بندی (JSON)
+[settings Map generators]
+نقشہ جنریٹر
+[settings Import a generator package, then select its landscape when creating a map or game.]
+جنریٹر پیکیج درآمد کریں، پھر نقشہ یا کھیل بناتے وقت اس کا منظرنامہ چنیں۔
+[settings Import map generator]
+نقشہ جنریٹر درآمد کریں
+[settings No custom map generators installed.]
+کوئی اپنا نقشہ جنریٹر نصب نہیں۔
+[settings Replace package]
+پیکیج بدلیں
+[settings Export package]
+پیکیج برآمد کریں
+[settings Remove generator]
+جنریٹر ہٹائیں
+[settings Saving generator library…]
+جنریٹروں کی لائبریری محفوظ ہو رہی ہے…
+[settings Could not read generator package.]
+جنریٹر پیکیج پڑھا نہیں جا سکا۔
+[settings Generator library saved.]
+جنریٹروں کی لائبریری محفوظ ہو گئی۔
+[settings Storage could not be saved. The previous library is retained.]
+ذخیرہ محفوظ نہیں ہو سکا۔ پچھلی لائبریری برقرار ہے۔
+[settings Waiting for file selection or storage…]
+فائل کے انتخاب یا ذخیرے کا انتظار ہے…
+[settings File selection is unavailable.]
+فائل کا انتخاب دستیاب نہیں۔
+[settings Package export is unavailable.]
+پیکیج برآمد کرنا دستیاب نہیں۔
+[stat band area upkeep]
+علاقے کی دیکھ بھال
+[outcome reason eliminated]
+بستی ختم ہو گئی۔
+[outcome reason opponents defeated]
+تمام حریفوں کو شکست ہوئی۔
+[outcome reason ally won]
+اتحادی بستی جیت گئی۔
+[outcome reason prestige]
+وقار کا ہدف پورا ہوا۔
+[outcome reason scenario]
+منظرنامے کے قواعد نے نتیجہ طے کیا۔
+[outcome reason timer]
+وقت کی حد پوری ہوئی۔
+[outcome reason probability]
+جیت کے امکان کی حد پوری ہوئی۔
+[Destroy this building?]
+یہ عمارت منہدم کریں؟
+[Discord community]
+Discord برادری
+[Globulation 2 Discord]
+Globulation 2 Discord
+[discord community intro]
+Globulation 2 کی برادری کے ساتھ حریف تلاش کریں، مدد مانگیں اور اپنے نقشے بانٹیں۔
+[discord opens externally]
+ہمارے Discord سرور میں شامل ہوں۔ اس سے Discord یا آپ کا براؤزر کھلتا ہے۔
+[Join Discord]
+Discord میں شامل ہوں
+[Copy link]
+لنک نقل کریں
+[discord opened]
+Discord کھل گیا۔ آپ کسی بھی وقت کھیل میں واپس آ سکتے ہیں۔
+[discord open failed]
+Discord نہیں کھل سکا۔ دعوت کا لنک نقل کر کے اپنے براؤزر میں کھولیں۔
+[discord link copied]
+دعوت کا لنک نقل ہو گیا۔
+[discord copy failed]
+لنک نقل نہیں ہو سکا۔ خود نقل کرنے کے لیے اوپر دعوت منتخب کریں۔
+[settings CPU automatic]
+خودکار CPU
+[settings Scalar]
+اسکیلر
+[settings Unavailable]
+دستیاب نہیں
+[settings Initializing]
+ابتدا ہو رہی ہے
+[settings Gradient backend]
+گریڈینٹ کا بیک اینڈ
+[settings Applies at the next simulation boundary. Unsupported work uses CPU automatic; rendering is independent.]
+اگلی سمیولیشن حد پر لاگو ہو گا۔ غیر معاون کام کے لیے خودکار CPU استعمال ہوتا ہے؛ رینڈرنگ الگ ہے۔
+[settings Gradient algorithm]
+گریڈینٹ کا الگورتھم
+[settings All choices compute the same exact field.]
+تمام طریقوں سے بالکل ایک ہی فاصلاتی نقشہ حاصل ہوتا ہے۔
+[settings Bucket propagation]
+بکٹ کے ذریعے پھیلاؤ
+[settings Verify gradient results]
+گریڈینٹ کے نتائج کی تصدیق
+[settings Compare GPU results with scalar CPU before publication. Adds computation and stops the game on a mismatch.]
+لاگو کرنے سے پہلے GPU کے نتائج اسکیلر CPU سے ملائیں۔ حساب بڑھتا ہے اور فرق آنے پر کھیل رک جاتا ہے۔
+[settings Gradient computation]
+گریڈینٹ کا حساب
+[settings CPU fallback]
+CPU پر متبادل عمل
+[settings GPU fields]
+GPU کے فاصلاتی نقشے
+[settings CPU fallbacks]
+CPU پر متبادل اعمال
+[settings MCP server]
+MCP سرور
+[settings Enabling the MCP server permits local clients to see and operate the game.]
+MCP سرور چالو کرنے سے مقامی کلائنٹ کھیل دیکھ اور چلا سکتے ہیں۔
+[settings Enable MCP server]
+MCP سرور چالو کریں
+[settings Port]
+پورٹ
+[settings Current controller: %0]
+موجودہ کنٹرول کنندہ: %0
+[settings Copy endpoint]
+رابطے کا پتہ کاپی کریں
+[settings Retry listener]
+سننے والا رابطہ دوبارہ شروع کریں
+[settings Revoke control]
+کنٹرول واپس لیں
+[settings MCP server unavailable in this application]
+اس ایپ میں MCP سرور دستیاب نہیں
+[settings Disabled]
+بند
+[settings Running]
+چل رہا ہے
+[settings Error: %0]
+خرابی: %0
+[settings None]
+کوئی نہیں
+[settings Starting]
+شروع ہو رہا ہے
+[Which hand holds your phone?]
+بایاں یا دایاں ہاتھ؟
+[hand preference explanation]
+فون معمول کے انداز میں پکڑیں۔ جس ہاتھ سے کھیلتے ہیں اسے چھوئیں۔
+[hand silhouettes description]
+فون کا خاکہ جس کے اوپر بایاں اور دایاں ہاتھ ہے۔ کسی طرف کے ابھرے ہوئے انگوٹھے کے ہدف کو دبا کر وہ سمت منتخب کریں۔
+[hand preference change later]
+آپ بعد میں ترتیبات میں طرف بدل سکتے ہیں۔
+[hand preference save failed]
+آپ کا انتخاب محفوظ نہیں ہو سکا۔ دوبارہ کوشش کریں۔
+[Left hand]
+بایاں ہاتھ
+[Right hand]
+دایاں ہاتھ
+[stat ground movement]
+زمینی حرکت
+[stat ground movement about]
+زندہ زمینی یونٹ، رفتار کے اندازاً تناسب کے مطابق۔ 'تیراکی 2x' کا مطلب دوڑنے سے دوگنی تیز تیراکی ہے۔ اڑنے والے اور غیر متحرک یونٹ شامل نہیں۔
+[stat view by movement]
+حرکت کے لحاظ سے
+[stat band land only]
+صرف زمین
+[stat band swim twice run]
+تیراکی 2x
+[stat band swim faster run]
+تیراکی 1.4x
+[stat band swim equals run]
+برابر
+[stat band run faster swim]
+دوڑ 1.3x
+[stat band run twice swim]
+دوڑ 2x
+[stat band run triple swim]
+دوڑ 3x
+[stat band water only]
+صرف پانی
+[settings Browse shared generators]
+مشترک جنریٹر دیکھیں
+[settings Apply artwork on the next game or editor load.]
+اگلی بار کھیل یا ایڈیٹر لوڈ ہونے پر تصاویر لاگو کریں۔
+[settings Requires a renderer with texture filtering. Your saved choice is retained.]
+ٹیکسچر فلٹرنگ والا رینڈرر چاہیے۔ محفوظ انتخاب برقرار ہے۔
+[settings Automatically show the torus overview while moving around the map.]
+نقشے پر حرکت کے دوران ٹورس کا مجموعی منظر خود دکھائیں۔
+[settings Requires a renderer with torus support. Your saved choice is retained.]
+ٹورس کی سہولت والا رینڈرر چاہیے۔ محفوظ انتخاب برقرار ہے۔
+[settings Move and animate units between game ticks.]
+کھیل کے ٹکوں کے درمیان یونٹوں کی حرکت اور اینیمیشن دکھائیں۔
+[settings Renderer unavailable]
+رینڈرر دستیاب نہیں
+[settings Apply at the next completed frame. Your game stays running.]
+اگلا فریم مکمل ہونے پر لاگو کریں۔ کھیل چلتا رہے گا۔
+[settings Active renderer: %0]
+فعال رینڈرر: %0
+[settings Changing renderer…]
+رینڈرر بدل رہا ہے…
+[settings Menu scroll wheel enabled]
+مینو کا اسکرول پہیہ چالو
+[settings Controls wheel scrolling in menus. The wheel always zooms the game and editor maps.]
+مینو میں پہیے کی اسکرولنگ قابو کرتا ہے۔ پہیہ کھیل اور ایڈیٹر کے نقشوں کو ہمیشہ زوم کرتا ہے۔
+[settings Gesture scrolling]
+اشاروں سے اسکرول
+[settings Touch and Mac gesture scrolling. 0 turns an effect off; 50 is the touch default.]
+ٹچ اور Mac اشاروں کی اسکرولنگ۔ 0 سے اثر بند؛ ٹچ کی طے شدہ قدر 50 ہے۔
+[settings How far lists and panels keep scrolling after a touch flick. Mac gestures use system momentum; zero disables their glide.]
+ٹچ کے ہلکے جھٹکے کے بعد فہرستیں اور پینل کتنی دور چلتے رہیں۔ Mac اشارے نظام کی روانی استعمال کرتے ہیں؛ صفر سے یہ روانی بند ہوتی ہے۔
+[settings How much lists and panels stretch past their ends and spring back. Mac gestures use a gentler stretch.]
+فہرستیں اور پینل کناروں سے کتنا آگے کھنچ کر واپس آئیں۔ Mac اشاروں میں کھنچاؤ نرم ہے۔
+[hive stopping]
+روکا جا رہا ہے…
+[hive stopped]
+رک گیا
+[hive stop failed]
+روکنا ناکام ہوا؛ روکنے کا شارٹ کٹ دوبارہ آزمائیں
+[hive updating]
+تازہ ہو رہا ہے…
+[hive requested]
+درخواست کر دی گئی
+[hive update failed]
+تازہ کرنا ناکام ہوا؛ دوبارہ کوشش کریں
+[hive give order]
+حکم دیں
+[hive less]
+کم
+[hive reports and details]
+رپورٹیں / تفصیلات
+[hive needs fresh order]
+نیا حکم درکار ہے
+[hive active]
+فعال
+[hive resume]
+بحال کریں
+[recordings]
+ریکارڈنگز
+[recording delete confirm]
+ریکارڈنگ حذف کریں؟
+[recording delete warning]
+ریکارڈنگ اور اس کا میٹا ڈیٹا ہٹا دیا جائے گا۔
+[recording delete]
+حذف کریں
+[recording working]
+کام ہو رہا ہے…
+[recording none]
+ابھی کوئی ریکارڈنگ نہیں۔
+[recording interrupted]
+رکاوٹ زدہ ریکارڈنگ
+[recording recover]
+بازیافت کریں
+[recording export video]
+ویڈیو برآمد کریں
+[recording export metadata]
+میٹا ڈیٹا برآمد کریں
+[recording export events]
+واقعات برآمد کریں
+[recording export failed]
+ریکارڈنگ برآمد نہیں ہو سکی۔
+[recording delete action]
+ریکارڈنگ حذف کریں
+[recording refresh]
+تازہ کریں
+[tutorial part1 message 1]
+Globulation 2 میں خوش آمدید! یہ تربیت چار مشنوں میں بستی چلانا سکھاتی ہے۔ کھیل کے مینو سے پیش رفت محفوظ اور بعد میں مرکزی مینو سے لوڈ کر سکتے ہیں۔ جاری رکھنے کے لیے Space دبائیں، یا ٹچ اسکرین پر «ٹھیک ہے» کو چھوئیں۔ آگے بڑھنے کے بعد کچھ پیغامات غائب ہو جاتے ہیں؛ انہیں دوبارہ پڑھنے کے لیے «پیغامات کا سابقہ ریکارڈ» کھولیں۔
+[tutorial part1 message 2]
+آپ ایک چھتے اور ایک کارکن سے شروع کرتے ہیں۔ آئیے دیکھیں یہ مل کر کیسے کام کرتے ہیں۔
+[tutorial part1 message 3]
+آپ کا کارکن گندم کاٹ کر چھتے تک لاتا ہے۔ چھتہ گندم سے نئے یونٹ بناتا ہے، اس لیے بستی کے لیے ضروری ہے۔
+[tutorial part1 message 4]
+اپنے گلوبیول، یعنی چلتے ہوئے یونٹ، کو بائیں کلک یا چھونے سے منتخب کریں۔
+[tutorial part1 message 5]
+یونٹ کی معلومات میں خوراک کی سطح وقت کے ساتھ گرتی دکھائی دیتی ہے۔ آپ کا گلوبیول بھوکا ہو رہا ہے۔ خوراک کی پٹیاں دکھائی دے رہی ہوں تو یونٹ کے نیچے نیلی پٹی اس کی باقی خوراک بتاتی ہے۔
+[tutorial part1 message 6]
+گلوبیول سرائے میں کھاتے ہیں۔ انتخاب ختم کرنے کے لیے دایاں کلک کریں، یا ٹچ اسکرین پر خالی زمین چھوئیں۔
+[tutorial part1 message 7]
+عمارتوں کے کنٹرول کھولیں، سرائے منتخب کریں اور اسے گندم کے قریب رکھیں۔ گندم نظر نہ آئے تو اپنے کارکن کے فصل کاٹنے کے راستے کو دیکھیں۔ ٹچ اسکرین پر تعمیر استعمال کریں اور درست جگہ کی تصدیق کریں۔ آخر میں دائیں کلک یا ٹچ کے «منسوخ کریں» کنٹرول سے جگہ رکھنے کے موڈ سے نکلیں۔
+[tutorial part1 message 8]
+بہت اچھا! سرائے کی تعمیراتی جگہ رکھ دی گئی ہے۔
+[tutorial part1 message 9]
+چھتے کا کارکن اب سرائے بنا سکتا ہے۔ وہ قریب کے درختوں سے لکڑی جمع کر کے تعمیراتی جگہ پر لاتا ہے۔ تعمیر مکمل ہونے کا انتظار کریں۔
+[tutorial part1 message 10]
+مکمل سرائے کو گندم چاہیے۔ ایک مقرر کارکن اسے جمع کرے گا، جیسے کارکن چھتے کو سامان پہنچاتا ہے۔
+[tutorial part1 message 11]
+گندم آنے پر سرائے کی زرد وسائل پٹی بڑھتی ہے۔ یہ سرائے کے ذخیرے میں گندم کی مقدار دکھاتی ہے۔
+[tutorial part1 message 12]
+اب کام مقرر کرنا سیکھتے ہیں۔
+[tutorial part1 message 13]
+ایک کارکن چھتے اور دوسرا سرائے کو سامان پہنچاتا ہے۔ کوئی بھی سرائے میں کھانے کے لیے رک سکتا ہے۔ یہ معمول کی بات ہے۔
+[tutorial part1 message 14]
+چھتہ منتخب کریں اور کارکن مقرر کرنے کا کنٹرول تلاش کریں۔ ڈیسک ٹاپ پر اس کا نام کام پر ہے؛ ٹچ اسکرین پر مقرر کارکنوں اور ہدف کا کنٹرول استعمال کریں۔ ہدف اس عمارت میں مطلوب کارکنوں کی تعداد ہے۔
+[tutorial part1 message 15]
+کارکن مقرر کرنے کے کنٹرول سے چھتے کا ہدف 0 کریں۔ پھر سرائے منتخب کر کے اس کا ہدف بھی 0 کریں۔
+[tutorial part1 message 16]
+آپ کے کارکن اب فارغ ہیں، لیکن انہیں خوراک پھر بھی چاہیے۔ مقرر کارکنوں کے بغیر سرائے کی گندم آخرکار ختم ہو جائے گی۔
+[tutorial part1 message 17]
+خوراک نہ ملنے پر گلوبیول کی صحت گرتی ہے اور وہ مر سکتا ہے۔ ہسپتال زخمی گلوبیولوں کا علاج کر سکتا ہے، لیکن سراؤں میں رسد برقرار رکھنا بھی ضروری ہے۔
+[tutorial part1 message 18]
+عمارتوں کے کنٹرول سے ہسپتال بنائیں۔ اسے گندم نہیں چاہیے، اس لیے لکڑی کے قریب یا چھتے کے پاس کسی مرکزی جگہ پر رکھیں۔
+[tutorial part1 message 19]
+ہسپتال کی تعمیراتی جگہ منتخب کر کے کارکنوں کا ہدف 2 کریں۔ دو کارکن اسے جلد مکمل کر سکتے ہیں۔
+[tutorial part1 message 20]
+ہسپتال تیار ہے۔ زخمی گلوبیول اب وہاں جا کر صحت بحال کر سکتے ہیں۔
+[tutorial part1 message 21]
+سیاہ علاقے ابھی دریافت نہیں ہوئے۔ یونٹ چلتے ہوئے آس پاس کی زمین ظاہر کرتے ہیں۔ کارکن اپنے کام کے پیچھے جاتے ہیں، اس لیے ان سے کھوج کروانا مشکل ہے۔ کھوجی اسی کام کے لیے ہیں۔
+[tutorial part1 message 22]
+چھتہ منتخب کریں اور کارکن، کھوجی اور جنگجو پیدا کرنے کے تناسب تلاش کریں۔ کھوجیوں کا تناسب 1 کریں۔
+[tutorial part1 message 23]
+کارکن اور کھوجی دونوں کے تناسب 1 ہوں تو چھتہ وقت کے ساتھ دونوں کی برابر تعداد پیدا کرتا ہے۔ کارکنوں کا تناسب 0 کریں تاکہ فی الحال صرف کھوجی بنیں۔
+[tutorial part1 message 24]
+چھتے میں مقرر کارکنوں کا ہدف دوبارہ 1 کریں تاکہ کارکن گندم لا سکے۔
+[tutorial part1 message 25]
+سرائے منتخب کر کے اس کے کارکنوں کا ہدف بھی 1 کریں۔ بڑھتی بستی کو مسلسل خوراک چاہیے۔
+[tutorial part1 message 26]
+اب چھتے کے کھوجی پیدا کرنے کا انتظار کریں۔
+[tutorial part1 message 27]
+آپ کا کھوجی بستی کے آس پاس اڑ کر مزید زمین ظاہر کرتا ہے۔ آگے بڑھنے سے پہلے چھتے کو دوسرا کھوجی پیدا کرنے دیں۔
+[tutorial part1 message 28]
+چھتہ دوبارہ منتخب کریں۔ کھوجیوں کا پیداواری تناسب 0 اور کارکنوں کا 1 کریں تاکہ کارکن پھر بننے لگیں۔
+[tutorial part2 message 1]
+آپ کے مرکز کے مشرق میں پتھر ہے۔ یہ جگہ یاد رکھیں؛ بعد میں پتھر درکار ہو گا۔
+[tutorial part2 message 2]
+پتھر کے جنوب میں سنترے کے درخت ہیں۔ وسائل کی معلومات دیکھنے کے لیے انہیں منتخب کریں۔ پھلوں پر بعد میں آئیں گے؛ ابھی چھتے پر توجہ دیں۔
+[tutorial part2 message 3]
+چھتے کو صرف کارکن بنانے پر لگائیں: کارکنوں کا تناسب 1، کھوجیوں اور جنگجوؤں کا 0۔
+[tutorial part2 message 4]
+بستی جلد بڑھاتے ہیں۔ چھتہ منتخب کر کے مقرر کارکنوں کا ہدف 6 کریں۔ شاید ابھی چھ کارکن نہ ہوں؛ نئے کارکن دستیاب ہوتے ہی اضافی کام سنبھال سکتے ہیں۔
+[tutorial part2 message 5]
+8 کارکن ہونے پر اگلے کام شروع کریں گے۔ آبادی بڑھنے کے دوران چھتے اور سرائے کی رسد جاری رکھیں۔
+[tutorial part2 message 6]
+اب کئی کارکن چھتے کو سامان پہنچا رہے ہیں۔ زیادہ گندم آنے سے وہ یونٹ زیادہ تیزی سے پیدا کر سکتا ہے۔
+[tutorial part2 message 7]
+ایک نیا کارکن پیدا کرنے کے لیے گندم کی 5 اکائیاں درکار ہیں۔ دور کے کھیت سے گندم لانے میں وقت لگتا ہے، اس لیے چھتے کو اکثر سرائے سے زیادہ رسد لانے والے کارکن چاہیے ہوتے ہیں۔ جہاں ممکن ہو، خوراک پر منحصر عمارتیں گندم کے قریب رکھیں۔
+[tutorial part2 message 8]
+اب آپ کے کم از کم 8 کارکن ہیں۔ چھتہ منتخب کر کے مقرر کارکنوں کا ہدف 1 کریں، تاکہ تعمیر کے دوران آبادی آہستہ بڑھے۔
+[tutorial part2 message 9]
+بستی کو کھلانے کی مزید گنجائش چاہیے۔ موجودہ سرائے کے شمال میں دوسری سرائے بنائیں۔
+[tutorial part2 message 10]
+نئی سرائے کی تعمیراتی جگہ پر فارغ کارکن مقرر کریں۔ اسے لکڑی کی صرف 3 اکائیاں درکار ہیں، اس لیے 3 سے زیادہ معمار زیادہ فائدہ نہیں دیں گے۔
+[tutorial part2 message 11]
+مکمل سرائے روزمرہ کام کے کارکن ہدف، عموماً 1، پر واپس آتی ہے۔ تعمیر اور روزمرہ رسد کے ہدف الگ ہیں۔
+[tutorial part2 message 12]
+کارکن تیز چلنا سیکھ سکتے ہیں۔ دوڑ کا میدان یہ تربیت دیتا ہے۔
+[tutorial part2 message 13]
+عمارتوں کے کنٹرول میں دوڑ کا میدان تلاش کریں۔ ڈیسک ٹاپ پر نشان پر ماؤس رکھ کر تفصیل اور لاگت دیکھیں۔ ٹچ اسکرین پر تعمیر میں اسے منتخب کر کے جگہ رکھنے کی تیاری کریں۔ ابھی اسے نہ رکھیں۔
+[tutorial part2 message 14]
+دوڑ کے میدان کو بہت سی لکڑی اور تھوڑا پتھر چاہیے۔ مرکزی جگہ چنیں تاکہ یونٹ آسانی سے پہنچ سکیں۔
+[tutorial part2 message 15]
+دوڑ کا میدان بنائیں، مثلاً چھتے کے جنوب میں۔ اردگرد جگہ خالی رکھیں: تربیتی عمارتوں کو اپ گریڈ پر پھیلنے کے لیے جگہ چاہیے۔
+[tutorial part2 message 16]
+دوڑ کے میدان کی تعمیراتی جگہ پر کارکنوں کا ہدف 5 سے 7 کے درمیان رکھیں۔ اسے تعمیراتی مواد کی کل 7 اکائیاں درکار ہیں۔
+[tutorial part2 message 17]
+تکمیل کے بعد دوڑ کا میدان آنے والے یونٹوں کو تربیت دیتا ہے؛ مزید تعمیراتی سامان یا گندم کی مسلسل رسد نہیں چاہیے۔
+[tutorial part2 message 18]
+گلوبیول تربیت کے لیے دوڑ کے میدان میں داخل ہو رہے ہیں۔ تربیت کے بعد وہ تیز دوڑ سکتے ہیں۔
+[tutorial part2 message 19]
+تربیت کی پیش رفت دیکھنے کے لیے دوڑ کا میدان منتخب کریں۔ اس کے پیش رفت کے اشارے بتاتے ہیں کہ اندر موجود یونٹوں کی تربیت مکمل ہونے میں کتنا باقی ہے۔
+[tutorial part2 message 20]
+تربیت یافتہ کارکن تیز سفر کر کے وسائل جلد پہنچاتے ہیں۔ بستی بڑھتے وقت خوراک کے ذخیرے دیکھتے رہیں؛ تیز رسد اسی وقت مفید ہے جب کافی سراؤں کو سامان ملتا رہے۔
+[tutorial part2 message 21]
+کھیل کے معلوماتی پینل میں کارکنوں کی آبادی کا شمار دیکھیں۔ کل عدد آبادی بتاتا ہے؛ دستیاب کارکنوں کا عدد اضافی کارکن یا خالی کام پہچاننے میں مدد دیتا ہے۔ فارغ کارکن استعمال کریں، لیکن بستی کی گنجائش سے زیادہ کام مقرر نہ کریں۔
+[tutorial part2 message 22]
+معلوماتی پینل میں کھوجیوں اور جنگجوؤں کی تعداد بھی ہے۔ پیداوار کی منصوبہ بندی یا جھنڈوں پر یونٹ مقرر کرتے وقت انہیں دیکھیں۔
+[tutorial part2 message 23]
+آپ کی 2 سرائے ہیں۔ ہر ابتدائی سرائے ایک وقت میں 4 یونٹ کھلا سکتی ہے؛ دونوں میں کل 8 جگہیں ہیں۔ 8 سے زیادہ یونٹ بھوکے ہو سکتے ہیں، اس لیے قطاروں کے لیے کافی گنجائش رکھیں۔
+[tutorial part2 message 24]
+دو سرائے بڑھتی بستی کو ہمیشہ نہیں چلا سکتیں۔ خوراک کی کمی فاقہ کشی میں بدلنے سے پہلے کھلانے کی مزید گنجائش بنائیں۔
+[tutorial part2 message 25]
+گندم کے قریب مزید 3 سرائے بنائیں۔ بھوکے کارکن کام روک دیتے ہیں اور مسلسل بھوک انہیں مار دیتی ہے۔ موجودہ خوراک کی رسد چلتی رکھتے ہوئے دستیاب کارکن تعمیر پر لگائیں۔
+[tutorial part2 message 26]
+مزید 3 سرائے مکمل کریں، تاکہ کل تعداد 5 ہو جائے۔
+[tutorial part2 message 27]
+تعمیر کے بعد نئی سرائے اپنے روزمرہ ہدف، عموماً ہر ایک 1 کارکن، پر آتی ہیں۔ دیکھیں کہ رسد لانے والے اور کافی گندم موجود ہیں۔
+[tutorial part2 message 28]
+دوڑ کے میدان نے زمین پر سفر بہتر کر دیا ہے۔ اب بستی کو تیرنا سکھاتے ہیں۔
+[tutorial part2 message 29]
+تیراکی کا تالاب یونٹوں کو تیرنا سکھاتا ہے اور تعمیر کے لیے لکڑی چاہتا ہے۔ مرکز کے شمال مشرق میں، پتھر کے شمال کی بڑی کھلی جگہ پر بنائیں۔ اپ گریڈ اور وسائل کی افزائش کے لیے جگہ چھوڑیں اور دستیاب کارکن تعمیر پر لگائیں۔
+[tutorial part2 message 30]
+تیراکی کا تالاب یونٹوں کو تیرنا سکھاتا ہے اور تعمیر کے لیے لکڑی چاہتا ہے۔ مرکز کے شمال مشرق میں، پتھر کے شمال کی بڑی کھلی جگہ پر بنائیں۔ اپ گریڈ اور وسائل کی افزائش کے لیے جگہ چھوڑیں اور دستیاب کارکن تعمیر پر لگائیں۔
+[tutorial part2 message 31]
+تیراکی کا تالاب تیار ہے۔ گلوبیول اب داخل ہو کر تیرنا سیکھ سکتے ہیں۔
+[tutorial part2 message 32]
+تربیت کی پیش رفت دیکھنے کے لیے تالاب منتخب کریں۔ ابتدائی تالاب، ابتدائی دوڑ کے میدان کی طرح، ایک وقت میں 2 گلوبیولوں کو تربیت دیتا ہے۔
+[tutorial part2 message 33]
+آپ کے تربیت یافتہ گلوبیول اب تیر سکتے ہیں۔ جلد انہیں ایسا کام دیں گے جس کے لیے پانی پار کرنا ہو گا۔
+[tutorial part2 message 34]
+ابھی مزید سیکھنا ہے۔ وقفہ چاہیے تو کھیل کے مینو سے پیش رفت محفوظ کر کے بعد میں واپس آئیں۔
+[tutorial part2 message 35]
+بستی میں خوراک اور جسمانی تربیت موجود ہے۔ اسکول کارکنوں کو بہتر عمارتوں کے لیے درکار ہنر سکھائے گا۔
+[tutorial part2 message 36]
+اسکول کارکنوں کی وسائل جمع کرنے اور تعمیر کی صلاحیت بہتر کرتا ہے۔ اسے بنانے کے لیے پانی میں اگنے والی کائی چاہیے۔ تیرنے والے کارکن اسے جمع کر سکتے ہیں۔
+[tutorial part2 message 37]
+اہم تربیتی عمارتیں محفوظ رکھیں۔ اسکول پانی کے کنارے ہونا ضروری نہیں؛ اندرونِ خشکی کی محفوظ جگہ اسے حملے سے بچا سکتی ہے۔
+[tutorial part2 message 38]
+محفوظ جگہ پر اسکول بنائیں، مثلاً تالاب کے پیچھے یا چھتے کے جنوب مغرب میں دوڑ کے میدان کے پاس۔ دستیاب کارکن تعمیر پر لگائیں۔
+[tutorial part2 message 39]
+مقرر کارکن دیکھنے کے لیے عمارت منتخب کریں۔ ڈیسک ٹاپ پر یونٹوں کے راستے دکھائیں/چھپائیں کی قابلِ ترتیب کارروائی یونٹوں سے منزلوں تک لکیریں بھی دکھا سکتی ہے؛ موجودہ شارٹ کٹ کے لیے ترتیبات، کنٹرولز دیکھیں۔ اسکول کی تکمیل کا انتظار کریں۔
+[tutorial part3 message 1]
+اب بستی میں سرائے، ہسپتال، دوڑ کا میدان، تالاب اور اسکول ہیں۔ دفاع کی تیاری کا وقت ہے۔
+[tutorial part3 message 2]
+ابھی کوئی جنگجو پیدا نہیں ہوا۔ ان کے بغیر بستی کو حملے سے بہت کم تحفظ ہے۔
+[tutorial part3 message 3]
+چھتہ منتخب کر کے جنگجوؤں کا پیداواری تناسب 2 کریں۔ کارکنوں کا 1 رہنے دیں، تاکہ وہ بھی بنتے رہیں۔
+[tutorial part3 message 4]
+چھتہ اب ہر کارکن کے مقابلے میں تقریباً 2 جنگجو بنائے گا۔ تیز پیداوار کے لیے رسد لانے کو مزید کارکن مقرر کریں۔
+[tutorial part3 message 5]
+پہلا جنگجو تیار ہے اور تربیت شروع کرے گا۔ آگے بڑھنے سے پہلے دوسرے کا انتظار کریں۔
+[tutorial part3 message 6]
+جنگجو بھی دوڑ کا میدان اور تالاب استعمال کرتے ہیں۔ وہ بیرک میں حملے کی تربیت بھی لے سکتے ہیں۔
+[tutorial part3 message 7]
+بیرک حملے کی طاقت اور رفتار بڑھاتی ہے۔ طاقت سے ہر ضرب کا نقصان بڑھتا ہے؛ رفتار سے جنگجو زیادہ بار حملہ کرتا ہے۔ تربیت یافتہ جنگجو غیر تربیت یافتہ دشمنوں کے بہت بڑے گروہ کو ہرا سکتے ہیں۔
+[tutorial part3 message 8]
+لکڑی کے قریب بیرک بنائیں؛ تعمیر کے لیے لکڑی چاہیے۔
+[tutorial part3 message 9]
+بیرک کی تعمیراتی جگہ پر دستیاب کارکن مقرر کریں۔ کافی کارکن خوراک کی رسد پر رکھیں اور ایسے اضافی کام نہ بنائیں جنہیں وہ پورا نہ کر سکیں۔
+[tutorial part3 message 10]
+بیرک تیار ہے۔ جنگجو اب وہاں حملے کے ہنر سیکھ سکتے ہیں۔
+[tutorial part3 message 11]
+عمارتیں اپ گریڈ کر کے بستی زیادہ مضبوط ہو سکتی ہے۔
+[tutorial part3 message 12]
+اسکول میں تربیت یافتہ کارکن اپ گریڈ بنا سکتے ہیں۔ اہل عمارت منتخب کر کے عمارتوں کے کنٹرول میں اپ گریڈ تلاش کریں۔ نقصان زدہ عمارت کو پہلے مرمت چاہیے ہو سکتی ہے۔
+[tutorial part3 message 13]
+پہلا اپ گریڈ طے کریں۔ سراؤں میں ابھی گنجائش باقی ہے، اس لیے انہیں بعد میں دیکھ سکتے ہیں۔
+[tutorial part3 message 14]
+ہسپتال میں بھی جگہ ہے۔ اسکول، دوڑ کے میدان، تالاب یا بیرک پر توجہ دے سکتے ہیں۔
+[tutorial part3 message 15]
+پہلے دوڑ کا میدان اپ گریڈ کریں، تاکہ یونٹ مزید تیز چلنا سیکھیں۔
+[tutorial part3 message 16]
+دوڑ کا میدان منتخب کر کے عمارتوں کے کنٹرول میں اپ گریڈ چنیں۔ تعمیر سے پہلے اندر کے یونٹوں کو نکلنا ہوتا ہے، اس لیے تبدیلی فوراً نہیں بھی ہو سکتی۔
+[tutorial part3 message 17]
+دوڑ کے میدان کے اپ گریڈ پر دستیاب کارکن لگائیں۔ صرف اسکول کی مطلوب تربیت والے کارکن سطح 2 کی تعمیراتی جگہ بنا سکتے ہیں۔
+[tutorial part3 message 18]
+دوڑ کے میدان کا اپ گریڈ مکمل ہونے دیں۔ اونچی سطح کی عمارتوں کو زیادہ وسائل اور وقت چاہیے۔
+[tutorial part3 message 19]
+سطح 2 کا دوڑ کا میدان مکمل ہے۔ اب پہلے سے زیادہ زمین لیتا ہے، اسی لیے جگہ چھوڑی تھی۔ پھیلنے کی کافی جگہ نہ ہو تو عمارت اپ گریڈ نہیں ہو سکتی۔
+[tutorial part3 message 20]
+اب بیرک اور تالاب کو سطح 2 پر اپ گریڈ کریں۔ دونوں مکمل ہونے پر آگے بڑھیں گے۔
+[tutorial part3 message 21]
+اپ گریڈ عمارتیں عموماً زیادہ گلوبیول سنبھالتی یا بہتر تربیت دیتی ہیں۔ مثلاً سطح 2 کی سرائے میں کھانے کی 7 جگہیں ہیں اور وہ ابتدائی سرائے سے جلد کھلاتی ہے۔
+[tutorial part3 message 22]
+دشمن قریب ہے۔ حملے کی تیاری کرتے ہیں۔
+[tutorial part3 message 23]
+مینار حد میں دشمنوں پر گولیاں چلاتے ہیں۔ دیواریں انہیں بچاتی ہیں۔ دونوں سے بستی کے ایک تنگ راستے کا دفاع کریں گے۔
+[tutorial part3 message 24]
+جگہ ہو تو مینار جوڑوں میں رکھیں۔ تین اطراف پر دیواریں بنا سکتے ہیں، مگر کارکنوں کے پتھر کے گولے لانے کا راستہ کھلا رکھیں۔
+[tutorial part3 message 25]
+تالاب کے مشرق، دوسرے پھل دار درختوں کے شمال میں دیکھیں۔ تنگ گزرگاہ دوسرے جزیرے تک جاتی ہے۔ دفاع کے لیے اچھی جگہ ہے۔
+[tutorial part3 message 26]
+درختوں اور ساحل کے درمیان 2 میناروں کی جگہ سوچیں۔ پیچھے پتھر کی رسد کا راستہ اور دوسری اطراف دیواروں کی جگہ چھوڑیں۔ کارکنوں کا راستہ بند نہ کریں۔
+[tutorial part3 message 27]
+وہاں 2 مینار بنائیں۔ معلوماتی پینل میں دستیاب کارکنوں کے مطابق ہر تعمیراتی جگہ پر 2 یا 3 کارکن لگائیں۔
+[tutorial part3 message 28]
+عمارتوں کے کنٹرول سے میناروں کی باہر کی تین اطراف پر دیوار کے حصے رکھیں۔ بستی کی طرف کی سمت کارکنوں کے لیے کھلی رکھیں۔
+[tutorial part3 message 29]
+دیوار کا ہر حصہ تعمیر کا ایک کام بناتا ہے اور 1 پتھر چاہتا ہے۔ سب کام بیک وقت نہ ہو سکیں تو کارکن باری باری حصے مکمل کر سکتے ہیں۔
+[tutorial part3 message 30]
+دونوں میناروں اور کئی دیواروں کی تکمیل کا انتظار کریں۔ میناروں کو پتھر کے گولے بھی چاہیے؛ دور کان سے رسد سست آتی ہے۔ اضافی کارکن ہوں تو ان کے ہدف بڑھائیں۔
+[tutorial part4 message 1]
+بستی میں خوراک، تربیت اور دفاع موجود ہیں۔ عمارتیں ایک بار اور سطح 3 تک جا سکتی ہیں، جس سے تربیت اور گنجائش بہتر ہوتی ہے۔ وسائل اور کارکنوں کے ہنر کے مطابق انہیں بہتر کرتے رہیں۔
+[tutorial part4 message 2]
+مرکز کے شمال مغرب میں دشمن بستی تلاش کریں۔ ابھی منظر وہاں لے جائیں۔
+[tutorial part4 message 3]
+دریافت شدہ زمین بھی جنگ کی دھند میں چھپ سکتی ہے۔ دشمن کی موجودہ سرگرمی دیکھنے کے لیے قریب کھوجی چاہیے۔
+[tutorial part4 message 4]
+جھنڈے کھولیں۔ یہاں جھنڈوں اور علاقوں سے ہر گلوبیول کو الگ قابو کیے بغیر یونٹوں کو سمت دی جا سکتی ہے۔
+[tutorial part4 message 5]
+پتنگ جیسے نشان والا کھوج کا جھنڈا چنیں۔ جھنڈے زمین، پانی، وسائل اور غیر دریافت شدہ زمین پر رکھ سکتے ہیں۔
+[tutorial part4 message 6]
+مشتبہ دشمن مرکز پر کھوج کا جھنڈا رکھیں۔ کھوج شروع کرنے کے لیے اندازاً جگہ کافی ہے۔ دائیں کلک سے موڈ چھوڑیں، یا ٹچ کنٹرول سے جگہ رکھنا مکمل کریں۔
+[tutorial part4 message 7]
+جھنڈے کے گرد دائرہ کام کا رداس دکھاتا ہے۔ مقرر کھوجی اس علاقے کی کھوج کرے گا۔ کوئی نہ آئے تو کھوجیوں کی تعداد دیکھیں اور ضرورت پر چھتے سے نیا بنائیں۔ کھوجی علاقے میں پہنچے تو Space دبائیں یا «ٹھیک ہے» چھوئیں۔
+[tutorial part4 message 8]
+دشمن کے پاس بہت سے کارکن اور جمع شدہ فوج ہے۔ اس کے حملے سے پہلے اپنا دفاع تیار کریں۔
+[tutorial part4 message 9]
+جھنڈے کھول کر نیلا پہرے کا علاقہ چنیں۔ زمین مٹانے کے بجائے علاقے میں شامل کرنے کا موڈ استعمال کریں۔ ٹچ اسکرین پر مٹائیں کے بجائے رنگیں چنیں۔
+[tutorial part4 message 10]
+برش کی شکل اور جسامت چنیں۔ بڑا مربع ایک سمٹا ہوا دفاعی علاقہ رنگنے کے لیے مفید ہے۔
+[tutorial part4 message 11]
+میناروں کے پیچھے، دشمن کی ممکنہ آمد کی جگہ پر پہرے کا علاقہ رنگیں۔ ایک جگہ کے لیے کلک یا چھوئیں، زیادہ زمین کے لیے کھینچیں۔ ٹچ اسکرین پر رنگتے وقت منظر بدلنے کے لیے منظر کھسکائیں استعمال کریں۔
+[tutorial part4 message 12]
+دستیاب جنگجو پہرے کے علاقے میں آئیں گے۔ اسے محافظوں کے لیے کافی بڑا مگر گزرگاہ پر جمع رکھنے کے لیے کافی چھوٹا رکھیں۔ اب حملے کا انتظار کریں۔
+[tutorial part4 message 13]
+دشمن گزرگاہ کی طرف آ رہا ہے!
+[tutorial part4 message 14]
+ہم پر حملہ ہو رہا ہے۔ دیکھیں آپ کے تربیت یافتہ جنگجو اور مینار کیسے مورچے کا دفاع کرتے ہیں۔
+[tutorial part4 message 15]
+آپ بچ گئے! اب جھنڈے کھول کر نوک دار جنگی جھنڈا چنیں۔ دشمن کے چھتے پر رکھ کر وہاں حملہ کروائیں۔
+[tutorial part4 message 16]
+جگہ رکھنے کا موڈ چھوڑ کر جنگی جھنڈا منتخب کریں۔ 1 سے زیادہ جنگجو مقرر کریں، پھر رداس کم کر کے حملہ دشمن چھتے کے گرد مرکوز کریں۔ جنگجوؤں کے پہنچنے کا انتظار کریں۔
+[tutorial part4 message 17]
+حملہ شروع ہو گیا۔ آپ کے جنگجوؤں کو چھتے تک پہنچنے کے لیے دشمن میناروں سے گزرنا ہے۔
+[tutorial part4 message 18]
+آپ کے جنگجو دشمن کے مرکز تک پہنچ گئے ہیں۔ حملہ چھتے پر مرکوز رکھیں۔
+[tutorial part4 message 19]
+آپ نے دشمن چھتہ تباہ کر دیا۔ مبارک ہو! تربیت مکمل ہوئی اور آپ نے خوراک، کام مقرر کرنے، تربیت، اپ گریڈ، کھوج اور لڑائی کی بنیادیں سیکھ لیں۔
+[tutorial mission basics]
+تعارف اور بنیادی باتیں
+[tutorial mission development]
+عمارتیں اور اسکول
+[tutorial mission training]
+جنگجو، تربیت اور اپ گریڈ
+[tutorial mission flags]
+جھنڈے اور تکمیل
+[library  Could not restore the previous library: %0]
+ پچھلی لائبریری بحال نہیں ہو سکی: %0
+[library  The previous library is retained.]
+ پچھلی لائبریری برقرار ہے۔
+[library  · Installed]
+ · نصب شدہ
+[library  · Update available]
+ · اپ ڈیٹ دستیاب ہے
+[library A different release is installed. Install the selected release to update explicitly.]
+مختلف ریلیز نصب ہے۔ واضح طور پر اپ ڈیٹ کرنے کے لیے منتخب ریلیز نصب کریں۔
+[library All engines]
+تمام انجن
+[library All generators]
+تمام جنریٹر
+[library Available families]
+دستیاب خاندان
+[library Back]
+واپس
+[library Building families]
+عمارتوں کے خاندان
+[library Building library]
+عمارتوں کی لائبریری
+[library Checking building release]
+عمارت کی ریلیز کی جانچ
+[library Choose an online instance before opening a family link.]
+خاندان کا لنک کھولنے سے پہلے آن لائن سرور منتخب کریں۔
+[library Compatible with this engine]
+اس انجن کے ساتھ موافق
+[library Confirm replacement]
+بدلنے کی تصدیق کریں
+[library Create in Building Studio]
+عمارت اسٹوڈیو میں بنائیں
+[library Downloading generator…]
+جنریٹر ڈاؤن لوڈ ہو رہا ہے…
+[library Each landscape is shown as a real map at the size and colony count below, which you can change here. Use one to play the map shown.]
+ہر منظرنامہ نیچے دی گئی جسامت اور بستیوں کی تعداد پر اصل نقشے کے طور پر دکھتا ہے؛ یہ ترتیبات یہاں بدل سکتے ہیں۔ دکھائے گئے نقشے پر کھیلنے کے لیے ایک چنیں۔
+[library Editor tool: generates terrain for the map editor.]
+ایڈیٹر کا آلہ: نقشہ ایڈیٹر کے لیے زمین بناتا ہے۔
+[library Editor tools]
+ایڈیٹر کے آلات
+[library Enable installed families below. Selection is saved in this local profile; existing maps and saves keep their own buildings. For online play, generate a map with these families, publish it in the map library, then choose that map in your room.]
+نیچے نصب خاندان چالو کریں۔ انتخاب مقامی پروفائل میں محفوظ ہوتا ہے؛ موجودہ نقشے اور محفوظ کھیل اپنی عمارتیں رکھتے ہیں۔ آن لائن کھیلنے کے لیے ان خاندانوں سے نقشہ بنائیں، نقشوں کی لائبریری میں شائع کریں، پھر کمرے میں وہ نقشہ چنیں۔
+[library Enter a building family ID or a link to its family page.]
+عمارت کے خاندان کی ID یا اس کے صفحے کا لنک درج کریں۔
+[library Family link or ID]
+خاندان کا لنک یا ID
+[library Family links must be at most 1024 characters.]
+خاندان کے لنک میں زیادہ سے زیادہ 1024 حروف ہو سکتے ہیں۔
+[library Family removed.]
+خاندان ہٹا دیا گیا۔
+[library Family unavailable. Private families require signing in through Online with an account that can access them.]
+خاندان دستیاب نہیں۔ نجی خاندانوں کے لیے آن لائن کے ذریعے ایسے اکاؤنٹ سے سائن ان کرنا ضروری ہے جسے ان تک رسائی ہو۔
+[library Generator file hash mismatch]
+جنریٹر فائل کا ہیش نہیں ملتا
+[library Generator installed. Future selections use this release.]
+جنریٹر نصب ہو گیا۔ آئندہ انتخاب یہ ریلیز استعمال کریں گے۔
+[library Generator package identity mismatch]
+جنریٹر پیکیج کی شناخت نہیں ملتی
+[library Generators]
+جنریٹر
+[library Install compatible release]
+موافق ریلیز نصب کریں
+[library Install individual buildings or upgrade families alongside the stock buildings. Selection applies only to newly generated maps.]
+اصل عمارتوں کے ساتھ الگ عمارتیں یا اپ گریڈ خاندان نصب کریں۔ انتخاب صرف نئے بنائے گئے نقشوں پر لاگو ہوتا ہے۔
+[library Install selected release]
+منتخب ریلیز نصب کریں
+[library Installed]
+نصب شدہ
+[library Installed families]
+نصب شدہ خاندان
+[library Installed. Enable the family below for new maps.]
+نصب ہو گیا۔ نئے نقشوں کے لیے نیچے خاندان فعال کریں۔
+[library Invalid building family ID.]
+عمارت کے خاندان کی ID درست نہیں۔
+[library Invalid building library response]
+عمارت کی لائبریری کا جواب درست نہیں
+[library Invalid library cursor]
+لائبریری کا کرسر درست نہیں
+[library Invalid release identity]
+ریلیز کی شناخت درست نہیں
+[library Load more]
+مزید لوڈ کریں
+[library Load more families]
+مزید خاندان لوڈ کریں
+[library Loading building families]
+عمارتوں کے خاندان لوڈ ہو رہے ہیں
+[library Loading…]
+لوڈ ہو رہا ہے…
+[library Map generators]
+نقشہ جنریٹر
+[library Maps]
+نقشے
+[library Most downloaded]
+سب سے زیادہ ڈاؤن لوڈ کیے گئے
+[library Most liked]
+سب سے زیادہ پسند کیے گئے
+[library My generators]
+میرے جنریٹر
+[library Newest]
+تازہ ترین
+[library No building families installed.]
+عمارتوں کا کوئی خاندان نصب نہیں۔
+[library No public building families yet]
+ابھی عمارتوں کا کوئی عوامی خاندان نہیں
+[library No validated release for this game version.]
+کھیل کے اس ورژن کے لیے کوئی توثیق شدہ ریلیز نہیں۔
+[library Online server changed during download]
+ڈاؤن لوڈ کے دوران آن لائن سرور بدل گیا
+[library Open an unlisted family by its link or ID. For private families, sign in through Online first.]
+غیر فہرست شدہ خاندان اس کے لنک یا ID سے کھولیں۔ نجی خاندانوں کے لیے پہلے آن لائن کے ذریعے سائن ان کریں۔
+[library Open family]
+خاندان کھولیں
+[library Opened family. Install its compatible release below.]
+خاندان کھل گیا۔ نیچے اس کی موافق ریلیز نصب کریں۔
+[library Opening building family]
+عمارت کا خاندان کھل رہا ہے
+[library Playable]
+کھیلنے کے قابل
+[library Playable generator]
+کھیلنے کے قابل جنریٹر
+[library Privacy policy]
+رازداری کی پالیسی
+[library Public library]
+عوامی لائبریری
+[library Recently updated]
+حال ہی میں تازہ کیے گئے
+[library Refresh library]
+لائبریری تازہ کریں
+[library Release identity changed during installation]
+تنصیب کے دوران ریلیز کی شناخت بدل گئی
+[library Reroll]
+دوبارہ قرعہ ڈالیں
+[library Reroll seed]
+نیا اتفاقی سیڈ بنائیں
+[library Saving generator library…]
+جنریٹروں کی لائبریری محفوظ ہو رہی ہے…
+[library Search]
+تلاش کریں
+[library Seed]
+سیڈ
+[library Selection saved for new maps.]
+نئے نقشوں کے لیے انتخاب محفوظ ہو گیا۔
+[library Storage failed.]
+ذخیرہ ناکام ہوا۔
+[library Storage persistence unavailable]
+مستقل ذخیرہ دستیاب نہیں
+[library Tags]
+ٹیگ
+[library Technical checks passed for this engine. Balance is not certified.]
+اس انجن کے لیے تکنیکی جانچ کامیاب ہوئی۔ توازن کی سند نہیں دی گئی۔
+[library The server returned a different family.]
+سرور نے مختلف خاندان واپس کیا۔
+[library This link is from another instance. Switch to that instance in Online first.]
+یہ لنک دوسرے سرور کا ہے۔ پہلے آن لائن میں اس سرور پر جائیں۔
+[library This package ID is installed. Confirm replacement to use the selected release.]
+اس پیکیج کی ID نصب ہے۔ منتخب ریلیز استعمال کرنے کے لیے بدلنے کی تصدیق کریں۔
+[library This release has no passing checks for this engine.]
+اس ریلیز کے لیے اس انجن کی کوئی کامیاب جانچ نہیں۔
+[library This release is installed.]
+یہ ریلیز نصب ہے۔
+[library Update installed family]
+نصب شدہ خاندان تازہ کریں
+[library Use in a room]
+کمرے میں استعمال کریں
+[library By %0]
+مصنف %0
+[library Installed release %0]
+نصب شدہ ریلیز %0
+[library Release %0]
+ریلیز %0
+[library Remove %0]
+%0 ہٹائیں
+[library Seed: %0]
+سیڈ: %0
+[library %0 · revision %1]
+%0 · ترمیم %1
+[library Fit]
+سمائیں
+[library GL only]
+صرف GL
+[Sound or silence?]
+آواز یا خاموشی؟
+[Silence]
+خاموشی
+[Sound]
+آواز
+[audio preference explanation]
+کھیل خاموشی سے شروع ہوتا ہے۔ کیا آپ خاموشی پسند کریں گے یا موسیقی اور کھیل کی آواز؟
+[audio preference change later]
+آپ اسے کسی بھی وقت ترتیبات ← آواز میں بدل سکتے ہیں۔
+[audio preference save failed]
+آپ کا انتخاب محفوظ نہیں ہو سکا۔ آواز اب بھی بند ہے۔ دوبارہ کوشش کریں۔
+[audio choices description]
+خاموشی: آواز بند اسپیکر۔ آواز: صوتی لہروں والا اسپیکر۔
+[Grassland]
+گھاس کا میدان
+[Kopjes]
+چٹانی ٹیلے
+[Game trails]
+جنگلی جانوروں کی پگڈنڈیاں
+[Fish amount]
+مچھلی کی مقدار
+[Camp-site amount]
+خیمہ گاہوں کی تعداد

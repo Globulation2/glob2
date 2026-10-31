@@ -1,0 +1,820 @@
+{
+  "id": "online-online-003",
+  "source_sha256": "0ac44b4cdfb03e688983d6e3fb1e484cca57589665bff19c5c65388e649b292a",
+  "surface": "online",
+  "domain": "online",
+  "context": "Account, multiplayer, upload and browser workflows. Preserve URLs, licences, paths, format tokens and product names.",
+  "entries": [
+    {
+      "id": "online:Changes",
+      "key": "Changes",
+      "source": "Changes"
+    },
+    {
+      "id": "online:Changing settings takes effect when you press Generate. One seed per preview.",
+      "key": "Changing settings takes effect when you press Generate. One seed per preview.",
+      "source": "Changing settings takes effect when you press Generate. One seed per preview."
+    },
+    {
+      "id": "online:Charged",
+      "key": "Charged",
+      "source": "Charged"
+    },
+    {
+      "id": "online:Charts appear once the server has replayed the match.",
+      "key": "Charts appear once the server has replayed the match.",
+      "source": "Charts appear once the server has replayed the match."
+    },
+    {
+      "id": "online:Chat",
+      "key": "Chat",
+      "source": "Chat"
+    },
+    {
+      "id": "online:Check & publish",
+      "key": "Check & publish",
+      "source": "Check & publish"
+    },
+    {
+      "id": "online:Check again",
+      "key": "Check again",
+      "source": "Check again"
+    },
+    {
+      "id": "online:Check payment",
+      "key": "Check payment",
+      "source": "Check payment"
+    },
+    {
+      "id": "online:Check the connection, then try again.",
+      "key": "Check the connection, then try again.",
+      "source": "Check the connection, then try again."
+    },
+    {
+      "id": "online:Check the essentials",
+      "key": "Check the essentials",
+      "source": "Check the essentials"
+    },
+    {
+      "id": "online:Check the score",
+      "key": "Check the score",
+      "source": "Check the score"
+    },
+    {
+      "id": "online:Checker",
+      "key": "Checker",
+      "source": "Checker"
+    },
+    {
+      "id": "online:Checking",
+      "key": "Checking",
+      "source": "Checking"
+    },
+    {
+      "id": "online:Checking generator…",
+      "key": "Checking generator…",
+      "source": "Checking generator…"
+    },
+    {
+      "id": "online:Checking the map with the game.",
+      "key": "Checking the map with the game.",
+      "source": "Checking the map with the game."
+    },
+    {
+      "id": "online:Checking the map…",
+      "key": "Checking the map…",
+      "source": "Checking the map…"
+    },
+    {
+      "id": "online:Checking your AI… {value0} of {value1} checks passed.{value2}",
+      "key": "Checking your AI… {value0} of {value1} checks passed.{value2}",
+      "source": "Checking your AI… {value0} of {value1} checks passed.{value2}"
+    },
+    {
+      "id": "online:Checking your set…",
+      "key": "Checking your set…",
+      "source": "Checking your set…"
+    },
+    {
+      "id": "online:Checking your world…",
+      "key": "Checking your world…",
+      "source": "Checking your world…"
+    },
+    {
+      "id": "online:Checkout could not be opened. Please try again.",
+      "key": "Checkout could not be opened. Please try again.",
+      "source": "Checkout could not be opened. Please try again."
+    },
+    {
+      "id": "online:Checkout does not match this purchase.",
+      "key": "Checkout does not match this purchase.",
+      "source": "Checkout does not match this purchase."
+    },
+    {
+      "id": "online:Checkout failed.",
+      "key": "Checkout failed.",
+      "source": "Checkout failed."
+    },
+    {
+      "id": "online:Checkout is not available yet; retry this event.",
+      "key": "Checkout is not available yet; retry this event.",
+      "source": "Checkout is not available yet; retry this event."
+    },
+    {
+      "id": "online:Checkout returned. Check the payment below to confirm your purchase.",
+      "key": "Checkout returned. Check the payment below to confirm your purchase.",
+      "source": "Checkout returned. Check the payment below to confirm your purchase."
+    },
+    {
+      "id": "online:Checkout was cancelled. Your project and draft are saved.",
+      "key": "Checkout was cancelled. Your project and draft are saved.",
+      "source": "Checkout was cancelled. Your project and draft are saved."
+    },
+    {
+      "id": "online:Checks",
+      "key": "Checks",
+      "source": "Checks"
+    },
+    {
+      "id": "online:Checks apply to the last saved revision. ",
+      "key": "Checks apply to the last saved revision. ",
+      "source": "Checks apply to the last saved revision. "
+    },
+    {
+      "id": "online:Checks cover the listed settings and do not certify game balance.",
+      "key": "Checks cover the listed settings and do not certify game balance.",
+      "source": "Checks cover the listed settings and do not certify game balance."
+    },
+    {
+      "id": "online:Checks failed",
+      "key": "Checks failed",
+      "source": "Checks failed"
+    },
+    {
+      "id": "online:Checks for {value0}",
+      "key": "Checks for {value0}",
+      "source": "Checks for {value0}"
+    },
+    {
+      "id": "online:Checks passed",
+      "key": "Checks passed",
+      "source": "Checks passed"
+    },
+    {
+      "id": "online:Checks validate gameplay properties, image bounds, frame mappings and rendering using the game engine. They do not establish map balance.",
+      "key": "Checks validate gameplay properties, image bounds, frame mappings and rendering using the game engine. They do not establish map balance.",
+      "source": "Checks validate gameplay properties, image bounds, frame mappings and rendering using the game engine. They do not establish map balance."
+    },
+    {
+      "id": "online:Checks · {slot0}",
+      "key": "Checks · {slot0}",
+      "source": "Checks · {slot0}"
+    },
+    {
+      "id": "online:Chevrons",
+      "key": "Chevrons",
+      "source": "Chevrons"
+    },
+    {
+      "id": "online:Choose 7, 30 or 90 days.",
+      "key": "Choose 7, 30 or 90 days.",
+      "source": "Choose 7, 30 or 90 days."
+    },
+    {
+      "id": "online:Choose a JPEG, PNG or WebP photo.",
+      "key": "Choose a JPEG, PNG or WebP photo.",
+      "source": "Choose a JPEG, PNG or WebP photo."
+    },
+    {
+      "id": "online:Choose a PNG or WebP frame.",
+      "key": "Choose a PNG or WebP frame.",
+      "source": "Choose a PNG or WebP frame."
+    },
+    {
+      "id": "online:Choose a PNG spritesheet.",
+      "key": "Choose a PNG spritesheet.",
+      "source": "Choose a PNG spritesheet."
+    },
+    {
+      "id": "online:Choose a PNG, JPEG or WebP up to 2048×2048.",
+      "key": "Choose a PNG, JPEG or WebP up to 2048×2048.",
+      "source": "Choose a PNG, JPEG or WebP up to 2048×2048."
+    },
+    {
+      "id": "online:Choose a building ZIP package.",
+      "key": "Choose a building ZIP package.",
+      "source": "Choose a building ZIP package."
+    },
+    {
+      "id": "online:Choose a draft or a released set.",
+      "key": "Choose a draft or a released set.",
+      "source": "Choose a draft or a released set."
+    },
+    {
+      "id": "online:Choose a family name.",
+      "key": "Choose a family name.",
+      "source": "Choose a family name."
+    },
+    {
+      "id": "online:Choose a file to begin.",
+      "key": "Choose a file to begin.",
+      "source": "Choose a file to begin."
+    },
+    {
+      "id": "online:Choose a local custom game or a multiplayer room with this map.",
+      "key": "Choose a local custom game or a multiplayer room with this map.",
+      "source": "Choose a local custom game or a multiplayer room with this map."
+    },
+    {
+      "id": "online:Choose a map file first: a .map or .map.gz file from the game.",
+      "key": "Choose a map file first: a .map or .map.gz file from the game.",
+      "source": "Choose a map file first: a .map or .map.gz file from the game."
+    },
+    {
+      "id": "online:Choose a map first.",
+      "key": "Choose a map first.",
+      "source": "Choose a map first."
+    },
+    {
+      "id": "online:Choose a nonempty JavaScript file without NUL bytes.",
+      "key": "Choose a nonempty JavaScript file without NUL bytes.",
+      "source": "Choose a nonempty JavaScript file without NUL bytes."
+    },
+    {
+      "id": "online:Choose a nonempty JavaScript file.",
+      "key": "Choose a nonempty JavaScript file.",
+      "source": "Choose a nonempty JavaScript file."
+    },
+    {
+      "id": "online:Choose a nonempty portable generator package without NUL bytes.",
+      "key": "Choose a nonempty portable generator package without NUL bytes.",
+      "source": "Choose a nonempty portable generator package without NUL bytes."
+    },
+    {
+      "id": "online:Choose a password",
+      "key": "Choose a password",
+      "source": "Choose a password"
+    },
+    {
+      "id": "online:Choose a password of at least {p0} characters.",
+      "key": "Choose a password of at least {p0} characters.",
+      "source": "Choose a password of at least {p0} characters."
+    },
+    {
+      "id": "online:Choose a photo no larger than 10 MiB.",
+      "key": "Choose a photo no larger than 10 MiB.",
+      "source": "Choose a photo no larger than 10 MiB."
+    },
+    {
+      "id": "online:Choose a photo no larger than 25 megapixels.",
+      "key": "Choose a photo no larger than 25 megapixels.",
+      "source": "Choose a photo no larger than 25 megapixels."
+    },
+    {
+      "id": "online:Choose a saved version, then describe the changes in chat. The saved map remains in history.",
+      "key": "Choose a saved version, then describe the changes in chat. The saved map remains in history.",
+      "source": "Choose a saved version, then describe the changes in chat. The saved map remains in history."
+    },
+    {
+      "id": "online:Choose a skin",
+      "key": "Choose a skin",
+      "source": "Choose a skin"
+    },
+    {
+      "id": "online:Choose a skin name.",
+      "key": "Choose a skin name.",
+      "source": "Choose a skin name."
+    },
+    {
+      "id": "online:Choose a sprite, frame, layer and current revision.",
+      "key": "Choose a sprite, frame, layer and current revision.",
+      "source": "Choose a sprite, frame, layer and current revision."
+    },
+    {
+      "id": "online:Choose a still JPEG, PNG or WebP photo, at most 25 megapixels.",
+      "key": "Choose a still JPEG, PNG or WebP photo, at most 25 megapixels.",
+      "source": "Choose a still JPEG, PNG or WebP photo, at most 25 megapixels."
+    },
+    {
+      "id": "online:Choose a still PNG or WebP frame no larger than 512 by 512.",
+      "key": "Choose a still PNG or WebP frame no larger than 512 by 512.",
+      "source": "Choose a still PNG or WebP frame no larger than 512 by 512."
+    },
+    {
+      "id": "online:Choose a still PNG or WebP frame.",
+      "key": "Choose a still PNG or WebP frame.",
+      "source": "Choose a still PNG or WebP frame."
+    },
+    {
+      "id": "online:Choose a still photo, not an animation.",
+      "key": "Choose a still photo, not an animation.",
+      "source": "Choose a still photo, not an animation."
+    },
+    {
+      "id": "online:Choose a username",
+      "key": "Choose a username",
+      "source": "Choose a username"
+    },
+    {
+      "id": "online:Choose a validated release for the simulation version you play. Each download includes its artwork.",
+      "key": "Choose a validated release for the simulation version you play. Each download includes its artwork.",
+      "source": "Choose a validated release for the simulation version you play. Each download includes its artwork."
+    },
+    {
+      "id": "online:Choose a version",
+      "key": "Choose a version",
+      "source": "Choose a version"
+    },
+    {
+      "id": "online:Choose an AI.",
+      "key": "Choose an AI.",
+      "source": "Choose an AI."
+    },
+    {
+      "id": "online:Choose an existing report to resolve.",
+      "key": "Choose an existing report to resolve.",
+      "source": "Choose an existing report to resolve."
+    },
+    {
+      "id": "online:Choose an updated file to try again.",
+      "key": "Choose an updated file to try again.",
+      "source": "Choose an updated file to try again."
+    },
+    {
+      "id": "online:Choose automatic or initials.",
+      "key": "Choose automatic or initials.",
+      "source": "Choose automatic or initials."
+    },
+    {
+      "id": "online:Choose either an import or a library version.",
+      "key": "Choose either an import or a library version.",
+      "source": "Choose either an import or a library version."
+    },
+    {
+      "id": "online:Choose final view",
+      "key": "Choose final view",
+      "source": "Choose final view"
+    },
+    {
+      "id": "online:Choose how to sign in to the game:",
+      "key": "Choose how to sign in to the game:",
+      "source": "Choose how to sign in to the game:"
+    },
+    {
+      "id": "online:Choose one bundled .js file.",
+      "key": "Choose one bundled .js file.",
+      "source": "Choose one bundled .js file."
+    },
+    {
+      "id": "online:Choose profile photo",
+      "key": "Choose profile photo",
+      "source": "Choose profile photo"
+    },
+    {
+      "id": "online:Choose property…",
+      "key": "Choose property…",
+      "source": "Choose property…"
+    },
+    {
+      "id": "online:Choose revision",
+      "key": "Choose revision",
+      "source": "Choose revision"
+    },
+    {
+      "id": "online:Choose sheet…",
+      "key": "Choose sheet…",
+      "source": "Choose sheet…"
+    },
+    {
+      "id": "online:Choose the current draft revision.",
+      "key": "Choose the current draft revision.",
+      "source": "Choose the current draft revision."
+    },
+    {
+      "id": "online:Choose up to five tags. These describe your strategy, not a tested strength rating.",
+      "key": "Choose up to five tags. These describe your strategy, not a tested strength rating.",
+      "source": "Choose up to five tags. These describe your strategy, not a tested strength rating."
+    },
+    {
+      "id": "online:Choose uploaded sheet…",
+      "key": "Choose uploaded sheet…",
+      "source": "Choose uploaded sheet…"
+    },
+    {
+      "id": "online:Choose visibility and a moderation reason.",
+      "key": "Choose visibility and a moderation reason.",
+      "source": "Choose visibility and a moderation reason."
+    },
+    {
+      "id": "online:Choose {value0}",
+      "key": "Choose {value0}",
+      "source": "Choose {value0}"
+    },
+    {
+      "id": "online:Clear selection",
+      "key": "Clear selection",
+      "source": "Clear selection"
+    },
+    {
+      "id": "online:Close",
+      "key": "Close",
+      "source": "Close"
+    },
+    {
+      "id": "online:Close credits",
+      "key": "Close credits",
+      "source": "Close credits"
+    },
+    {
+      "id": "online:Close navigation",
+      "key": "Close navigation",
+      "source": "Close navigation"
+    },
+    {
+      "id": "online:Close panel",
+      "key": "Close panel",
+      "source": "Close panel"
+    },
+    {
+      "id": "online:Close panel · Escape",
+      "key": "Close panel · Escape",
+      "source": "Close panel · Escape"
+    },
+    {
+      "id": "online:Close play choices",
+      "key": "Close play choices",
+      "source": "Close play choices"
+    },
+    {
+      "id": "online:Close preview",
+      "key": "Close preview",
+      "source": "Close preview"
+    },
+    {
+      "id": "online:Close {value0}",
+      "key": "Close {value0}",
+      "source": "Close {value0}"
+    },
+    {
+      "id": "online:Closed",
+      "key": "Closed",
+      "source": "Closed"
+    },
+    {
+      "id": "online:Code",
+      "key": "Code",
+      "source": "Code"
+    },
+    {
+      "id": "online:Code or invite link",
+      "key": "Code or invite link",
+      "source": "Code or invite link"
+    },
+    {
+      "id": "online:Collection disabled",
+      "key": "Collection disabled",
+      "source": "Collection disabled"
+    },
+    {
+      "id": "online:Collection enabled",
+      "key": "Collection enabled",
+      "source": "Collection enabled"
+    },
+    {
+      "id": "online:Colonies",
+      "key": "Colonies",
+      "source": "Colonies"
+    },
+    {
+      "id": "online:Colony AI",
+      "key": "Colony AI",
+      "source": "Colony AI"
+    },
+    {
+      "id": "online:Colony skins",
+      "key": "Colony skins",
+      "source": "Colony skins"
+    },
+    {
+      "id": "online:Colony still standing",
+      "key": "Colony still standing",
+      "source": "Colony still standing"
+    },
+    {
+      "id": "online:Colony {slot0}",
+      "key": "Colony {slot0}",
+      "source": "Colony {slot0}"
+    },
+    {
+      "id": "online:Colony {value0} paint",
+      "key": "Colony {value0} paint",
+      "source": "Colony {value0} paint"
+    },
+    {
+      "id": "online:Colony {value0} skin",
+      "key": "Colony {value0} skin",
+      "source": "Colony {value0} skin"
+    },
+    {
+      "id": "online:Color",
+      "key": "Color",
+      "source": "Color"
+    },
+    {
+      "id": "online:Colors your buildings; painted units stay unchanged.",
+      "key": "Colors your buildings; painted units stay unchanged.",
+      "source": "Colors your buildings; painted units stay unchanged."
+    },
+    {
+      "id": "online:Colors, seams and raised decor",
+      "key": "Colors, seams and raised decor",
+      "source": "Colors, seams and raised decor"
+    },
+    {
+      "id": "online:Combat",
+      "key": "Combat",
+      "source": "Combat"
+    },
+    {
+      "id": "online:Commander account",
+      "key": "Commander account",
+      "source": "Commander account"
+    },
+    {
+      "id": "online:Commander work",
+      "key": "Commander work",
+      "source": "Commander work"
+    },
+    {
+      "id": "online:Community",
+      "key": "Community",
+      "source": "Community"
+    },
+    {
+      "id": "online:Community-made JavaScript players control a colony through Glob2’s AI API. Download a version, import it in Settings → Custom AIs, then choose it for a computer seat in a local game. Installed versions work offline; saved games keep their original code.",
+      "key": "Community-made JavaScript players control a colony through Glob2’s AI API. Download a version, import it in Settings → Custom AIs, then choose it for a computer seat in a local game. Installed versions work offline; saved games keep their original code.",
+      "source": "Community-made JavaScript players control a colony through Glob2’s AI API. Download a version, import it in Settings → Custom AIs, then choose it for a computer seat in a local game. Installed versions work offline; saved games keep their original code."
+    },
+    {
+      "id": "online:Compare revision",
+      "key": "Compare revision",
+      "source": "Compare revision"
+    },
+    {
+      "id": "online:Compare with",
+      "key": "Compare with",
+      "source": "Compare with"
+    },
+    {
+      "id": "online:Compare with version",
+      "key": "Compare with version",
+      "source": "Compare with version"
+    },
+    {
+      "id": "online:Compared revision",
+      "key": "Compared revision",
+      "source": "Compared revision"
+    },
+    {
+      "id": "online:Compared revision {slot0}",
+      "key": "Compared revision {slot0}",
+      "source": "Compared revision {slot0}"
+    },
+    {
+      "id": "online:Compared revision: {slot0}",
+      "key": "Compared revision: {slot0}",
+      "source": "Compared revision: {slot0}"
+    },
+    {
+      "id": "online:Compare…",
+      "key": "Compare…",
+      "source": "Compare…"
+    },
+    {
+      "id": "online:Compatibility checklist",
+      "key": "Compatibility checklist",
+      "source": "Compatibility checklist"
+    },
+    {
+      "id": "online:Compatibility checks",
+      "key": "Compatibility checks",
+      "source": "Compatibility checks"
+    },
+    {
+      "id": "online:Compatibility checks exercise short games and save/resume. They do not certify safety or playing strength. Only run code from authors you trust.",
+      "key": "Compatibility checks exercise short games and save/resume. They do not certify safety or playing strength. Only run code from authors you trust.",
+      "source": "Compatibility checks exercise short games and save/resume. They do not certify safety or playing strength. Only run code from authors you trust."
+    },
+    {
+      "id": "online:Compatibility of your active skin",
+      "key": "Compatibility of your active skin",
+      "source": "Compatibility of your active skin"
+    },
+    {
+      "id": "online:Complete",
+      "key": "Complete",
+      "source": "Complete"
+    },
+    {
+      "id": "online:Complete family JSON",
+      "key": "Complete family JSON",
+      "source": "Complete family JSON"
+    },
+    {
+      "id": "online:Complete passing checks before publishing.",
+      "key": "Complete passing checks before publishing.",
+      "source": "Complete passing checks before publishing."
+    },
+    {
+      "id": "online:Completed",
+      "key": "Completed",
+      "source": "Completed"
+    },
+    {
+      "id": "online:Completion time comparison table",
+      "key": "Completion time comparison table",
+      "source": "Completion time comparison table"
+    },
+    {
+      "id": "online:Compose the music",
+      "key": "Compose the music",
+      "source": "Compose the music"
+    },
+    {
+      "id": "online:Composer’s progress",
+      "key": "Composer’s progress",
+      "source": "Composer’s progress"
+    },
+    {
+      "id": "online:Composition",
+      "key": "Composition",
+      "source": "Composition"
+    },
+    {
+      "id": "online:Configure Hive Mind in Settings → Online. In a match, press Ctrl+Enter to give an order. Assistance is permitted in ranked matches.",
+      "key": "Configure Hive Mind in Settings → Online. In a match, press Ctrl+Enter to give an order. Assistance is permitted in ranked matches.",
+      "source": "Configure Hive Mind in Settings → Online. In a match, press Ctrl+Enter to give an order. Assistance is permitted in ranked matches."
+    },
+    {
+      "id": "online:Confirm history deletion",
+      "key": "Confirm history deletion",
+      "source": "Confirm history deletion"
+    },
+    {
+      "id": "online:Confirm the license chosen when composing this version.",
+      "key": "Confirm the license chosen when composing this version.",
+      "source": "Confirm the license chosen when composing this version."
+    },
+    {
+      "id": "online:Confirmed cash",
+      "key": "Confirmed cash",
+      "source": "Confirmed cash"
+    },
+    {
+      "id": "online:Confirmed cash table",
+      "key": "Confirmed cash table",
+      "source": "Confirmed cash table"
+    },
+    {
+      "id": "online:Confirmed cash uses Stripe charge/refund currency units; current and previous UTC periods. CSV exports preserve exact integer minor units.",
+      "key": "Confirmed cash uses Stripe charge/refund currency units; current and previous UTC periods. CSV exports preserve exact integer minor units.",
+      "source": "Confirmed cash uses Stripe charge/refund currency units; current and previous UTC periods. CSV exports preserve exact integer minor units."
+    },
+    {
+      "id": "online:Confirming your payment. Your credits appear once payment is confirmed.",
+      "key": "Confirming your payment. Your credits appear once payment is confirmed.",
+      "source": "Confirming your payment. Your credits appear once payment is confirmed."
+    },
+    {
+      "id": "online:Connected",
+      "key": "Connected",
+      "source": "Connected"
+    },
+    {
+      "id": "online:Connection",
+      "key": "Connection",
+      "source": "Connection"
+    },
+    {
+      "id": "online:Connection interrupted. Reconnecting to your saved project…",
+      "key": "Connection interrupted. Reconnecting to your saved project…",
+      "source": "Connection interrupted. Reconnecting to your saved project…"
+    },
+    {
+      "id": "online:Connection quality per player",
+      "key": "Connection quality per player",
+      "source": "Connection quality per player"
+    },
+    {
+      "id": "online:Consistent levels",
+      "key": "Consistent levels",
+      "source": "Consistent levels"
+    },
+    {
+      "id": "online:Content",
+      "key": "Content",
+      "source": "Content"
+    },
+    {
+      "id": "online:Content not found.",
+      "key": "Content not found.",
+      "source": "Content not found."
+    },
+    {
+      "id": "online:Contents",
+      "key": "Contents",
+      "source": "Contents"
+    },
+    {
+      "id": "online:Contents & gameplay properties",
+      "key": "Contents & gameplay properties",
+      "source": "Contents & gameplay properties"
+    },
+    {
+      "id": "online:Continue as {p1}",
+      "key": "Continue as {p1}",
+      "source": "Continue as {p1}"
+    },
+    {
+      "id": "online:Continue to uploads",
+      "key": "Continue to uploads",
+      "source": "Continue to uploads"
+    },
+    {
+      "id": "online:Continue to {p1}",
+      "key": "Continue to {p1}",
+      "source": "Continue to {p1}"
+    },
+    {
+      "id": "online:Continue with {p3}",
+      "key": "Continue with {p3}",
+      "source": "Continue with {p3}"
+    },
+    {
+      "id": "online:Controls and compatibility evidence",
+      "key": "Controls and compatibility evidence",
+      "source": "Controls and compatibility evidence"
+    },
+    {
+      "id": "online:Conversation",
+      "key": "Conversation",
+      "source": "Conversation"
+    },
+    {
+      "id": "online:Convert and prepare preview",
+      "key": "Convert and prepare preview",
+      "source": "Convert and prepare preview"
+    },
+    {
+      "id": "online:Converting",
+      "key": "Converting",
+      "source": "Converting"
+    },
+    {
+      "id": "online:Copies the {slot0} texture and materials. Different models wrap that paint differently; inspect the results below.",
+      "key": "Copies the {slot0} texture and materials. Different models wrap that paint differently; inspect the results below.",
+      "source": "Copies the {slot0} texture and materials. Different models wrap that paint differently; inspect the results below."
+    },
+    {
+      "id": "online:Copy paint",
+      "key": "Copy paint",
+      "source": "Copy paint"
+    },
+    {
+      "id": "online:Copy paint to all models",
+      "key": "Copy paint to all models",
+      "source": "Copy paint to all models"
+    },
+    {
+      "id": "online:Copy paint to other models…",
+      "key": "Copy paint to other models…",
+      "source": "Copy paint to other models…"
+    },
+    {
+      "id": "online:Copy recorded usage",
+      "key": "Copy recorded usage",
+      "source": "Copy recorded usage"
+    },
+    {
+      "id": "online:Copy this link into Family link or ID in the game’s Building families picker to open this family directly.",
+      "key": "Copy this link into Family link or ID in the game’s Building families picker to open this family directly.",
+      "source": "Copy this link into Family link or ID in the game’s Building families picker to open this family directly."
+    },
+    {
+      "id": "online:Copyright",
+      "key": "Copyright",
+      "source": "Copyright"
+    }
+  ],
+  "carryforward": {
+    "prior_manifest": {
+      "path": "../release-three/manifest.json",
+      "sha256": "4fd5e1faff01b7eb0e95db7eac33105ab557101742f6ef1a889e7b73210eb977"
+    },
+    "prior_batch": {
+      "path": "../release-three/batches/online-online-003.json",
+      "sha256": "93db99a3a5b557b85fa96c3c4cc0bef232b06129a091e1fdbc7a67ba386300a6"
+    },
+    "method": "Partition retained keys by original ownership; radius supplement receives separate Sw correction chain, unchanged Hi/Ur retain original chain. No fresh reading inferred."
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "shared_inputs_unchanged_after_preparation": {
+    "data/texts.list.txt": true,
+    "data/texts.incomplete.txt": true,
+    "platform/packages/i18n/src/locales.ts": true,
+    "platform/packages/i18n/src/index.ts": true,
+    "test/translation_shared_values.json": true,
+    "platform/packages/i18n/shared-values.json": true,
+    "platform/packages/i18n/test/runtime.test.ts": true
+  },
+  "canonical_new_catalog_targets_still_absent": {
+    "data/texts.hi.txt": true,
+    "platform/packages/i18n/locales/hi.json": true,
+    "data/texts.ur.txt": true,
+    "platform/packages/i18n/locales/ur.json": true,
+    "data/texts.sw.txt": true,
+    "platform/packages/i18n/locales/sw.json": true
+  },
+  "exact_approved_native_online_equalities": "No missing or stale per-key decisions for all3locales; reviewed values only derived into canonical allowance formats.",
+  "canonical_patch_dry_run": "Passed for7shared files; no application performed.",
+  "no_git_operations": true,
+  "no_gate_records_written": true,
+  "all_gates_passed": false,
+  "all_gates_must_be_rechecked_before_root_application": true
+}

@@ -1,0 +1,188 @@
+{
+  "reviewer": "/root/hindi_online_review",
+  "scope": "Actual refreshed final native Urdu diagnostic pixels: all16 changed compact keys in all6styles,96samples,8actualimages manually read; not full34invocation screenshot approval.",
+  "metadata_sha256": "b3046c36f9d7b4dfe06b1ff2ef0ef15f5c64950b3192dc612d8620a1fb277743",
+  "producer": {
+    "compiler": "g++",
+    "dirty": false,
+    "flags": {
+      "CCFLAGS": "-O0 -g1 -fdebug-prefix-map=/Users/bradley/.codex/worktrees/ed62/glob2=.",
+      "CPPDEFINES": "GLOB2_OFFICIAL_INSTANCE_ORIGIN \\\"https://app.glob2.online\\\" GLOB2_OFFICIAL_INSTANCE_FORMER_ORIGINS \\\"https://glob2online.com https://app.glob2online.com\\\" HAVE_CONFIG_H GL_SILENCE_DEPRECATION GLOB2_RENDER_SHADER_DIR \\\"/Users/bradley/.codex/worktrees/ed62/glob2/build/darwin/client/debug/dev-dev_fast-true-linker-auto/shaders\\\" SDL_MAIN_HANDLED",
+      "CXXFLAGS": "-std=gnu++20 -Wall -fPIC",
+      "LINKFLAGS": "-Wall -Wl,-rpath,/opt/homebrew/lib"
+    },
+    "revision": "92205aae687b650ed8b9aea4b31265f0ff6b7301",
+    "sourceStatus": [],
+    "sourceTreeSha256": "f769966128e5998dbcaec839271dc2a451dcd58b15e114e61ac2935857345de2"
+  },
+  "executable_sha256": "0cc55b27ae690334c60178a8de2fe8454a2eee1c3623fefbef51875b4ce83fca",
+  "canonical_native_sha256": "444c71c1bf3105cf775cf50515af169a477a2a3db2c2d6a3c031b000c3920d27",
+  "font_sha256": {
+    "data/fonts/sans.ttf": "5701af44225833421b6f59a7ecaadf93c0f2630dbbdfc4ac59c794f5c5d889c1",
+    "data/fonts/scripts/NotoSansArabic-Regular.ttf": "ceea25b464a656dc3b26849bab9356740401af62aedf1bfa8b7f0d9b75925b1b",
+    "data/fonts/scripts/NotoSansBengali-Regular.ttf": "6300c5370cd688b0641343de4c786de6d412bb6c578d129dae75e93a0322dcab",
+    "data/fonts/scripts/NotoSansDevanagari-Regular.ttf": "385e78e6359a9d88a0f243d53b1209d7548361ba2194e2b9ec779bcaa7e8949d",
+    "data/fonts/scripts/NotoSansEthiopic-Regular.ttf": "e3a81ca66eb6d6b1a50a287c1dba18195541f69e0986f8b49a42658aa592ff0d",
+    "data/fonts/scripts/NotoSansGujarati-Regular.ttf": "8d5c22d7b729ef2839e6d1fe2cde77b2d083907be3659bca63676baa76e01fd6",
+    "data/fonts/scripts/NotoSansGurmukhi-Regular.ttf": "bbde4d85fdfb998eff6921cb2c7a9a7924a1c95560a6aa9a06172530e4f596da",
+    "data/fonts/scripts/NotoSansKannada-Regular.ttf": "5c804033c57f2c2844b1cd425f45b9a78d81d2f71bf358351b24258ebe168aea",
+    "data/fonts/scripts/NotoSansMalayalam-Regular.ttf": "42eb462ff13e820ebbeaaec4e7b426bd1de145d02cef8b634f5a3efd376b513c",
+    "data/fonts/scripts/NotoSansMyanmar-Regular.ttf": "9dd2bc76a822a974efce803a4b07302d14d01d5c1fa9e33a258d15a9cb513a7d",
+    "data/fonts/scripts/NotoSansOriya-Regular.ttf": "b8d8bd784b9d09c0668233437359913c93a3a83bf37d92ecde859e2bc728a0e0",
+    "data/fonts/scripts/NotoSansTamil-Regular.ttf": "6532db33b8b264abe3a098a40619feb489b5ddf5ab1d2b46e72b51eeb548001b",
+    "data/fonts/scripts/NotoSansTelugu-Regular.ttf": "2c05072e8018a9be1cb0582953d9edf9a0cf129cdfb74e611de763b09c411f7f",
+    "data/fonts/scripts/NotoSansThai-Regular.ttf": "404ddfb5ed0aaa6b6ec8a85700d682978992062d67da93903967b56cbd9a4acc"
+  },
+  "source_files_verified": {
+    "data/texts.en.txt": "429014652f15665df69f07eec8ccd3823ec605c836bc29726a21c650c0808129",
+    "data/texts.keys.txt": "336cbb1d41604ebc8b616b4a64eabdd9bc0848fe48878df1c3c65212d75a8f79",
+    "platform/packages/i18n/locales/en.json": "63017714064b5a2659aa8e2da27a43af117d3f1e60acbbb44ae5d73d80cd7d69",
+    "libgag/src/TrueTypeFont.cpp": "fa461f1852e80b1a763a14183ea7522d9c1725bd5ce0fbba19e769defb5d334b",
+    "libgag/src/BidiText.cpp": "0813cc512aafd71bb45257090b37f2180b5a36a44965891ba1961c12e1869fc7",
+    "libgag/src/ui/TextLayout.cpp": "72140e6df1636805f71b193c6a84b8e445ca638f0711563d839da8403f0601bd",
+    "src/hud/draw/GameGUIDraw.cpp": "e09cc4698c7b2f9e7a8d856b2a9c2beafca723431f6107f000e6308d3551891b",
+    "src/hud/touch/GameGUITouchView.cpp": "4130e0e49bf32bf325a1c5607cc4edafb6309ce54109107f5e90b1334fa12f8e",
+    "src/hud/touch/GameGUITouch.cpp": "32f0ddea06cb53cbc574e6e5dc7c3b0785efdd650fc1bd348f24275da0244333",
+    "src/hud/touch/GameGUITouch.h": "db39db778997c0cccb65248279b46d55a7f9178580438d92d258db83ed8432bb",
+    "libgag/include/TouchText.h": "71eb059abd12e090a6c0674cec761a7041339e89dcfadfdae8904f570c6d97cb",
+    "libgag/include/TrueTypeFont.h": "3493258a24d4021ef978310aea26f3a832842ff57dd7185d9ff1ecf15854246c",
+    "libgag/include/ui/TextLayout.h": "6cb805b24332bb38bde8525eeea77fa0917cea3b88ae4561bc44c00b08975969",
+    "libgag/src/DrawableSurfaceCompound.cpp": "a6174d18c8b0a62d8ca3a65c606b57cf0e1962408cd5e47642b8fdabd27b8810",
+    "src/game/screens/CustomGameScreen.cpp": "0cdbf52d68ec731f12aabff02f0576057423eca6d1d3d64e92ae68ceb6df21bd",
+    "src/render/overlay/MapZoomControls.h": "6d5b99d9f77853315ddd7298ce77b2ecbf54e470c406ce07c5d9fd1ee152e2d3",
+    "tools/TranslationPreviewHarness.cpp": "65bc3a8f564fc18cf80efe7b640bcfde736f7a2dd3f4dad6bef76b06315236db"
+  },
+  "harfbuzz": [
+    10,
+    1,
+    0
+  ],
+  "pages_actually_read": [
+    {
+      "png": "font-10-scale-1-page-001.png",
+      "sha256": "d441ae6c8b5d8b02a98108f45252dbb3248536bb94d7fd85fbf893a0905798c9",
+      "archived": "artifacts/translation-program/reviews/ur-native-current-visual/final-matrix-captures/font-10-scale-1-page-001.png"
+    },
+    {
+      "png": "font-10-scale-2-page-001.png",
+      "sha256": "0c8377757d81512b0b9adda6da71edaf9444ea1d45898de861792266ec45f72b",
+      "archived": "artifacts/translation-program/reviews/ur-native-current-visual/final-matrix-captures/font-10-scale-2-page-001.png"
+    },
+    {
+      "png": "font-13-scale-1-page-001.png",
+      "sha256": "79025daff02b704c25e9e7e54925859f7537dde5ab90f432a07da09e686527ef",
+      "archived": "artifacts/translation-program/reviews/ur-native-current-visual/final-matrix-captures/font-13-scale-1-page-001.png"
+    },
+    {
+      "png": "font-13-scale-2-page-001.png",
+      "sha256": "a61b680699c01c899eb8f5ba493f465f8784473c7d7da41634a9f78a53d0c19e",
+      "archived": "artifacts/translation-program/reviews/ur-native-current-visual/final-matrix-captures/font-13-scale-2-page-001.png"
+    },
+    {
+      "png": "font-20-scale-1-page-001.png",
+      "sha256": "1dae9ceb6c3f1374130b1f1d1bceec9ac3d14ae4c887e2f31a9ef052540abf25",
+      "archived": "artifacts/translation-program/reviews/ur-native-current-visual/final-matrix-captures/font-20-scale-1-page-001.png"
+    },
+    {
+      "png": "font-20-scale-1-page-002.png",
+      "sha256": "d5ac04f76b4e72f2060cfdefaf519792e419fa77f5d88a9d0fb346439eb14e6a",
+      "archived": "artifacts/translation-program/reviews/ur-native-current-visual/final-matrix-captures/font-20-scale-1-page-002.png"
+    },
+    {
+      "png": "font-20-scale-2-page-001.png",
+      "sha256": "e9c5a3f77c33ca9021ef84dc95c4badfbcf4fdf29dc2583e01b46a0a4745e824",
+      "archived": "artifacts/translation-program/reviews/ur-native-current-visual/final-matrix-captures/font-20-scale-2-page-001.png"
+    },
+    {
+      "png": "font-20-scale-2-page-002.png",
+      "sha256": "0a2d9c2e613ccfb8aad1b26259e6906c9bd29a771e27d51ecff719c262789a3c",
+      "archived": "artifacts/translation-program/reviews/ur-native-current-visual/final-matrix-captures/font-20-scale-2-page-002.png"
+    }
+  ],
+  "styles": [
+    {
+      "size": 10,
+      "scale": 1
+    },
+    {
+      "size": 10,
+      "scale": 2
+    },
+    {
+      "size": 13,
+      "scale": 1
+    },
+    {
+      "size": 13,
+      "scale": 2
+    },
+    {
+      "size": 20,
+      "scale": 1
+    },
+    {
+      "size": 20,
+      "scale": 2
+    }
+  ],
+  "keys_each_rechecked": [
+    "[intro compact attack]",
+    "[intro compact build]",
+    "[intro compact scout]",
+    "[lesson defensive-tactics counterattack compact]",
+    "[lesson defensive-tactics guard compact]",
+    "[lesson defensive-tactics scout compact]",
+    "[lesson fortifications supply compact]",
+    "[lesson fortifications tower compact]",
+    "[lesson healing build compact]",
+    "[lesson schools build compact]",
+    "[lesson swimming build compact]",
+    "[lesson swimming water-job compact]",
+    "[lesson upgrades upgrade compact]",
+    "[lesson walking-training build compact]",
+    "[lesson warrior-training build compact]",
+    "[lesson warrior-training produce compact]"
+  ],
+  "observations": [
+    "All16RTL workflows have first operation to the right, next operation to its left, with visible← pointing toward the next operation. No backwards→ remains in corrected samples.",
+    "Counterattack compact visibly reads رداس4یاکم across all6styles; bare mirrored comparator ambiguity removed. Count3warriors retained.",
+    "Joins/diacritics/punctuation and numeric1/2/3/4 references readable, no glyph boxes, overlap or clipped row in96sample scope."
+  ],
+  "resolutions": [
+    {
+      "id": "ur-native-rtl-workflow-arrows",
+      "affected_keys": [
+        "[intro compact attack]",
+        "[intro compact build]",
+        "[intro compact scout]",
+        "[lesson defensive-tactics counterattack compact]",
+        "[lesson defensive-tactics guard compact]",
+        "[lesson defensive-tactics scout compact]",
+        "[lesson fortifications supply compact]",
+        "[lesson fortifications tower compact]",
+        "[lesson healing build compact]",
+        "[lesson schools build compact]",
+        "[lesson swimming build compact]",
+        "[lesson swimming water-job compact]",
+        "[lesson upgrades upgrade compact]",
+        "[lesson walking-training build compact]",
+        "[lesson warrior-training build compact]",
+        "[lesson warrior-training produce compact]"
+      ],
+      "state": "resolved-in-refreshed-native-matrix-pixels"
+    },
+    {
+      "id": "ur-native-radius-comparator-readability",
+      "key": "[lesson defensive-tactics counterattack compact]",
+      "state": "resolved-in-refreshed-native-matrix-pixels"
+    }
+  ],
+  "open_findings_in_this_scope": 0,
+  "native_production_UI_review": "Remaining final34jobs including phone10lessonstates still pending; matrix resolution is not blanket platform/UI finalization.",
+  "limits": [
+    "ActualmacOSnativeengine font path; not browser WASM or Android/iOS proof.",
+    "32native+8online diagnostic keys×6styles=240total samples; this acceptance specifically96changed-key samples and8pages, notall3416/2836values.",
+    "Originalbad matrix/initialfinding snapshots preserved.",
+    "No own Urdu authorship or catalog edits by this reviewer."
+  ]
+}

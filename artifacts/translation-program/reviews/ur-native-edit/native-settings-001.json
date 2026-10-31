@@ -1,0 +1,1293 @@
+{
+  "editor": "/root/swahili_translation",
+  "author": "/root/urdu_translation",
+  "independent_reviewer": "/root/pilot_context",
+  "batch_id": "native-settings-001",
+  "source_contract_sha256": "aacd8a342e9e734ba47f902a161ac1a45badff5842a617bcd68bf8e2275d6013",
+  "original_target_subset_sha256": "86606fe7c410457a0f5cd58cb563ce5440316e673a50b5da602c309318e2b040",
+  "final_target_subset_sha256": "3fd028d444c96489ac6705a2f9becf1d073f0cf03424d68155b0fcc3bcaaaabe",
+  "final_catalog_sha256": "ec78fb33247244bf783461e0410ef11fe48e45644c3c6500419d9060e967d458",
+  "entries": [
+    {
+      "key": "[settings Finish in your browser. The game continues by itself.]",
+      "source": "Finish in your browser. The game continues by itself.",
+      "before": "اپنے براؤزر میں کارروائی مکمل کریں۔ کھیل خود بخود جاری ہو جائے گا۔",
+      "after": "اپنے براؤزر میں کارروائی مکمل کریں۔ کھیل خود چلتا رہتا ہے۔",
+      "editorially_read": true,
+      "disposition": "edited-pending-recheck"
+    },
+    {
+      "key": "[music set]",
+      "source": "Music set",
+      "before": "موسیقی کا مجموعہ",
+      "after": "موسیقی کا مجموعہ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[random music set]",
+      "source": "Random each match",
+      "before": "ہر میچ میں بے ترتیب انتخاب",
+      "after": "ہر میچ میں بے ترتیب انتخاب",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[playing music set %0]",
+      "source": "Playing: %0",
+      "before": "چل رہا ہے: %0",
+      "after": "چل رہا ہے: %0",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[music set failed]",
+      "source": "Could not load this music set.",
+      "before": "موسیقی کا یہ مجموعہ لوڈ نہیں ہو سکا۔",
+      "after": "موسیقی کا یہ مجموعہ لوڈ نہیں ہو سکا۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Edge scrolling]",
+      "source": "Edge scrolling",
+      "before": "کنارے پر اسکرول کرنا",
+      "after": "کنارے پر اسکرول کرنا",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Edge scrolling in fullscreen]",
+      "source": "Edge scrolling in fullscreen",
+      "before": "پوری اسکرین میں کنارے پر اسکرول کرنا",
+      "after": "پوری اسکرین میں کنارے پر اسکرول کرنا",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Edge scrolling in windowed mode]",
+      "source": "Edge scrolling in windowed mode",
+      "before": "ونڈو میں کنارے پر اسکرول کرنا",
+      "after": "ونڈو میں کنارے پر اسکرول کرنا",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Move the game and editor maps when the mouse reaches the window edge.]",
+      "source": "Move the game and editor maps when the mouse reaches the window edge.",
+      "before": "ماؤس کے ونڈو کے کنارے تک پہنچنے پر کھیل اور ایڈیٹر کے نقشوں کو حرکت دیں۔",
+      "after": "ماؤس کے ونڈو کے کنارے تک پہنچنے پر کھیل اور ایڈیٹر کے نقشوں کو حرکت دیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[add shortcut]",
+      "source": "Add Shortcut",
+      "before": "شارٹ کٹ شامل کریں",
+      "after": "شارٹ کٹ شامل کریں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[editor shortcuts]",
+      "source": "Editor Shortcuts",
+      "before": "ایڈیٹر کے شارٹ کٹ",
+      "after": "ایڈیٹر کے شارٹ کٹ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[flag settings explanation]",
+      "source": "The default radius of the flag",
+      "before": "جھنڈے کا طے شدہ رداس",
+      "after": "جھنڈے کا طے شدہ رداس",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[game shortcuts]",
+      "source": "Game Shortcuts",
+      "before": "کھیل کے شارٹ کٹ",
+      "after": "کھیل کے شارٹ کٹ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[keyboard settings]",
+      "source": "Keyboard Settings",
+      "before": "کی بورڈ کی ترتیبات",
+      "after": "کی بورڈ کی ترتیبات",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Music volume]",
+      "source": "Volume (music)",
+      "before": "آواز کی سطح (موسیقی)",
+      "after": "آواز کی سطح (موسیقی)",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[remove shortcut]",
+      "source": "Remove Shortcut",
+      "before": "شارٹ کٹ ہٹائیں",
+      "after": "شارٹ کٹ ہٹائیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[restore default shortcuts]",
+      "source": "Restore Default Keyboard Shortcuts",
+      "before": "کی بورڈ کے طے شدہ شارٹ کٹ بحال کریں",
+      "after": "کی بورڈ کے طے شدہ شارٹ کٹ بحال کریں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[shortcut explanation enter]",
+      "source": "Enter: send a chat message",
+      "before": "Enter: چیٹ پیغام بھیجیں",
+      "after": "Enter: چیٹ پیغام بھیجیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[shortcut explanation v]",
+      "source": "V: hold to speak",
+      "before": "V: بولنے کے لیے دبائے رکھیں",
+      "after": "V: بولنے کے لیے دبائے رکھیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[unit settings explanation]",
+      "source": "The default number of units assigned",
+      "before": "مقرر یونٹوں کی طے شدہ تعداد",
+      "after": "مقرر یونٹوں کی طے شدہ تعداد",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Generation failed. Adjust settings or press Start to retry.]",
+      "source": "Generation failed. Adjust settings or press Start to retry.",
+      "before": "نقشہ نہیں بن سکا۔ ترتیبات بدلیں یا دوبارہ کوشش کے لیے شروع کریں دبائیں۔",
+      "after": "نقشہ نہیں بن سکا۔ ترتیبات بدلیں یا دوبارہ کوشش کے لیے شروع کریں دبائیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Preview unavailable. Adjust settings or start to retry.]",
+      "source": "Preview unavailable. Adjust settings or start to retry.",
+      "before": "پیش منظر دستیاب نہیں۔ ترتیبات بدلیں یا دوبارہ کوشش کے لیے شروع کریں۔",
+      "after": "پیش منظر دستیاب نہیں۔ ترتیبات بدلیں یا دوبارہ کوشش کے لیے شروع کریں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Generation failed. Adjust settings or try again.]",
+      "source": "Generation failed. Adjust settings or try again.",
+      "before": "نقشہ نہیں بن سکا۔ ترتیبات بدلیں یا دوبارہ کوشش کریں۔",
+      "after": "نقشہ نہیں بن سکا۔ ترتیبات بدلیں یا دوبارہ کوشش کریں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Map settings changed. Generate a new preview or start.]",
+      "source": "Map settings changed. Generate a new preview or start.",
+      "before": "نقشے کی ترتیبات بدل گئی ہیں۔ نیا پیش منظر بنائیں یا شروع کریں۔",
+      "after": "نقشے کی ترتیبات بدل گئی ہیں۔ نیا پیش منظر بنائیں یا شروع کریں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Add key to sequence]",
+      "source": "Add key to sequence",
+      "before": "سلسلے میں کلید شامل کریں",
+      "after": "سلسلے میں کلید شامل کریں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Add shortcut]",
+      "source": "Add shortcut",
+      "before": "شارٹ کٹ شامل کریں",
+      "after": "شارٹ کٹ شامل کریں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Adjust assigned units with the wheel. When off, hold Ctrl. Shift adjusts flag radius. Also controls wheel input in other menus.]",
+      "source": "Adjust assigned units with the wheel. When off, hold Ctrl. Shift adjusts flag radius. Also controls wheel input in other menus.",
+      "before": "پہیے سے مقرر یونٹ بدلیں۔ بند ہو تو Ctrl دبائے رکھیں۔ Shift سے جھنڈے کا رداس بدلتا ہے۔ یہ دوسرے مینو میں پہیے کو بھی قابو کرتا ہے۔",
+      "after": "پہیے سے مقرر یونٹ بدلیں۔ بند ہو تو Ctrl دبائے رکھیں۔ Shift سے جھنڈے کا رداس بدلتا ہے۔ یہ دوسرے مینو میں پہیے کو بھی قابو کرتا ہے۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Adjust music and voice volume.]",
+      "source": "Adjust music and voice volume.",
+      "before": "موسیقی اور صوتی گفتگو کی آواز بدلیں۔",
+      "after": "موسیقی اور صوتی گفتگو کی آواز بدلیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Adjust the pace of play.]",
+      "source": "Adjust the pace of play.",
+      "before": "کھیل کی رفتار بدلیں۔",
+      "after": "کھیل کی رفتار بدلیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Advanced binding]",
+      "source": "Advanced binding",
+      "before": "اعلیٰ کلیدی ترتیب",
+      "after": "اعلیٰ کلیدی ترتیب",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Artwork & effects]",
+      "source": "Artwork & effects",
+      "before": "تصاویر اور اثرات",
+      "after": "تصاویر اور اثرات",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Audio]",
+      "source": "Audio",
+      "before": "آواز",
+      "after": "آواز",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Bind Escape]",
+      "source": "Bind Escape",
+      "before": "Escape مقرر کریں",
+      "after": "Escape مقرر کریں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Building]",
+      "source": "Building",
+      "before": "عمارت",
+      "after": "عمارت",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Building defaults]",
+      "source": "Building defaults",
+      "before": "عمارتوں کی طے شدہ ترتیبات",
+      "after": "عمارتوں کی طے شدہ ترتیبات",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Cancel]",
+      "source": "Cancel",
+      "before": "منسوخ",
+      "after": "منسوخ کریں",
+      "editorially_read": true,
+      "disposition": "edited-pending-recheck"
+    },
+    {
+      "key": "[settings Changes saved automatically]",
+      "source": "Changes saved automatically",
+      "before": "تبدیلیاں خود بخود محفوظ ہو گئیں",
+      "after": "تبدیلیاں خود بخود محفوظ ہو گئیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Changes you make during play update these defaults for future games.]",
+      "source": "Changes you make during play update these defaults for future games.",
+      "before": "کھیل کے دوران کی تبدیلیاں آئندہ کھیلوں کے لیے ان طے شدہ ترتیبات کو بدلتی ہیں۔",
+      "after": "کھیل کے دوران کی تبدیلیاں آئندہ کھیلوں کے لیے ان طے شدہ ترتیبات کو بدلتی ہیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Changing the renderer requires a restart.]",
+      "source": "Changing the renderer requires a restart.",
+      "before": "رینڈرر بدلنے کے لیے دوبارہ شروع کرنا ہو گا۔",
+      "after": "رینڈرر بدلنے کے لیے دوبارہ شروع کرنا ہو گا۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Choose a binding to change it, or add another shortcut for an action.]",
+      "source": "Choose a binding to change it, or add another shortcut for an action.",
+      "before": "بدلنے کے لیے کلیدی ترتیب چنیں، یا کسی کارروائی کے لیے دوسرا شارٹ کٹ شامل کریں۔",
+      "after": "بدلنے کے لیے کلیدی ترتیب چنیں، یا کسی کارروائی کے لیے دوسرا شارٹ کٹ شامل کریں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Choose a window or fill the screen.]",
+      "source": "Choose a window or fill the screen.",
+      "before": "ونڈو چنیں یا پوری اسکرین استعمال کریں۔",
+      "after": "ونڈو چنیں یا پوری اسکرین استعمال کریں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Choose how the game looks on your screen.]",
+      "source": "Choose how the game looks on your screen.",
+      "before": "اسکرین پر کھیل کی صورت چنیں۔",
+      "after": "اسکرین پر کھیل کی صورت چنیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Completed]",
+      "source": "Completed",
+      "before": "مکمل",
+      "after": "مکمل",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Construction]",
+      "source": "Construction",
+      "before": "تعمیر",
+      "after": "تعمیر",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Controls]",
+      "source": "Controls",
+      "before": "کنٹرولز",
+      "after": "کنٹرولز",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Could not change display mode. The previous mode was restored.]",
+      "source": "Could not change display mode. The previous mode was restored.",
+      "before": "اسکرین کا موڈ نہیں بدلا جا سکا۔ پچھلا موڈ بحال کر دیا گیا۔",
+      "after": "اسکرین کا موڈ نہیں بدلا جا سکا۔ پچھلا موڈ بحال کر دیا گیا۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Could not save]",
+      "source": "Could not save",
+      "before": "محفوظ نہیں ہو سکا",
+      "after": "محفوظ نہیں ہو سکا",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Current display]",
+      "source": "Current display",
+      "before": "موجودہ اسکرین",
+      "after": "موجودہ اسکرین",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Default]",
+      "source": "Default",
+      "before": "طے شدہ",
+      "after": "طے شدہ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Display]",
+      "source": "Display",
+      "before": "اسکرین",
+      "after": "اسکرین",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Display & graphics]",
+      "source": "Display & graphics",
+      "before": "اسکرین اور گرافکس",
+      "after": "اسکرین اور گرافکس",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Display the Globulation 2 cursor.]",
+      "source": "Display the Globulation 2 cursor.",
+      "before": "Globulation 2 کا کرسر دکھائیں۔",
+      "after": "Globulation 2 کا کرسر دکھائیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Done]",
+      "source": "Done",
+      "before": "مکمل",
+      "after": "مکمل",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Edit shortcut]",
+      "source": "Edit shortcut",
+      "before": "شارٹ کٹ بدلیں",
+      "after": "شارٹ کٹ بدلیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Multiply the operating system display scale for menus, text and the sidebar.]",
+      "source": "Multiply the operating system display scale for menus, text and the sidebar.",
+      "before": "مینو، متن اور ضمنی پینل کے لیے نظام کے اسکرین پیمانے کو اس عدد سے ضرب دیں۔",
+      "after": "مینو، متن اور ضمنی پینل کے لیے نظام کے اسکرین پیمانے کو اس عدد سے ضرب دیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Flags]",
+      "source": "Flags",
+      "before": "جھنڈے",
+      "after": "جھنڈے",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Full]",
+      "source": "Full",
+      "before": "مکمل",
+      "after": "مکمل",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Fullscreen]",
+      "source": "Fullscreen",
+      "before": "پوری اسکرین",
+      "after": "پوری اسکرین",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Game]",
+      "source": "Game",
+      "before": "کھیل",
+      "after": "کھیل",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Game speed]",
+      "source": "Game speed",
+      "before": "کھیل کی رفتار",
+      "after": "کھیل کی رفتار",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Gameplay]",
+      "source": "Gameplay",
+      "before": "کھیل کا طریقہ",
+      "after": "کھیل کا طریقہ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Graphics detail]",
+      "source": "Graphics detail",
+      "before": "گرافکس کی تفصیل",
+      "after": "گرافکس کی تفصیل",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Interface scale]",
+      "source": "Interface scale",
+      "before": "انٹرفیس کا پیمانہ",
+      "after": "انٹرفیس کا پیمانہ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Keep]",
+      "source": "Keep",
+      "before": "برقرار رکھیں",
+      "after": "برقرار رکھیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Keep this display mode?]",
+      "source": "Keep this display mode?",
+      "before": "اسکرین کا یہ موڈ برقرار رکھیں؟",
+      "after": "اسکرین کا یہ موڈ برقرار رکھیں؟",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Keep your volume levels while silencing audio.]",
+      "source": "Keep your volume levels while silencing audio.",
+      "before": "آواز بند کرتے وقت سطحوں کی ترتیبات برقرار رکھیں۔",
+      "after": "آواز بند کرتے وقت سطحوں کی ترتیبات برقرار رکھیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Key]",
+      "source": "Key",
+      "before": "کلید",
+      "after": "کلید",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Keyboard shortcuts]",
+      "source": "Keyboard shortcuts",
+      "before": "کی بورڈ کے شارٹ کٹ",
+      "after": "کی بورڈ کے شارٹ کٹ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Keys form a sequence in order. Each key can trigger on press or release.]",
+      "source": "Keys form a sequence in order. Each key can trigger on press or release.",
+      "before": "کلیدیں ترتیب وار سلسلہ بناتی ہیں۔ ہر کلید دبانے یا چھوڑنے پر کارروائی چلا سکتی ہے۔",
+      "after": "کلیدیں ترتیب وار سلسلہ بناتی ہیں۔ ہر کلید دبانے یا چھوڑنے پر کارروائی چلا سکتی ہے۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Language]",
+      "source": "Language",
+      "before": "زبان",
+      "after": "زبان",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Language & player]",
+      "source": "Language & player",
+      "before": "زبان اور کھلاڑی",
+      "after": "زبان اور کھلاڑی",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Language used throughout the interface.]",
+      "source": "Language used throughout the interface.",
+      "before": "پورے انٹرفیس کی زبان۔",
+      "after": "پورے انٹرفیس کی زبان۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Level]",
+      "source": "Level",
+      "before": "سطح",
+      "after": "سطح",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Map editor]",
+      "source": "Map editor",
+      "before": "نقشہ ایڈیٹر",
+      "after": "نقشہ ایڈیٹر",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Match the desktop]",
+      "source": "Match the desktop",
+      "before": "ڈیسک ٹاپ کے مطابق",
+      "after": "ڈیسک ٹاپ کے مطابق",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Missing font]",
+      "source": "Missing font",
+      "before": "فونٹ موجود نہیں",
+      "after": "فونٹ موجود نہیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Music volume]",
+      "source": "Music volume",
+      "before": "موسیقی کی آواز",
+      "after": "موسیقی کی آواز",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Mute audio]",
+      "source": "Mute audio",
+      "before": "آواز بند کریں",
+      "after": "آواز بند کریں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Name shown to other players.]",
+      "source": "Name shown to other players.",
+      "before": "دوسرے کھلاڑیوں کو نظر آنے والا نام۔",
+      "after": "دوسرے کھلاڑیوں کو نظر آنے والا نام۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Off]",
+      "source": "Off",
+      "before": "بند",
+      "after": "بند",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings On]",
+      "source": "On",
+      "before": "چالو",
+      "after": "چالو",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings OpenGL is not available in this build.]",
+      "source": "OpenGL is not available in this build.",
+      "before": "اس بلڈ میں OpenGL دستیاب نہیں۔",
+      "after": "اس بلڈ میں OpenGL دستیاب نہیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Player name]",
+      "source": "Player name",
+      "before": "کھلاڑی کا نام",
+      "after": "کھلاڑی کا نام",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Press]",
+      "source": "Press",
+      "before": "دبانے پر",
+      "after": "دبانے پر",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Press a key. Escape cancels capture. Use Bind Escape to assign Escape.]",
+      "source": "Press a key. Escape cancels capture. Use Bind Escape to assign Escape.",
+      "before": "کلید دبائیں۔ Escape سے گرفت منسوخ ہوتی ہے۔ Escape مقرر کرنے کے لیے Escape مقرر کریں استعمال کریں۔",
+      "after": "کلید دبائیں۔ Escape سے کلید درج کرنا منسوخ ہو جاتا ہے۔ Escape کو شارٹ کٹ کے طور پر مقرر کرنے کے لیے «Escape مقرر کریں» استعمال کریں۔",
+      "editorially_read": true,
+      "disposition": "edited-pending-recheck"
+    },
+    {
+      "key": "[settings Radius]",
+      "source": "Radius",
+      "before": "رداس",
+      "after": "رداس",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Reduced]",
+      "source": "Reduced",
+      "before": "کم",
+      "after": "کم",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Reduced detail disables clouds and their shadows, simplifies magic effects, and reduces transparency.]",
+      "source": "Reduced detail disables clouds and their shadows, simplifies magic effects, and reduces transparency.",
+      "before": "کم تفصیل سے بادل اور ان کے سائے بند، جادوئی اثرات سادہ اور شفافیت کم ہو جاتی ہے۔",
+      "after": "کم تفصیل سے بادل اور ان کے سائے بند، جادوئی اثرات سادہ اور شفافیت کم ہو جاتی ہے۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Release]",
+      "source": "Release",
+      "before": "چھوڑنے پر",
+      "after": "چھوڑنے پر",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Remember assignments between games]",
+      "source": "Remember assignments between games",
+      "before": "کھیلوں کے درمیان مقررہ تعداد یاد رکھیں",
+      "after": "کھیلوں کے درمیان مقررہ تعداد یاد رکھیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Remove key]",
+      "source": "Remove key",
+      "before": "کلید ہٹائیں",
+      "after": "کلید ہٹائیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Remove shortcut]",
+      "source": "Remove shortcut",
+      "before": "شارٹ کٹ ہٹائیں",
+      "after": "شارٹ کٹ ہٹائیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Renderer]",
+      "source": "Renderer",
+      "before": "رینڈرر",
+      "after": "رینڈرر",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Replace conflicting bindings]",
+      "source": "Replace conflicting bindings",
+      "before": "متصادم کلیدی ترتیبات بدل دیں",
+      "after": "متصادم کلیدی ترتیبات بدل دیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Replace shortcuts in this context with the defaults? This saves immediately.]",
+      "source": "Replace shortcuts in this context with the defaults? This saves immediately.",
+      "before": "اس سیاق کے شارٹ کٹ طے شدہ ترتیبات سے بدل دیں؟ یہ فوراً محفوظ ہو گا۔",
+      "after": "اس سیاق کے شارٹ کٹ طے شدہ ترتیبات سے بدل دیں؟ یہ فوراً محفوظ ہو گا۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Resolution]",
+      "source": "Resolution",
+      "before": "ریزولیوشن",
+      "after": "ریزولیوشن",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Restore default shortcuts]",
+      "source": "Restore default shortcuts",
+      "before": "طے شدہ شارٹ کٹ بحال کریں",
+      "after": "طے شدہ شارٹ کٹ بحال کریں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Retry]",
+      "source": "Retry",
+      "before": "دوبارہ کوشش",
+      "after": "دوبارہ کوشش کریں",
+      "editorially_read": true,
+      "disposition": "edited-pending-recheck"
+    },
+    {
+      "key": "[settings Revert]",
+      "source": "Revert",
+      "before": "پچھلی حالت بحال کریں",
+      "after": "پچھلی حالت بحال کریں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Reverting in]",
+      "source": "Reverting in",
+      "before": "پچھلی حالت کی بحالی میں باقی",
+      "after": "پچھلی حالت کی بحالی میں باقی",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Save shortcut]",
+      "source": "Save shortcut",
+      "before": "شارٹ کٹ محفوظ کریں",
+      "after": "شارٹ کٹ محفوظ کریں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Saved — restart required]",
+      "source": "Saved — restart required",
+      "before": "محفوظ ہو گیا — دوبارہ شروع کریں",
+      "after": "محفوظ ہو گیا — دوبارہ شروع کریں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Saving…]",
+      "source": "Saving…",
+      "before": "محفوظ ہو رہا ہے…",
+      "after": "محفوظ ہو رہا ہے…",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Scroll wheel enabled]",
+      "source": "Scroll wheel enabled",
+      "before": "اسکرول پہیہ چالو",
+      "after": "اسکرول پہیہ چالو",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Set starting unit assignments by building type and level.]",
+      "source": "Set starting unit assignments by building type and level.",
+      "before": "عمارت کی قسم اور سطح کے لحاظ سے ابتدائی مقرر یونٹ طے کریں۔",
+      "after": "عمارت کی قسم اور سطح کے لحاظ سے ابتدائی مقرر یونٹ طے کریں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Set your language and player name.]",
+      "source": "Set your language and player name.",
+      "before": "اپنی زبان اور کھلاڑی کا نام طے کریں۔",
+      "after": "اپنی زبان اور کھلاڑی کا نام طے کریں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Settings]",
+      "source": "Settings",
+      "before": "ترتیبات",
+      "after": "ترتیبات",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Single-player and replays only. Multiplayer runs at 1x.]",
+      "source": "Single-player and replays only. Multiplayer runs at 1x.",
+      "before": "صرف اکیلے کھیل اور ری پلے کے لیے۔ کئی کھلاڑیوں کا کھیل معمول کی رفتار پر چلتا ہے۔",
+      "after": "صرف اکیلے کھیل اور ری پلے کے لیے۔ کئی کھلاڑیوں کا کھیل معمول کی رفتار پر چلتا ہے۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Software]",
+      "source": "Software",
+      "before": "سافٹ ویئر",
+      "after": "سافٹ ویئر",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Starting unit counts and radius for newly placed flags.]",
+      "source": "Starting unit counts and radius for newly placed flags.",
+      "before": "نئے جھنڈوں کے لیے ابتدائی یونٹوں کی تعداد اور رداس۔",
+      "after": "نئے جھنڈوں کے لیے ابتدائی یونٹوں کی تعداد اور رداس۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings This shortcut conflicts with existing bindings:]",
+      "source": "This shortcut conflicts with existing bindings:",
+      "before": "یہ شارٹ کٹ ان موجودہ کلیدی ترتیبات سے متصادم ہے:",
+      "after": "یہ شارٹ کٹ ان موجودہ کلیدی ترتیبات سے متصادم ہے:",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Trigger]",
+      "source": "Trigger",
+      "before": "چلنے کا موقع",
+      "after": "چلنے کا موقع",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Unbound]",
+      "source": "Unbound",
+      "before": "غیر مقرر",
+      "after": "غیر مقرر",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Unit counts assigned to new construction sites.]",
+      "source": "Unit counts assigned to new construction sites.",
+      "before": "نئی تعمیراتی جگہوں پر مقرر یونٹوں کی تعداد۔",
+      "after": "نئی تعمیراتی جگہوں پر مقرر یونٹوں کی تعداد۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Unit counts for completed buildings.]",
+      "source": "Unit counts for completed buildings.",
+      "before": "مکمل عمارتوں کے یونٹوں کی تعداد۔",
+      "after": "مکمل عمارتوں کے یونٹوں کی تعداد۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Unit counts while a building is being upgraded.]",
+      "source": "Unit counts while a building is being upgraded.",
+      "before": "اپ گریڈ کے دوران عمارت پر یونٹوں کی تعداد۔",
+      "after": "اپ گریڈ کے دوران عمارت پر یونٹوں کی تعداد۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Units]",
+      "source": "Units",
+      "before": "یونٹ",
+      "after": "یونٹ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Upgrades]",
+      "source": "Upgrades",
+      "before": "اپ گریڈ",
+      "after": "اپ گریڈ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Use game cursor]",
+      "source": "Use game cursor",
+      "before": "کھیل کا کرسر استعمال کریں",
+      "after": "کھیل کا کرسر استعمال کریں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Voice volume]",
+      "source": "Voice volume",
+      "before": "صوتی گفتگو کی آواز",
+      "after": "صوتی گفتگو کی آواز",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Window mode]",
+      "source": "Window mode",
+      "before": "ونڈو کا موڈ",
+      "after": "ونڈو کا موڈ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Window-only sizes also switch the game to windowed mode.]",
+      "source": "Window-only sizes also switch the game to windowed mode.",
+      "before": "صرف ونڈو والی جسامت منتخب کرنے سے کھیل بھی ونڈو میں آ جاتا ہے۔",
+      "after": "صرف ونڈو والی جسامت منتخب کرنے سے کھیل بھی ونڈو میں آ جاتا ہے۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Windowed]",
+      "source": "Windowed",
+      "before": "ونڈو میں",
+      "after": "ونڈو میں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Windowed only]",
+      "source": "Windowed only",
+      "before": "صرف ونڈو",
+      "after": "صرف ونڈو",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings seconds]",
+      "source": "seconds",
+      "before": "سیکنڈ",
+      "after": "سیکنڈ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Flag]",
+      "source": "Flag",
+      "before": "جھنڈا",
+      "after": "جھنڈا",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings High-resolution artwork]",
+      "source": "High-resolution artwork",
+      "before": "اعلیٰ ریزولیوشن کی تصاویر",
+      "after": "اعلیٰ ریزولیوشن کی تصاویر",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Apply artwork on the next game or editor load (OpenGL).]",
+      "source": "Apply artwork on the next game or editor load (OpenGL).",
+      "before": "اگلی بار کھیل یا ایڈیٹر لوڈ ہونے پر تصاویر لاگو کریں (OpenGL)۔",
+      "after": "اگلی بار کھیل یا ایڈیٹر لوڈ ہونے پر تصاویر لاگو کریں (OpenGL)۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Automatic torus view]",
+      "source": "Automatic torus view",
+      "before": "ٹورس کا خودکار منظر",
+      "after": "ٹورس کا خودکار منظر",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Automatically show the torus overview while moving around the map (OpenGL).]",
+      "source": "Automatically show the torus overview while moving around the map (OpenGL).",
+      "before": "نقشے پر حرکت کے دوران ٹورس کا مجموعی منظر خود دکھائیں (OpenGL)۔",
+      "after": "نقشے پر حرکت کے دوران ٹورس کا مجموعی منظر خود دکھائیں (OpenGL)۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Autosave]",
+      "source": "Autosave",
+      "before": "خودکار محفوظ کرنا",
+      "after": "خودکار محفوظ کرنا",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Save the game automatically about every 10 seconds.]",
+      "source": "Save the game automatically about every 10 seconds.",
+      "before": "تقریباً ہر 10 سیکنڈ بعد کھیل خود محفوظ کریں۔",
+      "after": "تقریباً ہر 10 سیکنڈ بعد کھیل خود محفوظ کریں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Optional major shortcuts]",
+      "source": "Optional major shortcuts",
+      "before": "اختیاری اہم مختصر راستے",
+      "after": "اختیاری اہم مختصر راستے",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Portage Lakes cannot fit a useful dry woodland shortcut on this seed.]",
+      "source": "Portage Lakes cannot fit a useful dry woodland shortcut on this seed.",
+      "before": "اس سیڈ پر پورٹیج جھیلوں میں مفید خشک جنگلی مختصر راستہ نہیں بن سکتا۔",
+      "after": "اس سیڈ پر پورٹیج جھیلوں میں مفید خشک جنگلی مختصر راستہ نہیں بن سکتا۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Portage Lakes cannot fit a useful swimming shortcut on this seed.]",
+      "source": "Portage Lakes cannot fit a useful swimming shortcut on this seed.",
+      "before": "اس سیڈ پر پورٹیج جھیلوں میں مفید تیراکی کا مختصر راستہ نہیں بن سکتا۔",
+      "after": "اس سیڈ پر پورٹیج جھیلوں میں مفید تیراکی کا مختصر راستہ نہیں بن سکتا۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings continue]",
+      "source": "Continue",
+      "before": "جاری رکھیں",
+      "after": "جاری رکھیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings save failed]",
+      "source": "Settings save not confirmed. Retry, or continue.",
+      "before": "ترتیبات محفوظ ہونے کی تصدیق نہیں ہوئی۔ دوبارہ کوشش کریں یا جاری رکھیں۔",
+      "after": "ترتیبات محفوظ ہونے کی تصدیق نہیں ہوئی۔ دوبارہ کوشش کریں یا جاری رکھیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Hide keyboard]",
+      "source": "Hide keyboard",
+      "before": "کی بورڈ چھپائیں",
+      "after": "کی بورڈ چھپائیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Interface layout]",
+      "source": "Interface layout",
+      "before": "انٹرفیس کی ترتیب",
+      "after": "انٹرفیس کی ترتیب",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Automatic]",
+      "source": "Automatic",
+      "before": "خودکار",
+      "after": "خودکار",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Compact]",
+      "source": "Compact",
+      "before": "سمٹی ہوئی",
+      "after": "سمٹی ہوئی",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Spacious]",
+      "source": "Spacious",
+      "before": "کشادہ",
+      "after": "کشادہ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.]",
+      "source": "Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.",
+      "before": "جگہ ہو تو کشادہ ترتیب ضمنی پینل استعمال کرتی ہے۔ سمٹی ترتیب ٹول بار اور کھلنے والے پینل استعمال کرتی ہے۔",
+      "after": "جگہ ہو تو کشادہ ترتیب ضمنی پینل استعمال کرتی ہے۔ سمٹی ترتیب ٹول بار اور کھلنے والے پینل استعمال کرتی ہے۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Menu theme]",
+      "source": "Menu theme",
+      "before": "مینو کا تھیم",
+      "after": "مینو کا تھیم",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Colours and backdrop of menus, lobbies and results.]",
+      "source": "Colours and backdrop of menus, lobbies and results.",
+      "before": "مینو، لابی اور نتائج کے رنگ اور پس منظر۔",
+      "after": "مینو، لابی اور نتائج کے رنگ اور پس منظر۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings In-game theme]",
+      "source": "In-game theme",
+      "before": "کھیل کا تھیم",
+      "after": "کھیل کا تھیم",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Colours of dialogs and the touch interface during a game and in the editor.]",
+      "source": "Colours of dialogs and the touch interface during a game and in the editor.",
+      "before": "کھیل اور ایڈیٹر میں مکالموں اور ٹچ انٹرفیس کے رنگ۔",
+      "after": "کھیل اور ایڈیٹر میں مکالموں اور ٹچ انٹرفیس کے رنگ۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[theme light]",
+      "source": "Light",
+      "before": "ہلکا",
+      "after": "ہلکا",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[theme dark]",
+      "source": "Dark",
+      "before": "گہرا",
+      "after": "گہرا",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[theme classic]",
+      "source": "Classic",
+      "before": "روایتی",
+      "after": "روایتی",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[theme ocean]",
+      "source": "Ocean",
+      "before": "سمندر",
+      "after": "سمندر",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[theme dune]",
+      "source": "Dune",
+      "before": "ریت کا ٹیلہ",
+      "after": "ریت کا ٹیلہ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[theme high-contrast]",
+      "source": "High contrast",
+      "before": "نمایاں تضاد",
+      "after": "نمایاں تضاد",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings One-finger zoom]",
+      "source": "One-finger zoom",
+      "before": "ایک انگلی سے زوم",
+      "after": "ایک انگلی سے زوم",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Double-tap the map, hold, then drag to zoom.]",
+      "source": "Double-tap the map, hold, then drag to zoom.",
+      "before": "نقشے پر دو بار چھوئیں، دبائے رکھیں، پھر زوم کے لیے کھینچیں۔",
+      "after": "نقشے پر دو بار چھوئیں، دبائے رکھیں، پھر زوم کے لیے کھینچیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Platform default]",
+      "source": "Platform default",
+      "before": "پلیٹ فارم کی طے شدہ ترتیب",
+      "after": "پلیٹ فارم کی طے شدہ ترتیب",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Drag up zooms in]",
+      "source": "Drag up zooms in",
+      "before": "اوپر کھینچنے سے قریب",
+      "after": "اوپر کھینچنے پر زوم اِن",
+      "editorially_read": true,
+      "disposition": "edited-pending-recheck"
+    },
+    {
+      "key": "[settings Drag down zooms in]",
+      "source": "Drag down zooms in",
+      "before": "نیچے کھینچنے سے قریب",
+      "after": "نیچے کھینچنے پر زوم اِن",
+      "editorially_read": true,
+      "disposition": "edited-pending-recheck"
+    },
+    {
+      "key": "[settings Thumb side]",
+      "source": "Thumb side",
+      "before": "انگوٹھے کی سمت",
+      "after": "انگوٹھے کی سمت",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings Phone controls gather in this bottom corner.]",
+      "source": "Phone controls gather in this bottom corner.",
+      "before": "فون کے کنٹرول اس نچلے کونے میں جمع ہوتے ہیں۔",
+      "after": "فون کے کنٹرول اس نچلے کونے میں جمع ہوتے ہیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    }
+  ],
+  "status": "edited-awaiting-independent-recheck"
+}

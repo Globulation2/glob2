@@ -1,0 +1,66 @@
+{
+  "investigator": "/root/translation_kit",
+  "status": "revised fixture complete regression passes; root independent fixture review pending",
+  "scope": "Investigate monolithic touch regression timeout, then root-authorized fixture-only correction. No production code edited.",
+  "before": {
+    "initial_timeout": "tutorial-touch-regression.log / .xml,300.2s",
+    "longer_attempt": "touch-investigation.log / .xml,600.220s",
+    "outcome": "Both actual timeouts retained; no assertion failure before timeout, neither is a pass.",
+    "source_and_command": "touch-investigation-source.json",
+    "baseline_source_proof": "touch-baseline-source.json",
+    "baseline_runtime": "Not run. run() body matched HEAD exactly before fixture correction; this does not prove baseline runtime or product equivalence."
+  },
+  "diagnosis": [
+    {
+      "evidence": "touch-sample-1.txt, about20s",
+      "finding": "Main thread waits for font asset; workers decode images. Only 2 samples obtained, limited scheduling coverage."
+    },
+    {
+      "evidence": "touch-sample-2.txt, about110s",
+      "finding": "Main thread advances through GUI draws with substantial SoftwareTerrainCache/terrain composition work."
+    },
+    {
+      "evidence": "touch-sample-3.txt, about327s",
+      "finding": "759 main-thread samples at run() line3910.706 samples enter Toolkit::getSprite from ResourceSprites::resolve,702 sleep. All 300 synthetic IDs shared one nonexistent sprite. ResourceSprites resolves each ID; Toolkit discards failed load without cached success, causing repeated synchronous retries. Subsequent editor/parent registry switches repeat work."
+    },
+    {
+      "evidence": "touch-progress.jsonl and retained timeout profile",
+      "finding": "New screenshots and logged checks continued across 600 seconds; no fixed stuck tutorial loop found."
+    }
+  ],
+  "correction": {
+    "record": "touch-fixture-change.json",
+    "file": "src/hud/touch/GameGUITouchHarness.cpp",
+    "change": "First 299 synthetic IDs use existing data/gfx/ressource; last/highest retains missing-art path.300 definitions, above-255 missing-art mixed-material resource, all stocks/assertions preserved. No production caching change.",
+    "approval": "Root authorized conditional on 600s timeout; implemented after timeout."
+  },
+  "after": {
+    "build": "touch-fixture-build.log, exit 0",
+    "command": "Same invocation as touch-investigation-source.json, timeout 300, outputs touch-fixture-result.* and touch-fixture-artifacts.",
+    "result": "PASS 1 case, 0 failed, 0 skipped; runner 141.1s / doctest 139.549s",
+    "evidence": [
+      "touch-fixture-result.log",
+      "touch-fixture-result.xml",
+      "touch-fixture-stdout.log",
+      "touch-fixture-progress.jsonl"
+    ],
+    "coverage": "Complete monolithic test: gameplay touch, toroidal navigation, placement and orders, whole phone matrix, German/Japanese localization both orientations, replay controls, executed zone undo, editor controls/file/area IME. Successful complete run includes unchanged-simulation and dispatch assertions already present in test."
+  },
+  "limits": [
+    "Host was not fully isolated: unrelated foliage-worktree test workers and running /Applications/Glob2.app observed. Root held its native windows closed. No other processes stopped.",
+    "Different host load and fixture prevent interpreting600s versus 141s as controlled performance benchmark. Stacks and source path establish redundant work; not a full attribution of every second.",
+    "No previous-baseline runtime pass claim. This pass binds the revised fixture and recorded current binary.",
+    "Independent root review of tiny fixture correction pending; investigator does not approve own edit.",
+    "No mobile/browser platform coverage inferred."
+  ],
+  "runtime": "Approved HB10.1 via DYLD_LIBRARY_PATH script-support/prefix/lib; GLOB2_SIM_THREAD=0.",
+  "all_owned_processes_closed": true,
+  "product_code_changed": false,
+  "self_approved": false,
+  "diagnosis_path_source_unchanged_from_HEAD": {
+    "src/render/ResourceSprites.cpp": true,
+    "src/render/MapAssetSprites.cpp": true,
+    "libgag/src/Toolkit.cpp": true,
+    "libgag/src/SpriteLoad.cpp": true
+  }
+}

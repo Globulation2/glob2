@@ -1,0 +1,206 @@
+{
+  "reviewer": "/root/hindi_online_review",
+  "locale": "hi",
+  "status": "passed-for-tested-isolated-app-scope-with-transparent-stability-supplement",
+  "catalog_sha256": "d80bdd87f3502c34e45ae744d8e0f8bac3cafd93755a5ef87e0bed8bec3d74c4",
+  "run_identity": {
+    "checker_sha256": "958fe8f1c7cd2e45559a10efa9da1a67d521b6768ebb88ddf787e081851b59b1",
+    "started_utc": "2026-10-31T17:13:19.165Z",
+    "catalog_sha256": {
+      "hi": "d80bdd87f3502c34e45ae744d8e0f8bac3cafd93755a5ef87e0bed8bec3d74c4",
+      "ur": "db375ee564c39cf02dfb4ce08d6a4dbaecb8cd69d5bc7f167b4c7f779e246587",
+      "sw": "6914cbf226adebd70d3ff401cfda759b62b62cc8af621b25f4ba994a8e0bec0a"
+    },
+    "build_identity_sha256": "6445c77f4b8e480eb49e3dcc7ff97de623069c3a6f15d1a5075797f03c9094c5",
+    "server": {
+      "catalog_sha256": {
+        "hi": "d80bdd87f3502c34e45ae744d8e0f8bac3cafd93755a5ef87e0bed8bec3d74c4",
+        "ur": "db375ee564c39cf02dfb4ce08d6a4dbaecb8cd69d5bc7f167b4c7f779e246587",
+        "sw": "6914cbf226adebd70d3ff401cfda759b62b62cc8af621b25f4ba994a8e0bec0a"
+      },
+      "source_sha256": {
+        "../../../platform/packages/i18n/src/index.ts": "5f01c60c26795b599218c781194bdafb060b742f1b1ae04a16617dd5f2a1080e",
+        "../../../platform/apps/api/src/web/pages.ts": "be26854babcf09335c422fc2e08007d3013bfc8e356b2238b0f08551ae20b104",
+        "../../../platform/apps/api/src/routes/signin.ts": "a5711937ceb02407ffccd313b4aa2fd074e7eae828614d77b7ff939def025721",
+        "../../../platform/apps/api/test/historySeed.ts": "2132adfd455661cc26e7328ddabdfe9d3c78cd51e6979b56f71fe7fbae7a6244"
+      }
+    }
+  },
+  "results_sha256": "a0aa6ba50aa2b18616b229a1a07750d9b459c30fdd1e23114963954e46187fec",
+  "build_identity_sha256": "6445c77f4b8e480eb49e3dcc7ff97de623069c3a6f15d1a5075797f03c9094c5",
+  "all_source_files_matched_current": true,
+  "source_map_count": 149,
+  "method": "All20fresh1200/390screenshots independentlymanuallyreadinfullafterper-imagehashverification;older20reviewnotfalselycarriedforwardasfreshcapture.",
+  "images": [
+    {
+      "file": "integrated-final-captures/hi-1200-home-first-visit.png",
+      "sha256": "ee94e37c319979f526655d9181a94bcc11a725f3d06e0827bea3b1a81c3ca48e",
+      "width": 1200,
+      "surface": "home-first-visit",
+      "manual_read": true
+    },
+    {
+      "file": "integrated-final-captures/hi-1200-signin.png",
+      "sha256": "f58c8735af454cc0633e7c59cb3a7f10fa2ba9eeb77c362632689eff3a6ec9e3",
+      "width": 1200,
+      "surface": "signin",
+      "manual_read": true
+    },
+    {
+      "file": "integrated-final-captures/hi-1200-signin-error.png",
+      "sha256": "ee3536d1e8d03f1a02f8944e295607ebd1aaed38528999a386fd61e34f3b9eae",
+      "width": 1200,
+      "surface": "signin-error",
+      "manual_read": true
+    },
+    {
+      "file": "integrated-final-captures/hi-1200-account.png",
+      "sha256": "4291ebd135ce85fd793dcb9cb98687e6f01000983986b5159dc31da0fec570ce",
+      "width": 1200,
+      "surface": "account",
+      "manual_read": true
+    },
+    {
+      "file": "integrated-final-captures/hi-1200-matches.png",
+      "sha256": "ef6076f34086aac8d45bdfb1b64412fda47a91cc175a67eebe82e62b36cbd3f8",
+      "width": 1200,
+      "surface": "matches",
+      "manual_read": true
+    },
+    {
+      "file": "integrated-final-captures/hi-1200-match.png",
+      "sha256": "f4fcda16017ea313cb96d67ce221f8b92b48ef623ec35a478d0ab03d0cb1cccf",
+      "width": 1200,
+      "surface": "match",
+      "manual_read": true
+    },
+    {
+      "file": "integrated-final-captures/hi-1200-profile.png",
+      "sha256": "e3ac970e1ce57494b44214dea9f613c078ff09f2609aecbb70272a0d90604aee",
+      "width": 1200,
+      "surface": "profile",
+      "manual_read": true
+    },
+    {
+      "file": "integrated-final-captures/hi-1200-leaderboard.png",
+      "sha256": "708a1ae2bf60e73b82c74dbb253c7d84926e1b7a9d122d4a0d705b75cd95ce78",
+      "width": 1200,
+      "surface": "leaderboard",
+      "manual_read": true
+    },
+    {
+      "file": "integrated-final-captures/hi-1200-maps.png",
+      "sha256": "cbf68051ee76e165f22c09c4d66d0efac206f03bf6069c5d409cadf8d9b5466c",
+      "width": 1200,
+      "surface": "maps",
+      "manual_read": true
+    },
+    {
+      "file": "integrated-final-captures/hi-1200-invite.png",
+      "sha256": "52ea97dd6ee20f11c2309bc2dfd972bfca52d2f3d48418e8db990da1998b62c9",
+      "width": 1200,
+      "surface": "invite",
+      "manual_read": true
+    },
+    {
+      "file": "integrated-final-captures/hi-390-home-first-visit.png",
+      "sha256": "ba0491e8bbf1820a552137466b175f0cc0b6d54a3997be7f90d0843f037494d8",
+      "width": 390,
+      "surface": "home-first-visit",
+      "manual_read": true
+    },
+    {
+      "file": "integrated-final-captures/hi-390-signin.png",
+      "sha256": "896d4adcdb4b454c3134e8594bb3b192ed5d3e51409875075802764ce5078e1a",
+      "width": 390,
+      "surface": "signin",
+      "manual_read": true
+    },
+    {
+      "file": "integrated-final-captures/hi-390-signin-error.png",
+      "sha256": "d013ed378a9809a2b1d5aba2c1ec0d21c9fc831ff13e7009108da1d5ba3bc5bb",
+      "width": 390,
+      "surface": "signin-error",
+      "manual_read": true
+    },
+    {
+      "file": "integrated-final-captures/hi-390-account.png",
+      "sha256": "9d5e40d3ae20fdcb1c9ad3949b10a3e2211ae14899cbcbc0e75cd16e57260eae",
+      "width": 390,
+      "surface": "account",
+      "manual_read": true
+    },
+    {
+      "file": "integrated-final-captures/hi-390-matches.png",
+      "sha256": "600d4f981b223e18df234bf929af481aa51348a48d59756972ddfe30cd9b9ce1",
+      "width": 390,
+      "surface": "matches",
+      "manual_read": true
+    },
+    {
+      "file": "integrated-final-captures/hi-390-match.png",
+      "sha256": "fc1b5a91a2629391c85a405650c19935cb3049a52292985696b0297e25a00280",
+      "width": 390,
+      "surface": "match",
+      "manual_read": true
+    },
+    {
+      "file": "integrated-final-captures/hi-390-profile.png",
+      "sha256": "c5370a378c42620678b6d84f21249756c67b4bd8382f393e4381001e81eff43e",
+      "width": 390,
+      "surface": "profile",
+      "manual_read": true
+    },
+    {
+      "file": "integrated-final-captures/hi-390-leaderboard.png",
+      "sha256": "22b705ed5c0fcc294e1f83227633de506abb75bebb00155aedffcb79a3629df1",
+      "width": 390,
+      "surface": "leaderboard",
+      "manual_read": true
+    },
+    {
+      "file": "integrated-final-captures/hi-390-maps.png",
+      "sha256": "e1f5fd4b8a9be106d29ebe08a3abef1dc163f22c20f4823388ddb243e4f05aa1",
+      "width": 390,
+      "surface": "maps",
+      "manual_read": true
+    },
+    {
+      "file": "integrated-final-captures/hi-390-invite.png",
+      "sha256": "d33d8d65713b366fa36a6338c1a03a73dca03b392381ae87952070167fdab22f",
+      "width": 390,
+      "surface": "invite",
+      "manual_read": true
+    }
+  ],
+  "new_linguistic_findings": [],
+  "earlier11findings": "Allremainresolved;currentstaticAllmatchescorrectसभीमैच,invitationclauseordercorrect,confirmationcomplete,knownstatslocalized,phonejoin/CTAcontained,chartlegendsandoptionalReactslotscorrect.",
+  "capture_quality_observation": {
+    "file": "integrated-final-captures/hi-1200-profile.png",
+    "issue": "Desktopratingmarkersdetachedfrompolyline,sameasSwcapture;phonealigned. Rootnotified;SwliveDOMandstabilityprobeindicatestransientcapturerepaintnotprovenproductdefect.",
+    "state": "resolved-for-tested-evidence-by-same-build-stability-supplement",
+    "supplement": "../app-profile-stability/results.json",
+    "supplement_sha256": "ec8cea904001334cd6d5aa7482183c7619fdde487ceb0335fd4830c5d99f944f",
+    "supplement_png_sha256": "87c9a867282d8916b2faaf1cc9492e4c8f15fa25cf2d87f34191469fc6fd9706",
+    "cause": "Unknown; earlier anomalous screenshot retained. Font-ready plus2RAF and5stable geometry frames yielded aligned marker positions in actual independently viewed new image; no product patch."
+  },
+  "limits": [
+    "Isolateddraftoverlay+seededAPI,notshippingregistration.",
+    "EmulatedChromiumphone390/desktop1200,notphysicalAndroid/iOS.",
+    "Generic Game text field ARIAlabelsemanticreviewandbrowserharnessseparate;notclaimedvisiblein20appPNGs.",
+    "Noactualscreenreaderorhuman-nativeapproval;locale/platformnotfinalized."
+  ],
+  "locale_finalized": false,
+  "open_capture_observations": 0,
+  "axis_fix_targeted_followup": {
+    "record": "../app-axis-fix/results.json",
+    "record_sha256": "5bba523aa51cb7b3c8cafcc55d9d2fc2a5b0a5d96223e51e180cd6458ee84576",
+    "new_build_identity_sha256": "aceea0a44174817466736959aa6ce4959dd056729246f3e8ea226db3c6ce2260",
+    "base_108_run_build_sha256": "6445c77f4b8e480eb49e3dcc7ff97de623069c3a6f15d1a5075797f03c9094c5",
+    "unchanged_other_source_files": 148,
+    "changed_source_file": "platform/apps/web/src/components/LineChart.tsx",
+    "exact_single_attribute_reversal_proof": true,
+    "own_locale_four_new_images_manual_result": "pass",
+    "scope": "Only affectedprofile+matchviews at1200/390 rechecked in newbuild; original20image broadreview remains explicitly priorbuild, not falsely relabelled."
+  }
+}

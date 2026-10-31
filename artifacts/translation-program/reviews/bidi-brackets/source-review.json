@@ -1,0 +1,146 @@
+{
+  "reviewer": "/root/pilot_context",
+  "author": "/root",
+  "status": "source-review-pass-pending-render-recapture",
+  "source_sha256": "0813cc512aafd71bb45257090b37f2180b5a36a44965891ba1961c12e1869fc7",
+  "test_sha256": "83e79e18d37bac25212504a7a65d35832ae3943ed20b84ef8b84028db3912171",
+  "before_sha256": "68e003db80a2fbb80006d0ed73d7119c0b34fb69e7b6fd55b417fa396dbea18d",
+  "root_probe_log_sha256": "49f0eafde52692c6566f84bd6ad49c0188c47e2fdfabe7f768b6ce4c14f70c54",
+  "primary_reference": {
+    "url": "https://www.unicode.org/reports/tr9/tr9-52.html#N0",
+    "actually_consulted": true,
+    "scope": "N0 direction resolution processes matched brackets as one unit; implementation technical-token policy is a higher-level heuristic, not full UAX conformance."
+  },
+  "source_assessment": [
+    "Change is confined to if(runs): legacy visualOrder takes nullptr and bypasses added technical-token branch.",
+    "Balanced ASCII pairs within one whitespace-free technical token are classified L together. Unpaired bracket endpoints retain ON for existing N0 instead of forcing only opening endpoint L.",
+    "Correctly nested complete inner pairs remain L and unmatched surrounding pairs remain eligible for N0. Malformed mismatched bracket tokens retain heuristic neutral treatment; no complete Unicode pair/parser claim.",
+    "Existing ratio/sign classifier and run construction unchanged by this narrowfix.",
+    "New9case test catches original spacedpercent failure for three ASCII bracketpairs, spacedratios and mixed Urdu content. ParenthesizedURL regression remains covered by earlier test."
+  ],
+  "independent_compiled_probes": {
+    "compiler": "c++ -std=c++17 -Ilibgag/include",
+    "source": "current production BidiText.cpp, standalone noSDL",
+    "cases": [
+      {
+        "name": "spaced-percent",
+        "text": "ڈیسک ٹاپ کے مطابق (100 %)",
+        "pairs": "()",
+        "result": "PASS"
+      },
+      {
+        "name": "spaced-ratio",
+        "text": "کھلاڑی [12 / 100]",
+        "pairs": "[]",
+        "result": "PASS"
+      },
+      {
+        "name": "mixed-content",
+        "text": "کھلاڑی {100% اردو}",
+        "pairs": "{}",
+        "result": "PASS"
+      },
+      {
+        "name": "nested-whitespace",
+        "text": "کھلاڑی ([100 %])",
+        "pairs": "()[]",
+        "result": "PASS"
+      },
+      {
+        "name": "nested-inner-atomic",
+        "text": "کھلاڑی (a[100] اردو)",
+        "pairs": "()[]",
+        "result": "PASS"
+      },
+      {
+        "name": "nested-outer-atomic",
+        "text": "کھلاڑی ([100%])",
+        "pairs": "()[]",
+        "result": "PASS"
+      },
+      {
+        "name": "url",
+        "text": "کھلاڑی (https://glob2.org/play?q=12) پلیئر",
+        "pairs": "()",
+        "result": "PASS"
+      },
+      {
+        "name": "url-bracket-path",
+        "text": "کھلاڑی https://glob2.org/a(b)[c] پلیئر",
+        "pairs": "()[]",
+        "result": "PASS"
+      },
+      {
+        "name": "tab",
+        "text": "کھلاڑی (100\t%)",
+        "pairs": "()",
+        "result": "PASS"
+      },
+      {
+        "name": "nbsp",
+        "text": "کھلاڑی (100 %)",
+        "pairs": "()",
+        "result": "PASS"
+      },
+      {
+        "name": "latin-with-space",
+        "text": "کھلاڑی (Glob2 100%)",
+        "pairs": "()",
+        "result": "PASS"
+      },
+      {
+        "name": "persian-numbers",
+        "text": "کھلاڑی (۱۰۰ %)",
+        "pairs": "()",
+        "result": "PASS"
+      },
+      {
+        "name": "arabic-numbers",
+        "text": "کھلاڑی (١٠٠ %)",
+        "pairs": "()",
+        "result": "PASS"
+      },
+      {
+        "name": "separate-pairs",
+        "text": "کھلاڑی (12 %) [34 %]",
+        "pairs": "()[]",
+        "result": "PASS"
+      },
+      {
+        "name": "angle-url",
+        "text": "کھلاڑی <https://glob2.org/> پلیئر",
+        "pairs": "<>",
+        "result": "PASS"
+      }
+    ],
+    "legacy_comparison": {
+      "before": "parent archived immediate pre-bracketfix source",
+      "catalogs": [
+        {
+          "path": "data/texts.ar.txt",
+          "sha256": "0ab56f8cf67fc08c5f973e59ee493d3acb6507b15d314cd063246e97c1d52850",
+          "values": 3328
+        },
+        {
+          "path": "data/texts.fa.txt",
+          "sha256": "d9fc1ac1e88f5e7451a586903a7a7e774780fa2bf94c1dc73d6022a634babc2f",
+          "values": 3328
+        },
+        {
+          "path": "artifacts/translation-program/drafts/ur/texts.ur.txt",
+          "sha256": "5cb88fac67663fc436f6bfa60388382c24665755ee481514c002bc92e9a29837",
+          "values": 3328
+        }
+      ],
+      "values": 9984,
+      "identical_visualOrder": 9984,
+      "mismatches": 0
+    }
+  },
+  "findings": [],
+  "limits": [
+    "Source/standalone run metadata only; no glyphshaping or actualnative/WASM visual signoff.",
+    "No full UAX9 conformance assertion; explicitisolates/embeddings/general Unicode bracket coverage outside narrowfix.",
+    "No product or catalog files edited by reviewer."
+  ]
+}

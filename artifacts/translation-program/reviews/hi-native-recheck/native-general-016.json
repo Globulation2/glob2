@@ -1,0 +1,91 @@
+{
+  "author": "/root/hindi_translation",
+  "editor": "/root/translation_kit",
+  "supplemental_editor": null,
+  "reviewer": "/root/pilot_context",
+  "rechecked_by": "/root/pilot_context",
+  "batch_id": "native-general-016",
+  "source_json_sha256": "a214fc4c9ce4d90fb29d572e3b9d96987eb61af8d0f7bda5050d7d1309d488a9",
+  "original_review_file_sha256": "fd29c9ef7aeec556f3daa8edfeb31233ff48c1869a00e90f61dc59f29d820ac3",
+  "editor_file_sha256": "23396c3fa96b25fe2cbe5045d514d1496aeb8355e429b36eb91f3cbf5421d4f1",
+  "final_native_catalog_sha256": "a65477c9ac654c44a08531b6a5ee53f76d7aa6454c2f776c43382ed4f2e321e8",
+  "final_subset_sha256": "98c4795792eecd0a5b6e93531cbfb32a9f1d00c902f498b22e4ef8915f9601e6",
+  "final_target_sha256": "8c4d807d059cf2ce5ba1dc40b1b5c54acaf15ca270ab19db7164c5d23526007a",
+  "reviewed_keys": [
+    "[library Release %0]",
+    "[library Remove %0]",
+    "[library Seed: %0]",
+    "[library %0 · revision %1]",
+    "[library Fit]",
+    "[library GL only]",
+    "[Sound or silence?]",
+    "[Silence]",
+    "[Sound]",
+    "[audio preference explanation]",
+    "[audio preference change later]",
+    "[audio preference save failed]",
+    "[audio choices description]",
+    "[Grassland]",
+    "[Kopjes]",
+    "[Game trails]",
+    "[Fish amount]",
+    "[Camp-site amount]"
+  ],
+  "rechecked_keys": [
+    "[library Release %0]",
+    "[library Remove %0]",
+    "[library Seed: %0]",
+    "[library %0 · revision %1]",
+    "[library Fit]",
+    "[library GL only]",
+    "[Sound or silence?]",
+    "[Silence]",
+    "[Sound]",
+    "[audio preference explanation]",
+    "[audio preference change later]",
+    "[audio preference save failed]",
+    "[audio choices description]",
+    "[Grassland]",
+    "[Kopjes]",
+    "[Game trails]",
+    "[Fish amount]",
+    "[Camp-site amount]"
+  ],
+  "reread_changed_keys": [
+    "[Kopjes]",
+    "[Game trails]"
+  ],
+  "unchanged_keys_carried_forward_by_hash": [
+    "[library Release %0]",
+    "[library Remove %0]",
+    "[library Seed: %0]",
+    "[library %0 · revision %1]",
+    "[library Fit]",
+    "[library GL only]",
+    "[Sound or silence?]",
+    "[Silence]",
+    "[Sound]",
+    "[audio preference explanation]",
+    "[audio preference change later]",
+    "[audio preference save failed]",
+    "[audio choices description]",
+    "[Grassland]",
+    "[Fish amount]",
+    "[Camp-site amount]"
+  ],
+  "coverage_explanation": "Every original batchkey was independently read in review1. Every179primaryedit and4supplementaledits rechecked againstsource/context;3148unchangedkeys remaincovered byexact reversiblefile/subsethash proof, notclaimedfreshreading.",
+  "finding_dispositions": [
+    {
+      "key": "[Game trails]",
+      "original_severity": "major",
+      "state": "resolved_after_independent_recheck",
+      "final_target": "वन्य जीवों की पगडंडियाँ"
+    }
+  ],
+  "new_open_findings": [],
+  "status": "semantic_editorial_agent_review_passed",
+  "limits": [
+    "No nativehuman certification.",
+    "Fullregistered technical/font/render/browser/mobile gates separate; not locale finalization."
+  ]
+}

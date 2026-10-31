@@ -1,0 +1,54 @@
+{
+  "reviewer": "/root/pilot_context",
+  "author": "/root/hindi_translation",
+  "surface": "native",
+  "source_sha256": "a214fc4c9ce4d90fb29d572e3b9d96987eb61af8d0f7bda5050d7d1309d488a9",
+  "native_catalog_sha256": "027e686622a7758c5ee7633372aeb33533ecd1a36633b5e6f043bd18581b8cea",
+  "batch_count": 24,
+  "keys_examined": 3328,
+  "every_key_covered_exactly_once": true,
+  "batch_review_files": [
+    "reviews/hi-native/native-colony-001.json",
+    "reviews/hi-native/native-colony-002.json",
+    "reviews/hi-native/native-general-001.json",
+    "reviews/hi-native/native-general-002.json",
+    "reviews/hi-native/native-general-003.json",
+    "reviews/hi-native/native-general-004.json",
+    "reviews/hi-native/native-general-005.json",
+    "reviews/hi-native/native-general-006.json",
+    "reviews/hi-native/native-general-007.json",
+    "reviews/hi-native/native-general-008.json",
+    "reviews/hi-native/native-general-009.json",
+    "reviews/hi-native/native-general-010.json",
+    "reviews/hi-native/native-general-011.json",
+    "reviews/hi-native/native-general-012.json",
+    "reviews/hi-native/native-general-013.json",
+    "reviews/hi-native/native-general-014.json",
+    "reviews/hi-native/native-general-015.json",
+    "reviews/hi-native/native-general-016.json",
+    "reviews/hi-native/native-maps-001.json",
+    "reviews/hi-native/native-maps-002.json",
+    "reviews/hi-native/native-settings-001.json",
+    "reviews/hi-native/native-settings-002.json",
+    "reviews/hi-native/native-settings-003.json",
+    "reviews/hi-native/native-tutorial-001.json"
+  ],
+  "findings_count": 80,
+  "severity_counts": {
+    "critical": 0,
+    "major": 27,
+    "minor": 53
+  },
+  "result": "changes_requested",
+  "remaining_gates": [
+    "Distinct editor revisions and findings dispositions",
+    "Reviewer recheck exact substantivechanges",
+    "Structural integratedcatalog checks",
+    "Native/browser/mobile actualvisualverification"
+  ],
+  "limitations": [
+    "Agent-reviewed, not human-native approved.",
+    "Everykey semanticreading does not certify fullfluency or rendered usability.",
+    "OnlineHindi is separate and not included in this review."
+  ]
+}

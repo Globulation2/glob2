@@ -1,0 +1,15 @@
+{
+  "node": "v26.0.0",
+  "keys": 2835,
+  "plural_families": 27,
+  "plural_categories": [
+    "one",
+    "other"
+  ],
+  "branches": 2862,
+  "errors": [],
+  "catalog_sha256": "eb475877004dd1621921452dd5ff0dc5e564a98f7504d0d9d7c7a1c9462a3fac",
+  "limits": [
+    "Draft-only online structural/invariant validation; not full registered online/browser checker or rendering proof."
+  ]
+}

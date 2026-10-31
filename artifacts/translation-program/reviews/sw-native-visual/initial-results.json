@@ -1,0 +1,460 @@
+{
+  "identity": {
+    "binary_sha256": "9f002bdd4f6d6aa632499656bef371d6e2032844935dc321578e5d65f76837ec",
+    "source_sha256": "7583e9f8f0a03186eec456ed3b7a9c187509056b91f931551c3b7dc0e6b53457",
+    "catalog_sha256": {
+      "hi": {
+        "native": "a65477c9ac654c44a08531b6a5ee53f76d7aa6454c2f776c43382ed4f2e321e8",
+        "online": "d80bdd87f3502c34e45ae744d8e0f8bac3cafd93755a5ef87e0bed8bec3d74c4"
+      },
+      "ur": {
+        "native": "5cb88fac67663fc436f6bfa60388382c24665755ee481514c002bc92e9a29837",
+        "online": "db375ee564c39cf02dfb4ce08d6a4dbaecb8cd69d5bc7f167b4c7f779e246587"
+      },
+      "sw": {
+        "native": "d23c1b75c4ae209b85a6dbd9f2fb0ab084ab7bb21b7544ec8a4a5ad545129cc5",
+        "online": "6914cbf226adebd70d3ff401cfda759b62b62cc8af621b25f4ba994a8e0bec0a"
+      }
+    }
+  },
+  "results": [
+    {
+      "locale": "hi",
+      "mode": "matrix",
+      "name": "matrix",
+      "width": 1200,
+      "exit_code": 0,
+      "elapsed_s": 39.14,
+      "output": "native-preview/release-three/hi/1200"
+    },
+    {
+      "locale": "hi",
+      "mode": "screen",
+      "name": "main",
+      "width": 1200,
+      "exit_code": 0,
+      "elapsed_s": 21.9,
+      "output": "native-preview/release-three/hi/1200"
+    },
+    {
+      "locale": "hi",
+      "mode": "screen",
+      "name": "settings",
+      "width": 1200,
+      "exit_code": 0,
+      "elapsed_s": 18.2,
+      "output": "native-preview/release-three/hi/1200"
+    },
+    {
+      "locale": "hi",
+      "mode": "screen",
+      "name": "settings-audio",
+      "width": 1200,
+      "exit_code": 0,
+      "elapsed_s": 16.28,
+      "output": "native-preview/release-three/hi/1200"
+    },
+    {
+      "locale": "hi",
+      "mode": "screen",
+      "name": "lobby",
+      "width": 1200,
+      "exit_code": 0,
+      "elapsed_s": 21.52,
+      "output": "native-preview/release-three/hi/1200"
+    },
+    {
+      "locale": "hi",
+      "mode": "screen",
+      "name": "lobby-players",
+      "width": 1200,
+      "exit_code": 0,
+      "elapsed_s": 34.62,
+      "output": "native-preview/release-three/hi/1200"
+    },
+    {
+      "locale": "hi",
+      "mode": "game",
+      "name": "gameplay",
+      "width": 1200,
+      "exit_code": 0,
+      "elapsed_s": 28.42,
+      "output": "native-preview/release-three/hi/1200"
+    },
+    {
+      "locale": "hi",
+      "mode": "game",
+      "name": "tutorial",
+      "width": 1200,
+      "exit_code": 0,
+      "elapsed_s": 14.81,
+      "output": "native-preview/release-three/hi/1200"
+    },
+    {
+      "locale": "hi",
+      "mode": "matrix",
+      "name": "matrix",
+      "width": 390,
+      "exit_code": 0,
+      "elapsed_s": 29.69,
+      "output": "native-preview/release-three/hi/390"
+    },
+    {
+      "locale": "hi",
+      "mode": "screen",
+      "name": "main",
+      "width": 390,
+      "exit_code": 0,
+      "elapsed_s": 16.5,
+      "output": "native-preview/release-three/hi/390"
+    },
+    {
+      "locale": "hi",
+      "mode": "screen",
+      "name": "settings",
+      "width": 390,
+      "exit_code": 0,
+      "elapsed_s": 15.83,
+      "output": "native-preview/release-three/hi/390"
+    },
+    {
+      "locale": "hi",
+      "mode": "screen",
+      "name": "settings-audio",
+      "width": 390,
+      "exit_code": 0,
+      "elapsed_s": 15.66,
+      "output": "native-preview/release-three/hi/390"
+    },
+    {
+      "locale": "hi",
+      "mode": "screen",
+      "name": "lobby",
+      "width": 390,
+      "exit_code": 0,
+      "elapsed_s": 16.11,
+      "output": "native-preview/release-three/hi/390"
+    },
+    {
+      "locale": "hi",
+      "mode": "screen",
+      "name": "lobby-players",
+      "width": 390,
+      "exit_code": 0,
+      "elapsed_s": 22.7,
+      "output": "native-preview/release-three/hi/390"
+    },
+    {
+      "locale": "hi",
+      "mode": "game",
+      "name": "gameplay",
+      "width": 390,
+      "exit_code": 0,
+      "elapsed_s": 20.87,
+      "output": "native-preview/release-three/hi/390"
+    },
+    {
+      "locale": "hi",
+      "mode": "game",
+      "name": "tutorial",
+      "width": 390,
+      "exit_code": 0,
+      "elapsed_s": 16.7,
+      "output": "native-preview/release-three/hi/390"
+    },
+    {
+      "locale": "ur",
+      "mode": "matrix",
+      "name": "matrix",
+      "width": 1200,
+      "exit_code": 0,
+      "elapsed_s": 51.36,
+      "output": "native-preview/release-three/ur/1200"
+    },
+    {
+      "locale": "ur",
+      "mode": "screen",
+      "name": "main",
+      "width": 1200,
+      "exit_code": 0,
+      "elapsed_s": 18.79,
+      "output": "native-preview/release-three/ur/1200"
+    },
+    {
+      "locale": "ur",
+      "mode": "screen",
+      "name": "settings",
+      "width": 1200,
+      "exit_code": 0,
+      "elapsed_s": 18.07,
+      "output": "native-preview/release-three/ur/1200"
+    },
+    {
+      "locale": "ur",
+      "mode": "screen",
+      "name": "settings-audio",
+      "width": 1200,
+      "exit_code": 0,
+      "elapsed_s": 16.76,
+      "output": "native-preview/release-three/ur/1200"
+    },
+    {
+      "locale": "ur",
+      "mode": "screen",
+      "name": "lobby",
+      "width": 1200,
+      "exit_code": 0,
+      "elapsed_s": 15.94,
+      "output": "native-preview/release-three/ur/1200"
+    },
+    {
+      "locale": "ur",
+      "mode": "screen",
+      "name": "lobby-players",
+      "width": 1200,
+      "exit_code": 0,
+      "elapsed_s": 14.15,
+      "output": "native-preview/release-three/ur/1200"
+    },
+    {
+      "locale": "ur",
+      "mode": "game",
+      "name": "gameplay",
+      "width": 1200,
+      "exit_code": 0,
+      "elapsed_s": 14.26,
+      "output": "native-preview/release-three/ur/1200"
+    },
+    {
+      "locale": "ur",
+      "mode": "game",
+      "name": "tutorial",
+      "width": 1200,
+      "exit_code": 0,
+      "elapsed_s": 13.11,
+      "output": "native-preview/release-three/ur/1200"
+    },
+    {
+      "locale": "ur",
+      "mode": "matrix",
+      "name": "matrix",
+      "width": 390,
+      "exit_code": 0,
+      "elapsed_s": 28.31,
+      "output": "native-preview/release-three/ur/390"
+    },
+    {
+      "locale": "ur",
+      "mode": "screen",
+      "name": "main",
+      "width": 390,
+      "exit_code": 0,
+      "elapsed_s": 16.87,
+      "output": "native-preview/release-three/ur/390"
+    },
+    {
+      "locale": "ur",
+      "mode": "screen",
+      "name": "settings",
+      "width": 390,
+      "exit_code": 0,
+      "elapsed_s": 15.15,
+      "output": "native-preview/release-three/ur/390"
+    },
+    {
+      "locale": "ur",
+      "mode": "screen",
+      "name": "settings-audio",
+      "width": 390,
+      "exit_code": 0,
+      "elapsed_s": 18.08,
+      "output": "native-preview/release-three/ur/390"
+    },
+    {
+      "locale": "ur",
+      "mode": "screen",
+      "name": "lobby",
+      "width": 390,
+      "exit_code": 0,
+      "elapsed_s": 14.34,
+      "output": "native-preview/release-three/ur/390"
+    },
+    {
+      "locale": "ur",
+      "mode": "screen",
+      "name": "lobby-players",
+      "width": 390,
+      "exit_code": 0,
+      "elapsed_s": 16.42,
+      "output": "native-preview/release-three/ur/390"
+    },
+    {
+      "locale": "ur",
+      "mode": "game",
+      "name": "gameplay",
+      "width": 390,
+      "exit_code": 0,
+      "elapsed_s": 17.25,
+      "output": "native-preview/release-three/ur/390"
+    },
+    {
+      "locale": "ur",
+      "mode": "game",
+      "name": "tutorial",
+      "width": 390,
+      "exit_code": 0,
+      "elapsed_s": 13.21,
+      "output": "native-preview/release-three/ur/390"
+    },
+    {
+      "locale": "sw",
+      "mode": "matrix",
+      "name": "matrix",
+      "width": 1200,
+      "exit_code": 0,
+      "elapsed_s": 21.25,
+      "output": "native-preview/release-three/sw/1200"
+    },
+    {
+      "locale": "sw",
+      "mode": "screen",
+      "name": "main",
+      "width": 1200,
+      "exit_code": 0,
+      "elapsed_s": 14.41,
+      "output": "native-preview/release-three/sw/1200"
+    },
+    {
+      "locale": "sw",
+      "mode": "screen",
+      "name": "settings",
+      "width": 1200,
+      "exit_code": 0,
+      "elapsed_s": 18.52,
+      "output": "native-preview/release-three/sw/1200"
+    },
+    {
+      "locale": "sw",
+      "mode": "screen",
+      "name": "settings-audio",
+      "width": 1200,
+      "exit_code": 0,
+      "elapsed_s": 25.76,
+      "output": "native-preview/release-three/sw/1200"
+    },
+    {
+      "locale": "sw",
+      "mode": "screen",
+      "name": "lobby",
+      "width": 1200,
+      "exit_code": 0,
+      "elapsed_s": 31.57,
+      "output": "native-preview/release-three/sw/1200"
+    },
+    {
+      "locale": "sw",
+      "mode": "screen",
+      "name": "lobby-players",
+      "width": 1200,
+      "exit_code": 0,
+      "elapsed_s": 25.05,
+      "output": "native-preview/release-three/sw/1200"
+    },
+    {
+      "locale": "sw",
+      "mode": "game",
+      "name": "gameplay",
+      "width": 1200,
+      "exit_code": 0,
+      "elapsed_s": 24.48,
+      "output": "native-preview/release-three/sw/1200"
+    },
+    {
+      "locale": "sw",
+      "mode": "game",
+      "name": "tutorial",
+      "width": 1200,
+      "exit_code": 0,
+      "elapsed_s": 19.46,
+      "output": "native-preview/release-three/sw/1200"
+    },
+    {
+      "locale": "sw",
+      "mode": "matrix",
+      "name": "matrix",
+      "width": 390,
+      "exit_code": 0,
+      "elapsed_s": 30.83,
+      "output": "native-preview/release-three/sw/390"
+    },
+    {
+      "locale": "sw",
+      "mode": "screen",
+      "name": "main",
+      "width": 390,
+      "exit_code": 0,
+      "elapsed_s": 16.11,
+      "output": "native-preview/release-three/sw/390"
+    },
+    {
+      "locale": "sw",
+      "mode": "screen",
+      "name": "settings",
+      "width": 390,
+      "exit_code": 0,
+      "elapsed_s": 18.21,
+      "output": "native-preview/release-three/sw/390"
+    },
+    {
+      "locale": "sw",
+      "mode": "screen",
+      "name": "settings-audio",
+      "width": 390,
+      "exit_code": 0,
+      "elapsed_s": 20.88,
+      "output": "native-preview/release-three/sw/390"
+    },
+    {
+      "locale": "sw",
+      "mode": "screen",
+      "name": "lobby",
+      "width": 390,
+      "exit_code": 0,
+      "elapsed_s": 22.82,
+      "output": "native-preview/release-three/sw/390"
+    },
+    {
+      "locale": "sw",
+      "mode": "screen",
+      "name": "lobby-players",
+      "width": 390,
+      "exit_code": 0,
+      "elapsed_s": 26.32,
+      "output": "native-preview/release-three/sw/390"
+    },
+    {
+      "locale": "sw",
+      "mode": "game",
+      "name": "gameplay",
+      "width": 390,
+      "exit_code": 0,
+      "elapsed_s": 27.28,
+      "output": "native-preview/release-three/sw/390"
+    },
+    {
+      "locale": "sw",
+      "mode": "game",
+      "name": "tutorial",
+      "width": 390,
+      "exit_code": 0,
+      "elapsed_s": 26.05,
+      "output": "native-preview/release-three/sw/390"
+    }
+  ],
+  "complete": true,
+  "limits": [
+    "Native macOS arm64 software output; phone-sized native windows are not Android/iOS verification.",
+    "Full reviewed native catalog overlay keeps all existing locales installed.",
+    "Read image/checksum metadata before approving visual usability."
+  ]
+}

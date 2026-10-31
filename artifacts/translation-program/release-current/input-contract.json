@@ -1,0 +1,69 @@
+{
+  "helper": "consolidate-current.py",
+  "status": "Prepared and syntax-checked only; not executed; root must request before --write.",
+  "output_ownership": [
+    "release-current/manifest.json",
+    "release-current/batches/*.json",
+    "release-current/reviews/{hi,ur,sw}.json",
+    "release-current/consolidation-result.json"
+  ],
+  "never_written": [
+    "catalogs",
+    "canonical sources",
+    "drafts",
+    "reviewer/editor input evidence"
+  ],
+  "source_bundle_sha256": "a016e71957f16bbb880475c49b1d22dc8cbb7ae285fbbaa963464e0ea491fe0b",
+  "prerequisites": [
+    "Current manifest/source inventory3416native+2836online frozen at expected hash.",
+    "Old release-three/source,manifest,reviews,drafts preserved exact and all referenced evidence unchanged.",
+    "Root copies complete final catalogs into release-current/drafts/LOCALE/texts.LOCALE.txt and LOCALE.json; helper does not create/copy these.",
+    "All3 new209 author/review/editor/recheck chains complete at artifacts/source-delta-master/LOCALE/{draft,authorship,review,edited,editor,recheck}.json."
+  ],
+  "chain_contract": {
+    "people": "author,reviewer,editor identities explicit as appropriate; hi Kit/Pilot/root, ur Pilot/HiOnline/root, sw HiOnline/Kit/root.",
+    "editor_required_fields": [
+      "before_sha256 (=draft.json)",
+      "after_sha256 (=edited.json)",
+      "review_sha256",
+      "source_delta_sha256",
+      "edited_keys (all209; may use keys_read/coverage)"
+    ],
+    "recheck_required_fields": [
+      "edited_sha256",
+      "review_sha256",
+      "editor_sha256",
+      "source_delta_sha256",
+      "keys_checked_exactly_once (all209; may use reviewed_keys/keys_rechecked/coverage)",
+      "open_critical=0",
+      "open_major=0",
+      "open_minor=0",
+      "unresolved_linguistic_uncertainties=[]",
+      "resolutions: each initial review finding key has explicit status=resolved; if final_target present it must equal edited mapping"
+    ],
+    "review_coverage": "reviewed_keys_exactly_once, reviewed_keys, keys_reviewed or coverage exact209; per-key source hashes checked where present.",
+    "adaptation_rule": "Do not fabricate missing review fields or approval. Original reviewer can supply equivalent explicit data; helper adapter may be updated to validate actual schema with evidence. It currently fails closed on missing fields."
+  },
+  "outputs": "Filter old batches to retained keys; partition4radius keys by original batch, append160+49 separate new209tutorial batches. Never reassign an entire old batch to a new reviewer/editor.",
+  "technical_gates": "All9 remain passed=false,evidence=[] regardless old gated state; requires root binding actual new integrated evidence later.",
+  "verification": "python3 -m py_compile only; no consolidation or new approvals generated.",
+  "retained_radius_supplement": {
+    "keys": [
+      "[flag settings explanation]",
+      "[settings Adjust assigned units with the wheel. When off, hold Ctrl. Shift adjusts flag radius. Also controls wheel input in other menus.]",
+      "[settings Starting unit counts and radius for newly placed flags.]",
+      "[Hill radius]"
+    ],
+    "scope": "Sw3203 native pairs unchanged +4 explicit revised retained values +209 newly authored; Hi/Ur3207 unchanged +209 new.",
+    "paths": [
+      "artifacts/source-delta-master/sw/old-radius-review.json",
+      "artifacts/source-delta-master/sw/old-radius-edited.json",
+      "artifacts/source-delta-master/sw/old-radius-editor.json",
+      "artifacts/source-delta-master/sw/old-radius-recheck.json",
+      "artifacts/source-delta-master/sw/old-radius-original-reviewer-recheck.json"
+    ],
+    "roles": "Original author swahili_translation, bounded finding reviewer translation_kit, distinct editor root, rechecked by translation_kit, additional original full-catalog reviewer hindi_online_review.",
+    "partition": "Split these4keys from original batches into separate manifest batches grouped by original batch ID. Hi/Ur keep exact original people/identity, Sw adopts bounded correction people only for these4keys.",
+    "binding": "Exact source/before/after values, old base fullcatalog hash, edited4map hash, review/editor/recheck crosshashes and individual resolution targets; final assembled current catalog must equal edited4map."
+  }
+}

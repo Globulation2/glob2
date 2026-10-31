@@ -1,0 +1,13 @@
+{
+  "key": "[hard pause]",
+  "final_target": "खेल पूरी तरह रोकें",
+  "status": "wording_accepted_after_source_context_verification",
+  "source": "src/hud/input/GameGUIInputKey.cpp:309–316",
+  "meaning": "Freezes client order/checksum exchange; allowed singleplayer,AIonly,replay, rejectedlivepeer games. The full-stop action wording fits.",
+  "existing_test_source": "src/game/GameSpeedTest.cpp:298 onward",
+  "verification": "Read productionbranch and existingtestcode only; no newtestrunclaimed.",
+  "context_source_sha256": {
+    "src/hud/input/GameGUIInputKey.cpp": "69e56e4b9f969506c91fe202f53302fb6a7db0a110b297e38edc523956131804",
+    "src/game/GameSpeedTest.cpp": "accefc6e1af9b4a9ea86f4a5f7794f6c9882369945bfec210f6f3cd1c15e3580"
+  }
+}

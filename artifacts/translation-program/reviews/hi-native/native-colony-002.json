@@ -1,0 +1,27 @@
+{
+  "reviewer": "/root/pilot_context",
+  "author": "/root/hindi_translation",
+  "surface": "native",
+  "batch_id": "native-colony-002",
+  "source_json_sha256": "a214fc4c9ce4d90fb29d572e3b9d96987eb61af8d0f7bda5050d7d1309d488a9",
+  "native_catalog_sha256": "027e686622a7758c5ee7633372aeb33533ecd1a36633b5e6f043bd18581b8cea",
+  "author_batch_sha256": "ad3d498f048d840e4ed6443468d587cb83034a01489b819dcc8037a7d7e56fbe",
+  "reviewed_subset_sha256": "5dda50e3780a6a6bffbff78e94d3f844c1c5c3afe2f6552c32bf9d5e4f1c680d",
+  "keys_examined": [
+    "[library Loading building families]",
+    "[library No building families installed.]",
+    "[library No public building families yet]",
+    "[library Opening building family]"
+  ],
+  "all_batch_keys_examined": true,
+  "findings": [],
+  "context_notes": [
+    "All4building-library status messages preserve loaded/installed/public/opening distinctions."
+  ],
+  "result": "reviewed_no_actionable_findings",
+  "limits": [
+    "Agent source-to-target review; no native-human certification.",
+    "Rendering/length/style in actual game must be checked separately.",
+    "Not a full-locale or release signoff."
+  ]
+}

@@ -1,0 +1,35 @@
+{
+  "id": "native-settings-001-radius-supplement",
+  "source_sha256": "a016e71957f16bbb880475c49b1d22dc8cbb7ae285fbbaa963464e0ea491fe0b",
+  "surface": "native",
+  "domain": "settings",
+  "context": "Labels and help describe settings. Prefer short labels and explain their effect plainly.",
+  "entries": [
+    {
+      "id": "native:[flag settings explanation]",
+      "key": "[flag settings explanation]",
+      "source": "The default radius of the flag"
+    },
+    {
+      "id": "native:[settings Adjust assigned units with the wheel. When off, hold Ctrl. Shift adjusts flag radius. Also controls wheel input in other menus.]",
+      "key": "[settings Adjust assigned units with the wheel. When off, hold Ctrl. Shift adjusts flag radius. Also controls wheel input in other menus.]",
+      "source": "Adjust assigned units with the wheel. When off, hold Ctrl. Shift adjusts flag radius. Also controls wheel input in other menus."
+    },
+    {
+      "id": "native:[settings Starting unit counts and radius for newly placed flags.]",
+      "key": "[settings Starting unit counts and radius for newly placed flags.]",
+      "source": "Starting unit counts and radius for newly placed flags."
+    }
+  ],
+  "carryforward": {
+    "prior_manifest": {
+      "path": "../release-three/manifest.json",
+      "sha256": "4fd5e1faff01b7eb0e95db7eac33105ab557101742f6ef1a889e7b73210eb977"
+    },
+    "prior_batch": {
+      "path": "../release-three/batches/native-settings-001.json",
+      "sha256": "d87b9ee3be86a3b73e525b1e3a612c5833a775183d59d4b7ce5872f3bef22a24"
+    },
+    "method": "Partition retained keys by original ownership; radius supplement receives separate Sw correction chain, unchanged Hi/Ur retain original chain. No fresh reading inferred."
+  }
+}

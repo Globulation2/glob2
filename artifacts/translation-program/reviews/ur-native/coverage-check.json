@@ -1,0 +1,10 @@
+{
+  "frozen_sha256": "a2398e2e0776ad8828db86173bbeb849a119949401ec444c46ef0b8a8e6d179d",
+  "source_json_sha256": "a214fc4c9ce4d90fb29d572e3b9d96987eb61af8d0f7bda5050d7d1309d488a9",
+  "keys_examined_exactly_once": 3328,
+  "batches": 24,
+  "all_author_subset_hashes_match": true,
+  "structural_errors": [],
+  "snapshot_equals_current_frozen_catalog": true,
+  "limits": "Draftnativeonly structurecheck; notfullregisteredcatalog/font/browser/render checker."
+}

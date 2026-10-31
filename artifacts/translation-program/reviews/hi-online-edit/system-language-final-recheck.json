@@ -1,0 +1,20 @@
+{
+  "reviewer": "/root/pilot_context",
+  "source_sha256": {
+    "src/app/SystemLanguage.cpp": "0310cae417c0f98b357d8e93cdd98a2abd7aefc14079ac5aedc2b010314a8737",
+    "src/app/SystemLanguageTest.cpp": "30aa4dda709f35b3b3913832ef7ca442872ea0c9cdaec60bd7366de059953273"
+  },
+  "harness_sha256": "bd79ac27e172a9dd3716b334a8da7b7b7ba51b517da15bf7bead4b4d65fdebe0",
+  "compile": "c++ -std=c++20 -I/opt/homebrew/include -Isrc/app artifacts/translation-program/reviews/hi-online-edit/system-language-recheck.cpp src/app/SystemLanguage.cpp -L/opt/homebrew/lib -lSDL3 -o artifacts/translation-program/reviews/hi-online-edit/system-language-recheck",
+  "output": "hi-u-nu-latn/ => hi expected hi\nhi-x-latn/ => hi expected hi\npa-IN-u-nu-arab/ => pa-guru expected pa-guru\nhi/IN-u-nu-latn => hi expected hi\npa/IN-u-nu-arab => pa-guru expected pa-guru\nff-Arab-SN/ =>  expected \nfuc-Arab/ =>  expected \njv-Java/ =>  expected \nsu-Sund/ =>  expected \npa-Guru/PK => pa-guru expected pa-guru\npa-Arab/IN => pa-arab expected pa-arab\nff-Latn/SN => fuc expected fuc\nff-Adlm/SN =>  expected \nff/NG =>  expected \nuz-Cyrl/ =>  expected \nsd-Deva/ =>  expected \npa/Arab_PK => pa-arab expected pa-arab\nff/Latn_SN => fuc expected fuc\npa-Arab-Guru/ =>  expected \nhi-Latn/ =>  expected \nyo/NG => yo expected yo\nhi/IN => hi expected hi\ntl/PH => fil expected fil\njw/ => jv expected jv\nde/AT => de expected de\npt/BR => br expected br\nzh-Hant/ => zh-tw expected zh-tw\nfailures=0\nunicode extension diagnostic hi-u-nu-latn => hi\n",
+  "assertions_passed": 27,
+  "open_findings": [],
+  "review_notes": [
+    "Both language and country subtagparsers stop at singleton extension/privateuse marker.",
+    "Previously reported explicitscript mismatch and Unicodeextension findings resolved.",
+    "Punjabi explicitscriptpriority and contradictoryscript rejection preserved; selected Pulaar variety boundary preserved."
+  ],
+  "limits": [
+    "Standalone compiled productionmapping and code review; engine startup/OSintegration not claimed."
+  ]
+}

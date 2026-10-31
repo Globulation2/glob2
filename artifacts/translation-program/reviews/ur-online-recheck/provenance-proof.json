@@ -1,0 +1,17 @@
+{
+  "original_sha256": "0da47c791e9c389d68b54bfd67d418872f77a2b107daa03fe789f1ab02ab8a81",
+  "primary_editor_sha256": "f6c9ad7948a1772da6c47f7017fd5af68b43d562f1117beca6fb3b8eb1e18135",
+  "final_sha256": "de1091d2df613ac22bf2a9c46d1e3704712912c57e299e4171402aa002918d5e",
+  "primary_changes": 66,
+  "supplemental_changes": 1,
+  "total_distinct_changed_keys": 67,
+  "unchanged_keys": 2768,
+  "key_order_changed": false,
+  "original_key_order_preserved": true,
+  "reverse_supplemental_restores_primary_exact_bytes": true,
+  "reverse_all_changes_restores_original_exact_bytes": true,
+  "original_snapshot_byte_identity": true,
+  "missing_keys": [],
+  "extra_keys": [],
+  "unexpected_changed_values": []
+}

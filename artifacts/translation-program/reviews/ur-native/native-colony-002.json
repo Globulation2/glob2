@@ -1,0 +1,27 @@
+{
+  "reviewer": "/root/pilot_context",
+  "author": "/root/urdu_translation",
+  "batch_id": "native-colony-002",
+  "source_contract_sha256": "aacd8a342e9e734ba47f902a161ac1a45badff5842a617bcd68bf8e2275d6013",
+  "source_json_sha256": "a214fc4c9ce4d90fb29d572e3b9d96987eb61af8d0f7bda5050d7d1309d488a9",
+  "native_catalog_sha256": "a2398e2e0776ad8828db86173bbeb849a119949401ec444c46ef0b8a8e6d179d",
+  "author_batch_sha256": "2be50013c8a4a812a423cd26554bacba63206b07a39c67e17d6ffcfbcc3a8c6f",
+  "target_subset_sha256": "a4bfb86e7533660d8bc8296e5ac395a8cfc23fc7f0a65e4d33a993b8e10532c3",
+  "reviewed_keys": [
+    "[library Loading building families]",
+    "[library No building families installed.]",
+    "[library No public building families yet]",
+    "[library Opening building family]"
+  ],
+  "all_keys_examined": true,
+  "findings": [],
+  "context_notes": [
+    "All4 entries read. Family خاندان retained consistently ratherthanliteral biologicalclaim; installed/public distinctions preserved."
+  ],
+  "status": "read_no_actionable_findings",
+  "limits": [
+    "Independent agent review, not nativehuman certification.",
+    "No catalogediting or rendered/platform approval.",
+    "Meaning uncertainty must be resolved before finalization."
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "editor": "/root",
+  "requested_by": "/root/hindi_online_review",
+  "before_sha256": "11f177f2792592cdc2a0dfb1edb0d7b5efbead7487efa1d7249fea657d8f85ec",
+  "after_sha256": "d23c1b75c4ae209b85a6dbd9f2fb0ab084ab7bb21b7544ec8a4a5ad545129cc5",
+  "changes": [
+    {
+      "key": "[Each colony's start is measured on the finished map: the walk to wheat and to wood, how well its ground regrows, the deposits and building sites within reach, and its distance from rivals. Every factor scores from 0 to 1 against a fixed bar, the total weighs them, fairness is the worst colony's total over the best, and the score is the worst total times the fairness.]",
+      "before": "Mwanzo wa kila makazi hupimwa katika ramani iliyokamilika: umbali wa kutembea hadi ngano na kuni, uwezo wa ardhi kuota tena, akiba na maeneo ya ujenzi yanayofikika, na umbali kutoka kwa wapinzani. Kila kipengele hupata alama kati ya 0 na 1 kulingana na kiwango maalumu; jumla hupatikana kwa kujumlisha alama kulingana na uzito wa kila kipengele. Usawa ni jumla ya makazi dhaifu zaidi ikigawanywa kwa ya makazi bora zaidi, na alama ya mwisho ni jumla dhaifu zaidi ikizidishwa kwa usawa.",
+      "after": "Mwanzo wa kila makazi hupimwa katika ramani iliyokamilika: umbali wa kutembea hadi chakula na kuni, uwezo wa ardhi kuota tena, akiba na maeneo ya ujenzi yanayofikika, na umbali kutoka kwa wapinzani. Kila kipengele hupata alama kati ya 0 na 1 kulingana na kiwango maalumu; jumla hupatikana kwa kujumlisha alama kulingana na uzito wa kila kipengele. Usawa ni jumla ya makazi dhaifu zaidi ikigawanywa kwa ya makazi bora zaidi, na alama ya mwisho ni jumla dhaifu zaidi ikizidishwa kwa usawa.",
+      "reason": "Actual frozen source VALUE says food and wood; source key contains obsolete wheat wording. Original independent reviewer requested source-value correction."
+    }
+  ],
+  "status": "pending-original-reviewer-recheck"
+}

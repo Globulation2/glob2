@@ -1,0 +1,244 @@
+{
+  "status": "conditional-planning-analysis-only",
+  "analyst": "/root/hindi_online_review",
+  "as_of": "2026-10-31",
+  "scope": [
+    "hi",
+    "ur",
+    "sw"
+  ],
+  "inputs_provenance": {
+    "cached_audit_sha256": "ffb379228f7978a500ea4a18b65a21fa16489efcf5334f599ed7ec21bf15ba6e",
+    "cached_audit_revision": "6a16670c6daafa34f1f86a47014f23e0d05fd4e3",
+    "locale_inventory_sha256": "5478f66b7d9fa451160d3964784c4651148afda1c22b86ec2f56e755756fe0e0",
+    "locale_inventory": [
+      "ar",
+      "pt-BR",
+      "ca",
+      "cs",
+      "de",
+      "da",
+      "en",
+      "es",
+      "eo",
+      "eu",
+      "fa",
+      "fr",
+      "el",
+      "hu",
+      "it",
+      "nl",
+      "pl",
+      "pt-PT",
+      "ro",
+      "ru",
+      "sl",
+      "sk",
+      "sr-Cyrl",
+      "fi",
+      "sv",
+      "tr",
+      "zh-Hant",
+      "zh-Hans",
+      "uk",
+      "id",
+      "vi",
+      "ja",
+      "ko"
+    ],
+    "registered_locale_count": 33,
+    "pilots_currently_registered": []
+  },
+  "baseline": {
+    "native_proxy_count": 3162150000,
+    "old_denominator": 8300000000,
+    "old_native_percentage": 38.098192771084335,
+    "old_with_arabic_percentage": 42.13433734939759,
+    "on_new_UN_denominator_percentage": 38.09507909503823,
+    "on_new_UN_denominator_with_arabic_percentage": 42.1308938087102,
+    "recommended_rounded_native_label": "approximately38%, inherited rough proxy",
+    "recommended_rounded_arabic_label": "approximately42%, separate mixed written-access scenario",
+    "source_inputs": {
+      "world_millions": 8300,
+      "major_native_millions": {
+        "Mandarin": 988,
+        "Spanish": 487,
+        "English": 372,
+        "Portuguese": 252,
+        "Russian": 133,
+        "Japanese": 124,
+        "Turkish": 86,
+        "Vietnamese": 86,
+        "Korean": 82,
+        "Indonesian": 78,
+        "German": 76,
+        "French": 76,
+        "Iranian Persian": 65,
+        "Italian": 60
+      },
+      "smaller_language_Europe_only_rough_proxy_millions": {
+        "Polish": 38,
+        "Ukrainian": 32.6,
+        "Romanian": 24,
+        "Dutch": 22,
+        "Hungarian": 11,
+        "Greek": 11,
+        "Czech": 10.6,
+        "Swedish": 10,
+        "Catalan": 10,
+        "Serbian": 9,
+        "Danish": 5.5,
+        "Finnish": 5.4,
+        "Slovak": 5.2,
+        "Slovene": 2.1,
+        "Basque": 0.75
+      },
+      "standard_arabic_L2_millions": 335,
+      "notes": [
+        "Approximate planning model, not unique-person census. Smaller language inputs mix dates and omit diaspora; Catalan source may conflate native and total; use rounded 38 percent.",
+        "Arabic standard written access is a separate scenario, not native-speaker coverage.",
+        "Chinese scripts and Portuguese variants counted once.",
+        "No estimate of deduplicated multilingual union is available."
+      ]
+    }
+  },
+  "world_denominator": {
+    "persons": 8300678395,
+    "reference_date": "2026-07-01",
+    "variant": "Medium",
+    "revision": "UNWPP2024",
+    "workbook_cell": "Medium variant!M20",
+    "source": "UN-denominator"
+  },
+  "speaker_inputs": {
+    "hi_narrow_india_2011": 322230097,
+    "hi_broad_group_india_2011": 528347193,
+    "ur_india_group_2011": 50772631,
+    "ur_india_exact_return_2011": 50725762,
+    "ur_pakistan_2023": 22249307,
+    "sw_world_L1_estimate_2021": 16000000
+  },
+  "conditional_scenarios": {
+    "narrow_native_proxy": {
+      "baseline_count_proxy": 3162150000,
+      "addition_count_proxy": 411252035,
+      "conditional_total_count_proxy": 3573402035,
+      "conditional_percentage": 43.04951794244282,
+      "addition_percentage_points": 4.954438847404592,
+      "is_unique_person_or_net_new_coverage_estimate": false,
+      "conditional_on_all_three_finalized_and_registered": true,
+      "arabic_written_L2_scenario": false
+    },
+    "narrow_plus_baseline_arabic_written": {
+      "baseline_count_proxy": 3497150000,
+      "addition_count_proxy": 411252035,
+      "conditional_total_count_proxy": 3908402035,
+      "conditional_percentage": 47.085332656114794,
+      "addition_percentage_points": 4.954438847404592,
+      "is_unique_person_or_net_new_coverage_estimate": false,
+      "conditional_on_all_three_finalized_and_registered": true,
+      "arabic_written_L2_scenario": true
+    },
+    "broad_Hindi_group_sensitivity_not_coverage_claim": {
+      "baseline_count_proxy": 3162150000,
+      "addition_count_proxy": 617369131,
+      "conditional_total_count_proxy": 3779519131,
+      "conditional_percentage": 45.532653491028306,
+      "addition_percentage_points": 7.437574395990076,
+      "is_unique_person_or_net_new_coverage_estimate": false,
+      "conditional_on_all_three_finalized_and_registered": true,
+      "arabic_written_L2_scenario": false
+    },
+    "broad_plus_arabic_sensitivity_not_coverage_claim": {
+      "baseline_count_proxy": 3497150000,
+      "addition_count_proxy": 617369131,
+      "conditional_total_count_proxy": 4114519131,
+      "conditional_percentage": 49.568468204700274,
+      "addition_percentage_points": 7.437574395990076,
+      "is_unique_person_or_net_new_coverage_estimate": false,
+      "conditional_on_all_three_finalized_and_registered": true,
+      "arabic_written_L2_scenario": true
+    }
+  },
+  "recommended_statement_before_finalization": "The33-locale baseline remains an inherited rough38% native-language proxy. The3pilots are not registered or credited as delivered. If all3finalize, a conservative-scope mixed-date speaker-count scenario adds about410million (~5percentagepoints), taking that proxy to about43%. This is not newly reached unique people.",
+  "recommended_statement_after_all_three_finalized_only": "Hindi, Urdu and Swahili raise the rough native-language planning proxy from about38% to about43%, using narrower Hindi census self-identification; unique readable-user coverage and net-new reach remain unmeasured.",
+  "limitations": [
+    "Existing baseline inputs inherited, not independently re-audited: mixed dates/geographies, Catalan total/native ambiguity, missing diaspora; approximate38% only.",
+    "No native/online finalized quality certification inferred from presence of33 registered catalogs; three pilots remain unregistered and conditional.",
+    "New figures mix2011India,2023Pakistan,2021Swahili with2026world denominator; neither a2026language census nor a lower bound on current readable users.",
+    "Hindi group includes Bhojpuri, Rajasthani and many other classified mother tongues; Hindi translation is not certification of serving every such language. Narrow self-report category also does not test standard Hindi proficiency.",
+    "Hindi Devanagari, Urdu Arabic-derived Perso-Arabic/Nastaliq written form and Swahili contemporary Latin standard require reading ability; speech intelligibility does not imply literacy in these scripts. No RomanHindi/RomanUrdu/SwahiliAjami coverage claimed.",
+    "Hindi/Urdu spoken overlap does not make the two written translations redundant or guarantee cross-script reading. No script literacy adjustment measured.",
+    "Existing English/French/Arabic users overlap new Hindi/Urdu/Swahili audiences; no cross-language unique-person union data or net-new-access count available.",
+    "Mother tongue categories are mostly exclusive census responses, but baseline mixes national/global estimates; native multilinguals and methodological overlap remain.",
+    "Swahili200m total and baselineArabic335mL2 are not added to L1 scenario. Arabic remains a separately labelled mixed written-access illustration with unmeasured overlap, not a stronger native coverage estimate.",
+    "No geographic totals are counted as all literate speakers; Swahili Tanzania/Kenya populations not substituted for L1. Diaspora and L2 access may increase audience but are unquantified.",
+    "Remaining27backlog languages not re-audited or credited."
+  ],
+  "sources": [
+    {
+      "id": "india-census",
+      "url": "https://censusindia.gov.in/nada/index.php/catalog/42458",
+      "download_url": "https://censusindia.gov.in/nada/index.php/catalog/42458/download/46089/C-16_25062018.pdf",
+      "publisher": "Office of the Registrar General & Census Commissioner, India",
+      "data_date": "2011",
+      "publication": "Language, Paper1 of2018",
+      "read_method": "Official PDF downloaded successfully via urllib; pdftotext text actually read, General Note and Statement1 printed pages3–7. Browser PDF fetch returned octet-stream/timeout, not treated as substantive reading.",
+      "facts_used": "Statement1 differentiates Hindi self-return322230097 and group528347193. Urdu group50772631 includes exact Urdu50725762 plus minor classified returns. General Note records reported childhood mother tongue, not literacy or UI competence.",
+      "local_file": "sources/india-language.pdf",
+      "sha256": "2aac967e452fc6af7768a1266e8f88bbd031b61c62383ebda6b16c8e633b40f3"
+    },
+    {
+      "id": "pakistan-census",
+      "url": "https://www.pbs.gov.pk/wp-content/uploads/census_tables/tables/table_11_national.pdf",
+      "publisher": "Pakistan Bureau of Statistics",
+      "data_date": "2023",
+      "read_method": "Opened and read official two-page PDF; Table11 page1 national all-sexes Urdu column.",
+      "facts_used": "22249307 Urdu mother-tongue respondents; national table excludes population outside its stated census territorial universe. Not total Urdu speakers.",
+      "local_file": "sources/pakistan-table11.pdf",
+      "sha256": "b74c5e37d943b28f625467ff3af2afd73f1ef79573169c9ddd026a2994d5c6f4"
+    },
+    {
+      "id": "swahili-L1",
+      "url": "https://www.essex.ac.uk/news/2021/10/29/essex-leads-international-research-into-swahili",
+      "publisher": "University of Essex, reporting its Swahili research project",
+      "data_date": "2021-10-29",
+      "read_method": "Full article opened and relevant research/team paragraphs read.",
+      "facts_used": "Approximately16million first-language speakers; estimate, not enumerated census. The article does not provide an underlying count methodology; not projected to2026.",
+      "local_file": "sources/essex-swahili.html",
+      "sha256": null,
+      "local_cache_status": "urllib certificate validation failed; web tool successfully opened full article and relevant paragraphs were actually read. No certificate checks bypassed."
+    },
+    {
+      "id": "swahili-total-context-only",
+      "url": "https://www.unesco.org/en/articles/kiswahili-bridge-cultural-diversity-dialogue-and-digital-innovation",
+      "publisher": "UNESCO",
+      "data_date": "2026-07-03",
+      "read_method": "Full article opened and read.",
+      "facts_used": "Over200million speakers acrossAfrica/beyond, with multilingual bridge function. Total audience statement is contextual only; no additive L1/L2 arithmetic.",
+      "local_file": "sources/unesco-swahili.html",
+      "sha256": "9606a530959f31de1ddf8ea3bd2911082db98108b3e1bf3c780a7397023f2187"
+    },
+    {
+      "id": "UN-denominator",
+      "url": "https://population.un.org/wpp",
+      "download_url": "https://population.un.org/wpp/assets/Excel%20Files/1_Indicator%20(Standard)/EXCEL_FILES/1_General/WPP2024_GEN_F01_DEMOGRAPHIC_INDICATORS_COMPACT.xlsx",
+      "publisher": "UN DESA Population Division",
+      "data_date": "2026-07-01",
+      "publication": "World Population Prospects2024, GEN/01/REV1",
+      "read_method": "Downloaded official XLSX; independently decoded sharedStrings+worksheetXML; Medium variant row20 World2026, M20=8300678.3949999996 thousand, L20 Jan1=8266245.2910000002 thousand.",
+      "facts_used": "8300678395 persons rounded from official workbook July1 total; public UNDataPortal rounded display differs by1person, immaterial. This is a projection, not real-time count.",
+      "local_file": "sources/world.xlsx",
+      "sha256": "98e34d9b65b53858cd08a57a566e45050b08093ad85ba5714fe6fbd78055ae6d"
+    }
+  ],
+  "source_files_hashes": {
+    "sources/india-language.txt": "54cae95863e7a631e0eb01340b0ffd349fc44239ab107ed891d482448a1a8ae8",
+    "sources/world.xlsx": "98e34d9b65b53858cd08a57a566e45050b08093ad85ba5714fe6fbd78055ae6d",
+    "sources/india-language.pdf": "2aac967e452fc6af7768a1266e8f88bbd031b61c62383ebda6b16c8e633b40f3",
+    "sources/pakistan-table11.pdf": "b74c5e37d943b28f625467ff3af2afd73f1ef79573169c9ddd026a2994d5c6f4",
+    "sources/india-catalog.html": "31e9d450c4fd0c256f18aa1a83029a373444df576521f0e8b0a153eb6c0371ac",
+    "sources/world-2026-extracted-row.json": "de128fd58175be38a03f1fa231b3a0bfd246c87c4ca27414cc485d6ad8120368",
+    "sources/unesco-swahili.html": "9606a530959f31de1ddf8ea3bd2911082db98108b3e1bf3c780a7397023f2187"
+  }
+}

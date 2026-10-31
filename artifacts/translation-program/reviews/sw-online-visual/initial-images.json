@@ -1,0 +1,142 @@
+[
+  {
+    "file": "initial-captures/sw-1200-home-first-visit.png",
+    "sha256": "272ff7fbd0d4b2053166f220544ca07f35ed919ac57eb9144f8c7a372aea1162",
+    "width": 1200,
+    "manual_read": true,
+    "surface": "home-first-visit"
+  },
+  {
+    "file": "initial-captures/sw-1200-signin.png",
+    "sha256": "76370b63b16bd374b7b73d0df2816c6df15cc9be8ede161fcdfdb164fb90f181",
+    "width": 1200,
+    "manual_read": true,
+    "surface": "signin"
+  },
+  {
+    "file": "initial-captures/sw-1200-signin-error.png",
+    "sha256": "b1b5b84afbe93f32cef7505cb1517dd9bcae49ff30d56bd69c4bc81f8de80150",
+    "width": 1200,
+    "manual_read": true,
+    "surface": "signin-error"
+  },
+  {
+    "file": "initial-captures/sw-1200-account.png",
+    "sha256": "51f70bfcc55622f4bed43802f1422d5b377fc0378ae684610e03bc797d60c4f6",
+    "width": 1200,
+    "manual_read": true,
+    "surface": "account"
+  },
+  {
+    "file": "initial-captures/sw-1200-matches.png",
+    "sha256": "93870f523e6cb329e644f42bf155cd60de9a17dc2d38d49d30b72b75a0567694",
+    "width": 1200,
+    "manual_read": true,
+    "surface": "matches"
+  },
+  {
+    "file": "initial-captures/sw-1200-match.png",
+    "sha256": "c535b2854146dd7b30b6649d386d54b0ac083729ef6ee029f1b70548b8ed55ef",
+    "width": 1200,
+    "manual_read": true,
+    "surface": "match"
+  },
+  {
+    "file": "initial-captures/sw-1200-profile.png",
+    "sha256": "8924aa4a65c8ab03fb45d2bcc0dae3ef3a3c39397bf79e9719b1a9c6b63a4736",
+    "width": 1200,
+    "manual_read": true,
+    "surface": "profile"
+  },
+  {
+    "file": "initial-captures/sw-1200-leaderboard.png",
+    "sha256": "6cf40dd6b277fbb8001f4740f279476c7559e7a898efc92fbbaad7d1585255d5",
+    "width": 1200,
+    "manual_read": true,
+    "surface": "leaderboard"
+  },
+  {
+    "file": "initial-captures/sw-1200-maps.png",
+    "sha256": "fd6edb1ae9227b6b8ff4c04440fad5b3c76664336344ec902950ff2b1f8668d2",
+    "width": 1200,
+    "manual_read": true,
+    "surface": "maps"
+  },
+  {
+    "file": "initial-captures/sw-1200-invite.png",
+    "sha256": "9ff66c0476719d980cec34bcf9cef0e4b18457cdfe7ce36f53172a87d2a1106b",
+    "width": 1200,
+    "manual_read": true,
+    "surface": "invite"
+  },
+  {
+    "file": "initial-captures/sw-390-home-first-visit.png",
+    "sha256": "d8ed617a05b5d113e98230c0ff1cb296071467dbaa5db9f1403858092919ac4f",
+    "width": 390,
+    "manual_read": true,
+    "surface": "home-first-visit"
+  },
+  {
+    "file": "initial-captures/sw-390-signin.png",
+    "sha256": "8bf6ac9042bfb60309b64eb65180a6a6c5382237864b89a8580c8ba181d7b90b",
+    "width": 390,
+    "manual_read": true,
+    "surface": "signin"
+  },
+  {
+    "file": "initial-captures/sw-390-signin-error.png",
+    "sha256": "bd75c90a5a861dcc66ecc7ec186c8196dbe07fa2917c38a1e693113eed71057d",
+    "width": 390,
+    "manual_read": true,
+    "surface": "signin-error"
+  },
+  {
+    "file": "initial-captures/sw-390-account.png",
+    "sha256": "689ac513608156e76567ce8c13f0cf92af70110058edd466c52570d40d276a36",
+    "width": 390,
+    "manual_read": true,
+    "surface": "account"
+  },
+  {
+    "file": "initial-captures/sw-390-matches.png",
+    "sha256": "a02aa48713d638e5efb9199d34fbdd8903748e551968fa948769c4397d4d4a7f",
+    "width": 390,
+    "manual_read": true,
+    "surface": "matches"
+  },
+  {
+    "file": "initial-captures/sw-390-match.png",
+    "sha256": "73727d121e2ecc3c1333070fa17520b1295bd69755021e87594a0a30c7d696d8",
+    "width": 390,
+    "manual_read": true,
+    "surface": "match"
+  },
+  {
+    "file": "initial-captures/sw-390-profile.png",
+    "sha256": "c53426db26f87ca809f9f84eb1b63a1762525fef51f11f9adacb3532278c129d",
+    "width": 390,
+    "manual_read": true,
+    "surface": "profile"
+  },
+  {
+    "file": "initial-captures/sw-390-leaderboard.png",
+    "sha256": "47f01eba56f622419781116a4652a9c9aad85ce2bc735af1b8df8dba310fa596",
+    "width": 390,
+    "manual_read": true,
+    "surface": "leaderboard"
+  },
+  {
+    "file": "initial-captures/sw-390-maps.png",
+    "sha256": "10d6cb9acb2b3de3a862ab01d22f24dd20ab49e326fa97a114773675375301cc",
+    "width": 390,
+    "manual_read": true,
+    "surface": "maps"
+  },
+  {
+    "file": "initial-captures/sw-390-invite.png",
+    "sha256": "0097deacdaf25ff48169d87f0933cd53ac3d5f92ad515a22127d06a7d130d051",
+    "width": 390,
+    "manual_read": true,
+    "surface": "invite"
+  }
+]

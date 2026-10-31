@@ -1,0 +1,1293 @@
+{
+  "editor": "/root/swahili_translation",
+  "author": "/root/urdu_translation",
+  "independent_reviewer": "/root/pilot_context",
+  "batch_id": "native-general-003",
+  "source_contract_sha256": "aacd8a342e9e734ba47f902a161ac1a45badff5842a617bcd68bf8e2275d6013",
+  "original_target_subset_sha256": "4d70920ba64213140fb659f200384d5958b2235c1fe016a64602f6187f22af4e",
+  "final_target_subset_sha256": "b19e9118e864bd6ad8e54628444f7a942c061c18ea19532f8d864d52f66400e5",
+  "final_catalog_sha256": "ec78fb33247244bf783461e0410ef11fe48e45644c3c6500419d9060e967d458",
+  "entries": [
+    {
+      "key": "[select place clearing area]",
+      "source": "Select Place Clearing Area",
+      "before": "صفائی کا علاقہ لگانا منتخب کریں",
+      "after": "صفائی کا علاقہ لگانا منتخب کریں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[select place farm area]",
+      "source": "Select Place Farm Area",
+      "before": "کھیتی کا علاقہ لگانا منتخب کریں",
+      "after": "کھیتی کا علاقہ لگانا منتخب کریں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[select place forbidden area]",
+      "source": "Select Place Forbidden Area",
+      "before": "ممنوع علاقہ لگانا منتخب کریں",
+      "after": "ممنوع علاقہ لگانا منتخب کریں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[select place guard area]",
+      "source": "Select Place Guard Area",
+      "before": "پہرے کا علاقہ لگانا منتخب کریں",
+      "after": "پہرے کا علاقہ لگانا منتخب کریں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[settings]",
+      "source": "Settings",
+      "before": "ترتیبات",
+      "after": "ترتیبات",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[shift %0]",
+      "source": "shift-%0",
+      "before": "Shift-%0",
+      "after": "Shift-%0",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[show areas]",
+      "source": "Show areas",
+      "before": "علاقے دکھائیں",
+      "after": "علاقے دکھائیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[show main menu]",
+      "source": "Show Main Menu",
+      "before": "مرکزی مینیو دکھائیں",
+      "after": "مرکزی مینیو دکھائیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[skin]",
+      "source": "Display",
+      "before": "نمائش",
+      "after": "نمائش",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[smoothing]",
+      "source": "Smoothing",
+      "before": "ہموار کرنا",
+      "after": "ہموار کرنا",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[space]",
+      "source": "space",
+      "before": "Space",
+      "after": "Space",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[start mission]",
+      "source": "Start Mission",
+      "before": "مشن شروع کریں",
+      "after": "مشن شروع کریں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[start new campaign]",
+      "source": "Start New Campaign",
+      "before": "نئی مہم شروع کریں",
+      "after": "نئی مہم شروع کریں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Start]",
+      "source": "Start",
+      "before": "شروع کریں",
+      "after": "شروع کریں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Starving Map]",
+      "source": "Starving Map",
+      "before": "فاقہ زدہ یونٹوں کا نقشہ",
+      "after": "فاقہ زدہ یونٹوں کا نقشہ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[starving]",
+      "source": "starving",
+      "before": "فاقہ زدہ",
+      "after": "فاقہ زدہ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Statistics]",
+      "source": "Statistics",
+      "before": "اعداد و شمار",
+      "after": "اعداد و شمار",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Still (i)]",
+      "source": "Still",
+      "before": "ابھی بھی",
+      "after": "ابھی بھی",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[still (w)]",
+      "source": "Still",
+      "before": "ابھی بھی",
+      "after": "ابھی بھی",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[still one unit working]",
+      "source": "One unit still working",
+      "before": "ایک یونٹ اب بھی کام پر ہے",
+      "after": "ایک یونٹ اب بھی کام پر ہے",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Still one]",
+      "source": "Still one",
+      "before": "ابھی ایک",
+      "after": "ابھی ایک",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Stone]",
+      "source": "Stone",
+      "before": "پتھر",
+      "after": "پتھر",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stone]",
+      "source": "stone",
+      "before": "پتھر",
+      "after": "پتھر",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stonewall explanation 2]",
+      "source": "element",
+      "before": "کا ذریعہ",
+      "after": "کا ذریعہ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stonewall explanation]",
+      "source": "Passive defense",
+      "before": "غیر فعال دفاع",
+      "after": "غیر فعال دفاع",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stonewall]",
+      "source": "Stone Wall",
+      "before": "پتھر کی دیوار",
+      "after": "پتھر کی دیوار",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[svr hostname]",
+      "source": "Server hostname",
+      "before": "سرور کا میزبان نام",
+      "after": "سرور کا میزبان نام",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Swim]",
+      "source": "Swim",
+      "before": "تیراکی",
+      "after": "تیراکی",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[swimmingpool explanation 2]",
+      "source": "speed of your units",
+      "before": "تیرنے کی رفتار بہتر بناتا ہے",
+      "after": "تیرنے کی رفتار بہتر بناتا ہے",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[swimmingpool explanation]",
+      "source": "Improves the swimming",
+      "before": "آپ کے یونٹوں کی",
+      "after": "آپ کے یونٹوں کی",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[swimmingpool]",
+      "source": "Swimming pool",
+      "before": "تیراکی کا تالاب",
+      "after": "تیراکی کا تالاب",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[switch to adding areas]",
+      "source": "Switch To Adding Areas",
+      "before": "علاقے شامل کرنے پر جائیں",
+      "after": "علاقے شامل کرنے پر جائیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[switch to area brush 1]",
+      "source": "Switch To Area Brush 1",
+      "before": "علاقے کے برش 1 پر جائیں",
+      "after": "علاقے کے برش 1 پر جائیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[switch to area brush 2]",
+      "source": "Switch To Area Brush 2",
+      "before": "علاقے کے برش 2 پر جائیں",
+      "after": "علاقے کے برش 2 پر جائیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[switch to area brush 3]",
+      "source": "Switch To Area Brush 3",
+      "before": "علاقے کے برش 3 پر جائیں",
+      "after": "علاقے کے برش 3 پر جائیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[switch to area brush 4]",
+      "source": "Switch To Area Brush 4",
+      "before": "علاقے کے برش 4 پر جائیں",
+      "after": "علاقے کے برش 4 پر جائیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[switch to area brush 5]",
+      "source": "Switch To Area Brush 5",
+      "before": "علاقے کے برش 5 پر جائیں",
+      "after": "علاقے کے برش 5 پر جائیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[switch to area brush 6]",
+      "source": "Switch To Area Brush 6",
+      "before": "علاقے کے برش 6 پر جائیں",
+      "after": "علاقے کے برش 6 پر جائیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[switch to area brush 7]",
+      "source": "Switch To Area Brush 7",
+      "before": "علاقے کے برش 7 پر جائیں",
+      "after": "علاقے کے برش 7 پر جائیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[switch to area brush 8]",
+      "source": "Switch To Area Brush 8",
+      "before": "علاقے کے برش 8 پر جائیں",
+      "after": "علاقے کے برش 8 پر جائیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[switch to removing areas]",
+      "source": "Switch To Removing Areas",
+      "before": "علاقے ہٹانے پر جائیں",
+      "after": "علاقے ہٹانے پر جائیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[switch to teams view]",
+      "source": "Switch to Team view",
+      "before": "ٹیموں کا منظر دکھائیں",
+      "after": "ٹیموں کا منظر دکھائیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[sys req]",
+      "source": "sys req",
+      "before": "SysRq",
+      "after": "SysRq",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[tab]",
+      "source": "tab",
+      "before": "Tab",
+      "after": "Tab",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[teams editor]",
+      "source": "Teams Editor",
+      "before": "ٹیموں کا ایڈیٹر",
+      "after": "ٹیموں کا ایڈیٹر",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Teams Fixed]",
+      "source": "Teams Fixed",
+      "before": "ٹیمیں طے ہیں",
+      "after": "ٹیمیں طے ہیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[teams]",
+      "source": " teams",
+      "before": " ٹیمیں",
+      "after": " ٹیمیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[the barracks is finished]",
+      "source": "The barracks is finished.",
+      "before": "بیرک مکمل ہو گئی ہے۔",
+      "after": "بیرک مکمل ہو گئی ہے۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[the barracks is under attack]",
+      "source": "The barracks is under attack.",
+      "before": "بیرک پر حملہ ہو رہا ہے۔",
+      "after": "بیرک پر حملہ ہو رہا ہے۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[the defencetower is finished]",
+      "source": "The defense tower is finished.",
+      "before": "دفاعی مینار مکمل ہو گیا ہے۔",
+      "after": "دفاعی مینار مکمل ہو گیا ہے۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[the defencetower is under attack]",
+      "source": "The defense tower is under attack.",
+      "before": "دفاعی مینار پر حملہ ہو رہا ہے۔",
+      "after": "دفاعی مینار پر حملہ ہو رہا ہے۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[The game has not been finished]",
+      "source": "The game has not been finished.",
+      "before": "کھیل مکمل نہیں ہوا ہے۔",
+      "after": "کھیل مکمل نہیں ہوا ہے۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[the games]",
+      "source": "Games",
+      "before": "کھیل",
+      "after": "کھیل",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[the hospital is finished]",
+      "source": "The hospital is finished.",
+      "before": "ہسپتال مکمل ہو گیا ہے۔",
+      "after": "ہسپتال مکمل ہو گیا ہے۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[the hospital is under attack]",
+      "source": "The hospital is under attack.",
+      "before": "ہسپتال پر حملہ ہو رہا ہے۔",
+      "after": "ہسپتال پر حملہ ہو رہا ہے۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[The host has cancelled the game]",
+      "source": "The host has cancelled the game.",
+      "before": "میزبان نے کھیل منسوخ کر دیا ہے۔",
+      "after": "میزبان نے کھیل منسوخ کر دیا ہے۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[the maps]",
+      "source": "Maps",
+      "before": "نقشے",
+      "after": "نقشے",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[the racetrack is finished]",
+      "source": "The racetrack is finished.",
+      "before": "دوڑ کا میدان مکمل ہو گیا ہے۔",
+      "after": "دوڑ کا میدان مکمل ہو گیا ہے۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[the racetrack is under attack]",
+      "source": "The racetrack is under attack.",
+      "before": "دوڑ کے میدان پر حملہ ہو رہا ہے۔",
+      "after": "دوڑ کے میدان پر حملہ ہو رہا ہے۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[the replays]",
+      "source": "Replays",
+      "before": "ری پلے",
+      "after": "ری پلے",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[the school is finished]",
+      "source": "The school is finished.",
+      "before": "اسکول مکمل ہو گیا ہے۔",
+      "after": "اسکول مکمل ہو گیا ہے۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[the school is under attack]",
+      "source": "The school is under attack.",
+      "before": "اسکول پر حملہ ہو رہا ہے۔",
+      "after": "اسکول پر حملہ ہو رہا ہے۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[the stonewall is finished]",
+      "source": "A wall section is finished.",
+      "before": "دیوار کا ایک حصہ مکمل ہو گیا ہے۔",
+      "after": "دیوار کا ایک حصہ مکمل ہو گیا ہے۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[the stonewall is under attack]",
+      "source": "The enemy is at your walls.",
+      "before": "دشمن آپ کی دیواروں تک پہنچ گیا ہے۔",
+      "after": "دشمن آپ کی دیواروں تک پہنچ گیا ہے۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[the swimmingpool is finished]",
+      "source": "The swimming pool is finished.",
+      "before": "تیراکی کا تالاب مکمل ہو گیا ہے۔",
+      "after": "تیراکی کا تالاب مکمل ہو گیا ہے۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[the swimmingpool is under attack]",
+      "source": "The swimming pool is under attack.",
+      "before": "تیراکی کے تالاب پر حملہ ہو رہا ہے۔",
+      "after": "تیراکی کے تالاب پر حملہ ہو رہا ہے۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[time]",
+      "source": "Time",
+      "before": "وقت",
+      "after": "وقت",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[to:]",
+      "source": "to:",
+      "before": "بنام:",
+      "after": "بنام:",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[toggle draw accessibility aids]",
+      "source": "Toggle team numbers",
+      "before": "ٹیموں کے نمبر دکھائیں یا چھپائیں",
+      "after": "ٹیموں کے نمبر دکھائیں یا چھپائیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[toggle draw information]",
+      "source": "Toggle Draw Information",
+      "before": "معلومات دکھائیں یا چھپائیں",
+      "after": "معلومات دکھائیں یا چھپائیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[toggle draw unit paths]",
+      "source": "Toggle Draw Unit Paths",
+      "before": "یونٹوں کے راستے دکھائیں یا چھپائیں",
+      "after": "یونٹوں کے راستے دکھائیں یا چھپائیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[toggle menu screen]",
+      "source": "Toggle Menu Screen",
+      "before": "مینیو اسکرین دکھائیں یا چھپائیں",
+      "after": "مینیو اسکرین دکھائیں یا چھپائیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[toggle recording voice]",
+      "source": "Toggle Recording Voice",
+      "before": "آواز کی ریکارڈنگ شروع یا بند کریں",
+      "after": "آواز کی ریکارڈنگ شروع یا بند کریں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Total Attack Power]",
+      "source": "Total Attack Power",
+      "before": "کل حملہ آور طاقت",
+      "after": "کل حملہ آور طاقت",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Total Defence Power]",
+      "source": "Total Defence Power",
+      "before": "کل دفاعی طاقت",
+      "after": "کل دفاعی طاقت",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Total Hitpoints]",
+      "source": "Total Hitpoints",
+      "before": "کل صحت کے پوائنٹس",
+      "after": "کل صحت کے پوائنٹس",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Total prestige reached]",
+      "source": "Total prestige reached",
+      "before": "حاصل کردہ کل وقار",
+      "after": "حاصل کردہ کل وقار",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Total]",
+      "source": "Total",
+      "before": "کل",
+      "after": "کل",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Uncontrolled]",
+      "source": "Uncontrolled",
+      "before": "بے قابو",
+      "after": "بغیر کھلاڑی",
+      "editorially_read": true,
+      "disposition": "edited-pending-recheck"
+    },
+    {
+      "key": "[undo]",
+      "source": "undo",
+      "before": "واپس لیں",
+      "after": "واپس لیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Unit editor]",
+      "source": "Unit editor",
+      "before": "یونٹ ایڈیٹر",
+      "after": "یونٹ ایڈیٹر",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[units working]",
+      "source": " units working",
+      "before": " یونٹ کام پر",
+      "after": " یونٹ کام پر",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Units]",
+      "source": "Units",
+      "before": "یونٹ",
+      "after": "یونٹ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[unlocked at start]",
+      "source": "Unlocked At Start",
+      "before": "آغاز میں دستیاب",
+      "after": "آغاز میں دستیاب",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[unlocked by]",
+      "source": "Unlocked By",
+      "before": "اس کے ذریعے دستیاب",
+      "after": "اس کے ذریعے دستیاب",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Unnamed Area]",
+      "source": "Unnamed area",
+      "before": "بے نام علاقہ",
+      "after": "بے نام علاقہ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[up]",
+      "source": "up",
+      "before": "اوپر",
+      "after": "اوپر",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Upgrade Defaults]",
+      "source": "Upgrade Defaults",
+      "before": "ترقی کی طے شدہ ترتیبات",
+      "after": "اپ گریڈ کی طے شدہ ترتیبات",
+      "editorially_read": true,
+      "disposition": "edited-pending-recheck"
+    },
+    {
+      "key": "[upgrade]",
+      "source": "Upgrade",
+      "before": "ترقی دیں",
+      "after": "اپ گریڈ کریں",
+      "editorially_read": true,
+      "disposition": "edited-pending-recheck"
+    },
+    {
+      "key": "[username]",
+      "source": "Username",
+      "before": "صارف نام",
+      "after": "صارف نام",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Version]",
+      "source": "Version",
+      "before": "ورژن",
+      "after": "ورژن",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[view history]",
+      "source": "View History",
+      "before": "سابقہ ریکارڈ دیکھیں",
+      "after": "سابقہ ریکارڈ دیکھیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Voice volume]",
+      "source": "Volume (voice)",
+      "before": "آواز کی سطح (گفتگو)",
+      "after": "آواز کی سطح (گفتگو)",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[waiting for %0]",
+      "source": "Waiting for %0",
+      "before": "%0 کا انتظار ہے",
+      "after": "%0 کا انتظار ہے",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[waiting for key]",
+      "source": "waiting for key...",
+      "before": "کلید کا انتظار ہے...",
+      "after": "کلید کا انتظار ہے...",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Walk]",
+      "source": "Walk",
+      "before": "چلنا",
+      "after": "چلنا",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Warning, you need to reboot the game for changes to take effect]",
+      "source": "Warning, you need to restart the game for changes to take effect",
+      "before": "تنبیہ: تبدیلیاں نافذ کرنے کے لیے کھیل دوبارہ شروع کرنا ہو گا",
+      "after": "تنبیہ: تبدیلیاں نافذ کرنے کے لیے کھیل دوبارہ شروع کرنا ہو گا",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[watch again]",
+      "source": "Watch again",
+      "before": "دوبارہ دیکھیں",
+      "after": "دوبارہ دیکھیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[watching:]",
+      "source": "Watching:",
+      "before": "دیکھ رہے ہیں:",
+      "after": "دیکھ رہے ہیں:",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[water]",
+      "source": "Water",
+      "before": "پانی",
+      "after": "پانی",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Wheat]",
+      "source": "Wheat",
+      "before": "گندم",
+      "after": "گندم",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Won : you defeated your opponents]",
+      "source": "Won: you defeated your opponents",
+      "before": "فتح: آپ نے اپنے حریفوں کو شکست دی",
+      "after": "فتح: آپ نے اپنے حریفوں کو شکست دی",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Won : you have the most prestige]",
+      "source": "Won: you have the most prestige",
+      "before": "فتح: آپ کا وقار سب سے زیادہ ہے",
+      "after": "فتح: آپ کا وقار سب سے زیادہ ہے",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Won : your ally %0 has the most prestige]",
+      "source": "Won: your ally %0 has the most prestige",
+      "before": "فتح: آپ کے اتحادی %0 کا وقار سب سے زیادہ ہے",
+      "after": "فتح: آپ کے اتحادی %0 کا وقار سب سے زیادہ ہے",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Wood]",
+      "source": "Wood",
+      "before": "لکڑی",
+      "after": "لکڑی",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[wood]",
+      "source": "wood",
+      "before": "لکڑی",
+      "after": "لکڑی",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[working]",
+      "source": "Working",
+      "before": "کام پر",
+      "after": "کام پر",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[wounded]",
+      "source": "wounded",
+      "before": "زخمی",
+      "after": "زخمی",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Yes]",
+      "source": "Yes",
+      "before": "ہاں",
+      "after": "ہاں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD]",
+      "source": "The YOG metaserver has refused connection because your Globulation 2 client is out of date. Please obtain the latest version from www.globulation2.org to play online.",
+      "before": "YOG میٹا سرور نے رابطہ مسترد کر دیا ہے کیونکہ آپ کا Globulation 2 کلائنٹ پرانا ہے۔ آن لائن کھیلنے کے لیے www.globulation2.org سے تازہ ترین ورژن حاصل کریں۔",
+      "after": "YOG میٹا سرور نے رابطہ مسترد کر دیا ہے کیونکہ آپ کا Globulation 2 کلائنٹ پرانا ہے۔ آن لائن کھیلنے کے لیے www.globulation2.org سے تازہ ترین ورژن حاصل کریں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[you have lost]",
+      "source": "You have lost!",
+      "before": "آپ ہار گئے!",
+      "after": "آپ ہار گئے!",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[you have won]",
+      "source": "You have won!",
+      "before": "آپ جیت گئے!",
+      "after": "آپ جیت گئے!",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[You where kicked from the game]",
+      "source": "You were kicked from the game",
+      "before": "آپ کو کھیل سے نکال دیا گیا",
+      "after": "آپ کو کھیل سے نکال دیا گیا",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Your %0 are under attack]",
+      "source": "Your %0 is under attack",
+      "before": "آپ کی %0 پر حملہ ہو رہا ہے",
+      "after": "آپ کے %0 پر حملہ ہو رہا ہے",
+      "editorially_read": true,
+      "disposition": "edited-pending-recheck"
+    },
+    {
+      "key": "[Your unit got converted to %0's team]",
+      "source": "Your unit has joined %0's team",
+      "before": "آپ کا یونٹ %0 کی ٹیم میں شامل ہو گیا ہے",
+      "after": "آپ کا یونٹ %0 کی ٹیم میں شامل ہو گیا ہے",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[game speed help]",
+      "source": "Single-player and replays only. Multiplayer runs at 1x.",
+      "before": "صرف اکیلے کھیل اور ری پلے کے لیے۔ ملٹی پلیئر 1x رفتار پر چلتا ہے۔",
+      "after": "صرف اکیلے کھیل اور ری پلے کے لیے۔ ملٹی پلیئر 1x رفتار پر چلتا ہے۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[maximum game speed]",
+      "source": "Maximum",
+      "before": "زیادہ سے زیادہ",
+      "after": "زیادہ سے زیادہ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[multiplayer game speed]",
+      "source": "Game speed: 1x (multiplayer)",
+      "before": "کھیل کی رفتار: 1x (ملٹی پلیئر)",
+      "after": "کھیل کی رفتار: 1x (ملٹی پلیئر)",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Units still inside: %0]",
+      "source": "Still inside: %0",
+      "before": "اب بھی اندر: %0",
+      "after": "اب بھی اندر: %0",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Units still working: %0]",
+      "source": "Still working: %0",
+      "before": "اب بھی کام پر: %0",
+      "after": "اب بھی کام پر: %0",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[2 vs 2]",
+      "source": "2 vs 2",
+      "before": "2 بمقابلہ 2",
+      "after": "2 بمقابلہ 2",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[AI strategy & counterplay]",
+      "source": "AI strategy & counterplay",
+      "before": "AI کی حکمتِ عملی اور مقابلے کے طریقے",
+      "after": "AI کی حکمتِ عملی اور مقابلے کے طریقے",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[AICastor-Profile]",
+      "source": "Core strategy: Invests in a productive colony and technology before committing substantial attacks. Prioritized construction projects build up its settlement; development, military infrastructure and time increase war readiness.\\n\\nEconomy and development: Studies hydration, food-source growth, obstacles and worker reach. Manages food expansion, upgrades and defenses alongside production.\\n\\nAttack and defense: Estimates healthy warriors' attack power and begins strikes when power or timing conditions are met. Favors previously seen, accessible buildings, especially barracks and schools, and moves its attack flags toward valuable targets.\\n\\nCompared with other AIs: More deliberate about terrain and target value than Numbi. More patient than Warrush, trading early pressure for a developed base and stronger troops.\\n\\nStrengths and weaknesses: Broad infrastructure planning and valuable military targets give its strikes purpose. Preparation takes time, allowing faster opponents to contest resources before its main force is ready.\\n\\nCounterplay to try: Contest expansion early. Protect barracks and schools as well as food, and keep a reserve when attacking its developed settlement.",
+      "before": "بنیادی حکمتِ عملی: بڑے حملے کرنے سے پہلے پیداواری بستی اور ٹیکنالوجی میں سرمایہ لگاتا ہے۔ ترجیحی تعمیراتی منصوبے اس کی بستی کو بڑھاتے ہیں؛ ترقی، فوجی سہولیات اور وقت کے ساتھ اس کی جنگی تیاری بڑھتی ہے۔\\n\\nمعیشت اور ترقی: آب رسانی، خوراک کے ذرائع کی افزائش، رکاوٹوں اور کارکنوں کی رسائی کا جائزہ لیتا ہے۔ پیداوار کے ساتھ خوراک کی توسیع، ترقی اور دفاع سنبھالتا ہے۔\\n\\nحملہ اور دفاع: صحت مند جنگجوؤں کی حملہ آور طاقت کا اندازہ لگا کر طاقت یا وقت کی شرائط پوری ہونے پر حملہ کرتا ہے۔ پہلے دیکھی ہوئی، قابلِ رسائی عمارتوں، خصوصاً بیرکوں اور اسکولوں کو ترجیح دیتا ہے اور حملے کے جھنڈے قیمتی اہداف کی طرف بڑھاتا ہے۔\\n\\nدیگر AI سے موازنہ: Numbi کی نسبت زمین اور ہدف کی اہمیت پر زیادہ غور کرتا ہے۔ Warrush سے زیادہ صبر کرتا ہے؛ ابتدائی دباؤ کے بجائے ترقی یافتہ اڈے اور مضبوط فوج کو ترجیح دیتا ہے۔\\n\\nخوبیاں اور کمزوریاں: وسیع تعمیراتی منصوبہ بندی اور اہم فوجی اہداف اس کے حملوں کو بامقصد بناتے ہیں۔ تیاری میں وقت لگتا ہے، اس لیے تیز حریف اس کی مرکزی فوج تیار ہونے سے پہلے وسائل پر مقابلہ کر سکتے ہیں۔\\n\\nآزمانے کے لیے مقابلے کا طریقہ: ابتدا ہی میں اس کی توسیع کو روکیں۔ خوراک کے ساتھ بیرکوں اور اسکولوں کی بھی حفاظت کریں اور اس کی ترقی یافتہ بستی پر حملہ کرتے وقت کچھ فوج محفوظ رکھیں۔",
+      "after": "بنیادی حکمتِ عملی: بڑے حملے کرنے سے پہلے پیداواری بستی اور ٹیکنالوجی میں سرمایہ لگاتا ہے۔ ترجیحی تعمیراتی منصوبے اس کی بستی کو بڑھاتے ہیں؛ ترقی، فوجی سہولیات اور وقت کے ساتھ اس کی جنگی تیاری بڑھتی ہے۔\\n\\nمعیشت اور ترقی: زمین کی نمی، خوراک کے ذرائع کی افزائش، رکاوٹوں اور کارکنوں کی رسائی کا جائزہ لیتا ہے۔ پیداوار کے ساتھ خوراک کی فراہمی میں اضافہ، عمارتوں کی اپ گریڈنگ اور دفاع سنبھالتا ہے۔\\n\\nحملہ اور دفاع: صحت مند جنگجوؤں کی حملہ آور طاقت کا اندازہ لگا کر طاقت یا وقت کی شرائط پوری ہونے پر حملہ کرتا ہے۔ پہلے دیکھی ہوئی، قابلِ رسائی عمارتوں، خصوصاً بیرکوں اور اسکولوں کو ترجیح دیتا ہے اور حملے کے جھنڈے قیمتی اہداف کی طرف بڑھاتا ہے۔\\n\\nدیگر AI سے موازنہ: Numbi کی نسبت زمین اور ہدف کی اہمیت پر زیادہ غور کرتا ہے۔ Warrush سے زیادہ صبر کرتا ہے؛ ابتدائی دباؤ کے بجائے ترقی یافتہ اڈے اور مضبوط فوج کو ترجیح دیتا ہے۔\\n\\nخوبیاں اور کمزوریاں: وسیع تعمیراتی منصوبہ بندی اور اہم فوجی اہداف اس کے حملوں کو بامقصد بناتے ہیں۔ تیاری میں وقت لگتا ہے، اس لیے تیز حریف اس کی مرکزی فوج تیار ہونے سے پہلے وسائل پر مقابلہ کر سکتے ہیں۔\\n\\nآزمانے کے لیے مقابلے کا طریقہ: ابتدا ہی میں اس کی توسیع کو روکیں۔ خوراک کے ساتھ بیرکوں اور اسکولوں کی بھی حفاظت کریں اور اس کی ترقی یافتہ بستی پر حملہ کرتے وقت کچھ فوج محفوظ رکھیں۔",
+      "editorially_read": true,
+      "disposition": "edited-pending-recheck"
+    },
+    {
+      "key": "[AICastor-Summary]",
+      "source": "Develops a fortified colony, then strikes at military and science buildings.",
+      "before": "قلعہ بند بستی بناتا ہے، پھر فوجی اور سائنسی عمارتوں پر حملہ کرتا ہے۔",
+      "after": "قلعہ بند بستی بناتا ہے، پھر فوجی اور سائنسی عمارتوں پر حملہ کرتا ہے۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[AICortex-Profile]",
+      "source": "Core strategy: Uses reactive priorities to grow a working economy and turn spare labor into food, technology and military pressure. Its normal policy is rule-based; learned-policy experiments require separate configuration.\\n\\nEconomy and development: Adjusts worker production to staffing demand and keeps births going. Food trouble suppresses expansion and technology spending. Adds swimming when water access materially helps.\\n\\nAttack and defense: Prepares attacks using observed enemy technology and available troops. Water-crossing campaigns need swimming-capable warriors. Supports long campaigns with forward inns and hospitals, and can stage forces before advancing.\\n\\nCommitment and emergencies: Holds an offensive through minor harassment instead of repeatedly marching home. Serious attacks can recall defenders. Early emergencies can trigger warrior-only production and a hospital; famine can trigger a smaller desperation attack.\\n\\nCompared with other AIs: More concerned with forward support than Warrush. Maxima goes further in budgeting sustainable births, training and deployment against estimated enemy strength.\\n\\nStrengths and weaknesses: Connects pressure to food, healing and reachability. Forward infrastructure must stay supplied, and continued births can keep pressure on limited food. Emergency priorities force tradeoffs between growth and survival.\\n\\nCounterplay to try: Contest forward inns, hospitals and food sources. Keep defenders together against its push; minor harassment may not persuade it to retreat.\\n\\nScouting: Uses discovered enemy buildings and observed enemy troops.",
+      "before": "بنیادی حکمتِ عملی: حالات کے مطابق ترجیحات بدل کر فعال معیشت بڑھاتا اور اضافی محنت کو خوراک، ٹیکنالوجی اور فوجی دباؤ میں لگاتا ہے۔ اس کی عام پالیسی قواعد پر مبنی ہے؛ سیکھی ہوئی پالیسی کے تجربات کے لیے الگ ترتیب درکار ہے۔\\n\\nمعیشت اور ترقی: عملے کی ضرورت کے مطابق کارکنوں کی پیداوار بدلتا اور پیدائشیں جاری رکھتا ہے۔ خوراک کی مشکلات توسیع اور ٹیکنالوجی کے اخراجات کم کرتی ہیں۔ جہاں پانی تک رسائی سے نمایاں فائدہ ہو، وہاں تیراکی کی تربیت شامل کرتا ہے۔\\n\\nحملہ اور دفاع: دشمن کی دیکھی گئی ٹیکنالوجی اور دستیاب فوج کے مطابق حملوں کی تیاری کرتا ہے۔ پانی عبور کرنے والی مہموں کے لیے تیرنے والے جنگجو ضروری ہیں۔ اگلے مورچوں پر سرائے اور ہسپتال بنا کر طویل مہموں کو سہارا دیتا ہے اور پیش قدمی سے پہلے فوج جمع کر سکتا ہے۔\\n\\nحملہ جاری رکھنا اور ہنگامی حالات: معمولی چھیڑ چھاڑ پر بار بار واپس آنے کے بجائے حملہ جاری رکھتا ہے۔ سنگین حملہ محافظوں کو واپس بلا سکتا ہے۔ ابتدا کی ہنگامی حالت میں صرف جنگجو پیدا کیے جا سکتے ہیں اور ہسپتال بنایا جا سکتا ہے؛ قحط ایک چھوٹا، آخری کوشش والا حملہ شروع کر سکتا ہے۔\\n\\nدیگر AI سے موازنہ: Warrush سے زیادہ اگلے مورچوں کی مدد پر توجہ دیتا ہے۔ Maxima پائیدار پیدائشوں، تربیت اور تعیناتی کے وسائل کا دشمن کی اندازاً طاقت کے مقابلے میں زیادہ تفصیلی حساب کرتا ہے۔\\n\\nخوبیاں اور کمزوریاں: دباؤ کو خوراک، علاج اور رسائی سے جوڑتا ہے۔ اگلے مورچوں کی عمارتوں تک رسد جاری رہنی چاہیے اور مسلسل پیدائشیں محدود خوراک پر دباؤ برقرار رکھ سکتی ہیں۔ ہنگامی ترجیحات میں ترقی اور بقا کے درمیان انتخاب کرنا پڑتا ہے۔\\n\\nآزمانے کے لیے مقابلے کا طریقہ: اگلے مورچوں کی سراؤں، ہسپتالوں اور خوراک کے ذرائع کو چیلنج کریں۔ اس کی پیش قدمی کے مقابل محافظوں کو اکٹھا رکھیں؛ معمولی چھیڑ چھاڑ اسے پسپا ہونے پر مجبور نہیں بھی کر سکتی۔\\n\\nکھوج: دریافت شدہ دشمن عمارتوں اور دیکھی گئی دشمن فوج کو استعمال کرتا ہے۔",
+      "after": "بنیادی حکمتِ عملی: حالات کے مطابق ترجیحات بدل کر فعال معیشت بڑھاتا اور اضافی محنت کو خوراک، ٹیکنالوجی اور فوجی دباؤ میں لگاتا ہے۔ اس کی عام پالیسی قواعد پر مبنی ہے؛ سیکھی ہوئی پالیسی کے تجربات کے لیے الگ ترتیب درکار ہے۔\\n\\nمعیشت اور ترقی: عملے کی ضرورت کے مطابق کارکنوں کی پیداوار بدلتا اور پیدائشیں جاری رکھتا ہے۔ خوراک کی مشکلات توسیع اور ٹیکنالوجی کے اخراجات کم کرتی ہیں۔ جہاں پانی تک رسائی سے نمایاں فائدہ ہو، وہاں تیراکی کی تربیت شامل کرتا ہے۔\\n\\nحملہ اور دفاع: دشمن کی دیکھی گئی ٹیکنالوجی اور دستیاب فوج کے مطابق حملوں کی تیاری کرتا ہے۔ پانی عبور کرنے والی مہموں کے لیے تیرنے والے جنگجو ضروری ہیں۔ اگلے مورچوں پر سرائے اور ہسپتال بنا کر طویل مہموں کو سہارا دیتا ہے اور پیش قدمی سے پہلے فوج جمع کر سکتا ہے۔\\n\\nحملہ جاری رکھنا اور ہنگامی حالات: معمولی چھیڑ چھاڑ پر بار بار واپس آنے کے بجائے حملہ جاری رکھتا ہے۔ سنگین حملہ محافظوں کو واپس بلا سکتا ہے۔ ابتدا کی ہنگامی حالت میں صرف جنگجو پیدا کیے جا سکتے ہیں اور ہسپتال بنایا جا سکتا ہے؛ قحط کی حالت میں مجبوراً ایک چھوٹا حملہ کر سکتا ہے۔\\n\\nدیگر AI سے موازنہ: Warrush سے زیادہ اگلے مورچوں کی مدد پر توجہ دیتا ہے۔ Maxima پائیدار پیدائشوں، تربیت اور تعیناتی کے وسائل کا دشمن کی اندازاً طاقت کے مقابلے میں زیادہ تفصیلی حساب کرتا ہے۔\\n\\nخوبیاں اور کمزوریاں: دباؤ کو خوراک، علاج اور رسائی سے جوڑتا ہے۔ اگلے مورچوں کی عمارتوں تک رسد جاری رہنی چاہیے اور مسلسل پیدائشیں محدود خوراک پر دباؤ برقرار رکھ سکتی ہیں۔ ہنگامی ترجیحات میں ترقی اور بقا کے درمیان انتخاب کرنا پڑتا ہے۔\\n\\nآزمانے کے لیے مقابلے کا طریقہ: اگلے مورچوں کی سراؤں، ہسپتالوں اور خوراک کے ذرائع کو چیلنج کریں۔ اس کی پیش قدمی کے مقابل محافظوں کو اکٹھا رکھیں؛ معمولی چھیڑ چھاڑ اسے پسپا ہونے پر مجبور نہیں بھی کر سکتی۔\\n\\nکھوج: دریافت شدہ دشمن عمارتوں اور دیکھی گئی دشمن فوج کی معلومات استعمال کرتا ہے۔",
+      "editorially_read": true,
+      "disposition": "edited-pending-recheck"
+    },
+    {
+      "key": "[AICortex-Summary]",
+      "source": "Supports committed military pushes with forward food and healing.",
+      "before": "اگلے مورچوں پر خوراک اور علاج کے ذریعے مسلسل فوجی پیش قدمی کو سہارا دیتا ہے۔",
+      "after": "اگلے مورچوں پر خوراک اور علاج کے ذریعے مسلسل فوجی پیش قدمی کو سہارا دیتا ہے۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[AINicowar-Profile]",
+      "source": "Core strategy: Combines growth, training, upgrades and warfare through overlapping conditions. Can attack while expanding, and redirect economic effort toward recovery when feeding fails.\\n\\nOpening: The shipped aggressive profile begins war preparation at five total units and permits war at five warriors, counting level-zero warriors too. Aims for three attack flags with five warriors each. Custom strategy files can change these thresholds.\\n\\nEconomy and development: Expands food and birth capacity, trains workers, develops swimming and movement, and upgrades buildings. Adjusts food staffing, responds to starvation and pursues fruit.\\n\\nAttack and defense: Samples reachable enemy buildings for attacks. Can use clearing flags to open resource-blocked routes. Defensive flags cover clusters of threatened units and buildings. Later, trained ground-attacking explorers target enemy unit groups.\\n\\nCompared with other AIs: Shares Warrush's early aggression but has more follow-through. Unlike Cabino, does not consistently prioritize hospitals and inns.\\n\\nStrengths and weaknesses: Broad tactical coverage combines early pressure with continued development. Random target selection can spend effort on less valuable buildings. Its thresholds do not provide Maxima's detailed estimate of opposing fighting power.\\n\\nCounterplay to try: Expect an early attack. Protect food and workers, contest expansion, and prepare for explorer attacks if it reaches advanced training.",
+      "before": "بنیادی حکمتِ عملی: باہم مربوط شرائط کے ذریعے آبادی بڑھانے، تربیت، ترقی اور جنگ کو ملاتا ہے۔ توسیع کے دوران حملہ کر سکتا ہے اور خوراک کی فراہمی ناکام ہونے پر معاشی کوشش بحالی کی طرف موڑ سکتا ہے۔\\n\\nابتدا: فراہم کردہ جارحانہ پروفائل کل پانچ یونٹوں پر جنگ کی تیاری شروع کرتا ہے اور پانچ جنگجوؤں پر جنگ کی اجازت دیتا ہے، جس میں سطح صفر کے جنگجو بھی شمار ہوتے ہیں۔ اس کا ہدف تین حملہ آور جھنڈے ہیں، ہر ایک کے ساتھ پانچ جنگجو۔ حسبِ پسند حکمتِ عملی کی فائلیں یہ حدیں بدل سکتی ہیں۔\\n\\nمعیشت اور ترقی: خوراک اور پیدائش کی گنجائش بڑھاتا، کارکنوں کو تربیت دیتا، تیراکی اور حرکت بہتر کرتا اور عمارتوں کو ترقی دیتا ہے۔ خوراک کے عملے کو بدلتا، فاقہ کشی کا جواب دیتا اور پھل حاصل کرنے کی کوشش کرتا ہے۔\\n\\nحملہ اور دفاع: قابلِ رسائی دشمن عمارتوں میں سے حملے کے ہدف چنتا ہے۔ وسائل سے بند راستے کھولنے کے لیے صفائی کے جھنڈے استعمال کر سکتا ہے۔ دفاعی جھنڈے خطرے میں موجود یونٹوں اور عمارتوں کے گروہوں کو ڈھانپتے ہیں۔ بعد میں زمینی حملے کی تربیت یافتہ کھوجی دشمن یونٹوں کے گروہوں کو نشانہ بناتے ہیں۔\\n\\nدیگر AI سے موازنہ: Warrush کی طرح ابتدا میں جارحانہ ہے، مگر بعد کی کارروائی زیادہ وسیع ہے۔ Cabino کے برعکس ہسپتالوں اور سراؤں کو مسلسل ترجیح نہیں دیتا۔\\n\\nخوبیاں اور کمزوریاں: وسیع حربی صلاحیت ابتدائی دباؤ کو مسلسل ترقی کے ساتھ جوڑتی ہے۔ اتفاقی ہدف چننے سے کم اہم عمارتوں پر محنت خرچ ہو سکتی ہے۔ اس کی حدیں دشمن کی لڑنے کی طاقت کا Maxima جیسا تفصیلی تخمینہ نہیں دیتیں۔\\n\\nآزمانے کے لیے مقابلے کا طریقہ: جلد حملے کی توقع رکھیں۔ خوراک اور کارکنوں کی حفاظت کریں، توسیع کو چیلنج کریں اور اگر یہ اعلیٰ تربیت تک پہنچ جائے تو کھوجیوں کے حملوں کے لیے تیار رہیں۔",
+      "after": "بنیادی حکمتِ عملی: باہم مربوط شرائط کے ذریعے آبادی بڑھانے، تربیت، اپ گریڈ اور جنگ کو ملاتا ہے۔ توسیع کے دوران حملہ کر سکتا ہے اور خوراک کی فراہمی ناکام ہونے پر معاشی کوشش بحالی کی طرف موڑ سکتا ہے۔\\n\\nابتدا: فراہم کردہ جارحانہ پروفائل کل پانچ یونٹوں پر جنگ کی تیاری شروع کرتا ہے اور پانچ جنگجوؤں پر جنگ کی اجازت دیتا ہے، جس میں سطح صفر کے جنگجو بھی شمار ہوتے ہیں۔ اس کا ہدف تین حملہ آور جھنڈے ہیں، ہر ایک کے ساتھ پانچ جنگجو۔ حسبِ پسند حکمتِ عملی کی فائلیں یہ حدیں بدل سکتی ہیں۔\\n\\nمعیشت اور ترقی: خوراک اور پیدائش کی گنجائش بڑھاتا، کارکنوں کو تربیت دیتا، تیراکی اور حرکت بہتر کرتا اور عمارتوں کو اپ گریڈ کرتا ہے۔ خوراک کے عملے کو بدلتا، فاقہ کشی کا جواب دیتا اور پھل حاصل کرنے کی کوشش کرتا ہے۔\\n\\nحملہ اور دفاع: قابلِ رسائی دشمن عمارتوں میں سے حملے کے ہدف چنتا ہے۔ وسائل سے بند راستے کھولنے کے لیے صفائی کے جھنڈے استعمال کر سکتا ہے۔ دفاعی جھنڈے خطرے میں موجود یونٹوں اور عمارتوں کے گروہوں کی حفاظت کرتے ہیں۔ بعد میں زمینی حملے کی تربیت یافتہ کھوجی دشمن یونٹوں کے گروہوں کو نشانہ بناتے ہیں۔\\n\\nدیگر AI سے موازنہ: Warrush کی طرح ابتدا میں جارحانہ ہے، مگر بعد کی کارروائی زیادہ وسیع ہے۔ Cabino کے برعکس ہسپتالوں اور سراؤں کو مسلسل ترجیح نہیں دیتا۔\\n\\nخوبیاں اور کمزوریاں: وسیع حربی صلاحیت ابتدائی دباؤ کو مسلسل ترقی کے ساتھ جوڑتی ہے۔ اتفاقی ہدف چننے سے کم اہم عمارتوں پر محنت خرچ ہو سکتی ہے۔ اس کی حدیں دشمن کی لڑنے کی طاقت کا Maxima جیسا تفصیلی تخمینہ نہیں دیتیں۔\\n\\nآزمانے کے لیے مقابلے کا طریقہ: جلد حملے کی توقع رکھیں۔ خوراک اور کارکنوں کی حفاظت کریں، توسیع کو چیلنج کریں اور اگر یہ اعلیٰ تربیت تک پہنچ جائے تو کھوجیوں کے حملوں کے لیے تیار رہیں۔",
+      "editorially_read": true,
+      "disposition": "edited-pending-recheck"
+    },
+    {
+      "key": "[AINicowar-Summary]",
+      "source": "An early rush supported by farming, upgrades, defense and explorer attacks.",
+      "before": "ابتدائی یلغار جسے کھیتی، ترقی، دفاع اور کھوجیوں کے حملے سہارا دیتے ہیں۔",
+      "after": "ابتدائی یلغار جسے کھیتی، اپ گریڈ، دفاع اور کھوجیوں کے حملے سہارا دیتے ہیں۔",
+      "editorially_read": true,
+      "disposition": "edited-pending-recheck"
+    },
+    {
+      "key": "[AINone-Profile]",
+      "source": "Core strategy: Issues no AI orders.\\n\\nStrengths: A predictable idle opponent for experiments.\\n\\nWeaknesses: Does not expand or adapt.",
+      "before": "بنیادی حکمتِ عملی: AI کا کوئی حکم جاری نہیں کرتا۔\\n\\nخوبیاں: تجربات کے لیے ایک غیر متحرک اور قابلِ پیش گوئی حریف۔\\n\\nکمزوریاں: نہ توسیع کرتا ہے نہ حالات کے مطابق بدلتا ہے۔",
+      "after": "بنیادی حکمتِ عملی: AI کا کوئی حکم جاری نہیں کرتا۔\\n\\nخوبیاں: تجربات کے لیے ایک غیر متحرک اور قابلِ پیش گوئی حریف۔\\n\\nکمزوریاں: نہ توسیع کرتا ہے نہ حالات کے مطابق بدلتا ہے۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[AINone-Summary]",
+      "source": "An idle colony for experiments.",
+      "before": "تجربات کے لیے غیر متحرک بستی۔",
+      "after": "تجربات کے لیے غیر متحرک بستی۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[AINumbi-Profile]",
+      "source": "Core strategy: Builds food and population first, adds healing, science and training, then shifts toward warfare. Its broad phases advance with time rather than with the opponent's progress.\\n\\nEconomy and development: Scales building demand with population and estimates nearby food sources. Later phases add upgrades, defenses and expansion to support its growing army.\\n\\nAttack and defense: Attacks when enough healthy fighters exist or a timeout expires. Places war flags on sampled enemy buildings. When its fighting force falls too low, removes attack flags and raises the thresholds for another attempt.\\n\\nCompared with other AIs: More predictable than Castor or Nicowar. Castor considers terrain and target value more carefully; Nicowar applies pressure much earlier.\\n\\nStrengths and weaknesses: Broad supporting infrastructure can make it dangerous after an uninterrupted buildup, but its timetable may not match the battle. Simple target selection and longer pauses after losses make its attacks easier to anticipate.\\n\\nCounterplay to try: Apply pressure before its military phase. Grow food and training behind your attacks, and exploit the pause after defeating an assault.\\n\\nScouting: Its attack routine reads enemy building positions directly without a visibility check.",
+      "before": "بنیادی حکمتِ عملی: پہلے خوراک اور آبادی بڑھاتا، پھر علاج، سائنس اور تربیت شامل کرتا، اور آخر میں جنگ کی طرف جاتا ہے۔ اس کے بڑے مرحلے حریف کی ترقی کے بجائے وقت کے ساتھ آگے بڑھتے ہیں۔\\n\\nمعیشت اور ترقی: آبادی کے مطابق عمارتوں کی ضرورت بڑھاتا اور قریبی خوراک کے ذرائع کا اندازہ لگاتا ہے۔ بعد کے مراحل میں بڑھتی فوج کی مدد کے لیے ترقی، دفاع اور توسیع شامل ہوتی ہے۔\\n\\nحملہ اور دفاع: کافی صحت مند جنگجو موجود ہوں یا مقررہ وقت گزر جائے تو حملہ کرتا ہے۔ منتخب دشمن عمارتوں پر جنگی جھنڈے لگاتا ہے۔ لڑنے والی فوج بہت کم ہو جائے تو حملے کے جھنڈے ہٹا کر اگلی کوشش کی حدیں بڑھا دیتا ہے۔\\n\\nدیگر AI سے موازنہ: Castor یا Nicowar سے زیادہ قابلِ پیش گوئی ہے۔ Castor زمین اور ہدف کی اہمیت پر زیادہ غور کرتا ہے؛ Nicowar کہیں پہلے دباؤ ڈالتا ہے۔\\n\\nخوبیاں اور کمزوریاں: مددگار عمارتوں کا وسیع نظام بلا رکاوٹ تیاری کے بعد اسے خطرناک بنا سکتا ہے، مگر اس کا وقت نامہ لڑائی کے حالات سے میل نہیں بھی کھا سکتا۔ سادہ ہدف چننے اور نقصان کے بعد لمبے وقفوں کی وجہ سے اس کے حملوں کا اندازہ لگانا آسان ہے۔\\n\\nآزمانے کے لیے مقابلے کا طریقہ: فوجی مرحلے سے پہلے دباؤ ڈالیں۔ حملوں کے دوران اپنے پیچھے خوراک اور تربیت بڑھائیں اور اس کا حملہ شکست دینے کے بعد وقفے سے فائدہ اٹھائیں۔\\n\\nکھوج: اس کا حملہ کرنے والا معمول نظر آنے کی جانچ کے بغیر دشمن عمارتوں کے مقامات براہِ راست پڑھتا ہے۔",
+      "after": "بنیادی حکمتِ عملی: پہلے خوراک اور آبادی بڑھاتا، پھر علاج، سائنس اور تربیت شامل کرتا، اور آخر میں جنگ کی طرف جاتا ہے۔ اس کے بڑے مرحلے حریف کی ترقی کے بجائے وقت کے ساتھ آگے بڑھتے ہیں۔\\n\\nمعیشت اور ترقی: آبادی کے مطابق عمارتوں کی ضرورت بڑھاتا اور قریبی خوراک کے ذرائع کا اندازہ لگاتا ہے۔ بعد کے مراحل میں بڑھتی فوج کی مدد کے لیے اپ گریڈ، دفاع اور توسیع شامل ہوتی ہے۔\\n\\nحملہ اور دفاع: کافی صحت مند جنگجو موجود ہوں یا مقررہ وقت گزر جائے تو حملہ کرتا ہے۔ منتخب دشمن عمارتوں پر جنگی جھنڈے لگاتا ہے۔ لڑنے والی فوج بہت کم ہو جائے تو حملے کے جھنڈے ہٹا کر اگلی کوشش کی حدیں بڑھا دیتا ہے۔\\n\\nدیگر AI سے موازنہ: Castor یا Nicowar سے زیادہ قابلِ پیش گوئی ہے۔ Castor زمین اور ہدف کی اہمیت پر زیادہ غور کرتا ہے؛ Nicowar کہیں پہلے دباؤ ڈالتا ہے۔\\n\\nخوبیاں اور کمزوریاں: مددگار عمارتوں کا وسیع نظام بلا رکاوٹ تیاری کے بعد اسے خطرناک بنا سکتا ہے، مگر اس کا وقت نامہ لڑائی کے حالات سے میل نہیں بھی کھا سکتا۔ سادہ ہدف چننے اور نقصان کے بعد لمبے وقفوں کی وجہ سے اس کے حملوں کا اندازہ لگانا آسان ہے۔\\n\\nآزمانے کے لیے مقابلے کا طریقہ: فوجی مرحلے سے پہلے دباؤ ڈالیں۔ حملوں کے دوران اپنے پیچھے خوراک اور تربیت بڑھائیں اور اس کا حملہ شکست دینے کے بعد وقفے سے فائدہ اٹھائیں۔\\n\\nکھوج: اس کا حملہ کرنے والا معمول نظر آنے کی جانچ کے بغیر دشمن عمارتوں کے مقامات براہِ راست پڑھتا ہے۔",
+      "editorially_read": true,
+      "disposition": "edited-pending-recheck"
+    },
+    {
+      "key": "[AINumbi-Summary]",
+      "source": "A gradual colony builder that follows a timetable, then attacks in numbers.",
+      "before": "وقت نامے کے مطابق آہستہ آہستہ بستی بڑھاتا ہے، پھر بڑی تعداد میں حملہ کرتا ہے۔",
+      "after": "وقت نامے کے مطابق آہستہ آہستہ بستی بڑھاتا ہے، پھر بڑی تعداد میں حملہ کرتا ہے۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[AIEcono-Profile]",
+      "source": "Core strategy: Produces workers and explorers, expands its economy, and attracts enemy units through food and fruit. Has no conventional warrior offensive.\\n\\nEconomy and development: Builds inns and swarms near food sources, adds education and movement training, and upgrades infrastructure. Tracks food supplies and retains its buildings and exploration flags even when supplies deteriorate or targets disappear.\\n\\nFarming and conversion: Protects renewable food and wood sources near water. Sends explorers to fruit deposits and enemy colonies, and advertises food to enemies when pursuing fruit supply. Better food and fruit can help attract converts.\\n\\nCompared with other AIs: The most specialized economic opponent. Cabino and Maxima pursue fruit too, but combine it with armies.\\n\\nStrengths and weaknesses: Can grow while military opponents exhaust themselves, with conversion providing another form of competition. Produces no warriors to answer a sustained assault. Food, fruit, geography and victory rules strongly affect its opportunities.\\n\\nCounterplay to try: Pressure exposed expansion. Keep your own inns supplied with food and fruit to retain units. Avoid exhausting your colony in unnecessary fights while it grows.",
+      "before": "بنیادی حکمتِ عملی: کارکن اور کھوجی پیدا کرتا، معیشت پھیلاتا اور خوراک و پھل سے دشمن یونٹوں کو اپنی طرف لاتا ہے۔ جنگجوؤں کا روایتی حملہ نہیں کرتا۔\\n\\nمعیشت اور ترقی: خوراک کے ذرائع کے قریب سرائے اور چھتے بناتا، تعلیم اور حرکت کی تربیت شامل کرتا اور عمارتوں کو ترقی دیتا ہے۔ خوراک کی رسد پر نظر رکھتا ہے اور رسد خراب ہونے یا ہدف غائب ہونے پر بھی عمارتیں اور کھوج کے جھنڈے برقرار رکھتا ہے۔\\n\\nکھیتی اور وفاداری کی تبدیلی: پانی کے قریب دوبارہ اگنے والی خوراک اور لکڑی کے ذرائع کی حفاظت کرتا ہے۔ کھوجیوں کو پھل کے ذخائر اور دشمن بستیوں کی طرف بھیجتا ہے اور پھل کی رسد حاصل کرتے وقت دشمنوں کو خوراک کی دعوت دیتا ہے۔ بہتر خوراک اور پھل یونٹوں کو اپنی طرف لانے میں مدد دے سکتے ہیں۔\\n\\nدیگر AI سے موازنہ: سب سے زیادہ مخصوص معاشی حریف۔ Cabino اور Maxima بھی پھل حاصل کرتے ہیں، مگر ساتھ فوج بھی رکھتے ہیں۔\\n\\nخوبیاں اور کمزوریاں: فوجی حریفوں کے تھکنے کے دوران بڑھ سکتا ہے؛ وفاداری کی تبدیلی مقابلے کا ایک اور طریقہ دیتی ہے۔ مسلسل حملے کا جواب دینے کے لیے جنگجو پیدا نہیں کرتا۔ خوراک، پھل، جغرافیہ اور فتح کے قواعد اس کے مواقع پر بہت اثر ڈالتے ہیں۔\\n\\nآزمانے کے لیے مقابلے کا طریقہ: اس کی کھلی توسیع پر دباؤ ڈالیں۔ اپنے یونٹوں کو برقرار رکھنے کے لیے اپنی سراؤں میں خوراک اور پھل پہنچاتے رہیں۔ اس کے بڑھنے کے دوران غیر ضروری لڑائیوں میں اپنی بستی کو تھکانے سے بچیں۔",
+      "after": "بنیادی حکمتِ عملی: کارکن اور کھوجی پیدا کرتا، معیشت پھیلاتا اور خوراک و پھل سے دشمن یونٹوں کو اپنی طرف لاتا ہے۔ جنگجوؤں کا روایتی حملہ نہیں کرتا۔\\n\\nمعیشت اور ترقی: خوراک کے ذرائع کے قریب سرائے اور چھتے بناتا، تعلیم اور حرکت کی تربیت شامل کرتا اور عمارتوں کو اپ گریڈ کرتا ہے۔ خوراک کی رسد پر نظر رکھتا ہے اور رسد خراب ہونے یا ہدف غائب ہونے پر بھی عمارتیں اور کھوج کے جھنڈے برقرار رکھتا ہے۔\\n\\nکھیتی اور وفاداری کی تبدیلی: پانی کے قریب دوبارہ اگنے والی خوراک اور لکڑی کے ذرائع کی حفاظت کرتا ہے۔ کھوجیوں کو پھل کے ذخائر اور دشمن بستیوں کی طرف بھیجتا ہے اور پھل کی رسد حاصل کرتے وقت دشمنوں کو خوراک کی دعوت دیتا ہے۔ بہتر خوراک اور پھل یونٹوں کو اپنی طرف لانے میں مدد دے سکتے ہیں۔\\n\\nدیگر AI سے موازنہ: سب سے زیادہ مخصوص معاشی حریف۔ Cabino اور Maxima بھی پھل حاصل کرتے ہیں، مگر ساتھ فوج بھی رکھتے ہیں۔\\n\\nخوبیاں اور کمزوریاں: فوجی حریفوں کے تھکنے کے دوران بڑھ سکتا ہے؛ وفاداری کی تبدیلی مقابلے کا ایک اور طریقہ دیتی ہے۔ مسلسل حملے کا جواب دینے کے لیے جنگجو پیدا نہیں کرتا۔ خوراک، پھل، جغرافیہ اور فتح کے قواعد اس کے مواقع پر بہت اثر ڈالتے ہیں۔\\n\\nآزمانے کے لیے مقابلے کا طریقہ: اس کی کھلی توسیع پر دباؤ ڈالیں۔ اپنے یونٹوں کو برقرار رکھنے کے لیے اپنی سراؤں میں خوراک اور پھل پہنچاتے رہیں۔ اس کے بڑھنے کے دوران غیر ضروری لڑائیوں میں اپنی بستی کو تھکانے سے بچیں۔",
+      "editorially_read": true,
+      "disposition": "edited-pending-recheck"
+    },
+    {
+      "key": "[AIEcono-Summary]",
+      "source": "Grows a food-rich colony and competes for converts without producing warriors.",
+      "before": "جنگجو پیدا کیے بغیر خوراک سے بھرپور بستی بڑھاتا اور یونٹوں کی وفاداری کے لیے مقابلہ کرتا ہے۔",
+      "after": "جنگجو پیدا کیے بغیر خوراک سے بھرپور بستی بڑھاتا اور یونٹوں کی وفاداری کے لیے مقابلہ کرتا ہے۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[AIWarrush-Profile]",
+      "source": "Core strategy: Attacks before opponents finish a long economic or technological buildup. Expects combat to decide the game before a large support network becomes necessary.\\n\\nEconomy and development: Once six units can harvest, sets production to four workers, one explorer and three warriors. Adds barracks as training fills up, but restricts new inns. Spare construction often goes toward hospitals and movement training.\\n\\nAttack and defense: Marks discovered enemy buildings with guard areas so warriors apply continuing pressure. Does not wait for a carefully assembled wave. Clears obstructing resources and protects some renewable sources.\\n\\nFruit policy: Forbids fruit harvesting, avoiding fruit-related armor penalties and declining Econo's conversion strategy.\\n\\nCompared with other AIs: More committed to early pressure than Numbi or Castor. Nicowar also opens aggressively, but follows through with a broader upgrade and tactical program.\\n\\nStrengths and weaknesses: Punishes slow openings and forces early defensive spending. Limited systematic upgrading and lean food support make a stalled offensive costly. Terrain and long journeys can erode its early advantage.\\n\\nCounterplay to try: Protect inns and swarms early. Replace workers as well as defenders, develop training, then counterattack once its rush loses momentum.\\n\\nScouting: Opening exploration flags use enemy starting locations directly. Later attack-area placement requires visibility.",
+      "before": "بنیادی حکمتِ عملی: حریفوں کی طویل معاشی یا تکنیکی تیاری مکمل ہونے سے پہلے حملہ کرتا ہے۔ توقع رکھتا ہے کہ بڑے امدادی نظام کی ضرورت پڑنے سے پہلے لڑائی کھیل کا فیصلہ کر دے گی۔\\n\\nمعیشت اور ترقی: جب چھ یونٹ فصل کاٹ سکیں تو پیداوار چار کارکن، ایک کھوجی اور تین جنگجو مقرر کرتا ہے۔ تربیت بھرنے پر بیرکیں بڑھاتا ہے، مگر نئی سراؤں کو محدود رکھتا ہے۔ بچ جانے والی تعمیراتی گنجائش اکثر ہسپتالوں اور حرکت کی تربیت پر لگتی ہے۔\\n\\nحملہ اور دفاع: دریافت شدہ دشمن عمارتوں پر پہرے کے علاقے لگاتا ہے تاکہ جنگجو مسلسل دباؤ ڈالیں۔ احتیاط سے جمع کی گئی لہر کا انتظار نہیں کرتا۔ رکاوٹ بننے والے وسائل صاف کرتا اور کچھ دوبارہ اگنے والے ذرائع کی حفاظت کرتا ہے۔\\n\\nپھل کی پالیسی: پھل کاٹنے سے روکتا ہے، یوں پھل سے زرہ پر پڑنے والی کمی سے بچتا اور Econo کی وفاداری بدلنے کی حکمتِ عملی نہیں اپناتا۔\\n\\nدیگر AI سے موازنہ: Numbi یا Castor سے زیادہ ابتدائی دباؤ پر قائم رہتا ہے۔ Nicowar بھی جارحانہ ابتدا کرتا ہے، مگر بعد میں زیادہ وسیع ترقی اور حربی منصوبہ اپناتا ہے۔\\n\\nخوبیاں اور کمزوریاں: سست ابتدا کو سزا دیتا اور جلد دفاع پر خرچ کرنے پر مجبور کرتا ہے۔ محدود منظم ترقی اور کم خوراکی سہارا رک جانے والے حملے کو مہنگا بناتے ہیں۔ زمین اور لمبے سفر اس کی ابتدائی برتری گھٹا سکتے ہیں۔\\n\\nآزمانے کے لیے مقابلے کا طریقہ: ابتدا ہی میں سراؤں اور چھتوں کی حفاظت کریں۔ محافظوں کے ساتھ کارکنوں کی جگہ بھی نئے یونٹ لائیں، تربیت بڑھائیں، پھر یلغار کی رفتار ٹوٹنے پر جوابی حملہ کریں۔\\n\\nکھوج: ابتدائی کھوج کے جھنڈے دشمن کے شروع کے مقامات براہِ راست استعمال کرتے ہیں۔ بعد کے حملہ آور علاقوں کے لیے نظر آنا ضروری ہے۔",
+      "after": "بنیادی حکمتِ عملی: حریفوں کی طویل معاشی یا تکنیکی تیاری مکمل ہونے سے پہلے حملہ کرتا ہے۔ توقع رکھتا ہے کہ بڑے امدادی نظام کی ضرورت پڑنے سے پہلے لڑائی کھیل کا فیصلہ کر دے گی۔\\n\\nمعیشت اور ترقی: جب چھ یونٹ وسائل جمع کر سکیں تو پیداوار چار کارکن، ایک کھوجی اور تین جنگجو مقرر کرتا ہے۔ تربیت بھرنے پر بیرکیں بڑھاتا ہے، مگر نئی سراؤں کو محدود رکھتا ہے۔ بچ جانے والی تعمیراتی گنجائش اکثر ہسپتالوں اور حرکت کی تربیت پر لگتی ہے۔\\n\\nحملہ اور دفاع: دریافت شدہ دشمن عمارتوں پر پہرے کے علاقے لگاتا ہے تاکہ جنگجو مسلسل دباؤ ڈالیں۔ احتیاط سے جمع کی گئی لہر کا انتظار نہیں کرتا۔ رکاوٹ بننے والے وسائل صاف کرتا اور کچھ دوبارہ اگنے والے ذرائع کی حفاظت کرتا ہے۔\\n\\nپھل کی پالیسی: پھل کاٹنے سے روکتا ہے، یوں پھل سے زرہ پر پڑنے والی کمی سے بچتا اور Econo کی وفاداری بدلنے کی حکمتِ عملی نہیں اپناتا۔\\n\\nدیگر AI سے موازنہ: Numbi یا Castor سے زیادہ ابتدائی دباؤ پر قائم رہتا ہے۔ Nicowar بھی جارحانہ ابتدا کرتا ہے، مگر بعد میں زیادہ وسیع اپ گریڈ اور حربی منصوبہ اپناتا ہے۔\\n\\nخوبیاں اور کمزوریاں: سست ابتدا کو سزا دیتا اور جلد دفاع پر خرچ کرنے پر مجبور کرتا ہے۔ محدود منظم اپ گریڈ اور کم خوراکی سہارا رک جانے والے حملے کو مہنگا بناتے ہیں۔ زمین اور لمبے سفر اس کی ابتدائی برتری گھٹا سکتے ہیں۔\\n\\nآزمانے کے لیے مقابلے کا طریقہ: ابتدا ہی میں سراؤں اور چھتوں کی حفاظت کریں۔ محافظوں کے ساتھ کارکنوں کی جگہ بھی نئے یونٹ لائیں، تربیت بڑھائیں، پھر یلغار کی رفتار ٹوٹنے پر جوابی حملہ کریں۔\\n\\nکھوج: ابتدائی کھوج کے جھنڈے دشمن کے شروع کے مقامات براہِ راست استعمال کرتے ہیں۔ بعد کے حملہ آور علاقوں کے لیے نظر آنا ضروری ہے۔",
+      "editorially_read": true,
+      "disposition": "edited-pending-recheck"
+    },
+    {
+      "key": "[AIWarrush-Summary]",
+      "source": "Early warrior pressure backed by a deliberately lean support economy.",
+      "before": "جان بوجھ کر مختصر رکھے گئے امدادی معاشی نظام کے ساتھ ابتدائی جنگجوؤں کا دباؤ۔",
+      "after": "جان بوجھ کر مختصر رکھے گئے امدادی معاشی نظام کے ساتھ ابتدائی جنگجوؤں کا دباؤ۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[AICabino-Profile]",
+      "source": "Core strategy: Shares unit production among construction, upgrades, defense, attacks and exploration. Separate managers request and reserve units, developing economy and military together.\\n\\nEconomy and development: Builds and upgrades a broad settlement, manages inn and tower staffing, clears building surroundings and protects renewable resources. Scouts fruit and advertises food to compete for converts.\\n\\nAttack and defense: Chooses an enemy and prioritizes hospitals, then inns, then barracks. Supports up to four attacks, generally assigning eight to twenty warriors per target according to availability and nearby enemies. Uses separate defensive flags around threatened buildings.\\n\\nTraining: Requires enough suitable warriors and a completed barracks to attack, but does not wait for maximum technology. Continued upgrades and training strengthen later attacks.\\n\\nCompared with other AIs: More purposeful about dismantling support buildings than Nicowar. Spreads attacks more than Maxima's gathered waves, using unit reservations to manage competing demands.\\n\\nStrengths and weaknesses: Combines growth, training, defense and several attacks. Destroying food and healing can weaken an entire colony. Random opponent selection and fixed building priorities may miss opportunities; multiple attacks can divide its force.\\n\\nCounterplay to try: Defend hospitals and inns. Contest exposed expansion and concentrate defenders against individual attacks. Damage food or training before it sustains several fronts.\\n\\nScouting: Its attack selector reads enemy building lists without an explicit visibility check. Some economic comparisons use enemy statistics directly.",
+      "before": "بنیادی حکمتِ عملی: یونٹوں کی پیداوار کو تعمیر، ترقی، دفاع، حملوں اور کھوج میں بانٹتا ہے۔ الگ منتظم یونٹ مانگتے اور مختص کرتے ہیں، یوں معیشت اور فوج ساتھ ترقی کرتی ہیں۔\\n\\nمعیشت اور ترقی: وسیع بستی تعمیر اور ترقی کرتا، سراؤں اور میناروں کا عملہ سنبھالتا، عمارتوں کے اردگرد صفائی کرتا اور دوبارہ اگنے والے وسائل بچاتا ہے۔ پھل کی کھوج کرتا اور وفاداری بدلوانے کے لیے خوراک کی دعوت دیتا ہے۔\\n\\nحملہ اور دفاع: ایک دشمن چنتا اور پہلے ہسپتالوں، پھر سراؤں، پھر بیرکوں کو ترجیح دیتا ہے۔ بیک وقت چار تک حملے سنبھالتا ہے؛ دستیابی اور قریبی دشمنوں کے مطابق عموماً ہر ہدف کو آٹھ سے بیس جنگجو دیتا ہے۔ خطرے میں موجود عمارتوں کے اردگرد الگ دفاعی جھنڈے لگاتا ہے۔\\n\\nتربیت: حملے کے لیے کافی موزوں جنگجو اور مکمل بیرک درکار ہے، مگر اعلیٰ ترین ٹیکنالوجی کا انتظار نہیں کرتا۔ مسلسل ترقی اور تربیت بعد کے حملے مضبوط بناتی ہیں۔\\n\\nدیگر AI سے موازنہ: Nicowar سے زیادہ باقاعدگی سے امدادی عمارتیں تباہ کرتا ہے۔ Maxima کی جمع شدہ لہروں کے مقابل اپنے حملے زیادہ پھیلاتا اور مختلف ضرورتوں کو سنبھالنے کے لیے یونٹ مختص کرتا ہے۔\\n\\nخوبیاں اور کمزوریاں: ترقی، تربیت، دفاع اور کئی حملے یکجا کرتا ہے۔ خوراک اور علاج تباہ کرنا پوری بستی کمزور کر سکتا ہے۔ اتفاقی حریف چننے اور عمارتوں کی طے شدہ ترجیحات سے مواقع چھوٹ سکتے ہیں؛ کئی حملے اس کی فوج بانٹ سکتے ہیں۔\\n\\nآزمانے کے لیے مقابلے کا طریقہ: ہسپتالوں اور سراؤں کی حفاظت کریں۔ کھلی توسیع کو چیلنج کریں اور ہر الگ حملے کے خلاف محافظ جمع کریں۔ کئی محاذ سنبھالنے کے قابل ہونے سے پہلے اس کی خوراک یا تربیت کو نقصان پہنچائیں۔\\n\\nکھوج: حملہ چننے والا نظام واضح طور پر نظر آنے کی جانچ کیے بغیر دشمن عمارتوں کی فہرست پڑھتا ہے۔ بعض معاشی موازنے دشمن کے اعداد و شمار براہِ راست استعمال کرتے ہیں۔",
+      "after": "بنیادی حکمتِ عملی: یونٹوں کی پیداوار کو تعمیر، اپ گریڈ، دفاع، حملوں اور کھوج میں بانٹتا ہے۔ الگ منتظم یونٹ مانگتے اور مختص کرتے ہیں، یوں معیشت اور فوج ساتھ ترقی کرتی ہیں۔\\n\\nمعیشت اور ترقی: ایک وسیع بستی بناتا اور اس کی عمارتوں کو اپ گریڈ کرتا ہے، سراؤں اور میناروں کا عملہ سنبھالتا ہے، عمارتوں کے اردگرد صفائی کرتا اور دوبارہ اگنے والے وسائل بچاتا ہے۔ پھل کی کھوج کرتا اور وفاداری بدلوانے کے لیے خوراک کی دعوت دیتا ہے۔\\n\\nحملہ اور دفاع: ایک دشمن چنتا اور پہلے ہسپتالوں، پھر سراؤں، پھر بیرکوں کو ترجیح دیتا ہے۔ بیک وقت چار تک حملے سنبھالتا ہے؛ دستیابی اور قریبی دشمنوں کے مطابق عموماً ہر ہدف کو آٹھ سے بیس جنگجو دیتا ہے۔ خطرے میں موجود عمارتوں کے اردگرد الگ دفاعی جھنڈے لگاتا ہے۔\\n\\nتربیت: حملے کے لیے کافی موزوں جنگجو اور مکمل بیرک درکار ہے، مگر اعلیٰ ترین ٹیکنالوجی کا انتظار نہیں کرتا۔ مسلسل اپ گریڈ اور تربیت بعد کے حملے مضبوط بناتی ہیں۔\\n\\nدیگر AI سے موازنہ: Nicowar سے زیادہ باقاعدگی سے امدادی عمارتیں تباہ کرتا ہے۔ Maxima کی جمع شدہ لہروں کے مقابل اپنے حملے زیادہ پھیلاتا اور مختلف ضرورتوں کو سنبھالنے کے لیے یونٹ مختص کرتا ہے۔\\n\\nخوبیاں اور کمزوریاں: ترقی، تربیت، دفاع اور کئی حملے یکجا کرتا ہے۔ خوراک اور علاج تباہ کرنا پوری بستی کمزور کر سکتا ہے۔ اتفاقی حریف چننے اور عمارتوں کی طے شدہ ترجیحات سے مواقع چھوٹ سکتے ہیں؛ کئی حملے اس کی فوج بانٹ سکتے ہیں۔\\n\\nآزمانے کے لیے مقابلے کا طریقہ: ہسپتالوں اور سراؤں کی حفاظت کریں۔ کھلی توسیع کو چیلنج کریں اور ہر الگ حملے کے خلاف محافظ جمع کریں۔ کئی محاذ سنبھالنے کے قابل ہونے سے پہلے اس کی خوراک یا تربیت کو نقصان پہنچائیں۔\\n\\nکھوج: حملہ چننے والا نظام واضح طور پر نظر آنے کی جانچ کیے بغیر دشمن عمارتوں کی فہرست پڑھتا ہے۔ بعض معاشی موازنے دشمن کے اعداد و شمار براہِ راست استعمال کرتے ہیں۔",
+      "editorially_read": true,
+      "disposition": "edited-pending-recheck"
+    },
+    {
+      "key": "[AICabino-Summary]",
+      "source": "Coordinates colony growth and trained attacks, targeting healing and food first.",
+      "before": "بستی کی ترقی اور تربیت یافتہ حملے منظم کرتا ہے، پہلے علاج اور خوراک کو نشانہ بناتا ہے۔",
+      "after": "بستی کی ترقی اور تربیت یافتہ حملے منظم کرتا ہے، پہلے علاج اور خوراک کو نشانہ بناتا ہے۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Algae]",
+      "source": "Algae",
+      "before": "کائی",
+      "after": "کائی",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Beach size]",
+      "source": "Beach size",
+      "before": "ساحل کا سائز",
+      "after": "ساحل کا سائز",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Blue]",
+      "source": "Blue",
+      "before": "نیلا",
+      "after": "نیلا",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Brown]",
+      "source": "Brown",
+      "before": "بھورا",
+      "after": "بھورا",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Built-in maps]",
+      "source": "Built-in maps",
+      "before": "پہلے سے شامل نقشے",
+      "after": "پہلے سے شامل نقشے",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Closed]",
+      "source": "Closed",
+      "before": "بند",
+      "after": "بند",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Colonies]",
+      "source": "Colonies",
+      "before": "بستیاں",
+      "after": "بستیاں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Colony]",
+      "source": "Colony",
+      "before": "بستی",
+      "after": "بستی",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Conquest only]",
+      "source": "Conquest only",
+      "before": "صرف فتحِ علاقہ",
+      "after": "صرف حریف بستیوں کی شکست سے فتح",
+      "editorially_read": true,
+      "disposition": "edited-pending-recheck"
+    },
+    {
+      "key": "[Conquest or prestige]",
+      "source": "Conquest or prestige",
+      "before": "فتحِ علاقہ یا وقار",
+      "after": "حریف بستیوں کی شکست یا وقار سے فتح",
+      "editorially_read": true,
+      "disposition": "edited-pending-recheck"
+    },
+    {
+      "key": "[Could not launch this map. Your setup is retained; try again.]",
+      "source": "Could not launch this map. Your setup is retained; try again.",
+      "before": "یہ نقشہ شروع نہیں ہو سکا۔ آپ کی ترتیب برقرار ہے؛ دوبارہ کوشش کریں۔",
+      "after": "یہ نقشہ شروع نہیں ہو سکا۔ آپ کی ترتیب برقرار ہے؛ دوبارہ کوشش کریں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Custom]",
+      "source": "Custom",
+      "before": "حسبِ پسند",
+      "after": "حسبِ پسند",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Custom teams]",
+      "source": "Custom teams",
+      "before": "حسبِ پسند ٹیمیں",
+      "after": "حسبِ پسند ٹیمیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Cyan]",
+      "source": "Cyan",
+      "before": "فیروزی",
+      "after": "فیروزی",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Desert weight]",
+      "source": "Desert weight",
+      "before": "صحرا کا وزن",
+      "after": "صحرا کا وزن",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Easy]",
+      "source": "Easy",
+      "before": "آسان",
+      "after": "آسان",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Extra colony assignments are retained for larger maps.]",
+      "source": "Extra colony assignments are retained for larger maps.",
+      "before": "بڑے نقشوں کے لیے اضافی بستیوں کی تفویض برقرار رکھی جاتی ہے۔",
+      "after": "بڑے نقشوں کے لیے اضافی بستیوں کی تفویض برقرار رکھی جاتی ہے۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[FFA]",
+      "source": "FFA",
+      "before": "ہر ایک اپنے لیے",
+      "after": "ہر ایک اپنے لیے",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Game Rules]",
+      "source": "Game Rules",
+      "before": "کھیل کے قواعد",
+      "after": "کھیل کے قواعد",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Game speed]",
+      "source": "Game speed",
+      "before": "کھیل کی رفتار",
+      "after": "کھیل کی رفتار",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Generate & play]",
+      "source": "Generate & play",
+      "before": "بنائیں اور کھیلیں",
+      "after": "بنائیں اور کھیلیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Grass weight]",
+      "source": "Grass weight",
+      "before": "گھاس کا وزن",
+      "after": "گھاس کا وزن",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    }
+  ],
+  "status": "edited-awaiting-independent-recheck"
+}

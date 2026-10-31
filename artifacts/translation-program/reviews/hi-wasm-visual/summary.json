@@ -1,0 +1,376 @@
+{
+  "reviewer": "/root/hindi_online_review",
+  "locale": "hi",
+  "status": "passed-for-tested-browser-WASM-overlay-scope",
+  "source_run": "../../browser-wasm-final-v5/results.json",
+  "results_sha256": "a60f9112b344bcb010d8e0ea5ff1bf4d6fb247a26a7d47a911854527681fb1d0",
+  "validation_sha256": "99a5605332eca17099c02027c2e1a83cf7e79d492d2dc6fdc4f8bd4366203825",
+  "identity_sha256": "f2f2d4a6b782b2849031832620d62da3c4ba742b74901a66e7920f0a222245fc",
+  "run_identity": {
+    "started_utc": "2026-10-31T18:09:11.297Z",
+    "origin": "http://127.0.0.1:4331",
+    "checker_sha256": "d990c5c69cd79b6d34fc085a72442b2ed01cc3e3d2e5cbf9d39dbd713c208c5d",
+    "served_files": {
+      "index.html": {
+        "sha256": "9710535a4826a19042e7bb2c14e9a0bdb29cc579f60297db2a089baaf67d9c03",
+        "bytes": 58084
+      },
+      "index.js": {
+        "sha256": "b9b34780590780c94cf9fdaecfb4aa7c110dd3bec8a23c667648494fc1eef512",
+        "bytes": 1207471
+      },
+      "index.wasm": {
+        "sha256": "ea97092d507c6f5fe75781ece4668c1205bf39494f450866d952ca92cd570fb0",
+        "bytes": 50575252
+      },
+      "asset-manifest.js": {
+        "sha256": "9597fff70ccb08beb24f672c886af524de651b03391dbc842730ade44680b161",
+        "bytes": 411419
+      },
+      "loader.js": {
+        "sha256": "c06c9a252d1080d41cda582bd78aaaa3a5bda8ec36a4251b9255013d83fd43b1",
+        "bytes": 5767
+      },
+      "script-fonts.css": {
+        "sha256": "b54671afa3ef114cd11c01cbb68ef9da2008e89872f1039563be66c8590fb1fc",
+        "bytes": 3485
+      },
+      "presentation-surface.js": {
+        "sha256": "a0dc7dbde4cf5e29986174bc3ae4b6be0b2e90b62fe881a62794c7087bf50637",
+        "bytes": 6238
+      },
+      "identity.json": {
+        "sha256": "ff8b6801ee6ebef7e28d8d89f99c69f84c504ec88870cd1e95caed4ebbe18e45",
+        "bytes": 376
+      },
+      "runtime-assets.json": {
+        "sha256": "a23443981a98d6bc18cb6de7480c633b0bec2a1dfb15b81017ebacc506abdee4",
+        "bytes": 6771451
+      }
+    },
+    "build_identity": {
+      "client_features": {
+        "authoring_links": true,
+        "commander": true,
+        "community_ai": true,
+        "community_generators": true
+      },
+      "client_profile": "full",
+      "dev_fast": true,
+      "distribution": "browser",
+      "linker": "auto",
+      "mode": "debug",
+      "native_wss": false,
+      "role": "client",
+      "target": "web",
+      "toolchain": "emscripten",
+      "web_variant": "serial"
+    },
+    "source_bundle_sha256": "7583e9f8f0a03186eec456ed3b7a9c187509056b91f931551c3b7dc0e6b53457",
+    "runtime_sha256": "9f8021aaf97bfeea74e16c4751014eaa490943529de3697cf8cd4861f36e9061",
+    "runtime_override": "integration-stage/browser/i18n.js",
+    "font_manifest_sha256": "4dd7f1c0770d812fd9ddb6231e622dbe6e1d26588b2fec002650b6e7af1994cc",
+    "font_source_commit": "ffebf8c1ee449e544955a7e813c54f9b73848eac",
+    "catalog_sha256": {
+      "hi": {
+        "native": "a65477c9ac654c44a08531b6a5ee53f76d7aa6454c2f776c43382ed4f2e321e8",
+        "online": "d80bdd87f3502c34e45ae744d8e0f8bac3cafd93755a5ef87e0bed8bec3d74c4"
+      },
+      "ur": {
+        "native": "5cb88fac67663fc436f6bfa60388382c24665755ee481514c002bc92e9a29837",
+        "online": "db375ee564c39cf02dfb4ce08d6a4dbaecb8cd69d5bc7f167b4c7f779e246587"
+      },
+      "sw": {
+        "native": "d23c1b75c4ae209b85a6dbd9f2fb0ab084ab7bb21b7544ec8a4a5ad545129cc5",
+        "online": "6914cbf226adebd70d3ff401cfda759b62b62cc8af621b25f4ba994a8e0bec0a"
+      }
+    }
+  },
+  "catalog_sha256": {
+    "native": "a65477c9ac654c44a08531b6a5ee53f76d7aa6454c2f776c43382ed4f2e321e8",
+    "online": "d80bdd87f3502c34e45ae744d8e0f8bac3cafd93755a5ef87e0bed8bec3d74c4"
+  },
+  "actual_images_manually_read": 10,
+  "images": [
+    {
+      "path": "hi-1200-input.png",
+      "sha256": "0bf2cdaa58f1d5b72e8c1af09027249f5c0fd3faa7f000e64a0bbaf9e7ef6fe6",
+      "bytes": 476804,
+      "onboarding": false,
+      "manual_inspection": "Complete actual PNG viewed and visible text read for meaning, script, wrapping, clipping and direction; no new finding."
+    },
+    {
+      "path": "hi-1200-lobby.png",
+      "sha256": "744906914a4fef3a784753a972e3a98d9c5ad26169c6486cb7107ae7ed78a068",
+      "bytes": 245448,
+      "onboarding": false,
+      "manual_inspection": "Complete actual PNG viewed and visible text read for meaning, script, wrapping, clipping and direction; no new finding."
+    },
+    {
+      "path": "hi-1200-main.png",
+      "sha256": "aef93d20e6747761b77b732b32d6dbc7b933c4ff1fe694970f8d76a275d04672",
+      "bytes": 1068696,
+      "onboarding": false,
+      "manual_inspection": "Complete actual PNG viewed and visible text read for meaning, script, wrapping, clipping and direction; no new finding."
+    },
+    {
+      "path": "hi-1200-settings.png",
+      "sha256": "fce6568602e36e293dd81f2953968ee25b0b52aa045c401545568df5bc0b0730",
+      "bytes": 507785,
+      "onboarding": false,
+      "manual_inspection": "Complete actual PNG viewed and visible text read for meaning, script, wrapping, clipping and direction; no new finding."
+    },
+    {
+      "path": "hi-390-AudioPreferenceScreen.png",
+      "sha256": "03333835af45845ca86c4f39454d19a3627610a268fe6937d875745f6f06325a",
+      "bytes": 300827,
+      "onboarding": true,
+      "manual_inspection": "Complete actual PNG viewed and visible text read for meaning, script, wrapping, clipping and direction; no new finding."
+    },
+    {
+      "path": "hi-390-HandPreferenceScreen.png",
+      "sha256": "ed4a27daa736478ea65946071df277f3558c3ce8e6563610ef097b8f8d7b04a1",
+      "bytes": 220306,
+      "onboarding": true,
+      "manual_inspection": "Complete actual PNG viewed and visible text read for meaning, script, wrapping, clipping and direction; no new finding."
+    },
+    {
+      "path": "hi-390-input.png",
+      "sha256": "71bc41d3fe704749f2470ce4f67bc6ea058866af1718d31218e9dd2a9d449a42",
+      "bytes": 25140,
+      "onboarding": false,
+      "manual_inspection": "Complete actual PNG viewed and visible text read for meaning, script, wrapping, clipping and direction; no new finding."
+    },
+    {
+      "path": "hi-390-lobby.png",
+      "sha256": "c9a231923540e1385acc10d1d36b6c5db4f0ad0f1f5bf6aecb0a90cdfe170bcd",
+      "bytes": 59211,
+      "onboarding": false,
+      "manual_inspection": "Complete actual PNG viewed and visible text read for meaning, script, wrapping, clipping and direction; no new finding."
+    },
+    {
+      "path": "hi-390-main.png",
+      "sha256": "3ff952cfed9f28d73f2fdc7a1b806667588192d769b99f0ce798dba07918d2ed",
+      "bytes": 317426,
+      "onboarding": false,
+      "manual_inspection": "Complete actual PNG viewed and visible text read for meaning, script, wrapping, clipping and direction; no new finding."
+    },
+    {
+      "path": "hi-390-settings.png",
+      "sha256": "f1f51921220fbdaadb3d4ff244accf30ffd166f78a283fd824a75bb6b05f0dd5",
+      "bytes": 56575,
+      "onboarding": false,
+      "manual_inspection": "Complete actual PNG viewed and visible text read for meaning, script, wrapping, clipping and direction; no new finding."
+    }
+  ],
+  "http_artifact_verification": "http-verification.json",
+  "source_provenance": {
+    "freeze_before_file": "../../native-build-inputs-before-5.json",
+    "freeze_before_sha256": "24a2f5986f57e0e33fca28a71cf288150eb32961e4cb5d2611667ae9598c59ba",
+    "freeze_after_file": "../../native-build-inputs-after-5.json",
+    "freeze_after_sha256": "24a2f5986f57e0e33fca28a71cf288150eb32961e4cb5d2611667ae9598c59ba",
+    "native_source_count": 2458,
+    "before_after_maps_equal": true,
+    "all_current_native_source_files_match": true,
+    "browser_source_claim": "No31-browser-source freeze exists; initial assignment wording was corrected by root. C++/SCons freeze does not cover browserJS/HTML. Only9servedartifactHTTP/local-byte hashes and staged runtimeI18N overridehash establish browser artifact identity here. No invented full browser-source provenance."
+  },
+  "input_and_font_evidence": [
+    {
+      "width": 1200,
+      "inputEvidence": {
+        "value": "क्षेत्र 1/2 a.co",
+        "selectionStart": 0,
+        "selectionEnd": 16,
+        "dir": "auto",
+        "aria": "खेल में टेक्स्ट दर्ज करने का बॉक्स",
+        "font": "\"Glob2 Scripts\", \"Nunito Variable\", Nunito, ui-rounded, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif"
+      },
+      "inputCommitEvidence": {
+        "sample": "क्षेत्र 1/2 a.co",
+        "sampleUtf8Bytes": 30,
+        "savedUsername": "क्षेत्र 1/2 a.co",
+        "preferences_sha256": "c43a1d574362b01904ec141d8cb502d544795919751ec0699fd192e0919bbce3",
+        "escape_bridge_hidden": true,
+        "composition_two_frames": true,
+        "enter_bridge_hidden": true,
+        "done_saved": true,
+        "limits": "Synthetic DOM composition events test bridge sequencing; not a physical IME or mobile-keyboard certification."
+      },
+      "packaged_font_pins_verified": 13,
+      "sample_utf8_bytes": 30,
+      "fonts": {
+        "family": "\"Glob2 Scripts\", \"Nunito Variable\", Nunito, ui-rounded, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif",
+        "loaded": [
+          {
+            "status": "loaded",
+            "unicodeRange": "U+900-97F, U+1CD0-1CFF, U+A8E0-A8FF"
+          },
+          {
+            "status": "unloaded",
+            "unicodeRange": "U+980-9FF"
+          },
+          {
+            "status": "unloaded",
+            "unicodeRange": "U+A00-A7F"
+          },
+          {
+            "status": "unloaded",
+            "unicodeRange": "U+A80-AFF"
+          },
+          {
+            "status": "unloaded",
+            "unicodeRange": "U+B00-B7F"
+          },
+          {
+            "status": "unloaded",
+            "unicodeRange": "U+B80-BFF"
+          },
+          {
+            "status": "unloaded",
+            "unicodeRange": "U+C00-C7F"
+          },
+          {
+            "status": "unloaded",
+            "unicodeRange": "U+C80-CFF"
+          },
+          {
+            "status": "unloaded",
+            "unicodeRange": "U+D00-D7F"
+          },
+          {
+            "status": "unloaded",
+            "unicodeRange": "U+E00-E7F"
+          },
+          {
+            "status": "unloaded",
+            "unicodeRange": "U+1000-109F, U+A9E0-A9FF, U+AA60-AA7F"
+          },
+          {
+            "status": "unloaded",
+            "unicodeRange": "U+1200-139F, U+2D80-2DDF, U+AB00-AB2F"
+          },
+          {
+            "status": "loaded",
+            "unicodeRange": "U+600-6FF, U+750-77F, U+870-8FF, U+FB50-FDFF, U+FE70-FEFF"
+          }
+        ]
+      },
+      "page_errors": [],
+      "console_messages": [
+        "Failed to load resource: the server responded with a status of 404 (Not Found)",
+        "WARNING: using emscripten GL emulation. This is a collection of limited workarounds, do not expect it to work.",
+        "WARNING: using emscripten GL emulation unsafe opts. If weirdness happens, try -sGL_UNSAFE_OPTS=0",
+        "readlink() error: No such file or directory",
+        "WARNING: using emscripten GL immediate mode emulation. This is very limited in what it supports"
+      ],
+      "player_category_label": "भाषा और खिलाड़ी"
+    },
+    {
+      "width": 390,
+      "inputEvidence": {
+        "value": "क्षेत्र 1/2 a.co",
+        "selectionStart": 0,
+        "selectionEnd": 16,
+        "dir": "auto",
+        "aria": "खेल में टेक्स्ट दर्ज करने का बॉक्स",
+        "font": "\"Glob2 Scripts\", \"Nunito Variable\", Nunito, ui-rounded, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif"
+      },
+      "inputCommitEvidence": {
+        "sample": "क्षेत्र 1/2 a.co",
+        "sampleUtf8Bytes": 30,
+        "savedUsername": "क्षेत्र 1/2 a.co",
+        "preferences_sha256": "fb9d19fee07149ce568eb5c6a7240d3160e0b9a9d1ab43f90b6151623c87e456",
+        "escape_bridge_hidden": true,
+        "composition_two_frames": true,
+        "enter_bridge_hidden": true,
+        "done_saved": true,
+        "limits": "Synthetic DOM composition events test bridge sequencing; not a physical IME or mobile-keyboard certification."
+      },
+      "packaged_font_pins_verified": 13,
+      "sample_utf8_bytes": 30,
+      "fonts": {
+        "family": "\"Glob2 Scripts\", \"Nunito Variable\", Nunito, ui-rounded, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif",
+        "loaded": [
+          {
+            "status": "loaded",
+            "unicodeRange": "U+900-97F, U+1CD0-1CFF, U+A8E0-A8FF"
+          },
+          {
+            "status": "unloaded",
+            "unicodeRange": "U+980-9FF"
+          },
+          {
+            "status": "unloaded",
+            "unicodeRange": "U+A00-A7F"
+          },
+          {
+            "status": "unloaded",
+            "unicodeRange": "U+A80-AFF"
+          },
+          {
+            "status": "unloaded",
+            "unicodeRange": "U+B00-B7F"
+          },
+          {
+            "status": "unloaded",
+            "unicodeRange": "U+B80-BFF"
+          },
+          {
+            "status": "unloaded",
+            "unicodeRange": "U+C00-C7F"
+          },
+          {
+            "status": "unloaded",
+            "unicodeRange": "U+C80-CFF"
+          },
+          {
+            "status": "unloaded",
+            "unicodeRange": "U+D00-D7F"
+          },
+          {
+            "status": "unloaded",
+            "unicodeRange": "U+E00-E7F"
+          },
+          {
+            "status": "unloaded",
+            "unicodeRange": "U+1000-109F, U+A9E0-A9FF, U+AA60-AA7F"
+          },
+          {
+            "status": "unloaded",
+            "unicodeRange": "U+1200-139F, U+2D80-2DDF, U+AB00-AB2F"
+          },
+          {
+            "status": "loaded",
+            "unicodeRange": "U+600-6FF, U+750-77F, U+870-8FF, U+FB50-FDFF, U+FE70-FEFF"
+          }
+        ]
+      },
+      "page_errors": [],
+      "console_messages": [
+        "Failed to load resource: the server responded with a status of 404 (Not Found)",
+        "WARNING: using emscripten GL emulation. This is a collection of limited workarounds, do not expect it to work.",
+        "WARNING: using emscripten GL emulation unsafe opts. If weirdness happens, try -sGL_UNSAFE_OPTS=0",
+        "readlink() error: No such file or directory",
+        "WARNING: using emscripten GL immediate mode emulation. This is very limited in what it supports"
+      ],
+      "player_category_label": "भाषा और खिलाड़ी"
+    }
+  ],
+  "findings": [],
+  "observations": [
+    "Native translations visible in actual serial software WASM main/settings/lobby; phone onboarding prompts and hand/audio choices natural and readable.",
+    "Hindi input conjunct क्षेत्र and mixed1/2 a.co retain readable order; Sw input Mchezo12/100 a.co retains logical order. Narrow desktop text input horizontally scrolls selectedlongvalue; exact DOMvalue and persistedFSusername prove no character loss.",
+    "Phone lobby map mode controls fit: full Random map meaning visible. Scrollbars indicate deliberate scrolling for settings/lobby/main long panels; no permanently unreachable-content assertion from screenshots.",
+    "No obvious missing glyphs or broken Hindi conjuncts in inspected screenshots. Input accessible generic name is localized and dir=auto; screen-reader announcement was not physically tested."
+  ],
+  "limits": [
+    "Reviewed10images per locale: desktop+phone main/settings/input/lobby plus2phone onboarding screens; not gameplayHUD/tutorial/replay/native-platform evidence.",
+    "Isolated36-locale browserI18N and full draftFS overlays; shipping registration remains separate.",
+    "saveData=true skips optional media; requiredcore/game/translations loaded. Normal-media startup not established by this run.",
+    "Synthetic compositionstart/compositionend+Enter/Escape andFS-save sequencing are machine evidence; no physicalIME/keyboard/touch/nativeAndroid/iOS certification.",
+    "Known captured console404/GL-emulation/readlink warnings remain recorded; zero page exceptions does not mean no console warnings.",
+    "No native-human linguistic certification or full platform finalization."
+  ],
+  "edits_by_reviewer": false,
+  "locale_finalized": false
+}

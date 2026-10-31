@@ -1,0 +1,180 @@
+{
+  "id": "native-maps-002",
+  "source_sha256": "0ac44b4cdfb03e688983d6e3fb1e484cca57589665bff19c5c65388e649b292a",
+  "surface": "native",
+  "domain": "maps",
+  "context": "Procedural terrain controls: passes are mountain routes, reach is stream length, and banks/bars are terrain, not finance/weapons.",
+  "entries": [
+    {
+      "id": "native:[terrain group custom]",
+      "key": "[terrain group custom]",
+      "source": "Custom"
+    },
+    {
+      "id": "native:[terrain group classic]",
+      "key": "[terrain group classic]",
+      "source": "Classic ground"
+    },
+    {
+      "id": "native:[terrain rule walkable]",
+      "key": "[terrain rule walkable]",
+      "source": "Walkable"
+    },
+    {
+      "id": "native:[terrain rule swimmable]",
+      "key": "[terrain rule swimmable]",
+      "source": "Swimmable"
+    },
+    {
+      "id": "native:[terrain rule impassable]",
+      "key": "[terrain rule impassable]",
+      "source": "Impassable"
+    },
+    {
+      "id": "native:[terrain rule no flying]",
+      "key": "[terrain rule no flying]",
+      "source": "No flying"
+    },
+    {
+      "id": "native:[terrain rule buildable]",
+      "key": "[terrain rule buildable]",
+      "source": "Buildable"
+    },
+    {
+      "id": "native:[terrain rule speed %0]",
+      "key": "[terrain rule speed %0]",
+      "source": "Speed %0%"
+    },
+    {
+      "id": "native:[terrain rule crops grow]",
+      "key": "[terrain rule crops grow]",
+      "source": "Crops grow"
+    },
+    {
+      "id": "native:[terrain rule irrigates]",
+      "key": "[terrain rule irrigates]",
+      "source": "Irrigates nearby land"
+    },
+    {
+      "id": "native:[terrain rule stops nearby growth]",
+      "key": "[terrain rule stops nearby growth]",
+      "source": "Stops nearby growth"
+    },
+    {
+      "id": "native:[terrain rule blocks shots]",
+      "key": "[terrain rule blocks shots]",
+      "source": "Blocks shots"
+    },
+    {
+      "id": "native:[terrain rule hurts walkers]",
+      "key": "[terrain rule hurts walkers]",
+      "source": "Hurts walkers"
+    },
+    {
+      "id": "native:[terrain rule hurts fliers]",
+      "key": "[terrain rule hurts fliers]",
+      "source": "Hurts fliers"
+    },
+    {
+      "id": "native:[terrain palette hint]",
+      "key": "[terrain palette hint]",
+      "source": "Pick a brush. Groups share one set of rules; their members differ only in look."
+    },
+    {
+      "id": "native:[terrain rule algae grow]",
+      "key": "[terrain rule algae grow]",
+      "source": "Algae grow"
+    },
+    {
+      "id": "native:[editor map saved]",
+      "key": "[editor map saved]",
+      "source": "Map saved"
+    },
+    {
+      "id": "native:[editor map shared]",
+      "key": "[editor map shared]",
+      "source": "Map shared online"
+    },
+    {
+      "id": "native:[editor menu import terrain]",
+      "key": "[editor menu import terrain]",
+      "source": "Import terrain definitions…"
+    },
+    {
+      "id": "native:[library All generators]",
+      "key": "[library All generators]",
+      "source": "All generators"
+    },
+    {
+      "id": "native:[library Downloading generator…]",
+      "key": "[library Downloading generator…]",
+      "source": "Downloading generator…"
+    },
+    {
+      "id": "native:[library Each landscape is shown as a real map at the size and colony count below, which you can change here. Use one to play the map shown.]",
+      "key": "[library Each landscape is shown as a real map at the size and colony count below, which you can change here. Use one to play the map shown.]",
+      "source": "Each landscape is shown as a real map at the size and colony count below, which you can change here. Use one to play the map shown."
+    },
+    {
+      "id": "native:[library Editor tool: generates terrain for the map editor.]",
+      "key": "[library Editor tool: generates terrain for the map editor.]",
+      "source": "Editor tool: generates terrain for the map editor."
+    },
+    {
+      "id": "native:[library Enable installed families below. Selection is saved in this local profile; existing maps and saves keep their own buildings. For online play, generate a map with these families, publish it in the map library, then choose that map in your room.]",
+      "key": "[library Enable installed families below. Selection is saved in this local profile; existing maps and saves keep their own buildings. For online play, generate a map with these families, publish it in the map library, then choose that map in your room.]",
+      "source": "Enable installed families below. Selection is saved in this local profile; existing maps and saves keep their own buildings. For online play, generate a map with these families, publish it in the map library, then choose that map in your room."
+    },
+    {
+      "id": "native:[library Generator file hash mismatch]",
+      "key": "[library Generator file hash mismatch]",
+      "source": "Generator file hash mismatch"
+    },
+    {
+      "id": "native:[library Generator installed. Future selections use this release.]",
+      "key": "[library Generator installed. Future selections use this release.]",
+      "source": "Generator installed. Future selections use this release."
+    },
+    {
+      "id": "native:[library Generator package identity mismatch]",
+      "key": "[library Generator package identity mismatch]",
+      "source": "Generator package identity mismatch"
+    },
+    {
+      "id": "native:[library Generators]",
+      "key": "[library Generators]",
+      "source": "Generators"
+    },
+    {
+      "id": "native:[library Map generators]",
+      "key": "[library Map generators]",
+      "source": "Map generators"
+    },
+    {
+      "id": "native:[library My generators]",
+      "key": "[library My generators]",
+      "source": "My generators"
+    },
+    {
+      "id": "native:[library Playable generator]",
+      "key": "[library Playable generator]",
+      "source": "Playable generator"
+    },
+    {
+      "id": "native:[library Saving generator library…]",
+      "key": "[library Saving generator library…]",
+      "source": "Saving generator library…"
+    }
+  ],
+  "carryforward": {
+    "prior_manifest": {
+      "path": "../release-three/manifest.json",
+      "sha256": "4fd5e1faff01b7eb0e95db7eac33105ab557101742f6ef1a889e7b73210eb977"
+    },
+    "prior_batch": {
+      "path": "../release-three/batches/native-maps-002.json",
+      "sha256": "940319423c83a8c683961557a3e31e4d740440525ea781d2b04dd21b81553dff"
+    },
+    "method": "Partition retained keys by original ownership; radius supplement receives separate Sw correction chain, unchanged Hi/Ur retain original chain. No fresh reading inferred."
+  }
+}

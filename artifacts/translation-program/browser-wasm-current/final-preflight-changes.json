@@ -1,0 +1,13 @@
+{
+  "reason": "Root explicitly declared final92205 served build ready. Prepared5e/b366 preflight paths were intermediate; web-serial-current log was interrupted130 and is not accepted.",
+  "before_checker_sha256": "eb6dba41ba67b2a9c79d83c8f63e61bf55cc066e593b3a97cc57d76ee1f1a543",
+  "after_checker_sha256": "6e3aaf9ae254aa4f88669ba4d9ddf36fa5c6dc569e6e0ba9228b8eacaa0a33b6",
+  "changes": [
+    "Final-source-freeze.json replaces current-source-freeze.json.",
+    "Successful web-serial-release-final-build.log replaces interrupted web-serial-current-build.log.",
+    "Current browser-wasm-current/Caddyfile proxies canonicalAPI4323.",
+    "Bind actual web-release-final-build-proof, clean finalfreeze exactidentity, successfulloghash, actualWASMsha and canonicalUr444c71 catalog SHA."
+  ],
+  "no_runtime_content_overrides": true,
+  "root_authorized_all6_run": true
+}

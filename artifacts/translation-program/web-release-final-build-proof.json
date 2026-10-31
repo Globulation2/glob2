@@ -1,0 +1,21 @@
+{
+  "status": "passed",
+  "build_exit_code": 0,
+  "source_before_after_equal": true,
+  "source_identity": {
+    "dirty": false,
+    "revision": "92205aae687b650ed8b9aea4b31265f0ff6b7301",
+    "sourceStatus": [],
+    "sourceTreeSha256": "f769966128e5998dbcaec839271dc2a451dcd58b15e114e61ac2935857345de2"
+  },
+  "command": "PYTHONPATH=$PWD python3 tools/dev_build.py target=web web_variant=serial -j4",
+  "build_log": "web-serial-release-final-build.log",
+  "build_log_sha256": "3b32cb52612fde8245383c60cfba039841ec855c4eed3b0586ddef256b97e309",
+  "wasm_sha256": "c922528ad6485ee5137a998e5bb40f568452c2c7eedd65d47a146c0e297ce9a2",
+  "wasm_bytes": 50440769,
+  "canonical_ur_native_sha256": "444c71c1bf3105cf775cf50515af169a477a2a3db2c2d6a3c031b000c3920d27",
+  "limits": [
+    "Serial browser client; no threaded or native mobile verification inferred.",
+    "Build-only proof; actual served files/FS catalogs/rendering/input checked separately."
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "reviewer": "/root/pilot_context",
+  "author": "/root/urdu_translation",
+  "primary_editor": "/root/swahili_translation",
+  "supplemental_editor": null,
+  "batch_id": "native-colony-002",
+  "original_review_sha256": "951d337a1d9368efcefb1ae030cd4133edc3fad8be6f2ff961de5eff24fe0685",
+  "source_json_sha256": "a214fc4c9ce4d90fb29d572e3b9d96987eb61af8d0f7bda5050d7d1309d488a9",
+  "final_catalog_sha256": "5cb88fac67663fc436f6bfa60388382c24665755ee481514c002bc92e9a29837",
+  "original_target_subset_sha256": "a4bfb86e7533660d8bc8296e5ac395a8cfc23fc7f0a65e4d33a993b8e10532c3",
+  "final_target_subset_sha256": "a4bfb86e7533660d8bc8296e5ac395a8cfc23fc7f0a65e4d33a993b8e10532c3",
+  "reviewed_keys": [
+    "[library Loading building families]",
+    "[library No building families installed.]",
+    "[library No public building families yet]",
+    "[library Opening building family]"
+  ],
+  "changed_keys_reread": [],
+  "unchanged_keys_hash_carried_forward": [
+    "[library Loading building families]",
+    "[library No building families installed.]",
+    "[library No public building families yet]",
+    "[library Opening building family]"
+  ],
+  "new_full_batch_reread_claimed": false,
+  "dispositions": [],
+  "status": "linguistic-recheck-pass",
+  "limits": "Agent review of changed values plus exact unchanged-key provenance; no rendered/platform/finalized claim."
+}

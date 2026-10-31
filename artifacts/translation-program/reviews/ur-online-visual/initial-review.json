@@ -1,0 +1,556 @@
+{
+  "reviewer": "/root/pilot_context",
+  "locale": "ur",
+  "status": "all20-images-inspected-changes-requested",
+  "catalog_sha256": "db375ee564c39cf02dfb4ce08d6a4dbaecb8cd69d5bc7f167b4c7f779e246587",
+  "run_results_sha256": "00a9324a4a32d7e3728afd438844df7483d2cc10df294517083dded6b1c32007",
+  "build_identity_sha256": "3ca79e6bec285dd95d7fa8b37edbd26b41bcbae89d8d0f3a610e88f8d01f5e3f",
+  "server_identity_sha256": "765944e2eb4b9aa4c9e7bfd60ea402a66e8526cfc826634d0ae5f6b095f2ff26",
+  "captured_completed_utc": "2026-10-31T16:40:34.549Z",
+  "provenance_checks": {
+    "all20screenshot_hashes_match": true,
+    "actual_current_Urdu_catalog_matches_run_build_and_server": true,
+    "run_build_identity_file_exact_hash_match": true,
+    "server_identity_object_matches_run": true,
+    "all_screens_lang_ur_dir_rtl": true
+  },
+  "screens": [
+    {
+      "locale": "ur",
+      "width": 1200,
+      "name": "home-first-visit",
+      "url": "http://127.0.0.1:4322/",
+      "screenshot": "ur-1200-home-first-visit.png",
+      "screenshot_sha256": "0b7a479bf3f9e28edf495236b8bf6380933123650e866aa0b738bed8ae3f607f",
+      "lang": "ur",
+      "dir": "rtl",
+      "heading": [
+        "بستی میں خوش آمدید"
+      ],
+      "font": {
+        "loaded": true,
+        "body": "\"Glob2 Scripts\", \"Nunito Variable\", Nunito, ui-rounded, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif",
+        "heading": "\"Glob2 Scripts\", \"Glob2 Sans\", \"DejaVu Sans\", Verdana, sans-serif"
+      },
+      "overflow": 0,
+      "axe": [],
+      "independently_visually_inspected": true,
+      "inspection_notes": "Full page inspected at both widths, phone also reread at original resolution. Urdu hero/buttons/nav legible; all footer URL and card labels fit. Queue data text reorders in RTL. Phone match/player names use explicit ellipsis; retained English map names and seeded player names are authored data, not catalog fallback.",
+      "archived_screenshot": "initial-captures/ur-1200-home-first-visit.png"
+    },
+    {
+      "locale": "ur",
+      "width": 1200,
+      "name": "signin",
+      "url": "http://127.0.0.1:4322/signin",
+      "screenshot": "ur-1200-signin.png",
+      "screenshot_sha256": "ee96c9aca69167ccb537fbfed01c28427755be62ae08223951c52a27be1e0e90",
+      "lang": "ur",
+      "dir": "rtl",
+      "heading": [
+        "سائن ان کریں"
+      ],
+      "font": {
+        "loaded": true,
+        "body": "\"Glob2 Scripts\", \"Nunito Variable\", Nunito, ui-rounded, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif",
+        "heading": "\"Glob2 Scripts\", \"Glob2 Sans\", \"DejaVu Sans\", Verdana, sans-serif"
+      },
+      "overflow": 0,
+      "axe": [],
+      "independently_visually_inspected": true,
+      "inspection_notes": "Inputs/button labels legible, contextual Arabic joining correct, username hint wraps cleanly. ASCII numeric range0–9 visually reversed; see finding2.",
+      "archived_screenshot": "initial-captures/ur-1200-signin.png"
+    },
+    {
+      "locale": "ur",
+      "width": 1200,
+      "name": "signin-error",
+      "url": "http://127.0.0.1:4322/signin/local",
+      "screenshot": "ur-1200-signin-error.png",
+      "screenshot_sha256": "e856778026d3ab869578656a652ebda4eedce93ea0627bff307a9c89b0906e5c",
+      "lang": "ur",
+      "dir": "rtl",
+      "heading": [
+        "سائن ان کریں"
+      ],
+      "font": {
+        "loaded": true,
+        "body": "\"Glob2 Scripts\", \"Nunito Variable\", Nunito, ui-rounded, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif",
+        "heading": "\"Glob2 Scripts\", \"Glob2 Sans\", \"DejaVu Sans\", Verdana, sans-serif"
+      },
+      "overflow": 0,
+      "axe": [],
+      "independently_visually_inspected": true,
+      "inspection_notes": "Unknown username stays intact within Urdu error sentence, error box wraps without clipping. Same numeric-range hint issue.",
+      "archived_screenshot": "initial-captures/ur-1200-signin-error.png"
+    },
+    {
+      "locale": "ur",
+      "width": 1200,
+      "name": "account",
+      "url": "http://127.0.0.1:4322/account",
+      "screenshot": "ur-1200-account.png",
+      "screenshot_sha256": "f6faf12420dedff92d580b6e5e7c53e26994f65170d398ecb668ac6763df9671",
+      "lang": "ur",
+      "dir": "rtl",
+      "heading": [
+        "آپ کا اکاؤنٹ"
+      ],
+      "font": {
+        "loaded": true,
+        "body": "\"Glob2 Scripts\", \"Nunito Variable\", Nunito, ui-rounded, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif",
+        "heading": "\"Glob2 Scripts\", \"Glob2 Sans\", \"DejaVu Sans\", Verdana, sans-serif"
+      },
+      "overflow": 0,
+      "axe": [],
+      "independently_visually_inspected": true,
+      "inspection_notes": "Avatar, photo methods, JSON export and irreversible deletion warnings fit. Long privacy text and confirmation helper readable at390. Account name LTR intact. This is screenshot evidence, not destructive-account action execution.",
+      "archived_screenshot": "initial-captures/ur-1200-account.png"
+    },
+    {
+      "locale": "ur",
+      "width": 1200,
+      "name": "matches",
+      "url": "http://127.0.0.1:4322/matches",
+      "screenshot": "ur-1200-matches.png",
+      "screenshot_sha256": "cb7fbba0553617b9cc3d777c2527ed4c5f314a379c09c0a0860f9abe8ba7eaa9",
+      "lang": "ur",
+      "dir": "rtl",
+      "heading": [
+        "حالیہ میچ"
+      ],
+      "font": {
+        "loaded": true,
+        "body": "\"Glob2 Scripts\", \"Nunito Variable\", Nunito, ui-rounded, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif",
+        "heading": "\"Glob2 Scripts\", \"Glob2 Sans\", \"DejaVu Sans\", Verdana, sans-serif"
+      },
+      "overflow": 0,
+      "axe": [],
+      "independently_visually_inspected": true,
+      "inspection_notes": "Page title, filters and verification badges legible. Desktop durations align; phone deliberately hides duration/category columns and ellipsizes authored match titles. Queue data-label direction issue persists.",
+      "archived_screenshot": "initial-captures/ur-1200-matches.png"
+    },
+    {
+      "locale": "ur",
+      "width": 1200,
+      "name": "match",
+      "url": "http://127.0.0.1:4322/matches/4746469e-2a79-400d-afb4-6740c3899a1c",
+      "screenshot": "ur-1200-match.png",
+      "screenshot_sha256": "03c2388e8367ed39cb1b86e19696324d6514ce349f094fbe6aae5be264341cb5",
+      "lang": "ur",
+      "dir": "rtl",
+      "heading": [
+        "1 vs 1 ranked · Even Ground Classic"
+      ],
+      "font": {
+        "loaded": true,
+        "body": "\"Glob2 Scripts\", \"Nunito Variable\", Nunito, ui-rounded, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif",
+        "heading": "\"Glob2 Scripts\", \"Glob2 Sans\", \"DejaVu Sans\", Verdana, sans-serif"
+      },
+      "overflow": 0,
+      "axe": [],
+      "independently_visually_inspected": true,
+      "inspection_notes": "Title wraps at390 and Urdu sections, replay actions, plots and final stats are readable. Rating before/after transition visually reversed relative to signed delta. Phone rating column partially outside horizontally scrollable table; requires pan check. Striped skin asset is seeded fixture artwork, not missing text glyph.",
+      "archived_screenshot": "initial-captures/ur-1200-match.png"
+    },
+    {
+      "locale": "ur",
+      "width": 1200,
+      "name": "profile",
+      "url": "http://127.0.0.1:4322/players/b88dcfc9-b3e2-4291-8294-03769941aad0",
+      "screenshot": "ur-1200-profile.png",
+      "screenshot_sha256": "fd341541196717ecaa15dd1bd5df2188958f844dc284a49e59bf0db73676e717",
+      "lang": "ur",
+      "dir": "rtl",
+      "heading": [
+        "Bradley"
+      ],
+      "font": {
+        "loaded": true,
+        "body": "\"Glob2 Scripts\", \"Nunito Variable\", Nunito, ui-rounded, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif",
+        "heading": "\"Glob2 Scripts\", \"Glob2 Sans\", \"DejaVu Sans\", Verdana, sans-serif"
+      },
+      "overflow": 0,
+      "axe": [],
+      "independently_visually_inspected": true,
+      "inspection_notes": "Urdu stats, graph captions and match outcomes readable at both widths. Numeric plus/minus and win-loss pair deserve atomic direction; queue-name RTL issue. Proper player/map names retained deliberately; phone best-map card/title ellipsized.",
+      "archived_screenshot": "initial-captures/ur-1200-profile.png"
+    },
+    {
+      "locale": "ur",
+      "width": 1200,
+      "name": "leaderboard",
+      "url": "http://127.0.0.1:4322/leaderboard/ranked-1v1",
+      "screenshot": "ur-1200-leaderboard.png",
+      "screenshot_sha256": "6b2199919b7944b7d812108868b6d7c0235783e747dfda3f38c7dc4584e13ce2",
+      "lang": "ur",
+      "dir": "rtl",
+      "heading": [
+        "درجہ بندی"
+      ],
+      "font": {
+        "loaded": true,
+        "body": "\"Glob2 Scripts\", \"Nunito Variable\", Nunito, ui-rounded, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif",
+        "heading": "\"Glob2 Scripts\", \"Glob2 Sans\", \"DejaVu Sans\", Verdana, sans-serif"
+      },
+      "overflow": 0,
+      "axe": [],
+      "independently_visually_inspected": true,
+      "inspection_notes": "Urdu heading/explanation and provisional labels readable. Names/rating/game counts fit phone table; winrate column intentionally omitted on phone. Queue title bidi reorders; AI version text remains technical metadata.",
+      "archived_screenshot": "initial-captures/ur-1200-leaderboard.png"
+    },
+    {
+      "locale": "ur",
+      "width": 1200,
+      "name": "maps",
+      "url": "http://127.0.0.1:4322/maps",
+      "screenshot": "ur-1200-maps.png",
+      "screenshot_sha256": "485a8964b4b6a5ee2b63021ba8622691e78a846938cb315010a3d5cb2a7afc2a",
+      "lang": "ur",
+      "dir": "rtl",
+      "heading": [
+        "نقشے"
+      ],
+      "font": {
+        "loaded": true,
+        "body": "\"Glob2 Scripts\", \"Nunito Variable\", Nunito, ui-rounded, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif",
+        "heading": "\"Glob2 Scripts\", \"Glob2 Sans\", \"DejaVu Sans\", Verdana, sans-serif"
+      },
+      "overflow": 0,
+      "axe": [],
+      "independently_visually_inspected": true,
+      "inspection_notes": "All cards and filters inspected down to finalcard at390/1200. Long Urdu description wraps; mapdimensions128×128 and per-cardteam/like counts readable. English authored map titles are preserved names.",
+      "archived_screenshot": "initial-captures/ur-1200-maps.png"
+    },
+    {
+      "locale": "ur",
+      "width": 1200,
+      "name": "invite",
+      "url": "http://127.0.0.1:4322/j/GLOBJOIN",
+      "screenshot": "ur-1200-invite.png",
+      "screenshot_sha256": "d501bbb58daebc04b3365d5808f1d0d0845184e250cc7a05e61c910e26ada062",
+      "lang": "ur",
+      "dir": "rtl",
+      "heading": [
+        "آپ کو دعوت ہے"
+      ],
+      "font": {
+        "loaded": true,
+        "body": "\"Glob2 Scripts\", \"Nunito Variable\", Nunito, ui-rounded, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif",
+        "heading": "\"Glob2 Scripts\", \"Glob2 Sans\", \"DejaVu Sans\", Verdana, sans-serif"
+      },
+      "overflow": 0,
+      "axe": [],
+      "independently_visually_inspected": true,
+      "inspection_notes": "All Urdu instructions, hosted-room name, caller identity and uppercase GLOBJOIN code readable and unclipped; English room/provider names remain data. Phonebuttons and joincode fit. No longURL visible, so longURL wrapping is not verified.",
+      "archived_screenshot": "initial-captures/ur-1200-invite.png"
+    },
+    {
+      "locale": "ur",
+      "width": 390,
+      "name": "home-first-visit",
+      "url": "http://127.0.0.1:4322/",
+      "screenshot": "ur-390-home-first-visit.png",
+      "screenshot_sha256": "47ea39e1888acc4436353bd54756185c329348eb5b5b74a85e1acabc87d9352d",
+      "lang": "ur",
+      "dir": "rtl",
+      "heading": [
+        "بستی میں خوش آمدید"
+      ],
+      "font": {
+        "loaded": true,
+        "body": "\"Glob2 Scripts\", \"Nunito Variable\", Nunito, ui-rounded, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif",
+        "heading": "\"Glob2 Scripts\", \"Glob2 Sans\", \"DejaVu Sans\", Verdana, sans-serif"
+      },
+      "overflow": 0,
+      "axe": [],
+      "independently_visually_inspected": true,
+      "inspection_notes": "Full page inspected at both widths, phone also reread at original resolution. Urdu hero/buttons/nav legible; all footer URL and card labels fit. Queue data text reorders in RTL. Phone match/player names use explicit ellipsis; retained English map names and seeded player names are authored data, not catalog fallback.",
+      "archived_screenshot": "initial-captures/ur-390-home-first-visit.png"
+    },
+    {
+      "locale": "ur",
+      "width": 390,
+      "name": "signin",
+      "url": "http://127.0.0.1:4322/signin",
+      "screenshot": "ur-390-signin.png",
+      "screenshot_sha256": "d858c36ba2057db4d5530b20f3051997be133698af15613c8e27f7556c2c9310",
+      "lang": "ur",
+      "dir": "rtl",
+      "heading": [
+        "سائن ان کریں"
+      ],
+      "font": {
+        "loaded": true,
+        "body": "\"Glob2 Scripts\", \"Nunito Variable\", Nunito, ui-rounded, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif",
+        "heading": "\"Glob2 Scripts\", \"Glob2 Sans\", \"DejaVu Sans\", Verdana, sans-serif"
+      },
+      "overflow": 0,
+      "axe": [],
+      "independently_visually_inspected": true,
+      "inspection_notes": "Inputs/button labels legible, contextual Arabic joining correct, username hint wraps cleanly. ASCII numeric range0–9 visually reversed; see finding2.",
+      "archived_screenshot": "initial-captures/ur-390-signin.png"
+    },
+    {
+      "locale": "ur",
+      "width": 390,
+      "name": "signin-error",
+      "url": "http://127.0.0.1:4322/signin/local",
+      "screenshot": "ur-390-signin-error.png",
+      "screenshot_sha256": "96200b497c900afbe53f8c2ff051c5c330112efb57848934fdfa6e7d03ae2a5b",
+      "lang": "ur",
+      "dir": "rtl",
+      "heading": [
+        "سائن ان کریں"
+      ],
+      "font": {
+        "loaded": true,
+        "body": "\"Glob2 Scripts\", \"Nunito Variable\", Nunito, ui-rounded, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif",
+        "heading": "\"Glob2 Scripts\", \"Glob2 Sans\", \"DejaVu Sans\", Verdana, sans-serif"
+      },
+      "overflow": 0,
+      "axe": [],
+      "independently_visually_inspected": true,
+      "inspection_notes": "Unknown username stays intact within Urdu error sentence, error box wraps without clipping. Same numeric-range hint issue.",
+      "archived_screenshot": "initial-captures/ur-390-signin-error.png"
+    },
+    {
+      "locale": "ur",
+      "width": 390,
+      "name": "account",
+      "url": "http://127.0.0.1:4322/account",
+      "screenshot": "ur-390-account.png",
+      "screenshot_sha256": "1d4880450eee5943ed170e4bc17b43a16faa5c2e8f6ae16cfbb612d5cfb54418",
+      "lang": "ur",
+      "dir": "rtl",
+      "heading": [
+        "آپ کا اکاؤنٹ"
+      ],
+      "font": {
+        "loaded": true,
+        "body": "\"Glob2 Scripts\", \"Nunito Variable\", Nunito, ui-rounded, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif",
+        "heading": "\"Glob2 Scripts\", \"Glob2 Sans\", \"DejaVu Sans\", Verdana, sans-serif"
+      },
+      "overflow": 0,
+      "axe": [],
+      "independently_visually_inspected": true,
+      "inspection_notes": "Avatar, photo methods, JSON export and irreversible deletion warnings fit. Long privacy text and confirmation helper readable at390. Account name LTR intact. This is screenshot evidence, not destructive-account action execution.",
+      "archived_screenshot": "initial-captures/ur-390-account.png"
+    },
+    {
+      "locale": "ur",
+      "width": 390,
+      "name": "matches",
+      "url": "http://127.0.0.1:4322/matches",
+      "screenshot": "ur-390-matches.png",
+      "screenshot_sha256": "e63a6a0df3e23835b7e4aa8f8e28048c5cf32517ea492d831f801afa0e3e67ec",
+      "lang": "ur",
+      "dir": "rtl",
+      "heading": [
+        "حالیہ میچ"
+      ],
+      "font": {
+        "loaded": true,
+        "body": "\"Glob2 Scripts\", \"Nunito Variable\", Nunito, ui-rounded, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif",
+        "heading": "\"Glob2 Scripts\", \"Glob2 Sans\", \"DejaVu Sans\", Verdana, sans-serif"
+      },
+      "overflow": 0,
+      "axe": [],
+      "independently_visually_inspected": true,
+      "inspection_notes": "Page title, filters and verification badges legible. Desktop durations align; phone deliberately hides duration/category columns and ellipsizes authored match titles. Queue data-label direction issue persists.",
+      "archived_screenshot": "initial-captures/ur-390-matches.png"
+    },
+    {
+      "locale": "ur",
+      "width": 390,
+      "name": "match",
+      "url": "http://127.0.0.1:4322/matches/4746469e-2a79-400d-afb4-6740c3899a1c",
+      "screenshot": "ur-390-match.png",
+      "screenshot_sha256": "28d5b85fbee9dad11eaee82ae290797d386177f427986dcae0d7b53d7a0431d5",
+      "lang": "ur",
+      "dir": "rtl",
+      "heading": [
+        "1 vs 1 ranked · Even Ground Classic"
+      ],
+      "font": {
+        "loaded": true,
+        "body": "\"Glob2 Scripts\", \"Nunito Variable\", Nunito, ui-rounded, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif",
+        "heading": "\"Glob2 Scripts\", \"Glob2 Sans\", \"DejaVu Sans\", Verdana, sans-serif"
+      },
+      "overflow": 0,
+      "axe": [],
+      "independently_visually_inspected": true,
+      "inspection_notes": "Title wraps at390 and Urdu sections, replay actions, plots and final stats are readable. Rating before/after transition visually reversed relative to signed delta. Phone rating column partially outside horizontally scrollable table; requires pan check. Striped skin asset is seeded fixture artwork, not missing text glyph.",
+      "archived_screenshot": "initial-captures/ur-390-match.png"
+    },
+    {
+      "locale": "ur",
+      "width": 390,
+      "name": "profile",
+      "url": "http://127.0.0.1:4322/players/b88dcfc9-b3e2-4291-8294-03769941aad0",
+      "screenshot": "ur-390-profile.png",
+      "screenshot_sha256": "496bdcc799f7eaf89fe8539723a79f80022329056d05e818f4cd4dcd62bf3d7d",
+      "lang": "ur",
+      "dir": "rtl",
+      "heading": [
+        "Bradley"
+      ],
+      "font": {
+        "loaded": true,
+        "body": "\"Glob2 Scripts\", \"Nunito Variable\", Nunito, ui-rounded, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif",
+        "heading": "\"Glob2 Scripts\", \"Glob2 Sans\", \"DejaVu Sans\", Verdana, sans-serif"
+      },
+      "overflow": 0,
+      "axe": [],
+      "independently_visually_inspected": true,
+      "inspection_notes": "Urdu stats, graph captions and match outcomes readable at both widths. Numeric plus/minus and win-loss pair deserve atomic direction; queue-name RTL issue. Proper player/map names retained deliberately; phone best-map card/title ellipsized.",
+      "archived_screenshot": "initial-captures/ur-390-profile.png"
+    },
+    {
+      "locale": "ur",
+      "width": 390,
+      "name": "leaderboard",
+      "url": "http://127.0.0.1:4322/leaderboard/ranked-1v1",
+      "screenshot": "ur-390-leaderboard.png",
+      "screenshot_sha256": "200adaa90f8424d6a46200a7f7e640c18908d132c01be51f5f62bbe972fd91df",
+      "lang": "ur",
+      "dir": "rtl",
+      "heading": [
+        "درجہ بندی"
+      ],
+      "font": {
+        "loaded": true,
+        "body": "\"Glob2 Scripts\", \"Nunito Variable\", Nunito, ui-rounded, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif",
+        "heading": "\"Glob2 Scripts\", \"Glob2 Sans\", \"DejaVu Sans\", Verdana, sans-serif"
+      },
+      "overflow": 0,
+      "axe": [],
+      "independently_visually_inspected": true,
+      "inspection_notes": "Urdu heading/explanation and provisional labels readable. Names/rating/game counts fit phone table; winrate column intentionally omitted on phone. Queue title bidi reorders; AI version text remains technical metadata.",
+      "archived_screenshot": "initial-captures/ur-390-leaderboard.png"
+    },
+    {
+      "locale": "ur",
+      "width": 390,
+      "name": "maps",
+      "url": "http://127.0.0.1:4322/maps",
+      "screenshot": "ur-390-maps.png",
+      "screenshot_sha256": "78d0bff7832743dbd30d921032d458ad3ea20da55e08c35e868e675374479638",
+      "lang": "ur",
+      "dir": "rtl",
+      "heading": [
+        "نقشے"
+      ],
+      "font": {
+        "loaded": true,
+        "body": "\"Glob2 Scripts\", \"Nunito Variable\", Nunito, ui-rounded, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif",
+        "heading": "\"Glob2 Scripts\", \"Glob2 Sans\", \"DejaVu Sans\", Verdana, sans-serif"
+      },
+      "overflow": 0,
+      "axe": [],
+      "independently_visually_inspected": true,
+      "inspection_notes": "All cards and filters inspected down to finalcard at390/1200. Long Urdu description wraps; mapdimensions128×128 and per-cardteam/like counts readable. English authored map titles are preserved names.",
+      "archived_screenshot": "initial-captures/ur-390-maps.png"
+    },
+    {
+      "locale": "ur",
+      "width": 390,
+      "name": "invite",
+      "url": "http://127.0.0.1:4322/j/GLOBJOIN",
+      "screenshot": "ur-390-invite.png",
+      "screenshot_sha256": "03839bc2fb49547dbd779ea63d4568737190d1e24033766b6b2c526af650aa4b",
+      "lang": "ur",
+      "dir": "rtl",
+      "heading": [
+        "آپ کو دعوت ہے"
+      ],
+      "font": {
+        "loaded": true,
+        "body": "\"Glob2 Scripts\", \"Nunito Variable\", Nunito, ui-rounded, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif",
+        "heading": "\"Glob2 Scripts\", \"Glob2 Sans\", \"DejaVu Sans\", Verdana, sans-serif"
+      },
+      "overflow": 0,
+      "axe": [],
+      "independently_visually_inspected": true,
+      "inspection_notes": "All Urdu instructions, hosted-room name, caller identity and uppercase GLOBJOIN code readable and unclipped; English room/provider names remain data. Phonebuttons and joincode fit. No longURL visible, so longURL wrapping is not verified.",
+      "archived_screenshot": "initial-captures/ur-390-invite.png"
+    }
+  ],
+  "findings": [
+    {
+      "id": "UR-VIS-001",
+      "severity": "major",
+      "surface": "match/profile numeric values",
+      "key": " → ",
+      "kind": "shared-source-bidi-display",
+      "screens": [
+        "ur-1200-match.png",
+        "ur-390-match.png",
+        "ur-1200-profile.png",
+        "ur-390-profile.png"
+      ],
+      "problem": "Match screen lost Bradley has negative delta but visually shows1585→1615; winner Mirelle has positive delta but visually shows1706→1677. RTL context reorders numeric before/after operands around a rightward arrow. Signed deltas also render sign on the right.",
+      "source_context": "platform/apps/web/src/pages/Match.tsx175–176 outputs r.before + translated arrow + r.after in inheritedRTL td.num, without atomic LTR isolation.",
+      "proposal": "Keep numeric transition as atomic LTR data, e.g. bdi dir=ltr around before→after, and isolate signed numeric deltas/ordered win-loss data consistently. Do not change catalog arrow or manually reverse Unicode text.",
+      "state": "sent-to-root-distinct-source-editor; needs fresh capture/recheck"
+    },
+    {
+      "id": "UR-VIS-002",
+      "severity": "minor",
+      "surface": "signin and signin-error",
+      "key": "3 to 32 letters, digits, dots, dashes or underscores. Other players see it.",
+      "kind": "shared-source-or-catalog-bidi-display",
+      "screens": [
+        "ur-1200-signin.png",
+        "ur-390-signin.png",
+        "ur-1200-signin-error.png",
+        "ur-390-signin-error.png"
+      ],
+      "problem": "Correctly stored literal (0–9) is visually displayed as(9–0) in Urdu registration hint. The allowed ASCII-digit constraint remains understandable but numeric range ordering is wrong.",
+      "proposal": "Isolate the Latin/numeric range with an LTR boundary in rendered presentation, or have a distinct editor revise the specific Urdu hint to natural prose 0 سے9 with independent reviewer recheck. No catalog edits made by reviewer.",
+      "state": "sent-to-root; needs correction/explicit disposition and recapture"
+    },
+    {
+      "id": "UR-VIS-003",
+      "severity": "minor",
+      "surface": "home/matches/profile/leaderboard queue names",
+      "key": null,
+      "kind": "authored-data-bidi-boundary",
+      "screens": [
+        "ur-1200-home-first-visit.png",
+        "ur-390-home-first-visit.png",
+        "ur-1200-matches.png",
+        "ur-390-matches.png",
+        "ur-1200-profile.png",
+        "ur-390-profile.png",
+        "ur-1200-leaderboard.png",
+        "ur-390-leaderboard.png"
+      ],
+      "problem": "Seeded queue name1 vs1ranked displays with first numeral displaced to the right, visually vs1ranked1; analogous2vs2 fixture does the same. The label is authored data, not a missing translation.",
+      "proposal": "Isolate whole queue data labels with bdi/dir=auto so their own first strong Latin character controls internal direction while Urdu surrounding layout staysRTL.",
+      "state": "sent-to-root; source correction/explicit disposition and fresh evidence required"
+    }
+  ],
+  "interaction_followup": [
+    {
+      "surface": "ur-390-match.png ratingtable",
+      "observation": "Leftward rating data is clipped inside the narrow table while Player/Outcome remain visible. TableWrap suggests intentional horizontal scrolling, so screenshot alone cannot classify usability failure.",
+      "required_evidence": "Pan the table in the phone viewport and confirm complete before/after values can be read; if no scroll affordance, consider a responsive stacked rating presentation.",
+      "state": "pending-interaction-evidence"
+    }
+  ],
+  "positive_observations": [
+    "Connected Arabic-script glyph shaping and Urdu punctuation readable across all20images; no tofu observed.",
+    "Urdu headings, body text, account deletion warnings, controls and card titles generally wrap without overlap or viewport-edge clipping.",
+    "Invite joincode and footerURL remain readable; whole longURL behavior not shown.",
+    "Seeded English player/map/room names and technical identifiers distinguished from catalog prose."
+  ],
+  "limits": [
+    "Independent agent visual review, not human native-speaker approval.",
+    "Actual local app in desktop Chromium at1200/390 CSS pixel widths;390 is a browser phone viewport, not nativeAndroid/iOS/device verification.",
+    "Images were actually read; automation overflow0/axe reports are recorded provenance only, not substitutes for visual judgment.",
+    "All twenty route screenshots are whole-page static images; no claim that every interactive flow, screenreader, formoperation or apppage was exercised by reviewer.",
+    "No nativegameHUD/tutorial/settings/WASM rendering proof here.",
+    "Sharedsourcefixes require new exactbuild screenshots before visual gate can pass."
+  ]
+}

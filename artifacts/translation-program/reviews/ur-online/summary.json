@@ -1,0 +1,93 @@
+{
+  "reviewer": "/root/pilot_context",
+  "author": "/root/urdu_translation",
+  "status": "full-independent-review-complete-findings-open",
+  "catalog_sha256": "0da47c791e9c389d68b54bfd67d418872f77a2b107daa03fe789f1ab02ab8a81",
+  "source_file_sha256": "d7c8f06c7f023e77a027389d7decfa74bfd05c66ba151401317d67cc8bab1538",
+  "source_contract_sha256": "aacd8a342e9e734ba47f902a161ac1a45badff5842a617bcd68bf8e2275d6013",
+  "checkout_head_at_review": "6a16670c6daafa34f1f86a47014f23e0d05fd4e3",
+  "coverage": {
+    "all_keys_read": 2835,
+    "batches": 18,
+    "plural_families": 27,
+    "plural_branches": 54,
+    "total_value_branches": 2862,
+    "exact_english_retention_entries_individually_dispositioned": 84
+  },
+  "finding_count": 34,
+  "severities": {
+    "major": 14,
+    "minor": 20
+  },
+  "finding_ids": [
+    "UR-O-001-01",
+    "UR-O-001-02",
+    "UR-O-002-01",
+    "UR-O-002-02",
+    "UR-O-004-01",
+    "UR-O-004-02",
+    "UR-O-005-01",
+    "UR-O-005-02",
+    "UR-O-007-01",
+    "UR-O-009-01",
+    "UR-O-010-01",
+    "UR-O-010-02",
+    "UR-O-011-01",
+    "UR-O-012-01",
+    "UR-O-012-02",
+    "UR-O-014-01",
+    "UR-O-014-02",
+    "UR-O-014-03",
+    "UR-O-015-01",
+    "UR-O-015-02",
+    "UR-O-015-03",
+    "UR-O-015-04",
+    "UR-O-015-05",
+    "UR-O-016-01",
+    "UR-O-016-02",
+    "UR-O-016-03",
+    "UR-O-017-01",
+    "UR-O-017-02",
+    "UR-O-017-03",
+    "UR-O-018-01",
+    "UR-O-018-02",
+    "UR-O-018-03",
+    "UR-O-018-04",
+    "UR-O-018-05"
+  ],
+  "shared_glossary": {
+    "Swarm": "چھتہ / چھتے",
+    "worker": "کارکن",
+    "explorer": "کھوجی",
+    "warrior": "جنگجو",
+    "colony": "بستی",
+    "Inn": "سرائے",
+    "School": "اسکول",
+    "reserved_credit": "مختص کریڈٹ",
+    "credit_currency": "کریڈٹ",
+    "creator_credit": "تخلیق کار کا ذکر",
+    "chat_mute": "چیٹ پر پابندی",
+    "audio_mute": "آواز بند کریں",
+    "unmute_shared": "میوٹ ہٹائیں"
+  },
+  "positive_context_checks": [
+    "Account deletion is explicitly irreversible; historical replay files still retain names.",
+    "Credits buy AI work, not attribution; Close credits closes wallet panel.",
+    "Exposed tick correctly specifies outside buildings.",
+    "ASCII protocol/JSON identifiers, license IDs and numeric constants retained.",
+    "Short seeded games correctly describe brief game duration with fixed seeds.",
+    "All 27 source plural objects read against both target branches, including source values differing from singular key wording.",
+    "All source scalar values are equal to their English keys, checked programmatically."
+  ],
+  "unresolved_uncertainties": [
+    "Musical warm timbre suggestion is editorial guidance; editor should choose natural Urdu wording without claiming provider authority.",
+    "Native glossary cross-surface references need refresh after independent native editor finishes.",
+    "Numerals, URLs, arrow directions, wrapping and clipping need actual production RTL rendering; source logical order was inspected only."
+  ],
+  "limits": [
+    "Findings need a distinct editor and original reviewer recheck; no catalog writes by reviewer.",
+    "Agent review is not human native-speaker approval.",
+    "Only local snapshot key/placeholder/plural checks performed here; full registered online/browser checker, fonts, native/browser/mobile UI and integration gates are not certified.",
+    "Cloud Translate NMT comparison is stored as fallible context only; its output has demonstrated meaning errors and was not used as approval evidence."
+  ]
+}

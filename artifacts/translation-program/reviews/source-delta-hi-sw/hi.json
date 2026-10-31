@@ -1,0 +1,148 @@
+{
+  "locale": "hi",
+  "reviewer": "/root/hindi_online_review",
+  "author": "/root/swahili_translation",
+  "editor": "/root/translation_kit",
+  "key": "Game text field",
+  "source": "Game text field",
+  "translation": "खेल में टेक्स्ट दर्ज करने का बॉक्स",
+  "finding_status": "accepted-no-findings",
+  "rationale": "खेल में anchors in-game context; टेक्स्ट दर्ज करने का identifies text entry; बॉक्स names the software input box. Natural accessible noun phrase, no terrain/file/game-message confusion.",
+  "caller": "browser/shell.html:658–659, Module.textBridge.field non-password input branch",
+  "context_review": "Read textBridge field creation, dynamic data-i18n-aria/aria-label assignment, password distinction and locale refresh loop. Generic name identifies the control without inventing its specific gameplay purpose.",
+  "placeholder_review": "No placeholders, identifiers, plural branches or sensitive data in new label.",
+  "before_online_sha256": "18bc06269a91e48ed90b9c08372bbff2c218c245b2823e5aaf6738588a6f9954",
+  "after_online_sha256": "d80bdd87f3502c34e45ae744d8e0f8bac3cafd93755a5ef87e0bed8bec3d74c4",
+  "old_entries_equal_exactly": true,
+  "old_keys_carried_forward": 2835,
+  "method": "All old decoded key/value pairs compared recursively against preserved pre-integration snapshot; snapshot hash equals previously independently reviewed final catalog. All18 previous final batch hashes reproduced. Prior full review carried forward, not reread. Only new key read linguistically this turn.",
+  "batch_proof": [
+    {
+      "batch_id": "online-online-001",
+      "review_record": "artifacts/translation-program/reviews/hi-online/online-online-001.json",
+      "key_count": 160,
+      "unchanged_target_subset_sha256": "2f0078b1518c5bd6cb76a27cb5093f4ce7b441326c14d07d2cf8a57ba536adc7",
+      "matches_prior_final_recheck": true
+    },
+    {
+      "batch_id": "online-online-002",
+      "review_record": "artifacts/translation-program/reviews/hi-online/online-online-002.json",
+      "key_count": 160,
+      "unchanged_target_subset_sha256": "369093465d390cc0bcef830a39b15b6ddce216e16d5145a21ea3c7e59e825e8a",
+      "matches_prior_final_recheck": true
+    },
+    {
+      "batch_id": "online-online-003",
+      "review_record": "artifacts/translation-program/reviews/hi-online/online-online-003.json",
+      "key_count": 160,
+      "unchanged_target_subset_sha256": "7aed7ec35a730cfcf3715155d72f8fb41d109e7613485a1634429cfe7cd0e901",
+      "matches_prior_final_recheck": true
+    },
+    {
+      "batch_id": "online-online-004",
+      "review_record": "artifacts/translation-program/reviews/hi-online/online-online-004.json",
+      "key_count": 160,
+      "unchanged_target_subset_sha256": "468ba05153f5fe9d97ad78d7483511155e17acc11dd940db31839c7dd7820c2f",
+      "matches_prior_final_recheck": true
+    },
+    {
+      "batch_id": "online-online-005",
+      "review_record": "artifacts/translation-program/reviews/hi-online/online-online-005.json",
+      "key_count": 160,
+      "unchanged_target_subset_sha256": "a611ea02562787ae6bb9147519a257505488513e20734377def4d9e12d323991",
+      "matches_prior_final_recheck": true
+    },
+    {
+      "batch_id": "online-online-006",
+      "review_record": "artifacts/translation-program/reviews/hi-online/online-online-006.json",
+      "key_count": 160,
+      "unchanged_target_subset_sha256": "9f7f421eb047f93c59b6b60aab572f11e2026ae876f35acfe8b8c47a9348008d",
+      "matches_prior_final_recheck": true
+    },
+    {
+      "batch_id": "online-online-007",
+      "review_record": "artifacts/translation-program/reviews/hi-online/online-online-007.json",
+      "key_count": 160,
+      "unchanged_target_subset_sha256": "625de2d898500ec63913b160e64d0ad4177fcfcd0b6bcf25e407434093324e98",
+      "matches_prior_final_recheck": true
+    },
+    {
+      "batch_id": "online-online-008",
+      "review_record": "artifacts/translation-program/reviews/hi-online/online-online-008.json",
+      "key_count": 160,
+      "unchanged_target_subset_sha256": "5fb0db2d9f469efc090bbd73a5acad8942e53ab22b69cff213cfe5e2095f30e2",
+      "matches_prior_final_recheck": true
+    },
+    {
+      "batch_id": "online-online-009",
+      "review_record": "artifacts/translation-program/reviews/hi-online/online-online-009.json",
+      "key_count": 160,
+      "unchanged_target_subset_sha256": "fd0ca6b90fba0b64eac8a07d5796057ae679781a14aea96312ba179aec4392a4",
+      "matches_prior_final_recheck": true
+    },
+    {
+      "batch_id": "online-online-010",
+      "review_record": "artifacts/translation-program/reviews/hi-online/online-online-010.json",
+      "key_count": 160,
+      "unchanged_target_subset_sha256": "f24281103795f733e246aba323033f1525295d7452ce574f78b35cf9a99dde9a",
+      "matches_prior_final_recheck": true
+    },
+    {
+      "batch_id": "online-online-011",
+      "review_record": "artifacts/translation-program/reviews/hi-online/online-online-011.json",
+      "key_count": 160,
+      "unchanged_target_subset_sha256": "39e1667a5afb4ca8edf2cc995cbe7504db2ceaff763d3c0c71a8954d192fbb56",
+      "matches_prior_final_recheck": true
+    },
+    {
+      "batch_id": "online-online-012",
+      "review_record": "artifacts/translation-program/reviews/hi-online/online-online-012.json",
+      "key_count": 160,
+      "unchanged_target_subset_sha256": "476670a3938060178419c89b3ed27b59f46af18503b5ada2e1bee711381dab8d",
+      "matches_prior_final_recheck": true
+    },
+    {
+      "batch_id": "online-online-013",
+      "review_record": "artifacts/translation-program/reviews/hi-online/online-online-013.json",
+      "key_count": 160,
+      "unchanged_target_subset_sha256": "a2f97be20aa9d102f89b4411290ce373535b50701f2d26b4744f86d04c3f2aeb",
+      "matches_prior_final_recheck": true
+    },
+    {
+      "batch_id": "online-online-014",
+      "review_record": "artifacts/translation-program/reviews/hi-online/online-online-014.json",
+      "key_count": 160,
+      "unchanged_target_subset_sha256": "11afccc8a30b3850c25ebc7410b179a7034e555d8efca8dcfe515cc2cdf77338",
+      "matches_prior_final_recheck": true
+    },
+    {
+      "batch_id": "online-online-015",
+      "review_record": "artifacts/translation-program/reviews/hi-online/online-online-015.json",
+      "key_count": 160,
+      "unchanged_target_subset_sha256": "e6e724426f1ebebc4f185827e3ec86edf3e791526c10de195e1b41983ceecb3e",
+      "matches_prior_final_recheck": true
+    },
+    {
+      "batch_id": "online-online-016",
+      "review_record": "artifacts/translation-program/reviews/hi-online/online-online-016.json",
+      "key_count": 160,
+      "unchanged_target_subset_sha256": "2788522981411883af91d8f2a7d0acc305492196639ffcdd17a3d41d005971c3",
+      "matches_prior_final_recheck": true
+    },
+    {
+      "batch_id": "online-online-017",
+      "review_record": "artifacts/translation-program/reviews/hi-online/online-online-017.json",
+      "key_count": 160,
+      "unchanged_target_subset_sha256": "1ed36fb636e3e070a7bdd80df8fe56fcd6adb5faf3ebdba01c65858ff2980b07",
+      "matches_prior_final_recheck": true
+    },
+    {
+      "batch_id": "online-online-018",
+      "review_record": "artifacts/translation-program/reviews/hi-online/online-online-018.json",
+      "key_count": 115,
+      "unchanged_target_subset_sha256": "7750c052a0f009b4991881a0bacc07d0f1b8021ddda28582be9d969dc34018e5",
+      "matches_prior_final_recheck": true
+    }
+  ],
+  "locale_finalized": false
+}

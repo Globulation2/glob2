@@ -1,0 +1,639 @@
+{
+  "id": "native-tutorial-001",
+  "source_sha256": "7583e9f8f0a03186eec456ed3b7a9c187509056b91f931551c3b7dc0e6b53457",
+  "surface": "native",
+  "domain": "tutorial",
+  "context": "Teach the player the action shown. Preserve tutorial execution and mission identifiers; translate display text only.",
+  "entries": [
+    {
+      "id": "native:[tutorial text 1]",
+      "key": "[tutorial text 1]",
+      "source": "Welcome to the Globulation 2 primary tutorial! This tutorial will cover everything from building inns, exploring zones, and destroying enemies! There is no shortage of useful knowledge here!"
+    },
+    {
+      "id": "native:[tutorial text 2]",
+      "key": "[tutorial text 2]",
+      "source": "Now that you have mastered the basics, it's time to get used to other buildings such as Racetracks, Swimming Pools, and Schools."
+    },
+    {
+      "id": "native:[tutorial text 3]",
+      "key": "[tutorial text 3]",
+      "source": "You have done well to get this far. Now let's move on to Warriors, Barracks, and Upgrades."
+    },
+    {
+      "id": "native:[tutorial text 4]",
+      "key": "[tutorial text 4]",
+      "source": "You are almost finished. Only flags and attacking remain. Then you'll know enough to try Custom Games and eventually play online against some of Globulation 2's finest players."
+    },
+    {
+      "id": "native:[tutorial]",
+      "key": "[tutorial]",
+      "source": "Tutorial"
+    },
+    {
+      "id": "native:[Tutorial ▸]",
+      "key": "[Tutorial ▸]",
+      "source": "Tutorial ▸"
+    },
+    {
+      "id": "native:[tutorial part1 message 1]",
+      "key": "[tutorial part1 message 1]",
+      "source": "Welcome to Globulation 2! This tutorial teaches colony management over four missions. You can save your progress from the game menu and load it later from the main menu. Press Space to continue, or tap OK on a touch screen. Some messages disappear after you continue; use Message history to read them again."
+    },
+    {
+      "id": "native:[tutorial part1 message 2]",
+      "key": "[tutorial part1 message 2]",
+      "source": "You begin with a Swarm and one worker. Let's see how they work together."
+    },
+    {
+      "id": "native:[tutorial part1 message 3]",
+      "key": "[tutorial part1 message 3]",
+      "source": "Your worker harvests wheat and carries it to the Swarm. The Swarm uses wheat to produce new units, making it essential to your colony."
+    },
+    {
+      "id": "native:[tutorial part1 message 4]",
+      "key": "[tutorial part1 message 4]",
+      "source": "Select your globule, the moving unit, with a left-click or a tap."
+    },
+    {
+      "id": "native:[tutorial part1 message 5]",
+      "key": "[tutorial part1 message 5]",
+      "source": "The unit information shows its food level falling over time. Your globule is getting hungry. When food bars are visible, the blue bar beneath the unit shows its remaining food."
+    },
+    {
+      "id": "native:[tutorial part1 message 6]",
+      "key": "[tutorial part1 message 6]",
+      "source": "Globules eat at Inns. Clear the selection with a right-click, or tap empty ground on a touch screen."
+    },
+    {
+      "id": "native:[tutorial part1 message 7]",
+      "key": "[tutorial part1 message 7]",
+      "source": "Open the building controls, choose Inn, and place it near wheat. Follow your worker's harvesting route if you cannot spot the wheat. On touch screens, use Build and confirm a valid placement. When finished, leave placement mode with a right-click or the touch Cancel control."
+    },
+    {
+      "id": "native:[tutorial part1 message 8]",
+      "key": "[tutorial part1 message 8]",
+      "source": "Good! The Inn's building site is in place."
+    },
+    {
+      "id": "native:[tutorial part1 message 9]",
+      "key": "[tutorial part1 message 9]",
+      "source": "A worker from the Swarm can now build the Inn. The worker gathers wood from nearby trees and brings it to the site. Wait for construction to finish."
+    },
+    {
+      "id": "native:[tutorial part1 message 10]",
+      "key": "[tutorial part1 message 10]",
+      "source": "The finished Inn needs wheat. An assigned worker will gather it, just as a worker supplies the Swarm."
+    },
+    {
+      "id": "native:[tutorial part1 message 11]",
+      "key": "[tutorial part1 message 11]",
+      "source": "The Inn's yellow resource bar rises as wheat arrives. It shows how much wheat the Inn has in stock."
+    },
+    {
+      "id": "native:[tutorial part1 message 12]",
+      "key": "[tutorial part1 message 12]",
+      "source": "Now let's learn how to assign work."
+    },
+    {
+      "id": "native:[tutorial part1 message 13]",
+      "key": "[tutorial part1 message 13]",
+      "source": "One worker supplies the Swarm and another supplies the Inn. Either may pause to eat at the Inn. That is normal."
+    },
+    {
+      "id": "native:[tutorial part1 message 14]",
+      "key": "[tutorial part1 message 14]",
+      "source": "Select the Swarm and find its worker assignment control. On desktop it is labeled Working; on touch screens, use the assigned workers and target control. The target is how many workers you want at this building."
+    },
+    {
+      "id": "native:[tutorial part1 message 15]",
+      "key": "[tutorial part1 message 15]",
+      "source": "Use the assignment control to set the Swarm's worker target to 0. Then select the Inn and set its target to 0 too."
+    },
+    {
+      "id": "native:[tutorial part1 message 16]",
+      "key": "[tutorial part1 message 16]",
+      "source": "Your workers are now idle, but they still need food. An Inn with no assigned workers will eventually run out of wheat."
+    },
+    {
+      "id": "native:[tutorial part1 message 17]",
+      "key": "[tutorial part1 message 17]",
+      "source": "A globule that cannot find food will lose health and may die. A Hospital can heal damaged globules, but you must also keep the Inns supplied."
+    },
+    {
+      "id": "native:[tutorial part1 message 18]",
+      "key": "[tutorial part1 message 18]",
+      "source": "Build a Hospital using the building controls. It does not need wheat, so place it near wood or in a central spot near your Swarm."
+    },
+    {
+      "id": "native:[tutorial part1 message 19]",
+      "key": "[tutorial part1 message 19]",
+      "source": "Select the Hospital's building site and set its worker target to 2. Two workers can finish it faster."
+    },
+    {
+      "id": "native:[tutorial part1 message 20]",
+      "key": "[tutorial part1 message 20]",
+      "source": "The Hospital is ready. Injured globules can now visit it to recover their health."
+    },
+    {
+      "id": "native:[tutorial part1 message 21]",
+      "key": "[tutorial part1 message 21]",
+      "source": "The black areas are unexplored. Units reveal nearby ground as they move. Workers follow their jobs, so they are hard to use for scouting. Explorers are designed for that task."
+    },
+    {
+      "id": "native:[tutorial part1 message 22]",
+      "key": "[tutorial part1 message 22]",
+      "source": "Select the Swarm and find the production ratios for workers, explorers, and warriors. Increase the explorer ratio to 1."
+    },
+    {
+      "id": "native:[tutorial part1 message 23]",
+      "key": "[tutorial part1 message 23]",
+      "source": "With worker and explorer ratios both at 1, the Swarm produces equal numbers of each over time. Set the worker ratio to 0 so it produces only explorers for now."
+    },
+    {
+      "id": "native:[tutorial part1 message 24]",
+      "key": "[tutorial part1 message 24]",
+      "source": "Set the Swarm's worker assignment target back to 1 so a worker can bring it wheat."
+    },
+    {
+      "id": "native:[tutorial part1 message 25]",
+      "key": "[tutorial part1 message 25]",
+      "source": "Select the Inn and set its worker target to 1 too. Your growing colony needs a steady food supply."
+    },
+    {
+      "id": "native:[tutorial part1 message 26]",
+      "key": "[tutorial part1 message 26]",
+      "source": "Now wait for the Swarm to produce an explorer."
+    },
+    {
+      "id": "native:[tutorial part1 message 27]",
+      "key": "[tutorial part1 message 27]",
+      "source": "Your explorer flies around the colony, revealing more ground. Let the Swarm produce a second explorer before continuing."
+    },
+    {
+      "id": "native:[tutorial part1 message 28]",
+      "key": "[tutorial part1 message 28]",
+      "source": "Select the Swarm again. Set the explorer production ratio to 0 and the worker ratio to 1 to resume producing workers."
+    },
+    {
+      "id": "native:[tutorial part2 message 1]",
+      "key": "[tutorial part2 message 1]",
+      "source": "There is stone east of your base. Remember this location; you will need stone later."
+    },
+    {
+      "id": "native:[tutorial part2 message 2]",
+      "key": "[tutorial part2 message 2]",
+      "source": "The trees south of the stone are orange trees. Select them to see their resource information. We will return to fruit later; for now, focus on the Swarm."
+    },
+    {
+      "id": "native:[tutorial part2 message 3]",
+      "key": "[tutorial part2 message 3]",
+      "source": "Set your Swarm to produce workers only: worker ratio 1, explorer and warrior ratios 0."
+    },
+    {
+      "id": "native:[tutorial part2 message 4]",
+      "key": "[tutorial part2 message 4]",
+      "source": "Let's grow the colony faster. Select the Swarm and set its worker assignment target to 6. You may not have six workers yet; new workers can fill the extra jobs as they become available."
+    },
+    {
+      "id": "native:[tutorial part2 message 5]",
+      "key": "[tutorial part2 message 5]",
+      "source": "We will start the next tasks when you have 8 workers. Keep the Swarm and Inn supplied while the population grows."
+    },
+    {
+      "id": "native:[tutorial part2 message 6]",
+      "key": "[tutorial part2 message 6]",
+      "source": "Several workers are now supplying the Swarm. More wheat deliveries mean it can produce units more quickly."
+    },
+    {
+      "id": "native:[tutorial part2 message 7]",
+      "key": "[tutorial part2 message 7]",
+      "source": "A new worker costs 5 wheat. Carrying wheat from a distant field takes time, so a Swarm often needs more suppliers than an Inn. Place food-dependent buildings near wheat when possible."
+    },
+    {
+      "id": "native:[tutorial part2 message 8]",
+      "key": "[tutorial part2 message 8]",
+      "source": "You now have at least 8 workers. Select the Swarm and reduce its worker assignment target to 1 to slow population growth while we build."
+    },
+    {
+      "id": "native:[tutorial part2 message 9]",
+      "key": "[tutorial part2 message 9]",
+      "source": "Your colony needs more feeding capacity. Build a second Inn north of the existing one."
+    },
+    {
+      "id": "native:[tutorial part2 message 10]",
+      "key": "[tutorial part2 message 10]",
+      "source": "Assign free workers to the new Inn's construction site. It needs only 3 wood, so more than 3 builders will not help much."
+    },
+    {
+      "id": "native:[tutorial part2 message 11]",
+      "key": "[tutorial part2 message 11]",
+      "source": "The finished Inn returns to its operating worker target, normally 1. Construction and everyday supply use separate assignment targets."
+    },
+    {
+      "id": "native:[tutorial part2 message 12]",
+      "key": "[tutorial part2 message 12]",
+      "source": "Workers can learn to move faster. A Racetrack provides that training."
+    },
+    {
+      "id": "native:[tutorial part2 message 13]",
+      "key": "[tutorial part2 message 13]",
+      "source": "Open the building controls and find Racetrack. On desktop, hover over its icon to inspect its description and cost. On touch screens, select it in Build to prepare placement. Do not place it yet."
+    },
+    {
+      "id": "native:[tutorial part2 message 14]",
+      "key": "[tutorial part2 message 14]",
+      "source": "A Racetrack needs plenty of wood and a little stone. Choose a central location so units can reach it easily."
+    },
+    {
+      "id": "native:[tutorial part2 message 15]",
+      "key": "[tutorial part2 message 15]",
+      "source": "Build a Racetrack, perhaps south of the Swarm. Leave clear space around it: training buildings need room to expand when upgraded."
+    },
+    {
+      "id": "native:[tutorial part2 message 16]",
+      "key": "[tutorial part2 message 16]",
+      "source": "Set the Racetrack construction site's worker target between 5 and 7. It needs 7 construction materials in total."
+    },
+    {
+      "id": "native:[tutorial part2 message 17]",
+      "key": "[tutorial part2 message 17]",
+      "source": "Once finished, a Racetrack trains visiting units without a continuing supply of construction materials or wheat."
+    },
+    {
+      "id": "native:[tutorial part2 message 18]",
+      "key": "[tutorial part2 message 18]",
+      "source": "Globules are entering the Racetrack to train. Once trained, they can run faster."
+    },
+    {
+      "id": "native:[tutorial part2 message 19]",
+      "key": "[tutorial part2 message 19]",
+      "source": "Select the Racetrack to inspect training progress. Its progress indicators show how close the units inside are to finishing."
+    },
+    {
+      "id": "native:[tutorial part2 message 20]",
+      "key": "[tutorial part2 message 20]",
+      "source": "Your trained workers travel faster and can deliver resources sooner. Keep watching food stocks as the colony grows; faster deliveries help only if enough Inns remain supplied."
+    },
+    {
+      "id": "native:[tutorial part2 message 21]",
+      "key": "[tutorial part2 message 21]",
+      "source": "Find the worker population counter in the HUD. The total shows your population; the available-worker figure helps you spot spare workers or unfilled jobs. Use free workers without assigning more jobs than the colony can support."
+    },
+    {
+      "id": "native:[tutorial part2 message 22]",
+      "key": "[tutorial part2 message 22]",
+      "source": "The HUD also shows explorer and warrior counts. Check these when planning production or assigning units to flags."
+    },
+    {
+      "id": "native:[tutorial part2 message 23]",
+      "key": "[tutorial part2 message 23]",
+      "source": "You have 2 Inns. Each basic Inn can feed 4 units at once, so together they have 8 feeding places. More than 8 units can become hungry, so leave enough capacity for queues."
+    },
+    {
+      "id": "native:[tutorial part2 message 24]",
+      "key": "[tutorial part2 message 24]",
+      "source": "Two Inns will not support a growing colony forever. Build extra feeding capacity before shortages turn into starvation."
+    },
+    {
+      "id": "native:[tutorial part2 message 25]",
+      "key": "[tutorial part2 message 25]",
+      "source": "Build 3 more Inns near wheat. Hungry workers stop working, and prolonged starvation kills them. Assign available workers to construction while keeping your existing food supply running."
+    },
+    {
+      "id": "native:[tutorial part2 message 26]",
+      "key": "[tutorial part2 message 26]",
+      "source": "Finish building 3 more Inns, bringing your total to 5."
+    },
+    {
+      "id": "native:[tutorial part2 message 27]",
+      "key": "[tutorial part2 message 27]",
+      "source": "The new Inns use their operating assignment targets after construction, normally 1 worker each. Check that they have suppliers and enough wheat."
+    },
+    {
+      "id": "native:[tutorial part2 message 28]",
+      "key": "[tutorial part2 message 28]",
+      "source": "The Racetrack has improved travel on land. Now let's teach the colony to swim."
+    },
+    {
+      "id": "native:[tutorial part2 message 29]",
+      "key": "[tutorial part2 message 29]",
+      "source": "A Swimming Pool teaches units to swim and needs wood to build. Place one in the large clearing northeast of the base, north of the stone. Leave space around it for upgrades and resource growth, and assign available workers to construction."
+    },
+    {
+      "id": "native:[tutorial part2 message 30]",
+      "key": "[tutorial part2 message 30]",
+      "source": "A Swimming Pool teaches units to swim and needs wood to build. Place one in the large clearing northeast of the base, north of the stone. Leave space around it for upgrades and resource growth, and assign available workers to construction."
+    },
+    {
+      "id": "native:[tutorial part2 message 31]",
+      "key": "[tutorial part2 message 31]",
+      "source": "The Swimming Pool is ready. Globules can now enter and learn to swim."
+    },
+    {
+      "id": "native:[tutorial part2 message 32]",
+      "key": "[tutorial part2 message 32]",
+      "source": "Select the Swimming Pool to inspect training progress. A basic Pool trains 2 globules at a time, just like a basic Racetrack."
+    },
+    {
+      "id": "native:[tutorial part2 message 33]",
+      "key": "[tutorial part2 message 33]",
+      "source": "Your trained globules can now swim. Soon we will give them a job that requires crossing water."
+    },
+    {
+      "id": "native:[tutorial part2 message 34]",
+      "key": "[tutorial part2 message 34]",
+      "source": "There is more to learn. If you need a break, save your progress from the game menu and return later."
+    },
+    {
+      "id": "native:[tutorial part2 message 35]",
+      "key": "[tutorial part2 message 35]",
+      "source": "Your colony has food and physical training. A School will teach workers the skills needed for better buildings."
+    },
+    {
+      "id": "native:[tutorial part2 message 36]",
+      "key": "[tutorial part2 message 36]",
+      "source": "A School improves workers' harvesting and construction skills. Building one requires algae, which grows in water. Your swimming workers can gather it."
+    },
+    {
+      "id": "native:[tutorial part2 message 37]",
+      "key": "[tutorial part2 message 37]",
+      "source": "Protect important training buildings. A School does not have to stand beside water; a sheltered inland location can keep it safer from attack."
+    },
+    {
+      "id": "native:[tutorial part2 message 38]",
+      "key": "[tutorial part2 message 38]",
+      "source": "Build a School in a protected spot, such as behind the Swimming Pool or southwest of the Swarm beside the Racetrack. Assign available workers to build it."
+    },
+    {
+      "id": "native:[tutorial part2 message 39]",
+      "key": "[tutorial part2 message 39]",
+      "source": "Select a building to see the workers assigned to it. On desktop, the configurable Toggle draw unit paths action can also show lines from units to their destinations; see Settings, Controls for its current shortcut. Wait for the School to finish."
+    },
+    {
+      "id": "native:[tutorial part3 message 1]",
+      "key": "[tutorial part3 message 1]",
+      "source": "Your colony now has Inns, a Hospital, a Racetrack, a Swimming Pool, and a School. It is time to prepare its defenses."
+    },
+    {
+      "id": "native:[tutorial part3 message 2]",
+      "key": "[tutorial part3 message 2]",
+      "source": "We have not produced any warriors yet. Without them, the colony has little protection against an attack."
+    },
+    {
+      "id": "native:[tutorial part3 message 3]",
+      "key": "[tutorial part3 message 3]",
+      "source": "Select the Swarm and set the warrior production ratio to 2. Leave the worker ratio at 1 so the colony keeps producing workers too."
+    },
+    {
+      "id": "native:[tutorial part3 message 4]",
+      "key": "[tutorial part3 message 4]",
+      "source": "The Swarm will now produce roughly 2 warriors for every worker. Assign more workers to supply it if you want faster production."
+    },
+    {
+      "id": "native:[tutorial part3 message 5]",
+      "key": "[tutorial part3 message 5]",
+      "source": "Your first warrior is ready and will begin training. Wait for a second warrior before continuing."
+    },
+    {
+      "id": "native:[tutorial part3 message 6]",
+      "key": "[tutorial part3 message 6]",
+      "source": "Warriors use the Racetrack and Swimming Pool too. They can also train their attack skills at Barracks."
+    },
+    {
+      "id": "native:[tutorial part3 message 7]",
+      "key": "[tutorial part3 message 7]",
+      "source": "Barracks improve attack strength and attack speed. Strength increases damage per hit; speed increases how often a warrior attacks. Well-trained warriors can defeat much larger groups of untrained enemies."
+    },
+    {
+      "id": "native:[tutorial part3 message 8]",
+      "key": "[tutorial part3 message 8]",
+      "source": "Build Barracks near wood, which is needed for construction."
+    },
+    {
+      "id": "native:[tutorial part3 message 9]",
+      "key": "[tutorial part3 message 9]",
+      "source": "Assign available workers to the Barracks building site. Keep enough workers on food supply and avoid creating more jobs than they can fill."
+    },
+    {
+      "id": "native:[tutorial part3 message 10]",
+      "key": "[tutorial part3 message 10]",
+      "source": "The Barracks are ready. Warriors can now train their attack skills there."
+    },
+    {
+      "id": "native:[tutorial part3 message 11]",
+      "key": "[tutorial part3 message 11]",
+      "source": "Our colony can grow stronger by upgrading its buildings."
+    },
+    {
+      "id": "native:[tutorial part3 message 12]",
+      "key": "[tutorial part3 message 12]",
+      "source": "Workers trained at the School can construct upgrades. Select an eligible building and look for Upgrade in its building controls. Damaged buildings may need Repair first."
+    },
+    {
+      "id": "native:[tutorial part3 message 13]",
+      "key": "[tutorial part3 message 13]",
+      "source": "Let's decide what to upgrade first. Our Inns still have spare capacity, so they can wait."
+    },
+    {
+      "id": "native:[tutorial part3 message 14]",
+      "key": "[tutorial part3 message 14]",
+      "source": "The Hospital also has room. We can focus on the School, Racetrack, Swimming Pool, or Barracks."
+    },
+    {
+      "id": "native:[tutorial part3 message 15]",
+      "key": "[tutorial part3 message 15]",
+      "source": "Upgrade the Racetrack first so units can learn to move even faster."
+    },
+    {
+      "id": "native:[tutorial part3 message 16]",
+      "key": "[tutorial part3 message 16]",
+      "source": "Select the Racetrack and choose Upgrade in its building controls. Units inside must leave before construction begins, so the change may not be immediate."
+    },
+    {
+      "id": "native:[tutorial part3 message 17]",
+      "key": "[tutorial part3 message 17]",
+      "source": "Assign available workers to the Racetrack upgrade. Only workers with the required School training can build a level 2 construction site."
+    },
+    {
+      "id": "native:[tutorial part3 message 18]",
+      "key": "[tutorial part3 message 18]",
+      "source": "Wait for the Racetrack upgrade to finish. Higher-level buildings take more resources and time to construct."
+    },
+    {
+      "id": "native:[tutorial part3 message 19]",
+      "key": "[tutorial part3 message 19]",
+      "source": "Your level 2 Racetrack is complete. It occupies more ground than before, which is why we left a gap. A building cannot upgrade without enough room to expand."
+    },
+    {
+      "id": "native:[tutorial part3 message 20]",
+      "key": "[tutorial part3 message 20]",
+      "source": "Now upgrade the Barracks and the Swimming Pool to level 2. We will continue when both are finished."
+    },
+    {
+      "id": "native:[tutorial part3 message 21]",
+      "key": "[tutorial part3 message 21]",
+      "source": "Upgraded buildings can generally serve more globules or offer better training. A level 2 Inn, for example, has 7 feeding places and feeds units faster than a basic Inn."
+    },
+    {
+      "id": "native:[tutorial part3 message 22]",
+      "key": "[tutorial part3 message 22]",
+      "source": "The enemy is nearby. Let's prepare for an attack."
+    },
+    {
+      "id": "native:[tutorial part3 message 23]",
+      "key": "[tutorial part3 message 23]",
+      "source": "Towers shoot at enemies within range. Walls help protect them. We will use both to defend a narrow approach to the colony."
+    },
+    {
+      "id": "native:[tutorial part3 message 24]",
+      "key": "[tutorial part3 message 24]",
+      "source": "Place towers in pairs if space allows. Walls can protect three sides, but leave a route open so workers can deliver stone ammunition."
+    },
+    {
+      "id": "native:[tutorial part3 message 25]",
+      "key": "[tutorial part3 message 25]",
+      "source": "Look east of the Swimming Pool, north of the other fruit trees. A narrow crossing leads toward another island. This is a good place to defend."
+    },
+    {
+      "id": "native:[tutorial part3 message 26]",
+      "key": "[tutorial part3 message 26]",
+      "source": "Plan room for 2 towers between the trees and the shore. Leave access behind them for stone deliveries and space on the other sides for walls. Do not wall the workers out."
+    },
+    {
+      "id": "native:[tutorial part3 message 27]",
+      "key": "[tutorial part3 message 27]",
+      "source": "Build 2 towers there. Assign 2 or 3 workers to each construction site, depending on how many are available in the HUD counters."
+    },
+    {
+      "id": "native:[tutorial part3 message 28]",
+      "key": "[tutorial part3 message 28]",
+      "source": "Use the building controls to place wall sections around the three outward-facing sides of the towers. Keep the side toward your colony open for workers."
+    },
+    {
+      "id": "native:[tutorial part3 message 29]",
+      "key": "[tutorial part3 message 29]",
+      "source": "Each wall section creates a construction job and needs 1 stone. If workers cannot fill every job at once, they can finish the sections in turn."
+    },
+    {
+      "id": "native:[tutorial part3 message 30]",
+      "key": "[tutorial part3 message 30]",
+      "source": "Wait for both towers and several wall sections to finish. The towers also need stone ammunition; the distant quarry makes deliveries slow. Increase their worker targets if you have spare workers."
+    },
+    {
+      "id": "native:[tutorial part4 message 1]",
+      "key": "[tutorial part4 message 1]",
+      "source": "Your colony has food, training, and defenses. Buildings can advance once more to level 3, providing stronger training and greater capacity. Keep improving them as resources and worker skills allow."
+    },
+    {
+      "id": "native:[tutorial part4 message 2]",
+      "key": "[tutorial part4 message 2]",
+      "source": "Look northwest of your base for the enemy colony. Move the view there now."
+    },
+    {
+      "id": "native:[tutorial part4 message 3]",
+      "key": "[tutorial part4 message 3]",
+      "source": "Explored ground can still be hidden by fog of war. To see the enemy's current activity, we need an explorer nearby."
+    },
+    {
+      "id": "native:[tutorial part4 message 4]",
+      "key": "[tutorial part4 message 4]",
+      "source": "Open Flags. This gives you flags and zones for directing units without controlling each globule individually."
+    },
+    {
+      "id": "native:[tutorial part4 message 5]",
+      "key": "[tutorial part4 message 5]",
+      "source": "Choose the Exploration Flag, shown with a kite-shaped symbol. Flags can be placed over land, water, resources, and unexplored ground."
+    },
+    {
+      "id": "native:[tutorial part4 message 6]",
+      "key": "[tutorial part4 message 6]",
+      "source": "Place an Exploration Flag over the suspected enemy base. An approximate location is enough to start scouting. Leave placement mode with a right-click, or finish the placement using the touch controls."
+    },
+    {
+      "id": "native:[tutorial part4 message 7]",
+      "key": "[tutorial part4 message 7]",
+      "source": "The outline around the flag shows its working radius. An assigned explorer will scout that area. Check your explorer count if none arrives, and produce another at the Swarm if needed. Press Space or tap OK once the explorer reaches the area."
+    },
+    {
+      "id": "native:[tutorial part4 message 8]",
+      "key": "[tutorial part4 message 8]",
+      "source": "The enemy has many workers and a gathered army. Let's prepare our defenses before it attacks."
+    },
+    {
+      "id": "native:[tutorial part4 message 9]",
+      "key": "[tutorial part4 message 9]",
+      "source": "Open Flags and choose the blue Guard zone. Use the mode for adding ground to the zone, rather than removing it. On touch screens, choose Paint rather than Erase."
+    },
+    {
+      "id": "native:[tutorial part4 message 10]",
+      "key": "[tutorial part4 message 10]",
+      "source": "Choose a brush shape and size. The large square is useful for painting a compact defensive area."
+    },
+    {
+      "id": "native:[tutorial part4 message 11]",
+      "key": "[tutorial part4 message 11]",
+      "source": "Paint a Guard zone just behind your towers, where the enemy is likely to approach. Click or tap to paint a spot, or drag to cover more ground. On touch screens, use Pan when you need to move the view while painting."
+    },
+    {
+      "id": "native:[tutorial part4 message 12]",
+      "key": "[tutorial part4 message 12]",
+      "source": "Available warriors will move into the Guard zone. Make it large enough for the defenders but small enough to keep them concentrated at the crossing. Now wait for the attack."
+    },
+    {
+      "id": "native:[tutorial part4 message 13]",
+      "key": "[tutorial part4 message 13]",
+      "source": "The enemy is approaching the crossing!"
+    },
+    {
+      "id": "native:[tutorial part4 message 14]",
+      "key": "[tutorial part4 message 14]",
+      "source": "We are under attack. Watch how your trained warriors and towers defend the position."
+    },
+    {
+      "id": "native:[tutorial part4 message 15]",
+      "key": "[tutorial part4 message 15]",
+      "source": "You survived! Now open Flags and choose the spiked War Flag. Place it over the enemy Swarm to direct an attack there."
+    },
+    {
+      "id": "native:[tutorial part4 message 16]",
+      "key": "[tutorial part4 message 16]",
+      "source": "Leave placement mode and select the War Flag. Assign more than 1 warrior, then reduce its radius to concentrate the attack around the enemy Swarm. Wait for your warriors to arrive."
+    },
+    {
+      "id": "native:[tutorial part4 message 17]",
+      "key": "[tutorial part4 message 17]",
+      "source": "The attack has begun. Your warriors must get past the enemy towers to reach its Swarm."
+    },
+    {
+      "id": "native:[tutorial part4 message 18]",
+      "key": "[tutorial part4 message 18]",
+      "source": "Your warriors have reached the enemy base. Keep the attack focused on the Swarm."
+    },
+    {
+      "id": "native:[tutorial part4 message 19]",
+      "key": "[tutorial part4 message 19]",
+      "source": "You destroyed the enemy Swarm. Congratulations! You have completed the tutorial and learned the basics of food supply, assignments, training, upgrades, scouting, and combat."
+    },
+    {
+      "id": "native:[tutorial mission basics]",
+      "key": "[tutorial mission basics]",
+      "source": "Introduction and basics"
+    },
+    {
+      "id": "native:[tutorial mission development]",
+      "key": "[tutorial mission development]",
+      "source": "Buildings and schools"
+    },
+    {
+      "id": "native:[tutorial mission training]",
+      "key": "[tutorial mission training]",
+      "source": "Warriors, training and upgrades"
+    },
+    {
+      "id": "native:[tutorial mission flags]",
+      "key": "[tutorial mission flags]",
+      "source": "Flags and completion"
+    }
+  ]
+}

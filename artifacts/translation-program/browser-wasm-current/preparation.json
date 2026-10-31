@@ -1,0 +1,47 @@
+{
+  "status": "prepared only; not executed; waiting root confirmation current serial served build ready",
+  "driver": "check.mjs",
+  "driver_sha256": "eb6dba41ba67b2a9c79d83c8f63e61bf55cc066e593b3a97cc57d76ee1f1a543",
+  "original_overlay_driver_archived": "original-overlay-check.mjs",
+  "original_sha256": "d990c5c69cd79b6d34fc085a72442b2ed01cc3e3d2e5cbf9d39dbd713c208c5d",
+  "execution_command": "/opt/homebrew/opt/node@22/bin/node artifacts/translation-program/browser-wasm-current/check.mjs",
+  "actual_runtime_at_preparation": "Node v26.0.0 despite @22 executable path; report actual runtime",
+  "sources_read": [
+    "browser/tests/main-menu.js",
+    "browser/tests/settings-storage.spec.js",
+    "browser/tests/settings-preferences.js",
+    "browser/tests/tutorial-phone.spec.js",
+    "src/tutorial/TutorialGuidance.h",
+    "src/ui/settings/SettingsScreenGeneral.cpp",
+    "libgag/src/StringTable.cpp",
+    "browser/shell.html",
+    "src/game/screens/CustomGameScreen.cpp",
+    "scons/web_assets.py"
+  ],
+  "canonical_policy": [
+    "No routes/HTTP fulfillment, runtime-i18n override, native/catalog/roster FS writes, preRun hooks or preference injection.",
+    "Fresh browser context navigator hi-IN/ur-PK/sw-KE, only saveData environmental flag overridden.",
+    "Read actual StringTable parser: star means incomplete, plain hi/ur/sw lines mean complete; expects native [language] labels.",
+    "Browser chrome and saved game profile deliberately independent; do not expect native UI language changes to rewrite HTML language immediately."
+  ],
+  "preflight": [
+    "Require current source freeze revision==HEAD and no tracked source modifications.",
+    "Require actual current serial build log done and WASM mtime after freeze; reject old v5 binary.",
+    "Pin actualHTTP bytes for native runtime9files +i18n +3locales +13fonts against served build directory; compare canonical i18n/catalog bytes.",
+    "Record source freeze/build log/identity hashes; freeze sourceTreeSha256 is producer metadata, not invented per-file2458map."
+  ],
+  "flows": [
+    "Fresh onboarding Audio/Hand if offered captured and driven via stable real controls; IntroductionOfferScreen captured then actual waitForMainMenu helper declines.",
+    "Native first-visit selected language selfname verified through actual player.language control.",
+    "UTF8 player-name probes under32bytes; translated generic ARIA/direction/font and synthetic composition sequencing; save via actual settings.",
+    "Choose English then original locale through actual language picker; wait persisted,Done,reload,storage restore ready; verify saved language/name and native control values.",
+    "RuntimeFS13TTF pins +canonical full3416 native files/36roster bytes checked, no writes.",
+    "Actual lobby stable back, then main tutorial menu→catalog→lesson0; real intro destination/help/collapse controls, bounds andexpanded/help/collapsed captures."
+  ],
+  "expected_scope": "6 locale×viewport cases; actual screenshot count depends on offered onboarding. One introduction lesson sample only, no all10lesson/all3416visual claim.",
+  "review_independence": "Driver/runtime QA may be any agent. This author wrote Sw new209, so Sw tutorial linguistic pixels require different reviewer (Pilot); Urdu new209 pixels can be independently reviewed here.",
+  "syntax_check": "Node --check passed; driver not run; no rendering result yet",
+  "final_source_equivalence": "final-source-equivalence.json",
+  "expected_final_revision": "b3669e5e08219bb90874895a6c8b1d3185c3effd",
+  "expected_final_source_tree_sha256": "881e73f0678bc9ce4fb4affd83b1952ad8948e575826ca5356b3b93ec7674cb8"
+}

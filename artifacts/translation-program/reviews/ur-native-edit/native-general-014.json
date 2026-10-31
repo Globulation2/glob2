@@ -1,0 +1,1293 @@
+{
+  "editor": "/root/swahili_translation",
+  "author": "/root/urdu_translation",
+  "independent_reviewer": "/root/pilot_context",
+  "batch_id": "native-general-014",
+  "source_contract_sha256": "aacd8a342e9e734ba47f902a161ac1a45badff5842a617bcd68bf8e2275d6013",
+  "original_target_subset_sha256": "42e924e169bd09bd802dae4c92b76fae03ba7e5d1239b52fd32ed7f1494173ff",
+  "final_target_subset_sha256": "8770a4d0c766e7673558dd4b88c64f886a28e6f7adaf020b90b12ae1ffc1cc21",
+  "final_catalog_sha256": "ec78fb33247244bf783461e0410ef11fe48e45644c3c6500419d9060e967d458",
+  "entries": [
+    {
+      "key": "[stat band at enemy]",
+      "source": "At an enemy colony",
+      "before": "دشمن کی بستی میں",
+      "after": "دشمن کی بستی میں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat band in the open]",
+      "source": "In open ground",
+      "before": "کھلی زمین پر",
+      "after": "کھلی زمین پر",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat band seeking healing]",
+      "source": "Seeking healing",
+      "before": "علاج کی تلاش میں",
+      "after": "علاج کی تلاش میں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat band free]",
+      "source": "Free",
+      "before": "فارغ",
+      "after": "فارغ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat unit squares]",
+      "source": "squares",
+      "before": "خانے",
+      "after": "خانے",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat unit attack level]",
+      "source": "attack level",
+      "before": "حملے کی سطح",
+      "after": "حملے کی سطح",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat unit strength count]",
+      "source": "strength",
+      "before": "طاقت",
+      "after": "طاقت",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat view by place]",
+      "source": "By place",
+      "before": "جگہ کے لحاظ سے",
+      "after": "جگہ کے لحاظ سے",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[AI Library]",
+      "source": "AI Library",
+      "before": "AI لائبریری",
+      "after": "AI لائبریری",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Authoring guide]",
+      "source": "Authoring guide",
+      "before": "تخلیق کی رہنمائی",
+      "after": "تخلیق کی رہنمائی",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Beginner-friendly]",
+      "source": "Beginner-friendly",
+      "before": "نئے کھلاڑیوں کے لیے موزوں",
+      "after": "نئے کھلاڑیوں کے لیے موزوں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Defensive]",
+      "source": "Defensive",
+      "before": "دفاعی",
+      "after": "دفاعی",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Discover]",
+      "source": "Discover",
+      "before": "دریافت کریں",
+      "after": "دریافت کریں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Download & install]",
+      "source": "Download & install",
+      "before": "ڈاؤن لوڈ اور نصب کریں",
+      "after": "ڈاؤن لوڈ اور نصب کریں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Downloading AI…]",
+      "source": "Downloading AI…",
+      "before": "AI ڈاؤن لوڈ ہو رہا ہے…",
+      "after": "AI ڈاؤن لوڈ ہو رہا ہے…",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Expansion]",
+      "source": "Expansion",
+      "before": "توسیع",
+      "after": "توسیع",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Experimental]",
+      "source": "Experimental",
+      "before": "تجرباتی",
+      "after": "تجرباتی",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Favourite]",
+      "source": "Favourite",
+      "before": "پسندیدہ بنائیں",
+      "after": "پسندیدہ بنائیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Favourited]",
+      "source": "Favourited",
+      "before": "پسندیدہ بنایا گیا",
+      "after": "پسندیدہ بنایا گیا",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Favourites]",
+      "source": "Favourites",
+      "before": "پسندیدہ",
+      "after": "پسندیدہ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Got it]",
+      "source": "Got it",
+      "before": "سمجھ آ گیا",
+      "after": "سمجھ آ گیا",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[How AIs work]",
+      "source": "How AIs work",
+      "before": "AI کیسے کام کرتے ہیں",
+      "after": "AI کیسے کام کرتے ہیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Install selected version]",
+      "source": "Install selected version",
+      "before": "منتخب ورژن نصب کریں",
+      "after": "منتخب ورژن نصب کریں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Installed]",
+      "source": "Installed",
+      "before": "نصب شدہ",
+      "after": "نصب شدہ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Invalid AI catalogue response]",
+      "source": "Invalid AI catalogue response",
+      "before": "AI کیٹلاگ کا جواب درست نہیں",
+      "after": "AI کیٹلاگ کا جواب درست نہیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[JavaScript API reference]",
+      "source": "JavaScript API reference",
+      "before": "JavaScript API کا حوالہ",
+      "after": "JavaScript API کا حوالہ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Like]",
+      "source": "Like",
+      "before": "پسند کریں",
+      "after": "پسند کریں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Liked]",
+      "source": "Liked",
+      "before": "پسند کیا",
+      "after": "پسند کیا",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Loading AI library…]",
+      "source": "Loading AI library…",
+      "before": "AI لائبریری لوڈ ہو رہی ہے…",
+      "after": "AI لائبریری لوڈ ہو رہی ہے…",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Most downloaded]",
+      "source": "Most downloaded",
+      "before": "سب سے زیادہ ڈاؤن لوڈ کیے گئے",
+      "after": "سب سے زیادہ ڈاؤن لوڈ کیے گئے",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Most liked]",
+      "source": "Most liked",
+      "before": "سب سے زیادہ پسند کیے گئے",
+      "after": "سب سے زیادہ پسند کیے گئے",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Newest]",
+      "source": "Newest",
+      "before": "تازہ ترین",
+      "after": "تازہ ترین",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[No AIs match these filters.]",
+      "source": "No AIs match these filters.",
+      "before": "کوئی AI ان فلٹرز سے میل نہیں کھاتا۔",
+      "after": "کوئی AI ان فلٹرز سے میل نہیں کھاتا۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Not validated for this game version]",
+      "source": "Not validated for this game version",
+      "before": "کھیل کے اس ورژن کے لیے توثیق نہیں ہوئی",
+      "after": "کھیل کے اس ورژن کے لیے توثیق نہیں ہوئی",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Open AI Library]",
+      "source": "Open AI Library",
+      "before": "AI لائبریری کھولیں",
+      "after": "AI لائبریری کھولیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Open AI page]",
+      "source": "Open AI page",
+      "before": "AI کا صفحہ کھولیں",
+      "after": "AI کا صفحہ کھولیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Passed compatibility checks]",
+      "source": "Passed compatibility checks",
+      "before": "مطابقت کی جانچ کامیاب",
+      "after": "مطابقت کی جانچ کامیاب",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Recently updated]",
+      "source": "Recently updated",
+      "before": "حال ہی میں تازہ کیے گئے",
+      "after": "حال ہی میں تازہ کیے گئے",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Rush]",
+      "source": "Rush",
+      "before": "یلغار",
+      "after": "یلغار",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Search]",
+      "source": "Search",
+      "before": "تلاش کریں",
+      "after": "تلاش کریں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Share your AI]",
+      "source": "Share your AI",
+      "before": "اپنا AI بانٹیں",
+      "after": "اپنا AI بانٹیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Show more]",
+      "source": "Show more",
+      "before": "مزید دکھائیں",
+      "after": "مزید دکھائیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Starter project]",
+      "source": "Starter project",
+      "before": "ابتدائی منصوبہ",
+      "after": "ابتدائی منصوبہ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[downloads of this version]",
+      "source": "downloads of this version",
+      "before": "اس ورژن کے ڈاؤن لوڈ",
+      "after": "اس ورژن کے ڈاؤن لوڈ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[downloads]",
+      "source": "downloads",
+      "before": "ڈاؤن لوڈ",
+      "after": "ڈاؤن لوڈ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Update available]",
+      "source": "Update available",
+      "before": "اپ ڈیٹ دستیاب ہے",
+      "after": "اپ ڈیٹ دستیاب ہے",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Browse versions]",
+      "source": "Browse versions",
+      "before": "ورژن براؤز کریں",
+      "after": "ورژن براؤز کریں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Download an AI, then choose it for a computer seat in a local game. Installed versions work offline. Updates affect future games; saves keep their original code.]",
+      "source": "Download an AI, then choose it for a computer seat in a local game. Installed versions work offline. Updates affect future games; saves keep their original code.",
+      "before": "AI ڈاؤن لوڈ کریں، پھر مقامی کھیل میں کمپیوٹر کی نشست کے لیے منتخب کریں۔ نصب شدہ ورژن آف لائن چلتے ہیں۔ اپ ڈیٹ آئندہ کھیلوں کو بدلتی ہے؛ محفوظ کھیل اپنا اصل کوڈ رکھتے ہیں۔",
+      "after": "AI ڈاؤن لوڈ کریں، پھر مقامی کھیل میں کمپیوٹر کی نشست کے لیے منتخب کریں۔ نصب شدہ ورژن آف لائن چلتے ہیں۔ اپ ڈیٹ آئندہ کھیلوں کو بدلتی ہے؛ محفوظ کھیل اپنا اصل کوڈ رکھتے ہیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Compatibility checks do not certify safety or playing strength. Only run code from authors you trust.]",
+      "source": "Compatibility checks do not certify safety or playing strength. Only run code from authors you trust.",
+      "before": "مطابقت کی جانچ حفاظت یا کھیلنے کی طاقت کی سند نہیں۔ صرف قابلِ اعتماد مصنفوں کا کوڈ چلائیں۔",
+      "after": "مطابقت کی جانچ حفاظت یا کھیلنے کی طاقت کی سند نہیں۔ صرف قابلِ اعتماد مصنفوں کا کوڈ چلائیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Back to results]",
+      "source": "Back to results",
+      "before": "نتائج پر واپس",
+      "after": "نتائج پر واپس",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[ice]",
+      "source": "Ice",
+      "before": "برف",
+      "after": "برف",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[road]",
+      "source": "Trail",
+      "before": "پگڈنڈی",
+      "after": "پگڈنڈی",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Food]",
+      "source": "Food",
+      "before": "خوراک",
+      "after": "خوراک",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Paper]",
+      "source": "Paper",
+      "before": "کاغذ",
+      "after": "کاغذ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Cherries]",
+      "source": "Cherries",
+      "before": "چیریاں",
+      "after": "چیریاں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Oranges]",
+      "source": "Oranges",
+      "before": "سنترے",
+      "after": "سنترے",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Prunes]",
+      "source": "Prunes",
+      "before": "آلو بخارے",
+      "after": "آلو بخارے",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Gold]",
+      "source": "Gold",
+      "before": "سونا",
+      "after": "سونا",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Metal]",
+      "source": "Metal",
+      "before": "دھات",
+      "after": "دھات",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Glass]",
+      "source": "Glass",
+      "before": "شیشہ",
+      "after": "شیشہ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Fabric]",
+      "source": "Fabric",
+      "before": "کپڑا",
+      "after": "کپڑا",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Import Resource Definitions]",
+      "source": "Import Resource Definitions",
+      "before": "وسائل کی تعریفیں درآمد کریں",
+      "after": "وسائل کی تعریفیں درآمد کریں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Resource palette]",
+      "source": "Resource palette",
+      "before": "وسائل کی تختی",
+      "after": "وسائل کی تختی",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Trees]",
+      "source": "Trees",
+      "before": "درخت",
+      "after": "درخت",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Rocks]",
+      "source": "Rocks",
+      "before": "چٹانیں",
+      "after": "چٹانیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Cherry tree]",
+      "source": "Cherry tree",
+      "before": "چیری کا درخت",
+      "after": "چیری کا درخت",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Orange tree]",
+      "source": "Orange tree",
+      "before": "سنترے کا درخت",
+      "after": "سنترے کا درخت",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Prune tree]",
+      "source": "Prune tree",
+      "before": "آلو بخارے کا درخت",
+      "after": "آلو بخارے کا درخت",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Gold ore]",
+      "source": "Gold ore",
+      "before": "سونے کی دھات",
+      "after": "سونے کی کچ دھات",
+      "editorially_read": true,
+      "disposition": "edited-pending-recheck"
+    },
+    {
+      "key": "[Iron ore]",
+      "source": "Iron ore",
+      "before": "لوہے کی دھات",
+      "after": "لوہے کی کچ دھات",
+      "editorially_read": true,
+      "disposition": "edited-pending-recheck"
+    },
+    {
+      "key": "[Silica]",
+      "source": "Silica",
+      "before": "سلیکا",
+      "after": "سلیکا",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Cotton]",
+      "source": "Cotton",
+      "before": "کپاس",
+      "after": "کپاس",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Jungle trees]",
+      "source": "Jungle trees",
+      "before": "گھنے جنگل کے درخت",
+      "after": "گھنے جنگل کے درخت",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Pine trees]",
+      "source": "Pine trees",
+      "before": "چیڑ کے درخت",
+      "after": "چیڑ کے درخت",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Dead trees]",
+      "source": "Dead trees",
+      "before": "سوکھے درخت",
+      "after": "سوکھے درخت",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Ruins]",
+      "source": "Ruins",
+      "before": "کھنڈرات",
+      "after": "کھنڈرات",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Camp-site]",
+      "source": "Camp-site",
+      "before": "خیمہ گاہ",
+      "after": "خیمہ گاہ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Ancient debris]",
+      "source": "Ancient debris",
+      "before": "قدیم ملبہ",
+      "after": "قدیم ملبہ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Scrub]",
+      "source": "Scrub",
+      "before": "جھاڑیاں",
+      "after": "جھاڑیاں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Tall grass]",
+      "source": "Tall grass",
+      "before": "لمبی گھاس",
+      "after": "لمبی گھاس",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Maize]",
+      "source": "Maize",
+      "before": "مکئی",
+      "after": "مکئی",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Potatoes]",
+      "source": "Potatoes",
+      "before": "آلو",
+      "after": "آلو",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Rice]",
+      "source": "Rice",
+      "before": "چاول",
+      "after": "چاول",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Fish]",
+      "source": "Fish",
+      "before": "مچھلی",
+      "after": "مچھلی",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[boulders]",
+      "source": "Boulders",
+      "before": "بڑے پتھر",
+      "after": "بڑے پتھر",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[hedge]",
+      "source": "Hedge",
+      "before": "باڑ",
+      "after": "باڑ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[thicket]",
+      "source": "Thicket",
+      "before": "گھنی جھاڑیاں",
+      "after": "گھنی جھاڑیاں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[ridge_rock]",
+      "source": "Ridge",
+      "before": "پہاڑی دھار",
+      "after": "پہاڑی دھار",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[outcrop]",
+      "source": "Outcrop",
+      "before": "باہر نکلی چٹان",
+      "after": "باہر نکلی چٹان",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[dirt]",
+      "source": "Dirt",
+      "before": "مٹی",
+      "after": "مٹی",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[clay]",
+      "source": "Clay",
+      "before": "چکنی مٹی",
+      "after": "چکنی مٹی",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[gravel]",
+      "source": "Gravel",
+      "before": "بجری",
+      "after": "بجری",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[flower_meadow]",
+      "source": "Flower meadow",
+      "before": "پھولوں کا مرغزار",
+      "after": "پھولوں کا مرغزار",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[mud]",
+      "source": "Mud",
+      "before": "کیچڑ",
+      "after": "کیچڑ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[marsh]",
+      "source": "Marsh",
+      "before": "دلدل",
+      "after": "دلدل",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[deep_snow]",
+      "source": "Deep snow",
+      "before": "گہری برف",
+      "after": "گہری برف",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[scree]",
+      "source": "Scree",
+      "before": "پتھریلا ڈھلوانی ملبہ",
+      "after": "پتھریلا ڈھلوانی ملبہ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[dirt_track]",
+      "source": "Dirt track",
+      "before": "کچا راستہ",
+      "after": "کچا راستہ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[boardwalk]",
+      "source": "Boardwalk",
+      "before": "تختوں کا راستہ",
+      "after": "تختوں کا راستہ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[lava]",
+      "source": "Lava",
+      "before": "لاوا",
+      "after": "لاوا",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[ember_field]",
+      "source": "Ember field",
+      "before": "انگاروں کا میدان",
+      "after": "انگاروں کا میدان",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[loam]",
+      "source": "Loam",
+      "before": "زرخیز میرا مٹی",
+      "after": "زرخیز میرا مٹی",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[moss]",
+      "source": "Moss",
+      "before": "کائی",
+      "after": "کائی",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[spring_meadow]",
+      "source": "Spring meadow",
+      "before": "بہاری مرغزار",
+      "after": "بہاری مرغزار",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[deep_water]",
+      "source": "Deep water",
+      "before": "گہرا پانی",
+      "after": "گہرا پانی",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[dark_water]",
+      "source": "Dark water",
+      "before": "سیاہ پانی",
+      "after": "سیاہ پانی",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[void_hole]",
+      "source": "Hole",
+      "before": "سوراخ",
+      "after": "سوراخ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[chasm]",
+      "source": "Chasm",
+      "before": "گہری کھائی",
+      "after": "گہری کھائی",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[brush valid on %0]",
+      "source": "Valid on: %0",
+      "before": "یہاں درست: %0",
+      "after": "یہاں درست: %0",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[brush valid nowhere]",
+      "source": "Cannot be placed on any terrain of this map",
+      "before": "اس نقشے کی کسی زمین پر نہیں لگ سکتا",
+      "after": "اس نقشے کی کسی زمین پر نہیں لگ سکتا",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[brush requires experiment %0]",
+      "source": "Requires the %0 experiment",
+      "before": "%0 تجربہ درکار ہے",
+      "after": "%0 تجربہ درکار ہے",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[brush resources custom]",
+      "source": "Imported resources",
+      "before": "درآمد شدہ وسائل",
+      "after": "درآمد شدہ وسائل",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[brush section zones]",
+      "source": "Zones",
+      "before": "زون",
+      "after": "زون",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[brush section areas]",
+      "source": "Areas",
+      "before": "علاقے",
+      "after": "علاقے",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[brush section tools]",
+      "source": "Tools",
+      "before": "آلات",
+      "after": "آلات",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[brush clearing area]",
+      "source": "Clearing area",
+      "before": "صفائی کا علاقہ",
+      "after": "صفائی کا علاقہ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[editor unsaved title]",
+      "source": "Unsaved changes",
+      "before": "غیر محفوظ تبدیلیاں",
+      "after": "ابھی محفوظ نہ کی گئی تبدیلیاں",
+      "editorially_read": true,
+      "disposition": "edited-pending-recheck"
+    },
+    {
+      "key": "[editor quit unsaved]",
+      "source": "Save your changes to this map before leaving the editor?",
+      "before": "ایڈیٹر چھوڑنے سے پہلے اس نقشے کی تبدیلیاں محفوظ کریں؟",
+      "after": "ایڈیٹر چھوڑنے سے پہلے اس نقشے کی تبدیلیاں محفوظ کریں؟",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[editor load unsaved]",
+      "source": "Save your changes to this map before opening another one?",
+      "before": "دوسرا نقشہ کھولنے سے پہلے اس نقشے کی تبدیلیاں محفوظ کریں؟",
+      "after": "دوسرا نقشہ کھولنے سے پہلے اس نقشے کی تبدیلیاں محفوظ کریں؟",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[editor save]",
+      "source": "Save…",
+      "before": "محفوظ کریں…",
+      "after": "محفوظ کریں…",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[editor discard]",
+      "source": "Don't save",
+      "before": "محفوظ نہ کریں",
+      "after": "محفوظ نہ کریں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[editor share never saved]",
+      "source": "Maps are shared from their saved file. Save this map first, then share it.",
+      "before": "نقشے اپنی محفوظ فائل سے بانٹے جاتے ہیں۔ پہلے یہ نقشہ محفوظ کریں، پھر بانٹیں۔",
+      "after": "نقشے اپنی محفوظ فائل سے بانٹے جاتے ہیں۔ پہلے یہ نقشہ محفوظ کریں، پھر بانٹیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[editor share unsaved]",
+      "source": "This map has changes that are not saved yet. Sharing uploads the saved file.",
+      "before": "اس نقشے میں ابھی غیر محفوظ تبدیلیاں ہیں۔ بانٹنے سے محفوظ فائل اپ لوڈ ہوتی ہے۔",
+      "after": "اس نقشے میں ایسی تبدیلیاں ہیں جو ابھی محفوظ نہیں ہوئیں۔ بانٹنے سے محفوظ فائل اپ لوڈ ہوتی ہے۔",
+      "editorially_read": true,
+      "disposition": "edited-pending-recheck"
+    },
+    {
+      "key": "[editor save and share]",
+      "source": "Save and share…",
+      "before": "محفوظ کریں اور بانٹیں…",
+      "after": "محفوظ کریں اور بانٹیں…",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[editor share saved version]",
+      "source": "Share saved version",
+      "before": "محفوظ ورژن بانٹیں",
+      "after": "محفوظ ورژن بانٹیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[editor reroll confirm]",
+      "source": "Give every terrain tile a new random look? Terrain types and gameplay stay the same. This cannot be undone.",
+      "before": "زمین کے ہر خانے کو نئی اتفاقی شکل دیں؟ زمین کی قسمیں اور کھیل کا انداز یکساں رہیں گے۔ اسے واپس نہیں لیا جا سکتا۔",
+      "after": "زمین کے ہر خانے کو نئی اتفاقی شکل دیں؟ زمین کی قسمیں اور کھیل کا انداز یکساں رہیں گے۔ اسے واپس نہیں لیا جا سکتا۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[editor reroll]",
+      "source": "Reroll",
+      "before": "دوبارہ قرعہ ڈالیں",
+      "after": "دوبارہ قرعہ ڈالیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[editor save needs fertility]",
+      "source": "Saving needs the fertility map, so the save was cancelled. Press OK to try again.",
+      "before": "محفوظ کرنے کے لیے زرخیزی کا نقشہ درکار ہے، اس لیے محفوظ کرنا منسوخ ہوا۔ دوبارہ کوشش کے لیے ٹھیک ہے دبائیں۔",
+      "after": "محفوظ کرنے کے لیے زرخیزی کا نقشہ درکار ہے، اس لیے محفوظ کرنا منسوخ ہوا۔ دوبارہ کوشش کے لیے ٹھیک ہے دبائیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[editor fertility stale]",
+      "source": "Fertility map is out of date · Click to refresh",
+      "before": "زرخیزی کا نقشہ پرانا ہے · تازہ کرنے کے لیے کلک کریں",
+      "after": "زرخیزی کا نقشہ پرانا ہے · تازہ کرنے کے لیے کلک کریں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[No definition files found in %0]",
+      "source": "No definition files found in %0",
+      "before": "%0 میں تعریف کی کوئی فائل نہیں ملی",
+      "after": "%0 میں تعریف کی کوئی فائل نہیں ملی",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[From device…]",
+      "source": "From device…",
+      "before": "آلے سے…",
+      "after": "آلے سے…",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[replace existing file %0?]",
+      "source": "A file named \"%0\" already exists. Replace it?",
+      "before": "\"%0\" نام کی فائل پہلے سے موجود ہے۔ اسے بدل دیں؟",
+      "after": "\"%0\" نام کی فائل پہلے سے موجود ہے۔ اسے بدل دیں؟",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Replace]",
+      "source": "Replace",
+      "before": "بدل دیں",
+      "after": "بدل دیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Keep existing file]",
+      "source": "Keep existing file",
+      "before": "موجودہ فائل رکھیں",
+      "after": "موجودہ فائل رکھیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[editor menu save]",
+      "source": "Save map",
+      "before": "نقشہ محفوظ کریں",
+      "after": "نقشہ محفوظ کریں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[editor menu load]",
+      "source": "Open map…",
+      "before": "نقشہ کھولیں…",
+      "after": "نقشہ کھولیں…",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[editor menu import resources]",
+      "source": "Import resource definitions…",
+      "before": "وسائل کی تعریفیں درآمد کریں…",
+      "after": "وسائل کی تعریفیں درآمد کریں…",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[editor menu teams]",
+      "source": "Teams…",
+      "before": "ٹیمیں…",
+      "after": "ٹیمیں…",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[editor menu scenario]",
+      "source": "Scenario…",
+      "before": "منظرنامہ…",
+      "after": "منظرنامہ…",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[editor menu reroll]",
+      "source": "Reroll terrain look…",
+      "before": "زمین کی شکل دوبارہ اتفاقی بنائیں…",
+      "after": "زمین کی شکل دوبارہ اتفاقی بنائیں…",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[editor menu file]",
+      "source": "File",
+      "before": "فائل",
+      "after": "فائل",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[editor menu map]",
+      "source": "Map",
+      "before": "نقشہ",
+      "after": "نقشہ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[no resource growth areas]",
+      "source": "No-growth areas",
+      "before": "افزائش روکنے کے علاقے",
+      "after": "افزائش روکنے کے علاقے",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[dock minimap]",
+      "source": "Minimap",
+      "before": "چھوٹا نقشہ",
+      "after": "چھوٹا نقشہ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[dock search brushes]",
+      "source": "Search brushes",
+      "before": "برش تلاش کریں",
+      "after": "برش تلاش کریں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[dock brush shape %0]",
+      "source": "Brush shape %0",
+      "before": "برش کی شکل %0",
+      "after": "برش کی شکل %0",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[dock brush]",
+      "source": "Brush",
+      "before": "برش",
+      "after": "برش",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[dock brush paint]",
+      "source": "Paint",
+      "before": "رنگیں",
+      "after": "رنگیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[dock brush erase]",
+      "source": "Erase",
+      "before": "مٹائیں",
+      "after": "مٹائیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[dock enable for map]",
+      "source": "Enable for this map",
+      "before": "اس نقشے کے لیے فعال کریں",
+      "after": "اس نقشے کے لیے فعال کریں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[dock enable experiment %0]",
+      "source": "Enable %0",
+      "before": "%0 فعال کریں",
+      "after": "%0 فعال کریں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[dock enable experiment hint %0]",
+      "source": "Turns on the %0 experiment for this map only.",
+      "before": "صرف اس نقشے کے لیے %0 تجربہ فعال کرتا ہے۔",
+      "after": "صرف اس نقشے کے لیے %0 تجربہ فعال کرتا ہے۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[dock area number]",
+      "source": "Area",
+      "before": "علاقہ",
+      "after": "علاقہ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[dock unit level]",
+      "source": "Unit level",
+      "before": "یونٹ کی سطح",
+      "after": "یونٹ کی سطح",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[dock no brushes match]",
+      "source": "No brushes match the search.",
+      "before": "کوئی برش تلاش سے میل نہیں کھاتا۔",
+      "after": "کوئی برش تلاش سے میل نہیں کھاتا۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[dock active team]",
+      "source": "Active team",
+      "before": "فعال ٹیم",
+      "after": "فعال ٹیم",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[dock team count %0]",
+      "source": "Teams on this map: %0",
+      "before": "اس نقشے پر ٹیمیں: %0",
+      "after": "اس نقشے پر ٹیمیں: %0",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[dock add team]",
+      "source": "Add team",
+      "before": "ٹیم شامل کریں",
+      "after": "ٹیم شامل کریں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[dock remove team]",
+      "source": "Remove team",
+      "before": "ٹیم ہٹائیں",
+      "after": "ٹیم ہٹائیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[dock nothing selected]",
+      "source": "Nothing is selected.",
+      "before": "کچھ منتخب نہیں۔",
+      "after": "کچھ منتخب نہیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    }
+  ],
+  "status": "edited-awaiting-independent-recheck"
+}

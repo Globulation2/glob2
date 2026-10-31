@@ -1,0 +1,1522 @@
+{
+  "reviewer": "/root/hindi_online_review",
+  "author": "/root/pilot_context",
+  "editor": "/root",
+  "review_sha256": "9a654cb90af40b981fc3f8f9297a557ef798ae3d35c42452dd23f04e7114fca2",
+  "editor_sha256": "4a059b5c89387107d48c41ceec3fe2741d7a02013b4b0ae9e211921595066423",
+  "source_delta_sha256": "8884639e28a0f409f558951e5b1d9774772ec801330404218280f7a2cb653d4c",
+  "original_draft_sha256": "35e78cecc16d3a566197ee0cb2051600fa126d6f9be71e38e81a04849eb5ae2a",
+  "edited_sha256": "d20c43c2ec9a6524b5dc583afa3e15f3aa9a1d40b8377861c972ea9b1ce4e57b",
+  "scope": "All209 final key values verified. Four substantive changed entries freshly source/context rechecked;205 unchanged entries carry full original source-to-target review by exact per-key source+target identity, not a claim of fresh rereading.",
+  "keys_checked_exactly_once": [
+    "[intro menu]",
+    "[intro briefing]",
+    "[intro try]",
+    "[intro preflight]",
+    "[intro preflight save]",
+    "[intro preference failed]",
+    "[intro goal scout]",
+    "[intro goal build]",
+    "[intro goal supply]",
+    "[intro goal grow]",
+    "[intro goal attack]",
+    "[intro instruction scout]",
+    "[intro instruction build]",
+    "[intro instruction supply]",
+    "[intro instruction grow]",
+    "[intro instruction attack]",
+    "[intro help]",
+    "[intro help scout]",
+    "[intro help build]",
+    "[intro help supply]",
+    "[intro help grow]",
+    "[intro help attack]",
+    "[intro hint scout]",
+    "[intro hint build]",
+    "[intro hint supply]",
+    "[intro hint grow]",
+    "[intro hint attack]",
+    "[intro hint no scout flag]",
+    "[intro hint no suppliers]",
+    "[intro hint no war flag]",
+    "[intro hint retry]",
+    "[intro complete]",
+    "[intro complete body]",
+    "[intro play again]",
+    "[intro restart]",
+    "[intro restart body]",
+    "[intro help touch scout]",
+    "[intro help touch build]",
+    "[intro help touch supply]",
+    "[intro help touch grow]",
+    "[intro help touch attack]",
+    "[intro show destination]",
+    "[intro scout destination]",
+    "[intro compact scout]",
+    "[intro compact build]",
+    "[intro compact supply]",
+    "[intro compact grow]",
+    "[intro compact attack]",
+    "[tutorial lessons]",
+    "[tutorial restart]",
+    "[tutorial restart body]",
+    "[tutorial complete]",
+    "[tutorial food title]",
+    "[tutorial food briefing]",
+    "[tutorial food complete]",
+    "[tutorial unavailable]",
+    "[lesson healing title]",
+    "[lesson healing briefing]",
+    "[lesson healing complete]",
+    "[lesson healing build hint]",
+    "[lesson healing build title]",
+    "[lesson healing build instruction]",
+    "[lesson healing build help]",
+    "[lesson healing build marker]",
+    "[lesson healing heal hint]",
+    "[lesson healing heal title]",
+    "[lesson healing heal instruction]",
+    "[lesson healing heal help]",
+    "[lesson healing heal marker]",
+    "[lesson walking-training title]",
+    "[lesson walking-training briefing]",
+    "[lesson walking-training complete]",
+    "[lesson walking-training build hint]",
+    "[lesson walking-training build title]",
+    "[lesson walking-training build instruction]",
+    "[lesson walking-training build help]",
+    "[lesson walking-training build marker]",
+    "[lesson walking-training train hint]",
+    "[lesson walking-training train title]",
+    "[lesson walking-training train instruction]",
+    "[lesson walking-training train help]",
+    "[lesson swimming title]",
+    "[lesson swimming briefing]",
+    "[lesson swimming complete]",
+    "[lesson swimming build hint]",
+    "[lesson swimming build title]",
+    "[lesson swimming build instruction]",
+    "[lesson swimming build help]",
+    "[lesson swimming build marker]",
+    "[lesson swimming train hint]",
+    "[lesson swimming train title]",
+    "[lesson swimming train instruction]",
+    "[lesson swimming train help]",
+    "[lesson swimming water-job hint]",
+    "[lesson swimming water-job title]",
+    "[lesson swimming water-job instruction]",
+    "[lesson swimming water-job help]",
+    "[lesson swimming water-job marker]",
+    "[lesson schools title]",
+    "[lesson schools briefing]",
+    "[lesson schools complete]",
+    "[lesson schools build hint]",
+    "[lesson schools build title]",
+    "[lesson schools build instruction]",
+    "[lesson schools build help]",
+    "[lesson schools build marker]",
+    "[lesson schools learn hint]",
+    "[lesson schools learn title]",
+    "[lesson schools learn instruction]",
+    "[lesson schools learn help]",
+    "[lesson upgrades title]",
+    "[lesson upgrades briefing]",
+    "[lesson upgrades complete]",
+    "[lesson upgrades upgrade hint]",
+    "[lesson upgrades upgrade title]",
+    "[lesson upgrades upgrade instruction]",
+    "[lesson upgrades upgrade help]",
+    "[lesson upgrades upgrade marker]",
+    "[lesson upgrades train hint]",
+    "[lesson upgrades train title]",
+    "[lesson upgrades train instruction]",
+    "[lesson upgrades train help]",
+    "[lesson warrior-training title]",
+    "[lesson warrior-training briefing]",
+    "[lesson warrior-training complete]",
+    "[lesson warrior-training produce hint]",
+    "[lesson warrior-training produce title]",
+    "[lesson warrior-training produce instruction]",
+    "[lesson warrior-training produce help]",
+    "[lesson warrior-training produce marker]",
+    "[lesson warrior-training build hint]",
+    "[lesson warrior-training build title]",
+    "[lesson warrior-training build instruction]",
+    "[lesson warrior-training build help]",
+    "[lesson warrior-training build marker]",
+    "[lesson warrior-training train hint]",
+    "[lesson warrior-training train title]",
+    "[lesson warrior-training train instruction]",
+    "[lesson warrior-training train help]",
+    "[lesson fortifications title]",
+    "[lesson fortifications briefing]",
+    "[lesson fortifications complete]",
+    "[lesson fortifications tower hint]",
+    "[lesson fortifications tower title]",
+    "[lesson fortifications tower instruction]",
+    "[lesson fortifications tower help]",
+    "[lesson fortifications tower marker]",
+    "[lesson fortifications walls hint]",
+    "[lesson fortifications walls title]",
+    "[lesson fortifications walls instruction]",
+    "[lesson fortifications walls help]",
+    "[lesson fortifications walls marker]",
+    "[lesson fortifications supply hint]",
+    "[lesson fortifications supply title]",
+    "[lesson fortifications supply instruction]",
+    "[lesson fortifications supply help]",
+    "[lesson fortifications supply marker]",
+    "[lesson fortifications hold hint]",
+    "[lesson fortifications hold title]",
+    "[lesson fortifications hold instruction]",
+    "[lesson fortifications hold help]",
+    "[lesson fortifications hold marker]",
+    "[lesson defensive-tactics title]",
+    "[lesson defensive-tactics briefing]",
+    "[lesson defensive-tactics complete]",
+    "[lesson defensive-tactics scout hint]",
+    "[lesson defensive-tactics scout title]",
+    "[lesson defensive-tactics scout instruction]",
+    "[lesson defensive-tactics scout help]",
+    "[lesson defensive-tactics scout marker]",
+    "[lesson defensive-tactics guard hint]",
+    "[lesson defensive-tactics guard title]",
+    "[lesson defensive-tactics guard instruction]",
+    "[lesson defensive-tactics guard help]",
+    "[lesson defensive-tactics guard marker]",
+    "[lesson defensive-tactics repel hint]",
+    "[lesson defensive-tactics repel title]",
+    "[lesson defensive-tactics repel instruction]",
+    "[lesson defensive-tactics repel help]",
+    "[lesson defensive-tactics repel marker]",
+    "[lesson defensive-tactics counterattack hint]",
+    "[lesson defensive-tactics counterattack title]",
+    "[lesson defensive-tactics counterattack instruction]",
+    "[lesson defensive-tactics counterattack help]",
+    "[lesson defensive-tactics counterattack marker]",
+    "[lesson healing build compact]",
+    "[lesson healing heal compact]",
+    "[lesson walking-training build compact]",
+    "[lesson walking-training train compact]",
+    "[lesson swimming build compact]",
+    "[lesson swimming train compact]",
+    "[lesson swimming water-job compact]",
+    "[lesson schools build compact]",
+    "[lesson schools learn compact]",
+    "[lesson upgrades upgrade compact]",
+    "[lesson upgrades train compact]",
+    "[lesson warrior-training produce compact]",
+    "[lesson warrior-training build compact]",
+    "[lesson warrior-training train compact]",
+    "[lesson fortifications tower compact]",
+    "[lesson fortifications walls compact]",
+    "[lesson fortifications supply compact]",
+    "[lesson fortifications hold compact]",
+    "[lesson defensive-tactics scout compact]",
+    "[lesson defensive-tactics guard compact]",
+    "[lesson defensive-tactics repel compact]",
+    "[lesson defensive-tactics counterattack compact]",
+    "[intro attack destination]",
+    "[scenario messages]"
+  ],
+  "unchanged_count": 205,
+  "changed_count": 4,
+  "reverse_four_edits_restores_entire_original_mapping": true,
+  "coverage": [
+    {
+      "key": "[intro menu]",
+      "source_sha256": "b605350bc00209520b7cd8f546322663356ba630708f71bbf30aead6b3dd608e",
+      "final_target_sha256": "8b9b265b2e2e8bdf2800d2da9ce6fd4d1e5dad3b0f505f0e4288453db6433814",
+      "method": "exact identity with fully reviewed original source+target"
+    },
+    {
+      "key": "[intro briefing]",
+      "source_sha256": "c7d72c8ccb7eef6f1afe5a9dc28c45abc05499d2b743321ee8233e92ac1732c8",
+      "final_target_sha256": "b29e09754372873c112ddcf363ff5cbf03b7c2721eedb5bcce3a5f9fe0a4b655",
+      "method": "exact identity with fully reviewed original source+target"
+    },
+    {
+      "key": "[intro try]",
+      "source_sha256": "632e139b6ffc84032a2df0a5abef6c29a21fc044f08a9d8d8624bd9fae37d25c",
+      "final_target_sha256": "af6507633e904f35143bcd3f6e2baa41dcd60c8657c8c410f90df315783102a7",
+      "method": "exact identity with fully reviewed original source+target"
+    },
+    {
+      "key": "[intro preflight]",
+      "source_sha256": "1b93b2f42cd4b366a28c13dad513419d99166c41f330198619d09d665fb592d5",
+      "final_target_sha256": "cf2a447826a0d81738d96b5a7c5fed836a32171f41649df491518a8bc9d3a9cc",
+      "method": "exact identity with fully reviewed original source+target"
+    },
+    {
+      "key": "[intro preflight save]",
+      "source_sha256": "f03f365b775d564b49f88ea73ac36c2e66e98393dcb94aed159e4b84acda8995",
+      "final_target_sha256": "094172f836b0629b5ac4709a8757df3a4451c5b6de572b33a7fec8106015deed",
+      "method": "exact identity with fully reviewed original source+target"
+    },
+    {
+      "key": "[intro preference failed]",
+      "source_sha256": "515e7659bbbd1f9c16a4fa261bacf6310f888726f8d14614b75f39c14eb89d92",
+      "final_target_sha256": "4874d379ab2fca53443d0036495a026b91d7c7fa1ea7ca31deb2ba93be77025b",
+      "method": "exact identity with fully reviewed original source+target"
+    },
+    {
+      "key": "[intro goal scout]",
+      "source_sha256": "8f296a406cd3e406fdacd196ab6276f9f2fee40ccf5b9d85bd43e9329fade5ec",
+      "final_target_sha256": "cdb9823c57473b3c5bb2c5bb1a37569d5749b19df88d746f7999d81cce9dd1cf",
+      "method": "exact identity with fully reviewed original source+target"
+    },
+    {
+      "key": "[intro goal build]",
+      "source_sha256": "671261a04c1b6fba317d6f01a1a98b3527379067236c31cf4dcb91b3d880a95c",
+      "final_target_sha256": "0a6255e4b9b0b4428d79d9e082fd1cf6bc04d8ec5e95297b0063952a1714c165",
+      "method": "exact identity with fully reviewed original source+target"
+    },
+    {
+      "key": "[intro goal supply]",
+      "source_sha256": "d02454caa74a9b6e6d6724529068b33f852dc18f8ae12990cb956607ddf239de",
+      "final_target_sha256": "c1b896ea5fa668ccead578aee8c75bae9f7369d3a24ab62c86ca241272743084",
+      "method": "exact identity with fully reviewed original source+target"
+    },
+    {
+      "key": "[intro goal grow]",
+      "source_sha256": "f378c31ee09cac32e6e9047a8aadc59d93adf33b5baa1895de8ea3394aa3109c",
+      "final_target_sha256": "1602175bdb0abf0125f16803b247dce2c93239d8e5e47c8950dce03cdc2970f3",
+      "method": "exact identity with fully reviewed original source+target"
+    },
+    {
+      "key": "[intro goal attack]",
+      "source_sha256": "6ebb73f4151a80754d72a49729a2619f874054b47c4c5f2d2535e1014f849e47",
+      "final_target_sha256": "36b2c6645e8b1542b63685fe542be2925e09bdf48f8e9ae1820dba79f5a1f8e1",
+      "method": "exact identity with fully reviewed original source+target"
+    },
+    {
+      "key": "[intro instruction scout]",
+      "source_sha256": "528523a93220058aa7a39e18a2fc3191c020ed635618bfe44e0ddb7bfd9c2ef0",
+      "final_target_sha256": "ec4a3a7e64069fcfa9fcc8ee99a788ec619675e01ef369553146c57e9e527e97",
+      "method": "exact identity with fully reviewed original source+target"
+    },
+    {
+      "key": "[intro instruction build]",
+      "source_sha256": "383aefe3257df7a2e04aaf36f4d96ffb0887fc637ddbf454c8cabda68280215b",
+      "final_target_sha256": "acecfb33b446bc78f05de8ba62ef9bd5af04792588d2d4dcae0b977608840f98",
+      "method": "exact identity with fully reviewed original source+target"
+    },
+    {
+      "key": "[intro instruction supply]",
+      "source_sha256": "64223e9e4dd528795b8f6fa8e666978f1e377e61492129252345c7da4bdc7b28",
+      "final_target_sha256": "09e900a3507c9a8cf5456a571d4a4ef6f4c6dd665a7384a3b1f1965faae211db",
+      "method": "exact identity with fully reviewed original source+target"
+    },
+    {
+      "key": "[intro instruction grow]",
+      "source_sha256": "286bd2930a373864ed16a2e94d0e05896a1db0b2a2cf3c150270345889116b2b",
+      "final_target_sha256": "6678c94f705beb25533dcbc24673ce32330cee5e085bf0930945ab82964452a6",
+      "method": "exact identity with fully reviewed original source+target"
+    },
+    {
+      "key": "[intro instruction attack]",
+      "source_sha256": "13f5deb94f8b80fa1a8dd9b293f0cfdd415b4b8fee588aefd803bfba7eae6420",
+      "final_target_sha256": "a02c2b71d92e7ac0e2c92c079a8157da38cfc9f26c0c68522e91d5f0e8b63920",
+      "method": "exact identity with fully reviewed original source+target"
+    },
+    {
+      "key": "[intro help]",
+      "source_sha256": "4a6aba0a538c5111b9f7266bbd8bf0cb8b519783c19d00b23a0bf3765f83bff7",
+      "final_target_sha256": "a262dc470cbdb5afa341b13bf1277c8ee626667d298d59abd9c5f515da74c232",
+      "method": "exact identity with fully reviewed original source+target"
+    },
+    {
+      "key": "[intro help scout]",
+      "source_sha256": "13f7f62ffaecd0e972b55b29ac1ba6ad94820ddf198f8c5350cc0435add41418",
+      "final_target_sha256": "1147257e4e8fe8910836a55c2446df25159483a2b50623be0781febcb8fa4d51",
+      "method": "exact identity with fully reviewed original source+target"
+    },
+    {
+      "key": "[intro help build]",
+      "source_sha256": "b6379472916610f322c9fe236d6a40aa23062a99ed6372d8ed7d584ab3dc5897",
+      "final_target_sha256": "725376bb4470ac4463e90922408ab4b0896a410e09cfc1823238e206a858b3e8",
+      "method": "exact identity with fully reviewed original source+target"
+    },
+    {
+      "key": "[intro help supply]",
+      "source_sha256": "f91ffe9d60007e2d98d7c1bd9fa908a5fa62f85f3e1655db30a5e9e3ca03aba5",
+      "final_target_sha256": "7967752b797d388789c941dfa510094f489d4d02cebf75030b8af3a925806070",
+      "method": "exact identity with fully reviewed original source+target"
+    },
+    {
+      "key": "[intro help grow]",
+      "source_sha256": "0b2cbcacc012d20dd10de2f7028e43acf6fc26130554bb0b0b8eb82d83fa7bee",
+      "final_target_sha256": "963f5463b43205f7cdaf99e0dfc886b28e37b0808c083f5c3cb8bfbed7102316",
+      "method": "exact identity with fully reviewed original source+target"
+    },
+    {
+      "key": "[intro help attack]",
+      "source_sha256": "8441a18a4f842706c66be91487c4175fe33e80b4ec13729f4b7e3fbbcb3fd521",
+      "final_target_sha256": "2e2143c1fdac549f85d7553118f50a326dd935cf0afafc45e74d4e80a3a09100",
+      "method": "exact identity with fully reviewed original source+target"
+    },
+    {
+      "key": "[intro hint scout]",
+      "source_sha256": "70cbf285688b2d25efdcd26edb21f9ad1a053207a59eab337b562b3756598e94",
+      "final_target_sha256": "f6278f779e1b01bca76875a7ba5968c23169405c4f7aaf1156b7577acc82ee4a",
+      "method": "exact identity with fully reviewed original source+target"
+    },
+    {
+      "key": "[intro hint build]",
+      "source_sha256": "ab05e65884cd1425dec30b29b23335f2c474a2de03811ace35129287361ac9ec",
+      "final_target_sha256": "4e797c4315d6dc5e91149781c6294387559b5a57ed07b53194c7dcb85f430f6f",
+      "method": "exact identity with fully reviewed original source+target"
+    },
+    {
+      "key": "[intro hint supply]",
+      "source_sha256": "ebaf29082206b7a40a4a78dc71192bd165ecaed0003ea55b07998b2849a1ab93",
+      "final_target_sha256": "6dbcdd8a2b300f300fe4d78a9b17257cc5b823d3cccd18c985847ab2a78ed6d8",
+      "method": "exact identity with fully reviewed original source+target"
+    },
+    {
+      "key": "[intro hint grow]",
+      "source_sha256": "92e853f75b815dd20385b08d64968228dec23050a8b7cca53ad71282b42022f6",
+      "final_target_sha256": "d6e7ccf1dcc662aef819af03a4ec9928fb67aeff5381634539d3f1a7257b1eb6",
+      "method": "exact identity with fully reviewed original source+target"
+    },
+    {
+      "key": "[intro hint attack]",
+      "source_sha256": "9c2da10066330e9e0dfdacb56487124476e47565fa1ae2ab506cf32f7dcc4b3a",
+      "final_target_sha256": "69de7b15e8c8a08c611349ba6f164941d576405b86704c9470647a76d40cf536",
+      "method": "exact identity with fully reviewed original source+target"
+    },
+    {
+      "key": "[intro hint no scout flag]",
+      "source_sha256": "16f2b9c58cb61b2bb4c01dc285289ab918ced4ba70e034dbc790eee9be78a8a9",
+      "final_target_sha256": "1f906baec00610819e6926bf5305bfda5f06f62d3818dad4cf76897a1afe6b3d",
+      "method": "exact identity with fully reviewed original source+target"
+    },
+    {
+      "key": "[intro hint no suppliers]",
+      "source_sha256": "1c1d0802903a119353adb84d9baeb5eb9f7b1017a702e44cdd1272311b7f48a6",
+      "final_target_sha256": "22abf717b3735be96fefb007cdb96b95aa1131cd0528bcd66b73fff9fb10b84c",
+      "method": "exact identity with fully reviewed original source+target"
+    },
+    {
+      "key": "[intro hint no war flag]",
+      "source_sha256": "fd85a0861d942cb5c5b0492bd9a5bfa4f8accd7e1a2f8efb841a66efdeea527f",
+      "final_target_sha256": "7dd1712f16db268f4fad54c2c4ecafe7cddffbe75b6927b7e42185918e312b2f",
+      "method": "exact identity with fully reviewed original source+target"
+    },
+    {
+      "key": "[intro hint retry]",
+      "source_sha256": "063fa2323775fca7da42e09edff9e2a67eac16858fe6aaefba4f7ae337c4ca1c",
+      "final_target_sha256": "be9a0a8351b5226b51442f15eebfa38fba9d80d250c04bf2c6d7c46b9a404712",
+      "method": "exact identity with fully reviewed original source+target"
+    },
+    {
+      "key": "[intro complete]",
+      "source_sha256": "df6c7ded9c813af772c43b2b482441680d4419307f0899ec57dfdfae765b6173",
+      "final_target_sha256": "81fa5414ae89632277296560dcc1e5302cdd6f80a7ae9b3a7956c1c39c8128f9",
+      "method": "exact identity with fully reviewed original source+target"
+    },
+    {
+      "key": "[intro complete body]",
+      "source_sha256": "8bac06e405801f503c166ef6fbbea6febe641f98b40df7723f3df3216fe048ac",
+      "final_target_sha256": "79d642b22304c05e61c9e32d2531aead172c484513146213bd7123c235dcf959",
+      "method": "exact identity with fully reviewed original source+target"
+    },
+    {
+      "key": "[intro play again]",
+      "source_sha256": "5ef30d27f8bc261c9af7c5220ebca9e22ad51e60ff89bbdccceeb7102e21a32f",
+      "final_target_sha256": "a3ee268931ec7dd55b6d07e5b562be0b2ff730b5711d5ca5b2f6d77ff5242110",
+      "method": "exact identity with fully reviewed original source+target"
+    },
+    {
+      "key": "[intro restart]",
+      "source_sha256": "0b315ab3e4557ecb77e6d21dd8b6767899b78c21fbd485703d08ca66b57c5066",
+      "final_target_sha256": "61f21e96aecb2f5ecd752364748ab68a4705078996099bd4071265a1dc0b0b35",
+      "method": "exact identity with fully reviewed original source+target"
+    },
+    {
+      "key": "[intro restart body]",
+      "source_sha256": "b0cff10610a8c57ad2600f9ad0305bc2f385b3db4363820358ba3662b30cd560",
+      "final_target_sha256": "62226982fbc17f793882e955fda1d8df65a5547bca651764f29b8f1d6b8d9e54",
+      "method": "exact identity with fully reviewed original source+target"
+    },
+    {
+      "key": "[intro help touch scout]",
+      "source_sha256": "49f98243792f34407f61792c5fc70870d3a2ace31e91a16a19be228bac69953f",
+      "final_target_sha256": "f108ca8a4a57846ad68ad3bc6e5fb62004eb031954b86cdd4522f078b0d1c6e2",
+      "method": "exact identity with fully reviewed original source+target"
+    },
+    {
+      "key": "[intro help touch build]",
+      "source_sha256": "e286f939648bec99291055c43e55eb855fcc9d2d794eff3230dbd7cc4e9d9627",
+      "final_target_sha256": "66e5bbea0263464cbcf8d4baf4f3a23ab9bd53f6f22412916fbc96ce18d45581",
+      "method": "exact identity with fully reviewed original source+target"
+    },
+    {
+      "key": "[intro help touch supply]",
+      "source_sha256": "8045e077256e284b02cf47f73db71c1c242e28f28d45c099f0df36c5535b1ec3",
+      "final_target_sha256": "6452e8e04cdc809f82031ae79f8532b0008e5290f6ab34214ae50bf67be65daa",
+      "method": "exact identity with fully reviewed original source+target"
+    },
+    {
+      "key": "[intro help touch grow]",
+      "source_sha256": "e263537e6840ee3b2ee6b318a298049ff1f5acd3b6002f153eb15e4e1c99d341",
+      "final_target_sha256": "f716e640e499d0166fdad7eea28e84c4ffd5d2bbb05b513cc4def859ab054f42",
+      "method": "exact identity with fully reviewed original source+target"
+    },
+    {
+      "key": "[intro help touch attack]",
+      "source_sha256": "2d79e0b68352eedf8a91c42213ccc5480c9a7f246ae35b84d8943497bea6da7d",
+      "final_target_sha256": "9d85f17e07491e060f0c1afe234ee3c2ad77b24fbbc2007ab811cb819626bfb5",
+      "method": "exact identity with fully reviewed original source+target"
+    },
+    {
+      "key": "[intro show destination]",
+      "source_sha256": "e7205286a32eb7d586cfa3effe9b27c5340d4a19601796c4c229381a8132a4d9",
+      "final_target_sha256": "5350a2e70e69ba85d684dafee2b32e4f55ad795bdc78c3800bf390db17e31008",
+      "method": "exact identity with fully reviewed original source+target"
+    },
+    {
+      "key": "[intro scout destination]",
+      "source_sha256": "d1af8e2fce2b12ca88135efba81f39587b200c8891c877b7610c5d57e708cc85",
+      "final_target_sha256": "1dff4b2ee40ccacb31426a124aac6911470a6b6b47483487bd0f3a77f238351f",
+      "method": "exact identity with fully reviewed original source+target"
+    },
+    {
+      "key": "[intro compact scout]",
+      "source_sha256": "0add4107c48c91201cf0a65b8c5c4c7827280eca2bf7157c3503cc59b40a1127",
+      "final_target_sha256": "c82104cf965c613b8efaee00508ba30556bbc9e7499a3910cd7370a9cf76b0f2",
+      "method": "exact identity with fully reviewed original source+target"
+    },
+    {
+      "key": "[intro compact build]",
+      "source_sha256": "53f38844441fee7613de8b4c88a6656ba99902e382faef5be43f0e362a89a678",
+      "final_target_sha256": "c66c16cdfac1393087a7cc880d93fc75b5e15988ae2e6710c33d0d289050acf5",
+      "method": "exact identity with fully reviewed original source+target"
+    },
+    {
+      "key": "[intro compact supply]",
+      "source_sha256": "cde4d0be27c8b2713446e7e5f0126a0d80fab9df02d4c36b805e3b076bf511b6",
+      "final_target_sha256": "b275be11c1a7c83ef822a0ad8b7624068ca88f2487acf06b7dffc14598863971",
+      "method": "exact identity with fully reviewed original source+target"
+    },
+    {
+      "key": "[intro compact grow]",
+      "source_sha256": "e07f29bc4c11b58ec17dd5f70e54461cdacafbbf772372c80db656b57f590250",
+      "final_target_sha256": "18f8f6adc9b683c054bac93c5c2d07f2976f30f9b6a25bad93b593de4f01d4a7",
+      "method": "exact identity with fully reviewed original source+target"
+    },
+    {
+      "key": "[intro compact attack]",
+      "source_sha256": "dfea9d478c8f00031143cc7709ae12368d272533ab4aeccaa0bfa300f13facc1",
+      "final_target_sha256": "2eaa0f3f096361f11b3fb2fc377c0369373f37f929e74552abbbd7f1e9a36f64",
+      "method": "exact identity with fully reviewed original source+target"
+    },
+    {
+      "key": "[tutorial lessons]",
+      "source_sha256": "ce7b9a37270b6310fb50a7c5c9073fb01320b3d29316a6d259751e5ec1993c40",
+      "final_target_sha256": "49c2a5242d5e6584c1c3ab752450ac5b917abbdcc61719e9318fd3bf2bd98a21",
+      "method": "exact identity with fully reviewed original source+target"
+    },
+    {
+      "key": "[tutorial restart]",
+      "source_sha256": "cabbcb70d6181880ab073373526a0c6c6e19e654d5efb84953f80e240277b4e8",
+      "final_target_sha256": "1493744cf7486b372e699d1db6a53efb35c00ddb4785dd07ec973df16d1c1e7c",
+      "method": "exact identity with fully reviewed original source+target"
+    },
+    {
+      "key": "[tutorial restart body]",
+      "source_sha256": "ffc315259edd595391a644705dfaabb6a914fd236e958ba728877716c224db17",
+      "final_target_sha256": "40202916ffffa75684dde4244a2a4dfe2ef664048e820be60a1e7e036d5139ae",
+      "method": "exact identity with fully reviewed original source+target"
+    },
+    {
+      "key": "[tutorial complete]",
+      "source_sha256": "fd8ea0a29a653cac0de113a4dce5875e61def5197251debfeb9e58855fe9e298",
+      "final_target_sha256": "2a0bee53ab701563b85cc840f7df2bf5e4c4a51e8b515e2f3bcf92ee7407d241",
+      "method": "exact identity with fully reviewed original source+target"
+    },
+    {
+      "key": "[tutorial food title]",
+      "source_sha256": "198519daf7b8670fe922a53f5611acb70efddfaeaf90fad7a45402d2ca98e5f6",
+      "final_target_sha256": "efc7e11c9eb2ee1534d6cad3daaf8b134d590824492178ef36b79718ba9c27a7",
+      "method": "exact identity with fully reviewed original source+target"
+    },
+    {
+      "key": "[tutorial food briefing]",
+      "source_sha256": "5c7bc72d273165a1125f08c8e635e5c600d72a92a606de572f24d16156525dbb",
+      "final_target_sha256": "02c930a0df97f178bcafb72762c0fbf53eb34a7ef1c6cb60f621835050a2544f",
+      "method": "exact identity with fully reviewed original source+target"
+    },
+    {
+      "key": "[tutorial food complete]",
+      "source_sha256": "759019a7b94547d789004481c65b73477d3747825ca432de8d9c49568a32448c",
+      "final_target_sha256": "83e4fe944da0b8acde6874cb263ed2930e2598d05b663e6134d91812b6f35304",
+      "method": "exact identity with fully reviewed original source+target"
+    },
+    {
+      "key": "[tutorial unavailable]",
+      "source_sha256": "d52e2b1b949b87a4e9dc1dd8407010764fcb05b7f6338512195554c012cd8b4e",
+      "final_target_sha256": "a9d19addd8b3a78469a0e2e3d73b54e0971a51c17a43d2b794140a9ef027fcaa",
+      "method": "exact identity with fully reviewed original source+target"
+    },
+    {
+      "key": "[lesson healing title]",
+      "source_sha256": "f8ce2c4e8ed5abc698b51b28bbe7ec3cc9448a465a7f828920efc5c22511aa4d",
+      "final_target_sha256": "f4e6b6f8c33bc3198a8323e84804bbd4dd97d4d42e2d07a99c6be97c3da52d1e",
+      "method": "exact identity with fully reviewed original source+target"
+    },
+    {
+      "key": "[lesson healing briefing]",
+      "source_sha256": "19efcc776cc060b892b9b034f6ebdaf23a8e5f8915caa43173063086ebb5c8a9",
+      "final_target_sha256": "5a2191afeec2ee6de858417764a913786c9e4801b3930ae963a726e6de65f12b",
+      "method": "fresh substantive edit recheck"
+    },
+    {
+      "key": "[lesson healing complete]",
+      "source_sha256": "1e83b9981a8200e7eaad6ae21b047192224a63cc11f14d0fdb1f4543e5a2a7d4",
+      "final_target_sha256": "08526a884be584afa0b7f8f4d9abaf209fddf33bccc52d18cca65571905e83ab",
+      "method": "exact identity with fully reviewed original source+target"
+    },
+    {
+      "key": "[lesson healing build hint]",
+      "source_sha256": "aac1961b77307a9f1a32cb0edd45ba8f57924ec299f95928a0f17dd39eeb671c",
+      "final_target_sha256": "2cab396cdb83cb98a24833b207ee3222788d5a713379a45ebd1bf96152a40e8e",
+      "method": "exact identity with fully reviewed original source+target"
+    },
+    {
+      "key": "[lesson healing build title]",
+      "source_sha256": "f65e570fd9b08cd2d3cbdfa284e64495621cd1989d6a03df586e75403a947f84",
+      "final_target_sha256": "e1e4be9ca82d917c46a2ee5b0d670aae0ecb72bfbc2f793f84273afbea574725",
+      "method": "exact identity with fully reviewed original source+target"
+    },
+    {
+      "key": "[lesson healing build instruction]",
+      "source_sha256": "c155c3f8e1749e0fb54e0b4833d3b11ee5fc7feed36bf42e4f0ea810e7f4597a",
+      "final_target_sha256": "37df9d2ecf1da7730336f6ec451c421c2da9a68247ac08585e60e5c6bc4c277c",
+      "method": "exact identity with fully reviewed original source+target"
+    },
+    {
+      "key": "[lesson healing build help]",
+      "source_sha256": "85b0457612f27d52a92e56d2f30f6419c0e326fe093204faea817349d3712057",
+      "final_target_sha256": "6b5afb8e4ec60e38f75ac666c6568d0b402ce5ef9170f6e1fab13d4bfdffe3b3",
+      "method": "exact identity with fully reviewed original source+target"
+    },
+    {
+      "key": "[lesson healing build marker]",
+      "source_sha256": "f65e570fd9b08cd2d3cbdfa284e64495621cd1989d6a03df586e75403a947f84",
+      "final_target_sha256": "e1e4be9ca82d917c46a2ee5b0d670aae0ecb72bfbc2f793f84273afbea574725",
+      "method": "exact identity with fully reviewed original source+target"
+    },
+    {
+      "key": "[lesson healing heal hint]",
+      "source_sha256": "6e50b5aa1b13d6b72c3e917d928abda315cb5b0b6481ad27cc1deaf7cd9e5956",
+      "final_target_sha256": "12fef5e3e9cd99262e225ddebc26686c67a5c3e43a61f5eff4ff6d2e4999d357",
+      "method": "exact identity with fully reviewed original source+target"
+    },
+    {
+      "key": "[lesson healing heal title]",
+      "source_sha256": "ecd575a0939ec4e17f22d07f6d951a58c6a122bf4a0a2d689282b4bc81c45c07",
+      "final_target_sha256": "b1c64730d9260437564be32ea470d2970835dd5a06e902df5eb57b4bcdbe46e9",
+      "method": "exact identity with fully reviewed original source+target"
+    },
+    {
+      "key": "[lesson healing heal instruction]",
+      "source_sha256": "32628295c89baf6162cea507a5480a7a44c62728809ce8c89c4ca6e1c9181dae",
+      "final_target_sha256": "25e3066e4b0f947b8bc5257fbfb197121787b3b504c9a1fddda110b957748a22",
+      "method": "exact identity with fully reviewed original source+target"
+    },
+    {
+      "key": "[lesson healing heal help]",
+      "source_sha256": "b40e4c7c8ee1dcee11b63f15072ddc6cb769cff3aa53cc7698fcd3299273fd76",
+      "final_target_sha256": "579cda0e5853d7acea53bb79422ee2be2e5047011fb4443cc19ada959b2782fc",
+      "method": "exact identity with fully reviewed original source+target"
+    },
+    {
+      "key": "[lesson healing heal marker]",
+      "source_sha256": "ecd575a0939ec4e17f22d07f6d951a58c6a122bf4a0a2d689282b4bc81c45c07",
+      "final_target_sha256": "b1c64730d9260437564be32ea470d2970835dd5a06e902df5eb57b4bcdbe46e9",
+      "method": "exact identity with fully reviewed original source+target"
+    },
+    {
+      "key": "[lesson walking-training title]",
+      "source_sha256": "02bdb2f49220829a3e69f8acd77d2fd97143d41ce8246c13677e5aff7a699a7b",
+      "final_target_sha256": "a1911ad39f005fc145ee04f8281c4a07796ba51f5aeec9da5d7919ab31bff246",
+      "method": "exact identity with fully reviewed original source+target"
+    },
+    {
+      "key": "[lesson walking-training briefing]",
+      "source_sha256": "ffe08446ce138981a78d4686dc2e1b19f303d8e75b56b954682827671b29c847",
+      "final_target_sha256": "704a34d251338bb0196c1a044c2a0f331e3abc2f34eb617df700c6a492b263c4",
+      "method": "exact identity with fully reviewed original source+target"
+    },
+    {
+      "key": "[lesson walking-training complete]",
+      "source_sha256": "4921519a698ebb95f76d98c304831ba4d1177d01c71b879214b0c933954bad0f",
+      "final_target_sha256": "4b73dc0fb4888079d6e1a10d0173389e0d030cee0ea3bbe58096d22638ed00ac",
+      "method": "exact identity with fully reviewed original source+target"
+    },
+    {
+      "key": "[lesson walking-training build hint]",
+      "source_sha256": "bbe38492d1854d3d3ffa4ac1b490e3cdb2e1ceb959a39aa84d06e5c644efa1d9",
+      "final_target_sha256": "a2e9715dc2b059d3f6b81ce9e49c26a912f96759d47fda6db6b275540357a83f",
+      "method": "exact identity with fully reviewed original source+target"
+    },
+    {
+      "key": "[lesson walking-training build title]",
+      "source_sha256": "382ffa54226d6a70952a005aea55f404434a4199c45e511f9a594dbca3132a10",
+      "final_target_sha256": "bc1276d2da2d0b1b157c852c635ecd67199552e76b634cd48a51456eba285cad",
+      "method": "exact identity with fully reviewed original source+target"
+    },
+    {
+      "key": "[lesson walking-training build instruction]",
+      "source_sha256": "8a37b31c5fbd48997e0b71f36173035b1284b31e64bf9b858880e1f43c009afb",
+      "final_target_sha256": "9917cba5beaa4bd2d1f3f666fd5f658bec8b0d32fed51b1a496fd211fc91f124",
+      "method": "exact identity with fully reviewed original source+target"
+    },
+    {
+      "key": "[lesson walking-training build help]",
+      "source_sha256": "df76f6cb17b8f252d7e5de571fbc12258bb070e5cf38af99d8354cb7d8fe9a82",
+      "final_target_sha256": "36a288a884d4385b8ff5026eedf4afdfab62e5023d22f64b1719edf178c27b56",
+      "method": "exact identity with fully reviewed original source+target"
+    },
+    {
+      "key": "[lesson walking-training build marker]",
+      "source_sha256": "382ffa54226d6a70952a005aea55f404434a4199c45e511f9a594dbca3132a10",
+      "final_target_sha256": "bc1276d2da2d0b1b157c852c635ecd67199552e76b634cd48a51456eba285cad",
+      "method": "exact identity with fully reviewed original source+target"
+    },
+    {
+      "key": "[lesson walking-training train hint]",
+      "source_sha256": "9660b28cc43f9eba103a56fe15417810fc8986552e3d7fde8887fab52f464b77",
+      "final_target_sha256": "65100d4d4f65b9d5713462a85205111c6095edcd72b03740859449acfed449f7",
+      "method": "exact identity with fully reviewed original source+target"
+    },
+    {
+      "key": "[lesson walking-training train title]",
+      "source_sha256": "b58e6fbf320672af18cf550d695fd3e090ea22aecc2dce32e00d5bc9ce7695d0",
+      "final_target_sha256": "84584a818276450b4c3ff6fb87318fdafe940b7cf22f2f2b74e48e50b3fee136",
+      "method": "exact identity with fully reviewed original source+target"
+    },
+    {
+      "key": "[lesson walking-training train instruction]",
+      "source_sha256": "c490eaa53ee76b36912985d006b409f23e6e792bf735986d18ff27f3a484ee30",
+      "final_target_sha256": "dc4ca83b96e26ad86f8d68e3cb1798f2124e985f22c9039b0a25089a3252b29c",
+      "method": "exact identity with fully reviewed original source+target"
+    },
+    {
+      "key": "[lesson walking-training train help]",
+      "source_sha256": "7f4001d452252f7af1425aa15b89f09aacf5ef9b7362746039efe73b21731980",
+      "final_target_sha256": "b4629d444705856b997993bcb39d4f949206f3c0a36f9a6f14c9ee2bb5eb29c7",
+      "method": "exact identity with fully reviewed original source+target"
+    },
+    {
+      "key": "[lesson swimming title]",
+      "source_sha256": "d4744331ef71aeae9bd92eec994af82b59a6b15f76c62ee4ccc8fa80afa819dd",
+      "final_target_sha256": "5c0f998ff1588d6eebd2bd18c81d8ca0a8f134ab6cee2297bf74b27cd4ba620d",
+      "method": "exact identity with fully reviewed original source+target"
+    },
+    {
+      "key": "[lesson swimming briefing]",
+      "source_sha256": "fde3128193ae89e82c91056c363ca191502e826917fe969b764482d408cb0b02",
+      "final_target_sha256": "11cb0939536af473669cb2effd07781b9ae406ccf6803d4e86ec0539683bf515",
+      "method": "exact identity with fully reviewed original source+target"
+    },
+    {
+      "key": "[lesson swimming complete]",
+      "source_sha256": "ae21370b56f6c178e4cc2eab9a4ad8b267883428caa195150b8c947696ac25f3",
+      "final_target_sha256": "a28bd7cde887f2768db3cb648d2e1a5fc7dcc89f390dced5953a7af7d9fcb951",
+      "method": "exact identity with fully reviewed original source+target"
+    },
+    {
+      "key": "[lesson swimming build hint]",
+      "source_sha256": "92672c53c45ae0d3d8d932eaf0034221d50e0c1d8bfc17d8269cb193eec3613c",
+      "final_target_sha256": "ff13916f21840324297954409496456d28001f2457f174c1df8257ae798812ac",
+      "method": "exact identity with fully reviewed original source+target"
+    },
+    {
+      "key": "[lesson swimming build title]",
+      "source_sha256": "856b6cdc3c031e2596ab48ba4e599e74941efb6bba1b4fe7fb865dee23cdbf23",
+      "final_target_sha256": "17b6513a5f43fb24b1f6801f00f7907fdff1cf66a92bc7298ba7d098fd79ccd3",
+      "method": "exact identity with fully reviewed original source+target"
+    },
+    {
+      "key": "[lesson swimming build instruction]",
+      "source_sha256": "c0ca63bd13860ca6065afd1388f8f332db60855f6e652848994ed6aef90f892d",
+      "final_target_sha256": "734038306ae3a2df9a9d527b9524f43ea0c8cc68c95d6a7aa7654c221f1050b9",
+      "method": "exact identity with fully reviewed original source+target"
+    },
+    {
+      "key": "[lesson swimming build help]",
+      "source_sha256": "a787403905ba4c7d27a8c43b146fdb4beb54c77f5035d48a41780daeccd8e9e3",
+      "final_target_sha256": "571337c0243563014e147bcac48d91fd4ffa028220338118c42c3fe4d2349b08",
+      "method": "exact identity with fully reviewed original source+target"
+    },
+    {
+      "key": "[lesson swimming build marker]",
+      "source_sha256": "856b6cdc3c031e2596ab48ba4e599e74941efb6bba1b4fe7fb865dee23cdbf23",
+      "final_target_sha256": "17b6513a5f43fb24b1f6801f00f7907fdff1cf66a92bc7298ba7d098fd79ccd3",
+      "method": "exact identity with fully reviewed original source+target"
+    },
+    {
+      "key": "[lesson swimming train hint]",
+      "source_sha256": "672ab5d6d6eb18fe890f4f3e76a2b220c52df4187df4d9baa12eb3488861687a",
+      "final_target_sha256": "2dd549259693623a41562fe1e6ef83e2cfcfb2114924ba52ea89db8ed22acaee",
+      "method": "exact identity with fully reviewed original source+target"
+    },
+    {
+      "key": "[lesson swimming train title]",
+      "source_sha256": "d7c59c7d649b01f306a49aa0d22b9ea89d70989827c3f8cb98ade8c881d2e5f3",
+      "final_target_sha256": "cbb6761edea7d745d4560ae008cf5c163550886aca66c08869165c7c51220bdb",
+      "method": "exact identity with fully reviewed original source+target"
+    },
+    {
+      "key": "[lesson swimming train instruction]",
+      "source_sha256": "3b91b01d64bc5ff4f207241854d0f517490df563a44bd4ae869cdfc068f34a59",
+      "final_target_sha256": "509f32613c4af0cd8206c94aa54ddcf99dd5e08e37e009bb140688620ccd8fc7",
+      "method": "exact identity with fully reviewed original source+target"
+    },
+    {
+      "key": "[lesson swimming train help]",
+      "source_sha256": "569c8e1fae9f94d2bbb6c2858a159b7fbdcb3aaa5711d45d0e3c678b0f5bbdb6",
+      "final_target_sha256": "6d66a58054c701658985d2095967f1c78ba052a53ee3f51b48987fda416bab09",
+      "method": "exact identity with fully reviewed original source+target"
+    },
+    {
+      "key": "[lesson swimming water-job hint]",
+      "source_sha256": "20c1958f1383e86176b1b715e69388399e57d60ad055a7f4d9b81eb789ea668b",
+      "final_target_sha256": "7a3f636d05426b4aeb359783b70c55f01d469f60e48f487e39706bc0a68b6e68",
+      "method": "exact identity with fully reviewed original source+target"
+    },
+    {
+      "key": "[lesson swimming water-job title]",
+      "source_sha256": "4ae670886e2c1232dfed18a843ca2ced172a616ec8aa51bfe6e0fc088ead114d",
+      "final_target_sha256": "bfaa6810f78126e7c60761a08086b466caf086531b645ba88f2b685842f71398",
+      "method": "exact identity with fully reviewed original source+target"
+    },
+    {
+      "key": "[lesson swimming water-job instruction]",
+      "source_sha256": "f3899a2eb7ad404e7b67c6748bef3f469e2a574bbc8d9a79211c598649e46b02",
+      "final_target_sha256": "7c9a9087a18c32cdecc0ecd15434c0e12401514cd30dd9a13e3a56e3ce64340d",
+      "method": "exact identity with fully reviewed original source+target"
+    },
+    {
+      "key": "[lesson swimming water-job help]",
+      "source_sha256": "95cd8cbaa34e4e82dba66e66cd7a5ad3e3066c79ba8fc2fec5c267075764c22c",
+      "final_target_sha256": "e04900765fecaf22d951e05f58b0ff8b4483e7181459398de04166568b4aff85",
+      "method": "exact identity with fully reviewed original source+target"
+    },
+    {
+      "key": "[lesson swimming water-job marker]",
+      "source_sha256": "4ae670886e2c1232dfed18a843ca2ced172a616ec8aa51bfe6e0fc088ead114d",
+      "final_target_sha256": "bfaa6810f78126e7c60761a08086b466caf086531b645ba88f2b685842f71398",
+      "method": "exact identity with fully reviewed original source+target"
+    },
+    {
+      "key": "[lesson schools title]",
+      "source_sha256": "53fd0854bcc3fe0f1ffc6e1d86f090b8cd2872ef4ac7ff23200719c09000593e",
+      "final_target_sha256": "7f8c60b8d8affbc0ca42472cf9ccc02bee5f1a78af7002322784a7e9c1440f37",
+      "method": "exact identity with fully reviewed original source+target"
+    },
+    {
+      "key": "[lesson schools briefing]",
+      "source_sha256": "a5717f3cdd3febf4be8e2422ac7b65d13ebd96b737395e6fad0dcf71f3904229",
+      "final_target_sha256": "95c681de8bc193bd6b1a10ac475c39fcc9633f11a0b8207eba02455b148f0c93",
+      "method": "exact identity with fully reviewed original source+target"
+    },
+    {
+      "key": "[lesson schools complete]",
+      "source_sha256": "7e392dbcdeacfa8481a95bf4cd00c243212d86f6fe92f2e6b87f91437adb111d",
+      "final_target_sha256": "11f95794dee91a623f110a38404f40884c0618ee169b8fa81a670331cb586487",
+      "method": "exact identity with fully reviewed original source+target"
+    },
+    {
+      "key": "[lesson schools build hint]",
+      "source_sha256": "cff9c70eeeb44da5fd089909e1e6330e462ce21054266782343768adafae4546",
+      "final_target_sha256": "0d2835c7b0e7f7a2b824adf80dc20388d1365b89b06b494f419e7a514d6f97c5",
+      "method": "exact identity with fully reviewed original source+target"
+    },
+    {
+      "key": "[lesson schools build title]",
+      "source_sha256": "fac3591137e1eae1359862c19554a14441db9eb4b7faa05fbb0f53ed17a0a441",
+      "final_target_sha256": "0d16d8c374692325233d138da3a137c9f22403992a9fad19db93dd6214da7f68",
+      "method": "exact identity with fully reviewed original source+target"
+    },
+    {
+      "key": "[lesson schools build instruction]",
+      "source_sha256": "801d88020c2f22d2d928a0cd933a18b3607643b5ed54f54215acb8c52fbf3dbc",
+      "final_target_sha256": "8df492f19db7a2f81c9e59e34219010b54ac896c1b86603e748d8c6ad8105d1e",
+      "method": "exact identity with fully reviewed original source+target"
+    },
+    {
+      "key": "[lesson schools build help]",
+      "source_sha256": "a19fcf0f1fd780045b49c1e842274f91698244c496fc65f62124326516e2e4a8",
+      "final_target_sha256": "456ab73f7b397023f775bfef4bf0056be4382edb0e04788c1b9506f087f8d1b6",
+      "method": "exact identity with fully reviewed original source+target"
+    },
+    {
+      "key": "[lesson schools build marker]",
+      "source_sha256": "fac3591137e1eae1359862c19554a14441db9eb4b7faa05fbb0f53ed17a0a441",
+      "final_target_sha256": "0d16d8c374692325233d138da3a137c9f22403992a9fad19db93dd6214da7f68",
+      "method": "exact identity with fully reviewed original source+target"
+    },
+    {
+      "key": "[lesson schools learn hint]",
+      "source_sha256": "3d04bcfacf844a6e483dfe7c242efa6a05bd49b5eaf131fd93d0966895e136a4",
+      "final_target_sha256": "d43a5560f2018c1f5ffdc02e6dc5331cef8bfeeb1b2e03b17b1c437868245497",
+      "method": "exact identity with fully reviewed original source+target"
+    },
+    {
+      "key": "[lesson schools learn title]",
+      "source_sha256": "d5553f953f884a63d854871255334db8416bb37126074813a3be997c30e43c98",
+      "final_target_sha256": "545bb1cdcbe2a411db55f3fa862303ec9342e6677e98258ec184d6e00057e959",
+      "method": "exact identity with fully reviewed original source+target"
+    },
+    {
+      "key": "[lesson schools learn instruction]",
+      "source_sha256": "f75a35b17978c97df02e82d7717b0b9e554bfead191224e86c865ed64049323e",
+      "final_target_sha256": "be26289cf98626c0912695b945927ce61aae33c003f02e0fd6248a755b0023c4",
+      "method": "exact identity with fully reviewed original source+target"
+    },
+    {
+      "key": "[lesson schools learn help]",
+      "source_sha256": "310498ca180863ba0cc372d2037143580a23d433522d5ef60e029b893095180a",
+      "final_target_sha256": "3b9d08c5e56a92860858bc3bbd00c5f3f1f0bda76f7d2e893d4e6a6ee2720217",
+      "method": "exact identity with fully reviewed original source+target"
+    },
+    {
+      "key": "[lesson upgrades title]",
+      "source_sha256": "6de95521502898c4ce0b4c932cc626136ac953e95ed6b049c26b2e7d70b223a8",
+      "final_target_sha256": "84ef1a3b3506fa6cccf42ec960780668ffccb057f268adf903d354ae04d299cd",
+      "method": "exact identity with fully reviewed original source+target"
+    },
+    {
+      "key": "[lesson upgrades briefing]",
+      "source_sha256": "00355553147cbbf4d08f474acc02b0af58fc7a80ef633ccba4a21bd95ddde132",
+      "final_target_sha256": "18ec4eec1db4e39b2decb260f6cf4b7fea2494b6435b62dc920bdf1d1d03d42a",
+      "method": "exact identity with fully reviewed original source+target"
+    },
+    {
+      "key": "[lesson upgrades complete]",
+      "source_sha256": "e9015ed92c3ae22bc69d8fd6db6371d3933d638ece47c5cf1bcc8279dfbb56d2",
+      "final_target_sha256": "9e3f66a7a25dc2a0dc516817a746d53fac641bac77f3188ff5498d7edb6b6059",
+      "method": "exact identity with fully reviewed original source+target"
+    },
+    {
+      "key": "[lesson upgrades upgrade hint]",
+      "source_sha256": "927df6d62d2c2632ec44ff96a7d12988365db17063f76d4215ad2e5bc558861a",
+      "final_target_sha256": "7fde620f70d34fbca642e88ff6bef98d8fc7d1b9bd3411b91bc1dd5af79f6f81",
+      "method": "exact identity with fully reviewed original source+target"
+    },
+    {
+      "key": "[lesson upgrades upgrade title]",
+      "source_sha256": "5ca53112b9f0f909b02b33bab1736bdf0ed061bf3f515244a8c24cee387fe3ea",
+      "final_target_sha256": "1da5bd485747836af8742ee5e85bb38ea27c2eab3f101c54fee078541183462e",
+      "method": "exact identity with fully reviewed original source+target"
+    },
+    {
+      "key": "[lesson upgrades upgrade instruction]",
+      "source_sha256": "92f11bfc2d02667483cf9e4863aabf7df0c79d6a568a5fb2ecbae6886d3c16b3",
+      "final_target_sha256": "ecf054672335e0332b1b937b6e08d967e1349dc790e24f3329b2cab6203862e7",
+      "method": "exact identity with fully reviewed original source+target"
+    },
+    {
+      "key": "[lesson upgrades upgrade help]",
+      "source_sha256": "c7d9b727bd1edede7d06de35a8b677e444713551e79cfeed48d7f9ad1de78cf3",
+      "final_target_sha256": "360eba1eeb22762ec8930d3b4be48c6640917e6dfecf880dd3b68cfdc8f1da5e",
+      "method": "exact identity with fully reviewed original source+target"
+    },
+    {
+      "key": "[lesson upgrades upgrade marker]",
+      "source_sha256": "5ca53112b9f0f909b02b33bab1736bdf0ed061bf3f515244a8c24cee387fe3ea",
+      "final_target_sha256": "1da5bd485747836af8742ee5e85bb38ea27c2eab3f101c54fee078541183462e",
+      "method": "exact identity with fully reviewed original source+target"
+    },
+    {
+      "key": "[lesson upgrades train hint]",
+      "source_sha256": "262b1039283774fb4b8b30968c47ce23eeec36c3880594a68ef9719a074f9dff",
+      "final_target_sha256": "f20ea7c39bb4e8de88af8fdd01fc5f8ac238cf4a2a94d371351338281c3b9a85",
+      "method": "fresh substantive edit recheck"
+    },
+    {
+      "key": "[lesson upgrades train title]",
+      "source_sha256": "b34b3daf949026140ca4ef587dca22e77fb2b70842bb9cedb88337b3316b98b7",
+      "final_target_sha256": "b7bf0f413a1def1a12596207f7048683fbebb2963030f8887ff3ac20670b4b60",
+      "method": "exact identity with fully reviewed original source+target"
+    },
+    {
+      "key": "[lesson upgrades train instruction]",
+      "source_sha256": "1793d36ff1bd64d9bc03c8152162320ed55c9c740af0e32fcc37dc6642a1b621",
+      "final_target_sha256": "08fd20bb7741b486a19ad87b7b8a3f6e40e4d0e5df2fd199b572d1a0e43da480",
+      "method": "fresh substantive edit recheck"
+    },
+    {
+      "key": "[lesson upgrades train help]",
+      "source_sha256": "2dec24419b16192e124357919424273f531ff41dcdeabad6beecadfb3d3fb3ef",
+      "final_target_sha256": "20caeddcf46f9ee85fadfc9ac1ab3c3b6a17c50c56b59a69bec8640e77d91f63",
+      "method": "exact identity with fully reviewed original source+target"
+    },
+    {
+      "key": "[lesson warrior-training title]",
+      "source_sha256": "9f13a8d92ce3e8ceb12bb5e4ec9efc7cc6ab3e82fb55e698b2789fbfa402e552",
+      "final_target_sha256": "1fb19acb37df74f2e8acd2789bc22a0dbd768d1ebc278b6247b1f5b4003ca031",
+      "method": "exact identity with fully reviewed original source+target"
+    },
+    {
+      "key": "[lesson warrior-training briefing]",
+      "source_sha256": "4309b08f592348adcef159319122ada090b43135af5965a21d3b51d3c957ecce",
+      "final_target_sha256": "3de345c0e0797ea552b7fac7fb803890b4d9de78c00d1e8d16d6b3487fa24721",
+      "method": "exact identity with fully reviewed original source+target"
+    },
+    {
+      "key": "[lesson warrior-training complete]",
+      "source_sha256": "f0aabaef41606b58f9e696eb38d797e5935c70b69d03cc0c06292ba9b9b0f268",
+      "final_target_sha256": "09457e0a2025b824bac1aa70dd9a61c6bf4ef80996d13a75c2589154b2293f8b",
+      "method": "exact identity with fully reviewed original source+target"
+    },
+    {
+      "key": "[lesson warrior-training produce hint]",
+      "source_sha256": "7cba4e65c07d8ec8d12ad70e7ced76b7dc5cf398dc6b528a3b3eedaa834691b1",
+      "final_target_sha256": "5027b1d7a73c1a49c65cb35320e485bd2fdbbacd7751de684b2809dcf066f840",
+      "method": "exact identity with fully reviewed original source+target"
+    },
+    {
+      "key": "[lesson warrior-training produce title]",
+      "source_sha256": "366a102925ed9490b9c85725ed95ac3ffeeecd50dbaa2d09440b66ab4c20e6fd",
+      "final_target_sha256": "0f07a83fbb35bfc8401156ca4390f7b34ac525e9686144423020d55451d9c234",
+      "method": "exact identity with fully reviewed original source+target"
+    },
+    {
+      "key": "[lesson warrior-training produce instruction]",
+      "source_sha256": "0dc648b3a96bfc44c37a9f44eadaf3c7d36a8ba2167730bc85d6dffe4fb2aac4",
+      "final_target_sha256": "6581b73534363316e282ca8b964393ad4e52b164cfd6efe29519a9c10e7755a8",
+      "method": "exact identity with fully reviewed original source+target"
+    },
+    {
+      "key": "[lesson warrior-training produce help]",
+      "source_sha256": "8c7f99bd0164d0973cb1c59377f2f05201858c118259a3c333451afb3fb06a5a",
+      "final_target_sha256": "4b8cfa1cf0840775ec8c8c24bb9c489df81ce8c5e02b3128c4f7da5f7e9d6cd5",
+      "method": "exact identity with fully reviewed original source+target"
+    },
+    {
+      "key": "[lesson warrior-training produce marker]",
+      "source_sha256": "366a102925ed9490b9c85725ed95ac3ffeeecd50dbaa2d09440b66ab4c20e6fd",
+      "final_target_sha256": "0f07a83fbb35bfc8401156ca4390f7b34ac525e9686144423020d55451d9c234",
+      "method": "exact identity with fully reviewed original source+target"
+    },
+    {
+      "key": "[lesson warrior-training build hint]",
+      "source_sha256": "6c5632b857625afbef3566fcec268e5d3b595508f4b1346c46d8bed64fd3a485",
+      "final_target_sha256": "c889a057d21295a632547b5e46052d6ab6a7fa1750870d63daf04065915baa8e",
+      "method": "exact identity with fully reviewed original source+target"
+    },
+    {
+      "key": "[lesson warrior-training build title]",
+      "source_sha256": "ea9222aa11c8952dc854efd5df18c20fd9e4d867b67f57acd70e68e614ffb20a",
+      "final_target_sha256": "d3ff492ecec1f176c9a087220d61ddeec8d33913fe0ec78a76d80548ac7fecb2",
+      "method": "exact identity with fully reviewed original source+target"
+    },
+    {
+      "key": "[lesson warrior-training build instruction]",
+      "source_sha256": "e8e1042185bfcbb486cac134370b55bfbb26944054227af9bfc6825484114093",
+      "final_target_sha256": "cbd4fa60f7f21f20445edf0970e8bec2d5cef768ab8391480db4c24287e886e9",
+      "method": "exact identity with fully reviewed original source+target"
+    },
+    {
+      "key": "[lesson warrior-training build help]",
+      "source_sha256": "ffadabd3e3897bc957067e3e49928648541a542dff28040eccfec7ac2fda5b20",
+      "final_target_sha256": "9f68ffdf703ff4dfe001a9ac2c31e7998fbba1618c49b592f8fad37d696ba678",
+      "method": "exact identity with fully reviewed original source+target"
+    },
+    {
+      "key": "[lesson warrior-training build marker]",
+      "source_sha256": "ea9222aa11c8952dc854efd5df18c20fd9e4d867b67f57acd70e68e614ffb20a",
+      "final_target_sha256": "d3ff492ecec1f176c9a087220d61ddeec8d33913fe0ec78a76d80548ac7fecb2",
+      "method": "exact identity with fully reviewed original source+target"
+    },
+    {
+      "key": "[lesson warrior-training train hint]",
+      "source_sha256": "0e1a2d09acc6828c8fb1a4d4d87e012b989a380de3cadac37787e64cf7e003b3",
+      "final_target_sha256": "48121f4d0b1752e222a6652e13b156f6f6ae70b55412f506f6eff11911371040",
+      "method": "exact identity with fully reviewed original source+target"
+    },
+    {
+      "key": "[lesson warrior-training train title]",
+      "source_sha256": "fb6c824a056ea5bc246f44649fad59d98d41467631f0fa5820132f463e7358a6",
+      "final_target_sha256": "f149efd91a68be78cfba40635557a715f26e2053217f4403a77c4f233077ea01",
+      "method": "exact identity with fully reviewed original source+target"
+    },
+    {
+      "key": "[lesson warrior-training train instruction]",
+      "source_sha256": "497d65e974e6205395eda9b8f8e986e10e48da292cba30a90a6baea2a2954913",
+      "final_target_sha256": "5900130de12ae64bd07eb33401e53f40ce515d99b146378baf346b143b89986f",
+      "method": "exact identity with fully reviewed original source+target"
+    },
+    {
+      "key": "[lesson warrior-training train help]",
+      "source_sha256": "6bdc2b7e283c544bd0177dce03b423ef5d90989a171095ae3abd5da514de29fa",
+      "final_target_sha256": "9fe7daea6360c651e30c4b36a6f3cd5841b6f14dd54c5ddbe7ca6b7d052dd505",
+      "method": "exact identity with fully reviewed original source+target"
+    },
+    {
+      "key": "[lesson fortifications title]",
+      "source_sha256": "40fcc5a1e5d4ac83e053cbfe2e6170a4db09e1e675696c5d98a46a96418bed80",
+      "final_target_sha256": "10571f74a369ad026c338ee31b625f5c1e9939ad493c3f5f01b88ca171162044",
+      "method": "exact identity with fully reviewed original source+target"
+    },
+    {
+      "key": "[lesson fortifications briefing]",
+      "source_sha256": "1a8cf56f1e039bcc1f79b7b13d64183ebdba67f283fef378ddffc2061377b27e",
+      "final_target_sha256": "a49d85a7dbee034224917f623f55ccf5ebcfdd3a22639755679b256272e08b63",
+      "method": "exact identity with fully reviewed original source+target"
+    },
+    {
+      "key": "[lesson fortifications complete]",
+      "source_sha256": "d6ab09251751e41099e1ea02a0302bce28523cc0c72e51728c46ca6b0675954b",
+      "final_target_sha256": "82e280587d2735ecb59feaca5f53814e548218bb991ee8cc44c32b2206c52424",
+      "method": "exact identity with fully reviewed original source+target"
+    },
+    {
+      "key": "[lesson fortifications tower hint]",
+      "source_sha256": "30e184b3b8fae449ae0abcb096713214b559e29afe200d8f3d4631b8207ca157",
+      "final_target_sha256": "cad9fcebdf5714c98fbc4c1a56b292f1c8db591e94e8e9bf632a3c3e2a1cd950",
+      "method": "exact identity with fully reviewed original source+target"
+    },
+    {
+      "key": "[lesson fortifications tower title]",
+      "source_sha256": "945a36f5ddb37ab462b2044a4f12a16453352eebf7c7685a79696978e15b99e7",
+      "final_target_sha256": "934a4599547081023344e0cb96bfbbbfdde32c011b63895c67d388424a3a4f4a",
+      "method": "exact identity with fully reviewed original source+target"
+    },
+    {
+      "key": "[lesson fortifications tower instruction]",
+      "source_sha256": "cda5d2b9d6b493a82c4f9ff917f1e7129d2b24e4eb5e326be9752a724f3bf349",
+      "final_target_sha256": "89990b6bd23de13d1bbeaa1d35fe07ceb3df97b4f9b2f04547d56a4ca877a8d1",
+      "method": "exact identity with fully reviewed original source+target"
+    },
+    {
+      "key": "[lesson fortifications tower help]",
+      "source_sha256": "a29b441cd72aa2782e6ee327f14e625b38fcb79a00f0f74b91472d39949c84a9",
+      "final_target_sha256": "1bc0ffba0b52c394f6a717241e0e646b065426dd8607d179abf6a4c2e75fc0fd",
+      "method": "exact identity with fully reviewed original source+target"
+    },
+    {
+      "key": "[lesson fortifications tower marker]",
+      "source_sha256": "945a36f5ddb37ab462b2044a4f12a16453352eebf7c7685a79696978e15b99e7",
+      "final_target_sha256": "934a4599547081023344e0cb96bfbbbfdde32c011b63895c67d388424a3a4f4a",
+      "method": "exact identity with fully reviewed original source+target"
+    },
+    {
+      "key": "[lesson fortifications walls hint]",
+      "source_sha256": "946014ac28e6e8f3e7c2b5d373c81a1f945f93dd544e62798be302cb6c5981b7",
+      "final_target_sha256": "a07f8054b1f9574abf424e1ef9a0f783d2be61828be44528c8381fd45a470ae0",
+      "method": "exact identity with fully reviewed original source+target"
+    },
+    {
+      "key": "[lesson fortifications walls title]",
+      "source_sha256": "afd057c9740609e0f2033ac74e4f9141898a39030dce38b7bb2e66681f241437",
+      "final_target_sha256": "63a2e08715c53e699b7ff2c9de11220cb357aee85190e3ecf9cfe7e6e0f5e95b",
+      "method": "exact identity with fully reviewed original source+target"
+    },
+    {
+      "key": "[lesson fortifications walls instruction]",
+      "source_sha256": "f41abdc86db421cd4c320006ad7a1ae12703c7fe2c1761f840199bcae5d348dc",
+      "final_target_sha256": "219b9baa69eeea5579162085581cff03f24519f995ade0196ba1e0c71175321c",
+      "method": "exact identity with fully reviewed original source+target"
+    },
+    {
+      "key": "[lesson fortifications walls help]",
+      "source_sha256": "f1be2214a16249aa21a544553682c966a36eda6aa16971e6a02abdbce428025b",
+      "final_target_sha256": "8cf7bb86d13e1829b4d3662b915d86ab67952d0123c6930efb36e1f2f59014c2",
+      "method": "exact identity with fully reviewed original source+target"
+    },
+    {
+      "key": "[lesson fortifications walls marker]",
+      "source_sha256": "afd057c9740609e0f2033ac74e4f9141898a39030dce38b7bb2e66681f241437",
+      "final_target_sha256": "63a2e08715c53e699b7ff2c9de11220cb357aee85190e3ecf9cfe7e6e0f5e95b",
+      "method": "exact identity with fully reviewed original source+target"
+    },
+    {
+      "key": "[lesson fortifications supply hint]",
+      "source_sha256": "dd7f5e77b4708573919357cdaa7938335bd32cb84b09a16e0b0a3609dfea41b3",
+      "final_target_sha256": "b630ff479aa4d5e53bbf941cfd7f2454dd3bc6e028054bc44eadc9221bacb85d",
+      "method": "exact identity with fully reviewed original source+target"
+    },
+    {
+      "key": "[lesson fortifications supply title]",
+      "source_sha256": "f2698671f589cb9fcf889f6a8e5fdf81a176f9376944a7fadbb75303a73a00e1",
+      "final_target_sha256": "ba50dc75be19a61c4ce110e76a4da23ff27a05be1926b16ca8287bc84e4e2eda",
+      "method": "exact identity with fully reviewed original source+target"
+    },
+    {
+      "key": "[lesson fortifications supply instruction]",
+      "source_sha256": "1739fffe262975e0c90933660626e8c4226ff1b79e4191b74e42a6340269046a",
+      "final_target_sha256": "af3dc72060b51dc6db1ab865dfda200945f42a8d463a14e1b072e3f8ae76ef86",
+      "method": "exact identity with fully reviewed original source+target"
+    },
+    {
+      "key": "[lesson fortifications supply help]",
+      "source_sha256": "d186300e3036bd90deb96e5727af08efcf8145906bd43e37d5ef7a487c468904",
+      "final_target_sha256": "708e449892fb384be42daf76c170dcd3bac8b8c3d48d4493d632cd4f38d71156",
+      "method": "exact identity with fully reviewed original source+target"
+    },
+    {
+      "key": "[lesson fortifications supply marker]",
+      "source_sha256": "f2698671f589cb9fcf889f6a8e5fdf81a176f9376944a7fadbb75303a73a00e1",
+      "final_target_sha256": "ba50dc75be19a61c4ce110e76a4da23ff27a05be1926b16ca8287bc84e4e2eda",
+      "method": "exact identity with fully reviewed original source+target"
+    },
+    {
+      "key": "[lesson fortifications hold hint]",
+      "source_sha256": "7771d19435ae773d2b5b0bc229b951249c0ed2b0c375473b2276463c1c77a90d",
+      "final_target_sha256": "bc00c2927e24c486c8450215684ce105438cda46fe7c4b033e6cdc83f22a3877",
+      "method": "exact identity with fully reviewed original source+target"
+    },
+    {
+      "key": "[lesson fortifications hold title]",
+      "source_sha256": "deb8c3be51e330d3a704e8472320b92b6d72b01ec90ce7e3748998d8af351793",
+      "final_target_sha256": "d1c7e58a24d3123baa89b707ffa2faa37d4c0951c428404db3d1731061a316ad",
+      "method": "exact identity with fully reviewed original source+target"
+    },
+    {
+      "key": "[lesson fortifications hold instruction]",
+      "source_sha256": "2b4967ac54de7ac398b3bf56210361df1c507ed1741a447332fe33f198cd54e7",
+      "final_target_sha256": "99e1ef0a8794e318ac8b7eb16a8f2c1cc8b7ce2e74fb719bf73ce25b133023de",
+      "method": "exact identity with fully reviewed original source+target"
+    },
+    {
+      "key": "[lesson fortifications hold help]",
+      "source_sha256": "4307d76e374dd17075bf6d757631d7f557ed80a244c77c9c0cab9757a188f741",
+      "final_target_sha256": "a1874b623215a6b360348999aa360fa4091f8302544a80065727c86784bd14ea",
+      "method": "exact identity with fully reviewed original source+target"
+    },
+    {
+      "key": "[lesson fortifications hold marker]",
+      "source_sha256": "deb8c3be51e330d3a704e8472320b92b6d72b01ec90ce7e3748998d8af351793",
+      "final_target_sha256": "d1c7e58a24d3123baa89b707ffa2faa37d4c0951c428404db3d1731061a316ad",
+      "method": "exact identity with fully reviewed original source+target"
+    },
+    {
+      "key": "[lesson defensive-tactics title]",
+      "source_sha256": "0c65d7d44031cd027507880107a882c74a40c910ecd81e29fec62c9ee97e86b8",
+      "final_target_sha256": "9ecf739b9b2f6b6191315de71361e51ade38819f8486fbaffa42bebd3d5e1011",
+      "method": "exact identity with fully reviewed original source+target"
+    },
+    {
+      "key": "[lesson defensive-tactics briefing]",
+      "source_sha256": "88720a7a15fae2297a46b5ed4fa884bf24c61e663462bfd148c59d2f39f73ea3",
+      "final_target_sha256": "3f6dc1a00377e92aa0fa85611b5492f7e84d3caf83992ae490fcd752e15fabd6",
+      "method": "exact identity with fully reviewed original source+target"
+    },
+    {
+      "key": "[lesson defensive-tactics complete]",
+      "source_sha256": "569130f0e996a5fb8e0333f8fcc82cadc83756e6638897303a1fe8edcc93613f",
+      "final_target_sha256": "25756749005c88c284edd7203aabc49efce387ad593f20949c6b143c1de9731a",
+      "method": "exact identity with fully reviewed original source+target"
+    },
+    {
+      "key": "[lesson defensive-tactics scout hint]",
+      "source_sha256": "b434830b5f36bf9546dc37a93e67b766df19a41db4c2fe99798944ca3a69dbdd",
+      "final_target_sha256": "fd7be26c11c75c6a0c5c046239b964def92d6b828103171e1dcd045da9d34b31",
+      "method": "exact identity with fully reviewed original source+target"
+    },
+    {
+      "key": "[lesson defensive-tactics scout title]",
+      "source_sha256": "b3b54324da82236cdd7d5d40f898c8d48358bc19e1ebe8d4d5d7aa4e2d42ee81",
+      "final_target_sha256": "2835c48f3d92968b3eb4d108f28ca086c3f027fce88c3019fc40e9332ff40bb5",
+      "method": "exact identity with fully reviewed original source+target"
+    },
+    {
+      "key": "[lesson defensive-tactics scout instruction]",
+      "source_sha256": "e97c5699bd041d1dc6192298d788408be68b1cfd60c34fab39e31a65189ed07c",
+      "final_target_sha256": "5791ef31a5b1636c01dc34a5805b4d76b6486a2d827f59bca7b627ce69e22ab4",
+      "method": "exact identity with fully reviewed original source+target"
+    },
+    {
+      "key": "[lesson defensive-tactics scout help]",
+      "source_sha256": "009ed3c4fe4904e6634d31b779c6433822961cffb22ca8e7c299121229ac2968",
+      "final_target_sha256": "9147fa0288e31372c905be5495d4023db6d240fbcc7e25b9bd24500373f8b205",
+      "method": "exact identity with fully reviewed original source+target"
+    },
+    {
+      "key": "[lesson defensive-tactics scout marker]",
+      "source_sha256": "b3b54324da82236cdd7d5d40f898c8d48358bc19e1ebe8d4d5d7aa4e2d42ee81",
+      "final_target_sha256": "2835c48f3d92968b3eb4d108f28ca086c3f027fce88c3019fc40e9332ff40bb5",
+      "method": "exact identity with fully reviewed original source+target"
+    },
+    {
+      "key": "[lesson defensive-tactics guard hint]",
+      "source_sha256": "f19483fae25845d418e0ad1fe170fd9eda57ad1fc8cdca1f64636d5d9f877be4",
+      "final_target_sha256": "1b01abc4c4ed21bc124a9565f1f16a3701d32c05dbda8817fff2ce64c4865023",
+      "method": "exact identity with fully reviewed original source+target"
+    },
+    {
+      "key": "[lesson defensive-tactics guard title]",
+      "source_sha256": "19f4fb5560849cb0c844a6387a852c70ca52380dcbb5db96a88e3a794d2e77c2",
+      "final_target_sha256": "5811d4dec5dca61a3154ffd48923e7845c9e078ff1a227ff721425fe0d4c5341",
+      "method": "exact identity with fully reviewed original source+target"
+    },
+    {
+      "key": "[lesson defensive-tactics guard instruction]",
+      "source_sha256": "8d8e0e9f73df51a5dda2fd4290280ba0587fbe139ebfc6f5a2f98b3395900e9c",
+      "final_target_sha256": "9b169808eca72e61befdc1fe1ca2b09edc76ce27119819a8c0851f01c75aceae",
+      "method": "exact identity with fully reviewed original source+target"
+    },
+    {
+      "key": "[lesson defensive-tactics guard help]",
+      "source_sha256": "c109bede7222211f194d6c4917ee3184a4e7f5b146de47baf5a29ed4f91999d7",
+      "final_target_sha256": "e7fd2686e0ae3f0826568eb224e6450d25c1b78485220f0910a229b105437efa",
+      "method": "exact identity with fully reviewed original source+target"
+    },
+    {
+      "key": "[lesson defensive-tactics guard marker]",
+      "source_sha256": "19f4fb5560849cb0c844a6387a852c70ca52380dcbb5db96a88e3a794d2e77c2",
+      "final_target_sha256": "5811d4dec5dca61a3154ffd48923e7845c9e078ff1a227ff721425fe0d4c5341",
+      "method": "exact identity with fully reviewed original source+target"
+    },
+    {
+      "key": "[lesson defensive-tactics repel hint]",
+      "source_sha256": "60f3b4e28bc39b208058754cd64f39e697e446ca678e65678a6ed0868813fa24",
+      "final_target_sha256": "1688a18ee90423f04f41bc2154db70cf2aef67c5f78a0d6f6735729d9b1afcf7",
+      "method": "exact identity with fully reviewed original source+target"
+    },
+    {
+      "key": "[lesson defensive-tactics repel title]",
+      "source_sha256": "acea4ef8c5348f5646e714f541937e572af8fa448bca49f6ee898cbd76ac40b2",
+      "final_target_sha256": "26f01194a1356ba8c54f74913d8f0b4d61ef4933252cc6c428cd8a304bdba7e4",
+      "method": "exact identity with fully reviewed original source+target"
+    },
+    {
+      "key": "[lesson defensive-tactics repel instruction]",
+      "source_sha256": "e5321a7414d972a89302ff64ca3631aaee6778b407d733da38254f9ff10b8da1",
+      "final_target_sha256": "1588864ea872794c55d0e43999a563167753be6a3a2e0ae68178ce5c8ca36046",
+      "method": "exact identity with fully reviewed original source+target"
+    },
+    {
+      "key": "[lesson defensive-tactics repel help]",
+      "source_sha256": "0e1fbbd9830d88be1269146086a97ca17c83c4173c1cef3f98f9f6a9490cd7b2",
+      "final_target_sha256": "bb998c21cb8ac50ff2c8d7447177e79d150a8a212bb2d0e8dd91bda2821caefe",
+      "method": "exact identity with fully reviewed original source+target"
+    },
+    {
+      "key": "[lesson defensive-tactics repel marker]",
+      "source_sha256": "acea4ef8c5348f5646e714f541937e572af8fa448bca49f6ee898cbd76ac40b2",
+      "final_target_sha256": "26f01194a1356ba8c54f74913d8f0b4d61ef4933252cc6c428cd8a304bdba7e4",
+      "method": "exact identity with fully reviewed original source+target"
+    },
+    {
+      "key": "[lesson defensive-tactics counterattack hint]",
+      "source_sha256": "7a38e6414a0785a1467d4a71a3264491112413e1b06a8ce71cd462376bdf638a",
+      "final_target_sha256": "9b2e2421e05d0ae49364e131f5f10f128b97b8f32c7e6c9a79c74cd4d3a47758",
+      "method": "exact identity with fully reviewed original source+target"
+    },
+    {
+      "key": "[lesson defensive-tactics counterattack title]",
+      "source_sha256": "705a585928cbefd7169f283130ac7479288c587104555d277004055f409d1e3a",
+      "final_target_sha256": "8f64697ee07d097cfdff0797be8490131650435368f7e7ea3a2c5f76d7fb8229",
+      "method": "exact identity with fully reviewed original source+target"
+    },
+    {
+      "key": "[lesson defensive-tactics counterattack instruction]",
+      "source_sha256": "7e31ed818ad458de7085336111a3e5645ff63a802b713e31d3559fe004b0e09f",
+      "final_target_sha256": "e727e1417df86b16dd9204700b09a3e9ea0fe5bb645373e625b8acf2d9b9d11b",
+      "method": "exact identity with fully reviewed original source+target"
+    },
+    {
+      "key": "[lesson defensive-tactics counterattack help]",
+      "source_sha256": "ecdb1ecfd469c50b566cc196677c0e17120fa2bf8da320e26d15408f55a4d3d4",
+      "final_target_sha256": "ae032027af4184a00617ea76779ce6fb8971b0f81f0bb4510897686800d30378",
+      "method": "exact identity with fully reviewed original source+target"
+    },
+    {
+      "key": "[lesson defensive-tactics counterattack marker]",
+      "source_sha256": "705a585928cbefd7169f283130ac7479288c587104555d277004055f409d1e3a",
+      "final_target_sha256": "8f64697ee07d097cfdff0797be8490131650435368f7e7ea3a2c5f76d7fb8229",
+      "method": "exact identity with fully reviewed original source+target"
+    },
+    {
+      "key": "[lesson healing build compact]",
+      "source_sha256": "5579689cce9d9939f258fd293d5faaf1d0e5c582b197eb87185e888c9ee89cf8",
+      "final_target_sha256": "aacb2c3a88f4c6d512e98e9f01493f7f50bfe2fc94d8e305cc7235fe9f9ca0d4",
+      "method": "exact identity with fully reviewed original source+target"
+    },
+    {
+      "key": "[lesson healing heal compact]",
+      "source_sha256": "fd0fa46cfc433ee552061283c8225017dbe5079cd3db3032d9d7c66599010d02",
+      "final_target_sha256": "be6d2c1d47e19399d7c5df18ab2188d7b8b17403d016aa9d4f7c6262e0ac0b66",
+      "method": "exact identity with fully reviewed original source+target"
+    },
+    {
+      "key": "[lesson walking-training build compact]",
+      "source_sha256": "9c770809f9492e7b036aa05c1abdc8ca061af6c0cb01a5c4c935d6e297fdc4a9",
+      "final_target_sha256": "b53deb67b28c950129717447bb5838750cefa07cb9108ba7ef9c81dc03a39afc",
+      "method": "exact identity with fully reviewed original source+target"
+    },
+    {
+      "key": "[lesson walking-training train compact]",
+      "source_sha256": "24ba14d63104d9e1f0cda94964b0c6bcfdecc4a30e157ba963da232514dfcbb8",
+      "final_target_sha256": "14ec9f33096c6abc973ddda7d8c6775871c8e97ab0382bd67873ffaede82c63f",
+      "method": "exact identity with fully reviewed original source+target"
+    },
+    {
+      "key": "[lesson swimming build compact]",
+      "source_sha256": "0a93aaac38eba0b80e70d1692edae5cef4991ddbe972c3423935ed65973c90a0",
+      "final_target_sha256": "2c0112e7a9fbb6a5a54687650ff8753dd183abc320f827ead96decb0c6715ee9",
+      "method": "exact identity with fully reviewed original source+target"
+    },
+    {
+      "key": "[lesson swimming train compact]",
+      "source_sha256": "aca2d44efc33e41ea6bbeee07f3f4c3f9ca1b98d0885da23e95e8f745df2eccc",
+      "final_target_sha256": "ed3b458e7acc89a57780177fd267f054f063bc7b798884cd788bf5c2a2583f27",
+      "method": "exact identity with fully reviewed original source+target"
+    },
+    {
+      "key": "[lesson swimming water-job compact]",
+      "source_sha256": "aef86a92a8f68f514e1acee294ffd33f31679acc1f6d2f20a681f433d92ae269",
+      "final_target_sha256": "24c4d72590b49cd91bfbb64e44474637e170d97d8c1300a2594e3332edaf7556",
+      "method": "exact identity with fully reviewed original source+target"
+    },
+    {
+      "key": "[lesson schools build compact]",
+      "source_sha256": "aef86a92a8f68f514e1acee294ffd33f31679acc1f6d2f20a681f433d92ae269",
+      "final_target_sha256": "24c4d72590b49cd91bfbb64e44474637e170d97d8c1300a2594e3332edaf7556",
+      "method": "exact identity with fully reviewed original source+target"
+    },
+    {
+      "key": "[lesson schools learn compact]",
+      "source_sha256": "8b68f58372f830a68de429e14766d02215d614e22fe0aae95f204faa0177e00f",
+      "final_target_sha256": "342e5598af868b890bc47a2043becd703cf19eb421eddbb996aab8f8c6bfa22f",
+      "method": "exact identity with fully reviewed original source+target"
+    },
+    {
+      "key": "[lesson upgrades upgrade compact]",
+      "source_sha256": "299c4a6f19fec8b4cb69520c0feae96e14e1ae26852dacae5c9acbd55412c995",
+      "final_target_sha256": "ea2e21fa4e26d1dcf9a081b1dfb51eb37338ee7b9b378677a3d202368c12cddf",
+      "method": "exact identity with fully reviewed original source+target"
+    },
+    {
+      "key": "[lesson upgrades train compact]",
+      "source_sha256": "6a7d1268795a3e8ce719ff6e81652bea8652f97a9bd6cf588471cd4391fafaac",
+      "final_target_sha256": "06d512f6bc7cbe322d60f7e784c73cbddfcfe2ab506ddcd72e538f9d69d9f2f9",
+      "method": "fresh substantive edit recheck"
+    },
+    {
+      "key": "[lesson warrior-training produce compact]",
+      "source_sha256": "aba9b60fe9bf00353c782664ff07963e363802f6fcd98c7e4835b20d244424e2",
+      "final_target_sha256": "6fc627749f467f62f2cd0ffdf93b807f98579fc01a82c0502129adb064ec4100",
+      "method": "exact identity with fully reviewed original source+target"
+    },
+    {
+      "key": "[lesson warrior-training build compact]",
+      "source_sha256": "dd3e7c11bcef51b03fad860f5c8d1d13f058331bc443be23cab4498c699a6152",
+      "final_target_sha256": "179b8f81abd458c5b2392ee1a4743bb858d79ad9a556e16d767f2e541b992aff",
+      "method": "exact identity with fully reviewed original source+target"
+    },
+    {
+      "key": "[lesson warrior-training train compact]",
+      "source_sha256": "1ace656e45fcdb4805ac959f2cb0d5c75a2b4490c9b823035b276973d1bca802",
+      "final_target_sha256": "5900130de12ae64bd07eb33401e53f40ce515d99b146378baf346b143b89986f",
+      "method": "exact identity with fully reviewed original source+target"
+    },
+    {
+      "key": "[lesson fortifications tower compact]",
+      "source_sha256": "7c37cbe04cbd3a569af9a1549569e464c1ebe8fb6e3cea32ae538c79ef4431dc",
+      "final_target_sha256": "f2f3b4b15eba26913ac4b57e11427a1595f9b197cfeebd73fd67a756bbbef42b",
+      "method": "exact identity with fully reviewed original source+target"
+    },
+    {
+      "key": "[lesson fortifications walls compact]",
+      "source_sha256": "f9e8be538942967a2a76627cd20edf899589efcd4ebfc7a0af2dca3b57ad3685",
+      "final_target_sha256": "a966f0eae429a0ee0330f84d82d8e6fd235ab5f1c6f4ff1a746fbb1d13fce4ac",
+      "method": "exact identity with fully reviewed original source+target"
+    },
+    {
+      "key": "[lesson fortifications supply compact]",
+      "source_sha256": "e43a6b43b5d03ab44200bb7d3e5847e7a6f5e40633c458aea5b1405ada889081",
+      "final_target_sha256": "b0e18c98db38ce1508aeaa8babde27e3929e871e83151df5aa9abacc382c9fa0",
+      "method": "exact identity with fully reviewed original source+target"
+    },
+    {
+      "key": "[lesson fortifications hold compact]",
+      "source_sha256": "1f01900d32cc80b83bc4868e0851ac2783ae5cab743cbffa1858821d73944459",
+      "final_target_sha256": "cd50161d997254b1aec3cc902e029dd4f624fe2f31678c2e494d6449579cc1d5",
+      "method": "exact identity with fully reviewed original source+target"
+    },
+    {
+      "key": "[lesson defensive-tactics scout compact]",
+      "source_sha256": "788a2733f61d0c1b27a340ccdc666c104b8007a59d088c6df14b094d4a702826",
+      "final_target_sha256": "2d6b9b2bafc41ae35693d9ae07d8ccede57178162b549ad0aa352e25f884bce9",
+      "method": "exact identity with fully reviewed original source+target"
+    },
+    {
+      "key": "[lesson defensive-tactics guard compact]",
+      "source_sha256": "9bc0a18a161ace979a8b43b48bd12aaba58914389f840a7983312f096a582019",
+      "final_target_sha256": "60097af829cbfa2c65b7a68040b26d3aeb7c403bf08f1c6157e1ceba008ef11d",
+      "method": "exact identity with fully reviewed original source+target"
+    },
+    {
+      "key": "[lesson defensive-tactics repel compact]",
+      "source_sha256": "810a7e2e1de74745397cec18d371213f976bc8b1b42e658a5c139cbe428f0c35",
+      "final_target_sha256": "fd4591b5383d5535a7e9c806d910e2ee4aca6d5bae1276b19dfb077efc77303e",
+      "method": "exact identity with fully reviewed original source+target"
+    },
+    {
+      "key": "[lesson defensive-tactics counterattack compact]",
+      "source_sha256": "21b78ca2dcc4a380f51cee1b78762719f3a3a7de58fed71530ce3d924bf84555",
+      "final_target_sha256": "8366131c89b6e7a1422945ffd9985f96d67a4f7ef6784514970d5d190b226366",
+      "method": "exact identity with fully reviewed original source+target"
+    },
+    {
+      "key": "[intro attack destination]",
+      "source_sha256": "453b2368cf053f3756c23d8585adb11e9b6053ecb21458b34a1e84f0d1da880a",
+      "final_target_sha256": "be2ddd4f4763908b973b208a2c0e68c2b725c9326a284d26634c08ad83c0f370",
+      "method": "exact identity with fully reviewed original source+target"
+    },
+    {
+      "key": "[scenario messages]",
+      "source_sha256": "dc78d0fcd2df361ff116056564aad3cb02c402b2b0813b42979fb90b72868361",
+      "final_target_sha256": "a1f12fc99bebd33c656d2543d7bc7619a8276943d9ddf8b762854ba781e972ef",
+      "method": "exact identity with fully reviewed original source+target"
+    }
+  ],
+  "resolutions": [
+    {
+      "id": "ur-delta-001",
+      "key": "[lesson healing briefing]",
+      "status": "resolved",
+      "final_target": "ہسپتال بنائیں اور زخمی کارکن کی صحت بحال ہونے دیں۔ سبق کے آغاز میں بستی کے گلوبیول کھانا کھا چکے ہیں اور ایک کارکن زخمی ہے۔",
+      "rationale": "Exact requested correction: patient/colony already fed, not merely stocked."
+    },
+    {
+      "id": "ur-delta-002",
+      "key": "[lesson upgrades train hint]",
+      "status": "resolved",
+      "final_target": "کسی موجودہ کارکن کو اپ گریڈ کیے گئے دوڑ کے میدان میں تیز چلنا سیکھنے دیں۔ مکمل اپ گریڈ سے بہتر تربیت دستیاب ہوتی ہے۔ عمارتوں کی اونچی سطحوں کے لیے تعمیر کی بہتر مہارتیں چاہیے؛ کھلاڑیوں کو دکھائی جانے والی سطح 1 سے شروع ہوتی ہے۔",
+      "rationale": "Completed-upgrade adjectival construction correctly modifies Racetrack; lesson skill and numeric-level meaning unchanged."
+    },
+    {
+      "id": "ur-delta-003",
+      "key": "[lesson upgrades train instruction]",
+      "status": "resolved",
+      "final_target": "کسی موجودہ کارکن کو اپ گریڈ کیے گئے دوڑ کے میدان میں تیز چلنا سیکھنے دیں۔",
+      "rationale": "Completed-upgrade adjectival construction correctly modifies Racetrack; lesson skill and numeric-level meaning unchanged."
+    },
+    {
+      "id": "ur-delta-004",
+      "key": "[lesson upgrades train compact]",
+      "status": "resolved",
+      "final_target": "کسی کارکن کو اپ گریڈ کیے گئے دوڑ کے میدان میں تربیت حاصل کرنے دیں۔",
+      "rationale": "Completed-upgrade adjectival construction correctly modifies Racetrack; lesson skill and numeric-level meaning unchanged."
+    }
+  ],
+  "open_critical": 0,
+  "open_major": 0,
+  "open_minor": 0,
+  "unresolved_linguistic_uncertainties": [],
+  "status": "209-entry supplemental linguistic review and distinct editor recheck complete; rendering/integration checks still required",
+  "production_edits_by_reviewer": false,
+  "limits": [
+    "Agent-reviewed, not native human approval.",
+    "No new tutorial rendering, input, platform or final integration validation claimed.",
+    "Prior full source/context review remains valid only for exact source/target identities verified here."
+  ]
+}

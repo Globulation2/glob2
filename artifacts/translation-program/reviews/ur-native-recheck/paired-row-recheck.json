@@ -1,0 +1,59 @@
+{
+  "final_catalog_sha256": "5cb88fac67663fc436f6bfa60388382c24665755ee481514c002bc92e9a29837",
+  "rows": [
+    {
+      "keys": [
+        "[barracks explanation]",
+        "[barracks explanation 2]"
+      ],
+      "joined_value": "آپ کے جنگجوؤں کی جنگی سطح بہتر بناتی ہے",
+      "result": "grammatical-source-faithful",
+      "note": "Row order joined as intended; barracks possession no longer duplicated. Final line breaks/RTL visual order still need actual production capture."
+    },
+    {
+      "keys": [
+        "[defencetower explanation]",
+        "[defencetower explanation 2]"
+      ],
+      "joined_value": "قریب موجود دشمن کے یونٹوں یا عمارتوں پر حملہ کرتا ہے",
+      "result": "grammatical-source-faithful",
+      "note": "Row order joined as intended; barracks possession no longer duplicated. Final line breaks/RTL visual order still need actual production capture."
+    },
+    {
+      "keys": [
+        "[racetrack explanation]",
+        "[racetrack explanation 2]"
+      ],
+      "joined_value": "آپ کے یونٹوں کی چلنے کی رفتار بہتر بناتا ہے",
+      "result": "grammatical-source-faithful",
+      "note": "Row order joined as intended; barracks possession no longer duplicated. Final line breaks/RTL visual order still need actual production capture."
+    },
+    {
+      "keys": [
+        "[school explanation]",
+        "[school explanation 2]"
+      ],
+      "joined_value": "آپ کے کارکنوں کی تعمیر کی سطح بہتر بناتا ہے",
+      "result": "grammatical-source-faithful",
+      "note": "Row order joined as intended; barracks possession no longer duplicated. Final line breaks/RTL visual order still need actual production capture."
+    },
+    {
+      "keys": [
+        "[swimmingpool explanation]",
+        "[swimmingpool explanation 2]"
+      ],
+      "joined_value": "آپ کے یونٹوں کی تیرنے کی رفتار بہتر بناتا ہے",
+      "result": "grammatical-source-faithful",
+      "note": "Row order joined as intended; barracks possession no longer duplicated. Final line breaks/RTL visual order still need actual production capture."
+    },
+    {
+      "keys": [
+        "[market explanation]",
+        "[market explanation 2]"
+      ],
+      "joined_value": "پھلوں کا دوسروں سے تبادلہ ممکن بناتا ہے",
+      "result": "grammatical-source-faithful",
+      "note": "Row order joined as intended; barracks possession no longer duplicated. Final line breaks/RTL visual order still need actual production capture."
+    }
+  ]
+}

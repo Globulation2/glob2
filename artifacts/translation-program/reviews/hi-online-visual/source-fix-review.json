@@ -1,0 +1,24 @@
+{
+  "reviewer": "/root/hindi_online_review",
+  "editor": "/root",
+  "files": {
+    "platform/apps/web/src/i18n.tsx": "ece2a4a49b75634391d57269da55ab83e7da0e95c50c88c7e9a1880c7404c2cf",
+    "platform/apps/web/test/i18n.test.tsx": "82dfbe3598fd010b36c7380801c9ef1b59a8717eb8f6c91b81596e67efa3a06d",
+    "platform/apps/web/src/pages/Player.tsx": "bc9cd489b0f4f5b722d4ff3a05d380b66ba0428a82b0c52a38a4ac048e05ae89",
+    "platform/apps/web/src/pages/Matches.tsx": "f0575836e3953574e13b1f711404fe3f0edf93b9c349beed7a75b82bfa90e7d1",
+    "platform/apps/web/src/pages/Account.tsx": "f215f887c9866f3a09c856b1c4f53666b881a1a1871ef23d455aad21fd42a845",
+    "platform/apps/web/src/pages/Leaderboard.tsx": "1a2f8e61179879171b7e45810f6384174d43f6eb4dd370fa9fdb2b462446812d",
+    "platform/apps/web/src/styles/home.css": "2a6b051d320e3782cbff085055e11ef9f7e98dfc396dc0bece7a418cf5d864be",
+    "platform/apps/web/src/pages/Match.tsx": "dcf6e4d40581d99d11f1450c114481d83b09deab4575458f956c88521ea7d435",
+    "platform/apps/api/src/routes/signin.ts": "ca8a806ca5dbc356de5e1aec2cc35e43d81f6fa4be1b6c09e1a8dfbbbe077835",
+    "platform/apps/api/test/historySeed.ts": "2132adfd455661cc26e7328ddabdfe9d3c78cd51e6979b56f71fe7fbae7a6244"
+  },
+  "result": "No issue identified in requested source fixes after independent diff/caller inspection. Actual refreshed capture review pending.",
+  "explicit_optional_slot": "Object.hasOwn is retained; present null/undefined become valid empty React children, absent/inherited names retain placeholder fallback. Regression test covers null,undefined,missing simultaneously. Numeric-group and HTML-safe ReactNode behavior preserved.",
+  "named_data": "Known map/generator enum labels translated; authored map/player/queue names retained.",
+  "statistics_fixture": "Updated to actual producer keys. Unknown historical extension compatibility retained in dedicated unit fixture; no invented catalog support.",
+  "reviewer_ran_tests": false,
+  "catalog_edited": false,
+  "locale_finalized": false,
+  "average_label_refinement": "Average is absent from online English catalog (reviewer initially assumed otherwise). Revised Economy propagates actual profile displayName and uses existing {value0}’s average; Hindi {value0} का औसत is grammatical and semantically specific. Source caller inspected; refreshed runtime screenshots still pending."
+}

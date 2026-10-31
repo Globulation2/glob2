@@ -1,0 +1,1293 @@
+{
+  "editor": "/root/swahili_translation",
+  "author": "/root/urdu_translation",
+  "independent_reviewer": "/root/pilot_context",
+  "batch_id": "native-general-007",
+  "source_contract_sha256": "aacd8a342e9e734ba47f902a161ac1a45badff5842a617bcd68bf8e2275d6013",
+  "original_target_subset_sha256": "982ffc3cc564052d80132e88acf0f46006a2f5c820a22de23773b9c69831a064",
+  "final_target_subset_sha256": "fe2ff873d37076a1661225049247ef01c86827c5f10b95503b63082a3210ba23",
+  "final_catalog_sha256": "ec78fb33247244bf783461e0410ef11fe48e45644c3c6500419d9060e967d458",
+  "entries": [
+    {
+      "key": "[Bridges]",
+      "source": "Bridges",
+      "before": "پل",
+      "after": "پل",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Karst towers]",
+      "source": "Karst towers",
+      "before": "چونے کے پتھر کے مینار",
+      "after": "چونے کے پتھر کے مینار",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Tower spacing]",
+      "source": "Tower spacing",
+      "before": "میناروں کا درمیانی فاصلہ",
+      "after": "میناروں کا درمیانی فاصلہ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Tower density]",
+      "source": "Tower density",
+      "before": "میناروں کی کثافت",
+      "after": "میناروں کی کثافت",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Paddy depth]",
+      "source": "Paddy depth",
+      "before": "دھان کی گہرائی",
+      "after": "کنارے کے کھیتوں کی چوڑائی",
+      "editorially_read": true,
+      "disposition": "edited-pending-recheck"
+    },
+    {
+      "key": "[Home design]",
+      "source": "Home design",
+      "before": "ابتدائی علاقے کا نقشہ",
+      "after": "ابتدائی علاقے کا نقشہ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Horseshoe]",
+      "source": "Horseshoe",
+      "before": "گھوڑے کی نعل",
+      "after": "گھوڑے کی نعل",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Twin gates]",
+      "source": "Twin gates",
+      "before": "جڑواں دروازے",
+      "after": "جڑواں دروازے",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Three gates]",
+      "source": "Three gates",
+      "before": "تین دروازے",
+      "after": "تین دروازے",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Four gates]",
+      "source": "Four gates",
+      "before": "چار دروازے",
+      "after": "چار دروازے",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Flooded terraces]",
+      "source": "Flooded terraces",
+      "before": "پانی بھرے زینے",
+      "after": "پانی بھرے کھیت",
+      "editorially_read": true,
+      "disposition": "edited-pending-recheck"
+    },
+    {
+      "key": "[Sinkholes]",
+      "source": "Sinkholes",
+      "before": "دھنسے گڑھے",
+      "after": "دھنسے گڑھے",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Bajada]",
+      "source": "Bajada",
+      "before": "ملے ہوئے دامن کوہی پنکھے",
+      "after": "ملے ہوئے دامن کوہی پنکھے",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Range spacing]",
+      "source": "Range spacing",
+      "before": "پہاڑی سلسلوں کا درمیانی فاصلہ",
+      "after": "پہاڑی سلسلوں کا درمیانی فاصلہ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Ridge width]",
+      "source": "Ridge width",
+      "before": "پہاڑی دھار کی چوڑائی",
+      "after": "پہاڑی دھار کی چوڑائی",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Passes]",
+      "source": "Passes",
+      "before": "درے",
+      "after": "درے",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Fans per range]",
+      "source": "Fans per range",
+      "before": "فی سلسلہ پنکھے",
+      "after": "فی سلسلہ پنکھے",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Stream reach]",
+      "source": "Stream reach",
+      "before": "ندی کی رسائی",
+      "after": "ندی کی لمبائی",
+      "editorially_read": true,
+      "disposition": "edited-pending-recheck"
+    },
+    {
+      "key": "[Playa]",
+      "source": "Playa",
+      "before": "خشک جھیل کی تہہ",
+      "after": "خشک جھیل کی تہہ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Broad fan]",
+      "source": "Broad fan",
+      "before": "چوڑا پنکھا",
+      "after": "چوڑا پنکھا",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Long fan]",
+      "source": "Long fan",
+      "before": "لمبا پنکھا",
+      "after": "لمبا پنکھا",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Twin springs]",
+      "source": "Twin springs",
+      "before": "جڑواں چشمے",
+      "after": "جڑواں چشمے",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[The bajadas are too narrow for the homes; use a bigger map, a wider range spacing, narrower ridges or a smaller playa.]",
+      "source": "The bajadas are too narrow for the homes; use a bigger map, a wider range spacing, narrower ridges or a smaller playa.",
+      "before": "دامن کوہی پنکھے ابتدائی علاقوں کے لیے بہت تنگ ہیں؛ بڑا نقشہ، سلسلوں کے درمیان زیادہ فاصلہ، تنگ پہاڑی دھاریں یا چھوٹی خشک جھیل استعمال کریں۔",
+      "after": "دامن کوہی پنکھے ابتدائی علاقوں کے لیے بہت تنگ ہیں؛ بڑا نقشہ، سلسلوں کے درمیان زیادہ فاصلہ، تنگ پہاڑی دھاریں یا چھوٹی خشک جھیل استعمال کریں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Central Quarry]",
+      "source": "Central Quarry",
+      "before": "مرکزی کان",
+      "after": "مرکزی کان",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Quarry size]",
+      "source": "Quarry size",
+      "before": "کان کا سائز",
+      "after": "کان کا سائز",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Sand bars]",
+      "source": "Sand bars",
+      "before": "ریت کی پٹیاں",
+      "after": "ریت کی پٹیاں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Woodland]",
+      "source": "Woodland",
+      "before": "جنگلاتی علاقہ",
+      "after": "جنگلاتی علاقہ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Central Quarry needs at least two colonies.]",
+      "source": "Central Quarry needs at least two colonies.",
+      "before": "مرکزی کان کے لیے کم از کم دو بستیاں درکار ہیں۔",
+      "after": "مرکزی کان کے لیے کم از کم دو بستیاں درکار ہیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Hidden Oasis]",
+      "source": "Hidden Oasis",
+      "before": "پوشیدہ نخلستان",
+      "after": "پوشیدہ نخلستان",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Pond algae]",
+      "source": "Pond algae",
+      "before": "تالاب کی کائی",
+      "after": "تالاب کی کائی",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Starting towers]",
+      "source": "Starting towers",
+      "before": "ابتدائی مینار",
+      "after": "ابتدائی مینار",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Starting school]",
+      "source": "Starting school",
+      "before": "ابتدائی اسکول",
+      "after": "ابتدائی اسکول",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Mesas]",
+      "source": "Mesas",
+      "before": "میز نما پہاڑ",
+      "after": "میز نما پہاڑ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Springs]",
+      "source": "Springs",
+      "before": "چشمے",
+      "after": "چشمے",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Hidden Oasis needs at least two colonies.]",
+      "source": "Hidden Oasis needs at least two colonies.",
+      "before": "پوشیدہ نخلستان کے لیے کم از کم دو بستیاں درکار ہیں۔",
+      "after": "پوشیدہ نخلستان کے لیے کم از کم دو بستیاں درکار ہیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Hidden Oasis holds at most eight colonies.]",
+      "source": "Hidden Oasis holds at most eight colonies.",
+      "before": "پوشیدہ نخلستان میں زیادہ سے زیادہ آٹھ بستیاں آ سکتی ہیں۔",
+      "after": "پوشیدہ نخلستان میں زیادہ سے زیادہ آٹھ بستیاں آ سکتی ہیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[The pond has no room for that much algae; use a bigger pond.]",
+      "source": "The pond has no room for that much algae; use a bigger pond.",
+      "before": "تالاب میں اتنی کائی کے لیے جگہ نہیں؛ بڑا تالاب استعمال کریں۔",
+      "after": "تالاب میں اتنی کائی کے لیے جگہ نہیں؛ بڑا تالاب استعمال کریں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Even Ground]",
+      "source": "Even Ground",
+      "before": "برابر زمین",
+      "after": "برابر زمین",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Balance]",
+      "source": "Balance",
+      "before": "توازن",
+      "after": "توازن",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Tight passes]",
+      "source": "Tight passes",
+      "before": "تنگ درے",
+      "after": "تنگ درے",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Solver effort]",
+      "source": "Solver effort",
+      "before": "حل نکالنے کی کوشش",
+      "after": "حل نکالنے کی کوشش",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Brief]",
+      "source": "Brief",
+      "before": "مختصر",
+      "after": "مختصر",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Patient]",
+      "source": "Patient",
+      "before": "صبر سے",
+      "after": "صبر سے",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[The colonies could not be spread out on this map.]",
+      "source": "The colonies could not be spread out on this map.",
+      "before": "اس نقشے پر بستیاں پھیلائی نہیں جا سکیں۔",
+      "after": "اس نقشے پر بستیاں پھیلائی نہیں جا سکیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Marchland]",
+      "source": "Marchland",
+      "before": "سرحدی پٹی",
+      "after": "سرحدی پٹی",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Prizes on the rope]",
+      "source": "Prizes on the rope",
+      "before": "رسی پر انعام",
+      "after": "رسی پر انعام",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[March width]",
+      "source": "March width",
+      "before": "سرحدی پٹی کی چوڑائی",
+      "after": "سرحدی پٹی کی چوڑائی",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Levelling]",
+      "source": "Levelling",
+      "before": "برابر کرنا",
+      "after": "برابر کرنا",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[A march needs a country on each side; use at least two colonies.]",
+      "source": "A march needs a country on each side; use at least two colonies.",
+      "before": "سرحدی پٹی کے دونوں طرف ملک ہونا چاہیے؛ کم از کم دو بستیاں استعمال کریں۔",
+      "after": "سرحدی پٹی کے دونوں طرف ملک ہونا چاہیے؛ کم از کم دو بستیاں استعمال کریں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[The march has too little contested ground for that many prizes; use fewer prizes, a wider march or a bigger map.]",
+      "source": "The march has too little contested ground for that many prizes; use fewer prizes, a wider march or a bigger map.",
+      "before": "سرحدی پٹی میں اتنے انعاموں کے لیے متنازع زمین بہت کم ہے؛ کم انعام، چوڑی پٹی یا بڑا نقشہ استعمال کریں۔",
+      "after": "سرحدی پٹی میں اتنے انعاموں کے لیے متنازع زمین بہت کم ہے؛ کم انعام، چوڑی پٹی یا بڑا نقشہ استعمال کریں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[The march has no room for a prize; use a bigger map, fewer colonies or a wider march.]",
+      "source": "The march has no room for a prize; use a bigger map, fewer colonies or a wider march.",
+      "before": "سرحدی پٹی میں انعام کے لیے جگہ نہیں؛ بڑا نقشہ، کم بستیاں یا چوڑی پٹی استعمال کریں۔",
+      "after": "سرحدی پٹی میں انعام کے لیے جگہ نہیں؛ بڑا نقشہ، کم بستیاں یا چوڑی پٹی استعمال کریں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Orchard Commons]",
+      "source": "Orchard Commons",
+      "before": "مشترکہ باغ",
+      "after": "مشترکہ باغ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Orchard spacing]",
+      "source": "Orchard spacing",
+      "before": "باغوں کا درمیانی فاصلہ",
+      "after": "باغوں کا درمیانی فاصلہ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Compact]",
+      "source": "Compact",
+      "before": "سمٹا ہوا",
+      "after": "سمٹا ہوا",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Balanced]",
+      "source": "Balanced",
+      "before": "متوازن",
+      "after": "متوازن",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Spread]",
+      "source": "Spread",
+      "before": "پھیلا ہوا",
+      "after": "پھیلا ہوا",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[The Gauntlet]",
+      "source": "The Gauntlet",
+      "before": "کٹھن راہ",
+      "after": "کٹھن راہ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Partition thickness]",
+      "source": "Partition thickness",
+      "before": "تقسیمی دیوار کی موٹائی",
+      "after": "تقسیمی دیوار کی موٹائی",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[The Comb]",
+      "source": "The Comb",
+      "before": "کنگھی",
+      "after": "کنگھی",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Peninsulas per shore]",
+      "source": "Peninsulas per shore",
+      "before": "فی ساحل جزیرہ نما",
+      "after": "فی ساحل جزیرہ نما",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Encircled Kingdom]",
+      "source": "Encircled Kingdom",
+      "before": "گھری ہوئی مملکت",
+      "after": "گھری ہوئی مملکت",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Fortress plan]",
+      "source": "Fortress plan",
+      "before": "قلعے کا نقشہ",
+      "after": "قلعے کا نقشہ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Automatic]",
+      "source": "Automatic",
+      "before": "خودکار",
+      "after": "خودکار",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Elongated enclosure]",
+      "source": "Elongated enclosure",
+      "before": "لمبا احاطہ",
+      "after": "لمبا احاطہ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Bastioned enclosure]",
+      "source": "Bastioned enclosure",
+      "before": "برجوں والا احاطہ",
+      "after": "برجوں والا احاطہ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Paired courtyards]",
+      "source": "Paired courtyards",
+      "before": "جوڑے دار صحن",
+      "after": "جوڑے دار صحن",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Heartland farmland]",
+      "source": "Heartland farmland",
+      "before": "اندرونی علاقے کے کھیت",
+      "after": "اندرونی علاقے کے کھیت",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[The Faulted City]",
+      "source": "The Faulted City",
+      "before": "دراروں والا شہر",
+      "after": "دراروں والا شہر",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Fault displacement]",
+      "source": "Fault displacement",
+      "before": "درار کی سرکاؤ مقدار",
+      "after": "درار کے ساتھ سرکاؤ کی مقدار",
+      "editorially_read": true,
+      "disposition": "edited-pending-recheck"
+    },
+    {
+      "key": "[Fault width]",
+      "source": "Fault width",
+      "before": "درار کی چوڑائی",
+      "after": "درار کی چوڑائی",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Ruin density]",
+      "source": "Ruin density",
+      "before": "کھنڈرات کی کثافت",
+      "after": "کھنڈرات کی کثافت",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Surviving junctions]",
+      "source": "Surviving junctions",
+      "before": "باقی چوراہے",
+      "after": "باقی چوراہے",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[The Faulted City needs 256 or 512 tiles per side and one to twelve colonies.]",
+      "source": "The Faulted City needs 256 or 512 tiles per side and one to twelve colonies.",
+      "before": "دراروں والے شہر کے لیے ہر طرف 256 یا 512 خانے اور ایک سے بارہ بستیاں درکار ہیں۔",
+      "after": "دراروں والے شہر کے لیے ہر طرف 256 یا 512 خانے اور ایک سے بارہ بستیاں درکار ہیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[The city has too few usable junctions.]",
+      "source": "The city has too few usable junctions.",
+      "before": "شہر میں قابلِ استعمال چوراہے بہت کم ہیں۔",
+      "after": "شہر میں قابلِ استعمال چوراہے بہت کم ہیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[The city neighbourhoods are too unequal; try another seed.]",
+      "source": "The city neighbourhoods are too unequal; try another seed.",
+      "before": "شہر کے محلے بہت غیر مساوی ہیں؛ دوسرا سیڈ آزمائیں۔",
+      "after": "شہر کے محلے بہت غیر مساوی ہیں؛ دوسرا سیڈ آزمائیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[The fractured civic plaza did not survive.]",
+      "source": "The fractured civic plaza did not survive.",
+      "before": "ٹوٹا ہوا شہری چوک باقی نہیں رہا۔",
+      "after": "ٹوٹا ہوا شہری چوک باقی نہیں رہا۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Who Ate the Map?]",
+      "source": "Who Ate the Map?",
+      "before": "نقشہ کس نے کھایا؟",
+      "after": "نقشہ کس نے کھایا؟",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Appetite]",
+      "source": "Appetite",
+      "before": "بھوک",
+      "after": "بھوک",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[A Little Nibble]",
+      "source": "A Little Nibble",
+      "before": "ذرا سا لقمہ",
+      "after": "ذرا سا لقمہ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Hungry]",
+      "source": "Hungry",
+      "before": "بھوکا",
+      "after": "بھوکا",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Portage depth]",
+      "source": "Portage depth",
+      "before": "پورٹیج کی گہرائی",
+      "after": "کاٹے جانے والے جنگل کی موٹائی",
+      "editorially_read": true,
+      "disposition": "edited-pending-recheck"
+    },
+    {
+      "key": "[Extra trails]",
+      "source": "Extra trails",
+      "before": "اضافی پگڈنڈیاں",
+      "after": "اضافی پگڈنڈیاں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Drowned Forest]",
+      "source": "Drowned Forest",
+      "before": "ڈوبا ہوا جنگل",
+      "after": "ڈوبا ہوا جنگل",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Wooded neck thickness]",
+      "source": "Wooded neck thickness",
+      "before": "درختوں والی زمینی گردن کی موٹائی",
+      "after": "درختوں والی زمینی گردن کی موٹائی",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Neutral clearing size]",
+      "source": "Neutral clearing size",
+      "before": "غیر جانب دار کھلی جگہ کا سائز",
+      "after": "غیر جانب دار کھلی جگہ کا سائز",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Bastion Keys]",
+      "source": "Bastion Keys",
+      "before": "برجوں والے جزیرے",
+      "after": "برجوں والے جزیرے",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Plantation size]",
+      "source": "Plantation size",
+      "before": "باغات کا سائز",
+      "after": "باغات کا سائز",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[The Hungry Marches]",
+      "source": "The Hungry Marches",
+      "before": "بھوکی سرحدی پٹیاں",
+      "after": "بھوکی سرحدی پٹیاں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Opening ration]",
+      "source": "Opening ration",
+      "before": "ابتدائی راشن",
+      "after": "ابتدائی راشن",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Central concentration]",
+      "source": "Central concentration",
+      "before": "مرکز میں اجتماع",
+      "after": "مرکز میں اجتماع",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[The Last Treeline]",
+      "source": "The Last Treeline",
+      "before": "آخری درختوں کی قطار",
+      "after": "آخری درختوں کی قطار",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Woodland depth]",
+      "source": "Woodland depth",
+      "before": "جنگلاتی علاقے کی گہرائی",
+      "after": "جنگلاتی علاقے کی گہرائی",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[AI strategy]",
+      "source": "AI strategy",
+      "before": "AI کی حکمتِ عملی",
+      "after": "AI کی حکمتِ عملی",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[AIMaxima-Summary]",
+      "source": "Balances sustainable growth and training, then gathers armies into waves.",
+      "before": "پائیدار ترقی اور تربیت میں توازن رکھتا ہے، پھر فوج کو حملہ آور لہروں میں جمع کرتا ہے۔",
+      "after": "پائیدار ترقی اور تربیت میں توازن رکھتا ہے، پھر فوج کو حملہ آور لہروں میں جمع کرتا ہے۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[AIMaxima-Profile]",
+      "source": "Core strategy: Treats food, workers, births, training, construction and combat as competing demands. Sizes its army partly against estimated enemy strength, then tries to deliver that army effectively.\\n\\nEconomy and development: Budgets births against food and labor, preserves idle opportunities for training, and stops adding surplus workers when military production is needed. Scales training capacity and avoids taking too much infrastructure offline for upgrades.\\n\\nScouting and decisions: Estimates enemy forces from visible units and remembered sightings using a fitted model. Targets depend on value, distance, towers, exposed workers and persistence. Fruit missions support food variety and conversion.\\n\\nAttack and defense: Reserves warriors for training and defense, then gathers eligible land forces near friendly food infrastructure before launching waves. Uses local defensive responses and evaluates approaches to the colony.\\n\\nWhen attacks stall: After four consecutive wave-delivery failures, switches to continuously reinforced attack flags. Amphibious attacks can also use continuous reinforcement. This fallback does not solve every blockage before a rally can form.\\n\\nCompared with other AIs: Integrates food, training, intelligence and deployment more tightly. Cabino emphasizes several building attacks; Maxima emphasizes estimated demand and delivering gathered forces.\\n\\nStrengths and weaknesses: Sustains growth and military replacement while adapting to food pressure and observed threats. Needs food, training capacity and open gathering space; congestion and long routes can undermine delivery.\\n\\nCounterplay to try: Contest exposed food sources, inns and barracks before waves gather. Keep a supplied defensive force together and disrupt reinforcement routes. Expect repeated pressure after the first wave.\\n\\nScouting: Force estimates use sightings and observation history, rather than hidden enemy troop totals.",
+      "before": "بنیادی حکمتِ عملی: خوراک، کارکن، پیدائش، تربیت، تعمیر اور لڑائی کو ایک دوسرے سے مقابل ضرورتیں سمجھتا ہے۔ اپنی فوج کا سائز جزوی طور پر دشمن کی اندازاً طاقت کے مطابق رکھتا ہے، پھر اس فوج کو مؤثر انداز سے ہدف تک پہنچانے کی کوشش کرتا ہے۔\\n\\nمعیشت اور ترقی: خوراک اور محنت کے مطابق پیدائشوں کا حساب رکھتا، تربیت کے لیے فارغ مواقع بچاتا اور فوجی پیداوار کی ضرورت پر اضافی کارکن بڑھانا روک دیتا ہے۔ تربیتی گنجائش بڑھاتا ہے اور ترقی کے لیے بیک وقت بہت سی عمارتیں بند کرنے سے بچتا ہے۔\\n\\nکھوج اور فیصلے: دیکھی گئی یونٹوں اور سابقہ مشاہدات کی مدد سے، تیار کردہ ماڈل کے ذریعے دشمن فوج کا تخمینہ لگاتا ہے۔ ہدف کی اہمیت، فاصلہ، مینار، کھلے کارکن اور ہدف پر قائم رہنا فیصلے میں شامل ہیں۔ پھل کی مہمیں خوراک کے تنوع اور وفاداری کی تبدیلی میں مدد دیتی ہیں۔\\n\\nحملہ اور دفاع: تربیت اور دفاع کے لیے جنگجو مختص کرتا ہے، پھر لہریں بھیجنے سے پہلے موزوں زمینی فوج کو دوست خوراکی عمارتوں کے قریب جمع کرتا ہے۔ مقامی دفاعی ردِعمل استعمال کرتا اور بستی تک آنے والے راستوں کا جائزہ لیتا ہے۔\\n\\nحملے رکنے پر: مسلسل چار بار لہر ہدف تک نہ پہنچے تو مسلسل کمک پانے والے حملہ آور جھنڈوں پر منتقل ہو جاتا ہے۔ پانی اور زمین پر ہونے والے حملے بھی مسلسل کمک استعمال کر سکتے ہیں۔ یہ متبادل طریقہ فوج جمع ہونے سے پہلے ہر رکاوٹ حل نہیں کرتا۔\\n\\nدیگر AI سے موازنہ: خوراک، تربیت، معلومات اور تعیناتی کو زیادہ مضبوطی سے جوڑتا ہے۔ Cabino کئی عمارتوں پر حملوں پر زور دیتا ہے؛ Maxima اندازاً ضرورت اور جمع شدہ فوج پہنچانے پر زور دیتا ہے۔\\n\\nخوبیاں اور کمزوریاں: خوراک کے دباؤ اور دیکھی گئی دھمکیوں کے مطابق بدلتے ہوئے ترقی اور فوجی نقصان کا متبادل برقرار رکھتا ہے۔ اسے خوراک، تربیتی گنجائش اور جمع ہونے کے لیے کھلی جگہ چاہیے؛ ہجوم اور لمبے راستے فوج کی ترسیل خراب کر سکتے ہیں۔\\n\\nآزمانے کے لیے مقابلے کا طریقہ: لہریں جمع ہونے سے پہلے کھلے خوراکی ذرائع، سراؤں اور بیرکوں کو چیلنج کریں۔ رسد پانے والے محافظ اکٹھے رکھیں اور کمک کے راستے توڑیں۔ پہلی لہر کے بعد بھی بار بار دباؤ کی توقع رکھیں۔\\n\\nکھوج: فوج کے تخمینے دیکھی گئی معلومات اور مشاہدات کی تاریخ استعمال کرتے ہیں، دشمن کی پوشیدہ کل فوج نہیں۔",
+      "after": "بنیادی حکمتِ عملی: خوراک، کارکن، پیدائش، تربیت، تعمیر اور لڑائی کو ایک دوسرے سے مقابل ضرورتیں سمجھتا ہے۔ اپنی فوج کا سائز جزوی طور پر دشمن کی اندازاً طاقت کے مطابق رکھتا ہے، پھر اس فوج کو مؤثر انداز سے ہدف تک پہنچانے کی کوشش کرتا ہے۔\\n\\nمعیشت اور ترقی: خوراک اور محنت کے مطابق پیدائشوں کا حساب رکھتا، تربیت کے لیے خالی وقت بچاتا اور فوجی پیداوار کی ضرورت پر اضافی کارکن بڑھانا روک دیتا ہے۔ تربیتی گنجائش بڑھاتا ہے اور اپ گریڈ کے لیے بیک وقت بہت سی عمارتیں بند کرنے سے بچتا ہے۔\\n\\nکھوج اور فیصلے: دیکھے گئے یونٹوں اور سابقہ مشاہدات کی مدد سے، تیار کردہ ماڈل کے ذریعے دشمن فوج کا تخمینہ لگاتا ہے۔ ہدف کی اہمیت، فاصلہ، مینار، کھلے کارکن اور ہدف پر قائم رہنا فیصلے میں شامل ہیں۔ پھل کی مہمیں خوراک کے تنوع اور وفاداری کی تبدیلی میں مدد دیتی ہیں۔\\n\\nحملہ اور دفاع: تربیت اور دفاع کے لیے جنگجو مختص کرتا ہے، پھر لہریں بھیجنے سے پہلے موزوں زمینی فوج کو اپنی یا اتحادی خوراکی عمارتوں کے قریب جمع کرتا ہے۔ مقامی دفاعی ردِعمل استعمال کرتا اور بستی تک آنے والے راستوں کا جائزہ لیتا ہے۔\\n\\nحملے رکنے پر: مسلسل چار بار لہر ہدف تک نہ پہنچے تو مسلسل کمک پانے والے حملہ آور جھنڈوں پر منتقل ہو جاتا ہے۔ پانی اور زمین پر ہونے والے حملے بھی مسلسل کمک استعمال کر سکتے ہیں۔ یہ متبادل طریقہ فوج جمع ہونے سے پہلے ہر رکاوٹ حل نہیں کرتا۔\\n\\nدیگر AI سے موازنہ: خوراک، تربیت، معلومات اور تعیناتی کو زیادہ مضبوطی سے جوڑتا ہے۔ Cabino کئی عمارتوں پر حملوں پر زور دیتا ہے؛ Maxima اندازاً ضرورت اور جمع شدہ فوج پہنچانے پر زور دیتا ہے۔\\n\\nخوبیاں اور کمزوریاں: خوراک کے دباؤ اور دیکھی گئی دھمکیوں کے مطابق بدلتے ہوئے آبادی کی بڑھوتری اور فوجی نقصانات کی تلافی جاری رکھتا ہے۔ اسے خوراک، تربیتی گنجائش اور جمع ہونے کے لیے کھلی جگہ چاہیے؛ ہجوم اور لمبے راستے فوج کی ترسیل خراب کر سکتے ہیں۔\\n\\nآزمانے کے لیے مقابلے کا طریقہ: لہریں جمع ہونے سے پہلے کھلے خوراکی ذرائع، سراؤں اور بیرکوں کو چیلنج کریں۔ رسد پانے والے محافظ اکٹھے رکھیں اور کمک کے راستے توڑیں۔ پہلی لہر کے بعد بھی بار بار دباؤ کی توقع رکھیں۔\\n\\nکھوج: فوج کے تخمینے دیکھی گئی معلومات اور مشاہدات کی تاریخ استعمال کرتے ہیں، دشمن کی پوشیدہ کل فوج نہیں۔",
+      "editorially_read": true,
+      "disposition": "edited-pending-recheck"
+    },
+    {
+      "key": "[Fertility]",
+      "source": "Fertility",
+      "before": "زرخیزی",
+      "after": "زرخیزی",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Deposits]",
+      "source": "Deposits",
+      "before": "ذخائر",
+      "after": "ذخائر",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Room]",
+      "source": "Room",
+      "before": "جگہ",
+      "after": "جگہ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Isolation]",
+      "source": "Isolation",
+      "before": "علیحدگی",
+      "after": "علیحدگی",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[ERROR_CANT_SAVE_MAP]",
+      "source": "The map could not be saved. Check the destination and available space. Your edits are still open.",
+      "before": "نقشہ محفوظ نہیں ہو سکا۔ منزل اور دستیاب جگہ دیکھیں۔ آپ کی ترامیم اب بھی کھلی ہیں۔",
+      "after": "نقشہ محفوظ نہیں ہو سکا۔ منزل اور دستیاب جگہ دیکھیں۔ آپ کی ترامیم اب بھی کھلی ہیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Loading headers]",
+      "source": "Loading headers...",
+      "before": "ہیڈر لوڈ ہو رہے ہیں...",
+      "after": "ہیڈر لوڈ ہو رہے ہیں...",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Loading teams]",
+      "source": "Loading teams...",
+      "before": "ٹیمیں لوڈ ہو رہی ہیں...",
+      "after": "ٹیمیں لوڈ ہو رہی ہیں...",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Loading players]",
+      "source": "Loading players...",
+      "before": "کھلاڑی لوڈ ہو رہے ہیں...",
+      "after": "کھلاڑی لوڈ ہو رہے ہیں...",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Loading scripts]",
+      "source": "Loading scripts...",
+      "before": "اسکرپٹ لوڈ ہو رہے ہیں...",
+      "after": "اسکرپٹ لوڈ ہو رہے ہیں...",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Generating map]",
+      "source": "Generating map...",
+      "before": "نقشہ بن رہا ہے...",
+      "after": "نقشہ بن رہا ہے...",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[ERROR_CANT_GENERATE_MAP]",
+      "source": "The map could not be generated. Try different generation settings.",
+      "before": "نقشہ نہیں بن سکا۔ نقشہ بنانے کی مختلف ترتیبات آزمائیں۔",
+      "after": "نقشہ نہیں بن سکا۔ نقشہ بنانے کی مختلف ترتیبات آزمائیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Loading units]",
+      "source": "Loading units...",
+      "before": "یونٹ لوڈ ہو رہے ہیں...",
+      "after": "یونٹ لوڈ ہو رہے ہیں...",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Resolving team links]",
+      "source": "Resolving team links...",
+      "before": "ٹیموں کے روابط حل ہو رہے ہیں...",
+      "after": "ٹیموں کے روابط حل ہو رہے ہیں...",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[saving to storage]",
+      "source": "Saving...",
+      "before": "محفوظ ہو رہا ہے...",
+      "after": "محفوظ ہو رہا ہے...",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[save failed retry]",
+      "source": "Save failed. Retry.",
+      "before": "محفوظ نہیں ہو سکا۔ دوبارہ کوشش کریں۔",
+      "after": "محفوظ نہیں ہو سکا۔ دوبارہ کوشش کریں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[export save]",
+      "source": "Export save",
+      "before": "محفوظ کھیل برآمد کریں",
+      "after": "محفوظ کھیل برآمد کریں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[storage restore failed]",
+      "source": "Browser storage could not be restored. Existing saved data has not been changed. You can continue this session, but local changes cannot be persisted. Export important saves from the save-failure dialog. Reload to try restoring storage again.",
+      "before": "براؤزر کا ذخیرہ بحال نہیں ہو سکا۔ پہلے سے محفوظ ڈیٹا نہیں بدلا گیا۔ آپ یہ نشست جاری رکھ سکتے ہیں، مگر مقامی تبدیلیاں مستقل محفوظ نہیں ہو سکتیں۔ محفوظ کرنے کی ناکامی والے ڈائیلاگ سے اہم محفوظ کھیل برآمد کریں۔ ذخیرہ بحال کرنے کی دوبارہ کوشش کے لیے صفحہ پھر لوڈ کریں۔",
+      "after": "براؤزر کا ذخیرہ بحال نہیں ہو سکا۔ پہلے سے محفوظ ڈیٹا نہیں بدلا گیا۔ آپ یہ نشست جاری رکھ سکتے ہیں، مگر مقامی تبدیلیاں مستقل محفوظ نہیں ہو سکتیں۔ محفوظ کرنے کی ناکامی والے ڈائیلاگ سے اہم محفوظ کھیل برآمد کریں۔ ذخیرہ بحال کرنے کی دوبارہ کوشش کے لیے صفحہ پھر لوڈ کریں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[continue]",
+      "source": "Continue",
+      "before": "جاری رکھیں",
+      "after": "جاری رکھیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[export file]",
+      "source": "Export file",
+      "before": "فائل برآمد کریں",
+      "after": "فائل برآمد کریں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[export failed]",
+      "source": "File export failed",
+      "before": "فائل برآمد نہیں ہو سکی",
+      "after": "فائل برآمد نہیں ہو سکی",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[import file]",
+      "source": "Import",
+      "before": "درآمد کریں",
+      "after": "درآمد کریں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[select import file]",
+      "source": "Choose a file to import",
+      "before": "درآمد کرنے کے لیے فائل منتخب کریں",
+      "after": "درآمد کرنے کے لیے فائل منتخب کریں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[validating import]",
+      "source": "Validating file...",
+      "before": "فائل کی توثیق ہو رہی ہے...",
+      "after": "فائل کی توثیق ہو رہی ہے...",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[import succeeded]",
+      "source": "File imported",
+      "before": "فائل درآمد ہو گئی",
+      "after": "فائل درآمد ہو گئی",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[import cancelled]",
+      "source": "Import cancelled",
+      "before": "درآمد منسوخ ہو گئی",
+      "after": "درآمد منسوخ ہو گئی",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[import failed]",
+      "source": "Import failed: invalid or unsupported file",
+      "before": "درآمد ناکام: فائل غلط ہے یا معاونت یافتہ نہیں",
+      "after": "درآمد ناکام: فائل غلط ہے یا معاونت یافتہ نہیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[import persistence failed]",
+      "source": "Not saved: select Import to retry or Export file",
+      "before": "محفوظ نہیں ہوا: دوبارہ کوشش کے لیے درآمد کریں منتخب کریں یا فائل برآمد کریں",
+      "after": "محفوظ نہیں ہوا: دوبارہ کوشش کے لیے درآمد کریں منتخب کریں یا فائل برآمد کریں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[import progress]",
+      "source": "Import progress",
+      "before": "درآمد کی پیش رفت",
+      "after": "درآمد کی پیش رفت",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[export progress]",
+      "source": "Export progress",
+      "before": "برآمد کی پیش رفت",
+      "after": "برآمد کی پیش رفت",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[retry save]",
+      "source": "Retry save",
+      "before": "دوبارہ محفوظ کریں",
+      "after": "دوبارہ محفوظ کریں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[campaign save failed]",
+      "source": "Campaign progress not saved. Retry or export a backup.",
+      "before": "مہم کی پیش رفت محفوظ نہیں ہوئی۔ دوبارہ کوشش کریں یا بیک اپ برآمد کریں۔",
+      "after": "مہم کی پیش رفت محفوظ نہیں ہوئی۔ دوبارہ کوشش کریں یا بیک اپ برآمد کریں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[leave without saving]",
+      "source": "Leave without saving",
+      "before": "محفوظ کیے بغیر نکلیں",
+      "after": "محفوظ کیے بغیر نکلیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[campaign import failed]",
+      "source": "Invalid progress file or different campaign version",
+      "before": "پیش رفت کی فائل غلط ہے یا مہم کا ورژن مختلف ہے",
+      "after": "پیش رفت کی فائل غلط ہے یا مہم کا ورژن مختلف ہے",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[shutdown save failed]",
+      "source": "Final save not confirmed. Retry, or quit without saving.",
+      "before": "آخری بار محفوظ ہونے کی تصدیق نہیں ہوئی۔ دوبارہ کوشش کریں یا محفوظ کیے بغیر بند کریں۔",
+      "after": "آخری بار محفوظ ہونے کی تصدیق نہیں ہوئی۔ دوبارہ کوشش کریں یا محفوظ کیے بغیر بند کریں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[quit without saving]",
+      "source": "Quit without saving",
+      "before": "محفوظ کیے بغیر بند کریں",
+      "after": "محفوظ کیے بغیر بند کریں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[game closed]",
+      "source": "Game closed. You can close this window or reload to play again.",
+      "before": "کھیل بند ہو گیا۔ آپ یہ ونڈو بند کر سکتے ہیں یا دوبارہ کھیلنے کے لیے صفحہ پھر لوڈ کر سکتے ہیں۔",
+      "after": "کھیل بند ہو گیا۔ آپ یہ ونڈو بند کر سکتے ہیں یا دوبارہ کھیلنے کے لیے صفحہ پھر لوڈ کر سکتے ہیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[campaign editor save failed]",
+      "source": "Save not confirmed. OK retries; Cancel returns to the editor menu.",
+      "before": "محفوظ ہونے کی تصدیق نہیں ہوئی۔ ٹھیک ہے سے دوبارہ کوشش ہوتی ہے؛ منسوخ سے ایڈیٹر مینیو پر واپسی ہوتی ہے۔",
+      "after": "محفوظ ہونے کی تصدیق نہیں ہوئی۔ «ٹھیک ہے» سے دوبارہ کوشش ہوتی ہے؛ «منسوخ کریں» سے ایڈیٹر مینیو پر واپسی ہوتی ہے۔",
+      "editorially_read": true,
+      "disposition": "edited-pending-recheck"
+    },
+    {
+      "key": "[Actions]",
+      "source": "Actions",
+      "before": "اقدامات",
+      "after": "اقدامات",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Minimap]",
+      "source": "Minimap",
+      "before": "چھوٹا نقشہ",
+      "after": "چھوٹا نقشہ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Fast forward]",
+      "source": "Fast forward",
+      "before": "تیزی سے آگے",
+      "after": "تیزی سے آگے",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Player slot]",
+      "source": "Player slot",
+      "before": "کھلاڑی کی جگہ",
+      "after": "کھلاڑی کی جگہ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Team color]",
+      "source": "Team color",
+      "before": "ٹیم کا رنگ",
+      "after": "ٹیم کا رنگ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Alliance group]",
+      "source": "Alliance group",
+      "before": "اتحادی گروپ",
+      "after": "اتحادی گروپ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[menu]",
+      "source": "Menu",
+      "before": "مینیو",
+      "after": "مینیو",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Editor tools]",
+      "source": "Tools",
+      "before": "آلات",
+      "after": "آلات",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Pan map]",
+      "source": "Pan map",
+      "before": "نقشے کا منظر کھسکائیں",
+      "after": "نقشے کا منظر کھسکائیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Edit map]",
+      "source": "Edit map",
+      "before": "نقشہ ترمیم کریں",
+      "after": "نقشے میں ترمیم کریں",
+      "editorially_read": true,
+      "disposition": "edited-pending-recheck"
+    },
+    {
+      "key": "[Editor map]",
+      "source": "Map",
+      "before": "نقشہ",
+      "after": "نقشہ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Pause]",
+      "source": "Pause",
+      "before": "توقف",
+      "after": "توقف",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Speed]",
+      "source": "Speed",
+      "before": "رفتار",
+      "after": "رفتار",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Objectives]",
+      "source": "Objectives",
+      "before": "مقاصد",
+      "after": "مقاصد",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Menu]",
+      "source": "Menu",
+      "before": "مینیو",
+      "after": "مینیو",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Goals]",
+      "source": "Goals",
+      "before": "اہداف",
+      "after": "اہداف",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Teams]",
+      "source": "Teams",
+      "before": "ٹیمیں",
+      "after": "ٹیمیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Use this landscape]",
+      "source": "Use this landscape",
+      "before": "یہ منظرنامہ استعمال کریں",
+      "after": "یہ منظرنامہ استعمال کریں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Reset]",
+      "source": "Reset",
+      "before": "بحال کریں",
+      "after": "بحال کریں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Generating...]",
+      "source": "Generating...",
+      "before": "بن رہا ہے...",
+      "after": "بن رہا ہے...",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Players]",
+      "source": "Players",
+      "before": "کھلاڑی",
+      "after": "کھلاڑی",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Rules]",
+      "source": "Rules",
+      "before": "قواعد",
+      "after": "قواعد",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Undo stroke]",
+      "source": "Undo",
+      "before": "واپس لیں",
+      "after": "واپس لیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[No overlay]",
+      "source": "No overlay",
+      "before": "کوئی تہہ نہیں",
+      "after": "کوئی تہہ نہیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[zoom factor %0]",
+      "source": "%0×",
+      "before": "%0×",
+      "after": "%0×",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[More]",
+      "source": "More",
+      "before": "مزید",
+      "after": "مزید",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[No items]",
+      "source": "No items",
+      "before": "کوئی چیز نہیں",
+      "after": "کوئی چیز نہیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Review & Play]",
+      "source": "Review & Play",
+      "before": "جائزہ لیں اور کھیلیں",
+      "after": "جائزہ لیں اور کھیلیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    }
+  ],
+  "status": "edited-awaiting-independent-recheck"
+}

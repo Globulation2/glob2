@@ -1,0 +1,35 @@
+[
+  {
+    "locale": "hi",
+    "remaining": [
+      "desktop_rendering is pending or lacks evidence",
+      "phone_rendering is pending or lacks evidence",
+      "browser_startup is pending or lacks evidence",
+      "native_platforms is pending or lacks evidence",
+      "browser_platforms is pending or lacks evidence",
+      "mobile_platforms is pending or lacks evidence"
+    ]
+  },
+  {
+    "locale": "ur",
+    "remaining": [
+      "desktop_rendering is pending or lacks evidence",
+      "phone_rendering is pending or lacks evidence",
+      "browser_startup is pending or lacks evidence",
+      "native_platforms is pending or lacks evidence",
+      "browser_platforms is pending or lacks evidence",
+      "mobile_platforms is pending or lacks evidence"
+    ]
+  },
+  {
+    "locale": "sw",
+    "remaining": [
+      "desktop_rendering is pending or lacks evidence",
+      "phone_rendering is pending or lacks evidence",
+      "browser_startup is pending or lacks evidence",
+      "native_platforms is pending or lacks evidence",
+      "browser_platforms is pending or lacks evidence",
+      "mobile_platforms is pending or lacks evidence"
+    ]
+  }
+]

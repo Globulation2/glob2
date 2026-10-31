@@ -1,0 +1,568 @@
+{
+  "reviewer": "/root/hindi_online_review",
+  "locale": "hi",
+  "scope": "Independent actual online app screenshot/context review; all20 initial and all20 hash-bound final captures manually read at1200 and390 viewport widths.",
+  "initial_catalog_sha256": "748ed6f83bbb1e55f66af93e24c61a02ad50c75222adac731e3ae104356baf60",
+  "catalog_after_requested_visual_edits": "18bc06269a91e48ed90b9c08372bbff2c218c245b2823e5aaf6738588a6f9954",
+  "kind": "actual-app-components-isolated-draft-overlay",
+  "screens": [
+    "home-first-visit",
+    "signin",
+    "signin-error",
+    "account",
+    "matches",
+    "match",
+    "profile",
+    "leaderboard",
+    "maps",
+    "invite"
+  ],
+  "images": [
+    {
+      "file": "initial-captures/1200-account.png",
+      "width": 1200,
+      "height": 1148,
+      "sha256": "df7ed3bfe8f495c67db3fa8629087dcc4d74e50c4cab14f62183f1dbbcb08a16",
+      "manual_inspection": "Viewed complete screenshot, read visible Hindi text, checked shaping/wrapping/control containment. Browser automation is separate evidence."
+    },
+    {
+      "file": "initial-captures/1200-home-first-visit.png",
+      "width": 1200,
+      "height": 2385,
+      "sha256": "504e0de64a509a5e89e274dace26dfc349dbd52bf86eaef840c5bbcc32bbc480",
+      "manual_inspection": "Viewed complete screenshot, read visible Hindi text, checked shaping/wrapping/control containment. Browser automation is separate evidence."
+    },
+    {
+      "file": "initial-captures/1200-invite.png",
+      "width": 1200,
+      "height": 860,
+      "sha256": "badcbdd944bcafd24fdbb650bfb7d519bfa0283bcef1b5e95e862f37cca0cbb3",
+      "manual_inspection": "Viewed complete screenshot, read visible Hindi text, checked shaping/wrapping/control containment. Browser automation is separate evidence."
+    },
+    {
+      "file": "initial-captures/1200-leaderboard.png",
+      "width": 1200,
+      "height": 860,
+      "sha256": "e0645188e61514f67edf1deea5a9b80acdbad6254f27ca5c9c4773a56d8a9434",
+      "manual_inspection": "Viewed complete screenshot, read visible Hindi text, checked shaping/wrapping/control containment. Browser automation is separate evidence."
+    },
+    {
+      "file": "initial-captures/1200-maps.png",
+      "width": 1200,
+      "height": 1520,
+      "sha256": "d5c3ac26fae0b0c41ee5bca740a5019db22eaa80454fcb88bd412e8b1553f929",
+      "manual_inspection": "Viewed complete screenshot, read visible Hindi text, checked shaping/wrapping/control containment. Browser automation is separate evidence."
+    },
+    {
+      "file": "initial-captures/1200-match.png",
+      "width": 1200,
+      "height": 1847,
+      "sha256": "f7c0eb89ceb73e7d21db1bbb45617dd44112abea8fb05a8d155714e7f1734fc6",
+      "manual_inspection": "Viewed complete screenshot, read visible Hindi text, checked shaping/wrapping/control containment. Browser automation is separate evidence."
+    },
+    {
+      "file": "initial-captures/1200-matches.png",
+      "width": 1200,
+      "height": 1001,
+      "sha256": "36bc704f3043db64beff9b009d27252e80722e4492cde1f0ae1af9da0e39b6bc",
+      "manual_inspection": "Viewed complete screenshot, read visible Hindi text, checked shaping/wrapping/control containment. Browser automation is separate evidence."
+    },
+    {
+      "file": "initial-captures/1200-profile.png",
+      "width": 1200,
+      "height": 1952,
+      "sha256": "e963d51876f6b56302cca5ec6f9c7e51577f9355fac06b179b0b4cd22ae21ea7",
+      "manual_inspection": "Viewed complete screenshot, read visible Hindi text, checked shaping/wrapping/control containment. Browser automation is separate evidence."
+    },
+    {
+      "file": "initial-captures/1200-signin-error.png",
+      "width": 1200,
+      "height": 1081,
+      "sha256": "70ef049a580ecf275bb5936b70b8815e0ef5b9e7a33c9e473c338ae383b0e388",
+      "manual_inspection": "Viewed complete screenshot, read visible Hindi text, checked shaping/wrapping/control containment. Browser automation is separate evidence."
+    },
+    {
+      "file": "initial-captures/1200-signin.png",
+      "width": 1200,
+      "height": 1013,
+      "sha256": "cc7269c93d79ed1de9486d009344b1fda89a0b13714dc5a66b900d7c37add901",
+      "manual_inspection": "Viewed complete screenshot, read visible Hindi text, checked shaping/wrapping/control containment. Browser automation is separate evidence."
+    },
+    {
+      "file": "initial-captures/390-account.png",
+      "width": 390,
+      "height": 1728,
+      "sha256": "31eb117f0f2f67a172b9b9106688e1fd4a27065c5f0546a57a7b74d6e71e4c9c",
+      "manual_inspection": "Viewed complete screenshot, read visible Hindi text, checked shaping/wrapping/control containment. Browser automation is separate evidence."
+    },
+    {
+      "file": "initial-captures/390-home-first-visit.png",
+      "width": 390,
+      "height": 3548,
+      "sha256": "c2a49969fe3dfb27eb42e03447832eed0ae3d6637ebb6ed54a90076e18b0a61c",
+      "manual_inspection": "Viewed complete screenshot, read visible Hindi text, checked shaping/wrapping/control containment. Browser automation is separate evidence."
+    },
+    {
+      "file": "initial-captures/390-invite.png",
+      "width": 390,
+      "height": 860,
+      "sha256": "2c00040c85b0cb071824908ca2b0e0c4b6e8175892240ed854665923f709a3fc",
+      "manual_inspection": "Viewed complete screenshot, read visible Hindi text, checked shaping/wrapping/control containment. Browser automation is separate evidence."
+    },
+    {
+      "file": "initial-captures/390-leaderboard.png",
+      "width": 390,
+      "height": 1175,
+      "sha256": "fce7eef6f1fddabd99c4b4f42c8c072a824e4881c4ecf5ad2277efcd6889ee11",
+      "manual_inspection": "Viewed complete screenshot, read visible Hindi text, checked shaping/wrapping/control containment. Browser automation is separate evidence."
+    },
+    {
+      "file": "initial-captures/390-maps.png",
+      "width": 390,
+      "height": 3352,
+      "sha256": "e1f5fd4b8a9be106d29ebe08a3abef1dc163f22c20f4823388ddb243e4f05aa1",
+      "manual_inspection": "Viewed complete screenshot, read visible Hindi text, checked shaping/wrapping/control containment. Browser automation is separate evidence."
+    },
+    {
+      "file": "initial-captures/390-match.png",
+      "width": 390,
+      "height": 2943,
+      "sha256": "e22f8dcc41cc0add6c1404781be2e1ea80450134ce66f515415527b757a46130",
+      "manual_inspection": "Viewed complete screenshot, read visible Hindi text, checked shaping/wrapping/control containment. Browser automation is separate evidence."
+    },
+    {
+      "file": "initial-captures/390-matches.png",
+      "width": 390,
+      "height": 1048,
+      "sha256": "09f81bfedd5b3242c280d003e1b888542effdd4368ae4418977dffa9588e5924",
+      "manual_inspection": "Viewed complete screenshot, read visible Hindi text, checked shaping/wrapping/control containment. Browser automation is separate evidence."
+    },
+    {
+      "file": "initial-captures/390-profile.png",
+      "width": 390,
+      "height": 2721,
+      "sha256": "9ab42da2e444895a51cd30c8f75f537e20b6568a57015f7106c4234defb43719",
+      "manual_inspection": "Viewed complete screenshot, read visible Hindi text, checked shaping/wrapping/control containment. Browser automation is separate evidence."
+    },
+    {
+      "file": "initial-captures/390-signin-error.png",
+      "width": 390,
+      "height": 1110,
+      "sha256": "6690f522a707d59f08d876393f145e90049a1f9638e612a7add35bf3e9dc4ecd",
+      "manual_inspection": "Viewed complete screenshot, read visible Hindi text, checked shaping/wrapping/control containment. Browser automation is separate evidence."
+    },
+    {
+      "file": "initial-captures/390-signin.png",
+      "width": 390,
+      "height": 1019,
+      "sha256": "a45a7a7c47f38581ecc6d242f590e96ad05ffc4dd5d089fc8f9f89d137e2c9f5",
+      "manual_inspection": "Viewed complete screenshot, read visible Hindi text, checked shaping/wrapping/control containment. Browser automation is separate evidence."
+    }
+  ],
+  "findings": [
+    {
+      "id": "HI-VIS-001",
+      "topic": "signin_error_suffix",
+      "keys": ", or create an account below",
+      "caller": "platform/apps/api/src/routes/signin.ts",
+      "viewports": [
+        1200,
+        390
+      ],
+      "problem": "English suffix remained in otherwise translated failed-account sign-in error.",
+      "correction": "Translate suffix before interpolating it into diagnostic.",
+      "severity": "major",
+      "state": "resolved-independently-rechecked",
+      "final_catalog_sha256": "18bc06269a91e48ed90b9c08372bbff2c218c245b2823e5aaf6738588a6f9954",
+      "evidence": "Final captures at listed viewports; source-fix-review.json. Leaderboard accessible region additionally verified in actual DOM; no-location invite actual translator cases in invite-runtime-cases.json."
+    },
+    {
+      "id": "HI-VIS-002",
+      "topic": "match_outcome",
+      "keys": "Lost",
+      "caller": "platform/apps/web/src/pages/Match.tsx",
+      "viewports": [
+        1200,
+        390
+      ],
+      "problem": "Match hero status rendered raw LOST though row outcome correctly showed हार.",
+      "correction": "Use localized statusLabel(outcome).",
+      "severity": "major",
+      "state": "resolved-independently-rechecked",
+      "final_catalog_sha256": "18bc06269a91e48ed90b9c08372bbff2c218c245b2823e5aaf6738588a6f9954",
+      "evidence": "Final captures at listed viewports; source-fix-review.json. Leaderboard accessible region additionally verified in actual DOM; no-location invite actual translator cases in invite-runtime-cases.json."
+    },
+    {
+      "id": "HI-VIS-003",
+      "topic": "match_filters",
+      "keys": "All; Rooms",
+      "caller": "platform/apps/web/src/pages/Matches.tsx; platform/apps/web/src/pages/Player.tsx",
+      "viewports": [
+        1200,
+        390
+      ],
+      "problem": "Static match-filter button labels bypassed translation on match and profile pages.",
+      "correction": "Translate static labels, preserve authored queue names.",
+      "severity": "major",
+      "state": "resolved-independently-rechecked",
+      "final_catalog_sha256": "18bc06269a91e48ed90b9c08372bbff2c218c245b2823e5aaf6738588a6f9954",
+      "evidence": "Final captures at listed viewports; source-fix-review.json. Leaderboard accessible region additionally verified in actual DOM; no-location invite actual translator cases in invite-runtime-cases.json."
+    },
+    {
+      "id": "HI-VIS-004",
+      "topic": "delete_prompt",
+      "keys": "Type your name, ; , to confirm",
+      "caller": "platform/apps/web/src/pages/Account.tsx:160",
+      "viewports": [
+        1200,
+        390
+      ],
+      "problem": "Grid-separated fragments produced अपना नाम लिखें, / Kestrel / , पुष्टि करने के लिए.",
+      "correction": "Use existing complete Type your display name exactly to confirm. message plus isolated display name.",
+      "severity": "minor",
+      "state": "resolved-independently-rechecked",
+      "final_catalog_sha256": "18bc06269a91e48ed90b9c08372bbff2c218c245b2823e5aaf6738588a6f9954",
+      "evidence": "Final captures at listed viewports; source-fix-review.json. Leaderboard accessible region additionally verified in actual DOM; no-location invite actual translator cases in invite-runtime-cases.json."
+    },
+    {
+      "id": "HI-VIS-005",
+      "topic": "profile_legends",
+      "keys": "This match; Average",
+      "caller": "platform/apps/web/src/pages/Player.tsx:98",
+      "viewports": [
+        1200,
+        390
+      ],
+      "problem": "Economy chart legends remained English.",
+      "correction": "Translate This match; use existing {value0}’s average with actual human/AI profile displayName. Reviewer initially assumed generic Average was an online key; source checker disproved this and no new key was invented.",
+      "severity": "major",
+      "state": "resolved-independently-rechecked",
+      "final_catalog_sha256": "18bc06269a91e48ed90b9c08372bbff2c218c245b2823e5aaf6738588a6f9954",
+      "evidence": "Final captures at listed viewports; source-fix-review.json. Leaderboard accessible region additionally verified in actual DOM; no-location invite actual translator cases in invite-runtime-cases.json."
+    },
+    {
+      "id": "HI-VIS-006",
+      "topic": "best_dimension",
+      "keys": "Best {slot0}",
+      "caller": "platform/apps/web/src/pages/Player.tsx:242",
+      "viewports": [
+        1200,
+        390
+      ],
+      "problem": "Known protocol dimension map rendered literally as सबसे अच्छा map.",
+      "correction": "Translate recognized Map/Generator labels and preserve authored queue label/key.",
+      "severity": "major",
+      "state": "resolved-independently-rechecked",
+      "final_catalog_sha256": "18bc06269a91e48ed90b9c08372bbff2c218c245b2823e5aaf6738588a6f9954",
+      "evidence": "Final captures at listed viewports; source-fix-review.json. Leaderboard accessible region additionally verified in actual DOM; no-location invite actual translator cases in invite-runtime-cases.json."
+    },
+    {
+      "id": "HI-VIS-007",
+      "topic": "optional_slot",
+      "keys": "{slot0} · playing since {slot1}{slot2}",
+      "caller": "platform/apps/web/src/pages/Player.tsx:369; platform/apps/web/src/i18n.tsx",
+      "viewports": [
+        1200,
+        390
+      ],
+      "problem": "Explicit undefined optional React slot leaked literal {slot2} into profile header.",
+      "correction": "Respect present-own null/undefined as empty React children; fallback placeholder only for absent own property.",
+      "severity": "major",
+      "state": "resolved-independently-rechecked",
+      "final_catalog_sha256": "18bc06269a91e48ed90b9c08372bbff2c218c245b2823e5aaf6738588a6f9954",
+      "evidence": "Final captures at listed viewports; source-fix-review.json. Leaderboard accessible region additionally verified in actual DOM; no-location invite actual translator cases in invite-runtime-cases.json."
+    },
+    {
+      "id": "HI-VIS-008",
+      "topic": "invite_location",
+      "keys": "{p0} invited you to their Globulation 2 room{p1}.",
+      "caller": "platform/apps/api/src/routes/invite.ts:95",
+      "viewports": [
+        1200,
+        390
+      ],
+      "problem": "Optional translated on-server clause followed room noun, producing पर में in Hindi.",
+      "correction": "Move p1 before own-room clause in exact Hindi message; verify present and absent location.",
+      "severity": "major",
+      "state": "resolved-independently-rechecked",
+      "final_catalog_sha256": "18bc06269a91e48ed90b9c08372bbff2c218c245b2823e5aaf6738588a6f9954",
+      "evidence": "Final captures at listed viewports; source-fix-review.json. Leaderboard accessible region additionally verified in actual DOM; no-location invite actual translator cases in invite-runtime-cases.json."
+    },
+    {
+      "id": "HI-VIS-009",
+      "topic": "join_containment",
+      "keys": "Code or invite link",
+      "caller": "platform/apps/web/src/styles/home.css:83",
+      "viewports": [
+        390
+      ],
+      "problem": "Input right edge355px exceeded form edge341px by14px while document overflow check stayed0.",
+      "correction": "Allow label/input shrink and width100% within form.",
+      "severity": "minor",
+      "state": "resolved-independently-rechecked",
+      "final_catalog_sha256": "18bc06269a91e48ed90b9c08372bbff2c218c245b2823e5aaf6738588a6f9954",
+      "evidence": "Final captures at listed viewports; source-fix-review.json. Leaderboard accessible region additionally verified in actual DOM; no-location invite actual translator cases in invite-runtime-cases.json."
+    },
+    {
+      "id": "HI-VIS-010",
+      "topic": "leaderboard_region",
+      "keys": "Leaderboard participants",
+      "caller": "platform/apps/web/src/pages/Leaderboard.tsx:180",
+      "viewports": [
+        1200,
+        390
+      ],
+      "problem": "Named table region exposed raw players suffix in accessible name.",
+      "correction": "Use existing translated region name.",
+      "severity": "major",
+      "state": "resolved-independently-rechecked",
+      "final_catalog_sha256": "18bc06269a91e48ed90b9c08372bbff2c218c245b2823e5aaf6738588a6f9954",
+      "evidence": "Final captures at listed viewports; source-fix-review.json. Leaderboard accessible region additionally verified in actual DOM; no-location invite actual translator cases in invite-runtime-cases.json."
+    },
+    {
+      "id": "HI-VIS-011",
+      "topic": "rating_delta",
+      "keys": "Change",
+      "caller": "platform/apps/web/src/pages/Match.tsx:130; platform/apps/web/src/admin/Overview.tsx:317",
+      "viewports": [
+        1200
+      ],
+      "problem": "Numeric delta column used imperative बदलें rather than noun बदलाव.",
+      "correction": "Change exact Hindi value to बदलाव; both callers are numeric headings.",
+      "severity": "minor",
+      "state": "resolved-independently-rechecked",
+      "final_catalog_sha256": "18bc06269a91e48ed90b9c08372bbff2c218c245b2823e5aaf6738588a6f9954",
+      "evidence": "Final captures at listed viewports; source-fix-review.json. Leaderboard accessible region additionally verified in actual DOM; no-location invite actual translator cases in invite-runtime-cases.json."
+    }
+  ],
+  "manual_visual_conclusions": [
+    "No visible tofu, missing Devanagari glyphs or broken conjunct/shirorekha shaping found in these20 screenshots.",
+    "Hindi headings, labels, help and notices generally wrap legibly at390; identified home Join form containment defect was not caught by document-overflow=0.",
+    "Name/title ellipses in mobile match/map summaries are intentional responsive truncation of authored data, not missing translation.",
+    "Match numeric result tables are named, focusable horizontal-scroll regions; independent browser geometry verified scrollability, so offscreen rating/delta columns remain reachable.",
+    "Leaderboard phone win-rate column is deliberately hide-phone; not accidental clipping."
+  ],
+  "independent_readonly_geometry": {
+    "runtime": "Chromium via existing Playwright dependency",
+    "viewport": {
+      "width": 390,
+      "height": 860
+    },
+    "home": {
+      "form_left": 121,
+      "form_right": 341,
+      "input_left": 134,
+      "input_right": 355,
+      "document_overflow": 0
+    },
+    "match_regions": [
+      {
+        "name": "खिलाड़ी और परिणाम",
+        "clientWidth": 284,
+        "scrollWidth": 343,
+        "tabIndex": 0,
+        "programmatic_horizontal_scroll": true
+      },
+      {
+        "name": "अंतिम आँकड़े",
+        "clientWidth": 284,
+        "scrollWidth": 297,
+        "tabIndex": 0,
+        "programmatic_horizontal_scroll": true
+      }
+    ]
+  },
+  "accepted_English_and_data": [
+    "Authored map titles, player names, configured queue names, product names and technical version IDs are data/proper names and remain unchanged.",
+    "Profile W/L/D compact outcome notation has localized screen-reader won/lost/draw text; retained as explicit conventional notation, not untranslated prose.",
+    "Unknown seed-only final statistics unitsProduced/buildingsBuilt/unitsLost were not emitted by current engine. Source Headless.cpp349–358 and engineCli.ts523–539 establish known current keys; parent corrected history fixture to current producer fields without inventing catalog keys. Dedicated unknown-field compatibility test remains; arbitrary future/historical extension data are not claimed universally localized."
+  ],
+  "source_fix_review": "Inspected root patches: static names translated, optional slots safe through Object.hasOwn, arrays/HTML-safe ReactNode behavior preserved, input containment CSS only, account confirmation behavior unchanged, no queue/map authored-name rewriting.",
+  "automation_report": "Final hash-bound results:20 font-loaded,0 document-overflow,0 axe violations;21st failed-catalog-retry passed. Independent manual reading and DOM containment/accessibility checks supplement automation.",
+  "pending": [],
+  "limits": [
+    "Emulated desktop/phone viewport in local Chromium, not real mobile hardware.",
+    "Isolated fixture overlay and seeded API, not a shipped/release registration.",
+    "No native game rendering, authenticated purchase or destructive account deletion behavior claim.",
+    "No native-human linguistic certification or platform/locale finalization.",
+    "Absent-location invite uses actual translator and inspected caller branch; no independent absent-location HTTP-server launch.",
+    "Subsequent core resolveLocale written-script fix is independently source-reviewed separately; these captures do not verify that later startup resolver revision."
+  ],
+  "catalog_edited_by_reviewer": false,
+  "locale_finalized": false,
+  "capture_provenance_hold": "Resolved: initial stale build/capture mismatch was not accepted. Parent explicitly confirmed final run completed, then reviewer verified build identity and all20 per-image hashes before manual final reading.",
+  "final_run_identity": {
+    "started_utc": "2026-10-31T15:33:10.501Z",
+    "build_identity_sha256": "7cf0a5f4ef65378e39a1e5c92f0247c084958f55f22d48ca5b322692547400d5",
+    "catalog_sha256": "18bc06269a91e48ed90b9c08372bbff2c218c245b2823e5aaf6738588a6f9954",
+    "server": {
+      "catalog_sha256": "18bc06269a91e48ed90b9c08372bbff2c218c245b2823e5aaf6738588a6f9954",
+      "source_sha256": {
+        "../../../platform/apps/api/src/web/pages.ts": "8465498fcaeaa877efc77c903bfe86d139918cae0c8bd7697239cfc1ca7f132b",
+        "../../../platform/apps/api/src/routes/signin.ts": "ca8a806ca5dbc356de5e1aec2cc35e43d81f6fa4be1b6c09e1a8dfbbbe077835",
+        "../../../platform/apps/api/test/historySeed.ts": "2132adfd455661cc26e7328ddabdfe9d3c78cd51e6979b56f71fe7fbae7a6244"
+      }
+    }
+  },
+  "final_images": [
+    {
+      "file": "final-captures/1200-home-first-visit.png",
+      "width": 1200,
+      "sha256": "b1e2221e8e85587a1111137998bd94942dc69ab4950b89b84e0d6804a9efb741",
+      "manual_inspection": "Complete refreshed capture manually viewed and visible Hindi read; shaping, wrapping, control containment and initial finding corrections inspected.",
+      "result": "pass"
+    },
+    {
+      "file": "final-captures/1200-signin.png",
+      "width": 1200,
+      "sha256": "cc7269c93d79ed1de9486d009344b1fda89a0b13714dc5a66b900d7c37add901",
+      "manual_inspection": "Complete refreshed capture manually viewed and visible Hindi read; shaping, wrapping, control containment and initial finding corrections inspected.",
+      "result": "pass"
+    },
+    {
+      "file": "final-captures/1200-signin-error.png",
+      "width": 1200,
+      "sha256": "90f9c0118f5dd346654ef4160b2e0b1f4beaf1a576134e8119c4f27f93a9b968",
+      "manual_inspection": "Complete refreshed capture manually viewed and visible Hindi read; shaping, wrapping, control containment and initial finding corrections inspected.",
+      "result": "pass"
+    },
+    {
+      "file": "final-captures/1200-account.png",
+      "width": 1200,
+      "sha256": "dde80a0ff809a6e76da16f378a40a7f4f143bdb5282482ff94ae94bae6f8657b",
+      "manual_inspection": "Complete refreshed capture manually viewed and visible Hindi read; shaping, wrapping, control containment and initial finding corrections inspected.",
+      "result": "pass"
+    },
+    {
+      "file": "final-captures/1200-matches.png",
+      "width": 1200,
+      "sha256": "85ccba86c89d8b5e96f39bf6b7386a540c8b677dcdfe710b30bc662f983e44ae",
+      "manual_inspection": "Complete refreshed capture manually viewed and visible Hindi read; shaping, wrapping, control containment and initial finding corrections inspected.",
+      "result": "pass"
+    },
+    {
+      "file": "final-captures/1200-match.png",
+      "width": 1200,
+      "sha256": "63da6933ed6990e718c4914435207bb8cfdc0fd321ab2cd659a2a540909f1437",
+      "manual_inspection": "Complete refreshed capture manually viewed and visible Hindi read; shaping, wrapping, control containment and initial finding corrections inspected.",
+      "result": "pass"
+    },
+    {
+      "file": "final-captures/1200-profile.png",
+      "width": 1200,
+      "sha256": "5d162d270dc153bc552d3a91ec42832ae3c83fe72d313797c06fbeb95d3914e3",
+      "manual_inspection": "Complete refreshed capture manually viewed and visible Hindi read; shaping, wrapping, control containment and initial finding corrections inspected.",
+      "result": "pass"
+    },
+    {
+      "file": "final-captures/1200-leaderboard.png",
+      "width": 1200,
+      "sha256": "99367a40cca975c40be3ae818089306c30d750ea2c45e9158ade34fe267e4fe3",
+      "manual_inspection": "Complete refreshed capture manually viewed and visible Hindi read; shaping, wrapping, control containment and initial finding corrections inspected.",
+      "result": "pass"
+    },
+    {
+      "file": "final-captures/1200-maps.png",
+      "width": 1200,
+      "sha256": "0d56f21f46bf384c043a626a87e7c1ef522fa1874174e571962e50bc08bcbc7d",
+      "manual_inspection": "Complete refreshed capture manually viewed and visible Hindi read; shaping, wrapping, control containment and initial finding corrections inspected.",
+      "result": "pass"
+    },
+    {
+      "file": "final-captures/1200-invite.png",
+      "width": 1200,
+      "sha256": "52ea97dd6ee20f11c2309bc2dfd972bfca52d2f3d48418e8db990da1998b62c9",
+      "manual_inspection": "Complete refreshed capture manually viewed and visible Hindi read; shaping, wrapping, control containment and initial finding corrections inspected.",
+      "result": "pass"
+    },
+    {
+      "file": "final-captures/390-home-first-visit.png",
+      "width": 390,
+      "sha256": "f460a478580a1a80b3b29458299374f737fc14c4ba658159b77d7e4b2b8d8a0b",
+      "manual_inspection": "Complete refreshed capture manually viewed and visible Hindi read; shaping, wrapping, control containment and initial finding corrections inspected.",
+      "result": "pass"
+    },
+    {
+      "file": "final-captures/390-signin.png",
+      "width": 390,
+      "sha256": "a45a7a7c47f38581ecc6d242f590e96ad05ffc4dd5d089fc8f9f89d137e2c9f5",
+      "manual_inspection": "Complete refreshed capture manually viewed and visible Hindi read; shaping, wrapping, control containment and initial finding corrections inspected.",
+      "result": "pass"
+    },
+    {
+      "file": "final-captures/390-signin-error.png",
+      "width": 390,
+      "sha256": "6154bb3f099b44bcea86692e0ee94339c9b28ede2d89474206456fbfc5f3799d",
+      "manual_inspection": "Complete refreshed capture manually viewed and visible Hindi read; shaping, wrapping, control containment and initial finding corrections inspected.",
+      "result": "pass"
+    },
+    {
+      "file": "final-captures/390-account.png",
+      "width": 390,
+      "sha256": "c87869d68df4095a2ae11b1e3580fbfb04d64dfd9b338bba0bf3e200342e5b1e",
+      "manual_inspection": "Complete refreshed capture manually viewed and visible Hindi read; shaping, wrapping, control containment and initial finding corrections inspected.",
+      "result": "pass"
+    },
+    {
+      "file": "final-captures/390-matches.png",
+      "width": 390,
+      "sha256": "c07fee9c113896b5c35d14b3fa9cb432bc3cb2bcfdbb291972eb5dc17c1c77b9",
+      "manual_inspection": "Complete refreshed capture manually viewed and visible Hindi read; shaping, wrapping, control containment and initial finding corrections inspected.",
+      "result": "pass"
+    },
+    {
+      "file": "final-captures/390-match.png",
+      "width": 390,
+      "sha256": "60324698187612d7235d0b2616036cf64e55a11a5cf8393a125148a3facb2482",
+      "manual_inspection": "Complete refreshed capture manually viewed and visible Hindi read; shaping, wrapping, control containment and initial finding corrections inspected.",
+      "result": "pass"
+    },
+    {
+      "file": "final-captures/390-profile.png",
+      "width": 390,
+      "sha256": "97d08eab835dcb0f27d780cdfdd035adaf029b48abd42cbc8ac13e5f357d669e",
+      "manual_inspection": "Complete refreshed capture manually viewed and visible Hindi read; shaping, wrapping, control containment and initial finding corrections inspected.",
+      "result": "pass"
+    },
+    {
+      "file": "final-captures/390-leaderboard.png",
+      "width": 390,
+      "sha256": "7ae28a91504f25c9931a8bf13073203a8ea194927dfee40ae9a757f6e0d23321",
+      "manual_inspection": "Complete refreshed capture manually viewed and visible Hindi read; shaping, wrapping, control containment and initial finding corrections inspected.",
+      "result": "pass"
+    },
+    {
+      "file": "final-captures/390-maps.png",
+      "width": 390,
+      "sha256": "e1f5fd4b8a9be106d29ebe08a3abef1dc163f22c20f4823388ddb243e4f05aa1",
+      "manual_inspection": "Complete refreshed capture manually viewed and visible Hindi read; shaping, wrapping, control containment and initial finding corrections inspected.",
+      "result": "pass"
+    },
+    {
+      "file": "final-captures/390-invite.png",
+      "width": 390,
+      "sha256": "d33d8d65713b366fa36a6338c1a03a73dca03b392381ae87952070167fdab22f",
+      "manual_inspection": "Complete refreshed capture manually viewed and visible Hindi read; shaping, wrapping, control containment and initial finding corrections inspected.",
+      "result": "pass"
+    }
+  ],
+  "final_readonly_dom_recheck": {
+    "viewport": {
+      "width": 390,
+      "height": 860
+    },
+    "home": {
+      "form_left": 121,
+      "form_right": 341,
+      "input_left": 134,
+      "input_right": 328,
+      "contained": true
+    },
+    "leaderboard_region": {
+      "name": "रैंकिंग के प्रतिभागी",
+      "tabIndex": 0
+    }
+  },
+  "open_findings": 0,
+  "review_status": "passed-for-tested-isolated-app-scope"
+}

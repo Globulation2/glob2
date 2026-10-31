@@ -1,0 +1,271 @@
+{
+  "reviewer": "/root/hindi_online_review",
+  "status": "partial; desktop production images manually read, phone pending",
+  "producer_revision": "92205aae687b650ed8b9aea4b31265f0ff6b7301",
+  "native_sha256": "444c71c1bf3105cf775cf50515af169a477a2a3db2c2d6a3c031b000c3920d27",
+  "executable_sha256": "0cc55b27ae690334c60178a8de2fe8454a2eee1c3623fefbef51875b4ce83fca",
+  "manually_read": [
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/ur/1200/main.png",
+      "sha256": "24998f1c9f8147f49e4771f8b34ce36ab6b03ee9da8b531c063d3ca604066649",
+      "bytes": 1148511,
+      "width": 1200,
+      "height": 844
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/ur/1200/settings.png",
+      "sha256": "3a32117c321ce89f5ca141974e37b994395e00aaa63a5a2864491a1ddab36993",
+      "bytes": 540840,
+      "width": 1200,
+      "height": 844
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/ur/1200/settings-audio.png",
+      "sha256": "d444f6ab2f2bb379ecbba5cb31e4b750559be94540fc0e8b08f4a379a9c75d7a",
+      "bytes": 528983,
+      "width": 1200,
+      "height": 844
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/ur/1200/lobby.png",
+      "sha256": "9fab0fe7c935e75c29e7c3baa0d4874e740845f5ab6dc304b48fe05987b82062",
+      "bytes": 231773,
+      "width": 1200,
+      "height": 844
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/ur/1200/lobby-players.png",
+      "sha256": "d99eaa43cad6e78464390b5341cd1f7b492473ce248d593f34630d9a5611b06e",
+      "bytes": 240801,
+      "width": 1200,
+      "height": 844
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/ur/1200/gameplay-dialog.png",
+      "sha256": "59e0867c29b89cd0c88d8353d6a1fdcd7174cb2f00a07ace96568424616f0786",
+      "bytes": 544737,
+      "width": 2400,
+      "height": 1688
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/ur/1200/gameplay-zoom-fit.png",
+      "sha256": "fc9aabc13f3c9f729a48395691b05a707addb4aaa5b46ad7fabacba32f4105d4",
+      "bytes": 110129,
+      "width": 2400,
+      "height": 1688
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/ur/1200/gameplay-zoom-plus.png",
+      "sha256": "3fe78e1f9c9e3db50b1584707089e142d3102c176ae6f07de7d7d4dab8862f4e",
+      "bytes": 918711,
+      "width": 2400,
+      "height": 1688
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/ur/1200/gameplay.png",
+      "sha256": "15f567aa9fe17022f144f0b65433ed3586bea1ac49b4c33bbed1cd35abf13977",
+      "bytes": 725777,
+      "width": 2400,
+      "height": 1688
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/ur/1200/tutorial-introduction-briefing.png",
+      "sha256": "8b8e4575a7887407185583a8055b42d909f9658194307b87eb572b04436727c8",
+      "bytes": 905028,
+      "width": 2400,
+      "height": 1688
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/ur/1200/tutorial-introduction-dialog.png",
+      "sha256": "6c300646ac6cebcbce3b05e5a54d24e1957bdedb4d37682a8085e7755e3b8706",
+      "bytes": 520662,
+      "width": 2400,
+      "height": 1688
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/ur/1200/tutorial-introduction.png",
+      "sha256": "a9b9b495a3cecd95355576223e68a7231634533ccf078b9d0b6ff78448a5d226",
+      "bytes": 997834,
+      "width": 2400,
+      "height": 1688
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/ur/1200/tutorial-food-supply-dialog.png",
+      "sha256": "48915e94588d3cc0bed738ee77de350325149c3b2e5ec3730e8cf5435a1f2239",
+      "bytes": 521864,
+      "width": 2400,
+      "height": 1688
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/ur/1200/tutorial-food-supply.png",
+      "sha256": "aa3b99914d867da41e022ab0c3d7e450797c91fd810eedd202dd6e55750928f5",
+      "bytes": 985926,
+      "width": 2400,
+      "height": 1688
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/ur/1200/tutorial-healing-briefing.png",
+      "sha256": "0a4c4a21184a842d670c3d71b91e145749bbbf00198c753cfb7ab571f363f285",
+      "bytes": 914719,
+      "width": 2400,
+      "height": 1688
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/ur/1200/tutorial-healing-dialog.png",
+      "sha256": "848347189361fc454403c7334bcce7564e47176387b640429418108582e1d308",
+      "bytes": 526011,
+      "width": 2400,
+      "height": 1688
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/ur/1200/tutorial-healing.png",
+      "sha256": "6f1c4f20937acf3e721acfd4d316588e3ef760370249565b434fb1e5f7ec81fb",
+      "bytes": 974426,
+      "width": 2400,
+      "height": 1688
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/ur/1200/tutorial-walking-training-briefing.png",
+      "sha256": "91a41f27ce3ca44ec244eda0c1e4fa1e850423cccd8dc9d9bf54d06b3a1447f2",
+      "bytes": 930355,
+      "width": 2400,
+      "height": 1688
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/ur/1200/tutorial-walking-training-dialog.png",
+      "sha256": "302ea2692ee3ce113cbc72765abbd326f8ed9ede5da59d5195eb116306dd068b",
+      "bytes": 527459,
+      "width": 2400,
+      "height": 1688
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/ur/1200/tutorial-walking-training.png",
+      "sha256": "7cf4ced31e5de3c27cef138b30f9ca4f0baa8ed7e91a429c5a27aedbb6790ca5",
+      "bytes": 981470,
+      "width": 2400,
+      "height": 1688
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/ur/1200/tutorial-swimming-briefing.png",
+      "sha256": "c1a8c7463dd3bdbf9c9b5f6397a49e5208f030e91c6fdab9f459b2e038e4a0e8",
+      "bytes": 940917,
+      "width": 2400,
+      "height": 1688
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/ur/1200/tutorial-swimming-dialog.png",
+      "sha256": "e6780222856756085eca1b28db91434bfbd043a85dd3f45f5c87d8c3a99f6f9d",
+      "bytes": 530168,
+      "width": 2400,
+      "height": 1688
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/ur/1200/tutorial-swimming.png",
+      "sha256": "a771834beb7997927a3b15e6a6f75f4463826e2b9f14ec5fcf9fad511974a134",
+      "bytes": 997022,
+      "width": 2400,
+      "height": 1688
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/ur/1200/tutorial-schools-briefing.png",
+      "sha256": "562882f7036859dce66126df685c18830c09d085fa6164d660d233cf94baa4fd",
+      "bytes": 911163,
+      "width": 2400,
+      "height": 1688
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/ur/1200/tutorial-schools-dialog.png",
+      "sha256": "d0b2820b4fa9d2d9416d6cd9dc9e9f1e6a0be57e84f80f90c35e827ae547a759",
+      "bytes": 527246,
+      "width": 2400,
+      "height": 1688
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/ur/1200/tutorial-schools.png",
+      "sha256": "32a4de2144230983dd2f3af922d664c9dbcb9c6a9b196729c769bc044175d78e",
+      "bytes": 977001,
+      "width": 2400,
+      "height": 1688
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/ur/1200/tutorial-upgrades-dialog.png",
+      "sha256": "0a8b931f0b9a6a7c6be2cc2c5a2af859a79567792b6dae7b473c6a9165ba46da",
+      "bytes": 533599,
+      "width": 2400,
+      "height": 1688
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/ur/1200/tutorial-upgrades.png",
+      "sha256": "0cec7f10ca359a464aa99ef2626a861fe106e096fa141c716c279837965d8ab7",
+      "bytes": 1014047,
+      "width": 2400,
+      "height": 1688
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/ur/1200/tutorial-warrior-training-briefing.png",
+      "sha256": "a4b175256511b0a4864ab8ac098eae377310a5c2dda5ab2a391fc61008de5a95",
+      "bytes": 933347,
+      "width": 2400,
+      "height": 1688
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/ur/1200/tutorial-warrior-training-dialog.png",
+      "sha256": "ac92262bb9333bccba8805415f58cbc96cb42b037ba1f76318d1ad7bc6fde552",
+      "bytes": 523076,
+      "width": 2400,
+      "height": 1688
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/ur/1200/tutorial-warrior-training.png",
+      "sha256": "5fa64732f5b4f17d941091e0176e721c51b422a271e34a39f9283625ba09423d",
+      "bytes": 1001746,
+      "width": 2400,
+      "height": 1688
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/ur/1200/tutorial-fortifications-briefing.png",
+      "sha256": "9ce78d69835faadf17b1fb4709a588688b4b4f460224997c11283d1ba85b12c8",
+      "bytes": 934920,
+      "width": 2400,
+      "height": 1688
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/ur/1200/tutorial-fortifications-dialog.png",
+      "sha256": "12d88c469d28a7d2553e2287df880f8a34fa28c1138d7ef055b517eed330daad",
+      "bytes": 530391,
+      "width": 2400,
+      "height": 1688
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/ur/1200/tutorial-fortifications.png",
+      "sha256": "fb6f9603ff8e771e4a9cfc2013152aa33ed75c6b73a51be3383d62a2e7d612e9",
+      "bytes": 972591,
+      "width": 2400,
+      "height": 1688
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/ur/1200/tutorial-defensive-tactics-briefing.png",
+      "sha256": "3563cd55064328344fab36fa413f4ccc91ef262021fbe571188237474f648a37",
+      "bytes": 961554,
+      "width": 2400,
+      "height": 1688
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/ur/1200/tutorial-defensive-tactics-dialog.png",
+      "sha256": "3ee63cce8973e8ba0e7fbc5ed41b726e6b6f56f6526e5f5ee5552626af55eee8",
+      "bytes": 534838,
+      "width": 2400,
+      "height": 1688
+    },
+    {
+      "path": "artifacts/translation-program/native-preview/release-final/ur/1200/tutorial-defensive-tactics.png",
+      "sha256": "1529a5668e2b8fe43d108b2d697d32935fcfe2602827f6d6ea4d4544242a62f4",
+      "bytes": 1013685,
+      "width": 2400,
+      "height": 1688
+    }
+  ],
+  "count": 37,
+  "findings": [],
+  "method": "Fresh actual full-resolution screenshots read individually; no automation substitutes for manual reading. Matrix96 corrected workflow samples separately recorded in final-matrix-review.json."
+}

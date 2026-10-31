@@ -1,0 +1,15 @@
+{
+  "editor": "/root",
+  "requested_by": "/root/hindi_online_review",
+  "before_sha256": "663e69ca40b04f70a35e9261266a0440a3dd1b8159699b1fb370f86f09232989",
+  "after_sha256": "78627bc06a884a784f239b17008727562e3571c756b934559b9f6d3dad9286f4",
+  "changes": [
+    {
+      "key": "The 3D shader could not compile.",
+      "before": "Programu ya kuonyesha uso wa 3D (shader) haikuweza kutayarishwa.",
+      "after": "Programu ya kuonyesha uso wa 3D (shader) haikuweza kukusanywa.",
+      "reason": "Preserve source compile-stage diagnosis and align native Compile/Kusanya msimbo; original reviewer requested correction."
+    }
+  ],
+  "status": "pending-original-reviewer-recheck"
+}

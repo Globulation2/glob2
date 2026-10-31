@@ -1,0 +1,5861 @@
+{
+  "kind": "actual-app-three-draft-overlay",
+  "run_identity": {
+    "checker_sha256": "958fe8f1c7cd2e45559a10efa9da1a67d521b6768ebb88ddf787e081851b59b1",
+    "started_utc": "2026-10-31T17:13:19.165Z",
+    "catalog_sha256": {
+      "hi": "d80bdd87f3502c34e45ae744d8e0f8bac3cafd93755a5ef87e0bed8bec3d74c4",
+      "ur": "db375ee564c39cf02dfb4ce08d6a4dbaecb8cd69d5bc7f167b4c7f779e246587",
+      "sw": "6914cbf226adebd70d3ff401cfda759b62b62cc8af621b25f4ba994a8e0bec0a"
+    },
+    "build_identity_sha256": "6445c77f4b8e480eb49e3dcc7ff97de623069c3a6f15d1a5075797f03c9094c5",
+    "server": {
+      "catalog_sha256": {
+        "hi": "d80bdd87f3502c34e45ae744d8e0f8bac3cafd93755a5ef87e0bed8bec3d74c4",
+        "ur": "db375ee564c39cf02dfb4ce08d6a4dbaecb8cd69d5bc7f167b4c7f779e246587",
+        "sw": "6914cbf226adebd70d3ff401cfda759b62b62cc8af621b25f4ba994a8e0bec0a"
+      },
+      "source_sha256": {
+        "../../../platform/packages/i18n/src/index.ts": "5f01c60c26795b599218c781194bdafb060b742f1b1ae04a16617dd5f2a1080e",
+        "../../../platform/apps/api/src/web/pages.ts": "be26854babcf09335c422fc2e08007d3013bfc8e356b2238b0f08551ae20b104",
+        "../../../platform/apps/api/src/routes/signin.ts": "a5711937ceb02407ffccd313b4aa2fd074e7eae828614d77b7ff939def025721",
+        "../../../platform/apps/api/test/historySeed.ts": "2132adfd455661cc26e7328ddabdfe9d3c78cd51e6979b56f71fe7fbae7a6244"
+      }
+    }
+  },
+  "results": [
+    {
+      "name": "home-hero-control-and-text-containment",
+      "locale": "hi",
+      "width": 1200,
+      "geometry": [
+        {
+          "text": "ब्राउज़र में खेलें",
+          "box": {
+            "x": 321,
+            "y": 167.515625,
+            "width": 281.390625,
+            "height": 54,
+            "top": 167.515625,
+            "right": 602.390625,
+            "bottom": 221.515625,
+            "left": 321
+          },
+          "outer": {
+            "x": 296,
+            "y": 48,
+            "width": 620,
+            "height": 432.0625,
+            "top": 48,
+            "right": 916,
+            "bottom": 480.0625,
+            "left": 296
+          },
+          "texts": [
+            {
+              "text": "ब्राउज़र में खेलें",
+              "rect": {
+                "x": 430.265625,
+                "y": 181.71875,
+                "width": 92.84375,
+                "height": 24,
+                "top": 181.71875,
+                "right": 523.109375,
+                "bottom": 205.71875,
+                "left": 430.265625
+              }
+            }
+          ]
+        },
+        {
+          "text": "डाउनलोड करें",
+          "box": {
+            "x": 614.390625,
+            "y": 167.515625,
+            "width": 276.609375,
+            "height": 54,
+            "top": 167.515625,
+            "right": 891,
+            "bottom": 221.515625,
+            "left": 614.390625
+          },
+          "outer": {
+            "x": 296,
+            "y": 48,
+            "width": 620,
+            "height": 432.0625,
+            "top": 48,
+            "right": 916,
+            "bottom": 480.0625,
+            "left": 296
+          },
+          "texts": [
+            {
+              "text": "डाउनलोड करें",
+              "rect": {
+                "x": 723.671875,
+                "y": 181.71875,
+                "width": 88.046875,
+                "height": 24,
+                "top": 181.71875,
+                "right": 811.71875,
+                "bottom": 205.71875,
+                "left": 723.671875
+              }
+            }
+          ]
+        }
+      ],
+      "passed": true
+    },
+    {
+      "locale": "hi",
+      "width": 1200,
+      "name": "home-first-visit",
+      "url": "http://127.0.0.1:4322/",
+      "screenshot": "hi-1200-home-first-visit.png",
+      "screenshot_sha256": "ee94e37c319979f526655d9181a94bcc11a725f3d06e0827bea3b1a81c3ca48e",
+      "lang": "hi",
+      "dir": "ltr",
+      "heading": [
+        "बस्ती में स्वागत है"
+      ],
+      "font": {
+        "loaded": true,
+        "body": "\"Glob2 Scripts\", \"Nunito Variable\", Nunito, ui-rounded, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif",
+        "heading": "\"Glob2 Scripts\", \"Glob2 Sans\", \"DejaVu Sans\", Verdana, sans-serif"
+      },
+      "overflow": 0,
+      "axe": []
+    },
+    {
+      "locale": "hi",
+      "width": 1200,
+      "name": "signin",
+      "url": "http://127.0.0.1:4322/signin",
+      "screenshot": "hi-1200-signin.png",
+      "screenshot_sha256": "f58c8735af454cc0633e7c59cb3a7f10fa2ba9eeb77c362632689eff3a6ec9e3",
+      "lang": "hi",
+      "dir": "ltr",
+      "heading": [
+        "साइन इन करें"
+      ],
+      "font": {
+        "loaded": true,
+        "body": "\"Glob2 Scripts\", \"Nunito Variable\", Nunito, ui-rounded, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif",
+        "heading": "\"Glob2 Scripts\", \"Glob2 Sans\", \"DejaVu Sans\", Verdana, sans-serif"
+      },
+      "overflow": 0,
+      "axe": []
+    },
+    {
+      "locale": "hi",
+      "width": 1200,
+      "name": "signin-error",
+      "url": "http://127.0.0.1:4322/signin/local",
+      "screenshot": "hi-1200-signin-error.png",
+      "screenshot_sha256": "ee3536d1e8d03f1a02f8944e295607ebd1aaed38528999a386fd61e34f3b9eae",
+      "lang": "hi",
+      "dir": "ltr",
+      "heading": [
+        "साइन इन करें"
+      ],
+      "font": {
+        "loaded": true,
+        "body": "\"Glob2 Scripts\", \"Nunito Variable\", Nunito, ui-rounded, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif",
+        "heading": "\"Glob2 Scripts\", \"Glob2 Sans\", \"DejaVu Sans\", Verdana, sans-serif"
+      },
+      "overflow": 0,
+      "axe": []
+    },
+    {
+      "locale": "hi",
+      "width": 1200,
+      "name": "account",
+      "url": "http://127.0.0.1:4322/account",
+      "screenshot": "hi-1200-account.png",
+      "screenshot_sha256": "4291ebd135ce85fd793dcb9cb98687e6f01000983986b5159dc31da0fec570ce",
+      "lang": "hi",
+      "dir": "ltr",
+      "heading": [
+        "आपका खाता"
+      ],
+      "font": {
+        "loaded": true,
+        "body": "\"Glob2 Scripts\", \"Nunito Variable\", Nunito, ui-rounded, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif",
+        "heading": "\"Glob2 Scripts\", \"Glob2 Sans\", \"DejaVu Sans\", Verdana, sans-serif"
+      },
+      "overflow": 0,
+      "axe": []
+    },
+    {
+      "locale": "hi",
+      "width": 1200,
+      "name": "matches",
+      "url": "http://127.0.0.1:4322/matches",
+      "screenshot": "hi-1200-matches.png",
+      "screenshot_sha256": "ef6076f34086aac8d45bdfb1b64412fda47a91cc175a67eebe82e62b36cbd3f8",
+      "lang": "hi",
+      "dir": "ltr",
+      "heading": [
+        "हाल के मैच"
+      ],
+      "font": {
+        "loaded": true,
+        "body": "\"Glob2 Scripts\", \"Nunito Variable\", Nunito, ui-rounded, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif",
+        "heading": "\"Glob2 Scripts\", \"Glob2 Sans\", \"DejaVu Sans\", Verdana, sans-serif"
+      },
+      "overflow": 0,
+      "axe": []
+    },
+    {
+      "locale": "hi",
+      "width": 1200,
+      "name": "match",
+      "url": "http://127.0.0.1:4322/matches/3ed264df-bfa9-419d-8e85-62fdc5a008fa",
+      "screenshot": "hi-1200-match.png",
+      "screenshot_sha256": "f4fcda16017ea313cb96d67ce221f8b92b48ef623ec35a478d0ab03d0cb1cccf",
+      "lang": "hi",
+      "dir": "ltr",
+      "heading": [
+        "1 vs 1 ranked · Even Ground Classic"
+      ],
+      "font": {
+        "loaded": true,
+        "body": "\"Glob2 Scripts\", \"Nunito Variable\", Nunito, ui-rounded, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif",
+        "heading": "\"Glob2 Scripts\", \"Glob2 Sans\", \"DejaVu Sans\", Verdana, sans-serif"
+      },
+      "overflow": 0,
+      "axe": []
+    },
+    {
+      "locale": "hi",
+      "width": 1200,
+      "name": "profile",
+      "url": "http://127.0.0.1:4322/players/cd79fe35-f737-4fd9-9666-169d8e6036d2",
+      "screenshot": "hi-1200-profile.png",
+      "screenshot_sha256": "e3ac970e1ce57494b44214dea9f613c078ff09f2609aecbb70272a0d90604aee",
+      "lang": "hi",
+      "dir": "ltr",
+      "heading": [
+        "Bradley"
+      ],
+      "font": {
+        "loaded": true,
+        "body": "\"Glob2 Scripts\", \"Nunito Variable\", Nunito, ui-rounded, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif",
+        "heading": "\"Glob2 Scripts\", \"Glob2 Sans\", \"DejaVu Sans\", Verdana, sans-serif"
+      },
+      "overflow": 0,
+      "axe": []
+    },
+    {
+      "locale": "hi",
+      "width": 1200,
+      "name": "leaderboard",
+      "url": "http://127.0.0.1:4322/leaderboard/ranked-1v1",
+      "screenshot": "hi-1200-leaderboard.png",
+      "screenshot_sha256": "708a1ae2bf60e73b82c74dbb253c7d84926e1b7a9d122d4a0d705b75cd95ce78",
+      "lang": "hi",
+      "dir": "ltr",
+      "heading": [
+        "रैंकिंग"
+      ],
+      "font": {
+        "loaded": true,
+        "body": "\"Glob2 Scripts\", \"Nunito Variable\", Nunito, ui-rounded, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif",
+        "heading": "\"Glob2 Scripts\", \"Glob2 Sans\", \"DejaVu Sans\", Verdana, sans-serif"
+      },
+      "overflow": 0,
+      "axe": []
+    },
+    {
+      "locale": "hi",
+      "width": 1200,
+      "name": "maps",
+      "url": "http://127.0.0.1:4322/maps",
+      "screenshot": "hi-1200-maps.png",
+      "screenshot_sha256": "cbf68051ee76e165f22c09c4d66d0efac206f03bf6069c5d409cadf8d9b5466c",
+      "lang": "hi",
+      "dir": "ltr",
+      "heading": [
+        "नक्शे"
+      ],
+      "font": {
+        "loaded": true,
+        "body": "\"Glob2 Scripts\", \"Nunito Variable\", Nunito, ui-rounded, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif",
+        "heading": "\"Glob2 Scripts\", \"Glob2 Sans\", \"DejaVu Sans\", Verdana, sans-serif"
+      },
+      "overflow": 0,
+      "axe": []
+    },
+    {
+      "name": "ssr-invite-control-text-containment",
+      "locale": "hi",
+      "width": 1200,
+      "geometry": [
+        {
+          "text": "ब्राउज़र में खेलें",
+          "box": {
+            "x": 401,
+            "y": 284.0625,
+            "width": 398,
+            "height": 48,
+            "top": 284.0625,
+            "right": 799,
+            "bottom": 332.0625,
+            "left": 401
+          },
+          "outer": {
+            "x": 401,
+            "y": 284.0625,
+            "width": 398,
+            "height": 48,
+            "top": 284.0625,
+            "right": 799,
+            "bottom": 332.0625,
+            "left": 401
+          },
+          "texts": [
+            {
+              "text": "ब्राउज़र में खेलें",
+              "rect": {
+                "x": 558.734375,
+                "y": 296.46875,
+                "width": 82.53125,
+                "height": 22,
+                "top": 296.46875,
+                "right": 641.265625,
+                "bottom": 318.46875,
+                "left": 558.734375
+              }
+            }
+          ]
+        },
+        {
+          "text": "Globulation 2 ऐप में खोलें",
+          "box": {
+            "x": 401,
+            "y": 340.0625,
+            "width": 398,
+            "height": 48,
+            "top": 340.0625,
+            "right": 799,
+            "bottom": 388.0625,
+            "left": 401
+          },
+          "outer": {
+            "x": 401,
+            "y": 340.0625,
+            "width": 398,
+            "height": 48,
+            "top": 340.0625,
+            "right": 799,
+            "bottom": 388.0625,
+            "left": 401
+          },
+          "texts": [
+            {
+              "text": "Globulation 2 ऐप में खोलें",
+              "rect": {
+                "x": 515.46875,
+                "y": 352.46875,
+                "width": 169.046875,
+                "height": 22,
+                "top": 352.46875,
+                "right": 684.515625,
+                "bottom": 374.46875,
+                "left": 515.46875
+              }
+            }
+          ]
+        }
+      ],
+      "passed": true
+    },
+    {
+      "locale": "hi",
+      "width": 1200,
+      "name": "invite",
+      "url": "http://127.0.0.1:4322/j/GLOBJOIN",
+      "screenshot": "hi-1200-invite.png",
+      "screenshot_sha256": "52ea97dd6ee20f11c2309bc2dfd972bfca52d2f3d48418e8db990da1998b62c9",
+      "lang": "hi",
+      "dir": "ltr",
+      "heading": [
+        "आपको आमंत्रण मिला है"
+      ],
+      "font": {
+        "loaded": true,
+        "body": "\"Glob2 Scripts\", \"Nunito Variable\", Nunito, ui-rounded, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif",
+        "heading": "\"Glob2 Scripts\", \"Glob2 Sans\", \"DejaVu Sans\", Verdana, sans-serif"
+      },
+      "overflow": 0,
+      "axe": []
+    },
+    {
+      "name": "home-hero-control-and-text-containment",
+      "locale": "hi",
+      "width": 390,
+      "geometry": [
+        {
+          "text": "ब्राउज़र में खेलें",
+          "box": {
+            "x": 121,
+            "y": 160.015625,
+            "width": 220,
+            "height": 54,
+            "top": 160.015625,
+            "right": 341,
+            "bottom": 214.015625,
+            "left": 121
+          },
+          "outer": {
+            "x": 104,
+            "y": 36,
+            "width": 254,
+            "height": 609.390625,
+            "top": 36,
+            "right": 358,
+            "bottom": 645.390625,
+            "left": 104
+          },
+          "texts": [
+            {
+              "text": "ब्राउज़र में खेलें",
+              "rect": {
+                "x": 199.578125,
+                "y": 174.21875,
+                "width": 92.84375,
+                "height": 24,
+                "top": 174.21875,
+                "right": 292.421875,
+                "bottom": 198.21875,
+                "left": 199.578125
+              }
+            }
+          ]
+        },
+        {
+          "text": "डाउनलोड करें",
+          "box": {
+            "x": 121,
+            "y": 222.015625,
+            "width": 220,
+            "height": 54,
+            "top": 222.015625,
+            "right": 341,
+            "bottom": 276.015625,
+            "left": 121
+          },
+          "outer": {
+            "x": 104,
+            "y": 36,
+            "width": 254,
+            "height": 609.390625,
+            "top": 36,
+            "right": 358,
+            "bottom": 645.390625,
+            "left": 104
+          },
+          "texts": [
+            {
+              "text": "डाउनलोड करें",
+              "rect": {
+                "x": 201.96875,
+                "y": 236.21875,
+                "width": 88.046875,
+                "height": 24,
+                "top": 236.21875,
+                "right": 290.015625,
+                "bottom": 260.21875,
+                "left": 201.96875
+              }
+            }
+          ]
+        }
+      ],
+      "passed": true
+    },
+    {
+      "locale": "hi",
+      "width": 390,
+      "name": "home-first-visit",
+      "url": "http://127.0.0.1:4322/",
+      "screenshot": "hi-390-home-first-visit.png",
+      "screenshot_sha256": "ba0491e8bbf1820a552137466b175f0cc0b6d54a3997be7f90d0843f037494d8",
+      "lang": "hi",
+      "dir": "ltr",
+      "heading": [
+        "बस्ती में स्वागत है"
+      ],
+      "font": {
+        "loaded": true,
+        "body": "\"Glob2 Scripts\", \"Nunito Variable\", Nunito, ui-rounded, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif",
+        "heading": "\"Glob2 Scripts\", \"Glob2 Sans\", \"DejaVu Sans\", Verdana, sans-serif"
+      },
+      "overflow": 0,
+      "axe": []
+    },
+    {
+      "locale": "hi",
+      "width": 390,
+      "name": "signin",
+      "url": "http://127.0.0.1:4322/signin",
+      "screenshot": "hi-390-signin.png",
+      "screenshot_sha256": "896d4adcdb4b454c3134e8594bb3b192ed5d3e51409875075802764ce5078e1a",
+      "lang": "hi",
+      "dir": "ltr",
+      "heading": [
+        "साइन इन करें"
+      ],
+      "font": {
+        "loaded": true,
+        "body": "\"Glob2 Scripts\", \"Nunito Variable\", Nunito, ui-rounded, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif",
+        "heading": "\"Glob2 Scripts\", \"Glob2 Sans\", \"DejaVu Sans\", Verdana, sans-serif"
+      },
+      "overflow": 0,
+      "axe": []
+    },
+    {
+      "locale": "hi",
+      "width": 390,
+      "name": "signin-error",
+      "url": "http://127.0.0.1:4322/signin/local",
+      "screenshot": "hi-390-signin-error.png",
+      "screenshot_sha256": "d013ed378a9809a2b1d5aba2c1ec0d21c9fc831ff13e7009108da1d5ba3bc5bb",
+      "lang": "hi",
+      "dir": "ltr",
+      "heading": [
+        "साइन इन करें"
+      ],
+      "font": {
+        "loaded": true,
+        "body": "\"Glob2 Scripts\", \"Nunito Variable\", Nunito, ui-rounded, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif",
+        "heading": "\"Glob2 Scripts\", \"Glob2 Sans\", \"DejaVu Sans\", Verdana, sans-serif"
+      },
+      "overflow": 0,
+      "axe": []
+    },
+    {
+      "locale": "hi",
+      "width": 390,
+      "name": "account",
+      "url": "http://127.0.0.1:4322/account",
+      "screenshot": "hi-390-account.png",
+      "screenshot_sha256": "9d5e40d3ae20fdcb1c9ad3949b10a3e2211ae14899cbcbc0e75cd16e57260eae",
+      "lang": "hi",
+      "dir": "ltr",
+      "heading": [
+        "आपका खाता"
+      ],
+      "font": {
+        "loaded": true,
+        "body": "\"Glob2 Scripts\", \"Nunito Variable\", Nunito, ui-rounded, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif",
+        "heading": "\"Glob2 Scripts\", \"Glob2 Sans\", \"DejaVu Sans\", Verdana, sans-serif"
+      },
+      "overflow": 0,
+      "axe": []
+    },
+    {
+      "locale": "hi",
+      "width": 390,
+      "name": "matches",
+      "url": "http://127.0.0.1:4322/matches",
+      "screenshot": "hi-390-matches.png",
+      "screenshot_sha256": "600d4f981b223e18df234bf929af481aa51348a48d59756972ddfe30cd9b9ce1",
+      "lang": "hi",
+      "dir": "ltr",
+      "heading": [
+        "हाल के मैच"
+      ],
+      "font": {
+        "loaded": true,
+        "body": "\"Glob2 Scripts\", \"Nunito Variable\", Nunito, ui-rounded, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif",
+        "heading": "\"Glob2 Scripts\", \"Glob2 Sans\", \"DejaVu Sans\", Verdana, sans-serif"
+      },
+      "overflow": 0,
+      "axe": []
+    },
+    {
+      "name": "phone-match-table-focus-and-keyboard-pan",
+      "locale": "hi",
+      "width": 390,
+      "size": {
+        "clientWidth": 284,
+        "scrollWidth": 343
+      },
+      "positions": [
+        {
+          "key": "ArrowLeft",
+          "scrollLeft": 0,
+          "viewport": {
+            "x": 88,
+            "y": 678.25,
+            "width": 286,
+            "height": 182.53125,
+            "top": 678.25,
+            "right": 374,
+            "bottom": 860.78125,
+            "left": 88
+          },
+          "ratings": [
+            {
+              "text": "1615  → 1585",
+              "box": {
+                "x": 321.15625,
+                "y": 730.59375,
+                "width": 99.25,
+                "height": 22,
+                "top": 730.59375,
+                "right": 420.40625,
+                "bottom": 752.59375,
+                "left": 321.15625
+              },
+              "visibleFraction": 0.5324307304785895
+            },
+            {
+              "text": "1677  → 1706",
+              "box": {
+                "x": 321.15625,
+                "y": 801.1875,
+                "width": 99.25,
+                "height": 22,
+                "top": 801.1875,
+                "right": 420.40625,
+                "bottom": 823.1875,
+                "left": 321.15625
+              },
+              "visibleFraction": 0.5324307304785895
+            }
+          ],
+          "screenshot": "hi-390-match-table-ArrowLeft.png",
+          "screenshot_sha256": "fc1b5a91a2629391c85a405650c19935cb3049a52292985696b0297e25a00280"
+        },
+        {
+          "key": "ArrowRight",
+          "scrollLeft": 59,
+          "viewport": {
+            "x": 88,
+            "y": 678.25,
+            "width": 286,
+            "height": 182.53125,
+            "top": 678.25,
+            "right": 374,
+            "bottom": 860.78125,
+            "left": 88
+          },
+          "ratings": [
+            {
+              "text": "1615  → 1585",
+              "box": {
+                "x": 262.15625,
+                "y": 730.59375,
+                "width": 99.25,
+                "height": 22,
+                "top": 730.59375,
+                "right": 361.40625,
+                "bottom": 752.59375,
+                "left": 262.15625
+              },
+              "visibleFraction": 1
+            },
+            {
+              "text": "1677  → 1706",
+              "box": {
+                "x": 262.15625,
+                "y": 801.1875,
+                "width": 99.25,
+                "height": 22,
+                "top": 801.1875,
+                "right": 361.40625,
+                "bottom": 823.1875,
+                "left": 262.15625
+              },
+              "visibleFraction": 1
+            }
+          ],
+          "screenshot": "hi-390-match-table-ArrowRight.png",
+          "screenshot_sha256": "38759241fd6cc971a2fa57d79fb2a479c5b8633c9b72e29c8fe931e75496d3ae"
+        }
+      ],
+      "passed": true,
+      "limits": "Keyboard scrolling in emulated Chromium viewport; physical touch gestures and mobile hardware not verified."
+    },
+    {
+      "locale": "hi",
+      "width": 390,
+      "name": "match",
+      "url": "http://127.0.0.1:4322/matches/3ed264df-bfa9-419d-8e85-62fdc5a008fa",
+      "screenshot": "hi-390-match.png",
+      "screenshot_sha256": "fc1b5a91a2629391c85a405650c19935cb3049a52292985696b0297e25a00280",
+      "lang": "hi",
+      "dir": "ltr",
+      "heading": [
+        "1 vs 1 ranked · Even Ground Classic"
+      ],
+      "font": {
+        "loaded": true,
+        "body": "\"Glob2 Scripts\", \"Nunito Variable\", Nunito, ui-rounded, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif",
+        "heading": "\"Glob2 Scripts\", \"Glob2 Sans\", \"DejaVu Sans\", Verdana, sans-serif"
+      },
+      "overflow": 0,
+      "axe": []
+    },
+    {
+      "locale": "hi",
+      "width": 390,
+      "name": "profile",
+      "url": "http://127.0.0.1:4322/players/cd79fe35-f737-4fd9-9666-169d8e6036d2",
+      "screenshot": "hi-390-profile.png",
+      "screenshot_sha256": "c5370a378c42620678b6d84f21249756c67b4bd8382f393e4381001e81eff43e",
+      "lang": "hi",
+      "dir": "ltr",
+      "heading": [
+        "Bradley"
+      ],
+      "font": {
+        "loaded": true,
+        "body": "\"Glob2 Scripts\", \"Nunito Variable\", Nunito, ui-rounded, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif",
+        "heading": "\"Glob2 Scripts\", \"Glob2 Sans\", \"DejaVu Sans\", Verdana, sans-serif"
+      },
+      "overflow": 0,
+      "axe": []
+    },
+    {
+      "locale": "hi",
+      "width": 390,
+      "name": "leaderboard",
+      "url": "http://127.0.0.1:4322/leaderboard/ranked-1v1",
+      "screenshot": "hi-390-leaderboard.png",
+      "screenshot_sha256": "22b705ed5c0fcc294e1f83227633de506abb75bebb00155aedffcb79a3629df1",
+      "lang": "hi",
+      "dir": "ltr",
+      "heading": [
+        "रैंकिंग"
+      ],
+      "font": {
+        "loaded": true,
+        "body": "\"Glob2 Scripts\", \"Nunito Variable\", Nunito, ui-rounded, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif",
+        "heading": "\"Glob2 Scripts\", \"Glob2 Sans\", \"DejaVu Sans\", Verdana, sans-serif"
+      },
+      "overflow": 0,
+      "axe": []
+    },
+    {
+      "locale": "hi",
+      "width": 390,
+      "name": "maps",
+      "url": "http://127.0.0.1:4322/maps",
+      "screenshot": "hi-390-maps.png",
+      "screenshot_sha256": "e1f5fd4b8a9be106d29ebe08a3abef1dc163f22c20f4823388ddb243e4f05aa1",
+      "lang": "hi",
+      "dir": "ltr",
+      "heading": [
+        "नक्शे"
+      ],
+      "font": {
+        "loaded": true,
+        "body": "\"Glob2 Scripts\", \"Nunito Variable\", Nunito, ui-rounded, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif",
+        "heading": "\"Glob2 Scripts\", \"Glob2 Sans\", \"DejaVu Sans\", Verdana, sans-serif"
+      },
+      "overflow": 0,
+      "axe": []
+    },
+    {
+      "name": "ssr-invite-control-text-containment",
+      "locale": "hi",
+      "width": 390,
+      "geometry": [
+        {
+          "text": "ब्राउज़र में खेलें",
+          "box": {
+            "x": 51,
+            "y": 274.40625,
+            "width": 288,
+            "height": 48,
+            "top": 274.40625,
+            "right": 339,
+            "bottom": 322.40625,
+            "left": 51
+          },
+          "outer": {
+            "x": 51,
+            "y": 274.40625,
+            "width": 288,
+            "height": 48,
+            "top": 274.40625,
+            "right": 339,
+            "bottom": 322.40625,
+            "left": 51
+          },
+          "texts": [
+            {
+              "text": "ब्राउज़र में खेलें",
+              "rect": {
+                "x": 153.734375,
+                "y": 286.8125,
+                "width": 82.53125,
+                "height": 22,
+                "top": 286.8125,
+                "right": 236.265625,
+                "bottom": 308.8125,
+                "left": 153.734375
+              }
+            }
+          ]
+        },
+        {
+          "text": "Globulation 2 ऐप में खोलें",
+          "box": {
+            "x": 51,
+            "y": 330.40625,
+            "width": 288,
+            "height": 48,
+            "top": 330.40625,
+            "right": 339,
+            "bottom": 378.40625,
+            "left": 51
+          },
+          "outer": {
+            "x": 51,
+            "y": 330.40625,
+            "width": 288,
+            "height": 48,
+            "top": 330.40625,
+            "right": 339,
+            "bottom": 378.40625,
+            "left": 51
+          },
+          "texts": [
+            {
+              "text": "Globulation 2 ऐप में खोलें",
+              "rect": {
+                "x": 110.46875,
+                "y": 342.8125,
+                "width": 169.046875,
+                "height": 22,
+                "top": 342.8125,
+                "right": 279.515625,
+                "bottom": 364.8125,
+                "left": 110.46875
+              }
+            }
+          ]
+        }
+      ],
+      "passed": true
+    },
+    {
+      "locale": "hi",
+      "width": 390,
+      "name": "invite",
+      "url": "http://127.0.0.1:4322/j/GLOBJOIN",
+      "screenshot": "hi-390-invite.png",
+      "screenshot_sha256": "d33d8d65713b366fa36a6338c1a03a73dca03b392381ae87952070167fdab22f",
+      "lang": "hi",
+      "dir": "ltr",
+      "heading": [
+        "आपको आमंत्रण मिला है"
+      ],
+      "font": {
+        "loaded": true,
+        "body": "\"Glob2 Scripts\", \"Nunito Variable\", Nunito, ui-rounded, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif",
+        "heading": "\"Glob2 Scripts\", \"Glob2 Sans\", \"DejaVu Sans\", Verdana, sans-serif"
+      },
+      "overflow": 0,
+      "axe": []
+    },
+    {
+      "name": "home-hero-control-and-text-containment",
+      "locale": "ur",
+      "width": 1200,
+      "geometry": [
+        {
+          "text": "براؤزر میں کھیلیں",
+          "box": {
+            "x": 586.59375,
+            "y": 195.40625,
+            "width": 292.40625,
+            "height": 54,
+            "top": 195.40625,
+            "right": 879,
+            "bottom": 249.40625,
+            "left": 586.59375
+          },
+          "outer": {
+            "x": 284,
+            "y": 48,
+            "width": 620,
+            "height": 459.953125,
+            "top": 48,
+            "right": 904,
+            "bottom": 507.953125,
+            "left": 284
+          },
+          "texts": [
+            {
+              "text": "براؤزر میں کھیلیں",
+              "rect": {
+                "x": 655.546875,
+                "y": 209.609375,
+                "width": 124.515625,
+                "height": 24,
+                "top": 209.609375,
+                "right": 780.0625,
+                "bottom": 233.609375,
+                "left": 655.546875
+              }
+            }
+          ]
+        },
+        {
+          "text": "ڈاؤن لوڈ کریں",
+          "box": {
+            "x": 309,
+            "y": 195.40625,
+            "width": 265.59375,
+            "height": 54,
+            "top": 195.40625,
+            "right": 574.59375,
+            "bottom": 249.40625,
+            "left": 309
+          },
+          "outer": {
+            "x": 284,
+            "y": 48,
+            "width": 620,
+            "height": 459.953125,
+            "top": 48,
+            "right": 904,
+            "bottom": 507.953125,
+            "left": 284
+          },
+          "texts": [
+            {
+              "text": "ڈاؤن لوڈ کریں",
+              "rect": {
+                "x": 377.953125,
+                "y": 209.609375,
+                "width": 97.703125,
+                "height": 24,
+                "top": 209.609375,
+                "right": 475.65625,
+                "bottom": 233.609375,
+                "left": 377.953125
+              }
+            }
+          ]
+        }
+      ],
+      "passed": true
+    },
+    {
+      "name": "ur-queue-text-node-isolation",
+      "locale": "ur",
+      "width": 1200,
+      "surface": "home-first-visit",
+      "labels": [
+        {
+          "text": "1 vs 1 ranked",
+          "isolated": true,
+          "wholeLabel": "1 vs 1 ranked",
+          "direction": "ltr",
+          "bidi": "isolate"
+        },
+        {
+          "text": "1 vs 1 ranked",
+          "isolated": true,
+          "wholeLabel": "1 vs 1 ranked",
+          "direction": "ltr",
+          "bidi": "isolate"
+        },
+        {
+          "text": "1 vs 1 ranked",
+          "isolated": true,
+          "wholeLabel": "1 vs 1 ranked",
+          "direction": "ltr",
+          "bidi": "isolate"
+        },
+        {
+          "text": "1 vs 1 ranked",
+          "isolated": true,
+          "wholeLabel": "1 vs 1 ranked",
+          "direction": "ltr",
+          "bidi": "isolate"
+        },
+        {
+          "text": "1 vs 1 ranked",
+          "isolated": true,
+          "wholeLabel": "1 vs 1 ranked",
+          "direction": "ltr",
+          "bidi": "isolate"
+        },
+        {
+          "text": "1 vs 1 ranked",
+          "isolated": true,
+          "wholeLabel": "1 vs 1 ranked",
+          "direction": "ltr",
+          "bidi": "isolate"
+        },
+        {
+          "text": "2 vs 2 ranked",
+          "isolated": true,
+          "wholeLabel": "2 vs 2 ranked",
+          "direction": "ltr",
+          "bidi": "isolate"
+        }
+      ],
+      "passed": true
+    },
+    {
+      "locale": "ur",
+      "width": 1200,
+      "name": "home-first-visit",
+      "url": "http://127.0.0.1:4322/",
+      "screenshot": "ur-1200-home-first-visit.png",
+      "screenshot_sha256": "cfdeb2f1ca187aeff7737b9bde905058b53e428fe6ad7f4896bace66b5692270",
+      "lang": "ur",
+      "dir": "rtl",
+      "heading": [
+        "بستی میں خوش آمدید"
+      ],
+      "font": {
+        "loaded": true,
+        "body": "\"Glob2 Scripts\", \"Nunito Variable\", Nunito, ui-rounded, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif",
+        "heading": "\"Glob2 Scripts\", \"Glob2 Sans\", \"DejaVu Sans\", Verdana, sans-serif"
+      },
+      "overflow": 0,
+      "axe": []
+    },
+    {
+      "name": "ur-numeric-token-geometry",
+      "locale": "ur",
+      "width": 1200,
+      "surface": "signin",
+      "passed": true,
+      "digitRanges": [
+        {
+          "text": "0–9",
+          "tag": "BDI",
+          "dir": "ltr",
+          "direction": "ltr",
+          "bidi": "isolate",
+          "glyphs": [
+            {
+              "char": "0",
+              "x": 533.171875,
+              "right": 541.34375,
+              "y": 597.265625,
+              "height": 19
+            },
+            {
+              "char": "–",
+              "x": 541.328125,
+              "right": 548.140625,
+              "y": 597.265625,
+              "height": 19
+            },
+            {
+              "char": "9",
+              "x": 548.125,
+              "right": 556.296875,
+              "y": 597.265625,
+              "height": 19
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "locale": "ur",
+      "width": 1200,
+      "name": "signin",
+      "url": "http://127.0.0.1:4322/signin",
+      "screenshot": "ur-1200-signin.png",
+      "screenshot_sha256": "d17b397663c2108fddf8115d9f3ac1f0b6e04799d2ef9c02b06aaff762acc092",
+      "lang": "ur",
+      "dir": "rtl",
+      "heading": [
+        "سائن ان کریں"
+      ],
+      "font": {
+        "loaded": true,
+        "body": "\"Glob2 Scripts\", \"Nunito Variable\", Nunito, ui-rounded, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif",
+        "heading": "\"Glob2 Scripts\", \"Glob2 Sans\", \"DejaVu Sans\", Verdana, sans-serif"
+      },
+      "overflow": 0,
+      "axe": []
+    },
+    {
+      "name": "ur-numeric-token-geometry",
+      "locale": "ur",
+      "width": 1200,
+      "surface": "signin-error",
+      "passed": true,
+      "digitRanges": [
+        {
+          "text": "0–9",
+          "tag": "BDI",
+          "dir": "ltr",
+          "direction": "ltr",
+          "bidi": "isolate",
+          "glyphs": [
+            {
+              "char": "0",
+              "x": 533.171875,
+              "right": 541.34375,
+              "y": 665.921875,
+              "height": 19
+            },
+            {
+              "char": "–",
+              "x": 541.328125,
+              "right": 548.140625,
+              "y": 665.921875,
+              "height": 19
+            },
+            {
+              "char": "9",
+              "x": 548.125,
+              "right": 556.296875,
+              "y": 665.921875,
+              "height": 19
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "locale": "ur",
+      "width": 1200,
+      "name": "signin-error",
+      "url": "http://127.0.0.1:4322/signin/local",
+      "screenshot": "ur-1200-signin-error.png",
+      "screenshot_sha256": "c3f24596099ae2d37362436f1efd459517aedcb9ae13d6e8e56369518fb64a49",
+      "lang": "ur",
+      "dir": "rtl",
+      "heading": [
+        "سائن ان کریں"
+      ],
+      "font": {
+        "loaded": true,
+        "body": "\"Glob2 Scripts\", \"Nunito Variable\", Nunito, ui-rounded, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif",
+        "heading": "\"Glob2 Scripts\", \"Glob2 Sans\", \"DejaVu Sans\", Verdana, sans-serif"
+      },
+      "overflow": 0,
+      "axe": []
+    },
+    {
+      "name": "ur-queue-text-node-isolation",
+      "locale": "ur",
+      "width": 1200,
+      "surface": "account",
+      "labels": [],
+      "passed": true
+    },
+    {
+      "locale": "ur",
+      "width": 1200,
+      "name": "account",
+      "url": "http://127.0.0.1:4322/account",
+      "screenshot": "ur-1200-account.png",
+      "screenshot_sha256": "e86cf6edde218f587dd6e5000858f657834a1ed198a9cf78201fac65bd8f72a3",
+      "lang": "ur",
+      "dir": "rtl",
+      "heading": [
+        "آپ کا اکاؤنٹ"
+      ],
+      "font": {
+        "loaded": true,
+        "body": "\"Glob2 Scripts\", \"Nunito Variable\", Nunito, ui-rounded, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif",
+        "heading": "\"Glob2 Scripts\", \"Glob2 Sans\", \"DejaVu Sans\", Verdana, sans-serif"
+      },
+      "overflow": 0,
+      "axe": []
+    },
+    {
+      "name": "ur-queue-text-node-isolation",
+      "locale": "ur",
+      "width": 1200,
+      "surface": "matches",
+      "labels": [
+        {
+          "text": "1 vs 1 ranked",
+          "isolated": true,
+          "wholeLabel": "1 vs 1 ranked",
+          "direction": "ltr",
+          "bidi": "isolate"
+        },
+        {
+          "text": "2 vs 2 ranked",
+          "isolated": true,
+          "wholeLabel": "2 vs 2 ranked",
+          "direction": "ltr",
+          "bidi": "isolate"
+        },
+        {
+          "text": "1 vs 1 ranked",
+          "isolated": true,
+          "wholeLabel": "1 vs 1 ranked",
+          "direction": "ltr",
+          "bidi": "isolate"
+        },
+        {
+          "text": "1 vs 1 ranked",
+          "isolated": true,
+          "wholeLabel": "1 vs 1 ranked",
+          "direction": "ltr",
+          "bidi": "isolate"
+        },
+        {
+          "text": "1 vs 1 ranked",
+          "isolated": true,
+          "wholeLabel": "1 vs 1 ranked",
+          "direction": "ltr",
+          "bidi": "isolate"
+        },
+        {
+          "text": "1 vs 1 ranked",
+          "isolated": true,
+          "wholeLabel": "1 vs 1 ranked",
+          "direction": "ltr",
+          "bidi": "isolate"
+        },
+        {
+          "text": "1 vs 1 ranked",
+          "isolated": true,
+          "wholeLabel": "1 vs 1 ranked",
+          "direction": "ltr",
+          "bidi": "isolate"
+        },
+        {
+          "text": "1 vs 1 ranked",
+          "isolated": true,
+          "wholeLabel": "1 vs 1 ranked",
+          "direction": "ltr",
+          "bidi": "isolate"
+        },
+        {
+          "text": "1 vs 1 ranked",
+          "isolated": true,
+          "wholeLabel": "1 vs 1 ranked",
+          "direction": "ltr",
+          "bidi": "isolate"
+        },
+        {
+          "text": "1 vs 1 ranked",
+          "isolated": true,
+          "wholeLabel": "1 vs 1 ranked",
+          "direction": "ltr",
+          "bidi": "isolate"
+        },
+        {
+          "text": "1 vs 1 ranked",
+          "isolated": true,
+          "wholeLabel": "1 vs 1 ranked",
+          "direction": "ltr",
+          "bidi": "isolate"
+        },
+        {
+          "text": "1 vs 1 ranked",
+          "isolated": true,
+          "wholeLabel": "1 vs 1 ranked",
+          "direction": "ltr",
+          "bidi": "isolate"
+        }
+      ],
+      "passed": true
+    },
+    {
+      "locale": "ur",
+      "width": 1200,
+      "name": "matches",
+      "url": "http://127.0.0.1:4322/matches",
+      "screenshot": "ur-1200-matches.png",
+      "screenshot_sha256": "3cd040f450b689fe0e87d35d4fc3520df4a4aade405d581b3bf7d0efde8c72fc",
+      "lang": "ur",
+      "dir": "rtl",
+      "heading": [
+        "حالیہ میچ"
+      ],
+      "font": {
+        "loaded": true,
+        "body": "\"Glob2 Scripts\", \"Nunito Variable\", Nunito, ui-rounded, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif",
+        "heading": "\"Glob2 Scripts\", \"Glob2 Sans\", \"DejaVu Sans\", Verdana, sans-serif"
+      },
+      "overflow": 0,
+      "axe": []
+    },
+    {
+      "name": "ur-queue-text-node-isolation",
+      "locale": "ur",
+      "width": 1200,
+      "surface": "match",
+      "labels": [
+        {
+          "text": "1 vs 1 ranked",
+          "isolated": true,
+          "wholeLabel": "1 vs 1 ranked",
+          "direction": "ltr",
+          "bidi": "isolate"
+        }
+      ],
+      "passed": true
+    },
+    {
+      "name": "ur-numeric-token-geometry",
+      "locale": "ur",
+      "width": 1200,
+      "surface": "match",
+      "passed": true,
+      "transitions": [
+        {
+          "text": "1615  → 1585",
+          "tag": "BDI",
+          "dir": "ltr",
+          "direction": "ltr",
+          "bidi": "isolate",
+          "glyphs": [
+            {
+              "char": "1",
+              "x": 127.53125,
+              "right": 137.140625,
+              "y": 415.0625,
+              "height": 22
+            },
+            {
+              "char": "6",
+              "x": 137.125,
+              "right": 146.734375,
+              "y": 415.0625,
+              "height": 22
+            },
+            {
+              "char": "1",
+              "x": 146.71875,
+              "right": 156.34375,
+              "y": 415.0625,
+              "height": 22
+            },
+            {
+              "char": "5",
+              "x": 156.328125,
+              "right": 165.9375,
+              "y": 415.0625,
+              "height": 22
+            },
+            {
+              "char": "→",
+              "x": 170.0625,
+              "right": 184.25,
+              "y": 415.0625,
+              "height": 22
+            },
+            {
+              "char": "1",
+              "x": 188.375,
+              "right": 197.984375,
+              "y": 415.0625,
+              "height": 22
+            },
+            {
+              "char": "5",
+              "x": 197.96875,
+              "right": 207.578125,
+              "y": 415.0625,
+              "height": 22
+            },
+            {
+              "char": "8",
+              "x": 207.5625,
+              "right": 217.1875,
+              "y": 415.0625,
+              "height": 22
+            },
+            {
+              "char": "5",
+              "x": 217.171875,
+              "right": 226.78125,
+              "y": 415.0625,
+              "height": 22
+            }
+          ]
+        },
+        {
+          "text": "1677  → 1706",
+          "tag": "BDI",
+          "dir": "ltr",
+          "direction": "ltr",
+          "bidi": "isolate",
+          "glyphs": [
+            {
+              "char": "1",
+              "x": 127.53125,
+              "right": 137.140625,
+              "y": 460.859375,
+              "height": 22
+            },
+            {
+              "char": "6",
+              "x": 137.125,
+              "right": 146.734375,
+              "y": 460.859375,
+              "height": 22
+            },
+            {
+              "char": "7",
+              "x": 146.71875,
+              "right": 156.34375,
+              "y": 460.859375,
+              "height": 22
+            },
+            {
+              "char": "7",
+              "x": 156.328125,
+              "right": 165.9375,
+              "y": 460.859375,
+              "height": 22
+            },
+            {
+              "char": "→",
+              "x": 170.0625,
+              "right": 184.25,
+              "y": 460.859375,
+              "height": 22
+            },
+            {
+              "char": "1",
+              "x": 188.375,
+              "right": 197.984375,
+              "y": 460.859375,
+              "height": 22
+            },
+            {
+              "char": "7",
+              "x": 197.96875,
+              "right": 207.578125,
+              "y": 460.859375,
+              "height": 22
+            },
+            {
+              "char": "0",
+              "x": 207.5625,
+              "right": 217.1875,
+              "y": 460.859375,
+              "height": 22
+            },
+            {
+              "char": "6",
+              "x": 217.171875,
+              "right": 226.78125,
+              "y": 460.859375,
+              "height": 22
+            }
+          ]
+        }
+      ],
+      "deltas": [
+        {
+          "text": "−29",
+          "tag": "BDI",
+          "dir": "ltr",
+          "direction": "ltr",
+          "bidi": "isolate",
+          "glyphs": [
+            {
+              "char": "−",
+              "x": 45,
+              "right": 54.609375,
+              "y": 415.0625,
+              "height": 22
+            },
+            {
+              "char": "2",
+              "x": 54.59375,
+              "right": 64.203125,
+              "y": 415.0625,
+              "height": 22
+            },
+            {
+              "char": "9",
+              "x": 64.1875,
+              "right": 73.8125,
+              "y": 415.0625,
+              "height": 22
+            }
+          ]
+        },
+        {
+          "text": "+29",
+          "tag": "BDI",
+          "dir": "ltr",
+          "direction": "ltr",
+          "bidi": "isolate",
+          "glyphs": [
+            {
+              "char": "+",
+              "x": 45,
+              "right": 54.609375,
+              "y": 460.859375,
+              "height": 22
+            },
+            {
+              "char": "2",
+              "x": 54.59375,
+              "right": 64.203125,
+              "y": 460.859375,
+              "height": 22
+            },
+            {
+              "char": "9",
+              "x": 64.1875,
+              "right": 73.8125,
+              "y": 460.859375,
+              "height": 22
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "locale": "ur",
+      "width": 1200,
+      "name": "match",
+      "url": "http://127.0.0.1:4322/matches/3ed264df-bfa9-419d-8e85-62fdc5a008fa",
+      "screenshot": "ur-1200-match.png",
+      "screenshot_sha256": "0c10610c75b4d9b6d452b2de310ebba42e84bb1df7788dede873b075f962e0f7",
+      "lang": "ur",
+      "dir": "rtl",
+      "heading": [
+        "1 vs 1 ranked · Even Ground Classic"
+      ],
+      "font": {
+        "loaded": true,
+        "body": "\"Glob2 Scripts\", \"Nunito Variable\", Nunito, ui-rounded, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif",
+        "heading": "\"Glob2 Scripts\", \"Glob2 Sans\", \"DejaVu Sans\", Verdana, sans-serif"
+      },
+      "overflow": 0,
+      "axe": []
+    },
+    {
+      "name": "ur-queue-text-node-isolation",
+      "locale": "ur",
+      "width": 1200,
+      "surface": "profile",
+      "labels": [
+        {
+          "text": "1 vs 1 ranked",
+          "isolated": true,
+          "wholeLabel": "1 vs 1 ranked",
+          "direction": "ltr",
+          "bidi": "isolate"
+        },
+        {
+          "text": "2 vs 2 ranked",
+          "isolated": true,
+          "wholeLabel": "2 vs 2 ranked",
+          "direction": "ltr",
+          "bidi": "isolate"
+        },
+        {
+          "text": "1 vs 1 ranked",
+          "isolated": true,
+          "wholeLabel": "1 vs 1 ranked",
+          "direction": "ltr",
+          "bidi": "isolate"
+        },
+        {
+          "text": "1 vs 1 ranked",
+          "isolated": true,
+          "wholeLabel": "1 vs 1 ranked",
+          "direction": "ltr",
+          "bidi": "isolate"
+        },
+        {
+          "text": "1 vs 1 ranked",
+          "isolated": true,
+          "wholeLabel": "1 vs 1 ranked",
+          "direction": "ltr",
+          "bidi": "isolate"
+        },
+        {
+          "text": "2 vs 2 ranked",
+          "isolated": true,
+          "wholeLabel": "2 vs 2 ranked",
+          "direction": "ltr",
+          "bidi": "isolate"
+        },
+        {
+          "text": "1 vs 1 ranked",
+          "isolated": true,
+          "wholeLabel": "1 vs 1 ranked",
+          "direction": "ltr",
+          "bidi": "isolate"
+        },
+        {
+          "text": "1 vs 1 ranked",
+          "isolated": true,
+          "wholeLabel": "1 vs 1 ranked",
+          "direction": "ltr",
+          "bidi": "isolate"
+        },
+        {
+          "text": "1 vs 1 ranked",
+          "isolated": true,
+          "wholeLabel": "1 vs 1 ranked",
+          "direction": "ltr",
+          "bidi": "isolate"
+        },
+        {
+          "text": "1 vs 1 ranked",
+          "isolated": true,
+          "wholeLabel": "1 vs 1 ranked",
+          "direction": "ltr",
+          "bidi": "isolate"
+        },
+        {
+          "text": "1 vs 1 ranked",
+          "isolated": true,
+          "wholeLabel": "1 vs 1 ranked",
+          "direction": "ltr",
+          "bidi": "isolate"
+        },
+        {
+          "text": "1 vs 1 ranked",
+          "isolated": true,
+          "wholeLabel": "1 vs 1 ranked",
+          "direction": "ltr",
+          "bidi": "isolate"
+        },
+        {
+          "text": "1 vs 1 ranked",
+          "isolated": true,
+          "wholeLabel": "1 vs 1 ranked",
+          "direction": "ltr",
+          "bidi": "isolate"
+        },
+        {
+          "text": "1 vs 1 ranked",
+          "isolated": true,
+          "wholeLabel": "1 vs 1 ranked",
+          "direction": "ltr",
+          "bidi": "isolate"
+        },
+        {
+          "text": "1 vs 1 ranked",
+          "isolated": true,
+          "wholeLabel": "1 vs 1 ranked",
+          "direction": "ltr",
+          "bidi": "isolate"
+        }
+      ],
+      "passed": true
+    },
+    {
+      "name": "ur-numeric-token-geometry",
+      "locale": "ur",
+      "width": 1200,
+      "surface": "profile",
+      "passed": true,
+      "winLoss": [
+        {
+          "text": "5–3",
+          "tag": "BDI",
+          "dir": "ltr",
+          "direction": "ltr",
+          "bidi": "isolate",
+          "glyphs": [
+            {
+              "char": "5",
+              "x": 739,
+              "right": 748.609375,
+              "y": 827.984375,
+              "height": 22
+            },
+            {
+              "char": "–",
+              "x": 748.609375,
+              "right": 756.609375,
+              "y": 827.984375,
+              "height": 22
+            },
+            {
+              "char": "3",
+              "x": 756.609375,
+              "right": 766.21875,
+              "y": 827.984375,
+              "height": 22
+            }
+          ]
+        },
+        {
+          "text": "5–3",
+          "tag": "BDI",
+          "dir": "ltr",
+          "direction": "ltr",
+          "bidi": "isolate",
+          "glyphs": [
+            {
+              "char": "5",
+              "x": 396.609375,
+              "right": 406.21875,
+              "y": 827.984375,
+              "height": 22
+            },
+            {
+              "char": "–",
+              "x": 406.21875,
+              "right": 414.21875,
+              "y": 827.984375,
+              "height": 22
+            },
+            {
+              "char": "3",
+              "x": 414.21875,
+              "right": 423.828125,
+              "y": 827.984375,
+              "height": 22
+            }
+          ]
+        }
+      ],
+      "historyDeltas": [
+        {
+          "text": "−29",
+          "tag": "BDI",
+          "dir": "ltr",
+          "direction": "ltr",
+          "bidi": "isolate",
+          "glyphs": [
+            {
+              "char": "−",
+              "x": 49,
+              "right": 58.609375,
+              "y": 1380.078125,
+              "height": 22
+            },
+            {
+              "char": "2",
+              "x": 58.59375,
+              "right": 68.203125,
+              "y": 1380.078125,
+              "height": 22
+            },
+            {
+              "char": "9",
+              "x": 68.1875,
+              "right": 77.8125,
+              "y": 1380.078125,
+              "height": 22
+            }
+          ]
+        },
+        {
+          "text": "+91",
+          "tag": "BDI",
+          "dir": "ltr",
+          "direction": "ltr",
+          "bidi": "isolate",
+          "glyphs": [
+            {
+              "char": "+",
+              "x": 49,
+              "right": 58.609375,
+              "y": 1451.5625,
+              "height": 22
+            },
+            {
+              "char": "9",
+              "x": 58.59375,
+              "right": 68.203125,
+              "y": 1451.5625,
+              "height": 22
+            },
+            {
+              "char": "1",
+              "x": 68.1875,
+              "right": 77.8125,
+              "y": 1451.5625,
+              "height": 22
+            }
+          ]
+        },
+        {
+          "text": "+91",
+          "tag": "BDI",
+          "dir": "ltr",
+          "direction": "ltr",
+          "bidi": "isolate",
+          "glyphs": [
+            {
+              "char": "+",
+              "x": 49,
+              "right": 58.609375,
+              "y": 1523.046875,
+              "height": 22
+            },
+            {
+              "char": "9",
+              "x": 58.59375,
+              "right": 68.203125,
+              "y": 1523.046875,
+              "height": 22
+            },
+            {
+              "char": "1",
+              "x": 68.1875,
+              "right": 77.8125,
+              "y": 1523.046875,
+              "height": 22
+            }
+          ]
+        },
+        {
+          "text": "−24",
+          "tag": "BDI",
+          "dir": "ltr",
+          "direction": "ltr",
+          "bidi": "isolate",
+          "glyphs": [
+            {
+              "char": "−",
+              "x": 49,
+              "right": 58.609375,
+              "y": 1594.53125,
+              "height": 22
+            },
+            {
+              "char": "2",
+              "x": 58.59375,
+              "right": 68.203125,
+              "y": 1594.53125,
+              "height": 22
+            },
+            {
+              "char": "4",
+              "x": 68.1875,
+              "right": 77.8125,
+              "y": 1594.53125,
+              "height": 22
+            }
+          ]
+        },
+        {
+          "text": "+91",
+          "tag": "BDI",
+          "dir": "ltr",
+          "direction": "ltr",
+          "bidi": "isolate",
+          "glyphs": [
+            {
+              "char": "+",
+              "x": 49,
+              "right": 58.609375,
+              "y": 1666.015625,
+              "height": 22
+            },
+            {
+              "char": "9",
+              "x": 58.59375,
+              "right": 68.203125,
+              "y": 1666.015625,
+              "height": 22
+            },
+            {
+              "char": "1",
+              "x": 68.1875,
+              "right": 77.8125,
+              "y": 1666.015625,
+              "height": 22
+            }
+          ]
+        },
+        {
+          "text": "+91",
+          "tag": "BDI",
+          "dir": "ltr",
+          "direction": "ltr",
+          "bidi": "isolate",
+          "glyphs": [
+            {
+              "char": "+",
+              "x": 49,
+              "right": 58.609375,
+              "y": 1737.5,
+              "height": 22
+            },
+            {
+              "char": "9",
+              "x": 58.59375,
+              "right": 68.203125,
+              "y": 1737.5,
+              "height": 22
+            },
+            {
+              "char": "1",
+              "x": 68.1875,
+              "right": 77.8125,
+              "y": 1737.5,
+              "height": 22
+            }
+          ]
+        },
+        {
+          "text": "−24",
+          "tag": "BDI",
+          "dir": "ltr",
+          "direction": "ltr",
+          "bidi": "isolate",
+          "glyphs": [
+            {
+              "char": "−",
+              "x": 49,
+              "right": 58.609375,
+              "y": 1808.984375,
+              "height": 22
+            },
+            {
+              "char": "2",
+              "x": 58.59375,
+              "right": 68.203125,
+              "y": 1808.984375,
+              "height": 22
+            },
+            {
+              "char": "4",
+              "x": 68.1875,
+              "right": 77.8125,
+              "y": 1808.984375,
+              "height": 22
+            }
+          ]
+        },
+        {
+          "text": "+91",
+          "tag": "BDI",
+          "dir": "ltr",
+          "direction": "ltr",
+          "bidi": "isolate",
+          "glyphs": [
+            {
+              "char": "+",
+              "x": 49,
+              "right": 58.609375,
+              "y": 1880.46875,
+              "height": 22
+            },
+            {
+              "char": "9",
+              "x": 58.59375,
+              "right": 68.203125,
+              "y": 1880.46875,
+              "height": 22
+            },
+            {
+              "char": "1",
+              "x": 68.1875,
+              "right": 77.8125,
+              "y": 1880.46875,
+              "height": 22
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "locale": "ur",
+      "width": 1200,
+      "name": "profile",
+      "url": "http://127.0.0.1:4322/players/cd79fe35-f737-4fd9-9666-169d8e6036d2",
+      "screenshot": "ur-1200-profile.png",
+      "screenshot_sha256": "81c122b2149a3ff84bb78bfc0371757ca0b8d7e5392e59ad883d4aa7cc63f17c",
+      "lang": "ur",
+      "dir": "rtl",
+      "heading": [
+        "Bradley"
+      ],
+      "font": {
+        "loaded": true,
+        "body": "\"Glob2 Scripts\", \"Nunito Variable\", Nunito, ui-rounded, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif",
+        "heading": "\"Glob2 Scripts\", \"Glob2 Sans\", \"DejaVu Sans\", Verdana, sans-serif"
+      },
+      "overflow": 0,
+      "axe": []
+    },
+    {
+      "name": "ur-queue-text-node-isolation",
+      "locale": "ur",
+      "width": 1200,
+      "surface": "leaderboard",
+      "labels": [
+        {
+          "text": "1 vs 1 ranked",
+          "isolated": true,
+          "wholeLabel": "1 vs 1 ranked",
+          "direction": "ltr",
+          "bidi": "isolate"
+        },
+        {
+          "text": "2 vs 2 ranked",
+          "isolated": true,
+          "wholeLabel": "2 vs 2 ranked",
+          "direction": "ltr",
+          "bidi": "isolate"
+        },
+        {
+          "text": "1 vs 1 ranked",
+          "isolated": true,
+          "wholeLabel": "1 vs 1 ranked",
+          "direction": "ltr",
+          "bidi": "isolate"
+        }
+      ],
+      "passed": true
+    },
+    {
+      "locale": "ur",
+      "width": 1200,
+      "name": "leaderboard",
+      "url": "http://127.0.0.1:4322/leaderboard/ranked-1v1",
+      "screenshot": "ur-1200-leaderboard.png",
+      "screenshot_sha256": "9d54e1b4dd092bb678392ba14682c6a9a454a7a83ad6154cfff9e1067e71aa85",
+      "lang": "ur",
+      "dir": "rtl",
+      "heading": [
+        "درجہ بندی"
+      ],
+      "font": {
+        "loaded": true,
+        "body": "\"Glob2 Scripts\", \"Nunito Variable\", Nunito, ui-rounded, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif",
+        "heading": "\"Glob2 Scripts\", \"Glob2 Sans\", \"DejaVu Sans\", Verdana, sans-serif"
+      },
+      "overflow": 0,
+      "axe": []
+    },
+    {
+      "name": "ur-queue-text-node-isolation",
+      "locale": "ur",
+      "width": 1200,
+      "surface": "maps",
+      "labels": [],
+      "passed": true
+    },
+    {
+      "locale": "ur",
+      "width": 1200,
+      "name": "maps",
+      "url": "http://127.0.0.1:4322/maps",
+      "screenshot": "ur-1200-maps.png",
+      "screenshot_sha256": "d6fbdc321f26b1c7964eef2b5007612da52732124308cdcbdc90dc2d4d2262cd",
+      "lang": "ur",
+      "dir": "rtl",
+      "heading": [
+        "نقشے"
+      ],
+      "font": {
+        "loaded": true,
+        "body": "\"Glob2 Scripts\", \"Nunito Variable\", Nunito, ui-rounded, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif",
+        "heading": "\"Glob2 Scripts\", \"Glob2 Sans\", \"DejaVu Sans\", Verdana, sans-serif"
+      },
+      "overflow": 0,
+      "axe": []
+    },
+    {
+      "name": "ssr-invite-control-text-containment",
+      "locale": "ur",
+      "width": 1200,
+      "geometry": [
+        {
+          "text": "براؤزر میں کھیلیں",
+          "box": {
+            "x": 401,
+            "y": 284.0625,
+            "width": 398,
+            "height": 48,
+            "top": 284.0625,
+            "right": 799,
+            "bottom": 332.0625,
+            "left": 401
+          },
+          "outer": {
+            "x": 401,
+            "y": 284.0625,
+            "width": 398,
+            "height": 48,
+            "top": 284.0625,
+            "right": 799,
+            "bottom": 332.0625,
+            "left": 401
+          },
+          "texts": [
+            {
+              "text": "براؤزر میں کھیلیں",
+              "rect": {
+                "x": 544.671875,
+                "y": 296.46875,
+                "width": 110.671875,
+                "height": 22,
+                "top": 296.46875,
+                "right": 655.34375,
+                "bottom": 318.46875,
+                "left": 544.671875
+              }
+            }
+          ]
+        },
+        {
+          "text": "Globulation 2 ایپ میں کھولیں",
+          "box": {
+            "x": 401,
+            "y": 340.0625,
+            "width": 398,
+            "height": 48,
+            "top": 340.0625,
+            "right": 799,
+            "bottom": 388.0625,
+            "left": 401
+          },
+          "outer": {
+            "x": 401,
+            "y": 340.0625,
+            "width": 398,
+            "height": 48,
+            "top": 340.0625,
+            "right": 799,
+            "bottom": 388.0625,
+            "left": 401
+          },
+          "texts": [
+            {
+              "text": "Globulation 2 ایپ میں کھولیں",
+              "rect": {
+                "x": 495.171875,
+                "y": 352.46875,
+                "width": 109.03125,
+                "height": 22,
+                "top": 352.46875,
+                "right": 604.203125,
+                "bottom": 374.46875,
+                "left": 495.171875
+              }
+            },
+            {
+              "text": "Globulation 2 ایپ میں کھولیں",
+              "rect": {
+                "x": 604.203125,
+                "y": 352.46875,
+                "width": 100.625,
+                "height": 22,
+                "top": 352.46875,
+                "right": 704.828125,
+                "bottom": 374.46875,
+                "left": 604.203125
+              }
+            }
+          ]
+        }
+      ],
+      "passed": true
+    },
+    {
+      "locale": "ur",
+      "width": 1200,
+      "name": "invite",
+      "url": "http://127.0.0.1:4322/j/GLOBJOIN",
+      "screenshot": "ur-1200-invite.png",
+      "screenshot_sha256": "d501bbb58daebc04b3365d5808f1d0d0845184e250cc7a05e61c910e26ada062",
+      "lang": "ur",
+      "dir": "rtl",
+      "heading": [
+        "آپ کو دعوت ہے"
+      ],
+      "font": {
+        "loaded": true,
+        "body": "\"Glob2 Scripts\", \"Nunito Variable\", Nunito, ui-rounded, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif",
+        "heading": "\"Glob2 Scripts\", \"Glob2 Sans\", \"DejaVu Sans\", Verdana, sans-serif"
+      },
+      "overflow": 0,
+      "axe": []
+    },
+    {
+      "name": "home-hero-control-and-text-containment",
+      "locale": "ur",
+      "width": 390,
+      "geometry": [
+        {
+          "text": "براؤزر میں کھیلیں",
+          "box": {
+            "x": 49,
+            "y": 214.234375,
+            "width": 220,
+            "height": 54,
+            "top": 214.234375,
+            "right": 269,
+            "bottom": 268.234375,
+            "left": 49
+          },
+          "outer": {
+            "x": 32,
+            "y": 36,
+            "width": 254,
+            "height": 685.296875,
+            "top": 36,
+            "right": 286,
+            "bottom": 721.296875,
+            "left": 32
+          },
+          "texts": [
+            {
+              "text": "براؤزر میں کھیلیں",
+              "rect": {
+                "x": 81.75,
+                "y": 228.4375,
+                "width": 124.515625,
+                "height": 24,
+                "top": 228.4375,
+                "right": 206.265625,
+                "bottom": 252.4375,
+                "left": 81.75
+              }
+            }
+          ]
+        },
+        {
+          "text": "ڈاؤن لوڈ کریں",
+          "box": {
+            "x": 49,
+            "y": 276.234375,
+            "width": 220,
+            "height": 54,
+            "top": 276.234375,
+            "right": 269,
+            "bottom": 330.234375,
+            "left": 49
+          },
+          "outer": {
+            "x": 32,
+            "y": 36,
+            "width": 254,
+            "height": 685.296875,
+            "top": 36,
+            "right": 286,
+            "bottom": 721.296875,
+            "left": 32
+          },
+          "texts": [
+            {
+              "text": "ڈاؤن لوڈ کریں",
+              "rect": {
+                "x": 95.15625,
+                "y": 290.4375,
+                "width": 97.703125,
+                "height": 24,
+                "top": 290.4375,
+                "right": 192.859375,
+                "bottom": 314.4375,
+                "left": 95.15625
+              }
+            }
+          ]
+        }
+      ],
+      "passed": true
+    },
+    {
+      "name": "ur-queue-text-node-isolation",
+      "locale": "ur",
+      "width": 390,
+      "surface": "home-first-visit",
+      "labels": [
+        {
+          "text": "1 vs 1 ranked",
+          "isolated": true,
+          "wholeLabel": "1 vs 1 ranked",
+          "direction": "ltr",
+          "bidi": "isolate"
+        },
+        {
+          "text": "2 vs 2 ranked",
+          "isolated": true,
+          "wholeLabel": "2 vs 2 ranked",
+          "direction": "ltr",
+          "bidi": "isolate"
+        }
+      ],
+      "passed": true
+    },
+    {
+      "locale": "ur",
+      "width": 390,
+      "name": "home-first-visit",
+      "url": "http://127.0.0.1:4322/",
+      "screenshot": "ur-390-home-first-visit.png",
+      "screenshot_sha256": "d0b079711bdf7191a07175c06303a851cad4d8e0d6b56c11c6189291aff8d371",
+      "lang": "ur",
+      "dir": "rtl",
+      "heading": [
+        "بستی میں خوش آمدید"
+      ],
+      "font": {
+        "loaded": true,
+        "body": "\"Glob2 Scripts\", \"Nunito Variable\", Nunito, ui-rounded, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif",
+        "heading": "\"Glob2 Scripts\", \"Glob2 Sans\", \"DejaVu Sans\", Verdana, sans-serif"
+      },
+      "overflow": 0,
+      "axe": []
+    },
+    {
+      "name": "ur-numeric-token-geometry",
+      "locale": "ur",
+      "width": 390,
+      "surface": "signin",
+      "passed": true,
+      "digitRanges": [
+        {
+          "text": "0–9",
+          "tag": "BDI",
+          "dir": "ltr",
+          "direction": "ltr",
+          "bidi": "isolate",
+          "glyphs": [
+            {
+              "char": "0",
+              "x": 73.171875,
+              "right": 81.34375,
+              "y": 587.609375,
+              "height": 19
+            },
+            {
+              "char": "–",
+              "x": 81.328125,
+              "right": 88.140625,
+              "y": 587.609375,
+              "height": 19
+            },
+            {
+              "char": "9",
+              "x": 88.125,
+              "right": 96.296875,
+              "y": 587.609375,
+              "height": 19
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "locale": "ur",
+      "width": 390,
+      "name": "signin",
+      "url": "http://127.0.0.1:4322/signin",
+      "screenshot": "ur-390-signin.png",
+      "screenshot_sha256": "86e782f488934f1a438e865d476b313732f91bf2a5491a0951ea51e76cb5c4f5",
+      "lang": "ur",
+      "dir": "rtl",
+      "heading": [
+        "سائن ان کریں"
+      ],
+      "font": {
+        "loaded": true,
+        "body": "\"Glob2 Scripts\", \"Nunito Variable\", Nunito, ui-rounded, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif",
+        "heading": "\"Glob2 Scripts\", \"Glob2 Sans\", \"DejaVu Sans\", Verdana, sans-serif"
+      },
+      "overflow": 0,
+      "axe": []
+    },
+    {
+      "name": "ur-numeric-token-geometry",
+      "locale": "ur",
+      "width": 390,
+      "surface": "signin-error",
+      "passed": true,
+      "digitRanges": [
+        {
+          "text": "0–9",
+          "tag": "BDI",
+          "dir": "ltr",
+          "direction": "ltr",
+          "bidi": "isolate",
+          "glyphs": [
+            {
+              "char": "0",
+              "x": 73.171875,
+              "right": 81.34375,
+              "y": 656.265625,
+              "height": 19
+            },
+            {
+              "char": "–",
+              "x": 81.328125,
+              "right": 88.140625,
+              "y": 656.265625,
+              "height": 19
+            },
+            {
+              "char": "9",
+              "x": 88.125,
+              "right": 96.296875,
+              "y": 656.265625,
+              "height": 19
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "locale": "ur",
+      "width": 390,
+      "name": "signin-error",
+      "url": "http://127.0.0.1:4322/signin/local",
+      "screenshot": "ur-390-signin-error.png",
+      "screenshot_sha256": "7966ba4f266e1d56509960beb3488b87e62f84bf9c7147bd3d612bf3463cbada",
+      "lang": "ur",
+      "dir": "rtl",
+      "heading": [
+        "سائن ان کریں"
+      ],
+      "font": {
+        "loaded": true,
+        "body": "\"Glob2 Scripts\", \"Nunito Variable\", Nunito, ui-rounded, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif",
+        "heading": "\"Glob2 Scripts\", \"Glob2 Sans\", \"DejaVu Sans\", Verdana, sans-serif"
+      },
+      "overflow": 0,
+      "axe": []
+    },
+    {
+      "name": "ur-queue-text-node-isolation",
+      "locale": "ur",
+      "width": 390,
+      "surface": "account",
+      "labels": [],
+      "passed": true
+    },
+    {
+      "locale": "ur",
+      "width": 390,
+      "name": "account",
+      "url": "http://127.0.0.1:4322/account",
+      "screenshot": "ur-390-account.png",
+      "screenshot_sha256": "0708dff453e2f7cfda3d2a31b20fbdf65bf41c3e7f79e3d458fd59c4cf370f9c",
+      "lang": "ur",
+      "dir": "rtl",
+      "heading": [
+        "آپ کا اکاؤنٹ"
+      ],
+      "font": {
+        "loaded": true,
+        "body": "\"Glob2 Scripts\", \"Nunito Variable\", Nunito, ui-rounded, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif",
+        "heading": "\"Glob2 Scripts\", \"Glob2 Sans\", \"DejaVu Sans\", Verdana, sans-serif"
+      },
+      "overflow": 0,
+      "axe": []
+    },
+    {
+      "name": "ur-queue-text-node-isolation",
+      "locale": "ur",
+      "width": 390,
+      "surface": "matches",
+      "labels": [
+        {
+          "text": "1 vs 1 ranked",
+          "isolated": true,
+          "wholeLabel": "1 vs 1 ranked",
+          "direction": "ltr",
+          "bidi": "isolate"
+        },
+        {
+          "text": "2 vs 2 ranked",
+          "isolated": true,
+          "wholeLabel": "2 vs 2 ranked",
+          "direction": "ltr",
+          "bidi": "isolate"
+        }
+      ],
+      "passed": true
+    },
+    {
+      "locale": "ur",
+      "width": 390,
+      "name": "matches",
+      "url": "http://127.0.0.1:4322/matches",
+      "screenshot": "ur-390-matches.png",
+      "screenshot_sha256": "dcde8c4dad6f21b8a1c06ee46bee26459a5b367325def69131b6d67eb82d1efe",
+      "lang": "ur",
+      "dir": "rtl",
+      "heading": [
+        "حالیہ میچ"
+      ],
+      "font": {
+        "loaded": true,
+        "body": "\"Glob2 Scripts\", \"Nunito Variable\", Nunito, ui-rounded, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif",
+        "heading": "\"Glob2 Scripts\", \"Glob2 Sans\", \"DejaVu Sans\", Verdana, sans-serif"
+      },
+      "overflow": 0,
+      "axe": []
+    },
+    {
+      "name": "ur-queue-text-node-isolation",
+      "locale": "ur",
+      "width": 390,
+      "surface": "match",
+      "labels": [
+        {
+          "text": "1 vs 1 ranked",
+          "isolated": true,
+          "wholeLabel": "1 vs 1 ranked",
+          "direction": "ltr",
+          "bidi": "isolate"
+        }
+      ],
+      "passed": true
+    },
+    {
+      "name": "ur-numeric-token-geometry",
+      "locale": "ur",
+      "width": 390,
+      "surface": "match",
+      "passed": true,
+      "transitions": [
+        {
+          "text": "1615  → 1585",
+          "tag": "BDI",
+          "dir": "ltr",
+          "direction": "ltr",
+          "bidi": "isolate",
+          "glyphs": [
+            {
+              "char": "1",
+              "x": -13.921875,
+              "right": -4.3125,
+              "y": 762.28125,
+              "height": 22
+            },
+            {
+              "char": "6",
+              "x": -4.328125,
+              "right": 5.28125,
+              "y": 762.28125,
+              "height": 22
+            },
+            {
+              "char": "1",
+              "x": 5.265625,
+              "right": 14.890625,
+              "y": 762.28125,
+              "height": 22
+            },
+            {
+              "char": "5",
+              "x": 14.875,
+              "right": 24.484375,
+              "y": 762.28125,
+              "height": 22
+            },
+            {
+              "char": "→",
+              "x": 28.609375,
+              "right": 42.796875,
+              "y": 762.28125,
+              "height": 22
+            },
+            {
+              "char": "1",
+              "x": 46.921875,
+              "right": 56.53125,
+              "y": 762.28125,
+              "height": 22
+            },
+            {
+              "char": "5",
+              "x": 56.515625,
+              "right": 66.125,
+              "y": 762.28125,
+              "height": 22
+            },
+            {
+              "char": "8",
+              "x": 66.109375,
+              "right": 75.734375,
+              "y": 762.28125,
+              "height": 22
+            },
+            {
+              "char": "5",
+              "x": 75.71875,
+              "right": 85.328125,
+              "y": 762.28125,
+              "height": 22
+            }
+          ]
+        },
+        {
+          "text": "1677  → 1706",
+          "tag": "BDI",
+          "dir": "ltr",
+          "direction": "ltr",
+          "bidi": "isolate",
+          "glyphs": [
+            {
+              "char": "1",
+              "x": -13.921875,
+              "right": -4.3125,
+              "y": 832.875,
+              "height": 22
+            },
+            {
+              "char": "6",
+              "x": -4.328125,
+              "right": 5.28125,
+              "y": 832.875,
+              "height": 22
+            },
+            {
+              "char": "7",
+              "x": 5.265625,
+              "right": 14.890625,
+              "y": 832.875,
+              "height": 22
+            },
+            {
+              "char": "7",
+              "x": 14.875,
+              "right": 24.484375,
+              "y": 832.875,
+              "height": 22
+            },
+            {
+              "char": "→",
+              "x": 28.609375,
+              "right": 42.796875,
+              "y": 832.875,
+              "height": 22
+            },
+            {
+              "char": "1",
+              "x": 46.921875,
+              "right": 56.53125,
+              "y": 832.875,
+              "height": 22
+            },
+            {
+              "char": "7",
+              "x": 56.515625,
+              "right": 66.125,
+              "y": 832.875,
+              "height": 22
+            },
+            {
+              "char": "0",
+              "x": 66.109375,
+              "right": 75.734375,
+              "y": 832.875,
+              "height": 22
+            },
+            {
+              "char": "6",
+              "x": 75.71875,
+              "right": 85.328125,
+              "y": 832.875,
+              "height": 22
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "phone-match-table-focus-and-keyboard-pan",
+      "locale": "ur",
+      "width": 390,
+      "size": {
+        "clientWidth": 284,
+        "scrollWidth": 327
+      },
+      "positions": [
+        {
+          "key": "ArrowLeft",
+          "scrollLeft": -42,
+          "viewport": {
+            "x": 16,
+            "y": 678.9375,
+            "width": 286,
+            "height": 182.53125,
+            "top": 678.9375,
+            "right": 302,
+            "bottom": 861.46875,
+            "left": 16
+          },
+          "ratings": [
+            {
+              "text": "1615  → 1585",
+              "box": {
+                "x": 28.078125,
+                "y": 731.28125,
+                "width": 99.25,
+                "height": 22,
+                "top": 731.28125,
+                "right": 127.328125,
+                "bottom": 753.28125,
+                "left": 28.078125
+              },
+              "visibleFraction": 1
+            },
+            {
+              "text": "1677  → 1706",
+              "box": {
+                "x": 28.078125,
+                "y": 801.875,
+                "width": 99.25,
+                "height": 22,
+                "top": 801.875,
+                "right": 127.328125,
+                "bottom": 823.875,
+                "left": 28.078125
+              },
+              "visibleFraction": 1
+            }
+          ],
+          "screenshot": "ur-390-match-table-ArrowLeft.png",
+          "screenshot_sha256": "0fc6a7418304057458c730a242a8bd9dadefd3dffd592e1ce32c266c51ba5321"
+        },
+        {
+          "key": "ArrowRight",
+          "scrollLeft": 1,
+          "viewport": {
+            "x": 16,
+            "y": 678.9375,
+            "width": 286,
+            "height": 182.53125,
+            "top": 678.9375,
+            "right": 302,
+            "bottom": 861.46875,
+            "left": 16
+          },
+          "ratings": [
+            {
+              "text": "1615  → 1585",
+              "box": {
+                "x": -14.921875,
+                "y": 731.28125,
+                "width": 99.25,
+                "height": 22,
+                "top": 731.28125,
+                "right": 84.328125,
+                "bottom": 753.28125,
+                "left": -14.921875
+              },
+              "visibleFraction": 0.6884445843828715
+            },
+            {
+              "text": "1677  → 1706",
+              "box": {
+                "x": -14.921875,
+                "y": 801.875,
+                "width": 99.25,
+                "height": 22,
+                "top": 801.875,
+                "right": 84.328125,
+                "bottom": 823.875,
+                "left": -14.921875
+              },
+              "visibleFraction": 0.6884445843828715
+            }
+          ],
+          "screenshot": "ur-390-match-table-ArrowRight.png",
+          "screenshot_sha256": "d0758accaba18c3cae8a97d253ed2f16d967598b5283f92ac1a9f154f0225fa2"
+        }
+      ],
+      "passed": true,
+      "limits": "Keyboard scrolling in emulated Chromium viewport; physical touch gestures and mobile hardware not verified."
+    },
+    {
+      "locale": "ur",
+      "width": 390,
+      "name": "match",
+      "url": "http://127.0.0.1:4322/matches/3ed264df-bfa9-419d-8e85-62fdc5a008fa",
+      "screenshot": "ur-390-match.png",
+      "screenshot_sha256": "28dfc5c92b29883302ae9220db36a38bd132e5e11d2822cfb974685740cc8345",
+      "lang": "ur",
+      "dir": "rtl",
+      "heading": [
+        "1 vs 1 ranked · Even Ground Classic"
+      ],
+      "font": {
+        "loaded": true,
+        "body": "\"Glob2 Scripts\", \"Nunito Variable\", Nunito, ui-rounded, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif",
+        "heading": "\"Glob2 Scripts\", \"Glob2 Sans\", \"DejaVu Sans\", Verdana, sans-serif"
+      },
+      "overflow": 0,
+      "axe": []
+    },
+    {
+      "name": "ur-queue-text-node-isolation",
+      "locale": "ur",
+      "width": 390,
+      "surface": "profile",
+      "labels": [
+        {
+          "text": "1 vs 1 ranked",
+          "isolated": true,
+          "wholeLabel": "1 vs 1 ranked",
+          "direction": "ltr",
+          "bidi": "isolate"
+        },
+        {
+          "text": "2 vs 2 ranked",
+          "isolated": true,
+          "wholeLabel": "2 vs 2 ranked",
+          "direction": "ltr",
+          "bidi": "isolate"
+        },
+        {
+          "text": "1 vs 1 ranked",
+          "isolated": true,
+          "wholeLabel": "1 vs 1 ranked",
+          "direction": "ltr",
+          "bidi": "isolate"
+        },
+        {
+          "text": "1 vs 1 ranked",
+          "isolated": true,
+          "wholeLabel": "1 vs 1 ranked",
+          "direction": "ltr",
+          "bidi": "isolate"
+        },
+        {
+          "text": "1 vs 1 ranked",
+          "isolated": true,
+          "wholeLabel": "1 vs 1 ranked",
+          "direction": "ltr",
+          "bidi": "isolate"
+        },
+        {
+          "text": "2 vs 2 ranked",
+          "isolated": true,
+          "wholeLabel": "2 vs 2 ranked",
+          "direction": "ltr",
+          "bidi": "isolate"
+        }
+      ],
+      "passed": true
+    },
+    {
+      "name": "ur-numeric-token-geometry",
+      "locale": "ur",
+      "width": 390,
+      "surface": "profile",
+      "passed": true,
+      "winLoss": [
+        {
+          "text": "5–3",
+          "tag": "BDI",
+          "dir": "ltr",
+          "direction": "ltr",
+          "bidi": "isolate",
+          "glyphs": [
+            {
+              "char": "5",
+              "x": 115,
+              "right": 124.609375,
+              "y": 1075.859375,
+              "height": 22
+            },
+            {
+              "char": "–",
+              "x": 124.609375,
+              "right": 132.609375,
+              "y": 1075.859375,
+              "height": 22
+            },
+            {
+              "char": "3",
+              "x": 132.609375,
+              "right": 142.21875,
+              "y": 1075.859375,
+              "height": 22
+            }
+          ]
+        },
+        {
+          "text": "5–3",
+          "tag": "BDI",
+          "dir": "ltr",
+          "direction": "ltr",
+          "bidi": "isolate",
+          "glyphs": [
+            {
+              "char": "5",
+              "x": 74.609375,
+              "right": 84.21875,
+              "y": 1199.34375,
+              "height": 22
+            },
+            {
+              "char": "–",
+              "x": 84.21875,
+              "right": 92.21875,
+              "y": 1199.34375,
+              "height": 22
+            },
+            {
+              "char": "3",
+              "x": 92.21875,
+              "right": 101.828125,
+              "y": 1199.34375,
+              "height": 22
+            }
+          ]
+        }
+      ],
+      "historyDeltas": [
+        {
+          "text": "−29",
+          "tag": "BDI",
+          "dir": "ltr",
+          "direction": "ltr",
+          "bidi": "isolate",
+          "glyphs": [
+            {
+              "char": "−",
+              "x": 33,
+              "right": 42.609375,
+              "y": 2152.59375,
+              "height": 22
+            },
+            {
+              "char": "2",
+              "x": 42.59375,
+              "right": 52.203125,
+              "y": 2152.59375,
+              "height": 22
+            },
+            {
+              "char": "9",
+              "x": 52.1875,
+              "right": 61.8125,
+              "y": 2152.59375,
+              "height": 22
+            }
+          ]
+        },
+        {
+          "text": "+91",
+          "tag": "BDI",
+          "dir": "ltr",
+          "direction": "ltr",
+          "bidi": "isolate",
+          "glyphs": [
+            {
+              "char": "+",
+              "x": 33,
+              "right": 42.609375,
+              "y": 2224.078125,
+              "height": 22
+            },
+            {
+              "char": "9",
+              "x": 42.59375,
+              "right": 52.203125,
+              "y": 2224.078125,
+              "height": 22
+            },
+            {
+              "char": "1",
+              "x": 52.1875,
+              "right": 61.8125,
+              "y": 2224.078125,
+              "height": 22
+            }
+          ]
+        },
+        {
+          "text": "+91",
+          "tag": "BDI",
+          "dir": "ltr",
+          "direction": "ltr",
+          "bidi": "isolate",
+          "glyphs": [
+            {
+              "char": "+",
+              "x": 33,
+              "right": 42.609375,
+              "y": 2295.5625,
+              "height": 22
+            },
+            {
+              "char": "9",
+              "x": 42.59375,
+              "right": 52.203125,
+              "y": 2295.5625,
+              "height": 22
+            },
+            {
+              "char": "1",
+              "x": 52.1875,
+              "right": 61.8125,
+              "y": 2295.5625,
+              "height": 22
+            }
+          ]
+        },
+        {
+          "text": "−24",
+          "tag": "BDI",
+          "dir": "ltr",
+          "direction": "ltr",
+          "bidi": "isolate",
+          "glyphs": [
+            {
+              "char": "−",
+              "x": 33,
+              "right": 42.609375,
+              "y": 2367.046875,
+              "height": 22
+            },
+            {
+              "char": "2",
+              "x": 42.59375,
+              "right": 52.203125,
+              "y": 2367.046875,
+              "height": 22
+            },
+            {
+              "char": "4",
+              "x": 52.1875,
+              "right": 61.8125,
+              "y": 2367.046875,
+              "height": 22
+            }
+          ]
+        },
+        {
+          "text": "+91",
+          "tag": "BDI",
+          "dir": "ltr",
+          "direction": "ltr",
+          "bidi": "isolate",
+          "glyphs": [
+            {
+              "char": "+",
+              "x": 33,
+              "right": 42.609375,
+              "y": 2438.53125,
+              "height": 22
+            },
+            {
+              "char": "9",
+              "x": 42.59375,
+              "right": 52.203125,
+              "y": 2438.53125,
+              "height": 22
+            },
+            {
+              "char": "1",
+              "x": 52.1875,
+              "right": 61.8125,
+              "y": 2438.53125,
+              "height": 22
+            }
+          ]
+        },
+        {
+          "text": "+91",
+          "tag": "BDI",
+          "dir": "ltr",
+          "direction": "ltr",
+          "bidi": "isolate",
+          "glyphs": [
+            {
+              "char": "+",
+              "x": 33,
+              "right": 42.609375,
+              "y": 2510.015625,
+              "height": 22
+            },
+            {
+              "char": "9",
+              "x": 42.59375,
+              "right": 52.203125,
+              "y": 2510.015625,
+              "height": 22
+            },
+            {
+              "char": "1",
+              "x": 52.1875,
+              "right": 61.8125,
+              "y": 2510.015625,
+              "height": 22
+            }
+          ]
+        },
+        {
+          "text": "−24",
+          "tag": "BDI",
+          "dir": "ltr",
+          "direction": "ltr",
+          "bidi": "isolate",
+          "glyphs": [
+            {
+              "char": "−",
+              "x": 33,
+              "right": 42.609375,
+              "y": 2581.5,
+              "height": 22
+            },
+            {
+              "char": "2",
+              "x": 42.59375,
+              "right": 52.203125,
+              "y": 2581.5,
+              "height": 22
+            },
+            {
+              "char": "4",
+              "x": 52.1875,
+              "right": 61.8125,
+              "y": 2581.5,
+              "height": 22
+            }
+          ]
+        },
+        {
+          "text": "+91",
+          "tag": "BDI",
+          "dir": "ltr",
+          "direction": "ltr",
+          "bidi": "isolate",
+          "glyphs": [
+            {
+              "char": "+",
+              "x": 33,
+              "right": 42.609375,
+              "y": 2652.984375,
+              "height": 22
+            },
+            {
+              "char": "9",
+              "x": 42.59375,
+              "right": 52.203125,
+              "y": 2652.984375,
+              "height": 22
+            },
+            {
+              "char": "1",
+              "x": 52.1875,
+              "right": 61.8125,
+              "y": 2652.984375,
+              "height": 22
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "locale": "ur",
+      "width": 390,
+      "name": "profile",
+      "url": "http://127.0.0.1:4322/players/cd79fe35-f737-4fd9-9666-169d8e6036d2",
+      "screenshot": "ur-390-profile.png",
+      "screenshot_sha256": "6e6ba961075797e34c2e8a4acf3dc03468fdd2f3957d2ad8507f93cdfd1f37a6",
+      "lang": "ur",
+      "dir": "rtl",
+      "heading": [
+        "Bradley"
+      ],
+      "font": {
+        "loaded": true,
+        "body": "\"Glob2 Scripts\", \"Nunito Variable\", Nunito, ui-rounded, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif",
+        "heading": "\"Glob2 Scripts\", \"Glob2 Sans\", \"DejaVu Sans\", Verdana, sans-serif"
+      },
+      "overflow": 0,
+      "axe": []
+    },
+    {
+      "name": "ur-queue-text-node-isolation",
+      "locale": "ur",
+      "width": 390,
+      "surface": "leaderboard",
+      "labels": [
+        {
+          "text": "1 vs 1 ranked",
+          "isolated": true,
+          "wholeLabel": "1 vs 1 ranked",
+          "direction": "ltr",
+          "bidi": "isolate"
+        },
+        {
+          "text": "2 vs 2 ranked",
+          "isolated": true,
+          "wholeLabel": "2 vs 2 ranked",
+          "direction": "ltr",
+          "bidi": "isolate"
+        },
+        {
+          "text": "1 vs 1 ranked",
+          "isolated": true,
+          "wholeLabel": "1 vs 1 ranked",
+          "direction": "ltr",
+          "bidi": "isolate"
+        }
+      ],
+      "passed": true
+    },
+    {
+      "locale": "ur",
+      "width": 390,
+      "name": "leaderboard",
+      "url": "http://127.0.0.1:4322/leaderboard/ranked-1v1",
+      "screenshot": "ur-390-leaderboard.png",
+      "screenshot_sha256": "a67dacdc50ebd3164ed3963788434de006bda5afedfd7a784b304c44028573d4",
+      "lang": "ur",
+      "dir": "rtl",
+      "heading": [
+        "درجہ بندی"
+      ],
+      "font": {
+        "loaded": true,
+        "body": "\"Glob2 Scripts\", \"Nunito Variable\", Nunito, ui-rounded, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif",
+        "heading": "\"Glob2 Scripts\", \"Glob2 Sans\", \"DejaVu Sans\", Verdana, sans-serif"
+      },
+      "overflow": 0,
+      "axe": []
+    },
+    {
+      "name": "ur-queue-text-node-isolation",
+      "locale": "ur",
+      "width": 390,
+      "surface": "maps",
+      "labels": [],
+      "passed": true
+    },
+    {
+      "locale": "ur",
+      "width": 390,
+      "name": "maps",
+      "url": "http://127.0.0.1:4322/maps",
+      "screenshot": "ur-390-maps.png",
+      "screenshot_sha256": "78d0bff7832743dbd30d921032d458ad3ea20da55e08c35e868e675374479638",
+      "lang": "ur",
+      "dir": "rtl",
+      "heading": [
+        "نقشے"
+      ],
+      "font": {
+        "loaded": true,
+        "body": "\"Glob2 Scripts\", \"Nunito Variable\", Nunito, ui-rounded, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif",
+        "heading": "\"Glob2 Scripts\", \"Glob2 Sans\", \"DejaVu Sans\", Verdana, sans-serif"
+      },
+      "overflow": 0,
+      "axe": []
+    },
+    {
+      "name": "ssr-invite-control-text-containment",
+      "locale": "ur",
+      "width": 390,
+      "geometry": [
+        {
+          "text": "براؤزر میں کھیلیں",
+          "box": {
+            "x": 51,
+            "y": 274.40625,
+            "width": 288,
+            "height": 48,
+            "top": 274.40625,
+            "right": 339,
+            "bottom": 322.40625,
+            "left": 51
+          },
+          "outer": {
+            "x": 51,
+            "y": 274.40625,
+            "width": 288,
+            "height": 48,
+            "top": 274.40625,
+            "right": 339,
+            "bottom": 322.40625,
+            "left": 51
+          },
+          "texts": [
+            {
+              "text": "براؤزر میں کھیلیں",
+              "rect": {
+                "x": 139.671875,
+                "y": 286.8125,
+                "width": 110.671875,
+                "height": 22,
+                "top": 286.8125,
+                "right": 250.34375,
+                "bottom": 308.8125,
+                "left": 139.671875
+              }
+            }
+          ]
+        },
+        {
+          "text": "Globulation 2 ایپ میں کھولیں",
+          "box": {
+            "x": 51,
+            "y": 330.40625,
+            "width": 288,
+            "height": 48,
+            "top": 330.40625,
+            "right": 339,
+            "bottom": 378.40625,
+            "left": 51
+          },
+          "outer": {
+            "x": 51,
+            "y": 330.40625,
+            "width": 288,
+            "height": 48,
+            "top": 330.40625,
+            "right": 339,
+            "bottom": 378.40625,
+            "left": 51
+          },
+          "texts": [
+            {
+              "text": "Globulation 2 ایپ میں کھولیں",
+              "rect": {
+                "x": 90.171875,
+                "y": 342.8125,
+                "width": 109.03125,
+                "height": 22,
+                "top": 342.8125,
+                "right": 199.203125,
+                "bottom": 364.8125,
+                "left": 90.171875
+              }
+            },
+            {
+              "text": "Globulation 2 ایپ میں کھولیں",
+              "rect": {
+                "x": 199.203125,
+                "y": 342.8125,
+                "width": 100.625,
+                "height": 22,
+                "top": 342.8125,
+                "right": 299.828125,
+                "bottom": 364.8125,
+                "left": 199.203125
+              }
+            }
+          ]
+        }
+      ],
+      "passed": true
+    },
+    {
+      "locale": "ur",
+      "width": 390,
+      "name": "invite",
+      "url": "http://127.0.0.1:4322/j/GLOBJOIN",
+      "screenshot": "ur-390-invite.png",
+      "screenshot_sha256": "03839bc2fb49547dbd779ea63d4568737190d1e24033766b6b2c526af650aa4b",
+      "lang": "ur",
+      "dir": "rtl",
+      "heading": [
+        "آپ کو دعوت ہے"
+      ],
+      "font": {
+        "loaded": true,
+        "body": "\"Glob2 Scripts\", \"Nunito Variable\", Nunito, ui-rounded, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif",
+        "heading": "\"Glob2 Scripts\", \"Glob2 Sans\", \"DejaVu Sans\", Verdana, sans-serif"
+      },
+      "overflow": 0,
+      "axe": []
+    },
+    {
+      "name": "home-hero-control-and-text-containment",
+      "locale": "sw",
+      "width": 1200,
+      "geometry": [
+        {
+          "text": "Cheza kwenye kivinjari",
+          "box": {
+            "x": 321,
+            "y": 195.40625,
+            "width": 347.375,
+            "height": 54,
+            "top": 195.40625,
+            "right": 668.375,
+            "bottom": 249.40625,
+            "left": 321
+          },
+          "outer": {
+            "x": 296,
+            "y": 48,
+            "width": 620,
+            "height": 474.921875,
+            "top": 48,
+            "right": 916,
+            "bottom": 522.921875,
+            "left": 296
+          },
+          "texts": [
+            {
+              "text": "Cheza kwenye kivinjari",
+              "rect": {
+                "x": 416.03125,
+                "y": 209.609375,
+                "width": 187.3125,
+                "height": 24,
+                "top": 209.609375,
+                "right": 603.34375,
+                "bottom": 233.609375,
+                "left": 416.03125
+              }
+            }
+          ]
+        },
+        {
+          "text": "Pakua",
+          "box": {
+            "x": 680.375,
+            "y": 195.40625,
+            "width": 210.625,
+            "height": 54,
+            "top": 195.40625,
+            "right": 891,
+            "bottom": 249.40625,
+            "left": 680.375
+          },
+          "outer": {
+            "x": 296,
+            "y": 48,
+            "width": 620,
+            "height": 474.921875,
+            "top": 48,
+            "right": 916,
+            "bottom": 522.921875,
+            "left": 296
+          },
+          "texts": [
+            {
+              "text": "Pakua",
+              "rect": {
+                "x": 775.40625,
+                "y": 209.609375,
+                "width": 50.5625,
+                "height": 24,
+                "top": 209.609375,
+                "right": 825.96875,
+                "bottom": 233.609375,
+                "left": 775.40625
+              }
+            }
+          ]
+        }
+      ],
+      "passed": true
+    },
+    {
+      "locale": "sw",
+      "width": 1200,
+      "name": "home-first-visit",
+      "url": "http://127.0.0.1:4322/",
+      "screenshot": "sw-1200-home-first-visit.png",
+      "screenshot_sha256": "316785841d016a1d7b01f10212571d5d508dd1b6235ef178c3f4cb1068fe45ef",
+      "lang": "sw",
+      "dir": "ltr",
+      "heading": [
+        "Karibu kwenye makazi"
+      ],
+      "font": {
+        "loaded": true,
+        "body": "\"Nunito Variable\", Nunito, ui-rounded, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif",
+        "heading": "\"Glob2 Sans\", \"DejaVu Sans\", Verdana, sans-serif"
+      },
+      "overflow": 0,
+      "axe": []
+    },
+    {
+      "locale": "sw",
+      "width": 1200,
+      "name": "signin",
+      "url": "http://127.0.0.1:4322/signin",
+      "screenshot": "sw-1200-signin.png",
+      "screenshot_sha256": "76370b63b16bd374b7b73d0df2816c6df15cc9be8ede161fcdfdb164fb90f181",
+      "lang": "sw",
+      "dir": "ltr",
+      "heading": [
+        "Ingia"
+      ],
+      "font": {
+        "loaded": true,
+        "body": "\"Nunito Variable\", ui-rounded, system-ui, -apple-system, \"Segoe UI\", sans-serif",
+        "heading": "\"Glob2 Sans\", \"DejaVu Sans\", Verdana, sans-serif"
+      },
+      "overflow": 0,
+      "axe": []
+    },
+    {
+      "locale": "sw",
+      "width": 1200,
+      "name": "signin-error",
+      "url": "http://127.0.0.1:4322/signin/local",
+      "screenshot": "sw-1200-signin-error.png",
+      "screenshot_sha256": "cdd34fd02eb34485224d574d1b9d74046fd95684ff77b4d1c68272de2d6eaf7b",
+      "lang": "sw",
+      "dir": "ltr",
+      "heading": [
+        "Ingia"
+      ],
+      "font": {
+        "loaded": true,
+        "body": "\"Nunito Variable\", ui-rounded, system-ui, -apple-system, \"Segoe UI\", sans-serif",
+        "heading": "\"Glob2 Sans\", \"DejaVu Sans\", Verdana, sans-serif"
+      },
+      "overflow": 0,
+      "axe": []
+    },
+    {
+      "locale": "sw",
+      "width": 1200,
+      "name": "account",
+      "url": "http://127.0.0.1:4322/account",
+      "screenshot": "sw-1200-account.png",
+      "screenshot_sha256": "58d99436c727859fee20b90f96e3eb5c1f7e782bc22c04e0a1fe13200c78a634",
+      "lang": "sw",
+      "dir": "ltr",
+      "heading": [
+        "Akaunti yako"
+      ],
+      "font": {
+        "loaded": true,
+        "body": "\"Nunito Variable\", Nunito, ui-rounded, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif",
+        "heading": "\"Glob2 Sans\", \"DejaVu Sans\", Verdana, sans-serif"
+      },
+      "overflow": 0,
+      "axe": []
+    },
+    {
+      "locale": "sw",
+      "width": 1200,
+      "name": "matches",
+      "url": "http://127.0.0.1:4322/matches",
+      "screenshot": "sw-1200-matches.png",
+      "screenshot_sha256": "442118b434394c5a7aa03bfacab69dac6a8067e0c022197fd039d48b8f926104",
+      "lang": "sw",
+      "dir": "ltr",
+      "heading": [
+        "Mechi za hivi karibuni"
+      ],
+      "font": {
+        "loaded": true,
+        "body": "\"Nunito Variable\", Nunito, ui-rounded, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif",
+        "heading": "\"Glob2 Sans\", \"DejaVu Sans\", Verdana, sans-serif"
+      },
+      "overflow": 0,
+      "axe": []
+    },
+    {
+      "locale": "sw",
+      "width": 1200,
+      "name": "match",
+      "url": "http://127.0.0.1:4322/matches/3ed264df-bfa9-419d-8e85-62fdc5a008fa",
+      "screenshot": "sw-1200-match.png",
+      "screenshot_sha256": "317fc1d0ea7651eb0a64cf06c945f4f8cbd8ef8ac7bdb72486c9767e84dc9fdc",
+      "lang": "sw",
+      "dir": "ltr",
+      "heading": [
+        "1 vs 1 ranked · Even Ground Classic"
+      ],
+      "font": {
+        "loaded": true,
+        "body": "\"Nunito Variable\", Nunito, ui-rounded, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif",
+        "heading": "\"Glob2 Sans\", \"DejaVu Sans\", Verdana, sans-serif"
+      },
+      "overflow": 0,
+      "axe": []
+    },
+    {
+      "locale": "sw",
+      "width": 1200,
+      "name": "profile",
+      "url": "http://127.0.0.1:4322/players/cd79fe35-f737-4fd9-9666-169d8e6036d2",
+      "screenshot": "sw-1200-profile.png",
+      "screenshot_sha256": "5ff75d69cac5aaa40b9d0e8d64be81464eb88c3d4ba920f0a51864ed57d5a90b",
+      "lang": "sw",
+      "dir": "ltr",
+      "heading": [
+        "Bradley"
+      ],
+      "font": {
+        "loaded": true,
+        "body": "\"Nunito Variable\", Nunito, ui-rounded, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif",
+        "heading": "\"Glob2 Sans\", \"DejaVu Sans\", Verdana, sans-serif"
+      },
+      "overflow": 0,
+      "axe": []
+    },
+    {
+      "locale": "sw",
+      "width": 1200,
+      "name": "leaderboard",
+      "url": "http://127.0.0.1:4322/leaderboard/ranked-1v1",
+      "screenshot": "sw-1200-leaderboard.png",
+      "screenshot_sha256": "696dbfd761350d26d61dde54557ea0feb4f10f186a04d9267804d5bb9a865f07",
+      "lang": "sw",
+      "dir": "ltr",
+      "heading": [
+        "Ubao wa viwango"
+      ],
+      "font": {
+        "loaded": true,
+        "body": "\"Nunito Variable\", Nunito, ui-rounded, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif",
+        "heading": "\"Glob2 Sans\", \"DejaVu Sans\", Verdana, sans-serif"
+      },
+      "overflow": 0,
+      "axe": []
+    },
+    {
+      "locale": "sw",
+      "width": 1200,
+      "name": "maps",
+      "url": "http://127.0.0.1:4322/maps",
+      "screenshot": "sw-1200-maps.png",
+      "screenshot_sha256": "2f30e89228d6268a8030beea65a1c106692b091f02fb1fe3748778dfd04ab88a",
+      "lang": "sw",
+      "dir": "ltr",
+      "heading": [
+        "Ramani"
+      ],
+      "font": {
+        "loaded": true,
+        "body": "\"Nunito Variable\", Nunito, ui-rounded, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif",
+        "heading": "\"Glob2 Sans\", \"DejaVu Sans\", Verdana, sans-serif"
+      },
+      "overflow": 0,
+      "axe": []
+    },
+    {
+      "name": "ssr-invite-control-text-containment",
+      "locale": "sw",
+      "width": 1200,
+      "geometry": [
+        {
+          "text": "Cheza kwenye kivinjari",
+          "box": {
+            "x": 401,
+            "y": 284.0625,
+            "width": 398,
+            "height": 48,
+            "top": 284.0625,
+            "right": 799,
+            "bottom": 332.0625,
+            "left": 401
+          },
+          "outer": {
+            "x": 401,
+            "y": 284.0625,
+            "width": 398,
+            "height": 48,
+            "top": 284.0625,
+            "right": 799,
+            "bottom": 332.0625,
+            "left": 401
+          },
+          "texts": [
+            {
+              "text": "Cheza kwenye kivinjari",
+              "rect": {
+                "x": 516.75,
+                "y": 296.46875,
+                "width": 166.5,
+                "height": 22,
+                "top": 296.46875,
+                "right": 683.25,
+                "bottom": 318.46875,
+                "left": 516.75
+              }
+            }
+          ]
+        },
+        {
+          "text": "Fungua katika programu ya Globulation 2",
+          "box": {
+            "x": 401,
+            "y": 340.0625,
+            "width": 398,
+            "height": 48,
+            "top": 340.0625,
+            "right": 799,
+            "bottom": 388.0625,
+            "left": 401
+          },
+          "outer": {
+            "x": 401,
+            "y": 340.0625,
+            "width": 398,
+            "height": 48,
+            "top": 340.0625,
+            "right": 799,
+            "bottom": 388.0625,
+            "left": 401
+          },
+          "texts": [
+            {
+              "text": "Fungua katika programu ya Globulation 2",
+              "rect": {
+                "x": 447.234375,
+                "y": 352.46875,
+                "width": 305.53125,
+                "height": 22,
+                "top": 352.46875,
+                "right": 752.765625,
+                "bottom": 374.46875,
+                "left": 447.234375
+              }
+            }
+          ]
+        }
+      ],
+      "passed": true
+    },
+    {
+      "locale": "sw",
+      "width": 1200,
+      "name": "invite",
+      "url": "http://127.0.0.1:4322/j/GLOBJOIN",
+      "screenshot": "sw-1200-invite.png",
+      "screenshot_sha256": "2772e837e5d7d41a718244acdf22e62312e310fe039e0e078afd601eccd0baee",
+      "lang": "sw",
+      "dir": "ltr",
+      "heading": [
+        "Umealikwa"
+      ],
+      "font": {
+        "loaded": true,
+        "body": "\"Nunito Variable\", ui-rounded, system-ui, -apple-system, \"Segoe UI\", sans-serif",
+        "heading": "\"Glob2 Sans\", \"DejaVu Sans\", Verdana, sans-serif"
+      },
+      "overflow": 0,
+      "axe": []
+    },
+    {
+      "name": "home-hero-control-and-text-containment",
+      "locale": "sw",
+      "width": 390,
+      "geometry": [
+        {
+          "text": "Cheza kwenye kivinjari",
+          "box": {
+            "x": 121,
+            "y": 239.03125,
+            "width": 220,
+            "height": 54,
+            "top": 239.03125,
+            "right": 341,
+            "bottom": 293.03125,
+            "left": 121
+          },
+          "outer": {
+            "x": 104,
+            "y": 36,
+            "width": 254,
+            "height": 746.75,
+            "top": 36,
+            "right": 358,
+            "bottom": 782.75,
+            "left": 104
+          },
+          "texts": [
+            {
+              "text": "Cheza kwenye kivinjari",
+              "rect": {
+                "x": 186.734375,
+                "y": 242.4375,
+                "width": 118.53125,
+                "height": 24,
+                "top": 242.4375,
+                "right": 305.265625,
+                "bottom": 266.4375,
+                "left": 186.734375
+              }
+            },
+            {
+              "text": "Cheza kwenye kivinjari",
+              "rect": {
+                "x": 214,
+                "y": 264.03125,
+                "width": 63.984375,
+                "height": 24,
+                "top": 264.03125,
+                "right": 277.984375,
+                "bottom": 288.03125,
+                "left": 214
+              }
+            }
+          ]
+        },
+        {
+          "text": "Pakua",
+          "box": {
+            "x": 121,
+            "y": 301.03125,
+            "width": 220,
+            "height": 54,
+            "top": 301.03125,
+            "right": 341,
+            "bottom": 355.03125,
+            "left": 121
+          },
+          "outer": {
+            "x": 104,
+            "y": 36,
+            "width": 254,
+            "height": 746.75,
+            "top": 36,
+            "right": 358,
+            "bottom": 782.75,
+            "left": 104
+          },
+          "texts": [
+            {
+              "text": "Pakua",
+              "rect": {
+                "x": 220.71875,
+                "y": 315.234375,
+                "width": 50.5625,
+                "height": 24,
+                "top": 315.234375,
+                "right": 271.28125,
+                "bottom": 339.234375,
+                "left": 220.71875
+              }
+            }
+          ]
+        }
+      ],
+      "passed": true
+    },
+    {
+      "locale": "sw",
+      "width": 390,
+      "name": "home-first-visit",
+      "url": "http://127.0.0.1:4322/",
+      "screenshot": "sw-390-home-first-visit.png",
+      "screenshot_sha256": "2b42ba62010b0116004e5a404d79e79570c3613f607cde19ad7aae21d882a015",
+      "lang": "sw",
+      "dir": "ltr",
+      "heading": [
+        "Karibu kwenye makazi"
+      ],
+      "font": {
+        "loaded": true,
+        "body": "\"Nunito Variable\", Nunito, ui-rounded, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif",
+        "heading": "\"Glob2 Sans\", \"DejaVu Sans\", Verdana, sans-serif"
+      },
+      "overflow": 0,
+      "axe": []
+    },
+    {
+      "locale": "sw",
+      "width": 390,
+      "name": "signin",
+      "url": "http://127.0.0.1:4322/signin",
+      "screenshot": "sw-390-signin.png",
+      "screenshot_sha256": "8bf6ac9042bfb60309b64eb65180a6a6c5382237864b89a8580c8ba181d7b90b",
+      "lang": "sw",
+      "dir": "ltr",
+      "heading": [
+        "Ingia"
+      ],
+      "font": {
+        "loaded": true,
+        "body": "\"Nunito Variable\", ui-rounded, system-ui, -apple-system, \"Segoe UI\", sans-serif",
+        "heading": "\"Glob2 Sans\", \"DejaVu Sans\", Verdana, sans-serif"
+      },
+      "overflow": 0,
+      "axe": []
+    },
+    {
+      "locale": "sw",
+      "width": 390,
+      "name": "signin-error",
+      "url": "http://127.0.0.1:4322/signin/local",
+      "screenshot": "sw-390-signin-error.png",
+      "screenshot_sha256": "bd75c90a5a861dcc66ecc7ec186c8196dbe07fa2917c38a1e693113eed71057d",
+      "lang": "sw",
+      "dir": "ltr",
+      "heading": [
+        "Ingia"
+      ],
+      "font": {
+        "loaded": true,
+        "body": "\"Nunito Variable\", ui-rounded, system-ui, -apple-system, \"Segoe UI\", sans-serif",
+        "heading": "\"Glob2 Sans\", \"DejaVu Sans\", Verdana, sans-serif"
+      },
+      "overflow": 0,
+      "axe": []
+    },
+    {
+      "locale": "sw",
+      "width": 390,
+      "name": "account",
+      "url": "http://127.0.0.1:4322/account",
+      "screenshot": "sw-390-account.png",
+      "screenshot_sha256": "35827b54b814f4a83de36f8903dde23fe0d21ac8cb3a1cab18f604c8fe132bb1",
+      "lang": "sw",
+      "dir": "ltr",
+      "heading": [
+        "Akaunti yako"
+      ],
+      "font": {
+        "loaded": true,
+        "body": "\"Nunito Variable\", Nunito, ui-rounded, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif",
+        "heading": "\"Glob2 Sans\", \"DejaVu Sans\", Verdana, sans-serif"
+      },
+      "overflow": 0,
+      "axe": []
+    },
+    {
+      "locale": "sw",
+      "width": 390,
+      "name": "matches",
+      "url": "http://127.0.0.1:4322/matches",
+      "screenshot": "sw-390-matches.png",
+      "screenshot_sha256": "c6eab6d8a7b5a8485471ad5a5a7fb866d51f273206819360fef1f1076c285372",
+      "lang": "sw",
+      "dir": "ltr",
+      "heading": [
+        "Mechi za hivi karibuni"
+      ],
+      "font": {
+        "loaded": true,
+        "body": "\"Nunito Variable\", Nunito, ui-rounded, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif",
+        "heading": "\"Glob2 Sans\", \"DejaVu Sans\", Verdana, sans-serif"
+      },
+      "overflow": 0,
+      "axe": []
+    },
+    {
+      "name": "phone-match-table-focus-and-keyboard-pan",
+      "locale": "sw",
+      "width": 390,
+      "size": {
+        "clientWidth": 284,
+        "scrollWidth": 408
+      },
+      "positions": [
+        {
+          "key": "ArrowLeft",
+          "scrollLeft": 0,
+          "viewport": {
+            "x": 88,
+            "y": 653.9375,
+            "width": 286,
+            "height": 207.328125,
+            "top": 653.9375,
+            "right": 374,
+            "bottom": 861.265625,
+            "left": 88
+          },
+          "ratings": [
+            {
+              "text": "1615  → 1585",
+              "box": {
+                "x": 385.421875,
+                "y": 706.28125,
+                "width": 99.25,
+                "height": 22,
+                "top": 706.28125,
+                "right": 484.671875,
+                "bottom": 728.28125,
+                "left": 385.421875
+              },
+              "visibleFraction": 0
+            },
+            {
+              "text": "1677  → 1706",
+              "box": {
+                "x": 385.421875,
+                "y": 789.265625,
+                "width": 99.25,
+                "height": 22,
+                "top": 789.265625,
+                "right": 484.671875,
+                "bottom": 811.265625,
+                "left": 385.421875
+              },
+              "visibleFraction": 0
+            }
+          ],
+          "screenshot": "sw-390-match-table-ArrowLeft.png",
+          "screenshot_sha256": "665334388a7047c0b42f522e50664dafa03212a56f1405641870362eed01ffac"
+        },
+        {
+          "key": "ArrowRight",
+          "scrollLeft": 124,
+          "viewport": {
+            "x": 88,
+            "y": 653.9375,
+            "width": 286,
+            "height": 207.328125,
+            "top": 653.9375,
+            "right": 374,
+            "bottom": 861.265625,
+            "left": 88
+          },
+          "ratings": [
+            {
+              "text": "1615  → 1585",
+              "box": {
+                "x": 261.421875,
+                "y": 706.28125,
+                "width": 99.25,
+                "height": 22,
+                "top": 706.28125,
+                "right": 360.671875,
+                "bottom": 728.28125,
+                "left": 261.421875
+              },
+              "visibleFraction": 1
+            },
+            {
+              "text": "1677  → 1706",
+              "box": {
+                "x": 261.421875,
+                "y": 789.265625,
+                "width": 99.25,
+                "height": 22,
+                "top": 789.265625,
+                "right": 360.671875,
+                "bottom": 811.265625,
+                "left": 261.421875
+              },
+              "visibleFraction": 1
+            }
+          ],
+          "screenshot": "sw-390-match-table-ArrowRight.png",
+          "screenshot_sha256": "f81ce6bdd60fb53570d58b4ae3a1562f3d0b67b67936f94dc24d4776fd29b02e"
+        }
+      ],
+      "passed": true,
+      "limits": "Keyboard scrolling in emulated Chromium viewport; physical touch gestures and mobile hardware not verified."
+    },
+    {
+      "locale": "sw",
+      "width": 390,
+      "name": "match",
+      "url": "http://127.0.0.1:4322/matches/3ed264df-bfa9-419d-8e85-62fdc5a008fa",
+      "screenshot": "sw-390-match.png",
+      "screenshot_sha256": "ecab607759e51d9399e515038ad4ef17a9a87228a6b452875804cd364bc9bfb8",
+      "lang": "sw",
+      "dir": "ltr",
+      "heading": [
+        "1 vs 1 ranked · Even Ground Classic"
+      ],
+      "font": {
+        "loaded": true,
+        "body": "\"Nunito Variable\", Nunito, ui-rounded, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif",
+        "heading": "\"Glob2 Sans\", \"DejaVu Sans\", Verdana, sans-serif"
+      },
+      "overflow": 0,
+      "axe": []
+    },
+    {
+      "locale": "sw",
+      "width": 390,
+      "name": "profile",
+      "url": "http://127.0.0.1:4322/players/cd79fe35-f737-4fd9-9666-169d8e6036d2",
+      "screenshot": "sw-390-profile.png",
+      "screenshot_sha256": "2febcac80d749a87be008531c0ab8a1b70fddb92074b4aadf524a5f9702181ae",
+      "lang": "sw",
+      "dir": "ltr",
+      "heading": [
+        "Bradley"
+      ],
+      "font": {
+        "loaded": true,
+        "body": "\"Nunito Variable\", Nunito, ui-rounded, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif",
+        "heading": "\"Glob2 Sans\", \"DejaVu Sans\", Verdana, sans-serif"
+      },
+      "overflow": 0,
+      "axe": []
+    },
+    {
+      "locale": "sw",
+      "width": 390,
+      "name": "leaderboard",
+      "url": "http://127.0.0.1:4322/leaderboard/ranked-1v1",
+      "screenshot": "sw-390-leaderboard.png",
+      "screenshot_sha256": "d0fea7af91028ce837c2a471697689cd9bb4cb34d575f20a8abfc7884428bf65",
+      "lang": "sw",
+      "dir": "ltr",
+      "heading": [
+        "Ubao wa viwango"
+      ],
+      "font": {
+        "loaded": true,
+        "body": "\"Nunito Variable\", Nunito, ui-rounded, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif",
+        "heading": "\"Glob2 Sans\", \"DejaVu Sans\", Verdana, sans-serif"
+      },
+      "overflow": 0,
+      "axe": []
+    },
+    {
+      "locale": "sw",
+      "width": 390,
+      "name": "maps",
+      "url": "http://127.0.0.1:4322/maps",
+      "screenshot": "sw-390-maps.png",
+      "screenshot_sha256": "10d6cb9acb2b3de3a862ab01d22f24dd20ab49e326fa97a114773675375301cc",
+      "lang": "sw",
+      "dir": "ltr",
+      "heading": [
+        "Ramani"
+      ],
+      "font": {
+        "loaded": true,
+        "body": "\"Nunito Variable\", Nunito, ui-rounded, system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif",
+        "heading": "\"Glob2 Sans\", \"DejaVu Sans\", Verdana, sans-serif"
+      },
+      "overflow": 0,
+      "axe": []
+    },
+    {
+      "name": "ssr-invite-control-text-containment",
+      "locale": "sw",
+      "width": 390,
+      "geometry": [
+        {
+          "text": "Cheza kwenye kivinjari",
+          "box": {
+            "x": 51,
+            "y": 299.203125,
+            "width": 288,
+            "height": 48,
+            "top": 299.203125,
+            "right": 339,
+            "bottom": 347.203125,
+            "left": 51
+          },
+          "outer": {
+            "x": 51,
+            "y": 299.203125,
+            "width": 288,
+            "height": 48,
+            "top": 299.203125,
+            "right": 339,
+            "bottom": 347.203125,
+            "left": 51
+          },
+          "texts": [
+            {
+              "text": "Cheza kwenye kivinjari",
+              "rect": {
+                "x": 111.75,
+                "y": 311.609375,
+                "width": 166.5,
+                "height": 22,
+                "top": 311.609375,
+                "right": 278.25,
+                "bottom": 333.609375,
+                "left": 111.75
+              }
+            }
+          ]
+        },
+        {
+          "text": "Fungua katika programu ya Globulation 2",
+          "box": {
+            "x": 51,
+            "y": 355.203125,
+            "width": 288,
+            "height": 60.375,
+            "top": 355.203125,
+            "right": 339,
+            "bottom": 415.578125,
+            "left": 51
+          },
+          "outer": {
+            "x": 51,
+            "y": 355.203125,
+            "width": 288,
+            "height": 60.375,
+            "top": 355.203125,
+            "right": 339,
+            "bottom": 415.578125,
+            "left": 51
+          },
+          "texts": [
+            {
+              "text": "Fungua katika programu ya Globulation 2",
+              "rect": {
+                "x": 94.671875,
+                "y": 364.203125,
+                "width": 200.640625,
+                "height": 22,
+                "top": 364.203125,
+                "right": 295.3125,
+                "bottom": 386.203125,
+                "left": 94.671875
+              }
+            },
+            {
+              "text": "Fungua katika programu ya Globulation 2",
+              "rect": {
+                "x": 144.6875,
+                "y": 383.390625,
+                "width": 100.625,
+                "height": 22,
+                "top": 383.390625,
+                "right": 245.3125,
+                "bottom": 405.390625,
+                "left": 144.6875
+              }
+            }
+          ]
+        }
+      ],
+      "passed": true
+    },
+    {
+      "locale": "sw",
+      "width": 390,
+      "name": "invite",
+      "url": "http://127.0.0.1:4322/j/GLOBJOIN",
+      "screenshot": "sw-390-invite.png",
+      "screenshot_sha256": "22f4ded01d07e138914c42283e85e68718fcd6ac6a90275b6a5a9fa3dfeeb87e",
+      "lang": "sw",
+      "dir": "ltr",
+      "heading": [
+        "Umealikwa"
+      ],
+      "font": {
+        "loaded": true,
+        "body": "\"Nunito Variable\", ui-rounded, system-ui, -apple-system, \"Segoe UI\", sans-serif",
+        "heading": "\"Glob2 Sans\", \"DejaVu Sans\", Verdana, sans-serif"
+      },
+      "overflow": 0,
+      "axe": []
+    },
+    {
+      "name": "catalog-download-failure-retry",
+      "locale": "hi",
+      "passed": true
+    },
+    {
+      "name": "catalog-download-failure-retry",
+      "locale": "ur",
+      "passed": true
+    },
+    {
+      "name": "catalog-download-failure-retry",
+      "locale": "sw",
+      "passed": true
+    },
+    {
+      "name": "written-script-first-visit",
+      "tag": "hi-Deva-IN",
+      "expected": "hi",
+      "actual_navigator": [
+        "hi-Deva-IN"
+      ],
+      "passed": true
+    },
+    {
+      "name": "written-script-first-visit",
+      "tag": "hi-Latn",
+      "expected": "en",
+      "actual_navigator": [
+        "hi-Latn"
+      ],
+      "passed": true
+    },
+    {
+      "name": "written-script-first-visit",
+      "tag": "hi-u-nu-latn",
+      "expected": "hi",
+      "actual_navigator": [
+        "hi-u-nu-latn"
+      ],
+      "passed": true
+    },
+    {
+      "name": "written-script-first-visit",
+      "tag": "ur-Arab-PK",
+      "expected": "ur",
+      "actual_navigator": [
+        "ur-Arab-PK"
+      ],
+      "passed": true
+    },
+    {
+      "name": "written-script-first-visit",
+      "tag": "ur-Latn",
+      "expected": "en",
+      "actual_navigator": [
+        "ur-Latn"
+      ],
+      "passed": true
+    },
+    {
+      "name": "written-script-first-visit",
+      "tag": "sw-Latn-KE",
+      "expected": "sw",
+      "actual_navigator": [
+        "sw-Latn-KE"
+      ],
+      "passed": true
+    },
+    {
+      "name": "written-script-first-visit",
+      "tag": "sw-Arab",
+      "expected": "en",
+      "actual_navigator": [
+        "sw-Arab"
+      ],
+      "passed": true
+    },
+    {
+      "name": "font-download-failure-recovery",
+      "locale": "ur",
+      "font_errors": 1,
+      "passed": true,
+      "limits": "Fallback glyph appearance is not certified when a font download is deliberately blocked."
+    }
+  ],
+  "browser_diagnostics": [
+    {
+      "locale": "hi",
+      "width": 1200,
+      "pageErrors": [],
+      "requestFailures": [],
+      "apiResponses": [
+        {
+          "url": "http://127.0.0.1:4322/api/v1/accounts/me",
+          "status": 401
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/stats",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/instance",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/maps?sort=likes&limit=4",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/matches?limit=6",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/leaderboards/ranked-1v1?limit=5",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/leaderboards/ranked-2v2?limit=5",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/accounts/1965bde1-c4d1-4da8-9813-89650c4bfdea/avatar?v=0",
+          "status": 404
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/maps/e21d312a-6da3-4c3b-addf-099b2e98e135/versions/86c8da18706f76363dc32d8d440b6a7c12fa270d30df396dd8e49ec0f680f84f/preview.webp",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/accounts/b24d3b7b-8725-4582-ab40-574ae9fe8429/avatar?v=0",
+          "status": 404
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/maps/ef932352-30c9-4c4b-bc05-233a45050234/versions/0027970801e9b94f210bc86134d13144190b63cec75229c2da1a8abd54abb8cd/preview.webp",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/maps/42c9ec6e-98fa-47d1-a87b-74a5f5d87182/versions/c68de7b55215b9537c7b5421eca8e4c5bc71bb0a3580db8d734014c5127cba78/preview.webp",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/accounts/cd79fe35-f737-4fd9-9666-169d8e6036d2/avatar?v=0",
+          "status": 404
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/maps/5d379e7a-c21a-4a57-a644-c8c0204705a7/versions/0283f188c86a4e071d47f3fa9b44f47595d8b8d9a30d5be531aad3fabb4da0bd/preview.webp",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/accounts/06d463ac-670a-4d2b-8563-c5521620819f/avatar?v=0",
+          "status": 404
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/stats",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/accounts/me",
+          "status": 401
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/maps?sort=likes&limit=4",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/maps/e21d312a-6da3-4c3b-addf-099b2e98e135/versions/86c8da18706f76363dc32d8d440b6a7c12fa270d30df396dd8e49ec0f680f84f/preview.webp",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/maps/42c9ec6e-98fa-47d1-a87b-74a5f5d87182/versions/c68de7b55215b9537c7b5421eca8e4c5bc71bb0a3580db8d734014c5127cba78/preview.webp",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/maps/ef932352-30c9-4c4b-bc05-233a45050234/versions/0027970801e9b94f210bc86134d13144190b63cec75229c2da1a8abd54abb8cd/preview.webp",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/maps/5d379e7a-c21a-4a57-a644-c8c0204705a7/versions/0283f188c86a4e071d47f3fa9b44f47595d8b8d9a30d5be531aad3fabb4da0bd/preview.webp",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/instance",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/matches?limit=6",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/signin/local",
+          "status": 401
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/instance",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/accounts/me",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/accounts/1965bde1-c4d1-4da8-9813-89650c4bfdea/avatar?v=0",
+          "status": 404
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/instance",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/accounts/me",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/matches?limit=25",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/accounts/1965bde1-c4d1-4da8-9813-89650c4bfdea/avatar?v=0",
+          "status": 404
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/instance",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/accounts/me",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/matches/3ed264df-bfa9-419d-8e85-62fdc5a008fa",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/accounts/1965bde1-c4d1-4da8-9813-89650c4bfdea/avatar?v=0",
+          "status": 404
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/matches/3ed264df-bfa9-419d-8e85-62fdc5a008fa/skins",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/skins/versions/97b6e116-918a-490c-a59d-c9a7a3e97301/texture?sha256=1325080b605dd8f32ae850b0fc000de31b78f7ba6497d1a9e87ece8e5caea090",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/instance",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/accounts/me",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/accounts/1965bde1-c4d1-4da8-9813-89650c4bfdea/avatar?v=0",
+          "status": 404
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/players/cd79fe35-f737-4fd9-9666-169d8e6036d2",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/accounts/cd79fe35-f737-4fd9-9666-169d8e6036d2/avatar?v=0",
+          "status": 404
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/players/cd79fe35-f737-4fd9-9666-169d8e6036d2/matches?limit=20",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/leaderboards/ranked-1v1?participants=all&provisional=include&limit=50",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/instance",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/accounts/me",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/accounts/06d463ac-670a-4d2b-8563-c5521620819f/avatar?v=0",
+          "status": 404
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/accounts/1965bde1-c4d1-4da8-9813-89650c4bfdea/avatar?v=0",
+          "status": 404
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/accounts/b24d3b7b-8725-4582-ab40-574ae9fe8429/avatar?v=0",
+          "status": 404
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/accounts/cd79fe35-f737-4fd9-9666-169d8e6036d2/avatar?v=0",
+          "status": 404
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/instance",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/accounts/me",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/accounts/1965bde1-c4d1-4da8-9813-89650c4bfdea/avatar?v=0",
+          "status": 404
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/maps?sort=recent&limit=24",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/maps/e21d312a-6da3-4c3b-addf-099b2e98e135/versions/86c8da18706f76363dc32d8d440b6a7c12fa270d30df396dd8e49ec0f680f84f/preview.webp",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/maps/42c9ec6e-98fa-47d1-a87b-74a5f5d87182/versions/c68de7b55215b9537c7b5421eca8e4c5bc71bb0a3580db8d734014c5127cba78/preview.webp",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/maps/ef932352-30c9-4c4b-bc05-233a45050234/versions/0027970801e9b94f210bc86134d13144190b63cec75229c2da1a8abd54abb8cd/preview.webp",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/maps/5d379e7a-c21a-4a57-a644-c8c0204705a7/versions/0283f188c86a4e071d47f3fa9b44f47595d8b8d9a30d5be531aad3fabb4da0bd/preview.webp",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/maps/70aae503-3275-4af0-a8a5-a7e78fd47134/versions/d7f0d9a1dc0757cfeff1159fcab200d00438ea78f293931f372b397b7cf44c5e/preview.webp",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/maps/efb32589-6a7e-4707-ba82-40f93e58b439/versions/0981e6ba994f221b40a6c605f950a4e640a5b7d5a8ff4cc6ef425c9eb71a0e40/preview.webp",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/maps/af6ec968-fbc8-4079-b6b1-c86a64547626/versions/28807832f95ea2294e8427c056c13f811261cece45f361e190617539b0a1465b/preview.webp",
+          "status": 200
+        }
+      ],
+      "pending": [
+        "http://127.0.0.1:4322/assets/swarm-C7Cw-oud.webp",
+        "http://127.0.0.1:4322/api/v1/leaderboards/ranked-1v1?limit=5",
+        "http://127.0.0.1:4322/api/v1/leaderboards/ranked-2v2?limit=5"
+      ]
+    },
+    {
+      "locale": "hi",
+      "width": 390,
+      "pageErrors": [],
+      "requestFailures": [
+        {
+          "url": "http://127.0.0.1:4322/api/v1/maps?sort=recent&limit=24",
+          "error": {
+            "errorText": "net::ERR_ABORTED"
+          }
+        }
+      ],
+      "apiResponses": [
+        {
+          "url": "http://127.0.0.1:4322/api/v1/stats",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/instance",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/accounts/me",
+          "status": 401
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/maps?sort=likes&limit=4",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/matches?limit=6",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/leaderboards/ranked-2v2?limit=5",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/leaderboards/ranked-1v1?limit=5",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/maps/e21d312a-6da3-4c3b-addf-099b2e98e135/versions/86c8da18706f76363dc32d8d440b6a7c12fa270d30df396dd8e49ec0f680f84f/preview.webp",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/maps/42c9ec6e-98fa-47d1-a87b-74a5f5d87182/versions/c68de7b55215b9537c7b5421eca8e4c5bc71bb0a3580db8d734014c5127cba78/preview.webp",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/maps/ef932352-30c9-4c4b-bc05-233a45050234/versions/0027970801e9b94f210bc86134d13144190b63cec75229c2da1a8abd54abb8cd/preview.webp",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/maps/5d379e7a-c21a-4a57-a644-c8c0204705a7/versions/0283f188c86a4e071d47f3fa9b44f47595d8b8d9a30d5be531aad3fabb4da0bd/preview.webp",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/accounts/b24d3b7b-8725-4582-ab40-574ae9fe8429/avatar?v=0",
+          "status": 404
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/accounts/cd79fe35-f737-4fd9-9666-169d8e6036d2/avatar?v=0",
+          "status": 404
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/accounts/1965bde1-c4d1-4da8-9813-89650c4bfdea/avatar?v=0",
+          "status": 404
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/accounts/06d463ac-670a-4d2b-8563-c5521620819f/avatar?v=0",
+          "status": 404
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/stats",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/accounts/me",
+          "status": 401
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/instance",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/matches?limit=6",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/maps?sort=likes&limit=4",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/maps/e21d312a-6da3-4c3b-addf-099b2e98e135/versions/86c8da18706f76363dc32d8d440b6a7c12fa270d30df396dd8e49ec0f680f84f/preview.webp",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/maps/42c9ec6e-98fa-47d1-a87b-74a5f5d87182/versions/c68de7b55215b9537c7b5421eca8e4c5bc71bb0a3580db8d734014c5127cba78/preview.webp",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/maps/ef932352-30c9-4c4b-bc05-233a45050234/versions/0027970801e9b94f210bc86134d13144190b63cec75229c2da1a8abd54abb8cd/preview.webp",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/maps/5d379e7a-c21a-4a57-a644-c8c0204705a7/versions/0283f188c86a4e071d47f3fa9b44f47595d8b8d9a30d5be531aad3fabb4da0bd/preview.webp",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/signin/local",
+          "status": 401
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/instance",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/accounts/me",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/accounts/1965bde1-c4d1-4da8-9813-89650c4bfdea/avatar?v=0",
+          "status": 404
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/instance",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/matches?limit=25",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/accounts/me",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/instance",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/accounts/me",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/matches/3ed264df-bfa9-419d-8e85-62fdc5a008fa",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/matches/3ed264df-bfa9-419d-8e85-62fdc5a008fa/skins",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/skins/versions/97b6e116-918a-490c-a59d-c9a7a3e97301/texture?sha256=1325080b605dd8f32ae850b0fc000de31b78f7ba6497d1a9e87ece8e5caea090",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/instance",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/accounts/me",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/players/cd79fe35-f737-4fd9-9666-169d8e6036d2",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/accounts/cd79fe35-f737-4fd9-9666-169d8e6036d2/avatar?v=0",
+          "status": 404
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/players/cd79fe35-f737-4fd9-9666-169d8e6036d2/matches?limit=20",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/instance",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/leaderboards/ranked-1v1?participants=all&provisional=include&limit=50",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/accounts/me",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/accounts/cd79fe35-f737-4fd9-9666-169d8e6036d2/avatar?v=0",
+          "status": 404
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/accounts/1965bde1-c4d1-4da8-9813-89650c4bfdea/avatar?v=0",
+          "status": 404
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/accounts/b24d3b7b-8725-4582-ab40-574ae9fe8429/avatar?v=0",
+          "status": 404
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/accounts/06d463ac-670a-4d2b-8563-c5521620819f/avatar?v=0",
+          "status": 404
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/instance",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/accounts/me",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/maps?sort=recent&limit=24",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/maps/e21d312a-6da3-4c3b-addf-099b2e98e135/versions/86c8da18706f76363dc32d8d440b6a7c12fa270d30df396dd8e49ec0f680f84f/preview.webp",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/maps/42c9ec6e-98fa-47d1-a87b-74a5f5d87182/versions/c68de7b55215b9537c7b5421eca8e4c5bc71bb0a3580db8d734014c5127cba78/preview.webp",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/maps/ef932352-30c9-4c4b-bc05-233a45050234/versions/0027970801e9b94f210bc86134d13144190b63cec75229c2da1a8abd54abb8cd/preview.webp",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/maps/5d379e7a-c21a-4a57-a644-c8c0204705a7/versions/0283f188c86a4e071d47f3fa9b44f47595d8b8d9a30d5be531aad3fabb4da0bd/preview.webp",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/maps/efb32589-6a7e-4707-ba82-40f93e58b439/versions/0981e6ba994f221b40a6c605f950a4e640a5b7d5a8ff4cc6ef425c9eb71a0e40/preview.webp",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/maps/af6ec968-fbc8-4079-b6b1-c86a64547626/versions/28807832f95ea2294e8427c056c13f811261cece45f361e190617539b0a1465b/preview.webp",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/maps/70aae503-3275-4af0-a8a5-a7e78fd47134/versions/d7f0d9a1dc0757cfeff1159fcab200d00438ea78f293931f372b397b7cf44c5e/preview.webp",
+          "status": 200
+        }
+      ],
+      "pending": []
+    },
+    {
+      "locale": "ur",
+      "width": 1200,
+      "pageErrors": [],
+      "requestFailures": [
+        {
+          "url": "http://127.0.0.1:4322/api/v1/maps?sort=recent&limit=24",
+          "error": {
+            "errorText": "net::ERR_ABORTED"
+          }
+        }
+      ],
+      "apiResponses": [
+        {
+          "url": "http://127.0.0.1:4322/api/v1/maps?sort=likes&limit=4",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/stats",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/matches?limit=6",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/instance",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/accounts/me",
+          "status": 401
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/leaderboards/ranked-1v1?limit=5",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/leaderboards/ranked-2v2?limit=5",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/maps/e21d312a-6da3-4c3b-addf-099b2e98e135/versions/86c8da18706f76363dc32d8d440b6a7c12fa270d30df396dd8e49ec0f680f84f/preview.webp",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/maps/42c9ec6e-98fa-47d1-a87b-74a5f5d87182/versions/c68de7b55215b9537c7b5421eca8e4c5bc71bb0a3580db8d734014c5127cba78/preview.webp",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/maps/5d379e7a-c21a-4a57-a644-c8c0204705a7/versions/0283f188c86a4e071d47f3fa9b44f47595d8b8d9a30d5be531aad3fabb4da0bd/preview.webp",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/maps/ef932352-30c9-4c4b-bc05-233a45050234/versions/0027970801e9b94f210bc86134d13144190b63cec75229c2da1a8abd54abb8cd/preview.webp",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/accounts/1965bde1-c4d1-4da8-9813-89650c4bfdea/avatar?v=0",
+          "status": 404
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/accounts/cd79fe35-f737-4fd9-9666-169d8e6036d2/avatar?v=0",
+          "status": 404
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/accounts/b24d3b7b-8725-4582-ab40-574ae9fe8429/avatar?v=0",
+          "status": 404
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/accounts/06d463ac-670a-4d2b-8563-c5521620819f/avatar?v=0",
+          "status": 404
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/stats",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/accounts/me",
+          "status": 401
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/maps?sort=likes&limit=4",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/instance",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/maps/e21d312a-6da3-4c3b-addf-099b2e98e135/versions/86c8da18706f76363dc32d8d440b6a7c12fa270d30df396dd8e49ec0f680f84f/preview.webp",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/maps/42c9ec6e-98fa-47d1-a87b-74a5f5d87182/versions/c68de7b55215b9537c7b5421eca8e4c5bc71bb0a3580db8d734014c5127cba78/preview.webp",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/maps/ef932352-30c9-4c4b-bc05-233a45050234/versions/0027970801e9b94f210bc86134d13144190b63cec75229c2da1a8abd54abb8cd/preview.webp",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/maps/5d379e7a-c21a-4a57-a644-c8c0204705a7/versions/0283f188c86a4e071d47f3fa9b44f47595d8b8d9a30d5be531aad3fabb4da0bd/preview.webp",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/matches?limit=6",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/signin/local",
+          "status": 401
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/instance",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/accounts/me",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/accounts/1965bde1-c4d1-4da8-9813-89650c4bfdea/avatar?v=0",
+          "status": 404
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/instance",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/matches?limit=25",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/accounts/me",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/accounts/1965bde1-c4d1-4da8-9813-89650c4bfdea/avatar?v=0",
+          "status": 404
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/instance",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/accounts/me",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/accounts/1965bde1-c4d1-4da8-9813-89650c4bfdea/avatar?v=0",
+          "status": 404
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/matches/3ed264df-bfa9-419d-8e85-62fdc5a008fa",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/matches/3ed264df-bfa9-419d-8e85-62fdc5a008fa/skins",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/skins/versions/97b6e116-918a-490c-a59d-c9a7a3e97301/texture?sha256=1325080b605dd8f32ae850b0fc000de31b78f7ba6497d1a9e87ece8e5caea090",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/instance",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/accounts/me",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/accounts/1965bde1-c4d1-4da8-9813-89650c4bfdea/avatar?v=0",
+          "status": 404
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/players/cd79fe35-f737-4fd9-9666-169d8e6036d2",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/players/cd79fe35-f737-4fd9-9666-169d8e6036d2/matches?limit=20",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/accounts/cd79fe35-f737-4fd9-9666-169d8e6036d2/avatar?v=0",
+          "status": 404
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/instance",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/leaderboards/ranked-1v1?participants=all&provisional=include&limit=50",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/accounts/me",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/accounts/1965bde1-c4d1-4da8-9813-89650c4bfdea/avatar?v=0",
+          "status": 404
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/accounts/b24d3b7b-8725-4582-ab40-574ae9fe8429/avatar?v=0",
+          "status": 404
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/accounts/06d463ac-670a-4d2b-8563-c5521620819f/avatar?v=0",
+          "status": 404
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/accounts/cd79fe35-f737-4fd9-9666-169d8e6036d2/avatar?v=0",
+          "status": 404
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/instance",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/accounts/me",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/accounts/1965bde1-c4d1-4da8-9813-89650c4bfdea/avatar?v=0",
+          "status": 404
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/maps?sort=recent&limit=24",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/maps/e21d312a-6da3-4c3b-addf-099b2e98e135/versions/86c8da18706f76363dc32d8d440b6a7c12fa270d30df396dd8e49ec0f680f84f/preview.webp",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/maps/42c9ec6e-98fa-47d1-a87b-74a5f5d87182/versions/c68de7b55215b9537c7b5421eca8e4c5bc71bb0a3580db8d734014c5127cba78/preview.webp",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/maps/ef932352-30c9-4c4b-bc05-233a45050234/versions/0027970801e9b94f210bc86134d13144190b63cec75229c2da1a8abd54abb8cd/preview.webp",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/maps/5d379e7a-c21a-4a57-a644-c8c0204705a7/versions/0283f188c86a4e071d47f3fa9b44f47595d8b8d9a30d5be531aad3fabb4da0bd/preview.webp",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/maps/af6ec968-fbc8-4079-b6b1-c86a64547626/versions/28807832f95ea2294e8427c056c13f811261cece45f361e190617539b0a1465b/preview.webp",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/maps/70aae503-3275-4af0-a8a5-a7e78fd47134/versions/d7f0d9a1dc0757cfeff1159fcab200d00438ea78f293931f372b397b7cf44c5e/preview.webp",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/maps/efb32589-6a7e-4707-ba82-40f93e58b439/versions/0981e6ba994f221b40a6c605f950a4e640a5b7d5a8ff4cc6ef425c9eb71a0e40/preview.webp",
+          "status": 200
+        }
+      ],
+      "pending": [
+        "http://127.0.0.1:4322/assets/swarm-C7Cw-oud.webp",
+        "http://127.0.0.1:4322/api/v1/leaderboards/ranked-1v1?limit=5",
+        "http://127.0.0.1:4322/api/v1/leaderboards/ranked-2v2?limit=5"
+      ]
+    },
+    {
+      "locale": "ur",
+      "width": 390,
+      "pageErrors": [],
+      "requestFailures": [
+        {
+          "url": "http://127.0.0.1:4322/api/v1/maps?sort=recent&limit=24",
+          "error": {
+            "errorText": "net::ERR_ABORTED"
+          }
+        }
+      ],
+      "apiResponses": [
+        {
+          "url": "http://127.0.0.1:4322/api/v1/stats",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/instance",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/maps?sort=likes&limit=4",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/accounts/me",
+          "status": 401
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/matches?limit=6",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/leaderboards/ranked-1v1?limit=5",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/leaderboards/ranked-2v2?limit=5",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/maps/42c9ec6e-98fa-47d1-a87b-74a5f5d87182/versions/c68de7b55215b9537c7b5421eca8e4c5bc71bb0a3580db8d734014c5127cba78/preview.webp",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/maps/ef932352-30c9-4c4b-bc05-233a45050234/versions/0027970801e9b94f210bc86134d13144190b63cec75229c2da1a8abd54abb8cd/preview.webp",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/maps/e21d312a-6da3-4c3b-addf-099b2e98e135/versions/86c8da18706f76363dc32d8d440b6a7c12fa270d30df396dd8e49ec0f680f84f/preview.webp",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/maps/5d379e7a-c21a-4a57-a644-c8c0204705a7/versions/0283f188c86a4e071d47f3fa9b44f47595d8b8d9a30d5be531aad3fabb4da0bd/preview.webp",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/accounts/06d463ac-670a-4d2b-8563-c5521620819f/avatar?v=0",
+          "status": 404
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/accounts/cd79fe35-f737-4fd9-9666-169d8e6036d2/avatar?v=0",
+          "status": 404
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/accounts/b24d3b7b-8725-4582-ab40-574ae9fe8429/avatar?v=0",
+          "status": 404
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/accounts/1965bde1-c4d1-4da8-9813-89650c4bfdea/avatar?v=0",
+          "status": 404
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/stats",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/accounts/me",
+          "status": 401
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/matches?limit=6",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/maps?sort=likes&limit=4",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/signin/local",
+          "status": 401
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/instance",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/accounts/me",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/accounts/1965bde1-c4d1-4da8-9813-89650c4bfdea/avatar?v=0",
+          "status": 404
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/instance",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/matches?limit=25",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/accounts/me",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/instance",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/accounts/me",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/matches/3ed264df-bfa9-419d-8e85-62fdc5a008fa",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/matches/3ed264df-bfa9-419d-8e85-62fdc5a008fa/skins",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/skins/versions/97b6e116-918a-490c-a59d-c9a7a3e97301/texture?sha256=1325080b605dd8f32ae850b0fc000de31b78f7ba6497d1a9e87ece8e5caea090",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/instance",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/accounts/me",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/players/cd79fe35-f737-4fd9-9666-169d8e6036d2",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/accounts/cd79fe35-f737-4fd9-9666-169d8e6036d2/avatar?v=0",
+          "status": 404
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/players/cd79fe35-f737-4fd9-9666-169d8e6036d2/matches?limit=20",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/instance",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/leaderboards/ranked-1v1?participants=all&provisional=include&limit=50",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/accounts/me",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/accounts/06d463ac-670a-4d2b-8563-c5521620819f/avatar?v=0",
+          "status": 404
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/accounts/b24d3b7b-8725-4582-ab40-574ae9fe8429/avatar?v=0",
+          "status": 404
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/accounts/cd79fe35-f737-4fd9-9666-169d8e6036d2/avatar?v=0",
+          "status": 404
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/accounts/1965bde1-c4d1-4da8-9813-89650c4bfdea/avatar?v=0",
+          "status": 404
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/instance",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/accounts/me",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/maps?sort=recent&limit=24",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/maps/e21d312a-6da3-4c3b-addf-099b2e98e135/versions/86c8da18706f76363dc32d8d440b6a7c12fa270d30df396dd8e49ec0f680f84f/preview.webp",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/maps/42c9ec6e-98fa-47d1-a87b-74a5f5d87182/versions/c68de7b55215b9537c7b5421eca8e4c5bc71bb0a3580db8d734014c5127cba78/preview.webp",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/maps/ef932352-30c9-4c4b-bc05-233a45050234/versions/0027970801e9b94f210bc86134d13144190b63cec75229c2da1a8abd54abb8cd/preview.webp",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/maps/5d379e7a-c21a-4a57-a644-c8c0204705a7/versions/0283f188c86a4e071d47f3fa9b44f47595d8b8d9a30d5be531aad3fabb4da0bd/preview.webp",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/maps/af6ec968-fbc8-4079-b6b1-c86a64547626/versions/28807832f95ea2294e8427c056c13f811261cece45f361e190617539b0a1465b/preview.webp",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/maps/70aae503-3275-4af0-a8a5-a7e78fd47134/versions/d7f0d9a1dc0757cfeff1159fcab200d00438ea78f293931f372b397b7cf44c5e/preview.webp",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/maps/efb32589-6a7e-4707-ba82-40f93e58b439/versions/0981e6ba994f221b40a6c605f950a4e640a5b7d5a8ff4cc6ef425c9eb71a0e40/preview.webp",
+          "status": 200
+        }
+      ],
+      "pending": [
+        "http://127.0.0.1:4322/assets/colony-1600-yR11DKDO.webp",
+        "http://127.0.0.1:4322/assets/swarm-C7Cw-oud.webp"
+      ]
+    },
+    {
+      "locale": "sw",
+      "width": 1200,
+      "pageErrors": [],
+      "requestFailures": [
+        {
+          "url": "http://127.0.0.1:4322/api/v1/maps?sort=recent&limit=24",
+          "error": {
+            "errorText": "net::ERR_ABORTED"
+          }
+        }
+      ],
+      "apiResponses": [
+        {
+          "url": "http://127.0.0.1:4322/api/v1/maps?sort=likes&limit=4",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/stats",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/instance",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/accounts/me",
+          "status": 401
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/matches?limit=6",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/leaderboards/ranked-1v1?limit=5",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/maps/ef932352-30c9-4c4b-bc05-233a45050234/versions/0027970801e9b94f210bc86134d13144190b63cec75229c2da1a8abd54abb8cd/preview.webp",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/maps/42c9ec6e-98fa-47d1-a87b-74a5f5d87182/versions/c68de7b55215b9537c7b5421eca8e4c5bc71bb0a3580db8d734014c5127cba78/preview.webp",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/maps/e21d312a-6da3-4c3b-addf-099b2e98e135/versions/86c8da18706f76363dc32d8d440b6a7c12fa270d30df396dd8e49ec0f680f84f/preview.webp",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/maps/5d379e7a-c21a-4a57-a644-c8c0204705a7/versions/0283f188c86a4e071d47f3fa9b44f47595d8b8d9a30d5be531aad3fabb4da0bd/preview.webp",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/leaderboards/ranked-2v2?limit=5",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/accounts/cd79fe35-f737-4fd9-9666-169d8e6036d2/avatar?v=0",
+          "status": 404
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/accounts/1965bde1-c4d1-4da8-9813-89650c4bfdea/avatar?v=0",
+          "status": 404
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/accounts/b24d3b7b-8725-4582-ab40-574ae9fe8429/avatar?v=0",
+          "status": 404
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/accounts/06d463ac-670a-4d2b-8563-c5521620819f/avatar?v=0",
+          "status": 404
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/stats",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/accounts/me",
+          "status": 401
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/instance",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/maps?sort=likes&limit=4",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/maps/e21d312a-6da3-4c3b-addf-099b2e98e135/versions/86c8da18706f76363dc32d8d440b6a7c12fa270d30df396dd8e49ec0f680f84f/preview.webp",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/maps/42c9ec6e-98fa-47d1-a87b-74a5f5d87182/versions/c68de7b55215b9537c7b5421eca8e4c5bc71bb0a3580db8d734014c5127cba78/preview.webp",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/maps/ef932352-30c9-4c4b-bc05-233a45050234/versions/0027970801e9b94f210bc86134d13144190b63cec75229c2da1a8abd54abb8cd/preview.webp",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/maps/5d379e7a-c21a-4a57-a644-c8c0204705a7/versions/0283f188c86a4e071d47f3fa9b44f47595d8b8d9a30d5be531aad3fabb4da0bd/preview.webp",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/matches?limit=6",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/signin/local",
+          "status": 401
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/instance",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/accounts/me",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/accounts/1965bde1-c4d1-4da8-9813-89650c4bfdea/avatar?v=0",
+          "status": 404
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/instance",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/matches?limit=25",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/accounts/me",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/accounts/1965bde1-c4d1-4da8-9813-89650c4bfdea/avatar?v=0",
+          "status": 404
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/instance",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/accounts/me",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/accounts/1965bde1-c4d1-4da8-9813-89650c4bfdea/avatar?v=0",
+          "status": 404
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/matches/3ed264df-bfa9-419d-8e85-62fdc5a008fa",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/matches/3ed264df-bfa9-419d-8e85-62fdc5a008fa/skins",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/skins/versions/97b6e116-918a-490c-a59d-c9a7a3e97301/texture?sha256=1325080b605dd8f32ae850b0fc000de31b78f7ba6497d1a9e87ece8e5caea090",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/instance",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/accounts/me",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/accounts/1965bde1-c4d1-4da8-9813-89650c4bfdea/avatar?v=0",
+          "status": 404
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/players/cd79fe35-f737-4fd9-9666-169d8e6036d2",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/accounts/cd79fe35-f737-4fd9-9666-169d8e6036d2/avatar?v=0",
+          "status": 404
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/players/cd79fe35-f737-4fd9-9666-169d8e6036d2/matches?limit=20",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/instance",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/leaderboards/ranked-1v1?participants=all&provisional=include&limit=50",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/accounts/06d463ac-670a-4d2b-8563-c5521620819f/avatar?v=0",
+          "status": 404
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/accounts/b24d3b7b-8725-4582-ab40-574ae9fe8429/avatar?v=0",
+          "status": 404
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/accounts/cd79fe35-f737-4fd9-9666-169d8e6036d2/avatar?v=0",
+          "status": 404
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/accounts/1965bde1-c4d1-4da8-9813-89650c4bfdea/avatar?v=0",
+          "status": 404
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/accounts/me",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/accounts/1965bde1-c4d1-4da8-9813-89650c4bfdea/avatar?v=0",
+          "status": 404
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/instance",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/accounts/me",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/accounts/1965bde1-c4d1-4da8-9813-89650c4bfdea/avatar?v=0",
+          "status": 404
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/maps?sort=recent&limit=24",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/maps/e21d312a-6da3-4c3b-addf-099b2e98e135/versions/86c8da18706f76363dc32d8d440b6a7c12fa270d30df396dd8e49ec0f680f84f/preview.webp",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/maps/42c9ec6e-98fa-47d1-a87b-74a5f5d87182/versions/c68de7b55215b9537c7b5421eca8e4c5bc71bb0a3580db8d734014c5127cba78/preview.webp",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/maps/ef932352-30c9-4c4b-bc05-233a45050234/versions/0027970801e9b94f210bc86134d13144190b63cec75229c2da1a8abd54abb8cd/preview.webp",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/maps/5d379e7a-c21a-4a57-a644-c8c0204705a7/versions/0283f188c86a4e071d47f3fa9b44f47595d8b8d9a30d5be531aad3fabb4da0bd/preview.webp",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/maps/efb32589-6a7e-4707-ba82-40f93e58b439/versions/0981e6ba994f221b40a6c605f950a4e640a5b7d5a8ff4cc6ef425c9eb71a0e40/preview.webp",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/maps/70aae503-3275-4af0-a8a5-a7e78fd47134/versions/d7f0d9a1dc0757cfeff1159fcab200d00438ea78f293931f372b397b7cf44c5e/preview.webp",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/maps/af6ec968-fbc8-4079-b6b1-c86a64547626/versions/28807832f95ea2294e8427c056c13f811261cece45f361e190617539b0a1465b/preview.webp",
+          "status": 200
+        }
+      ],
+      "pending": [
+        "http://127.0.0.1:4322/assets/colony-1600-yR11DKDO.webp",
+        "http://127.0.0.1:4322/assets/swarm-C7Cw-oud.webp",
+        "http://127.0.0.1:4322/api/v1/leaderboards/ranked-1v1?limit=5",
+        "http://127.0.0.1:4322/api/v1/leaderboards/ranked-2v2?limit=5"
+      ]
+    },
+    {
+      "locale": "sw",
+      "width": 390,
+      "pageErrors": [],
+      "requestFailures": [
+        {
+          "url": "http://127.0.0.1:4322/api/v1/maps?sort=recent&limit=24",
+          "error": {
+            "errorText": "net::ERR_ABORTED"
+          }
+        }
+      ],
+      "apiResponses": [
+        {
+          "url": "http://127.0.0.1:4322/api/v1/stats",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/accounts/me",
+          "status": 401
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/instance",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/matches?limit=6",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/maps?sort=likes&limit=4",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/leaderboards/ranked-1v1?limit=5",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/leaderboards/ranked-2v2?limit=5",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/maps/ef932352-30c9-4c4b-bc05-233a45050234/versions/0027970801e9b94f210bc86134d13144190b63cec75229c2da1a8abd54abb8cd/preview.webp",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/maps/42c9ec6e-98fa-47d1-a87b-74a5f5d87182/versions/c68de7b55215b9537c7b5421eca8e4c5bc71bb0a3580db8d734014c5127cba78/preview.webp",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/maps/e21d312a-6da3-4c3b-addf-099b2e98e135/versions/86c8da18706f76363dc32d8d440b6a7c12fa270d30df396dd8e49ec0f680f84f/preview.webp",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/accounts/b24d3b7b-8725-4582-ab40-574ae9fe8429/avatar?v=0",
+          "status": 404
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/accounts/1965bde1-c4d1-4da8-9813-89650c4bfdea/avatar?v=0",
+          "status": 404
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/maps/5d379e7a-c21a-4a57-a644-c8c0204705a7/versions/0283f188c86a4e071d47f3fa9b44f47595d8b8d9a30d5be531aad3fabb4da0bd/preview.webp",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/accounts/06d463ac-670a-4d2b-8563-c5521620819f/avatar?v=0",
+          "status": 404
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/accounts/cd79fe35-f737-4fd9-9666-169d8e6036d2/avatar?v=0",
+          "status": 404
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/stats",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/accounts/me",
+          "status": 401
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/maps?sort=likes&limit=4",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/maps/e21d312a-6da3-4c3b-addf-099b2e98e135/versions/86c8da18706f76363dc32d8d440b6a7c12fa270d30df396dd8e49ec0f680f84f/preview.webp",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/maps/42c9ec6e-98fa-47d1-a87b-74a5f5d87182/versions/c68de7b55215b9537c7b5421eca8e4c5bc71bb0a3580db8d734014c5127cba78/preview.webp",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/maps/ef932352-30c9-4c4b-bc05-233a45050234/versions/0027970801e9b94f210bc86134d13144190b63cec75229c2da1a8abd54abb8cd/preview.webp",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/maps/5d379e7a-c21a-4a57-a644-c8c0204705a7/versions/0283f188c86a4e071d47f3fa9b44f47595d8b8d9a30d5be531aad3fabb4da0bd/preview.webp",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/matches?limit=6",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/instance",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/signin/local",
+          "status": 401
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/instance",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/accounts/me",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/accounts/1965bde1-c4d1-4da8-9813-89650c4bfdea/avatar?v=0",
+          "status": 404
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/instance",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/matches?limit=25",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/accounts/me",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/instance",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/accounts/me",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/matches/3ed264df-bfa9-419d-8e85-62fdc5a008fa",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/matches/3ed264df-bfa9-419d-8e85-62fdc5a008fa/skins",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/skins/versions/97b6e116-918a-490c-a59d-c9a7a3e97301/texture?sha256=1325080b605dd8f32ae850b0fc000de31b78f7ba6497d1a9e87ece8e5caea090",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/instance",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/accounts/me",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/players/cd79fe35-f737-4fd9-9666-169d8e6036d2",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/accounts/cd79fe35-f737-4fd9-9666-169d8e6036d2/avatar?v=0",
+          "status": 404
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/players/cd79fe35-f737-4fd9-9666-169d8e6036d2/matches?limit=20",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/leaderboards/ranked-1v1?participants=all&provisional=include&limit=50",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/instance",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/accounts/me",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/accounts/1965bde1-c4d1-4da8-9813-89650c4bfdea/avatar?v=0",
+          "status": 404
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/accounts/b24d3b7b-8725-4582-ab40-574ae9fe8429/avatar?v=0",
+          "status": 404
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/accounts/cd79fe35-f737-4fd9-9666-169d8e6036d2/avatar?v=0",
+          "status": 404
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/accounts/06d463ac-670a-4d2b-8563-c5521620819f/avatar?v=0",
+          "status": 404
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/instance",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/accounts/me",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/maps?sort=recent&limit=24",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/maps/e21d312a-6da3-4c3b-addf-099b2e98e135/versions/86c8da18706f76363dc32d8d440b6a7c12fa270d30df396dd8e49ec0f680f84f/preview.webp",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/maps/42c9ec6e-98fa-47d1-a87b-74a5f5d87182/versions/c68de7b55215b9537c7b5421eca8e4c5bc71bb0a3580db8d734014c5127cba78/preview.webp",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/maps/ef932352-30c9-4c4b-bc05-233a45050234/versions/0027970801e9b94f210bc86134d13144190b63cec75229c2da1a8abd54abb8cd/preview.webp",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/maps/5d379e7a-c21a-4a57-a644-c8c0204705a7/versions/0283f188c86a4e071d47f3fa9b44f47595d8b8d9a30d5be531aad3fabb4da0bd/preview.webp",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/maps/af6ec968-fbc8-4079-b6b1-c86a64547626/versions/28807832f95ea2294e8427c056c13f811261cece45f361e190617539b0a1465b/preview.webp",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/maps/efb32589-6a7e-4707-ba82-40f93e58b439/versions/0981e6ba994f221b40a6c605f950a4e640a5b7d5a8ff4cc6ef425c9eb71a0e40/preview.webp",
+          "status": 200
+        },
+        {
+          "url": "http://127.0.0.1:4322/api/v1/maps/70aae503-3275-4af0-a8a5-a7e78fd47134/versions/d7f0d9a1dc0757cfeff1159fcab200d00438ea78f293931f372b397b7cf44c5e/preview.webp",
+          "status": 200
+        }
+      ],
+      "pending": [
+        "http://127.0.0.1:4322/assets/colony-1600-yR11DKDO.webp",
+        "http://127.0.0.1:4322/assets/swarm-C7Cw-oud.webp"
+      ]
+    }
+  ],
+  "completed_utc": "2026-10-31T17:15:22.204Z",
+  "limits": [
+    "Desktop Chromium with phone viewports, not native mobile verification.",
+    "Seeded local API/test accounts; no external messages, purchases or account deletions.",
+    "Exact build/catalog/server/screenshot hashes bind this run.",
+    "No game WASM/HUD/tutorial proof here; standalone game tests are separate."
+  ]
+}

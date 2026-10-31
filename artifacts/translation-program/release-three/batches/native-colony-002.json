@@ -1,0 +1,29 @@
+{
+  "id": "native-colony-002",
+  "source_sha256": "7583e9f8f0a03186eec456ed3b7a9c187509056b91f931551c3b7dc0e6b53457",
+  "surface": "native",
+  "domain": "colony",
+  "context": "Workers autonomously gather/build; explorers scout; warriors fight. Flags assign work or military attention, not direct unit movement.",
+  "entries": [
+    {
+      "id": "native:[library Loading building families]",
+      "key": "[library Loading building families]",
+      "source": "Loading building families"
+    },
+    {
+      "id": "native:[library No building families installed.]",
+      "key": "[library No building families installed.]",
+      "source": "No building families installed."
+    },
+    {
+      "id": "native:[library No public building families yet]",
+      "key": "[library No public building families yet]",
+      "source": "No public building families yet"
+    },
+    {
+      "id": "native:[library Opening building family]",
+      "key": "[library Opening building family]",
+      "source": "Opening building family"
+    }
+  ]
+}

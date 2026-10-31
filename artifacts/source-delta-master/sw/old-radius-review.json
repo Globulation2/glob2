@@ -1,0 +1,94 @@
+{
+  "locale": "sw",
+  "reviewer": "/root/translation_kit",
+  "scope": "Bounded follow-up to new-delta concord review;4retainedoldSwkeys only, not old33locale overhaul",
+  "base_catalog": "artifacts/translation-program/release-three/drafts/sw/texts.sw.txt",
+  "base_catalog_sha256": "d23c1b75c4ae209b85a6dbd9f2fb0ab084ab7bb21b7544ec8a4a5ad545129cc5",
+  "source_delta_sha256": "8884639e28a0f409f558951e5b1d9774772ec801330404218280f7a2cb653d4c",
+  "disposition": "Need limited new4key edit/recheck; do not claim confidently accepted standard variant from current verified evidence. Safe proposed alternatives preserve the approved nusukipenyo lexical item and all control literals.",
+  "findings": [
+    {
+      "key": "[settings Adjust assigned units with the wheel. When off, hold Ctrl. Shift adjusts flag radius. Also controls wheel input in other menus.]",
+      "source": "Adjust assigned units with the wheel. When off, hold Ctrl. Shift adjusts flag radius. Also controls wheel input in other menus.",
+      "target": "Rekebisha idadi ya viumbe waliopangiwa kwa gurudumu la kipanya. Chaguo likizimwa, shikilia Ctrl. Shift hurekebisha nusukipenyo cha bendera. Pia hudhibiti gurudumu katika menyu nyingine.",
+      "severity": "minor",
+      "problem": "Current wording assigns ki-class agreement to the compound nusukipenyo. Dictionary class evidence is9/10 while usage may vary; independent reviewer cannot certify this variant confidently. Limited neutral phrasing avoids that uncertainty without changing the radius term or control behavior.",
+      "suggested_correction": "Rekebisha idadi ya viumbe waliopangiwa kwa gurudumu la kipanya. Chaguo likizimwa, shikilia Ctrl. Shift hurekebisha thamani ya nusukipenyo kwa bendera. Pia hudhibiti gurudumu katika menyu nyingine.",
+      "status": "open-awaiting-distinct-editor",
+      "source_unchanged_on_master": true,
+      "scope": "retained old catalog value, not part of209new delta",
+      "source_sha256": "7db2ed9b26354031531a8e209d5e819cda1f5d973846077d9468321fcc79f65d",
+      "target_sha256": "e566889b265be1e848d647fbee55528e0496f28409313670b568c51bd9458bf8",
+      "suggested_target_sha256": "8dcb195cd75d20abdfea091ee0037a7d4ea297b61b528281206696ad95f43d86"
+    },
+    {
+      "key": "[settings Starting unit counts and radius for newly placed flags.]",
+      "source": "Starting unit counts and radius for newly placed flags.",
+      "target": "Idadi ya awali ya viumbe na nusukipenyo cha bendera mpya.",
+      "severity": "minor",
+      "problem": "Current wording assigns ki-class agreement to the compound nusukipenyo. Dictionary class evidence is9/10 while usage may vary; independent reviewer cannot certify this variant confidently. Limited neutral phrasing avoids that uncertainty without changing the radius term or control behavior.",
+      "suggested_correction": "Thamani za awali za idadi ya viumbe na nusukipenyo kwa bendera mpya.",
+      "status": "open-awaiting-distinct-editor",
+      "source_unchanged_on_master": true,
+      "scope": "retained old catalog value, not part of209new delta",
+      "source_sha256": "79f788eba7427c13887464d0617b5899b51cbc0687560691b6f5d18458833d0e",
+      "target_sha256": "75e21732d4b5b715145bc06c622cca73874d6d32786fa7c73230300e299e97b4",
+      "suggested_target_sha256": "5a93bacdf96316e506caea163a09cd3c46e73ef9b0c6ec72a16732baa1413ebb"
+    },
+    {
+      "key": "[Hill radius]",
+      "source": "Hill radius",
+      "target": "Nusukipenyo cha kilima",
+      "severity": "minor",
+      "problem": "Current wording assigns ki-class agreement to the compound nusukipenyo. Dictionary class evidence is9/10 while usage may vary; independent reviewer cannot certify this variant confidently. Limited neutral phrasing avoids that uncertainty without changing the radius term or control behavior.",
+      "suggested_correction": "Kilima: nusukipenyo",
+      "status": "open-awaiting-distinct-editor",
+      "source_unchanged_on_master": true,
+      "scope": "retained old catalog value, not part of209new delta",
+      "source_sha256": "329a24507474f394cd7101b898be5892da8320c07532dc977e574e4a9a7125c4",
+      "target_sha256": "0af09eac2333bf6c8f0540ee7747e434b19fe6452aecc923baae3b3082835a14",
+      "suggested_target_sha256": "fbd940d1f442e302a5363da88304b791bcde0db2a72e82020b9f3818f325900b"
+    },
+    {
+      "key": "[flag settings explanation]",
+      "source": "The default radius of the flag",
+      "target": "Nusukipenyo cha awali cha bendera",
+      "severity": "minor",
+      "problem": "Current wording assigns ki-class agreement to the compound nusukipenyo. Dictionary class evidence is9/10 while usage may vary; independent reviewer cannot certify this variant confidently. Limited neutral phrasing avoids that uncertainty without changing the radius term or control behavior.",
+      "suggested_correction": "Thamani ya awali ya nusukipenyo kwa bendera",
+      "status": "open-awaiting-distinct-editor",
+      "source_unchanged_on_master": true,
+      "scope": "retained old catalog value, not part of209new delta",
+      "source_sha256": "25810233066ac098bfc58a832e88b1e909532e7c91ad124ffcdf2b2a2fe67ec6",
+      "target_sha256": "751b0c5a39394e646987c249f9f509bdef2dba4a6ed3a8c5dd502f7cf4766677",
+      "suggested_target_sha256": "f36fdca0583f19c95c899f8a236c0c2562aa04159b046d69393de5af93c8aad6"
+    }
+  ],
+  "requested_three_plus_additional_key": "[flag settings explanation] also contains twocha links; observed exactbaseline so must not overlookit.",
+  "retired_messages_excluded": [
+    "[tutorial part4 message 7]",
+    "[tutorial part4 message 16]"
+  ],
+  "why_not_automatic_global_replacement": "Visible compound structure is not sufficient to infer noun class; do not change every nusukipenyo occurrence, replace nusukipenyo term or alter radius semantics. Editor can adopt neutral wording at these four exact keys.",
+  "evidence": [
+    {
+      "url": "https://somabiblia.com/wp-content/uploads/2014/03/kamusi-swahili-english.pdf",
+      "inspection": "Actual dictionaryPDF identifiednusukipenyo as9/10 onPDFpage659(zero-based). Third-party host ofKamusi publication; other usage varies and this is not proofthatallki-concord is universally wrong."
+    },
+    {
+      "url": "https://mozilla-l10n.github.io/styleguides/sw/",
+      "inspection": "Softwarestyleguide supports concise clear terminology consistency and natural restructuring, permitting safe value-based constructions."
+    }
+  ],
+  "required_follow_up": "Root distinct editor records before/after values/hashes for4keys. Originalreviewer rechecks and binds exactfinalfullcataloghash. Consolidation cannot countchanged4 as oldunchanged3207; carry3203byidentity andthese4byexplicitreview/edit/recheck proof.",
+  "source_or_draft_edited": false,
+  "glyph_or_render_claim": false,
+  "full_locale_finalized": false,
+  "reviewed_keys": [
+    "[settings Adjust assigned units with the wheel. When off, hold Ctrl. Shift adjusts flag radius. Also controls wheel input in other menus.]",
+    "[settings Starting unit counts and radius for newly placed flags.]",
+    "[Hill radius]",
+    "[flag settings explanation]"
+  ],
+  "key_count": 4
+}

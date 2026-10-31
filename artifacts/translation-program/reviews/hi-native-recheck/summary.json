@@ -1,0 +1,69 @@
+{
+  "reviewer": "/root/pilot_context",
+  "author": "/root/hindi_translation",
+  "primary_editor": "/root/translation_kit",
+  "supplemental_editor": "/root",
+  "surface": "native",
+  "locale": "hi",
+  "final_native_sha256": "a65477c9ac654c44a08531b6a5ee53f76d7aa6454c2f776c43382ed4f2e321e8",
+  "final_online_crosssurface_sha256": "748ed6f83bbb1e55f66af93e24c61a02ad50c75222adac731e3ae104356baf60",
+  "original_review_keys": 3328,
+  "batch_count": 24,
+  "primary_edits_rechecked": 179,
+  "supplemental_edits_rechecked": 4,
+  "distinct_changed_keys": 180,
+  "unchanged_keys_hash_carried_forward": 3148,
+  "original_findings_resolved": 80,
+  "open_findings": [],
+  "reversible_proof": "Final -> reverse4supplementaledits -> reverse179primaryedits = exactoriginalreviewbytes SHA027e686622a7758c5ee7633372aeb33533ecd1a36633b5e6f043bd18581b8cea. All24originalreview andeditor subsethashes also match.",
+  "joined_description_rows_examined": {
+    "barracks": "आपके योद्धाओं का आक्रमण स्तर बढ़ाती है",
+    "defencetower": "पास की दुश्मन इकाइयों या इमारतों पर वार करती है",
+    "racetrack": "आपकी इकाइयों की चलने की गति बढ़ाता है",
+    "school": "आपके श्रमिकों का निर्माण स्तर बढ़ाता है",
+    "swimmingpool": "आपकी इकाइयों की तैरने की गति बढ़ाता है",
+    "market": "दूसरों के साथ फलों का आदान-प्रदान करने देता है"
+  },
+  "crosssurface_glossary": {
+    "Swarm": "छत्ता/छत्ते",
+    "colony": "बस्ती",
+    "worker": "श्रमिक",
+    "explorer": "खोजी",
+    "warrior": "योद्धा",
+    "reserved": "आरक्षित",
+    "Working_native_control": "कार्यरत; tutorialpart1message14 matches"
+  },
+  "supplemental_recheck_notes": [
+    "Portagedepth passivegrammar corrected; generator leaves depthrows ofstructuralwood toclear, notwaterdepth.",
+    "Castor foodexpansion modifier restored; hydration correctlygroundmoisture notplayerirrigation.",
+    "Native delay/ping thresholds preserve source goodunder and poorfrominclusive; align finalonline thresholds."
+  ],
+  "english_exceptions_rechecked": 36,
+  "structural_errors": [],
+  "status": "semantic_editorial_agent_review_passed",
+  "limits": [
+    "Agent-reviewed only; no human nativeapproval claimed.",
+    "3148unchangedkeys coveredby originalallkeyreading+hashproof; notfalsefreshreread.",
+    "No fullregistered translation regression/font/browser checker or visual/platformverification claimed here.",
+    "Pending root technical/render/platform gates prevent finalizedlocale label."
+  ],
+  "clarified_hard_pause_context": {
+    "key": "[hard pause]",
+    "final_target": "खेल पूरी तरह रोकें",
+    "status": "wording_accepted_after_source_context_verification",
+    "source": "src/hud/input/GameGUIInputKey.cpp:309–316",
+    "meaning": "Freezes client order/checksum exchange; allowed singleplayer,AIonly,replay, rejectedlivepeer games. The full-stop action wording fits.",
+    "existing_test_source": "src/game/GameSpeedTest.cpp:298 onward",
+    "verification": "Read productionbranch and existingtestcode only; no newtestrunclaimed.",
+    "context_source_sha256": {
+      "src/hud/input/GameGUIInputKey.cpp": "69e56e4b9f969506c91fe202f53302fb6a7db0a110b297e38edc523956131804",
+      "src/game/GameSpeedTest.cpp": "accefc6e1af9b4a9ea86f4a5f7794f6c9882369945bfec210f6f3cd1c15e3580"
+    }
+  },
+  "legacy_context_resolution": {
+    "evidence": "legacy-context-resolution.json",
+    "away": "Historically verified chat-presence prefix; अनुपस्थित: accepted.",
+    "P_key": "[P %0/%1/%2] is a retired compact prestige counter, with all three fields verified in its actual caller. Exact notation retention accepted.",
+    "unresolved_linguistic_questions": []
+  }
+}

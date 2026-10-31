@@ -1,0 +1,56 @@
+{
+  "author": "/root/pilot_context",
+  "locale": "ur",
+  "status": "authored-awaiting-independent-full209-review-and-distinct-editor",
+  "scope": "Only209newnativekeys in native_frozen_to_master.added. No canonical/native source/catalog editing. Prior3207carryforward entries were independently reviewed by this agent but were not authored here.",
+  "source_master_revision": "e7613e93b08234dbf785ceef3bd9b884cbb73221",
+  "catalog_delta_sha256": "8884639e28a0f409f558951e5b1d9774772ec801330404218280f7a2cb653d4c",
+  "source_entries_sha256": "d53dc74f795fee0a2211bf2f752f0c3d04fa9ec6a8dd8dff2251355fbc90cbf4",
+  "draft_sha256": "35e78cecc16d3a566197ee0cb2051600fa126d6f9be71e38e81a04849eb5ae2a",
+  "keys": 209,
+  "every_source_entry_read_and_authored": true,
+  "expected_independent_reviewer": "/root/hindi_online_review",
+  "expected_editor": "/root",
+  "no_self_signoff": true,
+  "context_sources": [
+    {
+      "path": "scripts/introduction.js",
+      "sha256": "04a37caf7cd7c21b62395861626bf93eaf1b49c983e1a8f2c57b306fd4c27769"
+    },
+    {
+      "path": "scripts/tutorials/runtime.js",
+      "sha256": "d16675029abfc63ed1dbf86ea2526d0103c7fada0ef0913b6501f60ad7b8d7b4"
+    },
+    {
+      "path": "src/tutorial/Tutorial.cpp",
+      "sha256": "aeff5f3b79bc5e2d788ff701f344cbcd98ba945540ace5dff056c714201fb7c8"
+    },
+    {
+      "path": "src/tutorial/TutorialGuidance.h",
+      "sha256": "2898d4b07e8c2de3fbb4ce2770526b59b731f45941942540dc69ae1e9ba6b3f8"
+    },
+    {
+      "path": "src/tutorial/TutorialModel.cpp",
+      "sha256": "de70d1c53f37a0652f2bd3b2b47766525ce231b651ac5901689f32a86f9ac185"
+    },
+    {
+      "path": "src/tutorial/TutorialModel.h",
+      "sha256": "9bb562129d23d7602adce3994e7128444521bf74ee814d3427564a847c0cda7c"
+    }
+  ],
+  "source_context_kit_sha256": "dd7225ff3894d4f8cfb6444f2e2b5876408588bf4135d2723f02030ca14d30c8",
+  "checks": {
+    "keys_exact209": true,
+    "allnonempty_XMLfree_JSONscalars": true,
+    "placeholders_preserved": true,
+    "all209sourceentries_have_noexecutionplaceholders": true,
+    "sourceEnglish_equalities": []
+  },
+  "limits": [
+    "Authored draft, not independent review/linguisticfinalization.",
+    "No rendering, phonefit or newtutorialexecutionverification.",
+    "No canonical files, scriptbehavior, identifiers,keys,simulation or registration modified.",
+    "No providerMT or externaldictionary used forthis209supplement; terminology grounded in approvedcatalog and actualcode."
+  ],
+  "context_glossary_sha256": "f4b19ffb477e4e52a3f9f0bddf75d4b7aa792677eae990fbfddf07a704858ce1"
+}

@@ -1,0 +1,28 @@
+{
+  "run_sha256": "7ce422c1d88b9aa84dedbc554784a02443f3c9ba81f00d94851c6ef878eeeaa5",
+  "build_sha256": "bdbfb1d99addac19c3fc69502aa990fe3b271767be4ae2d67486e2d1a564c4a6",
+  "checker_sha256": "cbe809c8f3cfba60d56875612214a3a6af66c119599e01fbbedb4aefb5b30544",
+  "results": 108,
+  "screenshots_hash_verified": 66,
+  "build_source_hashes_verified": 149,
+  "server_source_hashes_verified": 6,
+  "canonical_patches": [],
+  "server_injections": [],
+  "chart_statistics": {
+    "chart_captures": 12,
+    "stable_frames_min": 5,
+    "y_ticks": 156,
+    "circles": 48
+  },
+  "all_current_sources_verified": true,
+  "actual_node_version": "v26.0.0",
+  "manual_standard_images_read": {
+    "hi": 20,
+    "sw": 20
+  },
+  "manual_match_table_pan_read": {
+    "hi": 2,
+    "sw": 2
+  },
+  "no_product_edits": true
+}

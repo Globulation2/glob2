@@ -1,0 +1,1293 @@
+{
+  "editor": "/root/swahili_translation",
+  "author": "/root/urdu_translation",
+  "independent_reviewer": "/root/pilot_context",
+  "batch_id": "native-general-008",
+  "source_contract_sha256": "aacd8a342e9e734ba47f902a161ac1a45badff5842a617bcd68bf8e2275d6013",
+  "original_target_subset_sha256": "a124a1d2989879b7fac5b5c3d293fcf3dee79ed854d2a4f3b0b9cbdab0ff7dc0",
+  "final_target_subset_sha256": "a8373290774d7b001007f92af05fdf5ea10f8e2c86c213065442d8c3a91bc680",
+  "final_catalog_sha256": "ec78fb33247244bf783461e0410ef11fe48e45644c3c6500419d9060e967d458",
+  "entries": [
+    {
+      "key": "[Edit opponents]",
+      "source": "Edit opponents",
+      "before": "حریف بدلیں",
+      "after": "حریف بدلیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Next]",
+      "source": "Next",
+      "before": "اگلا",
+      "after": "اگلا",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Done]",
+      "source": "Done",
+      "before": "مکمل",
+      "after": "مکمل",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Contribution]",
+      "source": "Contribution",
+      "before": "حصہ",
+      "after": "حصہ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Choose who controls this colony]",
+      "source": "Choose who controls this colony",
+      "before": "منتخب کریں کہ یہ بستی کون کنٹرول کرے",
+      "after": "منتخب کریں کہ یہ بستی کون کنٹرول کرے",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Settings]",
+      "source": "Settings",
+      "before": "ترتیبات",
+      "after": "ترتیبات",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[AI opponents]",
+      "source": "AI opponents",
+      "before": "AI حریف",
+      "after": "AI حریف",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Assigned %0 · Target %1]",
+      "source": "Assigned %0 · Target %1",
+      "before": "مقرر %0 · ہدف %1",
+      "after": "مقرر %0 · ہدف %1",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Range: %0]",
+      "source": "Range: %0",
+      "before": "فاصلہ: %0",
+      "after": "فاصلہ: %0",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Player %0]",
+      "source": "Player %0",
+      "before": "کھلاڑی %0",
+      "after": "کھلاڑی %0",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Brush %0]",
+      "source": "Brush %0",
+      "before": "برش %0",
+      "after": "برش %0",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Team %0]",
+      "source": "Team %0",
+      "before": "ٹیم %0",
+      "after": "ٹیم %0",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Your colony]",
+      "source": "Your colony",
+      "before": "آپ کی بستی",
+      "after": "آپ کی بستی",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[%0 / %1 HP · %2]",
+      "source": "%0 / %1 HP · %2",
+      "before": "%0 / %1 HP · %2",
+      "after": "%0 / %1 HP · %2",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Units: %0]",
+      "source": "Units: %0",
+      "before": "یونٹ: %0",
+      "after": "یونٹ: %0",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Need food: %0]",
+      "source": "Need food: %0",
+      "before": "خوراک درکار: %0",
+      "after": "خوراک درکار: %0",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Need healing: %0]",
+      "source": "Need healing: %0",
+      "before": "علاج درکار: %0",
+      "after": "علاج درکار: %0",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Attack: %0]",
+      "source": "Attack: %0",
+      "before": "حملہ: %0",
+      "after": "حملہ: %0",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Defense: %0]",
+      "source": "Defense: %0",
+      "before": "دفاع: %0",
+      "after": "دفاع: %0",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Food: %0 / %1]",
+      "source": "Food: %0 / %1",
+      "before": "خوراک: %0 / %1",
+      "after": "خوراک: %0 / %1",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[View team %0]",
+      "source": "View team %0",
+      "before": "ٹیم %0 دیکھیں",
+      "after": "ٹیم %0 دیکھیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[P %0/%1/%2]",
+      "source": "P %0/%1/%2",
+      "before": "P %0/%1/%2",
+      "after": "P %0/%1/%2",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[CPU load %0]",
+      "source": "CPU %0%",
+      "before": "CPU %0%",
+      "after": "CPU %0%",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Brush %0x%1]",
+      "source": "Brush %0x%1",
+      "before": "برش %0x%1",
+      "after": "برش %0x%1",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Level %0]",
+      "source": "Level %0",
+      "before": "سطح %0",
+      "after": "سطح %0",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Manage teams (%0)]",
+      "source": "Manage teams (%0)",
+      "before": "ٹیمیں سنبھالیں (%0)",
+      "after": "ٹیمیں سنبھالیں (%0)",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Team %0 / Level %1]",
+      "source": "Team %0 / Level %1",
+      "before": "ٹیم %0 / سطح %1",
+      "after": "ٹیم %0 / سطح %1",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Files · %0]",
+      "source": "Files · %0",
+      "before": "فائلیں · %0",
+      "after": "فائلیں · %0",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Hint %0]",
+      "source": "Hint %0",
+      "before": "اشارہ %0",
+      "after": "اشارہ %0",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Objective %0]",
+      "source": "Objective %0",
+      "before": "مقصد %0",
+      "after": "مقصد %0",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Entry %0 of 8 · empty entries are omitted]",
+      "source": "Entry %0 of 8 · empty entries are omitted",
+      "before": "8 میں سے اندراج %0 · خالی اندراجات چھوڑ دیے جاتے ہیں",
+      "after": "8 میں سے اندراج %0 · خالی اندراجات چھوڑ دیے جاتے ہیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Teams %0/%1]",
+      "source": "Teams %0/%1",
+      "before": "ٹیمیں %0/%1",
+      "after": "ٹیمیں %0/%1",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Elapsed time · %0]",
+      "source": "Elapsed time · %0",
+      "before": "گزرا وقت · %0",
+      "after": "گزرا وقت · %0",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Alliance and shared vision are fixed for this match.]",
+      "source": "Alliance and shared vision are fixed for this match.",
+      "before": "اس میچ کے لیے اتحاد اور مشترکہ نظر طے ہیں۔",
+      "after": "اس میچ کے لیے اتحاد اور مشترکہ حدِ نگاہ طے ہیں۔",
+      "editorially_read": true,
+      "disposition": "edited-pending-recheck"
+    },
+    {
+      "key": "[Share vision]",
+      "source": "Share vision",
+      "before": "نظر بانٹیں",
+      "after": "حدِ نگاہ بانٹیں",
+      "editorially_read": true,
+      "disposition": "edited-pending-recheck"
+    },
+    {
+      "key": "[Share food vision]",
+      "source": "Share food vision",
+      "before": "خوراک کی نظر بانٹیں",
+      "after": "خوراک دینے والی عمارتوں کی حدِ نگاہ بانٹیں",
+      "editorially_read": true,
+      "disposition": "edited-pending-recheck"
+    },
+    {
+      "key": "[Chat]",
+      "source": "Chat",
+      "before": "چیٹ",
+      "after": "چیٹ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[No briefing for this match.]",
+      "source": "No briefing for this match.",
+      "before": "اس میچ کی ابتدائی ہدایات نہیں ہیں۔",
+      "after": "اس میچ کی ابتدائی ہدایات نہیں ہیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Chat · recipients selected in Teams]",
+      "source": "Chat · recipients selected in Teams",
+      "before": "چیٹ · وصول کنندگان ٹیموں میں منتخب ہیں",
+      "after": "چیٹ · وصول کنندگان ٹیموں میں منتخب ہیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Filename]",
+      "source": "Filename",
+      "before": "فائل نام",
+      "after": "فائل نام",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Reduced motion]",
+      "source": "Reduced motion",
+      "before": "کم حرکت",
+      "after": "کم حرکت",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Send]",
+      "source": "Send",
+      "before": "بھیجیں",
+      "after": "بھیجیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Close]",
+      "source": "Close",
+      "before": "بند کریں",
+      "after": "بند کریں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Forbidden]",
+      "source": "Forbidden",
+      "before": "ممنوع",
+      "after": "ممنوع",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Guard]",
+      "source": "Guard",
+      "before": "پہرا",
+      "after": "پہرا",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Clear]",
+      "source": "Clear",
+      "before": "صفائی",
+      "after": "صفائی",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Farm]",
+      "source": "Farm",
+      "before": "کھیتی",
+      "after": "کھیتی",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Paint]",
+      "source": "Paint",
+      "before": "رنگیں",
+      "after": "رنگیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Erase]",
+      "source": "Erase",
+      "before": "مٹائیں",
+      "after": "مٹائیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Paint on the map; two fingers move]",
+      "source": "Paint on the map; two fingers move",
+      "before": "نقشے پر رنگیں؛ دو انگلیوں سے منظر کھسکائیں",
+      "after": "نقشے پر رنگیں؛ دو انگلیوں سے منظر کھسکائیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Back to tools]",
+      "source": "Back to tools",
+      "before": "آلات پر واپس",
+      "after": "آلات پر واپس",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Starvation overlay]",
+      "source": "Starvation overlay",
+      "before": "فاقہ کشی کی تہہ",
+      "after": "فاقہ کشی کی تہہ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Damage overlay]",
+      "source": "Damage overlay",
+      "before": "نقصان کی تہہ",
+      "after": "نقصان کی تہہ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Defense overlay]",
+      "source": "Defense overlay",
+      "before": "دفاع کی تہہ",
+      "after": "دفاع کی تہہ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Fertility overlay]",
+      "source": "Fertility overlay",
+      "before": "زرخیزی کی تہہ",
+      "after": "زرخیزی کی تہہ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Health and food bars]",
+      "source": "Health and food bars",
+      "before": "صحت اور خوراک کی پٹیاں",
+      "after": "صحت اور خوراک کی پٹیاں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Message history]",
+      "source": "Message history",
+      "before": "پیغامات کا سابقہ ریکارڈ",
+      "after": "پیغامات کا سابقہ ریکارڈ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Show zones]",
+      "source": "Show zones",
+      "before": "علاقے دکھائیں",
+      "after": "علاقے دکھائیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Pan]",
+      "source": "Pan",
+      "before": "منظر کھسکائیں",
+      "after": "منظر کھسکائیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Select]",
+      "source": "Select",
+      "before": "منتخب کریں",
+      "after": "منتخب کریں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Show palette]",
+      "source": "Show palette",
+      "before": "رنگوں کی تختی دکھائیں",
+      "after": "برشوں کا پینل دکھائیں",
+      "editorially_read": true,
+      "disposition": "edited-pending-recheck"
+    },
+    {
+      "key": "[Release to place]",
+      "source": "Release to place",
+      "before": "لگانے کے لیے چھوڑیں",
+      "after": "لگانے کے لیے چھوڑیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Blocked placement]",
+      "source": "Blocked placement",
+      "before": "جگہ پر رکاوٹ ہے",
+      "after": "جگہ پر رکاوٹ ہے",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[File name]",
+      "source": "File name",
+      "before": "فائل کا نام",
+      "after": "فائل کا نام",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Load map]",
+      "source": "Load map",
+      "before": "نقشہ لوڈ کریں",
+      "after": "نقشہ لوڈ کریں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Save map]",
+      "source": "Save map",
+      "before": "نقشہ محفوظ کریں",
+      "after": "نقشہ محفوظ کریں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[No files in this folder]",
+      "source": "No files in this folder",
+      "before": "اس فولڈر میں کوئی فائل نہیں",
+      "after": "اس فولڈر میں کوئی فائل نہیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[No files saved yet]",
+      "source": "No files saved yet",
+      "before": "ابھی کوئی فائل محفوظ نہیں ہوئی",
+      "after": "ابھی کوئی فائل محفوظ نہیں ہوئی",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Export]",
+      "source": "Export",
+      "before": "برآمد کریں",
+      "after": "برآمد کریں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Tap to write the mission briefing]",
+      "source": "Tap to write the mission briefing",
+      "before": "مشن کی ابتدائی ہدایات لکھنے کے لیے چھوئیں",
+      "after": "مشن کی ابتدائی ہدایات لکھنے کے لیے چھوئیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Script]",
+      "source": "Script",
+      "before": "اسکرپٹ",
+      "after": "اسکرپٹ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Previous]",
+      "source": "Previous",
+      "before": "پچھلا",
+      "after": "پچھلا",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Compile]",
+      "source": "Compile",
+      "before": "کمپائل کریں",
+      "after": "کمپائل کریں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Tap to write this hint]",
+      "source": "Tap to write this hint",
+      "before": "یہ اشارہ لکھنے کے لیے چھوئیں",
+      "after": "یہ اشارہ لکھنے کے لیے چھوئیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Tap to write this objective]",
+      "source": "Tap to write this objective",
+      "before": "یہ مقصد لکھنے کے لیے چھوئیں",
+      "after": "یہ مقصد لکھنے کے لیے چھوئیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Mission briefing · tap to edit, swipe to scroll]",
+      "source": "Mission briefing · tap to edit, swipe to scroll",
+      "before": "مشن کی ابتدائی ہدایات · ترمیم کے لیے چھوئیں، اسکرول کے لیے سوائپ کریں",
+      "after": "مشن کی ابتدائی ہدایات · ترمیم کے لیے چھوئیں، اسکرول کے لیے سوائپ کریں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Not enough recorded history yet.]",
+      "source": "Not enough recorded history yet.",
+      "before": "ابھی کافی سابقہ ریکارڈ موجود نہیں۔",
+      "after": "ابھی کافی سابقہ ریکارڈ موجود نہیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Select a team to show its history.]",
+      "source": "Select a team to show its history.",
+      "before": "کسی ٹیم کا سابقہ ریکارڈ دکھانے کے لیے اسے منتخب کریں۔",
+      "after": "کسی ٹیم کا سابقہ ریکارڈ دکھانے کے لیے اسے منتخب کریں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Back to chart]",
+      "source": "Back to chart",
+      "before": "چارٹ پر واپس",
+      "after": "چارٹ پر واپس",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Expand chart]",
+      "source": "Expand chart",
+      "before": "چارٹ پھیلائیں",
+      "after": "چارٹ پھیلائیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Slot]",
+      "source": "Slot",
+      "before": "جگہ",
+      "after": "جگہ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Color]",
+      "source": "Color",
+      "before": "رنگ",
+      "after": "رنگ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Player / AI]",
+      "source": "Player / AI",
+      "before": "کھلاڑی / AI",
+      "after": "کھلاڑی / AI",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Group]",
+      "source": "Group",
+      "before": "گروپ",
+      "after": "گروپ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Forbid]",
+      "source": "Forbid",
+      "before": "ممنوع کریں",
+      "after": "ممنوع کریں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[↓ Low]",
+      "source": "↓ Low",
+      "before": "↓ کم",
+      "after": "↓ کم",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[= Normal]",
+      "source": "= Normal",
+      "before": "= معمول",
+      "after": "= معمول",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[↑ High]",
+      "source": "↑ High",
+      "before": "↑ زیادہ",
+      "after": "↑ زیادہ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Details]",
+      "source": "Details",
+      "before": "تفصیلات",
+      "after": "تفصیلات",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Campaign name]",
+      "source": "Campaign name",
+      "before": "مہم کا نام",
+      "after": "مہم کا نام",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Unlocking]",
+      "source": "Unlocking",
+      "before": "دستیاب کرنا",
+      "after": "دستیاب کرنا",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Parameters]",
+      "source": "Parameters",
+      "before": "پیرامیٹرز",
+      "after": "پیرامیٹرز",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Blank map]",
+      "source": "Blank map",
+      "before": "خالی نقشہ",
+      "after": "خالی نقشہ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Generated]",
+      "source": "Generated",
+      "before": "تیار کردہ",
+      "after": "تیار کردہ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Preview]",
+      "source": "Preview",
+      "before": "پیش منظر",
+      "after": "پیش منظر",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Selected landscape]",
+      "source": "Selected landscape",
+      "before": "منتخب منظرنامہ",
+      "after": "منتخب منظرنامہ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Representative preview]",
+      "source": "Representative preview",
+      "before": "نمائندہ پیش منظر",
+      "after": "نمائندہ پیش منظر",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Hide parameters]",
+      "source": "Hide parameters",
+      "before": "پیرامیٹرز چھپائیں",
+      "after": "پیرامیٹرز چھپائیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Size and parameters]",
+      "source": "Size and parameters",
+      "before": "سائز اور پیرامیٹرز",
+      "after": "سائز اور پیرامیٹرز",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Choose a landscape]",
+      "source": "Choose a landscape",
+      "before": "منظرنامہ منتخب کریں",
+      "after": "منظرنامہ منتخب کریں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[%0 / Browse]",
+      "source": "%0  /  Browse",
+      "before": "%0  /  براؤز کریں",
+      "after": "%0  /  براؤز کریں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[%0 colonies · %1]",
+      "source": "%0 colonies · %1",
+      "before": "%0 بستیاں · %1",
+      "after": "%0 بستیاں · %1",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[%0 · Team %1]",
+      "source": "%0 · Team %1",
+      "before": "%0 · ٹیم %1",
+      "after": "%0 · ٹیم %1",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Colonies: %0]",
+      "source": "Colonies: %0",
+      "before": "بستیاں: %0",
+      "after": "بستیاں: %0",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[%0 colonies · %1 AI]",
+      "source": "%0 colonies · %1 AI",
+      "before": "%0 بستیاں · %1 AI",
+      "after": "%0 بستیاں · %1 AI",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[%0 · %1]",
+      "source": "%0 · %1",
+      "before": "%0 · %1",
+      "after": "%0 · %1",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Fairness: %0]",
+      "source": "Fairness: %0",
+      "before": "برابری: %0",
+      "after": "برابری: %0",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Colony %0]",
+      "source": "Colony %0",
+      "before": "بستی %0",
+      "after": "بستی %0",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Win chance: %0 · Fitness: %1]",
+      "source": "Win chance: %0 · Fitness: %1",
+      "before": "جیتنے کا امکان: %0 · موزونیت: %1",
+      "after": "جیتنے کا امکان: %0 · موزونیت: %1",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[%0 · Contribution: %1]",
+      "source": "%0 · Contribution: %1",
+      "before": "%0 · حصہ: %1",
+      "after": "%0 · حصہ: %1",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Min required level %0]",
+      "source": "Minimum required level: %0",
+      "before": "کم از کم مطلوبہ سطح: %0",
+      "after": "کم از کم مطلوبہ سطح: %0",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Confirm %0]",
+      "source": "Ok: %0",
+      "before": "ٹھیک ہے: %0",
+      "after": "ٹھیک ہے: %0",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[%0 %1]",
+      "source": "%0 %1",
+      "before": "%0 %1",
+      "after": "%0 %1",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[resume game]",
+      "source": "Resume game",
+      "before": "کھیل بحال کریں",
+      "after": "کھیل بحال کریں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Add AI]",
+      "source": "Add AI",
+      "before": "AI شامل کریں",
+      "after": "AI شامل کریں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Experiments set by the host]",
+      "source": "Experiments set by the host",
+      "before": "میزبان کے مقرر کردہ تجربات",
+      "after": "میزبان کے مقرر کردہ تجربات",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Experiments]",
+      "source": "Experiments",
+      "before": "تجربات",
+      "after": "تجربات",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[experiment guard-area-balancing]",
+      "source": "Guard-area balancing",
+      "before": "پہرے کے علاقوں کا توازن",
+      "after": "پہرے کے علاقوں کا توازن",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[experiment guard-area-balancing help]",
+      "source": "Free warriors spread between painted guard areas instead of all taking the nearest one: a bigger area gets more of them, and an over-full area thins out into the others.",
+      "before": "فارغ جنگجو سب سے قریبی علاقے میں جمع ہونے کے بجائے رنگے ہوئے پہرے کے علاقوں میں بٹ جاتے ہیں: بڑے علاقے کو زیادہ جنگجو ملتے ہیں اور ضرورت سے زیادہ بھرے علاقے سے جنگجو دوسرے علاقوں میں چلے جاتے ہیں۔",
+      "after": "فارغ جنگجو سب سے قریبی علاقے میں جمع ہونے کے بجائے رنگے ہوئے پہرے کے علاقوں میں بٹ جاتے ہیں: بڑے علاقے کو زیادہ جنگجو ملتے ہیں اور ضرورت سے زیادہ بھرے علاقے سے جنگجو دوسرے علاقوں میں چلے جاتے ہیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[experiment farm-areas]",
+      "source": "Farm areas",
+      "before": "کھیتی کے علاقے",
+      "after": "کھیتی کے علاقے",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[experiment farm-areas help]",
+      "source": "Adds a farm area to the zone brushes. Workers harvesting inside one take from the ripest tile of the connected field and leave one grain on every tile, so the field regrows instead of being eaten from the edge. Wood growing into a farm is cleared.",
+      "before": "علاقوں کے برشوں میں کھیتی کا علاقہ شامل کرتا ہے۔ اس کے اندر فصل کاٹنے والے کارکن مربوط کھیت کے سب سے پکے خانے سے لیتے ہیں اور ہر خانے میں ایک دانہ چھوڑتے ہیں، اس لیے کھیت کنارے سے ختم ہونے کے بجائے دوبارہ اگتا ہے۔ کھیت میں اگنے والی لکڑی صاف کر دی جاتی ہے۔",
+      "after": "علاقوں کے برشوں میں کھیتی کا علاقہ شامل کرتا ہے۔ اس کے اندر فصل کاٹنے والے کارکن مربوط کھیت کے سب سے پکے خانے سے لیتے ہیں اور ہر خانے میں ایک دانہ چھوڑتے ہیں، اس لیے کھیت کنارے سے ختم ہونے کے بجائے دوبارہ اگتا ہے۔ کھیت میں اگنے والی لکڑی صاف کر دی جاتی ہے۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[List momentum]",
+      "source": "List momentum",
+      "before": "فہرست کی حرکت کا تسلسل",
+      "after": "فہرست کی حرکت کا تسلسل",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[List bounce]",
+      "source": "List bounce",
+      "before": "فہرست کا اچھال",
+      "after": "فہرست کا اچھال",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[lan pairing field]",
+      "source": "Host pairing string (or trusted WSS URL)",
+      "before": "میزبان کی جوڑنے والی عبارت (یا قابلِ اعتماد WSS URL)",
+      "after": "میزبان کی جوڑنے والی عبارت (یا قابلِ اعتماد WSS URL)",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[lan pairing connect]",
+      "source": "Pair and connect",
+      "before": "جوڑیں اور رابطہ کریں",
+      "after": "جوڑیں اور رابطہ کریں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[lan discovery instructions]",
+      "source": "Select a host, then paste its pairing string to verify its identity.",
+      "before": "میزبان منتخب کریں، پھر اس کی شناخت کی تصدیق کے لیے اس کی جوڑنے والی عبارت چسپاں کریں۔",
+      "after": "میزبان منتخب کریں، پھر اس کی شناخت کی تصدیق کے لیے اس کی جوڑنے والی عبارت چسپاں کریں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[lan discovery unavailable]",
+      "source": "LAN discovery is unavailable. Check local network permission or paste a host pairing string.",
+      "before": "LAN پر تلاش دستیاب نہیں۔ مقامی نیٹ ورک کی اجازت دیکھیں یا میزبان کی جوڑنے والی عبارت چسپاں کریں۔",
+      "after": "LAN پر تلاش دستیاب نہیں۔ مقامی نیٹ ورک کی اجازت دیکھیں یا میزبان کی جوڑنے والی عبارت چسپاں کریں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[lan discovered host %0]",
+      "source": "Discovered host %0 — pair to view games",
+      "before": "میزبان %0 دریافت ہوا — کھیل دیکھنے کے لیے جوڑیں",
+      "after": "میزبان %0 دریافت ہوا — کھیل دیکھنے کے لیے جوڑیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[lan connection unavailable]",
+      "source": "Unable to reach the LAN host. Check local network permission and the host pairing string.",
+      "before": "LAN میزبان تک رسائی نہیں ہو سکی۔ مقامی نیٹ ورک کی اجازت اور میزبان کی جوڑنے والی عبارت دیکھیں۔",
+      "after": "LAN میزبان تک رسائی نہیں ہو سکی۔ مقامی نیٹ ورک کی اجازت اور میزبان کی جوڑنے والی عبارت دیکھیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[lan connection verification failed %0]",
+      "source": "Unable to verify or connect to the LAN host: %0",
+      "before": "LAN میزبان کی تصدیق یا اس سے رابطہ نہیں ہو سکا: %0",
+      "after": "LAN میزبان کی تصدیق یا اس سے رابطہ نہیں ہو سکا: %0",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[lan lobby endpoint required]",
+      "source": "Use the host lobby endpoint",
+      "before": "میزبان کی لابی کا اینڈ پوائنٹ استعمال کریں",
+      "after": "میزبان کی لابی کا اینڈ پوائنٹ استعمال کریں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[turn reconnecting]",
+      "source": "Connection to the host lost. Reconnecting...",
+      "before": "میزبان سے رابطہ ٹوٹ گیا۔ دوبارہ رابطہ ہو رہا ہے...",
+      "after": "میزبان سے رابطہ ٹوٹ گیا۔ دوبارہ رابطہ ہو رہا ہے...",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[turn waiting for players]",
+      "source": "Waiting for every player to load...",
+      "before": "ہر کھلاڑی کے لوڈ ہونے کا انتظار ہے...",
+      "after": "تمام کھلاڑیوں کے کھیل لوڈ ہونے کا انتظار ہے…",
+      "editorially_read": true,
+      "disposition": "edited-pending-recheck"
+    },
+    {
+      "key": "[turn rejoining]",
+      "source": "Rejoining the game...",
+      "before": "کھیل میں دوبارہ شامل ہو رہے ہیں...",
+      "after": "کھیل میں دوبارہ شامل ہو رہے ہیں...",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[turn catching up %0]",
+      "source": "Catching up: %0 turns behind",
+      "before": "موجودہ حالت تک پہنچ رہے ہیں: %0 باری پیچھے",
+      "after": "موجودہ حالت تک پہنچ رہے ہیں: %0 باری پیچھے",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[turn player reconnecting %0]",
+      "source": "%0 is reconnecting...",
+      "before": "%0 دوبارہ رابطہ کر رہا ہے...",
+      "after": "%0 دوبارہ رابطہ کر رہا ہے...",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[turn player lagging %0]",
+      "source": "%0 is lagging",
+      "before": "%0 پیچھے رہ رہا ہے",
+      "after": "%0 پیچھے رہ رہا ہے",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[turn player resyncing %0]",
+      "source": "%0 is catching up",
+      "before": "%0 موجودہ حالت تک پہنچ رہا ہے",
+      "after": "%0 موجودہ حالت تک پہنچ رہا ہے",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[turn player not connected %0]",
+      "source": "%0 has not connected yet",
+      "before": "%0 نے ابھی رابطہ نہیں کیا",
+      "after": "%0 نے ابھی رابطہ نہیں کیا",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[lan host left]",
+      "source": "The host left the game.",
+      "before": "میزبان کھیل سے نکل گیا۔",
+      "after": "میزبان کھیل سے نکل گیا۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[lan host lost]",
+      "source": "The connection to the host was lost.",
+      "before": "میزبان سے رابطہ ٹوٹ گیا۔",
+      "after": "میزبان سے رابطہ ٹوٹ گیا۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[lan version mismatch %0]",
+      "source": "The host runs a different version of Globulation 2 (%0).",
+      "before": "میزبان Globulation 2 کا مختلف ورژن چلا رہا ہے (%0)۔",
+      "after": "میزبان Globulation 2 کا مختلف ورژن چلا رہا ہے (%0)۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[lan cannot host %0]",
+      "source": "Unable to host a LAN game: %0",
+      "before": "LAN کھیل کی میزبانی نہیں ہو سکی: %0",
+      "after": "LAN کھیل کی میزبانی نہیں ہو سکی: %0",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[play online]",
+      "source": "Play online",
+      "before": "آن لائن کھیلیں",
+      "after": "آن لائن کھیلیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Use in room]",
+      "source": "Use in room",
+      "before": "کمرے میں استعمال کریں",
+      "after": "کمرے میں استعمال کریں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[conn ai]",
+      "source": "AI",
+      "before": "AI",
+      "after": "AI",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[conn behind %0]",
+      "source": "Behind %0",
+      "before": "%0 پیچھے",
+      "after": "%0 پیچھے",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[conn behind explanation %0 %1]",
+      "source": "Behind: how far a player's game runs behind the match clock; it includes their delay. Under %0 is normal; from %1 the player is marked slow.",
+      "before": "پیچھے: کھلاڑی کا کھیل میچ کی گھڑی سے جتنا پیچھے چل رہا ہے؛ اس میں اس کی تاخیر شامل ہے۔ %0 سے کم معمول ہے؛ %1 سے کھلاڑی سست قرار پاتا ہے۔",
+      "after": "پیچھے: کھلاڑی کا کھیل میچ کی گھڑی سے جتنا پیچھے چل رہا ہے؛ اس میں اس کی تاخیر شامل ہے۔ %0 سے کم معمول ہے؛ %1 سے کھلاڑی سست قرار پاتا ہے۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[conn behind]",
+      "source": "Behind",
+      "before": "پیچھے",
+      "after": "پیچھے",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[conn card catching up]",
+      "source": "Catching up",
+      "before": "موجودہ حالت تک پہنچ رہے ہیں",
+      "after": "موجودہ حالت تک پہنچ رہے ہیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[conn card colony works]",
+      "source": "Your colony keeps working on its own: units finish their jobs and buildings keep running.",
+      "before": "آپ کی بستی خود کام کرتی رہتی ہے: یونٹ اپنے کام مکمل کرتے اور عمارتیں چلتی رہتی ہیں۔",
+      "after": "آپ کی بستی خود کام کرتی رہتی ہے: یونٹ اپنے کام مکمل کرتے اور عمارتیں چلتی رہتی ہیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[conn card desync detail]",
+      "source": "Rejoining from the match record so you see what everyone else sees. A report was sent automatically.",
+      "before": "میچ کے ریکارڈ سے دوبارہ شامل ہو رہے ہیں تاکہ آپ وہی دیکھیں جو باقی دیکھ رہے ہیں۔ رپورٹ خود بخود بھیج دی گئی۔",
+      "after": "میچ کے ریکارڈ سے دوبارہ شامل ہو رہے ہیں تاکہ آپ وہی دیکھیں جو باقی دیکھ رہے ہیں۔ رپورٹ خود بخود بھیج دی گئی۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[conn card desync]",
+      "source": "Your game fell out of sync",
+      "before": "آپ کے کھیل کی ہم وقت سازی بگڑ گئی",
+      "after": "آپ کے کھیل کی ہم وقت سازی بگڑ گئی",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[conn card grace %0]",
+      "source": "Your colony keeps working on its own: units finish their jobs and buildings keep running. You have %0 to come back before you're removed from the match.",
+      "before": "آپ کی بستی خود کام کرتی رہتی ہے: یونٹ اپنے کام مکمل کرتے اور عمارتیں چلتی رہتی ہیں۔ میچ سے ہٹائے جانے سے پہلے واپس آنے کے لیے آپ کے پاس %0 ہے۔",
+      "after": "آپ کی بستی خود کام کرتی رہتی ہے: یونٹ اپنے کام مکمل کرتے اور عمارتیں چلتی رہتی ہیں۔ میچ سے ہٹائے جانے سے پہلے واپس آنے کے لیے آپ کے پاس %0 ہے۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[conn card input paused]",
+      "source": "You are catching up · input paused",
+      "before": "آپ موجودہ حالت تک پہنچ رہے ہیں · احکامات رکے ہوئے ہیں",
+      "after": "آپ موجودہ حالت تک پہنچ رہے ہیں · نئے احکامات دینا موقوف ہے",
+      "editorially_read": true,
+      "disposition": "edited-pending-recheck"
+    },
+    {
+      "key": "[conn card lost]",
+      "source": "Connection lost",
+      "before": "رابطہ ٹوٹ گیا",
+      "after": "رابطہ ٹوٹ گیا",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[conn card progress %0 %1 %2]",
+      "source": "%0 % · %1 of %2 ticks",
+      "before": "%0 % · %2 میں سے %1 ٹک",
+      "after": "%0 % · %2 میں سے %1 ٹک",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[conn card reconnecting %0]",
+      "source": "Reconnecting to the match… attempt %0",
+      "before": "میچ سے دوبارہ رابطہ ہو رہا ہے… کوشش %0",
+      "after": "میچ سے دوبارہ رابطہ ہو رہا ہے… کوشش %0",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[conn card replaying %0]",
+      "source": "Replaying the %0 you missed. The screen updates when you're back to the present.",
+      "before": "آپ کے چھوٹے ہوئے %0 دوبارہ چل رہے ہیں۔ حال تک پہنچنے پر اسکرین تازہ ہو گی۔",
+      "after": "آپ کے چھوٹے ہوئے %0 دوبارہ چل رہے ہیں۔ حال تک پہنچنے پر اسکرین تازہ ہو گی۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[conn card seconds left %0]",
+      "source": "about %0 s left",
+      "before": "تقریباً %0 سیکنڈ باقی",
+      "after": "تقریباً %0 سیکنڈ باقی",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    }
+  ],
+  "status": "edited-awaiting-independent-recheck"
+}

@@ -1,0 +1,114 @@
+{
+  "reviewer": "/root/hindi_online_review",
+  "read_only": true,
+  "run_id": 41234689049,
+  "failed_head": "1be5505c6a4eca84802ebec59653ff9c02304262",
+  "comparison_master": "cbc20d2aabc364f7727439659001d29ffc741c25",
+  "jobs": [
+    {
+      "job_id": 124637265765,
+      "name": "Primary Linux programs / linux build (ubuntu:24.04, g++-13)",
+      "conclusion": "failure",
+      "log": "artifacts/translation-program/hosted-ci-review/gcc13.log",
+      "sha256": "dd6354666ce6988fa7a2887c931702aff1d2ee7aa55d7cc74a7688be2cb97d93",
+      "actual_failure": [
+        {
+          "line": 2755,
+          "text": "2026-10-31T19:57:12.6117064Z /usr/bin/ld: /home/runner/work/glob2/glob2/build/sdl3-ci/prefix/lib/libharfbuzz.a(harfbuzz.cc.o): relocation R_X86_64_PC32 against symbol `stderr@@GLIBC_2.2.5' can not be used when making a shared object; recompile with -fPIC"
+        }
+      ],
+      "classification": "introduced shared SDL_ttf dependency link failure; engine/platform tests not reached"
+    },
+    {
+      "job_id": 124637265888,
+      "name": "Linux GCC 11 build and tests / linux build (ubuntu:22.04, g++-11)",
+      "conclusion": "failure",
+      "log": "artifacts/translation-program/hosted-ci-review/job-124637265888.log",
+      "sha256": "2e271f8a5ac2be843a45e68bca521d49a4baa158d982574315a134699428c13a",
+      "actual_failure": [
+        {
+          "line": 2577,
+          "text": "2026-10-31T19:48:09.9099505Z /usr/bin/ld: /home/runner/work/glob2/glob2/build/sdl3-ci/prefix/lib/libharfbuzz.a(harfbuzz.cc.o): relocation R_X86_64_PC32 against symbol `stderr@@GLIBC_2.2.5' can not be used when making a shared object; recompile with -fPIC"
+        }
+      ],
+      "classification": "introduced shared SDL_ttf dependency link failure; engine/platform tests not reached"
+    },
+    {
+      "job_id": 124637265611,
+      "name": "linux variants (ubuntu:22.04)",
+      "conclusion": "failure",
+      "log": "artifacts/translation-program/hosted-ci-review/job-124637265611.log",
+      "sha256": "764accdbb0774e987ce2b331befd59dd50ce72102a95031e3d6de9ee0c2d47d8",
+      "actual_failure": [
+        {
+          "line": 2617,
+          "text": "2026-10-31T19:44:48.8994275Z /usr/bin/ld: /home/runner/work/glob2/glob2/build/sdl3-ci/prefix/lib/libharfbuzz.a(harfbuzz.cc.o): relocation R_X86_64_PC32 against symbol `stderr@@GLIBC_2.2.5' can not be used when making a shared object; recompile with -fPIC"
+        }
+      ],
+      "classification": "introduced shared SDL_ttf dependency link failure; engine/platform tests not reached"
+    },
+    {
+      "job_id": 124637265670,
+      "name": "linux variants (ubuntu:24.04)",
+      "conclusion": "failure",
+      "log": "artifacts/translation-program/hosted-ci-review/job-124637265670.log",
+      "sha256": "ff06900e0ef083c8a014f9396c7394bc055191bca5e342363a09988f5483304d",
+      "actual_failure": [
+        {
+          "line": 2794,
+          "text": "2026-10-31T19:57:11.3319859Z /usr/bin/ld: /home/runner/work/glob2/glob2/build/sdl3-ci/prefix/lib/libharfbuzz.a(harfbuzz.cc.o): relocation R_X86_64_PC32 against symbol `stderr@@GLIBC_2.2.5' can not be used when making a shared object; recompile with -fPIC"
+        }
+      ],
+      "classification": "introduced shared SDL_ttf dependency link failure; engine/platform tests not reached"
+    },
+    {
+      "job_id": 124637265644,
+      "name": "tsan / thread sanitizer (threaded games)",
+      "conclusion": "failure",
+      "log": "artifacts/translation-program/hosted-ci-review/job-124637265644.log",
+      "sha256": "a393692f417e79a6431321cae860ee40bcd3355acfe71785e96d57f162586c49",
+      "actual_failure": [
+        {
+          "line": 2504,
+          "text": "2026-10-31T19:41:29.8173317Z /usr/bin/ld: /home/runner/work/glob2/glob2/build/sdl3-ci/prefix/lib/libharfbuzz.a(harfbuzz.cc.o): relocation R_X86_64_PC32 against symbol `stderr@@GLIBC_2.2.5' can not be used when making a shared object; recompile with -fPIC"
+        }
+      ],
+      "classification": "introduced shared SDL_ttf dependency link failure; engine/platform tests not reached"
+    },
+    {
+      "job_id": 124637265642,
+      "name": "self-hosted platform stack",
+      "conclusion": "failure",
+      "log": "artifacts/translation-program/hosted-ci-review/job-124637265642.log",
+      "sha256": "38b6d0d54e25786304d3ae3c693f66d8ee330311085c1e1adcc232f7ca1e06f1",
+      "actual_failure": [
+        {
+          "line": 9651,
+          "text": "2026-10-31T19:48:04.9490382Z #245 223.6 /usr/bin/ld: /source/build/sdl3/prefix/lib/libharfbuzz.a(harfbuzz.cc.o): relocation R_X86_64_PC32 against symbol `stderr@@GLIBC_2.2.5' can not be used when making a shared object; recompile with -fPIC"
+        }
+      ],
+      "classification": "introduced shared SDL_ttf dependency link failure; engine/platform tests not reached"
+    }
+  ],
+  "cause": "New static HarfBuzz archive compiled without PIC is consumed by shared SDL3_ttf on Linux. All6requestedjobs hit same R_X86_64_PC32 relocation against stderr; Docker/process error tails are secondary. Base master source recipe has no HarfBuzz integration, so this is introduced by PR1304 rather than demonstrated baseline failure.",
+  "accepted_fix": {
+    "commit": "1c8785b878a8a635fb9ce05831a1842e4b0539a2",
+    "files": {
+      "sdl3_dependencies.proposed.py": "588839d0ce3e6acdddeac5d2100b44ad2ea4e40d8017c330ec5fab841fb6750d",
+      "test_sdl3_dependencies.proposed.py": "23466ccc515979e3a0cc7aae7ec06aec856230d48b83ef829181568cc7f45a6d"
+    },
+    "source_review": "HB-only CMAKE_POSITION_INDEPENDENT_CODE=ON is correct for static archive consumed by shared SDL_ttf; configuration13\u219214 forces stale nonPIC prefix invalidation. Mock Linux test checks actual configure argv. No unrelated dependency/version/simulation change. Existing WASM exception/thread flags unchanged.",
+    "source_findings": [],
+    "test_evidence": "proposed-shaping-unit.log reports3passed including LinuxPIC andbothWASMvariants; this is mock/recipe proof, not actualLinuxlink verification.",
+    "remaining_validation": [
+      "Actual Linux HarfBuzz\u2192shared SDL_ttf link from invalidated cache/prefix.",
+      "Rerun affected hosted jobs to reach native/platform tests.",
+      "Retain final translation pixel evidence bound922 unchanged worktree; infra fix has different revision/build identity."
+    ]
+  },
+  "limits": [
+    "Only6specified failed jobs diagnosed; no claimallhosted checks passed or allfuture failures excluded.",
+    "No baseline runtime/link test run by reviewer; introduced classification uses actual linker failure and base/head recipe source difference.",
+    "GitHub API run pull_request.head can mutate after new push; run.head_sha is the tested1be evidence identity."
+  ]
+}

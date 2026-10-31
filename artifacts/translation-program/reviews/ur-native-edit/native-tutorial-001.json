@@ -1,0 +1,1021 @@
+{
+  "editor": "/root/swahili_translation",
+  "author": "/root/urdu_translation",
+  "independent_reviewer": "/root/pilot_context",
+  "batch_id": "native-tutorial-001",
+  "source_contract_sha256": "aacd8a342e9e734ba47f902a161ac1a45badff5842a617bcd68bf8e2275d6013",
+  "original_target_subset_sha256": "8208aef32dbd59f109e872d1576fdd0a54adf152d075eb15f8bf37060973d665",
+  "final_target_subset_sha256": "189d6589995ea658cf8d1db5b75d7eb38afdf0f985141c65e33ce04696960670",
+  "final_catalog_sha256": "ec78fb33247244bf783461e0410ef11fe48e45644c3c6500419d9060e967d458",
+  "entries": [
+    {
+      "key": "[tutorial text 1]",
+      "source": "Welcome to the Globulation 2 primary tutorial! This tutorial will cover everything from building inns, exploring zones, and destroying enemies! There is no shortage of useful knowledge here!",
+      "before": "Globulation 2 کی ابتدائی تربیت میں خوش آمدید! یہاں سرائے بنانا، علاقوں کی کھوج اور دشمن کو تباہ کرنا سیکھیں گے۔ مفید معلومات کی کوئی کمی نہیں!",
+      "after": "Globulation 2 کی ابتدائی تربیت میں خوش آمدید! یہاں سرائے بنانا، علاقوں کی کھوج اور دشمن کو تباہ کرنا سیکھیں گے۔ مفید معلومات کی کوئی کمی نہیں!",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[tutorial text 2]",
+      "source": "Now that you have mastered the basics, it's time to get used to other buildings such as Racetracks, Swimming Pools, and Schools.",
+      "before": "بنیادی باتیں سیکھنے کے بعد اب دوڑ کے میدان، تیراکی کے تالاب اور اسکول جیسی دوسری عمارتوں سے واقف ہوں۔",
+      "after": "بنیادی باتیں سیکھنے کے بعد اب دوڑ کے میدان، تیراکی کے تالاب اور اسکول جیسی دوسری عمارتوں سے واقف ہوں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[tutorial text 3]",
+      "source": "You have done well to get this far. Now let's move on to Warriors, Barracks, and Upgrades.",
+      "before": "آپ نے یہاں تک اچھا کام کیا۔ اب جنگجوؤں، بیرکوں اور اپ گریڈ کی طرف چلتے ہیں۔",
+      "after": "آپ نے یہاں تک اچھا کام کیا۔ اب جنگجوؤں، بیرکوں اور اپ گریڈ کی طرف چلتے ہیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[tutorial text 4]",
+      "source": "You are almost finished. Only flags and attacking remain. Then you'll know enough to try Custom Games and eventually play online against some of Globulation 2's finest players.",
+      "before": "آپ تقریباً مکمل کر چکے ہیں۔ صرف جھنڈے اور حملہ باقی ہیں۔ پھر آپ اپنی مرضی کے کھیل آزمانے اور آخرکار Globulation 2 کے بہترین کھلاڑیوں سے آن لائن مقابلہ کرنے کے لیے تیار ہوں گے۔",
+      "after": "آپ تقریباً مکمل کر چکے ہیں۔ صرف جھنڈے اور حملہ باقی ہیں۔ پھر آپ اپنی مرضی کے کھیل آزمانے اور آخرکار Globulation 2 کے بہترین کھلاڑیوں سے آن لائن مقابلہ کرنے کے لیے تیار ہوں گے۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[tutorial]",
+      "source": "Tutorial",
+      "before": "تربیت",
+      "after": "تربیت",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Tutorial ▸]",
+      "source": "Tutorial ▸",
+      "before": "تربیت ▸",
+      "after": "تربیت ▸",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[tutorial part1 message 1]",
+      "source": "Welcome to Globulation 2! This tutorial teaches colony management over four missions. You can save your progress from the game menu and load it later from the main menu. Press Space to continue, or tap OK on a touch screen. Some messages disappear after you continue; use Message history to read them again.",
+      "before": "Globulation 2 میں خوش آمدید! یہ تربیت چار مہمات میں بستی چلانا سکھاتی ہے۔ کھیل کے مینو سے پیش رفت محفوظ اور بعد میں مرکزی مینو سے لوڈ کر سکتے ہیں۔ جاری رکھنے کے لیے Space دبائیں، یا ٹچ اسکرین پر OK کو چھوئیں۔ آگے بڑھنے کے بعد کچھ پیغامات غائب ہو جاتے ہیں؛ انہیں دوبارہ پڑھنے کے لیے پیغامات کی سرگزشت کھولیں۔",
+      "after": "Globulation 2 میں خوش آمدید! یہ تربیت چار مشنوں میں بستی چلانا سکھاتی ہے۔ کھیل کے مینو سے پیش رفت محفوظ اور بعد میں مرکزی مینو سے لوڈ کر سکتے ہیں۔ جاری رکھنے کے لیے Space دبائیں، یا ٹچ اسکرین پر «ٹھیک ہے» کو چھوئیں۔ آگے بڑھنے کے بعد کچھ پیغامات غائب ہو جاتے ہیں؛ انہیں دوبارہ پڑھنے کے لیے «پیغامات کا سابقہ ریکارڈ» کھولیں۔",
+      "editorially_read": true,
+      "disposition": "edited-pending-recheck"
+    },
+    {
+      "key": "[tutorial part1 message 2]",
+      "source": "You begin with a Swarm and one worker. Let's see how they work together.",
+      "before": "آپ ایک چھتے اور ایک کارکن سے شروع کرتے ہیں۔ آئیے دیکھیں یہ مل کر کیسے کام کرتے ہیں۔",
+      "after": "آپ ایک چھتے اور ایک کارکن سے شروع کرتے ہیں۔ آئیے دیکھیں یہ مل کر کیسے کام کرتے ہیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[tutorial part1 message 3]",
+      "source": "Your worker harvests wheat and carries it to the Swarm. The Swarm uses wheat to produce new units, making it essential to your colony.",
+      "before": "آپ کا کارکن گندم کاٹ کر چھتے تک لاتا ہے۔ چھتہ گندم سے نئے یونٹ بناتا ہے، اس لیے بستی کے لیے ضروری ہے۔",
+      "after": "آپ کا کارکن گندم کاٹ کر چھتے تک لاتا ہے۔ چھتہ گندم سے نئے یونٹ بناتا ہے، اس لیے بستی کے لیے ضروری ہے۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[tutorial part1 message 4]",
+      "source": "Select your globule, the moving unit, with a left-click or a tap.",
+      "before": "اپنے گلوبیول، یعنی چلتے ہوئے یونٹ، کو بائیں کلک یا چھونے سے منتخب کریں۔",
+      "after": "اپنے گلوبیول، یعنی چلتے ہوئے یونٹ، کو بائیں کلک یا چھونے سے منتخب کریں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[tutorial part1 message 5]",
+      "source": "The unit information shows its food level falling over time. Your globule is getting hungry. When food bars are visible, the blue bar beneath the unit shows its remaining food.",
+      "before": "یونٹ کی معلومات میں خوراک کی سطح وقت کے ساتھ گرتی دکھائی دیتی ہے۔ آپ کا گلوبیول بھوکا ہو رہا ہے۔ خوراک کی پٹیاں دکھائی دے رہی ہوں تو یونٹ کے نیچے نیلی پٹی اس کی باقی خوراک بتاتی ہے۔",
+      "after": "یونٹ کی معلومات میں خوراک کی سطح وقت کے ساتھ گرتی دکھائی دیتی ہے۔ آپ کا گلوبیول بھوکا ہو رہا ہے۔ خوراک کی پٹیاں دکھائی دے رہی ہوں تو یونٹ کے نیچے نیلی پٹی اس کی باقی خوراک بتاتی ہے۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[tutorial part1 message 6]",
+      "source": "Globules eat at Inns. Clear the selection with a right-click, or tap empty ground on a touch screen.",
+      "before": "گلوبیول سرائے میں کھاتے ہیں۔ انتخاب ختم کرنے کے لیے دایاں کلک کریں، یا ٹچ اسکرین پر خالی زمین چھوئیں۔",
+      "after": "گلوبیول سرائے میں کھاتے ہیں۔ انتخاب ختم کرنے کے لیے دایاں کلک کریں، یا ٹچ اسکرین پر خالی زمین چھوئیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[tutorial part1 message 7]",
+      "source": "Open the building controls, choose Inn, and place it near wheat. Follow your worker's harvesting route if you cannot spot the wheat. On touch screens, use Build and confirm a valid placement. When finished, leave placement mode with a right-click or the touch Cancel control.",
+      "before": "عمارتوں کے کنٹرول کھولیں، سرائے منتخب کریں اور اسے گندم کے قریب رکھیں۔ گندم نظر نہ آئے تو اپنے کارکن کے فصل کاٹنے کے راستے کو دیکھیں۔ ٹچ اسکرین پر تعمیر استعمال کریں اور درست جگہ کی تصدیق کریں۔ آخر میں دائیں کلک یا ٹچ کے منسوخ کنٹرول سے جگہ رکھنے کے موڈ سے نکلیں۔",
+      "after": "عمارتوں کے کنٹرول کھولیں، سرائے منتخب کریں اور اسے گندم کے قریب رکھیں۔ گندم نظر نہ آئے تو اپنے کارکن کے فصل کاٹنے کے راستے کو دیکھیں۔ ٹچ اسکرین پر تعمیر استعمال کریں اور درست جگہ کی تصدیق کریں۔ آخر میں دائیں کلک یا ٹچ کے «منسوخ کریں» کنٹرول سے جگہ رکھنے کے موڈ سے نکلیں۔",
+      "editorially_read": true,
+      "disposition": "edited-pending-recheck"
+    },
+    {
+      "key": "[tutorial part1 message 8]",
+      "source": "Good! The Inn's building site is in place.",
+      "before": "بہت اچھا! سرائے کی تعمیراتی جگہ رکھ دی گئی ہے۔",
+      "after": "بہت اچھا! سرائے کی تعمیراتی جگہ رکھ دی گئی ہے۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[tutorial part1 message 9]",
+      "source": "A worker from the Swarm can now build the Inn. The worker gathers wood from nearby trees and brings it to the site. Wait for construction to finish.",
+      "before": "چھتے کا کارکن اب سرائے بنا سکتا ہے۔ وہ قریب کے درختوں سے لکڑی جمع کر کے تعمیراتی جگہ لاتا ہے۔ تعمیر مکمل ہونے کا انتظار کریں۔",
+      "after": "چھتے کا کارکن اب سرائے بنا سکتا ہے۔ وہ قریب کے درختوں سے لکڑی جمع کر کے تعمیراتی جگہ پر لاتا ہے۔ تعمیر مکمل ہونے کا انتظار کریں۔",
+      "editorially_read": true,
+      "disposition": "edited-pending-recheck"
+    },
+    {
+      "key": "[tutorial part1 message 10]",
+      "source": "The finished Inn needs wheat. An assigned worker will gather it, just as a worker supplies the Swarm.",
+      "before": "مکمل سرائے کو گندم چاہیے۔ ایک مقرر کارکن اسے جمع کرے گا، جیسے کارکن چھتے کو سامان پہنچاتا ہے۔",
+      "after": "مکمل سرائے کو گندم چاہیے۔ ایک مقرر کارکن اسے جمع کرے گا، جیسے کارکن چھتے کو سامان پہنچاتا ہے۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[tutorial part1 message 11]",
+      "source": "The Inn's yellow resource bar rises as wheat arrives. It shows how much wheat the Inn has in stock.",
+      "before": "گندم آنے پر سرائے کی زرد وسائل پٹی بڑھتی ہے۔ یہ سرائے کے ذخیرے میں گندم کی مقدار دکھاتی ہے۔",
+      "after": "گندم آنے پر سرائے کی زرد وسائل پٹی بڑھتی ہے۔ یہ سرائے کے ذخیرے میں گندم کی مقدار دکھاتی ہے۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[tutorial part1 message 12]",
+      "source": "Now let's learn how to assign work.",
+      "before": "اب کام مقرر کرنا سیکھتے ہیں۔",
+      "after": "اب کام مقرر کرنا سیکھتے ہیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[tutorial part1 message 13]",
+      "source": "One worker supplies the Swarm and another supplies the Inn. Either may pause to eat at the Inn. That is normal.",
+      "before": "ایک کارکن چھتے اور دوسرا سرائے کو سامان پہنچاتا ہے۔ کوئی بھی سرائے میں کھانے کے لیے رک سکتا ہے۔ یہ معمول کی بات ہے۔",
+      "after": "ایک کارکن چھتے اور دوسرا سرائے کو سامان پہنچاتا ہے۔ کوئی بھی سرائے میں کھانے کے لیے رک سکتا ہے۔ یہ معمول کی بات ہے۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[tutorial part1 message 14]",
+      "source": "Select the Swarm and find its worker assignment control. On desktop it is labeled Working; on touch screens, use the assigned workers and target control. The target is how many workers you want at this building.",
+      "before": "چھتہ منتخب کریں اور کارکن مقرر کرنے کا کنٹرول تلاش کریں۔ ڈیسک ٹاپ پر اس کا نام کام پر ہے؛ ٹچ اسکرین پر مقرر کارکنوں اور ہدف کا کنٹرول استعمال کریں۔ ہدف اس عمارت میں مطلوب کارکنوں کی تعداد ہے۔",
+      "after": "چھتہ منتخب کریں اور کارکن مقرر کرنے کا کنٹرول تلاش کریں۔ ڈیسک ٹاپ پر اس کا نام کام پر ہے؛ ٹچ اسکرین پر مقرر کارکنوں اور ہدف کا کنٹرول استعمال کریں۔ ہدف اس عمارت میں مطلوب کارکنوں کی تعداد ہے۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[tutorial part1 message 15]",
+      "source": "Use the assignment control to set the Swarm's worker target to 0. Then select the Inn and set its target to 0 too.",
+      "before": "کارکن مقرر کرنے کے کنٹرول سے چھتے کا ہدف 0 کریں۔ پھر سرائے منتخب کر کے اس کا ہدف بھی 0 کریں۔",
+      "after": "کارکن مقرر کرنے کے کنٹرول سے چھتے کا ہدف 0 کریں۔ پھر سرائے منتخب کر کے اس کا ہدف بھی 0 کریں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[tutorial part1 message 16]",
+      "source": "Your workers are now idle, but they still need food. An Inn with no assigned workers will eventually run out of wheat.",
+      "before": "آپ کے کارکن اب فارغ ہیں، لیکن انہیں خوراک پھر بھی چاہیے۔ مقرر کارکنوں کے بغیر سرائے کی گندم آخرکار ختم ہو جائے گی۔",
+      "after": "آپ کے کارکن اب فارغ ہیں، لیکن انہیں خوراک پھر بھی چاہیے۔ مقرر کارکنوں کے بغیر سرائے کی گندم آخرکار ختم ہو جائے گی۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[tutorial part1 message 17]",
+      "source": "A globule that cannot find food will lose health and may die. A Hospital can heal damaged globules, but you must also keep the Inns supplied.",
+      "before": "خوراک نہ ملنے پر گلوبیول کی صحت گرتی ہے اور وہ مر سکتا ہے۔ ہسپتال زخمی گلوبیولوں کا علاج کر سکتا ہے، لیکن سراؤں میں رسد برقرار رکھنا بھی ضروری ہے۔",
+      "after": "خوراک نہ ملنے پر گلوبیول کی صحت گرتی ہے اور وہ مر سکتا ہے۔ ہسپتال زخمی گلوبیولوں کا علاج کر سکتا ہے، لیکن سراؤں میں رسد برقرار رکھنا بھی ضروری ہے۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[tutorial part1 message 18]",
+      "source": "Build a Hospital using the building controls. It does not need wheat, so place it near wood or in a central spot near your Swarm.",
+      "before": "عمارتوں کے کنٹرول سے ہسپتال بنائیں۔ اسے گندم نہیں چاہیے، اس لیے لکڑی کے قریب یا چھتے کے پاس کسی مرکزی جگہ پر رکھیں۔",
+      "after": "عمارتوں کے کنٹرول سے ہسپتال بنائیں۔ اسے گندم نہیں چاہیے، اس لیے لکڑی کے قریب یا چھتے کے پاس کسی مرکزی جگہ پر رکھیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[tutorial part1 message 19]",
+      "source": "Select the Hospital's building site and set its worker target to 2. Two workers can finish it faster.",
+      "before": "ہسپتال کی تعمیراتی جگہ منتخب کر کے کارکنوں کا ہدف 2 کریں۔ دو کارکن اسے جلد مکمل کر سکتے ہیں۔",
+      "after": "ہسپتال کی تعمیراتی جگہ منتخب کر کے کارکنوں کا ہدف 2 کریں۔ دو کارکن اسے جلد مکمل کر سکتے ہیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[tutorial part1 message 20]",
+      "source": "The Hospital is ready. Injured globules can now visit it to recover their health.",
+      "before": "ہسپتال تیار ہے۔ زخمی گلوبیول اب وہاں جا کر صحت بحال کر سکتے ہیں۔",
+      "after": "ہسپتال تیار ہے۔ زخمی گلوبیول اب وہاں جا کر صحت بحال کر سکتے ہیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[tutorial part1 message 21]",
+      "source": "The black areas are unexplored. Units reveal nearby ground as they move. Workers follow their jobs, so they are hard to use for scouting. Explorers are designed for that task.",
+      "before": "سیاہ علاقے ابھی دریافت نہیں ہوئے۔ یونٹ چلتے ہوئے آس پاس کی زمین ظاہر کرتے ہیں۔ کارکن اپنے کام کے پیچھے جاتے ہیں، اس لیے ان سے کھوج کروانا مشکل ہے۔ کھوجی اسی کام کے لیے ہیں۔",
+      "after": "سیاہ علاقے ابھی دریافت نہیں ہوئے۔ یونٹ چلتے ہوئے آس پاس کی زمین ظاہر کرتے ہیں۔ کارکن اپنے کام کے پیچھے جاتے ہیں، اس لیے ان سے کھوج کروانا مشکل ہے۔ کھوجی اسی کام کے لیے ہیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[tutorial part1 message 22]",
+      "source": "Select the Swarm and find the production ratios for workers, explorers, and warriors. Increase the explorer ratio to 1.",
+      "before": "چھتہ منتخب کریں اور کارکن، کھوجی اور جنگجو پیدا کرنے کے تناسب تلاش کریں۔ کھوجیوں کا تناسب 1 کریں۔",
+      "after": "چھتہ منتخب کریں اور کارکن، کھوجی اور جنگجو پیدا کرنے کے تناسب تلاش کریں۔ کھوجیوں کا تناسب 1 کریں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[tutorial part1 message 23]",
+      "source": "With worker and explorer ratios both at 1, the Swarm produces equal numbers of each over time. Set the worker ratio to 0 so it produces only explorers for now.",
+      "before": "کارکن اور کھوجی دونوں کے تناسب 1 ہوں تو چھتہ وقت کے ساتھ دونوں کی برابر تعداد پیدا کرتا ہے۔ کارکنوں کا تناسب 0 کریں تاکہ فی الحال صرف کھوجی بنیں۔",
+      "after": "کارکن اور کھوجی دونوں کے تناسب 1 ہوں تو چھتہ وقت کے ساتھ دونوں کی برابر تعداد پیدا کرتا ہے۔ کارکنوں کا تناسب 0 کریں تاکہ فی الحال صرف کھوجی بنیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[tutorial part1 message 24]",
+      "source": "Set the Swarm's worker assignment target back to 1 so a worker can bring it wheat.",
+      "before": "چھتے میں مقرر کارکنوں کا ہدف دوبارہ 1 کریں تاکہ کارکن گندم لا سکے۔",
+      "after": "چھتے میں مقرر کارکنوں کا ہدف دوبارہ 1 کریں تاکہ کارکن گندم لا سکے۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[tutorial part1 message 25]",
+      "source": "Select the Inn and set its worker target to 1 too. Your growing colony needs a steady food supply.",
+      "before": "سرائے منتخب کر کے اس کے کارکنوں کا ہدف بھی 1 کریں۔ بڑھتی بستی کو مسلسل خوراک چاہیے۔",
+      "after": "سرائے منتخب کر کے اس کے کارکنوں کا ہدف بھی 1 کریں۔ بڑھتی بستی کو مسلسل خوراک چاہیے۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[tutorial part1 message 26]",
+      "source": "Now wait for the Swarm to produce an explorer.",
+      "before": "اب چھتے کے کھوجی پیدا کرنے کا انتظار کریں۔",
+      "after": "اب چھتے کے کھوجی پیدا کرنے کا انتظار کریں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[tutorial part1 message 27]",
+      "source": "Your explorer flies around the colony, revealing more ground. Let the Swarm produce a second explorer before continuing.",
+      "before": "آپ کا کھوجی بستی کے آس پاس اڑ کر مزید زمین ظاہر کرتا ہے۔ آگے بڑھنے سے پہلے چھتے کو دوسرا کھوجی پیدا کرنے دیں۔",
+      "after": "آپ کا کھوجی بستی کے آس پاس اڑ کر مزید زمین ظاہر کرتا ہے۔ آگے بڑھنے سے پہلے چھتے کو دوسرا کھوجی پیدا کرنے دیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[tutorial part1 message 28]",
+      "source": "Select the Swarm again. Set the explorer production ratio to 0 and the worker ratio to 1 to resume producing workers.",
+      "before": "چھتہ دوبارہ منتخب کریں۔ کھوجیوں کا پیداواری تناسب 0 اور کارکنوں کا 1 کریں تاکہ کارکن پھر بننے لگیں۔",
+      "after": "چھتہ دوبارہ منتخب کریں۔ کھوجیوں کا پیداواری تناسب 0 اور کارکنوں کا 1 کریں تاکہ کارکن پھر بننے لگیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[tutorial part2 message 1]",
+      "source": "There is stone east of your base. Remember this location; you will need stone later.",
+      "before": "آپ کے مرکز کے مشرق میں پتھر ہے۔ یہ جگہ یاد رکھیں؛ بعد میں پتھر درکار ہو گا۔",
+      "after": "آپ کے مرکز کے مشرق میں پتھر ہے۔ یہ جگہ یاد رکھیں؛ بعد میں پتھر درکار ہو گا۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[tutorial part2 message 2]",
+      "source": "The trees south of the stone are orange trees. Select them to see their resource information. We will return to fruit later; for now, focus on the Swarm.",
+      "before": "پتھر کے جنوب میں درخت سنگترے کے ہیں۔ وسائل کی معلومات دیکھنے کے لیے انہیں منتخب کریں۔ پھلوں پر بعد میں آئیں گے؛ ابھی چھتے پر توجہ دیں۔",
+      "after": "پتھر کے جنوب میں سنترے کے درخت ہیں۔ وسائل کی معلومات دیکھنے کے لیے انہیں منتخب کریں۔ پھلوں پر بعد میں آئیں گے؛ ابھی چھتے پر توجہ دیں۔",
+      "editorially_read": true,
+      "disposition": "edited-pending-recheck"
+    },
+    {
+      "key": "[tutorial part2 message 3]",
+      "source": "Set your Swarm to produce workers only: worker ratio 1, explorer and warrior ratios 0.",
+      "before": "چھتے کو صرف کارکن بنانے پر لگائیں: کارکنوں کا تناسب 1، کھوجیوں اور جنگجوؤں کا 0۔",
+      "after": "چھتے کو صرف کارکن بنانے پر لگائیں: کارکنوں کا تناسب 1، کھوجیوں اور جنگجوؤں کا 0۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[tutorial part2 message 4]",
+      "source": "Let's grow the colony faster. Select the Swarm and set its worker assignment target to 6. You may not have six workers yet; new workers can fill the extra jobs as they become available.",
+      "before": "بستی جلد بڑھاتے ہیں۔ چھتہ منتخب کر کے مقرر کارکنوں کا ہدف 6 کریں۔ شاید ابھی چھ کارکن نہ ہوں؛ نئے کارکن دستیاب ہوتے ہی اضافی کام سنبھال سکتے ہیں۔",
+      "after": "بستی جلد بڑھاتے ہیں۔ چھتہ منتخب کر کے مقرر کارکنوں کا ہدف 6 کریں۔ شاید ابھی چھ کارکن نہ ہوں؛ نئے کارکن دستیاب ہوتے ہی اضافی کام سنبھال سکتے ہیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[tutorial part2 message 5]",
+      "source": "We will start the next tasks when you have 8 workers. Keep the Swarm and Inn supplied while the population grows.",
+      "before": "8 کارکن ہونے پر اگلے کام شروع کریں گے۔ آبادی بڑھنے کے دوران چھتے اور سرائے کی رسد جاری رکھیں۔",
+      "after": "8 کارکن ہونے پر اگلے کام شروع کریں گے۔ آبادی بڑھنے کے دوران چھتے اور سرائے کی رسد جاری رکھیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[tutorial part2 message 6]",
+      "source": "Several workers are now supplying the Swarm. More wheat deliveries mean it can produce units more quickly.",
+      "before": "اب کئی کارکن چھتے کو سامان پہنچا رہے ہیں۔ زیادہ گندم آنے سے وہ یونٹ زیادہ تیزی سے پیدا کر سکتا ہے۔",
+      "after": "اب کئی کارکن چھتے کو سامان پہنچا رہے ہیں۔ زیادہ گندم آنے سے وہ یونٹ زیادہ تیزی سے پیدا کر سکتا ہے۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[tutorial part2 message 7]",
+      "source": "A new worker costs 5 wheat. Carrying wheat from a distant field takes time, so a Swarm often needs more suppliers than an Inn. Place food-dependent buildings near wheat when possible.",
+      "before": "ایک نئے کارکن کی قیمت 5 گندم ہے۔ دور کے کھیت سے گندم لانے میں وقت لگتا ہے، اس لیے چھتے کو اکثر سرائے سے زیادہ رسد لانے والے چاہیے ہوتے ہیں۔ جہاں ممکن ہو، خوراک پر منحصر عمارتیں گندم کے قریب رکھیں۔",
+      "after": "ایک نیا کارکن پیدا کرنے کے لیے گندم کی 5 اکائیاں درکار ہیں۔ دور کے کھیت سے گندم لانے میں وقت لگتا ہے، اس لیے چھتے کو اکثر سرائے سے زیادہ رسد لانے والے کارکن چاہیے ہوتے ہیں۔ جہاں ممکن ہو، خوراک پر منحصر عمارتیں گندم کے قریب رکھیں۔",
+      "editorially_read": true,
+      "disposition": "edited-pending-recheck"
+    },
+    {
+      "key": "[tutorial part2 message 8]",
+      "source": "You now have at least 8 workers. Select the Swarm and reduce its worker assignment target to 1 to slow population growth while we build.",
+      "before": "اب آپ کے کم از کم 8 کارکن ہیں۔ چھتہ منتخب کر کے مقرر کارکنوں کا ہدف 1 کریں، تاکہ تعمیر کے دوران آبادی آہستہ بڑھے۔",
+      "after": "اب آپ کے کم از کم 8 کارکن ہیں۔ چھتہ منتخب کر کے مقرر کارکنوں کا ہدف 1 کریں، تاکہ تعمیر کے دوران آبادی آہستہ بڑھے۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[tutorial part2 message 9]",
+      "source": "Your colony needs more feeding capacity. Build a second Inn north of the existing one.",
+      "before": "بستی کو کھلانے کی مزید گنجائش چاہیے۔ موجودہ سرائے کے شمال میں دوسری سرائے بنائیں۔",
+      "after": "بستی کو کھلانے کی مزید گنجائش چاہیے۔ موجودہ سرائے کے شمال میں دوسری سرائے بنائیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[tutorial part2 message 10]",
+      "source": "Assign free workers to the new Inn's construction site. It needs only 3 wood, so more than 3 builders will not help much.",
+      "before": "نئی سرائے کی تعمیراتی جگہ پر فارغ کارکن مقرر کریں۔ اسے صرف 3 لکڑی چاہیے، اس لیے 3 سے زیادہ معمار زیادہ فائدہ نہیں دیں گے۔",
+      "after": "نئی سرائے کی تعمیراتی جگہ پر فارغ کارکن مقرر کریں۔ اسے لکڑی کی صرف 3 اکائیاں درکار ہیں، اس لیے 3 سے زیادہ معمار زیادہ فائدہ نہیں دیں گے۔",
+      "editorially_read": true,
+      "disposition": "edited-pending-recheck"
+    },
+    {
+      "key": "[tutorial part2 message 11]",
+      "source": "The finished Inn returns to its operating worker target, normally 1. Construction and everyday supply use separate assignment targets.",
+      "before": "مکمل سرائے روزمرہ کام کے کارکن ہدف، عموماً 1، پر واپس آتی ہے۔ تعمیر اور روزمرہ رسد کے ہدف الگ ہیں۔",
+      "after": "مکمل سرائے روزمرہ کام کے کارکن ہدف، عموماً 1، پر واپس آتی ہے۔ تعمیر اور روزمرہ رسد کے ہدف الگ ہیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[tutorial part2 message 12]",
+      "source": "Workers can learn to move faster. A Racetrack provides that training.",
+      "before": "کارکن تیز چلنا سیکھ سکتے ہیں۔ دوڑ کا میدان یہ تربیت دیتا ہے۔",
+      "after": "کارکن تیز چلنا سیکھ سکتے ہیں۔ دوڑ کا میدان یہ تربیت دیتا ہے۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[tutorial part2 message 13]",
+      "source": "Open the building controls and find Racetrack. On desktop, hover over its icon to inspect its description and cost. On touch screens, select it in Build to prepare placement. Do not place it yet.",
+      "before": "عمارتوں کے کنٹرول میں دوڑ کا میدان تلاش کریں۔ ڈیسک ٹاپ پر نشان پر ماؤس رکھ کر تفصیل اور لاگت دیکھیں۔ ٹچ اسکرین پر تعمیر میں اسے منتخب کر کے جگہ رکھنے کی تیاری کریں۔ ابھی اسے نہ رکھیں۔",
+      "after": "عمارتوں کے کنٹرول میں دوڑ کا میدان تلاش کریں۔ ڈیسک ٹاپ پر نشان پر ماؤس رکھ کر تفصیل اور لاگت دیکھیں۔ ٹچ اسکرین پر تعمیر میں اسے منتخب کر کے جگہ رکھنے کی تیاری کریں۔ ابھی اسے نہ رکھیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[tutorial part2 message 14]",
+      "source": "A Racetrack needs plenty of wood and a little stone. Choose a central location so units can reach it easily.",
+      "before": "دوڑ کے میدان کو بہت سی لکڑی اور تھوڑا پتھر چاہیے۔ مرکزی جگہ چنیں تاکہ یونٹ آسانی سے پہنچ سکیں۔",
+      "after": "دوڑ کے میدان کو بہت سی لکڑی اور تھوڑا پتھر چاہیے۔ مرکزی جگہ چنیں تاکہ یونٹ آسانی سے پہنچ سکیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[tutorial part2 message 15]",
+      "source": "Build a Racetrack, perhaps south of the Swarm. Leave clear space around it: training buildings need room to expand when upgraded.",
+      "before": "دوڑ کا میدان بنائیں، مثلاً چھتے کے جنوب میں۔ اردگرد جگہ خالی رکھیں: تربیتی عمارتوں کو اپ گریڈ پر پھیلنے کے لیے جگہ چاہیے۔",
+      "after": "دوڑ کا میدان بنائیں، مثلاً چھتے کے جنوب میں۔ اردگرد جگہ خالی رکھیں: تربیتی عمارتوں کو اپ گریڈ پر پھیلنے کے لیے جگہ چاہیے۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[tutorial part2 message 16]",
+      "source": "Set the Racetrack construction site's worker target between 5 and 7. It needs 7 construction materials in total.",
+      "before": "دوڑ کے میدان کی تعمیراتی جگہ پر کارکنوں کا ہدف 5 سے 7 کے درمیان رکھیں۔ اسے کل 7 تعمیراتی مواد چاہیے۔",
+      "after": "دوڑ کے میدان کی تعمیراتی جگہ پر کارکنوں کا ہدف 5 سے 7 کے درمیان رکھیں۔ اسے تعمیراتی مواد کی کل 7 اکائیاں درکار ہیں۔",
+      "editorially_read": true,
+      "disposition": "edited-pending-recheck"
+    },
+    {
+      "key": "[tutorial part2 message 17]",
+      "source": "Once finished, a Racetrack trains visiting units without a continuing supply of construction materials or wheat.",
+      "before": "تکمیل کے بعد دوڑ کا میدان آنے والے یونٹوں کو تربیت دیتا ہے؛ مزید تعمیراتی سامان یا گندم کی مسلسل رسد نہیں چاہیے۔",
+      "after": "تکمیل کے بعد دوڑ کا میدان آنے والے یونٹوں کو تربیت دیتا ہے؛ مزید تعمیراتی سامان یا گندم کی مسلسل رسد نہیں چاہیے۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[tutorial part2 message 18]",
+      "source": "Globules are entering the Racetrack to train. Once trained, they can run faster.",
+      "before": "گلوبیول تربیت کے لیے دوڑ کے میدان میں داخل ہو رہے ہیں۔ تربیت کے بعد وہ تیز دوڑ سکتے ہیں۔",
+      "after": "گلوبیول تربیت کے لیے دوڑ کے میدان میں داخل ہو رہے ہیں۔ تربیت کے بعد وہ تیز دوڑ سکتے ہیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[tutorial part2 message 19]",
+      "source": "Select the Racetrack to inspect training progress. Its progress indicators show how close the units inside are to finishing.",
+      "before": "تربیت کی پیش رفت دیکھنے کے لیے دوڑ کا میدان منتخب کریں۔ اس کے اشارے بتاتے ہیں کہ اندر کے یونٹ کتنے قریب ہیں۔",
+      "after": "تربیت کی پیش رفت دیکھنے کے لیے دوڑ کا میدان منتخب کریں۔ اس کے پیش رفت کے اشارے بتاتے ہیں کہ اندر موجود یونٹوں کی تربیت مکمل ہونے میں کتنا باقی ہے۔",
+      "editorially_read": true,
+      "disposition": "edited-pending-recheck"
+    },
+    {
+      "key": "[tutorial part2 message 20]",
+      "source": "Your trained workers travel faster and can deliver resources sooner. Keep watching food stocks as the colony grows; faster deliveries help only if enough Inns remain supplied.",
+      "before": "تربیت یافتہ کارکن تیز سفر کر کے وسائل جلد پہنچاتے ہیں۔ بستی بڑھتے وقت خوراک کے ذخیرے دیکھتے رہیں؛ تیز رسد اسی وقت مفید ہے جب کافی سراؤں کو سامان ملتا رہے۔",
+      "after": "تربیت یافتہ کارکن تیز سفر کر کے وسائل جلد پہنچاتے ہیں۔ بستی بڑھتے وقت خوراک کے ذخیرے دیکھتے رہیں؛ تیز رسد اسی وقت مفید ہے جب کافی سراؤں کو سامان ملتا رہے۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[tutorial part2 message 21]",
+      "source": "Find the worker population counter in the HUD. The total shows your population; the available-worker figure helps you spot spare workers or unfilled jobs. Use free workers without assigning more jobs than the colony can support.",
+      "before": "کھیل کے معلوماتی پینل میں کارکنوں کی آبادی کا شمار دیکھیں۔ کل عدد آبادی بتاتا ہے؛ دستیاب کارکنوں کا عدد اضافی کارکن یا خالی کام پہچاننے میں مدد دیتا ہے۔ فارغ کارکن استعمال کریں، لیکن بستی کی گنجائش سے زیادہ کام مقرر نہ کریں۔",
+      "after": "کھیل کے معلوماتی پینل میں کارکنوں کی آبادی کا شمار دیکھیں۔ کل عدد آبادی بتاتا ہے؛ دستیاب کارکنوں کا عدد اضافی کارکن یا خالی کام پہچاننے میں مدد دیتا ہے۔ فارغ کارکن استعمال کریں، لیکن بستی کی گنجائش سے زیادہ کام مقرر نہ کریں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[tutorial part2 message 22]",
+      "source": "The HUD also shows explorer and warrior counts. Check these when planning production or assigning units to flags.",
+      "before": "معلوماتی پینل میں کھوجیوں اور جنگجوؤں کی تعداد بھی ہے۔ پیداوار کی منصوبہ بندی یا جھنڈوں پر یونٹ مقرر کرتے وقت انہیں دیکھیں۔",
+      "after": "معلوماتی پینل میں کھوجیوں اور جنگجوؤں کی تعداد بھی ہے۔ پیداوار کی منصوبہ بندی یا جھنڈوں پر یونٹ مقرر کرتے وقت انہیں دیکھیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[tutorial part2 message 23]",
+      "source": "You have 2 Inns. Each basic Inn can feed 4 units at once, so together they have 8 feeding places. More than 8 units can become hungry, so leave enough capacity for queues.",
+      "before": "آپ کی 2 سرائے ہیں۔ ہر ابتدائی سرائے ایک وقت میں 4 یونٹ کھلا سکتی ہے؛ دونوں میں کل 8 جگہیں ہیں۔ 8 سے زیادہ یونٹ بھوکے ہو سکتے ہیں، اس لیے قطاروں کے لیے کافی گنجائش رکھیں۔",
+      "after": "آپ کی 2 سرائے ہیں۔ ہر ابتدائی سرائے ایک وقت میں 4 یونٹ کھلا سکتی ہے؛ دونوں میں کل 8 جگہیں ہیں۔ 8 سے زیادہ یونٹ بھوکے ہو سکتے ہیں، اس لیے قطاروں کے لیے کافی گنجائش رکھیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[tutorial part2 message 24]",
+      "source": "Two Inns will not support a growing colony forever. Build extra feeding capacity before shortages turn into starvation.",
+      "before": "دو سرائے بڑھتی بستی کو ہمیشہ نہیں چلا سکتیں۔ کمی کے بھوک میں بدلنے سے پہلے کھلانے کی مزید گنجائش بنائیں۔",
+      "after": "دو سرائے بڑھتی بستی کو ہمیشہ نہیں چلا سکتیں۔ خوراک کی کمی فاقہ کشی میں بدلنے سے پہلے کھلانے کی مزید گنجائش بنائیں۔",
+      "editorially_read": true,
+      "disposition": "edited-pending-recheck"
+    },
+    {
+      "key": "[tutorial part2 message 25]",
+      "source": "Build 3 more Inns near wheat. Hungry workers stop working, and prolonged starvation kills them. Assign available workers to construction while keeping your existing food supply running.",
+      "before": "گندم کے قریب مزید 3 سرائے بنائیں۔ بھوکے کارکن کام روک دیتے ہیں اور مسلسل بھوک انہیں مار دیتی ہے۔ موجودہ خوراک کی رسد چلتی رکھتے ہوئے دستیاب کارکن تعمیر پر لگائیں۔",
+      "after": "گندم کے قریب مزید 3 سرائے بنائیں۔ بھوکے کارکن کام روک دیتے ہیں اور مسلسل بھوک انہیں مار دیتی ہے۔ موجودہ خوراک کی رسد چلتی رکھتے ہوئے دستیاب کارکن تعمیر پر لگائیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[tutorial part2 message 26]",
+      "source": "Finish building 3 more Inns, bringing your total to 5.",
+      "before": "مزید 3 سرائے مکمل کریں، تاکہ کل تعداد 5 ہو جائے۔",
+      "after": "مزید 3 سرائے مکمل کریں، تاکہ کل تعداد 5 ہو جائے۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[tutorial part2 message 27]",
+      "source": "The new Inns use their operating assignment targets after construction, normally 1 worker each. Check that they have suppliers and enough wheat.",
+      "before": "تعمیر کے بعد نئی سرائے اپنے روزمرہ ہدف، عموماً ہر ایک 1 کارکن، پر آتی ہیں۔ دیکھیں کہ رسد لانے والے اور کافی گندم موجود ہیں۔",
+      "after": "تعمیر کے بعد نئی سرائے اپنے روزمرہ ہدف، عموماً ہر ایک 1 کارکن، پر آتی ہیں۔ دیکھیں کہ رسد لانے والے اور کافی گندم موجود ہیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[tutorial part2 message 28]",
+      "source": "The Racetrack has improved travel on land. Now let's teach the colony to swim.",
+      "before": "دوڑ کے میدان نے زمین پر سفر بہتر کر دیا ہے۔ اب بستی کو تیرنا سکھاتے ہیں۔",
+      "after": "دوڑ کے میدان نے زمین پر سفر بہتر کر دیا ہے۔ اب بستی کو تیرنا سکھاتے ہیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[tutorial part2 message 29]",
+      "source": "A Swimming Pool teaches units to swim and needs wood to build. Place one in the large clearing northeast of the base, north of the stone. Leave space around it for upgrades and resource growth, and assign available workers to construction.",
+      "before": "تیراکی کا تالاب یونٹوں کو تیرنا سکھاتا ہے اور تعمیر کے لیے لکڑی چاہتا ہے۔ مرکز کے شمال مشرق میں، پتھر کے شمال کی بڑی کھلی جگہ پر بنائیں۔ اپ گریڈ اور وسائل کی افزائش کے لیے جگہ چھوڑیں اور دستیاب کارکن تعمیر پر لگائیں۔",
+      "after": "تیراکی کا تالاب یونٹوں کو تیرنا سکھاتا ہے اور تعمیر کے لیے لکڑی چاہتا ہے۔ مرکز کے شمال مشرق میں، پتھر کے شمال کی بڑی کھلی جگہ پر بنائیں۔ اپ گریڈ اور وسائل کی افزائش کے لیے جگہ چھوڑیں اور دستیاب کارکن تعمیر پر لگائیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[tutorial part2 message 30]",
+      "source": "A Swimming Pool teaches units to swim and needs wood to build. Place one in the large clearing northeast of the base, north of the stone. Leave space around it for upgrades and resource growth, and assign available workers to construction.",
+      "before": "تیراکی کا تالاب یونٹوں کو تیرنا سکھاتا ہے اور تعمیر کے لیے لکڑی چاہتا ہے۔ مرکز کے شمال مشرق میں، پتھر کے شمال کی بڑی کھلی جگہ پر بنائیں۔ اپ گریڈ اور وسائل کی افزائش کے لیے جگہ چھوڑیں اور دستیاب کارکن تعمیر پر لگائیں۔",
+      "after": "تیراکی کا تالاب یونٹوں کو تیرنا سکھاتا ہے اور تعمیر کے لیے لکڑی چاہتا ہے۔ مرکز کے شمال مشرق میں، پتھر کے شمال کی بڑی کھلی جگہ پر بنائیں۔ اپ گریڈ اور وسائل کی افزائش کے لیے جگہ چھوڑیں اور دستیاب کارکن تعمیر پر لگائیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[tutorial part2 message 31]",
+      "source": "The Swimming Pool is ready. Globules can now enter and learn to swim.",
+      "before": "تیراکی کا تالاب تیار ہے۔ گلوبیول اب داخل ہو کر تیرنا سیکھ سکتے ہیں۔",
+      "after": "تیراکی کا تالاب تیار ہے۔ گلوبیول اب داخل ہو کر تیرنا سیکھ سکتے ہیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[tutorial part2 message 32]",
+      "source": "Select the Swimming Pool to inspect training progress. A basic Pool trains 2 globules at a time, just like a basic Racetrack.",
+      "before": "تربیت کی پیش رفت دیکھنے کے لیے تالاب منتخب کریں۔ ابتدائی تالاب، ابتدائی دوڑ کے میدان کی طرح، ایک وقت میں 2 گلوبیول تربیت دیتا ہے۔",
+      "after": "تربیت کی پیش رفت دیکھنے کے لیے تالاب منتخب کریں۔ ابتدائی تالاب، ابتدائی دوڑ کے میدان کی طرح، ایک وقت میں 2 گلوبیولوں کو تربیت دیتا ہے۔",
+      "editorially_read": true,
+      "disposition": "edited-pending-recheck"
+    },
+    {
+      "key": "[tutorial part2 message 33]",
+      "source": "Your trained globules can now swim. Soon we will give them a job that requires crossing water.",
+      "before": "آپ کے تربیت یافتہ گلوبیول اب تیر سکتے ہیں۔ جلد انہیں ایسا کام دیں گے جس کے لیے پانی پار کرنا ہو گا۔",
+      "after": "آپ کے تربیت یافتہ گلوبیول اب تیر سکتے ہیں۔ جلد انہیں ایسا کام دیں گے جس کے لیے پانی پار کرنا ہو گا۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[tutorial part2 message 34]",
+      "source": "There is more to learn. If you need a break, save your progress from the game menu and return later.",
+      "before": "ابھی مزید سیکھنا ہے۔ وقفہ چاہیے تو کھیل کے مینو سے پیش رفت محفوظ کر کے بعد میں واپس آئیں۔",
+      "after": "ابھی مزید سیکھنا ہے۔ وقفہ چاہیے تو کھیل کے مینو سے پیش رفت محفوظ کر کے بعد میں واپس آئیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[tutorial part2 message 35]",
+      "source": "Your colony has food and physical training. A School will teach workers the skills needed for better buildings.",
+      "before": "بستی میں خوراک اور جسمانی تربیت موجود ہے۔ اسکول کارکنوں کو بہتر عمارتوں کے لیے درکار ہنر سکھائے گا۔",
+      "after": "بستی میں خوراک اور جسمانی تربیت موجود ہے۔ اسکول کارکنوں کو بہتر عمارتوں کے لیے درکار ہنر سکھائے گا۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[tutorial part2 message 36]",
+      "source": "A School improves workers' harvesting and construction skills. Building one requires algae, which grows in water. Your swimming workers can gather it.",
+      "before": "اسکول کارکنوں کی وسائل جمع کرنے اور تعمیر کی صلاحیت بہتر کرتا ہے۔ اسے بنانے کے لیے پانی میں اگنے والی کائی چاہیے۔ تیرنے والے کارکن اسے جمع کر سکتے ہیں۔",
+      "after": "اسکول کارکنوں کی وسائل جمع کرنے اور تعمیر کی صلاحیت بہتر کرتا ہے۔ اسے بنانے کے لیے پانی میں اگنے والی کائی چاہیے۔ تیرنے والے کارکن اسے جمع کر سکتے ہیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[tutorial part2 message 37]",
+      "source": "Protect important training buildings. A School does not have to stand beside water; a sheltered inland location can keep it safer from attack.",
+      "before": "اہم تربیتی عمارتیں محفوظ رکھیں۔ اسکول پانی کے کنارے ہونا ضروری نہیں؛ اندرونِ خشکی کی محفوظ جگہ اسے حملے سے بچا سکتی ہے۔",
+      "after": "اہم تربیتی عمارتیں محفوظ رکھیں۔ اسکول پانی کے کنارے ہونا ضروری نہیں؛ اندرونِ خشکی کی محفوظ جگہ اسے حملے سے بچا سکتی ہے۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[tutorial part2 message 38]",
+      "source": "Build a School in a protected spot, such as behind the Swimming Pool or southwest of the Swarm beside the Racetrack. Assign available workers to build it.",
+      "before": "محفوظ جگہ پر اسکول بنائیں، مثلاً تالاب کے پیچھے یا چھتے کے جنوب مغرب میں دوڑ کے میدان کے پاس۔ دستیاب کارکن تعمیر پر لگائیں۔",
+      "after": "محفوظ جگہ پر اسکول بنائیں، مثلاً تالاب کے پیچھے یا چھتے کے جنوب مغرب میں دوڑ کے میدان کے پاس۔ دستیاب کارکن تعمیر پر لگائیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[tutorial part2 message 39]",
+      "source": "Select a building to see the workers assigned to it. On desktop, the configurable Toggle draw unit paths action can also show lines from units to their destinations; see Settings, Controls for its current shortcut. Wait for the School to finish.",
+      "before": "مقرر کارکن دیکھنے کے لیے عمارت منتخب کریں۔ ڈیسک ٹاپ پر یونٹوں کے راستے دکھائیں/چھپائیں کی قابلِ ترتیب کارروائی یونٹوں سے منزلوں تک لکیریں بھی دکھا سکتی ہے؛ موجودہ شارٹ کٹ کے لیے ترتیبات، کنٹرولز دیکھیں۔ اسکول کی تکمیل کا انتظار کریں۔",
+      "after": "مقرر کارکن دیکھنے کے لیے عمارت منتخب کریں۔ ڈیسک ٹاپ پر یونٹوں کے راستے دکھائیں/چھپائیں کی قابلِ ترتیب کارروائی یونٹوں سے منزلوں تک لکیریں بھی دکھا سکتی ہے؛ موجودہ شارٹ کٹ کے لیے ترتیبات، کنٹرولز دیکھیں۔ اسکول کی تکمیل کا انتظار کریں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[tutorial part3 message 1]",
+      "source": "Your colony now has Inns, a Hospital, a Racetrack, a Swimming Pool, and a School. It is time to prepare its defenses.",
+      "before": "اب بستی میں سرائے، ہسپتال، دوڑ کا میدان، تالاب اور اسکول ہیں۔ دفاع کی تیاری کا وقت ہے۔",
+      "after": "اب بستی میں سرائے، ہسپتال، دوڑ کا میدان، تالاب اور اسکول ہیں۔ دفاع کی تیاری کا وقت ہے۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[tutorial part3 message 2]",
+      "source": "We have not produced any warriors yet. Without them, the colony has little protection against an attack.",
+      "before": "ابھی کوئی جنگجو پیدا نہیں ہوا۔ ان کے بغیر بستی کو حملے سے بہت کم تحفظ ہے۔",
+      "after": "ابھی کوئی جنگجو پیدا نہیں ہوا۔ ان کے بغیر بستی کو حملے سے بہت کم تحفظ ہے۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[tutorial part3 message 3]",
+      "source": "Select the Swarm and set the warrior production ratio to 2. Leave the worker ratio at 1 so the colony keeps producing workers too.",
+      "before": "چھتہ منتخب کر کے جنگجوؤں کا پیداواری تناسب 2 کریں۔ کارکنوں کا 1 رہنے دیں، تاکہ وہ بھی بنتے رہیں۔",
+      "after": "چھتہ منتخب کر کے جنگجوؤں کا پیداواری تناسب 2 کریں۔ کارکنوں کا 1 رہنے دیں، تاکہ وہ بھی بنتے رہیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[tutorial part3 message 4]",
+      "source": "The Swarm will now produce roughly 2 warriors for every worker. Assign more workers to supply it if you want faster production.",
+      "before": "چھتہ اب ہر کارکن کے مقابلے میں تقریباً 2 جنگجو بنائے گا۔ تیز پیداوار کے لیے رسد لانے کو مزید کارکن مقرر کریں۔",
+      "after": "چھتہ اب ہر کارکن کے مقابلے میں تقریباً 2 جنگجو بنائے گا۔ تیز پیداوار کے لیے رسد لانے کو مزید کارکن مقرر کریں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[tutorial part3 message 5]",
+      "source": "Your first warrior is ready and will begin training. Wait for a second warrior before continuing.",
+      "before": "پہلا جنگجو تیار ہے اور تربیت شروع کرے گا۔ آگے بڑھنے سے پہلے دوسرے کا انتظار کریں۔",
+      "after": "پہلا جنگجو تیار ہے اور تربیت شروع کرے گا۔ آگے بڑھنے سے پہلے دوسرے کا انتظار کریں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[tutorial part3 message 6]",
+      "source": "Warriors use the Racetrack and Swimming Pool too. They can also train their attack skills at Barracks.",
+      "before": "جنگجو بھی دوڑ کا میدان اور تالاب استعمال کرتے ہیں۔ وہ بیرک میں حملے کی تربیت بھی لے سکتے ہیں۔",
+      "after": "جنگجو بھی دوڑ کا میدان اور تالاب استعمال کرتے ہیں۔ وہ بیرک میں حملے کی تربیت بھی لے سکتے ہیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[tutorial part3 message 7]",
+      "source": "Barracks improve attack strength and attack speed. Strength increases damage per hit; speed increases how often a warrior attacks. Well-trained warriors can defeat much larger groups of untrained enemies.",
+      "before": "بیرک حملے کی طاقت اور رفتار بڑھاتی ہے۔ طاقت سے ہر ضرب کا نقصان بڑھتا ہے؛ رفتار سے جنگجو زیادہ بار حملہ کرتا ہے۔ تربیت یافتہ جنگجو غیر تربیت یافتہ دشمنوں کے بہت بڑے گروہ کو ہرا سکتے ہیں۔",
+      "after": "بیرک حملے کی طاقت اور رفتار بڑھاتی ہے۔ طاقت سے ہر ضرب کا نقصان بڑھتا ہے؛ رفتار سے جنگجو زیادہ بار حملہ کرتا ہے۔ تربیت یافتہ جنگجو غیر تربیت یافتہ دشمنوں کے بہت بڑے گروہ کو ہرا سکتے ہیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[tutorial part3 message 8]",
+      "source": "Build Barracks near wood, which is needed for construction.",
+      "before": "لکڑی کے قریب بیرک بنائیں؛ تعمیر کے لیے لکڑی چاہیے۔",
+      "after": "لکڑی کے قریب بیرک بنائیں؛ تعمیر کے لیے لکڑی چاہیے۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[tutorial part3 message 9]",
+      "source": "Assign available workers to the Barracks building site. Keep enough workers on food supply and avoid creating more jobs than they can fill.",
+      "before": "بیرک کی تعمیراتی جگہ پر دستیاب کارکن مقرر کریں۔ کافی کارکن خوراک کی رسد پر رکھیں اور ایسے اضافی کام نہ بنائیں جنہیں وہ پورا نہ کر سکیں۔",
+      "after": "بیرک کی تعمیراتی جگہ پر دستیاب کارکن مقرر کریں۔ کافی کارکن خوراک کی رسد پر رکھیں اور ایسے اضافی کام نہ بنائیں جنہیں وہ پورا نہ کر سکیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[tutorial part3 message 10]",
+      "source": "The Barracks are ready. Warriors can now train their attack skills there.",
+      "before": "بیرک تیار ہے۔ جنگجو اب وہاں حملے کے ہنر سیکھ سکتے ہیں۔",
+      "after": "بیرک تیار ہے۔ جنگجو اب وہاں حملے کے ہنر سیکھ سکتے ہیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[tutorial part3 message 11]",
+      "source": "Our colony can grow stronger by upgrading its buildings.",
+      "before": "عمارتیں اپ گریڈ کر کے بستی زیادہ مضبوط ہو سکتی ہے۔",
+      "after": "عمارتیں اپ گریڈ کر کے بستی زیادہ مضبوط ہو سکتی ہے۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[tutorial part3 message 12]",
+      "source": "Workers trained at the School can construct upgrades. Select an eligible building and look for Upgrade in its building controls. Damaged buildings may need Repair first.",
+      "before": "اسکول میں تربیت یافتہ کارکن اپ گریڈ بنا سکتے ہیں۔ اہل عمارت منتخب کر کے عمارتوں کے کنٹرول میں اپ گریڈ تلاش کریں۔ زخمی عمارت کو پہلے مرمت چاہیے ہو سکتی ہے۔",
+      "after": "اسکول میں تربیت یافتہ کارکن اپ گریڈ بنا سکتے ہیں۔ اہل عمارت منتخب کر کے عمارتوں کے کنٹرول میں اپ گریڈ تلاش کریں۔ نقصان زدہ عمارت کو پہلے مرمت چاہیے ہو سکتی ہے۔",
+      "editorially_read": true,
+      "disposition": "edited-pending-recheck"
+    },
+    {
+      "key": "[tutorial part3 message 13]",
+      "source": "Let's decide what to upgrade first. Our Inns still have spare capacity, so they can wait.",
+      "before": "پہلا اپ گریڈ طے کریں۔ سراؤں میں ابھی گنجائش باقی ہے، اس لیے انہیں بعد میں دیکھ سکتے ہیں۔",
+      "after": "پہلا اپ گریڈ طے کریں۔ سراؤں میں ابھی گنجائش باقی ہے، اس لیے انہیں بعد میں دیکھ سکتے ہیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[tutorial part3 message 14]",
+      "source": "The Hospital also has room. We can focus on the School, Racetrack, Swimming Pool, or Barracks.",
+      "before": "ہسپتال میں بھی جگہ ہے۔ اسکول، دوڑ کے میدان، تالاب یا بیرک پر توجہ دے سکتے ہیں۔",
+      "after": "ہسپتال میں بھی جگہ ہے۔ اسکول، دوڑ کے میدان، تالاب یا بیرک پر توجہ دے سکتے ہیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[tutorial part3 message 15]",
+      "source": "Upgrade the Racetrack first so units can learn to move even faster.",
+      "before": "پہلے دوڑ کا میدان اپ گریڈ کریں، تاکہ یونٹ مزید تیز چلنا سیکھیں۔",
+      "after": "پہلے دوڑ کا میدان اپ گریڈ کریں، تاکہ یونٹ مزید تیز چلنا سیکھیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[tutorial part3 message 16]",
+      "source": "Select the Racetrack and choose Upgrade in its building controls. Units inside must leave before construction begins, so the change may not be immediate.",
+      "before": "دوڑ کا میدان منتخب کر کے عمارتوں کے کنٹرول میں اپ گریڈ چنیں۔ تعمیر سے پہلے اندر کے یونٹوں کو نکلنا ہوتا ہے، اس لیے تبدیلی فوراً نہیں بھی ہو سکتی۔",
+      "after": "دوڑ کا میدان منتخب کر کے عمارتوں کے کنٹرول میں اپ گریڈ چنیں۔ تعمیر سے پہلے اندر کے یونٹوں کو نکلنا ہوتا ہے، اس لیے تبدیلی فوراً نہیں بھی ہو سکتی۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[tutorial part3 message 17]",
+      "source": "Assign available workers to the Racetrack upgrade. Only workers with the required School training can build a level 2 construction site.",
+      "before": "دوڑ کے میدان کے اپ گریڈ پر دستیاب کارکن لگائیں۔ صرف اسکول کی مطلوب تربیت والے کارکن سطح 2 کی تعمیراتی جگہ بنا سکتے ہیں۔",
+      "after": "دوڑ کے میدان کے اپ گریڈ پر دستیاب کارکن لگائیں۔ صرف اسکول کی مطلوب تربیت والے کارکن سطح 2 کی تعمیراتی جگہ بنا سکتے ہیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[tutorial part3 message 18]",
+      "source": "Wait for the Racetrack upgrade to finish. Higher-level buildings take more resources and time to construct.",
+      "before": "دوڑ کے میدان کا اپ گریڈ مکمل ہونے دیں۔ اونچی سطح کی عمارتوں کو زیادہ وسائل اور وقت چاہیے۔",
+      "after": "دوڑ کے میدان کا اپ گریڈ مکمل ہونے دیں۔ اونچی سطح کی عمارتوں کو زیادہ وسائل اور وقت چاہیے۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[tutorial part3 message 19]",
+      "source": "Your level 2 Racetrack is complete. It occupies more ground than before, which is why we left a gap. A building cannot upgrade without enough room to expand.",
+      "before": "سطح 2 کا دوڑ کا میدان مکمل ہے۔ اب پہلے سے زیادہ زمین لیتا ہے، اسی لیے جگہ چھوڑی تھی۔ پھیلنے کی کافی جگہ نہ ہو تو عمارت اپ گریڈ نہیں ہو سکتی۔",
+      "after": "سطح 2 کا دوڑ کا میدان مکمل ہے۔ اب پہلے سے زیادہ زمین لیتا ہے، اسی لیے جگہ چھوڑی تھی۔ پھیلنے کی کافی جگہ نہ ہو تو عمارت اپ گریڈ نہیں ہو سکتی۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[tutorial part3 message 20]",
+      "source": "Now upgrade the Barracks and the Swimming Pool to level 2. We will continue when both are finished.",
+      "before": "اب بیرک اور تالاب کو سطح 2 پر اپ گریڈ کریں۔ دونوں مکمل ہونے پر آگے بڑھیں گے۔",
+      "after": "اب بیرک اور تالاب کو سطح 2 پر اپ گریڈ کریں۔ دونوں مکمل ہونے پر آگے بڑھیں گے۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[tutorial part3 message 21]",
+      "source": "Upgraded buildings can generally serve more globules or offer better training. A level 2 Inn, for example, has 7 feeding places and feeds units faster than a basic Inn.",
+      "before": "اپ گریڈ عمارتیں عموماً زیادہ گلوبیول سنبھالتی یا بہتر تربیت دیتی ہیں۔ مثلاً سطح 2 کی سرائے میں کھانے کی 7 جگہیں ہیں اور وہ ابتدائی سرائے سے جلد کھلاتی ہے۔",
+      "after": "اپ گریڈ عمارتیں عموماً زیادہ گلوبیول سنبھالتی یا بہتر تربیت دیتی ہیں۔ مثلاً سطح 2 کی سرائے میں کھانے کی 7 جگہیں ہیں اور وہ ابتدائی سرائے سے جلد کھلاتی ہے۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[tutorial part3 message 22]",
+      "source": "The enemy is nearby. Let's prepare for an attack.",
+      "before": "دشمن قریب ہے۔ حملے کی تیاری کرتے ہیں۔",
+      "after": "دشمن قریب ہے۔ حملے کی تیاری کرتے ہیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[tutorial part3 message 23]",
+      "source": "Towers shoot at enemies within range. Walls help protect them. We will use both to defend a narrow approach to the colony.",
+      "before": "مینار حد میں دشمنوں پر گولیاں چلاتے ہیں۔ دیواریں انہیں بچاتی ہیں۔ دونوں سے بستی کے ایک تنگ راستے کا دفاع کریں گے۔",
+      "after": "مینار حد میں دشمنوں پر گولیاں چلاتے ہیں۔ دیواریں انہیں بچاتی ہیں۔ دونوں سے بستی کے ایک تنگ راستے کا دفاع کریں گے۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[tutorial part3 message 24]",
+      "source": "Place towers in pairs if space allows. Walls can protect three sides, but leave a route open so workers can deliver stone ammunition.",
+      "before": "جگہ ہو تو مینار جوڑوں میں رکھیں۔ تین اطراف پر دیواریں بنا سکتے ہیں، مگر کارکنوں کے پتھر کے گولے لانے کا راستہ کھلا رکھیں۔",
+      "after": "جگہ ہو تو مینار جوڑوں میں رکھیں۔ تین اطراف پر دیواریں بنا سکتے ہیں، مگر کارکنوں کے پتھر کے گولے لانے کا راستہ کھلا رکھیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[tutorial part3 message 25]",
+      "source": "Look east of the Swimming Pool, north of the other fruit trees. A narrow crossing leads toward another island. This is a good place to defend.",
+      "before": "تالاب کے مشرق، دوسرے پھل دار درختوں کے شمال میں دیکھیں۔ تنگ گزرگاہ دوسرے جزیرے تک جاتی ہے۔ دفاع کے لیے اچھی جگہ ہے۔",
+      "after": "تالاب کے مشرق، دوسرے پھل دار درختوں کے شمال میں دیکھیں۔ تنگ گزرگاہ دوسرے جزیرے تک جاتی ہے۔ دفاع کے لیے اچھی جگہ ہے۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[tutorial part3 message 26]",
+      "source": "Plan room for 2 towers between the trees and the shore. Leave access behind them for stone deliveries and space on the other sides for walls. Do not wall the workers out.",
+      "before": "درختوں اور ساحل کے درمیان 2 میناروں کی جگہ سوچیں۔ پیچھے پتھر کی رسد کا راستہ اور دوسری اطراف دیواروں کی جگہ چھوڑیں۔ کارکنوں کا راستہ بند نہ کریں۔",
+      "after": "درختوں اور ساحل کے درمیان 2 میناروں کی جگہ سوچیں۔ پیچھے پتھر کی رسد کا راستہ اور دوسری اطراف دیواروں کی جگہ چھوڑیں۔ کارکنوں کا راستہ بند نہ کریں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[tutorial part3 message 27]",
+      "source": "Build 2 towers there. Assign 2 or 3 workers to each construction site, depending on how many are available in the HUD counters.",
+      "before": "وہاں 2 مینار بنائیں۔ معلوماتی پینل میں دستیاب کارکنوں کے مطابق ہر تعمیراتی جگہ پر 2 یا 3 کارکن لگائیں۔",
+      "after": "وہاں 2 مینار بنائیں۔ معلوماتی پینل میں دستیاب کارکنوں کے مطابق ہر تعمیراتی جگہ پر 2 یا 3 کارکن لگائیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[tutorial part3 message 28]",
+      "source": "Use the building controls to place wall sections around the three outward-facing sides of the towers. Keep the side toward your colony open for workers.",
+      "before": "عمارتوں کے کنٹرول سے میناروں کی باہر کی تین اطراف پر دیوار کے حصے رکھیں۔ بستی کی طرف کی سمت کارکنوں کے لیے کھلی رکھیں۔",
+      "after": "عمارتوں کے کنٹرول سے میناروں کی باہر کی تین اطراف پر دیوار کے حصے رکھیں۔ بستی کی طرف کی سمت کارکنوں کے لیے کھلی رکھیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[tutorial part3 message 29]",
+      "source": "Each wall section creates a construction job and needs 1 stone. If workers cannot fill every job at once, they can finish the sections in turn.",
+      "before": "دیوار کا ہر حصہ تعمیر کا ایک کام بناتا ہے اور 1 پتھر چاہتا ہے۔ سب کام بیک وقت نہ ہو سکیں تو کارکن باری باری حصے مکمل کر سکتے ہیں۔",
+      "after": "دیوار کا ہر حصہ تعمیر کا ایک کام بناتا ہے اور 1 پتھر چاہتا ہے۔ سب کام بیک وقت نہ ہو سکیں تو کارکن باری باری حصے مکمل کر سکتے ہیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[tutorial part3 message 30]",
+      "source": "Wait for both towers and several wall sections to finish. The towers also need stone ammunition; the distant quarry makes deliveries slow. Increase their worker targets if you have spare workers.",
+      "before": "دونوں میناروں اور کئی دیواروں کی تکمیل کا انتظار کریں۔ میناروں کو پتھر کے گولے بھی چاہیے؛ دور کان سے رسد سست آتی ہے۔ اضافی کارکن ہوں تو ان کے ہدف بڑھائیں۔",
+      "after": "دونوں میناروں اور کئی دیواروں کی تکمیل کا انتظار کریں۔ میناروں کو پتھر کے گولے بھی چاہیے؛ دور کان سے رسد سست آتی ہے۔ اضافی کارکن ہوں تو ان کے ہدف بڑھائیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[tutorial part4 message 1]",
+      "source": "Your colony has food, training, and defenses. Buildings can advance once more to level 3, providing stronger training and greater capacity. Keep improving them as resources and worker skills allow.",
+      "before": "بستی میں خوراک، تربیت اور دفاع موجود ہیں۔ عمارتیں ایک بار اور سطح 3 تک جا سکتی ہیں، جس سے تربیت اور گنجائش بہتر ہوتی ہے۔ وسائل اور کارکنوں کے ہنر کے مطابق انہیں بہتر کرتے رہیں۔",
+      "after": "بستی میں خوراک، تربیت اور دفاع موجود ہیں۔ عمارتیں ایک بار اور سطح 3 تک جا سکتی ہیں، جس سے تربیت اور گنجائش بہتر ہوتی ہے۔ وسائل اور کارکنوں کے ہنر کے مطابق انہیں بہتر کرتے رہیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[tutorial part4 message 2]",
+      "source": "Look northwest of your base for the enemy colony. Move the view there now.",
+      "before": "مرکز کے شمال مغرب میں دشمن بستی تلاش کریں۔ ابھی منظر وہاں لے جائیں۔",
+      "after": "مرکز کے شمال مغرب میں دشمن بستی تلاش کریں۔ ابھی منظر وہاں لے جائیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[tutorial part4 message 3]",
+      "source": "Explored ground can still be hidden by fog of war. To see the enemy's current activity, we need an explorer nearby.",
+      "before": "دریافت شدہ زمین بھی جنگ کی دھند میں چھپ سکتی ہے۔ دشمن کی موجودہ سرگرمی دیکھنے کے لیے قریب کھوجی چاہیے۔",
+      "after": "دریافت شدہ زمین بھی جنگ کی دھند میں چھپ سکتی ہے۔ دشمن کی موجودہ سرگرمی دیکھنے کے لیے قریب کھوجی چاہیے۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[tutorial part4 message 4]",
+      "source": "Open Flags. This gives you flags and zones for directing units without controlling each globule individually.",
+      "before": "جھنڈے کھولیں۔ یہاں جھنڈوں اور علاقوں سے ہر گلوبیول کو الگ قابو کیے بغیر یونٹوں کو سمت دی جا سکتی ہے۔",
+      "after": "جھنڈے کھولیں۔ یہاں جھنڈوں اور علاقوں سے ہر گلوبیول کو الگ قابو کیے بغیر یونٹوں کو سمت دی جا سکتی ہے۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[tutorial part4 message 5]",
+      "source": "Choose the Exploration Flag, shown with a kite-shaped symbol. Flags can be placed over land, water, resources, and unexplored ground.",
+      "before": "پتنگ جیسے نشان والا کھوج کا جھنڈا چنیں۔ جھنڈے زمین، پانی، وسائل اور غیر دریافت شدہ زمین پر رکھ سکتے ہیں۔",
+      "after": "پتنگ جیسے نشان والا کھوج کا جھنڈا چنیں۔ جھنڈے زمین، پانی، وسائل اور غیر دریافت شدہ زمین پر رکھ سکتے ہیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[tutorial part4 message 6]",
+      "source": "Place an Exploration Flag over the suspected enemy base. An approximate location is enough to start scouting. Leave placement mode with a right-click, or finish the placement using the touch controls.",
+      "before": "مشتبہ دشمن مرکز پر کھوج کا جھنڈا رکھیں۔ کھوج شروع کرنے کے لیے اندازاً جگہ کافی ہے۔ دائیں کلک سے موڈ چھوڑیں، یا ٹچ کنٹرول سے جگہ رکھنا مکمل کریں۔",
+      "after": "مشتبہ دشمن مرکز پر کھوج کا جھنڈا رکھیں۔ کھوج شروع کرنے کے لیے اندازاً جگہ کافی ہے۔ دائیں کلک سے موڈ چھوڑیں، یا ٹچ کنٹرول سے جگہ رکھنا مکمل کریں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[tutorial part4 message 7]",
+      "source": "The outline around the flag shows its working radius. An assigned explorer will scout that area. Check your explorer count if none arrives, and produce another at the Swarm if needed. Press Space or tap OK once the explorer reaches the area.",
+      "before": "جھنڈے کے گرد دائرہ کام کا رداس دکھاتا ہے۔ مقرر کھوجی اس علاقے کی کھوج کرے گا۔ کوئی نہ آئے تو کھوجیوں کی تعداد دیکھیں اور ضرورت پر چھتے سے نیا بنائیں۔ کھوجی علاقے میں پہنچے تو Space دبائیں یا OK چھوئیں۔",
+      "after": "جھنڈے کے گرد دائرہ کام کا رداس دکھاتا ہے۔ مقرر کھوجی اس علاقے کی کھوج کرے گا۔ کوئی نہ آئے تو کھوجیوں کی تعداد دیکھیں اور ضرورت پر چھتے سے نیا بنائیں۔ کھوجی علاقے میں پہنچے تو Space دبائیں یا «ٹھیک ہے» چھوئیں۔",
+      "editorially_read": true,
+      "disposition": "edited-pending-recheck"
+    },
+    {
+      "key": "[tutorial part4 message 8]",
+      "source": "The enemy has many workers and a gathered army. Let's prepare our defenses before it attacks.",
+      "before": "دشمن کے بہت سے کارکن اور جمع شدہ فوج ہے۔ حملے سے پہلے اپنا دفاع تیار کریں۔",
+      "after": "دشمن کے پاس بہت سے کارکن اور جمع شدہ فوج ہے۔ اس کے حملے سے پہلے اپنا دفاع تیار کریں۔",
+      "editorially_read": true,
+      "disposition": "edited-pending-recheck"
+    },
+    {
+      "key": "[tutorial part4 message 9]",
+      "source": "Open Flags and choose the blue Guard zone. Use the mode for adding ground to the zone, rather than removing it. On touch screens, choose Paint rather than Erase.",
+      "before": "جھنڈے کھول کر نیلا پہرے کا علاقہ چنیں۔ زمین مٹانے کے بجائے علاقے میں شامل کرنے کا موڈ استعمال کریں۔ ٹچ اسکرین پر مٹائیں کے بجائے رنگیں چنیں۔",
+      "after": "جھنڈے کھول کر نیلا پہرے کا علاقہ چنیں۔ زمین مٹانے کے بجائے علاقے میں شامل کرنے کا موڈ استعمال کریں۔ ٹچ اسکرین پر مٹائیں کے بجائے رنگیں چنیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[tutorial part4 message 10]",
+      "source": "Choose a brush shape and size. The large square is useful for painting a compact defensive area.",
+      "before": "برش کی شکل اور جسامت چنیں۔ بڑا مربع ایک سمٹا ہوا دفاعی علاقہ رنگنے کے لیے مفید ہے۔",
+      "after": "برش کی شکل اور جسامت چنیں۔ بڑا مربع ایک سمٹا ہوا دفاعی علاقہ رنگنے کے لیے مفید ہے۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[tutorial part4 message 11]",
+      "source": "Paint a Guard zone just behind your towers, where the enemy is likely to approach. Click or tap to paint a spot, or drag to cover more ground. On touch screens, use Pan when you need to move the view while painting.",
+      "before": "میناروں کے پیچھے، دشمن کی ممکنہ آمد کی جگہ پر پہرے کا علاقہ رنگیں۔ ایک جگہ کے لیے کلک یا چھوئیں، زیادہ زمین کے لیے کھینچیں۔ ٹچ اسکرین پر رنگتے وقت منظر بدلنے کے لیے منظر کھسکائیں استعمال کریں۔",
+      "after": "میناروں کے پیچھے، دشمن کی ممکنہ آمد کی جگہ پر پہرے کا علاقہ رنگیں۔ ایک جگہ کے لیے کلک یا چھوئیں، زیادہ زمین کے لیے کھینچیں۔ ٹچ اسکرین پر رنگتے وقت منظر بدلنے کے لیے منظر کھسکائیں استعمال کریں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[tutorial part4 message 12]",
+      "source": "Available warriors will move into the Guard zone. Make it large enough for the defenders but small enough to keep them concentrated at the crossing. Now wait for the attack.",
+      "before": "دستیاب جنگجو پہرے کے علاقے میں آئیں گے۔ اسے محافظوں کے لیے کافی بڑا مگر گزرگاہ پر جمع رکھنے کے لیے کافی چھوٹا رکھیں۔ اب حملے کا انتظار کریں۔",
+      "after": "دستیاب جنگجو پہرے کے علاقے میں آئیں گے۔ اسے محافظوں کے لیے کافی بڑا مگر گزرگاہ پر جمع رکھنے کے لیے کافی چھوٹا رکھیں۔ اب حملے کا انتظار کریں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[tutorial part4 message 13]",
+      "source": "The enemy is approaching the crossing!",
+      "before": "دشمن گزرگاہ کی طرف آ رہا ہے!",
+      "after": "دشمن گزرگاہ کی طرف آ رہا ہے!",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[tutorial part4 message 14]",
+      "source": "We are under attack. Watch how your trained warriors and towers defend the position.",
+      "before": "ہم پر حملہ ہو رہا ہے۔ دیکھیں آپ کے تربیت یافتہ جنگجو اور مینار کیسے مورچے کا دفاع کرتے ہیں۔",
+      "after": "ہم پر حملہ ہو رہا ہے۔ دیکھیں آپ کے تربیت یافتہ جنگجو اور مینار کیسے مورچے کا دفاع کرتے ہیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[tutorial part4 message 15]",
+      "source": "You survived! Now open Flags and choose the spiked War Flag. Place it over the enemy Swarm to direct an attack there.",
+      "before": "آپ بچ گئے! اب جھنڈے کھول کر نوک دار جنگی جھنڈا چنیں۔ دشمن کے چھتے پر رکھ کر وہاں حملہ کروائیں۔",
+      "after": "آپ بچ گئے! اب جھنڈے کھول کر نوک دار جنگی جھنڈا چنیں۔ دشمن کے چھتے پر رکھ کر وہاں حملہ کروائیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[tutorial part4 message 16]",
+      "source": "Leave placement mode and select the War Flag. Assign more than 1 warrior, then reduce its radius to concentrate the attack around the enemy Swarm. Wait for your warriors to arrive.",
+      "before": "جگہ رکھنے کا موڈ چھوڑ کر جنگی جھنڈا منتخب کریں۔ 1 سے زیادہ جنگجو مقرر کریں، پھر رداس کم کر کے حملہ دشمن چھتے کے گرد مرکوز کریں۔ جنگجوؤں کے پہنچنے کا انتظار کریں۔",
+      "after": "جگہ رکھنے کا موڈ چھوڑ کر جنگی جھنڈا منتخب کریں۔ 1 سے زیادہ جنگجو مقرر کریں، پھر رداس کم کر کے حملہ دشمن چھتے کے گرد مرکوز کریں۔ جنگجوؤں کے پہنچنے کا انتظار کریں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[tutorial part4 message 17]",
+      "source": "The attack has begun. Your warriors must get past the enemy towers to reach its Swarm.",
+      "before": "حملہ شروع ہو گیا۔ آپ کے جنگجوؤں کو چھتے تک پہنچنے کے لیے دشمن میناروں سے گزرنا ہے۔",
+      "after": "حملہ شروع ہو گیا۔ آپ کے جنگجوؤں کو چھتے تک پہنچنے کے لیے دشمن میناروں سے گزرنا ہے۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[tutorial part4 message 18]",
+      "source": "Your warriors have reached the enemy base. Keep the attack focused on the Swarm.",
+      "before": "جنگجو دشمن مرکز پہنچ گئے ہیں۔ حملہ چھتے پر مرکوز رکھیں۔",
+      "after": "آپ کے جنگجو دشمن کے مرکز تک پہنچ گئے ہیں۔ حملہ چھتے پر مرکوز رکھیں۔",
+      "editorially_read": true,
+      "disposition": "edited-pending-recheck"
+    },
+    {
+      "key": "[tutorial part4 message 19]",
+      "source": "You destroyed the enemy Swarm. Congratulations! You have completed the tutorial and learned the basics of food supply, assignments, training, upgrades, scouting, and combat.",
+      "before": "آپ نے دشمن چھتہ تباہ کر دیا۔ مبارک ہو! تربیت مکمل ہوئی اور آپ نے خوراک، کام مقرر کرنے، تربیت، اپ گریڈ، کھوج اور لڑائی کی بنیادیں سیکھ لیں۔",
+      "after": "آپ نے دشمن چھتہ تباہ کر دیا۔ مبارک ہو! تربیت مکمل ہوئی اور آپ نے خوراک، کام مقرر کرنے، تربیت، اپ گریڈ، کھوج اور لڑائی کی بنیادیں سیکھ لیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[tutorial mission basics]",
+      "source": "Introduction and basics",
+      "before": "تعارف اور بنیادی باتیں",
+      "after": "تعارف اور بنیادی باتیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[tutorial mission development]",
+      "source": "Buildings and schools",
+      "before": "عمارتیں اور اسکول",
+      "after": "عمارتیں اور اسکول",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[tutorial mission training]",
+      "source": "Warriors, training and upgrades",
+      "before": "جنگجو، تربیت اور اپ گریڈ",
+      "after": "جنگجو، تربیت اور اپ گریڈ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[tutorial mission flags]",
+      "source": "Flags and completion",
+      "before": "جھنڈے اور تکمیل",
+      "after": "جھنڈے اور تکمیل",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    }
+  ],
+  "status": "edited-awaiting-independent-recheck"
+}

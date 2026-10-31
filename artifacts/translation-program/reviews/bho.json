@@ -1,0 +1,54 @@
+{
+  "locale": "bho",
+  "source_sha256": "aacd8a342e9e734ba47f902a161ac1a45badff5842a617bcd68bf8e2275d6013",
+  "catalog_sha256": {},
+  "batches": [],
+  "findings": [],
+  "language_brief": {
+    "variety": "",
+    "script": "",
+    "region": "",
+    "sources": [],
+    "terminology_rationales": [],
+    "unresolved_uncertainty": [],
+    "certification": "Agent-reviewed; not native-human-certified"
+  },
+  "gates": {
+    "language_brief": {
+      "passed": false,
+      "evidence": []
+    },
+    "source_based_pilot": {
+      "passed": false,
+      "evidence": []
+    },
+    "structural": {
+      "passed": false,
+      "evidence": []
+    },
+    "desktop_rendering": {
+      "passed": false,
+      "evidence": []
+    },
+    "phone_rendering": {
+      "passed": false,
+      "evidence": []
+    },
+    "browser_startup": {
+      "passed": false,
+      "evidence": []
+    },
+    "native_platforms": {
+      "passed": false,
+      "evidence": []
+    },
+    "browser_platforms": {
+      "passed": false,
+      "evidence": []
+    },
+    "mobile_platforms": {
+      "passed": false,
+      "evidence": []
+    }
+  }
+}

@@ -1,0 +1,815 @@
+{
+  "id": "native-general-006",
+  "source_sha256": "0ac44b4cdfb03e688983d6e3fb1e484cca57589665bff19c5c65388e649b292a",
+  "surface": "native",
+  "domain": "general",
+  "context": "Read neighbouring source entries and inspect usage before translating ambiguous short labels.",
+  "entries": [
+    {
+      "id": "native:[Stats meals per minute]",
+      "key": "[Stats meals per minute]",
+      "source": "Food/min"
+    },
+    {
+      "id": "native:[Stats occupancy]",
+      "key": "[Stats occupancy]",
+      "source": "Feed / heal"
+    },
+    {
+      "id": "native:[Stats page one]",
+      "key": "[Stats page one]",
+      "source": "Statistics 1/3  >"
+    },
+    {
+      "id": "native:[Stats page two]",
+      "key": "[Stats page two]",
+      "source": "Statistics 2/3  >"
+    },
+    {
+      "id": "native:[Stats page three]",
+      "key": "[Stats page three]",
+      "source": "Statistics 3/3  >"
+    },
+    {
+      "id": "native:[Stats next page]",
+      "key": "[Stats next page]",
+      "source": "Page (P)"
+    },
+    {
+      "id": "native:[Stats blocked units]",
+      "key": "[Stats blocked units]",
+      "source": "Units blocked S/C"
+    },
+    {
+      "id": "native:[Stats current blocked units]",
+      "key": "[Stats current blocked units]",
+      "source": "Currently blocked units"
+    },
+    {
+      "id": "native:[Stats growth global]",
+      "key": "[Stats growth global]",
+      "source": "Growth added amount"
+    },
+    {
+      "id": "native:[Stats growth new tiles]",
+      "key": "[Stats growth new tiles]",
+      "source": "New resource tiles"
+    },
+    {
+      "id": "native:[Stats growth reductions]",
+      "key": "[Stats growth reductions]",
+      "source": "Natural reductions"
+    },
+    {
+      "id": "native:[Stats growth per minute]",
+      "key": "[Stats growth per minute]",
+      "source": "Food growth/min"
+    },
+    {
+      "id": "native:[Stats growth near 8]",
+      "key": "[Stats growth near 8]",
+      "source": "Growth within 8 tiles"
+    },
+    {
+      "id": "native:[Stats growth near 16]",
+      "key": "[Stats growth near 16]",
+      "source": "Growth within 16 tiles"
+    },
+    {
+      "id": "native:[Stats growth near 32]",
+      "key": "[Stats growth near 32]",
+      "source": "Growth within 32 tiles"
+    },
+    {
+      "id": "native:[Stats low HP 25]",
+      "key": "[Stats low HP 25]",
+      "source": "Units at 25% HP"
+    },
+    {
+      "id": "native:[Stats low food 25]",
+      "key": "[Stats low food 25]",
+      "source": "Units at 25% food reserve"
+    },
+    {
+      "id": "native:[Stats low HP 50]",
+      "key": "[Stats low HP 50]",
+      "source": "Units at 50% HP"
+    },
+    {
+      "id": "native:[Stats low HP 75]",
+      "key": "[Stats low HP 75]",
+      "source": "Units at 75% HP"
+    },
+    {
+      "id": "native:[Stats low food 50]",
+      "key": "[Stats low food 50]",
+      "source": "Units at 50% food reserve"
+    },
+    {
+      "id": "native:[Stats low food 75]",
+      "key": "[Stats low food 75]",
+      "source": "Units at 75% food reserve"
+    },
+    {
+      "id": "native:[Stats structural units]",
+      "key": "[Stats structural units]",
+      "source": "Structurally blocked units"
+    },
+    {
+      "id": "native:[Stats low HP ranges]",
+      "key": "[Stats low HP ranges]",
+      "source": "HP ≤25/50/75%"
+    },
+    {
+      "id": "native:[Stats low food ranges]",
+      "key": "[Stats low food ranges]",
+      "source": "Food ≤25/50/75%"
+    },
+    {
+      "id": "native:[Emoji]",
+      "key": "[Emoji]",
+      "source": "Emoji"
+    },
+    {
+      "id": "native:[Emoji character]",
+      "key": "[Emoji character]",
+      "source": "Emoji character"
+    },
+    {
+      "id": "native:[Smiley]",
+      "key": "[Smiley]",
+      "source": "Smiley"
+    },
+    {
+      "id": "native:[Sad face]",
+      "key": "[Sad face]",
+      "source": "Sad face"
+    },
+    {
+      "id": "native:[Winking face]",
+      "key": "[Winking face]",
+      "source": "Winking face"
+    },
+    {
+      "id": "native:[Surprised face]",
+      "key": "[Surprised face]",
+      "source": "Surprised face"
+    },
+    {
+      "id": "native:[Heart eyes]",
+      "key": "[Heart eyes]",
+      "source": "Heart eyes"
+    },
+    {
+      "id": "native:[Sunglasses]",
+      "key": "[Sunglasses]",
+      "source": "Sunglasses"
+    },
+    {
+      "id": "native:[Heart]",
+      "key": "[Heart]",
+      "source": "Heart"
+    },
+    {
+      "id": "native:[Star]",
+      "key": "[Star]",
+      "source": "Star"
+    },
+    {
+      "id": "native:[Neutral face]",
+      "key": "[Neutral face]",
+      "source": "Neutral face"
+    },
+    {
+      "id": "native:[Sleeping face]",
+      "key": "[Sleeping face]",
+      "source": "Sleeping face"
+    },
+    {
+      "id": "native:[Grinning face]",
+      "key": "[Grinning face]",
+      "source": "Grinning face"
+    },
+    {
+      "id": "native:[Kissing face]",
+      "key": "[Kissing face]",
+      "source": "Kissing face"
+    },
+    {
+      "id": "native:[Angry face]",
+      "key": "[Angry face]",
+      "source": "Angry face"
+    },
+    {
+      "id": "native:[Tongue out]",
+      "key": "[Tongue out]",
+      "source": "Tongue out"
+    },
+    {
+      "id": "native:[Skull]",
+      "key": "[Skull]",
+      "source": "Skull"
+    },
+    {
+      "id": "native:[Flower]",
+      "key": "[Flower]",
+      "source": "Flower"
+    },
+    {
+      "id": "native:[Four-leaf clover]",
+      "key": "[Four-leaf clover]",
+      "source": "Four-leaf clover"
+    },
+    {
+      "id": "native:[Teardrop]",
+      "key": "[Teardrop]",
+      "source": "Teardrop"
+    },
+    {
+      "id": "native:[Cloud]",
+      "key": "[Cloud]",
+      "source": "Cloud"
+    },
+    {
+      "id": "native:[Gem]",
+      "key": "[Gem]",
+      "source": "Gem"
+    },
+    {
+      "id": "native:[Apple]",
+      "key": "[Apple]",
+      "source": "Apple"
+    },
+    {
+      "id": "native:[Speech bubble]",
+      "key": "[Speech bubble]",
+      "source": "Speech bubble"
+    },
+    {
+      "id": "native:[Shield]",
+      "key": "[Shield]",
+      "source": "Shield"
+    },
+    {
+      "id": "native:[Emoji style]",
+      "key": "[Emoji style]",
+      "source": "Emoji style"
+    },
+    {
+      "id": "native:[Outline]",
+      "key": "[Outline]",
+      "source": "Outline"
+    },
+    {
+      "id": "native:[Filled]",
+      "key": "[Filled]",
+      "source": "Filled"
+    },
+    {
+      "id": "native:[Regular]",
+      "key": "[Regular]",
+      "source": "Regular"
+    },
+    {
+      "id": "native:[Inverse]",
+      "key": "[Inverse]",
+      "source": "Inverse"
+    },
+    {
+      "id": "native:[Crossings]",
+      "key": "[Crossings]",
+      "source": "Crossings"
+    },
+    {
+      "id": "native:[Forts]",
+      "key": "[Forts]",
+      "source": "Forts"
+    },
+    {
+      "id": "native:[Gate width]",
+      "key": "[Gate width]",
+      "source": "Gate width"
+    },
+    {
+      "id": "native:[Braided Delta]",
+      "key": "[Braided Delta]",
+      "source": "Braided Delta"
+    },
+    {
+      "id": "native:[Braid count]",
+      "key": "[Braid count]",
+      "source": "Braid count"
+    },
+    {
+      "id": "native:[Rejoining frequency]",
+      "key": "[Rejoining frequency]",
+      "source": "Rejoining frequency"
+    },
+    {
+      "id": "native:[Crossing spacing]",
+      "key": "[Crossing spacing]",
+      "source": "Crossing spacing"
+    },
+    {
+      "id": "native:[Breachable highlands]",
+      "key": "[Breachable highlands]",
+      "source": "Breachable highlands"
+    },
+    {
+      "id": "native:[Ridge depth]",
+      "key": "[Ridge depth]",
+      "source": "Ridge depth"
+    },
+    {
+      "id": "native:[Extra open passes]",
+      "key": "[Extra open passes]",
+      "source": "Extra open passes"
+    },
+    {
+      "id": "native:[Wooded saddles]",
+      "key": "[Wooded saddles]",
+      "source": "Wooded saddles"
+    },
+    {
+      "id": "native:[Hedgerow Country]",
+      "key": "[Hedgerow Country]",
+      "source": "Hedgerow Country"
+    },
+    {
+      "id": "native:[Field size]",
+      "key": "[Field size]",
+      "source": "Field size"
+    },
+    {
+      "id": "native:[Hedge thickness]",
+      "key": "[Hedge thickness]",
+      "source": "Hedge thickness"
+    },
+    {
+      "id": "native:[Existing gateways]",
+      "key": "[Existing gateways]",
+      "source": "Existing gateways"
+    },
+    {
+      "id": "native:[Wooded boundary share]",
+      "key": "[Wooded boundary share]",
+      "source": "Wooded boundary share"
+    },
+    {
+      "id": "native:[The Glacis]",
+      "key": "[The Glacis]",
+      "source": "The Glacis"
+    },
+    {
+      "id": "native:[Allotments]",
+      "key": "[Allotments]",
+      "source": "Allotments"
+    },
+    {
+      "id": "native:[Caravanserai]",
+      "key": "[Caravanserai]",
+      "source": "Caravanserai"
+    },
+    {
+      "id": "native:[Mixed]",
+      "key": "[Mixed]",
+      "source": "Mixed"
+    },
+    {
+      "id": "native:[Fort size]",
+      "key": "[Fort size]",
+      "source": "Fort size"
+    },
+    {
+      "id": "native:[Bastions]",
+      "key": "[Bastions]",
+      "source": "Bastions"
+    },
+    {
+      "id": "native:[Four-pointed]",
+      "key": "[Four-pointed]",
+      "source": "Four-pointed"
+    },
+    {
+      "id": "native:[Five-pointed]",
+      "key": "[Five-pointed]",
+      "source": "Five-pointed"
+    },
+    {
+      "id": "native:[Six-pointed]",
+      "key": "[Six-pointed]",
+      "source": "Six-pointed"
+    },
+    {
+      "id": "native:[Glacis width]",
+      "key": "[Glacis width]",
+      "source": "Glacis width"
+    },
+    {
+      "id": "native:[Gates]",
+      "key": "[Gates]",
+      "source": "Gates"
+    },
+    {
+      "id": "native:[Site size]",
+      "key": "[Site size]",
+      "source": "Site size"
+    },
+    {
+      "id": "native:[Plot width]",
+      "key": "[Plot width]",
+      "source": "Plot width"
+    },
+    {
+      "id": "native:[Plot mix]",
+      "key": "[Plot mix]",
+      "source": "Plot mix"
+    },
+    {
+      "id": "native:[Tended]",
+      "key": "[Tended]",
+      "source": "Tended"
+    },
+    {
+      "id": "native:[Overgrown]",
+      "key": "[Overgrown]",
+      "source": "Overgrown"
+    },
+    {
+      "id": "native:[Commons]",
+      "key": "[Commons]",
+      "source": "Commons"
+    },
+    {
+      "id": "native:[Few]",
+      "key": "[Few]",
+      "source": "Few"
+    },
+    {
+      "id": "native:[Some]",
+      "key": "[Some]",
+      "source": "Some"
+    },
+    {
+      "id": "native:[Home oasis size]",
+      "key": "[Home oasis size]",
+      "source": "Home oasis size"
+    },
+    {
+      "id": "native:[Caravanserais per colony]",
+      "key": "[Caravanserais per colony]",
+      "source": "Caravanserais per colony"
+    },
+    {
+      "id": "native:[Desert]",
+      "key": "[Desert]",
+      "source": "Desert"
+    },
+    {
+      "id": "native:[Open erg]",
+      "key": "[Open erg]",
+      "source": "Open erg"
+    },
+    {
+      "id": "native:[Dunes and mesas]",
+      "key": "[Dunes and mesas]",
+      "source": "Dunes and mesas"
+    },
+    {
+      "id": "native:[Canyon country]",
+      "key": "[Canyon country]",
+      "source": "Canyon country"
+    },
+    {
+      "id": "native:[A wall would stand on a beach; try another seed.]",
+      "key": "[A wall would stand on a beach; try another seed.]",
+      "source": "A wall would stand on a beach; try another seed."
+    },
+    {
+      "id": "native:[The fort is too small for its gardens; raise Fort size.]",
+      "key": "[The fort is too small for its gardens; raise Fort size.]",
+      "source": "The fort is too small for its gardens; raise Fort size."
+    },
+    {
+      "id": "native:[The home oasis is too small; raise Home oasis size.]",
+      "key": "[The home oasis is too small; raise Home oasis size.]",
+      "source": "The home oasis is too small; raise Home oasis size."
+    },
+    {
+      "id": "native:[Braid width]",
+      "key": "[Braid width]",
+      "source": "Braid width"
+    },
+    {
+      "id": "native:[Bar size]",
+      "key": "[Bar size]",
+      "source": "Bar size"
+    },
+    {
+      "id": "native:[Extra riffles]",
+      "key": "[Extra riffles]",
+      "source": "Extra riffles"
+    },
+    {
+      "id": "native:[Moraine hummocks]",
+      "key": "[Moraine hummocks]",
+      "source": "Moraine hummocks"
+    },
+    {
+      "id": "native:[Drumlin field]",
+      "key": "[Drumlin field]",
+      "source": "Drumlin field"
+    },
+    {
+      "id": "native:[Drumlin spacing]",
+      "key": "[Drumlin spacing]",
+      "source": "Drumlin spacing"
+    },
+    {
+      "id": "native:[Drumlin length]",
+      "key": "[Drumlin length]",
+      "source": "Drumlin length"
+    },
+    {
+      "id": "native:[Water gap]",
+      "key": "[Water gap]",
+      "source": "Water gap"
+    },
+    {
+      "id": "native:[Esker loops]",
+      "key": "[Esker loops]",
+      "source": "Esker loops"
+    },
+    {
+      "id": "native:[The eskers could not join every drumlin; use a smaller water gap or a bigger map.]",
+      "key": "[The eskers could not join every drumlin; use a smaller water gap or a bigger map.]",
+      "source": "The eskers could not join every drumlin; use a smaller water gap or a bigger map."
+    },
+    {
+      "id": "native:[Continents]",
+      "key": "[Continents]",
+      "source": "Continents"
+    },
+    {
+      "id": "native:[Continent]",
+      "key": "[Continent]",
+      "source": "Continent"
+    },
+    {
+      "id": "native:[North America]",
+      "key": "[North America]",
+      "source": "North America"
+    },
+    {
+      "id": "native:[South America]",
+      "key": "[South America]",
+      "source": "South America"
+    },
+    {
+      "id": "native:[Africa]",
+      "key": "[Africa]",
+      "source": "Africa"
+    },
+    {
+      "id": "native:[Europe]",
+      "key": "[Europe]",
+      "source": "Europe"
+    },
+    {
+      "id": "native:[Asia]",
+      "key": "[Asia]",
+      "source": "Asia"
+    },
+    {
+      "id": "native:[Oceania]",
+      "key": "[Oceania]",
+      "source": "Oceania"
+    },
+    {
+      "id": "native:[Orientation]",
+      "key": "[Orientation]",
+      "source": "Orientation"
+    },
+    {
+      "id": "native:[Turn to fit]",
+      "key": "[Turn to fit]",
+      "source": "Turn to fit"
+    },
+    {
+      "id": "native:[Upright]",
+      "key": "[Upright]",
+      "source": "Upright"
+    },
+    {
+      "id": "native:[Islets]",
+      "key": "[Islets]",
+      "source": "Islets"
+    },
+    {
+      "id": "native:[Oases]",
+      "key": "[Oases]",
+      "source": "Oases"
+    },
+    {
+      "id": "native:[The world atlas has no such continent.]",
+      "key": "[The world atlas has no such continent.]",
+      "source": "The world atlas has no such continent."
+    },
+    {
+      "id": "native:[Savannah]",
+      "key": "[Savannah]",
+      "source": "Savannah"
+    },
+    {
+      "id": "native:[Watering holes]",
+      "key": "[Watering holes]",
+      "source": "Watering holes"
+    },
+    {
+      "id": "native:[Dry patches]",
+      "key": "[Dry patches]",
+      "source": "Dry patches"
+    },
+    {
+      "id": "native:[Sparse]",
+      "key": "[Sparse]",
+      "source": "Sparse"
+    },
+    {
+      "id": "native:[Normal]",
+      "key": "[Normal]",
+      "source": "Normal"
+    },
+    {
+      "id": "native:[Many]",
+      "key": "[Many]",
+      "source": "Many"
+    },
+    {
+      "id": "native:[Rice terraces]",
+      "key": "[Rice terraces]",
+      "source": "Rice terraces"
+    },
+    {
+      "id": "native:[Unoccupied hills]",
+      "key": "[Unoccupied hills]",
+      "source": "Unoccupied hills"
+    },
+    {
+      "id": "native:[Contour band width]",
+      "key": "[Contour band width]",
+      "source": "Contour band width"
+    },
+    {
+      "id": "native:[Stairs per hill]",
+      "key": "[Stairs per hill]",
+      "source": "Stairs per hill"
+    },
+    {
+      "id": "native:[Hills]",
+      "key": "[Hills]",
+      "source": "Hills"
+    },
+    {
+      "id": "native:[Hillsides]",
+      "key": "[Hillsides]",
+      "source": "Hillsides"
+    },
+    {
+      "id": "native:[Terraces per slope]",
+      "key": "[Terraces per slope]",
+      "source": "Terraces per slope"
+    },
+    {
+      "id": "native:[Waviness]",
+      "key": "[Waviness]",
+      "source": "Waviness"
+    },
+    {
+      "id": "native:[Stair spacing]",
+      "key": "[Stair spacing]",
+      "source": "Stair spacing"
+    },
+    {
+      "id": "native:[Locust]",
+      "key": "[Locust]",
+      "source": "Locust"
+    },
+    {
+      "id": "native:[Plantations]",
+      "key": "[Plantations]",
+      "source": "Plantations"
+    },
+    {
+      "id": "native:[Plot size]",
+      "key": "[Plot size]",
+      "source": "Plot size"
+    },
+    {
+      "id": "native:[Farm width]",
+      "key": "[Farm width]",
+      "source": "Farm width"
+    },
+    {
+      "id": "native:[Outpost inns]",
+      "key": "[Outpost inns]",
+      "source": "Outpost inns"
+    },
+    {
+      "id": "native:[Sierpiński Gardens]",
+      "key": "[Sierpiński Gardens]",
+      "source": "Sierpiński Gardens"
+    },
+    {
+      "id": "native:[Maximum nesting]",
+      "key": "[Maximum nesting]",
+      "source": "Maximum nesting"
+    },
+    {
+      "id": "native:[Minimum terminal district side]",
+      "key": "[Minimum terminal district side]",
+      "source": "Minimum terminal district side"
+    },
+    {
+      "id": "native:[Major crossing pairs]",
+      "key": "[Major crossing pairs]",
+      "source": "Major crossing pairs"
+    },
+    {
+      "id": "native:[Maximum fold depth]",
+      "key": "[Maximum fold depth]",
+      "source": "Maximum fold depth"
+    },
+    {
+      "id": "native:[Minimum land spacing]",
+      "key": "[Minimum land spacing]",
+      "source": "Minimum land spacing"
+    },
+    {
+      "id": "native:[Optional local crossings per parent]",
+      "key": "[Optional local crossings per parent]",
+      "source": "Optional local crossings per parent"
+    },
+    {
+      "id": "native:[Lava shield]",
+      "key": "[Lava shield]",
+      "source": "Lava shield"
+    },
+    {
+      "id": "native:[Lava tongues]",
+      "key": "[Lava tongues]",
+      "source": "Lava tongues"
+    },
+    {
+      "id": "native:[Long tongues]",
+      "key": "[Long tongues]",
+      "source": "Long tongues"
+    },
+    {
+      "id": "native:[Crater rim width]",
+      "key": "[Crater rim width]",
+      "source": "Crater rim width"
+    },
+    {
+      "id": "native:[Honeycomb isle]",
+      "key": "[Honeycomb isle]",
+      "source": "Honeycomb isle"
+    },
+    {
+      "id": "native:[Blocks per colony]",
+      "key": "[Blocks per colony]",
+      "source": "Blocks per colony"
+    },
+    {
+      "id": "native:[Rubble]",
+      "key": "[Rubble]",
+      "source": "Rubble"
+    },
+    {
+      "id": "native:[Outline gaps]",
+      "key": "[Outline gaps]",
+      "source": "Outline gaps"
+    },
+    {
+      "id": "native:[Craters per colony]",
+      "key": "[Craters per colony]",
+      "source": "Craters per colony"
+    },
+    {
+      "id": "native:[Wheat fields]",
+      "key": "[Wheat fields]",
+      "source": "Wheat fields"
+    }
+  ],
+  "carryforward": {
+    "prior_manifest": {
+      "path": "../release-three/manifest.json",
+      "sha256": "4fd5e1faff01b7eb0e95db7eac33105ab557101742f6ef1a889e7b73210eb977"
+    },
+    "prior_batch": {
+      "path": "../release-three/batches/native-general-006.json",
+      "sha256": "e0c8af03fc44792c9b696defc2532570d2d5c2a629371dfbaf14150ba8d16c2b"
+    },
+    "method": "Partition retained keys by original ownership; radius supplement receives separate Sw correction chain, unchanged Hi/Ur retain original chain. No fresh reading inferred."
+  }
+}

@@ -1,0 +1,80 @@
+{
+  "started_utc": "2026-10-31T18:09:11.297Z",
+  "origin": "http://127.0.0.1:4331",
+  "checker_sha256": "d990c5c69cd79b6d34fc085a72442b2ed01cc3e3d2e5cbf9d39dbd713c208c5d",
+  "served_files": {
+    "index.html": {
+      "sha256": "9710535a4826a19042e7bb2c14e9a0bdb29cc579f60297db2a089baaf67d9c03",
+      "bytes": 58084
+    },
+    "index.js": {
+      "sha256": "b9b34780590780c94cf9fdaecfb4aa7c110dd3bec8a23c667648494fc1eef512",
+      "bytes": 1207471
+    },
+    "index.wasm": {
+      "sha256": "ea97092d507c6f5fe75781ece4668c1205bf39494f450866d952ca92cd570fb0",
+      "bytes": 50575252
+    },
+    "asset-manifest.js": {
+      "sha256": "9597fff70ccb08beb24f672c886af524de651b03391dbc842730ade44680b161",
+      "bytes": 411419
+    },
+    "loader.js": {
+      "sha256": "c06c9a252d1080d41cda582bd78aaaa3a5bda8ec36a4251b9255013d83fd43b1",
+      "bytes": 5767
+    },
+    "script-fonts.css": {
+      "sha256": "b54671afa3ef114cd11c01cbb68ef9da2008e89872f1039563be66c8590fb1fc",
+      "bytes": 3485
+    },
+    "presentation-surface.js": {
+      "sha256": "a0dc7dbde4cf5e29986174bc3ae4b6be0b2e90b62fe881a62794c7087bf50637",
+      "bytes": 6238
+    },
+    "identity.json": {
+      "sha256": "ff8b6801ee6ebef7e28d8d89f99c69f84c504ec88870cd1e95caed4ebbe18e45",
+      "bytes": 376
+    },
+    "runtime-assets.json": {
+      "sha256": "a23443981a98d6bc18cb6de7480c633b0bec2a1dfb15b81017ebacc506abdee4",
+      "bytes": 6771451
+    }
+  },
+  "build_identity": {
+    "client_features": {
+      "authoring_links": true,
+      "commander": true,
+      "community_ai": true,
+      "community_generators": true
+    },
+    "client_profile": "full",
+    "dev_fast": true,
+    "distribution": "browser",
+    "linker": "auto",
+    "mode": "debug",
+    "native_wss": false,
+    "role": "client",
+    "target": "web",
+    "toolchain": "emscripten",
+    "web_variant": "serial"
+  },
+  "source_bundle_sha256": "7583e9f8f0a03186eec456ed3b7a9c187509056b91f931551c3b7dc0e6b53457",
+  "runtime_sha256": "9f8021aaf97bfeea74e16c4751014eaa490943529de3697cf8cd4861f36e9061",
+  "runtime_override": "integration-stage/browser/i18n.js",
+  "font_manifest_sha256": "4dd7f1c0770d812fd9ddb6231e622dbe6e1d26588b2fec002650b6e7af1994cc",
+  "font_source_commit": "ffebf8c1ee449e544955a7e813c54f9b73848eac",
+  "catalog_sha256": {
+    "hi": {
+      "native": "a65477c9ac654c44a08531b6a5ee53f76d7aa6454c2f776c43382ed4f2e321e8",
+      "online": "d80bdd87f3502c34e45ae744d8e0f8bac3cafd93755a5ef87e0bed8bec3d74c4"
+    },
+    "ur": {
+      "native": "5cb88fac67663fc436f6bfa60388382c24665755ee481514c002bc92e9a29837",
+      "online": "db375ee564c39cf02dfb4ce08d6a4dbaecb8cd69d5bc7f167b4c7f779e246587"
+    },
+    "sw": {
+      "native": "d23c1b75c4ae209b85a6dbd9f2fb0ab084ab7bb21b7544ec8a4a5ad545129cc5",
+      "online": "6914cbf226adebd70d3ff401cfda759b62b62cc8af621b25f4ba994a8e0bec0a"
+    }
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "kind": "standalone-real-BidiText-negative-and-positive-regression",
+  "before_exit_code": 1,
+  "after_exit_code": 0,
+  "cases": 9,
+  "before_source_sha256": "68e003db80a2fbb80006d0ed73d7119c0b34fb69e7b6fd55b417fa396dbea18d",
+  "after_source_sha256": "0813cc512aafd71bb45257090b37f2180b5a36a44965891ba1961c12e1869fc7",
+  "spec_reference": "https://www.unicode.org/reports/tr9/tr9-52.html#N0",
+  "limits": [
+    "Reconstructed exact pre-fix logical-run branch from current source, not a baseline repository implementation.",
+    "Property/runs check; actual font/render screenshot recheck remains required."
+  ]
+}

@@ -1,0 +1,739 @@
+[
+  {
+    "id": "UR-E-001",
+    "key": " Follow latest",
+    "source": " Follow latest",
+    "before": " تازہ ترین نسخے کی پیروی کریں",
+    "after": " تازہ ترین ورژن کی پیروی کریں",
+    "reason": "Match the corresponding non-leading-space studio action while preserving its leading space.",
+    "review_finding_ids": [],
+    "status": "edited-awaiting-independent-recheck"
+  },
+  {
+    "id": "UR-E-002",
+    "key": " Terrain credits",
+    "source": " Terrain credits",
+    "before": " ارضی ساخت کے کریڈٹ",
+    "after": " زمین کے کریڈٹ",
+    "reason": "Wallet product label differs from زمین used consistently in Terrain Studio and its other credit messages; ارضی ساخت is not a different product.",
+    "review_finding_ids": [
+      "UR-O-001-02"
+    ],
+    "status": "edited-awaiting-independent-recheck"
+  },
+  {
+    "id": "UR-E-003",
+    "key": "3 to 32 letters, digits, dots, dashes or underscores. Other players see it.",
+    "source": "3 to 32 letters, digits, dots, dashes or underscores. Other players see it.",
+    "before": "3 سے 32 حروف، ہندسے، نقطے، ڈیش یا انڈر اسکور۔ دوسرے کھلاڑی اسے دیکھتے ہیں۔",
+    "after": "3 سے 32 انگریزی حروف (A–Z، a–z)، ہندسے (0–9)، نقطے، ڈیش یا انڈر اسکور۔ دوسرے کھلاڑی اسے دیکھتے ہیں۔",
+    "reason": "The actual username pattern in signin.ts accepts ASCII A-Z/a-z and digits only; unqualified Urdu حروف suggests Urdu letters are allowed.",
+    "review_finding_ids": [
+      "UR-O-001-01"
+    ],
+    "status": "edited-awaiting-independent-recheck"
+  },
+  {
+    "id": "UR-E-004",
+    "key": "A newer draft prevents undo. Use history to restore it.",
+    "source": "A newer draft prevents undo. Use history to restore it.",
+    "before": "نئے مسودے کی وجہ سے واپس لینا ممکن نہیں۔ بحالی کے لیے سابقہ ریکارڈ استعمال کریں۔",
+    "after": "نئے مسودے کی وجہ سے تبدیلی کالعدم کرنا ممکن نہیں۔ بحالی کے لیے سابقہ ریکارڈ استعمال کریں۔",
+    "reason": "Use the Undo action term and supply the missing object; do not weaken the restoration instruction.",
+    "review_finding_ids": [],
+    "status": "edited-awaiting-independent-recheck"
+  },
+  {
+    "id": "UR-E-005",
+    "key": "A newer revision prevents undo. Restore a version in Changes.",
+    "source": "A newer revision prevents undo. Restore a version in Changes.",
+    "before": "نئی ترمیم کی وجہ سے واپس لینا ممکن نہیں۔ تبدیلیوں میں کوئی ورژن بحال کریں۔",
+    "after": "نئی ترمیم کی وجہ سے تبدیلی کالعدم کرنا ممکن نہیں۔ تبدیلیوں میں کوئی ورژن بحال کریں۔",
+    "reason": "Align the revision undo conflict with the Undo button and Changes section label.",
+    "review_finding_ids": [],
+    "status": "edited-awaiting-independent-recheck"
+  },
+  {
+    "id": "UR-E-006",
+    "key": "Additional credits and source attribution",
+    "source": "Additional credits and source attribution",
+    "before": "مزید تخلیق کار اور ماخذ کا حوالہ",
+    "after": "مزید تخلیق کاروں کا ذکر اور ماخذ کے حوالے",
+    "reason": "Credits here acknowledge contributors in sets/Workspace.tsx, not additional people or wallet currency.",
+    "review_finding_ids": [],
+    "status": "edited-awaiting-independent-recheck"
+  },
+  {
+    "id": "UR-E-007",
+    "key": "Brush paints",
+    "source": "Brush paints",
+    "before": "برش کے رنگ",
+    "after": "برش سے لگانے کی چیز",
+    "reason": "ARIA group selects Color or Material, so an action-oriented neutral label covers both without reducing it to colours.",
+    "review_finding_ids": [
+      "UR-O-002-01"
+    ],
+    "status": "edited-awaiting-independent-recheck"
+  },
+  {
+    "id": "UR-E-008",
+    "key": "Building",
+    "source": "Building",
+    "before": "عمارت",
+    "after": "تعمیر",
+    "reason": "Both music mood and map-build status callers mean construction, not a building entity (music-studio/Workspace.tsx; studio/Conversation.tsx).",
+    "review_finding_ids": [],
+    "status": "edited-awaiting-independent-recheck"
+  },
+  {
+    "id": "UR-E-009",
+    "key": "Buildings and upgrade stages",
+    "source": "Buildings and upgrade stages",
+    "before": "عمارتیں اور ترقی کے مراحل",
+    "after": "عمارتیں اور اپ گریڈ کے مراحل",
+    "reason": "Concrete building-upgrade stages should use اپ گریڈ, matching native upgrade controls and other online labels, rather than generic development ترقی.",
+    "review_finding_ids": [
+      "UR-O-002-02"
+    ],
+    "status": "edited-awaiting-independent-recheck"
+  },
+  {
+    "id": "UR-E-010",
+    "key": "Calm",
+    "source": "Calm",
+    "before": "پُرسکون",
+    "after": "سکون",
+    "reason": "Use the same noun mood label as both existing Calm/Building/Combat sequence labels.",
+    "review_finding_ids": [],
+    "status": "edited-awaiting-independent-recheck"
+  },
+  {
+    "id": "UR-E-011",
+    "key": "Cancel",
+    "source": "Cancel",
+    "before": "منسوخ",
+    "after": "منسوخ کریں",
+    "reason": "Use a respectful action imperative for the cancel button, rather than an isolated adjective.",
+    "review_finding_ids": [],
+    "status": "edited-awaiting-independent-recheck"
+  },
+  {
+    "id": "UR-E-012",
+    "key": "Charged",
+    "source": "Charged",
+    "before": "رقم کٹ گئی",
+    "after": "کٹوتی ہو گئی",
+    "reason": "The status must allow credit deductions, not assert that cash was taken; aligns with the existing Charged prefix.",
+    "review_finding_ids": [],
+    "status": "edited-awaiting-independent-recheck"
+  },
+  {
+    "id": "UR-E-013",
+    "key": "Compatibility checks exercise short games and save/resume. They do not certify safety or playing strength. Only run code from authors you trust.",
+    "source": "Compatibility checks exercise short games and save/resume. They do not certify safety or playing strength. Only run code from authors you trust.",
+    "before": "مطابقت کی جانچیں مختصر کھیل اور محفوظ کر کے بحال کرنا آزماتی ہیں۔ یہ حفاظت یا کھیلنے کی طاقت کی سند نہیں۔ صرف قابلِ اعتماد مصنفوں کا کوڈ چلائیں۔",
+    "after": "مطابقت کی جانچیں مختصر کھیل اور محفوظ کر کے بحال کرنا آزماتی ہیں۔ یہ حفاظت یا کھیلنے کی طاقت کی تصدیق نہیں کرتیں۔ صرف قابلِ اعتماد مصنفوں کا کوڈ چلائیں۔",
+    "reason": "Complete the negative certification sentence naturally while retaining both safety/strength limits and the trust warning.",
+    "review_finding_ids": [],
+    "status": "edited-awaiting-independent-recheck"
+  },
+  {
+    "id": "UR-E-014",
+    "key": "Complete passing checks before publishing.",
+    "source": "Complete passing checks before publishing.",
+    "before": "شائع کرنے سے پہلے تمام جانچیں کامیاب مکمل کریں۔",
+    "after": "شائع کرنے سے پہلے تمام جانچیں کامیابی سے مکمل کریں۔",
+    "reason": "Repair adverbial grammar in the publishing validation instruction.",
+    "review_finding_ids": [],
+    "status": "edited-awaiting-independent-recheck"
+  },
+  {
+    "id": "UR-E-015",
+    "key": "Copies the {slot0} texture and materials. Different models wrap that paint differently; inspect the results below.",
+    "source": "Copies the {slot0} texture and materials. Different models wrap that paint differently; inspect the results below.",
+    "before": "{slot0} کی ساخت اور مواد نقل کرتا ہے۔ مختلف ماڈل اس رنگ کو مختلف انداز میں لپیٹتے ہیں؛ نیچے نتائج دیکھیں۔",
+    "after": "{slot0} کا ٹیکسچر اور مواد نقل کرتا ہے۔ مختلف ماڈل اس رنگ کو مختلف انداز میں لپیٹتے ہیں؛ نیچے نتائج دیکھیں۔",
+    "reason": "Copy paint texture/materials, not model geometry or structure; use the recognizable technical loanword for texture.",
+    "review_finding_ids": [],
+    "status": "edited-awaiting-independent-recheck"
+  },
+  {
+    "id": "UR-E-016",
+    "key": "Create a building or an upgrade family with custom artwork.",
+    "source": "Create a building or an upgrade family with custom artwork.",
+    "before": "حسبِ پسند فن پارے سے عمارت یا ترقی کا خاندان بنائیں۔",
+    "after": "حسبِ پسند فن پارے سے عمارت یا اپ گریڈ کا خاندان بنائیں۔",
+    "reason": "Concrete upgrade family should align اپ گریڈ rather than generic ترقی.",
+    "review_finding_ids": [
+      "UR-O-004-01"
+    ],
+    "status": "edited-awaiting-independent-recheck"
+  },
+  {
+    "id": "UR-E-017",
+    "key": "Delayed orders",
+    "source": "Delayed orders",
+    "before": "تاخیر سے آنے والے احکامات",
+    "after": "تاخیر سے نافذ ہونے والے احکامات",
+    "reason": "Match diagnostics describe execution after the requested tick, not arrival latency.",
+    "review_finding_ids": [],
+    "status": "edited-awaiting-independent-recheck"
+  },
+  {
+    "id": "UR-E-018",
+    "key": "Diverged",
+    "source": "Diverged",
+    "before": "الگ راستے پر گیا",
+    "after": "کھیل کی حالت مختلف ہو گئی",
+    "reason": "الگ راستے پر گیا describes movement on a different route. This state denotes mismatching simulation state/checksums, already correctly described by lowercase diverged.",
+    "review_finding_ids": [
+      "UR-O-004-02"
+    ],
+    "status": "edited-awaiting-independent-recheck"
+  },
+  {
+    "id": "UR-E-019",
+    "key": "Duplicate rig clip",
+    "source": "Duplicate rig clip",
+    "before": "رِگ کلپ کی نقل بنائیں",
+    "after": "رِگ کلپ کی ID دہرائی گئی ہے",
+    "reason": "This is a validation error for a repeated rig clip ID (skins/rig.ts), not a command to copy a clip. Current imperative tells user to create the defect.",
+    "review_finding_ids": [
+      "UR-O-005-01"
+    ],
+    "status": "edited-awaiting-independent-recheck"
+  },
+  {
+    "id": "UR-E-020",
+    "key": "Duplicate shape clip",
+    "source": "Duplicate shape clip",
+    "before": "شکل کے کلپ کی نقل بنائیں",
+    "after": "شکل کے کلپ کی ID دہرائی گئی ہے",
+    "reason": "This is a validation error for repeated shape clip ID (skins/shapes.ts), not a duplication command.",
+    "review_finding_ids": [
+      "UR-O-005-02"
+    ],
+    "status": "edited-awaiting-independent-recheck"
+  },
+  {
+    "id": "UR-E-021",
+    "key": "Enter to send · Shift + Enter for a new line. Creation requests build automatically · 1 credit on delivery.",
+    "source": "Enter to send · Shift + Enter for a new line. Creation requests build automatically · 1 credit on delivery.",
+    "before": "بھیجنے کے لیے Enter · نئی سطر کے لیے Shift + Enter۔ تخلیق کی درخواستیں خود بخود بناتی ہیں · فراہمی پر 1 کریڈٹ۔",
+    "after": "بھیجنے کے لیے Enter · نئی سطر کے لیے Shift + Enter۔ تخلیق کی درخواستوں پر خود بخود کام شروع ہوتا ہے · فراہمی پر 1 کریڈٹ۔",
+    "reason": "Repair the missing object in the creation-request clause; retain exact keyboard names and delivery price.",
+    "review_finding_ids": [],
+    "status": "edited-awaiting-independent-recheck"
+  },
+  {
+    "id": "UR-E-022",
+    "key": "Follow latest",
+    "source": "Follow latest",
+    "before": "تازہ ترین کی پیروی کریں",
+    "after": "تازہ ترین ورژن کی پیروی کریں",
+    "reason": "Studio follow action needs an object and refers to the newest generated version, not a social follow.",
+    "review_finding_ids": [],
+    "status": "edited-awaiting-independent-recheck"
+  },
+  {
+    "id": "UR-E-023",
+    "key": "Hide provisional ratings",
+    "source": "Hide provisional ratings",
+    "before": "عارضی ریٹنگ چھپائیں",
+    "after": "ابتدائی ریٹنگ چھپائیں",
+    "reason": "Consistent with the existing leading-space provisional label; ratings are preliminary, not temporary appointments.",
+    "review_finding_ids": [],
+    "status": "edited-awaiting-independent-recheck"
+  },
+  {
+    "id": "UR-E-024",
+    "key": "Invalid {value0} normal camera",
+    "source": "Invalid {value0} normal camera",
+    "before": "{value0} کا عمودی کیمرہ درست نہیں",
+    "after": "{value0} کے سطحی عمودوں کو کیمرے کے مختصات میں بدلنے کی میٹرکس درست نہیں",
+    "reason": "binaryAsset.ts validates the orthonormal normalToCamera matrix used to transform surface normals; عمودی کیمرہ instead means a vertical camera.",
+    "review_finding_ids": [
+      "UR-O-007-01"
+    ],
+    "status": "edited-awaiting-independent-recheck"
+  },
+  {
+    "id": "UR-E-025",
+    "key": "Keep lengths (must already match)",
+    "source": "Keep lengths (must already match)",
+    "before": "لمبائیاں برقرار رکھیں (پہلے سے یکساں ہونی چاہییں)",
+    "after": "دورانیے برقرار رکھیں (ان کا پہلے سے یکساں ہونا ضروری ہے)",
+    "reason": "Music/Library.tsx length repair controls use audio duration, not spatial length.",
+    "review_finding_ids": [],
+    "status": "edited-awaiting-independent-recheck"
+  },
+  {
+    "id": "UR-E-026",
+    "key": "Last {slot0} day",
+    "source": {
+      "one": "Last {slot0} day",
+      "other": "Last {slot0} days"
+    },
+    "before": {
+      "one": "آخری {slot0} دن",
+      "other": "آخری {slot0} دن"
+    },
+    "after": {
+      "one": "پچھلا {slot0} دن",
+      "other": "پچھلے {slot0} دن"
+    },
+    "reason": "Previous time window, not a final day; Urdu singular/plural adjective agreement is explicit.",
+    "review_finding_ids": [],
+    "status": "edited-awaiting-independent-recheck"
+  },
+  {
+    "id": "UR-E-027",
+    "key": "Last {slot0} days",
+    "source": "Last {slot0} days",
+    "before": "آخری {slot0} دن",
+    "after": "پچھلے {slot0} دن",
+    "reason": "Keep the legacy plural key consistent with the plural-family time window.",
+    "review_finding_ids": [],
+    "status": "edited-awaiting-independent-recheck"
+  },
+  {
+    "id": "UR-E-028",
+    "key": "Length repair",
+    "source": "Length repair",
+    "before": "لمبائی کی مرمت",
+    "after": "دورانیے کی درستی",
+    "reason": "Music duration repair is more idiomatic and precise than literal length repair.",
+    "review_finding_ids": [],
+    "status": "edited-awaiting-independent-recheck"
+  },
+  {
+    "id": "UR-E-029",
+    "key": "Matching lengths does not align beats or harmony.",
+    "source": "Matching lengths does not align beats or harmony.",
+    "before": "لمبائیاں برابر کرنے سے تال یا آہنگ ہم آہنگ نہیں ہوتے۔",
+    "after": "دورانیے برابر ہونے سے تال اور سُروں کا باہمی میل خود بخود درست نہیں ہوتا۔",
+    "reason": "Clarify audio durations and preserve the warning that equal duration does not establish musical alignment.",
+    "review_finding_ids": [],
+    "status": "edited-awaiting-independent-recheck"
+  },
+  {
+    "id": "UR-E-030",
+    "key": "Measured by the relay; typical value first, then the 95th percentile. Ping: round trip between the player and the relay. {slot0} Behind: how far the player’s game ran behind the match clock, their input delay included. {slot1} Quality is the worst of these and of reconnects, time offline and delayed orders. Offline: time disconnected before reconnecting. Delayed orders: orders that ran a tick later than asked.",
+    "source": "Measured by the relay; typical value first, then the 95th percentile. Ping: round trip between the player and the relay. {slot0} Behind: how far the player’s game ran behind the match clock, their input delay included. {slot1} Quality is the worst of these and of reconnects, time offline and delayed orders. Offline: time disconnected before reconnecting. Delayed orders: orders that ran a tick later than asked.",
+    "before": "ریلے کی پیمائش؛ پہلے عام قدر، پھر 95واں صدکیہ۔ پنگ: کھلاڑی اور ریلے کے درمیان آنے جانے کا وقت۔ {slot0} پیچھے: کھلاڑی کا کھیل میچ کی گھڑی سے کتنا پیچھے چلا، اس کی ان پٹ تاخیر سمیت۔ {slot1} معیار ان قدروں، دوبارہ رابطوں، آف لائن وقت اور تاخیر سے آنے والے احکامات میں بدترین ہے۔ آف لائن: دوبارہ رابطے سے پہلے منقطع رہنے کا وقت۔ تاخیر سے آنے والے احکامات: ایسے احکامات جو مانگے گئے وقت سے ایک ٹک بعد چلے۔",
+    "after": "ریلے کی پیمائش؛ پہلے عام قدر، پھر 95واں صدکیہ۔ پنگ: کھلاڑی اور ریلے کے درمیان آنے جانے کا وقت۔ {slot0} پیچھے: کھلاڑی کا کھیل میچ کی گھڑی سے کتنا پیچھے چلا، اس کی ان پٹ تاخیر سمیت۔ {slot1} معیار ان قدروں، دوبارہ رابطوں، آف لائن وقت اور تاخیر سے نافذ ہونے والے احکامات میں بدترین ہے۔ آف لائن: دوبارہ رابطے سے پہلے منقطع رہنے کا وقت۔ تاخیر سے نافذ ہونے والے احکامات: ایسے احکامات جو مانگے گئے وقت سے ایک ٹک بعد چلے۔",
+    "reason": "Keep the relay quality explanation and late-execution label consistent; no latency thresholds or slot values changed.",
+    "review_finding_ids": [],
+    "status": "edited-awaiting-independent-recheck"
+  },
+  {
+    "id": "UR-E-031",
+    "key": "Measured model usage is charged, including code that later fails tests.",
+    "source": "Measured model usage is charged, including code that later fails tests.",
+    "before": "ناپا گیا ماڈل استعمال وصول کیا جاتا ہے، بشمول وہ کوڈ جو بعد میں جانچوں میں ناکام ہو۔",
+    "after": "ماڈل کے ناپے گئے استعمال پر کریڈٹ کاٹے جاتے ہیں، اس کوڈ کے لیے بھی جو بعد میں جانچوں میں ناکام ہو۔",
+    "reason": "CodingStudio.tsx credit billing warning: usage is billed even for failing code; the previous wording said usage itself is collected.",
+    "review_finding_ids": [],
+    "status": "edited-awaiting-independent-recheck"
+  },
+  {
+    "id": "UR-E-032",
+    "key": "Prepare Calm, Building, and Combat arrangements of the same piece. Each must last 10 seconds to 15 minutes. Originals are deleted after conversion; keep your own source files.",
+    "source": "Prepare Calm, Building, and Combat arrangements of the same piece. Each must last 10 seconds to 15 minutes. Originals are deleted after conversion; keep your own source files.",
+    "before": "اسی موسیقی کے پُرسکون، تعمیر اور لڑائی والے انتظام تیار کریں۔ ہر ایک 10 سیکنڈ سے 15 منٹ کا ہونا چاہیے۔ تبدیلی کے بعد اصل فائلیں حذف ہوتی ہیں؛ اپنی ماخذ فائلیں اپنے پاس رکھیں۔",
+    "after": "اسی دھن کی سکون، تعمیر اور لڑائی کی کیفیتوں کے لیے الگ موسیقی ترتیب دیں۔ ہر ترتیب کا دورانیہ 10 سیکنڈ سے 15 منٹ ہونا چاہیے۔ تبدیلی کے بعد اصل فائلیں حذف ہو جاتی ہیں؛ اپنی ماخذ فائلیں اپنے پاس رکھیں۔",
+    "reason": "انتظام is administrative arrangement and unnatural for musical arrangements. The calm mood label also changes from سکون to پُرسکون. Preserve the already correct destructive original-file warning and duration limits.",
+    "review_finding_ids": [
+      "UR-O-009-01"
+    ],
+    "status": "edited-awaiting-independent-recheck"
+  },
+  {
+    "id": "UR-E-033",
+    "key": "Questions and brainstorming are free and require an available credit. A creation or revision request starts one build of up to 12 entries. Failed generations return their reservation.",
+    "source": "Questions and brainstorming are free and require an available credit. A creation or revision request starts one build of up to 12 entries. Failed generations return their reservation.",
+    "before": "سوال اور خیالات پر غور مفت ہیں اور دستیاب کریڈٹ درکار ہے۔ تخلیق یا ترمیم کی درخواست زیادہ سے زیادہ 12 اندراجات کی ایک تیاری شروع کرتی ہے۔ ناکام تخلیقات اپنی مختص رقم واپس کرتی ہیں۔",
+    "after": "سوال اور خیالات پر غور مفت ہیں اور دستیاب کریڈٹ درکار ہے۔ تخلیق یا ترمیم کی درخواست زیادہ سے زیادہ 12 اندراجات کی ایک تیاری شروع کرتی ہے۔ ناکام تخلیقات کے لیے مختص کریڈٹ واپس کر دیے جاتے ہیں۔",
+    "reason": "مختص رقم implies a cash amount; this is a reservation of product credits, not reimbursement of the purchase money. Other strings correctly use تخصیص.",
+    "review_finding_ids": [
+      "UR-O-010-01"
+    ],
+    "status": "edited-awaiting-independent-recheck"
+  },
+  {
+    "id": "UR-E-034",
+    "key": "Questions and brainstorming are free. A creation or revision request starts one build of up to 12 building variants. Failed generations return their reservation.",
+    "source": "Questions and brainstorming are free. A creation or revision request starts one build of up to 12 building variants. Failed generations return their reservation.",
+    "before": "سوال اور خیالات پر غور مفت ہیں۔ تخلیق یا ترمیم کی درخواست عمارت کی زیادہ سے زیادہ 12 صورتوں کی ایک تیاری شروع کرتی ہے۔ ناکام تخلیقات اپنی مختص رقم واپس کرتی ہیں۔",
+    "after": "سوال اور خیالات پر غور مفت ہیں۔ تخلیق یا ترمیم کی درخواست عمارت کی زیادہ سے زیادہ 12 صورتوں کی ایک تیاری شروع کرتی ہے۔ ناکام تخلیقات کے لیے مختص کریڈٹ واپس کر دیے جاتے ہیں۔",
+    "reason": "Same credit-versus-cash ambiguity: failed builds release reserved credits; they do not refund cash.",
+    "review_finding_ids": [
+      "UR-O-010-02"
+    ],
+    "status": "edited-awaiting-independent-recheck"
+  },
+  {
+    "id": "UR-E-035",
+    "key": "Registered signups",
+    "source": "Registered signups",
+    "before": "رجسٹرڈ شمولیتیں",
+    "after": "نئے رجسٹرڈ اکاؤنٹس",
+    "reason": "Admin presentation counts registered account creations, not vaguely translated participations.",
+    "review_finding_ids": [],
+    "status": "edited-awaiting-independent-recheck"
+  },
+  {
+    "id": "UR-E-036",
+    "key": "Reported skin texture",
+    "source": "Reported skin texture",
+    "before": "رپورٹ شدہ ظاہری شکل کی ساخت",
+    "after": "رپورٹ شدہ ظاہری شکل کا ٹیکسچر",
+    "reason": "Use the same precise texture term in moderation as in the skin editor.",
+    "review_finding_ids": [],
+    "status": "edited-awaiting-independent-recheck"
+  },
+  {
+    "id": "UR-E-037",
+    "key": "Restrictions and deletion require a lower-role account.",
+    "source": "Restrictions and deletion require a lower-role account.",
+    "before": "پابندی اور حذف کے لیے کم اختیارات والا اکاؤنٹ درکار ہے۔",
+    "after": "پابندی لگانے یا حذف کرنے کے لیے متعلقہ اکاؤنٹ کے اختیارات آپ سے کم ہونے چاہییں۔",
+    "reason": "Align with the three independently reviewed lower-role restrictions: the target must be below the acting account.",
+    "review_finding_ids": [],
+    "status": "edited-awaiting-independent-recheck"
+  },
+  {
+    "id": "UR-E-038",
+    "key": "Save your manual building edits in Edit before generating, restoring a version, or undoing.",
+    "source": "Save your manual building edits in Edit before generating, restoring a version, or undoing.",
+    "before": "تخلیق، ورژن کی بحالی یا واپس لینے سے پہلے ترمیم میں اپنی عمارت کی دستی ترامیم محفوظ کریں۔",
+    "after": "تخلیق، ورژن کی بحالی یا تبدیلی کالعدم کرنے سے پہلے ترمیم میں اپنی عمارت کی دستی ترامیم محفوظ کریں۔",
+    "reason": "Consistent Undo terminology in a warning to save manual work before a destructive edit action.",
+    "review_finding_ids": [],
+    "status": "edited-awaiting-independent-recheck"
+  },
+  {
+    "id": "UR-E-039",
+    "key": "Save your manual terrain edits in Edit before generating, restoring a version, or undoing.",
+    "source": "Save your manual terrain edits in Edit before generating, restoring a version, or undoing.",
+    "before": "تخلیق، ورژن کی بحالی یا واپس لینے سے پہلے ترمیم میں زمین کی دستی ترامیم محفوظ کریں۔",
+    "after": "تخلیق، ورژن کی بحالی یا تبدیلی کالعدم کرنے سے پہلے ترمیم میں زمین کی دستی ترامیم محفوظ کریں۔",
+    "reason": "Consistent Undo terminology in the parallel terrain manual-work warning.",
+    "review_finding_ids": [],
+    "status": "edited-awaiting-independent-recheck"
+  },
+  {
+    "id": "UR-E-040",
+    "key": "Set the goals and your globs get to work. Feed your colony, train your units and explore together.",
+    "source": "Set the goals and your globs get to work. Feed your colony, train your units and explore together.",
+    "before": "اہداف مقرر کریں اور آپ کے گلوب کام پر لگ جائیں گے۔ بستی کو کھانا دیں، یونٹ تربیت دیں اور مل کر کھوج کریں۔",
+    "after": "اہداف مقرر کریں اور آپ کے گلوب کام پر لگ جائیں گے۔ بستی کو کھانا دیں، یونٹوں کو تربیت دیں اور مل کر کھوج کریں۔",
+    "reason": "یونٹ تربیت دیں lacks required object/postposition and reads as units giving training.",
+    "review_finding_ids": [
+      "UR-O-011-01"
+    ],
+    "status": "edited-awaiting-independent-recheck"
+  },
+  {
+    "id": "UR-E-041",
+    "key": "Singular {value0} camera",
+    "source": "Singular {value0} camera",
+    "before": "{value0} کا کیمرہ سنگولر ہے",
+    "after": "{value0} کے کیمرے کی میٹرکس کا معکوس نہیں نکالا جا سکتا",
+    "reason": "binaryAsset.ts:98 rejects a zero determinant; describe the noninvertible matrix rather than merely transliterating singular.",
+    "review_finding_ids": [],
+    "status": "edited-awaiting-independent-recheck"
+  },
+  {
+    "id": "UR-E-042",
+    "key": "Skin texture",
+    "source": "Skin texture",
+    "before": "ظاہری شکل کی ساخت",
+    "after": "ظاہری شکل کا ٹیکسچر",
+    "reason": "Distinguish a paint texture from structural geometry, consistently with the copy-texture help.",
+    "review_finding_ids": [],
+    "status": "edited-awaiting-independent-recheck"
+  },
+  {
+    "id": "UR-E-043",
+    "key": "Start with one building, add stages for upgrades, then save and publish. Artwork uploads are saved immediately; choose their sprite keys in gameSprite and miniSprite.",
+    "source": "Start with one building, add stages for upgrades, then save and publish. Artwork uploads are saved immediately; choose their sprite keys in gameSprite and miniSprite.",
+    "before": "ایک عمارت سے شروع کریں، ترقی کے لیے مراحل شامل کریں، پھر محفوظ اور شائع کریں۔ فن پارے کے اپ لوڈ فوراً محفوظ ہوتے ہیں؛ ان کی اسپرائٹ کلیدیں gameSprite اور miniSprite میں منتخب کریں۔",
+    "after": "ایک عمارت سے شروع کریں، اپ گریڈ کے لیے مراحل شامل کریں، پھر محفوظ اور شائع کریں۔ فن پارے کے اپ لوڈ فوراً محفوظ ہوتے ہیں؛ ان کی اسپرائٹ کلیدیں gameSprite اور miniSprite میں منتخب کریں۔",
+    "reason": "Concrete building upgrades should align اپ گریڈ in the native controls and online upgrade labels. All JSON identifiers must remain exact.",
+    "review_finding_ids": [
+      "UR-O-012-01"
+    ],
+    "status": "edited-awaiting-independent-recheck"
+  },
+  {
+    "id": "UR-E-044",
+    "key": "Synth · warm bells, pads & pulse",
+    "source": "Synth · warm bells, pads & pulse",
+    "before": "سنتھیسائزر · گرم گھنٹیاں، پھیلے سُر اور دھڑکن",
+    "after": "سنتھیسائزر · نرم اور بھرپور آہنگ والی گھنٹیاں، پھیلے سُر اور دھڑکن",
+    "reason": "Warm describes musical timbre; physically hot bells or redundant soft-warm phrasing distract from the sound palette.",
+    "review_finding_ids": [
+      "UR-O-012-02"
+    ],
+    "status": "edited-awaiting-independent-recheck"
+  },
+  {
+    "id": "UR-E-045",
+    "key": "This building uses installed game artwork. Create or revise its appearance to preview custom artwork here.",
+    "source": "This building uses installed game artwork. Create or revise its appearance to preview custom artwork here.",
+    "before": "یہ عمارت نصب شدہ کھیل کا فن پارہ استعمال کرتی ہے۔ یہاں حسبِ پسند فن پارے کا پیش منظر دیکھنے کے لیے اس کی شکل بنائیں یا بدلیں۔",
+    "after": "یہ عمارت کھیل میں نصب شدہ فن پارہ استعمال کرتی ہے۔ یہاں حسبِ پسند فن پارے کا پیش منظر دیکھنے کے لیے اس کی شکل بنائیں یا بدلیں۔",
+    "reason": "Attach installed to artwork in the game, rather than implying an installed-game noun phrase.",
+    "review_finding_ids": [],
+    "status": "edited-awaiting-independent-recheck"
+  },
+  {
+    "id": "UR-E-046",
+    "key": "This family uses stock artwork.",
+    "source": "This family uses stock artwork.",
+    "before": "یہ خاندان عام فن پارہ استعمال کرتا ہے۔",
+    "after": "یہ خاندان کھیل کے پہلے سے شامل فن پارے استعمال کرتا ہے۔",
+    "reason": "Stock artwork is the bundled asset set, not merely ordinary artwork.",
+    "review_finding_ids": [],
+    "status": "edited-awaiting-independent-recheck"
+  },
+  {
+    "id": "UR-E-047",
+    "key": "Undo",
+    "source": "Undo",
+    "before": "واپس لیں",
+    "after": "کالعدم کریں",
+    "reason": "The same action is translated کالعدم کریں in the leading-space key. Use one term across the same Studio revision controls, including undo revision.",
+    "review_finding_ids": [
+      "UR-O-014-02"
+    ],
+    "status": "edited-awaiting-independent-recheck"
+  },
+  {
+    "id": "UR-E-048",
+    "key": "Undo revision",
+    "source": "Undo revision",
+    "before": "ترمیم واپس لیں",
+    "after": "ترمیم کالعدم کریں",
+    "reason": "Align the concrete undo action with leading-space Undo کالعدم کریں; واپس لیں can mean withdrawing a revision rather than reversing it.",
+    "review_finding_ids": [
+      "UR-O-014-03"
+    ],
+    "status": "edited-awaiting-independent-recheck"
+  },
+  {
+    "id": "UR-E-049",
+    "key": "Usernames can only use letters, digits, dots, dashes and underscores (no spaces).",
+    "source": "Usernames can only use letters, digits, dots, dashes and underscores (no spaces).",
+    "before": "صارف نام میں صرف حروف، ہندسے، نقطے، ڈیش اور انڈر اسکور ہو سکتے ہیں (خالی جگہ نہیں)۔",
+    "after": "صارف نام میں صرف انگریزی حروف (A–Z، a–z)، ہندسے (0–9)، نقطے، ڈیش اور انڈر اسکور ہو سکتے ہیں (خالی جگہ نہیں)۔",
+    "reason": "Actual registration regex allows ASCII Latin letters and digits only. Unqualified حروف misleadingly permits Urdu characters; pair with the registration hint finding.",
+    "review_finding_ids": [
+      "UR-O-014-01"
+    ],
+    "status": "edited-awaiting-independent-recheck"
+  },
+  {
+    "id": "UR-E-050",
+    "key": "You can only ban accounts with a lower role.",
+    "source": "You can only ban accounts with a lower role.",
+    "before": "آپ صرف کم اختیارات والے اکاؤنٹس پر پابندی لگا سکتے ہیں۔",
+    "after": "آپ صرف اپنے سے کم اختیارات والے اکاؤنٹس پر پابندی لگا سکتے ہیں۔",
+    "reason": "کم اختیارات only means low privileges, omitting relative hierarchy: the target role must be lower than the acting moderator own role.",
+    "review_finding_ids": [
+      "UR-O-015-01"
+    ],
+    "status": "edited-awaiting-independent-recheck"
+  },
+  {
+    "id": "UR-E-051",
+    "key": "You can only delete accounts with a lower role.",
+    "source": "You can only delete accounts with a lower role.",
+    "before": "آپ صرف کم اختیارات والے اکاؤنٹس حذف کر سکتے ہیں۔",
+    "after": "آپ صرف اپنے سے کم اختیارات والے اکاؤنٹس حذف کر سکتے ہیں۔",
+    "reason": "Make the relative permission boundary explicit, not merely an account with low privileges.",
+    "review_finding_ids": [
+      "UR-O-015-02"
+    ],
+    "status": "edited-awaiting-independent-recheck"
+  },
+  {
+    "id": "UR-E-052",
+    "key": "You can only mute accounts with a lower role.",
+    "source": "You can only mute accounts with a lower role.",
+    "before": "آپ صرف کم اختیارات والے اکاؤنٹس کی چیٹ پر پابندی لگا سکتے ہیں۔",
+    "after": "آپ صرف اپنے سے کم اختیارات والے اکاؤنٹس کی چیٹ پر پابندی لگا سکتے ہیں۔",
+    "reason": "Make relative permissions explicit; current chat context is correct.",
+    "review_finding_ids": [
+      "UR-O-015-03"
+    ],
+    "status": "edited-awaiting-independent-recheck"
+  },
+  {
+    "id": "UR-E-053",
+    "key": "Your creation will appear here. You can inspect, edit, compare, and publish saved versions.",
+    "source": "Your creation will appear here. You can inspect, edit, compare, and publish saved versions.",
+    "before": "آپ کی تخلیق یہاں ظاہر ہو گی۔ محفوظ ورژن دیکھ، بدل، موازنہ اور شائع کر سکتے ہیں۔",
+    "after": "آپ کی تخلیق یہاں ظاہر ہو گی۔ آپ محفوظ ورژن دیکھ سکتے ہیں، ان میں ترمیم اور ان کا موازنہ کر سکتے ہیں، اور انہیں شائع کر سکتے ہیں۔",
+    "reason": "Coordinated verbs دیکھ، بدل، موازنہ اور شائع کر سکتے ہیں share کر with nouns but not دیکھ/بدل; inspect/edit infinitive forms are malformed.",
+    "review_finding_ids": [
+      "UR-O-015-04"
+    ],
+    "status": "edited-awaiting-independent-recheck"
+  },
+  {
+    "id": "UR-E-054",
+    "key": "check needs",
+    "source": "check needs",
+    "before": "ضروریات جانچیں",
+    "after": "جانچ",
+    "reason": "Misread as imperative check the requirements. ValidationPanel.tsx43 inserts this after a count inside the attention template; must be a noun fragment paired with checks need and the outer template.",
+    "review_finding_ids": [
+      "UR-O-015-05"
+    ],
+    "status": "edited-awaiting-independent-recheck"
+  },
+  {
+    "id": "UR-E-055",
+    "key": "checks need",
+    "source": "checks need",
+    "before": "جانچوں کو درکار ہے",
+    "after": "جانچوں",
+    "reason": "Paired fragment currently carries a predicate before the outer attention noun. Coordinate with check needs and {value0} {value1} attention to form a complete Urdu sentence.",
+    "review_finding_ids": [
+      "UR-O-016-01"
+    ],
+    "status": "edited-awaiting-independent-recheck"
+  },
+  {
+    "id": "UR-E-056",
+    "key": "diverged",
+    "source": "diverged",
+    "before": "الگ راستے پر گیا",
+    "after": "کھیل کی حالت مختلف ہو گئی",
+    "reason": "Replay/match state badge means simulation divergence, not travelling another path (common.tsx161 and messages.ts).",
+    "review_finding_ids": [
+      "UR-O-016-02"
+    ],
+    "status": "edited-awaiting-independent-recheck"
+  },
+  {
+    "id": "UR-E-057",
+    "key": "provisional",
+    "source": "provisional",
+    "before": "عارضی",
+    "after": "ابتدائی",
+    "reason": "Leaderboard and player callers use a preliminary rating status, consistently with the existing parenthetical label.",
+    "review_finding_ids": [],
+    "status": "edited-awaiting-independent-recheck"
+  },
+  {
+    "id": "UR-E-058",
+    "key": "{slot0} and resolve",
+    "source": "{slot0} and resolve",
+    "before": "{slot0} کر کے حل کریں",
+    "after": "{slot0} اور رپورٹ حل کریں",
+    "reason": "Inserted slot is already a complete imperative بند کریں or چھپائیں (admin/Moderation.tsx104), so current output becomes بند کریں کر کے حل کریں.",
+    "review_finding_ids": [
+      "UR-O-016-03"
+    ],
+    "status": "edited-awaiting-independent-recheck"
+  },
+  {
+    "id": "UR-E-059",
+    "key": "Comparison with ",
+    "source": "Comparison with ",
+    "before": "اس سے موازنہ ",
+    "after": "موازنے کی بنیاد: ",
+    "reason": "Prepended before compared.title (AiBuildingStudio.tsx722); اس سے موازنہ + title leaves title after its postposition, with redundant اس.",
+    "review_finding_ids": [
+      "UR-O-017-01"
+    ],
+    "status": "edited-awaiting-independent-recheck"
+  },
+  {
+    "id": "UR-E-060",
+    "key": "Example of ",
+    "source": "Example of ",
+    "before": "اس کی مثال ",
+    "after": "مثال: ",
+    "reason": "Prepended before generator name (Generators.tsx171); اس کی مثال + name is not the intended X example phrase. Use a neutral label that works before a proper name.",
+    "review_finding_ids": [
+      "UR-O-017-02"
+    ],
+    "status": "edited-awaiting-independent-recheck"
+  },
+  {
+    "id": "UR-E-061",
+    "key": "Good under {value0}, fair under {value1}, poor from {value2}.",
+    "source": "Good under {value0}, fair under {value1}, poor from {value2}.",
+    "before": "{value0} سے کم اچھا، {value1} سے کم مناسب، {value2} سے خراب۔",
+    "after": "{value0} سے کم: اچھا؛ {value1} سے کم: مناسب؛ {value2} یا اس سے زیادہ: خراب۔",
+    "reason": "Unpunctuated {value0} سے کم اچھا reads less good than X and loses the inclusive poor threshold. Match.tsx245 defines category boundaries explicitly.",
+    "review_finding_ids": [
+      "UR-O-017-03"
+    ],
+    "status": "edited-awaiting-independent-recheck"
+  },
+  {
+    "id": "UR-E-062",
+    "key": "The provider outcome needs reconciliation. Your reserved {value0} credits remain held; new requests are paused. Manual editing and export remain available.",
+    "source": "The provider outcome needs reconciliation. Your reserved {value0} credits remain held; new requests are paused. Manual editing and export remain available.",
+    "before": "فراہم کنندہ کے نتیجے کا حساب ملانا ضروری ہے۔ آپ کے مختص {value0} کریڈٹ روکے رہتے ہیں؛ نئی درخواستیں رکی ہیں۔ دستی ترمیم اور برآمد دستیاب ہیں۔",
+    "after": "فراہم کنندہ کے نتیجے کا حساب ملانا ضروری ہے۔ آپ کے مختص {value0} کریڈٹ روک کر رکھے جاتے ہیں؛ نئی درخواستیں رکی ہیں۔ دستی ترمیم اور برآمد دستیاب ہیں۔",
+    "reason": "روکے رہتے ہیں is an active causative form (remain stopping/holding) without a passive auxiliary; credit holds should be clearly held, not doing the holding.",
+    "review_finding_ids": [
+      "UR-O-018-01"
+    ],
+    "status": "edited-awaiting-independent-recheck"
+  },
+  {
+    "id": "UR-E-063",
+    "key": "one unit per harvest",
+    "source": "one unit per harvest",
+    "before": "ہر کٹائی میں ایک اکائی",
+    "after": "وسائل جمع کرنے کی ہر باری میں ایک اکائی",
+    "reason": "Generic material harvesting applies to wood/stone and other resources, not only crop cutting; align native generic resource collection glossary.",
+    "review_finding_ids": [
+      "UR-O-018-02"
+    ],
+    "status": "edited-awaiting-independent-recheck"
+  },
+  {
+    "id": "UR-E-064",
+    "key": "stock remains available after harvesting",
+    "source": "stock remains available after harvesting",
+    "before": "کٹائی کے بعد ذخیرہ دستیاب رہتا ہے",
+    "after": "وسائل جمع کرنے کے بعد ذخیرہ دستیاب رہتا ہے",
+    "reason": "Generic resource-stock rule is not necessarily crop cutting.",
+    "review_finding_ids": [
+      "UR-O-018-03"
+    ],
+    "status": "edited-awaiting-independent-recheck"
+  },
+  {
+    "id": "UR-E-065",
+    "key": "the whole stock per harvest",
+    "source": "the whole stock per harvest",
+    "before": "ہر کٹائی میں پورا ذخیرہ",
+    "after": "وسائل جمع کرنے کی ہر باری میں پورا ذخیرہ",
+    "reason": "Generic resource collection, not necessarily agricultural harvest/cutting.",
+    "review_finding_ids": [
+      "UR-O-018-04"
+    ],
+    "status": "edited-awaiting-independent-recheck"
+  },
+  {
+    "id": "UR-E-066",
+    "key": "{value0} {value1} attention",
+    "source": "{value0} {value1} attention",
+    "before": "{value0} {value1} توجہ",
+    "after": "{value0} {value1} پر توجہ درکار ہے",
+    "reason": "ValidationPanel.tsx43 supplies numeric count and check needs/checks need fragment. Current value lacks Urdu predicate and singular fragment is wrongly imperative. Resolve all three keys together.",
+    "review_finding_ids": [
+      "UR-O-018-05"
+    ],
+    "status": "edited-awaiting-independent-recheck"
+  }
+]

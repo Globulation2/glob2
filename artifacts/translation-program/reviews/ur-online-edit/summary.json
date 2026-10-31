@@ -1,0 +1,175 @@
+{
+  "editor": "/root/hindi_translation",
+  "author": "/root/urdu_translation",
+  "independent_reviewer": "/root/pilot_context",
+  "status": "full-editorial-pass-complete-awaiting-independent-recheck",
+  "scope": "Urdu online only; no native/live/registration writes",
+  "original_catalog_sha256": "0da47c791e9c389d68b54bfd67d418872f77a2b107daa03fe789f1ab02ab8a81",
+  "edited_catalog_sha256": "f6c9ad7948a1772da6c47f7017fd5af68b43d562f1117beca6fb3b8eb1e18135",
+  "source_file_sha256": "d7c8f06c7f023e77a027389d7decfa74bfd05c66ba151401317d67cc8bab1538",
+  "source_contract_sha256": "aacd8a342e9e734ba47f902a161ac1a45badff5842a617bcd68bf8e2275d6013",
+  "checkout_head_at_edit": "6a16670c6daafa34f1f86a47014f23e0d05fd4e3",
+  "coverage": {
+    "all_keys_editorially_examined": 2835,
+    "batches": 18,
+    "plural_families": 27,
+    "plural_branches": 54,
+    "total_value_branches": 2862,
+    "changed_keys": 66,
+    "original_findings_corrected_pending_recheck": 34,
+    "additional_keys_edited_pending_recheck": 32,
+    "unchanged_exact_English_retention_keys": 84
+  },
+  "batches": [
+    {
+      "batch_id": "online-online-001",
+      "source_subset_sha256": "bcc2bb4f0b97d82e31a82086ffdbc921e7bf7ec83c3c700c9cfcc0eaa9aaa36c",
+      "before_target_subset_sha256": "fe17ccbda897d9cc5dccbbcf6f036712b40d6ccd53adbf5b593762d1c5f809e1",
+      "target_subset_sha256": "84d7a093fd817e01666eef4b3acee194ca39863bd3b4ffaf3c059a84c5b1ece3"
+    },
+    {
+      "batch_id": "online-online-002",
+      "source_subset_sha256": "bd5b7fe914da105e9c021b1da33d6e53a0a078bce0a7d8e9ea4fafc570ce838d",
+      "before_target_subset_sha256": "7708721e1357db948de11a9b4e1804300dceca6d8a9d0c230484cc1c81be9e3f",
+      "target_subset_sha256": "2b7b569c09e2923ce8c7055342e520e2485f0d4b07c633f57c9f81f056f60adc"
+    },
+    {
+      "batch_id": "online-online-003",
+      "source_subset_sha256": "d0f8d5fcd978e167f689aac0e3a9acf56a25357659ee2340c7bd01a806489da5",
+      "before_target_subset_sha256": "97029f66d14bc8e2d1df7a05bf49704056234c7d2a9638ca29d0811f17f16957",
+      "target_subset_sha256": "316231aef79f8e60ea27bc3514171a4ca300ad9fcfdf11a4a941acddf43f4ece"
+    },
+    {
+      "batch_id": "online-online-004",
+      "source_subset_sha256": "bbd7f9e87c746804f9bbf4c3c2cceebcdb7f96489b6d32620cf393d9d6ee6e93",
+      "before_target_subset_sha256": "ebfd01a968a181c9c72867c25909b4f60d574b2875d60a8c2ac4088b158f7cca",
+      "target_subset_sha256": "388b818ffc1fe37b84f5e914e52df557f4c780832890745634f441c29a91d4d8"
+    },
+    {
+      "batch_id": "online-online-005",
+      "source_subset_sha256": "56638308ee0b5710b4f26da69f76e0948169d16e3796d0473d8d51febd265127",
+      "before_target_subset_sha256": "c6f196081596b76e06dc85efb35678736d3e3f2f8c50ad61c1d2f9126c7b2d0b",
+      "target_subset_sha256": "3c4d630ddf9d8588893347a4bd344d32e4a744db4c6ef9cb453e6b2d4a0041d9"
+    },
+    {
+      "batch_id": "online-online-006",
+      "source_subset_sha256": "3fd21f7102eaf55fcc7acb9eb9157ad87c9423fc38d665a05b97f5ae11c7cb98",
+      "before_target_subset_sha256": "adba5ca8304a17bb8da4d645bb55b01d65abadfaf2602e0137c61b7d8687e8ba",
+      "target_subset_sha256": "02db62d6abcbbce0d5bf619e8916854b8c94e5ddee2900ccbcc5cdc589cdc138"
+    },
+    {
+      "batch_id": "online-online-007",
+      "source_subset_sha256": "687485ad4bccb92b0e880cb2a6dfaf11cea8086ddc4bb7c4e3b8e375ee7f7110",
+      "before_target_subset_sha256": "462e347449d58e78002fc76aa6a4e039f6519d88720d7713e1b02cb8fa4bf6a5",
+      "target_subset_sha256": "cd16ea93cbab2438f050ab945f0bcf5952a0a1452a581a6b6fa68979f1b1f73f"
+    },
+    {
+      "batch_id": "online-online-008",
+      "source_subset_sha256": "df261af9a1f9c09c1a80fe36dd6fa2fde1c09b70a1bec2fb304787b1b1a642bb",
+      "before_target_subset_sha256": "a9fe039e55310ebe7b882a440934b542a2ad6c5d6c7b87def361b9eaa1eb96c4",
+      "target_subset_sha256": "0c9895984ec7e56c385d97f657e5c0f06dc4d4c68a23e7f73db99b7775a4e595"
+    },
+    {
+      "batch_id": "online-online-009",
+      "source_subset_sha256": "46b52caaca1d15bc729391cd13deda5dbcac8dfd73d6d1ee3fdffeae1c00e1d5",
+      "before_target_subset_sha256": "e37b245f90422e4acf8a2e4b518486bda3764a2c18ea4a858c42d82fc22f892e",
+      "target_subset_sha256": "61aab55ce0674089bf1b8864c1a658f6b04eea0c97507ee20ab28a9f54c334d5"
+    },
+    {
+      "batch_id": "online-online-010",
+      "source_subset_sha256": "f229c14024da68fde786ca868489575e8639914046e789c015d8b47c51dc1e83",
+      "before_target_subset_sha256": "e9aff94234d677bdfd2d9d0882f7d2741f72583fa286216481ed99730ee67cd2",
+      "target_subset_sha256": "ab7fe87ccf713e206a5929238a6bba5d2f5f0c12453f629e10e82168e4bf221b"
+    },
+    {
+      "batch_id": "online-online-011",
+      "source_subset_sha256": "5e30a5d27bf67c264050f9a0a11d4be50d9253d56a50a6d4192e252259f40ef5",
+      "before_target_subset_sha256": "e401e0b4ef845d28e9f1ec5042cf8fc20e4cc53a1195d8a6bc2d13e55a19cc87",
+      "target_subset_sha256": "35b2f2581a38757548152250064be3af21874dad5c974cafb73490178068e364"
+    },
+    {
+      "batch_id": "online-online-012",
+      "source_subset_sha256": "f93a646142c28fd733b02142222dd6f5fb2309f01b0e2fa82ae20431369413a8",
+      "before_target_subset_sha256": "db45520d0edc62e89af90dd1ba62bf3ef2a116636510a832e3b55544bbd9970c",
+      "target_subset_sha256": "cd7cab2d758b112c802b36b29e4ecf4c6ec3310c3f0a4478d3243a57d3fca06c"
+    },
+    {
+      "batch_id": "online-online-013",
+      "source_subset_sha256": "c26f207112adacec88408f2fcc147798c11f332f4e4e2f9376ce18461f91b902",
+      "before_target_subset_sha256": "82640c12e1f5db0c48f3ecdf500d60fcf437efe511a4aa350a667498720e9dad",
+      "target_subset_sha256": "74ae0309f4822ac0c0520a8cd49906939b63d83eb04029ee46489486d5626be8"
+    },
+    {
+      "batch_id": "online-online-014",
+      "source_subset_sha256": "8e5cb9dbfafce23b875849e8323c6c25a773988f4ac474988170cf6abc601d6c",
+      "before_target_subset_sha256": "ada62aae5e38ac5d9595fefd4de66e0a14952abad5e02d1a42eda37d7de7016c",
+      "target_subset_sha256": "aaed867a224c289470c51d211b88416a00702a012c643a8cc8482cbd9b4be4df"
+    },
+    {
+      "batch_id": "online-online-015",
+      "source_subset_sha256": "8a74a2266a8154e6817c250bcecf61d534094bb770e1902822404ad4edbe8fd1",
+      "before_target_subset_sha256": "2762751c4510fbc1be04edf400baa10b3b42bacd0e6dfd90630c40489720d6ad",
+      "target_subset_sha256": "a85089ec1fdfec7976579cdfe3b91af01e83abc8ae13773830e3590179aea599"
+    },
+    {
+      "batch_id": "online-online-016",
+      "source_subset_sha256": "15f36b7ac3159c6ebcc831b25c7311546133783cb6876cf033bc1653061da219",
+      "before_target_subset_sha256": "baa6f16cd216976d188cab0b5c677aec4d0a049539cc796a7a69dbcf59966487",
+      "target_subset_sha256": "8b30b208ea9818dcb177ae97b284ef9682c5320e4235ae4b6d30ec9e6c7ad206"
+    },
+    {
+      "batch_id": "online-online-017",
+      "source_subset_sha256": "442281a542c21313a442917650867b30c05a096bca6acb56456a369a0472c8f2",
+      "before_target_subset_sha256": "c496f37c9a461696e8519a7c5d2944a324b77338aea960f53d6cb9674227bb9c",
+      "target_subset_sha256": "4ed74eada7caef261b43c1f6f128b884e74fb64a03163dd75ecb35011d1d42de"
+    },
+    {
+      "batch_id": "online-online-018",
+      "source_subset_sha256": "f9a1ec383e9d7d459716d679625c27f44df2dfabc49be86360e77cc4d68acede",
+      "before_target_subset_sha256": "7e39bf8317774a3a86b7a9c7a7f14d41c79f02f3802803ecfbcdbd3d634fcd18",
+      "target_subset_sha256": "620833ad51f12bfd29187f4bf0c1033e248be6235121c5695a30a7ffca2b0530"
+    }
+  ],
+  "findings_disposition_file": "finding-dispositions.json",
+  "exact_changes_file": "changes.json",
+  "technical_check": {
+    "command": "python3 tools/localization/translation_program.py check-draft --locale ur",
+    "exit_code": 0,
+    "errors": [],
+    "untranslated": [],
+    "evidence": "check-draft.json",
+    "limits": "Does not certify meaning or replace official source, invariant, font and browser checks.",
+    "native_is_concurrently_edited": "Full-locale checker snapshot is not a final native sign-off."
+  },
+  "english_retention_disposition": "No exact-English matches added or removed. Original reviewer individually dispositioned all 84 online retained entries in ../ur-online/english-equality-dispositions.json; independent recheck still required.",
+  "consulted_context": [
+    "../ur-online/consulted-evidence.json",
+    "../../references/urdu-styleguide.txt: word choice and action/error guidance",
+    "../../translation-kit.json",
+    "platform/apps/web/src/skins/binaryAsset.ts: camera matrices, determinant and normal transform",
+    "platform/apps/web/src/music/Library.tsx: duration repair",
+    "platform/apps/web/src/pages/music-studio/Workspace.tsx: Building mood",
+    "platform/apps/web/src/pages/studio/Conversation.tsx: Building map status",
+    "platform/apps/web/src/pages/Skins.tsx: Brush paints Color/Material selector",
+    "platform/apps/web/src/pages/Player.tsx and Leaderboard.tsx: provisional rating",
+    "platform/apps/web/src/pages/CodingStudio.tsx: credit usage billing",
+    "platform/apps/ai-music-worker/src/pipeline.ts: Composition source is music, retained",
+    "platform/apps/web/src/music/Player.tsx: Mute means audio, retained"
+  ],
+  "recheck_focus": [
+    "All 66 substantive per-key edits, including 34 reviewer findings and 32 editor-origin corrections.",
+    "Normal-camera and singular-camera diagnostics: mathematically precise Urdu terminology, no vertical camera interpretation.",
+    "Texture transliteration to distinguish material paint from geometry.",
+    "Warm musical timbre paraphrase, three mood labels and duration terminology.",
+    "Three-fragment attention line must read 1 جانچ پر توجہ درکار ہے / 2 جانچوں پر توجہ درکار ہے.",
+    "Relative lower-role moderation restrictions; ASCII-only usernames; execution-late orders.",
+    "Preserved account-deletion irreversibility, reserved credits, keyboard literals, numeric thresholds and privacy conditions."
+  ],
+  "limitations": [
+    "Agent editorial pass only; no self-signoff or claim of native human approval.",
+    "All substantive edits await original independent reviewer recheck.",
+    "No visual rendering or desktop/phone/browser platform verification performed by this editor.",
+    "No runtime approval, finalization or locale registration performed.",
+    "No Google/Microsoft machine provider called in this editorial pass; prior provider research is context, not authority."
+  ]
+}

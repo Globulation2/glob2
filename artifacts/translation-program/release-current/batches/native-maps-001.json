@@ -1,0 +1,820 @@
+{
+  "id": "native-maps-001",
+  "source_sha256": "a016e71957f16bbb880475c49b1d22dc8cbb7ae285fbbaa963464e0ea491fe0b",
+  "surface": "native",
+  "domain": "maps",
+  "context": "Procedural terrain controls: passes are mountain routes, reach is stream length, and banks/bars are terrain, not finance/weapons.",
+  "entries": [
+    {
+      "id": "native:[concrete islands terrain]",
+      "key": "[concrete islands terrain]",
+      "source": "Separate Islands"
+    },
+    {
+      "id": "native:[crater lakes terrain]",
+      "key": "[crater lakes terrain]",
+      "source": "Crater Lakes"
+    },
+    {
+      "id": "native:[extra islands]",
+      "key": "[extra islands]",
+      "source": "empty islands"
+    },
+    {
+      "id": "native:[islands size]",
+      "key": "[islands size]",
+      "source": "island size"
+    },
+    {
+      "id": "native:[islands terrain]",
+      "key": "[islands terrain]",
+      "source": "Islands"
+    },
+    {
+      "id": "native:[isles terrain]",
+      "key": "[isles terrain]",
+      "source": "Isles"
+    },
+    {
+      "id": "native:[map description]",
+      "key": "[map description]",
+      "source": "Description"
+    },
+    {
+      "id": "native:[Map Discovered]",
+      "key": "[Map Discovered]",
+      "source": "Map Discovered"
+    },
+    {
+      "id": "native:[map name]",
+      "key": "[map name]",
+      "source": "Name"
+    },
+    {
+      "id": "native:[map script]",
+      "key": "[map script]",
+      "source": "Map Script"
+    },
+    {
+      "id": "native:[map size x]",
+      "key": "[map size x]",
+      "source": "Map width"
+    },
+    {
+      "id": "native:[map size y]",
+      "key": "[map size y]",
+      "source": "Map height"
+    },
+    {
+      "id": "native:[old islands terrain]",
+      "key": "[old islands terrain]",
+      "source": "Rugged Archipelago"
+    },
+    {
+      "id": "native:[old random terrain]",
+      "key": "[old random terrain]",
+      "source": "Shattered Coast"
+    },
+    {
+      "id": "native:[river diameter]",
+      "key": "[river diameter]",
+      "source": "width of river"
+    },
+    {
+      "id": "native:[river terrain]",
+      "key": "[river terrain]",
+      "source": "River"
+    },
+    {
+      "id": "native:[Reroll terrain look]",
+      "key": "[Reroll terrain look]",
+      "source": "Reroll terrain look"
+    },
+    {
+      "id": "native:[swamp terrain]",
+      "key": "[swamp terrain]",
+      "source": "Swamp"
+    },
+    {
+      "id": "native:[switch to terrain view]",
+      "key": "[switch to terrain view]",
+      "source": "Switch to Terrain view"
+    },
+    {
+      "id": "native:[uniform terrain]",
+      "key": "[uniform terrain]",
+      "source": "Uniform terrain"
+    },
+    {
+      "id": "native:[Concrete islands]",
+      "key": "[Concrete islands]",
+      "source": "Concrete islands"
+    },
+    {
+      "id": "native:[Could not load this map. Choose another map or retry.]",
+      "key": "[Could not load this map. Choose another map or retry.]",
+      "source": "Could not load this map. Choose another map or retry."
+    },
+    {
+      "id": "native:[Crater lakes]",
+      "key": "[Crater lakes]",
+      "source": "Crater lakes"
+    },
+    {
+      "id": "native:[Extra islands]",
+      "key": "[Extra islands]",
+      "source": "Extra islands"
+    },
+    {
+      "id": "native:[Give at least one terrain type a nonzero weight.]",
+      "key": "[Give at least one terrain type a nonzero weight.]",
+      "source": "Give at least one terrain type a nonzero weight."
+    },
+    {
+      "id": "native:[Island size]",
+      "key": "[Island size]",
+      "source": "Island size"
+    },
+    {
+      "id": "native:[Islands]",
+      "key": "[Islands]",
+      "source": "Islands"
+    },
+    {
+      "id": "native:[Lake density]",
+      "key": "[Lake density]",
+      "source": "Lake density"
+    },
+    {
+      "id": "native:[Old islands]",
+      "key": "[Old islands]",
+      "source": "Rugged Archipelago"
+    },
+    {
+      "id": "native:[Each landscape is shown as a real map at your current size and colony count. Use one to play the map shown.]",
+      "key": "[Each landscape is shown as a real map at your current size and colony count. Use one to play the map shown.]",
+      "source": "Each landscape is shown as a real map at your current size and colony count. Use one to play the map shown."
+    },
+    {
+      "id": "native:[River]",
+      "key": "[River]",
+      "source": "River"
+    },
+    {
+      "id": "native:[River width]",
+      "key": "[River width]",
+      "source": "River width"
+    },
+    {
+      "id": "native:[Terrain]",
+      "key": "[Terrain]",
+      "source": "Terrain"
+    },
+    {
+      "id": "native:[Start with terrain known]",
+      "key": "[Start with terrain known]",
+      "source": "Start with terrain known"
+    },
+    {
+      "id": "native:[This landscape uses a fixed terrain recipe.]",
+      "key": "[This landscape uses a fixed terrain recipe.]",
+      "source": "This landscape uses a fixed terrain recipe."
+    },
+    {
+      "id": "native:[Updating map preview...]",
+      "key": "[Updating map preview...]",
+      "source": "Updating map preview..."
+    },
+    {
+      "id": "native:[Conquest only removes prestige victory; map scripts still apply.]",
+      "key": "[Conquest only removes prestige victory; map scripts still apply.]",
+      "source": "Conquest only removes prestige victory; map scripts still apply."
+    },
+    {
+      "id": "native:[Map source]",
+      "key": "[Map source]",
+      "source": "Map source"
+    },
+    {
+      "id": "native:[Select a map from the library.]",
+      "key": "[Select a map from the library.]",
+      "source": "Select a map from the library."
+    },
+    {
+      "id": "native:[Lake size]",
+      "key": "[Lake size]",
+      "source": "Lake size"
+    },
+    {
+      "id": "native:[The maze needs at least two cells across and down; use a bigger map or smaller cells.]",
+      "key": "[The maze needs at least two cells across and down; use a bigger map or smaller cells.]",
+      "source": "The maze needs at least two cells across and down; use a bigger map or smaller cells."
+    },
+    {
+      "id": "native:[The maze has too few cul-de-sacs for this many colonies; use a bigger map or smaller cells.]",
+      "key": "[The maze has too few cul-de-sacs for this many colonies; use a bigger map or smaller cells.]",
+      "source": "The maze has too few cul-de-sacs for this many colonies; use a bigger map or smaller cells."
+    },
+    {
+      "id": "native:[Home island size]",
+      "key": "[Home island size]",
+      "source": "Home island size"
+    },
+    {
+      "id": "native:[Lake connects to fjords]",
+      "key": "[Lake connects to fjords]",
+      "source": "Lake connects to fjords"
+    },
+    {
+      "id": "native:[Resource islands]",
+      "key": "[Resource islands]",
+      "source": "Resource islands"
+    },
+    {
+      "id": "native:[River density]",
+      "key": "[River density]",
+      "source": "River density"
+    },
+    {
+      "id": "native:[The watershed has too little floodplain for this many colonies; use a bigger map or fewer colonies.]",
+      "key": "[The watershed has too little floodplain for this many colonies; use a bigger map or fewer colonies.]",
+      "source": "The watershed has too little floodplain for this many colonies; use a bigger map or fewer colonies."
+    },
+    {
+      "id": "native:[These valleys are too big for the map; use a bigger map or smaller valleys.]",
+      "key": "[These valleys are too big for the map; use a bigger map or smaller valleys.]",
+      "source": "These valleys are too big for the map; use a bigger map or smaller valleys."
+    },
+    {
+      "id": "native:[The highlands have too little room for this many colonies; use a bigger map or fewer colonies.]",
+      "key": "[The highlands have too little room for this many colonies; use a bigger map or fewer colonies.]",
+      "source": "The highlands have too little room for this many colonies; use a bigger map or fewer colonies."
+    },
+    {
+      "id": "native:[Lakes]",
+      "key": "[Lakes]",
+      "source": "Lakes"
+    },
+    {
+      "id": "native:[Eight colonies need a square map in the symmetric arena.]",
+      "key": "[Eight colonies need a square map in the symmetric arena.]",
+      "source": "Eight colonies need a square map in the symmetric arena."
+    },
+    {
+      "id": "native:[The belt is too short for this many colonies; use a longer map or fewer colonies.]",
+      "key": "[The belt is too short for this many colonies; use a longer map or fewer colonies.]",
+      "source": "The belt is too short for this many colonies; use a longer map or fewer colonies."
+    },
+    {
+      "id": "native:[Too many colonies for this map; use a bigger map or fewer colonies.]",
+      "key": "[Too many colonies for this map; use a bigger map or fewer colonies.]",
+      "source": "Too many colonies for this map; use a bigger map or fewer colonies."
+    },
+    {
+      "id": "native:[Coral needs a map at least 128 tiles across.]",
+      "key": "[Coral needs a map at least 128 tiles across.]",
+      "source": "Coral needs a map at least 128 tiles across."
+    },
+    {
+      "id": "native:[Sandbars]",
+      "key": "[Sandbars]",
+      "source": "Sandbars"
+    },
+    {
+      "id": "native:[Central island]",
+      "key": "[Central island]",
+      "source": "Central island"
+    },
+    {
+      "id": "native:[The home islands do not fit on this map; use a bigger map, fewer colonies or smaller islands.]",
+      "key": "[The home islands do not fit on this map; use a bigger map, fewer colonies or smaller islands.]",
+      "source": "The home islands do not fit on this map; use a bigger map, fewer colonies or smaller islands."
+    },
+    {
+      "id": "native:[Winding river]",
+      "key": "[Winding river]",
+      "source": "Winding river"
+    },
+    {
+      "id": "native:[Sandy lake shore]",
+      "key": "[Sandy lake shore]",
+      "source": "Sandy lake shore"
+    },
+    {
+      "id": "native:[River delta]",
+      "key": "[River delta]",
+      "source": "River delta"
+    },
+    {
+      "id": "native:[Meandering rivers]",
+      "key": "[Meandering rivers]",
+      "source": "Meandering rivers"
+    },
+    {
+      "id": "native:[Inland lakes]",
+      "key": "[Inland lakes]",
+      "source": "Inland lakes"
+    },
+    {
+      "id": "native:[Map preview controls]",
+      "key": "[Map preview controls]",
+      "source": "Drag to wrap. Wheel to zoom. Right-click or double-click to reset."
+    },
+    {
+      "id": "native:[Map preview drag help]",
+      "key": "[Map preview drag help]",
+      "source": "Drag to wrap; wheel to zoom."
+    },
+    {
+      "id": "native:[Map preview loading]",
+      "key": "[Map preview loading]",
+      "source": "Loading..."
+    },
+    {
+      "id": "native:[Map preview failed]",
+      "key": "[Map preview failed]",
+      "source": "Preview failed"
+    },
+    {
+      "id": "native:[Map preview retry]",
+      "key": "[Map preview retry]",
+      "source": "Click to retry"
+    },
+    {
+      "id": "native:[Map preview please wait]",
+      "key": "[Map preview please wait]",
+      "source": "Please wait"
+    },
+    {
+      "id": "native:[Map preview choose another]",
+      "key": "[Map preview choose another]",
+      "source": "Choose a map"
+    },
+    {
+      "id": "native:[Emoji terrain]",
+      "key": "[Emoji terrain]",
+      "source": "Emoji terrain"
+    },
+    {
+      "id": "native:[A fort cannot reach its ford; use a bigger map or fewer colonies.]",
+      "key": "[A fort cannot reach its ford; use a bigger map or fewer colonies.]",
+      "source": "A fort cannot reach its ford; use a bigger map or fewer colonies."
+    },
+    {
+      "id": "native:[Braided river]",
+      "key": "[Braided river]",
+      "source": "Braided river"
+    },
+    {
+      "id": "native:[The braid leaves too little terrace for the homes; use a bigger map or a narrower braid.]",
+      "key": "[The braid leaves too little terrace for the homes; use a bigger map or a narrower braid.]",
+      "source": "The braid leaves too little terrace for the homes; use a bigger map or a narrower braid."
+    },
+    {
+      "id": "native:[The map is too narrow across for a braid; use a bigger map.]",
+      "key": "[The map is too narrow across for a braid; use a bigger map.]",
+      "source": "The map is too narrow across for a braid; use a bigger map."
+    },
+    {
+      "id": "native:[Mountain ranges]",
+      "key": "[Mountain ranges]",
+      "source": "Mountain ranges"
+    },
+    {
+      "id": "native:[Great rivers]",
+      "key": "[Great rivers]",
+      "source": "Great rivers"
+    },
+    {
+      "id": "native:[The map is too small to hold a continent.]",
+      "key": "[The map is too small to hold a continent.]",
+      "source": "The map is too small to hold a continent."
+    },
+    {
+      "id": "native:[This continent has no room for that many colonies at this map size; use a bigger map or fewer colonies.]",
+      "key": "[This continent has no room for that many colonies at this map size; use a bigger map or fewer colonies.]",
+      "source": "This continent has no room for that many colonies at this map size; use a bigger map or fewer colonies."
+    },
+    {
+      "id": "native:[Valley river]",
+      "key": "[Valley river]",
+      "source": "Valley river"
+    },
+    {
+      "id": "native:[Islands per colony]",
+      "key": "[Islands per colony]",
+      "source": "Islands per colony"
+    },
+    {
+      "id": "native:[The islands are too small for their plots; use a bigger map, a smaller plot or fewer colonies.]",
+      "key": "[The islands are too small for their plots; use a bigger map, a smaller plot or fewer colonies.]",
+      "source": "The islands are too small for their plots; use a bigger map, a smaller plot or fewer colonies."
+    },
+    {
+      "id": "native:[Hilbert River]",
+      "key": "[Hilbert River]",
+      "source": "Hilbert River"
+    },
+    {
+      "id": "native:[The rivers found no way between the homes; use a bigger map or fewer colonies.]",
+      "key": "[The rivers found no way between the homes; use a bigger map or fewer colonies.]",
+      "source": "The rivers found no way between the homes; use a bigger map or fewer colonies."
+    },
+    {
+      "id": "native:[River meander]",
+      "key": "[River meander]",
+      "source": "River meander"
+    },
+    {
+      "id": "native:[The lake does not fit this map; use a smaller lake or a bigger map.]",
+      "key": "[The lake does not fit this map; use a smaller lake or a bigger map.]",
+      "source": "The lake does not fit this map; use a smaller lake or a bigger map."
+    },
+    {
+      "id": "native:[A sand bar did not reach the island.]",
+      "key": "[A sand bar did not reach the island.]",
+      "source": "A sand bar did not reach the island."
+    },
+    {
+      "id": "native:[This map has no room for that many colonies; use a bigger map or fewer colonies.]",
+      "key": "[This map has no room for that many colonies; use a bigger map or fewer colonies.]",
+      "source": "This map has no room for that many colonies; use a bigger map or fewer colonies."
+    },
+    {
+      "id": "native:[The island has no room for its quarry; use a bigger island.]",
+      "key": "[The island has no room for its quarry; use a bigger island.]",
+      "source": "The island has no room for its quarry; use a bigger island."
+    },
+    {
+      "id": "native:[The massif does not fit this map; use a bigger map or fewer colonies.]",
+      "key": "[The massif does not fit this map; use a bigger map or fewer colonies.]",
+      "source": "The massif does not fit this map; use a bigger map or fewer colonies."
+    },
+    {
+      "id": "native:[This map is too small to solve on; use a bigger map.]",
+      "key": "[This map is too small to solve on; use a bigger map.]",
+      "source": "This map is too small to solve on; use a bigger map."
+    },
+    {
+      "id": "native:[Too many colonies to balance on a map this size; use a bigger map or fewer colonies.]",
+      "key": "[Too many colonies to balance on a map this size; use a bigger map or fewer colonies.]",
+      "source": "Too many colonies to balance on a map this size; use a bigger map or fewer colonies."
+    },
+    {
+      "id": "native:[Too many colonies for this map to give each a homeland; use a bigger map or fewer colonies.]",
+      "key": "[Too many colonies for this map to give each a homeland; use a bigger map or fewer colonies.]",
+      "source": "Too many colonies for this map to give each a homeland; use a bigger map or fewer colonies."
+    },
+    {
+      "id": "native:[This map has no room to spread the colonies out; use a bigger map or fewer colonies.]",
+      "key": "[This map has no room to spread the colonies out; use a bigger map or fewer colonies.]",
+      "source": "This map has no room to spread the colonies out; use a bigger map or fewer colonies."
+    },
+    {
+      "id": "native:[A colony's homeland has no way out onto the march; use a bigger map or a narrower march.]",
+      "key": "[A colony's homeland has no way out onto the march; use a bigger map or a narrower march.]",
+      "source": "A colony's homeland has no way out onto the march; use a bigger map or a narrower march."
+    },
+    {
+      "id": "native:[The Gauntlet needs a larger map or fewer colonies to fit its two guarded fronts.]",
+      "key": "[The Gauntlet needs a larger map or fewer colonies to fit its two guarded fronts.]",
+      "source": "The Gauntlet needs a larger map or fewer colonies to fit its two guarded fronts."
+    },
+    {
+      "id": "native:[Portage Lakes]",
+      "key": "[Portage Lakes]",
+      "source": "Portage Lakes"
+    },
+    {
+      "id": "native:[Lake elongation]",
+      "key": "[Lake elongation]",
+      "source": "Lake elongation"
+    },
+    {
+      "id": "native:[Portage Lakes needs sides between 64 and 512 tiles.]",
+      "key": "[Portage Lakes needs sides between 64 and 512 tiles.]",
+      "source": "Portage Lakes needs sides between 64 and 512 tiles."
+    },
+    {
+      "id": "native:[Portage Lakes cannot fit shoreline settlements on this seed.]",
+      "key": "[Portage Lakes cannot fit shoreline settlements on this seed.]",
+      "source": "Portage Lakes cannot fit shoreline settlements on this seed."
+    },
+    {
+      "id": "native:[Portage Lakes cannot fit renewable shore fields beside every settlement.]",
+      "key": "[Portage Lakes cannot fit renewable shore fields beside every settlement.]",
+      "source": "Portage Lakes cannot fit renewable shore fields beside every settlement."
+    },
+    {
+      "id": "native:[Portage Lakes cannot connect its shoreline trails.]",
+      "key": "[Portage Lakes cannot connect its shoreline trails.]",
+      "source": "Portage Lakes cannot connect its shoreline trails."
+    },
+    {
+      "id": "native:[Portage Lakes needs separate swimming lakes on this seed.]",
+      "key": "[Portage Lakes needs separate swimming lakes on this seed.]",
+      "source": "Portage Lakes needs separate swimming lakes on this seed."
+    },
+    {
+      "id": "native:[Sandbar connections]",
+      "key": "[Sandbar connections]",
+      "source": "Sandbar connections"
+    },
+    {
+      "id": "native:[Outlying islands]",
+      "key": "[Outlying islands]",
+      "source": "Outlying islands"
+    },
+    {
+      "id": "native:[Loading terrain]",
+      "key": "[Loading terrain]",
+      "source": "Loading terrain..."
+    },
+    {
+      "id": "native:[Map settings]",
+      "key": "[Map settings]",
+      "source": "Map settings"
+    },
+    {
+      "id": "native:[Release on valid terrain to place]",
+      "key": "[Release on valid terrain to place]",
+      "source": "Release on valid terrain to place"
+    },
+    {
+      "id": "native:[Mark map for allies]",
+      "key": "[Mark map for allies]",
+      "source": "Mark map for allies"
+    },
+    {
+      "id": "native:[Tap to write the map script]",
+      "key": "[Tap to write the map script]",
+      "source": "Tap to write the map script"
+    },
+    {
+      "id": "native:[Starting terrain]",
+      "key": "[Starting terrain]",
+      "source": "Starting terrain"
+    },
+    {
+      "id": "native:[Map momentum]",
+      "key": "[Map momentum]",
+      "source": "Map momentum"
+    },
+    {
+      "id": "native:[match downloading map %0]",
+      "key": "[match downloading map %0]",
+      "source": "Downloading map %0"
+    },
+    {
+      "id": "native:[match map cached]",
+      "key": "[match map cached]",
+      "source": "already on this device"
+    },
+    {
+      "id": "native:[room map changed %0]",
+      "key": "[room map changed %0]",
+      "source": "The map changed to %0."
+    },
+    {
+      "id": "native:[room map failed]",
+      "key": "[room map failed]",
+      "source": "The map could not be prepared"
+    },
+    {
+      "id": "native:[maps map page]",
+      "key": "[maps map page]",
+      "source": "Map page"
+    },
+    {
+      "id": "native:[maps upload a map title]",
+      "key": "[maps upload a map title]",
+      "source": "Upload a map"
+    },
+    {
+      "id": "native:[maps update map title]",
+      "key": "[maps update map title]",
+      "source": "Update a map"
+    },
+    {
+      "id": "native:[room map read failed]",
+      "key": "[room map read failed]",
+      "source": "This map file could not be read."
+    },
+    {
+      "id": "native:[room map upload failed]",
+      "key": "[room map upload failed]",
+      "source": "The map could not be shared with the room."
+    },
+    {
+      "id": "native:[room map upload failed %0]",
+      "key": "[room map upload failed %0]",
+      "source": "The map could not be shared with the room: %0"
+    },
+    {
+      "id": "native:[room premade map shared]",
+      "key": "[room premade map shared]",
+      "source": "Everyone in the room plays this map file; it downloads before the match."
+    },
+    {
+      "id": "native:[room map ready title %0]",
+      "key": "[room map ready title %0]",
+      "source": "Play %0"
+    },
+    {
+      "id": "native:[room map ready unnamed]",
+      "key": "[room map ready unnamed]",
+      "source": "this map"
+    },
+    {
+      "id": "native:[room map ready body]",
+      "key": "[room map ready body]",
+      "source": "Create a room and invite your friends: the room plays this map."
+    },
+    {
+      "id": "native:[Map repetition failed]",
+      "key": "[Map repetition failed]",
+      "source": "Cannot repeat this map. Use an unscripted starting map, or reduce the repeats and bases."
+    },
+    {
+      "id": "native:[repeat map horizontally]",
+      "key": "[repeat map horizontally]",
+      "source": "Repeat map horizontally"
+    },
+    {
+      "id": "native:[repeat map vertically]",
+      "key": "[repeat map vertically]",
+      "source": "Repeat map vertically"
+    },
+    {
+      "id": "native:[stat growth map about]",
+      "key": "[stat growth map about]",
+      "source": "How much material stock grew in resources anywhere on the map, in growth points rather than harvested loads. This is the same for every colony."
+    },
+    {
+      "id": "native:[Reveal terrain]",
+      "key": "[Reveal terrain]",
+      "source": "Reveal terrain"
+    },
+    {
+      "id": "native:[Players see the map's terrain from the start; enemy units stay hidden.]",
+      "key": "[Players see the map's terrain from the start; enemy units stay hidden.]",
+      "source": "Players see the map's terrain from the start; enemy units stay hidden."
+    },
+    {
+      "id": "native:[experiment ice-terrain]",
+      "key": "[experiment ice-terrain]",
+      "source": "Ice terrain"
+    },
+    {
+      "id": "native:[experiment ice-terrain help]",
+      "key": "[experiment ice-terrain help]",
+      "source": "Adds ice to the map editor. Ground units move at half speed and lose one health point per 32 exposed ticks. Ice cannot hold buildings or resources."
+    },
+    {
+      "id": "native:[experiment road-terrain]",
+      "key": "[experiment road-terrain]",
+      "source": "Trail terrain"
+    },
+    {
+      "id": "native:[experiment road-terrain help]",
+      "key": "[experiment road-terrain help]",
+      "source": "Adds weathered trails to the map editor. Ground units move at double speed. Trails support buildings but no resources. Flying units are unaffected."
+    },
+    {
+      "id": "native:[Import Terrain Definitions]",
+      "key": "[Import Terrain Definitions]",
+      "source": "Import Terrain Definitions"
+    },
+    {
+      "id": "native:[Terrain palette]",
+      "key": "[Terrain palette]",
+      "source": "Terrain palette"
+    },
+    {
+      "id": "native:[terrain group water]",
+      "key": "[terrain group water]",
+      "source": "Water"
+    },
+    {
+      "id": "native:[terrain group sand]",
+      "key": "[terrain group sand]",
+      "source": "Sand"
+    },
+    {
+      "id": "native:[terrain group grass]",
+      "key": "[terrain group grass]",
+      "source": "Grass"
+    },
+    {
+      "id": "native:[terrain group ice]",
+      "key": "[terrain group ice]",
+      "source": "Ice"
+    },
+    {
+      "id": "native:[terrain group paths]",
+      "key": "[terrain group paths]",
+      "source": "Paths"
+    },
+    {
+      "id": "native:[terrain group obstacles]",
+      "key": "[terrain group obstacles]",
+      "source": "Obstacles"
+    },
+    {
+      "id": "native:[terrain group ridges]",
+      "key": "[terrain group ridges]",
+      "source": "Ridges"
+    },
+    {
+      "id": "native:[terrain group barren]",
+      "key": "[terrain group barren]",
+      "source": "Barren ground"
+    },
+    {
+      "id": "native:[terrain group rough]",
+      "key": "[terrain group rough]",
+      "source": "Rough ground"
+    },
+    {
+      "id": "native:[terrain group lava]",
+      "key": "[terrain group lava]",
+      "source": "Lava"
+    },
+    {
+      "id": "native:[terrain group fertile]",
+      "key": "[terrain group fertile]",
+      "source": "Fertile ground"
+    },
+    {
+      "id": "native:[terrain group deep-water]",
+      "key": "[terrain group deep-water]",
+      "source": "Deep water"
+    },
+    {
+      "id": "native:[terrain group void]",
+      "key": "[terrain group void]",
+      "source": "Void"
+    },
+    {
+      "id": "native:[experiment obstacle-terrain]",
+      "key": "[experiment obstacle-terrain]",
+      "source": "Obstacle terrain"
+    },
+    {
+      "id": "native:[experiment obstacle-terrain help]",
+      "key": "[experiment obstacle-terrain help]",
+      "source": "Adds boulders, hedges and thickets to the map editor. Ground units cannot cross them and they stop projectiles; flying units pass over. They hold neither buildings nor resources."
+    },
+    {
+      "id": "native:[experiment ridge-terrain]",
+      "key": "[experiment ridge-terrain]",
+      "source": "Ridge terrain"
+    },
+    {
+      "id": "native:[experiment ridge-terrain help]",
+      "key": "[experiment ridge-terrain help]",
+      "source": "Adds rock ridges and outcrops to the map editor. Ground units cannot cross them, but towers shoot over them and flying units pass. They hold neither buildings nor resources."
+    },
+    {
+      "id": "native:[experiment barren-terrain]",
+      "key": "[experiment barren-terrain]",
+      "source": "Barren ground"
+    },
+    {
+      "id": "native:[experiment barren-terrain help]",
+      "key": "[experiment barren-terrain help]",
+      "source": "Adds dirt, clay, gravel and flower meadows to the map editor. Buildings can stand on them, nothing grows on or next to them, and they do not count as shoreline."
+    },
+    {
+      "id": "native:[experiment rough-terrain]",
+      "key": "[experiment rough-terrain]",
+      "source": "Rough ground"
+    },
+    {
+      "id": "native:[experiment rough-terrain help]",
+      "key": "[experiment rough-terrain help]",
+      "source": "Adds mud, marsh, deep snow and scree to the map editor. Ground units move at about two thirds speed. Rough ground holds neither buildings nor resources."
+    },
+    {
+      "id": "native:[experiment path-terrain]",
+      "key": "[experiment path-terrain]",
+      "source": "Path terrain"
+    },
+    {
+      "id": "native:[experiment path-terrain help]",
+      "key": "[experiment path-terrain help]",
+      "source": "Adds dirt tracks and boardwalks to the map editor. Like trails, ground units move at double speed and buildings are allowed, but nothing grows."
+    }
+  ],
+  "carryforward": {
+    "prior_manifest": {
+      "path": "../release-three/manifest.json",
+      "sha256": "4fd5e1faff01b7eb0e95db7eac33105ab557101742f6ef1a889e7b73210eb977"
+    },
+    "prior_batch": {
+      "path": "../release-three/batches/native-maps-001.json",
+      "sha256": "39554c1615353b25284ac791a830dc2ba812722d755113c621548f2172ca1ad3"
+    },
+    "method": "Partition retained keys by original ownership; radius supplement receives separate Sw correction chain, unchanged Hi/Ur retain original chain. No fresh reading inferred."
+  }
+}

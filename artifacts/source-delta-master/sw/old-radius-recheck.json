@@ -1,0 +1,64 @@
+{
+  "locale": "sw",
+  "reviewer": "/root/translation_kit",
+  "author": "/root/swahili_translation",
+  "editor": "/root",
+  "scope": "Exactly4retainedoldnativekeys; separate from209newdelta and old33locale catalog set",
+  "status": "originalfindingreviewer recheck complete; await additional originaloldcatalogreviewer proof and integratedtechnicalgates",
+  "edited_sha256": "3bd89e822d9377ce6d468ce746284d9f694aca65a9adc8b53870de7452e3ff93",
+  "editor_sha256": "ab51d98802bee35d68a08ff160c5b075861bebc524c3b78fd0e43b24a20d3e18",
+  "review_sha256": "1d15307d77970bc87948e4c573ec01191fa9ea01abfd0a36fb6a210e6af22a2a",
+  "source_delta_sha256": "8884639e28a0f409f558951e5b1d9774772ec801330404218280f7a2cb653d4c",
+  "base_catalog_sha256": "d23c1b75c4ae209b85a6dbd9f2fb0ab084ab7bb21b7544ec8a4a5ad545129cc5",
+  "keys_checked_exactly_once": [
+    "[settings Adjust assigned units with the wheel. When off, hold Ctrl. Shift adjusts flag radius. Also controls wheel input in other menus.]",
+    "[settings Starting unit counts and radius for newly placed flags.]",
+    "[Hill radius]",
+    "[flag settings explanation]"
+  ],
+  "method": "Read each exact English source, prior target and root-edited target. Verified exact4key set, editor/review/input hashes, unchanged base fullcatalog, each change record and proposedvalue. Neutral syntax resolves the four identified concord uncertainties; no fullcatalog reread claimed.",
+  "resolutions": [
+    {
+      "key": "[settings Adjust assigned units with the wheel. When off, hold Ctrl. Shift adjusts flag radius. Also controls wheel input in other menus.]",
+      "status": "resolved",
+      "source": "Adjust assigned units with the wheel. When off, hold Ctrl. Shift adjusts flag radius. Also controls wheel input in other menus.",
+      "final_target": "Rekebisha idadi ya viumbe waliopangiwa kwa gurudumu la kipanya. Chaguo likizimwa, shikilia Ctrl. Shift hurekebisha thamani ya nusukipenyo kwa bendera. Pia hudhibiti gurudumu katika menyu nyingine.",
+      "target_sha256": "8dcb195cd75d20abdfea091ee0037a7d4ea297b61b528281206696ad95f43d86",
+      "rationale": "Ctrl/Shift and wheel behavior unchanged. Thamani ya nusukipenyo refers to numeric flag-radius value without compound concord."
+    },
+    {
+      "key": "[settings Starting unit counts and radius for newly placed flags.]",
+      "status": "resolved",
+      "source": "Starting unit counts and radius for newly placed flags.",
+      "final_target": "Thamani za awali za idadi ya viumbe na nusukipenyo kwa bendera mpya.",
+      "target_sha256": "5a93bacdf96316e506caea163a09cd3c46e73ef9b0c6ec72a16732baa1413ebb",
+      "rationale": "Plural Thamani za awali covers both initial unit count and radius for new flags. Viumbe remains animate; no starting-value meaning lost."
+    },
+    {
+      "key": "[Hill radius]",
+      "status": "resolved",
+      "source": "Hill radius",
+      "final_target": "Kilima: nusukipenyo",
+      "target_sha256": "fbd940d1f442e302a5363da88304b791bcde0db2a72e82020b9f3818f325900b",
+      "rationale": "Topic/property caption explicitly names hill and radius; no unit or value assumption, no disputed compound agreement."
+    },
+    {
+      "key": "[flag settings explanation]",
+      "status": "resolved",
+      "source": "The default radius of the flag",
+      "final_target": "Thamani ya awali ya nusukipenyo kwa bendera",
+      "target_sha256": "f36fdca0583f19c95c899f8a236c0c2562aa04159b046d69393de5af93c8aad6",
+      "rationale": "Default numeric flag-radius value retained by Thamani ya awali; ya agrees with thamani, not an assumption about nusukipenyo."
+    }
+  ],
+  "open_critical": 0,
+  "open_major": 0,
+  "open_minor": 0,
+  "unresolved_linguistic_uncertainties": [],
+  "full_catalog_target_sha256": "Notyetassembled; bind these4exacttargets plus3203retainedidentity and209delta during root consolidation.",
+  "catalog_or_source_edited": false,
+  "glyph_coverage_verified": false,
+  "rendered": false,
+  "native_human_certified": false,
+  "full_locale_finalized": false
+}

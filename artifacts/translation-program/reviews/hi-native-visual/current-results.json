@@ -1,0 +1,2616 @@
+{
+  "proof_sha256": "8c5f1264b9b69c8410ea00d073aae8b07b22fe1c0bb2752d9f136fdd277a042a",
+  "executable_sha256": "042665b85330da9821555a141b063a7e25517bcee387ef643024fb3efbbedd2c",
+  "source_sha256": "a016e71957f16bbb880475c49b1d22dc8cbb7ae285fbbaa963464e0ea491fe0b",
+  "catalog_sha256": {
+    "hi": {
+      "native": "f31431ad0a4f51ddd3313a0726847f0ac0c1183ca644b9d80da4e030c444ce5c",
+      "online": "d80bdd87f3502c34e45ae744d8e0f8bac3cafd93755a5ef87e0bed8bec3d74c4"
+    },
+    "ur": {
+      "native": "00a9a60ebcee4730851744cf91fb5320c91ecbcc378ead36aaae2644500a19bc",
+      "online": "db375ee564c39cf02dfb4ce08d6a4dbaecb8cd69d5bc7f167b4c7f779e246587"
+    },
+    "sw": {
+      "native": "ccb1751ebc28116d3d7510f5fe48e7bb3ded222aec088772019fb9a78d646ef6",
+      "online": "6914cbf226adebd70d3ff401cfda759b62b62cc8af621b25f4ba994a8e0bec0a"
+    }
+  },
+  "started_utc": "2026-10-31T19:44:21Z",
+  "scheduled_invocations": 102,
+  "completed_invocations": 47,
+  "verified_invocations": 46,
+  "complete": false,
+  "results": [
+    {
+      "id": "hi-1200-matrix",
+      "locale": "hi",
+      "width": 1200,
+      "height": 844,
+      "mode": "matrix",
+      "name": "matrix",
+      "kind": "matrix",
+      "stem": "matrix",
+      "input": "artifacts/translation-program/render-inputs-current/hi-matrix",
+      "output": "artifacts/translation-program/native-preview/release-current/hi/1200/matrix",
+      "metadata": "font-matrix.json",
+      "command": [
+        "/Users/bradley/.codex/worktrees/ed62/glob2/build/darwin/client/debug/dev-dev_fast-true-linker-auto/test/TranslationPreviewHarness",
+        "matrix",
+        "/Users/bradley/.codex/worktrees/ed62/glob2",
+        "/Users/bradley/.codex/worktrees/ed62/glob2/artifacts/translation-program/render-inputs-current/hi-matrix",
+        "/Users/bradley/.codex/worktrees/ed62/glob2/artifacts/translation-program/native-preview/release-current/hi/1200/matrix",
+        "1200",
+        "844"
+      ],
+      "started_utc": "2026-10-31T19:44:21Z",
+      "exit_code": 0,
+      "metadata_path": "artifacts/translation-program/native-preview/release-current/hi/1200/matrix/font-matrix.json",
+      "metadata_sha256": "76714c32729427635748adc717374a28b57237cd44d4f1727dbc8504395c9b19",
+      "pngs": [
+        {
+          "path": "artifacts/translation-program/native-preview/release-current/hi/1200/matrix/font-10-scale-1-page-001.png",
+          "sha256": "a792c023dcc803efccbce8fe5a1ffa8c1badc4ac065dc425efa22ad1633e0f78",
+          "bytes": 160732,
+          "width": 1200,
+          "height": 844
+        },
+        {
+          "path": "artifacts/translation-program/native-preview/release-current/hi/1200/matrix/font-10-scale-1-page-002.png",
+          "sha256": "c6153c36804752e0cb761ee60ef1adb6b54cff101c1490ca12ca87e4b60ffb1d",
+          "bytes": 59330,
+          "width": 1200,
+          "height": 844
+        },
+        {
+          "path": "artifacts/translation-program/native-preview/release-current/hi/1200/matrix/font-10-scale-2-page-001.png",
+          "sha256": "2aa0aad70f604c62883381d02eae97fd976b2b559801d4cd4645bf755a4cce02",
+          "bytes": 1093112,
+          "width": 2400,
+          "height": 1688
+        },
+        {
+          "path": "artifacts/translation-program/native-preview/release-current/hi/1200/matrix/font-10-scale-2-page-002.png",
+          "sha256": "833755a72bf840f7e5671b8a25d0981caf2780f84f294e2dd6bff05632520048",
+          "bytes": 241462,
+          "width": 2400,
+          "height": 1688
+        },
+        {
+          "path": "artifacts/translation-program/native-preview/release-current/hi/1200/matrix/font-13-scale-1-page-001.png",
+          "sha256": "cd41c7edf655a3d731a04d41e0506e4275fbc5de1247fcd4b9911c76da35935c",
+          "bytes": 167207,
+          "width": 1200,
+          "height": 844
+        },
+        {
+          "path": "artifacts/translation-program/native-preview/release-current/hi/1200/matrix/font-13-scale-1-page-002.png",
+          "sha256": "e8044add4fbf516a840c7c11cfdc28c5cb0543aa49efbc861dc1823362b29b89",
+          "bytes": 136494,
+          "width": 1200,
+          "height": 844
+        },
+        {
+          "path": "artifacts/translation-program/native-preview/release-current/hi/1200/matrix/font-13-scale-2-page-001.png",
+          "sha256": "6abfc347af9f7ea8fa73e4c68f5385d9b70542079fa55c5047c3cb0caed50257",
+          "bytes": 904329,
+          "width": 2400,
+          "height": 1688
+        },
+        {
+          "path": "artifacts/translation-program/native-preview/release-current/hi/1200/matrix/font-13-scale-2-page-002.png",
+          "sha256": "339fe385138ebec7bea1d0ed3bf979bbafe01d79dcdce1a85d8caeaca8c63d01",
+          "bytes": 737666,
+          "width": 2400,
+          "height": 1688
+        },
+        {
+          "path": "artifacts/translation-program/native-preview/release-current/hi/1200/matrix/font-20-scale-1-page-001.png",
+          "sha256": "c6cb529f41d867415bc60df3f27d03b08d89c9819b4e1b40955fea6623cb7c93",
+          "bytes": 221777,
+          "width": 1200,
+          "height": 844
+        },
+        {
+          "path": "artifacts/translation-program/native-preview/release-current/hi/1200/matrix/font-20-scale-1-page-002.png",
+          "sha256": "9459f6f9a407d25f189e1efcae7d111e6fe7fc7065fb24eb3ccc62e5d67ef129",
+          "bytes": 209930,
+          "width": 1200,
+          "height": 844
+        },
+        {
+          "path": "artifacts/translation-program/native-preview/release-current/hi/1200/matrix/font-20-scale-1-page-003.png",
+          "sha256": "6a26870b5b9662a6cf107ac016c7a7374e3e5fee17dc8444ffc6063e71dad33b",
+          "bytes": 177678,
+          "width": 1200,
+          "height": 844
+        },
+        {
+          "path": "artifacts/translation-program/native-preview/release-current/hi/1200/matrix/font-20-scale-1-page-004.png",
+          "sha256": "afe9e772c9174f24922b3fd24b2d548af1e21d121dfae9571b41acf21580175e",
+          "bytes": 9904,
+          "width": 1200,
+          "height": 844
+        },
+        {
+          "path": "artifacts/translation-program/native-preview/release-current/hi/1200/matrix/font-20-scale-2-page-001.png",
+          "sha256": "075b075b5348701c9f598ed9cd88dfc913df0f6a9e2962cd9425f69eb6bfd83f",
+          "bytes": 960360,
+          "width": 2400,
+          "height": 1688
+        },
+        {
+          "path": "artifacts/translation-program/native-preview/release-current/hi/1200/matrix/font-20-scale-2-page-002.png",
+          "sha256": "8b3747a25ebf68a15773f9ffd2513fffab61a62127fd2aa4820655961b3f5a35",
+          "bytes": 969502,
+          "width": 2400,
+          "height": 1688
+        },
+        {
+          "path": "artifacts/translation-program/native-preview/release-current/hi/1200/matrix/font-20-scale-2-page-003.png",
+          "sha256": "cca2274a5a59317e81129ba362b52ce58df196df2df02ea9eb4ee02ccab26f9b",
+          "bytes": 780776,
+          "width": 2400,
+          "height": 1688
+        },
+        {
+          "path": "artifacts/translation-program/native-preview/release-current/hi/1200/matrix/font-20-scale-2-page-004.png",
+          "sha256": "d6421ead100cfb4864ff458e6b9e58e037b95ede83791fc319b3b7981da7cc95",
+          "bytes": 27913,
+          "width": 2400,
+          "height": 1688
+        }
+      ],
+      "runtime_ttf_sha256": "71b251b0514b1fc766d2051588d4bfea4c5d9965361de3fbcf3af002be8f8626",
+      "offscreen_control_count_diagnostic": 0,
+      "verified": true,
+      "elapsed_s": 38.471,
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "id": "hi-1200-main",
+      "locale": "hi",
+      "width": 1200,
+      "height": 844,
+      "mode": "screen",
+      "name": "main",
+      "kind": "full",
+      "stem": "main",
+      "input": "artifacts/translation-program/render-inputs-current/hi-full",
+      "output": "artifacts/translation-program/native-preview/release-current/hi/1200",
+      "metadata": "main.json",
+      "command": [
+        "/Users/bradley/.codex/worktrees/ed62/glob2/build/darwin/client/debug/dev-dev_fast-true-linker-auto/test/TranslationPreviewHarness",
+        "screen",
+        "/Users/bradley/.codex/worktrees/ed62/glob2",
+        "/Users/bradley/.codex/worktrees/ed62/glob2/artifacts/translation-program/render-inputs-current/hi-full",
+        "/Users/bradley/.codex/worktrees/ed62/glob2/artifacts/translation-program/native-preview/release-current/hi/1200",
+        "1200",
+        "844",
+        "main"
+      ],
+      "started_utc": "2026-10-31T19:45:01Z",
+      "exit_code": 0,
+      "metadata_path": "artifacts/translation-program/native-preview/release-current/hi/1200/main.json",
+      "metadata_sha256": "b002cd35e36ed0834545a0c9ee5015513dd062451aa70ee38fbaa12c1ab9ec98",
+      "pngs": [
+        {
+          "path": "artifacts/translation-program/native-preview/release-current/hi/1200/main.png",
+          "sha256": "8ba80d7c546b1dad32cc50edb45a4d5a282f4569f99973f3cb29396f7490579e",
+          "bytes": 1151830,
+          "width": 1200,
+          "height": 844
+        }
+      ],
+      "runtime_ttf_sha256": "71b251b0514b1fc766d2051588d4bfea4c5d9965361de3fbcf3af002be8f8626",
+      "offscreen_control_count_diagnostic": 0,
+      "verified": true,
+      "elapsed_s": 25.238,
+      "log_sha256": "683281f3dc1d8bfd6d39a4a962da6c3b1329e8b8dc9f655a52c9b0e21fd866d9"
+    },
+    {
+      "id": "hi-1200-settings",
+      "locale": "hi",
+      "width": 1200,
+      "height": 844,
+      "mode": "screen",
+      "name": "settings",
+      "kind": "full",
+      "stem": "settings",
+      "input": "artifacts/translation-program/render-inputs-current/hi-full",
+      "output": "artifacts/translation-program/native-preview/release-current/hi/1200",
+      "metadata": "settings.json",
+      "command": [
+        "/Users/bradley/.codex/worktrees/ed62/glob2/build/darwin/client/debug/dev-dev_fast-true-linker-auto/test/TranslationPreviewHarness",
+        "screen",
+        "/Users/bradley/.codex/worktrees/ed62/glob2",
+        "/Users/bradley/.codex/worktrees/ed62/glob2/artifacts/translation-program/render-inputs-current/hi-full",
+        "/Users/bradley/.codex/worktrees/ed62/glob2/artifacts/translation-program/native-preview/release-current/hi/1200",
+        "1200",
+        "844",
+        "settings"
+      ],
+      "started_utc": "2026-10-31T19:45:28Z",
+      "exit_code": 0,
+      "metadata_path": "artifacts/translation-program/native-preview/release-current/hi/1200/settings.json",
+      "metadata_sha256": "80761efeebbf28e0a409aea776c6885252d4fd23c7b3513a4141c1ea0743c7b9",
+      "pngs": [
+        {
+          "path": "artifacts/translation-program/native-preview/release-current/hi/1200/settings.png",
+          "sha256": "e7bc37663cb2b658059b2a78011ab81249921d723584feb0311f9d9199f16dc6",
+          "bytes": 546592,
+          "width": 1200,
+          "height": 844
+        }
+      ],
+      "runtime_ttf_sha256": "71b251b0514b1fc766d2051588d4bfea4c5d9965361de3fbcf3af002be8f8626",
+      "offscreen_control_count_diagnostic": 14,
+      "verified": true,
+      "elapsed_s": 18.076,
+      "log_sha256": "683281f3dc1d8bfd6d39a4a962da6c3b1329e8b8dc9f655a52c9b0e21fd866d9"
+    },
+    {
+      "id": "hi-1200-settings-audio",
+      "locale": "hi",
+      "width": 1200,
+      "height": 844,
+      "mode": "screen",
+      "name": "settings-audio",
+      "kind": "full",
+      "stem": "settings-audio",
+      "input": "artifacts/translation-program/render-inputs-current/hi-full",
+      "output": "artifacts/translation-program/native-preview/release-current/hi/1200",
+      "metadata": "settings-audio.json",
+      "command": [
+        "/Users/bradley/.codex/worktrees/ed62/glob2/build/darwin/client/debug/dev-dev_fast-true-linker-auto/test/TranslationPreviewHarness",
+        "screen",
+        "/Users/bradley/.codex/worktrees/ed62/glob2",
+        "/Users/bradley/.codex/worktrees/ed62/glob2/artifacts/translation-program/render-inputs-current/hi-full",
+        "/Users/bradley/.codex/worktrees/ed62/glob2/artifacts/translation-program/native-preview/release-current/hi/1200",
+        "1200",
+        "844",
+        "settings-audio"
+      ],
+      "started_utc": "2026-10-31T19:45:47Z",
+      "exit_code": 0,
+      "metadata_path": "artifacts/translation-program/native-preview/release-current/hi/1200/settings-audio.json",
+      "metadata_sha256": "dcf7f1140934a5910de4da052fea32f1f71cce8236fa9a96268777f22befe90d",
+      "pngs": [
+        {
+          "path": "artifacts/translation-program/native-preview/release-current/hi/1200/settings-audio.png",
+          "sha256": "6c4df0680a6bee014920730678b86f8d0f2681480a7bcd0ea21e0c04e88a33da",
+          "bytes": 524613,
+          "width": 1200,
+          "height": 844
+        }
+      ],
+      "runtime_ttf_sha256": "71b251b0514b1fc766d2051588d4bfea4c5d9965361de3fbcf3af002be8f8626",
+      "offscreen_control_count_diagnostic": 0,
+      "verified": true,
+      "elapsed_s": 16.869,
+      "log_sha256": "683281f3dc1d8bfd6d39a4a962da6c3b1329e8b8dc9f655a52c9b0e21fd866d9"
+    },
+    {
+      "id": "hi-1200-lobby",
+      "locale": "hi",
+      "width": 1200,
+      "height": 844,
+      "mode": "screen",
+      "name": "lobby",
+      "kind": "full",
+      "stem": "lobby",
+      "input": "artifacts/translation-program/render-inputs-current/hi-full",
+      "output": "artifacts/translation-program/native-preview/release-current/hi/1200",
+      "metadata": "lobby.json",
+      "command": [
+        "/Users/bradley/.codex/worktrees/ed62/glob2/build/darwin/client/debug/dev-dev_fast-true-linker-auto/test/TranslationPreviewHarness",
+        "screen",
+        "/Users/bradley/.codex/worktrees/ed62/glob2",
+        "/Users/bradley/.codex/worktrees/ed62/glob2/artifacts/translation-program/render-inputs-current/hi-full",
+        "/Users/bradley/.codex/worktrees/ed62/glob2/artifacts/translation-program/native-preview/release-current/hi/1200",
+        "1200",
+        "844",
+        "lobby"
+      ],
+      "started_utc": "2026-10-31T19:46:05Z",
+      "exit_code": 0,
+      "metadata_path": "artifacts/translation-program/native-preview/release-current/hi/1200/lobby.json",
+      "metadata_sha256": "6c6d64509f986d020fd42de300d9e18a71dca0b09d9f08b84d0d37857c27f3a4",
+      "pngs": [
+        {
+          "path": "artifacts/translation-program/native-preview/release-current/hi/1200/lobby.png",
+          "sha256": "cd5ead87ffac814b6f63f7a6c82ff2170944264ba27a2b785483d5279a5e5c9a",
+          "bytes": 232475,
+          "width": 1200,
+          "height": 844
+        }
+      ],
+      "runtime_ttf_sha256": "71b251b0514b1fc766d2051588d4bfea4c5d9965361de3fbcf3af002be8f8626",
+      "offscreen_control_count_diagnostic": 0,
+      "verified": true,
+      "elapsed_s": 19.351,
+      "log_sha256": "683281f3dc1d8bfd6d39a4a962da6c3b1329e8b8dc9f655a52c9b0e21fd866d9"
+    },
+    {
+      "id": "hi-1200-lobby-players",
+      "locale": "hi",
+      "width": 1200,
+      "height": 844,
+      "mode": "screen",
+      "name": "lobby-players",
+      "kind": "full",
+      "stem": "lobby-players",
+      "input": "artifacts/translation-program/render-inputs-current/hi-full",
+      "output": "artifacts/translation-program/native-preview/release-current/hi/1200",
+      "metadata": "lobby-players.json",
+      "command": [
+        "/Users/bradley/.codex/worktrees/ed62/glob2/build/darwin/client/debug/dev-dev_fast-true-linker-auto/test/TranslationPreviewHarness",
+        "screen",
+        "/Users/bradley/.codex/worktrees/ed62/glob2",
+        "/Users/bradley/.codex/worktrees/ed62/glob2/artifacts/translation-program/render-inputs-current/hi-full",
+        "/Users/bradley/.codex/worktrees/ed62/glob2/artifacts/translation-program/native-preview/release-current/hi/1200",
+        "1200",
+        "844",
+        "lobby-players"
+      ],
+      "started_utc": "2026-10-31T19:46:25Z",
+      "exit_code": 0,
+      "metadata_path": "artifacts/translation-program/native-preview/release-current/hi/1200/lobby-players.json",
+      "metadata_sha256": "ef8bd7056d42a8ea645a9f2d1998c8e87d24a8707384ebba3b03472cfb16e154",
+      "pngs": [
+        {
+          "path": "artifacts/translation-program/native-preview/release-current/hi/1200/lobby-players.png",
+          "sha256": "5f7f2d5b34329363814292afd5a23fe9be1bb7918e89dbb3e4791751758df372",
+          "bytes": 237522,
+          "width": 1200,
+          "height": 844
+        }
+      ],
+      "runtime_ttf_sha256": "71b251b0514b1fc766d2051588d4bfea4c5d9965361de3fbcf3af002be8f8626",
+      "offscreen_control_count_diagnostic": 0,
+      "verified": true,
+      "elapsed_s": 22.609,
+      "log_sha256": "683281f3dc1d8bfd6d39a4a962da6c3b1329e8b8dc9f655a52c9b0e21fd866d9"
+    },
+    {
+      "id": "hi-1200-gameplay",
+      "locale": "hi",
+      "width": 1200,
+      "height": 844,
+      "mode": "game",
+      "name": "gameplay",
+      "kind": "full",
+      "stem": "gameplay",
+      "input": "artifacts/translation-program/render-inputs-current/hi-full",
+      "output": "artifacts/translation-program/native-preview/release-current/hi/1200",
+      "metadata": "gameplay.json",
+      "command": [
+        "/Users/bradley/.codex/worktrees/ed62/glob2/build/darwin/client/debug/dev-dev_fast-true-linker-auto/test/TranslationPreviewHarness",
+        "game",
+        "/Users/bradley/.codex/worktrees/ed62/glob2",
+        "/Users/bradley/.codex/worktrees/ed62/glob2/artifacts/translation-program/render-inputs-current/hi-full",
+        "/Users/bradley/.codex/worktrees/ed62/glob2/artifacts/translation-program/native-preview/release-current/hi/1200",
+        "1200",
+        "844",
+        "gameplay"
+      ],
+      "started_utc": "2026-10-31T19:46:49Z",
+      "exit_code": 0,
+      "metadata_path": "artifacts/translation-program/native-preview/release-current/hi/1200/gameplay.json",
+      "metadata_sha256": "ae7584668e251c39fac17e8baf7e57ed4be6898e404a99de96629a1d5f79a2a3",
+      "pngs": [
+        {
+          "path": "artifacts/translation-program/native-preview/release-current/hi/1200/gameplay-dialog.png",
+          "sha256": "f4552961547de6ec7fc5d52fbeea41da7b6faafc67f6cc8a371a7dcc140a3613",
+          "bytes": 539692,
+          "width": 2400,
+          "height": 1688
+        },
+        {
+          "path": "artifacts/translation-program/native-preview/release-current/hi/1200/gameplay-zoom-fit.png",
+          "sha256": "073976416e88d013a8b79a6dd0d5f8a4d1a2ace5aacf0f548e5c9c1d01e4d8b5",
+          "bytes": 110175,
+          "width": 2400,
+          "height": 1688
+        },
+        {
+          "path": "artifacts/translation-program/native-preview/release-current/hi/1200/gameplay-zoom-plus.png",
+          "sha256": "2cf24e2e559024f4c1fccff5707a2274f6761618ee628d619912261dd98a5bbb",
+          "bytes": 919017,
+          "width": 2400,
+          "height": 1688
+        },
+        {
+          "path": "artifacts/translation-program/native-preview/release-current/hi/1200/gameplay.png",
+          "sha256": "89839e14d716248031aa925c34416e229235a0effb4c63bc32d8779b1609746b",
+          "bytes": 725597,
+          "width": 2400,
+          "height": 1688
+        }
+      ],
+      "runtime_ttf_sha256": "71b251b0514b1fc766d2051588d4bfea4c5d9965361de3fbcf3af002be8f8626",
+      "offscreen_control_count_diagnostic": 0,
+      "verified": true,
+      "elapsed_s": 25.564,
+      "log_sha256": "246c4fc73303f9b7bd3e3eaca38f409863a1f19db30b6cb8fc15ed43fc18860e"
+    },
+    {
+      "id": "hi-1200-tutorial-introduction",
+      "locale": "hi",
+      "width": 1200,
+      "height": 844,
+      "mode": "game",
+      "name": "tutorial:introduction",
+      "kind": "full",
+      "stem": "tutorial-introduction",
+      "input": "artifacts/translation-program/render-inputs-current/hi-full",
+      "output": "artifacts/translation-program/native-preview/release-current/hi/1200",
+      "metadata": "tutorial-introduction.json",
+      "command": [
+        "/Users/bradley/.codex/worktrees/ed62/glob2/build/darwin/client/debug/dev-dev_fast-true-linker-auto/test/TranslationPreviewHarness",
+        "game",
+        "/Users/bradley/.codex/worktrees/ed62/glob2",
+        "/Users/bradley/.codex/worktrees/ed62/glob2/artifacts/translation-program/render-inputs-current/hi-full",
+        "/Users/bradley/.codex/worktrees/ed62/glob2/artifacts/translation-program/native-preview/release-current/hi/1200",
+        "1200",
+        "844",
+        "tutorial:introduction"
+      ],
+      "started_utc": "2026-10-31T19:47:16Z",
+      "exit_code": 0,
+      "metadata_path": "artifacts/translation-program/native-preview/release-current/hi/1200/tutorial-introduction.json",
+      "metadata_sha256": "b142a0c59dd59840e41b164caf3f0bbbccdf32572a3bfeebb485936219e50c14",
+      "pngs": [
+        {
+          "path": "artifacts/translation-program/native-preview/release-current/hi/1200/tutorial-introduction-dialog.png",
+          "sha256": "067e018981fb6bea32067150afc07d4f8cd0107461f20a5b87c3a25f0cbf9311",
+          "bytes": 525236,
+          "width": 2400,
+          "height": 1688
+        },
+        {
+          "path": "artifacts/translation-program/native-preview/release-current/hi/1200/tutorial-introduction.png",
+          "sha256": "11d35dad732df9875f05631df0b993019a5fa509febab419c6e0d8378b196969",
+          "bytes": 934295,
+          "width": 2400,
+          "height": 1688
+        }
+      ],
+      "runtime_ttf_sha256": "71b251b0514b1fc766d2051588d4bfea4c5d9965361de3fbcf3af002be8f8626",
+      "offscreen_control_count_diagnostic": 0,
+      "verified": true,
+      "elapsed_s": 26.912,
+      "log_sha256": "246c4fc73303f9b7bd3e3eaca38f409863a1f19db30b6cb8fc15ed43fc18860e"
+    },
+    {
+      "id": "hi-1200-tutorial-food-supply",
+      "locale": "hi",
+      "width": 1200,
+      "height": 844,
+      "mode": "game",
+      "name": "tutorial:food-supply",
+      "kind": "full",
+      "stem": "tutorial-food-supply",
+      "input": "artifacts/translation-program/render-inputs-current/hi-full",
+      "output": "artifacts/translation-program/native-preview/release-current/hi/1200",
+      "metadata": "tutorial-food-supply.json",
+      "command": [
+        "/Users/bradley/.codex/worktrees/ed62/glob2/build/darwin/client/debug/dev-dev_fast-true-linker-auto/test/TranslationPreviewHarness",
+        "game",
+        "/Users/bradley/.codex/worktrees/ed62/glob2",
+        "/Users/bradley/.codex/worktrees/ed62/glob2/artifacts/translation-program/render-inputs-current/hi-full",
+        "/Users/bradley/.codex/worktrees/ed62/glob2/artifacts/translation-program/native-preview/release-current/hi/1200",
+        "1200",
+        "844",
+        "tutorial:food-supply"
+      ],
+      "started_utc": "2026-10-31T19:47:44Z",
+      "exit_code": 0,
+      "metadata_path": "artifacts/translation-program/native-preview/release-current/hi/1200/tutorial-food-supply.json",
+      "metadata_sha256": "7a7f94b4d804c806d9aa2c1ede1bfd2290d9117e39770e81c9a77e1c21b098ad",
+      "pngs": [
+        {
+          "path": "artifacts/translation-program/native-preview/release-current/hi/1200/tutorial-food-supply-dialog.png",
+          "sha256": "75415907e8eae4e75868ba8d192d117bcc6beb65f9a590e637bf9257f9799f35",
+          "bytes": 525985,
+          "width": 2400,
+          "height": 1688
+        },
+        {
+          "path": "artifacts/translation-program/native-preview/release-current/hi/1200/tutorial-food-supply.png",
+          "sha256": "b9454e98fac6e344a8d7da7edd59ceeeecfc396abaadb3b3d24dffddefb41c08",
+          "bytes": 916762,
+          "width": 2400,
+          "height": 1688
+        }
+      ],
+      "runtime_ttf_sha256": "71b251b0514b1fc766d2051588d4bfea4c5d9965361de3fbcf3af002be8f8626",
+      "offscreen_control_count_diagnostic": 0,
+      "verified": true,
+      "elapsed_s": 28.597,
+      "log_sha256": "3879fd9ef59947c394f7890cfe066f18140db5370d5102771d26ebb63e2f64c8"
+    },
+    {
+      "id": "hi-1200-tutorial-healing",
+      "locale": "hi",
+      "width": 1200,
+      "height": 844,
+      "mode": "game",
+      "name": "tutorial:healing",
+      "kind": "full",
+      "stem": "tutorial-healing",
+      "input": "artifacts/translation-program/render-inputs-current/hi-full",
+      "output": "artifacts/translation-program/native-preview/release-current/hi/1200",
+      "metadata": "tutorial-healing.json",
+      "command": [
+        "/Users/bradley/.codex/worktrees/ed62/glob2/build/darwin/client/debug/dev-dev_fast-true-linker-auto/test/TranslationPreviewHarness",
+        "game",
+        "/Users/bradley/.codex/worktrees/ed62/glob2",
+        "/Users/bradley/.codex/worktrees/ed62/glob2/artifacts/translation-program/render-inputs-current/hi-full",
+        "/Users/bradley/.codex/worktrees/ed62/glob2/artifacts/translation-program/native-preview/release-current/hi/1200",
+        "1200",
+        "844",
+        "tutorial:healing"
+      ],
+      "started_utc": "2026-10-31T19:48:14Z",
+      "exit_code": 0,
+      "metadata_path": "artifacts/translation-program/native-preview/release-current/hi/1200/tutorial-healing.json",
+      "metadata_sha256": "3c8fd99d74ef705314fbf1552fdb1e098719381642a5ab6a92007044b96d266b",
+      "pngs": [
+        {
+          "path": "artifacts/translation-program/native-preview/release-current/hi/1200/tutorial-healing-dialog.png",
+          "sha256": "7fd5164085adab2a0e655c2de11c4748285203e3080a7f4a94ca1fe8fa5b034e",
+          "bytes": 529690,
+          "width": 2400,
+          "height": 1688
+        },
+        {
+          "path": "artifacts/translation-program/native-preview/release-current/hi/1200/tutorial-healing.png",
+          "sha256": "0a2028dc1296a4f8b07fadce243625d76d22776283a7345bf450b5f600932480",
+          "bytes": 932312,
+          "width": 2400,
+          "height": 1688
+        }
+      ],
+      "runtime_ttf_sha256": "71b251b0514b1fc766d2051588d4bfea4c5d9965361de3fbcf3af002be8f8626",
+      "offscreen_control_count_diagnostic": 0,
+      "verified": true,
+      "elapsed_s": 23.017,
+      "log_sha256": "246c4fc73303f9b7bd3e3eaca38f409863a1f19db30b6cb8fc15ed43fc18860e"
+    },
+    {
+      "id": "hi-1200-tutorial-walking-training",
+      "locale": "hi",
+      "width": 1200,
+      "height": 844,
+      "mode": "game",
+      "name": "tutorial:walking-training",
+      "kind": "full",
+      "stem": "tutorial-walking-training",
+      "input": "artifacts/translation-program/render-inputs-current/hi-full",
+      "output": "artifacts/translation-program/native-preview/release-current/hi/1200",
+      "metadata": "tutorial-walking-training.json",
+      "command": [
+        "/Users/bradley/.codex/worktrees/ed62/glob2/build/darwin/client/debug/dev-dev_fast-true-linker-auto/test/TranslationPreviewHarness",
+        "game",
+        "/Users/bradley/.codex/worktrees/ed62/glob2",
+        "/Users/bradley/.codex/worktrees/ed62/glob2/artifacts/translation-program/render-inputs-current/hi-full",
+        "/Users/bradley/.codex/worktrees/ed62/glob2/artifacts/translation-program/native-preview/release-current/hi/1200",
+        "1200",
+        "844",
+        "tutorial:walking-training"
+      ],
+      "started_utc": "2026-10-31T19:48:38Z",
+      "exit_code": 0,
+      "metadata_path": "artifacts/translation-program/native-preview/release-current/hi/1200/tutorial-walking-training.json",
+      "metadata_sha256": "43828a620db62f03df457203434ec015ffbba8bc7decd173df29de535d05b4df",
+      "pngs": [
+        {
+          "path": "artifacts/translation-program/native-preview/release-current/hi/1200/tutorial-walking-training-dialog.png",
+          "sha256": "ac08d7efd960f2be153f9e0c8189ec77dc97c5ceaf8accc8bddcba2b4611e7dd",
+          "bytes": 530326,
+          "width": 2400,
+          "height": 1688
+        },
+        {
+          "path": "artifacts/translation-program/native-preview/release-current/hi/1200/tutorial-walking-training.png",
+          "sha256": "78f6646c05db6319dafae04690cfd83063187f71c90a8fcead4b697d85271c00",
+          "bytes": 980662,
+          "width": 2400,
+          "height": 1688
+        }
+      ],
+      "runtime_ttf_sha256": "71b251b0514b1fc766d2051588d4bfea4c5d9965361de3fbcf3af002be8f8626",
+      "offscreen_control_count_diagnostic": 0,
+      "verified": true,
+      "elapsed_s": 21.583,
+      "log_sha256": "246c4fc73303f9b7bd3e3eaca38f409863a1f19db30b6cb8fc15ed43fc18860e"
+    },
+    {
+      "id": "hi-1200-tutorial-swimming",
+      "locale": "hi",
+      "width": 1200,
+      "height": 844,
+      "mode": "game",
+      "name": "tutorial:swimming",
+      "kind": "full",
+      "stem": "tutorial-swimming",
+      "input": "artifacts/translation-program/render-inputs-current/hi-full",
+      "output": "artifacts/translation-program/native-preview/release-current/hi/1200",
+      "metadata": "tutorial-swimming.json",
+      "command": [
+        "/Users/bradley/.codex/worktrees/ed62/glob2/build/darwin/client/debug/dev-dev_fast-true-linker-auto/test/TranslationPreviewHarness",
+        "game",
+        "/Users/bradley/.codex/worktrees/ed62/glob2",
+        "/Users/bradley/.codex/worktrees/ed62/glob2/artifacts/translation-program/render-inputs-current/hi-full",
+        "/Users/bradley/.codex/worktrees/ed62/glob2/artifacts/translation-program/native-preview/release-current/hi/1200",
+        "1200",
+        "844",
+        "tutorial:swimming"
+      ],
+      "started_utc": "2026-10-31T19:49:01Z",
+      "exit_code": 0,
+      "metadata_path": "artifacts/translation-program/native-preview/release-current/hi/1200/tutorial-swimming.json",
+      "metadata_sha256": "e600b879ed3f7839c165efec4868d8f9e7a96196a5f7ae84865316486fc8422b",
+      "pngs": [
+        {
+          "path": "artifacts/translation-program/native-preview/release-current/hi/1200/tutorial-swimming-dialog.png",
+          "sha256": "3fe25a538e2243267fe45e78e403654ee5ea3fa0e9286e49b6ecd1cb56d7d699",
+          "bytes": 534100,
+          "width": 2400,
+          "height": 1688
+        },
+        {
+          "path": "artifacts/translation-program/native-preview/release-current/hi/1200/tutorial-swimming.png",
+          "sha256": "1933409dcdd040a1c7a13b8ff3d1c56035879fae71edcf38cfa40f6a9931cb09",
+          "bytes": 952783,
+          "width": 2400,
+          "height": 1688
+        }
+      ],
+      "runtime_ttf_sha256": "71b251b0514b1fc766d2051588d4bfea4c5d9965361de3fbcf3af002be8f8626",
+      "offscreen_control_count_diagnostic": 0,
+      "verified": true,
+      "elapsed_s": 22.166,
+      "log_sha256": "246c4fc73303f9b7bd3e3eaca38f409863a1f19db30b6cb8fc15ed43fc18860e"
+    },
+    {
+      "id": "hi-1200-tutorial-schools",
+      "locale": "hi",
+      "width": 1200,
+      "height": 844,
+      "mode": "game",
+      "name": "tutorial:schools",
+      "kind": "full",
+      "stem": "tutorial-schools",
+      "input": "artifacts/translation-program/render-inputs-current/hi-full",
+      "output": "artifacts/translation-program/native-preview/release-current/hi/1200",
+      "metadata": "tutorial-schools.json",
+      "command": [
+        "/Users/bradley/.codex/worktrees/ed62/glob2/build/darwin/client/debug/dev-dev_fast-true-linker-auto/test/TranslationPreviewHarness",
+        "game",
+        "/Users/bradley/.codex/worktrees/ed62/glob2",
+        "/Users/bradley/.codex/worktrees/ed62/glob2/artifacts/translation-program/render-inputs-current/hi-full",
+        "/Users/bradley/.codex/worktrees/ed62/glob2/artifacts/translation-program/native-preview/release-current/hi/1200",
+        "1200",
+        "844",
+        "tutorial:schools"
+      ],
+      "started_utc": "2026-10-31T19:49:24Z",
+      "exit_code": 0,
+      "metadata_path": "artifacts/translation-program/native-preview/release-current/hi/1200/tutorial-schools.json",
+      "metadata_sha256": "671ecb6c29c6bc88cb829be40cd6e2ad719e5ffc81814ff24e5b9dac2e673e12",
+      "pngs": [
+        {
+          "path": "artifacts/translation-program/native-preview/release-current/hi/1200/tutorial-schools-dialog.png",
+          "sha256": "cf3869c28e4e18baf89436cf2adc0d256ea60fed6d79608d0ad297ed2598cca8",
+          "bytes": 530269,
+          "width": 2400,
+          "height": 1688
+        },
+        {
+          "path": "artifacts/translation-program/native-preview/release-current/hi/1200/tutorial-schools.png",
+          "sha256": "5f161da757d0238156b607c26280525e3e71d77861fbd97d2d3d43ed090751a6",
+          "bytes": 956663,
+          "width": 2400,
+          "height": 1688
+        }
+      ],
+      "runtime_ttf_sha256": "71b251b0514b1fc766d2051588d4bfea4c5d9965361de3fbcf3af002be8f8626",
+      "offscreen_control_count_diagnostic": 0,
+      "verified": true,
+      "elapsed_s": 24.923,
+      "log_sha256": "246c4fc73303f9b7bd3e3eaca38f409863a1f19db30b6cb8fc15ed43fc18860e"
+    },
+    {
+      "id": "hi-1200-tutorial-upgrades",
+      "locale": "hi",
+      "width": 1200,
+      "height": 844,
+      "mode": "game",
+      "name": "tutorial:upgrades",
+      "kind": "full",
+      "stem": "tutorial-upgrades",
+      "input": "artifacts/translation-program/render-inputs-current/hi-full",
+      "output": "artifacts/translation-program/native-preview/release-current/hi/1200",
+      "metadata": "tutorial-upgrades.json",
+      "command": [
+        "/Users/bradley/.codex/worktrees/ed62/glob2/build/darwin/client/debug/dev-dev_fast-true-linker-auto/test/TranslationPreviewHarness",
+        "game",
+        "/Users/bradley/.codex/worktrees/ed62/glob2",
+        "/Users/bradley/.codex/worktrees/ed62/glob2/artifacts/translation-program/render-inputs-current/hi-full",
+        "/Users/bradley/.codex/worktrees/ed62/glob2/artifacts/translation-program/native-preview/release-current/hi/1200",
+        "1200",
+        "844",
+        "tutorial:upgrades"
+      ],
+      "started_utc": "2026-10-31T19:49:50Z",
+      "exit_code": 0,
+      "metadata_path": "artifacts/translation-program/native-preview/release-current/hi/1200/tutorial-upgrades.json",
+      "metadata_sha256": "43f61079e5cdd515605085ed8b1ad0f06cf138dfa75939fe1dbf548ba1e87c03",
+      "pngs": [
+        {
+          "path": "artifacts/translation-program/native-preview/release-current/hi/1200/tutorial-upgrades-dialog.png",
+          "sha256": "1dbe2ebe7914edb91945e7f23dcdd201ad3daf663d88c01a98547559ae69c2ff",
+          "bytes": 535570,
+          "width": 2400,
+          "height": 1688
+        },
+        {
+          "path": "artifacts/translation-program/native-preview/release-current/hi/1200/tutorial-upgrades.png",
+          "sha256": "3a09f4ffee2f0a277a5b5aad1eebd829516637ca180c2522c1dcadc5d3fa2538",
+          "bytes": 1029621,
+          "width": 2400,
+          "height": 1688
+        }
+      ],
+      "runtime_ttf_sha256": "71b251b0514b1fc766d2051588d4bfea4c5d9965361de3fbcf3af002be8f8626",
+      "offscreen_control_count_diagnostic": 0,
+      "verified": true,
+      "elapsed_s": 24.697,
+      "log_sha256": "246c4fc73303f9b7bd3e3eaca38f409863a1f19db30b6cb8fc15ed43fc18860e"
+    },
+    {
+      "id": "hi-1200-tutorial-warrior-training",
+      "locale": "hi",
+      "width": 1200,
+      "height": 844,
+      "mode": "game",
+      "name": "tutorial:warrior-training",
+      "kind": "full",
+      "stem": "tutorial-warrior-training",
+      "input": "artifacts/translation-program/render-inputs-current/hi-full",
+      "output": "artifacts/translation-program/native-preview/release-current/hi/1200",
+      "metadata": "tutorial-warrior-training.json",
+      "command": [
+        "/Users/bradley/.codex/worktrees/ed62/glob2/build/darwin/client/debug/dev-dev_fast-true-linker-auto/test/TranslationPreviewHarness",
+        "game",
+        "/Users/bradley/.codex/worktrees/ed62/glob2",
+        "/Users/bradley/.codex/worktrees/ed62/glob2/artifacts/translation-program/render-inputs-current/hi-full",
+        "/Users/bradley/.codex/worktrees/ed62/glob2/artifacts/translation-program/native-preview/release-current/hi/1200",
+        "1200",
+        "844",
+        "tutorial:warrior-training"
+      ],
+      "started_utc": "2026-10-31T19:50:16Z",
+      "exit_code": 0,
+      "metadata_path": "artifacts/translation-program/native-preview/release-current/hi/1200/tutorial-warrior-training.json",
+      "metadata_sha256": "8f9cb1d4b5c98f021fb9cd0f1f844ddfe5bfcd9b7c394eae3d9f2e44afe374c1",
+      "pngs": [
+        {
+          "path": "artifacts/translation-program/native-preview/release-current/hi/1200/tutorial-warrior-training-dialog.png",
+          "sha256": "28de86f91eb16400e57e42059d1804afb22fa8f854e1e17c9378e880ef1ee42e",
+          "bytes": 528000,
+          "width": 2400,
+          "height": 1688
+        },
+        {
+          "path": "artifacts/translation-program/native-preview/release-current/hi/1200/tutorial-warrior-training.png",
+          "sha256": "6e2c20b09512207775737483ece1d25ce37a412c17a69b781b1cb028744bed28",
+          "bytes": 936847,
+          "width": 2400,
+          "height": 1688
+        }
+      ],
+      "runtime_ttf_sha256": "71b251b0514b1fc766d2051588d4bfea4c5d9965361de3fbcf3af002be8f8626",
+      "offscreen_control_count_diagnostic": 0,
+      "verified": true,
+      "elapsed_s": 20.47,
+      "log_sha256": "3879fd9ef59947c394f7890cfe066f18140db5370d5102771d26ebb63e2f64c8"
+    },
+    {
+      "id": "hi-1200-tutorial-fortifications",
+      "locale": "hi",
+      "width": 1200,
+      "height": 844,
+      "mode": "game",
+      "name": "tutorial:fortifications",
+      "kind": "full",
+      "stem": "tutorial-fortifications",
+      "input": "artifacts/translation-program/render-inputs-current/hi-full",
+      "output": "artifacts/translation-program/native-preview/release-current/hi/1200",
+      "metadata": "tutorial-fortifications.json",
+      "command": [
+        "/Users/bradley/.codex/worktrees/ed62/glob2/build/darwin/client/debug/dev-dev_fast-true-linker-auto/test/TranslationPreviewHarness",
+        "game",
+        "/Users/bradley/.codex/worktrees/ed62/glob2",
+        "/Users/bradley/.codex/worktrees/ed62/glob2/artifacts/translation-program/render-inputs-current/hi-full",
+        "/Users/bradley/.codex/worktrees/ed62/glob2/artifacts/translation-program/native-preview/release-current/hi/1200",
+        "1200",
+        "844",
+        "tutorial:fortifications"
+      ],
+      "started_utc": "2026-10-31T19:50:37Z",
+      "exit_code": 0,
+      "metadata_path": "artifacts/translation-program/native-preview/release-current/hi/1200/tutorial-fortifications.json",
+      "metadata_sha256": "cb14e96dd8cd7e8915bc2cc830e00519d6dd0d0b662121da50691129a48b3fe8",
+      "pngs": [
+        {
+          "path": "artifacts/translation-program/native-preview/release-current/hi/1200/tutorial-fortifications-dialog.png",
+          "sha256": "64274a831cf7f90cc662cdadf44cd318db7ff936b8b3fef179fda3997150b86e",
+          "bytes": 532948,
+          "width": 2400,
+          "height": 1688
+        },
+        {
+          "path": "artifacts/translation-program/native-preview/release-current/hi/1200/tutorial-fortifications.png",
+          "sha256": "4d907269a20a388541aa1ceb8370279f14cc7bdb0ba914d27270d6e8b483366b",
+          "bytes": 987483,
+          "width": 2400,
+          "height": 1688
+        }
+      ],
+      "runtime_ttf_sha256": "71b251b0514b1fc766d2051588d4bfea4c5d9965361de3fbcf3af002be8f8626",
+      "offscreen_control_count_diagnostic": 0,
+      "verified": true,
+      "elapsed_s": 19.244,
+      "log_sha256": "246c4fc73303f9b7bd3e3eaca38f409863a1f19db30b6cb8fc15ed43fc18860e"
+    },
+    {
+      "id": "hi-1200-tutorial-defensive-tactics",
+      "locale": "hi",
+      "width": 1200,
+      "height": 844,
+      "mode": "game",
+      "name": "tutorial:defensive-tactics",
+      "kind": "full",
+      "stem": "tutorial-defensive-tactics",
+      "input": "artifacts/translation-program/render-inputs-current/hi-full",
+      "output": "artifacts/translation-program/native-preview/release-current/hi/1200",
+      "metadata": "tutorial-defensive-tactics.json",
+      "command": [
+        "/Users/bradley/.codex/worktrees/ed62/glob2/build/darwin/client/debug/dev-dev_fast-true-linker-auto/test/TranslationPreviewHarness",
+        "game",
+        "/Users/bradley/.codex/worktrees/ed62/glob2",
+        "/Users/bradley/.codex/worktrees/ed62/glob2/artifacts/translation-program/render-inputs-current/hi-full",
+        "/Users/bradley/.codex/worktrees/ed62/glob2/artifacts/translation-program/native-preview/release-current/hi/1200",
+        "1200",
+        "844",
+        "tutorial:defensive-tactics"
+      ],
+      "started_utc": "2026-10-31T19:50:56Z",
+      "exit_code": 0,
+      "metadata_path": "artifacts/translation-program/native-preview/release-current/hi/1200/tutorial-defensive-tactics.json",
+      "metadata_sha256": "d1eda41cf9f77dd3585cea83f35c8b4ec321e24f52edd116f3816a241efffa88",
+      "pngs": [
+        {
+          "path": "artifacts/translation-program/native-preview/release-current/hi/1200/tutorial-defensive-tactics-dialog.png",
+          "sha256": "9f1db1d54b03bd6aec2ebd5f8acd5bb5b669b0fd37d6417dc1185a9fa1a0beb4",
+          "bytes": 540439,
+          "width": 2400,
+          "height": 1688
+        },
+        {
+          "path": "artifacts/translation-program/native-preview/release-current/hi/1200/tutorial-defensive-tactics.png",
+          "sha256": "bf91096ce3fcdbf715660e7ec8c2d66bb9e75c50c851fa0c5101d564a6423669",
+          "bytes": 961798,
+          "width": 2400,
+          "height": 1688
+        }
+      ],
+      "runtime_ttf_sha256": "71b251b0514b1fc766d2051588d4bfea4c5d9965361de3fbcf3af002be8f8626",
+      "offscreen_control_count_diagnostic": 0,
+      "verified": true,
+      "elapsed_s": 19.036,
+      "log_sha256": "246c4fc73303f9b7bd3e3eaca38f409863a1f19db30b6cb8fc15ed43fc18860e"
+    },
+    {
+      "id": "hi-390-matrix",
+      "locale": "hi",
+      "width": 390,
+      "height": 844,
+      "mode": "matrix",
+      "name": "matrix",
+      "kind": "matrix",
+      "stem": "matrix",
+      "input": "artifacts/translation-program/render-inputs-current/hi-matrix",
+      "output": "artifacts/translation-program/native-preview/release-current/hi/390/matrix",
+      "metadata": "font-matrix.json",
+      "command": [
+        "/Users/bradley/.codex/worktrees/ed62/glob2/build/darwin/client/debug/dev-dev_fast-true-linker-auto/test/TranslationPreviewHarness",
+        "matrix",
+        "/Users/bradley/.codex/worktrees/ed62/glob2",
+        "/Users/bradley/.codex/worktrees/ed62/glob2/artifacts/translation-program/render-inputs-current/hi-matrix",
+        "/Users/bradley/.codex/worktrees/ed62/glob2/artifacts/translation-program/native-preview/release-current/hi/390/matrix",
+        "390",
+        "844"
+      ],
+      "started_utc": "2026-10-31T19:51:16Z",
+      "exit_code": 0,
+      "metadata_path": "artifacts/translation-program/native-preview/release-current/hi/390/matrix/font-matrix.json",
+      "metadata_sha256": "88e1d5cd08934662ad223ec1f3477f2cbc4124b8bb7282655b6fcb3627c6668a",
+      "pngs": [
+        {
+          "path": "artifacts/translation-program/native-preview/release-current/hi/390/matrix/font-10-scale-1-page-001.png",
+          "sha256": "b9d3088f892ea293aca0aa1bac2efca2efe5eddcf1c57fa8bcf83ea4817cc58a",
+          "bytes": 90732,
+          "width": 390,
+          "height": 844
+        },
+        {
+          "path": "artifacts/translation-program/native-preview/release-current/hi/390/matrix/font-10-scale-1-page-002.png",
+          "sha256": "2e52c0d9de334de076a52e3e387fe245005c6e899b5df728070d49ffdad34e07",
+          "bytes": 92919,
+          "width": 390,
+          "height": 844
+        },
+        {
+          "path": "artifacts/translation-program/native-preview/release-current/hi/390/matrix/font-10-scale-1-page-003.png",
+          "sha256": "004925932f2ff5cbf0961e008e3a2f747ebf749d2e5f09185ba81f9e3f27ce79",
+          "bytes": 57116,
+          "width": 390,
+          "height": 844
+        },
+        {
+          "path": "artifacts/translation-program/native-preview/release-current/hi/390/matrix/font-10-scale-2-page-001.png",
+          "sha256": "3ad0d8fb47de8455afe6fe8a99a67d2d6f132aff2ed6b4c5f0a1697e7226ff69",
+          "bytes": 535347,
+          "width": 780,
+          "height": 1688
+        },
+        {
+          "path": "artifacts/translation-program/native-preview/release-current/hi/390/matrix/font-10-scale-2-page-002.png",
+          "sha256": "7547019484d371073cc3411ed018c924ca3633d40382c7f74d309c258603654f",
+          "bytes": 612385,
+          "width": 780,
+          "height": 1688
+        },
+        {
+          "path": "artifacts/translation-program/native-preview/release-current/hi/390/matrix/font-10-scale-2-page-003.png",
+          "sha256": "b00304edd719ac916525a73c6f201a621497272cc5cf3ba9b7a0cfeb4735054b",
+          "bytes": 217522,
+          "width": 780,
+          "height": 1688
+        },
+        {
+          "path": "artifacts/translation-program/native-preview/release-current/hi/390/matrix/font-13-scale-1-page-001.png",
+          "sha256": "9b61850610bc1eb0d6aa4d947cdc46d196985439cffa12b5836971a11779ce98",
+          "bytes": 129024,
+          "width": 390,
+          "height": 844
+        },
+        {
+          "path": "artifacts/translation-program/native-preview/release-current/hi/390/matrix/font-13-scale-1-page-002.png",
+          "sha256": "e09022d95f389b938a00446febae0a1668e32940f6a80a61a57766d63e5d99df",
+          "bytes": 113141,
+          "width": 390,
+          "height": 844
+        },
+        {
+          "path": "artifacts/translation-program/native-preview/release-current/hi/390/matrix/font-13-scale-1-page-003.png",
+          "sha256": "c2dcc107e436a2c147ee5d5c48d561b1ff47e136c3d1025b18a1245c704f1bf8",
+          "bytes": 136626,
+          "width": 390,
+          "height": 844
+        },
+        {
+          "path": "artifacts/translation-program/native-preview/release-current/hi/390/matrix/font-13-scale-1-page-004.png",
+          "sha256": "0f1861ee1debdec2f61b31f4a67d98c40c038a9f7058420412f5a1d1c9863985",
+          "bytes": 49689,
+          "width": 390,
+          "height": 844
+        },
+        {
+          "path": "artifacts/translation-program/native-preview/release-current/hi/390/matrix/font-13-scale-2-page-001.png",
+          "sha256": "c3992ad2bcb38fc83fe05c65f9d341e07821cf3216e1d64ed7380f2a8d36c6cf",
+          "bytes": 499724,
+          "width": 780,
+          "height": 1688
+        },
+        {
+          "path": "artifacts/translation-program/native-preview/release-current/hi/390/matrix/font-13-scale-2-page-002.png",
+          "sha256": "349f488bcfc777e75319f97b5f7cf586e3a4c57dab205613b5514e9d466fc5e2",
+          "bytes": 491513,
+          "width": 780,
+          "height": 1688
+        },
+        {
+          "path": "artifacts/translation-program/native-preview/release-current/hi/390/matrix/font-13-scale-2-page-003.png",
+          "sha256": "b3a8ed957c8ae702e68d6421fa2d522b946afb6f21feb81f5d4a7f6411be595e",
+          "bytes": 556088,
+          "width": 780,
+          "height": 1688
+        },
+        {
+          "path": "artifacts/translation-program/native-preview/release-current/hi/390/matrix/font-13-scale-2-page-004.png",
+          "sha256": "f84a459b9d43cb0e3ba8f9d97060860ec9e330fdb3570e8586f8266047ede316",
+          "bytes": 129935,
+          "width": 780,
+          "height": 1688
+        },
+        {
+          "path": "artifacts/translation-program/native-preview/release-current/hi/390/matrix/font-20-scale-1-page-001.png",
+          "sha256": "6da49350522e4669b4eebbba1da3848253af6f38b804ae116ac3cc5492c90633",
+          "bytes": 137282,
+          "width": 390,
+          "height": 844
+        },
+        {
+          "path": "artifacts/translation-program/native-preview/release-current/hi/390/matrix/font-20-scale-1-page-002.png",
+          "sha256": "cf6798b8625e7b48874ff7f55b156ff41025d1dfce1744ca1da482b180b7a3fb",
+          "bytes": 123311,
+          "width": 390,
+          "height": 844
+        },
+        {
+          "path": "artifacts/translation-program/native-preview/release-current/hi/390/matrix/font-20-scale-1-page-003.png",
+          "sha256": "2b217c66cffc70a850769c170b05a0aaf79312cbba1b214602d3d5bbe3504feb",
+          "bytes": 107798,
+          "width": 390,
+          "height": 844
+        },
+        {
+          "path": "artifacts/translation-program/native-preview/release-current/hi/390/matrix/font-20-scale-1-page-004.png",
+          "sha256": "ab2541f0024edde6498cc5c4e7f9b3210c4e58f9778b2161a0ea5d6451969fa8",
+          "bytes": 134385,
+          "width": 390,
+          "height": 844
+        },
+        {
+          "path": "artifacts/translation-program/native-preview/release-current/hi/390/matrix/font-20-scale-1-page-005.png",
+          "sha256": "d37b515c61bebd1ffc2721a9ad48b5c69aebfbdb50d482dee0ed9895bc29a359",
+          "bytes": 117281,
+          "width": 390,
+          "height": 844
+        },
+        {
+          "path": "artifacts/translation-program/native-preview/release-current/hi/390/matrix/font-20-scale-1-page-006.png",
+          "sha256": "573f12f89c201fc4cfa2a129b0d83807870909016dca9226815377239bd2b3da",
+          "bytes": 121882,
+          "width": 390,
+          "height": 844
+        },
+        {
+          "path": "artifacts/translation-program/native-preview/release-current/hi/390/matrix/font-20-scale-1-page-007.png",
+          "sha256": "e0a9ed2469aafcc2588bcb622234d4dc484f03ae2aa612715c01bb53466aafe3",
+          "bytes": 115770,
+          "width": 390,
+          "height": 844
+        },
+        {
+          "path": "artifacts/translation-program/native-preview/release-current/hi/390/matrix/font-20-scale-1-page-008.png",
+          "sha256": "2b918fc47269f39d3129763bee6d02a8b758a9783bbeae73180e8fe30eabc722",
+          "bytes": 9726,
+          "width": 390,
+          "height": 844
+        },
+        {
+          "path": "artifacts/translation-program/native-preview/release-current/hi/390/matrix/font-20-scale-2-page-001.png",
+          "sha256": "d13266de96accd123c19b633e2c02e8a23c09d5282eae27da80d304397fe2115",
+          "bytes": 421441,
+          "width": 780,
+          "height": 1688
+        },
+        {
+          "path": "artifacts/translation-program/native-preview/release-current/hi/390/matrix/font-20-scale-2-page-002.png",
+          "sha256": "3c22f7513ebaadfded68882418165645e20eb87363a2d47a1ec4b3dfe759dd85",
+          "bytes": 401008,
+          "width": 780,
+          "height": 1688
+        },
+        {
+          "path": "artifacts/translation-program/native-preview/release-current/hi/390/matrix/font-20-scale-2-page-003.png",
+          "sha256": "01c9a9ae78457c25aeae00b12bf98b309ab913d0f8599e6fd57adafe0c81946b",
+          "bytes": 353480,
+          "width": 780,
+          "height": 1688
+        },
+        {
+          "path": "artifacts/translation-program/native-preview/release-current/hi/390/matrix/font-20-scale-2-page-004.png",
+          "sha256": "3b64edb14a41baa8051b51bf5960cf5fae20bb93397abaf3fc689471336e6e8b",
+          "bytes": 435041,
+          "width": 780,
+          "height": 1688
+        },
+        {
+          "path": "artifacts/translation-program/native-preview/release-current/hi/390/matrix/font-20-scale-2-page-005.png",
+          "sha256": "bd3e4a078d0e517274b2defc110108311ae78e767a0193c6936cc51c101dcf1e",
+          "bytes": 397746,
+          "width": 780,
+          "height": 1688
+        },
+        {
+          "path": "artifacts/translation-program/native-preview/release-current/hi/390/matrix/font-20-scale-2-page-006.png",
+          "sha256": "05b084bab787a5404d0163424c7dd9d7177530cea4de2ad125204cb1c3b4dd16",
+          "bytes": 404277,
+          "width": 780,
+          "height": 1688
+        },
+        {
+          "path": "artifacts/translation-program/native-preview/release-current/hi/390/matrix/font-20-scale-2-page-007.png",
+          "sha256": "34e198ef8a7377f7b5519d4b3c76c733fb555c739387fbc63adff1940166a60c",
+          "bytes": 319304,
+          "width": 780,
+          "height": 1688
+        },
+        {
+          "path": "artifacts/translation-program/native-preview/release-current/hi/390/matrix/font-20-scale-2-page-008.png",
+          "sha256": "6537ba507287490378424670eb8497b577607becae73184bd65a11c12d4c7652",
+          "bytes": 16787,
+          "width": 780,
+          "height": 1688
+        }
+      ],
+      "runtime_ttf_sha256": "71b251b0514b1fc766d2051588d4bfea4c5d9965361de3fbcf3af002be8f8626",
+      "offscreen_control_count_diagnostic": 0,
+      "verified": true,
+      "elapsed_s": 20.188,
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "id": "hi-390-main",
+      "locale": "hi",
+      "width": 390,
+      "height": 844,
+      "mode": "screen",
+      "name": "main",
+      "kind": "full",
+      "stem": "main",
+      "input": "artifacts/translation-program/render-inputs-current/hi-full",
+      "output": "artifacts/translation-program/native-preview/release-current/hi/390",
+      "metadata": "main.json",
+      "command": [
+        "/Users/bradley/.codex/worktrees/ed62/glob2/build/darwin/client/debug/dev-dev_fast-true-linker-auto/test/TranslationPreviewHarness",
+        "screen",
+        "/Users/bradley/.codex/worktrees/ed62/glob2",
+        "/Users/bradley/.codex/worktrees/ed62/glob2/artifacts/translation-program/render-inputs-current/hi-full",
+        "/Users/bradley/.codex/worktrees/ed62/glob2/artifacts/translation-program/native-preview/release-current/hi/390",
+        "390",
+        "844",
+        "main"
+      ],
+      "started_utc": "2026-10-31T19:51:37Z",
+      "exit_code": 0,
+      "metadata_path": "artifacts/translation-program/native-preview/release-current/hi/390/main.json",
+      "metadata_sha256": "e7c55935975155375c9dc69ce17e7cbe1415aaf0b0f4879222422d9ffd729ac1",
+      "pngs": [
+        {
+          "path": "artifacts/translation-program/native-preview/release-current/hi/390/main.png",
+          "sha256": "f24f5e01c0cc8dc0e5070bfd8514b1a556c6824b8d96c4bcd8ca2e8ba0119d80",
+          "bytes": 339138,
+          "width": 390,
+          "height": 844
+        }
+      ],
+      "runtime_ttf_sha256": "71b251b0514b1fc766d2051588d4bfea4c5d9965361de3fbcf3af002be8f8626",
+      "offscreen_control_count_diagnostic": 0,
+      "verified": true,
+      "elapsed_s": 15.467,
+      "log_sha256": "683281f3dc1d8bfd6d39a4a962da6c3b1329e8b8dc9f655a52c9b0e21fd866d9"
+    },
+    {
+      "id": "hi-390-settings",
+      "locale": "hi",
+      "width": 390,
+      "height": 844,
+      "mode": "screen",
+      "name": "settings",
+      "kind": "full",
+      "stem": "settings",
+      "input": "artifacts/translation-program/render-inputs-current/hi-full",
+      "output": "artifacts/translation-program/native-preview/release-current/hi/390",
+      "metadata": "settings.json",
+      "command": [
+        "/Users/bradley/.codex/worktrees/ed62/glob2/build/darwin/client/debug/dev-dev_fast-true-linker-auto/test/TranslationPreviewHarness",
+        "screen",
+        "/Users/bradley/.codex/worktrees/ed62/glob2",
+        "/Users/bradley/.codex/worktrees/ed62/glob2/artifacts/translation-program/render-inputs-current/hi-full",
+        "/Users/bradley/.codex/worktrees/ed62/glob2/artifacts/translation-program/native-preview/release-current/hi/390",
+        "390",
+        "844",
+        "settings"
+      ],
+      "started_utc": "2026-10-31T19:51:53Z",
+      "exit_code": 0,
+      "metadata_path": "artifacts/translation-program/native-preview/release-current/hi/390/settings.json",
+      "metadata_sha256": "706a621d37c345f8b837c335066b93f278c736447b223a9522be590ca4399a50",
+      "pngs": [
+        {
+          "path": "artifacts/translation-program/native-preview/release-current/hi/390/settings.png",
+          "sha256": "1e3001ceb62e92c8a73ed634e83645e0d6c14d8e311e5625a579a6404f044c7b",
+          "bytes": 52334,
+          "width": 390,
+          "height": 844
+        }
+      ],
+      "runtime_ttf_sha256": "71b251b0514b1fc766d2051588d4bfea4c5d9965361de3fbcf3af002be8f8626",
+      "offscreen_control_count_diagnostic": 19,
+      "verified": true,
+      "elapsed_s": 15.708,
+      "log_sha256": "683281f3dc1d8bfd6d39a4a962da6c3b1329e8b8dc9f655a52c9b0e21fd866d9"
+    },
+    {
+      "id": "hi-390-settings-audio",
+      "locale": "hi",
+      "width": 390,
+      "height": 844,
+      "mode": "screen",
+      "name": "settings-audio",
+      "kind": "full",
+      "stem": "settings-audio",
+      "input": "artifacts/translation-program/render-inputs-current/hi-full",
+      "output": "artifacts/translation-program/native-preview/release-current/hi/390",
+      "metadata": "settings-audio.json",
+      "command": [
+        "/Users/bradley/.codex/worktrees/ed62/glob2/build/darwin/client/debug/dev-dev_fast-true-linker-auto/test/TranslationPreviewHarness",
+        "screen",
+        "/Users/bradley/.codex/worktrees/ed62/glob2",
+        "/Users/bradley/.codex/worktrees/ed62/glob2/artifacts/translation-program/render-inputs-current/hi-full",
+        "/Users/bradley/.codex/worktrees/ed62/glob2/artifacts/translation-program/native-preview/release-current/hi/390",
+        "390",
+        "844",
+        "settings-audio"
+      ],
+      "started_utc": "2026-10-31T19:52:10Z",
+      "exit_code": 0,
+      "metadata_path": "artifacts/translation-program/native-preview/release-current/hi/390/settings-audio.json",
+      "metadata_sha256": "66fd52d3826ae1903cc155ba9490ff963bcef1c2c38458b0359e1b97defe3a66",
+      "pngs": [
+        {
+          "path": "artifacts/translation-program/native-preview/release-current/hi/390/settings-audio.png",
+          "sha256": "4bfcea85863831ea30959e271ef9ec8ac610af6cf3d7ebcf32449b020f7db139",
+          "bytes": 31967,
+          "width": 390,
+          "height": 844
+        }
+      ],
+      "runtime_ttf_sha256": "71b251b0514b1fc766d2051588d4bfea4c5d9965361de3fbcf3af002be8f8626",
+      "offscreen_control_count_diagnostic": 0,
+      "verified": true,
+      "elapsed_s": 14.496,
+      "log_sha256": "683281f3dc1d8bfd6d39a4a962da6c3b1329e8b8dc9f655a52c9b0e21fd866d9"
+    },
+    {
+      "id": "hi-390-lobby",
+      "locale": "hi",
+      "width": 390,
+      "height": 844,
+      "mode": "screen",
+      "name": "lobby",
+      "kind": "full",
+      "stem": "lobby",
+      "input": "artifacts/translation-program/render-inputs-current/hi-full",
+      "output": "artifacts/translation-program/native-preview/release-current/hi/390",
+      "metadata": "lobby.json",
+      "command": [
+        "/Users/bradley/.codex/worktrees/ed62/glob2/build/darwin/client/debug/dev-dev_fast-true-linker-auto/test/TranslationPreviewHarness",
+        "screen",
+        "/Users/bradley/.codex/worktrees/ed62/glob2",
+        "/Users/bradley/.codex/worktrees/ed62/glob2/artifacts/translation-program/render-inputs-current/hi-full",
+        "/Users/bradley/.codex/worktrees/ed62/glob2/artifacts/translation-program/native-preview/release-current/hi/390",
+        "390",
+        "844",
+        "lobby"
+      ],
+      "started_utc": "2026-10-31T19:52:25Z",
+      "exit_code": 0,
+      "metadata_path": "artifacts/translation-program/native-preview/release-current/hi/390/lobby.json",
+      "metadata_sha256": "97b20d778637469d3bcd41d6ff981689dc04829d1a4d491d187a031a80a7ddc4",
+      "pngs": [
+        {
+          "path": "artifacts/translation-program/native-preview/release-current/hi/390/lobby.png",
+          "sha256": "d024c0e1e99e23d7669e41c74f5cdb1e3d129ba78151a804d55fdc3bacbcde05",
+          "bytes": 38799,
+          "width": 390,
+          "height": 844
+        }
+      ],
+      "runtime_ttf_sha256": "71b251b0514b1fc766d2051588d4bfea4c5d9965361de3fbcf3af002be8f8626",
+      "offscreen_control_count_diagnostic": 6,
+      "verified": true,
+      "elapsed_s": 14.4,
+      "log_sha256": "683281f3dc1d8bfd6d39a4a962da6c3b1329e8b8dc9f655a52c9b0e21fd866d9"
+    },
+    {
+      "id": "hi-390-lobby-players",
+      "locale": "hi",
+      "width": 390,
+      "height": 844,
+      "mode": "screen",
+      "name": "lobby-players",
+      "kind": "full",
+      "stem": "lobby-players",
+      "input": "artifacts/translation-program/render-inputs-current/hi-full",
+      "output": "artifacts/translation-program/native-preview/release-current/hi/390",
+      "metadata": "lobby-players.json",
+      "command": [
+        "/Users/bradley/.codex/worktrees/ed62/glob2/build/darwin/client/debug/dev-dev_fast-true-linker-auto/test/TranslationPreviewHarness",
+        "screen",
+        "/Users/bradley/.codex/worktrees/ed62/glob2",
+        "/Users/bradley/.codex/worktrees/ed62/glob2/artifacts/translation-program/render-inputs-current/hi-full",
+        "/Users/bradley/.codex/worktrees/ed62/glob2/artifacts/translation-program/native-preview/release-current/hi/390",
+        "390",
+        "844",
+        "lobby-players"
+      ],
+      "started_utc": "2026-10-31T19:52:40Z",
+      "exit_code": 0,
+      "metadata_path": "artifacts/translation-program/native-preview/release-current/hi/390/lobby-players.json",
+      "metadata_sha256": "ca193bb950fb1cec82f5c680e533d4d216d8c8bc358920804a4053d8cda5d1a3",
+      "pngs": [
+        {
+          "path": "artifacts/translation-program/native-preview/release-current/hi/390/lobby-players.png",
+          "sha256": "b9093f007be42bea53a7c093106ec33330ae62e0784f9242926c986127d635a6",
+          "bytes": 37720,
+          "width": 390,
+          "height": 844
+        }
+      ],
+      "runtime_ttf_sha256": "71b251b0514b1fc766d2051588d4bfea4c5d9965361de3fbcf3af002be8f8626",
+      "offscreen_control_count_diagnostic": 5,
+      "verified": true,
+      "elapsed_s": 15.163,
+      "log_sha256": "683281f3dc1d8bfd6d39a4a962da6c3b1329e8b8dc9f655a52c9b0e21fd866d9"
+    },
+    {
+      "id": "hi-390-gameplay",
+      "locale": "hi",
+      "width": 390,
+      "height": 844,
+      "mode": "game",
+      "name": "gameplay",
+      "kind": "full",
+      "stem": "gameplay",
+      "input": "artifacts/translation-program/render-inputs-current/hi-full",
+      "output": "artifacts/translation-program/native-preview/release-current/hi/390",
+      "metadata": "gameplay.json",
+      "command": [
+        "/Users/bradley/.codex/worktrees/ed62/glob2/build/darwin/client/debug/dev-dev_fast-true-linker-auto/test/TranslationPreviewHarness",
+        "game",
+        "/Users/bradley/.codex/worktrees/ed62/glob2",
+        "/Users/bradley/.codex/worktrees/ed62/glob2/artifacts/translation-program/render-inputs-current/hi-full",
+        "/Users/bradley/.codex/worktrees/ed62/glob2/artifacts/translation-program/native-preview/release-current/hi/390",
+        "390",
+        "844",
+        "gameplay"
+      ],
+      "started_utc": "2026-10-31T19:52:56Z",
+      "exit_code": 0,
+      "metadata_path": "artifacts/translation-program/native-preview/release-current/hi/390/gameplay.json",
+      "metadata_sha256": "f28aa68772da3c974e023994066508644bfde25f9e33510362e22d874ec04679",
+      "pngs": [
+        {
+          "path": "artifacts/translation-program/native-preview/release-current/hi/390/gameplay-dialog.png",
+          "sha256": "c3a93d37e09cd405c16de211a2d1c87d581f9348db23465897266dfc5748ff3c",
+          "bytes": 83001,
+          "width": 780,
+          "height": 1688
+        },
+        {
+          "path": "artifacts/translation-program/native-preview/release-current/hi/390/gameplay.png",
+          "sha256": "87d48885eec224dd0f388470b28da7a31b8d564532302e62d6105108d3d482ca",
+          "bytes": 256826,
+          "width": 780,
+          "height": 1688
+        }
+      ],
+      "runtime_ttf_sha256": "71b251b0514b1fc766d2051588d4bfea4c5d9965361de3fbcf3af002be8f8626",
+      "offscreen_control_count_diagnostic": 0,
+      "verified": true,
+      "elapsed_s": 14.608,
+      "log_sha256": "246c4fc73303f9b7bd3e3eaca38f409863a1f19db30b6cb8fc15ed43fc18860e"
+    },
+    {
+      "id": "hi-390-tutorial-introduction",
+      "locale": "hi",
+      "width": 390,
+      "height": 844,
+      "mode": "game",
+      "name": "tutorial:introduction",
+      "kind": "full",
+      "stem": "tutorial-introduction",
+      "input": "artifacts/translation-program/render-inputs-current/hi-full",
+      "output": "artifacts/translation-program/native-preview/release-current/hi/390",
+      "metadata": "tutorial-introduction.json",
+      "command": [
+        "/Users/bradley/.codex/worktrees/ed62/glob2/build/darwin/client/debug/dev-dev_fast-true-linker-auto/test/TranslationPreviewHarness",
+        "game",
+        "/Users/bradley/.codex/worktrees/ed62/glob2",
+        "/Users/bradley/.codex/worktrees/ed62/glob2/artifacts/translation-program/render-inputs-current/hi-full",
+        "/Users/bradley/.codex/worktrees/ed62/glob2/artifacts/translation-program/native-preview/release-current/hi/390",
+        "390",
+        "844",
+        "tutorial:introduction"
+      ],
+      "started_utc": "2026-10-31T19:53:11Z",
+      "exit_code": 0,
+      "metadata_path": "artifacts/translation-program/native-preview/release-current/hi/390/tutorial-introduction.json",
+      "metadata_sha256": "e375b490372dfe8403aacfc55ad71ff53c540cb093e5161b1ac57b76b6b25764",
+      "pngs": [
+        {
+          "path": "artifacts/translation-program/native-preview/release-current/hi/390/tutorial-introduction-dialog.png",
+          "sha256": "d273d22926615a6f7c66938e9015385d0fc3d7ae437bbe038a5ca4db1ec0b47c",
+          "bytes": 101062,
+          "width": 780,
+          "height": 1688
+        },
+        {
+          "path": "artifacts/translation-program/native-preview/release-current/hi/390/tutorial-introduction.png",
+          "sha256": "cfe2bf8ca95c71126b57019aafdcb436d788dd143db00623e2211588edbe34bb",
+          "bytes": 341340,
+          "width": 780,
+          "height": 1688
+        }
+      ],
+      "runtime_ttf_sha256": "71b251b0514b1fc766d2051588d4bfea4c5d9965361de3fbcf3af002be8f8626",
+      "offscreen_control_count_diagnostic": 0,
+      "verified": true,
+      "elapsed_s": 16.133,
+      "log_sha256": "246c4fc73303f9b7bd3e3eaca38f409863a1f19db30b6cb8fc15ed43fc18860e"
+    },
+    {
+      "id": "hi-390-tutorial-food-supply",
+      "locale": "hi",
+      "width": 390,
+      "height": 844,
+      "mode": "game",
+      "name": "tutorial:food-supply",
+      "kind": "full",
+      "stem": "tutorial-food-supply",
+      "input": "artifacts/translation-program/render-inputs-current/hi-full",
+      "output": "artifacts/translation-program/native-preview/release-current/hi/390",
+      "metadata": "tutorial-food-supply.json",
+      "command": [
+        "/Users/bradley/.codex/worktrees/ed62/glob2/build/darwin/client/debug/dev-dev_fast-true-linker-auto/test/TranslationPreviewHarness",
+        "game",
+        "/Users/bradley/.codex/worktrees/ed62/glob2",
+        "/Users/bradley/.codex/worktrees/ed62/glob2/artifacts/translation-program/render-inputs-current/hi-full",
+        "/Users/bradley/.codex/worktrees/ed62/glob2/artifacts/translation-program/native-preview/release-current/hi/390",
+        "390",
+        "844",
+        "tutorial:food-supply"
+      ],
+      "started_utc": "2026-10-31T19:53:28Z",
+      "exit_code": 0,
+      "metadata_path": "artifacts/translation-program/native-preview/release-current/hi/390/tutorial-food-supply.json",
+      "metadata_sha256": "ecb5fe30cc00e35ac0e2e23b11856380e7b7e529c2184c1d466c611372594ae5",
+      "pngs": [
+        {
+          "path": "artifacts/translation-program/native-preview/release-current/hi/390/tutorial-food-supply-dialog.png",
+          "sha256": "4329b3319e630342400b18ab837f500d162bd5f6eb8e497c3f24c93936b72692",
+          "bytes": 101381,
+          "width": 780,
+          "height": 1688
+        },
+        {
+          "path": "artifacts/translation-program/native-preview/release-current/hi/390/tutorial-food-supply.png",
+          "sha256": "ed8e10877c8de1021b720f5638e7351901782d712b52f47a5621083968465cbd",
+          "bytes": 342793,
+          "width": 780,
+          "height": 1688
+        }
+      ],
+      "runtime_ttf_sha256": "71b251b0514b1fc766d2051588d4bfea4c5d9965361de3fbcf3af002be8f8626",
+      "offscreen_control_count_diagnostic": 0,
+      "verified": true,
+      "elapsed_s": 16.59,
+      "log_sha256": "246c4fc73303f9b7bd3e3eaca38f409863a1f19db30b6cb8fc15ed43fc18860e"
+    },
+    {
+      "id": "hi-390-tutorial-healing",
+      "locale": "hi",
+      "width": 390,
+      "height": 844,
+      "mode": "game",
+      "name": "tutorial:healing",
+      "kind": "full",
+      "stem": "tutorial-healing",
+      "input": "artifacts/translation-program/render-inputs-current/hi-full",
+      "output": "artifacts/translation-program/native-preview/release-current/hi/390",
+      "metadata": "tutorial-healing.json",
+      "command": [
+        "/Users/bradley/.codex/worktrees/ed62/glob2/build/darwin/client/debug/dev-dev_fast-true-linker-auto/test/TranslationPreviewHarness",
+        "game",
+        "/Users/bradley/.codex/worktrees/ed62/glob2",
+        "/Users/bradley/.codex/worktrees/ed62/glob2/artifacts/translation-program/render-inputs-current/hi-full",
+        "/Users/bradley/.codex/worktrees/ed62/glob2/artifacts/translation-program/native-preview/release-current/hi/390",
+        "390",
+        "844",
+        "tutorial:healing"
+      ],
+      "started_utc": "2026-10-31T19:53:45Z",
+      "exit_code": 0,
+      "metadata_path": "artifacts/translation-program/native-preview/release-current/hi/390/tutorial-healing.json",
+      "metadata_sha256": "f2c0139ea1cd91da6c213e9b2fb8d181cb0d90defd70710fb6f0e8eb1d9dc504",
+      "pngs": [
+        {
+          "path": "artifacts/translation-program/native-preview/release-current/hi/390/tutorial-healing-dialog.png",
+          "sha256": "a8efb050b8861e0da394c0f031a2ffd90785cfd1e4e3a04c7f7d0e468029387b",
+          "bytes": 102600,
+          "width": 780,
+          "height": 1688
+        },
+        {
+          "path": "artifacts/translation-program/native-preview/release-current/hi/390/tutorial-healing.png",
+          "sha256": "349e818a87b64014f0d0ccb928d937fb5f0a3e55342110f5f7de5a8effedeadd",
+          "bytes": 346876,
+          "width": 780,
+          "height": 1688
+        }
+      ],
+      "runtime_ttf_sha256": "71b251b0514b1fc766d2051588d4bfea4c5d9965361de3fbcf3af002be8f8626",
+      "offscreen_control_count_diagnostic": 0,
+      "verified": true,
+      "elapsed_s": 18.81,
+      "log_sha256": "3879fd9ef59947c394f7890cfe066f18140db5370d5102771d26ebb63e2f64c8"
+    },
+    {
+      "id": "hi-390-tutorial-walking-training",
+      "locale": "hi",
+      "width": 390,
+      "height": 844,
+      "mode": "game",
+      "name": "tutorial:walking-training",
+      "kind": "full",
+      "stem": "tutorial-walking-training",
+      "input": "artifacts/translation-program/render-inputs-current/hi-full",
+      "output": "artifacts/translation-program/native-preview/release-current/hi/390",
+      "metadata": "tutorial-walking-training.json",
+      "command": [
+        "/Users/bradley/.codex/worktrees/ed62/glob2/build/darwin/client/debug/dev-dev_fast-true-linker-auto/test/TranslationPreviewHarness",
+        "game",
+        "/Users/bradley/.codex/worktrees/ed62/glob2",
+        "/Users/bradley/.codex/worktrees/ed62/glob2/artifacts/translation-program/render-inputs-current/hi-full",
+        "/Users/bradley/.codex/worktrees/ed62/glob2/artifacts/translation-program/native-preview/release-current/hi/390",
+        "390",
+        "844",
+        "tutorial:walking-training"
+      ],
+      "started_utc": "2026-10-31T19:54:05Z",
+      "exit_code": 0,
+      "metadata_path": "artifacts/translation-program/native-preview/release-current/hi/390/tutorial-walking-training.json",
+      "metadata_sha256": "1d53e424fa0940b8aad55d3f98a8b9b62c8c9f9e833ce9f881c7a9287d5c7e1d",
+      "pngs": [
+        {
+          "path": "artifacts/translation-program/native-preview/release-current/hi/390/tutorial-walking-training-dialog.png",
+          "sha256": "50eb35ca4f5f2491138e44aacf57a4e33ac63ce766808a39fe225c4a1a9320d9",
+          "bytes": 102303,
+          "width": 780,
+          "height": 1688
+        },
+        {
+          "path": "artifacts/translation-program/native-preview/release-current/hi/390/tutorial-walking-training.png",
+          "sha256": "cf1cc7a77c04de0c52bf710d20d50a68ed1fcb5cf8edfff518ccb1a356d74f1f",
+          "bytes": 344473,
+          "width": 780,
+          "height": 1688
+        }
+      ],
+      "runtime_ttf_sha256": "71b251b0514b1fc766d2051588d4bfea4c5d9965361de3fbcf3af002be8f8626",
+      "offscreen_control_count_diagnostic": 0,
+      "verified": true,
+      "elapsed_s": 16.601,
+      "log_sha256": "246c4fc73303f9b7bd3e3eaca38f409863a1f19db30b6cb8fc15ed43fc18860e"
+    },
+    {
+      "id": "hi-390-tutorial-swimming",
+      "locale": "hi",
+      "width": 390,
+      "height": 844,
+      "mode": "game",
+      "name": "tutorial:swimming",
+      "kind": "full",
+      "stem": "tutorial-swimming",
+      "input": "artifacts/translation-program/render-inputs-current/hi-full",
+      "output": "artifacts/translation-program/native-preview/release-current/hi/390",
+      "metadata": "tutorial-swimming.json",
+      "command": [
+        "/Users/bradley/.codex/worktrees/ed62/glob2/build/darwin/client/debug/dev-dev_fast-true-linker-auto/test/TranslationPreviewHarness",
+        "game",
+        "/Users/bradley/.codex/worktrees/ed62/glob2",
+        "/Users/bradley/.codex/worktrees/ed62/glob2/artifacts/translation-program/render-inputs-current/hi-full",
+        "/Users/bradley/.codex/worktrees/ed62/glob2/artifacts/translation-program/native-preview/release-current/hi/390",
+        "390",
+        "844",
+        "tutorial:swimming"
+      ],
+      "started_utc": "2026-10-31T19:54:22Z",
+      "exit_code": 0,
+      "metadata_path": "artifacts/translation-program/native-preview/release-current/hi/390/tutorial-swimming.json",
+      "metadata_sha256": "cae01ffa36eedcb8e90c784e8110eecaed602a475a62895b91671cb9f56bef38",
+      "pngs": [
+        {
+          "path": "artifacts/translation-program/native-preview/release-current/hi/390/tutorial-swimming-dialog.png",
+          "sha256": "47a7ac13fab43463e1d8681f90a8d856999e29f827feeed8e8b242993cfdfa71",
+          "bytes": 102407,
+          "width": 780,
+          "height": 1688
+        },
+        {
+          "path": "artifacts/translation-program/native-preview/release-current/hi/390/tutorial-swimming.png",
+          "sha256": "c08e7a1ae94be7258d6f56ecb336bd84333406c374cee65e44329ddcdc8e26a7",
+          "bytes": 339088,
+          "width": 780,
+          "height": 1688
+        }
+      ],
+      "runtime_ttf_sha256": "71b251b0514b1fc766d2051588d4bfea4c5d9965361de3fbcf3af002be8f8626",
+      "offscreen_control_count_diagnostic": 0,
+      "verified": true,
+      "elapsed_s": 15.231,
+      "log_sha256": "3879fd9ef59947c394f7890cfe066f18140db5370d5102771d26ebb63e2f64c8"
+    },
+    {
+      "id": "hi-390-tutorial-schools",
+      "locale": "hi",
+      "width": 390,
+      "height": 844,
+      "mode": "game",
+      "name": "tutorial:schools",
+      "kind": "full",
+      "stem": "tutorial-schools",
+      "input": "artifacts/translation-program/render-inputs-current/hi-full",
+      "output": "artifacts/translation-program/native-preview/release-current/hi/390",
+      "metadata": "tutorial-schools.json",
+      "command": [
+        "/Users/bradley/.codex/worktrees/ed62/glob2/build/darwin/client/debug/dev-dev_fast-true-linker-auto/test/TranslationPreviewHarness",
+        "game",
+        "/Users/bradley/.codex/worktrees/ed62/glob2",
+        "/Users/bradley/.codex/worktrees/ed62/glob2/artifacts/translation-program/render-inputs-current/hi-full",
+        "/Users/bradley/.codex/worktrees/ed62/glob2/artifacts/translation-program/native-preview/release-current/hi/390",
+        "390",
+        "844",
+        "tutorial:schools"
+      ],
+      "started_utc": "2026-10-31T19:54:38Z",
+      "exit_code": 0,
+      "metadata_path": "artifacts/translation-program/native-preview/release-current/hi/390/tutorial-schools.json",
+      "metadata_sha256": "c45cf84e3bbe7c4173bae0ef4b7d5a61a197280e935b1e1564430c6b10b27794",
+      "pngs": [
+        {
+          "path": "artifacts/translation-program/native-preview/release-current/hi/390/tutorial-schools-dialog.png",
+          "sha256": "2b976a16264ee998099089527a8dbbd5ac322c40c8441bed574c78a40d4d098c",
+          "bytes": 101898,
+          "width": 780,
+          "height": 1688
+        },
+        {
+          "path": "artifacts/translation-program/native-preview/release-current/hi/390/tutorial-schools.png",
+          "sha256": "089b5c813926e9ccf16af697079eaea23b820a7cd5e85371a5551de9b0d9621b",
+          "bytes": 374952,
+          "width": 780,
+          "height": 1688
+        }
+      ],
+      "runtime_ttf_sha256": "71b251b0514b1fc766d2051588d4bfea4c5d9965361de3fbcf3af002be8f8626",
+      "offscreen_control_count_diagnostic": 0,
+      "verified": true,
+      "elapsed_s": 16.638,
+      "log_sha256": "3879fd9ef59947c394f7890cfe066f18140db5370d5102771d26ebb63e2f64c8"
+    },
+    {
+      "id": "hi-390-tutorial-upgrades",
+      "locale": "hi",
+      "width": 390,
+      "height": 844,
+      "mode": "game",
+      "name": "tutorial:upgrades",
+      "kind": "full",
+      "stem": "tutorial-upgrades",
+      "input": "artifacts/translation-program/render-inputs-current/hi-full",
+      "output": "artifacts/translation-program/native-preview/release-current/hi/390",
+      "metadata": "tutorial-upgrades.json",
+      "command": [
+        "/Users/bradley/.codex/worktrees/ed62/glob2/build/darwin/client/debug/dev-dev_fast-true-linker-auto/test/TranslationPreviewHarness",
+        "game",
+        "/Users/bradley/.codex/worktrees/ed62/glob2",
+        "/Users/bradley/.codex/worktrees/ed62/glob2/artifacts/translation-program/render-inputs-current/hi-full",
+        "/Users/bradley/.codex/worktrees/ed62/glob2/artifacts/translation-program/native-preview/release-current/hi/390",
+        "390",
+        "844",
+        "tutorial:upgrades"
+      ],
+      "started_utc": "2026-10-31T19:54:55Z",
+      "exit_code": 0,
+      "metadata_path": "artifacts/translation-program/native-preview/release-current/hi/390/tutorial-upgrades.json",
+      "metadata_sha256": "b31b4faa91b67c660e01f1e2cd74de2eb7902e55f8b2d69c5dd6628d4c6fa8e1",
+      "pngs": [
+        {
+          "path": "artifacts/translation-program/native-preview/release-current/hi/390/tutorial-upgrades-dialog.png",
+          "sha256": "51f8f362b36c18bd10d07c8b014146b53f25ec0d7a3c09c46b8d0928f1b02c14",
+          "bytes": 103126,
+          "width": 780,
+          "height": 1688
+        },
+        {
+          "path": "artifacts/translation-program/native-preview/release-current/hi/390/tutorial-upgrades.png",
+          "sha256": "718c26b2b7906b5130f00f2b9dffa95f79c640e837b4f1fb7ed4ac6ffa963373",
+          "bytes": 382696,
+          "width": 780,
+          "height": 1688
+        }
+      ],
+      "runtime_ttf_sha256": "71b251b0514b1fc766d2051588d4bfea4c5d9965361de3fbcf3af002be8f8626",
+      "offscreen_control_count_diagnostic": 0,
+      "verified": true,
+      "elapsed_s": 17.539,
+      "log_sha256": "246c4fc73303f9b7bd3e3eaca38f409863a1f19db30b6cb8fc15ed43fc18860e"
+    },
+    {
+      "id": "hi-390-tutorial-warrior-training",
+      "locale": "hi",
+      "width": 390,
+      "height": 844,
+      "mode": "game",
+      "name": "tutorial:warrior-training",
+      "kind": "full",
+      "stem": "tutorial-warrior-training",
+      "input": "artifacts/translation-program/render-inputs-current/hi-full",
+      "output": "artifacts/translation-program/native-preview/release-current/hi/390",
+      "metadata": "tutorial-warrior-training.json",
+      "command": [
+        "/Users/bradley/.codex/worktrees/ed62/glob2/build/darwin/client/debug/dev-dev_fast-true-linker-auto/test/TranslationPreviewHarness",
+        "game",
+        "/Users/bradley/.codex/worktrees/ed62/glob2",
+        "/Users/bradley/.codex/worktrees/ed62/glob2/artifacts/translation-program/render-inputs-current/hi-full",
+        "/Users/bradley/.codex/worktrees/ed62/glob2/artifacts/translation-program/native-preview/release-current/hi/390",
+        "390",
+        "844",
+        "tutorial:warrior-training"
+      ],
+      "started_utc": "2026-10-31T19:55:14Z",
+      "exit_code": 0,
+      "metadata_path": "artifacts/translation-program/native-preview/release-current/hi/390/tutorial-warrior-training.json",
+      "metadata_sha256": "196fd413ead1ef06867596b83936438b0d038fce2a4d65f64513394113b08845",
+      "pngs": [
+        {
+          "path": "artifacts/translation-program/native-preview/release-current/hi/390/tutorial-warrior-training-dialog.png",
+          "sha256": "661e21e6c13f205c6403965aed0dd3b42f071e169b0a89f45dbff79c1514df72",
+          "bytes": 102657,
+          "width": 780,
+          "height": 1688
+        },
+        {
+          "path": "artifacts/translation-program/native-preview/release-current/hi/390/tutorial-warrior-training.png",
+          "sha256": "b7ade5d76f0febee4388b9c29ff4d08c991cfdb1f2d3b99c6203263a28c612e0",
+          "bytes": 394128,
+          "width": 780,
+          "height": 1688
+        }
+      ],
+      "runtime_ttf_sha256": "71b251b0514b1fc766d2051588d4bfea4c5d9965361de3fbcf3af002be8f8626",
+      "offscreen_control_count_diagnostic": 0,
+      "verified": true,
+      "elapsed_s": 20.894,
+      "log_sha256": "246c4fc73303f9b7bd3e3eaca38f409863a1f19db30b6cb8fc15ed43fc18860e"
+    },
+    {
+      "id": "hi-390-tutorial-fortifications",
+      "locale": "hi",
+      "width": 390,
+      "height": 844,
+      "mode": "game",
+      "name": "tutorial:fortifications",
+      "kind": "full",
+      "stem": "tutorial-fortifications",
+      "input": "artifacts/translation-program/render-inputs-current/hi-full",
+      "output": "artifacts/translation-program/native-preview/release-current/hi/390",
+      "metadata": "tutorial-fortifications.json",
+      "command": [
+        "/Users/bradley/.codex/worktrees/ed62/glob2/build/darwin/client/debug/dev-dev_fast-true-linker-auto/test/TranslationPreviewHarness",
+        "game",
+        "/Users/bradley/.codex/worktrees/ed62/glob2",
+        "/Users/bradley/.codex/worktrees/ed62/glob2/artifacts/translation-program/render-inputs-current/hi-full",
+        "/Users/bradley/.codex/worktrees/ed62/glob2/artifacts/translation-program/native-preview/release-current/hi/390",
+        "390",
+        "844",
+        "tutorial:fortifications"
+      ],
+      "started_utc": "2026-10-31T19:55:35Z",
+      "exit_code": 0,
+      "metadata_path": "artifacts/translation-program/native-preview/release-current/hi/390/tutorial-fortifications.json",
+      "metadata_sha256": "1727e69c802c50cf6da8097e5c6a42ddcc64c22cfb9cc9b96d3fe99ac283cc4b",
+      "pngs": [
+        {
+          "path": "artifacts/translation-program/native-preview/release-current/hi/390/tutorial-fortifications-dialog.png",
+          "sha256": "2d614f28d1d7ed2ceee829be009746875966b8c6a3ddcae6b6887a50dff6ef72",
+          "bytes": 102459,
+          "width": 780,
+          "height": 1688
+        },
+        {
+          "path": "artifacts/translation-program/native-preview/release-current/hi/390/tutorial-fortifications.png",
+          "sha256": "7e63917cb0681ff6984b2d0539e72a29cbc0037b79af32cdfa84cd6bf9d8dc97",
+          "bytes": 383282,
+          "width": 780,
+          "height": 1688
+        }
+      ],
+      "runtime_ttf_sha256": "71b251b0514b1fc766d2051588d4bfea4c5d9965361de3fbcf3af002be8f8626",
+      "offscreen_control_count_diagnostic": 0,
+      "verified": true,
+      "elapsed_s": 20.059,
+      "log_sha256": "246c4fc73303f9b7bd3e3eaca38f409863a1f19db30b6cb8fc15ed43fc18860e"
+    },
+    {
+      "id": "hi-390-tutorial-defensive-tactics",
+      "locale": "hi",
+      "width": 390,
+      "height": 844,
+      "mode": "game",
+      "name": "tutorial:defensive-tactics",
+      "kind": "full",
+      "stem": "tutorial-defensive-tactics",
+      "input": "artifacts/translation-program/render-inputs-current/hi-full",
+      "output": "artifacts/translation-program/native-preview/release-current/hi/390",
+      "metadata": "tutorial-defensive-tactics.json",
+      "command": [
+        "/Users/bradley/.codex/worktrees/ed62/glob2/build/darwin/client/debug/dev-dev_fast-true-linker-auto/test/TranslationPreviewHarness",
+        "game",
+        "/Users/bradley/.codex/worktrees/ed62/glob2",
+        "/Users/bradley/.codex/worktrees/ed62/glob2/artifacts/translation-program/render-inputs-current/hi-full",
+        "/Users/bradley/.codex/worktrees/ed62/glob2/artifacts/translation-program/native-preview/release-current/hi/390",
+        "390",
+        "844",
+        "tutorial:defensive-tactics"
+      ],
+      "started_utc": "2026-10-31T19:55:56Z",
+      "exit_code": 0,
+      "metadata_path": "artifacts/translation-program/native-preview/release-current/hi/390/tutorial-defensive-tactics.json",
+      "metadata_sha256": "05f472f58a2f3f01744c0d9996ee33bd9f1b6fe1f321a7b5f99d21c711d8b6c6",
+      "pngs": [
+        {
+          "path": "artifacts/translation-program/native-preview/release-current/hi/390/tutorial-defensive-tactics-dialog.png",
+          "sha256": "52b0e31e33a034bbf113fec0ef1c7573ef84dd8098480daf023c2e81d17e03e1",
+          "bytes": 100999,
+          "width": 780,
+          "height": 1688
+        },
+        {
+          "path": "artifacts/translation-program/native-preview/release-current/hi/390/tutorial-defensive-tactics.png",
+          "sha256": "17427bdaab0d349d55b659c84d1ad9923e9f7405995205261d2422efc84fda74",
+          "bytes": 342249,
+          "width": 780,
+          "height": 1688
+        }
+      ],
+      "runtime_ttf_sha256": "71b251b0514b1fc766d2051588d4bfea4c5d9965361de3fbcf3af002be8f8626",
+      "offscreen_control_count_diagnostic": 0,
+      "verified": true,
+      "elapsed_s": 21.038,
+      "log_sha256": "246c4fc73303f9b7bd3e3eaca38f409863a1f19db30b6cb8fc15ed43fc18860e"
+    },
+    {
+      "id": "ur-1200-matrix",
+      "locale": "ur",
+      "width": 1200,
+      "height": 844,
+      "mode": "matrix",
+      "name": "matrix",
+      "kind": "matrix",
+      "stem": "matrix",
+      "input": "artifacts/translation-program/render-inputs-current/ur-matrix",
+      "output": "artifacts/translation-program/native-preview/release-current/ur/1200/matrix",
+      "metadata": "font-matrix.json",
+      "command": [
+        "/Users/bradley/.codex/worktrees/ed62/glob2/build/darwin/client/debug/dev-dev_fast-true-linker-auto/test/TranslationPreviewHarness",
+        "matrix",
+        "/Users/bradley/.codex/worktrees/ed62/glob2",
+        "/Users/bradley/.codex/worktrees/ed62/glob2/artifacts/translation-program/render-inputs-current/ur-matrix",
+        "/Users/bradley/.codex/worktrees/ed62/glob2/artifacts/translation-program/native-preview/release-current/ur/1200/matrix",
+        "1200",
+        "844"
+      ],
+      "started_utc": "2026-10-31T19:56:18Z",
+      "exit_code": 0,
+      "metadata_path": "artifacts/translation-program/native-preview/release-current/ur/1200/matrix/font-matrix.json",
+      "metadata_sha256": "22924695e69c5826d9fd574e9504d4297eea275e41ad70444ab6e6fc6fdf943b",
+      "pngs": [
+        {
+          "path": "artifacts/translation-program/native-preview/release-current/ur/1200/matrix/font-10-scale-1-page-001.png",
+          "sha256": "31657d08dfc7c664a587c0e6342686321b740ce3a1cde562917c57968d77cece",
+          "bytes": 106439,
+          "width": 1200,
+          "height": 844
+        },
+        {
+          "path": "artifacts/translation-program/native-preview/release-current/ur/1200/matrix/font-10-scale-1-page-002.png",
+          "sha256": "000d287192faeb1780db02476cfa9522840bb8d157db93ac60609471190f2e31",
+          "bytes": 101996,
+          "width": 1200,
+          "height": 844
+        },
+        {
+          "path": "artifacts/translation-program/native-preview/release-current/ur/1200/matrix/font-10-scale-1-page-003.png",
+          "sha256": "c039ff9f90ee36efe1f1d490af0df3b1b305fcc565a8c95caa37db839dc69456",
+          "bytes": 8100,
+          "width": 1200,
+          "height": 844
+        },
+        {
+          "path": "artifacts/translation-program/native-preview/release-current/ur/1200/matrix/font-10-scale-2-page-001.png",
+          "sha256": "4ba9d618900d2802f1fc527b011717c7bb8b762e49706e91c3980141ff98af8e",
+          "bytes": 710097,
+          "width": 2400,
+          "height": 1688
+        },
+        {
+          "path": "artifacts/translation-program/native-preview/release-current/ur/1200/matrix/font-10-scale-2-page-002.png",
+          "sha256": "b162f8cf2932a9faa041fe2de97755caf761d36a441f03208aae1b7a88c938f5",
+          "bytes": 678320,
+          "width": 2400,
+          "height": 1688
+        },
+        {
+          "path": "artifacts/translation-program/native-preview/release-current/ur/1200/matrix/font-13-scale-1-page-001.png",
+          "sha256": "0bd6b124a1c39340c7e4d31d287529775860550644ca78b5d7e63aa84e97367b",
+          "bytes": 125029,
+          "width": 1200,
+          "height": 844
+        },
+        {
+          "path": "artifacts/translation-program/native-preview/release-current/ur/1200/matrix/font-13-scale-1-page-002.png",
+          "sha256": "f9ea3eafceaa901370af9ec0a0e302a90e34f73f59076116e54f6ad433aff51f",
+          "bytes": 139307,
+          "width": 1200,
+          "height": 844
+        },
+        {
+          "path": "artifacts/translation-program/native-preview/release-current/ur/1200/matrix/font-13-scale-1-page-003.png",
+          "sha256": "91dd7acc461494161bb94ebbd36496a40d0b49d9872ee1dc0e83dc308b22bcaa",
+          "bytes": 77868,
+          "width": 1200,
+          "height": 844
+        },
+        {
+          "path": "artifacts/translation-program/native-preview/release-current/ur/1200/matrix/font-13-scale-2-page-001.png",
+          "sha256": "16641c866d5ef8c69ec2cc26aa6c864785e9e1dac72a7b692f1e831dfaf6a821",
+          "bytes": 728491,
+          "width": 2400,
+          "height": 1688
+        },
+        {
+          "path": "artifacts/translation-program/native-preview/release-current/ur/1200/matrix/font-13-scale-2-page-002.png",
+          "sha256": "39022171632dee342bc999b96cbe995dd727fb23bf2f0062bb6d2e526b56729f",
+          "bytes": 819247,
+          "width": 2400,
+          "height": 1688
+        },
+        {
+          "path": "artifacts/translation-program/native-preview/release-current/ur/1200/matrix/font-13-scale-2-page-003.png",
+          "sha256": "c15d0ebdf649623162aef07d06e89424f05edb1b0dd17c0f64cfd3cc22265099",
+          "bytes": 406548,
+          "width": 2400,
+          "height": 1688
+        },
+        {
+          "path": "artifacts/translation-program/native-preview/release-current/ur/1200/matrix/font-20-scale-1-page-001.png",
+          "sha256": "498f0dd1e09154657f9114fa3e4312ec0a14ad53f2bf26ef35e30480b0ae222d",
+          "bytes": 155847,
+          "width": 1200,
+          "height": 844
+        },
+        {
+          "path": "artifacts/translation-program/native-preview/release-current/ur/1200/matrix/font-20-scale-1-page-002.png",
+          "sha256": "b79482d66ff919ad9e51f7238291ac7da10e90772c271b7f5ebb95c5722425f4",
+          "bytes": 115922,
+          "width": 1200,
+          "height": 844
+        },
+        {
+          "path": "artifacts/translation-program/native-preview/release-current/ur/1200/matrix/font-20-scale-1-page-003.png",
+          "sha256": "f2223f7403f7060b646be620182853f189306c14f185900f51ad9017bc31f793",
+          "bytes": 152522,
+          "width": 1200,
+          "height": 844
+        },
+        {
+          "path": "artifacts/translation-program/native-preview/release-current/ur/1200/matrix/font-20-scale-1-page-004.png",
+          "sha256": "0de663b8e196cde401bc9d2ccde7bfa2b53c0169cca48b40b21bf8eb67552d93",
+          "bytes": 156677,
+          "width": 1200,
+          "height": 844
+        },
+        {
+          "path": "artifacts/translation-program/native-preview/release-current/ur/1200/matrix/font-20-scale-1-page-005.png",
+          "sha256": "66ddd5927be13adece0b1dc7194dede33c7f4cf6881513e20868856dfb8339ec",
+          "bytes": 80369,
+          "width": 1200,
+          "height": 844
+        },
+        {
+          "path": "artifacts/translation-program/native-preview/release-current/ur/1200/matrix/font-20-scale-2-page-001.png",
+          "sha256": "7a181db6e4ceb64a6b31f09e7da2cec5df1d1ef171a33b996f9cb2bdb7091d75",
+          "bytes": 835912,
+          "width": 2400,
+          "height": 1688
+        },
+        {
+          "path": "artifacts/translation-program/native-preview/release-current/ur/1200/matrix/font-20-scale-2-page-002.png",
+          "sha256": "fa5de5bace4b9b641aca18b7ae45ef341275125b2658440d64e90da32834ff70",
+          "bytes": 577557,
+          "width": 2400,
+          "height": 1688
+        },
+        {
+          "path": "artifacts/translation-program/native-preview/release-current/ur/1200/matrix/font-20-scale-2-page-003.png",
+          "sha256": "0f35d10b6c3e394672330ee9f45318f2813612e2a09c3594f3a820590f0e1f7e",
+          "bytes": 786338,
+          "width": 2400,
+          "height": 1688
+        },
+        {
+          "path": "artifacts/translation-program/native-preview/release-current/ur/1200/matrix/font-20-scale-2-page-004.png",
+          "sha256": "7589278a7f6acb803214fa104fc08888c3e21df0a76f3dd69c879c569bd796d7",
+          "bytes": 898953,
+          "width": 2400,
+          "height": 1688
+        },
+        {
+          "path": "artifacts/translation-program/native-preview/release-current/ur/1200/matrix/font-20-scale-2-page-005.png",
+          "sha256": "a5026b9ec8b1ac675e07fe3ce5acf7d5ca538293ac35df24c9e931e6a8a498ac",
+          "bytes": 316347,
+          "width": 2400,
+          "height": 1688
+        }
+      ],
+      "runtime_ttf_sha256": "71b251b0514b1fc766d2051588d4bfea4c5d9965361de3fbcf3af002be8f8626",
+      "offscreen_control_count_diagnostic": 0,
+      "verified": true,
+      "elapsed_s": 27.304,
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "id": "ur-1200-main",
+      "locale": "ur",
+      "width": 1200,
+      "height": 844,
+      "mode": "screen",
+      "name": "main",
+      "kind": "full",
+      "stem": "main",
+      "input": "artifacts/translation-program/render-inputs-current/ur-full",
+      "output": "artifacts/translation-program/native-preview/release-current/ur/1200",
+      "metadata": "main.json",
+      "command": [
+        "/Users/bradley/.codex/worktrees/ed62/glob2/build/darwin/client/debug/dev-dev_fast-true-linker-auto/test/TranslationPreviewHarness",
+        "screen",
+        "/Users/bradley/.codex/worktrees/ed62/glob2",
+        "/Users/bradley/.codex/worktrees/ed62/glob2/artifacts/translation-program/render-inputs-current/ur-full",
+        "/Users/bradley/.codex/worktrees/ed62/glob2/artifacts/translation-program/native-preview/release-current/ur/1200",
+        "1200",
+        "844",
+        "main"
+      ],
+      "started_utc": "2026-10-31T19:56:46Z",
+      "exit_code": 0,
+      "metadata_path": "artifacts/translation-program/native-preview/release-current/ur/1200/main.json",
+      "metadata_sha256": "90b312f60612ead7543cd7366fa3ab79d6a6be95ca4b4308f57d7a9157e3de04",
+      "pngs": [
+        {
+          "path": "artifacts/translation-program/native-preview/release-current/ur/1200/main.png",
+          "sha256": "24998f1c9f8147f49e4771f8b34ce36ab6b03ee9da8b531c063d3ca604066649",
+          "bytes": 1148511,
+          "width": 1200,
+          "height": 844
+        }
+      ],
+      "runtime_ttf_sha256": "71b251b0514b1fc766d2051588d4bfea4c5d9965361de3fbcf3af002be8f8626",
+      "offscreen_control_count_diagnostic": 0,
+      "verified": true,
+      "elapsed_s": 16.327,
+      "log_sha256": "683281f3dc1d8bfd6d39a4a962da6c3b1329e8b8dc9f655a52c9b0e21fd866d9"
+    },
+    {
+      "id": "ur-1200-settings",
+      "locale": "ur",
+      "width": 1200,
+      "height": 844,
+      "mode": "screen",
+      "name": "settings",
+      "kind": "full",
+      "stem": "settings",
+      "input": "artifacts/translation-program/render-inputs-current/ur-full",
+      "output": "artifacts/translation-program/native-preview/release-current/ur/1200",
+      "metadata": "settings.json",
+      "command": [
+        "/Users/bradley/.codex/worktrees/ed62/glob2/build/darwin/client/debug/dev-dev_fast-true-linker-auto/test/TranslationPreviewHarness",
+        "screen",
+        "/Users/bradley/.codex/worktrees/ed62/glob2",
+        "/Users/bradley/.codex/worktrees/ed62/glob2/artifacts/translation-program/render-inputs-current/ur-full",
+        "/Users/bradley/.codex/worktrees/ed62/glob2/artifacts/translation-program/native-preview/release-current/ur/1200",
+        "1200",
+        "844",
+        "settings"
+      ],
+      "started_utc": "2026-10-31T19:57:03Z",
+      "exit_code": 0,
+      "metadata_path": "artifacts/translation-program/native-preview/release-current/ur/1200/settings.json",
+      "metadata_sha256": "34721f8630d62872ee098cc6f141443931961827b02299f35085bcd61d4c4d96",
+      "pngs": [
+        {
+          "path": "artifacts/translation-program/native-preview/release-current/ur/1200/settings.png",
+          "sha256": "3a32117c321ce89f5ca141974e37b994395e00aaa63a5a2864491a1ddab36993",
+          "bytes": 540840,
+          "width": 1200,
+          "height": 844
+        }
+      ],
+      "runtime_ttf_sha256": "71b251b0514b1fc766d2051588d4bfea4c5d9965361de3fbcf3af002be8f8626",
+      "offscreen_control_count_diagnostic": 16,
+      "verified": true,
+      "elapsed_s": 16.224,
+      "log_sha256": "683281f3dc1d8bfd6d39a4a962da6c3b1329e8b8dc9f655a52c9b0e21fd866d9"
+    },
+    {
+      "id": "ur-1200-settings-audio",
+      "locale": "ur",
+      "width": 1200,
+      "height": 844,
+      "mode": "screen",
+      "name": "settings-audio",
+      "kind": "full",
+      "stem": "settings-audio",
+      "input": "artifacts/translation-program/render-inputs-current/ur-full",
+      "output": "artifacts/translation-program/native-preview/release-current/ur/1200",
+      "metadata": "settings-audio.json",
+      "command": [
+        "/Users/bradley/.codex/worktrees/ed62/glob2/build/darwin/client/debug/dev-dev_fast-true-linker-auto/test/TranslationPreviewHarness",
+        "screen",
+        "/Users/bradley/.codex/worktrees/ed62/glob2",
+        "/Users/bradley/.codex/worktrees/ed62/glob2/artifacts/translation-program/render-inputs-current/ur-full",
+        "/Users/bradley/.codex/worktrees/ed62/glob2/artifacts/translation-program/native-preview/release-current/ur/1200",
+        "1200",
+        "844",
+        "settings-audio"
+      ],
+      "started_utc": "2026-10-31T19:57:20Z",
+      "exit_code": 0,
+      "metadata_path": "artifacts/translation-program/native-preview/release-current/ur/1200/settings-audio.json",
+      "metadata_sha256": "b0be18ec867ab7272ed37be6439ec940e7d8e17070a47379e6f0093a13a2018b",
+      "pngs": [
+        {
+          "path": "artifacts/translation-program/native-preview/release-current/ur/1200/settings-audio.png",
+          "sha256": "d444f6ab2f2bb379ecbba5cb31e4b750559be94540fc0e8b08f4a379a9c75d7a",
+          "bytes": 528983,
+          "width": 1200,
+          "height": 844
+        }
+      ],
+      "runtime_ttf_sha256": "71b251b0514b1fc766d2051588d4bfea4c5d9965361de3fbcf3af002be8f8626",
+      "offscreen_control_count_diagnostic": 0,
+      "verified": true,
+      "elapsed_s": 15.218,
+      "log_sha256": "683281f3dc1d8bfd6d39a4a962da6c3b1329e8b8dc9f655a52c9b0e21fd866d9"
+    },
+    {
+      "id": "ur-1200-lobby",
+      "locale": "ur",
+      "width": 1200,
+      "height": 844,
+      "mode": "screen",
+      "name": "lobby",
+      "kind": "full",
+      "stem": "lobby",
+      "input": "artifacts/translation-program/render-inputs-current/ur-full",
+      "output": "artifacts/translation-program/native-preview/release-current/ur/1200",
+      "metadata": "lobby.json",
+      "command": [
+        "/Users/bradley/.codex/worktrees/ed62/glob2/build/darwin/client/debug/dev-dev_fast-true-linker-auto/test/TranslationPreviewHarness",
+        "screen",
+        "/Users/bradley/.codex/worktrees/ed62/glob2",
+        "/Users/bradley/.codex/worktrees/ed62/glob2/artifacts/translation-program/render-inputs-current/ur-full",
+        "/Users/bradley/.codex/worktrees/ed62/glob2/artifacts/translation-program/native-preview/release-current/ur/1200",
+        "1200",
+        "844",
+        "lobby"
+      ],
+      "started_utc": "2026-10-31T19:57:36Z",
+      "exit_code": 0,
+      "metadata_path": "artifacts/translation-program/native-preview/release-current/ur/1200/lobby.json",
+      "metadata_sha256": "467841d7e69430c02f288d1ea6350feb2d55e260272f8dce24b4542db0aecb7b",
+      "pngs": [
+        {
+          "path": "artifacts/translation-program/native-preview/release-current/ur/1200/lobby.png",
+          "sha256": "9fab0fe7c935e75c29e7c3baa0d4874e740845f5ab6dc304b48fe05987b82062",
+          "bytes": 231773,
+          "width": 1200,
+          "height": 844
+        }
+      ],
+      "runtime_ttf_sha256": "71b251b0514b1fc766d2051588d4bfea4c5d9965361de3fbcf3af002be8f8626",
+      "offscreen_control_count_diagnostic": 0,
+      "verified": true,
+      "elapsed_s": 15.898,
+      "log_sha256": "683281f3dc1d8bfd6d39a4a962da6c3b1329e8b8dc9f655a52c9b0e21fd866d9"
+    },
+    {
+      "id": "ur-1200-lobby-players",
+      "locale": "ur",
+      "width": 1200,
+      "height": 844,
+      "mode": "screen",
+      "name": "lobby-players",
+      "kind": "full",
+      "stem": "lobby-players",
+      "input": "artifacts/translation-program/render-inputs-current/ur-full",
+      "output": "artifacts/translation-program/native-preview/release-current/ur/1200",
+      "metadata": "lobby-players.json",
+      "command": [
+        "/Users/bradley/.codex/worktrees/ed62/glob2/build/darwin/client/debug/dev-dev_fast-true-linker-auto/test/TranslationPreviewHarness",
+        "screen",
+        "/Users/bradley/.codex/worktrees/ed62/glob2",
+        "/Users/bradley/.codex/worktrees/ed62/glob2/artifacts/translation-program/render-inputs-current/ur-full",
+        "/Users/bradley/.codex/worktrees/ed62/glob2/artifacts/translation-program/native-preview/release-current/ur/1200",
+        "1200",
+        "844",
+        "lobby-players"
+      ],
+      "started_utc": "2026-10-31T19:57:52Z",
+      "exit_code": 0,
+      "metadata_path": "artifacts/translation-program/native-preview/release-current/ur/1200/lobby-players.json",
+      "metadata_sha256": "d6efcd06cbbd285bb3d4f22686e6d41e6e3b729fab1e01e4df7b291ce57ab0f3",
+      "pngs": [
+        {
+          "path": "artifacts/translation-program/native-preview/release-current/ur/1200/lobby-players.png",
+          "sha256": "d99eaa43cad6e78464390b5341cd1f7b492473ce248d593f34630d9a5611b06e",
+          "bytes": 240801,
+          "width": 1200,
+          "height": 844
+        }
+      ],
+      "runtime_ttf_sha256": "71b251b0514b1fc766d2051588d4bfea4c5d9965361de3fbcf3af002be8f8626",
+      "offscreen_control_count_diagnostic": 0,
+      "verified": true,
+      "elapsed_s": 14.504,
+      "log_sha256": "683281f3dc1d8bfd6d39a4a962da6c3b1329e8b8dc9f655a52c9b0e21fd866d9"
+    },
+    {
+      "id": "ur-1200-gameplay",
+      "locale": "ur",
+      "width": 1200,
+      "height": 844,
+      "mode": "game",
+      "name": "gameplay",
+      "kind": "full",
+      "stem": "gameplay",
+      "input": "artifacts/translation-program/render-inputs-current/ur-full",
+      "output": "artifacts/translation-program/native-preview/release-current/ur/1200",
+      "metadata": "gameplay.json",
+      "command": [
+        "/Users/bradley/.codex/worktrees/ed62/glob2/build/darwin/client/debug/dev-dev_fast-true-linker-auto/test/TranslationPreviewHarness",
+        "game",
+        "/Users/bradley/.codex/worktrees/ed62/glob2",
+        "/Users/bradley/.codex/worktrees/ed62/glob2/artifacts/translation-program/render-inputs-current/ur-full",
+        "/Users/bradley/.codex/worktrees/ed62/glob2/artifacts/translation-program/native-preview/release-current/ur/1200",
+        "1200",
+        "844",
+        "gameplay"
+      ],
+      "started_utc": "2026-10-31T19:58:07Z",
+      "exit_code": 0,
+      "metadata_path": "artifacts/translation-program/native-preview/release-current/ur/1200/gameplay.json",
+      "metadata_sha256": "7f167230812aad7ff01fce7e31204bf33d4ebbb29c4d2ba3e28001e9b8740278",
+      "pngs": [
+        {
+          "path": "artifacts/translation-program/native-preview/release-current/ur/1200/gameplay-dialog.png",
+          "sha256": "93f9bbb51111196e8fbd04864cd153afc9a2990cd6a46baa5561142bc98b3e0e",
+          "bytes": 544889,
+          "width": 2400,
+          "height": 1688
+        },
+        {
+          "path": "artifacts/translation-program/native-preview/release-current/ur/1200/gameplay-zoom-fit.png",
+          "sha256": "01c8532afe55dfaab1ca1af65459818d572e3337b4ef05f674f1bfacd0a344b7",
+          "bytes": 110275,
+          "width": 2400,
+          "height": 1688
+        },
+        {
+          "path": "artifacts/translation-program/native-preview/release-current/ur/1200/gameplay-zoom-plus.png",
+          "sha256": "4bd817b2f60c0ba9c1ee8eba868b2659b0baa58d1707c8fed3ea37ab7e79d19a",
+          "bytes": 918985,
+          "width": 2400,
+          "height": 1688
+        },
+        {
+          "path": "artifacts/translation-program/native-preview/release-current/ur/1200/gameplay.png",
+          "sha256": "499e4c94dcee4fd3ed380d2d88ebffde3da03e90a022279c4c183f0f9d4c7de0",
+          "bytes": 725805,
+          "width": 2400,
+          "height": 1688
+        }
+      ],
+      "runtime_ttf_sha256": "71b251b0514b1fc766d2051588d4bfea4c5d9965361de3fbcf3af002be8f8626",
+      "offscreen_control_count_diagnostic": 0,
+      "verified": true,
+      "elapsed_s": 16.984,
+      "log_sha256": "246c4fc73303f9b7bd3e3eaca38f409863a1f19db30b6cb8fc15ed43fc18860e"
+    },
+    {
+      "id": "ur-1200-tutorial-introduction",
+      "locale": "ur",
+      "width": 1200,
+      "height": 844,
+      "mode": "game",
+      "name": "tutorial:introduction",
+      "kind": "full",
+      "stem": "tutorial-introduction",
+      "input": "artifacts/translation-program/render-inputs-current/ur-full",
+      "output": "artifacts/translation-program/native-preview/release-current/ur/1200",
+      "metadata": "tutorial-introduction.json",
+      "command": [
+        "/Users/bradley/.codex/worktrees/ed62/glob2/build/darwin/client/debug/dev-dev_fast-true-linker-auto/test/TranslationPreviewHarness",
+        "game",
+        "/Users/bradley/.codex/worktrees/ed62/glob2",
+        "/Users/bradley/.codex/worktrees/ed62/glob2/artifacts/translation-program/render-inputs-current/ur-full",
+        "/Users/bradley/.codex/worktrees/ed62/glob2/artifacts/translation-program/native-preview/release-current/ur/1200",
+        "1200",
+        "844",
+        "tutorial:introduction"
+      ],
+      "started_utc": "2026-10-31T19:58:25Z",
+      "exit_code": 0,
+      "metadata_path": "artifacts/translation-program/native-preview/release-current/ur/1200/tutorial-introduction.json",
+      "metadata_sha256": "8b11748817a84eaa556b99b6ae5b760ccb9020ba3a22dbe69219335e57a1fc5e",
+      "pngs": [
+        {
+          "path": "artifacts/translation-program/native-preview/release-current/ur/1200/tutorial-introduction-dialog.png",
+          "sha256": "6464f6d22ef1da8b631849ab4f1b65aec5006bf60ccd0551e2eb9282dd0a3daf",
+          "bytes": 522112,
+          "width": 2400,
+          "height": 1688
+        },
+        {
+          "path": "artifacts/translation-program/native-preview/release-current/ur/1200/tutorial-introduction.png",
+          "sha256": "219ff007560398d072264b60697ff7429a2fc5a8e090b95a7f667914a28ad6bd",
+          "bytes": 898268,
+          "width": 2400,
+          "height": 1688
+        }
+      ],
+      "runtime_ttf_sha256": "71b251b0514b1fc766d2051588d4bfea4c5d9965361de3fbcf3af002be8f8626",
+      "offscreen_control_count_diagnostic": 0,
+      "verified": true,
+      "elapsed_s": 21.171,
+      "log_sha256": "3879fd9ef59947c394f7890cfe066f18140db5370d5102771d26ebb63e2f64c8"
+    },
+    {
+      "id": "ur-1200-tutorial-food-supply",
+      "locale": "ur",
+      "width": 1200,
+      "height": 844,
+      "mode": "game",
+      "name": "tutorial:food-supply",
+      "kind": "full",
+      "stem": "tutorial-food-supply",
+      "input": "artifacts/translation-program/render-inputs-current/ur-full",
+      "output": "artifacts/translation-program/native-preview/release-current/ur/1200",
+      "metadata": "tutorial-food-supply.json",
+      "command": [
+        "/Users/bradley/.codex/worktrees/ed62/glob2/build/darwin/client/debug/dev-dev_fast-true-linker-auto/test/TranslationPreviewHarness",
+        "game",
+        "/Users/bradley/.codex/worktrees/ed62/glob2",
+        "/Users/bradley/.codex/worktrees/ed62/glob2/artifacts/translation-program/render-inputs-current/ur-full",
+        "/Users/bradley/.codex/worktrees/ed62/glob2/artifacts/translation-program/native-preview/release-current/ur/1200",
+        "1200",
+        "844",
+        "tutorial:food-supply"
+      ],
+      "started_utc": "2026-10-31T19:58:47Z",
+      "exit_code": 0,
+      "metadata_path": "artifacts/translation-program/native-preview/release-current/ur/1200/tutorial-food-supply.json",
+      "metadata_sha256": "86b164c2af17798916c7493c7d5e7d95e21b013d40ccffad8e922dc284d296f2",
+      "pngs": [
+        {
+          "path": "artifacts/translation-program/native-preview/release-current/ur/1200/tutorial-food-supply-dialog.png",
+          "sha256": "313b8aed487c14d1339fa8dfe14fdafb9e1ee1ce673845bfa75e8290f3cc1180",
+          "bytes": 522446,
+          "width": 2400,
+          "height": 1688
+        },
+        {
+          "path": "artifacts/translation-program/native-preview/release-current/ur/1200/tutorial-food-supply.png",
+          "sha256": "37510b7ed8e6fc57e3df4edb9573ba82af37fe8c8a3568f1f6499040877602de",
+          "bytes": 974062,
+          "width": 2400,
+          "height": 1688
+        }
+      ],
+      "runtime_ttf_sha256": "71b251b0514b1fc766d2051588d4bfea4c5d9965361de3fbcf3af002be8f8626",
+      "offscreen_control_count_diagnostic": 0,
+      "verified": true,
+      "elapsed_s": 21.42,
+      "log_sha256": "3879fd9ef59947c394f7890cfe066f18140db5370d5102771d26ebb63e2f64c8"
+    },
+    {
+      "id": "ur-1200-tutorial-healing",
+      "locale": "ur",
+      "width": 1200,
+      "height": 844,
+      "mode": "game",
+      "name": "tutorial:healing",
+      "kind": "full",
+      "stem": "tutorial-healing",
+      "input": "artifacts/translation-program/render-inputs-current/ur-full",
+      "output": "artifacts/translation-program/native-preview/release-current/ur/1200",
+      "metadata": "tutorial-healing.json",
+      "command": [
+        "/Users/bradley/.codex/worktrees/ed62/glob2/build/darwin/client/debug/dev-dev_fast-true-linker-auto/test/TranslationPreviewHarness",
+        "game",
+        "/Users/bradley/.codex/worktrees/ed62/glob2",
+        "/Users/bradley/.codex/worktrees/ed62/glob2/artifacts/translation-program/render-inputs-current/ur-full",
+        "/Users/bradley/.codex/worktrees/ed62/glob2/artifacts/translation-program/native-preview/release-current/ur/1200",
+        "1200",
+        "844",
+        "tutorial:healing"
+      ],
+      "started_utc": "2026-10-31T19:59:10Z",
+      "exit_code": 0,
+      "metadata_path": "artifacts/translation-program/native-preview/release-current/ur/1200/tutorial-healing.json",
+      "metadata_sha256": "b0642935c4e85d863199dbea1f645ad7c59b672d1303eb2842dfdb572f72ace2",
+      "pngs": [
+        {
+          "path": "artifacts/translation-program/native-preview/release-current/ur/1200/tutorial-healing-dialog.png",
+          "sha256": "bb1e3974864e71a30fe9c8ae52e772d8a56e8a264f7e465c92b34b4c109af662",
+          "bytes": 526370,
+          "width": 2400,
+          "height": 1688
+        },
+        {
+          "path": "artifacts/translation-program/native-preview/release-current/ur/1200/tutorial-healing.png",
+          "sha256": "ed988d085f1afc3082b00a2e8345d73ba538862f420d8be0c2a770cf6a506eca",
+          "bytes": 914625,
+          "width": 2400,
+          "height": 1688
+        }
+      ],
+      "runtime_ttf_sha256": "71b251b0514b1fc766d2051588d4bfea4c5d9965361de3fbcf3af002be8f8626",
+      "offscreen_control_count_diagnostic": 0,
+      "verified": true,
+      "elapsed_s": 21.234,
+      "log_sha256": "246c4fc73303f9b7bd3e3eaca38f409863a1f19db30b6cb8fc15ed43fc18860e"
+    },
+    {
+      "id": "ur-1200-tutorial-walking-training",
+      "locale": "ur",
+      "width": 1200,
+      "height": 844,
+      "mode": "game",
+      "name": "tutorial:walking-training",
+      "kind": "full",
+      "stem": "tutorial-walking-training",
+      "input": "artifacts/translation-program/render-inputs-current/ur-full",
+      "output": "artifacts/translation-program/native-preview/release-current/ur/1200",
+      "metadata": "tutorial-walking-training.json",
+      "command": [
+        "/Users/bradley/.codex/worktrees/ed62/glob2/build/darwin/client/debug/dev-dev_fast-true-linker-auto/test/TranslationPreviewHarness",
+        "game",
+        "/Users/bradley/.codex/worktrees/ed62/glob2",
+        "/Users/bradley/.codex/worktrees/ed62/glob2/artifacts/translation-program/render-inputs-current/ur-full",
+        "/Users/bradley/.codex/worktrees/ed62/glob2/artifacts/translation-program/native-preview/release-current/ur/1200",
+        "1200",
+        "844",
+        "tutorial:walking-training"
+      ],
+      "started_utc": "2026-10-31T19:59:31Z",
+      "exit_code": 0,
+      "metadata_path": "artifacts/translation-program/native-preview/release-current/ur/1200/tutorial-walking-training.json",
+      "metadata_sha256": "3c370de0282fa4a85ad7dccbe28214ff8c4e514356c11a25a29af871b1617fa2",
+      "pngs": [
+        {
+          "path": "artifacts/translation-program/native-preview/release-current/ur/1200/tutorial-walking-training-dialog.png",
+          "sha256": "09ef7385e9fb8c51713bc46988055ac37fcd4970886f58255a122b927290a987",
+          "bytes": 527272,
+          "width": 2400,
+          "height": 1688
+        },
+        {
+          "path": "artifacts/translation-program/native-preview/release-current/ur/1200/tutorial-walking-training.png",
+          "sha256": "ae886cc8fa2dcfeab35549c5f2dc0682db19d5afc311aa99dea1542a328b4ff6",
+          "bytes": 930481,
+          "width": 2400,
+          "height": 1688
+        }
+      ],
+      "runtime_ttf_sha256": "71b251b0514b1fc766d2051588d4bfea4c5d9965361de3fbcf3af002be8f8626",
+      "offscreen_control_count_diagnostic": 0,
+      "verified": true,
+      "elapsed_s": 21.642,
+      "log_sha256": "3879fd9ef59947c394f7890cfe066f18140db5370d5102771d26ebb63e2f64c8"
+    },
+    {
+      "id": "ur-1200-tutorial-swimming",
+      "locale": "ur",
+      "width": 1200,
+      "height": 844,
+      "mode": "game",
+      "name": "tutorial:swimming",
+      "kind": "full",
+      "stem": "tutorial-swimming",
+      "input": "artifacts/translation-program/render-inputs-current/ur-full",
+      "output": "artifacts/translation-program/native-preview/release-current/ur/1200",
+      "metadata": "tutorial-swimming.json",
+      "command": [
+        "/Users/bradley/.codex/worktrees/ed62/glob2/build/darwin/client/debug/dev-dev_fast-true-linker-auto/test/TranslationPreviewHarness",
+        "game",
+        "/Users/bradley/.codex/worktrees/ed62/glob2",
+        "/Users/bradley/.codex/worktrees/ed62/glob2/artifacts/translation-program/render-inputs-current/ur-full",
+        "/Users/bradley/.codex/worktrees/ed62/glob2/artifacts/translation-program/native-preview/release-current/ur/1200",
+        "1200",
+        "844",
+        "tutorial:swimming"
+      ],
+      "started_utc": "2026-10-31T19:59:54Z",
+      "exit_code": 0,
+      "metadata_path": "artifacts/translation-program/native-preview/release-current/ur/1200/tutorial-swimming.json",
+      "metadata_sha256": "cef1298ad17b3ebd12d356f393aa3350d96ed95747f890df2b5103cf9ff1e8d6",
+      "pngs": [
+        {
+          "path": "artifacts/translation-program/native-preview/release-current/ur/1200/tutorial-swimming-dialog.png",
+          "sha256": "9e666b2da02d620e6982d9e6bea61dee892ff6ce5d6c45bb73baaa664586a42e",
+          "bytes": 531624,
+          "width": 2400,
+          "height": 1688
+        },
+        {
+          "path": "artifacts/translation-program/native-preview/release-current/ur/1200/tutorial-swimming.png",
+          "sha256": "c4cc3774b5cc6aaf118af506703d550494fedde248dd8215eef103a6b6bdbbb7",
+          "bytes": 933156,
+          "width": 2400,
+          "height": 1688
+        }
+      ],
+      "runtime_ttf_sha256": "71b251b0514b1fc766d2051588d4bfea4c5d9965361de3fbcf3af002be8f8626",
+      "offscreen_control_count_diagnostic": 0,
+      "verified": true,
+      "elapsed_s": 22.034,
+      "log_sha256": "246c4fc73303f9b7bd3e3eaca38f409863a1f19db30b6cb8fc15ed43fc18860e"
+    },
+    {
+      "id": "ur-1200-tutorial-schools",
+      "locale": "ur",
+      "width": 1200,
+      "height": 844,
+      "mode": "game",
+      "name": "tutorial:schools",
+      "kind": "full",
+      "stem": "tutorial-schools",
+      "input": "artifacts/translation-program/render-inputs-current/ur-full",
+      "output": "artifacts/translation-program/native-preview/release-current/ur/1200",
+      "metadata": "tutorial-schools.json",
+      "command": [
+        "/Users/bradley/.codex/worktrees/ed62/glob2/build/darwin/client/debug/dev-dev_fast-true-linker-auto/test/TranslationPreviewHarness",
+        "game",
+        "/Users/bradley/.codex/worktrees/ed62/glob2",
+        "/Users/bradley/.codex/worktrees/ed62/glob2/artifacts/translation-program/render-inputs-current/ur-full",
+        "/Users/bradley/.codex/worktrees/ed62/glob2/artifacts/translation-program/native-preview/release-current/ur/1200",
+        "1200",
+        "844",
+        "tutorial:schools"
+      ],
+      "started_utc": "2026-10-31T20:00:17Z",
+      "elapsed_s": 7.43,
+      "log_sha256": "683281f3dc1d8bfd6d39a4a962da6c3b1329e8b8dc9f655a52c9b0e21fd866d9"
+    }
+  ],
+  "limits": [
+    "All real screens/games use complete3416native+2836online overlay; matrix is explicitly partial.",
+    "One initial published state per lesson; not every step/help/recovery/completion UI state.",
+    "Game views expose simulation draw/zoom checksums; menu screen mode provides control bounds and PNG evidence, not simulation checksums.",
+    "macOS native desktop at phone dimensions does not verify Android/iOS.",
+    "Driver author performs technical identity checks only, not independent full-Swahili visual signoff; root assigns independent image reviewers.",
+    "Do not invoke --run until root supplies final producer proof and signals readiness.",
+    "Image hashes/checksums do not constitute visual, linguistic or native-mobile approval."
+  ]
+}

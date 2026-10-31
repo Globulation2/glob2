@@ -1,0 +1,15 @@
+{
+  "editor": "/root",
+  "requested_by": "/root/pilot_context",
+  "before_sha256": "f6c9ad7948a1772da6c47f7017fd5af68b43d562f1117beca6fb3b8eb1e18135",
+  "after_sha256": "de1091d2df613ac22bf2a9c46d1e3704712912c57e299e4171402aa002918d5e",
+  "changes": [
+    {
+      "key": "{value0} playing",
+      "before": "{value0} کھیل رہے ہیں",
+      "after": "{value0} کی موسیقی چل رہی ہے",
+      "reason": "Only caller music/Player.tsx uses translated mood currently playing audio, not someone playing a game."
+    }
+  ],
+  "state": "pending-original-reviewer-recheck"
+}

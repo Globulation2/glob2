@@ -1,0 +1,42 @@
+{
+  "reviewer": "/root/pilot_context",
+  "author": "/root/urdu_translation",
+  "primary_editor": "/root/hindi_translation",
+  "supplemental_editor": "/root",
+  "status": "online-linguistic-review-and-independent-recheck-pass",
+  "original_catalog_sha256": "0da47c791e9c389d68b54bfd67d418872f77a2b107daa03fe789f1ab02ab8a81",
+  "primary_editor_catalog_sha256": "f6c9ad7948a1772da6c47f7017fd5af68b43d562f1117beca6fb3b8eb1e18135",
+  "final_catalog_sha256": "de1091d2df613ac22bf2a9c46d1e3704712912c57e299e4171402aa002918d5e",
+  "source_file_sha256": "d7c8f06c7f023e77a027389d7decfa74bfd05c66ba151401317d67cc8bab1538",
+  "native_final_glossary_sha256": "5cb88fac67663fc436f6bfa60388382c24665755ee481514c002bc92e9a29837",
+  "coverage": {
+    "original_keys_fully_read": 2835,
+    "primary_editor_changed_keys_actually_reread": 66,
+    "supplemental_changed_keys_actually_reread": 1,
+    "total_distinct_changed_keys_actually_reread": 67,
+    "unchanged_keys_hash_carried_forward": 2768,
+    "all_unchanged_keys_fresh_reread_claimed": false,
+    "all_plural_families_reread_again": 27,
+    "all_plural_branches_reread_again": 54,
+    "total_value_branches_structurally_checked": 2862,
+    "final_batch_hashes_refreshed": 18,
+    "individual_English_retention_decisions_unchanged_rechecked": 84
+  },
+  "original_findings_resolved": 34,
+  "new_caller_finding_resolved": 1,
+  "additional_editor_keys_accepted": 32,
+  "open_critical_findings": 0,
+  "open_major_findings": 0,
+  "open_minor_findings": 0,
+  "unresolved_linguistic_uncertainties": [],
+  "structural_errors": [],
+  "physical_key_order_preserved": true,
+  "reverse_exact_original_bytes": true,
+  "limits": [
+    "Agent linguistic review and editing, not human native-speaker approval.",
+    "No locale registration/finalization or production rendering/platform approval.",
+    "Actual desktop/phone layout, RTL punctuation/numbers/URLs, clipping and input flows remain root verification gates.",
+    "Catalog snapshot structural checks are not the full registered browser checker or fetched-master integration validation.",
+    "Shared source music hardcoded mood localization work is root-owned and requires independent source/test validation outside these catalog records."
+  ]
+}

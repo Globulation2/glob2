@@ -1,0 +1,820 @@
+{
+  "id": "online-online-009",
+  "source_sha256": "0ac44b4cdfb03e688983d6e3fb1e484cca57589665bff19c5c65388e649b292a",
+  "surface": "online",
+  "domain": "online",
+  "context": "Account, multiplayer, upload and browser workflows. Preserve URLs, licences, paths, format tokens and product names.",
+  "entries": [
+    {
+      "id": "online:No shared maps yet. Be the first to share one.",
+      "key": "No shared maps yet. Be the first to share one.",
+      "source": "No shared maps yet. Be the first to share one."
+    },
+    {
+      "id": "online:No sign-in provider {p0}.",
+      "key": "No sign-in provider {p0}.",
+      "source": "No sign-in provider {p0}."
+    },
+    {
+      "id": "online:No skin reports.",
+      "key": "No skin reports.",
+      "source": "No skin reports."
+    },
+    {
+      "id": "online:No such AI version.",
+      "key": "No such AI version.",
+      "source": "No such AI version."
+    },
+    {
+      "id": "online:No such AI.",
+      "key": "No such AI.",
+      "source": "No such AI."
+    },
+    {
+      "id": "online:No such account.",
+      "key": "No such account.",
+      "source": "No such account."
+    },
+    {
+      "id": "online:No such agent.",
+      "key": "No such agent.",
+      "source": "No such agent."
+    },
+    {
+      "id": "online:No such artifact.",
+      "key": "No such artifact.",
+      "source": "No such artifact."
+    },
+    {
+      "id": "online:No such artwork.",
+      "key": "No such artwork.",
+      "source": "No such artwork."
+    },
+    {
+      "id": "online:No such blob.",
+      "key": "No such blob.",
+      "source": "No such blob."
+    },
+    {
+      "id": "online:No such building family.",
+      "key": "No such building family.",
+      "source": "No such building family."
+    },
+    {
+      "id": "online:No such delivered map.",
+      "key": "No such delivered map.",
+      "source": "No such delivered map."
+    },
+    {
+      "id": "online:No such draft.",
+      "key": "No such draft.",
+      "source": "No such draft."
+    },
+    {
+      "id": "online:No such generator.",
+      "key": "No such generator.",
+      "source": "No such generator."
+    },
+    {
+      "id": "online:No such job.",
+      "key": "No such job.",
+      "source": "No such job."
+    },
+    {
+      "id": "online:No such leaderboard.",
+      "key": "No such leaderboard.",
+      "source": "No such leaderboard."
+    },
+    {
+      "id": "online:No such map.",
+      "key": "No such map.",
+      "source": "No such map."
+    },
+    {
+      "id": "online:No such match.",
+      "key": "No such match.",
+      "source": "No such match."
+    },
+    {
+      "id": "online:No such music release.",
+      "key": "No such music release.",
+      "source": "No such music release."
+    },
+    {
+      "id": "online:No such player.",
+      "key": "No such player.",
+      "source": "No such player."
+    },
+    {
+      "id": "online:No such proposal.",
+      "key": "No such proposal.",
+      "source": "No such proposal."
+    },
+    {
+      "id": "online:No such queue ticket.",
+      "key": "No such queue ticket.",
+      "source": "No such queue ticket."
+    },
+    {
+      "id": "online:No such release.",
+      "key": "No such release.",
+      "source": "No such release."
+    },
+    {
+      "id": "online:No such report.",
+      "key": "No such report.",
+      "source": "No such report."
+    },
+    {
+      "id": "online:No such room.",
+      "key": "No such room.",
+      "source": "No such room."
+    },
+    {
+      "id": "online:No such sign-in on this connection.",
+      "key": "No such sign-in on this connection.",
+      "source": "No such sign-in on this connection."
+    },
+    {
+      "id": "online:No such sign-in.",
+      "key": "No such sign-in.",
+      "source": "No such sign-in."
+    },
+    {
+      "id": "online:No such track.",
+      "key": "No such track.",
+      "source": "No such track."
+    },
+    {
+      "id": "online:No such upload.",
+      "key": "No such upload.",
+      "source": "No such upload."
+    },
+    {
+      "id": "online:No such version.",
+      "key": "No such version.",
+      "source": "No such version."
+    },
+    {
+      "id": "online:No timeline was recorded for this match.",
+      "key": "No timeline was recorded for this match.",
+      "source": "No timeline was recorded for this match."
+    },
+    {
+      "id": "online:No uncertain request.",
+      "key": "No uncertain request.",
+      "source": "No uncertain request."
+    },
+    {
+      "id": "online:No unpublished drafts.",
+      "key": "No unpublished drafts.",
+      "source": "No unpublished drafts."
+    },
+    {
+      "id": "online:No validated building release.",
+      "key": "No validated building release.",
+      "source": "No validated building release."
+    },
+    {
+      "id": "online:No validated release",
+      "key": "No validated release",
+      "source": "No validated release"
+    },
+    {
+      "id": "online:No worker leases are recorded.",
+      "key": "No worker leases are recorded.",
+      "source": "No worker leases are recorded."
+    },
+    {
+      "id": "online:No {p0} sign-in is linked to this account.",
+      "key": "No {p0} sign-in is linked to this account.",
+      "source": "No {p0} sign-in is linked to this account."
+    },
+    {
+      "id": "online:Nobody",
+      "key": "Nobody",
+      "source": "Nobody"
+    },
+    {
+      "id": "online:None",
+      "key": "None",
+      "source": "None"
+    },
+    {
+      "id": "online:None: this guest account lives on the device that created it.",
+      "key": "None: this guest account lives on the device that created it.",
+      "source": "None: this guest account lives on the device that created it."
+    },
+    {
+      "id": "online:Not AI-generated",
+      "key": "Not AI-generated",
+      "source": "Not AI-generated"
+    },
+    {
+      "id": "online:Not applicable",
+      "key": "Not applicable",
+      "source": "Not applicable"
+    },
+    {
+      "id": "online:Not available yet",
+      "key": "Not available yet",
+      "source": "Not available yet"
+    },
+    {
+      "id": "online:Not evaluated",
+      "key": "Not evaluated",
+      "source": "Not evaluated"
+    },
+    {
+      "id": "online:Not found.",
+      "key": "Not found.",
+      "source": "Not found."
+    },
+    {
+      "id": "online:Not found. It may have been removed, or the link is wrong.",
+      "key": "Not found. It may have been removed, or the link is wrong.",
+      "source": "Not found. It may have been removed, or the link is wrong."
+    },
+    {
+      "id": "online:Not hidden",
+      "key": "Not hidden",
+      "source": "Not hidden"
+    },
+    {
+      "id": "online:Not run",
+      "key": "Not run",
+      "source": "Not run"
+    },
+    {
+      "id": "online:Not saved",
+      "key": "Not saved",
+      "source": "Not saved"
+    },
+    {
+      "id": "online:Notes",
+      "key": "Notes",
+      "source": "Notes"
+    },
+    {
+      "id": "online:Nothing changed",
+      "key": "Nothing changed",
+      "source": "Nothing changed"
+    },
+    {
+      "id": "online:Nothing here: this page wandered off like an explorer glob. {slot0}.",
+      "key": "Nothing here: this page wandered off like an explorer glob. {slot0}.",
+      "source": "Nothing here: this page wandered off like an explorer glob. {slot0}."
+    },
+    {
+      "id": "online:Numbi",
+      "key": "Numbi",
+      "source": "Numbi"
+    },
+    {
+      "id": "online:OK",
+      "key": "OK",
+      "source": "OK"
+    },
+    {
+      "id": "online:Offensive",
+      "key": "Offensive",
+      "source": "Offensive"
+    },
+    {
+      "id": "online:Offline",
+      "key": "Offline",
+      "source": "Offline"
+    },
+    {
+      "id": "online:Offline · changes pending",
+      "key": "Offline · changes pending",
+      "source": "Offline · changes pending"
+    },
+    {
+      "id": "online:Older reports",
+      "key": "Older reports",
+      "source": "Older reports"
+    },
+    {
+      "id": "online:Oldest queued engine job: {slot0}",
+      "key": "Oldest queued engine job: {slot0}",
+      "source": "Oldest queued engine job: {slot0}"
+    },
+    {
+      "id": "online:One .js file · up to 128 KiB · profiles 1 and 2",
+      "key": "One .js file · up to 128 KiB · profiles 1 and 2",
+      "source": "One .js file · up to 128 KiB · profiles 1 and 2"
+    },
+    {
+      "id": "online:One melody. Three moods.",
+      "key": "One melody. Three moods.",
+      "source": "One melody. Three moods."
+    },
+    {
+      "id": "online:One soundtrack, three synchronized moods. Switch moods while listening to hear how the game adapts.",
+      "key": "One soundtrack, three synchronized moods. Switch moods while listening to hear how the game adapts.",
+      "source": "One soundtrack, three synchronized moods. Switch moods while listening to hear how the game adapts."
+    },
+    {
+      "id": "online:One-time purchases stay with your account. Preview and paint before buying.",
+      "key": "One-time purchases stay with your account. Preview and paint before buying.",
+      "source": "One-time purchases stay with your account. Preview and paint before buying."
+    },
+    {
+      "id": "online:Only a successfully converted release can be published.",
+      "key": "Only a successfully converted release can be published.",
+      "source": "Only a successfully converted release can be published."
+    },
+    {
+      "id": "online:Only continue if you just started signing in from your own game and it shows the same code. If someone sent you this link, cancel.",
+      "key": "Only continue if you just started signing in from your own game and it shows the same code. If someone sent you this link, cancel.",
+      "source": "Only continue if you just started signing in from your own game and it shows the same code. If someone sent you this link, cancel."
+    },
+    {
+      "id": "online:Only if you have installed the game on this device.",
+      "key": "Only if you have installed the game on this device.",
+      "source": "Only if you have installed the game on this device."
+    },
+    {
+      "id": "online:Only me",
+      "key": "Only me",
+      "source": "Only me"
+    },
+    {
+      "id": "online:Only registered accounts can be moderators or administrators.",
+      "key": "Only registered accounts can be moderators or administrators.",
+      "source": "Only registered accounts can be moderators or administrators."
+    },
+    {
+      "id": "online:Only the host assigns seats in this room.",
+      "key": "Only the host assigns seats in this room.",
+      "source": "Only the host assigns seats in this room."
+    },
+    {
+      "id": "online:Only the host can add AIs.",
+      "key": "Only the host can add AIs.",
+      "source": "Only the host can add AIs."
+    },
+    {
+      "id": "online:Only the host can change the room.",
+      "key": "Only the host can change the room.",
+      "source": "Only the host can change the room."
+    },
+    {
+      "id": "online:Only the host can empty other seats.",
+      "key": "Only the host can empty other seats.",
+      "source": "Only the host can empty other seats."
+    },
+    {
+      "id": "online:Only the host can lock seats.",
+      "key": "Only the host can lock seats.",
+      "source": "Only the host can lock seats."
+    },
+    {
+      "id": "online:Only the host can remove players.",
+      "key": "Only the host can remove players.",
+      "source": "Only the host can remove players."
+    },
+    {
+      "id": "online:Only the host can start the match.",
+      "key": "Only the host can start the match.",
+      "source": "Only the host can start the match."
+    },
+    {
+      "id": "online:Only the map owner can do that.",
+      "key": "Only the map owner can do that.",
+      "source": "Only the map owner can do that."
+    },
+    {
+      "id": "online:Only uncertain calls can be reconciled.",
+      "key": "Only uncertain calls can be reconciled.",
+      "source": "Only uncertain calls can be reconciled."
+    },
+    {
+      "id": "online:Only uncertain requests need reconciliation.",
+      "key": "Only uncertain requests need reconciliation.",
+      "source": "Only uncertain requests need reconciliation."
+    },
+    {
+      "id": "online:Opacity ",
+      "key": "Opacity ",
+      "source": "Opacity "
+    },
+    {
+      "id": "online:Open",
+      "key": "Open",
+      "source": "Open"
+    },
+    {
+      "id": "online:Open AI Map Studio",
+      "key": "Open AI Map Studio",
+      "source": "Open AI Map Studio"
+    },
+    {
+      "id": "online:Open Building families when creating a new game or a new map in the editor, install a compatible release, and enable it. Enabled families apply to future generated maps alongside stock buildings. Existing maps and saves keep their own buildings.",
+      "key": "Open Building families when creating a new game or a new map in the editor, install a compatible release, and enable it. Enabled families apply to future generated maps alongside stock buildings. Existing maps and saves keep their own buildings.",
+      "source": "Open Building families when creating a new game or a new map in the editor, install a compatible release, and enable it. Enabled families apply to future generated maps alongside stock buildings. Existing maps and saves keep their own buildings."
+    },
+    {
+      "id": "online:Open in installed app",
+      "key": "Open in installed app",
+      "source": "Open in installed app"
+    },
+    {
+      "id": "online:Open in the Globulation 2 app",
+      "key": "Open in the Globulation 2 app",
+      "source": "Open in the Globulation 2 app"
+    },
+    {
+      "id": "online:Open music release",
+      "key": "Open music release",
+      "source": "Open music release"
+    },
+    {
+      "id": "online:Open navigation",
+      "key": "Open navigation",
+      "source": "Open navigation"
+    },
+    {
+      "id": "online:Open the map editor’s Set Library to import a release, or import this downloaded package. Only custom content is included in shared maps. Each map keeps its own editable copy.",
+      "key": "Open the map editor’s Set Library to import a release, or import this downloaded package. Only custom content is included in shared maps. Each map keeps its own editable copy.",
+      "source": "Open the map editor’s Set Library to import a release, or import this downloaded package. Only custom content is included in shared maps. Each map keeps its own editable copy."
+    },
+    {
+      "id": "online:Open {target} ↗",
+      "key": "Open {target} ↗",
+      "source": "Open {target} ↗"
+    },
+    {
+      "id": "online:Opening Globulation 2…",
+      "key": "Opening Globulation 2…",
+      "source": "Opening Globulation 2…"
+    },
+    {
+      "id": "online:Opening studio…",
+      "key": "Opening studio…",
+      "source": "Opening studio…"
+    },
+    {
+      "id": "online:Opening your studio…",
+      "key": "Opening your studio…",
+      "source": "Opening your studio…"
+    },
+    {
+      "id": "online:Opens the app if it is installed.",
+      "key": "Opens the app if it is installed.",
+      "source": "Opens the app if it is installed."
+    },
+    {
+      "id": "online:Operations",
+      "key": "Operations",
+      "source": "Operations"
+    },
+    {
+      "id": "online:Opponent",
+      "key": "Opponent",
+      "source": "Opponent"
+    },
+    {
+      "id": "online:Orders the server refused (a modified or broken client sends these)",
+      "key": "Orders the server refused (a modified or broken client sends these)",
+      "source": "Orders the server refused (a modified or broken client sends these)"
+    },
+    {
+      "id": "online:Original game artwork",
+      "key": "Original game artwork",
+      "source": "Original game artwork"
+    },
+    {
+      "id": "online:Other",
+      "key": "Other",
+      "source": "Other"
+    },
+    {
+      "id": "online:Output tokens",
+      "key": "Output tokens",
+      "source": "Output tokens"
+    },
+    {
+      "id": "online:Overview",
+      "key": "Overview",
+      "source": "Overview"
+    },
+    {
+      "id": "online:Owned",
+      "key": "Owned",
+      "source": "Owned"
+    },
+    {
+      "id": "online:PLAYABLE MAP",
+      "key": "PLAYABLE MAP",
+      "source": "PLAYABLE MAP"
+    },
+    {
+      "id": "online:Package",
+      "key": "Package",
+      "source": "Package"
+    },
+    {
+      "id": "online:Pad ends with silence to longest",
+      "key": "Pad ends with silence to longest",
+      "source": "Pad ends with silence to longest"
+    },
+    {
+      "id": "online:Page not found",
+      "key": "Page not found",
+      "source": "Page not found"
+    },
+    {
+      "id": "online:Paint color",
+      "key": "Paint color",
+      "source": "Paint color"
+    },
+    {
+      "id": "online:Paint directly on the 3D {value0} model",
+      "key": "Paint directly on the 3D {value0} model",
+      "source": "Paint directly on the 3D {value0} model"
+    },
+    {
+      "id": "online:Paint repeats on matching surfaces",
+      "key": "Paint repeats on matching surfaces",
+      "source": "Paint repeats on matching surfaces"
+    },
+    {
+      "id": "online:Paint tools",
+      "key": "Paint tools",
+      "source": "Paint tools"
+    },
+    {
+      "id": "online:Painting is unavailable in this browser.",
+      "key": "Painting is unavailable in this browser.",
+      "source": "Painting is unavailable in this browser."
+    },
+    {
+      "id": "online:Painting needs WebGL 2. You can still save your draft, browse My skins, or visit the shop.",
+      "key": "Painting needs WebGL 2. You can still save your draft, browse My skins, or visit the shop.",
+      "source": "Painting needs WebGL 2. You can still save your draft, browse My skins, or visit the shop."
+    },
+    {
+      "id": "online:Passed",
+      "key": "Passed",
+      "source": "Passed"
+    },
+    {
+      "id": "online:Password",
+      "key": "Password",
+      "source": "Password"
+    },
+    {
+      "id": "online:Passwords can be at most {p0} characters.",
+      "key": "Passwords can be at most {p0} characters.",
+      "source": "Passwords can be at most {p0} characters."
+    },
+    {
+      "id": "online:Paste the invite link, or type its code (6 to 16 letters and digits).",
+      "key": "Paste the invite link, or type its code (6 to 16 letters and digits).",
+      "source": "Paste the invite link, or type its code (6 to 16 letters and digits)."
+    },
+    {
+      "id": "online:Pattern color",
+      "key": "Pattern color",
+      "source": "Pattern color"
+    },
+    {
+      "id": "online:Pattern coverage",
+      "key": "Pattern coverage",
+      "source": "Pattern coverage"
+    },
+    {
+      "id": "online:Pattern rotation",
+      "key": "Pattern rotation",
+      "source": "Pattern rotation"
+    },
+    {
+      "id": "online:Pattern size",
+      "key": "Pattern size",
+      "source": "Pattern size"
+    },
+    {
+      "id": "online:Patterns",
+      "key": "Patterns",
+      "source": "Patterns"
+    },
+    {
+      "id": "online:Patterns & fills",
+      "key": "Patterns & fills",
+      "source": "Patterns & fills"
+    },
+    {
+      "id": "online:Pause",
+      "key": "Pause",
+      "source": "Pause"
+    },
+    {
+      "id": "online:Payment",
+      "key": "Payment",
+      "source": "Payment"
+    },
+    {
+      "id": "online:Payment mode",
+      "key": "Payment mode",
+      "source": "Payment mode"
+    },
+    {
+      "id": "online:Payment status: {value0}.",
+      "key": "Payment status: {value0}.",
+      "source": "Payment status: {value0}."
+    },
+    {
+      "id": "online:Payments are not configured.",
+      "key": "Payments are not configured.",
+      "source": "Payments are not configured."
+    },
+    {
+      "id": "online:Pen pressure",
+      "key": "Pen pressure",
+      "source": "Pen pressure"
+    },
+    {
+      "id": "online:Pending",
+      "key": "Pending",
+      "source": "Pending"
+    },
+    {
+      "id": "online:Period",
+      "key": "Period",
+      "source": "Period"
+    },
+    {
+      "id": "online:Petals cupped open around a central bud.",
+      "key": "Petals cupped open around a central bud.",
+      "source": "Petals cupped open around a central bud."
+    },
+    {
+      "id": "online:Photo updated.",
+      "key": "Photo updated.",
+      "source": "Photo updated."
+    },
+    {
+      "id": "online:Ping",
+      "key": "Ping",
+      "source": "Ping"
+    },
+    {
+      "id": "online:Play",
+      "key": "Play",
+      "source": "Play"
+    },
+    {
+      "id": "online:Play Locally in Custom Game",
+      "key": "Play Locally in Custom Game",
+      "source": "Play Locally in Custom Game"
+    },
+    {
+      "id": "online:Play as {p3} instead",
+      "key": "Play as {p3} instead",
+      "source": "Play as {p3} instead"
+    },
+    {
+      "id": "online:Play in Multiplayer",
+      "key": "Play in Multiplayer",
+      "source": "Play in Multiplayer"
+    },
+    {
+      "id": "online:Play in browser",
+      "key": "Play in browser",
+      "source": "Play in browser"
+    },
+    {
+      "id": "online:Play in your browser",
+      "key": "Play in your browser",
+      "source": "Play in your browser"
+    },
+    {
+      "id": "online:Play online",
+      "key": "Play online",
+      "source": "Play online"
+    },
+    {
+      "id": "online:Play this map",
+      "key": "Play this map",
+      "source": "Play this map"
+    },
+    {
+      "id": "online:Play {slot0}",
+      "key": "Play {slot0}",
+      "source": "Play {slot0}"
+    },
+    {
+      "id": "online:Playability checks",
+      "key": "Playability checks",
+      "source": "Playability checks"
+    },
+    {
+      "id": "online:Playability checks passed",
+      "key": "Playability checks passed",
+      "source": "Playability checks passed"
+    },
+    {
+      "id": "online:Playable",
+      "key": "Playable",
+      "source": "Playable"
+    },
+    {
+      "id": "online:Playable generator",
+      "key": "Playable generator",
+      "source": "Playable generator"
+    },
+    {
+      "id": "online:Playable terrain",
+      "key": "Playable terrain",
+      "source": "Playable terrain"
+    },
+    {
+      "id": "online:Playback format",
+      "key": "Playback format",
+      "source": "Playback format"
+    },
+    {
+      "id": "online:Playback position",
+      "key": "Playback position",
+      "source": "Playback position"
+    },
+    {
+      "id": "online:Player",
+      "key": "Player",
+      "source": "Player"
+    },
+    {
+      "id": "online:Player guides",
+      "key": "Player guides",
+      "source": "Player guides"
+    },
+    {
+      "id": "online:Player types",
+      "key": "Player types",
+      "source": "Player types"
+    },
+    {
+      "id": "online:Players",
+      "key": "Players",
+      "source": "Players"
+    },
+    {
+      "id": "online:Players and AI opponents, ranked by their conservative rating: it rises as the game becomes sure of your skill. Guests are not ranked.",
+      "key": "Players and AI opponents, ranked by their conservative rating: it rises as the game becomes sure of your skill. Guests are not ranked.",
+      "source": "Players and AI opponents, ranked by their conservative rating: it rises as the game becomes sure of your skill. Guests are not ranked."
+    },
+    {
+      "id": "online:Players and results",
+      "key": "Players and results",
+      "source": "Players and results"
+    },
+    {
+      "id": "online:Players cannot be removed while a match is starting or running.",
+      "key": "Players cannot be removed while a match is starting or running.",
+      "source": "Players cannot be removed while a match is starting or running."
+    },
+    {
+      "id": "online:Players online",
+      "key": "Players online",
+      "source": "Players online"
+    },
+    {
+      "id": "online:Plays",
+      "key": "Plays",
+      "source": "Plays"
+    },
+    {
+      "id": "online:Please fix the issues in the attached test diagnostics.",
+      "key": "Please fix the issues in the attached test diagnostics.",
+      "source": "Please fix the issues in the attached test diagnostics."
+    },
+    {
+      "id": "online:Please try building the map again and address this issue: {value0}",
+      "key": "Please try building the map again and address this issue: {value0}",
+      "source": "Please try building the map again and address this issue: {value0}"
+    },
+    {
+      "id": "online:Pose",
+      "key": "Pose",
+      "source": "Pose"
+    },
+    {
+      "id": "online:Prepare Calm, Building, and Combat arrangements of the same piece. Each must last 10 seconds to 15 minutes. Originals are deleted after conversion; keep your own source files.",
+      "key": "Prepare Calm, Building, and Combat arrangements of the same piece. Each must last 10 seconds to 15 minutes. Originals are deleted after conversion; keep your own source files.",
+      "source": "Prepare Calm, Building, and Combat arrangements of the same piece. Each must last 10 seconds to 15 minutes. Originals are deleted after conversion; keep your own source files."
+    }
+  ],
+  "carryforward": {
+    "prior_manifest": {
+      "path": "../release-three/manifest.json",
+      "sha256": "4fd5e1faff01b7eb0e95db7eac33105ab557101742f6ef1a889e7b73210eb977"
+    },
+    "prior_batch": {
+      "path": "../release-three/batches/online-online-009.json",
+      "sha256": "4da5866a5c9004f6a0e8dd3f15636aed441d22adcde02f60749a818ba8053a86"
+    },
+    "method": "Partition retained keys by original ownership; radius supplement receives separate Sw correction chain, unchanged Hi/Ur retain original chain. No fresh reading inferred."
+  }
+}

@@ -1,0 +1,131 @@
+{
+  "editor": "/root",
+  "author": "/root/pilot_context",
+  "reviewer": "/root/hindi_online_review",
+  "scope": "16newnativecompactworkflowkeys; onealsoexpandscomparison4orless",
+  "before_native_sha256": "00a9a60ebcee4730851744cf91fb5320c91ecbcc378ead36aaae2644500a19bc",
+  "after_native_sha256": "444c71c1bf3105cf775cf50515af169a477a2a3db2c2d6a3c031b000c3920d27",
+  "final_209_sha256": "609d37d2eea97da26167b626d3643418948cba1c006b3ef5bbe9b99148d669ff",
+  "initial_209_edited_sha256": "d20c43c2ec9a6524b5dc583afa3e15f3aa9a1d40b8377861c972ea9b1ce4e57b",
+  "finding_record_sha256": "b1dbd57743f40d12fc41855d5632dd86d852344de0dae0c0ac442f107cc81032",
+  "changes": [
+    {
+      "key": "[intro compact scout]",
+      "before": "جھنڈے → کھوج کا جھنڈا۔ پتھروں پر لگائیں؛ 1 کھوجی مقرر کریں۔",
+      "after": "جھنڈے ← کھوج کا جھنڈا۔ پتھروں پر لگائیں؛ 1 کھوجی مقرر کریں۔",
+      "source": "Flags → Exploration Flag. Place it on the stone; assign 1 explorer."
+    },
+    {
+      "key": "[intro compact build]",
+      "before": "تعمیر → سرائے۔ گندم کے قریب جگہ مقرر کریں؛ تعمیر کے لیے 2 کارکن لگائیں۔",
+      "after": "تعمیر ← سرائے۔ گندم کے قریب جگہ مقرر کریں؛ تعمیر کے لیے 2 کارکن لگائیں۔",
+      "source": "Build → Inn. Place near wheat; assign 2 builders."
+    },
+    {
+      "key": "[intro compact attack]",
+      "before": "جھنڈے → جنگی جھنڈا۔ دشمن کے چھتے پر لگائیں؛ جنگجو مقرر کریں۔",
+      "after": "جھنڈے ← جنگی جھنڈا۔ دشمن کے چھتے پر لگائیں؛ جنگجو مقرر کریں۔",
+      "source": "Flags → War Flag. Place over the enemy Swarm; assign warriors."
+    },
+    {
+      "key": "[lesson healing build compact]",
+      "before": "تعمیر → ہسپتال۔ راستہ چھوڑیں؛ تعمیر کے لیے کارکن مقرر کریں۔",
+      "after": "تعمیر ← ہسپتال۔ راستہ چھوڑیں؛ تعمیر کے لیے کارکن مقرر کریں۔",
+      "source": "Build → Hospital. Leave access; assign builders."
+    },
+    {
+      "key": "[lesson walking-training build compact]",
+      "before": "تعمیر → دوڑ کا میدان۔ کناروں کے گرد جگہ چھوڑیں۔",
+      "after": "تعمیر ← دوڑ کا میدان۔ کناروں کے گرد جگہ چھوڑیں۔",
+      "source": "Build → Racetrack. Leave space around its edges."
+    },
+    {
+      "key": "[lesson swimming build compact]",
+      "before": "تعمیر → تیراکی کا تالاب، پانی کے تالاب کے مغرب میں۔",
+      "after": "تعمیر ← تیراکی کا تالاب، پانی کے تالاب کے مغرب میں۔",
+      "source": "Build → Swimming Pool, west of the pond."
+    },
+    {
+      "key": "[lesson swimming water-job compact]",
+      "before": "تعمیر → اسکول۔ لکڑی اور کائی کے لیے تعمیراتی کارکن مقرر کریں۔",
+      "after": "تعمیر ← اسکول۔ لکڑی اور کائی کے لیے تعمیراتی کارکن مقرر کریں۔",
+      "source": "Build → School. Assign builders for wood and algae."
+    },
+    {
+      "key": "[lesson schools build compact]",
+      "before": "تعمیر → اسکول۔ لکڑی اور کائی کے لیے تعمیراتی کارکن مقرر کریں۔",
+      "after": "تعمیر ← اسکول۔ لکڑی اور کائی کے لیے تعمیراتی کارکن مقرر کریں۔",
+      "source": "Build → School. Assign builders for wood and algae."
+    },
+    {
+      "key": "[lesson upgrades upgrade compact]",
+      "before": "دوڑ کا میدان منتخب کریں → اپ گریڈ کریں۔ ماہر تعمیراتی کارکن مقرر کریں۔",
+      "after": "دوڑ کا میدان منتخب کریں ← اپ گریڈ کریں۔ ماہر تعمیراتی کارکن مقرر کریں۔",
+      "source": "Select Racetrack → Upgrade. Assign skilled builders."
+    },
+    {
+      "key": "[lesson warrior-training produce compact]",
+      "before": "چھتہ → صرف جنگجو۔ 2 جنگجوؤں کے لیے گندم پہنچائیں۔",
+      "after": "چھتہ ← صرف جنگجو۔ 2 جنگجوؤں کے لیے گندم پہنچائیں۔",
+      "source": "Swarm → warriors only. Supply wheat for 2 warriors."
+    },
+    {
+      "key": "[lesson warrior-training build compact]",
+      "before": "تعمیر → بیرک۔ کناروں کے گرد جگہ چھوڑیں۔",
+      "after": "تعمیر ← بیرک۔ کناروں کے گرد جگہ چھوڑیں۔",
+      "source": "Build → Training Camp. Leave space around its edges."
+    },
+    {
+      "key": "[lesson fortifications tower compact]",
+      "before": "تعمیر → مینار۔ نشان زدہ جگہ میں بنائیں۔",
+      "after": "تعمیر ← مینار۔ نشان زدہ جگہ میں بنائیں۔",
+      "source": "Build → Tower. Place in the marked area."
+    },
+    {
+      "key": "[lesson fortifications supply compact]",
+      "before": "مینار منتخب کریں → رسد پہنچانے والے کارکن۔ 2 پتھر آنے کا انتظار کریں۔",
+      "after": "مینار منتخب کریں ← رسد پہنچانے والے کارکن۔ 2 پتھر آنے کا انتظار کریں۔",
+      "source": "Select tower → suppliers. Wait for 2 stone."
+    },
+    {
+      "key": "[lesson defensive-tactics scout compact]",
+      "before": "جھنڈے → کھوج۔ دشمن کے پاس لگائیں؛ 1 کھوجی مقرر کریں۔",
+      "after": "جھنڈے ← کھوج۔ دشمن کے پاس لگائیں؛ 1 کھوجی مقرر کریں۔",
+      "source": "Flags → Exploration. Place at the enemy; assign 1 explorer."
+    },
+    {
+      "key": "[lesson defensive-tactics guard compact]",
+      "before": "جھنڈے → پہرا۔ 4 خانے رنگیں؛ 2 جنگجوؤں کو آنے دیں۔",
+      "after": "جھنڈے ← پہرا۔ 4 خانے رنگیں؛ 2 جنگجوؤں کو آنے دیں۔",
+      "source": "Flags → Guard. Paint 4 tiles; let 2 warriors arrive."
+    },
+    {
+      "key": "[lesson defensive-tactics counterattack compact]",
+      "before": "جنگی جھنڈا → دشمن کا چھتہ۔ 3 جنگجوؤں کی درخواست کریں؛ رداس ≤4۔",
+      "after": "جنگی جھنڈا ← دشمن کا چھتہ۔ 3 جنگجوؤں کی درخواست کریں؛ رداس 4 یا کم۔",
+      "source": "War Flag → enemy Swarm. Request 3 warriors; radius ≤4."
+    }
+  ],
+  "keys_actually_edited": [
+    "[intro compact scout]",
+    "[intro compact build]",
+    "[intro compact attack]",
+    "[lesson healing build compact]",
+    "[lesson walking-training build compact]",
+    "[lesson swimming build compact]",
+    "[lesson swimming water-job compact]",
+    "[lesson schools build compact]",
+    "[lesson upgrades upgrade compact]",
+    "[lesson warrior-training produce compact]",
+    "[lesson warrior-training build compact]",
+    "[lesson fortifications tower compact]",
+    "[lesson fortifications supply compact]",
+    "[lesson defensive-tactics scout compact]",
+    "[lesson defensive-tactics guard compact]",
+    "[lesson defensive-tactics counterattack compact]"
+  ],
+  "retained_new_209_entries": 193,
+  "retained_whole_native_entries": 3400,
+  "no_key_or_placeholder_or_simulation_changes": true,
+  "status": "Edited; original independent reviewer semantic recheck and real updated rendered verification remain pending."
+}

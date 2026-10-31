@@ -1,0 +1,1894 @@
+{
+  "locale": "sw",
+  "reviewer": "/root/translation_kit",
+  "author": "/root/hindi_online_review",
+  "role": "Independent full209source/target review; did not author or edit this delta",
+  "state": "review-complete-findings-open-awaiting-distinct-root-editor",
+  "source_revision": "e7613e93b08234dbf785ceef3bd9b884cbb73221",
+  "source_file": "artifacts/source-delta-master/new-native-messages.json",
+  "source_file_sha256": "d30714a0fab4bc7255f905ebec8fafa968166e63d87f9eceee7cfe71730606c4",
+  "target_file": "artifacts/source-delta-master/sw/draft.json",
+  "target_sha256": "d146d456347a738ddd99e26c06bbf452fe15025726fef9834cb06b0f6f643947",
+  "target_frozen_before_and_after": true,
+  "key_count": 209,
+  "reviewed_keys": [
+    "[intro menu]",
+    "[intro briefing]",
+    "[intro try]",
+    "[intro preflight]",
+    "[intro preflight save]",
+    "[intro preference failed]",
+    "[intro goal scout]",
+    "[intro goal build]",
+    "[intro goal supply]",
+    "[intro goal grow]",
+    "[intro goal attack]",
+    "[intro instruction scout]",
+    "[intro instruction build]",
+    "[intro instruction supply]",
+    "[intro instruction grow]",
+    "[intro instruction attack]",
+    "[intro help]",
+    "[intro help scout]",
+    "[intro help build]",
+    "[intro help supply]",
+    "[intro help grow]",
+    "[intro help attack]",
+    "[intro hint scout]",
+    "[intro hint build]",
+    "[intro hint supply]",
+    "[intro hint grow]",
+    "[intro hint attack]",
+    "[intro hint no scout flag]",
+    "[intro hint no suppliers]",
+    "[intro hint no war flag]",
+    "[intro hint retry]",
+    "[intro complete]",
+    "[intro complete body]",
+    "[intro play again]",
+    "[intro restart]",
+    "[intro restart body]",
+    "[intro help touch scout]",
+    "[intro help touch build]",
+    "[intro help touch supply]",
+    "[intro help touch grow]",
+    "[intro help touch attack]",
+    "[intro show destination]",
+    "[intro scout destination]",
+    "[intro compact scout]",
+    "[intro compact build]",
+    "[intro compact supply]",
+    "[intro compact grow]",
+    "[intro compact attack]",
+    "[tutorial lessons]",
+    "[tutorial restart]",
+    "[tutorial restart body]",
+    "[tutorial complete]",
+    "[tutorial food title]",
+    "[tutorial food briefing]",
+    "[tutorial food complete]",
+    "[tutorial unavailable]",
+    "[lesson healing title]",
+    "[lesson healing briefing]",
+    "[lesson healing complete]",
+    "[lesson healing build hint]",
+    "[lesson healing build title]",
+    "[lesson healing build instruction]",
+    "[lesson healing build help]",
+    "[lesson healing build marker]",
+    "[lesson healing heal hint]",
+    "[lesson healing heal title]",
+    "[lesson healing heal instruction]",
+    "[lesson healing heal help]",
+    "[lesson healing heal marker]",
+    "[lesson walking-training title]",
+    "[lesson walking-training briefing]",
+    "[lesson walking-training complete]",
+    "[lesson walking-training build hint]",
+    "[lesson walking-training build title]",
+    "[lesson walking-training build instruction]",
+    "[lesson walking-training build help]",
+    "[lesson walking-training build marker]",
+    "[lesson walking-training train hint]",
+    "[lesson walking-training train title]",
+    "[lesson walking-training train instruction]",
+    "[lesson walking-training train help]",
+    "[lesson swimming title]",
+    "[lesson swimming briefing]",
+    "[lesson swimming complete]",
+    "[lesson swimming build hint]",
+    "[lesson swimming build title]",
+    "[lesson swimming build instruction]",
+    "[lesson swimming build help]",
+    "[lesson swimming build marker]",
+    "[lesson swimming train hint]",
+    "[lesson swimming train title]",
+    "[lesson swimming train instruction]",
+    "[lesson swimming train help]",
+    "[lesson swimming water-job hint]",
+    "[lesson swimming water-job title]",
+    "[lesson swimming water-job instruction]",
+    "[lesson swimming water-job help]",
+    "[lesson swimming water-job marker]",
+    "[lesson schools title]",
+    "[lesson schools briefing]",
+    "[lesson schools complete]",
+    "[lesson schools build hint]",
+    "[lesson schools build title]",
+    "[lesson schools build instruction]",
+    "[lesson schools build help]",
+    "[lesson schools build marker]",
+    "[lesson schools learn hint]",
+    "[lesson schools learn title]",
+    "[lesson schools learn instruction]",
+    "[lesson schools learn help]",
+    "[lesson upgrades title]",
+    "[lesson upgrades briefing]",
+    "[lesson upgrades complete]",
+    "[lesson upgrades upgrade hint]",
+    "[lesson upgrades upgrade title]",
+    "[lesson upgrades upgrade instruction]",
+    "[lesson upgrades upgrade help]",
+    "[lesson upgrades upgrade marker]",
+    "[lesson upgrades train hint]",
+    "[lesson upgrades train title]",
+    "[lesson upgrades train instruction]",
+    "[lesson upgrades train help]",
+    "[lesson warrior-training title]",
+    "[lesson warrior-training briefing]",
+    "[lesson warrior-training complete]",
+    "[lesson warrior-training produce hint]",
+    "[lesson warrior-training produce title]",
+    "[lesson warrior-training produce instruction]",
+    "[lesson warrior-training produce help]",
+    "[lesson warrior-training produce marker]",
+    "[lesson warrior-training build hint]",
+    "[lesson warrior-training build title]",
+    "[lesson warrior-training build instruction]",
+    "[lesson warrior-training build help]",
+    "[lesson warrior-training build marker]",
+    "[lesson warrior-training train hint]",
+    "[lesson warrior-training train title]",
+    "[lesson warrior-training train instruction]",
+    "[lesson warrior-training train help]",
+    "[lesson fortifications title]",
+    "[lesson fortifications briefing]",
+    "[lesson fortifications complete]",
+    "[lesson fortifications tower hint]",
+    "[lesson fortifications tower title]",
+    "[lesson fortifications tower instruction]",
+    "[lesson fortifications tower help]",
+    "[lesson fortifications tower marker]",
+    "[lesson fortifications walls hint]",
+    "[lesson fortifications walls title]",
+    "[lesson fortifications walls instruction]",
+    "[lesson fortifications walls help]",
+    "[lesson fortifications walls marker]",
+    "[lesson fortifications supply hint]",
+    "[lesson fortifications supply title]",
+    "[lesson fortifications supply instruction]",
+    "[lesson fortifications supply help]",
+    "[lesson fortifications supply marker]",
+    "[lesson fortifications hold hint]",
+    "[lesson fortifications hold title]",
+    "[lesson fortifications hold instruction]",
+    "[lesson fortifications hold help]",
+    "[lesson fortifications hold marker]",
+    "[lesson defensive-tactics title]",
+    "[lesson defensive-tactics briefing]",
+    "[lesson defensive-tactics complete]",
+    "[lesson defensive-tactics scout hint]",
+    "[lesson defensive-tactics scout title]",
+    "[lesson defensive-tactics scout instruction]",
+    "[lesson defensive-tactics scout help]",
+    "[lesson defensive-tactics scout marker]",
+    "[lesson defensive-tactics guard hint]",
+    "[lesson defensive-tactics guard title]",
+    "[lesson defensive-tactics guard instruction]",
+    "[lesson defensive-tactics guard help]",
+    "[lesson defensive-tactics guard marker]",
+    "[lesson defensive-tactics repel hint]",
+    "[lesson defensive-tactics repel title]",
+    "[lesson defensive-tactics repel instruction]",
+    "[lesson defensive-tactics repel help]",
+    "[lesson defensive-tactics repel marker]",
+    "[lesson defensive-tactics counterattack hint]",
+    "[lesson defensive-tactics counterattack title]",
+    "[lesson defensive-tactics counterattack instruction]",
+    "[lesson defensive-tactics counterattack help]",
+    "[lesson defensive-tactics counterattack marker]",
+    "[lesson healing build compact]",
+    "[lesson healing heal compact]",
+    "[lesson walking-training build compact]",
+    "[lesson walking-training train compact]",
+    "[lesson swimming build compact]",
+    "[lesson swimming train compact]",
+    "[lesson swimming water-job compact]",
+    "[lesson schools build compact]",
+    "[lesson schools learn compact]",
+    "[lesson upgrades upgrade compact]",
+    "[lesson upgrades train compact]",
+    "[lesson warrior-training produce compact]",
+    "[lesson warrior-training build compact]",
+    "[lesson warrior-training train compact]",
+    "[lesson fortifications tower compact]",
+    "[lesson fortifications walls compact]",
+    "[lesson fortifications supply compact]",
+    "[lesson fortifications hold compact]",
+    "[lesson defensive-tactics scout compact]",
+    "[lesson defensive-tactics guard compact]",
+    "[lesson defensive-tactics repel compact]",
+    "[lesson defensive-tactics counterattack compact]",
+    "[intro attack destination]",
+    "[scenario messages]"
+  ],
+  "per_key_review": [
+    {
+      "key": "[intro menu]",
+      "source_sha256": "b605350bc00209520b7cd8f546322663356ba630708f71bbf30aead6b3dd608e",
+      "target_sha256": "b9a3479a1a12963ab58814fca6d484e08a60f8786606fbb2c0d16d268495a14f",
+      "examined": true,
+      "finding_ids": []
+    },
+    {
+      "key": "[intro briefing]",
+      "source_sha256": "c7d72c8ccb7eef6f1afe5a9dc28c45abc05499d2b743321ee8233e92ac1732c8",
+      "target_sha256": "e24c39a3198c08a90e6b5849434e3cc614d4d159fd3083cfa6d41983bb573b5f",
+      "examined": true,
+      "finding_ids": [
+        "sw-delta-001"
+      ]
+    },
+    {
+      "key": "[intro try]",
+      "source_sha256": "632e139b6ffc84032a2df0a5abef6c29a21fc044f08a9d8d8624bd9fae37d25c",
+      "target_sha256": "011a0c57b2d58401cf8361f4b907c702ab9af7eb6a2c6e2f39eb8e7202373e07",
+      "examined": true,
+      "finding_ids": []
+    },
+    {
+      "key": "[intro preflight]",
+      "source_sha256": "1b93b2f42cd4b366a28c13dad513419d99166c41f330198619d09d665fb592d5",
+      "target_sha256": "f666b8e261abaa0dc5b5f9d0eb49812063c153242415da8b1111df84cd81e191",
+      "examined": true,
+      "finding_ids": []
+    },
+    {
+      "key": "[intro preflight save]",
+      "source_sha256": "f03f365b775d564b49f88ea73ac36c2e66e98393dcb94aed159e4b84acda8995",
+      "target_sha256": "d8812ed13efde367dfa38cc2bba703e0e263334948df691a97ad37138f16905b",
+      "examined": true,
+      "finding_ids": []
+    },
+    {
+      "key": "[intro preference failed]",
+      "source_sha256": "515e7659bbbd1f9c16a4fa261bacf6310f888726f8d14614b75f39c14eb89d92",
+      "target_sha256": "9d9773a484d3e489b2556c7c2aecf69426d11d4d3ebe0cabd925eefb823cef80",
+      "examined": true,
+      "finding_ids": []
+    },
+    {
+      "key": "[intro goal scout]",
+      "source_sha256": "8f296a406cd3e406fdacd196ab6276f9f2fee40ccf5b9d85bd43e9329fade5ec",
+      "target_sha256": "17105a782e6b87a500d32e016452c46c3f7c146cd77d94b13f1e19af811589b4",
+      "examined": true,
+      "finding_ids": []
+    },
+    {
+      "key": "[intro goal build]",
+      "source_sha256": "671261a04c1b6fba317d6f01a1a98b3527379067236c31cf4dcb91b3d880a95c",
+      "target_sha256": "0205444ecdce5191024ecd7e96a09c57674be5d67e188df3f7dcc8dd212a9f21",
+      "examined": true,
+      "finding_ids": []
+    },
+    {
+      "key": "[intro goal supply]",
+      "source_sha256": "d02454caa74a9b6e6d6724529068b33f852dc18f8ae12990cb956607ddf239de",
+      "target_sha256": "ea813c676073f04949f7b25bdfb03eb4fe7ab806c20fe0bc6a81cbfb9685c2e2",
+      "examined": true,
+      "finding_ids": []
+    },
+    {
+      "key": "[intro goal grow]",
+      "source_sha256": "f378c31ee09cac32e6e9047a8aadc59d93adf33b5baa1895de8ea3394aa3109c",
+      "target_sha256": "80148ac87a18fbbe1960879adb4d8e39dd338a02e1477fd1e840a0454828bdb2",
+      "examined": true,
+      "finding_ids": []
+    },
+    {
+      "key": "[intro goal attack]",
+      "source_sha256": "6ebb73f4151a80754d72a49729a2619f874054b47c4c5f2d2535e1014f849e47",
+      "target_sha256": "54c6a9e644667ee513d28f7f18224d1129337bc3675d28687de9ecd4d7ff1d2d",
+      "examined": true,
+      "finding_ids": []
+    },
+    {
+      "key": "[intro instruction scout]",
+      "source_sha256": "528523a93220058aa7a39e18a2fc3191c020ed635618bfe44e0ddb7bfd9c2ef0",
+      "target_sha256": "d90701ca0cd1629c60f5eb6631b5ef7ffa0c06d7cd81d20300395cf9c58c3b22",
+      "examined": true,
+      "finding_ids": []
+    },
+    {
+      "key": "[intro instruction build]",
+      "source_sha256": "383aefe3257df7a2e04aaf36f4d96ffb0887fc637ddbf454c8cabda68280215b",
+      "target_sha256": "ddf20a65af07faea3cf9cb1b1c07b974e963bb685f37baafe54f2578e12b0232",
+      "examined": true,
+      "finding_ids": []
+    },
+    {
+      "key": "[intro instruction supply]",
+      "source_sha256": "64223e9e4dd528795b8f6fa8e666978f1e377e61492129252345c7da4bdc7b28",
+      "target_sha256": "c21cdb4a4147085a6272d646a3dd25af09eca638da06322b12cfb96bf1356c9b",
+      "examined": true,
+      "finding_ids": []
+    },
+    {
+      "key": "[intro instruction grow]",
+      "source_sha256": "286bd2930a373864ed16a2e94d0e05896a1db0b2a2cf3c150270345889116b2b",
+      "target_sha256": "bf34d970ff2e8c0347e4d0df6ee12daf3635dbf3eea95553e1f973efad36c025",
+      "examined": true,
+      "finding_ids": []
+    },
+    {
+      "key": "[intro instruction attack]",
+      "source_sha256": "13f5deb94f8b80fa1a8dd9b293f0cfdd415b4b8fee588aefd803bfba7eae6420",
+      "target_sha256": "f2406f65fa678ce64bef07003b8a50f96396315bbf8d864f0f599821387d5a1b",
+      "examined": true,
+      "finding_ids": []
+    },
+    {
+      "key": "[intro help]",
+      "source_sha256": "4a6aba0a538c5111b9f7266bbd8bf0cb8b519783c19d00b23a0bf3765f83bff7",
+      "target_sha256": "b4080d3321a4628b39101e76661cf2659aec6014000b8be651bc49ab0a1bffae",
+      "examined": true,
+      "finding_ids": []
+    },
+    {
+      "key": "[intro help scout]",
+      "source_sha256": "13f7f62ffaecd0e972b55b29ac1ba6ad94820ddf198f8c5350cc0435add41418",
+      "target_sha256": "f684401397c7b30b0d1a42f3b8c1ed966e27c9ef12b60e67e51e1fd021982ad1",
+      "examined": true,
+      "finding_ids": []
+    },
+    {
+      "key": "[intro help build]",
+      "source_sha256": "b6379472916610f322c9fe236d6a40aa23062a99ed6372d8ed7d584ab3dc5897",
+      "target_sha256": "12e35a2680edb2063c366093a44d121b1cb024e20c61177235a7c22077a9c82f",
+      "examined": true,
+      "finding_ids": []
+    },
+    {
+      "key": "[intro help supply]",
+      "source_sha256": "f91ffe9d60007e2d98d7c1bd9fa908a5fa62f85f3e1655db30a5e9e3ca03aba5",
+      "target_sha256": "45b86c43f31a60e4dc4826c9b7a87f2ee4f7f557b059873445c01dc457e9160f",
+      "examined": true,
+      "finding_ids": []
+    },
+    {
+      "key": "[intro help grow]",
+      "source_sha256": "0b2cbcacc012d20dd10de2f7028e43acf6fc26130554bb0b0b8eb82d83fa7bee",
+      "target_sha256": "646a4115f51e4fd5e3fb9de049f952ddbc6faa28ee30f05088a52d76304d7e2b",
+      "examined": true,
+      "finding_ids": []
+    },
+    {
+      "key": "[intro help attack]",
+      "source_sha256": "8441a18a4f842706c66be91487c4175fe33e80b4ec13729f4b7e3fbbcb3fd521",
+      "target_sha256": "cad3dfcd69efda079ec4b6a22bd53a91d52950adad2c19b6e1367c9423006a37",
+      "examined": true,
+      "finding_ids": [
+        "sw-delta-006"
+      ]
+    },
+    {
+      "key": "[intro hint scout]",
+      "source_sha256": "70cbf285688b2d25efdcd26edb21f9ad1a053207a59eab337b562b3756598e94",
+      "target_sha256": "6cc659e53d76859ead4f8d3216413158a94ff8263032fa2bbe187264e2a0980e",
+      "examined": true,
+      "finding_ids": []
+    },
+    {
+      "key": "[intro hint build]",
+      "source_sha256": "ab05e65884cd1425dec30b29b23335f2c474a2de03811ace35129287361ac9ec",
+      "target_sha256": "cc3690afffc25786c93aab18a5e7e0a692c6cfe38caa2f021c1daf5886e77691",
+      "examined": true,
+      "finding_ids": []
+    },
+    {
+      "key": "[intro hint supply]",
+      "source_sha256": "ebaf29082206b7a40a4a78dc71192bd165ecaed0003ea55b07998b2849a1ab93",
+      "target_sha256": "e151c74b6e3cc525c5d2e08316986383e7fab616c2be12b42d20f64133838efa",
+      "examined": true,
+      "finding_ids": []
+    },
+    {
+      "key": "[intro hint grow]",
+      "source_sha256": "92e853f75b815dd20385b08d64968228dec23050a8b7cca53ad71282b42022f6",
+      "target_sha256": "66c2df8a5f1c6d181f577e76c285ce6aff8a8f95012c402d8d3f04052bf9adc6",
+      "examined": true,
+      "finding_ids": []
+    },
+    {
+      "key": "[intro hint attack]",
+      "source_sha256": "9c2da10066330e9e0dfdacb56487124476e47565fa1ae2ab506cf32f7dcc4b3a",
+      "target_sha256": "fcfa8ca2034b08cfccdf7a18fd4c49fbc0f70e28ab426cd160eac05f4fe42b78",
+      "examined": true,
+      "finding_ids": []
+    },
+    {
+      "key": "[intro hint no scout flag]",
+      "source_sha256": "16f2b9c58cb61b2bb4c01dc285289ab918ced4ba70e034dbc790eee9be78a8a9",
+      "target_sha256": "4e11dbc5f3c74d322857b5f959051c7d5b4b513076ffe3c2f0c150dc3994292a",
+      "examined": true,
+      "finding_ids": []
+    },
+    {
+      "key": "[intro hint no suppliers]",
+      "source_sha256": "1c1d0802903a119353adb84d9baeb5eb9f7b1017a702e44cdd1272311b7f48a6",
+      "target_sha256": "0db1c8f0b36f1246127a7ad4b1758e5a78af4ff800c5ef4ac7d9f893809f62af",
+      "examined": true,
+      "finding_ids": []
+    },
+    {
+      "key": "[intro hint no war flag]",
+      "source_sha256": "fd85a0861d942cb5c5b0492bd9a5bfa4f8accd7e1a2f8efb841a66efdeea527f",
+      "target_sha256": "b89cc882cc47f2fce4b8afdbe8cfa6fdf98bc1af61e0747fab40b5d62000d7ec",
+      "examined": true,
+      "finding_ids": []
+    },
+    {
+      "key": "[intro hint retry]",
+      "source_sha256": "063fa2323775fca7da42e09edff9e2a67eac16858fe6aaefba4f7ae337c4ca1c",
+      "target_sha256": "cc76de1a0c5b8ae74d2c33423642eba79531ac38e1c0e065b09329ae8e0dee59",
+      "examined": true,
+      "finding_ids": []
+    },
+    {
+      "key": "[intro complete]",
+      "source_sha256": "df6c7ded9c813af772c43b2b482441680d4419307f0899ec57dfdfae765b6173",
+      "target_sha256": "b470ea9a7bb2da78ba389ff92f29e36a86416338976fbf65d26b424c53ad943a",
+      "examined": true,
+      "finding_ids": []
+    },
+    {
+      "key": "[intro complete body]",
+      "source_sha256": "8bac06e405801f503c166ef6fbbea6febe641f98b40df7723f3df3216fe048ac",
+      "target_sha256": "dedc4251085954436da07c05e0ccdabc5eee29770e2f7acc3e2b2263fa212edd",
+      "examined": true,
+      "finding_ids": []
+    },
+    {
+      "key": "[intro play again]",
+      "source_sha256": "5ef30d27f8bc261c9af7c5220ebca9e22ad51e60ff89bbdccceeb7102e21a32f",
+      "target_sha256": "e9954c087fcb9742bbd2b4a909a3a014959e545e2fe496aba9e7c003b480dd5e",
+      "examined": true,
+      "finding_ids": []
+    },
+    {
+      "key": "[intro restart]",
+      "source_sha256": "0b315ab3e4557ecb77e6d21dd8b6767899b78c21fbd485703d08ca66b57c5066",
+      "target_sha256": "94fc656640babfa2dab2056f1091f2332ab09c1814641466e100a01e2420f750",
+      "examined": true,
+      "finding_ids": []
+    },
+    {
+      "key": "[intro restart body]",
+      "source_sha256": "b0cff10610a8c57ad2600f9ad0305bc2f385b3db4363820358ba3662b30cd560",
+      "target_sha256": "0dcb81e8bd485ff12433200db07dc8bb39dc7230a00ff8248a32c91eb0c9151b",
+      "examined": true,
+      "finding_ids": []
+    },
+    {
+      "key": "[intro help touch scout]",
+      "source_sha256": "49f98243792f34407f61792c5fc70870d3a2ace31e91a16a19be228bac69953f",
+      "target_sha256": "84fd61cefdb70188fe3e4fbd1d2ed2ed33acab437ae4a8a352e80da401c7a229",
+      "examined": true,
+      "finding_ids": []
+    },
+    {
+      "key": "[intro help touch build]",
+      "source_sha256": "e286f939648bec99291055c43e55eb855fcc9d2d794eff3230dbd7cc4e9d9627",
+      "target_sha256": "5d8d061908eb8a8e92b70dff6ef3ef5e0cd0f172d9d759dbb67da6626db2bf2a",
+      "examined": true,
+      "finding_ids": []
+    },
+    {
+      "key": "[intro help touch supply]",
+      "source_sha256": "8045e077256e284b02cf47f73db71c1c242e28f28d45c099f0df36c5535b1ec3",
+      "target_sha256": "fde41b86bc071680bb73bc4391b04a1dd34dfe0ce3f9debfc1b4bec067c38226",
+      "examined": true,
+      "finding_ids": []
+    },
+    {
+      "key": "[intro help touch grow]",
+      "source_sha256": "e263537e6840ee3b2ee6b318a298049ff1f5acd3b6002f153eb15e4e1c99d341",
+      "target_sha256": "7aee3ebecdd6038440d95c91ee282a77b13a1ced582ccb4723de63fcb3213961",
+      "examined": true,
+      "finding_ids": []
+    },
+    {
+      "key": "[intro help touch attack]",
+      "source_sha256": "2d79e0b68352eedf8a91c42213ccc5480c9a7f246ae35b84d8943497bea6da7d",
+      "target_sha256": "bc75975f27d750e037510baab7d29ca556e2a4fb2a34b2d4e9f9a1e52330c38d",
+      "examined": true,
+      "finding_ids": [
+        "sw-delta-007"
+      ]
+    },
+    {
+      "key": "[intro show destination]",
+      "source_sha256": "e7205286a32eb7d586cfa3effe9b27c5340d4a19601796c4c229381a8132a4d9",
+      "target_sha256": "2580c1bffad609d6290b6bb5ed6080539680eecb567efec6560c44ecfc11c6df",
+      "examined": true,
+      "finding_ids": [
+        "sw-delta-003"
+      ]
+    },
+    {
+      "key": "[intro scout destination]",
+      "source_sha256": "d1af8e2fce2b12ca88135efba81f39587b200c8891c877b7610c5d57e708cc85",
+      "target_sha256": "e1d3c709321aad9d11331a335189a98a2364d24a74d2f86c1a5d49af0d6388d5",
+      "examined": true,
+      "finding_ids": []
+    },
+    {
+      "key": "[intro compact scout]",
+      "source_sha256": "0add4107c48c91201cf0a65b8c5c4c7827280eca2bf7157c3503cc59b40a1127",
+      "target_sha256": "2700077af468af802e097d76ef59f023ef03b4931edfcd9cb258e43d823531b8",
+      "examined": true,
+      "finding_ids": []
+    },
+    {
+      "key": "[intro compact build]",
+      "source_sha256": "53f38844441fee7613de8b4c88a6656ba99902e382faef5be43f0e362a89a678",
+      "target_sha256": "06db9d015e11eabd2c8c0693b04879ab7449146d1afa0a3a3283f644e70ce5f0",
+      "examined": true,
+      "finding_ids": []
+    },
+    {
+      "key": "[intro compact supply]",
+      "source_sha256": "cde4d0be27c8b2713446e7e5f0126a0d80fab9df02d4c36b805e3b076bf511b6",
+      "target_sha256": "a6cafba2e89a095894c6a4c1b18787cc6fe210f45c45d50448fee93561420a80",
+      "examined": true,
+      "finding_ids": []
+    },
+    {
+      "key": "[intro compact grow]",
+      "source_sha256": "e07f29bc4c11b58ec17dd5f70e54461cdacafbbf772372c80db656b57f590250",
+      "target_sha256": "2563c15b66e6307d14c0fd7bab70e3142173cefa5d1b78389173bed97e3c593a",
+      "examined": true,
+      "finding_ids": []
+    },
+    {
+      "key": "[intro compact attack]",
+      "source_sha256": "dfea9d478c8f00031143cc7709ae12368d272533ab4aeccaa0bfa300f13facc1",
+      "target_sha256": "365984524d09af1907bfa1c12d540fc66c7a4961e99c1a618b183eea04c97f42",
+      "examined": true,
+      "finding_ids": []
+    },
+    {
+      "key": "[tutorial lessons]",
+      "source_sha256": "ce7b9a37270b6310fb50a7c5c9073fb01320b3d29316a6d259751e5ec1993c40",
+      "target_sha256": "e0be447324b9992b8bac8f3942f99c054294a414d96aee735a96de9952f9e6c0",
+      "examined": true,
+      "finding_ids": []
+    },
+    {
+      "key": "[tutorial restart]",
+      "source_sha256": "cabbcb70d6181880ab073373526a0c6c6e19e654d5efb84953f80e240277b4e8",
+      "target_sha256": "103205ce0c904d44c83bfe7d9558fa589c9318c8e6505f1f84088e93c4361cbf",
+      "examined": true,
+      "finding_ids": []
+    },
+    {
+      "key": "[tutorial restart body]",
+      "source_sha256": "ffc315259edd595391a644705dfaabb6a914fd236e958ba728877716c224db17",
+      "target_sha256": "8f6d7ced9297844cf814d56fd8c53e9c01a8bf27e3837cbd042f6f6b80fe8a2a",
+      "examined": true,
+      "finding_ids": []
+    },
+    {
+      "key": "[tutorial complete]",
+      "source_sha256": "fd8ea0a29a653cac0de113a4dce5875e61def5197251debfeb9e58855fe9e298",
+      "target_sha256": "26d981ad4cbb18b0dd9a83cf3cccc15b5b9c15a4bd370b4883a17923a68cab0e",
+      "examined": true,
+      "finding_ids": []
+    },
+    {
+      "key": "[tutorial food title]",
+      "source_sha256": "198519daf7b8670fe922a53f5611acb70efddfaeaf90fad7a45402d2ca98e5f6",
+      "target_sha256": "95d012589d1a4ca52a8d6f8522970a42b18c6e09f50a34eba05d51486345f1d0",
+      "examined": true,
+      "finding_ids": []
+    },
+    {
+      "key": "[tutorial food briefing]",
+      "source_sha256": "5c7bc72d273165a1125f08c8e635e5c600d72a92a606de572f24d16156525dbb",
+      "target_sha256": "093d18023f5e5534bf1f6b2ab97b0c82548c0d6fbd786e1fcec527e1761978ea",
+      "examined": true,
+      "finding_ids": []
+    },
+    {
+      "key": "[tutorial food complete]",
+      "source_sha256": "759019a7b94547d789004481c65b73477d3747825ca432de8d9c49568a32448c",
+      "target_sha256": "5f28d5bd1cb9bdb6631b03463ba3ebe4a66aeebda6acd86ab10ab9fcb509809e",
+      "examined": true,
+      "finding_ids": []
+    },
+    {
+      "key": "[tutorial unavailable]",
+      "source_sha256": "d52e2b1b949b87a4e9dc1dd8407010764fcb05b7f6338512195554c012cd8b4e",
+      "target_sha256": "9f4b1c7172d4bcd4c869d4aafa8c2e0e6d295079530d45a0e9ce22a2009e9cf1",
+      "examined": true,
+      "finding_ids": []
+    },
+    {
+      "key": "[lesson healing title]",
+      "source_sha256": "f8ce2c4e8ed5abc698b51b28bbe7ec3cc9448a465a7f828920efc5c22511aa4d",
+      "target_sha256": "52f8f04216d1e5b3f743087d711c419cb6879d8f81570b6635443d6c724d89fe",
+      "examined": true,
+      "finding_ids": []
+    },
+    {
+      "key": "[lesson healing briefing]",
+      "source_sha256": "19efcc776cc060b892b9b034f6ebdaf23a8e5f8915caa43173063086ebb5c8a9",
+      "target_sha256": "f608f88de6ce82f159b9fd837e0f452dd8b1ef8469dbfac3a0d7b1ebac4a01d5",
+      "examined": true,
+      "finding_ids": [
+        "sw-delta-002"
+      ]
+    },
+    {
+      "key": "[lesson healing complete]",
+      "source_sha256": "1e83b9981a8200e7eaad6ae21b047192224a63cc11f14d0fdb1f4543e5a2a7d4",
+      "target_sha256": "475a972bfe7d1e47d243497bdb39464838e1a33577b38c7c0550c851e52e3fbb",
+      "examined": true,
+      "finding_ids": []
+    },
+    {
+      "key": "[lesson healing build hint]",
+      "source_sha256": "aac1961b77307a9f1a32cb0edd45ba8f57924ec299f95928a0f17dd39eeb671c",
+      "target_sha256": "ef642d60974d75396c0ed71def3a375bc62c1d4d60a796bf033e15ff873b7e4b",
+      "examined": true,
+      "finding_ids": []
+    },
+    {
+      "key": "[lesson healing build title]",
+      "source_sha256": "f65e570fd9b08cd2d3cbdfa284e64495621cd1989d6a03df586e75403a947f84",
+      "target_sha256": "11c8242fb180b6b9aea1bd8542a325c6d917f36d77e49f12a2518ccf5374453e",
+      "examined": true,
+      "finding_ids": []
+    },
+    {
+      "key": "[lesson healing build instruction]",
+      "source_sha256": "c155c3f8e1749e0fb54e0b4833d3b11ee5fc7feed36bf42e4f0ea810e7f4597a",
+      "target_sha256": "903d1354a04f23cb045582afb9ba089e6eaf7926dd7bf13a4da7aba025507c95",
+      "examined": true,
+      "finding_ids": []
+    },
+    {
+      "key": "[lesson healing build help]",
+      "source_sha256": "85b0457612f27d52a92e56d2f30f6419c0e326fe093204faea817349d3712057",
+      "target_sha256": "032eed70a48da6980732fca36d3a58e620f15a0ea2afd515d53b65c88cd301e5",
+      "examined": true,
+      "finding_ids": []
+    },
+    {
+      "key": "[lesson healing build marker]",
+      "source_sha256": "f65e570fd9b08cd2d3cbdfa284e64495621cd1989d6a03df586e75403a947f84",
+      "target_sha256": "11c8242fb180b6b9aea1bd8542a325c6d917f36d77e49f12a2518ccf5374453e",
+      "examined": true,
+      "finding_ids": []
+    },
+    {
+      "key": "[lesson healing heal hint]",
+      "source_sha256": "6e50b5aa1b13d6b72c3e917d928abda315cb5b0b6481ad27cc1deaf7cd9e5956",
+      "target_sha256": "77bf4f460d7c6aff86e8943803efb071b4cebbfcfedf29eec1562d74ee265857",
+      "examined": true,
+      "finding_ids": []
+    },
+    {
+      "key": "[lesson healing heal title]",
+      "source_sha256": "ecd575a0939ec4e17f22d07f6d951a58c6a122bf4a0a2d689282b4bc81c45c07",
+      "target_sha256": "6ca6e14dcb68e7f3a0b9bbe12673c89fc15073451ade5b493483e7e25b1d7716",
+      "examined": true,
+      "finding_ids": []
+    },
+    {
+      "key": "[lesson healing heal instruction]",
+      "source_sha256": "32628295c89baf6162cea507a5480a7a44c62728809ce8c89c4ca6e1c9181dae",
+      "target_sha256": "a145540d0302244f8c1025e5630310172a9b2cee214dfbcdbbcb47a26e02d4de",
+      "examined": true,
+      "finding_ids": []
+    },
+    {
+      "key": "[lesson healing heal help]",
+      "source_sha256": "b40e4c7c8ee1dcee11b63f15072ddc6cb769cff3aa53cc7698fcd3299273fd76",
+      "target_sha256": "5598499097a1c01101fa331d422e35de4354cad2200919b6907a537290f996cf",
+      "examined": true,
+      "finding_ids": []
+    },
+    {
+      "key": "[lesson healing heal marker]",
+      "source_sha256": "ecd575a0939ec4e17f22d07f6d951a58c6a122bf4a0a2d689282b4bc81c45c07",
+      "target_sha256": "6ca6e14dcb68e7f3a0b9bbe12673c89fc15073451ade5b493483e7e25b1d7716",
+      "examined": true,
+      "finding_ids": []
+    },
+    {
+      "key": "[lesson walking-training title]",
+      "source_sha256": "02bdb2f49220829a3e69f8acd77d2fd97143d41ce8246c13677e5aff7a699a7b",
+      "target_sha256": "f2cc2a9e5769b853006b12a2afb489d5b7e6c55e65c0790b372df7847dd7c646",
+      "examined": true,
+      "finding_ids": []
+    },
+    {
+      "key": "[lesson walking-training briefing]",
+      "source_sha256": "ffe08446ce138981a78d4686dc2e1b19f303d8e75b56b954682827671b29c847",
+      "target_sha256": "3fc0364d5ae272df436eddea2beb9a9aa1ed8f91a6d99deda8b3e89518e89bc2",
+      "examined": true,
+      "finding_ids": []
+    },
+    {
+      "key": "[lesson walking-training complete]",
+      "source_sha256": "4921519a698ebb95f76d98c304831ba4d1177d01c71b879214b0c933954bad0f",
+      "target_sha256": "90ad5dddc934efa6cf469f7a11e1bd2111633f8f46e9013a581fe09babc76a4c",
+      "examined": true,
+      "finding_ids": []
+    },
+    {
+      "key": "[lesson walking-training build hint]",
+      "source_sha256": "bbe38492d1854d3d3ffa4ac1b490e3cdb2e1ceb959a39aa84d06e5c644efa1d9",
+      "target_sha256": "d31e989af7c8679301f09ffdd3c5f09a111cfffcf9e89d2c0e9cff06ce1f056e",
+      "examined": true,
+      "finding_ids": []
+    },
+    {
+      "key": "[lesson walking-training build title]",
+      "source_sha256": "382ffa54226d6a70952a005aea55f404434a4199c45e511f9a594dbca3132a10",
+      "target_sha256": "a138b1aa7d7196d8cc5d829a28d4023e7e75d6a77197d906aaf74e25692f2eee",
+      "examined": true,
+      "finding_ids": []
+    },
+    {
+      "key": "[lesson walking-training build instruction]",
+      "source_sha256": "8a37b31c5fbd48997e0b71f36173035b1284b31e64bf9b858880e1f43c009afb",
+      "target_sha256": "c734d92ec972aacaab3d48eab66be9484c1489f00bb273d2d927f292c7c61040",
+      "examined": true,
+      "finding_ids": []
+    },
+    {
+      "key": "[lesson walking-training build help]",
+      "source_sha256": "df76f6cb17b8f252d7e5de571fbc12258bb070e5cf38af99d8354cb7d8fe9a82",
+      "target_sha256": "107fba8378f30f49c8d6010d3c3229c74dd401960eb88aa0b5d9c16838eb3a4f",
+      "examined": true,
+      "finding_ids": []
+    },
+    {
+      "key": "[lesson walking-training build marker]",
+      "source_sha256": "382ffa54226d6a70952a005aea55f404434a4199c45e511f9a594dbca3132a10",
+      "target_sha256": "a138b1aa7d7196d8cc5d829a28d4023e7e75d6a77197d906aaf74e25692f2eee",
+      "examined": true,
+      "finding_ids": []
+    },
+    {
+      "key": "[lesson walking-training train hint]",
+      "source_sha256": "9660b28cc43f9eba103a56fe15417810fc8986552e3d7fde8887fab52f464b77",
+      "target_sha256": "8611904488be8daa5e2b4bd09dd4a1df578a59ced2b102860b4662f304b30bb1",
+      "examined": true,
+      "finding_ids": []
+    },
+    {
+      "key": "[lesson walking-training train title]",
+      "source_sha256": "b58e6fbf320672af18cf550d695fd3e090ea22aecc2dce32e00d5bc9ce7695d0",
+      "target_sha256": "84fc22059019e12e9446a069ba5600b9eff2312e378e548b6cda10c95af93356",
+      "examined": true,
+      "finding_ids": []
+    },
+    {
+      "key": "[lesson walking-training train instruction]",
+      "source_sha256": "c490eaa53ee76b36912985d006b409f23e6e792bf735986d18ff27f3a484ee30",
+      "target_sha256": "6364e9288ad3671b08a8cb50888ac37d74a704885a632d1daa78811007a7d450",
+      "examined": true,
+      "finding_ids": []
+    },
+    {
+      "key": "[lesson walking-training train help]",
+      "source_sha256": "7f4001d452252f7af1425aa15b89f09aacf5ef9b7362746039efe73b21731980",
+      "target_sha256": "af5669be4277983d345046abc8a02cff4b25a53d85deecbc2d24f5f57ab2b5b5",
+      "examined": true,
+      "finding_ids": []
+    },
+    {
+      "key": "[lesson swimming title]",
+      "source_sha256": "d4744331ef71aeae9bd92eec994af82b59a6b15f76c62ee4ccc8fa80afa819dd",
+      "target_sha256": "a346155274080a20c135aa5e023ffa0b6bc6541c4db8c1ea5db2e96fb4065c02",
+      "examined": true,
+      "finding_ids": []
+    },
+    {
+      "key": "[lesson swimming briefing]",
+      "source_sha256": "fde3128193ae89e82c91056c363ca191502e826917fe969b764482d408cb0b02",
+      "target_sha256": "04cf4bcd18aa337f366c08e475da304ddd000ccf386efc8ebe5326242d515a9d",
+      "examined": true,
+      "finding_ids": []
+    },
+    {
+      "key": "[lesson swimming complete]",
+      "source_sha256": "ae21370b56f6c178e4cc2eab9a4ad8b267883428caa195150b8c947696ac25f3",
+      "target_sha256": "5d881e227b4655ea02fdbd32cb8b21912db3275efb1c06a5f54644a643c164e3",
+      "examined": true,
+      "finding_ids": []
+    },
+    {
+      "key": "[lesson swimming build hint]",
+      "source_sha256": "92672c53c45ae0d3d8d932eaf0034221d50e0c1d8bfc17d8269cb193eec3613c",
+      "target_sha256": "c06e0d6f8fe720fbd220fc4b4675c5c244e17cce6fe3f44b1a9f480b023a3efe",
+      "examined": true,
+      "finding_ids": []
+    },
+    {
+      "key": "[lesson swimming build title]",
+      "source_sha256": "856b6cdc3c031e2596ab48ba4e599e74941efb6bba1b4fe7fb865dee23cdbf23",
+      "target_sha256": "992317dc38841f0bf6316ab00ae8e5116ec21ee99f25b15096a1aec16db0e51e",
+      "examined": true,
+      "finding_ids": []
+    },
+    {
+      "key": "[lesson swimming build instruction]",
+      "source_sha256": "c0ca63bd13860ca6065afd1388f8f332db60855f6e652848994ed6aef90f892d",
+      "target_sha256": "415cff57bf396474a6029cf1ac758591f3d1522d8d3ef1277ea1a96546005a4a",
+      "examined": true,
+      "finding_ids": []
+    },
+    {
+      "key": "[lesson swimming build help]",
+      "source_sha256": "a787403905ba4c7d27a8c43b146fdb4beb54c77f5035d48a41780daeccd8e9e3",
+      "target_sha256": "e64f7cab21934b68f06fb67136497e8121ae900ddce884fa7bdda1a53bead033",
+      "examined": true,
+      "finding_ids": []
+    },
+    {
+      "key": "[lesson swimming build marker]",
+      "source_sha256": "856b6cdc3c031e2596ab48ba4e599e74941efb6bba1b4fe7fb865dee23cdbf23",
+      "target_sha256": "992317dc38841f0bf6316ab00ae8e5116ec21ee99f25b15096a1aec16db0e51e",
+      "examined": true,
+      "finding_ids": []
+    },
+    {
+      "key": "[lesson swimming train hint]",
+      "source_sha256": "672ab5d6d6eb18fe890f4f3e76a2b220c52df4187df4d9baa12eb3488861687a",
+      "target_sha256": "c4e8a4f044060dafcbe417f458e94d22d514cbe00f84c9563ecb80559bb82cb9",
+      "examined": true,
+      "finding_ids": []
+    },
+    {
+      "key": "[lesson swimming train title]",
+      "source_sha256": "d7c59c7d649b01f306a49aa0d22b9ea89d70989827c3f8cb98ade8c881d2e5f3",
+      "target_sha256": "6722c9110abbd3f0cc6e26aeaa7a3ebd62735fa889fb8652fe11bd6463376767",
+      "examined": true,
+      "finding_ids": []
+    },
+    {
+      "key": "[lesson swimming train instruction]",
+      "source_sha256": "3b91b01d64bc5ff4f207241854d0f517490df563a44bd4ae869cdfc068f34a59",
+      "target_sha256": "7a53216be58e43de6b442f3ad1af4764412522d47ad901644dcd6c2e286b4ce5",
+      "examined": true,
+      "finding_ids": []
+    },
+    {
+      "key": "[lesson swimming train help]",
+      "source_sha256": "569c8e1fae9f94d2bbb6c2858a159b7fbdcb3aaa5711d45d0e3c678b0f5bbdb6",
+      "target_sha256": "9c7c2a6ddde2678717b72587f9d3b5d92d36cc3af2ee9f283db061a6d27dbb53",
+      "examined": true,
+      "finding_ids": []
+    },
+    {
+      "key": "[lesson swimming water-job hint]",
+      "source_sha256": "20c1958f1383e86176b1b715e69388399e57d60ad055a7f4d9b81eb789ea668b",
+      "target_sha256": "f16a20aec1909422304171c6af1e141f168aab259f20e724637976edac2c6d7f",
+      "examined": true,
+      "finding_ids": []
+    },
+    {
+      "key": "[lesson swimming water-job title]",
+      "source_sha256": "4ae670886e2c1232dfed18a843ca2ced172a616ec8aa51bfe6e0fc088ead114d",
+      "target_sha256": "1c170779de69e10252e73f7765bab926c4eb8d04496cfb805982363b8557912e",
+      "examined": true,
+      "finding_ids": []
+    },
+    {
+      "key": "[lesson swimming water-job instruction]",
+      "source_sha256": "f3899a2eb7ad404e7b67c6748bef3f469e2a574bbc8d9a79211c598649e46b02",
+      "target_sha256": "2552e77b9f6c0dd22407980e1ea56a66fdb8c16245e578653e883045b6f269e1",
+      "examined": true,
+      "finding_ids": []
+    },
+    {
+      "key": "[lesson swimming water-job help]",
+      "source_sha256": "95cd8cbaa34e4e82dba66e66cd7a5ad3e3066c79ba8fc2fec5c267075764c22c",
+      "target_sha256": "3adad4a776028ff4791398ea83b17a21fccde39e6004eeb7287828946fafd1b4",
+      "examined": true,
+      "finding_ids": []
+    },
+    {
+      "key": "[lesson swimming water-job marker]",
+      "source_sha256": "4ae670886e2c1232dfed18a843ca2ced172a616ec8aa51bfe6e0fc088ead114d",
+      "target_sha256": "1c170779de69e10252e73f7765bab926c4eb8d04496cfb805982363b8557912e",
+      "examined": true,
+      "finding_ids": []
+    },
+    {
+      "key": "[lesson schools title]",
+      "source_sha256": "53fd0854bcc3fe0f1ffc6e1d86f090b8cd2872ef4ac7ff23200719c09000593e",
+      "target_sha256": "68777c85ee12c165e1768c7c6b4c900ebd062f45b17129db579e0476eb0e855b",
+      "examined": true,
+      "finding_ids": []
+    },
+    {
+      "key": "[lesson schools briefing]",
+      "source_sha256": "a5717f3cdd3febf4be8e2422ac7b65d13ebd96b737395e6fad0dcf71f3904229",
+      "target_sha256": "ed5d1b64cfe3e82b3ba9a4e2a9c46bec866bc4de9a21459951768c0a2273c0ab",
+      "examined": true,
+      "finding_ids": []
+    },
+    {
+      "key": "[lesson schools complete]",
+      "source_sha256": "7e392dbcdeacfa8481a95bf4cd00c243212d86f6fe92f2e6b87f91437adb111d",
+      "target_sha256": "ab47248a12db7ca4a932ea6dbf0d08c866698242c9bdca6122b74464c8dad5e3",
+      "examined": true,
+      "finding_ids": []
+    },
+    {
+      "key": "[lesson schools build hint]",
+      "source_sha256": "cff9c70eeeb44da5fd089909e1e6330e462ce21054266782343768adafae4546",
+      "target_sha256": "aced0074fb19a82456326b41a4d98b27fd4495a32312b9104d76f00aa3c46158",
+      "examined": true,
+      "finding_ids": []
+    },
+    {
+      "key": "[lesson schools build title]",
+      "source_sha256": "fac3591137e1eae1359862c19554a14441db9eb4b7faa05fbb0f53ed17a0a441",
+      "target_sha256": "fab43db63a78b1b957712ffaa4cdafa4dacf9ed211f15be9e4a1ae5c90c36b77",
+      "examined": true,
+      "finding_ids": []
+    },
+    {
+      "key": "[lesson schools build instruction]",
+      "source_sha256": "801d88020c2f22d2d928a0cd933a18b3607643b5ed54f54215acb8c52fbf3dbc",
+      "target_sha256": "49b53de131ecbd560d53895dcb2712095ac4e8629ba382a2e9795cdaef8fc262",
+      "examined": true,
+      "finding_ids": []
+    },
+    {
+      "key": "[lesson schools build help]",
+      "source_sha256": "a19fcf0f1fd780045b49c1e842274f91698244c496fc65f62124326516e2e4a8",
+      "target_sha256": "bd39d96288acb8d6ab300186fa8e39ac38ff046bc6d8a885ce7ca2779a781a28",
+      "examined": true,
+      "finding_ids": []
+    },
+    {
+      "key": "[lesson schools build marker]",
+      "source_sha256": "fac3591137e1eae1359862c19554a14441db9eb4b7faa05fbb0f53ed17a0a441",
+      "target_sha256": "fab43db63a78b1b957712ffaa4cdafa4dacf9ed211f15be9e4a1ae5c90c36b77",
+      "examined": true,
+      "finding_ids": []
+    },
+    {
+      "key": "[lesson schools learn hint]",
+      "source_sha256": "3d04bcfacf844a6e483dfe7c242efa6a05bd49b5eaf131fd93d0966895e136a4",
+      "target_sha256": "9e678d0095598b514e9ab77bd2a9aad30bcc7a696d0517c09b43e227e47ca888",
+      "examined": true,
+      "finding_ids": []
+    },
+    {
+      "key": "[lesson schools learn title]",
+      "source_sha256": "d5553f953f884a63d854871255334db8416bb37126074813a3be997c30e43c98",
+      "target_sha256": "31faa14ed40caa01f58a64b3aafe94b0063b1921ceaedccfa536d9e2c784bf38",
+      "examined": true,
+      "finding_ids": []
+    },
+    {
+      "key": "[lesson schools learn instruction]",
+      "source_sha256": "f75a35b17978c97df02e82d7717b0b9e554bfead191224e86c865ed64049323e",
+      "target_sha256": "26fe76cea941425ca900902686bd6942d64ec94a5c4cc41e07b44064b3dd5a62",
+      "examined": true,
+      "finding_ids": []
+    },
+    {
+      "key": "[lesson schools learn help]",
+      "source_sha256": "310498ca180863ba0cc372d2037143580a23d433522d5ef60e029b893095180a",
+      "target_sha256": "5f0e5e65bad9a42ab0863a571b0d35c68b5228f62ad8303059348c717d30fdb6",
+      "examined": true,
+      "finding_ids": []
+    },
+    {
+      "key": "[lesson upgrades title]",
+      "source_sha256": "6de95521502898c4ce0b4c932cc626136ac953e95ed6b049c26b2e7d70b223a8",
+      "target_sha256": "ef326f7342cb72200ea368cd53882f417ca1fec108e09d611b9e73f1b3b157aa",
+      "examined": true,
+      "finding_ids": []
+    },
+    {
+      "key": "[lesson upgrades briefing]",
+      "source_sha256": "00355553147cbbf4d08f474acc02b0af58fc7a80ef633ccba4a21bd95ddde132",
+      "target_sha256": "c1c38a7d6550f3d8f58715f70d3f63ed2cca24208086d62961846f713c0a57e4",
+      "examined": true,
+      "finding_ids": []
+    },
+    {
+      "key": "[lesson upgrades complete]",
+      "source_sha256": "e9015ed92c3ae22bc69d8fd6db6371d3933d638ece47c5cf1bcc8279dfbb56d2",
+      "target_sha256": "d9340065ecf7bbbbdaf3e28721cdc2b09cb0d110d3d2dfbe37fc5a2ca21e7e79",
+      "examined": true,
+      "finding_ids": []
+    },
+    {
+      "key": "[lesson upgrades upgrade hint]",
+      "source_sha256": "927df6d62d2c2632ec44ff96a7d12988365db17063f76d4215ad2e5bc558861a",
+      "target_sha256": "1884d4c76b4aad1e7043c47961f1b2e48d7db2257d493642150edd9892e678bf",
+      "examined": true,
+      "finding_ids": []
+    },
+    {
+      "key": "[lesson upgrades upgrade title]",
+      "source_sha256": "5ca53112b9f0f909b02b33bab1736bdf0ed061bf3f515244a8c24cee387fe3ea",
+      "target_sha256": "c389b281ac3d21c8cf168b5e5c3193bf38169272a2fafbd82a403e68b81961de",
+      "examined": true,
+      "finding_ids": []
+    },
+    {
+      "key": "[lesson upgrades upgrade instruction]",
+      "source_sha256": "92f11bfc2d02667483cf9e4863aabf7df0c79d6a568a5fb2ecbae6886d3c16b3",
+      "target_sha256": "5b929dc7e0e618f17d6e973b4c3a123c3a0a1cd087247282494e4180b0906711",
+      "examined": true,
+      "finding_ids": []
+    },
+    {
+      "key": "[lesson upgrades upgrade help]",
+      "source_sha256": "c7d9b727bd1edede7d06de35a8b677e444713551e79cfeed48d7f9ad1de78cf3",
+      "target_sha256": "d522459e1838ec5ccfa5fc5962b6a18994830c84b6595613e8ef19c27273a012",
+      "examined": true,
+      "finding_ids": []
+    },
+    {
+      "key": "[lesson upgrades upgrade marker]",
+      "source_sha256": "5ca53112b9f0f909b02b33bab1736bdf0ed061bf3f515244a8c24cee387fe3ea",
+      "target_sha256": "c389b281ac3d21c8cf168b5e5c3193bf38169272a2fafbd82a403e68b81961de",
+      "examined": true,
+      "finding_ids": []
+    },
+    {
+      "key": "[lesson upgrades train hint]",
+      "source_sha256": "262b1039283774fb4b8b30968c47ce23eeec36c3880594a68ef9719a074f9dff",
+      "target_sha256": "f4835fa9ae29faa5476b2fd2fe2e9efb34064ddca17f48ec343520e27c10e2dd",
+      "examined": true,
+      "finding_ids": []
+    },
+    {
+      "key": "[lesson upgrades train title]",
+      "source_sha256": "b34b3daf949026140ca4ef587dca22e77fb2b70842bb9cedb88337b3316b98b7",
+      "target_sha256": "48cdc6cffc429b477018c2b55c039b4f2f3eea1d7f01f2e314fd7eb840f4af94",
+      "examined": true,
+      "finding_ids": []
+    },
+    {
+      "key": "[lesson upgrades train instruction]",
+      "source_sha256": "1793d36ff1bd64d9bc03c8152162320ed55c9c740af0e32fcc37dc6642a1b621",
+      "target_sha256": "10fe66432a3dc34423c60c72b4e24b61b74f6c20b56971946128c8eebdd9916a",
+      "examined": true,
+      "finding_ids": []
+    },
+    {
+      "key": "[lesson upgrades train help]",
+      "source_sha256": "2dec24419b16192e124357919424273f531ff41dcdeabad6beecadfb3d3fb3ef",
+      "target_sha256": "28f077b638a968d0bdd2280d0d72bdb1c73b92068fc88751968e42d3238a1ed0",
+      "examined": true,
+      "finding_ids": []
+    },
+    {
+      "key": "[lesson warrior-training title]",
+      "source_sha256": "9f13a8d92ce3e8ceb12bb5e4ec9efc7cc6ab3e82fb55e698b2789fbfa402e552",
+      "target_sha256": "0635eb24d204f25863aa7f15d378e60ddb452459327ef9607a4fbed50692a15b",
+      "examined": true,
+      "finding_ids": []
+    },
+    {
+      "key": "[lesson warrior-training briefing]",
+      "source_sha256": "4309b08f592348adcef159319122ada090b43135af5965a21d3b51d3c957ecce",
+      "target_sha256": "085cb2d51444fca94c514c64ac2c331f64e18fbd5719237a710966d66755ebd6",
+      "examined": true,
+      "finding_ids": []
+    },
+    {
+      "key": "[lesson warrior-training complete]",
+      "source_sha256": "f0aabaef41606b58f9e696eb38d797e5935c70b69d03cc0c06292ba9b9b0f268",
+      "target_sha256": "9dd46a3b12af439b003c6ad57cc05fe04b0d930a51a003786858e0b18601d60c",
+      "examined": true,
+      "finding_ids": []
+    },
+    {
+      "key": "[lesson warrior-training produce hint]",
+      "source_sha256": "7cba4e65c07d8ec8d12ad70e7ced76b7dc5cf398dc6b528a3b3eedaa834691b1",
+      "target_sha256": "f2a520dd9e65c59b63f39a947af8e72f71242e772c568b47a7bfa55b31ed146b",
+      "examined": true,
+      "finding_ids": []
+    },
+    {
+      "key": "[lesson warrior-training produce title]",
+      "source_sha256": "366a102925ed9490b9c85725ed95ac3ffeeecd50dbaa2d09440b66ab4c20e6fd",
+      "target_sha256": "c6c356b3dbec5960cad4c7e1af3401b4049b05974544357b680ff0fd580484ea",
+      "examined": true,
+      "finding_ids": []
+    },
+    {
+      "key": "[lesson warrior-training produce instruction]",
+      "source_sha256": "0dc648b3a96bfc44c37a9f44eadaf3c7d36a8ba2167730bc85d6dffe4fb2aac4",
+      "target_sha256": "01fff59108a5a25543c2ddb9df3e00932cf5ac38970e5381ec3e382f915b2ab8",
+      "examined": true,
+      "finding_ids": []
+    },
+    {
+      "key": "[lesson warrior-training produce help]",
+      "source_sha256": "8c7f99bd0164d0973cb1c59377f2f05201858c118259a3c333451afb3fb06a5a",
+      "target_sha256": "62db4f57dcaf1cd4ff1056cd67d718fad1cdc5c08edc970d16ae1c7f9ecb809f",
+      "examined": true,
+      "finding_ids": []
+    },
+    {
+      "key": "[lesson warrior-training produce marker]",
+      "source_sha256": "366a102925ed9490b9c85725ed95ac3ffeeecd50dbaa2d09440b66ab4c20e6fd",
+      "target_sha256": "c6c356b3dbec5960cad4c7e1af3401b4049b05974544357b680ff0fd580484ea",
+      "examined": true,
+      "finding_ids": []
+    },
+    {
+      "key": "[lesson warrior-training build hint]",
+      "source_sha256": "6c5632b857625afbef3566fcec268e5d3b595508f4b1346c46d8bed64fd3a485",
+      "target_sha256": "b92c4448f5028607f12c964269dce47919d2d523f40793c9520d126b33189fb1",
+      "examined": true,
+      "finding_ids": []
+    },
+    {
+      "key": "[lesson warrior-training build title]",
+      "source_sha256": "ea9222aa11c8952dc854efd5df18c20fd9e4d867b67f57acd70e68e614ffb20a",
+      "target_sha256": "b782619ad1224576874d974bce364287226194d4909611f29bbed48eecb50b0d",
+      "examined": true,
+      "finding_ids": []
+    },
+    {
+      "key": "[lesson warrior-training build instruction]",
+      "source_sha256": "e8e1042185bfcbb486cac134370b55bfbb26944054227af9bfc6825484114093",
+      "target_sha256": "16aa48707a022c755ca4bd3d2ae247c778387e941b8c991c09927c452f6963e3",
+      "examined": true,
+      "finding_ids": []
+    },
+    {
+      "key": "[lesson warrior-training build help]",
+      "source_sha256": "ffadabd3e3897bc957067e3e49928648541a542dff28040eccfec7ac2fda5b20",
+      "target_sha256": "31d4c02cbf27d34487b9348c29a68c5729c59883562517e50bd514f2a6521ef2",
+      "examined": true,
+      "finding_ids": []
+    },
+    {
+      "key": "[lesson warrior-training build marker]",
+      "source_sha256": "ea9222aa11c8952dc854efd5df18c20fd9e4d867b67f57acd70e68e614ffb20a",
+      "target_sha256": "b782619ad1224576874d974bce364287226194d4909611f29bbed48eecb50b0d",
+      "examined": true,
+      "finding_ids": []
+    },
+    {
+      "key": "[lesson warrior-training train hint]",
+      "source_sha256": "0e1a2d09acc6828c8fb1a4d4d87e012b989a380de3cadac37787e64cf7e003b3",
+      "target_sha256": "76137a027562fd64321df7086831b306629fe0e58a51c7830aae4c11c0877b49",
+      "examined": true,
+      "finding_ids": []
+    },
+    {
+      "key": "[lesson warrior-training train title]",
+      "source_sha256": "fb6c824a056ea5bc246f44649fad59d98d41467631f0fa5820132f463e7358a6",
+      "target_sha256": "82a4e8e93fa8bbaf4caa0d2042902405b3ae8488701b5180e6daa1a62f57376f",
+      "examined": true,
+      "finding_ids": []
+    },
+    {
+      "key": "[lesson warrior-training train instruction]",
+      "source_sha256": "497d65e974e6205395eda9b8f8e986e10e48da292cba30a90a6baea2a2954913",
+      "target_sha256": "defc09f1d2a53474983acf634da0ca87e207c53f4e13b9c9e58098cb9d95ce84",
+      "examined": true,
+      "finding_ids": []
+    },
+    {
+      "key": "[lesson warrior-training train help]",
+      "source_sha256": "6bdc2b7e283c544bd0177dce03b423ef5d90989a171095ae3abd5da514de29fa",
+      "target_sha256": "5f7663425d32b94d3dec7c0efad2950a38410579e6bf6d7fbdb21122d72edce7",
+      "examined": true,
+      "finding_ids": []
+    },
+    {
+      "key": "[lesson fortifications title]",
+      "source_sha256": "40fcc5a1e5d4ac83e053cbfe2e6170a4db09e1e675696c5d98a46a96418bed80",
+      "target_sha256": "b66409cd001241a8e601d05c7dbfe35503fd51f2a31ed0fe4e1a39c59b7fa207",
+      "examined": true,
+      "finding_ids": []
+    },
+    {
+      "key": "[lesson fortifications briefing]",
+      "source_sha256": "1a8cf56f1e039bcc1f79b7b13d64183ebdba67f283fef378ddffc2061377b27e",
+      "target_sha256": "b128e9e79c1864333687f558a923d2bf9908ead819ca8521e3307b7b415440ad",
+      "examined": true,
+      "finding_ids": []
+    },
+    {
+      "key": "[lesson fortifications complete]",
+      "source_sha256": "d6ab09251751e41099e1ea02a0302bce28523cc0c72e51728c46ca6b0675954b",
+      "target_sha256": "9c57a5b3576115f551ff6434de9f70fe318a40f41c86efb86c091d52c50cf17f",
+      "examined": true,
+      "finding_ids": []
+    },
+    {
+      "key": "[lesson fortifications tower hint]",
+      "source_sha256": "30e184b3b8fae449ae0abcb096713214b559e29afe200d8f3d4631b8207ca157",
+      "target_sha256": "05e49ed94a20ad327b6ae1eec626e82b15897fdd4bb9582b7f0d4e027f3a1344",
+      "examined": true,
+      "finding_ids": []
+    },
+    {
+      "key": "[lesson fortifications tower title]",
+      "source_sha256": "945a36f5ddb37ab462b2044a4f12a16453352eebf7c7685a79696978e15b99e7",
+      "target_sha256": "2163ba0915423f2962ec3c398c1ddae2eafde9746ef05f0cc13ca3647f57101b",
+      "examined": true,
+      "finding_ids": []
+    },
+    {
+      "key": "[lesson fortifications tower instruction]",
+      "source_sha256": "cda5d2b9d6b493a82c4f9ff917f1e7129d2b24e4eb5e326be9752a724f3bf349",
+      "target_sha256": "6afa999b29c5a85ba172e225b9cdeaca22193b76214872e45f100cadc553772f",
+      "examined": true,
+      "finding_ids": []
+    },
+    {
+      "key": "[lesson fortifications tower help]",
+      "source_sha256": "a29b441cd72aa2782e6ee327f14e625b38fcb79a00f0f74b91472d39949c84a9",
+      "target_sha256": "4b6caf7948124f476cd8ece43c8965abcca882c29cd958c4644f63579547caf3",
+      "examined": true,
+      "finding_ids": []
+    },
+    {
+      "key": "[lesson fortifications tower marker]",
+      "source_sha256": "945a36f5ddb37ab462b2044a4f12a16453352eebf7c7685a79696978e15b99e7",
+      "target_sha256": "2163ba0915423f2962ec3c398c1ddae2eafde9746ef05f0cc13ca3647f57101b",
+      "examined": true,
+      "finding_ids": []
+    },
+    {
+      "key": "[lesson fortifications walls hint]",
+      "source_sha256": "946014ac28e6e8f3e7c2b5d373c81a1f945f93dd544e62798be302cb6c5981b7",
+      "target_sha256": "135ee4a9796ce4a44bd506dee194c834f9ec41f4ba0ac9ce372bd9159ec28382",
+      "examined": true,
+      "finding_ids": []
+    },
+    {
+      "key": "[lesson fortifications walls title]",
+      "source_sha256": "afd057c9740609e0f2033ac74e4f9141898a39030dce38b7bb2e66681f241437",
+      "target_sha256": "9d456c8a0ece54b67e87df2ca63d82a0b234a0ad0f85a3a50b2e90104f8c15fb",
+      "examined": true,
+      "finding_ids": []
+    },
+    {
+      "key": "[lesson fortifications walls instruction]",
+      "source_sha256": "f41abdc86db421cd4c320006ad7a1ae12703c7fe2c1761f840199bcae5d348dc",
+      "target_sha256": "e2a7af56628c5a8e9fcf6205d40679a7c1daa21eed5c72a848aeef3263a831d9",
+      "examined": true,
+      "finding_ids": []
+    },
+    {
+      "key": "[lesson fortifications walls help]",
+      "source_sha256": "f1be2214a16249aa21a544553682c966a36eda6aa16971e6a02abdbce428025b",
+      "target_sha256": "c67e3fbe5d44f8328f3769bc0a7a8d7938c19de2366b81a4900ec173d93e1a9c",
+      "examined": true,
+      "finding_ids": []
+    },
+    {
+      "key": "[lesson fortifications walls marker]",
+      "source_sha256": "afd057c9740609e0f2033ac74e4f9141898a39030dce38b7bb2e66681f241437",
+      "target_sha256": "9d456c8a0ece54b67e87df2ca63d82a0b234a0ad0f85a3a50b2e90104f8c15fb",
+      "examined": true,
+      "finding_ids": []
+    },
+    {
+      "key": "[lesson fortifications supply hint]",
+      "source_sha256": "dd7f5e77b4708573919357cdaa7938335bd32cb84b09a16e0b0a3609dfea41b3",
+      "target_sha256": "fd3081aa792a33250158f88c749d5c23e7081c9e98e0690570167c1c9c765bae",
+      "examined": true,
+      "finding_ids": [
+        "sw-delta-004"
+      ]
+    },
+    {
+      "key": "[lesson fortifications supply title]",
+      "source_sha256": "f2698671f589cb9fcf889f6a8e5fdf81a176f9376944a7fadbb75303a73a00e1",
+      "target_sha256": "ea79f0ff1e2d6a44e0e25cfefbc154ac8e7649c3defc6b052e42515c8b3c0d91",
+      "examined": true,
+      "finding_ids": []
+    },
+    {
+      "key": "[lesson fortifications supply instruction]",
+      "source_sha256": "1739fffe262975e0c90933660626e8c4226ff1b79e4191b74e42a6340269046a",
+      "target_sha256": "8f16c776de50cf17b28eacccea487a85223cf5ccda111f1ce06be3687774c7ea",
+      "examined": true,
+      "finding_ids": []
+    },
+    {
+      "key": "[lesson fortifications supply help]",
+      "source_sha256": "d186300e3036bd90deb96e5727af08efcf8145906bd43e37d5ef7a487c468904",
+      "target_sha256": "0f7e381961655865e76a884a80258e56f67b21e3903882b5e858cd09839a4e2f",
+      "examined": true,
+      "finding_ids": [
+        "sw-delta-005"
+      ]
+    },
+    {
+      "key": "[lesson fortifications supply marker]",
+      "source_sha256": "f2698671f589cb9fcf889f6a8e5fdf81a176f9376944a7fadbb75303a73a00e1",
+      "target_sha256": "ea79f0ff1e2d6a44e0e25cfefbc154ac8e7649c3defc6b052e42515c8b3c0d91",
+      "examined": true,
+      "finding_ids": []
+    },
+    {
+      "key": "[lesson fortifications hold hint]",
+      "source_sha256": "7771d19435ae773d2b5b0bc229b951249c0ed2b0c375473b2276463c1c77a90d",
+      "target_sha256": "c6a7100ab664be35efc15c1950a3f2f377150deb478494d596cfb1db7ec26417",
+      "examined": true,
+      "finding_ids": []
+    },
+    {
+      "key": "[lesson fortifications hold title]",
+      "source_sha256": "deb8c3be51e330d3a704e8472320b92b6d72b01ec90ce7e3748998d8af351793",
+      "target_sha256": "b23f39403a0248dd751a626e29e25f1b3af4023fb1e35ac92326e6e1fbcb10b8",
+      "examined": true,
+      "finding_ids": []
+    },
+    {
+      "key": "[lesson fortifications hold instruction]",
+      "source_sha256": "2b4967ac54de7ac398b3bf56210361df1c507ed1741a447332fe33f198cd54e7",
+      "target_sha256": "e5dcc448d56a51f4a2edac6d5e39bc46fc4fab375843d2d84dd81d3a7057f772",
+      "examined": true,
+      "finding_ids": []
+    },
+    {
+      "key": "[lesson fortifications hold help]",
+      "source_sha256": "4307d76e374dd17075bf6d757631d7f557ed80a244c77c9c0cab9757a188f741",
+      "target_sha256": "b776ca461b6e058695e1dd6c4d592747740923358e32541b96be46aa04558b01",
+      "examined": true,
+      "finding_ids": []
+    },
+    {
+      "key": "[lesson fortifications hold marker]",
+      "source_sha256": "deb8c3be51e330d3a704e8472320b92b6d72b01ec90ce7e3748998d8af351793",
+      "target_sha256": "b23f39403a0248dd751a626e29e25f1b3af4023fb1e35ac92326e6e1fbcb10b8",
+      "examined": true,
+      "finding_ids": []
+    },
+    {
+      "key": "[lesson defensive-tactics title]",
+      "source_sha256": "0c65d7d44031cd027507880107a882c74a40c910ecd81e29fec62c9ee97e86b8",
+      "target_sha256": "4b273398a434015e9b2987c20dade27b2f7e57e432ca63494f380de2df3e5dda",
+      "examined": true,
+      "finding_ids": []
+    },
+    {
+      "key": "[lesson defensive-tactics briefing]",
+      "source_sha256": "88720a7a15fae2297a46b5ed4fa884bf24c61e663462bfd148c59d2f39f73ea3",
+      "target_sha256": "7e47e450bd4990612ba578df830e85ad5949c1ad69f5df517f0ff293829b9267",
+      "examined": true,
+      "finding_ids": []
+    },
+    {
+      "key": "[lesson defensive-tactics complete]",
+      "source_sha256": "569130f0e996a5fb8e0333f8fcc82cadc83756e6638897303a1fe8edcc93613f",
+      "target_sha256": "0b3c6f552745e8f46ea946a76fd6814c9a075dc9f7f9305edc556198c6c02dda",
+      "examined": true,
+      "finding_ids": []
+    },
+    {
+      "key": "[lesson defensive-tactics scout hint]",
+      "source_sha256": "b434830b5f36bf9546dc37a93e67b766df19a41db4c2fe99798944ca3a69dbdd",
+      "target_sha256": "ad36b40856f75718dd77370d728c919577d6094d3d530423e345cf7cec7b782e",
+      "examined": true,
+      "finding_ids": []
+    },
+    {
+      "key": "[lesson defensive-tactics scout title]",
+      "source_sha256": "b3b54324da82236cdd7d5d40f898c8d48358bc19e1ebe8d4d5d7aa4e2d42ee81",
+      "target_sha256": "f543e48ac3356a870093baa2a99d6d407d134c13ac929f54fa7603a62066a8a1",
+      "examined": true,
+      "finding_ids": []
+    },
+    {
+      "key": "[lesson defensive-tactics scout instruction]",
+      "source_sha256": "e97c5699bd041d1dc6192298d788408be68b1cfd60c34fab39e31a65189ed07c",
+      "target_sha256": "32f9c58d650dc05fb3e6d62a345d91f913ebd9d2687dc73c86ecb6e507be185d",
+      "examined": true,
+      "finding_ids": []
+    },
+    {
+      "key": "[lesson defensive-tactics scout help]",
+      "source_sha256": "009ed3c4fe4904e6634d31b779c6433822961cffb22ca8e7c299121229ac2968",
+      "target_sha256": "c82b66dd303aeae0a538c0cf8bf1bdb2fe6533293fbaaa1dbc4b2c46c744aed3",
+      "examined": true,
+      "finding_ids": []
+    },
+    {
+      "key": "[lesson defensive-tactics scout marker]",
+      "source_sha256": "b3b54324da82236cdd7d5d40f898c8d48358bc19e1ebe8d4d5d7aa4e2d42ee81",
+      "target_sha256": "f543e48ac3356a870093baa2a99d6d407d134c13ac929f54fa7603a62066a8a1",
+      "examined": true,
+      "finding_ids": []
+    },
+    {
+      "key": "[lesson defensive-tactics guard hint]",
+      "source_sha256": "f19483fae25845d418e0ad1fe170fd9eda57ad1fc8cdca1f64636d5d9f877be4",
+      "target_sha256": "7bb669d504b542ddc3fdd8ba569a5a76900a057a9d1d7733bb03a38f432eee4d",
+      "examined": true,
+      "finding_ids": []
+    },
+    {
+      "key": "[lesson defensive-tactics guard title]",
+      "source_sha256": "19f4fb5560849cb0c844a6387a852c70ca52380dcbb5db96a88e3a794d2e77c2",
+      "target_sha256": "c0c9500b2932246cd35f3686dbd9ebb9a4b3c943ea84634c217c4500c528cb8f",
+      "examined": true,
+      "finding_ids": []
+    },
+    {
+      "key": "[lesson defensive-tactics guard instruction]",
+      "source_sha256": "8d8e0e9f73df51a5dda2fd4290280ba0587fbe139ebfc6f5a2f98b3395900e9c",
+      "target_sha256": "e0fd87f81a8ff50688621b527d222b727d8a929dff608ecb5b8aa74897e1c90e",
+      "examined": true,
+      "finding_ids": []
+    },
+    {
+      "key": "[lesson defensive-tactics guard help]",
+      "source_sha256": "c109bede7222211f194d6c4917ee3184a4e7f5b146de47baf5a29ed4f91999d7",
+      "target_sha256": "a31ea3e119d3d3f561be638783abec326ff07828fd568e8a875ee3d4f4aa56a6",
+      "examined": true,
+      "finding_ids": []
+    },
+    {
+      "key": "[lesson defensive-tactics guard marker]",
+      "source_sha256": "19f4fb5560849cb0c844a6387a852c70ca52380dcbb5db96a88e3a794d2e77c2",
+      "target_sha256": "c0c9500b2932246cd35f3686dbd9ebb9a4b3c943ea84634c217c4500c528cb8f",
+      "examined": true,
+      "finding_ids": []
+    },
+    {
+      "key": "[lesson defensive-tactics repel hint]",
+      "source_sha256": "60f3b4e28bc39b208058754cd64f39e697e446ca678e65678a6ed0868813fa24",
+      "target_sha256": "8c5ab6216a6a5993e43c010e0358d272791a2304ab01cec79b20bc3591a06f9e",
+      "examined": true,
+      "finding_ids": []
+    },
+    {
+      "key": "[lesson defensive-tactics repel title]",
+      "source_sha256": "acea4ef8c5348f5646e714f541937e572af8fa448bca49f6ee898cbd76ac40b2",
+      "target_sha256": "c1f144d94e02961e599d9de9f8a8006d8825e4b9f3c373e349cc882a668023ad",
+      "examined": true,
+      "finding_ids": []
+    },
+    {
+      "key": "[lesson defensive-tactics repel instruction]",
+      "source_sha256": "e5321a7414d972a89302ff64ca3631aaee6778b407d733da38254f9ff10b8da1",
+      "target_sha256": "48907803896343e23d8913896f1db4f94c230e5d7a0982218c8133cc10b35ada",
+      "examined": true,
+      "finding_ids": []
+    },
+    {
+      "key": "[lesson defensive-tactics repel help]",
+      "source_sha256": "0e1fbbd9830d88be1269146086a97ca17c83c4173c1cef3f98f9f6a9490cd7b2",
+      "target_sha256": "2fb4f4e2fc5c3f2983f4d7368823bfc0839a9416e18364212a39ba9f19530cb1",
+      "examined": true,
+      "finding_ids": []
+    },
+    {
+      "key": "[lesson defensive-tactics repel marker]",
+      "source_sha256": "acea4ef8c5348f5646e714f541937e572af8fa448bca49f6ee898cbd76ac40b2",
+      "target_sha256": "c1f144d94e02961e599d9de9f8a8006d8825e4b9f3c373e349cc882a668023ad",
+      "examined": true,
+      "finding_ids": []
+    },
+    {
+      "key": "[lesson defensive-tactics counterattack hint]",
+      "source_sha256": "7a38e6414a0785a1467d4a71a3264491112413e1b06a8ce71cd462376bdf638a",
+      "target_sha256": "042889addcf35b1884bbb36995b7671bd68b77b84f5d39cfab87387e4bf872ad",
+      "examined": true,
+      "finding_ids": [
+        "sw-delta-008"
+      ]
+    },
+    {
+      "key": "[lesson defensive-tactics counterattack title]",
+      "source_sha256": "705a585928cbefd7169f283130ac7479288c587104555d277004055f409d1e3a",
+      "target_sha256": "78198bbabb324f853f00680ff552764d359a0482da467dbefadaeff519ea8cf4",
+      "examined": true,
+      "finding_ids": []
+    },
+    {
+      "key": "[lesson defensive-tactics counterattack instruction]",
+      "source_sha256": "7e31ed818ad458de7085336111a3e5645ff63a802b713e31d3559fe004b0e09f",
+      "target_sha256": "cca2dd5c0c96b7e207a357cd3d417294a991a4e3484d4fe0362c1fdbad40a13f",
+      "examined": true,
+      "finding_ids": [
+        "sw-delta-009"
+      ]
+    },
+    {
+      "key": "[lesson defensive-tactics counterattack help]",
+      "source_sha256": "ecdb1ecfd469c50b566cc196677c0e17120fa2bf8da320e26d15408f55a4d3d4",
+      "target_sha256": "b7b7e2bb398e592c486b6a4c2f06ab9ce53dc1f4b0308956cf2906488783c41e",
+      "examined": true,
+      "finding_ids": []
+    },
+    {
+      "key": "[lesson defensive-tactics counterattack marker]",
+      "source_sha256": "705a585928cbefd7169f283130ac7479288c587104555d277004055f409d1e3a",
+      "target_sha256": "78198bbabb324f853f00680ff552764d359a0482da467dbefadaeff519ea8cf4",
+      "examined": true,
+      "finding_ids": []
+    },
+    {
+      "key": "[lesson healing build compact]",
+      "source_sha256": "5579689cce9d9939f258fd293d5faaf1d0e5c582b197eb87185e888c9ee89cf8",
+      "target_sha256": "f92a9163ce1ac610424078d25ce2e82dfaa33cef4884ab4e5af00ce47850f1f3",
+      "examined": true,
+      "finding_ids": []
+    },
+    {
+      "key": "[lesson healing heal compact]",
+      "source_sha256": "fd0fa46cfc433ee552061283c8225017dbe5079cd3db3032d9d7c66599010d02",
+      "target_sha256": "50a4bc2b18234ad9468518ea9a4881384f3364c128f93a93c99fa7edd2a3c7c8",
+      "examined": true,
+      "finding_ids": []
+    },
+    {
+      "key": "[lesson walking-training build compact]",
+      "source_sha256": "9c770809f9492e7b036aa05c1abdc8ca061af6c0cb01a5c4c935d6e297fdc4a9",
+      "target_sha256": "dd7f4b62e9b9918d61c509e1cab707abd373597f4f933a4c9ce4f6fec9cba673",
+      "examined": true,
+      "finding_ids": []
+    },
+    {
+      "key": "[lesson walking-training train compact]",
+      "source_sha256": "24ba14d63104d9e1f0cda94964b0c6bcfdecc4a30e157ba963da232514dfcbb8",
+      "target_sha256": "48c98121f08d1a323d3e50a8f7d21edfcdc7596f26222b9767359c0fb2dc2e13",
+      "examined": true,
+      "finding_ids": []
+    },
+    {
+      "key": "[lesson swimming build compact]",
+      "source_sha256": "0a93aaac38eba0b80e70d1692edae5cef4991ddbe972c3423935ed65973c90a0",
+      "target_sha256": "b4d0573ad7278293982fc648319286ed4adf529c343f92deab2d22bb4a8e8481",
+      "examined": true,
+      "finding_ids": []
+    },
+    {
+      "key": "[lesson swimming train compact]",
+      "source_sha256": "aca2d44efc33e41ea6bbeee07f3f4c3f9ca1b98d0885da23e95e8f745df2eccc",
+      "target_sha256": "84f746735a5608a057dbefac9c5314ba21a9527ad2b48abe714991d8b7221807",
+      "examined": true,
+      "finding_ids": []
+    },
+    {
+      "key": "[lesson swimming water-job compact]",
+      "source_sha256": "aef86a92a8f68f514e1acee294ffd33f31679acc1f6d2f20a681f433d92ae269",
+      "target_sha256": "63a94c873ab1940a23f9303d8a7581e905192d13e00d175a374e8ea50da2bbe7",
+      "examined": true,
+      "finding_ids": []
+    },
+    {
+      "key": "[lesson schools build compact]",
+      "source_sha256": "aef86a92a8f68f514e1acee294ffd33f31679acc1f6d2f20a681f433d92ae269",
+      "target_sha256": "63a94c873ab1940a23f9303d8a7581e905192d13e00d175a374e8ea50da2bbe7",
+      "examined": true,
+      "finding_ids": []
+    },
+    {
+      "key": "[lesson schools learn compact]",
+      "source_sha256": "8b68f58372f830a68de429e14766d02215d614e22fe0aae95f204faa0177e00f",
+      "target_sha256": "75e63295390798b68a3df0534242db50a3f5bbce0db61000dbff548cd6d8da68",
+      "examined": true,
+      "finding_ids": []
+    },
+    {
+      "key": "[lesson upgrades upgrade compact]",
+      "source_sha256": "299c4a6f19fec8b4cb69520c0feae96e14e1ae26852dacae5c9acbd55412c995",
+      "target_sha256": "74f5c603f15131c7427e60701bd8d592871867995e8a81366c9d8e82ce6bd82d",
+      "examined": true,
+      "finding_ids": []
+    },
+    {
+      "key": "[lesson upgrades train compact]",
+      "source_sha256": "6a7d1268795a3e8ce719ff6e81652bea8652f97a9bd6cf588471cd4391fafaac",
+      "target_sha256": "5fc29b297f2eb53131c40b0d07c6e3245031da6fae61b185abf8924f4e391618",
+      "examined": true,
+      "finding_ids": []
+    },
+    {
+      "key": "[lesson warrior-training produce compact]",
+      "source_sha256": "aba9b60fe9bf00353c782664ff07963e363802f6fcd98c7e4835b20d244424e2",
+      "target_sha256": "90537c13ccf28c6a6c24067570e77616af2664b234573d6fe22c1624d024cdb1",
+      "examined": true,
+      "finding_ids": []
+    },
+    {
+      "key": "[lesson warrior-training build compact]",
+      "source_sha256": "dd3e7c11bcef51b03fad860f5c8d1d13f058331bc443be23cab4498c699a6152",
+      "target_sha256": "41b5d8053c0e4b41859a38e0e1b47e0c7affbbee45d11d5147b215e2e903723c",
+      "examined": true,
+      "finding_ids": []
+    },
+    {
+      "key": "[lesson warrior-training train compact]",
+      "source_sha256": "1ace656e45fcdb4805ac959f2cb0d5c75a2b4490c9b823035b276973d1bca802",
+      "target_sha256": "defc09f1d2a53474983acf634da0ca87e207c53f4e13b9c9e58098cb9d95ce84",
+      "examined": true,
+      "finding_ids": []
+    },
+    {
+      "key": "[lesson fortifications tower compact]",
+      "source_sha256": "7c37cbe04cbd3a569af9a1549569e464c1ebe8fb6e3cea32ae538c79ef4431dc",
+      "target_sha256": "9569f3cc07a97f61a726d536a862a2c3103bf1a9d69068c3a4d1e5e8aab4920b",
+      "examined": true,
+      "finding_ids": []
+    },
+    {
+      "key": "[lesson fortifications walls compact]",
+      "source_sha256": "f9e8be538942967a2a76627cd20edf899589efcd4ebfc7a0af2dca3b57ad3685",
+      "target_sha256": "c9e6e68d1108388fb00ec706d15fe2363c93688bc4af1fa9d1298eae4a80ea0a",
+      "examined": true,
+      "finding_ids": []
+    },
+    {
+      "key": "[lesson fortifications supply compact]",
+      "source_sha256": "e43a6b43b5d03ab44200bb7d3e5847e7a6f5e40633c458aea5b1405ada889081",
+      "target_sha256": "8c19a64c2460261a50b7850ddea5c73c9ae5dc31c2958eb9a42bc4f1ff9892a5",
+      "examined": true,
+      "finding_ids": []
+    },
+    {
+      "key": "[lesson fortifications hold compact]",
+      "source_sha256": "1f01900d32cc80b83bc4868e0851ac2783ae5cab743cbffa1858821d73944459",
+      "target_sha256": "fea7479e323346cc3a35a07de00e4c912962866413e760f715dde2b40cac9980",
+      "examined": true,
+      "finding_ids": []
+    },
+    {
+      "key": "[lesson defensive-tactics scout compact]",
+      "source_sha256": "788a2733f61d0c1b27a340ccdc666c104b8007a59d088c6df14b094d4a702826",
+      "target_sha256": "ff03f0d791f583d9166046f2f029fab1f3ccae798f020ca8ecd2f54c5e96473b",
+      "examined": true,
+      "finding_ids": []
+    },
+    {
+      "key": "[lesson defensive-tactics guard compact]",
+      "source_sha256": "9bc0a18a161ace979a8b43b48bd12aaba58914389f840a7983312f096a582019",
+      "target_sha256": "d96cfe69b21dede0776047f17901ba209dd1582725537ebfcf0dcddea5ed1b77",
+      "examined": true,
+      "finding_ids": []
+    },
+    {
+      "key": "[lesson defensive-tactics repel compact]",
+      "source_sha256": "810a7e2e1de74745397cec18d371213f976bc8b1b42e658a5c139cbe428f0c35",
+      "target_sha256": "35d905632896b82abf4d6b297a5873e3d9b25255e6f0a43f0e22d3b3d655124f",
+      "examined": true,
+      "finding_ids": []
+    },
+    {
+      "key": "[lesson defensive-tactics counterattack compact]",
+      "source_sha256": "21b78ca2dcc4a380f51cee1b78762719f3a3a7de58fed71530ce3d924bf84555",
+      "target_sha256": "4ec62dca71b0b0e902e0fc09ddb13d2f0e4c56d25f43dd21f575f71551456b61",
+      "examined": true,
+      "finding_ids": []
+    },
+    {
+      "key": "[intro attack destination]",
+      "source_sha256": "453b2368cf053f3756c23d8585adb11e9b6053ecb21458b34a1e84f0d1da880a",
+      "target_sha256": "8ab2d12f34ebb30fa8d815bdeca303f7b1691aa612364dbd290287a0aa1cdae9",
+      "examined": true,
+      "finding_ids": []
+    },
+    {
+      "key": "[scenario messages]",
+      "source_sha256": "dc78d0fcd2df361ff116056564aad3cb02c402b2b0813b42979fb90b72868361",
+      "target_sha256": "2e9a651911327d7166893c22f683f9960e28146f3073d55191f8970cc2f40737",
+      "examined": true,
+      "finding_ids": []
+    }
+  ],
+  "findings": [
+    {
+      "id": "sw-delta-001",
+      "key": "[intro briefing]",
+      "severity": "minor",
+      "category": "linguistic",
+      "source": "Learn indirect control: scout with a flag, supply your colony, and direct an attack.",
+      "target": "Jifunze kuongoza kwa njia isiyo ya moja kwa moja: chunguza kwa bendera, pelekea makazi lako mahitaji, na ongoza shambulio.",
+      "problem": "makazi takes collective ma-class/ya- agreement, but makazi lako uses singular li-concord; this contradicts the approved base and other new entries.",
+      "suggested_correction": "Jifunze kuongoza kwa njia isiyo ya moja kwa moja: chunguza kwa bendera, pelekea makazi yako mahitaji, na ongoza shambulio.",
+      "state": "open",
+      "confidence": "high",
+      "evidence": [
+        "Kamusi Project dictionary makazi class6, PDFpage443 (zero-based442).",
+        "Prior independently accepted Sw native glossary and concord review."
+      ]
+    },
+    {
+      "id": "sw-delta-002",
+      "key": "[lesson healing briefing]",
+      "severity": "major",
+      "category": "meaning",
+      "source": "Build a Hospital and help a wounded worker recover. The colony starts fed, with one injured worker.",
+      "target": "Jenga Hospitali na umsaidie mfanyakazi aliyejeruhiwa apone. Makazi yanaanza yakiwa na chakula cha kutosha, na mfanyakazi mmoja aliyejeruhiwa.",
+      "problem": "The source says the creatures start fed (their hunger satisfied), not merely that the colony has enough food available. That distinction explains why the prepared injured worker needs a Hospital rather than hunger relief. Current chakula cha kutosha changes the starting-state explanation.",
+      "suggested_correction": "Jenga Hospitali na umsaidie mfanyakazi aliyejeruhiwa apone. Mwanzoni, viumbe wa makazi wameshiba, na mfanyakazi mmoja amejeruhiwa.",
+      "state": "open",
+      "confidence": "high",
+      "evidence": [
+        "Healing definition binds patient and requires HP recovery; nearby source explicitly says patient already fed.",
+        "Immutable lesson-source-context.json, healing lesson."
+      ]
+    },
+    {
+      "id": "sw-delta-003",
+      "key": "[intro show destination]",
+      "severity": "minor",
+      "category": "UI context",
+      "source": "Show destination",
+      "target": "Onyesha unakoelekea",
+      "problem": "unakoelekea means where you are heading. The control reveals the current lesson target/marker (including a building, worker or defense area); it does not inspect the player or a selected unit travel destination. Use an objective-location caption.",
+      "suggested_correction": "Onyesha eneo lengwa",
+      "state": "open",
+      "confidence": "high",
+      "evidence": [
+        "Tutorial::ShowDestination callback centers camera on current destination marker; lesson definitions vary destination target."
+      ]
+    },
+    {
+      "id": "sw-delta-004",
+      "key": "[lesson fortifications supply hint]",
+      "severity": "minor",
+      "category": "terminology/clarity",
+      "source": "Select the tower and request suppliers. Wait for at least 2 stone. A finished tower needs an operating worker target to bring ammunition. This is separate from its construction target.",
+      "target": "Chagua mnara na uombe wasambazaji. Subiri angalau mawe 2. Mnara uliokamilika unahitaji lengo la wafanyakazi wa kuuhudumia ili kuleta risasi. Hili ni tofauti na lengo lake la ujenzi.",
+      "problem": "lengo la wafanyakazi can read as the workers' goal. This procedural explanation needs the requested worker count for operating supply, distinct from the construction count. The earlier introduction explains this precisely; keep that distinction explicit here.",
+      "suggested_correction": "Chagua mnara na uombe wasambazaji. Subiri angalau mawe 2. Mnara uliokamilika unahitaji uombe wafanyakazi wa kuleta risasi. Idadi hiyo inawekwa tofauti na idadi ya wafanyakazi wa ujenzi.",
+      "state": "open",
+      "confidence": "high",
+      "evidence": [
+        "Source operating worker target versus construction target; towerReady and loadedTower stages are separate."
+      ]
+    },
+    {
+      "id": "sw-delta-005",
+      "key": "[lesson fortifications supply help]",
+      "severity": "minor",
+      "category": "terminology/clarity",
+      "source": "A finished tower needs an operating worker target to bring ammunition. This is separate from its construction target.",
+      "target": "Mnara uliokamilika unahitaji lengo la wafanyakazi wa kuuhudumia ili kuleta risasi. Hili ni tofauti na lengo lake la ujenzi.",
+      "problem": "lengo la wafanyakazi can read as the workers' goal. This procedural explanation needs the requested worker count for operating supply, distinct from the construction count. The earlier introduction explains this precisely; keep that distinction explicit here.",
+      "suggested_correction": "Mnara uliokamilika unahitaji uombe wafanyakazi wa kuleta risasi. Idadi hiyo inawekwa tofauti na idadi ya wafanyakazi wa ujenzi.",
+      "state": "open",
+      "confidence": "high",
+      "evidence": [
+        "Source operating worker target versus construction target; towerReady and loadedTower stages are separate."
+      ]
+    },
+    {
+      "id": "sw-delta-006",
+      "key": "[intro help attack]",
+      "severity": "minor",
+      "category": "grammar uncertainty",
+      "source": "Open Flags, choose War Flag, and place it over the enemy Swarm east of the stone. Select the flag and request up to 4 warriors. A small radius keeps them concentrated. Leave placement with the secondary mouse button before selecting the flag. If no warriors remain, produce more at the Swarm. Warriors may stop to eat; keep the Inns supplied.",
+      "target": "Fungua Bendera, chagua Bendera ya vita, na uiweke juu ya Kiota cha adui mashariki mwa mawe. Chagua bendera na uombe hadi mashujaa 4. Nusukipenyo kidogo huwafanya wajikusanye karibu. Toka kwenye hali ya kuweka kwa kitufe cha pili cha kipanya kabla ya kuchagua bendera. Ikiwa hakuna mashujaa waliobaki, zalisha wengine katika Kiota. Mashujaa wanaweza kusimama kula; endelea kupelekea nyumba za wageni mahitaji.",
+      "problem": "The compound nusukipenyo is attested, but the draft uses ki-concord kidogo while Kamusi labels it9/10; published usage is variable. Do not infer its class solely from embedded kipenyo. Preserve the established term and avoid this unresolved concord through an explicit value construction.",
+      "suggested_correction": "Fungua Bendera, chagua Bendera ya vita, na uiweke juu ya Kiota cha adui mashariki mwa mawe. Chagua bendera na uombe hadi mashujaa 4. Thamani ndogo ya nusukipenyo huwafanya wajikusanye karibu. Toka kwenye hali ya kuweka kwa kitufe cha pili cha kipanya kabla ya kuchagua bendera. Ikiwa hakuna mashujaa waliobaki, zalisha wengine katika Kiota. Mashujaa wanaweza kusimama kula; endelea kupelekea nyumba za wageni mahitaji.",
+      "state": "open",
+      "confidence": "medium; variant usage not declared categorically wrong",
+      "evidence": [
+        "Kamusi Project dictionary nusukipenyo class9/10, PDFpage660 (zero-based659).",
+        "Mozilla Sw styleguide permits regrouping source syntax for clear idiomatic text."
+      ]
+    },
+    {
+      "id": "sw-delta-007",
+      "key": "[intro help touch attack]",
+      "severity": "minor",
+      "category": "grammar uncertainty",
+      "source": "Open Flags, choose War Flag, place it over the enemy Swarm east of the stone and confirm. Select the flag and request up to 4 warriors. A small radius concentrates them. If none remain, produce warriors at your Swarm. Warriors may stop to eat; keep the Inns supplied.",
+      "target": "Fungua Bendera, chagua Bendera ya vita, iweke juu ya Kiota cha adui mashariki mwa mawe na uthibitishe. Chagua bendera na uombe hadi mashujaa 4. Nusukipenyo kidogo huwafanya wajikusanye karibu. Ikiwa hakuna waliobaki, zalisha mashujaa katika Kiota chako. Mashujaa wanaweza kusimama kula; endelea kupelekea nyumba za wageni mahitaji.",
+      "problem": "The compound nusukipenyo is attested, but the draft uses ki-concord kidogo while Kamusi labels it9/10; published usage is variable. Do not infer its class solely from embedded kipenyo. Preserve the established term and avoid this unresolved concord through an explicit value construction.",
+      "suggested_correction": "Fungua Bendera, chagua Bendera ya vita, iweke juu ya Kiota cha adui mashariki mwa mawe na uthibitishe. Chagua bendera na uombe hadi mashujaa 4. Thamani ndogo ya nusukipenyo huwafanya wajikusanye karibu. Ikiwa hakuna waliobaki, zalisha mashujaa katika Kiota chako. Mashujaa wanaweza kusimama kula; endelea kupelekea nyumba za wageni mahitaji.",
+      "state": "open",
+      "confidence": "medium; variant usage not declared categorically wrong",
+      "evidence": [
+        "Kamusi Project dictionary nusukipenyo class9/10, PDFpage660 (zero-based659).",
+        "Mozilla Sw styleguide permits regrouping source syntax for clear idiomatic text."
+      ]
+    },
+    {
+      "id": "sw-delta-008",
+      "key": "[lesson defensive-tactics counterattack hint]",
+      "severity": "minor",
+      "category": "grammar uncertainty",
+      "source": "Place a War Flag over the enemy Swarm; request 3 warriors and use radius 4 or smaller. Guard zones and War Flags compete for warriors. Remove guard tiles if they hold your army back. Keep food available while warriors travel and attack.",
+      "target": "Weka Bendera ya vita juu ya Kiota cha adui; omba mashujaa 3 na utumie nusukipenyo cha 4 au chini. Maeneo ya ulinzi na Bendera za vita hushindania mashujaa. Ondoa miraba ya ulinzi ikiwa inalizuia jeshi lako kusonga. Dumisha chakula wakati mashujaa wanasafiri na kushambulia.",
+      "problem": "nusukipenyo cha4 assumes ki-class for the compound; dictionary evidence labels9/10 and usage varies. Avoid an unnecessary unresolved concord while retaining numeric limit4 and the established radius term.",
+      "suggested_correction": "Weka Bendera ya vita juu ya Kiota cha adui; omba mashujaa 3 na uweke nusukipenyo kuwa 4 au chini. Maeneo ya ulinzi na Bendera za vita hushindania mashujaa. Ondoa miraba ya ulinzi ikiwa inalizuia jeshi lako kusonga. Dumisha chakula wakati mashujaa wanasafiri na kushambulia.",
+      "state": "open",
+      "confidence": "medium; preferred safe rephrase rather than assert one variant ungrammatical",
+      "evidence": [
+        "Same lexical/concord evidence as sw-delta-006/007."
+      ]
+    },
+    {
+      "id": "sw-delta-009",
+      "key": "[lesson defensive-tactics counterattack instruction]",
+      "severity": "minor",
+      "category": "grammar uncertainty",
+      "source": "Place a War Flag over the enemy Swarm; request 3 warriors and use radius 4 or smaller.",
+      "target": "Weka Bendera ya vita juu ya Kiota cha adui; omba mashujaa 3 na utumie nusukipenyo cha 4 au chini.",
+      "problem": "nusukipenyo cha4 assumes ki-class for the compound; dictionary evidence labels9/10 and usage varies. Avoid an unnecessary unresolved concord while retaining numeric limit4 and the established radius term.",
+      "suggested_correction": "Weka Bendera ya vita juu ya Kiota cha adui; omba mashujaa 3 na uweke nusukipenyo kuwa 4 au chini.",
+      "state": "open",
+      "confidence": "medium; preferred safe rephrase rather than assert one variant ungrammatical",
+      "evidence": [
+        "Same lexical/concord evidence as sw-delta-006/007."
+      ]
+    }
+  ],
+  "severity_counts": {
+    "minor": 8,
+    "major": 1
+  },
+  "context_checked": [
+    "All209Englishsources/Sw targets, including full help/hint/compact variants, labels and destination markers.",
+    "All10lesson/29step definitions and semantic conditions, reused context independently from read-only source audit.",
+    "Prior full approved Sw native glossary and author notes; author arguments were not accepted instead of reading translation.",
+    "Supply-request versus observed count; constructed versus operating jobs; workforce-only ratios0/1; births consume wheat; automatic training existing units; levels1–3; guard4tiles/2warriors; focusedcounterattack3warriors/radius≤4."
+  ],
+  "accepted_without_rewrite": [
+    "Kiota/Viota, Nyumba ya wageni, Kambi ya jeshi, Uwanja wa mbio, Bwawa la kuogelea, Shule match approved control names.",
+    "Viumbe animate wa-/a- agreement is retained; no force to inanimate vi-/ki- forms merely because of noun spelling.",
+    "Risasi retains existing ammunition glossary; instructions explicitly state tower stone supply.",
+    "Harvesting consistently means malighafi collection, not only crop harvest.",
+    "Secondary mouse button remains generic to respect input preferences.",
+    "No unreviewed English-equal message, placeholder change, missing key or temporary marker found."
+  ],
+  "references": [
+    {
+      "url": "https://wisc.pb.unizin.org/dini/back-matter/appendix-noun-class/",
+      "inspection": "Read actual academic appendix: noun classes and animate semantic agreement. Confirms viumbe animate agreement need not follow visible prefix; no fabricated replacements of good wa-/a- concord."
+    },
+    {
+      "url": "https://mozilla-l10n.github.io/styleguides/sw/",
+      "inspection": "Read software style/tone, glossary consistency, restructuring and concise unambiguous procedural guidance; did not import repository-incompatible legacy syntax prescriptions."
+    },
+    {
+      "url": "https://somabiblia.com/wp-content/uploads/2014/03/kamusi-swahili-english.pdf",
+      "inspection": "Opened actual Kamusi Project dictionary PDF (third-party host) and located makazi class6 atPDF442 and nusukipenyo class9/10 atPDF659, zero-based pages. Lexical record is evidence, not proof that every contemporary usage rejects another concord. Safe value construction resolves that uncertainty."
+    },
+    {
+      "url": "https://journals.udsm.ac.tz/index.php/mj/article/download/6407/5118/0",
+      "inspection": "Search excerpt attests nusu+kipenyo compound; fullPDF fetch timed out. Not treated as a fully read grammar authority."
+    }
+  ],
+  "unresolved_uncertainty": [
+    "Four radius-concord findings have safe value-based suggestions; require editor disposition/recheck before claiming resolved.",
+    "Actual compact-card wrapping and full newlesson rendering remain unverified; source review cannot establish visual fit."
+  ],
+  "next_steps": "Root distinct editor resolves findings in a separate edited result; original reviewer /root/translation_kit rechecks every substantive edit and records final hashes. Do not mutate frozen author draft.",
+  "catalog_edited": false,
+  "rendered": false,
+  "finalized": false,
+  "native_human_certified": false
+}

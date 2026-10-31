@@ -1,0 +1,149 @@
+{
+  "status": "passed-with-explicit-opt-in-skip-coverage",
+  "reviewer_runner": "/root/pilot_context",
+  "source_revision": "b3669e5e08219bb90874895a6c8b1d3185c3effd",
+  "source_tree_sha256": "881e73f0678bc9ce4fb4affd83b1952ad8948e575826ca5356b3b93ec7674cb8",
+  "source_before_after_equal": true,
+  "result_sha256": "133708a9acaed206645d2e5c52ef04f6f2813ebcc5c66100695778a58661d917",
+  "result_path": "result.json",
+  "attempt2_archive_manifest_sha256": "61a7c7ed884c12a7315c8112bbe4e7182a86ef621bf846e5b6274d7a6ef5373b",
+  "environment": {
+    "image": "glob2-translation-check-tools:local",
+    "image_id": "sha256:f75af305d6881b1889bd8566dcd7a84f071101ccd12d16b683bcb33dda656510",
+    "base_image_id": "sha256:f5d93c14a0c3ac9997a4980cb44fc1d84d98de2323209d755eb1d3b987d58aad",
+    "Dockerfile_sha256": "8a1d93449aaecd47b9758a3466ad8ede6e323ea7e8e32ef9c038805d521ccd6d",
+    "package_versions_log_sha256": "3c72c3b9a271a2ab38176e29198fa4171b7b11eba77246b37e188b29556790bc",
+    "all_installed_packages_sha256": "2879d8bdf920125c2411796a65fde1f8f5353ac35c3f64c7d649635ef2549499",
+    "tmpfs": "/tmp:rw,exec,size=4g",
+    "development_only": true
+  },
+  "node": "22.23.4",
+  "postgres": "16.15",
+  "commands": [
+    "npm run lint",
+    "npm run typecheck",
+    "npm run i18n:check",
+    "npm test -- --maxWorkers=3"
+  ],
+  "full_check_equivalence": "All four npmcheck stages executed sequentially; finaltest command explicitlyboundsVitestworkers. No duplicate npmcheckrerun asserted.",
+  "stages": [
+    {
+      "step": "lint",
+      "exit_code": "0",
+      "started_utc": "2026-10-31T19:34:10Z",
+      "finished_utc": "2026-10-31T19:36:46Z"
+    },
+    {
+      "step": "typecheck",
+      "exit_code": "0",
+      "started_utc": "2026-10-31T19:36:46Z",
+      "finished_utc": "2026-10-31T19:41:59Z"
+    },
+    {
+      "step": "i18n",
+      "exit_code": "0",
+      "started_utc": "2026-10-31T19:41:59Z",
+      "finished_utc": "2026-10-31T19:42:08Z"
+    },
+    {
+      "step": "vitest",
+      "exit_code": "0",
+      "started_utc": "2026-10-31T19:42:08Z",
+      "finished_utc": "2026-10-31T19:50:27Z"
+    }
+  ],
+  "test_summary": {
+    "test_files_passed": 167,
+    "test_files_skipped": 5,
+    "test_files_total": 172,
+    "tests_passed": 1172,
+    "tests_skipped": 15,
+    "tests_total": 1187,
+    "failed": 0,
+    "unhandled_errors_reported": 0,
+    "duration_seconds_vitest": 496.85
+  },
+  "i18n": "36languages×2836messages inventory,parameters,pluralforms andgeneratedlauncherruntimecheckpassed.",
+  "skipped_inventory": [
+    " ✓ apps/ai-terrain-worker/test/pipeline.test.ts (8 tests | 1 skipped) 21080ms",
+    " ✓ apps/ai-building-worker/test/pipeline.test.ts (13 tests | 2 skipped) 17258ms",
+    " ✓ apps/ai-music-worker/test/runner.test.ts (3 tests | 2 skipped) 43ms",
+    " ↓ apps/engine-agent/test/generator-real.test.ts (1 test | 1 skipped)",
+    " ↓ apps/ai-map-worker/test/pipeline.test.ts (1 test | 1 skipped)",
+    " ↓ apps/api/test/generator-real-flow.test.ts (1 test | 1 skipped)",
+    " ↓ apps/engine-agent/test/real-binary.test.ts (5 tests | 5 skipped)",
+    " ↓ apps/skin-render-worker/test/native.test.ts (2 tests | 2 skipped)"
+  ],
+  "skip_limit": "5wholefiles/10tests and5othercases requireopt-inrealnativebinaries/provider/evidenceconfiguration. No GLOB2_BINARY/GLOB2_GENERATOR_SCRATCH/GLOB2_SKIN_RENDER_TEST_BINARY supplied; notclaimedexecuted. This is fullstandardconfiguredVitestsuite,notallopt-inengineintegration/platformverification.",
+  "first_attempt_preserved": {
+    "directory": "attempt-1",
+    "source_tree_sha256": "ebf33d6b58ff6c80fc641d4b7d8c737d71b4dbe4c4aad11b944a604b6b44fa87",
+    "summary": {
+      "test_files_failed": 5,
+      "test_files_passed": 162,
+      "test_files_skipped": 5,
+      "tests_failed": 11,
+      "tests_passed": 1161,
+      "tests_skipped": 15,
+      "unhandled_errors": 1
+    },
+    "diagnosis": "attempt-1/diagnosis.json",
+    "not_relabelled_pass": true
+  },
+  "rerun_changes": {
+    "product_source_delta_files": [
+      "platform/apps/web/test/studio.test.tsx"
+    ],
+    "new_development_image": "glob2-translation-check-tools:local",
+    "tmpfs": "/tmp:rw,exec,size=4g",
+    "studio_assertion": "Root independentlyreviewed nestedsummarytext matcher; no productiontextchange.",
+    "previous_failure_suites_now_pass": [
+      "apps/api/test/music.test.ts",
+      "apps/skin-render-worker/test/process.test.ts",
+      "apps/ai-terrain-worker/test/pipeline.test.ts",
+      "apps/web/test/studio.test.tsx",
+      "apps/api/test/abuse.test.ts"
+    ],
+    "abuse_timeout": "Previously30sectimeout; samequota assertions passinfullrerun withouttesttimeoutincrease. Donotclaimproofthatloadwasitssolecause."
+  },
+  "evidence_log_sha256": {
+    "logs/lint.log": "23f417c96f402762b2a28986136ea6dc0a94d7dfb2aa4a6d13a39b965b6283fd",
+    "logs/typecheck.log": "63f9a087add6fe9823841cf9523048b3f151c9b28ac64452880023a0b86d25cd",
+    "logs/i18n.log": "1a5f683840f3d4d963a96cc27cf146ace61ac1b048f119c6a51df6cc09547735",
+    "logs/vitest.log": "87de5fa09cb76f739d7ca02426f618f38fe76adab77861115d822536197cc177",
+    "runner.log": "f1a051125622a51282c1d31ecf45001de7b84f6dbddded1cb7a5f17b5d58bd62",
+    "tools-readiness.log": "3c72c3b9a271a2ab38176e29198fa4171b7b11eba77246b37e188b29556790bc",
+    "tools-packages.tsv": "2879d8bdf920125c2411796a65fde1f8f5353ac35c3f64c7d649635ef2549499"
+  },
+  "limits": [
+    "Linuxarm64DockerNodecheckwithPostgres,notWindows/macOS/nativeAndroid/iOS/WASMgameplay orphysicalinputverification.",
+    "Allstandardconfiguredsuitepassed;15opt-incasesnotexecutedremainexplicit.",
+    "No production/catalog changes byrunner. SeparateStudiofix authoredbyrootbetweenpreservedruns.",
+    "Dependencyimageisdevelopment-only; no productionruntimeupgrade.",
+    "Compiler/nativeengine/simulationcompatibility andhumanplaytesting gates outside this npmfullchecker."
+  ],
+  "optional_skip_guards": {
+    "realengine/generator/nativefiles": [
+      "GLOB2_BINARY",
+      "GLOB2_GENERATOR_SCRATCH",
+      "GLOB2_SKIN_RENDER_TEST_BINARY"
+    ],
+    "ai-building-two-cases": [
+      "BUILDING_NATIVE_BINARY",
+      "BUILDING_VALIDATION_IMAGE",
+      "BUILDING_OPENAI_API_KEY",
+      "BUILDING_LIVE_TEXT_MODEL",
+      "BUILDING_LIVE_IMAGE_MODEL"
+    ],
+    "ai-terrain-one-case": [
+      "TERRAIN_NATIVE_BINARY"
+    ],
+    "ai-music-two-cases": [
+      "MUSIC_SANDBOX_TEST=1",
+      "MUSIC_RENDER_TEST=1",
+      "MUSIC_ASSETS",
+      "MUSIC_SCRATCH",
+      "MUSIC_PYTHON"
+    ]
+  }
+}

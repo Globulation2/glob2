@@ -1,0 +1,123 @@
+{
+  "reviewer": "/root/pilot_context",
+  "catalog_sha256": "0da47c791e9c389d68b54bfd67d418872f77a2b107daa03fe789f1ab02ab8a81",
+  "external": [
+    {
+      "url": "https://mozilla-l10n.github.io/styleguides/ur/",
+      "consultation": "Opened and read primary Mozilla Urdu localization guide via web tool during this review.",
+      "applied": "Contemporary clear respectful آپ register, consistent terminology, exact external arguments and keyboard shortcuts, Latin numerals, Urdu full stop/comma.",
+      "limits": "Not an official game glossary or proof of disputed 3D/music terminology; individual awkward guide examples are not binding. Bidi punctuation must be rendered, not manually reversed on a guide assertion."
+    }
+  ],
+  "production_code": [
+    {
+      "path": "platform/apps/api/src/routes/signin.ts",
+      "sha256": "ca8a806ca5dbc356de5e1aec2cc35e43d81f6fa4be1b6c09e1a8dfbbbe077835"
+    },
+    {
+      "path": "platform/apps/api/src/auth/admin.ts",
+      "sha256": "1c8189caed023d8991371d67b7c0646d36c68401294c73cf52ea086db6611b61"
+    },
+    {
+      "path": "platform/apps/web/src/pages/Skins.tsx",
+      "sha256": "e9a0e65d318e6f48830e258f9c918026659ed3df6a86174fa3b433db46f71921"
+    },
+    {
+      "path": "platform/apps/web/src/skins/rig.ts",
+      "sha256": "301e4f773f6e4193cbd3bf4beee33596c5cd4f86d38bcb0e8305beb79cd61a4c"
+    },
+    {
+      "path": "platform/apps/web/src/skins/shapes.ts",
+      "sha256": "43e2d203b55f0bc652b79c2cb17b3cf37d5a624606315d75d5cf2bab6424110d"
+    },
+    {
+      "path": "platform/apps/web/src/skins/binaryAsset.ts",
+      "sha256": "78c19fb9ee6916a3e2f0160012ebe6f2414e6a4b1d756ea05ac0307f8490166b"
+    },
+    {
+      "path": "platform/apps/web/src/messages.ts",
+      "sha256": "13fa79a67f5c5ea7ce2e90f3534bd0db2ca247696c0b129d941520ac5b184ad8"
+    },
+    {
+      "path": "platform/apps/web/src/components/common.tsx",
+      "sha256": "d3e42f11bfa53dac0450984cdb235b0ae856907f9f238a3007202eebf1a02d43"
+    },
+    {
+      "path": "platform/apps/web/src/pages/studio/ValidationPanel.tsx",
+      "sha256": "22407407755e2dedce970fd170e6698d511a04ebc1e4f8434eb6d0f44cdf3cff"
+    },
+    {
+      "path": "platform/apps/web/src/admin/Moderation.tsx",
+      "sha256": "4775f66616cc37f4a1aca93b4c48cc14ffe631ea7eb876229c89ff00bbe5b0b2"
+    },
+    {
+      "path": "platform/apps/web/src/pages/AiBuildingStudio.tsx",
+      "sha256": "76ced9811a436648b5e3ee2d00d3ce123ea2b0ad45f7f59aacce5cbdf7166966"
+    },
+    {
+      "path": "platform/apps/web/src/pages/Generators.tsx",
+      "sha256": "8c1e5e1662cf0bba4183243aece6ac801c6ea941747889d961fbd1861d4831cc"
+    },
+    {
+      "path": "platform/apps/web/src/pages/Match.tsx",
+      "sha256": "dcf6e4d40581d99d11f1450c114481d83b09deab4575458f956c88521ea7d435"
+    },
+    {
+      "path": "platform/apps/web/src/pages/TerrainStudio.tsx",
+      "sha256": "196e47750c5486c41f3bead6121ea34917227c8a966cda047aaed50a9a8ad8f3"
+    },
+    {
+      "path": "platform/apps/web/src/pages/music-studio/Workspace.tsx",
+      "sha256": "b7dcc1d15dcde6c8a4f0664f0c55e5f025f05a8463e70bc696daf15daacb5177"
+    },
+    {
+      "path": "platform/apps/web/src/music/Player.tsx",
+      "sha256": "56eace9bbeaabe03faed4e8397d47ce24227c924993b8df26229352ddbb60235"
+    },
+    {
+      "path": "platform/apps/web/src/admin/presentation.ts",
+      "sha256": "6a0012d1800655612003ac5c4e915dc6c270a9741546acf94635e973557c382b"
+    },
+    {
+      "path": "platform/apps/web/src/pages/building-ai/Preview.tsx",
+      "sha256": "4c93e641d0e11d7ad8f0c6b481a6f28c6d59aebf678ec3df03ffc36448e9c66a"
+    },
+    {
+      "path": "platform/apps/web/src/components/studio/Studio.tsx",
+      "sha256": "2e33a6f9d1a570c239df9ed63df2734a25df25b9541be145c11e7976c905cb40"
+    }
+  ],
+  "caller_findings": {
+    "ASCII_username": "signin.ts272 onward exact pattern [A-Za-z0-9._\\-]{3,32}; auth/admin.ts enforces strict actor-target role comparison.",
+    "duplicate_clip": "rig.ts183 and shapes.ts110 require unique clip IDs; messages are errors, not copy commands.",
+    "normal_camera": "binaryAsset.ts85 onward defines normalToCamera as orthonormal model-to-camera matrix for normals.",
+    "attention_sentence": "ValidationPanel.tsx40-44 combines count + translated singular/plural fragment + outer attention template; tested by reading assembled strings.",
+    "moderation_imperative": "admin/Moderation.tsx104 inserts already complete Disable/Hide imperative into and resolve.",
+    "prefixes": "AiBuildingStudio.tsx722 concatenates Comparison with before title; Generators.tsx171 concatenates Example of before generator name.",
+    "connection_thresholds": "Match.tsx245-254 explicitly good under/fair under/poor from threshold.",
+    "generic_harvesting": "TerrainStudio.tsx770-788 loops every material resource yielding.consumption (one/infinite/whole).",
+    "technical_retention": "Workspace.tsx431/526/539 are version A/B selectors; Preview.tsx150 execution-sensitive b- prefix; presentation.ts12 Hive product identity.",
+    "mute": "Player.tsx105 Mute is audio; separate Mute {slot0} moderation key means chat restrictions."
+  },
+  "provider_comparison": {
+    "tool": "gcloud beta ml translate translate-text",
+    "actual_command": "gcloud beta ml translate translate-text --target-language=ur --source-language=en --mime-type=text/plain --model=general/nmt --content-file=artifacts/translation-program/reviews/ur-online/provider/source.txt --format=json",
+    "response": "provider/response.json",
+    "source": "provider/source.txt",
+    "source_sha256": "34662e8f81b076625df4cdea0aba78f115b605d941abba8af8a74ad79222adeb",
+    "response_sha256": "9e2ed28a2b057a5082f8bb3b79650822a8778e6e5c35ddf20fd9b62962619395",
+    "catalog_reference_sha256": "0da47c791e9c389d68b54bfd67d418872f77a2b107daa03fe789f1ab02ab8a81",
+    "provider_model": "general/nmt (Cloud Translation API; not Google web Advanced)",
+    "source_scope": "Eight English context-comparison lines, partly shortened/rephrased; source.txt preserves exact submitted bytes. Not represented as a verbatim full-catalog translation.",
+    "status": "actual successful CLI request; no credentials, tokens or HTTP auth logs captured",
+    "assessment": [
+      "Reject provider محفوظ for reserved balances; native and current online مختص correctly expresses allocation.",
+      "Provider literal گرم گھنٹیاں and انتظامات do not resolve musical naturalness.",
+      "Provider translates Synth as ترکیب; wrong musical instrument category.",
+      "Provider translates generic harvest as فصل; wrong for arbitrary materials.",
+      "Provider translates divergence as نقلی نقلی حالت; wrong simulation sense.",
+      "Two-check attention clause supports a full predicate but does not validate all concatenation/number cases."
+    ],
+    "disposition": "Comparison used critically; no suggestion copied or approved simply by provider agreement."
+  }
+}

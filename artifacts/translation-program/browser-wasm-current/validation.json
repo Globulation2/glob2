@@ -1,0 +1,509 @@
+{
+  "status": "passed",
+  "executor": "/root/hindi_online_review",
+  "results_sha256": "7f32eb0ba8e059047330aaa88d8ba6cb1e91289efb2093786f3d29f42d2de26c",
+  "checker_sha256": "7bf4bb1049140a9528ba9570a72c797582246717654bf56fda68824f68f39f6b",
+  "source_freeze": {
+    "dirty": false,
+    "revision": "92205aae687b650ed8b9aea4b31265f0ff6b7301",
+    "sourceStatus": [],
+    "sourceTreeSha256": "f769966128e5998dbcaec839271dc2a451dcd58b15e114e61ac2935857345de2"
+  },
+  "cases": 6,
+  "screenshots": 66,
+  "font_pin_read_checks": 78,
+  "canonical_FS_file_read_checks": 36,
+  "HTTP_files_byte_matched": 26,
+  "catalog_sha256": {
+    "hi": {
+      "native": "f31431ad0a4f51ddd3313a0726847f0ac0c1183ca644b9d80da4e030c444ce5c",
+      "online": "d80bdd87f3502c34e45ae744d8e0f8bac3cafd93755a5ef87e0bed8bec3d74c4"
+    },
+    "ur": {
+      "native": "444c71c1bf3105cf775cf50515af169a477a2a3db2c2d6a3c031b000c3920d27",
+      "online": "db375ee564c39cf02dfb4ce08d6a4dbaecb8cd69d5bc7f167b4c7f779e246587"
+    },
+    "sw": {
+      "native": "ccb1751ebc28116d3d7510f5fe48e7bb3ded222aec088772019fb9a78d646ef6",
+      "online": "6914cbf226adebd70d3ff401cfda759b62b62cc8af621b25f4ba994a8e0bec0a"
+    }
+  },
+  "screenshots_verified": [
+    {
+      "locale": "hi",
+      "width": 1200,
+      "name": "IntroductionOfferScreen",
+      "screenshot": "hi-1200-IntroductionOfferScreen.png",
+      "sha256": "e62600675c0e9f026fc6e4c2115af14f9a5cd6fa6cbef9a071c72d391744b334"
+    },
+    {
+      "locale": "hi",
+      "width": 1200,
+      "name": "main",
+      "screenshot": "hi-1200-main.png",
+      "sha256": "08b261f451193f968bd56147725e2778203a5e674e16b1677b182559327f3d52"
+    },
+    {
+      "locale": "hi",
+      "width": 1200,
+      "name": "settings",
+      "screenshot": "hi-1200-settings.png",
+      "sha256": "39f341ede0317c5abeeb234348a9290f9aaf9473c07ff606f3047328a35935d0"
+    },
+    {
+      "locale": "hi",
+      "width": 1200,
+      "name": "input",
+      "screenshot": "hi-1200-input.png",
+      "sha256": "262cfacc5148c6306f6b36fd776452fb48abb354b0cb2f8ea8bbcd8aaf337423"
+    },
+    {
+      "locale": "hi",
+      "width": 1200,
+      "name": "saved-language-reload",
+      "screenshot": "hi-1200-saved-language-reload.png",
+      "sha256": "9bc6c2c8d9db64288de3453d50fd98a4fb28a66c01ba4e480e7b3bd58992230a"
+    },
+    {
+      "locale": "hi",
+      "width": 1200,
+      "name": "lobby",
+      "screenshot": "hi-1200-lobby.png",
+      "sha256": "f3d54597cfee1878785a5b4081e2520e44250b596f1c12d6257ecadad7fb43f6"
+    },
+    {
+      "locale": "hi",
+      "width": 1200,
+      "name": "tutorial-catalog",
+      "screenshot": "hi-1200-tutorial-catalog.png",
+      "sha256": "a554857d5fe9fb071e9b8bb01ee2028e2a963f7c509c3e7ae14f00872a408178"
+    },
+    {
+      "locale": "hi",
+      "width": 1200,
+      "name": "tutorial-introduction",
+      "screenshot": "hi-1200-tutorial-introduction.png",
+      "sha256": "1de5ddeb8000cf229b21ea31807f020709df7da366ba644f592f433cb674b31f"
+    },
+    {
+      "locale": "hi",
+      "width": 1200,
+      "name": "tutorial-help",
+      "screenshot": "hi-1200-tutorial-help.png",
+      "sha256": "9554d75dfafd085ee7f80ddf38ca30667991baa97f3b28006b6059477327bbb2"
+    },
+    {
+      "locale": "hi",
+      "width": 1200,
+      "name": "tutorial-collapsed",
+      "screenshot": "hi-1200-tutorial-collapsed.png",
+      "sha256": "12a3b27184797a30c8cf877be9e720a3a0e43a76d9a633172a6f5d0124085018"
+    },
+    {
+      "locale": "hi",
+      "width": 390,
+      "name": "AudioPreferenceScreen",
+      "screenshot": "hi-390-AudioPreferenceScreen.png",
+      "sha256": "bcb1d50e5fa95517b05d648b79e782ea43cc7328464e898a793b1e884d568277"
+    },
+    {
+      "locale": "hi",
+      "width": 390,
+      "name": "HandPreferenceScreen",
+      "screenshot": "hi-390-HandPreferenceScreen.png",
+      "sha256": "e0fd44b62a8ad14825c77ff49d66fa9aaf1bef352b8572d34e3eea21fb016b72"
+    },
+    {
+      "locale": "hi",
+      "width": 390,
+      "name": "IntroductionOfferScreen",
+      "screenshot": "hi-390-IntroductionOfferScreen.png",
+      "sha256": "24dc7f2917122e314b8c78fe5beb4e026d3d26e09e7248231e359de5262d5ffb"
+    },
+    {
+      "locale": "hi",
+      "width": 390,
+      "name": "main",
+      "screenshot": "hi-390-main.png",
+      "sha256": "f1305bd4e3b569e6fadda2151379cff6117038e049a4c2128989c2d02609df55"
+    },
+    {
+      "locale": "hi",
+      "width": 390,
+      "name": "settings",
+      "screenshot": "hi-390-settings.png",
+      "sha256": "f1f51921220fbdaadb3d4ff244accf30ffd166f78a283fd824a75bb6b05f0dd5"
+    },
+    {
+      "locale": "hi",
+      "width": 390,
+      "name": "input",
+      "screenshot": "hi-390-input.png",
+      "sha256": "cf35dbb4c35212fc8d2af41ae4136aa36fa5bd8bf9311bba457e600622b5a4d1"
+    },
+    {
+      "locale": "hi",
+      "width": 390,
+      "name": "saved-language-reload",
+      "screenshot": "hi-390-saved-language-reload.png",
+      "sha256": "eb615949e433b67f95e2022738193287a7387481307223c0e450ad042214fb60"
+    },
+    {
+      "locale": "hi",
+      "width": 390,
+      "name": "lobby",
+      "screenshot": "hi-390-lobby.png",
+      "sha256": "8be08e1ace6699cda7b28d70ee72814cb31381c6b7f587f2e7eff77128f600d0"
+    },
+    {
+      "locale": "hi",
+      "width": 390,
+      "name": "tutorial-catalog",
+      "screenshot": "hi-390-tutorial-catalog.png",
+      "sha256": "5204b1bcac4e96187463ac83b48d83ff6c0935a864b505d294c178b981d217f6"
+    },
+    {
+      "locale": "hi",
+      "width": 390,
+      "name": "tutorial-introduction",
+      "screenshot": "hi-390-tutorial-introduction.png",
+      "sha256": "9d469c33198d424357ae17e50df1dcc3e15d9d020f1578a9103010232c99be30"
+    },
+    {
+      "locale": "hi",
+      "width": 390,
+      "name": "tutorial-help",
+      "screenshot": "hi-390-tutorial-help.png",
+      "sha256": "fa556e5a2bc4477fb90f1be52f0ecd73fa2116c496da8574973149d7ef6db2f9"
+    },
+    {
+      "locale": "hi",
+      "width": 390,
+      "name": "tutorial-collapsed",
+      "screenshot": "hi-390-tutorial-collapsed.png",
+      "sha256": "baee8dcd5f1b1aa0d6cff317658f78c3be9fe4e772a56e4ab63179b1f72077da"
+    },
+    {
+      "locale": "ur",
+      "width": 1200,
+      "name": "IntroductionOfferScreen",
+      "screenshot": "ur-1200-IntroductionOfferScreen.png",
+      "sha256": "1cedcc0bafc27dedf735c0502e59e9e0df11201508aacba34695631c9c74e42e"
+    },
+    {
+      "locale": "ur",
+      "width": 1200,
+      "name": "main",
+      "screenshot": "ur-1200-main.png",
+      "sha256": "3a864806a7efd63cde719f2586a6ec30c220d88369198f84897f857ed5a4a699"
+    },
+    {
+      "locale": "ur",
+      "width": 1200,
+      "name": "settings",
+      "screenshot": "ur-1200-settings.png",
+      "sha256": "7e68845c65a181233386b418ba1cedae6a29cc46e262097eb7424416976b4518"
+    },
+    {
+      "locale": "ur",
+      "width": 1200,
+      "name": "input",
+      "screenshot": "ur-1200-input.png",
+      "sha256": "f33c9ba73bcfdf36372be31637147fdca2e555bee7f9739435be30067df0a0fe"
+    },
+    {
+      "locale": "ur",
+      "width": 1200,
+      "name": "saved-language-reload",
+      "screenshot": "ur-1200-saved-language-reload.png",
+      "sha256": "b76ee6e147a0e1b30dc7580e307e456fdd172d6291455a9b3ff0df8984a0c7a8"
+    },
+    {
+      "locale": "ur",
+      "width": 1200,
+      "name": "lobby",
+      "screenshot": "ur-1200-lobby.png",
+      "sha256": "e3d75a7593a1dd93f93bd5d08f1bc4cda0a995b3245c72ed8e3b1e6fa1ed766f"
+    },
+    {
+      "locale": "ur",
+      "width": 1200,
+      "name": "tutorial-catalog",
+      "screenshot": "ur-1200-tutorial-catalog.png",
+      "sha256": "93e72a352d8ecba73c2775fa632c33c3e6ef9d3781d384c8289bf662d0d37827"
+    },
+    {
+      "locale": "ur",
+      "width": 1200,
+      "name": "tutorial-introduction",
+      "screenshot": "ur-1200-tutorial-introduction.png",
+      "sha256": "c3c1aa459785c4d85439d988042fd59dbed7c0683bb0d6f4bb0eced6b0d9902a"
+    },
+    {
+      "locale": "ur",
+      "width": 1200,
+      "name": "tutorial-help",
+      "screenshot": "ur-1200-tutorial-help.png",
+      "sha256": "5e9e20e1d4aadd9049979ee0856c4c52f7ea9ffc5185e056fc034d39ab261170"
+    },
+    {
+      "locale": "ur",
+      "width": 1200,
+      "name": "tutorial-collapsed",
+      "screenshot": "ur-1200-tutorial-collapsed.png",
+      "sha256": "190bdf80bb322625810fb13ff3370cd994fd0d647d4b919482fd7b28a09e93ef"
+    },
+    {
+      "locale": "ur",
+      "width": 390,
+      "name": "AudioPreferenceScreen",
+      "screenshot": "ur-390-AudioPreferenceScreen.png",
+      "sha256": "34c607220800a380fb79f94f90b8750b13a9b0c49a501b063ea2be3d87935bfc"
+    },
+    {
+      "locale": "ur",
+      "width": 390,
+      "name": "HandPreferenceScreen",
+      "screenshot": "ur-390-HandPreferenceScreen.png",
+      "sha256": "8aa3f57dd6a59986368bf1ffafdc983371937ed4fd80a52fb6bf63fe1b3f2c49"
+    },
+    {
+      "locale": "ur",
+      "width": 390,
+      "name": "IntroductionOfferScreen",
+      "screenshot": "ur-390-IntroductionOfferScreen.png",
+      "sha256": "04763a01942853d17fc0830af1c67e6b45382daa881381a1b52105e29d106363"
+    },
+    {
+      "locale": "ur",
+      "width": 390,
+      "name": "main",
+      "screenshot": "ur-390-main.png",
+      "sha256": "9b02dd337508418dcfb2b5e58bc94294986323e87ffa21dae7194a48f02362d9"
+    },
+    {
+      "locale": "ur",
+      "width": 390,
+      "name": "settings",
+      "screenshot": "ur-390-settings.png",
+      "sha256": "0a937d118fbe1dca6c7652d41cae7043a376b628872d5e8c641a6948e350f4f1"
+    },
+    {
+      "locale": "ur",
+      "width": 390,
+      "name": "input",
+      "screenshot": "ur-390-input.png",
+      "sha256": "88f96c228320800b18f81a66eed1a1da56e14abe299e464d56c180658e54814d"
+    },
+    {
+      "locale": "ur",
+      "width": 390,
+      "name": "saved-language-reload",
+      "screenshot": "ur-390-saved-language-reload.png",
+      "sha256": "b9005c98ca27c151b83913fade8c25be6dcd32253569a941ff6bc4ae76ff6ffc"
+    },
+    {
+      "locale": "ur",
+      "width": 390,
+      "name": "lobby",
+      "screenshot": "ur-390-lobby.png",
+      "sha256": "56cc30e12a306e3d3e96565a1ef3a6c218d89c33adfc6b7f365cd997435dab07"
+    },
+    {
+      "locale": "ur",
+      "width": 390,
+      "name": "tutorial-catalog",
+      "screenshot": "ur-390-tutorial-catalog.png",
+      "sha256": "b09de486ba6db4bd02386e9c0ca1bba12c2b8f64b80df353fa03d2f70380d67d"
+    },
+    {
+      "locale": "ur",
+      "width": 390,
+      "name": "tutorial-introduction",
+      "screenshot": "ur-390-tutorial-introduction.png",
+      "sha256": "f5ef5e97ae0ea4b0d4981e250e7b70998235dd6823a79c3d10f596b605903862"
+    },
+    {
+      "locale": "ur",
+      "width": 390,
+      "name": "tutorial-help",
+      "screenshot": "ur-390-tutorial-help.png",
+      "sha256": "03c3af23f66024c6ec2e4a8e3ee18a195797ca292ead64ed8571d93bd5e2b653"
+    },
+    {
+      "locale": "ur",
+      "width": 390,
+      "name": "tutorial-collapsed",
+      "screenshot": "ur-390-tutorial-collapsed.png",
+      "sha256": "3b284dcc69ffafa66f04e5b5ddd39b24f023548c00563a3d98308cb399321906"
+    },
+    {
+      "locale": "sw",
+      "width": 1200,
+      "name": "IntroductionOfferScreen",
+      "screenshot": "sw-1200-IntroductionOfferScreen.png",
+      "sha256": "f082cfd71635631d036ff49cedb004c22b738562301d3f706336f178874f3fed"
+    },
+    {
+      "locale": "sw",
+      "width": 1200,
+      "name": "main",
+      "screenshot": "sw-1200-main.png",
+      "sha256": "c2572d6d2fc3be17e8192f3d468b8bb80ca0a5885071df0106b6e0cf3051c113"
+    },
+    {
+      "locale": "sw",
+      "width": 1200,
+      "name": "settings",
+      "screenshot": "sw-1200-settings.png",
+      "sha256": "d077d56556290ba470eb74a4423ab5ae5544b69a9297619e5a03bcc748b22dab"
+    },
+    {
+      "locale": "sw",
+      "width": 1200,
+      "name": "input",
+      "screenshot": "sw-1200-input.png",
+      "sha256": "5b663f9a956f6a27eedddc79b03fc0d88f64a73d13b7018cb8933a4b06810df3"
+    },
+    {
+      "locale": "sw",
+      "width": 1200,
+      "name": "saved-language-reload",
+      "screenshot": "sw-1200-saved-language-reload.png",
+      "sha256": "50c85f6a7623819da6091497d0c214625bd8ae3cc0cf7b32f2a6f99a7cda1e55"
+    },
+    {
+      "locale": "sw",
+      "width": 1200,
+      "name": "lobby",
+      "screenshot": "sw-1200-lobby.png",
+      "sha256": "bcb2a0aec9af9466274085a41c1e1f0f52d33e1ad9bf3cb8e7cdffdef3790bd9"
+    },
+    {
+      "locale": "sw",
+      "width": 1200,
+      "name": "tutorial-catalog",
+      "screenshot": "sw-1200-tutorial-catalog.png",
+      "sha256": "076b0179c09d10223a24d71dfb933f1adc3b178bbc88e78bf29946b6cd6e6857"
+    },
+    {
+      "locale": "sw",
+      "width": 1200,
+      "name": "tutorial-introduction",
+      "screenshot": "sw-1200-tutorial-introduction.png",
+      "sha256": "d26383e681a6d5a0f20d14def75a73e288532e8f651e1fce56dd7f4d9ceb5a34"
+    },
+    {
+      "locale": "sw",
+      "width": 1200,
+      "name": "tutorial-help",
+      "screenshot": "sw-1200-tutorial-help.png",
+      "sha256": "9b4b4c96752020315f0a2e1e75a1423a5c1c39945092ca173951782c314590ae"
+    },
+    {
+      "locale": "sw",
+      "width": 1200,
+      "name": "tutorial-collapsed",
+      "screenshot": "sw-1200-tutorial-collapsed.png",
+      "sha256": "beab5659a12616cd9fb939b2ceb382d5eaa331e0ce1e58769a73b637c6172a79"
+    },
+    {
+      "locale": "sw",
+      "width": 390,
+      "name": "AudioPreferenceScreen",
+      "screenshot": "sw-390-AudioPreferenceScreen.png",
+      "sha256": "9daca0535d7c16650aa42000811e4430a07597f4a00c6b12d5af93098e16dc67"
+    },
+    {
+      "locale": "sw",
+      "width": 390,
+      "name": "HandPreferenceScreen",
+      "screenshot": "sw-390-HandPreferenceScreen.png",
+      "sha256": "d699c73a4e8808b812048cbea761d38cfdc7d345003519b7dd0992826a868cc8"
+    },
+    {
+      "locale": "sw",
+      "width": 390,
+      "name": "IntroductionOfferScreen",
+      "screenshot": "sw-390-IntroductionOfferScreen.png",
+      "sha256": "14eedfd90fe596e0cfeaf6edb4583cfae4f04fd380b138ddc38e560699467a42"
+    },
+    {
+      "locale": "sw",
+      "width": 390,
+      "name": "main",
+      "screenshot": "sw-390-main.png",
+      "sha256": "a5d33d8dab646aaf77cf331b39355ddfc8684ef70f2586718e0209c174df4559"
+    },
+    {
+      "locale": "sw",
+      "width": 390,
+      "name": "settings",
+      "screenshot": "sw-390-settings.png",
+      "sha256": "b99008ec06b8411f118720f9da876675c0969fa72e9b854312c08060f9795a1f"
+    },
+    {
+      "locale": "sw",
+      "width": 390,
+      "name": "input",
+      "screenshot": "sw-390-input.png",
+      "sha256": "4fdfc1d98218aeb6865812d79058bce1c8d43aadc16dcecf8073bbec5d7b116c"
+    },
+    {
+      "locale": "sw",
+      "width": 390,
+      "name": "saved-language-reload",
+      "screenshot": "sw-390-saved-language-reload.png",
+      "sha256": "15f2ca4dfdc685a4aa9f91caf016ece5aecc53bc15539e68e57b327c9585c10e"
+    },
+    {
+      "locale": "sw",
+      "width": 390,
+      "name": "lobby",
+      "screenshot": "sw-390-lobby.png",
+      "sha256": "7eaa9cb0f7c97b1de1d359738b30a4d24a2f48cd53d68c519c87a0311220d472"
+    },
+    {
+      "locale": "sw",
+      "width": 390,
+      "name": "tutorial-catalog",
+      "screenshot": "sw-390-tutorial-catalog.png",
+      "sha256": "3c2fc08b44c276195a9de2d9721a7ae64089ea6036098529fee145c4eb598bfc"
+    },
+    {
+      "locale": "sw",
+      "width": 390,
+      "name": "tutorial-introduction",
+      "screenshot": "sw-390-tutorial-introduction.png",
+      "sha256": "2e28ea2f921a01b7b820521713307ffa21c6b03dc4630e0ee74f005aebebd070"
+    },
+    {
+      "locale": "sw",
+      "width": 390,
+      "name": "tutorial-help",
+      "screenshot": "sw-390-tutorial-help.png",
+      "sha256": "9a251f4a0c78f2219a5adf50da5d00107f3a459e9ebcf0ddbcefcc4dce522dab"
+    },
+    {
+      "locale": "sw",
+      "width": 390,
+      "name": "tutorial-collapsed",
+      "screenshot": "sw-390-tutorial-collapsed.png",
+      "sha256": "e5242d8222aae9e7c39a1fb7893ea03ff7d853b494e27c9cc5401931c15f48c6"
+    }
+  ],
+  "node_version": "v26.0.0",
+  "failure_evidence_preserved": [
+    "preflight-node-module-resolution-failure.log",
+    "attempt-1-popup-scroll-failure/",
+    "popup-scroll-fixture-fix.json"
+  ],
+  "limits": [
+    "Actual serial software WebAssembly game from canonical shipped build; no browser i18n/catalog/roster/preRun FS overlay.",
+    "Fresh navigator-locale first visit and real UI saved-language reload are distinct checks; browser chrome and native game profile are intentionally independent.",
+    "saveData=true skips optional media; does not waive normal core/game/translations dependencies.",
+    "Chromium desktop/phone viewport is not native Android/iOS, physical touch/keyboard/IME or screen-reader certification.",
+    "Tutorial introduction/help/collapse is one lesson/sample; not full3416entry or all10lesson visual proof.",
+    "Capture driver does not approve translations; Sw new209 author must not sign off own Sw tutorial pixels."
+  ]
+}

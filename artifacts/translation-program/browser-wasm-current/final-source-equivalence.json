@@ -1,0 +1,21 @@
+{
+  "reviewer": "/root/hindi_online_review",
+  "before_revision": "5e7e2740dd9216ac270ccdc87842f7fbc7bcc34d",
+  "final_revision": "b3669e5e08219bb90874895a6c8b1d3185c3effd",
+  "actual_git_changed_files": [
+    "platform/apps/web/test/studio.test.tsx"
+  ],
+  "diff": "diff --git a/platform/apps/web/test/studio.test.tsx b/platform/apps/web/test/studio.test.tsx\nindex 849c7dcaf0..79b4368cbe 100644\n--- a/platform/apps/web/test/studio.test.tsx\n+++ b/platform/apps/web/test/studio.test.tsx\n@@ -271,7 +271,12 @@ it('persists revision settings through a reload and resets the parent when size\n   view.unmount();\n   render(<MapStudio id={id} />);\n   await screen.findAllByText(/Editing version 1/);\n-  fireEvent.click(screen.getByText(/256 × 128 · 4 players/, { selector: 'summary' }));\n+  fireEvent.click(\n+    screen.getByText(\n+      (_content, element) =>\n+        element?.tagName === 'SUMMARY' && /256 × 128 · 4 players/.test(element.textContent ?? ''),\n+    ),\n+  );\n   expect((screen.getByLabelText('Height') as HTMLSelectElement).value).toBe('128');\n   fireEvent.change(screen.getByLabelText('Players'), { target: { value: '6' } });\n   expect(screen.queryByText(/Editing version 1/)).toBeNull();\n",
+  "shipped_native_and_browser_sources_unchanged_by_this_commit": true,
+  "canonical_online_build_149_source_hashes_still_current": true,
+  "current_source_freeze": {
+    "dirty": false,
+    "revision": "b3669e5e08219bb90874895a6c8b1d3185c3effd",
+    "sourceStatus": [],
+    "sourceTreeSha256": "881e73f0678bc9ce4fb4affd83b1952ad8948e575826ca5356b3b93ec7674cb8"
+  },
+  "current_source_freeze_sha256": "6099ecf3a8c6dff09fd5b0056391476e5ecdc830907d0e89acdbaa1c4d0465b5",
+  "checker_reads_current_freeze_at_run_time": true,
+  "wasm_driver_executed": false,
+  "limits": "Git5e→b366onlytestfixture proof; final binary/build identity and actualHTTP bytes still must be verified once root serves final current WASM. Does not relabel prior5eapp run as a rebuilt b366run."
+}

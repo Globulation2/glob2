@@ -1,0 +1,44 @@
+{
+  "editor": "/root",
+  "author": "/root/swahili_translation",
+  "reviewer": "/root/translation_kit",
+  "scope": "4retained native keys only, separate supplement to209newkeys; fulloldcatalog remains frozen",
+  "review_sha256": "1d15307d77970bc87948e4c573ec01191fa9ea01abfd0a36fb6a210e6af22a2a",
+  "base_catalog_sha256": "d23c1b75c4ae209b85a6dbd9f2fb0ab084ab7bb21b7544ec8a4a5ad545129cc5",
+  "edited_sha256": "3bd89e822d9377ce6d468ce746284d9f694aca65a9adc8b53870de7452e3ff93",
+  "source_delta_sha256": "8884639e28a0f409f558951e5b1d9774772ec801330404218280f7a2cb653d4c",
+  "edited_keys": [
+    "[settings Adjust assigned units with the wheel. When off, hold Ctrl. Shift adjusts flag radius. Also controls wheel input in other menus.]",
+    "[settings Starting unit counts and radius for newly placed flags.]",
+    "[Hill radius]",
+    "[flag settings explanation]"
+  ],
+  "editor_actually_read_count": 4,
+  "changes": [
+    {
+      "key": "[settings Adjust assigned units with the wheel. When off, hold Ctrl. Shift adjusts flag radius. Also controls wheel input in other menus.]",
+      "before": "Rekebisha idadi ya viumbe waliopangiwa kwa gurudumu la kipanya. Chaguo likizimwa, shikilia Ctrl. Shift hurekebisha nusukipenyo cha bendera. Pia hudhibiti gurudumu katika menyu nyingine.",
+      "after": "Rekebisha idadi ya viumbe waliopangiwa kwa gurudumu la kipanya. Chaguo likizimwa, shikilia Ctrl. Shift hurekebisha thamani ya nusukipenyo kwa bendera. Pia hudhibiti gurudumu katika menyu nyingine.",
+      "reason": "Current wording assigns ki-class agreement to the compound nusukipenyo. Dictionary class evidence is9/10 while usage may vary; independent reviewer cannot certify this variant confidently. Limited neutral phrasing avoids that uncertainty without changing the radius term or control behavior."
+    },
+    {
+      "key": "[settings Starting unit counts and radius for newly placed flags.]",
+      "before": "Idadi ya awali ya viumbe na nusukipenyo cha bendera mpya.",
+      "after": "Thamani za awali za idadi ya viumbe na nusukipenyo kwa bendera mpya.",
+      "reason": "Current wording assigns ki-class agreement to the compound nusukipenyo. Dictionary class evidence is9/10 while usage may vary; independent reviewer cannot certify this variant confidently. Limited neutral phrasing avoids that uncertainty without changing the radius term or control behavior."
+    },
+    {
+      "key": "[Hill radius]",
+      "before": "Nusukipenyo cha kilima",
+      "after": "Kilima: nusukipenyo",
+      "reason": "Current wording assigns ki-class agreement to the compound nusukipenyo. Dictionary class evidence is9/10 while usage may vary; independent reviewer cannot certify this variant confidently. Limited neutral phrasing avoids that uncertainty without changing the radius term or control behavior."
+    },
+    {
+      "key": "[flag settings explanation]",
+      "before": "Nusukipenyo cha awali cha bendera",
+      "after": "Thamani ya awali ya nusukipenyo kwa bendera",
+      "reason": "Current wording assigns ki-class agreement to the compound nusukipenyo. Dictionary class evidence is9/10 while usage may vary; independent reviewer cannot certify this variant confidently. Limited neutral phrasing avoids that uncertainty without changing the radius term or control behavior."
+    }
+  ],
+  "status": "edited awaiting Kitoriginalfindingreviewer andHiOnlineoriginalcatalogreviewer recheck"
+}

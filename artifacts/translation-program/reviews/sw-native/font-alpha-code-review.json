@@ -1,0 +1,17 @@
+{
+  "reviewer": "/root/hindi_online_review",
+  "scope": "Root supplemental straight-alpha SDL run composition fix only, not complete shaping implementation",
+  "files": {
+    "libgag/src/TrueTypeFont.cpp": "207d715ccd35abb978505fc664d3d4bf3259f1d27984f92c3b7b1a5f9f43f09f",
+    "libgag/src/FontKerningTest.cpp": "7774b1c0fa4abaa13b80c0e2edf5889de124d27861e4eef77eb6317009948be8"
+  },
+  "findings": [],
+  "reasoning": [
+    "Script runs measured and rendered using same font/style/direction; disjoint horizontal placement advances by measured run width on a cleared RGBA32 target.",
+    "SDL_BLENDMODE_NONE on each rendered run copies straight RGB plus coverage alpha instead of blending coverage into RGB on transparent destination, avoiding double attenuation on later ordinary alpha draw.",
+    "Part and composite surfaces are destroyed on blend-mode/blit failure; part is destroyed on success.",
+    "Real-font regression scans Devanagari and Latin partial-alpha pixels for exact requested RGB 173/211/239, and requires partial-alpha pixels exist, directly catching premature RGB attenuation."
+  ],
+  "limits": "Static independent review only; parent owns C++ test execution and browser/native images.",
+  "code_edited": false
+}

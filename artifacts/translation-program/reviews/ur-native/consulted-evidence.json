@@ -1,0 +1,44 @@
+{
+  "reviewer": "/root/pilot_context",
+  "consulted_web": [
+    {
+      "url": "https://mozilla-l10n.github.io/styleguides/ur/",
+      "method": "Fullpage openedandread",
+      "use": "Friendlyrespectfulآپimperative,commonmodernUrdu,Latinphysicalshortcuts/arguments/numerals; consistency andUrdupunctuation.",
+      "limits": "Someguideexamples awkward; notblindauthority. Do notmanuallyreversebrackets/wordorder whereproductionUnicodeBidi mirrorspunctuation."
+    },
+    {
+      "url": "https://www.edudel.nic.in/welcome_folder/support_material_2021_22/10/10sm_science_urdu_2021_22.pdf",
+      "method": "PrimaryEducationDepartment indexedUrduexcerpt inspected; directfullPDFopenfailed21.9MBtoolsize limit",
+      "use": "کچ دھات usedforextractableore inclassXsciencematerial; supportsore/metal distinction.",
+      "limits": "NotclaimingreadentiretextbookorfullPDFvisualproof."
+    },
+    {
+      "url": "https://agripunjab.gov.pk/system/files/Fertigation_drip.pdf",
+      "method": "PrimaryAgricultureDepartment indexedsoiltexturetable inspected; directPDFopentimedout",
+      "use": "ہلکی میرا/بھاری میرا attestمیرا assoilterm, allowingloamretention ratherthanfalsepossessivecorrection.",
+      "limits": "No fullPDFreadclaim."
+    }
+  ],
+  "research_not_used_as_authority": [
+    "SearchreturnedPersian/Arabicsymmetrypages, notverifiedUrduprimarysense; didnotasserttheirdefinitionsasUrduproof.",
+    "Rekhtadictionaryspecificoreentrydirectopeninaccessible; primaryeducationexcerptsupportsrecommendation withoutclaimingdictionaryread.",
+    "MozillaSupportUrduhelp has mixed/unevenprose; onlystyleguide usednormatively,notblindlyimportedstrings."
+  ],
+  "primary_code_contexts": [
+    "src/ui/settings/SettingsScreenGeneral.cpp:337,341",
+    "src/hud/TeamDisplay.cpp:17–21",
+    "src/game/GameEvent.cpp:54",
+    "src/team/stats/TeamStat.cpp:780,850",
+    "src/map/editor/BrushCatalog.cpp:281",
+    "src/map/generator/generators/AmphitheatreGenerator.cpp:30–50,152–154",
+    "src/map/generator/generators/FingerprintGenerator.cpp:122",
+    "src/map/generator/generators/KarstTowersGenerator.cpp:89–95,827,898–904",
+    "src/map/generator/generators/PortageLakesGenerator.cpp:650–693",
+    "src/map/generator/generators/BajadaGenerator.cpp:406,541,864",
+    "src/ai/castor/Maps.cpp:419",
+    "src/hud/touch/GameGUITouchView.cpp:627",
+    "src/hud/GameGUIMessageManager.cpp:123–125",
+    "src/online/screens/OnlineHubScreen.cpp:503"
+  ]
+}

@@ -1,0 +1,7 @@
+{
+  "failure": "First actual runtime case failed selecting English popup/6 because shared controlOnScreen wheels over root centerx600 while actual narrow popup isx916..1170. Diagnostic target rowy-182 fully clipped; selected Hindi row33 visible at790. No product failure inferred.",
+  "retained_attempt": "attempt-1-popup-scroll-failure contains exact checker/log/results/identity/4screens",
+  "fixture_fix": "Use published popup rows/visible clip union, wheel at actual popup center, then original clickControl when target exposed. No FS, preferences, source or HTTP injection.",
+  "source_frozen": true,
+  "canonical_6_cases_will_restart_with_corrected_checker": true
+}

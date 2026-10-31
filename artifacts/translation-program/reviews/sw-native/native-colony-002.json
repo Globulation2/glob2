@@ -1,0 +1,27 @@
+{
+  "reviewer": "/root/hindi_online_review",
+  "author": "/root/swahili_translation",
+  "locale": "sw",
+  "batch_id": "native-colony-002",
+  "source_sha256": "aacd8a342e9e734ba47f902a161ac1a45badff5842a617bcd68bf8e2275d6013",
+  "native_sha256": "4f19c506d6d7d4bfd22c576ad1797e21a7a71a92d693e06c1a48a034585ceead",
+  "target_sha256": "c7eed2922ca9e3d28a320a5c8be7ff9b5a4d87d9482659ca14e7d24720f500ff",
+  "reviewed_keys": [
+    "native:[library Loading building families]",
+    "native:[library No building families installed.]",
+    "native:[library No public building families yet]",
+    "native:[library Opening building family]"
+  ],
+  "findings": [],
+  "accepted_english": [],
+  "status": "linguistic-recheck-complete-awaiting-other-gates",
+  "locale_finalized": false,
+  "recheck": {
+    "primary_editor": "/root/translation_kit",
+    "supplemental_editor": "/root",
+    "reviewer": "/root/hindi_online_review",
+    "final_native_sha256": "d23c1b75c4ae209b85a6dbd9f2fb0ab084ab7bb21b7544ec8a4a5ad545129cc5",
+    "final_target_sha256": "c7eed2922ca9e3d28a320a5c8be7ff9b5a4d87d9482659ca14e7d24720f500ff",
+    "result": "All changed keys independently rechecked; unchanged values proven against original frozen snapshot; no open linguistic finding."
+  }
+}

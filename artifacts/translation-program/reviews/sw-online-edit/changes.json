@@ -1,0 +1,562 @@
+[
+  {
+    "key": " Terrain credits",
+    "entry_id": "online: Terrain credits",
+    "before": "Shukrani za ardhi",
+    "after": " Krediti za Ardhi",
+    "reason": "Resolve SW-ON-001-01: purchasable wallet credits, not attribution; retain caller spacing."
+  },
+  {
+    "key": "A previous submission was not acknowledged. Sending it again safely retries the same request.",
+    "entry_id": "online:A previous submission was not acknowledged. Sending it again safely retries the same request.",
+    "before": "Wasilisho la awali halikukubaliwa. Kulituma tena hurudia ombi lilelile kwa usalama.",
+    "after": "Wasilisho la awali halijathibitishwa kupokelewa. Kulituma tena hurudia ombi lilelile kwa usalama.",
+    "reason": "Resolve SW-ON-001-02: halikukubaliwa means was not accepted; source only says acknowledgement was absent, so outcome may already be accepted."
+  },
+  {
+    "key": "Add a property override",
+    "entry_id": "online:Add a property override",
+    "before": "Ongeza ubatilishaji wa sifa",
+    "after": "Ongeza thamani mbadala ya sifa",
+    "reason": "Override sets a property value; ubatilishaji can imply invalidation rather than an explicit replacement value."
+  },
+  {
+    "key": "All properties and capabilities",
+    "entry_id": "online:All properties and capabilities",
+    "before": "Sifa na uwezo wote",
+    "after": "Sifa zote na uwezo wote",
+    "reason": "Use correct agreement for sifa and uwezo separately."
+  },
+  {
+    "key": "Apply soundtrack loudness targets and peak limiting",
+    "entry_id": "online:Apply soundtrack loudness targets and peak limiting",
+    "before": "Tumia viwango vya ulengaji sauti na kikomo cha kilele cha muziki",
+    "after": "Tumia viwango lengwa vya ukubwa wa sauti na kikomo cha vilele vya muziki",
+    "reason": "Preserve loudness targets and audio peak limiting, avoiding vague targeting sound."
+  },
+  {
+    "key": "Background material",
+    "entry_id": "online:Background material",
+    "before": "Malighafi ya usuli",
+    "after": "Nyenzo ya usuli",
+    "reason": "3D paint material/map/unwrap denotes surface finish or its IDs (Skins, StudioControls, PatternDialog, binaryAsset); use nyenzo, distinct from harvested malighafi. Preserve numeric IDs and API tokens."
+  },
+  {
+    "key": "Brush paints",
+    "entry_id": "online:Brush paints",
+    "before": "Rangi za brashi",
+    "after": "Brashi inapaka",
+    "reason": "Resolve SW-ON-002-01: Rangi za brashi names only colors; aria group chooses Color OR Material."
+  },
+  {
+    "key": "Building",
+    "entry_id": "online:Building",
+    "before": "Jengo",
+    "after": "Ujenzi",
+    "reason": "Resolve SW-ON-002-02: Jengo means a building object; these inspected callers denote build-in-progress or music production mood."
+  },
+  {
+    "key": "Choose visibility and a moderation reason.",
+    "entry_id": "online:Choose visibility and a moderation reason.",
+    "before": "Chagua mwonekano wa umma na sababu ya usimamizi.",
+    "after": "Chagua nani anayeweza kuona maudhui na utoe sababu ya usimamizi.",
+    "reason": "Visibility includes private/unlisted/public; avoid suggesting only public visibility."
+  },
+  {
+    "key": "Complete",
+    "entry_id": "online:Complete",
+    "before": "Kamilisha",
+    "after": "Imekamilika",
+    "reason": "Resolve SW-ON-003-01: Kamilisha is imperative complete it, but this labels completed request/job status."
+  },
+  {
+    "key": "Complete passing checks before publishing.",
+    "entry_id": "online:Complete passing checks before publishing.",
+    "before": "Kamilisha ukaguzi unaopita kabla ya kuchapisha.",
+    "after": "Kamilisha ukaguzi kwa mafanikio kabla ya kuchapisha.",
+    "reason": "Source requires passing checks, not merely completing a set labelled as already passing."
+  },
+  {
+    "key": "Copies the {slot0} texture and materials. Different models wrap that paint differently; inspect the results below.",
+    "entry_id": "online:Copies the {slot0} texture and materials. Different models wrap that paint differently; inspect the results below.",
+    "before": "Hunakili umbile na malighafi za {slot0}. Miundo tofauti hufunika rangi hiyo kwa namna tofauti; kagua matokeo hapa chini.",
+    "after": "Hunakili umbile na nyenzo za {slot0}. Miundo tofauti hufunika rangi hiyo kwa namna tofauti; kagua matokeo hapa chini.",
+    "reason": "3D paint material/map/unwrap denotes surface finish or its IDs (Skins, StudioControls, PatternDialog, binaryAsset); use nyenzo, distinct from harvested malighafi. Preserve numeric IDs and API tokens."
+  },
+  {
+    "key": "Could not load the material unwrap.",
+    "entry_id": "online:Could not load the material unwrap.",
+    "before": "Ramani bapa ya malighafi haikuweza kupakiwa.",
+    "after": "Ramani bapa ya nyenzo haikuweza kupakiwa.",
+    "reason": "3D paint material/map/unwrap denotes surface finish or its IDs (Skins, StudioControls, PatternDialog, binaryAsset); use nyenzo, distinct from harvested malighafi. Preserve numeric IDs and API tokens."
+  },
+  {
+    "key": "Create a new room with this map and invite friends.",
+    "entry_id": "online:Create a new room with this map and invite friends.",
+    "before": "Unda chumba kipya chenye ramani hii na uwaalike rafiki.",
+    "after": "Unda chumba kipya chenye ramani hii na uwaalike marafiki.",
+    "reason": "Use idiomatic plural friends."
+  },
+  {
+    "key": "Create a ring of islands around a shared lagoon",
+    "entry_id": "online:Create a ring of islands around a shared lagoon",
+    "before": "Unda pete ya visiwa kuzunguka rasi ya maji ya pamoja",
+    "after": "Unda pete ya visiwa kuzunguka ziwa la pwani la pamoja",
+    "reason": "Resolve SW-ON-004-01: Rasi is a peninsula/land protrusion, not a lagoon."
+  },
+  {
+    "key": "Dense",
+    "entry_id": "online:Dense",
+    "before": "Nzito",
+    "after": "Msongamano mkubwa",
+    "reason": "PatternDialog.tsx density 0.7; visual density rather than heavy weight."
+  },
+  {
+    "key": "Duplicate rig clip",
+    "entry_id": "online:Duplicate rig clip",
+    "before": "Nakili kipande cha mifupa ya uhuishaji",
+    "after": "Kitambulisho cha kipande cha mifupa ya uhuishaji kimerudiwa",
+    "reason": "Resolve SW-ON-005-01: Nakili is an action command; this is a validation error about repeated clip IDs."
+  },
+  {
+    "key": "Duplicate shape clip",
+    "entry_id": "online:Duplicate shape clip",
+    "before": "Nakili kipande cha umbo",
+    "after": "Kitambulisho cha kipande cha umbo kimerudiwa",
+    "reason": "Resolve SW-ON-005-02: Nakili is an action command; this is a validation error about repeated clip IDs."
+  },
+  {
+    "key": "Each product has its own credit unit. Flows cover the current selected range across all payment modes. Usage/refund ledger entries are signed; reserved balances are current snapshots.",
+    "entry_id": "online:Each product has its own credit unit. Flows cover the current selected range across all payment modes. Usage/refund ledger entries are signed; reserved balances are current snapshots.",
+    "before": "Kila bidhaa ina kipimo chake cha krediti. Mitiririko hushughulikia kipindi kilichochaguliwa sasa kwa njia zote za malipo. Maingizo ya leja ya matumizi/marejesho yana ishara chanya au hasi; salio zilizoshikiliwa ni picha ya hali ya sasa.",
+    "after": "Kila bidhaa ina kipimo chake cha krediti. Mitiririko inahusu kipindi kilichochaguliwa sasa kwa njia zote za malipo. Maingizo ya leja ya matumizi/marejesho yana ishara chanya au hasi; masalio yaliyoshikiliwa yanaonyesha hali ya sasa.",
+    "reason": "Resolve SW-ON-005-03: salio/masalio concord, financial held balances and signed ledger amounts preserved."
+  },
+  {
+    "key": "Friends share a code or a link from their room.",
+    "entry_id": "online:Friends share a code or a link from their room.",
+    "before": "Rafiki hushiriki msimbo au kiungo kutoka chumbani mwao.",
+    "after": "Marafiki hushiriki msimbo au kiungo kutoka chumbani mwao.",
+    "reason": "Use explicit plural friends rather than an unmarked singular form."
+  },
+  {
+    "key": "Give your colony controller a home. Every release keeps its own source and download history.",
+    "entry_id": "online:Give your colony controller a home. Every release keeps its own source and download history.",
+    "before": "Ipe kidhibiti cha makazi yako mahali pa kukaa. Kila toleo huhifadhi chanzo na historia yake ya upakuaji.",
+    "after": "Kipe kidhibiti cha makazi yako mahali pa kukaa. Kila toleo huhifadhi chanzo na historia yake ya upakuaji.",
+    "reason": "Kidhibiti is ki-/vi- class, requiring kipe rather than ipe."
+  },
+  {
+    "key": "Hidden by a moderator",
+    "entry_id": "online:Hidden by a moderator",
+    "before": "Imefichwa na msimamizi",
+    "after": "Imefichwa na msimamizi wa maudhui",
+    "reason": "Align moderator role with explicit catalog terminology, distinct from Administrator."
+  },
+  {
+    "key": "Hidden by a moderator: {slot0}",
+    "entry_id": "online:Hidden by a moderator: {slot0}",
+    "before": "Imefichwa na msimamizi: {slot0}",
+    "after": "Imefichwa na msimamizi wa maudhui: {slot0}",
+    "reason": "Align moderator role with explicit catalog terminology."
+  },
+  {
+    "key": "Hidden following moderator review",
+    "entry_id": "online:Hidden following moderator review",
+    "before": "Imefichwa baada ya ukaguzi wa msimamizi",
+    "after": "Imefichwa baada ya ukaguzi wa msimamizi wa maudhui",
+    "reason": "Align moderator role with explicit catalog terminology."
+  },
+  {
+    "key": "Invalid material map dimensions.",
+    "entry_id": "online:Invalid material map dimensions.",
+    "before": "Vipimo vya ramani ya malighafi si sahihi.",
+    "after": "Vipimo vya ramani ya nyenzo si sahihi.",
+    "reason": "3D paint material/map/unwrap denotes surface finish or its IDs (Skins, StudioControls, PatternDialog, binaryAsset); use nyenzo, distinct from harvested malighafi. Preserve numeric IDs and API tokens."
+  },
+  {
+    "key": "Invalid material map.",
+    "entry_id": "online:Invalid material map.",
+    "before": "Ramani ya malighafi si sahihi.",
+    "after": "Ramani ya nyenzo si sahihi.",
+    "reason": "3D paint material/map/unwrap denotes surface finish or its IDs (Skins, StudioControls, PatternDialog, binaryAsset); use nyenzo, distinct from harvested malighafi. Preserve numeric IDs and API tokens."
+  },
+  {
+    "key": "Invalid material unwrap coordinate.",
+    "entry_id": "online:Invalid material unwrap coordinate.",
+    "before": "Kirago cha ramani bapa ya malighafi si sahihi.",
+    "after": "Mahali kwenye ramani bapa ya nyenzo si sahihi.",
+    "reason": "3D paint material/map/unwrap denotes surface finish or its IDs (Skins, StudioControls, PatternDialog, binaryAsset); use nyenzo, distinct from harvested malighafi. Preserve numeric IDs and API tokens. Resolves SW-ON-006-01: mahali, not kirago (woven mat)."
+  },
+  {
+    "key": "Invalid material unwrap dimensions.",
+    "entry_id": "online:Invalid material unwrap dimensions.",
+    "before": "Vipimo vya ramani bapa ya malighafi si sahihi.",
+    "after": "Vipimo vya ramani bapa ya nyenzo si sahihi.",
+    "reason": "3D paint material/map/unwrap denotes surface finish or its IDs (Skins, StudioControls, PatternDialog, binaryAsset); use nyenzo, distinct from harvested malighafi. Preserve numeric IDs and API tokens."
+  },
+  {
+    "key": "Invalid rig normal",
+    "entry_id": "online:Invalid rig normal",
+    "before": "Vekta ya wima ya mifupa ya uhuishaji si sahihi",
+    "after": "Vekta iliyo wima kwa uso wa mifupa ya uhuishaji si sahihi",
+    "reason": "Resolve SW-ON-007-03: Vekta ya wima may suggest global vertical rather than perpendicular to the mesh surface; clarify the relative reference."
+  },
+  {
+    "key": "Invalid visibility.",
+    "entry_id": "online:Invalid visibility.",
+    "before": "Mwonekano wa umma si sahihi.",
+    "after": "Mpangilio wa nani anayeweza kuona maudhui si sahihi.",
+    "reason": "Visibility is access/publication scope, not appearance or an exclusively public mode."
+  },
+  {
+    "key": "Invalid {value0} normal camera",
+    "entry_id": "online:Invalid {value0} normal camera",
+    "before": "Kamera ya kawaida ya {value0} si sahihi",
+    "after": "Matriki ya kamera ya vekta zilizo wima kwa uso wa {value0} si sahihi",
+    "reason": "Resolve SW-ON-007-02: surface normals, not ordinary camera or global vertical; binaryAsset.ts normalToCamera matrix validation."
+  },
+  {
+    "key": "Light",
+    "entry_id": "online:Light",
+    "before": "Nyepesi",
+    "after": "Msongamano mdogo",
+    "reason": "PatternDialog.tsx density 0.3 for speckles; visual density rather than low weight or theme brightness."
+  },
+  {
+    "key": "Lost",
+    "entry_id": "online:Lost",
+    "before": "Imepotea",
+    "after": "Kushindwa",
+    "reason": "Resolve SW-ON-007-01: Imepotea describes a missing object. Match outcome is defeat."
+  },
+  {
+    "key": "Manifest release revision: {slot0}. Publishing a new release requires a larger manifest revision.",
+    "entry_id": "online:Manifest release revision: {slot0}. Publishing a new release requires a larger manifest revision.",
+    "before": "Marekebisho ya toleo la hati ya maelezo: {slot0}. Kuchapisha toleo jipya kunahitaji marekebisho makubwa zaidi ya hati ya maelezo.",
+    "after": "Namba ya marekebisho ya toleo katika hati ya maelezo: {slot0}. Kuchapisha toleo jipya kunahitaji namba kubwa zaidi ya marekebisho katika hati hiyo.",
+    "reason": "Larger means monotonically increasing revision number, not larger substantive changes."
+  },
+  {
+    "key": "Map credits",
+    "entry_id": "online:Map credits",
+    "before": "Shukrani za ramani",
+    "after": "Krediti za Ramani",
+    "reason": "MapStudio.tsx wallet balance and purchase drawer; attribution shukrani is wrong here."
+  },
+  {
+    "key": "Maps you shared, whatever their visibility.",
+    "entry_id": "online:Maps you shared, whatever their visibility.",
+    "before": "Ramani ulizoshiriki, bila kujali mwonekano wake wa umma.",
+    "after": "Ramani ulizoshiriki, bila kujali nani anayeweza kuziona.",
+    "reason": "Retain all private/unlisted/public maps."
+  },
+  {
+    "key": "Material",
+    "entry_id": "online:Material",
+    "before": "Malighafi",
+    "after": "Nyenzo",
+    "reason": "3D paint material/map/unwrap denotes surface finish or its IDs (Skins, StudioControls, PatternDialog, binaryAsset); use nyenzo, distinct from harvested malighafi. Preserve numeric IDs and API tokens."
+  },
+  {
+    "key": "Material map pixels must be fully opaque.",
+    "entry_id": "online:Material map pixels must be fully opaque.",
+    "before": "Pikseli za ramani ya malighafi lazima zisiwe na uwazi kabisa.",
+    "after": "Pikseli za ramani ya nyenzo lazima zisiwe na uwazi kabisa.",
+    "reason": "3D paint material/map/unwrap denotes surface finish or its IDs (Skins, StudioControls, PatternDialog, binaryAsset); use nyenzo, distinct from harvested malighafi. Preserve numeric IDs and API tokens."
+  },
+  {
+    "key": "Material map pixels must be grey: red, green and blue equal to the material id.",
+    "entry_id": "online:Material map pixels must be grey: red, green and blue equal to the material id.",
+    "before": "Pikseli za ramani ya malighafi lazima ziwe kijivu: nyekundu, kijani na buluu zilingane na kitambulisho cha malighafi.",
+    "after": "Pikseli za ramani ya nyenzo lazima ziwe kijivu: nyekundu, kijani na buluu zilingane na kitambulisho cha nyenzo.",
+    "reason": "3D paint material/map/unwrap denotes surface finish or its IDs (Skins, StudioControls, PatternDialog, binaryAsset); use nyenzo, distinct from harvested malighafi. Preserve numeric IDs and API tokens."
+  },
+  {
+    "key": "Material map pixels must be material ids 0 to {p0}.",
+    "entry_id": "online:Material map pixels must be material ids 0 to {p0}.",
+    "before": "Pikseli za ramani ya malighafi lazima ziwe vitambulisho vya malighafi 0 hadi {p0}.",
+    "after": "Pikseli za ramani ya nyenzo lazima ziwe vitambulisho vya nyenzo 0 hadi {p0}.",
+    "reason": "3D paint material/map/unwrap denotes surface finish or its IDs (Skins, StudioControls, PatternDialog, binaryAsset); use nyenzo, distinct from harvested malighafi. Preserve numeric IDs and API tokens."
+  },
+  {
+    "key": "Mute {slot0}",
+    "entry_id": "online:Mute {slot0}",
+    "before": "Nyamazisha {slot0}",
+    "after": "Zuia kutuma ujumbe kwa {slot0}",
+    "reason": "Resolve SW-ON-008-01: Nyamazisha {duration} omits duration relation and chat restriction; sounds silence a thing named duration."
+  },
+  {
+    "key": "No rated players yet. The first wins will put you here.",
+    "entry_id": "online:No rated players yet. The first wins will put you here.",
+    "before": "Bado hakuna wachezaji wenye viwango. Ushindi wa kwanza utawaweka hapa.",
+    "after": "Bado hakuna wachezaji wenye viwango. Ushindi wako wa kwanza utakuweka hapa.",
+    "reason": "Resolve SW-ON-008-02: utawaweka addresses them, while source addresses you."
+  },
+  {
+    "key": "Prestige ",
+    "entry_id": "online:Prestige ",
+    "before": "Fahari ",
+    "after": "Heshima ",
+    "reason": "Resolve SW-ON-010-01: Fahari conflicts with locked native game term Heshima."
+  },
+  {
+    "key": "Prestige {slot0}",
+    "entry_id": "online:Prestige {slot0}",
+    "before": "Fahari {slot0}",
+    "after": "Heshima {slot0}",
+    "reason": "Resolve SW-ON-010-02: Fahari conflicts with locked native game term Heshima."
+  },
+  {
+    "key": "Properties inherit this preset until you add an override.",
+    "entry_id": "online:Properties inherit this preset until you add an override.",
+    "before": "Sifa hurithi mpangilio huu hadi uongeze ubatilishaji.",
+    "after": "Sifa hutumia thamani za mpangilio huu hadi uweke thamani mbadala.",
+    "reason": "Explain inherited preset and explicit value override in ordinary wording."
+  },
+  {
+    "key": "Published visibility",
+    "entry_id": "online:Published visibility",
+    "before": "Mwonekano wa umma uliochapishwa",
+    "after": "Nani anaweza kuona toleo lililochapishwa",
+    "reason": "Retain published visibility without assuming it is public."
+  },
+  {
+    "key": "Rank",
+    "entry_id": "online:Rank",
+    "before": "Nafasi ya kiwango",
+    "after": "Nafasi katika viwango",
+    "reason": "Natural leaderboard rank label, distinct from rating strength."
+  },
+  {
+    "key": "Restrictions and deletion require a lower-role account.",
+    "entry_id": "online:Restrictions and deletion require a lower-role account.",
+    "before": "Vizuizi na kufuta vinahitaji akaunti yenye jukumu la chini.",
+    "after": "Vizuizi na kufuta vinaweza kutumika tu kwa akaunti yenye mamlaka machache kuliko yako.",
+    "reason": "Target must have lower authority; avoid implying requester needs fewer roles."
+  },
+  {
+    "key": "Room matches go back to their room instead.",
+    "entry_id": "online:Room matches go back to their room instead.",
+    "before": "Mechi za chumba hurudi chumbani kwake badala yake.",
+    "after": "Baada ya mechi ya chumba, unarudi kwenye chumba chake badala yake.",
+    "reason": "Natural player navigation wording; avoids saying matches themselves move and plural/singular possessive mismatch."
+  },
+  {
+    "key": "Set the goals and your globs get to work. Feed your colony, train your units and explore together.",
+    "entry_id": "online:Set the goals and your globs get to work. Feed your colony, train your units and explore together.",
+    "before": "Weka malengo na viumbe wako wataanza kazi. Lisha makazi yako, funza viumbe wako na mgundue pamoja.",
+    "after": "Weka malengo na viumbe wako wataanza kazi. Lisha makazi yako, funza viumbe wako na chunguzeni pamoja.",
+    "reason": "Coordinated player imperative: explore together, not discover a hidden object."
+  },
+  {
+    "key": "Shape asset length mismatch",
+    "entry_id": "online:Shape asset length mismatch",
+    "before": "Urefu wa nyenzo ya umbo haulingani",
+    "after": "Urefu wa faili ya umbo haulingani",
+    "reason": "Binary shape asset data, not physical raw material or equipment."
+  },
+  {
+    "key": "Synth · warm bells, pads & pulse",
+    "entry_id": "online:Synth · warm bells, pads & pulse",
+    "before": "Sauti sanisi · kengele nyororo, sauti tambarare na mpigo",
+    "after": "Sauti sanisi · kengele nyororo, sauti za nyuma zinazodumu na mpigo",
+    "reason": "Resolve SW-ON-012-01: sauti tambarare means flat sounds, while musical pads are sustained atmospheric accompaniment."
+  },
+  {
+    "key": "The 3D shader could not compile.",
+    "entry_id": "online:The 3D shader could not compile.",
+    "before": "Programu ya vivuli ya 3D haikuweza kukusanywa.",
+    "after": "Programu ya kuonyesha uso wa 3D (shader) haikuweza kutayarishwa.",
+    "reason": "Shader computes surface appearance, not only shadows; retain recognized identifier in explanation."
+  },
+  {
+    "key": "The refresh token is not valid.",
+    "entry_id": "online:The refresh token is not valid.",
+    "before": "Tokeni ya kuonyesha upya si sahihi.",
+    "after": "Tokeni ya kusasisha kipindi si sahihi.",
+    "reason": "Authentication refresh token extends session; does not merely refresh a visual display."
+  },
+  {
+    "key": "Theme: dark (night colony)",
+    "entry_id": "online:Theme: dark (night colony)",
+    "before": "Mandhari: meusi (makazi ya usiku)",
+    "after": "Mandhari: yenye giza (makazi ya usiku)",
+    "reason": "Resolve SW-ON-013-02: meusi uses ma-class agreement while mandhari is treated as hi/i class elsewhere in this catalog."
+  },
+  {
+    "key": "Theme: light (meadow)",
+    "entry_id": "online:Theme: light (meadow)",
+    "before": "Mandhari: mepesi (mbuga)",
+    "after": "Mandhari: angavu (mbuga)",
+    "reason": "Resolve SW-ON-013-01: mepesi means light in weight, not the bright UI color theme."
+  },
+  {
+    "key": "These details apply to every release. Changing visibility also changes who can download them. Edit building definitions in your Studio draft and publish a new release.",
+    "entry_id": "online:These details apply to every release. Changing visibility also changes who can download them. Edit building definitions in your Studio draft and publish a new release.",
+    "before": "Maelezo haya yanahusu kila toleo. Kubadilisha mwonekano wa umma pia hubadilisha wanaoweza kuyapakua. Hariri fasili za majengo katika rasimu yako ya Studio na uchapishe toleo jipya.",
+    "after": "Maelezo haya yanahusu kila toleo. Kubadilisha nani anayeweza kuona matoleo pia hubadilisha nani anayeweza kuyapakua. Hariri fasili za majengo katika rasimu yako ya Studio na uchapishe toleo jipya.",
+    "reason": "Clarify that download permission applies to releases, not description text."
+  },
+  {
+    "key": "This changes the map’s visibility. Conversation history remains private.",
+    "entry_id": "online:This changes the map’s visibility. Conversation history remains private.",
+    "before": "Hili hubadilisha mwonekano wa umma wa ramani. Historia ya mazungumzo hubaki faragha.",
+    "after": "Hili hubadilisha nani anayeweza kuona ramani. Historia ya mazungumzo hubaki faragha.",
+    "reason": "Privacy scope, rather than changing a map visual appearance."
+  },
+  {
+    "key": "Time between shots (ticks)",
+    "entry_id": "online:Time between shots (ticks)",
+    "before": "Muda kati ya mashambulizi (hatua)",
+    "after": "Muda kati ya kurusha risasi (hatua)",
+    "reason": "Resolve SW-ON-014-01: mashambulizi means attacks generally; this property sets interval between tower projectile shots."
+  },
+  {
+    "key": "Use a valid, still 512 by 512 pixel 8-bit material map.",
+    "entry_id": "online:Use a valid, still 512 by 512 pixel 8-bit material map.",
+    "before": "Tumia ramani sahihi tuli ya malighafi ya pikseli 512 kwa 512 ya biti 8.",
+    "after": "Tumia ramani sahihi tuli ya nyenzo ya pikseli 512 kwa 512 ya biti 8.",
+    "reason": "3D paint material/map/unwrap denotes surface finish or its IDs (Skins, StudioControls, PatternDialog, binaryAsset); use nyenzo, distinct from harvested malighafi. Preserve numeric IDs and API tokens."
+  },
+  {
+    "key": "Visibility",
+    "entry_id": "online:Visibility",
+    "before": "Mwonekano wa umma",
+    "after": "Nani anaweza kuona",
+    "reason": "Clear concise privacy-setting label across private/unlisted/public choices."
+  },
+  {
+    "key": "Volume",
+    "entry_id": "online:Volume",
+    "before": "Sauti",
+    "after": "Kiwango cha sauti",
+    "reason": "Audio amplitude control, not sound as a whole."
+  },
+  {
+    "key": "You are muted.",
+    "entry_id": "online:You are muted.",
+    "before": "Umenyamazishwa.",
+    "after": "Umezuiwa kutuma ujumbe wa gumzo.",
+    "reason": "Resolve SW-ON-015-01: Umenyamazishwa is broad; this denial specifically prevents sending chat messages, not a user microphone/audio mute state."
+  },
+  {
+    "key": "You can only ban accounts with a lower role.",
+    "entry_id": "online:You can only ban accounts with a lower role.",
+    "before": "Unaweza kupiga marufuku akaunti zenye jukumu la chini tu.",
+    "after": "Unaweza kupiga marufuku akaunti zenye mamlaka machache kuliko yako tu.",
+    "reason": "Lower authority relative to administrator, not fewer responsibilities."
+  },
+  {
+    "key": "You can only delete accounts with a lower role.",
+    "entry_id": "online:You can only delete accounts with a lower role.",
+    "before": "Unaweza kufuta akaunti zenye jukumu la chini tu.",
+    "after": "Unaweza kufuta akaunti zenye mamlaka machache kuliko yako tu.",
+    "reason": "Lower authority relative to administrator."
+  },
+  {
+    "key": "You can only mute accounts with a lower role.",
+    "entry_id": "online:You can only mute accounts with a lower role.",
+    "before": "Unaweza kunyamazisha akaunti zenye jukumu la chini tu.",
+    "after": "Unaweza kuzuia ujumbe wa gumzo kutoka kwa akaunti zenye mamlaka machache kuliko yako tu.",
+    "reason": "Chat restriction and lower authority; not audio muting or fewer roles."
+  },
+  {
+    "key": "Your next colony starts here. Play in your browser or join your friends.",
+    "entry_id": "online:Your next colony starts here. Play in your browser or join your friends.",
+    "before": "Makazi yako yajayo huanzia hapa. Cheza kwenye kivinjari chako au ujiunge na rafiki zako.",
+    "after": "Makazi yako yajayo huanzia hapa. Cheza kwenye kivinjari chako au ujiunge na marafiki zako.",
+    "reason": "Use idiomatic plural friends."
+  },
+  {
+    "key": "check needs",
+    "entry_id": "online:check needs",
+    "before": "ukaguzi unahitaji",
+    "after": "Kipengele cha ukaguzi kinachohitaji kushughulikiwa",
+    "reason": "Resolve SW-ON-015-02: Current fragments compose as “1 ukaguzi unahitaji zinahitaji kushughulikiwa”, duplicating requires and mixing agreement. The three keys must be edited together."
+  },
+  {
+    "key": "checks need",
+    "entry_id": "online:checks need",
+    "before": "ukaguzi unahitaji",
+    "after": "Vipengele vya ukaguzi vinavyohitaji kushughulikiwa",
+    "reason": "Resolve SW-ON-016-01: Current fragments compose as “1 ukaguzi unahitaji zinahitaji kushughulikiwa”, duplicating requires and mixing agreement. The three keys must be edited together."
+  },
+  {
+    "key": "median length",
+    "entry_id": "online:median length",
+    "before": "urefu wa kati",
+    "after": "Muda wa kati wa mechi",
+    "reason": "This label measures game duration, not physical length."
+  },
+  {
+    "key": "muted until {slot0}",
+    "entry_id": "online:muted until {slot0}",
+    "before": "amenyamazishwa hadi {slot0}",
+    "after": "amezuiwa kutuma ujumbe wa gumzo hadi {slot0}",
+    "reason": "Admin chat restriction, not audio/microphone state."
+  },
+  {
+    "key": "Follow latest generation",
+    "entry_id": "online:Follow latest generation",
+    "before": "Fuata uzalishaji mpya zaidi",
+    "after": "Fuata uzalishaji wa karibuni zaidi",
+    "reason": "Correct agreement without an adjective class ambiguity."
+  },
+  {
+    "key": "Following latest generation",
+    "entry_id": "online:Following latest generation",
+    "before": "Inafuata uzalishaji mpya zaidi",
+    "after": "Inafuata uzalishaji wa karibuni zaidi",
+    "reason": "Correct agreement without an adjective class ambiguity."
+  },
+  {
+    "key": "Signed HP per exposed tick, divided by 256; negative values damage units.",
+    "entry_id": "online:Signed HP per exposed tick, divided by 256; negative values damage units.",
+    "before": "Alama za afya zenye ishara chanya au hasi kwa kila hatua ya kuathiriwa, zikigawanywa kwa 256; thamani hasi hudhuru viumbe.",
+    "after": "Mabadiliko ya afya yenye ishara chanya au hasi kwa kila hatua kiumbe akiwa nje ya jengo, yakigawanywa kwa 256; thamani hasi hudhuru viumbe.",
+    "reason": "Resolve SW-ON-018-01: hatua ya kuathiriwa does not explain exposure and the noun total health obscures signed health change; source applies outside a building."
+  },
+  {
+    "key": "{value0} HP per exposed tick",
+    "entry_id": "online:{value0} HP per exposed tick",
+    "before": "Alama za afya {value0} kwa kila hatua ya kuathiriwa",
+    "after": "Mabadiliko ya afya ya {value0} kwa kila hatua kiumbe akiwa nje ya jengo",
+    "reason": "Resolve SW-ON-018-02: Alama za afya ... kwa hatua ya kuathiriwa is unclear about both signed change and exposure outside buildings."
+  },
+  {
+    "key": "{value0} playing",
+    "entry_id": "online:{value0} playing",
+    "before": "{value0} inacheza",
+    "after": "Inacheza: {value0}",
+    "reason": "music/Player.tsx supplies translated mood names with different noun classes; avoid fixed i-class predicate after arbitrary mood."
+  },
+  {
+    "key": "{value0} {value1} attention",
+    "entry_id": "online:{value0} {value1} attention",
+    "before": "{value0} {value1} zinahitaji kushughulikiwa",
+    "after": "{value1}: {value0}",
+    "reason": "Resolve SW-ON-018-05: Current fragments compose as “1 ukaguzi unahitaji zinahitaji kushughulikiwa”, duplicating requires and mixing agreement. The three keys must be edited together."
+  },
+  {
+    "key": "Composition source · edit {count}",
+    "entry_id": "online:Composition source · edit {count}",
+    "before": "Chanzo cha utunzi · hariri {count}",
+    "after": "Chanzo cha utunzi · marekebisho {count}",
+    "reason": "Resolve SW-ON-018-04: hariri is imperative Edit, but edit number here identifies a composition-source revision."
+  },
+  {
+    "key": "Engine import and artwork",
+    "entry_id": "online:Engine import and artwork",
+    "before": "Uletaji wa injini na picha",
+    "after": "Uletaji kwenye injini na picha",
+    "reason": "Source describes importing into the engine, not importing the engine itself."
+  },
+  {
+    "key": "Requested size and players",
+    "entry_id": "online:Requested size and players",
+    "before": "Ukubwa na wachezaji walioombwa",
+    "after": "Ukubwa na idadi ya wachezaji iliyoombwa",
+    "reason": "Resolve SW-ON-018-03: wachezaji walioombwa reads as requested people, not requested player count."
+  }
+]

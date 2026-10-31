@@ -1,0 +1,29 @@
+{
+  "editor": "/root",
+  "requested_by": "/root/pilot_context",
+  "before_sha256": "ec78fb33247244bf783461e0410ef11fe48e45644c3c6500419d9060e967d458",
+  "after_sha256": "5cb88fac67663fc436f6bfa60388382c24665755ee481514c002bc92e9a29837",
+  "changes": [
+    {
+      "key": "[Symmetric arena]",
+      "before": "متناسب میدانِ جنگ",
+      "after": "تشاکلی میدانِ جنگ",
+      "reason": "Original reviewer verified primary OUP mathematics text pairs تشاکل with symmetry and checked exact point-symmetry generator geometry; normalize precise game-title family."
+    },
+    {
+      "key": "[Symmetric arena needs 2, 4 or 8 colonies.]",
+      "before": "متناسب میدانِ جنگ کے لیے 2، 4 یا 8 بستیاں درکار ہیں۔",
+      "after": "تشاکلی میدانِ جنگ کے لیے 2، 4 یا 8 بستیاں درکار ہیں۔",
+      "reason": "Original reviewer verified primary OUP mathematics text pairs تشاکل with symmetry and checked exact point-symmetry generator geometry; normalize precise game-title family."
+    },
+    {
+      "key": "[Eight colonies need a square map in the symmetric arena.]",
+      "before": "متناسب میدان میں آٹھ بستیوں کے لیے مربع نقشہ چاہیے۔",
+      "after": "تشاکلی میدانِ جنگ میں آٹھ بستیوں کے لیے مربع نقشہ چاہیے۔",
+      "reason": "Original reviewer verified primary OUP mathematics text pairs تشاکل with symmetry and checked exact point-symmetry generator geometry; normalize precise game-title family."
+    }
+  ],
+  "primary_source": "https://oup.com.pk/media/productattachments/files/Math_Understood_TG-4_2.pdf",
+  "primary_evidence": "reviews/ur-native-recheck/oup-math-page165.png",
+  "state": "pending-original-reviewer-recheck"
+}

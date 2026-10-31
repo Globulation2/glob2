@@ -1,0 +1,1474 @@
+{
+  "author": "/root/hindi_online_review",
+  "role": "AUTHOR of new209 only; not independent reviewer/editor of these entries",
+  "source_delta_sha256": "8884639e28a0f409f558951e5b1d9774772ec801330404218280f7a2cb653d4c",
+  "source_revision": "e7613e93b08234dbf785ceef3bd9b884cbb73221",
+  "draft_sha256": "d146d456347a738ddd99e26c06bbf452fe15025726fef9834cb06b0f6f643947",
+  "entries": [
+    {
+      "index": 0,
+      "key": "[intro menu]",
+      "source": "Introduction",
+      "target": "Utangulizi",
+      "method": "individually authored"
+    },
+    {
+      "index": 1,
+      "key": "[intro briefing]",
+      "source": "Learn indirect control: scout with a flag, supply your colony, and direct an attack.",
+      "target": "Jifunze kuongoza kwa njia isiyo ya moja kwa moja: chunguza kwa bendera, pelekea makazi lako mahitaji, na ongoza shambulio.",
+      "method": "individually authored"
+    },
+    {
+      "index": 2,
+      "key": "[intro try]",
+      "source": "Start introduction",
+      "target": "Anza utangulizi",
+      "method": "individually authored"
+    },
+    {
+      "index": 3,
+      "key": "[intro preflight]",
+      "source": "Your globules act on their own. You choose their jobs through buildings and flags. In this short introduction, scout a landmark, expand food supply, grow your workforce, and direct a small attack.",
+      "target": "Viumbe wako hujitendea wenyewe. Unawachagulia kazi kupitia majengo na bendera. Katika utangulizi huu mfupi, chunguza alama ya eneo, ongeza upatikanaji wa chakula, ongeza wafanyakazi, na ongoza shambulio dogo.",
+      "method": "individually authored"
+    },
+    {
+      "index": 4,
+      "key": "[intro preflight save]",
+      "source": "Allow about 10 minutes. You can save from the game menu and resume through Load game. Normal hunger and combat rules apply. Choose Tutorial lessons from the main menu to practice more skills.",
+      "target": "Tenga takribani dakika 10. Unaweza kuhifadhi kupitia menyu ya mchezo na kuendelea kupitia Pakia mchezo. Kanuni za kawaida za njaa na mapigano zinatumika. Chagua Masomo ya mafunzo katika menyu kuu ili kufanya mazoezi ya ujuzi zaidi.",
+      "method": "individually authored"
+    },
+    {
+      "index": 5,
+      "key": "[intro preference failed]",
+      "source": "Your choice could not be saved. You can continue playing; this recommendation may appear again next time.",
+      "target": "Chaguo lako halikuweza kuhifadhiwa. Unaweza kuendelea kucheza; pendekezo hili linaweza kuonekana tena wakati ujao.",
+      "method": "individually authored"
+    },
+    {
+      "index": 6,
+      "key": "[intro goal scout]",
+      "source": "Scout the stone landmark",
+      "target": "Chunguza alama ya mawe",
+      "method": "individually authored"
+    },
+    {
+      "index": 7,
+      "key": "[intro goal build]",
+      "source": "Build another Inn",
+      "target": "Jenga nyumba nyingine ya wageni",
+      "method": "individually authored"
+    },
+    {
+      "index": 8,
+      "key": "[intro goal supply]",
+      "source": "Supply your new Inn",
+      "target": "Pelekea nyumba yako mpya ya wageni mahitaji",
+      "method": "individually authored"
+    },
+    {
+      "index": 9,
+      "key": "[intro goal grow]",
+      "source": "Grow the workforce",
+      "target": "Ongeza wafanyakazi",
+      "method": "individually authored"
+    },
+    {
+      "index": 10,
+      "key": "[intro goal attack]",
+      "source": "Destroy the enemy Swarm",
+      "target": "Haribu Kiota cha adui",
+      "method": "individually authored"
+    },
+    {
+      "index": 11,
+      "key": "[intro instruction scout]",
+      "source": "Open Flags and place an Exploration Flag over the stone patch east of your colony. Assign one explorer. Watch it travel to the flag.",
+      "target": "Fungua Bendera na uweke Bendera ya uchunguzi juu ya eneo la mawe mashariki mwa makazi yako. Pangia mgunduzi mmoja kazi hiyo. Mtazame akisafiri kwenda kwenye bendera.",
+      "method": "individually authored"
+    },
+    {
+      "index": 12,
+      "key": "[intro instruction build]",
+      "source": "Open Build and place an Inn near wheat. Assign available workers to construct it. Leave your existing Inn supplied.",
+      "target": "Fungua Jenga na uweke nyumba ya wageni karibu na ngano. Pangia wafanyakazi wanaopatikana kazi ya kuijenga. Endelea kupelekea nyumba yako ya wageni iliyopo mahitaji.",
+      "method": "individually authored"
+    },
+    {
+      "index": 13,
+      "key": "[intro instruction supply]",
+      "source": "Select your finished new Inn and give it at least one supplier. Wait for a worker to deliver wheat.",
+      "target": "Chagua nyumba yako mpya ya wageni iliyokamilika na uipangie angalau msambazaji mmoja. Subiri mfanyakazi alete ngano.",
+      "method": "individually authored"
+    },
+    {
+      "index": 14,
+      "key": "[intro instruction grow]",
+      "source": "Select the Swarm. Set its worker target to at least 2, and its production ratios to workers only. Keep both Inns supplied while a new worker is born.",
+      "target": "Chagua Kiota. Weka idadi inayolengwa ya wafanyakazi wake kuwa angalau 2, na uwiano wa uzalishaji uwe wa wafanyakazi pekee. Endelea kupelekea nyumba zote mbili za wageni mahitaji wakati mfanyakazi mpya anazaliwa.",
+      "method": "individually authored"
+    },
+    {
+      "index": 15,
+      "key": "[intro instruction attack]",
+      "source": "Find the enemy Swarm farther east. Use a War Flag to direct your warriors against it. Help is available if you need a reminder.",
+      "target": "Tafuta Kiota cha adui mbali zaidi mashariki. Tumia Bendera ya vita kuwaelekeza mashujaa wako wakishambulie. Msaada unapatikana ukihitaji kukumbushwa.",
+      "method": "individually authored"
+    },
+    {
+      "index": 16,
+      "key": "[intro help]",
+      "source": "Help / why?",
+      "target": "Msaada / kwa nini?",
+      "method": "individually authored"
+    },
+    {
+      "index": 17,
+      "key": "[intro help scout]",
+      "source": "Use the minimap to move the view east and find the stone patch. Choose Exploration Flag in Flags, place it on the stone, then leave placement with the secondary mouse button. Select the flag and request 1 explorer. Flags request units; they do not move them instantly. Explorers may stop to eat.",
+      "target": "Tumia ramani ndogo kusogeza mwonekano mashariki na kutafuta eneo la mawe. Chagua Bendera ya uchunguzi katika Bendera, iweke juu ya mawe, kisha toka kwenye hali ya kuweka kwa kitufe cha pili cha kipanya. Chagua bendera na uombe mgunduzi 1. Bendera huomba viumbe; haziwasogezi papo hapo. Wagunduzi wanaweza kusimama kula.",
+      "method": "individually authored"
+    },
+    {
+      "index": 18,
+      "key": "[intro help build]",
+      "source": "Construction consumes wood delivered by workers. Choose Inn from the building controls (the building palette), place it in clear ground near wheat, and request 2 builders. A worker target is a request, not a count of workers already present. Keep suppliers at your existing Inn and Swarm. Any valid location counts.",
+      "target": "Ujenzi hutumia kuni zinazoletwa na wafanyakazi. Chagua Nyumba ya wageni katika vidhibiti vya majengo (orodha ya majengo), iweke kwenye ardhi wazi karibu na ngano, na uombe wajenzi 2. Idadi inayolengwa ya wafanyakazi ni ombi, si idadi ya wafanyakazi waliopo tayari. Endelea kupelekea nyumba yako ya wageni iliyopo na Kiota mahitaji. Eneo lolote linaloruhusiwa linakubalika.",
+      "method": "individually authored"
+    },
+    {
+      "index": 19,
+      "key": "[intro help supply]",
+      "source": "Construction and everyday supply have separate worker targets. Select the finished Inn and increase its operating target. A supplier gathers wheat and carries it here. Hungry globules eat at Inns; a building with no suppliers will eventually run out. Keep the wheat patch accessible.",
+      "target": "Ujenzi na usambazaji wa kila siku vina malengo tofauti ya idadi ya wafanyakazi. Chagua nyumba ya wageni iliyokamilika na uongeze idadi ya wafanyakazi wa kuihudumia. Msambazaji hukusanya ngano na kuileta hapa. Viumbe wenye njaa hula katika nyumba za wageni; jengo lisilo na wasambazaji hatimaye litaishiwa. Hakikisha eneo la ngano linafikika.",
+      "method": "individually authored"
+    },
+    {
+      "index": 20,
+      "key": "[intro help grow]",
+      "source": "The Swarm consumes wheat to produce units. Set worker production to 1 and explorer and warrior production to 0. Increase the Swarm worker target to 2 or more. More suppliers can deliver wheat faster, but they compete with other jobs. Maintain food supply at both Inns.",
+      "target": "Kiota hutumia ngano kuzalisha viumbe. Weka uzalishaji wa wafanyakazi kuwa 1, na wa wagunduzi na mashujaa kuwa 0. Ongeza idadi inayolengwa ya wafanyakazi wa Kiota hadi 2 au zaidi. Wasambazaji wengi wanaweza kuleta ngano haraka zaidi, lakini wanahitajika pia katika kazi nyingine. Dumisha usambazaji wa chakula katika nyumba zote mbili za wageni.",
+      "method": "individually authored"
+    },
+    {
+      "index": 21,
+      "key": "[intro help attack]",
+      "source": "Open Flags, choose War Flag, and place it over the enemy Swarm east of the stone. Select the flag and request up to 4 warriors. A small radius keeps them concentrated. Leave placement with the secondary mouse button before selecting the flag. If no warriors remain, produce more at the Swarm. Warriors may stop to eat; keep the Inns supplied.",
+      "target": "Fungua Bendera, chagua Bendera ya vita, na uiweke juu ya Kiota cha adui mashariki mwa mawe. Chagua bendera na uombe hadi mashujaa 4. Nusukipenyo kidogo huwafanya wajikusanye karibu. Toka kwenye hali ya kuweka kwa kitufe cha pili cha kipanya kabla ya kuchagua bendera. Ikiwa hakuna mashujaa waliobaki, zalisha wengine katika Kiota. Mashujaa wanaweza kusimama kula; endelea kupelekea nyumba za wageni mahitaji.",
+      "method": "individually authored"
+    },
+    {
+      "index": 22,
+      "key": "[intro hint scout]",
+      "source": "Your explorer needs an assigned Exploration Flag at the eastern stone patch. Check its target and explorer count.",
+      "target": "Mgunduzi wako anahitaji Bendera ya uchunguzi yenye mgawo wa kazi kwenye eneo la mawe la mashariki. Kagua eneo inalolenga na idadi ya wagunduzi.",
+      "method": "individually authored"
+    },
+    {
+      "index": 23,
+      "key": "[intro hint build]",
+      "source": "If you removed the new Inn, build another. Otherwise check the construction site and its worker target. Existing supply jobs may occupy your workers; keep food running while making builders available.",
+      "target": "Ikiwa uliondoa nyumba mpya ya wageni, jenga nyingine. Vinginevyo kagua eneo la ujenzi na idadi yake inayolengwa ya wafanyakazi. Kazi za usambazaji zilizopo zinaweza kuwashughulisha wafanyakazi wako; dumisha chakula huku ukiwapata wajenzi.",
+      "method": "individually authored"
+    },
+    {
+      "index": 24,
+      "key": "[intro hint supply]",
+      "source": "Select the finished new Inn. Check its worker target and watch for wheat deliveries. Workers may need time to travel or eat.",
+      "target": "Chagua nyumba mpya ya wageni iliyokamilika. Kagua idadi yake inayolengwa ya wafanyakazi na uangalie ngano ikiletwa. Wafanyakazi wanaweza kuhitaji muda wa kusafiri au kula.",
+      "method": "individually authored"
+    },
+    {
+      "index": 25,
+      "key": "[intro hint grow]",
+      "source": "Check Swarm supply and worker-only production. Keep the Inns supplied while waiting for another worker.",
+      "target": "Kagua usambazaji wa Kiota na uzalishaji wa wafanyakazi pekee. Endelea kupelekea nyumba za wageni mahitaji ukisubiri mfanyakazi mwingine.",
+      "method": "individually authored"
+    },
+    {
+      "index": 26,
+      "key": "[intro hint attack]",
+      "source": "Check your War Flag, requested warrior count, and food supply. Your warriors need time to travel and attack.",
+      "target": "Kagua Bendera yako ya vita, idadi ya mashujaa walioombwa, na usambazaji wa chakula. Mashujaa wako wanahitaji muda wa kusafiri na kushambulia.",
+      "method": "individually authored"
+    },
+    {
+      "index": 27,
+      "key": "[intro hint no scout flag]",
+      "source": "No assigned Exploration Flag was found. Place one on the stone east of your base and request 1 explorer.",
+      "target": "Hakuna Bendera ya uchunguzi yenye mgawo wa kazi iliyopatikana. Weka moja juu ya mawe mashariki mwa kituo chako na uombe mgunduzi 1.",
+      "method": "individually authored"
+    },
+    {
+      "index": 28,
+      "key": "[intro hint no suppliers]",
+      "source": "Your new Inn or building site has a worker target of 0. Select it and request workers.",
+      "target": "Lengo la idadi ya wafanyakazi katika nyumba yako mpya ya wageni au eneo la ujenzi ni 0. Chagua nyumba hiyo au eneo hilo na uombe wafanyakazi.",
+      "method": "individually authored"
+    },
+    {
+      "index": 29,
+      "key": "[intro hint no war flag]",
+      "source": "No assigned War Flag was found at the enemy base. Place one over the eastern enemy Swarm and request warriors.",
+      "target": "Hakuna Bendera ya vita yenye mgawo wa kazi iliyopatikana katika kituo cha adui. Weka moja juu ya Kiota cha adui cha mashariki na uombe mashujaa.",
+      "method": "individually authored"
+    },
+    {
+      "index": 30,
+      "key": "[intro hint retry]",
+      "source": "A unit or building needed for this lesson has been lost. Load an earlier save or restart this lesson from the game menu.",
+      "target": "Umepoteza kiumbe au jengo linalohitajika kwa somo hili. Pakia hifadhi ya awali au anza somo hili upya kupitia menyu ya mchezo.",
+      "method": "individually authored"
+    },
+    {
+      "index": 31,
+      "key": "[intro complete]",
+      "source": "Introduction complete",
+      "target": "Utangulizi umekamilika",
+      "method": "individually authored"
+    },
+    {
+      "index": 32,
+      "key": "[intro complete body]",
+      "source": "You directed autonomous globules, expanded food supply, grew the colony, and organized an attack. Continue with Tutorial lessons for training, upgrades, and defense, or return to the main menu to start a match.",
+      "target": "Umeongoza viumbe wanaojitendea wenyewe, ukaongeza usambazaji wa chakula, ukapanua makazi, na ukapanga shambulio. Endelea na Masomo ya mafunzo kwa mazoezi, maboresho, na ulinzi, au rudi kwenye menyu kuu kuanza mechi.",
+      "method": "individually authored"
+    },
+    {
+      "index": 33,
+      "key": "[intro play again]",
+      "source": "Play again",
+      "target": "Cheza tena",
+      "method": "individually authored"
+    },
+    {
+      "index": 34,
+      "key": "[intro restart]",
+      "source": "Restart introduction",
+      "target": "Anza utangulizi upya",
+      "method": "individually authored"
+    },
+    {
+      "index": 35,
+      "key": "[intro restart body]",
+      "source": "Restart from the prepared colony? Unsaved progress in this introduction will be lost.",
+      "target": "Uanze upya kutoka makazi yaliyoandaliwa? Maendeleo yasiyohifadhiwa katika utangulizi huu yatapotea.",
+      "method": "individually authored"
+    },
+    {
+      "index": 36,
+      "key": "[intro help touch scout]",
+      "source": "Drag empty ground to move the view before placing a flag. Find the stone patch east of the colony. Open Flags, choose Exploration Flag, place it on the stone and confirm. Select the flag and request 1 explorer using its assigned-unit target. Globules travel on their own and may stop to eat.",
+      "target": "Buruta ardhi tupu kusogeza mwonekano kabla ya kuweka bendera. Tafuta eneo la mawe mashariki mwa makazi. Fungua Bendera, chagua Bendera ya uchunguzi, iweke juu ya mawe na uthibitishe. Chagua bendera na uombe mgunduzi 1 kupitia lengo lake la idadi ya viumbe. Viumbe husafiri wenyewe na wanaweza kusimama kula.",
+      "method": "individually authored"
+    },
+    {
+      "index": 37,
+      "key": "[intro help touch build]",
+      "source": "Choose Inn from Build. Place it in clear ground near wheat and confirm. Select the site and request 2 builders. A worker target is a request, not a count of workers already present. Keep the existing Inn and Swarm supplied. Any valid location counts.",
+      "target": "Chagua Nyumba ya wageni katika Jenga. Iweke kwenye ardhi wazi karibu na ngano na uthibitishe. Chagua eneo la ujenzi na uombe wajenzi 2. Idadi inayolengwa ya wafanyakazi ni ombi, si idadi ya wafanyakazi waliopo tayari. Endelea kupelekea nyumba ya wageni iliyopo na Kiota mahitaji. Eneo lolote linaloruhusiwa linakubalika.",
+      "method": "individually authored"
+    },
+    {
+      "index": 38,
+      "key": "[intro help touch supply]",
+      "source": "Select the finished new Inn and increase its assigned-worker target. Construction and everyday supply have separate targets. A supplier gathers wheat and carries it here. Hungry globules eat at Inns; a building with no suppliers eventually runs out. Keep the wheat accessible.",
+      "target": "Chagua nyumba mpya ya wageni iliyokamilika na uongeze idadi yake inayolengwa ya wafanyakazi. Ujenzi na usambazaji wa kila siku vina malengo tofauti. Msambazaji hukusanya ngano na kuileta hapa. Viumbe wenye njaa hula katika nyumba za wageni; jengo lisilo na wasambazaji hatimaye litaishiwa. Hakikisha ngano inafikika.",
+      "method": "individually authored"
+    },
+    {
+      "index": 39,
+      "key": "[intro help touch grow]",
+      "source": "Select the Swarm. Set worker production to 1 and explorer and warrior production to 0. Increase its assigned-worker target to 2 or more. Suppliers bring wheat for new units, but they compete with other jobs. Keep both Inns supplied.",
+      "target": "Chagua Kiota. Weka uzalishaji wa wafanyakazi kuwa 1, na wa wagunduzi na mashujaa kuwa 0. Ongeza idadi yake inayolengwa ya wafanyakazi hadi 2 au zaidi. Wasambazaji huleta ngano kwa viumbe wapya, lakini wanahitajika pia katika kazi nyingine. Endelea kupelekea nyumba zote mbili za wageni mahitaji.",
+      "method": "individually authored"
+    },
+    {
+      "index": 40,
+      "key": "[intro help touch attack]",
+      "source": "Open Flags, choose War Flag, place it over the enemy Swarm east of the stone and confirm. Select the flag and request up to 4 warriors. A small radius concentrates them. If none remain, produce warriors at your Swarm. Warriors may stop to eat; keep the Inns supplied.",
+      "target": "Fungua Bendera, chagua Bendera ya vita, iweke juu ya Kiota cha adui mashariki mwa mawe na uthibitishe. Chagua bendera na uombe hadi mashujaa 4. Nusukipenyo kidogo huwafanya wajikusanye karibu. Ikiwa hakuna waliobaki, zalisha mashujaa katika Kiota chako. Mashujaa wanaweza kusimama kula; endelea kupelekea nyumba za wageni mahitaji.",
+      "method": "individually authored"
+    },
+    {
+      "index": 41,
+      "key": "[intro show destination]",
+      "source": "Show destination",
+      "target": "Onyesha unakoelekea",
+      "method": "individually authored"
+    },
+    {
+      "index": 42,
+      "key": "[intro scout destination]",
+      "source": "Scout here",
+      "target": "Chunguza hapa",
+      "method": "individually authored"
+    },
+    {
+      "index": 43,
+      "key": "[intro compact scout]",
+      "source": "Flags → Exploration Flag. Place it on the stone; assign 1 explorer.",
+      "target": "Bendera → Bendera ya uchunguzi. Weka juu ya mawe; pangia mgunduzi 1.",
+      "method": "individually authored"
+    },
+    {
+      "index": 44,
+      "key": "[intro compact build]",
+      "source": "Build → Inn. Place near wheat; assign 2 builders.",
+      "target": "Jenga → Nyumba ya wageni. Weka karibu na ngano; pangia wajenzi 2.",
+      "method": "individually authored"
+    },
+    {
+      "index": 45,
+      "key": "[intro compact supply]",
+      "source": "Select your new Inn; assign at least 1 supplier. Wait for wheat.",
+      "target": "Chagua nyumba yako mpya ya wageni; pangia angalau msambazaji 1. Subiri ngano.",
+      "method": "individually authored"
+    },
+    {
+      "index": 46,
+      "key": "[intro compact grow]",
+      "source": "Select the Swarm; assign 2 suppliers. Produce workers only.",
+      "target": "Chagua Kiota; pangia wasambazaji 2. Zalisha wafanyakazi pekee.",
+      "method": "individually authored"
+    },
+    {
+      "index": 47,
+      "key": "[intro compact attack]",
+      "source": "Flags → War Flag. Place over the enemy Swarm; assign warriors.",
+      "target": "Bendera → Bendera ya vita. Weka juu ya Kiota cha adui; pangia mashujaa.",
+      "method": "individually authored"
+    },
+    {
+      "index": 48,
+      "key": "[tutorial lessons]",
+      "source": "Tutorial lessons",
+      "target": "Masomo ya mafunzo",
+      "method": "individually authored"
+    },
+    {
+      "index": 49,
+      "key": "[tutorial restart]",
+      "source": "Restart lesson",
+      "target": "Anza somo upya",
+      "method": "individually authored"
+    },
+    {
+      "index": 50,
+      "key": "[tutorial restart body]",
+      "source": "Restart this lesson from its prepared colony? Unsaved progress will be lost.",
+      "target": "Uanze somo hili upya kutoka makazi yake yaliyoandaliwa? Maendeleo yasiyohifadhiwa yatapotea.",
+      "method": "individually authored"
+    },
+    {
+      "index": 51,
+      "key": "[tutorial complete]",
+      "source": "Lesson complete",
+      "target": "Somo limekamilika",
+      "method": "individually authored"
+    },
+    {
+      "index": 52,
+      "key": "[tutorial food title]",
+      "source": "Food supply practice",
+      "target": "Mazoezi ya usambazaji wa chakula",
+      "method": "individually authored"
+    },
+    {
+      "index": 53,
+      "key": "[tutorial food briefing]",
+      "source": "Practice expanding food supply: build another Inn, then assign suppliers and watch wheat arrive.",
+      "target": "Fanya mazoezi ya kuongeza usambazaji wa chakula: jenga nyumba nyingine ya wageni, kisha pangia wasambazaji na uangalie ngano ikifika.",
+      "method": "individually authored"
+    },
+    {
+      "index": 54,
+      "key": "[tutorial food complete]",
+      "source": "You built an Inn and supplied it with wheat. Try another lesson or return to the main menu.",
+      "target": "Umejenga nyumba ya wageni na kuiletea ngano. Jaribu somo jingine au rudi kwenye menyu kuu.",
+      "method": "individually authored"
+    },
+    {
+      "index": 55,
+      "key": "[tutorial unavailable]",
+      "source": "Tutorial lessons could not be loaded.",
+      "target": "Masomo ya mafunzo hayakuweza kupakiwa.",
+      "method": "individually authored"
+    },
+    {
+      "index": 56,
+      "key": "[lesson healing title]",
+      "source": "Hospitals and healing",
+      "target": "Hospitali na matibabu",
+      "method": "individually authored"
+    },
+    {
+      "index": 57,
+      "key": "[lesson healing briefing]",
+      "source": "Build a Hospital and help a wounded worker recover. The colony starts fed, with one injured worker.",
+      "target": "Jenga Hospitali na umsaidie mfanyakazi aliyejeruhiwa apone. Makazi yanaanza yakiwa na chakula cha kutosha, na mfanyakazi mmoja aliyejeruhiwa.",
+      "method": "individually authored"
+    },
+    {
+      "index": 58,
+      "key": "[lesson healing complete]",
+      "source": "Your Hospital restored an injured globule. Keep Inns supplied: hunger can injure units again.",
+      "target": "Hospitali yako imemponya kiumbe aliyejeruhiwa. Endelea kupelekea nyumba za wageni mahitaji: njaa inaweza kuwajeruhi viumbe tena.",
+      "method": "individually authored"
+    },
+    {
+      "index": 59,
+      "key": "[lesson healing build hint]",
+      "source": "Build a Hospital in clear ground; assign 2 builders. Leave room for globules to enter and exit. Hospitals heal injuries; Inns supply food. This patient is already fed.",
+      "target": "Jenga Hospitali kwenye ardhi wazi; pangia wajenzi 2. Acha nafasi ili viumbe waweze kuingia na kutoka. Hospitali hutibu majeraha; nyumba za wageni hutoa chakula. Mgonjwa huyu tayari amekula.",
+      "method": "exact source instruction + help composition; same authored sentences"
+    },
+    {
+      "index": 60,
+      "key": "[lesson healing build title]",
+      "source": "Build a Hospital",
+      "target": "Jenga Hospitali",
+      "method": "individually authored"
+    },
+    {
+      "index": 61,
+      "key": "[lesson healing build instruction]",
+      "source": "Build a Hospital in clear ground; assign 2 builders.",
+      "target": "Jenga Hospitali kwenye ardhi wazi; pangia wajenzi 2.",
+      "method": "individually authored"
+    },
+    {
+      "index": 62,
+      "key": "[lesson healing build help]",
+      "source": "Leave room for globules to enter and exit. Hospitals heal injuries; Inns supply food. This patient is already fed.",
+      "target": "Acha nafasi ili viumbe waweze kuingia na kutoka. Hospitali hutibu majeraha; nyumba za wageni hutoa chakula. Mgonjwa huyu tayari amekula.",
+      "method": "individually authored"
+    },
+    {
+      "index": 63,
+      "key": "[lesson healing build marker]",
+      "source": "Build a Hospital",
+      "target": "Jenga Hospitali",
+      "method": "same exact English source; retained same authored target"
+    },
+    {
+      "index": 64,
+      "key": "[lesson healing heal hint]",
+      "source": "Keep the Hospital accessible. Watch the injured worker recover. Globules seek healing autonomously. Track the injured worker, not a newly born unit. If it dies, restart or load a save.",
+      "target": "Hakikisha Hospitali inafikika. Mtazame mfanyakazi aliyejeruhiwa akipona. Viumbe hutafuta matibabu wenyewe. Mfuatilie mfanyakazi aliyejeruhiwa, si kiumbe aliyezaliwa karibuni. Akifa, anza upya au pakia hifadhi.",
+      "method": "exact source instruction + help composition; same authored sentences"
+    },
+    {
+      "index": 65,
+      "key": "[lesson healing heal title]",
+      "source": "Let the patient recover",
+      "target": "Mpe mgonjwa nafasi ya kupona",
+      "method": "individually authored"
+    },
+    {
+      "index": 66,
+      "key": "[lesson healing heal instruction]",
+      "source": "Keep the Hospital accessible. Watch the injured worker recover.",
+      "target": "Hakikisha Hospitali inafikika. Mtazame mfanyakazi aliyejeruhiwa akipona.",
+      "method": "individually authored"
+    },
+    {
+      "index": 67,
+      "key": "[lesson healing heal help]",
+      "source": "Globules seek healing autonomously. Track the injured worker, not a newly born unit. If it dies, restart or load a save.",
+      "target": "Viumbe hutafuta matibabu wenyewe. Mfuatilie mfanyakazi aliyejeruhiwa, si kiumbe aliyezaliwa karibuni. Akifa, anza upya au pakia hifadhi.",
+      "method": "individually authored"
+    },
+    {
+      "index": 68,
+      "key": "[lesson healing heal marker]",
+      "source": "Let the patient recover",
+      "target": "Mpe mgonjwa nafasi ya kupona",
+      "method": "same exact English source; retained same authored target"
+    },
+    {
+      "index": 69,
+      "key": "[lesson walking-training title]",
+      "source": "Walking training",
+      "target": "Mafunzo ya kutembea",
+      "method": "individually authored"
+    },
+    {
+      "index": 70,
+      "key": "[lesson walking-training briefing]",
+      "source": "Build a Racetrack and observe an existing worker learn to walk faster.",
+      "target": "Jenga Uwanja wa mbio na utazame mfanyakazi aliyepo akijifunza kutembea haraka zaidi.",
+      "method": "individually authored"
+    },
+    {
+      "index": 71,
+      "key": "[lesson walking-training complete]",
+      "source": "Your workers learned faster walking. Training improves the workers you have; it does not replace the colony food supply.",
+      "target": "Wafanyakazi wako wamejifunza kutembea haraka zaidi. Mafunzo huboresha wafanyakazi ulio nao; hayachukui nafasi ya usambazaji wa chakula wa makazi.",
+      "method": "individually authored"
+    },
+    {
+      "index": 72,
+      "key": "[lesson walking-training build hint]",
+      "source": "Build a Racetrack in the marked clearing; assign builders. A Racetrack needs wood and stone. Leave a gap around its edges for entry, exit and later expansion.",
+      "target": "Jenga Uwanja wa mbio katika eneo wazi lililowekwa alama; pangia wajenzi. Uwanja wa mbio unahitaji kuni na mawe. Acha nafasi kuzunguka kingo zake kwa kuingia, kutoka na upanuzi wa baadaye.",
+      "method": "exact source instruction + help composition; same authored sentences"
+    },
+    {
+      "index": 73,
+      "key": "[lesson walking-training build title]",
+      "source": "Build a Racetrack",
+      "target": "Jenga Uwanja wa mbio",
+      "method": "individually authored"
+    },
+    {
+      "index": 74,
+      "key": "[lesson walking-training build instruction]",
+      "source": "Build a Racetrack in the marked clearing; assign builders.",
+      "target": "Jenga Uwanja wa mbio katika eneo wazi lililowekwa alama; pangia wajenzi.",
+      "method": "individually authored"
+    },
+    {
+      "index": 75,
+      "key": "[lesson walking-training build help]",
+      "source": "A Racetrack needs wood and stone. Leave a gap around its edges for entry, exit and later expansion.",
+      "target": "Uwanja wa mbio unahitaji kuni na mawe. Acha nafasi kuzunguka kingo zake kwa kuingia, kutoka na upanuzi wa baadaye.",
+      "method": "individually authored"
+    },
+    {
+      "index": 76,
+      "key": "[lesson walking-training build marker]",
+      "source": "Build a Racetrack",
+      "target": "Jenga Uwanja wa mbio",
+      "method": "same exact English source; retained same authored target"
+    },
+    {
+      "index": 77,
+      "key": "[lesson walking-training train hint]",
+      "source": "Keep the Racetrack accessible and let a worker finish training. Training is automatic for eligible globules. Keep some workers free from supply jobs and keep both Inns stocked.",
+      "target": "Hakikisha Uwanja wa mbio unafikika na umpe mfanyakazi nafasi ya kumaliza mafunzo. Viumbe wanaostahili hupata mafunzo kiotomatiki. Waache baadhi ya wafanyakazi bila kazi za usambazaji na uhakikishe nyumba zote mbili za wageni zina akiba ya chakula.",
+      "method": "exact source instruction + help composition; same authored sentences"
+    },
+    {
+      "index": 78,
+      "key": "[lesson walking-training train title]",
+      "source": "Train an existing worker",
+      "target": "Mfundishe mfanyakazi aliyepo",
+      "method": "individually authored"
+    },
+    {
+      "index": 79,
+      "key": "[lesson walking-training train instruction]",
+      "source": "Keep the Racetrack accessible and let a worker finish training.",
+      "target": "Hakikisha Uwanja wa mbio unafikika na umpe mfanyakazi nafasi ya kumaliza mafunzo.",
+      "method": "individually authored"
+    },
+    {
+      "index": 80,
+      "key": "[lesson walking-training train help]",
+      "source": "Training is automatic for eligible globules. Keep some workers free from supply jobs and keep both Inns stocked.",
+      "target": "Viumbe wanaostahili hupata mafunzo kiotomatiki. Waache baadhi ya wafanyakazi bila kazi za usambazaji na uhakikishe nyumba zote mbili za wageni zina akiba ya chakula.",
+      "method": "individually authored"
+    },
+    {
+      "index": 81,
+      "key": "[lesson swimming title]",
+      "source": "Swimming and water resources",
+      "target": "Kuogelea na malighafi za majini",
+      "method": "individually authored"
+    },
+    {
+      "index": 82,
+      "key": "[lesson swimming briefing]",
+      "source": "Train swimmers, then use algae from the pond to construct a School.",
+      "target": "Fundisha waogeleaji, kisha tumia mwani wa kidimbwi kujenga Shule.",
+      "method": "individually authored"
+    },
+    {
+      "index": 83,
+      "key": "[lesson swimming complete]",
+      "source": "A swimmer delivered water resources for your School. Water access expands the jobs your colony can perform.",
+      "target": "Mwogeleaji ameleta malighafi za majini kwa ajili ya Shule yako. Kufikia maji huongeza kazi ambazo makazi yako yanaweza kufanya.",
+      "method": "individually authored"
+    },
+    {
+      "index": 84,
+      "key": "[lesson swimming build hint]",
+      "source": "Build a Swimming Pool west of the pond; assign builders. Leave space around the pool. A worker cannot gather algae in deep water until it has learned to swim.",
+      "target": "Jenga Bwawa la kuogelea magharibi mwa kidimbwi; pangia wajenzi. Acha nafasi kuzunguka bwawa. Mfanyakazi hawezi kukusanya mwani kwenye maji yenye kina kirefu mpaka awe amejifunza kuogelea.",
+      "method": "exact source instruction + help composition; same authored sentences"
+    },
+    {
+      "index": 85,
+      "key": "[lesson swimming build title]",
+      "source": "Build a Swimming Pool",
+      "target": "Jenga Bwawa la kuogelea",
+      "method": "individually authored"
+    },
+    {
+      "index": 86,
+      "key": "[lesson swimming build instruction]",
+      "source": "Build a Swimming Pool west of the pond; assign builders.",
+      "target": "Jenga Bwawa la kuogelea magharibi mwa kidimbwi; pangia wajenzi.",
+      "method": "individually authored"
+    },
+    {
+      "index": 87,
+      "key": "[lesson swimming build help]",
+      "source": "Leave space around the pool. A worker cannot gather algae in deep water until it has learned to swim.",
+      "target": "Acha nafasi kuzunguka bwawa. Mfanyakazi hawezi kukusanya mwani kwenye maji yenye kina kirefu mpaka awe amejifunza kuogelea.",
+      "method": "individually authored"
+    },
+    {
+      "index": 88,
+      "key": "[lesson swimming build marker]",
+      "source": "Build a Swimming Pool",
+      "target": "Jenga Bwawa la kuogelea",
+      "method": "same exact English source; retained same authored target"
+    },
+    {
+      "index": 89,
+      "key": "[lesson swimming train hint]",
+      "source": "Let an existing worker finish swimming training. Units choose training automatically. Keep supply running and allow free workers to reach the pool.",
+      "target": "Mpe mfanyakazi aliyepo nafasi ya kumaliza mafunzo ya kuogelea. Viumbe huchagua mafunzo kiotomatiki. Dumisha usambazaji na uruhusu wafanyakazi wasio na kazi kufika kwenye bwawa.",
+      "method": "exact source instruction + help composition; same authored sentences"
+    },
+    {
+      "index": 90,
+      "key": "[lesson swimming train title]",
+      "source": "Train a swimmer",
+      "target": "Fundisha mwogeleaji",
+      "method": "individually authored"
+    },
+    {
+      "index": 91,
+      "key": "[lesson swimming train instruction]",
+      "source": "Let an existing worker finish swimming training.",
+      "target": "Mpe mfanyakazi aliyepo nafasi ya kumaliza mafunzo ya kuogelea.",
+      "method": "individually authored"
+    },
+    {
+      "index": 92,
+      "key": "[lesson swimming train help]",
+      "source": "Units choose training automatically. Keep supply running and allow free workers to reach the pool.",
+      "target": "Viumbe huchagua mafunzo kiotomatiki. Dumisha usambazaji na uruhusu wafanyakazi wasio na kazi kufika kwenye bwawa.",
+      "method": "individually authored"
+    },
+    {
+      "index": 93,
+      "key": "[lesson swimming water-job hint]",
+      "source": "Build a School near the colony; assign builders to fetch wood and algae. The algae grows in the pond. A trained swimmer must enter water to collect it. Keep the School on open land with access for suppliers.",
+      "target": "Jenga Shule karibu na makazi; pangia wajenzi kuleta kuni na mwani. Mwani huota katika kidimbwi. Mwogeleaji aliyefundishwa lazima aingie majini ili kuukusanya. Weka Shule kwenye ardhi wazi inayofikika na wasambazaji.",
+      "method": "exact source instruction + help composition; same authored sentences"
+    },
+    {
+      "index": 94,
+      "key": "[lesson swimming water-job title]",
+      "source": "Use algae from the pond",
+      "target": "Tumia mwani wa kidimbwi",
+      "method": "individually authored"
+    },
+    {
+      "index": 95,
+      "key": "[lesson swimming water-job instruction]",
+      "source": "Build a School near the colony; assign builders to fetch wood and algae.",
+      "target": "Jenga Shule karibu na makazi; pangia wajenzi kuleta kuni na mwani.",
+      "method": "individually authored"
+    },
+    {
+      "index": 96,
+      "key": "[lesson swimming water-job help]",
+      "source": "The algae grows in the pond. A trained swimmer must enter water to collect it. Keep the School on open land with access for suppliers.",
+      "target": "Mwani huota katika kidimbwi. Mwogeleaji aliyefundishwa lazima aingie majini ili kuukusanya. Weka Shule kwenye ardhi wazi inayofikika na wasambazaji.",
+      "method": "individually authored"
+    },
+    {
+      "index": 97,
+      "key": "[lesson swimming water-job marker]",
+      "source": "Use algae from the pond",
+      "target": "Tumia mwani wa kidimbwi",
+      "method": "same exact English source; retained same authored target"
+    },
+    {
+      "index": 98,
+      "key": "[lesson schools title]",
+      "source": "Schools and worker skills",
+      "target": "Shule na ujuzi wa wafanyakazi",
+      "method": "individually authored"
+    },
+    {
+      "index": 99,
+      "key": "[lesson schools briefing]",
+      "source": "Use the prepared swimmers to build a School, then observe workers learn construction and harvesting.",
+      "target": "Tumia waogeleaji walioandaliwa kujenga Shule, kisha utazame wafanyakazi wakijifunza ujenzi na ukusanyaji wa malighafi.",
+      "method": "individually authored"
+    },
+    {
+      "index": 100,
+      "key": "[lesson schools complete]",
+      "source": "Your School improved worker skills. Skilled builders unlock upgrades; better harvesting helps maintain an expanding economy.",
+      "target": "Shule yako imeboresha ujuzi wa wafanyakazi. Wajenzi wenye ujuzi huwezesha maboresho; ukusanyaji bora wa malighafi husaidia kudumisha uchumi unaopanuka.",
+      "method": "individually authored"
+    },
+    {
+      "index": 101,
+      "key": "[lesson schools build hint]",
+      "source": "Build a School in the clearing; assign builders. The colony already has swimmers for algae. Leave access to wood and water. Fruit trees provide prestige resources; food still comes from wheat.",
+      "target": "Jenga Shule katika eneo wazi; pangia wajenzi. Makazi tayari yana waogeleaji kwa ajili ya mwani. Acha njia ya kufikia kuni na maji. Miti ya matunda hutoa malighafi za heshima; chakula bado hutokana na ngano.",
+      "method": "exact source instruction + help composition; same authored sentences"
+    },
+    {
+      "index": 102,
+      "key": "[lesson schools build title]",
+      "source": "Build a School",
+      "target": "Jenga Shule",
+      "method": "individually authored"
+    },
+    {
+      "index": 103,
+      "key": "[lesson schools build instruction]",
+      "source": "Build a School in the clearing; assign builders.",
+      "target": "Jenga Shule katika eneo wazi; pangia wajenzi.",
+      "method": "individually authored"
+    },
+    {
+      "index": 104,
+      "key": "[lesson schools build help]",
+      "source": "The colony already has swimmers for algae. Leave access to wood and water. Fruit trees provide prestige resources; food still comes from wheat.",
+      "target": "Makazi tayari yana waogeleaji kwa ajili ya mwani. Acha njia ya kufikia kuni na maji. Miti ya matunda hutoa malighafi za heshima; chakula bado hutokana na ngano.",
+      "method": "individually authored"
+    },
+    {
+      "index": 105,
+      "key": "[lesson schools build marker]",
+      "source": "Build a School",
+      "target": "Jenga Shule",
+      "method": "same exact English source; retained same authored target"
+    },
+    {
+      "index": 106,
+      "key": "[lesson schools learn hint]",
+      "source": "Let an existing worker finish its School training. The School teaches construction and harvesting together. Keep workers available; a construction site alone does not train anyone.",
+      "target": "Mpe mfanyakazi aliyepo nafasi ya kumaliza mafunzo yake ya Shule. Shule hufundisha ujenzi na ukusanyaji wa malighafi pamoja. Hakikisha wafanyakazi wanapatikana; eneo la ujenzi pekee halimfundishi mtu yeyote.",
+      "method": "exact source instruction + help composition; same authored sentences"
+    },
+    {
+      "index": 107,
+      "key": "[lesson schools learn title]",
+      "source": "Teach construction and harvesting",
+      "target": "Fundisha ujenzi na ukusanyaji wa malighafi",
+      "method": "individually authored"
+    },
+    {
+      "index": 108,
+      "key": "[lesson schools learn instruction]",
+      "source": "Let an existing worker finish its School training.",
+      "target": "Mpe mfanyakazi aliyepo nafasi ya kumaliza mafunzo yake ya Shule.",
+      "method": "individually authored"
+    },
+    {
+      "index": 109,
+      "key": "[lesson schools learn help]",
+      "source": "The School teaches construction and harvesting together. Keep workers available; a construction site alone does not train anyone.",
+      "target": "Shule hufundisha ujenzi na ukusanyaji wa malighafi pamoja. Hakikisha wafanyakazi wanapatikana; eneo la ujenzi pekee halimfundishi mtu yeyote.",
+      "method": "individually authored"
+    },
+    {
+      "index": 110,
+      "key": "[lesson upgrades title]",
+      "source": "Upgrading buildings",
+      "target": "Kuboresha majengo",
+      "method": "individually authored"
+    },
+    {
+      "index": 111,
+      "key": "[lesson upgrades briefing]",
+      "source": "Use prepared skilled workers to upgrade a Racetrack and train beyond the first level.",
+      "target": "Tumia wafanyakazi wenye ujuzi walioandaliwa kuboresha Uwanja wa mbio na kufundisha zaidi ya kiwango cha kwanza.",
+      "method": "individually authored"
+    },
+    {
+      "index": 112,
+      "key": "[lesson upgrades complete]",
+      "source": "You upgraded a building and used its improved training. Further upgrades repeat this cycle with better Schools, skills, materials and space, up to level 3.",
+      "target": "Umeboresha jengo na kutumia mafunzo yake yaliyoboreshwa. Maboresho zaidi hurudia mzunguko huu kwa Shule bora zaidi, ujuzi, malighafi na nafasi, hadi kiwango cha 3.",
+      "method": "individually authored"
+    },
+    {
+      "index": 113,
+      "key": "[lesson upgrades upgrade hint]",
+      "source": "Select the Racetrack, choose Upgrade and assign skilled builders. These workers already learned first-level School skills. Upgrades need extra space and materials, and interrupt the building service. Cancelled upgrades do not count.",
+      "target": "Chagua Uwanja wa mbio, chagua Boresha na upangie wajenzi wenye ujuzi. Wafanyakazi hawa tayari wamejifunza ujuzi wa kiwango cha kwanza wa Shule. Maboresho yanahitaji nafasi na malighafi za ziada, na husimamisha huduma ya jengo kwa muda. Maboresho yaliyoghairiwa hayahesabiwi.",
+      "method": "exact source instruction + help composition; same authored sentences"
+    },
+    {
+      "index": 114,
+      "key": "[lesson upgrades upgrade title]",
+      "source": "Upgrade the Racetrack",
+      "target": "Boresha Uwanja wa mbio",
+      "method": "individually authored"
+    },
+    {
+      "index": 115,
+      "key": "[lesson upgrades upgrade instruction]",
+      "source": "Select the Racetrack, choose Upgrade and assign skilled builders.",
+      "target": "Chagua Uwanja wa mbio, chagua Boresha na upangie wajenzi wenye ujuzi.",
+      "method": "individually authored"
+    },
+    {
+      "index": 116,
+      "key": "[lesson upgrades upgrade help]",
+      "source": "These workers already learned first-level School skills. Upgrades need extra space and materials, and interrupt the building service. Cancelled upgrades do not count.",
+      "target": "Wafanyakazi hawa tayari wamejifunza ujuzi wa kiwango cha kwanza wa Shule. Maboresho yanahitaji nafasi na malighafi za ziada, na husimamisha huduma ya jengo kwa muda. Maboresho yaliyoghairiwa hayahesabiwi.",
+      "method": "individually authored"
+    },
+    {
+      "index": 117,
+      "key": "[lesson upgrades upgrade marker]",
+      "source": "Upgrade the Racetrack",
+      "target": "Boresha Uwanja wa mbio",
+      "method": "same exact English source; retained same authored target"
+    },
+    {
+      "index": 118,
+      "key": "[lesson upgrades train hint]",
+      "source": "Let an existing worker learn faster walking at the upgraded Racetrack. A completed upgrade improves available training. Higher building levels need higher construction skills; the level shown to players starts at 1.",
+      "target": "Mpe mfanyakazi aliyepo nafasi ya kujifunza kutembea haraka zaidi katika Uwanja wa mbio ulioboreshwa. Uboreshaji uliokamilika huboresha mafunzo yanayopatikana. Viwango vya juu vya majengo vinahitaji ujuzi wa juu wa ujenzi; kiwango kinachoonyeshwa kwa wachezaji huanza na 1.",
+      "method": "exact source instruction + help composition; same authored sentences"
+    },
+    {
+      "index": 119,
+      "key": "[lesson upgrades train title]",
+      "source": "Use the upgraded training",
+      "target": "Tumia mafunzo yaliyoboreshwa",
+      "method": "individually authored"
+    },
+    {
+      "index": 120,
+      "key": "[lesson upgrades train instruction]",
+      "source": "Let an existing worker learn faster walking at the upgraded Racetrack.",
+      "target": "Mpe mfanyakazi aliyepo nafasi ya kujifunza kutembea haraka zaidi katika Uwanja wa mbio ulioboreshwa.",
+      "method": "individually authored"
+    },
+    {
+      "index": 121,
+      "key": "[lesson upgrades train help]",
+      "source": "A completed upgrade improves available training. Higher building levels need higher construction skills; the level shown to players starts at 1.",
+      "target": "Uboreshaji uliokamilika huboresha mafunzo yanayopatikana. Viwango vya juu vya majengo vinahitaji ujuzi wa juu wa ujenzi; kiwango kinachoonyeshwa kwa wachezaji huanza na 1.",
+      "method": "individually authored"
+    },
+    {
+      "index": 122,
+      "key": "[lesson warrior-training title]",
+      "source": "Producing and training warriors",
+      "target": "Kuzalisha na kufundisha mashujaa",
+      "method": "individually authored"
+    },
+    {
+      "index": 123,
+      "key": "[lesson warrior-training briefing]",
+      "source": "Produce warriors at the Swarm, then train them at a Training Camp.",
+      "target": "Zalisha mashujaa katika Kiota, kisha uwafundishe katika Kambi ya jeshi.",
+      "method": "individually authored"
+    },
+    {
+      "index": 124,
+      "key": "[lesson warrior-training complete]",
+      "source": "You controlled military production and trained warriors. Keep their food supply running; combat units still need to eat.",
+      "target": "Umedhibiti uzalishaji wa kijeshi na kufundisha mashujaa. Dumisha usambazaji wao wa chakula; wapiganaji bado wanahitaji kula.",
+      "method": "individually authored"
+    },
+    {
+      "index": 125,
+      "key": "[lesson warrior-training produce hint]",
+      "source": "Set the Swarm to warriors only; assign suppliers and wait for 2 warriors. Set worker and explorer ratios to 0 and warrior ratio to 1. The Swarm consumes wheat for births. Ratios choose what is produced; suppliers determine whether it can run.",
+      "target": "Weka Kiota kizalishe mashujaa pekee; pangia wasambazaji na usubiri mashujaa 2. Weka uwiano wa wafanyakazi na wagunduzi kuwa 0, na uwiano wa mashujaa kuwa 1. Kiota hutumia ngano kwa uzazi. Uwiano huchagua kinachozalishwa; wasambazaji huamua kama uzalishaji unaweza kuendelea.",
+      "method": "exact source instruction + help composition; same authored sentences"
+    },
+    {
+      "index": 126,
+      "key": "[lesson warrior-training produce title]",
+      "source": "Produce two warriors",
+      "target": "Zalisha mashujaa wawili",
+      "method": "individually authored"
+    },
+    {
+      "index": 127,
+      "key": "[lesson warrior-training produce instruction]",
+      "source": "Set the Swarm to warriors only; assign suppliers and wait for 2 warriors.",
+      "target": "Weka Kiota kizalishe mashujaa pekee; pangia wasambazaji na usubiri mashujaa 2.",
+      "method": "individually authored"
+    },
+    {
+      "index": 128,
+      "key": "[lesson warrior-training produce help]",
+      "source": "Set worker and explorer ratios to 0 and warrior ratio to 1. The Swarm consumes wheat for births. Ratios choose what is produced; suppliers determine whether it can run.",
+      "target": "Weka uwiano wa wafanyakazi na wagunduzi kuwa 0, na uwiano wa mashujaa kuwa 1. Kiota hutumia ngano kwa uzazi. Uwiano huchagua kinachozalishwa; wasambazaji huamua kama uzalishaji unaweza kuendelea.",
+      "method": "individually authored"
+    },
+    {
+      "index": 129,
+      "key": "[lesson warrior-training produce marker]",
+      "source": "Produce two warriors",
+      "target": "Zalisha mashujaa wawili",
+      "method": "same exact English source; retained same authored target"
+    },
+    {
+      "index": 130,
+      "key": "[lesson warrior-training build hint]",
+      "source": "Build a Training Camp in the clearing; assign builders. Stop or reduce warrior production once you have enough. Training Camps teach combat skills; they need free space around their edges.",
+      "target": "Jenga Kambi ya jeshi katika eneo wazi; pangia wajenzi. Simamisha au punguza uzalishaji wa mashujaa ukishakuwa na wa kutosha. Kambi za jeshi hufundisha ujuzi wa mapigano; zinahitaji nafasi wazi kuzunguka kingo zake.",
+      "method": "exact source instruction + help composition; same authored sentences"
+    },
+    {
+      "index": 131,
+      "key": "[lesson warrior-training build title]",
+      "source": "Build a Training Camp",
+      "target": "Jenga Kambi ya jeshi",
+      "method": "individually authored"
+    },
+    {
+      "index": 132,
+      "key": "[lesson warrior-training build instruction]",
+      "source": "Build a Training Camp in the clearing; assign builders.",
+      "target": "Jenga Kambi ya jeshi katika eneo wazi; pangia wajenzi.",
+      "method": "individually authored"
+    },
+    {
+      "index": 133,
+      "key": "[lesson warrior-training build help]",
+      "source": "Stop or reduce warrior production once you have enough. Training Camps teach combat skills; they need free space around their edges.",
+      "target": "Simamisha au punguza uzalishaji wa mashujaa ukishakuwa na wa kutosha. Kambi za jeshi hufundisha ujuzi wa mapigano; zinahitaji nafasi wazi kuzunguka kingo zake.",
+      "method": "individually authored"
+    },
+    {
+      "index": 134,
+      "key": "[lesson warrior-training build marker]",
+      "source": "Build a Training Camp",
+      "target": "Jenga Kambi ya jeshi",
+      "method": "same exact English source; retained same authored target"
+    },
+    {
+      "index": 135,
+      "key": "[lesson warrior-training train hint]",
+      "source": "Let a warrior complete Training Camp practice. Warriors seek training automatically. Keep Inns supplied and the Camp accessible. Building a Camp alone is not a completed training session.",
+      "target": "Mpe shujaa nafasi ya kumaliza mazoezi ya Kambi ya jeshi. Mashujaa hutafuta mafunzo wenyewe. Endelea kupelekea nyumba za wageni mahitaji na uhakikishe Kambi inafikika. Kujenga Kambi pekee si kumaliza kipindi cha mafunzo.",
+      "method": "exact source instruction + help composition; same authored sentences"
+    },
+    {
+      "index": 136,
+      "key": "[lesson warrior-training train title]",
+      "source": "Train your warriors",
+      "target": "Fundisha mashujaa wako",
+      "method": "individually authored"
+    },
+    {
+      "index": 137,
+      "key": "[lesson warrior-training train instruction]",
+      "source": "Let a warrior complete Training Camp practice.",
+      "target": "Mpe shujaa nafasi ya kumaliza mazoezi ya Kambi ya jeshi.",
+      "method": "individually authored"
+    },
+    {
+      "index": 138,
+      "key": "[lesson warrior-training train help]",
+      "source": "Warriors seek training automatically. Keep Inns supplied and the Camp accessible. Building a Camp alone is not a completed training session.",
+      "target": "Mashujaa hutafuta mafunzo wenyewe. Endelea kupelekea nyumba za wageni mahitaji na uhakikishe Kambi inafikika. Kujenga Kambi pekee si kumaliza kipindi cha mafunzo.",
+      "method": "individually authored"
+    },
+    {
+      "index": 139,
+      "key": "[lesson fortifications title]",
+      "source": "Towers and protective walls",
+      "target": "Minara na kuta za kinga",
+      "method": "individually authored"
+    },
+    {
+      "index": 140,
+      "key": "[lesson fortifications briefing]",
+      "source": "Build a supplied tower and protective walls, then test them against one small attack.",
+      "target": "Jenga mnara unaoletewa mahitaji na kuta za kinga, kisha zijaribu dhidi ya shambulio moja dogo.",
+      "method": "individually authored"
+    },
+    {
+      "index": 141,
+      "key": "[lesson fortifications complete]",
+      "source": "Your supplied defenses stopped the practice attack. Towers need stone and walls need gaps so suppliers can keep reaching them.",
+      "target": "Ulinzi wako ulioletewa mahitaji umezuia shambulio la mazoezi. Minara inahitaji mawe na kuta zinahitaji mianya ili wasambazaji waendelee kuifikia.",
+      "method": "individually authored"
+    },
+    {
+      "index": 142,
+      "key": "[lesson fortifications tower hint]",
+      "source": "Build a tower in the marked area; assign builders. Place it near the stone quarry and leave supplier access. No attack starts until the preparation goals are complete.",
+      "target": "Jenga mnara katika eneo lililowekwa alama; pangia wajenzi. Uweke karibu na machimbo ya mawe na uache njia ya wasambazaji. Hakuna shambulio linaloanza mpaka malengo ya maandalizi yatimizwe.",
+      "method": "exact source instruction + help composition; same authored sentences"
+    },
+    {
+      "index": 143,
+      "key": "[lesson fortifications tower title]",
+      "source": "Build a defense tower",
+      "target": "Jenga mnara wa ulinzi",
+      "method": "individually authored"
+    },
+    {
+      "index": 144,
+      "key": "[lesson fortifications tower instruction]",
+      "source": "Build a tower in the marked area; assign builders.",
+      "target": "Jenga mnara katika eneo lililowekwa alama; pangia wajenzi.",
+      "method": "individually authored"
+    },
+    {
+      "index": 145,
+      "key": "[lesson fortifications tower help]",
+      "source": "Place it near the stone quarry and leave supplier access. No attack starts until the preparation goals are complete.",
+      "target": "Uweke karibu na machimbo ya mawe na uache njia ya wasambazaji. Hakuna shambulio linaloanza mpaka malengo ya maandalizi yatimizwe.",
+      "method": "individually authored"
+    },
+    {
+      "index": 146,
+      "key": "[lesson fortifications tower marker]",
+      "source": "Build a defense tower",
+      "target": "Jenga mnara wa ulinzi",
+      "method": "same exact English source; retained same authored target"
+    },
+    {
+      "index": 147,
+      "key": "[lesson fortifications walls hint]",
+      "source": "Build at least 2 wall sections near the tower; keep its west access lane open. Walls use stone and each site requests workers. Do not seal the tower in: suppliers need a route. The marked west lane must remain clear.",
+      "target": "Jenga angalau sehemu 2 za ukuta karibu na mnara; acha njia yake ya magharibi wazi. Kuta hutumia mawe na kila eneo la ujenzi huomba wafanyakazi. Usiuzingire mnara bila njia ya kuingia: wasambazaji wanahitaji njia. Njia ya magharibi iliyowekwa alama lazima ibaki wazi.",
+      "method": "exact source instruction + help composition; same authored sentences"
+    },
+    {
+      "index": 148,
+      "key": "[lesson fortifications walls title]",
+      "source": "Protect the tower with walls",
+      "target": "Linda mnara kwa kuta",
+      "method": "individually authored"
+    },
+    {
+      "index": 149,
+      "key": "[lesson fortifications walls instruction]",
+      "source": "Build at least 2 wall sections near the tower; keep its west access lane open.",
+      "target": "Jenga angalau sehemu 2 za ukuta karibu na mnara; acha njia yake ya magharibi wazi.",
+      "method": "individually authored"
+    },
+    {
+      "index": 150,
+      "key": "[lesson fortifications walls help]",
+      "source": "Walls use stone and each site requests workers. Do not seal the tower in: suppliers need a route. The marked west lane must remain clear.",
+      "target": "Kuta hutumia mawe na kila eneo la ujenzi huomba wafanyakazi. Usiuzingire mnara bila njia ya kuingia: wasambazaji wanahitaji njia. Njia ya magharibi iliyowekwa alama lazima ibaki wazi.",
+      "method": "individually authored"
+    },
+    {
+      "index": 151,
+      "key": "[lesson fortifications walls marker]",
+      "source": "Protect the tower with walls",
+      "target": "Linda mnara kwa kuta",
+      "method": "same exact English source; retained same authored target"
+    },
+    {
+      "index": 152,
+      "key": "[lesson fortifications supply hint]",
+      "source": "Select the tower and request suppliers. Wait for at least 2 stone. A finished tower needs an operating worker target to bring ammunition. This is separate from its construction target.",
+      "target": "Chagua mnara na uombe wasambazaji. Subiri angalau mawe 2. Mnara uliokamilika unahitaji lengo la wafanyakazi wa kuuhudumia ili kuleta risasi. Hili ni tofauti na lengo lake la ujenzi.",
+      "method": "exact source instruction + help composition; same authored sentences"
+    },
+    {
+      "index": 153,
+      "key": "[lesson fortifications supply title]",
+      "source": "Supply ammunition",
+      "target": "Leta risasi",
+      "method": "individually authored"
+    },
+    {
+      "index": 154,
+      "key": "[lesson fortifications supply instruction]",
+      "source": "Select the tower and request suppliers. Wait for at least 2 stone.",
+      "target": "Chagua mnara na uombe wasambazaji. Subiri angalau mawe 2.",
+      "method": "individually authored"
+    },
+    {
+      "index": 155,
+      "key": "[lesson fortifications supply help]",
+      "source": "A finished tower needs an operating worker target to bring ammunition. This is separate from its construction target.",
+      "target": "Mnara uliokamilika unahitaji lengo la wafanyakazi wa kuuhudumia ili kuleta risasi. Hili ni tofauti na lengo lake la ujenzi.",
+      "method": "individually authored"
+    },
+    {
+      "index": 156,
+      "key": "[lesson fortifications supply marker]",
+      "source": "Supply ammunition",
+      "target": "Leta risasi",
+      "method": "same exact English source; retained same authored target"
+    },
+    {
+      "index": 157,
+      "key": "[lesson fortifications hold hint]",
+      "source": "A practice warrior is approaching. Keep the tower supplied and accessible. Hold until the attacker is defeated or driven back. A wall that blocks suppliers can starve the tower of ammunition. If the colony fails, restart or load an earlier save.",
+      "target": "Shujaa wa mazoezi anakaribia. Endelea kupelekea mnara mahitaji na uhakikishe unafikika. Subiri mpaka mshambuliaji ashindwe au arudishwe nyuma. Ukuta unaozuia wasambazaji unaweza kuufanya mnara uishiwe risasi. Makazi yakishindwa, anza upya au pakia hifadhi ya awali.",
+      "method": "exact source instruction + help composition; same authored sentences"
+    },
+    {
+      "index": 158,
+      "key": "[lesson fortifications hold title]",
+      "source": "Test the fortifications",
+      "target": "Jaribu ngome",
+      "method": "individually authored"
+    },
+    {
+      "index": 159,
+      "key": "[lesson fortifications hold instruction]",
+      "source": "A practice warrior is approaching. Keep the tower supplied and accessible.",
+      "target": "Shujaa wa mazoezi anakaribia. Endelea kupelekea mnara mahitaji na uhakikishe unafikika.",
+      "method": "individually authored"
+    },
+    {
+      "index": 160,
+      "key": "[lesson fortifications hold help]",
+      "source": "Hold until the attacker is defeated or driven back. A wall that blocks suppliers can starve the tower of ammunition. If the colony fails, restart or load an earlier save.",
+      "target": "Subiri mpaka mshambuliaji ashindwe au arudishwe nyuma. Ukuta unaozuia wasambazaji unaweza kuufanya mnara uishiwe risasi. Makazi yakishindwa, anza upya au pakia hifadhi ya awali.",
+      "method": "individually authored"
+    },
+    {
+      "index": 161,
+      "key": "[lesson fortifications hold marker]",
+      "source": "Test the fortifications",
+      "target": "Jaribu ngome",
+      "method": "same exact English source; retained same authored target"
+    },
+    {
+      "index": 162,
+      "key": "[lesson defensive-tactics title]",
+      "source": "Guard zones and flag tactics",
+      "target": "Maeneo ya ulinzi na mbinu za bendera",
+      "method": "individually authored"
+    },
+    {
+      "index": 163,
+      "key": "[lesson defensive-tactics briefing]",
+      "source": "Scout the practice enemy, prepare a guard zone, defend, then organize a counterattack.",
+      "target": "Chunguza adui wa mazoezi, andaa eneo la ulinzi, linda, kisha panga shambulio la kujibu.",
+      "method": "individually authored"
+    },
+    {
+      "index": 164,
+      "key": "[lesson defensive-tactics complete]",
+      "source": "You scouted, defended a guard zone and directed a counterattack. Flag targets request units; radius controls where those units work.",
+      "target": "Umechunguza, ukalinda eneo la ulinzi na ukaongoza shambulio la kujibu. Malengo ya bendera huomba viumbe; nusukipenyo hudhibiti mahali viumbe hao wanapofanya kazi.",
+      "method": "individually authored"
+    },
+    {
+      "index": 165,
+      "key": "[lesson defensive-tactics scout hint]",
+      "source": "Place an Exploration Flag at the enemy base; assign 1 explorer. Flags request units autonomously. An explorer reveals current activity through fog of war; it may stop to eat.",
+      "target": "Weka Bendera ya uchunguzi katika kituo cha adui; pangia mgunduzi 1. Bendera huomba viumbe, ambao hujielekeza wenyewe. Mgunduzi hufichua shughuli za sasa katika maeneo yaliyofichwa na ukungu wa vita; anaweza kusimama kula.",
+      "method": "exact source instruction + help composition; same authored sentences"
+    },
+    {
+      "index": 166,
+      "key": "[lesson defensive-tactics scout title]",
+      "source": "Scout the enemy base",
+      "target": "Chunguza kituo cha adui",
+      "method": "individually authored"
+    },
+    {
+      "index": 167,
+      "key": "[lesson defensive-tactics scout instruction]",
+      "source": "Place an Exploration Flag at the enemy base; assign 1 explorer.",
+      "target": "Weka Bendera ya uchunguzi katika kituo cha adui; pangia mgunduzi 1.",
+      "method": "individually authored"
+    },
+    {
+      "index": 168,
+      "key": "[lesson defensive-tactics scout help]",
+      "source": "Flags request units autonomously. An explorer reveals current activity through fog of war; it may stop to eat.",
+      "target": "Bendera huomba viumbe, ambao hujielekeza wenyewe. Mgunduzi hufichua shughuli za sasa katika maeneo yaliyofichwa na ukungu wa vita; anaweza kusimama kula.",
+      "method": "individually authored"
+    },
+    {
+      "index": 169,
+      "key": "[lesson defensive-tactics scout marker]",
+      "source": "Scout the enemy base",
+      "target": "Chunguza kituo cha adui",
+      "method": "same exact English source; retained same authored target"
+    },
+    {
+      "index": 170,
+      "key": "[lesson defensive-tactics guard hint]",
+      "source": "Paint a guard zone in the marked area and let 2 warriors reach it. Open Flags, choose Guard and paint at least 4 tiles inside the area. Guard zones attract idle warriors. Forbidden zones block travel; clearing zones request resource removal.",
+      "target": "Paka eneo la ulinzi mahali palipowekwa alama na uwaruhusu mashujaa 2 wafike hapo. Fungua Bendera, chagua Ulinzi na upake angalau miraba 4 ndani ya eneo. Maeneo ya ulinzi huwavutia mashujaa wasio na kazi. Maeneo yaliyokatazwa huzuia kupita; maeneo ya kusafisha huomba malighafi ziondolewe.",
+      "method": "exact source instruction + help composition; same authored sentences"
+    },
+    {
+      "index": 171,
+      "key": "[lesson defensive-tactics guard title]",
+      "source": "Prepare a guard zone",
+      "target": "Andaa eneo la ulinzi",
+      "method": "individually authored"
+    },
+    {
+      "index": 172,
+      "key": "[lesson defensive-tactics guard instruction]",
+      "source": "Paint a guard zone in the marked area and let 2 warriors reach it.",
+      "target": "Paka eneo la ulinzi mahali palipowekwa alama na uwaruhusu mashujaa 2 wafike hapo.",
+      "method": "individually authored"
+    },
+    {
+      "index": 173,
+      "key": "[lesson defensive-tactics guard help]",
+      "source": "Open Flags, choose Guard and paint at least 4 tiles inside the area. Guard zones attract idle warriors. Forbidden zones block travel; clearing zones request resource removal.",
+      "target": "Fungua Bendera, chagua Ulinzi na upake angalau miraba 4 ndani ya eneo. Maeneo ya ulinzi huwavutia mashujaa wasio na kazi. Maeneo yaliyokatazwa huzuia kupita; maeneo ya kusafisha huomba malighafi ziondolewe.",
+      "method": "individually authored"
+    },
+    {
+      "index": 174,
+      "key": "[lesson defensive-tactics guard marker]",
+      "source": "Prepare a guard zone",
+      "target": "Andaa eneo la ulinzi",
+      "method": "same exact English source; retained same authored target"
+    },
+    {
+      "index": 175,
+      "key": "[lesson defensive-tactics repel hint]",
+      "source": "The enemy is attacking. Keep the guard zone covered and Inns supplied. The small attack starts after your preparations. Defeat or drive back both raiders; wounded enemies may retreat. Warriors may leave temporarily to eat. If the defense fails, use an earlier save or restart.",
+      "target": "Adui anashambulia. Hakikisha eneo la ulinzi lina walinzi na nyumba za wageni zinaletewa mahitaji. Shambulio dogo huanza baada ya maandalizi yako. Washinde au uwarudishe nyuma wavamizi wote wawili; maadui waliojeruhiwa wanaweza kurudi nyuma. Mashujaa wanaweza kuondoka kwa muda ili kula. Ulinzi ukishindwa, tumia hifadhi ya awali au anza upya.",
+      "method": "exact source instruction + help composition; same authored sentences"
+    },
+    {
+      "index": 176,
+      "key": "[lesson defensive-tactics repel title]",
+      "source": "Repel the practice attack",
+      "target": "Zuia shambulio la mazoezi",
+      "method": "individually authored"
+    },
+    {
+      "index": 177,
+      "key": "[lesson defensive-tactics repel instruction]",
+      "source": "The enemy is attacking. Keep the guard zone covered and Inns supplied.",
+      "target": "Adui anashambulia. Hakikisha eneo la ulinzi lina walinzi na nyumba za wageni zinaletewa mahitaji.",
+      "method": "individually authored"
+    },
+    {
+      "index": 178,
+      "key": "[lesson defensive-tactics repel help]",
+      "source": "The small attack starts after your preparations. Defeat or drive back both raiders; wounded enemies may retreat. Warriors may leave temporarily to eat. If the defense fails, use an earlier save or restart.",
+      "target": "Shambulio dogo huanza baada ya maandalizi yako. Washinde au uwarudishe nyuma wavamizi wote wawili; maadui waliojeruhiwa wanaweza kurudi nyuma. Mashujaa wanaweza kuondoka kwa muda ili kula. Ulinzi ukishindwa, tumia hifadhi ya awali au anza upya.",
+      "method": "individually authored"
+    },
+    {
+      "index": 179,
+      "key": "[lesson defensive-tactics repel marker]",
+      "source": "Repel the practice attack",
+      "target": "Zuia shambulio la mazoezi",
+      "method": "same exact English source; retained same authored target"
+    },
+    {
+      "index": 180,
+      "key": "[lesson defensive-tactics counterattack hint]",
+      "source": "Place a War Flag over the enemy Swarm; request 3 warriors and use radius 4 or smaller. Guard zones and War Flags compete for warriors. Remove guard tiles if they hold your army back. Keep food available while warriors travel and attack.",
+      "target": "Weka Bendera ya vita juu ya Kiota cha adui; omba mashujaa 3 na utumie nusukipenyo cha 4 au chini. Maeneo ya ulinzi na Bendera za vita hushindania mashujaa. Ondoa miraba ya ulinzi ikiwa inalizuia jeshi lako kusonga. Dumisha chakula wakati mashujaa wanasafiri na kushambulia.",
+      "method": "exact source instruction + help composition; same authored sentences"
+    },
+    {
+      "index": 181,
+      "key": "[lesson defensive-tactics counterattack title]",
+      "source": "Direct a focused counterattack",
+      "target": "Ongoza shambulio la kujibu lililolenga sehemu moja",
+      "method": "individually authored"
+    },
+    {
+      "index": 182,
+      "key": "[lesson defensive-tactics counterattack instruction]",
+      "source": "Place a War Flag over the enemy Swarm; request 3 warriors and use radius 4 or smaller.",
+      "target": "Weka Bendera ya vita juu ya Kiota cha adui; omba mashujaa 3 na utumie nusukipenyo cha 4 au chini.",
+      "method": "individually authored"
+    },
+    {
+      "index": 183,
+      "key": "[lesson defensive-tactics counterattack help]",
+      "source": "Guard zones and War Flags compete for warriors. Remove guard tiles if they hold your army back. Keep food available while warriors travel and attack.",
+      "target": "Maeneo ya ulinzi na Bendera za vita hushindania mashujaa. Ondoa miraba ya ulinzi ikiwa inalizuia jeshi lako kusonga. Dumisha chakula wakati mashujaa wanasafiri na kushambulia.",
+      "method": "individually authored"
+    },
+    {
+      "index": 184,
+      "key": "[lesson defensive-tactics counterattack marker]",
+      "source": "Direct a focused counterattack",
+      "target": "Ongoza shambulio la kujibu lililolenga sehemu moja",
+      "method": "same exact English source; retained same authored target"
+    },
+    {
+      "index": 185,
+      "key": "[lesson healing build compact]",
+      "source": "Build → Hospital. Leave access; assign builders.",
+      "target": "Jenga → Hospitali. Acha njia; pangia wajenzi.",
+      "method": "individually authored"
+    },
+    {
+      "index": 186,
+      "key": "[lesson healing heal compact]",
+      "source": "Let the wounded worker heal at the Hospital.",
+      "target": "Mpe mfanyakazi aliyejeruhiwa nafasi ya kupona Hospitalini.",
+      "method": "individually authored"
+    },
+    {
+      "index": 187,
+      "key": "[lesson walking-training build compact]",
+      "source": "Build → Racetrack. Leave space around its edges.",
+      "target": "Jenga → Uwanja wa mbio. Acha nafasi kuzunguka kingo zake.",
+      "method": "individually authored"
+    },
+    {
+      "index": 188,
+      "key": "[lesson walking-training train compact]",
+      "source": "Let a worker finish Racetrack training.",
+      "target": "Mpe mfanyakazi nafasi ya kumaliza mafunzo ya Uwanja wa mbio.",
+      "method": "individually authored"
+    },
+    {
+      "index": 189,
+      "key": "[lesson swimming build compact]",
+      "source": "Build → Swimming Pool, west of the pond.",
+      "target": "Jenga → Bwawa la kuogelea, magharibi mwa kidimbwi.",
+      "method": "individually authored"
+    },
+    {
+      "index": 190,
+      "key": "[lesson swimming train compact]",
+      "source": "Let a worker learn to swim.",
+      "target": "Mpe mfanyakazi nafasi ya kujifunza kuogelea.",
+      "method": "individually authored"
+    },
+    {
+      "index": 191,
+      "key": "[lesson swimming water-job compact]",
+      "source": "Build → School. Assign builders for wood and algae.",
+      "target": "Jenga → Shule. Pangia wajenzi kuleta kuni na mwani.",
+      "method": "individually authored"
+    },
+    {
+      "index": 192,
+      "key": "[lesson schools build compact]",
+      "source": "Build → School. Assign builders for wood and algae.",
+      "target": "Jenga → Shule. Pangia wajenzi kuleta kuni na mwani.",
+      "method": "same exact English source; retained same authored target"
+    },
+    {
+      "index": 193,
+      "key": "[lesson schools learn compact]",
+      "source": "Let a worker finish School training.",
+      "target": "Mpe mfanyakazi nafasi ya kumaliza mafunzo ya Shule.",
+      "method": "individually authored"
+    },
+    {
+      "index": 194,
+      "key": "[lesson upgrades upgrade compact]",
+      "source": "Select Racetrack → Upgrade. Assign skilled builders.",
+      "target": "Chagua Uwanja wa mbio → Boresha. Pangia wajenzi wenye ujuzi.",
+      "method": "individually authored"
+    },
+    {
+      "index": 195,
+      "key": "[lesson upgrades train compact]",
+      "source": "Let a worker train at the upgraded Racetrack.",
+      "target": "Mpe mfanyakazi nafasi ya kujifunza katika Uwanja wa mbio ulioboreshwa.",
+      "method": "individually authored"
+    },
+    {
+      "index": 196,
+      "key": "[lesson warrior-training produce compact]",
+      "source": "Swarm → warriors only. Supply wheat for 2 warriors.",
+      "target": "Kiota → mashujaa pekee. Leta ngano kwa ajili ya mashujaa 2.",
+      "method": "individually authored"
+    },
+    {
+      "index": 197,
+      "key": "[lesson warrior-training build compact]",
+      "source": "Build → Training Camp. Leave space around its edges.",
+      "target": "Jenga → Kambi ya jeshi. Acha nafasi kuzunguka kingo zake.",
+      "method": "individually authored"
+    },
+    {
+      "index": 198,
+      "key": "[lesson warrior-training train compact]",
+      "source": "Let a warrior finish Training Camp practice.",
+      "target": "Mpe shujaa nafasi ya kumaliza mazoezi ya Kambi ya jeshi.",
+      "method": "individually authored"
+    },
+    {
+      "index": 199,
+      "key": "[lesson fortifications tower compact]",
+      "source": "Build → Tower. Place in the marked area.",
+      "target": "Jenga → Mnara. Weka katika eneo lililowekwa alama.",
+      "method": "individually authored"
+    },
+    {
+      "index": 200,
+      "key": "[lesson fortifications walls compact]",
+      "source": "Build 2 walls. Keep the tower’s west lane open.",
+      "target": "Jenga kuta 2. Acha njia ya magharibi ya mnara wazi.",
+      "method": "individually authored"
+    },
+    {
+      "index": 201,
+      "key": "[lesson fortifications supply compact]",
+      "source": "Select tower → suppliers. Wait for 2 stone.",
+      "target": "Chagua mnara → wasambazaji. Subiri mawe 2.",
+      "method": "individually authored"
+    },
+    {
+      "index": 202,
+      "key": "[lesson fortifications hold compact]",
+      "source": "Keep the tower supplied against the attacker.",
+      "target": "Endelea kupelekea mnara mahitaji ili ukabili mshambuliaji.",
+      "method": "individually authored"
+    },
+    {
+      "index": 203,
+      "key": "[lesson defensive-tactics scout compact]",
+      "source": "Flags → Exploration. Place at the enemy; assign 1 explorer.",
+      "target": "Bendera → Uchunguzi. Weka kwa adui; pangia mgunduzi 1.",
+      "method": "individually authored"
+    },
+    {
+      "index": 204,
+      "key": "[lesson defensive-tactics guard compact]",
+      "source": "Flags → Guard. Paint 4 tiles; let 2 warriors arrive.",
+      "target": "Bendera → Ulinzi. Paka miraba 4; subiri mashujaa 2 wafike.",
+      "method": "individually authored"
+    },
+    {
+      "index": 205,
+      "key": "[lesson defensive-tactics repel compact]",
+      "source": "Hold the guard zone. Keep Inns supplied.",
+      "target": "Shikilia eneo la ulinzi. Endelea kupelekea nyumba za wageni mahitaji.",
+      "method": "individually authored"
+    },
+    {
+      "index": 206,
+      "key": "[lesson defensive-tactics counterattack compact]",
+      "source": "War Flag → enemy Swarm. Request 3 warriors; radius ≤4.",
+      "target": "Bendera ya vita → Kiota cha adui. Omba mashujaa 3; nusukipenyo ≤4.",
+      "method": "individually authored"
+    },
+    {
+      "index": 207,
+      "key": "[intro attack destination]",
+      "source": "Attack here",
+      "target": "Shambulia hapa",
+      "method": "individually authored"
+    },
+    {
+      "index": 208,
+      "key": "[scenario messages]",
+      "source": "Messages ▸",
+      "target": "Ujumbe ▸",
+      "method": "individually authored"
+    }
+  ],
+  "status": "authored; awaiting distinct full source-context reviewer and editor; not approved/finalized",
+  "production_edits": false
+}

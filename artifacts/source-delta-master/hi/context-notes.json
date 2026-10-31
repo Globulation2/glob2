@@ -1,0 +1,26 @@
+{
+  "context_read": [
+    "All209 English messages and all209 targets authored coherently across full instructions/help/hints/compact cards.",
+    "10 lesson definitions with29step completion conditions, UI anchors, destinations and recovery targets from immutablemaster.",
+    "Shared deterministic runtime publishes source keys, does not interpret translation values.",
+    "Old full Hindi building/unit/resource/toolbar labels and prior native editorial terminology record."
+  ],
+  "rationales": [
+    "Training Camp is the lesson name for build:barracks, so retain established बैरक rather than introduce a second name for one control.",
+    "Swarm is unit-producing building छत्ता, not moving झुंड.",
+    "Suppliers are assigned workers carrying goods, not merchants; requests differ from already present worker counts.",
+    "Construction and operating targets remain distinct in Inn and tower supply explanations.",
+    "Existing workers train automatically; instruction does not imply click-to-select an individual to make it learn.",
+    "School harvesting covers wood/algae/resources, not merely crop cutting.",
+    "Landmark is actual eastern stone patch, so पत्थरों वाली जगह avoids inventing a monument.",
+    "Compact captions keep all action/quantity/radius distinctions; no text shortened solely to hide clipping.",
+    "No state IDs, target IDs, maps, scripts, JSON definitions or original full catalogs modified."
+  ],
+  "questions_for_independent_review": [
+    "Check naturalness/readability of worker-target explanations and compact captions at actual phone widths.",
+    "Review whether खाने is clearest grid-tile wording alongside existing zone controls.",
+    "Validate food/supply wording retains autonomous travel/eating and skill training rather than direct unit control."
+  ],
+  "unresolved_source_ambiguity": [],
+  "linguistic_approval": "None; authored draft only. Not native-human-certified."
+}

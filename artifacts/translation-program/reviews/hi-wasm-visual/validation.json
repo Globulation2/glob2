@@ -1,0 +1,298 @@
+{
+  "status": "six-browser-wasm-cases-pass-not-platform-finalization",
+  "results_sha256": "a60f9112b344bcb010d8e0ea5ff1bf4d6fb247a26a7d47a911854527681fb1d0",
+  "identity_sha256": "f2f2d4a6b782b2849031832620d62da3c4ba742b74901a66e7920f0a222245fc",
+  "checker_sha256": "d990c5c69cd79b6d34fc085a72442b2ed01cc3e3d2e5cbf9d39dbd713c208c5d",
+  "cases": [
+    {
+      "locale": "hi",
+      "width": 1200,
+      "passed": true,
+      "sample_utf8_bytes": 30,
+      "saved_username": "क्षेत्र 1/2 a.co",
+      "packaged_fonts_verified": 13,
+      "page_errors": [],
+      "console_errors": [
+        "Failed to load resource: the server responded with a status of 404 (Not Found)",
+        "WARNING: using emscripten GL emulation. This is a collection of limited workarounds, do not expect it to work.",
+        "WARNING: using emscripten GL emulation unsafe opts. If weirdness happens, try -sGL_UNSAFE_OPTS=0",
+        "readlink() error: No such file or directory",
+        "WARNING: using emscripten GL immediate mode emulation. This is very limited in what it supports"
+      ]
+    },
+    {
+      "locale": "hi",
+      "width": 390,
+      "passed": true,
+      "sample_utf8_bytes": 30,
+      "saved_username": "क्षेत्र 1/2 a.co",
+      "packaged_fonts_verified": 13,
+      "page_errors": [],
+      "console_errors": [
+        "Failed to load resource: the server responded with a status of 404 (Not Found)",
+        "WARNING: using emscripten GL emulation. This is a collection of limited workarounds, do not expect it to work.",
+        "WARNING: using emscripten GL emulation unsafe opts. If weirdness happens, try -sGL_UNSAFE_OPTS=0",
+        "readlink() error: No such file or directory",
+        "WARNING: using emscripten GL immediate mode emulation. This is very limited in what it supports"
+      ]
+    },
+    {
+      "locale": "ur",
+      "width": 1200,
+      "passed": true,
+      "sample_utf8_bytes": 20,
+      "saved_username": "کھیل 12/100 a.co",
+      "packaged_fonts_verified": 13,
+      "page_errors": [],
+      "console_errors": [
+        "Failed to load resource: the server responded with a status of 404 (Not Found)",
+        "WARNING: using emscripten GL emulation. This is a collection of limited workarounds, do not expect it to work.",
+        "WARNING: using emscripten GL emulation unsafe opts. If weirdness happens, try -sGL_UNSAFE_OPTS=0",
+        "readlink() error: No such file or directory",
+        "WARNING: using emscripten GL immediate mode emulation. This is very limited in what it supports"
+      ]
+    },
+    {
+      "locale": "ur",
+      "width": 390,
+      "passed": true,
+      "sample_utf8_bytes": 20,
+      "saved_username": "کھیل 12/100 a.co",
+      "packaged_fonts_verified": 13,
+      "page_errors": [],
+      "console_errors": [
+        "Failed to load resource: the server responded with a status of 404 (Not Found)",
+        "WARNING: using emscripten GL emulation. This is a collection of limited workarounds, do not expect it to work.",
+        "WARNING: using emscripten GL emulation unsafe opts. If weirdness happens, try -sGL_UNSAFE_OPTS=0",
+        "readlink() error: No such file or directory",
+        "WARNING: using emscripten GL immediate mode emulation. This is very limited in what it supports"
+      ]
+    },
+    {
+      "locale": "sw",
+      "width": 1200,
+      "passed": true,
+      "sample_utf8_bytes": 18,
+      "saved_username": "Mchezo 12/100 a.co",
+      "packaged_fonts_verified": 13,
+      "page_errors": [],
+      "console_errors": [
+        "Failed to load resource: the server responded with a status of 404 (Not Found)",
+        "WARNING: using emscripten GL emulation. This is a collection of limited workarounds, do not expect it to work.",
+        "WARNING: using emscripten GL emulation unsafe opts. If weirdness happens, try -sGL_UNSAFE_OPTS=0",
+        "readlink() error: No such file or directory",
+        "WARNING: using emscripten GL immediate mode emulation. This is very limited in what it supports"
+      ]
+    },
+    {
+      "locale": "sw",
+      "width": 390,
+      "passed": true,
+      "sample_utf8_bytes": 18,
+      "saved_username": "Mchezo 12/100 a.co",
+      "packaged_fonts_verified": 13,
+      "page_errors": [],
+      "console_errors": [
+        "Failed to load resource: the server responded with a status of 404 (Not Found)",
+        "WARNING: using emscripten GL emulation. This is a collection of limited workarounds, do not expect it to work.",
+        "WARNING: using emscripten GL emulation unsafe opts. If weirdness happens, try -sGL_UNSAFE_OPTS=0",
+        "readlink() error: No such file or directory",
+        "WARNING: using emscripten GL immediate mode emulation. This is very limited in what it supports"
+      ]
+    }
+  ],
+  "source_and_catalog_files_still_match_run_identity": true,
+  "served_build_files_still_match_run_identity": true,
+  "screenshots": [
+    {
+      "path": "hi-1200-input.png",
+      "sha256": "0bf2cdaa58f1d5b72e8c1af09027249f5c0fd3faa7f000e64a0bbaf9e7ef6fe6",
+      "bytes": 476804,
+      "onboarding": false
+    },
+    {
+      "path": "hi-1200-lobby.png",
+      "sha256": "744906914a4fef3a784753a972e3a98d9c5ad26169c6486cb7107ae7ed78a068",
+      "bytes": 245448,
+      "onboarding": false
+    },
+    {
+      "path": "hi-1200-main.png",
+      "sha256": "aef93d20e6747761b77b732b32d6dbc7b933c4ff1fe694970f8d76a275d04672",
+      "bytes": 1068696,
+      "onboarding": false
+    },
+    {
+      "path": "hi-1200-settings.png",
+      "sha256": "fce6568602e36e293dd81f2953968ee25b0b52aa045c401545568df5bc0b0730",
+      "bytes": 507785,
+      "onboarding": false
+    },
+    {
+      "path": "hi-390-AudioPreferenceScreen.png",
+      "sha256": "03333835af45845ca86c4f39454d19a3627610a268fe6937d875745f6f06325a",
+      "bytes": 300827,
+      "onboarding": true
+    },
+    {
+      "path": "hi-390-HandPreferenceScreen.png",
+      "sha256": "ed4a27daa736478ea65946071df277f3558c3ce8e6563610ef097b8f8d7b04a1",
+      "bytes": 220306,
+      "onboarding": true
+    },
+    {
+      "path": "hi-390-input.png",
+      "sha256": "71bc41d3fe704749f2470ce4f67bc6ea058866af1718d31218e9dd2a9d449a42",
+      "bytes": 25140,
+      "onboarding": false
+    },
+    {
+      "path": "hi-390-lobby.png",
+      "sha256": "c9a231923540e1385acc10d1d36b6c5db4f0ad0f1f5bf6aecb0a90cdfe170bcd",
+      "bytes": 59211,
+      "onboarding": false
+    },
+    {
+      "path": "hi-390-main.png",
+      "sha256": "3ff952cfed9f28d73f2fdc7a1b806667588192d769b99f0ce798dba07918d2ed",
+      "bytes": 317426,
+      "onboarding": false
+    },
+    {
+      "path": "hi-390-settings.png",
+      "sha256": "f1f51921220fbdaadb3d4ff244accf30ffd166f78a283fd824a75bb6b05f0dd5",
+      "bytes": 56575,
+      "onboarding": false
+    },
+    {
+      "path": "sw-1200-input.png",
+      "sha256": "2afcecd7e8671db190b8e0089b9a8bf45f9172ba85cc919b5fe10aa7bded108f",
+      "bytes": 477300,
+      "onboarding": false
+    },
+    {
+      "path": "sw-1200-lobby.png",
+      "sha256": "18139553ae731ccc4b1d1d3f6fcf05cd315bc4309bdff867532ec6b5f58a0e2c",
+      "bytes": 240503,
+      "onboarding": false
+    },
+    {
+      "path": "sw-1200-main.png",
+      "sha256": "e683ba81c7bb4b1c8751cf656cb7ed9fb1350e72ebd0afff88c606dc594caa02",
+      "bytes": 1069693,
+      "onboarding": false
+    },
+    {
+      "path": "sw-1200-settings.png",
+      "sha256": "5a7825d81110062c2d49a4a3b628319f8def19dcebbae188f132d3d66fefbd04",
+      "bytes": 507711,
+      "onboarding": false
+    },
+    {
+      "path": "sw-390-AudioPreferenceScreen.png",
+      "sha256": "0b9fc2f3feda9e19008d6b7cb6ebdc1a325e86f939ce5175de7ba83acb79f9e8",
+      "bytes": 297162,
+      "onboarding": true
+    },
+    {
+      "path": "sw-390-HandPreferenceScreen.png",
+      "sha256": "162876863d8c098d66691779c95ba5beb789d22f03b4a52175ae98e38660ee74",
+      "bytes": 192304,
+      "onboarding": true
+    },
+    {
+      "path": "sw-390-input.png",
+      "sha256": "889f4d9083f4d5188e203d3038e6d8bc4428071b6377273faf5fe3dee188d86a",
+      "bytes": 23834,
+      "onboarding": false
+    },
+    {
+      "path": "sw-390-lobby.png",
+      "sha256": "96a7d980429eb96fdd4040751744b0778f95a3c37c0fc97c786d955b1ca2fea6",
+      "bytes": 42200,
+      "onboarding": false
+    },
+    {
+      "path": "sw-390-main.png",
+      "sha256": "0e01170adbc2654a17420fe06e52575567922b8040cac8860f6d42ed3bbefa13",
+      "bytes": 322210,
+      "onboarding": false
+    },
+    {
+      "path": "sw-390-settings.png",
+      "sha256": "b99008ec06b8411f118720f9da876675c0969fa72e9b854312c08060f9795a1f",
+      "bytes": 51169,
+      "onboarding": false
+    },
+    {
+      "path": "ur-1200-input.png",
+      "sha256": "d9d08ca3c8ceae671f904d7c2e42c86f6cfceadfca66f660cdc110709462fb89",
+      "bytes": 479052,
+      "onboarding": false
+    },
+    {
+      "path": "ur-1200-lobby.png",
+      "sha256": "90f97b21b2cbfa4853bbe17eec0cbe53813ea70b213a5b7160d761be5d59fd93",
+      "bytes": 241940,
+      "onboarding": false
+    },
+    {
+      "path": "ur-1200-main.png",
+      "sha256": "100854679174d9d5823d557508474b15cd720c773f2620682924f8900594d6f2",
+      "bytes": 1062660,
+      "onboarding": false
+    },
+    {
+      "path": "ur-1200-settings.png",
+      "sha256": "2ca30e88c33e4b63b69573eca665289ca7a36252e4e3a6d087b093569d4c9ab6",
+      "bytes": 495300,
+      "onboarding": false
+    },
+    {
+      "path": "ur-390-AudioPreferenceScreen.png",
+      "sha256": "5f34fabcdaa23f838e84065fbd764abf7202370b4524962c2983aab36932808e",
+      "bytes": 245003,
+      "onboarding": true
+    },
+    {
+      "path": "ur-390-HandPreferenceScreen.png",
+      "sha256": "de5b2f33e459dac593fb5220dd02a5fb30bcaebe6d93404927faba40df0f48e7",
+      "bytes": 183308,
+      "onboarding": true
+    },
+    {
+      "path": "ur-390-input.png",
+      "sha256": "88f96c228320800b18f81a66eed1a1da56e14abe299e464d56c180658e54814d",
+      "bytes": 26445,
+      "onboarding": false
+    },
+    {
+      "path": "ur-390-lobby.png",
+      "sha256": "7d27a91e7afb4e583f5bc70c168531e042e6474ae5d06be9859801a35bf51db7",
+      "bytes": 49292,
+      "onboarding": false
+    },
+    {
+      "path": "ur-390-main.png",
+      "sha256": "159ff45b0a45eb0a9ac2b4a60b95534b305e6574bf970ee7b068f35ff401af59",
+      "bytes": 318766,
+      "onboarding": false
+    },
+    {
+      "path": "ur-390-settings.png",
+      "sha256": "0a937d118fbe1dca6c7652d41cae7043a376b628872d5e8c641a6948e350f4f1",
+      "bytes": 47884,
+      "onboarding": false
+    }
+  ],
+  "limits": [
+    "Isolated HTTP/catalog/preRun FS overlay; shipped locale registration is unchanged.",
+    "Actual serial software WebAssembly game; Chromium desktop with phone viewport is not native Android/iOS.",
+    "saveData=true skips optional media; normal core/game/translations dependency loading remains required.",
+    "Full reviewed draft FS catalogs and36-locale stage browser i18n are isolated review overlays, not production registration.",
+    "Runtime packaged FS TTF hashes are compared with pinned source manifest; native producer metadata is not used as a WASM identity.",
+    "Synthetic composition sequence verifies bridge timing, not a physical IME.",
+    "Done persistence verified in actual Emscripten FS preferences; no separate browser-restart durability claim.",
+    "Snapshot controls/fonts and screenshots still require independent visual linguistic review."
+  ]
+}

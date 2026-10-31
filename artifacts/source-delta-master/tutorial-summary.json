@@ -1,0 +1,41 @@
+{
+  "revision": "e7613e93b08234dbf785ceef3bd9b884cbb73221",
+  "lessons": 10,
+  "new_messages": 209,
+  "new_messages_in_lesson_definitions": 195,
+  "new_messages_without_definition_ref": [
+    "[intro try]",
+    "[intro preflight]",
+    "[intro preflight save]",
+    "[intro preference failed]",
+    "[intro help]",
+    "[intro play again]",
+    "[intro restart]",
+    "[intro restart body]",
+    "[intro show destination]",
+    "[tutorial lessons]",
+    "[tutorial restart]",
+    "[tutorial restart body]",
+    "[tutorial unavailable]",
+    "[scenario messages]"
+  ],
+  "pending_keys": 209,
+  "pending_matches_all209additions": true,
+  "step_counts": {
+    "introduction": 5,
+    "food-supply": 2,
+    "healing": 2,
+    "walking-training": 2,
+    "swimming": 3,
+    "schools": 2,
+    "upgrades": 2,
+    "warrior-training": 3,
+    "fortifications": 4,
+    "defensive-tactics": 4
+  },
+  "draft_approved_equalities_removed": {
+    "hi": [],
+    "ur": [],
+    "sw": []
+  }
+}

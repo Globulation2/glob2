@@ -1,0 +1,744 @@
+[
+  {
+    "path": "artifacts/translation-program/native-preview/release-final/sw/1200/main.png",
+    "sha256": "0088534e632b3d94fab583fa6d013f8d506190e1b1cf43f169b1db7329e7177f",
+    "manually_read": true,
+    "result": "pass",
+    "notes": "All visible Swahili controls read; labels fit, no glyph loss or overlap; main menu names/settings categories clear."
+  },
+  {
+    "path": "artifacts/translation-program/native-preview/release-final/sw/1200/settings.png",
+    "sha256": "d2b8dfd3592814c9ae2bd0a5083b6154921426dc8e4fe54cc8825ae873cb1476",
+    "manually_read": true,
+    "result": "pass",
+    "notes": "All visible Swahili controls read; labels fit, no glyph loss or overlap; main menu names/settings categories clear."
+  },
+  {
+    "path": "artifacts/translation-program/native-preview/release-final/sw/1200/matrix/font-10-scale-1-page-001.png",
+    "sha256": "1d4144d6c3970effb144f2cdbcc7fffda2ae73ae55579501a23fa6d6c6070b1e",
+    "manually_read": true,
+    "result": "pass",
+    "notes": "Latin letters and punctuation clear; LTR arrows and ≤4/order correct; prose wraps at word boundaries without clipped glyphs. Diagnostic page boundary may split a message across pages."
+  },
+  {
+    "path": "artifacts/translation-program/native-preview/release-final/sw/1200/matrix/font-10-scale-1-page-002.png",
+    "sha256": "016efa55afe670b9a0e86062c17695ba5401b95e89af65cc8baa32305280784a",
+    "manually_read": true,
+    "result": "pass",
+    "notes": "Latin letters and punctuation clear; LTR arrows and ≤4/order correct; prose wraps at word boundaries without clipped glyphs. Diagnostic page boundary may split a message across pages."
+  },
+  {
+    "path": "artifacts/translation-program/native-preview/release-final/sw/1200/matrix/font-10-scale-2-page-001.png",
+    "sha256": "13bbf3846718dfeec7413d43af285cfdee669e423cf51ed521770ea506912689",
+    "manually_read": true,
+    "result": "pass",
+    "notes": "Latin letters and punctuation clear; LTR arrows and ≤4/order correct; prose wraps at word boundaries without clipped glyphs. Diagnostic page boundary may split a message across pages."
+  },
+  {
+    "path": "artifacts/translation-program/native-preview/release-final/sw/1200/matrix/font-10-scale-2-page-002.png",
+    "sha256": "042200a13c5cd55a72e0dacc53e75819c2183504e7b485e9345fcb67b77b80a1",
+    "manually_read": true,
+    "result": "pass",
+    "notes": "Latin letters and punctuation clear; LTR arrows and ≤4/order correct; prose wraps at word boundaries without clipped glyphs. Diagnostic page boundary may split a message across pages."
+  },
+  {
+    "path": "artifacts/translation-program/native-preview/release-final/sw/1200/matrix/font-13-scale-1-page-001.png",
+    "sha256": "b0aaea67bc8ffde32ccbadeb9e289956fecb85fc6119fe3650d0979df612bc21",
+    "manually_read": true,
+    "result": "pass",
+    "notes": "Latin letters and punctuation clear; LTR arrows and ≤4/order correct; prose wraps at word boundaries without clipped glyphs. Diagnostic page boundary may split a message across pages."
+  },
+  {
+    "path": "artifacts/translation-program/native-preview/release-final/sw/1200/matrix/font-13-scale-1-page-002.png",
+    "sha256": "09495c74a498a7704f420c7eded8b46fabc866d4d844b83107c05dbbda5ccff9",
+    "manually_read": true,
+    "result": "pass",
+    "notes": "Latin letters and punctuation clear; LTR arrows and ≤4/order correct; prose wraps at word boundaries without clipped glyphs. Diagnostic page boundary may split a message across pages."
+  },
+  {
+    "path": "artifacts/translation-program/native-preview/release-final/sw/1200/matrix/font-13-scale-2-page-001.png",
+    "sha256": "f43bd777bdfe19449c3dece7058041c599acb503324e76facfdeac58d64bda57",
+    "manually_read": true,
+    "result": "pass",
+    "notes": "Latin letters and punctuation clear; LTR arrows and ≤4/order correct; prose wraps at word boundaries without clipped glyphs. Diagnostic page boundary may split a message across pages."
+  },
+  {
+    "path": "artifacts/translation-program/native-preview/release-final/sw/1200/matrix/font-13-scale-2-page-002.png",
+    "sha256": "7bddc51861ba6fbec506129165af6431d7088c182a29748bdcf9c56c83b1a748",
+    "manually_read": true,
+    "result": "pass",
+    "notes": "Latin letters and punctuation clear; LTR arrows and ≤4/order correct; prose wraps at word boundaries without clipped glyphs. Diagnostic page boundary may split a message across pages."
+  },
+  {
+    "path": "artifacts/translation-program/native-preview/release-final/sw/1200/matrix/font-20-scale-1-page-001.png",
+    "sha256": "29e446feb7b7ef9015e8b87998fc74953c2a9c640156d437bff4a970bca6d2c0",
+    "manually_read": true,
+    "result": "pass",
+    "notes": "Latin letters and punctuation clear; LTR arrows and ≤4/order correct; prose wraps at word boundaries without clipped glyphs. Diagnostic page boundary may split a message across pages."
+  },
+  {
+    "path": "artifacts/translation-program/native-preview/release-final/sw/1200/matrix/font-20-scale-1-page-002.png",
+    "sha256": "42af6fd3e24618f4e0ae1709406d2f2c07c9e4e1290f9d869875b2ff7364107c",
+    "manually_read": true,
+    "result": "pass",
+    "notes": "Latin letters and punctuation clear; LTR arrows and ≤4/order correct; prose wraps at word boundaries without clipped glyphs. Diagnostic page boundary may split a message across pages."
+  },
+  {
+    "path": "artifacts/translation-program/native-preview/release-final/sw/1200/matrix/font-20-scale-1-page-003.png",
+    "sha256": "0b25265b9abcb61fb5f49c2b3822025711b7a388ee9867c1797c61b96abd26be",
+    "manually_read": true,
+    "result": "pass",
+    "notes": "Latin letters and punctuation clear; LTR arrows and ≤4/order correct; prose wraps at word boundaries without clipped glyphs. Diagnostic page boundary may split a message across pages."
+  },
+  {
+    "path": "artifacts/translation-program/native-preview/release-final/sw/1200/matrix/font-20-scale-2-page-001.png",
+    "sha256": "922fd037900bd327bee46b18aebb3c46da7255553df1b6793530969fb24f5965",
+    "manually_read": true,
+    "result": "pass",
+    "notes": "Latin letters and punctuation clear; LTR arrows and ≤4/order correct; prose wraps at word boundaries without clipped glyphs. Diagnostic page boundary may split a message across pages."
+  },
+  {
+    "path": "artifacts/translation-program/native-preview/release-final/sw/1200/matrix/font-20-scale-2-page-002.png",
+    "sha256": "d9cc8c53e163ddcc2ffc45b2fa6c31b19caf0d55bf79a52e9d89063998049d53",
+    "manually_read": true,
+    "result": "pass",
+    "notes": "Latin letters and punctuation clear; LTR arrows and ≤4/order correct; prose wraps at word boundaries without clipped glyphs. Diagnostic page boundary may split a message across pages."
+  },
+  {
+    "path": "artifacts/translation-program/native-preview/release-final/sw/1200/matrix/font-20-scale-2-page-003.png",
+    "sha256": "58516d5c96b7ee597e7d1eb81b9ce092bc6aae2cf4f71d32c5c66a78ea750976",
+    "manually_read": true,
+    "result": "pass",
+    "notes": "Latin letters and punctuation clear; LTR arrows and ≤4/order correct; prose wraps at word boundaries without clipped glyphs. Diagnostic page boundary may split a message across pages."
+  },
+  {
+    "path": "artifacts/translation-program/native-preview/release-final/sw/1200/settings-audio.png",
+    "sha256": "656dd2c9a6ed1be85efa84261551bd432e80bc30193a10b11261d0fc076cf6e8",
+    "manually_read": true,
+    "result": "pass",
+    "notes": "Read visible labels/options/counts; full words and natural LTR numbers, no overlap, clipping, missing glyphs or unexplained fallback."
+  },
+  {
+    "path": "artifacts/translation-program/native-preview/release-final/sw/1200/lobby.png",
+    "sha256": "0c88841441d75ebbeebb384bf1f347e44f000eda2522beed3798c54c89f80429",
+    "manually_read": true,
+    "result": "pass",
+    "notes": "Read visible labels/options/counts; full words and natural LTR numbers, no overlap, clipping, missing glyphs or unexplained fallback."
+  },
+  {
+    "path": "artifacts/translation-program/native-preview/release-final/sw/1200/lobby-players.png",
+    "sha256": "ef10f8f7779affd54cde4801b4bdd8535454468f4bfcd8988596f944baace22f",
+    "manually_read": true,
+    "result": "pass",
+    "notes": "Read visible labels/options/counts; full words and natural LTR numbers, no overlap, clipping, missing glyphs or unexplained fallback."
+  },
+  {
+    "path": "artifacts/translation-program/native-preview/release-final/sw/1200/gameplay.png",
+    "sha256": "9ba222fc1e00ecae33041bd3479baafa959839ce466918c6cf60980078725c4c",
+    "manually_read": true,
+    "result": "pass",
+    "notes": "Actual gameplay/menu/lesson PNG read. Expanded instructions fully visible with natural Latin shaping and LTR numeric counts; labels/zoom/readable controls fit. Opening briefing and guidance are distinct where briefing exists."
+  },
+  {
+    "path": "artifacts/translation-program/native-preview/release-final/sw/1200/gameplay-dialog.png",
+    "sha256": "2ed36d60fb1dfb3ace2c9acb0d122863bea3def32cf149d2e70d905206db23b9",
+    "manually_read": true,
+    "result": "pass",
+    "notes": "Actual gameplay/menu/lesson PNG read. Expanded instructions fully visible with natural Latin shaping and LTR numeric counts; labels/zoom/readable controls fit. Opening briefing and guidance are distinct where briefing exists."
+  },
+  {
+    "path": "artifacts/translation-program/native-preview/release-final/sw/1200/gameplay-zoom-fit.png",
+    "sha256": "f37e96e5c2982c270b2ed06958721df1a9861da84698fc844d6acb8e98bf38aa",
+    "manually_read": true,
+    "result": "pass",
+    "notes": "Actual gameplay/menu/lesson PNG read. Expanded instructions fully visible with natural Latin shaping and LTR numeric counts; labels/zoom/readable controls fit. Opening briefing and guidance are distinct where briefing exists."
+  },
+  {
+    "path": "artifacts/translation-program/native-preview/release-final/sw/1200/gameplay-zoom-plus.png",
+    "sha256": "986d854f01ed06703533781416f2a7b34004175d3655c5c2219c0c739368e108",
+    "manually_read": true,
+    "result": "pass",
+    "notes": "Actual gameplay/menu/lesson PNG read. Expanded instructions fully visible with natural Latin shaping and LTR numeric counts; labels/zoom/readable controls fit. Opening briefing and guidance are distinct where briefing exists."
+  },
+  {
+    "path": "artifacts/translation-program/native-preview/release-final/sw/1200/tutorial-introduction.png",
+    "sha256": "4eebc02dc5d998b1b8aebca7370dd6aef4d6fc0327f314b0c7c266b8c6b98bf3",
+    "manually_read": true,
+    "result": "pass",
+    "notes": "Actual gameplay/menu/lesson PNG read. Expanded instructions fully visible with natural Latin shaping and LTR numeric counts; labels/zoom/readable controls fit. Opening briefing and guidance are distinct where briefing exists."
+  },
+  {
+    "path": "artifacts/translation-program/native-preview/release-final/sw/1200/tutorial-introduction-dialog.png",
+    "sha256": "9623dc6b8fe6bbea21f8822293029951f75f11792cfc906198d4c63de6f74688",
+    "manually_read": true,
+    "result": "pass",
+    "notes": "Actual gameplay/menu/lesson PNG read. Expanded instructions fully visible with natural Latin shaping and LTR numeric counts; labels/zoom/readable controls fit. Opening briefing and guidance are distinct where briefing exists."
+  },
+  {
+    "path": "artifacts/translation-program/native-preview/release-final/sw/1200/tutorial-food-supply-briefing.png",
+    "sha256": "a7b25b1c88f7a0c79a35d66ba6c5d77889f4cb5bc3dbd7f8875be5ad9f5ae8af",
+    "manually_read": true,
+    "result": "pass",
+    "notes": "Actual gameplay/menu/lesson PNG read. Expanded instructions fully visible with natural Latin shaping and LTR numeric counts; labels/zoom/readable controls fit. Opening briefing and guidance are distinct where briefing exists."
+  },
+  {
+    "path": "artifacts/translation-program/native-preview/release-final/sw/1200/tutorial-food-supply.png",
+    "sha256": "08b8bc973249ae6d8d6cd9975103ec05275cbc2b010572a284aae5b2e2a5df28",
+    "manually_read": true,
+    "result": "pass",
+    "notes": "Actual gameplay/menu/lesson PNG read. Expanded instructions fully visible with natural Latin shaping and LTR numeric counts; labels/zoom/readable controls fit. Opening briefing and guidance are distinct where briefing exists."
+  },
+  {
+    "path": "artifacts/translation-program/native-preview/release-final/sw/1200/tutorial-food-supply-dialog.png",
+    "sha256": "91ccd56e966365a6217226344be0ddc74d38a6157ca343a8c2066abbc5a78852",
+    "manually_read": true,
+    "result": "pass",
+    "notes": "Actual gameplay/menu/lesson PNG read. Expanded instructions fully visible with natural Latin shaping and LTR numeric counts; labels/zoom/readable controls fit. Opening briefing and guidance are distinct where briefing exists."
+  },
+  {
+    "path": "artifacts/translation-program/native-preview/release-final/sw/1200/tutorial-healing-briefing.png",
+    "sha256": "f2a89177ce6de22118e3b5248ab64c31b53e76b755e6db0c516edf5465bbe6c8",
+    "manually_read": true,
+    "result": "pass",
+    "notes": "Read briefing, actual initial-step guidance/marker, and menu; complete Latin letters, word wrapping and 1/2 count fit. Healing correctly states fed creatures and one injured worker; walking preserves existing-worker training and marked construction site."
+  },
+  {
+    "path": "artifacts/translation-program/native-preview/release-final/sw/1200/tutorial-healing.png",
+    "sha256": "5defd6495c1c5e23088452d8b5e7739a5d5079f4b6b712fc6905cb69d9301f1c",
+    "manually_read": true,
+    "result": "pass",
+    "notes": "Read briefing, actual initial-step guidance/marker, and menu; complete Latin letters, word wrapping and 1/2 count fit. Healing correctly states fed creatures and one injured worker; walking preserves existing-worker training and marked construction site."
+  },
+  {
+    "path": "artifacts/translation-program/native-preview/release-final/sw/1200/tutorial-healing-dialog.png",
+    "sha256": "ad00bfd3f4d4edb21cdfc222bcc2e64eee4666684ad06e86126e81f023b6bd35",
+    "manually_read": true,
+    "result": "pass",
+    "notes": "Read briefing, actual initial-step guidance/marker, and menu; complete Latin letters, word wrapping and 1/2 count fit. Healing correctly states fed creatures and one injured worker; walking preserves existing-worker training and marked construction site."
+  },
+  {
+    "path": "artifacts/translation-program/native-preview/release-final/sw/1200/tutorial-walking-training-briefing.png",
+    "sha256": "30b49e1bc28d62abca19569ed7fa6bc2be323a851c74e9abb33b274994088812",
+    "manually_read": true,
+    "result": "pass",
+    "notes": "Read briefing, actual initial-step guidance/marker, and menu; complete Latin letters, word wrapping and 1/2 count fit. Healing correctly states fed creatures and one injured worker; walking preserves existing-worker training and marked construction site."
+  },
+  {
+    "path": "artifacts/translation-program/native-preview/release-final/sw/1200/tutorial-walking-training.png",
+    "sha256": "2017a060c4aaa80ab8b18115f948b8b7521f90ebf18ceab86b18063964ef6ac8",
+    "manually_read": true,
+    "result": "pass",
+    "notes": "Read briefing, actual initial-step guidance/marker, and menu; complete Latin letters, word wrapping and 1/2 count fit. Healing correctly states fed creatures and one injured worker; walking preserves existing-worker training and marked construction site."
+  },
+  {
+    "path": "artifacts/translation-program/native-preview/release-final/sw/1200/tutorial-walking-training-dialog.png",
+    "sha256": "4acb37f508610e97c6754a54162b1c26fe7da879460d8758adbc06cb0e0e0826",
+    "manually_read": true,
+    "result": "pass",
+    "notes": "Read briefing, actual initial-step guidance/marker, and menu; complete Latin letters, word wrapping and 1/2 count fit. Healing correctly states fed creatures and one injured worker; walking preserves existing-worker training and marked construction site."
+  },
+  {
+    "path": "artifacts/translation-program/native-preview/release-final/sw/1200/tutorial-swimming-briefing.png",
+    "sha256": "cd419f922c46debe39e4898825c061b369723173a86a6163d9076f61593253ae",
+    "manually_read": true,
+    "result": "pass",
+    "notes": "Swimming briefing/train-swimmers and pond-algae/School relationship intact; initial instruction and marker preserve west-of-pond location and builders. 1/3 and all text/buttons fit without glyph defects."
+  },
+  {
+    "path": "artifacts/translation-program/native-preview/release-final/sw/1200/tutorial-swimming.png",
+    "sha256": "25cd0144c6e776fba9b51ec300b8f4ee5b47d3c6756c564bb8d38c608313319d",
+    "manually_read": true,
+    "result": "pass",
+    "notes": "Swimming briefing/train-swimmers and pond-algae/School relationship intact; initial instruction and marker preserve west-of-pond location and builders. 1/3 and all text/buttons fit without glyph defects."
+  },
+  {
+    "path": "artifacts/translation-program/native-preview/release-final/sw/1200/tutorial-swimming-dialog.png",
+    "sha256": "0232beeae701aaeb26c79f2352b206f0ae7b3ec662f7975cbff69d272304d1d2",
+    "manually_read": true,
+    "result": "pass",
+    "notes": "Swimming briefing/train-swimmers and pond-algae/School relationship intact; initial instruction and marker preserve west-of-pond location and builders. 1/3 and all text/buttons fit without glyph defects."
+  },
+  {
+    "path": "artifacts/translation-program/native-preview/release-final/sw/1200/tutorial-schools-briefing.png",
+    "sha256": "067c73db5702fd56ac6f487d355593a3c8934fbed73c8c061e5a4675cfe88357",
+    "manually_read": true,
+    "result": "pass",
+    "notes": "Read actual schools/upgrades initial instruction and marker/menu; school uses prepared swimmers and worker skills, upgrade calls skilled builders and Racetrack consistently. No missing letters, clipping or overlap; 1/2 order preserved."
+  },
+  {
+    "path": "artifacts/translation-program/native-preview/release-final/sw/1200/tutorial-schools.png",
+    "sha256": "37c4fdb17185dd34f16c91016486bef24db0bbede1071c7866dea1affc633ed9",
+    "manually_read": true,
+    "result": "pass",
+    "notes": "Read actual schools/upgrades initial instruction and marker/menu; school uses prepared swimmers and worker skills, upgrade calls skilled builders and Racetrack consistently. No missing letters, clipping or overlap; 1/2 order preserved."
+  },
+  {
+    "path": "artifacts/translation-program/native-preview/release-final/sw/1200/tutorial-schools-dialog.png",
+    "sha256": "2d9e19aa8377fe9a4d11f9fde78f6b3fced91e9216b105b859e25e31c219717d",
+    "manually_read": true,
+    "result": "pass",
+    "notes": "Read actual schools/upgrades initial instruction and marker/menu; school uses prepared swimmers and worker skills, upgrade calls skilled builders and Racetrack consistently. No missing letters, clipping or overlap; 1/2 order preserved."
+  },
+  {
+    "path": "artifacts/translation-program/native-preview/release-final/sw/1200/tutorial-upgrades.png",
+    "sha256": "5db139edb1777981416ee42c62ce74e02e08bcb04d6d3f569583bcf1b3fb5e14",
+    "manually_read": true,
+    "result": "pass",
+    "notes": "Read actual schools/upgrades initial instruction and marker/menu; school uses prepared swimmers and worker skills, upgrade calls skilled builders and Racetrack consistently. No missing letters, clipping or overlap; 1/2 order preserved."
+  },
+  {
+    "path": "artifacts/translation-program/native-preview/release-final/sw/1200/tutorial-upgrades-dialog.png",
+    "sha256": "0befbedd84f2bfe93405a211ed2ecb7a2f99ee8c431a5bd100180a1b1ca17a6a",
+    "manually_read": true,
+    "result": "pass",
+    "notes": "Read actual schools/upgrades initial instruction and marker/menu; school uses prepared swimmers and worker skills, upgrade calls skilled builders and Racetrack consistently. No missing letters, clipping or overlap; 1/2 order preserved."
+  },
+  {
+    "path": "artifacts/translation-program/native-preview/release-final/sw/1200/tutorial-warrior-training-briefing.png",
+    "sha256": "70444195a1fdf9a1ea82bcfaa47d0a76c2d6b0f5c10df282f0543c8a714f3a1d",
+    "manually_read": true,
+    "result": "pass",
+    "notes": "Read initial lesson briefing/guidance/menu; production2warriors and 1/3 count retain meaning, tower1/4 and supply/walls briefing clear. Fully visible Latin text, no control overlap or clipping."
+  },
+  {
+    "path": "artifacts/translation-program/native-preview/release-final/sw/1200/tutorial-warrior-training.png",
+    "sha256": "30392e62cb8aeb744ae90062e22b4a98e45aa3624025a4cd45948fe02a59eb98",
+    "manually_read": true,
+    "result": "pass",
+    "notes": "Read initial lesson briefing/guidance/menu; production2warriors and 1/3 count retain meaning, tower1/4 and supply/walls briefing clear. Fully visible Latin text, no control overlap or clipping."
+  },
+  {
+    "path": "artifacts/translation-program/native-preview/release-final/sw/1200/tutorial-warrior-training-dialog.png",
+    "sha256": "6c90870bd39e9b4e83acafad22c545f41542a7dbdb165ad9d6cc4147f6352f2b",
+    "manually_read": true,
+    "result": "pass",
+    "notes": "Read initial lesson briefing/guidance/menu; production2warriors and 1/3 count retain meaning, tower1/4 and supply/walls briefing clear. Fully visible Latin text, no control overlap or clipping."
+  },
+  {
+    "path": "artifacts/translation-program/native-preview/release-final/sw/1200/tutorial-fortifications-briefing.png",
+    "sha256": "f8d0357a7ae0267a99b0fcc894b117e4dbc40f9e76be60e6c7329e9afaef301a",
+    "manually_read": true,
+    "result": "pass",
+    "notes": "Read initial lesson briefing/guidance/menu; production2warriors and 1/3 count retain meaning, tower1/4 and supply/walls briefing clear. Fully visible Latin text, no control overlap or clipping."
+  },
+  {
+    "path": "artifacts/translation-program/native-preview/release-final/sw/1200/tutorial-fortifications.png",
+    "sha256": "0112b6c55400bcb1e2b06ed6021cc4e3c957fa09b0f50042e1f2922e450b3633",
+    "manually_read": true,
+    "result": "pass",
+    "notes": "Read initial lesson briefing/guidance/menu; production2warriors and 1/3 count retain meaning, tower1/4 and supply/walls briefing clear. Fully visible Latin text, no control overlap or clipping."
+  },
+  {
+    "path": "artifacts/translation-program/native-preview/release-final/sw/1200/tutorial-fortifications-dialog.png",
+    "sha256": "eaaecd3f2ce326d4658772c1d0bcd84cd7f3b6b905541b711bff3cf73a9ba8f7",
+    "manually_read": true,
+    "result": "pass",
+    "notes": "Read initial lesson briefing/guidance/menu; production2warriors and 1/3 count retain meaning, tower1/4 and supply/walls briefing clear. Fully visible Latin text, no control overlap or clipping."
+  },
+  {
+    "path": "artifacts/translation-program/native-preview/release-final/sw/1200/tutorial-defensive-tactics-briefing.png",
+    "sha256": "cef0fb5a31f45208cdcebb31f409c8bdc4575f8ef8e0de483ac1d1c8f6e106eb",
+    "manually_read": true,
+    "result": "pass",
+    "notes": "Read defense briefing sequence/scout enemy camp instruction1/4 and menu. Clear request1explorer and Exploration Flag; text fits panel and correct LTR counts."
+  },
+  {
+    "path": "artifacts/translation-program/native-preview/release-final/sw/1200/tutorial-defensive-tactics.png",
+    "sha256": "7d3ff49c6eb8f25c15ba44a99bff07be05e3cc0714e661a5aad97680575d983a",
+    "manually_read": true,
+    "result": "pass",
+    "notes": "Read defense briefing sequence/scout enemy camp instruction1/4 and menu. Clear request1explorer and Exploration Flag; text fits panel and correct LTR counts."
+  },
+  {
+    "path": "artifacts/translation-program/native-preview/release-final/sw/1200/tutorial-defensive-tactics-dialog.png",
+    "sha256": "0f4c903232bfe95129638cb54a6ca9d1313b57b1e82e1c9cd765acdb1cb863a6",
+    "manually_read": true,
+    "result": "pass",
+    "notes": "Read defense briefing sequence/scout enemy camp instruction1/4 and menu. Clear request1explorer and Exploration Flag; text fits panel and correct LTR counts."
+  },
+  {
+    "path": "artifacts/translation-program/native-preview/release-final/sw/390/matrix/font-10-scale-1-page-001.png",
+    "sha256": "10d4dc3365d60c390c65a53ce4024a00859fce456ff7064be4b6548d814b0a2f",
+    "manually_read": true,
+    "result": "pass",
+    "notes": "Phone-width Latin text read: entire22page matrix checked across10/13/20points and1/2scale; LTR arrows/counts/≤4 correct, word wrapping and full glyph extents fit. Diagnostic message continuations span pages intentionally."
+  },
+  {
+    "path": "artifacts/translation-program/native-preview/release-final/sw/390/matrix/font-10-scale-1-page-002.png",
+    "sha256": "a81956668362fb30eb25e61e92aa2d012bd6725f9f89fd49b34b670bcbf487fd",
+    "manually_read": true,
+    "result": "pass",
+    "notes": "Phone-width Latin text read: entire22page matrix checked across10/13/20points and1/2scale; LTR arrows/counts/≤4 correct, word wrapping and full glyph extents fit. Diagnostic message continuations span pages intentionally."
+  },
+  {
+    "path": "artifacts/translation-program/native-preview/release-final/sw/390/matrix/font-10-scale-2-page-001.png",
+    "sha256": "f1bc309d8e931b07418331b75c72f4ca377d15b2ad94786a8ba26c3e8f923559",
+    "manually_read": true,
+    "result": "pass",
+    "notes": "Phone-width Latin text read: entire22page matrix checked across10/13/20points and1/2scale; LTR arrows/counts/≤4 correct, word wrapping and full glyph extents fit. Diagnostic message continuations span pages intentionally."
+  },
+  {
+    "path": "artifacts/translation-program/native-preview/release-final/sw/390/matrix/font-10-scale-2-page-002.png",
+    "sha256": "97e1c5c6692b325713a8a4b90fe0892ef57077ab67ce296bb3721e101852e2bc",
+    "manually_read": true,
+    "result": "pass",
+    "notes": "Phone-width Latin text read: entire22page matrix checked across10/13/20points and1/2scale; LTR arrows/counts/≤4 correct, word wrapping and full glyph extents fit. Diagnostic message continuations span pages intentionally."
+  },
+  {
+    "path": "artifacts/translation-program/native-preview/release-final/sw/390/matrix/font-13-scale-1-page-001.png",
+    "sha256": "9c03b0ac3779c50585542128c0251213c2aa84d2330a29d11d9645297ec61d68",
+    "manually_read": true,
+    "result": "pass",
+    "notes": "Phone-width Latin text read: entire22page matrix checked across10/13/20points and1/2scale; LTR arrows/counts/≤4 correct, word wrapping and full glyph extents fit. Diagnostic message continuations span pages intentionally."
+  },
+  {
+    "path": "artifacts/translation-program/native-preview/release-final/sw/390/matrix/font-13-scale-1-page-002.png",
+    "sha256": "3ba788641c53c2c0ef6472f207e25053924db0f46d179bcb78561e8d8bdfe460",
+    "manually_read": true,
+    "result": "pass",
+    "notes": "Phone-width Latin text read: entire22page matrix checked across10/13/20points and1/2scale; LTR arrows/counts/≤4 correct, word wrapping and full glyph extents fit. Diagnostic message continuations span pages intentionally."
+  },
+  {
+    "path": "artifacts/translation-program/native-preview/release-final/sw/390/matrix/font-13-scale-1-page-003.png",
+    "sha256": "9712ac5ffedaaa0c2db4d556636e4f08978072fb50456d0d56add79af31b7020",
+    "manually_read": true,
+    "result": "pass",
+    "notes": "Phone-width Latin text read: entire22page matrix checked across10/13/20points and1/2scale; LTR arrows/counts/≤4 correct, word wrapping and full glyph extents fit. Diagnostic message continuations span pages intentionally."
+  },
+  {
+    "path": "artifacts/translation-program/native-preview/release-final/sw/390/matrix/font-13-scale-2-page-001.png",
+    "sha256": "b939712173eeacc1629e4924a1fe17dad23ea4a6b0507ff3214912562db8227b",
+    "manually_read": true,
+    "result": "pass",
+    "notes": "Phone-width Latin text read: entire22page matrix checked across10/13/20points and1/2scale; LTR arrows/counts/≤4 correct, word wrapping and full glyph extents fit. Diagnostic message continuations span pages intentionally."
+  },
+  {
+    "path": "artifacts/translation-program/native-preview/release-final/sw/390/matrix/font-13-scale-2-page-002.png",
+    "sha256": "3163c2ee971d125e008d403dc86f6c7448e68568815947ed05f8abc900ba9b53",
+    "manually_read": true,
+    "result": "pass",
+    "notes": "Phone-width Latin text read: entire22page matrix checked across10/13/20points and1/2scale; LTR arrows/counts/≤4 correct, word wrapping and full glyph extents fit. Diagnostic message continuations span pages intentionally."
+  },
+  {
+    "path": "artifacts/translation-program/native-preview/release-final/sw/390/matrix/font-13-scale-2-page-003.png",
+    "sha256": "299f9604b37e435ee72624c4dd64a12a3d3088ba1ef70e2a54d2481e55c6f6b3",
+    "manually_read": true,
+    "result": "pass",
+    "notes": "Phone-width Latin text read: entire22page matrix checked across10/13/20points and1/2scale; LTR arrows/counts/≤4 correct, word wrapping and full glyph extents fit. Diagnostic message continuations span pages intentionally."
+  },
+  {
+    "path": "artifacts/translation-program/native-preview/release-final/sw/390/matrix/font-20-scale-1-page-001.png",
+    "sha256": "e3c9b609088bb6ba37b6bdecc084f255a7a2eb7773cb98381a15723ba4cd542e",
+    "manually_read": true,
+    "result": "pass",
+    "notes": "Phone-width Latin text read: entire22page matrix checked across10/13/20points and1/2scale; LTR arrows/counts/≤4 correct, word wrapping and full glyph extents fit. Diagnostic message continuations span pages intentionally."
+  },
+  {
+    "path": "artifacts/translation-program/native-preview/release-final/sw/390/matrix/font-20-scale-1-page-002.png",
+    "sha256": "d098ea9437324784b6d5c65f2548c678aa4a00e2f530df16cdfd6b4d30d6ea42",
+    "manually_read": true,
+    "result": "pass",
+    "notes": "Phone-width Latin text read: entire22page matrix checked across10/13/20points and1/2scale; LTR arrows/counts/≤4 correct, word wrapping and full glyph extents fit. Diagnostic message continuations span pages intentionally."
+  },
+  {
+    "path": "artifacts/translation-program/native-preview/release-final/sw/390/matrix/font-20-scale-1-page-003.png",
+    "sha256": "14a842e81c6c5532c2c18e0b0071f2a7f3ba06c19602b93081134901d2531e0f",
+    "manually_read": true,
+    "result": "pass",
+    "notes": "Phone-width Latin text read: entire22page matrix checked across10/13/20points and1/2scale; LTR arrows/counts/≤4 correct, word wrapping and full glyph extents fit. Diagnostic message continuations span pages intentionally."
+  },
+  {
+    "path": "artifacts/translation-program/native-preview/release-final/sw/390/matrix/font-20-scale-1-page-004.png",
+    "sha256": "59dc29c7415d57987c0f047e226acb92d76a21931a8c25bd0ed72b37bdd68605",
+    "manually_read": true,
+    "result": "pass",
+    "notes": "Phone-width Latin text read: entire22page matrix checked across10/13/20points and1/2scale; LTR arrows/counts/≤4 correct, word wrapping and full glyph extents fit. Diagnostic message continuations span pages intentionally."
+  },
+  {
+    "path": "artifacts/translation-program/native-preview/release-final/sw/390/matrix/font-20-scale-1-page-005.png",
+    "sha256": "d1fbd94e2f6ca6234c82aa55cfeffe5d8da0b3a99f1ee77f8a2330fb9013cb25",
+    "manually_read": true,
+    "result": "pass",
+    "notes": "Phone-width Latin text read: entire22page matrix checked across10/13/20points and1/2scale; LTR arrows/counts/≤4 correct, word wrapping and full glyph extents fit. Diagnostic message continuations span pages intentionally."
+  },
+  {
+    "path": "artifacts/translation-program/native-preview/release-final/sw/390/matrix/font-20-scale-1-page-006.png",
+    "sha256": "decbb8c910a0ce0f4b1d17c79594241b854f345d55021aff704e69c8c720ac87",
+    "manually_read": true,
+    "result": "pass",
+    "notes": "Phone-width Latin text read: entire22page matrix checked across10/13/20points and1/2scale; LTR arrows/counts/≤4 correct, word wrapping and full glyph extents fit. Diagnostic message continuations span pages intentionally."
+  },
+  {
+    "path": "artifacts/translation-program/native-preview/release-final/sw/390/matrix/font-20-scale-2-page-001.png",
+    "sha256": "e51b47e1841a904654b6df2f050bcabfe3c3317a6f45612ac6914fc4741fb2cf",
+    "manually_read": true,
+    "result": "pass",
+    "notes": "Phone-width Latin text read: entire22page matrix checked across10/13/20points and1/2scale; LTR arrows/counts/≤4 correct, word wrapping and full glyph extents fit. Diagnostic message continuations span pages intentionally."
+  },
+  {
+    "path": "artifacts/translation-program/native-preview/release-final/sw/390/matrix/font-20-scale-2-page-002.png",
+    "sha256": "162d0e68ec3aec36fbe5e52332406a3e62442eea7cc1528d1688a46f2c0b35d1",
+    "manually_read": true,
+    "result": "pass",
+    "notes": "Phone-width Latin text read: entire22page matrix checked across10/13/20points and1/2scale; LTR arrows/counts/≤4 correct, word wrapping and full glyph extents fit. Diagnostic message continuations span pages intentionally."
+  },
+  {
+    "path": "artifacts/translation-program/native-preview/release-final/sw/390/matrix/font-20-scale-2-page-003.png",
+    "sha256": "bd36e88b335046f29de1583b1e128db9787f4d088e1b4588c8adbdfec07db40a",
+    "manually_read": true,
+    "result": "pass",
+    "notes": "Phone-width Latin text read: entire22page matrix checked across10/13/20points and1/2scale; LTR arrows/counts/≤4 correct, word wrapping and full glyph extents fit. Diagnostic message continuations span pages intentionally."
+  },
+  {
+    "path": "artifacts/translation-program/native-preview/release-final/sw/390/matrix/font-20-scale-2-page-004.png",
+    "sha256": "fc2b77bbc62b1197cc564fe01c586e431c4c3b09f73c7423d010d201b20e2cb6",
+    "manually_read": true,
+    "result": "pass",
+    "notes": "Phone-width Latin text read: entire22page matrix checked across10/13/20points and1/2scale; LTR arrows/counts/≤4 correct, word wrapping and full glyph extents fit. Diagnostic message continuations span pages intentionally."
+  },
+  {
+    "path": "artifacts/translation-program/native-preview/release-final/sw/390/matrix/font-20-scale-2-page-005.png",
+    "sha256": "fb73454edaa6c41a6d8ce1d5d41d4493971b0dcfd4f64c1dda4273527f8886ea",
+    "manually_read": true,
+    "result": "pass",
+    "notes": "Phone-width Latin text read: entire22page matrix checked across10/13/20points and1/2scale; LTR arrows/counts/≤4 correct, word wrapping and full glyph extents fit. Diagnostic message continuations span pages intentionally."
+  },
+  {
+    "path": "artifacts/translation-program/native-preview/release-final/sw/390/matrix/font-20-scale-2-page-006.png",
+    "sha256": "6fb14d56553d9e887fed6d37b277255ae3aa44c06f90bfad645debc267e570f0",
+    "manually_read": true,
+    "result": "pass",
+    "notes": "Phone-width Latin text read: entire22page matrix checked across10/13/20points and1/2scale; LTR arrows/counts/≤4 correct, word wrapping and full glyph extents fit. Diagnostic message continuations span pages intentionally."
+  },
+  {
+    "path": "artifacts/translation-program/native-preview/release-final/sw/390/main.png",
+    "sha256": "b39888a32b57ef15edabbc5bf19bdd106c306bde29082c7abf3f0de0fbb05d01",
+    "manually_read": true,
+    "result": "pass",
+    "notes": "Phone menu/settings read; visible labels, dropdown values and footer text wrap cleanly with scroll affordance and no clipped glyphs or button overlap."
+  },
+  {
+    "path": "artifacts/translation-program/native-preview/release-final/sw/390/settings.png",
+    "sha256": "94aefd644270a95956c299ca21fe48e657b615df47e56b6000b48e78188a74e5",
+    "manually_read": true,
+    "result": "pass",
+    "notes": "Phone menu/settings read; visible labels, dropdown values and footer text wrap cleanly with scroll affordance and no clipped glyphs or button overlap."
+  },
+  {
+    "path": "artifacts/translation-program/native-preview/release-final/sw/390/settings-audio.png",
+    "sha256": "664fb553ecfd851f4c02c5b0c0c3db3c0a2e46e77335d536875ad11f536e5bcf",
+    "manually_read": true,
+    "result": "pass",
+    "notes": "Phone audio/lobby/player labels read. Long option/help text wraps cleanly; visible portions of scroll content clear; cropped offscreen rows are behind intentional scroll viewport, not unexpected text glyph clipping. Numbers and menu controls fit."
+  },
+  {
+    "path": "artifacts/translation-program/native-preview/release-final/sw/390/lobby.png",
+    "sha256": "246c1bd9b7f9e40c423c7b936895058ff81e129f0ede1a476251c967549b5b8c",
+    "manually_read": true,
+    "result": "pass",
+    "notes": "Phone audio/lobby/player labels read. Long option/help text wraps cleanly; visible portions of scroll content clear; cropped offscreen rows are behind intentional scroll viewport, not unexpected text glyph clipping. Numbers and menu controls fit."
+  },
+  {
+    "path": "artifacts/translation-program/native-preview/release-final/sw/390/lobby-players.png",
+    "sha256": "2ba5401918777f5aa2bb98684317315575cc32180594c6bdcac61779fdc75d7d",
+    "manually_read": true,
+    "result": "pass",
+    "notes": "Phone audio/lobby/player labels read. Long option/help text wraps cleanly; visible portions of scroll content clear; cropped offscreen rows are behind intentional scroll viewport, not unexpected text glyph clipping. Numbers and menu controls fit."
+  },
+  {
+    "path": "artifacts/translation-program/native-preview/release-final/sw/390/gameplay.png",
+    "sha256": "65714fa791711862bf93549cad6f60cdcfbd61e3e0b9c0a917b2b269b879a62f",
+    "manually_read": true,
+    "result": "pass",
+    "notes": "Actual phone gameplay/menu/intro-food-healing guidance read. Compact workflows point right in LTR; counts and controls clear. Introduction briefing tab uses narrow-column word continuation (Maelekez/o) with all letters visible, no loss; accepted cosmetic wrap, not clipping."
+  },
+  {
+    "path": "artifacts/translation-program/native-preview/release-final/sw/390/gameplay-dialog.png",
+    "sha256": "2405bd8f08a56adddb50bd1803e099a5dd2db82aa87b72a776fa04aed5b78778",
+    "manually_read": true,
+    "result": "pass",
+    "notes": "Actual phone gameplay/menu/intro-food-healing guidance read. Compact workflows point right in LTR; counts and controls clear. Introduction briefing tab uses narrow-column word continuation (Maelekez/o) with all letters visible, no loss; accepted cosmetic wrap, not clipping."
+  },
+  {
+    "path": "artifacts/translation-program/native-preview/release-final/sw/390/tutorial-introduction-briefing.png",
+    "sha256": "d0de29da6b69175b393fbec172eda46f276c3b4b479bd2f358b848c91da3b313",
+    "manually_read": true,
+    "result": "pass",
+    "notes": "Actual phone gameplay/menu/intro-food-healing guidance read. Compact workflows point right in LTR; counts and controls clear. Introduction briefing tab uses narrow-column word continuation (Maelekez/o) with all letters visible, no loss; accepted cosmetic wrap, not clipping."
+  },
+  {
+    "path": "artifacts/translation-program/native-preview/release-final/sw/390/tutorial-introduction.png",
+    "sha256": "8ab758e3500e417bedd170e24b6cf2675789bad9aa7c5489bbd0ae15b0dd375d",
+    "manually_read": true,
+    "result": "pass",
+    "notes": "Actual phone gameplay/menu/intro-food-healing guidance read. Compact workflows point right in LTR; counts and controls clear. Introduction briefing tab uses narrow-column word continuation (Maelekez/o) with all letters visible, no loss; accepted cosmetic wrap, not clipping."
+  },
+  {
+    "path": "artifacts/translation-program/native-preview/release-final/sw/390/tutorial-introduction-dialog.png",
+    "sha256": "fde4fd2e9c5f32c04b95bdbf839dcca012a203092885f1b4b3b5c99f5d5bb1dc",
+    "manually_read": true,
+    "result": "pass",
+    "notes": "Actual phone gameplay/menu/intro-food-healing guidance read. Compact workflows point right in LTR; counts and controls clear. Introduction briefing tab uses narrow-column word continuation (Maelekez/o) with all letters visible, no loss; accepted cosmetic wrap, not clipping."
+  },
+  {
+    "path": "artifacts/translation-program/native-preview/release-final/sw/390/tutorial-food-supply.png",
+    "sha256": "5b922dbdd819ab5c638e98f6055205f727c51d42f26ca792076ea0e4a9b1d37f",
+    "manually_read": true,
+    "result": "pass",
+    "notes": "Actual phone gameplay/menu/intro-food-healing guidance read. Compact workflows point right in LTR; counts and controls clear. Introduction briefing tab uses narrow-column word continuation (Maelekez/o) with all letters visible, no loss; accepted cosmetic wrap, not clipping."
+  },
+  {
+    "path": "artifacts/translation-program/native-preview/release-final/sw/390/tutorial-food-supply-dialog.png",
+    "sha256": "c3c6721b99975e8596081e49bd86c907d08b6e3f9b4cc250c95148f9a93c7503",
+    "manually_read": true,
+    "result": "pass",
+    "notes": "Actual phone gameplay/menu/intro-food-healing guidance read. Compact workflows point right in LTR; counts and controls clear. Introduction briefing tab uses narrow-column word continuation (Maelekez/o) with all letters visible, no loss; accepted cosmetic wrap, not clipping."
+  },
+  {
+    "path": "artifacts/translation-program/native-preview/release-final/sw/390/tutorial-healing.png",
+    "sha256": "1e717b4f5214fca9bc0192df72bae2c3c194123f266724b9b1b33de890b054a0",
+    "manually_read": true,
+    "result": "pass",
+    "notes": "Actual phone gameplay/menu/intro-food-healing guidance read. Compact workflows point right in LTR; counts and controls clear. Introduction briefing tab uses narrow-column word continuation (Maelekez/o) with all letters visible, no loss; accepted cosmetic wrap, not clipping."
+  },
+  {
+    "path": "artifacts/translation-program/native-preview/release-final/sw/390/tutorial-healing-dialog.png",
+    "sha256": "2f5c732220ea73ff364cd0d48716f4f42a02bb4c002c7f411bf4a5a99d47d4ec",
+    "manually_read": true,
+    "result": "pass",
+    "notes": "Actual phone gameplay/menu/intro-food-healing guidance read. Compact workflows point right in LTR; counts and controls clear. Introduction briefing tab uses narrow-column word continuation (Maelekez/o) with all letters visible, no loss; accepted cosmetic wrap, not clipping."
+  },
+  {
+    "path": "artifacts/translation-program/native-preview/release-final/sw/390/tutorial-walking-training.png",
+    "sha256": "50d51ef9656aff5f451f3679b5a6363b5c14b937fc34e3fd8fd4e101b1d38eb2",
+    "manually_read": true,
+    "result": "pass",
+    "notes": "Read compact initial phone instruction and menu; workflow/building terms and counts fit without missing letters or overlap. Swimming preserves west-of-pond direction; school wood/algae and walking track spacing intact."
+  },
+  {
+    "path": "artifacts/translation-program/native-preview/release-final/sw/390/tutorial-walking-training-dialog.png",
+    "sha256": "cb7a4f64a24d7cad995e60f18d0f23c586a8f6a70e2c7ce80fee7b1c7cbb6d61",
+    "manually_read": true,
+    "result": "pass",
+    "notes": "Read compact initial phone instruction and menu; workflow/building terms and counts fit without missing letters or overlap. Swimming preserves west-of-pond direction; school wood/algae and walking track spacing intact."
+  },
+  {
+    "path": "artifacts/translation-program/native-preview/release-final/sw/390/tutorial-swimming.png",
+    "sha256": "9a4564f70c40207f2efbb1be0c9376681379360f649d46b7ea92d9e53dbc56a9",
+    "manually_read": true,
+    "result": "pass",
+    "notes": "Read compact initial phone instruction and menu; workflow/building terms and counts fit without missing letters or overlap. Swimming preserves west-of-pond direction; school wood/algae and walking track spacing intact."
+  },
+  {
+    "path": "artifacts/translation-program/native-preview/release-final/sw/390/tutorial-swimming-dialog.png",
+    "sha256": "9c715afeedb60119e690b8873223151283d2e06a14c1b2d3ebba340850b04b59",
+    "manually_read": true,
+    "result": "pass",
+    "notes": "Read compact initial phone instruction and menu; workflow/building terms and counts fit without missing letters or overlap. Swimming preserves west-of-pond direction; school wood/algae and walking track spacing intact."
+  },
+  {
+    "path": "artifacts/translation-program/native-preview/release-final/sw/390/tutorial-schools.png",
+    "sha256": "127c58bf36fa71c1beefd5270e4d6cef41c65d75668b0c7a29da44c8ad795994",
+    "manually_read": true,
+    "result": "pass",
+    "notes": "Read compact initial phone instruction and menu; workflow/building terms and counts fit without missing letters or overlap. Swimming preserves west-of-pond direction; school wood/algae and walking track spacing intact."
+  },
+  {
+    "path": "artifacts/translation-program/native-preview/release-final/sw/390/tutorial-schools-dialog.png",
+    "sha256": "1733ca99ffc6bab791b00117509808d1d754b9101707a860a9eb66ab61eab7a9",
+    "manually_read": true,
+    "result": "pass",
+    "notes": "Read compact initial phone instruction and menu; workflow/building terms and counts fit without missing letters or overlap. Swimming preserves west-of-pond direction; school wood/algae and walking track spacing intact."
+  },
+  {
+    "path": "artifacts/translation-program/native-preview/release-final/sw/390/tutorial-walking-training-briefing.png",
+    "sha256": "64d7a61449e6655148dc0bfc67d6708a3df0004fc351138cbd34b4c11798fda8",
+    "manually_read": true,
+    "result": "pass",
+    "notes": "Read actual phone briefing/guidance/menu. Existing-worker walking, skilled-builder upgrade beyond firstlevel, Swarm warriors-only/2warrior quantity and training camp meanings clear. No lost glyphs, wrong arrow direction, or overlapping controls; narrow briefing tab continuation accepted cosmetic wrap."
+  },
+  {
+    "path": "artifacts/translation-program/native-preview/release-final/sw/390/tutorial-upgrades-briefing.png",
+    "sha256": "3c54e0677506eb3edc8bb508310378171b6df70aa061af5ec364b370e83aaa85",
+    "manually_read": true,
+    "result": "pass",
+    "notes": "Read actual phone briefing/guidance/menu. Existing-worker walking, skilled-builder upgrade beyond firstlevel, Swarm warriors-only/2warrior quantity and training camp meanings clear. No lost glyphs, wrong arrow direction, or overlapping controls; narrow briefing tab continuation accepted cosmetic wrap."
+  },
+  {
+    "path": "artifacts/translation-program/native-preview/release-final/sw/390/tutorial-upgrades.png",
+    "sha256": "cce8b7e243fdb04b170bb88142909fc256495681db80a0905a9ee36f7a417a97",
+    "manually_read": true,
+    "result": "pass",
+    "notes": "Read actual phone briefing/guidance/menu. Existing-worker walking, skilled-builder upgrade beyond firstlevel, Swarm warriors-only/2warrior quantity and training camp meanings clear. No lost glyphs, wrong arrow direction, or overlapping controls; narrow briefing tab continuation accepted cosmetic wrap."
+  },
+  {
+    "path": "artifacts/translation-program/native-preview/release-final/sw/390/tutorial-upgrades-dialog.png",
+    "sha256": "1a8ac75a0dbcb37ac36ddcf4864729369bc65c5bc1009f1cc7c4341a9ff9bce0",
+    "manually_read": true,
+    "result": "pass",
+    "notes": "Read actual phone briefing/guidance/menu. Existing-worker walking, skilled-builder upgrade beyond firstlevel, Swarm warriors-only/2warrior quantity and training camp meanings clear. No lost glyphs, wrong arrow direction, or overlapping controls; narrow briefing tab continuation accepted cosmetic wrap."
+  },
+  {
+    "path": "artifacts/translation-program/native-preview/release-final/sw/390/tutorial-warrior-training-briefing.png",
+    "sha256": "5cac1145d3f63815007a427c60ec24bf9936f14cc13410fa1e003cde5611de62",
+    "manually_read": true,
+    "result": "pass",
+    "notes": "Read actual phone briefing/guidance/menu. Existing-worker walking, skilled-builder upgrade beyond firstlevel, Swarm warriors-only/2warrior quantity and training camp meanings clear. No lost glyphs, wrong arrow direction, or overlapping controls; narrow briefing tab continuation accepted cosmetic wrap."
+  },
+  {
+    "path": "artifacts/translation-program/native-preview/release-final/sw/390/tutorial-warrior-training.png",
+    "sha256": "adc278d3137371ea86bd740c835d90e58fb5f10ae80e144ce5093e56013f6c7d",
+    "manually_read": true,
+    "result": "pass",
+    "notes": "Read actual phone briefing/guidance/menu. Existing-worker walking, skilled-builder upgrade beyond firstlevel, Swarm warriors-only/2warrior quantity and training camp meanings clear. No lost glyphs, wrong arrow direction, or overlapping controls; narrow briefing tab continuation accepted cosmetic wrap."
+  },
+  {
+    "path": "artifacts/translation-program/native-preview/release-final/sw/390/tutorial-warrior-training-dialog.png",
+    "sha256": "d2c23bfe7c542571987f9972d937e76426e4e898f48b58d611fa152cf68ff63c",
+    "manually_read": true,
+    "result": "pass",
+    "notes": "Read actual phone briefing/guidance/menu. Existing-worker walking, skilled-builder upgrade beyond firstlevel, Swarm warriors-only/2warrior quantity and training camp meanings clear. No lost glyphs, wrong arrow direction, or overlapping controls; narrow briefing tab continuation accepted cosmetic wrap."
+  },
+  {
+    "path": "artifacts/translation-program/native-preview/release-final/sw/390/tutorial-fortifications-briefing.png",
+    "sha256": "addf7950f61ed58d64920f886175f7dedba878383f5d8f5d42bf2065baeacb9d",
+    "manually_read": true,
+    "result": "pass",
+    "notes": "Read actual tower/defense phone briefing/guidance/menu. Marked tower site and scout enemy/1explorer preserve meaning. Rightward arrows and1/4 clear; all words fit except accepted narrow-column briefing tab continuation with no glyph loss."
+  },
+  {
+    "path": "artifacts/translation-program/native-preview/release-final/sw/390/tutorial-fortifications.png",
+    "sha256": "acff49a10efd8f92c552f36cf972ca26680269be9079e21689b65f882707bea8",
+    "manually_read": true,
+    "result": "pass",
+    "notes": "Read actual tower/defense phone briefing/guidance/menu. Marked tower site and scout enemy/1explorer preserve meaning. Rightward arrows and1/4 clear; all words fit except accepted narrow-column briefing tab continuation with no glyph loss."
+  },
+  {
+    "path": "artifacts/translation-program/native-preview/release-final/sw/390/tutorial-fortifications-dialog.png",
+    "sha256": "69ad1f0283c7d1bb5d1da9f8d6f367b5ba61bd012079f774481f829a6590d603",
+    "manually_read": true,
+    "result": "pass",
+    "notes": "Read actual tower/defense phone briefing/guidance/menu. Marked tower site and scout enemy/1explorer preserve meaning. Rightward arrows and1/4 clear; all words fit except accepted narrow-column briefing tab continuation with no glyph loss."
+  },
+  {
+    "path": "artifacts/translation-program/native-preview/release-final/sw/390/tutorial-defensive-tactics-briefing.png",
+    "sha256": "d4bc314a643b8bc3691b0663b7570909971f3d071fd2df43d312e3ef86ff806d",
+    "manually_read": true,
+    "result": "pass",
+    "notes": "Read actual tower/defense phone briefing/guidance/menu. Marked tower site and scout enemy/1explorer preserve meaning. Rightward arrows and1/4 clear; all words fit except accepted narrow-column briefing tab continuation with no glyph loss."
+  },
+  {
+    "path": "artifacts/translation-program/native-preview/release-final/sw/390/tutorial-defensive-tactics.png",
+    "sha256": "a4ab74b06a6c8d68287745b9ff375ef8ebd7d92a4e74199308dda81209278565",
+    "manually_read": true,
+    "result": "pass",
+    "notes": "Read actual tower/defense phone briefing/guidance/menu. Marked tower site and scout enemy/1explorer preserve meaning. Rightward arrows and1/4 clear; all words fit except accepted narrow-column briefing tab continuation with no glyph loss."
+  },
+  {
+    "path": "artifacts/translation-program/native-preview/release-final/sw/390/tutorial-defensive-tactics-dialog.png",
+    "sha256": "9d709a8c545828d780722f01961efde6a6b373deda64200365967dce9df714f4",
+    "manually_read": true,
+    "result": "pass",
+    "notes": "Read actual tower/defense phone briefing/guidance/menu. Marked tower site and scout enemy/1explorer preserve meaning. Rightward arrows and1/4 clear; all words fit except accepted narrow-column briefing tab continuation with no glyph loss."
+  }
+]

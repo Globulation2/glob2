@@ -1,0 +1,19 @@
+{
+  "reviewer": "/root/hindi_online_review",
+  "files": {
+    "platform/apps/web/src/i18n.tsx": "589622dac88caddda41b8fbb1c63aab6efa29662139d61501df3ac96c5ea8d84",
+    "platform/apps/web/test/i18n.test.tsx": "5a668092aabf208e4c17e270fddf649812df4fc8a75c6e478e0d76fefe66dfbd"
+  },
+  "findings": [],
+  "reasoning": [
+    "Grouping is restricted to typed numeric React slots separated solely by slash or multiplication sign and whitespace; model/stage string pairs retain independent auto isolation.",
+    "Numeric token sequence preserves translated placeholder order; no parsing or HTML injection is introduced. React elements outside numeric groups remain ReactNode values.",
+    "Occurrences are counted both for initial and consumed tokens; repeated placeholder groups and later standalone occurrences have distinct keys.",
+    "Missing or inherited slot properties stay literal via Object.hasOwn, unchanged from prior behavior.",
+    "Focused new tests cover RTL ratio/dimensions, repeated numeric tokens and authored identifier pairs."
+  ],
+  "limits": "Static independent code review only; root owns Vitest execution and actual browser glyph/order evidence.",
+  "code_edited": false,
+  "format_refresh": "Re-read complete post-Prettier RichMessage diff: formatting, line breaks and trailing commas only; semantics match independently reviewed implementation.",
+  "execution_note": "Parent reports focused Vitest 25 passed; not executed by this reviewer."
+}

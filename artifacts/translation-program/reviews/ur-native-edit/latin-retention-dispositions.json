@@ -1,0 +1,1982 @@
+{
+  "editor": "/root/swahili_translation",
+  "final_catalog_sha256": "ec78fb33247244bf783461e0410ef11fe48e45644c3c6500419d9060e967d458",
+  "entries": [
+    {
+      "key": "[abreaviation explanation A]",
+      "source": "A: Allies",
+      "before": "A: اتحادی",
+      "after": "A: اتحادی",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch."
+    },
+    {
+      "key": "[abreaviation explanation C]",
+      "source": "C: Send chat messages to",
+      "before": "C: انہیں چیٹ پیغامات بھیجیں",
+      "after": "C: انہیں چیٹ پیغامات بھیجیں",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch."
+    },
+    {
+      "key": "[abreaviation explanation fV]",
+      "source": "fV: Show vision for Inn buildings (to steal units)",
+      "before": "fV: سرائے کی عمارتوں کی حدِ نگاہ دکھائیں (دوسری ٹیموں کے یونٹ اپنی ٹیم میں لانے کے لیے)",
+      "after": "fV: سرائے کی عمارتوں کی حدِ نگاہ دکھائیں (دوسری ٹیموں کے یونٹ اپنی ٹیم میں لانے کے لیے)",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch."
+    },
+    {
+      "key": "[abreaviation explanation mV]",
+      "source": "mV: Show vision for Markets buildings (to exchange fruits)",
+      "before": "mV: بازاروں کی حدِ نگاہ دکھائیں (پھلوں کے تبادلے کے لیے)",
+      "after": "mV: بازاروں کی حدِ نگاہ دکھائیں (پھلوں کے تبادلے کے لیے)",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch."
+    },
+    {
+      "key": "[abreaviation explanation V]",
+      "source": "V: Show vision for all buildings",
+      "before": "V: تمام عمارتوں کی حدِ نگاہ دکھائیں",
+      "after": "V: تمام عمارتوں کی حدِ نگاہ دکھائیں",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch."
+    },
+    {
+      "key": "[AICastor]",
+      "source": "Castor",
+      "before": "Castor",
+      "after": "Castor",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "NamedAIcontrollers/JavaScript/AI heading abbreviations retained; all narrativeUrdu reviewedagainstfullEnglishprofile."
+    },
+    {
+      "key": "[AIMaxima]",
+      "source": "Maxima",
+      "before": "Maxima",
+      "after": "Maxima",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "NamedAIcontrollers/JavaScript/AI heading abbreviations retained; all narrativeUrdu reviewedagainstfullEnglishprofile."
+    },
+    {
+      "key": "[AICortex]",
+      "source": "Cortex",
+      "before": "Cortex",
+      "after": "Cortex",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "NamedAIcontrollers/JavaScript/AI heading abbreviations retained; all narrativeUrdu reviewedagainstfullEnglishprofile."
+    },
+    {
+      "key": "[AINicowar]",
+      "source": "Nicowar",
+      "before": "Nicowar",
+      "after": "Nicowar",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "NamedAIcontrollers/JavaScript/AI heading abbreviations retained; all narrativeUrdu reviewedagainstfullEnglishprofile."
+    },
+    {
+      "key": "[AINumbi]",
+      "source": "Numbi",
+      "before": "Numbi",
+      "after": "Numbi",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "NamedAIcontrollers/JavaScript/AI heading abbreviations retained; all narrativeUrdu reviewedagainstfullEnglishprofile."
+    },
+    {
+      "key": "[AIEcono]",
+      "source": "Econo",
+      "before": "Econo",
+      "after": "Econo",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "NamedAIcontrollers/JavaScript/AI heading abbreviations retained; all narrativeUrdu reviewedagainstfullEnglishprofile."
+    },
+    {
+      "key": "[AIWarrush]",
+      "source": "Warrush",
+      "before": "Warrush",
+      "after": "Warrush",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "NamedAIcontrollers/JavaScript/AI heading abbreviations retained; all narrativeUrdu reviewedagainstfullEnglishprofile."
+    },
+    {
+      "key": "[AICabino]",
+      "source": "Cabino",
+      "before": "Cabino",
+      "after": "Cabino",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "NamedAIcontrollers/JavaScript/AI heading abbreviations retained; all narrativeUrdu reviewedagainstfullEnglishprofile."
+    },
+    {
+      "key": "[AIJavaScript]",
+      "source": "JavaScript",
+      "before": "JavaScript",
+      "after": "JavaScript",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "NamedAIcontrollers/JavaScript/AI heading abbreviations retained; all narrativeUrdu reviewedagainstfullEnglishprofile."
+    },
+    {
+      "key": "[AIJavaScript-Description]",
+      "source": "A controller using an embedded JavaScript source module.",
+      "before": "اندرونی JavaScript ماخذ ماڈیول استعمال کرنے والا کنٹرولر۔",
+      "after": "اندرونی JavaScript ماخذ ماڈیول استعمال کرنے والا کنٹرولر۔",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "NamedAIcontrollers/JavaScript/AI heading abbreviations retained; all narrativeUrdu reviewedagainstfullEnglishprofile."
+    },
+    {
+      "key": "[alt %0]",
+      "source": "alt-%0",
+      "before": "alt-%0",
+      "after": "alt-%0",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch."
+    },
+    {
+      "key": "[backspace]",
+      "source": "backspace",
+      "before": "Backspace",
+      "after": "Backspace",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Physicalkeyboardkeyname; preserveLatin keycaption perconsultedMozillaUrduguide. Compose iskeyboardkey, notmusiccomposition."
+    },
+    {
+      "key": "[break]",
+      "source": "break",
+      "before": "Break",
+      "after": "Break",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Physicalkeyboardkeyname; preserveLatin keycaption perconsultedMozillaUrduguide. Compose iskeyboardkey, notmusiccomposition."
+    },
+    {
+      "key": "[Building Tool Box Explanation]",
+      "source": "Shift + Drag = Box",
+      "before": "Shift + کھینچیں = خانہ",
+      "after": "Shift + کھینچیں = خانہ",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch."
+    },
+    {
+      "key": "[Building Tool Line Explanation]",
+      "source": "Ctrl + Drag = Line",
+      "before": "Ctrl + کھینچیں = لکیر",
+      "after": "Ctrl + کھینچیں = لکیر",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch."
+    },
+    {
+      "key": "[caps lock]",
+      "source": "caps lock",
+      "before": "Caps Lock",
+      "after": "Caps Lock",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Physicalkeyboardkeyname; preserveLatin keycaption perconsultedMozillaUrduguide. Compose iskeyboardkey, notmusiccomposition."
+    },
+    {
+      "key": "[compose]",
+      "source": "compose",
+      "before": "Compose",
+      "after": "Compose",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Physicalkeyboardkeyname; preserveLatin keycaption perconsultedMozillaUrduguide. Compose iskeyboardkey, notmusiccomposition."
+    },
+    {
+      "key": "[control %0]",
+      "source": "control-%0",
+      "before": "Ctrl-%0",
+      "after": "Ctrl-%0",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch."
+    },
+    {
+      "key": "[ctrl - line]",
+      "source": "Ctrl - Line",
+      "before": "Ctrl - لکیر",
+      "after": "Ctrl - لکیر",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch."
+    },
+    {
+      "key": "[end]",
+      "source": "end",
+      "before": "End",
+      "after": "End",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Physicalkeyboardkeyname; preserveLatin keycaption perconsultedMozillaUrduguide. Compose iskeyboardkey, notmusiccomposition."
+    },
+    {
+      "key": "[enter]",
+      "source": "enter",
+      "before": "Enter",
+      "after": "Enter",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Physicalkeyboardkeyname; preserveLatin keycaption perconsultedMozillaUrduguide. Compose iskeyboardkey, notmusiccomposition."
+    },
+    {
+      "key": "[escape]",
+      "source": "escape",
+      "before": "Escape",
+      "after": "Escape",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Physicalkeyboardkeyname; preserveLatin keycaption perconsultedMozillaUrduguide. Compose iskeyboardkey, notmusiccomposition."
+    },
+    {
+      "key": "[f10]",
+      "source": "f10",
+      "before": "F10",
+      "after": "F10",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Physicalkeyboardkeyname; preserveLatin keycaption perconsultedMozillaUrduguide. Compose iskeyboardkey, notmusiccomposition."
+    },
+    {
+      "key": "[f11]",
+      "source": "f11",
+      "before": "F11",
+      "after": "F11",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Physicalkeyboardkeyname; preserveLatin keycaption perconsultedMozillaUrduguide. Compose iskeyboardkey, notmusiccomposition."
+    },
+    {
+      "key": "[f12]",
+      "source": "f12",
+      "before": "F12",
+      "after": "F12",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Physicalkeyboardkeyname; preserveLatin keycaption perconsultedMozillaUrduguide. Compose iskeyboardkey, notmusiccomposition."
+    },
+    {
+      "key": "[f13]",
+      "source": "f13",
+      "before": "F13",
+      "after": "F13",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Physicalkeyboardkeyname; preserveLatin keycaption perconsultedMozillaUrduguide. Compose iskeyboardkey, notmusiccomposition."
+    },
+    {
+      "key": "[f14]",
+      "source": "f14",
+      "before": "F14",
+      "after": "F14",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Physicalkeyboardkeyname; preserveLatin keycaption perconsultedMozillaUrduguide. Compose iskeyboardkey, notmusiccomposition."
+    },
+    {
+      "key": "[f15]",
+      "source": "f15",
+      "before": "F15",
+      "after": "F15",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Physicalkeyboardkeyname; preserveLatin keycaption perconsultedMozillaUrduguide. Compose iskeyboardkey, notmusiccomposition."
+    },
+    {
+      "key": "[f1]",
+      "source": "f1",
+      "before": "F1",
+      "after": "F1",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Physicalkeyboardkeyname; preserveLatin keycaption perconsultedMozillaUrduguide. Compose iskeyboardkey, notmusiccomposition."
+    },
+    {
+      "key": "[f2]",
+      "source": "f2",
+      "before": "F2",
+      "after": "F2",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Physicalkeyboardkeyname; preserveLatin keycaption perconsultedMozillaUrduguide. Compose iskeyboardkey, notmusiccomposition."
+    },
+    {
+      "key": "[f3]",
+      "source": "f3",
+      "before": "F3",
+      "after": "F3",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Physicalkeyboardkeyname; preserveLatin keycaption perconsultedMozillaUrduguide. Compose iskeyboardkey, notmusiccomposition."
+    },
+    {
+      "key": "[f4]",
+      "source": "f4",
+      "before": "F4",
+      "after": "F4",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Physicalkeyboardkeyname; preserveLatin keycaption perconsultedMozillaUrduguide. Compose iskeyboardkey, notmusiccomposition."
+    },
+    {
+      "key": "[f5]",
+      "source": "f5",
+      "before": "F5",
+      "after": "F5",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Physicalkeyboardkeyname; preserveLatin keycaption perconsultedMozillaUrduguide. Compose iskeyboardkey, notmusiccomposition."
+    },
+    {
+      "key": "[f6]",
+      "source": "f6",
+      "before": "F6",
+      "after": "F6",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Physicalkeyboardkeyname; preserveLatin keycaption perconsultedMozillaUrduguide. Compose iskeyboardkey, notmusiccomposition."
+    },
+    {
+      "key": "[f7]",
+      "source": "f7",
+      "before": "F7",
+      "after": "F7",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Physicalkeyboardkeyname; preserveLatin keycaption perconsultedMozillaUrduguide. Compose iskeyboardkey, notmusiccomposition."
+    },
+    {
+      "key": "[f8]",
+      "source": "f8",
+      "before": "F8",
+      "after": "F8",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Physicalkeyboardkeyname; preserveLatin keycaption perconsultedMozillaUrduguide. Compose iskeyboardkey, notmusiccomposition."
+    },
+    {
+      "key": "[f9]",
+      "source": "f9",
+      "before": "F9",
+      "after": "F9",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Physicalkeyboardkeyname; preserveLatin keycaption perconsultedMozillaUrduguide. Compose iskeyboardkey, notmusiccomposition."
+    },
+    {
+      "key": "[home]",
+      "source": "home",
+      "before": "Home",
+      "after": "Home",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Physicalkeyboardkeyname; preserveLatin keycaption perconsultedMozillaUrduguide. Compose iskeyboardkey, notmusiccomposition."
+    },
+    {
+      "key": "[hp]",
+      "source": "HP",
+      "before": "HP",
+      "after": "HP",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch."
+    },
+    {
+      "key": "[insert]",
+      "source": "insert",
+      "before": "Insert",
+      "after": "Insert",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Physicalkeyboardkeyname; preserveLatin keycaption perconsultedMozillaUrduguide. Compose iskeyboardkey, notmusiccomposition."
+    },
+    {
+      "key": "[lan]",
+      "source": "LAN Game",
+      "before": "LAN کھیل",
+      "after": "LAN کھیل",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch."
+    },
+    {
+      "key": "[language-code]",
+      "source": "en",
+      "before": "ur",
+      "after": "ur",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "ur is stable technicalgamecatalogcode, notvisibleEnglishlanguageword."
+    },
+    {
+      "key": "[left meta]",
+      "source": "left meta",
+      "before": "بایاں Meta",
+      "after": "بایاں Meta",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch."
+    },
+    {
+      "key": "[left super]",
+      "source": "left windows key",
+      "before": "بائیں طرف کی Windows کلید",
+      "after": "بائیں طرف کی Windows کلید",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch."
+    },
+    {
+      "key": "[meta %0]",
+      "source": "meta-%0",
+      "before": "Meta-%0",
+      "after": "Meta-%0",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch."
+    },
+    {
+      "key": "[numlock]",
+      "source": "numlock",
+      "before": "Num Lock",
+      "after": "Num Lock",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Physicalkeyboardkeyname; preserveLatin keycaption perconsultedMozillaUrduguide. Compose iskeyboardkey, notmusiccomposition."
+    },
+    {
+      "key": "[OpenGL]",
+      "source": "OpenGL",
+      "before": "OpenGL",
+      "after": "OpenGL",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch."
+    },
+    {
+      "key": "[page down]",
+      "source": "page down",
+      "before": "Page Down",
+      "after": "Page Down",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Physicalkeyboardkeyname; preserveLatin keycaption perconsultedMozillaUrduguide. Compose iskeyboardkey, notmusiccomposition."
+    },
+    {
+      "key": "[page up]",
+      "source": "page up",
+      "before": "Page Up",
+      "after": "Page Up",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Physicalkeyboardkeyname; preserveLatin keycaption perconsultedMozillaUrduguide. Compose iskeyboardkey, notmusiccomposition."
+    },
+    {
+      "key": "[press space]",
+      "source": "Press space to continue.",
+      "before": "جاری رکھنے کے لیے Space دبائیں۔",
+      "after": "جاری رکھنے کے لیے Space دبائیں۔",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch."
+    },
+    {
+      "key": "[print screen]",
+      "source": "print screen",
+      "before": "Print Screen",
+      "after": "Print Screen",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Physicalkeyboardkeyname; preserveLatin keycaption perconsultedMozillaUrduguide. Compose iskeyboardkey, notmusiccomposition."
+    },
+    {
+      "key": "[return]",
+      "source": "enter",
+      "before": "Enter",
+      "after": "Enter",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Physicalkeyboardkeyname; preserveLatin keycaption perconsultedMozillaUrduguide. Compose iskeyboardkey, notmusiccomposition."
+    },
+    {
+      "key": "[right meta]",
+      "source": "right meta",
+      "before": "دایاں Meta",
+      "after": "دایاں Meta",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch."
+    },
+    {
+      "key": "[right super]",
+      "source": "right windows key",
+      "before": "دائیں طرف کی Windows کلید",
+      "after": "دائیں طرف کی Windows کلید",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch."
+    },
+    {
+      "key": "[scroll lock]",
+      "source": "scroll lock",
+      "before": "Scroll Lock",
+      "after": "Scroll Lock",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Physicalkeyboardkeyname; preserveLatin keycaption perconsultedMozillaUrduguide. Compose iskeyboardkey, notmusiccomposition."
+    },
+    {
+      "key": "[shift %0]",
+      "source": "shift-%0",
+      "before": "Shift-%0",
+      "after": "Shift-%0",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch."
+    },
+    {
+      "key": "[shortcut explanation enter]",
+      "source": "Enter: send a chat message",
+      "before": "Enter: چیٹ پیغام بھیجیں",
+      "after": "Enter: چیٹ پیغام بھیجیں",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch."
+    },
+    {
+      "key": "[shortcut explanation v]",
+      "source": "V: hold to speak",
+      "before": "V: بولنے کے لیے دبائے رکھیں",
+      "after": "V: بولنے کے لیے دبائے رکھیں",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch."
+    },
+    {
+      "key": "[space]",
+      "source": "space",
+      "before": "Space",
+      "after": "Space",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Physicalkeyboardkeyname; preserveLatin keycaption perconsultedMozillaUrduguide. Compose iskeyboardkey, notmusiccomposition."
+    },
+    {
+      "key": "[sys req]",
+      "source": "sys req",
+      "before": "SysRq",
+      "after": "SysRq",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Physicalkeyboardkeyname; preserveLatin keycaption perconsultedMozillaUrduguide. Compose iskeyboardkey, notmusiccomposition."
+    },
+    {
+      "key": "[tab]",
+      "source": "tab",
+      "before": "Tab",
+      "after": "Tab",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Physicalkeyboardkeyname; preserveLatin keycaption perconsultedMozillaUrduguide. Compose iskeyboardkey, notmusiccomposition."
+    },
+    {
+      "key": "[tutorial text 1]",
+      "source": "Welcome to the Globulation 2 primary tutorial! This tutorial will cover everything from building inns, exploring zones, and destroying enemies! There is no shortage of useful knowledge here!",
+      "before": "Globulation 2 کی ابتدائی تربیت میں خوش آمدید! یہاں سرائے بنانا، علاقوں کی کھوج اور دشمن کو تباہ کرنا سیکھیں گے۔ مفید معلومات کی کوئی کمی نہیں!",
+      "after": "Globulation 2 کی ابتدائی تربیت میں خوش آمدید! یہاں سرائے بنانا، علاقوں کی کھوج اور دشمن کو تباہ کرنا سیکھیں گے۔ مفید معلومات کی کوئی کمی نہیں!",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch."
+    },
+    {
+      "key": "[tutorial text 4]",
+      "source": "You are almost finished. Only flags and attacking remain. Then you'll know enough to try Custom Games and eventually play online against some of Globulation 2's finest players.",
+      "before": "آپ تقریباً مکمل کر چکے ہیں۔ صرف جھنڈے اور حملہ باقی ہیں۔ پھر آپ اپنی مرضی کے کھیل آزمانے اور آخرکار Globulation 2 کے بہترین کھلاڑیوں سے آن لائن مقابلہ کرنے کے لیے تیار ہوں گے۔",
+      "after": "آپ تقریباً مکمل کر چکے ہیں۔ صرف جھنڈے اور حملہ باقی ہیں۔ پھر آپ اپنی مرضی کے کھیل آزمانے اور آخرکار Globulation 2 کے بہترین کھلاڑیوں سے آن لائن مقابلہ کرنے کے لیے تیار ہوں گے۔",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch."
+    },
+    {
+      "key": "[YESTS_CONNECTION_REFUSED_PROTOCOL_TOO_OLD]",
+      "source": "The YOG metaserver has refused connection because your Globulation 2 client is out of date. Please obtain the latest version from www.globulation2.org to play online.",
+      "before": "YOG میٹا سرور نے رابطہ مسترد کر دیا ہے کیونکہ آپ کا Globulation 2 کلائنٹ پرانا ہے۔ آن لائن کھیلنے کے لیے www.globulation2.org سے تازہ ترین ورژن حاصل کریں۔",
+      "after": "YOG میٹا سرور نے رابطہ مسترد کر دیا ہے کیونکہ آپ کا Globulation 2 کلائنٹ پرانا ہے۔ آن لائن کھیلنے کے لیے www.globulation2.org سے تازہ ترین ورژن حاصل کریں۔",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch."
+    },
+    {
+      "key": "[game speed help]",
+      "source": "Single-player and replays only. Multiplayer runs at 1x.",
+      "before": "صرف اکیلے کھیل اور ری پلے کے لیے۔ ملٹی پلیئر 1x رفتار پر چلتا ہے۔",
+      "after": "صرف اکیلے کھیل اور ری پلے کے لیے۔ ملٹی پلیئر 1x رفتار پر چلتا ہے۔",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Numeric scale/2D notation preserves source; no Englishprose."
+    },
+    {
+      "key": "[multiplayer game speed]",
+      "source": "Game speed: 1x (multiplayer)",
+      "before": "کھیل کی رفتار: 1x (ملٹی پلیئر)",
+      "after": "کھیل کی رفتار: 1x (ملٹی پلیئر)",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Numeric scale/2D notation preserves source; no Englishprose."
+    },
+    {
+      "key": "[AI strategy & counterplay]",
+      "source": "AI strategy & counterplay",
+      "before": "AI کی حکمتِ عملی اور مقابلے کے طریقے",
+      "after": "AI کی حکمتِ عملی اور مقابلے کے طریقے",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "NamedAIcontrollers/JavaScript/AI heading abbreviations retained; all narrativeUrdu reviewedagainstfullEnglishprofile."
+    },
+    {
+      "key": "[AICastor-Profile]",
+      "source": "Core strategy: Invests in a productive colony and technology before committing substantial attacks. Prioritized construction projects build up its settlement; development, military infrastructure and time increase war readiness.\\n\\nEconomy and development: Studies hydration, food-source growth, obstacles and worker reach. Manages food expansion, upgrades and defenses alongside production.\\n\\nAttack and defense: Estimates healthy warriors' attack power and begins strikes when power or timing conditions are met. Favors previously seen, accessible buildings, especially barracks and schools, and moves its attack flags toward valuable targets.\\n\\nCompared with other AIs: More deliberate about terrain and target value than Numbi. More patient than Warrush, trading early pressure for a developed base and stronger troops.\\n\\nStrengths and weaknesses: Broad infrastructure planning and valuable military targets give its strikes purpose. Preparation takes time, allowing faster opponents to contest resources before its main force is ready.\\n\\nCounterplay to try: Contest expansion early. Protect barracks and schools as well as food, and keep a reserve when attacking its developed settlement.",
+      "before": "بنیادی حکمتِ عملی: بڑے حملے کرنے سے پہلے پیداواری بستی اور ٹیکنالوجی میں سرمایہ لگاتا ہے۔ ترجیحی تعمیراتی منصوبے اس کی بستی کو بڑھاتے ہیں؛ ترقی، فوجی سہولیات اور وقت کے ساتھ اس کی جنگی تیاری بڑھتی ہے۔\\n\\nمعیشت اور ترقی: آب رسانی، خوراک کے ذرائع کی افزائش، رکاوٹوں اور کارکنوں کی رسائی کا جائزہ لیتا ہے۔ پیداوار کے ساتھ خوراک کی توسیع، ترقی اور دفاع سنبھالتا ہے۔\\n\\nحملہ اور دفاع: صحت مند جنگجوؤں کی حملہ آور طاقت کا اندازہ لگا کر طاقت یا وقت کی شرائط پوری ہونے پر حملہ کرتا ہے۔ پہلے دیکھی ہوئی، قابلِ رسائی عمارتوں، خصوصاً بیرکوں اور اسکولوں کو ترجیح دیتا ہے اور حملے کے جھنڈے قیمتی اہداف کی طرف بڑھاتا ہے۔\\n\\nدیگر AI سے موازنہ: Numbi کی نسبت زمین اور ہدف کی اہمیت پر زیادہ غور کرتا ہے۔ Warrush سے زیادہ صبر کرتا ہے؛ ابتدائی دباؤ کے بجائے ترقی یافتہ اڈے اور مضبوط فوج کو ترجیح دیتا ہے۔\\n\\nخوبیاں اور کمزوریاں: وسیع تعمیراتی منصوبہ بندی اور اہم فوجی اہداف اس کے حملوں کو بامقصد بناتے ہیں۔ تیاری میں وقت لگتا ہے، اس لیے تیز حریف اس کی مرکزی فوج تیار ہونے سے پہلے وسائل پر مقابلہ کر سکتے ہیں۔\\n\\nآزمانے کے لیے مقابلے کا طریقہ: ابتدا ہی میں اس کی توسیع کو روکیں۔ خوراک کے ساتھ بیرکوں اور اسکولوں کی بھی حفاظت کریں اور اس کی ترقی یافتہ بستی پر حملہ کرتے وقت کچھ فوج محفوظ رکھیں۔",
+      "after": "بنیادی حکمتِ عملی: بڑے حملے کرنے سے پہلے پیداواری بستی اور ٹیکنالوجی میں سرمایہ لگاتا ہے۔ ترجیحی تعمیراتی منصوبے اس کی بستی کو بڑھاتے ہیں؛ ترقی، فوجی سہولیات اور وقت کے ساتھ اس کی جنگی تیاری بڑھتی ہے۔\\n\\nمعیشت اور ترقی: زمین کی نمی، خوراک کے ذرائع کی افزائش، رکاوٹوں اور کارکنوں کی رسائی کا جائزہ لیتا ہے۔ پیداوار کے ساتھ خوراک کی فراہمی میں اضافہ، عمارتوں کی اپ گریڈنگ اور دفاع سنبھالتا ہے۔\\n\\nحملہ اور دفاع: صحت مند جنگجوؤں کی حملہ آور طاقت کا اندازہ لگا کر طاقت یا وقت کی شرائط پوری ہونے پر حملہ کرتا ہے۔ پہلے دیکھی ہوئی، قابلِ رسائی عمارتوں، خصوصاً بیرکوں اور اسکولوں کو ترجیح دیتا ہے اور حملے کے جھنڈے قیمتی اہداف کی طرف بڑھاتا ہے۔\\n\\nدیگر AI سے موازنہ: Numbi کی نسبت زمین اور ہدف کی اہمیت پر زیادہ غور کرتا ہے۔ Warrush سے زیادہ صبر کرتا ہے؛ ابتدائی دباؤ کے بجائے ترقی یافتہ اڈے اور مضبوط فوج کو ترجیح دیتا ہے۔\\n\\nخوبیاں اور کمزوریاں: وسیع تعمیراتی منصوبہ بندی اور اہم فوجی اہداف اس کے حملوں کو بامقصد بناتے ہیں۔ تیاری میں وقت لگتا ہے، اس لیے تیز حریف اس کی مرکزی فوج تیار ہونے سے پہلے وسائل پر مقابلہ کر سکتے ہیں۔\\n\\nآزمانے کے لیے مقابلے کا طریقہ: ابتدا ہی میں اس کی توسیع کو روکیں۔ خوراک کے ساتھ بیرکوں اور اسکولوں کی بھی حفاظت کریں اور اس کی ترقی یافتہ بستی پر حملہ کرتے وقت کچھ فوج محفوظ رکھیں۔",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "NamedAIcontrollers/JavaScript/AI heading abbreviations retained; all narrativeUrdu reviewedagainstfullEnglishprofile."
+    },
+    {
+      "key": "[AICortex-Profile]",
+      "source": "Core strategy: Uses reactive priorities to grow a working economy and turn spare labor into food, technology and military pressure. Its normal policy is rule-based; learned-policy experiments require separate configuration.\\n\\nEconomy and development: Adjusts worker production to staffing demand and keeps births going. Food trouble suppresses expansion and technology spending. Adds swimming when water access materially helps.\\n\\nAttack and defense: Prepares attacks using observed enemy technology and available troops. Water-crossing campaigns need swimming-capable warriors. Supports long campaigns with forward inns and hospitals, and can stage forces before advancing.\\n\\nCommitment and emergencies: Holds an offensive through minor harassment instead of repeatedly marching home. Serious attacks can recall defenders. Early emergencies can trigger warrior-only production and a hospital; famine can trigger a smaller desperation attack.\\n\\nCompared with other AIs: More concerned with forward support than Warrush. Maxima goes further in budgeting sustainable births, training and deployment against estimated enemy strength.\\n\\nStrengths and weaknesses: Connects pressure to food, healing and reachability. Forward infrastructure must stay supplied, and continued births can keep pressure on limited food. Emergency priorities force tradeoffs between growth and survival.\\n\\nCounterplay to try: Contest forward inns, hospitals and food sources. Keep defenders together against its push; minor harassment may not persuade it to retreat.\\n\\nScouting: Uses discovered enemy buildings and observed enemy troops.",
+      "before": "بنیادی حکمتِ عملی: حالات کے مطابق ترجیحات بدل کر فعال معیشت بڑھاتا اور اضافی محنت کو خوراک، ٹیکنالوجی اور فوجی دباؤ میں لگاتا ہے۔ اس کی عام پالیسی قواعد پر مبنی ہے؛ سیکھی ہوئی پالیسی کے تجربات کے لیے الگ ترتیب درکار ہے۔\\n\\nمعیشت اور ترقی: عملے کی ضرورت کے مطابق کارکنوں کی پیداوار بدلتا اور پیدائشیں جاری رکھتا ہے۔ خوراک کی مشکلات توسیع اور ٹیکنالوجی کے اخراجات کم کرتی ہیں۔ جہاں پانی تک رسائی سے نمایاں فائدہ ہو، وہاں تیراکی کی تربیت شامل کرتا ہے۔\\n\\nحملہ اور دفاع: دشمن کی دیکھی گئی ٹیکنالوجی اور دستیاب فوج کے مطابق حملوں کی تیاری کرتا ہے۔ پانی عبور کرنے والی مہموں کے لیے تیرنے والے جنگجو ضروری ہیں۔ اگلے مورچوں پر سرائے اور ہسپتال بنا کر طویل مہموں کو سہارا دیتا ہے اور پیش قدمی سے پہلے فوج جمع کر سکتا ہے۔\\n\\nحملہ جاری رکھنا اور ہنگامی حالات: معمولی چھیڑ چھاڑ پر بار بار واپس آنے کے بجائے حملہ جاری رکھتا ہے۔ سنگین حملہ محافظوں کو واپس بلا سکتا ہے۔ ابتدا کی ہنگامی حالت میں صرف جنگجو پیدا کیے جا سکتے ہیں اور ہسپتال بنایا جا سکتا ہے؛ قحط ایک چھوٹا، آخری کوشش والا حملہ شروع کر سکتا ہے۔\\n\\nدیگر AI سے موازنہ: Warrush سے زیادہ اگلے مورچوں کی مدد پر توجہ دیتا ہے۔ Maxima پائیدار پیدائشوں، تربیت اور تعیناتی کے وسائل کا دشمن کی اندازاً طاقت کے مقابلے میں زیادہ تفصیلی حساب کرتا ہے۔\\n\\nخوبیاں اور کمزوریاں: دباؤ کو خوراک، علاج اور رسائی سے جوڑتا ہے۔ اگلے مورچوں کی عمارتوں تک رسد جاری رہنی چاہیے اور مسلسل پیدائشیں محدود خوراک پر دباؤ برقرار رکھ سکتی ہیں۔ ہنگامی ترجیحات میں ترقی اور بقا کے درمیان انتخاب کرنا پڑتا ہے۔\\n\\nآزمانے کے لیے مقابلے کا طریقہ: اگلے مورچوں کی سراؤں، ہسپتالوں اور خوراک کے ذرائع کو چیلنج کریں۔ اس کی پیش قدمی کے مقابل محافظوں کو اکٹھا رکھیں؛ معمولی چھیڑ چھاڑ اسے پسپا ہونے پر مجبور نہیں بھی کر سکتی۔\\n\\nکھوج: دریافت شدہ دشمن عمارتوں اور دیکھی گئی دشمن فوج کو استعمال کرتا ہے۔",
+      "after": "بنیادی حکمتِ عملی: حالات کے مطابق ترجیحات بدل کر فعال معیشت بڑھاتا اور اضافی محنت کو خوراک، ٹیکنالوجی اور فوجی دباؤ میں لگاتا ہے۔ اس کی عام پالیسی قواعد پر مبنی ہے؛ سیکھی ہوئی پالیسی کے تجربات کے لیے الگ ترتیب درکار ہے۔\\n\\nمعیشت اور ترقی: عملے کی ضرورت کے مطابق کارکنوں کی پیداوار بدلتا اور پیدائشیں جاری رکھتا ہے۔ خوراک کی مشکلات توسیع اور ٹیکنالوجی کے اخراجات کم کرتی ہیں۔ جہاں پانی تک رسائی سے نمایاں فائدہ ہو، وہاں تیراکی کی تربیت شامل کرتا ہے۔\\n\\nحملہ اور دفاع: دشمن کی دیکھی گئی ٹیکنالوجی اور دستیاب فوج کے مطابق حملوں کی تیاری کرتا ہے۔ پانی عبور کرنے والی مہموں کے لیے تیرنے والے جنگجو ضروری ہیں۔ اگلے مورچوں پر سرائے اور ہسپتال بنا کر طویل مہموں کو سہارا دیتا ہے اور پیش قدمی سے پہلے فوج جمع کر سکتا ہے۔\\n\\nحملہ جاری رکھنا اور ہنگامی حالات: معمولی چھیڑ چھاڑ پر بار بار واپس آنے کے بجائے حملہ جاری رکھتا ہے۔ سنگین حملہ محافظوں کو واپس بلا سکتا ہے۔ ابتدا کی ہنگامی حالت میں صرف جنگجو پیدا کیے جا سکتے ہیں اور ہسپتال بنایا جا سکتا ہے؛ قحط کی حالت میں مجبوراً ایک چھوٹا حملہ کر سکتا ہے۔\\n\\nدیگر AI سے موازنہ: Warrush سے زیادہ اگلے مورچوں کی مدد پر توجہ دیتا ہے۔ Maxima پائیدار پیدائشوں، تربیت اور تعیناتی کے وسائل کا دشمن کی اندازاً طاقت کے مقابلے میں زیادہ تفصیلی حساب کرتا ہے۔\\n\\nخوبیاں اور کمزوریاں: دباؤ کو خوراک، علاج اور رسائی سے جوڑتا ہے۔ اگلے مورچوں کی عمارتوں تک رسد جاری رہنی چاہیے اور مسلسل پیدائشیں محدود خوراک پر دباؤ برقرار رکھ سکتی ہیں۔ ہنگامی ترجیحات میں ترقی اور بقا کے درمیان انتخاب کرنا پڑتا ہے۔\\n\\nآزمانے کے لیے مقابلے کا طریقہ: اگلے مورچوں کی سراؤں، ہسپتالوں اور خوراک کے ذرائع کو چیلنج کریں۔ اس کی پیش قدمی کے مقابل محافظوں کو اکٹھا رکھیں؛ معمولی چھیڑ چھاڑ اسے پسپا ہونے پر مجبور نہیں بھی کر سکتی۔\\n\\nکھوج: دریافت شدہ دشمن عمارتوں اور دیکھی گئی دشمن فوج کی معلومات استعمال کرتا ہے۔",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "NamedAIcontrollers/JavaScript/AI heading abbreviations retained; all narrativeUrdu reviewedagainstfullEnglishprofile."
+    },
+    {
+      "key": "[AINicowar-Profile]",
+      "source": "Core strategy: Combines growth, training, upgrades and warfare through overlapping conditions. Can attack while expanding, and redirect economic effort toward recovery when feeding fails.\\n\\nOpening: The shipped aggressive profile begins war preparation at five total units and permits war at five warriors, counting level-zero warriors too. Aims for three attack flags with five warriors each. Custom strategy files can change these thresholds.\\n\\nEconomy and development: Expands food and birth capacity, trains workers, develops swimming and movement, and upgrades buildings. Adjusts food staffing, responds to starvation and pursues fruit.\\n\\nAttack and defense: Samples reachable enemy buildings for attacks. Can use clearing flags to open resource-blocked routes. Defensive flags cover clusters of threatened units and buildings. Later, trained ground-attacking explorers target enemy unit groups.\\n\\nCompared with other AIs: Shares Warrush's early aggression but has more follow-through. Unlike Cabino, does not consistently prioritize hospitals and inns.\\n\\nStrengths and weaknesses: Broad tactical coverage combines early pressure with continued development. Random target selection can spend effort on less valuable buildings. Its thresholds do not provide Maxima's detailed estimate of opposing fighting power.\\n\\nCounterplay to try: Expect an early attack. Protect food and workers, contest expansion, and prepare for explorer attacks if it reaches advanced training.",
+      "before": "بنیادی حکمتِ عملی: باہم مربوط شرائط کے ذریعے آبادی بڑھانے، تربیت، ترقی اور جنگ کو ملاتا ہے۔ توسیع کے دوران حملہ کر سکتا ہے اور خوراک کی فراہمی ناکام ہونے پر معاشی کوشش بحالی کی طرف موڑ سکتا ہے۔\\n\\nابتدا: فراہم کردہ جارحانہ پروفائل کل پانچ یونٹوں پر جنگ کی تیاری شروع کرتا ہے اور پانچ جنگجوؤں پر جنگ کی اجازت دیتا ہے، جس میں سطح صفر کے جنگجو بھی شمار ہوتے ہیں۔ اس کا ہدف تین حملہ آور جھنڈے ہیں، ہر ایک کے ساتھ پانچ جنگجو۔ حسبِ پسند حکمتِ عملی کی فائلیں یہ حدیں بدل سکتی ہیں۔\\n\\nمعیشت اور ترقی: خوراک اور پیدائش کی گنجائش بڑھاتا، کارکنوں کو تربیت دیتا، تیراکی اور حرکت بہتر کرتا اور عمارتوں کو ترقی دیتا ہے۔ خوراک کے عملے کو بدلتا، فاقہ کشی کا جواب دیتا اور پھل حاصل کرنے کی کوشش کرتا ہے۔\\n\\nحملہ اور دفاع: قابلِ رسائی دشمن عمارتوں میں سے حملے کے ہدف چنتا ہے۔ وسائل سے بند راستے کھولنے کے لیے صفائی کے جھنڈے استعمال کر سکتا ہے۔ دفاعی جھنڈے خطرے میں موجود یونٹوں اور عمارتوں کے گروہوں کو ڈھانپتے ہیں۔ بعد میں زمینی حملے کی تربیت یافتہ کھوجی دشمن یونٹوں کے گروہوں کو نشانہ بناتے ہیں۔\\n\\nدیگر AI سے موازنہ: Warrush کی طرح ابتدا میں جارحانہ ہے، مگر بعد کی کارروائی زیادہ وسیع ہے۔ Cabino کے برعکس ہسپتالوں اور سراؤں کو مسلسل ترجیح نہیں دیتا۔\\n\\nخوبیاں اور کمزوریاں: وسیع حربی صلاحیت ابتدائی دباؤ کو مسلسل ترقی کے ساتھ جوڑتی ہے۔ اتفاقی ہدف چننے سے کم اہم عمارتوں پر محنت خرچ ہو سکتی ہے۔ اس کی حدیں دشمن کی لڑنے کی طاقت کا Maxima جیسا تفصیلی تخمینہ نہیں دیتیں۔\\n\\nآزمانے کے لیے مقابلے کا طریقہ: جلد حملے کی توقع رکھیں۔ خوراک اور کارکنوں کی حفاظت کریں، توسیع کو چیلنج کریں اور اگر یہ اعلیٰ تربیت تک پہنچ جائے تو کھوجیوں کے حملوں کے لیے تیار رہیں۔",
+      "after": "بنیادی حکمتِ عملی: باہم مربوط شرائط کے ذریعے آبادی بڑھانے، تربیت، اپ گریڈ اور جنگ کو ملاتا ہے۔ توسیع کے دوران حملہ کر سکتا ہے اور خوراک کی فراہمی ناکام ہونے پر معاشی کوشش بحالی کی طرف موڑ سکتا ہے۔\\n\\nابتدا: فراہم کردہ جارحانہ پروفائل کل پانچ یونٹوں پر جنگ کی تیاری شروع کرتا ہے اور پانچ جنگجوؤں پر جنگ کی اجازت دیتا ہے، جس میں سطح صفر کے جنگجو بھی شمار ہوتے ہیں۔ اس کا ہدف تین حملہ آور جھنڈے ہیں، ہر ایک کے ساتھ پانچ جنگجو۔ حسبِ پسند حکمتِ عملی کی فائلیں یہ حدیں بدل سکتی ہیں۔\\n\\nمعیشت اور ترقی: خوراک اور پیدائش کی گنجائش بڑھاتا، کارکنوں کو تربیت دیتا، تیراکی اور حرکت بہتر کرتا اور عمارتوں کو اپ گریڈ کرتا ہے۔ خوراک کے عملے کو بدلتا، فاقہ کشی کا جواب دیتا اور پھل حاصل کرنے کی کوشش کرتا ہے۔\\n\\nحملہ اور دفاع: قابلِ رسائی دشمن عمارتوں میں سے حملے کے ہدف چنتا ہے۔ وسائل سے بند راستے کھولنے کے لیے صفائی کے جھنڈے استعمال کر سکتا ہے۔ دفاعی جھنڈے خطرے میں موجود یونٹوں اور عمارتوں کے گروہوں کی حفاظت کرتے ہیں۔ بعد میں زمینی حملے کی تربیت یافتہ کھوجی دشمن یونٹوں کے گروہوں کو نشانہ بناتے ہیں۔\\n\\nدیگر AI سے موازنہ: Warrush کی طرح ابتدا میں جارحانہ ہے، مگر بعد کی کارروائی زیادہ وسیع ہے۔ Cabino کے برعکس ہسپتالوں اور سراؤں کو مسلسل ترجیح نہیں دیتا۔\\n\\nخوبیاں اور کمزوریاں: وسیع حربی صلاحیت ابتدائی دباؤ کو مسلسل ترقی کے ساتھ جوڑتی ہے۔ اتفاقی ہدف چننے سے کم اہم عمارتوں پر محنت خرچ ہو سکتی ہے۔ اس کی حدیں دشمن کی لڑنے کی طاقت کا Maxima جیسا تفصیلی تخمینہ نہیں دیتیں۔\\n\\nآزمانے کے لیے مقابلے کا طریقہ: جلد حملے کی توقع رکھیں۔ خوراک اور کارکنوں کی حفاظت کریں، توسیع کو چیلنج کریں اور اگر یہ اعلیٰ تربیت تک پہنچ جائے تو کھوجیوں کے حملوں کے لیے تیار رہیں۔",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "NamedAIcontrollers/JavaScript/AI heading abbreviations retained; all narrativeUrdu reviewedagainstfullEnglishprofile."
+    },
+    {
+      "key": "[AINone-Profile]",
+      "source": "Core strategy: Issues no AI orders.\\n\\nStrengths: A predictable idle opponent for experiments.\\n\\nWeaknesses: Does not expand or adapt.",
+      "before": "بنیادی حکمتِ عملی: AI کا کوئی حکم جاری نہیں کرتا۔\\n\\nخوبیاں: تجربات کے لیے ایک غیر متحرک اور قابلِ پیش گوئی حریف۔\\n\\nکمزوریاں: نہ توسیع کرتا ہے نہ حالات کے مطابق بدلتا ہے۔",
+      "after": "بنیادی حکمتِ عملی: AI کا کوئی حکم جاری نہیں کرتا۔\\n\\nخوبیاں: تجربات کے لیے ایک غیر متحرک اور قابلِ پیش گوئی حریف۔\\n\\nکمزوریاں: نہ توسیع کرتا ہے نہ حالات کے مطابق بدلتا ہے۔",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "NamedAIcontrollers/JavaScript/AI heading abbreviations retained; all narrativeUrdu reviewedagainstfullEnglishprofile."
+    },
+    {
+      "key": "[AINumbi-Profile]",
+      "source": "Core strategy: Builds food and population first, adds healing, science and training, then shifts toward warfare. Its broad phases advance with time rather than with the opponent's progress.\\n\\nEconomy and development: Scales building demand with population and estimates nearby food sources. Later phases add upgrades, defenses and expansion to support its growing army.\\n\\nAttack and defense: Attacks when enough healthy fighters exist or a timeout expires. Places war flags on sampled enemy buildings. When its fighting force falls too low, removes attack flags and raises the thresholds for another attempt.\\n\\nCompared with other AIs: More predictable than Castor or Nicowar. Castor considers terrain and target value more carefully; Nicowar applies pressure much earlier.\\n\\nStrengths and weaknesses: Broad supporting infrastructure can make it dangerous after an uninterrupted buildup, but its timetable may not match the battle. Simple target selection and longer pauses after losses make its attacks easier to anticipate.\\n\\nCounterplay to try: Apply pressure before its military phase. Grow food and training behind your attacks, and exploit the pause after defeating an assault.\\n\\nScouting: Its attack routine reads enemy building positions directly without a visibility check.",
+      "before": "بنیادی حکمتِ عملی: پہلے خوراک اور آبادی بڑھاتا، پھر علاج، سائنس اور تربیت شامل کرتا، اور آخر میں جنگ کی طرف جاتا ہے۔ اس کے بڑے مرحلے حریف کی ترقی کے بجائے وقت کے ساتھ آگے بڑھتے ہیں۔\\n\\nمعیشت اور ترقی: آبادی کے مطابق عمارتوں کی ضرورت بڑھاتا اور قریبی خوراک کے ذرائع کا اندازہ لگاتا ہے۔ بعد کے مراحل میں بڑھتی فوج کی مدد کے لیے ترقی، دفاع اور توسیع شامل ہوتی ہے۔\\n\\nحملہ اور دفاع: کافی صحت مند جنگجو موجود ہوں یا مقررہ وقت گزر جائے تو حملہ کرتا ہے۔ منتخب دشمن عمارتوں پر جنگی جھنڈے لگاتا ہے۔ لڑنے والی فوج بہت کم ہو جائے تو حملے کے جھنڈے ہٹا کر اگلی کوشش کی حدیں بڑھا دیتا ہے۔\\n\\nدیگر AI سے موازنہ: Castor یا Nicowar سے زیادہ قابلِ پیش گوئی ہے۔ Castor زمین اور ہدف کی اہمیت پر زیادہ غور کرتا ہے؛ Nicowar کہیں پہلے دباؤ ڈالتا ہے۔\\n\\nخوبیاں اور کمزوریاں: مددگار عمارتوں کا وسیع نظام بلا رکاوٹ تیاری کے بعد اسے خطرناک بنا سکتا ہے، مگر اس کا وقت نامہ لڑائی کے حالات سے میل نہیں بھی کھا سکتا۔ سادہ ہدف چننے اور نقصان کے بعد لمبے وقفوں کی وجہ سے اس کے حملوں کا اندازہ لگانا آسان ہے۔\\n\\nآزمانے کے لیے مقابلے کا طریقہ: فوجی مرحلے سے پہلے دباؤ ڈالیں۔ حملوں کے دوران اپنے پیچھے خوراک اور تربیت بڑھائیں اور اس کا حملہ شکست دینے کے بعد وقفے سے فائدہ اٹھائیں۔\\n\\nکھوج: اس کا حملہ کرنے والا معمول نظر آنے کی جانچ کے بغیر دشمن عمارتوں کے مقامات براہِ راست پڑھتا ہے۔",
+      "after": "بنیادی حکمتِ عملی: پہلے خوراک اور آبادی بڑھاتا، پھر علاج، سائنس اور تربیت شامل کرتا، اور آخر میں جنگ کی طرف جاتا ہے۔ اس کے بڑے مرحلے حریف کی ترقی کے بجائے وقت کے ساتھ آگے بڑھتے ہیں۔\\n\\nمعیشت اور ترقی: آبادی کے مطابق عمارتوں کی ضرورت بڑھاتا اور قریبی خوراک کے ذرائع کا اندازہ لگاتا ہے۔ بعد کے مراحل میں بڑھتی فوج کی مدد کے لیے اپ گریڈ، دفاع اور توسیع شامل ہوتی ہے۔\\n\\nحملہ اور دفاع: کافی صحت مند جنگجو موجود ہوں یا مقررہ وقت گزر جائے تو حملہ کرتا ہے۔ منتخب دشمن عمارتوں پر جنگی جھنڈے لگاتا ہے۔ لڑنے والی فوج بہت کم ہو جائے تو حملے کے جھنڈے ہٹا کر اگلی کوشش کی حدیں بڑھا دیتا ہے۔\\n\\nدیگر AI سے موازنہ: Castor یا Nicowar سے زیادہ قابلِ پیش گوئی ہے۔ Castor زمین اور ہدف کی اہمیت پر زیادہ غور کرتا ہے؛ Nicowar کہیں پہلے دباؤ ڈالتا ہے۔\\n\\nخوبیاں اور کمزوریاں: مددگار عمارتوں کا وسیع نظام بلا رکاوٹ تیاری کے بعد اسے خطرناک بنا سکتا ہے، مگر اس کا وقت نامہ لڑائی کے حالات سے میل نہیں بھی کھا سکتا۔ سادہ ہدف چننے اور نقصان کے بعد لمبے وقفوں کی وجہ سے اس کے حملوں کا اندازہ لگانا آسان ہے۔\\n\\nآزمانے کے لیے مقابلے کا طریقہ: فوجی مرحلے سے پہلے دباؤ ڈالیں۔ حملوں کے دوران اپنے پیچھے خوراک اور تربیت بڑھائیں اور اس کا حملہ شکست دینے کے بعد وقفے سے فائدہ اٹھائیں۔\\n\\nکھوج: اس کا حملہ کرنے والا معمول نظر آنے کی جانچ کے بغیر دشمن عمارتوں کے مقامات براہِ راست پڑھتا ہے۔",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "NamedAIcontrollers/JavaScript/AI heading abbreviations retained; all narrativeUrdu reviewedagainstfullEnglishprofile."
+    },
+    {
+      "key": "[AIEcono-Profile]",
+      "source": "Core strategy: Produces workers and explorers, expands its economy, and attracts enemy units through food and fruit. Has no conventional warrior offensive.\\n\\nEconomy and development: Builds inns and swarms near food sources, adds education and movement training, and upgrades infrastructure. Tracks food supplies and retains its buildings and exploration flags even when supplies deteriorate or targets disappear.\\n\\nFarming and conversion: Protects renewable food and wood sources near water. Sends explorers to fruit deposits and enemy colonies, and advertises food to enemies when pursuing fruit supply. Better food and fruit can help attract converts.\\n\\nCompared with other AIs: The most specialized economic opponent. Cabino and Maxima pursue fruit too, but combine it with armies.\\n\\nStrengths and weaknesses: Can grow while military opponents exhaust themselves, with conversion providing another form of competition. Produces no warriors to answer a sustained assault. Food, fruit, geography and victory rules strongly affect its opportunities.\\n\\nCounterplay to try: Pressure exposed expansion. Keep your own inns supplied with food and fruit to retain units. Avoid exhausting your colony in unnecessary fights while it grows.",
+      "before": "بنیادی حکمتِ عملی: کارکن اور کھوجی پیدا کرتا، معیشت پھیلاتا اور خوراک و پھل سے دشمن یونٹوں کو اپنی طرف لاتا ہے۔ جنگجوؤں کا روایتی حملہ نہیں کرتا۔\\n\\nمعیشت اور ترقی: خوراک کے ذرائع کے قریب سرائے اور چھتے بناتا، تعلیم اور حرکت کی تربیت شامل کرتا اور عمارتوں کو ترقی دیتا ہے۔ خوراک کی رسد پر نظر رکھتا ہے اور رسد خراب ہونے یا ہدف غائب ہونے پر بھی عمارتیں اور کھوج کے جھنڈے برقرار رکھتا ہے۔\\n\\nکھیتی اور وفاداری کی تبدیلی: پانی کے قریب دوبارہ اگنے والی خوراک اور لکڑی کے ذرائع کی حفاظت کرتا ہے۔ کھوجیوں کو پھل کے ذخائر اور دشمن بستیوں کی طرف بھیجتا ہے اور پھل کی رسد حاصل کرتے وقت دشمنوں کو خوراک کی دعوت دیتا ہے۔ بہتر خوراک اور پھل یونٹوں کو اپنی طرف لانے میں مدد دے سکتے ہیں۔\\n\\nدیگر AI سے موازنہ: سب سے زیادہ مخصوص معاشی حریف۔ Cabino اور Maxima بھی پھل حاصل کرتے ہیں، مگر ساتھ فوج بھی رکھتے ہیں۔\\n\\nخوبیاں اور کمزوریاں: فوجی حریفوں کے تھکنے کے دوران بڑھ سکتا ہے؛ وفاداری کی تبدیلی مقابلے کا ایک اور طریقہ دیتی ہے۔ مسلسل حملے کا جواب دینے کے لیے جنگجو پیدا نہیں کرتا۔ خوراک، پھل، جغرافیہ اور فتح کے قواعد اس کے مواقع پر بہت اثر ڈالتے ہیں۔\\n\\nآزمانے کے لیے مقابلے کا طریقہ: اس کی کھلی توسیع پر دباؤ ڈالیں۔ اپنے یونٹوں کو برقرار رکھنے کے لیے اپنی سراؤں میں خوراک اور پھل پہنچاتے رہیں۔ اس کے بڑھنے کے دوران غیر ضروری لڑائیوں میں اپنی بستی کو تھکانے سے بچیں۔",
+      "after": "بنیادی حکمتِ عملی: کارکن اور کھوجی پیدا کرتا، معیشت پھیلاتا اور خوراک و پھل سے دشمن یونٹوں کو اپنی طرف لاتا ہے۔ جنگجوؤں کا روایتی حملہ نہیں کرتا۔\\n\\nمعیشت اور ترقی: خوراک کے ذرائع کے قریب سرائے اور چھتے بناتا، تعلیم اور حرکت کی تربیت شامل کرتا اور عمارتوں کو اپ گریڈ کرتا ہے۔ خوراک کی رسد پر نظر رکھتا ہے اور رسد خراب ہونے یا ہدف غائب ہونے پر بھی عمارتیں اور کھوج کے جھنڈے برقرار رکھتا ہے۔\\n\\nکھیتی اور وفاداری کی تبدیلی: پانی کے قریب دوبارہ اگنے والی خوراک اور لکڑی کے ذرائع کی حفاظت کرتا ہے۔ کھوجیوں کو پھل کے ذخائر اور دشمن بستیوں کی طرف بھیجتا ہے اور پھل کی رسد حاصل کرتے وقت دشمنوں کو خوراک کی دعوت دیتا ہے۔ بہتر خوراک اور پھل یونٹوں کو اپنی طرف لانے میں مدد دے سکتے ہیں۔\\n\\nدیگر AI سے موازنہ: سب سے زیادہ مخصوص معاشی حریف۔ Cabino اور Maxima بھی پھل حاصل کرتے ہیں، مگر ساتھ فوج بھی رکھتے ہیں۔\\n\\nخوبیاں اور کمزوریاں: فوجی حریفوں کے تھکنے کے دوران بڑھ سکتا ہے؛ وفاداری کی تبدیلی مقابلے کا ایک اور طریقہ دیتی ہے۔ مسلسل حملے کا جواب دینے کے لیے جنگجو پیدا نہیں کرتا۔ خوراک، پھل، جغرافیہ اور فتح کے قواعد اس کے مواقع پر بہت اثر ڈالتے ہیں۔\\n\\nآزمانے کے لیے مقابلے کا طریقہ: اس کی کھلی توسیع پر دباؤ ڈالیں۔ اپنے یونٹوں کو برقرار رکھنے کے لیے اپنی سراؤں میں خوراک اور پھل پہنچاتے رہیں۔ اس کے بڑھنے کے دوران غیر ضروری لڑائیوں میں اپنی بستی کو تھکانے سے بچیں۔",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "NamedAIcontrollers/JavaScript/AI heading abbreviations retained; all narrativeUrdu reviewedagainstfullEnglishprofile."
+    },
+    {
+      "key": "[AIWarrush-Profile]",
+      "source": "Core strategy: Attacks before opponents finish a long economic or technological buildup. Expects combat to decide the game before a large support network becomes necessary.\\n\\nEconomy and development: Once six units can harvest, sets production to four workers, one explorer and three warriors. Adds barracks as training fills up, but restricts new inns. Spare construction often goes toward hospitals and movement training.\\n\\nAttack and defense: Marks discovered enemy buildings with guard areas so warriors apply continuing pressure. Does not wait for a carefully assembled wave. Clears obstructing resources and protects some renewable sources.\\n\\nFruit policy: Forbids fruit harvesting, avoiding fruit-related armor penalties and declining Econo's conversion strategy.\\n\\nCompared with other AIs: More committed to early pressure than Numbi or Castor. Nicowar also opens aggressively, but follows through with a broader upgrade and tactical program.\\n\\nStrengths and weaknesses: Punishes slow openings and forces early defensive spending. Limited systematic upgrading and lean food support make a stalled offensive costly. Terrain and long journeys can erode its early advantage.\\n\\nCounterplay to try: Protect inns and swarms early. Replace workers as well as defenders, develop training, then counterattack once its rush loses momentum.\\n\\nScouting: Opening exploration flags use enemy starting locations directly. Later attack-area placement requires visibility.",
+      "before": "بنیادی حکمتِ عملی: حریفوں کی طویل معاشی یا تکنیکی تیاری مکمل ہونے سے پہلے حملہ کرتا ہے۔ توقع رکھتا ہے کہ بڑے امدادی نظام کی ضرورت پڑنے سے پہلے لڑائی کھیل کا فیصلہ کر دے گی۔\\n\\nمعیشت اور ترقی: جب چھ یونٹ فصل کاٹ سکیں تو پیداوار چار کارکن، ایک کھوجی اور تین جنگجو مقرر کرتا ہے۔ تربیت بھرنے پر بیرکیں بڑھاتا ہے، مگر نئی سراؤں کو محدود رکھتا ہے۔ بچ جانے والی تعمیراتی گنجائش اکثر ہسپتالوں اور حرکت کی تربیت پر لگتی ہے۔\\n\\nحملہ اور دفاع: دریافت شدہ دشمن عمارتوں پر پہرے کے علاقے لگاتا ہے تاکہ جنگجو مسلسل دباؤ ڈالیں۔ احتیاط سے جمع کی گئی لہر کا انتظار نہیں کرتا۔ رکاوٹ بننے والے وسائل صاف کرتا اور کچھ دوبارہ اگنے والے ذرائع کی حفاظت کرتا ہے۔\\n\\nپھل کی پالیسی: پھل کاٹنے سے روکتا ہے، یوں پھل سے زرہ پر پڑنے والی کمی سے بچتا اور Econo کی وفاداری بدلنے کی حکمتِ عملی نہیں اپناتا۔\\n\\nدیگر AI سے موازنہ: Numbi یا Castor سے زیادہ ابتدائی دباؤ پر قائم رہتا ہے۔ Nicowar بھی جارحانہ ابتدا کرتا ہے، مگر بعد میں زیادہ وسیع ترقی اور حربی منصوبہ اپناتا ہے۔\\n\\nخوبیاں اور کمزوریاں: سست ابتدا کو سزا دیتا اور جلد دفاع پر خرچ کرنے پر مجبور کرتا ہے۔ محدود منظم ترقی اور کم خوراکی سہارا رک جانے والے حملے کو مہنگا بناتے ہیں۔ زمین اور لمبے سفر اس کی ابتدائی برتری گھٹا سکتے ہیں۔\\n\\nآزمانے کے لیے مقابلے کا طریقہ: ابتدا ہی میں سراؤں اور چھتوں کی حفاظت کریں۔ محافظوں کے ساتھ کارکنوں کی جگہ بھی نئے یونٹ لائیں، تربیت بڑھائیں، پھر یلغار کی رفتار ٹوٹنے پر جوابی حملہ کریں۔\\n\\nکھوج: ابتدائی کھوج کے جھنڈے دشمن کے شروع کے مقامات براہِ راست استعمال کرتے ہیں۔ بعد کے حملہ آور علاقوں کے لیے نظر آنا ضروری ہے۔",
+      "after": "بنیادی حکمتِ عملی: حریفوں کی طویل معاشی یا تکنیکی تیاری مکمل ہونے سے پہلے حملہ کرتا ہے۔ توقع رکھتا ہے کہ بڑے امدادی نظام کی ضرورت پڑنے سے پہلے لڑائی کھیل کا فیصلہ کر دے گی۔\\n\\nمعیشت اور ترقی: جب چھ یونٹ وسائل جمع کر سکیں تو پیداوار چار کارکن، ایک کھوجی اور تین جنگجو مقرر کرتا ہے۔ تربیت بھرنے پر بیرکیں بڑھاتا ہے، مگر نئی سراؤں کو محدود رکھتا ہے۔ بچ جانے والی تعمیراتی گنجائش اکثر ہسپتالوں اور حرکت کی تربیت پر لگتی ہے۔\\n\\nحملہ اور دفاع: دریافت شدہ دشمن عمارتوں پر پہرے کے علاقے لگاتا ہے تاکہ جنگجو مسلسل دباؤ ڈالیں۔ احتیاط سے جمع کی گئی لہر کا انتظار نہیں کرتا۔ رکاوٹ بننے والے وسائل صاف کرتا اور کچھ دوبارہ اگنے والے ذرائع کی حفاظت کرتا ہے۔\\n\\nپھل کی پالیسی: پھل کاٹنے سے روکتا ہے، یوں پھل سے زرہ پر پڑنے والی کمی سے بچتا اور Econo کی وفاداری بدلنے کی حکمتِ عملی نہیں اپناتا۔\\n\\nدیگر AI سے موازنہ: Numbi یا Castor سے زیادہ ابتدائی دباؤ پر قائم رہتا ہے۔ Nicowar بھی جارحانہ ابتدا کرتا ہے، مگر بعد میں زیادہ وسیع اپ گریڈ اور حربی منصوبہ اپناتا ہے۔\\n\\nخوبیاں اور کمزوریاں: سست ابتدا کو سزا دیتا اور جلد دفاع پر خرچ کرنے پر مجبور کرتا ہے۔ محدود منظم اپ گریڈ اور کم خوراکی سہارا رک جانے والے حملے کو مہنگا بناتے ہیں۔ زمین اور لمبے سفر اس کی ابتدائی برتری گھٹا سکتے ہیں۔\\n\\nآزمانے کے لیے مقابلے کا طریقہ: ابتدا ہی میں سراؤں اور چھتوں کی حفاظت کریں۔ محافظوں کے ساتھ کارکنوں کی جگہ بھی نئے یونٹ لائیں، تربیت بڑھائیں، پھر یلغار کی رفتار ٹوٹنے پر جوابی حملہ کریں۔\\n\\nکھوج: ابتدائی کھوج کے جھنڈے دشمن کے شروع کے مقامات براہِ راست استعمال کرتے ہیں۔ بعد کے حملہ آور علاقوں کے لیے نظر آنا ضروری ہے۔",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "NamedAIcontrollers/JavaScript/AI heading abbreviations retained; all narrativeUrdu reviewedagainstfullEnglishprofile."
+    },
+    {
+      "key": "[AICabino-Profile]",
+      "source": "Core strategy: Shares unit production among construction, upgrades, defense, attacks and exploration. Separate managers request and reserve units, developing economy and military together.\\n\\nEconomy and development: Builds and upgrades a broad settlement, manages inn and tower staffing, clears building surroundings and protects renewable resources. Scouts fruit and advertises food to compete for converts.\\n\\nAttack and defense: Chooses an enemy and prioritizes hospitals, then inns, then barracks. Supports up to four attacks, generally assigning eight to twenty warriors per target according to availability and nearby enemies. Uses separate defensive flags around threatened buildings.\\n\\nTraining: Requires enough suitable warriors and a completed barracks to attack, but does not wait for maximum technology. Continued upgrades and training strengthen later attacks.\\n\\nCompared with other AIs: More purposeful about dismantling support buildings than Nicowar. Spreads attacks more than Maxima's gathered waves, using unit reservations to manage competing demands.\\n\\nStrengths and weaknesses: Combines growth, training, defense and several attacks. Destroying food and healing can weaken an entire colony. Random opponent selection and fixed building priorities may miss opportunities; multiple attacks can divide its force.\\n\\nCounterplay to try: Defend hospitals and inns. Contest exposed expansion and concentrate defenders against individual attacks. Damage food or training before it sustains several fronts.\\n\\nScouting: Its attack selector reads enemy building lists without an explicit visibility check. Some economic comparisons use enemy statistics directly.",
+      "before": "بنیادی حکمتِ عملی: یونٹوں کی پیداوار کو تعمیر، ترقی، دفاع، حملوں اور کھوج میں بانٹتا ہے۔ الگ منتظم یونٹ مانگتے اور مختص کرتے ہیں، یوں معیشت اور فوج ساتھ ترقی کرتی ہیں۔\\n\\nمعیشت اور ترقی: وسیع بستی تعمیر اور ترقی کرتا، سراؤں اور میناروں کا عملہ سنبھالتا، عمارتوں کے اردگرد صفائی کرتا اور دوبارہ اگنے والے وسائل بچاتا ہے۔ پھل کی کھوج کرتا اور وفاداری بدلوانے کے لیے خوراک کی دعوت دیتا ہے۔\\n\\nحملہ اور دفاع: ایک دشمن چنتا اور پہلے ہسپتالوں، پھر سراؤں، پھر بیرکوں کو ترجیح دیتا ہے۔ بیک وقت چار تک حملے سنبھالتا ہے؛ دستیابی اور قریبی دشمنوں کے مطابق عموماً ہر ہدف کو آٹھ سے بیس جنگجو دیتا ہے۔ خطرے میں موجود عمارتوں کے اردگرد الگ دفاعی جھنڈے لگاتا ہے۔\\n\\nتربیت: حملے کے لیے کافی موزوں جنگجو اور مکمل بیرک درکار ہے، مگر اعلیٰ ترین ٹیکنالوجی کا انتظار نہیں کرتا۔ مسلسل ترقی اور تربیت بعد کے حملے مضبوط بناتی ہیں۔\\n\\nدیگر AI سے موازنہ: Nicowar سے زیادہ باقاعدگی سے امدادی عمارتیں تباہ کرتا ہے۔ Maxima کی جمع شدہ لہروں کے مقابل اپنے حملے زیادہ پھیلاتا اور مختلف ضرورتوں کو سنبھالنے کے لیے یونٹ مختص کرتا ہے۔\\n\\nخوبیاں اور کمزوریاں: ترقی، تربیت، دفاع اور کئی حملے یکجا کرتا ہے۔ خوراک اور علاج تباہ کرنا پوری بستی کمزور کر سکتا ہے۔ اتفاقی حریف چننے اور عمارتوں کی طے شدہ ترجیحات سے مواقع چھوٹ سکتے ہیں؛ کئی حملے اس کی فوج بانٹ سکتے ہیں۔\\n\\nآزمانے کے لیے مقابلے کا طریقہ: ہسپتالوں اور سراؤں کی حفاظت کریں۔ کھلی توسیع کو چیلنج کریں اور ہر الگ حملے کے خلاف محافظ جمع کریں۔ کئی محاذ سنبھالنے کے قابل ہونے سے پہلے اس کی خوراک یا تربیت کو نقصان پہنچائیں۔\\n\\nکھوج: حملہ چننے والا نظام واضح طور پر نظر آنے کی جانچ کیے بغیر دشمن عمارتوں کی فہرست پڑھتا ہے۔ بعض معاشی موازنے دشمن کے اعداد و شمار براہِ راست استعمال کرتے ہیں۔",
+      "after": "بنیادی حکمتِ عملی: یونٹوں کی پیداوار کو تعمیر، اپ گریڈ، دفاع، حملوں اور کھوج میں بانٹتا ہے۔ الگ منتظم یونٹ مانگتے اور مختص کرتے ہیں، یوں معیشت اور فوج ساتھ ترقی کرتی ہیں۔\\n\\nمعیشت اور ترقی: ایک وسیع بستی بناتا اور اس کی عمارتوں کو اپ گریڈ کرتا ہے، سراؤں اور میناروں کا عملہ سنبھالتا ہے، عمارتوں کے اردگرد صفائی کرتا اور دوبارہ اگنے والے وسائل بچاتا ہے۔ پھل کی کھوج کرتا اور وفاداری بدلوانے کے لیے خوراک کی دعوت دیتا ہے۔\\n\\nحملہ اور دفاع: ایک دشمن چنتا اور پہلے ہسپتالوں، پھر سراؤں، پھر بیرکوں کو ترجیح دیتا ہے۔ بیک وقت چار تک حملے سنبھالتا ہے؛ دستیابی اور قریبی دشمنوں کے مطابق عموماً ہر ہدف کو آٹھ سے بیس جنگجو دیتا ہے۔ خطرے میں موجود عمارتوں کے اردگرد الگ دفاعی جھنڈے لگاتا ہے۔\\n\\nتربیت: حملے کے لیے کافی موزوں جنگجو اور مکمل بیرک درکار ہے، مگر اعلیٰ ترین ٹیکنالوجی کا انتظار نہیں کرتا۔ مسلسل اپ گریڈ اور تربیت بعد کے حملے مضبوط بناتی ہیں۔\\n\\nدیگر AI سے موازنہ: Nicowar سے زیادہ باقاعدگی سے امدادی عمارتیں تباہ کرتا ہے۔ Maxima کی جمع شدہ لہروں کے مقابل اپنے حملے زیادہ پھیلاتا اور مختلف ضرورتوں کو سنبھالنے کے لیے یونٹ مختص کرتا ہے۔\\n\\nخوبیاں اور کمزوریاں: ترقی، تربیت، دفاع اور کئی حملے یکجا کرتا ہے۔ خوراک اور علاج تباہ کرنا پوری بستی کمزور کر سکتا ہے۔ اتفاقی حریف چننے اور عمارتوں کی طے شدہ ترجیحات سے مواقع چھوٹ سکتے ہیں؛ کئی حملے اس کی فوج بانٹ سکتے ہیں۔\\n\\nآزمانے کے لیے مقابلے کا طریقہ: ہسپتالوں اور سراؤں کی حفاظت کریں۔ کھلی توسیع کو چیلنج کریں اور ہر الگ حملے کے خلاف محافظ جمع کریں۔ کئی محاذ سنبھالنے کے قابل ہونے سے پہلے اس کی خوراک یا تربیت کو نقصان پہنچائیں۔\\n\\nکھوج: حملہ چننے والا نظام واضح طور پر نظر آنے کی جانچ کیے بغیر دشمن عمارتوں کی فہرست پڑھتا ہے۔ بعض معاشی موازنے دشمن کے اعداد و شمار براہِ راست استعمال کرتے ہیں۔",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "NamedAIcontrollers/JavaScript/AI heading abbreviations retained; all narrativeUrdu reviewedagainstfullEnglishprofile."
+    },
+    {
+      "key": "[No AI orders]",
+      "source": "No AI orders",
+      "before": "AI کا کوئی حکم نہیں",
+      "after": "AI کا کوئی حکم نہیں",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch."
+    },
+    {
+      "key": "[You + AI]",
+      "source": "You + AI",
+      "before": "آپ + AI",
+      "after": "آپ + AI",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch."
+    },
+    {
+      "key": "[You and the AI both issue orders. Uses two controller slots.]",
+      "source": "You and the AI both issue orders. Uses two controller slots.",
+      "before": "آپ اور AI دونوں احکامات دیتے ہیں۔ کنٹرولر کی دو جگہیں استعمال ہوتی ہیں۔",
+      "after": "آپ اور AI دونوں احکامات دیتے ہیں۔ کنٹرولر کی دو جگہیں استعمال ہوتی ہیں۔",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch."
+    },
+    {
+      "key": "[toggle torus view]",
+      "source": "Toggle 2D / torus view",
+      "before": "2D / ٹورس منظر بدلیں",
+      "after": "2D / ٹورس منظر بدلیں",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Numeric scale/2D notation preserves source; no Englishprose."
+    },
+    {
+      "key": "[Quick clash on premade maps: only speed changes (2x).]",
+      "source": "Quick clash on premade maps: only speed changes (2x).",
+      "before": "تیار نقشوں پر فوری ٹکراؤ: صرف رفتار بدلتی ہے (2x)۔",
+      "after": "تیار نقشوں پر فوری ٹکراؤ: صرف رفتار بدلتی ہے (2x)۔",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Numeric scale/2D notation preserves source; no Englishprose."
+    },
+    {
+      "key": "[settings Adjust assigned units with the wheel. When off, hold Ctrl. Shift adjusts flag radius. Also controls wheel input in other menus.]",
+      "source": "Adjust assigned units with the wheel. When off, hold Ctrl. Shift adjusts flag radius. Also controls wheel input in other menus.",
+      "before": "پہیے سے مقرر یونٹ بدلیں۔ بند ہو تو Ctrl دبائے رکھیں۔ Shift سے جھنڈے کا رداس بدلتا ہے۔ یہ دوسرے مینو میں پہیے کو بھی قابو کرتا ہے۔",
+      "after": "پہیے سے مقرر یونٹ بدلیں۔ بند ہو تو Ctrl دبائے رکھیں۔ Shift سے جھنڈے کا رداس بدلتا ہے۔ یہ دوسرے مینو میں پہیے کو بھی قابو کرتا ہے۔",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch."
+    },
+    {
+      "key": "[settings Bind Escape]",
+      "source": "Bind Escape",
+      "before": "Escape مقرر کریں",
+      "after": "Escape مقرر کریں",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch."
+    },
+    {
+      "key": "[settings Display the Globulation 2 cursor.]",
+      "source": "Display the Globulation 2 cursor.",
+      "before": "Globulation 2 کا کرسر دکھائیں۔",
+      "after": "Globulation 2 کا کرسر دکھائیں۔",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch."
+    },
+    {
+      "key": "[settings OpenGL is not available in this build.]",
+      "source": "OpenGL is not available in this build.",
+      "before": "اس بلڈ میں OpenGL دستیاب نہیں۔",
+      "after": "اس بلڈ میں OpenGL دستیاب نہیں۔",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch."
+    },
+    {
+      "key": "[settings Press a key. Escape cancels capture. Use Bind Escape to assign Escape.]",
+      "source": "Press a key. Escape cancels capture. Use Bind Escape to assign Escape.",
+      "before": "کلید دبائیں۔ Escape سے گرفت منسوخ ہوتی ہے۔ Escape مقرر کرنے کے لیے Escape مقرر کریں استعمال کریں۔",
+      "after": "کلید دبائیں۔ Escape سے کلید درج کرنا منسوخ ہو جاتا ہے۔ Escape کو شارٹ کٹ کے طور پر مقرر کرنے کے لیے «Escape مقرر کریں» استعمال کریں۔",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch."
+    },
+    {
+      "key": "[settings Apply artwork on the next game or editor load (OpenGL).]",
+      "source": "Apply artwork on the next game or editor load (OpenGL).",
+      "before": "اگلی بار کھیل یا ایڈیٹر لوڈ ہونے پر تصاویر لاگو کریں (OpenGL)۔",
+      "after": "اگلی بار کھیل یا ایڈیٹر لوڈ ہونے پر تصاویر لاگو کریں (OpenGL)۔",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch."
+    },
+    {
+      "key": "[settings Automatically show the torus overview while moving around the map (OpenGL).]",
+      "source": "Automatically show the torus overview while moving around the map (OpenGL).",
+      "before": "نقشے پر حرکت کے دوران ٹورس کا مجموعی منظر خود دکھائیں (OpenGL)۔",
+      "after": "نقشے پر حرکت کے دوران ٹورس کا مجموعی منظر خود دکھائیں (OpenGL)۔",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch."
+    },
+    {
+      "key": "[Scarce (2x slower)]",
+      "source": "Scarce (2x slower)",
+      "before": "کم یاب (2x سست)",
+      "after": "کم یاب (2x سست)",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Numeric scale/2D notation preserves source; no Englishprose."
+    },
+    {
+      "key": "[Very scarce (4x slower)]",
+      "source": "Very scarce (4x slower)",
+      "before": "بہت کم یاب (4x سست)",
+      "after": "بہت کم یاب (4x سست)",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Numeric scale/2D notation preserves source; no Englishprose."
+    },
+    {
+      "key": "[Extremely scarce (8x slower)]",
+      "source": "Extremely scarce (8x slower)",
+      "before": "انتہائی کم یاب (8x سست)",
+      "after": "انتہائی کم یاب (8x سست)",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Numeric scale/2D notation preserves source; no Englishprose."
+    },
+    {
+      "key": "[Glass cannon x2]",
+      "source": "Glass cannon x2",
+      "before": "نازک مگر طاقتور x2",
+      "after": "نازک مگر طاقتور x2",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Numeric scale/2D notation preserves source; no Englishprose."
+    },
+    {
+      "key": "[Glass cannon x3]",
+      "source": "Glass cannon x3",
+      "before": "نازک مگر طاقتور x3",
+      "after": "نازک مگر طاقتور x3",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Numeric scale/2D notation preserves source; no Englishprose."
+    },
+    {
+      "key": "[Fortress x5]",
+      "source": "Fortress x5",
+      "before": "قلعہ x5",
+      "after": "قلعہ x5",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Numeric scale/2D notation preserves source; no Englishprose."
+    },
+    {
+      "key": "[Fortress x10]",
+      "source": "Fortress x10",
+      "before": "قلعہ x10",
+      "after": "قلعہ x10",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Numeric scale/2D notation preserves source; no Englishprose."
+    },
+    {
+      "key": "[Stats HP restored]",
+      "source": "HP restored",
+      "before": "بحال کردہ HP",
+      "after": "بحال کردہ HP",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch."
+    },
+    {
+      "key": "[Stats next page]",
+      "source": "Page (P)",
+      "before": "صفحہ (P)",
+      "after": "صفحہ (P)",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch."
+    },
+    {
+      "key": "[Stats blocked units]",
+      "source": "Units blocked S/C",
+      "before": "رکے ہوئے یونٹ S/C",
+      "after": "پھنسے ہوئے یونٹ S/C",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch."
+    },
+    {
+      "key": "[Stats blocked buildings]",
+      "source": "Buildings blocked S/C",
+      "before": "بند راستوں والی عمارتیں S/C",
+      "after": "بند راستوں والی عمارتیں S/C",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch."
+    },
+    {
+      "key": "[Stats blocked buildings swim]",
+      "source": "Swim exits S/C",
+      "before": "تیراکی کے بند راستے S/C",
+      "after": "تیراکی کے بند راستے S/C",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch."
+    },
+    {
+      "key": "[Stats low HP 25]",
+      "source": "Units at 25% HP",
+      "before": "25% HP والے یونٹ",
+      "after": "25% HP والے یونٹ",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch."
+    },
+    {
+      "key": "[Stats low HP 50]",
+      "source": "Units at 50% HP",
+      "before": "50% HP والے یونٹ",
+      "after": "50% HP والے یونٹ",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch."
+    },
+    {
+      "key": "[Stats low HP 75]",
+      "source": "Units at 75% HP",
+      "before": "75% HP والے یونٹ",
+      "after": "75% HP والے یونٹ",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch."
+    },
+    {
+      "key": "[Stats low HP ranges]",
+      "source": "HP ≤25/50/75%",
+      "before": "HP ≤25/50/75%",
+      "after": "HP ≤25/50/75%",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch."
+    },
+    {
+      "key": "[AI strategy]",
+      "source": "AI strategy",
+      "before": "AI کی حکمتِ عملی",
+      "after": "AI کی حکمتِ عملی",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "NamedAIcontrollers/JavaScript/AI heading abbreviations retained; all narrativeUrdu reviewedagainstfullEnglishprofile."
+    },
+    {
+      "key": "[AIMaxima-Profile]",
+      "source": "Core strategy: Treats food, workers, births, training, construction and combat as competing demands. Sizes its army partly against estimated enemy strength, then tries to deliver that army effectively.\\n\\nEconomy and development: Budgets births against food and labor, preserves idle opportunities for training, and stops adding surplus workers when military production is needed. Scales training capacity and avoids taking too much infrastructure offline for upgrades.\\n\\nScouting and decisions: Estimates enemy forces from visible units and remembered sightings using a fitted model. Targets depend on value, distance, towers, exposed workers and persistence. Fruit missions support food variety and conversion.\\n\\nAttack and defense: Reserves warriors for training and defense, then gathers eligible land forces near friendly food infrastructure before launching waves. Uses local defensive responses and evaluates approaches to the colony.\\n\\nWhen attacks stall: After four consecutive wave-delivery failures, switches to continuously reinforced attack flags. Amphibious attacks can also use continuous reinforcement. This fallback does not solve every blockage before a rally can form.\\n\\nCompared with other AIs: Integrates food, training, intelligence and deployment more tightly. Cabino emphasizes several building attacks; Maxima emphasizes estimated demand and delivering gathered forces.\\n\\nStrengths and weaknesses: Sustains growth and military replacement while adapting to food pressure and observed threats. Needs food, training capacity and open gathering space; congestion and long routes can undermine delivery.\\n\\nCounterplay to try: Contest exposed food sources, inns and barracks before waves gather. Keep a supplied defensive force together and disrupt reinforcement routes. Expect repeated pressure after the first wave.\\n\\nScouting: Force estimates use sightings and observation history, rather than hidden enemy troop totals.",
+      "before": "بنیادی حکمتِ عملی: خوراک، کارکن، پیدائش، تربیت، تعمیر اور لڑائی کو ایک دوسرے سے مقابل ضرورتیں سمجھتا ہے۔ اپنی فوج کا سائز جزوی طور پر دشمن کی اندازاً طاقت کے مطابق رکھتا ہے، پھر اس فوج کو مؤثر انداز سے ہدف تک پہنچانے کی کوشش کرتا ہے۔\\n\\nمعیشت اور ترقی: خوراک اور محنت کے مطابق پیدائشوں کا حساب رکھتا، تربیت کے لیے فارغ مواقع بچاتا اور فوجی پیداوار کی ضرورت پر اضافی کارکن بڑھانا روک دیتا ہے۔ تربیتی گنجائش بڑھاتا ہے اور ترقی کے لیے بیک وقت بہت سی عمارتیں بند کرنے سے بچتا ہے۔\\n\\nکھوج اور فیصلے: دیکھی گئی یونٹوں اور سابقہ مشاہدات کی مدد سے، تیار کردہ ماڈل کے ذریعے دشمن فوج کا تخمینہ لگاتا ہے۔ ہدف کی اہمیت، فاصلہ، مینار، کھلے کارکن اور ہدف پر قائم رہنا فیصلے میں شامل ہیں۔ پھل کی مہمیں خوراک کے تنوع اور وفاداری کی تبدیلی میں مدد دیتی ہیں۔\\n\\nحملہ اور دفاع: تربیت اور دفاع کے لیے جنگجو مختص کرتا ہے، پھر لہریں بھیجنے سے پہلے موزوں زمینی فوج کو دوست خوراکی عمارتوں کے قریب جمع کرتا ہے۔ مقامی دفاعی ردِعمل استعمال کرتا اور بستی تک آنے والے راستوں کا جائزہ لیتا ہے۔\\n\\nحملے رکنے پر: مسلسل چار بار لہر ہدف تک نہ پہنچے تو مسلسل کمک پانے والے حملہ آور جھنڈوں پر منتقل ہو جاتا ہے۔ پانی اور زمین پر ہونے والے حملے بھی مسلسل کمک استعمال کر سکتے ہیں۔ یہ متبادل طریقہ فوج جمع ہونے سے پہلے ہر رکاوٹ حل نہیں کرتا۔\\n\\nدیگر AI سے موازنہ: خوراک، تربیت، معلومات اور تعیناتی کو زیادہ مضبوطی سے جوڑتا ہے۔ Cabino کئی عمارتوں پر حملوں پر زور دیتا ہے؛ Maxima اندازاً ضرورت اور جمع شدہ فوج پہنچانے پر زور دیتا ہے۔\\n\\nخوبیاں اور کمزوریاں: خوراک کے دباؤ اور دیکھی گئی دھمکیوں کے مطابق بدلتے ہوئے ترقی اور فوجی نقصان کا متبادل برقرار رکھتا ہے۔ اسے خوراک، تربیتی گنجائش اور جمع ہونے کے لیے کھلی جگہ چاہیے؛ ہجوم اور لمبے راستے فوج کی ترسیل خراب کر سکتے ہیں۔\\n\\nآزمانے کے لیے مقابلے کا طریقہ: لہریں جمع ہونے سے پہلے کھلے خوراکی ذرائع، سراؤں اور بیرکوں کو چیلنج کریں۔ رسد پانے والے محافظ اکٹھے رکھیں اور کمک کے راستے توڑیں۔ پہلی لہر کے بعد بھی بار بار دباؤ کی توقع رکھیں۔\\n\\nکھوج: فوج کے تخمینے دیکھی گئی معلومات اور مشاہدات کی تاریخ استعمال کرتے ہیں، دشمن کی پوشیدہ کل فوج نہیں۔",
+      "after": "بنیادی حکمتِ عملی: خوراک، کارکن، پیدائش، تربیت، تعمیر اور لڑائی کو ایک دوسرے سے مقابل ضرورتیں سمجھتا ہے۔ اپنی فوج کا سائز جزوی طور پر دشمن کی اندازاً طاقت کے مطابق رکھتا ہے، پھر اس فوج کو مؤثر انداز سے ہدف تک پہنچانے کی کوشش کرتا ہے۔\\n\\nمعیشت اور ترقی: خوراک اور محنت کے مطابق پیدائشوں کا حساب رکھتا، تربیت کے لیے خالی وقت بچاتا اور فوجی پیداوار کی ضرورت پر اضافی کارکن بڑھانا روک دیتا ہے۔ تربیتی گنجائش بڑھاتا ہے اور اپ گریڈ کے لیے بیک وقت بہت سی عمارتیں بند کرنے سے بچتا ہے۔\\n\\nکھوج اور فیصلے: دیکھے گئے یونٹوں اور سابقہ مشاہدات کی مدد سے، تیار کردہ ماڈل کے ذریعے دشمن فوج کا تخمینہ لگاتا ہے۔ ہدف کی اہمیت، فاصلہ، مینار، کھلے کارکن اور ہدف پر قائم رہنا فیصلے میں شامل ہیں۔ پھل کی مہمیں خوراک کے تنوع اور وفاداری کی تبدیلی میں مدد دیتی ہیں۔\\n\\nحملہ اور دفاع: تربیت اور دفاع کے لیے جنگجو مختص کرتا ہے، پھر لہریں بھیجنے سے پہلے موزوں زمینی فوج کو اپنی یا اتحادی خوراکی عمارتوں کے قریب جمع کرتا ہے۔ مقامی دفاعی ردِعمل استعمال کرتا اور بستی تک آنے والے راستوں کا جائزہ لیتا ہے۔\\n\\nحملے رکنے پر: مسلسل چار بار لہر ہدف تک نہ پہنچے تو مسلسل کمک پانے والے حملہ آور جھنڈوں پر منتقل ہو جاتا ہے۔ پانی اور زمین پر ہونے والے حملے بھی مسلسل کمک استعمال کر سکتے ہیں۔ یہ متبادل طریقہ فوج جمع ہونے سے پہلے ہر رکاوٹ حل نہیں کرتا۔\\n\\nدیگر AI سے موازنہ: خوراک، تربیت، معلومات اور تعیناتی کو زیادہ مضبوطی سے جوڑتا ہے۔ Cabino کئی عمارتوں پر حملوں پر زور دیتا ہے؛ Maxima اندازاً ضرورت اور جمع شدہ فوج پہنچانے پر زور دیتا ہے۔\\n\\nخوبیاں اور کمزوریاں: خوراک کے دباؤ اور دیکھی گئی دھمکیوں کے مطابق بدلتے ہوئے آبادی کی بڑھوتری اور فوجی نقصانات کی تلافی جاری رکھتا ہے۔ اسے خوراک، تربیتی گنجائش اور جمع ہونے کے لیے کھلی جگہ چاہیے؛ ہجوم اور لمبے راستے فوج کی ترسیل خراب کر سکتے ہیں۔\\n\\nآزمانے کے لیے مقابلے کا طریقہ: لہریں جمع ہونے سے پہلے کھلے خوراکی ذرائع، سراؤں اور بیرکوں کو چیلنج کریں۔ رسد پانے والے محافظ اکٹھے رکھیں اور کمک کے راستے توڑیں۔ پہلی لہر کے بعد بھی بار بار دباؤ کی توقع رکھیں۔\\n\\nکھوج: فوج کے تخمینے دیکھی گئی معلومات اور مشاہدات کی تاریخ استعمال کرتے ہیں، دشمن کی پوشیدہ کل فوج نہیں۔",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "NamedAIcontrollers/JavaScript/AI heading abbreviations retained; all narrativeUrdu reviewedagainstfullEnglishprofile."
+    },
+    {
+      "key": "[AI opponents]",
+      "source": "AI opponents",
+      "before": "AI حریف",
+      "after": "AI حریف",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "NamedAIcontrollers/JavaScript/AI heading abbreviations retained; all narrativeUrdu reviewedagainstfullEnglishprofile."
+    },
+    {
+      "key": "[%0 / %1 HP · %2]",
+      "source": "%0 / %1 HP · %2",
+      "before": "%0 / %1 HP · %2",
+      "after": "%0 / %1 HP · %2",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch."
+    },
+    {
+      "key": "[P %0/%1/%2]",
+      "source": "P %0/%1/%2",
+      "before": "P %0/%1/%2",
+      "after": "P %0/%1/%2",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch."
+    },
+    {
+      "key": "[CPU load %0]",
+      "source": "CPU %0%",
+      "before": "CPU %0%",
+      "after": "CPU %0%",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch."
+    },
+    {
+      "key": "[Brush %0x%1]",
+      "source": "Brush %0x%1",
+      "before": "برش %0x%1",
+      "after": "برش %0x%1",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Numeric scale/2D notation preserves source; no Englishprose."
+    },
+    {
+      "key": "[Player / AI]",
+      "source": "Player / AI",
+      "before": "کھلاڑی / AI",
+      "after": "کھلاڑی / AI",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch."
+    },
+    {
+      "key": "[%0 colonies · %1 AI]",
+      "source": "%0 colonies · %1 AI",
+      "before": "%0 بستیاں · %1 AI",
+      "after": "%0 بستیاں · %1 AI",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch."
+    },
+    {
+      "key": "[Add AI]",
+      "source": "Add AI",
+      "before": "AI شامل کریں",
+      "after": "AI شامل کریں",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch."
+    },
+    {
+      "key": "[settings Custom AIs]",
+      "source": "Custom AIs",
+      "before": "اپنی مرضی کے AI",
+      "after": "اپنی مرضی کے AI",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch."
+    },
+    {
+      "key": "[settings Requires the OpenGL renderer. Your saved choice is retained.]",
+      "source": "Requires the OpenGL renderer. Your saved choice is retained.",
+      "before": "OpenGL رینڈرر درکار ہے۔ آپ کا محفوظ انتخاب برقرار رہتا ہے۔",
+      "after": "OpenGL رینڈرر درکار ہے۔ آپ کا محفوظ انتخاب برقرار رہتا ہے۔",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch."
+    },
+    {
+      "key": "[lan pairing field]",
+      "source": "Host pairing string (or trusted WSS URL)",
+      "before": "میزبان کی جوڑنے والی عبارت (یا قابلِ اعتماد WSS URL)",
+      "after": "میزبان کی جوڑنے والی عبارت (یا قابلِ اعتماد WSS URL)",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch."
+    },
+    {
+      "key": "[lan discovery unavailable]",
+      "source": "LAN discovery is unavailable. Check local network permission or paste a host pairing string.",
+      "before": "LAN پر تلاش دستیاب نہیں۔ مقامی نیٹ ورک کی اجازت دیکھیں یا میزبان کی جوڑنے والی عبارت چسپاں کریں۔",
+      "after": "LAN پر تلاش دستیاب نہیں۔ مقامی نیٹ ورک کی اجازت دیکھیں یا میزبان کی جوڑنے والی عبارت چسپاں کریں۔",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch."
+    },
+    {
+      "key": "[lan connection unavailable]",
+      "source": "Unable to reach the LAN host. Check local network permission and the host pairing string.",
+      "before": "LAN میزبان تک رسائی نہیں ہو سکی۔ مقامی نیٹ ورک کی اجازت اور میزبان کی جوڑنے والی عبارت دیکھیں۔",
+      "after": "LAN میزبان تک رسائی نہیں ہو سکی۔ مقامی نیٹ ورک کی اجازت اور میزبان کی جوڑنے والی عبارت دیکھیں۔",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch."
+    },
+    {
+      "key": "[lan connection verification failed %0]",
+      "source": "Unable to verify or connect to the LAN host: %0",
+      "before": "LAN میزبان کی تصدیق یا اس سے رابطہ نہیں ہو سکا: %0",
+      "after": "LAN میزبان کی تصدیق یا اس سے رابطہ نہیں ہو سکا: %0",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch."
+    },
+    {
+      "key": "[lan version mismatch %0]",
+      "source": "The host runs a different version of Globulation 2 (%0).",
+      "before": "میزبان Globulation 2 کا مختلف ورژن چلا رہا ہے (%0)۔",
+      "after": "میزبان Globulation 2 کا مختلف ورژن چلا رہا ہے (%0)۔",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch."
+    },
+    {
+      "key": "[lan cannot host %0]",
+      "source": "Unable to host a LAN game: %0",
+      "before": "LAN کھیل کی میزبانی نہیں ہو سکی: %0",
+      "after": "LAN کھیل کی میزبانی نہیں ہو سکی: %0",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch."
+    },
+    {
+      "key": "[conn ai]",
+      "source": "AI",
+      "before": "AI",
+      "after": "AI",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch."
+    },
+    {
+      "key": "[hub ai joins after %0]",
+      "source": "AI joins after %0",
+      "before": "%0 کے بعد AI شامل ہو گا",
+      "after": "%0 کے بعد AI شامل ہو گا",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch."
+    },
+    {
+      "key": "[hub offline detail %0]",
+      "source": "Trying again in %0 s. Quick match and online rooms are unavailable. LAN game on the main menu doesn't need this server.",
+      "before": "%0 سیکنڈ میں دوبارہ کوشش ہو گی۔ فوری میچ اور آن لائن کمرے دستیاب نہیں۔ مرکزی مینیو کے LAN کھیل کو اس سرور کی ضرورت نہیں۔",
+      "after": "%0 سیکنڈ میں دوبارہ کوشش ہو گی۔ فوری میچ اور آن لائن کمرے دستیاب نہیں۔ مرکزی مینیو کے LAN کھیل کو اس سرور کی ضرورت نہیں۔",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch."
+    },
+    {
+      "key": "[hub sim %0]",
+      "source": "sim %0",
+      "before": "sim %0",
+      "after": "sim %0",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch."
+    },
+    {
+      "key": "[hub update required detail %0]",
+      "source": "%0 plays a newer version, so this copy can't join online games until it updates. LAN games still work.",
+      "before": "%0 نیا ورژن چلاتا ہے، اس لیے یہ نقل اپ ڈیٹ ہونے تک آن لائن کھیلوں میں شامل نہیں ہو سکتی۔ LAN کھیل اب بھی چلتے ہیں۔",
+      "after": "%0 نیا ورژن چلاتا ہے، اس لیے یہ نقل اپ ڈیٹ ہونے تک آن لائن کھیلوں میں شامل نہیں ہو سکتی۔ LAN کھیل اب بھی چلتے ہیں۔",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch."
+    },
+    {
+      "key": "[hub server behind detail %0]",
+      "source": "This copy is newer than %0, which hasn't been updated to it yet. Online games will open once the server updates. LAN games still work.",
+      "before": "یہ نقل %0 سے نئی ہے، جسے ابھی اس ورژن پر اپ ڈیٹ نہیں کیا گیا۔ سرور اپ ڈیٹ ہونے پر آن لائن کھیل کھل جائیں گے۔ LAN کھیل اب بھی چلتے ہیں۔",
+      "after": "یہ نقل %0 سے نئی ہے، جسے ابھی اس ورژن پر اپ ڈیٹ نہیں کیا گیا۔ سرور اپ ڈیٹ ہونے پر آن لائن کھیل کھل جائیں گے۔ LAN کھیل اب بھی چلتے ہیں۔",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch."
+    },
+    {
+      "key": "[hub version mismatch detail %0]",
+      "source": "%0 plays a different version of the game, so this copy can't join online games. LAN games still work.",
+      "before": "%0 کھیل کا مختلف ورژن چلاتا ہے، اس لیے یہ نقل آن لائن کھیلوں میں شامل نہیں ہو سکتی۔ LAN کھیل اب بھی چلتے ہیں۔",
+      "after": "%0 کھیل کا مختلف ورژن چلاتا ہے، اس لیے یہ نقل آن لائن کھیلوں میں شامل نہیں ہو سکتی۔ LAN کھیل اب بھی چلتے ہیں۔",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch."
+    },
+    {
+      "key": "[match ai]",
+      "source": "AI",
+      "before": "AI",
+      "after": "AI",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch."
+    },
+    {
+      "key": "[room ai %0]",
+      "source": "AI: %0",
+      "before": "AI: %0",
+      "after": "AI: %0",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch."
+    },
+    {
+      "key": "[room humans vs ai]",
+      "source": "Humans vs AI",
+      "before": "انسان بمقابلہ AI",
+      "after": "انسان بمقابلہ AI",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch."
+    },
+    {
+      "key": "[room lan list hint %0]",
+      "source": "Others on the same network see %0 in the LAN game list on the main menu.",
+      "before": "اسی نیٹ ورک کے دوسرے لوگ مرکزی مینیو کی LAN کھیل فہرست میں %0 دیکھتے ہیں۔",
+      "after": "اسی نیٹ ورک کے دوسرے لوگ مرکزی مینیو کی LAN کھیل فہرست میں %0 دیکھتے ہیں۔",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch."
+    },
+    {
+      "key": "[room needs two seats]",
+      "source": "Invite a friend or add an AI to start",
+      "before": "شروع کرنے کے لیے دوست کو بلائیں یا AI شامل کریں",
+      "after": "شروع کرنے کے لیے دوست کو بلائیں یا AI شامل کریں",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch."
+    },
+    {
+      "key": "[room seats summary %0 %1 %2]",
+      "source": "%0 players · %1 AI · %2 open",
+      "before": "%0 کھلاڑی · %1 AI · %2 کھلی",
+      "after": "%0 کھلاڑی · %1 AI · %2 کھلی",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch."
+    },
+    {
+      "key": "[room share text %0]",
+      "source": "Join my Globulation 2 room: %0",
+      "before": "میرے Globulation 2 کمرے میں شامل ہوں: %0",
+      "after": "میرے Globulation 2 کمرے میں شامل ہوں: %0",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch."
+    },
+    {
+      "key": "[settings Enter an https:// address.]",
+      "source": "Enter an https:// address.",
+      "before": "https:// سے شروع ہونے والا پتہ درج کریں۔",
+      "after": "https:// سے شروع ہونے والا پتہ درج کریں۔",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch."
+    },
+    {
+      "key": "[settings Not a Globulation 2 server.]",
+      "source": "Not a Globulation 2 server.",
+      "before": "یہ Globulation 2 کا سرور نہیں۔",
+      "after": "یہ Globulation 2 کا سرور نہیں۔",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch."
+    },
+    {
+      "key": "[settings The official Globulation 2 server · ranked queues, leaderboards, map catalog]",
+      "source": "The official Globulation 2 server · ranked queues, leaderboards, map catalog",
+      "before": "Globulation 2 کا سرکاری سرور · درجہ بند قطاریں، درجہ بندی، نقشوں کی فہرست",
+      "after": "Globulation 2 کا سرکاری سرور · درجہ بند قطاریں، درجہ بندی، نقشوں کی فہرست",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch."
+    },
+    {
+      "key": "[trust not official]",
+      "source": "This server isn't run by the Globulation 2 project.",
+      "before": "یہ سرور Globulation 2 منصوبہ نہیں چلاتا۔",
+      "after": "یہ سرور Globulation 2 منصوبے کے زیرِ انتظام نہیں ہے۔",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch."
+    },
+    {
+      "key": "[qm ai joins after %0]",
+      "source": "AI joins after %0",
+      "before": "%0 کے بعد AI شامل ہو گا",
+      "after": "%0 کے بعد AI شامل ہو گا",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch."
+    },
+    {
+      "key": "[qm waiting for a person]",
+      "source": "Waiting for a person: AI opponents are off.",
+      "before": "کسی شخص کا انتظار ہے: AI حریف بند ہیں۔",
+      "after": "کسی شخص کا انتظار ہے: AI حریف بند ہیں۔",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch."
+    },
+    {
+      "key": "[qm ai in %0 rated]",
+      "source": "If no one is found, you'll play the closest-rated AI in %0",
+      "before": "کوئی نہ ملا تو %0 میں آپ کی ریٹنگ کے قریب ترین AI کے ساتھ کھیلیں گے",
+      "after": "کوئی نہ ملا تو %0 میں آپ کی ریٹنگ کے قریب ترین AI کے ساتھ کھیلیں گے",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch."
+    },
+    {
+      "key": "[qm ai in %0]",
+      "source": "If no one is found, an AI joins in %0",
+      "before": "کوئی نہ ملا تو %0 میں AI شامل ہو گا",
+      "after": "کوئی نہ ملا تو %0 میں AI شامل ہو گا",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch."
+    },
+    {
+      "key": "[qm ai after %0]",
+      "source": "If no one is found, an AI takes the seat after %0",
+      "before": "کوئی نہ ملا تو %0 کے بعد AI نشست لے گا",
+      "after": "کوئی نہ ملا تو %0 کے بعد AI نشست لے گا",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch."
+    },
+    {
+      "key": "[qm allow ai short]",
+      "source": "Allow AI",
+      "before": "AI کی اجازت دیں",
+      "after": "AI کی اجازت دیں",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch."
+    },
+    {
+      "key": "[qm allow ai]",
+      "source": "Allow an AI opponent",
+      "before": "AI حریف کی اجازت دیں",
+      "after": "AI حریف کی اجازت دیں",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch."
+    },
+    {
+      "key": "[qm ais are rated]",
+      "source": "(rated: AIs have ratings too)",
+      "before": "(ریٹنگ شامل ہے: AI کی بھی ریٹنگ ہوتی ہے)",
+      "after": "(ریٹنگ شامل ہے: AI کی بھی ریٹنگ ہوتی ہے)",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch."
+    },
+    {
+      "key": "[qm ai]",
+      "source": "AI",
+      "before": "AI",
+      "after": "AI",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch."
+    },
+    {
+      "key": "[qm ai badge]",
+      "source": "AI",
+      "before": "AI",
+      "after": "AI",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch."
+    },
+    {
+      "key": "[qm playing an ai]",
+      "source": "Playing an AI",
+      "before": "AI کے خلاف کھیل",
+      "after": "AI کے خلاف کھیل",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch."
+    },
+    {
+      "key": "[qm ai explanation rated]",
+      "source": "No one in your rating range was searching. You'll play the AI closest to your rating; the result counts for your rating and the AI's.",
+      "before": "آپ کی ریٹنگ کے دائرے میں کوئی تلاش نہیں کر رہا تھا۔ آپ اپنی ریٹنگ کے قریب ترین AI سے کھیلیں گے؛ نتیجہ آپ اور AI دونوں کی ریٹنگ میں شمار ہو گا۔",
+      "after": "آپ کی ریٹنگ کے دائرے میں کوئی تلاش نہیں کر رہا تھا۔ آپ اپنی ریٹنگ کے قریب ترین AI سے کھیلیں گے؛ نتیجہ آپ اور AI دونوں کی ریٹنگ میں شمار ہو گا۔",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch."
+    },
+    {
+      "key": "[qm ai explanation]",
+      "source": "No one was searching. You'll play the AI closest to your rating; this game is unrated.",
+      "before": "کوئی تلاش نہیں کر رہا تھا۔ آپ اپنی ریٹنگ کے قریب ترین AI سے کھیلیں گے؛ اس کھیل کی ریٹنگ نہیں ہو گی۔",
+      "after": "کوئی تلاش نہیں کر رہا تھا۔ آپ اپنی ریٹنگ کے قریب ترین AI سے کھیلیں گے؛ اس کھیل کی ریٹنگ نہیں ہو گی۔",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch."
+    },
+    {
+      "key": "[profile ai filled]",
+      "source": "AI filled",
+      "before": "AI نے جگہ پُر کی",
+      "after": "AI نے جگہ پُر کی",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch."
+    },
+    {
+      "key": "[profile vs ai]",
+      "source": "vs AI",
+      "before": "بمقابلہ AI",
+      "after": "بمقابلہ AI",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch."
+    },
+    {
+      "key": "[maps upload hint]",
+      "source": ".map files from your maps folder or the editor",
+      "before": "آپ کے نقشوں کے فولڈر یا ایڈیٹر کی .map فائلیں",
+      "after": "آپ کے نقشوں کے فولڈر یا ایڈیٹر کی .map فائلیں",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch."
+    },
+    {
+      "key": "[maps %0 kb]",
+      "source": "%0 KB",
+      "before": "%0 KB",
+      "after": "%0 KB",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch."
+    },
+    {
+      "key": "[leave lan title]",
+      "source": "Leave this LAN game?",
+      "before": "یہ LAN کھیل چھوڑیں؟",
+      "after": "یہ LAN کھیل چھوڑیں؟",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch."
+    },
+    {
+      "key": "[room seats one person %0 %1]",
+      "source": "1 player · %0 AI · %1 open",
+      "before": "1 کھلاڑی · %0 AI · %1 کھلی",
+      "after": "1 کھلاڑی · %0 AI · %1 کھلی",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch."
+    },
+    {
+      "key": "[room copy by hand keys]",
+      "source": "The link is selected: press Ctrl+C (⌘C on a Mac).",
+      "before": "لنک منتخب ہے: Ctrl+C دبائیں (Mac پر ⌘C)۔",
+      "after": "لنک منتخب ہے: Ctrl+C دبائیں (Mac پر ⌘C)۔",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch."
+    },
+    {
+      "key": "[qm ai opponent %0]",
+      "source": "AI opponent: %0",
+      "before": "AI حریف: %0",
+      "after": "AI حریف: %0",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch."
+    },
+    {
+      "key": "[settings Hive Mind]",
+      "source": "Hive Mind",
+      "before": "Hive Mind",
+      "after": "Hive Mind",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch."
+    },
+    {
+      "key": "[settings Default shortcuts: Ctrl+Enter to give an order; Ctrl+Shift+Enter to stop commander work. Change them under Controls. Standing-order cards have separate pause and cancel controls.]",
+      "source": "Default shortcuts: Ctrl+Enter to give an order; Ctrl+Shift+Enter to stop commander work. Change them under Controls. Standing-order cards have separate pause and cancel controls.",
+      "before": "طے شدہ شارٹ کٹ: حکم کے لیے Ctrl+Enter؛ کمانڈر کا کام روکنے کے لیے Ctrl+Shift+Enter۔ انہیں کنٹرولز میں بدلیں۔ مستقل حکم کے کارڈ پر رکنے اور منسوخ کرنے کے الگ کنٹرول ہیں۔",
+      "after": "طے شدہ شارٹ کٹ: حکم کے لیے Ctrl+Enter؛ کمانڈر کا کام روکنے کے لیے Ctrl+Shift+Enter۔ انہیں کنٹرولز میں بدلیں۔ مستقل حکم کے کارڈ پر رکنے اور منسوخ کرنے کے الگ کنٹرول ہیں۔",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch."
+    },
+    {
+      "key": "[settings Record your games as MP4 videos with sound. Recording needs FFmpeg with the libx264 and AAC encoders.]",
+      "source": "Record your games as MP4 videos with sound. Recording needs FFmpeg with the libx264 and AAC encoders.",
+      "before": "کھیل آواز کے ساتھ MP4 ویڈیو میں ریکارڈ کریں۔ ریکارڈنگ کے لیے libx264 اور AAC انکوڈر والا FFmpeg چاہیے۔",
+      "after": "کھیل آواز کے ساتھ MP4 ویڈیو میں ریکارڈ کریں۔ ریکارڈنگ کے لیے libx264 اور AAC انکوڈر والا FFmpeg چاہیے۔",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch."
+    },
+    {
+      "key": "[settings Record your games as MP4 videos with sound.]",
+      "source": "Record your games as MP4 videos with sound.",
+      "before": "کھیل آواز کے ساتھ MP4 ویڈیو میں ریکارڈ کریں۔",
+      "after": "کھیل آواز کے ساتھ MP4 ویڈیو میں ریکارڈ کریں۔",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch."
+    },
+    {
+      "key": "[settings Recording uses the full rendered resolution at 30 FPS.]",
+      "source": "Recording uses the full rendered resolution at 30 FPS.",
+      "before": "ریکارڈنگ مکمل دکھائی گئی ریزولیوشن پر 30 FPS استعمال کرتی ہے۔",
+      "after": "ریکارڈنگ مکمل دکھائی گئی ریزولیوشن پر 30 FPS استعمال کرتی ہے۔",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch."
+    },
+    {
+      "key": "[settings FFmpeg is ready.]",
+      "source": "FFmpeg is ready.",
+      "before": "FFmpeg تیار ہے۔",
+      "after": "FFmpeg تیار ہے۔",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch."
+    },
+    {
+      "key": "[settings FFmpeg is not available, so recording is turned off. Install FFmpeg and make sure it is on your PATH, then check again.]",
+      "source": "FFmpeg is not available, so recording is turned off. Install FFmpeg and make sure it is on your PATH, then check again.",
+      "before": "FFmpeg دستیاب نہیں، اس لیے ریکارڈنگ بند ہے۔ اسے نصب کریں، PATH میں موجودگی یقینی بنائیں، پھر جانچیں۔",
+      "after": "FFmpeg دستیاب نہیں، اس لیے ریکارڈنگ بند ہے۔ اسے نصب کریں، PATH میں موجودگی یقینی بنائیں، پھر جانچیں۔",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch."
+    },
+    {
+      "key": "[settings Check for FFmpeg again]",
+      "source": "Check for FFmpeg again",
+      "before": "FFmpeg دوبارہ جانچیں",
+      "after": "FFmpeg دوبارہ جانچیں",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch."
+    },
+    {
+      "key": "[settings Checking for FFmpeg…]",
+      "source": "Checking for FFmpeg…",
+      "before": "FFmpeg کی جانچ ہو رہی ہے…",
+      "after": "FFmpeg کی جانچ ہو رہی ہے…",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch."
+    },
+    {
+      "key": "[Saving custom AI…]",
+      "source": "Saving custom AI…",
+      "before": "حسبِ پسند AI محفوظ ہو رہا ہے…",
+      "after": "حسبِ پسند AI محفوظ ہو رہا ہے…",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch."
+    },
+    {
+      "key": "[Could not read the selected JavaScript file.]",
+      "source": "Could not read the selected JavaScript file.",
+      "before": "منتخب JavaScript فائل پڑھی نہیں جا سکی۔",
+      "after": "منتخب JavaScript فائل پڑھی نہیں جا سکی۔",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch."
+    },
+    {
+      "key": "[Custom AI library saved.]",
+      "source": "Custom AI library saved.",
+      "before": "حسبِ پسند AI کی لائبریری محفوظ ہو گئی۔",
+      "after": "حسبِ پسند AI کی لائبریری محفوظ ہو گئی۔",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch."
+    },
+    {
+      "key": "[Import a single JavaScript AI file, then select it when setting up a local game.]",
+      "source": "Import a single JavaScript AI file, then select it when setting up a local game.",
+      "before": "JavaScript AI کی ایک فائل درآمد کریں، پھر مقامی کھیل ترتیب دیتے وقت اسے منتخب کریں۔",
+      "after": "JavaScript AI کی ایک فائل درآمد کریں، پھر مقامی کھیل ترتیب دیتے وقت اسے منتخب کریں۔",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch."
+    },
+    {
+      "key": "[Imports keep a copy in Glob2. Update replaces that copy for future games; saves keep their original AI.]",
+      "source": "Imports keep a copy in Glob2. Update replaces that copy for future games; saves keep their original AI.",
+      "before": "درآمد کرنے سے Glob2 میں نقل رکھی جاتی ہے۔ اپ ڈیٹ آئندہ کھیلوں کے لیے وہ نقل بدلتا ہے؛ محفوظ کھیل اپنا اصل AI رکھتے ہیں۔",
+      "after": "درآمد کرنے سے Glob2 میں نقل رکھی جاتی ہے۔ اپ ڈیٹ آئندہ کھیلوں کے لیے وہ نقل بدلتا ہے؛ محفوظ کھیل اپنا اصل AI رکھتے ہیں۔",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch."
+    },
+    {
+      "key": "[Import JavaScript AI]",
+      "source": "Import JavaScript AI",
+      "before": "JavaScript AI درآمد کریں",
+      "after": "JavaScript AI درآمد کریں",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch."
+    },
+    {
+      "key": "[Example AI and authoring guide]",
+      "source": "Example AI and authoring guide",
+      "before": "مثالی AI اور تخلیق کی رہنمائی",
+      "after": "مثالی AI اور تخلیق کی رہنمائی",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch."
+    },
+    {
+      "key": "[No custom AIs yet. Import a bundled .js file to get started.]",
+      "source": "No custom AIs yet. Import a bundled .js file to get started.",
+      "before": "ابھی کوئی حسبِ پسند AI نہیں۔ شروع کرنے کے لیے بنڈل کی گئی .js فائل درآمد کریں۔",
+      "after": "ابھی کوئی حسبِ پسند AI نہیں۔ شروع کرنے کے لیے بنڈل کی گئی .js فائل درآمد کریں۔",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch."
+    },
+    {
+      "key": "[AI startup and persistent globals are valid.]",
+      "source": "AI startup and persistent globals are valid.",
+      "before": "AI کا آغاز اور مستقل عالمی متغیرات درست ہیں۔",
+      "after": "AI کا آغاز اور مستقل عالمی متغیرات درست ہیں۔",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "NamedAIcontrollers/JavaScript/AI heading abbreviations retained; all narrativeUrdu reviewedagainstfullEnglishprofile."
+    },
+    {
+      "key": "[AI telemetry]",
+      "source": "AI telemetry",
+      "before": "AI کی ٹیلی میٹری",
+      "after": "AI کی ٹیلی میٹری",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "NamedAIcontrollers/JavaScript/AI heading abbreviations retained; all narrativeUrdu reviewedagainstfullEnglishprofile."
+    },
+    {
+      "key": "[No accessible AI telemetry.]",
+      "source": "No accessible AI telemetry.",
+      "before": "AI کی قابلِ رسائی ٹیلی میٹری نہیں۔",
+      "after": "AI کی قابلِ رسائی ٹیلی میٹری نہیں۔",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch."
+    },
+    {
+      "key": "[Add JavaScript AIs in Settings → Custom AIs. They appear in each colony’s AI selector.]",
+      "source": "Add JavaScript AIs in Settings → Custom AIs. They appear in each colony’s AI selector.",
+      "before": "ترتیبات → اپنی مرضی کے AI میں JavaScript کے AI شامل کریں۔ وہ ہر بستی کے AI انتخاب میں دکھائی دیتے ہیں۔",
+      "after": "ترتیبات → اپنی مرضی کے AI میں JavaScript کے AI شامل کریں۔ وہ ہر بستی کے AI انتخاب میں دکھائی دیتے ہیں۔",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch."
+    },
+    {
+      "key": "[Missing custom AI]",
+      "source": "Missing custom AI",
+      "before": "حسبِ پسند AI موجود نہیں",
+      "after": "حسبِ پسند AI موجود نہیں",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch."
+    },
+    {
+      "key": "[Units hit harder but have less HP and armor.]",
+      "source": "Units hit harder but have less HP and armor.",
+      "before": "یونٹ زیادہ زور سے وار کرتے ہیں مگر HP اور زرہ کم ہوتی ہے۔",
+      "after": "یونٹ زیادہ زور سے وار کرتے ہیں مگر HP اور زرہ کم ہوتی ہے۔",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch."
+    },
+    {
+      "key": "[Units die when they run out of HP. Turn off to stop them at 1 HP.]",
+      "source": "Units die when they run out of HP. Turn off to stop them at 1 HP.",
+      "before": "HP ختم ہونے پر یونٹ مر جاتے ہیں۔ انہیں 1 HP پر روکنے کے لیے بند کریں۔",
+      "after": "HP ختم ہونے پر یونٹ مر جاتے ہیں۔ انہیں 1 HP پر روکنے کے لیے بند کریں۔",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch."
+    },
+    {
+      "key": "[AI Library]",
+      "source": "AI Library",
+      "before": "AI لائبریری",
+      "after": "AI لائبریری",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "NamedAIcontrollers/JavaScript/AI heading abbreviations retained; all narrativeUrdu reviewedagainstfullEnglishprofile."
+    },
+    {
+      "key": "[Downloading AI…]",
+      "source": "Downloading AI…",
+      "before": "AI ڈاؤن لوڈ ہو رہا ہے…",
+      "after": "AI ڈاؤن لوڈ ہو رہا ہے…",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch."
+    },
+    {
+      "key": "[How AIs work]",
+      "source": "How AIs work",
+      "before": "AI کیسے کام کرتے ہیں",
+      "after": "AI کیسے کام کرتے ہیں",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch."
+    },
+    {
+      "key": "[Invalid AI catalogue response]",
+      "source": "Invalid AI catalogue response",
+      "before": "AI کیٹلاگ کا جواب درست نہیں",
+      "after": "AI کیٹلاگ کا جواب درست نہیں",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch."
+    },
+    {
+      "key": "[JavaScript API reference]",
+      "source": "JavaScript API reference",
+      "before": "JavaScript API کا حوالہ",
+      "after": "JavaScript API کا حوالہ",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch."
+    },
+    {
+      "key": "[Loading AI library…]",
+      "source": "Loading AI library…",
+      "before": "AI لائبریری لوڈ ہو رہی ہے…",
+      "after": "AI لائبریری لوڈ ہو رہی ہے…",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch."
+    },
+    {
+      "key": "[No AIs match these filters.]",
+      "source": "No AIs match these filters.",
+      "before": "کوئی AI ان فلٹرز سے میل نہیں کھاتا۔",
+      "after": "کوئی AI ان فلٹرز سے میل نہیں کھاتا۔",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch."
+    },
+    {
+      "key": "[Open AI Library]",
+      "source": "Open AI Library",
+      "before": "AI لائبریری کھولیں",
+      "after": "AI لائبریری کھولیں",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch."
+    },
+    {
+      "key": "[Open AI page]",
+      "source": "Open AI page",
+      "before": "AI کا صفحہ کھولیں",
+      "after": "AI کا صفحہ کھولیں",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch."
+    },
+    {
+      "key": "[Share your AI]",
+      "source": "Share your AI",
+      "before": "اپنا AI بانٹیں",
+      "after": "اپنا AI بانٹیں",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch."
+    },
+    {
+      "key": "[Sign in through Online settings to like and favourite AIs.]",
+      "source": "Sign in through Online settings to like and favourite AIs.",
+      "before": "AI کو پسند اور پسندیدہ کرنے کے لیے آن لائن ترتیبات سے سائن اِن کریں۔",
+      "after": "AI کو پسند اور پسندیدہ کرنے کے لیے آن لائن ترتیبات سے سائن اِن کریں۔",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch."
+    },
+    {
+      "key": "[Download an AI, then choose it for a computer seat in a local game. Installed versions work offline. Updates affect future games; saves keep their original code.]",
+      "source": "Download an AI, then choose it for a computer seat in a local game. Installed versions work offline. Updates affect future games; saves keep their original code.",
+      "before": "AI ڈاؤن لوڈ کریں، پھر مقامی کھیل میں کمپیوٹر کی نشست کے لیے منتخب کریں۔ نصب شدہ ورژن آف لائن چلتے ہیں۔ اپ ڈیٹ آئندہ کھیلوں کو بدلتی ہے؛ محفوظ کھیل اپنا اصل کوڈ رکھتے ہیں۔",
+      "after": "AI ڈاؤن لوڈ کریں، پھر مقامی کھیل میں کمپیوٹر کی نشست کے لیے منتخب کریں۔ نصب شدہ ورژن آف لائن چلتے ہیں۔ اپ ڈیٹ آئندہ کھیلوں کو بدلتی ہے؛ محفوظ کھیل اپنا اصل کوڈ رکھتے ہیں۔",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch."
+    },
+    {
+      "key": "[music AI-generated]",
+      "source": "AI-generated",
+      "before": "AI کی بنائی ہوئی",
+      "after": "AI کی بنائی ہوئی",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch."
+    },
+    {
+      "key": "[music Choose ZIP]",
+      "source": "Choose ZIP",
+      "before": "ZIP چنیں",
+      "after": "ZIP چنیں",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch."
+    },
+    {
+      "key": "[music Import ZIP]",
+      "source": "Import ZIP",
+      "before": "ZIP درآمد کریں",
+      "after": "ZIP درآمد کریں",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch."
+    },
+    {
+      "key": "[music Import ZIP or three tracks]",
+      "source": "Import ZIP or three tracks",
+      "before": "ZIP یا تین ٹریک درآمد کریں",
+      "after": "ZIP یا تین ٹریک درآمد کریں",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch."
+    },
+    {
+      "key": "[music Includes AI-generated audio]",
+      "source": "Includes AI-generated audio",
+      "before": "AI کی بنائی ہوئی آواز شامل ہے",
+      "after": "AI کی بنائی ہوئی آواز شامل ہے",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch."
+    },
+    {
+      "key": "[music Not AI-generated]",
+      "source": "Not AI-generated",
+      "before": "AI کی بنائی ہوئی نہیں",
+      "after": "AI کی بنائی ہوئی نہیں",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch."
+    },
+    {
+      "key": "[music Import a downloaded music ZIP or the three Opus tracks. Metadata and cover art are read from Calm; no extra files are required.]",
+      "source": "Import a downloaded music ZIP or the three Opus tracks. Metadata and cover art are read from Calm; no extra files are required.",
+      "before": "ڈاؤن لوڈ شدہ موسیقی کا ZIP یا تین Opus ٹریک درآمد کریں۔ معلومات اور سرورق پرسکون ٹریک سے پڑھے جاتے ہیں؛ مزید فائلیں درکار نہیں۔",
+      "after": "ڈاؤن لوڈ شدہ موسیقی کا ZIP یا تین Opus ٹریک درآمد کریں۔ معلومات اور سرورق پرسکون ٹریک سے پڑھے جاتے ہیں؛ مزید فائلیں درکار نہیں۔",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch."
+    },
+    {
+      "key": "[settings Target render FPS]",
+      "source": "Target render FPS",
+      "before": "رینڈرنگ کا مطلوب FPS",
+      "after": "رینڈرنگ کا مطلوب FPS",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch."
+    },
+    {
+      "key": "[experiment markets-v2]",
+      "source": "Markets V2",
+      "before": "بازار V2",
+      "after": "بازار V2",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch."
+    },
+    {
+      "key": "[set library definition]",
+      "source": "Properties definition (JSON)",
+      "before": "خواص کی تعریف (JSON)",
+      "after": "خواص کی تعریف (JSON)",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch."
+    },
+    {
+      "key": "[set library artwork]",
+      "source": "Terrain artwork mapping (JSON)",
+      "before": "زمین کے فن پاروں کی نقشہ بندی (JSON)",
+      "after": "زمین کے فن پاروں کی نقشہ بندی (JSON)",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch."
+    },
+    {
+      "key": "[Discord community]",
+      "source": "Discord community",
+      "before": "Discord برادری",
+      "after": "Discord برادری",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch."
+    },
+    {
+      "key": "[Globulation 2 Discord]",
+      "source": "Globulation 2 Discord",
+      "before": "Globulation 2 Discord",
+      "after": "Globulation 2 Discord",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch."
+    },
+    {
+      "key": "[discord community intro]",
+      "source": "Find opponents, ask for help, and share your maps with the Globulation 2 community.",
+      "before": "Globulation 2 کی برادری کے ساتھ حریف تلاش کریں، مدد مانگیں اور اپنے نقشے بانٹیں۔",
+      "after": "Globulation 2 کی برادری کے ساتھ حریف تلاش کریں، مدد مانگیں اور اپنے نقشے بانٹیں۔",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch."
+    },
+    {
+      "key": "[discord opens externally]",
+      "source": "Join our Discord server. This opens Discord or your browser.",
+      "before": "ہمارے Discord سرور میں شامل ہوں۔ اس سے Discord یا آپ کا براؤزر کھلتا ہے۔",
+      "after": "ہمارے Discord سرور میں شامل ہوں۔ اس سے Discord یا آپ کا براؤزر کھلتا ہے۔",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch."
+    },
+    {
+      "key": "[Join Discord]",
+      "source": "Join Discord",
+      "before": "Discord میں شامل ہوں",
+      "after": "Discord میں شامل ہوں",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch."
+    },
+    {
+      "key": "[discord opened]",
+      "source": "Discord opened. You can return to the game at any time.",
+      "before": "Discord کھل گیا۔ آپ کسی بھی وقت کھیل میں واپس آ سکتے ہیں۔",
+      "after": "Discord کھل گیا۔ آپ کسی بھی وقت کھیل میں واپس آ سکتے ہیں۔",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch."
+    },
+    {
+      "key": "[discord open failed]",
+      "source": "Could not open Discord. Copy the invitation link and open it in your browser.",
+      "before": "Discord نہیں کھل سکا۔ دعوت کا لنک نقل کر کے اپنے براؤزر میں کھولیں۔",
+      "after": "Discord نہیں کھل سکا۔ دعوت کا لنک نقل کر کے اپنے براؤزر میں کھولیں۔",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch."
+    },
+    {
+      "key": "[settings CPU automatic]",
+      "source": "CPU automatic",
+      "before": "خودکار CPU",
+      "after": "خودکار CPU",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch."
+    },
+    {
+      "key": "[settings Applies at the next simulation boundary. Unsupported work uses CPU automatic; rendering is independent.]",
+      "source": "Applies at the next simulation boundary. Unsupported work uses CPU automatic; rendering is independent.",
+      "before": "اگلی سمیولیشن حد پر لاگو ہو گا۔ غیر معاون کام کے لیے خودکار CPU استعمال ہوتا ہے؛ رینڈرنگ الگ ہے۔",
+      "after": "اگلی سمیولیشن حد پر لاگو ہو گا۔ غیر معاون کام کے لیے خودکار CPU استعمال ہوتا ہے؛ رینڈرنگ الگ ہے۔",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch."
+    },
+    {
+      "key": "[settings Compare GPU results with scalar CPU before publication. Adds computation and stops the game on a mismatch.]",
+      "source": "Compare GPU results with scalar CPU before publication. Adds computation and stops the game on a mismatch.",
+      "before": "لاگو کرنے سے پہلے GPU کے نتائج اسکیلر CPU سے ملائیں۔ حساب بڑھتا ہے اور فرق آنے پر کھیل رک جاتا ہے۔",
+      "after": "لاگو کرنے سے پہلے GPU کے نتائج اسکیلر CPU سے ملائیں۔ حساب بڑھتا ہے اور فرق آنے پر کھیل رک جاتا ہے۔",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch."
+    },
+    {
+      "key": "[settings CPU fallback]",
+      "source": "CPU fallback",
+      "before": "CPU پر متبادل عمل",
+      "after": "CPU پر متبادل عمل",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch."
+    },
+    {
+      "key": "[settings GPU fields]",
+      "source": "GPU fields",
+      "before": "GPU کے میدان",
+      "after": "GPU کے فاصلاتی نقشے",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch."
+    },
+    {
+      "key": "[settings CPU fallbacks]",
+      "source": "CPU fallbacks",
+      "before": "CPU پر متبادل اعمال",
+      "after": "CPU پر متبادل اعمال",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch."
+    },
+    {
+      "key": "[settings MCP server]",
+      "source": "MCP server",
+      "before": "MCP سرور",
+      "after": "MCP سرور",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch."
+    },
+    {
+      "key": "[settings Enabling the MCP server permits local clients to see and operate the game.]",
+      "source": "Enabling the MCP server permits local clients to see and operate the game.",
+      "before": "MCP سرور چالو کرنے سے مقامی کلائنٹ کھیل دیکھ اور چلا سکتے ہیں۔",
+      "after": "MCP سرور چالو کرنے سے مقامی کلائنٹ کھیل دیکھ اور چلا سکتے ہیں۔",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch."
+    },
+    {
+      "key": "[settings Enable MCP server]",
+      "source": "Enable MCP server",
+      "before": "MCP سرور چالو کریں",
+      "after": "MCP سرور چالو کریں",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch."
+    },
+    {
+      "key": "[settings MCP server unavailable in this application]",
+      "source": "MCP server unavailable in this application",
+      "before": "اس ایپ میں MCP سرور دستیاب نہیں",
+      "after": "اس ایپ میں MCP سرور دستیاب نہیں",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch."
+    },
+    {
+      "key": "[stat ground movement about]",
+      "source": "Living ground units by approximate speed ratio. 'Swim 2x' means swimming twice as fast as running. Flying and immobile units are excluded.",
+      "before": "زندہ زمینی یونٹ، رفتار کے اندازاً تناسب کے مطابق۔ 'تیراکی 2x' کا مطلب دوڑنے سے دوگنی تیز تیراکی ہے۔ اڑنے والے اور غیر متحرک یونٹ شامل نہیں۔",
+      "after": "زندہ زمینی یونٹ، رفتار کے اندازاً تناسب کے مطابق۔ 'تیراکی 2x' کا مطلب دوڑنے سے دوگنی تیز تیراکی ہے۔ اڑنے والے اور غیر متحرک یونٹ شامل نہیں۔",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Numeric scale/2D notation preserves source; no Englishprose."
+    },
+    {
+      "key": "[stat band swim twice run]",
+      "source": "Swim 2x",
+      "before": "تیراکی 2x",
+      "after": "تیراکی 2x",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Numeric scale/2D notation preserves source; no Englishprose."
+    },
+    {
+      "key": "[stat band swim faster run]",
+      "source": "Swim 1.4x",
+      "before": "تیراکی 1.4x",
+      "after": "تیراکی 1.4x",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Numeric scale/2D notation preserves source; no Englishprose."
+    },
+    {
+      "key": "[stat band run faster swim]",
+      "source": "Run 1.3x",
+      "before": "دوڑ 1.3x",
+      "after": "دوڑ 1.3x",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Numeric scale/2D notation preserves source; no Englishprose."
+    },
+    {
+      "key": "[stat band run twice swim]",
+      "source": "Run 2x",
+      "before": "دوڑ 2x",
+      "after": "دوڑ 2x",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Numeric scale/2D notation preserves source; no Englishprose."
+    },
+    {
+      "key": "[stat band run triple swim]",
+      "source": "Run 3x",
+      "before": "دوڑ 3x",
+      "after": "دوڑ 3x",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Numeric scale/2D notation preserves source; no Englishprose."
+    },
+    {
+      "key": "[settings Touch and Mac gesture scrolling. 0 turns an effect off; 50 is the touch default.]",
+      "source": "Touch and Mac gesture scrolling. 0 turns an effect off; 50 is the touch default.",
+      "before": "ٹچ اور Mac اشاروں کی اسکرولنگ۔ 0 سے اثر بند؛ ٹچ کی طے شدہ قدر 50 ہے۔",
+      "after": "ٹچ اور Mac اشاروں کی اسکرولنگ۔ 0 سے اثر بند؛ ٹچ کی طے شدہ قدر 50 ہے۔",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch."
+    },
+    {
+      "key": "[settings How far lists and panels keep scrolling after a touch flick. Mac gestures use system momentum; zero disables their glide.]",
+      "source": "How far lists and panels keep scrolling after a touch flick. Mac gestures use system momentum; zero disables their glide.",
+      "before": "ٹچ کے ہلکے جھٹکے کے بعد فہرستیں اور پینل کتنی دور چلتے رہیں۔ Mac اشارے نظام کی روانی استعمال کرتے ہیں؛ صفر سے یہ روانی بند ہوتی ہے۔",
+      "after": "ٹچ کے ہلکے جھٹکے کے بعد فہرستیں اور پینل کتنی دور چلتے رہیں۔ Mac اشارے نظام کی روانی استعمال کرتے ہیں؛ صفر سے یہ روانی بند ہوتی ہے۔",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch."
+    },
+    {
+      "key": "[settings How much lists and panels stretch past their ends and spring back. Mac gestures use a gentler stretch.]",
+      "source": "How much lists and panels stretch past their ends and spring back. Mac gestures use a gentler stretch.",
+      "before": "فہرستیں اور پینل کناروں سے کتنا آگے کھنچ کر واپس آئیں۔ Mac اشاروں میں کھنچاؤ نرم ہے۔",
+      "after": "فہرستیں اور پینل کناروں سے کتنا آگے کھنچ کر واپس آئیں۔ Mac اشاروں میں کھنچاؤ نرم ہے۔",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch."
+    },
+    {
+      "key": "[tutorial part1 message 1]",
+      "source": "Welcome to Globulation 2! This tutorial teaches colony management over four missions. You can save your progress from the game menu and load it later from the main menu. Press Space to continue, or tap OK on a touch screen. Some messages disappear after you continue; use Message history to read them again.",
+      "before": "Globulation 2 میں خوش آمدید! یہ تربیت چار مہمات میں بستی چلانا سکھاتی ہے۔ کھیل کے مینو سے پیش رفت محفوظ اور بعد میں مرکزی مینو سے لوڈ کر سکتے ہیں۔ جاری رکھنے کے لیے Space دبائیں، یا ٹچ اسکرین پر OK کو چھوئیں۔ آگے بڑھنے کے بعد کچھ پیغامات غائب ہو جاتے ہیں؛ انہیں دوبارہ پڑھنے کے لیے پیغامات کی سرگزشت کھولیں۔",
+      "after": "Globulation 2 میں خوش آمدید! یہ تربیت چار مشنوں میں بستی چلانا سکھاتی ہے۔ کھیل کے مینو سے پیش رفت محفوظ اور بعد میں مرکزی مینو سے لوڈ کر سکتے ہیں۔ جاری رکھنے کے لیے Space دبائیں، یا ٹچ اسکرین پر «ٹھیک ہے» کو چھوئیں۔ آگے بڑھنے کے بعد کچھ پیغامات غائب ہو جاتے ہیں؛ انہیں دوبارہ پڑھنے کے لیے «پیغامات کا سابقہ ریکارڈ» کھولیں۔",
+      "editor_disposition": "localized-caption-fixed-pending-recheck",
+      "reason": "OK islocalized touchbutton, notphysicalkeyboard; replacewithactualٹھیک ہے per exacttutorialfinding. OtherLatinpropernames/Spaceinentry remainvalid."
+    },
+    {
+      "key": "[tutorial part4 message 7]",
+      "source": "The outline around the flag shows its working radius. An assigned explorer will scout that area. Check your explorer count if none arrives, and produce another at the Swarm if needed. Press Space or tap OK once the explorer reaches the area.",
+      "before": "جھنڈے کے گرد دائرہ کام کا رداس دکھاتا ہے۔ مقرر کھوجی اس علاقے کی کھوج کرے گا۔ کوئی نہ آئے تو کھوجیوں کی تعداد دیکھیں اور ضرورت پر چھتے سے نیا بنائیں۔ کھوجی علاقے میں پہنچے تو Space دبائیں یا OK چھوئیں۔",
+      "after": "جھنڈے کے گرد دائرہ کام کا رداس دکھاتا ہے۔ مقرر کھوجی اس علاقے کی کھوج کرے گا۔ کوئی نہ آئے تو کھوجیوں کی تعداد دیکھیں اور ضرورت پر چھتے سے نیا بنائیں۔ کھوجی علاقے میں پہنچے تو Space دبائیں یا «ٹھیک ہے» چھوئیں۔",
+      "editor_disposition": "localized-caption-fixed-pending-recheck",
+      "reason": "OK islocalized touchbutton, notphysicalkeyboard; replacewithactualٹھیک ہے per exacttutorialfinding. OtherLatinpropernames/Spaceinentry remainvalid."
+    },
+    {
+      "key": "[library Create in Building Studio]",
+      "source": "Create in Building Studio",
+      "before": "Building Studio میں بنائیں",
+      "after": "عمارت اسٹوڈیو میں بنائیں",
+      "editor_disposition": "localized-caption-fixed-pending-recheck",
+      "reason": "AlignnamedfeaturewithfinalonlineUrduglossary عمارت اسٹوڈیو; currentpartialEnglishlabelnotblanketapproved."
+    },
+    {
+      "key": "[library Enter a building family ID or a link to its family page.]",
+      "source": "Enter a building family ID or a link to its family page.",
+      "before": "عمارت کے خاندان کی ID یا اس کے صفحے کا لنک درج کریں۔",
+      "after": "عمارت کے خاندان کی ID یا اس کے صفحے کا لنک درج کریں۔",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch."
+    },
+    {
+      "key": "[library Family link or ID]",
+      "source": "Family link or ID",
+      "before": "خاندان کا لنک یا ID",
+      "after": "خاندان کا لنک یا ID",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch."
+    },
+    {
+      "key": "[library Invalid building family ID.]",
+      "source": "Invalid building family ID.",
+      "before": "عمارت کے خاندان کی ID درست نہیں۔",
+      "after": "عمارت کے خاندان کی ID درست نہیں۔",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch."
+    },
+    {
+      "key": "[library Open an unlisted family by its link or ID. For private families, sign in through Online first.]",
+      "source": "Open an unlisted family by its link or ID. For private families, sign in through Online first.",
+      "before": "غیر فہرست شدہ خاندان اس کے لنک یا ID سے کھولیں۔ نجی خاندانوں کے لیے پہلے آن لائن کے ذریعے سائن ان کریں۔",
+      "after": "غیر فہرست شدہ خاندان اس کے لنک یا ID سے کھولیں۔ نجی خاندانوں کے لیے پہلے آن لائن کے ذریعے سائن ان کریں۔",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch."
+    },
+    {
+      "key": "[library This package ID is installed. Confirm replacement to use the selected release.]",
+      "source": "This package ID is installed. Confirm replacement to use the selected release.",
+      "before": "اس پیکیج کی ID نصب ہے۔ منتخب ریلیز استعمال کرنے کے لیے بدلنے کی تصدیق کریں۔",
+      "after": "اس پیکیج کی ID نصب ہے۔ منتخب ریلیز استعمال کرنے کے لیے بدلنے کی تصدیق کریں۔",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch."
+    },
+    {
+      "key": "[library GL only]",
+      "source": "GL only",
+      "before": "صرف GL",
+      "after": "صرف GL",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Retainedsource technicalnames/abbreviations, keyboardnotation, format/API/URLliteral ornumericmultiplier; surroundingprose independentlyreadinbatch."
+    }
+  ]
+}

@@ -1,0 +1,820 @@
+{
+  "id": "native-general-013",
+  "source_sha256": "0ac44b4cdfb03e688983d6e3fb1e484cca57589665bff19c5c65388e649b292a",
+  "surface": "native",
+  "domain": "general",
+  "context": "Read neighbouring source entries and inspect usage before translating ambiguous short labels.",
+  "entries": [
+    {
+      "id": "native:[stat band trapped]",
+      "key": "[stat band trapped]",
+      "source": "Trapped"
+    },
+    {
+      "id": "native:[stat band other]",
+      "key": "[stat band other]",
+      "source": "Other"
+    },
+    {
+      "id": "native:[stat band starving]",
+      "key": "[stat band starving]",
+      "source": "Nearly empty"
+    },
+    {
+      "id": "native:[stat band hungry]",
+      "key": "[stat band hungry]",
+      "source": "Low"
+    },
+    {
+      "id": "native:[stat band peckish]",
+      "key": "[stat band peckish]",
+      "source": "Half full"
+    },
+    {
+      "id": "native:[stat band fed]",
+      "key": "[stat band fed]",
+      "source": "Well fed"
+    },
+    {
+      "id": "native:[stat band critical]",
+      "key": "[stat band critical]",
+      "source": "Critical"
+    },
+    {
+      "id": "native:[stat band wounded]",
+      "key": "[stat band wounded]",
+      "source": "Wounded"
+    },
+    {
+      "id": "native:[stat band hurt]",
+      "key": "[stat band hurt]",
+      "source": "Hurt"
+    },
+    {
+      "id": "native:[stat band healthy]",
+      "key": "[stat band healthy]",
+      "source": "Healthy"
+    },
+    {
+      "id": "native:[stat band weakening]",
+      "key": "[stat band weakening]",
+      "source": "Weakening"
+    },
+    {
+      "id": "native:[stat band looking]",
+      "key": "[stat band looking]",
+      "source": "Looking for an inn"
+    },
+    {
+      "id": "native:[stat band eating]",
+      "key": "[stat band eating]",
+      "source": "Eating"
+    },
+    {
+      "id": "native:[stat band healing]",
+      "key": "[stat band healing]",
+      "source": "Healing"
+    },
+    {
+      "id": "native:[stat band meals]",
+      "key": "[stat band meals]",
+      "source": "Meals"
+    },
+    {
+      "id": "native:[stat band new units]",
+      "key": "[stat band new units]",
+      "source": "New units"
+    },
+    {
+      "id": "native:[stat band ammunition]",
+      "key": "[stat band ammunition]",
+      "source": "Ammunition"
+    },
+    {
+      "id": "native:[stat band construction]",
+      "key": "[stat band construction]",
+      "source": "New buildings"
+    },
+    {
+      "id": "native:[stat band upgrades]",
+      "key": "[stat band upgrades]",
+      "source": "Upgrades"
+    },
+    {
+      "id": "native:[stat band built]",
+      "key": "[stat band built]",
+      "source": "Built"
+    },
+    {
+      "id": "native:[stat band upgraded]",
+      "key": "[stat band upgraded]",
+      "source": "Upgraded"
+    },
+    {
+      "id": "native:[stat band repaired]",
+      "key": "[stat band repaired]",
+      "source": "Repaired"
+    },
+    {
+      "id": "native:[stat band destroyed]",
+      "key": "[stat band destroyed]",
+      "source": "Destroyed"
+    },
+    {
+      "id": "native:[stat band demolished]",
+      "key": "[stat band demolished]",
+      "source": "Demolished"
+    },
+    {
+      "id": "native:[stat band melee]",
+      "key": "[stat band melee]",
+      "source": "Warriors"
+    },
+    {
+      "id": "native:[stat band magic]",
+      "key": "[stat band magic]",
+      "source": "Magic"
+    },
+    {
+      "id": "native:[stat band towers]",
+      "key": "[stat band towers]",
+      "source": "Towers"
+    },
+    {
+      "id": "native:[stat band within 8]",
+      "key": "[stat band within 8]",
+      "source": "Within 8 squares"
+    },
+    {
+      "id": "native:[stat band 8 to 16]",
+      "key": "[stat band 8 to 16]",
+      "source": "8 to 16 squares"
+    },
+    {
+      "id": "native:[stat band 16 to 32]",
+      "key": "[stat band 16 to 32]",
+      "source": "16 to 32 squares"
+    },
+    {
+      "id": "native:[stat unit units]",
+      "key": "[stat unit units]",
+      "source": "units"
+    },
+    {
+      "id": "native:[stat unit wheat]",
+      "key": "[stat unit wheat]",
+      "source": "food"
+    },
+    {
+      "id": "native:[stat unit meals]",
+      "key": "[stat unit meals]",
+      "source": "meals"
+    },
+    {
+      "id": "native:[stat unit hit points]",
+      "key": "[stat unit hit points]",
+      "source": "hit points"
+    },
+    {
+      "id": "native:[stat unit resources]",
+      "key": "[stat unit resources]",
+      "source": "units"
+    },
+    {
+      "id": "native:[stat unit strength]",
+      "key": "[stat unit strength]",
+      "source": "score"
+    },
+    {
+      "id": "native:[stat unit damage]",
+      "key": "[stat unit damage]",
+      "source": "damage"
+    },
+    {
+      "id": "native:[stat unit shots]",
+      "key": "[stat unit shots]",
+      "source": "shots"
+    },
+    {
+      "id": "native:[stat unit visits]",
+      "key": "[stat unit visits]",
+      "source": "visits"
+    },
+    {
+      "id": "native:[stat unit skills]",
+      "key": "[stat unit skills]",
+      "source": "skill levels"
+    },
+    {
+      "id": "native:[stat unit prestige]",
+      "key": "[stat unit prestige]",
+      "source": "prestige"
+    },
+    {
+      "id": "native:[stat axis percent of %0]",
+      "key": "[stat axis percent of %0]",
+      "source": "% of %0"
+    },
+    {
+      "id": "native:[stat axis share of all teams]",
+      "key": "[stat axis share of all teams]",
+      "source": "% of all colonies"
+    },
+    {
+      "id": "native:[stat axis percent of units]",
+      "key": "[stat axis percent of units]",
+      "source": "% of the colony's units"
+    },
+    {
+      "id": "native:[stat axis %0 per minute per 100 units]",
+      "key": "[stat axis %0 per minute per 100 units]",
+      "source": "%0 per minute, per 100 units in the colony"
+    },
+    {
+      "id": "native:[stat axis %0 per 100 units]",
+      "key": "[stat axis %0 per 100 units]",
+      "source": "%0 per 100 units in the colony"
+    },
+    {
+      "id": "native:[stat axis %0 per minute]",
+      "key": "[stat axis %0 per minute]",
+      "source": "%0 per minute"
+    },
+    {
+      "id": "native:[stat axis %0 so far]",
+      "key": "[stat axis %0 so far]",
+      "source": "%0, running total"
+    },
+    {
+      "id": "native:[stat axis %0 minute average]",
+      "key": "[stat axis %0 minute average]",
+      "source": "%0-minute average"
+    },
+    {
+      "id": "native:[stat view per minute]",
+      "key": "[stat view per minute]",
+      "source": "Per minute"
+    },
+    {
+      "id": "native:[stat view total]",
+      "key": "[stat view total]",
+      "source": "Total"
+    },
+    {
+      "id": "native:[stat view %0 min]",
+      "key": "[stat view %0 min]",
+      "source": "%0 min"
+    },
+    {
+      "id": "native:[stat view split]",
+      "key": "[stat view split]",
+      "source": "Split by kind"
+    },
+    {
+      "id": "native:[stat view percentages]",
+      "key": "[stat view percentages]",
+      "source": "As % of total"
+    },
+    {
+      "id": "native:[stat view percent of units]",
+      "key": "[stat view percent of units]",
+      "source": "As % of colony"
+    },
+    {
+      "id": "native:[stat view per 100 units]",
+      "key": "[stat view per 100 units]",
+      "source": "Relative to colony size"
+    },
+    {
+      "id": "native:[stat view share]",
+      "key": "[stat view share]",
+      "source": "Share of all colonies"
+    },
+    {
+      "id": "native:[stat view highlight none]",
+      "key": "[stat view highlight none]",
+      "source": "Highlight: none"
+    },
+    {
+      "id": "native:[stat column peak units]",
+      "key": "[stat column peak units]",
+      "source": "Peak units"
+    },
+    {
+      "id": "native:[stat column born]",
+      "key": "[stat column born]",
+      "source": "Born"
+    },
+    {
+      "id": "native:[stat column lost]",
+      "key": "[stat column lost]",
+      "source": "Lost"
+    },
+    {
+      "id": "native:[stat column wheat]",
+      "key": "[stat column wheat]",
+      "source": "Food"
+    },
+    {
+      "id": "native:[stat column damage dealt]",
+      "key": "[stat column damage dealt]",
+      "source": "Damage dealt"
+    },
+    {
+      "id": "native:[stat column damage taken]",
+      "key": "[stat column damage taken]",
+      "source": "Damage taken"
+    },
+    {
+      "id": "native:[stat column built]",
+      "key": "[stat column built]",
+      "source": "Built"
+    },
+    {
+      "id": "native:[stat column prestige]",
+      "key": "[stat column prestige]",
+      "source": "Prestige"
+    },
+    {
+      "id": "native:[stat marker wiped out]",
+      "key": "[stat marker wiped out]",
+      "source": "last unit lost"
+    },
+    {
+      "id": "native:[stat marker first combat death]",
+      "key": "[stat marker first combat death]",
+      "source": "first unit killed in combat"
+    },
+    {
+      "id": "native:[stat not recorded for this match]",
+      "key": "[stat not recorded for this match]",
+      "source": "This statistic was not recorded for this match."
+    },
+    {
+      "id": "native:[results reason beyond doubt]",
+      "key": "[results reason beyond doubt]",
+      "source": "The result was no longer in doubt."
+    },
+    {
+      "id": "native:[stat per minute short]",
+      "key": "[stat per minute short]",
+      "source": "/min"
+    },
+    {
+      "id": "native:[stat page colony]",
+      "key": "[stat page colony]",
+      "source": "Colony"
+    },
+    {
+      "id": "native:[stat page %0 of %1]",
+      "key": "[stat page %0 of %1]",
+      "source": "%0/%1  >"
+    },
+    {
+      "id": "native:[stat unit deaths]",
+      "key": "[stat unit deaths]",
+      "source": "deaths"
+    },
+    {
+      "id": "native:[stat unit growth]",
+      "key": "[stat unit growth]",
+      "source": "growth"
+    },
+    {
+      "id": "native:[stat view by unit type]",
+      "key": "[stat view by unit type]",
+      "source": "By unit type"
+    },
+    {
+      "id": "native:[stat view by state]",
+      "key": "[stat view by state]",
+      "source": "By state"
+    },
+    {
+      "id": "native:[stat view by resource]",
+      "key": "[stat view by resource]",
+      "source": "By material"
+    },
+    {
+      "id": "native:[stat view by work]",
+      "key": "[stat view by work]",
+      "source": "By kind of work"
+    },
+    {
+      "id": "native:[stat view by cause]",
+      "key": "[stat view by cause]",
+      "source": "By cause"
+    },
+    {
+      "id": "native:[stat view by weapon]",
+      "key": "[stat view by weapon]",
+      "source": "By weapon"
+    },
+    {
+      "id": "native:[stat view by distance]",
+      "key": "[stat view by distance]",
+      "source": "By distance"
+    },
+    {
+      "id": "native:[stat nothing to show]",
+      "key": "[stat nothing to show]",
+      "source": "Nothing to show: this did not happen in this match."
+    },
+    {
+      "id": "native:[stat %0 nothing]",
+      "key": "[stat %0 nothing]",
+      "source": "%0 (none)"
+    },
+    {
+      "id": "native:[Match]",
+      "key": "[Match]",
+      "source": "Match"
+    },
+    {
+      "id": "native:[Time limit]",
+      "key": "[Time limit]",
+      "source": "Time limit"
+    },
+    {
+      "id": "native:[Alliances can change]",
+      "key": "[Alliances can change]",
+      "source": "Alliances can change"
+    },
+    {
+      "id": "native:[Starting unit level]",
+      "key": "[Starting unit level]",
+      "source": "Starting unit level"
+    },
+    {
+      "id": "native:[Starting stockpile]",
+      "key": "[Starting stockpile]",
+      "source": "Starting stockpile"
+    },
+    {
+      "id": "native:[Regrowth]",
+      "key": "[Regrowth]",
+      "source": "Regrowth"
+    },
+    {
+      "id": "native:[Wounded units retreat]",
+      "key": "[Wounded units retreat]",
+      "source": "Wounded units retreat"
+    },
+    {
+      "id": "native:[Units can die]",
+      "key": "[Units can die]",
+      "source": "Units can die"
+    },
+    {
+      "id": "native:[Upgrades]",
+      "key": "[Upgrades]",
+      "source": "Upgrades"
+    },
+    {
+      "id": "native:[No stockpile]",
+      "key": "[No stockpile]",
+      "source": "None"
+    },
+    {
+      "id": "native:[No glass cannon]",
+      "key": "[No glass cannon]",
+      "source": "Off"
+    },
+    {
+      "id": "native:[How quickly harvested resources grow back and spread.]",
+      "key": "[How quickly harvested resources grow back and spread.]",
+      "source": "How quickly harvested resources grow back and spread."
+    },
+    {
+      "id": "native:[Units must eat to keep working.]",
+      "key": "[Units must eat to keep working.]",
+      "source": "Units must eat to keep working."
+    },
+    {
+      "id": "native:[Summary]",
+      "key": "[Summary]",
+      "source": "Summary"
+    },
+    {
+      "id": "native:[All rules]",
+      "key": "[All rules]",
+      "source": "All rules"
+    },
+    {
+      "id": "native:[Show all rules]",
+      "key": "[Show all rules]",
+      "source": "Show all rules"
+    },
+    {
+      "id": "native:[Choose a ruleset]",
+      "key": "[Choose a ruleset]",
+      "source": "Choose a ruleset"
+    },
+    {
+      "id": "native:[Reset to %0]",
+      "key": "[Reset to %0]",
+      "source": "Reset to %0"
+    },
+    {
+      "id": "native:[ruleset one change %0]",
+      "key": "[ruleset one change %0]",
+      "source": "%0 + 1 change"
+    },
+    {
+      "id": "native:[ruleset changes %0 %1]",
+      "key": "[ruleset changes %0 %1]",
+      "source": "%0 + %1 changes"
+    },
+    {
+      "id": "native:[This match cannot end. Turn on prestige victory or set a time limit.]",
+      "key": "[This match cannot end. Turn on prestige victory or set a time limit.]",
+      "source": "This match cannot end. Turn on prestige victory or set a time limit."
+    },
+    {
+      "id": "native:[Prestige usually appears after 13 to 28 minutes, so a 30-minute limit often ends in a tie.]",
+      "key": "[Prestige usually appears after 13 to 28 minutes, so a 30-minute limit often ends in a tie.]",
+      "source": "Prestige usually appears after 13 to 28 minutes, so a 30-minute limit often ends in a tie."
+    },
+    {
+      "id": "native:[Blitz]",
+      "key": "[Blitz]",
+      "source": "Blitz"
+    },
+    {
+      "id": "native:[ruleset blitz description]",
+      "key": "[ruleset blitz description]",
+      "source": "Fast start, early finish"
+    },
+    {
+      "id": "native:[Gentle]",
+      "key": "[Gentle]",
+      "source": "Gentle"
+    },
+    {
+      "id": "native:[ruleset gentle description]",
+      "key": "[ruleset gentle description]",
+      "source": "Forgiving rules for a first match"
+    },
+    {
+      "id": "native:[Sandbox]",
+      "key": "[Sandbox]",
+      "source": "Sandbox"
+    },
+    {
+      "id": "native:[ruleset sandbox description]",
+      "key": "[ruleset sandbox description]",
+      "source": "No fighting, no starving, build anything"
+    },
+    {
+      "id": "native:[Bloodbath]",
+      "key": "[Bloodbath]",
+      "source": "Bloodbath"
+    },
+    {
+      "id": "native:[ruleset bloodbath description]",
+      "key": "[ruleset bloodbath description]",
+      "source": "Fragile, fearless armies"
+    },
+    {
+      "id": "native:[Siege]",
+      "key": "[Siege]",
+      "source": "Siege"
+    },
+    {
+      "id": "native:[ruleset siege description]",
+      "key": "[ruleset siege description]",
+      "source": "Fortress walls and long wars"
+    },
+    {
+      "id": "native:[Lean years]",
+      "key": "[Lean years]",
+      "source": "Lean years"
+    },
+    {
+      "id": "native:[ruleset lean years description]",
+      "key": "[ruleset lean years description]",
+      "source": "Resources barely come back"
+    },
+    {
+      "id": "native:[Gold rush]",
+      "key": "[Gold rush]",
+      "source": "Gold rush"
+    },
+    {
+      "id": "native:[ruleset gold rush description]",
+      "key": "[ruleset gold rush description]",
+      "source": "What's on the map is all there is"
+    },
+    {
+      "id": "native:[Elite ranks]",
+      "key": "[Elite ranks]",
+      "source": "Elite ranks"
+    },
+    {
+      "id": "native:[ruleset elite ranks description]",
+      "key": "[ruleset elite ranks description]",
+      "source": "Start trained, train no further"
+    },
+    {
+      "id": "native:[Shifting alliances]",
+      "key": "[Shifting alliances]",
+      "source": "Shifting alliances"
+    },
+    {
+      "id": "native:[ruleset shifting alliances description]",
+      "key": "[ruleset shifting alliances description]",
+      "source": "Teams can change in a 60-minute race"
+    },
+    {
+      "id": "native:[Changed from %0: %1]",
+      "key": "[Changed from %0: %1]",
+      "source": "Changed from %0: %1"
+    },
+    {
+      "id": "native:[Combat is off, so the rules below have no effect.]",
+      "key": "[Combat is off, so the rules below have no effect.]",
+      "source": "Combat is off, so the rules below have no effect."
+    },
+    {
+      "id": "native:[%0 more rules are at their Standard values.]",
+      "key": "[%0 more rules are at their Standard values.]",
+      "source": "%0 more rules are at their Standard values."
+    },
+    {
+      "id": "native:[Each team starts with extra resources in its shared pool.]",
+      "key": "[Each team starts with extra resources in its shared pool.]",
+      "source": "Each team starts with extra materials in its shared pool."
+    },
+    {
+      "id": "native:[Units hit harder but have less HP and armor.]",
+      "key": "[Units hit harder but have less HP and armor.]",
+      "source": "Units hit harder but have less HP and armor."
+    },
+    {
+      "id": "native:[Teams can attack each other. Turn off for a peaceful match.]",
+      "key": "[Teams can attack each other. Turn off for a peaceful match.]",
+      "source": "Teams can attack each other. Turn off for a peaceful match."
+    },
+    {
+      "id": "native:[Hurt units go back to heal instead of fighting to the death.]",
+      "key": "[Hurt units go back to heal instead of fighting to the death.]",
+      "source": "Hurt units go back to heal instead of fighting to the death."
+    },
+    {
+      "id": "native:[Units die when they run out of HP. Turn off to stop them at 1 HP.]",
+      "key": "[Units die when they run out of HP. Turn off to stop them at 1 HP.]",
+      "source": "Units die when they run out of HP. Turn off to stop them at 1 HP."
+    },
+    {
+      "id": "native:[stat group work]",
+      "key": "[stat group work]",
+      "source": "Workers' time"
+    },
+    {
+      "id": "native:[stat work by job]",
+      "key": "[stat work by job]",
+      "source": "What workers were working on"
+    },
+    {
+      "id": "native:[stat work by job about]",
+      "key": "[stat work by job about]",
+      "source": "How many workers were supplying each kind of building: swarms (to make new units), inns (to make meals), buildings being built or upgraded, or other buildings such as towers, schools and barracks."
+    },
+    {
+      "id": "native:[stat haul distance]",
+      "key": "[stat haul distance]",
+      "source": "Distance to resources"
+    },
+    {
+      "id": "native:[stat haul distance about]",
+      "key": "[stat haul distance about]",
+      "source": "How far, on average, a harvesting worker was from the building it was supplying, in map squares in a straight line."
+    },
+    {
+      "id": "native:[stat hauling]",
+      "key": "[stat hauling]",
+      "source": "Fetching and carrying"
+    },
+    {
+      "id": "native:[stat hauling about]",
+      "key": "[stat hauling about]",
+      "source": "How the workers supplying buildings divided between walking to a resource, harvesting it, carrying materials back, and delivering it or waiting for a resource they can reach. Most of it is walking, so the closer the resources, the more gets done."
+    },
+    {
+      "id": "native:[stat eating time]",
+      "key": "[stat eating time]",
+      "source": "Workers going to eat"
+    },
+    {
+      "id": "native:[stat eating time about]",
+      "key": "[stat eating time about]",
+      "source": "How many workers were away from work to eat: walking to an inn, eating inside one, or hungry with no inn that could take them. Workers left with no inn means the colony has outgrown its inns or their food."
+    },
+    {
+      "id": "native:[stat intruders]",
+      "key": "[stat intruders]",
+      "source": "Enemy warriors at home"
+    },
+    {
+      "id": "native:[stat intruders about]",
+      "key": "[stat intruders about]",
+      "source": "How many enemy warriors were within 16 squares of the colony's buildings. Where two colonies are close together, each counts the other's defenders."
+    },
+    {
+      "id": "native:[stat home defence]",
+      "key": "[stat home defence]",
+      "source": "Home defence strength margin"
+    },
+    {
+      "id": "native:[stat home defence about]",
+      "key": "[stat home defence about]",
+      "source": "The strength of the colony's own warriors near its buildings minus that of the enemy warriors there, counting each warrior and each of its attack levels. Below zero the colony was outmatched at home."
+    },
+    {
+      "id": "native:[stat combat death places]",
+      "key": "[stat combat death places]",
+      "source": "Where units fell in combat"
+    },
+    {
+      "id": "native:[stat combat death places about]",
+      "key": "[stat combat death places about]",
+      "source": "Where the colony's units were when they were killed: near its own buildings, near an enemy's buildings, or in open ground between colonies. Losses at home mean the colony was being attacked; losses at an enemy colony mean it was attacking. Ground close to both colonies counts as home."
+    },
+    {
+      "id": "native:[stat band working]",
+      "key": "[stat band working]",
+      "source": "Working"
+    },
+    {
+      "id": "native:[stat band idle]",
+      "key": "[stat band idle]",
+      "source": "Idle"
+    },
+    {
+      "id": "native:[stat band training]",
+      "key": "[stat band training]",
+      "source": "Training"
+    },
+    {
+      "id": "native:[stat band unserved]",
+      "key": "[stat band unserved]",
+      "source": "No inn or hospital free"
+    },
+    {
+      "id": "native:[stat band inns]",
+      "key": "[stat band inns]",
+      "source": "Inns"
+    },
+    {
+      "id": "native:[stat band sites]",
+      "key": "[stat band sites]",
+      "source": "Building and upgrading"
+    },
+    {
+      "id": "native:[stat band to resource]",
+      "key": "[stat band to resource]",
+      "source": "Walking to a resource"
+    },
+    {
+      "id": "native:[stat band harvesting]",
+      "key": "[stat band harvesting]",
+      "source": "Harvesting"
+    },
+    {
+      "id": "native:[stat band carrying]",
+      "key": "[stat band carrying]",
+      "source": "Carrying it back"
+    },
+    {
+      "id": "native:[stat band delivering]",
+      "key": "[stat band delivering]",
+      "source": "Delivering or waiting"
+    },
+    {
+      "id": "native:[stat band walking to inn]",
+      "key": "[stat band walking to inn]",
+      "source": "Walking to an inn"
+    },
+    {
+      "id": "native:[stat band no inn]",
+      "key": "[stat band no inn]",
+      "source": "No inn free"
+    },
+    {
+      "id": "native:[stat band at home]",
+      "key": "[stat band at home]",
+      "source": "At home"
+    }
+  ],
+  "carryforward": {
+    "prior_manifest": {
+      "path": "../release-three/manifest.json",
+      "sha256": "4fd5e1faff01b7eb0e95db7eac33105ab557101742f6ef1a889e7b73210eb977"
+    },
+    "prior_batch": {
+      "path": "../release-three/batches/native-general-013.json",
+      "sha256": "4d29acc0dc84cb923c6e26867d7529a9e731dbba0841bc72b401d98a54d427b9"
+    },
+    "method": "Partition retained keys by original ownership; radius supplement receives separate Sw correction chain, unchanged Hi/Ur retain original chain. No fresh reading inferred."
+  }
+}

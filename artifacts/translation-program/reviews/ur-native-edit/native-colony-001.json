@@ -1,0 +1,1293 @@
+{
+  "editor": "/root/swahili_translation",
+  "author": "/root/urdu_translation",
+  "independent_reviewer": "/root/pilot_context",
+  "batch_id": "native-colony-001",
+  "source_contract_sha256": "aacd8a342e9e734ba47f902a161ac1a45badff5842a617bcd68bf8e2275d6013",
+  "original_target_subset_sha256": "d65007672104370545109c5291b2b5b93b27cf72d0f351472f588132940a1eb0",
+  "final_target_subset_sha256": "9e7b73f8708467d3860a52c8fbb30bdd8a163eb0e26ac1088ae13ae64be67758",
+  "final_catalog_sha256": "ec78fb33247244bf783461e0410ef11fe48e45644c3c6500419d9060e967d458",
+  "entries": [
+    {
+      "key": "[%0 units can't access building]",
+      "source": "%0 units can't access building",
+      "before": "%0 یونٹ عمارت تک نہیں پہنچ سکتے",
+      "after": "%0 یونٹ عمارت تک نہیں پہنچ سکتے",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[%0 units can't access flag]",
+      "source": "%0 units can't access flag",
+      "before": "%0 یونٹ جھنڈے تک نہیں پہنچ سکتے",
+      "after": "%0 یونٹ جھنڈے تک نہیں پہنچ سکتے",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[%0 units can't access fruit]",
+      "source": "%0 units can't access fruit",
+      "before": "%0 یونٹ پھل تک نہیں پہنچ سکتے",
+      "after": "%0 یونٹ پھل تک نہیں پہنچ سکتے",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[%0 units too far from building]",
+      "source": "%0 units too far from building",
+      "before": "%0 یونٹ عمارت سے بہت دور ہیں",
+      "after": "%0 یونٹ عمارت سے بہت دور ہیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[%0 units too far from flag]",
+      "source": "%0 units too far from flag",
+      "before": "%0 یونٹ جھنڈے سے بہت دور ہیں",
+      "after": "%0 یونٹ جھنڈے سے بہت دور ہیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[%0 units too far from fruit]",
+      "source": "%0 units too far from fruit",
+      "before": "%0 یونٹ پھل سے بہت دور ہیں",
+      "after": "%0 یونٹ پھل سے بہت دور ہیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[any explorer]",
+      "source": "any explorer",
+      "before": "کوئی بھی کھوجی",
+      "after": "کوئی بھی کھوجی",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Building Defaults]",
+      "source": "Building Defaults",
+      "before": "عمارتوں کی طے شدہ ترتیبات",
+      "after": "عمارتوں کی طے شدہ ترتیبات",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[building settings]",
+      "source": "Building Settings",
+      "before": "عمارت کی ترتیبات",
+      "after": "عمارت کی ترتیبات",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[building site]",
+      "source": "construction site",
+      "before": "تعمیراتی جگہ",
+      "after": "تعمیراتی جگہ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Building Tool Box Explanation]",
+      "source": "Shift + Drag = Box",
+      "before": "Shift + کھینچیں = خانہ",
+      "after": "Shift + کھینچیں = خانہ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Building Tool Line Explanation]",
+      "source": "Ctrl + Drag = Line",
+      "before": "Ctrl + کھینچیں = لکیر",
+      "after": "Ctrl + کھینچیں = لکیر",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Buildings]",
+      "source": "Buildings",
+      "before": "عمارتیں",
+      "after": "عمارتیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[clearingflag explanation 2]",
+      "source": "",
+      "before": "",
+      "after": "",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[clearingflag explanation]",
+      "source": "Clears resources",
+      "before": "وسائل صاف کرتا ہے",
+      "after": "وسائل صاف کرتا ہے",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[clearingflag]",
+      "source": "Clearing Flag",
+      "before": "صفائی کا جھنڈا",
+      "after": "صفائی کا جھنڈا",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[destroy building]",
+      "source": "Destroy Selected Building",
+      "before": "منتخب عمارت منہدم کریں",
+      "after": "منتخب عمارت منہدم کریں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[explorationflag explanation 2]",
+      "source": "",
+      "before": "",
+      "after": "",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[explorationflag explanation]",
+      "source": "Attracts explorers",
+      "before": "کھوجیوں کو بلاتا ہے",
+      "after": "کھوجیوں کو بلاتا ہے",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[explorationflag]",
+      "source": "Exploration Flag",
+      "before": "کھوج کا جھنڈا",
+      "after": "کھوج کا جھنڈا",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Explorer Ratio]",
+      "source": "Explorer Ratio",
+      "before": "کھوجیوں کا تناسب",
+      "after": "کھوجیوں کا تناسب",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Explorer]",
+      "source": "Explorer",
+      "before": "کھوجی",
+      "after": "کھوجی",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[explorers]",
+      "source": "explorers",
+      "before": "کھوجی",
+      "after": "کھوجی",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Flag Defaults]",
+      "source": "Flag Defaults",
+      "before": "جھنڈوں کی طے شدہ ترتیبات",
+      "after": "جھنڈوں کی طے شدہ ترتیبات",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[fruit]",
+      "source": "fruit",
+      "before": "پھل",
+      "after": "پھل",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[inn explanation 2]",
+      "source": "",
+      "before": "",
+      "after": "",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[inn explanation]",
+      "source": "Feeds your units",
+      "before": "آپ کے یونٹوں کو کھانا کھلاتا ہے",
+      "after": "آپ کے یونٹوں کو کھانا کھلاتی ہے",
+      "editorially_read": true,
+      "disposition": "edited-pending-recheck"
+    },
+    {
+      "key": "[market explanation 2]",
+      "source": "fruits with others",
+      "before": "دوسروں سے تبادلہ ممکن بناتا ہے",
+      "after": "دوسروں سے تبادلہ ممکن بناتا ہے",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[market explanation]",
+      "source": "Allows the exchange of",
+      "before": "پھلوں کا",
+      "after": "پھلوں کا",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[market]",
+      "source": "Market",
+      "before": "بازار",
+      "after": "بازار",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Minimum Level To Flag]",
+      "source": "Min. unit level",
+      "before": "یونٹ کی کم از کم سطح",
+      "after": "یونٹ کی کم از کم سطح",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Number Of Buildings]",
+      "source": "Number Of Buildings",
+      "before": "عمارتوں کی تعداد",
+      "after": "عمارتوں کی تعداد",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[repair building]",
+      "source": "Start/Stop Repair",
+      "before": "مرمت شروع/بند کریں",
+      "after": "مرمت شروع/بند کریں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[select barracks building]",
+      "source": "Select Barracks",
+      "before": "بیرک منتخب کریں",
+      "after": "بیرک منتخب کریں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[select clearingflag]",
+      "source": "Select Clearing Flag",
+      "before": "صفائی کا جھنڈا منتخب کریں",
+      "after": "صفائی کا جھنڈا منتخب کریں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[select construct market]",
+      "source": "Select Construct Market",
+      "before": "بازار کی تعمیر منتخب کریں",
+      "after": "بازار کی تعمیر منتخب کریں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[select construct swarm]",
+      "source": "Select Construct Swarm",
+      "before": "چھتے کی تعمیر منتخب کریں",
+      "after": "چھتے کی تعمیر منتخب کریں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[select explorationflag]",
+      "source": "Select Exploration Flag",
+      "before": "کھوج کا جھنڈا منتخب کریں",
+      "after": "کھوج کا جھنڈا منتخب کریں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[select hospital building]",
+      "source": "Select Hospital",
+      "before": "ہسپتال منتخب کریں",
+      "after": "ہسپتال منتخب کریں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[select inn building]",
+      "source": "Select Inn",
+      "before": "سرائے منتخب کریں",
+      "after": "سرائے منتخب کریں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[select market building]",
+      "source": "Select Market",
+      "before": "بازار منتخب کریں",
+      "after": "بازار منتخب کریں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[select place clearingflag]",
+      "source": "Select Place Clearing Flag",
+      "before": "صفائی کا جھنڈا لگانا منتخب کریں",
+      "after": "صفائی کا جھنڈا لگانا منتخب کریں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[select place explorationflag]",
+      "source": "Select Place Exploration Flag",
+      "before": "کھوج کا جھنڈا لگانا منتخب کریں",
+      "after": "کھوج کا جھنڈا لگانا منتخب کریں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[select place warflag]",
+      "source": "Select Place War Flag",
+      "before": "جنگی جھنڈا لگانا منتخب کریں",
+      "after": "جنگی جھنڈا لگانا منتخب کریں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[select racetrack building]",
+      "source": "Select Racetrack",
+      "before": "دوڑ کا میدان منتخب کریں",
+      "after": "دوڑ کا میدان منتخب کریں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[select school building]",
+      "source": "Select School",
+      "before": "مدرسہ منتخب کریں",
+      "after": "اسکول منتخب کریں",
+      "editorially_read": true,
+      "disposition": "edited-pending-recheck"
+    },
+    {
+      "key": "[select swarm building]",
+      "source": "Select Swarm",
+      "before": "چھتہ منتخب کریں",
+      "after": "چھتہ منتخب کریں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[select swimmingpool building]",
+      "source": "Select Swimming Pool",
+      "before": "تیراکی کا تالاب منتخب کریں",
+      "after": "تیراکی کا تالاب منتخب کریں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[select tower building]",
+      "source": "Select Defense Tower",
+      "before": "دفاعی مینار منتخب کریں",
+      "after": "دفاعی مینار منتخب کریں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[select wall building]",
+      "source": "Select Wall",
+      "before": "دیوار منتخب کریں",
+      "after": "دیوار منتخب کریں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[select warflag]",
+      "source": "Select War Flag",
+      "before": "جنگی جھنڈا منتخب کریں",
+      "after": "جنگی جھنڈا منتخب کریں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[show flags]",
+      "source": "Show flags",
+      "before": "جھنڈے دکھائیں",
+      "after": "جھنڈے دکھائیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[swarm explanation 2]",
+      "source": "",
+      "before": "",
+      "after": "",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[swarm explanation]",
+      "source": "Creates new units",
+      "before": "نئے یونٹ پیدا کرتا ہے",
+      "after": "نئے یونٹ پیدا کرتا ہے",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[swarm]",
+      "source": "Swarm",
+      "before": "چھتہ",
+      "after": "چھتہ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[switch to building view]",
+      "source": "Switch To Building view",
+      "before": "عمارتوں کے منظر پر جائیں",
+      "after": "عمارتوں کے منظر پر جائیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[switch to flag view]",
+      "source": "Switch to Flags view",
+      "before": "جھنڈوں کے منظر پر جائیں",
+      "after": "جھنڈوں کے منظر پر جائیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[the building is finished]",
+      "source": "The building is finished.",
+      "before": "عمارت مکمل ہو گئی ہے۔",
+      "after": "عمارت مکمل ہو گئی ہے۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[the building is under attack]",
+      "source": "The building is under attack.",
+      "before": "عمارت پر حملہ ہو رہا ہے۔",
+      "after": "عمارت پر حملہ ہو رہا ہے۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[the clearingflag is finished]",
+      "source": "Clearing flag placed.",
+      "before": "صفائی کا جھنڈا لگا دیا گیا۔",
+      "after": "صفائی کا جھنڈا لگا دیا گیا۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[the clearingflag is under attack]",
+      "source": "Clearing flag is under attack.",
+      "before": "صفائی کے جھنڈے پر حملہ ہو رہا ہے۔",
+      "after": "صفائی کے جھنڈے پر حملہ ہو رہا ہے۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[the explorationflag is finished]",
+      "source": "Exploration flag placed.",
+      "before": "کھوج کا جھنڈا لگا دیا گیا۔",
+      "after": "کھوج کا جھنڈا لگا دیا گیا۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[the explorationflag is under attack]",
+      "source": "Exploration flag is under attack.",
+      "before": "کھوج کے جھنڈے پر حملہ ہو رہا ہے۔",
+      "after": "کھوج کے جھنڈے پر حملہ ہو رہا ہے۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[the inn is finished]",
+      "source": "The Inn is finished.",
+      "before": "سرائے مکمل ہو گئی ہے۔",
+      "after": "سرائے مکمل ہو گئی ہے۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[the inn is under attack]",
+      "source": "The Inn is under attack.",
+      "before": "سرائے پر حملہ ہو رہا ہے۔",
+      "after": "سرائے پر حملہ ہو رہا ہے۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[the market is finished]",
+      "source": "The market is finished.",
+      "before": "بازار مکمل ہو گیا ہے۔",
+      "after": "بازار مکمل ہو گیا ہے۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[the market is under attack]",
+      "source": "The market is under attack.",
+      "before": "بازار پر حملہ ہو رہا ہے۔",
+      "after": "بازار پر حملہ ہو رہا ہے۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[the swarm is finished]",
+      "source": "The swarm is finished.",
+      "before": "چھتہ مکمل ہو گیا ہے۔",
+      "after": "چھتہ مکمل ہو گیا ہے۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[the swarm is under attack]",
+      "source": "The swarm is under attack.",
+      "before": "چھتے پر حملہ ہو رہا ہے۔",
+      "after": "چھتے پر حملہ ہو رہا ہے۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[the warflag is finished]",
+      "source": "War flag placed.",
+      "before": "جنگی جھنڈا لگا دیا گیا۔",
+      "after": "جنگی جھنڈا لگا دیا گیا۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[the warflag is under attack]",
+      "source": "War flag is under attack.",
+      "before": "جنگی جھنڈے پر حملہ ہو رہا ہے۔",
+      "after": "جنگی جھنڈے پر حملہ ہو رہا ہے۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[upgrade building]",
+      "source": "Start/Stop Upgrade",
+      "before": "اپ گریڈ شروع/بند کریں",
+      "after": "اپ گریڈ شروع/بند کریں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[warflag explanation 2]",
+      "source": "",
+      "before": "",
+      "after": "",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[warflag explanation]",
+      "source": "Attracts warriors",
+      "before": "جنگجوؤں کو بلاتا ہے",
+      "after": "جنگجوؤں کو بلاتا ہے",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[warflag]",
+      "source": "War Flag",
+      "before": "جنگی جھنڈا",
+      "after": "جنگی جھنڈا",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Warrior Ratio]",
+      "source": "Warrior Ratio",
+      "before": "جنگجوؤں کا تناسب",
+      "after": "جنگجوؤں کا تناسب",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Warrior]",
+      "source": "Warrior",
+      "before": "جنگجو",
+      "after": "جنگجو",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[warriors]",
+      "source": "warriors",
+      "before": "جنگجو",
+      "after": "جنگجو",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Worker Ratio]",
+      "source": "Worker Ratio",
+      "before": "کارکنوں کا تناسب",
+      "after": "کارکنوں کا تناسب",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Worker]",
+      "source": "Worker",
+      "before": "کارکن",
+      "after": "کارکن",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[workers]",
+      "source": "workers",
+      "before": "کارکن",
+      "after": "کارکن",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Fruit]",
+      "source": "Fruit",
+      "before": "پھل",
+      "after": "پھل",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Starting workers]",
+      "source": "Starting workers",
+      "before": "ابتدائی کارکن",
+      "after": "ابتدائی کارکن",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Starting workers: Game Rules tab.]",
+      "source": "Starting workers: Game Rules tab.",
+      "before": "ابتدائی کارکن: کھیل کے قواعد کے ٹیب میں۔",
+      "after": "ابتدائی کارکن: کھیل کے قواعد کے ٹیب میں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[8 workers / 2x speed]",
+      "source": "8 workers / 2x speed",
+      "before": "8 کارکن / دوگنی رفتار",
+      "after": "8 کارکن / دوگنی رفتار",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Classic colony building]",
+      "source": "Classic colony building",
+      "before": "روایتی بستی سازی",
+      "after": "روایتی بستی سازی",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Quick clash: 2x speed; generated maps start with 8 workers.]",
+      "source": "Quick clash: 2x speed; generated maps start with 8 workers.",
+      "before": "تیز مقابلہ: دوگنی رفتار؛ بنائے گئے نقشوں پر ابتدا میں 8 کارکن ہوتے ہیں۔",
+      "after": "تیز مقابلہ: دوگنی رفتار؛ بنائے گئے نقشوں پر ابتدا میں 8 کارکن ہوتے ہیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Starting workers affects generated maps only.]",
+      "source": "Starting workers affects generated maps only.",
+      "before": "ابتدائی کارکنوں کی ترتیب صرف بنائے گئے نقشوں پر اثر کرتی ہے۔",
+      "after": "ابتدائی کارکنوں کی ترتیب صرف بنائے گئے نقشوں پر اثر کرتی ہے۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[More workers jump-start colony growth. Changes the generated map.]",
+      "source": "More workers jump-start colony growth. Changes the generated map.",
+      "before": "زیادہ کارکن بستی کی بڑھوتری تیز کرتے ہیں۔ اس سے بننے والا نقشہ بدلتا ہے۔",
+      "after": "زیادہ کارکن بستی کی بڑھوتری تیز کرتے ہیں۔ اس سے بننے والا نقشہ بدلتا ہے۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[No warriors]",
+      "source": "No warriors",
+      "before": "جنگجو نہیں",
+      "after": "جنگجو نہیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Farm building plots]",
+      "source": "Farm building plots",
+      "before": "کھیتوں میں تعمیراتی قطعے",
+      "after": "کھیتوں میں تعمیراتی قطعے",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Fruit amount]",
+      "source": "Fruit amount",
+      "before": "پھلوں کی مقدار",
+      "after": "پھلوں کی مقدار",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Fruit in home valleys]",
+      "source": "Fruit in home valleys",
+      "before": "آبائی وادیوں میں پھل",
+      "after": "آبائی وادیوں میں پھل",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Building sites complete immediately, skipping delivery.]",
+      "source": "Building sites complete immediately, skipping delivery.",
+      "before": "سامان پہنچائے بغیر تعمیراتی جگہیں فوراً مکمل ہو جاتی ہیں۔",
+      "after": "سامان پہنچائے بغیر تعمیراتی جگہیں فوراً مکمل ہو جاتی ہیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Higher tiers give every building much more HP.]",
+      "source": "Higher tiers give every building much more HP.",
+      "before": "اونچے درجوں پر ہر عمارت کی صحت بہت زیادہ ہوتی ہے۔",
+      "after": "اونچے درجوں پر ہر عمارت کی صحت بہت زیادہ ہوتی ہے۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Stats new buildings]",
+      "source": "New buildings",
+      "before": "نئی عمارتیں",
+      "after": "نئی عمارتیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Stats blocked buildings]",
+      "source": "Buildings blocked S/C",
+      "before": "بند راستوں والی عمارتیں S/C",
+      "after": "بند راستوں والی عمارتیں S/C",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Stats blocked buildings swim]",
+      "source": "Swim exits S/C",
+      "before": "تیراکی کے بند راستے S/C",
+      "after": "تیراکی کے بند راستے S/C",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Stats current blocked buildings]",
+      "source": "Currently blocked buildings",
+      "before": "اس وقت بند راستوں والی عمارتیں",
+      "after": "اس وقت بند راستوں والی عمارتیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Stats structural buildings]",
+      "source": "Structurally blocked buildings",
+      "before": "ساخت کی وجہ سے بند عمارتیں",
+      "after": "ساخت کی وجہ سے بند راستوں والی عمارتیں",
+      "editorially_read": true,
+      "disposition": "edited-pending-recheck"
+    },
+    {
+      "key": "[A colony's homeland has no room for a swarm; use a bigger map, fewer colonies or a narrower march.]",
+      "source": "A colony's homeland has no room for a swarm; use a bigger map, fewer colonies or a narrower march.",
+      "before": "ایک بستی کے آبائی علاقے میں چھتے کے لیے جگہ نہیں؛ بڑا نقشہ، کم بستیاں یا تنگ سرحدی پٹی منتخب کریں۔",
+      "after": "ایک بستی کے آبائی علاقے میں چھتے کے لیے جگہ نہیں؛ بڑا نقشہ، کم بستیاں یا تنگ سرحدی پٹی منتخب کریں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[A city neighbourhood lacks reachable crops or building room.]",
+      "source": "A city neighbourhood lacks reachable crops or building room.",
+      "before": "شہر کے ایک محلے میں قابلِ رسائی فصلیں یا تعمیر کی جگہ نہیں ہے۔",
+      "after": "شہر کے ایک محلے میں قابلِ رسائی فصلیں یا تعمیر کی جگہ نہیں ہے۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Each colony's start is measured on the finished map: the walk to wheat and to wood, how well its ground regrows, the deposits and building sites within reach, and its distance from rivals. Every factor scores from 0 to 1 against a fixed bar, the total weighs them, fairness is the worst colony's total over the best, and the score is the worst total times the fairness.]",
+      "source": "Each colony's start is measured on the finished map: the walk to food and wood sources, how well its ground regrows, the deposits and building sites within reach, and its distance from rivals. Every factor scores from 0 to 1 against a fixed bar, the total weighs them, fairness is the worst colony's total over the best, and the score is the worst total times the fairness.",
+      "before": "مکمل نقشے پر ہر بستی کی ابتدائی حالت جانچی جاتی ہے: خوراک اور لکڑی تک پیدل فاصلہ، زمین کی دوبارہ افزائش، رسائی میں ذخائر اور تعمیراتی جگہیں، اور حریفوں سے فاصلہ۔ ہر پہلو کو ایک مقررہ معیار کے مقابلے میں 0 سے 1 تک اسکور ملتا ہے؛ مجموعے میں ان کے وزن شامل ہوتے ہیں۔ منصفانہ تقسیم کم ترین مجموعے کو بہترین مجموعے سے تقسیم کرنے پر ملتی ہے، اور حتمی اسکور کم ترین مجموعے اور اس تقسیم کا حاصلِ ضرب ہے۔",
+      "after": "مکمل نقشے پر ہر بستی کی ابتدائی حالت جانچی جاتی ہے: خوراک اور لکڑی تک پیدل فاصلہ، زمین کی دوبارہ افزائش، رسائی میں ذخائر اور تعمیراتی جگہیں، اور حریفوں سے فاصلہ۔ ہر پہلو کو ایک مقررہ معیار کے مقابلے میں 0 سے 1 تک اسکور ملتا ہے؛ مجموعے میں ان کے وزن شامل ہوتے ہیں۔ منصفانہ تقسیم کم ترین مجموعے کو بہترین مجموعے سے تقسیم کرنے پر ملتی ہے، اور حتمی اسکور کم ترین مجموعے اور اس تقسیم کا حاصلِ ضرب ہے۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Building gradients]",
+      "source": "Building gradients...",
+      "before": "عمارتوں کے فاصلاتی نقشے بن رہے ہیں…",
+      "after": "عمارتوں کے فاصلاتی نقشے بن رہے ہیں…",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Loading buildings]",
+      "source": "Loading buildings...",
+      "before": "عمارتیں لوڈ ہو رہی ہیں…",
+      "after": "عمارتیں لوڈ ہو رہی ہیں…",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Flags]",
+      "source": "Flags",
+      "before": "جھنڈے",
+      "after": "جھنڈے",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Buildings: %0]",
+      "source": "Buildings: %0",
+      "before": "عمارتیں: %0",
+      "after": "عمارتیں: %0",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Read-only building]",
+      "source": "Read-only building",
+      "before": "صرف دیکھنے کی عمارت",
+      "after": "صرف دیکھنے کی عمارت",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Share market vision]",
+      "source": "Share market vision",
+      "before": "بازار کی حدِ نگاہ بانٹیں",
+      "after": "بازار کی حدِ نگاہ بانٹیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[match tip flags]",
+      "source": "Tip: exploration flags send explorers to reveal the map; war flags gather your warriors.",
+      "before": "مشورہ: کھوج کے جھنڈے کھوجیوں کو نقشہ ظاہر کرنے بھیجتے ہیں؛ جنگی جھنڈے آپ کے جنگجوؤں کو جمع کرتے ہیں۔",
+      "after": "مشورہ: کھوج کے جھنڈے کھوجیوں کو نقشہ ظاہر کرنے بھیجتے ہیں؛ جنگی جھنڈے آپ کے جنگجوؤں کو جمع کرتے ہیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat group buildings]",
+      "source": "Buildings",
+      "before": "عمارتیں",
+      "after": "عمارتیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat buildings]",
+      "source": "Buildings standing",
+      "before": "کھڑی عمارتیں",
+      "after": "کھڑی عمارتیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat buildings about]",
+      "source": "Finished buildings the colony had. Split it to see each kind of building.",
+      "before": "بستی کی مکمل عمارتیں۔ ہر قسم الگ دیکھنے کے لیے تقسیم کریں۔",
+      "after": "بستی کی مکمل عمارتیں۔ ہر قسم الگ دیکھنے کے لیے تقسیم کریں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat buildings lost]",
+      "source": "Buildings lost",
+      "before": "تباہ شدہ عمارتیں",
+      "after": "تباہ شدہ عمارتیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat buildings lost about]",
+      "source": "Buildings destroyed by enemies or demolished by the colony itself.",
+      "before": "دشمن کی تباہ کردہ یا بستی کی خود منہدم کردہ عمارتیں۔",
+      "after": "دشمن کی تباہ کردہ یا بستی کی خود منہدم کردہ عمارتیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat blocked buildings]",
+      "source": "Buildings with no way in",
+      "before": "بند راستوں والی عمارتیں",
+      "after": "بند راستوں والی عمارتیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat blocked buildings about]",
+      "source": "Buildings whose entrances were blocked, so units could not get in or out.",
+      "before": "وہ عمارتیں جن کے داخلی راستے بند تھے، اس لیے یونٹ اندر یا باہر نہیں جا سکتے تھے۔",
+      "after": "وہ عمارتیں جن کے داخلی راستے بند تھے، اس لیے یونٹ اندر یا باہر نہیں جا سکتے تھے۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat unit buildings]",
+      "source": "buildings",
+      "before": "عمارتیں",
+      "after": "عمارتیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat column buildings lost]",
+      "source": "Buildings lost",
+      "before": "تباہ شدہ عمارتیں",
+      "after": "تباہ شدہ عمارتیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat marker first building destroyed]",
+      "source": "first building destroyed",
+      "before": "پہلی عمارت تباہ ہوئی",
+      "after": "پہلی عمارت تباہ ہوئی",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat band workers]",
+      "source": "Workers",
+      "before": "کارکن",
+      "after": "کارکن",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat band explorers]",
+      "source": "Explorers",
+      "before": "کھوجی",
+      "after": "کھوجی",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat band warriors]",
+      "source": "Warriors",
+      "before": "جنگجو",
+      "after": "جنگجو",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat view by building]",
+      "source": "By building",
+      "before": "عمارت کے لحاظ سے",
+      "after": "عمارت کے لحاظ سے",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Building strength]",
+      "source": "Building strength",
+      "before": "عمارتوں کی مضبوطی",
+      "after": "عمارتوں کی مضبوطی",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Units gain levels at training buildings and buildings can be upgraded. Repairs remain available when off.]",
+      "source": "Units gain levels at training buildings and buildings can be upgraded. Repairs remain available when off.",
+      "before": "یونٹ تربیتی عمارتوں میں درجے حاصل کرتے ہیں اور عمارتیں اپ گریڈ ہو سکتی ہیں۔ اسے بند کرنے پر بھی مرمت دستیاب رہتی ہے۔",
+      "after": "یونٹ تربیتی عمارتوں میں درجے حاصل کرتے ہیں اور عمارتیں اپ گریڈ ہو سکتی ہیں۔ اسے بند کرنے پر بھی مرمت دستیاب رہتی ہے۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat worker time]",
+      "source": "How workers spent their time",
+      "before": "کارکنوں کا وقت کیسے گزرا",
+      "after": "کارکنوں کا وقت کیسے گزرا",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat worker time about]",
+      "source": "What the colony's workers were doing, moment by moment: working for a building, working at a flag, training, eating, healing, waiting hungry or hurt with no inn or hospital free, or idle with nothing to do. A healthy colony keeps most of its workers working, few idle and none waiting.",
+      "before": "بستی کے کارکن ہر لمحے کیا کر رہے تھے: عمارت یا جھنڈے کے لیے کام، تربیت، کھانا، علاج، سرائے یا ہسپتال خالی نہ ہونے پر بھوک یا چوٹ کے ساتھ انتظار، یا کام کے بغیر فارغ۔ صحت مند بستی میں زیادہ تر کارکن کام کرتے ہیں، کم فارغ ہوتے ہیں اور کوئی منتظر نہیں ہوتا۔",
+      "after": "بستی کے کارکن ہر لمحے کیا کر رہے تھے: عمارت یا جھنڈے کے لیے کام، تربیت، کھانا، علاج، سرائے یا ہسپتال خالی نہ ہونے پر بھوک یا چوٹ کے ساتھ انتظار، یا کام کے بغیر فارغ۔ صحت مند بستی میں زیادہ تر کارکن کام کرتے ہیں، کم فارغ ہوتے ہیں اور کوئی منتظر نہیں ہوتا۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat idle workers]",
+      "source": "Idle workers",
+      "before": "فارغ کارکن",
+      "after": "فارغ کارکن",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat idle workers about]",
+      "source": "The share of workers' time spent with nothing to do. High values mean more workers than work; near zero means every worker is busy and jobs may be waiting.",
+      "before": "کارکنوں کے وقت کا وہ حصہ جس میں کوئی کام نہیں تھا۔ زیادہ شرح کا مطلب کام سے زیادہ کارکن ہیں؛ تقریباً صفر کا مطلب ہر کارکن مصروف ہے اور کام انتظار میں ہو سکتے ہیں۔",
+      "after": "کارکنوں کے وقت کا وہ حصہ جس میں کوئی کام نہیں تھا۔ زیادہ شرح کا مطلب کام سے زیادہ کارکن ہیں؛ تقریباً صفر کا مطلب ہر کارکن مصروف ہے اور کام انتظار میں ہو سکتے ہیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat inn distance]",
+      "source": "Distance from the inn",
+      "before": "سرائے سے فاصلہ",
+      "after": "سرائے سے فاصلہ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat inn distance about]",
+      "source": "How far hungry workers were, on average over their walk, from the inn they were heading for, in map squares in a straight line. A whole trip is roughly twice this. High values mean inns are far from where workers work.",
+      "before": "بھوکے کارکن راستے میں اوسطاً اس سرائے سے کتنے دور تھے جہاں وہ جا رہے تھے؛ فاصلہ سیدھی لکیر میں نقشے کے خانوں میں ہے۔ پورا سفر تقریباً اس کا دوگنا ہے۔ زیادہ قدر کا مطلب سرائیں کام کی جگہوں سے دور ہیں۔",
+      "after": "بھوکے کارکن راستے میں اوسطاً اس سرائے سے کتنے دور تھے جہاں وہ جا رہے تھے؛ فاصلہ سیدھی لکیر میں نقشے کے خانوں میں ہے۔ پورا سفر تقریباً اس کا دوگنا ہے۔ زیادہ قدر کا مطلب سرائیں کام کی جگہوں سے دور ہیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat warriors]",
+      "source": "Warriors",
+      "before": "جنگجو",
+      "after": "جنگجو",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat warriors about]",
+      "source": "How many warriors the colony had. Split it to see how many were near home, near an enemy colony, or in open ground. Ground close to both colonies counts as home.",
+      "before": "بستی کے جنگجوؤں کی تعداد۔ الگ دیکھیں کہ کتنے گھر کے قریب، دشمن بستی کے قریب یا کھلے میدان میں تھے۔ دونوں بستیوں کے قریب زمین گھر میں شمار ہوتی ہے۔",
+      "after": "بستی کے جنگجوؤں کی تعداد۔ الگ دیکھیں کہ کتنے گھر کے قریب، دشمن بستی کے قریب یا کھلے میدان میں تھے۔ دونوں بستیوں کے قریب زمین گھر میں شمار ہوتی ہے۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat warrior level]",
+      "source": "Average warrior attack level",
+      "before": "جنگجوؤں کے حملے کی اوسط سطح",
+      "after": "جنگجوؤں کے حملے کی اوسط سطح",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat warrior level about]",
+      "source": "The average attack level of the colony's warriors, counting attack speed and attack strength equally, on the 1 to 4 scale the game shows. Barracks raise it; new untrained warriors pull it down.",
+      "before": "بستی کے جنگجوؤں کی اوسط حملہ سطح؛ حملے کی رفتار اور طاقت کو برابر وزن دیا جاتا ہے، کھیل کے 1 سے 4 پیمانے پر۔ بیرک اسے بڑھاتی ہے؛ نئے غیر تربیت یافتہ جنگجو اسے گھٹاتے ہیں۔",
+      "after": "بستی کے جنگجوؤں کی اوسط حملہ سطح؛ حملے کی رفتار اور طاقت کو برابر وزن دیا جاتا ہے، کھیل کے 1 سے 4 پیمانے پر۔ بیرک اسے بڑھاتی ہے؛ نئے غیر تربیت یافتہ جنگجو اسے گھٹاتے ہیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat warrior duties]",
+      "source": "What warriors were doing",
+      "before": "جنگجو کیا کر رہے تھے",
+      "after": "جنگجو کیا کر رہے تھے",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat warrior duties about]",
+      "source": "How the colony's warriors divided between those sent to a war flag, those hurt badly enough to leave the fight for a hospital (including those being healed), and those free.",
+      "before": "بستی کے جنگجوؤں کی تقسیم: جنگی جھنڈے پر بھیجے گئے، اتنے زخمی کہ لڑائی چھوڑ کر ہسپتال گئے (زیرِ علاج سمیت)، اور فارغ جنگجو۔",
+      "after": "بستی کے جنگجوؤں کی تقسیم: جنگی جھنڈے پر بھیجے گئے، اتنے زخمی کہ لڑائی چھوڑ کر ہسپتال گئے (زیرِ علاج سمیت)، اور فارغ جنگجو۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat band flag work]",
+      "source": "At a flag",
+      "before": "جھنڈے پر",
+      "after": "جھنڈے پر",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat band swarms]",
+      "source": "Swarms",
+      "before": "چھتے",
+      "after": "چھتے",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat band other buildings]",
+      "source": "Other buildings",
+      "before": "دوسری عمارتیں",
+      "after": "دوسری عمارتیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat band war flag]",
+      "source": "On a war flag",
+      "before": "جنگی جھنڈے پر",
+      "after": "جنگی جھنڈے پر",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat unit workers]",
+      "source": "workers",
+      "before": "کارکن",
+      "after": "کارکن",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat unit worker time]",
+      "source": "workers' time",
+      "before": "کارکنوں کا وقت",
+      "after": "کارکنوں کا وقت",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat unit working workers]",
+      "source": "workers supplying buildings",
+      "before": "عمارتوں کو سامان پہنچاتے کارکن",
+      "after": "عمارتوں کو سامان پہنچاتے کارکن",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat unit warriors]",
+      "source": "warriors",
+      "before": "جنگجو",
+      "after": "جنگجو",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat unit enemy warriors]",
+      "source": "enemy warriors",
+      "before": "دشمن جنگجو",
+      "after": "دشمن جنگجو",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[experiment markets-v2]",
+      "source": "Markets V2",
+      "before": "بازار V2",
+      "after": "بازار V2",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[experiment markets-v2 help]",
+      "source": "Workers can fetch supplies from shared market stock. Markets can upgrade to store food and wood, then every material. Trading between teams remains fruit-only. Applies to new games; saves keep their original setting.",
+      "before": "کارکن مشترک بازار کے ذخیرے سے سامان لا سکتے ہیں۔ بازار اپ گریڈ ہو کر پہلے خوراک اور لکڑی، پھر ہر قسم کا مواد ذخیرہ کر سکتے ہیں۔ ٹیموں کے درمیان تجارت صرف پھلوں کی رہتی ہے۔ نئے کھیلوں پر لاگو؛ محفوظ کھیل اپنی اصل ترتیب رکھتے ہیں۔",
+      "after": "کارکن مشترک بازار کے ذخیرے سے سامان لا سکتے ہیں۔ بازار اپ گریڈ ہو کر پہلے خوراک اور لکڑی، پھر ہر قسم کا مواد ذخیرہ کر سکتے ہیں۔ ٹیموں کے درمیان تجارت صرف پھلوں کی رہتی ہے۔ نئے کھیلوں پر لاگو؛ محفوظ کھیل اپنی اصل ترتیب رکھتے ہیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[dock flags and units]",
+      "source": "Flags & units",
+      "before": "جھنڈے اور یونٹ",
+      "after": "جھنڈے اور یونٹ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[dock building level]",
+      "source": "Level",
+      "before": "سطح",
+      "after": "سطح",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Destroy this building?]",
+      "source": "Destroy this building?",
+      "before": "یہ عمارت منہدم کریں؟",
+      "after": "یہ عمارت منہدم کریں؟",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[library Building families]",
+      "source": "Building families",
+      "before": "عمارتوں کے خاندان",
+      "after": "عمارتوں کے خاندان",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[library Building library]",
+      "source": "Building library",
+      "before": "عمارتوں کی لائبریری",
+      "after": "عمارتوں کی لائبریری",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[library Checking building release]",
+      "source": "Checking building release",
+      "before": "عمارت کی ریلیز کی جانچ",
+      "after": "عمارت کی ریلیز کی جانچ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[library Create in Building Studio]",
+      "source": "Create in Building Studio",
+      "before": "Building Studio میں بنائیں",
+      "after": "عمارت اسٹوڈیو میں بنائیں",
+      "editorially_read": true,
+      "disposition": "edited-pending-recheck"
+    },
+    {
+      "key": "[library Enter a building family ID or a link to its family page.]",
+      "source": "Enter a building family ID or a link to its family page.",
+      "before": "عمارت کے خاندان کی ID یا اس کے صفحے کا لنک درج کریں۔",
+      "after": "عمارت کے خاندان کی ID یا اس کے صفحے کا لنک درج کریں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[library Install individual buildings or upgrade families alongside the stock buildings. Selection applies only to newly generated maps.]",
+      "source": "Install individual buildings or upgrade families alongside the stock buildings. Selection applies only to newly generated maps.",
+      "before": "اصل عمارتوں کے ساتھ الگ عمارتیں یا اپ گریڈ خاندان نصب کریں۔ انتخاب صرف نئے بنائے گئے نقشوں پر لاگو ہوتا ہے۔",
+      "after": "اصل عمارتوں کے ساتھ الگ عمارتیں یا اپ گریڈ خاندان نصب کریں۔ انتخاب صرف نئے بنائے گئے نقشوں پر لاگو ہوتا ہے۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[library Invalid building family ID.]",
+      "source": "Invalid building family ID.",
+      "before": "عمارت کے خاندان کی ID درست نہیں۔",
+      "after": "عمارت کے خاندان کی ID درست نہیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[library Invalid building library response]",
+      "source": "Invalid building library response",
+      "before": "عمارت کی لائبریری کا جواب درست نہیں",
+      "after": "عمارت کی لائبریری کا جواب درست نہیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    }
+  ],
+  "status": "edited-awaiting-independent-recheck"
+}

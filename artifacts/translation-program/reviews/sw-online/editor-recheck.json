@@ -1,0 +1,456 @@
+{
+  "reviewer": "/root/hindi_online_review",
+  "author": "/root/swahili_translation",
+  "primary_editor": "/root/urdu_translation",
+  "surface": "online",
+  "reviewed_after_sha256": "663e69ca40b04f70a35e9261266a0440a3dd1b8159699b1fb370f86f09232989",
+  "before_sha256": "d20d52adddc3ab0449f41475d3b0959fe9fac518e1d287babc9d1c67dba25613",
+  "changed_keys_rechecked": 80,
+  "unchanged_keys_proven": 2755,
+  "method": "Read each of80 edited after-values and actual English source values, including all changed fragments. Reused original every-key/27-plural-family source review for unchanged keys only after reversing all80 changes reconstructed original JSON bytes with exact frozen d20d52 hash. Checked individual before/after values and key uniqueness. Independently approved shader Nyenzo vs harvested Malighafi via Skins/StudioControls/PatternDialog and TerrainStudio contexts.",
+  "original_29_findings_resolved": true,
+  "accepted_edits": 80,
+  "remaining_findings": [],
+  "per_key_dispositions": [
+    {
+      "key": " Terrain credits",
+      "result": "accepted",
+      "reason": "Resolve SW-ON-001-01: purchasable wallet credits, not attribution; retain caller spacing."
+    },
+    {
+      "key": "A previous submission was not acknowledged. Sending it again safely retries the same request.",
+      "result": "accepted",
+      "reason": "Resolve SW-ON-001-02: halikukubaliwa means was not accepted; source only says acknowledgement was absent, so outcome may already be accepted."
+    },
+    {
+      "key": "Add a property override",
+      "result": "accepted",
+      "reason": "Override sets a property value; ubatilishaji can imply invalidation rather than an explicit replacement value."
+    },
+    {
+      "key": "All properties and capabilities",
+      "result": "accepted",
+      "reason": "Use correct agreement for sifa and uwezo separately."
+    },
+    {
+      "key": "Apply soundtrack loudness targets and peak limiting",
+      "result": "accepted",
+      "reason": "Preserve loudness targets and audio peak limiting, avoiding vague targeting sound."
+    },
+    {
+      "key": "Background material",
+      "result": "accepted",
+      "reason": "3D paint material/map/unwrap denotes surface finish or its IDs (Skins, StudioControls, PatternDialog, binaryAsset); use nyenzo, distinct from harvested malighafi. Preserve numeric IDs and API tokens."
+    },
+    {
+      "key": "Brush paints",
+      "result": "accepted",
+      "reason": "Resolve SW-ON-002-01: Rangi za brashi names only colors; aria group chooses Color OR Material."
+    },
+    {
+      "key": "Building",
+      "result": "accepted",
+      "reason": "Resolve SW-ON-002-02: Jengo means a building object; these inspected callers denote build-in-progress or music production mood."
+    },
+    {
+      "key": "Choose visibility and a moderation reason.",
+      "result": "accepted",
+      "reason": "Visibility includes private/unlisted/public; avoid suggesting only public visibility."
+    },
+    {
+      "key": "Complete",
+      "result": "accepted",
+      "reason": "Resolve SW-ON-003-01: Kamilisha is imperative complete it, but this labels completed request/job status."
+    },
+    {
+      "key": "Complete passing checks before publishing.",
+      "result": "accepted",
+      "reason": "Source requires passing checks, not merely completing a set labelled as already passing."
+    },
+    {
+      "key": "Copies the {slot0} texture and materials. Different models wrap that paint differently; inspect the results below.",
+      "result": "accepted",
+      "reason": "3D paint material/map/unwrap denotes surface finish or its IDs (Skins, StudioControls, PatternDialog, binaryAsset); use nyenzo, distinct from harvested malighafi. Preserve numeric IDs and API tokens."
+    },
+    {
+      "key": "Could not load the material unwrap.",
+      "result": "accepted",
+      "reason": "3D paint material/map/unwrap denotes surface finish or its IDs (Skins, StudioControls, PatternDialog, binaryAsset); use nyenzo, distinct from harvested malighafi. Preserve numeric IDs and API tokens."
+    },
+    {
+      "key": "Create a new room with this map and invite friends.",
+      "result": "accepted",
+      "reason": "Use idiomatic plural friends."
+    },
+    {
+      "key": "Create a ring of islands around a shared lagoon",
+      "result": "accepted",
+      "reason": "Resolve SW-ON-004-01: Rasi is a peninsula/land protrusion, not a lagoon."
+    },
+    {
+      "key": "Dense",
+      "result": "accepted",
+      "reason": "PatternDialog.tsx density 0.7; visual density rather than heavy weight."
+    },
+    {
+      "key": "Duplicate rig clip",
+      "result": "accepted",
+      "reason": "Resolve SW-ON-005-01: Nakili is an action command; this is a validation error about repeated clip IDs."
+    },
+    {
+      "key": "Duplicate shape clip",
+      "result": "accepted",
+      "reason": "Resolve SW-ON-005-02: Nakili is an action command; this is a validation error about repeated clip IDs."
+    },
+    {
+      "key": "Each product has its own credit unit. Flows cover the current selected range across all payment modes. Usage/refund ledger entries are signed; reserved balances are current snapshots.",
+      "result": "accepted",
+      "reason": "Resolve SW-ON-005-03: salio/masalio concord, financial held balances and signed ledger amounts preserved."
+    },
+    {
+      "key": "Friends share a code or a link from their room.",
+      "result": "accepted",
+      "reason": "Use explicit plural friends rather than an unmarked singular form."
+    },
+    {
+      "key": "Give your colony controller a home. Every release keeps its own source and download history.",
+      "result": "accepted",
+      "reason": "Kidhibiti is ki-/vi- class, requiring kipe rather than ipe."
+    },
+    {
+      "key": "Hidden by a moderator",
+      "result": "accepted",
+      "reason": "Align moderator role with explicit catalog terminology, distinct from Administrator."
+    },
+    {
+      "key": "Hidden by a moderator: {slot0}",
+      "result": "accepted",
+      "reason": "Align moderator role with explicit catalog terminology."
+    },
+    {
+      "key": "Hidden following moderator review",
+      "result": "accepted",
+      "reason": "Align moderator role with explicit catalog terminology."
+    },
+    {
+      "key": "Invalid material map dimensions.",
+      "result": "accepted",
+      "reason": "3D paint material/map/unwrap denotes surface finish or its IDs (Skins, StudioControls, PatternDialog, binaryAsset); use nyenzo, distinct from harvested malighafi. Preserve numeric IDs and API tokens."
+    },
+    {
+      "key": "Invalid material map.",
+      "result": "accepted",
+      "reason": "3D paint material/map/unwrap denotes surface finish or its IDs (Skins, StudioControls, PatternDialog, binaryAsset); use nyenzo, distinct from harvested malighafi. Preserve numeric IDs and API tokens."
+    },
+    {
+      "key": "Invalid material unwrap coordinate.",
+      "result": "accepted",
+      "reason": "3D paint material/map/unwrap denotes surface finish or its IDs (Skins, StudioControls, PatternDialog, binaryAsset); use nyenzo, distinct from harvested malighafi. Preserve numeric IDs and API tokens. Resolves SW-ON-006-01: mahali, not kirago (woven mat)."
+    },
+    {
+      "key": "Invalid material unwrap dimensions.",
+      "result": "accepted",
+      "reason": "3D paint material/map/unwrap denotes surface finish or its IDs (Skins, StudioControls, PatternDialog, binaryAsset); use nyenzo, distinct from harvested malighafi. Preserve numeric IDs and API tokens."
+    },
+    {
+      "key": "Invalid rig normal",
+      "result": "accepted",
+      "reason": "Resolve SW-ON-007-03: Vekta ya wima may suggest global vertical rather than perpendicular to the mesh surface; clarify the relative reference."
+    },
+    {
+      "key": "Invalid visibility.",
+      "result": "accepted",
+      "reason": "Visibility is access/publication scope, not appearance or an exclusively public mode."
+    },
+    {
+      "key": "Invalid {value0} normal camera",
+      "result": "accepted",
+      "reason": "Resolve SW-ON-007-02: surface normals, not ordinary camera or global vertical; binaryAsset.ts normalToCamera matrix validation."
+    },
+    {
+      "key": "Light",
+      "result": "accepted",
+      "reason": "PatternDialog.tsx density 0.3 for speckles; visual density rather than low weight or theme brightness."
+    },
+    {
+      "key": "Lost",
+      "result": "accepted",
+      "reason": "Resolve SW-ON-007-01: Imepotea describes a missing object. Match outcome is defeat."
+    },
+    {
+      "key": "Manifest release revision: {slot0}. Publishing a new release requires a larger manifest revision.",
+      "result": "accepted",
+      "reason": "Larger means monotonically increasing revision number, not larger substantive changes."
+    },
+    {
+      "key": "Map credits",
+      "result": "accepted",
+      "reason": "MapStudio.tsx wallet balance and purchase drawer; attribution shukrani is wrong here."
+    },
+    {
+      "key": "Maps you shared, whatever their visibility.",
+      "result": "accepted",
+      "reason": "Retain all private/unlisted/public maps."
+    },
+    {
+      "key": "Material",
+      "result": "accepted",
+      "reason": "3D paint material/map/unwrap denotes surface finish or its IDs (Skins, StudioControls, PatternDialog, binaryAsset); use nyenzo, distinct from harvested malighafi. Preserve numeric IDs and API tokens."
+    },
+    {
+      "key": "Material map pixels must be fully opaque.",
+      "result": "accepted",
+      "reason": "3D paint material/map/unwrap denotes surface finish or its IDs (Skins, StudioControls, PatternDialog, binaryAsset); use nyenzo, distinct from harvested malighafi. Preserve numeric IDs and API tokens."
+    },
+    {
+      "key": "Material map pixels must be grey: red, green and blue equal to the material id.",
+      "result": "accepted",
+      "reason": "3D paint material/map/unwrap denotes surface finish or its IDs (Skins, StudioControls, PatternDialog, binaryAsset); use nyenzo, distinct from harvested malighafi. Preserve numeric IDs and API tokens."
+    },
+    {
+      "key": "Material map pixels must be material ids 0 to {p0}.",
+      "result": "accepted",
+      "reason": "3D paint material/map/unwrap denotes surface finish or its IDs (Skins, StudioControls, PatternDialog, binaryAsset); use nyenzo, distinct from harvested malighafi. Preserve numeric IDs and API tokens."
+    },
+    {
+      "key": "Mute {slot0}",
+      "result": "accepted",
+      "reason": "Resolve SW-ON-008-01: Nyamazisha {duration} omits duration relation and chat restriction; sounds silence a thing named duration."
+    },
+    {
+      "key": "No rated players yet. The first wins will put you here.",
+      "result": "accepted",
+      "reason": "Resolve SW-ON-008-02: utawaweka addresses them, while source addresses you."
+    },
+    {
+      "key": "Prestige ",
+      "result": "accepted",
+      "reason": "Resolve SW-ON-010-01: Fahari conflicts with locked native game term Heshima."
+    },
+    {
+      "key": "Prestige {slot0}",
+      "result": "accepted",
+      "reason": "Resolve SW-ON-010-02: Fahari conflicts with locked native game term Heshima."
+    },
+    {
+      "key": "Properties inherit this preset until you add an override.",
+      "result": "accepted",
+      "reason": "Explain inherited preset and explicit value override in ordinary wording."
+    },
+    {
+      "key": "Published visibility",
+      "result": "accepted",
+      "reason": "Retain published visibility without assuming it is public."
+    },
+    {
+      "key": "Rank",
+      "result": "accepted",
+      "reason": "Natural leaderboard rank label, distinct from rating strength."
+    },
+    {
+      "key": "Restrictions and deletion require a lower-role account.",
+      "result": "accepted",
+      "reason": "Target must have lower authority; avoid implying requester needs fewer roles."
+    },
+    {
+      "key": "Room matches go back to their room instead.",
+      "result": "accepted",
+      "reason": "Natural player navigation wording; avoids saying matches themselves move and plural/singular possessive mismatch."
+    },
+    {
+      "key": "Set the goals and your globs get to work. Feed your colony, train your units and explore together.",
+      "result": "accepted",
+      "reason": "Coordinated player imperative: explore together, not discover a hidden object."
+    },
+    {
+      "key": "Shape asset length mismatch",
+      "result": "accepted",
+      "reason": "Binary shape asset data, not physical raw material or equipment."
+    },
+    {
+      "key": "Synth · warm bells, pads & pulse",
+      "result": "accepted",
+      "reason": "Resolve SW-ON-012-01: sauti tambarare means flat sounds, while musical pads are sustained atmospheric accompaniment."
+    },
+    {
+      "key": "The 3D shader could not compile.",
+      "result": "accepted after root supplemental compiler-stage correction",
+      "reason": "Shader computes surface appearance, not only shadows; retain recognized identifier in explanation."
+    },
+    {
+      "key": "The refresh token is not valid.",
+      "result": "accepted",
+      "reason": "Authentication refresh token extends session; does not merely refresh a visual display."
+    },
+    {
+      "key": "Theme: dark (night colony)",
+      "result": "accepted",
+      "reason": "Resolve SW-ON-013-02: meusi uses ma-class agreement while mandhari is treated as hi/i class elsewhere in this catalog."
+    },
+    {
+      "key": "Theme: light (meadow)",
+      "result": "accepted",
+      "reason": "Resolve SW-ON-013-01: mepesi means light in weight, not the bright UI color theme."
+    },
+    {
+      "key": "These details apply to every release. Changing visibility also changes who can download them. Edit building definitions in your Studio draft and publish a new release.",
+      "result": "accepted",
+      "reason": "Clarify that download permission applies to releases, not description text."
+    },
+    {
+      "key": "This changes the map’s visibility. Conversation history remains private.",
+      "result": "accepted",
+      "reason": "Privacy scope, rather than changing a map visual appearance."
+    },
+    {
+      "key": "Time between shots (ticks)",
+      "result": "accepted",
+      "reason": "Resolve SW-ON-014-01: mashambulizi means attacks generally; this property sets interval between tower projectile shots."
+    },
+    {
+      "key": "Use a valid, still 512 by 512 pixel 8-bit material map.",
+      "result": "accepted",
+      "reason": "3D paint material/map/unwrap denotes surface finish or its IDs (Skins, StudioControls, PatternDialog, binaryAsset); use nyenzo, distinct from harvested malighafi. Preserve numeric IDs and API tokens."
+    },
+    {
+      "key": "Visibility",
+      "result": "accepted",
+      "reason": "Clear concise privacy-setting label across private/unlisted/public choices."
+    },
+    {
+      "key": "Volume",
+      "result": "accepted",
+      "reason": "Audio amplitude control, not sound as a whole."
+    },
+    {
+      "key": "You are muted.",
+      "result": "accepted",
+      "reason": "Resolve SW-ON-015-01: Umenyamazishwa is broad; this denial specifically prevents sending chat messages, not a user microphone/audio mute state."
+    },
+    {
+      "key": "You can only ban accounts with a lower role.",
+      "result": "accepted",
+      "reason": "Lower authority relative to administrator, not fewer responsibilities."
+    },
+    {
+      "key": "You can only delete accounts with a lower role.",
+      "result": "accepted",
+      "reason": "Lower authority relative to administrator."
+    },
+    {
+      "key": "You can only mute accounts with a lower role.",
+      "result": "accepted",
+      "reason": "Chat restriction and lower authority; not audio muting or fewer roles."
+    },
+    {
+      "key": "Your next colony starts here. Play in your browser or join your friends.",
+      "result": "accepted",
+      "reason": "Use idiomatic plural friends."
+    },
+    {
+      "key": "check needs",
+      "result": "accepted",
+      "reason": "Resolve SW-ON-015-02: Current fragments compose as “1 ukaguzi unahitaji zinahitaji kushughulikiwa”, duplicating requires and mixing agreement. The three keys must be edited together."
+    },
+    {
+      "key": "checks need",
+      "result": "accepted",
+      "reason": "Resolve SW-ON-016-01: Current fragments compose as “1 ukaguzi unahitaji zinahitaji kushughulikiwa”, duplicating requires and mixing agreement. The three keys must be edited together."
+    },
+    {
+      "key": "median length",
+      "result": "accepted",
+      "reason": "This label measures game duration, not physical length."
+    },
+    {
+      "key": "muted until {slot0}",
+      "result": "accepted",
+      "reason": "Admin chat restriction, not audio/microphone state."
+    },
+    {
+      "key": "Follow latest generation",
+      "result": "accepted",
+      "reason": "Correct agreement without an adjective class ambiguity."
+    },
+    {
+      "key": "Following latest generation",
+      "result": "accepted",
+      "reason": "Correct agreement without an adjective class ambiguity."
+    },
+    {
+      "key": "Signed HP per exposed tick, divided by 256; negative values damage units.",
+      "result": "accepted",
+      "reason": "Resolve SW-ON-018-01: hatua ya kuathiriwa does not explain exposure and the noun total health obscures signed health change; source applies outside a building."
+    },
+    {
+      "key": "{value0} HP per exposed tick",
+      "result": "accepted",
+      "reason": "Resolve SW-ON-018-02: Alama za afya ... kwa hatua ya kuathiriwa is unclear about both signed change and exposure outside buildings."
+    },
+    {
+      "key": "{value0} playing",
+      "result": "accepted",
+      "reason": "music/Player.tsx supplies translated mood names with different noun classes; avoid fixed i-class predicate after arbitrary mood."
+    },
+    {
+      "key": "{value0} {value1} attention",
+      "result": "accepted",
+      "reason": "Resolve SW-ON-018-05: Current fragments compose as “1 ukaguzi unahitaji zinahitaji kushughulikiwa”, duplicating requires and mixing agreement. The three keys must be edited together."
+    },
+    {
+      "key": "Composition source · edit {count}",
+      "result": "accepted",
+      "reason": "Resolve SW-ON-018-04: hariri is imperative Edit, but edit number here identifies a composition-source revision."
+    },
+    {
+      "key": "Engine import and artwork",
+      "result": "accepted",
+      "reason": "Source describes importing into the engine, not importing the engine itself."
+    },
+    {
+      "key": "Requested size and players",
+      "result": "accepted",
+      "reason": "Resolve SW-ON-018-03: wachezaji walioombwa reads as requested people, not requested player count."
+    }
+  ],
+  "terminology_questions_resolved": {
+    "3D shader materials": "Nyenzo accepted as surface finish/type; 12 exact shader keys revised. Resource primaryMaterial and Material yields correctly retain malighafi.",
+    "credits": "Krediti wallet vs Shukrani attribution; both Terrain and newly fixed Map credits correctly identified by callers.",
+    "normal-camera": "New matrix/surface-normal wording accurately distinguishes normal vectors from ordinary or globally vertical camera concepts.",
+    "failed-check fragments": "Read all three edited keys together: singular/plural subject phrases plus {value1}: {value0} yield grammatical count heading with exactly one needs-attention predicate."
+  },
+  "catalog_edited": false,
+  "locale_finalized": false,
+  "supplemental_editor": "/root",
+  "final_online_sha256": "78627bc06a884a784f239b17008727562e3571c756b934559b9f6d3dad9286f4",
+  "final_target_subset_hashes": {
+    "online-online-001": "1b6a54aeea7430c4b90f2250775c92a02690c0c878a2fad23be7c9cf7ac55c2b",
+    "online-online-002": "0e029fba77e88c1d4c2afa42f750729e685d75480a36e51f5580ac79c3316e80",
+    "online-online-003": "bdf07a161bd9c3de7759b28d00b0e5ba83be91cb2c917b8a450af752b01965b5",
+    "online-online-004": "59e12da496f070cb02fbcb269b062c45eefd1f8581cbaae89b7e99ffb9291f3c",
+    "online-online-005": "13f1c35e7a01c201661c1a9686a507e8cea96c216b724c5c5b3e98e79950394f",
+    "online-online-006": "105637ef9bf0ce293dda3b872f644b3806f4caa835937dab9e9f3dd29f80ef18",
+    "online-online-007": "6ee84629ffa56838ee634cee3151a7ce8770d24eef3a9e9942afbf080318f51a",
+    "online-online-008": "9c4275da49c7465f6a43d36ce4bc358b067f3b7ce336e2c54e3a4b1ba2815afb",
+    "online-online-009": "a2b85f562a28d0e0eac72218c0d22e5b3e19970a442d7e1c6c035946c9b69d58",
+    "online-online-010": "09d0689f76ec4b654b63657c79b6b5e5054e97d4cdc784afae6a0e49b2e9048c",
+    "online-online-011": "8070b82bd91d686ccf9d38865f4810d30c17f94669ec8985161ffa9e03b9a945",
+    "online-online-012": "668a9d4c6a3a7dc47e26df06ef5acdc3baec0de3e1f16e9059e8412f9e20a200",
+    "online-online-013": "5859b0d83d310d24fc44684cea468f2667822c1addc4add3a6ba66980415bf9f",
+    "online-online-014": "6564342e9d76bec968de62c28fb0b944bff43ec3ccd1afc916ccf3890a4918c0",
+    "online-online-015": "50a5f1afb0e34a9601c9e876970a6fa69958a6ceaa39c279d489ac51453e866a",
+    "online-online-016": "4a8aff0f2cd4bf8fe4dea61b4686f12935f27d70f5139321371fba3633558f88",
+    "online-online-017": "09d9cc39b87c6d50f64c709fdc3a35f571f41016c37c35a75a62b5d37788f08f",
+    "online-online-018": "4b2c9edcd2c84f95f92ea45979a94b3cf624016da6d6b8f8d31906367f855bb4"
+  },
+  "online_errors": [],
+  "online_untranslated": [],
+  "all_88_English_exceptions_exact": true,
+  "result": "All80 unique edited keys accepted after root supplemental compile-stage correction; 2755 unchanged keys proven. Shader Nyenzo/resource Malighafi terminology resolved; no open linguistic finding.",
+  "supplemental_edit": {
+    "key": "The 3D shader could not compile.",
+    "after": "Programu ya kuonyesha uso wa 3D (shader) haikuweza kukusanywa.",
+    "rechecked": true,
+    "sole_difference_from_primary_editor_bytes_proven": true
+  }
+}

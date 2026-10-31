@@ -1,0 +1,13 @@
+{
+  "fonts": 13,
+  "OFL_exact_canonical_copy": true,
+  "rebased_CSS_all_font_URLs_exist": true,
+  "original_and_gzip_closure_files": 30,
+  "version_before_CSS_change": "ab6ad538866fd94c",
+  "version_after_CSS_change": "fce0672cda5f913d",
+  "CSS_changes_release_identity": true,
+  "repeatable_version": true,
+  "missing_gzip_rejected": "Static package contains unexpected or missing files",
+  "self_consistent_bad_gzip_rejected": "Sidecar does not match original: fonts/NotoSansDevanagari-Regular.ttf.gz",
+  "self_consistent_unpinned_font_rejected": "Missing or unpinned launcher font: fonts/NotoSansDevanagari-Regular.ttf"
+}

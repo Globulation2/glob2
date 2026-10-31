@@ -1,0 +1,51 @@
+{
+  "reviewer": "/root/pilot_context",
+  "author": "/root/urdu_translation",
+  "primary_editor": "/root/swahili_translation",
+  "supplemental_editor": "/root",
+  "status": "native-linguistic-review-and-independent-recheck-pass",
+  "original_catalog_sha256": "a2398e2e0776ad8828db86173bbeb849a119949401ec444c46ef0b8a8e6d179d",
+  "primary_editor_catalog_sha256": "ec78fb33247244bf783461e0410ef11fe48e45644c3c6500419d9060e967d458",
+  "final_catalog_sha256": "5cb88fac67663fc436f6bfa60388382c24665755ee481514c002bc92e9a29837",
+  "source_json_sha256": "a214fc4c9ce4d90fb29d572e3b9d96987eb61af8d0f7bda5050d7d1309d488a9",
+  "batches_final_hashes_refreshed": 24,
+  "original_full_review_keys": 3328,
+  "primary_editor_changed_values_reread": 114,
+  "supplemental_editor_changed_values_reread": 3,
+  "final_distinct_changed_values_reread": 117,
+  "unchanged_values_hash_carried_forward": 3211,
+  "unchanged_values_new_full_reread_claimed": false,
+  "original_findings": 98,
+  "resolved_by_editor_changes": 97,
+  "withdrawn_reviewer_source_scope_errors": 1,
+  "new_supplemental_precision_refinements": 3,
+  "open_critical_findings": 0,
+  "open_major_findings": 0,
+  "open_minor_findings": 0,
+  "unresolved_linguistic_uncertainties": [],
+  "source_scope_resolution": "Portage shore-fields English value has no on this seed phrase. Editor correctly rejected adding it; original reviewer withdraws the mistaken finding, retaining faithful translation.",
+  "symmetry_resolution": "All three exact-symmetry landscape title references use تشاکلی میدانِ جنگ, independently rechecked against visually read primary OUP Urdu symmetry text and actual pointSymmetry geometry.",
+  "retention": {
+    "exact_english_equality_entries_unchanged_approved": 37,
+    "original_latin_token_entries_dispositioned": 247,
+    "localized_caption_fixes_rechecked": 3
+  },
+  "cross_surface_glossary": {
+    "Swarm": "چھتہ / چھتے",
+    "worker": "کارکن",
+    "explorer": "کھوجی",
+    "warrior": "جنگجو",
+    "colony": "بستی",
+    "reserved": "مختص",
+    "Building Studio": "عمارت اسٹوڈیو",
+    "Map generators": "نقشہ جنریٹر",
+    "status": "Native labels align with the independently reviewed online frozen source target; online editor is active, so final integrated online hash should be bound by original online reviewer later."
+  },
+  "structural_snapshot_errors": [],
+  "limits": [
+    "No native-human approval claimed or required for this agent-reviewed status.",
+    "No locale finalized/registered/integrated or production font/render/browser/mobile platform signoff here.",
+    "RTL arrow, wrapping, clipping, plural/numeric composition and all affected screens still require production evidence managed by root.",
+    "Source and candidate are frozen review snapshots, not fetched-master integrated release validation."
+  ]
+}

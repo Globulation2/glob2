@@ -1,0 +1,1249 @@
+{
+  "reviewer": "/root/pilot_context",
+  "locale": "ur",
+  "status": "changes-requested-two-native-rendering-findings",
+  "source_kit_sha256": "7583e9f8f0a03186eec456ed3b7a9c187509056b91f931551c3b7dc0e6b53457",
+  "native_catalog_sha256": "5cb88fac67663fc436f6bfa60388382c24665755ee481514c002bc92e9a29837",
+  "native_render_json_sha256": "17a358eb8bc02ec417a27ffce1de452b4a275430bfc07d5fb3ea18ea5b05b10d",
+  "native_render_json_values_exactly_equal_final3328": true,
+  "online_catalog_sha256": "db375ee564c39cf02dfb4ce08d6a4dbaecb8cd69d5bc7f167b4c7f779e246587",
+  "evidence_identity": {
+    "locale": "ur",
+    "source_revision": "6a16670c6daafa34f1f86a47014f23e0d05fd4e3",
+    "source_revision_origin": "Frozen translation kit; executable and code hashes identify the actual dirty build.",
+    "executable": "/Users/bradley/.codex/worktrees/ed62/glob2/build/darwin/client/debug/dev-dev_fast-true-linker-auto/test/TranslationPreviewHarness",
+    "executable_sha256": "9f002bdd4f6d6aa632499656bef371d6e2032844935dc321578e5d65f76837ec",
+    "source_sha256": {
+      "data/texts.en.txt": "12b08d5636663846dce1b5a93ae3fc98fc31a6ff662e576bf9ba7efbed7ae1a9",
+      "data/texts.keys.txt": "fa77dd4464a27324e4c884f44f296a4ca9b5cf0bea46a5916b32b888d423c1de",
+      "platform/packages/i18n/locales/en.json": "63017714064b5a2659aa8e2da27a43af117d3f1e60acbbb44ae5d73d80cd7d69",
+      "libgag/src/TrueTypeFont.cpp": "fa461f1852e80b1a763a14183ea7522d9c1725bd5ce0fbba19e769defb5d334b",
+      "libgag/src/BidiText.cpp": "68e003db80a2fbb80006d0ed73d7119c0b34fb69e7b6fd55b417fa396dbea18d",
+      "libgag/src/ui/TextLayout.cpp": "72140e6df1636805f71b193c6a84b8e445ca638f0711563d839da8403f0601bd",
+      "src/hud/draw/GameGUIDraw.cpp": "1192e00eb86b977b1f0a9b4d3c58294f29dc8dc3f36dc88755162e06b44aeeed",
+      "src/hud/touch/GameGUITouchView.cpp": "966acc8acc2dd1027edbc433002e4df4e1684927531fad33954870c4693bf902",
+      "src/hud/touch/GameGUITouch.cpp": "0e3e31b6516c3dba1113e654eb8577ebba28bddda2d20612e4a8483908b90614",
+      "src/hud/touch/GameGUITouch.h": "0021daf8e9d244d7891ea772a0df8dea77410263685b4cb3e8d379d29a26e8c6",
+      "tools/TranslationPreviewHarness.cpp": "c15bb999e8402ad3534b0419aa07fc22ac0dfa46797e0f83665b9e8f077e87b7"
+    },
+    "catalog_sha256": {
+      "native": "17a358eb8bc02ec417a27ffce1de452b4a275430bfc07d5fb3ea18ea5b05b10d",
+      "online": "db375ee564c39cf02dfb4ce08d6a4dbaecb8cd69d5bc7f167b4c7f779e246587"
+    },
+    "runtime_fonts": [
+      {
+        "virtual_path": "data/fonts/sans.ttf",
+        "path": "/Users/bradley/.codex/worktrees/ed62/glob2/build/darwin/client/debug/dev-dev_fast-true-linker-auto/runtime-assets/data/fonts/sans.ttf",
+        "sha256": "5701af44225833421b6f59a7ecaadf93c0f2630dbbdfc4ac59c794f5c5d889c1"
+      },
+      {
+        "virtual_path": "data/fonts/scripts/NotoSansArabic-Regular.ttf",
+        "path": "/Users/bradley/.codex/worktrees/ed62/glob2/build/darwin/client/debug/dev-dev_fast-true-linker-auto/runtime-assets/data/fonts/scripts/NotoSansArabic-Regular.ttf",
+        "sha256": "ceea25b464a656dc3b26849bab9356740401af62aedf1bfa8b7f0d9b75925b1b"
+      },
+      {
+        "virtual_path": "data/fonts/scripts/NotoSansBengali-Regular.ttf",
+        "path": "/Users/bradley/.codex/worktrees/ed62/glob2/build/darwin/client/debug/dev-dev_fast-true-linker-auto/runtime-assets/data/fonts/scripts/NotoSansBengali-Regular.ttf",
+        "sha256": "6300c5370cd688b0641343de4c786de6d412bb6c578d129dae75e93a0322dcab"
+      },
+      {
+        "virtual_path": "data/fonts/scripts/NotoSansDevanagari-Regular.ttf",
+        "path": "/Users/bradley/.codex/worktrees/ed62/glob2/build/darwin/client/debug/dev-dev_fast-true-linker-auto/runtime-assets/data/fonts/scripts/NotoSansDevanagari-Regular.ttf",
+        "sha256": "385e78e6359a9d88a0f243d53b1209d7548361ba2194e2b9ec779bcaa7e8949d"
+      },
+      {
+        "virtual_path": "data/fonts/scripts/NotoSansEthiopic-Regular.ttf",
+        "path": "/Users/bradley/.codex/worktrees/ed62/glob2/build/darwin/client/debug/dev-dev_fast-true-linker-auto/runtime-assets/data/fonts/scripts/NotoSansEthiopic-Regular.ttf",
+        "sha256": "e3a81ca66eb6d6b1a50a287c1dba18195541f69e0986f8b49a42658aa592ff0d"
+      },
+      {
+        "virtual_path": "data/fonts/scripts/NotoSansGujarati-Regular.ttf",
+        "path": "/Users/bradley/.codex/worktrees/ed62/glob2/build/darwin/client/debug/dev-dev_fast-true-linker-auto/runtime-assets/data/fonts/scripts/NotoSansGujarati-Regular.ttf",
+        "sha256": "8d5c22d7b729ef2839e6d1fe2cde77b2d083907be3659bca63676baa76e01fd6"
+      },
+      {
+        "virtual_path": "data/fonts/scripts/NotoSansGurmukhi-Regular.ttf",
+        "path": "/Users/bradley/.codex/worktrees/ed62/glob2/build/darwin/client/debug/dev-dev_fast-true-linker-auto/runtime-assets/data/fonts/scripts/NotoSansGurmukhi-Regular.ttf",
+        "sha256": "bbde4d85fdfb998eff6921cb2c7a9a7924a1c95560a6aa9a06172530e4f596da"
+      },
+      {
+        "virtual_path": "data/fonts/scripts/NotoSansKannada-Regular.ttf",
+        "path": "/Users/bradley/.codex/worktrees/ed62/glob2/build/darwin/client/debug/dev-dev_fast-true-linker-auto/runtime-assets/data/fonts/scripts/NotoSansKannada-Regular.ttf",
+        "sha256": "5c804033c57f2c2844b1cd425f45b9a78d81d2f71bf358351b24258ebe168aea"
+      },
+      {
+        "virtual_path": "data/fonts/scripts/NotoSansMalayalam-Regular.ttf",
+        "path": "/Users/bradley/.codex/worktrees/ed62/glob2/build/darwin/client/debug/dev-dev_fast-true-linker-auto/runtime-assets/data/fonts/scripts/NotoSansMalayalam-Regular.ttf",
+        "sha256": "42eb462ff13e820ebbeaaec4e7b426bd1de145d02cef8b634f5a3efd376b513c"
+      },
+      {
+        "virtual_path": "data/fonts/scripts/NotoSansMyanmar-Regular.ttf",
+        "path": "/Users/bradley/.codex/worktrees/ed62/glob2/build/darwin/client/debug/dev-dev_fast-true-linker-auto/runtime-assets/data/fonts/scripts/NotoSansMyanmar-Regular.ttf",
+        "sha256": "9dd2bc76a822a974efce803a4b07302d14d01d5c1fa9e33a258d15a9cb513a7d"
+      },
+      {
+        "virtual_path": "data/fonts/scripts/NotoSansOriya-Regular.ttf",
+        "path": "/Users/bradley/.codex/worktrees/ed62/glob2/build/darwin/client/debug/dev-dev_fast-true-linker-auto/runtime-assets/data/fonts/scripts/NotoSansOriya-Regular.ttf",
+        "sha256": "b8d8bd784b9d09c0668233437359913c93a3a83bf37d92ecde859e2bc728a0e0"
+      },
+      {
+        "virtual_path": "data/fonts/scripts/NotoSansTamil-Regular.ttf",
+        "path": "/Users/bradley/.codex/worktrees/ed62/glob2/build/darwin/client/debug/dev-dev_fast-true-linker-auto/runtime-assets/data/fonts/scripts/NotoSansTamil-Regular.ttf",
+        "sha256": "6532db33b8b264abe3a098a40619feb489b5ddf5ab1d2b46e72b51eeb548001b"
+      },
+      {
+        "virtual_path": "data/fonts/scripts/NotoSansTelugu-Regular.ttf",
+        "path": "/Users/bradley/.codex/worktrees/ed62/glob2/build/darwin/client/debug/dev-dev_fast-true-linker-auto/runtime-assets/data/fonts/scripts/NotoSansTelugu-Regular.ttf",
+        "sha256": "2c05072e8018a9be1cb0582953d9edf9a0cf129cdfb74e611de763b09c411f7f"
+      },
+      {
+        "virtual_path": "data/fonts/scripts/NotoSansThai-Regular.ttf",
+        "path": "/Users/bradley/.codex/worktrees/ed62/glob2/build/darwin/client/debug/dev-dev_fast-true-linker-auto/runtime-assets/data/fonts/scripts/NotoSansThai-Regular.ttf",
+        "sha256": "404ddfb5ed0aaa6b6ec8a85700d682978992062d67da93903967b56cbd9a4acc"
+      }
+    ],
+    "runtime_search_paths": [
+      "/Users/bradley/.codex/worktrees/ed62/glob2/artifacts/translation-program/native-preview/release-three/profile-ur",
+      "/Users/bradley/.codex/worktrees/ed62/glob2/build/darwin/client/debug/dev-dev_fast-true-linker-auto/test/",
+      "/Users/bradley/.codex/worktrees/ed62/glob2/build/darwin/client/debug/dev-dev_fast-true-linker-auto/runtime-assets",
+      ".",
+      "/usr/local/share../Resources/",
+      "/Users/bradley/.codex/worktrees/ed62/glob2",
+      "/Users/bradley/.codex/worktrees/ed62/glob2"
+    ],
+    "input_metadata": {
+      "locale": "ur",
+      "kind": "complete-agent-reviewed-draft-overlay",
+      "original_catalog_sha256": {
+        "native": "5cb88fac67663fc436f6bfa60388382c24665755ee481514c002bc92e9a29837",
+        "online": "db375ee564c39cf02dfb4ce08d6a4dbaecb8cd69d5bc7f167b4c7f779e246587"
+      },
+      "state": "linguistic-review-complete-platform-gates-pending"
+    },
+    "sdl_library_path": "/opt/homebrew/Cellar/sdl3/3.4.18/lib/libSDL3.0.dylib",
+    "sdl_ttf_library_path": "/Users/bradley/.codex/worktrees/ed62/glob2/artifacts/translation-program/script-support/prefix/lib/libSDL3_ttf.0.2.2.dylib",
+    "sdl_version": 3004018,
+    "sdl_ttf_version": 3002002,
+    "harfbuzz_version": [
+      10,
+      1,
+      0
+    ]
+  },
+  "current_source_hash_checks": [
+    {
+      "path": "data/texts.en.txt",
+      "expected": "12b08d5636663846dce1b5a93ae3fc98fc31a6ff662e576bf9ba7efbed7ae1a9",
+      "current": "12b08d5636663846dce1b5a93ae3fc98fc31a6ff662e576bf9ba7efbed7ae1a9",
+      "matches": true
+    },
+    {
+      "path": "data/texts.keys.txt",
+      "expected": "fa77dd4464a27324e4c884f44f296a4ca9b5cf0bea46a5916b32b888d423c1de",
+      "current": "fa77dd4464a27324e4c884f44f296a4ca9b5cf0bea46a5916b32b888d423c1de",
+      "matches": true
+    },
+    {
+      "path": "platform/packages/i18n/locales/en.json",
+      "expected": "63017714064b5a2659aa8e2da27a43af117d3f1e60acbbb44ae5d73d80cd7d69",
+      "current": "63017714064b5a2659aa8e2da27a43af117d3f1e60acbbb44ae5d73d80cd7d69",
+      "matches": true
+    },
+    {
+      "path": "libgag/src/TrueTypeFont.cpp",
+      "expected": "fa461f1852e80b1a763a14183ea7522d9c1725bd5ce0fbba19e769defb5d334b",
+      "current": "fa461f1852e80b1a763a14183ea7522d9c1725bd5ce0fbba19e769defb5d334b",
+      "matches": true
+    },
+    {
+      "path": "libgag/src/BidiText.cpp",
+      "expected": "68e003db80a2fbb80006d0ed73d7119c0b34fb69e7b6fd55b417fa396dbea18d",
+      "current": "0813cc512aafd71bb45257090b37f2180b5a36a44965891ba1961c12e1869fc7",
+      "matches": false
+    },
+    {
+      "path": "libgag/src/ui/TextLayout.cpp",
+      "expected": "72140e6df1636805f71b193c6a84b8e445ca638f0711563d839da8403f0601bd",
+      "current": "72140e6df1636805f71b193c6a84b8e445ca638f0711563d839da8403f0601bd",
+      "matches": true
+    },
+    {
+      "path": "src/hud/draw/GameGUIDraw.cpp",
+      "expected": "1192e00eb86b977b1f0a9b4d3c58294f29dc8dc3f36dc88755162e06b44aeeed",
+      "current": "1192e00eb86b977b1f0a9b4d3c58294f29dc8dc3f36dc88755162e06b44aeeed",
+      "matches": true
+    },
+    {
+      "path": "src/hud/touch/GameGUITouchView.cpp",
+      "expected": "966acc8acc2dd1027edbc433002e4df4e1684927531fad33954870c4693bf902",
+      "current": "51ed48845aa3f2cf45880fbc8aa530347ab21a41117ab80a66ecf7159eda468c",
+      "matches": false
+    },
+    {
+      "path": "src/hud/touch/GameGUITouch.cpp",
+      "expected": "0e3e31b6516c3dba1113e654eb8577ebba28bddda2d20612e4a8483908b90614",
+      "current": "96d342744a5048fd38042b8ea3276bc0d8ddd8b6de0e96ac35914833c6f19eb4",
+      "matches": false
+    },
+    {
+      "path": "src/hud/touch/GameGUITouch.h",
+      "expected": "0021daf8e9d244d7891ea772a0df8dea77410263685b4cb3e8d379d29a26e8c6",
+      "current": "705660ad9a667d77fc52c1f50584cb9c2cc4b87635a3964a7053ce2c3f2bc6a7",
+      "matches": false
+    },
+    {
+      "path": "tools/TranslationPreviewHarness.cpp",
+      "expected": "c15bb999e8402ad3534b0419aa07fc22ac0dfa46797e0f83665b9e8f077e87b7",
+      "current": "c15bb999e8402ad3534b0419aa07fc22ac0dfa46797e0f83665b9e8f077e87b7",
+      "matches": true
+    }
+  ],
+  "current_runtime_font_checks": [
+    {
+      "virtual_path": "data/fonts/sans.ttf",
+      "path": "/Users/bradley/.codex/worktrees/ed62/glob2/build/darwin/client/debug/dev-dev_fast-true-linker-auto/runtime-assets/data/fonts/sans.ttf",
+      "sha256": "5701af44225833421b6f59a7ecaadf93c0f2630dbbdfc4ac59c794f5c5d889c1",
+      "current_sha256": "5701af44225833421b6f59a7ecaadf93c0f2630dbbdfc4ac59c794f5c5d889c1",
+      "matches": true
+    },
+    {
+      "virtual_path": "data/fonts/scripts/NotoSansArabic-Regular.ttf",
+      "path": "/Users/bradley/.codex/worktrees/ed62/glob2/build/darwin/client/debug/dev-dev_fast-true-linker-auto/runtime-assets/data/fonts/scripts/NotoSansArabic-Regular.ttf",
+      "sha256": "ceea25b464a656dc3b26849bab9356740401af62aedf1bfa8b7f0d9b75925b1b",
+      "current_sha256": "ceea25b464a656dc3b26849bab9356740401af62aedf1bfa8b7f0d9b75925b1b",
+      "matches": true
+    },
+    {
+      "virtual_path": "data/fonts/scripts/NotoSansBengali-Regular.ttf",
+      "path": "/Users/bradley/.codex/worktrees/ed62/glob2/build/darwin/client/debug/dev-dev_fast-true-linker-auto/runtime-assets/data/fonts/scripts/NotoSansBengali-Regular.ttf",
+      "sha256": "6300c5370cd688b0641343de4c786de6d412bb6c578d129dae75e93a0322dcab",
+      "current_sha256": "6300c5370cd688b0641343de4c786de6d412bb6c578d129dae75e93a0322dcab",
+      "matches": true
+    },
+    {
+      "virtual_path": "data/fonts/scripts/NotoSansDevanagari-Regular.ttf",
+      "path": "/Users/bradley/.codex/worktrees/ed62/glob2/build/darwin/client/debug/dev-dev_fast-true-linker-auto/runtime-assets/data/fonts/scripts/NotoSansDevanagari-Regular.ttf",
+      "sha256": "385e78e6359a9d88a0f243d53b1209d7548361ba2194e2b9ec779bcaa7e8949d",
+      "current_sha256": "385e78e6359a9d88a0f243d53b1209d7548361ba2194e2b9ec779bcaa7e8949d",
+      "matches": true
+    },
+    {
+      "virtual_path": "data/fonts/scripts/NotoSansEthiopic-Regular.ttf",
+      "path": "/Users/bradley/.codex/worktrees/ed62/glob2/build/darwin/client/debug/dev-dev_fast-true-linker-auto/runtime-assets/data/fonts/scripts/NotoSansEthiopic-Regular.ttf",
+      "sha256": "e3a81ca66eb6d6b1a50a287c1dba18195541f69e0986f8b49a42658aa592ff0d",
+      "current_sha256": "e3a81ca66eb6d6b1a50a287c1dba18195541f69e0986f8b49a42658aa592ff0d",
+      "matches": true
+    },
+    {
+      "virtual_path": "data/fonts/scripts/NotoSansGujarati-Regular.ttf",
+      "path": "/Users/bradley/.codex/worktrees/ed62/glob2/build/darwin/client/debug/dev-dev_fast-true-linker-auto/runtime-assets/data/fonts/scripts/NotoSansGujarati-Regular.ttf",
+      "sha256": "8d5c22d7b729ef2839e6d1fe2cde77b2d083907be3659bca63676baa76e01fd6",
+      "current_sha256": "8d5c22d7b729ef2839e6d1fe2cde77b2d083907be3659bca63676baa76e01fd6",
+      "matches": true
+    },
+    {
+      "virtual_path": "data/fonts/scripts/NotoSansGurmukhi-Regular.ttf",
+      "path": "/Users/bradley/.codex/worktrees/ed62/glob2/build/darwin/client/debug/dev-dev_fast-true-linker-auto/runtime-assets/data/fonts/scripts/NotoSansGurmukhi-Regular.ttf",
+      "sha256": "bbde4d85fdfb998eff6921cb2c7a9a7924a1c95560a6aa9a06172530e4f596da",
+      "current_sha256": "bbde4d85fdfb998eff6921cb2c7a9a7924a1c95560a6aa9a06172530e4f596da",
+      "matches": true
+    },
+    {
+      "virtual_path": "data/fonts/scripts/NotoSansKannada-Regular.ttf",
+      "path": "/Users/bradley/.codex/worktrees/ed62/glob2/build/darwin/client/debug/dev-dev_fast-true-linker-auto/runtime-assets/data/fonts/scripts/NotoSansKannada-Regular.ttf",
+      "sha256": "5c804033c57f2c2844b1cd425f45b9a78d81d2f71bf358351b24258ebe168aea",
+      "current_sha256": "5c804033c57f2c2844b1cd425f45b9a78d81d2f71bf358351b24258ebe168aea",
+      "matches": true
+    },
+    {
+      "virtual_path": "data/fonts/scripts/NotoSansMalayalam-Regular.ttf",
+      "path": "/Users/bradley/.codex/worktrees/ed62/glob2/build/darwin/client/debug/dev-dev_fast-true-linker-auto/runtime-assets/data/fonts/scripts/NotoSansMalayalam-Regular.ttf",
+      "sha256": "42eb462ff13e820ebbeaaec4e7b426bd1de145d02cef8b634f5a3efd376b513c",
+      "current_sha256": "42eb462ff13e820ebbeaaec4e7b426bd1de145d02cef8b634f5a3efd376b513c",
+      "matches": true
+    },
+    {
+      "virtual_path": "data/fonts/scripts/NotoSansMyanmar-Regular.ttf",
+      "path": "/Users/bradley/.codex/worktrees/ed62/glob2/build/darwin/client/debug/dev-dev_fast-true-linker-auto/runtime-assets/data/fonts/scripts/NotoSansMyanmar-Regular.ttf",
+      "sha256": "9dd2bc76a822a974efce803a4b07302d14d01d5c1fa9e33a258d15a9cb513a7d",
+      "current_sha256": "9dd2bc76a822a974efce803a4b07302d14d01d5c1fa9e33a258d15a9cb513a7d",
+      "matches": true
+    },
+    {
+      "virtual_path": "data/fonts/scripts/NotoSansOriya-Regular.ttf",
+      "path": "/Users/bradley/.codex/worktrees/ed62/glob2/build/darwin/client/debug/dev-dev_fast-true-linker-auto/runtime-assets/data/fonts/scripts/NotoSansOriya-Regular.ttf",
+      "sha256": "b8d8bd784b9d09c0668233437359913c93a3a83bf37d92ecde859e2bc728a0e0",
+      "current_sha256": "b8d8bd784b9d09c0668233437359913c93a3a83bf37d92ecde859e2bc728a0e0",
+      "matches": true
+    },
+    {
+      "virtual_path": "data/fonts/scripts/NotoSansTamil-Regular.ttf",
+      "path": "/Users/bradley/.codex/worktrees/ed62/glob2/build/darwin/client/debug/dev-dev_fast-true-linker-auto/runtime-assets/data/fonts/scripts/NotoSansTamil-Regular.ttf",
+      "sha256": "6532db33b8b264abe3a098a40619feb489b5ddf5ab1d2b46e72b51eeb548001b",
+      "current_sha256": "6532db33b8b264abe3a098a40619feb489b5ddf5ab1d2b46e72b51eeb548001b",
+      "matches": true
+    },
+    {
+      "virtual_path": "data/fonts/scripts/NotoSansTelugu-Regular.ttf",
+      "path": "/Users/bradley/.codex/worktrees/ed62/glob2/build/darwin/client/debug/dev-dev_fast-true-linker-auto/runtime-assets/data/fonts/scripts/NotoSansTelugu-Regular.ttf",
+      "sha256": "2c05072e8018a9be1cb0582953d9edf9a0cf129cdfb74e611de763b09c411f7f",
+      "current_sha256": "2c05072e8018a9be1cb0582953d9edf9a0cf129cdfb74e611de763b09c411f7f",
+      "matches": true
+    },
+    {
+      "virtual_path": "data/fonts/scripts/NotoSansThai-Regular.ttf",
+      "path": "/Users/bradley/.codex/worktrees/ed62/glob2/build/darwin/client/debug/dev-dev_fast-true-linker-auto/runtime-assets/data/fonts/scripts/NotoSansThai-Regular.ttf",
+      "sha256": "404ddfb5ed0aaa6b6ec8a85700d682978992062d67da93903967b56cbd9a4acc",
+      "current_sha256": "404ddfb5ed0aaa6b6ec8a85700d682978992062d67da93903967b56cbd9a4acc",
+      "matches": true
+    }
+  ],
+  "coverage": {
+    "png_files_enumerated": 108,
+    "production_screen_pngs_all_actually_inspected": 18,
+    "font_matrix_pngs_available": 90,
+    "representative_font_pngs_actually_inspected": 10,
+    "total_pngs_actually_inspected": 28,
+    "all_fontpages_claimed_read": false,
+    "font_sizes": [
+      10,
+      13,
+      20
+    ],
+    "font_scales": [
+      1,
+      2
+    ]
+  },
+  "images": [
+    {
+      "path": "native-preview/release-three/ur/1200/main.png",
+      "sha256": "24998f1c9f8147f49e4771f8b34ce36ab6b03ee9da8b531c063d3ca604066649",
+      "pixel_size": [
+        1200,
+        844
+      ],
+      "visually_inspected": true,
+      "notes": "Actually inspected production Urdu text, joining, vertical marks, mixed Latin/numerals and visible control fit. Findings below take precedence; offscreen scroll content not claimed read.",
+      "archive": "reviewed-images/1200/main.png"
+    },
+    {
+      "path": "native-preview/release-three/ur/1200/settings.png",
+      "sha256": "f664db0599e7a5b0c98079e1f450d56a7440258a31802419596699fd7b5a3309",
+      "pixel_size": [
+        1200,
+        844
+      ],
+      "visually_inspected": true,
+      "notes": "Scale selector has unbalanced visible parenthesis orientation in bothsizes despite correct logicalsource. Other captured labels readable; later scrollrows not inspected.",
+      "archive": "reviewed-images/1200/settings.png"
+    },
+    {
+      "path": "native-preview/release-three/ur/1200/settings-audio.png",
+      "sha256": "d444f6ab2f2bb379ecbba5cb31e4b750559be94540fc0e8b08f4a379a9c75d7a",
+      "pixel_size": [
+        1200,
+        844
+      ],
+      "visually_inspected": true,
+      "notes": "Actually inspected production Urdu text, joining, vertical marks, mixed Latin/numerals and visible control fit. Findings below take precedence; offscreen scroll content not claimed read.",
+      "archive": "reviewed-images/1200/settings-audio.png"
+    },
+    {
+      "path": "native-preview/release-three/ur/1200/lobby.png",
+      "sha256": "9fab0fe7c935e75c29e7c3baa0d4874e740845f5ab6dc304b48fe05987b82062",
+      "pixel_size": [
+        1200,
+        844
+      ],
+      "visually_inspected": true,
+      "notes": "Visible controls readable; mapthumbnail pending, no generatedmaprender claim.",
+      "archive": "reviewed-images/1200/lobby.png"
+    },
+    {
+      "path": "native-preview/release-three/ur/1200/lobby-players.png",
+      "sha256": "d99eaa43cad6e78464390b5341cd1f7b492473ce248d593f34630d9a5611b06e",
+      "pixel_size": [
+        1200,
+        844
+      ],
+      "visually_inspected": true,
+      "notes": "Actually inspected production Urdu text, joining, vertical marks, mixed Latin/numerals and visible control fit. Findings below take precedence; offscreen scroll content not claimed read.",
+      "archive": "reviewed-images/1200/lobby-players.png"
+    },
+    {
+      "path": "native-preview/release-three/ur/1200/gameplay.png",
+      "sha256": "23e987a8603ac4bd1f221cb9c0d187f18d291f7d9337ed0b875fcd8bfa34c7c8",
+      "pixel_size": [
+        2400,
+        1688
+      ],
+      "visually_inspected": true,
+      "notes": "390 phone-presentation bottom navigation labels clipped at framebuffer edge;1200 desktop HUD readable. Zero counters are fixturestate, not arbitrary formattednumber proof.",
+      "archive": "reviewed-images/1200/gameplay.png"
+    },
+    {
+      "path": "native-preview/release-three/ur/1200/gameplay-dialog.png",
+      "sha256": "fd5ce54d9b084052eb7e5a67934676dbb329fda1ec089660a742842ab3d1a902",
+      "pixel_size": [
+        2400,
+        1688
+      ],
+      "visually_inspected": true,
+      "notes": "Actually inspected production Urdu text, joining, vertical marks, mixed Latin/numerals and visible control fit. Findings below take precedence; offscreen scroll content not claimed read.",
+      "archive": "reviewed-images/1200/gameplay-dialog.png"
+    },
+    {
+      "path": "native-preview/release-three/ur/1200/tutorial.png",
+      "sha256": "0093a1665d8bfff045b56bfc837bcd89472c3792f6374ec4a1b39c8d84ec19b0",
+      "pixel_size": [
+        2400,
+        1688
+      ],
+      "visually_inspected": true,
+      "notes": "Only first production instruction;1200 paragraph readable and390 scrollbox top readable with fixed OK.390 bottom navigation labels clipped. Hidden tutorial text not claimed read.",
+      "archive": "reviewed-images/1200/tutorial.png"
+    },
+    {
+      "path": "native-preview/release-three/ur/1200/tutorial-dialog.png",
+      "sha256": "9f97b14e75020cdcd66dc6b6dc8f223b506d257a92d18d1f236fe3591f3a5f69",
+      "pixel_size": [
+        2400,
+        1688
+      ],
+      "visually_inspected": true,
+      "notes": "Actually inspected production Urdu text, joining, vertical marks, mixed Latin/numerals and visible control fit. Findings below take precedence; offscreen scroll content not claimed read.",
+      "archive": "reviewed-images/1200/tutorial-dialog.png"
+    },
+    {
+      "path": "native-preview/release-three/ur/390/main.png",
+      "sha256": "d9331f67453a1fad59eeaee7fae02adcf98d7017bfbfc7285177b5a291f9caad",
+      "pixel_size": [
+        390,
+        844
+      ],
+      "visually_inspected": true,
+      "notes": "Actually inspected production Urdu text, joining, vertical marks, mixed Latin/numerals and visible control fit. Findings below take precedence; offscreen scroll content not claimed read.",
+      "archive": "reviewed-images/390/main.png"
+    },
+    {
+      "path": "native-preview/release-three/ur/390/settings.png",
+      "sha256": "c506fe7277b1ec3cf200eccb9ec1779befa01db187e488d320a44718814e8905",
+      "pixel_size": [
+        390,
+        844
+      ],
+      "visually_inspected": true,
+      "notes": "Scale selector has unbalanced visible parenthesis orientation in bothsizes despite correct logicalsource. Other captured labels readable; later scrollrows not inspected.",
+      "archive": "reviewed-images/390/settings.png"
+    },
+    {
+      "path": "native-preview/release-three/ur/390/settings-audio.png",
+      "sha256": "914e5eeb501f58af04edc63191f0d75bc584be109602745657c8085ced26728d",
+      "pixel_size": [
+        390,
+        844
+      ],
+      "visually_inspected": true,
+      "notes": "Actually inspected production Urdu text, joining, vertical marks, mixed Latin/numerals and visible control fit. Findings below take precedence; offscreen scroll content not claimed read.",
+      "archive": "reviewed-images/390/settings-audio.png"
+    },
+    {
+      "path": "native-preview/release-three/ur/390/lobby.png",
+      "sha256": "40e7876588790056e8f25e662ca5a825e1aeeb37092ded53986008570d032fb5",
+      "pixel_size": [
+        390,
+        844
+      ],
+      "visually_inspected": true,
+      "notes": "Visible controls readable; mapthumbnail pending, no generatedmaprender claim.",
+      "archive": "reviewed-images/390/lobby.png"
+    },
+    {
+      "path": "native-preview/release-three/ur/390/lobby-players.png",
+      "sha256": "fe248c0ca776636afd1b3f110e1862e3fdc9fd354d1807bbaeda99b82ae9c2a8",
+      "pixel_size": [
+        390,
+        844
+      ],
+      "visually_inspected": true,
+      "notes": "Actually inspected production Urdu text, joining, vertical marks, mixed Latin/numerals and visible control fit. Findings below take precedence; offscreen scroll content not claimed read.",
+      "archive": "reviewed-images/390/lobby-players.png"
+    },
+    {
+      "path": "native-preview/release-three/ur/390/gameplay.png",
+      "sha256": "014ba8c279928ce64887cb6d32bee7a65570e3a8d0b7ddfb78530554e558c365",
+      "pixel_size": [
+        780,
+        1688
+      ],
+      "visually_inspected": true,
+      "notes": "390 phone-presentation bottom navigation labels clipped at framebuffer edge;1200 desktop HUD readable. Zero counters are fixturestate, not arbitrary formattednumber proof.",
+      "archive": "reviewed-images/390/gameplay.png"
+    },
+    {
+      "path": "native-preview/release-three/ur/390/gameplay-dialog.png",
+      "sha256": "a6bdbf6205d8d64385bc19f457876e127bc6d5f411cbbcffd14c9f8195bfbb52",
+      "pixel_size": [
+        780,
+        1688
+      ],
+      "visually_inspected": true,
+      "notes": "Actually inspected production Urdu text, joining, vertical marks, mixed Latin/numerals and visible control fit. Findings below take precedence; offscreen scroll content not claimed read.",
+      "archive": "reviewed-images/390/gameplay-dialog.png"
+    },
+    {
+      "path": "native-preview/release-three/ur/390/tutorial.png",
+      "sha256": "1595296effc958ae90bbf433dd30dd0617eb0b41cb9c7cb16806cc883630be5f",
+      "pixel_size": [
+        780,
+        1688
+      ],
+      "visually_inspected": true,
+      "notes": "Only first production instruction;1200 paragraph readable and390 scrollbox top readable with fixed OK.390 bottom navigation labels clipped. Hidden tutorial text not claimed read.",
+      "archive": "reviewed-images/390/tutorial.png"
+    },
+    {
+      "path": "native-preview/release-three/ur/390/tutorial-dialog.png",
+      "sha256": "273d7e1babb4415975c3500ba23749018b878d0a9753658990f9861ff890072d",
+      "pixel_size": [
+        780,
+        1688
+      ],
+      "visually_inspected": true,
+      "notes": "Actually inspected production Urdu text, joining, vertical marks, mixed Latin/numerals and visible control fit. Findings below take precedence; offscreen scroll content not claimed read.",
+      "archive": "reviewed-images/390/tutorial-dialog.png"
+    },
+    {
+      "path": "native-preview/release-three/ur/1200/font-10-scale-1-page-001.png",
+      "sha256": "69212ccab5f1d3beae15ad5a1201c2a64114c71ed8193b11cdde911330f1a25a",
+      "pixel_size": [
+        1200,
+        844
+      ],
+      "visually_inspected": true,
+      "notes": "Representative production Urdu fontmatrix; Arabic joining, diacritics, dots, Latin/numbers and line spacing readable; no tofu/obvious clipped glyph. Literalplaceholdertokens, not formattedmessage proof.",
+      "archive": "reviewed-images/1200/font-10-scale-1-page-001.png"
+    },
+    {
+      "path": "native-preview/release-three/ur/1200/font-10-scale-2-page-001.png",
+      "sha256": "090118f80b1c02aa76da1c9ce8941ef27e5114f435d59e93a6a834026b7fe2c7",
+      "pixel_size": [
+        2400,
+        1688
+      ],
+      "visually_inspected": true,
+      "notes": "Representative production Urdu fontmatrix; Arabic joining, diacritics, dots, Latin/numbers and line spacing readable; no tofu/obvious clipped glyph. Literalplaceholdertokens, not formattedmessage proof.",
+      "archive": "reviewed-images/1200/font-10-scale-2-page-001.png"
+    },
+    {
+      "path": "native-preview/release-three/ur/1200/font-13-scale-1-page-001.png",
+      "sha256": "194e4cd3109c7916e9fa20ce944e4ca68f35d17acd6a53a6e2a479f660419996",
+      "pixel_size": [
+        1200,
+        844
+      ],
+      "visually_inspected": true,
+      "notes": "Representative production Urdu fontmatrix; Arabic joining, diacritics, dots, Latin/numbers and line spacing readable; no tofu/obvious clipped glyph. Literalplaceholdertokens, not formattedmessage proof.",
+      "archive": "reviewed-images/1200/font-13-scale-1-page-001.png"
+    },
+    {
+      "path": "native-preview/release-three/ur/1200/font-13-scale-2-page-001.png",
+      "sha256": "598c8a75418af20da64721533296b35c78dd075ea99046d82a0840a8d01a0835",
+      "pixel_size": [
+        2400,
+        1688
+      ],
+      "visually_inspected": true,
+      "notes": "Representative production Urdu fontmatrix; Arabic joining, diacritics, dots, Latin/numbers and line spacing readable; no tofu/obvious clipped glyph. Literalplaceholdertokens, not formattedmessage proof.",
+      "archive": "reviewed-images/1200/font-13-scale-2-page-001.png"
+    },
+    {
+      "path": "native-preview/release-three/ur/1200/font-20-scale-1-page-001.png",
+      "sha256": "d6ef7cda4a7a4437b52f25787ce73d57478188df3570ee0d0e8839314b5eb65e",
+      "pixel_size": [
+        1200,
+        844
+      ],
+      "visually_inspected": true,
+      "notes": "Representative production Urdu fontmatrix; Arabic joining, diacritics, dots, Latin/numbers and line spacing readable; no tofu/obvious clipped glyph. Literalplaceholdertokens, not formattedmessage proof.",
+      "archive": "reviewed-images/1200/font-20-scale-1-page-001.png"
+    },
+    {
+      "path": "native-preview/release-three/ur/1200/font-20-scale-2-page-001.png",
+      "sha256": "0d126cb0520aeeaf17f955df8bc5dfc0d21c32db26f7d07f5739aa60025c74ab",
+      "pixel_size": [
+        2400,
+        1688
+      ],
+      "visually_inspected": true,
+      "notes": "Representative production Urdu fontmatrix; Arabic joining, diacritics, dots, Latin/numbers and line spacing readable; no tofu/obvious clipped glyph. Literalplaceholdertokens, not formattedmessage proof.",
+      "archive": "reviewed-images/1200/font-20-scale-2-page-001.png"
+    },
+    {
+      "path": "native-preview/release-three/ur/390/font-10-scale-1-page-001.png",
+      "sha256": "2f02647ce04042f3f76e2317c1d9a75fc3cc2f18c3293bbf321178ab75836fa9",
+      "pixel_size": [
+        390,
+        844
+      ],
+      "visually_inspected": true,
+      "notes": "Representative production Urdu fontmatrix; Arabic joining, diacritics, dots, Latin/numbers and line spacing readable; no tofu/obvious clipped glyph. Literalplaceholdertokens, not formattedmessage proof.",
+      "archive": "reviewed-images/390/font-10-scale-1-page-001.png"
+    },
+    {
+      "path": "native-preview/release-three/ur/390/font-13-scale-2-page-003.png",
+      "sha256": "aadcbc078a2382d069a2013d26ac4bf00732c1e1d7f89e88b387adb268b25771",
+      "pixel_size": [
+        780,
+        1688
+      ],
+      "visually_inspected": true,
+      "notes": "Representative production Urdu fontmatrix; Arabic joining, diacritics, dots, Latin/numbers and line spacing readable; no tofu/obvious clipped glyph. Literalplaceholdertokens, not formattedmessage proof.",
+      "archive": "reviewed-images/390/font-13-scale-2-page-003.png"
+    },
+    {
+      "path": "native-preview/release-three/ur/390/font-20-scale-1-page-009.png",
+      "sha256": "aab56b063d5308d55096c86b0f2db7925748d2234ca8ec890adedc09f6308935",
+      "pixel_size": [
+        390,
+        844
+      ],
+      "visually_inspected": true,
+      "notes": "Representative production Urdu fontmatrix; Arabic joining, diacritics, dots, Latin/numbers and line spacing readable; no tofu/obvious clipped glyph. Literalplaceholdertokens, not formattedmessage proof.",
+      "archive": "reviewed-images/390/font-20-scale-1-page-009.png"
+    },
+    {
+      "path": "native-preview/release-three/ur/390/font-20-scale-2-page-010.png",
+      "sha256": "e7dd9f9d569ea5ee2c7ae9bb2e8df959dc1062845818dd4f8e3e47138fbb2ffb",
+      "pixel_size": [
+        780,
+        1688
+      ],
+      "visually_inspected": true,
+      "notes": "Representative production Urdu fontmatrix; Arabic joining, diacritics, dots, Latin/numbers and line spacing readable; no tofu/obvious clipped glyph. Literalplaceholdertokens, not formattedmessage proof.",
+      "archive": "reviewed-images/390/font-20-scale-2-page-010.png"
+    }
+  ],
+  "metadata_checks": [
+    {
+      "metadata_sha256": "d09b211791d6cc48543c3a4f044525c104d2eaac707737623eef43984d649181",
+      "width": "1200",
+      "screen": "main",
+      "full3328overlay": true,
+      "binary_source_catalog_identity_matches": true,
+      "control_count": 11,
+      "off_viewport_controls": 0,
+      "bounds_limit": "Offscreen scrollcontent is expected; bounds do not independently establish rendered text fit."
+    },
+    {
+      "metadata_sha256": "36ae970a559fd25dfd8f8ceb2befe25c266317af976dc7dd60c3c7d5a338a60a",
+      "width": "1200",
+      "screen": "settings",
+      "full3328overlay": true,
+      "binary_source_catalog_identity_matches": true,
+      "control_count": 36,
+      "off_viewport_controls": 16,
+      "bounds_limit": "Offscreen scrollcontent is expected; bounds do not independently establish rendered text fit."
+    },
+    {
+      "metadata_sha256": "82373db64539184d6e6d59fcbd6a47f6324ad3bdba53163aeca1fa5385811976",
+      "width": "1200",
+      "screen": "settings-audio",
+      "full3328overlay": true,
+      "binary_source_catalog_identity_matches": true,
+      "control_count": 18,
+      "off_viewport_controls": 0,
+      "bounds_limit": "Offscreen scrollcontent is expected; bounds do not independently establish rendered text fit."
+    },
+    {
+      "metadata_sha256": "0a277796feecbd91a552058f543884a606e80c10335978d0e7936b53bc099ae6",
+      "width": "1200",
+      "screen": "lobby",
+      "full3328overlay": true,
+      "binary_source_catalog_identity_matches": true,
+      "control_count": 18,
+      "off_viewport_controls": 0,
+      "bounds_limit": "Offscreen scrollcontent is expected; bounds do not independently establish rendered text fit."
+    },
+    {
+      "metadata_sha256": "ba04d17d0b10b4556a8ddd5c454aad4494c5a5943f6be38195bf05f74f0e37b0",
+      "width": "1200",
+      "screen": "lobby-players",
+      "full3328overlay": true,
+      "binary_source_catalog_identity_matches": true,
+      "control_count": 20,
+      "off_viewport_controls": 0,
+      "bounds_limit": "Offscreen scrollcontent is expected; bounds do not independently establish rendered text fit."
+    },
+    {
+      "metadata_sha256": "b34bd7c44ef5e4ee1b450887adbce6485283bd0564c1661ebe4088b082bd758a",
+      "width": "1200",
+      "screen": "gameplay",
+      "full3328overlay": true,
+      "binary_source_catalog_identity_matches": true,
+      "draw_checksum_unchanged": true,
+      "capture_tick": 20,
+      "published_tick": 20,
+      "phone_presentation_requested": false,
+      "simulation_steps": [
+        {
+          "tick": 1,
+          "checksum": 488519661
+        },
+        {
+          "tick": 2,
+          "checksum": 239455904
+        },
+        {
+          "tick": 3,
+          "checksum": 2342655463
+        },
+        {
+          "tick": 4,
+          "checksum": 1448693384
+        },
+        {
+          "tick": 5,
+          "checksum": 2383970093
+        },
+        {
+          "tick": 6,
+          "checksum": 240711042
+        },
+        {
+          "tick": 7,
+          "checksum": 1476558731
+        },
+        {
+          "tick": 8,
+          "checksum": 1610118548
+        },
+        {
+          "tick": 9,
+          "checksum": 3682992799
+        },
+        {
+          "tick": 10,
+          "checksum": 4281023702
+        },
+        {
+          "tick": 11,
+          "checksum": 687465296
+        },
+        {
+          "tick": 12,
+          "checksum": 4022557372
+        },
+        {
+          "tick": 13,
+          "checksum": 4156513797
+        },
+        {
+          "tick": 14,
+          "checksum": 3450370349
+        },
+        {
+          "tick": 15,
+          "checksum": 1579608020
+        },
+        {
+          "tick": 16,
+          "checksum": 961700865
+        },
+        {
+          "tick": 17,
+          "checksum": 716797530
+        },
+        {
+          "tick": 18,
+          "checksum": 1860788331
+        },
+        {
+          "tick": 19,
+          "checksum": 332734974
+        },
+        {
+          "tick": 20,
+          "checksum": 3828636654
+        }
+      ],
+      "captures": [
+        {
+          "name": "gameplay",
+          "checksum_before_draw": 3828636654,
+          "checksum_after_draw": 3828636654,
+          "image_width": 2400,
+          "image_height": 1688
+        },
+        {
+          "name": "gameplay-dialog",
+          "checksum_before_draw": 3828636654,
+          "checksum_after_draw": 3828636654,
+          "image_width": 2400,
+          "image_height": 1688
+        }
+      ]
+    },
+    {
+      "metadata_sha256": "85e3240dcfd9bea547bf7cfead2eeb9f450867800baf088721283a0e4a64659e",
+      "width": "1200",
+      "screen": "tutorial",
+      "full3328overlay": true,
+      "binary_source_catalog_identity_matches": true,
+      "draw_checksum_unchanged": true,
+      "capture_tick": 20,
+      "published_tick": 20,
+      "phone_presentation_requested": false,
+      "simulation_steps": [
+        {
+          "tick": 1,
+          "checksum": 637031179
+        },
+        {
+          "tick": 2,
+          "checksum": 804621614
+        },
+        {
+          "tick": 3,
+          "checksum": 1381263482
+        },
+        {
+          "tick": 4,
+          "checksum": 1818219666
+        },
+        {
+          "tick": 5,
+          "checksum": 793377981
+        },
+        {
+          "tick": 6,
+          "checksum": 3351761139
+        },
+        {
+          "tick": 7,
+          "checksum": 2068533513
+        },
+        {
+          "tick": 8,
+          "checksum": 3142637807
+        },
+        {
+          "tick": 9,
+          "checksum": 1944372796
+        },
+        {
+          "tick": 10,
+          "checksum": 4007467353
+        },
+        {
+          "tick": 11,
+          "checksum": 2806585442
+        },
+        {
+          "tick": 12,
+          "checksum": 3730932390
+        },
+        {
+          "tick": 13,
+          "checksum": 3431297055
+        },
+        {
+          "tick": 14,
+          "checksum": 3847581872
+        },
+        {
+          "tick": 15,
+          "checksum": 2759296637
+        },
+        {
+          "tick": 16,
+          "checksum": 3578734380
+        },
+        {
+          "tick": 17,
+          "checksum": 3874144772
+        },
+        {
+          "tick": 18,
+          "checksum": 2097932196
+        },
+        {
+          "tick": 19,
+          "checksum": 2981859672
+        },
+        {
+          "tick": 20,
+          "checksum": 4048920978
+        }
+      ],
+      "captures": [
+        {
+          "name": "tutorial",
+          "checksum_before_draw": 4048920978,
+          "checksum_after_draw": 4048920978,
+          "image_width": 2400,
+          "image_height": 1688
+        },
+        {
+          "name": "tutorial-dialog",
+          "checksum_before_draw": 4048920978,
+          "checksum_after_draw": 4048920978,
+          "image_width": 2400,
+          "image_height": 1688
+        }
+      ]
+    },
+    {
+      "metadata_sha256": "1b6a1eb5813473e59b2b8a1b44176d5058fe94a7f5b5fc99b4a8f00390ac9f5e",
+      "width": "390",
+      "screen": "main",
+      "full3328overlay": true,
+      "binary_source_catalog_identity_matches": true,
+      "control_count": 11,
+      "off_viewport_controls": 0,
+      "bounds_limit": "Offscreen scrollcontent is expected; bounds do not independently establish rendered text fit."
+    },
+    {
+      "metadata_sha256": "786eb0ee7953cac04c0f72b683be588766582713d37ca7bc2c600b1f4acffd47",
+      "width": "390",
+      "screen": "settings",
+      "full3328overlay": true,
+      "binary_source_catalog_identity_matches": true,
+      "control_count": 24,
+      "off_viewport_controls": 18,
+      "bounds_limit": "Offscreen scrollcontent is expected; bounds do not independently establish rendered text fit."
+    },
+    {
+      "metadata_sha256": "a1a6e484e0de7664bcac715eb0fff879854d10c28d0a93cbd8d21cfad5d01eef",
+      "width": "390",
+      "screen": "settings-audio",
+      "full3328overlay": true,
+      "binary_source_catalog_identity_matches": true,
+      "control_count": 6,
+      "off_viewport_controls": 0,
+      "bounds_limit": "Offscreen scrollcontent is expected; bounds do not independently establish rendered text fit."
+    },
+    {
+      "metadata_sha256": "49de278aa05a59a2ce3b6bc28498bab6fd77c1b23cbada9180ebf12bd2e4ba50",
+      "width": "390",
+      "screen": "lobby",
+      "full3328overlay": true,
+      "binary_source_catalog_identity_matches": true,
+      "control_count": 18,
+      "off_viewport_controls": 6,
+      "bounds_limit": "Offscreen scrollcontent is expected; bounds do not independently establish rendered text fit."
+    },
+    {
+      "metadata_sha256": "acf7712f3dabdb83423ed6297521fb704b48058990c12a1586a4fdd65c31a9d6",
+      "width": "390",
+      "screen": "lobby-players",
+      "full3328overlay": true,
+      "binary_source_catalog_identity_matches": true,
+      "control_count": 20,
+      "off_viewport_controls": 4,
+      "bounds_limit": "Offscreen scrollcontent is expected; bounds do not independently establish rendered text fit."
+    },
+    {
+      "metadata_sha256": "d9896819224741984be0b3500c05cacfa1256a07fd28074df453f5351184183f",
+      "width": "390",
+      "screen": "gameplay",
+      "full3328overlay": true,
+      "binary_source_catalog_identity_matches": true,
+      "draw_checksum_unchanged": true,
+      "capture_tick": 20,
+      "published_tick": 20,
+      "phone_presentation_requested": true,
+      "simulation_steps": [
+        {
+          "tick": 1,
+          "checksum": 488519661
+        },
+        {
+          "tick": 2,
+          "checksum": 239455904
+        },
+        {
+          "tick": 3,
+          "checksum": 2342655463
+        },
+        {
+          "tick": 4,
+          "checksum": 1448693384
+        },
+        {
+          "tick": 5,
+          "checksum": 2383970093
+        },
+        {
+          "tick": 6,
+          "checksum": 240711042
+        },
+        {
+          "tick": 7,
+          "checksum": 1476558731
+        },
+        {
+          "tick": 8,
+          "checksum": 1610118548
+        },
+        {
+          "tick": 9,
+          "checksum": 3682992799
+        },
+        {
+          "tick": 10,
+          "checksum": 4281023702
+        },
+        {
+          "tick": 11,
+          "checksum": 687465296
+        },
+        {
+          "tick": 12,
+          "checksum": 4022557372
+        },
+        {
+          "tick": 13,
+          "checksum": 4156513797
+        },
+        {
+          "tick": 14,
+          "checksum": 3450370349
+        },
+        {
+          "tick": 15,
+          "checksum": 1579608020
+        },
+        {
+          "tick": 16,
+          "checksum": 961700865
+        },
+        {
+          "tick": 17,
+          "checksum": 716797530
+        },
+        {
+          "tick": 18,
+          "checksum": 1860788331
+        },
+        {
+          "tick": 19,
+          "checksum": 332734974
+        },
+        {
+          "tick": 20,
+          "checksum": 3828636654
+        }
+      ],
+      "captures": [
+        {
+          "name": "gameplay",
+          "checksum_before_draw": 3828636654,
+          "checksum_after_draw": 3828636654,
+          "image_width": 780,
+          "image_height": 1688
+        },
+        {
+          "name": "gameplay-dialog",
+          "checksum_before_draw": 3828636654,
+          "checksum_after_draw": 3828636654,
+          "image_width": 780,
+          "image_height": 1688
+        }
+      ]
+    },
+    {
+      "metadata_sha256": "f7d48d8d1e94d5ef9f58a8531a422a62d153e140569fff20d4db622f277e2696",
+      "width": "390",
+      "screen": "tutorial",
+      "full3328overlay": true,
+      "binary_source_catalog_identity_matches": true,
+      "draw_checksum_unchanged": true,
+      "capture_tick": 21,
+      "published_tick": 21,
+      "phone_presentation_requested": true,
+      "simulation_steps": [
+        {
+          "tick": 1,
+          "checksum": 637031179
+        },
+        {
+          "tick": 2,
+          "checksum": 804621614
+        },
+        {
+          "tick": 3,
+          "checksum": 1381263482
+        },
+        {
+          "tick": 4,
+          "checksum": 1818219666
+        },
+        {
+          "tick": 5,
+          "checksum": 793377981
+        },
+        {
+          "tick": 6,
+          "checksum": 3351761139
+        },
+        {
+          "tick": 7,
+          "checksum": 2068533513
+        },
+        {
+          "tick": 8,
+          "checksum": 3142637807
+        },
+        {
+          "tick": 9,
+          "checksum": 1944372796
+        },
+        {
+          "tick": 10,
+          "checksum": 4007467353
+        },
+        {
+          "tick": 11,
+          "checksum": 2806585442
+        },
+        {
+          "tick": 12,
+          "checksum": 3730932390
+        },
+        {
+          "tick": 13,
+          "checksum": 3431297055
+        },
+        {
+          "tick": 14,
+          "checksum": 3847581872
+        },
+        {
+          "tick": 15,
+          "checksum": 2759296637
+        },
+        {
+          "tick": 16,
+          "checksum": 3578734380
+        },
+        {
+          "tick": 17,
+          "checksum": 3874144772
+        },
+        {
+          "tick": 18,
+          "checksum": 2097932196
+        },
+        {
+          "tick": 19,
+          "checksum": 2981859672
+        },
+        {
+          "tick": 20,
+          "checksum": 4048920978
+        }
+      ],
+      "captures": [
+        {
+          "name": "tutorial",
+          "checksum_before_draw": 3942977124,
+          "checksum_after_draw": 3942977124,
+          "image_width": 780,
+          "image_height": 1688
+        },
+        {
+          "name": "tutorial-dialog",
+          "checksum_before_draw": 3942977124,
+          "checksum_after_draw": 3942977124,
+          "image_width": 780,
+          "image_height": 1688
+        }
+      ]
+    }
+  ],
+  "matrix_diagnostics": [
+    {
+      "width": "1200",
+      "metadata_sha256": "7b7cd125bfe4f69e4ea98403b8b0dbdbdeee2c8cf0167da82f74ebf2c9a4ad35",
+      "source_is_pilot_not_final_catalog": true,
+      "pilot_native_keys": 80,
+      "pilot_online_keys": 40,
+      "samples_all_scales": 726,
+      "bad_glyph_or_draw_destination_samples": 0,
+      "font_png_count": 44,
+      "source_identity_matches_production_capture": true,
+      "catalog_sha256": {
+        "native": "aa4f790619c288fae4cdb0945c2a0a3719539ccf9f98eaf2141076ea4aab6df0",
+        "online": "c3643a8d5503799380c31dd0622d07799443671d87d7da939f513ce6cfbd372d"
+      },
+      "scope": "Representative script/font diagnostic only; stale pilot wording/status cannot establish final fullcatalog linguistic approval."
+    },
+    {
+      "width": "390",
+      "metadata_sha256": "e2bf4ff396469531c735304368af4c76154a27527230f41921a899e99a8e5c3b",
+      "source_is_pilot_not_final_catalog": true,
+      "pilot_native_keys": 80,
+      "pilot_online_keys": 40,
+      "samples_all_scales": 726,
+      "bad_glyph_or_draw_destination_samples": 0,
+      "font_png_count": 46,
+      "source_identity_matches_production_capture": true,
+      "catalog_sha256": {
+        "native": "aa4f790619c288fae4cdb0945c2a0a3719539ccf9f98eaf2141076ea4aab6df0",
+        "online": "c3643a8d5503799380c31dd0622d07799443671d87d7da939f513ce6cfbd372d"
+      },
+      "scope": "Representative script/font diagnostic only; stale pilot wording/status cannot establish final fullcatalog linguistic approval."
+    }
+  ],
+  "findings": [
+    {
+      "id": "UR-NATIVE-VIS-001",
+      "severity": "major",
+      "screens": [
+        "390/gameplay.png",
+        "390/tutorial.png"
+      ],
+      "keys": [
+        "[Build]",
+        "[Flags]",
+        "[Editor tools]",
+        "[Goals]",
+        "[Teams]",
+        "[Menu]"
+      ],
+      "problem": "All six bottom action labels extend beyond framebuffer bottom; only upper parts remain visible. Dialog menus themselves fit. Tall Urdu raster/line metrics exceed the action-strip label allocation.",
+      "suggestion": "Grow the navigation action strip from measured Urdu font/raster height and wrapped linecount; keep icon,label and bottompadding inside framebuffer. Verify actual390 recaptures plus existing locales.",
+      "catalog_edit_requested": false
+    },
+    {
+      "id": "UR-NATIVE-VIS-002",
+      "severity": "minor",
+      "screens": [
+        "1200/settings.png",
+        "390/settings.png"
+      ],
+      "key": "[settings Match the desktop %0]",
+      "source": "Match the desktop (%0)",
+      "target": "ڈیسک ٹاپ کے مطابق (%0)",
+      "problem": "Rendered scale label shows two opening parentheses to the left of100 rather than a balanced parenthesized percentage. Logical catalog has correct paired ASCII parentheses.",
+      "suggestion": "Inspect production bidi segmentation and SDL_ttf bracket mirroring. Ensure punctuation mirrored exactly once, then render percent, mixedLatin and bracket pairs in Urdu plus existing Arabic/Persian. Do not reverse catalog text.",
+      "catalog_edit_requested": false
+    }
+  ],
+  "positive_observations": [
+    "All18 production screenshots actually inspected independently, not machineflags alone.",
+    "Urdu joining, dots, diacritics and line spacing readable in visible menu, lobby, dialogs and firsttutorialtext; representative10/13/20 fonts atscales1/2 have no observed tofu or clippedglyphs.",
+    "All8 drawing checksum pairs unchanged;20ticktraces identical at bothwidths. Local evidence, not crossplatformsimulation certification."
+  ],
+  "limits": [
+    "Agentreview, not human nativespeaker approval.",
+    "390 is phonepresentation in macOS desktopengine, not Android/iOS or physicalphone verification.",
+    "Fontmatrix is old80native40onlinepilot, literalplaceholders and121branches; not fullfinalcatalog visual approval.",
+    "Only visible settings/lobby rows and firsttutorialinstruction inspected; no scrolling interaction/IME/alltutorials/allformat combinations claim.",
+    "Staticimages do not verify native inputcomposition, URLs typing, networking or audio playback.",
+    "source_revision inmetadata is frozenkitrevision; dirtybuild identified by exactsource/executable/font hashes. Sourcehash mismatches below mean subsequentworktree edits, not the capture being rebuilt; findings refer archivedpixels.",
+    "Fresh rendering after fixes and globalintegration/platform gates remain pending."
+  ]
+}

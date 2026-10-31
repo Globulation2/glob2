@@ -1,0 +1,20 @@
+{
+  "baseline_sha256": "a2398e2e0776ad8828db86173bbeb849a119949401ec444c46ef0b8a8e6d179d",
+  "primary_editor_sha256": "ec78fb33247244bf783461e0410ef11fe48e45644c3c6500419d9060e967d458",
+  "final_sha256": "5cb88fac67663fc436f6bfa60388382c24665755ee481514c002bc92e9a29837",
+  "primary_editor_changed_values": 114,
+  "root_supplemental_changed_values": 3,
+  "final_distinct_changed_values": 117,
+  "primary_unchanged_values": 3214,
+  "final_unchanged_values": 3211,
+  "original_key_count": 3328,
+  "final_key_count": 3328,
+  "missing_keys": [],
+  "extra_keys": [],
+  "unexpected_value_changes": [],
+  "reversed_map_equals_original": true,
+  "original_order_reconstruction_sha256": "a2398e2e0776ad8828db86173bbeb849a119949401ec444c46ef0b8a8e6d179d",
+  "original_order_reconstruction_byte_equal": true,
+  "physical_order_changed": true,
+  "physical_order_note": "Editor serialized catalog in a different key order. Reversing values alone retains edited physical order; reconstructing the original recorded key order after reversal exactly restores original bytes. No false claim of identical order or direct reverse-only byte equality."
+}

@@ -1,0 +1,1293 @@
+{
+  "editor": "/root/swahili_translation",
+  "author": "/root/urdu_translation",
+  "independent_reviewer": "/root/pilot_context",
+  "batch_id": "native-general-015",
+  "source_contract_sha256": "aacd8a342e9e734ba47f902a161ac1a45badff5842a617bcd68bf8e2275d6013",
+  "original_target_subset_sha256": "649038f5b05f69689a2ea82b6b4e31574f2133dd75baf4b1bc696517a82a8e5b",
+  "final_target_subset_sha256": "649038f5b05f69689a2ea82b6b4e31574f2133dd75baf4b1bc696517a82a8e5b",
+  "final_catalog_sha256": "ec78fb33247244bf783461e0410ef11fe48e45644c3c6500419d9060e967d458",
+  "entries": [
+    {
+      "key": "[dock no properties]",
+      "source": "This object has no editable properties.",
+      "before": "اس شے کی کوئی خاصیت قابلِ ترمیم نہیں۔",
+      "after": "اس شے کی کوئی خاصیت قابلِ ترمیم نہیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[focus brush search]",
+      "source": "Search brushes",
+      "before": "برش تلاش کریں",
+      "after": "برش تلاش کریں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[switch to resources view]",
+      "source": "Switch to resources view",
+      "before": "وسائل کے منظر پر جائیں",
+      "after": "وسائل کے منظر پر جائیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[dock resources base]",
+      "source": "Standard resources",
+      "before": "معیاری وسائل",
+      "after": "معیاری وسائل",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[dock fertility stale]",
+      "source": "The fertility map is out of date.",
+      "before": "زرخیزی کا نقشہ پرانا ہے۔",
+      "after": "زرخیزی کا نقشہ پرانا ہے۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[dock fertility refresh]",
+      "source": "Refresh fertility",
+      "before": "زرخیزی تازہ کریں",
+      "after": "زرخیزی تازہ کریں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Enabled %0 for this map]",
+      "source": "Enabled %0 for this map",
+      "before": "اس نقشے کے لیے %0 فعال کر دیا",
+      "after": "اس نقشے کے لیے %0 فعال کر دیا",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[editor fertility tap refresh]",
+      "source": "Fertility map out of date: tap to refresh",
+      "before": "زرخیزی کا نقشہ پرانا ہے: تازہ کرنے کے لیے چھوئیں",
+      "after": "زرخیزی کا نقشہ پرانا ہے: تازہ کرنے کے لیے چھوئیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[editor menu import set]",
+      "source": "Import Terrain & Resource Set",
+      "before": "زمین اور وسائل کا مجموعہ درآمد کریں",
+      "after": "زمین اور وسائل کا مجموعہ درآمد کریں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[editor menu set library]",
+      "source": "Set Library",
+      "before": "مجموعوں کی لائبریری",
+      "after": "مجموعوں کی لائبریری",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[set library loading]",
+      "source": "Loading sets…",
+      "before": "مجموعے لوڈ ہو رہے ہیں…",
+      "after": "مجموعے لوڈ ہو رہے ہیں…",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[set library downloading]",
+      "source": "Downloading exact release…",
+      "before": "عین منتخب ریلیز ڈاؤن لوڈ ہو رہی ہے…",
+      "after": "عین منتخب ریلیز ڈاؤن لوڈ ہو رہی ہے…",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[set library connection error]",
+      "source": "Cannot load sets. Check your connection and try again.",
+      "before": "مجموعے لوڈ نہیں ہو سکتے۔ رابطہ دیکھیں اور دوبارہ کوشش کریں۔",
+      "after": "مجموعے لوڈ نہیں ہو سکتے۔ رابطہ دیکھیں اور دوبارہ کوشش کریں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[set library hash error]",
+      "source": "Downloaded set failed its hash check.",
+      "before": "ڈاؤن لوڈ کردہ مجموعے کی ہیش جانچ ناکام ہوئی۔",
+      "after": "ڈاؤن لوڈ کردہ مجموعے کی ہیش جانچ ناکام ہوئی۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[set library package error]",
+      "source": "Invalid set package.",
+      "before": "مجموعے کا پیکیج درست نہیں۔",
+      "after": "مجموعے کا پیکیج درست نہیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[set library listing error]",
+      "source": "Invalid set listing.",
+      "before": "مجموعے کی فہرست درست نہیں۔",
+      "after": "مجموعے کی فہرست درست نہیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[set library release error]",
+      "source": "Invalid set release.",
+      "before": "مجموعے کی ریلیز درست نہیں۔",
+      "after": "مجموعے کی ریلیز درست نہیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[set library selection help]",
+      "source": "Select entries to import. Required custom resources are included automatically.",
+      "before": "درآمد کرنے کے لیے اندراجات منتخب کریں۔ درکار حسبِ پسند وسائل خود بخود شامل ہوتے ہیں۔",
+      "after": "درآمد کرنے کے لیے اندراجات منتخب کریں۔ درکار حسبِ پسند وسائل خود بخود شامل ہوتے ہیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[set library empty]",
+      "source": "No sets found.",
+      "before": "کوئی مجموعہ نہیں ملا۔",
+      "after": "کوئی مجموعہ نہیں ملا۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[set library release help]",
+      "source": "Choose an exact release to inspect and import.",
+      "before": "معائنہ اور درآمد کے لیے مخصوص ریلیز منتخب کریں۔",
+      "after": "معائنہ اور درآمد کے لیے مخصوص ریلیز منتخب کریں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[set library heading]",
+      "source": "Terrain & resource sets",
+      "before": "زمین اور وسائل کے مجموعے",
+      "after": "زمین اور وسائل کے مجموعے",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[set library browse]",
+      "source": "Browse online library",
+      "before": "آن لائن لائبریری براؤز کریں",
+      "after": "آن لائن لائبریری براؤز کریں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[set library local]",
+      "source": "Map content, credits & local edits",
+      "before": "نقشے کا مواد، تخلیق کار اور مقامی ترامیم",
+      "after": "نقشے کا مواد، تخلیق کار اور مقامی ترامیم",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[set library local help]",
+      "source": "Edit this map's copy. Original release credits remain attached. Changes do not update other maps or the online release.",
+      "before": "اس نقشے کی نقل بدلیں۔ اصل ریلیز کے تخلیق کاروں کا ذکر ساتھ رہتا ہے۔ تبدیلیاں دوسرے نقشوں یا آن لائن ریلیز کو تازہ نہیں کرتیں۔",
+      "after": "اس نقشے کی نقل بدلیں۔ اصل ریلیز کے تخلیق کاروں کا ذکر ساتھ رہتا ہے۔ تبدیلیاں دوسرے نقشوں یا آن لائن ریلیز کو تازہ نہیں کرتیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[set library apply]",
+      "source": "Apply local changes",
+      "before": "مقامی تبدیلیاں نافذ کریں",
+      "after": "مقامی تبدیلیاں نافذ کریں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[set library updated]",
+      "source": "Local content updated.",
+      "before": "مقامی مواد تازہ ہو گیا۔",
+      "after": "مقامی مواد تازہ ہو گیا۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[set library search hint]",
+      "source": "Search themes and creators",
+      "before": "موضوعات اور تخلیق کار تلاش کریں",
+      "after": "موضوعات اور تخلیق کار تلاش کریں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[set library search]",
+      "source": "Search",
+      "before": "تلاش کریں",
+      "after": "تلاش کریں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[set library set]",
+      "source": "Set",
+      "before": "مجموعہ",
+      "after": "مجموعہ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[set library update help]",
+      "source": "This explicitly replaces matching placed terrain and resources, including local edits. Removed entries remain on the old release. Existing material amounts are capped to the new capacities.",
+      "before": "یہ عمل رکھے گئے مماثل زمینی اور وسائل کے اندراجات کو واضح طور پر بدلتا ہے، بشمول مقامی ترامیم۔ ہٹائے گئے اندراجات پرانی ریلیز پر رہتے ہیں۔ موجودہ مواد کی مقداریں نئی گنجائش تک محدود کی جاتی ہیں۔",
+      "after": "یہ عمل رکھے گئے مماثل زمینی اور وسائل کے اندراجات کو واضح طور پر بدلتا ہے، بشمول مقامی ترامیم۔ ہٹائے گئے اندراجات پرانی ریلیز پر رہتے ہیں۔ موجودہ مواد کی مقداریں نئی گنجائش تک محدود کی جاتی ہیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[set library import]",
+      "source": "Import selected entries",
+      "before": "منتخب اندراجات درآمد کریں",
+      "after": "منتخب اندراجات درآمد کریں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[set library next]",
+      "source": "Next page",
+      "before": "اگلا صفحہ",
+      "after": "اگلا صفحہ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[set library back]",
+      "source": "Back to results",
+      "before": "نتائج پر واپس",
+      "after": "نتائج پر واپس",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[set library license %0]",
+      "source": "License: %0",
+      "before": "لائسنس: %0",
+      "after": "لائسنس: %0",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[set library release %0]",
+      "source": "release %0",
+      "before": "ریلیز %0",
+      "after": "ریلیز %0",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[set library replace %0]",
+      "source": "Replace placed entries from release %0",
+      "before": "ریلیز %0 کے رکھے ہوئے اندراجات بدلیں",
+      "after": "ریلیز %0 کے رکھے ہوئے اندراجات بدلیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[set library preview limit]",
+      "source": "Previews are shown for the first 64 entries. All entries remain selectable.",
+      "before": "پہلے 64 اندراجات کے پیش منظر دکھتے ہیں۔ تمام اندراجات منتخب کیے جا سکتے ہیں۔",
+      "after": "پہلے 64 اندراجات کے پیش منظر دکھتے ہیں۔ تمام اندراجات منتخب کیے جا سکتے ہیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[set library definition]",
+      "source": "Properties definition (JSON)",
+      "before": "خواص کی تعریف (JSON)",
+      "after": "خواص کی تعریف (JSON)",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[set library artwork]",
+      "source": "Terrain artwork mapping (JSON)",
+      "before": "زمین کے فن پاروں کی نقشہ بندی (JSON)",
+      "after": "زمین کے فن پاروں کی نقشہ بندی (JSON)",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat band area upkeep]",
+      "source": "Area upkeep",
+      "before": "علاقے کی دیکھ بھال",
+      "after": "علاقے کی دیکھ بھال",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[outcome reason eliminated]",
+      "source": "Colony eliminated.",
+      "before": "بستی ختم ہو گئی۔",
+      "after": "بستی ختم ہو گئی۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[outcome reason opponents defeated]",
+      "source": "All opponents defeated.",
+      "before": "تمام حریفوں کو شکست ہوئی۔",
+      "after": "تمام حریفوں کو شکست ہوئی۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[outcome reason ally won]",
+      "source": "An allied colony won.",
+      "before": "اتحادی بستی جیت گئی۔",
+      "after": "اتحادی بستی جیت گئی۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[outcome reason prestige]",
+      "source": "Prestige goal reached.",
+      "before": "وقار کا ہدف پورا ہوا۔",
+      "after": "وقار کا ہدف پورا ہوا۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[outcome reason scenario]",
+      "source": "Scenario rules decided the outcome.",
+      "before": "منظرنامے کے قواعد نے نتیجہ طے کیا۔",
+      "after": "منظرنامے کے قواعد نے نتیجہ طے کیا۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[outcome reason timer]",
+      "source": "Time limit reached.",
+      "before": "وقت کی حد پوری ہوئی۔",
+      "after": "وقت کی حد پوری ہوئی۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[outcome reason probability]",
+      "source": "Win probability threshold reached.",
+      "before": "جیت کے امکان کی حد پوری ہوئی۔",
+      "after": "جیت کے امکان کی حد پوری ہوئی۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Discord community]",
+      "source": "Discord community",
+      "before": "Discord برادری",
+      "after": "Discord برادری",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Globulation 2 Discord]",
+      "source": "Globulation 2 Discord",
+      "before": "Globulation 2 Discord",
+      "after": "Globulation 2 Discord",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[discord community intro]",
+      "source": "Find opponents, ask for help, and share your maps with the Globulation 2 community.",
+      "before": "Globulation 2 کی برادری کے ساتھ حریف تلاش کریں، مدد مانگیں اور اپنے نقشے بانٹیں۔",
+      "after": "Globulation 2 کی برادری کے ساتھ حریف تلاش کریں، مدد مانگیں اور اپنے نقشے بانٹیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[discord opens externally]",
+      "source": "Join our Discord server. This opens Discord or your browser.",
+      "before": "ہمارے Discord سرور میں شامل ہوں۔ اس سے Discord یا آپ کا براؤزر کھلتا ہے۔",
+      "after": "ہمارے Discord سرور میں شامل ہوں۔ اس سے Discord یا آپ کا براؤزر کھلتا ہے۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Join Discord]",
+      "source": "Join Discord",
+      "before": "Discord میں شامل ہوں",
+      "after": "Discord میں شامل ہوں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Copy link]",
+      "source": "Copy link",
+      "before": "لنک نقل کریں",
+      "after": "لنک نقل کریں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[discord opened]",
+      "source": "Discord opened. You can return to the game at any time.",
+      "before": "Discord کھل گیا۔ آپ کسی بھی وقت کھیل میں واپس آ سکتے ہیں۔",
+      "after": "Discord کھل گیا۔ آپ کسی بھی وقت کھیل میں واپس آ سکتے ہیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[discord open failed]",
+      "source": "Could not open Discord. Copy the invitation link and open it in your browser.",
+      "before": "Discord نہیں کھل سکا۔ دعوت کا لنک نقل کر کے اپنے براؤزر میں کھولیں۔",
+      "after": "Discord نہیں کھل سکا۔ دعوت کا لنک نقل کر کے اپنے براؤزر میں کھولیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[discord link copied]",
+      "source": "Invitation link copied.",
+      "before": "دعوت کا لنک نقل ہو گیا۔",
+      "after": "دعوت کا لنک نقل ہو گیا۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Which hand holds your phone?]",
+      "source": "Left or right hand?",
+      "before": "بایاں یا دایاں ہاتھ؟",
+      "after": "بایاں یا دایاں ہاتھ؟",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[hand preference explanation]",
+      "source": "Hold your phone naturally. Tap the hand you play with.",
+      "before": "فون معمول کے انداز میں پکڑیں۔ جس ہاتھ سے کھیلتے ہیں اسے چھوئیں۔",
+      "after": "فون معمول کے انداز میں پکڑیں۔ جس ہاتھ سے کھیلتے ہیں اسے چھوئیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[hand silhouettes description]",
+      "source": "A phone outline with left and right hands on top. Press either beveled thumb target to choose that side.",
+      "before": "فون کا خاکہ جس کے اوپر بایاں اور دایاں ہاتھ ہے۔ کسی طرف کے ابھرے ہوئے انگوٹھے کے ہدف کو دبا کر وہ سمت منتخب کریں۔",
+      "after": "فون کا خاکہ جس کے اوپر بایاں اور دایاں ہاتھ ہے۔ کسی طرف کے ابھرے ہوئے انگوٹھے کے ہدف کو دبا کر وہ سمت منتخب کریں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[hand preference change later]",
+      "source": "You can change sides later in Settings.",
+      "before": "آپ بعد میں ترتیبات میں طرف بدل سکتے ہیں۔",
+      "after": "آپ بعد میں ترتیبات میں طرف بدل سکتے ہیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[hand preference save failed]",
+      "source": "Could not save your choice. Please try again.",
+      "before": "آپ کا انتخاب محفوظ نہیں ہو سکا۔ دوبارہ کوشش کریں۔",
+      "after": "آپ کا انتخاب محفوظ نہیں ہو سکا۔ دوبارہ کوشش کریں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Left hand]",
+      "source": "Left hand",
+      "before": "بایاں ہاتھ",
+      "after": "بایاں ہاتھ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Right hand]",
+      "source": "Right hand",
+      "before": "دایاں ہاتھ",
+      "after": "دایاں ہاتھ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[discord copy failed]",
+      "source": "Could not copy the link. Select the invitation above to copy it manually.",
+      "before": "لنک نقل نہیں ہو سکا۔ خود نقل کرنے کے لیے اوپر دعوت منتخب کریں۔",
+      "after": "لنک نقل نہیں ہو سکا۔ خود نقل کرنے کے لیے اوپر دعوت منتخب کریں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat ground movement]",
+      "source": "Ground movement",
+      "before": "زمینی حرکت",
+      "after": "زمینی حرکت",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat ground movement about]",
+      "source": "Living ground units by approximate speed ratio. 'Swim 2x' means swimming twice as fast as running. Flying and immobile units are excluded.",
+      "before": "زندہ زمینی یونٹ، رفتار کے اندازاً تناسب کے مطابق۔ 'تیراکی 2x' کا مطلب دوڑنے سے دوگنی تیز تیراکی ہے۔ اڑنے والے اور غیر متحرک یونٹ شامل نہیں۔",
+      "after": "زندہ زمینی یونٹ، رفتار کے اندازاً تناسب کے مطابق۔ 'تیراکی 2x' کا مطلب دوڑنے سے دوگنی تیز تیراکی ہے۔ اڑنے والے اور غیر متحرک یونٹ شامل نہیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat view by movement]",
+      "source": "By movement",
+      "before": "حرکت کے لحاظ سے",
+      "after": "حرکت کے لحاظ سے",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat band land only]",
+      "source": "Land only",
+      "before": "صرف زمین",
+      "after": "صرف زمین",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat band swim twice run]",
+      "source": "Swim 2x",
+      "before": "تیراکی 2x",
+      "after": "تیراکی 2x",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat band swim faster run]",
+      "source": "Swim 1.4x",
+      "before": "تیراکی 1.4x",
+      "after": "تیراکی 1.4x",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat band swim equals run]",
+      "source": "Equal",
+      "before": "برابر",
+      "after": "برابر",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat band run faster swim]",
+      "source": "Run 1.3x",
+      "before": "دوڑ 1.3x",
+      "after": "دوڑ 1.3x",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat band run twice swim]",
+      "source": "Run 2x",
+      "before": "دوڑ 2x",
+      "after": "دوڑ 2x",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat band run triple swim]",
+      "source": "Run 3x",
+      "before": "دوڑ 3x",
+      "after": "دوڑ 3x",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stat band water only]",
+      "source": "Water only",
+      "before": "صرف پانی",
+      "after": "صرف پانی",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[hive stopping]",
+      "source": "Stopping…",
+      "before": "روکا جا رہا ہے…",
+      "after": "روکا جا رہا ہے…",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[hive stopped]",
+      "source": "Stopped",
+      "before": "رک گیا",
+      "after": "رک گیا",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[hive stop failed]",
+      "source": "Stop failed; retry the stop shortcut",
+      "before": "روکنا ناکام ہوا؛ روکنے کا شارٹ کٹ دوبارہ آزمائیں",
+      "after": "روکنا ناکام ہوا؛ روکنے کا شارٹ کٹ دوبارہ آزمائیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[hive updating]",
+      "source": "Updating…",
+      "before": "تازہ ہو رہا ہے…",
+      "after": "تازہ ہو رہا ہے…",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[hive requested]",
+      "source": "Requested",
+      "before": "درخواست کر دی گئی",
+      "after": "درخواست کر دی گئی",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[hive update failed]",
+      "source": "Update failed; try again",
+      "before": "تازہ کرنا ناکام ہوا؛ دوبارہ کوشش کریں",
+      "after": "تازہ کرنا ناکام ہوا؛ دوبارہ کوشش کریں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[hive give order]",
+      "source": "Give order",
+      "before": "حکم دیں",
+      "after": "حکم دیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[hive less]",
+      "source": "Less",
+      "before": "کم",
+      "after": "کم",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[hive reports and details]",
+      "source": "Reports / details",
+      "before": "رپورٹیں / تفصیلات",
+      "after": "رپورٹیں / تفصیلات",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[hive needs fresh order]",
+      "source": "Needs a fresh order",
+      "before": "نیا حکم درکار ہے",
+      "after": "نیا حکم درکار ہے",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[hive active]",
+      "source": "Active",
+      "before": "فعال",
+      "after": "فعال",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[hive resume]",
+      "source": "Resume",
+      "before": "بحال کریں",
+      "after": "بحال کریں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[recordings]",
+      "source": "Recordings",
+      "before": "ریکارڈنگز",
+      "after": "ریکارڈنگز",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[recording delete confirm]",
+      "source": "Delete recording?",
+      "before": "ریکارڈنگ حذف کریں؟",
+      "after": "ریکارڈنگ حذف کریں؟",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[recording delete warning]",
+      "source": "The recording and its metadata will be removed.",
+      "before": "ریکارڈنگ اور اس کا میٹا ڈیٹا ہٹا دیا جائے گا۔",
+      "after": "ریکارڈنگ اور اس کا میٹا ڈیٹا ہٹا دیا جائے گا۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[recording delete]",
+      "source": "Delete",
+      "before": "حذف کریں",
+      "after": "حذف کریں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[recording working]",
+      "source": "Working…",
+      "before": "کام ہو رہا ہے…",
+      "after": "کام ہو رہا ہے…",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[recording none]",
+      "source": "No recordings yet.",
+      "before": "ابھی کوئی ریکارڈنگ نہیں۔",
+      "after": "ابھی کوئی ریکارڈنگ نہیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[recording interrupted]",
+      "source": "Interrupted recording",
+      "before": "رکاوٹ زدہ ریکارڈنگ",
+      "after": "رکاوٹ زدہ ریکارڈنگ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[recording recover]",
+      "source": "Recover",
+      "before": "بازیافت کریں",
+      "after": "بازیافت کریں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[recording export video]",
+      "source": "Export video",
+      "before": "ویڈیو برآمد کریں",
+      "after": "ویڈیو برآمد کریں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[recording export metadata]",
+      "source": "Export metadata",
+      "before": "میٹا ڈیٹا برآمد کریں",
+      "after": "میٹا ڈیٹا برآمد کریں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[recording export events]",
+      "source": "Export events",
+      "before": "واقعات برآمد کریں",
+      "after": "واقعات برآمد کریں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[recording export failed]",
+      "source": "Could not export recording.",
+      "before": "ریکارڈنگ برآمد نہیں ہو سکی۔",
+      "after": "ریکارڈنگ برآمد نہیں ہو سکی۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[recording delete action]",
+      "source": "Delete recording",
+      "before": "ریکارڈنگ حذف کریں",
+      "after": "ریکارڈنگ حذف کریں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[recording refresh]",
+      "source": "Refresh",
+      "before": "تازہ کریں",
+      "after": "تازہ کریں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[library  Could not restore the previous library: %0]",
+      "source": " Could not restore the previous library: %0",
+      "before": " پچھلی لائبریری بحال نہیں ہو سکی: %0",
+      "after": " پچھلی لائبریری بحال نہیں ہو سکی: %0",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[library  The previous library is retained.]",
+      "source": " The previous library is retained.",
+      "before": " پچھلی لائبریری برقرار ہے۔",
+      "after": " پچھلی لائبریری برقرار ہے۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[library  · Installed]",
+      "source": " · Installed",
+      "before": " · نصب شدہ",
+      "after": " · نصب شدہ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[library  · Update available]",
+      "source": " · Update available",
+      "before": " · اپ ڈیٹ دستیاب ہے",
+      "after": " · اپ ڈیٹ دستیاب ہے",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[library A different release is installed. Install the selected release to update explicitly.]",
+      "source": "A different release is installed. Install the selected release to update explicitly.",
+      "before": "مختلف ریلیز نصب ہے۔ واضح طور پر اپ ڈیٹ کرنے کے لیے منتخب ریلیز نصب کریں۔",
+      "after": "مختلف ریلیز نصب ہے۔ واضح طور پر اپ ڈیٹ کرنے کے لیے منتخب ریلیز نصب کریں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[library All engines]",
+      "source": "All engines",
+      "before": "تمام انجن",
+      "after": "تمام انجن",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[library Available families]",
+      "source": "Available families",
+      "before": "دستیاب خاندان",
+      "after": "دستیاب خاندان",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[library Back]",
+      "source": "Back",
+      "before": "واپس",
+      "after": "واپس",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[library Choose an online instance before opening a family link.]",
+      "source": "Choose an online instance before opening a family link.",
+      "before": "خاندان کا لنک کھولنے سے پہلے آن لائن سرور منتخب کریں۔",
+      "after": "خاندان کا لنک کھولنے سے پہلے آن لائن سرور منتخب کریں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[library Compatible with this engine]",
+      "source": "Compatible with this engine",
+      "before": "اس انجن کے ساتھ موافق",
+      "after": "اس انجن کے ساتھ موافق",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[library Confirm replacement]",
+      "source": "Confirm replacement",
+      "before": "بدلنے کی تصدیق کریں",
+      "after": "بدلنے کی تصدیق کریں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[library Editor tools]",
+      "source": "Editor tools",
+      "before": "ایڈیٹر کے آلات",
+      "after": "ایڈیٹر کے آلات",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[library Family link or ID]",
+      "source": "Family link or ID",
+      "before": "خاندان کا لنک یا ID",
+      "after": "خاندان کا لنک یا ID",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[library Family links must be at most 1024 characters.]",
+      "source": "Family links must be at most 1024 characters.",
+      "before": "خاندان کے لنک میں زیادہ سے زیادہ 1024 حروف ہو سکتے ہیں۔",
+      "after": "خاندان کے لنک میں زیادہ سے زیادہ 1024 حروف ہو سکتے ہیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[library Family removed.]",
+      "source": "Family removed.",
+      "before": "خاندان ہٹا دیا گیا۔",
+      "after": "خاندان ہٹا دیا گیا۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[library Family unavailable. Private families require signing in through Online with an account that can access them.]",
+      "source": "Family unavailable. Private families require signing in through Online with an account that can access them.",
+      "before": "خاندان دستیاب نہیں۔ نجی خاندانوں کے لیے آن لائن کے ذریعے ایسے اکاؤنٹ سے سائن ان کرنا ضروری ہے جسے ان تک رسائی ہو۔",
+      "after": "خاندان دستیاب نہیں۔ نجی خاندانوں کے لیے آن لائن کے ذریعے ایسے اکاؤنٹ سے سائن ان کرنا ضروری ہے جسے ان تک رسائی ہو۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[library Install compatible release]",
+      "source": "Install compatible release",
+      "before": "موافق ریلیز نصب کریں",
+      "after": "موافق ریلیز نصب کریں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[library Install selected release]",
+      "source": "Install selected release",
+      "before": "منتخب ریلیز نصب کریں",
+      "after": "منتخب ریلیز نصب کریں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[library Installed]",
+      "source": "Installed",
+      "before": "نصب شدہ",
+      "after": "نصب شدہ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[library Installed families]",
+      "source": "Installed families",
+      "before": "نصب شدہ خاندان",
+      "after": "نصب شدہ خاندان",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[library Installed. Enable the family below for new maps.]",
+      "source": "Installed. Enable the family below for new maps.",
+      "before": "نصب ہو گیا۔ نئے نقشوں کے لیے نیچے خاندان فعال کریں۔",
+      "after": "نصب ہو گیا۔ نئے نقشوں کے لیے نیچے خاندان فعال کریں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[library Invalid library cursor]",
+      "source": "Invalid library cursor",
+      "before": "لائبریری کا کرسر درست نہیں",
+      "after": "لائبریری کا کرسر درست نہیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[library Invalid release identity]",
+      "source": "Invalid release identity",
+      "before": "ریلیز کی شناخت درست نہیں",
+      "after": "ریلیز کی شناخت درست نہیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[library Load more]",
+      "source": "Load more",
+      "before": "مزید لوڈ کریں",
+      "after": "مزید لوڈ کریں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[library Load more families]",
+      "source": "Load more families",
+      "before": "مزید خاندان لوڈ کریں",
+      "after": "مزید خاندان لوڈ کریں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[library Loading…]",
+      "source": "Loading…",
+      "before": "لوڈ ہو رہا ہے…",
+      "after": "لوڈ ہو رہا ہے…",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[library Maps]",
+      "source": "Maps",
+      "before": "نقشے",
+      "after": "نقشے",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[library Most downloaded]",
+      "source": "Most downloaded",
+      "before": "سب سے زیادہ ڈاؤن لوڈ کیے گئے",
+      "after": "سب سے زیادہ ڈاؤن لوڈ کیے گئے",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[library Most liked]",
+      "source": "Most liked",
+      "before": "سب سے زیادہ پسند کیے گئے",
+      "after": "سب سے زیادہ پسند کیے گئے",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[library Newest]",
+      "source": "Newest",
+      "before": "تازہ ترین",
+      "after": "تازہ ترین",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[library No validated release for this game version.]",
+      "source": "No validated release for this game version.",
+      "before": "کھیل کے اس ورژن کے لیے کوئی توثیق شدہ ریلیز نہیں۔",
+      "after": "کھیل کے اس ورژن کے لیے کوئی توثیق شدہ ریلیز نہیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[library Online server changed during download]",
+      "source": "Online server changed during download",
+      "before": "ڈاؤن لوڈ کے دوران آن لائن سرور بدل گیا",
+      "after": "ڈاؤن لوڈ کے دوران آن لائن سرور بدل گیا",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[library Open an unlisted family by its link or ID. For private families, sign in through Online first.]",
+      "source": "Open an unlisted family by its link or ID. For private families, sign in through Online first.",
+      "before": "غیر فہرست شدہ خاندان اس کے لنک یا ID سے کھولیں۔ نجی خاندانوں کے لیے پہلے آن لائن کے ذریعے سائن ان کریں۔",
+      "after": "غیر فہرست شدہ خاندان اس کے لنک یا ID سے کھولیں۔ نجی خاندانوں کے لیے پہلے آن لائن کے ذریعے سائن ان کریں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[library Open family]",
+      "source": "Open family",
+      "before": "خاندان کھولیں",
+      "after": "خاندان کھولیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[library Opened family. Install its compatible release below.]",
+      "source": "Opened family. Install its compatible release below.",
+      "before": "خاندان کھل گیا۔ نیچے اس کی موافق ریلیز نصب کریں۔",
+      "after": "خاندان کھل گیا۔ نیچے اس کی موافق ریلیز نصب کریں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[library Playable]",
+      "source": "Playable",
+      "before": "کھیلنے کے قابل",
+      "after": "کھیلنے کے قابل",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[library Privacy policy]",
+      "source": "Privacy policy",
+      "before": "رازداری کی پالیسی",
+      "after": "رازداری کی پالیسی",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[library Public library]",
+      "source": "Public library",
+      "before": "عوامی لائبریری",
+      "after": "عوامی لائبریری",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[library Recently updated]",
+      "source": "Recently updated",
+      "before": "حال ہی میں تازہ کیے گئے",
+      "after": "حال ہی میں تازہ کیے گئے",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[library Refresh library]",
+      "source": "Refresh library",
+      "before": "لائبریری تازہ کریں",
+      "after": "لائبریری تازہ کریں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[library Release identity changed during installation]",
+      "source": "Release identity changed during installation",
+      "before": "تنصیب کے دوران ریلیز کی شناخت بدل گئی",
+      "after": "تنصیب کے دوران ریلیز کی شناخت بدل گئی",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[library Reroll]",
+      "source": "Reroll",
+      "before": "دوبارہ قرعہ ڈالیں",
+      "after": "دوبارہ قرعہ ڈالیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[library Reroll seed]",
+      "source": "Reroll seed",
+      "before": "نیا اتفاقی سیڈ بنائیں",
+      "after": "نیا اتفاقی سیڈ بنائیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[library Search]",
+      "source": "Search",
+      "before": "تلاش کریں",
+      "after": "تلاش کریں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[library Seed]",
+      "source": "Seed",
+      "before": "سیڈ",
+      "after": "سیڈ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[library Selection saved for new maps.]",
+      "source": "Selection saved for new maps.",
+      "before": "نئے نقشوں کے لیے انتخاب محفوظ ہو گیا۔",
+      "after": "نئے نقشوں کے لیے انتخاب محفوظ ہو گیا۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[library Storage failed.]",
+      "source": "Storage failed.",
+      "before": "ذخیرہ ناکام ہوا۔",
+      "after": "ذخیرہ ناکام ہوا۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[library Storage persistence unavailable]",
+      "source": "Storage persistence unavailable",
+      "before": "مستقل ذخیرہ دستیاب نہیں",
+      "after": "مستقل ذخیرہ دستیاب نہیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[library Tags]",
+      "source": "Tags",
+      "before": "ٹیگ",
+      "after": "ٹیگ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[library Technical checks passed for this engine. Balance is not certified.]",
+      "source": "Technical checks passed for this engine. Balance is not certified.",
+      "before": "اس انجن کے لیے تکنیکی جانچ کامیاب ہوئی۔ توازن کی سند نہیں دی گئی۔",
+      "after": "اس انجن کے لیے تکنیکی جانچ کامیاب ہوئی۔ توازن کی سند نہیں دی گئی۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[library The server returned a different family.]",
+      "source": "The server returned a different family.",
+      "before": "سرور نے مختلف خاندان واپس کیا۔",
+      "after": "سرور نے مختلف خاندان واپس کیا۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[library This link is from another instance. Switch to that instance in Online first.]",
+      "source": "This link is from another instance. Switch to that instance in Online first.",
+      "before": "یہ لنک دوسرے سرور کا ہے۔ پہلے آن لائن میں اس سرور پر جائیں۔",
+      "after": "یہ لنک دوسرے سرور کا ہے۔ پہلے آن لائن میں اس سرور پر جائیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[library This package ID is installed. Confirm replacement to use the selected release.]",
+      "source": "This package ID is installed. Confirm replacement to use the selected release.",
+      "before": "اس پیکیج کی ID نصب ہے۔ منتخب ریلیز استعمال کرنے کے لیے بدلنے کی تصدیق کریں۔",
+      "after": "اس پیکیج کی ID نصب ہے۔ منتخب ریلیز استعمال کرنے کے لیے بدلنے کی تصدیق کریں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[library This release has no passing checks for this engine.]",
+      "source": "This release has no passing checks for this engine.",
+      "before": "اس ریلیز کے لیے اس انجن کی کوئی کامیاب جانچ نہیں۔",
+      "after": "اس ریلیز کے لیے اس انجن کی کوئی کامیاب جانچ نہیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[library This release is installed.]",
+      "source": "This release is installed.",
+      "before": "یہ ریلیز نصب ہے۔",
+      "after": "یہ ریلیز نصب ہے۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[library Update installed family]",
+      "source": "Update installed family",
+      "before": "نصب شدہ خاندان تازہ کریں",
+      "after": "نصب شدہ خاندان تازہ کریں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[library Use in a room]",
+      "source": "Use in a room",
+      "before": "کمرے میں استعمال کریں",
+      "after": "کمرے میں استعمال کریں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[library By %0]",
+      "source": "By %0",
+      "before": "مصنف %0",
+      "after": "مصنف %0",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[library Installed release %0]",
+      "source": "Installed release %0",
+      "before": "نصب شدہ ریلیز %0",
+      "after": "نصب شدہ ریلیز %0",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    }
+  ],
+  "status": "edited-awaiting-independent-recheck"
+}

@@ -1,0 +1,302 @@
+{
+  "editor": "/root/swahili_translation",
+  "final_catalog_sha256": "ec78fb33247244bf783461e0410ef11fe48e45644c3c6500419d9060e967d458",
+  "entries": [
+    {
+      "key": "[AICastor]",
+      "source": "Castor",
+      "before": "Castor",
+      "after": "Castor",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Specificcontroller/product/technology propername retained deliberately."
+    },
+    {
+      "key": "[AIMaxima]",
+      "source": "Maxima",
+      "before": "Maxima",
+      "after": "Maxima",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Specificcontroller/product/technology propername retained deliberately."
+    },
+    {
+      "key": "[AICortex]",
+      "source": "Cortex",
+      "before": "Cortex",
+      "after": "Cortex",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Specificcontroller/product/technology propername retained deliberately."
+    },
+    {
+      "key": "[AINicowar]",
+      "source": "Nicowar",
+      "before": "Nicowar",
+      "after": "Nicowar",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Specificcontroller/product/technology propername retained deliberately."
+    },
+    {
+      "key": "[AINumbi]",
+      "source": "Numbi",
+      "before": "Numbi",
+      "after": "Numbi",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Specificcontroller/product/technology propername retained deliberately."
+    },
+    {
+      "key": "[AIEcono]",
+      "source": "Econo",
+      "before": "Econo",
+      "after": "Econo",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Specificcontroller/product/technology propername retained deliberately."
+    },
+    {
+      "key": "[AIWarrush]",
+      "source": "Warrush",
+      "before": "Warrush",
+      "after": "Warrush",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Specificcontroller/product/technology propername retained deliberately."
+    },
+    {
+      "key": "[AICabino]",
+      "source": "Cabino",
+      "before": "Cabino",
+      "after": "Cabino",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Specificcontroller/product/technology propername retained deliberately."
+    },
+    {
+      "key": "[AIJavaScript]",
+      "source": "JavaScript",
+      "before": "JavaScript",
+      "after": "JavaScript",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Specificcontroller/product/technology propername retained deliberately."
+    },
+    {
+      "key": "[alt %0]",
+      "source": "alt-%0",
+      "before": "alt-%0",
+      "after": "alt-%0",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Physicalkeyboardmodifier andplaceholder; Latin keynotation specified in consultedMozillaUrdustyleguide."
+    },
+    {
+      "key": "[clearingflag explanation 2]",
+      "source": "",
+      "before": "",
+      "after": "",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Intentionally empty sourcecontinuation row; preserveblank ratherthaninventprose."
+    },
+    {
+      "key": "[explorationflag explanation 2]",
+      "source": "",
+      "before": "",
+      "after": "",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Intentionally empty sourcecontinuation row; preserveblank ratherthaninventprose."
+    },
+    {
+      "key": "[hospital explanation 2]",
+      "source": "",
+      "before": "",
+      "after": "",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Intentionally empty sourcecontinuation row; preserveblank ratherthaninventprose."
+    },
+    {
+      "key": "[hp]",
+      "source": "HP",
+      "before": "HP",
+      "after": "HP",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Standardhitpointabbreviation HP withnumeric/placeholdernotation, alreadydefinedintranslated surroundinglabels."
+    },
+    {
+      "key": "[inn explanation 2]",
+      "source": "",
+      "before": "",
+      "after": "",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Intentionally empty sourcecontinuation row; preserveblank ratherthaninventprose."
+    },
+    {
+      "key": "[OpenGL]",
+      "source": "OpenGL",
+      "before": "OpenGL",
+      "after": "OpenGL",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Specificcontroller/product/technology propername retained deliberately."
+    },
+    {
+      "key": "[swarm explanation 2]",
+      "source": "",
+      "before": "",
+      "after": "",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Intentionally empty sourcecontinuation row; preserveblank ratherthaninventprose."
+    },
+    {
+      "key": "[warflag explanation 2]",
+      "source": "",
+      "before": "",
+      "after": "",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Intentionally empty sourcecontinuation row; preserveblank ratherthaninventprose."
+    },
+    {
+      "key": "[Stats low HP ranges]",
+      "source": "HP ≤25/50/75%",
+      "before": "HP ≤25/50/75%",
+      "after": "HP ≤25/50/75%",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Standardhitpointabbreviation HP withnumeric/placeholdernotation, alreadydefinedintranslated surroundinglabels."
+    },
+    {
+      "key": "[zoom factor %0]",
+      "source": "%0×",
+      "before": "%0×",
+      "after": "%0×",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Onlynumericplaceholders/numerals/math/navigationpunctuation; noEnglishprose."
+    },
+    {
+      "key": "[%0 / %1 HP · %2]",
+      "source": "%0 / %1 HP · %2",
+      "before": "%0 / %1 HP · %2",
+      "after": "%0 / %1 HP · %2",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Standardhitpointabbreviation HP withnumeric/placeholdernotation, alreadydefinedintranslated surroundinglabels."
+    },
+    {
+      "key": "[P %0/%1/%2]",
+      "source": "P %0/%1/%2",
+      "before": "P %0/%1/%2",
+      "after": "P %0/%1/%2",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Sourcecompactdiagnostic P abbreviation; preservewithoutguessingexpansion wherecurrentcallerunlocated."
+    },
+    {
+      "key": "[CPU load %0]",
+      "source": "CPU %0%",
+      "before": "CPU %0%",
+      "after": "CPU %0%",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "StandardCPU technicalabbreviation, numericplaceholder preserved."
+    },
+    {
+      "key": "[%0 · %1]",
+      "source": "%0 · %1",
+      "before": "%0 · %1",
+      "after": "%0 · %1",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Onlynumericplaceholders/numerals/math/navigationpunctuation; noEnglishprose."
+    },
+    {
+      "key": "[%0 %1]",
+      "source": "%0 %1",
+      "before": "%0 %1",
+      "after": "%0 %1",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Onlynumericplaceholders/numerals/math/navigationpunctuation; noEnglishprose."
+    },
+    {
+      "key": "[conn ai]",
+      "source": "AI",
+      "before": "AI",
+      "after": "AI",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "EstablishedAI abbreviation usedforcomputeropponents; no Englishproseleft."
+    },
+    {
+      "key": "[hub sim %0]",
+      "source": "sim %0",
+      "before": "sim %0",
+      "after": "sim %0",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Source simulationrevisioncodeprefix sim andinterpolatedidentifier retained; not an unfilledprosesentence."
+    },
+    {
+      "key": "[match ai]",
+      "source": "AI",
+      "before": "AI",
+      "after": "AI",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "EstablishedAI abbreviation usedforcomputeropponents; no Englishproseleft."
+    },
+    {
+      "key": "[room ai %0]",
+      "source": "AI: %0",
+      "before": "AI: %0",
+      "after": "AI: %0",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "EstablishedAI abbreviation usedforcomputeropponents; no Englishproseleft."
+    },
+    {
+      "key": "[qm ai]",
+      "source": "AI",
+      "before": "AI",
+      "after": "AI",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "EstablishedAI abbreviation usedforcomputeropponents; no Englishproseleft."
+    },
+    {
+      "key": "[qm ai badge]",
+      "source": "AI",
+      "before": "AI",
+      "after": "AI",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "EstablishedAI abbreviation usedforcomputeropponents; no Englishproseleft."
+    },
+    {
+      "key": "[profile draw letter]",
+      "source": "–",
+      "before": "–",
+      "after": "–",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Onlynumericplaceholders/numerals/math/navigationpunctuation; noEnglishprose."
+    },
+    {
+      "key": "[maps 256]",
+      "source": "256 × 256",
+      "before": "256 × 256",
+      "after": "256 × 256",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Onlynumericplaceholders/numerals/math/navigationpunctuation; noEnglishprose."
+    },
+    {
+      "key": "[maps %0 kb]",
+      "source": "%0 KB",
+      "before": "%0 KB",
+      "after": "%0 KB",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Standardstorageunit KB andnumericplaceholder preserved."
+    },
+    {
+      "key": "[settings Hive Mind]",
+      "source": "Hive Mind",
+      "before": "Hive Mind",
+      "after": "Hive Mind",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Specificcontroller/product/technology propername retained deliberately."
+    },
+    {
+      "key": "[stat page %0 of %1]",
+      "source": "%0/%1  >",
+      "before": "%0/%1  >",
+      "after": "%0/%1  >",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Onlynumericplaceholders/numerals/math/navigationpunctuation; noEnglishprose."
+    },
+    {
+      "key": "[Globulation 2 Discord]",
+      "source": "Globulation 2 Discord",
+      "before": "Globulation 2 Discord",
+      "after": "Globulation 2 Discord",
+      "editor_disposition": "retention-confirmed-by-editor",
+      "reason": "Specificcontroller/product/technology propername retained deliberately."
+    }
+  ]
+}

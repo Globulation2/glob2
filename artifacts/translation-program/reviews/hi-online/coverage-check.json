@@ -1,0 +1,16 @@
+{
+  "keys_exactly_once": 2835,
+  "batches": 18,
+  "target_online_sha256": "18bc06269a91e48ed90b9c08372bbff2c218c245b2823e5aaf6738588a6f9954",
+  "batch_hashes_match": true,
+  "online_errors": [],
+  "online_untranslated": [],
+  "english_equal_exactly_dispositioned": 85,
+  "plural_families": 27,
+  "catalog_edited": false,
+  "locale_finalized": false,
+  "initial_target_online_sha256": "71736314f32c38490dc29630b9a118f232b725de770ce0c5adbe4a9d69223a26",
+  "final_recheck": "editor-recheck.json",
+  "before_visual_context_target_online_sha256": "748ed6f83bbb1e55f66af93e24c61a02ad50c75222adac731e3ae104356baf60",
+  "visual_context_followup": "../hi-online-visual/catalog-recheck.json"
+}

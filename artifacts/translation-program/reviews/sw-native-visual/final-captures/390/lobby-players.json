@@ -1,0 +1,440 @@
+{
+  "kind": "production-screen-draft-overlay",
+  "screen": "lobby-players",
+  "pilot": "/Users/bradley/.codex/worktrees/ed62/glob2/artifacts/translation-program/render-inputs/sw-full",
+  "evidence_identity": {
+    "locale": "sw",
+    "source_revision": "6a16670c6daafa34f1f86a47014f23e0d05fd4e3",
+    "source_revision_origin": "Frozen translation kit; executable and code hashes identify the actual dirty build.",
+    "executable": "/Users/bradley/.codex/worktrees/ed62/glob2/build/darwin/client/debug/dev-dev_fast-true-linker-auto/test/TranslationPreviewHarness",
+    "executable_sha256": "1633fbaf78878430b8e0ac42f6bb2ba1d1977b5d673a766bf1ab8f66a438aa74",
+    "producer": {
+      "compiler": "g++",
+      "dirty": true,
+      "flags": {
+        "CCFLAGS": "-O0 -g1 -fdebug-prefix-map=/Users/bradley/.codex/worktrees/ed62/glob2=.",
+        "CPPDEFINES": "GLOB2_OFFICIAL_INSTANCE_ORIGIN \\\"https://app.glob2.online\\\" GLOB2_OFFICIAL_INSTANCE_FORMER_ORIGINS \\\"https://glob2online.com https://app.glob2online.com\\\" HAVE_CONFIG_H GL_SILENCE_DEPRECATION GLOB2_RENDER_SHADER_DIR \\\"/Users/bradley/.codex/worktrees/ed62/glob2/build/darwin/client/debug/dev-dev_fast-true-linker-auto/shaders\\\" SDL_MAIN_HANDLED",
+        "CXXFLAGS": "-std=gnu++20 -Wall -fPIC",
+        "LINKFLAGS": "-Wall -Wl,-rpath,/opt/homebrew/lib"
+      },
+      "revision": "6a16670c6daafa34f1f86a47014f23e0d05fd4e3",
+      "sourceStatus": [
+        " M .github/workflows/build.yml",
+        " M .github/workflows/ci-linux-build.yml",
+        " M browser/i18n.js",
+        " M browser/package-static.py",
+        " M browser/shell.html",
+        " M data/fonts/README.md",
+        " M data/fonts/SConscript",
+        " M deploy/Caddyfile",
+        " M deploy/Dockerfile",
+        " M docs/assets/source-attribution.md",
+        " M docs/development/ui-framework.md",
+        " M flatpak/org.globulation2.Globulation2.yml.in",
+        " M libgag/include/BidiText.h",
+        " M libgag/include/SDLGraphicContext.h",
+        " M libgag/include/TouchText.h",
+        " M libgag/include/TrueTypeFont.h",
+        " M libgag/include/ui/Canvas.h",
+        " M libgag/include/ui/TextLayout.h",
+        " M libgag/src/BidiText.cpp",
+        " M libgag/src/BidiTextTest.cpp",
+        " M libgag/src/DrawableSurfaceCompound.cpp",
+        " M libgag/src/FontKerningTest.cpp",
+        " M libgag/src/FontMetricsTest.cpp",
+        " M libgag/src/TrueTypeFont.cpp",
+        " M libgag/src/ui/Canvas.cpp",
+        " M libgag/src/ui/TextLayout.cpp",
+        " M libgag/src/ui/UILayoutHarness.cpp",
+        " M mobile/vcpkg.json",
+        " M platform/apps/api/src/routes/signin.ts",
+        " M platform/apps/api/src/web/pages.ts",
+        " M platform/apps/api/test/historySeed.ts",
+        " M platform/apps/api/test/pages.test.ts",
+        " M platform/apps/web/src/components/LineChart.tsx",
+        " M platform/apps/web/src/components/common.tsx",
+        " M platform/apps/web/src/i18n.tsx",
+        " M platform/apps/web/src/main.tsx",
+        " M platform/apps/web/src/music/Player.tsx",
+        " M platform/apps/web/src/pages/Account.tsx",
+        " M platform/apps/web/src/pages/Home.tsx",
+        " M platform/apps/web/src/pages/Leaderboard.tsx",
+        " M platform/apps/web/src/pages/Match.tsx",
+        " M platform/apps/web/src/pages/Matches.tsx",
+        " M platform/apps/web/src/pages/Player.tsx",
+        " M platform/apps/web/src/styles/home.css",
+        " M platform/apps/web/test/i18n.test.tsx",
+        " M platform/apps/web/test/pages.test.tsx",
+        " M platform/apps/web/vite.config.ts",
+        " M platform/packages/i18n/locales/ar.json",
+        " M platform/packages/i18n/locales/ca.json",
+        " M platform/packages/i18n/locales/cs.json",
+        " M platform/packages/i18n/locales/da.json",
+        " M platform/packages/i18n/locales/de.json",
+        " M platform/packages/i18n/locales/el.json",
+        " M platform/packages/i18n/locales/en.json",
+        " M platform/packages/i18n/locales/eo.json",
+        " M platform/packages/i18n/locales/es.json",
+        " M platform/packages/i18n/locales/eu.json",
+        " M platform/packages/i18n/locales/fa.json",
+        " M platform/packages/i18n/locales/fi.json",
+        " M platform/packages/i18n/locales/fr.json",
+        " M platform/packages/i18n/locales/hu.json",
+        " M platform/packages/i18n/locales/id.json",
+        " M platform/packages/i18n/locales/it.json",
+        " M platform/packages/i18n/locales/ja.json",
+        " M platform/packages/i18n/locales/ko.json",
+        " M platform/packages/i18n/locales/nl.json",
+        " M platform/packages/i18n/locales/pl.json",
+        " M platform/packages/i18n/locales/pt-BR.json",
+        " M platform/packages/i18n/locales/pt-PT.json",
+        " M platform/packages/i18n/locales/ro.json",
+        " M platform/packages/i18n/locales/ru.json",
+        " M platform/packages/i18n/locales/sk.json",
+        " M platform/packages/i18n/locales/sl.json",
+        " M platform/packages/i18n/locales/sr-Cyrl.json",
+        " M platform/packages/i18n/locales/sv.json",
+        " M platform/packages/i18n/locales/tr.json",
+        " M platform/packages/i18n/locales/uk.json",
+        " M platform/packages/i18n/locales/vi.json",
+        " M platform/packages/i18n/locales/zh-Hans.json",
+        " M platform/packages/i18n/locales/zh-Hant.json",
+        " M platform/packages/i18n/src/index.ts",
+        " M platform/packages/i18n/test/runtime.test.ts",
+        " M scons/sdl3-versions.json",
+        " M scons/sdl3_dependencies.py",
+        " M scons/web_assets.py",
+        " M scons/web_build.py",
+        " M src/app/SystemLanguage.cpp",
+        " M src/app/SystemLanguageTest.cpp",
+        " M src/engine/Engine.h",
+        " M src/game/screens/CustomGameScreen.cpp",
+        " M src/hud/GameGUI.cpp",
+        " M src/hud/GameGUI.h",
+        " M src/hud/draw/GameGUIDraw.cpp",
+        " M src/hud/touch/GameGUITouch.cpp",
+        " M src/hud/touch/GameGUITouch.h",
+        " M src/hud/touch/GameGUITouchHarness.cpp",
+        " M src/hud/touch/GameGUITouchView.cpp",
+        " M src/map/editor/MapEditDock.cpp",
+        " M src/render/overlay/MapZoomControls.h",
+        " M test/SConscript",
+        " M test/build_system/test_browser_package.py",
+        " M test/build_system/test_package_assets.py",
+        " M test/build_system/test_sdl3_dependencies.py",
+        " M test/build_system/test_web_assets.py",
+        " M test/test_font_coverage.py",
+        " M test/tests.py",
+        " M tools/package_assets.py",
+        " M vcpkg.json",
+        "?? data/fonts/LICENSE-HarfBuzz.txt",
+        "?? data/fonts/LICENSE-Noto.txt",
+        "?? data/fonts/check_script_support.py",
+        "?? data/fonts/fetch_script_fonts.py",
+        "?? data/fonts/script-probes.json",
+        "?? data/fonts/scripts/",
+        "?? platform/apps/web/src/styles/script-fonts.css",
+        "?? platform/packages/i18n/script-fonts.css",
+        "?? test/deployment/test_browser_font_types.py",
+        "?? test/test_script_support.py",
+        "?? test/test_translation_program.py",
+        "?? tools/TranslationPreviewHarness.cpp",
+        "?? tools/localization/translation_program.py"
+      ],
+      "sourceTreeSha256": "55fd7ab7c375f34eaa4445cb9d4b57f2fff7dbf014631550c1e35e5e4dd55c68"
+    },
+    "source_sha256": {
+      "data/texts.en.txt": "12b08d5636663846dce1b5a93ae3fc98fc31a6ff662e576bf9ba7efbed7ae1a9",
+      "data/texts.keys.txt": "fa77dd4464a27324e4c884f44f296a4ca9b5cf0bea46a5916b32b888d423c1de",
+      "platform/packages/i18n/locales/en.json": "63017714064b5a2659aa8e2da27a43af117d3f1e60acbbb44ae5d73d80cd7d69",
+      "libgag/src/TrueTypeFont.cpp": "fa461f1852e80b1a763a14183ea7522d9c1725bd5ce0fbba19e769defb5d334b",
+      "libgag/src/BidiText.cpp": "0813cc512aafd71bb45257090b37f2180b5a36a44965891ba1961c12e1869fc7",
+      "libgag/src/ui/TextLayout.cpp": "72140e6df1636805f71b193c6a84b8e445ca638f0711563d839da8403f0601bd",
+      "src/hud/draw/GameGUIDraw.cpp": "1192e00eb86b977b1f0a9b4d3c58294f29dc8dc3f36dc88755162e06b44aeeed",
+      "src/hud/touch/GameGUITouchView.cpp": "6548dc32b515c083ed34d81acacfee411c26a4a8005e68051ffb777ab3dd8f63",
+      "src/hud/touch/GameGUITouch.cpp": "96d342744a5048fd38042b8ea3276bc0d8ddd8b6de0e96ac35914833c6f19eb4",
+      "src/hud/touch/GameGUITouch.h": "e299d68dfd081f587230c8049aba19a99c553d1f8747a409bfe468342f1bd221",
+      "libgag/include/TouchText.h": "71eb059abd12e090a6c0674cec761a7041339e89dcfadfdae8904f570c6d97cb",
+      "libgag/include/TrueTypeFont.h": "3493258a24d4021ef978310aea26f3a832842ff57dd7185d9ff1ecf15854246c",
+      "libgag/include/ui/TextLayout.h": "6cb805b24332bb38bde8525eeea77fa0917cea3b88ae4561bc44c00b08975969",
+      "libgag/src/DrawableSurfaceCompound.cpp": "a6174d18c8b0a62d8ca3a65c606b57cf0e1962408cd5e47642b8fdabd27b8810",
+      "src/game/screens/CustomGameScreen.cpp": "0cdbf52d68ec731f12aabff02f0576057423eca6d1d3d64e92ae68ceb6df21bd",
+      "src/render/overlay/MapZoomControls.h": "6d5b99d9f77853315ddd7298ce77b2ecbf54e470c406ce07c5d9fd1ee152e2d3",
+      "tools/TranslationPreviewHarness.cpp": "1be1cb9faaff248e480f921bb87a4201b4fa6fc7c08287fab3f1a13fe1377a3c"
+    },
+    "catalog_sha256": {
+      "native": "760e1c75a1f9d20ec63dc66085283864bf1b2a8e094f871ad9b5844624b9f1fe",
+      "online": "6914cbf226adebd70d3ff401cfda759b62b62cc8af621b25f4ba994a8e0bec0a"
+    },
+    "runtime_fonts": [
+      {
+        "virtual_path": "data/fonts/sans.ttf",
+        "path": "/Users/bradley/.codex/worktrees/ed62/glob2/build/darwin/client/debug/dev-dev_fast-true-linker-auto/runtime-assets/data/fonts/sans.ttf",
+        "sha256": "5701af44225833421b6f59a7ecaadf93c0f2630dbbdfc4ac59c794f5c5d889c1"
+      },
+      {
+        "virtual_path": "data/fonts/scripts/NotoSansArabic-Regular.ttf",
+        "path": "/Users/bradley/.codex/worktrees/ed62/glob2/build/darwin/client/debug/dev-dev_fast-true-linker-auto/runtime-assets/data/fonts/scripts/NotoSansArabic-Regular.ttf",
+        "sha256": "ceea25b464a656dc3b26849bab9356740401af62aedf1bfa8b7f0d9b75925b1b"
+      },
+      {
+        "virtual_path": "data/fonts/scripts/NotoSansBengali-Regular.ttf",
+        "path": "/Users/bradley/.codex/worktrees/ed62/glob2/build/darwin/client/debug/dev-dev_fast-true-linker-auto/runtime-assets/data/fonts/scripts/NotoSansBengali-Regular.ttf",
+        "sha256": "6300c5370cd688b0641343de4c786de6d412bb6c578d129dae75e93a0322dcab"
+      },
+      {
+        "virtual_path": "data/fonts/scripts/NotoSansDevanagari-Regular.ttf",
+        "path": "/Users/bradley/.codex/worktrees/ed62/glob2/build/darwin/client/debug/dev-dev_fast-true-linker-auto/runtime-assets/data/fonts/scripts/NotoSansDevanagari-Regular.ttf",
+        "sha256": "385e78e6359a9d88a0f243d53b1209d7548361ba2194e2b9ec779bcaa7e8949d"
+      },
+      {
+        "virtual_path": "data/fonts/scripts/NotoSansEthiopic-Regular.ttf",
+        "path": "/Users/bradley/.codex/worktrees/ed62/glob2/build/darwin/client/debug/dev-dev_fast-true-linker-auto/runtime-assets/data/fonts/scripts/NotoSansEthiopic-Regular.ttf",
+        "sha256": "e3a81ca66eb6d6b1a50a287c1dba18195541f69e0986f8b49a42658aa592ff0d"
+      },
+      {
+        "virtual_path": "data/fonts/scripts/NotoSansGujarati-Regular.ttf",
+        "path": "/Users/bradley/.codex/worktrees/ed62/glob2/build/darwin/client/debug/dev-dev_fast-true-linker-auto/runtime-assets/data/fonts/scripts/NotoSansGujarati-Regular.ttf",
+        "sha256": "8d5c22d7b729ef2839e6d1fe2cde77b2d083907be3659bca63676baa76e01fd6"
+      },
+      {
+        "virtual_path": "data/fonts/scripts/NotoSansGurmukhi-Regular.ttf",
+        "path": "/Users/bradley/.codex/worktrees/ed62/glob2/build/darwin/client/debug/dev-dev_fast-true-linker-auto/runtime-assets/data/fonts/scripts/NotoSansGurmukhi-Regular.ttf",
+        "sha256": "bbde4d85fdfb998eff6921cb2c7a9a7924a1c95560a6aa9a06172530e4f596da"
+      },
+      {
+        "virtual_path": "data/fonts/scripts/NotoSansKannada-Regular.ttf",
+        "path": "/Users/bradley/.codex/worktrees/ed62/glob2/build/darwin/client/debug/dev-dev_fast-true-linker-auto/runtime-assets/data/fonts/scripts/NotoSansKannada-Regular.ttf",
+        "sha256": "5c804033c57f2c2844b1cd425f45b9a78d81d2f71bf358351b24258ebe168aea"
+      },
+      {
+        "virtual_path": "data/fonts/scripts/NotoSansMalayalam-Regular.ttf",
+        "path": "/Users/bradley/.codex/worktrees/ed62/glob2/build/darwin/client/debug/dev-dev_fast-true-linker-auto/runtime-assets/data/fonts/scripts/NotoSansMalayalam-Regular.ttf",
+        "sha256": "42eb462ff13e820ebbeaaec4e7b426bd1de145d02cef8b634f5a3efd376b513c"
+      },
+      {
+        "virtual_path": "data/fonts/scripts/NotoSansMyanmar-Regular.ttf",
+        "path": "/Users/bradley/.codex/worktrees/ed62/glob2/build/darwin/client/debug/dev-dev_fast-true-linker-auto/runtime-assets/data/fonts/scripts/NotoSansMyanmar-Regular.ttf",
+        "sha256": "9dd2bc76a822a974efce803a4b07302d14d01d5c1fa9e33a258d15a9cb513a7d"
+      },
+      {
+        "virtual_path": "data/fonts/scripts/NotoSansOriya-Regular.ttf",
+        "path": "/Users/bradley/.codex/worktrees/ed62/glob2/build/darwin/client/debug/dev-dev_fast-true-linker-auto/runtime-assets/data/fonts/scripts/NotoSansOriya-Regular.ttf",
+        "sha256": "b8d8bd784b9d09c0668233437359913c93a3a83bf37d92ecde859e2bc728a0e0"
+      },
+      {
+        "virtual_path": "data/fonts/scripts/NotoSansTamil-Regular.ttf",
+        "path": "/Users/bradley/.codex/worktrees/ed62/glob2/build/darwin/client/debug/dev-dev_fast-true-linker-auto/runtime-assets/data/fonts/scripts/NotoSansTamil-Regular.ttf",
+        "sha256": "6532db33b8b264abe3a098a40619feb489b5ddf5ab1d2b46e72b51eeb548001b"
+      },
+      {
+        "virtual_path": "data/fonts/scripts/NotoSansTelugu-Regular.ttf",
+        "path": "/Users/bradley/.codex/worktrees/ed62/glob2/build/darwin/client/debug/dev-dev_fast-true-linker-auto/runtime-assets/data/fonts/scripts/NotoSansTelugu-Regular.ttf",
+        "sha256": "2c05072e8018a9be1cb0582953d9edf9a0cf129cdfb74e611de763b09c411f7f"
+      },
+      {
+        "virtual_path": "data/fonts/scripts/NotoSansThai-Regular.ttf",
+        "path": "/Users/bradley/.codex/worktrees/ed62/glob2/build/darwin/client/debug/dev-dev_fast-true-linker-auto/runtime-assets/data/fonts/scripts/NotoSansThai-Regular.ttf",
+        "sha256": "404ddfb5ed0aaa6b6ec8a85700d682978992062d67da93903967b56cbd9a4acc"
+      }
+    ],
+    "runtime_search_paths": [
+      "/Users/bradley/.codex/worktrees/ed62/glob2/artifacts/translation-program/native-preview/release-three-integrated/profile-sw",
+      "/Users/bradley/.codex/worktrees/ed62/glob2/build/darwin/client/debug/dev-dev_fast-true-linker-auto/test/",
+      "/Users/bradley/.codex/worktrees/ed62/glob2/build/darwin/client/debug/dev-dev_fast-true-linker-auto/runtime-assets",
+      ".",
+      "/usr/local/share../Resources/",
+      "/Users/bradley/.codex/worktrees/ed62/glob2",
+      "/Users/bradley/.codex/worktrees/ed62/glob2"
+    ],
+    "input_metadata": {
+      "locale": "sw",
+      "kind": "complete-agent-reviewed-draft-overlay",
+      "original_catalog_sha256": {
+        "native": "d23c1b75c4ae209b85a6dbd9f2fb0ab084ab7bb21b7544ec8a4a5ad545129cc5",
+        "online": "6914cbf226adebd70d3ff401cfda759b62b62cc8af621b25f4ba994a8e0bec0a"
+      },
+      "source_sha256": "7583e9f8f0a03186eec456ed3b7a9c187509056b91f931551c3b7dc0e6b53457",
+      "state": "linguistic-review-complete-platform-gates-pending"
+    },
+    "sdl_library_path": "/opt/homebrew/Cellar/sdl3/3.4.18/lib/libSDL3.0.dylib",
+    "sdl_ttf_library_path": "/Users/bradley/.codex/worktrees/ed62/glob2/artifacts/translation-program/script-support/prefix/lib/libSDL3_ttf.0.2.2.dylib",
+    "sdl_version": 3004018,
+    "sdl_ttf_version": 3002002,
+    "harfbuzz_version": [
+      10,
+      1,
+      0
+    ]
+  },
+  "native_keys_overridden": 3328,
+  "width": 390,
+  "height": 844,
+  "controls": [
+    {
+      "key": "tab/0",
+      "x": 26,
+      "y": 18,
+      "width": 108,
+      "height": 34,
+      "within_viewport": true
+    },
+    {
+      "key": "tab/1",
+      "x": 140,
+      "y": 18,
+      "width": 108,
+      "height": 34,
+      "within_viewport": true
+    },
+    {
+      "key": "tab/2",
+      "x": 254,
+      "y": 18,
+      "width": 110,
+      "height": 34,
+      "within_viewport": true
+    },
+    {
+      "key": "teams",
+      "x": 26,
+      "y": 84,
+      "width": 328,
+      "height": 34,
+      "within_viewport": true
+    },
+    {
+      "key": "colony/0/controller",
+      "x": 36,
+      "y": 188,
+      "width": 308,
+      "height": 34,
+      "within_viewport": true
+    },
+    {
+      "key": "colony/0/team",
+      "x": 36,
+      "y": 246,
+      "width": 308,
+      "height": 34,
+      "within_viewport": true
+    },
+    {
+      "key": "colony/1/controller",
+      "x": 36,
+      "y": 362,
+      "width": 308,
+      "height": 34,
+      "within_viewport": true
+    },
+    {
+      "key": "colony/1/ai",
+      "x": 36,
+      "y": 402,
+      "width": 268,
+      "height": 34,
+      "within_viewport": true
+    },
+    {
+      "key": "colony/1/info",
+      "x": 310,
+      "y": 402,
+      "width": 34,
+      "height": 34,
+      "within_viewport": true
+    },
+    {
+      "key": "colony/1/team",
+      "x": 36,
+      "y": 442,
+      "width": 308,
+      "height": 34,
+      "within_viewport": true
+    },
+    {
+      "key": "colony/2/controller",
+      "x": 36,
+      "y": 574,
+      "width": 308,
+      "height": 34,
+      "within_viewport": true
+    },
+    {
+      "key": "colony/2/ai",
+      "x": 36,
+      "y": 614,
+      "width": 268,
+      "height": 34,
+      "within_viewport": true
+    },
+    {
+      "key": "colony/2/info",
+      "x": 310,
+      "y": 614,
+      "width": 34,
+      "height": 34,
+      "within_viewport": true
+    },
+    {
+      "key": "colony/2/team",
+      "x": 36,
+      "y": 654,
+      "width": 308,
+      "height": 34,
+      "within_viewport": true
+    },
+    {
+      "key": "colony/3/controller",
+      "x": 36,
+      "y": 786,
+      "width": 308,
+      "height": 34,
+      "within_viewport": true
+    },
+    {
+      "key": "colony/3/ai",
+      "x": 36,
+      "y": 826,
+      "width": 268,
+      "height": 34,
+      "within_viewport": false
+    },
+    {
+      "key": "colony/3/info",
+      "x": 310,
+      "y": 826,
+      "width": 34,
+      "height": 34,
+      "within_viewport": false
+    },
+    {
+      "key": "colony/3/team",
+      "x": 36,
+      "y": 866,
+      "width": 308,
+      "height": 34,
+      "within_viewport": false
+    },
+    {
+      "key": "back",
+      "x": 126,
+      "y": 792,
+      "width": 86,
+      "height": 34,
+      "within_viewport": true
+    },
+    {
+      "key": "start",
+      "x": 242,
+      "y": 792,
+      "width": 112,
+      "height": 34,
+      "within_viewport": true
+    }
+  ],
+  "limits": [
+    "Only supplied draft keys are translated; native_keys_overridden records their count. Missing draft keys use English.",
+    "Control bounds include scrollable content and do not independently prove text fitting.",
+    "Does not verify gameplay HUD, tutorial, dialogs, browser, mobile platform, or full locale."
+  ]
+}

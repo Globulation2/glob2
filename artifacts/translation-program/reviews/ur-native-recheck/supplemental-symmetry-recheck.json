@@ -1,0 +1,60 @@
+{
+  "reviewer": "/root/pilot_context",
+  "editor": "/root",
+  "before_sha256": "ec78fb33247244bf783461e0410ef11fe48e45644c3c6500419d9060e967d458",
+  "final_sha256": "5cb88fac67663fc436f6bfa60388382c24665755ee481514c002bc92e9a29837",
+  "changes": [
+    {
+      "key": "[Symmetric arena]",
+      "before": "متناسب میدانِ جنگ",
+      "after": "تشاکلی میدانِ جنگ",
+      "reason": "Original reviewer verified primary OUP mathematics text pairs تشاکل with symmetry and checked exact point-symmetry generator geometry; normalize precise game-title family.",
+      "result": "independently-rechecked-pass"
+    },
+    {
+      "key": "[Symmetric arena needs 2, 4 or 8 colonies.]",
+      "before": "متناسب میدانِ جنگ کے لیے 2، 4 یا 8 بستیاں درکار ہیں۔",
+      "after": "تشاکلی میدانِ جنگ کے لیے 2، 4 یا 8 بستیاں درکار ہیں۔",
+      "reason": "Original reviewer verified primary OUP mathematics text pairs تشاکل with symmetry and checked exact point-symmetry generator geometry; normalize precise game-title family.",
+      "result": "independently-rechecked-pass"
+    },
+    {
+      "key": "[Eight colonies need a square map in the symmetric arena.]",
+      "before": "متناسب میدان میں آٹھ بستیوں کے لیے مربع نقشہ چاہیے۔",
+      "after": "تشاکلی میدانِ جنگ میں آٹھ بستیوں کے لیے مربع نقشہ چاہیے۔",
+      "reason": "Original reviewer verified primary OUP mathematics text pairs تشاکل with symmetry and checked exact point-symmetry generator geometry; normalize precise game-title family.",
+      "result": "independently-rechecked-pass"
+    }
+  ],
+  "decision": "تشاکلی is the natural adjectival form of attested Urdu symmetry noun تشاکل. It identifies mathematical mirror/rotation symmetry rather than vague proportionate balance, and all three UI references now share the exact landscape title. No claim that متناسب is wrong in every ordinary Urdu sense.",
+  "primary_source": "https://oup.com.pk/media/productattachments/files/Math_Understood_TG-4_2.pdf",
+  "primary_pdf_sha256": "632eaa607d8cb0bb64ea3b19cb1e836fe7e3c3981245f1432dbdcffa2c89a4ce",
+  "primary_page_image": "oup-math-page165.png",
+  "primary_page_image_sha256": "f043486e80b7662d2f5d2427a8677787afb998fea443175f921ae6c700609cdf",
+  "consultation": "Downloaded PDF and visually read full physical page165/printed157, Competency5; تشاکل is explicitly paired with symmetry and خط تشاکل with line of symmetry. Search excerpt incorrectly substituted a different Urdu term, so screenshot is the lexical evidence. Adjective follows regular Urdu derivation; indexed Rekhta adjective headword additionally agrees but direct entry access failed403, not claimed fully read.",
+  "code_context": [
+    {
+      "path": "src/map/generator/shared/Orbits.h",
+      "sha256": "9a57bb7a103f8d8a8fb74b5462811244f185a3b4ab5ede176fdb9d148e544e5b"
+    },
+    {
+      "path": "src/map/generator/generators/SymmetricArenaGenerator.cpp",
+      "sha256": "3ad7b9e3c24d303a75727795f8c2102bae5f8e3d7a6ee1dd4c9c0b8b432174ca"
+    }
+  ],
+  "geometry": "Orbits.h specifies tile-preserving point symmetries: half-turn for2, quarter turns/mirrors for4, all8 for8. SymmetricArenaGenerator.cpp147 calls pointSymmetry. This is genuine mathematical symmetry, not merely fair random terrain.",
+  "failed_or_partial_lookups": [
+    {
+      "url": "https://www.urducouncil.nic.in/sites/default/files/2024-07/0270-Farhang-e-Istalahat%28Mathematics%29ForSecondaryLevel.1.pdf",
+      "status": "Web and directcurl timed out; no full text or entries claimed read."
+    },
+    {
+      "url": "https://ncert.nic.in/textbook/pdf/cumm114.pdf",
+      "status": "Web rejected20.9MB size; indexed third-party excerpt not treated as primary full-document proof."
+    },
+    {
+      "url": "https://rekhtadictionary.com/meaning-of-tashaakulii",
+      "status": "Search-index adjective headword seen; directopen403; secondary corroboration only."
+    }
+  ]
+}

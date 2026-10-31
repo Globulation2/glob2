@@ -1,0 +1,769 @@
+{
+  "reviewer": "/root/pilot_context",
+  "catalog_sha256": "0da47c791e9c389d68b54bfd67d418872f77a2b107daa03fe789f1ab02ab8a81",
+  "combined_author_proposals": 115,
+  "native_proposals_out_of_scope": 31,
+  "online_proposals": 84,
+  "actual_online_equality_entries": 84,
+  "missing_proposals": [],
+  "stale_online_proposals": [],
+  "entries": [
+    {
+      "key": " ({slot0})",
+      "source": " ({slot0})",
+      "target": " ({slot0})",
+      "status": "approved-retention",
+      "rationale": "Exact entry ' ({slot0})' contains only placeholders, digits, numeric notation, punctuation or a UI symbol; no English words to translate. Preserve slot identity and logical ordering.",
+      "context": "all source-target pairs independently read; RTL rendering remains separate",
+      "author_proposal": "This exact entry contains only placeholders, numeric notation, punctuation or a UI symbol; it has no English lexical text."
+    },
+    {
+      "key": " / {slot0}",
+      "source": " / {slot0}",
+      "target": " / {slot0}",
+      "status": "approved-retention",
+      "rationale": "Exact entry ' / {slot0}' contains only placeholders, digits, numeric notation, punctuation or a UI symbol; no English words to translate. Preserve slot identity and logical ordering.",
+      "context": "all source-target pairs independently read; RTL rendering remains separate",
+      "author_proposal": "This exact entry contains only placeholders, numeric notation, punctuation or a UI symbol; it has no English lexical text."
+    },
+    {
+      "key": " · ",
+      "source": " · ",
+      "target": " · ",
+      "status": "approved-retention",
+      "rationale": "Exact entry ' · ' contains only placeholders, digits, numeric notation, punctuation or a UI symbol; no English words to translate. Preserve slot identity and logical ordering.",
+      "context": "all source-target pairs independently read; RTL rendering remains separate",
+      "author_proposal": "This exact entry contains only placeholders, numeric notation, punctuation or a UI symbol; it has no English lexical text."
+    },
+    {
+      "key": " · {slot0}",
+      "source": " · {slot0}",
+      "target": " · {slot0}",
+      "status": "approved-retention",
+      "rationale": "Exact entry ' · {slot0}' contains only placeholders, digits, numeric notation, punctuation or a UI symbol; no English words to translate. Preserve slot identity and logical ordering.",
+      "context": "all source-target pairs independently read; RTL rendering remains separate",
+      "author_proposal": "This exact entry contains only placeholders, numeric notation, punctuation or a UI symbol; it has no English lexical text."
+    },
+    {
+      "key": " — ",
+      "source": " — ",
+      "target": " — ",
+      "status": "approved-retention",
+      "rationale": "Exact entry ' — ' contains only placeholders, digits, numeric notation, punctuation or a UI symbol; no English words to translate. Preserve slot identity and logical ordering.",
+      "context": "all source-target pairs independently read; RTL rendering remains separate",
+      "author_proposal": "This exact entry contains only placeholders, numeric notation, punctuation or a UI symbol; it has no English lexical text."
+    },
+    {
+      "key": " → ",
+      "source": " → ",
+      "target": " → ",
+      "status": "approved-retention",
+      "rationale": "Exact entry ' → ' contains only placeholders, digits, numeric notation, punctuation or a UI symbol; no English words to translate. Preserve slot identity and logical ordering.",
+      "context": "all source-target pairs independently read; RTL rendering remains separate",
+      "author_proposal": "This exact entry contains only placeholders, numeric notation, punctuation or a UI symbol; it has no English lexical text."
+    },
+    {
+      "key": "#{slot0}",
+      "source": "#{slot0}",
+      "target": "#{slot0}",
+      "status": "approved-retention",
+      "rationale": "Exact entry '#{slot0}' contains only placeholders, digits, numeric notation, punctuation or a UI symbol; no English words to translate. Preserve slot identity and logical ordering.",
+      "context": "all source-target pairs independently read; RTL rendering remains separate",
+      "author_proposal": "This exact entry contains only placeholders, numeric notation, punctuation or a UI symbol; it has no English lexical text."
+    },
+    {
+      "key": "/ais/favourites",
+      "source": "/ais/favourites",
+      "target": "/ais/favourites",
+      "status": "approved-retention",
+      "rationale": "Exact route; translating would change a URL, not prose.",
+      "context": "route literal",
+      "author_proposal": "Exact route literal; preserving URL semantics."
+    },
+    {
+      "key": "/ais/mine",
+      "source": "/ais/mine",
+      "target": "/ais/mine",
+      "status": "approved-retention",
+      "rationale": "Exact route for owned AI entries; preserve URL identity.",
+      "context": "route literal",
+      "author_proposal": "Exact route literal; preserving URL semantics."
+    },
+    {
+      "key": "1.0.0",
+      "source": "1.0.0",
+      "target": "1.0.0",
+      "status": "approved-retention",
+      "rationale": "Semantic version example; each digit/separator is significant.",
+      "context": "version notation",
+      "author_proposal": "Semantic-version example; not translatable prose."
+    },
+    {
+      "key": "95%: {slot0}",
+      "source": "95%: {slot0}",
+      "target": "95%: {slot0}",
+      "status": "approved-retention",
+      "rationale": "Exact entry '95%: {slot0}' contains only placeholders, digits, numeric notation, punctuation or a UI symbol; no English words to translate. Preserve slot identity and logical ordering.",
+      "context": "all source-target pairs independently read; RTL rendering remains separate",
+      "author_proposal": "This exact entry contains only placeholders, numeric notation, punctuation or a UI symbol; it has no English lexical text."
+    },
+    {
+      "key": ": ",
+      "source": ": ",
+      "target": ": ",
+      "status": "approved-retention",
+      "rationale": "Exact entry ': ' contains only placeholders, digits, numeric notation, punctuation or a UI symbol; no English words to translate. Preserve slot identity and logical ordering.",
+      "context": "all source-target pairs independently read; RTL rendering remains separate",
+      "author_proposal": "This exact entry contains only placeholders, numeric notation, punctuation or a UI symbol; it has no English lexical text."
+    },
+    {
+      "key": "A · V{slot0}",
+      "source": "A · V{slot0}",
+      "target": "A · V{slot0}",
+      "status": "approved-retention",
+      "rationale": "A/B audio comparison identity and version marker; Workspace.tsx526 pairs it with the B selector, not a translatable grade.",
+      "context": "platform/apps/web/src/pages/music-studio/Workspace.tsx:526",
+      "author_proposal": "Compact A/V technical labels and a version placeholder; requires contextual independent confirmation."
+    },
+    {
+      "key": "AI",
+      "source": "AI",
+      "target": "AI",
+      "status": "approved-retention",
+      "rationale": "Established artificial-intelligence acronym consistently retained in native AI names.",
+      "context": "shared glossary",
+      "author_proposal": "Compact artificial-intelligence acronym."
+    },
+    {
+      "key": "B{slot0}",
+      "source": "B{slot0}",
+      "target": "B{slot0}",
+      "status": "approved-retention",
+      "rationale": "B selector in A/B music comparison; slot appends the compared version marker. Preserve matching identity.",
+      "context": "platform/apps/web/src/pages/music-studio/Workspace.tsx:539",
+      "author_proposal": "Compact B technical identifier and a placeholder; requires contextual independent confirmation."
+    },
+    {
+      "key": "CC BY",
+      "source": "CC BY",
+      "target": "CC BY",
+      "status": "approved-retention",
+      "rationale": "CC BY is the exact Creative Commons licence/dedication identifier; preserve BY attribution, SA share-alike and version distinctions without translating the identifier.",
+      "context": "license identifier",
+      "author_proposal": "Creative Commons license identifier."
+    },
+    {
+      "key": "CC BY 4.0",
+      "source": "CC BY 4.0",
+      "target": "CC BY 4.0",
+      "status": "approved-retention",
+      "rationale": "CC BY 4.0 is the exact Creative Commons licence/dedication identifier; preserve BY attribution, SA share-alike and version distinctions without translating the identifier.",
+      "context": "license identifier",
+      "author_proposal": "Creative Commons license identifier and version."
+    },
+    {
+      "key": "CC BY-SA 4.0",
+      "source": "CC BY-SA 4.0",
+      "target": "CC BY-SA 4.0",
+      "status": "approved-retention",
+      "rationale": "CC BY-SA 4.0 is the exact Creative Commons licence/dedication identifier; preserve BY attribution, SA share-alike and version distinctions without translating the identifier.",
+      "context": "license identifier",
+      "author_proposal": "Creative Commons ShareAlike license identifier and version."
+    },
+    {
+      "key": "CC-BY-4.0",
+      "source": "CC-BY-4.0",
+      "target": "CC-BY-4.0",
+      "status": "approved-retention",
+      "rationale": "CC-BY-4.0 is the exact Creative Commons licence/dedication identifier; preserve BY attribution, SA share-alike and version distinctions without translating the identifier.",
+      "context": "license identifier",
+      "author_proposal": "Machine-readable Creative Commons license identifier."
+    },
+    {
+      "key": "CC-BY-SA-4.0",
+      "source": "CC-BY-SA-4.0",
+      "target": "CC-BY-SA-4.0",
+      "status": "approved-retention",
+      "rationale": "CC-BY-SA-4.0 is the exact Creative Commons licence/dedication identifier; preserve BY attribution, SA share-alike and version distinctions without translating the identifier.",
+      "context": "license identifier",
+      "author_proposal": "Machine-readable Creative Commons ShareAlike license identifier."
+    },
+    {
+      "key": "CC0",
+      "source": "CC0",
+      "target": "CC0",
+      "status": "approved-retention",
+      "rationale": "CC0 is the exact Creative Commons licence/dedication identifier; preserve BY attribution, SA share-alike and version distinctions without translating the identifier.",
+      "context": "license identifier",
+      "author_proposal": "Creative Commons public-domain dedication identifier."
+    },
+    {
+      "key": "CC0 1.0",
+      "source": "CC0 1.0",
+      "target": "CC0 1.0",
+      "status": "approved-retention",
+      "rationale": "CC0 1.0 is the exact Creative Commons licence/dedication identifier; preserve BY attribution, SA share-alike and version distinctions without translating the identifier.",
+      "context": "license identifier",
+      "author_proposal": "Creative Commons public-domain dedication identifier and version."
+    },
+    {
+      "key": "CC0-1.0",
+      "source": "CC0-1.0",
+      "target": "CC0-1.0",
+      "status": "approved-retention",
+      "rationale": "CC0-1.0 is the exact Creative Commons licence/dedication identifier; preserve BY attribution, SA share-alike and version distinctions without translating the identifier.",
+      "context": "license identifier",
+      "author_proposal": "Machine-readable public-domain dedication identifier."
+    },
+    {
+      "key": "Cabino",
+      "source": "Cabino",
+      "target": "Cabino",
+      "status": "approved-retention",
+      "rationale": "Cabino is the built-in AI strategy proper name; retaining the name preserves the same opponent identity as native menus.",
+      "context": "native AI glossary",
+      "author_proposal": "Built-in AI strategy proper name."
+    },
+    {
+      "key": "Castor",
+      "source": "Castor",
+      "target": "Castor",
+      "status": "approved-retention",
+      "rationale": "Castor is the built-in AI strategy proper name; retaining the name preserves the same opponent identity as native menus.",
+      "context": "native AI glossary",
+      "author_proposal": "Built-in AI strategy proper name."
+    },
+    {
+      "key": "Cortex",
+      "source": "Cortex",
+      "target": "Cortex",
+      "status": "approved-retention",
+      "rationale": "Cortex is the built-in AI strategy proper name; retaining the name preserves the same opponent identity as native menus.",
+      "context": "native AI glossary",
+      "author_proposal": "Built-in AI strategy proper name."
+    },
+    {
+      "key": "Econo",
+      "source": "Econo",
+      "target": "Econo",
+      "status": "approved-retention",
+      "rationale": "Econo is the built-in AI strategy proper name; retaining the name preserves the same opponent identity as native menus.",
+      "context": "native AI glossary",
+      "author_proposal": "Built-in AI strategy proper name."
+    },
+    {
+      "key": "Globulation 2",
+      "source": "Globulation 2",
+      "target": "Globulation 2",
+      "status": "approved-retention",
+      "rationale": "Exact game product name.",
+      "context": "product identity",
+      "author_proposal": "Game product name."
+    },
+    {
+      "key": "HTTP {value0}",
+      "source": "HTTP {value0}",
+      "target": "HTTP {value0}",
+      "status": "approved-retention",
+      "rationale": "Protocol acronym plus unaltered status-code placeholder.",
+      "context": "HTTP standard abbreviation",
+      "author_proposal": "HTTP protocol acronym followed by its status-code placeholder."
+    },
+    {
+      "key": "Hive",
+      "source": "Hive",
+      "target": "Hive",
+      "status": "approved-retention",
+      "rationale": "Product identity for Hive Mind billing in PRODUCT_NAMES.hive; not the in-game Swarm building (چھتہ).",
+      "context": "platform/apps/web/src/admin/presentation.ts:12",
+      "author_proposal": "Named product/navigation identity; requires contextual independent confirmation."
+    },
+    {
+      "key": "Hive Mind",
+      "source": "Hive Mind",
+      "target": "Hive Mind",
+      "status": "approved-retention",
+      "rationale": "Named commander feature shared with native settings; preserve branded identity.",
+      "context": "platform/apps/web/src/admin/presentation.ts:12",
+      "author_proposal": "Named commander feature."
+    },
+    {
+      "key": "JSON",
+      "source": "JSON",
+      "target": "JSON",
+      "status": "approved-retention",
+      "rationale": "Standard data-format abbreviation; shared across the source and native technical instructions.",
+      "context": "format identifier",
+      "author_proposal": "Standard technical format acronym."
+    },
+    {
+      "key": "JavaScript · {slot0}",
+      "source": "JavaScript · {slot0}",
+      "target": "JavaScript · {slot0}",
+      "status": "approved-retention",
+      "rationale": "Programming-language proper name with metadata slot and separator.",
+      "context": "language identifier",
+      "author_proposal": "Programming language name with metadata placeholder."
+    },
+    {
+      "key": "Maxima",
+      "source": "Maxima",
+      "target": "Maxima",
+      "status": "approved-retention",
+      "rationale": "Maxima is the built-in AI strategy proper name; retaining the name preserves the same opponent identity as native menus.",
+      "context": "native AI glossary",
+      "author_proposal": "Built-in AI strategy proper name."
+    },
+    {
+      "key": "Nicowar",
+      "source": "Nicowar",
+      "target": "Nicowar",
+      "status": "approved-retention",
+      "rationale": "Nicowar is the built-in AI strategy proper name; retaining the name preserves the same opponent identity as native menus.",
+      "context": "native AI glossary",
+      "author_proposal": "Built-in AI strategy proper name."
+    },
+    {
+      "key": "Numbi",
+      "source": "Numbi",
+      "target": "Numbi",
+      "status": "approved-retention",
+      "rationale": "Numbi is the built-in AI strategy proper name; retaining the name preserves the same opponent identity as native menus.",
+      "context": "native AI glossary",
+      "author_proposal": "Built-in AI strategy proper name."
+    },
+    {
+      "key": "Toubib",
+      "source": "Toubib",
+      "target": "Toubib",
+      "status": "approved-retention",
+      "rationale": "Toubib is the built-in AI strategy proper name; retaining the name preserves the same opponent identity as native menus.",
+      "context": "native AI glossary",
+      "author_proposal": "Built-in AI strategy proper name."
+    },
+    {
+      "key": "V",
+      "source": "V",
+      "target": "V",
+      "status": "approved-retention",
+      "rationale": "Compact generation-version marker immediately followed by a numeric version index.",
+      "context": "platform/apps/web/src/pages/music-studio/Workspace.tsx:431",
+      "author_proposal": "Compact version marker; requires contextual independent confirmation."
+    },
+    {
+      "key": "V{slot0} · {slot1}",
+      "source": "V{slot0} · {slot1}",
+      "target": "V{slot0} · {slot1}",
+      "status": "approved-retention",
+      "rationale": "Version marker V with numeric slot and unchanged metadata separator.",
+      "context": "version notation",
+      "author_proposal": "Version marker and placeholders."
+    },
+    {
+      "key": "Warrush",
+      "source": "Warrush",
+      "target": "Warrush",
+      "status": "approved-retention",
+      "rationale": "Warrush is the built-in AI strategy proper name; retaining the name preserves the same opponent identity as native menus.",
+      "context": "native AI glossary",
+      "author_proposal": "Built-in AI strategy proper name."
+    },
+    {
+      "key": "b-",
+      "source": "b-",
+      "target": "b-",
+      "status": "approved-retention",
+      "rationale": "Execution-sensitive building-definition prefix: Preview.tsx150 strips b- + namespace + hyphen from next-stage ID. Changing it would break ID presentation.",
+      "context": "platform/apps/web/src/pages/building-ai/Preview.tsx:150",
+      "author_proposal": "Technical prefix literal; requires contextual independent confirmation."
+    },
+    {
+      "key": "public, max-age=604800",
+      "source": "public, max-age=604800",
+      "target": "public, max-age=604800",
+      "status": "approved-retention",
+      "rationale": "Literal HTTP Cache-Control header value; translation would invalidate the technical example.",
+      "context": "HTTP literal",
+      "author_proposal": "Exact HTTP cache-control header literal."
+    },
+    {
+      "key": "r{slot0} · {slot1}",
+      "source": "r{slot0} · {slot1}",
+      "target": "r{slot0} · {slot1}",
+      "status": "approved-retention",
+      "rationale": "Revision marker r with exact revision/metadata slots.",
+      "context": "revision notation",
+      "author_proposal": "Compact revision marker with numeric metadata placeholders."
+    },
+    {
+      "key": "text/html; charset=utf-8",
+      "source": "text/html; charset=utf-8",
+      "target": "text/html; charset=utf-8",
+      "status": "approved-retention",
+      "rationale": "Literal MIME type/charset header value; preserve execution-sensitive syntax.",
+      "context": "MIME literal",
+      "author_proposal": "Exact MIME type and character-encoding literal."
+    },
+    {
+      "key": "v{slot0}",
+      "source": "v{slot0}",
+      "target": "v{slot0}",
+      "status": "approved-retention",
+      "rationale": "Compact version marker paired with exact version slot.",
+      "context": "version notation",
+      "author_proposal": "Compact version marker with numeric placeholder."
+    },
+    {
+      "key": "{hours} {minutes}",
+      "source": "{hours} {minutes}",
+      "target": "{hours} {minutes}",
+      "status": "approved-retention",
+      "rationale": "Exact entry '{hours} {minutes}' contains only placeholders, digits, numeric notation, punctuation or a UI symbol; no English words to translate. Preserve slot identity and logical ordering.",
+      "context": "all source-target pairs independently read; RTL rendering remains separate",
+      "author_proposal": "This exact entry contains only placeholders, numeric notation, punctuation or a UI symbol; it has no English lexical text."
+    },
+    {
+      "key": "{slot0} ({slot1}%)",
+      "source": "{slot0} ({slot1}%)",
+      "target": "{slot0} ({slot1}%)",
+      "status": "approved-retention",
+      "rationale": "Exact entry '{slot0} ({slot1}%)' contains only placeholders, digits, numeric notation, punctuation or a UI symbol; no English words to translate. Preserve slot identity and logical ordering.",
+      "context": "all source-target pairs independently read; RTL rendering remains separate",
+      "author_proposal": "This exact entry contains only placeholders, numeric notation, punctuation or a UI symbol; it has no English lexical text."
+    },
+    {
+      "key": "{slot0} ({slot1})",
+      "source": "{slot0} ({slot1})",
+      "target": "{slot0} ({slot1})",
+      "status": "approved-retention",
+      "rationale": "Exact entry '{slot0} ({slot1})' contains only placeholders, digits, numeric notation, punctuation or a UI symbol; no English words to translate. Preserve slot identity and logical ordering.",
+      "context": "all source-target pairs independently read; RTL rendering remains separate",
+      "author_proposal": "This exact entry contains only placeholders, numeric notation, punctuation or a UI symbol; it has no English lexical text."
+    },
+    {
+      "key": "{slot0} / {slot1}",
+      "source": "{slot0} / {slot1}",
+      "target": "{slot0} / {slot1}",
+      "status": "approved-retention",
+      "rationale": "Exact entry '{slot0} / {slot1}' contains only placeholders, digits, numeric notation, punctuation or a UI symbol; no English words to translate. Preserve slot identity and logical ordering.",
+      "context": "all source-target pairs independently read; RTL rendering remains separate",
+      "author_proposal": "This exact entry contains only placeholders, numeric notation, punctuation or a UI symbol; it has no English lexical text."
+    },
+    {
+      "key": "{slot0} · {slot1}",
+      "source": "{slot0} · {slot1}",
+      "target": "{slot0} · {slot1}",
+      "status": "approved-retention",
+      "rationale": "Exact entry '{slot0} · {slot1}' contains only placeholders, digits, numeric notation, punctuation or a UI symbol; no English words to translate. Preserve slot identity and logical ordering.",
+      "context": "all source-target pairs independently read; RTL rendering remains separate",
+      "author_proposal": "This exact entry contains only placeholders, numeric notation, punctuation or a UI symbol; it has no English lexical text."
+    },
+    {
+      "key": "{slot0} · {slot1} {slot2}",
+      "source": "{slot0} · {slot1} {slot2}",
+      "target": "{slot0} · {slot1} {slot2}",
+      "status": "approved-retention",
+      "rationale": "Exact entry '{slot0} · {slot1} {slot2}' contains only placeholders, digits, numeric notation, punctuation or a UI symbol; no English words to translate. Preserve slot identity and logical ordering.",
+      "context": "all source-target pairs independently read; RTL rendering remains separate",
+      "author_proposal": "This exact entry contains only placeholders, numeric notation, punctuation or a UI symbol; it has no English lexical text."
+    },
+    {
+      "key": "{slot0} · {slot1} · {slot2}",
+      "source": "{slot0} · {slot1} · {slot2}",
+      "target": "{slot0} · {slot1} · {slot2}",
+      "status": "approved-retention",
+      "rationale": "Exact entry '{slot0} · {slot1} · {slot2}' contains only placeholders, digits, numeric notation, punctuation or a UI symbol; no English words to translate. Preserve slot identity and logical ordering.",
+      "context": "all source-target pairs independently read; RTL rendering remains separate",
+      "author_proposal": "This exact entry contains only placeholders, numeric notation, punctuation or a UI symbol; it has no English lexical text."
+    },
+    {
+      "key": "{slot0} · {slot1} · {slot2} × {slot3}",
+      "source": "{slot0} · {slot1} · {slot2} × {slot3}",
+      "target": "{slot0} · {slot1} · {slot2} × {slot3}",
+      "status": "approved-retention",
+      "rationale": "Exact entry '{slot0} · {slot1} · {slot2} × {slot3}' contains only placeholders, digits, numeric notation, punctuation or a UI symbol; no English words to translate. Preserve slot identity and logical ordering.",
+      "context": "all source-target pairs independently read; RTL rendering remains separate",
+      "author_proposal": "This exact entry contains only placeholders, numeric notation, punctuation or a UI symbol; it has no English lexical text."
+    },
+    {
+      "key": "{slot0} · {slot1} · {slot2}{slot3}",
+      "source": "{slot0} · {slot1} · {slot2}{slot3}",
+      "target": "{slot0} · {slot1} · {slot2}{slot3}",
+      "status": "approved-retention",
+      "rationale": "Exact entry '{slot0} · {slot1} · {slot2}{slot3}' contains only placeholders, digits, numeric notation, punctuation or a UI symbol; no English words to translate. Preserve slot identity and logical ordering.",
+      "context": "all source-target pairs independently read; RTL rendering remains separate",
+      "author_proposal": "This exact entry contains only placeholders, numeric notation, punctuation or a UI symbol; it has no English lexical text."
+    },
+    {
+      "key": "{slot0} · {slot1}{slot2}",
+      "source": "{slot0} · {slot1}{slot2}",
+      "target": "{slot0} · {slot1}{slot2}",
+      "status": "approved-retention",
+      "rationale": "Exact entry '{slot0} · {slot1}{slot2}' contains only placeholders, digits, numeric notation, punctuation or a UI symbol; no English words to translate. Preserve slot identity and logical ordering.",
+      "context": "all source-target pairs independently read; RTL rendering remains separate",
+      "author_proposal": "This exact entry contains only placeholders, numeric notation, punctuation or a UI symbol; it has no English lexical text."
+    },
+    {
+      "key": "{slot0} · {slot1}×{slot2}",
+      "source": "{slot0} · {slot1}×{slot2}",
+      "target": "{slot0} · {slot1}×{slot2}",
+      "status": "approved-retention",
+      "rationale": "Exact entry '{slot0} · {slot1}×{slot2}' contains only placeholders, digits, numeric notation, punctuation or a UI symbol; no English words to translate. Preserve slot identity and logical ordering.",
+      "context": "all source-target pairs independently read; RTL rendering remains separate",
+      "author_proposal": "This exact entry contains only placeholders, numeric notation, punctuation or a UI symbol; it has no English lexical text."
+    },
+    {
+      "key": "{slot0} ↗",
+      "source": "{slot0} ↗",
+      "target": "{slot0} ↗",
+      "status": "approved-retention",
+      "rationale": "Exact entry '{slot0} ↗' contains only placeholders, digits, numeric notation, punctuation or a UI symbol; no English words to translate. Preserve slot identity and logical ordering.",
+      "context": "all source-target pairs independently read; RTL rendering remains separate",
+      "author_proposal": "This exact entry contains only placeholders, numeric notation, punctuation or a UI symbol; it has no English lexical text."
+    },
+    {
+      "key": "{slot0}%",
+      "source": "{slot0}%",
+      "target": "{slot0}%",
+      "status": "approved-retention",
+      "rationale": "Exact entry '{slot0}%' contains only placeholders, digits, numeric notation, punctuation or a UI symbol; no English words to translate. Preserve slot identity and logical ordering.",
+      "context": "all source-target pairs independently read; RTL rendering remains separate",
+      "author_proposal": "This exact entry contains only placeholders, numeric notation, punctuation or a UI symbol; it has no English lexical text."
+    },
+    {
+      "key": "{slot0}/32",
+      "source": "{slot0}/32",
+      "target": "{slot0}/32",
+      "status": "approved-retention",
+      "rationale": "Exact entry '{slot0}/32' contains only placeholders, digits, numeric notation, punctuation or a UI symbol; no English words to translate. Preserve slot identity and logical ordering.",
+      "context": "all source-target pairs independently read; RTL rendering remains separate",
+      "author_proposal": "This exact entry contains only placeholders, numeric notation, punctuation or a UI symbol; it has no English lexical text."
+    },
+    {
+      "key": "{slot0}: {slot1}",
+      "source": "{slot0}: {slot1}",
+      "target": "{slot0}: {slot1}",
+      "status": "approved-retention",
+      "rationale": "Exact entry '{slot0}: {slot1}' contains only placeholders, digits, numeric notation, punctuation or a UI symbol; no English words to translate. Preserve slot identity and logical ordering.",
+      "context": "all source-target pairs independently read; RTL rendering remains separate",
+      "author_proposal": "This exact entry contains only placeholders, numeric notation, punctuation or a UI symbol; it has no English lexical text."
+    },
+    {
+      "key": "{slot0}: {slot1} · {slot2}",
+      "source": "{slot0}: {slot1} · {slot2}",
+      "target": "{slot0}: {slot1} · {slot2}",
+      "status": "approved-retention",
+      "rationale": "Exact entry '{slot0}: {slot1} · {slot2}' contains only placeholders, digits, numeric notation, punctuation or a UI symbol; no English words to translate. Preserve slot identity and logical ordering.",
+      "context": "all source-target pairs independently read; RTL rendering remains separate",
+      "author_proposal": "This exact entry contains only placeholders, numeric notation, punctuation or a UI symbol; it has no English lexical text."
+    },
+    {
+      "key": "{slot0}{slot1} · ♥ {slot2}{slot3}",
+      "source": "{slot0}{slot1} · ♥ {slot2}{slot3}",
+      "target": "{slot0}{slot1} · ♥ {slot2}{slot3}",
+      "status": "approved-retention",
+      "rationale": "Exact entry '{slot0}{slot1} · ♥ {slot2}{slot3}' contains only placeholders, digits, numeric notation, punctuation or a UI symbol; no English words to translate. Preserve slot identity and logical ordering.",
+      "context": "all source-target pairs independently read; RTL rendering remains separate",
+      "author_proposal": "This exact entry contains only placeholders, numeric notation, punctuation or a UI symbol; it has no English lexical text."
+    },
+    {
+      "key": "{slot0}°",
+      "source": "{slot0}°",
+      "target": "{slot0}°",
+      "status": "approved-retention",
+      "rationale": "Exact entry '{slot0}°' contains only placeholders, digits, numeric notation, punctuation or a UI symbol; no English words to translate. Preserve slot identity and logical ordering.",
+      "context": "all source-target pairs independently read; RTL rendering remains separate",
+      "author_proposal": "This exact entry contains only placeholders, numeric notation, punctuation or a UI symbol; it has no English lexical text."
+    },
+    {
+      "key": "{slot0}×{slot1}",
+      "source": "{slot0}×{slot1}",
+      "target": "{slot0}×{slot1}",
+      "status": "approved-retention",
+      "rationale": "Exact entry '{slot0}×{slot1}' contains only placeholders, digits, numeric notation, punctuation or a UI symbol; no English words to translate. Preserve slot identity and logical ordering.",
+      "context": "all source-target pairs independently read; RTL rendering remains separate",
+      "author_proposal": "This exact entry contains only placeholders, numeric notation, punctuation or a UI symbol; it has no English lexical text."
+    },
+    {
+      "key": "{slot0}–{slot1}",
+      "source": "{slot0}–{slot1}",
+      "target": "{slot0}–{slot1}",
+      "status": "approved-retention",
+      "rationale": "Exact entry '{slot0}–{slot1}' contains only placeholders, digits, numeric notation, punctuation or a UI symbol; no English words to translate. Preserve slot identity and logical ordering.",
+      "context": "all source-target pairs independently read; RTL rendering remains separate",
+      "author_proposal": "This exact entry contains only placeholders, numeric notation, punctuation or a UI symbol; it has no English lexical text."
+    },
+    {
+      "key": "×",
+      "source": "×",
+      "target": "×",
+      "status": "approved-retention",
+      "rationale": "Exact entry '×' contains only placeholders, digits, numeric notation, punctuation or a UI symbol; no English words to translate. Preserve slot identity and logical ordering.",
+      "context": "all source-target pairs independently read; RTL rendering remains separate",
+      "author_proposal": "This exact entry contains only placeholders, numeric notation, punctuation or a UI symbol; it has no English lexical text."
+    },
+    {
+      "key": "–",
+      "source": "–",
+      "target": "–",
+      "status": "approved-retention",
+      "rationale": "Exact entry '–' contains only placeholders, digits, numeric notation, punctuation or a UI symbol; no English words to translate. Preserve slot identity and logical ordering.",
+      "context": "all source-target pairs independently read; RTL rendering remains separate",
+      "author_proposal": "This exact entry contains only placeholders, numeric notation, punctuation or a UI symbol; it has no English lexical text."
+    },
+    {
+      "key": "•••",
+      "source": "•••",
+      "target": "•••",
+      "status": "approved-retention",
+      "rationale": "Exact entry '•••' contains only placeholders, digits, numeric notation, punctuation or a UI symbol; no English words to translate. Preserve slot identity and logical ordering.",
+      "context": "all source-target pairs independently read; RTL rendering remains separate",
+      "author_proposal": "This exact entry contains only placeholders, numeric notation, punctuation or a UI symbol; it has no English lexical text."
+    },
+    {
+      "key": "…",
+      "source": "…",
+      "target": "…",
+      "status": "approved-retention",
+      "rationale": "Exact entry '…' contains only placeholders, digits, numeric notation, punctuation or a UI symbol; no English words to translate. Preserve slot identity and logical ordering.",
+      "context": "all source-target pairs independently read; RTL rendering remains separate",
+      "author_proposal": "This exact entry contains only placeholders, numeric notation, punctuation or a UI symbol; it has no English lexical text."
+    },
+    {
+      "key": "← {slot0}",
+      "source": "← {slot0}",
+      "target": "← {slot0}",
+      "status": "approved-retention",
+      "rationale": "Exact entry '← {slot0}' contains only placeholders, digits, numeric notation, punctuation or a UI symbol; no English words to translate. Preserve slot identity and logical ordering.",
+      "context": "all source-target pairs independently read; RTL rendering remains separate",
+      "author_proposal": "This exact entry contains only placeholders, numeric notation, punctuation or a UI symbol; it has no English lexical text."
+    },
+    {
+      "key": "↑",
+      "source": "↑",
+      "target": "↑",
+      "status": "approved-retention",
+      "rationale": "Exact entry '↑' contains only placeholders, digits, numeric notation, punctuation or a UI symbol; no English words to translate. Preserve slot identity and logical ordering.",
+      "context": "all source-target pairs independently read; RTL rendering remains separate",
+      "author_proposal": "This exact entry contains only placeholders, numeric notation, punctuation or a UI symbol; it has no English lexical text."
+    },
+    {
+      "key": "→",
+      "source": "→",
+      "target": "→",
+      "status": "approved-retention",
+      "rationale": "Exact entry '→' contains only placeholders, digits, numeric notation, punctuation or a UI symbol; no English words to translate. Preserve slot identity and logical ordering.",
+      "context": "all source-target pairs independently read; RTL rendering remains separate",
+      "author_proposal": "This exact entry contains only placeholders, numeric notation, punctuation or a UI symbol; it has no English lexical text."
+    },
+    {
+      "key": "↗",
+      "source": "↗",
+      "target": "↗",
+      "status": "approved-retention",
+      "rationale": "Exact entry '↗' contains only placeholders, digits, numeric notation, punctuation or a UI symbol; no English words to translate. Preserve slot identity and logical ordering.",
+      "context": "all source-target pairs independently read; RTL rendering remains separate",
+      "author_proposal": "This exact entry contains only placeholders, numeric notation, punctuation or a UI symbol; it has no English lexical text."
+    },
+    {
+      "key": "−",
+      "source": "−",
+      "target": "−",
+      "status": "approved-retention",
+      "rationale": "Exact entry '−' contains only placeholders, digits, numeric notation, punctuation or a UI symbol; no English words to translate. Preserve slot identity and logical ordering.",
+      "context": "all source-target pairs independently read; RTL rendering remains separate",
+      "author_proposal": "This exact entry contains only placeholders, numeric notation, punctuation or a UI symbol; it has no English lexical text."
+    },
+    {
+      "key": "⌄",
+      "source": "⌄",
+      "target": "⌄",
+      "status": "approved-retention",
+      "rationale": "Exact entry '⌄' contains only placeholders, digits, numeric notation, punctuation or a UI symbol; no English words to translate. Preserve slot identity and logical ordering.",
+      "context": "all source-target pairs independently read; RTL rendering remains separate",
+      "author_proposal": "This exact entry contains only placeholders, numeric notation, punctuation or a UI symbol; it has no English lexical text."
+    },
+    {
+      "key": "◎",
+      "source": "◎",
+      "target": "◎",
+      "status": "approved-retention",
+      "rationale": "Exact entry '◎' contains only placeholders, digits, numeric notation, punctuation or a UI symbol; no English words to translate. Preserve slot identity and logical ordering.",
+      "context": "all source-target pairs independently read; RTL rendering remains separate",
+      "author_proposal": "This exact entry contains only placeholders, numeric notation, punctuation or a UI symbol; it has no English lexical text."
+    },
+    {
+      "key": "●",
+      "source": "●",
+      "target": "●",
+      "status": "approved-retention",
+      "rationale": "Exact entry '●' contains only placeholders, digits, numeric notation, punctuation or a UI symbol; no English words to translate. Preserve slot identity and logical ordering.",
+      "context": "all source-target pairs independently read; RTL rendering remains separate",
+      "author_proposal": "This exact entry contains only placeholders, numeric notation, punctuation or a UI symbol; it has no English lexical text."
+    },
+    {
+      "key": "★",
+      "source": "★",
+      "target": "★",
+      "status": "approved-retention",
+      "rationale": "Exact entry '★' contains only placeholders, digits, numeric notation, punctuation or a UI symbol; no English words to translate. Preserve slot identity and logical ordering.",
+      "context": "all source-target pairs independently read; RTL rendering remains separate",
+      "author_proposal": "This exact entry contains only placeholders, numeric notation, punctuation or a UI symbol; it has no English lexical text."
+    },
+    {
+      "key": "♥ {slot0}",
+      "source": "♥ {slot0}",
+      "target": "♥ {slot0}",
+      "status": "approved-retention",
+      "rationale": "Exact entry '♥ {slot0}' contains only placeholders, digits, numeric notation, punctuation or a UI symbol; no English words to translate. Preserve slot identity and logical ordering.",
+      "context": "all source-target pairs independently read; RTL rendering remains separate",
+      "author_proposal": "This exact entry contains only placeholders, numeric notation, punctuation or a UI symbol; it has no English lexical text."
+    },
+    {
+      "key": "♥ {slot0} · {slot1}",
+      "source": "♥ {slot0} · {slot1}",
+      "target": "♥ {slot0} · {slot1}",
+      "status": "approved-retention",
+      "rationale": "Exact entry '♥ {slot0} · {slot1}' contains only placeholders, digits, numeric notation, punctuation or a UI symbol; no English words to translate. Preserve slot identity and logical ordering.",
+      "context": "all source-target pairs independently read; RTL rendering remains separate",
+      "author_proposal": "This exact entry contains only placeholders, numeric notation, punctuation or a UI symbol; it has no English lexical text."
+    },
+    {
+      "key": "✕",
+      "source": "✕",
+      "target": "✕",
+      "status": "approved-retention",
+      "rationale": "Exact entry '✕' contains only placeholders, digits, numeric notation, punctuation or a UI symbol; no English words to translate. Preserve slot identity and logical ordering.",
+      "context": "all source-target pairs independently read; RTL rendering remains separate",
+      "author_proposal": "This exact entry contains only placeholders, numeric notation, punctuation or a UI symbol; it has no English lexical text."
+    },
+    {
+      "key": "⠿ {slot0}",
+      "source": "⠿ {slot0}",
+      "target": "⠿ {slot0}",
+      "status": "approved-retention",
+      "rationale": "Exact entry '⠿ {slot0}' contains only placeholders, digits, numeric notation, punctuation or a UI symbol; no English words to translate. Preserve slot identity and logical ordering.",
+      "context": "all source-target pairs independently read; RTL rendering remains separate",
+      "author_proposal": "This exact entry contains only placeholders, numeric notation, punctuation or a UI symbol; it has no English lexical text."
+    },
+    {
+      "key": "＋",
+      "source": "＋",
+      "target": "＋",
+      "status": "approved-retention",
+      "rationale": "Exact entry '＋' contains only placeholders, digits, numeric notation, punctuation or a UI symbol; no English words to translate. Preserve slot identity and logical ordering.",
+      "context": "all source-target pairs independently read; RTL rendering remains separate",
+      "author_proposal": "This exact entry contains only placeholders, numeric notation, punctuation or a UI symbol; it has no English lexical text."
+    },
+    {
+      "key": "{count} {status}",
+      "source": "{count} {status}",
+      "target": "{count} {status}",
+      "status": "approved-retention",
+      "rationale": "Exact entry '{count} {status}' contains only placeholders, digits, numeric notation, punctuation or a UI symbol; no English words to translate. Preserve slot identity and logical ordering.",
+      "context": "all source-target pairs independently read; RTL rendering remains separate",
+      "author_proposal": "This exact entry contains only placeholders, numeric notation, punctuation or a UI symbol; it has no English lexical text."
+    }
+  ],
+  "limits": "Approval covers exact lexical retention only, not font, visual bidi, browser or platform usability."
+}

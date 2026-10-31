@@ -1,0 +1,264 @@
+{
+  "reviewer": "/root/pilot_context",
+  "final_native_sha256": "a65477c9ac654c44a08531b6a5ee53f76d7aa6454c2f776c43382ed4f2e321e8",
+  "disposition_count": 36,
+  "entries": [
+    {
+      "key": "[AICastor]",
+      "source": "Castor",
+      "target": "Castor",
+      "reason": "Proper product/controller/technology name retained deliberately.",
+      "reviewer": "/root/pilot_context"
+    },
+    {
+      "key": "[AIMaxima]",
+      "source": "Maxima",
+      "target": "Maxima",
+      "reason": "Proper product/controller/technology name retained deliberately.",
+      "reviewer": "/root/pilot_context"
+    },
+    {
+      "key": "[AICortex]",
+      "source": "Cortex",
+      "target": "Cortex",
+      "reason": "Proper product/controller/technology name retained deliberately.",
+      "reviewer": "/root/pilot_context"
+    },
+    {
+      "key": "[AINicowar]",
+      "source": "Nicowar",
+      "target": "Nicowar",
+      "reason": "Proper product/controller/technology name retained deliberately.",
+      "reviewer": "/root/pilot_context"
+    },
+    {
+      "key": "[AINumbi]",
+      "source": "Numbi",
+      "target": "Numbi",
+      "reason": "Proper product/controller/technology name retained deliberately.",
+      "reviewer": "/root/pilot_context"
+    },
+    {
+      "key": "[AIEcono]",
+      "source": "Econo",
+      "target": "Econo",
+      "reason": "Proper product/controller/technology name retained deliberately.",
+      "reviewer": "/root/pilot_context"
+    },
+    {
+      "key": "[AIWarrush]",
+      "source": "Warrush",
+      "target": "Warrush",
+      "reason": "Proper product/controller/technology name retained deliberately.",
+      "reviewer": "/root/pilot_context"
+    },
+    {
+      "key": "[AICabino]",
+      "source": "Cabino",
+      "target": "Cabino",
+      "reason": "Proper product/controller/technology name retained deliberately.",
+      "reviewer": "/root/pilot_context"
+    },
+    {
+      "key": "[AIJavaScript]",
+      "source": "JavaScript",
+      "target": "JavaScript",
+      "reason": "Proper product/controller/technology name retained deliberately.",
+      "reviewer": "/root/pilot_context"
+    },
+    {
+      "key": "[alt %0]",
+      "source": "alt-%0",
+      "target": "alt-%0",
+      "reason": "Keyboard modifier name aligned with hardware/developer shortcut notation; placeholder preserved.",
+      "reviewer": "/root/pilot_context"
+    },
+    {
+      "key": "[clearingflag explanation 2]",
+      "source": "",
+      "target": "",
+      "reason": "Source is intentionally empty continuation row; empty target preserves that layout, not missing translation.",
+      "reviewer": "/root/pilot_context"
+    },
+    {
+      "key": "[control %0]",
+      "source": "control-%0",
+      "target": "control-%0",
+      "reason": "Keyboard modifier name aligned with hardware/developer shortcut notation; placeholder preserved.",
+      "reviewer": "/root/pilot_context"
+    },
+    {
+      "key": "[explorationflag explanation 2]",
+      "source": "",
+      "target": "",
+      "reason": "Source is intentionally empty continuation row; empty target preserves that layout, not missing translation.",
+      "reviewer": "/root/pilot_context"
+    },
+    {
+      "key": "[hospital explanation 2]",
+      "source": "",
+      "target": "",
+      "reason": "Source is intentionally empty continuation row; empty target preserves that layout, not missing translation.",
+      "reviewer": "/root/pilot_context"
+    },
+    {
+      "key": "[inn explanation 2]",
+      "source": "",
+      "target": "",
+      "reason": "Source is intentionally empty continuation row; empty target preserves that layout, not missing translation.",
+      "reviewer": "/root/pilot_context"
+    },
+    {
+      "key": "[meta %0]",
+      "source": "meta-%0",
+      "target": "meta-%0",
+      "reason": "Keyboard modifier name aligned with hardware/developer shortcut notation; placeholder preserved.",
+      "reviewer": "/root/pilot_context"
+    },
+    {
+      "key": "[OpenGL]",
+      "source": "OpenGL",
+      "target": "OpenGL",
+      "reason": "Proper product/controller/technology name retained deliberately.",
+      "reviewer": "/root/pilot_context"
+    },
+    {
+      "key": "[shift %0]",
+      "source": "shift-%0",
+      "target": "shift-%0",
+      "reason": "Keyboard modifier name aligned with hardware/developer shortcut notation; placeholder preserved.",
+      "reviewer": "/root/pilot_context"
+    },
+    {
+      "key": "[swarm explanation 2]",
+      "source": "",
+      "target": "",
+      "reason": "Source is intentionally empty continuation row; empty target preserves that layout, not missing translation.",
+      "reviewer": "/root/pilot_context"
+    },
+    {
+      "key": "[warflag explanation 2]",
+      "source": "",
+      "target": "",
+      "reason": "Source is intentionally empty continuation row; empty target preserves that layout, not missing translation.",
+      "reviewer": "/root/pilot_context"
+    },
+    {
+      "key": "[zoom factor %0]",
+      "source": "%0×",
+      "target": "%0×",
+      "reason": "Only numeric placeholders, numerals, punctuation, unit/scale or navigation symbols; no English prose.",
+      "reviewer": "/root/pilot_context"
+    },
+    {
+      "key": "[P %0/%1/%2]",
+      "source": "P %0/%1/%2",
+      "target": "P %0/%1/%2",
+      "reason": "Historical mobile HUD prestige counter: P plus local prestige / total match prestige / prestige threshold. Exact compact source notation deliberately retained; former caller replaced by numeric/icon HUD. Context verified in legacy-context-resolution.json; no linguistic uncertainty remains.",
+      "reviewer": "/root/pilot_context"
+    },
+    {
+      "key": "[CPU load %0]",
+      "source": "CPU %0%",
+      "target": "CPU %0%",
+      "reason": "Established CPU abbreviation and numeric placeholder.",
+      "reviewer": "/root/pilot_context"
+    },
+    {
+      "key": "[%0 · %1]",
+      "source": "%0 · %1",
+      "target": "%0 · %1",
+      "reason": "Only numeric placeholders, numerals, punctuation, unit/scale or navigation symbols; no English prose.",
+      "reviewer": "/root/pilot_context"
+    },
+    {
+      "key": "[%0 %1]",
+      "source": "%0 %1",
+      "target": "%0 %1",
+      "reason": "Only numeric placeholders, numerals, punctuation, unit/scale or navigation symbols; no English prose.",
+      "reviewer": "/root/pilot_context"
+    },
+    {
+      "key": "[conn ai]",
+      "source": "AI",
+      "target": "AI",
+      "reason": "Established AI technical abbreviation; surrounding display grammar requires no additionaltranslation.",
+      "reviewer": "/root/pilot_context"
+    },
+    {
+      "key": "[match ai]",
+      "source": "AI",
+      "target": "AI",
+      "reason": "Established AI technical abbreviation; surrounding display grammar requires no additionaltranslation.",
+      "reviewer": "/root/pilot_context"
+    },
+    {
+      "key": "[room ai %0]",
+      "source": "AI: %0",
+      "target": "AI: %0",
+      "reason": "Established AI technical abbreviation; surrounding display grammar requires no additionaltranslation.",
+      "reviewer": "/root/pilot_context"
+    },
+    {
+      "key": "[qm ai]",
+      "source": "AI",
+      "target": "AI",
+      "reason": "Established AI technical abbreviation; surrounding display grammar requires no additionaltranslation.",
+      "reviewer": "/root/pilot_context"
+    },
+    {
+      "key": "[qm ai badge]",
+      "source": "AI",
+      "target": "AI",
+      "reason": "Established AI technical abbreviation; surrounding display grammar requires no additionaltranslation.",
+      "reviewer": "/root/pilot_context"
+    },
+    {
+      "key": "[profile draw letter]",
+      "source": "–",
+      "target": "–",
+      "reason": "Only numeric placeholders, numerals, punctuation, unit/scale or navigation symbols; no English prose.",
+      "reviewer": "/root/pilot_context"
+    },
+    {
+      "key": "[maps 256]",
+      "source": "256 × 256",
+      "target": "256 × 256",
+      "reason": "Only numeric placeholders, numerals, punctuation, unit/scale or navigation symbols; no English prose.",
+      "reviewer": "/root/pilot_context"
+    },
+    {
+      "key": "[maps %0 kb]",
+      "source": "%0 KB",
+      "target": "%0 KB",
+      "reason": "Standard storage unit symbol KB, placeholder preserved.",
+      "reviewer": "/root/pilot_context"
+    },
+    {
+      "key": "[settings Hive Mind]",
+      "source": "Hive Mind",
+      "target": "Hive Mind",
+      "reason": "Proper product/controller/technology name retained deliberately.",
+      "reviewer": "/root/pilot_context"
+    },
+    {
+      "key": "[stat page %0 of %1]",
+      "source": "%0/%1  >",
+      "target": "%0/%1  >",
+      "reason": "Only numeric placeholders, numerals, punctuation, unit/scale or navigation symbols; no English prose.",
+      "reviewer": "/root/pilot_context"
+    },
+    {
+      "key": "[Globulation 2 Discord]",
+      "source": "Globulation 2 Discord",
+      "target": "Globulation 2 Discord",
+      "reason": "Proper product/controller/technology name retained deliberately.",
+      "reviewer": "/root/pilot_context"
+    }
+  ],
+  "all_dispositions_unchanged_after_edit": true,
+  "limits": [
+    "Keyboardnotation style subject to finalvisualreview."
+  ],
+  "legacy_context_evidence": "legacy-context-resolution.json"
+}

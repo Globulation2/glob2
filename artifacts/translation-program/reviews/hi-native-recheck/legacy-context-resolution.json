@@ -1,0 +1,141 @@
+{
+  "reviewer": "/root/pilot_context",
+  "source_snapshot_sha256": "a214fc4c9ce4d90fb29d572e3b9d96987eb61af8d0f7bda5050d7d1309d488a9",
+  "final_native_sha256": "a65477c9ac654c44a08531b6a5ee53f76d7aa6454c2f776c43382ed4f2e321e8",
+  "checkout_head_at_inspection": "6a16670c6daafa34f1f86a47014f23e0d05fd4e3",
+  "scope": "Bounded historical/current source-context clarification only; no catalog editing or runtime/rendering approval.",
+  "current_runtime_literal_scans": [
+    {
+      "key": "[away:]",
+      "command": [
+        "rg",
+        "-n",
+        "-F",
+        "[away:]",
+        "src",
+        "libgag"
+      ],
+      "exit_code": 1,
+      "runtime_source_matches": []
+    },
+    {
+      "key": "[P %0/%1/%2]",
+      "command": [
+        "rg",
+        "-n",
+        "-F",
+        "[P %0/%1/%2]",
+        "src",
+        "libgag"
+      ],
+      "exit_code": 1,
+      "runtime_source_matches": []
+    }
+  ],
+  "away": {
+    "key": "[away:]",
+    "English_value": "away:",
+    "Hindi_target": "अनुपस्थित:",
+    "classification": "Retired chat-presence prefix with historically verified meaning, not spatial distance.",
+    "confidence": "Meaning resolved from actual producer and consumer code.",
+    "historical_introduction": {
+      "commit": "909990b7d9b65a5e42c3dd6f8b1787d59a3782fe\n",
+      "path": "src/YOGScreen.cpp",
+      "git_blob": "7df843aed0cfdb100f3971f0b8bd675c9007fdfc",
+      "source_sha256": "dcd6110838881da30c45987edd0630c0896e610c72c81766b8bd9535abcecb22",
+      "excerpts": [
+        {
+          "start_line": 239,
+          "end_line": 248,
+          "lines": "\t\tbreak;\n\t\tcase YCMT_PRIVATE_RECEIPT_BUT_AWAY:\n\t\t\tchatWindow->addText(\"<\");\n\t\t\tchatWindow->addText(globalContainer->texts.getString(\"[away:]\"));\n\t\t\tchatWindow->addText(m->userName);\n\t\t\tchatWindow->addText(\"> \");\n\t\t\tchatWindow->addText(m->text);\n\t\t\tchatWindow->addText(\"\\n\");\n\t\t\tchatWindow->scrollToBottom();\n\t\tbreak;"
+        }
+      ]
+    },
+    "historical_receipt_state": {
+      "commit": "909990b7d9b65a5e42c3dd6f8b1787d59a3782fe\n",
+      "path": "src/YOG.cpp",
+      "git_blob": "75892daf631cf9b09a29d3cfb83e88cc6a7485de",
+      "source_sha256": "a55bcdcba7713485cce43eb56f83306c0b770e312e6500195e33248856350b2c",
+      "excerpts": [
+        {
+          "start_line": 376,
+          "end_line": 385,
+          "lines": "\t\t\t\t\t\t\n\t\t\t\t\t\tif (away)\n\t\t\t\t\t\t{\n\t\t\t\t\t\t\tm.messageType=YCMT_PRIVATE_RECEIPT_BUT_AWAY;\n\t\t\t\t\t\t\t\n\t\t\t\t\t\t\tchar *text=(char *)data+index;\n\t\t\t\t\t\t\tint l=Utilities::strmlen(text, 64);\n\t\t\t\t\t\t\tmemcpy(m.text, text, l);\n\t\t\t\t\t\t\tif (m.text[l-1]!=0)\n\t\t\t\t\t\t\t\tfprintf(logFile, \"warning, non-zero ending away message!\\n\");"
+        }
+      ]
+    },
+    "historical_introduction_commit_subject": "Added the \"/away msg\" support to YOG.",
+    "mechanism": "/away msg introduces boolean client.away and YCMT_PRIVATE_RECEIPT_BUT_AWAY; away recipient private receipt displays <away:USERNAME> MESSAGE. A textual message/presence state, not a map measurement.",
+    "later_retirement_evidence": {
+      "commit": "2db0431b1ac99ac4311cfb663e659cb4d7f49b22",
+      "path": "src/GameGUI.cpp",
+      "local_patch": "away-2008-removal.patch",
+      "patch_sha256": "b72f33162d970fa77442db971940869d2a1a8fd82d35dddf617fcaefedcb1b90",
+      "finding": "Removes the YCMT_PRIVATE_RECEIPT_BUT_AWAY handler and exact key; current runtime scan has no remaining literal caller. This is not claimed as sole/global removal commit."
+    },
+    "existing_catalog_corroboration": {
+      "en": "away:",
+      "fr": "absent :",
+      "de": "weg:",
+      "es": "fuera:",
+      "it": "assente:",
+      "pt": "ausente:",
+      "nl": "weg:",
+      "ru": "отсутствует:"
+    },
+    "decision": "अनुपस्थित: accurately denotes absent/away recipient presence and preserves source colon. No edit necessary; source meaning is no longer an unresolved linguistic question."
+  },
+  "prestige": {
+    "exact_key": "[P %0/%1/%2]",
+    "English_value": "P %0/%1/%2",
+    "Hindi_target": "P %0/%1/%2",
+    "classification": "Retired compact mobile prestige counter; not an unidentified standalone P or P: entry.",
+    "historical_addition": {
+      "commit": "49b0844621847ce75064cf251c7035aca56d5f76\n",
+      "path": "src/gui/GameGUITouchView.cpp",
+      "git_blob": "6d600f4e1b95d8f056ee0d6b80ccdc7855145fe8",
+      "source_sha256": "f633f3bd71c438b78c92d8454a9f8ab525df7a83a268ed15a126c1a80a6f555f",
+      "excerpts": [
+        {
+          "start_line": 185,
+          "end_line": 194,
+          "lines": "\t\t\t free < 0});\n\t}\n\tstats.push_back(\n\t\t{GAGCore::FormattableString(GAGCore::Toolkit::getStringTable()->getString(\"[P %0/%1/%2]\"))\n\t\t\t .arg(gui.localTeam->prestige)\n\t\t\t .arg(gui.game.totalPrestige)\n\t\t\t .arg(gui.game.prestigeToReach)});\n\tstats.push_back({\"+\" + std::to_string(gui.localTeam->unitConversionGained) + \" / −\" +\n\t\t\t\t\t std::to_string(gui.localTeam->unitConversionLost)});\n\tint cpu = 0;"
+        }
+      ]
+    },
+    "historical_last_pre_removal_caller": {
+      "commit": "c26a0a02aeef4993a7478c3651d6117b49dbc56c\n",
+      "path": "src/hud/touch/GameGUITouchView.cpp",
+      "git_blob": "abb0b9cbcd7ce35e2bdd5d8613e40835df64d3dd",
+      "source_sha256": "60e831be5919eeaa5fcd5a684a80e497361ad406b7a8d59d05209e245bd7005b",
+      "excerpts": [
+        {
+          "start_line": 230,
+          "end_line": 239,
+          "lines": "\t\t\t free < 0});\n\t}\n\tstats.push_back(\n\t\t{GAGCore::FormattableString(GAGCore::Toolkit::getStringTable()->getString(\"[P %0/%1/%2]\"))\n\t\t\t .arg(gui.drawnScene().panels.local.state().prestige)\n\t\t\t .arg(gui.drawnScene().panels.hud.totalPrestige())\n\t\t\t .arg(gui.drawnScene().panels.hud.state().prestigeToReach)});\n\tstats.push_back({\"+\" + std::to_string(gui.drawnScene().panels.local.state().unitConversionGained) + \" / −\" +\n\t\t\t\t\t std::to_string(gui.drawnScene().panels.local.state().unitConversionLost)});\n\t// The last cell holds the speed chevrons and the simulation tick rate; where"
+        }
+      ]
+    },
+    "placeholder_mapping": {
+      "%0": "local colony prestige",
+      "%1": "whole match total prestige",
+      "%2": "prestige threshold to reach"
+    },
+    "prefix_meaning": "P is a compact source prestige marker, confirmed by the immediately interpolated prestige fields; no speculative expansion.",
+    "removal": {
+      "commit": "ea08b13d1205c5de0487391fdf9b45706d508b11",
+      "subject": "Polish mobile HUD icons and share Glob conversion readouts with desktop (#1039)",
+      "path": "src/hud/touch/GameGUITouchView.cpp",
+      "local_patch": "prestige-2026-removal.patch",
+      "patch_sha256": "e8f33af6cc21483b3c629b58789e69aba7255a3e2d81302540922ba1aa105d01",
+      "change": "Replaces the three-number formatted P string with colony.prestige numeric value and graphical/progress presentation."
+    },
+    "decision": "Retain exact source P and three numeric placeholders as an intentional compact technical notation. Current caller is retired; no new English prose or fallback is introduced. Meaning and category resolved, so no linguistic uncertainty remains."
+  },
+  "unresolved_linguistic_questions": [],
+  "catalog_changes": [],
+  "limits": [
+    "Historical source inspected and current direct-literal references searched; no claim of running historic builds.",
+    "No active runtime P/away renderer remains to certify visually. Existing broad production rendering/platform gates are separate."
+  ]
+}

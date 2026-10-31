@@ -1,0 +1,341 @@
+{
+  "editor": "/root/swahili_translation",
+  "author": "/root/urdu_translation",
+  "independent_reviewer": "/root/pilot_context",
+  "batch_id": "native-maps-002",
+  "source_contract_sha256": "aacd8a342e9e734ba47f902a161ac1a45badff5842a617bcd68bf8e2275d6013",
+  "original_target_subset_sha256": "a3afc7752109df138c7954b262a084b84a56ec9961c7d9763986843694cb6225",
+  "final_target_subset_sha256": "a3afc7752109df138c7954b262a084b84a56ec9961c7d9763986843694cb6225",
+  "final_catalog_sha256": "ec78fb33247244bf783461e0410ef11fe48e45644c3c6500419d9060e967d458",
+  "entries": [
+    {
+      "key": "[experiment lava-terrain]",
+      "source": "Lava terrain",
+      "before": "لاوا کی زمین",
+      "after": "لاوا کی زمین",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[experiment lava-terrain help]",
+      "source": "Adds lava and ember fields to the map editor. Ground units cannot enter them; flying units crossing them lose health quickly. Projectiles pass over.",
+      "before": "نقشہ ایڈیٹر میں لاوا اور انگاروں کے میدان شامل کرتا ہے۔ زمینی یونٹ داخل نہیں ہو سکتے؛ اڑ کر گزرنے والے یونٹ تیزی سے صحت کھوتے ہیں۔ گولے اوپر سے گزر جاتے ہیں۔",
+      "after": "نقشہ ایڈیٹر میں لاوا اور انگاروں کے میدان شامل کرتا ہے۔ زمینی یونٹ داخل نہیں ہو سکتے؛ اڑ کر گزرنے والے یونٹ تیزی سے صحت کھوتے ہیں۔ گولے اوپر سے گزر جاتے ہیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[experiment fertile-terrain]",
+      "source": "Fertile ground",
+      "before": "زرخیز زمین",
+      "after": "زرخیز زمین",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[experiment fertile-terrain help]",
+      "source": "Adds loam, moss and spring meadows to the map editor. They support buildings and crops and irrigate the land around them more strongly than water does.",
+      "before": "نقشہ ایڈیٹر میں زرخیز مٹی، کائی اور بہار کے میدان شامل کرتا ہے۔ ان پر عمارتیں اور فصلیں ہو سکتی ہیں اور یہ اردگرد کی زمین کو پانی سے بھی زیادہ سیراب کرتے ہیں۔",
+      "after": "نقشہ ایڈیٹر میں زرخیز مٹی، کائی اور بہار کے میدان شامل کرتا ہے۔ ان پر عمارتیں اور فصلیں ہو سکتی ہیں اور یہ اردگرد کی زمین کو پانی سے بھی زیادہ سیراب کرتے ہیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[experiment deep-water-terrain]",
+      "source": "Deep water",
+      "before": "گہرا پانی",
+      "after": "گہرا پانی",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[experiment deep-water-terrain help]",
+      "source": "Adds deep and dark water to the map editor. Swimmers cross them more slowly, no algae grows in them, and they still irrigate nearby fields.",
+      "before": "نقشہ ایڈیٹر میں گہرا اور تاریک پانی شامل کرتا ہے۔ تیراک آہستہ پار کرتے ہیں، اس میں کائی نہیں اگتی، مگر پاس کے کھیت سیراب ہوتے ہیں۔",
+      "after": "نقشہ ایڈیٹر میں گہرا اور تاریک پانی شامل کرتا ہے۔ تیراک آہستہ پار کرتے ہیں، اس میں کائی نہیں اگتی، مگر پاس کے کھیت سیراب ہوتے ہیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[experiment void-terrain]",
+      "source": "Void terrain",
+      "before": "خلا کی زمین",
+      "after": "خلا کی زمین",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[experiment void-terrain help]",
+      "source": "Adds holes and chasms to the map editor. Nothing can cross them, not even flying units, and projectiles stop at their edge.",
+      "before": "نقشہ ایڈیٹر میں گڑھے اور کھائیاں شامل کرتا ہے۔ کوئی، حتیٰ کہ اڑنے والے یونٹ بھی، انہیں پار نہیں کر سکتے؛ گولے کنارے پر رک جاتے ہیں۔",
+      "after": "نقشہ ایڈیٹر میں گڑھے اور کھائیاں شامل کرتا ہے۔ کوئی، حتیٰ کہ اڑنے والے یونٹ بھی، انہیں پار نہیں کر سکتے؛ گولے کنارے پر رک جاتے ہیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[terrain group custom]",
+      "source": "Custom",
+      "before": "اپنی مرضی کی",
+      "after": "اپنی مرضی کی",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[terrain group classic]",
+      "source": "Classic ground",
+      "before": "روایتی زمین",
+      "after": "روایتی زمین",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[terrain rule walkable]",
+      "source": "Walkable",
+      "before": "چلنے کے قابل",
+      "after": "چلنے کے قابل",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[terrain rule swimmable]",
+      "source": "Swimmable",
+      "before": "تیرنے کے قابل",
+      "after": "تیرنے کے قابل",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[terrain rule impassable]",
+      "source": "Impassable",
+      "before": "ناقابلِ عبور",
+      "after": "ناقابلِ عبور",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[terrain rule no flying]",
+      "source": "No flying",
+      "before": "پرواز ممنوع",
+      "after": "پرواز ممنوع",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[terrain rule buildable]",
+      "source": "Buildable",
+      "before": "تعمیر کے قابل",
+      "after": "تعمیر کے قابل",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[terrain rule speed %0]",
+      "source": "Speed %0%",
+      "before": "رفتار %0%",
+      "after": "رفتار %0%",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[terrain rule crops grow]",
+      "source": "Crops grow",
+      "before": "فصلیں اگتی ہیں",
+      "after": "فصلیں اگتی ہیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[terrain rule irrigates]",
+      "source": "Irrigates nearby land",
+      "before": "پاس کی زمین سیراب کرتا ہے",
+      "after": "پاس کی زمین سیراب کرتا ہے",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[terrain rule stops nearby growth]",
+      "source": "Stops nearby growth",
+      "before": "قریب کی افزائش روکتا ہے",
+      "after": "قریب کی افزائش روکتا ہے",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[terrain rule blocks shots]",
+      "source": "Blocks shots",
+      "before": "گولے روکتا ہے",
+      "after": "گولے روکتا ہے",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[terrain rule hurts walkers]",
+      "source": "Hurts walkers",
+      "before": "چلنے والوں کو نقصان",
+      "after": "چلنے والوں کو نقصان",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[terrain rule hurts fliers]",
+      "source": "Hurts fliers",
+      "before": "اڑنے والوں کو نقصان",
+      "after": "اڑنے والوں کو نقصان",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[terrain palette hint]",
+      "source": "Pick a brush. Groups share one set of rules; their members differ only in look.",
+      "before": "برش چنیں۔ ہر گروہ کے قواعد ایک جیسے ہیں؛ اس کے ارکان صرف صورت میں مختلف ہیں۔",
+      "after": "برش چنیں۔ ہر گروہ کے قواعد ایک جیسے ہیں؛ اس کے ارکان صرف صورت میں مختلف ہیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[terrain rule algae grow]",
+      "source": "Algae grow",
+      "before": "کائی اگتی ہے",
+      "after": "کائی اگتی ہے",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[terrain palette experiments hint]",
+      "source": "Pick a brush. More terrain groups appear here once their experiments are enabled under Settings > Experiments.",
+      "before": "برش چنیں۔ ترتیبات > تجربات میں متعلقہ تجربے چالو کرنے پر مزید زمینی گروہ یہاں آتے ہیں۔",
+      "after": "برش چنیں۔ ترتیبات > تجربات میں متعلقہ تجربے چالو کرنے پر مزید زمینی گروہ یہاں آتے ہیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[editor map saved]",
+      "source": "Map saved",
+      "before": "نقشہ محفوظ ہو گیا",
+      "after": "نقشہ محفوظ ہو گیا",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[editor map shared]",
+      "source": "Map shared online",
+      "before": "نقشہ آن لائن بانٹ دیا گیا",
+      "after": "نقشہ آن لائن بانٹ دیا گیا",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[editor menu import terrain]",
+      "source": "Import terrain definitions…",
+      "before": "زمین کی تعریفیں درآمد کریں…",
+      "after": "زمین کی تعریفیں درآمد کریں…",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[library All generators]",
+      "source": "All generators",
+      "before": "تمام جنریٹر",
+      "after": "تمام جنریٹر",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[library Downloading generator…]",
+      "source": "Downloading generator…",
+      "before": "جنریٹر ڈاؤن لوڈ ہو رہا ہے…",
+      "after": "جنریٹر ڈاؤن لوڈ ہو رہا ہے…",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[library Each landscape is shown as a real map at the size and colony count below, which you can change here. Use one to play the map shown.]",
+      "source": "Each landscape is shown as a real map at the size and colony count below, which you can change here. Use one to play the map shown.",
+      "before": "ہر منظرنامہ نیچے دی گئی جسامت اور بستیوں کی تعداد پر اصل نقشے کے طور پر دکھتا ہے؛ یہ ترتیبات یہاں بدل سکتے ہیں۔ دکھائے گئے نقشے پر کھیلنے کے لیے ایک چنیں۔",
+      "after": "ہر منظرنامہ نیچے دی گئی جسامت اور بستیوں کی تعداد پر اصل نقشے کے طور پر دکھتا ہے؛ یہ ترتیبات یہاں بدل سکتے ہیں۔ دکھائے گئے نقشے پر کھیلنے کے لیے ایک چنیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[library Editor tool: generates terrain for the map editor.]",
+      "source": "Editor tool: generates terrain for the map editor.",
+      "before": "ایڈیٹر کا آلہ: نقشہ ایڈیٹر کے لیے زمین بناتا ہے۔",
+      "after": "ایڈیٹر کا آلہ: نقشہ ایڈیٹر کے لیے زمین بناتا ہے۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[library Enable installed families below. Selection is saved in this local profile; existing maps and saves keep their own buildings. For online play, generate a map with these families, publish it in the map library, then choose that map in your room.]",
+      "source": "Enable installed families below. Selection is saved in this local profile; existing maps and saves keep their own buildings. For online play, generate a map with these families, publish it in the map library, then choose that map in your room.",
+      "before": "نیچے نصب خاندان چالو کریں۔ انتخاب مقامی پروفائل میں محفوظ ہوتا ہے؛ موجودہ نقشے اور محفوظ کھیل اپنی عمارتیں رکھتے ہیں۔ آن لائن کھیلنے کے لیے ان خاندانوں سے نقشہ بنائیں، نقشوں کی لائبریری میں شائع کریں، پھر کمرے میں وہ نقشہ چنیں۔",
+      "after": "نیچے نصب خاندان چالو کریں۔ انتخاب مقامی پروفائل میں محفوظ ہوتا ہے؛ موجودہ نقشے اور محفوظ کھیل اپنی عمارتیں رکھتے ہیں۔ آن لائن کھیلنے کے لیے ان خاندانوں سے نقشہ بنائیں، نقشوں کی لائبریری میں شائع کریں، پھر کمرے میں وہ نقشہ چنیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[library Generator file hash mismatch]",
+      "source": "Generator file hash mismatch",
+      "before": "جنریٹر فائل کا ہیش نہیں ملتا",
+      "after": "جنریٹر فائل کا ہیش نہیں ملتا",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[library Generator installed. Future selections use this release.]",
+      "source": "Generator installed. Future selections use this release.",
+      "before": "جنریٹر نصب ہو گیا۔ آئندہ انتخاب یہ ریلیز استعمال کریں گے۔",
+      "after": "جنریٹر نصب ہو گیا۔ آئندہ انتخاب یہ ریلیز استعمال کریں گے۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[library Generator package identity mismatch]",
+      "source": "Generator package identity mismatch",
+      "before": "جنریٹر پیکیج کی شناخت نہیں ملتی",
+      "after": "جنریٹر پیکیج کی شناخت نہیں ملتی",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[library Generators]",
+      "source": "Generators",
+      "before": "جنریٹر",
+      "after": "جنریٹر",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[library Map generators]",
+      "source": "Map generators",
+      "before": "نقشہ جنریٹر",
+      "after": "نقشہ جنریٹر",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[library My generators]",
+      "source": "My generators",
+      "before": "میرے جنریٹر",
+      "after": "میرے جنریٹر",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[library Playable generator]",
+      "source": "Playable generator",
+      "before": "کھیلنے کے قابل جنریٹر",
+      "after": "کھیلنے کے قابل جنریٹر",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[library Saving generator library…]",
+      "source": "Saving generator library…",
+      "before": "جنریٹروں کی لائبریری محفوظ ہو رہی ہے…",
+      "after": "جنریٹروں کی لائبریری محفوظ ہو رہی ہے…",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    }
+  ],
+  "status": "edited-awaiting-independent-recheck"
+}

@@ -1,0 +1,2827 @@
+{
+  "reviewer": "/root/pilot_context",
+  "locale": "ur",
+  "status": "pass-with-explicit-captured-scope",
+  "kind": "independent-canonical-registered-Urdu-online-visual-review",
+  "source_revision": "5e7e2740dd9216ac270ccdc87842f7fbc7bcc34d",
+  "canonical_catalog_path": "platform/packages/i18n/locales/ur.json",
+  "canonical_catalog_entries": 2836,
+  "canonical_catalog_sha256": "db375ee564c39cf02dfb4ce08d6a4dbaecb8cd69d5bc7f167b4c7f779e246587",
+  "results_sha256": "7ce422c1d88b9aa84dedbc554784a02443f3c9ba81f00d94851c6ef878eeeaa5",
+  "build_identity_sha256": "bdbfb1d99addac19c3fc69502aa990fe3b271767be4ae2d67486e2d1a564c4a6",
+  "server_identity_sha256": "78143cbe13c9c5203b5c9c799a02f5c9399dc32a8c8a16d7dc91d4f5b5e91922",
+  "checker_sha256": "cbe809c8f3cfba60d56875612214a3a6af66c119599e01fbbedb4aefb5b30544",
+  "run_identity": {
+    "checker_sha256": "cbe809c8f3cfba60d56875612214a3a6af66c119599e01fbbedb4aefb5b30544",
+    "started_utc": "2026-10-31T19:10:35.575Z",
+    "catalog_sha256": {
+      "hi": "d80bdd87f3502c34e45ae744d8e0f8bac3cafd93755a5ef87e0bed8bec3d74c4",
+      "ur": "db375ee564c39cf02dfb4ce08d6a4dbaecb8cd69d5bc7f167b4c7f779e246587",
+      "sw": "6914cbf226adebd70d3ff401cfda759b62b62cc8af621b25f4ba994a8e0bec0a"
+    },
+    "build_identity_sha256": "bdbfb1d99addac19c3fc69502aa990fe3b271767be4ae2d67486e2d1a564c4a6",
+    "server": {
+      "kind": "canonical-registered-server",
+      "catalog_sha256": {
+        "hi": "d80bdd87f3502c34e45ae744d8e0f8bac3cafd93755a5ef87e0bed8bec3d74c4",
+        "ur": "db375ee564c39cf02dfb4ce08d6a4dbaecb8cd69d5bc7f167b4c7f779e246587",
+        "sw": "6914cbf226adebd70d3ff401cfda759b62b62cc8af621b25f4ba994a8e0bec0a"
+      },
+      "source_sha256": {
+        "../../../platform/packages/i18n/src/index.ts": "6eaaf44f038074e2124939a3ddf963ea5fcaed3e40af8fbe304e1249459fb3b0",
+        "../../../platform/packages/i18n/src/locales.ts": "1a48e76202ff5f525766d6acd131054cc0f0b55f32d42b6ab80c199d7d2a1d72",
+        "../../../platform/packages/i18n/src/server.ts": "7b65c6543468af99b7dd78000556967f77d6491a35557fac8a06ec9e777d9ab8",
+        "../../../platform/apps/api/src/web/pages.ts": "be26854babcf09335c422fc2e08007d3013bfc8e356b2238b0f08551ae20b104",
+        "../../../platform/apps/api/src/routes/signin.ts": "a5711937ceb02407ffccd313b4aa2fd074e7eae828614d77b7ff939def025721",
+        "../../../platform/apps/api/test/historySeed.ts": "2132adfd455661cc26e7328ddabdfe9d3c78cd51e6979b56f71fe7fbae7a6244"
+      },
+      "injections": []
+    },
+    "canonical_http_index_sha256": "de8b2ea98d3fad0bf274b1a31b9082441fc98f345ecd8dd74d1b677bc40d1386",
+    "original_checker_sha256": "f53005518d25575b6b4ad27e2aa0942d22f819f8421eb87314cf519fbc1ae4ee",
+    "fixture_improvements": "Retained original checker; added fonts+2RAF+5 stable geometry frames, numeric-axis and marker checks before profile/match capture; no product edits."
+  },
+  "completed_utc": "2026-10-31T19:12:19.578Z",
+  "source_checks": [
+    {
+      "path": "platform/apps/web/src/App.tsx",
+      "sha256": "53e82c02bd342b86754b3078ba6c91e090b85f4e3453beffbea3e71fb09ceebd",
+      "current_matches": true
+    },
+    {
+      "path": "platform/apps/web/src/admin/Accounts.tsx",
+      "sha256": "ab14db21f86cba031de68034b965145836d073b7a3e9a76be1ead12ceeae030a",
+      "current_matches": true
+    },
+    {
+      "path": "platform/apps/web/src/admin/Admin.tsx",
+      "sha256": "6989fa39d65d1335aa53fcf93e07026f472c8aa48ec5f1c3a5bf42d60dfcf0ce",
+      "current_matches": true
+    },
+    {
+      "path": "platform/apps/web/src/admin/Finances.tsx",
+      "sha256": "b357f21c15d9e48b7c6362d5debbf9aad3e3b84ed2e63beb4fada525acb9e588",
+      "current_matches": true
+    },
+    {
+      "path": "platform/apps/web/src/admin/Matches.tsx",
+      "sha256": "2cce30f38a61ce6dc9f35bb45b6e6727b3a6836f6a3a437d6f875d1179ec4530",
+      "current_matches": true
+    },
+    {
+      "path": "platform/apps/web/src/admin/Moderation.tsx",
+      "sha256": "4775f66616cc37f4a1aca93b4c48cc14ffe631ea7eb876229c89ff00bbe5b0b2",
+      "current_matches": true
+    },
+    {
+      "path": "platform/apps/web/src/admin/Operations.tsx",
+      "sha256": "262e96f4846ada31e3761e599c7ad6166ea9f6afeab0e94333c89e23e0396be8",
+      "current_matches": true
+    },
+    {
+      "path": "platform/apps/web/src/admin/Overview.tsx",
+      "sha256": "7781fb7dab2cdcce22cf5a633d5c386fe682f28a9f65d7fe5bb4fd9a7fdeb688",
+      "current_matches": true
+    },
+    {
+      "path": "platform/apps/web/src/admin/filters.tsx",
+      "sha256": "87a1d6d17cd9ec16cfaf26ce7252c8189c7b0528562fdb5042edd9a7a7592c8d",
+      "current_matches": true
+    },
+    {
+      "path": "platform/apps/web/src/admin/presentation.ts",
+      "sha256": "6a0012d1800655612003ac5c4e915dc6c270a9741546acf94635e973557c382b",
+      "current_matches": true
+    },
+    {
+      "path": "platform/apps/web/src/aiApi.ts",
+      "sha256": "9afc9deca5d1f4f6cfcb743d597c0e961cd6c03401ae706862d006ecd9eb61ac",
+      "current_matches": true
+    },
+    {
+      "path": "platform/apps/web/src/aiBrowse.ts",
+      "sha256": "6e0c7d0f1c144c8ddc2614311ddfe87c272d18df01d23ad9f462ca8713f1511f",
+      "current_matches": true
+    },
+    {
+      "path": "platform/apps/web/src/api.ts",
+      "sha256": "be3a27dba10023f57dcb9c8b51bf346eb61f676d9b1d2b8606c6110ec7c0b3da",
+      "current_matches": true
+    },
+    {
+      "path": "platform/apps/web/src/art.tsx",
+      "sha256": "1b8b581611e5883c378535904ab8856a2148bec86aecde75d4182f858f6b198b",
+      "current_matches": true
+    },
+    {
+      "path": "platform/apps/web/src/colors.ts",
+      "sha256": "5026cef49f1f0551d95ca5e0c9517c0f2157056aaa797c8e259fbd9239d6be35",
+      "current_matches": true
+    },
+    {
+      "path": "platform/apps/web/src/components/Colony.tsx",
+      "sha256": "b95fb21e494d558fdedd32234085bcb4c1f944dd85009d38eb51d708f34edd0d",
+      "current_matches": true
+    },
+    {
+      "path": "platform/apps/web/src/components/LineChart.tsx",
+      "sha256": "4897547d07c9379593dc91f9c65b08d9d32b70cdfb73f366900bb1f4a89d6f82",
+      "current_matches": true
+    },
+    {
+      "path": "platform/apps/web/src/components/MapPreview.tsx",
+      "sha256": "1cbb7b73e32e7a1ea739c3f606d25b7096b62a9f3c554853acfd9a646af8e978",
+      "current_matches": true
+    },
+    {
+      "path": "platform/apps/web/src/components/ProfilePhoto.tsx",
+      "sha256": "065f0f1a71e49a829a58fbc7eb15cce1dd96060517a22f0e4ead4915c97cec12",
+      "current_matches": true
+    },
+    {
+      "path": "platform/apps/web/src/components/common.tsx",
+      "sha256": "3776d67b58610f5a50745846f12f4ef6ca61c5328448dd047897fa3273699298",
+      "current_matches": true
+    },
+    {
+      "path": "platform/apps/web/src/components/library.tsx",
+      "sha256": "5a3471502828767889bcb1267d58d2536e10fac4e313c5edbc01426b36bac516",
+      "current_matches": true
+    },
+    {
+      "path": "platform/apps/web/src/components/studio/CodeEditor.tsx",
+      "sha256": "2eafd43614a696fb8c4cd7f663e92aeab18a36de29ed6e53e33d150be9a9e131",
+      "current_matches": true
+    },
+    {
+      "path": "platform/apps/web/src/components/studio/Studio.tsx",
+      "sha256": "2e33a6f9d1a570c239df9ed63df2734a25df25b9541be145c11e7976c905cb40",
+      "current_matches": true
+    },
+    {
+      "path": "platform/apps/web/src/components/studio/adapters.ts",
+      "sha256": "cdb8045ffd8f20d6d48725a432407b1ee141a5122ddbe44b26ee6055d33d9b57",
+      "current_matches": true
+    },
+    {
+      "path": "platform/apps/web/src/components/studio/checkoutAttempt.ts",
+      "sha256": "6bab83565231ebfa46481f724155d5baa43327f3959a6a8a2de9a8834e6dfecd",
+      "current_matches": true
+    },
+    {
+      "path": "platform/apps/web/src/components/studio/conversation.ts",
+      "sha256": "8570913b6b43ac21d40373858391a081e92edb69479aaf05ca948bb6faca7652",
+      "current_matches": true
+    },
+    {
+      "path": "platform/apps/web/src/components/studio/history.ts",
+      "sha256": "efaee37d42d1be15e8eb47aa8d368dc948b2ac2bf6e3d3b2e19bead1de08f6b3",
+      "current_matches": true
+    },
+    {
+      "path": "platform/apps/web/src/components/studio/storage.ts",
+      "sha256": "8efef01b5d57e5d9b135992c795f23592467fefc47005a44624ed880dfef8aa6",
+      "current_matches": true
+    },
+    {
+      "path": "platform/apps/web/src/components/studio/studio.css",
+      "sha256": "981fd8d831cf276d96d42a8cbab9e4101f8818ac4f5c13c0936c3bd5055ed70d",
+      "current_matches": true
+    },
+    {
+      "path": "platform/apps/web/src/components/studio/useProjectDraft.ts",
+      "sha256": "f0096aa0a55937a9bdb477ced7148e8a1104bdd5c26fc250e77ec5de09141a9e",
+      "current_matches": true
+    },
+    {
+      "path": "platform/apps/web/src/components/studio/useRevisionUndo.ts",
+      "sha256": "27e2f06ab7c92bed4d6ef6ea2b7c8c15da0d67ebbd3eb8111c375fb65acc464d",
+      "current_matches": true
+    },
+    {
+      "path": "platform/apps/web/src/components/studio/useStudioChecks.ts",
+      "sha256": "0c1a9ee359eb145643f5a0836f1a7ab074b00243c7bfd4c6ab2f172f32afe560",
+      "current_matches": true
+    },
+    {
+      "path": "platform/apps/web/src/components/studio/useStudioStream.ts",
+      "sha256": "11756f4160d8aefcf53f30f710f1db94e415fb872b2bb9b7431ef345e9db738e",
+      "current_matches": true
+    },
+    {
+      "path": "platform/apps/web/src/components/studio/useVersionApplication.ts",
+      "sha256": "21a797209185a6d64e083291a9313a9049b2fd79b418a176ea5ad386f31ddbff",
+      "current_matches": true
+    },
+    {
+      "path": "platform/apps/web/src/features.tsx",
+      "sha256": "3b93c93216a1cf86a3da74e6443320f871a5f89f3e4c9d33dd0c05a47fcfc914",
+      "current_matches": true
+    },
+    {
+      "path": "platform/apps/web/src/format.ts",
+      "sha256": "c6836a9b485bfc28cd2607e6818444d3795cb60c6da56d580ab7a7e909ce3289",
+      "current_matches": true
+    },
+    {
+      "path": "platform/apps/web/src/generatorApi.ts",
+      "sha256": "9fdec4a5a30af9106f16b0ef533e5d0a411fa41b6b1fda84509307862f96c4c3",
+      "current_matches": true
+    },
+    {
+      "path": "platform/apps/web/src/i18n.tsx",
+      "sha256": "a90eaa655944970ab021a89d3898daf54087a95140b400526c17e94292a081cc",
+      "current_matches": true
+    },
+    {
+      "path": "platform/apps/web/src/icons.tsx",
+      "sha256": "6592eda8b1f9417790172b3f1c53f95697c15deab4cf44c598612ce3c3d6fdca",
+      "current_matches": true
+    },
+    {
+      "path": "platform/apps/web/src/main.tsx",
+      "sha256": "be44cea1f29f1c5f7229ef2fa200bdde8209a8862b78ff51153b987bbadd5eb4",
+      "current_matches": true
+    },
+    {
+      "path": "platform/apps/web/src/messages.ts",
+      "sha256": "13fa79a67f5c5ea7ce2e90f3534bd0db2ca247696c0b129d941520ac5b184ad8",
+      "current_matches": true
+    },
+    {
+      "path": "platform/apps/web/src/music/Cover.tsx",
+      "sha256": "f1bd1beef9820dc451a707041fddda3676927ee94d6b14d04767398bb556a36b",
+      "current_matches": true
+    },
+    {
+      "path": "platform/apps/web/src/music/Library.tsx",
+      "sha256": "1c0a854f8a7bbd0118a766605d7e5094921e4a72a471b0c74ecc2ed7d1176701",
+      "current_matches": true
+    },
+    {
+      "path": "platform/apps/web/src/music/Moderation.tsx",
+      "sha256": "749e3228a9e6c450277ef48b493bc3bfbec6fa3989f501105cc30af96e411e15",
+      "current_matches": true
+    },
+    {
+      "path": "platform/apps/web/src/music/Player.tsx",
+      "sha256": "2a627fa0a75c8c291071e2d80c4e25f98cf64d0f3942eb16bce6ed8eee7b27d9",
+      "current_matches": true
+    },
+    {
+      "path": "platform/apps/web/src/music/Validation.tsx",
+      "sha256": "721246ea0932be13eb57fbeb9f2084d37693e22ccee589c1990aa8abeb5fff7b",
+      "current_matches": true
+    },
+    {
+      "path": "platform/apps/web/src/music/music.css",
+      "sha256": "18b1c870182148422f12507293493f64a3f200ec16bdd9d2a0c4b64de0563f60",
+      "current_matches": true
+    },
+    {
+      "path": "platform/apps/web/src/music/useMusicCatalogue.ts",
+      "sha256": "a5813ba5ed6a7dcbcb988bd02d7ec10605cdd3a03e008f1b6e3dda15f88ce9ca",
+      "current_matches": true
+    },
+    {
+      "path": "platform/apps/web/src/music/useMusicPlayback.ts",
+      "sha256": "cdccef714454faaaf63caf42ed192d010e603338dfd7f1842b8f2a1262eeecf6",
+      "current_matches": true
+    },
+    {
+      "path": "platform/apps/web/src/pages/Account.tsx",
+      "sha256": "f215f887c9866f3a09c856b1c4f53666b881a1a1871ef23d455aad21fd42a845",
+      "current_matches": true
+    },
+    {
+      "path": "platform/apps/web/src/pages/AiBuildingStudio.tsx",
+      "sha256": "76ced9811a436648b5e3ee2d00d3ce123ea2b0ad45f7f59aacce5cbdf7166966",
+      "current_matches": true
+    },
+    {
+      "path": "platform/apps/web/src/pages/AiStudio.tsx",
+      "sha256": "2bae931c9151a43f33e50dbc0b1756fe3ac47555b43d1512e9dae4208f40290e",
+      "current_matches": true
+    },
+    {
+      "path": "platform/apps/web/src/pages/Ais.tsx",
+      "sha256": "38b399cbf70dcb38fbab25ba7f1e124d4757e7daea0a12b9d3a7570f203db6f4",
+      "current_matches": true
+    },
+    {
+      "path": "platform/apps/web/src/pages/BuildingLibrary.tsx",
+      "sha256": "9383014921eb25d694f08427ab84e904777a04cc7ffafc8bbfdf9a121fa53b9c",
+      "current_matches": true
+    },
+    {
+      "path": "platform/apps/web/src/pages/BuildingStudio.tsx",
+      "sha256": "2600e7d042477ad46af075146f18063b9db5e50a0c045d6cd8db87cd777124c1",
+      "current_matches": true
+    },
+    {
+      "path": "platform/apps/web/src/pages/CodingStudio.tsx",
+      "sha256": "8ba2b972155066aac3b148d1dd6b3490a9718cbe36168d3079437c2e53e4c214",
+      "current_matches": true
+    },
+    {
+      "path": "platform/apps/web/src/pages/Commander.tsx",
+      "sha256": "8709460f61ad24dbd222aa4a1c032791ebca1c4958b1bbdf46bcf54197e340d9",
+      "current_matches": true
+    },
+    {
+      "path": "platform/apps/web/src/pages/GeneratorStudio.tsx",
+      "sha256": "ed1781af0f1aec6b827e4e3b0be518e5c70b9ced3d5a6459f2493cb10ef1fda5",
+      "current_matches": true
+    },
+    {
+      "path": "platform/apps/web/src/pages/Generators.tsx",
+      "sha256": "8c1e5e1662cf0bba4183243aece6ac801c6ea941747889d961fbd1861d4831cc",
+      "current_matches": true
+    },
+    {
+      "path": "platform/apps/web/src/pages/Home.tsx",
+      "sha256": "18e10ec6d25492108454399ad6babc71a07290bd703754f9f52b34b41b893faa",
+      "current_matches": true
+    },
+    {
+      "path": "platform/apps/web/src/pages/Leaderboard.tsx",
+      "sha256": "333761b338b9bdb80529378283bd9e8b72c822b1bb925a0d82fbf9db638ae976",
+      "current_matches": true
+    },
+    {
+      "path": "platform/apps/web/src/pages/MapStudio.tsx",
+      "sha256": "3067c30589140816f6d5237ab501fbb1010e6d286427e0681190a1af1cfc3a53",
+      "current_matches": true
+    },
+    {
+      "path": "platform/apps/web/src/pages/Maps.tsx",
+      "sha256": "65cd407a4e30ac5193c9b7b5e91a1319fdf1a5b52a7005ba15734d3924e1cf3f",
+      "current_matches": true
+    },
+    {
+      "path": "platform/apps/web/src/pages/Match.tsx",
+      "sha256": "9ecfe57216a0b539dcb64234d964f60200988e61d4bb0bee51c14703d0bd0e21",
+      "current_matches": true
+    },
+    {
+      "path": "platform/apps/web/src/pages/Matches.tsx",
+      "sha256": "dcbbbda1399270292b272a9da21f3457824dfbab26c6d9ecb25eeea357b9a3d1",
+      "current_matches": true
+    },
+    {
+      "path": "platform/apps/web/src/pages/MusicStudio.tsx",
+      "sha256": "43b98becc8cbac7791887e14eca8747311db16ebbcf7f6fc2c20dd5d3757168e",
+      "current_matches": true
+    },
+    {
+      "path": "platform/apps/web/src/pages/Player.tsx",
+      "sha256": "c23c551ef24034bb8572d8497ddade262641073bf4e793b55c8f7ce980be0c96",
+      "current_matches": true
+    },
+    {
+      "path": "platform/apps/web/src/pages/Players.tsx",
+      "sha256": "ed962f6d12c294b87f89ac1e878b371685497c0f07ed8e5336f4c865b2d80605",
+      "current_matches": true
+    },
+    {
+      "path": "platform/apps/web/src/pages/Skins.tsx",
+      "sha256": "e9a0e65d318e6f48830e258f9c918026659ed3df6a86174fa3b433db46f71921",
+      "current_matches": true
+    },
+    {
+      "path": "platform/apps/web/src/pages/TerrainStudio.tsx",
+      "sha256": "196e47750c5486c41f3bead6121ea34917227c8a966cda047aaed50a9a8ad8f3",
+      "current_matches": true
+    },
+    {
+      "path": "platform/apps/web/src/pages/aiStudio/Editor.tsx",
+      "sha256": "316e8f2650dd522ba676474c5172c9f1a3885631a1773631cbf0367b27e1c2ba",
+      "current_matches": true
+    },
+    {
+      "path": "platform/apps/web/src/pages/aiStudio/Playtest.tsx",
+      "sha256": "add701294086ccb8862f062d0c746e40dc4b773c5979fc98afa0613bccc1456c",
+      "current_matches": true
+    },
+    {
+      "path": "platform/apps/web/src/pages/aiStudio/checkoutAttempt.ts",
+      "sha256": "461629c07191aa7dc27188c4a6cc6ff22199f4c29878c259a48ffa1a87df0fe7",
+      "current_matches": true
+    },
+    {
+      "path": "platform/apps/web/src/pages/aiStudio/conversation.ts",
+      "sha256": "44542b660ec46430a1de7082a779bd729914d6d5fd0c9ac92c3e37de0e650a72",
+      "current_matches": true
+    },
+    {
+      "path": "platform/apps/web/src/pages/aiStudio/useProjectDraft.ts",
+      "sha256": "8f9cef2252609d7663807d97ada93bba7763ec6dd0973b909646912636fa46c3",
+      "current_matches": true
+    },
+    {
+      "path": "platform/apps/web/src/pages/building-ai/Preview.tsx",
+      "sha256": "4c93e641d0e11d7ad8f0c6b481a6f28c6d59aebf678ec3df03ffc36448e9c66a",
+      "current_matches": true
+    },
+    {
+      "path": "platform/apps/web/src/pages/building-ai/retryStore.ts",
+      "sha256": "69a7fe283a5bd79e3b36de4dff4ba4482c424da6b8c0ed7f7a443002334f9186",
+      "current_matches": true
+    },
+    {
+      "path": "platform/apps/web/src/pages/building-ai/useStudioSnapshot.ts",
+      "sha256": "ac6a62755507394f01d49d0cc06432ca1611466ea65b4b443c616e42f540a966",
+      "current_matches": true
+    },
+    {
+      "path": "platform/apps/web/src/pages/generatorStudio/Editor.tsx",
+      "sha256": "4e62f6e7810d36ab7ddb66d12fd3241bb8a6657eebc9bf9d4a8183e8d29d3a30",
+      "current_matches": true
+    },
+    {
+      "path": "platform/apps/web/src/pages/generatorStudio/Preview.tsx",
+      "sha256": "e3bebd1e7c7f1eaf72e055213b3d5049321823a7f4201e12c5e53e5b7222eba6",
+      "current_matches": true
+    },
+    {
+      "path": "platform/apps/web/src/pages/generatorStudio/Settings.tsx",
+      "sha256": "e513587f70b8f1b66d305f25056232b32c5c06bec20e12826db4cf3ffb3fe1b0",
+      "current_matches": true
+    },
+    {
+      "path": "platform/apps/web/src/pages/music-studio/CreditControls.tsx",
+      "sha256": "13f72602b074ecb3f48f93b68d18ac6478a03a514b5b23221dc49d41769c739c",
+      "current_matches": true
+    },
+    {
+      "path": "platform/apps/web/src/pages/music-studio/Workspace.tsx",
+      "sha256": "b7dcc1d15dcde6c8a4f0664f0c55e5f025f05a8463e70bc696daf15daacb5177",
+      "current_matches": true
+    },
+    {
+      "path": "platform/apps/web/src/pages/music-studio/ideas.ts",
+      "sha256": "5b36ba0fe39967c5645e0a909950ad270f892bdfadcb436c762790c559562a34",
+      "current_matches": true
+    },
+    {
+      "path": "platform/apps/web/src/pages/music-studio/music-studio.css",
+      "sha256": "9fc81d703761ba376f9f776ca9349e9290e5875e7e1c20cfe051035e0098d901",
+      "current_matches": true
+    },
+    {
+      "path": "platform/apps/web/src/pages/music-studio/types.ts",
+      "sha256": "1307574d2dc07174a19cf738b6cdb0f2ec8658ebfdaee9700c2b1833c6153501",
+      "current_matches": true
+    },
+    {
+      "path": "platform/apps/web/src/pages/music-studio/useMusicStudioDraft.ts",
+      "sha256": "4baa23d71a98068663461b7dffc8d387274646b62d766a6a8056811f5d922a7e",
+      "current_matches": true
+    },
+    {
+      "path": "platform/apps/web/src/pages/music-studio/useMusicStudioStream.ts",
+      "sha256": "0e80a6b55f383d5d7fb5fad8fa9bc4b392f144ce04a02715630e58ff09f1ff69",
+      "current_matches": true
+    },
+    {
+      "path": "platform/apps/web/src/pages/studio/Conversation.tsx",
+      "sha256": "cf9d04d566b4cd5a6888a8ee71d850520d50ab3aa27862bbebc374522819c4da",
+      "current_matches": true
+    },
+    {
+      "path": "platform/apps/web/src/pages/studio/CreditControls.tsx",
+      "sha256": "a9b0753420c56d5d64a6acd3ed2e1ea4bc2cf10bc60556c0f62328efd9c71446",
+      "current_matches": true
+    },
+    {
+      "path": "platform/apps/web/src/pages/studio/GenerationTimeline.tsx",
+      "sha256": "e8d1db914eb9cf771dc8535faca702ab99d9c7c499ad798a1d266c5cd553c219",
+      "current_matches": true
+    },
+    {
+      "path": "platform/apps/web/src/pages/studio/MapViewer.tsx",
+      "sha256": "d8de9a4a6156e568f838980d013e1cfe2d783e2cf6f672080e6f697eb7629cdd",
+      "current_matches": true
+    },
+    {
+      "path": "platform/apps/web/src/pages/studio/StudioWorkspace.tsx",
+      "sha256": "727adbf59945df061b0a1d086580d84bb97c44649da073584e7335ef1f594269",
+      "current_matches": true
+    },
+    {
+      "path": "platform/apps/web/src/pages/studio/ValidationPanel.tsx",
+      "sha256": "22407407755e2dedce970fd170e6698d511a04ebc1e4f8434eb6d0f44cdf3cff",
+      "current_matches": true
+    },
+    {
+      "path": "platform/apps/web/src/pages/studio/types.ts",
+      "sha256": "678a49aa38bdf86a9ad1f9f5676c4d2c82a8ae3817a801dd51d657640e07e76a",
+      "current_matches": true
+    },
+    {
+      "path": "platform/apps/web/src/pages/studio/useDeliveryCelebration.ts",
+      "sha256": "a264ef07c4834233fe459d8cfeb3b03cf34480a95ed9931c038bb73eda6f8e75",
+      "current_matches": true
+    },
+    {
+      "path": "platform/apps/web/src/pages/studio/useStudioDraft.ts",
+      "sha256": "87f45f0597e7d990bcdd3fb410557f670f2e3ba336295fdb6f8a40249db9deb5",
+      "current_matches": true
+    },
+    {
+      "path": "platform/apps/web/src/pages/studio/useStudioProgress.ts",
+      "sha256": "c56743aaa2d69f95f6fcbdbff06cc6ba744ff0bea219597f3f88877b20202a81",
+      "current_matches": true
+    },
+    {
+      "path": "platform/apps/web/src/pages/studio/useStudioStream.ts",
+      "sha256": "8b15e385e097e78a4bc111b65b54ababaf6d82c65b2240eae9f62a452b3eab0d",
+      "current_matches": true
+    },
+    {
+      "path": "platform/apps/web/src/playerLinks.ts",
+      "sha256": "1a01ea492a9110a2cc1f172edafe5fe0295ff73ad930c7449ca2f09d583eede6",
+      "current_matches": true
+    },
+    {
+      "path": "platform/apps/web/src/router.tsx",
+      "sha256": "aec57638f3d2f3c46335443186e2eeca0d88ec101be9c7af48c103ddfa3647e8",
+      "current_matches": true
+    },
+    {
+      "path": "platform/apps/web/src/sets/Library.tsx",
+      "sha256": "e9caa340d17a4a9ea863969a12f8abc14c985b7f6f60d2af15127f1f121c4163",
+      "current_matches": true
+    },
+    {
+      "path": "platform/apps/web/src/sets/Preview.tsx",
+      "sha256": "68a80a3ebb1ff464ed62889f62a44444d8186877d298dd93b4d2dcb77c775cf0",
+      "current_matches": true
+    },
+    {
+      "path": "platform/apps/web/src/sets/Workspace.tsx",
+      "sha256": "cde84e3c0205a8e8ad4e475946ac740d86482cad72b234f7479c9d4e95ac34c8",
+      "current_matches": true
+    },
+    {
+      "path": "platform/apps/web/src/sets/model.ts",
+      "sha256": "b91c5dfc8a39a7310014df2bb4c7cc22f7c232c3d4ac802de3bece29c93e8a7d",
+      "current_matches": true
+    },
+    {
+      "path": "platform/apps/web/src/sets/sets.css",
+      "sha256": "6f0c6af9eb48a1809c9b29b0ea4c5c132ba6da61499a8fcedc4ac7496c161dd3",
+      "current_matches": true
+    },
+    {
+      "path": "platform/apps/web/src/skins/ColorPicker.tsx",
+      "sha256": "ef391bff896beaa017cba84d1c6d7249cd09ab5f8fa91d37febeadd10f52c7f2",
+      "current_matches": true
+    },
+    {
+      "path": "platform/apps/web/src/skins/CopyPaintDialog.tsx",
+      "sha256": "4288a89d3cfc74b4e9f7428552c32aaf20083507d082c45335879fdd058c179e",
+      "current_matches": true
+    },
+    {
+      "path": "platform/apps/web/src/skins/MeshPreview.tsx",
+      "sha256": "67fdd852bc55120900eae82609f5d0bd12767893c7a42ffdfaa903d1fc4e29c8",
+      "current_matches": true
+    },
+    {
+      "path": "platform/apps/web/src/skins/Moderation.tsx",
+      "sha256": "8a816852167d5bbdc499c6d11955e63f63088a0d5570a413f68c8868a92f09ac",
+      "current_matches": true
+    },
+    {
+      "path": "platform/apps/web/src/skins/PatternDialog.tsx",
+      "sha256": "393a9a287d59925fe584b578d013dcaf39d86ea534019580f476a9cd4259b9df",
+      "current_matches": true
+    },
+    {
+      "path": "platform/apps/web/src/skins/Reporting.tsx",
+      "sha256": "c7b4b381c90f752eeb0966fd1a74ca57c49d493a802e679c4cc7f15a55952517",
+      "current_matches": true
+    },
+    {
+      "path": "platform/apps/web/src/skins/SkinLibrary.tsx",
+      "sha256": "bb478a01b069bf7477c890a1fa19a2300b55d32af535f32363dc129cfb0632d8",
+      "current_matches": true
+    },
+    {
+      "path": "platform/apps/web/src/skins/Store.tsx",
+      "sha256": "bc50bd6d71a1613dda01a4f5268b1bbe9d3b3fa2df65adb78ee08aae52bc96c0",
+      "current_matches": true
+    },
+    {
+      "path": "platform/apps/web/src/skins/StudioControls.tsx",
+      "sha256": "d1b7fb4b8aa402da78a38d2eeb4f2062730844eb439c19c651ea964c2b5784fe",
+      "current_matches": true
+    },
+    {
+      "path": "platform/apps/web/src/skins/affine.ts",
+      "sha256": "9adf1e00f1196182e34e63183589f68d758d565d82b1286f0f4c0d293c876177",
+      "current_matches": true
+    },
+    {
+      "path": "platform/apps/web/src/skins/assetUrls.ts",
+      "sha256": "4c3b119ba030ec48a6c032d14b128a09443c670dfe8e69cc21f94c08d0c1e043",
+      "current_matches": true
+    },
+    {
+      "path": "platform/apps/web/src/skins/atlas.ts",
+      "sha256": "c3e96e5c3fbcc59d8c4e8739a655dc7577565c4a00d3ea1335cf9994f924e64d",
+      "current_matches": true
+    },
+    {
+      "path": "platform/apps/web/src/skins/binaryAsset.ts",
+      "sha256": "78c19fb9ee6916a3e2f0160012ebe6f2414e6a4b1d756ea05ac0307f8490166b",
+      "current_matches": true
+    },
+    {
+      "path": "platform/apps/web/src/skins/geometry.ts",
+      "sha256": "bb76a6082d8362732c3c0e9a1a918311626512631f4c36a7abec007d33a3bf18",
+      "current_matches": true
+    },
+    {
+      "path": "platform/apps/web/src/skins/materialShader.ts",
+      "sha256": "8fd3bebbff01e8a86711b9a35a2d9a1a9e1da84225a83f8022aebee2daca9aaf",
+      "current_matches": true
+    },
+    {
+      "path": "platform/apps/web/src/skins/paint.ts",
+      "sha256": "d70f1b9f84fce0de086941a3b8bdd7c1f2676e0b25d9e13861e94623f3e93b50",
+      "current_matches": true
+    },
+    {
+      "path": "platform/apps/web/src/skins/projection.ts",
+      "sha256": "2501b3127cc2804c4bc77ddad67d489c86038a8ee2a89ca6d4ce330c24354bdf",
+      "current_matches": true
+    },
+    {
+      "path": "platform/apps/web/src/skins/rig.ts",
+      "sha256": "301e4f773f6e4193cbd3bf4beee33596c5cd4f86d38bcb0e8305beb79cd61a4c",
+      "current_matches": true
+    },
+    {
+      "path": "platform/apps/web/src/skins/shapes.ts",
+      "sha256": "43e2d203b55f0bc652b79c2cb17b3cf37d5a624606315d75d5cf2bab6424110d",
+      "current_matches": true
+    },
+    {
+      "path": "platform/apps/web/src/skins/swarmShapes.ts",
+      "sha256": "572b3e8caec0e0b1448ac758a42a2c2eed93de1b5426483d1a58c8009185796a",
+      "current_matches": true
+    },
+    {
+      "path": "platform/apps/web/src/skins/useSkinDocument.ts",
+      "sha256": "b837dd86ed34e11763616c82c26ab26a72052aab791f7c9ab985cc1ed0cf686a",
+      "current_matches": true
+    },
+    {
+      "path": "platform/apps/web/src/skins/useToolboxLayout.ts",
+      "sha256": "73ed323163b4106dc6f0612cefed548217fbd272c1846df534aa5a7f4d1f935d",
+      "current_matches": true
+    },
+    {
+      "path": "platform/apps/web/src/skins/workspace.ts",
+      "sha256": "39d7a261b8b90642ea6ba6559982b02dd6f92350589562b35e1c06deb090c6ca",
+      "current_matches": true
+    },
+    {
+      "path": "platform/apps/web/src/state.tsx",
+      "sha256": "87100d943c1e04419e1e99b36a8f15a17aa6950cb740b92e11f1141071759c8c",
+      "current_matches": true
+    },
+    {
+      "path": "platform/apps/web/src/styles/ai-building-studio.css",
+      "sha256": "2e8e012a1f863f5795646df2081281d23b4a85301367a40e65778e3537c139ed",
+      "current_matches": true
+    },
+    {
+      "path": "platform/apps/web/src/styles/ai-studio.css",
+      "sha256": "0192741dab5e5b07bf535f97e365b4bd1178b3d3d12f01f78d501e93dd4ffca8",
+      "current_matches": true
+    },
+    {
+      "path": "platform/apps/web/src/styles/ais.css",
+      "sha256": "2c8006cecc4664468aef0b4c1c55520f3aa1a03ed4fb676d4ae5349131337625",
+      "current_matches": true
+    },
+    {
+      "path": "platform/apps/web/src/styles/base.css",
+      "sha256": "b4d03cd54080b8b369bf3ab3ee442b6d16a124219513dccccd503fe61218e224",
+      "current_matches": true
+    },
+    {
+      "path": "platform/apps/web/src/styles/buildings.css",
+      "sha256": "5bd7aa33b37fe4544588be7d11920ea4b468a3ad8f89ffd073733554c1318783",
+      "current_matches": true
+    },
+    {
+      "path": "platform/apps/web/src/styles/components.css",
+      "sha256": "441b2da8aa614c7fe1fd3ff864fee790bacc3ec084002e4b96a7be2794b9a3f8",
+      "current_matches": true
+    },
+    {
+      "path": "platform/apps/web/src/styles/home.css",
+      "sha256": "bdc5b2e2b100c0a5ee16f4443cf16f6703e52f517c5ed1526832cbf962381073",
+      "current_matches": true
+    },
+    {
+      "path": "platform/apps/web/src/styles/layout.css",
+      "sha256": "36897c694d7d33b4c37a32264fb89354afcb6df772f810ffc38175595dbc11fc",
+      "current_matches": true
+    },
+    {
+      "path": "platform/apps/web/src/styles/library.css",
+      "sha256": "b52bd561b0200ec2d304e2103e759e54bbeb9d49f87281e710000c82f920f6e3",
+      "current_matches": true
+    },
+    {
+      "path": "platform/apps/web/src/styles/pages.css",
+      "sha256": "7016476f6a8610d14e5c2befc7d6c86c3c7729ad37fa3388043e273b8e41e01d",
+      "current_matches": true
+    },
+    {
+      "path": "platform/apps/web/src/styles/script-fonts.css",
+      "sha256": "bf4e8982528a5711c1acec489cea68ad93fb670d97fefbc2eddd6505635aee30",
+      "current_matches": true
+    },
+    {
+      "path": "platform/apps/web/src/styles/skin-studio.css",
+      "sha256": "5bfc806ab3e4d674b75e3cadcff009e3a0b1e3f55b20ddf2441935be83be2a8c",
+      "current_matches": true
+    },
+    {
+      "path": "platform/apps/web/src/styles/studio.css",
+      "sha256": "45ceb2764df03f7382d00555186fa46b8a3ce14bc02f3bcdab8735b6427e9ecc",
+      "current_matches": true
+    },
+    {
+      "path": "platform/apps/web/src/styles/terrain-studio.css",
+      "sha256": "8a23236f392cca60dbd1311e126e2993abc6a4d12667d285aa834a1bbda6cc16",
+      "current_matches": true
+    },
+    {
+      "path": "platform/apps/web/src/theme.tsx",
+      "sha256": "0c61f863989b81afc192ff5b201c5a4c8f7246a3a49626e0523403ef2cdaf85b",
+      "current_matches": true
+    },
+    {
+      "path": "platform/packages/i18n/src/index.ts",
+      "sha256": "6eaaf44f038074e2124939a3ddf963ea5fcaed3e40af8fbe304e1249459fb3b0",
+      "current_matches": true
+    },
+    {
+      "path": "platform/packages/i18n/src/locales.ts",
+      "sha256": "1a48e76202ff5f525766d6acd131054cc0f0b55f32d42b6ab80c199d7d2a1d72",
+      "current_matches": true
+    },
+    {
+      "path": "platform/packages/i18n/src/server.ts",
+      "sha256": "7b65c6543468af99b7dd78000556967f77d6491a35557fac8a06ec9e777d9ab8",
+      "current_matches": true
+    },
+    {
+      "path": "platform/packages/i18n/script-fonts.css",
+      "sha256": "593a96e3c346cacaf35f40bb2304703455f41a7e97d3cdd76e5290fe8b3bcf50",
+      "current_matches": true
+    }
+  ],
+  "server_source_checks": [
+    {
+      "path": "../../../platform/packages/i18n/src/index.ts",
+      "sha256": "6eaaf44f038074e2124939a3ddf963ea5fcaed3e40af8fbe304e1249459fb3b0",
+      "current_matches": true
+    },
+    {
+      "path": "../../../platform/packages/i18n/src/locales.ts",
+      "sha256": "1a48e76202ff5f525766d6acd131054cc0f0b55f32d42b6ab80c199d7d2a1d72",
+      "current_matches": true
+    },
+    {
+      "path": "../../../platform/packages/i18n/src/server.ts",
+      "sha256": "7b65c6543468af99b7dd78000556967f77d6491a35557fac8a06ec9e777d9ab8",
+      "current_matches": true
+    },
+    {
+      "path": "../../../platform/apps/api/src/web/pages.ts",
+      "sha256": "be26854babcf09335c422fc2e08007d3013bfc8e356b2238b0f08551ae20b104",
+      "current_matches": true
+    },
+    {
+      "path": "../../../platform/apps/api/src/routes/signin.ts",
+      "sha256": "a5711937ceb02407ffccd313b4aa2fd074e7eae828614d77b7ff939def025721",
+      "current_matches": true
+    },
+    {
+      "path": "../../../platform/apps/api/test/historySeed.ts",
+      "sha256": "2132adfd455661cc26e7328ddabdfe9d3c78cd51e6979b56f71fe7fbae7a6244",
+      "current_matches": true
+    }
+  ],
+  "source_script_font_manifest_sha256": "4dd7f1c0770d812fd9ddb6231e622dbe6e1d26588b2fec002650b6e7af1994cc",
+  "pinned_script_fonts": [
+    {
+      "path": "data/fonts/scripts/NotoSansDevanagari-Regular.ttf",
+      "sha256": "385e78e6359a9d88a0f243d53b1209d7548361ba2194e2b9ec779bcaa7e8949d",
+      "matches_pin": true
+    },
+    {
+      "path": "data/fonts/scripts/NotoSansBengali-Regular.ttf",
+      "sha256": "6300c5370cd688b0641343de4c786de6d412bb6c578d129dae75e93a0322dcab",
+      "matches_pin": true
+    },
+    {
+      "path": "data/fonts/scripts/NotoSansGujarati-Regular.ttf",
+      "sha256": "8d5c22d7b729ef2839e6d1fe2cde77b2d083907be3659bca63676baa76e01fd6",
+      "matches_pin": true
+    },
+    {
+      "path": "data/fonts/scripts/NotoSansGurmukhi-Regular.ttf",
+      "sha256": "bbde4d85fdfb998eff6921cb2c7a9a7924a1c95560a6aa9a06172530e4f596da",
+      "matches_pin": true
+    },
+    {
+      "path": "data/fonts/scripts/NotoSansTamil-Regular.ttf",
+      "sha256": "6532db33b8b264abe3a098a40619feb489b5ddf5ab1d2b46e72b51eeb548001b",
+      "matches_pin": true
+    },
+    {
+      "path": "data/fonts/scripts/NotoSansTelugu-Regular.ttf",
+      "sha256": "2c05072e8018a9be1cb0582953d9edf9a0cf129cdfb74e611de763b09c411f7f",
+      "matches_pin": true
+    },
+    {
+      "path": "data/fonts/scripts/NotoSansKannada-Regular.ttf",
+      "sha256": "5c804033c57f2c2844b1cd425f45b9a78d81d2f71bf358351b24258ebe168aea",
+      "matches_pin": true
+    },
+    {
+      "path": "data/fonts/scripts/NotoSansMalayalam-Regular.ttf",
+      "sha256": "42eb462ff13e820ebbeaaec4e7b426bd1de145d02cef8b634f5a3efd376b513c",
+      "matches_pin": true
+    },
+    {
+      "path": "data/fonts/scripts/NotoSansOriya-Regular.ttf",
+      "sha256": "b8d8bd784b9d09c0668233437359913c93a3a83bf37d92ecde859e2bc728a0e0",
+      "matches_pin": true
+    },
+    {
+      "path": "data/fonts/scripts/NotoSansThai-Regular.ttf",
+      "sha256": "404ddfb5ed0aaa6b6ec8a85700d682978992062d67da93903967b56cbd9a4acc",
+      "matches_pin": true
+    },
+    {
+      "path": "data/fonts/scripts/NotoSansMyanmar-Regular.ttf",
+      "sha256": "9dd2bc76a822a974efce803a4b07302d14d01d5c1fa9e33a258d15a9cb513a7d",
+      "matches_pin": true
+    },
+    {
+      "path": "data/fonts/scripts/NotoSansEthiopic-Regular.ttf",
+      "sha256": "e3a81ca66eb6d6b1a50a287c1dba18195541f69e0986f8b49a42658aa592ff0d",
+      "matches_pin": true
+    },
+    {
+      "path": "data/fonts/scripts/NotoSansArabic-Regular.ttf",
+      "sha256": "ceea25b464a656dc3b26849bab9356740401af62aedf1bfa8b7f0d9b75925b1b",
+      "matches_pin": true
+    }
+  ],
+  "registration": {
+    "build_has_no_preview_patches": true,
+    "server_has_no_injections": true,
+    "actual36locale_registry": true,
+    "UrRTL_and_scriptfonts_loaded_all20standard": true
+  },
+  "coverage": {
+    "standard_images_actually_read": 20,
+    "tablepan_images_actually_read": 2,
+    "prior_image_carryforward_claimed": false,
+    "widths": [
+      1200,
+      390
+    ],
+    "routes": [
+      "home-first-visit",
+      "signin",
+      "signin-error",
+      "account",
+      "matches",
+      "match",
+      "profile",
+      "leaderboard",
+      "maps",
+      "invite"
+    ]
+  },
+  "images": [
+    {
+      "file": "ur-1200-home-first-visit.png",
+      "sha256": "e0714f490dc4c7b0ed0c8b234bd1be3aa7bcbb813eca2297b7eba72f99b03eba",
+      "actually_read_current_canonical_image": true,
+      "archive": "ur-images/ur-1200-home-first-visit.png"
+    },
+    {
+      "file": "ur-1200-signin.png",
+      "sha256": "d17b397663c2108fddf8115d9f3ac1f0b6e04799d2ef9c02b06aaff762acc092",
+      "actually_read_current_canonical_image": true,
+      "archive": "ur-images/ur-1200-signin.png"
+    },
+    {
+      "file": "ur-1200-signin-error.png",
+      "sha256": "666cbe72e43c9128689029b848bcb72ed3529416bcce6c0dd9559cabdf21fb4a",
+      "actually_read_current_canonical_image": true,
+      "archive": "ur-images/ur-1200-signin-error.png"
+    },
+    {
+      "file": "ur-1200-account.png",
+      "sha256": "779dacf3a92badb5ab82d875b5f91ffe4398cbc1fe3679fc8b1eec844091dd0b",
+      "actually_read_current_canonical_image": true,
+      "archive": "ur-images/ur-1200-account.png"
+    },
+    {
+      "file": "ur-1200-matches.png",
+      "sha256": "f89ed0770852f643898c547377502d74de05723c4d9942844b3d3942b40e4e8c",
+      "actually_read_current_canonical_image": true,
+      "archive": "ur-images/ur-1200-matches.png"
+    },
+    {
+      "file": "ur-1200-match.png",
+      "sha256": "09b123ada81f46561819773cdc4620647c8832c914bb45dde6adc6ee891f25a9",
+      "actually_read_current_canonical_image": true,
+      "archive": "ur-images/ur-1200-match.png"
+    },
+    {
+      "file": "ur-1200-profile.png",
+      "sha256": "7fd43351c631d6c3d1f12748585026129db0f6b71c9000d2c5530452dee65080",
+      "actually_read_current_canonical_image": true,
+      "archive": "ur-images/ur-1200-profile.png"
+    },
+    {
+      "file": "ur-1200-leaderboard.png",
+      "sha256": "aa4c8df11c9c9a6e7e1d8541a75c3822052d0c10665dcd824fbda844f807ce6b",
+      "actually_read_current_canonical_image": true,
+      "archive": "ur-images/ur-1200-leaderboard.png"
+    },
+    {
+      "file": "ur-1200-maps.png",
+      "sha256": "9e0bff75e07e5390c2ef279b38a3a9bb9b3e00f5323de43f48dbfd13914e58a2",
+      "actually_read_current_canonical_image": true,
+      "archive": "ur-images/ur-1200-maps.png"
+    },
+    {
+      "file": "ur-1200-invite.png",
+      "sha256": "d501bbb58daebc04b3365d5808f1d0d0845184e250cc7a05e61c910e26ada062",
+      "actually_read_current_canonical_image": true,
+      "archive": "ur-images/ur-1200-invite.png"
+    },
+    {
+      "file": "ur-390-home-first-visit.png",
+      "sha256": "271dfdc20e703d9aa40ad787be0601baf6b6c4d12075fe03c740a96694c98ce8",
+      "actually_read_current_canonical_image": true,
+      "archive": "ur-images/ur-390-home-first-visit.png"
+    },
+    {
+      "file": "ur-390-signin.png",
+      "sha256": "86e782f488934f1a438e865d476b313732f91bf2a5491a0951ea51e76cb5c4f5",
+      "actually_read_current_canonical_image": true,
+      "archive": "ur-images/ur-390-signin.png"
+    },
+    {
+      "file": "ur-390-signin-error.png",
+      "sha256": "7966ba4f266e1d56509960beb3488b87e62f84bf9c7147bd3d612bf3463cbada",
+      "actually_read_current_canonical_image": true,
+      "archive": "ur-images/ur-390-signin-error.png"
+    },
+    {
+      "file": "ur-390-account.png",
+      "sha256": "498ae627f7aaea03194bfdf7dc869321f713241c4f5712a3bfb96f23d6e20b83",
+      "actually_read_current_canonical_image": true,
+      "archive": "ur-images/ur-390-account.png"
+    },
+    {
+      "file": "ur-390-matches.png",
+      "sha256": "dcde8c4dad6f21b8a1c06ee46bee26459a5b367325def69131b6d67eb82d1efe",
+      "actually_read_current_canonical_image": true,
+      "archive": "ur-images/ur-390-matches.png"
+    },
+    {
+      "file": "ur-390-match.png",
+      "sha256": "b66b3825cb9825afde6771c944942dd7f67a86796834dd8929358978297cd60a",
+      "actually_read_current_canonical_image": true,
+      "archive": "ur-images/ur-390-match.png"
+    },
+    {
+      "file": "ur-390-profile.png",
+      "sha256": "88d578d398c839e744534355fb6b4d65fdf18f9699f1f214883e0ad7df2c4154",
+      "actually_read_current_canonical_image": true,
+      "archive": "ur-images/ur-390-profile.png"
+    },
+    {
+      "file": "ur-390-leaderboard.png",
+      "sha256": "73a23359c722b6d21b4c7272aaec4d78c01d811e02d8ba867e9dae9d141a9f81",
+      "actually_read_current_canonical_image": true,
+      "archive": "ur-images/ur-390-leaderboard.png"
+    },
+    {
+      "file": "ur-390-maps.png",
+      "sha256": "78d0bff7832743dbd30d921032d458ad3ea20da55e08c35e868e675374479638",
+      "actually_read_current_canonical_image": true,
+      "archive": "ur-images/ur-390-maps.png"
+    },
+    {
+      "file": "ur-390-invite.png",
+      "sha256": "03839bc2fb49547dbd779ea63d4568737190d1e24033766b6b2c526af650aa4b",
+      "actually_read_current_canonical_image": true,
+      "archive": "ur-images/ur-390-invite.png"
+    },
+    {
+      "file": "ur-390-match-table-ArrowLeft.png",
+      "sha256": "9811a817a20506b7a52592ad2ab26446284710e837fa99e49d18f98c35dd747b",
+      "actually_read_current_canonical_image": true,
+      "archive": "ur-images/ur-390-match-table-ArrowLeft.png"
+    },
+    {
+      "file": "ur-390-match-table-ArrowRight.png",
+      "sha256": "58cc9b4d60c481400d9f2aac4b7172437dad5ee58bb001604830b43d77548a6f",
+      "actually_read_current_canonical_image": true,
+      "archive": "ur-images/ur-390-match-table-ArrowRight.png"
+    }
+  ],
+  "table_pan_evidence": {
+    "name": "phone-match-table-focus-and-keyboard-pan",
+    "locale": "ur",
+    "width": 390,
+    "size": {
+      "clientWidth": 284,
+      "scrollWidth": 327
+    },
+    "positions": [
+      {
+        "key": "ArrowLeft",
+        "scrollLeft": -42,
+        "viewport": {
+          "x": 16,
+          "y": 678.9375,
+          "width": 286,
+          "height": 182.53125,
+          "top": 678.9375,
+          "right": 302,
+          "bottom": 861.46875,
+          "left": 16
+        },
+        "ratings": [
+          {
+            "text": "1615  → 1585",
+            "box": {
+              "x": 28.078125,
+              "y": 731.28125,
+              "width": 99.25,
+              "height": 22,
+              "top": 731.28125,
+              "right": 127.328125,
+              "bottom": 753.28125,
+              "left": 28.078125
+            },
+            "visibleFraction": 1
+          },
+          {
+            "text": "1677  → 1706",
+            "box": {
+              "x": 28.078125,
+              "y": 801.875,
+              "width": 99.25,
+              "height": 22,
+              "top": 801.875,
+              "right": 127.328125,
+              "bottom": 823.875,
+              "left": 28.078125
+            },
+            "visibleFraction": 1
+          }
+        ],
+        "screenshot": "ur-390-match-table-ArrowLeft.png",
+        "screenshot_sha256": "9811a817a20506b7a52592ad2ab26446284710e837fa99e49d18f98c35dd747b"
+      },
+      {
+        "key": "ArrowRight",
+        "scrollLeft": 1,
+        "viewport": {
+          "x": 16,
+          "y": 678.9375,
+          "width": 286,
+          "height": 182.53125,
+          "top": 678.9375,
+          "right": 302,
+          "bottom": 861.46875,
+          "left": 16
+        },
+        "ratings": [
+          {
+            "text": "1615  → 1585",
+            "box": {
+              "x": -14.921875,
+              "y": 731.28125,
+              "width": 99.25,
+              "height": 22,
+              "top": 731.28125,
+              "right": 84.328125,
+              "bottom": 753.28125,
+              "left": -14.921875
+            },
+            "visibleFraction": 0.6884445843828715
+          },
+          {
+            "text": "1677  → 1706",
+            "box": {
+              "x": -14.921875,
+              "y": 801.875,
+              "width": 99.25,
+              "height": 22,
+              "top": 801.875,
+              "right": 84.328125,
+              "bottom": 823.875,
+              "left": -14.921875
+            },
+            "visibleFraction": 0.6884445843828715
+          }
+        ],
+        "screenshot": "ur-390-match-table-ArrowRight.png",
+        "screenshot_sha256": "58cc9b4d60c481400d9f2aac4b7172437dad5ee58bb001604830b43d77548a6f"
+      }
+    ],
+    "passed": true,
+    "limits": "Keyboard scrolling in emulated Chromium viewport; physical touch gestures and mobile hardware not verified."
+  },
+  "geometry_and_boundaries": [
+    {
+      "name": "ur-queue-text-node-isolation",
+      "locale": "ur",
+      "width": 1200,
+      "surface": "home-first-visit",
+      "labels": [
+        {
+          "text": "1 vs 1 ranked",
+          "isolated": true,
+          "wholeLabel": "1 vs 1 ranked",
+          "direction": "ltr",
+          "bidi": "isolate"
+        },
+        {
+          "text": "1 vs 1 ranked",
+          "isolated": true,
+          "wholeLabel": "1 vs 1 ranked",
+          "direction": "ltr",
+          "bidi": "isolate"
+        },
+        {
+          "text": "1 vs 1 ranked",
+          "isolated": true,
+          "wholeLabel": "1 vs 1 ranked",
+          "direction": "ltr",
+          "bidi": "isolate"
+        },
+        {
+          "text": "1 vs 1 ranked",
+          "isolated": true,
+          "wholeLabel": "1 vs 1 ranked",
+          "direction": "ltr",
+          "bidi": "isolate"
+        },
+        {
+          "text": "1 vs 1 ranked",
+          "isolated": true,
+          "wholeLabel": "1 vs 1 ranked",
+          "direction": "ltr",
+          "bidi": "isolate"
+        },
+        {
+          "text": "1 vs 1 ranked",
+          "isolated": true,
+          "wholeLabel": "1 vs 1 ranked",
+          "direction": "ltr",
+          "bidi": "isolate"
+        },
+        {
+          "text": "2 vs 2 ranked",
+          "isolated": true,
+          "wholeLabel": "2 vs 2 ranked",
+          "direction": "ltr",
+          "bidi": "isolate"
+        }
+      ],
+      "passed": true
+    },
+    {
+      "name": "ur-numeric-token-geometry",
+      "locale": "ur",
+      "width": 1200,
+      "surface": "signin",
+      "passed": true,
+      "digitRanges": [
+        {
+          "text": "0–9",
+          "tag": "BDI",
+          "dir": "ltr",
+          "direction": "ltr",
+          "bidi": "isolate",
+          "glyphs": [
+            {
+              "char": "0",
+              "x": 533.171875,
+              "right": 541.34375,
+              "y": 597.265625,
+              "height": 19
+            },
+            {
+              "char": "–",
+              "x": 541.328125,
+              "right": 548.140625,
+              "y": 597.265625,
+              "height": 19
+            },
+            {
+              "char": "9",
+              "x": 548.125,
+              "right": 556.296875,
+              "y": 597.265625,
+              "height": 19
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "ur-numeric-token-geometry",
+      "locale": "ur",
+      "width": 1200,
+      "surface": "signin-error",
+      "passed": true,
+      "digitRanges": [
+        {
+          "text": "0–9",
+          "tag": "BDI",
+          "dir": "ltr",
+          "direction": "ltr",
+          "bidi": "isolate",
+          "glyphs": [
+            {
+              "char": "0",
+              "x": 533.171875,
+              "right": 541.34375,
+              "y": 665.921875,
+              "height": 19
+            },
+            {
+              "char": "–",
+              "x": 541.328125,
+              "right": 548.140625,
+              "y": 665.921875,
+              "height": 19
+            },
+            {
+              "char": "9",
+              "x": 548.125,
+              "right": 556.296875,
+              "y": 665.921875,
+              "height": 19
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "ur-queue-text-node-isolation",
+      "locale": "ur",
+      "width": 1200,
+      "surface": "account",
+      "labels": [],
+      "passed": true
+    },
+    {
+      "name": "ur-queue-text-node-isolation",
+      "locale": "ur",
+      "width": 1200,
+      "surface": "matches",
+      "labels": [
+        {
+          "text": "1 vs 1 ranked",
+          "isolated": true,
+          "wholeLabel": "1 vs 1 ranked",
+          "direction": "ltr",
+          "bidi": "isolate"
+        },
+        {
+          "text": "2 vs 2 ranked",
+          "isolated": true,
+          "wholeLabel": "2 vs 2 ranked",
+          "direction": "ltr",
+          "bidi": "isolate"
+        },
+        {
+          "text": "1 vs 1 ranked",
+          "isolated": true,
+          "wholeLabel": "1 vs 1 ranked",
+          "direction": "ltr",
+          "bidi": "isolate"
+        },
+        {
+          "text": "1 vs 1 ranked",
+          "isolated": true,
+          "wholeLabel": "1 vs 1 ranked",
+          "direction": "ltr",
+          "bidi": "isolate"
+        },
+        {
+          "text": "1 vs 1 ranked",
+          "isolated": true,
+          "wholeLabel": "1 vs 1 ranked",
+          "direction": "ltr",
+          "bidi": "isolate"
+        },
+        {
+          "text": "1 vs 1 ranked",
+          "isolated": true,
+          "wholeLabel": "1 vs 1 ranked",
+          "direction": "ltr",
+          "bidi": "isolate"
+        },
+        {
+          "text": "1 vs 1 ranked",
+          "isolated": true,
+          "wholeLabel": "1 vs 1 ranked",
+          "direction": "ltr",
+          "bidi": "isolate"
+        },
+        {
+          "text": "1 vs 1 ranked",
+          "isolated": true,
+          "wholeLabel": "1 vs 1 ranked",
+          "direction": "ltr",
+          "bidi": "isolate"
+        },
+        {
+          "text": "1 vs 1 ranked",
+          "isolated": true,
+          "wholeLabel": "1 vs 1 ranked",
+          "direction": "ltr",
+          "bidi": "isolate"
+        },
+        {
+          "text": "1 vs 1 ranked",
+          "isolated": true,
+          "wholeLabel": "1 vs 1 ranked",
+          "direction": "ltr",
+          "bidi": "isolate"
+        },
+        {
+          "text": "1 vs 1 ranked",
+          "isolated": true,
+          "wholeLabel": "1 vs 1 ranked",
+          "direction": "ltr",
+          "bidi": "isolate"
+        },
+        {
+          "text": "1 vs 1 ranked",
+          "isolated": true,
+          "wholeLabel": "1 vs 1 ranked",
+          "direction": "ltr",
+          "bidi": "isolate"
+        }
+      ],
+      "passed": true
+    },
+    {
+      "name": "ur-queue-text-node-isolation",
+      "locale": "ur",
+      "width": 1200,
+      "surface": "match",
+      "labels": [
+        {
+          "text": "1 vs 1 ranked",
+          "isolated": true,
+          "wholeLabel": "1 vs 1 ranked",
+          "direction": "ltr",
+          "bidi": "isolate"
+        }
+      ],
+      "passed": true
+    },
+    {
+      "name": "ur-numeric-token-geometry",
+      "locale": "ur",
+      "width": 1200,
+      "surface": "match",
+      "passed": true,
+      "transitions": [
+        {
+          "text": "1615  → 1585",
+          "tag": "BDI",
+          "dir": "ltr",
+          "direction": "ltr",
+          "bidi": "isolate",
+          "glyphs": [
+            {
+              "char": "1",
+              "x": 127.53125,
+              "right": 137.140625,
+              "y": 415.0625,
+              "height": 22
+            },
+            {
+              "char": "6",
+              "x": 137.125,
+              "right": 146.734375,
+              "y": 415.0625,
+              "height": 22
+            },
+            {
+              "char": "1",
+              "x": 146.71875,
+              "right": 156.34375,
+              "y": 415.0625,
+              "height": 22
+            },
+            {
+              "char": "5",
+              "x": 156.328125,
+              "right": 165.9375,
+              "y": 415.0625,
+              "height": 22
+            },
+            {
+              "char": "→",
+              "x": 170.0625,
+              "right": 184.25,
+              "y": 415.0625,
+              "height": 22
+            },
+            {
+              "char": "1",
+              "x": 188.375,
+              "right": 197.984375,
+              "y": 415.0625,
+              "height": 22
+            },
+            {
+              "char": "5",
+              "x": 197.96875,
+              "right": 207.578125,
+              "y": 415.0625,
+              "height": 22
+            },
+            {
+              "char": "8",
+              "x": 207.5625,
+              "right": 217.1875,
+              "y": 415.0625,
+              "height": 22
+            },
+            {
+              "char": "5",
+              "x": 217.171875,
+              "right": 226.78125,
+              "y": 415.0625,
+              "height": 22
+            }
+          ]
+        },
+        {
+          "text": "1677  → 1706",
+          "tag": "BDI",
+          "dir": "ltr",
+          "direction": "ltr",
+          "bidi": "isolate",
+          "glyphs": [
+            {
+              "char": "1",
+              "x": 127.53125,
+              "right": 137.140625,
+              "y": 460.859375,
+              "height": 22
+            },
+            {
+              "char": "6",
+              "x": 137.125,
+              "right": 146.734375,
+              "y": 460.859375,
+              "height": 22
+            },
+            {
+              "char": "7",
+              "x": 146.71875,
+              "right": 156.34375,
+              "y": 460.859375,
+              "height": 22
+            },
+            {
+              "char": "7",
+              "x": 156.328125,
+              "right": 165.9375,
+              "y": 460.859375,
+              "height": 22
+            },
+            {
+              "char": "→",
+              "x": 170.0625,
+              "right": 184.25,
+              "y": 460.859375,
+              "height": 22
+            },
+            {
+              "char": "1",
+              "x": 188.375,
+              "right": 197.984375,
+              "y": 460.859375,
+              "height": 22
+            },
+            {
+              "char": "7",
+              "x": 197.96875,
+              "right": 207.578125,
+              "y": 460.859375,
+              "height": 22
+            },
+            {
+              "char": "0",
+              "x": 207.5625,
+              "right": 217.1875,
+              "y": 460.859375,
+              "height": 22
+            },
+            {
+              "char": "6",
+              "x": 217.171875,
+              "right": 226.78125,
+              "y": 460.859375,
+              "height": 22
+            }
+          ]
+        }
+      ],
+      "deltas": [
+        {
+          "text": "−29",
+          "tag": "BDI",
+          "dir": "ltr",
+          "direction": "ltr",
+          "bidi": "isolate",
+          "glyphs": [
+            {
+              "char": "−",
+              "x": 45,
+              "right": 54.609375,
+              "y": 415.0625,
+              "height": 22
+            },
+            {
+              "char": "2",
+              "x": 54.59375,
+              "right": 64.203125,
+              "y": 415.0625,
+              "height": 22
+            },
+            {
+              "char": "9",
+              "x": 64.1875,
+              "right": 73.8125,
+              "y": 415.0625,
+              "height": 22
+            }
+          ]
+        },
+        {
+          "text": "+29",
+          "tag": "BDI",
+          "dir": "ltr",
+          "direction": "ltr",
+          "bidi": "isolate",
+          "glyphs": [
+            {
+              "char": "+",
+              "x": 45,
+              "right": 54.609375,
+              "y": 460.859375,
+              "height": 22
+            },
+            {
+              "char": "2",
+              "x": 54.59375,
+              "right": 64.203125,
+              "y": 460.859375,
+              "height": 22
+            },
+            {
+              "char": "9",
+              "x": 64.1875,
+              "right": 73.8125,
+              "y": 460.859375,
+              "height": 22
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "ur-queue-text-node-isolation",
+      "locale": "ur",
+      "width": 1200,
+      "surface": "profile",
+      "labels": [
+        {
+          "text": "1 vs 1 ranked",
+          "isolated": true,
+          "wholeLabel": "1 vs 1 ranked",
+          "direction": "ltr",
+          "bidi": "isolate"
+        },
+        {
+          "text": "2 vs 2 ranked",
+          "isolated": true,
+          "wholeLabel": "2 vs 2 ranked",
+          "direction": "ltr",
+          "bidi": "isolate"
+        },
+        {
+          "text": "1 vs 1 ranked",
+          "isolated": true,
+          "wholeLabel": "1 vs 1 ranked",
+          "direction": "ltr",
+          "bidi": "isolate"
+        },
+        {
+          "text": "1 vs 1 ranked",
+          "isolated": true,
+          "wholeLabel": "1 vs 1 ranked",
+          "direction": "ltr",
+          "bidi": "isolate"
+        },
+        {
+          "text": "1 vs 1 ranked",
+          "isolated": true,
+          "wholeLabel": "1 vs 1 ranked",
+          "direction": "ltr",
+          "bidi": "isolate"
+        },
+        {
+          "text": "2 vs 2 ranked",
+          "isolated": true,
+          "wholeLabel": "2 vs 2 ranked",
+          "direction": "ltr",
+          "bidi": "isolate"
+        },
+        {
+          "text": "1 vs 1 ranked",
+          "isolated": true,
+          "wholeLabel": "1 vs 1 ranked",
+          "direction": "ltr",
+          "bidi": "isolate"
+        },
+        {
+          "text": "1 vs 1 ranked",
+          "isolated": true,
+          "wholeLabel": "1 vs 1 ranked",
+          "direction": "ltr",
+          "bidi": "isolate"
+        },
+        {
+          "text": "1 vs 1 ranked",
+          "isolated": true,
+          "wholeLabel": "1 vs 1 ranked",
+          "direction": "ltr",
+          "bidi": "isolate"
+        },
+        {
+          "text": "1 vs 1 ranked",
+          "isolated": true,
+          "wholeLabel": "1 vs 1 ranked",
+          "direction": "ltr",
+          "bidi": "isolate"
+        },
+        {
+          "text": "1 vs 1 ranked",
+          "isolated": true,
+          "wholeLabel": "1 vs 1 ranked",
+          "direction": "ltr",
+          "bidi": "isolate"
+        },
+        {
+          "text": "1 vs 1 ranked",
+          "isolated": true,
+          "wholeLabel": "1 vs 1 ranked",
+          "direction": "ltr",
+          "bidi": "isolate"
+        },
+        {
+          "text": "1 vs 1 ranked",
+          "isolated": true,
+          "wholeLabel": "1 vs 1 ranked",
+          "direction": "ltr",
+          "bidi": "isolate"
+        },
+        {
+          "text": "1 vs 1 ranked",
+          "isolated": true,
+          "wholeLabel": "1 vs 1 ranked",
+          "direction": "ltr",
+          "bidi": "isolate"
+        },
+        {
+          "text": "1 vs 1 ranked",
+          "isolated": true,
+          "wholeLabel": "1 vs 1 ranked",
+          "direction": "ltr",
+          "bidi": "isolate"
+        }
+      ],
+      "passed": true
+    },
+    {
+      "name": "ur-numeric-token-geometry",
+      "locale": "ur",
+      "width": 1200,
+      "surface": "profile",
+      "passed": true,
+      "winLoss": [
+        {
+          "text": "5–3",
+          "tag": "BDI",
+          "dir": "ltr",
+          "direction": "ltr",
+          "bidi": "isolate",
+          "glyphs": [
+            {
+              "char": "5",
+              "x": 739,
+              "right": 748.609375,
+              "y": 827.984375,
+              "height": 22
+            },
+            {
+              "char": "–",
+              "x": 748.609375,
+              "right": 756.609375,
+              "y": 827.984375,
+              "height": 22
+            },
+            {
+              "char": "3",
+              "x": 756.609375,
+              "right": 766.21875,
+              "y": 827.984375,
+              "height": 22
+            }
+          ]
+        },
+        {
+          "text": "5–3",
+          "tag": "BDI",
+          "dir": "ltr",
+          "direction": "ltr",
+          "bidi": "isolate",
+          "glyphs": [
+            {
+              "char": "5",
+              "x": 396.609375,
+              "right": 406.21875,
+              "y": 827.984375,
+              "height": 22
+            },
+            {
+              "char": "–",
+              "x": 406.21875,
+              "right": 414.21875,
+              "y": 827.984375,
+              "height": 22
+            },
+            {
+              "char": "3",
+              "x": 414.21875,
+              "right": 423.828125,
+              "y": 827.984375,
+              "height": 22
+            }
+          ]
+        }
+      ],
+      "historyDeltas": [
+        {
+          "text": "−29",
+          "tag": "BDI",
+          "dir": "ltr",
+          "direction": "ltr",
+          "bidi": "isolate",
+          "glyphs": [
+            {
+              "char": "−",
+              "x": 49,
+              "right": 58.609375,
+              "y": 1380.078125,
+              "height": 22
+            },
+            {
+              "char": "2",
+              "x": 58.59375,
+              "right": 68.203125,
+              "y": 1380.078125,
+              "height": 22
+            },
+            {
+              "char": "9",
+              "x": 68.1875,
+              "right": 77.8125,
+              "y": 1380.078125,
+              "height": 22
+            }
+          ]
+        },
+        {
+          "text": "+91",
+          "tag": "BDI",
+          "dir": "ltr",
+          "direction": "ltr",
+          "bidi": "isolate",
+          "glyphs": [
+            {
+              "char": "+",
+              "x": 49,
+              "right": 58.609375,
+              "y": 1451.5625,
+              "height": 22
+            },
+            {
+              "char": "9",
+              "x": 58.59375,
+              "right": 68.203125,
+              "y": 1451.5625,
+              "height": 22
+            },
+            {
+              "char": "1",
+              "x": 68.1875,
+              "right": 77.8125,
+              "y": 1451.5625,
+              "height": 22
+            }
+          ]
+        },
+        {
+          "text": "+91",
+          "tag": "BDI",
+          "dir": "ltr",
+          "direction": "ltr",
+          "bidi": "isolate",
+          "glyphs": [
+            {
+              "char": "+",
+              "x": 49,
+              "right": 58.609375,
+              "y": 1523.046875,
+              "height": 22
+            },
+            {
+              "char": "9",
+              "x": 58.59375,
+              "right": 68.203125,
+              "y": 1523.046875,
+              "height": 22
+            },
+            {
+              "char": "1",
+              "x": 68.1875,
+              "right": 77.8125,
+              "y": 1523.046875,
+              "height": 22
+            }
+          ]
+        },
+        {
+          "text": "−24",
+          "tag": "BDI",
+          "dir": "ltr",
+          "direction": "ltr",
+          "bidi": "isolate",
+          "glyphs": [
+            {
+              "char": "−",
+              "x": 49,
+              "right": 58.609375,
+              "y": 1594.53125,
+              "height": 22
+            },
+            {
+              "char": "2",
+              "x": 58.59375,
+              "right": 68.203125,
+              "y": 1594.53125,
+              "height": 22
+            },
+            {
+              "char": "4",
+              "x": 68.1875,
+              "right": 77.8125,
+              "y": 1594.53125,
+              "height": 22
+            }
+          ]
+        },
+        {
+          "text": "+91",
+          "tag": "BDI",
+          "dir": "ltr",
+          "direction": "ltr",
+          "bidi": "isolate",
+          "glyphs": [
+            {
+              "char": "+",
+              "x": 49,
+              "right": 58.609375,
+              "y": 1666.015625,
+              "height": 22
+            },
+            {
+              "char": "9",
+              "x": 58.59375,
+              "right": 68.203125,
+              "y": 1666.015625,
+              "height": 22
+            },
+            {
+              "char": "1",
+              "x": 68.1875,
+              "right": 77.8125,
+              "y": 1666.015625,
+              "height": 22
+            }
+          ]
+        },
+        {
+          "text": "+91",
+          "tag": "BDI",
+          "dir": "ltr",
+          "direction": "ltr",
+          "bidi": "isolate",
+          "glyphs": [
+            {
+              "char": "+",
+              "x": 49,
+              "right": 58.609375,
+              "y": 1737.5,
+              "height": 22
+            },
+            {
+              "char": "9",
+              "x": 58.59375,
+              "right": 68.203125,
+              "y": 1737.5,
+              "height": 22
+            },
+            {
+              "char": "1",
+              "x": 68.1875,
+              "right": 77.8125,
+              "y": 1737.5,
+              "height": 22
+            }
+          ]
+        },
+        {
+          "text": "−24",
+          "tag": "BDI",
+          "dir": "ltr",
+          "direction": "ltr",
+          "bidi": "isolate",
+          "glyphs": [
+            {
+              "char": "−",
+              "x": 49,
+              "right": 58.609375,
+              "y": 1808.984375,
+              "height": 22
+            },
+            {
+              "char": "2",
+              "x": 58.59375,
+              "right": 68.203125,
+              "y": 1808.984375,
+              "height": 22
+            },
+            {
+              "char": "4",
+              "x": 68.1875,
+              "right": 77.8125,
+              "y": 1808.984375,
+              "height": 22
+            }
+          ]
+        },
+        {
+          "text": "+91",
+          "tag": "BDI",
+          "dir": "ltr",
+          "direction": "ltr",
+          "bidi": "isolate",
+          "glyphs": [
+            {
+              "char": "+",
+              "x": 49,
+              "right": 58.609375,
+              "y": 1880.46875,
+              "height": 22
+            },
+            {
+              "char": "9",
+              "x": 58.59375,
+              "right": 68.203125,
+              "y": 1880.46875,
+              "height": 22
+            },
+            {
+              "char": "1",
+              "x": 68.1875,
+              "right": 77.8125,
+              "y": 1880.46875,
+              "height": 22
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "ur-queue-text-node-isolation",
+      "locale": "ur",
+      "width": 1200,
+      "surface": "leaderboard",
+      "labels": [
+        {
+          "text": "1 vs 1 ranked",
+          "isolated": true,
+          "wholeLabel": "1 vs 1 ranked",
+          "direction": "ltr",
+          "bidi": "isolate"
+        },
+        {
+          "text": "2 vs 2 ranked",
+          "isolated": true,
+          "wholeLabel": "2 vs 2 ranked",
+          "direction": "ltr",
+          "bidi": "isolate"
+        },
+        {
+          "text": "1 vs 1 ranked",
+          "isolated": true,
+          "wholeLabel": "1 vs 1 ranked",
+          "direction": "ltr",
+          "bidi": "isolate"
+        }
+      ],
+      "passed": true
+    },
+    {
+      "name": "ur-queue-text-node-isolation",
+      "locale": "ur",
+      "width": 1200,
+      "surface": "maps",
+      "labels": [],
+      "passed": true
+    },
+    {
+      "name": "ur-queue-text-node-isolation",
+      "locale": "ur",
+      "width": 390,
+      "surface": "home-first-visit",
+      "labels": [
+        {
+          "text": "1 vs 1 ranked",
+          "isolated": true,
+          "wholeLabel": "1 vs 1 ranked",
+          "direction": "ltr",
+          "bidi": "isolate"
+        },
+        {
+          "text": "2 vs 2 ranked",
+          "isolated": true,
+          "wholeLabel": "2 vs 2 ranked",
+          "direction": "ltr",
+          "bidi": "isolate"
+        }
+      ],
+      "passed": true
+    },
+    {
+      "name": "ur-numeric-token-geometry",
+      "locale": "ur",
+      "width": 390,
+      "surface": "signin",
+      "passed": true,
+      "digitRanges": [
+        {
+          "text": "0–9",
+          "tag": "BDI",
+          "dir": "ltr",
+          "direction": "ltr",
+          "bidi": "isolate",
+          "glyphs": [
+            {
+              "char": "0",
+              "x": 73.171875,
+              "right": 81.34375,
+              "y": 587.609375,
+              "height": 19
+            },
+            {
+              "char": "–",
+              "x": 81.328125,
+              "right": 88.140625,
+              "y": 587.609375,
+              "height": 19
+            },
+            {
+              "char": "9",
+              "x": 88.125,
+              "right": 96.296875,
+              "y": 587.609375,
+              "height": 19
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "ur-numeric-token-geometry",
+      "locale": "ur",
+      "width": 390,
+      "surface": "signin-error",
+      "passed": true,
+      "digitRanges": [
+        {
+          "text": "0–9",
+          "tag": "BDI",
+          "dir": "ltr",
+          "direction": "ltr",
+          "bidi": "isolate",
+          "glyphs": [
+            {
+              "char": "0",
+              "x": 73.171875,
+              "right": 81.34375,
+              "y": 656.265625,
+              "height": 19
+            },
+            {
+              "char": "–",
+              "x": 81.328125,
+              "right": 88.140625,
+              "y": 656.265625,
+              "height": 19
+            },
+            {
+              "char": "9",
+              "x": 88.125,
+              "right": 96.296875,
+              "y": 656.265625,
+              "height": 19
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "ur-queue-text-node-isolation",
+      "locale": "ur",
+      "width": 390,
+      "surface": "account",
+      "labels": [],
+      "passed": true
+    },
+    {
+      "name": "ur-queue-text-node-isolation",
+      "locale": "ur",
+      "width": 390,
+      "surface": "matches",
+      "labels": [
+        {
+          "text": "1 vs 1 ranked",
+          "isolated": true,
+          "wholeLabel": "1 vs 1 ranked",
+          "direction": "ltr",
+          "bidi": "isolate"
+        },
+        {
+          "text": "2 vs 2 ranked",
+          "isolated": true,
+          "wholeLabel": "2 vs 2 ranked",
+          "direction": "ltr",
+          "bidi": "isolate"
+        }
+      ],
+      "passed": true
+    },
+    {
+      "name": "ur-queue-text-node-isolation",
+      "locale": "ur",
+      "width": 390,
+      "surface": "match",
+      "labels": [
+        {
+          "text": "1 vs 1 ranked",
+          "isolated": true,
+          "wholeLabel": "1 vs 1 ranked",
+          "direction": "ltr",
+          "bidi": "isolate"
+        }
+      ],
+      "passed": true
+    },
+    {
+      "name": "ur-numeric-token-geometry",
+      "locale": "ur",
+      "width": 390,
+      "surface": "match",
+      "passed": true,
+      "transitions": [
+        {
+          "text": "1615  → 1585",
+          "tag": "BDI",
+          "dir": "ltr",
+          "direction": "ltr",
+          "bidi": "isolate",
+          "glyphs": [
+            {
+              "char": "1",
+              "x": -13.921875,
+              "right": -4.3125,
+              "y": 762.28125,
+              "height": 22
+            },
+            {
+              "char": "6",
+              "x": -4.328125,
+              "right": 5.28125,
+              "y": 762.28125,
+              "height": 22
+            },
+            {
+              "char": "1",
+              "x": 5.265625,
+              "right": 14.890625,
+              "y": 762.28125,
+              "height": 22
+            },
+            {
+              "char": "5",
+              "x": 14.875,
+              "right": 24.484375,
+              "y": 762.28125,
+              "height": 22
+            },
+            {
+              "char": "→",
+              "x": 28.609375,
+              "right": 42.796875,
+              "y": 762.28125,
+              "height": 22
+            },
+            {
+              "char": "1",
+              "x": 46.921875,
+              "right": 56.53125,
+              "y": 762.28125,
+              "height": 22
+            },
+            {
+              "char": "5",
+              "x": 56.515625,
+              "right": 66.125,
+              "y": 762.28125,
+              "height": 22
+            },
+            {
+              "char": "8",
+              "x": 66.109375,
+              "right": 75.734375,
+              "y": 762.28125,
+              "height": 22
+            },
+            {
+              "char": "5",
+              "x": 75.71875,
+              "right": 85.328125,
+              "y": 762.28125,
+              "height": 22
+            }
+          ]
+        },
+        {
+          "text": "1677  → 1706",
+          "tag": "BDI",
+          "dir": "ltr",
+          "direction": "ltr",
+          "bidi": "isolate",
+          "glyphs": [
+            {
+              "char": "1",
+              "x": -13.921875,
+              "right": -4.3125,
+              "y": 832.875,
+              "height": 22
+            },
+            {
+              "char": "6",
+              "x": -4.328125,
+              "right": 5.28125,
+              "y": 832.875,
+              "height": 22
+            },
+            {
+              "char": "7",
+              "x": 5.265625,
+              "right": 14.890625,
+              "y": 832.875,
+              "height": 22
+            },
+            {
+              "char": "7",
+              "x": 14.875,
+              "right": 24.484375,
+              "y": 832.875,
+              "height": 22
+            },
+            {
+              "char": "→",
+              "x": 28.609375,
+              "right": 42.796875,
+              "y": 832.875,
+              "height": 22
+            },
+            {
+              "char": "1",
+              "x": 46.921875,
+              "right": 56.53125,
+              "y": 832.875,
+              "height": 22
+            },
+            {
+              "char": "7",
+              "x": 56.515625,
+              "right": 66.125,
+              "y": 832.875,
+              "height": 22
+            },
+            {
+              "char": "0",
+              "x": 66.109375,
+              "right": 75.734375,
+              "y": 832.875,
+              "height": 22
+            },
+            {
+              "char": "6",
+              "x": 75.71875,
+              "right": 85.328125,
+              "y": 832.875,
+              "height": 22
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "ur-queue-text-node-isolation",
+      "locale": "ur",
+      "width": 390,
+      "surface": "profile",
+      "labels": [
+        {
+          "text": "1 vs 1 ranked",
+          "isolated": true,
+          "wholeLabel": "1 vs 1 ranked",
+          "direction": "ltr",
+          "bidi": "isolate"
+        },
+        {
+          "text": "2 vs 2 ranked",
+          "isolated": true,
+          "wholeLabel": "2 vs 2 ranked",
+          "direction": "ltr",
+          "bidi": "isolate"
+        },
+        {
+          "text": "1 vs 1 ranked",
+          "isolated": true,
+          "wholeLabel": "1 vs 1 ranked",
+          "direction": "ltr",
+          "bidi": "isolate"
+        },
+        {
+          "text": "1 vs 1 ranked",
+          "isolated": true,
+          "wholeLabel": "1 vs 1 ranked",
+          "direction": "ltr",
+          "bidi": "isolate"
+        },
+        {
+          "text": "1 vs 1 ranked",
+          "isolated": true,
+          "wholeLabel": "1 vs 1 ranked",
+          "direction": "ltr",
+          "bidi": "isolate"
+        },
+        {
+          "text": "2 vs 2 ranked",
+          "isolated": true,
+          "wholeLabel": "2 vs 2 ranked",
+          "direction": "ltr",
+          "bidi": "isolate"
+        }
+      ],
+      "passed": true
+    },
+    {
+      "name": "ur-numeric-token-geometry",
+      "locale": "ur",
+      "width": 390,
+      "surface": "profile",
+      "passed": true,
+      "winLoss": [
+        {
+          "text": "5–3",
+          "tag": "BDI",
+          "dir": "ltr",
+          "direction": "ltr",
+          "bidi": "isolate",
+          "glyphs": [
+            {
+              "char": "5",
+              "x": 115,
+              "right": 124.609375,
+              "y": 1075.859375,
+              "height": 22
+            },
+            {
+              "char": "–",
+              "x": 124.609375,
+              "right": 132.609375,
+              "y": 1075.859375,
+              "height": 22
+            },
+            {
+              "char": "3",
+              "x": 132.609375,
+              "right": 142.21875,
+              "y": 1075.859375,
+              "height": 22
+            }
+          ]
+        },
+        {
+          "text": "5–3",
+          "tag": "BDI",
+          "dir": "ltr",
+          "direction": "ltr",
+          "bidi": "isolate",
+          "glyphs": [
+            {
+              "char": "5",
+              "x": 74.609375,
+              "right": 84.21875,
+              "y": 1199.34375,
+              "height": 22
+            },
+            {
+              "char": "–",
+              "x": 84.21875,
+              "right": 92.21875,
+              "y": 1199.34375,
+              "height": 22
+            },
+            {
+              "char": "3",
+              "x": 92.21875,
+              "right": 101.828125,
+              "y": 1199.34375,
+              "height": 22
+            }
+          ]
+        }
+      ],
+      "historyDeltas": [
+        {
+          "text": "−29",
+          "tag": "BDI",
+          "dir": "ltr",
+          "direction": "ltr",
+          "bidi": "isolate",
+          "glyphs": [
+            {
+              "char": "−",
+              "x": 33,
+              "right": 42.609375,
+              "y": 2152.59375,
+              "height": 22
+            },
+            {
+              "char": "2",
+              "x": 42.59375,
+              "right": 52.203125,
+              "y": 2152.59375,
+              "height": 22
+            },
+            {
+              "char": "9",
+              "x": 52.1875,
+              "right": 61.8125,
+              "y": 2152.59375,
+              "height": 22
+            }
+          ]
+        },
+        {
+          "text": "+91",
+          "tag": "BDI",
+          "dir": "ltr",
+          "direction": "ltr",
+          "bidi": "isolate",
+          "glyphs": [
+            {
+              "char": "+",
+              "x": 33,
+              "right": 42.609375,
+              "y": 2224.078125,
+              "height": 22
+            },
+            {
+              "char": "9",
+              "x": 42.59375,
+              "right": 52.203125,
+              "y": 2224.078125,
+              "height": 22
+            },
+            {
+              "char": "1",
+              "x": 52.1875,
+              "right": 61.8125,
+              "y": 2224.078125,
+              "height": 22
+            }
+          ]
+        },
+        {
+          "text": "+91",
+          "tag": "BDI",
+          "dir": "ltr",
+          "direction": "ltr",
+          "bidi": "isolate",
+          "glyphs": [
+            {
+              "char": "+",
+              "x": 33,
+              "right": 42.609375,
+              "y": 2295.5625,
+              "height": 22
+            },
+            {
+              "char": "9",
+              "x": 42.59375,
+              "right": 52.203125,
+              "y": 2295.5625,
+              "height": 22
+            },
+            {
+              "char": "1",
+              "x": 52.1875,
+              "right": 61.8125,
+              "y": 2295.5625,
+              "height": 22
+            }
+          ]
+        },
+        {
+          "text": "−24",
+          "tag": "BDI",
+          "dir": "ltr",
+          "direction": "ltr",
+          "bidi": "isolate",
+          "glyphs": [
+            {
+              "char": "−",
+              "x": 33,
+              "right": 42.609375,
+              "y": 2367.046875,
+              "height": 22
+            },
+            {
+              "char": "2",
+              "x": 42.59375,
+              "right": 52.203125,
+              "y": 2367.046875,
+              "height": 22
+            },
+            {
+              "char": "4",
+              "x": 52.1875,
+              "right": 61.8125,
+              "y": 2367.046875,
+              "height": 22
+            }
+          ]
+        },
+        {
+          "text": "+91",
+          "tag": "BDI",
+          "dir": "ltr",
+          "direction": "ltr",
+          "bidi": "isolate",
+          "glyphs": [
+            {
+              "char": "+",
+              "x": 33,
+              "right": 42.609375,
+              "y": 2438.53125,
+              "height": 22
+            },
+            {
+              "char": "9",
+              "x": 42.59375,
+              "right": 52.203125,
+              "y": 2438.53125,
+              "height": 22
+            },
+            {
+              "char": "1",
+              "x": 52.1875,
+              "right": 61.8125,
+              "y": 2438.53125,
+              "height": 22
+            }
+          ]
+        },
+        {
+          "text": "+91",
+          "tag": "BDI",
+          "dir": "ltr",
+          "direction": "ltr",
+          "bidi": "isolate",
+          "glyphs": [
+            {
+              "char": "+",
+              "x": 33,
+              "right": 42.609375,
+              "y": 2510.015625,
+              "height": 22
+            },
+            {
+              "char": "9",
+              "x": 42.59375,
+              "right": 52.203125,
+              "y": 2510.015625,
+              "height": 22
+            },
+            {
+              "char": "1",
+              "x": 52.1875,
+              "right": 61.8125,
+              "y": 2510.015625,
+              "height": 22
+            }
+          ]
+        },
+        {
+          "text": "−24",
+          "tag": "BDI",
+          "dir": "ltr",
+          "direction": "ltr",
+          "bidi": "isolate",
+          "glyphs": [
+            {
+              "char": "−",
+              "x": 33,
+              "right": 42.609375,
+              "y": 2581.5,
+              "height": 22
+            },
+            {
+              "char": "2",
+              "x": 42.59375,
+              "right": 52.203125,
+              "y": 2581.5,
+              "height": 22
+            },
+            {
+              "char": "4",
+              "x": 52.1875,
+              "right": 61.8125,
+              "y": 2581.5,
+              "height": 22
+            }
+          ]
+        },
+        {
+          "text": "+91",
+          "tag": "BDI",
+          "dir": "ltr",
+          "direction": "ltr",
+          "bidi": "isolate",
+          "glyphs": [
+            {
+              "char": "+",
+              "x": 33,
+              "right": 42.609375,
+              "y": 2652.984375,
+              "height": 22
+            },
+            {
+              "char": "9",
+              "x": 42.59375,
+              "right": 52.203125,
+              "y": 2652.984375,
+              "height": 22
+            },
+            {
+              "char": "1",
+              "x": 52.1875,
+              "right": 61.8125,
+              "y": 2652.984375,
+              "height": 22
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "ur-queue-text-node-isolation",
+      "locale": "ur",
+      "width": 390,
+      "surface": "leaderboard",
+      "labels": [
+        {
+          "text": "1 vs 1 ranked",
+          "isolated": true,
+          "wholeLabel": "1 vs 1 ranked",
+          "direction": "ltr",
+          "bidi": "isolate"
+        },
+        {
+          "text": "2 vs 2 ranked",
+          "isolated": true,
+          "wholeLabel": "2 vs 2 ranked",
+          "direction": "ltr",
+          "bidi": "isolate"
+        },
+        {
+          "text": "1 vs 1 ranked",
+          "isolated": true,
+          "wholeLabel": "1 vs 1 ranked",
+          "direction": "ltr",
+          "bidi": "isolate"
+        }
+      ],
+      "passed": true
+    },
+    {
+      "name": "ur-queue-text-node-isolation",
+      "locale": "ur",
+      "width": 390,
+      "surface": "maps",
+      "labels": [],
+      "passed": true
+    }
+  ],
+  "findings": [],
+  "prior_findings_rechecked": [
+    {
+      "id": "UR-VIS-001",
+      "result": "resolved inactualcanonicaldesktopMatch1615→1585/1677→1706,deltas−29/+29,profile5–3+signedhistory;phonepanexposescompletetransitions."
+    },
+    {
+      "id": "UR-VIS-002",
+      "result": "resolved:signin+error atbothwidths display0–9 correctly;A–Z/a–z remainreadable."
+    },
+    {
+      "id": "UR-VIS-003",
+      "result": "resolved:1vs1ranked/2vs2ranked correctorderatallvisiblecapturedqueueboundaries."
+    },
+    {
+      "id": "UR-VIS-004",
+      "result": "resolved:1300/otherYticksleftofplot,notunderpoint;profile8markersatbothwidthsalignedwithline. Allnewcanonicalimagesread,notpriortransientimagecarry."
+    }
+  ],
+  "observations": [
+    "Urdujoins/dots/marks,prosewrappingandcontrolcontainmentreadableinall22actualimages.",
+    "Accountirreversibility/privacywarningandconfirmationreadable; noaccountdeletionperformed.",
+    "Namedplayers/maps/room/queuelabels,technicalAIhashand49/125simformatfixturemetadata legitimateauthoredcontent,notEnglishUIgaps.",
+    "PhoneMatchtablewiderthanviewport intentionally;ArrowLeftrecordandimageexposefullratingcolumn,ArrowRightrestoresplayercolumn. Keyboardfocusringvisible.",
+    "Canonicalapp usesnewactual36localeregistryandcanonicalUrduJSON,withnocatalog/registrypreviewpatches.",
+    "LineCharttooltip/legend/hiddenTHisolationretainedincurrentsourcehash;staticimagesonlyverifyvisiblelegends,notunshownhover/screenreaderUI."
+  ],
+  "limits": [
+    "Independentagentreview,nothuman nativeapproval.",
+    "ActualcanonicalappChromeviewports1200/390,notphysicaltouch/mobilehardware/nativeAndroid/iOS/gameWASM.",
+    "22imagescoverfixtureflows,notall2836messages/27pluralfamilies/screensreader/IMEormanyusergeneratedstrings.",
+    "PinnedsourceTTFfiles+fontCSSsourceidentity+computedloadedfontschecked;noseparateHTTPfontbinarySHAenumerationinferred.",
+    "Oldpreviewreviewsandtransientmarkerimagesremainseparatehistoricalevidence,notrelabeledcanonical.",
+    "No production/catalog/sourcewrites byreviewer."
+  ]
+}

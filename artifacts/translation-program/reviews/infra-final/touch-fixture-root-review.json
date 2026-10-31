@@ -1,0 +1,25 @@
+{
+  "reviewer": "/root",
+  "status": "accepted",
+  "source_sha256": "e45b8249590c5686792211ebdac9e863f4d3acdad43bedb37c87f8aa34961493",
+  "finding": "The monolithic touch fixture requested the same nonexistent art for300 resource definitions, repeatedly invoking synchronous missing-file retries on registry/language changes.",
+  "review": [
+    "All300 definitions and selected highest mixed-material id remain; highest id still exceeds255 and uses missing-art fallback.",
+    "First299 ids use an existing bundled sprite; count, material yields, selected resource, orders and assertions are unchanged.",
+    "No production asset-loader/cache or simulation change is made by this fixture edit."
+  ],
+  "validation_evidence": [
+    {
+      "path": "touch-fixture-result.xml",
+      "sha256": "4841de9cabfadae6c6d6ffb09f07dc22ccbe35101d6b9067c180aeb945a1bbe2"
+    },
+    {
+      "path": "touch-investigation-review.json",
+      "sha256": "b168d7cb3121be9d4977446ae9d6e91ab1bcd3223a814f25a682b447e0a62dc4"
+    }
+  ],
+  "limits": [
+    "Earlier300s and600s timeouts remain recorded.",
+    "No claim that the original fixture passed on baseline, or that elapsed time is a controlled benchmark."
+  ]
+}

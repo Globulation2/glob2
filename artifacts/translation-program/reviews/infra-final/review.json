@@ -1,0 +1,116 @@
+{
+  "reviewer": "/root/translation_kit",
+  "review_type": "Independent read-only review of root API/CSS/Docker/SSR changes; separately author of high-DPI fix requiring root review",
+  "git_revision": "6a16670c6daafa34f1f86a47014f23e0d05fd4e3",
+  "reviewed_code_sha256": {
+    "platform/packages/i18n/script-fonts.css": "593a96e3c346cacaf35f40bb2304703455f41a7e97d3cdd76e5290fe8b3bcf50",
+    "platform/apps/web/src/styles/script-fonts.css": "bf4e8982528a5711c1acec489cea68ad93fb670d97fefbc2eddd6505635aee30",
+    "platform/apps/web/src/main.tsx": "be44cea1f29f1c5f7229ef2fa200bdde8209a8862b78ff51153b987bbadd5eb4",
+    "platform/apps/api/src/web/pages.ts": "8465498fcaeaa877efc77c903bfe86d139918cae0c8bd7697239cfc1ca7f132b",
+    "platform/apps/api/test/pages.test.ts": "f82ea1e07bd68ebb34c2d308062446859163c3fe4b19ed89698d7b7b999dd4ca",
+    "deploy/Dockerfile": "e6a71f930618793892109f7831c6f97a95b047acc9c49fbe779e9612f6f60517",
+    "platform/apps/api/src/routes/signin.ts": "ca8a806ca5dbc356de5e1aec2cc35e43d81f6fa4be1b6c09e1a8dfbbbe077835",
+    "platform/apps/web/src/pages/Match.tsx": "dcf6e4d40581d99d11f1450c114481d83b09deab4575458f956c88521ea7d435"
+  },
+  "blocking_findings": [],
+  "code_review_observations": [
+    "Shared CSS source URLs resolve relative to platform/packages/i18n into repository data/fonts/scripts; Vite imports them through the small web wrapper and emits hashed assets.",
+    "CSS opts only new complex-script locales into script families using :lang selectors (pa covers both Punjabi script tags); existing locales retain existing typography. Language picker options carry explicit lang attributes.",
+    "Server stylesheet rebases exact font URL prefix to same-origin /signin/assets. Font names come from pinned manifest allowlist; regex rejects slashes and unknown TTF names return404. Existing design assets retain original serving path.",
+    "SSR body/headings/room typography uses script variables with original stacks as fallback. sendPage supplies response-local lang/dir and font-src self permits served files without widening CSP.",
+    "Docker web build and production runtime copy font tree plus Noto licence to /app/data/fonts, matching import.meta-relative API source paths; runtime stages consume that tree. Native packaging adds linked HarfBuzz alongside SDL libraries.",
+    "Sign-in conditional suffix now translated before interpolation into response-local message; username interpolation stays escaped by existing pageHtml path, not treated as trusted markup.",
+    "Match outcomes use existing statusLabel mapping (lost, abandoned etc), and boolean No passes through translator. TeamCards already subscribes to locale and statistic block retains existing locale behavior."
+  ],
+  "independent_Docker_runtime_verification": {
+    "image": "glob2-translation-platform:local",
+    "image_id": "sha256:f8fc399d624e72d4f75b96502d23794074359a905ef3d277f5626705836720fb",
+    "command": "docker run --rm --network=none -i --entrypoint node glob2-translation-platform:local --input-type=module < docker-font-check.mjs",
+    "result_file": "docker-font-results.json",
+    "platform": "linux/arm64",
+    "fonts_with_matching_sha256_and_bytes": 13,
+    "CSS_status": 200,
+    "Noto_licence_status": 200,
+    "unapproved_TTF_and_path_traversal_status": 404,
+    "scope": "Actual production pageAssetRoutes imported inside built image; Fastify inject endpoint checks. No browser rendering inferred."
+  },
+  "font_investigation": {
+    "evidence": "hinting-probe.json",
+    "primary_reference": "https://freetype.org/freetype2/docs/glyphs/glyphs-3.html",
+    "root_cause": "Authored-size measurement and independently hinted high-DPI advances differ. A real Hindi line measured362 logical px but raw26px font rendered754px (377 logical), exceeding366px slot. Six observed overflow lines exactly reproduced with pinned SDL3_ttf/Noto/HarfBuzz10.1.0.",
+    "rejected_shortcut": "No-hint or light-subpixel still has0–2px metric rounding and changes authored layout; adding slack or clipping would hide mismatch."
+  },
+  "authored_font_fix": {
+    "code_sha256": {
+      "libgag/src/TrueTypeFont.cpp": "554784f8b27866b300e611fcb4d55eb34e0a746adc5a165e3508668e26db05b3",
+      "libgag/include/TrueTypeFont.h": "099ded15be8de1bf321c4f57faac91bfb680943cb03f17b09eccbc09a93e6024",
+      "libgag/src/FontKerningTest.cpp": "41cc9b488e1cf640fb17ed524a7d3ac831eec93c68236e312017b986ee419cce",
+      "libgag/src/FontMetricsTest.cpp": "fcc818635a3b0e5dbf5017ac92637765ef0f48dbcbe3566f64b7c0db20d4689b"
+    },
+    "behavior": "Scaled script drawing uses authored measured width for the full raster destination; fractional raster quantization does not reapply to normalized horizontal advance. Native anisotropic output retains min-axis correction. Vertical geometry retains existing physical raster behavior. Legacy/scriptless geometry and raw rasterizeString pixels remain unchanged.",
+    "public_geometry_API": "TrueTypeFont::getStringDrawSize(text, requestedScale, outputScaleX=1, outputScaleY=1) returns logical destination extent using exactly the same geometry helper as both drawString overloads. Native axis ratios are drawable/logical; matrix defaults to isotropic axes.",
+    "tests": [
+      {
+        "log": "font-kerning-homebrew.log",
+        "exit_code": 0,
+        "result": [
+          "[doctest] test cases:    9 |    9 passed | 0 failed | 1991 skipped",
+          "[doctest] assertions: 3904 | 3904 passed | 0 failed |"
+        ]
+      },
+      {
+        "log": "font-kerning-hb10.log",
+        "exit_code": 0,
+        "result": [
+          "[doctest] test cases:    9 |    9 passed | 0 failed | 1991 skipped",
+          "[doctest] assertions: 3904 | 3904 passed | 0 failed |"
+        ]
+      },
+      {
+        "log": "text-metrics-homebrew.log",
+        "exit_code": 0,
+        "result": [
+          "[doctest] test cases:     2 |     2 passed | 0 failed | 1253 skipped",
+          "[doctest] assertions: 10371 | 10371 passed | 0 failed |"
+        ]
+      },
+      {
+        "log": "text-metrics-hb10.log",
+        "exit_code": 0,
+        "result": [
+          "[doctest] test cases:     2 |     2 passed | 0 failed | 1253 skipped",
+          "[doctest] assertions: 10371 | 10371 passed | 0 failed |"
+        ]
+      }
+    ],
+    "runtime_provenance": [
+      "runtime-homebrew.log: actual Homebrew SDL3_ttf3.2.2 and HarfBuzz14.1.0 loaded",
+      "runtime-hb10.log: actual approved-prefix SDL3_ttf3.2.2 and HarfBuzz10.1.0 loaded"
+    ],
+    "builds": [
+      {
+        "command": "python3 tools/dev_build.py engine-tests unit-tests",
+        "log": "native-build.log",
+        "exit_code": 0
+      },
+      {
+        "command": "PYTHONPATH=$PWD python3 tools/dev_build.py translation-preview-harness",
+        "log": "preview-build.log",
+        "exit_code": 0
+      }
+    ],
+    "independent_review": "Root reported conceptual implementation accepted after code inspection; actual updated screenshots/matrices remain root-owned pending verification. This author does not sign off own fix."
+  },
+  "line_height_clearance_review": {
+    "observation": "Root +2px clearance on active script font nominal line box compensates observed Devanagari/Gujarati+1 and Gurmukhi+2 hinted bounds, including Latin-only labels. Existing en/ar/fa line metrics and cache appearance tested unchanged.",
+    "verified_scope": "Current focused fixture covers hi,ur,gu,pa-guru at sizes10/13/20; suite also exercises all13script raw fonts.",
+    "limits": "Fixed nominal padding is not proof every script/combining sequence/style or cross-script chat fits every UI line box. Actual multi-locale rendered screens and platform-specific checks remain acceptance gates."
+  },
+  "limits": [
+    "No source catalog, locale registration or translation file changed during this infrastructure task.",
+    "Root API unit/lint checks were reviewed as supplied evidence, not rerun by this reviewer; independent actual-container route checks did run.",
+    "No API/web rendered-page screenshots inspected in this pass.",
+    "Native tests use macOS arm64 development binaries; other desktop, browser and mobile rendering/platform verification remains orchestrator-owned.",
+    "Raw raster overflow remains a diagnostic and must remain visible alongside corrected destination geometry; actual draw/capture verification is pending."
+  ]
+}

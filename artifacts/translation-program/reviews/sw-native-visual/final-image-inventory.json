@@ -1,0 +1,230 @@
+{
+  "images": [
+    {
+      "path": "final-captures/1200/main.png",
+      "sha256": "0088534e632b3d94fab583fa6d013f8d506190e1b1cf43f169b1db7329e7177f",
+      "width": 1200,
+      "name": "main",
+      "manual_read": false
+    },
+    {
+      "path": "final-captures/1200/settings.png",
+      "sha256": "d2b8dfd3592814c9ae2bd0a5083b6154921426dc8e4fe54cc8825ae873cb1476",
+      "width": 1200,
+      "name": "settings",
+      "manual_read": false
+    },
+    {
+      "path": "final-captures/1200/settings-audio.png",
+      "sha256": "656dd2c9a6ed1be85efa84261551bd432e80bc30193a10b11261d0fc076cf6e8",
+      "width": 1200,
+      "name": "settings-audio",
+      "manual_read": false
+    },
+    {
+      "path": "final-captures/1200/lobby.png",
+      "sha256": "0c88841441d75ebbeebb384bf1f347e44f000eda2522beed3798c54c89f80429",
+      "width": 1200,
+      "name": "lobby",
+      "manual_read": false
+    },
+    {
+      "path": "final-captures/1200/lobby-players.png",
+      "sha256": "ef10f8f7779affd54cde4801b4bdd8535454468f4bfcd8988596f944baace22f",
+      "width": 1200,
+      "name": "lobby-players",
+      "manual_read": false
+    },
+    {
+      "path": "final-captures/1200/gameplay.png",
+      "sha256": "3a25543f5877f689236fd80f4fc6d1ba59c2d136afb5544f52127b2fc1d9aab4",
+      "width": 1200,
+      "name": "gameplay",
+      "manual_read": false
+    },
+    {
+      "path": "final-captures/1200/gameplay-dialog.png",
+      "sha256": "80dfc1bd38c7341360ec63bc8e2d0ea202a43ad70366c57fc2b2cb40dc773609",
+      "width": 1200,
+      "name": "gameplay-dialog",
+      "manual_read": false
+    },
+    {
+      "path": "final-captures/1200/tutorial.png",
+      "sha256": "a6b3aa9c1d5dad009f3ec53a6bf74c1ee7a3630a40a783a83c17daa848b2cf18",
+      "width": 1200,
+      "name": "tutorial",
+      "manual_read": false
+    },
+    {
+      "path": "final-captures/1200/tutorial-dialog.png",
+      "sha256": "a8a5866e0255532c6cd36d9c9faa069a9a1045fabd5c988669f52e3c29596f0a",
+      "width": 1200,
+      "name": "tutorial-dialog",
+      "manual_read": false
+    },
+    {
+      "path": "final-captures/1200/gameplay-zoom-plus.png",
+      "sha256": "7f7cc4ad9db56a74bbcd754d0fb4355ce03d5c8fbbedd6822d56dfc6225bc367",
+      "width": 1200,
+      "name": "gameplay-zoom-plus",
+      "manual_read": false
+    },
+    {
+      "path": "final-captures/1200/gameplay-zoom-fit.png",
+      "sha256": "9d3de6c95a6799b5ca65c1fcb6e60823463faf7322e96394fe102ac105c22bc7",
+      "width": 1200,
+      "name": "gameplay-zoom-fit",
+      "manual_read": false
+    },
+    {
+      "path": "final-captures/390/main.png",
+      "sha256": "b797b1bd0e7970bba9a583e135ced5585ebe3db00d37a13ca4ddfd32ef13cad9",
+      "width": 390,
+      "name": "main",
+      "manual_read": false
+    },
+    {
+      "path": "final-captures/390/settings.png",
+      "sha256": "4d79632166aa421ed34f1685d933ded686062d693d437856afe1507fe5ad6b64",
+      "width": 390,
+      "name": "settings",
+      "manual_read": false
+    },
+    {
+      "path": "final-captures/390/settings-audio.png",
+      "sha256": "5a6a52113899b9f76aeb03b17914e40a6548239e9e7b138d4b017476c8c85270",
+      "width": 390,
+      "name": "settings-audio",
+      "manual_read": false
+    },
+    {
+      "path": "final-captures/390/lobby.png",
+      "sha256": "3d1fe2a63ee03dca2a85d18e00a15f9f7cb32dae33ff6ad8d54fc52e1dbe31fb",
+      "width": 390,
+      "name": "lobby",
+      "manual_read": false
+    },
+    {
+      "path": "final-captures/390/lobby-players.png",
+      "sha256": "58e9cbd60dc2f285aad3ba69ac6424e5167bd302415412bebd8839240d9779c1",
+      "width": 390,
+      "name": "lobby-players",
+      "manual_read": false
+    },
+    {
+      "path": "final-captures/390/gameplay.png",
+      "sha256": "f6103c030f220262eb1e2a6a2165e189e6742ccdfbbb944792d85da928e5bfe1",
+      "width": 390,
+      "name": "gameplay",
+      "manual_read": false
+    },
+    {
+      "path": "final-captures/390/gameplay-dialog.png",
+      "sha256": "02a79d63bb65e6adb0251cf9eaae5b04aa634a4bcc2d5d0dc25f118114f3fb9f",
+      "width": 390,
+      "name": "gameplay-dialog",
+      "manual_read": false
+    },
+    {
+      "path": "final-captures/390/tutorial.png",
+      "sha256": "68168279467e70f823bda57422dc5be55043cdbfeb9af412e1107c05f046252f",
+      "width": 390,
+      "name": "tutorial",
+      "manual_read": false
+    },
+    {
+      "path": "final-captures/390/tutorial-dialog.png",
+      "sha256": "f6feb79f89e2d7fc83d76ccbb612887bbd5c51346867a91511a6783c325c0ca2",
+      "width": 390,
+      "name": "tutorial-dialog",
+      "manual_read": false
+    }
+  ],
+  "font_pages_carried_by_exact_hash": [
+    {
+      "new_path": "artifacts/translation-program/native-preview/release-three-integrated/sw/1200/font-10-scale-1-page-001.png",
+      "prior_review_image": "initial-captures/1200/font-10-scale-1-page-001.png",
+      "sha256": "b1222778617785a7739027477737247790b31c583e26de870d21c70ff312cd9c",
+      "byte_equal_to_prior_manually_read": true,
+      "fresh_manual_read_claimed": false
+    },
+    {
+      "new_path": "artifacts/translation-program/native-preview/release-three-integrated/sw/1200/font-10-scale-2-page-001.png",
+      "prior_review_image": "initial-captures/1200/font-10-scale-2-page-001.png",
+      "sha256": "14e2f637df936dfe94b9971a9e23df3fbdfe138152d48ccedf13460cfba12b47",
+      "byte_equal_to_prior_manually_read": true,
+      "fresh_manual_read_claimed": false
+    },
+    {
+      "new_path": "artifacts/translation-program/native-preview/release-three-integrated/sw/1200/font-13-scale-1-page-001.png",
+      "prior_review_image": "initial-captures/1200/font-13-scale-1-page-001.png",
+      "sha256": "7244a79df8c6cbb373c94999c9ae84ff022de9d855ea19b00e71dcfd41a7dcce",
+      "byte_equal_to_prior_manually_read": true,
+      "fresh_manual_read_claimed": false
+    },
+    {
+      "new_path": "artifacts/translation-program/native-preview/release-three-integrated/sw/1200/font-13-scale-2-page-001.png",
+      "prior_review_image": "initial-captures/1200/font-13-scale-2-page-001.png",
+      "sha256": "871dcc786d4953521dc2a85c1303281bdf366252f6848d4c45efbdc3a2c534fa",
+      "byte_equal_to_prior_manually_read": true,
+      "fresh_manual_read_claimed": false
+    },
+    {
+      "new_path": "artifacts/translation-program/native-preview/release-three-integrated/sw/1200/font-20-scale-1-page-001.png",
+      "prior_review_image": "initial-captures/1200/font-20-scale-1-page-001.png",
+      "sha256": "5f1c2ae696783c722b759ccede87c01466930ebc146745148c6bc1518a587919",
+      "byte_equal_to_prior_manually_read": true,
+      "fresh_manual_read_claimed": false
+    },
+    {
+      "new_path": "artifacts/translation-program/native-preview/release-three-integrated/sw/1200/font-20-scale-2-page-001.png",
+      "prior_review_image": "initial-captures/1200/font-20-scale-2-page-001.png",
+      "sha256": "ab060394aece7b7848d9b80e61f722a110e603843288bd376c3582c892bab99a",
+      "byte_equal_to_prior_manually_read": true,
+      "fresh_manual_read_claimed": false
+    },
+    {
+      "new_path": "artifacts/translation-program/native-preview/release-three-integrated/sw/390/font-10-scale-1-page-001.png",
+      "prior_review_image": "initial-captures/390/font-10-scale-1-page-001.png",
+      "sha256": "6a2a76d7cb357098e5eeb68f6a4f2cf549bba3918608d0071410d4d2f1111f83",
+      "byte_equal_to_prior_manually_read": true,
+      "fresh_manual_read_claimed": false
+    },
+    {
+      "new_path": "artifacts/translation-program/native-preview/release-three-integrated/sw/390/font-10-scale-2-page-001.png",
+      "prior_review_image": "initial-captures/390/font-10-scale-2-page-001.png",
+      "sha256": "b00f2932a546a9e443c25e3aa1863a4512aff827d66c91b0c66f40c43396a21c",
+      "byte_equal_to_prior_manually_read": true,
+      "fresh_manual_read_claimed": false
+    },
+    {
+      "new_path": "artifacts/translation-program/native-preview/release-three-integrated/sw/390/font-13-scale-1-page-001.png",
+      "prior_review_image": "initial-captures/390/font-13-scale-1-page-001.png",
+      "sha256": "e4697bb5b716030f85eb3cdb2a2806bb02dd3d821376bd41b83f769ddda1b3d6",
+      "byte_equal_to_prior_manually_read": true,
+      "fresh_manual_read_claimed": false
+    },
+    {
+      "new_path": "artifacts/translation-program/native-preview/release-three-integrated/sw/390/font-13-scale-2-page-001.png",
+      "prior_review_image": "initial-captures/390/font-13-scale-2-page-001.png",
+      "sha256": "ae30737d0ac16cd605b46997c20007608647efc101a7ccd1c3ccdfef76c59840",
+      "byte_equal_to_prior_manually_read": true,
+      "fresh_manual_read_claimed": false
+    },
+    {
+      "new_path": "artifacts/translation-program/native-preview/release-three-integrated/sw/390/font-20-scale-1-page-001.png",
+      "prior_review_image": "initial-captures/390/font-20-scale-1-page-001.png",
+      "sha256": "4e11347214bd44f9be5e619b40c25d2d98ef610f220bfec48b34edd7c2b52393",
+      "byte_equal_to_prior_manually_read": true,
+      "fresh_manual_read_claimed": false
+    },
+    {
+      "new_path": "artifacts/translation-program/native-preview/release-three-integrated/sw/390/font-20-scale-2-page-001.png",
+      "prior_review_image": "initial-captures/390/font-20-scale-2-page-001.png",
+      "sha256": "2650e0d0d9ada13841f808a939f1bee5b00225f94de668a8c39be8e68040e293",
+      "byte_equal_to_prior_manually_read": true,
+      "fresh_manual_read_claimed": false
+    }
+  ]
+}

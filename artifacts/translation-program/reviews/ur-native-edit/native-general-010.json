@@ -1,0 +1,1293 @@
+{
+  "editor": "/root/swahili_translation",
+  "author": "/root/urdu_translation",
+  "independent_reviewer": "/root/pilot_context",
+  "batch_id": "native-general-010",
+  "source_contract_sha256": "aacd8a342e9e734ba47f902a161ac1a45badff5842a617bcd68bf8e2275d6013",
+  "original_target_subset_sha256": "14ec604c85dedefc5d870125b611abc21533257955fe792337282cb0f8c46f19",
+  "final_target_subset_sha256": "977420ac1870ada22e06f4d74c8dfda90b4aa08e60c10d8f0bb23b8a5c8fb3ae",
+  "final_catalog_sha256": "ec78fb33247244bf783461e0410ef11fe48e45644c3c6500419d9060e967d458",
+  "entries": [
+    {
+      "key": "[room lan badge]",
+      "source": "Local network · not rated",
+      "before": "مقامی نیٹ ورک · بغیر ریٹنگ",
+      "after": "مقامی نیٹ ورک · بغیر ریٹنگ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[room lan list hint %0]",
+      "source": "Others on the same network see %0 in the LAN game list on the main menu.",
+      "before": "اسی نیٹ ورک کے دوسرے لوگ مرکزی مینیو کی LAN کھیل فہرست میں %0 دیکھتے ہیں۔",
+      "after": "اسی نیٹ ورک کے دوسرے لوگ مرکزی مینیو کی LAN کھیل فہرست میں %0 دیکھتے ہیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[room leave]",
+      "source": "Leave",
+      "before": "نکلیں",
+      "after": "نکلیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[room match label]",
+      "source": "Room",
+      "before": "کمرہ",
+      "after": "کمرہ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[room member joined %0]",
+      "source": "%0 joined.",
+      "before": "%0 شامل ہو گیا۔",
+      "after": "%0 شامل ہو گیا۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[room member left %0]",
+      "source": "%0 left.",
+      "before": "%0 نکل گیا۔",
+      "after": "%0 نکل گیا۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[room member ready %0]",
+      "source": "%0 is ready.",
+      "before": "%0 تیار ہے۔",
+      "after": "%0 تیار ہے۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[room needs two seats]",
+      "source": "Invite a friend or add an AI to start",
+      "before": "شروع کرنے کے لیے دوست کو بلائیں یا AI شامل کریں",
+      "after": "شروع کرنے کے لیے دوست کو بلائیں یا AI شامل کریں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[room no map]",
+      "source": "No map yet",
+      "before": "ابھی کوئی نقشہ نہیں",
+      "after": "ابھی کوئی نقشہ نہیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[room not ready]",
+      "source": "Not ready",
+      "before": "تیار نہیں",
+      "after": "تیار نہیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[room open for a person]",
+      "source": "Open for a person",
+      "before": "کسی شخص کے لیے کھلا",
+      "after": "کسی شخص کے لیے کھلا",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[room open seat detail]",
+      "source": "Anyone with the invite can take it",
+      "before": "دعوت رکھنے والا کوئی بھی شخص یہ نشست لے سکتا ہے",
+      "after": "دعوت رکھنے والا کوئی بھی شخص یہ نشست لے سکتا ہے",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[room open seat]",
+      "source": "Open seat",
+      "before": "کھلی نشست",
+      "after": "کھلی نشست",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[room person]",
+      "source": "Person",
+      "before": "شخص",
+      "after": "شخص",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[room preparing map]",
+      "source": "Preparing map on the server…",
+      "before": "سرور پر نقشہ تیار ہو رہا ہے…",
+      "after": "سرور پر نقشہ تیار ہو رہا ہے…",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[room public]",
+      "source": "Public",
+      "before": "عوامی",
+      "after": "عوامی",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[room ready?]",
+      "source": "Ready",
+      "before": "تیار",
+      "after": "تیار",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[room ready]",
+      "source": "✓ Ready",
+      "before": "✓ تیار",
+      "after": "✓ تیار",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[room remove from room]",
+      "source": "Remove from room",
+      "before": "کمرے سے ہٹائیں",
+      "after": "کمرے سے ہٹائیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[room rule off]",
+      "source": "Off",
+      "before": "بند",
+      "after": "بند",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[room rule on]",
+      "source": "On",
+      "before": "فعال",
+      "after": "فعال",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[room rules changed]",
+      "source": "The rules changed.",
+      "before": "قواعد بدل گئے۔",
+      "after": "قواعد بدل گئے۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[room rules]",
+      "source": "Rules",
+      "before": "قواعد",
+      "after": "قواعد",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[room say something]",
+      "source": "Say something…",
+      "before": "کچھ کہیں…",
+      "after": "کچھ کہیں…",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[room seat hint]",
+      "source": "Players can move to an open seat themselves. Change Team to rebalance.",
+      "before": "کھلاڑی خود کھلی نشست پر جا سکتے ہیں۔ توازن درست کرنے کے لیے ٹیم بدلیں۔",
+      "after": "کھلاڑی خود کھلی نشست پر جا سکتے ہیں۔ توازن درست کرنے کے لیے ٹیم بدلیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[room seat options]",
+      "source": "Seat options",
+      "before": "نشست کے اختیارات",
+      "after": "نشست کے اختیارات",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[room seats summary %0 %1 %2]",
+      "source": "%0 players · %1 AI · %2 open",
+      "before": "%0 کھلاڑی · %1 AI · %2 کھلی",
+      "after": "%0 کھلاڑی · %1 AI · %2 کھلی",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[room seats]",
+      "source": "Seats",
+      "before": "نشستیں",
+      "after": "نشستیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[room seed]",
+      "source": "Seed",
+      "before": "سیڈ",
+      "after": "سیڈ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[room send]",
+      "source": "Send",
+      "before": "بھیجیں",
+      "after": "بھیجیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[room set by host]",
+      "source": "Set by the host",
+      "before": "میزبان نے مقرر کیا",
+      "after": "میزبان نے مقرر کیا",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[room share text %0]",
+      "source": "Join my Globulation 2 room: %0",
+      "before": "میرے Globulation 2 کمرے میں شامل ہوں: %0",
+      "after": "میرے Globulation 2 کمرے میں شامل ہوں: %0",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[room share]",
+      "source": "Share…",
+      "before": "بانٹیں…",
+      "after": "بانٹیں…",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[room size]",
+      "source": "Size",
+      "before": "سائز",
+      "after": "سائز",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[room starting match]",
+      "source": "Starting the match…",
+      "before": "میچ شروع ہو رہا ہے…",
+      "after": "میچ شروع ہو رہا ہے…",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[room take seat]",
+      "source": "Take seat",
+      "before": "نشست لیں",
+      "after": "نشست لیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[room team %0]",
+      "source": "Team %0",
+      "before": "ٹیم %0",
+      "after": "ٹیم %0",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[room update required]",
+      "source": "This room plays another version of the game. Update to join it.",
+      "before": "یہ کمرہ کھیل کا دوسرا ورژن چلاتا ہے۔ شامل ہونے کے لیے اپ ڈیٹ کریں۔",
+      "after": "یہ کمرہ کھیل کا دوسرا ورژن چلاتا ہے۔ شامل ہونے کے لیے اپ ڈیٹ کریں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[room uploaded map]",
+      "source": "Uploaded map",
+      "before": "اپ لوڈ کردہ نقشہ",
+      "after": "اپ لوڈ کردہ نقشہ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[room waiting for %0]",
+      "source": "Waiting for %0 to be ready",
+      "before": "%0 کے تیار ہونے کا انتظار ہے",
+      "after": "%0 کے تیار ہونے کا انتظار ہے",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[room waiting for you]",
+      "source": "Press Ready when you're set",
+      "before": "جب تیار ہوں تو تیار دبائیں",
+      "after": "جب تیار ہوں تو تیار دبائیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[room match over]",
+      "source": "Match over. Ready up for another round!",
+      "before": "میچ ختم۔ اگلے دور کے لیے تیار ہوں!",
+      "after": "میچ ختم۔ اگلے دور کے لیے تیار ہوں!",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[room waiting for host]",
+      "source": "Waiting for the host to start",
+      "before": "میزبان کے شروع کرنے کا انتظار ہے",
+      "after": "میزبان کے شروع کرنے کا انتظار ہے",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[room waiting for players %0]",
+      "source": "Waiting for %0 players to be ready",
+      "before": "%0 کھلاڑیوں کے تیار ہونے کا انتظار ہے",
+      "after": "%0 کھلاڑیوں کے تیار ہونے کا انتظار ہے",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[room who can find it]",
+      "source": "Who can find it",
+      "before": "اسے کون تلاش کر سکتا ہے",
+      "after": "اسے کون تلاش کر سکتا ہے",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[room you created]",
+      "source": "You created the room.",
+      "before": "آپ نے کمرہ بنایا۔",
+      "after": "آپ نے کمرہ بنایا۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[room you joined %0]",
+      "source": "You joined %0.",
+      "before": "آپ %0 میں شامل ہو گئے۔",
+      "after": "آپ %0 میں شامل ہو گئے۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[room you were removed]",
+      "source": "The host removed you from the room.",
+      "before": "میزبان نے آپ کو کمرے سے ہٹا دیا۔",
+      "after": "میزبان نے آپ کو کمرے سے ہٹا دیا۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[room you]",
+      "source": "you",
+      "before": "آپ",
+      "after": "آپ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[trust invited to room %0]",
+      "source": "Invited to room %0",
+      "before": "کمرہ %0 کی دعوت",
+      "after": "کمرہ %0 کی دعوت",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[trust join as guest]",
+      "source": "Join as guest",
+      "before": "مہمان کے طور پر شامل ہوں",
+      "after": "مہمان کے طور پر شامل ہوں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[trust not official]",
+      "source": "This server isn't run by the Globulation 2 project.",
+      "before": "یہ سرور Globulation 2 منصوبہ نہیں چلاتا۔",
+      "after": "یہ سرور Globulation 2 منصوبے کے زیرِ انتظام نہیں ہے۔",
+      "editorially_read": true,
+      "disposition": "edited-pending-recheck"
+    },
+    {
+      "key": "[trust remember]",
+      "source": "Remember this server",
+      "before": "یہ سرور یاد رکھیں",
+      "after": "یہ سرور یاد رکھیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[trust separate identity %0]",
+      "source": "You'll join as a guest there. Your %0 account, rating and history stay where they are.",
+      "before": "وہاں آپ مہمان کے طور پر شامل ہوں گے۔ آپ کا %0 اکاؤنٹ، ریٹنگ اور سابقہ ریکارڈ اپنی جگہ رہیں گے۔",
+      "after": "وہاں آپ مہمان کے طور پر شامل ہوں گے۔ آپ کا %0 اکاؤنٹ، ریٹنگ اور سابقہ ریکارڈ اپنی جگہ رہیں گے۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[trust title]",
+      "source": "Join a game on another server?",
+      "before": "دوسرے سرور پر کھیل میں شامل ہوں؟",
+      "after": "دوسرے سرور پر کھیل میں شامل ہوں؟",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[trust what it sees]",
+      "source": "The server sees your display name, your connection's address and the games you play on it.",
+      "before": "سرور آپ کا نمایاں نام، آپ کے رابطے کا پتہ اور اس پر آپ کے کھیلے ہوئے کھیل دیکھتا ہے۔",
+      "after": "سرور آپ کا نمایاں نام، آپ کے رابطے کا پتہ اور اس پر آپ کے کھیلے ہوئے کھیل دیکھتا ہے۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[hub code]",
+      "source": "Code",
+      "before": "کوڈ",
+      "after": "کوڈ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[results draw]",
+      "source": "Draw",
+      "before": "برابری",
+      "after": "برابری",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[qm 2 vs 2]",
+      "source": "2 vs 2",
+      "before": "2 بمقابلہ 2",
+      "after": "2 بمقابلہ 2",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[qm 1 vs 1]",
+      "source": "1 vs 1",
+      "before": "1 بمقابلہ 1",
+      "after": "1 بمقابلہ 1",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[qm ping about]",
+      "source": "Ping about",
+      "before": "پنگ تقریباً",
+      "after": "پنگ تقریباً",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[qm ranked]",
+      "source": "Ranked",
+      "before": "درجہ بند",
+      "after": "درجہ بند",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[qm casual %0]",
+      "source": "Casual %0",
+      "before": "عام %0",
+      "after": "عام %0",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[qm rated]",
+      "source": "Ranked",
+      "before": "درجہ بند",
+      "after": "درجہ بند",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[qm unrated]",
+      "source": "Unrated",
+      "before": "بغیر ریٹنگ",
+      "after": "بغیر ریٹنگ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[qm solo queue]",
+      "source": "solo queue",
+      "before": "اکیلی قطار",
+      "after": "اکیلے کھلاڑیوں کی قطار",
+      "editorially_read": true,
+      "disposition": "edited-pending-recheck"
+    },
+    {
+      "key": "[qm ai joins after %0]",
+      "source": "AI joins after %0",
+      "before": "%0 کے بعد AI شامل ہو گا",
+      "after": "%0 کے بعد AI شامل ہو گا",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[qm fair maps %0]",
+      "source": "Maps: %0",
+      "before": "نقشے: %0",
+      "after": "نقشے: %0",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[qm cooldown %0]",
+      "source": "You declined a match. You can search again in %0.",
+      "before": "آپ نے میچ مسترد کیا۔ %0 میں دوبارہ تلاش کر سکتے ہیں۔",
+      "after": "آپ نے میچ مسترد کیا۔ %0 میں دوبارہ تلاش کر سکتے ہیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[qm sign in to play ranked]",
+      "source": "Ranked queues are for signed-in accounts; sign in first.",
+      "before": "درجہ بند قطاریں سائن ان کیے ہوئے اکاؤنٹس کے لیے ہیں؛ پہلے سائن ان کریں۔",
+      "after": "درجہ بند قطاریں سائن ان کیے ہوئے اکاؤنٹس کے لیے ہیں؛ پہلے سائن ان کریں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[online update required]",
+      "source": "This version of the game is too old for the server; update to play online.",
+      "before": "کھیل کا یہ ورژن سرور کے لیے بہت پرانا ہے؛ آن لائن کھیلنے کے لیے اپ ڈیٹ کریں۔",
+      "after": "کھیل کا یہ ورژن سرور کے لیے بہت پرانا ہے؛ آن لائن کھیلنے کے لیے اپ ڈیٹ کریں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[online server behind]",
+      "source": "The server hasn't been updated to this version yet; online play opens once it is.",
+      "before": "سرور ابھی اس ورژن پر اپ ڈیٹ نہیں ہوا؛ اپ ڈیٹ ہونے پر آن لائن کھیل کھلے گا۔",
+      "after": "سرور ابھی اس ورژن پر اپ ڈیٹ نہیں ہوا؛ اپ ڈیٹ ہونے پر آن لائن کھیل کھلے گا۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[online version mismatch]",
+      "source": "The server plays a different version of the game; online play isn't available with this copy.",
+      "before": "سرور کھیل کا مختلف ورژن چلاتا ہے؛ اس نقل سے آن لائن کھیل دستیاب نہیں۔",
+      "after": "سرور کھیل کا مختلف ورژن چلاتا ہے؛ اس نقل سے آن لائن کھیل دستیاب نہیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[qm already searching]",
+      "source": "You are already searching or in a match.",
+      "before": "آپ پہلے ہی تلاش کر رہے ہیں یا میچ میں ہیں۔",
+      "after": "آپ پہلے ہی تلاش کر رہے ہیں یا میچ میں ہیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[online connection problem]",
+      "source": "The server could not be reached.",
+      "before": "سرور تک رسائی نہیں ہو سکی۔",
+      "after": "سرور تک رسائی نہیں ہو سکی۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[qm find match]",
+      "source": "Find match",
+      "before": "میچ تلاش کریں",
+      "after": "میچ تلاش کریں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[qm opponents rated %0 to %1]",
+      "source": "Opponents rated %0 to %1",
+      "before": "%0 سے %1 ریٹنگ والے حریف",
+      "after": "%0 سے %1 ریٹنگ والے حریف",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[qm region %0]",
+      "source": "Region %0",
+      "before": "خطہ %0",
+      "after": "خطہ %0",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[qm searching]",
+      "source": "Searching",
+      "before": "تلاش ہو رہی ہے",
+      "after": "تلاش ہو رہی ہے",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[qm measuring relays]",
+      "source": "Measuring relays",
+      "before": "ریلوں کی پیمائش ہو رہی ہے",
+      "after": "ریلوں کی پیمائش ہو رہی ہے",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[qm joining queue]",
+      "source": "Joining the queue",
+      "before": "قطار میں شامل ہو رہے ہیں",
+      "after": "قطار میں شامل ہو رہے ہیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[qm waiting for a person]",
+      "source": "Waiting for a person: AI opponents are off.",
+      "before": "کسی شخص کا انتظار ہے: AI حریف بند ہیں۔",
+      "after": "کسی شخص کا انتظار ہے: AI حریف بند ہیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[qm ai in %0 rated]",
+      "source": "If no one is found, you'll play the closest-rated AI in %0",
+      "before": "کوئی نہ ملا تو %0 میں آپ کی ریٹنگ کے قریب ترین AI کے ساتھ کھیلیں گے",
+      "after": "کوئی نہ ملا تو %0 میں آپ کی ریٹنگ کے قریب ترین AI کے ساتھ کھیلیں گے",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[qm ai in %0]",
+      "source": "If no one is found, an AI joins in %0",
+      "before": "کوئی نہ ملا تو %0 میں AI شامل ہو گا",
+      "after": "کوئی نہ ملا تو %0 میں AI شامل ہو گا",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[qm ai after %0]",
+      "source": "If no one is found, an AI takes the seat after %0",
+      "before": "کوئی نہ ملا تو %0 کے بعد AI نشست لے گا",
+      "after": "کوئی نہ ملا تو %0 کے بعد AI نشست لے گا",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[qm allow ai short]",
+      "source": "Allow AI",
+      "before": "AI کی اجازت دیں",
+      "after": "AI کی اجازت دیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[qm allow ai]",
+      "source": "Allow an AI opponent",
+      "before": "AI حریف کی اجازت دیں",
+      "after": "AI حریف کی اجازت دیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[qm cancel]",
+      "source": "Cancel",
+      "before": "منسوخ",
+      "after": "منسوخ کریں",
+      "editorially_read": true,
+      "disposition": "edited-pending-recheck"
+    },
+    {
+      "key": "[qm cancel search]",
+      "source": "Cancel search",
+      "before": "تلاش منسوخ کریں",
+      "after": "تلاش منسوخ کریں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[qm usual wait %0]",
+      "source": "usual wait %0",
+      "before": "عام انتظار %0",
+      "after": "عام انتظار %0",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[qm widening]",
+      "source": "widening as you wait",
+      "before": "انتظار کے ساتھ دائرہ بڑھ رہا ہے",
+      "after": "انتظار کے ساتھ دائرہ بڑھ رہا ہے",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[qm ais are rated]",
+      "source": "(rated: AIs have ratings too)",
+      "before": "(ریٹنگ شامل ہے: AI کی بھی ریٹنگ ہوتی ہے)",
+      "after": "(ریٹنگ شامل ہے: AI کی بھی ریٹنگ ہوتی ہے)",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[qm opponent declined]",
+      "source": "Your opponent didn't accept. You're back at the front of the queue.",
+      "before": "آپ کے حریف نے قبول نہیں کیا۔ آپ قطار کے شروع میں واپس آ گئے ہیں۔",
+      "after": "آپ کے حریف نے قبول نہیں کیا۔ آپ قطار کے شروع میں واپس آ گئے ہیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[qm %0 did not accept]",
+      "source": "%0 didn't accept. You're back at the front of the queue.",
+      "before": "%0 نے قبول نہیں کیا۔ آپ قطار کے شروع میں واپس آ گئے ہیں۔",
+      "after": "%0 نے قبول نہیں کیا۔ آپ قطار کے شروع میں واپس آ گئے ہیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[qm start failed]",
+      "source": "The match could not start. You're searching again.",
+      "before": "میچ شروع نہیں ہو سکا۔ آپ کی تلاش دوبارہ جاری ہے۔",
+      "after": "میچ شروع نہیں ہو سکا۔ آپ کی تلاش دوبارہ جاری ہے۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[qm you declined]",
+      "source": "You declined the match. You can search again after a short wait.",
+      "before": "آپ نے میچ مسترد کیا۔ مختصر انتظار کے بعد دوبارہ تلاش کر سکتے ہیں۔",
+      "after": "آپ نے میچ مسترد کیا۔ مختصر انتظار کے بعد دوبارہ تلاش کر سکتے ہیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[qm you did not answer]",
+      "source": "You didn't accept in time. You can search again after a short wait.",
+      "before": "آپ نے وقت پر قبول نہیں کیا۔ مختصر انتظار کے بعد دوبارہ تلاش کر سکتے ہیں۔",
+      "after": "آپ نے وقت پر قبول نہیں کیا۔ مختصر انتظار کے بعد دوبارہ تلاش کر سکتے ہیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[qm search ended]",
+      "source": "The search ended.",
+      "before": "تلاش ختم ہو گئی۔",
+      "after": "تلاش ختم ہو گئی۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[qm try again]",
+      "source": "Try again",
+      "before": "دوبارہ کوشش کریں",
+      "after": "دوبارہ کوشش کریں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[online connecting]",
+      "source": "Connecting…",
+      "before": "رابطہ ہو رہا ہے…",
+      "after": "رابطہ ہو رہا ہے…",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[qm no queues]",
+      "source": "This server has no quick-match queues.",
+      "before": "اس سرور پر فوری میچ کی قطاریں نہیں ہیں۔",
+      "after": "اس سرور پر فوری میچ کی قطاریں نہیں ہیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[qm quick match]",
+      "source": "Quick match",
+      "before": "فوری میچ",
+      "after": "فوری میچ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[qm phone searching note]",
+      "source": "The search keeps running if you leave this screen.",
+      "before": "اس اسکرین سے نکلنے پر بھی تلاش جاری رہتی ہے۔",
+      "after": "اس اسکرین سے نکلنے پر بھی تلاش جاری رہتی ہے۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[qm phone intro]",
+      "source": "Pick a queue below; the search runs while you browse.",
+      "before": "نیچے قطار منتخب کریں؛ براؤز کرتے وقت تلاش جاری رہتی ہے۔",
+      "after": "نیچے قطار منتخب کریں؛ براؤز کرتے وقت تلاش جاری رہتی ہے۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[qm online]",
+      "source": "Online",
+      "before": "آن لائن",
+      "after": "آن لائن",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[qm keeps running note]",
+      "source": "The search keeps running if you leave this screen.",
+      "before": "اس اسکرین سے نکلنے پر بھی تلاش جاری رہتی ہے۔",
+      "after": "اس اسکرین سے نکلنے پر بھی تلاش جاری رہتی ہے۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[qm ai]",
+      "source": "AI",
+      "before": "AI",
+      "after": "AI",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[qm provisional]",
+      "source": "provisional",
+      "before": "عارضی",
+      "after": "عارضی",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[qm accepted]",
+      "source": "✓ accepted",
+      "before": "✓ قبول کیا",
+      "after": "✓ قبول کیا",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[qm declined]",
+      "source": "declined",
+      "before": "مسترد کیا",
+      "after": "مسترد کیا",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[qm waiting]",
+      "source": "waiting…",
+      "before": "انتظار ہے…",
+      "after": "انتظار ہے…",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[qm ai badge]",
+      "source": "AI",
+      "before": "AI",
+      "after": "AI",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[qm match found]",
+      "source": "Match found",
+      "before": "میچ مل گیا",
+      "after": "میچ مل گیا",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[qm playing an ai]",
+      "source": "Playing an AI",
+      "before": "AI کے خلاف کھیل",
+      "after": "AI کے خلاف کھیل",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[qm vs]",
+      "source": "vs",
+      "before": "بمقابلہ",
+      "after": "بمقابلہ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[qm ai explanation rated]",
+      "source": "No one in your rating range was searching. You'll play the AI closest to your rating; the result counts for your rating and the AI's.",
+      "before": "آپ کی ریٹنگ کے دائرے میں کوئی تلاش نہیں کر رہا تھا۔ آپ اپنی ریٹنگ کے قریب ترین AI سے کھیلیں گے؛ نتیجہ آپ اور AI دونوں کی ریٹنگ میں شمار ہو گا۔",
+      "after": "آپ کی ریٹنگ کے دائرے میں کوئی تلاش نہیں کر رہا تھا۔ آپ اپنی ریٹنگ کے قریب ترین AI سے کھیلیں گے؛ نتیجہ آپ اور AI دونوں کی ریٹنگ میں شمار ہو گا۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[qm ai explanation]",
+      "source": "No one was searching. You'll play the AI closest to your rating; this game is unrated.",
+      "before": "کوئی تلاش نہیں کر رہا تھا۔ آپ اپنی ریٹنگ کے قریب ترین AI سے کھیلیں گے؛ اس کھیل کی ریٹنگ نہیں ہو گی۔",
+      "after": "کوئی تلاش نہیں کر رہا تھا۔ آپ اپنی ریٹنگ کے قریب ترین AI سے کھیلیں گے؛ اس کھیل کی ریٹنگ نہیں ہو گی۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[qm casual explanation]",
+      "source": "The match starts straight away; casual games are unrated.",
+      "before": "میچ فوراً شروع ہوتا ہے؛ عام کھیلوں کی ریٹنگ نہیں ہوتی۔",
+      "after": "میچ فوراً شروع ہوتا ہے؛ عام کھیلوں کی ریٹنگ نہیں ہوتی۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[qm accepted button]",
+      "source": "Accepted",
+      "before": "قبول کر لیا",
+      "after": "قبول کر لیا",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[qm accept]",
+      "source": "Accept",
+      "before": "قبول کریں",
+      "after": "قبول کریں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[qm decline]",
+      "source": "Decline",
+      "before": "مسترد کریں",
+      "after": "مسترد کریں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[qm both must accept]",
+      "source": "Both must accept",
+      "before": "دونوں کو قبول کرنا ہو گا",
+      "after": "دونوں کو قبول کرنا ہو گا",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[qm accept explanation]",
+      "source": "Both players must accept. Declining or letting the timer run out puts you at the back of the queue.",
+      "before": "دونوں کھلاڑیوں کو قبول کرنا ہو گا۔ مسترد کرنے یا وقت ختم ہونے دینے سے آپ قطار کے آخر میں چلے جاتے ہیں۔",
+      "after": "دونوں کھلاڑیوں کو قبول کرنا ہو گا۔ مسترد کرنے یا وقت ختم ہونے دینے سے آپ قطار کے آخر میں چلے جاتے ہیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[qm starting in %0]",
+      "source": "Starting in %0…",
+      "before": "%0 میں شروع ہو رہا ہے…",
+      "after": "%0 میں شروع ہو رہا ہے…",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[qm preparing match]",
+      "source": "Preparing the match…",
+      "before": "میچ تیار ہو رہا ہے…",
+      "after": "میچ تیار ہو رہا ہے…",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[qm match assigned %0 %1]",
+      "source": "Match %0 is ready on %1, but this build cannot connect to online matches yet.",
+      "before": "میچ %0، %1 پر تیار ہے، مگر یہ بلڈ ابھی آن لائن میچوں سے رابطہ نہیں کر سکتی۔",
+      "after": "میچ %0، %1 پر تیار ہے، مگر یہ بلڈ ابھی آن لائن میچوں سے رابطہ نہیں کر سکتی۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[online jan]",
+      "source": "Jan",
+      "before": "جنوری",
+      "after": "جنوری",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[online feb]",
+      "source": "Feb",
+      "before": "فروری",
+      "after": "فروری",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[online mar]",
+      "source": "Mar",
+      "before": "مارچ",
+      "after": "مارچ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[online apr]",
+      "source": "Apr",
+      "before": "اپریل",
+      "after": "اپریل",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[online may]",
+      "source": "May",
+      "before": "مئی",
+      "after": "مئی",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[online jun]",
+      "source": "Jun",
+      "before": "جون",
+      "after": "جون",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[online jul]",
+      "source": "Jul",
+      "before": "جولائی",
+      "after": "جولائی",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[online aug]",
+      "source": "Aug",
+      "before": "اگست",
+      "after": "اگست",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[online sep]",
+      "source": "Sep",
+      "before": "ستمبر",
+      "after": "ستمبر",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[online oct]",
+      "source": "Oct",
+      "before": "اکتوبر",
+      "after": "اکتوبر",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[online nov]",
+      "source": "Nov",
+      "before": "نومبر",
+      "after": "نومبر",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[online dec]",
+      "source": "Dec",
+      "before": "دسمبر",
+      "after": "دسمبر",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[profile win letter]",
+      "source": "W",
+      "before": "ج",
+      "after": "ج",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[profile loss letter]",
+      "source": "L",
+      "before": "ہ",
+      "after": "ہ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[profile draw letter]",
+      "source": "–",
+      "before": "–",
+      "after": "–",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[profile history unavailable]",
+      "source": "This server does not offer match history yet.",
+      "before": "یہ سرور ابھی میچوں کا سابقہ ریکارڈ فراہم نہیں کرتا۔",
+      "after": "یہ سرور ابھی میچوں کا سابقہ ریکارڈ فراہم نہیں کرتا۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[profile downloading replay]",
+      "source": "Downloading the replay…",
+      "before": "ری پلے ڈاؤن لوڈ ہو رہا ہے…",
+      "after": "ری پلے ڈاؤن لوڈ ہو رہا ہے…",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[profile no replay]",
+      "source": "No replay is available for this match.",
+      "before": "اس میچ کا ری پلے دستیاب نہیں۔",
+      "after": "اس میچ کا ری پلے دستیاب نہیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[profile room with %0]",
+      "source": "Room · %0 colonies",
+      "before": "کمرہ · %0 بستیاں",
+      "after": "کمرہ · %0 بستیاں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[profile with %0 vs %1]",
+      "source": "with %0 vs %1",
+      "before": "%0 کے ساتھ بمقابلہ %1",
+      "after": "%0 کے ساتھ بمقابلہ %1",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[profile vs %0]",
+      "source": "vs %0",
+      "before": "بمقابلہ %0",
+      "after": "بمقابلہ %0",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[profile room]",
+      "source": "Room",
+      "before": "کمرہ",
+      "after": "کمرہ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[profile casual]",
+      "source": "Casual",
+      "before": "عام",
+      "after": "عام",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[profile ai filled]",
+      "source": "AI filled",
+      "before": "AI نے جگہ پُر کی",
+      "after": "AI نے جگہ پُر کی",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[profile provisional %0 games]",
+      "source": "provisional · %0 games",
+      "before": "عارضی · %0 کھیل",
+      "after": "عارضی · %0 کھیل",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[profile unrated]",
+      "source": "unrated",
+      "before": "بغیر ریٹنگ",
+      "after": "بغیر ریٹنگ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[profile checking]",
+      "source": "checking…",
+      "before": "جانچ ہو رہی ہے…",
+      "after": "جانچ ہو رہی ہے…",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[profile %0 min]",
+      "source": "%0 min",
+      "before": "%0 منٹ",
+      "after": "%0 منٹ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[profile match page]",
+      "source": "Match page",
+      "before": "میچ کا صفحہ",
+      "after": "میچ کا صفحہ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[profile replay]",
+      "source": "Replay",
+      "before": "ری پلے",
+      "after": "ری پلے",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[profile win rate last %0]",
+      "source": "Win rate, last %0",
+      "before": "جیت کی شرح، آخری %0",
+      "after": "جیت کی شرح، آخری %0",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[profile %0 w %1 l %2 d]",
+      "source": "%0 W · %1 L · %2 draw",
+      "before": "%0 جیت · %1 ہار · %2 برابر",
+      "after": "%0 جیت · %1 ہار · %2 برابر",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[profile typical game]",
+      "source": "Typical game",
+      "before": "عام کھیل",
+      "after": "عام کھیل",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[profile median length]",
+      "source": "your median length",
+      "before": "آپ کے دورانیے کی میانہ قدر",
+      "after": "آپ کے دورانیے کی میانہ قدر",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    }
+  ],
+  "status": "edited-awaiting-independent-recheck"
+}

@@ -1,0 +1,1293 @@
+{
+  "editor": "/root/swahili_translation",
+  "author": "/root/urdu_translation",
+  "independent_reviewer": "/root/pilot_context",
+  "batch_id": "native-general-001",
+  "source_contract_sha256": "aacd8a342e9e734ba47f902a161ac1a45badff5842a617bcd68bf8e2275d6013",
+  "original_target_subset_sha256": "61f906d9669bcca290701ffd7d14c04c1d63bdd46858815f99ad6873f8062cb1",
+  "final_target_subset_sha256": "93e9de0de9318c1ca7ac5e130f7fab60c6e9d923f29081a9112c405b2baf7b57",
+  "final_catalog_sha256": "ec78fb33247244bf783461e0410ef11fe48e45644c3c6500419d9060e967d458",
+  "entries": [
+    {
+      "key": "[hub finish in browser, game continues]",
+      "source": "Finish signing in in your browser. The game continues by itself once you are done.",
+      "before": "اپنے براؤزر میں سائن اِن مکمل کریں۔ آپ کے مکمل کرنے کے بعد کھیل خود بخود جاری ہو جائے گا۔",
+      "after": "اپنے براؤزر میں سائن اِن مکمل کریں۔ آپ کے مکمل کرنے کے بعد کھیل خود بخود جاری ہو جائے گا۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[hub browser did not open]",
+      "source": "Your browser did not open. Open the sign-in page to continue.",
+      "before": "آپ کا براؤزر نہیں کھلا۔ جاری رکھنے کے لیے سائن اِن کا صفحہ کھولیں۔",
+      "after": "آپ کا براؤزر نہیں کھلا۔ جاری رکھنے کے لیے سائن اِن کا صفحہ کھولیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[hub compare code %0]",
+      "source": "If the page asks, check that it shows %0.",
+      "before": "اگر صفحے پر تصدیق کے لیے کہا جائے تو دیکھیں کہ وہاں %0 دکھایا گیا ہے۔",
+      "after": "اگر صفحے پر تصدیق کے لیے کہا جائے تو دیکھیں کہ وہاں %0 دکھایا گیا ہے۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[hub code copied]",
+      "source": "Code copied",
+      "before": "کوڈ کاپی ہو گیا",
+      "after": "کوڈ کاپی ہو گیا",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[%0 has left the game]",
+      "source": "%0 has quit the game.",
+      "before": "%0 کھیل سے نکل گئے ہیں۔",
+      "after": "%0 کھیل سے نکل گئے ہیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[start recording]",
+      "source": "Start recording",
+      "before": "ریکارڈنگ شروع کریں",
+      "after": "ریکارڈنگ شروع کریں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[stop recording]",
+      "source": "Stop recording",
+      "before": "ریکارڈنگ روکیں",
+      "after": "ریکارڈنگ روکیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[finalizing recording]",
+      "source": "Finalizing recording…",
+      "before": "ریکارڈنگ مکمل کی جا رہی ہے…",
+      "after": "ریکارڈنگ مکمل کی جا رہی ہے…",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[%0 level %1]",
+      "source": "%0 Level %1",
+      "before": "%0 سطح %1",
+      "after": "%0 سطح %1",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[%0 units can't access resource]",
+      "source": "%0 units can't access needed materials",
+      "before": "%0 یونٹ ضروری مواد تک نہیں پہنچ سکتے",
+      "after": "%0 یونٹ ضروری مواد تک نہیں پہنچ سکتے",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[%0 units not available]",
+      "source": "%0 units not available",
+      "before": "%0 یونٹ دستیاب نہیں ہیں",
+      "after": "%0 یونٹ دستیاب نہیں ہیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[%0 units too far from resource]",
+      "source": "%0 units too far from needed materials",
+      "before": "%0 یونٹ ضروری مواد سے بہت دور ہیں",
+      "after": "%0 یونٹ ضروری مواد سے بہت دور ہیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[%0 units too low level]",
+      "source": "%0 units too low level",
+      "before": "%0 یونٹوں کی سطح بہت کم ہے",
+      "after": "%0 یونٹوں کی سطح بہت کم ہے",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[%0% Uploaded]",
+      "source": "%0% uploaded",
+      "before": "%0% اپ لوڈ ہو گیا",
+      "after": "%0% اپ لوڈ ہو گیا",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[%0's team unit got converted to your team]",
+      "source": "A unit from %0's team has joined your team",
+      "before": "%0 کی ٹیم کا ایک یونٹ آپ کی ٹیم میں شامل ہو گیا ہے",
+      "after": "%0 کی ٹیم کا ایک یونٹ آپ کی ٹیم میں شامل ہو گیا ہے",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[abreaviation explanation A]",
+      "source": "A: Allies",
+      "before": "A: اتحادی",
+      "after": "A: اتحادی",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[abreaviation explanation C]",
+      "source": "C: Send chat messages to",
+      "before": "C: انہیں چیٹ پیغامات بھیجیں",
+      "after": "C: انہیں چیٹ پیغامات بھیجیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[abreaviation explanation fV]",
+      "source": "fV: Show vision for Inn buildings (to steal units)",
+      "before": "fV: سرائے کی عمارتوں کی حدِ نگاہ دکھائیں (دوسری ٹیموں کے یونٹ اپنی ٹیم میں لانے کے لیے)",
+      "after": "fV: سرائے کی عمارتوں کی حدِ نگاہ دکھائیں (دوسری ٹیموں کے یونٹ اپنی ٹیم میں لانے کے لیے)",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[abreaviation explanation mV]",
+      "source": "mV: Show vision for Markets buildings (to exchange fruits)",
+      "before": "mV: بازاروں کی حدِ نگاہ دکھائیں (پھلوں کے تبادلے کے لیے)",
+      "after": "mV: بازاروں کی حدِ نگاہ دکھائیں (پھلوں کے تبادلے کے لیے)",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[abreaviation explanation V]",
+      "source": "V: Show vision for all buildings",
+      "before": "V: تمام عمارتوں کی حدِ نگاہ دکھائیں",
+      "after": "V: تمام عمارتوں کی حدِ نگاہ دکھائیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[add map]",
+      "source": "Add map",
+      "before": "نقشہ شامل کریں",
+      "after": "نقشہ شامل کریں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[AI Descriptions]",
+      "source": "AI Descriptions",
+      "before": "مصنوعی ذہانت کی تفصیلات",
+      "after": "مصنوعی ذہانت کی تفصیلات",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[AI]",
+      "source": "AI",
+      "before": "مصنوعی ذہانت",
+      "after": "مصنوعی ذہانت",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[ai]",
+      "source": "AI",
+      "before": "مصنوعی ذہانت",
+      "after": "مصنوعی ذہانت",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[AICastor-Description]",
+      "source": "Builds and trains while keeping growth tied to food supply.",
+      "before": "خوراک کی فراہمی کے مطابق آبادی بڑھاتا، تعمیر کرتا اور تربیت دیتا ہے۔",
+      "after": "خوراک کی فراہمی کے مطابق آبادی بڑھاتا، تعمیر کرتا اور تربیت دیتا ہے۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[AICastor]",
+      "source": "Castor",
+      "before": "Castor",
+      "after": "Castor",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[AICortex-Description]",
+      "source": "Gathered warrior waves with food and healing support.",
+      "before": "خوراک اور علاج کی مدد کے ساتھ جنگجوؤں کی لہریں جمع کرتا ہے۔",
+      "after": "خوراک اور علاج کی مدد کے ساتھ جنگجوؤں کی لہریں جمع کرتا ہے۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[AIMaxima-Description]",
+      "source": "Scouts, builds its food supply and gathers warrior waves.",
+      "before": "کھوج لگاتا، خوراک کی فراہمی بڑھاتا اور جنگجوؤں کی لہریں جمع کرتا ہے۔",
+      "after": "کھوج لگاتا، خوراک کی فراہمی بڑھاتا اور جنگجوؤں کی لہریں جمع کرتا ہے۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[AIMaxima]",
+      "source": "Maxima",
+      "before": "Maxima",
+      "after": "Maxima",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[AICortex]",
+      "source": "Cortex",
+      "before": "Cortex",
+      "after": "Cortex",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[AINicowar-Description]",
+      "source": "Builds up its population, trains warriors, then attacks.",
+      "before": "آبادی بڑھاتا ہے، جنگجوؤں کو تربیت دیتا ہے، پھر حملہ کرتا ہے۔",
+      "after": "آبادی بڑھاتا ہے، جنگجوؤں کو تربیت دیتا ہے، پھر حملہ کرتا ہے۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[AINicowar]",
+      "source": "Nicowar",
+      "before": "Nicowar",
+      "after": "Nicowar",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[AINone-Description]",
+      "source": "None - Doesn't do anything.",
+      "before": "کوئی نہیں — کچھ نہیں کرتا۔",
+      "after": "کوئی نہیں — کچھ نہیں کرتا۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[AINone]",
+      "source": "None",
+      "before": "کوئی نہیں",
+      "after": "کوئی نہیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[AINumbi-Description]",
+      "source": "A forgiving opponent that still expands and attacks.",
+      "before": "ایک نسبتاً آسان حریف جو پھر بھی پھیلتا اور حملہ کرتا ہے۔",
+      "after": "ایک نسبتاً آسان حریف جو پھر بھی پھیلتا اور حملہ کرتا ہے۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[AINumbi]",
+      "source": "Numbi",
+      "before": "Numbi",
+      "after": "Numbi",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[AIEcono-Description]",
+      "source": "Expands and competes for converts without producing warriors.",
+      "before": "جنگجو پیدا کیے بغیر پھیلتا ہے اور یونٹ اپنی طرف لانے کے لیے مقابلہ کرتا ہے۔",
+      "after": "جنگجو پیدا کیے بغیر پھیلتا ہے اور یونٹ اپنی طرف لانے کے لیے مقابلہ کرتا ہے۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[AIEcono]",
+      "source": "Econo",
+      "before": "Econo",
+      "after": "Econo",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[AIWarrush-Description]",
+      "source": "Fast attacks that test your early defenses.",
+      "before": "تیز حملے جو شروع میں آپ کے دفاع کو آزماتے ہیں۔",
+      "after": "تیز حملے جو شروع میں آپ کے دفاع کو آزماتے ہیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[AIWarrush]",
+      "source": "Warrush",
+      "before": "Warrush",
+      "after": "Warrush",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[AICabino-Description]",
+      "source": "A strong builder that fields trained attacking forces.",
+      "before": "ایک مضبوط تعمیر کار جو تربیت یافتہ حملہ آور دستے میدان میں اتارتا ہے۔",
+      "after": "ایک مضبوط تعمیر کار جو تربیت یافتہ حملہ آور دستے میدان میں اتارتا ہے۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[AICabino]",
+      "source": "Cabino",
+      "before": "Cabino",
+      "after": "Cabino",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[AIJavaScript]",
+      "source": "JavaScript",
+      "before": "JavaScript",
+      "after": "JavaScript",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[AIJavaScript-Description]",
+      "source": "A controller using an embedded JavaScript source module.",
+      "before": "اندرونی JavaScript ماخذ ماڈیول استعمال کرنے والا کنٹرولر۔",
+      "after": "اندرونی JavaScript ماخذ ماڈیول استعمال کرنے والا کنٹرولر۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Alga]",
+      "source": "Algae",
+      "before": "کائی",
+      "after": "کائی",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[algae]",
+      "source": "algae",
+      "before": "کائی",
+      "after": "کائی",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[alliances]",
+      "source": "Alliances",
+      "before": "اتحاد",
+      "after": "اتحاد",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[alt %0]",
+      "source": "alt-%0",
+      "before": "alt-%0",
+      "after": "alt-%0",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[and]",
+      "source": "and",
+      "before": "اور",
+      "after": "اور",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[are dying hungry]",
+      "source": "starving",
+      "before": "بھوک سے مر رہے ہیں",
+      "after": "بھوک سے مر رہے ہیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[are hungry]",
+      "source": "hungry",
+      "before": "بھوکے ہیں",
+      "after": "بھوکے ہیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[are ok]",
+      "source": "ok",
+      "before": "ٹھیک ہیں",
+      "after": "ٹھیک ہیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[are wonded]",
+      "source": "wounded",
+      "before": "زخمی ہیں",
+      "after": "زخمی ہیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[armor]",
+      "source": "Armour",
+      "before": "زرہ",
+      "after": "زرہ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[assigned]",
+      "source": "Assigned",
+      "before": "متعین",
+      "after": "متعین",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[At. speed]",
+      "source": "Att. speed",
+      "before": "حملے کی رفتار",
+      "after": "حملے کی رفتار",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[At. strength]",
+      "source": "Att. str.",
+      "before": "حملے کی طاقت",
+      "after": "حملے کی طاقت",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Attack]",
+      "source": "Attack",
+      "before": "حملہ",
+      "after": "حملہ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[audio]",
+      "source": "Audio",
+      "before": "آواز",
+      "after": "آواز",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[auto save]",
+      "source": "Auto save",
+      "before": "خودکار محفوظ کرنا",
+      "after": "خودکار محفوظ کرنا",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[available lan games]",
+      "source": "Available local games",
+      "before": "مقامی نیٹ ورک پر دستیاب کھیل",
+      "after": "مقامی نیٹ ورک پر دستیاب کھیل",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[away:]",
+      "source": "away:",
+      "before": "غیر حاضر:",
+      "after": "غیر حاضر:",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Back]",
+      "source": "Back",
+      "before": "واپس",
+      "after": "واپس",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[backspace]",
+      "source": "backspace",
+      "before": "Backspace",
+      "after": "Backspace",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[barracks explanation 2]",
+      "source": "level of your warriors",
+      "before": "جنگجوؤں کی سطح بہتر بناتی ہے",
+      "after": "جنگی سطح بہتر بناتی ہے",
+      "editorially_read": true,
+      "disposition": "edited-pending-recheck"
+    },
+    {
+      "key": "[barracks explanation]",
+      "source": "Improves the fighting",
+      "before": "آپ کے جنگجوؤں کی لڑائی کی",
+      "after": "آپ کے جنگجوؤں کی",
+      "editorially_read": true,
+      "disposition": "edited-pending-recheck"
+    },
+    {
+      "key": "[barracks]",
+      "source": "Barracks",
+      "before": "بیرک",
+      "after": "بیرک",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[beach size]",
+      "source": "beach size",
+      "before": "ساحل کا سائز",
+      "after": "ساحل کا سائز",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[break]",
+      "source": "break",
+      "before": "Break",
+      "after": "Break",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[briefing]",
+      "source": "Briefing",
+      "before": "ابتدائی ہدایات",
+      "after": "ابتدائی ہدایات",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[build %0 level %1]",
+      "source": "Construct %0 Level %1",
+      "before": "%0 کی سطح %1 تعمیر کریں",
+      "after": "%0 کی سطح %1 تعمیر کریں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Build]",
+      "source": "Build",
+      "before": "تعمیر",
+      "after": "تعمیر",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Bullets]",
+      "source": "Bullets",
+      "before": "گولیاں",
+      "after": "گولیاں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[campaign editor]",
+      "source": "Campaign Editor",
+      "before": "مہم کا ایڈیٹر",
+      "after": "مہم کا ایڈیٹر",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[campaign]",
+      "source": "Campaign",
+      "before": "مہم",
+      "after": "مہم",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Can't connect, can't find host]",
+      "source": "Can't connect, can't find host",
+      "before": "رابطہ نہیں ہو سکا، میزبان نہیں ملا",
+      "after": "رابطہ نہیں ہو سکا، میزبان نہیں ملا",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Can't host game, port %0 in use]",
+      "source": "Can't host game, port %0 in use",
+      "before": "کھیل کی میزبانی نہیں ہو سکتی، پورٹ %0 استعمال میں ہے",
+      "after": "کھیل کی میزبانی نہیں ہو سکتی، پورٹ %0 استعمال میں ہے",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Can't join game, game has started]",
+      "source": "Can't join game, game has started",
+      "before": "کھیل میں شامل نہیں ہو سکتے، کھیل شروع ہو چکا ہے",
+      "after": "کھیل میں شامل نہیں ہو سکتے، کھیل شروع ہو چکا ہے",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Can't join game, game is full]",
+      "source": "Can't join game, game is full",
+      "before": "کھیل میں شامل نہیں ہو سکتے، کھیل میں جگہ نہیں ہے",
+      "after": "کھیل میں شامل نہیں ہو سکتے، کھیل میں جگہ نہیں ہے",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[cancel destroy]",
+      "source": "Cancel destroy",
+      "before": "مسمار کرنا منسوخ کریں",
+      "after": "مسمار کرنا منسوخ کریں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[cancel repair]",
+      "source": "Cancel repair",
+      "before": "مرمت منسوخ کریں",
+      "after": "مرمت منسوخ کریں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[cancel upgrade]",
+      "source": "Cancel upgrade",
+      "before": "ترقی منسوخ کریں",
+      "after": "اپ گریڈ منسوخ کریں",
+      "editorially_read": true,
+      "disposition": "edited-pending-recheck"
+    },
+    {
+      "key": "[Cancel]",
+      "source": "Cancel",
+      "before": "منسوخ",
+      "after": "منسوخ کریں",
+      "editorially_read": true,
+      "disposition": "edited-pending-recheck"
+    },
+    {
+      "key": "[caps lock]",
+      "source": "caps lock",
+      "before": "Caps Lock",
+      "after": "Caps Lock",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[carry]",
+      "source": "Carrying:",
+      "before": "اٹھایا ہوا سامان:",
+      "after": "اٹھایا ہوا سامان:",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Change Area Name]",
+      "source": "Change Area Name",
+      "before": "علاقے کا نام بدلیں",
+      "after": "علاقے کا نام بدلیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Cherry]",
+      "source": "Cherry",
+      "before": "چیری",
+      "after": "چیری",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[choose campaign]",
+      "source": "Choose a campaign",
+      "before": "مہم منتخب کریں",
+      "after": "مہم منتخب کریں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[choose game]",
+      "source": "Choose a game",
+      "before": "کھیل منتخب کریں",
+      "after": "کھیل منتخب کریں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[choose map]",
+      "source": "Choose a map",
+      "before": "نقشہ منتخب کریں",
+      "after": "نقشہ منتخب کریں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[clear area]",
+      "source": "Clearing area",
+      "before": "صفائی کا علاقہ",
+      "after": "صفائی کا علاقہ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[farm area]",
+      "source": "Farm area",
+      "before": "کھیتی کا علاقہ",
+      "after": "کھیتی کا علاقہ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Clearing:]",
+      "source": "Clearing:",
+      "before": "صفائی:",
+      "after": "صفائی:",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[closed]",
+      "source": "Closed",
+      "before": "بند",
+      "after": "بند",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[combined vision]",
+      "source": "Combined vision",
+      "before": "مشترکہ نظر",
+      "after": "مشترکہ حدِ نگاہ",
+      "editorially_read": true,
+      "disposition": "edited-pending-recheck"
+    },
+    {
+      "key": "[compile]",
+      "source": "Compile script",
+      "before": "اسکرپٹ کمپائل کریں",
+      "after": "اسکرپٹ کمپائل کریں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[compose]",
+      "source": "compose",
+      "before": "Compose",
+      "after": "Compose",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Computing Fertility]",
+      "source": "Computing Fertility",
+      "before": "زرخیزی کا حساب لگایا جا رہا ہے",
+      "after": "زرخیزی کا حساب لگایا جا رہا ہے",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[connect]",
+      "source": "Connect",
+      "before": "رابطہ کریں",
+      "after": "رابطہ کریں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[connecting to game]",
+      "source": "Connecting To Game",
+      "before": "کھیل سے رابطہ ہو رہا ہے",
+      "after": "کھیل سے رابطہ ہو رہا ہے",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[connecting to]",
+      "source": "Connecting to",
+      "before": "رابطہ ہو رہا ہے:",
+      "after": "رابطہ ہو رہا ہے:",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Construction Site Defaults]",
+      "source": "Construction Site Defaults",
+      "before": "تعمیراتی مقامات کی طے شدہ ترتیبات",
+      "after": "تعمیراتی مقامات کی طے شدہ ترتیبات",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Continue playing]",
+      "source": "Continue playing",
+      "before": "کھیل جاری رکھیں",
+      "after": "کھیل جاری رکھیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[control %0]",
+      "source": "control-%0",
+      "before": "Ctrl-%0",
+      "after": "Ctrl-%0",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Corn]",
+      "source": "Wheat",
+      "before": "گندم",
+      "after": "گندم",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[crater density]",
+      "source": "crater count",
+      "before": "گڑھوں کی تعداد",
+      "after": "گڑھوں کی تعداد",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[create map]",
+      "source": "Create map",
+      "before": "نقشہ بنائیں",
+      "after": "نقشہ بنائیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[credits]",
+      "source": "Credits",
+      "before": "تخلیق کار",
+      "after": "تخلیق کار",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[ctrl - line]",
+      "source": "Ctrl - Line",
+      "before": "Ctrl - لکیر",
+      "after": "Ctrl - لکیر",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[current speed]",
+      "source": "Current speed",
+      "before": "موجودہ رفتار",
+      "after": "موجودہ رفتار",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[custom game]",
+      "source": "Custom game",
+      "before": "حسبِ پسند کھیل",
+      "after": "حسبِ پسند کھیل",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[customcur]",
+      "source": "Custom cursor",
+      "before": "حسبِ پسند کرسر",
+      "after": "حسبِ پسند کرسر",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[damage]",
+      "source": "Damage",
+      "before": "نقصان",
+      "after": "نقصان",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Damaged Map]",
+      "source": "Wounded Units Map",
+      "before": "زخمی یونٹوں کا نقشہ",
+      "after": "زخمی یونٹوں کا نقشہ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[decrease game speed]",
+      "source": "Decrease Game Speed",
+      "before": "کھیل کی رفتار کم کریں",
+      "after": "کھیل کی رفتار کم کریں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[decrease units working]",
+      "source": "Decrease Units Working",
+      "before": "کام کرنے والے یونٹ کم کریں",
+      "after": "کام کرنے والے یونٹ کم کریں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Defeat Your Oppenents]",
+      "source": "Defeat Your Opponents",
+      "before": "اپنے حریفوں کو شکست دیں",
+      "after": "اپنے حریفوں کو شکست دیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[defencetower explanation 2]",
+      "source": "units or buildings",
+      "before": "یونٹوں یا عمارتوں پر حملہ کرتا ہے",
+      "after": "یونٹوں یا عمارتوں پر حملہ کرتا ہے",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[defencetower explanation]",
+      "source": "Attacks nearby enemy",
+      "before": "قریب موجود دشمن کے",
+      "after": "قریب موجود دشمن کے",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[defencetower]",
+      "source": "Defense Tower",
+      "before": "دفاعی مینار",
+      "after": "دفاعی مینار",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Defense Map]",
+      "source": "Defense Map",
+      "before": "دفاعی نقشہ",
+      "after": "دفاعی نقشہ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Defense]",
+      "source": "Defense",
+      "before": "دفاع",
+      "after": "دفاع",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Delete game]",
+      "source": "Delete the selected game",
+      "before": "منتخب کھیل حذف کریں",
+      "after": "منتخب کھیل حذف کریں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[delete]",
+      "source": "Delete",
+      "before": "حذف کریں",
+      "after": "حذف کریں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[desert]",
+      "source": "desert",
+      "before": "صحرا",
+      "after": "صحرا",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[destroy]",
+      "source": "Destroy",
+      "before": "مسمار کریں",
+      "after": "مسمار کریں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[display]",
+      "source": "Display",
+      "before": "دکھائیں",
+      "after": "دکھائیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[do nothing]",
+      "source": "Do Nothing",
+      "before": "کچھ نہ کریں",
+      "after": "کچھ نہ کریں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[don't carry anything]",
+      "source": "Not carrying anything",
+      "before": "کوئی سامان نہیں اٹھایا ہوا",
+      "after": "کوئی سامان نہیں اٹھایا ہوا",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[down]",
+      "source": "down",
+      "before": "نیچے",
+      "after": "نیچے",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[edit map]",
+      "source": "Edit Map",
+      "before": "نقشہ ترمیم کریں",
+      "after": "نقشے میں ترمیم کریں",
+      "editorially_read": true,
+      "disposition": "edited-pending-recheck"
+    },
+    {
+      "key": "[editing map]",
+      "source": "Editing Map",
+      "before": "نقشے کی ترمیم",
+      "after": "نقشے کی ترمیم",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[editor]",
+      "source": "Editor",
+      "before": "ایڈیٹر",
+      "after": "ایڈیٹر",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[end]",
+      "source": "end",
+      "before": "End",
+      "after": "End",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[enter]",
+      "source": "enter",
+      "before": "Enter",
+      "after": "Enter",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[equals]",
+      "source": "equals",
+      "before": "برابر",
+      "after": "برابر",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[ERROR_CANT_LOAD_MAP]",
+      "source": "The map couldn't be loaded because the file is either damaged or an incompatible version.",
+      "before": "نقشہ لوڈ نہیں ہو سکا کیونکہ فائل خراب ہے یا اس کا ورژن غیر موافق ہے۔",
+      "after": "نقشہ لوڈ نہیں ہو سکا کیونکہ فائل خراب ہے یا اس کا ورژن غیر موافق ہے۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[ERROR_CANT_SAVE_CAMPAIGN]",
+      "source": "The campaign couldn't be saved. Check that the destination directory exists, is writable, and has free space.",
+      "before": "مہم محفوظ نہیں ہو سکی۔ دیکھیں کہ منزل کا فولڈر موجود ہو، اس میں لکھنے کی اجازت ہو اور خالی جگہ ہو۔",
+      "after": "مہم محفوظ نہیں ہو سکی۔ دیکھیں کہ منزل کا فولڈر موجود ہو، اس میں لکھنے کی اجازت ہو اور خالی جگہ ہو۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[escape]",
+      "source": "escape",
+      "before": "Escape",
+      "after": "Escape",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[f10]",
+      "source": "f10",
+      "before": "F10",
+      "after": "F10",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[f11]",
+      "source": "f11",
+      "before": "F11",
+      "after": "F11",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[f12]",
+      "source": "f12",
+      "before": "F12",
+      "after": "F12",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[f13]",
+      "source": "f13",
+      "before": "F13",
+      "after": "F13",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[f14]",
+      "source": "f14",
+      "before": "F14",
+      "after": "F14",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[f15]",
+      "source": "f15",
+      "before": "F15",
+      "after": "F15",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[f1]",
+      "source": "f1",
+      "before": "F1",
+      "after": "F1",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[f2]",
+      "source": "f2",
+      "before": "F2",
+      "after": "F2",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[f3]",
+      "source": "f3",
+      "before": "F3",
+      "after": "F3",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[f4]",
+      "source": "f4",
+      "before": "F4",
+      "after": "F4",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[f5]",
+      "source": "f5",
+      "before": "F5",
+      "after": "F5",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[f6]",
+      "source": "f6",
+      "before": "F6",
+      "after": "F6",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[f7]",
+      "source": "f7",
+      "before": "F7",
+      "after": "F7",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[f8]",
+      "source": "f8",
+      "before": "F8",
+      "after": "F8",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[f9]",
+      "source": "f9",
+      "before": "F9",
+      "after": "F9",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Fertility Map]",
+      "source": "Fertility Map",
+      "before": "زرخیزی کا نقشہ",
+      "after": "زرخیزی کا نقشہ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[fog of war]",
+      "source": "Fog of war",
+      "before": "جنگ کی دھند",
+      "after": "جنگ کی دھند",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[food]",
+      "source": "Food",
+      "before": "خوراک",
+      "after": "خوراک",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[forbidden area]",
+      "source": "Forbidden area",
+      "before": "ممنوع علاقہ",
+      "after": "ممنوع علاقہ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Free]",
+      "source": "Healthy",
+      "before": "صحت مند",
+      "after": "صحت مند",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[free]",
+      "source": "free",
+      "before": "آزاد",
+      "after": "آزاد",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    }
+  ],
+  "status": "edited-awaiting-independent-recheck"
+}

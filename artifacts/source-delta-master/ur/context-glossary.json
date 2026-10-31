@@ -1,0 +1,146 @@
+{
+  "author": "/root/pilot_context",
+  "locale": "ur",
+  "draft_sha256": "35e78cecc16d3a566197ee0cb2051600fa126d6f9be71e38e81a04849eb5ae2a",
+  "source_revision": "e7613e93b08234dbf785ceef3bd9b884cbb73221",
+  "glossary": {
+    "Globule": "گلوبیول",
+    "Globules oblique plural": "گلوبیولوں",
+    "colony": "بستی",
+    "Swarm": "چھتہ",
+    "Inn": "سرائے",
+    "Hospital": "ہسپتال",
+    "Racetrack": "دوڑ کا میدان",
+    "Swimming Pool": "تیراکی کا تالاب",
+    "School": "اسکول",
+    "Training Camp (actual Barracks control)": "بیرک",
+    "Defense Tower": "دفاعی مینار",
+    "tower": "مینار",
+    "worker": "کارکن",
+    "explorer": "کھوجی",
+    "warrior": "جنگجو",
+    "supplier": "رسد پہنچانے والا کارکن",
+    "builder": "تعمیر کرنے والا کارکن / تعمیراتی کارکن",
+    "worker target": "کارکنوں کی مطلوبہ تعداد",
+    "Exploration Flag": "کھوج کا جھنڈا",
+    "War Flag": "جنگی جھنڈا",
+    "Flags control": "جھنڈے",
+    "Build control": "تعمیر",
+    "Upgrade control": "اپ گریڈ کریں",
+    "Guard control": "پہرا",
+    "guard zone": "پہرے کا علاقہ",
+    "Forbidden zone": "ممنوع علاقہ",
+    "Clear zone": "صفائی کا علاقہ",
+    "Wheat": "گندم",
+    "algae": "کائی",
+    "harvesting (skill)": "وسائل جمع کرنا",
+    "prestige": "وقار",
+    "radius": "رداس",
+    "tutorial lessons": "تربیتی اسباق",
+    "Load game control": "کھیل لوڈ کریں"
+  },
+  "approved_baseline_catalog_sha256": "5cb88fac67663fc436f6bfa60388382c24665755ee481514c002bc92e9a29837",
+  "actual_master_definitions_verified": [
+    {
+      "path": "scripts/tutorials/introduction.json",
+      "sha256": "0decd2a83899e9863b7364032f2df841498959514eaeed265d63450bebbb11a2",
+      "lesson_id": "introduction",
+      "steps": 5
+    },
+    {
+      "path": "scripts/tutorials/food-supply.json",
+      "sha256": "44f94a25d59cfa525087b40a4af838a6fe54153e34c9652581017274a4d2daff",
+      "lesson_id": "food-supply",
+      "steps": 2
+    },
+    {
+      "path": "scripts/tutorials/healing.json",
+      "sha256": "54d72efe481a8c7f854607077b1e5165f3588d10cf90e14230f22dddb7afcfde",
+      "lesson_id": "healing",
+      "steps": 2
+    },
+    {
+      "path": "scripts/tutorials/walking-training.json",
+      "sha256": "3ad30989585ae26d9efd03aee8092a6cf2eae540f5ade0ca4cc0f4a2475ac683",
+      "lesson_id": "walking-training",
+      "steps": 2
+    },
+    {
+      "path": "scripts/tutorials/swimming.json",
+      "sha256": "1ed9b1d90a8f7902b8bbe8c5cf8d57f316288f77cf979cae5c77b68606fa0bb6",
+      "lesson_id": "swimming",
+      "steps": 3
+    },
+    {
+      "path": "scripts/tutorials/schools.json",
+      "sha256": "779ebdbc4d5238adc970ea94aef5c958852d6d6a10048be6ba529ec7eb06a3d6",
+      "lesson_id": "schools",
+      "steps": 2
+    },
+    {
+      "path": "scripts/tutorials/upgrades.json",
+      "sha256": "1ffb1085e770b48c9691008c3a8c308a6fc18876b6ee00d61ff826f089de79f1",
+      "lesson_id": "upgrades",
+      "steps": 2
+    },
+    {
+      "path": "scripts/tutorials/warrior-training.json",
+      "sha256": "169434e29911c9e4bb6c4eff7af550c0f50c67382ba87ea8484a8bab4e848f6f",
+      "lesson_id": "warrior-training",
+      "steps": 3
+    },
+    {
+      "path": "scripts/tutorials/fortifications.json",
+      "sha256": "ec5fd7a07e2e2e8352b62507fa79149776191994f595ebfacf1b85565c859276",
+      "lesson_id": "fortifications",
+      "steps": 4
+    },
+    {
+      "path": "scripts/tutorials/defensive-tactics.json",
+      "sha256": "be3a7ead9293e00fc15d49c24d7e880ffd6985c717a75a8d3f091c4806bae9a2",
+      "lesson_id": "defensive-tactics",
+      "steps": 4
+    }
+  ],
+  "context_decisions": [
+    {
+      "keys": "All request/worker/supplier/builder messages",
+      "rationale": "A target is requested staffing, not actual workers currentlypresent. Constructionworkers andoperating suppliers separate. Workers maywalk/eat beforejobcompletion. Concrete مطلوبہ تعداد/requestphrasing preservesdistinction."
+    },
+    {
+      "keys": "All Training Camp lesson andcompact entries",
+      "rationale": "EnglishTrainingCamp refers codehighlightbuild:barracks, existingEnglishUI[barracks]=Barracks andapprovedUrduUIبیرک. Choseبیرک consistently soinstructionnamesmatchactualcontrol; notnewbuildingname."
+    },
+    {
+      "keys": "Walking/swimming/schools/upgrades training",
+      "rationale": "Existingworkerlevel increases measured againstlessonbaseline; newbirthdoesnotqualify. Walkinguseslevels.3,swimminglevels.4,schoolconstruction+harvestinglevels.6/.7. Avoidinstructionthatonlybuildingtrainingfacilitysatisfiesgoal."
+    },
+    {
+      "keys": "Guard/fortifications/counterattack",
+      "rationale": "Guardrequires4tilesplus2warriors;wallsminimum2andwestlaneclear;towersuppliesminimum2stone;counterattack3warriorsradiusatmost4. Numericconstraints preserved andresourcesnotsimplifiedtofood."
+    },
+    {
+      "keys": "introhelpdesktop versus touchhelp/compact",
+      "rationale": "Secondarymousebuttoninstructionskeptonlydesktopfamily;touchrequiresplacementconfirmation. Compactprogresscards useone/coherentactionchain; fullhelpretainswhy."
+    },
+    {
+      "keys": "School and algae",
+      "rationale": "Useapprovedاسکولnotمدرسہ. Harvestingmeanscollectingresources,notspecificcropagriculture. Fruittreesgiveprestigeresources,foodstillwheat; preserveexplicitdistinction."
+    }
+  ],
+  "tone": "Politeimperativeکریں; concisegoaltitles,neutralcompletion/recoveryprose. ContemporaryUrduwithapprovedtechnicalloanwordsandpropergameunitterm.",
+  "structural_checks": {
+    "all209keys_exact_and_nonempty": true,
+    "identicalEnglish_sources_have_identicalUrdu_targets": true,
+    "English_equality_exceptions_needed": [],
+    "placeholders": "Nonein209sources; noneadded. JSONkeystringsstable; arrowsand≤operatorretainedlogically.",
+    "numbers": "ASCIIcountsretainedwhereEnglishnumeric; wordtwoheadingsnaturallyدو. Numbersarenotgameidentifiers."
+  },
+  "uncertainties_for_independent_reviewer": [
+    "No unresolvedmeaningblockeridentifiedbyauthor, butindependentreviewmustchecknaturalnessoflong staffing/supplyexplanations andsmall-screenbrevity.",
+    "Bیرک matchingoldcontrol intentionally differsfromliteralTrainingCamp. Please crosscheckwhenUIglossaryisrebased.",
+    "Numeric/arrows≤andRTLwrappinghave not beenrenderedfornewlessons; priorenginefontsproofdoesnotverifythese209screens.",
+    "Potentialpublictonechoicesautonomousگلوبیول andmaplandmarkپتھروںکینشانی requireindependenteditorassessment,notselfapproval."
+  ],
+  "coverage_claim": "All209Englishvaluesreadandauthoredasnewwork. Existing3207unchangedkeysnotreread/rewritteninthisauthoringtask. Noindependentreviewsignofforplatformfinalization."
+}

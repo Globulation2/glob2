@@ -1,0 +1,25 @@
+{
+  "editor": "/root/translation_kit",
+  "author": "/root/swahili_translation",
+  "reviewer": "/root/hindi_online_review",
+  "batch_id": "native-colony-002",
+  "source_sha256": "aacd8a342e9e734ba47f902a161ac1a45badff5842a617bcd68bf8e2275d6013",
+  "before_native_catalog_sha256": "4f19c506d6d7d4bfd22c576ad1797e21a7a71a92d693e06c1a48a034585ceead",
+  "before_target_sha256": "c7eed2922ca9e3d28a320a5c8be7ff9b5a4d87d9482659ca14e7d24720f500ff",
+  "after_target_sha256": "c7eed2922ca9e3d28a320a5c8be7ff9b5a4d87d9482659ca14e7d24720f500ff",
+  "editor_read_keys": [
+    "[library Loading building families]",
+    "[library No building families installed.]",
+    "[library No public building families yet]",
+    "[library Opening building family]"
+  ],
+  "editor_read_count": 4,
+  "edits": [],
+  "finding_dispositions": [],
+  "editor_notes": [
+    "Read all4buildingfamilylibrary entries. Makundi ya majengo consistently denotes upgradefamilies; no changes necessary."
+  ],
+  "status": "editor-pass-complete-awaiting-original-reviewer-recheck",
+  "certification": "Agent edited; not native-human-certified; rendering/platform gates separate",
+  "after_native_catalog_sha256": "11f177f2792592cdc2a0dfb1edb0d7b5efbead7487efa1d7249fea657d8f85ec"
+}

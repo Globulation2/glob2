@@ -1,0 +1,52 @@
+{
+  "performed_by": "/root/translation_kit",
+  "role": "mechanical only",
+  "review_record": {
+    "path": "reviews/ur.json",
+    "sha256": "c1495bfcaccbf6e8be4e0c861c29b453a7e623cda30068e70683cd626585c647"
+  },
+  "source_sha256": "a016e71957f16bbb880475c49b1d22dc8cbb7ae285fbbaa963464e0ea491fe0b",
+  "native_sha256": "444c71c1bf3105cf775cf50515af169a477a2a3db2c2d6a3c031b000c3920d27",
+  "online_sha256": "db375ee564c39cf02dfb4ce08d6a4dbaecb8cd69d5bc7f167b4c7f779e246587",
+  "changed_batches": [
+    "native-master-tutorial-delta-001",
+    "native-master-tutorial-delta-002"
+  ],
+  "changed_keys_count": 16,
+  "retained_new209": 193,
+  "retained_full_native": 3400,
+  "expanded_open_major_findings": 16,
+  "expanded_open_minor_findings": 1,
+  "all_nine_gates_unchanged_pending": true,
+  "audit_issues": [
+    "unresolved finding: native:[intro compact scout]",
+    "unresolved finding: native:[intro compact build]",
+    "unresolved finding: native:[intro compact attack]",
+    "unresolved finding: native:[lesson healing build compact]",
+    "unresolved finding: native:[lesson walking-training build compact]",
+    "unresolved finding: native:[lesson swimming build compact]",
+    "unresolved finding: native:[lesson swimming water-job compact]",
+    "unresolved finding: native:[lesson schools build compact]",
+    "unresolved finding: native:[lesson upgrades upgrade compact]",
+    "unresolved finding: native:[lesson warrior-training produce compact]",
+    "unresolved finding: native:[lesson warrior-training build compact]",
+    "unresolved finding: native:[lesson fortifications tower compact]",
+    "unresolved finding: native:[lesson fortifications supply compact]",
+    "unresolved finding: native:[lesson defensive-tactics scout compact]",
+    "unresolved finding: native:[lesson defensive-tactics guard compact]",
+    "unresolved finding: native:[lesson defensive-tactics counterattack compact]",
+    "unresolved finding: native:[lesson defensive-tactics counterattack compact]",
+    "language_brief is pending or lacks evidence",
+    "source_based_pilot is pending or lacks evidence",
+    "structural is pending or lacks evidence",
+    "desktop_rendering is pending or lacks evidence",
+    "phone_rendering is pending or lacks evidence",
+    "browser_startup is pending or lacks evidence",
+    "native_platforms is pending or lacks evidence",
+    "browser_platforms is pending or lacks evidence",
+    "mobile_platforms is pending or lacks evidence"
+  ],
+  "semantic_provenance_validated": true,
+  "actual_render_resolution": "pending_render",
+  "full_locale_finalized": false
+}

@@ -1,0 +1,27 @@
+{
+  "reviewer": "/root/hindi_online_review",
+  "scope": "Only new Hindi and Swahili Game text field; old full online review carried forward by exact identity proof, no fresh reread claim.",
+  "new_source_key": "Game text field",
+  "original_online_source_sha256": "d7c8f06c7f023e77a027389d7decfa74bfd05c66ba151401317d67cc8bab1538",
+  "before_integration_english_sha256": "d7c8f06c7f023e77a027389d7decfa74bfd05c66ba151401317d67cc8bab1538",
+  "current_english_sha256": "63017714064b5a2659aa8e2da27a43af117d3f1e60acbbb44ae5d73d80cd7d69",
+  "release_three_source_sha256": "63017714064b5a2659aa8e2da27a43af117d3f1e60acbbb44ae5d73d80cd7d69",
+  "frozen_original_key_count": 2835,
+  "current_key_count": 2836,
+  "original_source_values_unchanged": true,
+  "only_added_source_key": "Game text field",
+  "caller_sha256": "556ba59567d5f685797d1ecb840313ce5500d818fb38606c004fec5b46e2c4af",
+  "original_manifest_source_bundle_sha256": "aacd8a342e9e734ba47f902a161ac1a45badff5842a617bcd68bf8e2275d6013",
+  "hash_note": "Original manifest source bundle revision and actual online.json file SHA are different provenance fields; online file hash d7c8… is independently identical to before-integration English bytes.",
+  "records": [
+    "hi.json",
+    "sw.json"
+  ],
+  "open_findings": 0,
+  "catalog_edits_by_reviewer": false,
+  "limits": [
+    "No Urdu or existing33 linguistic approval made in this supplemental review.",
+    "No actual screen-reader announcement or browser rendering tested by this semantic/source-delta review.",
+    "No platform or locale finalization claim."
+  ]
+}

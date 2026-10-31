@@ -1,0 +1,110 @@
+{
+  "id": "native-general-016",
+  "source_sha256": "a016e71957f16bbb880475c49b1d22dc8cbb7ae285fbbaa963464e0ea491fe0b",
+  "surface": "native",
+  "domain": "general",
+  "context": "Read neighbouring source entries and inspect usage before translating ambiguous short labels.",
+  "entries": [
+    {
+      "id": "native:[library Release %0]",
+      "key": "[library Release %0]",
+      "source": "Release %0"
+    },
+    {
+      "id": "native:[library Remove %0]",
+      "key": "[library Remove %0]",
+      "source": "Remove %0"
+    },
+    {
+      "id": "native:[library Seed: %0]",
+      "key": "[library Seed: %0]",
+      "source": "Seed: %0"
+    },
+    {
+      "id": "native:[library %0 · revision %1]",
+      "key": "[library %0 · revision %1]",
+      "source": "%0 · revision %1"
+    },
+    {
+      "id": "native:[library Fit]",
+      "key": "[library Fit]",
+      "source": "Fit"
+    },
+    {
+      "id": "native:[library GL only]",
+      "key": "[library GL only]",
+      "source": "GL only"
+    },
+    {
+      "id": "native:[Sound or silence?]",
+      "key": "[Sound or silence?]",
+      "source": "Sound or silence?"
+    },
+    {
+      "id": "native:[Silence]",
+      "key": "[Silence]",
+      "source": "Silence"
+    },
+    {
+      "id": "native:[Sound]",
+      "key": "[Sound]",
+      "source": "Sound"
+    },
+    {
+      "id": "native:[audio preference explanation]",
+      "key": "[audio preference explanation]",
+      "source": "The game starts quietly. Would you like silence, or music and game audio?"
+    },
+    {
+      "id": "native:[audio preference change later]",
+      "key": "[audio preference change later]",
+      "source": "You can change this anytime in Settings → Audio."
+    },
+    {
+      "id": "native:[audio preference save failed]",
+      "key": "[audio preference save failed]",
+      "source": "Your choice could not be saved. Audio is still off. Please try again."
+    },
+    {
+      "id": "native:[audio choices description]",
+      "key": "[audio choices description]",
+      "source": "Silence: a muted speaker. Sound: a speaker with sound waves."
+    },
+    {
+      "id": "native:[Grassland]",
+      "key": "[Grassland]",
+      "source": "Grassland"
+    },
+    {
+      "id": "native:[Kopjes]",
+      "key": "[Kopjes]",
+      "source": "Kopjes"
+    },
+    {
+      "id": "native:[Game trails]",
+      "key": "[Game trails]",
+      "source": "Game trails"
+    },
+    {
+      "id": "native:[Fish amount]",
+      "key": "[Fish amount]",
+      "source": "Fish amount"
+    },
+    {
+      "id": "native:[Camp-site amount]",
+      "key": "[Camp-site amount]",
+      "source": "Camp-site amount"
+    }
+  ],
+  "carryforward": {
+    "prior_manifest": {
+      "path": "../release-three/manifest.json",
+      "sha256": "4fd5e1faff01b7eb0e95db7eac33105ab557101742f6ef1a889e7b73210eb977"
+    },
+    "prior_batch": {
+      "path": "../release-three/batches/native-general-016.json",
+      "sha256": "b1503f9312edcd778a31fee229d7f635e4bf86f68501720c92502258857f3b6b"
+    },
+    "method": "Partition retained keys by original ownership; radius supplement receives separate Sw correction chain, unchanged Hi/Ur retain original chain. No fresh reading inferred."
+  }
+}

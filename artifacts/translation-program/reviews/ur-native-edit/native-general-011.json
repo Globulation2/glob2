@@ -1,0 +1,1293 @@
+{
+  "editor": "/root/swahili_translation",
+  "author": "/root/urdu_translation",
+  "independent_reviewer": "/root/pilot_context",
+  "batch_id": "native-general-011",
+  "source_contract_sha256": "aacd8a342e9e734ba47f902a161ac1a45badff5842a617bcd68bf8e2275d6013",
+  "original_target_subset_sha256": "c91717333be3d494d25427713ad55b490e42ddfcff24177d182fc641bbfe6ec2",
+  "final_target_subset_sha256": "161319fed2f61aac40f912e393b45cfac8b7a850f9bbb9f52e995bcfaf596134",
+  "final_catalog_sha256": "ec78fb33247244bf783461e0410ef11fe48e45644c3c6500419d9060e967d458",
+  "entries": [
+    {
+      "key": "[profile best map]",
+      "source": "Best map",
+      "before": "بہترین نقشہ",
+      "after": "بہترین نقشہ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[profile %0 w %1 l]",
+      "source": "%0 W · %1 L",
+      "before": "%0 جیت · %1 ہار",
+      "after": "%0 جیت · %1 ہار",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[profile no rated games]",
+      "source": "Play a ranked match to get a rating.",
+      "before": "ریٹنگ حاصل کرنے کے لیے درجہ بند میچ کھیلیں۔",
+      "after": "ریٹنگ حاصل کرنے کے لیے درجہ بند میچ کھیلیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[profile all]",
+      "source": "All",
+      "before": "سب",
+      "after": "سب",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[profile rooms]",
+      "source": "Rooms",
+      "before": "کمرے",
+      "after": "کمرے",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[profile vs ai]",
+      "source": "vs AI",
+      "before": "بمقابلہ AI",
+      "after": "بمقابلہ AI",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[profile matches]",
+      "source": "Matches",
+      "before": "میچ",
+      "after": "میچ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[online loading]",
+      "source": "Loading…",
+      "before": "لوڈ ہو رہا ہے…",
+      "after": "لوڈ ہو رہا ہے…",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[profile no matches]",
+      "source": "No matches yet.",
+      "before": "ابھی کوئی میچ نہیں۔",
+      "after": "ابھی کوئی میچ نہیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[online load more]",
+      "source": "Load more",
+      "before": "مزید لوڈ کریں",
+      "after": "مزید لوڈ کریں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[profile title]",
+      "source": "Profile",
+      "before": "پروفائل",
+      "after": "پروفائل",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[profile guest]",
+      "source": "guest",
+      "before": "مہمان",
+      "after": "مہمان",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[profile playing since %0]",
+      "source": "playing since %0",
+      "before": "%0 سے کھیل رہے ہیں",
+      "after": "%0 سے کھیل رہے ہیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[profile full profile web]",
+      "source": "Full profile on the web",
+      "before": "ویب پر مکمل پروفائل",
+      "after": "ویب پر مکمل پروفائل",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[profile replays note]",
+      "source": "Replays are downloaded from the server when you open them; ones you saved locally stay in Load game → Replays.",
+      "before": "ری پلے کھولنے پر سرور سے ڈاؤن لوڈ ہوتے ہیں؛ مقامی طور پر محفوظ کیے ہوئے ری پلے لوڈ کھیل ← ری پلے میں رہتے ہیں۔",
+      "after": "ری پلے کھولنے پر سرور سے ڈاؤن لوڈ ہوتے ہیں؛ مقامی طور پر محفوظ کیے ہوئے ری پلے «کھیل لوڈ کریں ← ری پلے» میں رہتے ہیں۔",
+      "editorially_read": true,
+      "disposition": "edited-pending-recheck"
+    },
+    {
+      "key": "[profile web profile]",
+      "source": "Web profile",
+      "before": "ویب پروفائل",
+      "after": "ویب پروفائل",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[maps most played]",
+      "source": "Most played",
+      "before": "سب سے زیادہ کھیلے گئے",
+      "after": "سب سے زیادہ کھیلے گئے",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[maps most liked]",
+      "source": "Most liked",
+      "before": "سب سے زیادہ پسند کیے گئے",
+      "after": "سب سے زیادہ پسند کیے گئے",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[maps newest]",
+      "source": "Newest",
+      "before": "تازہ ترین",
+      "after": "تازہ ترین",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[maps most downloaded]",
+      "source": "Most downloaded",
+      "before": "سب سے زیادہ ڈاؤن لوڈ کیے گئے",
+      "after": "سب سے زیادہ ڈاؤن لوڈ کیے گئے",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[maps any size]",
+      "source": "Any size",
+      "before": "کوئی بھی سائز",
+      "after": "کوئی بھی سائز",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[maps up to 128]",
+      "source": "Up to 128 × 128",
+      "before": "128 × 128 تک",
+      "after": "128 × 128 تک",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[maps 256]",
+      "source": "256 × 256",
+      "before": "256 × 256",
+      "after": "256 × 256",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[maps 512 and larger]",
+      "source": "512 and larger",
+      "before": "512 اور اس سے بڑے",
+      "after": "512 اور اس سے بڑے",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[maps report broken]",
+      "source": "It does not work",
+      "before": "یہ کام نہیں کرتا",
+      "after": "یہ کام نہیں کرتا",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[maps report offensive]",
+      "source": "Offensive",
+      "before": "ناگوار مواد",
+      "after": "ناگوار مواد",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[maps report copyright]",
+      "source": "Someone else's work",
+      "before": "کسی اور کا کام",
+      "after": "کسی اور کا کام",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[maps report other]",
+      "source": "Something else",
+      "before": "کچھ اور",
+      "after": "کچھ اور",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[maps public]",
+      "source": "Public",
+      "before": "عوامی",
+      "after": "عوامی",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[maps unlisted]",
+      "source": "Unlisted",
+      "before": "غیر فہرست شدہ",
+      "after": "غیر فہرست شدہ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[maps private]",
+      "source": "Private",
+      "before": "نجی",
+      "after": "نجی",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[maps cannot read file]",
+      "source": "The map file could not be read.",
+      "before": "نقشے کی فائل پڑھی نہیں جا سکی۔",
+      "after": "نقشے کی فائل پڑھی نہیں جا سکی۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[maps file too large]",
+      "source": "The map file is too large to share.",
+      "before": "نقشے کی فائل بانٹنے کے لیے بہت بڑی ہے۔",
+      "after": "نقشے کی فائل بانٹنے کے لیے بہت بڑی ہے۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[maps saved for next room]",
+      "source": "The map is downloaded; it will be used when you open a room.",
+      "before": "نقشہ ڈاؤن لوڈ ہو گیا؛ کمرہ کھولنے پر استعمال ہو گا۔",
+      "after": "نقشہ ڈاؤن لوڈ ہو گیا؛ کمرہ کھولنے پر استعمال ہو گا۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[maps download failed]",
+      "source": "The map could not be downloaded.",
+      "before": "نقشہ ڈاؤن لوڈ نہیں ہو سکا۔",
+      "after": "نقشہ ڈاؤن لوڈ نہیں ہو سکا۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[maps %0 colonies]",
+      "source": "%0 colonies",
+      "before": "%0 بستیاں",
+      "after": "%0 بستیاں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[maps version %0]",
+      "source": "version %0",
+      "before": "ورژن %0",
+      "after": "ورژن %0",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[maps updated %0]",
+      "source": "updated %0",
+      "before": "تازہ کیا گیا %0",
+      "after": "تازہ کیا گیا %0",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[maps downloading]",
+      "source": "Downloading the map…",
+      "before": "نقشہ ڈاؤن لوڈ ہو رہا ہے…",
+      "after": "نقشہ ڈاؤن لوڈ ہو رہا ہے…",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[maps like needs account]",
+      "source": "Liking maps needs a signed-in account.",
+      "before": "نقشے پسند کرنے کے لیے سائن ان کیا ہوا اکاؤنٹ درکار ہے۔",
+      "after": "نقشے پسند کرنے کے لیے سائن ان کیا ہوا اکاؤنٹ درکار ہے۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[maps report sent]",
+      "source": "Thank you; the moderators will look at it.",
+      "before": "شکریہ؛ نگران اس کا جائزہ لیں گے۔",
+      "after": "شکریہ؛ نگران اس کا جائزہ لیں گے۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[maps select a map]",
+      "source": "Select a map to see its details.",
+      "before": "تفصیلات دیکھنے کے لیے نقشہ منتخب کریں۔",
+      "after": "تفصیلات دیکھنے کے لیے نقشہ منتخب کریں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[maps by %0]",
+      "source": "by %0",
+      "before": "مصنف %0",
+      "after": "مصنف %0",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[maps stats %0 %1 %2]",
+      "source": "▶ %0 plays · ⬇ %1 downloads · ♥ %2",
+      "before": "▶ %0 بار کھیلا گیا · ⬇ %1 ڈاؤن لوڈ · ♥ %2",
+      "after": "▶ %0 بار کھیلا گیا · ⬇ %1 ڈاؤن لوڈ · ♥ %2",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[maps use in room]",
+      "source": "Use in a room",
+      "before": "کمرے میں استعمال کریں",
+      "after": "کمرے میں استعمال کریں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[maps liked]",
+      "source": "Liked",
+      "before": "پسند کیا",
+      "after": "پسند کیا",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[maps like]",
+      "source": "Like",
+      "before": "پسند کریں",
+      "after": "پسند کریں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[maps reported]",
+      "source": "Reported",
+      "before": "رپورٹ ہو گئی",
+      "after": "رپورٹ ہو گئی",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[maps report]",
+      "source": "Report…",
+      "before": "رپورٹ کریں…",
+      "after": "رپورٹ کریں…",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[maps report why]",
+      "source": "What is wrong with this map?",
+      "before": "اس نقشے میں کیا مسئلہ ہے؟",
+      "after": "اس نقشے میں کیا مسئلہ ہے؟",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[maps search placeholder]",
+      "source": "Search maps or authors",
+      "before": "نقشے یا مصنف تلاش کریں",
+      "after": "نقشے یا مصنف تلاش کریں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[maps none found]",
+      "source": "No maps match.",
+      "before": "کوئی نقشہ تلاش سے میل نہیں کھاتا۔",
+      "after": "کوئی نقشہ تلاش سے میل نہیں کھاتا۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[maps catalog empty]",
+      "source": "No maps have been shared on this server yet.",
+      "before": "اس سرور پر ابھی کوئی نقشہ نہیں بانٹا گیا۔",
+      "after": "اس سرور پر ابھی کوئی نقشہ نہیں بانٹا گیا۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[maps clear filters]",
+      "source": "Clear filters",
+      "before": "فلٹر صاف کریں",
+      "after": "فلٹر صاف کریں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[maps any colonies]",
+      "source": "Any colonies",
+      "before": "بستیوں کی کوئی بھی تعداد",
+      "after": "بستیوں کی کوئی بھی تعداد",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[maps checking]",
+      "source": "Checking…",
+      "before": "جانچ ہو رہی ہے…",
+      "after": "جانچ ہو رہی ہے…",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[maps no version yet]",
+      "source": "No version has been uploaded yet.",
+      "before": "ابھی کوئی ورژن اپ لوڈ نہیں ہوا۔",
+      "after": "ابھی کوئی ورژن اپ لوڈ نہیں ہوا۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[maps rejected]",
+      "source": "Rejected",
+      "before": "مسترد",
+      "after": "مسترد",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[maps did not load %0]",
+      "source": "The map did not load: %0",
+      "before": "نقشہ لوڈ نہیں ہوا: %0",
+      "after": "نقشہ لوڈ نہیں ہوا: %0",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[maps unknown reason]",
+      "source": "no reason was given",
+      "before": "کوئی وجہ نہیں دی گئی",
+      "after": "کوئی وجہ نہیں دی گئی",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[maps fix and upload again]",
+      "source": "fix it in the editor, then upload again",
+      "before": "ایڈیٹر میں درست کریں، پھر دوبارہ اپ لوڈ کریں",
+      "after": "ایڈیٹر میں درست کریں، پھر دوبارہ اپ لوڈ کریں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[maps uploaded just now]",
+      "source": "uploaded just now",
+      "before": "ابھی اپ لوڈ ہوا",
+      "after": "ابھی اپ لوڈ ہوا",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[maps loading on server]",
+      "source": "loading it on the server",
+      "before": "سرور پر لوڈ ہو رہا ہے",
+      "after": "سرور پر لوڈ ہو رہا ہے",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[maps %0 plays]",
+      "source": "%0 plays",
+      "before": "%0 بار کھیلا گیا",
+      "after": "%0 بار کھیلا گیا",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[maps hidden]",
+      "source": "Hidden",
+      "before": "چھپا ہوا",
+      "after": "چھپا ہوا",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[maps upload again]",
+      "source": "Upload again…",
+      "before": "دوبارہ اپ لوڈ کریں…",
+      "after": "دوبارہ اپ لوڈ کریں…",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[maps delete]",
+      "source": "Delete",
+      "before": "حذف کریں",
+      "after": "حذف کریں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[maps update]",
+      "source": "Update…",
+      "before": "تازہ کریں…",
+      "after": "تازہ کریں…",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[maps upload a map]",
+      "source": "Upload a map…",
+      "before": "نقشہ اپ لوڈ کریں…",
+      "after": "نقشہ اپ لوڈ کریں…",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[maps upload hint]",
+      "source": ".map files from your maps folder or the editor",
+      "before": "آپ کے نقشوں کے فولڈر یا ایڈیٹر کی .map فائلیں",
+      "after": "آپ کے نقشوں کے فولڈر یا ایڈیٹر کی .map فائلیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[maps no maps yet]",
+      "source": "You have not shared any maps yet.",
+      "before": "آپ نے ابھی کوئی نقشہ نہیں بانٹا۔",
+      "after": "آپ نے ابھی کوئی نقشہ نہیں بانٹا۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[maps my maps]",
+      "source": "My maps",
+      "before": "میرے نقشے",
+      "after": "میرے نقشے",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[maps my maps %0]",
+      "source": "My maps (%0)",
+      "before": "میرے نقشے (%0)",
+      "after": "میرے نقشے (%0)",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[maps browse]",
+      "source": "Browse",
+      "before": "براؤز کریں",
+      "after": "براؤز کریں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[maps title]",
+      "source": "Maps",
+      "before": "نقشے",
+      "after": "نقشے",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[maps browse note %0]",
+      "source": "%0 catalog · only maps that load in this version are shown",
+      "before": "%0 کیٹلاگ · صرف وہ نقشے دکھتے ہیں جو اس ورژن میں لوڈ ہوتے ہیں",
+      "after": "%0 کیٹلاگ · صرف وہ نقشے دکھتے ہیں جو اس ورژن میں لوڈ ہوتے ہیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[maps visibility note]",
+      "source": "Public maps appear in Browse. Unlisted maps work in your rooms and through their link. Private maps only in your own rooms.",
+      "before": "عوامی نقشے براؤز میں دکھتے ہیں۔ غیر فہرست شدہ نقشے آپ کے کمروں اور اپنے لنک کے ذریعے چلتے ہیں۔ نجی نقشے صرف آپ کے اپنے کمروں میں چلتے ہیں۔",
+      "after": "عوامی نقشے براؤز میں دکھتے ہیں۔ غیر فہرست شدہ نقشے آپ کے کمروں اور اپنے لنک کے ذریعے چلتے ہیں۔ نجی نقشے صرف آپ کے اپنے کمروں میں چلتے ہیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[maps use %0]",
+      "source": "Use %0",
+      "before": "%0 استعمال کریں",
+      "after": "%0 استعمال کریں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[maps %0 kb]",
+      "source": "%0 KB",
+      "before": "%0 KB",
+      "after": "%0 KB",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[maps field title]",
+      "source": "Title",
+      "before": "عنوان",
+      "after": "عنوان",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[maps field description]",
+      "source": "Description",
+      "before": "تفصیل",
+      "after": "تفصیل",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[maps who can use it]",
+      "source": "Who can use it",
+      "before": "اسے کون استعمال کر سکتا ہے",
+      "after": "اسے کون استعمال کر سکتا ہے",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[maps guests unlisted]",
+      "source": "Guests can share unlisted and private maps; sign in to publish to Browse.",
+      "before": "مہمان غیر فہرست شدہ اور نجی نقشے بانٹ سکتے ہیں؛ براؤز میں شائع کرنے کے لیے سائن ان کریں۔",
+      "after": "مہمان غیر فہرست شدہ اور نجی نقشے بانٹ سکتے ہیں؛ براؤز میں شائع کرنے کے لیے سائن ان کریں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[maps visibility help]",
+      "source": "Unlisted maps work in your rooms and through their link; public maps also appear in Browse.",
+      "before": "غیر فہرست شدہ نقشے آپ کے کمروں اور اپنے لنک کے ذریعے چلتے ہیں؛ عوامی نقشے براؤز میں بھی دکھتے ہیں۔",
+      "after": "غیر فہرست شدہ نقشے آپ کے کمروں اور اپنے لنک کے ذریعے چلتے ہیں؛ عوامی نقشے براؤز میں بھی دکھتے ہیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[maps new version of %0]",
+      "source": "Upload this file as a new version of %0.",
+      "before": "یہ فائل %0 کے نئے ورژن کے طور پر اپ لوڈ کریں۔",
+      "after": "یہ فائل %0 کے نئے ورژن کے طور پر اپ لوڈ کریں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[maps upload]",
+      "source": "Upload",
+      "before": "اپ لوڈ کریں",
+      "after": "اپ لوڈ کریں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[maps uploading]",
+      "source": "Uploading…",
+      "before": "اپ لوڈ ہو رہا ہے…",
+      "after": "اپ لوڈ ہو رہا ہے…",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[maps checking detail]",
+      "source": "The server is loading the map and drawing its preview. Until then the map cannot be used.",
+      "before": "سرور نقشہ لوڈ کر کے اس کا پیش منظر بنا رہا ہے۔ تب تک نقشہ استعمال نہیں ہو سکتا۔",
+      "after": "سرور نقشہ لوڈ کر کے اس کا پیش منظر بنا رہا ہے۔ تب تک نقشہ استعمال نہیں ہو سکتا۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[maps ready]",
+      "source": "Ready",
+      "before": "تیار",
+      "after": "تیار",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[maps ready public]",
+      "source": "The map is ready and listed in Browse.",
+      "before": "نقشہ تیار ہے اور براؤز میں فہرست شدہ ہے۔",
+      "after": "نقشہ تیار ہے اور براؤز میں فہرست شدہ ہے۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[maps ready unlisted]",
+      "source": "The map is ready. Unlisted maps work in your rooms and through their link.",
+      "before": "نقشہ تیار ہے۔ غیر فہرست شدہ نقشے آپ کے کمروں اور اپنے لنک کے ذریعے چلتے ہیں۔",
+      "after": "نقشہ تیار ہے۔ غیر فہرست شدہ نقشے آپ کے کمروں اور اپنے لنک کے ذریعے چلتے ہیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[maps ready private]",
+      "source": "The map is ready. Private maps work only in your own rooms.",
+      "before": "نقشہ تیار ہے۔ نجی نقشے صرف آپ کے اپنے کمروں میں چلتے ہیں۔",
+      "after": "نقشہ تیار ہے۔ نجی نقشے صرف آپ کے اپنے کمروں میں چلتے ہیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[maps upload failed]",
+      "source": "The upload failed",
+      "before": "اپ لوڈ ناکام ہو گیا",
+      "after": "اپ لوڈ ناکام ہو گیا",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[maps server read %0 %1]",
+      "source": "The server read it as %0 with %1 colonies.",
+      "before": "سرور نے اسے %0 اور %1 بستیوں کے ساتھ پڑھا۔",
+      "after": "سرور نے اسے %0 اور %1 بستیوں کے ساتھ پڑھا۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[maps continue in background]",
+      "source": "Close",
+      "before": "بند کریں",
+      "after": "بند کریں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[maps upload note]",
+      "source": "The server loads every upload before it can be used.",
+      "before": "سرور ہر اپ لوڈ کو استعمال سے پہلے لوڈ کرتا ہے۔",
+      "after": "سرور ہر اپ لوڈ کو استعمال سے پہلے لوڈ کرتا ہے۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[online just now]",
+      "source": "just now",
+      "before": "ابھی",
+      "after": "ابھی",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[online today %0]",
+      "source": "today %0",
+      "before": "آج %0",
+      "after": "آج %0",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[online yesterday]",
+      "source": "yesterday",
+      "before": "گزشتہ روز",
+      "after": "گزشتہ روز",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[online sun]",
+      "source": "Sun",
+      "before": "اتوار",
+      "after": "اتوار",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[online mon]",
+      "source": "Mon",
+      "before": "پیر",
+      "after": "پیر",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[online tue]",
+      "source": "Tue",
+      "before": "منگل",
+      "after": "منگل",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[online wed]",
+      "source": "Wed",
+      "before": "بدھ",
+      "after": "بدھ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[online thu]",
+      "source": "Thu",
+      "before": "جمعرات",
+      "after": "جمعرات",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[online fri]",
+      "source": "Fri",
+      "before": "جمعہ",
+      "after": "جمعہ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[online sat]",
+      "source": "Sat",
+      "before": "ہفتہ",
+      "after": "ہفتہ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[online %0 weeks ago]",
+      "source": "%0 weeks ago",
+      "before": "%0 ہفتے پہلے",
+      "after": "%0 ہفتے پہلے",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[online %0 months ago]",
+      "source": "%0 months ago",
+      "before": "%0 مہینے پہلے",
+      "after": "%0 مہینے پہلے",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[online %0 years ago]",
+      "source": "%0 years ago",
+      "before": "%0 سال پہلے",
+      "after": "%0 سال پہلے",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[maps share online]",
+      "source": "Share online…",
+      "before": "آن لائن بانٹیں…",
+      "after": "آن لائن بانٹیں…",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[maps mine]",
+      "source": "Mine",
+      "before": "میرے",
+      "after": "میرے",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[results waiting for players]",
+      "source": "Waiting for the other players to leave…",
+      "before": "دوسرے کھلاڑیوں کے نکلنے کا انتظار ہے…",
+      "after": "دوسرے کھلاڑیوں کے نکلنے کا انتظار ہے…",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[results waiting detail]",
+      "source": "The result is recorded once everyone has left the match.",
+      "before": "سب کے میچ سے نکلنے پر نتیجہ درج ہوتا ہے۔",
+      "after": "سب کے میچ سے نکلنے پر نتیجہ درج ہوتا ہے۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[results waiting slow]",
+      "source": "A player who lost the connection has up to 3 minutes to come back. The result will appear in your history and on the match page.",
+      "before": "رابطہ ٹوٹنے والے کھلاڑی کو واپس آنے کے لیے 3 منٹ تک ملتے ہیں۔ نتیجہ آپ کے سابقہ ریکارڈ اور میچ کے صفحے پر ظاہر ہو گا۔",
+      "after": "رابطہ ٹوٹنے والے کھلاڑی کو واپس آنے کے لیے 3 منٹ تک ملتے ہیں۔ نتیجہ آپ کے سابقہ ریکارڈ اور میچ کے صفحے پر ظاہر ہو گا۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[results verifying slow]",
+      "source": "Verification is taking longer than usual. The result will appear in your history and on the match page.",
+      "before": "تصدیق میں معمول سے زیادہ وقت لگ رہا ہے۔ نتیجہ آپ کے سابقہ ریکارڈ اور میچ کے صفحے پر ظاہر ہو گا۔",
+      "after": "تصدیق میں معمول سے زیادہ وقت لگ رہا ہے۔ نتیجہ آپ کے سابقہ ریکارڈ اور میچ کے صفحے پر ظاہر ہو گا۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[results rematch]",
+      "source": "Rematch",
+      "before": "دوبارہ میچ",
+      "after": "دوبارہ میچ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[results join rematch %0]",
+      "source": "Join %0's rematch",
+      "before": "%0 کے دوبارہ میچ میں شامل ہوں",
+      "after": "%0 کے دوبارہ میچ میں شامل ہوں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[hub profile history]",
+      "source": "Profile & history",
+      "before": "پروفائل اور سابقہ ریکارڈ",
+      "after": "پروفائل اور سابقہ ریکارڈ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[hub leaderboard %0]",
+      "source": "Leaderboard · %0",
+      "before": "درجہ بندی · %0",
+      "after": "درجہ بندی · %0",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[hub leaderboard empty]",
+      "source": "No ranked players yet.",
+      "before": "ابھی کوئی درجہ بند کھلاڑی نہیں۔",
+      "after": "ابھی کوئی درجہ بند کھلاڑی نہیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[hub guests not ranked]",
+      "source": "Guests aren't ranked. Sign in to appear here.",
+      "before": "مہمانوں کا درجہ نہیں ہوتا۔ یہاں ظاہر ہونے کے لیے سائن ان کریں۔",
+      "after": "مہمانوں کا درجہ نہیں ہوتا۔ یہاں ظاہر ہونے کے لیے سائن ان کریں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[hub full leaderboard]",
+      "source": "Full leaderboard",
+      "before": "مکمل درجہ بندی",
+      "after": "مکمل درجہ بندی",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[room uploading map]",
+      "source": "Sharing the map with the room…",
+      "before": "نقشہ کمرے کے ساتھ بانٹا جا رہا ہے…",
+      "after": "نقشہ کمرے کے ساتھ بانٹا جا رہا ہے…",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[room take a seat to play]",
+      "source": "Take an open seat to play",
+      "before": "کھیلنے کے لیے کھلی نشست لیں",
+      "after": "کھیلنے کے لیے کھلی نشست لیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[room waiting for a seat]",
+      "source": "Every seat is taken. You can take one when it opens.",
+      "before": "ہر نشست پُر ہے۔ خالی ہونے پر آپ نشست لے سکتے ہیں۔",
+      "after": "ہر نشست پُر ہے۔ خالی ہونے پر آپ نشست لے سکتے ہیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[room not seated]",
+      "source": "Not seated",
+      "before": "نشست نہیں لی",
+      "after": "نشست نہیں لی",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[room copied]",
+      "source": "Copied",
+      "before": "نقل ہو گیا",
+      "after": "نقل ہو گیا",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[room copy failed]",
+      "source": "Could not copy",
+      "before": "نقل نہیں ہو سکا",
+      "after": "نقل نہیں ہو سکا",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[room closed title]",
+      "source": "Room closed",
+      "before": "کمرہ بند",
+      "after": "کمرہ بند",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[room removed title]",
+      "source": "Removed from the room",
+      "before": "کمرے سے ہٹا دیا گیا",
+      "after": "کمرے سے ہٹا دیا گیا",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[room back to online]",
+      "source": "Back to online",
+      "before": "آن لائن پر واپس",
+      "after": "آن لائن پر واپس",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[leave match]",
+      "source": "Leave match",
+      "before": "میچ چھوڑیں",
+      "after": "میچ چھوڑیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[leave match title]",
+      "source": "Leave this match?",
+      "before": "یہ میچ چھوڑیں؟",
+      "after": "یہ میچ چھوڑیں؟",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[leave lan title]",
+      "source": "Leave this LAN game?",
+      "before": "یہ LAN کھیل چھوڑیں؟",
+      "after": "یہ LAN کھیل چھوڑیں؟",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[leave rated body]",
+      "source": "You lose this ranked match and your rating drops. The others play on, and you cannot come back to it.",
+      "before": "آپ یہ درجہ بند میچ ہار جائیں گے اور آپ کی ریٹنگ گرے گی۔ دوسرے کھیلتے رہیں گے اور آپ واپس نہیں آ سکیں گے۔",
+      "after": "آپ یہ درجہ بند میچ ہار جائیں گے اور آپ کی ریٹنگ گرے گی۔ دوسرے کھیلتے رہیں گے اور آپ واپس نہیں آ سکیں گے۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[leave casual body]",
+      "source": "This quick match counts as a loss for you. The others play on, and you cannot come back to it.",
+      "before": "یہ فوری میچ آپ کی ہار شمار ہو گا۔ دوسرے کھیلتے رہیں گے اور آپ واپس نہیں آ سکیں گے۔",
+      "after": "یہ فوری میچ آپ کی ہار شمار ہو گا۔ دوسرے کھیلتے رہیں گے اور آپ واپس نہیں آ سکیں گے۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[leave room body]",
+      "source": "You leave the room's match and it counts as a loss in your history. The others play on, and you cannot come back to it.",
+      "before": "آپ کمرے کا میچ چھوڑ دیں گے اور یہ آپ کے سابقہ ریکارڈ میں ہار شمار ہو گا۔ دوسرے کھیلتے رہیں گے اور آپ واپس نہیں آ سکیں گے۔",
+      "after": "آپ کمرے کا میچ چھوڑ دیں گے اور یہ آپ کے سابقہ ریکارڈ میں ہار شمار ہو گا۔ دوسرے کھیلتے رہیں گے اور آپ واپس نہیں آ سکیں گے۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[leave lan body]",
+      "source": "The others play on without you, and you cannot come back to this game.",
+      "before": "دوسرے آپ کے بغیر کھیلتے رہیں گے اور آپ اس کھیل میں واپس نہیں آ سکیں گے۔",
+      "after": "دوسرے آپ کے بغیر کھیلتے رہیں گے اور آپ اس کھیل میں واپس نہیں آ سکیں گے۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[leave match confirm]",
+      "source": "Leave match",
+      "before": "میچ چھوڑیں",
+      "after": "میچ چھوڑیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[keep playing]",
+      "source": "Keep playing",
+      "before": "کھیلتے رہیں",
+      "after": "کھیلتے رہیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[results team]",
+      "source": "Team",
+      "before": "ٹیم",
+      "after": "ٹیم",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[results quick unrated]",
+      "source": "Quick match · unrated",
+      "before": "فوری میچ · بغیر ریٹنگ",
+      "after": "فوری میچ · بغیر ریٹنگ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[conn card cannot keep up]",
+      "source": "Your device can't keep up with this match",
+      "before": "آپ کا آلہ اس میچ کی رفتار کا ساتھ نہیں دے سکتا",
+      "after": "آپ کا آلہ اس میچ کی رفتار کا ساتھ نہیں دے سکتا",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[conn card cannot keep up body]",
+      "source": "It replays the match more slowly than the match runs, so it will not catch up. You can leave the match, or lower the graphics settings and keep waiting.",
+      "before": "یہ میچ کی رفتار سے سست ری پلے چلاتا ہے، اس لیے حال تک نہیں پہنچے گا۔ آپ میچ چھوڑ سکتے ہیں یا گرافکس کی ترتیبات کم کر کے انتظار جاری رکھ سکتے ہیں۔",
+      "after": "یہ میچ کی رفتار سے سست ری پلے چلاتا ہے، اس لیے حال تک نہیں پہنچے گا۔ آپ میچ چھوڑ سکتے ہیں یا گرافکس کی ترتیبات کم کر کے انتظار جاری رکھ سکتے ہیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[conn card not gaining]",
+      "source": "not gaining",
+      "before": "فرق کم نہیں ہو رہا",
+      "after": "فرق کم نہیں ہو رہا",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[results reason opponents left]",
+      "source": "Your opponents left the match.",
+      "before": "آپ کے حریف میچ سے نکل گئے۔",
+      "after": "آپ کے حریف میچ سے نکل گئے۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[results reason victory]",
+      "source": "Every opposing colony was defeated.",
+      "before": "ہر مخالف بستی کو شکست ہوئی۔",
+      "after": "ہر مخالف بستی کو شکست ہوئی۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[results reason defeat]",
+      "source": "Your colony was defeated.",
+      "before": "آپ کی بستی کو شکست ہوئی۔",
+      "after": "آپ کی بستی کو شکست ہوئی۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[results reason you left]",
+      "source": "You left the match. It counts as a loss.",
+      "before": "آپ میچ سے نکل گئے۔ یہ ہار شمار ہو گا۔",
+      "after": "آپ میچ سے نکل گئے۔ یہ ہار شمار ہو گا۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[results final after end]",
+      "source": "Final result after the match ends.",
+      "before": "میچ ختم ہونے کے بعد حتمی نتیجہ۔",
+      "after": "میچ ختم ہونے کے بعد حتمی نتیجہ۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[pause none left]",
+      "source": "No pauses left",
+      "before": "توقف باقی نہیں",
+      "after": "توقف باقی نہیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[pause game left %0]",
+      "source": "Pause game (%0 left)",
+      "before": "کھیل روکیں (%0 باقی)",
+      "after": "کھیل روکیں (%0 باقی)",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[pause by %0]",
+      "source": "Paused by %0",
+      "before": "%0 نے روکا",
+      "after": "%0 نے روکا",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[pause by %0 resumes in %1]",
+      "source": "Paused by %0 · resumes in %1",
+      "before": "%0 نے روکا · %1 میں بحال ہو گا",
+      "after": "%0 نے روکا · %1 میں بحال ہو گا",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[turn too many actions]",
+      "source": "Too many actions: some are still waiting to be sent",
+      "before": "بہت زیادہ اقدامات: کچھ ابھی بھی بھیجے جانے کے منتظر ہیں",
+      "after": "بہت زیادہ اقدامات: کچھ ابھی بھی بھیجے جانے کے منتظر ہیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[turn no pauses left]",
+      "source": "You have no pauses left in this match",
+      "before": "اس میچ میں آپ کے توقف ختم ہو گئے ہیں",
+      "after": "اس میچ میں آپ کے توقف ختم ہو گئے ہیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[turn pause time used %0]",
+      "source": "%0 has used all their pause time: the game resumes",
+      "before": "%0 نے توقف کا پورا وقت استعمال کر لیا: کھیل بحال ہو رہا ہے",
+      "after": "%0 نے توقف کا پورا وقت استعمال کر لیا: کھیل بحال ہو رہا ہے",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[room seats one person %0 %1]",
+      "source": "1 player · %0 AI · %1 open",
+      "before": "1 کھلاڑی · %0 AI · %1 کھلی",
+      "after": "1 کھلاڑی · %0 AI · %1 کھلی",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[room rules otherwise standard]",
+      "source": "Every other rule is as in Standard.",
+      "before": "ہر دوسرا قاعدہ معیاری کے مطابق ہے۔",
+      "after": "ہر دوسرا قاعدہ معیاری کے مطابق ہے۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[room browser link]",
+      "source": "Link for browser players",
+      "before": "براؤزر کے کھلاڑیوں کا لنک",
+      "after": "براؤزر کے کھلاڑیوں کا لنک",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    }
+  ],
+  "status": "edited-awaiting-independent-recheck"
+}

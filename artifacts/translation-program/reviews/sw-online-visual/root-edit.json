@@ -1,0 +1,24 @@
+{
+  "editor": "/root",
+  "reviewer": "/root/hindi_online_review",
+  "before_sha256": "59a34af2d4ac447e4183db0bc2cea2825c93758925fb519d10df0eeed0f4847a",
+  "after_sha256": "6914cbf226adebd70d3ff401cfda759b62b62cc8af621b25f4ba994a8e0bec0a",
+  "changes": [
+    {
+      "key": " on {p0}",
+      "before": "kwenye {p0}",
+      "after": " kwenye {p0}"
+    },
+    {
+      "key": "Change",
+      "before": "Badilisha",
+      "after": "Mabadiliko"
+    },
+    {
+      "key": "Best {slot0}",
+      "before": "Bora {slot0}",
+      "after": "{slot0} bora"
+    }
+  ],
+  "status": "requires-original-reviewer-recheck"
+}

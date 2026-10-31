@@ -1,0 +1,387 @@
+{
+  "final_sha256": "de1091d2df613ac22bf2a9c46d1e3704712912c57e299e4171402aa002918d5e",
+  "families": 27,
+  "branches": 54,
+  "every_branch_actually_reread_again": true,
+  "entries": [
+    {
+      "key": " · {slot0} disconnect",
+      "source": {
+        "one": " · {slot0} disconnect",
+        "other": " · {slot0} disconnects"
+      },
+      "target": {
+        "one": " · رابطہ {slot0} بار منقطع ہوا",
+        "other": " · رابطہ {slot0} بار منقطع ہوا"
+      },
+      "changed_by_editor": false,
+      "independently_reread_all_branches": true,
+      "result": "pass"
+    },
+    {
+      "key": "Buy {slot0} credit · {slot1}",
+      "source": {
+        "one": "Buy {slot0} credit · {slot1}",
+        "other": "Buy {slot0} credits · {slot1}"
+      },
+      "target": {
+        "one": "{slot0} کریڈٹ خریدیں · {slot1}",
+        "other": "{slot0} کریڈٹ خریدیں · {slot1}"
+      },
+      "changed_by_editor": false,
+      "independently_reread_all_branches": true,
+      "result": "pass"
+    },
+    {
+      "key": "By {slot0} · {slot1} terrain · {slot2} resources",
+      "source": {
+        "one": "By {slot0} · {slot1} terrain · {slot2} resources",
+        "other": "By {slot0} · {slot1} terrains · {slot2} resources"
+      },
+      "target": {
+        "one": "مصنف {slot0} · {slot1} زمینی قسم · {slot2} وسائل",
+        "other": "مصنف {slot0} · {slot1} زمینی اقسام · {slot2} وسائل"
+      },
+      "changed_by_editor": false,
+      "independently_reread_all_branches": true,
+      "result": "pass"
+    },
+    {
+      "key": "Current {slot0} day and previous {slot1} days. Activity totals count account-days; the active-account cards count distinct accounts. Studio/job statuses use request creation dates. Publications count versions; recorded downloads use each library’s existing counting rules.",
+      "source": {
+        "one": "Current and previous reporting periods, in days: {slot0} and {slot1}. Activity totals count account-days; the active-account cards count distinct accounts. Studio/job statuses use request creation dates. Publications count versions; recorded downloads use each library’s existing counting rules.",
+        "other": "Current and previous reporting periods, in days: {slot0} and {slot1}. Activity totals count account-days; the active-account cards count distinct accounts. Studio/job statuses use request creation dates. Publications count versions; recorded downloads use each library’s existing counting rules."
+      },
+      "target": {
+        "one": "موجودہ اور پچھلی رپورٹنگ مدتیں، دنوں میں: {slot0} اور {slot1}۔ سرگرمی کے مجموعے اکاؤنٹ دن گنتے ہیں؛ فعال اکاؤنٹ کے کارڈ منفرد اکاؤنٹس گنتے ہیں۔ اسٹوڈیو/کام کی حالتیں درخواست بننے کی تاریخ استعمال کرتی ہیں۔ اشاعتیں ورژن گنتی ہیں؛ درج ڈاؤن لوڈ ہر لائبریری کے موجودہ شمار کے قواعد استعمال کرتے ہیں۔",
+        "other": "موجودہ اور پچھلی رپورٹنگ مدتیں، دنوں میں: {slot0} اور {slot1}۔ سرگرمی کے مجموعے اکاؤنٹ دن گنتے ہیں؛ فعال اکاؤنٹ کے کارڈ منفرد اکاؤنٹس گنتے ہیں۔ اسٹوڈیو/کام کی حالتیں درخواست بننے کی تاریخ استعمال کرتی ہیں۔ اشاعتیں ورژن گنتی ہیں؛ درج ڈاؤن لوڈ ہر لائبریری کے موجودہ شمار کے قواعد استعمال کرتے ہیں۔"
+      },
+      "changed_by_editor": false,
+      "independently_reread_all_branches": true,
+      "result": "pass"
+    },
+    {
+      "key": "Last {slot0} day",
+      "source": {
+        "one": "Last {slot0} day",
+        "other": "Last {slot0} days"
+      },
+      "target": {
+        "one": "پچھلا {slot0} دن",
+        "other": "پچھلے {slot0} دن"
+      },
+      "changed_by_editor": true,
+      "independently_reread_all_branches": true,
+      "result": "pass"
+    },
+    {
+      "key": "Rate {slot0}: {slot1} credit per million input tokens, {slot2} for cached input, {slot3} for cache writes, and {slot4} for output including reasoning. Repairs and follow-ups use the same rates.",
+      "source": {
+        "one": "Rate {slot0}: {slot1} credit per million input tokens, {slot2} for cached input, {slot3} for cache writes, and {slot4} for output including reasoning. Repairs and follow-ups use the same rates.",
+        "other": "Rate {slot0}: {slot1} credits per million input tokens, {slot2} for cached input, {slot3} for cache writes, and {slot4} for output including reasoning. Repairs and follow-ups use the same rates."
+      },
+      "target": {
+        "one": "شرح {slot0}: فی دس لاکھ ان پٹ ٹوکن {slot1} کریڈٹ، کیش شدہ ان پٹ کے لیے {slot2}، کیش میں لکھنے کے لیے {slot3}، اور استدلال سمیت آؤٹ پٹ کے لیے {slot4}۔ مرمت اور بعد کی کارروائیوں پر یہی شرحیں لاگو ہیں۔",
+        "other": "شرح {slot0}: فی دس لاکھ ان پٹ ٹوکن {slot1} کریڈٹ، کیش شدہ ان پٹ کے لیے {slot2}، کیش میں لکھنے کے لیے {slot3}، اور استدلال سمیت آؤٹ پٹ کے لیے {slot4}۔ مرمت اور بعد کی کارروائیوں پر یہی شرحیں لاگو ہیں۔"
+      },
+      "changed_by_editor": false,
+      "independently_reread_all_branches": true,
+      "result": "pass"
+    },
+    {
+      "key": "Reporting range: {slot0} through {slot1} (UTC). Today is still in progress; the previous {slot2} day are complete calendar days. History may be incomplete; comparisons use recorded observations only.",
+      "source": {
+        "one": "Reporting range: {slot0} through {slot1} (UTC). Today is still in progress; the previous {slot2} day is a complete calendar day. History may be incomplete; comparisons use recorded observations only.",
+        "other": "Reporting range: {slot0} through {slot1} (UTC). Today is still in progress; the previous {slot2} days are complete calendar days. History may be incomplete; comparisons use recorded observations only."
+      },
+      "target": {
+        "one": "رپورٹنگ مدت: {slot0} سے {slot1} تک (UTC)۔ آج کا دن جاری ہے؛ پچھلا {slot2} دن مکمل تقویمی دن ہے۔ سابقہ ریکارڈ نامکمل ہو سکتا ہے؛ موازنے صرف درج مشاہدات استعمال کرتے ہیں۔",
+        "other": "رپورٹنگ مدت: {slot0} سے {slot1} تک (UTC)۔ آج کا دن جاری ہے؛ پچھلے {slot2} دن مکمل تقویمی دن ہیں۔ سابقہ ریکارڈ نامکمل ہو سکتا ہے؛ موازنے صرف درج مشاہدات استعمال کرتے ہیں۔"
+      },
+      "changed_by_editor": false,
+      "independently_reread_all_branches": true,
+      "result": "pass"
+    },
+    {
+      "key": "Win rate, {slot0} day",
+      "source": {
+        "one": "Win rate, {slot0} day",
+        "other": "Win rate, {slot0} days"
+      },
+      "target": {
+        "one": "جیت کی شرح، {slot0} دن",
+        "other": "جیت کی شرح، {slot0} دن"
+      },
+      "changed_by_editor": false,
+      "independently_reread_all_branches": true,
+      "result": "pass"
+    },
+    {
+      "key": "{slot0}  {slot1} credit available",
+      "source": {
+        "one": "{slot0}  {slot1} credit available",
+        "other": "{slot0}  {slot1} credits available"
+      },
+      "target": {
+        "one": "{slot0}  {slot1} کریڈٹ دستیاب",
+        "other": "{slot0}  {slot1} کریڈٹ دستیاب"
+      },
+      "changed_by_editor": false,
+      "independently_reread_all_branches": true,
+      "result": "pass"
+    },
+    {
+      "key": "{slot0} credit available",
+      "source": {
+        "one": "{slot0} credit available",
+        "other": "{slot0} credits available"
+      },
+      "target": {
+        "one": "{slot0} کریڈٹ دستیاب",
+        "other": "{slot0} کریڈٹ دستیاب"
+      },
+      "changed_by_editor": false,
+      "independently_reread_all_branches": true,
+      "result": "pass"
+    },
+    {
+      "key": "{slot0} credit available · {slot1} reserved",
+      "source": {
+        "one": "{slot0} credit available · {slot1} reserved",
+        "other": "{slot0} credits available · {slot1} reserved"
+      },
+      "target": {
+        "one": "{slot0} کریڈٹ دستیاب · {slot1} مختص",
+        "other": "{slot0} کریڈٹ دستیاب · {slot1} مختص"
+      },
+      "changed_by_editor": false,
+      "independently_reread_all_branches": true,
+      "result": "pass"
+    },
+    {
+      "key": "{slot0} credit reserved for work in progress.",
+      "source": {
+        "one": "{slot0} credit reserved for work in progress.",
+        "other": "{slot0} credits reserved for work in progress."
+      },
+      "target": {
+        "one": "جاری کام کے لیے {slot0} کریڈٹ مختص۔",
+        "other": "جاری کام کے لیے {slot0} کریڈٹ مختص۔"
+      },
+      "changed_by_editor": false,
+      "independently_reread_all_branches": true,
+      "result": "pass"
+    },
+    {
+      "key": "{slot0} credit · {slot1}  {slot2}",
+      "source": {
+        "one": "{slot0} credit · {slot1}  {slot2}",
+        "other": "{slot0} credits · {slot1}  {slot2}"
+      },
+      "target": {
+        "one": "{slot0} کریڈٹ · {slot1}  {slot2}",
+        "other": "{slot0} کریڈٹ · {slot1}  {slot2}"
+      },
+      "changed_by_editor": false,
+      "independently_reread_all_branches": true,
+      "result": "pass"
+    },
+    {
+      "key": "{slot0} credit — {slot1}",
+      "source": {
+        "one": "{slot0} credit — {slot1}",
+        "other": "{slot0} credits — {slot1}"
+      },
+      "target": {
+        "one": "{slot0} کریڈٹ — {slot1}",
+        "other": "{slot0} کریڈٹ — {slot1}"
+      },
+      "changed_by_editor": false,
+      "independently_reread_all_branches": true,
+      "result": "pass"
+    },
+    {
+      "key": "{slot0} day",
+      "source": {
+        "one": "{slot0} day",
+        "other": "{slot0} days"
+      },
+      "target": {
+        "one": "{slot0} دن",
+        "other": "{slot0} دن"
+      },
+      "changed_by_editor": false,
+      "independently_reread_all_branches": true,
+      "result": "pass"
+    },
+    {
+      "key": "{slot0} terrain · {slot1} resources · revision {slot2}",
+      "source": {
+        "one": "{slot0} terrain · {slot1} resources · revision {slot2}",
+        "other": "{slot0} terrains · {slot1} resources · revision {slot2}"
+      },
+      "target": {
+        "one": "{slot0} زمینی قسم · {slot1} وسائل · ترمیم {slot2}",
+        "other": "{slot0} زمینی اقسام · {slot1} وسائل · ترمیم {slot2}"
+      },
+      "changed_by_editor": false,
+      "independently_reread_all_branches": true,
+      "result": "pass"
+    },
+    {
+      "key": "{slot0} terrain · {slot1} resources · {slot2}",
+      "source": {
+        "one": "{slot0} terrain · {slot1} resources · {slot2}",
+        "other": "{slot0} terrains · {slot1} resources · {slot2}"
+      },
+      "target": {
+        "one": "{slot0} زمینی قسم · {slot1} وسائل · {slot2}",
+        "other": "{slot0} زمینی اقسام · {slot1} وسائل · {slot2}"
+      },
+      "changed_by_editor": false,
+      "independently_reread_all_branches": true,
+      "result": "pass"
+    },
+    {
+      "key": "{slot0} · {slot1} second",
+      "source": {
+        "one": "{slot0} · {slot1} second",
+        "other": "{slot0} · {slot1} seconds"
+      },
+      "target": {
+        "one": "{slot0} · {slot1} سیکنڈ",
+        "other": "{slot0} · {slot1} سیکنڈ"
+      },
+      "changed_by_editor": false,
+      "independently_reread_all_branches": true,
+      "result": "pass"
+    },
+    {
+      "key": "{slot0} × {slot1} · {slot2} player",
+      "source": {
+        "one": "{slot0} × {slot1} · {slot2} player",
+        "other": "{slot0} × {slot1} · {slot2} players"
+      },
+      "target": {
+        "one": "{slot0} × {slot1} · {slot2} کھلاڑی",
+        "other": "{slot0} × {slot1} · {slot2} کھلاڑی"
+      },
+      "changed_by_editor": false,
+      "independently_reread_all_branches": true,
+      "result": "pass"
+    },
+    {
+      "key": "{slot0} × {slot1} · {slot2} player · Private until published",
+      "source": {
+        "one": "{slot0} × {slot1} · {slot2} player · Private until published",
+        "other": "{slot0} × {slot1} · {slot2} players · Private until published"
+      },
+      "target": {
+        "one": "{slot0} × {slot1} · {slot2} کھلاڑی · اشاعت تک نجی",
+        "other": "{slot0} × {slot1} · {slot2} کھلاڑی · اشاعت تک نجی"
+      },
+      "changed_by_editor": false,
+      "independently_reread_all_branches": true,
+      "result": "pass"
+    },
+    {
+      "key": "{slot0}: {slot1} · {slot2} credit",
+      "source": {
+        "one": "{slot0}: {slot1} · {slot2} credit",
+        "other": "{slot0}: {slot1} · {slot2} credits"
+      },
+      "target": {
+        "one": "{slot0}: {slot1} · {slot2} کریڈٹ",
+        "other": "{slot0}: {slot1} · {slot2} کریڈٹ"
+      },
+      "changed_by_editor": false,
+      "independently_reread_all_branches": true,
+      "result": "pass"
+    },
+    {
+      "key": " · {count} team",
+      "source": {
+        "one": " · {count} team",
+        "other": " · {count} teams"
+      },
+      "target": {
+        "one": " · {count} ٹیم",
+        "other": " · {count} ٹیمیں"
+      },
+      "changed_by_editor": false,
+      "independently_reread_all_branches": true,
+      "result": "pass"
+    },
+    {
+      "key": "{count} credit",
+      "source": {
+        "one": "{count} credit",
+        "other": "{count} credits"
+      },
+      "target": {
+        "one": "{count} کریڈٹ",
+        "other": "{count} کریڈٹ"
+      },
+      "changed_by_editor": false,
+      "independently_reread_all_branches": true,
+      "result": "pass"
+    },
+    {
+      "key": "{count} player on this page",
+      "source": {
+        "one": "{count} player on this page",
+        "other": "{count} players on this page"
+      },
+      "target": {
+        "one": "اس صفحے پر {count} کھلاڑی",
+        "other": "اس صفحے پر {count} کھلاڑی"
+      },
+      "changed_by_editor": false,
+      "independently_reread_all_branches": true,
+      "result": "pass"
+    },
+    {
+      "key": "{count} team · ",
+      "source": {
+        "one": "{count} team · ",
+        "other": "{count} teams · "
+      },
+      "target": {
+        "one": "{count} ٹیم · ",
+        "other": "{count} ٹیمیں · "
+      },
+      "changed_by_editor": false,
+      "independently_reread_all_branches": true,
+      "result": "pass"
+    },
+    {
+      "key": "{count} version",
+      "source": {
+        "one": "{count} version",
+        "other": "{count} versions"
+      },
+      "target": {
+        "one": "{count} ورژن",
+        "other": "{count} ورژن"
+      },
+      "changed_by_editor": false,
+      "independently_reread_all_branches": true,
+      "result": "pass"
+    },
+    {
+      "key": "{slot0} · {count} image",
+      "source": {
+        "one": "{slot0} · {count} image",
+        "other": "{slot0} · {count} images"
+      },
+      "target": {
+        "one": "{slot0} · {count} تصویر",
+        "other": "{slot0} · {count} تصاویر"
+      },
+      "changed_by_editor": false,
+      "independently_reread_all_branches": true,
+      "result": "pass"
+    }
+  ],
+  "notes": "Changed Last-day family uses پچھلا singular and پچھلے plural; Urdu invariant کریڈٹ/دن/کھلاڑی/ورژن in other families remain legitimate."
+}

@@ -1,0 +1,26 @@
+[
+  {
+    "locale": "hi",
+    "native_sha256": "f31431ad0a4f51ddd3313a0726847f0ac0c1183ca644b9d80da4e030c444ce5c",
+    "online_sha256": "d80bdd87f3502c34e45ae744d8e0f8bac3cafd93755a5ef87e0bed8bec3d74c4",
+    "native_keys": 3416,
+    "old_target_changes": 0,
+    "status": "mechanical draft assembly; review chain validation and technical gates separate"
+  },
+  {
+    "locale": "ur",
+    "native_sha256": "00a9a60ebcee4730851744cf91fb5320c91ecbcc378ead36aaae2644500a19bc",
+    "online_sha256": "db375ee564c39cf02dfb4ce08d6a4dbaecb8cd69d5bc7f167b4c7f779e246587",
+    "native_keys": 3416,
+    "old_target_changes": 0,
+    "status": "mechanical draft assembly; review chain validation and technical gates separate"
+  },
+  {
+    "locale": "sw",
+    "native_sha256": "ccb1751ebc28116d3d7510f5fe48e7bb3ded222aec088772019fb9a78d646ef6",
+    "online_sha256": "6914cbf226adebd70d3ff401cfda759b62b62cc8af621b25f4ba994a8e0bec0a",
+    "native_keys": 3416,
+    "old_target_changes": 4,
+    "status": "mechanical draft assembly; review chain validation and technical gates separate"
+  }
+]

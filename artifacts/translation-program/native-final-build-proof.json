@@ -1,0 +1,49 @@
+{
+  "status": "passed",
+  "native_input_count": 2582,
+  "before_after_native_inputs_equal": true,
+  "producer": {
+    "compiler": "g++",
+    "dirty": false,
+    "flags": {
+      "CCFLAGS": "-O0 -g1 -fdebug-prefix-map=/Users/bradley/.codex/worktrees/ed62/glob2=.",
+      "CPPDEFINES": "GLOB2_OFFICIAL_INSTANCE_ORIGIN \\\"https://app.glob2.online\\\" GLOB2_OFFICIAL_INSTANCE_FORMER_ORIGINS \\\"https://glob2online.com https://app.glob2online.com\\\" HAVE_CONFIG_H GL_SILENCE_DEPRECATION GLOB2_RENDER_SHADER_DIR \\\"/Users/bradley/.codex/worktrees/ed62/glob2/build/darwin/client/debug/dev-dev_fast-true-linker-auto/shaders\\\" SDL_MAIN_HANDLED",
+      "CXXFLAGS": "-std=gnu++20 -Wall -fPIC",
+      "LINKFLAGS": "-Wall -Wl,-rpath,/opt/homebrew/lib"
+    },
+    "revision": "92205aae687b650ed8b9aea4b31265f0ff6b7301",
+    "sourceStatus": [],
+    "sourceTreeSha256": "f769966128e5998dbcaec839271dc2a451dcd58b15e114e61ac2935857345de2"
+  },
+  "source_identity": {
+    "revision": "92205aae687b650ed8b9aea4b31265f0ff6b7301",
+    "dirty": false,
+    "sourceStatus": [],
+    "sourceTreeSha256": "f769966128e5998dbcaec839271dc2a451dcd58b15e114e61ac2935857345de2"
+  },
+  "executable_sha256": "0cc55b27ae690334c60178a8de2fe8454a2eee1c3623fefbef51875b4ce83fca",
+  "source_snapshot_before_sha256": "5a32b2b60693f4aa5e9793ffc006d2a0b0d221b7fffb00a203641f29a403acca",
+  "source_snapshot_after_sha256": "5a32b2b60693f4aa5e9793ffc006d2a0b0d221b7fffb00a203641f29a403acca",
+  "compiled_header_sha256": "9c1a836481e39043fca7c0e06d7aa37eeacf4ce1bce80c39bb0e7eade5d96114",
+  "build_log": "native-final-build.log",
+  "build_log_sha256": "38e230bf60d95909d0ec7a01e929b9e42177a90eb690d40cf3a1516a50ee992b",
+  "build_exit_code": 0,
+  "command": "PYTHONPATH=$PWD python3 tools/dev_build.py translation-preview-harness engine-tests -j3",
+  "runtime_prefix": "artifacts/translation-program/script-support/prefix",
+  "expected_runtime_versions": {
+    "SDL_ttf": [
+      3,
+      2,
+      2
+    ],
+    "HarfBuzz": [
+      10,
+      1,
+      0
+    ]
+  },
+  "limits": [
+    "macOS arm64 fast-development build, not release validation.",
+    "New capture helper now dismisses automatic briefings and records the dialog-free invariant; actual images remain independently reviewed."
+  ]
+}

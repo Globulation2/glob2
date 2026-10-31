@@ -1,0 +1,14 @@
+{
+  "native_sha256": "d23c1b75c4ae209b85a6dbd9f2fb0ab084ab7bb21b7544ec8a4a5ad545129cc5",
+  "batches": 24,
+  "keys": 3328,
+  "exactly_once": true,
+  "subset_hashes_match": true,
+  "native_parse_errors": [],
+  "catalog_edited": false,
+  "native_errors": [],
+  "native_untranslated": [],
+  "english_equal_exactly_dispositioned": 46,
+  "initial_native_sha256": "4f19c506d6d7d4bfd22c576ad1797e21a7a71a92d693e06c1a48a034585ceead",
+  "final_recheck": "../sw-native-recheck/summary.json"
+}

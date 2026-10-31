@@ -1,0 +1,45 @@
+{
+  "id": "native-tutorial-001",
+  "source_sha256": "a016e71957f16bbb880475c49b1d22dc8cbb7ae285fbbaa963464e0ea491fe0b",
+  "surface": "native",
+  "domain": "tutorial",
+  "context": "Teach the player the action shown. Preserve tutorial execution and mission identifiers; translate display text only.",
+  "entries": [
+    {
+      "id": "native:[tutorial text 1]",
+      "key": "[tutorial text 1]",
+      "source": "Welcome to the Globulation 2 primary tutorial! This tutorial will cover everything from building inns, exploring zones, and destroying enemies! There is no shortage of useful knowledge here!"
+    },
+    {
+      "id": "native:[tutorial text 2]",
+      "key": "[tutorial text 2]",
+      "source": "Now that you have mastered the basics, it's time to get used to other buildings such as Racetracks, Swimming Pools, and Schools."
+    },
+    {
+      "id": "native:[tutorial text 3]",
+      "key": "[tutorial text 3]",
+      "source": "You have done well to get this far. Now let's move on to Warriors, Barracks, and Upgrades."
+    },
+    {
+      "id": "native:[tutorial text 4]",
+      "key": "[tutorial text 4]",
+      "source": "You are almost finished. Only flags and attacking remain. Then you'll know enough to try Custom Games and eventually play online against some of Globulation 2's finest players."
+    },
+    {
+      "id": "native:[tutorial]",
+      "key": "[tutorial]",
+      "source": "Tutorial"
+    }
+  ],
+  "carryforward": {
+    "prior_manifest": {
+      "path": "../release-three/manifest.json",
+      "sha256": "4fd5e1faff01b7eb0e95db7eac33105ab557101742f6ef1a889e7b73210eb977"
+    },
+    "prior_batch": {
+      "path": "../release-three/batches/native-tutorial-001.json",
+      "sha256": "a082f135ea663f22823b66b9ae3198e61914d37a96b3d673be7ad047e46fb583"
+    },
+    "method": "Partition retained keys by original ownership; radius supplement receives separate Sw correction chain, unchanged Hi/Ur retain original chain. No fresh reading inferred."
+  }
+}

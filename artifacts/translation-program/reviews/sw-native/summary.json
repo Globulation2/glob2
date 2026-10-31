@@ -1,0 +1,59 @@
+{
+  "reviewer": "/root/hindi_online_review",
+  "author": "/root/swahili_translation",
+  "locale": "sw",
+  "surface": "native",
+  "source_sha256": "aacd8a342e9e734ba47f902a161ac1a45badff5842a617bcd68bf8e2275d6013",
+  "native_snapshot_sha256": "4f19c506d6d7d4bfd22c576ad1797e21a7a71a92d693e06c1a48a034585ceead",
+  "batches_read": 24,
+  "keys_read_exactly_once": 3328,
+  "complete_AI_profiles_read": 9,
+  "tutorial_keys_read": 126,
+  "paired_descriptions": "All first/second rows read as complete intended sentences, including food, barracks, school, swimming pool, tower and wall descriptions.",
+  "findings": 32,
+  "severity_counts": {
+    "major": 26,
+    "minor": 6
+  },
+  "accepted_english_entries": 46,
+  "catalog_edited": false,
+  "locale_finalized": false,
+  "status": "linguistic-recheck-complete-awaiting-other-gates",
+  "references": [
+    {
+      "url": "https://wisc.pb.unizin.org/dini/back-matter/appendix-noun-class/",
+      "inspection": "Read actual animate-agreement discussion and examples; animate noun shape need not determine agreement."
+    },
+    {
+      "url": "https://mozilla-l10n.github.io/styleguides/sw/",
+      "inspection": "Read actual software tone, compounds, noun agreement, abbreviations and procedure guidance critically; outdated programming-quote prescriptions do not override repository syntax."
+    },
+    {
+      "url": "https://docs.steinhardt.nyu.edu/pdfs/metrocenter/atn293/biology/hs_living_environment_swahili.pdf",
+      "inspection": "Read publication identity and actual moss(es)=kuvumwani entry (page33/printed32); attested educational term, not rejected merely because unfamiliar."
+    },
+    {
+      "url": "https://wold.clld.org/word/72141734932533495",
+      "inspection": "Read Thilo Schadeberg lexical record: mzinga specifically man-made cylindrical beehive/cannon; not inherently a better creature-production label than a nest."
+    },
+    {
+      "url": "https://hist.hse.ru/data/2021/06/11/1442422693/A.C.%20Madan%20-%20Swahili-English%20Dictionary.pdf",
+      "inspection": "Inspected retrieved lexical entry for kiota (viota), nest/laying place; historical evidence used only for core meaning, not modern software style."
+    }
+  ],
+  "accepted_context_decisions": [
+    "Swarm=Kiota/Viota accepted as a game-specific nest/production-structure term, reinforced by Huzalisha viumbe wapya. Do not translate as troop-group or force beehive-specific Mzinga merely because another language uses hive.",
+    "Moss=Kuvumwani accepted: explicitly attested in primary educational biology glossary.",
+    "Animate viumbe use hawawezi/hawapatikani/wako/wana; singular kiumbe uses amejiunga. Pilot fixes present and correctly preserved.",
+    "Corn key source is Wheat and becomes Ngano; food-labeled statistics source values correctly become Chakula, avoiding source-key guesses.",
+    "All tutorial numbers/directions and production, feeding, upgrades, unit counts were compared; remaining specific findings recorded.",
+    "Makazi is collective ma-class; standard ya- agreement is generally consistent, with one explicit source-key finding for kila makazi lina. Eneo la makazi halina is correct because subject is eneo."
+  ],
+  "limitations": [
+    "No native-human certification.",
+    "Visual wrapping, UI length, accessibility and platform verification remain separate acceptance gates."
+  ],
+  "final_native_sha256": "d23c1b75c4ae209b85a6dbd9f2fb0ab084ab7bb21b7544ec8a4a5ad545129cc5",
+  "open_linguistic_findings": 0,
+  "editor_recheck": "../sw-native-recheck/summary.json"
+}

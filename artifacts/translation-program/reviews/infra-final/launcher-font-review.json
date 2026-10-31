@@ -1,0 +1,90 @@
+{
+  "reviewer": "/root/translation_kit",
+  "scope": "Independent read-only review of root standalone-launcher font integration; reviewer authored focused HTTP regression test only. No own product font fix signoff.",
+  "source_sha256": {
+    "scons/web_assets.py": "167b14e2f547e764f18c8f3bd5c2746047767098621078ddfab21bfcf15a0b45",
+    "scons/web_build.py": "4fd387cf50a7b26b294ab3acba2d3b9b9ef3f2ddc253438045ff5bceea22e295",
+    "browser/shell.html": "556ba59567d5f685797d1ecb840313ce5500d818fb38606c004fec5b46e2c4af",
+    "browser/package-static.py": "8fbbfb4f9d6e019effc5556f13c1c12cc98efa6ca6ce6fcb4112fd4905ecbee3",
+    "platform/packages/i18n/script-fonts.css": "593a96e3c346cacaf35f40bb2304703455f41a7e97d3cdd76e5290fe8b3bcf50",
+    "deploy/Caddyfile": "2a11c0619684babf4e6f26a4406f3b56641ed2d7057ef92890bf9aa9d6dd24db",
+    ".github/workflows/build.yml": "4dd3944766ee374592d4201fbb6ec99e7aeb95703b8da5838d8aeefa18f6a9bb",
+    "test/deployment/test_browser_font_types.py": "d566a24dd2602038d7dcb48ee148b4927758d55790d16a9c4717478d946d312a"
+  },
+  "findings": [
+    {
+      "id": "launcher-input-font",
+      "severity": "major",
+      "file": "browser/shell.html",
+      "problem": "DOM text bridge inline system-ui font bypassed new script family despite available HTTP fonts.",
+      "disposition": "Root changed inline font to16px var(--glob2-script-body,system-ui); independently reread. Existing root locales retain original fallback; new script locales inherit approved family.",
+      "status": "source-fix-reviewed-browser-render-verification-pending"
+    },
+    {
+      "id": "launcher-gzip-css-MIME",
+      "severity": "major",
+      "file": "deploy/Caddyfile",
+      "problem": "Precompression rewrite changed CSS request to.css.gz without restoring text/css, returning application/gzip.",
+      "prepatch_evidence": [
+        "launcher-http-mime/Caddyfile",
+        "launcher-http-mime/gzip-response.log",
+        "launcher-http-mime/identity-response.log"
+      ],
+      "prepatch_method": "Isolated existing Docker Caddy image with exact previous gzip matching/rewrite excerpt; waited for readiness. Gzip CSS200/application-gzip; identity200/text-css. Initial premature readiness attempts were not evidence; retained successful final headers. Container removed.",
+      "disposition": "Root added explicit CSS, TTF and JSON Content-Type before rewrite. Exact current production /play route independently exercised by focused test.",
+      "status": "fixed-and-HTTP-regression-verified"
+    }
+  ],
+  "open_blocking_findings": [],
+  "review_observations": [
+    "Launcher HTTP font closure is separate from Emscripten VFS fonts;13 pinned TTFs and canonical Noto OFL are copied with rebased relative fonts/ URLs.",
+    "SCons Command declares CSS, manifest, OFL, helper source and every actual TTF as inputs and15 outputs. Default/web-package page dependencies include font staging.",
+    "Package release identity includes font closure names/bytes, including CSS and OFL. Stable CSS/TTF URLs are safe under production /play no-cache policy; custom hosts must similarly revalidate unversioned files.",
+    "Static verification requires every font original+gzip, independently checks pinned font hashes and validates gzip decoded content against original, even if checksums are regenerated.",
+    "Both web artifact inventories explicitly include script-fonts.css and fonts/. Existing CI deployment unittest discovery includes the new HTTP test.",
+    "Outer launcher root font var uses prior Nunito/system stack as fallback. New script selectors opt in; existing33 root locale stacks remain unchanged. Options receive native lang and dir.",
+    "DOM input data-i18n-aria attribute now lets existing locale-change refresh update accessible labels; font var is computed dynamically after root locale changes. New label integration remains separately independently reviewed/source-delta gated.",
+    "Production font-src self permits relative same-origin font requests; gzip route now retains correct MIME, encoding and revalidation."
+  ],
+  "independent_validation": {
+    "HTTP": {
+      "command": "python3 test/deployment/test_browser_font_types.py -v",
+      "log": "launcher-http-font-test.log",
+      "exit_code": 0,
+      "cases": 1,
+      "seconds": 6.501,
+      "caddy_version": "2.11.6",
+      "coverage": "Actual complete /play production route extracted without replacing its matching/rewrite logic; CSS, JSON and all13 exact pinned fonts; GET/HEAD; identity/gzip; MIME, content encoding, decoded bytes/hash, CSP and cache headers. Isolated127.0.0.1 server terminated after test."
+    },
+    "package": {
+      "command": "python3 artifacts/translation-program/reviews/infra-final/launcher-package-probe.py",
+      "results": "launcher-package-probe.json",
+      "exit_code": 0,
+      "font_count": 13,
+      "font_CSS_OFL_original_and_gzip_count": 30,
+      "checks": [
+        "Exact canonical OFL copy",
+        "All rebased CSS URLs point to staged pinned fonts",
+        "Changing CSS changes release identity",
+        "Same input yields same version",
+        "Missing gzip rejected",
+        "Self-consistent wrong gzip rejected against original",
+        "Self-consistent wrong font rejected against canonical pin"
+      ]
+    },
+    "diff_whitespace": "git diff --check on new focused HTTP test passes"
+  },
+  "DOM_font_loading_acceptance_still_required": [
+    "Check first visit and saved hi/ur preferences, including launcher picker options, loading/errors and actual editable/read-only DOM text bridge inputs.",
+    "Wait for requested font faces to load and assert matching FontFace.status loaded for Hindi/Urdu representative text; document.fonts.ready or successful bytes alone does not prove the intended font renders.",
+    "Exercise failed font fetch fallback and locale switching on an already existing input; aria label and computed font stack must refresh.",
+    "Inspect actual desktop/phone shaping, RTL numbers/URLs and IME/caret behavior; native browser/OS picker behavior is platform dependent.",
+    "Swahili uses existing Latin font stack and should retain that geometry; current fonts do not imply all platforms visually verified."
+  ],
+  "limits": [
+    "No full browser UI rendering or screen-reader audio verified by these HTTP/package tests.",
+    "Focused test author is this reviewer; root should independently review test code.",
+    "No live catalogs changed in this infrastructure review; accessibility-label edit-1.json is a separate36-entry editorial record.",
+    "Review is bound to these hashes; later source/integration edits require refreshed evidence."
+  ]
+}

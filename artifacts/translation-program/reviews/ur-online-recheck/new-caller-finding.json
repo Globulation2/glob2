@@ -1,0 +1,17 @@
+{
+  "id": "UR-O-R2-001",
+  "key": "{value0} playing",
+  "severity": "major",
+  "source": "{value0} playing",
+  "before": "{value0} کھیل رہے ہیں",
+  "suggested_correction": "{value0} کی موسیقی چل رہی ہے",
+  "problem": "Exclusive caller music/Player.tsx189 interpolates a music mood, not people playing a game. All Calm/Building/Combat statuses must mean audio playback.",
+  "original_reviewer": "/root/pilot_context",
+  "state": "resolved-by-distinct-supplemental-editor-and-original-reviewer-recheck",
+  "caller_sha256": "56eace9bbeaabe03faed4e8397d47ce24227c924993b8df26229352ddbb60235",
+  "note": "Missed in original full review; discovered during actual caller recheck of editor mood-label normalization.",
+  "final_target": "{value0} کی موسیقی چل رہی ہے",
+  "final_sha256": "de1091d2df613ac22bf2a9c46d1e3704712912c57e299e4171402aa002918d5e",
+  "supplemental_editor": "/root",
+  "supplemental_ledger_sha256": "87dd398e5cdbd414b24d486541bf7d44f8ad5d01ad729a1a7b3defc2b76822fa"
+}

@@ -1,0 +1,800 @@
+{
+  "Add a terrain or resource to begin. Built-in presets supply properties without copying their artwork into your set.": {
+    "before": "शुरू करने के लिए भूभाग या संसाधन जोड़ें। साथ आए प्रीसेट आपकी संग्रह में अपनी कलाकृतियाँ कॉपी किए बिना गुण देते हैं।",
+    "after": "शुरू करने के लिए भूभाग या संसाधन जोड़ें। साथ आए प्रीसेट आपके संग्रह में अपनी कलाकृतियाँ कॉपी किए बिना गुण देते हैं।",
+    "reason": "आपकी संग्रह is incorrect gender agreement for masculine संग्रह.",
+    "review_findings": [
+      "HI-ON-001-01"
+    ],
+    "before_sha256": "9b6f657badfd732aea935e83751cbff7806fa8a65e5f9a873d4dcb6322fb603d",
+    "after_sha256": "57886b3aba32396d3683f4eca2da8fb79111f6c14ea113a9ac190a19257f2ac0"
+  },
+  "3 to 32 letters, digits, dots, dashes or underscores. Other players see it.": {
+    "before": "3 से 32 अक्षर, अंक, बिंदु, डैश या अंडरस्कोर। यह अन्य खिलाड़ियों को दिखता है।",
+    "after": "3 से 32 लैटिन अक्षर (A–Z, a–z), अंक (0–9), बिंदु, डैश या अंडरस्कोर। यह अन्य खिलाड़ियों को दिखता है।",
+    "reason": "The localized hint implies Devanagari letters/digits may be accepted, but USERNAME accepts only ASCII A-Z/a-z/0-9 plus ._-. Clarify the actual restriction.",
+    "review_findings": [
+      "HI-ON-001-02"
+    ],
+    "before_sha256": "e4ad4fc4289e2f40ef002598ce2714daf1e42b5d629711de9e63e06d5364b352",
+    "after_sha256": "d297549f75d7c3a7aeb0182e2329f641207514a5230a8e78696b210019d48a07"
+  },
+  "A Globulation 2 colony: globs at work around their swarm": {
+    "before": "Globulation 2 की बस्ती: अपने झुंड के आसपास काम करते ग्लोब्यूल",
+    "after": "Globulation 2 की बस्ती: अपने छत्ते के आसपास काम करते ग्लोब्यूल",
+    "reason": "झुंड means a troop/group; this refers to the colony unit-production Swarm building. Align with the independently settled native glossary छत्ता.",
+    "review_findings": [
+      "HI-ON-001-03"
+    ],
+    "before_sha256": "5a605144687fea732fad19a0c2f0cb2ee14b8e56ee75d7069a5e010cfcc738a5",
+    "after_sha256": "75f40085d02df6077cba75a05ca2b1966de09c52c20d1b23c9157b478b5945e2"
+  },
+  "Cancellation is unavailable while the provider outcome and reserved credits are reconciled. You can keep editing the saved source or export it.": {
+    "before": "प्रदाता के परिणाम और सुरक्षित क्रेडिट का मिलान होने तक रद्द करना उपलब्ध नहीं है। आप सहेजे स्रोत को बदलते या निर्यात करते रह सकते हैं।",
+    "after": "प्रदाता के परिणाम और आरक्षित क्रेडिट का मिलान होने तक रद्द करना उपलब्ध नहीं है। आप सहेजे स्रोत को बदलते या निर्यात करते रह सकते हैं।",
+    "reason": "Reserved means allocated/held and unavailable for another use; सुरक्षित communicates protected/safe. Keep safe/preserved wording elsewhere unchanged.",
+    "review_findings": [
+      "HI-ON-002-01"
+    ],
+    "before_sha256": "a77b7ad9434eeceb7c2bf826a9963cfdfad6ee82b2e9a0020f44ae5004aab7fa",
+    "after_sha256": "4d5064e39c5b1e6d25a784dc6922732fd0056838178d54bb3d0eaf84a5e01a94"
+  },
+  "Close credits": {
+    "before": "श्रेय बंद करें",
+    "after": "क्रेडिट पैनल बंद करें",
+    "reason": "This closes the purchasable credit drawer, not an attribution/acknowledgement credits screen. श्रेय changes the domain.",
+    "review_findings": [
+      "HI-ON-003-01"
+    ],
+    "before_sha256": "b06320641aa54a91f79ed885965e5a08792e874b3008f249dc5e858565e2bacd",
+    "after_sha256": "85b2eb83ca2215cb70535ca2ceb4a8d91cd52a552b5924baad77a1c4054bc67c"
+  },
+  "Drag to paint · Rotate tool to turn · scroll or pinch to zoom": {
+    "before": "रंगने के लिए खींचें · घुमाने के लिए घुमाएँ औज़ार · ज़ूम के लिए स्क्रॉल या पिंच करें",
+    "after": "रंगने के लिए खींचें · घुमाने के लिए «घुमाएँ» औज़ार चुनें · ज़ूम के लिए स्क्रॉल या पिंच करें",
+    "reason": "घुमाने के लिए घुमाएँ औज़ार is not a complete natural instruction. Rotate is the named tool.",
+    "review_findings": [
+      "HI-ON-005-01"
+    ],
+    "before_sha256": "453d08accc7611d125aaa0ca50d9645aa198ba257f6e433933659d5c67cca92a",
+    "after_sha256": "c29a5454f9fe439de339f4324a28b269cb5597a4d33929eb17b0702fcd2cd65c"
+  },
+  "Each product has its own credit unit. Flows cover the current selected range across all payment modes. Usage/refund ledger entries are signed; reserved balances are current snapshots.": {
+    "before": "हर उत्पाद की अपनी क्रेडिट इकाई है। प्रवाह चुनी मौजूदा अवधि के सभी भुगतान तरीकों को शामिल करता है। उपयोग/वापसी के बही रिकॉर्ड धनात्मक या ऋणात्मक हैं; सुरक्षित शेष मौजूदा स्थिति के चित्र हैं।",
+    "after": "हर उत्पाद की अपनी क्रेडिट इकाई है। प्रवाह चुनी मौजूदा अवधि के सभी भुगतान तरीकों को शामिल करता है। उपयोग/वापसी के बही रिकॉर्ड धनात्मक या ऋणात्मक हैं; आरक्षित शेष इस समय की स्थिति बताते हैं।",
+    "reason": "Keep reserved allocation meaning; snapshots are current balances, notliteralpictures.",
+    "review_findings": [
+      "HI-ON-005-02"
+    ],
+    "before_sha256": "434ea6832b3922cae701e185851511ae725b8f43e8c4f5a6ab3735779cdf059b",
+    "after_sha256": "d00c53fe73a15a3e1fec399f336e585840f6585e9a786d436ba257f84943cf04"
+  },
+  "Each shape shares the swarm paint area. Check the result after switching.": {
+    "before": "हर आकार झुंड के रंग का क्षेत्र साझा करता है। बदलने के बाद परिणाम जाँचें।",
+    "after": "हर आकृति छत्ते का रंगने वाला क्षेत्र साझा करती है। बदलने के बाद परिणाम जाँचें।",
+    "reason": "Align geometry term and feminine agreement.",
+    "review_findings": [
+      "HI-ON-005-03"
+    ],
+    "before_sha256": "18f6d745e38e521db428e85830d743f551463ee902ec3fddd9f16db7b62c6663",
+    "after_sha256": "9b5a12beb8233206e13c06055fcedf36b6efbc20dee4c7858a982dbee326c6b0"
+  },
+  "Health restored per tick": {
+    "before": "हर टिक बहाल सेहत",
+    "after": "हर टिक पर बहाल होने वाली सेहत",
+    "reason": "हर टिक बहाल सेहत is an unnatural compressed noun phrase; add the relation without implying an action button.",
+    "review_findings": [
+      "HI-ON-006-01"
+    ],
+    "before_sha256": "98c0ed524d354977f46b75dcf1f1b86a2d91ad18e41b5b5fa643406a3987ed53",
+    "after_sha256": "5491a28af30c9cb0289bd5b89ae74d78cceadf87506c3046499f1ddffff89b13"
+  },
+  "Lost": {
+    "before": "खोया",
+    "after": "हार",
+    "reason": "Match outcome lost is translated as a lost object (खोया), inconsistent with Won→जीत and the already-correct (lost)→(हारा).",
+    "review_findings": [
+      "HI-ON-007-01"
+    ],
+    "before_sha256": "30a395a408a7985b8c02725eb30298d70e4c5ab10162afb5210c5134025f7781",
+    "after_sha256": "c7d2e6436d3e7ccc8560abb5908bad4407831eadbbd194ab8780de667584600f"
+  },
+  "Mark this generation failed and return {value0} reserved product credit(s)? Confirm that its delivery cannot be recovered.": {
+    "before": "इस निर्माण को विफल चिह्नित करके {value0} सुरक्षित उत्पाद क्रेडिट लौटाएँ? पुष्टि करें कि इसकी रचना पुनर्प्राप्त नहीं हो सकती।",
+    "after": "इस निर्माण को विफल चिह्नित करके {value0} आरक्षित उत्पाद क्रेडिट लौटाएँ? पुष्टि करें कि इसकी रचना पुनर्प्राप्त नहीं हो सकती।",
+    "reason": "Reserved means allocated/held and unavailable for another use; सुरक्षित communicates protected/safe. Keep safe/preserved wording elsewhere unchanged.",
+    "review_findings": [
+      "HI-ON-008-01"
+    ],
+    "before_sha256": "ad3bc7e04593f1f036a8fc295c7889c460fe38f9a33b2eda9312ceb5dbb27c89",
+    "after_sha256": "937e203730e17ec808ddf974a67ef7205ba3fe69667d6ada0912b97f9faa3d17"
+  },
+  "Mute {slot0}": {
+    "before": "{slot0} की आवाज़ बंद करें",
+    "after": "{slot0} के लिए चैट पर रोक लगाएँ",
+    "reason": "This admin action mutes account chat for a selected duration; it does not switch off the player audio.",
+    "review_findings": [
+      "HI-ON-008-02"
+    ],
+    "before_sha256": "c2e2c9ec1ae6d164584e7d0dfca54a9bea85a2060d3dabefc21ed3ef0fd2f78a",
+    "after_sha256": "7d32b69a2ce36a4bdc7da0482b7d09dc1c2c1f2f442293d292db81dcea74f1f7"
+  },
+  "Names like Guest-1234 are reserved for guests.": {
+    "before": "Guest-1234 जैसे नाम अतिथियों के लिए सुरक्षित हैं।",
+    "after": "Guest-1234 जैसे नाम अतिथियों के लिए आरक्षित हैं।",
+    "reason": "Reserved means allocated/held and unavailable for another use; सुरक्षित communicates protected/safe. Keep safe/preserved wording elsewhere unchanged.",
+    "review_findings": [
+      "HI-ON-008-03"
+    ],
+    "before_sha256": "ec92950f7773c11160d23887ca3454fd534f55f9e293403ff11245180c02590d",
+    "after_sha256": "098db13c883d41a9bdf1077d87f9cdf8c20ec23fd2c05953a8073e4c6b5dc777"
+  },
+  "Questions and brainstorming are free and require an available credit. A creation or revision request starts one build of up to 12 entries. Failed generations return their reservation.": {
+    "before": "सवाल और विचार-विमर्श मुफ़्त हैं, लेकिन उपलब्ध क्रेडिट चाहिए। बनाने या बदलने का अनुरोध अधिकतम 12 प्रविष्टियों का एक निर्माण शुरू करता है। विफल निर्माण के सुरक्षित क्रेडिट लौटते हैं।",
+    "after": "सवाल और विचार-विमर्श मुफ़्त हैं, लेकिन उपलब्ध क्रेडिट चाहिए। बनाने या बदलने का अनुरोध अधिकतम 12 प्रविष्टियों का एक निर्माण शुरू करता है। विफल निर्माण के आरक्षित क्रेडिट लौटते हैं।",
+    "reason": "Reserved means allocated/held and unavailable for another use; सुरक्षित communicates protected/safe. Keep safe/preserved wording elsewhere unchanged.",
+    "review_findings": [
+      "HI-ON-010-01"
+    ],
+    "before_sha256": "cbaa5a6f4907db16392d54782f23a0ec428e3be058c4176d42996386604203c9",
+    "after_sha256": "7584bad9b37ce7732898147ae76d5736abb5b21aecad6954b6543839d19cc3db"
+  },
+  "Questions and brainstorming are free. A creation or revision request starts one build of up to 12 building variants. Failed generations return their reservation.": {
+    "before": "सवाल और विचार-विमर्श मुफ़्त हैं। बनाने या बदलने का अनुरोध अधिकतम 12 इमारत रूपों का एक निर्माण शुरू करता है। विफल निर्माण के सुरक्षित क्रेडिट लौटते हैं।",
+    "after": "सवाल और विचार-विमर्श मुफ़्त हैं। बनाने या बदलने का अनुरोध अधिकतम 12 इमारत रूपों का एक निर्माण शुरू करता है। विफल निर्माण के आरक्षित क्रेडिट लौटते हैं।",
+    "reason": "Reserved means allocated/held and unavailable for another use; सुरक्षित communicates protected/safe. Keep safe/preserved wording elsewhere unchanged.",
+    "review_findings": [
+      "HI-ON-010-02"
+    ],
+    "before_sha256": "2856a48a0075445259c37264e0ae62371cdfe7f6d8f749e8125984feafb6b5ce",
+    "after_sha256": "b5266acc709f705ff0c94e88736be41e8e5807327f3d4ca2d2870592600ae770"
+  },
+  "Reconcile outstanding credit reservations before deleting this project.": {
+    "before": "यह प्रोजेक्ट मिटाने से पहले बाकी सुरक्षित क्रेडिट का मिलान करें।",
+    "after": "यह प्रोजेक्ट मिटाने से पहले बाकी आरक्षित क्रेडिट का मिलान करें।",
+    "reason": "Reserved means allocated/held and unavailable for another use; सुरक्षित communicates protected/safe. Keep safe/preserved wording elsewhere unchanged.",
+    "review_findings": [
+      "HI-ON-010-03"
+    ],
+    "before_sha256": "46365014d848dae0a7f76d8a9737edb70fdd02ee93dae253b50ff7dcf27fb1d1",
+    "after_sha256": "2274c7c235ec88968569a7fa43c1e3fd4f127be2f92228f8cd3db869f66173d7"
+  },
+  "Reservation": {
+    "before": "सुरक्षित आरक्षण",
+    "after": "आरक्षित क्रेडिट",
+    "reason": "Reserved means allocated/held and unavailable for another use; सुरक्षित communicates protected/safe. Keep safe/preserved wording elsewhere unchanged.",
+    "review_findings": [
+      "HI-ON-011-01"
+    ],
+    "before_sha256": "a980c1136bcd96ad7ff1d943b11b5895f80c46ca14df73b7298c0c0c9e6869e9",
+    "after_sha256": "c67d608999a30698698dbc6e05bbb1a96b6122814e635d2975373694a1e05bd4"
+  },
+  "Reserved": {
+    "before": "सुरक्षित रखे गए",
+    "after": "आरक्षित",
+    "reason": "Reserved means allocated/held and unavailable for another use; सुरक्षित communicates protected/safe. Keep safe/preserved wording elsewhere unchanged.",
+    "review_findings": [
+      "HI-ON-011-02"
+    ],
+    "before_sha256": "bcc8d5480f59da8c4fd959ec79b6bfc162051d6876da5ea15d6b478a4ed4c115",
+    "after_sha256": "2d16b27ddfee79aadcfd4c16b62df9ff2b527982e321250856d7fb9c5a421b48"
+  },
+  "Reserved product credits": {
+    "before": "सुरक्षित उत्पाद क्रेडिट",
+    "after": "आरक्षित उत्पाद क्रेडिट",
+    "reason": "Reserved means allocated/held and unavailable for another use; सुरक्षित communicates protected/safe. Keep safe/preserved wording elsewhere unchanged.",
+    "review_findings": [
+      "HI-ON-011-03"
+    ],
+    "before_sha256": "d7f241a3f8f775cf9aafa15253fc8b5d153fcc9901a75cde5e5fa23a2eef76fd",
+    "after_sha256": "04b10a94a9e6de489b3866743c9b0c6c6e461ada433a445f2752d8e3469777fc"
+  },
+  "Reserved: {slot0} product credits": {
+    "before": "सुरक्षित: {slot0} उत्पाद क्रेडिट",
+    "after": "आरक्षित: {slot0} उत्पाद क्रेडिट",
+    "reason": "Reserved means allocated/held and unavailable for another use; सुरक्षित communicates protected/safe. Keep safe/preserved wording elsewhere unchanged.",
+    "review_findings": [
+      "HI-ON-011-04"
+    ],
+    "before_sha256": "ab87d8ce971e12c57cdc264dbe883ede8209702db81d0fc7036bec03efac7f10",
+    "after_sha256": "35744776da18ae2901b84ed04f50b78f764ac51ac93f2bc000e3ec36725361e0"
+  },
+  "Reserved: {slot0} product credits{slot1}": {
+    "before": "सुरक्षित: {slot0} उत्पाद क्रेडिट{slot1}",
+    "after": "आरक्षित: {slot0} उत्पाद क्रेडिट{slot1}",
+    "reason": "Reserved means allocated/held and unavailable for another use; सुरक्षित communicates protected/safe. Keep safe/preserved wording elsewhere unchanged.",
+    "review_findings": [
+      "HI-ON-011-05"
+    ],
+    "before_sha256": "882783975923cb4b13283806623e403b2f0d020e646489d38ce4caccb19e362e",
+    "after_sha256": "ea63150762b39005bd17bf77e1c802e53437cdb7338a81f7c57ecfb3c7d43065"
+  },
+  "Restrictions and deletion require a lower-role account.": {
+    "before": "पाबंदी और मिटाने के लिए कम भूमिका वाला खाता चाहिए।",
+    "after": "प्रतिबंध लगाने और मिटाने के लिए लक्ष्य खाते के अधिकार आपसे कम होने चाहिए।",
+    "reason": "कम भूमिका वाला means fewer/less roles rather than a lower privilege rank. This is an administrative authorization condition.",
+    "review_findings": [
+      "HI-ON-011-06"
+    ],
+    "before_sha256": "0d6a5c6188e07a37e66528f1371cbca4f0fdd4a4d34684e0a8fecd3ab3d6b991",
+    "after_sha256": "ecfa476dfe4c4e057f76b556a28e58263301bba061dc8356a53ac1ea3762670f"
+  },
+  "Reteaming names team {p0} of {p1}.": {
+    "before": "टीम बदलने में {p1} में से टीम {p0} का नाम है।",
+    "after": "टीम बदलने की सूची में टीम क्रमांक {p0} दिया गया है, जबकि कुल {p1} टीमें हैं।",
+    "reason": "names is the verb refers to, not giving a team a name. API emits this when entry.team >= teamCount; target currently does not explain invalid team reference.",
+    "review_findings": [
+      "HI-ON-011-07"
+    ],
+    "before_sha256": "12d4fc68dbbadd2601a39021325410dc0d0e9cd3328dea6ad025502a4e48ad9e",
+    "after_sha256": "8291f90b0fb1283fa1c683506f648ebe172fe2c4fef9d805e7d4319f66b4b4c5"
+  },
+  "Return reserved credit": {
+    "before": "सुरक्षित क्रेडिट लौटाएँ",
+    "after": "आरक्षित क्रेडिट लौटाएँ",
+    "reason": "Reserved means allocated/held and unavailable for another use; सुरक्षित communicates protected/safe. Keep safe/preserved wording elsewhere unchanged.",
+    "review_findings": [
+      "HI-ON-011-08"
+    ],
+    "before_sha256": "674345098bac3d79f3cdd091987d887f77830d91d670eab23c1a4e11d431f42f",
+    "after_sha256": "4f4f882858d2732514ad809bba471c96e41fd23bca9d432b3b75664462efc775"
+  },
+  "Returning the reservation marks this generation failed. Inspect its details and confirm delivery cannot be recovered first.": {
+    "before": "सुरक्षित क्रेडिट लौटाने पर यह निर्माण विफल चिह्नित होता है। पहले विवरण जाँचकर पुष्टि करें कि रचना पुनर्प्राप्त नहीं हो सकती।",
+    "after": "आरक्षित क्रेडिट लौटाने पर यह निर्माण विफल चिह्नित होता है। पहले विवरण जाँचकर पुष्टि करें कि रचना पुनर्प्राप्त नहीं हो सकती।",
+    "reason": "Reserved means allocated/held and unavailable for another use; सुरक्षित communicates protected/safe. Keep safe/preserved wording elsewhere unchanged.",
+    "review_findings": [
+      "HI-ON-011-09"
+    ],
+    "before_sha256": "eb03c2da37a419ed19d6602bb3ba1f959578ca31858dd0adf476f04e80559017",
+    "after_sha256": "63ab405a85dbe191a0599e784695252cd73dd518d5aecc272a1b624b9f3b0851"
+  },
+  "Synth · warm bells, pads & pulse": {
+    "before": "सिंथ · गर्म घंटियाँ, पैड और धड़कन",
+    "after": "सिंथ · गरमाहट भरी घंटियों की ध्वनि, पैड और धड़कन",
+    "reason": "गर्म घंटियाँ evokes physical hot bells rather than warm timbre; use a clear musical metaphor.",
+    "review_findings": [
+      "HI-ON-012-01"
+    ],
+    "before_sha256": "2a9c3bbc0cfc3df3952926192bea17634c1529c9d72d36f25191b60af341083b",
+    "after_sha256": "4129d8aa36c58121ee2605fa2bd87c714cadbb0e2732b321eb1402b5c8acc9d4"
+  },
+  "Swarm shape": {
+    "before": "झुंड का आकार",
+    "after": "छत्ते की आकृति",
+    "reason": "Align settled Swarm building term and shape/size distinction.",
+    "review_findings": [
+      "HI-ON-012-02"
+    ],
+    "before_sha256": "a69d53124bec44a8c7d80ba288f15f0dc17fd7cb75a7d74ddbe20dc572f01a2f",
+    "after_sha256": "0adf0367acdd5fb373fbfd8ea855292f57c14f67ee68b360b63bb34d227a7cd9"
+  },
+  "This package ID is already reserved. Forks need a new ID.": {
+    "before": "यह पैकेज ID पहले से सुरक्षित है। अलग कॉपी के लिए नई ID चाहिए।",
+    "after": "यह पैकेज ID पहले से आरक्षित है। अलग कॉपी के लिए नई ID चाहिए।",
+    "reason": "Reserved means allocated/held and unavailable for another use; सुरक्षित communicates protected/safe. Keep safe/preserved wording elsewhere unchanged.",
+    "review_findings": [
+      "HI-ON-013-01"
+    ],
+    "before_sha256": "6cfaf9b16ebb0d7beb090e859ecdae4f09926fa9b8f825c5bcb211fffde73b2e",
+    "after_sha256": "fbe5b88be3045f6242707d70a8380113f3cb7bfb90c0e594359609e91a9f9fd4"
+  },
+  "The original swarm: spires ringed around an egg.": {
+    "before": "मूल झुंड: अंडे के चारों ओर मीनारों का घेरा।",
+    "after": "मूल छत्ता: अंडे के चारों ओर मीनारों का घेरा।",
+    "reason": "झुंड means a troop/group; this refers to the colony unit-production Swarm building. Align with the independently settled native glossary छत्ता.",
+    "review_findings": [
+      "HI-ON-013-02"
+    ],
+    "before_sha256": "77a58defcb267918c7cb48d1b09cb3c82306eb971d1c9eb2d79ec9bdc51bc06a",
+    "after_sha256": "9c2de005f6d2557330e27cc98a4306bb8eee93c34678716792f8f4535cca3188"
+  },
+  "Unmute": {
+    "before": "आवाज़ चालू करें",
+    "after": "म्यूट हटाएँ",
+    "reason": "Shared key is used both for admin account-chat unmute and music audio. आवाज़ चालू करें only fits music. Use an established neutral software loanword rather than inventing a source-key split.",
+    "review_findings": [
+      "HI-ON-014-01"
+    ],
+    "before_sha256": "2bcecae7f4853bd6bd1ddd1e830535e445d5f455957a060cee93985c087333a5",
+    "after_sha256": "ae392043e90d072f0b556eb0de8e02014bce1a8d52f04267993713e16c4cf926"
+  },
+  "Usernames can only use letters, digits, dots, dashes and underscores (no spaces).": {
+    "before": "उपयोगकर्ता नाम में केवल अक्षर, अंक, बिंदु, डैश और अंडरस्कोर हो सकते हैं (खाली जगह नहीं)।",
+    "after": "उपयोगकर्ता नाम में केवल लैटिन अक्षर (A–Z, a–z), अंक (0–9), बिंदु, डैश और अंडरस्कोर हो सकते हैं (खाली जगह नहीं)।",
+    "reason": "Whitelist error likewise does not explain why Hindi letters/digits are rejected. This restriction is specific to usernames; display names/passwords differ.",
+    "review_findings": [
+      "HI-ON-014-02"
+    ],
+    "before_sha256": "b240fdc934d5840b639278549c16633b7b85b632a2e51ff94a17049c3bfc9122",
+    "after_sha256": "6757a5ade1e8c1f9df9957632819895fb5f69b01923aab0e032bf046393d10b3"
+  },
+  "You are muted.": {
+    "before": "आपकी आवाज़ बंद की गई है।",
+    "after": "आपको चैट में संदेश भेजने से रोका गया है।",
+    "reason": "rooms.chat emits this when muted_until is active; audio wording suggests a microphone/sound setting that cannot fix the chat denial.",
+    "review_findings": [
+      "HI-ON-015-01"
+    ],
+    "before_sha256": "61edf49ee971ad957ee7e7c551bb4223d1bea7a79c00434e73558803fa11bcaf",
+    "after_sha256": "e7f7af1c78adfae524d902ec71c128c4e6c0dc5eed9f6116380e7c28bbbdc834"
+  },
+  "You can only ban accounts with a lower role.": {
+    "before": "केवल कम भूमिका वाले खातों पर प्रतिबंध लगा सकते हैं।",
+    "after": "आप केवल अपने से कम अधिकार वाले खातों पर प्रतिबंध लगा सकते हैं।",
+    "reason": "Lower role is lower privilege rank, not fewer roles; mute is a chat restriction, not microphone/audio control.",
+    "review_findings": [
+      "HI-ON-015-02"
+    ],
+    "before_sha256": "995476614383fd339f31680593c01bf3a9925ae46cb4b1ff7f03c1cf8a2b9433",
+    "after_sha256": "507338d6b42b0452e9ed2ec3231fe828651ddd8eeebff10e3201e9800b8afce4"
+  },
+  "You can only delete accounts with a lower role.": {
+    "before": "केवल कम भूमिका वाले खाते मिटा सकते हैं।",
+    "after": "आप केवल अपने से कम अधिकार वाले खाते मिटा सकते हैं।",
+    "reason": "Lower role is lower privilege rank, not fewer roles; mute is a chat restriction, not microphone/audio control.",
+    "review_findings": [
+      "HI-ON-015-03"
+    ],
+    "before_sha256": "8df3f6147b21927e7226026ff7af927bdff96b4717130110dad49e23cc1a4f87",
+    "after_sha256": "90f181c4be6a4e48ae7aa0f0cb2887d7d9bc957d0c4761968b7d2265afcc294a"
+  },
+  "You can only mute accounts with a lower role.": {
+    "before": "केवल कम भूमिका वाले खातों की आवाज़ बंद कर सकते हैं।",
+    "after": "आप केवल अपने से कम अधिकार वाले खातों की चैट पर रोक लगा सकते हैं।",
+    "reason": "Lower role is lower privilege rank, not fewer roles; mute is a chat restriction, not microphone/audio control.",
+    "review_findings": [
+      "HI-ON-015-04"
+    ],
+    "before_sha256": "bcf3c083a9286ae36434d41c06ed6574c145d94b628ad24bb63569f5504b7cd4",
+    "after_sha256": "34aedf2e72c237f4bab83255d3403af540210a1b225dc05a4514ea4d791eeb9d"
+  },
+  "Your creation will appear here. You can inspect, edit, compare, and publish saved versions.": {
+    "before": "आपकी रचना यहाँ दिखेगी। सहेजे संस्करणों को जाँच, बदल, तुलना और प्रकाशित कर सकते हैं।",
+    "after": "आपकी रचना यहाँ दिखेगी। सहेजे संस्करणों की जाँच और तुलना कर सकते हैं, उन्हें बदल सकते हैं और प्रकाशित कर सकते हैं।",
+    "reason": "जाँच, बदल, तुलना और प्रकाशित कर सकते हैं mixes bare nouns and verbs in one coordinated clause.",
+    "review_findings": [
+      "HI-ON-015-05"
+    ],
+    "before_sha256": "d6b31db6cf78fccbce04364cf24082923bb487d7d52ee3964e98a1f74c2d6226",
+    "after_sha256": "0b5c10420acd7d6709efbd40af4d9d595d69ca42bbf1415a674b261cf76fd67d"
+  },
+  "Your credit is reserved while the provider outcome is reconciled.": {
+    "before": "प्रदाता के परिणाम का मिलान होने तक आपका क्रेडिट सुरक्षित है।",
+    "after": "प्रदाता के परिणाम का मिलान होने तक आपका क्रेडिट आरक्षित है।",
+    "reason": "Reserved means allocated/held and unavailable for another use; सुरक्षित communicates protected/safe. Keep safe/preserved wording elsewhere unchanged.",
+    "review_findings": [
+      "HI-ON-015-06"
+    ],
+    "before_sha256": "32bf7ffc8ac52480273e5dd906e3a97c59a7db8923183d2e399154e1ca20e5ba",
+    "after_sha256": "574d763a363148cc04363ea9f2c47b76ed087e8340d80292923ecdc35fe538d9"
+  },
+  "Your credit remains reserved while the provider outcome is reconciled.": {
+    "before": "प्रदाता के परिणाम का मिलान होने तक आपका क्रेडिट सुरक्षित रहता है।",
+    "after": "प्रदाता के परिणाम का मिलान होने तक आपका क्रेडिट आरक्षित रहता है।",
+    "reason": "Reserved means allocated/held and unavailable for another use; सुरक्षित communicates protected/safe. Keep safe/preserved wording elsewhere unchanged.",
+    "review_findings": [
+      "HI-ON-015-07"
+    ],
+    "before_sha256": "1314a5168bf54fc7072e0bc617d38bcc7c1e085ac19a96d65d6c36a720bbfa0d",
+    "after_sha256": "4867b89470d3c6f32ce2dce6adc04dd29067cf856964517122f33e1cc04894b7"
+  },
+  "Your first design starts with New skin. Your work saves automatically.": {
+    "before": "आपका पहला डिज़ाइन नई स्किन से शुरू होता है। काम अपने आप सहेजता है।",
+    "after": "आपका पहला डिज़ाइन नई स्किन से शुरू होता है। आपका काम अपने आप सहेजा जाता है।",
+    "reason": "काम अपने आप सहेजता makes work the saving actor. Use passive automatic-save wording.",
+    "review_findings": [
+      "HI-ON-015-08"
+    ],
+    "before_sha256": "ed99f7639a1720b08eeb4d5c1d0e19da7bc4a9e56f178fa747f661527e82e424",
+    "after_sha256": "370f764165d017c2f3fa613f0e1090e9a2b16526aa86df4d922c1e3f9d0016bd"
+  },
+  "Your swarm, in the game": {
+    "before": "खेल में आपका झुंड",
+    "after": "खेल में आपका छत्ता",
+    "reason": "झुंड means a troop/group; this refers to the colony unit-production Swarm building. Align with the independently settled native glossary छत्ता.",
+    "review_findings": [
+      "HI-ON-015-09"
+    ],
+    "before_sha256": "81c1277d807d5959c1c3168d772a36a8916ee3099c37c43ef62a7bef211fe81f",
+    "after_sha256": "33b9ff99793856a36d8be16fe370c5519e7c90643dd976ab970dbadfe8916705"
+  },
+  "muted until {slot0}": {
+    "before": "{slot0} तक आवाज़ बंद",
+    "after": "{slot0} तक चैट पर रोक",
+    "reason": "Administrative chat-mute expiration is currently described as sound disabled.",
+    "review_findings": [
+      "HI-ON-016-01"
+    ],
+    "before_sha256": "ea3304c5bf7a03c02972bebc12be27bacba8a6c2fde760193245c1bf61d05d3c",
+    "after_sha256": "db564b03c3bc4c696697e35e88e82530515095093204210215435cb9e7cdf680"
+  },
+  "{slot0} available · {slot1} reserved. Discussion requires an available credit; each delivered map or revision costs 1 credit. Failed generations return the credit.": {
+    "before": "{slot0} उपलब्ध · {slot1} सुरक्षित। चर्चा के लिए उपलब्ध क्रेडिट चाहिए; हर तैयार नक्शे या संशोधन पर 1 क्रेडिट लगता है। विफल निर्माण का क्रेडिट लौटता है।",
+    "after": "{slot0} उपलब्ध · {slot1} आरक्षित। चर्चा के लिए उपलब्ध क्रेडिट चाहिए; हर तैयार नक्शे या संशोधन पर 1 क्रेडिट लगता है। विफल निर्माण का क्रेडिट लौटता है।",
+    "reason": "Reserved means allocated/held and unavailable for another use; सुरक्षित communicates protected/safe. Keep safe/preserved wording elsewhere unchanged.",
+    "review_findings": [
+      "HI-ON-016-02"
+    ],
+    "before_sha256": "d3885b6d86250154bd0c1960139278c6afd2f4684fc0d8f462a9c9c659919791",
+    "after_sha256": "b1f5db2d56029a9c21ec4742d4f69ed6d145dfbbd579bd9d1db057a8ea0abfd7"
+  },
+  "{slot0} available · {slot1} reserved. Discussion requires an available credit; each delivered set or revision costs 1 credit. Failed generations return the credit.": {
+    "before": "{slot0} उपलब्ध · {slot1} सुरक्षित। चर्चा के लिए उपलब्ध क्रेडिट चाहिए; हर तैयार संग्रह या संशोधन पर 1 क्रेडिट लगता है। विफल निर्माण का क्रेडिट लौटता है।",
+    "after": "{slot0} उपलब्ध · {slot1} आरक्षित। चर्चा के लिए उपलब्ध क्रेडिट चाहिए; हर तैयार संग्रह या संशोधन पर 1 क्रेडिट लगता है। विफल निर्माण का क्रेडिट लौटता है।",
+    "reason": "Reserved means allocated/held and unavailable for another use; सुरक्षित communicates protected/safe. Keep safe/preserved wording elsewhere unchanged.",
+    "review_findings": [
+      "HI-ON-016-03"
+    ],
+    "before_sha256": "df375af3f198d38dccc7eb5f63b09b4f6044eb5acdff1f5adc29cb8cc2914c66",
+    "after_sha256": "640412f6460500fa8493fb647d6362c4d3dcebe888374c0e2850cee612dd3e72"
+  },
+  "{slot0} credit available · {slot1} reserved": {
+    "before": {
+      "one": "{slot0} क्रेडिट उपलब्ध · {slot1} सुरक्षित",
+      "other": "{slot0} क्रेडिट उपलब्ध · {slot1} सुरक्षित"
+    },
+    "after": {
+      "one": "{slot0} क्रेडिट उपलब्ध · {slot1} आरक्षित",
+      "other": "{slot0} क्रेडिट उपलब्ध · {slot1} आरक्षित"
+    },
+    "reason": "Reserved means allocated/held and unavailable for another use; सुरक्षित communicates protected/safe. Keep safe/preserved wording elsewhere unchanged.",
+    "review_findings": [
+      "HI-ON-016-04"
+    ],
+    "before_sha256": "dac816950b4f8475bc60aaff1783b0773936305017b6344e1babd16c7f175b4e",
+    "after_sha256": "bc49d1f9e2d1818c99cdda9aea96fa00de1531eb0f74798f757fca842d508f2d"
+  },
+  "{slot0} credit reserved for work in progress.": {
+    "before": {
+      "one": "चल रहे काम के लिए {slot0} क्रेडिट सुरक्षित।",
+      "other": "चल रहे काम के लिए {slot0} क्रेडिट सुरक्षित।"
+    },
+    "after": {
+      "one": "चल रहे काम के लिए {slot0} क्रेडिट आरक्षित।",
+      "other": "चल रहे काम के लिए {slot0} क्रेडिट आरक्षित।"
+    },
+    "reason": "Reserved means allocated/held and unavailable for another use; सुरक्षित communicates protected/safe. Keep safe/preserved wording elsewhere unchanged.",
+    "review_findings": [
+      "HI-ON-016-05"
+    ],
+    "before_sha256": "e719563f29861e2550a2ea1b21431010bee340a1c42931849113ff9c6e6a1bbc",
+    "after_sha256": "bbf640e89f0b3c4f744e58dbb8c6857765d049a912f0c9bb4ba69e1f3158fe70"
+  },
+  "{slot0} credits available · {slot1} reserved": {
+    "before": "{slot0} क्रेडिट उपलब्ध · {slot1} सुरक्षित",
+    "after": "{slot0} क्रेडिट उपलब्ध · {slot1} आरक्षित",
+    "reason": "Reserved means allocated/held and unavailable for another use; सुरक्षित communicates protected/safe. Keep safe/preserved wording elsewhere unchanged.",
+    "review_findings": [
+      "HI-ON-016-06"
+    ],
+    "before_sha256": "0f226690bf8d318775a9e31c0b8ca1b9b44ab61e0a231b181b7ec03086632006",
+    "after_sha256": "be34d73ec074d5400ebcb8ed1598d6cdfa40122b2faaf226b67949fa4fc75fba"
+  },
+  "{slot0} credits reserved for work in progress.": {
+    "before": "चल रहे काम के लिए {slot0} क्रेडिट सुरक्षित।",
+    "after": "चल रहे काम के लिए {slot0} क्रेडिट आरक्षित।",
+    "reason": "Reserved means allocated/held and unavailable for another use; सुरक्षित communicates protected/safe. Keep safe/preserved wording elsewhere unchanged.",
+    "review_findings": [
+      "HI-ON-016-07"
+    ],
+    "before_sha256": "e36df0b82d16632c0086b282a0d7eb3793175c193d6f187b7597ab3bd2a7012b",
+    "after_sha256": "71efe92cb76cb79fc99d3c88fd98be9b2bbd1bbd8f456f797cadda3963720f09"
+  },
+  "{slot0} reserved. Credits belong to this studio.": {
+    "before": "{slot0} सुरक्षित। क्रेडिट इसी स्टूडियो के हैं।",
+    "after": "{slot0} आरक्षित। क्रेडिट इसी स्टूडियो के हैं।",
+    "reason": "Reserved means allocated/held and unavailable for another use; सुरक्षित communicates protected/safe. Keep safe/preserved wording elsewhere unchanged.",
+    "review_findings": [
+      "HI-ON-016-08"
+    ],
+    "before_sha256": "7ba11dc137d83ca3560da48a486a1485921e7ea17e032ea6a48403af15896276",
+    "after_sha256": "94b8cdb12371dee745d83ef50e9713b1aeecd19a1718666016eb294e6f8cbe10"
+  },
+  "Good under {value0}, fair under {value1}, poor from {value2}.": {
+    "before": "{value0} से कम अच्छा, {value1} से कम ठीक, {value2} से खराब।",
+    "after": "{value0} से कम: अच्छा; {value1} से कम: ठीक; {value2} और उससे अधिक: खराब।",
+    "reason": "Current phrasing {value0} से कम अच्छा can mean less good than the number; category thresholds need unambiguous predicates and inclusive poor-from boundary.",
+    "review_findings": [
+      "HI-ON-017-01"
+    ],
+    "before_sha256": "39e5d25ba8b7b2e1024094e8c7916041186455ed027e5de7cf5357a1265b3bb0",
+    "after_sha256": "e6f6702063ac4ebaa7585f00ef12764cff38de6192ae883435845a99b799820b"
+  },
+  "Signed HP per exposed tick, divided by 256; negative values damage units.": {
+    "before": "हर खुले टिक पर धनात्मक/ऋणात्मक सेहत, 256 से भाग देकर; ऋणात्मक मान इकाइयों को नुकसान पहुँचाते हैं।",
+    "after": "इमारत से बाहर रहने के हर टिक पर सेहत में बदलाव, 256 से भाग देकर; ऋणात्मक मान इकाइयों को नुकसान पहुँचाते हैं।",
+    "reason": "हर खुले टिक treats a tick as open. Exposure here is a unit outside a building, with health change applied while exposed. Preserve signed change, divisor and damage semantics.",
+    "review_findings": [
+      "HI-ON-018-01"
+    ],
+    "before_sha256": "160678df58e7da085c05d4dd7cd0ebf685f01f61d69ddf44eaaba1de0288def2",
+    "after_sha256": "6d9d647100f07c66b5a86c9a741790a650977234974a5ff70e9f8217652c2e0a"
+  },
+  "The provider outcome needs reconciliation. Your credit remains reserved.": {
+    "before": "प्रदाता के परिणाम का मिलान चाहिए। आपका क्रेडिट सुरक्षित रहता है।",
+    "after": "प्रदाता के परिणाम का मिलान चाहिए। आपका क्रेडिट आरक्षित रहता है।",
+    "reason": "Reserved means allocated/held and unavailable for another use; सुरक्षित communicates protected/safe. Keep safe/preserved wording elsewhere unchanged.",
+    "review_findings": [
+      "HI-ON-018-02"
+    ],
+    "before_sha256": "4040f24b64a3c06961adf5478b68a6726c914480817b4e71cd6efde28e767cc9",
+    "after_sha256": "7fc7bca05c4bf01b7fa5699c87b010f4a4ee073295bd49cba064d422d2213701"
+  },
+  "The provider outcome needs reconciliation. Your reserved {value0} credits remain held; new requests are paused. Manual editing and export remain available.": {
+    "before": "प्रदाता के परिणाम का मिलान चाहिए। आपके {value0} सुरक्षित क्रेडिट रोके रहते हैं; नए अनुरोध रुके हैं। हाथ से संपादन और निर्यात उपलब्ध हैं।",
+    "after": "प्रदाता के परिणाम का मिलान चाहिए। आपके {value0} आरक्षित क्रेडिट रोके रहते हैं; नए अनुरोध रुके हैं। हाथ से संपादन और निर्यात उपलब्ध हैं।",
+    "reason": "Reserved means allocated/held and unavailable for another use; सुरक्षित communicates protected/safe. Keep safe/preserved wording elsewhere unchanged.",
+    "review_findings": [
+      "HI-ON-018-03"
+    ],
+    "before_sha256": "4baeafc59e6e01cf978f751239204be244560599c2816ec084c2b207a3a92dc2",
+    "after_sha256": "58c841e97ba6208d5b8e1b73130c91e69f3e0e798ee7fbde22d9b2e64c92a1ee"
+  },
+  "This request is paused while its result is checked. Your reserved credit stays safe; you can leave and return later.": {
+    "before": "परिणाम जाँचे जाने तक यह अनुरोध रुका है। आपका सुरक्षित क्रेडिट सुरक्षित रहता है; आप बाद में लौट सकते हैं।",
+    "after": "परिणाम जाँचे जाने तक यह अनुरोध रुका है। आपका आरक्षित क्रेडिट सुरक्षित रहता है; आप बाद में लौट सकते हैं।",
+    "reason": "Reserved means allocated/held and unavailable for another use; सुरक्षित communicates protected/safe. Keep safe/preserved wording elsewhere unchanged.",
+    "review_findings": [
+      "HI-ON-018-04"
+    ],
+    "before_sha256": "22e39b1d31ba17fbae205321c39bdbd95fba27d58fedd786d061b69a148d4671",
+    "after_sha256": "b197812dc809a095281b983c8a1b52eb8ee1473f09e7be9c045314e0f0fc8058"
+  },
+  "{value0} HP per exposed tick": {
+    "before": "हर खुले टिक पर {value0} सेहत",
+    "after": "इमारत से बाहर हर टिक पर सेहत में {value0} का बदलाव",
+    "reason": "Exposure means unit outside a building, not an open simulation tick. This number is a health change, not total health.",
+    "review_findings": [
+      "HI-ON-018-05"
+    ],
+    "before_sha256": "f954b799ed60de64bde3b4ddabb292d8ea46b2721aad18a0630f6fdf4b9dced4",
+    "after_sha256": "05620c6ddfe554881e3079f57573c57adabd0d1dae0a2695c10beebeed7fc74e"
+  },
+  "Game-rendered scene and resource gallery": {
+    "before": "खेल से रेंडर किया दृश्य और संसाधन गैलरी",
+    "after": "खेल में रेंडर किए गए दृश्य और संसाधनों की गैलरी",
+    "reason": "खेल से रेंडर किया दृश्य और संसाधन गैलरी has unclear agreement/association.",
+    "review_findings": [
+      "HI-ON-018-06"
+    ],
+    "before_sha256": "7081f35343400ec010a540cbfdd0935d7868ae9faaa2f09aa91405b16a97fa72",
+    "after_sha256": "54395607011314d5a84c9cec64d6c9d1a0a0e4422cd3f117122df83719409b3d"
+  },
+  "Requested size and players": {
+    "before": "माँगा आकार और खिलाड़ी",
+    "after": "माँगा गया आकार और खिलाड़ियों की संख्या",
+    "reason": "माँगा आकार और खिलाड़ी is compressed and reads as requesting people rather than player count.",
+    "review_findings": [
+      "HI-ON-018-07"
+    ],
+    "before_sha256": "a657ad76cb57f99cd9120403f0a15ad035b5a67fd447ecc9b53e53264da0bc24",
+    "after_sha256": "51c621fb89bb0f3e946798ebd826fe72432ef0f2eecf791dd491e8cbda63911d"
+  },
+  "Valid colony starts": {
+    "before": "मान्य बस्ती शुरुआती स्थान",
+    "after": "बस्तियों के मान्य शुरुआती स्थान",
+    "reason": "मान्य बस्ती शुरुआती स्थान has an ungrammatical noun sequence.",
+    "review_findings": [
+      "HI-ON-018-08"
+    ],
+    "before_sha256": "ad27343e06733227069b3dc26c253941b6b3edc3ab13386c9de0fe76c4d556f2",
+    "after_sha256": "81601f3e401a32f3fd5eb2b0c57845368105d1f7adfc700757ab24ed49aeb2c7"
+  },
+  "Change shape ⌄": {
+    "before": "आकार बदलें ⌄",
+    "after": "आकृति बदलें ⌄",
+    "reason": "Distinguish model shape from size, matching native geometry glossary.",
+    "review_findings": [],
+    "before_sha256": "f918b2a835fa4a32dc2a56a067e3fb1c01f6ba24c7ddae9d9453be0f3e94fb8c",
+    "after_sha256": "396c9e8f61e5e7d8d521434d186df801d7587efdd6a7c26697480580911ccf35"
+  },
+  "Copy this link into Family link or ID in the game’s Building families picker to open this family directly.": {
+    "before": "इस परिवार को सीधे खोलने के लिए खेल के इमारत परिवार चयन में परिवार का लिंक या ID के भीतर यह लिंक कॉपी करें।",
+    "after": "इस परिवार को सीधे खोलने के लिए खेल के इमारत परिवार चयन में «परिवार का लिंक या ID» फ़ील्ड में यह लिंक चिपकाएँ।",
+    "reason": "Natural field instruction: paste into named input; retain exact existing native fieldlabel.",
+    "review_findings": [],
+    "before_sha256": "b2befd2a9ab2635b1c707d51f46968e909960f29290f5c9f310de4366a7c4d70",
+    "after_sha256": "303e658989bafb5dc2b2691089d09390bf209e570e9ffee8eb2eeea3f8c28d72"
+  },
+  "Duplicate shape clip": {
+    "before": "आकार क्लिप की प्रतिलिपि बनाएँ",
+    "after": "आकृति क्लिप की ID दोहराई गई है",
+    "reason": "Validation error at skins/shapes.ts:110 requires uniqueclipIDs; not duplicate-action command.",
+    "review_findings": [],
+    "before_sha256": "b78fe1751520fc46269910c1ef8397a46e2e55fbc2993a295a75d665aa020cab",
+    "after_sha256": "099fafbd665cf56c1f762649217d29a3a2a5fbfcbc09a21cf86fd181ce1b793a"
+  },
+  "Duplicate rig clip": {
+    "before": "रिग क्लिप की प्रतिलिपि बनाएँ",
+    "after": "रिग क्लिप की ID दोहराई गई है",
+    "reason": "Validation error at skins/rig.ts:183 requires uniqueclipIDs; not duplicate-action command.",
+    "review_findings": [],
+    "before_sha256": "4fec16a27fc096cc9bb489afdfe31babe5e3f5a65787ec722339b3094257c356",
+    "after_sha256": "2c1dac9337ea935b440d6bf836a375288465283ee0dee0c6de1c00eee177da49"
+  },
+  "Brush paints": {
+    "before": "ब्रश का रंग",
+    "after": "ब्रश से लगाने का प्रकार",
+    "reason": "Skins.tsx:479 accessiblegroup selects Color or Material; ब्रश का रंग excludesmaterial option.",
+    "review_findings": [],
+    "before_sha256": "6166c754a23080850dd0f0c96a548429c6d64bba51267b2f47a9747d784c7aee",
+    "after_sha256": "7c9991c5494992a23beb5f7fc8dbe5fc8e3975e5e0f71d24bbffb5ebe1bad0bc"
+  },
+  "Invalid shape UV": {
+    "before": "आकार का UV अमान्य है",
+    "after": "आकृति का UV अमान्य है",
+    "reason": "Consistent shape/model geometry term; आकार reserved for actualsize.",
+    "review_findings": [],
+    "before_sha256": "4090efaecbb7bb7875d0c63b88eb26d854153f9a1f9b17e8ef323d3a89fbd2a8",
+    "after_sha256": "27af27e145deea0b093d2be1d2bdcd1f74f72a9fee6d86cc8d0f46b4eb0a33e9"
+  },
+  "Invalid shape clip": {
+    "before": "आकार की क्लिप अमान्य है",
+    "after": "आकृति की क्लिप अमान्य है",
+    "reason": "Consistent shape/model geometry term; आकार reserved for actualsize.",
+    "review_findings": [],
+    "before_sha256": "e954191f993629343bc8b1c5a3d7733278bbbc43862d0c6cb3311a63673a468d",
+    "after_sha256": "93c1fd5063559d165f64e7b07b519b7fad428bc85b4bb62eb78b08bfc202c77c"
+  },
+  "Invalid shape dimensions": {
+    "before": "आकार के आयाम अमान्य हैं",
+    "after": "आकृति के आयाम अमान्य हैं",
+    "reason": "Consistent shape/model geometry term; आकार reserved for actualsize.",
+    "review_findings": [],
+    "before_sha256": "483aff68720b00d11671ef3b127d7cb65766832c259b7ad1351966661ec67fa7",
+    "after_sha256": "b52b9293edd1d75e37ab0b976ac65addc5aa9aee6be053d84103a46be2440032"
+  },
+  "Invalid shape frame": {
+    "before": "आकार का फ़्रेम अमान्य है",
+    "after": "आकृति का फ़्रेम अमान्य है",
+    "reason": "Consistent shape/model geometry term; आकार reserved for actualsize.",
+    "review_findings": [],
+    "before_sha256": "d8faca1b5b142860537bd0311f2b44d8bad6ba284e4d867fc8c5bdedb6a99eb4",
+    "after_sha256": "7bf65d3cbfc51981f949d567daa52c284d1ad3626f0d8ce51d3b67e1327fbffd"
+  },
+  "Invalid shape heading": {
+    "before": "आकार की दिशा अमान्य है",
+    "after": "आकृति की दिशा अमान्य है",
+    "reason": "Consistent shape/model geometry term; आकार reserved for actualsize.",
+    "review_findings": [],
+    "before_sha256": "2d4b71ed8e45bc7dac94c46463384cf9078520ce31c2ba1494eceb0d3b416fc8",
+    "after_sha256": "b83e294ffda8f6aaa804832692280d7a22b3af7c23f0034aa63bad35aea8d40f"
+  },
+  "Invalid shape index": {
+    "before": "आकार का सूचकांक अमान्य है",
+    "after": "आकृति का सूचकांक अमान्य है",
+    "reason": "Consistent shape/model geometry term; आकार reserved for actualsize.",
+    "review_findings": [],
+    "before_sha256": "7b55e47d370d3b43d053c1ec6cbd32ef2d767c34d33fcaec7b35b2699a704ad7",
+    "after_sha256": "98eb599fa72a5a7cc984621aa3129bb03b786c43af14b78c43eeb74276c98074"
+  },
+  "Invalid shape scale": {
+    "before": "आकार का पैमाना अमान्य है",
+    "after": "आकृति का पैमाना अमान्य है",
+    "reason": "Consistent shape/model geometry term; आकार reserved for actualsize.",
+    "review_findings": [],
+    "before_sha256": "0ea29b50a72626b15d2bdac841b592a8b1a63ed904ae07859a49d971ee2e6582",
+    "after_sha256": "af7ceafb6fd2861fd5dc577335dc9e5472b1331a6ea7f13cc4b7113dc4f50594"
+  },
+  "Invalid shape size": {
+    "before": "आकार का माप अमान्य है",
+    "after": "आकृति का माप अमान्य है",
+    "reason": "Consistent shape/model geometry term; आकार reserved for actualsize.",
+    "review_findings": [],
+    "before_sha256": "37928c31fe15c0a9f7079130e85979a2ba968e7b156e4c9948947303972a2dfe",
+    "after_sha256": "455ce451b049e5237e3b53959351ad9a25b2dc11996384c56b29f01131fe7477"
+  },
+  "Shape asset length mismatch": {
+    "before": "आकार एसेट की लंबाई मेल नहीं खाती",
+    "after": "आकृति एसेट की लंबाई मेल नहीं खाती",
+    "reason": "Align shape geometry glossary.",
+    "review_findings": [],
+    "before_sha256": "82c18964ff47509e3bcc1e33ce361a1b1db91d48378eae12a455488ab601ee1a",
+    "after_sha256": "02edbbcd12d73250e4f1ecba306619a51942b8bc7c89515e6edc475842cbdf91"
+  },
+  "Short seeded games check runtime behaviour, repeatability, and save/resume. Passing does not certify safety or playing strength.": {
+    "before": "छोटे सीड वाले खेल रनटाइम का व्यवहार, दोहराव और सहेजने/फिर चलाने की जाँच करते हैं। सफलता सुरक्षा या खेलने की ताकत प्रमाणित नहीं करती।",
+    "after": "सीड के आधार पर चलाए गए छोटे खेल रनटाइम का व्यवहार, दोहराव और सहेजने/फिर चलाने की जाँच करते हैं। सफलता सुरक्षा या खेलने की ताकत प्रमाणित नहीं करती।",
+    "reason": "Short modifies games, notseed. Original छोटे सीड वाले खेल implied shortseeds.",
+    "review_findings": [],
+    "before_sha256": "972d3bf3f5a68a11df4ad7e884f8e8276a1c8713c3cda57f5daafad54fef4e31",
+    "after_sha256": "c402152c8d79e7f95cbde6176d4ea31798e77222b43dd41368d1ba2d70a9ca00"
+  },
+  "Signing in with {p0} did not work. Please try again.": {
+    "before": "{p0} से साइन इन काम नहीं किया। फिर कोशिश करें।",
+    "after": "{p0} से साइन इन नहीं हो सका। फिर कोशिश करें।",
+    "reason": "Natural verb phrase; do not assign working action to signin.",
+    "review_findings": [],
+    "before_sha256": "320bf240862f3d9119ef3d72f1ab174c67073fb5648442d603c0c3b617d4c8dc",
+    "after_sha256": "f82cbefb1f9f3fc77e9d182dc377efb11bdd730192ee4a64543b81a4f98f67df"
+  },
+  "Skin report resolutions need at most 1000 characters and disabling for a resolved report.": {
+    "before": "स्किन शिकायत के समाधान में अधिकतम 1000 अक्षर चाहिए और सुलझी शिकायत के लिए स्किन बंद करना ज़रूरी है।",
+    "after": "स्किन की शिकायत के समाधान का विवरण 1000 अक्षरों से अधिक न हो। शिकायत सुलझी चिह्नित करने के लिए स्किन बंद करना ज़रूरी है।",
+    "reason": "Clarify maximumlength ratherthan requiredcharactercount; keep resolvedrestriction.",
+    "review_findings": [],
+    "before_sha256": "7db65989f5b341705ac4cf7f5339eb3e22602637108c777cf3a2773ab819b34e",
+    "after_sha256": "b05f13463113ed57460b8e6605282ed9de671796cc03249744bfca19db9b56f2"
+  },
+  "Unsupported shape clip frames": {
+    "before": "आकार क्लिप के फ़्रेम समर्थित नहीं हैं",
+    "after": "आकृति क्लिप के फ़्रेम समर्थित नहीं हैं",
+    "reason": "Align shape geometry term across diagnostics.",
+    "review_findings": [],
+    "before_sha256": "c2ac56627d33aa04c94609dbdb4d1666a77f9c0a7d6d0dcff229cd063f2a8515",
+    "after_sha256": "10fccd7641ba6c65652a82b7b80556d1d6fcc4a124dd0bc38a842e0dc99ba020"
+  },
+  "Unsupported shape format": {
+    "before": "आकार का प्रारूप समर्थित नहीं है",
+    "after": "आकृति का प्रारूप समर्थित नहीं है",
+    "reason": "Align shape geometry term across diagnostics.",
+    "review_findings": [],
+    "before_sha256": "940fa231cef495444871fffb5cb67ec580158683733e92a37d4b46bc09ebde32",
+    "after_sha256": "512d64cf3b257a18736a3f461050de654130b00f09cf9f7dfa466f6f4daed0dc"
+  },
+  "one unit per harvest": {
+    "before": "हर कटाई पर एक इकाई",
+    "after": "हर बार संसाधन जुटाने पर एक इकाई",
+    "reason": "Resource harvesting option applies to allmaterials including noncrops; generic जुटाना aligns native resourceglossary (TerrainStudio.tsx:785–788).",
+    "review_findings": [],
+    "before_sha256": "faaca85389847ac9513a885df4caaacd9b0feeba22a1373fa7d5aa935f3c282c",
+    "after_sha256": "c7cefedb3c553105bb5f6ab68bb3890ccdf6deafc3bd0e7541fcafbe36ed402f"
+  },
+  "stock remains available after harvesting": {
+    "before": "कटाई के बाद भंडार उपलब्ध रहता है",
+    "after": "संसाधन जुटाने के बाद भी भंडार उपलब्ध रहता है",
+    "reason": "Resource harvesting option applies to allmaterials including noncrops; generic जुटाना aligns native resourceglossary (TerrainStudio.tsx:785–788).",
+    "review_findings": [],
+    "before_sha256": "93b3aeb52d99fc26bb0db555d993af5025f1f0653c43aa3f9e722184b67744e0",
+    "after_sha256": "0a7ae658a9b4000601a6ffc7d4b3ea1a9a36e8c7cdd8ac87540641b8b3a2eb2f"
+  },
+  "the whole stock per harvest": {
+    "before": "हर कटाई पर पूरा भंडार",
+    "after": "हर बार संसाधन जुटाने पर पूरा भंडार",
+    "reason": "Resource harvesting option applies to allmaterials including noncrops; generic जुटाना aligns native resourceglossary (TerrainStudio.tsx:785–788).",
+    "review_findings": [],
+    "before_sha256": "6c770637fefa0e6f6f88fedf822334a0db5567aaac3c19147225bb5085451676",
+    "after_sha256": "b70d9eb50efb699d48fbba97ab9488fde1ad105c679ba3059dff59e55ab53ee8"
+  },
+  "by ": {
+    "before": "द्वारा ",
+    "after": "रचनाकार: ",
+    "reason": "Maps.tsx:638 prepends this fragment to PlayerLink. Hindi द्वारा before name reverses normal postposition order; use grammatical attributionlabel without changingcomponent.",
+    "review_findings": [],
+    "before_sha256": "badb7fed73ced34f98f6d3dc891acff4090a22436d9b3aa91c16b586fdd2e2e4",
+    "after_sha256": "898b14b08ef4c6a9ca3e954f31e53966c575b18f75a751c645f209db2a522e39"
+  },
+  "Example of ": {
+    "before": "इसका उदाहरण ",
+    "after": "उदाहरण: ",
+    "reason": "Generators.tsx:171 concatenates prefix with generatorname; इसका उदाहरण +name is unnatural reversed deictic; label permits existingordering.",
+    "review_findings": [],
+    "before_sha256": "c8e017b3fa57a643aa76c77ab5025b08fa20a1850a4281aced4325e97be646ec",
+    "after_sha256": "9e022ac4210d920a0dc01204fe0c938b658c535f437d2ba404b1d16cb94abf46"
+  },
+  "Comparison with ": {
+    "before": "इनसे तुलना ",
+    "after": "तुलना का आधार: ",
+    "reason": "AiBuildingStudio.tsx:722 concatenates prefix with compared.title; readable Hindi accessiblelabel with existingorder.",
+    "review_findings": [],
+    "before_sha256": "892a754b311a6e36a3669a5a14c5d3ea5378b75df440f1646cf2ad4aca01de63",
+    "after_sha256": "32b30c02d2ba1db9c8972f7cd7be7e857cae4bd1732ad89cfeb4c3ab8e6cad7f"
+  },
+  "check needs": {
+    "before": "जाँच को चाहिए",
+    "after": "जाँच",
+    "reason": "ValidationPanel.tsx:41–43 combines failedCount +value1+ attentiontemplate; wholeHindi template already supplies पर ध्यान चाहिए, so fragment must be noun.",
+    "review_findings": [],
+    "before_sha256": "ed3c91bc295f2e102a2c35bccf2d48cb9997caef8e9130fa5bf6f4e0edf93592",
+    "after_sha256": "2ab07d6b10bd2bb60edce02de43adb2828459e33b22834fc521ebf73dd997250"
+  },
+  "checks need": {
+    "before": "जाँचों को चाहिए",
+    "after": "जाँचों",
+    "reason": "ValidationPanel.tsx:41–43 plural oblique noun before template पर; prevents duplicated predicate चाहिए पर ध्यान चाहिए.",
+    "review_findings": [],
+    "before_sha256": "7befd8e81763934aa024a8dd5d9cc99080b290d144cdd32aab930cac9f1b0c4f",
+    "after_sha256": "6922fe30f3546dbad1982888fdc40d085fd7241ee36b82f47e64bc8dd7c5443a"
+  }
+}

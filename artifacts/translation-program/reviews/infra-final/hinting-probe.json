@@ -1,0 +1,175 @@
+{
+  "method": "Independent ctypes calls to pinned SDL3_ttf/HarfBuzz10.1.0, exact same Noto font and six actual matrix overflow strings. This probes raw font metrics; actual production draw geometry is established by source inspection, not exercised here.",
+  "font_sha256": "385e78e6359a9d88a0f243d53b1209d7548361ba2194e2b9ec779bcaa7e8949d",
+  "TTF_library": "/Users/bradley/.codex/worktrees/ed62/glob2/artifacts/translation-program/script-support/prefix/lib/libSDL3_ttf.dylib",
+  "rows": [
+    {
+      "key": "[settings Move the game and editor maps when the mouse reaches the window edge.]",
+      "text": "माउस के विंडो के किनारे पर पहुँचने पर खेल और संपादक के नक्शों को खिसकाएँ।",
+      "base_size": 13,
+      "scale": 2,
+      "physical_slot_width": 732,
+      "actual_production_raster_width": 754,
+      "standalone_TTF_measurements": {
+        "normal": {
+          "base": 362,
+          "physical": 754,
+          "physical_div_scale": 377.0,
+          "deviation_from_scaled_base": 30
+        },
+        "none": {
+          "base": 371,
+          "physical": 744,
+          "physical_div_scale": 372.0,
+          "deviation_from_scaled_base": 2
+        },
+        "light_subpixel": {
+          "base": 371,
+          "physical": 744,
+          "physical_div_scale": 372.0,
+          "deviation_from_scaled_base": 2
+        }
+      }
+    },
+    {
+      "key": "[AIMaxima-Description]",
+      "text": "खोजबीन करता है, भोजन की आपूर्ति बढ़ाता है और योद्धाओं की लहरें जुटाता है।",
+      "base_size": 13,
+      "scale": 2,
+      "physical_slot_width": 732,
+      "actual_production_raster_width": 740,
+      "standalone_TTF_measurements": {
+        "normal": {
+          "base": 352,
+          "physical": 740,
+          "physical_div_scale": 370.0,
+          "deviation_from_scaled_base": 36
+        },
+        "none": {
+          "base": 364,
+          "physical": 729,
+          "physical_div_scale": 364.5,
+          "deviation_from_scaled_base": 1
+        },
+        "light_subpixel": {
+          "base": 364,
+          "physical": 729,
+          "physical_div_scale": 364.5,
+          "deviation_from_scaled_base": 1
+        }
+      }
+    },
+    {
+      "key": "[AINicowar-Description]",
+      "text": "अपनी आबादी बढ़ाता है, योद्धाओं को प्रशिक्षित करता है और फिर हमला करता है।",
+      "base_size": 13,
+      "scale": 2,
+      "physical_slot_width": 732,
+      "actual_production_raster_width": 757,
+      "standalone_TTF_measurements": {
+        "normal": {
+          "base": 356,
+          "physical": 757,
+          "physical_div_scale": 378.5,
+          "deviation_from_scaled_base": 45
+        },
+        "none": {
+          "base": 370,
+          "physical": 742,
+          "physical_div_scale": 371.0,
+          "deviation_from_scaled_base": 2
+        },
+        "light_subpixel": {
+          "base": 370,
+          "physical": 742,
+          "physical_div_scale": 371.0,
+          "deviation_from_scaled_base": 2
+        }
+      }
+    },
+    {
+      "key": "[AIEcono-Description]",
+      "text": "योद्धा बनाए बिना विस्तार करता है और दूसरी टीमों की इकाइयों को अपनी टीम में",
+      "base_size": 13,
+      "scale": 2,
+      "physical_slot_width": 732,
+      "actual_production_raster_width": 740,
+      "standalone_TTF_measurements": {
+        "normal": {
+          "base": 350,
+          "physical": 740,
+          "physical_div_scale": 370.0,
+          "deviation_from_scaled_base": 40
+        },
+        "none": {
+          "base": 363,
+          "physical": 728,
+          "physical_div_scale": 364.0,
+          "deviation_from_scaled_base": 2
+        },
+        "light_subpixel": {
+          "base": 363,
+          "physical": 728,
+          "physical_div_scale": 364.0,
+          "deviation_from_scaled_base": 2
+        }
+      }
+    },
+    {
+      "key": "[hub finish in browser, game continues]",
+      "text": "अपने ब्राउज़र में साइन इन पूरा करें। आपके पूरा करते",
+      "base_size": 20,
+      "scale": 2,
+      "physical_slot_width": 732,
+      "actual_production_raster_width": 735,
+      "standalone_TTF_measurements": {
+        "normal": {
+          "base": 365,
+          "physical": 735,
+          "physical_div_scale": 367.5,
+          "deviation_from_scaled_base": 5
+        },
+        "none": {
+          "base": 370,
+          "physical": 741,
+          "physical_div_scale": 370.5,
+          "deviation_from_scaled_base": 1
+        },
+        "light_subpixel": {
+          "base": 370,
+          "physical": 741,
+          "physical_div_scale": 370.5,
+          "deviation_from_scaled_base": 1
+        }
+      }
+    },
+    {
+      "key": "[AINicowar-Description]",
+      "text": "अपनी आबादी बढ़ाता है, योद्धाओं को प्रशिक्षित करता",
+      "base_size": 20,
+      "scale": 2,
+      "physical_slot_width": 732,
+      "actual_production_raster_width": 739,
+      "standalone_TTF_measurements": {
+        "normal": {
+          "base": 365,
+          "physical": 739,
+          "physical_div_scale": 369.5,
+          "deviation_from_scaled_base": 9
+        },
+        "none": {
+          "base": 372,
+          "physical": 744,
+          "physical_div_scale": 372.0,
+          "deviation_from_scaled_base": 0
+        },
+        "light_subpixel": {
+          "base": 372,
+          "physical": 744,
+          "physical_div_scale": 372.0,
+          "deviation_from_scaled_base": 0
+        }
+      }
+    }
+  ]
+}

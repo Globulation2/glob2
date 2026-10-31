@@ -1,0 +1,1293 @@
+{
+  "editor": "/root/swahili_translation",
+  "author": "/root/urdu_translation",
+  "independent_reviewer": "/root/pilot_context",
+  "batch_id": "native-general-006",
+  "source_contract_sha256": "aacd8a342e9e734ba47f902a161ac1a45badff5842a617bcd68bf8e2275d6013",
+  "original_target_subset_sha256": "40feab80d946dc9b7c509dc31f2edb990bb20b1bb70db0886222e61d08e0eef7",
+  "final_target_subset_sha256": "0a21d2af4545c38e8087e940d5130969bde420b885148a6021129ef460808f8b",
+  "final_catalog_sha256": "ec78fb33247244bf783461e0410ef11fe48e45644c3c6500419d9060e967d458",
+  "entries": [
+    {
+      "key": "[Stats meals per minute]",
+      "source": "Food/min",
+      "before": "خوراک/منٹ",
+      "after": "خوراک/منٹ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Stats occupancy]",
+      "source": "Feed / heal",
+      "before": "کھانا / علاج",
+      "after": "کھانا / علاج",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Stats page one]",
+      "source": "Statistics 1/3  >",
+      "before": "اعداد و شمار 1/3  >",
+      "after": "اعداد و شمار 1/3  >",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Stats page two]",
+      "source": "Statistics 2/3  >",
+      "before": "اعداد و شمار 2/3  >",
+      "after": "اعداد و شمار 2/3  >",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Stats page three]",
+      "source": "Statistics 3/3  >",
+      "before": "اعداد و شمار 3/3  >",
+      "after": "اعداد و شمار 3/3  >",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Stats next page]",
+      "source": "Page (P)",
+      "before": "صفحہ (P)",
+      "after": "صفحہ (P)",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Stats blocked units]",
+      "source": "Units blocked S/C",
+      "before": "رکے ہوئے یونٹ S/C",
+      "after": "پھنسے ہوئے یونٹ S/C",
+      "editorially_read": true,
+      "disposition": "edited-pending-recheck"
+    },
+    {
+      "key": "[Stats current blocked units]",
+      "source": "Currently blocked units",
+      "before": "فی الحال رکے ہوئے یونٹ",
+      "after": "اس وقت پھنسے ہوئے یونٹ",
+      "editorially_read": true,
+      "disposition": "edited-pending-recheck"
+    },
+    {
+      "key": "[Stats growth global]",
+      "source": "Growth added amount",
+      "before": "افزائش سے بڑھی مقدار",
+      "after": "افزائش سے بڑھی مقدار",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Stats growth new tiles]",
+      "source": "New resource tiles",
+      "before": "وسائل کے نئے خانے",
+      "after": "وسائل کے نئے خانے",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Stats growth reductions]",
+      "source": "Natural reductions",
+      "before": "قدرتی کمی",
+      "after": "قدرتی کمی",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Stats growth per minute]",
+      "source": "Food growth/min",
+      "before": "خوراک کی افزائش/منٹ",
+      "after": "خوراک کی افزائش/منٹ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Stats growth near 8]",
+      "source": "Growth within 8 tiles",
+      "before": "8 خانوں کے اندر افزائش",
+      "after": "8 خانوں کے اندر افزائش",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Stats growth near 16]",
+      "source": "Growth within 16 tiles",
+      "before": "16 خانوں کے اندر افزائش",
+      "after": "16 خانوں کے اندر افزائش",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Stats growth near 32]",
+      "source": "Growth within 32 tiles",
+      "before": "32 خانوں کے اندر افزائش",
+      "after": "32 خانوں کے اندر افزائش",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Stats low HP 25]",
+      "source": "Units at 25% HP",
+      "before": "25% HP والے یونٹ",
+      "after": "25% HP والے یونٹ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Stats low food 25]",
+      "source": "Units at 25% food reserve",
+      "before": "25% غذائی ذخیرے والے یونٹ",
+      "after": "25% غذائی ذخیرے والے یونٹ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Stats low HP 50]",
+      "source": "Units at 50% HP",
+      "before": "50% HP والے یونٹ",
+      "after": "50% HP والے یونٹ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Stats low HP 75]",
+      "source": "Units at 75% HP",
+      "before": "75% HP والے یونٹ",
+      "after": "75% HP والے یونٹ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Stats low food 50]",
+      "source": "Units at 50% food reserve",
+      "before": "50% غذائی ذخیرے والے یونٹ",
+      "after": "50% غذائی ذخیرے والے یونٹ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Stats low food 75]",
+      "source": "Units at 75% food reserve",
+      "before": "75% غذائی ذخیرے والے یونٹ",
+      "after": "75% غذائی ذخیرے والے یونٹ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Stats structural units]",
+      "source": "Structurally blocked units",
+      "before": "بناوٹ کی وجہ سے رکے یونٹ",
+      "after": "بناوٹ کی وجہ سے پھنسے ہوئے یونٹ",
+      "editorially_read": true,
+      "disposition": "edited-pending-recheck"
+    },
+    {
+      "key": "[Stats low HP ranges]",
+      "source": "HP ≤25/50/75%",
+      "before": "HP ≤25/50/75%",
+      "after": "HP ≤25/50/75%",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Stats low food ranges]",
+      "source": "Food ≤25/50/75%",
+      "before": "خوراک ≤25/50/75%",
+      "after": "خوراک ≤25/50/75%",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Emoji]",
+      "source": "Emoji",
+      "before": "ایموجی",
+      "after": "ایموجی",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Emoji character]",
+      "source": "Emoji character",
+      "before": "ایموجی حرف",
+      "after": "ایموجی حرف",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Smiley]",
+      "source": "Smiley",
+      "before": "مسکراتا چہرہ",
+      "after": "مسکراتا چہرہ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Sad face]",
+      "source": "Sad face",
+      "before": "اداس چہرہ",
+      "after": "اداس چہرہ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Winking face]",
+      "source": "Winking face",
+      "before": "آنکھ مارتا چہرہ",
+      "after": "آنکھ مارتا چہرہ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Surprised face]",
+      "source": "Surprised face",
+      "before": "حیران چہرہ",
+      "after": "حیران چہرہ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Heart eyes]",
+      "source": "Heart eyes",
+      "before": "دل والی آنکھیں",
+      "after": "دل والی آنکھیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Sunglasses]",
+      "source": "Sunglasses",
+      "before": "دھوپ کا چشمہ",
+      "after": "دھوپ کا چشمہ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Heart]",
+      "source": "Heart",
+      "before": "دل",
+      "after": "دل",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Star]",
+      "source": "Star",
+      "before": "ستارہ",
+      "after": "ستارہ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Neutral face]",
+      "source": "Neutral face",
+      "before": "بے تاثر چہرہ",
+      "after": "بے تاثر چہرہ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Sleeping face]",
+      "source": "Sleeping face",
+      "before": "سوتا چہرہ",
+      "after": "سوتا چہرہ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Grinning face]",
+      "source": "Grinning face",
+      "before": "کھلکھلاتا چہرہ",
+      "after": "کھلکھلاتا چہرہ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Kissing face]",
+      "source": "Kissing face",
+      "before": "بوسہ دیتا چہرہ",
+      "after": "بوسہ دیتا چہرہ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Angry face]",
+      "source": "Angry face",
+      "before": "غصے والا چہرہ",
+      "after": "غصے والا چہرہ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Tongue out]",
+      "source": "Tongue out",
+      "before": "نکلی ہوئی زبان",
+      "after": "نکلی ہوئی زبان",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Skull]",
+      "source": "Skull",
+      "before": "کھوپڑی",
+      "after": "کھوپڑی",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Flower]",
+      "source": "Flower",
+      "before": "پھول",
+      "after": "پھول",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Four-leaf clover]",
+      "source": "Four-leaf clover",
+      "before": "چار پتیوں والا شبدر",
+      "after": "چار پتیوں والا شبدر",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Teardrop]",
+      "source": "Teardrop",
+      "before": "آنسو",
+      "after": "آنسو",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Cloud]",
+      "source": "Cloud",
+      "before": "بادل",
+      "after": "بادل",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Gem]",
+      "source": "Gem",
+      "before": "جواہر",
+      "after": "جواہر",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Apple]",
+      "source": "Apple",
+      "before": "سیب",
+      "after": "سیب",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Speech bubble]",
+      "source": "Speech bubble",
+      "before": "گفتگو کا غبارہ",
+      "after": "گفتگو کا غبارہ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Shield]",
+      "source": "Shield",
+      "before": "ڈھال",
+      "after": "ڈھال",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Emoji style]",
+      "source": "Emoji style",
+      "before": "ایموجی کا انداز",
+      "after": "ایموجی کا انداز",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Outline]",
+      "source": "Outline",
+      "before": "خاکہ",
+      "after": "خاکہ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Filled]",
+      "source": "Filled",
+      "before": "بھرا ہوا",
+      "after": "بھرا ہوا",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Regular]",
+      "source": "Regular",
+      "before": "معمول",
+      "after": "معمول",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Inverse]",
+      "source": "Inverse",
+      "before": "الٹ",
+      "after": "الٹ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Crossings]",
+      "source": "Crossings",
+      "before": "گزرگاہیں",
+      "after": "گزرگاہیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Forts]",
+      "source": "Forts",
+      "before": "قلعے",
+      "after": "قلعے",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Gate width]",
+      "source": "Gate width",
+      "before": "دروازے کی چوڑائی",
+      "after": "دروازے کی چوڑائی",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Braided Delta]",
+      "source": "Braided Delta",
+      "before": "باہم گندھی شاخوں والا ڈیلٹا",
+      "after": "باہم گندھی شاخوں والا ڈیلٹا",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Braid count]",
+      "source": "Braid count",
+      "before": "شاخوں کی تعداد",
+      "after": "شاخوں کی تعداد",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Rejoining frequency]",
+      "source": "Rejoining frequency",
+      "before": "دوبارہ ملنے کی شرح",
+      "after": "دوبارہ ملنے کی شرح",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Crossing spacing]",
+      "source": "Crossing spacing",
+      "before": "گزرگاہوں کا درمیانی فاصلہ",
+      "after": "گزرگاہوں کا درمیانی فاصلہ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Breachable highlands]",
+      "source": "Breachable highlands",
+      "before": "راستہ بننے والی بلندیاں",
+      "after": "راستہ بننے والی بلندیاں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Ridge depth]",
+      "source": "Ridge depth",
+      "before": "پہاڑی دھار کی گہرائی",
+      "after": "پہاڑی دھار کی گہرائی",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Extra open passes]",
+      "source": "Extra open passes",
+      "before": "اضافی کھلے درے",
+      "after": "اضافی کھلے درے",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Wooded saddles]",
+      "source": "Wooded saddles",
+      "before": "درختوں والے پہاڑی درے",
+      "after": "درختوں والے پہاڑی درے",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Hedgerow Country]",
+      "source": "Hedgerow Country",
+      "before": "باڑوں کا دیس",
+      "after": "باڑوں کا دیس",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Field size]",
+      "source": "Field size",
+      "before": "کھیت کا سائز",
+      "after": "کھیت کا سائز",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Hedge thickness]",
+      "source": "Hedge thickness",
+      "before": "باڑ کی موٹائی",
+      "after": "باڑ کی موٹائی",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Existing gateways]",
+      "source": "Existing gateways",
+      "before": "موجودہ داخلی راستے",
+      "after": "موجودہ داخلی راستے",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Wooded boundary share]",
+      "source": "Wooded boundary share",
+      "before": "درختوں والی سرحد کا حصہ",
+      "after": "درختوں والی سرحد کا حصہ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[The Glacis]",
+      "source": "The Glacis",
+      "before": "قلعے کی بیرونی ڈھلوان",
+      "after": "قلعے کی بیرونی ڈھلوان",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Allotments]",
+      "source": "Allotments",
+      "before": "کھیتی کے قطعے",
+      "after": "کھیتی کے قطعے",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Caravanserai]",
+      "source": "Caravanserai",
+      "before": "کارواں سرائے",
+      "after": "کارواں سرائے",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Mixed]",
+      "source": "Mixed",
+      "before": "ملا جلا",
+      "after": "ملا جلا",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Fort size]",
+      "source": "Fort size",
+      "before": "قلعے کا سائز",
+      "after": "قلعے کا سائز",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Bastions]",
+      "source": "Bastions",
+      "before": "برج",
+      "after": "برج",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Four-pointed]",
+      "source": "Four-pointed",
+      "before": "چار نوکوں والا",
+      "after": "چار نوکوں والا",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Five-pointed]",
+      "source": "Five-pointed",
+      "before": "پانچ نوکوں والا",
+      "after": "پانچ نوکوں والا",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Six-pointed]",
+      "source": "Six-pointed",
+      "before": "چھ نوکوں والا",
+      "after": "چھ نوکوں والا",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Glacis width]",
+      "source": "Glacis width",
+      "before": "بیرونی ڈھلوان کی چوڑائی",
+      "after": "بیرونی ڈھلوان کی چوڑائی",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Gates]",
+      "source": "Gates",
+      "before": "دروازے",
+      "after": "دروازے",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Site size]",
+      "source": "Site size",
+      "before": "مقام کا سائز",
+      "after": "مقام کا سائز",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Plot width]",
+      "source": "Plot width",
+      "before": "قطعے کی چوڑائی",
+      "after": "قطعے کی چوڑائی",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Plot mix]",
+      "source": "Plot mix",
+      "before": "قطعوں کا امتزاج",
+      "after": "قطعوں کا امتزاج",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Tended]",
+      "source": "Tended",
+      "before": "نگہداشت شدہ",
+      "after": "نگہداشت شدہ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Overgrown]",
+      "source": "Overgrown",
+      "before": "خود رو پودوں سے بھرا",
+      "after": "خود رو پودوں سے بھرا",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Commons]",
+      "source": "Commons",
+      "before": "مشترکہ میدان",
+      "after": "مشترکہ میدان",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Few]",
+      "source": "Few",
+      "before": "تھوڑے",
+      "after": "تھوڑے",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Some]",
+      "source": "Some",
+      "before": "کچھ",
+      "after": "کچھ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Home oasis size]",
+      "source": "Home oasis size",
+      "before": "ابتدائی نخلستان کا سائز",
+      "after": "ابتدائی نخلستان کا سائز",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Caravanserais per colony]",
+      "source": "Caravanserais per colony",
+      "before": "فی بستی کارواں سرائے",
+      "after": "فی بستی کارواں سرائے",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Desert]",
+      "source": "Desert",
+      "before": "صحرا",
+      "after": "صحرا",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Open erg]",
+      "source": "Open erg",
+      "before": "کھلا ریگستان",
+      "after": "کھلا ریگستان",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Dunes and mesas]",
+      "source": "Dunes and mesas",
+      "before": "ٹیلے اور میز نما پہاڑ",
+      "after": "ٹیلے اور میز نما پہاڑ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Canyon country]",
+      "source": "Canyon country",
+      "before": "گہری وادیوں کا دیس",
+      "after": "گہری وادیوں کا دیس",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[A wall would stand on a beach; try another seed.]",
+      "source": "A wall would stand on a beach; try another seed.",
+      "before": "دیوار ساحل پر بنے گی؛ دوسرا سیڈ آزمائیں۔",
+      "after": "دیوار ساحل پر بنے گی؛ دوسرا سیڈ آزمائیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[The fort is too small for its gardens; raise Fort size.]",
+      "source": "The fort is too small for its gardens; raise Fort size.",
+      "before": "قلعہ اپنے باغوں کے لیے بہت چھوٹا ہے؛ قلعے کا سائز بڑھائیں۔",
+      "after": "قلعہ اپنے باغوں کے لیے بہت چھوٹا ہے؛ قلعے کا سائز بڑھائیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[The home oasis is too small; raise Home oasis size.]",
+      "source": "The home oasis is too small; raise Home oasis size.",
+      "before": "ابتدائی نخلستان بہت چھوٹا ہے؛ ابتدائی نخلستان کا سائز بڑھائیں۔",
+      "after": "ابتدائی نخلستان بہت چھوٹا ہے؛ ابتدائی نخلستان کا سائز بڑھائیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Braid width]",
+      "source": "Braid width",
+      "before": "شاخ کی چوڑائی",
+      "after": "شاخ کی چوڑائی",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Bar size]",
+      "source": "Bar size",
+      "before": "ریت کی پٹی کا سائز",
+      "after": "ریت کی پٹی کا سائز",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Extra riffles]",
+      "source": "Extra riffles",
+      "before": "اضافی اتھلے بہاؤ",
+      "after": "اضافی اتھلے بہاؤ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Moraine hummocks]",
+      "source": "Moraine hummocks",
+      "before": "برفانی ملبے کے ٹیلے",
+      "after": "برفانی ملبے کے ٹیلے",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Drumlin field]",
+      "source": "Drumlin field",
+      "before": "برفانی بیضوی ٹیلوں کا میدان",
+      "after": "برفانی بیضوی ٹیلوں کا میدان",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Drumlin spacing]",
+      "source": "Drumlin spacing",
+      "before": "بیضوی ٹیلوں کا درمیانی فاصلہ",
+      "after": "بیضوی ٹیلوں کا درمیانی فاصلہ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Drumlin length]",
+      "source": "Drumlin length",
+      "before": "بیضوی ٹیلے کی لمبائی",
+      "after": "بیضوی ٹیلے کی لمبائی",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Water gap]",
+      "source": "Water gap",
+      "before": "پانی کا خلا",
+      "after": "پانی کا خلا",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Esker loops]",
+      "source": "Esker loops",
+      "before": "برفانی ریتلی دھاروں کے حلقے",
+      "after": "برفانی ریتلی دھاروں کے حلقے",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[The eskers could not join every drumlin; use a smaller water gap or a bigger map.]",
+      "source": "The eskers could not join every drumlin; use a smaller water gap or a bigger map.",
+      "before": "برفانی ریتلی دھاریں ہر بیضوی ٹیلے کو نہیں جوڑ سکیں؛ پانی کا خلا کم کریں یا بڑا نقشہ استعمال کریں۔",
+      "after": "برفانی ریتلی دھاریں ہر بیضوی ٹیلے کو نہیں جوڑ سکیں؛ پانی کا خلا کم کریں یا بڑا نقشہ استعمال کریں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Continents]",
+      "source": "Continents",
+      "before": "براعظم",
+      "after": "براعظم",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Continent]",
+      "source": "Continent",
+      "before": "براعظم",
+      "after": "براعظم",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[North America]",
+      "source": "North America",
+      "before": "شمالی امریکہ",
+      "after": "شمالی امریکہ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[South America]",
+      "source": "South America",
+      "before": "جنوبی امریکہ",
+      "after": "جنوبی امریکہ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Africa]",
+      "source": "Africa",
+      "before": "افریقہ",
+      "after": "افریقہ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Europe]",
+      "source": "Europe",
+      "before": "یورپ",
+      "after": "یورپ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Asia]",
+      "source": "Asia",
+      "before": "ایشیا",
+      "after": "ایشیا",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Oceania]",
+      "source": "Oceania",
+      "before": "اوشیانا",
+      "after": "اوشیانا",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Orientation]",
+      "source": "Orientation",
+      "before": "سمت",
+      "after": "سمت",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Turn to fit]",
+      "source": "Turn to fit",
+      "before": "سمانے کے لیے گھمائیں",
+      "after": "سمانے کے لیے گھمائیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Upright]",
+      "source": "Upright",
+      "before": "سیدھا",
+      "after": "سیدھا",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Islets]",
+      "source": "Islets",
+      "before": "چھوٹے جزیرے",
+      "after": "چھوٹے جزیرے",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Oases]",
+      "source": "Oases",
+      "before": "نخلستان",
+      "after": "نخلستان",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[The world atlas has no such continent.]",
+      "source": "The world atlas has no such continent.",
+      "before": "دنیا کے اٹلس میں ایسا کوئی براعظم نہیں۔",
+      "after": "دنیا کے اٹلس میں ایسا کوئی براعظم نہیں۔",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Savannah]",
+      "source": "Savannah",
+      "before": "ساوانا",
+      "after": "ساوانا",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Watering holes]",
+      "source": "Watering holes",
+      "before": "جانوروں کے پانی پینے کے تالاب",
+      "after": "جانوروں کے پانی پینے کے تالاب",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Dry patches]",
+      "source": "Dry patches",
+      "before": "خشک قطعے",
+      "after": "خشک قطعے",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Sparse]",
+      "source": "Sparse",
+      "before": "کم",
+      "after": "کم",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Normal]",
+      "source": "Normal",
+      "before": "معمول",
+      "after": "معمول",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Many]",
+      "source": "Many",
+      "before": "زیادہ",
+      "after": "زیادہ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Rice terraces]",
+      "source": "Rice terraces",
+      "before": "چاول کے زینہ دار کھیت",
+      "after": "چاول کے زینہ دار کھیت",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Unoccupied hills]",
+      "source": "Unoccupied hills",
+      "before": "غیر آباد پہاڑیاں",
+      "after": "غیر آباد پہاڑیاں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Hill radius]",
+      "source": "Hill radius",
+      "before": "پہاڑی کا نصف قطر",
+      "after": "پہاڑی کا نصف قطر",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Contour band width]",
+      "source": "Contour band width",
+      "before": "ہم ارتفاع پٹی کی چوڑائی",
+      "after": "ہم ارتفاع پٹی کی چوڑائی",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Stairs per hill]",
+      "source": "Stairs per hill",
+      "before": "فی پہاڑی زینے",
+      "after": "فی پہاڑی زینے",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Hills]",
+      "source": "Hills",
+      "before": "پہاڑیاں",
+      "after": "پہاڑیاں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Hillsides]",
+      "source": "Hillsides",
+      "before": "پہاڑی ڈھلوانیں",
+      "after": "پہاڑی ڈھلوانیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Terraces per slope]",
+      "source": "Terraces per slope",
+      "before": "فی ڈھلوان زینے",
+      "after": "فی ڈھلوان زینے",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Waviness]",
+      "source": "Waviness",
+      "before": "لہردار پن",
+      "after": "لہردار پن",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Stair spacing]",
+      "source": "Stair spacing",
+      "before": "زینوں کا درمیانی فاصلہ",
+      "after": "زینوں کا درمیانی فاصلہ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Locust]",
+      "source": "Locust",
+      "before": "ٹڈی",
+      "after": "ٹڈی",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Plantations]",
+      "source": "Plantations",
+      "before": "باغات",
+      "after": "باغات",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Plot size]",
+      "source": "Plot size",
+      "before": "قطعے کا سائز",
+      "after": "قطعے کا سائز",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Farm width]",
+      "source": "Farm width",
+      "before": "کھیت کی چوڑائی",
+      "after": "کھیت کی چوڑائی",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Outpost inns]",
+      "source": "Outpost inns",
+      "before": "چوکی کی سرائے",
+      "after": "چوکی کی سرائے",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Sierpiński Gardens]",
+      "source": "Sierpiński Gardens",
+      "before": "سیرپنسکی باغات",
+      "after": "سیرپنسکی باغات",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Maximum nesting]",
+      "source": "Maximum nesting",
+      "before": "اندرونی درجوں کی زیادہ سے زیادہ تعداد",
+      "after": "اندرونی درجوں کی زیادہ سے زیادہ تعداد",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Minimum terminal district side]",
+      "source": "Minimum terminal district side",
+      "before": "آخری ضلع کی کم از کم ضلع کی لمبائی",
+      "after": "آخری قطعے کے کنارے کی کم از کم لمبائی",
+      "editorially_read": true,
+      "disposition": "edited-pending-recheck"
+    },
+    {
+      "key": "[Major crossing pairs]",
+      "source": "Major crossing pairs",
+      "before": "بڑی گزرگاہوں کے جوڑے",
+      "after": "بڑی گزرگاہوں کے جوڑے",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Maximum fold depth]",
+      "source": "Maximum fold depth",
+      "before": "تہوں کی زیادہ سے زیادہ گہرائی",
+      "after": "تہوں کی زیادہ سے زیادہ گہرائی",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Minimum land spacing]",
+      "source": "Minimum land spacing",
+      "before": "زمین کا کم از کم درمیانی فاصلہ",
+      "after": "زمین کا کم از کم درمیانی فاصلہ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Optional local crossings per parent]",
+      "source": "Optional local crossings per parent",
+      "before": "فی بنیادی حصے اختیاری مقامی گزرگاہیں",
+      "after": "فی بنیادی حصے اختیاری مقامی گزرگاہیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Lava shield]",
+      "source": "Lava shield",
+      "before": "لاوے کی ڈھال",
+      "after": "لاوے کی ڈھال",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Lava tongues]",
+      "source": "Lava tongues",
+      "before": "لاوے کی زبانیں",
+      "after": "لاوے کی زبانیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Long tongues]",
+      "source": "Long tongues",
+      "before": "لمبی زبانیں",
+      "after": "لمبی زبانیں",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Crater rim width]",
+      "source": "Crater rim width",
+      "before": "آتش فشانی گڑھے کے کنارے کی چوڑائی",
+      "after": "آتش فشانی گڑھے کے کنارے کی چوڑائی",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Honeycomb isle]",
+      "source": "Honeycomb isle",
+      "before": "شہد کے چھتے جیسا جزیرہ",
+      "after": "شہد کے چھتے جیسا جزیرہ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Blocks per colony]",
+      "source": "Blocks per colony",
+      "before": "فی بستی قطعے",
+      "after": "فی بستی قطعے",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Rubble]",
+      "source": "Rubble",
+      "before": "ملبہ",
+      "after": "ملبہ",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Outline gaps]",
+      "source": "Outline gaps",
+      "before": "خاکے کے خلا",
+      "after": "خاکے کے خلا",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Craters per colony]",
+      "source": "Craters per colony",
+      "before": "فی بستی گڑھے",
+      "after": "فی بستی گڑھے",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    },
+    {
+      "key": "[Wheat fields]",
+      "source": "Wheat fields",
+      "before": "گندم کے کھیت",
+      "after": "گندم کے کھیت",
+      "editorially_read": true,
+      "disposition": "retained-after-editorial-read"
+    }
+  ],
+  "status": "edited-awaiting-independent-recheck"
+}

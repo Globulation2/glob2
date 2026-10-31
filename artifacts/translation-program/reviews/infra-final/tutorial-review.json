@@ -1,0 +1,174 @@
+{
+  "author": "/root/translation_kit",
+  "status": "implementation-and-focused-validation-complete-awaiting-independent-render-review",
+  "source_sha256": {
+    "src/hud/draw/GameGUIDraw.cpp": "1192e00eb86b977b1f0a9b4d3c58294f29dc8dc3f36dc88755162e06b44aeeed",
+    "src/hud/touch/GameGUITouch.cpp": "0e3e31b6516c3dba1113e654eb8577ebba28bddda2d20612e4a8483908b90614",
+    "src/hud/touch/GameGUITouch.h": "0021daf8e9d244d7891ea772a0df8dea77410263685b4cb3e8d379d29a26e8c6",
+    "src/hud/touch/GameGUITouchView.cpp": "966acc8acc2dd1027edbc433002e4df4e1684927531fad33954870c4693bf902",
+    "src/hud/touch/GameGUITouchHarness.cpp": "4eed2591413a112e70105386c90f0b09475859c233391d3313d3977bc3d99323",
+    "libgag/src/TrueTypeFont.cpp": "fa461f1852e80b1a763a14183ea7522d9c1725bd5ce0fbba19e769defb5d334b",
+    "libgag/include/TrueTypeFont.h": "3493258a24d4021ef978310aea26f3a832842ff57dd7185d9ff1ecf15854246c",
+    "libgag/src/FontKerningTest.cpp": "13b8628857e3337ccf5981e4dcfbb50b2c315356d9688ccf6c9a56e025831494"
+  },
+  "tutorial_behavior": [
+    "Desktop tutorial and prompt use measured font/line heights with20px floor; existing smaller-font spacing unchanged. Background follows actual block extent.",
+    "Touch tutorial uses shared production wrapText and actual font cluster ends; blank paragraphs preserved and oversized conjuncts stay whole. Flow prose spaces normalize through shared wrapper.",
+    "Cached line step has24px floor and covers actual wrapped lines; point conversion shared by panel bounds, drawing, scrolling and scrollbar content.",
+    "Cache includes source text, width, locale, font identity and default/text metrics; same-font reload can invalidate. Preparation now precedes scroll clamping.",
+    "OK footer retains48pt minimum, expands for tall script/accessibility text; text centering, clip, hit region and scroll bounds share its measured height.",
+    "Collapsed tutorial target measures actual translated label at drawPointLabel1.15×text growth with16pt padding, floor48; shared rectangle covers input and scroll geometry. Urdu13px at1.5x verified by focused test."
+  ],
+  "Swahili_width_opt_in": "Active sw locale normalizes authored width while using original Latin font and legacy render path. Existing en/ar/fa draw geometry remains physical-raster based. Script composition continues unchanged.",
+  "focused_test_intent": [
+    "Touch: preserve blank paragraphs, cached collapse state, locale invalidation and same-object reload metrics.",
+    "Touch: real font oversized Hindi conjunct remains whole, metric-aware pitch/maxscroll/footer and simulation checksum unchanged.",
+    "Font: real Swahili recording-licence and visibility phrases plus Menu; scales1/1.1/1.5/2/3 at sizes10/13/20; both native anisotropic output orientations; legacy en/ar/fa geometry retained."
+  ],
+  "root_game_harness_independent_review": {
+    "reviewer": "/root/translation_kit",
+    "files": [
+      "tools/TranslationPreviewHarness.cpp",
+      "src/engine/Engine.h",
+      "src/hud/GameGUI.h"
+    ],
+    "findings": [
+      {
+        "problem": "phone_presentation_requested checked environment presence, so explicit0 incorrectly recorded as phone",
+        "disposition": "Root fixed to resolved phonePresentationRequested()."
+      },
+      {
+        "problem": "Initial new game harness used private Engine::gui and private GameGUI menu access; failed first combined build with13errors",
+        "disposition": "Root added tool-named TranslationPreviewAccess friendship and3 small accessors; independently source-reviewed and final compilation succeeds."
+      },
+      {
+        "problem": "After retaining the installed inventory, hardcoded defaultLang0 selects Arabic because texts.ar.txt is first. Prior two-locale fixture0 had been English.",
+        "disposition": "Root fixed explicit English presence guard and setDefaultLang(getLangCode(\"en\")); independently verified in source."
+      }
+    ],
+    "observations": [
+      "Real Engine session advances20synthetic-time steps, loads unmodified tutorial map/SGSL and waits current published scene plus real tutorial flag.",
+      "Capture draws without stepping simulation and requires before/after checksums equal; autosave disabled in isolated profile.",
+      "Access helper is tool-only and does not affect object layout or simulation algorithm; current usages read state/checksums and control capture/menu/session UI.",
+      "Actual game rendering/platform evidence remains pending; no signoff from this source review alone.",
+      "Retaining all existing catalog paths while adding draft target is necessary for legacy SGSL language-block validation; does not alter SGSL source/parser. Main/settings picker evidence from earlier two-locale overlay is a limited fixture and should be refreshed with full inventory."
+    ],
+    "source_sha256": {
+      "tools/TranslationPreviewHarness.cpp": "4d4b19c5d2b80344d34e0245d7c78812107918cdeb8249e7ea0fb9a06255672b",
+      "src/engine/Engine.h": "f966a6ae0c29d529971e6ba1eb70fd17b814f94bad9f0e998dd36bd7848f6662",
+      "src/hud/GameGUI.h": "5df98c9de879f68b89ee2cd3a9cd8fb63fd420d513863a3d8b45820f7ccdddba"
+    },
+    "source_sha256_at_inventory_review": {
+      "tools/TranslationPreviewHarness.cpp": "9c064e40aea21623d2d64bf8d652a28e4ff446d0cbc7b7d4db79a68b2748399b",
+      "src/engine/Engine.h": "f966a6ae0c29d529971e6ba1eb70fd17b814f94bad9f0e998dd36bd7848f6662",
+      "src/hud/GameGUI.h": "5df98c9de879f68b89ee2cd3a9cd8fb63fd420d513863a3d8b45820f7ccdddba"
+    },
+    "limits": [
+      "Actual game capture readiness equality has not passed; parent/explorer investigating completed-world-tick semantics.",
+      "Reviewer initially inferred a threaded runner from default thread-start function without checking call site; withdrawn. Harness direct beginSession+stepSession does not call startSimulationThread, and actual parent probe already explicitly used serial mode. No actual race finding established.",
+      "Any further harness readiness/source edits require refreshed review/evidence identities."
+    ]
+  },
+  "validation": {
+    "first_build": "tutorial-build.log: failed only root harness private access; preserved evidence",
+    "second_build": {
+      "log": "tutorial-build-2.log",
+      "exit_code": 0
+    },
+    "final_build": {
+      "log": "tutorial-build-final.log",
+      "exit_code": 0,
+      "targets": [
+        "engine-tests",
+        "unit-tests",
+        "translation-preview-harness"
+      ],
+      "note": "Final frozen View/Harness objects explicitly regenerated after last source edits."
+    },
+    "focused_tests": [
+      {
+        "log": "font-kerning-final-homebrew.log",
+        "exit_code": 0,
+        "result": [
+          "[doctest] test cases:    9 |    9 passed | 0 failed | 1992 skipped",
+          "[doctest] assertions: 4486 | 4486 passed | 0 failed |"
+        ]
+      },
+      {
+        "log": "font-kerning-final-hb10.log",
+        "exit_code": 0,
+        "result": [
+          "[doctest] test cases:    9 |    9 passed | 0 failed | 1992 skipped",
+          "[doctest] assertions: 4486 | 4486 passed | 0 failed |"
+        ]
+      },
+      {
+        "log": "text-metrics-final-homebrew.log",
+        "exit_code": 0,
+        "result": [
+          "[doctest] test cases:     2 |     2 passed | 0 failed | 1253 skipped",
+          "[doctest] assertions: 10371 | 10371 passed | 0 failed |"
+        ]
+      },
+      {
+        "log": "text-metrics-final-hb10.log",
+        "exit_code": 0,
+        "result": [
+          "[doctest] test cases:     2 |     2 passed | 0 failed | 1253 skipped",
+          "[doctest] assertions: 10371 | 10371 passed | 0 failed |"
+        ]
+      }
+    ],
+    "touch_typography": {
+      "log": "tutorial-typography.log",
+      "junit": "tutorial-typography.xml",
+      "exit_code": 0,
+      "cases": 1,
+      "result": "All assertions pass, including unchanged game checksum."
+    },
+    "existing_touch_regression": {
+      "log": "tutorial-touch-regression.log",
+      "junit": "tutorial-touch-regression.xml",
+      "status": "TIMEOUT",
+      "timeout_seconds": 300,
+      "cases": 1,
+      "exit_code": 1,
+      "interpretation": "Open unresolved regression-check outcome. No assertion failure reported before timeout; repeated synthetic missing-resource fixture diagnostics. Neither baseline failure nor resource-contention cause is established. Not a pass. Root may rerun once exclusively after captures."
+    },
+    "touch_input_build": {
+      "log": "tutorial-input-build.log",
+      "exit_code": 0,
+      "command": "PYTHONPATH=$PWD python3 tools/dev_build.py engine-tests",
+      "changes": "Focused regression test only; production code unchanged after final3-target build."
+    },
+    "touch_real_input": {
+      "log": "tutorial-input.log",
+      "junit": "tutorial-input.xml",
+      "exit_code": 0,
+      "cases": 1,
+      "duration_seconds": 52.9,
+      "assertions_verified": [
+        "Real drag increases tutorialScroll and does not acknowledge.",
+        "A tap in the measured footer above the old48pt hit region acknowledges via shared Space action.",
+        "Actual Urdu label تربیت ▸ at13px/1.5x fits collapsed target plus padding.",
+        "All typography/cache/cluster checks retained; simulation checksum unchanged."
+      ],
+      "isolation": "Root held all native capture windows closed during focused DISPLAY test."
+    }
+  },
+  "pending": [
+    "Independent root review and actual game/tutorial rendered captures.",
+    "Existing monolithic touch regression timed out300s and remains unresolved.",
+    "Browser and supported mobile rendering paths not verified by this macOS editing task."
+  ],
+  "self_approved": false,
+  "binary_sha256_at_first_focused_font_run": {
+    "build/darwin/client/debug/dev-dev_fast-true-linker-auto/test/glob2-engine-tests": "0311631de122d891c9973a89e28827c8af735a49652d982436e506cb2ad00582",
+    "build/darwin/client/debug/dev-dev_fast-true-linker-auto/test/glob2-unit-tests": "aab3c40abd1f9d899bb79e3a3c3848d7b1ef318a3dd7adca1b5a3165b0f87c95",
+    "build/darwin/client/debug/dev-dev_fast-true-linker-auto/test/TranslationPreviewHarness": "bc292177d892d861554ea658f34a9167898d4ef331f56932ae180af759f4cec7"
+  },
+  "binary_sha256_at_final_touch_input_run": {
+    "build/darwin/client/debug/dev-dev_fast-true-linker-auto/test/glob2-engine-tests": "7259fad61abf1823cfdb9ea1a45cd9543b326a9c3ed642d3c14679e8142a9e68"
+  },
+  "simulation_rule_or_state_code_modified": false
+}

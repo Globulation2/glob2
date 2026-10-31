@@ -1,0 +1,18 @@
+{
+  "captured_at": 1793464950.213085,
+  "head": "6a16670c6daafa34f1f86a47014f23e0d05fd4e3",
+  "sha256": {
+    "src/hud/touch/GameGUITouchHarness.cpp": "4eed2591413a112e70105386c90f0b09475859c233391d3313d3977bc3d99323",
+    "src/render/ResourceSprites.cpp": "1c23ee129ff09d27b2eb1aee08d1d3e3fa0e26375abe5fba25bbc646cc22a447",
+    "src/render/MapAssetSprites.cpp": "e4b26f174cf42e701ed781b9258d29db3c9dab3bf9ae0066ea31ed7dacbfafe5",
+    "libgag/src/Toolkit.cpp": "710e9919b28ce48dec6fbf4fff5bd5abb37ec99d76d7b8b76ae5d7b168c0c5e9",
+    "libgag/src/SpriteLoad.cpp": "574dac3d29000445b9767193a9c95cdc54c3893fb187a48a516fefdf255e1070",
+    "libgag/src/TrueTypeFont.cpp": "fa461f1852e80b1a763a14183ea7522d9c1725bd5ce0fbba19e769defb5d334b",
+    "src/hud/touch/GameGUITouchView.cpp": "966acc8acc2dd1027edbc433002e4df4e1684927531fad33954870c4693bf902",
+    "src/hud/touch/GameGUITouch.cpp": "0e3e31b6516c3dba1113e654eb8577ebba28bddda2d20612e4a8483908b90614",
+    "build/darwin/client/debug/dev-dev_fast-true-linker-auto/test/glob2-engine-tests": "7259fad61abf1823cfdb9ea1a45cd9543b326a9c3ed642d3c14679e8142a9e68"
+  },
+  "command": "DYLD_LIBRARY_PATH=$PWD/artifacts/translation-program/script-support/prefix/lib GLOB2_SIM_THREAD=0 python3 test/run_tests.py --build-dir build/darwin/client/debug/dev-dev_fast-true-linker-auto --binary engine --filter 'GameGUITouch/actual gameplay touch*' --timeout 600 --jobs 1 --display-jobs 1 --keep-profiles --junit artifacts/translation-program/reviews/infra-final/touch-investigation.xml --artifacts artifacts/translation-program/reviews/infra-final/touch-investigation-artifacts",
+  "process_pid": 41687,
+  "session": 46790
+}
