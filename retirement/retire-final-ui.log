@@ -1,0 +1,11 @@
+PASS IntroductionUI/guidance preserves pointer ownership across map drags and concurrent touches [display] (2.8s)
+PASS TutorialLocalization/Tutorial messages wrap unspaced UTF-8 text and continuation indents without changing simulation [display] (3.2s)
+PASS TutorialLocalization/Old tutorial localization preserves script bytes and matches ordinary save-load state [display][artifacts] (4.9s)
+PASS IntroductionUI/retired tutorial progress stays on disk without appearing as a campaign [display] (2.7s)
+PASS IntroductionUI/first-run recommendation can be declined and stays dismissed [display][writes-preferences] (3.9s)
+PASS IntroductionUI/catalog and second lesson use generic guidance and restart navigation [display][artifacts] (5.5s)
+PASS IntroductionUI/guidance adapts to desktop touch and large text without consuming map input [display][artifacts] (27.8s)
+PASS IntroductionUI/expanded lesson catalog and guidance fit both phone orientations [display][artifacts] (54.1s)
+
+8 passed, 0 failed, 0 skipped (104.9s of test time)
+[run_tests] JUnit report: artifacts/training/retire-final-ui.xml (8 cases)

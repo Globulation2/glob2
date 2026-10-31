@@ -1,0 +1,10 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="8" failures="0" errors="0" skipped="0"><testsuite name="IntroductionUI"><testcase classname="IntroductionUI" name="catalog and second lesson use generic guidance and restart navigation [display][artifacts]" time="5.14039" status="run" />
+  <testcase classname="IntroductionUI" name="expanded lesson catalog and guidance fit both phone orientations [display][artifacts]" time="53.799" status="run" />
+  <testcase classname="IntroductionUI" name="first-run recommendation can be declined and stays dismissed [display][writes-preferences]" time="3.62688" status="run" />
+  <testcase classname="IntroductionUI" name="guidance adapts to desktop touch and large text without consuming map input [display][artifacts]" time="25.4083" status="run" />
+  <testcase classname="IntroductionUI" name="guidance preserves pointer ownership across map drags and concurrent touches [display]" time="2.34472" status="run" />
+  <testcase classname="IntroductionUI" name="retired tutorial progress stays on disk without appearing as a campaign [display]" time="2.3576" status="run" />
+  </testsuite><testsuite name="TutorialLocalization"><testcase classname="TutorialLocalization" name="Old tutorial localization preserves script bytes and matches ordinary save-load state [display][artifacts]" time="4.4815" status="run" />
+  <testcase classname="TutorialLocalization" name="Tutorial messages wrap unspaced UTF-8 text and continuation indents without changing simulation [display]" time="2.73214" status="run" />
+  </testsuite></testsuites>

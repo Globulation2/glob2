@@ -1,0 +1,211 @@
+
+Running 6 tests using 2 workers
+
+(node:133991) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+(node:133992) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+[1/6] [chromium] › tests/campaign-progress.spec.js:47:1 › campaign progress merges through the chooser, survives reload and rejects invalid backups
+[2/6] [chromium] › tests/tutorial-phone.spec.js:7:1 › Tutorial opens the lesson catalog as the only tutorial menu on phones
+[3/6] [chromium] › tests/tutorial-phone.spec.js:26:1 › shared training tutorial keeps touch actions usable across rotation
+  1) [chromium] › tests/campaign-progress.spec.js:47:1 › campaign progress merges through the chooser, survives reload and rejects invalid backups 
+
+    Error: control "ok" is not available
+
+    control "ok" is not available
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: true
+    Received: false
+
+    Call Log:
+    - Timeout 30000ms exceeded while waiting on the predicate
+
+       at main-menu.js:21
+
+      19 |     found = await page.evaluate(key => glob2Diagnostics.snapshot().controls[key] || null, key);
+      20 |     return Boolean(found && (!enabled || found.enabled) && current(page, found));
+    > 21 |   }, {timeout, message: `control "${key}" is not available`}).toBe(true);
+         |                                                               ^
+      22 |   await settled(page);
+      23 |   return (await page.evaluate(key => glob2Diagnostics.snapshot().controls[key] || null, key)) || found;
+      24 | }
+        at control (/home/bradley/.codex/worktrees/159d/glob2/browser/tests/main-menu.js:21:63)
+        at controlOnScreen (/home/bradley/.codex/worktrees/159d/glob2/browser/tests/main-menu.js:75:22)
+        at clickControl (/home/bradley/.codex/worktrees/159d/glob2/browser/tests/main-menu.js:121:24)
+        at campaign (/home/bradley/.codex/worktrees/159d/glob2/browser/tests/campaign-progress.spec.js:20:80)
+        at /home/bradley/.codex/worktrees/159d/glob2/browser/tests/campaign-progress.spec.js:48:3
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../artifacts/training/retire-browser-output/campaign-progress-campaign-ff7aa-and-rejects-invalid-backups-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../artifacts/training/retire-browser-output/campaign-progress-campaign-ff7aa-and-rejects-invalid-backups-chromium/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    ../artifacts/training/retire-browser-output/campaign-progress-campaign-ff7aa-and-rejects-invalid-backups-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace ../artifacts/training/retire-browser-output/campaign-progress-campaign-ff7aa-and-rejects-invalid-backups-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+
+(node:134766) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+[4/6] [chromium] › tests/campaign-progress.spec.js:65:44 › campaign persistence failure preserves the durable backup with retry
+  2) [chromium] › tests/campaign-progress.spec.js:65:44 › campaign persistence failure preserves the durable backup with retry 
+
+    Error: control "ok" is not available
+
+    control "ok" is not available
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: true
+    Received: false
+
+    Call Log:
+    - Timeout 30000ms exceeded while waiting on the predicate
+
+       at main-menu.js:21
+
+      19 |     found = await page.evaluate(key => glob2Diagnostics.snapshot().controls[key] || null, key);
+      20 |     return Boolean(found && (!enabled || found.enabled) && current(page, found));
+    > 21 |   }, {timeout, message: `control "${key}" is not available`}).toBe(true);
+         |                                                               ^
+      22 |   await settled(page);
+      23 |   return (await page.evaluate(key => glob2Diagnostics.snapshot().controls[key] || null, key)) || found;
+      24 | }
+        at control (/home/bradley/.codex/worktrees/159d/glob2/browser/tests/main-menu.js:21:63)
+        at controlOnScreen (/home/bradley/.codex/worktrees/159d/glob2/browser/tests/main-menu.js:75:22)
+        at clickControl (/home/bradley/.codex/worktrees/159d/glob2/browser/tests/main-menu.js:121:24)
+        at campaign (/home/bradley/.codex/worktrees/159d/glob2/browser/tests/campaign-progress.spec.js:20:80)
+        at /home/bradley/.codex/worktrees/159d/glob2/browser/tests/campaign-progress.spec.js:66:3
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../artifacts/training/retire-browser-output/campaign-progress-campaign-f598a-e-durable-backup-with-retry-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../artifacts/training/retire-browser-output/campaign-progress-campaign-f598a-e-durable-backup-with-retry-chromium/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    ../artifacts/training/retire-browser-output/campaign-progress-campaign-f598a-e-durable-backup-with-retry-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace ../artifacts/training/retire-browser-output/campaign-progress-campaign-f598a-e-durable-backup-with-retry-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+
+(node:135381) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+[5/6] [chromium] › tests/campaign-progress.spec.js:65:44 › campaign persistence failure preserves the durable backup with discard
+  3) [chromium] › tests/campaign-progress.spec.js:65:44 › campaign persistence failure preserves the durable backup with discard 
+
+    Error: control "ok" is not available
+
+    control "ok" is not available
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: true
+    Received: false
+
+    Call Log:
+    - Timeout 30000ms exceeded while waiting on the predicate
+
+       at main-menu.js:21
+
+      19 |     found = await page.evaluate(key => glob2Diagnostics.snapshot().controls[key] || null, key);
+      20 |     return Boolean(found && (!enabled || found.enabled) && current(page, found));
+    > 21 |   }, {timeout, message: `control "${key}" is not available`}).toBe(true);
+         |                                                               ^
+      22 |   await settled(page);
+      23 |   return (await page.evaluate(key => glob2Diagnostics.snapshot().controls[key] || null, key)) || found;
+      24 | }
+        at control (/home/bradley/.codex/worktrees/159d/glob2/browser/tests/main-menu.js:21:63)
+        at controlOnScreen (/home/bradley/.codex/worktrees/159d/glob2/browser/tests/main-menu.js:75:22)
+        at clickControl (/home/bradley/.codex/worktrees/159d/glob2/browser/tests/main-menu.js:121:24)
+        at campaign (/home/bradley/.codex/worktrees/159d/glob2/browser/tests/campaign-progress.spec.js:20:80)
+        at /home/bradley/.codex/worktrees/159d/glob2/browser/tests/campaign-progress.spec.js:66:3
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../artifacts/training/retire-browser-output/campaign-progress-campaign-805e6-durable-backup-with-discard-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../artifacts/training/retire-browser-output/campaign-progress-campaign-805e6-durable-backup-with-discard-chromium/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    ../artifacts/training/retire-browser-output/campaign-progress-campaign-805e6-durable-backup-with-discard-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace ../artifacts/training/retire-browser-output/campaign-progress-campaign-805e6-durable-backup-with-discard-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+
+(node:135713) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+[6/6] [chromium] › tests/campaign-progress.spec.js:96:1 › leaving a new campaign waits for persistence and discard removes its uncommitted file
+  4) [chromium] › tests/campaign-progress.spec.js:96:1 › leaving a new campaign waits for persistence and discard removes its uncommitted file 
+
+    Error: control "ok" is not available
+
+    control "ok" is not available
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: true
+    Received: false
+
+    Call Log:
+    - Timeout 30000ms exceeded while waiting on the predicate
+
+       at main-menu.js:21
+
+      19 |     found = await page.evaluate(key => glob2Diagnostics.snapshot().controls[key] || null, key);
+      20 |     return Boolean(found && (!enabled || found.enabled) && current(page, found));
+    > 21 |   }, {timeout, message: `control "${key}" is not available`}).toBe(true);
+         |                                                               ^
+      22 |   await settled(page);
+      23 |   return (await page.evaluate(key => glob2Diagnostics.snapshot().controls[key] || null, key)) || found;
+      24 | }
+        at control (/home/bradley/.codex/worktrees/159d/glob2/browser/tests/main-menu.js:21:63)
+        at controlOnScreen (/home/bradley/.codex/worktrees/159d/glob2/browser/tests/main-menu.js:75:22)
+        at clickControl (/home/bradley/.codex/worktrees/159d/glob2/browser/tests/main-menu.js:121:24)
+        at campaign (/home/bradley/.codex/worktrees/159d/glob2/browser/tests/campaign-progress.spec.js:20:80)
+        at /home/bradley/.codex/worktrees/159d/glob2/browser/tests/campaign-progress.spec.js:97:3
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../artifacts/training/retire-browser-output/campaign-progress-leaving--92f4c-emoves-its-uncommitted-file-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../artifacts/training/retire-browser-output/campaign-progress-leaving--92f4c-emoves-its-uncommitted-file-chromium/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    ../artifacts/training/retire-browser-output/campaign-progress-leaving--92f4c-emoves-its-uncommitted-file-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace ../artifacts/training/retire-browser-output/campaign-progress-leaving--92f4c-emoves-its-uncommitted-file-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+
+  4 failed
+    [chromium] › tests/campaign-progress.spec.js:47:1 › campaign progress merges through the chooser, survives reload and rejects invalid backups 
+    [chromium] › tests/campaign-progress.spec.js:65:44 › campaign persistence failure preserves the durable backup with retry 
+    [chromium] › tests/campaign-progress.spec.js:65:44 › campaign persistence failure preserves the durable backup with discard 
+    [chromium] › tests/campaign-progress.spec.js:96:1 › leaving a new campaign waits for persistence and discard removes its uncommitted file 
+  2 passed (5.0m)

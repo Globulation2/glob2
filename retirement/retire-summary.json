@@ -1,0 +1,35 @@
+{
+  "head": "ce8b04d55271f967578342434a64756cd0224774",
+  "source_tree": "d5d95b95e0a680878b78294c7463f87c501b7531",
+  "base": "8ce957bd09894b8a1ecc07763873a1649d9ae8bc",
+  "fetched_master": "6e83e9f4dec9ac13ac309d2a9bbf9302bdabc0e3",
+  "simulation_revision": 104,
+  "save_format": "unchanged",
+  "checks": {
+    "native_lessons_and_compatibility": 16,
+    "native_ui_and_localization": 8,
+    "javascript_units": 149,
+    "authoring_contracts": 7,
+    "translation_contracts": 10,
+    "web_asset_contracts": {
+      "passed": 25,
+      "skipped": 1
+    },
+    "gog_contracts": 10,
+    "release_guards": 4,
+    "chromium_phone": 2,
+    "chromium_campaign_persistence": 4,
+    "chromium_lesson_quit_retry": 1,
+    "chromium_loader_cancel_retry": 1,
+    "chromium_team_colors": 2,
+    "chromium_serial_native_traces": 9,
+    "golden_match": 1
+  },
+  "limitations": [
+    "Physical devices not tested",
+    "Native Windows/macOS not rerun",
+    "Firefox/WebKit/threaded browser checks not rerun for retirement commit (prior review evidence covers previous commit)",
+    "New lesson localization remains incomplete; text exporter reports230 missing Simplified Chinese messages",
+    "Archived SGSL chapter-three checkpoint has its documented pre-existing loader failure"
+  ]
+}

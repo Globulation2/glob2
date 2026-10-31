@@ -1,0 +1,59 @@
+
+Running 2 tests using 1 worker
+
+(node:134462) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+[1/2] [chromium] › tests/single-player.spec.js:79:1 › tutorial sessions quit through the end screen and can restart
+  1) [chromium] › tests/single-player.spec.js:79:1 › tutorial sessions quit through the end screen and can restart 
+
+    Error: control "quit" is not available
+
+    control "quit" is not available
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: true
+    Received: false
+
+    Call Log:
+    - Timeout 30000ms exceeded while waiting on the predicate
+
+       at main-menu.js:21
+
+      19 |     found = await page.evaluate(key => glob2Diagnostics.snapshot().controls[key] || null, key);
+      20 |     return Boolean(found && (!enabled || found.enabled) && current(page, found));
+    > 21 |   }, {timeout, message: `control "${key}" is not available`}).toBe(true);
+         |                                                               ^
+      22 |   await settled(page);
+      23 |   return (await page.evaluate(key => glob2Diagnostics.snapshot().controls[key] || null, key)) || found;
+      24 | }
+        at control (/home/bradley/.codex/worktrees/159d/glob2/browser/tests/main-menu.js:21:63)
+        at controlOnScreen (/home/bradley/.codex/worktrees/159d/glob2/browser/tests/main-menu.js:75:22)
+        at clickControl (/home/bradley/.codex/worktrees/159d/glob2/browser/tests/main-menu.js:121:24)
+        at /home/bradley/.codex/worktrees/159d/glob2/browser/tests/single-player.spec.js:87:11
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ../artifacts/training/retire-flow-output/single-player-tutorial-ses-656a4--end-screen-and-can-restart-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../artifacts/training/retire-flow-output/single-player-tutorial-ses-656a4--end-screen-and-can-restart-chromium/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    ../artifacts/training/retire-flow-output/single-player-tutorial-ses-656a4--end-screen-and-can-restart-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace ../artifacts/training/retire-flow-output/single-player-tutorial-ses-656a4--end-screen-and-can-restart-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+
+(node:135072) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+[2/2] [chromium] › tests/single-player.spec.js:278:1 › custom and tutorial startup can be cancelled and retried
+  1 failed
+    [chromium] › tests/single-player.spec.js:79:1 › tutorial sessions quit through the end screen and can restart 
+  1 passed (2.6m)

@@ -1,0 +1,18 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="18" failures="0" errors="0" skipped="2"><testsuite name="Introduction"><testcase classname="Introduction" name="expanded lessons complete through player orders and saved continuation" time="69.8361" status="run" />
+  <testcase classname="Introduction" name="guidance accepts only the authored lesson objectives" time="0.000131" status="run" />
+  <testcase classname="Introduction" name="idle time and acknowledgments cannot complete the introduction" time="2.43451" status="run" />
+  <testcase classname="Introduction" name="original tutorial scripts compile and available checkpoints roundtrip" time="11.0564" status="run" />
+  <testcase classname="Introduction" name="packaged lesson maps embed their source and share geography" time="9.81533" status="run" />
+  <testcase classname="Introduction" name="prototype map scripts retain progress and legacy guidance after save load" time="2.23988" status="run" />
+  <testcase classname="Introduction" name="real orders complete scouting construction supply growth and attack" time="36.8874" status="run" />
+  <testcase classname="Introduction" name="recommendation migrates existing profiles and persists an explicit choice" time="0.587592" status="run" />
+  <testcase classname="Introduction" name="scenario area and queued-building orders need no local presentation player" time="1.48035" status="run" />
+  <testcase classname="Introduction" name="scripted diplomacy is atomic and rejects invalid relationships" time="2.69716" status="run" />
+  <testcase classname="Introduction" name="second lesson completes and resumes with the shared runner" time="7.02154" status="run" />
+  <testcase classname="Introduction" name="training algae requires swimming and named regions survive loading" time="10.9402" status="run" />
+  <testcase classname="Introduction" name="training colonies remain supplied while a learner takes time" time="19.5237" status="run" />
+  <testcase classname="Introduction" name="tutorial metadata is validated atomically with scenario effects" time="1.71975" status="run" />
+  <testcase classname="Introduction" name="zone observations and scenario orders preserve map callback validation" time="1.54365" status="run" />
+  </testsuite><testsuite name="TutorialLocalization"><testcase classname="TutorialLocalization" name="Legacy tutorial aliases use the selected catalog and preserve unknown text" time="1.58535" status="run" />
+  <testcase classname="TutorialLocalization" name="Tutorial messages wrap unspaced UTF-8 text and continuation indents without changing simulation [display]" time="0.000"><skipped message="needs a display" /></testcase><testcase classname="TutorialLocalization" name="Old tutorial localization preserves script bytes and matches ordinary save-load state [display][artifacts]" time="0.000"><skipped message="needs a display" /></testcase></testsuite></testsuites>

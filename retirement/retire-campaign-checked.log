@@ -1,0 +1,14 @@
+
+Running 4 tests using 1 worker
+
+(node:138273) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+[1/4] [chromium] › tests/campaign-progress.spec.js:47:1 › campaign progress merges through the chooser, survives reload and rejects invalid backups
+[2/4] [chromium] › tests/campaign-progress.spec.js:65:44 › campaign persistence failure preserves the durable backup with retry
+[3/4] [chromium] › tests/campaign-progress.spec.js:65:44 › campaign persistence failure preserves the durable backup with discard
+[4/4] [chromium] › tests/campaign-progress.spec.js:96:1 › leaving a new campaign waits for persistence and discard removes its uncommitted file
+  Slow test file: [chromium] › tests/campaign-progress.spec.js (6.3m)
+  Consider running tests from slow files in parallel. See: https://playwright.dev/docs/test-parallel
+  4 passed (6.3m)

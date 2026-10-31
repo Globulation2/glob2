@@ -1,0 +1,30 @@
+glob2:training revision 1 seed 20261026 [complete]: 
+Map: /tmp/glob2-training-qmzw8ju1/lesson.map.gz
+glob2:training revision 1 seed 20261026 [complete]: 
+Map: /tmp/glob2-training-4uoi7xip/lesson.map.gz
+glob2:training revision 1 seed 20261026 [complete]: 
+Map: /tmp/glob2-training-vfw3dosc/lesson.map.gz
+glob2:training revision 1 seed 20261026 [complete]: 
+Map: /tmp/glob2-training-fzoghc0u/lesson.map.gz
+glob2:training revision 1 seed 20261026 [complete]: 
+Map: /tmp/glob2-training-1ni9f89w/lesson.map.gz
+glob2:training revision 1 seed 20261026 [complete]: 
+Map: /tmp/glob2-training-lybpfzs_/lesson.map.gz
+glob2:training revision 1 seed 20261026 [complete]: 
+Map: /tmp/glob2-training-bz58wk2q/lesson.map.gz
+glob2:training revision 1 seed 20261026 [complete]: 
+Map: /tmp/glob2-training-83m6a1cq/lesson.map.gz
+glob2:training revision 1 seed 20261026 [complete]: 
+Map: /tmp/glob2-training-0_ayk44z/lesson.map.gz
+glob2:training revision 1 seed 20261026 [complete]: 
+Map: /tmp/glob2-training-ecvf3fyf/lesson.map.gz
+introduction: 5 steps → scripts/introduction.js
+food-supply: 2 steps → scripts/food-supply.js
+healing: 2 steps → scripts/healing.js
+walking-training: 2 steps → scripts/walking-training.js
+swimming: 3 steps → scripts/swimming.js
+schools: 2 steps → scripts/schools.js
+upgrades: 2 steps → scripts/upgrades.js
+warrior-training: 3 steps → scripts/warrior-training.js
+fortifications: 4 steps → scripts/fortifications.js
+defensive-tactics: 4 steps → scripts/defensive-tactics.js
