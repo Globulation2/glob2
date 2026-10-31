@@ -355,8 +355,7 @@ if (tile.explored && tile.corners.every(c => c === tile.corners[0])) {
 }
 ```
 
-Each entry has `id`, stable `name`, `experiment` (a required experiment key or
-`null`), `editorSelectable`, and these gameplay properties:
+Each entry has `id`, stable `name`, `editorSelectable`, and these gameplay properties:
 
 | Fields | Meaning |
 | --- | --- |
@@ -369,8 +368,7 @@ Each entry has `id`, stable `name`, `experiment` (a required experiment key or
 | `allowedResources` | Runtime resource IDs permitted by compiled habitat rules and explicit terrain whitelists; refreshed when either catalog changes |
 | `farmMaterial` | Preferred renewable farming material key, or `null` for none |
 
-The array is ID-indexed and includes experimental materials even when the current
-match has not enabled their authoring options.
+The array is ID-indexed. Every terrain is available without experiment flags.
 All nested registry values are read-only in both scripting profiles, including
 commander and map scripts. Existing IDs remain water `0`, sand `1`, grass `2`,
 ice `3` and Trail `4` (legacy registry name `road`); scripts should query capabilities

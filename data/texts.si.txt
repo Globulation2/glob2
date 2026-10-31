@@ -5546,14 +5546,6 @@ Omeji izris v celotni aplikaciji. Nižje vrednosti zmanjšajo delo pri izrisu. H
 Led
 [road]
 Steza
-[experiment ice-terrain]
-Ledeni teren
-[experiment ice-terrain help]
-Doda led v urejevalnik zemljevidov. Kopenske enote se premikajo s polovično hitrostjo in izgubijo eno točko zdravja vsakih 32 simulacijskih korakov na ledu. Na ledu ne more biti zgradb ali virov.
-[experiment road-terrain]
-Teren steze
-[experiment road-terrain help]
-V urejevalnik zemljevidov doda obrabljene steze. Kopenske enote se premikajo z dvojno hitrostjo. Steze omogočajo zgradbe, vendar ne virov. Na leteče enote to ne vpliva.
 [experiment markets-v2]
 Tržnice V2
 [experiment markets-v2 help]
@@ -5702,42 +5694,6 @@ Rodovitna tla
 Globoka voda
 [terrain group void]
 Praznina
-[experiment obstacle-terrain]
-Teren z ovirami
-[experiment obstacle-terrain help]
-V urejevalnik zemljevidov doda balvane, žive meje in goščave. Kopenske enote jih ne morejo prečkati in ustavljajo izstrelke; leteče enote jih preletijo. Na njih ni stavb ali virov.
-[experiment ridge-terrain]
-Skalnat teren
-[experiment ridge-terrain help]
-V urejevalnik zemljevidov doda skalne grebene in izdanke. Kopenske enote jih ne morejo prečkati, vendar stolpi streljajo čeznje in leteče enote jih preletijo. Na njih ni stavb ali virov.
-[experiment barren-terrain]
-Nerodovitna tla
-[experiment barren-terrain help]
-V urejevalnik zemljevidov doda prst, glino, prod in cvetlične travnike. Na njih lahko stojijo stavbe, vendar na njih ali ob njih nič ne raste in ne štejejo za obalo.
-[experiment rough-terrain]
-Zahteven teren
-[experiment rough-terrain help]
-V urejevalnik zemljevidov doda blato, močvirja, globok sneg in melišča. Kopenske enote se premikajo s približno dvema tretjinama hitrosti. Na tem terenu ni stavb ali virov.
-[experiment path-terrain]
-Teren s potmi
-[experiment path-terrain help]
-V urejevalnik zemljevidov doda kolovoze in lesene poti. Tako kot na stezah se kopenske enote premikajo z dvojno hitrostjo in stavbe so dovoljene, vendar nič ne raste.
-[experiment lava-terrain]
-Teren z lavo
-[experiment lava-terrain help]
-V urejevalnik zemljevidov doda lavo in žerjavico. Kopenske enote ne morejo vstopiti; leteče enote med preletom hitro izgubljajo zdravje. Izstrelki letijo čeznje.
-[experiment fertile-terrain]
-Rodovitna tla
-[experiment fertile-terrain help]
-V urejevalnik zemljevidov doda ilovico, mah in pomladne travnike. Omogočajo stavbe in poljščine ter okolico namakajo močneje kot voda.
-[experiment deep-water-terrain]
-Globoka voda
-[experiment deep-water-terrain help]
-V urejevalnik zemljevidov doda globoko in temno vodo. Plavalci jo prečkajo počasneje, alge v njej ne rastejo, vendar še vedno namaka bližnja polja.
-[experiment void-terrain]
-Prazen teren
-[experiment void-terrain help]
-V urejevalnik zemljevidov doda luknje in prepade. Nič jih ne more prečkati, niti leteče enote, izstrelki pa se ustavijo na robu.
 [terrain group custom]
 Po meri
 [terrain group classic]
@@ -5770,8 +5726,6 @@ Poškoduje leteče enote
 Izberite čopič. Skupine imajo skupna pravila; njihovi člani se razlikujejo le po videzu.
 [terrain rule algae grow]
 Alge rastejo
-[terrain palette experiments hint]
-Izberite čopič. Več skupin terena se pojavi po vklopu njihovih poskusov v Nastavitve > Poskusi.
 [brush valid on %0]
 Veljavno na: %0
 [brush valid nowhere]

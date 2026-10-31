@@ -5546,14 +5546,6 @@ Obmedzuje vykresľovanie v celej aplikácii. Nižšie hodnoty znižujú nároky 
 Ľad
 [road]
 Chodník
-[experiment ice-terrain]
-Ľadový terén
-[experiment ice-terrain help]
-Pridá ľad do editora máp. Pozemné jednotky sa pohybujú polovičnou rýchlosťou a každých 32 krokov simulácie na ľade stratia jeden bod zdravia. Na ľade nemôžu byť budovy ani suroviny.
-[experiment road-terrain]
-Terén chodníka
-[experiment road-terrain help]
-Pridáva do editora máp vyšliapané chodníky. Pozemné jednotky sa pohybujú dvojnásobnou rýchlosťou. Na chodníkoch možno stavať budovy, ale nemôžu na nich byť suroviny. Lietajúce jednotky nie sú ovplyvnené.
 [experiment markets-v2]
 Trhy V2
 [experiment markets-v2 help]
@@ -5702,42 +5694,6 @@ Láva
 Hlboká voda
 [terrain group void]
 Prázdnota
-[experiment obstacle-terrain]
-Terén s prekážkami
-[experiment obstacle-terrain help]
-Pridá do editora máp balvany, živé ploty a húštiny. Pozemné jednotky ich nemôžu prekonať a zastavujú strely; lietajúce jednotky preletia. Nemožno na ne umiestniť budovy ani suroviny.
-[experiment ridge-terrain]
-Skalnatý terén
-[experiment ridge-terrain help]
-Pridá do editora máp skalné hrebene a výchozy. Pozemné jednotky ich nemôžu prekonať, ale veže strieľajú ponad ne a lietajúce jednotky preletia. Nemožno na ne umiestniť budovy ani suroviny.
-[experiment barren-terrain]
-Neúrodná pôda
-[experiment barren-terrain help]
-Pridá do editora máp hlinu, íl, štrk a kvetnaté lúky. Možno na nich stavať budovy, ale na nich ani vedľa nich nič nerastie a nepočítajú sa ako breh.
-[experiment rough-terrain]
-Náročný terén
-[experiment rough-terrain help]
-Pridá do editora máp blato, močiare, hlboký sneh a suť. Pozemné jednotky sa pohybujú približne dvoma tretinami rýchlosti. Nemožno sem umiestniť budovy ani suroviny.
-[experiment path-terrain]
-Cestný terén
-[experiment path-terrain help]
-Pridá do editora máp poľné cesty a drevené chodníky. Rovnako ako na cestičkách sa pozemné jednotky pohybujú dvojnásobnou rýchlosťou a budovy sú povolené, ale nič tu nerastie.
-[experiment lava-terrain]
-Lávový terén
-[experiment lava-terrain help]
-Pridá do editora máp lávu a žeravé polia. Pozemné jednotky do nich nemôžu vstúpiť; lietajúce jednotky nad nimi rýchlo strácajú zdravie. Strely ich preletia.
-[experiment fertile-terrain]
-Úrodná pôda
-[experiment fertile-terrain help]
-Pridá do editora máp úrodnú hlinu, mach a jarné lúky. Umožňujú stavby aj pestovanie plodín a zavlažujú okolitú pôdu viac než voda.
-[experiment deep-water-terrain]
-Hlboká voda
-[experiment deep-water-terrain help]
-Pridá do editora máp hlbokú a tmavú vodu. Plavci ju prekonávajú pomalšie, nerastú v nej riasy, ale stále zavlažuje okolité polia.
-[experiment void-terrain]
-Prázdny terén
-[experiment void-terrain help]
-Pridá do editora máp diery a priepasti. Nič ich nemôže prekonať, ani lietajúce jednotky, a strely sa zastavia na okraji.
 [terrain group custom]
 Vlastné
 [terrain group classic]
@@ -5770,8 +5726,6 @@ Zraňuje lietajúce jednotky
 Vyberte štetec. Skupiny zdieľajú pravidlá; ich členovia sa líšia iba vzhľadom.
 [terrain rule algae grow]
 Riasy rastú
-[terrain palette experiments hint]
-Vyberte štetec. Ďalšie skupiny terénu sa tu objavia po zapnutí ich experimentov v Nastavenia > Experimenty.
 [brush valid on %0]
 Platné na: %0
 [brush valid nowhere]

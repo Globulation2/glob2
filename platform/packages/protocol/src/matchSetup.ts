@@ -291,8 +291,6 @@ export function resourceExperimentKeys(definitions: ResourceExperimentDefinition
 export const BUILTIN_EXPERIMENT_KEYS = [
   'guard-area-balancing',
   'farm-areas',
-  'ice-terrain',
-  'road-terrain',
   'markets-v2',
 ] as const;
 

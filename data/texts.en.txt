@@ -5548,14 +5548,6 @@ Limit drawing across the application. Lower values reduce rendering work. Game s
 Ice
 [road]
 Trail
-[experiment ice-terrain]
-Ice terrain
-[experiment ice-terrain help]
-Adds ice to the map editor. Ground units move at half speed and lose one health point per 32 exposed ticks. Ice cannot hold buildings or resources.
-[experiment road-terrain]
-Trail terrain
-[experiment road-terrain help]
-Adds weathered trails to the map editor. Ground units move at double speed. Trails support buildings but no resources. Flying units are unaffected.
 [experiment markets-v2]
 Markets V2
 [experiment markets-v2 help]
@@ -5702,42 +5694,6 @@ Fertile ground
 Deep water
 [terrain group void]
 Void
-[experiment obstacle-terrain]
-Obstacle terrain
-[experiment obstacle-terrain help]
-Adds boulders, hedges and thickets to the map editor. Ground units cannot cross them and they stop projectiles; flying units pass over. They hold neither buildings nor resources.
-[experiment ridge-terrain]
-Ridge terrain
-[experiment ridge-terrain help]
-Adds rock ridges and outcrops to the map editor. Ground units cannot cross them, but towers shoot over them and flying units pass. They hold neither buildings nor resources.
-[experiment barren-terrain]
-Barren ground
-[experiment barren-terrain help]
-Adds dirt, clay, gravel and flower meadows to the map editor. Buildings can stand on them, nothing grows on or next to them, and they do not count as shoreline.
-[experiment rough-terrain]
-Rough ground
-[experiment rough-terrain help]
-Adds mud, marsh, deep snow and scree to the map editor. Ground units move at about two thirds speed. Rough ground holds neither buildings nor resources.
-[experiment path-terrain]
-Path terrain
-[experiment path-terrain help]
-Adds dirt tracks and boardwalks to the map editor. Like trails, ground units move at double speed and buildings are allowed, but nothing grows.
-[experiment lava-terrain]
-Lava terrain
-[experiment lava-terrain help]
-Adds lava and ember fields to the map editor. Ground units cannot enter them; flying units crossing them lose health quickly. Projectiles pass over.
-[experiment fertile-terrain]
-Fertile ground
-[experiment fertile-terrain help]
-Adds loam, moss and spring meadows to the map editor. They support buildings and crops and irrigate the land around them more strongly than water does.
-[experiment deep-water-terrain]
-Deep water
-[experiment deep-water-terrain help]
-Adds deep and dark water to the map editor. Swimmers cross them more slowly, no algae grows in them, and they still irrigate nearby fields.
-[experiment void-terrain]
-Void terrain
-[experiment void-terrain help]
-Adds holes and chasms to the map editor. Nothing can cross them, not even flying units, and projectiles stop at their edge.
 [terrain group custom]
 Custom
 [terrain group classic]
@@ -5770,8 +5726,6 @@ Hurts fliers
 Pick a brush. Groups share one set of rules; their members differ only in look.
 [terrain rule algae grow]
 Algae grow
-[terrain palette experiments hint]
-Pick a brush. More terrain groups appear here once their experiments are enabled under Settings > Experiments.
 [brush valid on %0]
 Valid on: %0
 [brush valid nowhere]

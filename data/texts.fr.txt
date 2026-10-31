@@ -5546,14 +5546,6 @@ Limite le dessin dans toute l’application. Des valeurs plus faibles réduisent
 Glace
 [road]
 Sentier
-[experiment ice-terrain]
-Terrain de glace
-[experiment ice-terrain help]
-Ajoute de la glace à l’éditeur de cartes. Les unités terrestres avancent à mi-vitesse et perdent un point de vie tous les 32 pas de simulation passés sur la glace. La glace ne peut accueillir ni bâtiments ni ressources.
-[experiment road-terrain]
-Terrain de sentier
-[experiment road-terrain help]
-Ajoute des sentiers usés à l’éditeur de cartes. Les unités terrestres se déplacent deux fois plus vite. Les sentiers permettent les bâtiments, mais pas les ressources. Les unités volantes ne sont pas affectées.
 [experiment markets-v2]
 Marchés V2
 [experiment markets-v2 help]
@@ -5702,42 +5694,6 @@ Sol fertile
 Eau profonde
 [terrain group void]
 Vide
-[experiment obstacle-terrain]
-Terrain à obstacles
-[experiment obstacle-terrain help]
-Ajoute des blocs rocheux, des haies et des fourrés à l'éditeur de cartes. Les unités terrestres ne peuvent pas les traverser et ils arrêtent les projectiles ; les unités volantes les survolent. Ils n'accueillent ni bâtiments ni ressources.
-[experiment ridge-terrain]
-Terrain de crêtes
-[experiment ridge-terrain help]
-Ajoute des crêtes rocheuses et des affleurements à l'éditeur de cartes. Les unités terrestres ne peuvent pas les traverser, mais les tours tirent par-dessus et les unités volantes passent. Ils n'accueillent ni bâtiments ni ressources.
-[experiment barren-terrain]
-Sol stérile
-[experiment barren-terrain help]
-Ajoute de la terre, de l'argile, du gravier et des prairies fleuries à l'éditeur de cartes. Les bâtiments peuvent s'y tenir, rien n'y pousse ni à côté et ces terrains ne comptent pas comme rivage.
-[experiment rough-terrain]
-Sol accidenté
-[experiment rough-terrain help]
-Ajoute de la boue, des marais, de la neige profonde et des éboulis à l'éditeur de cartes. Les unités terrestres se déplacent à environ deux tiers de leur vitesse. Ces terrains n'accueillent ni bâtiments ni ressources.
-[experiment path-terrain]
-Terrain de chemins
-[experiment path-terrain help]
-Ajoute des chemins de terre et des passerelles en bois à l'éditeur de cartes. Comme sur les sentiers, les unités terrestres avancent deux fois plus vite et les bâtiments sont autorisés, mais rien ne pousse.
-[experiment lava-terrain]
-Terrain de lave
-[experiment lava-terrain help]
-Ajoute de la lave et des champs de braises à l'éditeur de cartes. Les unités terrestres ne peuvent pas y entrer ; les unités volantes qui les traversent perdent rapidement de la santé. Les projectiles passent par-dessus.
-[experiment fertile-terrain]
-Sol fertile
-[experiment fertile-terrain help]
-Ajoute de la terre franche, de la mousse et des prairies printanières à l'éditeur de cartes. Ces terrains accueillent bâtiments et cultures et irriguent les terres voisines plus fortement que l'eau.
-[experiment deep-water-terrain]
-Eau profonde
-[experiment deep-water-terrain help]
-Ajoute de l'eau profonde et sombre à l'éditeur de cartes. Les nageurs la traversent plus lentement, aucune algue n'y pousse et elle irrigue toujours les champs voisins.
-[experiment void-terrain]
-Terrain de vide
-[experiment void-terrain help]
-Ajoute des trous et des gouffres à l'éditeur de cartes. Rien ne peut les traverser, même les unités volantes, et les projectiles s'arrêtent à leur bord.
 [terrain group custom]
 Personnalisé
 [terrain group classic]
@@ -5770,8 +5726,6 @@ Blesse les unités volantes
 Choisissez un pinceau. Les terrains d’un même groupe partagent les mêmes règles et ne diffèrent que par leur aspect.
 [terrain rule algae grow]
 Les algues poussent
-[terrain palette experiments hint]
-Choisissez un pinceau. D’autres groupes de terrain apparaissent ici quand leurs expérimentations sont activées dans Paramètres > Expérimentations.
 [brush valid on %0]
 Valable sur : %0
 [brush valid nowhere]

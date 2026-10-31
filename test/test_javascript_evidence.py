@@ -230,7 +230,7 @@ class SaveHeaderTests(unittest.TestCase):
             return struct.pack('>I', len(encoded)) + encoded
         result = text('Resource header fixture')
         result += struct.pack('>IIII', 0, version, 2, 0) + b'\1' + bytes(20)
-        if version >= 134:
+        if 134 <= version < 187:
             result += struct.pack('>I', len(terrain_required))
             result += b''.join(text(key) for key in terrain_required)
         if version >= 140:

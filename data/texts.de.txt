@@ -5546,14 +5546,6 @@ Begrenzt die Darstellung in der gesamten Anwendung. Niedrigere Werte reduzieren 
 Eis
 [road]
 Pfad
-[experiment ice-terrain]
-Eisgelände
-[experiment ice-terrain help]
-Fügt Eis zum Karteneditor hinzu. Bodeneinheiten bewegen sich mit halber Geschwindigkeit und verlieren alle 32 Simulationsschritte auf dem Eis einen Lebenspunkt. Auf Eis können keine Gebäude oder Ressourcen liegen.
-[experiment road-terrain]
-Pfadgelände
-[experiment road-terrain help]
-Fügt dem Karteneditor verwitterte Pfade hinzu. Bodeneinheiten bewegen sich mit doppelter Geschwindigkeit. Pfade erlauben Gebäude, aber keine Rohstoffe. Fliegende Einheiten bleiben unbeeinflusst.
 [experiment markets-v2]
 Märkte V2
 [experiment markets-v2 help]
@@ -5702,42 +5694,6 @@ Fruchtbarer Boden
 Tiefes Wasser
 [terrain group void]
 Leere
-[experiment obstacle-terrain]
-Hindernisgelände
-[experiment obstacle-terrain help]
-Fügt dem Karteneditor Felsblöcke, Hecken und Dickicht hinzu. Bodeneinheiten können sie nicht überqueren, und sie stoppen Geschosse; fliegende Einheiten passieren sie. Weder Gebäude noch Ressourcen können dort stehen.
-[experiment ridge-terrain]
-Felsrückengelände
-[experiment ridge-terrain help]
-Fügt dem Karteneditor Felsrücken und Felsvorsprünge hinzu. Bodeneinheiten können sie nicht überqueren, doch Türme schießen darüber und fliegende Einheiten passieren sie. Weder Gebäude noch Ressourcen können dort stehen.
-[experiment barren-terrain]
-Unfruchtbarer Boden
-[experiment barren-terrain help]
-Fügt dem Karteneditor Erde, Ton, Kies und Blumenwiesen hinzu. Gebäude können darauf stehen, nichts wächst darauf oder daneben, und sie zählen nicht als Ufer.
-[experiment rough-terrain]
-Unwegsamer Boden
-[experiment rough-terrain help]
-Fügt dem Karteneditor Schlamm, Sumpf, tiefen Schnee und Geröll hinzu. Bodeneinheiten bewegen sich mit etwa zwei Dritteln der Geschwindigkeit. Weder Gebäude noch Ressourcen können dort stehen.
-[experiment path-terrain]
-Weggelände
-[experiment path-terrain help]
-Fügt dem Karteneditor Feldwege und Bohlenwege hinzu. Wie auf Pfaden bewegen sich Bodeneinheiten doppelt so schnell. Gebäude sind erlaubt, aber nichts wächst.
-[experiment lava-terrain]
-Lavagelände
-[experiment lava-terrain help]
-Fügt dem Karteneditor Lava und Glutfelder hinzu. Bodeneinheiten können sie nicht betreten; fliegende Einheiten verlieren beim Überqueren schnell Gesundheit. Geschosse passieren sie.
-[experiment fertile-terrain]
-Fruchtbarer Boden
-[experiment fertile-terrain help]
-Fügt dem Karteneditor fruchtbaren Lehm, Moos und Frühlingswiesen hinzu. Sie erlauben Gebäude und Pflanzen und bewässern umliegendes Land stärker als Wasser.
-[experiment deep-water-terrain]
-Tiefes Wasser
-[experiment deep-water-terrain help]
-Fügt dem Karteneditor tiefes und dunkles Wasser hinzu. Schwimmer überqueren es langsamer, keine Algen wachsen darin, und es bewässert weiterhin nahe Felder.
-[experiment void-terrain]
-Leeres Gelände
-[experiment void-terrain help]
-Fügt dem Karteneditor Löcher und Abgründe hinzu. Nichts kann sie überqueren, auch keine fliegenden Einheiten, und Geschosse stoppen an ihrem Rand.
 [terrain group custom]
 Benutzerdefiniert
 [terrain group classic]
@@ -5770,8 +5726,6 @@ Schädigt fliegende Einheiten
 Wähle einen Pinsel. Die Geländearten innerhalb einer Gruppe haben dieselben Regeln und unterscheiden sich nur im Aussehen.
 [terrain rule algae grow]
 Algen wachsen
-[terrain palette experiments hint]
-Wähle einen Pinsel. Weitere Geländegruppen erscheinen hier, sobald ihre Experimente unter Einstellungen > Experimente aktiviert sind.
 [brush valid on %0]
 Gültig auf: %0
 [brush valid nowhere]

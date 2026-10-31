@@ -119,7 +119,6 @@ TEST_SUITE("EditorTerrainPaint")
 	TEST_CASE("every terrain brush paints exactly the vertices its hover preview shows [display]")
 	{
 		glob2test::HeadlessGlobals globals(displayOptions());
-		globals->settings.experiments.set(ExperimentId::IceTerrain, true);
 		for (unsigned figure = 0; figure < BrushTool::BRUSH_COUNT; ++figure)
 			for (const char *kind : {"grass", "sand", "water", "catalogue", "custom"})
 				for (const Cell centre : {Cell{16, 16}, Cell{0, 0}})
@@ -247,7 +246,6 @@ TEST_SUITE("EditorTerrainPaint")
 	TEST_CASE("Del reverts only vertices of the selected terrain to grass [display]")
 	{
 		glob2test::HeadlessGlobals globals(displayOptions());
-		globals->settings.experiments.set(ExperimentId::IceTerrain, true);
 		MapEdit editor;
 		blank(editor);
 		auto &map = editor.game.map;

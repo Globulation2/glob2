@@ -1492,7 +1492,7 @@ TEST_CASE("JavaScript terrain registry exposes immutable property capabilities i
             "const all=ctx.game.terrainTypes(); const tile=ctx.game.map.tile(5,5);"
             "const ice=all[tile.corners[0]],road=all.find(t=>t.name==='road');"
             "s.name=ice.name;s.walk=ice.walkable;s.swim=ice.swimmable;s.air=ice.flyable;"
-            "s.speed=ice.groundSpeedQ8;s.health=ice.groundHealthQ8;s.experiment=ice.experiment;"
+            "s.speed=ice.groundSpeedQ8;s.health=ice.groundHealthQ8;s.noExperiment=!('experiment' in ice);"
             "s.road=road.buildable && road.groundSpeedQ8===512 && !road.resourcesGrow;"
             "s.grass=all.find(t=>t.name==='grass').allowedResources.includes(1);"
             "s.internal=all.some(t=>!t.editorSelectable);"
@@ -1504,7 +1504,7 @@ TEST_CASE("JavaScript terrain registry exposes immutable property capabilities i
         CHECK(state.get("name").text=="ice");CHECK(state.get("walk").number==1);
         CHECK(state.get("swim").number==0);CHECK(state.get("air").number==1);
         CHECK(state.get("speed").number==128);CHECK(state.get("health").number==-8);
-        CHECK(state.get("experiment").text=="ice-terrain");
+        CHECK(state.get("noExperiment").number==1);
         CHECK(state.get("road").number==1);CHECK(state.get("grass").number==1);
         CHECK(state.get("internal").number==0);CHECK(state.get("frozen").number==1);
         CHECK(state.get("unchanged").number==1);
