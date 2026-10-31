@@ -37,14 +37,47 @@ struct Seam
 	int fringe = 0, fringeWidth = 0; // Q8 tint strength and Q8 pixel width.
 	std::array<unsigned char, 3> fringeColor{255, 255, 255};
 };
+// Animated shoreline where a liquid ("surf") material meets any material
+// without surf: lighter shallows on the liquid side, a darker wet band on the
+// land side, and a foam line that washes up the land and back. Widths and reach
+// are Q8 logical pixels from the coverage margin, which is exact only within
+// eight pixels of the edge, so every band must end inside that distance.
+struct Surf
+{
+	int period = 0;                  // Animation ticks per wash; zero disables surf.
+	int ticks = 1;                   // Animation ticks per surf update (and page re-blend).
+	int reach = 0;                   // Q8 pixels the wash climbs onto the land.
+	int shallow = 0, shallowWidth = 0; // Q8 tint strength and Q8 pixel width.
+	int wet = 0, wetWidth = 0;         // Q8 darkening strength and Q8 pixel width.
+	int foam = 0, foamWidth = 0;       // Q8 strength and Q8 pixel half-width.
+	std::array<unsigned char, 3> shallowColor{}, foamColor{255, 255, 255};
+};
+// Applies surf to one composed sample. value holds the composed channels and
+// is updated in place. surfSide is true when the sample's dominant material is
+// the surf one. wx and wy are the sample's non-negative Q8 world pixel
+// coordinates. The integer arithmetic is mirrored exactly by
+// libgag/shaders/terrain-compose-fragment.glsl.
+void applySurf(const Surf &, bool surfSide, int margin, int wx, int wy, unsigned time,
+			   unsigned value[3]);
 // Raised objects drawn over a material's cells with the resources, in screen
 // row order, so they overlap neighbouring cells (boulders, hedges, rock).
 // `full` frames are for cells surrounded by the same material, `edge` frames
 // (smaller, pulled toward the cell centre) for cells with an open neighbour.
+// Connected foliage instead selects its surface using the painted corner mask.
 struct Decor
 {
 	std::string sprite;
 	std::vector<int> full, edge;
+	// Optional mask-major frames: TL=1, TR=2, BL=4, BR=8. Equal numbers
+	// of variants for each of the 16 masks; mask zero is never drawn.
+	std::vector<int> connected;
+	// Corner tiles ("connected_corners"): each mask holds 16 variants indexed by
+	// the colour bits of the cell's four vertices (see cornerColours), so a
+	// texture continues across every cell edge without repeating periodically.
+	bool connectedCorners = false;
+	// Optional extra filled-mask frames ("connected_interior"), colour-major with
+	// the same count per colour: alternative interiors picked by a cell hash.
+	std::vector<int> connectedInterior;
 };
 struct Material
 {
@@ -68,6 +101,7 @@ struct Material
 	Decor decor;
 	std::array<unsigned char, 3> preview{}, minimap{};
 	Seam seam;
+	Surf surf;
 };
 struct PairTreatment
 {
@@ -93,9 +127,14 @@ class Catalog
 	unsigned variantIndex(MaterialId material, int x, int y, std::uint32_t seed = 0) const;
 	int frame(MaterialId material, int x, int y, int time, std::uint32_t seed = 0) const;
 	// Decor frame for a cell of this material, or -1 when it has no decor.
-	int decorFrame(MaterialId material, int x, int y, bool edge, std::uint32_t seed = 0) const;
+	// cornerColours selects the variant of corner-tiled connected decor.
+	int decorFrame(MaterialId material, int x, int y, bool edge, std::uint32_t seed = 0,
+		unsigned cornerMask = 15, unsigned cornerColours = 0) const;
 };
 std::uint32_t hash(std::uint32_t x, std::uint32_t y, std::uint32_t salt = 0);
+// One seeded bit per map vertex, packed for a cell in corner-mask order. It is
+// shared by all materials, so adjacent connected foliage joins the same shapes.
+unsigned cornerColours(int x, int y, unsigned maskW, unsigned maskH, std::uint32_t seed);
 struct Recipe
 {
 	// Materials of the cell's corner vertices: top-left, top-right, bottom-left,
@@ -146,7 +185,14 @@ class PreparedCoverage
 	bool hasBorder = false;
 	std::array<MaterialId, 2> borderMaterials{};
 	float borderBlendScale = 65536;
+	// Nearest contour segment (1-based, 0 when beyond the seam reach) at two-pixel
+	// lattice points from -4 to 36 logical pixels. Samples search only the
+	// segments their lattice corners name, not the whole curve.
+	static constexpr int NearestLattice = 21;
+	std::array<std::uint8_t, NearestLattice * NearestLattice> nearestSegment{};
 	void prepareBorders(const Catalog &, const Recipe &);
+	void prepareNearestSegments();
+	unsigned borderMargin(Point sample) const;
 	Coverage patchCoverage(int px, int py, const std::array<int, 2> *displacement = nullptr) const;
 	struct WarpLayer
 	{

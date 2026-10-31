@@ -4,6 +4,7 @@
 #include "ComputeExecutor.h"
 #include <PresentationWork.h>
 #include <cstring>
+#include <numeric>
 #include "TerrainMaterials.h"
 #include "TerrainCompositor.h"
 #include "TerrainCatalogIO.h"
@@ -47,6 +48,110 @@ std::array<unsigned, 64> materialWeights(const TerrainVisual::Coverage &coverage
 } // namespace
 TEST_SUITE("TerrainMaterials")
 {
+	TEST_CASE("connected foliage selects the requested corner mask and keeps legacy decor")
+	{
+		glob2test::HeadlessGlobals globals;
+		const auto c = catalog();
+		for (const auto *key : {"hedge", "thicket"})
+		{
+			const auto id = c.find(key);
+			const auto &frames = c.materials[id].decor.connected;
+			REQUIRE(frames.size() == 256);
+			const auto &interior = c.materials[id].decor.connectedInterior;
+			REQUIRE(c.materials[id].decor.connectedCorners);
+			REQUIRE(interior.size() == 16 * 7);
+			for (unsigned mask = 0; mask < 15; ++mask)
+				for (unsigned colours = 0; colours < 16; ++colours)
+				{
+					const int frame = c.decorFrame(id, 3, 5, true, 73, mask, colours);
+					if (!mask) CHECK(frame == -1);
+					else CHECK(frame == frames[mask * 16 + colours]);
+				}
+			// Filled cells pick among the colour's base frame and its interiors.
+			for (unsigned colours = 0; colours < 16; ++colours)
+			{
+				std::set<int> seen;
+				for (int y = 0; y < 16; ++y)
+					for (int x = 0; x < 16; ++x)
+					{
+						const int frame = c.decorFrame(id, x, y, false, 73, 15, colours);
+						seen.insert(frame);
+						const auto first = interior.begin() + colours * 7;
+						CHECK((frame == frames[15 * 16 + colours] || std::find(first, first + 7, frame) != first + 7));
+					}
+				CHECK(seen.size() == 8);
+			}
+		}
+		// Neighbouring cells read the same bit for each shared vertex, including
+		// across the toroidal seam, and both colours occur.
+		unsigned seen = 0;
+		for (unsigned seed : {0u, 73u})
+			for (int y = 0; y < 32; ++y)
+				for (int x = 0; x < 32; ++x)
+				{
+					const auto here = TerrainVisual::cornerColours(x, y, 31, 31, seed);
+					const auto right = TerrainVisual::cornerColours((x + 1) & 31, y, 31, 31, seed);
+					const auto below = TerrainVisual::cornerColours(x, (y + 1) & 31, 31, 31, seed);
+					CHECK(((here >> 1) & 5u) == (right & 5u));
+					CHECK(((here >> 2) & 3u) == (below & 3u));
+					seen |= 1u << here;
+				}
+		CHECK(seen == 0xffffu);
+		const auto id = c.find("boulders");
+		for (bool edge : {false, true})
+		{
+			const auto &frames = edge ? c.materials[id].decor.edge : c.materials[id].decor.full;
+			const auto frame = c.decorFrame(id, 3, 7, edge);
+			CHECK(std::find(frames.begin(), frames.end(), frame) != frames.end());
+		}
+	}
+
+	TEST_CASE("connected foliage rejects incomplete corner groups")
+	{
+		glob2test::HeadlessGlobals globals;
+		auto document = nlohmann::json::parse(catalog().serialized);
+		for (auto &material : document["materials"])
+			if (material["key"] == "hedge")
+			{
+				for (unsigned count : {0u, 1u, 15u, 17u, 272u})
+				{
+					material["decor"]["connected"] = std::vector<int>(count, 0);
+					CHECK_THROWS(TerrainVisual::Catalog::parse(document));
+				}
+			}
+	}
+
+	TEST_CASE("connected canopy ground leaves contact shadows to the foliage [display]")
+	{
+		glob2test::HeadlessGlobals globals({.display = true});
+		const auto c = catalog();
+		const auto grass = c.find("grass"), hedge = c.find("hedge");
+		auto unshadowed = c, legacy = c;
+		unshadowed.materials[hedge].seam.cast = 0;
+		legacy.materials[hedge].decor.connected.clear();
+		TerrainVisual::Compositor canopy(c), ground(unshadowed), oldGround(legacy);
+		canopy.prepare(false, 0); ground.prepare(false, 0); oldGround.prepare(false, 0);
+		TerrainVisual::Recipe r;
+		r.corners = {grass, hedge, grass, hedge}; r.width = r.height = 16;
+		GAGCore::DrawableSurface actual(32, 32), expected(32, 32), old(32, 32);
+		canopy.compose(r, actual.getSDLSurface(), 0, 0, 1);
+		ground.compose(r, expected.getSDLSurface(), 0, 0, 1);
+		oldGround.compose(r, old.getSDLSurface(), 0, 0, 1);
+		unsigned legacyDifferences = 0;
+		for (int y = 0; y < 32; ++y)
+		{
+			const auto row = [y](SDL_Surface *surface) {
+				return reinterpret_cast<const Uint32 *>(static_cast<const Uint8 *>(surface->pixels) + y * surface->pitch);
+			};
+			for (int x = 0; x < 32; ++x)
+			{
+				CHECK(row(actual.getSDLSurface())[x] == row(expected.getSDLSurface())[x]);
+				legacyDifferences += row(actual.getSDLSurface())[x] != row(old.getSDLSurface())[x];
+			}
+		}
+		CHECK(legacyDifferences > 0);
+	}
+
 	TEST_CASE("contextual borders preserve seams and normalization across both wrapped axes")
 	{
 		glob2test::HeadlessGlobals globals;
@@ -718,6 +823,110 @@ TEST_SUITE("TerrainMaterials")
 			}
 		}
 	}
+	TEST_CASE("surf washes a beach within eight pixels and repeats each period [display]")
+	{
+		glob2test::HeadlessGlobals globals({.display = true});
+		auto definitions = catalog();
+		definitions.compiledPack.clear();
+		definitions.boundaryWarp = {}; // A straight water/sand edge at x = 16.
+		for (auto &profile : definitions.profiles)
+			profile.roughness = profile.speckle = 0;
+		const auto water = definitions.find("water"), sand = definitions.find("sand");
+		const auto surf = definitions.materials[water].surf;
+		REQUIRE(surf.period > 0);
+		REQUIRE(definitions.materials[sand].surf.period == 0);
+		TerrainVisual::Recipe r;
+		r.width = r.height = 16;
+		r.x = 3;
+		r.y = 5;
+		r.corners = {water, sand, water, sand};
+		using Columns = std::array<unsigned, 32>;
+		const auto render = [&](TerrainVisual::Compositor &compositor, int time)
+		{
+			compositor.prepare(false, time);
+			GAGCore::DrawableSurface result(32, 32);
+			compositor.compose(r, result.getSDLSurface(), 0, 0, 1);
+			Columns brightness{};
+			for (int y = 0; y < 32; ++y)
+			{
+				const auto *row = reinterpret_cast<const Uint32 *>(
+					static_cast<const unsigned char *>(result.getSDLSurface()->pixels) +
+					y * result.getSDLSurface()->pitch);
+				for (int x = 0; x < 32; ++x)
+					brightness[x] += (row[x] >> 16 & 255) + (row[x] >> 8 & 255) + (row[x] & 255);
+			}
+			return brightness;
+		};
+		auto still = definitions;
+		for (auto &material : still.materials)
+			material.surf = {};
+		TerrainVisual::Compositor surfCompositor(definitions), stillCompositor(still);
+		std::vector<Columns> frames;
+		int darker = 0, lighter = 0;
+		for (int step = 0; step < 8; ++step)
+		{
+			const int time = step * surf.period / 8;
+			// Water animates its texture as well, so compare at the same time.
+			const auto plain = render(stillCompositor, time);
+			const auto washed = render(surfCompositor, time);
+			for (int x = 0; x < 32; ++x)
+			{
+				INFO("time " << time << " x " << x);
+				if (x < 8 || x >= 24)
+					CHECK(washed[x] == plain[x]); // Bands end before the cell's edges.
+			}
+			CHECK(washed[12] > plain[12]); // Shallows lighten the water near the beach.
+			darker += washed[19] < plain[19];
+			lighter += washed[19] > plain[19];
+			frames.push_back(washed);
+		}
+		// Wet sand when the wash has drained; foam and a water sheet as it arrives.
+		CHECK(darker > 0);
+		CHECK(lighter > 0);
+		CHECK(std::count(frames.begin(), frames.end(), frames[0]) == 1); // It moves.
+		// After a whole surf period and a whole texture cycle the frame repeats.
+		const auto &textured = definitions.materials[water];
+		const int cycle = std::lcm(surf.period, textured.animationFrames * textured.animationTicks);
+		CHECK(render(surfCompositor, cycle + surf.period / 8) == frames[1]);
+		// Surf without texture animation still invalidates its pages as time advances.
+		const auto dark = definitions.find("dark_water");
+		REQUIRE(definitions.materials[dark].animationFrames == 1);
+		REQUIRE(definitions.materials[dark].surf.period > 0);
+		CHECK(surfCompositor.animated(dark));
+		// Still dark water re-blends once per surf step, not on every tick.
+		const auto &darkSurf = definitions.materials[dark].surf;
+		REQUIRE(darkSurf.ticks > 1);
+		const int step = 7 * darkSurf.ticks;
+		surfCompositor.prepare(false, step);
+		const auto revision = surfCompositor.materialRevision(dark);
+		surfCompositor.prepare(false, step);
+		CHECK(surfCompositor.materialRevision(dark) == revision);
+		surfCompositor.prepare(false, step + darkSurf.ticks - 1);
+		CHECK(surfCompositor.materialRevision(dark) == revision);
+		surfCompositor.prepare(false, step + darkSurf.ticks);
+		CHECK(surfCompositor.materialRevision(dark) == revision + 1);
+		// Within one step the composed wash is identical.
+		const auto washed = [&](int time)
+		{
+			std::vector<unsigned> result;
+			for (int margin = 0; margin < 2048; margin += 64)
+				for (bool surfSide : {false, true})
+				{
+					unsigned value[3] = {180, 160, 120};
+					TerrainVisual::applySurf(darkSurf, surfSide, margin, 5000, 9000, unsigned(time), value);
+					result.insert(result.end(), value, value + 3);
+				}
+			return result;
+		};
+		bool moved = false;
+		for (int k = 0; k < darkSurf.period; k += darkSurf.ticks)
+		{
+			for (int t = 1; t < darkSurf.ticks; ++t)
+				CHECK(washed(k + t) == washed(k));
+			moved = moved || washed(k) != washed(k + darkSurf.ticks);
+		}
+		CHECK(moved);
+	}
 	TEST_CASE("mixed cells compose exactly as a direct per-pixel coverage blend [display]")
 	{
 		// The reference is the blend before cell masks: sample coverage per pixel
@@ -793,7 +1002,8 @@ TEST_SUITE("TerrainMaterials")
 							int shade = 256, tint = 0;
 							if (mask.neighbor != mask.material[dominant])
 							{
-								if (other.cast && other.height > self.height && int(mask.margin) < other.castWidth)
+								if (c.materials[mask.neighbor].decor.connected.empty() && other.cast &&
+									other.height > self.height && int(mask.margin) < other.castWidth)
 									shade = 256 - other.cast * (other.castWidth - int(mask.margin)) / other.castWidth;
 								if (other.fringe && int(mask.margin) < other.fringeWidth)
 									tint = other.fringe * (other.fringeWidth - int(mask.margin)) / other.fringeWidth;
@@ -803,8 +1013,16 @@ TEST_SUITE("TerrainMaterials")
 								unsigned value = unsigned(alpha ? rgb[k] / alpha : 0) * shade >> 8;
 								return value + (unsigned(other.fringeColor[k]) - value) * tint / 256;
 							};
-							const Uint32 expected = ((alpha + 32768) / 65536 << 24) | (channel(0) << 16) |
-													(channel(1) << 8) | channel(2);
+							unsigned value[3] = {channel(0), channel(1), channel(2)};
+							const auto &selfSurf = c.materials[mask.material[dominant]].surf;
+							const auto &otherSurf = c.materials[mask.neighbor].surf;
+							if ((selfSurf.period > 0) != (otherSurf.period > 0))
+								TerrainVisual::applySurf(selfSurf.period ? selfSurf : otherSurf,
+														 selfSurf.period > 0, int(mask.margin),
+														 r.x * 8192 + (2 * x + 1) * 4096 / size,
+														 r.y * 8192 + (2 * y + 1) * 4096 / size, 0, value);
+							const Uint32 expected = ((alpha + 32768) / 65536 << 24) | (value[0] << 16) |
+													(value[1] << 8) | value[2];
 							mismatches += pixels(actual, x, y) != expected;
 						}
 					INFO("seed " << seed << " scale " << scale << " corners " << corners[0] << ","
@@ -884,7 +1102,10 @@ TEST_SUITE("TerrainMaterials")
 				j["version"] = 1;
 				j.erase("boundary_warp_q8");
 				for (auto &material : j["materials"])
+				{
 					material.erase("seam");
+					material.erase("surf");
+				}
 				const int roughness[] = {256, 320, 192};
 				for (unsigned i = 0; i < j["profiles"].size(); ++i)
 				{
@@ -925,7 +1146,7 @@ TEST_SUITE("TerrainMaterials")
 			// Fingerprint the reviewed native/HD geometry. Intentional contour changes
 			// require a rendered comparison and an updated digest, not just a
 			// matching partition sum.
-			CHECK(digest == (legacy ? 15866489041356360345ull : 14215220908205104757ull));
+			CHECK(digest == (legacy ? 7551547235460948223ull : 3380676554505949637ull));
 		}
 	}
 	TEST_CASE("the Python validator's built-in name list mirrors the terrain table")
@@ -947,7 +1168,7 @@ TEST_SUITE("TerrainMaterials")
 	{
 		glob2test::HeadlessGlobals globals;
 		const auto definitions = catalog();
-		// One material per new profile: rock, soft, crisp and brush, beside grass.
+		// Reviewed representatives for rock, soft, crisp and the smooth canopy underlay.
 		const std::array<TerrainVisual::MaterialId, 4> samples{
 			definitions.find("boulders"), definitions.find("mud"), definitions.find("void_hole"),
 			definitions.find("hedge")};
@@ -976,7 +1197,7 @@ TEST_SUITE("TerrainMaterials")
 					}
 		}
 		// Intentional profile changes need a rendered comparison and a new digest.
-		CHECK(digest == 11045336540448780839ull);
+		CHECK(digest == 2507281759612371885ull);
 	}
 	TEST_CASE("coverage partitions every binary shape and multi-material junction")
 	{
@@ -1362,6 +1583,14 @@ TEST_SUITE("TerrainMaterials")
 			{nlohmann::json::json_pointer("/materials/3/seam/height"), -1},
 			{nlohmann::json::json_pointer("/materials/3/seam/fringe"), {0, 0}},
 			{nlohmann::json::json_pointer("/materials/3/seam/fringe_width_q8"), 2049},
+			{nlohmann::json::json_pointer("/materials/3/surf"), nlohmann::json::array()},
+			{nlohmann::json::json_pointer("/materials/3/surf"), {{"period", 0}}},
+			{nlohmann::json::json_pointer("/materials/3/surf"), {{"period", 60}, {"wet_q8", 257}}},
+			{nlohmann::json::json_pointer("/materials/3/surf"), {{"period", 60}, {"ticks", 0}}},
+			{nlohmann::json::json_pointer("/materials/3/surf"), {{"period", 60}, {"ticks", 61}}},
+			{nlohmann::json::json_pointer("/materials/3/surf"),
+			 {{"period", 60}, {"reach_q8", 1800}, {"foam_width_q8", 300}}},
+			{nlohmann::json::json_pointer("/materials/3/surf"), {{"period", 60}, {"shallow", {0, 0}}}},
 			{nlohmann::json::json_pointer("/boundary_warp_q8"), {0, 0}},
 			{nlohmann::json::json_pointer("/boundary_warp_q8"), {true, 0, 0}},
 			{nlohmann::json::json_pointer("/boundary_warp_q8"), {0, 1.5, 0}},

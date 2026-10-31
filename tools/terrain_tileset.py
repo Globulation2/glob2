@@ -199,6 +199,26 @@ def _validate(document, root):
                 type(n) is not int or not 0 <= n <= 255 for n in fringe
             ):
                 raise ValueError("Invalid seam fringe color")
+        if "surf" in m:
+            if version < 3:
+                raise ValueError("Surf requires catalog version 3")
+            surf = m["surf"]
+            if not isinstance(surf, dict):
+                raise ValueError("Surf must be an object")
+            integer(surf.get("period"), 1, 65535, "Surf period")
+            integer(surf.get("ticks", 1), 1, surf["period"], "Surf ticks")
+            for field in ("shallow_q8", "wet_q8", "foam_q8"):
+                integer(surf.get(field, 0), 0, 256, f"Surf {field}")
+            for field in ("reach_q8", "shallow_width_q8", "wet_width_q8", "foam_width_q8"):
+                integer(surf.get(field, 0), 0, 2048, f"Surf {field}")
+            if surf.get("reach_q8", 0) + surf.get("foam_width_q8", 0) > 2048:
+                raise ValueError("Surf must end within eight pixels")
+            for field in ("shallow", "foam"):
+                color = surf.get(field, [0, 0, 0])
+                if not isinstance(color, list) or len(color) != 3 or any(
+                    type(n) is not int or not 0 <= n <= 255 for n in color
+                ):
+                    raise ValueError(f"Invalid surf {field} color")
         phases, stride, ticks = (
             m.get("animation_frames", 1),
             m.get("animation_stride", 0),
@@ -247,16 +267,27 @@ def _validate(document, root):
         if "decor" in m:
             decor = m["decor"]
             decor_sprite = data_path(decor["sprite"], "Decor sprite")
-            for key in ("full", "edge"):
+            for key in ("full", "edge", "connected", "connected_interior"):
+                if key.startswith("connected") and key not in decor:
+                    continue
                 frames = decor.get(key)
                 if not isinstance(frames, list) or not frames or len(frames) > 256:
                     raise ValueError("Decor frames must be a non-empty array")
+                if key.startswith("connected") and len(frames) % 16:
+                    raise ValueError("Connected decor needs equal variants for all 16 masks")
                 for frame in frames:
                     integer(frame, 0, 65535, "Decor frame")
                     source = root / f"{decor_sprite.as_posix()}{frame}.png"
                     with Image.open(source) as image:
                         if image.width > 64 or image.height > 64:
                             raise ValueError(f"Decor frame larger than 64x64: {source}")
+            if "connected_corners" in decor:
+                if not isinstance(decor["connected_corners"], bool):
+                    raise ValueError("connected_corners must be a boolean")
+                if decor["connected_corners"] and len(decor.get("connected", [])) != 256:
+                    raise ValueError("Corner-tiled connected decor needs 16 variants per mask")
+            if "connected_interior" in decor and not decor.get("connected_corners"):
+                raise ValueError("connected_interior needs connected_corners")
             decor_sprites.add(decor["sprite"])
         materials[m["key"]] = m
     if len(decor_sprites) > 1:

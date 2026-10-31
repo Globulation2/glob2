@@ -107,6 +107,24 @@ class TerrainTileset(unittest.TestCase):
             self.assertIn(record["method"], ("procedural", "image-generator", "hybrid"), key)
             self.assertTrue((ROOT / record["source"]).is_file(), key)
 
+    def test_connected_decor_requires_complete_corner_groups(self):
+        hedge = next(m for m in self.document["materials"] if m["key"] == "hedge")
+        original = hedge["decor"]["connected"]
+        for frames in ([], [0], [0] * 15, [0] * 17, [0] * 272, [True] * 16):
+            hedge["decor"]["connected"] = frames
+            with self.assertRaises(ValueError):
+                validate(self.document)
+        hedge["decor"]["connected"] = original
+        hedge["decor"]["connected_corners"] = 1
+        with self.assertRaises(ValueError):
+            validate(self.document)
+        hedge["decor"]["connected"] = original[:128]
+        hedge["decor"]["connected_corners"] = True
+        with self.assertRaises(ValueError):
+            validate(self.document)
+        hedge["decor"]["connected"] = original
+        validate(self.document)
+
     def test_invalid_catalogs(self):
         mutations = [
             lambda d: d.update(version=9),
@@ -153,6 +171,13 @@ class TerrainTileset(unittest.TestCase):
             lambda d: d["materials"][3]["seam"].update(height=-1),
             lambda d: d["materials"][3]["seam"].update(fringe=[0, 0]),
             lambda d: d["materials"][3]["seam"].update(fringe_width_q8=2049),
+            lambda d: d["materials"][3].update(surf=[]),
+            lambda d: d["materials"][3].update(surf={"period": 0}),
+            lambda d: d["materials"][3].update(surf={"period": 60, "wet_q8": 257}),
+            lambda d: d["materials"][3].update(surf={"period": 60, "ticks": 0}),
+            lambda d: d["materials"][3].update(surf={"period": 60, "ticks": 61}),
+            lambda d: d["materials"][3].update(surf={"period": 60, "reach_q8": 1800, "foam_width_q8": 300}),
+            lambda d: d["materials"][3].update(surf={"period": 60, "shallow": [0, 0]}),
             lambda d: d["profiles"][0].update(feather_q8=True),
             lambda d: d["profiles"][0].update(feather_q8=127),
             lambda d: d["profiles"][0].update(feather_q8=513),
@@ -193,6 +218,7 @@ class TerrainTileset(unittest.TestCase):
             profile["contours_q12"] = [[0, 128, -128, 64, 0]] * 4
         for material in self.document["materials"]:
             material.pop("seam", None)
+            material.pop("surf", None)
         self.assertEqual(len(validate(self.document)), catalog_frame_count(self.document))
         self.document["profiles"][0]["contours_q12"][0][1] = 257
         with self.assertRaises(ValueError):

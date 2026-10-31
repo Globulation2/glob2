@@ -197,14 +197,29 @@ Catalog Catalog::parse(const nlohmann::json &j)
 			const auto &d = m.at("decor");
 			require(d.is_object(), "decor must be an object");
 			v.decor.sprite = dataPath(d.at("sprite"));
-			for (const auto *key : {"full", "edge"})
+			for (const auto *key : {"full", "edge", "connected", "connected_interior"})
 			{
-				auto &frames = std::string(key) == "full" ? v.decor.full : v.decor.edge;
+				const std::string name = key;
+				if (name.starts_with("connected") && !d.contains(key)) continue;
+				auto &frames = name == "full" ? v.decor.full : name == "edge" ? v.decor.edge :
+					name == "connected" ? v.decor.connected : v.decor.connectedInterior;
 				require(d.at(key).is_array() && !d.at(key).empty() && d.at(key).size() <= 256,
 						"decor frames must be a non-empty array");
 				for (const auto &frame : d.at(key))
 					frames.push_back(integerInRange(frame, 0, 65535));
 			}
+			require(v.decor.connected.empty() || v.decor.connected.size() % 16 == 0,
+				"connected decor needs equal variant counts for all 16 corner masks");
+			if (d.contains("connected_corners"))
+			{
+				require(d.at("connected_corners").is_boolean(), "connected_corners must be a boolean");
+				v.decor.connectedCorners = d.at("connected_corners").get<bool>();
+				require(!v.decor.connectedCorners || v.decor.connected.size() == 16 * 16,
+					"connected_corners needs 16 corner-colour variants per mask");
+			}
+			require(v.decor.connectedInterior.empty() ||
+				(v.decor.connectedCorners && v.decor.connectedInterior.size() % 16 == 0),
+				"connected_interior needs connected_corners and equal variants per colour");
 		}
 		v.animationFrames = integerInRange(m.value("animation_frames", nlohmann::json(1)), 1, 256);
 		v.animationTicks = integerInRange(m.value("animation_ticks", nlohmann::json(1)), 1,
@@ -228,6 +243,28 @@ Catalog Catalog::parse(const nlohmann::json &j)
 				integerInRange(s.value("fringe_width_q8", nlohmann::json(0)), 0, 2048);
 			if (s.contains("fringe"))
 				v.seam.fringeColor = rgbColor(s.at("fringe"));
+		}
+		if (m.contains("surf"))
+		{
+			require(version >= 3, "surf requires catalog version 3");
+			const auto &s = m.at("surf");
+			require(s.is_object(), "surf must be an object");
+			auto &surf = v.surf;
+			surf.period = integerInRange(s.at("period"), 1, 65535);
+			surf.ticks = integerInRange(s.value("ticks", nlohmann::json(1)), 1, surf.period);
+			surf.reach = integerInRange(s.value("reach_q8", nlohmann::json(0)), 0, 2048);
+			surf.shallow = integerInRange(s.value("shallow_q8", nlohmann::json(0)), 0, 256);
+			surf.shallowWidth =
+				integerInRange(s.value("shallow_width_q8", nlohmann::json(0)), 0, 2048);
+			surf.wet = integerInRange(s.value("wet_q8", nlohmann::json(0)), 0, 256);
+			surf.wetWidth = integerInRange(s.value("wet_width_q8", nlohmann::json(0)), 0, 2048);
+			surf.foam = integerInRange(s.value("foam_q8", nlohmann::json(0)), 0, 256);
+			surf.foamWidth = integerInRange(s.value("foam_width_q8", nlohmann::json(0)), 0, 2048);
+			require(surf.reach + surf.foamWidth <= 2048, "surf must end within eight pixels");
+			if (s.contains("shallow"))
+				surf.shallowColor = rgbColor(s.at("shallow"));
+			if (s.contains("foam"))
+				surf.foamColor = rgbColor(s.at("foam"));
 		}
 		require(m.at("variants").is_array() && !m.at("variants").empty(),
 				"material needs variants");
@@ -314,14 +351,106 @@ unsigned Catalog::variantIndex(MaterialId id, int x, int y, std::uint32_t seed) 
 	}
 	return unsigned(m.variants.size() - 1);
 }
-int Catalog::decorFrame(MaterialId id, int x, int y, bool edge, std::uint32_t seed) const
+unsigned cornerColours(int x, int y, unsigned maskW, unsigned maskH, std::uint32_t seed)
+{
+	const auto salt = mapSeedSalt(seed) ^ 0xca70b1u;
+	const auto bit = [&](unsigned vx, unsigned vy) { return hash(vx & maskW, vy & maskH, salt) >> 16 & 1u; };
+	const unsigned ux = unsigned(x), uy = unsigned(y);
+	return bit(ux, uy) | bit(ux + 1, uy) << 1 | bit(ux, uy + 1) << 2 | bit(ux + 1, uy + 1) << 3;
+}
+int Catalog::decorFrame(MaterialId id, int x, int y, bool edge, std::uint32_t seed, unsigned cornerMask,
+	unsigned colours) const
 {
 	const auto &d = materials[id].decor;
+	if (!d.connected.empty())
+	{
+		if (cornerMask == 0 || cornerMask > 15) return -1;
+		if (cornerMask == 15 && !d.connectedInterior.empty())
+		{
+			// Interiors never reach a cell edge, so filled cells choose freely.
+			const unsigned extra = unsigned(d.connectedInterior.size()) / 16;
+			if (const unsigned v = hash(x, y, mapSeedSalt(seed) ^ 0x1e7e10u) % (extra + 1))
+				return d.connectedInterior[(colours & 15u) * extra + v - 1];
+		}
+		const unsigned variants = unsigned(d.connected.size()) / 16;
+		const unsigned variant = d.connectedCorners ? colours & 15u :
+			hash(x, y, materials[id].salt ^ mapSeedSalt(seed) ^ 0x6dec0u) % variants;
+		return d.connected[cornerMask * variants + variant];
+	}
 	const auto &frames = edge ? d.edge : d.full;
 	if (frames.empty())
 		return -1;
 	// A salt distinct from the ground variant's, so the two choices are independent.
 	return frames[hash(x, y, materials[id].salt ^ mapSeedSalt(seed) ^ 0x6dec0u) % frames.size()];
+}
+namespace
+{
+// Smooth periodic bump: 0 at u = 0 and 1024, 256 at u = 512.
+int surfBump(int u)
+{
+	const int x = u < 512 ? u : 1024 - u;
+	return x * x * (1536 - 2 * x) / 524288;
+}
+unsigned surfMix(unsigned value, unsigned color, int amount)
+{
+	return (value * unsigned(256 - amount) + color * unsigned(amount)) / 256;
+}
+} // namespace
+void applySurf(const Surf &s, bool surfSide, int margin, int wx, int wy, unsigned time,
+			   unsigned value[3])
+{
+	// Beyond every band (most samples of a mixed cell) surf changes nothing.
+	if (margin >= (surfSide ? std::max(s.shallowWidth, s.foamWidth) : std::max(s.wetWidth, s.reach + s.foamWidth)))
+		return;
+	// A slow world-space field staggers each wash along the shore. Its
+	// wavelengths (256 and 512 pixels) divide every map, so it wraps cleanly.
+	// The wash advances in whole steps of `ticks`, matching its page re-blends.
+	time -= time % unsigned(s.ticks);
+	const int phase = int(time % unsigned(s.period) * 1024 / unsigned(s.period));
+	const int offset = surfBump(wx >> 7 & 1023) + surfBump(wy >> 7 & 1023) +
+					   surfBump((wx + wy) >> 6 & 1023);
+	const int u = (phase + offset) & 1023;
+	// The wash rushes up over the first 30% of its period and drains slowly.
+	const int rise = u < 320 ? u * 512 / 320 : 512 + (u - 320) * 512 / 704;
+	const int run = s.reach * surfBump(rise) / 256;
+	for (int k = 0; k < 3; ++k)
+		value[k] = std::min(value[k], 255u);
+	int front;
+	if (surfSide)
+	{
+		if (margin < s.shallowWidth)
+		{
+			const int amount = s.shallow * (s.shallowWidth - margin) / s.shallowWidth;
+			for (int k = 0; k < 3; ++k)
+				value[k] = surfMix(value[k], s.shallowColor[k], amount);
+		}
+		front = margin + run;
+	}
+	else
+	{
+		if (margin < s.wetWidth)
+		{
+			const int dark = 256 - s.wet * (s.wetWidth - margin) / s.wetWidth;
+			for (int k = 0; k < 3; ++k)
+				value[k] = value[k] * unsigned(dark) / 256;
+		}
+		// A thin sheet of water covers the land the wash has reached.
+		if (margin < run)
+		{
+			const int amount = s.shallow * (run - margin) / (2 * run);
+			for (int k = 0; k < 3; ++k)
+				value[k] = surfMix(value[k], s.shallowColor[k], amount);
+		}
+		front = margin < run ? run - margin : margin - run;
+	}
+	if (front < s.foamWidth)
+	{
+		const int breakup = 96 + (surfBump(wx * 5 >> 7 & 1023) +
+								  surfBump(((wy * 7 >> 7) + phase) & 1023)) * 160 / 512;
+		const int amount = s.foam * (s.foamWidth - front) / s.foamWidth * breakup / 256;
+		for (int k = 0; k < 3; ++k)
+			value[k] = surfMix(value[k], s.foamColor[k], amount);
+	}
 }
 int Catalog::frame(MaterialId id, int x, int y, int time, std::uint32_t seed) const
 {
@@ -525,16 +654,71 @@ void PreparedCoverage::prepareBorders(const Catalog &c, const Recipe &r)
 		border.ordinate[coordinate] = secondary(p) + t * ds;
 		border.normal[coordinate] = std::abs(dp) / std::sqrt(dp * dp + ds * ds);
 	}
+	prepareNearestSegments();
 	hasBorder = true;
 }
 
+namespace
+{
+// Squared distance from a sample to one contour segment.
+float segmentDistance(float px, float py, float qx, float qy, float x, float y)
+{
+	const float ex = qx - px, ey = qy - py, length = ex * ex + ey * ey;
+	const float t = length > 0 ? std::clamp(((x - px) * ex + (y - py) * ey) / length, 0.f, 1.f) : 0.f;
+	const float cx = px + t * ex - x, cy = py + t * ey - y;
+	return cx * cx + cy * cy;
+}
+} // namespace
+void PreparedCoverage::prepareNearestSegments()
+{
+	// A lattice point lies within 1.5 pixels of every sample in its squares,
+	// so any segment within eight pixels of a sample is within 9.5 of a corner.
+	constexpr float reach = 9.5f;
+	std::array<float, NearestLattice * NearestLattice> best;
+	best.fill(reach * reach);
+	nearestSegment.fill(0);
+	const auto &points = naturalBorder.points;
+	for (unsigned i = 1; i < points.size(); ++i)
+	{
+		const auto p = points[i - 1], q = points[i];
+		const auto lattice = [](float v, bool up)
+		{ return std::clamp(int(up ? std::ceil((v + 4) / 2) : std::floor((v + 4) / 2)), 0, NearestLattice - 1); };
+		const int x0 = lattice(std::min(p.x, q.x) - reach, false), x1 = lattice(std::max(p.x, q.x) + reach, true);
+		const int y0 = lattice(std::min(p.y, q.y) - reach, false), y1 = lattice(std::max(p.y, q.y) + reach, true);
+		for (int y = y0; y <= y1; ++y)
+			for (int x = x0; x <= x1; ++x)
+			{
+				const int k = y * NearestLattice + x;
+				const float d = segmentDistance(p.x, p.y, q.x, q.y, float(2 * x - 4), float(2 * y - 4));
+				if (d < best[k]) { best[k] = d; nearestSegment[k] = std::uint8_t(i); }
+			}
+	}
+}
+unsigned PreparedCoverage::borderMargin(Point sample) const
+{
+	// Euclidean distance to the contour polyline in Q8 pixels. Every seam and
+	// surf band ends within eight pixels; beyond that the margin is saturated.
+	const int x = std::clamp(int(std::floor((sample.x + 4) / 2)), 0, NearestLattice - 2);
+	const int y = std::clamp(int(std::floor((sample.y + 4) / 2)), 0, NearestLattice - 2);
+	unsigned low = 255, high = 0;
+	for (const int k : {y * NearestLattice + x, y * NearestLattice + x + 1,
+			(y + 1) * NearestLattice + x, (y + 1) * NearestLattice + x + 1})
+		if (nearestSegment[k])
+		{
+			low = std::min<unsigned>(low, nearestSegment[k]);
+			high = std::max<unsigned>(high, nearestSegment[k]);
+		}
+	if (!high) return 65535;
+	const auto &points = naturalBorder.points;
+	float best = 64;
+	for (unsigned i = std::max(1u, low - 1); i <= std::min<unsigned>(points.size() - 1, high + 1); ++i)
+		best = std::min(best, segmentDistance(points[i - 1].x, points[i - 1].y, points[i].x, points[i].y,
+			sample.x, sample.y));
+	return best >= 64 ? 65535u : unsigned(std::sqrt(best) * 256);
+}
 Coverage PreparedCoverage::at(int px, int py) const
 {
 	if (!hasBorder) return patchCoverage(px, py);
-	// Keep historical crossings and feather weights in a 1px seam band. Blend
-	// to the contextual geometry by 4px; this also joins complex junctions.
-	const int edgeDistance = std::min({px, py, 8192 - px, 8192 - py});
-	if (edgeDistance <= 256) return patchCoverage(px, py);
 	int dx = 0, dy = 0;
 	for (const auto &layer : warp)
 	{
@@ -547,6 +731,17 @@ Coverage PreparedCoverage::at(int px, int py) const
 	const float warpScale = warpSquared > 1536 * 1536 ? 512 / std::sqrt(warpSquared) : 1.f / 3;
 	const Point sample{float(px) / 256 + dx * warpScale / 256,
 		float(py) / 256 + dy * warpScale / 256};
+	// Keep historical crossings and feather weights in a 1px seam band. Blend
+	// to the contextual geometry by 4px; this also joins complex junctions.
+	// The seam distance always comes from the curve, so seams and surf bands
+	// stay continuous through both.
+	const int edgeDistance = std::min({px, py, 8192 - px, 8192 - py});
+	if (edgeDistance <= 256)
+	{
+		auto band = patchCoverage(px, py);
+		band.margin = borderMargin(sample);
+		return band;
+	}
 	const auto &border = naturalBorder;
 	const float coordinate = std::clamp(border.vertical ? sample.y : sample.x, 0.f, 32.f);
 	const unsigned index = std::min(unsigned(coordinate), 31u);
@@ -577,7 +772,7 @@ Coverage PreparedCoverage::at(int px, int py) const
 	result.weight[0] = unsigned(std::clamp(32768.f + signedDistance * borderBlendScale, 0.f, 65536.f));
 	result.weight[1] = 65536 - result.weight[0];
 	result.neighbor = borderMaterials[result.weight[0] >= result.weight[1] ? 1 : 0];
-	result.margin = unsigned(std::min(65535.f, std::abs(signedDistance) * 256));
+	result.margin = borderMargin(sample);
 	if (edgeDistance < 1024)
 	{
 		const std::array<int, 2> displacement{dx, dy};
@@ -589,7 +784,6 @@ Coverage PreparedCoverage::at(int px, int py) const
 		blend = int(std::int64_t(blend) * blend * (12288 - 2 * blend) >> 24);
 		result.weight[0] = (std::uint64_t(result.weight[0]) * blend + std::uint64_t(oldA) * (4096 - blend)) / 4096;
 		result.weight[1] = 65536 - result.weight[0];
-		result.margin = (result.margin * blend + old.margin * (4096 - blend)) / 4096;
 		result.neighbor = borderMaterials[result.weight[0] >= result.weight[1] ? 1 : 0];
 	}
 	return result;
