@@ -65,7 +65,7 @@ struct CustomGameSetup
 	unsigned mapRevision = 0;
 	CustomGameSetup()
 	{
-		generator.setMethodDefaults(GeneratorRegistry::builtins().methods(false).front());
+		generator.setMethodDefaults(GeneratorRegistry::builtins().defaultMethod(false));
 		capacity = generator.nbTeams;
 		for (int i = 0; i < Team::MAX_COUNT; ++i)
 			colonies[i].alliance = i;

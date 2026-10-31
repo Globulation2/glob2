@@ -4,6 +4,7 @@
 #include "Material.h"
 #include "AITelemetryFields.h"
 #include "Game.h"
+#include "shared_runtime/Farming.h"
 #include "shared_runtime/Runtime.h"
 #include "shared_runtime/BuildingDemands.h"
 
@@ -158,69 +159,11 @@ void Econo::tick_explorer_flags_enemies(Runtime& runtime)
 	}
 }
 
-//Farming wheat and wood near water
+// Farming wheat and wood uses the same expansion and clearance policy as Nicowar.
 void Econo::tick_farming_areas(Runtime& runtime)
 {
-	// Protecting growth cells would permanently withhold resources without regrowth.
 	if (runtime.observation().configuration->isResourceGrowthDisabled()) return;
 	telemetry.count(AITrace::AI4::Econo_tick_farming_areas_calls);
 	if((timer%AI_SHARED_RUNTIME_RTI_FARMING_INTERVAL_TICKS)==0)
-	{
-		AddArea* mo_farming=new AddArea(ForbiddenArea);
-		RemoveArea* mo_non_farming=new RemoveArea(ForbiddenArea);
-		AISharedRuntime::Gradients::GradientInfo gi_water;
-		gi_water.add_source(new Entities::Water);
-		Gradient& gradient=runtime.get_gradient_manager().get_gradient(gi_water);
-		MapInfo mi(runtime);
-		// With the farm-areas experiment, wheat near water is farmed with a farm
-		// area on the same lattice; forbidden spots continue to protect wood.
-		const bool farms = mi.farm_areas_enabled();
-		AddArea* mo_farm=farms ? new AddArea(FarmArea) : nullptr;
-		RemoveArea* mo_non_farm=farms ? new RemoveArea(FarmArea) : nullptr;
-		for(int x=0; x<mi.get_width(); ++x)
-		{
-			for(int y=0; y<mi.get_height(); ++y)
-			{
-				const bool farm_spot = x%AI_SHARED_RUNTIME_RTI_FARMING_PATTERN_STRIDE==1 &&
-					y%AI_SHARED_RUNTIME_RTI_FARMING_PATTERN_STRIDE==1;
-				if(farms && mi.is_discovered(x, y))
-				{
-					const bool wheat_farm = farm_spot &&
-						mi.is_resource(x, y, materialIndex(MaterialId::Food)) && mi.can_paint_farm(x, y) &&
-						gradient.within_dist(x, y, AI_SHARED_RUNTIME_RTI_FARMING_WATER_MAX_DIST);
-					if(wheat_farm && !mi.is_farm_area(x, y))
-						mo_farm->add_location(x, y);
-					else if(!wheat_farm && mi.is_farm_area(x, y))
-						mo_non_farm->add_location(x, y);
-				}
-				if(farm_spot)
-				{
-					const bool protected_resource = farms
-						? mi.is_resource(x, y, materialIndex(MaterialId::Wood))
-						: mi.is_resource(x, y, materialIndex(MaterialId::Wood)) || mi.is_resource(x, y, materialIndex(MaterialId::Food));
-					if(!protected_resource && mi.is_forbidden_area(x, y))
-					{
-						mo_non_farming->add_location(x, y);
-					}
-					else
-					{
-						if(protected_resource &&
-						    mi.is_discovered(x, y) &&
-						    !mi.is_forbidden_area(x, y) &&
-						    gradient.within_dist(x, y, AI_SHARED_RUNTIME_RTI_FARMING_WATER_MAX_DIST))
-						{
-							mo_farming->add_location(x, y);
-						}
-					}
-				}
-			}
-		}
-		runtime.add_management_order(mo_farming);
-		runtime.add_management_order(mo_non_farming);
-		if(farms)
-		{
-			runtime.add_management_order(mo_farm);
-			runtime.add_management_order(mo_non_farm);
-		}
-	}
+		updateFarmingAreas(runtime);
 }

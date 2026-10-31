@@ -75,7 +75,7 @@ struct CustomGamePreferences
 		const bool custom = !selected.packageHash.empty();
 		if (custom)
 			legacy.method = MapGenerationDescriptor::Method(
-				GeneratorRegistry::builtins().methods(false).front());
+				GeneratorRegistry::builtins().defaultMethod(false));
 		std::ostringstream out;
 		out << "glob2-custom-game 8\n"
 			<< "setup " << setup.random << ' ' << setup.capacity << ' ' << setup.prestige << ' '

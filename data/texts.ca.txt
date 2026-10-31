@@ -6355,421 +6355,421 @@ No s’ha pogut desar la tria. El so continua desactivat. Torna-ho a provar.
 [audio choices description]
 Silenci: un altaveu silenciat. So: un altaveu amb ones sonores.
 [intro menu]
-
+Introducció
 [intro briefing]
-
+Aprèn el control indirecte: explora amb una bandera, abasteix la colònia i dirigeix un atac.
 [intro try]
-
+Inicia la introducció
 [intro preflight]
-
+Els glòbuls actuen pel seu compte. En tries les tasques mitjançant edificis i banderes. En aquesta breu introducció, explora un punt de referència, amplia l'abastiment, augmenta els treballadors i dirigeix un petit atac.
 [intro preflight save]
-
+Reserva uns 10 minuts. Pots desar des del menú del joc i reprendre amb Carrega una partida. S'apliquen les regles normals de fam i combat. Tria les lliçons del tutorial al menú principal per practicar més habilitats.
 [intro preference failed]
-
+No s'ha pogut desar la teva tria. Pots continuar jugant; aquesta recomanació pot tornar a aparèixer la propera vegada.
 [intro goal scout]
-
+Explora el punt de referència de pedra
 [intro goal build]
-
+Construeix una altra Despensa
 [intro goal supply]
-
+Abasteix la nova Despensa
 [intro goal grow]
-
+Augmenta els treballadors
 [intro goal attack]
-
+Destrueix la Granja enemiga
 [intro instruction scout]
-
+Obre les banderes i posa una Bandera d'exploració sobre les pedres a l'est de la colònia. Assigna-hi un explorador. Observa com arriba a la bandera.
 [intro instruction build]
-
+Obre les construccions i posa una Despensa prop del blat. Assigna-hi treballadors disponibles per construir-la. Mantén la Despensa existent abastida.
 [intro instruction supply]
-
+Selecciona la nova Despensa acabada i assigna-hi almenys un proveïdor. Espera que un treballador hi porti blat.
 [intro instruction grow]
-
+Selecciona la Granja. Demana almenys 2 treballadors i ajusta les proporcions de producció per produir només treballadors. Mantén les dues Despenses abastides mentre neix un nou treballador.
 [intro instruction attack]
-
+Troba la Granja enemiga més a l'est. Dirigeix-hi els guerrers amb una Bandera de guerra. Consulta l'ajuda si necessites recordar els passos.
 [intro help]
-
+Ajuda / per què?
 [intro help scout]
-
+Mou la vista cap a l'est amb el minimapa per trobar les pedres. A les banderes, tria Bandera d'exploració, posa-la sobre les pedres i surt de la col·locació amb el botó secundari del ratolí. Selecciona la bandera i demana 1 explorador. Les banderes demanen unitats; no les mouen instantàniament. Els exploradors poden aturar-se a menjar.
 [intro help build]
-
+La construcció consumeix fusta portada pels treballadors. Tria Despensa a la paleta d'edificis, posa-la en terreny lliure prop del blat i demana 2 constructors. La quantitat demanada no indica els treballadors que ja hi són. Mantén proveïdors a la Despensa existent i a la Granja. Qualsevol ubicació vàlida serveix.
 [intro help supply]
-
+La construcció i l'abastiment diari tenen quantitats de treballadors separades. Selecciona la Despensa acabada i augmenta'n la quantitat de funcionament. Un proveïdor recull blat i el porta aquí. Els glòbuls afamats mengen a les Despenses; sense proveïdors, les reserves s'acaben. Mantén el blat accessible.
 [intro help grow]
-
+La Granja consumeix blat per produir unitats. Fixa la producció de treballadors a 1 i la d'exploradors i guerrers a 0. Demana almenys 2 treballadors a la Granja. Més proveïdors porten blat més ràpid, però competeixen amb altres tasques. Mantén les dues Despenses abastides.
 [intro help attack]
-
+Obre les banderes, tria Bandera de guerra i posa-la sobre la Granja enemiga a l'est de les pedres. Selecciona-la i demana fins a 4 guerrers. Un radi petit els concentra. Surt de la col·locació amb el botó secundari abans de seleccionar la bandera. Si no queden guerrers, produeix-ne més a la Granja. Poden aturar-se a menjar; abasteix les Despenses.
 [intro hint scout]
-
+L'explorador necessita una Bandera d'exploració amb unitats assignades a les pedres de l'est. Comprova'n la destinació i la quantitat d'exploradors.
 [intro hint build]
-
+Si has eliminat la nova Despensa, construeix-ne una altra. Si no, comprova l'obra i els treballadors demanats. L'abastiment existent pot ocupar-los; mantén el menjar mentre alliberes constructors.
 [intro hint supply]
-
+Selecciona la nova Despensa acabada. Comprova els treballadors demanats i les entregues de blat. Els treballadors poden necessitar temps per desplaçar-se o menjar.
 [intro hint grow]
-
+Comprova l'abastiment de la Granja i que només produeixi treballadors. Abasteix les Despenses mentre esperes un altre treballador.
 [intro hint attack]
-
+Comprova la Bandera de guerra, els guerrers demanats i el menjar. Els guerrers necessiten temps per desplaçar-se i atacar.
 [intro hint no scout flag]
-
+No s'ha trobat cap Bandera d'exploració amb unitats assignades. Posa'n una a les pedres a l'est de la base i demana 1 explorador.
 [intro hint no suppliers]
-
+La nova Despensa o la seva obra demana 0 treballadors. Selecciona-la i demana'n.
 [intro hint no war flag]
-
+No s'ha trobat cap Bandera de guerra amb unitats assignades a la base enemiga. Posa'n una sobre la Granja enemiga de l'est i demana guerrers.
 [intro hint retry]
-
+S'ha perdut una unitat o edifici necessari per a aquesta lliçó. Carrega una partida desada anterior o reinicia la lliçó des del menú del joc.
 [intro complete]
-
+Introducció completada
 [intro complete body]
-
+Has dirigit glòbuls autònoms, ampliat l'abastiment i la colònia i organitzat un atac. Continua amb les lliçons del tutorial per practicar entrenament, millores i defensa, o torna al menú principal per començar una partida.
 [intro play again]
-
+Torna a jugar
 [intro restart]
-
+Reinicia la introducció
 [intro restart body]
-
+Vols tornar a començar amb la colònia preparada? Es perdrà el progrés no desat d'aquesta introducció.
 [intro help touch scout]
-
+Arrossega terreny buit per moure la vista abans de posar una bandera. Troba les pedres a l'est de la colònia. Obre les banderes, tria Bandera d'exploració, posa-la a les pedres i confirma. Selecciona-la i demana 1 explorador amb el control d'unitats assignades. Els glòbuls es mouen sols i poden aturar-se a menjar.
 [intro help touch build]
-
+Tria Despensa a les construccions. Posa-la en terreny lliure prop del blat i confirma. Selecciona l'obra i demana 2 constructors. La quantitat demanada no indica els treballadors ja presents. Abasteix la Despensa existent i la Granja. Qualsevol ubicació vàlida serveix.
 [intro help touch supply]
-
+Selecciona la nova Despensa acabada i augmenta els treballadors demanats. Construcció i abastiment tenen controls separats. Un proveïdor recull blat i el porta aquí. Els glòbuls afamats mengen a les Despenses; sense proveïdors, les reserves s'acaben. Mantén el blat accessible.
 [intro help touch grow]
-
+Selecciona la Granja. Fixa la producció de treballadors a 1 i la d'exploradors i guerrers a 0. Demana almenys 2 treballadors. Els proveïdors porten blat per a noves unitats, però competeixen amb altres tasques. Abasteix les dues Despenses.
 [intro help touch attack]
-
+Obre les banderes, tria Bandera de guerra, posa-la sobre la Granja enemiga a l'est de les pedres i confirma. Selecciona-la i demana fins a 4 guerrers. Un radi petit els concentra. Si no en queden, produeix-ne a la Granja. Poden aturar-se a menjar; abasteix les Despenses.
 [intro show destination]
-
+Mostra la destinació
 [intro scout destination]
-
+Explora aquí
 [intro attack destination]
-
+Ataca aquí
 [intro compact scout]
-
+Banderes → Bandera d'exploració. Posa-la a les pedres; assigna 1 explorador.
 [intro compact build]
-
+Construeix → Despensa. Posa-la prop del blat; assigna 2 constructors.
 [intro compact supply]
-
+Selecciona la nova Despensa; assigna almenys 1 proveïdor. Espera el blat.
 [intro compact grow]
-
+Selecciona la Granja; assigna 2 proveïdors. Produeix només treballadors.
 [intro compact attack]
-
+Banderes → Bandera de guerra. Posa-la sobre la Granja enemiga; assigna guerrers.
 [tutorial lessons]
-
+Lliçons del tutorial
 [tutorial restart]
-
+Reinicia la lliçó
 [tutorial restart body]
-
+Vols reiniciar aquesta lliçó amb la colònia preparada? Es perdrà el progrés no desat.
 [tutorial complete]
-
+Lliçó completada
 [tutorial food title]
-
+Pràctica d'abastiment
 [tutorial food briefing]
-
+Practica l'ampliació de l'abastiment: construeix una altra Despensa, assigna proveïdors i observa com arriba el blat.
 [tutorial food complete]
-
+Has construït una Despensa i l'has abastida amb blat. Prova una altra lliçó o torna al menú principal.
 [tutorial unavailable]
-
+No s'han pogut carregar les lliçons del tutorial.
 [lesson healing title]
-
+Hospitals i curació
 [lesson healing briefing]
-
+Construeix un Hospital i ajuda un treballador ferit a recuperar-se. La colònia comença alimentada, amb un treballador ferit.
 [lesson healing complete]
-
+L'Hospital ha curat un glòbul ferit. Abasteix les Despenses: la fam pot tornar a ferir les unitats.
 [lesson healing build hint]
-
+Construeix un Hospital en terreny lliure; assigna 2 constructors. Deixa espai perquè els glòbuls entrin i surtin. Els Hospitals curen ferides; les Despenses donen menjar. Aquest pacient ja està alimentat.
 [lesson healing build title]
-
+Construeix un Hospital
 [lesson healing build instruction]
-
+Construeix un Hospital en terreny lliure; assigna 2 constructors.
 [lesson healing build help]
-
+Deixa espai perquè els glòbuls entrin i surtin. Els Hospitals curen ferides; les Despenses donen menjar. Aquest pacient ja està alimentat.
 [lesson healing build marker]
-
+Construeix un Hospital
 [lesson healing heal hint]
-
+Mantén l'Hospital accessible. Observa la recuperació del treballador ferit. Els glòbuls busquen curació sols. Segueix el treballador ferit, no una unitat acabada de néixer. Si mor, reinicia o carrega una partida desada.
 [lesson healing heal title]
-
+Deixa que el pacient es recuperi
 [lesson healing heal instruction]
-
+Mantén l'Hospital accessible. Observa la recuperació del treballador ferit.
 [lesson healing heal help]
-
+Els glòbuls busquen curació sols. Segueix el treballador ferit, no una unitat acabada de néixer. Si mor, reinicia o carrega una partida desada.
 [lesson healing heal marker]
-
+Deixa que el pacient es recuperi
 [lesson walking-training title]
-
+Entrenament de marxa
 [lesson walking-training briefing]
-
+Construeix un Poliesportiu i observa com un treballador existent aprèn a caminar més de pressa.
 [lesson walking-training complete]
-
+Els treballadors han après a caminar més de pressa. L'entrenament millora els treballadors existents; no substitueix l'abastiment de la colònia.
 [lesson walking-training build hint]
-
+Construeix un Poliesportiu a la clariana marcada; assigna constructors. Un Poliesportiu necessita fusta i pedra. Deixa espai a les vores per entrar, sortir i ampliar-lo més endavant.
 [lesson walking-training build title]
-
+Construeix un Poliesportiu
 [lesson walking-training build instruction]
-
+Construeix un Poliesportiu a la clariana marcada; assigna constructors.
 [lesson walking-training build help]
-
+Un Poliesportiu necessita fusta i pedra. Deixa espai a les vores per entrar, sortir i ampliar-lo més endavant.
 [lesson walking-training build marker]
-
+Construeix un Poliesportiu
 [lesson walking-training train hint]
-
+Mantén el Poliesportiu accessible i deixa que un treballador acabi l'entrenament. Els glòbuls aptes s'entrenen automàticament. Deixa alguns treballadors lliures de l'abastiment i mantén les dues Despenses abastides.
 [lesson walking-training train title]
-
+Entrena un treballador existent
 [lesson walking-training train instruction]
-
+Mantén el Poliesportiu accessible i deixa que un treballador acabi l'entrenament.
 [lesson walking-training train help]
-
+Els glòbuls aptes s'entrenen automàticament. Deixa alguns treballadors lliures de l'abastiment i mantén les dues Despenses abastides.
 [lesson swimming title]
-
+Natació i recursos aquàtics
 [lesson swimming briefing]
-
+Entrena nedadors i utilitza les algues de l'estany per construir una Escola.
 [lesson swimming complete]
-
+Un nedador ha portat recursos aquàtics per a l'Escola. L'accés a l'aigua amplia les tasques que pot fer la colònia.
 [lesson swimming build hint]
-
+Construeix una Piscina a l'oest de l'estany; assigna constructors. Deixa espai al voltant de la Piscina. Un treballador no pot recollir algues en aigües profundes fins que sap nedar.
 [lesson swimming build title]
-
+Construeix una Piscina
 [lesson swimming build instruction]
-
+Construeix una Piscina a l'oest de l'estany; assigna constructors.
 [lesson swimming build help]
-
+Deixa espai al voltant de la Piscina. Un treballador no pot recollir algues en aigües profundes fins que sap nedar.
 [lesson swimming build marker]
-
+Construeix una Piscina
 [lesson swimming train hint]
-
+Deixa que un treballador existent acabi l'entrenament de natació. Les unitats trien l'entrenament automàticament. Mantén l'abastiment i deixa que els treballadors lliures arribin a la Piscina.
 [lesson swimming train title]
-
+Entrena un nedador
 [lesson swimming train instruction]
-
+Deixa que un treballador existent acabi l'entrenament de natació.
 [lesson swimming train help]
-
+Les unitats trien l'entrenament automàticament. Mantén l'abastiment i deixa que els treballadors lliures arribin a la Piscina.
 [lesson swimming water-job hint]
-
+Construeix una Escola prop de la colònia; assigna constructors per buscar fusta i algues. Les algues creixen a l'estany. Un nedador entrenat ha d'entrar a l'aigua per recollir-les. Posa l'Escola en terreny obert accessible als proveïdors.
 [lesson swimming water-job title]
-
+Utilitza les algues de l'estany
 [lesson swimming water-job instruction]
-
+Construeix una Escola prop de la colònia; assigna constructors per buscar fusta i algues.
 [lesson swimming water-job help]
-
+Les algues creixen a l'estany. Un nedador entrenat ha d'entrar a l'aigua per recollir-les. Posa l'Escola en terreny obert accessible als proveïdors.
 [lesson swimming water-job marker]
-
+Utilitza les algues de l'estany
 [lesson schools title]
-
+Escoles i habilitats dels treballadors
 [lesson schools briefing]
-
+Utilitza els nedadors preparats per construir una Escola i observa els treballadors aprendre construcció i recol·lecció.
 [lesson schools complete]
-
+L'Escola ha millorat les habilitats dels treballadors. Els constructors qualificats permeten millores; una recol·lecció millor sosté una economia en expansió.
 [lesson schools build hint]
-
+Construeix una Escola a la clariana; assigna constructors. La colònia ja té nedadors per a les algues. Deixa accés a la fusta i a l'aigua. Els arbres fruiters donen recursos de prestigi; el menjar continua sent blat.
 [lesson schools build title]
-
+Construeix una Escola
 [lesson schools build instruction]
-
+Construeix una Escola a la clariana; assigna constructors.
 [lesson schools build help]
-
+La colònia ja té nedadors per a les algues. Deixa accés a la fusta i a l'aigua. Els arbres fruiters donen recursos de prestigi; el menjar continua sent blat.
 [lesson schools build marker]
-
+Construeix una Escola
 [lesson schools learn hint]
-
+Deixa que un treballador existent acabi la formació a l'Escola. L'Escola ensenya construcció i recol·lecció alhora. Mantén treballadors disponibles; una obra per si sola no entrena ningú.
 [lesson schools learn title]
-
+Ensenya construcció i recol·lecció
 [lesson schools learn instruction]
-
+Deixa que un treballador existent acabi la formació a l'Escola.
 [lesson schools learn help]
-
+L'Escola ensenya construcció i recol·lecció alhora. Mantén treballadors disponibles; una obra per si sola no entrena ningú.
 [lesson upgrades title]
-
+Millora d'edificis
 [lesson upgrades briefing]
-
+Utilitza els treballadors qualificats preparats per millorar un Poliesportiu i entrenar més enllà del primer nivell.
 [lesson upgrades complete]
-
+Has millorat un edifici i utilitzat el seu entrenament superior. Les millores següents repeteixen el cicle amb millors Escoles, habilitats, materials i més espai, fins al nivell 3.
 [lesson upgrades upgrade hint]
-
+Selecciona el Poliesportiu, tria Millora i assigna constructors qualificats. Aquests treballadors ja han après les habilitats de l'Escola de primer nivell. Les millores necessiten més espai i materials i interrompen el servei de l'edifici. Les millores cancel·lades no compten.
 [lesson upgrades upgrade title]
-
+Millora el Poliesportiu
 [lesson upgrades upgrade instruction]
-
+Selecciona el Poliesportiu, tria Millora i assigna constructors qualificats.
 [lesson upgrades upgrade help]
-
+Aquests treballadors ja han après les habilitats de l'Escola de primer nivell. Les millores necessiten més espai i materials i interrompen el servei de l'edifici. Les millores cancel·lades no compten.
 [lesson upgrades upgrade marker]
-
+Millora el Poliesportiu
 [lesson upgrades train hint]
-
+Deixa que un treballador existent aprengui a caminar més de pressa al Poliesportiu millorat. Una millora acabada amplia l'entrenament disponible. Els nivells superiors exigeixen més habilitat de construcció; el nivell mostrat comença a 1.
 [lesson upgrades train title]
-
+Utilitza l'entrenament millorat
 [lesson upgrades train instruction]
-
+Deixa que un treballador existent aprengui a caminar més de pressa al Poliesportiu millorat.
 [lesson upgrades train help]
-
+Una millora acabada amplia l'entrenament disponible. Els nivells superiors exigeixen més habilitat de construcció; el nivell mostrat comença a 1.
 [lesson warrior-training title]
-
+Producció i entrenament de guerrers
 [lesson warrior-training briefing]
-
+Produeix guerrers a la Granja i entrena'ls en una Caserna.
 [lesson warrior-training complete]
-
+Has controlat la producció militar i entrenat guerrers. Mantén-ne l'abastiment: les unitats de combat també han de menjar.
 [lesson warrior-training produce hint]
-
+Configura la Granja per produir només guerrers; assigna proveïdors i espera 2 guerrers. Fixa les proporcions de treballadors i exploradors a 0 i la de guerrers a 1. La Granja consumeix blat per als naixements. Les proporcions trien què produir; els proveïdors permeten que funcioni.
 [lesson warrior-training produce title]
-
+Produeix dos guerrers
 [lesson warrior-training produce instruction]
-
+Configura la Granja per produir només guerrers; assigna proveïdors i espera 2 guerrers.
 [lesson warrior-training produce help]
-
+Fixa les proporcions de treballadors i exploradors a 0 i la de guerrers a 1. La Granja consumeix blat per als naixements. Les proporcions trien què produir; els proveïdors permeten que funcioni.
 [lesson warrior-training produce marker]
-
+Produeix dos guerrers
 [lesson warrior-training build hint]
-
+Construeix una Caserna a la clariana; assigna constructors. Atura o redueix la producció de guerrers quan en tinguis prou. Les Casernes ensenyen combat i necessiten espai lliure al voltant.
 [lesson warrior-training build title]
-
+Construeix una Caserna
 [lesson warrior-training build instruction]
-
+Construeix una Caserna a la clariana; assigna constructors.
 [lesson warrior-training build help]
-
+Atura o redueix la producció de guerrers quan en tinguis prou. Les Casernes ensenyen combat i necessiten espai lliure al voltant.
 [lesson warrior-training build marker]
-
+Construeix una Caserna
 [lesson warrior-training train hint]
-
+Deixa que un guerrer acabi la pràctica a la Caserna. Els guerrers busquen entrenament automàticament. Abasteix les Despenses i mantén la Caserna accessible. Construir una Caserna no equival a acabar una sessió d'entrenament.
 [lesson warrior-training train title]
-
+Entrena els guerrers
 [lesson warrior-training train instruction]
-
+Deixa que un guerrer acabi la pràctica a la Caserna.
 [lesson warrior-training train help]
-
+Els guerrers busquen entrenament automàticament. Abasteix les Despenses i mantén la Caserna accessible. Construir una Caserna no equival a acabar una sessió d'entrenament.
 [lesson fortifications title]
-
+Torres i murs protectors
 [lesson fortifications briefing]
-
+Construeix una Torre abastida i murs protectors i prova'ls contra un petit atac.
 [lesson fortifications complete]
-
+Les defenses abastides han aturat l'atac de pràctica. Les Torres necessiten pedra i els murs necessiten obertures per als proveïdors.
 [lesson fortifications tower hint]
-
+Construeix una Torre a la zona marcada; assigna constructors. Posa-la prop de les pedres i deixa accés als proveïdors. Cap atac no comença abans d'acabar els preparatius.
 [lesson fortifications tower title]
-
+Construeix una Torre
 [lesson fortifications tower instruction]
-
+Construeix una Torre a la zona marcada; assigna constructors.
 [lesson fortifications tower help]
-
+Posa-la prop de les pedres i deixa accés als proveïdors. Cap atac no comença abans d'acabar els preparatius.
 [lesson fortifications tower marker]
-
+Construeix una Torre
 [lesson fortifications walls hint]
-
+Construeix almenys 2 trams de mur prop de la Torre; mantén obert l'accés oest. Els murs utilitzen pedra i cada obra demana treballadors. No tanquis la Torre: els proveïdors necessiten un camí. El pas oest marcat ha de quedar lliure.
 [lesson fortifications walls title]
-
+Protegeix la Torre amb murs
 [lesson fortifications walls instruction]
-
+Construeix almenys 2 trams de mur prop de la Torre; mantén obert l'accés oest.
 [lesson fortifications walls help]
-
+Els murs utilitzen pedra i cada obra demana treballadors. No tanquis la Torre: els proveïdors necessiten un camí. El pas oest marcat ha de quedar lliure.
 [lesson fortifications walls marker]
-
+Protegeix la Torre amb murs
 [lesson fortifications supply hint]
-
+Selecciona la Torre i demana proveïdors. Espera almenys 2 pedres. Una Torre acabada necessita treballadors de funcionament per portar munició. Aquest control és separat del de construcció.
 [lesson fortifications supply title]
-
+Subministra munició
 [lesson fortifications supply instruction]
-
+Selecciona la Torre i demana proveïdors. Espera almenys 2 pedres.
 [lesson fortifications supply help]
-
+Una Torre acabada necessita treballadors de funcionament per portar munició. Aquest control és separat del de construcció.
 [lesson fortifications supply marker]
-
+Subministra munició
 [lesson fortifications hold hint]
-
+S'acosta un guerrer de pràctica. Mantén la Torre abastida i accessible. Resisteix fins a derrotar o fer retrocedir l'atacant. Un mur que bloquegi proveïdors pot deixar la Torre sense munició. Si la colònia fracassa, reinicia o carrega una partida desada anterior.
 [lesson fortifications hold title]
-
+Prova les fortificacions
 [lesson fortifications hold instruction]
-
+S'acosta un guerrer de pràctica. Mantén la Torre abastida i accessible.
 [lesson fortifications hold help]
-
+Resisteix fins a derrotar o fer retrocedir l'atacant. Un mur que bloquegi proveïdors pot deixar la Torre sense munició. Si la colònia fracassa, reinicia o carrega una partida desada anterior.
 [lesson fortifications hold marker]
-
+Prova les fortificacions
 [lesson defensive-tactics title]
-
+Zones de guàrdia i tàctiques amb banderes
 [lesson defensive-tactics briefing]
-
+Explora l'enemic de pràctica, prepara una zona de guàrdia, defensa i organitza un contraatac.
 [lesson defensive-tactics complete]
-
+Has explorat, defensat una zona de guàrdia i dirigit un contraatac. Les quantitats de les banderes demanen unitats; el radi determina on treballen.
 [lesson defensive-tactics scout hint]
-
+Posa una Bandera d'exploració a la base enemiga; assigna 1 explorador. Les banderes demanen unitats automàticament. Un explorador revela l'activitat actual a través de la boira de guerra; pot aturar-se a menjar.
 [lesson defensive-tactics scout title]
-
+Explora la base enemiga
 [lesson defensive-tactics scout instruction]
-
+Posa una Bandera d'exploració a la base enemiga; assigna 1 explorador.
 [lesson defensive-tactics scout help]
-
+Les banderes demanen unitats automàticament. Un explorador revela l'activitat actual a través de la boira de guerra; pot aturar-se a menjar.
 [lesson defensive-tactics scout marker]
-
+Explora la base enemiga
 [lesson defensive-tactics guard hint]
-
+Pinta una zona de guàrdia a la regió marcada i deixa que hi arribin 2 guerrers. Obre les banderes, tria Guàrdia i pinta almenys 4 caselles dins la regió. Les zones de guàrdia atrauen guerrers inactius. Les zones prohibides bloquegen el pas; les zones de neteja demanen retirar recursos.
 [lesson defensive-tactics guard title]
-
+Prepara una zona de guàrdia
 [lesson defensive-tactics guard instruction]
-
+Pinta una zona de guàrdia a la regió marcada i deixa que hi arribin 2 guerrers.
 [lesson defensive-tactics guard help]
-
+Obre les banderes, tria Guàrdia i pinta almenys 4 caselles dins la regió. Les zones de guàrdia atrauen guerrers inactius. Les zones prohibides bloquegen el pas; les zones de neteja demanen retirar recursos.
 [lesson defensive-tactics guard marker]
-
+Prepara una zona de guàrdia
 [lesson defensive-tactics repel hint]
-
+L'enemic ataca. Mantén guerrers a la zona de guàrdia i les Despenses abastides. El petit atac comença després dels preparatius. Derrota o fes retrocedir els dos assaltants; els enemics ferits poden retirar-se. Els guerrers poden anar-se'n temporalment a menjar. Si falla la defensa, carrega una partida desada anterior o reinicia.
 [lesson defensive-tactics repel title]
-
+Rebutja l'atac de pràctica
 [lesson defensive-tactics repel instruction]
-
+L'enemic ataca. Mantén guerrers a la zona de guàrdia i les Despenses abastides.
 [lesson defensive-tactics repel help]
-
+El petit atac comença després dels preparatius. Derrota o fes retrocedir els dos assaltants; els enemics ferits poden retirar-se. Els guerrers poden anar-se'n temporalment a menjar. Si falla la defensa, carrega una partida desada anterior o reinicia.
 [lesson defensive-tactics repel marker]
-
+Rebutja l'atac de pràctica
 [lesson defensive-tactics counterattack hint]
-
+Posa una Bandera de guerra sobre la Granja enemiga; demana 3 guerrers amb un radi de 4 o menys. Les zones de guàrdia i les Banderes de guerra competeixen pels guerrers. Esborra caselles de guàrdia si retenen l'exèrcit. Mantén el menjar disponible mentre els guerrers viatgen i ataquen.
 [lesson defensive-tactics counterattack title]
-
+Dirigeix un contraatac concentrat
 [lesson defensive-tactics counterattack instruction]
-
+Posa una Bandera de guerra sobre la Granja enemiga; demana 3 guerrers amb un radi de 4 o menys.
 [lesson defensive-tactics counterattack help]
-
+Les zones de guàrdia i les Banderes de guerra competeixen pels guerrers. Esborra caselles de guàrdia si retenen l'exèrcit. Mantén el menjar disponible mentre els guerrers viatgen i ataquen.
 [lesson defensive-tactics counterattack marker]
-
+Dirigeix un contraatac concentrat
 [lesson healing build compact]
-
+Construeix → Hospital. Deixa accés; assigna constructors.
 [lesson healing heal compact]
-
+Deixa que el treballador ferit es curi a l'Hospital.
 [lesson walking-training build compact]
-
+Construeix → Poliesportiu. Deixa espai al voltant.
 [lesson walking-training train compact]
-
+Deixa que un treballador acabi l'entrenament al Poliesportiu.
 [lesson swimming build compact]
-
+Construeix → Piscina, a l'oest de l'estany.
 [lesson swimming train compact]
-
+Deixa que un treballador aprengui a nedar.
 [lesson swimming water-job compact]
-
+Construeix → Escola. Assigna constructors per a fusta i algues.
 [lesson schools build compact]
-
+Construeix → Escola. Assigna constructors per a fusta i algues.
 [lesson schools learn compact]
-
+Deixa que un treballador acabi la formació a l'Escola.
 [lesson upgrades upgrade compact]
-
+Poliesportiu → Millora. Assigna constructors qualificats.
 [lesson upgrades train compact]
-
+Deixa que un treballador s'entreni al Poliesportiu millorat.
 [lesson warrior-training produce compact]
-
+Granja → només guerrers. Subministra blat per a 2 guerrers.
 [lesson warrior-training build compact]
-
+Construeix → Caserna. Deixa espai al voltant.
 [lesson warrior-training train compact]
-
+Deixa que un guerrer acabi la pràctica a la Caserna.
 [lesson fortifications tower compact]
-
+Construeix → Torre. Posa-la a la zona marcada.
 [lesson fortifications walls compact]
-
+Construeix 2 murs. Mantén obert el pas oest de la Torre.
 [lesson fortifications supply compact]
-
+Torre → proveïdors. Espera 2 pedres.
 [lesson fortifications hold compact]
-
+Mantén la Torre abastida davant l'atacant.
 [lesson defensive-tactics scout compact]
-
+Banderes → Exploració. Posa-la a l'enemic; assigna 1 explorador.
 [lesson defensive-tactics guard compact]
-
+Banderes → Guàrdia. Pinta 4 caselles; espera 2 guerrers.
 [lesson defensive-tactics repel compact]
-
+Defensa la zona de guàrdia. Abasteix les Despenses.
 [lesson defensive-tactics counterattack compact]
-
+Bandera de guerra → Granja enemiga. Demana 3 guerrers; radi ≤4.
 [library GL only]
 Només GL
 [Grassland]
@@ -6781,6 +6781,6 @@ Corriols d’animals
 [Fish amount]
 Quantitat de peixos
 [scenario messages]
-
+Missatges ▸
 [Camp-site amount]
 Nombre de campaments
