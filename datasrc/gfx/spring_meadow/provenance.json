@@ -2,7 +2,7 @@
   "generator": "tools/artwork/terrain_synth.py",
   "method": "procedural",
   "generator_sha256": {
-    "tools/artwork/terrain_synth.py": "5875ba78481ca08ec761ec21ce7c94f30c1822f16fdcf3f44dcdf667b8ad3e0d",
+    "tools/artwork/terrain_synth.py": "8db5a59bc3b22d0a4c542046efb340f58cd3fefb92d1db099bba8c57b0780029",
     "tools/artwork/material_tiles.py": "224e159e0974023797710aa959994f11658c82da8fb80f9701e4abc13c74ed83"
   },
   "material": "spring_meadow",
@@ -145,12 +145,12 @@
       }
     }
   },
-  "python": "3.14.10",
+  "python": "3.14.4",
   "pillow": "12.2.0",
   "platform": {
     "system": "linux",
     "machine": "x86_64",
-    "libc": "glibc 2.41"
+    "libc": "glibc 2.43"
   },
   "runtime_sha256": {
     "data/gfx/terrain-spring_meadow0.png": "a82797caba9b24ac370a87c63de8577a4c8671aeff792a8b63236dbf05659145",

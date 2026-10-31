@@ -2,7 +2,7 @@
   "generator": "tools/artwork/terrain_synth.py",
   "method": "procedural",
   "generator_sha256": {
-    "tools/artwork/terrain_synth.py": "2c09f2ad783dc422351fa15ae2ce92d4cdcd8048a6d19f0684dbfc9f953178c4",
+    "tools/artwork/terrain_synth.py": "8db5a59bc3b22d0a4c542046efb340f58cd3fefb92d1db099bba8c57b0780029",
     "tools/artwork/material_tiles.py": "224e159e0974023797710aa959994f11658c82da8fb80f9701e4abc13c74ed83"
   },
   "material": "ember_field",
@@ -189,12 +189,12 @@
       }
     }
   },
-  "python": "3.12.12",
+  "python": "3.14.4",
   "pillow": "12.2.0",
   "platform": {
-    "system": "darwin",
-    "machine": "arm64",
-    "libc": null
+    "system": "linux",
+    "machine": "x86_64",
+    "libc": "glibc 2.43"
   },
   "runtime_sha256": {
     "data/gfx/terrain-ember_field0.png": "c2040554bdda1042c488239d4a9bb00817fd07d1c21cd8c75c4ac90c61523329",
