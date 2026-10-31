@@ -371,12 +371,18 @@ export function SetEditor({
     if (!source) return;
     const added: Entry =
       kind === 'terrain'
-        ? { key, name: 'Custom ' + name(preset), base: preset, appearance: preset, properties: {} }
+        ? {
+            key,
+            name: t('Terrain') + ': ' + preset,
+            base: preset,
+            appearance: preset,
+            properties: {},
+          }
         : {
             ...structuredClone(source),
             key,
             requiredExperiment: '',
-            presentation: { ...source.presentation, name: 'Custom ' + source.presentation.name },
+            presentation: { ...source.presentation, name: t('Resource') + ': ' + resourcePreset },
           };
     change({ ...pack, [kind === 'terrain' ? 'terrains' : 'resources']: [...entries, added] });
     setSelected(entries.length);
