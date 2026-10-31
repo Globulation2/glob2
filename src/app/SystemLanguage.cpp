@@ -52,8 +52,9 @@ namespace SystemLanguage
 
 		if (language == "zh")
 			return has("hant") || has("tw") || has("hk") || has("mo") ? "zh-tw" : "zh-cn";
-		// Generic Norwegian defaults to Bokmål; the legacy Nynorsk tag does not.
-		if (language == "no") return has("nyn") ? "" : "nb";
+		// Generic Norwegian defaults to Bokmål. Both legacy Nynorsk forms
+		// (no-nyn and no_NO_NY) explicitly request the other written standard.
+		if (language == "no") return has("nyn") || (has("no") && has("ny")) ? "" : "nb";
 		if (language == "pt")
 			return has("br") ? "br" : "pt";
 		std::set<std::string> scripts;

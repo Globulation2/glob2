@@ -84,6 +84,10 @@ TEST_SUITE("SystemLanguage")
 		CHECK(code("no-x-nyn") == "nb");
 		CHECK(code("nn-NO").empty());
 		CHECK(code("no-nyn").empty());
+		CHECK(code("no_NO_NY").empty());
+		CHECK(code("no", "NO_NY").empty());
+		CHECK(code("no-NO-u-ca-ny") == "nb");
+		CHECK(SystemLanguage::choose({{"no-NO-NY", ""}, {"sv", "SE"}}, [](const std::string &) { return true; }) == "sv");
 		CHECK(SystemLanguage::choose({{"nn", "NO"}, {"de", "DE"}}, [](const std::string &) { return true; }) == "de");
 		CHECK(SystemLanguage::choose({{"nb", "NO"}, {"de", "DE"}}, [](const std::string &c) { return c == "de"; }) == "de");
 	}

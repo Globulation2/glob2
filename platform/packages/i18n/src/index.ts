@@ -67,11 +67,11 @@ export function resolveLocale(input: string | readonly string[]): Locale {
       const script = subtags.find((part) => /^[a-z]{4}$/.test(part));
       if (script && script !== writtenScript) continue;
     }
-    // The retired no-nyn tag explicitly requests Nynorsk, which has no catalog.
+    // Legacy no-nyn and no_NO_NY explicitly request Nynorsk, which has no catalog.
     if (language === 'no') {
       const extension = parts.findIndex((part) => part.length === 1);
       const subtags = extension < 0 ? parts : parts.slice(0, extension);
-      if (subtags.includes('nyn')) continue;
+      if (subtags.includes('nyn') || (subtags.includes('no') && subtags.includes('ny'))) continue;
       return 'nb';
     }
     if (language === 'pt') return parts.includes('br') ? 'pt-BR' : 'pt-PT';
