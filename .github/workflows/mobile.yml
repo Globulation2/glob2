@@ -9,6 +9,20 @@ on:
         type: string
         default: '["arm64-v8a","armeabi-v7a","x86_64"]'
   workflow_dispatch:
+    inputs:
+      revision:
+        description: Exact source revision (defaults to selected branch)
+        type: string
+        default: ""
+      android_localization:
+        description: Qualify only x86_64 with the reviewed Thai app locale
+        type: boolean
+        default: false
+      locale:
+        description: Reviewed app locale
+        type: choice
+        options: [th]
+        default: th
 
 # A newer push supersedes an Android build for the same pull request. The
 # literal prefix keeps this group distinct from its caller's: when called,
@@ -32,7 +46,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        arch: ${{ fromJSON(inputs.architectures || '["arm64-v8a","armeabi-v7a","x86_64"]') }}
+        arch: ${{ fromJSON((github.event_name == 'workflow_dispatch' && inputs.android_localization && '["x86_64"]') || inputs.architectures || '["arm64-v8a","armeabi-v7a","x86_64"]') }}
     steps:
       - uses: actions/checkout@v4
         id: actions_checkout_v4_1
@@ -132,6 +146,9 @@ jobs:
             | tee "build/android-${{ matrix.arch }}-build.log"
       - name: Exercise x86_64 release APK in an emulator
         if: matrix.arch == 'x86_64'
+        env:
+          QA_ANDROID_LOCALIZATION: ${{ github.event_name == 'workflow_dispatch' && inputs.android_localization }}
+          QA_LOCALE: ${{ inputs.locale || 'th' }}
         run: |
           sudo chmod a+rw /dev/kvm
           python3 mobile/setup_tools.py --emulator
@@ -146,8 +163,19 @@ jobs:
           test "$ready" -eq 1
           python3 mobile/android.py sign --arch x86_64 --release --fdroid
           python3 mobile/android.py install --arch x86_64 --release --fdroid --serial emulator-5580 --adb-port 15037
+          if test "$QA_ANDROID_LOCALIZATION" = true; then
+            python3 mobile/android_localization_qa.py --serial emulator-5580 --avd glob2-api35-x64 --locale "$QA_LOCALE"
+          fi
           python3 mobile/smoke.py --serial emulator-5580 --avd glob2-api35-x64 --package org.globulation2.glob2
           python3 mobile/emulator.py stop --arch x86_64
+      - name: Stop only the task-owned localization emulator after failure
+        if: ${{ always() && github.event_name == 'workflow_dispatch' && inputs.android_localization && matrix.arch == 'x86_64' }}
+        run: |
+          sdk="$(python3 tools/dev_environment.py paths --field android_sdk)"
+          avd="$(timeout 20 "$sdk/platform-tools/adb" -P 15037 -s emulator-5580 emu avd name 2>/dev/null | head -n1 || true)"
+          if test "$avd" = glob2-api35-x64; then
+            python3 mobile/emulator.py stop --arch x86_64
+          fi
       - name: Report Android compiler cache
         if: ${{ !cancelled() && steps.cache_ready.outcome == 'success' }}
         run: ccache -s

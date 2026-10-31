@@ -51,6 +51,16 @@ it does not establish the OS permission popup, Thai IME interaction or physical
 device behavior. The helper only shuts down and deletes its recorded private
 simulator. Build and platform failures retain their actual diagnostics.
 
+The existing `mobile.yml` workflow also accepts the optional manual input
+`android_localization=true` with `locale=th`. That mode builds and tests x86_64
+only, verifies the actual APK catalog/font/notices and Thai Android startup
+resource, and selects Thai with Android's per-app locale API before the existing
+startup/settings/rotation/lifecycle smoke. Ordinary runs and workflow calls keep
+their original architecture selection. Review retained screenshots for actual
+Thai rendering; the transient unpack label is checked in compiled resources,
+not guaranteed to appear in the screenshots. Physical devices and Thai IME
+interaction remain separate checks.
+
 ## Mobile design review gallery
 
 The offline gallery captures production screen classes at ten logical viewport
