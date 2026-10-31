@@ -68,8 +68,24 @@ TEST_SUITE("SystemLanguage")
 	{
 		CHECK(code("br").empty()); // Breton, not Brazilian Portuguese
 		CHECK(code("si").empty()); // Sinhala, not Slovenian
-		CHECK(code("nb").empty());
+		CHECK(code("nn").empty());
 		CHECK(code("").empty());
+	}
+
+	TEST_CASE("Norwegian Bokmaal accepts generic Norwegian but never Nynorsk")
+	{
+		CHECK(code("nb") == "nb");
+		CHECK(code("nb-NO") == "nb");
+		CHECK(code("NB", "NO") == "nb");
+		CHECK(code("no") == "nb");
+		CHECK(code("no_NO") == "nb");
+		CHECK(code("no-bok") == "nb");
+		CHECK(code("no-u-ca-nyn") == "nb");
+		CHECK(code("no-x-nyn") == "nb");
+		CHECK(code("nn-NO").empty());
+		CHECK(code("no-nyn").empty());
+		CHECK(SystemLanguage::choose({{"nn", "NO"}, {"de", "DE"}}, [](const std::string &) { return true; }) == "de");
+		CHECK(SystemLanguage::choose({{"nb", "NO"}, {"de", "DE"}}, [](const std::string &c) { return c == "de"; }) == "de");
 	}
 
 	TEST_CASE("expanded locales distinguish scripts and the precise Pulaar variety")
@@ -111,6 +127,14 @@ TEST_SUITE("SystemLanguage")
 		CHECK(SystemLanguage::choose({{"hi", "IN"}, {"de", "DE"}}, [](const std::string &c) { return c == "de"; }) == "de");
 		CHECK(SystemLanguage::choose({}, all) == "en");
 		CHECK(SystemLanguage::choose({{"de", ""}, {"fr", ""}}, [](const std::string &c) { return c == "fr"; }) == "fr");
+	}
+
+	TEST_CASE("Norwegian startup follows preferences and preserves a saved language")
+	{
+		PreferredLocales locales("nb_NO,en_US");
+		CHECK(startupLanguage("") == "nb");
+		CHECK(startupLanguage("fr") == "fr");
+		CHECK(startupLanguage("nb") == "nb");
 	}
 
 	TEST_CASE("startup follows the system only when the profile has no usable language")

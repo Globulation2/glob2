@@ -166,6 +166,41 @@ checks draft keys and tokens and reports untranslated entries and English matche
 for review; it does not replace the official checks above. Keep unfinished
 catalogs out of the selectable language inventory.
 
+For Google Cloud machine drafts, prepare a scoped kit (for example,
+`prepare --locales nb --output artifacts/norwegian/kit`), then estimate work without
+network access:
+
+```sh
+python3 tools/localization/google_draft.py --output artifacts/norwegian/kit --locale nb
+```
+
+Authenticate `gcloud` to an existing project with Cloud Translation enabled. Pass
+`--project PROJECT_ID --execute --max-characters LIMIT` to make paid Translation
+v3 requests. `--price-per-million` changes the planning estimate; verify actual
+project pricing before interpreting it as a cost forecast. The runner queries
+supported languages and selects `nb` when available, otherwise Google's `no`
+target for the Bokmål catalog. `--batches BATCH_ID ...` limits the source-based
+pilot to selected manifest batches. Complete and review that pilot before running
+the full catalog.
+
+The runner protects substitutions, literal line breaks, authored markup and URLs
+with non-translatable HTML spans and rejects changed tokens. Outer whitespace is
+restored for message fragments. These checks do not establish correct meaning or
+word order. Exact request/project/location matches reuse immutable provider
+responses under the kit's `google/LOCALE/responses/`; generated JSON catalogs live
+under `google/LOCALE/runs/PLAN_HASH/`. They never replace `drafts/`, registered
+catalogs or review records. Copy a selected machine draft into the editorial
+workspace only when intentionally beginning review.
+
+The cumulative character allowance counts every attempted translation request,
+including uncertain failures and retries, before dispatch. It conservatively
+counts the protected HTML payload and persists across resumed invocations. Run
+one writer per kit. Authentication tokens are cached in memory and never written
+to evidence. Requests use bounded retries. Invalid responses remain inspectable;
+`--retry-invalid-responses` archives them under `rejected/` before another paid
+attempt within the same allowance. Raising the allowance is an explicit budget
+change. Provider output remains a machine draft, never a linguistic sign-off.
+
 Register finished catalogs in both inventories and their browser loaders, then
 test system-language selection against the installed catalog set. Mapping a
 system tag alone must never enable an unfinished locale. Punjabi scripts use

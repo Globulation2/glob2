@@ -14,6 +14,7 @@ data/texts.fr.txt
 data/texts.gr.txt
 data/texts.hu.txt
 data/texts.it.txt
+data/texts.nb.txt
 data/texts.nl.txt
 data/texts.pl.txt
 data/texts.pt.txt

@@ -90,6 +90,12 @@ export const locales = [
     dir: 'ltr',
   },
   {
+    code: 'nb',
+    gameCode: 'nb',
+    name: 'Norsk bokmål',
+    dir: 'ltr',
+  },
+  {
     code: 'nl',
     gameCode: 'nl',
     name: 'Nederlands',
