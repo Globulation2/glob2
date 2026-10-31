@@ -2318,6 +2318,9 @@ PAIR_TREATMENTS = (
         {"a": "water", "b": "deep_water", "profile": "soft"},
         {"a": "deep_water", "b": "dark_water", "profile": "soft"},
     ]
+    # Low-roughness waterlines that the shoreline surf can wash up.
+    + [{"a": name, "b": look, "profile": "beach"} for name in ("water", "deep_water", "dark_water")
+       for look in SAND_LOOKS]
     + [
         {"a": name, "b": ground_name, "profile": "fractured"}
         for name in ("lava", "ember_field")
@@ -2522,9 +2525,9 @@ def merge_catalog(document, fragment):
     for block in fragment["materials"]:
         if block["key"] in by_key:
             previous = document["materials"][by_key[block["key"]]]
-            # Raised decor has its own generator; refreshing ground must retain it.
-            if "decor" in previous:
-                block = dict(block, decor=previous["decor"])
+            # Raised decor and shoreline surf are authored elsewhere; refreshing
+            # ground must retain them.
+            block = dict(block, **{k: previous[k] for k in ("decor", "surf") if k in previous})
             document["materials"][by_key[block["key"]]] = block
         else:
             document["materials"].append(block)
