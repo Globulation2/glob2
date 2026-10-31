@@ -6355,421 +6355,421 @@ No se pudo guardar tu elección. El sonido sigue desactivado. Vuelve a intentarl
 [audio choices description]
 Silencio: un altavoz silenciado. Sonido: un altavoz con ondas sonoras.
 [intro menu]
-
+Introducción
 [intro briefing]
-
+Aprende el control indirecto: explora con una bandera, abastece tu colonia y dirige un ataque.
 [intro try]
-
+Iniciar introducción
 [intro preflight]
-
+Tus glóbulos actúan por su cuenta. Eliges sus tareas mediante edificios y banderas. En esta breve introducción, explora un punto de referencia, amplía el abastecimiento, aumenta la mano de obra y dirige un pequeño ataque.
 [intro preflight save]
-
+Calcula unos 10 minutos. Puedes guardar desde el menú del juego y continuar con Cargar partida. Se aplican las reglas normales de hambre y combate. Elige las lecciones del tutorial en el menú principal para practicar más habilidades.
 [intro preference failed]
-
+No se pudo guardar tu elección. Puedes seguir jugando; esta recomendación podría aparecer la próxima vez.
 [intro goal scout]
-
+Explorar el punto de referencia de piedra
 [intro goal build]
-
+Construir otra Posada
 [intro goal supply]
-
+Abastecer tu nueva Posada
 [intro goal grow]
-
+Aumentar la mano de obra
 [intro goal attack]
-
+Destruir la Colmena enemiga
 [intro instruction scout]
-
+Abre Banderas y coloca una Bandera de exploración sobre las piedras al este de tu colonia. Asigna un explorador. Observa cómo llega a la bandera.
 [intro instruction build]
-
+Abre Construir y coloca una Posada cerca del trigo. Asigna trabajadores disponibles para construirla. Mantén abastecida la Posada existente.
 [intro instruction supply]
-
+Selecciona la nueva Posada terminada y asígnale al menos un abastecedor. Espera a que un trabajador entregue trigo.
 [intro instruction grow]
-
+Selecciona la Colmena. Solicita al menos 2 trabajadores y ajusta las proporciones de producción para producir solo trabajadores. Mantén las dos Posadas abastecidas mientras nace un nuevo trabajador.
 [intro instruction attack]
-
+Busca la Colmena enemiga más al este. Usa una Bandera de guerra para dirigir a tus guerreros contra ella. Consulta la ayuda si necesitas un recordatorio.
 [intro help]
-
+Ayuda / ¿por qué?
 [intro help scout]
-
+Usa el minimapa para mover la vista hacia el este y encontrar las piedras. En Banderas, elige Bandera de exploración, colócala sobre las piedras y sal de la colocación con el botón secundario del ratón. Selecciona la bandera y solicita 1 explorador. Las banderas solicitan unidades; no las mueven al instante. Los exploradores pueden detenerse a comer.
 [intro help build]
-
+La construcción consume madera entregada por trabajadores. Elige Posada en los controles de edificios, colócala en terreno despejado cerca del trigo y solicita 2 constructores. La cantidad solicitada no indica cuántos trabajadores están ya presentes. Mantén abastecedores en la Posada existente y la Colmena. Cualquier ubicación válida sirve.
 [intro help supply]
-
+La construcción y el abastecimiento diario tienen cantidades solicitadas independientes. Selecciona la Posada terminada y aumenta su cantidad de funcionamiento. Un abastecedor recoge trigo y lo lleva aquí. Los glóbulos hambrientos comen en las Posadas; sin abastecedores, sus reservas se acaban. Mantén accesible el campo de trigo.
 [intro help grow]
-
+La Colmena consume trigo para producir unidades. Ajusta la producción de trabajadores a 1 y la de exploradores y guerreros a 0. Solicita 2 o más trabajadores en la Colmena. Más abastecedores entregan trigo más rápido, pero compiten con otras tareas. Mantén abastecidas ambas Posadas.
 [intro help attack]
-
+Abre Banderas, elige Bandera de guerra y colócala sobre la Colmena enemiga al este de las piedras. Selecciona la bandera y solicita hasta 4 guerreros. Un radio pequeño los concentra. Sal de la colocación con el botón secundario antes de seleccionar la bandera. Si no quedan guerreros, produce más en la Colmena. Pueden detenerse a comer; abastece las Posadas.
 [intro hint scout]
-
+Tu explorador necesita una Bandera de exploración con unidades asignadas sobre las piedras del este. Comprueba su destino y la cantidad de exploradores solicitada.
 [intro hint build]
-
+Si eliminaste la nueva Posada, construye otra. Si no, comprueba la obra y los trabajadores solicitados. El abastecimiento existente puede ocuparlos; mantén la comida mientras liberas constructores.
 [intro hint supply]
-
+Selecciona la nueva Posada terminada. Comprueba los trabajadores solicitados y observa las entregas de trigo. Los trabajadores pueden necesitar tiempo para desplazarse o comer.
 [intro hint grow]
-
+Comprueba el abastecimiento de la Colmena y que solo produzca trabajadores. Mantén las Posadas abastecidas mientras esperas otro trabajador.
 [intro hint attack]
-
+Comprueba la Bandera de guerra, los guerreros solicitados y el abastecimiento de comida. Tus guerreros necesitan tiempo para desplazarse y atacar.
 [intro hint no scout flag]
-
+No se encontró ninguna Bandera de exploración con unidades asignadas. Coloca una sobre las piedras al este de la base y solicita 1 explorador.
 [intro hint no suppliers]
-
+Tu nueva Posada o su obra solicita 0 trabajadores. Selecciónala y solicita trabajadores.
 [intro hint no war flag]
-
+No se encontró ninguna Bandera de guerra con unidades asignadas en la base enemiga. Coloca una sobre la Colmena enemiga del este y solicita guerreros.
 [intro hint retry]
-
+Se ha perdido una unidad o edificio necesario para esta lección. Carga una partida guardada anterior o reinicia la lección desde el menú del juego.
 [intro complete]
-
+Introducción completada
 [intro complete body]
-
+Has dirigido glóbulos autónomos, ampliado el abastecimiento y la colonia y organizado un ataque. Sigue con las lecciones del tutorial para practicar entrenamiento, mejoras y defensa, o vuelve al menú principal para iniciar una partida.
 [intro play again]
-
+Volver a jugar
 [intro restart]
-
+Reiniciar introducción
 [intro restart body]
-
+¿Reiniciar desde la colonia preparada? Se perderá el progreso sin guardar de esta introducción.
 [intro help touch scout]
-
+Arrastra terreno vacío para mover la vista antes de colocar una bandera. Busca las piedras al este de la colonia. Abre Banderas, elige Bandera de exploración, colócala en las piedras y confirma. Selecciona la bandera y solicita 1 explorador con su control de unidades asignadas. Los glóbulos viajan solos y pueden detenerse a comer.
 [intro help touch build]
-
+Elige Posada en Construir. Colócala en terreno despejado cerca del trigo y confirma. Selecciona la obra y solicita 2 constructores. La cantidad solicitada no indica los trabajadores ya presentes. Mantén abastecidas la Posada existente y la Colmena. Cualquier ubicación válida sirve.
 [intro help touch supply]
-
+Selecciona la nueva Posada terminada y aumenta los trabajadores solicitados. Construcción y abastecimiento tienen controles independientes. Un abastecedor recoge trigo y lo lleva aquí. Los glóbulos hambrientos comen en las Posadas; sin abastecedores, las reservas se agotan. Mantén el trigo accesible.
 [intro help touch grow]
-
+Selecciona la Colmena. Ajusta la producción de trabajadores a 1 y la de exploradores y guerreros a 0. Solicita 2 o más trabajadores. Los abastecedores llevan trigo para nuevas unidades, pero compiten con otras tareas. Mantén ambas Posadas abastecidas.
 [intro help touch attack]
-
+Abre Banderas, elige Bandera de guerra, colócala sobre la Colmena enemiga al este de las piedras y confirma. Selecciona la bandera y solicita hasta 4 guerreros. Un radio pequeño los concentra. Si no quedan guerreros, prodúcelos en tu Colmena. Pueden detenerse a comer; abastece las Posadas.
 [intro show destination]
-
+Mostrar destino
 [intro scout destination]
-
+Explorar aquí
 [intro attack destination]
-
+Atacar aquí
 [intro compact scout]
-
+Banderas → Bandera de exploración. Colócala en las piedras; asigna 1 explorador.
 [intro compact build]
-
+Construir → Posada. Colócala cerca del trigo; asigna 2 constructores.
 [intro compact supply]
-
+Selecciona tu nueva Posada; asigna al menos 1 abastecedor. Espera el trigo.
 [intro compact grow]
-
+Selecciona la Colmena; asigna 2 abastecedores. Produce solo trabajadores.
 [intro compact attack]
-
+Banderas → Bandera de guerra. Colócala sobre la Colmena enemiga; asigna guerreros.
 [tutorial lessons]
-
+Lecciones del tutorial
 [tutorial restart]
-
+Reiniciar lección
 [tutorial restart body]
-
+¿Reiniciar esta lección desde la colonia preparada? Se perderá el progreso sin guardar.
 [tutorial complete]
-
+Lección completada
 [tutorial food title]
-
+Práctica de abastecimiento
 [tutorial food briefing]
-
+Practica la ampliación del abastecimiento: construye otra Posada, asigna abastecedores y observa cómo llega el trigo.
 [tutorial food complete]
-
+Has construido una Posada y la has abastecido con trigo. Prueba otra lección o vuelve al menú principal.
 [tutorial unavailable]
-
+No se pudieron cargar las lecciones del tutorial.
 [lesson healing title]
-
+Hospitales y curación
 [lesson healing briefing]
-
+Construye un Hospital y ayuda a un trabajador herido a recuperarse. La colonia comienza alimentada, con un trabajador herido.
 [lesson healing complete]
-
+Tu Hospital curó a un glóbulo herido. Abastece las Posadas: el hambre puede volver a herir a las unidades.
 [lesson healing build hint]
-
+Construye un Hospital en terreno despejado; asigna 2 constructores. Deja espacio para que los glóbulos entren y salgan. Los Hospitales curan heridas; las Posadas proporcionan comida. Este paciente ya está alimentado.
 [lesson healing build title]
-
+Construir un Hospital
 [lesson healing build instruction]
-
+Construye un Hospital en terreno despejado; asigna 2 constructores.
 [lesson healing build help]
-
+Deja espacio para que los glóbulos entren y salgan. Los Hospitales curan heridas; las Posadas proporcionan comida. Este paciente ya está alimentado.
 [lesson healing build marker]
-
+Construir un Hospital
 [lesson healing heal hint]
-
+Mantén el Hospital accesible. Observa cómo se recupera el trabajador herido. Los glóbulos buscan curación solos. Sigue al trabajador herido, no a una unidad recién nacida. Si muere, reinicia o carga una partida guardada.
 [lesson healing heal title]
-
+Dejar que el paciente se recupere
 [lesson healing heal instruction]
-
+Mantén el Hospital accesible. Observa cómo se recupera el trabajador herido.
 [lesson healing heal help]
-
+Los glóbulos buscan curación solos. Sigue al trabajador herido, no a una unidad recién nacida. Si muere, reinicia o carga una partida guardada.
 [lesson healing heal marker]
-
+Dejar que el paciente se recupere
 [lesson walking-training title]
-
+Entrenamiento de marcha
 [lesson walking-training briefing]
-
+Construye un Circuito de entrenamiento y observa cómo un trabajador existente aprende a caminar más rápido.
 [lesson walking-training complete]
-
+Tus trabajadores aprendieron a caminar más rápido. El entrenamiento mejora a los trabajadores existentes; no sustituye el abastecimiento de la colonia.
 [lesson walking-training build hint]
-
+Construye un Circuito de entrenamiento en el claro marcado; asigna constructores. Un Circuito de entrenamiento necesita madera y piedra. Deja espacio en sus bordes para entrar, salir y ampliarlo después.
 [lesson walking-training build title]
-
+Construir un Circuito de entrenamiento
 [lesson walking-training build instruction]
-
+Construye un Circuito de entrenamiento en el claro marcado; asigna constructores.
 [lesson walking-training build help]
-
+Un Circuito de entrenamiento necesita madera y piedra. Deja espacio en sus bordes para entrar, salir y ampliarlo después.
 [lesson walking-training build marker]
-
+Construir un Circuito de entrenamiento
 [lesson walking-training train hint]
-
+Mantén el Circuito de entrenamiento accesible y deja que un trabajador termine su entrenamiento. Los glóbulos aptos entrenan automáticamente. Deja algunos trabajadores libres del abastecimiento y mantén ambas Posadas abastecidas.
 [lesson walking-training train title]
-
+Entrenar a un trabajador existente
 [lesson walking-training train instruction]
-
+Mantén el Circuito de entrenamiento accesible y deja que un trabajador termine su entrenamiento.
 [lesson walking-training train help]
-
+Los glóbulos aptos entrenan automáticamente. Deja algunos trabajadores libres del abastecimiento y mantén ambas Posadas abastecidas.
 [lesson swimming title]
-
+Natación y recursos acuáticos
 [lesson swimming briefing]
-
+Entrena nadadores y usa las algas del estanque para construir una Escuela.
 [lesson swimming complete]
-
+Un nadador entregó recursos acuáticos para tu Escuela. El acceso al agua amplía las tareas que puede realizar tu colonia.
 [lesson swimming build hint]
-
+Construye una Piscina al oeste del estanque; asigna constructores. Deja espacio alrededor de la Piscina. Un trabajador no puede recoger algas en aguas profundas hasta aprender a nadar.
 [lesson swimming build title]
-
+Construir una Piscina
 [lesson swimming build instruction]
-
+Construye una Piscina al oeste del estanque; asigna constructores.
 [lesson swimming build help]
-
+Deja espacio alrededor de la Piscina. Un trabajador no puede recoger algas en aguas profundas hasta aprender a nadar.
 [lesson swimming build marker]
-
+Construir una Piscina
 [lesson swimming train hint]
-
+Deja que un trabajador existente termine su entrenamiento de natación. Las unidades eligen su entrenamiento automáticamente. Mantén el abastecimiento y permite que los trabajadores libres lleguen a la Piscina.
 [lesson swimming train title]
-
+Entrenar a un nadador
 [lesson swimming train instruction]
-
+Deja que un trabajador existente termine su entrenamiento de natación.
 [lesson swimming train help]
-
+Las unidades eligen su entrenamiento automáticamente. Mantén el abastecimiento y permite que los trabajadores libres lleguen a la Piscina.
 [lesson swimming water-job hint]
-
+Construye una Escuela cerca de la colonia; asigna constructores para buscar madera y algas. Las algas crecen en el estanque. Un nadador entrenado debe entrar en el agua para recogerlas. Coloca la Escuela en terreno abierto, accesible para los abastecedores.
 [lesson swimming water-job title]
-
+Usar las algas del estanque
 [lesson swimming water-job instruction]
-
+Construye una Escuela cerca de la colonia; asigna constructores para buscar madera y algas.
 [lesson swimming water-job help]
-
+Las algas crecen en el estanque. Un nadador entrenado debe entrar en el agua para recogerlas. Coloca la Escuela en terreno abierto, accesible para los abastecedores.
 [lesson swimming water-job marker]
-
+Usar las algas del estanque
 [lesson schools title]
-
+Escuelas y habilidades de los trabajadores
 [lesson schools briefing]
-
+Usa los nadadores preparados para construir una Escuela y observa a los trabajadores aprender construcción y recolección.
 [lesson schools complete]
-
+Tu Escuela mejoró las habilidades de los trabajadores. Los constructores expertos permiten mejoras; una mejor recolección sostiene una economía en expansión.
 [lesson schools build hint]
-
+Construye una Escuela en el claro; asigna constructores. La colonia ya tiene nadadores para las algas. Deja acceso a la madera y el agua. Los árboles frutales proporcionan recursos de prestigio; la comida sigue siendo trigo.
 [lesson schools build title]
-
+Construir una Escuela
 [lesson schools build instruction]
-
+Construye una Escuela en el claro; asigna constructores.
 [lesson schools build help]
-
+La colonia ya tiene nadadores para las algas. Deja acceso a la madera y el agua. Los árboles frutales proporcionan recursos de prestigio; la comida sigue siendo trigo.
 [lesson schools build marker]
-
+Construir una Escuela
 [lesson schools learn hint]
-
+Deja que un trabajador existente termine su formación en la Escuela. La Escuela enseña construcción y recolección juntas. Mantén trabajadores disponibles; una obra por sí sola no entrena a nadie.
 [lesson schools learn title]
-
+Enseñar construcción y recolección
 [lesson schools learn instruction]
-
+Deja que un trabajador existente termine su formación en la Escuela.
 [lesson schools learn help]
-
+La Escuela enseña construcción y recolección juntas. Mantén trabajadores disponibles; una obra por sí sola no entrena a nadie.
 [lesson upgrades title]
-
+Mejora de edificios
 [lesson upgrades briefing]
-
+Usa los trabajadores expertos preparados para mejorar un Circuito de entrenamiento y entrenar más allá del primer nivel.
 [lesson upgrades complete]
-
+Has mejorado un edificio y usado su entrenamiento superior. Las siguientes mejoras repiten el ciclo con mejores Escuelas, habilidades, materiales y más espacio, hasta el nivel 3.
 [lesson upgrades upgrade hint]
-
+Selecciona el Circuito de entrenamiento, elige Mejorar y asigna constructores expertos. Estos trabajadores ya aprendieron las habilidades de la Escuela de primer nivel. Las mejoras necesitan más espacio y materiales e interrumpen el servicio del edificio. Las mejoras canceladas no cuentan.
 [lesson upgrades upgrade title]
-
+Mejorar el Circuito de entrenamiento
 [lesson upgrades upgrade instruction]
-
+Selecciona el Circuito de entrenamiento, elige Mejorar y asigna constructores expertos.
 [lesson upgrades upgrade help]
-
+Estos trabajadores ya aprendieron las habilidades de la Escuela de primer nivel. Las mejoras necesitan más espacio y materiales e interrumpen el servicio del edificio. Las mejoras canceladas no cuentan.
 [lesson upgrades upgrade marker]
-
+Mejorar el Circuito de entrenamiento
 [lesson upgrades train hint]
-
+Deja que un trabajador existente aprenda a caminar más rápido en el Circuito de entrenamiento mejorado. Una mejora terminada amplía el entrenamiento disponible. Los edificios de niveles superiores exigen mejores habilidades de construcción; el nivel mostrado empieza en 1.
 [lesson upgrades train title]
-
+Usar el entrenamiento mejorado
 [lesson upgrades train instruction]
-
+Deja que un trabajador existente aprenda a caminar más rápido en el Circuito de entrenamiento mejorado.
 [lesson upgrades train help]
-
+Una mejora terminada amplía el entrenamiento disponible. Los edificios de niveles superiores exigen mejores habilidades de construcción; el nivel mostrado empieza en 1.
 [lesson warrior-training title]
-
+Producción y entrenamiento de guerreros
 [lesson warrior-training briefing]
-
+Produce guerreros en la Colmena y entrénalos en un Cuartel.
 [lesson warrior-training complete]
-
+Has controlado la producción militar y entrenado guerreros. Mantén su abastecimiento: las unidades de combate también necesitan comer.
 [lesson warrior-training produce hint]
-
+Configura la Colmena para producir solo guerreros; asigna abastecedores y espera a 2 guerreros. Ajusta las proporciones de trabajadores y exploradores a 0 y la de guerreros a 1. La Colmena consume trigo para los nacimientos. Las proporciones eligen qué producir; los abastecedores permiten que la producción funcione.
 [lesson warrior-training produce title]
-
+Producir dos guerreros
 [lesson warrior-training produce instruction]
-
+Configura la Colmena para producir solo guerreros; asigna abastecedores y espera a 2 guerreros.
 [lesson warrior-training produce help]
-
+Ajusta las proporciones de trabajadores y exploradores a 0 y la de guerreros a 1. La Colmena consume trigo para los nacimientos. Las proporciones eligen qué producir; los abastecedores permiten que la producción funcione.
 [lesson warrior-training produce marker]
-
+Producir dos guerreros
 [lesson warrior-training build hint]
-
+Construye un Cuartel en el claro; asigna constructores. Detén o reduce la producción de guerreros cuando tengas suficientes. Los Cuarteles enseñan combate y necesitan espacio libre alrededor.
 [lesson warrior-training build title]
-
+Construir un Cuartel
 [lesson warrior-training build instruction]
-
+Construye un Cuartel en el claro; asigna constructores.
 [lesson warrior-training build help]
-
+Detén o reduce la producción de guerreros cuando tengas suficientes. Los Cuarteles enseñan combate y necesitan espacio libre alrededor.
 [lesson warrior-training build marker]
-
+Construir un Cuartel
 [lesson warrior-training train hint]
-
+Deja que un guerrero complete la práctica en el Cuartel. Los guerreros buscan entrenamiento automáticamente. Abastece las Posadas y mantén el Cuartel accesible. Construir un Cuartel no equivale a terminar una sesión de entrenamiento.
 [lesson warrior-training train title]
-
+Entrenar a tus guerreros
 [lesson warrior-training train instruction]
-
+Deja que un guerrero complete la práctica en el Cuartel.
 [lesson warrior-training train help]
-
+Los guerreros buscan entrenamiento automáticamente. Abastece las Posadas y mantén el Cuartel accesible. Construir un Cuartel no equivale a terminar una sesión de entrenamiento.
 [lesson fortifications title]
-
+Torres y murallas protectoras
 [lesson fortifications briefing]
-
+Construye una torre abastecida y murallas protectoras y pruébalas contra un pequeño ataque.
 [lesson fortifications complete]
-
+Tus defensas abastecidas detuvieron el ataque de práctica. Las torres necesitan piedra y las murallas necesitan aberturas para que pasen los abastecedores.
 [lesson fortifications tower hint]
-
+Construye una torre en la zona marcada; asigna constructores. Colócala cerca de las piedras y deja acceso para los abastecedores. Ningún ataque comienza antes de completar los preparativos.
 [lesson fortifications tower title]
-
+Construir una Torre de defensa
 [lesson fortifications tower instruction]
-
+Construye una torre en la zona marcada; asigna constructores.
 [lesson fortifications tower help]
-
+Colócala cerca de las piedras y deja acceso para los abastecedores. Ningún ataque comienza antes de completar los preparativos.
 [lesson fortifications tower marker]
-
+Construir una Torre de defensa
 [lesson fortifications walls hint]
-
+Construye al menos 2 tramos de muralla cerca de la torre; mantén abierto su acceso oeste. Las murallas usan piedra y cada obra solicita trabajadores. No encierres la torre: los abastecedores necesitan un camino. El paso oeste marcado debe permanecer libre.
 [lesson fortifications walls title]
-
+Proteger la torre con murallas
 [lesson fortifications walls instruction]
-
+Construye al menos 2 tramos de muralla cerca de la torre; mantén abierto su acceso oeste.
 [lesson fortifications walls help]
-
+Las murallas usan piedra y cada obra solicita trabajadores. No encierres la torre: los abastecedores necesitan un camino. El paso oeste marcado debe permanecer libre.
 [lesson fortifications walls marker]
-
+Proteger la torre con murallas
 [lesson fortifications supply hint]
-
+Selecciona la torre y solicita abastecedores. Espera al menos 2 piedras. Una torre terminada necesita trabajadores solicitados para funcionar y traer munición. Este control es independiente del de construcción.
 [lesson fortifications supply title]
-
+Suministrar munición
 [lesson fortifications supply instruction]
-
+Selecciona la torre y solicita abastecedores. Espera al menos 2 piedras.
 [lesson fortifications supply help]
-
+Una torre terminada necesita trabajadores solicitados para funcionar y traer munición. Este control es independiente del de construcción.
 [lesson fortifications supply marker]
-
+Suministrar munición
 [lesson fortifications hold hint]
-
+Se acerca un guerrero de práctica. Mantén la torre abastecida y accesible. Resiste hasta derrotar o hacer retroceder al atacante. Una muralla que bloquee abastecedores puede dejar la torre sin munición. Si la colonia fracasa, reinicia o carga una partida guardada anterior.
 [lesson fortifications hold title]
-
+Probar las fortificaciones
 [lesson fortifications hold instruction]
-
+Se acerca un guerrero de práctica. Mantén la torre abastecida y accesible.
 [lesson fortifications hold help]
-
+Resiste hasta derrotar o hacer retroceder al atacante. Una muralla que bloquee abastecedores puede dejar la torre sin munición. Si la colonia fracasa, reinicia o carga una partida guardada anterior.
 [lesson fortifications hold marker]
-
+Probar las fortificaciones
 [lesson defensive-tactics title]
-
+Áreas de guardia y tácticas con banderas
 [lesson defensive-tactics briefing]
-
+Explora al enemigo de práctica, prepara un área de guardia, defiende y organiza un contraataque.
 [lesson defensive-tactics complete]
-
+Has explorado, defendido un área de guardia y dirigido un contraataque. Las cantidades de las banderas solicitan unidades; el radio determina dónde trabajan.
 [lesson defensive-tactics scout hint]
-
+Coloca una Bandera de exploración en la base enemiga; asigna 1 explorador. Las banderas solicitan unidades automáticamente. Un explorador revela la actividad actual a través de la niebla de guerra; puede detenerse a comer.
 [lesson defensive-tactics scout title]
-
+Explorar la base enemiga
 [lesson defensive-tactics scout instruction]
-
+Coloca una Bandera de exploración en la base enemiga; asigna 1 explorador.
 [lesson defensive-tactics scout help]
-
+Las banderas solicitan unidades automáticamente. Un explorador revela la actividad actual a través de la niebla de guerra; puede detenerse a comer.
 [lesson defensive-tactics scout marker]
-
+Explorar la base enemiga
 [lesson defensive-tactics guard hint]
-
+Pinta un área de guardia en la zona marcada y deja que lleguen 2 guerreros. Abre Banderas, elige Guardia y pinta al menos 4 casillas dentro de la zona. Las áreas de guardia atraen guerreros inactivos. Las zonas prohibidas bloquean el paso; las zonas de limpieza solicitan la retirada de recursos.
 [lesson defensive-tactics guard title]
-
+Preparar un área de guardia
 [lesson defensive-tactics guard instruction]
-
+Pinta un área de guardia en la zona marcada y deja que lleguen 2 guerreros.
 [lesson defensive-tactics guard help]
-
+Abre Banderas, elige Guardia y pinta al menos 4 casillas dentro de la zona. Las áreas de guardia atraen guerreros inactivos. Las zonas prohibidas bloquean el paso; las zonas de limpieza solicitan la retirada de recursos.
 [lesson defensive-tactics guard marker]
-
+Preparar un área de guardia
 [lesson defensive-tactics repel hint]
-
+El enemigo ataca. Mantén guerreros en el área de guardia y las Posadas abastecidas. El pequeño ataque comienza tras tus preparativos. Derrota o haz retroceder a ambos asaltantes; los enemigos heridos pueden retirarse. Los guerreros pueden irse temporalmente a comer. Si falla la defensa, carga una partida guardada anterior o reinicia.
 [lesson defensive-tactics repel title]
-
+Repeler el ataque de práctica
 [lesson defensive-tactics repel instruction]
-
+El enemigo ataca. Mantén guerreros en el área de guardia y las Posadas abastecidas.
 [lesson defensive-tactics repel help]
-
+El pequeño ataque comienza tras tus preparativos. Derrota o haz retroceder a ambos asaltantes; los enemigos heridos pueden retirarse. Los guerreros pueden irse temporalmente a comer. Si falla la defensa, carga una partida guardada anterior o reinicia.
 [lesson defensive-tactics repel marker]
-
+Repeler el ataque de práctica
 [lesson defensive-tactics counterattack hint]
-
+Coloca una Bandera de guerra sobre la Colmena enemiga; solicita 3 guerreros con un radio de 4 o menos. Las áreas de guardia y las Banderas de guerra compiten por los guerreros. Borra casillas de guardia si retienen a tu ejército. Mantén comida disponible mientras los guerreros viajan y atacan.
 [lesson defensive-tactics counterattack title]
-
+Dirigir un contraataque concentrado
 [lesson defensive-tactics counterattack instruction]
-
+Coloca una Bandera de guerra sobre la Colmena enemiga; solicita 3 guerreros con un radio de 4 o menos.
 [lesson defensive-tactics counterattack help]
-
+Las áreas de guardia y las Banderas de guerra compiten por los guerreros. Borra casillas de guardia si retienen a tu ejército. Mantén comida disponible mientras los guerreros viajan y atacan.
 [lesson defensive-tactics counterattack marker]
-
+Dirigir un contraataque concentrado
 [lesson healing build compact]
-
+Construir → Hospital. Deja acceso; asigna constructores.
 [lesson healing heal compact]
-
+Deja que el trabajador herido se cure en el Hospital.
 [lesson walking-training build compact]
-
+Construir → Circuito de entrenamiento. Deja espacio alrededor.
 [lesson walking-training train compact]
-
+Deja que un trabajador termine su entrenamiento en el Circuito.
 [lesson swimming build compact]
-
+Construir → Piscina, al oeste del estanque.
 [lesson swimming train compact]
-
+Deja que un trabajador aprenda a nadar.
 [lesson swimming water-job compact]
-
+Construir → Escuela. Asigna constructores para madera y algas.
 [lesson schools build compact]
-
+Construir → Escuela. Asigna constructores para madera y algas.
 [lesson schools learn compact]
-
+Deja que un trabajador termine su formación en la Escuela.
 [lesson upgrades upgrade compact]
-
+Circuito de entrenamiento → Mejorar. Asigna constructores expertos.
 [lesson upgrades train compact]
-
+Deja que un trabajador entrene en el Circuito mejorado.
 [lesson warrior-training produce compact]
-
+Colmena → solo guerreros. Suministra trigo para 2 guerreros.
 [lesson warrior-training build compact]
-
+Construir → Cuartel. Deja espacio alrededor.
 [lesson warrior-training train compact]
-
+Deja que un guerrero termine la práctica en el Cuartel.
 [lesson fortifications tower compact]
-
+Construir → Torre. Colócala en la zona marcada.
 [lesson fortifications walls compact]
-
+Construye 2 murallas. Mantén abierto el paso oeste de la torre.
 [lesson fortifications supply compact]
-
+Torre → abastecedores. Espera 2 piedras.
 [lesson fortifications hold compact]
-
+Mantén la torre abastecida frente al atacante.
 [lesson defensive-tactics scout compact]
-
+Banderas → Exploración. Colócala en el enemigo; asigna 1 explorador.
 [lesson defensive-tactics guard compact]
-
+Banderas → Guardia. Pinta 4 casillas; espera a 2 guerreros.
 [lesson defensive-tactics repel compact]
-
+Defiende el área de guardia. Abastece las Posadas.
 [lesson defensive-tactics counterattack compact]
-
+Bandera de guerra → Colmena enemiga. Solicita 3 guerreros; radio ≤4.
 [library GL only]
 Solo GL
 [Grassland]
@@ -6781,6 +6781,6 @@ Senderos de animales
 [Fish amount]
 Cantidad de peces
 [scenario messages]
-
+Mensajes ▸
 [Camp-site amount]
 Número de campamentos

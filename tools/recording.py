@@ -77,7 +77,7 @@ def parser() -> argparse.ArgumentParser:
     sub = root.add_subparsers(dest="action", required=True)
     for name in ("list", "extract"):
         p = sub.add_parser(name)
-        p.add_argument("recording", type=Path, help="MP4 or its .mp4.json manifest")
+        p.add_argument("recording", type=Path, help="MP4/WebM or its .json manifest")
         p.add_argument("--chapter", type=int, action="append")
         p.add_argument("--screen", action="append")
         p.add_argument("--dialog", action="append")

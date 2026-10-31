@@ -183,3 +183,37 @@ framework metadata. These are upstream input sizes, not measured compressed
 package growth. Adding MoltenVK is a runtime dependency change requiring explicit
 maintainer approval and Apple packaging/device qualification. Runtime selection
 remains independent of rendering and never ships a shader compiler.
+
+## Recording codec builds
+
+Native Linux clients can select `recording_codec=h264` (the default),
+`recording_codec=vp9`, or `recording_codec=av1`:
+
+```sh
+scons release=1 recording_codec=vp9
+scons release=1 recording_codec=av1
+python3 tools/dev_build.py recording_codec=vp9 unit-tests
+```
+
+The WebM profiles replace H.264/AAC with VP9/Opus or AV1/Opus throughout the
+recorder. They neither fetch nor link x264 or NVIDIA codec headers, and do not
+compile H.264 or AAC encoders. They use pinned static libvpx 1.17.0 (VP9) or
+libaom 3.15.1 (AV1), together with the native client's existing Opus dependency
+through `pkg-config`. There is one native Opus implementation; the recorder does
+not bundle a second copy. libvpx uses a BSD license; libaom includes BSD and AOM
+patent license terms. The dependency recipe
+installs license and patent notices with the selected sources and configuration.
+AV1 builds also require CMake. Only the selected video library is built.
+
+Each profile has a separate output directory and dependency-cache identity.
+The native Opus version, compiler flags and link flags are recorded in the
+recording receipt and included in its cache inputs.
+Explicit `GLOB2_RECORDING_PREFIX` overrides must use a separate prefix for each
+codec. A prebuilt SDL recording prefix is reused only for the default H.264
+profile. WebM profiles currently support native Linux clients; other targets
+reject them before provisioning dependencies. Both use software encoding, so
+qualify gameplay frame times and dropped-frame counters on the target hardware;
+realtime settings alone do not establish realtime performance.
+
+See [gameplay recording](../features/gameplay-recording.md) for output paths,
+quality controls and recovery.
