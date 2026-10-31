@@ -30,6 +30,7 @@
 .music-detail label,
 .music-create label {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: 6px;
   font-weight: 600;
 }
@@ -575,6 +576,7 @@
 .music-upload,
 .music-create form {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: 18px;
   max-width: 720px;
   margin: 24px 0;

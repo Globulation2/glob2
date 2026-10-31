@@ -2969,5 +2969,12 @@
   "Clear filters": "Wyczyść filtry",
   "No results match these filters.": "Brak wyników pasujących do tych filtrów.",
   "Results: {value0}": "Wyniki: {value0}",
-  "Game text field": "Pole tekstowe w grze"
+  "Game text field": "Pole tekstowe w grze",
+  "Rush": "Szybki atak",
+  "Defensive": "Obronna",
+  "Economy": "Gospodarka",
+  "Expansion": "Ekspansja",
+  "Experimental": "Eksperymentalna",
+  "Beginner-friendly": "Dla początkujących",
+  "Artist": "Artysta"
 }

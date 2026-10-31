@@ -1,3 +1,17 @@
+/* Content controls must fit their column when translated labels are longer.
+   Keep navigation and its icon-only controls outside this rule. */
+main :is(button, .btn) {
+  max-inline-size: 100%;
+  white-space: normal;
+}
+main :is(input, select, textarea) {
+  min-inline-size: 0;
+}
+main .field {
+  min-inline-size: 0;
+  grid-template-columns: minmax(0, 1fr);
+}
+
 /* Win/loss pebble. */
 .res {
   width: 30px;
@@ -302,6 +316,7 @@
 }
 .map-preview figcaption {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
   gap: var(--sp-2);

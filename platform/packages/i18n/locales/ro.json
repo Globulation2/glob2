@@ -2942,5 +2942,12 @@
   "Clear filters": "Șterge filtrele",
   "No results match these filters.": "Niciun rezultat nu corespunde acestor filtre.",
   "Results: {value0}": "Rezultate: {value0}",
-  "Game text field": "Câmp de text în joc"
+  "Game text field": "Câmp de text în joc",
+  "Rush": "Atac rapid",
+  "Defensive": "Defensivă",
+  "Economy": "Economie",
+  "Expansion": "Expansiune",
+  "Experimental": "Experimentală",
+  "Beginner-friendly": "Potrivită pentru începători",
+  "Artist": "Artist"
 }

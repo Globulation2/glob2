@@ -3023,5 +3023,12 @@
   "Clear filters": "مسح المرشحات",
   "No results match these filters.": "لا توجد نتائج تطابق هذه المرشحات.",
   "Results: {value0}": "النتائج: {value0}",
-  "Game text field": "حقل إدخال النص في اللعبة"
+  "Game text field": "حقل إدخال النص في اللعبة",
+  "Rush": "هجوم مبكر",
+  "Defensive": "دفاعي",
+  "Economy": "الاقتصاد",
+  "Expansion": "توسعي",
+  "Experimental": "تجريبي",
+  "Beginner-friendly": "مناسب للمبتدئين",
+  "Artist": "الفنان"
 }

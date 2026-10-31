@@ -2915,5 +2915,12 @@
   "Clear filters": "Futa vichujio",
   "No results match these filters.": "Hakuna matokeo yanayolingana na vichujio hivi.",
   "Results: {value0}": "Matokeo: {value0}",
-  "Game text field": "Sehemu ya kuingiza maandishi mchezoni"
+  "Game text field": "Sehemu ya kuingiza maandishi mchezoni",
+  "Rush": "Shambulio la mapema",
+  "Defensive": "Ya kujilinda",
+  "Economy": "Uchumi",
+  "Expansion": "Upanuzi",
+  "Experimental": "Ya majaribio",
+  "Beginner-friendly": "Inafaa kwa wanaoanza",
+  "Artist": "Msanii"
 }

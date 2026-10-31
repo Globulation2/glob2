@@ -2915,5 +2915,12 @@
   "Clear filters": "फ़िल्टर हटाएँ",
   "No results match these filters.": "इन फ़िल्टर से कोई परिणाम मेल नहीं खाता।",
   "Results: {value0}": "परिणाम: {value0}",
-  "Game text field": "खेल में टेक्स्ट दर्ज करने का बॉक्स"
+  "Game text field": "खेल में टेक्स्ट दर्ज करने का बॉक्स",
+  "Rush": "शुरुआती धावा",
+  "Defensive": "रक्षात्मक",
+  "Economy": "अर्थव्यवस्था",
+  "Expansion": "विस्तार",
+  "Experimental": "प्रयोगात्मक",
+  "Beginner-friendly": "शुरुआती खिलाड़ियों के लिए",
+  "Artist": "कलाकार"
 }

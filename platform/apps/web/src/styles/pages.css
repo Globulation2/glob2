@@ -489,3 +489,10 @@
     align-self: center;
   }
 }
+
+/* Profile summaries have fixed numeric columns and an ellipsized name column. */
+@media (max-width: 760px) {
+  .grid3 > .card > table.data {
+    table-layout: fixed;
+  }
+}

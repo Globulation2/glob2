@@ -2915,5 +2915,12 @@
   "Clear filters": "Изчистване на филтрите",
   "No results match these filters.": "Няма резултати, които да отговарят на тези филтри.",
   "Results: {value0}": "Резултати: {value0}",
-  "Game text field": "Текстово поле за игра"
+  "Game text field": "Текстово поле за игра",
+  "Rush": "Ранна атака",
+  "Defensive": "Отбранителен",
+  "Economy": "Икономика",
+  "Expansion": "Разширяване",
+  "Experimental": "Експериментален",
+  "Beginner-friendly": "Подходящ за начинаещи",
+  "Artist": "Изпълнител"
 }

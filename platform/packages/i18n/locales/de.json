@@ -2915,5 +2915,12 @@
   "Clear filters": "Filter löschen",
   "No results match these filters.": "Keine Ergebnisse passen zu diesen Filtern.",
   "Results: {value0}": "Ergebnisse: {value0}",
-  "Game text field": "Texteingabefeld im Spiel"
+  "Game text field": "Texteingabefeld im Spiel",
+  "Rush": "Früher Angriff",
+  "Defensive": "Defensiv",
+  "Economy": "Wirtschaft",
+  "Expansion": "Expansion",
+  "Experimental": "Experimentell",
+  "Beginner-friendly": "Für Anfänger geeignet",
+  "Artist": "Künstler"
 }

@@ -2,8 +2,9 @@
 import { afterEach, describe, expect, it } from 'vitest';
 import { act, cleanup, fireEvent, render, screen } from '@testing-library/react';
 import { useState } from 'react';
+import { AI_TAGS } from '@glob2/protocol';
 import { registerCatalog, setLocale } from '../../../packages/i18n/src/index.ts';
-import { statusLabel, artifactLabel, fixedCaption } from '../src/messages.ts';
+import { statusLabel, artifactLabel, fixedCaption, aiTagLabel } from '../src/messages.ts';
 import { ApiError } from '../src/api.ts';
 import {
   LocaleProvider,
@@ -31,6 +32,33 @@ afterEach(async () => {
   await setLocale('en');
 });
 describe('web localization', () => {
+  it('translates canonical AI tags while retaining their stored identifiers', async () => {
+    const tags = [...AI_TAGS];
+    registerCatalog('bg', {
+      Balanced: 'Балансиран',
+      Rush: 'Ранна атака',
+      Defensive: 'Отбранителен',
+      Economy: 'Икономика',
+      Expansion: 'Разширяване',
+      Experimental: 'Експериментален',
+      'Beginner-friendly': 'Подходящ за начинаещи',
+    });
+    await setLocale('bg');
+    const labels = tags.map(aiTagLabel);
+    expect(labels).toEqual([
+      'Балансиран',
+      'Ранна атака',
+      'Отбранителен',
+      'Икономика',
+      'Разширяване',
+      'Експериментален',
+      'Подходящ за начинаещи',
+    ]);
+    expect(tags[1]).toBe('Rush');
+    expect(aiTagLabel('a future authored tag')).toBe('a future authored tag');
+    await setLocale('en');
+    expect(tags.map(aiTagLabel)).toEqual(tags);
+  });
   it('localizes known system artifact captions while preserving authored titles', async () => {
     registerCatalog('fr', {
       'Generated layout': 'Disposition générée',

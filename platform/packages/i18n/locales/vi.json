@@ -2888,5 +2888,12 @@
   "Clear filters": "Xóa bộ lọc",
   "No results match these filters.": "Không có kết quả phù hợp với các bộ lọc này.",
   "Results: {value0}": "Kết quả: {value0}",
-  "Game text field": "Ô nhập văn bản trong trò chơi"
+  "Game text field": "Ô nhập văn bản trong trò chơi",
+  "Rush": "Tấn công chớp nhoáng",
+  "Defensive": "Phòng thủ",
+  "Economy": "Kinh tế",
+  "Expansion": "Mở rộng",
+  "Experimental": "Thử nghiệm",
+  "Beginner-friendly": "Phù hợp người mới",
+  "Artist": "Nghệ sĩ"
 }

@@ -2888,5 +2888,12 @@
   "Clear filters": "清除篩選條件",
   "No results match these filters.": "沒有符合這些篩選條件的結果。",
   "Results: {value0}": "結果: {value0}",
-  "Game text field": "遊戲內文字輸入欄位"
+  "Game text field": "遊戲內文字輸入欄位",
+  "Rush": "速攻型",
+  "Defensive": "防守型",
+  "Economy": "經濟",
+  "Expansion": "擴張型",
+  "Experimental": "實驗性",
+  "Beginner-friendly": "適合新手",
+  "Artist": "藝術家"
 }

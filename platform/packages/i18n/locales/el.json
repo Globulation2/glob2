@@ -2915,5 +2915,12 @@
   "Clear filters": "Εκκαθάριση φίλτρων",
   "No results match these filters.": "Κανένα αποτέλεσμα δεν αντιστοιχεί σε αυτά τα φίλτρα.",
   "Results: {value0}": "Αποτελέσματα: {value0}",
-  "Game text field": "Πεδίο εισαγωγής κειμένου στο παιχνίδι"
+  "Game text field": "Πεδίο εισαγωγής κειμένου στο παιχνίδι",
+  "Rush": "Γρήγορη επίθεση",
+  "Defensive": "Αμυντική",
+  "Economy": "Οικονομία",
+  "Expansion": "Επέκταση",
+  "Experimental": "Πειραματική",
+  "Beginner-friendly": "Κατάλληλη για αρχάριους",
+  "Artist": "Καλλιτέχνης"
 }

@@ -2888,5 +2888,12 @@
   "Clear filters": "Hapus filter",
   "No results match these filters.": "Tidak ada hasil yang cocok dengan filter ini.",
   "Results: {value0}": "Hasil: {value0}",
-  "Game text field": "Kolom teks dalam permainan"
+  "Game text field": "Kolom teks dalam permainan",
+  "Rush": "Serangan cepat",
+  "Defensive": "Bertahan",
+  "Economy": "Ekonomi",
+  "Expansion": "Ekspansi",
+  "Experimental": "Eksperimental",
+  "Beginner-friendly": "Ramah pemula",
+  "Artist": "Artis"
 }

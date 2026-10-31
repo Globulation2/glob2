@@ -2942,5 +2942,12 @@
   "Clear filters": "Borrar filtros",
   "No results match these filters.": "Ningún resultado coincide con estos filtros.",
   "Results: {value0}": "Resultados: {value0}",
-  "Game text field": "Campo de texto del juego"
+  "Game text field": "Campo de texto del juego",
+  "Rush": "Ataque rápido",
+  "Defensive": "Defensiva",
+  "Economy": "Economía",
+  "Expansion": "Expansión",
+  "Experimental": "Experimental",
+  "Beginner-friendly": "Apta para principiantes",
+  "Artist": "Artista"
 }
