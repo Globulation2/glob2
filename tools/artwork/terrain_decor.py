@@ -62,6 +62,8 @@ HD_CATEGORY = "procedural-materials"
 HD_RECIPE = "procedural terrain decor v1"
 LIGHT = (-0.62, -0.78)  # toward the upper left, screen space
 SHADOW = (0.55, 0.42)   # contact shadow offset direction (lower right)
+# The same light in 3D for faceted rock: x right, y south, z up; unit length.
+LIGHT3 = tuple(c / math.hypot(LIGHT[0], LIGHT[1], 0.9) for c in (LIGHT[0], LIGHT[1], 0.9))
 
 
 def clamp(v, lo=0.0, hi=1.0):
@@ -299,9 +301,6 @@ def stone_palette(rng):
     return tuple(c + j + rng.uniform(-5, 5) for c in base)
 
 
-LIGHT3 = tuple(c / math.hypot(LIGHT[0], LIGHT[1], 0.9) for c in (LIGHT[0], LIGHT[1], 0.9))
-
-
 def facet_rock(rng, cx, cy, r, squash=0.8, height=0.95):
     """A convex faceted rock: the soft minimum of jittered sloped planes and a
     tilted top, so the outline is angular and each facet catches the light on
@@ -520,7 +519,6 @@ def render_thicket(rng, edge):
     return canvas
 
 
-LIGHT3 = (-0.5, -0.6, 0.62)  # toward the upper left and up; x right, y south, z up
 VIEW = (0.0, 0.7071, 0.7071)  # toward the viewer in the three-quarter view
 
 
