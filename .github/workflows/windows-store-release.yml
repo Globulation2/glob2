@@ -175,8 +175,13 @@ jobs:
           if ($LASTEXITCODE -ne 0) { throw 'MakePkg genmap failed.' }
           # /lt is installable for local testing; /l produces the encrypted
           # submission package and EKB, which must stay out of public artifacts.
+          $makePkgHelp = (& $tool.FullName pack /? 2>&1 | Out-String)
+          if ($makePkgHelp -notmatch '/validationpath') { throw 'MakePkg does not advertise /validationpath support.' }
+          $validationPath = Join-Path $env:RUNNER_TEMP 'glob2-submission-validator'
+          python .github/scripts/windows_store_validator.py --prepare $validationPath
+          if ($LASTEXITCODE -ne 0) { throw 'Verified Microsoft validator staging failed.' }
           $encryption = if ($env:STORE_UPLOAD -eq 'true') { '/l' } else { '/lt' }
-          & $tool.FullName pack /f $layout /d $content /pd $output /pc /nogameos /updatesubval /validationcritical $encryption
+          & $tool.FullName pack /f $layout /d $content /pd $output /pc /nogameos /validationpath $validationPath /validationcritical $encryption
           $makePkgExit = $LASTEXITCODE
           $package = Get-ChildItem $output -Filter *.msixvc | Select-Object -First 1
           $ekb = Get-ChildItem $output -Filter *.ekb | Select-Object -First 1
