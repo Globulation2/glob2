@@ -78,6 +78,8 @@ TEST_SUITE("SystemLanguage")
 		CHECK(code("tl", "PH") == "fil");
 		CHECK(code("jw") == "jv");
 		CHECK(code("yo", "NG") == "yo");
+		CHECK(code("th", "TH") == "th");
+		CHECK(code("th-TH") == "th");
 		CHECK(code("pa", "PK") == "pa-arab");
 		CHECK(code("pa", "IN") == "pa-guru");
 		CHECK(code("pa-Guru", "PK") == "pa-guru");

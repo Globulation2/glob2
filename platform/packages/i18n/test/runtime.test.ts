@@ -34,6 +34,8 @@ describe('online locale resolution', () => {
     expect(resolveLocale('zh')).toBe('zh-Hans');
     expect(resolveLocale('sr-RS')).toBe('sr-Cyrl');
     expect(resolveLocale('in-ID')).toBe('id');
+    expect(resolveLocale('th')).toBe('th');
+    expect(resolveLocale('th-TH')).toBe('th');
     expect(resolveLocale('xx, fr;q=0.2, de;q=0.8')).toBe('de');
     expect(resolveLocale('fr;q=0, de')).toBe('de');
   });

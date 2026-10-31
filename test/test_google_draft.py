@@ -4,6 +4,9 @@ import importlib.util
 import json
 from pathlib import Path
 import tempfile
+from types import SimpleNamespace
+import io
+from contextlib import redirect_stdout
 import unittest
 from unittest.mock import patch
 import urllib.error
@@ -150,6 +153,44 @@ class CampaignTest(unittest.TestCase):
             {'Items': {'other': ''}, 'Hello': 'สวัสดี'}, {})
         self.assertEqual(entries, [('native', '[c]', None, 'Other', ()),
                                    ('online', 'Items', 'other', '{count} items', ())])
+
+
+class DraftIntegrationTest(unittest.TestCase):
+    def test_selected_pilot_preserves_reviewed_work_and_resumes_without_spend(self):
+        with tempfile.TemporaryDirectory() as directory:
+            output = Path(directory)
+            source = output / 'source'
+            source.mkdir()
+            native = {'[new]': 'Hello %0', '[reviewed]': 'Reviewed', '[blank]': ''}
+            online = {'Hello': 'Hello', '{count} items': {'one': '{count} item', 'other': '{count} items'}}
+            (output / 'manifest.json').write_text(json.dumps({'source_sha256': 'source', 'locales': ['th']}))
+            (source / 'native.json').write_text(json.dumps(native))
+            (source / 'online.json').write_text(json.dumps(online))
+            folder = output / 'drafts/th'
+            folder.mkdir(parents=True)
+            (folder / 'texts.th.txt').write_text('[new]\n\n[reviewed]\nตรวจแล้ว\n[blank]\n\n')
+            (folder / 'th.json').write_text(json.dumps({'Hello': '', '{count} items': {'other': ''}}))
+            ids = output / 'pilot.json'
+            ids.write_text(json.dumps(['native:[new]', 'online:{count} items']))
+            args = SimpleNamespace(output=output, project='test-project', locale='th', budget_usd='25',
+                                   usd_per_million='20', limit=None, ids_file=ids)
+            def response(request):
+                return {'translations': [{'translatedText': text.replace('Hello', 'สวัสดี').replace('items', 'รายการ')}
+                                         for text in request['contents']]}
+            with patch.object(DRAFT.PROGRAM, 'sources', return_value=(list(native), native, online, {}, 'source')), \
+                    patch.object(DRAFT.Campaign, 'send', side_effect=response) as send, redirect_stdout(io.StringIO()):
+                result = DRAFT.run(args)
+                resumed = DRAFT.run(args)
+            self.assertEqual(send.call_count, 1)
+            self.assertEqual(result['translated_this_run'], 2)
+            self.assertEqual(resumed['translated_this_run'], 0)
+            self.assertEqual(result['reserved_usd'], resumed['reserved_usd'])
+            self.assertIn('[reviewed]\nตรวจแล้ว\n', (folder / 'texts.th.txt').read_text())
+            target = json.loads((folder / 'th.json').read_text())
+            self.assertEqual(target['Hello'], '')
+            self.assertEqual(target['{count} items'], {'other': '{count} รายการ'})
+            self.assertTrue((output / 'google/th/check-draft.json').is_file())
+            self.assertFalse((output / 'google/th/campaign.lock').exists())
 
 
 if __name__ == '__main__':
