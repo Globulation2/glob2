@@ -1,0 +1,18 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="16" failures="0" errors="0" skipped="0"><testsuite name="Introduction"><testcase classname="Introduction" name="expanded lessons complete through player orders and saved continuation" time="64.9701" status="run" />
+  <testcase classname="Introduction" name="guidance accepts only the authored lesson objectives" time="0" status="run" />
+  <testcase classname="Introduction" name="idle time and acknowledgments cannot complete the introduction" time="2.22218" status="run" />
+  <testcase classname="Introduction" name="original tutorial scripts compile and available checkpoints roundtrip" time="8.74462" status="run" />
+  <testcase classname="Introduction" name="packaged lesson maps embed their source and share geography" time="8.11413" status="run" />
+  <testcase classname="Introduction" name="prototype map scripts retain progress and legacy guidance after save load" time="2.1561" status="run" />
+  <testcase classname="Introduction" name="real orders complete scouting construction supply growth and attack" time="35.0357" status="run" />
+  <testcase classname="Introduction" name="recommendation migrates existing profiles and persists an explicit choice" time="0.439254" status="run" />
+  <testcase classname="Introduction" name="scripted diplomacy is atomic and rejects invalid relationships" time="2.48119" status="run" />
+  <testcase classname="Introduction" name="second lesson completes and resumes with the shared runner" time="7.08348" status="run" />
+  <testcase classname="Introduction" name="training algae requires swimming and named regions survive loading" time="8.88961" status="run" />
+  <testcase classname="Introduction" name="training colonies remain supplied while a learner takes time" time="17.5828" status="run" />
+  <testcase classname="Introduction" name="tutorial metadata is validated atomically with scenario effects" time="1.65234" status="run" />
+  <testcase classname="Introduction" name="zone observations and scenario orders preserve map callback validation" time="1.45605" status="run" />
+  </testsuite><testsuite name="ScriptGenerator"><testcase classname="ScriptGenerator" name="Scenario creation validates options and cannot run in validators" time="0.705551" status="run" />
+  </testsuite><testsuite name="TurnEngineHarness"><testcase classname="TurnEngineHarness" name="the committed match record verifies to the committed checksum trace [network-sim][golden]" time="2.88021" status="run" />
+  </testsuite></testsuites>

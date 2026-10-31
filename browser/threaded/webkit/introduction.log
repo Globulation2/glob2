@@ -1,0 +1,238 @@
+GLOB2_TEST_BUILD compiler=Clang 22.0.0git (https:/github.com/llvm/llvm-project 3388d40684742e950b3c5d1d2dafe5a40695cfc1) platform=Emscripten pointer_bits=32
+GLOB2_TEST_PROVENANCE {"compiler": "/home/bradley/.local/share/glob2/development/toolchains/emscripten/Linux-x86_64-88a621bc131cd4954413aa39/upstream/emscripten/em++", "dirty": true, "flags": {"CCFLAGS": "-pthread", "CPPDEFINES": "GLOB2_RENDER_SHADER_DIR \\\"/shaders\\\" HAVE_CONFIG_H GLOB2_OFFICIAL_INSTANCE_ORIGIN \\\"https://app.glob2online.com\\\" GLOB2_OFFICIAL_INSTANCE_FORMER_ORIGINS \\\"https://glob2online.com\\\"", "CXXFLAGS": "-std=gnu++20 -fwasm-exceptions -g2 -O0 --use-port=zlib", "LINKFLAGS": "--js-library browser/canvas-size.js --js-library browser/webgpu-device.js --js-library browser/gradient-compute.js -pthread -sOFFSCREENCANVAS_SUPPORT=1 -sDEFAULT_PTHREAD_STACK_SIZE=8388608 -sPTHREAD_POOL_SIZE_STRICT=0 '-sPTHREAD_POOL_SIZE=Math.min(2*Math.max(navigator.hardwareConcurrency||1,1),16)' -sALLOW_BLOCKING_ON_MAIN_THREAD=0 --js-library browser/threaded-egl.js --preload-file /home/bradley/.codex/worktrees/159d/glob2/build/emscripten/client/debug/dev-dev_fast-true-linker-auto-web_variant-threaded/threaded/shaders/webgl2@/shaders/webgl2 -fwasm-exceptions -O0 -sLEGACY_GL_EMULATION=1 -sFETCH=1 -sMIN_WEBGL_VERSION=2 -sMAX_WEBGL_VERSION=2 -sALLOW_MEMORY_GROWTH -sINITIAL_MEMORY=134217728 -sSTACK_SIZE=8388608 -sASSERTIONS=1 -sFORCE_FILESYSTEM -lidbfs.js -lwebsocket.js '-sEXPORTED_FUNCTIONS=[\"_main\",\"_malloc\",\"_free\"]' '-sEXPORTED_RUNTIME_METHODS=[\"callMain\",\"FS\"]' --pre-js browser/storage.js --pre-js browser/file-selection.js --pre-js browser/audio.js --pre-js browser/recording.js --pre-js browser/runtime.js --use-port=zlib --pre-js browser/legacy-gl-runtime.js --post-js browser/webgl-shaders.js --pre-js /home/bradley/.codex/worktrees/159d/glob2/build/emscripten/client/debug/dev-dev_fast-true-linker-auto-web_variant-threaded/asset-manifest.js --pre-js browser/asset-loader.js"}, "revision": "5c691899db0080764f5257be7058622dbbefef60", "sourceStatus": [" M browser/tests/artwork-memory.spec.js", " M browser/tests/asset-loading.spec.js", " M browser/tests/campaign-editor-storage.spec.js", " M browser/tests/campaign-progress.spec.js", " M browser/tests/chooser-errors.spec.js", " M browser/tests/colony-skins.spec.js", " M browser/tests/editor-import.spec.js", " M browser/tests/editor-storage.spec.js", " M browser/tests/import.spec.js", " M browser/tests/input.spec.js", " M browser/tests/main-menu.js", " M browser/tests/menu-presentation.spec.js", " M browser/tests/music-import.spec.js", " M browser/tests/online-links.spec.js", " M browser/tests/pacing.spec.js", " M browser/tests/recording.spec.js", " M browser/tests/render-fps.spec.js", " M browser/tests/renderer-switch-queue.spec.js", " M browser/tests/renderer-switching.spec.js", " M browser/tests/rendering.spec.js", " M browser/tests/replay-save.spec.js", " M browser/tests/responsive-presentation.spec.js", " M browser/tests/runtime-build.spec.js", " M browser/tests/session-reload.spec.js", " M browser/tests/settings-storage.spec.js", " M browser/tests/shutdown-storage.spec.js", " M browser/tests/single-player.spec.js", " M browser/tests/skin-assets.spec.js", " M browser/tests/staged-assets.spec.js", " M browser/tests/storage.spec.js", " M browser/tests/team-colors.spec.js", " M browser/tests/threading.spec.js", " M browser/tests/torus.spec.js", " M browser/tests/viewport.spec.js", " M data/SConscript", " M data/completions/_glob2", " M data/completions/glob2.bash", " M data/completions/glob2.fish", " M data/generators/toolkit.d.ts", " M data/texts.ar.txt", " M data/texts.br.txt", " M data/texts.ca.txt", " M data/texts.cz.txt", " M data/texts.de.txt", " M data/texts.dk.txt", " M data/texts.en.txt", " M data/texts.eo.txt", " M data/texts.es.txt", " M data/texts.eu.txt", " M data/texts.fa.txt", " M data/texts.fi.txt", " M data/texts.fr.txt", " M data/texts.gr.txt", " M data/texts.hu.txt", " M data/texts.id.txt", " M data/texts.incomplete.txt", " M data/texts.it.txt", " M data/texts.ja.txt", " M data/texts.keys.txt", " M data/texts.ko.txt", " M data/texts.nl.txt", " M data/texts.pending.txt", " M data/texts.pl.txt", " M data/texts.pt.txt", " M data/texts.ro.txt", " M data/texts.ru.txt", " M data/texts.si.txt", " M data/texts.sk.txt", " M data/texts.sr.txt", " M data/texts.sv.txt", " M data/texts.tr.txt", " M data/texts.uk.txt", " M data/texts.vi.txt", " M data/texts.zh-cn.txt", " M data/texts.zh-tw.txt", " M debian/glob2.6", " M docs/development/testing/scripting.md", " M docs/map-generators/javascript.md", " M docs/scripting/javascript-api.md", " M docs/scripting/javascript.md", " M docs/tools/cli.md", " M scons/sources.py", " M scripts/SConscript", " M src/app/Application.cpp", " M src/app/Settings.cpp", " M src/app/Settings.h", " M src/app/cli/CommandLine.cpp", " M src/app/cli/MapCommand.cpp", " M src/engine/Engine.h", " M src/engine/EngineRun.cpp", " M src/engine/sim/snapshot/ObservationRecords.h", " M src/engine/sim/snapshot/WorldCapture.cpp", " M src/game/Game.h", " M src/game/GameHints.h", " M src/game/Game_orders.cpp", " M src/game/SimRevision.h", " M src/game/screens/GameSessionScreen.cpp", " M src/game/screens/SinglePlayerFlow.cpp", " M src/game/screens/SinglePlayerFlow.h", " M src/hud/GameGUI.cpp", " M src/hud/GameGUI.h", " M src/hud/GameGUIDialog.cpp", " M src/hud/GameGUIDialog.h", " M src/hud/draw/GameGUIDraw.cpp", " M src/hud/draw/GameGUIDrawBuildingHelpers.cpp", " M src/hud/input/GameGUIInput.cpp", " M src/hud/input/GameGUIInputMenu.cpp", " M src/hud/touch/GameGUITouchActions.cpp", " M src/hud/touch/GameGUITouchDial.cpp", " M src/hud/touch/GameGUITouchPalette.cpp", " M src/hud/touch/GameGUITouchView.cpp", " M src/map/generator/javascript/ToolkitBinding.cpp", " M src/map/generator/javascript/ToolkitBindingTest.cpp", " M src/map/generator/javascript/ToolkitCoverage.json", " M src/scripting/javascript/JavaScriptMap.cpp", " M src/scripting/javascript/JavaScriptMap.h", " M src/scripting/javascript/ScriptObservations.cpp", " M src/scripting/javascript/ScriptOrders.cpp", " M src/scripting/javascript/ScriptRuntime.cpp", " M src/scripting/map/MapScript.h", " M src/ui/screens/MainMenuScreen.cpp", " M src/ui/screens/MainMenuScreen.h", " M test/fixtures/multiplayer/FourSquares1.g2mr", " M test/fixtures/multiplayer/FourSquares1.verify-trace.txt", " M test/tests.py", " M tools/SConscript", " M tools/map-generators/generate_js_bindings.py", "?? browser/tests/introduction.spec.js", "?? browser/unit/tutorial-lessons.test.js", "?? campaigns/defensive-tactics.map.gz", "?? campaigns/food-supply.map.gz", "?? campaigns/fortifications.map.gz", "?? campaigns/healing.map.gz", "?? campaigns/introduction.map.gz", "?? campaigns/schools.map.gz", "?? campaigns/swimming.map.gz", "?? campaigns/upgrades.map.gz", "?? campaigns/walking-training.map.gz", "?? campaigns/warrior-training.map.gz", "?? data/generators/training/", "?? scripts/defensive-tactics.js", "?? scripts/food-supply.js", "?? scripts/fortifications.js", "?? scripts/healing.js", "?? scripts/introduction.js", "?? scripts/schools.js", "?? scripts/swimming.js", "?? scripts/tutorials/", "?? scripts/upgrades.js", "?? scripts/walking-training.js", "?? scripts/warrior-training.js", "?? src/tutorial/", "?? src/ui/screens/IntroductionOfferScreen.h", "?? test/fixtures/tutorial/", "?? test/test_tutorial_content.py", "?? tools/tutorials/"], "sourceTreeSha256": "e548c834d7d7b48c91e2b38678131bf75bf6353fa83c18cd7f5c68e7a0d93127"}
+readlink() error: No such file or directory
+Settings::load("preferences.txt") : error, can't open file.
+readlink() error: No such file or directory
+Settings::load("preferences.txt") : error, can't open file.
+readlink() error: No such file or directory
+Settings::load("preferences.txt") : error, can't open file.
+readlink() error: No such file or directory
+Settings::load("preferences.txt") : error, can't open file.
+readlink() error: No such file or directory
+Settings::load("preferences.txt") : error, can't open file.
+readlink() error: No such file or directory
+Settings::load("preferences.txt") : error, can't open file.
+Settings::load("/evidence/profile/intro-preferences.txt") : error, can't open file.
+readlink() error: No such file or directory
+Settings::load("preferences.txt") : error, can't open file.
+readlink() error: No such file or directory
+Settings::load("preferences.txt") : error, can't open file.
+readlink() error: No such file or directory
+Settings::load("preferences.txt") : error, can't open file.
+readlink() error: No such file or directory
+Settings::load("preferences.txt") : error, can't open file.
+readlink() error: No such file or directory
+Settings::load("preferences.txt") : error, can't open file.
+readlink() error: No such file or directory
+Settings::load("preferences.txt") : error, can't open file.
+Invalid coordinate X=52 for team 1 building 9 (racetrack) with X span [48:52[, healing!
+Invalid coordinate X=53 for team 1 building 9 (racetrack) with X span [48:52[, healing!
+Invalid coordinate X=52 for team 1 building 9 (racetrack) with X span [48:52[, healing!
+Invalid coordinate X=53 for team 1 building 9 (racetrack) with X span [48:52[, healing!
+Invalid coordinate X=52 for team 1 building 9 (racetrack) with X span [48:52[, healing!
+Invalid coordinate X=53 for team 1 building 9 (racetrack) with X span [48:52[, healing!
+Invalid coordinate X=52 for team 1 building 9 (racetrack) with X span [48:52[, healing!
+Invalid coordinate X=53 for team 1 building 9 (racetrack) with X span [48:52[, healing!
+Invalid coordinate Y=45 for team 1 building 9 (racetrack) with Y span [41:45[, healing!
+Invalid coordinate Y=45 for team 1 building 9 (racetrack) with Y span [41:45[, healing!
+Invalid coordinate Y=45 for team 1 building 9 (racetrack) with Y span [41:45[, healing!
+Invalid coordinate Y=45 for team 1 building 9 (racetrack) with Y span [41:45[, healing!
+Invalid coordinate X=52 for team 1 building 9 (racetrack) with X span [48:52[, healing!
+Invalid coordinate Y=45 for team 1 building 9 (racetrack) with Y span [41:45[, healing!
+Invalid coordinate X=53 for team 1 building 9 (racetrack) with X span [48:52[, healing!
+Invalid coordinate Y=45 for team 1 building 9 (racetrack) with Y span [41:45[, healing!
+Invalid coordinate Y=46 for team 1 building 9 (racetrack) with Y span [41:45[, healing!
+Invalid coordinate Y=46 for team 1 building 9 (racetrack) with Y span [41:45[, healing!
+Invalid coordinate Y=46 for team 1 building 9 (racetrack) with Y span [41:45[, healing!
+Invalid coordinate Y=46 for team 1 building 9 (racetrack) with Y span [41:45[, healing!
+Invalid coordinate X=52 for team 1 building 9 (racetrack) with X span [48:52[, healing!
+Invalid coordinate Y=46 for team 1 building 9 (racetrack) with Y span [41:45[, healing!
+Invalid coordinate X=53 for team 1 building 9 (racetrack) with X span [48:52[, healing!
+Invalid coordinate Y=46 for team 1 building 9 (racetrack) with Y span [41:45[, healing!
+Invalid coordinate X=52 for team 1 building 9 (racetrack) with X span [48:52[, healing!
+Invalid coordinate X=53 for team 1 building 9 (racetrack) with X span [48:52[, healing!
+Invalid coordinate X=52 for team 1 building 9 (racetrack) with X span [48:52[, healing!
+Invalid coordinate X=53 for team 1 building 9 (racetrack) with X span [48:52[, healing!
+Invalid coordinate X=52 for team 1 building 9 (racetrack) with X span [48:52[, healing!
+Invalid coordinate X=53 for team 1 building 9 (racetrack) with X span [48:52[, healing!
+Invalid coordinate X=52 for team 1 building 9 (racetrack) with X span [48:52[, healing!
+Invalid coordinate X=53 for team 1 building 9 (racetrack) with X span [48:52[, healing!
+Invalid coordinate Y=45 for team 1 building 9 (racetrack) with Y span [41:45[, healing!
+Invalid coordinate Y=45 for team 1 building 9 (racetrack) with Y span [41:45[, healing!
+Invalid coordinate Y=45 for team 1 building 9 (racetrack) with Y span [41:45[, healing!
+Invalid coordinate Y=45 for team 1 building 9 (racetrack) with Y span [41:45[, healing!
+Invalid coordinate X=52 for team 1 building 9 (racetrack) with X span [48:52[, healing!
+Invalid coordinate Y=45 for team 1 building 9 (racetrack) with Y span [41:45[, healing!
+Invalid coordinate X=53 for team 1 building 9 (racetrack) with X span [48:52[, healing!
+Invalid coordinate Y=45 for team 1 building 9 (racetrack) with Y span [41:45[, healing!
+Invalid coordinate Y=46 for team 1 building 9 (racetrack) with Y span [41:45[, healing!
+Invalid coordinate Y=46 for team 1 building 9 (racetrack) with Y span [41:45[, healing!
+Invalid coordinate Y=46 for team 1 building 9 (racetrack) with Y span [41:45[, healing!
+Invalid coordinate Y=46 for team 1 building 9 (racetrack) with Y span [41:45[, healing!
+Invalid coordinate X=52 for team 1 building 9 (racetrack) with X span [48:52[, healing!
+Invalid coordinate Y=46 for team 1 building 9 (racetrack) with Y span [41:45[, healing!
+Invalid coordinate X=53 for team 1 building 9 (racetrack) with X span [48:52[, healing!
+Invalid coordinate Y=46 for team 1 building 9 (racetrack) with Y span [41:45[, healing!
+Invalid coordinate X=52 for team 1 building 9 (racetrack) with X span [48:52[, healing!
+Invalid coordinate X=53 for team 1 building 9 (racetrack) with X span [48:52[, healing!
+Invalid coordinate X=52 for team 1 building 9 (racetrack) with X span [48:52[, healing!
+Invalid coordinate X=53 for team 1 building 9 (racetrack) with X span [48:52[, healing!
+Invalid coordinate X=52 for team 1 building 9 (racetrack) with X span [48:52[, healing!
+Invalid coordinate X=53 for team 1 building 9 (racetrack) with X span [48:52[, healing!
+Invalid coordinate X=52 for team 1 building 9 (racetrack) with X span [48:52[, healing!
+Invalid coordinate X=53 for team 1 building 9 (racetrack) with X span [48:52[, healing!
+Invalid coordinate Y=45 for team 1 building 9 (racetrack) with Y span [41:45[, healing!
+Invalid coordinate Y=45 for team 1 building 9 (racetrack) with Y span [41:45[, healing!
+Invalid coordinate Y=45 for team 1 building 9 (racetrack) with Y span [41:45[, healing!
+Invalid coordinate Y=45 for team 1 building 9 (racetrack) with Y span [41:45[, healing!
+Invalid coordinate X=52 for team 1 building 9 (racetrack) with X span [48:52[, healing!
+Invalid coordinate Y=45 for team 1 building 9 (racetrack) with Y span [41:45[, healing!
+Invalid coordinate X=53 for team 1 building 9 (racetrack) with X span [48:52[, healing!
+Invalid coordinate Y=45 for team 1 building 9 (racetrack) with Y span [41:45[, healing!
+Invalid coordinate Y=46 for team 1 building 9 (racetrack) with Y span [41:45[, healing!
+Invalid coordinate Y=46 for team 1 building 9 (racetrack) with Y span [41:45[, healing!
+Invalid coordinate Y=46 for team 1 building 9 (racetrack) with Y span [41:45[, healing!
+Invalid coordinate Y=46 for team 1 building 9 (racetrack) with Y span [41:45[, healing!
+Invalid coordinate X=52 for team 1 building 9 (racetrack) with X span [48:52[, healing!
+Invalid coordinate Y=46 for team 1 building 9 (racetrack) with Y span [41:45[, healing!
+Invalid coordinate X=53 for team 1 building 9 (racetrack) with X span [48:52[, healing!
+Invalid coordinate Y=46 for team 1 building 9 (racetrack) with Y span [41:45[, healing!
+Invalid coordinate X=114 for team 0 building 7 (swimmingpool) with X span [110:114[, healing!
+Invalid coordinate X=115 for team 0 building 7 (swimmingpool) with X span [110:114[, healing!
+Invalid coordinate X=114 for team 0 building 7 (swimmingpool) with X span [110:114[, healing!
+Invalid coordinate X=115 for team 0 building 7 (swimmingpool) with X span [110:114[, healing!
+Invalid coordinate X=114 for team 0 building 7 (swimmingpool) with X span [110:114[, healing!
+Invalid coordinate X=115 for team 0 building 7 (swimmingpool) with X span [110:114[, healing!
+Invalid coordinate X=114 for team 0 building 7 (swimmingpool) with X span [110:114[, healing!
+Invalid coordinate X=115 for team 0 building 7 (swimmingpool) with X span [110:114[, healing!
+Invalid coordinate Y=82 for team 0 building 7 (swimmingpool) with Y span [78:82[, healing!
+Invalid coordinate Y=82 for team 0 building 7 (swimmingpool) with Y span [78:82[, healing!
+Invalid coordinate Y=82 for team 0 building 7 (swimmingpool) with Y span [78:82[, healing!
+Invalid coordinate Y=82 for team 0 building 7 (swimmingpool) with Y span [78:82[, healing!
+Invalid coordinate X=114 for team 0 building 7 (swimmingpool) with X span [110:114[, healing!
+Invalid coordinate Y=82 for team 0 building 7 (swimmingpool) with Y span [78:82[, healing!
+Invalid coordinate X=115 for team 0 building 7 (swimmingpool) with X span [110:114[, healing!
+Invalid coordinate Y=82 for team 0 building 7 (swimmingpool) with Y span [78:82[, healing!
+Invalid coordinate Y=83 for team 0 building 7 (swimmingpool) with Y span [78:82[, healing!
+Invalid coordinate Y=83 for team 0 building 7 (swimmingpool) with Y span [78:82[, healing!
+Invalid coordinate Y=83 for team 0 building 7 (swimmingpool) with Y span [78:82[, healing!
+Invalid coordinate Y=83 for team 0 building 7 (swimmingpool) with Y span [78:82[, healing!
+Invalid coordinate X=114 for team 0 building 7 (swimmingpool) with X span [110:114[, healing!
+Invalid coordinate Y=83 for team 0 building 7 (swimmingpool) with Y span [78:82[, healing!
+Invalid coordinate X=115 for team 0 building 7 (swimmingpool) with X span [110:114[, healing!
+Invalid coordinate Y=83 for team 0 building 7 (swimmingpool) with Y span [78:82[, healing!
+Invalid coordinate X=101 for team 0 building 6 (racetrack) with X span [97:101[, healing!
+Invalid coordinate X=102 for team 0 building 6 (racetrack) with X span [97:101[, healing!
+Invalid coordinate X=101 for team 0 building 6 (racetrack) with X span [97:101[, healing!
+Invalid coordinate X=102 for team 0 building 6 (racetrack) with X span [97:101[, healing!
+Invalid coordinate X=101 for team 0 building 6 (racetrack) with X span [97:101[, healing!
+Invalid coordinate X=102 for team 0 building 6 (racetrack) with X span [97:101[, healing!
+Invalid coordinate X=101 for team 0 building 6 (racetrack) with X span [97:101[, healing!
+Invalid coordinate X=102 for team 0 building 6 (racetrack) with X span [97:101[, healing!
+Invalid coordinate Y=103 for team 0 building 6 (racetrack) with Y span [99:103[, healing!
+Invalid coordinate Y=103 for team 0 building 6 (racetrack) with Y span [99:103[, healing!
+Invalid coordinate Y=103 for team 0 building 6 (racetrack) with Y span [99:103[, healing!
+Invalid coordinate Y=103 for team 0 building 6 (racetrack) with Y span [99:103[, healing!
+Invalid coordinate X=101 for team 0 building 6 (racetrack) with X span [97:101[, healing!
+Invalid coordinate Y=103 for team 0 building 6 (racetrack) with Y span [99:103[, healing!
+Invalid coordinate X=102 for team 0 building 6 (racetrack) with X span [97:101[, healing!
+Invalid coordinate Y=103 for team 0 building 6 (racetrack) with Y span [99:103[, healing!
+Invalid coordinate Y=104 for team 0 building 6 (racetrack) with Y span [99:103[, healing!
+Invalid coordinate Y=104 for team 0 building 6 (racetrack) with Y span [99:103[, healing!
+Invalid coordinate Y=104 for team 0 building 6 (racetrack) with Y span [99:103[, healing!
+Invalid coordinate Y=104 for team 0 building 6 (racetrack) with Y span [99:103[, healing!
+Invalid coordinate X=101 for team 0 building 6 (racetrack) with X span [97:101[, healing!
+Invalid coordinate Y=104 for team 0 building 6 (racetrack) with Y span [99:103[, healing!
+Invalid coordinate X=102 for team 0 building 6 (racetrack) with X span [97:101[, healing!
+Invalid coordinate Y=104 for team 0 building 6 (racetrack) with Y span [99:103[, healing!
+LEGACY_CHECKPOINT_UNAVAILABLE chapter=3 (unchanged SGSL loader); source compile checked separately
+Invalid coordinate X=52 for team 1 building 9 (racetrack) with X span [48:52[, healing!
+Invalid coordinate X=53 for team 1 building 9 (racetrack) with X span [48:52[, healing!
+Invalid coordinate X=52 for team 1 building 9 (racetrack) with X span [48:52[, healing!
+Invalid coordinate X=53 for team 1 building 9 (racetrack) with X span [48:52[, healing!
+Invalid coordinate X=52 for team 1 building 9 (racetrack) with X span [48:52[, healing!
+Invalid coordinate X=53 for team 1 building 9 (racetrack) with X span [48:52[, healing!
+Invalid coordinate X=52 for team 1 building 9 (racetrack) with X span [48:52[, healing!
+Invalid coordinate X=53 for team 1 building 9 (racetrack) with X span [48:52[, healing!
+Invalid coordinate Y=45 for team 1 building 9 (racetrack) with Y span [41:45[, healing!
+Invalid coordinate Y=45 for team 1 building 9 (racetrack) with Y span [41:45[, healing!
+Invalid coordinate Y=45 for team 1 building 9 (racetrack) with Y span [41:45[, healing!
+Invalid coordinate Y=45 for team 1 building 9 (racetrack) with Y span [41:45[, healing!
+Invalid coordinate X=52 for team 1 building 9 (racetrack) with X span [48:52[, healing!
+Invalid coordinate Y=45 for team 1 building 9 (racetrack) with Y span [41:45[, healing!
+Invalid coordinate X=53 for team 1 building 9 (racetrack) with X span [48:52[, healing!
+Invalid coordinate Y=45 for team 1 building 9 (racetrack) with Y span [41:45[, healing!
+Invalid coordinate Y=46 for team 1 building 9 (racetrack) with Y span [41:45[, healing!
+Invalid coordinate Y=46 for team 1 building 9 (racetrack) with Y span [41:45[, healing!
+Invalid coordinate Y=46 for team 1 building 9 (racetrack) with Y span [41:45[, healing!
+Invalid coordinate Y=46 for team 1 building 9 (racetrack) with Y span [41:45[, healing!
+Invalid coordinate X=52 for team 1 building 9 (racetrack) with X span [48:52[, healing!
+Invalid coordinate Y=46 for team 1 building 9 (racetrack) with Y span [41:45[, healing!
+Invalid coordinate X=53 for team 1 building 9 (racetrack) with X span [48:52[, healing!
+Invalid coordinate Y=46 for team 1 building 9 (racetrack) with Y span [41:45[, healing!
+Invalid coordinate X=115 for team 0 building 7 (swimmingpool) with X span [109:115[, healing!
+Invalid coordinate X=116 for team 0 building 7 (swimmingpool) with X span [109:115[, healing!
+Invalid coordinate X=115 for team 0 building 7 (swimmingpool) with X span [109:115[, healing!
+Invalid coordinate X=116 for team 0 building 7 (swimmingpool) with X span [109:115[, healing!
+Invalid coordinate X=115 for team 0 building 7 (swimmingpool) with X span [109:115[, healing!
+Invalid coordinate X=116 for team 0 building 7 (swimmingpool) with X span [109:115[, healing!
+Invalid coordinate X=115 for team 0 building 7 (swimmingpool) with X span [109:115[, healing!
+Invalid coordinate X=116 for team 0 building 7 (swimmingpool) with X span [109:115[, healing!
+Invalid coordinate X=115 for team 0 building 7 (swimmingpool) with X span [109:115[, healing!
+Invalid coordinate X=116 for team 0 building 7 (swimmingpool) with X span [109:115[, healing!
+Invalid coordinate X=115 for team 0 building 7 (swimmingpool) with X span [109:115[, healing!
+Invalid coordinate X=116 for team 0 building 7 (swimmingpool) with X span [109:115[, healing!
+Invalid coordinate Y=83 for team 0 building 7 (swimmingpool) with Y span [77:83[, healing!
+Invalid coordinate Y=83 for team 0 building 7 (swimmingpool) with Y span [77:83[, healing!
+Invalid coordinate Y=83 for team 0 building 7 (swimmingpool) with Y span [77:83[, healing!
+Invalid coordinate Y=83 for team 0 building 7 (swimmingpool) with Y span [77:83[, healing!
+Invalid coordinate Y=83 for team 0 building 7 (swimmingpool) with Y span [77:83[, healing!
+Invalid coordinate Y=83 for team 0 building 7 (swimmingpool) with Y span [77:83[, healing!
+Invalid coordinate X=115 for team 0 building 7 (swimmingpool) with X span [109:115[, healing!
+Invalid coordinate Y=83 for team 0 building 7 (swimmingpool) with Y span [77:83[, healing!
+Invalid coordinate X=116 for team 0 building 7 (swimmingpool) with X span [109:115[, healing!
+Invalid coordinate Y=83 for team 0 building 7 (swimmingpool) with Y span [77:83[, healing!
+Invalid coordinate Y=84 for team 0 building 7 (swimmingpool) with Y span [77:83[, healing!
+Invalid coordinate Y=84 for team 0 building 7 (swimmingpool) with Y span [77:83[, healing!
+Invalid coordinate Y=84 for team 0 building 7 (swimmingpool) with Y span [77:83[, healing!
+Invalid coordinate Y=84 for team 0 building 7 (swimmingpool) with Y span [77:83[, healing!
+Invalid coordinate Y=84 for team 0 building 7 (swimmingpool) with Y span [77:83[, healing!
+Invalid coordinate Y=84 for team 0 building 7 (swimmingpool) with Y span [77:83[, healing!
+Invalid coordinate X=115 for team 0 building 7 (swimmingpool) with X span [109:115[, healing!
+Invalid coordinate Y=84 for team 0 building 7 (swimmingpool) with Y span [77:83[, healing!
+Invalid coordinate X=116 for team 0 building 7 (swimmingpool) with X span [109:115[, healing!
+Invalid coordinate Y=84 for team 0 building 7 (swimmingpool) with Y span [77:83[, healing!
+Invalid coordinate X=102 for team 0 building 6 (racetrack) with X span [96:102[, healing!
+Invalid coordinate X=103 for team 0 building 6 (racetrack) with X span [96:102[, healing!
+Invalid coordinate X=102 for team 0 building 6 (racetrack) with X span [96:102[, healing!
+Invalid coordinate X=103 for team 0 building 6 (racetrack) with X span [96:102[, healing!
+Invalid coordinate X=102 for team 0 building 6 (racetrack) with X span [96:102[, healing!
+Invalid coordinate X=103 for team 0 building 6 (racetrack) with X span [96:102[, healing!
+Invalid coordinate X=102 for team 0 building 6 (racetrack) with X span [96:102[, healing!
+Invalid coordinate X=103 for team 0 building 6 (racetrack) with X span [96:102[, healing!
+Invalid coordinate X=102 for team 0 building 6 (racetrack) with X span [96:102[, healing!
+Invalid coordinate X=103 for team 0 building 6 (racetrack) with X span [96:102[, healing!
+Invalid coordinate X=102 for team 0 building 6 (racetrack) with X span [96:102[, healing!
+Invalid coordinate X=103 for team 0 building 6 (racetrack) with X span [96:102[, healing!
+Invalid coordinate Y=104 for team 0 building 6 (racetrack) with Y span [98:104[, healing!
+Invalid coordinate Y=104 for team 0 building 6 (racetrack) with Y span [98:104[, healing!
+Invalid coordinate Y=104 for team 0 building 6 (racetrack) with Y span [98:104[, healing!
+Invalid coordinate Y=104 for team 0 building 6 (racetrack) with Y span [98:104[, healing!
+Invalid coordinate Y=104 for team 0 building 6 (racetrack) with Y span [98:104[, healing!
+Invalid coordinate Y=104 for team 0 building 6 (racetrack) with Y span [98:104[, healing!
+Invalid coordinate X=102 for team 0 building 6 (racetrack) with X span [96:102[, healing!
+Invalid coordinate Y=104 for team 0 building 6 (racetrack) with Y span [98:104[, healing!
+Invalid coordinate X=103 for team 0 building 6 (racetrack) with X span [96:102[, healing!
+Invalid coordinate Y=104 for team 0 building 6 (racetrack) with Y span [98:104[, healing!
+Invalid coordinate Y=105 for team 0 building 6 (racetrack) with Y span [98:104[, healing!
+Invalid coordinate Y=105 for team 0 building 6 (racetrack) with Y span [98:104[, healing!
+Invalid coordinate Y=105 for team 0 building 6 (racetrack) with Y span [98:104[, healing!
+Invalid coordinate Y=105 for team 0 building 6 (racetrack) with Y span [98:104[, healing!
+Invalid coordinate Y=105 for team 0 building 6 (racetrack) with Y span [98:104[, healing!
+Invalid coordinate Y=105 for team 0 building 6 (racetrack) with Y span [98:104[, healing!
+Invalid coordinate X=102 for team 0 building 6 (racetrack) with X span [96:102[, healing!
+Invalid coordinate Y=105 for team 0 building 6 (racetrack) with Y span [98:104[, healing!
+Invalid coordinate X=103 for team 0 building 6 (racetrack) with X span [96:102[, healing!
+Invalid coordinate Y=105 for team 0 building 6 (racetrack) with Y span [98:104[, healing!
+readlink() error: No such file or directory
+Settings::load("preferences.txt") : error, can't open file.

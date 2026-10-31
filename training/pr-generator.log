@@ -1,0 +1,34 @@
+Settings::load("preferences.txt") : error, can't open file.
+SAMPLED,19,3156985305,1
+ROLL,0,3156985305,1,0.856170,0.530097
+STUDY,1000000,19,1,16384,8926,955,4565,1938,7286,5571,9429,1923,5032,0.530669,3528717083232345438
+TUNE,309,2,2,4,760,590,192,992,1,2
+QUALITY,1,0.856170,0.856170,0.036566,0.596435,0.346070,4,0.046011
+COLONY,0,2,2,1555,908,282,41,0,3298.1,0.596435,0.314734
+COLONY,1,1,2,1599,1029,157,51,0,3348.6,0.036566,0.179803
+COLONY,2,1,2,863,309,406,41,0,2817.8,0.322773,0.239383
+COLONY,3,2,2,1225,815,322,47,0,2814.6,0.428504,0.266080
+REQUEST,examples:swamp,1,3156985305,7,7,4,4
+OPTION,algae-amount,100
+OPTION,fruit,4
+OPTION,grass,60
+OPTION,hilltop-stone,0
+OPTION,repeat,0
+OPTION,smoothing,6
+OPTION,stone-amount,100
+OPTION,water,35
+OPTION,wheat-amount,100
+OPTION,wood-amount,100
+START,0,105,0
+START,1,51,10
+START,2,97,41
+START,3,62,62
+MAPFILE,0,/home/bradley/.codex/worktrees/159d/glob2/artifacts/training/pr-generator/generated/map-r0.map.gz,1130347,15330501101247343676
+ROTATIONS,4,1,0,1,1,1,1
+Settings::load("preferences.txt") : error, can't open file.
+initial: wrote /home/bradley/.codex/worktrees/159d/glob2/artifacts/training/pr-generator/initial.game.gz
+nox::game started
+nox::gui.game.checkSum() = 58f9db9c
+automaticEndingGame ended: 64 ticks, 0 minutes, 2 seconds
+GLOB2_GAME_END ticks=64 winner_team=-1 seed=19 map="study-1000000-19-r0" orders=0 players=team0:Nicowar,team1:Nicowar,team2:Nicowar,team3:Nicowar
+final: wrote /home/bradley/.codex/worktrees/159d/glob2/artifacts/training/pr-generator/final.game.gz

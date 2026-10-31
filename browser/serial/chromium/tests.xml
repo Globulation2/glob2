@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+  <testsuite name="./this.program" errors="0" failures="0" tests="4794" time="221.185" timestamp="2026-10-27T14:51:48Z" doctest_version="2.4.11">
+    <testcase classname="src/tutorial/IntroductionTest.cpp" name="packaged lesson maps embed their source and share geography" time="12.46" status="run"/>
+    <testcase classname="src/tutorial/IntroductionTest.cpp" name="training algae requires swimming and named regions survive loading" time="13.918" status="run"/>
+    <testcase classname="src/tutorial/IntroductionTest.cpp" name="training colonies remain supplied while a learner takes time" time="20.92" status="run"/>
+    <testcase classname="src/tutorial/IntroductionTest.cpp" name="real orders complete scouting construction supply growth and attack" time="46.308" status="run"/>
+    <testcase classname="src/tutorial/IntroductionTest.cpp" name="idle time and acknowledgments cannot complete the introduction" time="2.691" status="run"/>
+    <testcase classname="src/tutorial/IntroductionTest.cpp" name="recommendation migrates existing profiles and persists an explicit choice" time="0.382" status="run"/>
+    <testcase classname="src/tutorial/IntroductionTest.cpp" name="guidance accepts only the authored lesson objectives" time="0.001" status="run"/>
+    <testcase classname="src/tutorial/IntroductionTest.cpp" name="second lesson completes and resumes with the shared runner" time="9.185" status="run"/>
+    <testcase classname="src/tutorial/IntroductionTest.cpp" name="prototype map scripts retain progress and legacy guidance after save load" time="2.902" status="run"/>
+    <testcase classname="src/tutorial/IntroductionTest.cpp" name="tutorial metadata is validated atomically with scenario effects" time="1.705" status="run"/>
+    <testcase classname="src/tutorial/IntroductionTest.cpp" name="expanded lessons complete through player orders and saved continuation" time="94.763" status="run"/>
+    <testcase classname="src/tutorial/IntroductionTest.cpp" name="zone observations and scenario orders preserve map callback validation" time="1.636" status="run"/>
+    <testcase classname="src/tutorial/IntroductionTest.cpp" name="original tutorial scripts compile and available checkpoints roundtrip" time="11.371" status="run"/>
+    <testcase classname="src/tutorial/IntroductionTest.cpp" name="scripted diplomacy is atomic and rejects invalid relationships" time="2.943" status="run"/>
+  </testsuite>
+</testsuites>

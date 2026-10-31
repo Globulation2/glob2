@@ -1,0 +1,116 @@
+{
+  "base": "5c691899db0080764f5257be7058622dbbefef60",
+  "fetched_master": "60be419db529347457c8cf80e853d2ab2eff4dcb",
+  "source_tree_sha256": "b6b028398cda84adceb8656e3406ef5b78df203293b33717dce9d3783d923a85",
+  "simulation_revision": 103,
+  "training": {
+    "size": [
+      256,
+      256
+    ],
+    "seed": 20261026,
+    "teams": 2,
+    "workers_per_team": 8,
+    "lessons": 10,
+    "generation": "JavaScript package, shipped pre-generated maps",
+    "setup_selector": "explicit catalog field, independent of menu order"
+  },
+  "verification": {
+    "native_final": {
+      "cases": 16,
+      "failed": 0,
+      "report": "native-final.xml"
+    },
+    "native_ui": {
+      "cases": 4,
+      "failed": 0,
+      "report": "ui.xml",
+      "viewports": [
+        "1024x768 desktop",
+        "400x800 touch",
+        "800x400 touch"
+      ],
+      "text_sizes": [
+        100,
+        150
+      ]
+    },
+    "javascript_unit": {
+      "passed": 143,
+      "log": "js-unit.log"
+    },
+    "authoring_contracts": {
+      "passed": 6,
+      "log": "authoring.log"
+    },
+    "scripting": {
+      "headless_cases_passed": 40,
+      "display_cases_passed": 2,
+      "reports": [
+        "scripting.xml",
+        "scripting-display.xml"
+      ],
+      "note": "Initial display cases used a headless driver; both passed when rerun under X11."
+    },
+    "browser_simulation": {
+      "variants": [
+        "serial",
+        "threaded"
+      ],
+      "browsers": [
+        "Chromium",
+        "Firefox",
+        "WebKit"
+      ],
+      "trace_sets_per_configuration": 8,
+      "exact_matches": 48,
+      "total_comparisons": 48,
+      "details": "browser-trace-comparison.json",
+      "logs": [
+        "browser.log",
+        "browser-webkit-retry.log"
+      ],
+      "note": "The initial final case hit a shared Playwright trace-directory cleanup collision. Its trace comparisons passed; the isolated rerun also passed."
+    },
+    "browser_phone": {
+      "browser": "Chromium",
+      "touch": true,
+      "viewports": [
+        [
+          400,
+          800
+        ],
+        [
+          800,
+          400
+        ]
+      ],
+      "minimum_action_css_pixels": 44,
+      "result": "passed",
+      "log": "browser-ui.log"
+    },
+    "regeneration": "All ten maps and source bundles pass --check --maps; decompressed map bytes match.",
+    "generated_bindings": "generate_js_bindings.py --check passed with pinned clang bindings and system libclang 18.",
+    "cli_reference": "cli_reference.py --check passed.",
+    "legacy": "Original SGSL scripts, campaign and four tutorial maps are byte-identical to HEAD. Chapter 3 archived checkpoint has the previously documented SGSL loader failure; source compiles.",
+    "manual_mcp": "Desktop destination/flag controls inspected through embedded MCP. Swimming completed through the mobile HUD using MCP UI input: Pool placement, automatic training, School placement, algae delivery and completion. Browser onboarding/tutorial also opened through CUA MCP.",
+    "independent_review": "Creation guards, region caching, scenario attachment and diplomacy reviewed; reported issues fixed."
+  },
+  "limitations": [
+    "No physical Android/iOS device test.",
+    "No native Windows/macOS checksum comparison.",
+    "No fresh-player usability study or release-performance claim.",
+    "Fetched master contains newer Anthill/Savannah/shared-generator changes; validation describes this checkout, not a merged or rebased result."
+  ],
+  "evidence": [
+    "landscape.png",
+    "mcp-mobile-placement.png",
+    "mcp-mobile-swimming-trained.png",
+    "mcp-mobile-complete.png",
+    "browser-ui/portrait.png",
+    "browser-ui/landscape.png",
+    "browser-ui/portrait-help.png",
+    "browser-ui/landscape-help.png"
+  ],
+  "native_binary_sha256": "d7ea63602abb63fad40a0f021835d9298e57ed0d0d4ed5eb2e008450e4ffb818"
+}

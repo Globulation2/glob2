@@ -1,0 +1,42 @@
+
+Running 6 tests using 2 workers
+
+(node:245807) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:245808) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 [firefox] › browser/tests/introduction.spec.js:7:3 › data-authored lessons complete and resume in WebAssembly (serial) (3.0m)
+  ✓  2 [chromium] › browser/tests/introduction.spec.js:7:3 › data-authored lessons complete and resume in WebAssembly (serial) (3.7m)
+  ✓  3 [firefox] › browser/tests/introduction.spec.js:7:3 › data-authored lessons complete and resume in WebAssembly (threaded) (3.1m)
+(node:246886) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  4 [chromium] › browser/tests/introduction.spec.js:7:3 › data-authored lessons complete and resume in WebAssembly (threaded) (3.8m)
+  ✓  5 [webkit] › browser/tests/introduction.spec.js:7:3 › data-authored lessons complete and resume in WebAssembly (serial) (2.7m)
+  ✘  6 [webkit] › browser/tests/introduction.spec.js:7:3 › data-authored lessons complete and resume in WebAssembly (threaded) (2.9m)
+
+
+  1) [webkit] › browser/tests/introduction.spec.js:7:3 › data-authored lessons complete and resume in WebAssembly (threaded) 
+
+    Error: browserContext.close: ENOENT: no such file or directory, open '/home/bradley/.codex/worktrees/159d/glob2/build/browser-test-results/.playwright-artifacts-2/traces/607e37a1983d19631694-63619c64ee6146449930-recording2.trace'
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    build/browser-test-results/introduction-data-authored-4ae96-me-in-WebAssembly-threaded--webkit/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: build/browser-test-results/introduction-data-authored-4ae96-me-in-WebAssembly-threaded--webkit/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    build/browser-test-results/introduction-data-authored-4ae96-me-in-WebAssembly-threaded--webkit/trace.zip
+    Usage:
+
+        npx playwright show-trace build/browser-test-results/introduction-data-authored-4ae96-me-in-WebAssembly-threaded--webkit/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  Slow test file: [chromium] › browser/tests/introduction.spec.js (7.5m)
+  Slow test file: [firefox] › browser/tests/introduction.spec.js (6.1m)
+  Slow test file: [webkit] › browser/tests/introduction.spec.js (5.6m)
+  Consider running tests from slow files in parallel. See: https://playwright.dev/docs/test-parallel
+  1 failed
+    [webkit] › browser/tests/introduction.spec.js:7:3 › data-authored lessons complete and resume in WebAssembly (threaded) 
+  5 passed (11.7m)

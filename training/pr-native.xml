@@ -1,0 +1,50 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="48" failures="0" errors="0" skipped="0"><testsuite name="Introduction"><testcase classname="Introduction" name="expanded lessons complete through player orders and saved continuation" time="67.5331" status="run" />
+  <testcase classname="Introduction" name="guidance accepts only the authored lesson objectives" time="0" status="run" />
+  <testcase classname="Introduction" name="idle time and acknowledgments cannot complete the introduction" time="2.866" status="run" />
+  <testcase classname="Introduction" name="original tutorial scripts compile and available checkpoints roundtrip" time="8.88364" status="run" />
+  <testcase classname="Introduction" name="packaged lesson maps embed their source and share geography" time="8.32427" status="run" />
+  <testcase classname="Introduction" name="prototype map scripts retain progress and legacy guidance after save load" time="2.53241" status="run" />
+  <testcase classname="Introduction" name="real orders complete scouting construction supply growth and attack" time="34.2636" status="run" />
+  <testcase classname="Introduction" name="recommendation migrates existing profiles and persists an explicit choice" time="0.637671" status="run" />
+  <testcase classname="Introduction" name="scripted diplomacy is atomic and rejects invalid relationships" time="3.28929" status="run" />
+  <testcase classname="Introduction" name="second lesson completes and resumes with the shared runner" time="6.86457" status="run" />
+  <testcase classname="Introduction" name="training algae requires swimming and named regions survive loading" time="8.62527" status="run" />
+  <testcase classname="Introduction" name="training colonies remain supplied while a learner takes time" time="16.1445" status="run" />
+  <testcase classname="Introduction" name="tutorial metadata is validated atomically with scenario effects" time="1.61116" status="run" />
+  <testcase classname="Introduction" name="zone observations and scenario orders preserve map callback validation" time="2.06505" status="run" />
+  </testsuite><testsuite name="MapPreview"><testcase classname="MapPreview" name="generator Studio freezes playable worlds and preserves save continuation" time="8.08824" status="run" />
+  </testsuite><testsuite name="ScriptGenerator"><testcase classname="ScriptGenerator" name="All named stream consumers share creation limits and accounting" time="0.082913" status="run" />
+  <testcase classname="ScriptGenerator" name="Boolean buffer proxies become JavaScript booleans" time="0.008999" status="run" />
+  <testcase classname="ScriptGenerator" name="By value copies reserve native payloads before allocation" time="0.008655" status="run" />
+  <testcase classname="ScriptGenerator" name="Conversion failures release intermediate QuickJS containers" time="0.008904" status="run" />
+  <testcase classname="ScriptGenerator" name="Custom preferences persist string identity and tolerate missing packages" time="0.01859" status="run" />
+  <testcase classname="ScriptGenerator" name="Every operation registration path shares the handle budget" time="0.154055" status="run" />
+  <testcase classname="ScriptGenerator" name="Fertility binding rejects incomplete fields and mismatched masks" time="0.067166" status="run" />
+  <testcase classname="ScriptGenerator" name="Fertility binding reserves native work and memory before rebuilding" time="0.584901" status="run" />
+  <testcase classname="ScriptGenerator" name="Frozen controls survive package replacement and catalogs are released" time="0.020737" status="run" />
+  <testcase classname="ScriptGenerator" name="Frozen selections retain defaults and rules after package removal" time="0.019258" status="run" />
+  <testcase classname="ScriptGenerator" name="Full toolkit records buffers geometry callbacks and solver" time="0.863771" status="run" />
+  <testcase classname="ScriptGenerator" name="Graph ownership optional callbacks and pointer outputs" time="0.563972" status="run" />
+  <testcase classname="ScriptGenerator" name="Installed generator library writes to a fresh user profile [writes-preferences]" time="0.450968" status="run" />
+  <testcase classname="ScriptGenerator" name="Library mutations retain memory and disk when storage throws" time="0.013008" status="run" />
+  <testcase classname="ScriptGenerator" name="Moved callback arguments retain their converted storage" time="0.008528" status="run" />
+  <testcase classname="ScriptGenerator" name="Native scratch tables respect the allocation budget" time="2.84935" status="run" />
+  <testcase classname="ScriptGenerator" name="Native work and interpreter resource failures are sticky" time="20.4048" status="run" />
+  <testcase classname="ScriptGenerator" name="Nested buffer fills are accounted and returned rows own their data" time="0.009101" status="run" />
+  <testcase classname="ScriptGenerator" name="Nested buffer get fill and set reserve before copying" time="0.013103" status="run" />
+  <testcase classname="ScriptGenerator" name="Online generator installation verifies hashes and persists provenance transactionally" time="0.013982" status="run" />
+  <testcase classname="ScriptGenerator" name="Optional JavaScript examples generate repeatable validated worlds [slow]" time="37.4748" status="run" />
+  <testcase classname="ScriptGenerator" name="Owned classes preserve borrowed context and RNG expiration" time="1.17013" status="run" />
+  <testcase classname="ScriptGenerator" name="Package identity controls modules and installation rollback" time="0.031799" status="run" />
+  <testcase classname="ScriptGenerator" name="Repeated point handles share one owned prototype" time="0.008834" status="run" />
+  <testcase classname="ScriptGenerator" name="Request immutability RNG streams and module isolation" time="0.042252" status="run" />
+  <testcase classname="ScriptGenerator" name="Scenario creation validates options and cannot run in validators" time="0.949783" status="run" />
+  <testcase classname="ScriptGenerator" name="Script control mutations cannot bypass native domain contracts" time="0.055129" status="run" />
+  <testcase classname="ScriptGenerator" name="Script resource placement uses the world catalog and bounded brushes" time="0.689488" status="run" />
+  <testcase classname="ScriptGenerator" name="Script terrain and colonies go through engine world validation" time="2.85977" status="run" />
+  <testcase classname="ScriptGenerator" name="Shared generated worlds continue identically without installed generator code [golden]" time="6.83566" status="run" />
+  <testcase classname="ScriptGenerator" name="Site graphs share distance captures and account repeated graph copies" time="0.9674" status="run" />
+  <testcase classname="ScriptGenerator" name="Toolkit consumers reject empty fertility arguments" time="0.48046" status="run" />
+  </testsuite><testsuite name="TurnEngineHarness"><testcase classname="TurnEngineHarness" name="the committed match record verifies to the committed checksum trace [network-sim][golden]" time="3.64471" status="run" />
+  </testsuite></testsuites>

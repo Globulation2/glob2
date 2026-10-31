@@ -1,0 +1,9 @@
+
+Running 1 test using 1 worker
+
+(node:248745) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+[1/1] [chromium] › browser/tests/tutorial-phone.spec.js:7:1 › shared training tutorial keeps touch actions usable across rotation
+  1 passed (32.3s)

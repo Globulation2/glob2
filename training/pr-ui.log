@@ -1,0 +1,7 @@
+PASS IntroductionUI/catalog and second lesson use generic guidance and restart navigation [display][artifacts] (4.7s)
+PASS IntroductionUI/first-run recommendation can be declined and stays dismissed [display][writes-preferences] (5.5s)
+PASS IntroductionUI/guidance adapts to desktop touch and large text without consuming map input [display][artifacts] (26.4s)
+PASS IntroductionUI/expanded lesson catalog and guidance fit both phone orientations [display][artifacts] (52.0s)
+
+4 passed, 0 failed, 0 skipped (88.6s of test time)
+[run_tests] JUnit report: artifacts/training/pr-ui.xml (4 cases)

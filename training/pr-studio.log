@@ -1,0 +1,7 @@
+Settings::load("preferences.txt") : error, can't open file.
+initial: wrote /home/bradley/.codex/worktrees/159d/glob2/artifacts/training/pr-studio/initial.game.gz
+nox::game started
+nox::gui.game.checkSum() = c8d104cc
+automaticEndingGame ended: 1024 ticks, 0 minutes, 34 seconds
+GLOB2_GAME_END ticks=1024 winner_team=-1 seed=19 map="study-15-19-r0" orders=1023 players=team0:JavaScript,team1:Numbi
+final: wrote /home/bradley/.codex/worktrees/159d/glob2/artifacts/training/pr-studio/final.game.gz

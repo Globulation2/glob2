@@ -1,0 +1,6 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="4" failures="0" errors="0" skipped="0"><testsuite name="IntroductionUI"><testcase classname="IntroductionUI" name="catalog and second lesson use generic guidance and restart navigation [display][artifacts]" time="4.31785" status="run" />
+  <testcase classname="IntroductionUI" name="expanded lesson catalog and guidance fit both phone orientations [display][artifacts]" time="51.6521" status="run" />
+  <testcase classname="IntroductionUI" name="first-run recommendation can be declined and stays dismissed [display][writes-preferences]" time="3.15544" status="run" />
+  <testcase classname="IntroductionUI" name="guidance adapts to desktop touch and large text without consuming map input [display][artifacts]" time="22.0083" status="run" />
+  </testsuite></testsuites>
