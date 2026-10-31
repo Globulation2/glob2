@@ -211,11 +211,16 @@ Only after that succeeds, set the environment variable `WIKI_PUBLISH_ENABLED`
 to `true` to enable scheduled writes. Until then weekly runs check and report
 the proposed differences without editing the wiki. Configure a
 `wiki-publication` environment restricted to that branch, with
-`WIKI_BOT_USERNAME` (`Genixpro@ReleaseSync`) and `WIKI_BOT_PASSWORD` secrets.
-The bot password must have basic read access and permission to edit existing
-pages; it needs no administrator, page-creation or upload grant. Create it through
-MediaWiki's **Special:BotPasswords**, keeping the main account password out of
-Actions. Credential entry and creation are performed by the account owner.
+`WIKI_USERNAME` and `WIKI_PASSWORD` secrets. An ordinary account such as
+`Genixpro` uses MediaWiki's `clientlogin` API; an `Account@BotName` username uses
+bot-password login. Both require basic read access and permission to edit existing
+pages. No administrator, page-creation or upload permission is needed.
+A dedicated bot password can be created through **Special:BotPasswords** when
+that page is available. With the account owner's authorization, the existing
+account password can instead be stored in this protected environment. Never put
+credentials in workflow inputs, source files, logs or artifacts. The local tool
+also accepts the older `WIKI_BOT_USERNAME` / `WIKI_BOT_PASSWORD` environment names
+when the generic names are absent.
 A required environment reviewer pauses scheduled jobs; unattended operation
 requires configuring this narrow environment accordingly. Game publication
 and signing environments retain their existing protections.
