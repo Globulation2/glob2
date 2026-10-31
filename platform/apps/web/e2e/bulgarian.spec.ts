@@ -36,6 +36,18 @@ test('Bulgarian loads its bundled font and persists an explicit language choice'
   }));
   expect(font.family).toContain('Glob2 Bulgarian');
   expect(font.loaded).toBe(true);
+  const placeholder = await page.locator('input[name="code"]').evaluate((element) => {
+    const input = element as HTMLInputElement;
+    const style = getComputedStyle(input);
+    const context = document.createElement('canvas').getContext('2d');
+    if (!context) throw new Error('Canvas text measurement unavailable');
+    context.font = `${style.fontWeight} ${style.fontSize} ${style.fontFamily}`;
+    return {
+      text: context.measureText(input.placeholder).width,
+      available: input.clientWidth - parseFloat(style.paddingLeft) - parseFloat(style.paddingRight),
+    };
+  });
+  expect(placeholder.text).toBeLessThanOrEqual(placeholder.available + 1);
   expect(
     await page.evaluate(() => document.documentElement.scrollWidth - innerWidth),
   ).toBeLessThanOrEqual(1);
