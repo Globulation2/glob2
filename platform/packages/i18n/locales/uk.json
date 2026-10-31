@@ -2969,5 +2969,21 @@
   "Clear filters": "Очистити фільтри",
   "No results match these filters.": "Немає результатів, що відповідають цим фільтрам.",
   "Results: {value0}": "Результати: {value0}",
-  "Game text field": "Поле введення тексту в грі"
+  "Game text field": "Поле введення тексту в грі",
+  "Front view": "Вигляд спереду",
+  "Back view": "Вигляд ззаду",
+  "Left view": "Вигляд зліва",
+  "Right view": "Вигляд справа",
+  "Walk": "Ходьба",
+  "Swim": "Плавання",
+  "Harvest": "Збирання ресурсів",
+  "Fight": "Бій",
+  "Fly": "Літати",
+  "Static pose": "Статична поза",
+  "Artist": "Виконавець",
+  "Started": "Розпочато",
+  "Accounts per day": "Облікові записи на день",
+  "Matches per day": "Матчів на день",
+  "Guest accounts": "Гостьові облікові записи",
+  "Registered accounts": "Зареєстровані облікові записи"
 }

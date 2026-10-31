@@ -1,4 +1,4 @@
-import { message as sourceMessage } from '../messages.ts';
+import { message as sourceMessage, skinActionLabel } from '../messages.ts';
 import { statusLabel } from '../i18n.tsx';
 import { t, useLocale, RichMessage } from '../i18n.tsx';
 /* DOM nodes are present during pointer events; model catalogs are nonempty. */
@@ -633,9 +633,16 @@ function SkinStudio() {
                       <option value="zoom-in">{t('Zoom in (+)')}</option>
                       <option value="zoom-out">{t('Zoom out (−)')}</option>
                     </optgroup>
-                    {['front', 'back', 'left', 'right'].map((v) => (
+                    {(['front', 'back', 'left', 'right'] as const).map((v) => (
                       <option key={v} value={v}>
-                        {v[0]!.toUpperCase() + v.slice(1)}
+                        {
+                          {
+                            front: t('Front view'),
+                            back: t('Back view'),
+                            left: t('Left view'),
+                            right: t('Right view'),
+                          }[v]
+                        }
                       </option>
                     ))}
                   </select>
@@ -770,7 +777,7 @@ function SkinStudio() {
                           }}
                         >
                           <img src={`/skins/thumbs/${model.id}-${a}.png`} alt="" />
-                          <span>{a[0]!.toUpperCase() + a.slice(1)}</span>
+                          <span>{skinActionLabel(a)}</span>
                         </button>
                       ))}
                     </div>

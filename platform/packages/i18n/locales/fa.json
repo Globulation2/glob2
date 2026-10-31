@@ -2915,5 +2915,21 @@
   "Clear filters": "پاک کردن فیلترها",
   "No results match these filters.": "هیچ نتیجه‌ای با این فیلترها مطابقت ندارد.",
   "Results: {value0}": "نتایج: {value0}",
-  "Game text field": "کادر ورود متن در بازی"
+  "Game text field": "کادر ورود متن در بازی",
+  "Front view": "نمای جلو",
+  "Back view": "نمای پشت",
+  "Left view": "نمای چپ",
+  "Right view": "نمای راست",
+  "Walk": "پیاده روی",
+  "Swim": "شنا",
+  "Harvest": "جمع‌آوری منابع",
+  "Fight": "مبارزه",
+  "Fly": "پرواز",
+  "Static pose": "ژست استاتیک",
+  "Artist": "هنرمند",
+  "Started": "شروع شده",
+  "Accounts per day": "حساب‌ها در هر روز",
+  "Matches per day": "مسابقات در هر روز",
+  "Guest accounts": "حساب‌های مهمان",
+  "Registered accounts": "حساب‌های ثبت‌شده"
 }

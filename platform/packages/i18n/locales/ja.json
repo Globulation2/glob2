@@ -2888,5 +2888,21 @@
   "Clear filters": "フィルターをクリア",
   "No results match these filters.": "これらのフィルターに一致する結果はありません。",
   "Results: {value0}": "結果: {value0}",
-  "Game text field": "ゲーム内のテキスト入力欄"
+  "Game text field": "ゲーム内のテキスト入力欄",
+  "Front view": "正面表示",
+  "Back view": "背面表示",
+  "Left view": "左側面表示",
+  "Right view": "右側面表示",
+  "Walk": "歩く",
+  "Swim": "泳ぐ",
+  "Harvest": "資源採集",
+  "Fight": "戦い",
+  "Fly": "飛ぶ",
+  "Static pose": "静止ポーズ",
+  "Artist": "アーティスト",
+  "Started": "開始しました",
+  "Accounts per day": "1日あたりのアカウント数",
+  "Matches per day": "1日あたりの試合数",
+  "Guest accounts": "ゲストアカウント",
+  "Registered accounts": "登録済みアカウント"
 }

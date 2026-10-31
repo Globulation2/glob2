@@ -2915,5 +2915,21 @@
   "Clear filters": "Rensa filter",
   "No results match these filters.": "Inga resultat matchar dessa filter.",
   "Results: {value0}": "Resultat: {value0}",
-  "Game text field": "Textfält i spelet"
+  "Game text field": "Textfält i spelet",
+  "Front view": "Vy framifrån",
+  "Back view": "Vy bakifrån",
+  "Left view": "Vy från vänster",
+  "Right view": "Vy från höger",
+  "Walk": "Gå",
+  "Swim": "Simma",
+  "Harvest": "Samla resurser",
+  "Fight": "Strid",
+  "Fly": "Flyga",
+  "Static pose": "Statisk pose",
+  "Artist": "Artist",
+  "Started": "Började",
+  "Accounts per day": "Konton per dag",
+  "Matches per day": "Matcher per dag",
+  "Guest accounts": "Gästkonton",
+  "Registered accounts": "Registrerade konton"
 }

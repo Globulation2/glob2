@@ -2915,5 +2915,21 @@
   "Clear filters": "Filters wissen",
   "No results match these filters.": "Geen resultaten komen overeen met deze filters.",
   "Results: {value0}": "Resultaten: {value0}",
-  "Game text field": "Tekstveld in het spel"
+  "Game text field": "Tekstveld in het spel",
+  "Front view": "Vooraanzicht",
+  "Back view": "Achteraanzicht",
+  "Left view": "Aanzicht van links",
+  "Right view": "Aanzicht van rechts",
+  "Walk": "Lopen",
+  "Swim": "Zwemmen",
+  "Harvest": "Grondstoffen verzamelen",
+  "Fight": "Gevecht",
+  "Fly": "Vliegen",
+  "Static pose": "Statische pose",
+  "Artist": "Artiest",
+  "Started": "Gestart",
+  "Accounts per day": "Aantal accounts per dag",
+  "Matches per day": "Wedstrijden per dag",
+  "Guest accounts": "Gastaccounts",
+  "Registered accounts": "Geregistreerde accounts"
 }

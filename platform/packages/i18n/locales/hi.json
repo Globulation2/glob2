@@ -2915,5 +2915,21 @@
   "Clear filters": "फ़िल्टर हटाएँ",
   "No results match these filters.": "इन फ़िल्टर से कोई परिणाम मेल नहीं खाता।",
   "Results: {value0}": "परिणाम: {value0}",
-  "Game text field": "खेल में टेक्स्ट दर्ज करने का बॉक्स"
+  "Game text field": "खेल में टेक्स्ट दर्ज करने का बॉक्स",
+  "Front view": "सामने का दृश्य",
+  "Back view": "पीछे का दृश्य",
+  "Left view": "बाईं ओर का दृश्य",
+  "Right view": "दाईं ओर का दृश्य",
+  "Walk": "चलना",
+  "Swim": "तैरना",
+  "Harvest": "संसाधन इकट्ठा करना",
+  "Fight": "लड़ना",
+  "Fly": "उड़ना",
+  "Static pose": "स्थिर मुद्रा",
+  "Artist": "कलाकार",
+  "Started": "शुरू हुए",
+  "Accounts per day": "प्रति दिन खाते",
+  "Matches per day": "प्रतिदिन मैचों की संख्या",
+  "Guest accounts": "अतिथि खाते",
+  "Registered accounts": "पंजीकृत खाते"
 }

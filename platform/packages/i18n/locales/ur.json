@@ -2915,5 +2915,21 @@
   "Clear filters": "فلٹر صاف کریں",
   "No results match these filters.": "کوئی نتیجہ ان فلٹرز سے میل نہیں کھاتا۔",
   "Results: {value0}": "نتائج: {value0}",
-  "Game text field": "کھیل میں متن درج کرنے کا خانہ"
+  "Game text field": "کھیل میں متن درج کرنے کا خانہ",
+  "Front view": "سامنے کا منظر",
+  "Back view": "پیچھے کا منظر",
+  "Left view": "بائیں طرف کا منظر",
+  "Right view": "دائیں طرف کا منظر",
+  "Walk": "چلنا",
+  "Swim": "تیرنا",
+  "Harvest": "وسائل جمع کرنا",
+  "Fight": "لڑنا",
+  "Fly": "اڑنا",
+  "Static pose": "جامد پوز",
+  "Artist": "فنکار",
+  "Started": "شروع ہوئے",
+  "Accounts per day": "فی دن اکاؤنٹس",
+  "Matches per day": "میچز فی دن",
+  "Guest accounts": "مہمانوں کے اکاؤنٹس",
+  "Registered accounts": "رجسٹرڈ اکاؤنٹس"
 }

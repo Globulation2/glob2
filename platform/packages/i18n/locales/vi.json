@@ -2888,5 +2888,21 @@
   "Clear filters": "Xóa bộ lọc",
   "No results match these filters.": "Không có kết quả phù hợp với các bộ lọc này.",
   "Results: {value0}": "Kết quả: {value0}",
-  "Game text field": "Ô nhập văn bản trong trò chơi"
+  "Game text field": "Ô nhập văn bản trong trò chơi",
+  "Front view": "Góc nhìn trước",
+  "Back view": "Góc nhìn sau",
+  "Left view": "Góc nhìn trái",
+  "Right view": "Góc nhìn phải",
+  "Walk": "Đi bộ",
+  "Swim": "Bơi",
+  "Harvest": "Thu thập tài nguyên",
+  "Fight": "Trận đánh",
+  "Fly": "Bay",
+  "Static pose": "Tư thế tĩnh",
+  "Artist": "Nghệ sĩ",
+  "Started": "Bắt đầu",
+  "Accounts per day": "Số tài khoản mỗi ngày",
+  "Matches per day": "Số trận đấu mỗi ngày",
+  "Guest accounts": "Tài khoản khách",
+  "Registered accounts": "Tài khoản đã đăng ký"
 }

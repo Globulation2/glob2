@@ -137,6 +137,11 @@ route by language code; changing languages invalidates affected font caches.
 Do not send presentation-form Arabic through the logical shaping route. The
 FontKerning suite checks raster sizes, reloads and language switching.
 
+Map visible captions from stable IDs to translated source strings instead of
+capitalizing the IDs. This includes skin views and poses, music metadata fields,
+and chart axes and legends. Preserve the IDs themselves: the swarm's empty pose
+ID is valid and needs a localized static-pose caption.
+
 Legacy scenario-message panels use the active font’s measured line height. Desktop messages
 retain a 20-pixel minimum advance; touch instructions use the shared cluster-aware
 wrapper and a 24-point minimum advance. The touch cache includes language, font,
@@ -165,6 +170,39 @@ plural forms. Drafts never overwrite existing work. `check-draft --locale hi`
 checks draft keys and tokens and reports untranslated entries and English matches
 for review; it does not replace the official checks above. Keep unfinished
 catalogs out of the selectable language inventory.
+
+For a Google Cloud NMT comparison draft, authenticate with `gcloud` and use the
+budget-limited development helper on an existing kit. Pass an explicit project;
+preflight does not dispatch requests. `--keys` accepts a JSON array of exact
+`native:`/`online:` entry IDs for a pilot. Keep the same kit and ledger throughout
+the campaign, including retries. The helper uses POSIX file locking; run it on
+Linux, macOS or WSL. `python3 test/test_translation_program.py` also exercises
+its mocked budget and resumption contracts.
+
+```sh
+python3 tools/localization/google_draft.py --output artifacts/localization-ta \
+  --project PROJECT_ID --locale ta --keys artifacts/localization-ta/pilot-keys.json
+# Add --execute only after checking the preflight estimate.
+```
+
+The helper uses English-to-target NMT, fills blank draft values only, and caches
+provider output by source/protected literals, project, target, model and protection
+version. Set catalog identity metadata deliberately before drafting. Its gross
+ceiling is 400,000 request characters (US$8 at US$20/million, before taxes and
+without assuming credits); `--max-characters` can lower but never raise that limit.
+Each attempt reserves its entire character count durably before dispatch; failed
+or uncertain requests remain charged against the ledger. Existing ledger ceilings
+cannot be changed. Credentials are read from `gcloud` into memory and never written
+to request/response evidence. Confirm current provider pricing before a campaign.
+
+Damaged protected literals are reported in `repair_required`, retained in the
+cache/raw response, and left blank in the draft for manual correction. They are
+not silently retried or accepted. Inspect all completed output linguistically;
+placeholder success and provider output are not review sign-offs. Re-running
+resumes cached work and preserves nonblank edits. Do not remove the ledger or
+cache to bypass a ceiling. If frozen sources change, preserve the old kit and
+carry its ledger/cache into the new kit before continuing; stop using the old
+kit for API calls so both kits cannot spend the same remaining allowance.
 
 Register finished catalogs in both inventories and their browser loaders, then
 test system-language selection against the installed catalog set. Mapping a
@@ -265,6 +303,40 @@ present. Construction and operating supply use separate targets. Keep those
 meanings distinct in instructions. Reviewed product names, technical terms and
 loanwords belong in the existing shared-value exception contracts; an exception
 for one key does not justify leaving unrelated prose in English.
+
+### Tamil terminology
+
+Tamil (`ta`, தமிழ்) uses broad contemporary written Tamil in logical Unicode
+order. Use respectful instructions and natural inflection across game and online
+surfaces. The [Microsoft Tamil style guide](https://aka.ms/tamil-styleguide)
+provides software-localization guidance; the [Unicode Tamil chapter](https://www.unicode.org/versions/Unicode17.0.0/core-spec/chapter-12/#G12322)
+describes the script's vowel and puḷḷi behavior.
+
+| Concept | Tamil | Context |
+| --- | --- | --- |
+| Worker | தொழிலாளர் | Gathering and building unit |
+| Explorer | சாரணர் | Scout, rather than scientific researcher |
+| Warrior | போர்வீரர் | Fighting unit |
+| Player | ஆட்டக்காரர் | Person playing, distinct from a warrior unit |
+| Unit | அலகு | Any unit class |
+| Swarm | கூடு | Unit-producing hive building, rather than a crowd |
+| Inn | உணவகம் | Feeds units and attracts converts |
+| Barracks / Training Camp | படைமுகாம் | Same build-menu control and warrior-training building |
+| Colony | குடியிருப்பு | Settlement |
+| Clearing flag | வள அகற்றும் கொடி | Removes resources, rather than removing the flag |
+| Replay | மறுபதிவு | Recorded match playback |
+| Product credit | வரவு | Usage balance; distinct from debt or contributor acknowledgements |
+| Commander | கட்டளை உதவியாளர் | In-game AI assistance role; Hive Mind remains the product name |
+| Studio | படைப்பகம் | Online authoring workspace |
+| Online instance | சேவையகம் | Independent online service installation |
+
+Keep keyboard key names and protocol identifiers recognizable. Translate terrain
+controls from their effects, and preserve distinctions between requested workers
+and workers present, capabilities and completed actions, and unit conversion and
+religious conversion. Account wording such as கணக்கு and கடவுச்சொல் follows
+established [Tamil software usage](https://support.google.com/accounts/answer/27441?hl=ta).
+Shared mute/unmute controls cover both audio and chat moderation; keep their
+Tamil action labels neutral rather than making every occurrence audio-specific.
 
 ## Anatomy of a screen
 

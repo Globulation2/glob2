@@ -2942,5 +2942,21 @@
   "Clear filters": "Очисти филтере",
   "No results match these filters.": "Нема резултата који одговарају овим филтерима.",
   "Results: {value0}": "Резултати: {value0}",
-  "Game text field": "Поље за унос текста у игри"
+  "Game text field": "Поље за унос текста у игри",
+  "Front view": "Поглед спреда",
+  "Back view": "Поглед отпозади",
+  "Left view": "Поглед слева",
+  "Right view": "Поглед здесна",
+  "Walk": "Ходање",
+  "Swim": "Пливање",
+  "Harvest": "Прикупљање ресурса",
+  "Fight": "Борба",
+  "Fly": "Лети",
+  "Static pose": "Статична поза",
+  "Artist": "Уметник",
+  "Started": "Започето",
+  "Accounts per day": "Налози дневно",
+  "Matches per day": "Утакмице дневно",
+  "Guest accounts": "Гостујући налози",
+  "Registered accounts": "Регистровани налози"
 }

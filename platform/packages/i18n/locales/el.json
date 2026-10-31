@@ -2915,5 +2915,21 @@
   "Clear filters": "Εκκαθάριση φίλτρων",
   "No results match these filters.": "Κανένα αποτέλεσμα δεν αντιστοιχεί σε αυτά τα φίλτρα.",
   "Results: {value0}": "Αποτελέσματα: {value0}",
-  "Game text field": "Πεδίο εισαγωγής κειμένου στο παιχνίδι"
+  "Game text field": "Πεδίο εισαγωγής κειμένου στο παιχνίδι",
+  "Front view": "Μπροστινή όψη",
+  "Back view": "Πίσω όψη",
+  "Left view": "Αριστερή όψη",
+  "Right view": "Δεξιά όψη",
+  "Walk": "Περπάτημα",
+  "Swim": "Κολύμβηση",
+  "Harvest": "Συλλογή πόρων",
+  "Fight": "Μάχη",
+  "Fly": "Πτήση",
+  "Static pose": "Στατική στάση",
+  "Artist": "Καλλιτέχνης",
+  "Started": "Ξεκίνησε",
+  "Accounts per day": "Λογαριασμοί ανά ημέρα",
+  "Matches per day": "Αγώνες ανά ημέρα",
+  "Guest accounts": "Λογαριασμοί επισκεπτών",
+  "Registered accounts": "Εγγεγραμμένοι λογαριασμοί"
 }

@@ -2969,5 +2969,21 @@
   "Clear filters": "Wyczyść filtry",
   "No results match these filters.": "Brak wyników pasujących do tych filtrów.",
   "Results: {value0}": "Wyniki: {value0}",
-  "Game text field": "Pole tekstowe w grze"
+  "Game text field": "Pole tekstowe w grze",
+  "Front view": "Widok z przodu",
+  "Back view": "Widok z tyłu",
+  "Left view": "Widok z lewej",
+  "Right view": "Widok z prawej",
+  "Walk": "Chodzić",
+  "Swim": "Pływać",
+  "Harvest": "Zbieranie zasobów",
+  "Fight": "Walka",
+  "Fly": "Latać",
+  "Static pose": "Pozycja statyczna",
+  "Artist": "Artysta",
+  "Started": "Rozpoczęto",
+  "Accounts per day": "Konta dziennie",
+  "Matches per day": "Mecze dziennie",
+  "Guest accounts": "Konta gości",
+  "Registered accounts": "Zarejestrowane konta"
 }

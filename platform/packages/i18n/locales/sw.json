@@ -2915,5 +2915,21 @@
   "Clear filters": "Futa vichujio",
   "No results match these filters.": "Hakuna matokeo yanayolingana na vichujio hivi.",
   "Results: {value0}": "Matokeo: {value0}",
-  "Game text field": "Sehemu ya kuingiza maandishi mchezoni"
+  "Game text field": "Sehemu ya kuingiza maandishi mchezoni",
+  "Front view": "Mwonekano wa mbele",
+  "Back view": "Mwonekano wa nyuma",
+  "Left view": "Mwonekano wa kushoto",
+  "Right view": "Mwonekano wa kulia",
+  "Walk": "Tembea",
+  "Swim": "Kuogelea",
+  "Harvest": "Kukusanya rasilimali",
+  "Fight": "Pambana",
+  "Fly": "Kuruka",
+  "Static pose": "Mkao tuli",
+  "Artist": "Msanii",
+  "Started": "Imeanza",
+  "Accounts per day": "Akaunti kwa siku",
+  "Matches per day": "Mechi kwa siku",
+  "Guest accounts": "Akaunti za wageni",
+  "Registered accounts": "Akaunti zilizosajiliwa"
 }

@@ -2942,5 +2942,21 @@
   "Clear filters": "Neteja els filtres",
   "No results match these filters.": "Cap resultat coincideix amb aquests filtres.",
   "Results: {value0}": "Resultats: {value0}",
-  "Game text field": "Camp de text del joc"
+  "Game text field": "Camp de text del joc",
+  "Front view": "Vista frontal",
+  "Back view": "Vista posterior",
+  "Left view": "Vista esquerra",
+  "Right view": "Vista dreta",
+  "Walk": "Caminada",
+  "Swim": "Nedar",
+  "Harvest": "Recollir recursos",
+  "Fight": "Lluita",
+  "Fly": "Volar",
+  "Static pose": "Postura estàtica",
+  "Artist": "Artista",
+  "Started": "Iniciat",
+  "Accounts per day": "Comptes per dia",
+  "Matches per day": "Partides per dia",
+  "Guest accounts": "Comptes de convidat",
+  "Registered accounts": "Comptes registrats"
 }

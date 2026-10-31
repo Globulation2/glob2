@@ -2888,5 +2888,21 @@
   "Clear filters": "清除篩選條件",
   "No results match these filters.": "沒有符合這些篩選條件的結果。",
   "Results: {value0}": "結果: {value0}",
-  "Game text field": "遊戲內文字輸入欄位"
+  "Game text field": "遊戲內文字輸入欄位",
+  "Front view": "正面視圖",
+  "Back view": "背面視圖",
+  "Left view": "左側視圖",
+  "Right view": "右側視圖",
+  "Walk": "走",
+  "Swim": "游泳",
+  "Harvest": "採集資源",
+  "Fight": "戰鬥",
+  "Fly": "飛",
+  "Static pose": "靜態姿勢",
+  "Artist": "音樂人",
+  "Started": "開始",
+  "Accounts per day": "每日帳戶數",
+  "Matches per day": "每日比賽場次",
+  "Guest accounts": "訪客帳戶",
+  "Registered accounts": "註冊帳戶"
 }

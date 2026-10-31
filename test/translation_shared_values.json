@@ -805,6 +805,18 @@
       "Ping",
       "Sep",
       "–"
+    ],
+    "texts.ta.txt": [
+      "%0 KB",
+      "1 vs 1",
+      "256 × 256",
+      "AI: %0",
+      "CPU %0%",
+      "FFA",
+      "Globulation 2 Discord",
+      "Hive Mind",
+      "P %0/%1/%2",
+      "–"
     ]
   }
 }

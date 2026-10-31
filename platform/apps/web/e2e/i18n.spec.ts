@@ -30,7 +30,25 @@ for (const locale of locales) {
     await expect(page.locator('#hero-title')).toHaveText(heading);
     await expect(page.getByRole('link', { name: /Isles of Plenty/ })).toBeVisible();
     await expect(page.locator('.app-sidebar .nav a[href="/maps"]')).toBeVisible();
-    await expect(page.locator('.app-sidebar .nav a')).toHaveCount(10);
+    // Optional libraries depend on instance capabilities. The core navigation
+    // must survive language changes regardless of those feature flags.
+    expect(
+      await page
+        .locator('.app-sidebar .nav a')
+        .evaluateAll((links) => links.map((link) => link.getAttribute('href'))),
+    ).toEqual(
+      expect.arrayContaining([
+        '/',
+        '/leaderboard',
+        '/players',
+        '/matches',
+        '/maps',
+        '/sets',
+        '/ais',
+        '/buildings',
+        '/music',
+      ]),
+    );
     const signIn = page.locator('.app-sidebar .sidebar-account a[href="/signin"]');
     await expect(signIn).toBeVisible();
     expect(
@@ -41,6 +59,7 @@ for (const locale of locales) {
       () => document.documentElement.scrollWidth - document.documentElement.clientWidth,
     );
     expect(overflow).toBeLessThanOrEqual(1);
+    await page.evaluate(() => document.fonts.ready);
     let screenshotPath: string | undefined;
     if (process.env.SCREENSHOT_DIR) {
       const directory = resolve(process.env.SCREENSHOT_DIR, info.project.name);

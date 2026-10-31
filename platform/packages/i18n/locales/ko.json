@@ -2888,5 +2888,21 @@
   "Clear filters": "필터 지우기",
   "No results match these filters.": "이 필터와 일치하는 결과가 없습니다.",
   "Results: {value0}": "결과: {value0}",
-  "Game text field": "게임 내 텍스트 입력란"
+  "Game text field": "게임 내 텍스트 입력란",
+  "Front view": "앞면 보기",
+  "Back view": "뒷면 보기",
+  "Left view": "왼쪽 보기",
+  "Right view": "오른쪽 보기",
+  "Walk": "걷다",
+  "Swim": "헤엄",
+  "Harvest": "자원 수집",
+  "Fight": "싸움",
+  "Fly": "날기",
+  "Static pose": "정적인 자세",
+  "Artist": "아티스트",
+  "Started": "시작됨",
+  "Accounts per day": "하루 계정 수",
+  "Matches per day": "하루 경기 수",
+  "Guest accounts": "게스트 계정",
+  "Registered accounts": "등록된 계정"
 }

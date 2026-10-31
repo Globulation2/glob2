@@ -2915,5 +2915,21 @@
   "Clear filters": "Forigi filtrilojn",
   "No results match these filters.": "Neniuj rezultoj kongruas kun ĉi tiuj filtriloj.",
   "Results: {value0}": "Rezultoj: {value0}",
-  "Game text field": "Teksta enigokampo en la ludo"
+  "Game text field": "Teksta enigokampo en la ludo",
+  "Front view": "Antaŭa vido",
+  "Back view": "Malantaŭa vido",
+  "Left view": "Maldekstra vido",
+  "Right view": "Dekstra vido",
+  "Walk": "Piediru",
+  "Swim": "Naĝado",
+  "Harvest": "Kolektado de rimedoj",
+  "Fight": "Batalo",
+  "Fly": "Flugado",
+  "Static pose": "Senmova pozo",
+  "Artist": "Artisto",
+  "Started": "Komencita",
+  "Accounts per day": "Kontoj po tago",
+  "Matches per day": "Matĉoj po tago",
+  "Guest accounts": "Gastaj kontoj",
+  "Registered accounts": "Registritaj kontoj"
 }

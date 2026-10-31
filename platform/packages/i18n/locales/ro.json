@@ -2942,5 +2942,21 @@
   "Clear filters": "Șterge filtrele",
   "No results match these filters.": "Niciun rezultat nu corespunde acestor filtre.",
   "Results: {value0}": "Rezultate: {value0}",
-  "Game text field": "Câmp de text în joc"
+  "Game text field": "Câmp de text în joc",
+  "Front view": "Vedere din față",
+  "Back view": "Vedere din spate",
+  "Left view": "Vedere din stânga",
+  "Right view": "Vedere din dreapta",
+  "Walk": "Mers",
+  "Swim": "Înot",
+  "Harvest": "Colectare de resurse",
+  "Fight": "Luptă",
+  "Fly": "Zbura",
+  "Static pose": "Poziție statică",
+  "Artist": "Artist",
+  "Started": "Început",
+  "Accounts per day": "Conturi pe zi",
+  "Matches per day": "Meciuri pe zi",
+  "Guest accounts": "Conturi de oaspeți",
+  "Registered accounts": "Conturi înregistrate"
 }

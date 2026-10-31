@@ -103,6 +103,19 @@ TEST_SUITE("SystemLanguage")
 		CHECK(code("sd-Deva").empty());
 	}
 
+	TEST_CASE("Tamil accepts regional tags only in the supported written script")
+	{
+		CHECK(code("ta") == "ta");
+		CHECK(code("ta", "IN") == "ta");
+		CHECK(code("ta-LK") == "ta");
+		CHECK(code("ta-Taml-IN") == "ta");
+		CHECK(code("ta-Latn").empty());
+		CHECK(code("ta-Taml-Latn").empty());
+		CHECK(code("ta-u-nu-latn") == "ta");
+		CHECK(SystemLanguage::choose({{"ta-IN", ""}, {"en", ""}}, [](const std::string &c) { return c == "ta"; }) == "ta");
+		CHECK(SystemLanguage::choose({{"ta-IN", ""}, {"fr", ""}}, [](const std::string &c) { return c == "fr"; }) == "fr");
+	}
+
 	TEST_CASE("the first available preference wins, then English")
 	{
 		auto all = [](const std::string &) { return true; };
@@ -113,9 +126,16 @@ TEST_SUITE("SystemLanguage")
 		CHECK(SystemLanguage::choose({{"de", ""}, {"fr", ""}}, [](const std::string &c) { return c == "fr"; }) == "fr");
 	}
 
+	TEST_CASE("startup selects installed Tamil and preserves an explicit saved choice")
+	{
+		PreferredLocales locales("ta_LK,en_US");
+		CHECK(startupLanguage("") == "ta");
+		CHECK(startupLanguage("en") == "en");
+	}
+
 	TEST_CASE("startup follows the system only when the profile has no usable language")
 	{
-		PreferredLocales locales("hi_IN,pt_BR,en_US");
+		PreferredLocales locales("xx_XX,pt_BR,en_US");
 		CHECK(startupLanguage("") == "br");
 		CHECK(startupLanguage("no-such-language") == "br");
 		CHECK(startupLanguage("fr") == "fr");

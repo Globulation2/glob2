@@ -10,6 +10,7 @@
 #include <TrueTypeFont.h>
 #include <BidiText.h>
 #include <StringTable.h>
+#include <ui/TextLayout.h>
 #include <fstream>
 #include <algorithm>
 #include <cstdlib>
@@ -17,6 +18,7 @@
 #include <memory>
 #include <string>
 #include <vector>
+#include <utility>
 
 using GAGCore::TrueTypeFont;
 
@@ -130,6 +132,7 @@ TEST_SUITE("FontKerning")
 		const Sample samples[] = {
 			{"क्षिX", {12, 13}}, {"क्षत्रिX", {9, 21, 22}},
 			{"က္ကX", {9, 10}}, {"ก้X", {6, 7}}, {"o\u0323\u0301X", {5, 6}},
+			{"கிX", {6, 7}}, {"கொX", {6, 7}}, {"க்X", {6, 7}}, {"கொX", {9, 10}},
 		};
 		for (const auto &sample : samples)
 		{
@@ -150,7 +153,7 @@ TEST_SUITE("FontKerning")
 		std::ofstream(files.path / "probe.keys.txt") << "[language-code]\n";
 		std::ofstream listing(files.path / "probe.list.txt");
 		listing << "probe.keys.txt\n";
-		for (const char *code : {"en", "hi", "ur", "sw", "gu", "pa-guru", "ar", "fa"})
+		for (const char *code : {"en", "hi", "ur", "sw", "ta", "gu", "pa-guru", "ar", "fa"})
 		{
 			listing << "probe." << code << ".txt\n";
 			std::ofstream(files.path / (std::string("probe.") + code + ".txt")) << "[language-code]\n" << code << '\n';
@@ -160,11 +163,12 @@ TEST_SUITE("FontKerning")
 		REQUIRE(strings->load("probe.list.txt"));
 		for (unsigned size : {10u, 13u, 20u})
 		{
+			strings->setLang(strings->getLangCode("en"));
 			TrueTypeFont font("data/fonts/sans.ttf", size);
 			const int originalHeight = font.getStringHeight("");
 			auto original = font.rasterizeString("Menu", 1.f);
 			REQUIRE(original);
-			for (const char *code : {"hi", "ur", "sw", "gu", "pa-guru"})
+			for (const char *code : {"hi", "ur", "sw", "ta", "gu", "pa-guru"})
 			{
 				strings->setLang(strings->getLangCode(code));
 				const int lineHeight = font.getStringHeight("");
@@ -175,6 +179,7 @@ TEST_SUITE("FontKerning")
 				CHECK(menu->getH() == lineHeight);
 				CAPTURE(code); CAPTURE(size);
 				const char *sample = std::string(code) == "hi" ? "क्षत्रिय खिलाड़ी" :
+					std::string(code) == "ta" ? "தமிழ் வீரர் 12 / 100 Glob2" :
 					std::string(code) == "gu" ? "ગુજરાતી ખેલાડી" :
 					std::string(code) == "pa-guru" ? "ਪੰਜਾਬੀ ਖਿਡਾਰੀ" :
 					std::string(code) == "sw" ? "Nina haki ya kushiriki rekodi hizi na michoro hii kwa leseni iliyochaguliwa." : "کھلاڑی 12 / 100";
@@ -209,6 +214,63 @@ TEST_SUITE("FontKerning")
 					auto raw = font.rasterizeString("Menu", scale);
 					REQUIRE(raw);
 					CHECK(font.getStringDrawSize("Menu", scale).first == doctest::Approx(raw->getW() / scale));
+				}
+			}
+			// Return to Tamil after the Latin/legacy path and a reload: empty
+			// row labels and actual Tamil text must agree on their line height.
+			strings->setLang(strings->getLangCode("ta"));
+			const int tamilHeight = font.getStringHeight("");
+			CHECK(tamilHeight >= originalHeight);
+			REQUIRE(font.reload());
+			CHECK(font.getStringHeight("") == tamilHeight);
+			CHECK(font.getStringHeight("தமிழ் வீரர்") <= tamilHeight);
+		}
+	}
+
+	TEST_CASE("Tamil vowels and pulli remain whole when a narrow label wraps")
+	{
+		TtfScope ttf;
+		glob2test::ToolkitScope toolkit;
+		GAGCore::Toolkit::getFileManager()->addDir(glob2test::sourceRoot().string());
+		struct Measurer : GAGGUI::ui::TextMeasurer
+		{
+			TrueTypeFont &font;
+			explicit Measurer(TrueTypeFont &font) : font(font) {}
+			int width(GAGGUI::ui::FontRole, const std::string &text) const override { return font.getStringWidth(text); }
+			int lineHeight(GAGGUI::ui::FontRole) const override { return font.getStringHeight(""); }
+			std::vector<std::size_t> clusterEnds(GAGGUI::ui::FontRole, const std::string &text) const override
+			{ return font.getStringClusterEnds(text); }
+		};
+		for (unsigned size : {10u, 13u, 20u})
+		{
+			TrueTypeFont font("data/fonts/sans.ttf", size);
+			Measurer measurer(font);
+			// Unicode-equivalent vowel spellings must be shaped identically,
+			// including pre-base signs whose display order differs from storage.
+			for (const auto &pair : {std::pair{"கொ", "கொ"}, std::pair{"கோ", "கோ"}, std::pair{"கௌ", "கௌ"}})
+				for (float scale : {1.f, 1.5f, 2.f})
+				{
+					CAPTURE(size); CAPTURE(scale); CAPTURE(pair.first);
+					auto composed = font.rasterizeString(pair.first, scale);
+					auto decomposed = font.rasterizeString(pair.second, scale);
+					REQUIRE(composed); REQUIRE(decomposed);
+					CHECK(samePixels(composed->getSDLSurface(), decomposed->getSDLSurface()));
+				}
+			for (const char *cluster : {"கி", "கீ", "கு", "கூ", "கெ", "கே", "கை", "கொ", "கோ", "கௌ", "க்", "கொ"})
+			{
+				CAPTURE(size); CAPTURE(cluster);
+				const std::string text = std::string(cluster) + "X";
+				CHECK(font.hasGlyphsFor(text));
+				const auto lines = GAGGUI::ui::wrapText(measurer, GAGGUI::ui::FontRole::Body, text, 1);
+				REQUIRE(lines.size() == 2);
+				CHECK(lines[0] == cluster);
+				CHECK(lines[1] == "X");
+				for (float scale : {1.f, 1.1f, 1.5f, 2.f})
+				{
+					CAPTURE(scale);
+					auto raster = font.rasterizeString(text, scale);
+					REQUIRE(raster);
+					CHECK(font.getStringDrawSize(text, scale).first == doctest::Approx(font.getStringWidth(text)));
 				}
 			}
 		}

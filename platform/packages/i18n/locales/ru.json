@@ -2969,5 +2969,21 @@
   "Clear filters": "Сбросить фильтры",
   "No results match these filters.": "Нет результатов, соответствующих этим фильтрам.",
   "Results: {value0}": "Результаты: {value0}",
-  "Game text field": "Поле ввода текста в игре"
+  "Game text field": "Поле ввода текста в игре",
+  "Front view": "Вид спереди",
+  "Back view": "Вид сзади",
+  "Left view": "Вид слева",
+  "Right view": "Вид справа",
+  "Walk": "Ходить",
+  "Swim": "Плавать",
+  "Harvest": "Сбор ресурсов",
+  "Fight": "Драться",
+  "Fly": "Летать",
+  "Static pose": "Статическая поза",
+  "Artist": "Исполнитель",
+  "Started": "Началось",
+  "Accounts per day": "Аккаунты в день",
+  "Matches per day": "Матчи в день",
+  "Guest accounts": "Гостевые аккаунты",
+  "Registered accounts": "Зарегистрированные аккаунты"
 }

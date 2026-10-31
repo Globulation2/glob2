@@ -3023,5 +3023,21 @@
   "Clear filters": "مسح المرشحات",
   "No results match these filters.": "لا توجد نتائج تطابق هذه المرشحات.",
   "Results: {value0}": "النتائج: {value0}",
-  "Game text field": "حقل إدخال النص في اللعبة"
+  "Game text field": "حقل إدخال النص في اللعبة",
+  "Front view": "منظر أمامي",
+  "Back view": "منظر خلفي",
+  "Left view": "منظر من اليسار",
+  "Right view": "منظر من اليمين",
+  "Walk": "مشي",
+  "Swim": "السباحة",
+  "Harvest": "جمع الموارد",
+  "Fight": "قتال",
+  "Fly": "طيران",
+  "Static pose": "وضع ثابت",
+  "Artist": "فنان",
+  "Started": "بدأ",
+  "Accounts per day": "عدد الحسابات في اليوم",
+  "Matches per day": "عدد المباريات في اليوم",
+  "Guest accounts": "حسابات الضيوف",
+  "Registered accounts": "الحسابات المسجلة"
 }

@@ -2969,5 +2969,21 @@
   "Clear filters": "Počisti filtre",
   "No results match these filters.": "Noben rezultat ne ustreza tem filtrom.",
   "Results: {value0}": "Rezultati: {value0}",
-  "Game text field": "Besedilno polje v igri"
+  "Game text field": "Besedilno polje v igri",
+  "Front view": "Pogled od spredaj",
+  "Back view": "Pogled od zadaj",
+  "Left view": "Pogled z leve",
+  "Right view": "Pogled z desne",
+  "Walk": "Hoja",
+  "Swim": "Plavanje",
+  "Harvest": "Zbiranje virov",
+  "Fight": "Boj",
+  "Fly": "Letenje",
+  "Static pose": "Statična poza",
+  "Artist": "Umetnik",
+  "Started": "Začelo",
+  "Accounts per day": "Računi na dan",
+  "Matches per day": "Tekme na dan",
+  "Guest accounts": "Gostujoči računi",
+  "Registered accounts": "Registrirani računi"
 }

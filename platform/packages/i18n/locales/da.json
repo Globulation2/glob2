@@ -2915,5 +2915,21 @@
   "Clear filters": "Ryd filtre",
   "No results match these filters.": "Ingen resultater matcher disse filtre.",
   "Results: {value0}": "Resultater: {value0}",
-  "Game text field": "Tekstfelt i spillet"
+  "Game text field": "Tekstfelt i spillet",
+  "Front view": "Set forfra",
+  "Back view": "Set bagfra",
+  "Left view": "Set fra venstre",
+  "Right view": "Set fra højre",
+  "Walk": "Gå",
+  "Swim": "Svømme",
+  "Harvest": "Indsamling af ressourcer",
+  "Fight": "Kæmpe",
+  "Fly": "Flyve",
+  "Static pose": "Statisk stilling",
+  "Artist": "Kunstner",
+  "Started": "Startet",
+  "Accounts per day": "Konti pr. dag",
+  "Matches per day": "Kampe pr. dag",
+  "Guest accounts": "Gæstekonti",
+  "Registered accounts": "Registrerede konti"
 }

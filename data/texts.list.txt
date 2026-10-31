@@ -35,3 +35,4 @@ data/texts.ko.txt
 data/texts.hi.txt
 data/texts.ur.txt
 data/texts.sw.txt
+data/texts.ta.txt

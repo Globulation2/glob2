@@ -2915,5 +2915,21 @@
   "Clear filters": "Szűrők törlése",
   "No results match these filters.": "Nincs ezeknek a szűrőknek megfelelő találat.",
   "Results: {value0}": "Találatok: {value0}",
-  "Game text field": "Játékon belüli szövegmező"
+  "Game text field": "Játékon belüli szövegmező",
+  "Front view": "Elölnézet",
+  "Back view": "Hátulnézet",
+  "Left view": "Bal oldali nézet",
+  "Right view": "Jobb oldali nézet",
+  "Walk": "Séta",
+  "Swim": "Úszás",
+  "Harvest": "Erőforrásgyűjtés",
+  "Fight": "Harc",
+  "Fly": "Repül",
+  "Static pose": "Statikus póz",
+  "Artist": "Művész",
+  "Started": "Elindítva",
+  "Accounts per day": "Fiókok naponta",
+  "Matches per day": "Meccsek naponta",
+  "Guest accounts": "Vendégfiókok",
+  "Registered accounts": "Regisztrált fiókok"
 }

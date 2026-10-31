@@ -2915,5 +2915,21 @@
   "Clear filters": "Clear filters",
   "No results match these filters.": "No results match these filters.",
   "Results: {value0}": "Results: {value0}",
-  "Game text field": "Game text field"
+  "Game text field": "Game text field",
+  "Front view": "Front view",
+  "Back view": "Back view",
+  "Left view": "Left view",
+  "Right view": "Right view",
+  "Walk": "Walk",
+  "Swim": "Swim",
+  "Harvest": "Harvest",
+  "Fight": "Fight",
+  "Fly": "Fly",
+  "Static pose": "Static pose",
+  "Artist": "Artist",
+  "Started": "Started",
+  "Accounts per day": "Accounts per day",
+  "Matches per day": "Matches per day",
+  "Guest accounts": "Guest accounts",
+  "Registered accounts": "Registered accounts"
 }

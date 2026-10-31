@@ -2969,5 +2969,21 @@
   "Clear filters": "Vymazat filtry",
   "No results match these filters.": "Těmto filtrům neodpovídají žádné výsledky.",
   "Results: {value0}": "Výsledky: {value0}",
-  "Game text field": "Textové pole ve hře"
+  "Game text field": "Textové pole ve hře",
+  "Front view": "Pohled zepředu",
+  "Back view": "Pohled zezadu",
+  "Left view": "Pohled zleva",
+  "Right view": "Pohled zprava",
+  "Walk": "Chůze",
+  "Swim": "Plavat",
+  "Harvest": "Sběr surovin",
+  "Fight": "Boj",
+  "Fly": "Létat",
+  "Static pose": "Statická pozice",
+  "Artist": "Umělec",
+  "Started": "Zahájeno",
+  "Accounts per day": "Účty za den",
+  "Matches per day": "Zápasy za den",
+  "Guest accounts": "Účty hostů",
+  "Registered accounts": "Registrované účty"
 }

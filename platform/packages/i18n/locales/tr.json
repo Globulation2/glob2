@@ -2915,5 +2915,21 @@
   "Clear filters": "Filtreleri temizle",
   "No results match these filters.": "Bu filtrelerle eşleşen sonuç yok.",
   "Results: {value0}": "Sonuçlar: {value0}",
-  "Game text field": "Oyun içi metin alanı"
+  "Game text field": "Oyun içi metin alanı",
+  "Front view": "Ön görünüm",
+  "Back view": "Arka görünüm",
+  "Left view": "Sol görünüm",
+  "Right view": "Sağ görünüm",
+  "Walk": "Yürümek",
+  "Swim": "Yüzmek",
+  "Harvest": "Kaynak toplama",
+  "Fight": "Dövüş",
+  "Fly": "Uçmak",
+  "Static pose": "Statik poz",
+  "Artist": "Sanatçı",
+  "Started": "Başladı",
+  "Accounts per day": "Günlük hesap sayısı",
+  "Matches per day": "Günlük maç sayısı",
+  "Guest accounts": "Misafir hesapları",
+  "Registered accounts": "Kayıtlı hesaplar"
 }
