@@ -1,7 +1,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-#include "doctest.h"
+#include "support/Glob2Test.h"
 #include <GameplayRecording.h>
 #include <filesystem>
+#include <fstream>
 
 TEST_SUITE("RecordingDisabled")
 {
@@ -12,8 +13,8 @@ TEST_SUITE("RecordingDisabled")
         CHECK_FALSE(available());
         CHECK_FALSE(toggle());
         Recorder local;
-        const auto path = std::filesystem::temp_directory_path() / "glob2-disabled-recording.mp4";
-        const bool existed = std::filesystem::exists(path);
+        const auto path = glob2test::artifactDir() / "disabled-recording.mp4";
+        { std::ofstream existing(path); existing << "preserve existing file"; }
         CHECK_FALSE(local.start(path.string()));
         CHECK_FALSE(local.active());
         CHECK_FALSE(local.wantsFrame());
@@ -30,6 +31,10 @@ TEST_SUITE("RecordingDisabled")
         recoverFile(path.string());
         deleteFile(path.string());
         CHECK(filesStatus().files.empty());
-        CHECK(std::filesystem::exists(path) == existed);
+        std::ifstream existing(path);
+        std::string contents;
+        std::getline(existing, contents);
+        CHECK(contents == "preserve existing file");
+        CHECK_FALSE(std::filesystem::exists(path.string() + ".recording"));
     }
 }
