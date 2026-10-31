@@ -22,7 +22,12 @@ TEST_SUITE("InstalledPaths")
         glob2test::ScopedEnvironment shaders("GLOB2_RENDERER_SHADER_DIR", "/explicit/shader/override");
         CHECK(GAGCore::GraphicContext::rendererShaderDirectory() == "/explicit/shader/override");
         {
-            glob2test::ScopedEnvironment noShaderOverride("GLOB2_RENDERER_SHADER_DIR", nullptr);
+            // ScopedEnvironment requires a value when entering, and restores
+            // both environment stores on exit. Clear both inside that guard
+            // to exercise the fallback rather than an empty explicit override.
+            glob2test::ScopedEnvironment restoreShaderOverride("GLOB2_RENDERER_SHADER_DIR", "temporary");
+            REQUIRE(unsetenv("GLOB2_RENDERER_SHADER_DIR") == 0);
+            SDL_UnsetEnvironmentVariable(SDL_GetEnvironment(), "GLOB2_RENDERER_SHADER_DIR");
             CHECK(GAGCore::GraphicContext::rendererShaderDirectory().find(glob2test::sourceRoot().string()) == std::string::npos);
         }
     }
