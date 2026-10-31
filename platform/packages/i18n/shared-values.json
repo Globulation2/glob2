@@ -604,7 +604,8 @@
     "✕",
     "＋",
     "V",
-    "{count} {status}"
+    "{count} {status}",
+    "Expansion"
   ],
   "ru": [
     " ({slot0})",
@@ -1242,7 +1243,8 @@
     "♥ {slot0} · {slot1}",
     "✕",
     "⠿ {slot0}",
-    "＋"
+    "＋",
+    "Experimental"
   ],
   "it": [
     " / {slot0}",
@@ -1530,7 +1532,8 @@
     "{count} {status}",
     "{slot0} · {count} image",
     "{slot0} · {count} images",
-    "{value0} {value1} attention"
+    "{value0} {value1} attention",
+    "Expansion"
   ],
   "el": [
     " · ",
@@ -1825,7 +1828,8 @@
     "♥ {slot0} · {slot1}",
     "✕",
     "⠿ {slot0}",
-    "＋"
+    "＋",
+    "Experimental"
   ],
   "pt-BR": [
     " · ",
@@ -1919,7 +1923,8 @@
     "♥ {slot0} · {slot1}",
     "✕",
     "⠿ {slot0}",
-    "＋"
+    "＋",
+    "Experimental"
   ],
   "ko": [
     " ({slot0})",
@@ -2814,7 +2819,8 @@
     "♥ {slot0} · {slot1}",
     "✕",
     "⠿ {slot0}",
-    "＋"
+    "＋",
+    "Expansion"
   ],
   "es": [
     " / {slot0}",
@@ -2906,7 +2912,8 @@
     "♥ {slot0} · {slot1}",
     "✕",
     "⠿ {slot0}",
-    "＋"
+    "＋",
+    "Experimental"
   ],
   "ar": [
     " ({slot0})",

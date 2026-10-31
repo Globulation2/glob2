@@ -2915,5 +2915,11 @@
   "Clear filters": "ফিল্টার মুছুন",
   "No results match these filters.": "এই ফিল্টারগুলোর সাথে কোনো ফলাফল মেলে না।",
   "Results: {value0}": "ফলাফল: {value0}",
-  "Game text field": "খেলার লেখার ঘর"
+  "Game text field": "খেলার লেখার ঘর",
+  "Rush": "দ্রুত আক্রমণ",
+  "Defensive": "প্রতিরক্ষামূলক",
+  "Economy": "অর্থনীতি",
+  "Expansion": "সম্প্রসারণ",
+  "Experimental": "পরীক্ষামূলক",
+  "Beginner-friendly": "শিক্ষানবিসদের জন্য সহজ"
 }

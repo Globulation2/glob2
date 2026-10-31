@@ -2915,5 +2915,11 @@
   "Clear filters": "Filtreleri temizle",
   "No results match these filters.": "Bu filtrelerle eşleşen sonuç yok.",
   "Results: {value0}": "Sonuçlar: {value0}",
-  "Game text field": "Oyun içi metin alanı"
+  "Game text field": "Oyun içi metin alanı",
+  "Rush": "Hızlı saldırı",
+  "Defensive": "Savunmacı",
+  "Economy": "Ekonomi",
+  "Expansion": "Genişleme",
+  "Experimental": "Deneysel",
+  "Beginner-friendly": "Yeni başlayanlara uygun"
 }

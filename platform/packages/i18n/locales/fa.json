@@ -2915,5 +2915,11 @@
   "Clear filters": "پاک کردن فیلترها",
   "No results match these filters.": "هیچ نتیجه‌ای با این فیلترها مطابقت ندارد.",
   "Results: {value0}": "نتایج: {value0}",
-  "Game text field": "کادر ورود متن در بازی"
+  "Game text field": "کادر ورود متن در بازی",
+  "Rush": "یورش سریع",
+  "Defensive": "دفاعی",
+  "Economy": "اقتصاد",
+  "Expansion": "گسترش‌گرا",
+  "Experimental": "آزمایشی",
+  "Beginner-friendly": "مناسب تازه‌کارها"
 }

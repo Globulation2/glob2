@@ -2915,5 +2915,11 @@
   "Clear filters": "Ryd filtre",
   "No results match these filters.": "Ingen resultater matcher disse filtre.",
   "Results: {value0}": "Resultater: {value0}",
-  "Game text field": "Tekstfelt i spillet"
+  "Game text field": "Tekstfelt i spillet",
+  "Rush": "Hurtigt angreb",
+  "Defensive": "Defensiv",
+  "Economy": "Økonomi",
+  "Expansion": "Ekspansion",
+  "Experimental": "Eksperimentel",
+  "Beginner-friendly": "Begyndervenlig"
 }

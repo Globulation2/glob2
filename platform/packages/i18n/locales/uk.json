@@ -2969,5 +2969,11 @@
   "Clear filters": "Очистити фільтри",
   "No results match these filters.": "Немає результатів, що відповідають цим фільтрам.",
   "Results: {value0}": "Результати: {value0}",
-  "Game text field": "Поле введення тексту в грі"
+  "Game text field": "Поле введення тексту в грі",
+  "Rush": "Швидка атака",
+  "Defensive": "Оборонний",
+  "Economy": "Економіка",
+  "Expansion": "Розвиток",
+  "Experimental": "Експериментальний",
+  "Beginner-friendly": "Для початківців"
 }
