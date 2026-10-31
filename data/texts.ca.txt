@@ -3102,8 +3102,6 @@ Esborra
 Deixa anar sobre terreny vàlid per col·locar
 [Paint on the map; two fingers move]
 Pinta al mapa; mou amb dos dits
-[Tutorial ▸]
-Tutorial ▸
 [Back to tools]
 Torna a les eines
 [Starvation overlay]
@@ -6210,246 +6208,6 @@ No s’ha pogut exportar l’enregistrament.
 Suprimeix l’enregistrament
 [recording refresh]
 Actualitza
-[tutorial part1 message 1]
-Benvingut a Globulation 2! Aquestes quatre missions ensenyen a gestionar una colònia. Desa la partida al menú del joc i reprèn-la des del menú principal. Prem Espai o toca D’acord per continuar. Consulta els missatges anteriors a l’historial de missatges.
-[tutorial part1 message 2]
-Comences amb una Granja i un treballador. Observem com col·laboren.
-[tutorial part1 message 3]
-El treballador cull blat i el porta a la Granja. La Granja consumeix blat per produir unitats noves i és essencial per a la colònia.
-[tutorial part1 message 4]
-Selecciona el teu glòbul, la unitat mòbil, amb un clic esquerre o un toc.
-[tutorial part1 message 5]
-La informació de la unitat mostra com disminueix la reserva d’aliment: té gana. Si les barres d’aliment són visibles, la blava sota la unitat indica la reserva.
-[tutorial part1 message 6]
-Els glòbuls mengen a les Despenses. Treu la selecció amb un clic dret o tocant terreny buit en una pantalla tàctil.
-[tutorial part1 message 7]
-Obre els controls de construcció, tria Despensa i col·loca-la prop del blat. Segueix el recorregut del treballador si no el trobes. En pantalla tàctil, fes servir Construcció i confirma un lloc vàlid. Surt de la col·locació amb un clic dret o Cancel·la.
-[tutorial part1 message 8]
-Molt bé! El solar de la Despensa està col·locat.
-[tutorial part1 message 9]
-Un treballador de la Granja pot construir la Despensa. Recull fusta dels arbres propers i la porta al solar. Espera que acabin les obres.
-[tutorial part1 message 10]
-La Despensa acabada necessita blat. Un treballador assignat el cull, com per a la Granja.
-[tutorial part1 message 11]
-La barra groga de la Despensa puja amb els lliuraments de blat. Indica les existències.
-[tutorial part1 message 12]
-Ara aprendrem a assignar feina.
-[tutorial part1 message 13]
-Un treballador proveeix la Granja i un altre la Despensa. Poden interrompre la feina per menjar. És normal.
-[tutorial part1 message 14]
-Selecciona la Granja i busca l’assignació de treballadors: Treballant a l’ordinador, o assignats i objectiu a la pantalla tàctil. L’objectiu indica quants treballadors vols a l’edifici.
-[tutorial part1 message 15]
-Posa l’objectiu de treballadors de la Granja a 0. Després selecciona la Despensa i fes el mateix.
-[tutorial part1 message 16]
-Els treballadors estan inactius, però continuen menjant. Sense treballadors assignats, la Despensa acabarà sense blat.
-[tutorial part1 message 17]
-Un glòbul sense menjar perd salut i pot morir. Un Hospital cura les ferides, però també cal proveir les Despenses.
-[tutorial part1 message 18]
-Construeix un Hospital. No necessita blat, així que col·loca’l prop de la fusta o en un punt central al costat de la Granja.
-[tutorial part1 message 19]
-Selecciona el solar de l’Hospital i posa l’objectiu a 2 treballadors per acabar abans.
-[tutorial part1 message 20]
-L’Hospital està llest. Els glòbuls ferits poden recuperar-hi la salut.
-[tutorial part1 message 21]
-Les zones negres no s’han explorat. Les unitats revelen el terreny proper en moure’s. Els treballadors segueixen les seves feines; els exploradors són més adequats per descobrir el mapa.
-[tutorial part1 message 22]
-Selecciona la Granja i busca les proporcions de producció de treballadors, exploradors i guerrers. Puja la dels exploradors a 1.
-[tutorial part1 message 23]
-Amb treballadors i exploradors a 1, la Granja en produeix quantitats iguals amb el temps. Posa els treballadors a 0 per produir només exploradors.
-[tutorial part1 message 24]
-Torna a posar l’objectiu de treballadors assignats a la Granja a 1 perquè rebi blat.
-[tutorial part1 message 25]
-Posa també l’objectiu de la Despensa a 1 treballador. La colònia necessita menjar regularment.
-[tutorial part1 message 26]
-Espera que la Granja produeixi un explorador.
-[tutorial part1 message 27]
-L’explorador vola al voltant de la colònia i revela terreny. Deixa que la Granja en produeixi un segon abans de continuar.
-[tutorial part1 message 28]
-Selecciona la Granja. Posa la proporció d’exploradors a 0 i la de treballadors a 1 per reprendre’n la producció.
-[tutorial part2 message 1]
-Hi ha pedra a l’est de la base. Recorda aquest lloc per més endavant.
-[tutorial part2 message 2]
-Els arbres al sud de la pedra són tarongers. Selecciona’ls per veure’n els recursos. Tornarem a la fruita més endavant; ara centra’t en la Granja.
-[tutorial part2 message 3]
-Configura la Granja per produir només treballadors: treballadors 1, exploradors i guerrers 0.
-[tutorial part2 message 4]
-Accelerem el creixement. Posa l’objectiu de la Granja a 6 treballadors. Els nous treballadors ocuparan les places disponibles quan neixin.
-[tutorial part2 message 5]
-Començarem les properes feines quan tinguis 8 treballadors. Mantén proveïdes la Granja i la Despensa mentre esperes.
-[tutorial part2 message 6]
-Diversos treballadors proveeixen la Granja. Més lliuraments de blat permeten produir unitats més de pressa.
-[tutorial part2 message 7]
-Cada treballador costa 5 de blat. El transport des de camps llunyans triga; una Granja sol necessitar més proveïdors que una Despensa. Construeix prop del blat quan puguis.
-[tutorial part2 message 8]
-Ja tens almenys 8 treballadors. Redueix l’objectiu de la Granja a 1 per frenar el creixement mentre construïm.
-[tutorial part2 message 9]
-La colònia necessita més places per menjar. Construeix una segona Despensa al nord de la primera.
-[tutorial part2 message 10]
-Assigna treballadors lliures al nou solar. Només necessita 3 de fusta; més de 3 constructors ajudarien poc.
-[tutorial part2 message 11]
-La Despensa acabada reprèn l’objectiu de funcionament, normalment 1 treballador. Els objectius de construcció i proveïment són diferents.
-[tutorial part2 message 12]
-Els treballadors aprenen a córrer més de pressa al Poliesportiu.
-[tutorial part2 message 13]
-Busca el Poliesportiu als controls de construcció. A l’ordinador, passa el punter per la icona per veure’n descripció i cost. En pantalla tàctil, selecciona’l a Construcció. No el col·loquis encara.
-[tutorial part2 message 14]
-El Poliesportiu necessita molta fusta i una mica de pedra. Tria un lloc central i accessible.
-[tutorial part2 message 15]
-Construeix un Poliesportiu, per exemple al sud de la Granja. Deixa espai al voltant per a ampliacions futures.
-[tutorial part2 message 16]
-Assigna entre 5 i 7 treballadors al solar del Poliesportiu. Necessita 7 materials en total.
-[tutorial part2 message 17]
-El Poliesportiu acabat entrena unitats sense lliuraments continus de materials ni blat.
-[tutorial part2 message 18]
-Els glòbuls entren al Poliesportiu. Quan acabin l’entrenament, correran més de pressa.
-[tutorial part2 message 19]
-Selecciona el Poliesportiu per seguir l’entrenament. Els indicadors mostren quant falta perquè les unitats acabin.
-[tutorial part2 message 20]
-Els treballadors entrenats lliuren recursos abans. Continua vigilant el menjar i mantén prou Despenses proveïdes mentre creix la colònia.
-[tutorial part2 message 21]
-Busca el comptador de treballadors a la interfície. El total indica la població; la disponibilitat revela treballadors lliures o places vacants. No assignis més feina de la que pot assumir la colònia.
-[tutorial part2 message 22]
-La interfície també mostra exploradors i guerrers. Consulta’n els comptadors per planificar la producció i les assignacions a banderes.
-[tutorial part2 message 23]
-Tens 2 Despenses bàsiques de 4 places cadascuna: 8 en total. Poden tenir gana més de 8 unitats, així que preveu capacitat per a les cues.
-[tutorial part2 message 24]
-Dues Despenses no bastaran per sempre. Amplia la capacitat abans que l’escassetat esdevingui fam.
-[tutorial part2 message 25]
-Construeix 3 Despenses més prop del blat. Els treballadors afamats deixen de treballar i poden morir. Fes servir treballadors disponibles sense descuidar el proveïment existent.
-[tutorial part2 message 26]
-Acaba 3 Despenses més, fins a tenir-ne 5 en total.
-[tutorial part2 message 27]
-Les Despenses noves adopten els objectius de funcionament, normalment 1 treballador cadascuna. Revisa proveïdors i reserves de blat.
-[tutorial part2 message 28]
-El Poliesportiu millora els desplaçaments terrestres. Ara aprendrem a nedar.
-[tutorial part2 message 29]
-La Piscina ensenya a nedar i necessita fusta. Construeix-ne una a la gran clariana al nord-est de la base, al nord de la pedra. Deixa espai per a millores i creixement dels recursos i assigna treballadors disponibles.
-[tutorial part2 message 30]
-La Piscina ensenya a nedar i necessita fusta. Construeix-ne una a la gran clariana al nord-est de la base, al nord de la pedra. Deixa espai per a millores i creixement dels recursos i assigna treballadors disponibles.
-[tutorial part2 message 31]
-La Piscina està llesta. Els glòbuls ja poden aprendre a nedar.
-[tutorial part2 message 32]
-Selecciona la Piscina per seguir l’entrenament. Una Piscina bàsica entrena 2 glòbuls alhora, igual que un Poliesportiu bàsic.
-[tutorial part2 message 33]
-Els glòbuls entrenats saben nedar. Aviat tindran una feina que exigeix travessar aigua.
-[tutorial part2 message 34]
-Encara queda per aprendre. Si necessites una pausa, desa la partida al menú del joc.
-[tutorial part2 message 35]
-La colònia té menjar i entrenament físic. L’Escola ensenyarà als treballadors les habilitats necessàries per a edificis millors.
-[tutorial part2 message 36]
-L’Escola millora la recol·lecció i la construcció. Necessita algues, que creixen a l’aigua. Els treballadors que saben nedar poden collir-les.
-[tutorial part2 message 37]
-Protegeix els edificis d’entrenament. L’Escola no ha d’estar arran de l’aigua; un lloc protegit a l’interior és més segur.
-[tutorial part2 message 38]
-Construeix l’Escola en un lloc protegit, darrere la Piscina o al sud-oest de la Granja, vora el Poliesportiu. Assigna-hi treballadors disponibles.
-[tutorial part2 message 39]
-Selecciona un edifici per veure’n els treballadors. A l’ordinador, l’acció configurable de mostrar trajectes uneix les unitats amb les destinacions. Consulta’n la drecera a Opcions, Controls. Espera que acabi l’Escola.
-[tutorial part3 message 1]
-La colònia té Despenses, Hospital, Poliesportiu, Piscina i Escola. Preparem ara les defenses.
-[tutorial part3 message 2]
-Encara no hem produït guerrers. Sense ells, la colònia té poca protecció contra atacs.
-[tutorial part3 message 3]
-Selecciona la Granja i posa la proporció de guerrers a 2. Mantén els treballadors a 1 per continuar produint-ne.
-[tutorial part3 message 4]
-La Granja produirà aproximadament 2 guerrers per treballador. Assigna-hi més proveïdors per accelerar la producció.
-[tutorial part3 message 5]
-El primer guerrer està llest i començarà a entrenar. Espera’n un segon abans de continuar.
-[tutorial part3 message 6]
-Els guerrers també fan servir el Poliesportiu i la Piscina. A més, entrenen l’atac a la Caserna.
-[tutorial part3 message 7]
-La Caserna millora força i velocitat d’atac: dany per cop i freqüència dels cops. Els guerrers entrenats poden vèncer grups sense entrenament molt més nombrosos.
-[tutorial part3 message 8]
-Construeix una Caserna prop de la fusta necessària per construir-la.
-[tutorial part3 message 9]
-Assigna treballadors disponibles al solar de la Caserna. Mantén prou proveïdors de menjar i evita crear massa places.
-[tutorial part3 message 10]
-La Caserna està llesta. Els guerrers hi poden entrenar els atacs.
-[tutorial part3 message 11]
-Millorar els edificis també enforteix la colònia.
-[tutorial part3 message 12]
-Els treballadors formats a l’Escola poden construir millores. Selecciona un edifici adequat i tria Millora. Si està malmès, potser cal reparar-lo abans.
-[tutorial part3 message 13]
-Què millorem primer? Les Despenses encara tenen places i poden esperar.
-[tutorial part3 message 14]
-L’Hospital també té lloc. Podem centrar-nos en l’Escola, el Poliesportiu, la Piscina o la Caserna.
-[tutorial part3 message 15]
-Millora primer el Poliesportiu perquè les unitats aprenguin a córrer encara més de pressa.
-[tutorial part3 message 16]
-Selecciona el Poliesportiu i tria Millora. Les unitats de dins han de sortir abans de començar les obres; pot trigar un moment.
-[tutorial part3 message 17]
-Assigna treballadors disponibles a la millora. Només els que tenen la formació escolar necessària poden construir obres de nivell 2.
-[tutorial part3 message 18]
-Espera que acabi la millora. Els edificis avançats necessiten més recursos i temps.
-[tutorial part3 message 19]
-El Poliesportiu de nivell 2 està llest i ocupa més espai. Per això vam deixar lloc: sense espai per ampliar, no es pot millorar.
-[tutorial part3 message 20]
-Ara millora la Caserna i la Piscina al nivell 2. Continuarem quan totes dues estiguin acabades.
-[tutorial part3 message 21]
-Els edificis millorats solen atendre més glòbuls o oferir millor entrenament. Una Despensa de nivell 2 té 7 places i alimenta més de pressa.
-[tutorial part3 message 22]
-L’enemic és a prop. Preparem-nos per a un atac.
-[tutorial part3 message 23]
-Les Torres disparen als enemics a l’abast. Els Murs les protegeixen. Combinarem tots dos per defensar un pas estret.
-[tutorial part3 message 24]
-Col·loca Torres per parelles si hi ha lloc. Els Murs poden protegir tres costats, però deixa una ruta per als lliuraments de pedra com a munició.
-[tutorial part3 message 25]
-A l’est de la Piscina, al nord dels altres arbres fruiters, un pas estret duu a una altra illa. Defensa aquest punt.
-[tutorial part3 message 26]
-Preveu 2 Torres entre els arbres i la costa. Deixa accés al darrere per a la pedra i espai als altres costats per als Murs. No bloquegis els treballadors.
-[tutorial part3 message 27]
-Construeix-hi 2 Torres. Assigna 2 o 3 treballadors a cada solar segons la disponibilitat dels comptadors.
-[tutorial part3 message 28]
-Col·loca Murs als tres costats exteriors de les Torres. Deixa obert el costat que mira a la colònia.
-[tutorial part3 message 29]
-Cada tram de Mur crea una feina i necessita 1 de pedra. Si no hi ha prou treballadors, acabaran els trams per torns.
-[tutorial part3 message 30]
-Espera que acabin les dues Torres i diversos Murs. Les Torres necessiten munició de pedra; la pedrera llunyana alenteix els lliuraments. Augmenta els objectius si tens treballadors lliures.
-[tutorial part4 message 1]
-La colònia té menjar, entrenament i defenses. Els edificis poden arribar al nivell 3 per augmentar capacitat i entrenament. Continua millorant segons els recursos i les habilitats.
-[tutorial part4 message 2]
-Busca la colònia enemiga al nord-oest de la base. Mou-hi la vista.
-[tutorial part4 message 3]
-La boira de guerra pot amagar terreny explorat. Un explorador proper revelarà l’activitat actual de l’enemic.
-[tutorial part4 message 4]
-Obre Banderes. Les banderes i les zones dirigeixen unitats sense controlar cada glòbul individualment.
-[tutorial part4 message 5]
-Tria la Bandera d’exploració, amb símbol d’estel. Es pot col·locar sobre terra, aigua, recursos i terreny inexplorat.
-[tutorial part4 message 6]
-Col·loca-la on creus que és la base enemiga. N’hi ha prou amb una ubicació aproximada. Surt de la col·locació amb un clic dret o els controls tàctils.
-[tutorial part4 message 7]
-El contorn mostra el radi de la bandera. Un explorador assignat recorrerà la zona. Si no n’arriba cap, revisa’n el nombre i produeix-ne un a la Granja si cal. Prem Espai o toca D’acord quan arribi.
-[tutorial part4 message 8]
-L’enemic té molts treballadors i un exèrcit reunit. Preparem les defenses.
-[tutorial part4 message 9]
-Obre Banderes i tria la zona blava de Guàrdia. Fes servir el mode d’afegir terreny, no d’eliminar-ne. En pantalla tàctil, tria Pinta en lloc d’Esborra.
-[tutorial part4 message 10]
-Tria la forma i la mida del pinzell. El quadrat gran serveix per a una defensa compacta.
-[tutorial part4 message 11]
-Pinta una zona de Guàrdia darrere les Torres, a la ruta probable de l’enemic. Clica o toca per pintar un punt, o arrossega per cobrir més terreny. En pantalla tàctil, fes servir Desplaça per moure la vista mentre pintes.
-[tutorial part4 message 12]
-Els guerrers disponibles ocuparan la zona. Deixa prou lloc, però mantén els defensors concentrats al pas. Espera l’atac.
-[tutorial part4 message 13]
-L’enemic s’acosta al pas!
-[tutorial part4 message 14]
-Ens ataquen. Observa com els guerrers entrenats i les Torres defensen la posició.
-[tutorial part4 message 15]
-Has sobreviscut! Obre Banderes i tria la Bandera de guerra amb punxes. Col·loca-la sobre la Granja enemiga per dirigir-hi l’atac.
-[tutorial part4 message 16]
-Surt de la col·locació i selecciona la Bandera de guerra. Assigna més d’1 guerrer i redueix el radi per concentrar l’atac a la Granja. Espera que arribin.
-[tutorial part4 message 17]
-L’atac ha començat. Els guerrers han de superar les Torres enemigues per arribar a la Granja.
-[tutorial part4 message 18]
-Els guerrers han arribat a la base enemiga. Mantén l’atac centrat en la Granja.
-[tutorial part4 message 19]
-Has destruït la Granja enemiga! Has acabat el tutorial i après les bases d’alimentació, assignació, entrenament, millores, exploració i combat.
-[tutorial mission basics]
-Introducció i conceptes bàsics
-[tutorial mission development]
-Edificis i escoles
-[tutorial mission training]
-Guerrers, entrenament i millores
-[tutorial mission flags]
-Banderes i conclusió
 [library  Could not restore the previous library: %0]
  No s’ha pogut restaurar la biblioteca anterior: %0
 [library  The previous library is retained.]
@@ -6642,6 +6400,422 @@ Ho pots canviar en qualsevol moment a Configuració → Àudio.
 No s’ha pogut desar la tria. El so continua desactivat. Torna-ho a provar.
 [audio choices description]
 Silenci: un altaveu silenciat. So: un altaveu amb ones sonores.
+[intro menu]
+
+[intro briefing]
+
+[intro try]
+
+[intro preflight]
+
+[intro preflight save]
+
+[intro preference failed]
+
+[intro goal scout]
+
+[intro goal build]
+
+[intro goal supply]
+
+[intro goal grow]
+
+[intro goal attack]
+
+[intro instruction scout]
+
+[intro instruction build]
+
+[intro instruction supply]
+
+[intro instruction grow]
+
+[intro instruction attack]
+
+[intro help]
+
+[intro help scout]
+
+[intro help build]
+
+[intro help supply]
+
+[intro help grow]
+
+[intro help attack]
+
+[intro hint scout]
+
+[intro hint build]
+
+[intro hint supply]
+
+[intro hint grow]
+
+[intro hint attack]
+
+[intro hint no scout flag]
+
+[intro hint no suppliers]
+
+[intro hint no war flag]
+
+[intro hint retry]
+
+[intro complete]
+
+[intro complete body]
+
+[intro play again]
+
+[intro restart]
+
+[intro restart body]
+
+[intro help touch scout]
+
+[intro help touch build]
+
+[intro help touch supply]
+
+[intro help touch grow]
+
+[intro help touch attack]
+
+[intro show destination]
+
+[intro scout destination]
+
+[intro attack destination]
+
+[intro compact scout]
+
+[intro compact build]
+
+[intro compact supply]
+
+[intro compact grow]
+
+[intro compact attack]
+
+[tutorial lessons]
+
+[tutorial restart]
+
+[tutorial restart body]
+
+[tutorial complete]
+
+[tutorial food title]
+
+[tutorial food briefing]
+
+[tutorial food complete]
+
+[tutorial unavailable]
+
+[lesson healing title]
+
+[lesson healing briefing]
+
+[lesson healing complete]
+
+[lesson healing build hint]
+
+[lesson healing build title]
+
+[lesson healing build instruction]
+
+[lesson healing build help]
+
+[lesson healing build marker]
+
+[lesson healing heal hint]
+
+[lesson healing heal title]
+
+[lesson healing heal instruction]
+
+[lesson healing heal help]
+
+[lesson healing heal marker]
+
+[lesson walking-training title]
+
+[lesson walking-training briefing]
+
+[lesson walking-training complete]
+
+[lesson walking-training build hint]
+
+[lesson walking-training build title]
+
+[lesson walking-training build instruction]
+
+[lesson walking-training build help]
+
+[lesson walking-training build marker]
+
+[lesson walking-training train hint]
+
+[lesson walking-training train title]
+
+[lesson walking-training train instruction]
+
+[lesson walking-training train help]
+
+[lesson swimming title]
+
+[lesson swimming briefing]
+
+[lesson swimming complete]
+
+[lesson swimming build hint]
+
+[lesson swimming build title]
+
+[lesson swimming build instruction]
+
+[lesson swimming build help]
+
+[lesson swimming build marker]
+
+[lesson swimming train hint]
+
+[lesson swimming train title]
+
+[lesson swimming train instruction]
+
+[lesson swimming train help]
+
+[lesson swimming water-job hint]
+
+[lesson swimming water-job title]
+
+[lesson swimming water-job instruction]
+
+[lesson swimming water-job help]
+
+[lesson swimming water-job marker]
+
+[lesson schools title]
+
+[lesson schools briefing]
+
+[lesson schools complete]
+
+[lesson schools build hint]
+
+[lesson schools build title]
+
+[lesson schools build instruction]
+
+[lesson schools build help]
+
+[lesson schools build marker]
+
+[lesson schools learn hint]
+
+[lesson schools learn title]
+
+[lesson schools learn instruction]
+
+[lesson schools learn help]
+
+[lesson upgrades title]
+
+[lesson upgrades briefing]
+
+[lesson upgrades complete]
+
+[lesson upgrades upgrade hint]
+
+[lesson upgrades upgrade title]
+
+[lesson upgrades upgrade instruction]
+
+[lesson upgrades upgrade help]
+
+[lesson upgrades upgrade marker]
+
+[lesson upgrades train hint]
+
+[lesson upgrades train title]
+
+[lesson upgrades train instruction]
+
+[lesson upgrades train help]
+
+[lesson warrior-training title]
+
+[lesson warrior-training briefing]
+
+[lesson warrior-training complete]
+
+[lesson warrior-training produce hint]
+
+[lesson warrior-training produce title]
+
+[lesson warrior-training produce instruction]
+
+[lesson warrior-training produce help]
+
+[lesson warrior-training produce marker]
+
+[lesson warrior-training build hint]
+
+[lesson warrior-training build title]
+
+[lesson warrior-training build instruction]
+
+[lesson warrior-training build help]
+
+[lesson warrior-training build marker]
+
+[lesson warrior-training train hint]
+
+[lesson warrior-training train title]
+
+[lesson warrior-training train instruction]
+
+[lesson warrior-training train help]
+
+[lesson fortifications title]
+
+[lesson fortifications briefing]
+
+[lesson fortifications complete]
+
+[lesson fortifications tower hint]
+
+[lesson fortifications tower title]
+
+[lesson fortifications tower instruction]
+
+[lesson fortifications tower help]
+
+[lesson fortifications tower marker]
+
+[lesson fortifications walls hint]
+
+[lesson fortifications walls title]
+
+[lesson fortifications walls instruction]
+
+[lesson fortifications walls help]
+
+[lesson fortifications walls marker]
+
+[lesson fortifications supply hint]
+
+[lesson fortifications supply title]
+
+[lesson fortifications supply instruction]
+
+[lesson fortifications supply help]
+
+[lesson fortifications supply marker]
+
+[lesson fortifications hold hint]
+
+[lesson fortifications hold title]
+
+[lesson fortifications hold instruction]
+
+[lesson fortifications hold help]
+
+[lesson fortifications hold marker]
+
+[lesson defensive-tactics title]
+
+[lesson defensive-tactics briefing]
+
+[lesson defensive-tactics complete]
+
+[lesson defensive-tactics scout hint]
+
+[lesson defensive-tactics scout title]
+
+[lesson defensive-tactics scout instruction]
+
+[lesson defensive-tactics scout help]
+
+[lesson defensive-tactics scout marker]
+
+[lesson defensive-tactics guard hint]
+
+[lesson defensive-tactics guard title]
+
+[lesson defensive-tactics guard instruction]
+
+[lesson defensive-tactics guard help]
+
+[lesson defensive-tactics guard marker]
+
+[lesson defensive-tactics repel hint]
+
+[lesson defensive-tactics repel title]
+
+[lesson defensive-tactics repel instruction]
+
+[lesson defensive-tactics repel help]
+
+[lesson defensive-tactics repel marker]
+
+[lesson defensive-tactics counterattack hint]
+
+[lesson defensive-tactics counterattack title]
+
+[lesson defensive-tactics counterattack instruction]
+
+[lesson defensive-tactics counterattack help]
+
+[lesson defensive-tactics counterattack marker]
+
+[lesson healing build compact]
+
+[lesson healing heal compact]
+
+[lesson walking-training build compact]
+
+[lesson walking-training train compact]
+
+[lesson swimming build compact]
+
+[lesson swimming train compact]
+
+[lesson swimming water-job compact]
+
+[lesson schools build compact]
+
+[lesson schools learn compact]
+
+[lesson upgrades upgrade compact]
+
+[lesson upgrades train compact]
+
+[lesson warrior-training produce compact]
+
+[lesson warrior-training build compact]
+
+[lesson warrior-training train compact]
+
+[lesson fortifications tower compact]
+
+[lesson fortifications walls compact]
+
+[lesson fortifications supply compact]
+
+[lesson fortifications hold compact]
+
+[lesson defensive-tactics scout compact]
+
+[lesson defensive-tactics guard compact]
+
+[lesson defensive-tactics repel compact]
+
+[lesson defensive-tactics counterattack compact]
+
 [library GL only]
 Només GL
 [Grassland]
@@ -6652,5 +6826,7 @@ Turons rocosos
 Corriols d’animals
 [Fish amount]
 Quantitat de peixos
+[scenario messages]
+
 [Camp-site amount]
 Nombre de campaments

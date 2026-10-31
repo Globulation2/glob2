@@ -1,3 +1,4 @@
+const {waitForMainMenu}=require('./main-menu');
 const {clickCreateMap}=require('./editor-controls');
 const {editTextField,clickControl,control}=require('./main-menu');
 const {test,expect}=require('@playwright/test');
@@ -5,7 +6,7 @@ const {clickMainMenu,gameURL}=require('./main-menu');
 const fs=require('node:fs/promises');
 const {createHash}=require('node:crypto');
 const state=page=>page.evaluate(()=>glob2Diagnostics.snapshot());
-const screen=(page,name)=>expect.poll(async()=>(await state(page)).screen).toContain(name);
+const screen=(page,name)=>name==='MainMenuScreen' ? waitForMainMenu(page) : expect.poll(async()=>(await state(page)).screen).toContain(name);
 
 for(const fault of ['quota','aborted transaction']) test(`editor save before quit survives ${fault} with export and retry`,async({page,context},info)=>{
   await page.goto(gameURL());await screen(page,'MainMenuScreen');

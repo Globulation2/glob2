@@ -17,6 +17,7 @@ from pathlib import PurePosixPath
 from pathlib import Path
 
 from package_steam_windows import stage as stage_windows_files
+from tutorials.content import packaged_assets, reject_retired_assets
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -25,9 +26,8 @@ UBUNTU_COPYRIGHT_ROOT = Path("/usr/share/doc")
 COMMON_LICENSE_ROOT = Path("/usr/share/common-licenses")
 REQUIRED_ASSETS = (
     "data/fonts/sans.ttf", "data/gfx/ressource0.png",
-    "maps/SmallForTwo.map.gz", "campaigns/Tutorial_Campaign.txt",
-    "scripts/tutorial_part1.sgsl",
-)
+    "maps/SmallForTwo.map.gz",
+) + packaged_assets(ROOT)
 VERSION_PATTERN = re.compile(r'^PACKAGE_VERSION = "([0-9]+(?:\.[0-9]+)+)"$', re.MULTILINE)
 LIBRARY_PATTERN = re.compile(r"^\s*(\S+)\s+=>\s+(/\S+)", re.MULTILINE)
 SYSTEM_LIBRARY_PREFIXES = (
@@ -160,6 +160,7 @@ def verify_manifest(depot, platform):
     root = depot / "Glob2.app/Contents/Resources" if platform == "macos" else depot
     if platform == "linux":
         root = depot / "share/glob2"
+    reject_retired_assets(root)
     for asset in REQUIRED_ASSETS:
         if not (root / asset).is_file() and not (
                 asset.startswith("data/") and asset.endswith(".png") and

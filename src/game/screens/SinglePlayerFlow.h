@@ -15,12 +15,16 @@ class SinglePlayerFlow
 	explicit SinglePlayerFlow(GAGGUI::ScreenStack &screens) : screens(screens) {}
 	void custom(const std::optional<Online::MapPlayRequest> &map = std::nullopt);
 	void load();
+    void introduction();
+    void lessons();
 	void studio();
 	void generatorStudio();
 	void replay(const std::string &filename);
 
   private:
 	GAGGUI::ScreenStack &screens;
-	void launch(GameLoadScreen::Initializer initialize, bool repeatCustom,
+	enum class ReturnTo { MainMenu, CustomSetup, Lessons };
+    void returnTo(ReturnTo destination);
+	void launch(GameLoadScreen::Initializer initialize, ReturnTo destination,
 				std::shared_ptr<void> mapFile = nullptr);
 };

@@ -1,4 +1,3 @@
-#include "ui/TutorialText.h"
 #include "render/ResourceSprites.h"
 #include "BuildingPresentation.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
@@ -464,7 +463,7 @@ void GameGUITouch::drawHUD()
 
 	if (!activeDialog())
 	{
-		drawTutorial();
+		drawScenarioMessage();
 		drawPanel();
 	}
 	if (statsOpen && !activeDialog())
@@ -495,6 +494,14 @@ void GameGUITouch::drawHUD()
 			: i == 1 ? panelOpen && !inspecting() && !inspectingReadOnly() && gui.displayMode == GameGUI::FLAG_VIEW
 			: i == 2 && (lensOpen || (panelOpen && gui.displayMode == GameGUI::STAT_TEXT_VIEW));
 		const int icon = globalContainer->replaying && i < 2 ? (i == 1 ? 8 : gui.gamePaused ? 7 : 6) : i;
+        bool guided=false;
+        for(int anchor:gui.tutorialHighlights) {
+            if(i==0 && anchor>=GameGUI::HighlightBuildingOnPanel && anchor<GameGUI::HighlightBuildingOnMap &&
+                anchor!=GameGUI::HighlightBuildingOnPanel+8 && anchor!=GameGUI::HighlightBuildingOnPanel+9 && anchor!=GameGUI::HighlightBuildingOnPanel+10) guided=true;
+            if(i==1 && ((anchor>=GameGUI::HighlightForbiddenZoneOnPanel && anchor<=GameGUI::HighlightBrushSelector) ||
+                anchor==GameGUI::HighlightBuildingOnPanel+8 || anchor==GameGUI::HighlightBuildingOnPanel+9 || anchor==GameGUI::HighlightBuildingOnPanel+10)) guided=true;
+        }
+        if(guided) gfx->drawRect(int(x+2*unit),int(ui.actions.y+2*unit),int(width-4*unit),int(ui.actions.h-4*unit),Color(255,220,80));
 		drawNavigationIcon(icon, {x + width / 2, ui.actions.y + 17 * unit}, selected);
 		drawPointLabel({x + 2 * unit, ui.actions.y + 32 * unit, width - 4 * unit, 16 * unit},
 			Toolkit::getStringTable()->getString(labels[i]), .86);
@@ -502,9 +509,9 @@ void GameGUITouch::drawHUD()
 
 }
 
-ViewRect GameGUITouch::tutorialRect() const
+ViewRect GameGUITouch::scenarioMessageRect() const
 {
-	if (tutorialLines.empty())
+	if (scenarioMessageLines.empty())
 		return {};
 	const double unit = globalContainer->gfx->logicalUnitsPerPoint();
 	auto rect = layout().world;
@@ -512,16 +519,16 @@ ViewRect GameGUITouch::tutorialRect() const
 	rect.y = minimapRect().y + minimapRect().h + 8 * unit;
 	rect.w = std::min(rect.w - 16 * unit, 560 * unit);
 	rect.h = std::max(0.0, layout().actions.y - rect.y);
-	rect.h = tutorialCollapsed ? 48 * unit
-							   : std::min(rect.h, (std::min<size_t>(3, tutorialLines.size()) *
-														   InGameTouchTheme::tutorialPitch() +
+	rect.h = scenarioMessageCollapsed ? 48 * unit
+							   : std::min(rect.h, (std::min<size_t>(3, scenarioMessageLines.size()) *
+														   InGameTouchTheme::scenarioMessagePitch() +
 													   16 + (gui.swallowSpaceKey ? 48 : 0)) *
 													  unit);
 	return rect;
 }
-void GameGUITouch::prepareTutorial()
+void GameGUITouch::prepareScenarioMessage()
 {
-	std::string text = Glob2UI::tutorialText(gui.drawnScene().panels.hud.state().legacyScriptText, gui.legacyTutorialScript);
+	std::string text = gui.drawnScene().panels.hud.state().legacyScriptText;
 	if (!gui.scriptText.empty())
 	{
 		if (!text.empty())
@@ -531,13 +538,13 @@ void GameGUITouch::prepareTutorial()
 	const double width =
 		(std::min(layout().world.w / globalContainer->gfx->logicalUnitsPerPoint() - 16, 560.0) - 64) /
 		InGameTouchTheme::textGrowth();
-	if (text == tutorialText && width == tutorialWidth)
+	if (text == scenarioMessageText && width == scenarioMessageWidth)
 		return;
-	tutorialCollapsed = false;
-	tutorialText = text;
-	tutorialWidth = width;
-	tutorialLines.clear();
-	tutorialScroll = 0;
+	scenarioMessageCollapsed = false;
+	scenarioMessageText = text;
+	scenarioMessageWidth = width;
+	scenarioMessageLines.clear();
+	scenarioMessageScroll = 0;
 	std::string line;
 	auto *font = globalContainer->standardFont;
 	InGameTouchTheme::TextStyle textStyle(font);
@@ -549,7 +556,7 @@ void GameGUITouch::prepareTutorial()
 			++end;
 		if (text[at] == '\n')
 		{
-			tutorialLines.push_back(line);
+			scenarioMessageLines.push_back(line);
 			line.clear();
 			at = end;
 			continue;
@@ -560,12 +567,12 @@ void GameGUITouch::prepareTutorial()
 			const auto space = line.find_last_of(' ');
 			if (space != std::string::npos)
 			{
-				tutorialLines.push_back(line.substr(0, space));
+				scenarioMessageLines.push_back(line.substr(0, space));
 				line.erase(0, space + 1);
 			}
 			else
 			{
-				tutorialLines.push_back(line);
+				scenarioMessageLines.push_back(line);
 				line.clear();
 			}
 		}
@@ -573,44 +580,44 @@ void GameGUITouch::prepareTutorial()
 		at = end;
 	}
 	if (!line.empty())
-		tutorialLines.push_back(line);
+		scenarioMessageLines.push_back(line);
 }
-void GameGUITouch::drawTutorial()
+void GameGUITouch::drawScenarioMessage()
 {
-	InGameTouchTheme::TextStyle tutorialStyle(globalContainer->standardFont);
-	auto rect = tutorialRect();
+	InGameTouchTheme::TextStyle scenarioMessageStyle(globalContainer->standardFont);
+	auto rect = scenarioMessageRect();
 	if (rect.w <= 0 || rect.h <= 0)
 		return;
 	auto *gfx = globalContainer->gfx;
 	const double unit = gfx->logicalUnitsPerPoint();
 	gfx->drawFilledRect(int(rect.x), int(rect.y), int(rect.w), int(rect.h),
 						InGameTouchTheme::paper());
-	if (tutorialCollapsed)
+	if (scenarioMessageCollapsed)
 	{
-		drawPointLabel(rect, GAGCore::Toolkit::getStringTable()->getString("[Tutorial ▸]"));
+		drawPointLabel(rect, GAGCore::Toolkit::getStringTable()->getString("[scenario messages]"));
 		return;
 	}
 	const double footerHeight = gui.swallowSpaceKey ? 48 * unit : 0;
 	SDL_Rect clip{int(rect.x), int(rect.y), int(rect.w - 48 * unit),
 				  int(std::max(0.0, rect.h - footerHeight))};
-	// Lines are tutorialLine authored pixels apart and drawn at the text unit,
-	// so they sit tutorialPitch() points apart.
-	const double pitch = InGameTouchTheme::tutorialPitch();
-	const size_t first = std::min(tutorialLines.size(), size_t(std::max(0.0, tutorialScroll) / pitch));
+	// Lines are scenarioMessageLine authored pixels apart and drawn at the text unit,
+	// so they sit scenarioMessagePitch() points apart.
+	const double pitch = InGameTouchTheme::scenarioMessagePitch();
+	const size_t first = std::min(scenarioMessageLines.size(), size_t(std::max(0.0, scenarioMessageScroll) / pitch));
 	gfx->setUITransform(gfx->textUnitsPerPoint(), rect.x + 8 * unit,
-						rect.y + (8 - tutorialScroll + first * pitch) * unit, &clip);
-	const size_t end = std::min(tutorialLines.size(), first + size_t(rect.h / unit / pitch) + 1);
+						rect.y + (8 - scenarioMessageScroll + first * pitch) * unit, &clip);
+	const size_t end = std::min(scenarioMessageLines.size(), first + size_t(rect.h / unit / pitch) + 1);
 	for (size_t i = first; i < end; ++i)
-		gfx->drawString(0, int((i - first) * InGameTouchTheme::tutorialLine), globalContainer->standardFont,
-						tutorialLines[i]);
+		gfx->drawString(0, int((i - first) * InGameTouchTheme::scenarioMessageLine), globalContainer->standardFont,
+						scenarioMessageLines[i]);
 	gfx->setUITransform();
 	gfx->setClipRect();
 	const double textHeight = std::max(1.0, rect.h - footerHeight),
-				 content = tutorialLines.size() * pitch * unit;
+				 content = scenarioMessageLines.size() * pitch * unit;
 	if (content > textHeight)
 	{
 		gfx->drawFilledRect(int(rect.x + rect.w - 3 * unit),
-							int(rect.y + std::clamp(tutorialScroll * unit, 0.0, content - textHeight) * textHeight / content),
+							int(rect.y + std::clamp(scenarioMessageScroll * unit, 0.0, content - textHeight) * textHeight / content),
 							std::max(1, int(2 * unit)), int(textHeight * textHeight / content),
 							Color(170, 185, 190));
 	}

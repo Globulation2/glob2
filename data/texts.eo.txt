@@ -3102,8 +3102,6 @@ Forviŝi
 Lasu sur valida tereno por loki
 [Paint on the map; two fingers move]
 Pentru sur la mapo; movu per du fingroj
-[Tutorial ▸]
-Lernludo ▸
 [Back to tools]
 Reen al iloj
 [Starvation overlay]
@@ -6210,246 +6208,6 @@ Ne eblis eksporti la registraĵon.
 Forigi registraĵon
 [recording refresh]
 Refreŝigi
-[tutorial part1 message 1]
-Bonvenon al Globulation 2! En ĉi tiu kvarmisia lernilo vi lernos administri kolonion. Vi povas konservi vian progreson per la ludmenuo kaj poste ŝargi ĝin el la ĉefmenuo. Premu Spacon por daŭrigi, aŭ tuŝu Bone sur tuŝekrano. Kelkaj mesaĝoj poste malaperas; relegu ilin en la mesaĝhistorio.
-[tutorial part1 message 2]
-Vi komencas kun Globulejo kaj unu laboristo. Ni vidu, kiel ili kunlaboras.
-[tutorial part1 message 3]
-Via laboristo rikoltas tritikon kaj portas ĝin al la Globulejo. La Globulejo uzas tritikon por produkti novajn unuojn, do ĝi estas esenca por via kolonio.
-[tutorial part1 message 4]
-Elektu vian globulon, la moviĝantan unuon, per maldekstra alklako aŭ tuŝo.
-[tutorial part1 message 5]
-La informoj pri la unuo montras, ke ĝia manĝnivelo iom post iom malaltiĝas. Via globulo malsatas. Kiam la manĝindikiloj estas videblaj, la blua strio sub la unuo montras ĝian restantan manĝon.
-[tutorial part1 message 6]
-Globuloj manĝas en Manĝejoj. Nuligu la elekton per dekstra alklako aŭ, sur tuŝekrano, tuŝu malplenan terenon.
-[tutorial part1 message 7]
-Malfermu la konstruajn regilojn, elektu Manĝejon kaj metu ĝin apud tritiko. Sekvu la rikoltan vojon de via laboristo, se vi ne vidas la tritikon. Sur tuŝekrano uzu Konstruado kaj konfirmu validan lokon. Fininte, eliru el la metoreĝimo per dekstra alklako aŭ la tuŝregilo Nuligi.
-[tutorial part1 message 8]
-Bone! La konstruareo por la Manĝejo estas metita.
-[tutorial part1 message 9]
-Laboristo el la Globulejo nun povas konstrui la Manĝejon. Ĝi kolektas lignon de proksimaj arboj kaj portas ĝin al la konstruareo. Atendu la finkonstruon.
-[tutorial part1 message 10]
-La finita Manĝejo bezonas tritikon. Asignita laboristo kolektos ĝin, same kiel laboristo provizas la Globulejon.
-[tutorial part1 message 11]
-La flava rimedstrio de la Manĝejo altiĝas, kiam alvenas tritiko. Ĝi montras la stokitan kvanton da tritiko.
-[tutorial part1 message 12]
-Nun ni lernu asigni laboron.
-[tutorial part1 message 13]
-Unu laboristo provizas la Globulejon kaj alia la Manĝejon. Ambaŭ povas paŭzi por manĝi en la Manĝejo. Tio estas normala.
-[tutorial part1 message 14]
-Elektu la Globulejon kaj trovu ĝian regilon por asigni laboristojn. Sur komputilo ĝi nomiĝas Laboranta(j); sur tuŝekrano uzu la regilon pri asignitaj laboristoj kaj celkvanto. La celkvanto estas la nombro da laboristoj, kiujn vi deziras ĉe ĉi tiu konstruaĵo.
-[tutorial part1 message 15]
-Per la asignoregilo agordu la celkvanton de laboristoj ĉe la Globulejo al 0. Poste elektu la Manĝejon kaj ankaŭ agordu ĝian celkvanton al 0.
-[tutorial part1 message 16]
-Viaj laboristoj nun senokupas, sed plu bezonas manĝon. Manĝejo sen asignitaj laboristoj fine elĉerpos sian tritikon.
-[tutorial part1 message 17]
-Globulo, kiu ne trovas manĝon, perdas sanon kaj povas morti. Malsanejo resanigas vunditajn globulojn, sed vi ankaŭ devas provizi la Manĝejojn.
-[tutorial part1 message 18]
-Konstruu Malsanejon per la konstruaj regiloj. Ĝi ne bezonas tritikon, do metu ĝin apud ligno aŭ en centra loko proksime al via Globulejo.
-[tutorial part1 message 19]
-Elektu la konstruareon de la Malsanejo kaj agordu ĝian laboristan celkvanton al 2. Du laboristoj povas fini ĝin pli rapide.
-[tutorial part1 message 20]
-La Malsanejo pretas. Vunditaj globuloj nun povas viziti ĝin por resaniĝi.
-[tutorial part1 message 21]
-La nigraj areoj estas neesploritaj. Unuoj malkaŝas proksiman terenon dum ili moviĝas. Laboristoj sekvas siajn taskojn, do ili ne taŭgas por esplorado. Esploristoj estas destinitaj al tiu tasko.
-[tutorial part1 message 22]
-Elektu la Globulejon kaj trovu la produktajn proporciojn por laboristoj, esploristoj kaj militistoj. Altigu la esploristan proporcion al 1.
-[tutorial part1 message 23]
-Kun la laborista kaj esplorista proporcioj ambaŭ je 1, la Globulejo iom post iom produktas egalajn kvantojn de ambaŭ. Agordu la laboristan proporcion al 0 por momente produkti nur esploristojn.
-[tutorial part1 message 24]
-Reagordu la laboristan celkvanton de la Globulejo al 1, por ke laboristo portu al ĝi tritikon.
-[tutorial part1 message 25]
-Elektu la Manĝejon kaj ankaŭ agordu ĝian laboristan celkvanton al 1. Via kreskanta kolonio bezonas konstantan manĝprovizon.
-[tutorial part1 message 26]
-Nun atendu, ke la Globulejo produktu esploriston.
-[tutorial part1 message 27]
-Via esploristo flugas ĉirkaŭ la kolonio kaj malkaŝas pli da tereno. Lasu la Globulejon produkti duan esploriston antaŭ ol daŭrigi.
-[tutorial part1 message 28]
-Reelektu la Globulejon. Agordu la esploristan produktan proporcion al 0 kaj la laboristan al 1 por rekomenci produkti laboristojn.
-[tutorial part2 message 1]
-Oriente de via bazo troviĝas ŝtono. Memoru tiun lokon; vi poste bezonos ŝtonon.
-[tutorial part2 message 2]
-La arboj sude de la ŝtono estas oranĝarboj. Elektu ilin por vidi iliajn rimedinformojn. Ni poste revenos al fruktoj; nun atentu la Globulejon.
-[tutorial part2 message 3]
-Agordu la Globulejon por produkti nur laboristojn: laborista proporcio 1, esplorista kaj militista proporcioj 0.
-[tutorial part2 message 4]
-Ni kreskigu la kolonion pli rapide. Elektu la Globulejon kaj agordu ĝian laboristan celkvanton al 6. Eble vi ankoraŭ ne havas ses laboristojn; novaj laboristoj povos plenigi la kromajn postenojn laŭ sia havebliĝo.
-[tutorial part2 message 5]
-Ni komencos la sekvajn taskojn, kiam vi havos 8 laboristojn. Plu provizu la Globulejon kaj Manĝejon dum la loĝantaro kreskas.
-[tutorial part2 message 6]
-Pluraj laboristoj nun provizas la Globulejon. Pli da tritikliveroj ebligas pli rapidan produktadon de unuoj.
-[tutorial part2 message 7]
-Nova laboristo kostas 5 tritikojn. Porti tritikon el fora kampo daŭras, do Globulejo ofte bezonas pli da provizantoj ol Manĝejo. Laŭeble metu konstruaĵojn, kiuj bezonas manĝon, apud tritiko.
-[tutorial part2 message 8]
-Vi nun havas almenaŭ 8 laboristojn. Elektu la Globulejon kaj malaltigu ĝian laboristan celkvanton al 1 por bremsi la loĝantaran kreskon dum ni konstruas.
-[tutorial part2 message 9]
-Via kolonio bezonas pli da manĝlokoj. Konstruu duan Manĝejon norde de la ekzistanta.
-[tutorial part2 message 10]
-Asignu liberajn laboristojn al la nova Manĝeja konstruareo. Ĝi bezonas nur 3 lignojn, do pli ol 3 konstruistoj malmulte helpos.
-[tutorial part2 message 11]
-La finita Manĝejo revenas al sia funkciada laborista celkvanto, kutime 1. Konstruado kaj ĉiutaga provizado havas apartajn asignocelojn.
-[tutorial part2 message 12]
-Laboristoj povas lerni moviĝi pli rapide. Kuregejo donas tiun trejnadon.
-[tutorial part2 message 13]
-Malfermu la konstruajn regilojn kaj trovu Kuregejon. Sur komputilo tenu la montrilon super ĝia bildsimbolo por vidi la priskribon kaj koston. Sur tuŝekrano elektu ĝin en Konstruado por prepari meton. Ankoraŭ ne metu ĝin.
-[tutorial part2 message 14]
-Kuregejo bezonas multe da ligno kaj iom da ŝtono. Elektu centran lokon, kiun unuoj povas facile atingi.
-[tutorial part2 message 15]
-Konstruu Kuregejon, ekzemple sude de la Globulejo. Lasu liberan spacon ĉirkaŭ ĝi: trejnaj konstruaĵoj bezonas lokon por pligrandiĝi dum plibonigoj.
-[tutorial part2 message 16]
-Agordu la laboristan celkvanton de la Kuregeja konstruareo inter 5 kaj 7. Ĝi entute bezonas 7 konstrumaterialojn.
-[tutorial part2 message 17]
-Finita Kuregejo trejnas vizitantajn unuojn sen konstanta provizo de konstrumaterialoj aŭ tritiko.
-[tutorial part2 message 18]
-Globuloj eniras la Kuregejon por trejniĝi. Post la trejnado ili povas kuri pli rapide.
-[tutorial part2 message 19]
-Elektu la Kuregejon por rigardi la trejnan progreson. Ĝiaj progresindikiloj montras, kiom proksimas la fino de la trejnado por la unuoj interne.
-[tutorial part2 message 20]
-Viaj trejnitaj laboristoj vojaĝas pli rapide kaj povas liveri rimedojn pli frue. Plu kontrolu la manĝstokojn dum la kolonio kreskas; rapidaj liveroj helpas nur se sufiĉe da Manĝejoj restas provizitaj.
-[tutorial part2 message 21]
-Trovu la laboristan loĝantaran nombrilon en la ludinterfaco. La totalo montras vian loĝantaron; la nombro de disponeblaj laboristoj helpas rimarki liberajn laboristojn aŭ neplenigitajn postenojn. Uzu liberajn laboristojn sen asigni pli da taskoj ol la kolonio povas subteni.
-[tutorial part2 message 22]
-La ludinterfaco ankaŭ montras la nombrojn de esploristoj kaj militistoj. Kontrolu ilin dum planado de produktado aŭ asignado de unuoj al markiloj.
-[tutorial part2 message 23]
-Vi havas 2 Manĝejojn. Ĉiu baza Manĝejo povas nutri 4 unuojn samtempe, do kune ili havas 8 manĝlokojn. Pli ol 8 unuoj povas malsati, do lasu sufiĉan kapaciton por atendovicoj.
-[tutorial part2 message 24]
-Du Manĝejoj ne eterne subtenos kreskantan kolonion. Konstruu pliajn manĝlokojn antaŭ ol manko fariĝas malsatego.
-[tutorial part2 message 25]
-Konstruu 3 pliajn Manĝejojn apud tritiko. Malsataj laboristoj ĉesas labori, kaj longa malsatego mortigas ilin. Asignu disponeblajn laboristojn al konstruado, sed daŭre funkciigu la ekzistantan manĝprovizon.
-[tutorial part2 message 26]
-Finkonstruu 3 pliajn Manĝejojn, por havi entute 5.
-[tutorial part2 message 27]
-La novaj Manĝejoj uzas siajn funkciadajn asignocelojn post konstruado, kutime po 1 laboristo. Kontrolu, ke ili havas provizantojn kaj sufiĉe da tritiko.
-[tutorial part2 message 28]
-La Kuregejo plibonigis moviĝadon surtere. Nun ni instruu al la kolonio naĝadon.
-[tutorial part2 message 29]
-Naĝejo instruas naĝadon al unuoj kaj bezonas lignon por konstruado. Metu unu en la grandan maldensejon nordoriente de la bazo, norde de la ŝtono. Lasu ĉirkaŭan spacon por plibonigoj kaj rimedkresko, kaj asignu disponeblajn laboristojn al konstruado.
-[tutorial part2 message 30]
-Naĝejo instruas naĝadon al unuoj kaj bezonas lignon por konstruado. Metu unu en la grandan maldensejon nordoriente de la bazo, norde de la ŝtono. Lasu ĉirkaŭan spacon por plibonigoj kaj rimedkresko, kaj asignu disponeblajn laboristojn al konstruado.
-[tutorial part2 message 31]
-La Naĝejo pretas. Globuloj nun povas eniri kaj lerni naĝi.
-[tutorial part2 message 32]
-Elektu la Naĝejon por rigardi la trejnan progreson. Baza Naĝejo trejnas po 2 globuloj samtempe, same kiel baza Kuregejo.
-[tutorial part2 message 33]
-Viaj trejnitaj globuloj nun povas naĝi. Baldaŭ ni donos al ili taskon, kiu postulas transiri akvon.
-[tutorial part2 message 34]
-Estas ankoraŭ multo por lerni. Se vi bezonas paŭzon, konservu vian progreson per la ludmenuo kaj revenu poste.
-[tutorial part2 message 35]
-Via kolonio havas manĝon kaj korpan trejnadon. Lernejo instruos al laboristoj la kapablojn bezonatajn por pli bonaj konstruaĵoj.
-[tutorial part2 message 36]
-Lernejo plibonigas la rikoltajn kaj konstruajn kapablojn de laboristoj. Ĝia konstruado bezonas algojn, kiuj kreskas en akvo. Viaj naĝantaj laboristoj povas kolekti ilin.
-[tutorial part2 message 37]
-Protektu gravajn trejnajn konstruaĵojn. Lernejo ne devas stari apud akvo; ŝirmita loko en la internlando povas pli bone protekti ĝin kontraŭ atako.
-[tutorial part2 message 38]
-Konstruu Lernejon en protektita loko, ekzemple malantaŭ la Naĝejo aŭ sudokcidente de la Globulejo apud la Kuregejo. Asignu disponeblajn laboristojn al ĝia konstruado.
-[tutorial part2 message 39]
-Elektu konstruaĵon por vidi ĝiajn asignitajn laboristojn. Sur komputilo la agordebla ago Montri/kaŝi irvojojn de globuloj ankaŭ povas montri liniojn de unuoj al iliaj celoj; vidu Agordoj, Ludaj kontroloj por la nuna klavkombino. Atendu la finkonstruon de la Lernejo.
-[tutorial part3 message 1]
-Via kolonio nun havas Manĝejojn, Malsanejon, Kuregejon, Naĝejon kaj Lernejon. Estas tempo prepari ĝian defendon.
-[tutorial part3 message 2]
-Ni ankoraŭ ne produktis militistojn. Sen ili la kolonio havas malmultan protekton kontraŭ atako.
-[tutorial part3 message 3]
-Elektu la Globulejon kaj agordu la militistan produktan proporcion al 2. Lasu la laboristan proporcion je 1, por ke la kolonio plu produktu ankaŭ laboristojn.
-[tutorial part3 message 4]
-La Globulejo nun produktos proksimume 2 militistojn por ĉiu laboristo. Asignu pliajn laboristojn al ĝia provizado, se vi deziras pli rapidan produktadon.
-[tutorial part3 message 5]
-Via unua militisto pretas kaj komencos trejniĝi. Atendu duan militiston antaŭ ol daŭrigi.
-[tutorial part3 message 6]
-Militistoj ankaŭ uzas la Kuregejon kaj Naĝejon. Ili povas krome trejni siajn atakkapablojn en Militistejo.
-[tutorial part3 message 7]
-Militistejo plibonigas atakforton kaj atakrapidon. Forto pliigas damaĝon je ĉiu bato; rapido pliigas la oftecon de atakoj. Bone trejnitaj militistoj povas venki multe pli grandajn grupojn de netrejnitaj malamikoj.
-[tutorial part3 message 8]
-Konstruu Militistejon apud ligno, kiun ĝia konstruado bezonas.
-[tutorial part3 message 9]
-Asignu disponeblajn laboristojn al la Militisteja konstruareo. Lasu sufiĉe da laboristoj ĉe manĝprovizado kaj ne kreu pli da postenoj ol ili povas plenigi.
-[tutorial part3 message 10]
-La Militistejo pretas. Militistoj nun povas trejni siajn atakkapablojn tie.
-[tutorial part3 message 11]
-Nia kolonio povas fortiĝi per plibonigado de siaj konstruaĵoj.
-[tutorial part3 message 12]
-Laboristoj trejnitaj en la Lernejo povas konstrui plibonigojn. Elektu taŭgan konstruaĵon kaj trovu Plibonigi en ĝiaj regiloj. Difektitaj konstruaĵoj eble unue bezonas Ripari.
-[tutorial part3 message 13]
-Ni decidu, kion unue plibonigi. Niaj Manĝejoj ankoraŭ havas liberajn lokojn, do ili povas atendi.
-[tutorial part3 message 14]
-Ankaŭ en la Malsanejo estas loko. Ni povas atenti la Lernejon, Kuregejon, Naĝejon aŭ Militistejon.
-[tutorial part3 message 15]
-Unue plibonigu la Kuregejon, por ke unuoj lernu moviĝi eĉ pli rapide.
-[tutorial part3 message 16]
-Elektu la Kuregejon kaj Plibonigi en ĝiaj regiloj. La unuoj interne devas eliri antaŭ ol konstruado komenciĝas, do la ŝanĝo eble ne estos tuja.
-[tutorial part3 message 17]
-Asignu disponeblajn laboristojn al la Kuregeja plibonigo. Nur laboristoj kun la bezonata Lerneja trejnado povas labori ĉe konstruareo de nivelo 2.
-[tutorial part3 message 18]
-Atendu la finkonstruon de la Kuregeja plibonigo. Altnivelaj konstruaĵoj bezonas pli da rimedoj kaj tempo por konstruado.
-[tutorial part3 message 19]
-Via Kuregejo de nivelo 2 estas finita. Ĝi okupas pli da tereno ol antaŭe; tial ni lasis interspacon. Konstruaĵo ne povas pliboniĝi sen sufiĉa loko por pligrandiĝo.
-[tutorial part3 message 20]
-Nun plibonigu la Militistejon kaj Naĝejon al nivelo 2. Ni daŭrigos, kiam ambaŭ estos finitaj.
-[tutorial part3 message 21]
-Plibonigitaj konstruaĵoj ĝenerale povas servi pli da globuloj aŭ oferti pli bonan trejnadon. Ekzemple, Manĝejo de nivelo 2 havas 7 manĝlokojn kaj nutras unuojn pli rapide ol baza Manĝejo.
-[tutorial part3 message 22]
-La malamiko proksimas. Ni preparu nin por atako.
-[tutorial part3 message 23]
-Turoj pafas kontraŭ malamikoj ene de sia trafdistanco. Muroj helpas protekti ilin. Ni uzos ambaŭ por defendi mallarĝan alirejon al la kolonio.
-[tutorial part3 message 24]
-Metu turojn duope, se estas sufiĉe da loko. Muroj povas protekti tri flankojn, sed lasu vojon malfermita por ke laboristoj liveru ŝtonan municion.
-[tutorial part3 message 25]
-Rigardu orienten de la Naĝejo, norde de la aliaj fruktarboj. Mallarĝa pasejo kondukas al alia insulo. Tio estas bona defendoloko.
-[tutorial part3 message 26]
-Planu lokon por 2 turoj inter la arboj kaj la bordo. Lasu aliron malantaŭ ili por ŝtonliveroj kaj spacon ĉe la aliaj flankoj por muroj. Ne fermu la laboristojn ekstere per muroj.
-[tutorial part3 message 27]
-Konstruu 2 turojn tie. Asignu 2 aŭ 3 laboristojn al ĉiu konstruareo, laŭ la disponebla nombro en la ludinterfacaj nombriloj.
-[tutorial part3 message 28]
-Per la konstruaj regiloj metu mursekciojn ĉirkaŭ la tri eksterajn flankojn de la turoj. Lasu la flankon direkte al via kolonio malfermita por laboristoj.
-[tutorial part3 message 29]
-Ĉiu mursekcio kreas konstruan taskon kaj bezonas 1 ŝtonon. Se la laboristoj ne povas samtempe plenigi ĉiujn postenojn, ili povas fini la sekciojn laŭvice.
-[tutorial part3 message 30]
-Atendu la finkonstruon de ambaŭ turoj kaj pluraj mursekcioj. La turoj ankaŭ bezonas ŝtonan municion; la fora ŝtonminejo malrapidigas liverojn. Altigu iliajn laboristajn celkvantojn, se vi havas liberajn laboristojn.
-[tutorial part4 message 1]
-Via kolonio havas manĝon, trejnadon kaj defendon. Konstruaĵoj povas denove progresi al nivelo 3, kun pli forta trejnado kaj pli granda kapacito. Plu plibonigu ilin laŭ la disponeblaj rimedoj kaj laboristaj kapabloj.
-[tutorial part4 message 2]
-Serĉu la malamikan kolonion nordokcidente de via bazo. Movu la vidon tien nun.
-[tutorial part4 message 3]
-Eĉ esplorita tereno povas esti kaŝita de la militnebulo. Por vidi la nunan agadon de la malamiko, ni bezonas esploriston apude.
-[tutorial part4 message 4]
-Malfermu Markilojn. Tie troviĝas markiloj kaj zonoj por direkti unuojn sen regi ĉiun globulon aparte.
-[tutorial part4 message 5]
-Elektu la Esplormarkilon, montratan per kajtoforma simbolo. Markiloj povas esti metitaj sur tero, akvo, rimedoj kaj neesplorita tereno.
-[tutorial part4 message 6]
-Metu Esplormarkilon super la supozata malamika bazo. Proksimuma loko sufiĉas por komenci esploradon. Eliru el la metoreĝimo per dekstra alklako, aŭ finu la meton per la tuŝregiloj.
-[tutorial part4 message 7]
-La konturo ĉirkaŭ la markilo montras ĝian agadradion. Asignita esploristo esploros tiun areon. Kontrolu vian nombron de esploristoj, se neniu alvenas, kaj laŭbezone produktu novan ĉe la Globulejo. Premu Spacon aŭ tuŝu Bone, kiam la esploristo atingas la areon.
-[tutorial part4 message 8]
-La malamiko havas multajn laboristojn kaj kolektitan armeon. Ni preparu nian defendon antaŭ ĝia atako.
-[tutorial part4 message 9]
-Malfermu Markilojn kaj elektu la bluan defendatan zonon. Uzu la reĝimon por aldoni terenon al la zono, ne por forigi ĝin. Sur tuŝekrano elektu Pentri anstataŭ Forviŝi.
-[tutorial part4 message 10]
-Elektu penikoformon kaj grandecon. La granda kvadrato utilas por pentri kompaktan defendareon.
-[tutorial part4 message 11]
-Pentru defendatan zonon tuj malantaŭ viaj turoj, kie la malamiko verŝajne proksimiĝos. Alklaku aŭ tuŝu por pentri lokon, aŭ trenu por kovri pli da tereno. Sur tuŝekrano uzu Movi por movi la vidon dum pentrado.
-[tutorial part4 message 12]
-Disponeblaj militistoj moviĝos en la defendatan zonon. Faru ĝin sufiĉe granda por la defendantoj, sed sufiĉe malgranda por kunigi ilin ĉe la pasejo. Nun atendu la atakon.
-[tutorial part4 message 13]
-La malamiko proksimiĝas al la pasejo!
-[tutorial part4 message 14]
-Ni estas atakataj. Rigardu, kiel viaj trejnitaj militistoj kaj turoj defendas la pozicion.
-[tutorial part4 message 15]
-Vi postvivis! Nun malfermu Markilojn kaj elektu la dornan Militmarkilon. Metu ĝin super la malamika Globulejo por direkti atakon tien.
-[tutorial part4 message 16]
-Eliru el la metoreĝimo kaj elektu la Militmarkilon. Asignu pli ol 1 militiston, poste malgrandigu ĝian radion por koncentri la atakon ĉirkaŭ la malamika Globulejo. Atendu la alvenon de viaj militistoj.
-[tutorial part4 message 17]
-La atako komenciĝis. Viaj militistoj devas preterpasi la malamikajn turojn por atingi la Globulejon.
-[tutorial part4 message 18]
-Viaj militistoj atingis la malamikan bazon. Plu direktu la atakon al la Globulejo.
-[tutorial part4 message 19]
-Vi detruis la malamikan Globulejon. Gratulon! Vi finis la lernilon kaj lernis la bazojn de manĝprovizado, asignado, trejnado, plibonigado, esplorado kaj batalado.
-[tutorial mission basics]
-Enkonduko kaj bazoj
-[tutorial mission development]
-Konstruaĵoj kaj lernejoj
-[tutorial mission training]
-Militistoj, trejnado kaj plibonigoj
-[tutorial mission flags]
-Markiloj kaj fino
 [library Back]
 Reen
 [library Installed]
@@ -6642,6 +6400,422 @@ Vi povas ŝanĝi tion iam ajn en Agordoj → Sono.
 Via elekto ne povis esti konservita. Sono restas malŝaltita. Bonvolu reprovi.
 [audio choices description]
 Silento: silentigita laŭtparolilo. Sono: laŭtparolilo kun sonondoj.
+[intro menu]
+
+[intro briefing]
+
+[intro try]
+
+[intro preflight]
+
+[intro preflight save]
+
+[intro preference failed]
+
+[intro goal scout]
+
+[intro goal build]
+
+[intro goal supply]
+
+[intro goal grow]
+
+[intro goal attack]
+
+[intro instruction scout]
+
+[intro instruction build]
+
+[intro instruction supply]
+
+[intro instruction grow]
+
+[intro instruction attack]
+
+[intro help]
+
+[intro help scout]
+
+[intro help build]
+
+[intro help supply]
+
+[intro help grow]
+
+[intro help attack]
+
+[intro hint scout]
+
+[intro hint build]
+
+[intro hint supply]
+
+[intro hint grow]
+
+[intro hint attack]
+
+[intro hint no scout flag]
+
+[intro hint no suppliers]
+
+[intro hint no war flag]
+
+[intro hint retry]
+
+[intro complete]
+
+[intro complete body]
+
+[intro play again]
+
+[intro restart]
+
+[intro restart body]
+
+[intro help touch scout]
+
+[intro help touch build]
+
+[intro help touch supply]
+
+[intro help touch grow]
+
+[intro help touch attack]
+
+[intro show destination]
+
+[intro scout destination]
+
+[intro attack destination]
+
+[intro compact scout]
+
+[intro compact build]
+
+[intro compact supply]
+
+[intro compact grow]
+
+[intro compact attack]
+
+[tutorial lessons]
+
+[tutorial restart]
+
+[tutorial restart body]
+
+[tutorial complete]
+
+[tutorial food title]
+
+[tutorial food briefing]
+
+[tutorial food complete]
+
+[tutorial unavailable]
+
+[lesson healing title]
+
+[lesson healing briefing]
+
+[lesson healing complete]
+
+[lesson healing build hint]
+
+[lesson healing build title]
+
+[lesson healing build instruction]
+
+[lesson healing build help]
+
+[lesson healing build marker]
+
+[lesson healing heal hint]
+
+[lesson healing heal title]
+
+[lesson healing heal instruction]
+
+[lesson healing heal help]
+
+[lesson healing heal marker]
+
+[lesson walking-training title]
+
+[lesson walking-training briefing]
+
+[lesson walking-training complete]
+
+[lesson walking-training build hint]
+
+[lesson walking-training build title]
+
+[lesson walking-training build instruction]
+
+[lesson walking-training build help]
+
+[lesson walking-training build marker]
+
+[lesson walking-training train hint]
+
+[lesson walking-training train title]
+
+[lesson walking-training train instruction]
+
+[lesson walking-training train help]
+
+[lesson swimming title]
+
+[lesson swimming briefing]
+
+[lesson swimming complete]
+
+[lesson swimming build hint]
+
+[lesson swimming build title]
+
+[lesson swimming build instruction]
+
+[lesson swimming build help]
+
+[lesson swimming build marker]
+
+[lesson swimming train hint]
+
+[lesson swimming train title]
+
+[lesson swimming train instruction]
+
+[lesson swimming train help]
+
+[lesson swimming water-job hint]
+
+[lesson swimming water-job title]
+
+[lesson swimming water-job instruction]
+
+[lesson swimming water-job help]
+
+[lesson swimming water-job marker]
+
+[lesson schools title]
+
+[lesson schools briefing]
+
+[lesson schools complete]
+
+[lesson schools build hint]
+
+[lesson schools build title]
+
+[lesson schools build instruction]
+
+[lesson schools build help]
+
+[lesson schools build marker]
+
+[lesson schools learn hint]
+
+[lesson schools learn title]
+
+[lesson schools learn instruction]
+
+[lesson schools learn help]
+
+[lesson upgrades title]
+
+[lesson upgrades briefing]
+
+[lesson upgrades complete]
+
+[lesson upgrades upgrade hint]
+
+[lesson upgrades upgrade title]
+
+[lesson upgrades upgrade instruction]
+
+[lesson upgrades upgrade help]
+
+[lesson upgrades upgrade marker]
+
+[lesson upgrades train hint]
+
+[lesson upgrades train title]
+
+[lesson upgrades train instruction]
+
+[lesson upgrades train help]
+
+[lesson warrior-training title]
+
+[lesson warrior-training briefing]
+
+[lesson warrior-training complete]
+
+[lesson warrior-training produce hint]
+
+[lesson warrior-training produce title]
+
+[lesson warrior-training produce instruction]
+
+[lesson warrior-training produce help]
+
+[lesson warrior-training produce marker]
+
+[lesson warrior-training build hint]
+
+[lesson warrior-training build title]
+
+[lesson warrior-training build instruction]
+
+[lesson warrior-training build help]
+
+[lesson warrior-training build marker]
+
+[lesson warrior-training train hint]
+
+[lesson warrior-training train title]
+
+[lesson warrior-training train instruction]
+
+[lesson warrior-training train help]
+
+[lesson fortifications title]
+
+[lesson fortifications briefing]
+
+[lesson fortifications complete]
+
+[lesson fortifications tower hint]
+
+[lesson fortifications tower title]
+
+[lesson fortifications tower instruction]
+
+[lesson fortifications tower help]
+
+[lesson fortifications tower marker]
+
+[lesson fortifications walls hint]
+
+[lesson fortifications walls title]
+
+[lesson fortifications walls instruction]
+
+[lesson fortifications walls help]
+
+[lesson fortifications walls marker]
+
+[lesson fortifications supply hint]
+
+[lesson fortifications supply title]
+
+[lesson fortifications supply instruction]
+
+[lesson fortifications supply help]
+
+[lesson fortifications supply marker]
+
+[lesson fortifications hold hint]
+
+[lesson fortifications hold title]
+
+[lesson fortifications hold instruction]
+
+[lesson fortifications hold help]
+
+[lesson fortifications hold marker]
+
+[lesson defensive-tactics title]
+
+[lesson defensive-tactics briefing]
+
+[lesson defensive-tactics complete]
+
+[lesson defensive-tactics scout hint]
+
+[lesson defensive-tactics scout title]
+
+[lesson defensive-tactics scout instruction]
+
+[lesson defensive-tactics scout help]
+
+[lesson defensive-tactics scout marker]
+
+[lesson defensive-tactics guard hint]
+
+[lesson defensive-tactics guard title]
+
+[lesson defensive-tactics guard instruction]
+
+[lesson defensive-tactics guard help]
+
+[lesson defensive-tactics guard marker]
+
+[lesson defensive-tactics repel hint]
+
+[lesson defensive-tactics repel title]
+
+[lesson defensive-tactics repel instruction]
+
+[lesson defensive-tactics repel help]
+
+[lesson defensive-tactics repel marker]
+
+[lesson defensive-tactics counterattack hint]
+
+[lesson defensive-tactics counterattack title]
+
+[lesson defensive-tactics counterattack instruction]
+
+[lesson defensive-tactics counterattack help]
+
+[lesson defensive-tactics counterattack marker]
+
+[lesson healing build compact]
+
+[lesson healing heal compact]
+
+[lesson walking-training build compact]
+
+[lesson walking-training train compact]
+
+[lesson swimming build compact]
+
+[lesson swimming train compact]
+
+[lesson swimming water-job compact]
+
+[lesson schools build compact]
+
+[lesson schools learn compact]
+
+[lesson upgrades upgrade compact]
+
+[lesson upgrades train compact]
+
+[lesson warrior-training produce compact]
+
+[lesson warrior-training build compact]
+
+[lesson warrior-training train compact]
+
+[lesson fortifications tower compact]
+
+[lesson fortifications walls compact]
+
+[lesson fortifications supply compact]
+
+[lesson fortifications hold compact]
+
+[lesson defensive-tactics scout compact]
+
+[lesson defensive-tactics guard compact]
+
+[lesson defensive-tactics repel compact]
+
+[lesson defensive-tactics counterattack compact]
+
 [library GL only]
 Nur GL
 [Grassland]
@@ -6652,5 +6826,7 @@ Rokmontetoj
 Bestaj padoj
 [Fish amount]
 Kvanto da fiŝoj
+[scenario messages]
+
 [Camp-site amount]
 Nombro de kampadejoj

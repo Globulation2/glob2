@@ -3102,8 +3102,6 @@ Pyyhi
 Sijoita vapauttamalla kelvollisen maaston päällä
 [Paint on the map; two fingers move]
 Maalaa kartalle; siirrä kahdella sormella
-[Tutorial ▸]
-Opastus ▸
 [Back to tools]
 Takaisin työkaluihin
 [Starvation overlay]
@@ -6210,246 +6208,6 @@ Tallennetta ei voitu viedä.
 Poista tallenne
 [recording refresh]
 Päivitä
-[tutorial part1 message 1]
-Tervetuloa Globulation 2:een! Tässä opetellaan siirtokunnan hallintaa neljässä tehtävässä. Voit tallentaa etenemisen pelivalikosta ja ladata sen myöhemmin päävalikosta. Jatka välilyönnillä tai kosketusnäytön OK-painikkeella. Osa viesteistä katoaa jatkettaessa; ne voi lukea uudelleen viestihistoriasta.
-[tutorial part1 message 2]
-Aluksi sinulla on pesä ja yksi työläinen. Katsotaan niiden yhteistyötä.
-[tutorial part1 message 3]
-Työläinen korjaa vehnää ja kantaa sen pesään. Pesä käyttää vehnää uusien yksiköiden tuottamiseen, joten se on siirtokunnalle välttämätön.
-[tutorial part1 message 4]
-Valitse globulisi eli liikkuva yksikkö vasemmalla napsautuksella tai napautuksella.
-[tutorial part1 message 5]
-Yksikön tiedoissa näkyy ravinnon vähenevän ajan myötä. Globulille tulee nälkä. Kun ravintopalkit ovat näkyvissä, yksikön alla oleva sininen palkki näyttää jäljellä olevan ravinnon.
-[tutorial part1 message 6]
-Globulit syövät majataloissa. Poista valinta oikealla napsautuksella tai napauttamalla tyhjää maata kosketusnäytöllä.
-[tutorial part1 message 7]
-Avaa rakennusvalinnat, valitse majatalo ja sijoita se vehnän lähelle. Jos vehnää ei näy, seuraa työläisen korjuureittiä. Kosketusnäytöllä käytä rakentamista ja vahvista kelvollinen paikka. Lopuksi poistu sijoitustilasta oikealla napsautuksella tai kosketusnäytön peruutuspainikkeella.
-[tutorial part1 message 8]
-Hyvä! Majatalon rakennuspaikka on asetettu.
-[tutorial part1 message 9]
-Pesän työläinen voi nyt rakentaa majatalon. Se kerää puuta läheisistä puista ja tuo sen työmaalle. Odota valmistumista.
-[tutorial part1 message 10]
-Valmis majatalo tarvitsee vehnää. Tehtävään määrätty työläinen kerää sitä kuten pesää huoltava työläinen.
-[tutorial part1 message 11]
-Majatalon keltainen resurssipalkki kasvaa vehnän saapuessa. Se näyttää varastossa olevan vehnän määrän.
-[tutorial part1 message 12]
-Opetellaan seuraavaksi töiden jakamista.
-[tutorial part1 message 13]
-Yksi työläinen huoltaa pesää ja toinen majataloa. Kumpikin voi pitää ruokatauon majatalossa. Se on normaalia.
-[tutorial part1 message 14]
-Valitse pesä ja etsi työläisten määräasetus. Työpöydällä sen nimi on Työskentelemässä; kosketusnäytöllä käytä määrättyjen työläisten ja tavoitteen säädintä. Tavoite kertoo, montako työläistä haluat tähän rakennukseen.
-[tutorial part1 message 15]
-Aseta pesän työläistavoitteeksi 0. Valitse sitten majatalo ja aseta senkin tavoitteeksi 0.
-[tutorial part1 message 16]
-Työläiset ovat nyt vapaina, mutta tarvitsevat edelleen ruokaa. Ilman työläisiä majatalon vehnä loppuu aikanaan.
-[tutorial part1 message 17]
-Jos globuli ei löydä ruokaa, sen terveys heikkenee ja se voi kuolla. Sairaala parantaa loukkaantuneita, mutta majatalojen huoltokin on pidettävä kunnossa.
-[tutorial part1 message 18]
-Rakenna sairaala rakennusvalinnoista. Se ei tarvitse vehnää, joten sijoita se puun lähelle tai keskeiselle paikalle pesän lähelle.
-[tutorial part1 message 19]
-Valitse sairaalan työmaa ja aseta työläistavoitteeksi 2. Kaksi työläistä saa sen nopeammin valmiiksi.
-[tutorial part1 message 20]
-Sairaala on valmis. Loukkaantuneet globulit voivat käydä siellä palauttamassa terveytensä.
-[tutorial part1 message 21]
-Mustat alueet ovat tutkimattomia. Liikkuvat yksiköt paljastavat lähiympäristöä. Työläiset seuraavat töitään, joten tiedustelu on niillä hankalaa. Tutkijat on tarkoitettu siihen.
-[tutorial part1 message 22]
-Valitse pesä ja etsi työläisten, tutkijoiden ja sotureiden tuotantosuhteet. Nosta tutkijoiden suhteeksi 1.
-[tutorial part1 message 23]
-Kun työläisten ja tutkijoiden suhde on kummallakin 1, pesä tuottaa ajan myötä yhtä monta kumpaakin. Aseta työläisten suhteeksi 0, jotta nyt syntyy vain tutkijoita.
-[tutorial part1 message 24]
-Palauta pesän työläistavoitteeksi 1, jotta työläinen voi tuoda sinne vehnää.
-[tutorial part1 message 25]
-Valitse majatalo ja aseta senkin työläistavoitteeksi 1. Kasvava siirtokunta tarvitsee tasaisen ruokahuollon.
-[tutorial part1 message 26]
-Odota nyt, että pesä tuottaa tutkijan.
-[tutorial part1 message 27]
-Tutkija lentää siirtokunnan ympärillä ja paljastaa lisää maastoa. Anna pesän tuottaa toinenkin tutkija ennen jatkamista.
-[tutorial part1 message 28]
-Valitse pesä uudelleen. Aseta tutkijoiden suhteeksi 0 ja työläisten suhteeksi 1, jotta työläisten tuotanto jatkuu.
-[tutorial part2 message 1]
-Tukikohdan itäpuolella on kiveä. Muista paikka, sillä tarvitset sitä myöhemmin.
-[tutorial part2 message 2]
-Kivien eteläpuoliset puut ovat appelsiinipuita. Valitse ne nähdäksesi resurssitiedot. Palaamme hedelmiin myöhemmin; keskity nyt pesään.
-[tutorial part2 message 3]
-Aseta pesä tuottamaan vain työläisiä: työläisten suhde 1, tutkijoiden ja sotureiden 0.
-[tutorial part2 message 4]
-Nopeutetaan kasvua. Valitse pesä ja aseta työläistavoitteeksi 6. Sinulla ei ehkä vielä ole kuutta työläistä, mutta uudet voivat täyttää vapaat työt syntyessään.
-[tutorial part2 message 5]
-Jatkamme seuraaviin töihin, kun työläisiä on 8. Huolla pesää ja majataloa väestön kasvaessa.
-[tutorial part2 message 6]
-Pesää huoltaa nyt useita työläisiä. Enemmän vehnätoimituksia tarkoittaa nopeampaa yksiköiden tuotantoa.
-[tutorial part2 message 7]
-Uusi työläinen maksaa 5 vehnää. Kuljettaminen kaukaiselta pellolta vie aikaa, joten pesä tarvitsee usein useampia huoltajia kuin majatalo. Sijoita ravinnosta riippuvat rakennukset mahdollisuuksien mukaan vehnän lähelle.
-[tutorial part2 message 8]
-Työläisiä on nyt vähintään 8. Valitse pesä ja laske työläistavoite arvoon 1, jotta väestönkasvu hidastuu rakentamisen ajaksi.
-[tutorial part2 message 9]
-Siirtokunta tarvitsee lisää ruokailupaikkoja. Rakenna toinen majatalo nykyisen pohjoispuolelle.
-[tutorial part2 message 10]
-Määrää vapaita työläisiä uuden majatalon työmaalle. Se tarvitsee vain 3 puuta, joten yli 3 rakentajasta ei ole paljon lisähyötyä.
-[tutorial part2 message 11]
-Valmis majatalo palaa käytön aikaiseen työläistavoitteeseen, joka on yleensä 1. Rakentamisella ja tavallisella huollolla on erilliset tavoitteet.
-[tutorial part2 message 12]
-Työläiset voivat oppia liikkumaan nopeammin. Kilparata tarjoaa tämän koulutuksen.
-[tutorial part2 message 13]
-Avaa rakennusvalinnat ja etsi kilparata. Työpöydällä vie osoitin kuvakkeen päälle nähdäksesi kuvauksen ja hinnan. Kosketusnäytöllä valitse se rakentamisvalikosta sijoitettavaksi. Älä vielä sijoita sitä.
-[tutorial part2 message 14]
-Kilparata tarvitsee paljon puuta ja hieman kiveä. Valitse keskeinen paikka, johon yksiköt pääsevät helposti.
-[tutorial part2 message 15]
-Rakenna kilparata vaikkapa pesän eteläpuolelle. Jätä ympärille tilaa: koulutusrakennusten on voitava laajentua parannettaessa.
-[tutorial part2 message 16]
-Aseta kilparadan työmaan työläistavoitteeksi 5–7. Rakennusmateriaaleja tarvitaan yhteensä 7.
-[tutorial part2 message 17]
-Valmis kilparata kouluttaa siellä käyviä yksiköitä ilman jatkuvaa rakennusmateriaalien tai vehnän toimitusta.
-[tutorial part2 message 18]
-Globulit menevät kilparadalle harjoittelemaan. Koulutuksen jälkeen ne juoksevat nopeammin.
-[tutorial part2 message 19]
-Valitse kilparata nähdäksesi koulutuksen etenemisen. Ilmaisimet näyttävät, kuinka lähellä sisällä olevat yksiköt ovat valmistumista.
-[tutorial part2 message 20]
-Koulutetut työläiset kulkevat nopeammin ja toimittavat resurssit aiemmin. Seuraa ruokavarastoja kasvun aikana; nopeat toimitukset auttavat vain, jos riittävästi majataloja saa vehnää.
-[tutorial part2 message 21]
-Etsi pelinäkymän työläislaskuri. Kokonaismäärä näyttää väestön, ja vapaiden työläisten luku auttaa havaitsemaan ylimääräiset tekijät tai täyttämättömät työt. Käytä vapaat työläiset, mutta älä määrää enemmän töitä kuin siirtokunta kestää.
-[tutorial part2 message 22]
-Näkymä näyttää myös tutkijoiden ja sotureiden määrät. Tarkista ne suunnitellessasi tuotantoa tai määrätessäsi yksiköitä lipuille.
-[tutorial part2 message 23]
-Sinulla on 2 majataloa. Perusmajatalossa voi syödä 4 yksikköä kerrallaan, joten paikkoja on yhteensä 8. Nälkäisiä voi olla enemmän kuin 8, joten varaa kapasiteettia jonoja varten.
-[tutorial part2 message 24]
-Kaksi majataloa ei elätä kasvavaa siirtokuntaa loputtomiin. Lisää ruokailutilaa ennen kuin puute muuttuu nälänhädäksi.
-[tutorial part2 message 25]
-Rakenna vielä 3 majataloa vehnän lähelle. Nälkäiset työläiset lopettavat työnteon, ja pitkittynyt nälkä tappaa. Määrää vapaat rakentamaan mutta pidä nykyinen ruokahuolto toiminnassa.
-[tutorial part2 message 26]
-Rakenna 3 uutta majataloa valmiiksi, jolloin niitä on yhteensä 5.
-[tutorial part2 message 27]
-Uudet majatalot käyttävät valmistuttuaan käytön aikaisia tavoitteita, yleensä yhtä työläistä kukin. Tarkista huoltajat ja vehnän riittävyys.
-[tutorial part2 message 28]
-Kilparata paransi maalla liikkumista. Opetetaan seuraavaksi siirtokunta uimaan.
-[tutorial part2 message 29]
-Uima-allas opettaa yksiköt uimaan ja tarvitsee rakentamiseen puuta. Sijoita se suurelle aukiolle tukikohdan koillispuolella, kivien pohjoispuolelle. Jätä tilaa parannuksille ja resurssien kasvulle sekä määrää vapaita työläisiä rakentamaan.
-[tutorial part2 message 30]
-Uima-allas opettaa yksiköt uimaan ja tarvitsee rakentamiseen puuta. Sijoita se suurelle aukiolle tukikohdan koillispuolella, kivien pohjoispuolelle. Jätä tilaa parannuksille ja resurssien kasvulle sekä määrää vapaita työläisiä rakentamaan.
-[tutorial part2 message 31]
-Uima-allas on valmis. Globulit voivat mennä sinne opettelemaan uimista.
-[tutorial part2 message 32]
-Valitse uima-allas nähdäksesi koulutuksen etenemisen. Perusallas kouluttaa 2 globulia kerrallaan kuten peruskilparatakin.
-[tutorial part2 message 33]
-Koulutetut globulit osaavat nyt uida. Pian annamme niille työn, jossa on ylitettävä vettä.
-[tutorial part2 message 34]
-Opittavaa on lisää. Jos tarvitset tauon, tallenna pelivalikosta ja palaa myöhemmin.
-[tutorial part2 message 35]
-Siirtokunnalla on ruokaa ja fyysistä koulutusta. Koulu opettaa työläisille parempiin rakennuksiin tarvittavat taidot.
-[tutorial part2 message 36]
-Koulu parantaa korjuu- ja rakennustaitoja. Sen rakentamiseen tarvitaan vedessä kasvavaa levää. Uimataitoiset työläiset voivat kerätä sitä.
-[tutorial part2 message 37]
-Suojaa tärkeät koulutusrakennukset. Koulun ei tarvitse olla veden vieressä; suojainen sisämaan paikka voi turvata sen hyökkäyksiltä.
-[tutorial part2 message 38]
-Rakenna koulu suojaisaan paikkaan, esimerkiksi altaan taakse tai pesän lounaispuolelle kilparadan viereen. Määrää vapaat työläiset rakentamaan.
-[tutorial part2 message 39]
-Valitse rakennus nähdäksesi sille määrätyt työläiset. Työpöydällä muokattava yksikköpolkujen näyttötoiminto voi näyttää viivat yksiköistä määränpäihin; katso nykyinen pikanäppäin kohdasta Asetukset, Ohjaus. Odota koulun valmistumista.
-[tutorial part3 message 1]
-Siirtokunnalla on nyt majataloja, sairaala, kilparata, uima-allas ja koulu. On aika valmistella puolustus.
-[tutorial part3 message 2]
-Emme ole vielä tuottaneet sotureita. Ilman niitä siirtokunta on huonosti suojattu hyökkäyksiltä.
-[tutorial part3 message 3]
-Valitse pesä ja aseta sotureiden tuotantosuhteeksi 2. Jätä työläisten suhteeksi 1, jotta niitäkin syntyy lisää.
-[tutorial part3 message 4]
-Pesä tuottaa nyt noin 2 soturia jokaista työläistä kohti. Määrää enemmän työläisiä huoltamaan sitä, jos haluat nopeuttaa tuotantoa.
-[tutorial part3 message 5]
-Ensimmäinen soturi on valmis ja aloittaa koulutuksen. Odota toista ennen jatkamista.
-[tutorial part3 message 6]
-Soturitkin käyttävät kilparataa ja uima-allasta. Ne voivat lisäksi harjoitella hyökkäystaitoja parakissa.
-[tutorial part3 message 7]
-Parakki kehittää hyökkäysvoimaa ja -nopeutta. Voima kasvattaa osuman vahinkoa ja nopeus hyökkäystiheyttä. Hyvin koulutetut soturit voivat kukistaa paljon suuremman kouluttamattoman joukon.
-[tutorial part3 message 8]
-Rakenna parakki puun lähelle, sillä rakentamiseen tarvitaan puuta.
-[tutorial part3 message 9]
-Määrää vapaita työläisiä parakin työmaalle. Jätä riittävästi ruokahuoltoon äläkä luo enemmän töitä kuin tekijät ehtivät hoitaa.
-[tutorial part3 message 10]
-Parakki on valmis. Soturit voivat nyt kouluttaa hyökkäystaitojaan siellä.
-[tutorial part3 message 11]
-Rakennusten parantaminen vahvistaa siirtokuntaa.
-[tutorial part3 message 12]
-Koulussa oppineet työläiset voivat rakentaa parannuksia. Valitse sopiva rakennus ja etsi rakennusvalinnoista parannustoiminto. Vaurioitunut rakennus voi tarvita ensin korjauksen.
-[tutorial part3 message 13]
-Päätetään ensimmäinen parannuskohde. Majataloissa on vielä tilaa, joten ne voivat odottaa.
-[tutorial part3 message 14]
-Sairaalassakin on tilaa. Voimme keskittyä kouluun, kilparataan, altaaseen tai parakkiin.
-[tutorial part3 message 15]
-Paranna ensin kilparataa, jotta yksiköt oppivat liikkumaan vielä nopeammin.
-[tutorial part3 message 16]
-Valitse kilparata ja sen rakennusvalinnoista parantaminen. Sisällä olevien yksiköiden on poistuttava ennen rakentamista, joten muutos ei ehkä ala heti.
-[tutorial part3 message 17]
-Määrää vapaat työläiset parantamaan kilparataa. Vain tarvittavan koulutuksen saaneet voivat rakentaa tason 2 työmaata.
-[tutorial part3 message 18]
-Odota kilparadan parannuksen valmistumista. Korkeamman tason rakennukset vaativat enemmän resursseja ja aikaa.
-[tutorial part3 message 19]
-Tason 2 kilparata on valmis. Se vie aiempaa enemmän maata, minkä vuoksi jätimme välin. Ilman laajentumistilaa rakennusta ei voi parantaa.
-[tutorial part3 message 20]
-Paranna nyt parakki ja uima-allas tasolle 2. Jatkamme, kun molemmat ovat valmiit.
-[tutorial part3 message 21]
-Parannetut rakennukset palvelevat yleensä useampia globuleita tai tarjoavat parempaa koulutusta. Esimerkiksi tason 2 majatalossa on 7 ruokailupaikkaa ja ruokailu on perusmajataloa nopeampaa.
-[tutorial part3 message 22]
-Vihollinen on lähellä. Valmistaudutaan hyökkäykseen.
-[tutorial part3 message 23]
-Tornit ampuvat kantamalla olevia vihollisia, ja muurit suojaavat torneja. Puolustamme niillä kapeaa reittiä siirtokuntaan.
-[tutorial part3 message 24]
-Sijoita tornit pareittain, jos tilaa on. Muurit voivat suojata kolmea sivua, mutta jätä työläisille reitti kiviammusten kuljettamiseen.
-[tutorial part3 message 25]
-Katso altaasta itään, muiden hedelmäpuiden pohjoispuolelle. Kapea ylityspaikka vie toiselle saarelle ja sopii puolustettavaksi.
-[tutorial part3 message 26]
-Suunnittele 2 tornin paikat puiden ja rannan väliin. Jätä taakse kuljetusreitti kivelle ja muille sivuille tilaa muureille. Älä sulje työläisiä ulos.
-[tutorial part3 message 27]
-Rakenna sinne 2 tornia. Määrää kummallekin työmaalle 2 tai 3 työläistä sen mukaan, paljonko vapaita näkyy laskureissa.
-[tutorial part3 message 28]
-Aseta rakennusvalinnoilla muuriosia tornien kolmelle ulospäin suuntautuvalle sivulle. Jätä siirtokunnan puoli avoimeksi työläisille.
-[tutorial part3 message 29]
-Jokainen muuriosa luo rakennustyön ja vaatii 1 kiven. Jos tekijät eivät riitä kaikkiin töihin yhtä aikaa, osat voidaan tehdä vuorotellen.
-[tutorial part3 message 30]
-Odota molempien tornien ja usean muuriosan valmistumista. Tornit tarvitsevat myös kiviammuksia; kaukainen louhos hidastaa toimituksia. Nosta työläistavoitteita, jos vapaita on.
-[tutorial part4 message 1]
-Siirtokunnalla on ruokaa, koulutusta ja puolustus. Rakennukset voi vielä nostaa tasolle 3, jolloin koulutus ja kapasiteetti paranevat. Jatka kehittämistä resurssien ja työläisten taitojen salliessa.
-[tutorial part4 message 2]
-Etsi vihollisen siirtokuntaa tukikohdan luoteispuolelta. Siirrä näkymä sinne nyt.
-[tutorial part4 message 3]
-Tutkittukin maa voi jäädä sodan sumuun. Vihollisen nykyisten toimien näkemiseen tarvitaan tutkija lähelle.
-[tutorial part4 message 4]
-Avaa liput. Lippujen ja alueiden avulla ohjaat joukkoja hallitsematta jokaista globulia erikseen.
-[tutorial part4 message 5]
-Valitse leijan muotoinen tiedustelulippu. Lipun voi asettaa maalle, veteen, resurssien tai tutkimattoman maan päälle.
-[tutorial part4 message 6]
-Aseta tiedustelulippu oletetun vihollistukikohdan päälle. Suuntaa-antava paikka riittää tiedustelun alkuun. Poistu sijoitustilasta oikealla napsautuksella tai viimeistele kosketusohjaimilla.
-[tutorial part4 message 7]
-Lipun ääriviiva näyttää toimintasäteen. Määrätty tutkija tutkii alueen. Jos kukaan ei saavu, tarkista tutkijamäärä ja tuota tarvittaessa uusi pesässä. Jatka välilyönnillä tai OK:lla tutkijan saavuttua.
-[tutorial part4 message 8]
-Vihollisella on paljon työläisiä ja koottu armeija. Valmistellaan puolustus ennen hyökkäystä.
-[tutorial part4 message 9]
-Avaa liput ja valitse sininen vartioalue. Käytä maata lisäävää tilaa, älä poistavaa. Kosketusnäytöllä valitse maalaus pyyhkimisen sijaan.
-[tutorial part4 message 10]
-Valitse siveltimen muoto ja koko. Iso neliö sopii tiiviin puolustusalueen maalaamiseen.
-[tutorial part4 message 11]
-Maalaa vartioalue heti tornien taakse, mistä vihollinen todennäköisesti lähestyy. Napsauta tai napauta yhtä kohtaa tai vedä laajempi alue. Kosketusnäytöllä siirrä näkymää maalaamisen aikana Siirrä-toiminnolla.
-[tutorial part4 message 12]
-Vapaat soturit siirtyvät vartioalueelle. Tee siitä riittävän suuri puolustajille mutta niin pieni, että ne keskittyvät ylityspaikalle. Odota hyökkäystä.
-[tutorial part4 message 13]
-Vihollinen lähestyy ylityspaikkaa!
-[tutorial part4 message 14]
-Meitä vastaan hyökätään. Katso, kuinka koulutetut soturit ja tornit puolustavat asemaa.
-[tutorial part4 message 15]
-Selvisit! Avaa liput ja valitse piikikäs sotalippu. Aseta se vihollispesän päälle ohjaamaan hyökkäystä sinne.
-[tutorial part4 message 16]
-Poistu sijoitustilasta ja valitse sotalippu. Määrää enemmän kuin 1 soturi ja pienennä sädettä keskittääksesi hyökkäyksen pesän ympärille. Odota sotureiden saapumista.
-[tutorial part4 message 17]
-Hyökkäys on alkanut. Sotureiden on ohitettava vihollistornit päästäkseen pesälle.
-[tutorial part4 message 18]
-Soturit ovat päässeet vihollistukikohtaan. Pidä hyökkäys pesään keskitettynä.
-[tutorial part4 message 19]
-Tuhosit vihollisen pesän. Onnittelut! Suoritit opastuksen ja opit ruokahuollon, työjaon, koulutuksen, parannusten, tiedustelun ja taistelun perusteet.
-[tutorial mission basics]
-Johdanto ja perusteet
-[tutorial mission development]
-Rakennukset ja koulut
-[tutorial mission training]
-Soturit, koulutus ja parannukset
-[tutorial mission flags]
-Liput ja päätös
 [library  Could not restore the previous library: %0]
  Edellistä kirjastoa ei voitu palauttaa: %0
 [library  The previous library is retained.]
@@ -6642,6 +6400,422 @@ Voit muuttaa valintaa milloin tahansa kohdassa Asetukset → Ääni.
 Valintaa ei voitu tallentaa. Ääni on yhä pois päältä. Yritä uudelleen.
 [audio choices description]
 Hiljaisuus: mykistetty kaiutin. Ääni: kaiutin ja ääniaaltoja.
+[intro menu]
+
+[intro briefing]
+
+[intro try]
+
+[intro preflight]
+
+[intro preflight save]
+
+[intro preference failed]
+
+[intro goal scout]
+
+[intro goal build]
+
+[intro goal supply]
+
+[intro goal grow]
+
+[intro goal attack]
+
+[intro instruction scout]
+
+[intro instruction build]
+
+[intro instruction supply]
+
+[intro instruction grow]
+
+[intro instruction attack]
+
+[intro help]
+
+[intro help scout]
+
+[intro help build]
+
+[intro help supply]
+
+[intro help grow]
+
+[intro help attack]
+
+[intro hint scout]
+
+[intro hint build]
+
+[intro hint supply]
+
+[intro hint grow]
+
+[intro hint attack]
+
+[intro hint no scout flag]
+
+[intro hint no suppliers]
+
+[intro hint no war flag]
+
+[intro hint retry]
+
+[intro complete]
+
+[intro complete body]
+
+[intro play again]
+
+[intro restart]
+
+[intro restart body]
+
+[intro help touch scout]
+
+[intro help touch build]
+
+[intro help touch supply]
+
+[intro help touch grow]
+
+[intro help touch attack]
+
+[intro show destination]
+
+[intro scout destination]
+
+[intro attack destination]
+
+[intro compact scout]
+
+[intro compact build]
+
+[intro compact supply]
+
+[intro compact grow]
+
+[intro compact attack]
+
+[tutorial lessons]
+
+[tutorial restart]
+
+[tutorial restart body]
+
+[tutorial complete]
+
+[tutorial food title]
+
+[tutorial food briefing]
+
+[tutorial food complete]
+
+[tutorial unavailable]
+
+[lesson healing title]
+
+[lesson healing briefing]
+
+[lesson healing complete]
+
+[lesson healing build hint]
+
+[lesson healing build title]
+
+[lesson healing build instruction]
+
+[lesson healing build help]
+
+[lesson healing build marker]
+
+[lesson healing heal hint]
+
+[lesson healing heal title]
+
+[lesson healing heal instruction]
+
+[lesson healing heal help]
+
+[lesson healing heal marker]
+
+[lesson walking-training title]
+
+[lesson walking-training briefing]
+
+[lesson walking-training complete]
+
+[lesson walking-training build hint]
+
+[lesson walking-training build title]
+
+[lesson walking-training build instruction]
+
+[lesson walking-training build help]
+
+[lesson walking-training build marker]
+
+[lesson walking-training train hint]
+
+[lesson walking-training train title]
+
+[lesson walking-training train instruction]
+
+[lesson walking-training train help]
+
+[lesson swimming title]
+
+[lesson swimming briefing]
+
+[lesson swimming complete]
+
+[lesson swimming build hint]
+
+[lesson swimming build title]
+
+[lesson swimming build instruction]
+
+[lesson swimming build help]
+
+[lesson swimming build marker]
+
+[lesson swimming train hint]
+
+[lesson swimming train title]
+
+[lesson swimming train instruction]
+
+[lesson swimming train help]
+
+[lesson swimming water-job hint]
+
+[lesson swimming water-job title]
+
+[lesson swimming water-job instruction]
+
+[lesson swimming water-job help]
+
+[lesson swimming water-job marker]
+
+[lesson schools title]
+
+[lesson schools briefing]
+
+[lesson schools complete]
+
+[lesson schools build hint]
+
+[lesson schools build title]
+
+[lesson schools build instruction]
+
+[lesson schools build help]
+
+[lesson schools build marker]
+
+[lesson schools learn hint]
+
+[lesson schools learn title]
+
+[lesson schools learn instruction]
+
+[lesson schools learn help]
+
+[lesson upgrades title]
+
+[lesson upgrades briefing]
+
+[lesson upgrades complete]
+
+[lesson upgrades upgrade hint]
+
+[lesson upgrades upgrade title]
+
+[lesson upgrades upgrade instruction]
+
+[lesson upgrades upgrade help]
+
+[lesson upgrades upgrade marker]
+
+[lesson upgrades train hint]
+
+[lesson upgrades train title]
+
+[lesson upgrades train instruction]
+
+[lesson upgrades train help]
+
+[lesson warrior-training title]
+
+[lesson warrior-training briefing]
+
+[lesson warrior-training complete]
+
+[lesson warrior-training produce hint]
+
+[lesson warrior-training produce title]
+
+[lesson warrior-training produce instruction]
+
+[lesson warrior-training produce help]
+
+[lesson warrior-training produce marker]
+
+[lesson warrior-training build hint]
+
+[lesson warrior-training build title]
+
+[lesson warrior-training build instruction]
+
+[lesson warrior-training build help]
+
+[lesson warrior-training build marker]
+
+[lesson warrior-training train hint]
+
+[lesson warrior-training train title]
+
+[lesson warrior-training train instruction]
+
+[lesson warrior-training train help]
+
+[lesson fortifications title]
+
+[lesson fortifications briefing]
+
+[lesson fortifications complete]
+
+[lesson fortifications tower hint]
+
+[lesson fortifications tower title]
+
+[lesson fortifications tower instruction]
+
+[lesson fortifications tower help]
+
+[lesson fortifications tower marker]
+
+[lesson fortifications walls hint]
+
+[lesson fortifications walls title]
+
+[lesson fortifications walls instruction]
+
+[lesson fortifications walls help]
+
+[lesson fortifications walls marker]
+
+[lesson fortifications supply hint]
+
+[lesson fortifications supply title]
+
+[lesson fortifications supply instruction]
+
+[lesson fortifications supply help]
+
+[lesson fortifications supply marker]
+
+[lesson fortifications hold hint]
+
+[lesson fortifications hold title]
+
+[lesson fortifications hold instruction]
+
+[lesson fortifications hold help]
+
+[lesson fortifications hold marker]
+
+[lesson defensive-tactics title]
+
+[lesson defensive-tactics briefing]
+
+[lesson defensive-tactics complete]
+
+[lesson defensive-tactics scout hint]
+
+[lesson defensive-tactics scout title]
+
+[lesson defensive-tactics scout instruction]
+
+[lesson defensive-tactics scout help]
+
+[lesson defensive-tactics scout marker]
+
+[lesson defensive-tactics guard hint]
+
+[lesson defensive-tactics guard title]
+
+[lesson defensive-tactics guard instruction]
+
+[lesson defensive-tactics guard help]
+
+[lesson defensive-tactics guard marker]
+
+[lesson defensive-tactics repel hint]
+
+[lesson defensive-tactics repel title]
+
+[lesson defensive-tactics repel instruction]
+
+[lesson defensive-tactics repel help]
+
+[lesson defensive-tactics repel marker]
+
+[lesson defensive-tactics counterattack hint]
+
+[lesson defensive-tactics counterattack title]
+
+[lesson defensive-tactics counterattack instruction]
+
+[lesson defensive-tactics counterattack help]
+
+[lesson defensive-tactics counterattack marker]
+
+[lesson healing build compact]
+
+[lesson healing heal compact]
+
+[lesson walking-training build compact]
+
+[lesson walking-training train compact]
+
+[lesson swimming build compact]
+
+[lesson swimming train compact]
+
+[lesson swimming water-job compact]
+
+[lesson schools build compact]
+
+[lesson schools learn compact]
+
+[lesson upgrades upgrade compact]
+
+[lesson upgrades train compact]
+
+[lesson warrior-training produce compact]
+
+[lesson warrior-training build compact]
+
+[lesson warrior-training train compact]
+
+[lesson fortifications tower compact]
+
+[lesson fortifications walls compact]
+
+[lesson fortifications supply compact]
+
+[lesson fortifications hold compact]
+
+[lesson defensive-tactics scout compact]
+
+[lesson defensive-tactics guard compact]
+
+[lesson defensive-tactics repel compact]
+
+[lesson defensive-tactics counterattack compact]
+
 [library GL only]
 Vain GL
 [Grassland]
@@ -6652,5 +6826,7 @@ Kalliokukkulat
 Eläinpolut
 [Fish amount]
 Kalojen määrä
+[scenario messages]
+
 [Camp-site amount]
 Leiripaikkojen määrä

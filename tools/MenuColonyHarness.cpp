@@ -404,7 +404,7 @@ void capture(const std::string &name, const std::string &path)
 	}
 	else if (name == "missions")
 	{
-		Preview<CampaignMenuScreen> s("campaigns/Tutorial_Campaign.txt", screens);
+		Preview<CampaignMenuScreen> s("test/fixtures/campaign/Browser_Test_Campaign.txt", screens);
 		s.render();
 		s.checkBounds();
 	}
@@ -946,7 +946,7 @@ int main(int argc, char **argv)
 		navigate(std::make_unique<MainMenuScreen>(), "main menu exits");
 		navigate(std::make_unique<CampaignMainMenu>(screens), "campaign menu exits");
 		navigate(std::make_unique<CampaignSelectorScreen>(), "campaign selector exits");
-		navigate(std::make_unique<CampaignMenuScreen>("campaigns/Tutorial_Campaign.txt", screens), "mission list exits");
+		navigate(std::make_unique<CampaignMenuScreen>("test/fixtures/campaign/Browser_Test_Campaign.txt", screens), "mission list exits");
 		navigate(std::make_unique<CustomGameScreen>(screens), "custom game exits");
 		navigate(std::make_unique<ChooseMapScreen>("games", "game", true), "load game exits");
 		navigate(std::make_unique<SettingsScreen>(), "settings exit");

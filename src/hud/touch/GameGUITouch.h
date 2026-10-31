@@ -274,13 +274,13 @@ class GameGUITouch
 	int previousDisplayMode = 0;
 	bool swallowMouseRelease = false, ignoreTouchSequence = false;
 	double panelScroll = 144;
-	bool tutorialCollapsed = false;
-	std::string tutorialText;
-	std::vector<std::string> tutorialLines;
-	double tutorialWidth = 0, tutorialScroll = 0;
-	GAGCore::ViewRect tutorialRect() const;
-	void prepareTutorial();
-	void drawTutorial();
+	bool scenarioMessageCollapsed = false;
+	std::string scenarioMessageText;
+	std::vector<std::string> scenarioMessageLines;
+	double scenarioMessageWidth = 0, scenarioMessageScroll = 0;
+	GAGCore::ViewRect scenarioMessageRect() const;
+	void prepareScenarioMessage();
+	void drawScenarioMessage();
 	GAGCore::MobileLayout layout() const;
 	// Edge-hugging controls the host is asked to keep free of system gestures;
 	// synchronised only when the set changes.
@@ -290,16 +290,16 @@ class GameGUITouch
 	void clampScroll();
 	// HUD panel offsets with momentum and bounce; clampScroll() keeps them and
 	// the plain scroll variables in step.
-	GAGCore::TrackedScrollAxis panelAxis, actionAxis, tutorialAxis;
+	GAGCore::TrackedScrollAxis panelAxis, actionAxis, scenarioMessageAxis;
 	GAGCore::GestureScrollController nativeScroll;
 	Uint64 nativeSequence = 0;
-	int nativePanel = 0; // 1 palette, 2 inspector actions, 3 tutorial; retained for cancelled tails
+	int nativePanel = 0; // 1 palette, 2 inspector actions, 3 scenario message; retained for cancelled tails
 	bool nativeScrolling = false;
-	GAGCore::TrackedScrollAxis &nativeAxis() { return nativePanel == 3 ? tutorialAxis : nativePanel == 2 ? actionAxis : panelAxis; }
-	double &nativeOffset() { return nativePanel == 3 ? tutorialScroll : nativePanel == 2 ? actionScroll : panelScroll; }
+	GAGCore::TrackedScrollAxis &nativeAxis() { return nativePanel == 3 ? scenarioMessageAxis : nativePanel == 2 ? actionAxis : panelAxis; }
+	double &nativeOffset() { return nativePanel == 3 ? scenarioMessageScroll : nativePanel == 2 ? actionScroll : panelScroll; }
 	GAGCore::ScrollMotion mapMotion;
 	Uint64 mapDragStartTime = 0;
-	double tutorialMaximum() const;
+	double scenarioMessageMaximum() const;
 	Uint64 lastStepTime = 0;
 	// Momentum only follows real fingers; the synthetic mouse finger drags.
 	bool fingerIsTouch = false;

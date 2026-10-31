@@ -2395,16 +2395,16 @@ class GameGUITouchHarness
 			gui.swallowSpaceKey = true;
 			gui.setIsSpaceSet(false);
 			glob2test::drawGUI(gui,0);
-			gfx->printScreen(width < height ? "touch-tutorial-portrait.bmp"
-											: "touch-tutorial-landscape.bmp");
+			gfx->printScreen(width < height ? "touch-scenario-message-portrait.bmp"
+											: "touch-scenario-message-landscape.bmp");
 			gfx->nextFrame();
 			finger(SDL_EVENT_FINGER_DOWN, 1, 30 * unit, 80 * unit);
 			finger(SDL_EVENT_FINGER_MOTION, 1, 30 * unit, 60 * unit);
 			finger(SDL_EVENT_FINGER_UP, 1, 30 * unit, 60 * unit);
-			require(!gui.isSpaceSet(), "Scrolling tutorial text must not acknowledge it");
-			const auto tutorial = gui.touch->tutorialRect();
-			tap(tutorial.x + 20 * unit, tutorial.y + tutorial.h - 24 * unit);
-			require(gui.isSpaceSet(), "Tutorial touch acknowledgment uses the shared Space action");
+			require(!gui.isSpaceSet(), "Scrolling scenario text must not acknowledge it");
+			const auto message = gui.touch->scenarioMessageRect();
+			tap(message.x + 20 * unit, message.y + message.h - 24 * unit);
+			require(gui.isSpaceSet(), "Scenario message acknowledgment uses the shared Space action");
 			gui.scriptText.clear();
 			gui.swallowSpaceKey = false;
 		}

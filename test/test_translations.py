@@ -110,37 +110,6 @@ panel.actions = {{"id", "Untranslated action", [] {}}, {"ok", tr("[localized]"),
             self.assertEqual({key for key, _ in checker.source_keys(experiment)}, {
                 '[experiment new-experiment]', '[experiment new-experiment help]'})
 
-    def test_tutorial_aliases_cover_shipped_maps_and_remain_current(self):
-        root = Path(__file__).resolve().parents[1]
-        spec = importlib.util.spec_from_file_location('tutorial_aliases', root / 'tools/localization/generate_tutorial_aliases.py')
-        generator = importlib.util.module_from_spec(spec)
-        spec.loader.exec_module(generator)
-        self.assertEqual((root / generator.OUTPUT).read_text(encoding='utf-8'), generator.render(root))
-        english, errors = checker.read_table(root / 'data/texts.en.txt')
-        self.assertFalse(errors)
-        aliases = generator.aliases(root)
-        for _, source in generator.sources(root):
-            self.assertEqual(generator.fingerprint(source), generator.fingerprint(source.replace(b'\r\n', b'\n').replace(b'\n', b'\r\n')))
-        self.assertGreater(len(aliases), 900)  # Includes older map-embedded copies.
-        for key in aliases.values():
-            self.assertTrue(english.get(key), key)
-        # One legacy Spanish instruction was used for both steps; its current
-        # combined wording must remain valid for either display alias.
-        self.assertEqual(english['[tutorial part2 message 29]'], english['[tutorial part2 message 30]'])
-        for name in checker.read_lines(root / 'data/texts.list.txt')[1:]:
-            table, errors = checker.read_table(root / name)
-            self.assertFalse(errors)
-            with self.subTest(catalog=name):
-                self.assertTrue(table.get('[tutorial part2 message 29]'))
-                self.assertEqual(table.get('[tutorial part2 message 29]'),
-                                 table.get('[tutorial part2 message 30]'),
-                                 'Ambiguous legacy pool aliases need the same complete instruction')
-        for part, count in ((1, 28), (2, 39), (3, 30), (4, 19)):
-            script = (root / f'scripts/tutorial_part{part}.sgsl').read_text(encoding='utf-8')
-            groups = {key for key, _ in generator.messages(script, part)}
-            self.assertEqual(len(groups), count)
-            self.assertTrue(groups <= set(aliases.values()))
-
     def test_duplicate_values_are_reported_without_rewriting(self):
         with tempfile.TemporaryDirectory() as directory:
             path = Path(directory) / 'texts.test.txt'
@@ -179,16 +148,18 @@ panel.actions = {{"id", "Untranslated action", [] {}}, {"ok", tr("[localized]"),
             other = ['xx', 'Example', 'Example - Incomplete', 'Language', '%0 to %0', '', '', 'Localized complete sentence', '']
             for code, values in [('en', english), ('xx', other)]:
                 (root / f'data/texts.{code}.txt').write_text(''.join(k+'\n'+v+'\n' for k,v in zip(keys, values)), encoding='utf-8')
-            (root / 'scripts').mkdir()
-            (root / 'scripts/tutorial_part1.sgsl').write_text(
-                '#show("Ignored")\nshow("Message with \"inner quotes\".")\nshow("Message",xx)\n', encoding='utf-8')
+            (root / 'scripts/tutorials').mkdir(parents=True)
+            (root / 'scripts/tutorials/catalog.json').write_text(json.dumps([
+                {'definition': 'scripts/tutorials/sample.json'}]))
+            (root / 'scripts/tutorials/sample.json').write_text(json.dumps({
+                'title': '[new control]', 'steps': [{'help': '[absent]'}]}))
             (root / 'data/themes').mkdir()
             (root / 'data/themes/index.json').write_text('{"themes":["missing-theme"]}', encoding='utf-8')
             result = checker.audit(root)
-            self.assertEqual(result['coverage']['tutorials']['scripts/tutorial_part1.sgsl'], {
-                'message_counts': {'en': 1, 'xx': 1}, 'legacy_languages_without_messages': [],
-                'display_catalog_gaps': {'data/texts.en.txt': ['[tutorial part1 message 1]'],
-                    'data/texts.xx.txt': ['[tutorial part1 message 1]']}})
+            self.assertEqual(result['coverage']['tutorials']['scripts/tutorials/sample.json'], {
+                'key_count': 2,
+                'display_catalog_gaps': {'data/texts.en.txt': [],
+                    'data/texts.xx.txt': ['[absent]', '[new control]']}})
             self.assertTrue(any('unknown translation key [theme missing-theme]' in e for e in result['errors']))
             self.assertTrue(any('unknown translation key [missing lookup]' in e for e in result['errors']))
             self.assertTrue(any('invalid placeholders' in e for e in result['errors']))

@@ -3,6 +3,7 @@
 #include "CampaignSelectorScreen.h"
 #include "ui/FileListing.h"
 #include <cassert>
+#include <algorithm>
 
 using namespace Glob2UI;
 
@@ -10,6 +11,9 @@ CampaignSelectorScreen::CampaignSelectorScreen(bool isSelectingSave)
 	: directory(isSelectingSave ? "games" : "campaigns")
 {
 	names = listFiles(directory, "txt");
+    // Keep retired campaign progress on disk without offering broken launch links,
+    // including installations upgraded in place with stale packaged files.
+    std::erase(names, "Tutorial_Campaign");
 }
 
 void CampaignSelectorScreen::select(int index)

@@ -1,7 +1,8 @@
+const {waitForMainMenu}=require('./main-menu');
 const {test,expect}=require('@playwright/test');
 const {clickMainMenu,gameURL,clickCustomGameStart,clickControl,controlBox}=require('./main-menu');
 const state=page=>page.evaluate(()=>glob2Diagnostics.snapshot());
-const screen=(page,name)=>expect.poll(async()=>(await state(page)).screen).toContain(name);
+const screen=(page,name)=>name==='MainMenuScreen' ? waitForMainMenu(page) : expect.poll(async()=>(await state(page)).screen).toContain(name);
 
 test('reload and address-bar shortcuts remain available with game focus',async({page})=>{
   await page.goto(gameURL());await screen(page,'MainMenuScreen');

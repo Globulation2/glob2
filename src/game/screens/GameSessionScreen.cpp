@@ -1,3 +1,4 @@
+#include "tutorial/TutorialModel.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "GameSessionScreen.h"
 #include "Engine.h"
@@ -222,7 +223,8 @@ void GameSessionScreen::updateExecutionImpl(Uint32 tick)
 						   [request = *request](Engine &next)
 						   {
 							   return request.replay ? next.loadReplayTask(request.filename)
-													 : next.initCustomTask(request.filename);
+													 : request.campaign ? next.initCampaignTask(request.filename)
+                                                                : next.initCustomTask(request.filename);
 						   }),
 					   [this](GAGGUI::Screen &loading, int result)
 					   {
@@ -254,6 +256,11 @@ void GameSessionScreen::updateExecutionImpl(Uint32 tick)
 			return;
 		}
 		finished = true;
+        if (engine->tutorialNavigation()) {
+            if (globalContainer->mix) globalContainer->mix->setNextTrack(MusicTrack::Menu,true);
+            endExecute(engine->tutorialNavigation());
+            return;
+        }
 		auto endScreen = engine->endRunScreen();
 		if (!endScreen)
 			endExecute(QUIT_APPLICATION);

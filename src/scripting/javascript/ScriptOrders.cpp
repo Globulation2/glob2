@@ -20,6 +20,25 @@ std::shared_ptr<Order> order(const AIEngine::AIWorldView &world, int team, const
 	const std::string type = d.string("type");
 	auto number = [&](const char *name, int lo = 0, int hi = 65535)
 	{ return d.integer(name, lo, hi); };
+    if(type=="alliance") {
+        if(team<0 || team>=int(world.teams.size())) throw std::runtime_error("Invalid alliance owner");
+        const Uint32 self=Uint32(1)<<team;
+        const auto mask=[&](const char *key,Uint32 fallback) {
+            const auto &value=d.get(key);
+            if(value.kind==Value::Null) return fallback;
+            if(value.kind!=Value::Array || value.items.size()>world.teams.size()) throw std::runtime_error("Alliance requires bounded team arrays");
+            Uint32 result=0;
+            for(const auto &item:value.items) {
+                const int owner=Value::object().set("team",item).integer("team",0,int(world.teams.size())-1);
+                result|=Uint32(1)<<owner;
+            }
+            return result;
+        };
+        const auto allies=mask("allies",self),enemies=mask("enemies",0);
+        if((allies&enemies) || (enemies&self) || !(allies&self)) throw std::runtime_error("Contradictory alliance teams");
+        return std::make_shared<SetAllianceOrder>(team,allies,enemies,mask("visionExchange",self),mask("visionFood",self),mask("visionOther",self));
+    }
+
 	if (type == "create")
 	{
 		int t = number("buildingType", 0, int(world.catalog->size()) - 1);
