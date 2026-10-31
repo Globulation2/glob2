@@ -1,3 +1,4 @@
+const {waitForMainMenu}=require('./main-menu');
 const {test, expect} = require('@playwright/test');
 const {gameURL, clickMainMenu} = require('./main-menu');
 
@@ -15,7 +16,7 @@ test('loading page presents branded progress before the runtime is ready', async
   await expect(page.locator('#canvas')).toHaveCSS('opacity', '0');
   release();
   await navigation;
-  await expect.poll(() => page.evaluate(() => glob2Diagnostics.snapshot().screen)).toContain('MainMenuScreen');
+  await waitForMainMenu(page);
   await expect(page.locator('#loading')).toHaveAttribute('aria-hidden', 'true');
   await expect(page.locator('#canvas')).toHaveCSS('opacity', '1');
 });
@@ -27,8 +28,7 @@ test('threaded startup transfers its worker lifetime to gameplay and exits clean
   const url = new URL(gameURL(), 'http://localhost');
   url.searchParams.delete('threads');
   await page.goto(url.pathname + url.search);
-  await expect.poll(() => page.evaluate(() => globalThis.glob2Diagnostics?.snapshot().screen), {timeout:120000})
-    .toContain('MainMenuScreen');
+  await waitForMainMenu(page);
   const executionMode = await page.evaluate(() => Module.executionMode);
   test.skip(info.project.name === 'webkit' && executionMode === 'serial',
     'This WebKit host does not support the threaded runtime capability probe');
@@ -39,8 +39,7 @@ test('threaded startup transfers its worker lifetime to gameplay and exits clean
   await expect.poll(() => page.evaluate(() => glob2Diagnostics.snapshot().screen))
     .toContain('SettingsScreen');
   await page.locator('#canvas').press('Escape');
-  await expect.poll(() => page.evaluate(() => glob2Diagnostics.snapshot().screen))
-    .toContain('MainMenuScreen');
+  await waitForMainMenu(page);
   await clickMainMenu(page, 'quit');
   await expect.poll(() => page.evaluate(() => glob2Diagnostics.snapshot().screen))
     .toBe('exited');

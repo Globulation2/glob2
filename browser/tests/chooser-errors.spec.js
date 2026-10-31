@@ -1,7 +1,8 @@
+const {waitForMainMenu}=require('./main-menu');
 const {test, expect} = require('@playwright/test');
 const {clickMainMenu,gameURL,clickListRow}=require('./main-menu');
 const state = page => page.evaluate(() => glob2Diagnostics.snapshot());
-const screen = (page, name) => expect.poll(async () => (await state(page)).screen).toContain(name);
+const screen = (page, name) => name==='MainMenuScreen' ? waitForMainMenu(page) : expect.poll(async () => (await state(page)).screen).toContain(name);
 
 test('corrupt local files leave the chooser responsive and cannot accept an old selection', async ({page}) => {
   const errors = [];

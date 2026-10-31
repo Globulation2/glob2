@@ -1,0 +1,258 @@
+{
+  "schema": 1,
+  "id": "upgrades",
+  "version": 1,
+  "map": "campaigns/upgrades.map.gz",
+  "name": "Upgrading buildings",
+  "title": "[lesson upgrades title]",
+  "briefing": "[lesson upgrades briefing]",
+  "completionTitle": "[tutorial complete]",
+  "completionBody": "[lesson upgrades complete]",
+  "confirmTicks": 90,
+  "hintTicks": 1350,
+  "targets": {
+    "workers": {
+      "kind": "unit",
+      "team": 0,
+      "type": 0
+    },
+    "swarm": {
+      "kind": "building",
+      "team": 0,
+      "type": 0
+    },
+    "trainees": {
+      "kind": "unit",
+      "team": 0,
+      "type": 0,
+      "bind": "lesson"
+    },
+    "buildArea": {
+      "kind": "area",
+      "region": "home"
+    },
+    "track": {
+      "kind": "building",
+      "team": 0,
+      "type": 3,
+      "bind": "lesson"
+    },
+    "upgraded": {
+      "kind": "building",
+      "team": 0,
+      "type": 3,
+      "filters": [
+        {
+          "field": "level",
+          "op": "gte",
+          "value": 1
+        },
+        {
+          "field": "construction",
+          "op": "eq",
+          "value": 0
+        }
+      ]
+    }
+  },
+  "steps": [
+    {
+      "id": "upgrade",
+      "title": "[lesson upgrades upgrade title]",
+      "instruction": "[lesson upgrades upgrade instruction]",
+      "touchInstruction": "[lesson upgrades upgrade compact]",
+      "help": "[lesson upgrades upgrade help]",
+      "touchHelp": "[lesson upgrades upgrade help]",
+      "complete": {
+        "type": "exists",
+        "target": "upgraded"
+      },
+      "activeOnly": true,
+      "highlights": [
+        "upgrade",
+        "workers"
+      ],
+      "hint": 0,
+      "milestones": [
+        {
+          "condition": {
+            "type": "exists",
+            "target": "upgraded"
+          }
+        }
+      ],
+      "destination": {
+        "target": "track",
+        "label": "[lesson upgrades upgrade marker]"
+      }
+    },
+    {
+      "id": "train",
+      "title": "[lesson upgrades train title]",
+      "instruction": "[lesson upgrades train instruction]",
+      "touchInstruction": "[lesson upgrades train compact]",
+      "help": "[lesson upgrades train help]",
+      "touchHelp": "[lesson upgrades train help]",
+      "complete": {
+        "type": "all",
+        "conditions": [
+          {
+            "type": "exists",
+            "target": "upgraded"
+          },
+          {
+            "type": "increased",
+            "target": "trainees",
+            "field": "levels.3",
+            "baseline": "lesson"
+          }
+        ]
+      },
+      "activeOnly": true,
+      "highlights": [
+        "build:racetrack"
+      ],
+      "hint": 1,
+      "milestones": [
+        {
+          "condition": {
+            "type": "all",
+            "conditions": [
+              {
+                "type": "exists",
+                "target": "upgraded"
+              },
+              {
+                "type": "increased",
+                "target": "trainees",
+                "field": "levels.3",
+                "baseline": "lesson"
+              }
+            ]
+          }
+        }
+      ],
+      "recovery": [
+        {
+          "hint": 2,
+          "when": {
+            "type": "none",
+            "target": "trainees"
+          }
+        }
+      ]
+    }
+  ],
+  "hints": [
+    "[lesson upgrades upgrade hint]",
+    "[lesson upgrades train hint]",
+    "[intro hint retry]"
+  ],
+  "onStart": [
+    {
+      "type": "scenarioOrder",
+      "team": 0,
+      "order": {
+        "type": "alliance",
+        "allies": [
+          0
+        ],
+        "enemies": []
+      }
+    },
+    {
+      "type": "scenarioOrder",
+      "team": 1,
+      "order": {
+        "type": "alliance",
+        "allies": [
+          1
+        ],
+        "enemies": []
+      }
+    },
+    {
+      "type": "buildingChoice",
+      "name": "swarm",
+      "enabled": false
+    },
+    {
+      "type": "buildingChoice",
+      "name": "inn",
+      "enabled": true
+    },
+    {
+      "type": "buildingChoice",
+      "name": "hospital",
+      "enabled": false
+    },
+    {
+      "type": "buildingChoice",
+      "name": "racetrack",
+      "enabled": true
+    },
+    {
+      "type": "buildingChoice",
+      "name": "swimmingpool",
+      "enabled": false
+    },
+    {
+      "type": "buildingChoice",
+      "name": "barracks",
+      "enabled": false
+    },
+    {
+      "type": "buildingChoice",
+      "name": "school",
+      "enabled": false
+    },
+    {
+      "type": "buildingChoice",
+      "name": "defencetower",
+      "enabled": false
+    },
+    {
+      "type": "buildingChoice",
+      "name": "stonewall",
+      "enabled": false
+    },
+    {
+      "type": "buildingChoice",
+      "name": "market",
+      "enabled": false
+    },
+    {
+      "type": "flagChoice",
+      "name": "explorationflag",
+      "enabled": false
+    },
+    {
+      "type": "flagChoice",
+      "name": "warflag",
+      "enabled": false
+    },
+    {
+      "type": "flagChoice",
+      "name": "clearingflag",
+      "enabled": false
+    }
+  ],
+  "recovery": [
+    {
+      "hint": 2,
+      "when": {
+        "type": "any",
+        "conditions": [
+          {
+            "type": "none",
+            "target": "swarm"
+          },
+          {
+            "type": "none",
+            "target": "workers"
+          }
+        ]
+      }
+    }
+  ]
+}

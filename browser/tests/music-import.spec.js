@@ -1,9 +1,10 @@
+const {waitForMainMenu}=require('./main-menu');
 const {test, expect} = require('@playwright/test');
 const {readFile} = require('node:fs/promises');
 const {gameURL, clickMainMenu, clickControl, clickByLabel, control, readBrowserFile} = require('./main-menu');
 const archive = process.env.GLOB2_MUSIC_TEST_ARCHIVE;
 const state = page => page.evaluate(() => glob2Diagnostics.snapshot());
-const screen = (page, name) => expect.poll(async () => (await state(page)).screen).toContain(name);
+const screen = (page, name) => name==='MainMenuScreen' ? waitForMainMenu(page) : expect.poll(async () => (await state(page)).screen).toContain(name);
 const directory = page => page.evaluate(() => {
   const root = '/home/web_user/.glob2/data/zik';
   return FS.analyzePath(root).exists ? FS.readdir(root).find(name => name.startsWith('community-')) : null;

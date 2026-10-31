@@ -483,6 +483,8 @@ CLIENT_SOURCES = (
     'scripting/javascript/ScriptServices.cpp',
     'scripting/javascript/ScriptSpatial.cpp',
     'scripting/javascript/JavaScriptMap.cpp',
+    'tutorial/Tutorial.cpp',
+    'tutorial/TutorialModel.cpp',
     'scripting/javascript/ScriptCommand.cpp',
     'ai/javascript/ScriptLibrary.cpp',
     'ui/settings/SettingsScreenCustomAIs.cpp',

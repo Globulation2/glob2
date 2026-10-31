@@ -1,3 +1,4 @@
+const {waitForMainMenu}=require('./main-menu');
 const {clickCreateMap,clickCampaignFooter,chooseEditorLandscape}=require('./editor-controls');
 const {editTextField}=require('./main-menu');
 const {gameURL,clickMainMenu,clickSettingsDone,clickCustomGameStart,clickCustomAIProfile,clickControl,clickListRow,controlBox,control}=require('./main-menu');
@@ -5,7 +6,7 @@ const {darkShare}=require('./pixels');
 const {test, expect} = require('@playwright/test');
 
 const state = page => page.evaluate(() => glob2Diagnostics.snapshot());
-const screen = (page, name) => expect.poll(async () => (await state(page)).screen).toContain(name);
+const screen = (page, name) => name==='MainMenuScreen' ? waitForMainMenu(page) : expect.poll(async () => (await state(page)).screen).toContain(name);
 
 // Hold the first scheduled turn after entering a loader. The real Escape event
 // can then reach a pending job without racing a fast machine's completed load.

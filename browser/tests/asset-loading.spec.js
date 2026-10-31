@@ -1,3 +1,4 @@
+const {waitForMainMenu}=require('./main-menu');
 const {test, expect} = require('@playwright/test');
 const {gameURL} = require('./main-menu');
 
@@ -18,7 +19,7 @@ test('the loading page shows download progress and the game starts with core and
   await expect(page.locator('#loading-status')).toHaveText('Downloading the game…');
   release();
   await navigation;
-  await expect.poll(async () => (await snapshot(page)).screen).toContain('MainMenuScreen');
+  await waitForMainMenu(page);
   expect((await snapshot(page)).assets.core).toBe('ready');
   expect((await snapshot(page)).assets.game).toBe('ready');
   // Simulation data starts with the game; build files never ship.
@@ -47,7 +48,7 @@ for (const name of ['core', 'game']) test(`a failed ${name} download says so and
   expect((await snapshot(page)).assets[name]).toBe('failed');
   await page.unroute(`**/assets/${name}*.data`);
   await page.locator('#loading-retry').click();
-  await expect.poll(async () => (await snapshot(page)).screen, {timeout: 60000}).toContain('MainMenuScreen');
+  await waitForMainMenu(page);
 });
 
 test('a second visit starts from the packages cached on the device', async ({page, browserName}) => {
@@ -55,7 +56,7 @@ test('a second visit starts from the packages cached on the device', async ({pag
   // falls back to the HTTP cache, which this test server does not make immutable.
   test.skip(browserName === 'webkit', 'automation WebKit does not keep Cache Storage across reloads');
   await page.goto(gameURL());
-  await expect.poll(async () => (await snapshot(page)).screen).toContain('MainMenuScreen');
+  await waitForMainMenu(page);
   // Every background package, including artwork where it is wanted. Skin meshes
   // are requested only on demand and intentionally stay idle on this menu.
   await expect.poll(async () => Object.entries((await snapshot(page)).assets)
@@ -64,7 +65,7 @@ test('a second visit starts from the packages cached on the device', async ({pag
   const downloads = [];
   page.on('request', request => { if (/\/assets\/.*\.data$/.test(request.url())) downloads.push(request.url()); });
   await page.reload();
-  await expect.poll(async () => (await snapshot(page)).screen).toContain('MainMenuScreen');
+  await waitForMainMenu(page);
   await expect.poll(async () => (await snapshot(page)).assets.music, {timeout: 60000}).toBe('ready');
   expect(downloads).toEqual([]);
 });

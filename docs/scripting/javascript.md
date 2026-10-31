@@ -401,3 +401,154 @@ with the latest saved code. **Fix this** attaches diagnostics to a message you
 can review before sending. Publish is a separate action requiring a passing
 server validation for the exact source. The studio does not make custom AIs
 available in online multiplayer games.
+
+## Data-authored tutorial lessons
+
+The experimental tutorial catalog uses one shared JavaScript runner and one
+desktop/touch guidance UI. It includes the introduction, Food supply practice,
+Hospitals and healing, Walking training, Swimming and water resources, Schools
+and worker skills, Upgrading buildings, Producing and training warriors, Towers
+and protective walls, and Guard zones and flag tactics. The existing legacy tutorial remains
+separate. The introduction recommendation can be skipped; the manual preflight
+and lesson completion screen also open **Tutorial lessons**.
+
+### Authoring and packaging
+
+`scripts/tutorials/catalog.json` lists lesson definition files and generated
+script paths. Each definition supplies a stable lesson ID and version, a packaged
+map path, translation keys, named targets, ordered steps, hints and setup effects.
+`introduction.json` is the five-step example; `food-supply.json` reuses ordinary
+building and supply checks in a two-step lesson. Neither needs lesson-specific
+C++ presentation or progression code.
+
+A step has a stable ID, title, desktop/touch instruction and Help keys, completion
+condition, optional destination, control anchors, hint index, milestone queries,
+and optional recovery rules/on-enter effects. For example:
+
+```json
+{
+  "id": "supply",
+  "title": "[intro goal supply]",
+  "instruction": "[intro instruction supply]",
+  "touchInstruction": "[intro compact supply]",
+  "help": "[intro help supply]",
+  "touchHelp": "[intro help touch supply]",
+  "complete": {"type": "exists", "target": "suppliedInns", "latch": true},
+  "highlights": ["workers"],
+  "hint": 2,
+  "milestones": [{"target": "staffedInns"}, {"target": "suppliedInns"}]
+}
+```
+
+Named targets select areas, buildings or units. Entity targets specify a team,
+optional unit/building family, numeric field filters, an inherited target
+(`from`), an area (`within`) or a flag attachment (`assignedTo`). A `baseline` of
+`lesson` excludes entities present at lesson start; `step` excludes those present
+when entering the current step. Identity comparisons include entity generation,
+so a reused ID never impersonates a previous entity. Derived targets inherit
+filters by selecting from their parent. Conditions support `exists`, `none`,
+`all`, `any` and `count`; explicit `latch` remembers an observed outcome. `activeOnly`
+limits evaluation to the active step, useful for births that must happen after
+entering the growth lesson. A resource-stock condition observes inventory; it
+is not a general resource-delivery event counter. The introduction's new Inn
+starts empty, so positive wheat stock establishes a delivery.
+
+Targets can also bind existing entities at lesson/step entry using `bind`, so
+healing/training follows those identities even as their health, skills or location
+change. `increased` compares a field with its captured lesson/step baseline;
+`zoneCoverage` checks a bounded named area through the map engine zone query.
+Numeric filters may compare against another field with an optional scale (for
+example, health at least 95% of maximum). No replacement unit can impersonate
+the original entity because comparisons include its generation.
+
+Use `increased` for entities present when its baseline is captured. For units
+produced during a lesson, use the new-entity target plus a trained-level filter
+when learning ahead should count; a step-entry baseline can otherwise require
+an unavailable second upgrade. If a bound patient or all bound trainees can be
+lost, add a missing-target recovery rule with restart guidance. Replacement
+units do not satisfy an improvement condition captured for the originals.
+
+Destinations reference these same targets. Areas use their center; entity markers
+use the selected entity's position plus optional authored offsets. Removing or
+moving a target is reflected in the published view. Coordinates are authored
+once in lesson data, never separately in the renderer. Control anchors support all built-in building palette entries (`build:<family>`),
+exploration/war/clearing flags, worker and production controls, upgrades, guard/
+forbidden/clearing zone selectors and brushes. Desktop arrows and mobile outlines
+use the control's actual layout. A new kind of engine control still requires a
+native binding; new lessons using existing controls do not.
+
+Run the content validator/bundler before regenerating map assets:
+
+```sh
+python3 tools/tutorials/build.py
+python3 tools/dev_build.py
+python3 tools/tutorials/build.py --maps --binary BUILD_DIRECTORY/src/glob2
+python3 tools/tutorials/build.py --check --maps --binary BUILD_DIRECTORY/src/glob2
+python3 test/run_tests.py --build-dir BUILD_DIRECTORY --filter 'Introduction/*'
+```
+
+The normal JavaScript generator package in `data/generators/training/` owns the
+256×256 landscape and lesson starting setups. Seed 20261026, two colonies and
+eight starting workers per colony are pinned by the builder. Each catalog entry has an explicit, unique `setup` selector which
+selects a setup independently of menu order; the landscape never reads that selector. Lesson modules share
+colony helpers, then author only their differences through creation-only APIs.
+The opponent uses the existing no-op AI; encounters issue validated scenario orders.
+
+The build tool bundles lesson scripts and invokes `map generate` with `--scenario`
+and temporary `--scenario-config` presentation metadata. It ships a fresh map per
+lesson. `--lessons introduction swimming defensive-tactics` restricts a map build;
+`--check --maps` regenerates into temporary files and compares decompressed map
+bytes as well as source bundles. No test fixture authors production maps.
+
+Area targets can use `{kind:"area", region:"defense"}` to resolve existing saved
+map areas. Optional `offsetX`, `offsetY`, `width`, and `height` select a rectangular
+part of that region. Lookup returns bounds, including holes in nonrectangular
+editor areas. The runner caches resolved bounds in its saved state. New training
+maps use the existing nine script-area slots without changing the save format.
+
+Adding a lesson requires a definition/catalog entry, a JS starting-setup module,
+its generator selector, translation keys and regenerated assets. Terrain changes
+belong in the shared landscape module. Generated scripts under `scripts/` are
+reviewable bundles; edit their definitions and shared runtime. Existing maps and
+saves keep their embedded source. The SGSL tutorial remains available separately.
+
+### Progress, presentation and compatibility
+
+The runner stores lesson/version, stable current and completed step IDs,
+entity baselines, latched conditions and hint timers in ordinary saved JavaScript
+globals. It uses simulation ticks and observations only. Confirming an outcome
+and choosing recovery hints are shared policies, configured with `confirmTicks`
+and `hintTicks`. Milestones reset the inactivity timer; opening Help never
+advances a step. Setup uses existing `buildingChoice`, `flagChoice` and
+`guiElement` effects. Encounter entry actions can issue `scenarioOrder` effects,
+resolving `buildingName`, `buildingTarget` and `destination` through catalog
+queries/named targets before sending ordinary order descriptors to the engine.
+Entry actions and bindings survive saves, so loading cannot repeat an attack.
+Exceptional scenarios may provide a `hooks` script defining
+`function tutorialCondition(name, ctx, tools, condition)`; `tools.resolve(name)`
+uses the shared target resolver and `tools.state` is saved runner state. Hooks
+retain the normal scripting sandbox and determinism constraints.
+
+A `tutorial` effect with a `view` record publishes schema/version, lesson/step IDs,
+step position/count, instruction keys, hints, anchors, restart map and a resolved
+optional destination. `Tutorial::parse` validates this record before the callback
+transaction commits any world effects. `view: null` clears published guidance.
+The view is saved in the existing JavaScript presentation record and copied into
+the immutable Session snapshot; the HUD never calls into the live interpreter.
+It sizes guidance from the declared step count, including compact touch text and
+persistent 44-point map/Help/collapse actions. Help scrolls; default touch
+instructions do not. Touch placement follows HUD notification bounds. Control highlights bind to desktop panels and the actual mobile toolbar,
+palette, assignment/production controls and upgrade actions.
+
+Every map/save embeds its exact generated source, definition and runner. Loading
+an older lesson therefore executes that original version, rather than migrating
+saved globals to today's source. Definition changes affect newly packaged maps;
+manual source replacement has no implicit progress migration. Unsupported
+presentation schemas fail explicitly. The original introduction prototype is
+covered by a separate compatibility adapter and fixture, preserving its saved
+script/progress and guidance. No save-format floor is raised.
+
+These lessons remain experimental until novice playtests establish independent
+completion and skill transfer. Keep playtest observations, screenshots, saves and
+checksum evidence under `artifacts/`; automated completion does not demonstrate
+that players understand the game.

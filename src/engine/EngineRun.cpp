@@ -15,6 +15,7 @@
 #include "ConnectionOverlay.h"
 #include "DatasetWriter.h"
 #include "Engine.h"
+#include "tutorial/TutorialModel.h"
 #include "sim/snapshot/SnapshotChecksum.h"
 #include "hive/HiveClient.h"
 #include "GameDiagnostics.h"
@@ -1406,6 +1407,9 @@ std::optional<Engine::PendingLoad> Engine::finishSessionForHost()
     stopSimulationThread();
     if (gui.isRunning) throw std::logic_error("Cannot finish a running engine session");
     if (globalContainer->automaticEndingGame) printAutomaticEndingSummary();
+    const auto &scene=gui.drawnScene();
+    const auto lesson=scene.world.session ? Tutorial::view(*scene.world.session) : gui.game.mapscript.tutorialView();
+    const bool campaign=lesson && lesson->restartMap==gui.toLoadGameFileName;
     teardownSession();
     auto &perf = PerformanceTelemetry::collector();
 	// Structured runs may still write their requested final save after run().
@@ -1424,14 +1428,14 @@ std::optional<Engine::PendingLoad> Engine::finishSessionForHost()
     // The outgoing end screen will not be shown; finalize its replay before
     // a cooperative initializer creates the next session's writer.
     globalContainer->replayWriter.reset();
-    return PendingLoad{filename, globalContainer->replaying};
+    return PendingLoad{filename, globalContainer->replaying,campaign};
 }
 
 bool Engine::finishSession()
 {
     const auto request = finishSessionForHost();
     if (!request) return false;
-    return (request->replay ? loadReplay(request->filename) : initCustom(request->filename)) == EE_NO_ERROR;
+    return (request->replay ? loadReplay(request->filename) : request->campaign ? initCampaign(request->filename) : initCustom(request->filename)) == EE_NO_ERROR;
 }
 
 void Engine::runOneGameSession(bool& doRunOnceAgain)

@@ -6,6 +6,12 @@
 #include "ChooseMapScreen.h"
 #include "GameSessionScreen.h"
 #include "MessageScreen.h"
+#include "IntroductionOfferScreen.h"
+#include "CampaignMenuScreen.h"
+#include "GlobalContainer.h"
+#include "tutorial/Introduction.h"
+#include "tutorial/TutorialModel.h"
+#include "tutorial/LessonCatalogScreen.h"
 #include <Toolkit.h>
 #include "scripting/javascript/ScriptCommand.h"
 #include "scripting/javascript/ScriptRuntime.h"
@@ -26,9 +32,11 @@ void SinglePlayerFlow::launch(GameLoadScreen::Initializer initialize, bool repea
 			if (result == 1)
 				screens.push(std::make_unique<GameSessionScreen>(
 								 screens, static_cast<GameLoadScreen &>(screen).takeEngine()),
-							 [this, repeatCustom](GAGGUI::Screen &, int)
+							 [this, repeatCustom](GAGGUI::Screen &, int destination)
 							 {
-								 if (repeatCustom)
+								 if (destination==Introduction::LegacyTutorial) tutorial();
+                                 else if (destination==Tutorial::Lessons) lessons();
+                                 else if (repeatCustom && destination!=Introduction::MainMenu)
 									 custom();
 							 });
 			else if (result == 2)
@@ -147,4 +155,34 @@ void SinglePlayerFlow::generatorStudio()
 							{ return engine.initCustomFromBytesTask(map, players, 0, -1, bytes); },
 							false, bytes);
 				 });
+}
+
+void SinglePlayerFlow::tutorial()
+{
+    Campaign campaign;
+    const bool saved=campaign.load("games/Tutorial_Campaign.txt");
+    auto menu=std::make_unique<CampaignMenuScreen>(saved ? "games/Tutorial_Campaign.txt" : "campaigns/Tutorial_Campaign.txt",screens);
+    if (!saved) menu->setNewCampaign();
+    screens.push(std::move(menu));
+}
+
+void SinglePlayerFlow::introduction(bool preflight)
+{
+    if (preflight) {
+        screens.push(std::make_unique<IntroductionOfferScreen>(false),
+            [this](GAGGUI::Screen &,int result) { if (result==1) introduction(false); else if(result==2) lessons(); });
+        return;
+    }
+    launch([](Engine &engine) { return engine.initCampaignTask(Introduction::Map); },false);
+}
+
+void SinglePlayerFlow::lessons()
+{
+    screens.push(std::make_unique<Tutorial::LessonCatalogScreen>(),
+        [this](GAGGUI::Screen &screen,int result) {
+            const auto &entries=static_cast<Tutorial::LessonCatalogScreen&>(screen).entries;
+            if(result<=0 || size_t(result)>entries.size()) return;
+            const auto map=entries[result-1].map;
+            launch([map](Engine &engine){return engine.initCampaignTask(map);},false);
+        });
 }

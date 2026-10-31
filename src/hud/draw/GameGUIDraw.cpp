@@ -1,3 +1,4 @@
+#include "tutorial/TutorialGuidance.h"
 #include "ui/TutorialText.h"
 #include "hive/HiveDialog.h"
 #include "render/scene/SceneExtract.h"
@@ -689,6 +690,7 @@ void GameGUI::drawAll(int team)
 	if (!publishedScene && !frameScene.map.getW()) return;
 	const PresentationFrame &scene = drawnScene();
 	view.scene = &scene;
+    updateTutorial();
 	view.render.zonesEmphasised = selectionMode==BRUSH_SELECTION;
 	view.render.minimumZoom = camera.minimumZoom();
 	view.render.unitMotion = globalContainer->settings.unitInterpolation && !gamePaused && !hardPause
@@ -865,6 +867,8 @@ void GameGUI::drawAll(int team)
 
 	}
     if (touch) { touch->drawControls();touch->drawKeyboardFocus(); }
+    if (!activeDialog()) Tutorial::drawDestination(*this);
+    if (tutorialGuidance && !activeDialog() && !typingInputScreen) tutorialGuidance->draw(SDL_GetTicks());
 }
 
 void GameGUI::drawButton(int x, int y, std::string caption, int r, int g, int b, bool doLanguageLookup)

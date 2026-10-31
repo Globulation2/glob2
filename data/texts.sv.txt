@@ -6642,6 +6642,426 @@ Du kan ändra detta när som helst under Inställningar → Ljud.
 Ditt val kunde inte sparas. Ljudet är fortfarande avstängt. Försök igen.
 [audio choices description]
 Tystnad: en tystad högtalare. Ljud: en högtalare med ljudvågor.
+[intro menu]
+
+[intro briefing]
+
+[intro try]
+
+[intro start]
+
+[intro preflight]
+
+[intro preflight save]
+
+[intro preference failed]
+
+[intro goal scout]
+
+[intro goal build]
+
+[intro goal supply]
+
+[intro goal grow]
+
+[intro goal attack]
+
+[intro instruction scout]
+
+[intro instruction build]
+
+[intro instruction supply]
+
+[intro instruction grow]
+
+[intro instruction attack]
+
+[intro help]
+
+[intro help scout]
+
+[intro help build]
+
+[intro help supply]
+
+[intro help grow]
+
+[intro help attack]
+
+[intro hint scout]
+
+[intro hint build]
+
+[intro hint supply]
+
+[intro hint grow]
+
+[intro hint attack]
+
+[intro hint no scout flag]
+
+[intro hint no suppliers]
+
+[intro hint no war flag]
+
+[intro hint retry]
+
+[intro complete]
+
+[intro complete body]
+
+[intro play again]
+
+[intro existing tutorial]
+
+[intro restart]
+
+[intro restart body]
+
+[intro help touch scout]
+
+[intro help touch build]
+
+[intro help touch supply]
+
+[intro help touch grow]
+
+[intro help touch attack]
+
+[intro show destination]
+
+[intro scout destination]
+
+[intro attack destination]
+
+[intro compact scout]
+
+[intro compact build]
+
+[intro compact supply]
+
+[intro compact grow]
+
+[intro compact attack]
+
+[tutorial lessons]
+
+[tutorial restart]
+
+[tutorial restart body]
+
+[tutorial complete]
+
+[tutorial food title]
+
+[tutorial food briefing]
+
+[tutorial food complete]
+
+[tutorial unavailable]
+
+[lesson healing title]
+
+[lesson healing briefing]
+
+[lesson healing complete]
+
+[lesson healing build hint]
+
+[lesson healing build title]
+
+[lesson healing build instruction]
+
+[lesson healing build help]
+
+[lesson healing build marker]
+
+[lesson healing heal hint]
+
+[lesson healing heal title]
+
+[lesson healing heal instruction]
+
+[lesson healing heal help]
+
+[lesson healing heal marker]
+
+[lesson walking-training title]
+
+[lesson walking-training briefing]
+
+[lesson walking-training complete]
+
+[lesson walking-training build hint]
+
+[lesson walking-training build title]
+
+[lesson walking-training build instruction]
+
+[lesson walking-training build help]
+
+[lesson walking-training build marker]
+
+[lesson walking-training train hint]
+
+[lesson walking-training train title]
+
+[lesson walking-training train instruction]
+
+[lesson walking-training train help]
+
+[lesson swimming title]
+
+[lesson swimming briefing]
+
+[lesson swimming complete]
+
+[lesson swimming build hint]
+
+[lesson swimming build title]
+
+[lesson swimming build instruction]
+
+[lesson swimming build help]
+
+[lesson swimming build marker]
+
+[lesson swimming train hint]
+
+[lesson swimming train title]
+
+[lesson swimming train instruction]
+
+[lesson swimming train help]
+
+[lesson swimming water-job hint]
+
+[lesson swimming water-job title]
+
+[lesson swimming water-job instruction]
+
+[lesson swimming water-job help]
+
+[lesson swimming water-job marker]
+
+[lesson schools title]
+
+[lesson schools briefing]
+
+[lesson schools complete]
+
+[lesson schools build hint]
+
+[lesson schools build title]
+
+[lesson schools build instruction]
+
+[lesson schools build help]
+
+[lesson schools build marker]
+
+[lesson schools learn hint]
+
+[lesson schools learn title]
+
+[lesson schools learn instruction]
+
+[lesson schools learn help]
+
+[lesson upgrades title]
+
+[lesson upgrades briefing]
+
+[lesson upgrades complete]
+
+[lesson upgrades upgrade hint]
+
+[lesson upgrades upgrade title]
+
+[lesson upgrades upgrade instruction]
+
+[lesson upgrades upgrade help]
+
+[lesson upgrades upgrade marker]
+
+[lesson upgrades train hint]
+
+[lesson upgrades train title]
+
+[lesson upgrades train instruction]
+
+[lesson upgrades train help]
+
+[lesson warrior-training title]
+
+[lesson warrior-training briefing]
+
+[lesson warrior-training complete]
+
+[lesson warrior-training produce hint]
+
+[lesson warrior-training produce title]
+
+[lesson warrior-training produce instruction]
+
+[lesson warrior-training produce help]
+
+[lesson warrior-training produce marker]
+
+[lesson warrior-training build hint]
+
+[lesson warrior-training build title]
+
+[lesson warrior-training build instruction]
+
+[lesson warrior-training build help]
+
+[lesson warrior-training build marker]
+
+[lesson warrior-training train hint]
+
+[lesson warrior-training train title]
+
+[lesson warrior-training train instruction]
+
+[lesson warrior-training train help]
+
+[lesson fortifications title]
+
+[lesson fortifications briefing]
+
+[lesson fortifications complete]
+
+[lesson fortifications tower hint]
+
+[lesson fortifications tower title]
+
+[lesson fortifications tower instruction]
+
+[lesson fortifications tower help]
+
+[lesson fortifications tower marker]
+
+[lesson fortifications walls hint]
+
+[lesson fortifications walls title]
+
+[lesson fortifications walls instruction]
+
+[lesson fortifications walls help]
+
+[lesson fortifications walls marker]
+
+[lesson fortifications supply hint]
+
+[lesson fortifications supply title]
+
+[lesson fortifications supply instruction]
+
+[lesson fortifications supply help]
+
+[lesson fortifications supply marker]
+
+[lesson fortifications hold hint]
+
+[lesson fortifications hold title]
+
+[lesson fortifications hold instruction]
+
+[lesson fortifications hold help]
+
+[lesson fortifications hold marker]
+
+[lesson defensive-tactics title]
+
+[lesson defensive-tactics briefing]
+
+[lesson defensive-tactics complete]
+
+[lesson defensive-tactics scout hint]
+
+[lesson defensive-tactics scout title]
+
+[lesson defensive-tactics scout instruction]
+
+[lesson defensive-tactics scout help]
+
+[lesson defensive-tactics scout marker]
+
+[lesson defensive-tactics guard hint]
+
+[lesson defensive-tactics guard title]
+
+[lesson defensive-tactics guard instruction]
+
+[lesson defensive-tactics guard help]
+
+[lesson defensive-tactics guard marker]
+
+[lesson defensive-tactics repel hint]
+
+[lesson defensive-tactics repel title]
+
+[lesson defensive-tactics repel instruction]
+
+[lesson defensive-tactics repel help]
+
+[lesson defensive-tactics repel marker]
+
+[lesson defensive-tactics counterattack hint]
+
+[lesson defensive-tactics counterattack title]
+
+[lesson defensive-tactics counterattack instruction]
+
+[lesson defensive-tactics counterattack help]
+
+[lesson defensive-tactics counterattack marker]
+
+[lesson healing build compact]
+
+[lesson healing heal compact]
+
+[lesson walking-training build compact]
+
+[lesson walking-training train compact]
+
+[lesson swimming build compact]
+
+[lesson swimming train compact]
+
+[lesson swimming water-job compact]
+
+[lesson schools build compact]
+
+[lesson schools learn compact]
+
+[lesson upgrades upgrade compact]
+
+[lesson upgrades train compact]
+
+[lesson warrior-training produce compact]
+
+[lesson warrior-training build compact]
+
+[lesson warrior-training train compact]
+
+[lesson fortifications tower compact]
+
+[lesson fortifications walls compact]
+
+[lesson fortifications supply compact]
+
+[lesson fortifications hold compact]
+
+[lesson defensive-tactics scout compact]
+
+[lesson defensive-tactics guard compact]
+
+[lesson defensive-tactics repel compact]
+
+[lesson defensive-tactics counterattack compact]
+
 [library GL only]
 Bara GL
 [Grassland]

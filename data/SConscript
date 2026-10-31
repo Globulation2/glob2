@@ -11,6 +11,10 @@ if 'install' in COMMAND_LINE_TARGETS and not env.get('server'):
         env.Alias('install', env.InstallAs(env['INSTALLDIR'] + '/' + destination, source))
     env.Alias('install', env.Install(env['INSTALLDIR'] + '/man/man6', '#debian/glob2.6'))
 if 'dist' in COMMAND_LINE_TARGETS:
+    for directory, _, files in os.walk('generators/training'):
+        for filename in sorted(files):
+            if filename.endswith(('.js', '.json')):
+                PackTar(env['TARFILE'], os.path.join(directory, filename))
     PackTar(env['TARFILE'], Split('completions/glob2.bash completions/_glob2 completions/glob2.fish'))
 
 if env.get('OPTIMIZED_ASSET_INSTALL') and 'dist' not in COMMAND_LINE_TARGETS:

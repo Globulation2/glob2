@@ -1,8 +1,9 @@
+const {waitForMainMenu}=require('./main-menu');
 const {test,expect}=require('@playwright/test');
 const {clickMainMenu,gameURL,clickControl}=require('./main-menu');
 const fs=require('node:fs/promises');
 const state=page=>page.evaluate(()=>glob2Diagnostics.snapshot());
-const screen=(page,name)=>expect.poll(async()=>(await state(page)).screen).toContain(name);
+const screen=(page,name)=>name==='MainMenuScreen' ? waitForMainMenu(page) : expect.poll(async()=>(await state(page)).screen).toContain(name);
 const stored=page=>page.evaluate(()=>glob2Diagnostics.campaignDigest('Tutorial_Campaign.txt'));
 async function tutorial(page) {await clickMainMenu(page,'tutorial');await screen(page,'CampaignMenuScreen');}
 async function backup(page) {

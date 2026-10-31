@@ -495,6 +495,14 @@ void GameGUITouch::drawHUD()
 			: i == 1 ? panelOpen && !inspecting() && !inspectingReadOnly() && gui.displayMode == GameGUI::FLAG_VIEW
 			: i == 2 && (lensOpen || (panelOpen && gui.displayMode == GameGUI::STAT_TEXT_VIEW));
 		const int icon = globalContainer->replaying && i < 2 ? (i == 1 ? 8 : gui.gamePaused ? 7 : 6) : i;
+        bool guided=false;
+        for(int anchor:gui.tutorialHighlights) {
+            if(i==0 && anchor>=GameGUI::HighlightBuildingOnPanel && anchor<GameGUI::HighlightBuildingOnMap &&
+                anchor!=GameGUI::HighlightBuildingOnPanel+8 && anchor!=GameGUI::HighlightBuildingOnPanel+9 && anchor!=GameGUI::HighlightBuildingOnPanel+10) guided=true;
+            if(i==1 && ((anchor>=GameGUI::HighlightForbiddenZoneOnPanel && anchor<=GameGUI::HighlightBrushSelector) ||
+                anchor==GameGUI::HighlightBuildingOnPanel+8 || anchor==GameGUI::HighlightBuildingOnPanel+9 || anchor==GameGUI::HighlightBuildingOnPanel+10)) guided=true;
+        }
+        if(guided) gfx->drawRect(int(x+2*unit),int(ui.actions.y+2*unit),int(width-4*unit),int(ui.actions.h-4*unit),Color(255,220,80));
 		drawNavigationIcon(icon, {x + width / 2, ui.actions.y + 17 * unit}, selected);
 		drawPointLabel({x + 2 * unit, ui.actions.y + 32 * unit, width - 4 * unit, 16 * unit},
 			Toolkit::getStringTable()->getString(labels[i]), .86);

@@ -15,6 +15,9 @@ class SinglePlayerFlow
 	explicit SinglePlayerFlow(GAGGUI::ScreenStack &screens) : screens(screens) {}
 	void custom(const std::optional<Online::MapPlayRequest> &map = std::nullopt);
 	void load();
+    void introduction(bool preflight=true);
+    void tutorial();
+    void lessons();
 	void studio();
 	void generatorStudio();
 	void replay(const std::string &filename);

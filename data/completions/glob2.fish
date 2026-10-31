@@ -189,6 +189,8 @@ complete -c glob2 -n "__glob2_at 'map generate'" -l generator-package -r
 complete -c glob2 -n "__glob2_at 'map generate'" -l output -r
 complete -c glob2 -n "__glob2_at 'map generate'" -l report-file -r
 complete -c glob2 -n "__glob2_at 'map generate'" -l config -r
+complete -c glob2 -n "__glob2_at 'map generate'" -l scenario -r
+complete -c glob2 -n "__glob2_at 'map generate'" -l scenario-config -r
 complete -c glob2 -n "__glob2_at 'map generate'" -l map-image -r
 complete -c glob2 -n "__glob2_at 'map generate'" -l export-generator-package -r
 complete -c glob2 -n "__glob2_at 'map generate'" -l help
