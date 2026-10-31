@@ -6,6 +6,8 @@ import { INVITE_CODE } from './showcase.ts';
 const catalog = JSON.parse(
   readFileSync(new URL('../../../packages/i18n/locales/ta.json', import.meta.url), 'utf8'),
 ) as Record<string, string>;
+const welcome = catalog['Welcome to the colony'];
+if (!welcome) throw new Error('Missing Tamil welcome heading');
 
 async function capture(page: Page, info: TestInfo, path: string, name: string) {
   await page.goto(path);
@@ -39,10 +41,12 @@ async function capture(page: Page, info: TestInfo, path: string, name: string) {
         if (element.getBoundingClientRect().width === 0) return [];
         const select = element as HTMLSelectElement;
         const style = getComputedStyle(select);
-        const context = document.createElement('canvas').getContext('2d')!;
+        const context = document.createElement('canvas').getContext('2d');
+        if (!context) throw new Error('Canvas text measurement is unavailable');
         context.font = `${style.fontWeight} ${style.fontSize} ${style.fontFamily}`;
         const text = select.selectedOptions[0]?.textContent ?? '';
-        const available = select.clientWidth - parseFloat(style.paddingLeft) - parseFloat(style.paddingRight);
+        const available =
+          select.clientWidth - parseFloat(style.paddingLeft) - parseFloat(style.paddingRight);
         return context.measureText(text).width > available + 1 ? [text] : [];
       }),
     ),
@@ -53,9 +57,14 @@ async function capture(page: Page, info: TestInfo, path: string, name: string) {
       heads.flatMap((head) => {
         const title = head.querySelector('h2')?.getBoundingClientRect();
         const link = head.querySelector('a')?.getBoundingClientRect();
-        return title && link && title.width > 0 && link.width > 0 &&
-          title.left < link.right - 1 && title.right > link.left + 1 &&
-          title.top < link.bottom - 1 && title.bottom > link.top + 1
+        return title &&
+          link &&
+          title.width > 0 &&
+          link.width > 0 &&
+          title.left < link.right - 1 &&
+          title.right > link.left + 1 &&
+          title.top < link.bottom - 1 &&
+          title.bottom > link.top + 1
           ? [head.textContent]
           : [];
       }),
@@ -101,7 +110,7 @@ test('Tamil fonts, navigation, server pages and saved language render together',
     expect(font.type, font.url).toContain('font/ttf');
   }
   await page.goto('/');
-  await expect(page.locator('#hero-title')).toHaveText(catalog['Welcome to the colony']!);
+  await expect(page.locator('#hero-title')).toHaveText(welcome);
   await expect(page.getByTestId('theme-toggle')).not.toHaveAttribute('aria-label', /Change theme/);
   const code = page.locator('input[name="code"]');
   await code.fill('no!');
@@ -118,7 +127,7 @@ test('Tamil fonts, navigation, server pages and saved language render together',
   await expect(code).toHaveValue('ABCD');
   await page.reload();
   await expect(page.locator('html')).toHaveAttribute('lang', 'ta');
-  await expect(page.locator('#hero-title')).toHaveText(catalog['Welcome to the colony']!);
+  await expect(page.locator('#hero-title')).toHaveText(welcome);
   const seed = (await (await page.request.get('/__seed')).json()) as { userSession: string };
   await context.addCookies([{ name: 'glob2_session', value: seed.userSession, url: base }]);
   for (const path of ['/account', '/building-studio', '/map-studio'])

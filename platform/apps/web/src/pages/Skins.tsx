@@ -2,7 +2,6 @@ import { message as sourceMessage, skinActionLabel } from '../messages.ts';
 import { statusLabel } from '../i18n.tsx';
 import { t, useLocale, RichMessage } from '../i18n.tsx';
 /* DOM nodes are present during pointer events; model catalogs are nonempty. */
-/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { useContext, useEffect, useRef, useState } from 'react';
 import {
   SWARM_MESHES,
