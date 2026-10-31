@@ -221,7 +221,9 @@ wrapper at several authored sizes and raster scales. `screen` adds a screen name
 (`main`, `settings`, `settings-audio`, `lobby` or `lobby-players`); `game` adds
 `gameplay`, `tutorial` (the introduction), or `tutorial:LESSON-ID` and captures
 the real engine and menu dialog. Tutorial IDs must belong to the current shipped
-lesson catalog. Inputs are
+lesson catalog. When a lesson opens its automatic briefing, the harness saves
+that state separately, dismisses it and captures the uncovered guidance panel.
+A published tutorial model alone does not prove that its text is visible. Inputs are
 `native.json` and `online.json` key/value objects plus `metadata.json` identifying
 the locale. Preserve the original text-catalog hashes in that metadata when
 converting formats. A small pilot is a font diagnostic, not evidence that the
