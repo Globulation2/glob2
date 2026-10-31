@@ -64,6 +64,7 @@ CLIENT_SOURCES = (
     'ai/shared_runtime/Econo.cpp',
     'ai/shared_runtime/EconoBuilding.cpp',
     'ai/shared_runtime/EconoFlags.cpp',
+    'ai/shared_runtime/Farming.cpp',
     'ai/shared_runtime/SearchTools.cpp',
     'ai/AINames.cpp',
     'ai/nicowar/Attack.cpp',
