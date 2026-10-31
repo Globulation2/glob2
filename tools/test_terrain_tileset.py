@@ -213,22 +213,45 @@ class TerrainTileset(unittest.TestCase):
             self.assertEqual(second.getpixel((1, 16)), (40, 80, 120, 96))
             self.assertEqual(second.getpixel((16, 16)), (250, 0, 0, 0))
 
+    def blended(self):
+        """The catalog with its first material's shared borders blended, not periodic."""
+        document = copy.deepcopy(self.document)
+        for field in ("edges", "variant_grid", "variant_blocks", "variant_block_group"):
+            document["materials"][0].pop(field, None)
+        return document, catalog_frame_count(dict(materials=document["materials"][:1]))
+
+    def test_only_blended_frames_are_packed(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            periodic = [m for m in self.document["materials"] if m.get("edges") == "periodic"]
+            packed = compile_tileset(dict(self.document, materials=periodic), Path(tmp) / "a")
+            self.assertEqual((packed["pages"], packed["frames"], packed["sources"]), ([], [], {}))
+            document, count = self.blended()
+            packed = compile_tileset(document, Path(tmp) / "b")
+            prefix = document["materials"][0]["sprite"]
+            self.assertEqual(len(packed["frames"]), count)
+            self.assertTrue(all(f["source"].startswith(prefix) for f in packed["frames"]))
+            self.assertEqual(sorted(packed["sources"]), sorted(f["source"] for f in packed["frames"]))
+            self.assertTrue(all(len(page["levels"]) == 1 for page in packed["pages"]))
+
     def test_source_fingerprints_follow_exported_pixels(self):
         native = Image.new("RGBA", (32, 32), (23, 57, 91, 255))
         # Shared fixture value also asserted by the C++ pack loader regression.
         self.assertEqual(pixel_fingerprint(native), "422c101433645325")
+        document, count = self.blended()
         with tempfile.TemporaryDirectory() as tmp:
-            fingerprints = {name: pixel_fingerprint(native) for name in validate(self.document)}
-            packed = compile_tileset(self.document, Path(tmp), runtime_fingerprints=fingerprints)
+            fingerprints = {name: pixel_fingerprint(native) for name in validate(document)}
+            packed = compile_tileset(document, Path(tmp), runtime_fingerprints=fingerprints)
+            self.assertEqual(len(packed["frames"]), count)
             self.assertTrue(all(frame["native_rgba_fnv1a64"] == fingerprints[frame["source"]]
                                 for frame in packed["frames"]))
 
     def test_pages_and_mips_are_reproducible(self):
+        document, _ = self.blended()
         with tempfile.TemporaryDirectory() as tmp:
             a, b = Path(tmp) / "a", Path(tmp) / "b"
-            first = compile_tileset(self.document, a, page_size=128)
+            first = compile_tileset(document, a, page_size=128)
             self.assertGreater(len(first["pages"]), 1)
-            second = compile_tileset(self.document, b, page_size=128)
+            second = compile_tileset(document, b, page_size=128)
             self.assertEqual(first, second)
             for p in a.iterdir():
                 self.assertEqual(p.read_bytes(), (b / p.name).read_bytes())

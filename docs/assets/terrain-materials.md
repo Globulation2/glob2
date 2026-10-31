@@ -129,7 +129,10 @@ The pipeline has three responsibilities:
 1. **Catalog/compiler:** validate the schema and native sources, prepare common
    variant borders, then emit paged texture metadata, contour tables and source
    provenance. Page sizes are powers of two from 64 to 8192; the default is 1024.
-   Each 32×32 source has four pixels of padding and three exported mip levels.
+   Only frames whose shared border the compiler blends are packed: periodic
+   materials and decor keep their native pixels, so the runtime reads those
+   sources directly instead of shipping a second copy. Each packed 32×32 source
+   has four pixels of padding on a single full-resolution page level.
 2. **Runtime asset exporter:** encode the game's sprite sources, generate the
    terrain pack and audit all output files. It records fingerprints of the actual
    decoded runtime sources, including lossy WebP and sheet frames, separately
@@ -137,9 +140,8 @@ The pipeline has three responsibilities:
 3. **Runtime compositor:** verify native source fingerprints, read prepared texture
    regions lazily from CPU pages, resolve coverage and compose visible terrain.
    It computes coverage directly from normalized profile controls. Exported
-   contour tables and source mips are validation/packaging data; runtime source
-   extraction currently reads mip 0. Composed view pages supply their own GPU
-   mipmaps and respect the device texture limit.
+   contour tables are validation/packaging data. Composed view pages supply their
+   own GPU mipmaps and respect the device texture limit.
 
 `compiled_pack` names `atlas.json` in its own data subdirectory, such as
 `data/terrain/my-pack/atlas.json`. An absent pack,
