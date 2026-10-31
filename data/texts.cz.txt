@@ -3102,8 +3102,6 @@ Mazat
 Uvolněte nad vhodným terénem pro umístění
 [Paint on the map; two fingers move]
 Malujte na mapě; dvěma prsty posouvejte
-[Tutorial ▸]
-Výuka ▸
 [Back to tools]
 Zpět k nástrojům
 [Starvation overlay]
@@ -6168,246 +6166,6 @@ Obnovit seznam
 Přizp.
 [library GL only]
 Pouze GL
-[tutorial part1 message 1]
-Vítejte v Globulation 2! Čtyři mise vás naučí spravovat kolonii. Postup uložte v herní nabídce a později jej načtěte z hlavní nabídky. Pokračujte mezerníkem nebo klepnutím na OK. Starší zprávy najdete v historii zpráv.
-[tutorial part1 message 2]
-Začínáte s Úlem a jedním dělníkem. Podívejme se, jak spolupracují.
-[tutorial part1 message 3]
-Dělník sklízí obilí a nosí je do Úlu. Úl obilí spotřebovává na tvorbu nových jednotek a je pro kolonii zásadní.
-[tutorial part1 message 4]
-Vyberte svou globuli, pohyblivou jednotku, levým kliknutím nebo klepnutím.
-[tutorial part1 message 5]
-Informace o jednotce ukazují klesající zásobu jídla: globule dostává hlad. Jsou-li ukazatele jídla zobrazeny, modrý proužek pod jednotkou značí zbývající zásobu.
-[tutorial part1 message 6]
-Globule jedí v Hospodách. Zrušte výběr pravým kliknutím nebo klepnutím na prázdné místo na dotykové obrazovce.
-[tutorial part1 message 7]
-Otevřete ovládání stavby, vyberte Hospodu a umístěte ji blízko obilí. Pokud je nevidíte, sledujte cestu dělníka. Na dotykové obrazovce použijte Stavba a potvrďte platné místo. Režim umisťování ukončete pravým kliknutím nebo dotykovým tlačítkem Zrušit.
-[tutorial part1 message 8]
-Dobře! Staveniště Hospody je umístěno.
-[tutorial part1 message 9]
-Dělník z Úlu může Hospodu postavit. Sklidí dřevo z okolních stromů a donese je na staveniště. Počkejte na dokončení.
-[tutorial part1 message 10]
-Hotová Hospoda potřebuje obilí. Přidělený dělník je sklízí stejně jako pro Úl.
-[tutorial part1 message 11]
-Žlutý ukazatel Hospody roste s dodávkami obilí. Zobrazuje jeho zásobu.
-[tutorial part1 message 12]
-Teď se naučíme přidělovat práci.
-[tutorial part1 message 13]
-Jeden dělník zásobuje Úl, druhý Hospodu. Oba mohou práci přerušit kvůli jídlu. To je normální.
-[tutorial part1 message 14]
-Vyberte Úl a najděte přidělování dělníků. Na počítači má popisek Pracují; na dotykové obrazovce použijte přidělené dělníky a cílový počet. Cíl určuje požadovaný počet dělníků u budovy.
-[tutorial part1 message 15]
-Nastavte cílový počet dělníků Úlu na 0. Potom vyberte Hospodu a nastavte jej také na 0.
-[tutorial part1 message 16]
-Dělníci jsou nečinní, ale stále potřebují jídlo. Hospodě bez přidělených dělníků časem dojde obilí.
-[tutorial part1 message 17]
-Globule bez jídla ztrácí zdraví a může zemřít. Nemocnice léčí zranění, ale zároveň musíte zásobovat Hospody.
-[tutorial part1 message 18]
-Postavte Nemocnici. Obilí nepotřebuje, takže ji umístěte blízko dřeva nebo doprostřed kolonie poblíž Úlu.
-[tutorial part1 message 19]
-Vyberte staveniště Nemocnice a nastavte cíl na 2 dělníky. Dva dělníci ji dokončí rychleji.
-[tutorial part1 message 20]
-Nemocnice je hotová. Zraněné globule se v ní mohou uzdravit.
-[tutorial part1 message 21]
-Černé oblasti nejsou prozkoumané. Jednotky odhalují okolní terén při pohybu. Dělníci sledují své úkoly; k průzkumu se lépe hodí průzkumníci.
-[tutorial part1 message 22]
-Vyberte Úl a najděte poměry tvorby dělníků, průzkumníků a válečníků. Zvyšte poměr průzkumníků na 1.
-[tutorial part1 message 23]
-Při poměrech dělníků i průzkumníků 1 vytváří Úl dlouhodobě stejné počty obou. Nastavte dělníky na 0, aby zatím vznikali jen průzkumníci.
-[tutorial part1 message 24]
-Vraťte cílový počet dělníků Úlu na 1, aby mu někdo nosil obilí.
-[tutorial part1 message 25]
-Vyberte Hospodu a nastavte její cíl také na 1 dělníka. Rostoucí kolonie potřebuje pravidelné jídlo.
-[tutorial part1 message 26]
-Počkejte, až Úl vytvoří průzkumníka.
-[tutorial part1 message 27]
-Průzkumník létá kolem kolonie a odhaluje terén. Nechte Úl vytvořit druhého, než budete pokračovat.
-[tutorial part1 message 28]
-Vyberte Úl. Nastavte poměr průzkumníků na 0 a dělníků na 1, aby znovu vznikali dělníci.
-[tutorial part2 message 1]
-Východně od základny je kámen. Zapamatujte si místo, později ho využijete.
-[tutorial part2 message 2]
-Stromy jižně od kamene jsou pomerančovníky. Vyberte je pro informace o zdrojích. K ovoci se vrátíme později; nyní se soustřeďte na Úl.
-[tutorial part2 message 3]
-Nastavte Úl pouze na dělníky: dělníci 1, průzkumníci a válečníci 0.
-[tutorial part2 message 4]
-Urychleme růst. Nastavte cílový počet dělníků Úlu na 6. Noví dělníci postupně obsadí volná místa.
-[tutorial part2 message 5]
-Další úkoly začnou při 8 dělnících. Zatím udržujte zásobování Úlu a Hospody.
-[tutorial part2 message 6]
-Úl nyní zásobuje několik dělníků. Více obilí umožňuje rychlejší tvorbu jednotek.
-[tutorial part2 message 7]
-Nový dělník stojí 5 obilí. Doprava ze vzdáleného pole trvá, takže Úl často potřebuje více zásobovačů než Hospoda. Budovy závislé na obilí stavte pokud možno u polí.
-[tutorial part2 message 8]
-Máte nejméně 8 dělníků. Snižte cílový počet Úlu na 1, aby se během stavění zpomalil růst populace.
-[tutorial part2 message 9]
-Kolonie potřebuje více míst k jídlu. Postavte druhou Hospodu severně od první.
-[tutorial part2 message 10]
-Přidělte volné dělníky na nové staveniště. Potřebuje jen 3 dřeva, takže více než 3 stavitelé příliš nepomohou.
-[tutorial part2 message 11]
-Hotová Hospoda přejde na provozní cílový počet, obvykle 1 dělníka. Stavba a běžné zásobování mají oddělené cíle.
-[tutorial part2 message 12]
-Dělníci se mohou naučit běhat rychleji na Závodní dráze.
-[tutorial part2 message 13]
-Najděte Závodní dráhu v ovládání stavby. Na počítači ukažte na ikonu pro popis a cenu. Na dotykové obrazovce ji vyberte ve Stavbě. Ještě ji neumisťujte.
-[tutorial part2 message 14]
-Závodní dráha potřebuje hodně dřeva a trochu kamene. Vyberte centrální a snadno dostupné místo.
-[tutorial part2 message 15]
-Postavte Závodní dráhu, třeba jižně od Úlu. Nechte kolem ní volno pro budoucí rozšíření.
-[tutorial part2 message 16]
-Nastavte staveništi dráhy cíl 5 až 7 dělníků. Potřebuje celkem 7 stavebních materiálů.
-[tutorial part2 message 17]
-Hotová Závodní dráha cvičí jednotky bez průběžných dodávek stavebních materiálů nebo obilí.
-[tutorial part2 message 18]
-Globule vstupují na Závodní dráhu. Po výcviku budou běhat rychleji.
-[tutorial part2 message 19]
-Vyberte Závodní dráhu a sledujte výcvik. Ukazatele zobrazují, jak blízko jsou jednotky uvnitř k dokončení.
-[tutorial part2 message 20]
-Vycvičení dělníci dodávají zdroje rychleji. Dál sledujte zásoby jídla a udržujte dostatečný počet zásobených Hospod.
-[tutorial part2 message 21]
-Najděte počítadlo dělníků v herním rozhraní. Celkový počet značí populaci; dostupnost ukazuje volné dělníky nebo neobsazenou práci. Nepřidělujte více úkolů, než kolonie zvládne.
-[tutorial part2 message 22]
-Rozhraní ukazuje také průzkumníky a válečníky. Kontrolujte počty při plánování výroby a přidělování k praporům.
-[tutorial part2 message 23]
-Máte 2 základní Hospody, každou se 4 místy, celkem tedy 8. Hlad může dostat více než 8 jednotek; počítejte i s frontami.
-[tutorial part2 message 24]
-Dvě Hospody rostoucí kolonii nevystačí navždy. Zvětšete kapacitu dřív, než nedostatek přeroste v hladomor.
-[tutorial part2 message 25]
-Postavte další 3 Hospody u obilí. Hladoví dělníci přestanou pracovat a při dlouhém hladovění zemřou. Využijte volné dělníky, ale zachovejte zásobování jídlem.
-[tutorial part2 message 26]
-Dokončete další 3 Hospody, abyste jich měli celkem 5.
-[tutorial part2 message 27]
-Nové Hospody po stavbě používají provozní cíle, obvykle po 1 dělníkovi. Zkontrolujte zásobovače a zásoby obilí.
-[tutorial part2 message 28]
-Závodní dráha zlepšila pohyb po souši. Nyní se naučíme plavat.
-[tutorial part2 message 29]
-Koupaliště učí jednotky plavat a staví se ze dřeva. Umístěte je na velkou mýtinu severovýchodně od základny, severně od kamene. Nechte prostor na vylepšení a růst zdrojů a přidělte volné dělníky.
-[tutorial part2 message 30]
-Koupaliště učí jednotky plavat a staví se ze dřeva. Umístěte je na velkou mýtinu severovýchodně od základny, severně od kamene. Nechte prostor na vylepšení a růst zdrojů a přidělte volné dělníky.
-[tutorial part2 message 31]
-Koupaliště je hotové. Globule se v něm nyní mohou učit plavat.
-[tutorial part2 message 32]
-Vyberte Koupaliště a sledujte výcvik. Základní Koupaliště cvičí 2 globule současně, stejně jako základní Závodní dráha.
-[tutorial part2 message 33]
-Vycvičené globule už umějí plavat. Brzy dostanou úkol vyžadující překonání vody.
-[tutorial part2 message 34]
-Ještě se máme co učit. Potřebujete-li přestávku, uložte postup v herní nabídce.
-[tutorial part2 message 35]
-Kolonie má jídlo a tělesný výcvik. Škola naučí dělníky dovednosti potřebné pro lepší budovy.
-[tutorial part2 message 36]
-Škola zlepšuje sklizeň a stavění. Její stavba potřebuje řasy rostoucí ve vodě. Dělníci, kteří umějí plavat, je mohou sklízet.
-[tutorial part2 message 37]
-Chraňte důležité výcvikové budovy. Škola nemusí stát u vody; chráněné místo ve vnitrozemí je bezpečnější.
-[tutorial part2 message 38]
-Postavte Školu chráněně, třeba za Koupalištěm nebo jihozápadně od Úlu vedle Závodní dráhy. Přidělte dostupné dělníky.
-[tutorial part2 message 39]
-Vyberte budovu a uvidíte její dělníky. Na počítači lze nastavit akci pro zobrazení tras jednotek k cílům; aktuální zkratku najdete v Nastavení, Ovládání hry. Počkejte na dokončení Školy.
-[tutorial part3 message 1]
-Kolonie má Hospody, Nemocnici, Závodní dráhu, Koupaliště a Školu. Je čas připravit obranu.
-[tutorial part3 message 2]
-Ještě jsme nevytvořili válečníky. Bez nich je kolonie proti útoku málo chráněná.
-[tutorial part3 message 3]
-Vyberte Úl a nastavte poměr válečníků na 2. Dělníky nechte na 1, aby nadále vznikali.
-[tutorial part3 message 4]
-Úl vytvoří přibližně 2 válečníky na každého dělníka. Více zásobujících dělníků může tvorbu urychlit.
-[tutorial part3 message 5]
-První válečník je připraven a začne cvičit. Než budete pokračovat, počkejte na druhého.
-[tutorial part3 message 6]
-Válečníci také používají dráhu a Koupaliště. Útok se učí na Cvičišti.
-[tutorial part3 message 7]
-Cvičiště zlepšuje sílu a rychlost útoku: poškození jedním úderem a četnost úderů. Dobře vycvičení válečníci mohou porazit mnohem početnější nevycvičené skupiny.
-[tutorial part3 message 8]
-Postavte Cvičiště poblíž dřeva potřebného na stavbu.
-[tutorial part3 message 9]
-Přidělte dostupné dělníky na Cvičiště. Zachovejte dost zásobovačů jídla a nevytvářejte příliš mnoho práce.
-[tutorial part3 message 10]
-Cvičiště je hotové. Válečníci se na něm mohou učit útočit.
-[tutorial part3 message 11]
-Kolonii posílíme také vylepšováním budov.
-[tutorial part3 message 12]
-Dělníci vyškolení ve Škole umějí stavět vylepšení. Vyberte vhodnou budovu a Vylepšit v jejím ovládání. Poškozenou budovu může být nutné nejprve opravit.
-[tutorial part3 message 13]
-Co vylepšíme první? Hospody mají stále volná místa, takže mohou počkat.
-[tutorial part3 message 14]
-Také Nemocnice má prostor. Zaměřme se na Školu, Závodní dráhu, Koupaliště nebo Cvičiště.
-[tutorial part3 message 15]
-Nejprve vylepšete Závodní dráhu, aby se jednotky naučily pohybovat ještě rychleji.
-[tutorial part3 message 16]
-Vyberte Závodní dráhu a Vylepšit. Jednotky uvnitř musí nejprve odejít, takže práce nemusí začít okamžitě.
-[tutorial part3 message 17]
-Přidělte dostupné dělníky na vylepšení dráhy. Na stavbě úrovně 2 mohou pracovat jen dělníci s potřebným školním výcvikem.
-[tutorial part3 message 18]
-Počkejte na dokončení vylepšení Závodní dráhy. Budovy vyšších úrovní vyžadují více zdrojů a času.
-[tutorial part3 message 19]
-Závodní dráha úrovně 2 je hotová a větší. Proto jsme nechali mezeru: bez prostoru pro rozšíření nelze budovu vylepšit.
-[tutorial part3 message 20]
-Nyní vylepšete Cvičiště a Koupaliště na úroveň 2. Pokračovat budeme po dokončení obou.
-[tutorial part3 message 21]
-Vylepšené budovy obvykle obslouží více globulí nebo nabídnou lepší výcvik. Hospoda úrovně 2 má například 7 míst a krmí rychleji.
-[tutorial part3 message 22]
-Nepřítel je blízko. Připravme se na útok.
-[tutorial part3 message 23]
-Obranné věže střílejí po nepřátelích v dosahu. Hradby je chrání. Využijeme obojí k obraně úzkého přístupu.
-[tutorial part3 message 24]
-Je-li místo, stavte věže v párech. Hradby mohou chránit tři strany; ponechte cestu dělníkům dodávajícím kamennou munici.
-[tutorial part3 message 25]
-Východně od Koupaliště, severně od dalších ovocných stromů, vede úzký přechod na jiný ostrov. Toto místo braňte.
-[tutorial part3 message 26]
-Naplánujte 2 věže mezi stromy a břehem. Nechte za nimi přístup pro kámen a jinde prostor pro hradby. Nezablokujte dělníky.
-[tutorial part3 message 27]
-Postavte tam 2 věže. Přidělte každému staveništi 2 nebo 3 dělníky podle dostupnosti v počítadlech.
-[tutorial part3 message 28]
-Umístěte hradby na tři vnější strany věží. Stranu ke kolonii nechte otevřenou pro dělníky.
-[tutorial part3 message 29]
-Každý díl hradby vytvoří stavební práci a potřebuje 1 kámen. Pokud chybějí dělníci, mohou díly dokončovat postupně.
-[tutorial part3 message 30]
-Počkejte na dokončení obou věží a několika dílů hradeb. Věže potřebují kamennou munici; dodávky ze vzdáleného lomu trvají. Máte-li volné dělníky, zvyšte požadovaný počet dělníků u věží.
-[tutorial part4 message 1]
-Kolonie má jídlo, výcvik a obranu. Budovy mohou dosáhnout úrovně 3, s větší kapacitou a lepším výcvikem. Vylepšujte je podle zdrojů a dovedností dělníků.
-[tutorial part4 message 2]
-Najděte nepřátelskou kolonii severozápadně od základny. Přesuňte tam pohled.
-[tutorial part4 message 3]
-I prozkoumaný terén může zakrývat válečná mlha. Současnou činnost nepřítele odhalí průzkumník v blízkosti.
-[tutorial part4 message 4]
-Otevřete Prapory. Prapory a oblasti směrují jednotky bez ovládání každé globule zvlášť.
-[tutorial part4 message 5]
-Vyberte Průzkumný prapor se symbolem draka. Lze jej umístit nad souš, vodu, zdroje i neprozkoumanou půdu.
-[tutorial part4 message 6]
-Umístěte jej nad předpokládanou nepřátelskou základnu. Přibližná poloha stačí. Ukončete umisťování pravým kliknutím nebo dotykovými ovladači.
-[tutorial part4 message 7]
-Obrys značí pracovní dosah praporu. Přidělený průzkumník oblast prozkoumá. Pokud žádný nepřichází, zkontrolujte počet a případně vytvořte nového v Úlu. Po příchodu stiskněte mezerník nebo OK.
-[tutorial part4 message 8]
-Nepřítel má mnoho dělníků a shromážděnou armádu. Připravme obranu.
-[tutorial part4 message 9]
-Otevřete Prapory a vyberte modrou strážní oblast. Použijte přidávání půdy, ne odebírání. Na dotykové obrazovce zvolte Malovat místo Mazat.
-[tutorial part4 message 10]
-Vyberte tvar a velikost štětce. Velký čtverec se hodí pro kompaktní obranu.
-[tutorial part4 message 11]
-Namalujte strážní oblast za věžemi na pravděpodobné trase nepřítele. Kliknutí či klepnutí maluje bod, tažení větší plochu. Na dotykové obrazovce přesouvejte pohled pomocí Posouvat.
-[tutorial part4 message 12]
-Dostupní válečníci obsadí oblast. Dejte jim prostor, ale držte obránce soustředěné u přechodu. Počkejte na útok.
-[tutorial part4 message 13]
-Nepřítel se blíží k přechodu!
-[tutorial part4 message 14]
-Jsme pod útokem. Sledujte, jak vycvičení válečníci a věže brání pozici.
-[tutorial part4 message 15]
-Přežili jste! Otevřete Prapory a vyberte ostnatý Válečný prapor. Umístěte jej na nepřátelský Úl a naveďte tam útok.
-[tutorial part4 message 16]
-Ukončete umisťování a vyberte Válečný prapor. Přidělte více než 1 válečníka a zmenšete dosah, aby se útok soustředil na Úl. Počkejte na jejich příchod.
-[tutorial part4 message 17]
-Útok začal. Válečníci se musejí dostat kolem nepřátelských věží k Úlu.
-[tutorial part4 message 18]
-Válečníci dosáhli nepřátelské základny. Udržujte útok zaměřený na Úl.
-[tutorial part4 message 19]
-Zničili jste nepřátelský Úl! Dokončili jste výuku a naučili se základy zásobování, přidělování, výcviku, vylepšení, průzkumu a boje.
-[tutorial mission basics]
-Úvod a základy
-[tutorial mission development]
-Budovy a školy
-[tutorial mission training]
-Válečníci, výcvik a vylepšení
-[tutorial mission flags]
-Prapory a dokončení
 [library  Could not restore the previous library: %0]
  Předchozí knihovnu se nepodařilo obnovit: %0
 [library  The previous library is retained.]
@@ -6596,6 +6354,422 @@ Volbu můžete kdykoli změnit v Nastavení → Zvuk.
 Volbu se nepodařilo uložit. Zvuk je stále vypnutý. Zkuste to znovu.
 [audio choices description]
 Ticho: ztlumený reproduktor. Zvuk: reproduktor se zvukovými vlnami.
+[intro menu]
+
+[intro briefing]
+
+[intro try]
+
+[intro preflight]
+
+[intro preflight save]
+
+[intro preference failed]
+
+[intro goal scout]
+
+[intro goal build]
+
+[intro goal supply]
+
+[intro goal grow]
+
+[intro goal attack]
+
+[intro instruction scout]
+
+[intro instruction build]
+
+[intro instruction supply]
+
+[intro instruction grow]
+
+[intro instruction attack]
+
+[intro help]
+
+[intro help scout]
+
+[intro help build]
+
+[intro help supply]
+
+[intro help grow]
+
+[intro help attack]
+
+[intro hint scout]
+
+[intro hint build]
+
+[intro hint supply]
+
+[intro hint grow]
+
+[intro hint attack]
+
+[intro hint no scout flag]
+
+[intro hint no suppliers]
+
+[intro hint no war flag]
+
+[intro hint retry]
+
+[intro complete]
+
+[intro complete body]
+
+[intro play again]
+
+[intro restart]
+
+[intro restart body]
+
+[intro help touch scout]
+
+[intro help touch build]
+
+[intro help touch supply]
+
+[intro help touch grow]
+
+[intro help touch attack]
+
+[intro show destination]
+
+[intro scout destination]
+
+[intro attack destination]
+
+[intro compact scout]
+
+[intro compact build]
+
+[intro compact supply]
+
+[intro compact grow]
+
+[intro compact attack]
+
+[tutorial lessons]
+
+[tutorial restart]
+
+[tutorial restart body]
+
+[tutorial complete]
+
+[tutorial food title]
+
+[tutorial food briefing]
+
+[tutorial food complete]
+
+[tutorial unavailable]
+
+[lesson healing title]
+
+[lesson healing briefing]
+
+[lesson healing complete]
+
+[lesson healing build hint]
+
+[lesson healing build title]
+
+[lesson healing build instruction]
+
+[lesson healing build help]
+
+[lesson healing build marker]
+
+[lesson healing heal hint]
+
+[lesson healing heal title]
+
+[lesson healing heal instruction]
+
+[lesson healing heal help]
+
+[lesson healing heal marker]
+
+[lesson walking-training title]
+
+[lesson walking-training briefing]
+
+[lesson walking-training complete]
+
+[lesson walking-training build hint]
+
+[lesson walking-training build title]
+
+[lesson walking-training build instruction]
+
+[lesson walking-training build help]
+
+[lesson walking-training build marker]
+
+[lesson walking-training train hint]
+
+[lesson walking-training train title]
+
+[lesson walking-training train instruction]
+
+[lesson walking-training train help]
+
+[lesson swimming title]
+
+[lesson swimming briefing]
+
+[lesson swimming complete]
+
+[lesson swimming build hint]
+
+[lesson swimming build title]
+
+[lesson swimming build instruction]
+
+[lesson swimming build help]
+
+[lesson swimming build marker]
+
+[lesson swimming train hint]
+
+[lesson swimming train title]
+
+[lesson swimming train instruction]
+
+[lesson swimming train help]
+
+[lesson swimming water-job hint]
+
+[lesson swimming water-job title]
+
+[lesson swimming water-job instruction]
+
+[lesson swimming water-job help]
+
+[lesson swimming water-job marker]
+
+[lesson schools title]
+
+[lesson schools briefing]
+
+[lesson schools complete]
+
+[lesson schools build hint]
+
+[lesson schools build title]
+
+[lesson schools build instruction]
+
+[lesson schools build help]
+
+[lesson schools build marker]
+
+[lesson schools learn hint]
+
+[lesson schools learn title]
+
+[lesson schools learn instruction]
+
+[lesson schools learn help]
+
+[lesson upgrades title]
+
+[lesson upgrades briefing]
+
+[lesson upgrades complete]
+
+[lesson upgrades upgrade hint]
+
+[lesson upgrades upgrade title]
+
+[lesson upgrades upgrade instruction]
+
+[lesson upgrades upgrade help]
+
+[lesson upgrades upgrade marker]
+
+[lesson upgrades train hint]
+
+[lesson upgrades train title]
+
+[lesson upgrades train instruction]
+
+[lesson upgrades train help]
+
+[lesson warrior-training title]
+
+[lesson warrior-training briefing]
+
+[lesson warrior-training complete]
+
+[lesson warrior-training produce hint]
+
+[lesson warrior-training produce title]
+
+[lesson warrior-training produce instruction]
+
+[lesson warrior-training produce help]
+
+[lesson warrior-training produce marker]
+
+[lesson warrior-training build hint]
+
+[lesson warrior-training build title]
+
+[lesson warrior-training build instruction]
+
+[lesson warrior-training build help]
+
+[lesson warrior-training build marker]
+
+[lesson warrior-training train hint]
+
+[lesson warrior-training train title]
+
+[lesson warrior-training train instruction]
+
+[lesson warrior-training train help]
+
+[lesson fortifications title]
+
+[lesson fortifications briefing]
+
+[lesson fortifications complete]
+
+[lesson fortifications tower hint]
+
+[lesson fortifications tower title]
+
+[lesson fortifications tower instruction]
+
+[lesson fortifications tower help]
+
+[lesson fortifications tower marker]
+
+[lesson fortifications walls hint]
+
+[lesson fortifications walls title]
+
+[lesson fortifications walls instruction]
+
+[lesson fortifications walls help]
+
+[lesson fortifications walls marker]
+
+[lesson fortifications supply hint]
+
+[lesson fortifications supply title]
+
+[lesson fortifications supply instruction]
+
+[lesson fortifications supply help]
+
+[lesson fortifications supply marker]
+
+[lesson fortifications hold hint]
+
+[lesson fortifications hold title]
+
+[lesson fortifications hold instruction]
+
+[lesson fortifications hold help]
+
+[lesson fortifications hold marker]
+
+[lesson defensive-tactics title]
+
+[lesson defensive-tactics briefing]
+
+[lesson defensive-tactics complete]
+
+[lesson defensive-tactics scout hint]
+
+[lesson defensive-tactics scout title]
+
+[lesson defensive-tactics scout instruction]
+
+[lesson defensive-tactics scout help]
+
+[lesson defensive-tactics scout marker]
+
+[lesson defensive-tactics guard hint]
+
+[lesson defensive-tactics guard title]
+
+[lesson defensive-tactics guard instruction]
+
+[lesson defensive-tactics guard help]
+
+[lesson defensive-tactics guard marker]
+
+[lesson defensive-tactics repel hint]
+
+[lesson defensive-tactics repel title]
+
+[lesson defensive-tactics repel instruction]
+
+[lesson defensive-tactics repel help]
+
+[lesson defensive-tactics repel marker]
+
+[lesson defensive-tactics counterattack hint]
+
+[lesson defensive-tactics counterattack title]
+
+[lesson defensive-tactics counterattack instruction]
+
+[lesson defensive-tactics counterattack help]
+
+[lesson defensive-tactics counterattack marker]
+
+[lesson healing build compact]
+
+[lesson healing heal compact]
+
+[lesson walking-training build compact]
+
+[lesson walking-training train compact]
+
+[lesson swimming build compact]
+
+[lesson swimming train compact]
+
+[lesson swimming water-job compact]
+
+[lesson schools build compact]
+
+[lesson schools learn compact]
+
+[lesson upgrades upgrade compact]
+
+[lesson upgrades train compact]
+
+[lesson warrior-training produce compact]
+
+[lesson warrior-training build compact]
+
+[lesson warrior-training train compact]
+
+[lesson fortifications tower compact]
+
+[lesson fortifications walls compact]
+
+[lesson fortifications supply compact]
+
+[lesson fortifications hold compact]
+
+[lesson defensive-tactics scout compact]
+
+[lesson defensive-tactics guard compact]
+
+[lesson defensive-tactics repel compact]
+
+[lesson defensive-tactics counterattack compact]
+
 [library %0 · revision %1]
 %0 · revize %1
 [Grassland]
@@ -6606,5 +6780,7 @@ Skalnaté pahorky
 Zvířecí stezky
 [Fish amount]
 Množství ryb
+[scenario messages]
+
 [Camp-site amount]
 Počet tábořišť

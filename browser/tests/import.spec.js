@@ -1,3 +1,4 @@
+const {waitForMainMenu}=require('./main-menu');
 const {editTextField,clickControl,clickListRow}=require('./main-menu');
 const {test, expect} = require('@playwright/test');
 const {clickMainMenu,gameURL,clickCustomGameStart}=require('./main-menu');
@@ -6,7 +7,7 @@ const path = require('node:path');
 const {createHash} = require('node:crypto');
 const {gunzipSync,gzipSync} = require('node:zlib');
 const state = page => page.evaluate(() => glob2Diagnostics.snapshot());
-const screen = (page, name) => expect.poll(async () => (await state(page)).screen).toContain(name);
+const screen = (page, name) => name==='MainMenuScreen' ? waitForMainMenu(page) : expect.poll(async () => (await state(page)).screen).toContain(name);
 const digest = bytes => ({size:bytes.length,sha256:createHash('sha256').update(bytes).digest('hex')});
 async function select(page,name,bytes) {
   const chooser = page.waitForEvent('filechooser');

@@ -15,6 +15,7 @@
 #include <StreamBackend.h>
 #include <TextStream.h>
 #include <cctype>
+#include <memory>
 #include <set>
 #include <string>
 #include <stdexcept>
@@ -118,6 +119,42 @@ TEST_SUITE("ExperimentalFeatures")
 		enabled.clear();
 		CHECK(enabled.empty());
 		CHECK(enabled.size() == 0);
+	}
+
+	TEST_CASE("retired terrain flags are discarded unless explicitly declared by an embedded catalog")
+	{
+		const std::vector<std::string> retiredKeys{
+			"ice-terrain", "road-terrain", "obstacle-terrain", "ridge-terrain",
+			"barren-terrain", "rough-terrain", "path-terrain", "lava-terrain",
+			"fertile-terrain", "deep-water-terrain", "void-terrain"};
+		auto enabled = guardOnly();
+		for (const auto& key : retiredKeys)
+		{
+			CHECK_FALSE(parseExperimentKey(key));
+			enabled.set(key, true, retiredKeys);
+		}
+		for (const auto version : {FILE_FORMAT_VERSION_MAINLINE_TERRAINS - 1, VERSION_MINOR})
+			for (const bool text : {false, true})
+				for (const bool declared : {false, true})
+				{
+					CAPTURE(version);
+					CAPTURE(text);
+					CAPTURE(declared);
+					auto* memory = new MemoryStreamBackend;
+					std::unique_ptr<OutputStream> output(text
+						? static_cast<OutputStream*>(new TextOutputStream(memory))
+						: static_cast<OutputStream*>(new BinaryOutputStream(memory)));
+					enabled.save(output.get());
+					output->flush();
+					auto* copy = new MemoryStreamBackend(std::string(memory->getBuffer(), memory->getPosition()));
+					std::unique_ptr<InputStream> input(text
+						? static_cast<InputStream*>(new TextInputStream(copy))
+						: static_cast<InputStream*>(new BinaryInputStream(copy)));
+					ExperimentSet restored;
+					REQUIRE(restored.load(input.get(), version, true,
+						declared ? retiredKeys : std::vector<std::string>{}));
+					CHECK(restored == (declared ? enabled : guardOnly()));
+				}
 	}
 
 	TEST_CASE("dynamic experiment text streams round trip and sets respect the stored count bound")

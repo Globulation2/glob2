@@ -296,7 +296,10 @@ bool ExperimentSet::load(GAGCore::InputStream *stream, Sint32 versionMinor, bool
 			stream->readLeaveSection();
 			return false;
 		}
-		if (retiredTerrainExperiment(key))
+		// Catalogs may explicitly reuse a former built-in key. Retire only the
+		// authoring flag, not a gate declared by this game's embedded catalog.
+		if (retiredTerrainExperiment(key) &&
+			std::find(allowedKeys.begin(), allowedKeys.end(), key) == allowedKeys.end())
 			continue;
 		if (knownExperimentKey(key, allowedKeys))
 			set(key, true, allowedKeys);

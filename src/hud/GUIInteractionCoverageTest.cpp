@@ -1,7 +1,4 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-#include "ui/TutorialText.h"
-#include <BinaryStream.h>
-#include <FileManager.h>
 #include "EngineFixtures.h"
 #include "GameGUIViewport.h"
 #include "GameGUIInternal.h"
@@ -20,7 +17,6 @@
 #include <ScopedEnvironment.h>
 #include <InterfacePresentation.h>
 #include <algorithm>
-#include <iterator>
 #include <set>
 
 namespace
@@ -689,7 +685,7 @@ TEST_CASE("resource inspectors show infinity only for stocked infinite yields [d
 }
 
 
-TEST_CASE("Tutorial messages wrap unspaced UTF-8 text and continuation indents without changing simulation [display]" * doctest::test_suite("TutorialLocalization"))
+TEST_CASE("Scenario messages wrap unspaced UTF-8 text and continuation indents without changing simulation [display]" * doctest::test_suite("ScenarioMessages"))
 {
     glob2test::HeadlessGlobals globals({.display=true,.loadStrings=true,.width=640,.height=480});
     glob2test::HeadlessGame world({.clearImmobile=true,.loadDefaultRace=true,.header=true});
@@ -718,61 +714,4 @@ TEST_CASE("Tutorial messages wrap unspaced UTF-8 text and continuation indents w
     CHECK(lines.empty());
     CHECK(world.checksum() == checksum);
     CHECK(world.gui.orderQueue.empty());
-}
-
-
-TEST_CASE("Old tutorial localization preserves script bytes and matches ordinary save-load state [display][artifacts]" * doctest::test_suite("TutorialLocalization"))
-{
-    glob2test::HeadlessGlobals globals({.display=true,.loadStrings=true,.width=640,.height=480});
-    GameGUI original(false);
-    {
-        GAGCore::BinaryInputStream input(glob2OpenMapOrSaveInputStreamBackend(*GAGCore::Toolkit::getFileManager(), "campaigns/tutorial-part1.map.gz"));
-        REQUIRE(original.load(&input));
-    }
-    REQUIRE(original.legacyTutorialScript);
-    const auto source = original.game.sgslScript.sourceCode;
-    const auto checksum = original.game.checkSum();
-    const auto orders = original.orderQueue.snapshot();
-    const auto baselineSave = (glob2test::artifactDir() / "tutorial-localization-baseline.game").string();
-    const auto writeSave = [&](const std::string& path) {
-        GAGCore::BinaryOutputStream output(GAGCore::Toolkit::getFileManager()->openOutputStreamBackend(path));
-        original.save(&output, "Tutorial localization round trip");
-    };
-    writeSave(baselineSave);
-    CHECK(original.game.checkSum() == checksum);
-
-    const auto alias = std::find_if(std::begin(Glob2UI::tutorialTextAliases),
-        std::end(Glob2UI::tutorialTextAliases), [&](const auto& entry) {
-            return source.find(entry.first) != std::string::npos;
-        });
-    REQUIRE(alias != std::end(Glob2UI::tutorialTextAliases));
-    CHECK(Glob2UI::tutorialText(std::string(alias->first), original.legacyTutorialScript) ==
-        GAGCore::Toolkit::getStringTable()->getString(std::string(alias->second)));
-    CHECK(original.game.sgslScript.sourceCode == source);
-    CHECK(original.game.checkSum() == checksum);
-    CHECK(original.orderQueue.snapshot() == orders);
-
-    const auto save = (glob2test::artifactDir() / "tutorial-localization-roundtrip.game").string();
-    writeSave(save);
-    CHECK(original.game.checkSum() == checksum);
-    // Loading a newly saved legacy map can heal old coordinates and rebuild
-    // derived state. Compare against the same ordinary save/load without the
-    // display lookup, rather than requiring legacy migration to be a no-op.
-    GameGUI baselineRestored(false);
-    {
-        GAGCore::BinaryInputStream input(GAGCore::Toolkit::getFileManager()->openInputStreamBackend(baselineSave));
-        REQUIRE(baselineRestored.load(&input));
-    }
-    CHECK(baselineRestored.legacyTutorialScript);
-    CHECK(baselineRestored.game.sgslScript.sourceCode == source);
-    GameGUI restored(false);
-    {
-        GAGCore::BinaryInputStream input(GAGCore::Toolkit::getFileManager()->openInputStreamBackend(save));
-        REQUIRE(restored.load(&input));
-    }
-    CHECK(restored.legacyTutorialScript);
-    CHECK(restored.game.sgslScript.sourceCode == source);
-    CHECK(restored.game.checkSum() == baselineRestored.game.checkSum());
-    restored.init();
-    CHECK_FALSE(restored.legacyTutorialScript);
 }

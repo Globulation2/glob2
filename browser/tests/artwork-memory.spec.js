@@ -1,3 +1,4 @@
+const {waitForMainMenu}=require('./main-menu');
 // SPDX-License-Identifier: GPL-3.0-or-later
 const {test, expect} = require('@playwright/test');
 const fs = require('node:fs');
@@ -22,7 +23,7 @@ for (const variant of ['serial', 'threaded']) {
     });
     await page.goto(`/?renderer=webgl2&gl-errors=1&threads=${variant}`);
     const state = () => page.evaluate(() => glob2Diagnostics.snapshot());
-    await expect.poll(async () => (await state()).screen).toContain('MainMenuScreen');
+    await waitForMainMenu(page);
     // A warm optional package reproduces the large first-match allocations;
     // starting before it arrives would accidentally test original artwork.
     await expect.poll(async () => (await state()).assets.hd, {timeout:120000}).toBe('ready');

@@ -1,8 +1,9 @@
+const {waitForMainMenu}=require('./main-menu');
 const {clickCreateMap}=require('./editor-controls');
 const {clickControl,control,clickMainMenu,gameURL}=require('./main-menu');
 const {test,expect}=require('@playwright/test');
 const state=page=>page.evaluate(()=>glob2Diagnostics.snapshot());
-const screen=(page,name)=>expect.poll(async()=>(await state(page)).screen).toContain(name);
+const screen=(page,name)=>name==='MainMenuScreen' ? waitForMainMenu(page) : expect.poll(async()=>(await state(page)).screen).toContain(name);
 
 // Definition imports pick a file from the device through the host file chooser,
 // without leaving the editor, and feed its bytes to the same JSON importer.

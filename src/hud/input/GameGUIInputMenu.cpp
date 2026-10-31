@@ -1,3 +1,4 @@
+#include "tutorial/TutorialModel.h"
 #include "hive/HiveDialog.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
@@ -61,6 +62,7 @@ void GameGUI::openMainMenu()
 {
 	auto menu = std::make_unique<InGameMainScreen>(globalContainer->replaying, !globalContainer->isViewingGame(), gamePaused);
 	menu->setNetworked(networkMatch.active);
+    menu->setTutorial(bool(Tutorial::view(drawnScene().panels.hud.state())) && !globalContainer->replaying && !networkMatch.active);
 	if (networkMatch.active)
 	{
 		auto &strings = *Toolkit::getStringTable();
@@ -167,7 +169,12 @@ bool GameGUI::processGameMenu(SDL_Event *event)
 		{
 			switch (result)
 			{
-				case InGameMainScreen::HIVE_MIND:
+				case InGameMainScreen::TUTORIAL_RESTART:
+                    openDialog(IGM_TUTORIAL_RESTART,std::make_unique<InGameConfirmScreen>(
+                        Glob2UI::tr("[tutorial restart]"),Glob2UI::tr("[tutorial restart body]"),
+                        Glob2UI::tr("[tutorial restart]"),Glob2UI::tr("[Cancel]")));
+                    return true;
+                case InGameMainScreen::HIVE_MIND:
 					if(hive)openDialog(IGM_HIVE,std::make_unique<Hive::Dialog>(hive));
 					return true;
 				case InGameMainScreen::LOAD_GAME:
@@ -229,6 +236,14 @@ bool GameGUI::processGameMenu(SDL_Event *event)
 			}
 		}
 
+		case IGM_TUTORIAL_RESTART:
+            closeDialog();
+            if (result == InGameConfirmScreen::CONFIRM) {
+                if (auto lesson=Tutorial::view(drawnScene().panels.hud.state())) toLoadGameFileName=lesson->restartMap;
+                enqueueOrder(std::make_shared<PlayerQuitsGameOrder>(localPlayer));
+                flushOutgoingAndExit=true;
+            } else openMainMenu();
+            return true;
 		case IGM_CONFIRM_LEAVE:
 		{
 			closeDialog();

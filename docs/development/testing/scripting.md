@@ -116,3 +116,52 @@ historical version-123 references remain separate. CI retains these artifacts ev
 The shared evidence comparator requires successful runs of the same clean source
 revision. `--allow-development` permits diagnostic comparisons while recording
 provenance failures; those comparisons do not satisfy the final acceptance gate.
+
+## Tutorial lessons
+
+`python3 tools/tutorials/build.py --check` verifies generated scripts against the
+catalog, validated lesson definitions and shared runner. `python3
+test/test_tutorial_content.py` checks malformed definitions, dangling/cyclic
+targets and content-only expansion. `node --test
+browser/unit/tutorial-lessons.test.js` covers shared target resolution, markers,
+entity generations, persistent step IDs and custom-condition hooks.
+
+`python3 test/run_tests.py --filter 'Introduction/*'` loads the shipped maps and verifies shared terrain/resources/regions, all ten real-order lessons, saved continuation at each stage, legacy
+prototype map/save continuity and archived SGSL save compatibility checks, atomic metadata validation and first-run preference
+migration. Regenerate maps with `python3 tools/tutorials/build.py --maps --binary
+BUILD_DIRECTORY/src/glob2`. Add `--check` to verify deterministic regeneration of
+all packaged map bytes. Creation-only JS APIs and the fixed training package use
+the normal map-generation command; test fixtures do not author production maps.
+The prototype compatibility fixture must not be regenerated as new lesson data.
+It checks embedded source, objectives, hints and saved continuation through the
+ordinary scenario interfaces, without a prototype-specific guidance adapter.
+
+`browser/tests/introduction.spec.js` runs this same suite in serial and threaded
+WebAssembly. Set `GLOB2_TEST_BUILD_DIR` and `GLOB2_TEST_URL` for a development
+build served with `browser/serve.py`, then run Playwright against this file. Set
+`GLOB2_INTRODUCTION_NATIVE_TRACE` to a native `introduction.trace`; place native
+`food-supply.trace`, `prototype.trace`, `expanded.trace` and
+`legacy-campaign.trace`, `water-access.trace`, `sustainability.trace` and
+`diplomacy.trace` and `scripted-areas.trace` beside it. All nine must match exactly.
+Browser JUnit, logs and traces remain under `artifacts/introduction/browser/`.
+Compilation alone does not establish equivalent execution.
+
+The `IntroductionUI` suite captures desktop and portrait/landscape touch at
+100% and 150% text size, Help, destination navigation, collapsing and completion.
+It exercises finger events, unscrolled default instructions and 44-point actions
+above the bottom toolbar. It also verifies catalog loading and second-lesson
+restart routing, the ten-entry catalog, and all new lessons in both phone
+orientations at normal and enlarged text sizes. Keep captures, traces and human playtest observations under
+`artifacts/`.
+
+The single archived SGSL checkpoint at
+`test/fixtures/tutorial/legacy/tutorial-part1.map.gz` verifies its embedded source
+and deterministic save/load continuation through the ordinary SGSL reader. It is
+not shipped, and no standalone old tutorial sources or display-remapping table
+are needed. The JS prototype fixture likewise retains source, objectives, hints
+and continuation without a special guidance adapter.
+
+Ordinary campaign UI and persistence checks use
+`test/fixtures/campaign/Browser_Test_Campaign.txt`; Tutorial opens the JS lesson
+catalog and cannot launch old campaign progress. Existing progress files are not
+deleted.

@@ -3102,8 +3102,6 @@ OpenGL недоступен в этой сборке.
 Отпустите над подходящей местностью для размещения
 [Paint on the map; two fingers move]
 Рисуйте на карте; двигайте двумя пальцами
-[Tutorial ▸]
-Обучение ▸
 [Back to tools]
 Назад к инструментам
 [Starvation overlay]
@@ -6164,246 +6162,6 @@ Discord открыт. Вы можете вернуться в игру в люб
 Удалить запись
 [recording refresh]
 Обновить
-[tutorial part1 message 1]
-Добро пожаловать в Globulation 2! В четырёх миссиях вы научитесь управлять колонией. Прогресс можно сохранить через игровое меню и позже загрузить из главного меню. Для продолжения нажмите Пробел или коснитесь ОК на сенсорном экране. Некоторые сообщения после этого исчезают; перечитать их можно в истории сообщений.
-[tutorial part1 message 2]
-Вы начинаете с Роя и одного рабочего. Посмотрим, как они взаимодействуют.
-[tutorial part1 message 3]
-Рабочий собирает пшеницу и несёт её в Рой. Рой расходует пшеницу на создание новых юнитов и потому крайне важен для колонии.
-[tutorial part1 message 4]
-Выберите своего глобула, движущегося юнита, щелчком левой кнопки или касанием.
-[tutorial part1 message 5]
-В сведениях о юните видно, как со временем уменьшается запас пищи. Ваш глобул голодает. Если полосы пищи включены, синяя полоса под юнитом показывает остаток пищи.
-[tutorial part1 message 6]
-Глобулы едят в Кабаках. Снимите выделение правой кнопкой или коснитесь пустой земли на сенсорном экране.
-[tutorial part1 message 7]
-Откройте управление постройками, выберите Кабак и разместите его рядом с пшеницей. Если не видите её, проследите путь рабочего. На сенсорном экране используйте «Стройка» и подтвердите допустимое место. Затем выйдите из размещения правой кнопкой или сенсорной кнопкой Отмена.
-[tutorial part1 message 8]
-Хорошо! Стройплощадка Кабака размещена.
-[tutorial part1 message 9]
-Рабочий из Роя теперь может построить Кабак. Он собирает древесину с ближайших деревьев и несёт её на стройку. Дождитесь завершения.
-[tutorial part1 message 10]
-Готовому Кабаку нужна пшеница. Назначенный рабочий будет собирать её, как и при снабжении Роя.
-[tutorial part1 message 11]
-Жёлтая полоса ресурсов Кабака растёт с поступлением пшеницы. Она показывает её запас.
-[tutorial part1 message 12]
-Теперь научимся назначать работу.
-[tutorial part1 message 13]
-Один рабочий снабжает Рой, другой — Кабак. Оба могут прерваться, чтобы поесть в Кабаке. Это нормально.
-[tutorial part1 message 14]
-Выберите Рой и найдите настройку назначения рабочих. На компьютере она обозначена как «Работает»; на сенсорном экране используйте число назначенных рабочих и целевое значение. Цель — желаемое число рабочих у здания.
-[tutorial part1 message 15]
-Установите желаемое число рабочих Роя на 0. Затем выберите Кабак и тоже установите число рабочих на 0.
-[tutorial part1 message 16]
-Теперь рабочие бездействуют, но всё ещё нуждаются в еде. У Кабака без назначенных рабочих рано или поздно закончится пшеница.
-[tutorial part1 message 17]
-Глобул, не находящий еду, теряет здоровье и может погибнуть. Госпиталь лечит раненых глобулов, но Кабаки тоже нужно снабжать.
-[tutorial part1 message 18]
-Постройте Госпиталь через управление постройками. Ему не нужна пшеница, поэтому разместите его рядом с древесиной или в центральном месте возле Роя.
-[tutorial part1 message 19]
-Выберите стройплощадку Госпиталя и задайте желаемое число рабочих 2. Двое рабочих закончат строительство быстрее.
-[tutorial part1 message 20]
-Госпиталь готов. Раненые глобулы могут приходить туда восстанавливать здоровье.
-[tutorial part1 message 21]
-Чёрные области ещё не исследованы. При движении юниты открывают соседнюю землю. Рабочие следуют своим заданиям и плохо подходят для разведки. Для этого предназначены исследователи.
-[tutorial part1 message 22]
-Выберите Рой и найдите пропорции производства рабочих, исследователей и воинов. Увеличьте долю исследователей до 1.
-[tutorial part1 message 23]
-При долях рабочих и исследователей по 1 Рой со временем производит поровну тех и других. Установите долю рабочих в 0, чтобы пока создавать только исследователей.
-[tutorial part1 message 24]
-Верните желаемое число рабочих Роя к 1, чтобы рабочий мог приносить ему пшеницу.
-[tutorial part1 message 25]
-Выберите Кабак и тоже задайте желаемое число рабочих 1. Растущей колонии нужен постоянный приток пищи.
-[tutorial part1 message 26]
-Теперь дождитесь, пока Рой создаст исследователя.
-[tutorial part1 message 27]
-Исследователь летает вокруг колонии и открывает новую землю. Прежде чем продолжить, дождитесь второго исследователя.
-[tutorial part1 message 28]
-Снова выберите Рой. Установите долю исследователей в 0, а рабочих в 1, чтобы возобновить производство рабочих.
-[tutorial part2 message 1]
-К востоку от базы есть камень. Запомните это место: позже он понадобится.
-[tutorial part2 message 2]
-Деревья к югу от камня — апельсиновые. Выберите их, чтобы посмотреть сведения о ресурсах. К фруктам вернёмся позже; сейчас займёмся Роем.
-[tutorial part2 message 3]
-Настройте Рой на производство только рабочих: доля рабочих 1, исследователей и воинов 0.
-[tutorial part2 message 4]
-Ускорим рост колонии. Выберите Рой и задайте желаемое число рабочих 6. Возможно, шести рабочих ещё нет; новые смогут занять свободные места по мере появления.
-[tutorial part2 message 5]
-Следующие задания начнутся, когда у вас будет 8 рабочих. Поддерживайте снабжение Роя и Кабака, пока растёт население.
-[tutorial part2 message 6]
-Теперь Рой снабжают несколько рабочих. Больше поставок пшеницы позволяет быстрее создавать юнитов.
-[tutorial part2 message 7]
-Новый рабочий стоит 5 единиц пшеницы. Доставка с далёкого поля занимает время, поэтому Рою часто нужно больше снабженцев, чем Кабаку. По возможности размещайте зависимые от пищи здания рядом с пшеницей.
-[tutorial part2 message 8]
-У вас уже не менее 8 рабочих. Выберите Рой и уменьшите желаемое число рабочих до 1, чтобы замедлить рост населения на время строительства.
-[tutorial part2 message 9]
-Колонии нужно больше мест для питания. Постройте второй Кабак к северу от первого.
-[tutorial part2 message 10]
-Назначьте свободных рабочих на стройку нового Кабака. Ему нужно всего 3 единицы древесины, поэтому больше 3 строителей мало помогут.
-[tutorial part2 message 11]
-В готовом Кабаке снова действует число рабочих для снабжения, обычно 1. Для строительства и повседневного снабжения число рабочих задаётся отдельно.
-[tutorial part2 message 12]
-Рабочие могут научиться двигаться быстрее. Для этого служит Стадион.
-[tutorial part2 message 13]
-Откройте управление постройками и найдите Стадион. На компьютере наведите указатель на значок, чтобы увидеть описание и стоимость. На сенсорном экране выберите его в разделе «Стройка» для подготовки размещения. Пока не размещайте.
-[tutorial part2 message 14]
-Стадиону нужно много древесины и немного камня. Выберите центральное место, куда юнитам легко добраться.
-[tutorial part2 message 15]
-Постройте Стадион, например к югу от Роя. Оставьте вокруг свободное место: учебные здания расширяются при улучшении.
-[tutorial part2 message 16]
-Задайте желаемое число рабочих на стройплощадке Стадиона от 5 до 7. Всего ему нужно 7 единиц строительных материалов.
-[tutorial part2 message 17]
-Готовый Стадион обучает приходящих юнитов без постоянных поставок стройматериалов или пшеницы.
-[tutorial part2 message 18]
-Глобулы входят в Стадион для тренировки. После обучения они смогут бегать быстрее.
-[tutorial part2 message 19]
-Выберите Стадион, чтобы посмотреть ход обучения. Индикаторы показывают, сколько осталось обучающимся внутри юнитам.
-[tutorial part2 message 20]
-Обученные рабочие быстрее передвигаются и доставляют ресурсы. Следите за пищей при росте колонии: быстрые доставки помогают лишь при достаточном числе снабжаемых Кабаков.
-[tutorial part2 message 21]
-Найдите счётчик рабочих в игровом интерфейсе. Общее число показывает население; доступные рабочие помогают заметить свободную рабочую силу или незанятые задания. Используйте свободных рабочих, не назначая больше работ, чем колония способна выполнить.
-[tutorial part2 message 22]
-Интерфейс также показывает число исследователей и воинов. Учитывайте его при планировании производства и назначении юнитов к флагам.
-[tutorial part2 message 23]
-У вас 2 Кабака. Каждый базовый Кабак кормит 4 юнита одновременно: вместе это 8 мест. Проголодаться могут больше 8 юнитов, поэтому предусмотрите запас для очередей.
-[tutorial part2 message 24]
-Два Кабака не смогут поддерживать растущую колонию вечно. Добавляйте места для питания до того, как нехватка перейдёт в голод.
-[tutorial part2 message 25]
-Постройте ещё 3 Кабака рядом с пшеницей. Голодные рабочие перестают работать, а длительный голод их убивает. Назначайте свободных рабочих на стройки, сохраняя существующее снабжение пищей.
-[tutorial part2 message 26]
-Завершите ещё 3 Кабака, доведя общее число до 5.
-[tutorial part2 message 27]
-После строительства в новых Кабаках действует число рабочих для снабжения, обычно по 1 рабочему. Проверьте, есть ли снабженцы и достаточно ли пшеницы.
-[tutorial part2 message 28]
-Стадион улучшил передвижение по суше. Теперь научим колонию плавать.
-[tutorial part2 message 29]
-Бассейн учит юнитов плавать и строится из древесины. Разместите его на большой поляне к северо-востоку от базы, севернее камня. Оставьте вокруг место для улучшений и роста ресурсов, назначьте доступных рабочих на стройку.
-[tutorial part2 message 30]
-Бассейн учит юнитов плавать и строится из древесины. Разместите его на большой поляне к северо-востоку от базы, севернее камня. Оставьте вокруг место для улучшений и роста ресурсов, назначьте доступных рабочих на стройку.
-[tutorial part2 message 31]
-Бассейн готов. Теперь глобулы могут входить и учиться плавать.
-[tutorial part2 message 32]
-Выберите Бассейн для просмотра обучения. Базовый Бассейн обучает 2 глобулов одновременно, как и базовый Стадион.
-[tutorial part2 message 33]
-Ваши обученные глобулы теперь плавают. Скоро мы дадим им работу, требующую пересечь воду.
-[tutorial part2 message 34]
-Предстоит узнать ещё многое. Если нужен перерыв, сохранитесь через игровое меню и вернитесь позже.
-[tutorial part2 message 35]
-У колонии есть пища и физическая подготовка. Школа научит рабочих навыкам для лучших зданий.
-[tutorial part2 message 36]
-Школа улучшает сбор ресурсов и строительство. Для её постройки нужны водоросли, растущие в воде. Рабочие, умеющие плавать, могут их собрать.
-[tutorial part2 message 37]
-Защищайте важные учебные здания. Школе не обязательно стоять у воды: защищённое место в глубине острова может уберечь её от нападения.
-[tutorial part2 message 38]
-Постройте Школу в защищённом месте, например за Бассейном или к юго-западу от Роя рядом со Стадионом. Назначьте доступных рабочих на стройку.
-[tutorial part2 message 39]
-Выберите здание, чтобы увидеть назначенных рабочих. На компьютере настраиваемое действие показа путей юнитов также выводит линии к их целям; текущую клавишу смотрите в Настройках, Управление. Дождитесь завершения Школы.
-[tutorial part3 message 1]
-У колонии теперь есть Кабаки, Госпиталь, Стадион, Бассейн и Школа. Пора готовить оборону.
-[tutorial part3 message 2]
-Мы ещё не произвели ни одного воина. Без них колония почти не защищена от нападения.
-[tutorial part3 message 3]
-Выберите Рой и установите долю воинов в 2. Долю рабочих оставьте на 1, чтобы продолжать производить и их.
-[tutorial part3 message 4]
-Теперь Рой будет создавать примерно двух воинов на каждого рабочего. Для ускорения производства назначьте больше рабочих на снабжение.
-[tutorial part3 message 5]
-Первый воин готов и приступит к тренировкам. Перед продолжением дождитесь второго.
-[tutorial part3 message 6]
-Воины тоже пользуются Стадионом и Бассейном. Кроме того, они тренируют атаку в Казармах.
-[tutorial part3 message 7]
-Казармы улучшают силу и скорость атаки. Сила повышает урон за удар, скорость — частоту ударов. Хорошо обученные воины могут победить значительно более многочисленных необученных врагов.
-[tutorial part3 message 8]
-Постройте Казармы рядом с древесиной, необходимой для стройки.
-[tutorial part3 message 9]
-Назначьте свободных рабочих на стройплощадку Казарм. Оставьте достаточно рабочих на снабжении пищей и не создавайте больше заданий, чем они смогут выполнить.
-[tutorial part3 message 10]
-Казармы готовы. Теперь воины могут тренировать там атаку.
-[tutorial part3 message 11]
-Колония может стать сильнее благодаря улучшению зданий.
-[tutorial part3 message 12]
-Обученные в Школе рабочие могут строить улучшения. Выберите подходящее здание и найдите «Улучшение» в его управлении. Повреждённым зданиям сначала может понадобиться Ремонт.
-[tutorial part3 message 13]
-Решим, что улучшать первым. В Кабаках ещё есть свободные места, поэтому они могут подождать.
-[tutorial part3 message 14]
-В Госпитале тоже есть место. Можно заняться Школой, Стадионом, Бассейном или Казармами.
-[tutorial part3 message 15]
-Сначала улучшите Стадион, чтобы юниты научились двигаться ещё быстрее.
-[tutorial part3 message 16]
-Выберите Стадион и команду «Улучшение». Перед началом стройки все юниты внутри должны выйти, поэтому изменения могут начаться не сразу.
-[tutorial part3 message 17]
-Назначьте доступных рабочих на улучшение Стадиона. На стройплощадке уровня 2 могут работать только рабочие с необходимым обучением в Школе.
-[tutorial part3 message 18]
-Дождитесь завершения улучшения Стадиона. Здания более высокого уровня требуют больше ресурсов и времени.
-[tutorial part3 message 19]
-Стадион уровня 2 готов. Он занимает больше земли, поэтому мы оставили промежуток. Без места для расширения улучшение здания невозможно.
-[tutorial part3 message 20]
-Теперь улучшите Казармы и Бассейн до уровня 2. Продолжим, когда оба будут готовы.
-[tutorial part3 message 21]
-Улучшенные здания обычно обслуживают больше глобулов или лучше обучают. Например, Кабак уровня 2 имеет 7 мест и кормит быстрее базового.
-[tutorial part3 message 22]
-Враг рядом. Подготовимся к нападению.
-[tutorial part3 message 23]
-Башни стреляют по врагам в пределах дальности. Стены помогают их защищать. Используем и то и другое для обороны узкого подхода к колонии.
-[tutorial part3 message 24]
-Если хватает места, ставьте башни парами. Стены могут закрыть три стороны, но оставьте путь для рабочих, доставляющих камень для боеприпасов.
-[tutorial part3 message 25]
-Посмотрите к востоку от Бассейна, севернее остальных фруктовых деревьев. Узкая переправа ведёт к другому острову. Это хорошее место для обороны.
-[tutorial part3 message 26]
-Предусмотрите место для 2 башен между деревьями и берегом. Позади оставьте доступ для доставки камня, с других сторон — место для стен. Не отгородите рабочих.
-[tutorial part3 message 27]
-Постройте там 2 башни. Назначьте по 2 или 3 рабочих на каждую стройку в зависимости от доступного числа в счётчиках интерфейса.
-[tutorial part3 message 28]
-Через управление постройками разместите стены с трёх наружных сторон башен. Сторону к колонии оставьте открытой для рабочих.
-[tutorial part3 message 29]
-Каждый участок стены создаёт строительную работу и требует 1 камень. Если рабочих не хватает на все задания сразу, они завершат участки по очереди.
-[tutorial part3 message 30]
-Дождитесь завершения обеих башен и нескольких участков стены. Башням также нужны каменные боеприпасы; далёкий карьер замедляет доставку. Увеличьте желаемое число рабочих у башен, если есть свободные.
-[tutorial part4 message 1]
-У колонии есть пища, обучение и оборона. Здания можно ещё раз улучшить до уровня 3, получив лучшее обучение и вместимость. Продолжайте улучшать их по мере наличия ресурсов и навыков рабочих.
-[tutorial part4 message 2]
-Найдите вражескую колонию к северо-западу от базы. Переместите туда обзор.
-[tutorial part4 message 3]
-Даже исследованную землю может скрывать туман войны. Чтобы видеть текущие действия врага, нужен исследователь поблизости.
-[tutorial part4 message 4]
-Откройте Флаги. Здесь доступны флаги и зоны для направления юнитов без отдельного управления каждым глобулом.
-[tutorial part4 message 5]
-Выберите Флаг разведки со значком в форме воздушного змея. Флаги можно ставить на суше, воде, ресурсах и неисследованной земле.
-[tutorial part4 message 6]
-Поставьте Флаг разведки над предполагаемой базой врага. Для начала разведки достаточно примерного места. Выйдите из размещения правой кнопкой или завершите его сенсорными элементами управления.
-[tutorial part4 message 7]
-Контур вокруг флага показывает рабочий радиус. Назначенный исследователь осмотрит эту область. Если никто не прибывает, проверьте число исследователей и при необходимости создайте нового в Рое. Нажмите Пробел или коснитесь ОК, когда исследователь достигнет области.
-[tutorial part4 message 8]
-У врага много рабочих и собранная армия. Подготовим оборону до нападения.
-[tutorial part4 message 9]
-Откройте Флаги и выберите синюю зону Охраны. Используйте режим добавления земли в зону, а не удаления. На сенсорном экране выберите Рисовать вместо Стирать.
-[tutorial part4 message 10]
-Выберите форму и размер кисти. Большой квадрат удобен для компактной оборонительной области.
-[tutorial part4 message 11]
-Нарисуйте зону Охраны сразу за башнями, где ожидается враг. Щёлкните или коснитесь для одной точки либо протяните для большей площади. На сенсорном экране используйте Перемещать, когда нужно сдвинуть обзор во время рисования.
-[tutorial part4 message 12]
-Доступные воины войдут в зону Охраны. Сделайте её достаточно большой для защитников, но достаточно маленькой, чтобы они держались вместе у переправы. Теперь ждите нападения.
-[tutorial part4 message 13]
-Враг приближается к переправе!
-[tutorial part4 message 14]
-Нас атакуют. Наблюдайте, как обученные воины и башни защищают позицию.
-[tutorial part4 message 15]
-Вы выстояли! Откройте Флаги и выберите шипастый Флаг войны. Разместите его над вражеским Роем, чтобы направить туда атаку.
-[tutorial part4 message 16]
-Выйдите из размещения и выберите Флаг войны. Назначьте больше 1 воина, затем уменьшите радиус для сосредоточения атаки вокруг вражеского Роя. Дождитесь прибытия воинов.
-[tutorial part4 message 17]
-Атака началась. Вашим воинам нужно пройти мимо башен врага, чтобы добраться до его Роя.
-[tutorial part4 message 18]
-Воины достигли вражеской базы. Сосредоточьтесь на атаке Роя.
-[tutorial part4 message 19]
-Вы уничтожили вражеский Рой. Поздравляем! Вы прошли обучение и освоили основы снабжения пищей, назначения работ, тренировок, улучшений, разведки и боя.
-[tutorial mission basics]
-Введение и основы
-[tutorial mission development]
-Здания и школы
-[tutorial mission training]
-Воины, тренировки и улучшения
-[tutorial mission flags]
-Флаги и завершение
 [library  Could not restore the previous library: %0]
  Не удалось восстановить предыдущую библиотеку: %0
 [library  The previous library is retained.]
@@ -6596,6 +6354,422 @@ Discord открыт. Вы можете вернуться в игру в люб
 Не удалось сохранить выбор. Звук остаётся выключенным. Попробуйте снова.
 [audio choices description]
 Тишина: отключённый динамик. Звук: динамик со звуковыми волнами.
+[intro menu]
+
+[intro briefing]
+
+[intro try]
+
+[intro preflight]
+
+[intro preflight save]
+
+[intro preference failed]
+
+[intro goal scout]
+
+[intro goal build]
+
+[intro goal supply]
+
+[intro goal grow]
+
+[intro goal attack]
+
+[intro instruction scout]
+
+[intro instruction build]
+
+[intro instruction supply]
+
+[intro instruction grow]
+
+[intro instruction attack]
+
+[intro help]
+
+[intro help scout]
+
+[intro help build]
+
+[intro help supply]
+
+[intro help grow]
+
+[intro help attack]
+
+[intro hint scout]
+
+[intro hint build]
+
+[intro hint supply]
+
+[intro hint grow]
+
+[intro hint attack]
+
+[intro hint no scout flag]
+
+[intro hint no suppliers]
+
+[intro hint no war flag]
+
+[intro hint retry]
+
+[intro complete]
+
+[intro complete body]
+
+[intro play again]
+
+[intro restart]
+
+[intro restart body]
+
+[intro help touch scout]
+
+[intro help touch build]
+
+[intro help touch supply]
+
+[intro help touch grow]
+
+[intro help touch attack]
+
+[intro show destination]
+
+[intro scout destination]
+
+[intro attack destination]
+
+[intro compact scout]
+
+[intro compact build]
+
+[intro compact supply]
+
+[intro compact grow]
+
+[intro compact attack]
+
+[tutorial lessons]
+
+[tutorial restart]
+
+[tutorial restart body]
+
+[tutorial complete]
+
+[tutorial food title]
+
+[tutorial food briefing]
+
+[tutorial food complete]
+
+[tutorial unavailable]
+
+[lesson healing title]
+
+[lesson healing briefing]
+
+[lesson healing complete]
+
+[lesson healing build hint]
+
+[lesson healing build title]
+
+[lesson healing build instruction]
+
+[lesson healing build help]
+
+[lesson healing build marker]
+
+[lesson healing heal hint]
+
+[lesson healing heal title]
+
+[lesson healing heal instruction]
+
+[lesson healing heal help]
+
+[lesson healing heal marker]
+
+[lesson walking-training title]
+
+[lesson walking-training briefing]
+
+[lesson walking-training complete]
+
+[lesson walking-training build hint]
+
+[lesson walking-training build title]
+
+[lesson walking-training build instruction]
+
+[lesson walking-training build help]
+
+[lesson walking-training build marker]
+
+[lesson walking-training train hint]
+
+[lesson walking-training train title]
+
+[lesson walking-training train instruction]
+
+[lesson walking-training train help]
+
+[lesson swimming title]
+
+[lesson swimming briefing]
+
+[lesson swimming complete]
+
+[lesson swimming build hint]
+
+[lesson swimming build title]
+
+[lesson swimming build instruction]
+
+[lesson swimming build help]
+
+[lesson swimming build marker]
+
+[lesson swimming train hint]
+
+[lesson swimming train title]
+
+[lesson swimming train instruction]
+
+[lesson swimming train help]
+
+[lesson swimming water-job hint]
+
+[lesson swimming water-job title]
+
+[lesson swimming water-job instruction]
+
+[lesson swimming water-job help]
+
+[lesson swimming water-job marker]
+
+[lesson schools title]
+
+[lesson schools briefing]
+
+[lesson schools complete]
+
+[lesson schools build hint]
+
+[lesson schools build title]
+
+[lesson schools build instruction]
+
+[lesson schools build help]
+
+[lesson schools build marker]
+
+[lesson schools learn hint]
+
+[lesson schools learn title]
+
+[lesson schools learn instruction]
+
+[lesson schools learn help]
+
+[lesson upgrades title]
+
+[lesson upgrades briefing]
+
+[lesson upgrades complete]
+
+[lesson upgrades upgrade hint]
+
+[lesson upgrades upgrade title]
+
+[lesson upgrades upgrade instruction]
+
+[lesson upgrades upgrade help]
+
+[lesson upgrades upgrade marker]
+
+[lesson upgrades train hint]
+
+[lesson upgrades train title]
+
+[lesson upgrades train instruction]
+
+[lesson upgrades train help]
+
+[lesson warrior-training title]
+
+[lesson warrior-training briefing]
+
+[lesson warrior-training complete]
+
+[lesson warrior-training produce hint]
+
+[lesson warrior-training produce title]
+
+[lesson warrior-training produce instruction]
+
+[lesson warrior-training produce help]
+
+[lesson warrior-training produce marker]
+
+[lesson warrior-training build hint]
+
+[lesson warrior-training build title]
+
+[lesson warrior-training build instruction]
+
+[lesson warrior-training build help]
+
+[lesson warrior-training build marker]
+
+[lesson warrior-training train hint]
+
+[lesson warrior-training train title]
+
+[lesson warrior-training train instruction]
+
+[lesson warrior-training train help]
+
+[lesson fortifications title]
+
+[lesson fortifications briefing]
+
+[lesson fortifications complete]
+
+[lesson fortifications tower hint]
+
+[lesson fortifications tower title]
+
+[lesson fortifications tower instruction]
+
+[lesson fortifications tower help]
+
+[lesson fortifications tower marker]
+
+[lesson fortifications walls hint]
+
+[lesson fortifications walls title]
+
+[lesson fortifications walls instruction]
+
+[lesson fortifications walls help]
+
+[lesson fortifications walls marker]
+
+[lesson fortifications supply hint]
+
+[lesson fortifications supply title]
+
+[lesson fortifications supply instruction]
+
+[lesson fortifications supply help]
+
+[lesson fortifications supply marker]
+
+[lesson fortifications hold hint]
+
+[lesson fortifications hold title]
+
+[lesson fortifications hold instruction]
+
+[lesson fortifications hold help]
+
+[lesson fortifications hold marker]
+
+[lesson defensive-tactics title]
+
+[lesson defensive-tactics briefing]
+
+[lesson defensive-tactics complete]
+
+[lesson defensive-tactics scout hint]
+
+[lesson defensive-tactics scout title]
+
+[lesson defensive-tactics scout instruction]
+
+[lesson defensive-tactics scout help]
+
+[lesson defensive-tactics scout marker]
+
+[lesson defensive-tactics guard hint]
+
+[lesson defensive-tactics guard title]
+
+[lesson defensive-tactics guard instruction]
+
+[lesson defensive-tactics guard help]
+
+[lesson defensive-tactics guard marker]
+
+[lesson defensive-tactics repel hint]
+
+[lesson defensive-tactics repel title]
+
+[lesson defensive-tactics repel instruction]
+
+[lesson defensive-tactics repel help]
+
+[lesson defensive-tactics repel marker]
+
+[lesson defensive-tactics counterattack hint]
+
+[lesson defensive-tactics counterattack title]
+
+[lesson defensive-tactics counterattack instruction]
+
+[lesson defensive-tactics counterattack help]
+
+[lesson defensive-tactics counterattack marker]
+
+[lesson healing build compact]
+
+[lesson healing heal compact]
+
+[lesson walking-training build compact]
+
+[lesson walking-training train compact]
+
+[lesson swimming build compact]
+
+[lesson swimming train compact]
+
+[lesson swimming water-job compact]
+
+[lesson schools build compact]
+
+[lesson schools learn compact]
+
+[lesson upgrades upgrade compact]
+
+[lesson upgrades train compact]
+
+[lesson warrior-training produce compact]
+
+[lesson warrior-training build compact]
+
+[lesson warrior-training train compact]
+
+[lesson fortifications tower compact]
+
+[lesson fortifications walls compact]
+
+[lesson fortifications supply compact]
+
+[lesson fortifications hold compact]
+
+[lesson defensive-tactics scout compact]
+
+[lesson defensive-tactics guard compact]
+
+[lesson defensive-tactics repel compact]
+
+[lesson defensive-tactics counterattack compact]
+
 [library GL only]
 Лишь GL
 [Grassland]
@@ -6606,5 +6780,7 @@ Discord открыт. Вы можете вернуться в игру в люб
 Звериные тропы
 [Fish amount]
 Количество рыбы
+[scenario messages]
+
 [Camp-site amount]
 Количество стоянок

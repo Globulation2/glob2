@@ -26,6 +26,8 @@ ENGINE_SUPPORT = [
 
 # glob2-engine-tests: every client object except the entry point, plus these.
 ENGINE_TESTS = [
+    '#src/tutorial/IntroductionTest.cpp',
+    ('#src/tutorial/IntroductionUITest.cpp', dict(cxxflags=['-fno-access-control'])),
     ('#src/map/gradient/GradientLegacyQueueHarness.cpp', dict(cxxflags=['-fno-access-control'])),
     ('#src/map/gradient/GradientMarketTurnoverHarness.cpp', dict(cxxflags=['-fno-access-control'])),
     ('#src/map/gradient/GradientBackendSwitchTest.cpp', dict(cxxflags=['-fno-access-control'])),
@@ -613,7 +615,7 @@ def scripting_entries():
     cases. Its unrelated registered cases are excluded by the JavaScript* suite
     filter. Both desktop binaries and Android use the full registry above.
     """
-    selected = {'#src/map/generator/javascript/ScriptGeneratorTest.cpp', '#src/scripting/javascript/ScriptCompatibilityTest.cpp', '#src/scripting/javascript/ScriptIntegrationTest.cpp', '#src/scripting/javascript/ScriptPresentationTest.cpp',
+    selected = {'#src/tutorial/IntroductionTest.cpp', '#src/map/generator/javascript/ScriptGeneratorTest.cpp', '#src/scripting/javascript/ScriptCompatibilityTest.cpp', '#src/scripting/javascript/ScriptIntegrationTest.cpp', '#src/scripting/javascript/ScriptPresentationTest.cpp',
                 '#src/scripting/javascript/ScriptRealisticTest.cpp', '#src/scripting/javascript/ScriptSessionTest.cpp', '#src/scripting/javascript/ScriptSimulationTest.cpp',
                 '#src/team/stats/TeamStatsSaveHarness.cpp', '#src/scripting/javascript/ScriptRuntimeTest.cpp', '#src/scripting/javascript/ScriptNumericTest.cpp', '#libgag/src/ImageAssetTest.cpp'}
     return [entry for entry in ENGINE_TESTS + UNIT_TESTS

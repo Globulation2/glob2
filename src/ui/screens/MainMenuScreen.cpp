@@ -89,7 +89,7 @@ Element MainMenuScreen::build(const Presentation &p)
 		case LOAD_GAME:
 			options.icon = uiIcon(UIIcon::LoadGame);
 			break;
-		case TUTORIAL:
+        case TUTORIAL:
 			options.icon = uiIcon(UIIcon::Tutorial);
 			break;
 		case PLAY_ONLINE:

@@ -17,6 +17,7 @@
 #include "CampaignEditor.h"
 #include "CampaignMainMenu.h"
 #include "CampaignMenuScreen.h"
+#include "tutorial/LessonCatalogScreen.h"
 #include "CampaignSelectorScreen.h"
 #include "ChooseMapScreen.h"
 #include "CreditScreen.h"
@@ -179,8 +180,8 @@ std::vector<Fixture> fixtures()
 		 }},
 		{"campaign-select", [](GAGGUI::ScreenStack &) { return std::make_unique<CampaignSelectorScreen>(); }},
 		{"campaign-saves", [](GAGGUI::ScreenStack &) { return std::make_unique<CampaignSelectorScreen>(true); }},
-		{"tutorial-missions", [](GAGGUI::ScreenStack &s) { return std::make_unique<CampaignMenuScreen>("campaigns/Tutorial_Campaign.txt", s); }},
-		{"campaign-editor", [](GAGGUI::ScreenStack &s) { return std::make_unique<CampaignEditor>("campaigns/Tutorial_Campaign.txt", s); }},
+		{"tutorial-missions", [](GAGGUI::ScreenStack &s) { return std::make_unique<Tutorial::LessonCatalogScreen>(); }},
+		{"campaign-editor", [](GAGGUI::ScreenStack &s) { return std::make_unique<CampaignEditor>("test/fixtures/campaign/Browser_Test_Campaign.txt", s); }},
 		{"map-repeat", [](GAGGUI::ScreenStack &)
 		 {
 			 auto screen = std::make_unique<ChooseMapScreen>("maps", "map", false);

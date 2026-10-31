@@ -3102,8 +3102,6 @@ CPU %0%
 Αφήστε πάνω σε κατάλληλο έδαφος για τοποθέτηση
 [Paint on the map; two fingers move]
 Ζωγραφίστε στον χάρτη· μετακινήστε με δύο δάχτυλα
-[Tutorial ▸]
-Εκμάθηση ▸
 [Back to tools]
 Πίσω στα εργαλεία
 [Starvation overlay]
@@ -6164,246 +6162,6 @@ CPU (αυτόματα)
 Διαγραφή εγγραφής
 [recording refresh]
 Ανανέωση
-[tutorial part1 message 1]
-Καλώς ήρθατε στο Globulation 2! Αυτό το μάθημα διδάσκει τη διαχείριση αποικίας σε τέσσερις αποστολές. Μπορείτε να αποθηκεύσετε την πρόοδό σας από το μενού παιχνιδιού και να τη φορτώσετε αργότερα από το κύριο μενού. Πατήστε το πλήκτρο κενού για συνέχεια ή αγγίξτε Εντάξει σε οθόνη αφής. Μερικά μηνύματα εξαφανίζονται μετά· διαβάστε τα ξανά στο ιστορικό μηνυμάτων.
-[tutorial part1 message 2]
-Ξεκινάτε με ένα Σμήνος και έναν εργάτη. Ας δούμε πώς συνεργάζονται.
-[tutorial part1 message 3]
-Ο εργάτης θερίζει σιτάρι και το μεταφέρει στο Σμήνος. Το Σμήνος χρησιμοποιεί σιτάρι για νέες μονάδες, γι' αυτό είναι απαραίτητο στην αποικία.
-[tutorial part1 message 4]
-Επιλέξτε το σφαιρίδιό σας, την κινούμενη μονάδα, με αριστερό κλικ ή άγγιγμα.
-[tutorial part1 message 5]
-Οι πληροφορίες της μονάδας δείχνουν ότι η τροφή της μειώνεται με τον χρόνο. Το σφαιρίδιο πεινάει. Όταν φαίνονται οι μπάρες τροφής, η μπλε μπάρα κάτω από τη μονάδα δείχνει την τροφή που απομένει.
-[tutorial part1 message 6]
-Τα σφαιρίδια τρώνε στα Πανδοχεία. Καταργήστε την επιλογή με δεξί κλικ ή αγγίξτε άδειο έδαφος στην οθόνη αφής.
-[tutorial part1 message 7]
-Ανοίξτε τους χειρισμούς κτιρίων, επιλέξτε Πανδοχείο και τοποθετήστε το κοντά σε σιτάρι. Αν δεν το βλέπετε, ακολουθήστε τη διαδρομή του εργάτη. Στην αφή χρησιμοποιήστε Κατασκευή και επιβεβαιώστε έγκυρη θέση. Μετά βγείτε από την τοποθέτηση με δεξί κλικ ή την επιλογή Άκυρο.
-[tutorial part1 message 8]
-Ωραία! Το εργοτάξιο του Πανδοχείου τοποθετήθηκε.
-[tutorial part1 message 9]
-Ένας εργάτης από το Σμήνος μπορεί τώρα να χτίσει το Πανδοχείο. Συλλέγει ξύλο από κοντινά δέντρα και το φέρνει στο εργοτάξιο. Περιμένετε την ολοκλήρωση.
-[tutorial part1 message 10]
-Το έτοιμο Πανδοχείο χρειάζεται σιτάρι. Ένας ανατεθειμένος εργάτης θα το συλλέγει, όπως τροφοδοτεί και το Σμήνος.
-[tutorial part1 message 11]
-Η κίτρινη μπάρα πόρων του Πανδοχείου ανεβαίνει όταν φτάνει σιτάρι. Δείχνει το απόθεμά του.
-[tutorial part1 message 12]
-Τώρα ας μάθουμε την ανάθεση εργασίας.
-[tutorial part1 message 13]
-Ένας εργάτης τροφοδοτεί το Σμήνος και άλλος το Πανδοχείο. Ο καθένας μπορεί να σταματήσει για φαγητό στο Πανδοχείο. Είναι φυσιολογικό.
-[tutorial part1 message 14]
-Επιλέξτε το Σμήνος και βρείτε την ανάθεση εργατών. Στον υπολογιστή ονομάζεται Εργάζεται· στην αφή χρησιμοποιήστε τους ανατεθειμένους εργάτες και τον στόχο. Ο στόχος είναι πόσους εργάτες θέλετε σε αυτό το κτίριο.
-[tutorial part1 message 15]
-Ορίστε τον στόχο εργατών του Σμήνους σε 0. Έπειτα επιλέξτε το Πανδοχείο και ορίστε και εκεί 0.
-[tutorial part1 message 16]
-Οι εργάτες είναι αδρανείς αλλά εξακολουθούν να χρειάζονται τροφή. Ένα Πανδοχείο χωρίς εργάτες θα ξεμείνει τελικά από σιτάρι.
-[tutorial part1 message 17]
-Ένα σφαιρίδιο που δεν βρίσκει τροφή χάνει υγεία και μπορεί να πεθάνει. Το Νοσοκομείο θεραπεύει τραυματισμένα σφαιρίδια, αλλά πρέπει επίσης να τροφοδοτείτε τα Πανδοχεία.
-[tutorial part1 message 18]
-Χτίστε Νοσοκομείο από τους χειρισμούς κτιρίων. Δεν χρειάζεται σιτάρι, οπότε βάλτε το κοντά σε ξύλο ή σε κεντρικό σημείο κοντά στο Σμήνος.
-[tutorial part1 message 19]
-Επιλέξτε το εργοτάξιο του Νοσοκομείου και ορίστε στόχο 2 εργατών. Δύο εργάτες το ολοκληρώνουν γρηγορότερα.
-[tutorial part1 message 20]
-Το Νοσοκομείο είναι έτοιμο. Τα τραυματισμένα σφαιρίδια μπορούν να το επισκέπτονται για να ανακτήσουν υγεία.
-[tutorial part1 message 21]
-Οι μαύρες περιοχές είναι ανεξερεύνητες. Οι μονάδες αποκαλύπτουν κοντινό έδαφος καθώς κινούνται. Οι εργάτες ακολουθούν τη δουλειά τους και δεν βολεύουν για ανίχνευση. Οι εξερευνητές προορίζονται γι' αυτό.
-[tutorial part1 message 22]
-Επιλέξτε το Σμήνος και βρείτε τις αναλογίες παραγωγής εργατών, εξερευνητών και πολεμιστών. Αυξήστε την αναλογία εξερευνητών σε 1.
-[tutorial part1 message 23]
-Με τις δύο αναλογίες στο 1, το Σμήνος παράγει με τον χρόνο ίσους αριθμούς εργατών και εξερευνητών. Βάλτε τους εργάτες στο 0 για να παράγει προς το παρόν μόνο εξερευνητές.
-[tutorial part1 message 24]
-Επαναφέρετε τον στόχο ανατεθειμένων εργατών του Σμήνους στο 1, ώστε ένας εργάτης να φέρνει σιτάρι.
-[tutorial part1 message 25]
-Επιλέξτε το Πανδοχείο και βάλτε και εκεί στόχο 1 εργάτη. Η αναπτυσσόμενη αποικία χρειάζεται σταθερή τροφή.
-[tutorial part1 message 26]
-Τώρα περιμένετε να παραγάγει το Σμήνος έναν εξερευνητή.
-[tutorial part1 message 27]
-Ο εξερευνητής πετά γύρω από την αποικία αποκαλύπτοντας έδαφος. Περιμένετε δεύτερο εξερευνητή πριν συνεχίσετε.
-[tutorial part1 message 28]
-Επιλέξτε ξανά το Σμήνος. Βάλτε τους εξερευνητές στο 0 και τους εργάτες στο 1 για να ξαναρχίσει η παραγωγή εργατών.
-[tutorial part2 message 1]
-Ανατολικά της βάσης υπάρχει πέτρα. Θυμηθείτε το μέρος· θα τη χρειαστείτε αργότερα.
-[tutorial part2 message 2]
-Τα δέντρα νότια της πέτρας είναι πορτοκαλιές. Επιλέξτε τα για πληροφορίες πόρων. Θα επιστρέψουμε στα φρούτα αργότερα· τώρα προσέξτε το Σμήνος.
-[tutorial part2 message 3]
-Ρυθμίστε το Σμήνος να παράγει μόνο εργάτες: αναλογία εργατών 1, εξερευνητών και πολεμιστών 0.
-[tutorial part2 message 4]
-Ας μεγαλώσουμε γρηγορότερα την αποικία. Επιλέξτε το Σμήνος και βάλτε στόχο 6 εργατών. Ίσως δεν έχετε ακόμη έξι· οι νέοι εργάτες θα καλύψουν τις κενές θέσεις όταν γίνουν διαθέσιμοι.
-[tutorial part2 message 5]
-Οι επόμενες εργασίες αρχίζουν όταν έχετε 8 εργάτες. Τροφοδοτείτε Σμήνος και Πανδοχείο όσο μεγαλώνει ο πληθυσμός.
-[tutorial part2 message 6]
-Αρκετοί εργάτες τροφοδοτούν τώρα το Σμήνος. Περισσότερες παραδόσεις σιταριού επιτρέπουν ταχύτερη παραγωγή μονάδων.
-[tutorial part2 message 7]
-Ένας νέος εργάτης κοστίζει 5 σιτάρι. Η μεταφορά από μακρινό χωράφι αργεί, οπότε το Σμήνος συχνά χρειάζεται περισσότερους προμηθευτές από ένα Πανδοχείο. Τοποθετείτε κτίρια που εξαρτώνται από τροφή κοντά στο σιτάρι όταν μπορείτε.
-[tutorial part2 message 8]
-Έχετε τουλάχιστον 8 εργάτες. Επιλέξτε το Σμήνος και μειώστε τον στόχο εργατών σε 1 για να επιβραδύνετε την αύξηση όσο χτίζουμε.
-[tutorial part2 message 9]
-Η αποικία χρειάζεται περισσότερες θέσεις φαγητού. Χτίστε δεύτερο Πανδοχείο βόρεια του υπάρχοντος.
-[tutorial part2 message 10]
-Αναθέστε ελεύθερους εργάτες στο νέο εργοτάξιο. Χρειάζεται μόνο 3 ξύλο, άρα πάνω από 3 οικοδόμοι δεν βοηθούν πολύ.
-[tutorial part2 message 11]
-Το έτοιμο Πανδοχείο επιστρέφει στον στόχο λειτουργίας, συνήθως 1 εργάτη. Η κατασκευή και η καθημερινή τροφοδοσία έχουν χωριστούς στόχους.
-[tutorial part2 message 12]
-Οι εργάτες μπορούν να μάθουν να κινούνται γρηγορότερα. Ο Στίβος παρέχει αυτή την εκπαίδευση.
-[tutorial part2 message 13]
-Ανοίξτε τους χειρισμούς κτιρίων και βρείτε Στίβο. Στον υπολογιστή δείξτε το εικονίδιο για περιγραφή και κόστος. Στην αφή επιλέξτε τον στην Κατασκευή για προετοιμασία τοποθέτησης. Μην τον τοποθετήσετε ακόμη.
-[tutorial part2 message 14]
-Ο Στίβος χρειάζεται πολύ ξύλο και λίγη πέτρα. Επιλέξτε κεντρικό σημείο με εύκολη πρόσβαση.
-[tutorial part2 message 15]
-Χτίστε Στίβο, ίσως νότια του Σμήνους. Αφήστε χώρο γύρω του: τα κτίρια εκπαίδευσης επεκτείνονται όταν αναβαθμίζονται.
-[tutorial part2 message 16]
-Ορίστε τον στόχο εργατών του εργοταξίου του Στίβου μεταξύ 5 και 7. Χρειάζονται συνολικά 7 υλικά κατασκευής.
-[tutorial part2 message 17]
-Ο έτοιμος Στίβος εκπαιδεύει τις μονάδες που έρχονται χωρίς διαρκή παροχή υλικών ή σιταριού.
-[tutorial part2 message 18]
-Τα σφαιρίδια μπαίνουν στον Στίβο για εκπαίδευση. Μετά θα τρέχουν γρηγορότερα.
-[tutorial part2 message 19]
-Επιλέξτε τον Στίβο για να δείτε την πρόοδο. Οι ενδείξεις δείχνουν πόσο απομένει στις μονάδες μέσα.
-[tutorial part2 message 20]
-Οι εκπαιδευμένοι εργάτες ταξιδεύουν και παραδίδουν γρηγορότερα. Παρακολουθείτε την τροφή όσο μεγαλώνει η αποικία: οι γρήγορες παραδόσεις βοηθούν μόνο αν υπάρχουν αρκετά τροφοδοτούμενα Πανδοχεία.
-[tutorial part2 message 21]
-Βρείτε τον μετρητή εργατών στη διεπαφή παιχνιδιού. Το σύνολο δείχνει τον πληθυσμό· οι διαθέσιμοι εργάτες βοηθούν να εντοπίσετε ελεύθερους εργάτες ή ακάλυπτες θέσεις. Αξιοποιήστε τους χωρίς περισσότερες αναθέσεις από όσες αντέχει η αποικία.
-[tutorial part2 message 22]
-Η διεπαφή δείχνει και εξερευνητές και πολεμιστές. Ελέγχετε τους αριθμούς όταν σχεδιάζετε παραγωγή ή αναθέτετε μονάδες σε σημαίες.
-[tutorial part2 message 23]
-Έχετε 2 Πανδοχεία. Κάθε βασικό Πανδοχείο ταΐζει 4 μονάδες μαζί: συνολικά 8 θέσεις. Περισσότερες από 8 μονάδες μπορεί να πεινάσουν, οπότε κρατήστε επαρκή χωρητικότητα για ουρές.
-[tutorial part2 message 24]
-Δύο Πανδοχεία δεν αρκούν για πάντα σε μια αναπτυσσόμενη αποικία. Προσθέστε θέσεις πριν οι ελλείψεις γίνουν λιμός.
-[tutorial part2 message 25]
-Χτίστε άλλα 3 Πανδοχεία κοντά στο σιτάρι. Οι πεινασμένοι εργάτες σταματούν τη δουλειά και η παρατεταμένη πείνα τους σκοτώνει. Αναθέστε διαθέσιμους εργάτες στην κατασκευή διατηρώντας την υπάρχουσα τροφοδοσία.
-[tutorial part2 message 26]
-Ολοκληρώστε άλλα 3 Πανδοχεία, φτάνοντας συνολικά τα 5.
-[tutorial part2 message 27]
-Μετά την κατασκευή τα νέα Πανδοχεία χρησιμοποιούν τους στόχους λειτουργίας, συνήθως από 1 εργάτη. Ελέγξτε ότι έχουν προμηθευτές και αρκετό σιτάρι.
-[tutorial part2 message 28]
-Ο Στίβος βελτίωσε την κίνηση στη στεριά. Τώρα ας μάθουμε στην αποικία να κολυμπά.
-[tutorial part2 message 29]
-Η Πισίνα διδάσκει κολύμβηση και χτίζεται με ξύλο. Τοποθετήστε μία στο μεγάλο ξέφωτο βορειοανατολικά της βάσης, βόρεια της πέτρας. Αφήστε χώρο για αναβαθμίσεις και ανάπτυξη πόρων και αναθέστε διαθέσιμους εργάτες.
-[tutorial part2 message 30]
-Η Πισίνα διδάσκει κολύμβηση και χτίζεται με ξύλο. Τοποθετήστε μία στο μεγάλο ξέφωτο βορειοανατολικά της βάσης, βόρεια της πέτρας. Αφήστε χώρο για αναβαθμίσεις και ανάπτυξη πόρων και αναθέστε διαθέσιμους εργάτες.
-[tutorial part2 message 31]
-Η Πισίνα είναι έτοιμη. Τα σφαιρίδια μπορούν να μπουν και να μάθουν κολύμβηση.
-[tutorial part2 message 32]
-Επιλέξτε την Πισίνα για την πρόοδο εκπαίδευσης. Μια βασική Πισίνα εκπαιδεύει 2 σφαιρίδια μαζί, όπως ο βασικός Στίβος.
-[tutorial part2 message 33]
-Τα εκπαιδευμένα σφαιρίδια κολυμπούν πλέον. Σύντομα θα τους δώσουμε εργασία που απαιτεί πέρασμα νερού.
-[tutorial part2 message 34]
-Έχουμε κι άλλα να μάθουμε. Αν χρειάζεστε διάλειμμα, αποθηκεύστε από το μενού παιχνιδιού και επιστρέψτε αργότερα.
-[tutorial part2 message 35]
-Η αποικία έχει τροφή και σωματική εκπαίδευση. Το Σχολείο θα διδάξει στους εργάτες τις δεξιότητες για καλύτερα κτίρια.
-[tutorial part2 message 36]
-Το Σχολείο βελτιώνει τη συγκομιδή και την κατασκευή. Για να χτιστεί χρειάζεται φύκια, που φυτρώνουν στο νερό. Οι εργάτες που κολυμπούν μπορούν να τα συλλέξουν.
-[tutorial part2 message 37]
-Προστατέψτε τα σημαντικά κτίρια εκπαίδευσης. Το Σχολείο δεν χρειάζεται να είναι δίπλα στο νερό· ένα προστατευμένο σημείο στην ενδοχώρα μπορεί να το ασφαλίσει από επιθέσεις.
-[tutorial part2 message 38]
-Χτίστε Σχολείο σε προστατευμένο σημείο, όπως πίσω από την Πισίνα ή νοτιοδυτικά του Σμήνους δίπλα στον Στίβο. Αναθέστε διαθέσιμους εργάτες.
-[tutorial part2 message 39]
-Επιλέξτε κτίριο για να δείτε τους ανατεθειμένους εργάτες. Στον υπολογιστή η ρυθμιζόμενη ενέργεια εμφάνισης διαδρομών μονάδων δείχνει και γραμμές προς τους προορισμούς· δείτε την τρέχουσα συντόμευση στις Ρυθμίσεις, Χειρισμός. Περιμένετε το Σχολείο.
-[tutorial part3 message 1]
-Η αποικία έχει Πανδοχεία, Νοσοκομείο, Στίβο, Πισίνα και Σχολείο. Ώρα να ετοιμάσουμε την άμυνα.
-[tutorial part3 message 2]
-Δεν έχουμε παραγάγει πολεμιστές ακόμη. Χωρίς αυτούς η αποικία είναι ελάχιστα προστατευμένη από επίθεση.
-[tutorial part3 message 3]
-Επιλέξτε το Σμήνος και ορίστε αναλογία πολεμιστών 2. Αφήστε τους εργάτες στο 1 για να συνεχίσουν να παράγονται.
-[tutorial part3 message 4]
-Το Σμήνος θα παράγει περίπου 2 πολεμιστές ανά εργάτη. Αναθέστε περισσότερους εργάτες στην τροφοδοσία για ταχύτερη παραγωγή.
-[tutorial part3 message 5]
-Ο πρώτος πολεμιστής είναι έτοιμος και αρχίζει εκπαίδευση. Περιμένετε δεύτερο πριν συνεχίσετε.
-[tutorial part3 message 6]
-Οι πολεμιστές χρησιμοποιούν επίσης Στίβο και Πισίνα. Εκπαιδεύουν και την επίθεσή τους στους Στρατώνες.
-[tutorial part3 message 7]
-Οι Στρατώνες βελτιώνουν τη δύναμη και την ταχύτητα επίθεσης. Η δύναμη αυξάνει τη ζημιά ανά χτύπημα· η ταχύτητα τη συχνότητα. Καλά εκπαιδευμένοι πολεμιστές νικούν πολύ μεγαλύτερες ομάδες ανεκπαίδευτων εχθρών.
-[tutorial part3 message 8]
-Χτίστε Στρατώνες κοντά στο ξύλο που απαιτεί η κατασκευή.
-[tutorial part3 message 9]
-Αναθέστε διαθέσιμους εργάτες στο εργοτάξιο των Στρατώνων. Κρατήστε αρκετούς στην τροφή και μην δημιουργείτε περισσότερες θέσεις από όσες μπορούν να καλύψουν.
-[tutorial part3 message 10]
-Οι Στρατώνες είναι έτοιμοι. Οι πολεμιστές μπορούν να εκπαιδεύσουν εκεί την επίθεσή τους.
-[tutorial part3 message 11]
-Η αποικία δυναμώνει αναβαθμίζοντας τα κτίριά της.
-[tutorial part3 message 12]
-Οι εργάτες που εκπαιδεύτηκαν στο Σχολείο μπορούν να κατασκευάζουν αναβαθμίσεις. Επιλέξτε ένα κατάλληλο κτίριο και βρείτε την επιλογή Αναβάθμιση στους χειρισμούς του. Τα κτίρια με ζημιές μπορεί να χρειάζονται πρώτα Επισκευή.
-[tutorial part3 message 13]
-Ας αποφασίσουμε τι αναβαθμίζουμε πρώτο. Τα Πανδοχεία έχουν ακόμη ελεύθερες θέσεις και μπορούν να περιμένουν.
-[tutorial part3 message 14]
-Και το Νοσοκομείο έχει χώρο. Μπορούμε να επικεντρωθούμε σε Σχολείο, Στίβο, Πισίνα ή Στρατώνες.
-[tutorial part3 message 15]
-Αναβαθμίστε πρώτα τον Στίβο για να μάθουν οι μονάδες να κινούνται ακόμη γρηγορότερα.
-[tutorial part3 message 16]
-Επιλέξτε τον Στίβο και Αναβάθμιση. Οι μονάδες μέσα πρέπει να βγουν πριν αρχίσει η κατασκευή, οπότε η αλλαγή μπορεί να καθυστερήσει.
-[tutorial part3 message 17]
-Αναθέστε διαθέσιμους εργάτες στην αναβάθμιση του Στίβου. Μόνο εργάτες με την απαιτούμενη σχολική εκπαίδευση χτίζουν εργοτάξιο επιπέδου 2.
-[tutorial part3 message 18]
-Περιμένετε την αναβάθμιση του Στίβου. Τα κτίρια υψηλότερου επιπέδου θέλουν περισσότερους πόρους και χρόνο.
-[tutorial part3 message 19]
-Ο Στίβος επιπέδου 2 ολοκληρώθηκε. Πιάνει περισσότερο έδαφος, γι' αυτό αφήσαμε κενό. Χωρίς χώρο επέκτασης ένα κτίριο δεν αναβαθμίζεται.
-[tutorial part3 message 20]
-Τώρα αναβαθμίστε Στρατώνες και Πισίνα στο επίπεδο 2. Συνεχίζουμε όταν ολοκληρωθούν και τα δύο.
-[tutorial part3 message 21]
-Τα αναβαθμισμένα κτίρια συνήθως εξυπηρετούν περισσότερα σφαιρίδια ή παρέχουν καλύτερη εκπαίδευση. Για παράδειγμα, Πανδοχείο επιπέδου 2 έχει 7 θέσεις και ταΐζει γρηγορότερα από το βασικό.
-[tutorial part3 message 22]
-Ο εχθρός είναι κοντά. Ας ετοιμαστούμε για επίθεση.
-[tutorial part3 message 23]
-Οι Πύργοι πυροβολούν τους εχθρούς εντός εμβέλειας. Τα Τείχη βοηθούν στην προστασία τους. Θα χρησιμοποιήσουμε και τα δύο για να υπερασπιστούμε μια στενή πρόσβαση στην αποικία.
-[tutorial part3 message 24]
-Βάλτε Πύργους σε ζεύγη αν χωρούν. Τα Τείχη προστατεύουν τρεις πλευρές, αλλά αφήστε διαδρομή για εργάτες που φέρνουν πέτρα για πυρομαχικά.
-[tutorial part3 message 25]
-Κοιτάξτε ανατολικά της Πισίνας, βόρεια των άλλων οπωροφόρων. Ένα στενό πέρασμα οδηγεί σε άλλο νησί. Είναι καλό αμυντικό σημείο.
-[tutorial part3 message 26]
-Προβλέψτε χώρο για 2 Πύργους ανάμεσα στα δέντρα και την ακτή. Πίσω αφήστε πρόσβαση για πέτρα, στις άλλες πλευρές χώρο για Τείχη. Μην αποκλείσετε τους εργάτες.
-[tutorial part3 message 27]
-Χτίστε εκεί 2 Πύργους. Αναθέστε 2 ή 3 εργάτες ανά εργοτάξιο, ανάλογα με τους διαθέσιμους στους μετρητές.
-[tutorial part3 message 28]
-Από τους χειρισμούς κτιρίων τοποθετήστε τμήματα Τείχους γύρω από τις τρεις εξωτερικές πλευρές των Πύργων. Αφήστε την πλευρά προς την αποικία ανοιχτή για εργάτες.
-[tutorial part3 message 29]
-Κάθε τμήμα Τείχους δημιουργεί εργασία κατασκευής και χρειάζεται 1 πέτρα. Αν δεν φτάνουν οι εργάτες για όλες μαζί, μπορούν να τελειώσουν τα τμήματα διαδοχικά.
-[tutorial part3 message 30]
-Περιμένετε τους δύο Πύργους και αρκετά τμήματα Τείχους. Οι Πύργοι χρειάζονται και πέτρινα πυρομαχικά· το μακρινό λατομείο καθυστερεί τις παραδόσεις. Αυξήστε τους στόχους εργατών αν περισσεύουν εργάτες.
-[tutorial part4 message 1]
-Η αποικία έχει τροφή, εκπαίδευση και άμυνα. Τα κτίρια μπορούν να φτάσουν ακόμη στο επίπεδο 3, με καλύτερη εκπαίδευση και μεγαλύτερη χωρητικότητα. Συνεχίστε τις αναβαθμίσεις όσο επιτρέπουν πόροι και δεξιότητες.
-[tutorial part4 message 2]
-Ψάξτε την εχθρική αποικία βορειοδυτικά της βάσης. Μετακινήστε εκεί την προβολή.
-[tutorial part4 message 3]
-Το εξερευνημένο έδαφος μπορεί ακόμη να καλύπτεται από ομίχλη πολέμου. Χρειαζόμαστε εξερευνητή κοντά για να δούμε την τρέχουσα δραστηριότητα του εχθρού.
-[tutorial part4 message 4]
-Ανοίξτε Σημαίες. Παρέχουν σημαίες και ζώνες για καθοδήγηση μονάδων χωρίς να χειρίζεστε κάθε σφαιρίδιο χωριστά.
-[tutorial part4 message 5]
-Επιλέξτε τη Σημαία εξερεύνησης με σύμβολο χαρταετού. Οι σημαίες μπαίνουν σε ξηρά, νερό, πόρους και ανεξερεύνητο έδαφος.
-[tutorial part4 message 6]
-Τοποθετήστε μια Σημαία εξερεύνησης εκεί που υποψιάζεστε ότι βρίσκεται η εχθρική βάση. Μια κατά προσέγγιση θέση αρκεί για να αρχίσει η εξερεύνηση. Βγείτε από την τοποθέτηση με δεξί κλικ ή ολοκληρώστε την με τους χειρισμούς αφής.
-[tutorial part4 message 7]
-Το περίγραμμα της σημαίας δείχνει την ακτίνα εργασίας. Ένας ανατεθειμένος εξερευνητής θα εξετάσει την περιοχή. Αν δεν έρχεται κανείς, ελέγξτε το πλήθος εξερευνητών και παράγετε άλλον στο Σμήνος αν χρειάζεται. Όταν φτάσει, πατήστε το πλήκτρο κενού ή αγγίξτε το Εντάξει.
-[tutorial part4 message 8]
-Ο εχθρός έχει πολλούς εργάτες και συγκεντρωμένο στρατό. Ας ετοιμάσουμε την άμυνα πριν επιτεθεί.
-[tutorial part4 message 9]
-Ανοίξτε Σημαίες και επιλέξτε τη μπλε ζώνη Φρούρησης. Χρησιμοποιήστε προσθήκη εδάφους, όχι αφαίρεση. Στην αφή επιλέξτε Ζωγραφική αντί για Διαγραφή.
-[tutorial part4 message 10]
-Επιλέξτε σχήμα και μέγεθος πινέλου. Το μεγάλο τετράγωνο βολεύει για συμπαγή αμυντική περιοχή.
-[tutorial part4 message 11]
-Ζωγραφίστε ζώνη Φρούρησης ακριβώς πίσω από τους Πύργους, στην πιθανή προσέγγιση του εχθρού. Κλικ ή άγγιγμα βάφει σημείο, σύρσιμο μεγαλύτερη περιοχή. Στην αφή χρησιμοποιήστε Μετακίνηση για να κινείτε την προβολή όσο ζωγραφίζετε.
-[tutorial part4 message 12]
-Οι διαθέσιμοι πολεμιστές θα πάνε στη ζώνη Φρούρησης. Κάντε τη αρκετά μεγάλη για τους αμυνόμενους αλλά μικρή ώστε να συγκεντρωθούν στο πέρασμα. Τώρα περιμένετε την επίθεση.
-[tutorial part4 message 13]
-Ο εχθρός πλησιάζει το πέρασμα!
-[tutorial part4 message 14]
-Δεχόμαστε επίθεση. Δείτε πώς οι εκπαιδευμένοι πολεμιστές και οι Πύργοι κρατούν τη θέση.
-[tutorial part4 message 15]
-Επιβιώσατε! Ανοίξτε Σημαίες και επιλέξτε την αγκαθωτή Σημαία πολέμου. Βάλτε τη πάνω στο εχθρικό Σμήνος για να κατευθύνετε εκεί την επίθεση.
-[tutorial part4 message 16]
-Βγείτε από την τοποθέτηση και επιλέξτε τη Σημαία πολέμου. Αναθέστε πάνω από 1 πολεμιστή και μειώστε την ακτίνα, ώστε η επίθεση να συγκεντρωθεί γύρω από το εχθρικό Σμήνος. Περιμένετε τους πολεμιστές.
-[tutorial part4 message 17]
-Η επίθεση άρχισε. Οι πολεμιστές πρέπει να περάσουν τους εχθρικούς Πύργους για να φτάσουν στο Σμήνος.
-[tutorial part4 message 18]
-Οι πολεμιστές έφτασαν στην εχθρική βάση. Κρατήστε την επίθεση συγκεντρωμένη στο Σμήνος.
-[tutorial part4 message 19]
-Καταστρέψατε το εχθρικό Σμήνος. Συγχαρητήρια! Ολοκληρώσατε το μάθημα και μάθατε τα βασικά για τροφή, αναθέσεις, εκπαίδευση, αναβαθμίσεις, εξερεύνηση και μάχη.
-[tutorial mission basics]
-Εισαγωγή και βασικά
-[tutorial mission development]
-Κτίρια και σχολεία
-[tutorial mission training]
-Πολεμιστές, εκπαίδευση και αναβαθμίσεις
-[tutorial mission flags]
-Σημαίες και ολοκλήρωση
 [library  Could not restore the previous library: %0]
  Δεν ήταν δυνατή η επαναφορά της προηγούμενης βιβλιοθήκης: %0
 [library  The previous library is retained.]
@@ -6596,6 +6354,422 @@ CPU (αυτόματα)
 Η επιλογή σας δεν αποθηκεύτηκε. Ο ήχος παραμένει κλειστός. Δοκιμάστε ξανά.
 [audio choices description]
 Σιωπή: ένα ηχείο σε σίγαση. Ήχος: ένα ηχείο με ηχητικά κύματα.
+[intro menu]
+
+[intro briefing]
+
+[intro try]
+
+[intro preflight]
+
+[intro preflight save]
+
+[intro preference failed]
+
+[intro goal scout]
+
+[intro goal build]
+
+[intro goal supply]
+
+[intro goal grow]
+
+[intro goal attack]
+
+[intro instruction scout]
+
+[intro instruction build]
+
+[intro instruction supply]
+
+[intro instruction grow]
+
+[intro instruction attack]
+
+[intro help]
+
+[intro help scout]
+
+[intro help build]
+
+[intro help supply]
+
+[intro help grow]
+
+[intro help attack]
+
+[intro hint scout]
+
+[intro hint build]
+
+[intro hint supply]
+
+[intro hint grow]
+
+[intro hint attack]
+
+[intro hint no scout flag]
+
+[intro hint no suppliers]
+
+[intro hint no war flag]
+
+[intro hint retry]
+
+[intro complete]
+
+[intro complete body]
+
+[intro play again]
+
+[intro restart]
+
+[intro restart body]
+
+[intro help touch scout]
+
+[intro help touch build]
+
+[intro help touch supply]
+
+[intro help touch grow]
+
+[intro help touch attack]
+
+[intro show destination]
+
+[intro scout destination]
+
+[intro attack destination]
+
+[intro compact scout]
+
+[intro compact build]
+
+[intro compact supply]
+
+[intro compact grow]
+
+[intro compact attack]
+
+[tutorial lessons]
+
+[tutorial restart]
+
+[tutorial restart body]
+
+[tutorial complete]
+
+[tutorial food title]
+
+[tutorial food briefing]
+
+[tutorial food complete]
+
+[tutorial unavailable]
+
+[lesson healing title]
+
+[lesson healing briefing]
+
+[lesson healing complete]
+
+[lesson healing build hint]
+
+[lesson healing build title]
+
+[lesson healing build instruction]
+
+[lesson healing build help]
+
+[lesson healing build marker]
+
+[lesson healing heal hint]
+
+[lesson healing heal title]
+
+[lesson healing heal instruction]
+
+[lesson healing heal help]
+
+[lesson healing heal marker]
+
+[lesson walking-training title]
+
+[lesson walking-training briefing]
+
+[lesson walking-training complete]
+
+[lesson walking-training build hint]
+
+[lesson walking-training build title]
+
+[lesson walking-training build instruction]
+
+[lesson walking-training build help]
+
+[lesson walking-training build marker]
+
+[lesson walking-training train hint]
+
+[lesson walking-training train title]
+
+[lesson walking-training train instruction]
+
+[lesson walking-training train help]
+
+[lesson swimming title]
+
+[lesson swimming briefing]
+
+[lesson swimming complete]
+
+[lesson swimming build hint]
+
+[lesson swimming build title]
+
+[lesson swimming build instruction]
+
+[lesson swimming build help]
+
+[lesson swimming build marker]
+
+[lesson swimming train hint]
+
+[lesson swimming train title]
+
+[lesson swimming train instruction]
+
+[lesson swimming train help]
+
+[lesson swimming water-job hint]
+
+[lesson swimming water-job title]
+
+[lesson swimming water-job instruction]
+
+[lesson swimming water-job help]
+
+[lesson swimming water-job marker]
+
+[lesson schools title]
+
+[lesson schools briefing]
+
+[lesson schools complete]
+
+[lesson schools build hint]
+
+[lesson schools build title]
+
+[lesson schools build instruction]
+
+[lesson schools build help]
+
+[lesson schools build marker]
+
+[lesson schools learn hint]
+
+[lesson schools learn title]
+
+[lesson schools learn instruction]
+
+[lesson schools learn help]
+
+[lesson upgrades title]
+
+[lesson upgrades briefing]
+
+[lesson upgrades complete]
+
+[lesson upgrades upgrade hint]
+
+[lesson upgrades upgrade title]
+
+[lesson upgrades upgrade instruction]
+
+[lesson upgrades upgrade help]
+
+[lesson upgrades upgrade marker]
+
+[lesson upgrades train hint]
+
+[lesson upgrades train title]
+
+[lesson upgrades train instruction]
+
+[lesson upgrades train help]
+
+[lesson warrior-training title]
+
+[lesson warrior-training briefing]
+
+[lesson warrior-training complete]
+
+[lesson warrior-training produce hint]
+
+[lesson warrior-training produce title]
+
+[lesson warrior-training produce instruction]
+
+[lesson warrior-training produce help]
+
+[lesson warrior-training produce marker]
+
+[lesson warrior-training build hint]
+
+[lesson warrior-training build title]
+
+[lesson warrior-training build instruction]
+
+[lesson warrior-training build help]
+
+[lesson warrior-training build marker]
+
+[lesson warrior-training train hint]
+
+[lesson warrior-training train title]
+
+[lesson warrior-training train instruction]
+
+[lesson warrior-training train help]
+
+[lesson fortifications title]
+
+[lesson fortifications briefing]
+
+[lesson fortifications complete]
+
+[lesson fortifications tower hint]
+
+[lesson fortifications tower title]
+
+[lesson fortifications tower instruction]
+
+[lesson fortifications tower help]
+
+[lesson fortifications tower marker]
+
+[lesson fortifications walls hint]
+
+[lesson fortifications walls title]
+
+[lesson fortifications walls instruction]
+
+[lesson fortifications walls help]
+
+[lesson fortifications walls marker]
+
+[lesson fortifications supply hint]
+
+[lesson fortifications supply title]
+
+[lesson fortifications supply instruction]
+
+[lesson fortifications supply help]
+
+[lesson fortifications supply marker]
+
+[lesson fortifications hold hint]
+
+[lesson fortifications hold title]
+
+[lesson fortifications hold instruction]
+
+[lesson fortifications hold help]
+
+[lesson fortifications hold marker]
+
+[lesson defensive-tactics title]
+
+[lesson defensive-tactics briefing]
+
+[lesson defensive-tactics complete]
+
+[lesson defensive-tactics scout hint]
+
+[lesson defensive-tactics scout title]
+
+[lesson defensive-tactics scout instruction]
+
+[lesson defensive-tactics scout help]
+
+[lesson defensive-tactics scout marker]
+
+[lesson defensive-tactics guard hint]
+
+[lesson defensive-tactics guard title]
+
+[lesson defensive-tactics guard instruction]
+
+[lesson defensive-tactics guard help]
+
+[lesson defensive-tactics guard marker]
+
+[lesson defensive-tactics repel hint]
+
+[lesson defensive-tactics repel title]
+
+[lesson defensive-tactics repel instruction]
+
+[lesson defensive-tactics repel help]
+
+[lesson defensive-tactics repel marker]
+
+[lesson defensive-tactics counterattack hint]
+
+[lesson defensive-tactics counterattack title]
+
+[lesson defensive-tactics counterattack instruction]
+
+[lesson defensive-tactics counterattack help]
+
+[lesson defensive-tactics counterattack marker]
+
+[lesson healing build compact]
+
+[lesson healing heal compact]
+
+[lesson walking-training build compact]
+
+[lesson walking-training train compact]
+
+[lesson swimming build compact]
+
+[lesson swimming train compact]
+
+[lesson swimming water-job compact]
+
+[lesson schools build compact]
+
+[lesson schools learn compact]
+
+[lesson upgrades upgrade compact]
+
+[lesson upgrades train compact]
+
+[lesson warrior-training produce compact]
+
+[lesson warrior-training build compact]
+
+[lesson warrior-training train compact]
+
+[lesson fortifications tower compact]
+
+[lesson fortifications walls compact]
+
+[lesson fortifications supply compact]
+
+[lesson fortifications hold compact]
+
+[lesson defensive-tactics scout compact]
+
+[lesson defensive-tactics guard compact]
+
+[lesson defensive-tactics repel compact]
+
+[lesson defensive-tactics counterattack compact]
+
 [library GL only]
 Μόνο GL
 [Grassland]
@@ -6606,5 +6780,7 @@ CPU (αυτόματα)
 Μονοπάτια ζώων
 [Fish amount]
 Ποσότητα ψαριών
+[scenario messages]
+
 [Camp-site amount]
 Αριθμός καταυλισμών

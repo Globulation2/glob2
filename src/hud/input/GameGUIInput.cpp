@@ -1,3 +1,4 @@
+#include "tutorial/TutorialGuidance.h"
 #include <GestureScroll.h>
 #include "hive/HiveDialog.h"
 #include "MapZoomControls.h"
@@ -137,6 +138,7 @@ void GameGUI::processEvent(SDL_Event *event)
     inputState.observe(*event);
     if(hiveCards && !gameMenuScreen && !scrollableText && !inGameMenu && globalContainer->settings.hiveMindEnabled && hiveCards->handle(*event))return;
     if (connectionOverlay && !activeDialog() && !inGameMenu && connectionOverlay->handle(*event)) return;
+    if (tutorialGuidance && !activeDialog() && !typingInputScreen && tutorialGuidance->handle(*event)) return;
     if (touch && !activeDialog() && touch->process(*event)) return;
     if ((event->type == SDL_EVENT_MOUSE_BUTTON_UP && event->button.button == SDL_BUTTON_MIDDLE) ||
         ((event->type >= SDL_EVENT_WINDOW_FIRST && event->type <= SDL_EVENT_WINDOW_LAST) && event->type == SDL_EVENT_WINDOW_FOCUS_LOST))

@@ -282,6 +282,8 @@ ctx.game.map.width
 ctx.game.map.height
 ctx.game.map.tile(x, y)
 ctx.game.map.region(x, y, width, height)
+ctx.game.map.zones(x, y, width, height, team)
+ctx.game.map.area(name) // map scripts only
 ```
 
 Query X/Y must be integers in `-32768..32767` and wrap around the toroidal map;
@@ -291,6 +293,12 @@ Region requires exactly four arguments and returns a flat row-major array:
 `tiles[dy * width + dx]` corresponds to wrapped `(x + dx, y + dy)`.
 Maximum dimensions are validation limits, not promises that a region fits the
 callback budget. For example, a 256×256 request exceeds the work budget.
+
+`area(name)` returns the bounding rectangle `{x,y,width,height}` of a named saved
+script area, or `null` for a missing/empty area. Holes and irregular boundaries are
+included in the bounds; this is not a point-membership query. It is available only
+to map scripts, reads the callback's captured annotations, and does not reveal
+scenario annotations to AI scripts. Cache bounds when repeatedly using a region.
 
 | Tile field | Presence and meaning |
 | --- | --- |
@@ -480,8 +488,9 @@ such as `"0"`. Queries during a callback see committed state, not effects that
 callback will return.
 
 Return an array of at most 256 effects, or `null`/`undefined` for no effects.
-The full batch is validated before anything is applied. Effects apply in array
-order; for repeated changes, the later effect wins.
+The full batch is validated before anything is applied. World actions apply in
+array order; presentation overrides accumulate and publish at callback completion.
+For repeated changes, the later effect wins.
 
 | `type` | Required fields / behavior |
 | --- | --- |
@@ -492,6 +501,8 @@ order; for repeated changes, the later effect wins.
 | `hint` | `id`: existing zero-based hint index; `visible`: boolean |
 | `buildingChoice`, `flagChoice` | `name`: supported family name; `enabled`: boolean |
 | `guiElement` | `id`: `0..4`; `enabled`: boolean; prefer the implemented panels `0..3` |
+| `tutorial` | `view`: validated tutorial presentation record, or `null` to clear |
+| `scenarioOrder` | `team`: existing team; `order`: ordinary gameplay descriptor; maximum 16 per callback |
 
 Building-choice names: `swarm`, `inn`, `hospital`, `racetrack`, `swimmingpool`,
 `barracks`, `school`, `defencetower`, `stonewall`, `market`. Flag-choice names:
@@ -504,7 +515,39 @@ message. History receives a message only when that displayed text changes to a
 nonempty message; unchanged callbacks do not repeat it. Loading restores the
 persisted message, choices and hidden elements without running a callback or
 publishing a duplicate history entry. Leaving the session clears its presentation.
-There are no spawn, terrain-write, objective-create or gameplay-order effects.
+There are no spawn, terrain-write or objective-create effects. Prepared scenario
+assets supply starting terrain, units and objective/hint slots.
+
+### Zone observations and scripted encounters
+
+`ctx.game.map.zones(x, y, width, height, team)` returns a row-major array of
+`{guard, forbidden, clear}` boolean records for the requested team. Coordinates
+wrap like `region`; dimensions are integers in `0..256` and either zero yields
+an empty array. The team must exist. Map scripts may inspect any team's zones;
+AI scripts may inspect only their own. Query work/native allocations consume
+normal script budgets. Existing `tile` and `region` record shapes are unchanged.
+
+`{type: "scenarioOrder", team, order}` executes an ordinary gameplay order for
+an existing team/player. `order` uses the same descriptors as JavaScript AI
+orders, including owned entity references with generations. At most 16 scenario
+orders are accepted per callback, within the overall 256-effect limit. Conversion
+uses the callback's immutable observation; the full batch is validated against
+the pre-callback game state before any effects execute. Commands cannot rely on
+an entity created by an earlier effect in that same callback. Choice/GUI overrides
+also publish at completion; enable a choice in an earlier callback before issuing
+a dependent creation order. Ordinary execution
+rules still apply, including placement, ownership and disabled building choices.
+Scenario orders are simulation-generated, so replay/dataset input streams do not
+record them as player commands; replaying the script generates them again.
+
+Tutorial practice opponents use a prepared, assigned War Flag and a `moveFlag`
+order when preparation is complete. A saved once-only entry action controls the
+encounter. It does not move the player's units, grant resources, suppress hunger
+or bypass normal combat.
+
+`{type: "tutorial", view}` publishes validated, persisted guidance metadata;
+`view: null` clears it. The immutable published model and authoring contract are
+described in [Tutorial lessons](javascript.md#data-authored-tutorial-lessons).
 
 ## Maintaining the boundary
 
@@ -660,3 +703,12 @@ Changes are sampled into a versioned replay diagnostic stream, capped at 16 MiB.
 A truncated recording explicitly stops providing telemetry past its coverage.
 Older replays report telemetry unavailable. Diagnostics do not enter gameplay
 checksums and opening the dialog does not run AI code.
+
+Map effects can issue the ordinary diplomacy order through `scenarioOrder`:
+`{type:"scenarioOrder", team:0, order:{type:"alliance", allies:[0], enemies:[1]}}`.
+The same order descriptor is available to JS AI controllers for their own team.
+Each optional vision field (`visionExchange`, `visionFood`, `visionOther`) is an
+array of team indices, defaulting to the owner only. Allies default to the owner,
+enemies to none. Arrays are bounded by colony count; invalid, overlapping and
+self-hostile relationships are rejected. Changing both sides requires two orders.
+This lets lessons keep colonies neutral until the player prepares an encounter.

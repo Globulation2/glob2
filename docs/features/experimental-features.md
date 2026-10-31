@@ -63,7 +63,9 @@ remove its entry and its gate together: old saves that named it load and play th
 now-default rules.
 
 Retired terrain keys are consumed and discarded when reading older map and game
-headers. Unknown required keys or unknown terrain IDs still reject a map. Terrain
+headers. A key explicitly declared by an embedded building, resource or unit
+catalog remains a catalog experiment, even if it reuses a retired terrain name.
+Unknown required keys or unknown terrain IDs still reject a map. Terrain
 authoring flags no longer appear in settings, lobbies or saved game requirements.
 Version 187 also removes the terrain registry's script `experiment` field. The
 replay floor is 187 because older scripted decisions may depend on that field;

@@ -1,3 +1,4 @@
+const {waitForMainMenu}=require('./main-menu');
 // SPDX-License-Identifier: GPL-3.0-or-later
 const {test, expect} = require('@playwright/test');
 const fs = require('node:fs');
@@ -47,7 +48,7 @@ for (const variant of ['serial', 'threaded']) {
     const url = new URL(gameURL(), 'http://localhost');
     url.searchParams.set('threads', variant);
     await openRuntimeHost(page, shell, url.search);
-    await expect.poll(async () => (await state(page)).screen).toContain('MainMenuScreen');
+    await waitForMainMenu(page);
     expect((await state(page)).executionMode).toBe(variant);
     // Exercise different drawing ceilings against the same reference tick trace.
     await clickMainMenu(page, 'settings');
@@ -55,7 +56,7 @@ for (const variant of ['serial', 'threaded']) {
     await clickControl(page, 'graphics.fps');
     await clickControl(page, variant === 'serial' ? 'popup/0' : 'popup/4');
     await clickSettingsDone(page);
-    await expect.poll(async () => (await state(page)).screen).toContain('MainMenuScreen');
+    await waitForMainMenu(page);
     await clickMainMenu(page, 'load');
     const chooser = page.waitForEvent('filechooser');
     await clickControl(page, 'import');
