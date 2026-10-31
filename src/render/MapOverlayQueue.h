@@ -65,9 +65,9 @@ struct MapOverlayQueue
 
 	void marker(GAGCore::GraphicContext &gfx, int mapX, int mapY, MarkerShape shape,
 				float sizePoints, Uint8 r, Uint8 g, Uint8 b, float opacity);
-	//! `priority` decides which glyph stays when several would cover each
-	//! other. A Tile is the footprint filled with the team's colour, never
-	//! enlarged or dropped: a wall stays a line of small tiles. `level` adds a
+	//! Higher `priority` glyphs draw on top when several cover each other;
+	//! every glyph is drawn. A Tile is the footprint filled with the team's colour,
+	//! never enlarged: a wall stays a line of small tiles. `level` adds a
 	//! pip per upgrade and `site` marks a construction site.
 	void glyph(GAGCore::GraphicContext &gfx, int mapLeft, int mapTop, int mapRight, int mapBottom,
 			   int icon, GlyphShape shape, int level, bool site, int priority, Uint8 r, Uint8 g,

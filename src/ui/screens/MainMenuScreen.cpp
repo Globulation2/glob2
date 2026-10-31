@@ -190,9 +190,9 @@ Element MainMenuScreen::build(const Presentation &p)
 #if defined(GLOB2_MOBILE) && defined(__ANDROID__)
 			content.push_back(button("menu/privacy", Glob2UI::libraryText("Privacy policy"), [] {
 #if defined(GLOB2_AMAZON_RELEASE)
-				GAGCore::ApplicationHost::openUrl("https://glob2online.com/privacy/#fire-tablet-edition");
+				GAGCore::ApplicationHost::openUrl("https://glob2.online/privacy/#fire-tablet-edition");
 #else
-				GAGCore::ApplicationHost::openUrl("https://glob2online.com/privacy/");
+				GAGCore::ApplicationHost::openUrl("https://glob2.online/privacy/");
 #endif
 			}, rowStyle));
 #endif
@@ -249,9 +249,9 @@ Element MainMenuScreen::build(const Presentation &p)
 #if defined(GLOB2_MOBILE) && defined(__ANDROID__)
 	utilities.push_back(button("menu/privacy", Glob2UI::libraryText("Privacy policy"), [] {
 #if defined(GLOB2_AMAZON_RELEASE)
-		GAGCore::ApplicationHost::openUrl("https://glob2online.com/privacy/#fire-tablet-edition");
+		GAGCore::ApplicationHost::openUrl("https://glob2.online/privacy/#fire-tablet-edition");
 #else
-		GAGCore::ApplicationHost::openUrl("https://glob2online.com/privacy/");
+		GAGCore::ApplicationHost::openUrl("https://glob2.online/privacy/");
 #endif
 	}, utility));
 #endif

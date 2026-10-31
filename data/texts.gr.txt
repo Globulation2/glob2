@@ -7064,3 +7064,13 @@ CPU (αυτόματα)
 
 [library GL only]
 Μόνο GL
+[Grassland]
+Λιβάδια
+[Kopjes]
+Βραχώδεις λόφοι
+[Game trails]
+Μονοπάτια ζώων
+[Fish amount]
+Ποσότητα ψαριών
+[Camp-site amount]
+Αριθμός καταυλισμών

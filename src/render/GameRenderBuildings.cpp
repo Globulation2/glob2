@@ -73,7 +73,7 @@ void Game::drawMapBuilding(int x, int y, int gid, int viewportX, int viewportY, 
 
 	// draw building. Zoomed far out, the sprite cross-fades to a chip in its
 	// team's colour carrying an icon of what the building is for; where chips
-	// would pile up the most important one stays.
+	// overlap, the most important ones draw on top.
 	const ZoomDetail *detail = drawnRender ? &drawnRender->detail : nullptr;
 	const float spriteOpacity = detail ? detail->buildingSprite : 1.f;
 	const Uint8 spriteAlpha = Uint8(std::lround(255 * spriteOpacity));

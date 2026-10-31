@@ -7064,3 +7064,13 @@ Stilte: een gedempte luidspreker. Geluid: een luidspreker met geluidsgolven.
 
 [library GL only]
 Alleen GL
+[Grassland]
+Grasland
+[Kopjes]
+Rotsheuvels
+[Game trails]
+Wildpaden
+[Fish amount]
+Hoeveelheid vis
+[Camp-site amount]
+Aantal kampeerplaatsen

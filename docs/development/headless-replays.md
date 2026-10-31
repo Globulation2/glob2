@@ -65,6 +65,10 @@ change while scheduled building fields are pending. Format 148 saves the pending
 fields and the request queue; older saves restore none and start the pipeline at
 the delay their header implies (8 before format 148).
 
+`result.json` reports `gradient_pending` for the terminal periodic field queue.
+Changing `--gradient-delay` on a loaded checkpoint is accepted only when that
+queue is empty; elapsed ticks alone do not establish that work is pending.
+
 To compare delays from one checkpoint, fork it explicitly:
 `--load-game busy.game --fork-rule buildingGradientDelay=N`. A fork changes the
 loaded match's rules before its first tick; it is a different match from the saved
@@ -679,6 +683,9 @@ the additional continuation fields.
 Headless diagnostic exports wait for each pending output batch before advancing
 the simulation, including with `GLOB2_SIM_THREAD=1`. This keeps capture intervals
 from being lost while PNGs are written; it affects export wall time only.
+PNG diagnostic sessions retain presentation requirements while an export is
+pending. Draining the export cannot introduce a missing component within an
+already captured tick. CSV-only sessions omit that presentation data.
 
 ### Repeating saves with normal presentation
 

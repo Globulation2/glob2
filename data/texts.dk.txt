@@ -7064,3 +7064,13 @@ Stilhed: en lydløs højttaler. Lyd: en højttaler med lydbølger.
 
 [library GL only]
 Kun GL
+[Grassland]
+Græsland
+[Kopjes]
+Klippebakker
+[Game trails]
+Dyrestier
+[Fish amount]
+Fiskemængde
+[Camp-site amount]
+Antal lejrpladser

@@ -7064,3 +7064,13 @@ Discord открыт. Вы можете вернуться в игру в люб
 
 [library GL only]
 Лишь GL
+[Grassland]
+Луга
+[Kopjes]
+Скалистые холмы
+[Game trails]
+Звериные тропы
+[Fish amount]
+Количество рыбы
+[Camp-site amount]
+Количество стоянок

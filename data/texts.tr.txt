@@ -7064,3 +7064,13 @@ Sessizlik: sessize alınmış hoparlör. Ses: ses dalgaları olan hoparlör.
 
 [library GL only]
 Yalnız GL
+[Grassland]
+Otlak
+[Kopjes]
+Kayalık tepeler
+[Game trails]
+Hayvan patikaları
+[Fish amount]
+Balık miktarı
+[Camp-site amount]
+Kamp yeri sayısı

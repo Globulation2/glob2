@@ -41,6 +41,18 @@
 		-Server
 	}
 
+	# Begin canonical sign-in redirect.
+	# Keep OAuth state cookies and callbacks on the canonical host while the
+	# former app host remains available for local-file and credential recovery.
+	@formerSignin {
+		host {$GLOB2_AUTH_REDIRECT_DOMAIN:auth-redirect.invalid}
+		method GET
+		path /signin /signin/* /auth/*/start
+		not path_regexp ^/signin/assets/
+	}
+	redir @formerSignin {$GLOB2_PUBLIC_ORIGIN:https://localhost:8443}{uri} 302
+	# End canonical sign-in redirect.
+
 	# First: `handle` blocks are exclusive and run before a bare `respond`.
 	@private path /internal /internal/* /healthz /readyz /metrics
 	handle @private {
@@ -60,6 +72,21 @@
 			stream_close_delay 5m
 		}
 	}
+
+	# Begin shared sign-in bootstrap.
+	# API-rendered pages use the same qualified bootstrap as the SPA. Keep this
+	# exact stable URL revalidating while all other API assets remain proxied.
+	@signinBootstrap {
+		method GET HEAD
+		path_regexp ^/signin/assets/bootstrap[.]js$
+	}
+	handle @signinBootstrap {
+		root * /srv/web
+		rewrite * /theme.js
+		header Cache-Control "public, max-age=0, must-revalidate"
+		file_server
+	}
+	# End shared sign-in bootstrap.
 
 	@platform path /api/* /realtime /signin /signin/* /auth/* /.well-known/* /j/*
 	handle @platform {

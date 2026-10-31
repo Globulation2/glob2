@@ -7064,3 +7064,13 @@ Building Studio で作成
 
 [library GL only]
 GL のみ
+[Grassland]
+草原
+[Kopjes]
+岩山
+[Game trails]
+獣道
+[Fish amount]
+魚の量
+[Camp-site amount]
+野営地の数

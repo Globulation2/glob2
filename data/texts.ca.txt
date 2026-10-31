@@ -7064,3 +7064,13 @@ Silenci: un altaveu silenciat. So: un altaveu amb ones sonores.
 
 [library GL only]
 Només GL
+[Grassland]
+Praderia
+[Kopjes]
+Turons rocosos
+[Game trails]
+Corriols d’animals
+[Fish amount]
+Quantitat de peixos
+[Camp-site amount]
+Nombre de campaments

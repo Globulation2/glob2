@@ -7064,3 +7064,13 @@ Silenzio: un altoparlante disattivato. Audio: un altoparlante con onde sonore.
 
 [library GL only]
 Solo GL
+[Grassland]
+Prateria
+[Kopjes]
+Colline rocciose
+[Game trails]
+Sentieri degli animali
+[Fish amount]
+Quantità di pesci
+[Camp-site amount]
+Numero di accampamenti

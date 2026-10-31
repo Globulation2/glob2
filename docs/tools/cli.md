@@ -79,7 +79,7 @@ verdict. See [headless execution and replays](../development/headless-replays.md
 
 ```sh
 glob2 ai check examples/javascript/ai.js --format json
-glob2 online join ABCDEF --instance https://app.glob2online.com
+glob2 online join ABCDEF --instance https://app.glob2.online
 glob2 info version
 glob2 info sim-version --format json
 ```
@@ -918,7 +918,7 @@ Choose at most one: `--record`, `--videoshot`.
 `--record-fps` requires `--record` or `--videoshot`.
 
 ```sh
-glob2 online join ABCDEF --instance https://app.glob2online.com
+glob2 online join ABCDEF --instance https://app.glob2.online
 ```
 
 ### `glob2 online play-map`

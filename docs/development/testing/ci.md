@@ -55,10 +55,24 @@ Versioned Linux tools can be selected with `--cc clang-18 --cxx clang++-18
 Each run gets a fresh directory under ignored `artifacts/native-coverage/`, with
 build/test logs, JUnit, compiler/tool versions, source revision, selection,
 profiles, full coverage JSON, weighted implementation summaries and HTML.
-CI gives the instrumented suite a 90-minute job budget while retaining the
+CI gives the instrumented suite a 180-minute job budget while retaining the
 900-second per-case timeout. It passes `--stream-logs` so command progress and
 diagnostics remain visible in the job log even when artifact upload cannot finish.
 Local runs keep file-only output unless this option is requested.
+
+CI passes `--debug-info line-tables-only` to reduce debug-object storage. Source
+coverage still uses the same instrumentation and coverage mapping, and line
+tables retain backtrace locations. Local runs default to `--debug-info full`
+for variable inspection. Neither option changes the selected tests or optimization
+level.
+
+CI also passes `--profile-pool-size 4`. LLVM's
+[online merge pool](https://clang.llvm.org/docs/SourceBasedCodeCoverage.html#running-the-instrumented-program)
+locks and updates at most four raw files per binary signature as processes exit,
+instead of accumulating a profile for every engine case. Unit and engine pools
+stay in separate directories. The exported counters, regions and branch counts
+remain complete; pooled files are retained on failures. Local runs default to
+`--profile-pool-size 0`, keeping individual process profiles for diagnosis.
 
 CI passes `--discard-merged-profiles` to remove redundant raw profiles only after
 the binary's tests, profile merge, JSON export and HTML generation succeed. The

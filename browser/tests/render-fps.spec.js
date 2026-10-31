@@ -13,6 +13,8 @@ for (const compact of [false, true]) {
     if (compact) await page.setViewportSize({width:460, height:820});
     await page.goto(gameURL());
     if (compact) {
+      await screen(page, 'AudioPreferenceScreen');
+      await clickControl(page, 'audio.silence');
       await screen(page, 'HandPreferenceScreen');
       await clickControl(page, 'hand.right');
     }

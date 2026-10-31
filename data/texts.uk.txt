@@ -7064,3 +7064,13 @@ Discord відкрито. Ви можете повернутися до гри �
 
 [library GL only]
 Лише GL
+[Grassland]
+Луки
+[Kopjes]
+Скелясті пагорби
+[Game trails]
+Звірині стежки
+[Fish amount]
+Кількість риби
+[Camp-site amount]
+Кількість стоянок

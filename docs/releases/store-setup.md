@@ -2,6 +2,17 @@
 
 Configure store credentials and mirror-only publication workflows.
 
+## Store presentation
+
+Use the [approved colony/economy copy and media](https://github.com/Globulation2/glob2-marketing/blob/b759591/planning/approved-storefront-rollout.md)
+when maintaining Epic, Steam, GOG, itch.io or other project-controlled listings.
+The [desktop export pack](https://github.com/Globulation2/glob2-marketing/tree/a968359dc95d51e998f63ba4d984d33b04560b39/assets/storefront-approved-v1)
+records gameplay order, key-art/logo sources and image provenance. Adapt to each
+store's fields and crop preview, keeping illustrated key art separate from
+actual gameplay. Use device-specific release-candidate captures for mobile
+screenshot slots. Listing updates and binary release/availability are separate
+operations; preserve each platform's existing release controls.
+
 ## Store setup
 
 ### Epic Games Store
@@ -28,6 +39,13 @@ active for Windows; newly uploaded binaries are inactive and scheduled for
 deletion until activated. Install and test that active Dev build through the
 Epic launcher, then move the candidate through Stage and review, and promote
 it to Live in the portal.
+
+The native CLI accepts the documented Epic Launcher `-KEY=VALUE` fields and
+`-EpicPortal` switch without treating them as game commands. Their values are
+discarded instead of copied into the parsed game request; this does not add EOS
+authentication or change the game's account flow. Unsupported arguments still
+fail validation. Test Launcher-style arguments as well as the headless smoke
+command when qualifying the candidate.
 
 In the release repository, set `EPIC_ORGANIZATION_ID`, `EPIC_PRODUCT_ID`,
 `EPIC_WINDOWS_ARTIFACT_ID`, `EPIC_BPT_CLIENT_ID`, and `EPIC_BPT_SHA256` as

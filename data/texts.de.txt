@@ -7064,3 +7064,13 @@ Stille: ein stummgeschalteter Lautsprecher. Ton: ein Lautsprecher mit Schallwell
 
 [library GL only]
 Nur GL
+[Grassland]
+Grasland
+[Kopjes]
+Felshügel
+[Game trails]
+Wildwechsel
+[Fish amount]
+Fischmenge
+[Camp-site amount]
+Anzahl der Lagerplätze

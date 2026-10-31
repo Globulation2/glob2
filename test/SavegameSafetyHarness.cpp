@@ -694,6 +694,12 @@ static void checkRandomContinuation(bool text, bool ai)
 		game.step(0);
 	};
 	for (int i=0; i<100; ++i) step(gui.game);
+    // Idle matches no longer schedule periodic route work. Explicitly admit a
+    // cold, otherwise unused movement class so malformed pending-job checks
+    // always exercise a real saved destination and publication deadline.
+    REQUIRE(gui.game.map.lookupForbiddenGradient(0,WATER_ONLY_CLASS)==nullptr);
+    gui.game.map.getForbiddenGradient(0,WATER_ONLY_CLASS);
+    gui.game.observeCompletedWorld();
 	const auto savedRandom = gui.game.syncRandom;
 	auto *backend = new MemoryStreamBackend();
 	class CheckpointOutput : public BinaryOutputStream
@@ -765,10 +771,12 @@ static void checkRandomContinuation(bool text, bool ai)
 		REQUIRE(output.pipelineStart>output.runtimeStart);
 		// Reject invalid queue sizes, deadlines, destinations and cancellation flags.
 		const auto pipeline=output.pipelineStart;
-		// Format 174 batches pending fields: uint16 count, uint32 destination.
-		REQUIRE((static_cast<unsigned char>(bytes[pipeline+1])<<8 |
-		         static_cast<unsigned char>(bytes[pipeline+2]))>0);
-		const auto destination=pipeline+3;
+		// Unified gradients store a uint32 count followed by uint32 destinations.
+		REQUIRE((static_cast<unsigned char>(bytes[pipeline+1])<<24 |
+		         static_cast<unsigned char>(bytes[pipeline+2])<<16 |
+		         static_cast<unsigned char>(bytes[pipeline+3])<<8 |
+		         static_cast<unsigned char>(bytes[pipeline+4]))>0);
+		const auto destination=pipeline+5;
 		const auto remaining=destination+sizeof(Uint32);
 		for (const auto [offset,value] : std::vector<std::pair<size_t,unsigned char>>{
 			{pipeline,0}, {pipeline,17}, {pipeline+1,255},

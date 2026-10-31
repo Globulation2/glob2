@@ -372,28 +372,31 @@ TEST_CASE("market routes respect forbidden ground and water across swim classes"
 	}
     }
 }
-TEST_CASE("a frequently refreshed market field publishes depletion and restocking")
+TEST_CASE("explicit market refresh publishes depletion and restocking after the minimum interval")
 {
-	glob2test::HeadlessGlobals globals;
-	glob2test::GameOptions options{.discovered=true, .clearImmobile=true, .header=true};
-	options.experiments.set(ExperimentId::MarketsV2);
-	glob2test::HeadlessGame world(options);
-	auto &map=world.game.map;
-	world.game.gameHeader.setResourceGrowthDisabled(true);
-	auto *market=world.addBuilding("market",8,8);
-	REQUIRE(market);
-	market->setMaterial(CHERRY, 20);
-	map.configureGradientPipeline(2,3);
-	map.getMaterialGradientSlot(0,CHERRY,0,true);
-	for (int tick=0;tick<8;++tick) { world.game.stepCounter=tick+1; map.advanceGradientPipeline(); map.syncStep(tick); map.stagePeriodicGradientPreparation(); glob2test::prepareGradientBoundary(world.game); }
-	CHECK(map.gradientPipelineStatus().published>0);
-	market->setMaterial(CHERRY, 0);
-	map.dirtyMarketGradientsSlot(0,CHERRY);
-	for (int tick=8;tick<16;++tick) { world.game.stepCounter=tick+1; map.advanceGradientPipeline(); map.syncStep(tick); map.stagePeriodicGradientPreparation(); glob2test::prepareGradientBoundary(world.game); }
-	CHECK_FALSE(map.materialAvailableSlot(0,CHERRY,0,5,5,true));
-	market->addMaterialIntoBuilding(CHERRY);
-	for (int tick=16;tick<24;++tick) { world.game.stepCounter=tick+1; map.advanceGradientPipeline(); map.syncStep(tick); map.stagePeriodicGradientPreparation(); glob2test::prepareGradientBoundary(world.game); }
-	CHECK(map.materialAvailableSlot(0,CHERRY,0,5,5,true));
+    glob2test::HeadlessGlobals globals;
+    glob2test::GameOptions options{.discovered=true, .clearImmobile=true, .header=true};
+    options.experiments.set(ExperimentId::MarketsV2);
+    glob2test::HeadlessGame world(options);
+    auto& map=world.game.map;
+    world.game.gameHeader.setResourceGrowthDisabled(true);
+    auto* market=world.addBuilding("market",8,8);
+    REQUIRE(market);
+    map.configureGradientPipeline(2,3);
+    market->setMaterial(CHERRY,20);
+    glob2test::awaitGradient(world.game,[&] { return map.getMaterialGradientSlot(0,CHERRY,0,true); });
+    CHECK(map.materialAvailableSlot(0,CHERRY,0,5,5,true));
+    for (bool stocked:{false,true}) {
+        market->setMaterial(CHERRY,stocked ? 1 : 0);
+        map.dirtyMarketGradientsSlot(0,CHERRY);
+        world.game.stepCounter+=AdaptiveGradientState::MinimumInterval;
+        map.updateMaterialGradient(0,CHERRY,0,true);
+        glob2test::awaitGradient(world.game,[&] {
+            const auto* field=map.getMaterialGradientSlot(0,CHERRY,0,true);
+            return map.materialAvailableSlot(0,CHERRY,0,5,5,true)==stocked ? field : nullptr;
+        });
+        CHECK(map.materialAvailableSlot(0,CHERRY,0,5,5,true)==stocked);
+    }
 }
 TEST_CASE("upgrading cancelling and completing preserve shared stock and gate")
 {

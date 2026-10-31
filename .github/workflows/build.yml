@@ -205,6 +205,7 @@ jobs:
       - name: Run native coverage without the slow integration tier
         run: |
           GLOB2_SDL3_PREFIX=build/sdl3-ci/prefix python3 test/run_coverage.py --quick --timeout 900 -j4 \
+            --debug-info line-tables-only --profile-pool-size 4 \
             --discard-merged-profiles --stream-logs \
             --cc clang-18 --cxx clang++-18 \
             --llvm-profdata llvm-profdata-18 --llvm-cov llvm-cov-18
@@ -363,6 +364,13 @@ jobs:
         run: |
           # Fetch immutable package indexes to avoid mirror-sync mismatches,
           # and bound network stalls without weakening signature verification.
+          # Runner images may point at a throttled Azure mirror. Use Ubuntu's
+          # HTTPS archive, including mirror+file lists, retaining signature checks.
+          for source in /etc/apt/sources.list /etc/apt/sources.list.d/*.list /etc/apt/sources.list.d/*.sources /etc/apt/apt-mirrors*.txt; do
+            if [ -f "$source" ]; then
+              sudo sed -Ei 's|https?://azure.archive.ubuntu.com/ubuntu|https://archive.ubuntu.com/ubuntu|g' "$source"
+            fi
+          done
           sudo tee /etc/apt/apt.conf.d/80-ci-network >/dev/null <<'EOF'
           Acquire::By-Hash "force";
           Acquire::Retries "3";

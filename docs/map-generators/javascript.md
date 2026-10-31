@@ -12,6 +12,10 @@
 
 ## Generator Studio
 
+The native preview report's checksum describes the reloaded frozen map snapshot.
+Map snapshots omit match runtime caches, so it is computed from the same bytes
+used to launch Play.
+
 The opt-in web workspace at `/generator-studio` combines conversation, JavaScript
 and manifest editing, immutable private revisions, and engine previews. Start with
 a playable Swamp example with a fresh identity, or import a portable package. V1

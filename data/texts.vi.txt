@@ -7064,3 +7064,13 @@ Im lặng: loa bị tắt tiếng. Âm thanh: loa có sóng âm.
 
 [library GL only]
 Chỉ GL
+[Grassland]
+Đồng cỏ
+[Kopjes]
+Đồi đá
+[Game trails]
+Đường mòn thú rừng
+[Fish amount]
+Lượng cá
+[Camp-site amount]
+Số khu cắm trại

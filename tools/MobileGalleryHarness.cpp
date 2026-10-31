@@ -460,7 +460,7 @@ struct MobileGallerySetup
 			casual.presentSearching(OnlineUIFixtures::queues()[2], status, now - 65000);
 			screenShot(stack, "quick-match-searching-casual",
 					   std::make_unique<QuickMatchScreen>(stack, casual, OnlineUIFixtures::queues(),
-														  "https://app.glob2online.com",
+														  "https://app.glob2.online",
 														  "Bradley"));
 		}
 		screenShot(stack, "match-found", OnlineUIFixtures::matchFound(true));
@@ -1276,7 +1276,7 @@ class MobileGalleryGameplay
 			stackShot(stack, "game-results-value");
 			// Online results: the rating card while verifying, verified, and a room match.
 			auto online = std::make_shared<Online::OnlineMatchResult>(
-				"https://app.glob2online.com", "8f3k2q00-0000-4000-8000-000000000001",
+				"https://app.glob2.online", "8f3k2q00-0000-4000-8000-000000000001",
 				OnlineUIFixtures::HOST_ID);
 			online->label = "1 vs 1 · Ranked";
 			online->mapTitle = "Even Ground 128×128";
@@ -1296,7 +1296,7 @@ class MobileGalleryGameplay
 			++online->revision;
 			stackShot(stack, "game-results-verified");
 			auto room = std::make_shared<Online::OnlineMatchResult>(
-				"https://app.glob2online.com", "8f3k2q00-0000-4000-8000-000000000002",
+				"https://app.glob2.online", "8f3k2q00-0000-4000-8000-000000000002",
 				OnlineUIFixtures::HOST_ID);
 			room->label = "Room · Sunday 2v2";
 			room->mapTitle = "Marchland";
@@ -1307,7 +1307,7 @@ class MobileGalleryGameplay
 			// The winner of a match the opponent left, before the platform settles
 			// it, and the player who left: their loss at once, the record later.
 			auto opponentLeft = std::make_shared<Online::OnlineMatchResult>(
-				"https://app.glob2online.com", "8f3k2q00-0000-4000-8000-000000000003",
+				"https://app.glob2.online", "8f3k2q00-0000-4000-8000-000000000003",
 				OnlineUIFixtures::HOST_ID);
 			opponentLeft->label = "Room · Bradley's room";
 			opponentLeft->mapTitle = "balanced for 2";
@@ -1316,7 +1316,7 @@ class MobileGalleryGameplay
 			view->setReason("Ana_M left the match.");
 			stackShot(stack, "game-results-opponent-left");
 			auto leaver = std::make_shared<Online::OnlineMatchResult>(
-				"https://app.glob2online.com", "8f3k2q00-0000-4000-8000-000000000004",
+				"https://app.glob2.online", "8f3k2q00-0000-4000-8000-000000000004",
 				OnlineUIFixtures::GUEST_ID);
 			leaver->label = "1 vs 1 · Ranked";
 			leaver->mapTitle = "Even Ground 128×128";

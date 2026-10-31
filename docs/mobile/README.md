@@ -27,6 +27,6 @@ Build, test and understand the Android and iOS clients.
 public website and official online service. The website repository imports both
 with `scripts/sync-legal.mjs`; run its `--check --game-repo` command against this
 checkout when changing either document. Public pages are
-https://glob2online.com/privacy/ and https://glob2online.com/terms/. The old
+https://glob2.online/privacy/ and https://glob2.online/terms/. The old
 Amazon privacy file is a compatibility pointer. Publish the website pages
 before shipping game links or updating mobile store listings.

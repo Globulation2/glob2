@@ -7064,3 +7064,13 @@ Hold the guard zone. Keep Inns supplied.
 War Flag → enemy Swarm. Request 3 warriors; radius ≤4.
 [intro attack destination]
 Attack here
+[Grassland]
+Grassland
+[Kopjes]
+Kopjes
+[Game trails]
+Game trails
+[Fish amount]
+Fish amount
+[Camp-site amount]
+Camp-site amount

@@ -1,12 +1,24 @@
 name: globulation2
 base: core24
 adopt-info: glob2
-summary: Real time strategy with automatic unit task assignment
+summary: Build a thriving colony in contested territory.
 description: |
-  Globulation 2 is a real time strategy game that lets players assign
-  units to tasks rather than directing each unit individually.
+  Build a thriving colony in contested territory.
+
+  Globulation 2 is a real-time strategy game where food, workers and space shape your expansion. Grow a sprawling colony, balance its competing needs, and contend with rivals for land and resources. Your creatures act autonomously, letting you guide the colony as a whole.
+
+  Grow an economy that can sustain your ambitions.
+  Food, construction and training compete for your workforce. Decide where workers are needed and balance new ambitions with the needs of the colony you already have.
+
+  Make the map part of your strategy.
+  Different maps call for different strategies. Adapt your expansion to the terrain, choose what to defend, and find the routes and resources your colony needs.
+
+  Defend what you've built.
+  Your economy supports both growth and defense. Balance the needs of your colony while rivals compete for land and resources, and prepare for conflicts that can decide the match.
+
+  Globulation 2 is free and open source.
 license: GPL-3.0-or-later
-website: https://globulation2.org/
+website: https://glob2.online/
 source-code: https://github.com/Globulation2/glob2
 issues: https://github.com/Globulation2/glob2/issues
 icon: data/icons/glob2-icon-256x256.png

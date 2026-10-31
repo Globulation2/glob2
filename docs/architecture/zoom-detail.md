@@ -61,8 +61,9 @@ it is saved, checksummed or read by the simulation.
   team's colour carrying a white icon of the building's purpose, with a pip per
   upgrade level and a paler chip for a construction site; flags become discs of
   constant size; walls become plain team-coloured tiles. Chips are 15 to 26 points
-  and placed in priority order (damaged, flags, towers, hives, the rest); one that a
-  placed chip would cover by more than 15% is left out. The icons are
+  and all are drawn, including when they overlap. Higher-priority icons draw on
+  top (damaged, flags, towers, hives, the rest), with equal priorities retaining
+  their original draw order. The icons are
   generated from `data/gfx/mapicon*.png` sources and loaded as WebP in the runtime
   tree. The sources are rasterised at seven pixel sizes from the SVGs in
   `datasrc/icons/map/` by `python3 tools/icons/export_map_icons.py` (needs

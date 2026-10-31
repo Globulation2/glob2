@@ -7064,3 +7064,13 @@ MCP сервер није доступан у овој апликацији
 
 [library GL only]
 Само GL
+[Grassland]
+Травњаци
+[Kopjes]
+Каменита брда
+[Game trails]
+Животињске стазе
+[Fish amount]
+Количина рибе
+[Camp-site amount]
+Број кампова

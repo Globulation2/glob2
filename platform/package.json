@@ -37,6 +37,6 @@
     "vitest": "^5.0.3"
   },
   "dependencies": {
-    "@glob2/design-system": "git+https://github.com/Globulation2/glob2-design-system.git#acd277710acfebf528e1fc6f653d55fdf75de4b2"
+    "@glob2/design-system": "git+https://github.com/Globulation2/glob2-design-system.git#220b965b061e402df7531fa0f9ad5104bf29a638"
   }
 }

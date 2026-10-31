@@ -7064,3 +7064,13 @@ Silento: silentigita laŭtparolilo. Sono: laŭtparolilo kun sonondoj.
 
 [library GL only]
 Nur GL
+[Grassland]
+Herbejo
+[Kopjes]
+Rokmontetoj
+[Game trails]
+Bestaj padoj
+[Fish amount]
+Kvanto da fiŝoj
+[Camp-site amount]
+Nombro de kampadejoj

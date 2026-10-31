@@ -50,12 +50,14 @@ int plantShoreFields(Map &, const Torus &, const std::vector<ShoreField> &,
 /// An irregular grass plot surrounded by sand. `corners` is an arbitrary, nonempty set of
 /// terrain vertices; a Chebyshev margin seals diagonal growth across the wrap.
 /// The default two rows preserve existing gardens; one row is a thinner, still sealed bund.
-/// margin must be positive.
+/// margin must be positive. `seal` replaces the sand with any terrain on which nothing grows
+/// (barren earth, scree): growth containment is the same, only the look and its other rules change.
 /// Returns the pure grass tiles inside it, suitable for a crop eligibility list. The caller must
 /// reserve the plot AND its margin before stamping: this operation intentionally overwrites terrain.
 /// Run beaches afterwards and check final tiles if later stages can overlap the plot.
 std::vector<int> stampContainedPlot(TerrainSketch &, const Torus &,
-									const std::vector<int> &corners, int margin = 2);
+									const std::vector<int> &corners, int margin = 2,
+									TerrainType seal = SAND);
 
 /// Plant up to `wanted` deposits in a contained plot, preferring exact crop fertility (tile index
 /// breaks ties). With renewable=true, dry tiles are excluded; false also serves finite dry groves
@@ -64,10 +66,12 @@ int plantContainedPlot(Map &, const Torus &, const std::vector<int> &tiles,
 					   const Fertility::Field &, int resource, int wanted, bool renewable = true);
 
 /// Prove on final terrain that eight-neighbour grass growth cannot leave or join differently
-/// labelled plots. `plotOf` labels pure grass tiles (-1 outside); also reject wheat/wood planted
-/// outside them, except a tree on a tile whose crop growth chance in `dry` is zero (the engine's
-/// water probe never lets it spread). Empty means sealed. Does not assume a particular outline or
-/// sand graphic. `finiteWheat` additionally permits dry wheat on the marked tiles.
+/// labelled plots. `plotOf` labels pure grass tiles (-1 outside); also reject any deposit that
+/// spreads over land (wheat, trees and catalogue crops and grasses) planted outside them, except
+/// a non-farmable land-ecology deposit (a tree, tall grass) on a tile whose crop growth chance in
+/// `dry` is zero (the engine's water probe never lets it spread). Empty means sealed. Does not
+/// assume a particular outline or sand graphic. `finiteWheat` additionally permits dry farmable
+/// land crops (wheat, maize) on the marked tiles.
 std::string containedPlotsMismatch(const Map &, const Torus &, const std::vector<int> &plotOf,
 								   const Fertility::Field *dry = nullptr,
 								   const std::vector<unsigned char> *finiteWheat = nullptr);

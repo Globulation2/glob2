@@ -77,12 +77,13 @@ checks the redirects.
 
 #### The official instance
 
-`glob2online.com` is the public website, **Globulation 2 Online**: an Astro site
+`glob2.online` is the public website, **Globulation 2 Online**: an Astro site
 in the separate
 [Globulation2/glob2-online-website](https://github.com/Globulation2/glob2-online-website)
-repository on Firebase Hosting (project `pharaoh-418820`), with the [app-route redirects](#separate-public-website-and-app) in its `firebase.json`.
-`app.glob2online.com` runs this stack and is the official instance origin
-(`scons/official_instance.py`; its former origin is `https://glob2online.com`).
+repository on Firebase Hosting (project `bradley-personal-20261027`), with the [app-route redirects](#separate-public-website-and-app) in its `firebase.json`.
+`app.glob2.online` runs this stack and is the official instance origin
+(`scons/official_instance.py`; former origins are `https://glob2online.com` and
+`https://app.glob2online.com`).
 Website releases never restart platform services or matches. Public rating
 snapshots are published to a bucket by the website repository's scheduled
 publisher from `/api/v1/leaderboards/<queue>`.
@@ -96,11 +97,46 @@ publisher from `/api/v1/leaderboards/<queue>`.
 2. When no matches are running, set `GLOB2_DOMAIN` and `GLOB2_PUBLIC_ORIGIN` to the
    new name, update provider redirect URIs, and recreate `platform-api` and the
    relays. `/api/v1/instance` then advertises `wss://<new name>/realtime`, and the
-   relay origin allow-list follows `GLOB2_PUBLIC_ORIGIN`. Do not mix old-origin
-   sessions with new-origin relay URLs.
-3. After sign-in and a real match pass on the new name, move the old name's DNS
-   (for example to the website) and clear `GLOB2_ADDITIONAL_DOMAIN`, so Caddy
-   stops renewing a certificate for a name it no longer serves.
+   relay origin allow-list defaults to `GLOB2_PUBLIC_ORIGIN`. During a recovery
+   window, put both browser origins in `instance.web.allowedOrigins` and set
+   `GLOB2_RELAY_ALLOWED_ORIGINS=https://app.glob2.online,https://app.glob2online.com`
+   (comma-separated) before recreating the relays. Set
+   `GLOB2_AUTH_REDIRECT_DOMAIN=app.glob2online.com` for Caddy: GET `/signin`,
+   `/signin/*` and `/auth/*/start` then redirect temporarily to `GLOB2_PUBLIC_ORIGIN`
+   with their path and query intact, except the public `/signin/assets/` namespace.
+   API-rendered documents keep those assets on their original host so their
+   same-origin content security policy remains valid. Exact GET/HEAD requests for
+   `/signin/assets/bootstrap.js` use the qualified frontend's `/srv/web/theme.js`
+   with cache revalidation; the remaining assets and other methods still go to
+   the API. This starts OAuth on the same hostname that receives its callback;
+   the old API, realtime, browser client and mobile association routes keep
+   serving directly. Leave the setting unset outside
+   the transition and never set it to the canonical hostname. Native access tokens issued
+   for the old origin will need refreshing; opaque refresh tokens and guest
+   device credentials remain valid in the same database. Do not mix active
+   old-origin matches with a relay restart.
+3. After sign-in and a real match pass on the new name, remove the old name
+   from `GLOB2_ADDITIONAL_DOMAIN` and add it to `GLOB2_REDIRECT_DOMAINS`. Keep its
+   DNS on this edge so Caddy renews its certificate and permanently redirects
+   requests to the canonical app origin with the path and query preserved.
+   The old public website domain redirects separately through Firebase Hosting.
+   Remove the old origin from both allow-lists when retiring its recovery host.
+
+A redirect does not migrate existing clients or browser data. Shipped native
+builds may still use the previous official origin, API clients may not follow
+redirects, and WebSocket connections cannot be moved by an HTTP redirect. Old
+mobile builds may also need the old host's `/.well-known/assetlinks.json` and
+`/.well-known/apple-app-site-association` served directly for verified links.
+Qualify these clients before replacing their origin with a redirect; a temporary
+same-app hostname is available through `GLOB2_ADDITIONAL_DOMAIN`.
+
+Browser saves, maps, campaign progress, recordings and guest credentials belong
+to the old origin. Keep an accessible old-origin `/play/` recovery route until
+players have exported their files and linked a sign-in provider for guest-account
+recovery. Import game/map files and campaign progress on the new host using the
+[existing controls](../browser/storage.md#import-and-export), and download
+recordings separately. A redirect-only hostname cannot expose its old browser
+storage. Do not claim a hostname cutover transfers those files or guest sessions.
 
 Reload Caddy rather than replacing it while connections are active; its
 `stream_close_delay` gives a short reconnection grace period, but replacing the
@@ -174,7 +210,7 @@ after a change, allow a day or reinstall the app.
 The apps take the domain from `scons/official_instance.py`: the Android build fills
 the App Link host (`officialInstanceHost` in `AndroidManifest.xml`) from it, and
 `mobile/ios.py` writes `applinks:<host>` into the iOS entitlements, both using the default host
-`app.glob2online.com`. The Amazon and China editions leave online play out, so they
+`app.glob2.online`. The Amazon and China editions leave online play out, so they
 declare neither invite links nor associated domains.
 
 #### Setting up the official instance
@@ -189,7 +225,7 @@ app-signing certificate. Supply these values:
 | Google Play app-signing certificate SHA-256 | Play Console > the app > Test and release > App integrity > App signing key certificate, "SHA-256 certificate fingerprint" (uppercase hex with colons, as the config expects). Play re-signs every installed copy with this key, so it is the one phones check; the upload key is not. |
 | Other Android signing keys (optional) | F-Droid signs its own APKs. Add F-Droid's certificate SHA-256 (`apksigner verify --print-certs <F-Droid APK>`) for F-Droid installs to get verified links; without it they open the invite page, whose "Open in the Globulation 2 app" button still works. Up to eight fingerprints are allowed. |
 | Apple Team ID | The TestFlight workflow signs with team `CL2MNNYQX3`; confirm it on the Apple Developer account's Membership page. |
-| Associated Domains capability | Enable it on the `org.globulation2.glob2` App ID (Certificates, Identifiers & Profiles), so the App Store provisioning profile carries `com.apple.developer.associated-domains`. Check an exported build with `codesign -d --entitlements - Glob2.app`: it must list `applinks:app.glob2online.com`. |
+| Associated Domains capability | Enable it on the `org.globulation2.glob2` App ID (Certificates, Identifiers & Profiles), so the App Store provisioning profile carries `com.apple.developer.associated-domains`. Check an exported build with `codesign -d --entitlements - Glob2.app`: it must list `applinks:app.glob2.online`. |
 
 The release mirror's **App signing fingerprints** workflow reads these values with
 the release credentials, enables Associated Domains on the App ID when it is
@@ -213,12 +249,12 @@ appLinks:
 Check the result:
 
 ```sh
-curl -s https://app.glob2online.com/.well-known/assetlinks.json
-curl -s https://app.glob2online.com/.well-known/apple-app-site-association
-curl -s https://app-site-association.cdn-apple.com/a/v1/app.glob2online.com   # Apple's cached copy
-curl -s 'https://digitalassetlinks.googleapis.com/v1/statements:list?source.web.site=https://app.glob2online.com&relation=delegate_permission/common.handle_all_urls'   # Google's view
+curl -s https://app.glob2.online/.well-known/assetlinks.json
+curl -s https://app.glob2.online/.well-known/apple-app-site-association
+curl -s https://app-site-association.cdn-apple.com/a/v1/app.glob2.online   # Apple's cached copy
+curl -s 'https://digitalassetlinks.googleapis.com/v1/statements:list?source.web.site=https://app.glob2.online&relation=delegate_permission/common.handle_all_urls'   # Google's view
 adb shell pm verify-app-links --re-verify org.globulation2.glob2
-adb shell pm get-app-links org.globulation2.glob2   # app.glob2online.com: verified
+adb shell pm get-app-links org.globulation2.glob2   # app.glob2.online: verified
 ```
 
 Android verifies when the app is installed or updated, so reinstall (or re-verify as

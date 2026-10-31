@@ -3531,3 +3531,8 @@
 [lesson defensive-tactics guard compact]
 [lesson defensive-tactics repel compact]
 [lesson defensive-tactics counterattack compact]
+[Grassland]
+[Kopjes]
+[Game trails]
+[Fish amount]
+[Camp-site amount]

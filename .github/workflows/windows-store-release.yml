@@ -7,6 +7,11 @@ on:
         description: Four-part Store package version, ending in .0 (increase for every upload)
         required: true
         default: 1.0.0.0
+      payload_tag:
+        description: Optional digest-pinned public portable payload; blank rebuilds mirror source
+        required: false
+        type: string
+        default: ""
       upload:
         description: Upload the package to the configured Partner Center branch
         required: true
@@ -35,6 +40,7 @@ jobs:
       STORE_PUBLISHER_DISPLAY_NAME: ${{ vars.STORE_PUBLISHER_DISPLAY_NAME }}
       STORE_BRANCH: ${{ vars.STORE_BRANCH }}
       STORE_VERSION: ${{ inputs.version }}
+      PAYLOAD_TAG: ${{ inputs.payload_tag }}
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
@@ -70,7 +76,8 @@ jobs:
           python -m pip install --only-binary=:all: Pillow==12.2.0
           $encoder = (Get-Command python).Source
           "GLOB2_ASSET_ENCODER_PYTHON=$encoder" >> $env:GITHUB_ENV
-      - uses: msys2/setup-msys2@ec48f7c5447b3140e2b088413ae3a55687bccb6e # v2
+      - if: ${{ !inputs.payload_tag }}
+        uses: msys2/setup-msys2@ec48f7c5447b3140e2b088413ae3a55687bccb6e # v2
         with:
           msystem: MINGW64
           update: true
@@ -98,10 +105,17 @@ jobs:
             mingw-w64-x86_64-libsystre mingw-w64-x86_64-cmake mingw-w64-x86_64-ninja
 
       - name: Check release staging logic
-        shell: msys2 {0}
-        run: python test/test_windows_store_release.py -v
+        shell: pwsh
+        run: |
+          python test/test_windows_store_release.py -v
+          if ($LASTEXITCODE -ne 0) { throw "Store staging tests failed." }
+          python test/test_windows_store_portable.py -v
+          if ($LASTEXITCODE -ne 0) { throw "Portable staging tests failed." }
+          python test/test_windows_store_validator.py -v
+          if ($LASTEXITCODE -ne 0) { throw "Validator report tests failed." }
 
       - name: Build Windows client
+        if: ${{ !inputs.payload_tag }}
         shell: msys2 {0}
         run: |
           python3 scons/sdl3_dependencies.py --prefix build/sdl3-ci/prefix --work build/sdl3-ci/sources --jobs 2
@@ -110,6 +124,7 @@ jobs:
           GLOB2_SDL3_PREFIX=build/sdl3-ci/prefix scons -j$(nproc) release=1 mingw=1 server=0 lean_images=1 build/mingw/client/release/lean-images/src/glob2.exe
 
       - name: Stage game, DLLs, assets and Store identity
+        if: ${{ !inputs.payload_tag }}
         shell: msys2 {0}
         run: |
           python .github/scripts/windows_store_release.py \
@@ -124,6 +139,17 @@ jobs:
             --store-id "$STORE_ID" \
             --version "$STORE_VERSION" \
             --commit "$GITHUB_SHA"
+
+      - name: Stage digest-pinned public portable payload
+        if: ${{ inputs.payload_tag }}
+        shell: pwsh
+        run: |
+          python .github/scripts/windows_store_portable.py --tag "$env:PAYLOAD_TAG" `
+            --dest artifacts/windows-store/content `
+            --identity-name "$env:STORE_IDENTITY_NAME" --publisher "$env:STORE_PUBLISHER" `
+            --publisher-display-name "$env:STORE_PUBLISHER_DISPLAY_NAME" `
+            --store-id "$env:STORE_ID" --version "$env:STORE_VERSION"
+          if ($LASTEXITCODE -ne 0) { throw 'Portable payload staging failed.' }
 
       - name: Install Microsoft GDK
         shell: pwsh
@@ -149,21 +175,34 @@ jobs:
           if ($LASTEXITCODE -ne 0) { throw 'MakePkg genmap failed.' }
           # /lt is installable for local testing; /l produces the encrypted
           # submission package and EKB, which must stay out of public artifacts.
+          $makePkgHelp = (& $tool.FullName pack /? 2>&1 | Out-String)
+          if ($makePkgHelp -notmatch '/validationpath') { throw 'MakePkg does not advertise /validationpath support.' }
+          $validationPath = Join-Path $env:RUNNER_TEMP 'glob2-submission-validator'
+          python .github/scripts/windows_store_validator.py --prepare $validationPath
+          if ($LASTEXITCODE -ne 0) { throw 'Verified Microsoft validator staging failed.' }
           $encryption = if ($env:STORE_UPLOAD -eq 'true') { '/l' } else { '/lt' }
-          & $tool.FullName pack /f $layout /d $content /pd $output /pc /nogameos $encryption
-          if ($LASTEXITCODE -ne 0) { throw 'MakePkg pack failed.' }
+          & $tool.FullName pack /f $layout /d $content /pd $output /pc /nogameos /validationpath $validationPath /validationcritical $encryption
+          $makePkgExit = $LASTEXITCODE
           $package = Get-ChildItem $output -Filter *.msixvc | Select-Object -First 1
           $ekb = Get-ChildItem $output -Filter *.ekb | Select-Object -First 1
           $validator = Get-ChildItem $output -Filter Validator_*.xml | Select-Object -First 1
-          if (-not $package -or -not $validator -or ($env:STORE_UPLOAD -eq 'true' -and -not $ekb)) {
-            throw 'Expected MSIXVC, validator report and (for upload) EKB in the package directory.'
+          if (-not $validator) {
+            Write-Output "::error::MakePkg produced no Submission Validator XML report (exit $makePkgExit)."
+            throw 'Missing Submission Validator XML report.'
+          }
+          python .github/scripts/windows_store_validator.py $validator.FullName
+          $validatorExit = $LASTEXITCODE
+          if ($makePkgExit -ne 0) { throw "MakePkg pack failed (exit $makePkgExit); XML was inspected above." }
+          if ($validatorExit -ne 0) { throw 'Submission Validator XML did not pass.' }
+          if (-not $package -or ($env:STORE_UPLOAD -eq 'true' -and -not $ekb)) {
+            throw 'Expected MSIXVC and (for upload) EKB in the package directory.'
           }
           "package_path=$($package.FullName)" >> $env:GITHUB_OUTPUT
           "ekb_path=$($ekb.FullName)" >> $env:GITHUB_OUTPUT
           "validator_path=$($validator.FullName)" >> $env:GITHUB_OUTPUT
 
       - name: Retain package for install testing and review
-        if: ${{ !inputs.upload }}
+        if: ${{ always() && !inputs.upload && steps.package.outcome != 'skipped' && steps.package.outcome != '' }}
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: glob2-windows-store-${{ inputs.version }}

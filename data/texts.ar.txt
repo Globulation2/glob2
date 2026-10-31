@@ -7064,3 +7064,13 @@ GL فقط
 
 [library %0 · revision %1]
 %0 · المراجعة %1
+[Grassland]
+المراعي
+[Kopjes]
+التلال الصخرية
+[Game trails]
+دروب الحيوانات
+[Fish amount]
+كمية الأسماك
+[Camp-site amount]
+عدد المخيمات

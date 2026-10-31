@@ -7064,3 +7064,13 @@ Liniște: un difuzor dezactivat. Sunet: un difuzor cu unde sonore.
 
 [library GL only]
 Doar GL
+[Grassland]
+Pajiști
+[Kopjes]
+Dealuri stâncoase
+[Game trails]
+Poteci de animale
+[Fish amount]
+Cantitate de pește
+[Camp-site amount]
+Număr de tabere
