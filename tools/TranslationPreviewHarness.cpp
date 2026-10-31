@@ -126,7 +126,7 @@ Json evidenceIdentity(const fs::path &root, const fs::path &pilot)
              "libgag/src/BidiText.cpp", "libgag/src/ui/TextLayout.cpp",
              "src/hud/draw/GameGUIDraw.cpp", "src/hud/touch/GameGUITouchView.cpp",
              "src/hud/touch/GameGUITouch.cpp", "src/hud/touch/GameGUITouch.h",
-             "libgag/include/TouchText.h", "libgag/include/TrueTypeFont.h",
+             "libgag/include/TouchText.h", "libgag/include/TextBreaks.h", "libgag/include/TrueTypeFont.h",
              "libgag/include/ui/TextLayout.h", "libgag/src/DrawableSurfaceCompound.cpp",
              "src/game/screens/CustomGameScreen.cpp", "src/render/overlay/MapZoomControls.h",
              "tools/TranslationPreviewHarness.cpp"})

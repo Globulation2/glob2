@@ -96,7 +96,7 @@ class Restorer(HTMLParser):
         return ''.join(self.parts)
 
 
-def restore(translated, protection, source):
+def restore(translated, protection, source, *, native=True):
     _, protected, leading, trailing = protection
     parser = Restorer(protected)
     parser.feed(translated)
@@ -105,7 +105,7 @@ def restore(translated, protection, source):
         raise ValueError('Empty or invalid provider translation')
     if Counter(TOKENS.findall(text)) != Counter(TOKENS.findall(source)):
         raise ValueError('Provider translation changed placeholders')
-    if PROGRAM.CHECKER.invalid_percent(text) != PROGRAM.CHECKER.invalid_percent(source):
+    if native and PROGRAM.CHECKER.invalid_percent(text) and not PROGRAM.CHECKER.invalid_percent(source):
         raise ValueError('Provider translation introduced invalid percent tokens')
     return text
 
@@ -268,7 +268,7 @@ def run_locked(args):
         if len(translated) != len(batch):
             raise ValueError('Provider response entry count differs from request')
         # Validate entire response before changing any in-memory draft value.
-        values = [restore(item.get('translatedText', ''), protection, entry[3])
+        values = [restore(item.get('translatedText', ''), protection, entry[3], native=entry[0] == 'native')
                   for entry, protection, item in zip(batch, protections, translated)]
         for (surface, key, category, _, literals), value in zip(batch, values):
             if any(literal not in value for literal in literals):

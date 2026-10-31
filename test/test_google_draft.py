@@ -61,6 +61,18 @@ class ProtectionTest(unittest.TestCase):
                 DRAFT.restore(value, DRAFT.protect('Value'), 'Value')
 
 
+class OnlinePercentTest(unittest.TestCase):
+    def test_online_percentages_do_not_use_native_stringtable_percent_grammar(self):
+        source = '95%: {slot0}'
+        protection = DRAFT.protect(source)
+        provider = protection[0].replace('95%', '95% ')
+        self.assertEqual(DRAFT.restore(provider, protection, source, native=False), '95% : {slot0}')
+        source = '{value0}% saturation'
+        protection = DRAFT.protect(source)
+        provider = protection[0].replace(' saturation', 'ความอิ่มตัว')
+        self.assertTrue(DRAFT.restore(provider, protection, source, native=False).endswith('%ความอิ่มตัว'))
+
+
 class CampaignTest(unittest.TestCase):
     def setUp(self):
         temporary = tempfile.TemporaryDirectory()

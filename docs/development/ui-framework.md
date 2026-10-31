@@ -186,9 +186,10 @@ An exclusive campaign lock prevents concurrent writers. Investigate an abandoned
 process before removing a stale lock; retain the ledger and cached responses.
 
 Thai native catalogs may contain reviewed U+200B soft word-break hints. Generate
-candidate boundaries with `node tools/localization/thai_breaks.mjs INPUT OUTPUT`
+candidate boundaries with `python3 tools/localization/thai_breaks.py INPUT OUTPUT`
 using distinct files, then inspect the output during the editorial pass. The tool
-uses the development Node/ICU Thai segmenter; no segmenter ships with the game.
+uses pinned PyThaiNLP with its `newmm` dictionary segmenter from
+`requirements-dev.txt`; no segmenter ships with the game.
 Hints prefer whole-word wrapping without adding visible spaces, and the renderer
 omits them from measurements and drawing. Oversized words retain cluster-safe
 emergency wrapping. Keep online catalog text unannotated and use browser Thai line
