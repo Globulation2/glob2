@@ -1624,65 +1624,76 @@ def render_spring_meadow(ctx):
     return rgb, None
 
 
-# Grass and sand looks: the same ground as the classic grass and sand, so they
-# keep their soft (grass) and speckled (sand) grain and only shift the colour.
+# Grass and sand looks: the same ground as the classic grass and sand, built
+# from the same common-edge and per-layout fields, so they keep the soft (grass)
+# and speckled (sand) grain and only shift the colour and a few small accents.
 
 @recipe(name="lush_grass", group="grass", label="Lush grass", profile="sand",
         seam={"height": 2, "cast_q8": 48, "cast_width_q8": 480},
         palette={"dark": (14, 80, 40), "mid": (26, 104, 52), "light": (48, 128, 64), "clump": (10, 66, 34)},
-        style=Style(luma=72, std=6, grain_max=6))
+        style=Style(luma=72, std=6, grain_max=6), periodic=True, grid=8, blocks=4)
 def render_lush_grass(ctx):
-    p = RECIPES["lush_grass"].palette
-    rgb, _ = ground(ctx, 7, 4, (p["dark"], p["mid"], p["light"]), warp=6, grit=0.10)
-    # Darker clumps about two native pixels across give it body.
-    clumps, _, _ = soft_blobs(ctx, 18, 4.0, 6.0)
-    rgb = mix(rgb, p["clump"], clumps, 0.45)
-    return rgb, None
+    """Classic grass grain in deeper greens, with darker clumps for body."""
+    p, size = RECIPES["lush_grass"].palette, ctx.size
+    rgb = grass_look(ctx, p)
+    clumps = blend_fields(fbm(ctx.shared_rng, 18, 2, size=size), fbm(ctx.rng, 18, 2, size=size),
+                          ctx.interior_mask)
+    return mix(rgb, p["clump"], [smoothstep(0.58, 0.74, v) for v in clumps], 0.45), None
 
 
 @recipe(name="dry_grass", group="grass", label="Dry grass", profile="sand",
         seam={"height": 2, "cast_q8": 48, "cast_width_q8": 480},
         palette={"dark": (92, 100, 36), "mid": (120, 124, 52), "light": (150, 146, 74), "straw": (176, 164, 96)},
-        style=Style(luma=114, std=7, grain_max=7))
+        style=Style(luma=114, std=7, grain_max=7), periodic=True, grid=8, blocks=4)
 def render_dry_grass(ctx):
-    p = RECIPES["dry_grass"].palette
-    rgb, _ = ground(ctx, 6, 4, (p["dark"], p["mid"], p["light"]), warp=8, grit=0.10)
-    # Short pale straw strokes leaning one way, kept off the perimeter.
-    rng = ctx.rng
-    straw = [0.0] * (N * N)
-    for _ in range(26):
-        x, y = ctx.interior_point(STAMP_MARGIN + 10)
-        stamp_stroke(straw, x, y, -0.9 + 0.5 * rng.random(), 5 + 4 * rng.random(), 1.6, 1.0)
-    rgb = mix(rgb, p["straw"], straw, 0.5)
-    return rgb, None
+    """Classic grass grain in olive, with short pale straw streaks."""
+    p, size = RECIPES["dry_grass"].palette, ctx.size
+    rgb = grass_look(ctx, p)
+    # Streaks: noise stretched along x, kept to its brightest ridges.
+    straw = blend_fields(fbm(ctx.shared_rng, 40, 2, cells_y=10, size=size),
+                         fbm(ctx.rng, 40, 2, cells_y=10, size=size), ctx.interior_mask)
+    return mix(rgb, p["straw"], [smoothstep(0.66, 0.8, v) for v in straw], 0.5), None
+
+
+def grass_look(ctx, p):
+    """Classic grass turf through another dark/mid/light palette."""
+    common, common_grain = grass_fields(ctx.shared_rng, ctx.size)
+    own, own_grain = grass_fields(ctx.rng, ctx.size)
+    height = normalize_like(blend_fields(common, own, ctx.interior_mask), common, 0.02, 0.98)
+    rgb = ramp(height, [(0.0, p["dark"]), (0.5, p["mid"]), (1.0, p["light"])])
+    fine = blend_fields(common_grain, own_grain, ctx.interior_mask)
+    return [[c * (1 + 0.05 * (v - 0.5) * 2) for c, v in zip(channel, fine)] for channel in rgb]
 
 
 @recipe(name="dune_sand", group="sand", label="Dune sand", profile="sand",
         seam={"height": 2, "cast_q8": 40, "cast_width_q8": 448},
         palette={"dark": (176, 120, 60), "mid": (206, 152, 84), "light": (230, 186, 118)},
-        style=Style(luma=158, std=20, grain_max=26, match=0.5))
+        style=Style(luma=158, std=20, grain_max=26, match=0.5), periodic=True, grid=8, blocks=4)
 def render_dune_sand(ctx):
+    """Classic sand grain in warm orange, with its mineral flecks."""
     p = RECIPES["dune_sand"].palette
-    rng = ctx.rng
-    f = normalize(domain_warp(fbm(rng, 8, 3), fbm(rng, 3, 2), fbm(rng, 3, 2), 6))
-    rgb = ramp(f, [(0.0, p["dark"]), (0.5, p["mid"]), (1.0, p["light"])])
-    # Speckle at the native pixel, like the classic sand.
-    rgb = grain(rgb, rng, 0.22, cells=32)
-    return rgb, None
+    rgb, flecks = sand_look(ctx, p)
+    return mix(rgb, p["dark"], flecks, 0.18), None
 
 
 @recipe(name="pale_sand", group="sand", label="Pale sand", profile="sand",
         seam={"height": 2, "cast_q8": 40, "cast_width_q8": 448},
         palette={"dark": (190, 180, 146), "mid": (214, 204, 170), "light": (234, 226, 196), "shell": (250, 246, 232)},
-        style=Style(luma=198, std=14, grain_max=24, match=0.5))
+        style=Style(luma=198, std=14, grain_max=24, match=0.5), periodic=True, grid=8, blocks=4)
 def render_pale_sand(ctx):
+    """Classic sand grain bleached pale, its flecks turned to shell fragments."""
     p = RECIPES["pale_sand"].palette
-    rng = ctx.rng
-    rgb, _ = ground(ctx, 8, 3, (p["dark"], p["mid"], p["light"]), grit=0.0)
-    rgb = grain(rgb, rng, 0.16, cells=32)
-    shells, _ = scatter(ctx, 10, 1.4, 2.0, softness=0.4)
-    rgb = mix(rgb, p["shell"], shells, 0.7)
-    return rgb, None
+    rgb, flecks = sand_look(ctx, p)
+    return mix(rgb, p["shell"], flecks, 0.7), None
+
+
+def sand_look(ctx, p):
+    """Classic sand dunes and grains through another palette, and its flecks."""
+    common, common_flecks = sand_fields(ctx.shared_rng, ctx.size)
+    own, own_flecks = sand_fields(ctx.rng, ctx.size)
+    height = normalize_like(blend_fields(common, own, ctx.interior_mask), common, 0.02, 0.98)
+    rgb = ramp(height, [(0.0, p["dark"]), (0.5, p["mid"]), (1.0, p["light"])])
+    return rgb, blend_fields(common_flecks, own_flecks, ctx.interior_mask)
 
 
 # Water: opaque animated tiles in the colour of the retired scrolling ocean
