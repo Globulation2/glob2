@@ -3102,8 +3102,6 @@ OpenGL недоступний у цій збірці.
 Відпустіть над придатною місцевістю для розміщення
 [Paint on the map; two fingers move]
 Малюйте на карті; рухайте двома пальцями
-[Tutorial ▸]
-Навчання ▸
 [Back to tools]
 Назад до інструментів
 [Starvation overlay]
@@ -6210,246 +6208,6 @@ Discord відкрито. Ви можете повернутися до гри �
 Видалити запис
 [recording refresh]
 Оновити
-[tutorial part1 message 1]
-Вітаємо у Globulation 2! Чотири місії навчать керувати колонією. Зберігайте поступ у меню гри та завантажуйте пізніше з головного меню. Натисніть пробіл або «Гаразд» на сенсорному екрані, щоб продовжити. Деякі повідомлення зникнуть; їх можна перечитати в історії повідомлень.
-[tutorial part1 message 2]
-Спочатку у вас є Рій і один робітник. Подивімося, як вони співпрацюють.
-[tutorial part1 message 3]
-Робітник збирає пшеницю та несе до Рою. Рій витрачає її на нових юнітів, тому життєво важливий для колонії.
-[tutorial part1 message 4]
-Виберіть свого глобуля — рухомого юніта — лівою кнопкою миші або дотиком.
-[tutorial part1 message 5]
-Відомості про юніта показують, як із часом зменшується запас їжі. Ваш глобуль голодніє. Коли смужки їжі ввімкнені, синя смужка під юнітом показує залишок.
-[tutorial part1 message 6]
-Глобулі їдять у їдальнях. Скасуйте вибір правою кнопкою миші або торкніться порожньої землі на сенсорному екрані.
-[tutorial part1 message 7]
-Відкрийте керування будівництвом, виберіть їдальню та розмістіть біля пшениці. Не бачите пшениці — простежте маршрут робітника. На сенсорному екрані скористайтеся будівництвом і підтвердьте придатне місце. Завершивши, вийдіть із розміщення правою кнопкою або сенсорним скасуванням.
-[tutorial part1 message 8]
-Чудово! Майданчик їдальні розміщено.
-[tutorial part1 message 9]
-Робітник із Рою тепер може будувати їдальню. Він збирає деревину з сусідніх дерев і несе на майданчик. Дочекайтеся завершення.
-[tutorial part1 message 10]
-Готовій їдальні потрібна пшениця. Призначений робітник збиратиме її так само, як постачальник Рою.
-[tutorial part1 message 11]
-Коли надходить пшениця, жовта смужка ресурсів їдальні зростає. Вона показує запас пшениці.
-[tutorial part1 message 12]
-Тепер навчімося призначати роботу.
-[tutorial part1 message 13]
-Один робітник постачає Рій, інший — їдальню. Кожен може перерватися, щоб поїсти. Це нормально.
-[tutorial part1 message 14]
-Виберіть Рій і знайдіть призначення робітників. На комп'ютері воно позначене як «Працює»; на сенсорному екрані використовуйте призначених робітників і ціль. Ціль — бажана кількість робітників у будівлі.
-[tutorial part1 message 15]
-Установіть бажану кількість робітників Рою на 0. Потім виберіть їдальню й теж установіть 0.
-[tutorial part1 message 16]
-Робітники тепер вільні, але їжа потрібна й далі. Їдальня без призначених робітників зрештою вичерпає пшеницю.
-[tutorial part1 message 17]
-Глобуль без їжі втрачає здоров'я і може загинути. Лікарня лікує поранених, але їдальні також мають отримувати постачання.
-[tutorial part1 message 18]
-Побудуйте лікарню через керування будівництвом. Їй не потрібна пшениця, тому оберіть місце біля деревини або центральне місце поряд із Роєм.
-[tutorial part1 message 19]
-Виберіть майданчик лікарні й установіть бажану кількість робітників на 2. Удвох вони завершать будівництво швидше.
-[tutorial part1 message 20]
-Лікарня готова. Поранені глобулі можуть відвідувати її для відновлення здоров'я.
-[tutorial part1 message 21]
-Чорні ділянки не досліджені. Рухаючись, юніти відкривають землю поруч. Робітники йдуть за роботою, тож розвідувати ними незручно. Для цього призначені дослідники.
-[tutorial part1 message 22]
-Виберіть Рій і знайдіть пропорції виробництва робітників, дослідників та воїнів. Підніміть пропорцію дослідників до 1.
-[tutorial part1 message 23]
-Коли пропорції робітників і дослідників обидві 1, Рій із часом виробляє їх порівну. Задайте робітникам 0, щоб поки виробляти лише дослідників.
-[tutorial part1 message 24]
-Поверніть бажану кількість робітників Рою до 1, щоб робітник приносив пшеницю.
-[tutorial part1 message 25]
-Виберіть їдальню і теж задайте бажану кількість робітників 1. Колонії, що зростає, потрібне стабільне харчування.
-[tutorial part1 message 26]
-Дочекайтеся, поки Рій виробить дослідника.
-[tutorial part1 message 27]
-Дослідник літає довкола колонії та відкриває місцевість. Перш ніж продовжити, дочекайтеся другого дослідника.
-[tutorial part1 message 28]
-Знову виберіть Рій. Задайте дослідникам пропорцію 0, а робітникам 1, щоб відновити виробництво робітників.
-[tutorial part2 message 1]
-На схід від бази є камінь. Запам'ятайте місце: він знадобиться пізніше.
-[tutorial part2 message 2]
-Дерева на південь від каменю — апельсинові. Виберіть їх, щоб побачити відомості про ресурс. До фруктів повернемося пізніше, а зараз зосередьмося на Рої.
-[tutorial part2 message 3]
-Нехай Рій виробляє тільки робітників: їхня пропорція 1, дослідників і воїнів — 0.
-[tutorial part2 message 4]
-Прискоримо зростання колонії. Виберіть Рій і задайте бажану кількість робітників 6. Якщо шістьох ще немає, нові займуть вільні місця, щойно з’являться.
-[tutorial part2 message 5]
-До наступних завдань перейдемо, коли буде 8 робітників. Під час зростання населення постачайте Рій та їдальню.
-[tutorial part2 message 6]
-Тепер Рій постачають кілька робітників. Більше доставок пшениці прискорює виробництво юнітів.
-[tutorial part2 message 7]
-Новий робітник коштує 5 пшениці. Доставка з далекого поля займає час, тому Рою часто потрібно більше постачальників, ніж їдальні. За можливості ставте залежні від їжі будівлі біля пшениці.
-[tutorial part2 message 8]
-У вас щонайменше 8 робітників. Виберіть Рій і зменште бажану кількість робітників до 1, щоб уповільнити зростання населення на час будівництва.
-[tutorial part2 message 9]
-Колонії потрібно більше місць для їжі. Побудуйте другу їдальню на північ від наявної.
-[tutorial part2 message 10]
-Призначте вільних робітників на новий майданчик. Потрібно лише 3 деревини, тож понад 3 будівельники мало допоможуть.
-[tutorial part2 message 11]
-У готовій їдальні знову діє кількість робітників для постачання, зазвичай 1. Для будівництва та щоденного постачання бажану кількість робітників задають окремо.
-[tutorial part2 message 12]
-Робітники можуть навчитися швидше рухатися. Для цього потрібна бігова доріжка.
-[tutorial part2 message 13]
-Знайдіть бігову доріжку в керуванні будівництвом. На комп'ютері наведіть вказівник на значок для опису й вартості. На сенсорному екрані виберіть її в будівництві для підготовки розміщення. Ще не ставте.
-[tutorial part2 message 14]
-Біговій доріжці потрібно багато деревини й трохи каменю. Виберіть центральне місце, куди юнітам легко дістатися.
-[tutorial part2 message 15]
-Побудуйте бігову доріжку, наприклад на південь від Рою. Залиште простір довкола: навчальні будівлі розширюються під час поліпшення.
-[tutorial part2 message 16]
-Задайте бажану кількість робітників на майданчику доріжки від 5 до 7. Загалом потрібно 7 одиниць будівельних матеріалів.
-[tutorial part2 message 17]
-Готова доріжка тренує відвідувачів без постійного постачання матеріалів чи пшениці.
-[tutorial part2 message 18]
-Глобулі заходять на доріжку тренуватися. Після навчання бігатимуть швидше.
-[tutorial part2 message 19]
-Виберіть доріжку, щоб оглянути навчання. Індикатори показують, наскільки близькі юніти всередині до завершення.
-[tutorial part2 message 20]
-Навчені робітники швидше рухаються й доставляють ресурси. Стежте за запасами їжі під час зростання: швидша доставка допомагає лише за достатнього постачання їдалень.
-[tutorial part2 message 21]
-Знайдіть лічильник робітників в інтерфейсі. Загальне число показує населення; доступні робітники допомагають помітити вільних працівників або незаповнені роботи. Залучайте вільних, але не призначайте більше роботи, ніж колонія здатна виконати.
-[tutorial part2 message 22]
-Інтерфейс також показує кількість дослідників і воїнів. Перевіряйте її, плануючи виробництво чи призначення до прапорів.
-[tutorial part2 message 23]
-У вас 2 їдальні. Кожна базова годує 4 юнітів одночасно, разом це 8 місць. Зголодніти може більше ніж 8 юнітів, тож залишайте місткість для черг.
-[tutorial part2 message 24]
-Дві їдальні не зможуть вічно підтримувати зростання. Додавайте місця для їжі, перш ніж нестача перетвориться на голод.
-[tutorial part2 message 25]
-Побудуйте ще 3 їдальні біля пшениці. Голодні робітники припиняють працювати, а тривалий голод убиває їх. Призначайте вільних на будівництво, зберігаючи чинне постачання їжі.
-[tutorial part2 message 26]
-Завершіть ще 3 їдальні, щоб загалом їх стало 5.
-[tutorial part2 message 27]
-Після будівництва в нових їдальнях діє кількість робітників для постачання, зазвичай по 1 робітнику. Перевірте, чи є постачальники та достатній запас пшениці.
-[tutorial part2 message 28]
-Доріжка поліпшила рух суходолом. Тепер навчімо колонію плавати.
-[tutorial part2 message 29]
-Басейн навчає юнітів плавати й потребує деревини для будівництва. Розмістіть його на великій галявині на північний схід від бази, на північ від каменю. Залиште місце для поліпшень і розростання ресурсів та призначте вільних робітників на будівництво.
-[tutorial part2 message 30]
-Басейн навчає юнітів плавати й потребує деревини для будівництва. Розмістіть його на великій галявині на північний схід від бази, на північ від каменю. Залиште місце для поліпшень і розростання ресурсів та призначте вільних робітників на будівництво.
-[tutorial part2 message 31]
-Басейн готовий. Глобулі можуть заходити й учитися плавати.
-[tutorial part2 message 32]
-Виберіть басейн, щоб оглянути навчання. Базовий басейн навчає 2 глобулів одночасно, як і базова доріжка.
-[tutorial part2 message 33]
-Навчені глобулі тепер плавають. Незабаром дамо їм роботу, для якої треба перетнути воду.
-[tutorial part2 message 34]
-Попереду ще багато цікавого. Для перерви збережіть поступ у меню гри та поверніться пізніше.
-[tutorial part2 message 35]
-Колонія має їжу й фізичну підготовку. Школа навчить робітників навичок для кращих будівель.
-[tutorial part2 message 36]
-Школа поліпшує збирання та будівництво. Для її зведення потрібні водорості, які ростуть у воді. Робітники-плавці можуть їх зібрати.
-[tutorial part2 message 37]
-Захищайте важливі навчальні будівлі. Школі не обов'язково стояти біля води: захищене місце вглибині суходолу безпечніше від нападу.
-[tutorial part2 message 38]
-Побудуйте школу в захищеному місці: за басейном або на південний захід від Рою поряд із доріжкою. Призначте вільних робітників.
-[tutorial part2 message 39]
-Виберіть будівлю, щоб побачити призначених робітників. На комп'ютері настроювана дія перемикання шляхів юнітів також показує лінії до їхніх цілей; поточну клавішу дивіться в налаштуваннях керування. Дочекайтеся школи.
-[tutorial part3 message 1]
-Колонія має їдальні, лікарню, доріжку, басейн і школу. Час готувати оборону.
-[tutorial part3 message 2]
-Ми ще не виробляли воїнів. Без них колонія погано захищена від нападу.
-[tutorial part3 message 3]
-Виберіть Рій і задайте пропорцію воїнів 2. Робітникам залиште 1, щоб вони теж з'являлися.
-[tutorial part3 message 4]
-Тепер Рій виробляє приблизно 2 воїнів на кожного робітника. Для швидшого виробництва призначте більше постачальників.
-[tutorial part3 message 5]
-Перший воїн готовий і починає навчання. Дочекайтеся другого, перш ніж продовжити.
-[tutorial part3 message 6]
-Воїни теж користуються доріжкою та басейном. Також вони тренують атаку в казармі.
-[tutorial part3 message 7]
-Казарма поліпшує силу й швидкість атаки. Сила збільшує шкоду від удару, швидкість — частоту ударів. Добре навчені воїни здатні перемогти значно більші групи ненавчених ворогів.
-[tutorial part3 message 8]
-Побудуйте казарму біля деревини, потрібної для будівництва.
-[tutorial part3 message 9]
-Призначте вільних робітників на майданчик казарми. Залиште досить робітників для постачання їжі й не створюйте більше завдань, ніж вони здатні виконати.
-[tutorial part3 message 10]
-Казарма готова. Воїни можуть тренувати там бойові навички.
-[tutorial part3 message 11]
-Поліпшуючи будівлі, ми зміцнюємо колонію.
-[tutorial part3 message 12]
-Навчені в школі робітники можуть зводити поліпшення. Виберіть придатну будівлю та знайдіть поліпшення в її керуванні. Пошкодженій будівлі спершу може знадобитися ремонт.
-[tutorial part3 message 13]
-Визначмо перше поліпшення. У їдальнях ще є місця, тож вони зачекають.
-[tutorial part3 message 14]
-У лікарні теж є місце. Зосередимося на школі, доріжці, басейні або казармі.
-[tutorial part3 message 15]
-Спочатку поліпшіть доріжку, щоб юніти навчилися рухатися ще швидше.
-[tutorial part3 message 16]
-Виберіть доріжку та поліпшення в її керуванні. Юніти всередині мають вийти перед будівництвом, тому зміна може початися не відразу.
-[tutorial part3 message 17]
-Призначте вільних робітників на поліпшення доріжки. Майданчик рівня 2 можуть будувати тільки робітники з потрібною шкільною підготовкою.
-[tutorial part3 message 18]
-Дочекайтеся поліпшення доріжки. Будівлі вищого рівня потребують більше ресурсів і часу.
-[tutorial part3 message 19]
-Доріжка рівня 2 готова. Вона займає більше землі, саме тому ми лишали проміжок. Без місця для розширення будівлю не поліпшити.
-[tutorial part3 message 20]
-Тепер поліпшіть казарму й басейн до рівня 2. Продовжимо, коли обидва завершаться.
-[tutorial part3 message 21]
-Поліпшені будівлі зазвичай приймають більше глобулів або краще навчають. Наприклад, їдальня рівня 2 має 7 місць і годує швидше за базову.
-[tutorial part3 message 22]
-Ворог поруч. Підготуємося до нападу.
-[tutorial part3 message 23]
-Вежі стріляють у ворогів у межах досяжності, а стіни їх захищають. Обома засобами оборонятимемо вузький підхід до колонії.
-[tutorial part3 message 24]
-Якщо є місце, ставте вежі парами. Стіни можуть прикрити три боки, але залиште шлях для доставки кам'яних боєприпасів.
-[tutorial part3 message 25]
-Погляньте на схід від басейну, на північ від інших фруктових дерев. Вузький перехід веде на інший острів і добре підходить для оборони.
-[tutorial part3 message 26]
-Заплануйте місце для 2 веж між деревами й берегом. Позаду залиште підхід для каменю, з інших боків — для стін. Не відгородіть робітників.
-[tutorial part3 message 27]
-Побудуйте там 2 вежі. Призначте по 2 або 3 робітники на майданчик відповідно до доступної кількості в інтерфейсі.
-[tutorial part3 message 28]
-Через керування будівництвом поставте секції стін уздовж трьох зовнішніх боків веж. Бік до колонії залиште відкритим для робітників.
-[tutorial part3 message 29]
-Кожна секція створює будівельну роботу й потребує 1 каменю. Якщо робітників на все відразу бракує, вони завершать секції по черзі.
-[tutorial part3 message 30]
-Дочекайтеся завершення обох веж і кількох секцій стіни. Вежам також потрібні кам’яні боєприпаси; далекий кар’єр уповільнює доставку. Збільшуйте бажану кількість робітників біля веж, якщо маєте вільних.
-[tutorial part4 message 1]
-Колонія має їжу, навчання й оборону. Будівлі можна ще раз підняти до рівня 3 для кращої підготовки й місткості. Продовжуйте поліпшення за наявності ресурсів і навичок.
-[tutorial part4 message 2]
-Шукайте ворожу колонію на північний захід від бази. Перемістіть туди огляд.
-[tutorial part4 message 3]
-Навіть досліджена земля може ховатися в тумані війни. Щоб бачити теперішні дії ворога, потрібен дослідник поблизу.
-[tutorial part4 message 4]
-Відкрийте прапори. Прапори й зони дозволяють спрямовувати юнітів, не керуючи кожним глобулем окремо.
-[tutorial part4 message 5]
-Виберіть прапор розвідки зі значком повітряного змія. Прапори ставляться на суходолі, воді, ресурсах і недослідженій землі.
-[tutorial part4 message 6]
-Поставте прапор розвідки над імовірною ворожою базою. Приблизного місця досить для початку розвідки. Вийдіть із розміщення правою кнопкою або завершіть сенсорним керуванням.
-[tutorial part4 message 7]
-Контур навколо прапора показує робочий радіус. Призначений дослідник оглядатиме цю зону. Якщо ніхто не приходить, перевірте кількість і за потреби виробіть ще одного в Рої. Коли він прибуде, натисніть пробіл або «Гаразд».
-[tutorial part4 message 8]
-У ворога багато робітників і зібрана армія. Підготуємо оборону перед їхнім нападом.
-[tutorial part4 message 9]
-У прапорах виберіть синю зону охорони. Використовуйте додавання землі до зони, а не вилучення. На сенсорному екрані оберіть малювання замість стирання.
-[tutorial part4 message 10]
-Виберіть форму й розмір пензля. Великий квадрат зручний для компактної оборонної ділянки.
-[tutorial part4 message 11]
-Намалюйте зону охорони відразу за вежами, де очікуєте ворога. Клацніть чи торкніться для однієї точки або тягніть для більшої площі. На сенсорному екрані використовуйте панорамування, коли треба пересунути огляд під час малювання.
-[tutorial part4 message 12]
-Доступні воїни підуть у зону охорони. Вона має вміщувати оборонців, але бути досить малою, щоб тримати їх разом біля переходу. Чекайте нападу.
-[tutorial part4 message 13]
-Ворог наближається до переходу!
-[tutorial part4 message 14]
-На нас напали. Спостерігайте, як навчені воїни й вежі обороняють позицію.
-[tutorial part4 message 15]
-Ви вистояли! У прапорах виберіть шипований бойовий прапор і поставте над ворожим Роєм, щоб спрямувати туди атаку.
-[tutorial part4 message 16]
-Вийдіть із розміщення й виберіть бойовий прапор. Призначте більше ніж 1 воїна, потім зменште радіус, зосередивши атаку біля ворожого Рою. Дочекайтеся прибуття.
-[tutorial part4 message 17]
-Атака почалася. Щоб дістатися Рою, воїнам треба пройти ворожі вежі.
-[tutorial part4 message 18]
-Воїни дісталися ворожої бази. Продовжуйте зосереджувати атаку на Рої.
-[tutorial part4 message 19]
-Ви знищили ворожий Рій. Вітаємо! Навчання завершено: ви опанували основи харчування, призначень, підготовки, поліпшень, розвідки й бою.
-[tutorial mission basics]
-Вступ і основи
-[tutorial mission development]
-Будівлі та школи
-[tutorial mission training]
-Воїни, навчання й поліпшення
-[tutorial mission flags]
-Прапори та завершення
 [library  Could not restore the previous library: %0]
  Не вдалося відновити попередню бібліотеку: %0
 [library  The previous library is retained.]
@@ -6642,6 +6400,422 @@ Discord відкрито. Ви можете повернутися до гри �
 Не вдалося зберегти вибір. Звук залишається вимкненим. Спробуйте знову.
 [audio choices description]
 Тиша: вимкнений динамік. Звук: динамік зі звуковими хвилями.
+[intro menu]
+
+[intro briefing]
+
+[intro try]
+
+[intro preflight]
+
+[intro preflight save]
+
+[intro preference failed]
+
+[intro goal scout]
+
+[intro goal build]
+
+[intro goal supply]
+
+[intro goal grow]
+
+[intro goal attack]
+
+[intro instruction scout]
+
+[intro instruction build]
+
+[intro instruction supply]
+
+[intro instruction grow]
+
+[intro instruction attack]
+
+[intro help]
+
+[intro help scout]
+
+[intro help build]
+
+[intro help supply]
+
+[intro help grow]
+
+[intro help attack]
+
+[intro hint scout]
+
+[intro hint build]
+
+[intro hint supply]
+
+[intro hint grow]
+
+[intro hint attack]
+
+[intro hint no scout flag]
+
+[intro hint no suppliers]
+
+[intro hint no war flag]
+
+[intro hint retry]
+
+[intro complete]
+
+[intro complete body]
+
+[intro play again]
+
+[intro restart]
+
+[intro restart body]
+
+[intro help touch scout]
+
+[intro help touch build]
+
+[intro help touch supply]
+
+[intro help touch grow]
+
+[intro help touch attack]
+
+[intro show destination]
+
+[intro scout destination]
+
+[intro attack destination]
+
+[intro compact scout]
+
+[intro compact build]
+
+[intro compact supply]
+
+[intro compact grow]
+
+[intro compact attack]
+
+[tutorial lessons]
+
+[tutorial restart]
+
+[tutorial restart body]
+
+[tutorial complete]
+
+[tutorial food title]
+
+[tutorial food briefing]
+
+[tutorial food complete]
+
+[tutorial unavailable]
+
+[lesson healing title]
+
+[lesson healing briefing]
+
+[lesson healing complete]
+
+[lesson healing build hint]
+
+[lesson healing build title]
+
+[lesson healing build instruction]
+
+[lesson healing build help]
+
+[lesson healing build marker]
+
+[lesson healing heal hint]
+
+[lesson healing heal title]
+
+[lesson healing heal instruction]
+
+[lesson healing heal help]
+
+[lesson healing heal marker]
+
+[lesson walking-training title]
+
+[lesson walking-training briefing]
+
+[lesson walking-training complete]
+
+[lesson walking-training build hint]
+
+[lesson walking-training build title]
+
+[lesson walking-training build instruction]
+
+[lesson walking-training build help]
+
+[lesson walking-training build marker]
+
+[lesson walking-training train hint]
+
+[lesson walking-training train title]
+
+[lesson walking-training train instruction]
+
+[lesson walking-training train help]
+
+[lesson swimming title]
+
+[lesson swimming briefing]
+
+[lesson swimming complete]
+
+[lesson swimming build hint]
+
+[lesson swimming build title]
+
+[lesson swimming build instruction]
+
+[lesson swimming build help]
+
+[lesson swimming build marker]
+
+[lesson swimming train hint]
+
+[lesson swimming train title]
+
+[lesson swimming train instruction]
+
+[lesson swimming train help]
+
+[lesson swimming water-job hint]
+
+[lesson swimming water-job title]
+
+[lesson swimming water-job instruction]
+
+[lesson swimming water-job help]
+
+[lesson swimming water-job marker]
+
+[lesson schools title]
+
+[lesson schools briefing]
+
+[lesson schools complete]
+
+[lesson schools build hint]
+
+[lesson schools build title]
+
+[lesson schools build instruction]
+
+[lesson schools build help]
+
+[lesson schools build marker]
+
+[lesson schools learn hint]
+
+[lesson schools learn title]
+
+[lesson schools learn instruction]
+
+[lesson schools learn help]
+
+[lesson upgrades title]
+
+[lesson upgrades briefing]
+
+[lesson upgrades complete]
+
+[lesson upgrades upgrade hint]
+
+[lesson upgrades upgrade title]
+
+[lesson upgrades upgrade instruction]
+
+[lesson upgrades upgrade help]
+
+[lesson upgrades upgrade marker]
+
+[lesson upgrades train hint]
+
+[lesson upgrades train title]
+
+[lesson upgrades train instruction]
+
+[lesson upgrades train help]
+
+[lesson warrior-training title]
+
+[lesson warrior-training briefing]
+
+[lesson warrior-training complete]
+
+[lesson warrior-training produce hint]
+
+[lesson warrior-training produce title]
+
+[lesson warrior-training produce instruction]
+
+[lesson warrior-training produce help]
+
+[lesson warrior-training produce marker]
+
+[lesson warrior-training build hint]
+
+[lesson warrior-training build title]
+
+[lesson warrior-training build instruction]
+
+[lesson warrior-training build help]
+
+[lesson warrior-training build marker]
+
+[lesson warrior-training train hint]
+
+[lesson warrior-training train title]
+
+[lesson warrior-training train instruction]
+
+[lesson warrior-training train help]
+
+[lesson fortifications title]
+
+[lesson fortifications briefing]
+
+[lesson fortifications complete]
+
+[lesson fortifications tower hint]
+
+[lesson fortifications tower title]
+
+[lesson fortifications tower instruction]
+
+[lesson fortifications tower help]
+
+[lesson fortifications tower marker]
+
+[lesson fortifications walls hint]
+
+[lesson fortifications walls title]
+
+[lesson fortifications walls instruction]
+
+[lesson fortifications walls help]
+
+[lesson fortifications walls marker]
+
+[lesson fortifications supply hint]
+
+[lesson fortifications supply title]
+
+[lesson fortifications supply instruction]
+
+[lesson fortifications supply help]
+
+[lesson fortifications supply marker]
+
+[lesson fortifications hold hint]
+
+[lesson fortifications hold title]
+
+[lesson fortifications hold instruction]
+
+[lesson fortifications hold help]
+
+[lesson fortifications hold marker]
+
+[lesson defensive-tactics title]
+
+[lesson defensive-tactics briefing]
+
+[lesson defensive-tactics complete]
+
+[lesson defensive-tactics scout hint]
+
+[lesson defensive-tactics scout title]
+
+[lesson defensive-tactics scout instruction]
+
+[lesson defensive-tactics scout help]
+
+[lesson defensive-tactics scout marker]
+
+[lesson defensive-tactics guard hint]
+
+[lesson defensive-tactics guard title]
+
+[lesson defensive-tactics guard instruction]
+
+[lesson defensive-tactics guard help]
+
+[lesson defensive-tactics guard marker]
+
+[lesson defensive-tactics repel hint]
+
+[lesson defensive-tactics repel title]
+
+[lesson defensive-tactics repel instruction]
+
+[lesson defensive-tactics repel help]
+
+[lesson defensive-tactics repel marker]
+
+[lesson defensive-tactics counterattack hint]
+
+[lesson defensive-tactics counterattack title]
+
+[lesson defensive-tactics counterattack instruction]
+
+[lesson defensive-tactics counterattack help]
+
+[lesson defensive-tactics counterattack marker]
+
+[lesson healing build compact]
+
+[lesson healing heal compact]
+
+[lesson walking-training build compact]
+
+[lesson walking-training train compact]
+
+[lesson swimming build compact]
+
+[lesson swimming train compact]
+
+[lesson swimming water-job compact]
+
+[lesson schools build compact]
+
+[lesson schools learn compact]
+
+[lesson upgrades upgrade compact]
+
+[lesson upgrades train compact]
+
+[lesson warrior-training produce compact]
+
+[lesson warrior-training build compact]
+
+[lesson warrior-training train compact]
+
+[lesson fortifications tower compact]
+
+[lesson fortifications walls compact]
+
+[lesson fortifications supply compact]
+
+[lesson fortifications hold compact]
+
+[lesson defensive-tactics scout compact]
+
+[lesson defensive-tactics guard compact]
+
+[lesson defensive-tactics repel compact]
+
+[lesson defensive-tactics counterattack compact]
+
 [library GL only]
 Лише GL
 [Grassland]
@@ -6652,5 +6826,7 @@ Discord відкрито. Ви можете повернутися до гри �
 Звірині стежки
 [Fish amount]
 Кількість риби
+[scenario messages]
+
 [Camp-site amount]
 Кількість стоянок

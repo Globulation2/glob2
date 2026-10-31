@@ -1,7 +1,8 @@
+const {waitForMainMenu}=require('./main-menu');
 const {gameURL, clickMainMenu, clickCustomGameStart} = require('./main-menu');
 const {test, expect} = require('@playwright/test');
 const state = page => page.evaluate(() => glob2Diagnostics.snapshot());
-const screen = (page, name) => expect.poll(async () => (await state(page)).screen).toContain(name);
+const screen = (page, name) => name==='MainMenuScreen' ? waitForMainMenu(page) : expect.poll(async () => (await state(page)).screen).toContain(name);
 const toggle = page => page.locator('#canvas').press('g', {delay: 80});
 // Bottom-left of the play area at the default 1200x900 viewport: open sky below
 // the fitted ring in the overview, fog or ground on the flat map.

@@ -3102,8 +3102,6 @@ Apagar
 Solte sobre terreno válido para colocar
 [Paint on the map; two fingers move]
 Pinte no mapa; mova com dois dedos
-[Tutorial ▸]
-Tutorial ▸
 [Back to tools]
 Voltar às ferramentas
 [Starvation overlay]
@@ -6210,246 +6208,6 @@ Não foi possível exportar a gravação.
 Excluir gravação
 [recording refresh]
 Atualizar
-[tutorial part1 message 1]
-Boas-vindas ao Globulation 2! Estas quatro missões ensinam a gerenciar uma colônia. Salve pelo menu do jogo e continue depois pelo menu principal. Pressione Espaço ou toque em OK para avançar. Consulte mensagens anteriores no Histórico de mensagens.
-[tutorial part1 message 2]
-Você começa com uma Colmeia e um trabalhador. Vamos observar como trabalham juntos.
-[tutorial part1 message 3]
-O trabalhador colhe trigo e o leva à Colmeia. Ela consome trigo para produzir novas unidades e é essencial à colônia.
-[tutorial part1 message 4]
-Selecione seu glóbulo, a unidade móvel, com um clique esquerdo ou um toque.
-[tutorial part1 message 5]
-As informações da unidade mostram a reserva de alimento diminuindo: ela está ficando com fome. Quando as barras de alimento estão visíveis, a azul sob a unidade mostra a reserva.
-[tutorial part1 message 6]
-Glóbulos comem nas Tavernas. Limpe a seleção com um clique direito ou tocando em terreno vazio na tela sensível ao toque.
-[tutorial part1 message 7]
-Abra os controles de construção, escolha Taverna e coloque-a perto do trigo. Siga o trajeto de coleta do trabalhador se não o encontrar. Na tela de toque, use Construir e confirme um local válido. Saia da colocação com um clique direito ou Cancelar.
-[tutorial part1 message 8]
-Ótimo! O canteiro da Taverna está colocado.
-[tutorial part1 message 9]
-Um trabalhador da Colmeia pode construir a Taverna. Ele coleta madeira de árvores próximas e a leva ao canteiro. Espere a conclusão.
-[tutorial part1 message 10]
-A Taverna pronta precisa de trigo. Um trabalhador designado faz a coleta, assim como para a Colmeia.
-[tutorial part1 message 11]
-A barra amarela da Taverna sobe quando chega trigo. Ela mostra o estoque.
-[tutorial part1 message 12]
-Agora vamos aprender a distribuir o trabalho.
-[tutorial part1 message 13]
-Um trabalhador abastece a Colmeia e outro a Taverna. Eles podem interromper o trabalho para comer. Isso é normal.
-[tutorial part1 message 14]
-Selecione a Colmeia e encontre a designação de trabalhadores: Trabalhando no computador, ou designados e meta na tela de toque. A meta indica quantos trabalhadores você quer no edifício.
-[tutorial part1 message 15]
-Defina a meta de trabalhadores da Colmeia como 0. Depois selecione a Taverna e faça o mesmo.
-[tutorial part1 message 16]
-Seus trabalhadores estão ociosos, mas continuam comendo. Sem trabalhadores designados, a Taverna acabará ficando sem trigo.
-[tutorial part1 message 17]
-Um glóbulo sem comida perde saúde e pode morrer. Um Hospital cura ferimentos, mas você também precisa abastecer as Tavernas.
-[tutorial part1 message 18]
-Construa um Hospital. Ele não precisa de trigo, então coloque-o perto de madeira ou em um ponto central, próximo à Colmeia.
-[tutorial part1 message 19]
-Selecione o canteiro do Hospital e defina a meta como 2 trabalhadores para terminar mais rápido.
-[tutorial part1 message 20]
-O Hospital está pronto. Glóbulos feridos podem recuperar a saúde nele.
-[tutorial part1 message 21]
-Áreas pretas ainda não foram exploradas. As unidades revelam o terreno próximo ao se moverem. Trabalhadores seguem suas tarefas; exploradores são mais adequados para descobrir o mapa.
-[tutorial part1 message 22]
-Selecione a Colmeia e encontre as proporções de produção de trabalhadores, exploradores e guerreiros. Aumente a dos exploradores para 1.
-[tutorial part1 message 23]
-Com trabalhadores e exploradores em 1, a Colmeia produz quantidades iguais ao longo do tempo. Defina trabalhadores como 0 para produzir só exploradores por enquanto.
-[tutorial part1 message 24]
-Volte a meta de trabalhadores designados à Colmeia para 1, para abastecê-la com trigo.
-[tutorial part1 message 25]
-Defina também a meta da Taverna como 1 trabalhador. A colônia precisa de comida regularmente.
-[tutorial part1 message 26]
-Espere a Colmeia produzir um explorador.
-[tutorial part1 message 27]
-Seu explorador voa pela colônia e revela o terreno. Deixe a Colmeia produzir um segundo antes de continuar.
-[tutorial part1 message 28]
-Selecione a Colmeia. Defina a proporção de exploradores como 0 e a de trabalhadores como 1 para voltar a produzir trabalhadores.
-[tutorial part2 message 1]
-Há pedra a leste da base. Lembre-se do local: ela será necessária depois.
-[tutorial part2 message 2]
-As árvores ao sul da pedra são laranjeiras. Selecione-as para ver seus recursos. Voltaremos às frutas depois; agora concentre-se na Colmeia.
-[tutorial part2 message 3]
-Configure a Colmeia para produzir apenas trabalhadores: trabalhadores 1, exploradores e guerreiros 0.
-[tutorial part2 message 4]
-Vamos acelerar o crescimento. Defina a meta da Colmeia como 6 trabalhadores. Novos trabalhadores ocuparão as vagas disponíveis conforme nascerem.
-[tutorial part2 message 5]
-Começaremos as próximas tarefas quando houver 8 trabalhadores. Mantenha a Colmeia e a Taverna abastecidas enquanto espera.
-[tutorial part2 message 6]
-Vários trabalhadores abastecem a Colmeia. Mais entregas de trigo permitem produzir unidades mais rápido.
-[tutorial part2 message 7]
-Cada trabalhador custa 5 de trigo. Transportar trigo de longe leva tempo; a Colmeia costuma precisar de mais fornecedores que uma Taverna. Construa perto do trigo quando possível.
-[tutorial part2 message 8]
-Você tem pelo menos 8 trabalhadores. Reduza a meta da Colmeia para 1 para desacelerar o crescimento enquanto construímos.
-[tutorial part2 message 9]
-A colônia precisa de mais lugares para comer. Construa outra Taverna ao norte da primeira.
-[tutorial part2 message 10]
-Designe trabalhadores livres ao novo canteiro. Ele precisa só de 3 unidades de madeira; mais de 3 construtores ajudarão pouco.
-[tutorial part2 message 11]
-A Taverna pronta volta à meta de funcionamento, normalmente 1 trabalhador. As metas de construção e abastecimento são separadas.
-[tutorial part2 message 12]
-Trabalhadores aprendem a correr mais rápido na Pista de corrida.
-[tutorial part2 message 13]
-Encontre a Pista de corrida nos controles de construção. No computador, passe o ponteiro sobre o ícone para ver descrição e custo. Na tela de toque, selecione-a em Construir. Ainda não a coloque.
-[tutorial part2 message 14]
-A Pista de corrida exige muita madeira e um pouco de pedra. Escolha um local central e acessível.
-[tutorial part2 message 15]
-Construa uma Pista de corrida, por exemplo ao sul da Colmeia. Deixe espaço ao redor para futuras ampliações.
-[tutorial part2 message 16]
-Designe entre 5 e 7 trabalhadores ao canteiro da Pista. Ela precisa de 7 materiais no total.
-[tutorial part2 message 17]
-A Pista pronta treina unidades sem precisar de entregas contínuas de materiais ou trigo.
-[tutorial part2 message 18]
-Glóbulos entram na Pista de corrida. Ao terminar o treinamento, correrão mais rápido.
-[tutorial part2 message 19]
-Selecione a Pista para acompanhar o treinamento. Os indicadores mostram quanto falta para as unidades terminarem.
-[tutorial part2 message 20]
-Os trabalhadores treinados entregam recursos mais rápido. Continue acompanhando os estoques de comida e mantenha Tavernas suficientes abastecidas.
-[tutorial part2 message 21]
-Encontre o contador de trabalhadores na interface. O total indica a população; a disponibilidade revela trabalhadores livres ou vagas não preenchidas. Evite designar mais trabalho do que a colônia pode atender.
-[tutorial part2 message 22]
-A interface também mostra exploradores e guerreiros. Consulte os contadores ao planejar produção ou designações a bandeiras.
-[tutorial part2 message 23]
-Você tem 2 Tavernas básicas, com 4 lugares cada: 8 ao todo. Mais de 8 unidades podem ficar com fome, então reserve capacidade para as filas.
-[tutorial part2 message 24]
-Duas Tavernas não bastarão para sempre. Amplie a capacidade antes que a escassez cause fome.
-[tutorial part2 message 25]
-Construa mais 3 Tavernas perto do trigo. Trabalhadores famintos param de trabalhar e podem morrer. Use trabalhadores livres sem descuidar do abastecimento existente.
-[tutorial part2 message 26]
-Termine mais 3 Tavernas, chegando a 5 no total.
-[tutorial part2 message 27]
-As novas Tavernas adotam suas metas de funcionamento, normalmente 1 trabalhador cada. Confira fornecedores e estoques de trigo.
-[tutorial part2 message 28]
-A Pista melhora o deslocamento em terra. Agora vamos aprender a nadar.
-[tutorial part2 message 29]
-A Piscina ensina unidades a nadar e exige madeira. Construa uma na grande clareira a nordeste da base, ao norte da pedra. Deixe espaço para melhorias e crescimento dos recursos e designe trabalhadores livres.
-[tutorial part2 message 30]
-A Piscina ensina unidades a nadar e exige madeira. Construa uma na grande clareira a nordeste da base, ao norte da pedra. Deixe espaço para melhorias e crescimento dos recursos e designe trabalhadores livres.
-[tutorial part2 message 31]
-A Piscina está pronta. Os glóbulos podem aprender a nadar nela.
-[tutorial part2 message 32]
-Selecione a Piscina para acompanhar o treinamento. Uma Piscina básica treina 2 glóbulos por vez, assim como uma Pista básica.
-[tutorial part2 message 33]
-Os glóbulos treinados sabem nadar. Em breve terão uma tarefa que exige atravessar água.
-[tutorial part2 message 34]
-Ainda há mais a aprender. Se precisar de uma pausa, salve o progresso pelo menu do jogo.
-[tutorial part2 message 35]
-Sua colônia tem comida e treinamento físico. Uma Escola ensinará aos trabalhadores as habilidades necessárias para edifícios melhores.
-[tutorial part2 message 36]
-A Escola melhora a coleta e a construção. Sua obra exige algas, que crescem na água. Trabalhadores que sabem nadar podem coletá-las.
-[tutorial part2 message 37]
-Proteja os edifícios de treinamento. A Escola não precisa ficar junto à água; um local protegido no interior é mais seguro.
-[tutorial part2 message 38]
-Construa a Escola em um local protegido, atrás da Piscina ou a sudoeste da Colmeia junto à Pista. Designe trabalhadores disponíveis.
-[tutorial part2 message 39]
-Selecione um edifício para ver seus trabalhadores. No computador, a ação configurável de mostrar trajetos liga unidades a seus destinos. Consulte o atalho atual em Ajustes, Controles do jogo. Espere a Escola ficar pronta.
-[tutorial part3 message 1]
-Sua colônia tem Tavernas, Hospital, Pista, Piscina e Escola. Agora vamos preparar as defesas.
-[tutorial part3 message 2]
-Ainda não produzimos guerreiros. Sem eles, a colônia tem pouca proteção contra ataques.
-[tutorial part3 message 3]
-Selecione a Colmeia e defina a proporção de guerreiros como 2. Mantenha trabalhadores em 1 para continuar produzindo-os.
-[tutorial part3 message 4]
-A Colmeia produzirá cerca de 2 guerreiros por trabalhador. Designe mais fornecedores para acelerar a produção.
-[tutorial part3 message 5]
-Seu primeiro guerreiro está pronto e começará a treinar. Espere o segundo antes de continuar.
-[tutorial part3 message 6]
-Guerreiros também usam a Pista e a Piscina. Além disso, treinam ataques no Quartel.
-[tutorial part3 message 7]
-O Quartel melhora força e velocidade de ataque: dano por golpe e frequência de golpes. Guerreiros bem treinados podem vencer grupos sem treinamento muito maiores.
-[tutorial part3 message 8]
-Construa um Quartel perto da madeira necessária à construção.
-[tutorial part3 message 9]
-Designe trabalhadores disponíveis ao canteiro do Quartel. Preserve o abastecimento de comida e evite criar vagas demais.
-[tutorial part3 message 10]
-O Quartel está pronto. Os guerreiros podem treinar seus ataques lá.
-[tutorial part3 message 11]
-Melhorar edifícios também fortalece a colônia.
-[tutorial part3 message 12]
-Trabalhadores formados na Escola podem construir melhorias. Selecione um edifício adequado e escolha Melhorar. Se estiver danificado, talvez precise de reparo antes.
-[tutorial part3 message 13]
-O que melhorar primeiro? As Tavernas ainda têm vagas e podem esperar.
-[tutorial part3 message 14]
-O Hospital também tem espaço. Podemos focar na Escola, Pista, Piscina ou Quartel.
-[tutorial part3 message 15]
-Melhore a Pista primeiro para ensinar as unidades a correr ainda mais rápido.
-[tutorial part3 message 16]
-Selecione a Pista e escolha Melhorar. As unidades dentro precisam sair antes da obra, então a mudança pode demorar um pouco.
-[tutorial part3 message 17]
-Designe trabalhadores disponíveis à melhoria da Pista. Só quem tem a formação escolar necessária trabalha em obras de nível 2.
-[tutorial part3 message 18]
-Espere a melhoria terminar. Edifícios avançados exigem mais recursos e tempo.
-[tutorial part3 message 19]
-A Pista de nível 2 está pronta e ocupa mais terreno. Por isso deixamos espaço: sem área para ampliar, não se pode melhorar.
-[tutorial part3 message 20]
-Agora melhore o Quartel e a Piscina para o nível 2. Continuaremos quando ambos estiverem prontos.
-[tutorial part3 message 21]
-Edifícios melhorados costumam atender mais glóbulos ou oferecer treinamento melhor. Uma Taverna de nível 2 tem 7 lugares e alimenta mais rápido.
-[tutorial part3 message 22]
-O inimigo está perto. Vamos nos preparar para um ataque.
-[tutorial part3 message 23]
-Torres de defesa atiram em inimigos ao alcance. Muros protegem as Torres. Vamos combinar ambos em uma passagem estreita.
-[tutorial part3 message 24]
-Coloque Torres em pares se houver espaço. Muros podem proteger três lados, mas deixe acesso para trabalhadores entregarem munição de pedra.
-[tutorial part3 message 25]
-A leste da Piscina, ao norte das outras árvores frutíferas, há uma passagem estreita para outra ilha. Defenda esse local.
-[tutorial part3 message 26]
-Planeje 2 Torres entre as árvores e a praia. Deixe acesso atrás para pedra e espaço nos outros lados para Muros. Não bloqueie os trabalhadores.
-[tutorial part3 message 27]
-Construa 2 Torres ali. Designe 2 ou 3 trabalhadores a cada obra, conforme a disponibilidade indicada.
-[tutorial part3 message 28]
-Coloque Muros nos três lados externos das Torres. Deixe aberto o lado voltado à colônia.
-[tutorial part3 message 29]
-Cada trecho de Muro cria uma tarefa e precisa de 1 pedra. Se faltarem trabalhadores, eles podem concluir os trechos em sequência.
-[tutorial part3 message 30]
-Espere as duas Torres e vários Muros ficarem prontos. As Torres precisam de munição de pedra; a pedreira distante atrasa as entregas. Aumente as metas se houver trabalhadores livres.
-[tutorial part4 message 1]
-Sua colônia tem comida, treinamento e defesas. Os edifícios podem chegar ao nível 3 para aumentar capacidade e treinamento. Continue melhorando conforme os recursos e as habilidades permitirem.
-[tutorial part4 message 2]
-Procure a colônia inimiga a noroeste da sua base. Mova a visão para lá.
-[tutorial part4 message 3]
-A névoa de guerra pode ocultar terreno explorado. Um explorador próximo revelará a atividade atual do inimigo.
-[tutorial part4 message 4]
-Abra Bandeiras. Bandeiras e zonas dirigem as unidades sem controlar cada glóbulo individualmente.
-[tutorial part4 message 5]
-Escolha a Bandeira de exploração, com símbolo de pipa. Ela pode ser colocada sobre terra, água, recursos e terreno inexplorado.
-[tutorial part4 message 6]
-Coloque-a onde suspeita estar a base inimiga. Uma posição aproximada basta. Saia da colocação com um clique direito ou os controles de toque.
-[tutorial part4 message 7]
-O contorno mostra o raio da bandeira. Um explorador designado investigará a área. Se nenhum chegar, confira a quantidade e produza outro na Colmeia se necessário. Pressione Espaço ou toque em OK quando ele chegar.
-[tutorial part4 message 8]
-O inimigo tem muitos trabalhadores e um exército reunido. Vamos preparar as defesas.
-[tutorial part4 message 9]
-Abra Bandeiras e escolha a Área de guarda azul. Use o modo de adicionar terreno, não de remover. Na tela de toque, escolha Pintar em vez de Apagar.
-[tutorial part4 message 10]
-Escolha formato e tamanho do pincel. O quadrado grande serve para criar uma defesa compacta.
-[tutorial part4 message 11]
-Pinte uma Área de guarda atrás das Torres, na rota provável do inimigo. Clique ou toque para um ponto, ou arraste para cobrir mais terreno. Na tela de toque, use Deslocar para deslocar a visão enquanto pinta.
-[tutorial part4 message 12]
-Os guerreiros disponíveis ocuparão a zona. Deixe espaço suficiente, mas mantenha os defensores concentrados na passagem. Espere o ataque.
-[tutorial part4 message 13]
-O inimigo está se aproximando da passagem!
-[tutorial part4 message 14]
-Estamos sob ataque. Observe como os guerreiros treinados e as Torres defendem a posição.
-[tutorial part4 message 15]
-Você sobreviveu! Abra Bandeiras e escolha a Bandeira de guerra com pontas. Coloque-a sobre a Colmeia inimiga para direcionar o ataque.
-[tutorial part4 message 16]
-Saia da colocação e selecione a Bandeira de guerra. Designe mais de 1 guerreiro e reduza o raio para concentrar o ataque na Colmeia. Espere a chegada deles.
-[tutorial part4 message 17]
-O ataque começou. Seus guerreiros precisam passar pelas Torres inimigas para chegar à Colmeia.
-[tutorial part4 message 18]
-Seus guerreiros chegaram à base inimiga. Mantenha o ataque concentrado na Colmeia.
-[tutorial part4 message 19]
-Você destruiu a Colmeia inimiga! Concluiu o tutorial e aprendeu as bases de alimentação, designação, treinamento, melhorias, exploração e combate.
-[tutorial mission basics]
-Introdução e conceitos básicos
-[tutorial mission development]
-Edifícios e escolas
-[tutorial mission training]
-Guerreiros, treinamento e melhorias
-[tutorial mission flags]
-Bandeiras e conclusão
 [library  Could not restore the previous library: %0]
  Não foi possível restaurar a biblioteca anterior: %0
 [library  The previous library is retained.]
@@ -6642,6 +6400,422 @@ Você pode mudar isso a qualquer momento em Configurações → Áudio.
 Não foi possível salvar sua escolha. O áudio continua desligado. Tente novamente.
 [audio choices description]
 Silêncio: um alto-falante silenciado. Som: um alto-falante com ondas sonoras.
+[intro menu]
+
+[intro briefing]
+
+[intro try]
+
+[intro preflight]
+
+[intro preflight save]
+
+[intro preference failed]
+
+[intro goal scout]
+
+[intro goal build]
+
+[intro goal supply]
+
+[intro goal grow]
+
+[intro goal attack]
+
+[intro instruction scout]
+
+[intro instruction build]
+
+[intro instruction supply]
+
+[intro instruction grow]
+
+[intro instruction attack]
+
+[intro help]
+
+[intro help scout]
+
+[intro help build]
+
+[intro help supply]
+
+[intro help grow]
+
+[intro help attack]
+
+[intro hint scout]
+
+[intro hint build]
+
+[intro hint supply]
+
+[intro hint grow]
+
+[intro hint attack]
+
+[intro hint no scout flag]
+
+[intro hint no suppliers]
+
+[intro hint no war flag]
+
+[intro hint retry]
+
+[intro complete]
+
+[intro complete body]
+
+[intro play again]
+
+[intro restart]
+
+[intro restart body]
+
+[intro help touch scout]
+
+[intro help touch build]
+
+[intro help touch supply]
+
+[intro help touch grow]
+
+[intro help touch attack]
+
+[intro show destination]
+
+[intro scout destination]
+
+[intro attack destination]
+
+[intro compact scout]
+
+[intro compact build]
+
+[intro compact supply]
+
+[intro compact grow]
+
+[intro compact attack]
+
+[tutorial lessons]
+
+[tutorial restart]
+
+[tutorial restart body]
+
+[tutorial complete]
+
+[tutorial food title]
+
+[tutorial food briefing]
+
+[tutorial food complete]
+
+[tutorial unavailable]
+
+[lesson healing title]
+
+[lesson healing briefing]
+
+[lesson healing complete]
+
+[lesson healing build hint]
+
+[lesson healing build title]
+
+[lesson healing build instruction]
+
+[lesson healing build help]
+
+[lesson healing build marker]
+
+[lesson healing heal hint]
+
+[lesson healing heal title]
+
+[lesson healing heal instruction]
+
+[lesson healing heal help]
+
+[lesson healing heal marker]
+
+[lesson walking-training title]
+
+[lesson walking-training briefing]
+
+[lesson walking-training complete]
+
+[lesson walking-training build hint]
+
+[lesson walking-training build title]
+
+[lesson walking-training build instruction]
+
+[lesson walking-training build help]
+
+[lesson walking-training build marker]
+
+[lesson walking-training train hint]
+
+[lesson walking-training train title]
+
+[lesson walking-training train instruction]
+
+[lesson walking-training train help]
+
+[lesson swimming title]
+
+[lesson swimming briefing]
+
+[lesson swimming complete]
+
+[lesson swimming build hint]
+
+[lesson swimming build title]
+
+[lesson swimming build instruction]
+
+[lesson swimming build help]
+
+[lesson swimming build marker]
+
+[lesson swimming train hint]
+
+[lesson swimming train title]
+
+[lesson swimming train instruction]
+
+[lesson swimming train help]
+
+[lesson swimming water-job hint]
+
+[lesson swimming water-job title]
+
+[lesson swimming water-job instruction]
+
+[lesson swimming water-job help]
+
+[lesson swimming water-job marker]
+
+[lesson schools title]
+
+[lesson schools briefing]
+
+[lesson schools complete]
+
+[lesson schools build hint]
+
+[lesson schools build title]
+
+[lesson schools build instruction]
+
+[lesson schools build help]
+
+[lesson schools build marker]
+
+[lesson schools learn hint]
+
+[lesson schools learn title]
+
+[lesson schools learn instruction]
+
+[lesson schools learn help]
+
+[lesson upgrades title]
+
+[lesson upgrades briefing]
+
+[lesson upgrades complete]
+
+[lesson upgrades upgrade hint]
+
+[lesson upgrades upgrade title]
+
+[lesson upgrades upgrade instruction]
+
+[lesson upgrades upgrade help]
+
+[lesson upgrades upgrade marker]
+
+[lesson upgrades train hint]
+
+[lesson upgrades train title]
+
+[lesson upgrades train instruction]
+
+[lesson upgrades train help]
+
+[lesson warrior-training title]
+
+[lesson warrior-training briefing]
+
+[lesson warrior-training complete]
+
+[lesson warrior-training produce hint]
+
+[lesson warrior-training produce title]
+
+[lesson warrior-training produce instruction]
+
+[lesson warrior-training produce help]
+
+[lesson warrior-training produce marker]
+
+[lesson warrior-training build hint]
+
+[lesson warrior-training build title]
+
+[lesson warrior-training build instruction]
+
+[lesson warrior-training build help]
+
+[lesson warrior-training build marker]
+
+[lesson warrior-training train hint]
+
+[lesson warrior-training train title]
+
+[lesson warrior-training train instruction]
+
+[lesson warrior-training train help]
+
+[lesson fortifications title]
+
+[lesson fortifications briefing]
+
+[lesson fortifications complete]
+
+[lesson fortifications tower hint]
+
+[lesson fortifications tower title]
+
+[lesson fortifications tower instruction]
+
+[lesson fortifications tower help]
+
+[lesson fortifications tower marker]
+
+[lesson fortifications walls hint]
+
+[lesson fortifications walls title]
+
+[lesson fortifications walls instruction]
+
+[lesson fortifications walls help]
+
+[lesson fortifications walls marker]
+
+[lesson fortifications supply hint]
+
+[lesson fortifications supply title]
+
+[lesson fortifications supply instruction]
+
+[lesson fortifications supply help]
+
+[lesson fortifications supply marker]
+
+[lesson fortifications hold hint]
+
+[lesson fortifications hold title]
+
+[lesson fortifications hold instruction]
+
+[lesson fortifications hold help]
+
+[lesson fortifications hold marker]
+
+[lesson defensive-tactics title]
+
+[lesson defensive-tactics briefing]
+
+[lesson defensive-tactics complete]
+
+[lesson defensive-tactics scout hint]
+
+[lesson defensive-tactics scout title]
+
+[lesson defensive-tactics scout instruction]
+
+[lesson defensive-tactics scout help]
+
+[lesson defensive-tactics scout marker]
+
+[lesson defensive-tactics guard hint]
+
+[lesson defensive-tactics guard title]
+
+[lesson defensive-tactics guard instruction]
+
+[lesson defensive-tactics guard help]
+
+[lesson defensive-tactics guard marker]
+
+[lesson defensive-tactics repel hint]
+
+[lesson defensive-tactics repel title]
+
+[lesson defensive-tactics repel instruction]
+
+[lesson defensive-tactics repel help]
+
+[lesson defensive-tactics repel marker]
+
+[lesson defensive-tactics counterattack hint]
+
+[lesson defensive-tactics counterattack title]
+
+[lesson defensive-tactics counterattack instruction]
+
+[lesson defensive-tactics counterattack help]
+
+[lesson defensive-tactics counterattack marker]
+
+[lesson healing build compact]
+
+[lesson healing heal compact]
+
+[lesson walking-training build compact]
+
+[lesson walking-training train compact]
+
+[lesson swimming build compact]
+
+[lesson swimming train compact]
+
+[lesson swimming water-job compact]
+
+[lesson schools build compact]
+
+[lesson schools learn compact]
+
+[lesson upgrades upgrade compact]
+
+[lesson upgrades train compact]
+
+[lesson warrior-training produce compact]
+
+[lesson warrior-training build compact]
+
+[lesson warrior-training train compact]
+
+[lesson fortifications tower compact]
+
+[lesson fortifications walls compact]
+
+[lesson fortifications supply compact]
+
+[lesson fortifications hold compact]
+
+[lesson defensive-tactics scout compact]
+
+[lesson defensive-tactics guard compact]
+
+[lesson defensive-tactics repel compact]
+
+[lesson defensive-tactics counterattack compact]
+
 [library GL only]
 Só GL
 [Grassland]
@@ -6652,5 +6826,7 @@ Colinas rochosas
 Trilhas de animais
 [Fish amount]
 Quantidade de peixes
+[scenario messages]
+
 [Camp-site amount]
 Quantidade de acampamentos

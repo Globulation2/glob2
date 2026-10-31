@@ -1,10 +1,11 @@
+const {waitForMainMenu}=require('./main-menu');
 const {editTextField}=require('./main-menu');
 const {gameURL,clickMainMenu,clickSettingsCancel,clickCustomGameStart,clickControl,control}=require('./main-menu');
 const {test,expect}=require('@playwright/test');
 const fs=require('node:fs/promises');
 const {createHash}=require('node:crypto');
 const state=page=>page.evaluate(()=>glob2Diagnostics.snapshot());
-const screen=(page,name)=>expect.poll(async ()=>(await state(page)).screen).toContain(name);
+const screen=(page,name)=>name==='MainMenuScreen' ? waitForMainMenu(page) : expect.poll(async ()=>(await state(page)).screen).toContain(name);
 async function save(page) {
   await page.locator('#canvas').press('Escape',{delay:80});
   const frames=(await state(page)).frames;

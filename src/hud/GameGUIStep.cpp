@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
-#include "ui/TutorialText.h"
 #include "PowerOfTwo.h"
 #include <PerformanceTelemetry.h>
 #include <EventQueue.h>
@@ -296,13 +295,12 @@ void GameGUI::step(const std::vector<SDL_Event>& events, Uint64 now)
 		enqueueOrder(orderVoiceData);
 	}
 
-	// TODO: die with SGSL
-	// Check if the text being displayed has changed, and if it has, add it to the history box
+	// Publish authored scenario messages to history when their text changes.
 	const auto& legacyText=drawnScene().panels.hud.state().legacyScriptText;
     const bool legacyShown=drawnScene().panels.hud.state().legacyScriptTextShown;
 	if(legacyShown && legacyText != previousSGSLText)
 	{
-		publishMessageHistoryLines(Glob2UI::tutorialText(legacyText, legacyTutorialScript), HistoryList::Chat,
+		publishMessageHistoryLines(legacyText, HistoryList::Chat,
 			Color(255, 255, 255), kHistoryOnlyTimeoutMs, kScriptTextContinuationIndent);
 		previousSGSLText = legacyText;
 	}

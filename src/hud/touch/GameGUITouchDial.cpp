@@ -583,4 +583,15 @@ void GameGUITouch::drawDial()
 	}
 	if (allocation && allocation->polar)
 		TouchReadout::draw(allocation->position, std::to_string(allocation->requested), layout().safe);
+    for(const auto &region:regions) {
+        const int kind=region.action.kind;
+        const bool guided=(kind==6 && gui.highlights.count(GameGUI::HighlightUnitsAssignedBar)) ||
+            (kind==0 && gui.highlights.count(GameGUI::HighlightRatioBar)) ||
+            (kind==3 && gui.highlights.count(GameGUI::HighlightUpgradeButton));
+        if(guided && region.ring>=0) {
+            const auto &ring=g.rings[region.ring];
+            dialPainter.fill(g,ring.outer-2,ring.outer,region.from+.8,region.to-.8,Color(255,220,80));
+        }
+    }
+
 }

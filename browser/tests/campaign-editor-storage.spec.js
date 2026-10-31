@@ -1,9 +1,10 @@
+const {waitForMainMenu}=require('./main-menu');
 const {campaignFrame,clickCampaignFooter}=require('./editor-controls');
 const {editTextField,clickControl,controlBox}=require('./main-menu');
 const {test,expect}=require('@playwright/test');
 const {clickMainMenu,gameURL}=require('./main-menu');
 const state=page=>page.evaluate(()=>glob2Diagnostics.snapshot());
-const screen=(page,name)=>expect.poll(async()=>(await state(page)).screen).toContain(name);
+const screen=(page,name)=>name==='MainMenuScreen' ? waitForMainMenu(page) : expect.poll(async()=>(await state(page)).screen).toContain(name);
 const digest=page=>page.evaluate(()=>glob2Diagnostics.campaignDefinitionDigest('Browser_Campaign.txt'));
 async function edit(page){
   await page.goto(gameURL());await screen(page,'MainMenuScreen');

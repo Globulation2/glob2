@@ -28,6 +28,7 @@ namespace Online { class SkinDownloads; }
 #include "GameGUIMessageManager.h"
 #include "GameEventFeed.h"
 #include "GameGUIDialog.h"
+namespace Tutorial { class Guidance; }
 #include "GameSpeedControl.h"
 #include "render/Minimap.h"
 #include "OverlayAreas.h"
@@ -219,6 +220,7 @@ public:
 		HighlightClearingZoneOnPanel=14,
 		///This causes the brush selector to be highlighted
 		HighlightBrushSelector=15,
+        HighlightUpgradeButton=16,
 		
 		///Anything above this number causes a particular building on the right side menu to be highlighted,
 		///the value is HighlightBuilding+IntBuildingType
@@ -230,6 +232,10 @@ public:
 	
 	///Stores the currently highlighted elements
 	std::set<int> highlights;
+    std::set<int> tutorialHighlights;
+    std::unique_ptr<Tutorial::Guidance> tutorialGuidance;
+    int tutorialDestination = 0;
+    void updateTutorial();
 	
 	struct HighlightArrowPosition
 	{
@@ -775,7 +781,8 @@ private:
 		IGM_END_OF_GAME,
 		IGM_HIVE,
 		IGM_CONFIRM_LEAVE,
-		IGM_TELEMETRY
+		IGM_TELEMETRY,
+        IGM_TUTORIAL_RESTART
 	} inGameMenu;
 	// The dialog receiving input, if any: the menu, the chat composer or the history.
 	Glob2UI::InGameDialog *activeDialog() const;
@@ -878,8 +885,6 @@ private:
 
 	// Stuff for the correct working of the campaign
 	Campaign* campaign;
-	// Client-only display context, derived on load; never serialized.
-	bool legacyTutorialScript = false;
 	std::string missionName;
 
 	GameGUIDefaultAssignManager defaultAssign;

@@ -158,6 +158,7 @@ exports.gameURL = () => {
 
 const mainMenuCodes = {campaign:0, tutorial:1, load:2, custom:3, yog:4, lan:5, settings:6, editor:7, credits:8, quit:9};
 exports.clickMainMenu = async (page, action) => {
+  await exports.waitForMainMenu(page);
   const code = mainMenuCodes[action];
   if (code === undefined) throw new Error('Unknown main menu action: ' + action);
   const keys = action === 'settings' ? ['menu/6', 'menu/settings'] : ['menu/' + code];
@@ -229,3 +230,17 @@ exports.readBrowserFile = async (page,path) => Buffer.from(await page.evaluate(p
     parts.push(String.fromCharCode(...data.subarray(at,at+32768)));
   return btoa(parts.join(''));
 },path),'base64');
+
+// Existing gameplay tests explicitly decline the first-run recommendation when
+// they ask for the main menu. Tests of onboarding itself drive its controls.
+exports.waitForMainMenu = async (page, {timeout = 60000} = {}) => {
+  await expect.poll(async () => {
+    const state=await page.evaluate(()=>glob2Diagnostics.snapshot());
+    if ((state.screen+' '+state.screenClass).includes('MainMenuScreen')) return true;
+    if ((state.screen+' '+state.screenClass).includes('IntroductionOfferScreen') && state.controls['intro/menu']?.enabled)
+      await exports.clickControl(page,'intro/menu');
+    else if ((state.screen+' '+state.screenClass).includes('IntroductionOfferScreen') && state.controls['intro/continue']?.enabled)
+      await exports.clickControl(page,'intro/continue');
+    return false;
+  }, {timeout,message:'main menu is not showing after declining the introduction'}).toBe(true);
+};

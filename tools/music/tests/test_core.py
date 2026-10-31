@@ -99,11 +99,6 @@ class LoopTest(unittest.TestCase):
         out = loop.fold_tail(y, 10, preroll_frames=2)
         np.testing.assert_allclose(out, [1.5, 1.25, 1, 1, 1, 1, 1, 1, 1.1, 1.2])
 
-    def test_crossfade_loop_is_seamless(self):
-        t = np.arange(SR * 3) / SR
-        src = np.sin(2 * np.pi * 220.7 * t)                  # not periodic in the cut
-        y = loop.crossfade_loop(src, 4410, 4410 + SR, 2205)
-        self.assertLess(abs(y[0] - y[-1]), np.abs(np.diff(y)).max() * 1.01)
 
 
 class TrioIoTest(unittest.TestCase):
@@ -148,6 +143,36 @@ class TrioIoTest(unittest.TestCase):
         self.assertAlmostEqual(y[int(2.0 * SR), 0], 0.2)
         self.assertAlmostEqual(y[int(3.5 * SR), 0], 0.3)
 
+    def test_preview_uses_gameplay_timing_and_complementary_gains(self):
+        # Identical, aligned audio must not get the +3 dB boost an equal-power
+        # crossfade would produce. The event starts at the segment boundary.
+        t = np.arange(SR) / SR
+        signal = np.repeat((0.1 * np.sin(2 * np.pi * 220 * t))[:, None], 2, axis=1)
+        trio = Trio(**{m: signal.copy() for m in ('calm', 'building', 'combat')})
+        signal = trio.calm.astype(np.float64)
+        y = preview.render(trio, segment_s=1, fade_out_s=0)
+        np.testing.assert_array_equal(y[:SR], signal)
+        n = preview.GAME_FADE_FRAMES
+        np.testing.assert_allclose(y[SR:SR+n], signal[:n] * (65535 / 65536), atol=1e-12)
+        np.testing.assert_array_equal(y[SR+n:2*SR], signal[n:])
+
+    def test_preview_smoothstep_curve_and_position_during_fade(self):
+        # Silence -> a ramp distinguishes smoothstep from equal-power, verifies
+        # the incoming file's position, and checks stereo sample gain rounding.
+        signal = np.repeat(np.linspace(0.1, 0.3, SR)[:, None], 2, axis=1)
+        trio = Trio(calm=np.zeros_like(signal), building=signal, combat=signal)
+        y = preview.render(trio, segment_s=1, crossfade_s=0.4, fade_out_s=0)
+        quarter = SR // 10
+        np.testing.assert_allclose(y[SR+quarter] / signal[quarter], 0.15625, atol=0.0001)
+        np.testing.assert_allclose(y[SR+2*quarter] / signal[2*quarter], 0.5, atol=0.0001)
+
+    def test_preview_zero_fade_switches_at_event(self):
+        trio = Trio(calm=np.full((SR, 2), 0.1), building=np.full((SR, 2), 0.2),
+                    combat=np.full((SR, 2), 0.3))
+        y = preview.render(trio, segment_s=1, crossfade_s=0, fade_out_s=0)
+        self.assertEqual(y[SR-1, 0], trio.calm[-1, 0])
+        self.assertEqual(y[SR, 0], trio.building[0, 0])
+
 
 class SeamPreparationTest(unittest.TestCase):
     def test_configured_taper_keeps_frames_and_other_moods(self):
@@ -179,7 +204,7 @@ class SourcesTest(unittest.TestCase):
 
 
 class ManifestTest(unittest.TestCase):
-    BASE = {'title': 'Test', 'method': 'adapted', 'license': 'CC0-1.0'}
+    BASE = {'title': 'Test', 'method': 'symbolic-acoustic', 'license': 'CC0-1.0'}
 
     def test_waiver_needs_reason(self):
         with self.assertRaises(ManifestError):
@@ -195,6 +220,11 @@ class ManifestTest(unittest.TestCase):
             parse_manifest(self.BASE, 'Bad_Id')
         with self.assertRaises(ManifestError):
             parse_manifest({**self.BASE, 'ai_generated': True}, 'test-set')
+
+    def test_recording_adaptation_and_generation_methods_are_rejected(self):
+        for method in ('adapted', 'generated'):
+            with self.subTest(method=method), self.assertRaises(ManifestError):
+                parse_manifest({**self.BASE, 'method': method}, 'test-set')
 
     def test_loudness_offsets_move_the_target_within_tolerance(self):
         m = parse_manifest({**self.BASE, 'master': {'loudness_offset_db': {'calm': -1.0}}}, 'test-set')

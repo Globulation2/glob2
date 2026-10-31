@@ -247,7 +247,8 @@ public:
 
 	/// Executes an Order with respect to the localPlayer of the GUI. All Orders get processed here.
 	// Returns whether the existing executor admitted the command, including queued construction.
-	bool executeOrder(std::shared_ptr<Order> order, int localPlayer);
+	// Simulation-generated scenario commands must not be recorded as external replay input.
+	bool executeOrder(std::shared_ptr<Order> order, int localPlayer, bool recordInput=true);
 	//! Owner sequence: publish due state, capture, admit world work.
 	//! The first call fixes this observation's optional payload; later calls may
 	//! request only components already captured. Copy the handle to retain it.
@@ -351,7 +352,10 @@ public:
 	///Repeats the loaded map rx by ry times and deals its colonies round robin to teamCount fresh teams, see MapTiling.h
 	bool tileForPlay(int rx, int ry, int teamCount, int coloniesPerTeam);
 
-	Unit *addUnit(int x, int y, int team, int type, int level, int delta, int dx, int dy);
+	// Optional creation-time training levels participate in placement validation;
+	// they cannot be applied after a unit has occupied an incompatible tile.
+	Unit *addUnit(int x, int y, int team, int type, int level, int delta, int dx, int dy,
+        const std::array<int, NB_ABILITY>* initialLevels = nullptr);
 	bool isBuildingTypeAvailable(int typeNum) const;
 	Building *addBuilding(int x, int y, int typeNum, int teamNumber, Sint32 unitWorking = 1, Sint32 unitWorkingFuture = 1);
 	//! This remove anything at case(x, y), and return a rect which include every removed things.

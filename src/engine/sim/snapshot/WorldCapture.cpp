@@ -441,6 +441,7 @@ Handle capture(const Game& game,
         session->fixedAlliances=game.gameHeader.areAllyTeamsFixed();
         session->objectives=game.objectives.frozen();
         session->hints=game.gameHints.frozen();
+        session->tutorial=game.mapscript.tutorialView();
         const auto briefing=previous && previous->session ? previous->session->missionBriefing : nullptr;
         session->missionBriefing=briefing && *briefing==game.missionBriefing ? briefing : std::make_shared<const std::string>(game.missionBriefing);
         session->terrainSeed=game.map.terrainSeed(); session->fertilityMaximum=game.map.fertilityMaximum;

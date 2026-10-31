@@ -92,6 +92,7 @@ public:
     GAGCore::CooperativeTask loadReplayTask(std::string filename);
     void cancelInitialization();
     const std::string& getInitializationDiagnostic() const { return initializationDiagnostic; }
+    int tutorialNavigation() const { return gui.tutorialDestination; }
     bool takeSettingsRequest() { return gui.takeSettingsRequest(); }
     void suspendInput() { cancelInputDispatches(); gui.suspendInput(); }
     void viewportResized(int oldWidth, int oldHeight, int width, int height) { gui.viewportResized(oldWidth, oldHeight, width, height); }
@@ -219,7 +220,7 @@ public:
     // Called on the main thread with the simulation parked. GUI timing uses
     // the SDL clock, independently of the host/session simulation clock.
     void clientStep(const std::vector<SDL_Event>& events);
-    struct PendingLoad { std::string filename; bool replay; };
+    struct PendingLoad { std::string filename; bool replay; bool campaign=false; };
     // Finalize without loading another game or entering a UI loop. The host
     // schedules a returned request, or presents the end screen when absent.
     std::optional<PendingLoad> finishSessionForHost();

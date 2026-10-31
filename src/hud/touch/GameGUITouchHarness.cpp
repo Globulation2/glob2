@@ -1117,36 +1117,36 @@ class GameGUITouchHarness
 		globalContainer->standardFont = &font;
 		GAGCore::userTextScale = 1;
 		gui.scriptText = "alpha\n\nbeta";
-		gui.touch->prepareTutorial();
-		CHECK(gui.touch->tutorialLines == std::vector<std::string>{"alpha", "", "beta"});
-		CHECK(gui.touch->tutorialLineStep == 24);
-		gui.touch->tutorialCollapsed = true;
-		gui.touch->prepareTutorial();
-		CHECK(gui.touch->tutorialCollapsed); // unchanged content preserves player collapse
+		gui.touch->prepareScenarioMessage();
+		CHECK(gui.touch->scenarioMessageLines == std::vector<std::string>{"alpha", "", "beta"});
+		CHECK(gui.touch->scenarioMessageLineStep == 24);
+		gui.touch->scenarioMessageCollapsed = true;
+		gui.touch->prepareScenarioMessage();
+		CHECK(gui.touch->scenarioMessageCollapsed); // unchanged content preserves player collapse
 		strings->setLang(strings->getLangCode("de"));
-		gui.touch->prepareTutorial();
-		CHECK_FALSE(gui.touch->tutorialCollapsed); // same text, different locale invalidates
+		gui.touch->prepareScenarioMessage();
+		CHECK_FALSE(gui.touch->scenarioMessageCollapsed); // same text, different locale invalidates
 		strings->setLang(restore.language);
 
 		gui.scriptText = "क्षि";
-		gui.touch->prepareTutorial();
-		const int small = gui.touch->tutorialLineStep;
+		gui.touch->prepareScenarioMessage();
+		const int small = gui.touch->scenarioMessageLineStep;
 		// An indivisible real-font conjunct wider than the slot must remain
 		// whole. Reload the SAME font object to expose metric-cache invalidation.
 		REQUIRE(font.load("data/fonts/sans.ttf", 1000));
-		gui.touch->prepareTutorial();
-		CHECK(gui.touch->tutorialLines == std::vector<std::string>{"क्षि"});
-		CHECK(gui.touch->tutorialLineStep > small);
-		CHECK(gui.touch->tutorialLineStep >= font.getStringHeight("क्षि"));
-		CHECK(font.getStringWidth("क्षि") > gui.touch->tutorialWidth);
+		gui.touch->prepareScenarioMessage();
+		CHECK(gui.touch->scenarioMessageLines == std::vector<std::string>{"क्षि"});
+		CHECK(gui.touch->scenarioMessageLineStep > small);
+		CHECK(gui.touch->scenarioMessageLineStep >= font.getStringHeight("क्षि"));
+		CHECK(font.getStringWidth("क्षि") > gui.touch->scenarioMessageWidth);
 		GAGCore::userTextScale = 1.5;
-		gui.touch->prepareTutorial();
-		CHECK(gui.touch->tutorialPitch() == doctest::Approx(gui.touch->tutorialLineStep * 1.5));
+		gui.touch->prepareScenarioMessage();
+		CHECK(gui.touch->scenarioMessagePitch() == doctest::Approx(gui.touch->scenarioMessageLineStep * 1.5));
 		const double unit = globalContainer->gfx->logicalUnitsPerPoint();
-		CHECK(gui.touch->tutorialMaximum() == doctest::Approx(std::max(0.0,
-			gui.touch->tutorialLines.size() * gui.touch->tutorialPitch() - gui.touch->tutorialRect().h / unit + 16)));
+		CHECK(gui.touch->scenarioMessageMaximum() == doctest::Approx(std::max(0.0,
+			gui.touch->scenarioMessageLines.size() * gui.touch->scenarioMessagePitch() - gui.touch->scenarioMessageRect().h / unit + 16)));
 		gui.swallowSpaceKey = true;
-		CHECK(gui.touch->tutorialFooterHeight() >= gui.touch->tutorialFontHeight * 1.5 + 16);
+		CHECK(gui.touch->scenarioMessageFooterHeight() >= gui.touch->scenarioMessageFontHeight * 1.5 + 16);
 		// Exercise real input separately from the large synthetic-extent check.
 		// A normal Latin26px font at1.5x gives a footer taller than the legacy
 		//48pt target, so tapping its upper area detects stale hit geometry.
@@ -1160,9 +1160,9 @@ class GameGUITouchHarness
 			gui.scriptText += "Scroll this instruction without acknowledging it.\n";
 		gui.setIsSpaceSet(false);
 		glob2test::drawGUI(gui, 0);
-		const auto tutorial = gui.touch->tutorialRect();
+		const auto tutorial = gui.touch->scenarioMessageRect();
 		REQUIRE(tutorial.h > 0);
-		REQUIRE(gui.touch->tutorialMaximum() > 0);
+		REQUIRE(gui.touch->scenarioMessageMaximum() > 0);
 		Uint64 now = 20000;
 		auto finger = [&](Uint32 type, double x, double y) {
 			SDL_Event event{};
@@ -1179,9 +1179,9 @@ class GameGUITouchHarness
 		finger(SDL_EVENT_FINGER_MOTION, x, startY - 24 * unit);
 		finger(SDL_EVENT_FINGER_UP, x, startY - 24 * unit);
 		CHECK_FALSE(gui.isSpaceSet());
-		CHECK(gui.touch->tutorialScroll > 0);
+		CHECK(gui.touch->scenarioMessageScroll > 0);
 		gui.touch->stopScrolling();
-		const double footer = gui.touch->tutorialFooterHeight() * unit;
+		const double footer = gui.touch->scenarioMessageFooterHeight() * unit;
 		REQUIRE(footer > 48 * unit);
 		const double ackY = tutorial.y + tutorial.h - footer + 4 * unit;
 		REQUIRE(ackY < tutorial.y + tutorial.h - 48 * unit);
@@ -1193,19 +1193,19 @@ class GameGUITouchHarness
 		// any unfinished catalog. Use the actual authored collapsed label.
 		glob2test::TempDir labels("tutorial-urdu");
 		GAGCore::Toolkit::getFileManager()->addDir(labels.path.string());
-		std::ofstream(labels.path / "tutorial.keys.txt") << "[language-code]\n[Tutorial ▸]\n";
+		std::ofstream(labels.path / "tutorial.keys.txt") << "[language-code]\n[scenario messages]\n";
 		std::ofstream(labels.path / "tutorial.list.txt") << "tutorial.keys.txt\ntutorial.en.txt\ntutorial.ur.txt\n";
-		std::ofstream(labels.path / "tutorial.en.txt") << "[language-code]\nen\n[Tutorial ▸]\nTutorial ▸\n";
-		std::ofstream(labels.path / "tutorial.ur.txt") << "[language-code]\nur\n[Tutorial ▸]\nتربیت ▸\n";
+		std::ofstream(labels.path / "tutorial.en.txt") << "[language-code]\nen\n[scenario messages]\nTutorial ▸\n";
+		std::ofstream(labels.path / "tutorial.ur.txt") << "[language-code]\nur\n[scenario messages]\nتربیت ▸\n";
 		restore.stringsReplaced = true;
 		REQUIRE(strings->load("tutorial.list.txt"));
 		strings->setLang(strings->getLangCode("ur"));
 		REQUIRE(font.load("data/fonts/sans.ttf", 13));
 		gui.scriptText = "instruction";
-		gui.touch->prepareTutorial();
-		gui.touch->tutorialCollapsed = true;
-		const auto collapsed = gui.touch->tutorialRect();
-		const auto label = strings->getString("[Tutorial ▸]");
+		gui.touch->prepareScenarioMessage();
+		gui.touch->scenarioMessageCollapsed = true;
+		const auto collapsed = gui.touch->scenarioMessageRect();
+		const auto label = strings->getString("[scenario messages]");
 		const double labelHeight = font.getStringHeight(label) * 1.15 * 1.5 * unit;
 		CHECK(collapsed.h >= labelHeight + 16 * unit);
 		CHECK(collapsed.h >= 48 * unit);
@@ -2644,16 +2644,16 @@ class GameGUITouchHarness
 			gui.swallowSpaceKey = true;
 			gui.setIsSpaceSet(false);
 			glob2test::drawGUI(gui,0);
-			gfx->printScreen(width < height ? "touch-tutorial-portrait.bmp"
-											: "touch-tutorial-landscape.bmp");
+			gfx->printScreen(width < height ? "touch-scenario-message-portrait.bmp"
+											: "touch-scenario-message-landscape.bmp");
 			gfx->nextFrame();
 			finger(SDL_EVENT_FINGER_DOWN, 1, 30 * unit, 80 * unit);
 			finger(SDL_EVENT_FINGER_MOTION, 1, 30 * unit, 60 * unit);
 			finger(SDL_EVENT_FINGER_UP, 1, 30 * unit, 60 * unit);
-			require(!gui.isSpaceSet(), "Scrolling tutorial text must not acknowledge it");
-			const auto tutorial = gui.touch->tutorialRect();
-			tap(tutorial.x + 20 * unit, tutorial.y + tutorial.h - 24 * unit);
-			require(gui.isSpaceSet(), "Tutorial touch acknowledgment uses the shared Space action");
+			require(!gui.isSpaceSet(), "Scrolling scenario text must not acknowledge it");
+			const auto message = gui.touch->scenarioMessageRect();
+			tap(message.x + 20 * unit, message.y + message.h - 24 * unit);
+			require(gui.isSpaceSet(), "Scenario message acknowledgment uses the shared Space action");
 			gui.scriptText.clear();
 			gui.swallowSpaceKey = false;
 		}

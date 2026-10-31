@@ -6,6 +6,7 @@ from pathlib import Path
 import subprocess
 import sys
 import tempfile
+import tomllib
 import unittest
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -66,6 +67,16 @@ class WebAssetPlanTests(unittest.TestCase):
             self.assertEqual(self.owner.get(path), 'core', path)
             self.assertNotIn(path, self.packages.get('font-cjk', []))
             self.assertEqual(web_assets.contents(ROOT, 'core', path, {}), font.read_bytes())
+
+    def test_only_current_tutorial_assets_ship(self):
+        catalog = json.loads((ROOT / 'scripts/tutorials/catalog.json').read_text())
+        self.assertEqual(self.owner.get('scripts/tutorials/catalog.json'), 'core')
+        for entry in catalog:
+            lesson = json.loads((ROOT / entry['definition']).read_text())
+            for path in (entry['definition'], entry['script'], lesson['map']):
+                self.assertEqual(self.owner.get(path), 'core', path)
+        self.assertNotIn('campaigns/Tutorial_Campaign.txt', self.owner)
+        self.assertFalse([p for p in self.owner if p.startswith(('campaigns/tutorial-part', 'scripts/tutorial_part', 'test/fixtures/'))])
 
     def test_runtime_files_the_menus_need_are_core(self):
         for path in ('data/fonts/sans.ttf', 'data/fonts/LICENSE-DejaVu.txt', 'data/texts.list.txt',
@@ -201,13 +212,17 @@ class WebAssetPlanTests(unittest.TestCase):
         self.assertEqual(self.owner['data/zik/intro.opus'], 'menu-music')
         self.assertEqual(self.owner['data/zik/menu.opus'], 'menu-music')
         self.assertEqual(self.owner['data/zik/original/a1.opus'], 'music')
-        self.assertEqual(self.owner['data/zik/woodland/a1.opus'], 'music-sets')
+        self.assertEqual(self.owner['data/zik/moss-lanterns/a1.opus'], 'music-sets')
         self.assertEqual(self.owner['data/highres/v1/frames.txt'], 'hd')
         self.assertTrue(all(p.startswith('data/highres/') for p in self.packages['hd']))
 
     def test_every_installed_music_set_is_owned_and_opus_only(self):
         sets = [p for p in (ROOT / 'data/zik').iterdir() if p.is_dir()]
-        catalogue = {p.name for p in (ROOT / 'tools/music/sets').iterdir() if p.is_dir()}
+        catalogue = {'original'}
+        for manifest in (ROOT / 'tools/music/sets').glob('*/set.toml'):
+            with manifest.open('rb') as source:
+                if tomllib.load(source).get('shipped', False):
+                    catalogue.add(manifest.parent.name)
         self.assertTrue(catalogue)
         self.assertEqual({p.name for p in sets}, catalogue)
         for directory in sets:

@@ -3,6 +3,7 @@
 // Draft overlays and evidence live outside the shipped language inventory.
 #include "GlobalContainer.h"
 #include "Engine.h"
+#include "tutorial/TutorialModel.h"
 #include "sim/presentation/SceneInputs.h"
 #include "MainMenuScreen.h"
 #include "SettingsScreen.h"
@@ -393,7 +394,16 @@ void screenPreview(const fs::path &root, const fs::path &pilot, const fs::path &
 void gameplayPreview(const fs::path &root, const fs::path &pilot, const fs::path &output,
                      const std::string &kind, int width, int height)
 {
-    require(kind == "gameplay" || kind == "tutorial", "Unknown game preview kind");
+    const bool tutorial = kind == "tutorial" || kind.starts_with("tutorial:");
+    require(kind == "gameplay" || tutorial, "Unknown game preview kind");
+    const std::string lesson = kind == "tutorial" ? "introduction" : (tutorial ? kind.substr(9) : "");
+    if (tutorial) {
+        const auto catalog = readJson(root / "scripts/tutorials/catalog.json");
+        bool found = false;
+        for (const auto &entry : catalog)
+            if (readJson(root / entry["definition"].get<std::string>())["id"] == lesson) found = true;
+        require(found, "Known production tutorial lesson");
+    }
     require(SDL_setenv_unsafe("GLOB2_SIM_THREAD", "0", 1) == 0, "Use serial scripted preview execution");
     GlobalContainer globals("glob2-translation-game-preview");
     globalContainer = &globals;
@@ -409,7 +419,7 @@ void gameplayPreview(const fs::path &root, const fs::path &pilot, const fs::path
     globals.settings.language = pilotLocale(pilot);
     require(NET_Init(), "Initialize SDL_net");
     struct NetworkScope { ~NetworkScope() { NET_Quit(); } } network;
-    const std::string map = kind == "tutorial" ? "campaigns/tutorial-part1.map" : "maps/balanced.map";
+    const std::string map = tutorial ? "campaigns/" + lesson + ".map" : "maps/balanced.map";
     Json result = {{"kind", "production-game-draft-overlay"}, {"locale", pilotLocale(pilot)},
         {"simulation_execution", "serial with scripted host clock"},
         {"map", map}, {"map_sha256", sha256(root / (map + ".gz"))},
@@ -417,7 +427,7 @@ void gameplayPreview(const fs::path &root, const fs::path &pilot, const fs::path
         {"width", width}, {"height", height}, {"simulation_steps", Json::array()}, {"captures", Json::array()},
         {"phone_presentation_requested", GAGCore::phonePresentationRequested()},
         {"limits", {"Draft overlay in the actual desktop engine; not a native mobile-platform claim.",
-            "Tutorial instructions come from the unmodified SGSL and production translation aliases.",
+            "Tutorial instructions come from the current production JavaScript lesson and catalog; no script behavior is changed.",
             "No external service or networked match is exercised by this local map session."}}};
     {
         Engine engine;
@@ -449,7 +459,7 @@ void gameplayPreview(const fs::path &root, const fs::path &pilot, const fs::path
             draw();
             const auto &scene = gui.drawnScene();
             if (scene.world.session && scene.tick == gui.game.stepCounter &&
-                (kind != "tutorial" || scene.panels.hud.state().legacyScriptTextShown)) break;
+                (!tutorial || bool(scene.panels.hud.state().tutorial))) break;
             // A final fast simulation tick may overlap a pending scene job.
             // Follow ordinary owner admission until that current world has a
             // presentation request, then keep simulation frozen for capture.
@@ -465,11 +475,16 @@ void gameplayPreview(const fs::path &root, const fs::path &pilot, const fs::path
                   << " has_session=" << bool(scene.world.session)
                   << " tutorial_shown=" << scene.panels.hud.state().legacyScriptTextShown << '\n';
         require(scene.world.session && scene.tick == gui.game.stepCounter, "Latest gameplay scene published");
-        if (kind == "tutorial")
-            require(scene.panels.hud.state().legacyScriptTextShown, "Actual tutorial instruction published");
+        if (tutorial)
+            require(bool(scene.panels.hud.state().tutorial), "Actual tutorial instruction published");
         result["published_tick"] = scene.tick;
         result["capture_simulation_tick"] = gui.game.stepCounter;
-        result["tutorial_instruction_shown"] = scene.panels.hud.state().legacyScriptTextShown;
+        result["tutorial_instruction_shown"] = bool(scene.panels.hud.state().tutorial);
+        if (const auto &model = scene.panels.hud.state().tutorial) {
+            result["tutorial_lesson"] = model->lessonId;
+            result["tutorial_instruction"] = model->instruction;
+            result["tutorial_touch_instruction"] = model->touchInstruction;
+        }
         result["source_script_text"] = scene.panels.hud.state().legacyScriptText;
         const fs::path profile = globals.fileManager->getDir(0);
         auto capture = [&](const std::string &name) {

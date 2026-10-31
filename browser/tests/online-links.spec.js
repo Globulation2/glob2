@@ -1,3 +1,4 @@
+const {waitForMainMenu}=require('./main-menu');
 // The online hub's "open a web page" actions (Full leaderboard, Sign in) in the
 // browser game, on the threaded and the serial runtime. The threaded runtime runs
 // the game on a worker without window or document; those actions used to throw
@@ -59,7 +60,7 @@ async function fakePlatform(page, served) {
 }
 
 const snapshot = page => page.evaluate(() => glob2Diagnostics.snapshot());
-const screen = (page, name) => expect.poll(async () => (await snapshot(page)).screen, {timeout:60000}).toContain(name);
+const screen = (page, name) => name==='MainMenuScreen' ? waitForMainMenu(page) : expect.poll(async () => (await snapshot(page)).screen, {timeout:60000}).toContain(name);
 
 // What a click opened: a tab, or (a browser that refuses the tab) the page's link,
 // which the player taps.

@@ -32,7 +32,7 @@
 #include <SDL3/SDL_system.h>
 #include <jni.h>
 #endif
-#if defined(__IPHONEOS__)
+#if defined(SDL_PLATFORM_IOS)
 #include "mobile/ios/SafeArea.h"
 #endif
 using namespace GAGCore;
@@ -182,19 +182,19 @@ MobileLayout GameGUITouch::layout() const
 	}
 	return result;
 }
-double GameGUITouch::tutorialPitch() const
+double GameGUITouch::scenarioMessagePitch() const
 {
-	return tutorialLineStep * InGameTouchTheme::textGrowth();
+	return scenarioMessageLineStep * InGameTouchTheme::textGrowth();
 }
-double GameGUITouch::tutorialFooterHeight() const
+double GameGUITouch::scenarioMessageFooterHeight() const
 {
-	return gui.swallowSpaceKey ? std::max(48.0, tutorialFontHeight * InGameTouchTheme::textGrowth() + 16) : 0;
+	return gui.swallowSpaceKey ? std::max(48.0, scenarioMessageFontHeight * InGameTouchTheme::textGrowth() + 16) : 0;
 }
-double GameGUITouch::tutorialMaximum() const
+double GameGUITouch::scenarioMessageMaximum() const
 {
 	const double unit = globalContainer->gfx->logicalUnitsPerPoint();
-	return std::max(0.0, tutorialLines.size() * tutorialPitch() - tutorialRect().h / unit + 16 +
-							 tutorialFooterHeight());
+	return std::max(0.0, scenarioMessageLines.size() * scenarioMessagePitch() - scenarioMessageRect().h / unit + 16 +
+							 scenarioMessageFooterHeight());
 }
 void GameGUITouch::clampScroll()
 {
@@ -219,7 +219,7 @@ void GameGUITouch::clampScroll()
 				? 8 + unitInfoRows().size() * InGameTouchTheme::unitStatRow * InGameTouchTheme::textGrowth()
 				: inspectingResource() ? 0 : tacticalActions().size() * 56;
 	panelAxis.sync(panelScroll, std::max(0.0, height - content.h / unit), content.h / unit);
-	tutorialAxis.sync(tutorialScroll, tutorialMaximum(), tutorialRect().h / unit);
+	scenarioMessageAxis.sync(scenarioMessageScroll, scenarioMessageMaximum(), scenarioMessageRect().h / unit);
 }
 void GameGUITouch::stopScrolling()
 {
@@ -232,7 +232,7 @@ void GameGUITouch::stopScrolling()
 	mapMotion.interrupt();
 	panelAxis.axis.interrupt();
 	actionAxis.axis.interrupt();
-	tutorialAxis.axis.interrupt();
+	scenarioMessageAxis.axis.interrupt();
 }
 // A blank-map tap is a dismissal, not navigation back through inspector history.
 void GameGUITouch::dismissMapPanels()
@@ -251,7 +251,7 @@ void GameGUITouch::dismissMapPanels()
 bool GameGUITouch::scrollAnimating() const
 {
 	return (nativeScrolling && nativeScroll.needsFrames()) || mapMotion.isAnimating() || panelAxis.axis.isAnimating() ||
-		   actionAxis.axis.isAnimating() || tutorialAxis.axis.isAnimating();
+		   actionAxis.axis.isAnimating() || scenarioMessageAxis.axis.isAnimating();
 }
 Uint64 GameGUITouch::eventTime(const SDL_Event &event) const
 {
@@ -277,7 +277,7 @@ void GameGUITouch::advanceScroll(Uint64 now)
 	if (!usesHUD())
 		return;
 	if (nativeScrolling) nativeScroll.update(now, nativeAxis().axis);
-	for (auto *panel : {&panelAxis, &actionAxis, &tutorialAxis})
+	for (auto *panel : {&panelAxis, &actionAxis, &scenarioMessageAxis})
 		if (panel->axis.isAnimating())
 			panel->axis.step(now);
 	clampScroll();
@@ -444,7 +444,7 @@ int GameGUITouch::interfaceRegion(ViewPoint point) const
 		}
 		else if (layout().panel.contains(point))
 			return 3;
-		if (tutorialRect().contains(point))
+		if (scenarioMessageRect().contains(point))
 			return 7;
 		return world().contains(point) ? 0 : 6;
 	}
@@ -564,7 +564,7 @@ bool GameGUITouch::process(SDL_Event &event)
 						nativeAxis().publish(nativeOffset());
 					}
 					auto &axis = nativeAxis().axis;
-					nativeScroll.begin(*sample, axis, nativeOffset(), axis.maximum(), nativePanel == 3 ? tutorialRect().h / globalContainer->gfx->logicalUnitsPerPoint() : panelContent().h / globalContainer->gfx->logicalUnitsPerPoint());
+					nativeScroll.begin(*sample, axis, nativeOffset(), axis.maximum(), nativePanel == 3 ? scenarioMessageRect().h / globalContainer->gfx->logicalUnitsPerPoint() : panelContent().h / globalContainer->gfx->logicalUnitsPerPoint());
 					nativeScrolling = true;
 				}
 			}
@@ -764,7 +764,7 @@ bool GameGUITouch::process(SDL_Event &event)
 			const auto hud = fingerIsTouch ? ScrollPresets::hudPanel() : ScrollPresets::mouse();
 			panelAxis.axis.setConfig(hud);
 			actionAxis.axis.setConfig(hud);
-			tutorialAxis.axis.setConfig(hud);
+			scenarioMessageAxis.axis.setConfig(hud);
 			gui.viewportSpeedX = gui.viewportSpeedY = 0;
 			gui.lastMouseButtonState = 0;
 			gui.selectionPushed = gui.panPushed = gui.miniMapPushed = false;
@@ -947,7 +947,7 @@ bool GameGUITouch::process(SDL_Event &event)
 		if (fingers.empty())
 		{
 			// A touch that stopped a bounce without dragging lets it finish.
-			for (auto *panel : {&panelAxis, &actionAxis, &tutorialAxis})
+			for (auto *panel : {&panelAxis, &actionAxis, &scenarioMessageAxis})
 				panel->axis.settle(time);
 			if (usesHUD())
 				clampScroll();
@@ -978,7 +978,7 @@ void GameGUITouch::actions(const std::vector<TouchAction> &changes)
 			{
 				const double unit = globalContainer->gfx->logicalUnitsPerPoint();
 				clampScroll();
-				auto &panel = ownerRegion == 7 ? tutorialAxis : inspecting() ? actionAxis : panelAxis;
+				auto &panel = ownerRegion == 7 ? scenarioMessageAxis : inspecting() ? actionAxis : panelAxis;
 				if (action.kind == TouchActionKind::Pan)
 					// The thumb rail fills from the bottom, so its content follows the
 					// finger with the opposite sign.
@@ -1326,21 +1326,21 @@ void GameGUITouch::interfaceTap(ViewPoint point)
 		return;
 	}
 	if (usesHUD() && !gui.inGameMenu && !gui.typingInputScreen && !gui.scrollableText &&
-		tutorialRect().contains(point) && !layout().panel.contains(point))
+		scenarioMessageRect().contains(point) && !layout().panel.contains(point))
 	{
-		if (tutorialCollapsed)
+		if (scenarioMessageCollapsed)
 		{
-			tutorialCollapsed = false;
+			scenarioMessageCollapsed = false;
 			return;
 		}
-		const auto tutorial = tutorialRect();
+		const auto message = scenarioMessageRect();
 		const double target = 48 * globalContainer->gfx->logicalUnitsPerPoint();
-		if (point.x >= tutorial.x + tutorial.w - target && point.y < tutorial.y + target)
+		if (point.x >= message.x + message.w - target && point.y < message.y + target)
 		{
-			tutorialCollapsed = true;
+			scenarioMessageCollapsed = true;
 			return;
 		}
-		if (point.y < tutorial.y + tutorial.h - tutorialFooterHeight() * globalContainer->gfx->logicalUnitsPerPoint())
+		if (point.y < message.y + message.h - scenarioMessageFooterHeight() * globalContainer->gfx->logicalUnitsPerPoint())
 			return;
 		if (!gui.swallowSpaceKey)
 		{
@@ -1669,7 +1669,7 @@ void GameGUITouch::prepareDraw()
 	}
 	if (usesHUD())
 	{
-		prepareTutorial();
+		prepareScenarioMessage();
 		clampScroll();
 	}
 	syncGestureExclusion();

@@ -20,8 +20,8 @@ class GameHints
 public:
 	GameHints();
 
-	///Upper bound of the storable script number domain. Stock content uses
-	///1..8 (the script editor has eight hint slots).
+	///Upper bound of the storable script number domain. Legacy editor slots use
+	///1..8; JavaScript scenarios address hint lists by index and may use more.
 	static constexpr int MaxScriptNumber = ScriptNumber::Max;
 
 	///Returns the number of hints. The count is returned as int (not size_t)

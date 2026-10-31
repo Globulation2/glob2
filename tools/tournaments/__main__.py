@@ -100,7 +100,8 @@ def main():
                     job = json.loads(json.dumps(job))
                     job['outputs'].update({'replay': job['type'] == 'game', 'core': True, 'stack': True})
                     if job['type'] == 'game':
-                        job['outputs'].update({'saves': ['initial', 'final', 'every:2048'], 'telemetry': ['checksums', 'team-timeline', 'maxima']})
+                        job['outputs'].update({'saves': ['initial', 'final'], 'telemetry': ['checksums', 'team-timeline', 'maxima'], 'log_mode': 'full'})
+                        job['limits'].setdefault('artifact_bytes', 512 * 1024**2)
                     value = {k: v for k, v in coordinator.manifest.items() if k != 'package_id'}
                     value.update(id=value['id'] + '-diagnostic', jobs=[job])
                     # Resolve dependencies to retained artifacts; no generator rerun.
