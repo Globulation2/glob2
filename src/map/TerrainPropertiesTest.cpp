@@ -837,6 +837,7 @@ TEST_SUITE("TerrainRuntime")
 				  TerrainRegistry::builtins()->propertyIndex(classic));
 		}
 		// The editor lays a sand beach where any grass look meets water.
+		glob2test::HeadlessGlobals globals;
 		Map map;
 		map.setSize(5, 5, WATER);
 		map.paintVertices({{2, 2}}, DRY_GRASS);
