@@ -55,6 +55,28 @@ test('long localized controls fit phone columns and preserve desktop layout', as
         expect(
           await page.evaluate(() => document.documentElement.scrollWidth - innerWidth),
         ).toBeLessThanOrEqual(1);
+        // Technical identifiers can overflow their flex label and cover Remove
+        // even when all control boxes remain inside the viewport.
+        for (const label of await page.locator('.building-field > label').all()) {
+          expect(
+            await label.evaluate((element) => {
+              const bounds = element.getBoundingClientRect();
+              const text = document.createTreeWalker(element, NodeFilter.SHOW_TEXT);
+              while (text.nextNode()) {
+                if (!text.currentNode.textContent?.trim()) continue;
+                const range = document.createRange();
+                range.selectNodeContents(text.currentNode);
+                if (
+                  [...range.getClientRects()].some(
+                    (rect) => rect.left < bounds.left - 1 || rect.right > bounds.right + 1,
+                  )
+                )
+                  return false;
+              }
+              return true;
+            }),
+          ).toBe(true);
+        }
         // The shell can conceal overflow, so verify actual interactive bounds too.
         for (const control of await page
           .locator('main button:visible, main input:visible, main select:visible')
