@@ -78,3 +78,22 @@ paths and need compatibility links or updated scripts before cleanup. Migration
 never infers that extracted tool directories are trustworthy from a version
 string alone. Windows inventory/seeding is supported; duplicate removal requires
 a supported open-file checker and is conservatively skipped there.
+
+
+## Experiment output
+
+Experiment artifacts are outside SDK/cache pruning. Use the bounded
+[tournament runner](../tools/tournaments.md#experiment-storage) for broad AI
+campaigns. Its default game outputs omit saves and replays; a compact probability
+profile records the existing win model without retaining unrelated console
+telemetry. Logs are compressed during capture, attempts and collected artifacts
+have explicit byte allowances, and disk pressure stops new work before evidence
+is lost. Keep exhaustive per-object checksum dumps and frequent checkpoints to
+short, selected diagnostic runs. They can exceed the simulation's own storage
+by orders of magnitude.
+
+Cleanup must distinguish reusable evidence from duplicated intermediate output.
+Retain manifests, seeds, build identity, results and the compact measurements
+needed for the analysis. Remove detailed mismatch-debug payloads only after
+verifying retained checksums and original match artifacts, and record the removal.
+Do not infer that an ignored `artifacts/` directory is disposable in its entirety.

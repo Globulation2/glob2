@@ -227,7 +227,7 @@ Every job has these fields:
 | `depends_on` | Job IDs; every input dependency must appear; cycles rejected |
 | `seeds` | `{"game":N}` or `{"map":N}`; empty on saved games |
 | `config` | Game: players, ticks, ai_params (player-string to key/value object), alliances, winning_conditions. Generator: generator, params, candidates, rotations. Defaults follow CLI |
-| `outputs` | replay false; saves/telemetry/reports empty lists; map false; core/stack false; required empty list of relative output paths; result `full` (or `outcome` for compact rating/adjudication fields only) |
+| `outputs` | replay false; saves/telemetry/reports empty lists; log_mode `full` (or `telemetry`, or `win-probability` with game team-timeline telemetry); map false; core/stack false; required empty list of relative output paths; result `full` (or `outcome` for compact rating/adjudication fields only) |
 | `limits` | timeout_seconds 3600, memory_mb host default, estimated_seconds 60 (buffer planning only) |
 | `labels` | Opaque JSON object preserved unchanged |
 
@@ -248,12 +248,77 @@ continues its buffer and spools results. Expired leases can be reassigned; old t
 cannot revive, replace an accepted result, or count twice. Late attempts are retained.
 
 Failures distinguish transport_failure, interrupted, disk_pressure, artifact_failure,
-invalid_result, crash, timeout, process_failure, invalid_request, generation_failed.
+invalid_result, crash, timeout, process_failure, invalid_request, generation_failed,
+and storage_limit. A storage_limit failure is recorded once and is not automatically
+retried; change the recording request or its explicit allowance before retrying.
 Infrastructure failures have five attempts total; crashes/timeouts/process failures
 have two total, preferring another eligible connected host. Invalid requests and
 ordinary generation failures are terminal recorded results. Dependencies requiring
 an unavailable generated map become blocked. Automatic retries restart original
 input; a user can explicitly create a saved-state job to inspect a checkpoint.
+
+## Experiment storage
+
+Ordinary games retain results without replay or checkpoint output. Keep map seeds,
+input identities and frozen bundles so a small, declared set of diagnostic games
+can be reproduced. Request initial/final saves or replays for those games; avoid
+periodic saves on every game in a broad campaign. A `checksums` request includes
+per-object, per-field data on **every tick**, and can grow to many gigabytes for
+one large FFA. Games whose absolute tick limit exceeds 4,096 must provide an
+explicit positive integer `limits.artifact_bytes` when requesting it. Prefer short
+probes loaded near the event of interest. The worker's byte limits still apply.
+
+For model-based Maxima comparisons, this profile retains only the engine's
+512-tick win-probability records and structured results:
+
+```json
+{
+  "outputs": {
+    "telemetry": ["team-timeline"],
+    "log_mode": "win-probability",
+    "result": "full"
+  }
+}
+```
+
+For tactical studies that also need Maxima flags and placement decisions, use
+`log_mode: "telemetry"` with the requested `maxima`/`team-timeline` telemetry.
+It retains `MAXIMA_TELEMETRY`, `GLOB2_WINPROB`, `GLOB2_TL`, `GLOB2_ECON` and
+`GLOB2_TIMELINE` records, while omitting unrelated console/performance chatter.
+Other telemetry families require full capture. Requested CSV outputs are unaffected.
+
+`log_mode` controls stdout retention only; stderr remains diagnostic. The engine
+still emits its ordinary timeline internally. Both console streams are compressed
+while the game runs, with no full raw-log temporary copy. Stored `stdout.log`
+remains readable through `Results.open_artifact`; its raw hash and byte count
+refer to the retained content. Execution records report received/retained bytes,
+mode, truncation and capture errors. Full console capture remains available with
+`log_mode: "full"`. Hitting a log limit is a failed measurement, never a successful
+shortened timeline.
+
+Workers enforce an aggregate attempt allowance and a hard child file-size limit;
+job `limits.artifact_bytes` and `limits.log_bytes` may lower the host ceilings.
+These limits also cover saves, replays, core files and detailed traces. After
+packing publishes verified content and its durable record, source output copies
+are removed; acknowledgement still controls removal of the authoritative spool.
+A host stops admitting work at its spool budget. Supervisors also watch live
+attempt/spool usage and the full disk reserve. Aggregate monitoring can overshoot
+briefly between polls; per-file and retained-log ceilings remain hard bounds.
+
+Coordinator settings default to `artifact_budget_bytes: 10737418240` (10 GiB) for
+artifacts plus transfer state, and `disk_reserve_bytes: 2147483648` (2 GiB).
+Concurrent collectors reserve an artifact's remaining transfer size before
+receiving it. Quota pressure defers collection and new dispatch; uncollected
+worker evidence remains intact. `status` reports used, reserved, budget and free
+bytes. Record larger campaign allowances explicitly in the experiment manifest
+when the intended evidence requires them. Frozen build caches are accounted for
+separately by the worker cache budget; derived report exports are not included in
+the coordinator artifact-transfer allowance.
+
+These protections apply to the shared tournament runner. Standalone shell/Python
+loops must use the same storage bounds rather than bypassing them. The managed
+SDK/cache pruner does not clean experimental evidence; see
+[development storage](../development/development-storage.md).
 
 ## Hosts and operational commands
 
@@ -269,8 +334,10 @@ Each host has `name`, `directory`, optional `transport` (ssh default, or local),
 | input_slots | 2 concurrent input deliveries per host (coordinator-side) |
 | result_slots | 2 concurrent result collections per host (coordinator-side) |
 | builds | empty: every platform-compatible, capable build |
-| disk_reserve_bytes | 1 GiB |
+| disk_reserve_bytes | 5 GiB |
 | spool_budget_bytes | 10 GiB |
+| attempt_budget_bytes | 512 MiB, including inputs, logs and child-written outputs |
+| log_budget_bytes | 64 MiB of retained decoded bytes per console stream |
 | cache_budget_bytes | 20 GiB |
 | memory_mb | null (optional process address-space limit) |
 | cpu_ids | absent: inherit the host CPU affinity; otherwise a nonempty list of caller-owned logical CPU IDs |
