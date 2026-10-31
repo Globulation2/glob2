@@ -190,6 +190,9 @@ candidate boundaries with `python3 tools/localization/thai_breaks.py INPUT OUTPU
 using distinct files, then inspect the output during the editorial pass. The tool
 uses pinned PyThaiNLP with its `newmm` dictionary segmenter from
 `requirements-dev.txt`; no segmenter ships with the game.
+The suggestion tool protects a small set of reviewed game terms from internal
+breaks. Context can still fool its dictionary: inspect every final hint and
+preserve manual corrections rather than blindly regenerating an edited catalog.
 Hints prefer whole-word wrapping without adding visible spaces, and the renderer
 omits them from measurements and drawing. Oversized words retain cluster-safe
 emergency wrapping. Keep online catalog text unannotated and use browser Thai line

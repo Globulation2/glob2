@@ -10,6 +10,12 @@ from pathlib import Path
 import re
 
 THAI = re.compile(r'[\u0e00-\u0e7f]+')
+# Reviewed game terms that dictionary context can otherwise split internally.
+# This is a suggestion guard, not a substitute for reviewing surrounding words.
+PROTECTED_TERMS = ('คนงาน', 'นักสำรวจ', 'พื้นที่', 'กราเดียนต์', 'ดรัมลิน',
+                   'ฟยอร์ด', 'อัปโหลด', 'ดาวน์โหลด', 'แผนที่', 'กำลัง', 'ป้องกัน',
+                   'เนื้อหา', 'โหลด', 'แอป', 'เซสชัน', 'มิลลิวินาที', 'เกรเดียนต์',
+                   'โมเรน', 'เอเวอร์เกลดส์')
 
 
 def annotate(text):
@@ -20,7 +26,18 @@ def annotate(text):
         tokens = word_tokenize(source, engine='newmm', keep_whitespace=True)
         if ''.join(tokens) != source:
             raise ValueError('Segmenter changed catalog characters')
-        return '\u200b'.join(tokens)
+        ends, position = set(), 0
+        for token in tokens[:-1]:
+            position += len(token)
+            ends.add(position)
+        forbidden = set()
+        for term in PROTECTED_TERMS:
+            start = source.find(term)
+            while start >= 0:
+                forbidden.update(range(start + 1, start + len(term)))
+                start = source.find(term, start + 1)
+        return ''.join(character + ('\u200b' if index + 1 in ends and index + 1 not in forbidden else '')
+                       for index, character in enumerate(source))
 
     return THAI.sub(words, text.replace('\u200b', ''))
 

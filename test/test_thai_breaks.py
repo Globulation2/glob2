@@ -12,7 +12,8 @@ SPEC.loader.exec_module(BREAKS)
 class ThaiBreakTests(unittest.TestCase):
     def test_thai_words_and_marks_stay_whole(self):
         for text, expected in [('อาคารอื่นๆ', 'อาคาร\u200bอื่นๆ'), ('เป็นกลุ่ม', 'เป็น\u200bกลุ่ม'),
-                               ('อัปโหลด', 'อัปโหลด'), ('ริมฝั่งฟยอร์ด', 'ริมฝั่ง\u200bฟยอร์ด')]:
+                               ('อัปโหลด', 'อัปโหลด'), ('ริมฝั่งฟยอร์ด', 'ริมฝั่ง\u200bฟยอร์ด'),
+                               ('กราเดียนต์', 'กราเดียนต์'), ('นักสำรวจ', 'นักสำรวจ')]:
             with self.subTest(text=text):
                 self.assertEqual(BREAKS.annotate(text), expected)
         text = 'ผู้เล่นกำลังก่อสร้าง %0 / 100 Glob2'

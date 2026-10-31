@@ -115,9 +115,17 @@ TEST_SUITE("SystemLanguage")
 		CHECK(SystemLanguage::choose({{"de", ""}, {"fr", ""}}, [](const std::string &c) { return c == "fr"; }) == "fr");
 	}
 
+	TEST_CASE("Thai starts from an installed catalog for system and saved preferences")
+	{
+		PreferredLocales locales("th_TH,en_US");
+		CHECK(startupLanguage("") == "th");
+		CHECK(startupLanguage("th") == "th");
+		CHECK(startupLanguage("en") == "en");
+	}
+
 	TEST_CASE("startup follows the system only when the profile has no usable language")
 	{
-		PreferredLocales locales("hi_IN,pt_BR,en_US");
+		PreferredLocales locales("xx_XX,pt_BR,en_US");
 		CHECK(startupLanguage("") == "br");
 		CHECK(startupLanguage("no-such-language") == "br");
 		CHECK(startupLanguage("fr") == "fr");
