@@ -58,14 +58,14 @@ export function resolveLocale(input: string | readonly string[]): Locale {
         ? 'deva'
         : language === 'ur'
           ? 'arab'
-          : language === 'sw'
+          : language === 'sw' || language === 'ms'
             ? 'latn'
             : undefined;
     if (writtenScript) {
       const extension = parts.findIndex((part) => part.length === 1);
       const subtags = extension < 0 ? parts : parts.slice(0, extension);
-      const script = subtags.find((part) => /^[a-z]{4}$/.test(part));
-      if (script && script !== writtenScript) continue;
+      const scripts = subtags.filter((part) => /^[a-z]{4}$/.test(part));
+      if (scripts.some((script) => script !== writtenScript)) continue;
     }
     if (language === 'pt') return parts.includes('br') ? 'pt-BR' : 'pt-PT';
     if (language === 'zh')
@@ -107,6 +107,7 @@ export function hasMessage(source: string, locale = selected): boolean {
   return !!catalog && Object.hasOwn(catalog, source);
 }
 const loaders: Record<string, () => Promise<{ default: Catalog }>> = {
+  ms: () => import('../locales/ms.json', { with: { type: 'json' } }),
   hi: () => import('../locales/hi.json', { with: { type: 'json' } }),
   ur: () => import('../locales/ur.json', { with: { type: 'json' } }),
   sw: () => import('../locales/sw.json', { with: { type: 'json' } }),

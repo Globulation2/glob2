@@ -166,6 +166,37 @@ checks draft keys and tokens and reports untranslated entries and English matche
 for review; it does not replace the official checks above. Keep unfinished
 catalogs out of the selectable language inventory.
 
+For a gcloud-authenticated machine draft, use the same frozen kit:
+
+```sh
+python3 tools/localization/cloud_draft.py --output artifacts/localization-release \
+  --locale ms --project YOUR_PROJECT_ID --dry-run
+python3 tools/localization/cloud_draft.py --output artifacts/localization-release \
+  --locale ms --project YOUR_PROJECT_ID --keys-file artifacts/localization-release/pilot-keys.json
+```
+
+The project must already have billing and Cloud Translation API access. The
+runner obtains an access token through `gcloud auth print-access-token`, uses
+Advanced v3 `general/nmt` with explicit English source, and never changes the
+global gcloud project. The keys file is a JSON array of exact `native:[key]` and
+`online:key` source IDs; use it for a representative pilot, or `--limit N` for
+the first N pending values. After reviewing the pilot, omit the selection flags
+to draft the remaining blank values. Existing nonblank translations are retained.
+`--dry-run` reports pending values and source character counts without API calls.
+
+Requests contain at most 4,500 protected HTML code points and 1,000 entries.
+Oversized messages split at safe word boundaries. Nontranslated spans protect
+placeholders, line breaks, markup and online invariant literals; changed tokens
+or malformed response cardinality stop the run. Raw provider responses and
+request identities are cached under the kit's `cloud/LOCALE/` directory before
+drafts are checkpointed. A restart reuses cached identical requests. Temporary
+network/server errors retry with bounded backoff; ambiguous transport failures
+can still incur duplicate provider charges. Inspect any rejected cached response
+before explicitly removing it to retry. Machine output and a successful runner
+are not linguistic approval. Review every entry through the independent passes
+below; do not publish the kit's cache, credentials or review working files.
+Run `python3 test/test_cloud_draft.py` when changing this runner.
+
 Register finished catalogs in both inventories and their browser loaders, then
 test system-language selection against the installed catalog set. Mapping a
 system tag alone must never enable an unfinished locale. Punjabi scripts use
@@ -243,6 +274,29 @@ exchange fruits. Translate ambiguous terrain terms from their control's effect,
 not an isolated dictionary sense. Preserve tutorial execution and campaign IDs;
 only their presentation is localized. Review legitimate names and loanwords
 explicitly rather than changing correct text merely to avoid an English match.
+
+### Malay terminology
+
+The `ms` catalog uses standard Malaysian Malay in Latin/Rumi script, displayed
+as **Bahasa Melayu**. Explicit Jawi/Arabic-script locale preferences do not select
+this catalog. Use contemporary Malaysian software terms: **Tetapan**, **fail**,
+**akaun**, **kata laluan**, **pelayar web**, **muat turun** and **muat naik**.
+Indonesian translations can clarify game concepts, but are not Malaysian wording
+authorities. Consult [DBP's dictionary and terminology](https://prpm.dbp.gov.my/)
+for disputed words and review each term in its actual gameplay context.
+
+| Concept | Malay (`ms`) |
+| --- | --- |
+| Worker / Explorer / Warrior | Pekerja / Penjelajah / Pahlawan |
+| Inn / Swarm / Market | Penginapan / Sarang / Pasar |
+| Racetrack | Litar Larian (unit training, not horse racing) |
+| Room / Match | Bilik / Perlawanan |
+| Map generator / Terrain | Penjana peta / Rupa bumi |
+| Stream reach / Sand bar | Panjang anak sungai / Beting pasir |
+
+Keep building names consistent in lessons and HUD text. The Inn supplies food,
+the Swarm produces units, and flags assign work or military attention. Music
+playback uses **Sedang dimainkan**, rather than the verb for playing a game.
 
 ### Hindi, Urdu and Swahili terminology
 
