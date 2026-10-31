@@ -1,0 +1,8 @@
+PASS glob2-unit-tests PlatformProtocol (1 cases) (0.0s)
+PASS glob2-unit-tests TurnMatchRecord (3 cases) (0.0s)
+PASS glob2-unit-tests ReplayStepCounter (1 cases) (0.0s)
+PASS glob2-unit-tests TurnSequencer (1 cases) (0.0s)
+PASS TurnEngineHarness/the committed match record verifies to the committed checksum trace [network-sim][golden] (2.7s)
+
+5 passed, 0 failed, 0 skipped (2.8s of test time)
+[run_tests] JUnit report: artifacts/econo-farming/compatibility.xml (7 cases)

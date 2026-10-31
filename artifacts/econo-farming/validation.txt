@@ -1,0 +1,41 @@
+Econo farming verification
+Base and fetched master: cbc20d2aabc364f7727439659001d29ffc741c25
+Working change fingerprint (tracked binary diff plus new shared sources): d37a1336335c0655f4c48c6c599f28d357eb22db0860107c896c65f5866e2123
+Environment: Linux-7.0.0-38-generic-x86_64-with-glibc2.39, GCC 13.3.0, fast development build (-O0 -g1), SDL3 from pinned repository builder.
+
+Result: Econo and Nicowar call the same farming scan every 250 ticks. Nicowar's scan was moved without changing its decision body. Econo gains edge-donor protection, wood overgrowth clearing, separate wood/wheat water bands and clearing cleanup. No save fields changed. SIM_REVISION is 106.
+
+Build commands:
+python3 scons/sdl3_dependencies.py --prefix build/sdl3/prefix --work build/sdl3/sources --jobs 8
+GLOB2_SDL3_PREFIX="$PWD/build/sdl3/prefix" python3 tools/dev_build.py engine-tests
+GLOB2_SDL3_PREFIX="$PWD/build/sdl3/prefix" python3 tools/dev_build.py unit-tests
+
+Test environment: LD_LIBRARY_PATH="$PWD/build/sdl3/prefix/lib".
+Runner: python3 test/run_tests.py --build-dir build/linux/client/debug/dev-dev_fast-true-linker-auto
+Focused engine filters: NicowarFarming/*; AIDecisionCoverage/Econo*; AIDecisionCoverage/Nicowar*; AIDecisionCoverage/*farm*; RuntimeContinuation/*; LegacyAIState/shared runtime*; LegacyAIState/pre-fix*; AICustomCatalog/historical farming*.
+Focused result: 22 cases passed, 0 failed. focused.log and focused.xml retain results.
+Compatibility filters: ReplayStepCounter/VersionBounds; PlatformProtocol/the local sim*; TurnSequencer/admission*; TurnMatchRecord/*; TurnEngineHarness/the committed*.
+Compatibility result: 7 cases passed, 0 failed (unit cases grouped into 4 runner jobs plus 1 engine job). compatibility.log and compatibility.xml retain results.
+Golden update: --binary engine --update-fixtures --filter 'TurnEngineHarness/the committed*'; 1 passed. golden-update.log and golden-update.xml retain results. The regenerated record is test/fixtures/multiplayer/FourSquares1.g2mr.
+python3 test/check_sim_revision.py --base origin/master: passed.
+git diff --check: passed.
+
+The regenerated Nicowar/Warrush match retained the exact committed checksum trace:
+SHA256 5a843636b78375d3233d6623bd33cc96a5a5f9c3a18a60443e52515c3de7c56c.
+
+Coverage rationale: real area executors cover both AI entry points, farm areas on/off, edge expansion/release, disabled growth, water bands, diagonal/wrapped wood threats, fog, and preserving building clearance. Existing fixed-seed continuation cases compare per-tick state and orders through save/load. Legacy binary/text queues and gradients, replay version bounds, network admission and sim version record checks cover affected compatibility boundaries.
+
+Initial farming run: assertions passed, but two SUBCASE-based reports were rejected by runner inventory validation. Harness switched to ordinary loops, rebuilt, and all cases passed. Initial farming.xml is retained as failure evidence; focused.xml is the final report.
+
+Limits: Linux x86_64 only; Windows, macOS, browser and mobile checksum comparisons were not run. No release build, long tournament, performance claim or interactive playtest. Clearance labor and temporary seed protection can alter Econo pacing and resource pressure; maintainers should play the result.
+
+Final PR integration verification
+Tested clean commit: d434e7fede9b7383b294170a149685fa1d3e6fb6
+PR: https://github.com/Globulation2/glob2/pull/1318
+Rebased onto master e67cba82e after its font, dependency and CI changes. Rebuilt the pinned SDL3 prefix with current master's helper. Rebuilt engine-tests and unit-tests together using the existing GLOB2_SDL3_PREFIX configuration. Both builds exited 0.
+Build command: GLOB2_SDL3_PREFIX="$PWD/build/sdl3/prefix" python3 tools/dev_build.py engine-tests unit-tests
+Exact test command: LD_LIBRARY_PATH="$PWD/build/sdl3/prefix/lib" python3 test/run_tests.py --build-dir build/linux/client/debug/dev-dev_fast-true-linker-auto --binary all -j8 --filter 'NicowarFarming/*' --filter 'AIDecisionCoverage/Econo*' --filter 'AIDecisionCoverage/Nicowar*' --filter 'AIDecisionCoverage/*farm*' --filter 'RuntimeContinuation/*' --filter 'LegacyAIState/shared runtime*' --filter 'LegacyAIState/pre-fix*' --filter 'AICustomCatalog/historical farming*' --filter 'ReplayStepCounter/VersionBounds' --filter 'PlatformProtocol/the local sim*' --filter 'TurnSequencer/admission*' --filter 'TurnMatchRecord/*' --filter 'TurnEngineHarness/the committed*' --write-inventory artifacts/econo-farming/integration-inventory.json --junit artifacts/econo-farming/integration.xml --artifacts artifacts/econo-farming/integration
+Result: exit 0; 29 cases passed, 0 failures/errors/skips (27 runner jobs, since three TurnMatchRecord unit cases share a job). integration.log, integration.xml, integration-inventory.json and integration/build-provenance.json retain execution evidence. Compressed build logs are integration-build.log.gz and integration-sdl.log.gz.
+Final fetch found master 7b67d4293, whose additional change only updates translations and translation tests. It does not affect this PR's farming, build/dependency inputs or CI configuration. No additional rebase was needed. GitHub reports the PR mergeable.
+Simulation revision check against master and git diff --check: passed. Golden record verification passed and the checksum trace SHA-256 remained unchanged.
+Platform and gameplay limitations above still apply. No hosted failures reported at merge preparation; hosted build matrix remains queued/in progress.

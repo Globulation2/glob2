@@ -1,0 +1,31 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="29" failures="0" errors="0" skipped="0"><testsuite name="AICustomCatalog"><testcase classname="AICustomCatalog" name="historical farming reserves only propagating finite material donors" time="9.28641" status="run" />
+  </testsuite><testsuite name="AIDecisionCoverage"><testcase classname="AIDecisionCoverage" name="Econo adds new swarms as its colony grows" time="5.54864" status="run" />
+  <testcase classname="AIDecisionCoverage" name="Econo retains exploration flags after their enemy target disappears" time="3.62479" status="run" />
+  <testcase classname="AIDecisionCoverage" name="Econo retains wheat-starved buildings" time="15.3594" status="run" />
+  <testcase classname="AIDecisionCoverage" name="Econo shared runtime survives save-load" time="19.7516" status="run" />
+  <testcase classname="AIDecisionCoverage" name="Nicowar shared runtime survives save-load" time="20.8724" status="run" />
+  <testcase classname="AIDecisionCoverage" name="farm areas reuse each AI's forbidden wheat placement on an unchanged colony" time="79.8856" status="run" />
+  <testcase classname="AIDecisionCoverage" name="with the farm-areas experiment every farming AI farms its wheat with a farm area and survives save-load" time="41.7361" status="run" />
+  </testsuite><testsuite name="LegacyAIState"><testcase classname="LegacyAIState" name="pre-fix format 127 writers remain aligned for Cabino Nicowar and Cortex" time="1.54581" status="run" />
+  <testcase classname="LegacyAIState" name="shared runtime reload replaces queues and registrations in binary and text" time="1.11978" status="run" />
+  </testsuite><testsuite name="NicowarFarming"><testcase classname="NicowarFarming" name="edge donors expand fields and are released after growth" time="1.35812" status="run" />
+  <testcase classname="NicowarFarming" name="farm areas reuse wheat protection while wood keeps its existing forbidden and clearing rules" time="1.91134" status="run" />
+  <testcase classname="NicowarFarming" name="zone boundaries; eight-way adjacency; wrap seams; discovery; protection and building clearance" time="1.75133" status="run" />
+  </testsuite><testsuite name="RuntimeContinuation"><testcase classname="RuntimeContinuation" name="flat building relationships resolve captured unit incarnations" time="1.0885" status="run" />
+  <testcase classname="RuntimeContinuation" name="gradient manager state survives binary and text round trips [save-format]" time="3.42212" status="run" />
+  <testcase classname="RuntimeContinuation" name="irrigation heuristics require a positive enabled fertility contribution" time="0" status="run" />
+  <testcase classname="RuntimeContinuation" name="position entities retain historical binary and text payloads" time="0.000231" status="run" />
+  <testcase classname="RuntimeContinuation" name="queued orders preserve selection incarnations through save and slot replacement" time="1.36763" status="run" />
+  <testcase classname="RuntimeContinuation" name="recurring input tracking and provider lookup preserve composite membership" time="1.3567" status="run" />
+  <testcase classname="RuntimeContinuation" name="runtime owner helpers and decisions release their full observation leases" time="0.921181" status="run" />
+  <testcase classname="RuntimeContinuation" name="static material fields invalidate on source edits and preserve continuation" time="1.42739" status="run" />
+  <testcase classname="RuntimeContinuation" name="terrain weighted influence retains obstacles and sub-tile trail costs" time="0.003381" status="run" />
+  </testsuite><testsuite name="TurnEngineHarness"><testcase classname="TurnEngineHarness" name="the committed match record verifies to the committed checksum trace [network-sim][golden]" time="4.73735" status="run" />
+  </testsuite><testsuite name="PlatformProtocol"><testcase classname="PlatformProtocol" name="the local sim version carries this build's versions" time="0.000131" status="run" />
+  </testsuite><testsuite name="ReplayStepCounter"><testcase classname="ReplayStepCounter" name="VersionBounds" time="0.000765" status="run" />
+  </testsuite><testsuite name="TurnMatchRecord"><testcase classname="TurnMatchRecord" name="round-trips through bytes and files" time="0.000616" status="run" />
+    <testcase classname="TurnMatchRecord" name="rejects corruption, truncation, newer versions and disorder" time="0.000444" status="run" />
+    <testcase classname="TurnMatchRecord" name="CRC-32 matches the IEEE check value" time="0" status="run" />
+  </testsuite><testsuite name="TurnSequencer"><testcase classname="TurnSequencer" name="admission: tickets, versions, first message and seat takeover" time="0.000541" status="run" />
+  </testsuite></testsuites>

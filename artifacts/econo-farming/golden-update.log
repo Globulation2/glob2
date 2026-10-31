@@ -1,0 +1,4 @@
+PASS TurnEngineHarness/the committed match record verifies to the committed checksum trace [network-sim][golden] (7.5s)
+
+1 passed, 0 failed, 0 skipped (7.5s of test time)
+[run_tests] JUnit report: artifacts/econo-farming/golden-update.xml (1 cases)

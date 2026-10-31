@@ -1,0 +1,9 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="7" failures="0" errors="0" skipped="0"><testsuite name="TurnEngineHarness"><testcase classname="TurnEngineHarness" name="the committed match record verifies to the committed checksum trace [network-sim][golden]" time="2.65199" status="run" />
+  </testsuite><testsuite name="PlatformProtocol"><testcase classname="PlatformProtocol" name="the local sim version carries this build's versions" time="0.000111" status="run" />
+  </testsuite><testsuite name="ReplayStepCounter"><testcase classname="ReplayStepCounter" name="VersionBounds" time="0.000845" status="run" />
+  </testsuite><testsuite name="TurnMatchRecord"><testcase classname="TurnMatchRecord" name="round-trips through bytes and files" time="0.000584" status="run" />
+    <testcase classname="TurnMatchRecord" name="rejects corruption, truncation, newer versions and disorder" time="0.000466" status="run" />
+    <testcase classname="TurnMatchRecord" name="CRC-32 matches the IEEE check value" time="0" status="run" />
+  </testsuite><testsuite name="TurnSequencer"><testcase classname="TurnSequencer" name="admission: tickets, versions, first message and seat takeover" time="0.000503" status="run" />
+  </testsuite></testsuites>
