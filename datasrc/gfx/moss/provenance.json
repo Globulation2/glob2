@@ -2,7 +2,7 @@
   "generator": "tools/artwork/terrain_synth.py",
   "method": "procedural",
   "generator_sha256": {
-    "tools/artwork/terrain_synth.py": "8db5a59bc3b22d0a4c542046efb340f58cd3fefb92d1db099bba8c57b0780029",
+    "tools/artwork/terrain_synth.py": "17e295e58481aa492a86da8e25fad6066c348b814be0a758864840a7932d9f62",
     "tools/artwork/material_tiles.py": "224e159e0974023797710aa959994f11658c82da8fb80f9701e4abc13c74ed83"
   },
   "material": "moss",
