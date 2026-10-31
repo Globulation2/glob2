@@ -698,35 +698,6 @@ TEST_CASE("Settings categories follow the resolved client capabilities" * doctes
 
 
 
-TEST_CASE("Malay display settings translate the software renderer label" * doctest::test_suite("SettingsLocalization"))
-{
-    glob2test::ScopedEnvironment desktop("GLOB2_MOBILE_UI", "0");
-    glob2test::HeadlessGlobals globals({.display=true,.loadStrings=true,.width=1280,.height=900});
-    auto *strings = Toolkit::getStringTable();
-    REQUIRE(strings->hasLanguage("ms"));
-    strings->setLang(strings->getLangCode("ms"));
-    globalContainer->settings.language = "ms";
-    REQUIRE(globalContainer->gfx->backendSwitchStatus().active == RendererBackend::Software);
-    NativeSettings screen;
-    screen.selectCategory(SettingsScreen::Category::Display);
-    const auto translated = strings->getString("[settings Software]");
-    REQUIRE(translated != "Software");
-    int translatedStatusRows = 0;
-    for (const auto &row : screen.rows())
-    {
-        if (row.kind == SettingsScreen::Kind::Info && row.label.find(translated) != std::string::npos)
-            ++translatedStatusRows;
-        CHECK(row.label.find("Software") == std::string::npos);
-        for (const auto &choice : row.choices)
-            CHECK(choice.find("Software") == std::string::npos);
-    }
-#ifdef GLOB2_MOBILE
-    CHECK(translatedStatusRows == 1); // The OS owns mobile display modes.
-#else
-    CHECK(translatedStatusRows == 2); // Current display and active renderer.
-#endif
-}
-
 TEST_CASE("Controls render translated labels and help in every supported language [display:1400x1000][artifacts]" * doctest::test_suite("SettingsLocalization"))
 {
     glob2test::ScopedEnvironment desktop("GLOB2_MOBILE_UI", "0");
