@@ -111,6 +111,8 @@ jobs:
           if ($LASTEXITCODE -ne 0) { throw "Store staging tests failed." }
           python test/test_windows_store_portable.py -v
           if ($LASTEXITCODE -ne 0) { throw "Portable staging tests failed." }
+          python test/test_windows_store_validator.py -v
+          if ($LASTEXITCODE -ne 0) { throw "Validator report tests failed." }
 
       - name: Build Windows client
         if: ${{ !inputs.payload_tag }}
@@ -174,7 +176,7 @@ jobs:
           # /lt is installable for local testing; /l produces the encrypted
           # submission package and EKB, which must stay out of public artifacts.
           $encryption = if ($env:STORE_UPLOAD -eq 'true') { '/l' } else { '/lt' }
-          & $tool.FullName pack /f $layout /d $content /pd $output /pc /nogameos $encryption
+          & $tool.FullName pack /f $layout /d $content /pd $output /pc /nogameos /updatesubval /validationcritical $encryption
           if ($LASTEXITCODE -ne 0) { throw 'MakePkg pack failed.' }
           $package = Get-ChildItem $output -Filter *.msixvc | Select-Object -First 1
           $ekb = Get-ChildItem $output -Filter *.ekb | Select-Object -First 1
@@ -182,12 +184,14 @@ jobs:
           if (-not $package -or -not $validator -or ($env:STORE_UPLOAD -eq 'true' -and -not $ekb)) {
             throw 'Expected MSIXVC, validator report and (for upload) EKB in the package directory.'
           }
+          python .github/scripts/windows_store_validator.py $validator.FullName
+          if ($LASTEXITCODE -ne 0) { throw "Submission Validator XML did not pass." }
           "package_path=$($package.FullName)" >> $env:GITHUB_OUTPUT
           "ekb_path=$($ekb.FullName)" >> $env:GITHUB_OUTPUT
           "validator_path=$($validator.FullName)" >> $env:GITHUB_OUTPUT
 
       - name: Retain package for install testing and review
-        if: ${{ !inputs.upload }}
+        if: ${{ always() && !inputs.upload && steps.package.outcome != 'skipped' && steps.package.outcome != '' }}
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: glob2-windows-store-${{ inputs.version }}
