@@ -157,9 +157,8 @@ function DeleteAccount({ account, onDeleted }: { account: SelfAccount; onDeleted
         )}
       </p>
       <label className="field">
-        {t('Type your name, ')}
+        {t('Type your display name exactly to confirm.')}{' '}
         <bdi dir="auto">{account.displayName}</bdi>
-        {t(', to confirm')}
         <input
           dir="auto"
           value={typed}

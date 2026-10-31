@@ -43,6 +43,14 @@ export function html(strings: TemplateStringsArray, ...values: unknown[]): Html 
   return new Html(out);
 }
 
+/** Keep numeric ranges in source order inside RTL prose; every part stays escaped. */
+export function isolateNumericRanges(text: string): Html {
+  const range = /^(?:\p{Nd}+)(?:\s*[–/×]\s*\p{Nd}+)+$/u;
+  return html`${text
+    .split(/(\p{Nd}+(?:\s*[–/×]\s*\p{Nd}+)+)/u)
+    .map((part) => (range.test(part) ? html`<bdi dir="ltr">${part}</bdi>` : part))}`;
+}
+
 /** Locale belongs to one response; never mutate the browser runtime's global locale. */
 const pageLocales = new WeakMap<FastifyReply, string>();
 export function setPageLocale(request: FastifyRequest, reply: FastifyReply): void {
@@ -125,12 +133,21 @@ const TYPES: Record<string, string> = {
   png: 'image/png',
   jpg: 'image/jpeg',
   woff2: 'font/woff2',
+  ttf: 'font/ttf',
   js: 'text/javascript; charset=utf-8',
   css: 'text/css; charset=utf-8',
   txt: 'text/plain; charset=utf-8',
 };
 
-const ASSET_NAME = /^[a-zA-Z0-9-]+\.(webp|png|jpg|woff2|js|css|txt)$/;
+const ASSET_NAME = /^[a-zA-Z0-9-]+\.(webp|png|jpg|woff2|ttf|js|css|txt)$/;
+
+// Serve the same pinned script fonts as the app; never accept arbitrary paths.
+const scriptFontRoot = new URL('../../../../../data/fonts/', import.meta.url);
+const scriptFontManifest = JSON.parse(
+  readFileSync(new URL('scripts/manifest.json', scriptFontRoot), 'utf8'),
+) as { fonts: { name: string }[] };
+const scriptFontNames = new Set(scriptFontManifest.fonts.map((font) => `${font.name}-Regular.ttf`));
+const scriptFontsCss = new URL('../../../../packages/i18n/script-fonts.css', import.meta.url);
 
 /** Serves shared design assets (read once, revalidated by browsers after deployment). */
 export async function pageAssetRoutes(app: FastifyInstance): Promise<void> {
@@ -142,10 +159,24 @@ export async function pageAssetRoutes(app: FastifyInstance): Promise<void> {
     let body = cache.get(file);
     if (!body) {
       try {
-        body =
-          ext === 'css'
-            ? Buffer.from(cssText(file.slice(0, -4), ASSETS))
-            : readFileSync(assetPath(file));
+        if (file === 'script-fonts.css') {
+          body = Buffer.from(
+            readFileSync(scriptFontsCss, 'utf8').replaceAll(
+              '../../../data/fonts/scripts/',
+              `${ASSETS}/`,
+            ),
+          );
+        } else if (scriptFontNames.has(file)) {
+          body = readFileSync(new URL(`scripts/${file}`, scriptFontRoot));
+        } else if (file === 'LICENSE-Noto.txt') {
+          body = readFileSync(new URL(file, scriptFontRoot));
+        } else {
+          if (ext === 'ttf') return reply.status(404).send();
+          body =
+            ext === 'css'
+              ? Buffer.from(cssText(file.slice(0, -4), ASSETS))
+              : readFileSync(assetPath(file));
+        }
       } catch {
         return reply.status(404).send();
       }
@@ -164,14 +195,14 @@ const STYLE = `
 :root{--two:var(--wm-two);--tint:var(--hero-tint);--shadow:var(--shadow-lg)}
 *{box-sizing:border-box}
 html{background:#2f6526}
-body{margin:0;min-height:100vh;display:flex;flex-direction:column;align-items:center;color:var(--ink);font:16px/1.55 'Nunito Variable',ui-rounded,system-ui,-apple-system,'Segoe UI',sans-serif;background:#2f6526 url(${ASSETS}/colony.webp) center/cover fixed;padding:0 16px}
+body{margin:0;min-height:100vh;display:flex;flex-direction:column;align-items:center;color:var(--ink);font:16px/1.55 var(--glob2-script-body,'Nunito Variable',ui-rounded,system-ui,-apple-system,'Segoe UI',sans-serif);background:#2f6526 url(${ASSETS}/colony.webp) center/cover fixed;padding:0 16px}
 body::before{content:'';position:fixed;inset:0;background:linear-gradient(180deg,rgba(10,20,12,.35),rgba(10,20,12,.15) 40%,rgba(10,20,12,.45)),linear-gradient(0deg,var(--tint),var(--tint));z-index:-1}
 .top{width:100%;max-width:30rem;padding:20px 0 12px}
 .brand{display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:4px 14px 4px 6px;background:var(--surface);border-radius:999px;text-decoration:none;color:var(--ink);box-shadow:var(--shadow)}
 .brand img{width:34px;height:34px;display:block}
 .wordmark{height:22px}
 main{width:100%;max-width:30rem;margin:0 0 24px;background:var(--bg);border-radius:24px;padding:24px;box-shadow:var(--shadow)}
-h1{font:normal 1.6rem/1.15 'Glob2 Sans','DejaVu Sans',Verdana,sans-serif;letter-spacing:-.01em;margin:0 0 16px;text-wrap:balance}
+h1{font:normal 1.6rem/1.15 var(--glob2-script-display,'Glob2 Sans','DejaVu Sans',Verdana,sans-serif);letter-spacing:-.01em;margin:0 0 16px;text-wrap:balance}
 p{margin:0 0 12px}
 a{color:var(--ink);text-decoration-color:var(--accent-edge);text-decoration-thickness:2px;text-underline-offset:3px}
 :focus-visible{outline:3px solid var(--focus);outline-offset:2px}
@@ -182,10 +213,10 @@ a{color:var(--ink);text-decoration-color:var(--accent-edge);text-decoration-thic
 .muted{color:var(--ink-2);font-size:.9rem}
 .warn{color:var(--warn);background:var(--warn-bg);border:1px solid var(--warn-line);border-radius:12px;padding:10px 12px}
 .eyebrow{font-size:.78rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--gold-ink);margin:0 0 4px}
-.room{font:normal 1.35rem/1.2 'Glob2 Sans','DejaVu Sans',Verdana,sans-serif;margin:0 0 8px;overflow-wrap:anywhere}
-a.button,button{display:flex;width:100%;min-height:48px;padding:10px 18px;margin:8px 0;text-align:center}
+.room{font:normal 1.35rem/1.2 var(--glob2-script-display,'Glob2 Sans','DejaVu Sans',Verdana,sans-serif);margin:0 0 8px;overflow-wrap:anywhere}
+a.button,button{display:flex;width:100%;max-width:100%;min-width:0;min-height:48px;height:auto;padding:10px 18px;margin:8px 0;text-align:center;white-space:normal;overflow-wrap:anywhere}
 label{display:block;margin:12px 0 4px;font-weight:700;font-size:.9rem;color:var(--ink-2)}
-h2{font:normal 1.2rem/1.2 'Glob2 Sans','DejaVu Sans',Verdana,sans-serif;margin:0 0 4px}
+h2{font:normal 1.2rem/1.2 var(--glob2-script-display,'Glob2 Sans','DejaVu Sans',Verdana,sans-serif);margin:0 0 4px}
 .hint{margin:4px 0 0;font-size:.85rem;color:var(--ink-2)}
 .field-error{margin:6px 0 0;padding:8px 10px;border-radius:10px;font-weight:700;font-size:.9rem;color:var(--danger);background:var(--danger-bg);border:1px solid var(--danger-line)}
 .form-error{margin:8px 0}
@@ -244,6 +275,7 @@ export function sendPage(
             <link rel="stylesheet" href="/signin/assets/base.css" />
             <link rel="stylesheet" href="/signin/assets/components.css" />
             <link rel="stylesheet" href="/signin/assets/brand.css" />
+            <link rel="stylesheet" href="/signin/assets/script-fonts.css" />
             <title>${title === 'Globulation 2' ? title : `${title} · Globulation 2`}</title>
             <link rel="icon" type="image/png" sizes="32x32" href="${ASSETS}/favicon-32.png" />
             ${extras.head}

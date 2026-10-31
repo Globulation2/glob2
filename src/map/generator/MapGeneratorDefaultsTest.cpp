@@ -570,17 +570,11 @@ class MapGeneratorDefaultsTest
 		NewMapScreen s;
 		s.beginExecution(globalContainer->gfx);
 		CustomGameSetup lobby;
-		// The catalog's order was shuffled once (FEEDBACK 2026-09-14: no bias towards the landscapes
-		// that happen to be listed first). The editor opens on the catalog's first entry and the
-		// lobby on its first playable one, whatever they are.
-		D editorFirst, lobbyFirst;
-		editorFirst.setMethodDefaults(GeneratorRegistry::builtins().methods().front());
-		lobbyFirst.setMethodDefaults(GeneratorRegistry::builtins().methods(false).front());
-		REQUIRE(GeneratorRegistry::builtins().methods(false).front() ==
-			   GeneratorRegistry::builtins().idOf("fingerprint"));
-		REQUIRE(s.descriptor.method == GeneratorRegistry::builtins().methods().front());
-		sameControls(s.descriptor, editorFirst);
-		sameControls(lobby.generator, lobbyFirst);
+		// Fresh editor and lobby setups use Lava Shield regardless of catalog order.
+		D expectedDefault;
+		expectedDefault.setMethodDefaults(GeneratorRegistry::builtins().idOf("lava-shield"));
+		sameControls(s.descriptor, expectedDefault);
+		sameControls(lobby.generator, expectedDefault);
 		for (int m : GeneratorRegistry::builtins().methods())
 		{
 			auto method = static_cast<D::Method>(m);

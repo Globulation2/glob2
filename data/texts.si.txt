@@ -6359,421 +6359,421 @@ Izbire ni bilo mogoče shraniti. Zvok ostaja izklopljen. Poskusite znova.
 [audio choices description]
 Tišina: utišan zvočnik. Zvok: zvočnik z zvočnimi valovi.
 [intro menu]
-
+Uvod
 [intro briefing]
-
+Spoznajte posredno upravljanje: raziskujte z zastavo, oskrbite kolonijo in usmerite napad.
 [intro try]
-
+Začni uvod
 [intro preflight]
-
+Vaše kroglice delujejo samostojno. Njihove naloge izbirate z zgradbami in zastavami. V tem kratkem uvodu raziščite orientacijsko točko, razširite oskrbo s hrano, povečajte delovno silo in usmerite manjši napad.
 [intro preflight save]
-
+Načrtujte približno 10 minut. Shranite lahko v meniju igre in nadaljujete tako, da izberete Naloži igro. Veljajo običajna pravila lakote in boja. V glavnem meniju izberite Vadnice, da vadite več spretnosti.
 [intro preference failed]
-
+Vaše izbire ni bilo mogoče shraniti. Lahko nadaljujete z igro; to priporočilo se lahko pojavi naslednjič.
 [intro goal scout]
-
+Raziščite kamnito orientacijsko točko
 [intro goal build]
-
+Zgradite še eno restavracijo
 [intro goal supply]
-
+Oskrbite svojo novo restavracijo
 [intro goal grow]
-
+Povečajte delovno silo
 [intro goal attack]
-
+Uničite sovražnikovo porodnišnico
 [intro instruction scout]
-
+Odprite Zastave in postavite Raziskovalno zastavo na nahajališče kamna vzhodno od kolonije. Dodelite enega raziskovalca in opazujte, kako potuje do zastave.
 [intro instruction build]
-
+Odprite Gradnjo in postavite Restavracijo blizu pšenice. Dodelite razpoložljive delavce za gradnjo. Obstoječo Restavracijo še naprej oskrbujte.
 [intro instruction supply]
-
+Izberite svojo dokončano novo restavracijo in ji dodelite vsaj enega dobavitelja. Počakajte, da delavec dostavi pšenico.
 [intro instruction grow]
-
+Izberite Porodnišnico. Za dobavo zahtevajte vsaj 2 delavca. Nastavite proizvodnjo samo za delavce. Oskrbujte obe restavraciji s hrano, dokler se ne rodi nov delavec.
 [intro instruction attack]
-
+Poiščite sovražno porodnišnico dlje na vzhodu. Uporabite vojaško zastavo, da usmerite svoje bojevnike proti njej. Če potrebujete opomnik, je na voljo pomoč.
 [intro help]
-
+Pomoč / zakaj?
 [intro help scout]
-
+Z mini zemljevidom premaknite pogled na vzhod in poiščite nahajališče kamna. V Zastavah izberite Raziskovalno zastavo in jo postavite na kamen. S sekundarnim gumbom miške končajte postavljanje. Izberite zastavo in zahtevajte 1 raziskovalca. Zastave zahtevajo enote; ne premaknejo jih takoj. Raziskovalci se lahko ustavijo, da bi jedli.
 [intro help build]
-
+Gradnja porablja les, ki ga prinašajo delavci. V paleti zgradb izberite Restavracijo, jo postavite na prosta tla blizu pšenice in zahtevajte 2 graditelja. Zahtevano število delavcev je zahteva, ne število že prisotnih. Ohranite dobavitelje pri obstoječi Restavraciji in Porodnišnici. Vsaka veljavna lokacija šteje.
 [intro help supply]
-
+Gradnja in vsakodnevna oskrba imata ločeni zahtevani števili delavcev. Izberite dokončano Restavracijo in povečajte zahtevano število delavcev za obratovanje. Dobavitelj zbere pšenico in jo prinese sem. Lačne kroglice jedo v Restavracijah; zgradbi brez dobaviteljev sčasoma zmanjka hrane. Ohranite dostop do pšenice.
 [intro help grow]
-
+Porodnišnica porabi pšenico za proizvodnjo enot. Nastavite proizvodnjo delavcev na 1 ter proizvodnjo raziskovalcev in bojevnikov na 0. Povečajte zahtevano število delavcev v porodnišnici na 2 ali več. Več dobaviteljev lahko pšenico dostavi hitreje, vendar tekmujejo z drugimi deli. Vzdržujte oskrbo s hrano v obeh restavracijah.
 [intro help attack]
-
+Odprite zastave, izberite vojaško zastavo in jo postavite nad sovražnikovo porodnišnico vzhodno od kamna. Izberite zastavo in zahtevajte do 4 bojevnike. Majhen radij ohranja bojevnike zbrane. Pritisnite sekundarni gumb miške, da prenehate postavljati zastavice, preden izberete zastavico. Če ne ostane noben bojevnik, jih proizvedite več v porodnišnici. Bojevniki se lahko ustavijo, da bi jedli; poskrbite za oskrbo restavracij s hrano.
 [intro hint scout]
-
+Raziskovalec potrebuje Raziskovalno zastavo z dodeljenimi enotami na vzhodnem nahajališču kamna. Preverite položaj zastave in zahtevano število raziskovalcev.
 [intro hint build]
-
+Če ste odstranili novo restavracijo, zgradite novo. V nasprotnem primeru preverite gradbišče in število zahtevanih delavcev. Vaše delavce lahko zasedejo druga oskrbovalna dela; poskrbite, da bo kolonija oskrbovana s hrano, medtem ko bodo graditelji na voljo.
 [intro hint supply]
-
+Izberite končano novo restavracijo. Preverite zahtevano število delavcev in pazite na dostavo pšenice. Delavci morda potrebujejo čas za potovanje ali hrano.
 [intro hint grow]
-
+Preverite, ali je porodnišnica preskrbljena s pšenico in daje samo delavce. Oskrbujte restavracije s hrano, medtem ko čakate na drugega delavca.
 [intro hint attack]
-
+Preverite svojo vojaško zastavo, zahtevano število bojevnikov in zalogo hrane. Vaši bojevniki potrebujejo čas za potovanje in napad.
 [intro hint no scout flag]
-
+Raziskovalne zastave z dodeljenimi enotami ni bilo mogoče najti. Postavite jo na kamen vzhodno od baze in zahtevajte 1 raziskovalca.
 [intro hint no suppliers]
-
+Vaša nova restavracija ali gradbišče ima zahtevano število delavcev 0. Izberite ga in zahtevajte delavce.
 [intro hint no war flag]
-
+V sovražnikovi bazi ni Vojaške zastave z dodeljenimi enotami. Postavite jo nad vzhodno sovražnikovo Porodnišnico in zahtevajte bojevnike.
 [intro hint retry]
-
+Enota ali stavba, potrebna za to lekcijo, je izgubljena. Naložite prejšnje shranjevanje ali znova zaženite to lekcijo iz menija igre.
 [intro complete]
-
+Uvod končan
 [intro complete body]
-
+Usmerjali ste samostojne kroglice, razširili oskrbo s hrano, povečali kolonijo in organizirali napad. Nadaljujte z Vadnicami za urjenje, nadgradnje in obrambo ali se vrnite v glavni meni in začnite tekmo.
 [intro play again]
-
+Igraj znova
 [intro restart]
-
+Znova zaženite uvod
 [intro restart body]
-
+Znova zagnati iz pripravljene kolonije? Neshranjen napredek v tem uvodu bo izgubljen.
 [intro help touch scout]
-
+Pred postavitvijo zastave povlecite prazna tla, da premaknete pogled. Poiščite nahajališče kamna vzhodno od kolonije. Odprite Zastave, izberite Raziskovalno zastavo, jo postavite na kamen in potrdite. Izberite zastavo in z nastavitvijo zahtevanega števila dodeljenih enot zahtevajte 1 raziskovalca. Kroglice potujejo samostojno in se lahko ustavijo, da bi jedle.
 [intro help touch build]
-
+V Gradnji izberite Restavracijo. Postavite jo na prosta tla blizu pšenice in potrdite. Izberite gradbišče in zahtevajte 2 graditelja. Zahtevano število delavcev je zahteva, ne število že prisotnih. Oskrbujte obstoječo Restavracijo in Porodnišnico. Vsaka veljavna lokacija šteje.
 [intro help touch supply]
-
+Izberite dokončano novo Restavracijo in povečajte zahtevano število dodeljenih delavcev. Gradnja in vsakodnevna oskrba imata ločeni nastavitvi. Dobavitelj nabere pšenico in jo prinese sem. Lačne kroglice jedo v Restavracijah; zgradbi brez dobaviteljev sčasoma zmanjka hrane. Ohranite dostop do pšenice.
 [intro help touch grow]
-
+Izberite Porodnišnico. Nastavite proizvodnjo delavcev na 1 ter raziskovalcev in bojevnikov na 0. Povečajte zahtevano število dodeljenih delavcev na vsaj 2. Dobavitelji prinašajo pšenico za nove enote, vendar tekmujejo z drugimi nalogami za delavce. Oskrbujte obe Restavraciji.
 [intro help touch attack]
-
+Odprite zastave, izberite vojaško zastavo, jo postavite nad sovražno porodnišnico vzhodno od kamna in potrdite. Izberite zastavo in zahtevajte do 4 bojevnike. Majhen radij jih koncentrira. Če ne ostane noben, ustvarite bojevnike v svoji porodnišnici. Bojevniki se lahko ustavijo, da bi jedli; poskrbite za oskrbo restavracij.
 [intro show destination]
-
+Pokaži cilj
 [intro scout destination]
-
+Raziščite tukaj
 [intro attack destination]
-
+Napadi tukaj
 [intro compact scout]
-
+Zastave → Raziskovalna zastava. Postavite jo na kamen; dodelite 1 raziskovalca.
 [intro compact build]
-
+Gradnja → Restavracija. Postavite blizu pšenice; dodelite 2 graditelja.
 [intro compact supply]
-
+Izberite svojo novo restavracijo; dodelite vsaj 1 dobavitelja. Počakajte na pšenico.
 [intro compact grow]
-
+Izberite Porodnišnico; dodelite 2 dobavitelja. Proizvajajte samo delavce.
 [intro compact attack]
-
+Zastave → Vojaška zastava. Postavite nad sovražnikovo porodnišnico; dodelite bojevnike.
 [tutorial lessons]
-
+Vadnice
 [tutorial restart]
-
+Ponovno zaženi lekcijo
 [tutorial restart body]
-
+Želite znova zagnati to lekcijo iz pripravljene kolonije? Neshranjen napredek bo izgubljen.
 [tutorial complete]
-
+Lekcija končana
 [tutorial food title]
-
+Vaja oskrbe s hrano
 [tutorial food briefing]
-
+Vadite širitev oskrbe s hrano: zgradite še eno Restavracijo, dodelite dobavitelje in opazujte prihod pšenice.
 [tutorial food complete]
-
+Zgradili ste restavracijo in jo oskrbeli s pšenico. Poskusite z drugo lekcijo ali se vrnite v glavni meni.
 [tutorial unavailable]
-
+Vadnic ni bilo mogoče naložiti.
 [lesson healing title]
-
+Bolnišnice in zdravljenje
 [lesson healing briefing]
-
+Zgradite Bolnišnico in pomagajte ranjenemu delavcu okrevati. Kolonija začne sita, z enim ranjenim delavcem.
 [lesson healing complete]
-
+Vaša bolnišnica je pozdravila poškodovano kroglico. Oskrbite restavracije s hrano: lakota lahko ponovno poškoduje enote.
 [lesson healing build hint]
-
+Zgradite bolnišnico na prostih tleh; dodelite 2 graditelja. Pustite prostor za vstop in izstop kroglic. Bolnišnice zdravijo poškodbe; Restavracije ponujajo hrano. Ta bolnik je že nahranjen.
 [lesson healing build title]
-
+Zgradite bolnišnico
 [lesson healing build instruction]
-
+Zgradite bolnišnico na prostih tleh; dodelite 2 graditelja.
 [lesson healing build help]
-
+Pustite prostor za vstop in izstop kroglic. Bolnišnice zdravijo poškodbe; Restavracije ponujajo hrano. Ta bolnik je že nahranjen.
 [lesson healing build marker]
-
+Zgradite bolnišnico
 [lesson healing heal hint]
-
+Naj bo bolnišnica dostopna. Opazujte okrevanje poškodovanega delavca. Kroglice samostojno iščejo zdravljenje. Sledite ranjenemu delavcu, ne novorojeni enoti. Če umre, začnite znova ali naložite shranjeno igro.
 [lesson healing heal title]
-
+Naj bolnik okreva
 [lesson healing heal instruction]
-
+Naj bo bolnišnica dostopna. Opazujte okrevanje poškodovanega delavca.
 [lesson healing heal help]
-
+Kroglice samostojno iščejo zdravljenje. Sledite ranjenemu delavcu, ne novorojeni enoti. Če umre, začnite znova ali naložite shranjeno igro.
 [lesson healing heal marker]
-
+Naj bolnik okreva
 [lesson walking-training title]
-
+Trening hitrejše hoje
 [lesson walking-training briefing]
-
+Zgradite tekaško stezo in opazujte obstoječega delavca, ki se uči hoditi hitreje.
 [lesson walking-training complete]
-
+Vaši delavci so se naučili hitrejše hoje. Usposabljanje izboljša delavce, ki jih imate; ne nadomešča preskrbe kolonije s hrano.
 [lesson walking-training build hint]
-
+Na označeni jasi zgradite tekaško stezo; dodelite graditelje. Tekaška steza potrebuje les in kamen. Okoli stavbe pustite prostor za vstop, izhod in kasnejšo širitev.
 [lesson walking-training build title]
-
+Zgradite tekaško stezo
 [lesson walking-training build instruction]
-
+Na označeni jasi zgradite tekaško stezo; dodelite graditelje.
 [lesson walking-training build help]
-
+Tekaška steza potrebuje les in kamen. Okoli stavbe pustite prostor za vstop, izhod in kasnejšo širitev.
 [lesson walking-training build marker]
-
+Zgradite tekaško stezo
 [lesson walking-training train hint]
-
+Naj bo tekaška steza dostopna in naj delavec dokonča trening. Primerne kroglice se urijo samodejno. Nekaj delavcev pustite prostih oskrbovalnih nalog in obe Restavraciji oskrbujte s hrano.
 [lesson walking-training train title]
-
+Izurite obstoječega delavca
 [lesson walking-training train instruction]
-
+Naj bo tekaška steza dostopna in naj delavec dokonča trening.
 [lesson walking-training train help]
-
+Primerne kroglice se urijo samodejno. Nekaj delavcev pustite prostih oskrbovalnih nalog in obe Restavraciji oskrbujte s hrano.
 [lesson swimming title]
-
+Plavanje in viri v vodi
 [lesson swimming briefing]
-
+Trenirajte plavalce, nato pa uporabite alge iz ribnika, da zgradite šolo.
 [lesson swimming complete]
-
+Plavalec je iz vode dostavil sredstva za gradnjo vaše šole. Dostop do vode vaši koloniji omogoča, da opravlja več vrst del.
 [lesson swimming build hint]
-
+Zgradite bazen zahodno od ribnika; dodelite graditelje. Pustite prostor okoli bazena. Delavec ne more nabirati alg v globoki vodi, dokler se ne nauči plavati.
 [lesson swimming build title]
-
+Zgradite bazen
 [lesson swimming build instruction]
-
+Zgradite bazen zahodno od ribnika; dodelite graditelje.
 [lesson swimming build help]
-
+Pustite prostor okoli bazena. Delavec ne more nabirati alg v globoki vodi, dokler se ne nauči plavati.
 [lesson swimming build marker]
-
+Zgradite bazen
 [lesson swimming train hint]
-
+Naj obstoječi delavec konča plavalni tečaj. Enote samodejno izberejo urjenje. Nadaljujte oskrbo in omogočite prostim delavcem dostop do bazena.
 [lesson swimming train title]
-
+Trenirajte plavalca
 [lesson swimming train instruction]
-
+Naj obstoječi delavec konča plavalni tečaj.
 [lesson swimming train help]
-
+Enote samodejno izberejo urjenje. Nadaljujte oskrbo in omogočite prostim delavcem dostop do bazena.
 [lesson swimming water-job hint]
-
+Zgradite šolo blizu kolonije; dodelite graditelje za prinašanje lesa in alg. Alge rastejo v ribniku. Izurjen plavalec mora vstopiti v vodo, da jih nabere. Šolo postavite na prosta tla z dostopom za dobavitelje.
 [lesson swimming water-job title]
-
+Uporabite alge iz ribnika
 [lesson swimming water-job instruction]
-
+Zgradite šolo blizu kolonije; dodelite graditelje za prinašanje lesa in alg.
 [lesson swimming water-job help]
-
+Alge rastejo v ribniku. Izurjen plavalec mora vstopiti v vodo, da jih nabere. Šolo postavite na prosta tla z dostopom za dobavitelje.
 [lesson swimming water-job marker]
-
+Uporabite alge iz ribnika
 [lesson schools title]
-
+Šole in znanja delavcev
 [lesson schools briefing]
-
+Uporabite pripravljene plavalce, da zgradite šolo, nato opazujte delavce, ki se učijo gradnje in žetve.
 [lesson schools complete]
-
+Vaša šola je izboljšala veščine delavcev. Izurjeni gradbeniki odklenejo nadgradnje; boljša žetev pomaga ohranjati rastoče gospodarstvo.
 [lesson schools build hint]
-
+Zgradite šolo na jasi; dodelite graditelje. Kolonija že ima plavalce za alge. Pustite dostop do lesa in vode. Sadna drevesa zagotavljajo prestižne vire; hrana je še vedno iz pšenice.
 [lesson schools build title]
-
+Zgradite šolo
 [lesson schools build instruction]
-
+Zgradite šolo na jasi; dodelite graditelje.
 [lesson schools build help]
-
+Kolonija že ima plavalce za alge. Pustite dostop do lesa in vode. Sadna drevesa zagotavljajo prestižne vire; hrana je še vedno iz pšenice.
 [lesson schools build marker]
-
+Zgradite šolo
 [lesson schools learn hint]
-
+Naj obstoječi delavec opravi izobraževanje v Šoli. Šola skupaj poučuje gradnjo in žetev. Delavci naj bodo na voljo; samo gradbišče nikogar ne izšola.
 [lesson schools learn title]
-
+Poučite gradnjo in žetev
 [lesson schools learn instruction]
-
+Naj obstoječi delavec opravi izobraževanje v Šoli.
 [lesson schools learn help]
-
+Šola skupaj poučuje gradnjo in žetev. Delavci naj bodo na voljo; samo gradbišče nikogar ne izšola.
 [lesson upgrades title]
-
+Nadgradnje zgradb
 [lesson upgrades briefing]
-
+Uporabite pripravljene usposobljene delavce za nadgradnjo tekaške steze in trenirajte nad prvo stopnjo.
 [lesson upgrades complete]
-
+Nadgradili ste stavbo in uporabili njeno izboljšano usposabljanje. Nadaljnje nadgradnje ponovijo ta cikel z boljšimi šolami, veščinami, materiali in prostorom, do 3. stopnje.
 [lesson upgrades upgrade hint]
-
+Izberite tekaško stezo, izberite Nadgradi in dodelite usposobljene graditelje. Ti delavci so že osvojili spretnosti Šole prve stopnje. Nadgradnje zahtevajo dodaten prostor in material ter prekinejo delovanje stavbe. Preklicane nadgradnje ne štejejo.
 [lesson upgrades upgrade title]
-
+Nadgradite tekaško stezo
 [lesson upgrades upgrade instruction]
-
+Izberite tekaško stezo, izberite Nadgradi in dodelite usposobljene graditelje.
 [lesson upgrades upgrade help]
-
+Ti delavci so že osvojili spretnosti Šole prve stopnje. Nadgradnje zahtevajo dodaten prostor in material ter prekinejo delovanje stavbe. Preklicane nadgradnje ne štejejo.
 [lesson upgrades upgrade marker]
-
+Nadgradite tekaško stezo
 [lesson upgrades train hint]
-
+Naj se obstoječi delavec nauči hitrejše hoje na nadgrajeni tekaški stezi. Dokončana nadgradnja izboljša razpoložljivo urjenje. Višje stopnje zgradb zahtevajo boljše gradbene spretnosti; igralcem prikazana stopnja se začne pri 1.
 [lesson upgrades train title]
-
+Uporabite nadgrajeno usposabljanje
 [lesson upgrades train instruction]
-
+Naj se obstoječi delavec nauči hitrejše hoje na nadgrajeni tekaški stezi.
 [lesson upgrades train help]
-
+Dokončana nadgradnja izboljša razpoložljivo urjenje. Višje stopnje zgradb zahtevajo boljše gradbene spretnosti; igralcem prikazana stopnja se začne pri 1.
 [lesson warrior-training title]
-
+Proizvodnja in urjenje bojevnikov
 [lesson warrior-training briefing]
-
+Ustvarite bojevnike v porodnišnici, nato pa jih urite v vojašnici.
 [lesson warrior-training complete]
-
+Nadzorovali ste vojaško proizvodnjo in urili bojevnike. Ohranjajte njihovo zalogo hrane; bojne enote še vedno morajo jesti.
 [lesson warrior-training produce hint]
-
+Porodnišnico nastavite samo na bojevnike; dodelite dobavitelje in počakajte na 2 bojevnika. Nastavite razmerja delavca in raziskovalca na 0 in razmerje bojevnika na 1. Porodnišnica porabi pšenico za porod. Razmerja izbirajo, kaj se proizvaja; dobavitelji določijo, ali lahko deluje.
 [lesson warrior-training produce title]
-
+Ustvarite dva bojevnika
 [lesson warrior-training produce instruction]
-
+Porodnišnico nastavite samo na bojevnike; dodelite dobavitelje in počakajte na 2 bojevnika.
 [lesson warrior-training produce help]
-
+Nastavite razmerja delavca in raziskovalca na 0 in razmerje bojevnika na 1. Porodnišnica porabi pšenico za porod. Razmerja izbirajo, kaj se proizvaja; dobavitelji določijo, ali lahko deluje.
 [lesson warrior-training produce marker]
-
+Ustvarite dva bojevnika
 [lesson warrior-training build hint]
-
+Zgradite vojašnico na jasi; dodelite graditelje. Ustavite ali zmanjšajte proizvodnjo bojevnikov, ko jih imate dovolj. V vojašnicah se učijo bojnih veščin; potrebujejo prosti prostor okoli svojih robov.
 [lesson warrior-training build title]
-
+Zgradite vojašnico
 [lesson warrior-training build instruction]
-
+Zgradite vojašnico na jasi; dodelite graditelje.
 [lesson warrior-training build help]
-
+Ustavite ali zmanjšajte proizvodnjo bojevnikov, ko jih imate dovolj. V vojašnicah se učijo bojnih veščin; potrebujejo prosti prostor okoli svojih robov.
 [lesson warrior-training build marker]
-
+Zgradite vojašnico
 [lesson warrior-training train hint]
-
+Naj bojevnik dokonča urjenje v Vojašnici. Bojevniki samodejno iščejo usposabljanje. Naj bodo restavracije oskrbljene s hrano in vojašnice dostopne. Izgradnja vojašnice ni dovolj: bojevnik mora tam opraviti usposabljanje.
 [lesson warrior-training train title]
-
+Urite svoje bojevnike
 [lesson warrior-training train instruction]
-
+Naj bojevnik dokonča urjenje v Vojašnici.
 [lesson warrior-training train help]
-
+Bojevniki samodejno iščejo usposabljanje. Naj bodo restavracije oskrbljene s hrano in vojašnice dostopne. Izgradnja vojašnice ni dovolj: bojevnik mora tam opraviti usposabljanje.
 [lesson fortifications title]
-
+Stolpi in zaščitni zidovi
 [lesson fortifications briefing]
-
+Zgradite stolp, ga oskrbujte s strelivom in zgradite zaščitne zidove. Nato preizkusite svojo obrambo pred enim majhnim napadom.
 [lesson fortifications complete]
-
+Vaša obramba je imela dovolj streliva, da je ustavila vadbeni napad. Stolpi potrebujejo kamen. Pustite vrzeli v stenah, da lahko dobavitelji dosežejo stolpe.
 [lesson fortifications tower hint]
-
+Zgradite stolp na označenem območju; dodelite graditelje. Postavite ga blizu kamnoloma in pustite dobavitelju dostop. Noben napad se ne začne, dokler cilji priprave niso dokončani.
 [lesson fortifications tower title]
-
+Zgradite obrambni stolp
 [lesson fortifications tower instruction]
-
+Zgradite stolp na označenem območju; dodelite graditelje.
 [lesson fortifications tower help]
-
+Postavite ga blizu kamnoloma in pustite dobavitelju dostop. Noben napad se ne začne, dokler cilji priprave niso dokončani.
 [lesson fortifications tower marker]
-
+Zgradite obrambni stolp
 [lesson fortifications walls hint]
-
+Blizu stolpa zgradite vsaj 2 odseka zidu; njegov zahodni dostop naj ostane odprt. Zidovi porabljajo kamen in vsako gradbišče zahteva delavce. Stolpa ne zaprite povsem: dobavitelji potrebujejo pot. Označeni zahodni prehod mora ostati prost.
 [lesson fortifications walls title]
-
+Zaščitite stolp z obzidjem
 [lesson fortifications walls instruction]
-
+Blizu stolpa zgradite vsaj 2 odseka zidu; njegov zahodni dostop naj ostane odprt.
 [lesson fortifications walls help]
-
+Zidovi porabljajo kamen in vsako gradbišče zahteva delavce. Stolpa ne zaprite povsem: dobavitelji potrebujejo pot. Označeni zahodni prehod mora ostati prost.
 [lesson fortifications walls marker]
-
+Zaščitite stolp z obzidjem
 [lesson fortifications supply hint]
-
+Izberite stolp in zahtevajte dobavitelje. Počakajte, da ima stolp vsaj 2 enoti kamna. Ko je stolp zgrajen, zahtevajte od delavcev, da prinesejo strelivo. To število morate nastaviti ločeno od števila zahtevanih delavcev za gradnjo.
 [lesson fortifications supply title]
-
+Oskrba s strelivom
 [lesson fortifications supply instruction]
-
+Izberite stolp in zahtevajte dobavitelje. Počakajte, da ima stolp vsaj 2 enoti kamna.
 [lesson fortifications supply help]
-
+Ko je stolp zgrajen, zahtevajte od delavcev, da prinesejo strelivo. To število morate nastaviti ločeno od števila zahtevanih delavcev za gradnjo.
 [lesson fortifications supply marker]
-
+Oskrba s strelivom
 [lesson fortifications hold hint]
-
+Približuje se sovražni bojevnik, poslan na to vajo. Stolp naj bo oskrbljen s strelivom in naj bo dostopen. Branite se, dokler napadalec ni premagan ali odgnan. Zid, ki blokira dobavitelje, lahko stolp pusti brez streliva. Če kolonija propade, znova začnite lekcijo ali naložite prejšnjo shranjeno igro.
 [lesson fortifications hold title]
-
+Preizkusite utrdbe
 [lesson fortifications hold instruction]
-
+Približuje se sovražni bojevnik, poslan na to vajo. Stolp naj bo oskrbljen s strelivom in naj bo dostopen.
 [lesson fortifications hold help]
-
+Branite se, dokler napadalec ni premagan ali odgnan. Zid, ki blokira dobavitelje, lahko stolp pusti brez streliva. Če kolonija propade, znova začnite lekcijo ali naložite prejšnjo shranjeno igro.
 [lesson fortifications hold marker]
-
+Preizkusite utrdbe
 [lesson defensive-tactics title]
-
+Stražarska območja in taktika zastav
 [lesson defensive-tactics briefing]
-
+Raziščite sovražnika v vaji, pripravite stražarsko območje, ubranite napad in organizirajte protinapad.
 [lesson defensive-tactics complete]
-
+Raziskovali ste sovražnika, branili stražarsko območje in usmerili protinapad. Število, ki ga nastavite za zastavo, določa, koliko enot je zahtevanih. Radij določa, kje te enote delujejo.
 [lesson defensive-tactics scout hint]
-
+Postavite raziskovalno zastavo na sovražnikovo bazo; dodelite 1 raziskovalca. Zastave zahtevajo enote, ki potujejo avtonomno. Raziskovalec razkrije trenutno dejavnost, skrito v megli vojne. Raziskovalec se lahko ustavi, da bi jedel.
 [lesson defensive-tactics scout title]
-
+Raziščite sovražnikovo bazo
 [lesson defensive-tactics scout instruction]
-
+Postavite raziskovalno zastavo na sovražnikovo bazo; dodelite 1 raziskovalca.
 [lesson defensive-tactics scout help]
-
+Zastave zahtevajo enote, ki potujejo avtonomno. Raziskovalec razkrije trenutno dejavnost, skrito v megli vojne. Raziskovalec se lahko ustavi, da bi jedel.
 [lesson defensive-tactics scout marker]
-
+Raziščite sovražnikovo bazo
 [lesson defensive-tactics guard hint]
-
+Na označenem območju pobarvajte stražarsko območje in pustite, da ga dosežeta 2 bojevnika. Odprite Zastave, izberite Straža in pobarvajte vsaj 4 polja v območju. Stražarska območja privabljajo proste bojevnike. Prepovedana območja preprečujejo prehod; območja čiščenja zahtevajo odstranjevanje virov.
 [lesson defensive-tactics guard title]
-
+Pripravite stražarsko območje
 [lesson defensive-tactics guard instruction]
-
+Na označenem območju pobarvajte stražarsko območje in pustite, da ga dosežeta 2 bojevnika.
 [lesson defensive-tactics guard help]
-
+Odprite Zastave, izberite Straža in pobarvajte vsaj 4 polja v območju. Stražarska območja privabljajo proste bojevnike. Prepovedana območja preprečujejo prehod; območja čiščenja zahtevajo odstranjevanje virov.
 [lesson defensive-tactics guard marker]
-
+Pripravite stražarsko območje
 [lesson defensive-tactics repel hint]
-
+Sovražnik napada. V stražarskem območju ohranite bojevnike in oskrbujte Restavracije. Manjši napad se začne po pripravah. Premagajte ali odženite oba napadalca; ranjeni sovražniki se lahko umaknejo. Bojevniki lahko začasno odidejo jest. Če obramba odpove, naložite prejšnjo shranjeno igro ali začnite znova.
 [lesson defensive-tactics repel title]
-
+Odbijte vadbeni napad
 [lesson defensive-tactics repel instruction]
-
+Sovražnik napada. V stražarskem območju ohranite bojevnike in oskrbujte Restavracije.
 [lesson defensive-tactics repel help]
-
+Manjši napad se začne po pripravah. Premagajte ali odženite oba napadalca; ranjeni sovražniki se lahko umaknejo. Bojevniki lahko začasno odidejo jest. Če obramba odpove, naložite prejšnjo shranjeno igro ali začnite znova.
 [lesson defensive-tactics repel marker]
-
+Odbijte vadbeni napad
 [lesson defensive-tactics counterattack hint]
-
+Postavite vojaško zastavo nad sovražno porodnišnico; zahtevajte 3 bojevnike in uporabite polmer 4 ali manj. Stražarska območja in Vojaške zastave tekmujejo za bojevnike. Odstranite stražarska polja, če zadržujejo vašo vojsko. Zagotovite hrano, medtem ko bojevniki potujejo in napadajo.
 [lesson defensive-tactics counterattack title]
-
+Usmerite osredotočen protinapad
 [lesson defensive-tactics counterattack instruction]
-
+Postavite vojaško zastavo nad sovražno porodnišnico; zahtevajte 3 bojevnike in uporabite polmer 4 ali manj.
 [lesson defensive-tactics counterattack help]
-
+Stražarska območja in Vojaške zastave tekmujejo za bojevnike. Odstranite stražarska polja, če zadržujejo vašo vojsko. Zagotovite hrano, medtem ko bojevniki potujejo in napadajo.
 [lesson defensive-tactics counterattack marker]
-
+Usmerite osredotočen protinapad
 [lesson healing build compact]
-
+Gradnja → Bolnišnica. Pustite dostop; dodelite graditelje.
 [lesson healing heal compact]
-
+Naj se ranjeni delavec pozdravi v bolnišnici.
 [lesson walking-training build compact]
-
+Gradnja → Tekaška steza. Pustite prostor okoli njenih robov.
 [lesson walking-training train compact]
-
+Naj delavec opravi trening na Tekaški stezi.
 [lesson swimming build compact]
-
+Gradnja → Bazen, zahodno od ribnika.
 [lesson swimming train compact]
-
+Naj se delavec nauči plavati.
 [lesson swimming water-job compact]
-
+Gradnja → Šola. Dodelite graditelje za les in alge.
 [lesson schools build compact]
-
+Gradnja → Šola. Dodelite graditelje za les in alge.
 [lesson schools learn compact]
-
+Naj delavec opravi usposabljanje v Šoli.
 [lesson upgrades upgrade compact]
-
+Izberite Tekaška steza → Nadgradi. Dodelite kvalificirane graditelje.
 [lesson upgrades train compact]
-
+Naj delavec trenira na posodobljeni tekaški stezi.
 [lesson warrior-training produce compact]
-
+Porodnišnica → Samo bojevniki. Zagotovite pšenico za 2 bojevnika.
 [lesson warrior-training build compact]
-
+Gradnja → Vojašnica. Pustite prostor okoli njenih robov.
 [lesson warrior-training train compact]
-
+Naj bojevnik konča vajo v vojašnici.
 [lesson fortifications tower compact]
-
+Gradnja → Stolp. Postavite na označeno območje.
 [lesson fortifications walls compact]
-
+Zgradite 2 zidova. Zahodni dostop do stolpa naj ostane odprt.
 [lesson fortifications supply compact]
-
+Izberite stolp → dobavitelji. Počakajte na 2 kamna.
 [lesson fortifications hold compact]
-
+Stolp oskrbujte s strelivom proti napadalcu.
 [lesson defensive-tactics scout compact]
-
+Zastave → Raziskovanje. Postavite zastavo na sovražnikovo bazo; dodelite 1 raziskovalca.
 [lesson defensive-tactics guard compact]
-
+Zastave → Straža. Pobarvajte 4 polja; naj prideta 2 bojevnika.
 [lesson defensive-tactics repel compact]
-
+Ubranite stražarsko območje. Oskrbujte Restavracije.
 [lesson defensive-tactics counterattack compact]
-
+Vojaška zastava → Sovražnikova Porodnišnica. Zahtevajte 3 bojevnike; polmer ≤4.
 [library GL only]
 Samo GL
 [Grassland]
@@ -6785,6 +6785,6 @@ Skalnati griči
 [Fish amount]
 Količina rib
 [scenario messages]
-
+Sporočila ▸
 [Camp-site amount]
 Število taborišč

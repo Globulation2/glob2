@@ -6359,421 +6359,421 @@ Impossibile salvare la scelta. L’audio resta disattivato. Riprova.
 [audio choices description]
 Silenzio: un altoparlante disattivato. Audio: un altoparlante con onde sonore.
 [intro menu]
-
+Introduzione
 [intro briefing]
-
+Impara il controllo indiretto: esplora con una bandiera, rifornisci la tua colonia e dirigi un attacco.
 [intro try]
-
+Inizia l'introduzione
 [intro preflight]
-
+I tuoi globuli agiscono da soli. Assegna i loro compiti tramite edifici e bandiere. In questa breve introduzione, esplora un punto di riferimento, amplia l'approvvigionamento di cibo, aumenta il numero di lavoratori e dirigi un piccolo attacco.
 [intro preflight save]
-
+Prevedi circa 10 minuti. Puoi salvare dal menu di gioco e riprendere con Carica partita. Si applicano le normali regole di fame e combattimento. Scegli Lezioni del tutorial dal menu principale per esercitarti in altre abilità.
 [intro preference failed]
-
+Non è stato possibile salvare la tua scelta. Puoi continuare a giocare; questa raccomandazione potrebbe apparire nuovamente la prossima volta.
 [intro goal scout]
-
+Esplora il punto di riferimento di pietra
 [intro goal build]
-
+Costruisci un'altra mensa
 [intro goal supply]
-
+Rifornisci la tua nuova mensa
 [intro goal grow]
-
+Aumenta il numero di lavoratori
 [intro goal attack]
-
+Distruggi lo sciame nemico
 [intro instruction scout]
-
+Apri le bandiere e posiziona una bandiera di esplorazione sulla zona di pietra a est della tua colonia. Assegna un esploratore. Guardalo mentre viaggia verso la bandiera.
 [intro instruction build]
-
+Apri Costruisci e colloca una Mensa vicino al grano. Assegna i lavoratori disponibili alla costruzione. Mantieni rifornita la Mensa esistente.
 [intro instruction supply]
-
+Seleziona la tua nuova mensa finita e assegnale almeno un rifornitore. Aspetta che un lavoratore consegni il grano.
 [intro instruction grow]
-
+Seleziona lo Sciame. Imposta il numero richiesto di lavoratori ad almeno 2 e le proporzioni di produzione su soli lavoratori. Mantieni entrambe le Mense rifornite mentre nasce un nuovo lavoratore.
 [intro instruction attack]
-
+Trova lo Sciame nemico più a est. Usa una Bandiera di attacco per dirigere i tuoi guerrieri contro di esso. Consulta l'aiuto se ti serve un promemoria.
 [intro help]
-
+Aiuto / perché?
 [intro help scout]
-
+Usa la minimappa per spostare la visuale a est e trovare la zona di pietra. In Bandiere, scegli Bandiera di esplorazione, collocala sulla pietra e termina il posizionamento con il pulsante secondario del mouse. Seleziona la bandiera e richiedi 1 esploratore. Le bandiere richiedono unità senza spostarle istantaneamente. Gli esploratori possono fermarsi a mangiare.
 [intro help build]
-
+La costruzione consuma legno consegnato dai lavoratori. Scegli Mensa dalla tavolozza degli edifici, collocala su terreno sgombro vicino al grano e richiedi 2 costruttori. Il numero richiesto non è il numero di lavoratori già presenti. Mantieni i ririfornitori presso la Mensa esistente e lo Sciame. Qualsiasi posizione valida conta.
 [intro help supply]
-
+La costruzione e il rifornimento quotidiano hanno numeri di lavoratori richiesti separati. Seleziona la Mensa completata e aumenta il numero di addetti al rifornimento. Un ririfornitore raccoglie grano e lo porta qui. I globuli affamati mangiano nelle Mense; senza ririfornitori le scorte prima o poi si esauriscono. Mantieni accessibile il campo di grano.
 [intro help grow]
-
+Lo Sciame consuma grano per produrre unità. Imposta la produzione di lavoratori su 1 e quelle di esploratori e guerrieri su 0. Porta il numero di lavoratori richiesto dallo Sciame ad almeno 2. Più ririfornitori possono consegnare grano più velocemente, ma sottraggono lavoratori ad altri compiti. Mantieni entrambe le Mense rifornite di cibo.
 [intro help attack]
-
+Apri Bandiere, scegli Bandiera di attacco e collocala sullo Sciame nemico a est della pietra. Seleziona la bandiera e richiedi fino a 4 guerrieri. Un raggio piccolo li tiene concentrati. Termina il posizionamento con il pulsante secondario del mouse prima di selezionare la bandiera. Se non rimangono guerrieri, producine altri allo Sciame. I guerrieri possono fermarsi a mangiare; mantieni le Mense rifornite.
 [intro hint scout]
-
+Il tuo esploratore ha bisogno di una bandiera di esplorazione assegnata nella zona di pietra orientale. Controlla la sua posizione e il conteggio degli esploratori richiesti.
 [intro hint build]
-
+Se hai rimosso la nuova mensa, costruiscine un'altra. Altrimenti controlla il cantiere e il numero di lavoratori ivi richiesti. Altri lavori di fornitura potrebbero occupare i tuoi lavoratori; mantieni la colonia rifornita di cibo rendendo disponibili i costruttori.
 [intro hint supply]
-
+Seleziona la nuova mensa finita. Controlla il numero di lavoratori richiesto e controlla le consegne di grano. I lavoratori potrebbero aver bisogno di tempo per viaggiare o mangiare.
 [intro hint grow]
-
+Controlla che lo Sciame sia rifornito di grano e produca solo lavoratori. Mantieni le mense rifornite di cibo mentre aspetti un altro lavoratore.
 [intro hint attack]
-
+Controlla la tua bandiera di attacco, il conteggio dei guerrieri richiesti e le scorte di cibo. I tuoi guerrieri hanno bisogno di tempo per viaggiare e attaccare.
 [intro hint no scout flag]
-
+Non è stata trovata alcuna Bandiera di esplorazione con unità assegnate. Collocane una sulla pietra a est della base e richiedi 1 esploratore.
 [intro hint no suppliers]
-
+La nuova Mensa o il suo cantiere richiede 0 lavoratori. Seleziona la struttura e richiedi lavoratori.
 [intro hint no war flag]
-
+Non è stata trovata alcuna Bandiera di attacco con unità assegnate nella base nemica. Collocane una sullo Sciame nemico a est e richiedi guerrieri.
 [intro hint retry]
-
+Un'unità o un edificio necessario per questa lezione è andato perduto. Carica un salvataggio precedente o riavvia questa lezione dal menu di gioco.
 [intro complete]
-
+Introduzione completata
 [intro complete body]
-
+Hai diretto globuli autonomi, ampliato l'approvvigionamento di cibo, fatto crescere la colonia e organizzato un attacco. Continua con Lezioni del tutorial per esercitarti in addestramento, miglioramenti e difesa, oppure torna al menu principale per iniziare una partita.
 [intro play again]
-
+Gioca di nuovo
 [intro restart]
-
+Ricomincia l'introduzione
 [intro restart body]
-
+Ripartire dalla colonia preparata? I progressi non salvati in questa introduzione andranno persi.
 [intro help touch scout]
-
+Prima di collocare una bandiera, trascina il terreno vuoto per spostare la visuale. Trova la zona di pietra a est della colonia. Apri Bandiere, scegli Bandiera di esplorazione, collocala sulla pietra e conferma. Seleziona la bandiera e richiedi 1 esploratore con il comando delle unità assegnate. I globuli si spostano autonomamente e possono fermarsi a mangiare.
 [intro help touch build]
-
+Scegli Mensa da Costruisci. Collocala su terreno sgombro vicino al grano e conferma. Seleziona il cantiere e richiedi 2 costruttori. Il numero richiesto non è il numero di lavoratori già presenti. Mantieni riforniti la Mensa esistente e lo Sciame. Qualsiasi posizione valida conta.
 [intro help touch supply]
-
+Seleziona la nuova Mensa completata e aumenta il numero richiesto di lavoratori assegnati. Costruzione e rifornimento quotidiano hanno impostazioni separate. Un ririfornitore raccoglie grano e lo porta qui. I globuli affamati mangiano nelle Mense; senza ririfornitori le scorte si esauriscono. Mantieni accessibile il grano.
 [intro help touch grow]
-
+Seleziona lo Sciame. Imposta la produzione di lavoratori su 1 e quelle di esploratori e guerrieri su 0. Porta il numero richiesto di lavoratori assegnati ad almeno 2. I ririfornitori portano grano per le nuove unità, ma sottraggono lavoratori ad altri compiti. Mantieni entrambe le Mense rifornite.
 [intro help touch attack]
-
+Apri le Bandiere, scegli la Bandiera di attacco, posizionala sullo Sciame nemico a est della pietra e conferma. Seleziona la bandiera e richiedi fino a 4 guerrieri. Un piccolo raggio li concentra. Se non ne rimane nessuno, produci guerrieri nel tuo Sciame. I guerrieri possono fermarsi a mangiare; mantieni rifornite le mense.
 [intro show destination]
-
+Mostra destinazione
 [intro scout destination]
-
+Esplora qui
 [intro attack destination]
-
+Attacca qui
 [intro compact scout]
-
+Bandiere → Bandiera di esplorazione. Collocala sulla pietra; assegna 1 esploratore.
 [intro compact build]
-
+Costruisci → Mensa. Colloca vicino al grano; assegna 2 costruttori.
 [intro compact supply]
-
+Seleziona la tua nuova Mensa; assegna almeno 1 rifornitore. Aspetta il grano.
 [intro compact grow]
-
+Seleziona lo Sciame; assegna 2 rifornitori. Produci solo lavoratori.
 [intro compact attack]
-
+Bandiere → Bandiera di attacco. Colloca sopra lo Sciame nemico; assegna guerrieri.
 [tutorial lessons]
-
+Lezioni del tutorial
 [tutorial restart]
-
+Ricomincia la lezione
 [tutorial restart body]
-
+Ricominciare questa lezione dalla colonia preparata? I progressi non salvati andranno persi.
 [tutorial complete]
-
+Lezione completata
 [tutorial food title]
-
+Esercizio di approvvigionamento alimentare
 [tutorial food briefing]
-
+Esercitati ad ampliare l'approvvigionamento di cibo: costruisci un'altra Mensa, assegna i ririfornitori e osserva l'arrivo del grano.
 [tutorial food complete]
-
+Hai costruito una mensa e l'hai rifornita di grano. Prova un'altra lezione o torna al menu principale.
 [tutorial unavailable]
-
+Impossibile caricare le lezioni del tutorial.
 [lesson healing title]
-
+Ospedali e cure
 [lesson healing briefing]
-
+Costruisci un Ospedale e aiuta un lavoratore ferito a riprendersi. La colonia inizia già nutrita, con un lavoratore ferito.
 [lesson healing complete]
-
+Il tuo ospedale ha guarito un globulo ferito. Mantieni le mense rifornite di cibo: la fame può ferire nuovamente le unità.
 [lesson healing build hint]
-
+Costruisci un ospedale su terreno sgombrato; assegna 2 costruttori. Lascia spazio per l'ingresso e l'uscita dei globuli. Gli Ospedali curano le ferite; le Mense forniscono cibo. Questo paziente ha già mangiato.
 [lesson healing build title]
-
+Costruisci un ospedale
 [lesson healing build instruction]
-
+Costruisci un ospedale su terreno sgombrato; assegna 2 costruttori.
 [lesson healing build help]
-
+Lascia spazio per l'ingresso e l'uscita dei globuli. Gli Ospedali curano le ferite; le Mense forniscono cibo. Questo paziente ha già mangiato.
 [lesson healing build marker]
-
+Costruisci un ospedale
 [lesson healing heal hint]
-
+Mantieni l'Ospedale accessibile. Guarda il lavoratore infortunato riprendersi. I globuli cercano la guarigione autonomamente. Rintraccia il lavoratore infortunato, non un'unità appena nata. Se muore, riavvia o carica un salvataggio.
 [lesson healing heal title]
-
+Lascia che il paziente si riprenda
 [lesson healing heal instruction]
-
+Mantieni l'Ospedale accessibile. Guarda il lavoratore infortunato riprendersi.
 [lesson healing heal help]
-
+I globuli cercano la guarigione autonomamente. Rintraccia il lavoratore infortunato, non un'unità appena nata. Se muore, riavvia o carica un salvataggio.
 [lesson healing heal marker]
-
+Lascia che il paziente si riprenda
 [lesson walking-training title]
-
+Allenamento per camminare più velocemente
 [lesson walking-training briefing]
-
+Costruisci un circuito e osserva un lavoratore esistente che impara a camminare più velocemente.
 [lesson walking-training complete]
-
+I tuoi lavoratori hanno imparato a camminare più velocemente. La formazione migliora i lavoratori che hai; non sostituisce la fornitura di cibo della colonia.
 [lesson walking-training build hint]
-
+Costruisci un circuito nella radura contrassegnata; assegna i costruttori. Un Circuito ha bisogno di legno e pietra. Lascia spazio attorno all'edificio per l'ingresso, l'uscita e la successiva espansione.
 [lesson walking-training build title]
-
+Costruisci un circuito
 [lesson walking-training build instruction]
-
+Costruisci un circuito nella radura contrassegnata; assegna i costruttori.
 [lesson walking-training build help]
-
+Un Circuito ha bisogno di legno e pietra. Lascia spazio attorno all'edificio per l'ingresso, l'uscita e la successiva espansione.
 [lesson walking-training build marker]
-
+Costruisci un circuito
 [lesson walking-training train hint]
-
+Mantieni il Circuito accessibile e lascia che un lavoratore termini la formazione. L'addestramento è automatico per i globuli idonei. Mantieni alcuni lavoratori liberi dai lavori di rifornimento e mantieni entrambe le mense rifornite.
 [lesson walking-training train title]
-
+Addestra un lavoratore esistente
 [lesson walking-training train instruction]
-
+Mantieni il Circuito accessibile e lascia che un lavoratore termini la formazione.
 [lesson walking-training train help]
-
+L'addestramento è automatico per i globuli idonei. Mantieni alcuni lavoratori liberi dai lavori di rifornimento e mantieni entrambe le mense rifornite.
 [lesson swimming title]
-
+Nuoto e risorse in acqua
 [lesson swimming briefing]
-
+Addestra i nuotatori, quindi usa le alghe dello stagno per costruire una scuola.
 [lesson swimming complete]
-
+Un nuotatore ha consegnato risorse acquatiche per la tua Scuola. L'accesso all'acqua amplia i compiti che la colonia può svolgere.
 [lesson swimming build hint]
-
+Costruisci una piscina a ovest dello stagno; assegna i costruttori. Lascia spazio intorno alla piscina. Un lavoratore non può raccogliere le alghe in acque profonde finché non ha imparato a nuotare.
 [lesson swimming build title]
-
+Costruisci una piscina
 [lesson swimming build instruction]
-
+Costruisci una piscina a ovest dello stagno; assegna i costruttori.
 [lesson swimming build help]
-
+Lascia spazio intorno alla piscina. Un lavoratore non può raccogliere le alghe in acque profonde finché non ha imparato a nuotare.
 [lesson swimming build marker]
-
+Costruisci una piscina
 [lesson swimming train hint]
-
+Lascia che un lavoratore esistente finisca l'allenamento di nuoto. Le unità scelgono automaticamente l'addestramento. Mantieni i rifornimenti e consenti ai lavoratori liberi di raggiungere la Piscina.
 [lesson swimming train title]
-
+Allena un nuotatore
 [lesson swimming train instruction]
-
+Lascia che un lavoratore esistente finisca l'allenamento di nuoto.
 [lesson swimming train help]
-
+Le unità scelgono automaticamente l'addestramento. Mantieni i rifornimenti e consenti ai lavoratori liberi di raggiungere la Piscina.
 [lesson swimming water-job hint]
-
+Costruisci una Scuola vicino alla colonia; assegna costruttori per raccogliere legno e alghe. Le alghe crescono nello stagno. Un nuotatore addestrato deve entrare in acqua per raccoglierle. Colloca la Scuola su terreno aperto, accessibile ai ririfornitori.
 [lesson swimming water-job title]
-
+Usa le alghe dello stagno
 [lesson swimming water-job instruction]
-
+Costruisci una Scuola vicino alla colonia; assegna costruttori per raccogliere legno e alghe.
 [lesson swimming water-job help]
-
+Le alghe crescono nello stagno. Un nuotatore addestrato deve entrare in acqua per raccoglierle. Colloca la Scuola su terreno aperto, accessibile ai ririfornitori.
 [lesson swimming water-job marker]
-
+Usa le alghe dello stagno
 [lesson schools title]
-
+Scuole e competenze dei lavoratori
 [lesson schools briefing]
-
+Usa i nuotatori preparati per costruire una scuola, quindi osserva i lavoratori mentre imparano la costruzione e la raccolta.
 [lesson schools complete]
-
+La tua Scuola ha migliorato le competenze dei lavoratori. I costruttori qualificati permettono di migliorare gli edifici; una raccolta più efficiente sostiene un'economia in espansione.
 [lesson schools build hint]
-
+Costruisci una scuola nella radura; assegna i costruttori. La colonia dispone già di nuotatori per le alghe. Lascia l'accesso al legno e all'acqua. Gli alberi da frutto forniscono risorse di prestigio; il cibo proviene ancora dal grano.
 [lesson schools build title]
-
+Costruisci una scuola
 [lesson schools build instruction]
-
+Costruisci una scuola nella radura; assegna i costruttori.
 [lesson schools build help]
-
+La colonia dispone già di nuotatori per le alghe. Lascia l'accesso al legno e all'acqua. Gli alberi da frutto forniscono risorse di prestigio; il cibo proviene ancora dal grano.
 [lesson schools build marker]
-
+Costruisci una scuola
 [lesson schools learn hint]
-
+Lascia che un lavoratore esistente completi l'addestramento alla Scuola. La Scuola insegna a costruire e raccogliere insieme. Mantieni i lavoratori disponibili; un cantiere da solo non forma nessuno.
 [lesson schools learn title]
-
+Insegna la costruzione e la raccolta
 [lesson schools learn instruction]
-
+Lascia che un lavoratore esistente completi l'addestramento alla Scuola.
 [lesson schools learn help]
-
+La Scuola insegna a costruire e raccogliere insieme. Mantieni i lavoratori disponibili; un cantiere da solo non forma nessuno.
 [lesson upgrades title]
-
+Miglioramenti degli edifici
 [lesson upgrades briefing]
-
+Usa i lavoratori qualificati già disponibili per migliorare un Circuito e addestrare oltre il primo livello.
 [lesson upgrades complete]
-
+Hai potenziato un edificio e utilizzato il suo addestramento migliorato. Ulteriori miglioramenti ripetono questo ciclo con scuole, abilità, materiali e spazio migliori, fino al livello 3.
 [lesson upgrades upgrade hint]
-
+Seleziona il Circuito, scegli Migliora e assegna costruttori qualificati. Questi lavoratori hanno già appreso le competenze della Scuola di primo livello. I miglioramenti richiedono spazio e materiali aggiuntivi e interrompono il servizio dell'edificio. I miglioramenti annullati non contano.
 [lesson upgrades upgrade title]
-
+Migliora il Circuito
 [lesson upgrades upgrade instruction]
-
+Seleziona il Circuito, scegli Migliora e assegna costruttori qualificati.
 [lesson upgrades upgrade help]
-
+Questi lavoratori hanno già appreso le competenze della Scuola di primo livello. I miglioramenti richiedono spazio e materiali aggiuntivi e interrompono il servizio dell'edificio. I miglioramenti annullati non contano.
 [lesson upgrades upgrade marker]
-
+Migliora il Circuito
 [lesson upgrades train hint]
-
+Consenti a un lavoratore esistente di imparare a camminare più velocemente nel Circuito migliorato. Un miglioramento completato offre un addestramento migliore. Livelli più alti degli edifici richiedono competenze costruttive superiori; il livello mostrato ai giocatori parte da 1.
 [lesson upgrades train title]
-
+Utilizza la formazione migliorata
 [lesson upgrades train instruction]
-
+Consenti a un lavoratore esistente di imparare a camminare più velocemente nel Circuito migliorato.
 [lesson upgrades train help]
-
+Un miglioramento completato offre un addestramento migliore. Livelli più alti degli edifici richiedono competenze costruttive superiori; il livello mostrato ai giocatori parte da 1.
 [lesson warrior-training title]
-
+Produzione e addestramento dei guerrieri
 [lesson warrior-training briefing]
-
+Produci guerrieri allo Sciame, quindi addestrali in una Caserma.
 [lesson warrior-training complete]
-
+Hai gestito la produzione militare e addestrato guerrieri. Mantieni i loro rifornimenti di cibo: anche le unità da combattimento devono mangiare.
 [lesson warrior-training produce hint]
-
+Imposta lo Sciame solo sui guerrieri; assegna i rifornitori e attendi 2 guerrieri. Imposta le proporzioni di lavoratori ed esploratori su 0 e quella dei guerrieri su 1. Lo Sciame consuma grano per le nascite. Le proporzioni scelgono cosa produrre; i ririfornitori determinano se la produzione può continuare.
 [lesson warrior-training produce title]
-
+Produci due guerrieri
 [lesson warrior-training produce instruction]
-
+Imposta lo Sciame solo sui guerrieri; assegna i rifornitori e attendi 2 guerrieri.
 [lesson warrior-training produce help]
-
+Imposta le proporzioni di lavoratori ed esploratori su 0 e quella dei guerrieri su 1. Lo Sciame consuma grano per le nascite. Le proporzioni scelgono cosa produrre; i ririfornitori determinano se la produzione può continuare.
 [lesson warrior-training produce marker]
-
+Produci due guerrieri
 [lesson warrior-training build hint]
-
+Costruisci una caserma nella radura; assegna i costruttori. Interrompi o riduci la produzione di guerrieri quando ne hai abbastanza. Le caserme insegnano abilità di combattimento; hanno bisogno di spazio libero attorno ai bordi.
 [lesson warrior-training build title]
-
+Costruisci una caserma
 [lesson warrior-training build instruction]
-
+Costruisci una caserma nella radura; assegna i costruttori.
 [lesson warrior-training build help]
-
+Interrompi o riduci la produzione di guerrieri quando ne hai abbastanza. Le caserme insegnano abilità di combattimento; hanno bisogno di spazio libero attorno ai bordi.
 [lesson warrior-training build marker]
-
+Costruisci una caserma
 [lesson warrior-training train hint]
-
+Lascia che un guerriero completi la pratica della Caserma. I guerrieri cercano automaticamente l'addestramento. Mantieni le Mense rifornite e la Caserma accessibile. Costruire una Caserma non basta a completare una sessione di addestramento.
 [lesson warrior-training train title]
-
+Addestra i tuoi guerrieri
 [lesson warrior-training train instruction]
-
+Lascia che un guerriero completi la pratica della Caserma.
 [lesson warrior-training train help]
-
+I guerrieri cercano automaticamente l'addestramento. Mantieni le Mense rifornite e la Caserma accessibile. Costruire una Caserma non basta a completare una sessione di addestramento.
 [lesson fortifications title]
-
+Torri e mura di protezione
 [lesson fortifications briefing]
-
+Costruisci una torre, riforniscila di munizioni e costruisci muri protettivi. Quindi metti alla prova le tue difese contro un piccolo attacco.
 [lesson fortifications complete]
-
+Le tue difese avevano abbastanza munizioni per fermare l'attacco di prova. Le torri hanno bisogno di pietra. Lascia degli spazi vuoti nei muri in modo che i rifornitori possano raggiungere le torri.
 [lesson fortifications tower hint]
-
+Costruisci una torre nell'area contrassegnata; assegna i costruttori. Colloca la torre vicino al giacimento di pietra e lascia libero l’accesso ai ririfornitori. L’attacco inizia solo quando gli obiettivi di preparazione sono completati.
 [lesson fortifications tower title]
-
+Costruisci una torre di difesa
 [lesson fortifications tower instruction]
-
+Costruisci una torre nell'area contrassegnata; assegna i costruttori.
 [lesson fortifications tower help]
-
+Colloca la torre vicino al giacimento di pietra e lascia libero l’accesso ai ririfornitori. L’attacco inizia solo quando gli obiettivi di preparazione sono completati.
 [lesson fortifications tower marker]
-
+Costruisci una torre di difesa
 [lesson fortifications walls hint]
-
+Costruisci almeno 2 sezioni di muro vicino alla torre; mantieni aperta la corsia di accesso ovest. I muri consumano pietra e ogni cantiere richiede lavoratori. Non chiudere la torre: i ririfornitori hanno bisogno di un passaggio. La corsia ovest segnalata deve rimanere libera.
 [lesson fortifications walls title]
-
+Proteggi la torre con mura
 [lesson fortifications walls instruction]
-
+Costruisci almeno 2 sezioni di muro vicino alla torre; mantieni aperta la corsia di accesso ovest.
 [lesson fortifications walls help]
-
+I muri consumano pietra e ogni cantiere richiede lavoratori. Non chiudere la torre: i ririfornitori hanno bisogno di un passaggio. La corsia ovest segnalata deve rimanere libera.
 [lesson fortifications walls marker]
-
+Proteggi la torre con mura
 [lesson fortifications supply hint]
-
+Seleziona la torre e richiedi i rifornitori. Aspetta finché la torre non avrà almeno 2 unità di pietra. Una volta costruita la torre, chiedi ai lavoratori di portare munizioni. È necessario impostare questo numero separatamente dal numero di lavoratori richiesti per la costruzione.
 [lesson fortifications supply title]
-
+Rifornisci di munizioni
 [lesson fortifications supply instruction]
-
+Seleziona la torre e richiedi i rifornitori. Aspetta finché la torre non avrà almeno 2 unità di pietra.
 [lesson fortifications supply help]
-
+Una volta costruita la torre, chiedi ai lavoratori di portare munizioni. È necessario impostare questo numero separatamente dal numero di lavoratori richiesti per la costruzione.
 [lesson fortifications supply marker]
-
+Rifornisci di munizioni
 [lesson fortifications hold hint]
-
+Un guerriero nemico inviato per questa esercitazione si sta avvicinando. Mantieni la torre rifornita di munizioni e accessibile. Resisti finché l'attaccante non viene sconfitto o respinto. Un muro che blocca i ririfornitori può lasciare la torre senza munizioni. Se la colonia viene sconfitta, ricomincia o carica un salvataggio precedente.
 [lesson fortifications hold title]
-
+Metti alla prova le fortificazioni
 [lesson fortifications hold instruction]
-
+Un guerriero nemico inviato per questa esercitazione si sta avvicinando. Mantieni la torre rifornita di munizioni e accessibile.
 [lesson fortifications hold help]
-
+Resisti finché l'attaccante non viene sconfitto o respinto. Un muro che blocca i ririfornitori può lasciare la torre senza munizioni. Se la colonia viene sconfitta, ricomincia o carica un salvataggio precedente.
 [lesson fortifications hold marker]
-
+Metti alla prova le fortificazioni
 [lesson defensive-tactics title]
-
+Aree di pattuglia e tattiche di bandiera
 [lesson defensive-tactics briefing]
-
+Esplora il nemico dell'esercitazione, prepara una area di pattuglia, difendi e poi organizza un contrattacco.
 [lesson defensive-tactics complete]
-
+Hai esplorato, difeso una area di pattuglia e diretto un contrattacco. Il numero impostato sulle bandiere determina quante unità vengono richieste; il raggio controlla dove operano.
 [lesson defensive-tactics scout hint]
-
+Posiziona una bandiera di esplorazione sulla base nemica; assegna 1 esploratore. Le bandiere richiedono automaticamente unità. Un esploratore rivela l'attività attuale nascosta dalla nebbia di guerra; può fermarsi a mangiare.
 [lesson defensive-tactics scout title]
-
+Esplora la base nemica
 [lesson defensive-tactics scout instruction]
-
+Posiziona una bandiera di esplorazione sulla base nemica; assegna 1 esploratore.
 [lesson defensive-tactics scout help]
-
+Le bandiere richiedono automaticamente unità. Un esploratore rivela l'attività attuale nascosta dalla nebbia di guerra; può fermarsi a mangiare.
 [lesson defensive-tactics scout marker]
-
+Esplora la base nemica
 [lesson defensive-tactics guard hint]
-
+Dipingi una area di pattuglia nell'area contrassegnata e lascia che 2 guerrieri la raggiungano. Apri Bandiere, scegli Pattuglia e dipingi almeno 4 caselle nell’area. Le aree di pattuglia attirano i guerrieri inattivi. Le zone vietate impediscono il passaggio; le zone di pulizia richiedono la rimozione delle risorse.
 [lesson defensive-tactics guard title]
-
+Prepara una area di pattuglia
 [lesson defensive-tactics guard instruction]
-
+Dipingi una area di pattuglia nell'area contrassegnata e lascia che 2 guerrieri la raggiungano.
 [lesson defensive-tactics guard help]
-
+Apri Bandiere, scegli Pattuglia e dipingi almeno 4 caselle nell’area. Le aree di pattuglia attirano i guerrieri inattivi. Le zone vietate impediscono il passaggio; le zone di pulizia richiedono la rimozione delle risorse.
 [lesson defensive-tactics guard marker]
-
+Prepara una area di pattuglia
 [lesson defensive-tactics repel hint]
-
+Il nemico sta attaccando. Mantieni la area di pattuglia coperta e le mense rifornite. Il piccolo attacco inizia dopo i preparativi. Sconfiggi o respingi entrambi i predoni; i nemici feriti possono ritirarsi. I guerrieri possono andarsene temporaneamente per mangiare. Se la difesa fallisce, utilizza un salvataggio precedente o riavvia.
 [lesson defensive-tactics repel title]
-
+Respingi l’attacco di esercitazione
 [lesson defensive-tactics repel instruction]
-
+Il nemico sta attaccando. Mantieni la area di pattuglia coperta e le mense rifornite.
 [lesson defensive-tactics repel help]
-
+Il piccolo attacco inizia dopo i preparativi. Sconfiggi o respingi entrambi i predoni; i nemici feriti possono ritirarsi. I guerrieri possono andarsene temporaneamente per mangiare. Se la difesa fallisce, utilizza un salvataggio precedente o riavvia.
 [lesson defensive-tactics repel marker]
-
+Respingi l’attacco di esercitazione
 [lesson defensive-tactics counterattack hint]
-
+Posiziona una bandiera di attacco sullo sciame nemico; richiedi 3 guerrieri e usa un raggio 4 o inferiore. Le aree di pattuglia e le Bandiere di attacco si contendono i guerrieri. Rimuovi le caselle di guardia se trattengono il tuo esercito. Mantieni il cibo disponibile mentre i guerrieri si spostano e attaccano.
 [lesson defensive-tactics counterattack title]
-
+Dirigi un contrattacco mirato
 [lesson defensive-tactics counterattack instruction]
-
+Posiziona una bandiera di attacco sullo sciame nemico; richiedi 3 guerrieri e usa un raggio 4 o inferiore.
 [lesson defensive-tactics counterattack help]
-
+Le aree di pattuglia e le Bandiere di attacco si contendono i guerrieri. Rimuovi le caselle di guardia se trattengono il tuo esercito. Mantieni il cibo disponibile mentre i guerrieri si spostano e attaccano.
 [lesson defensive-tactics counterattack marker]
-
+Dirigi un contrattacco mirato
 [lesson healing build compact]
-
+Costruisci → Ospedale. Lascia l'accesso; assegna i costruttori.
 [lesson healing heal compact]
-
+Lascia che l'operaio ferito guarisca all'ospedale.
 [lesson walking-training build compact]
-
+Costruisci → Circuito. Lascia spazio attorno ai bordi.
 [lesson walking-training train compact]
-
+Lascia che un lavoratore completi l'addestramento al Circuito.
 [lesson swimming build compact]
-
+Costruisci → Piscina, a ovest dello stagno.
 [lesson swimming train compact]
-
+Lascia che un lavoratore impari a nuotare.
 [lesson swimming water-job compact]
-
+Costruisci → Scuola. Assegna costruttori per legno e alghe.
 [lesson schools build compact]
-
+Costruisci → Scuola. Assegna costruttori per legno e alghe.
 [lesson schools learn compact]
-
+Lascia che un lavoratore completi la formazione presso la Scuola.
 [lesson upgrades upgrade compact]
-
+Seleziona Circuito → Migliora. Assegna costruttori qualificati.
 [lesson upgrades train compact]
-
+Lascia che un lavoratore si alleni nel Circuito potenziato.
 [lesson warrior-training produce compact]
-
+Sciame → solo guerrieri. Fornisci grano per produrre 2 guerrieri.
 [lesson warrior-training build compact]
-
+Costruisci → Caserma. Lascia spazio attorno ai bordi.
 [lesson warrior-training train compact]
-
+Lascia che un guerriero finisca l'allenamento in Caserma.
 [lesson fortifications tower compact]
-
+Costruisci → Torre. Collocala nell'area contrassegnata.
 [lesson fortifications walls compact]
-
+Costruisci 2 muri. Mantieni aperta la corsia ovest della torre.
 [lesson fortifications supply compact]
-
+Seleziona torre → rifornitori. Aspetta 2 pietre.
 [lesson fortifications hold compact]
-
+Mantieni la torre rifornita contro l'attaccante.
 [lesson defensive-tactics scout compact]
-
+Bandiere → Esplorazione. Posiziona la bandiera nella base nemica; assegna 1 esploratore.
 [lesson defensive-tactics guard compact]
-
+Bandiere → Pattuglia. Dipingi 4 caselle; lascia che arrivino 2 guerrieri.
 [lesson defensive-tactics repel compact]
-
+Mantieni la area di pattuglia. Mantieni rifornite le mense.
 [lesson defensive-tactics counterattack compact]
-
+Bandiera di attacco → Sciame nemico. Richiedi 3 guerrieri; raggio ≤4.
 [library GL only]
 Solo GL
 [Grassland]
@@ -6785,6 +6785,6 @@ Sentieri degli animali
 [Fish amount]
 Quantità di pesci
 [scenario messages]
-
+Messaggi ▸
 [Camp-site amount]
 Numero di accampamenti

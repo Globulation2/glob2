@@ -279,6 +279,8 @@ void GameGUI::setMultiLine(const std::string &input, std::vector<std::string> *o
         { return font->getStringWidth(text.c_str()); }
         int lineHeight(GAGGUI::ui::FontRole) const override
         { return font->getStringHeight("M"); }
+        std::vector<std::size_t> clusterEnds(GAGGUI::ui::FontRole, const std::string &text) const override
+        { return font->getStringClusterEnds(text); }
     } measurer(globalContainer->standardFont);
     // Reserve continuation indentation while wrapping. The shared UTF-8
     // wrapper also handles unspaced CJK text, long words and explicit newlines.

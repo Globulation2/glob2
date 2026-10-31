@@ -33,7 +33,7 @@ NewMapScreen::NewMapScreen(std::shared_ptr<const GeneratorRegistry> catalog,
 						   GAGGUI::ScreenStack *screens)
 	: registryOwner(std::move(catalog)), registry(*registryOwner), screens(screens)
 {
-	descriptor.setMethodDefaults(registry.methods().front(), registryOwner);
+	descriptor.setMethodDefaults(registry.defaultMethod(), registryOwner);
 	preview = std::make_unique<MapPreview>();
 }
 

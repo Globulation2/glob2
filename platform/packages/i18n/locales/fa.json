@@ -2914,5 +2914,6 @@
   "More filters": "فیلترهای بیشتر",
   "Clear filters": "پاک کردن فیلترها",
   "No results match these filters.": "هیچ نتیجه‌ای با این فیلترها مطابقت ندارد.",
-  "Results: {value0}": "نتایج: {value0}"
+  "Results: {value0}": "نتایج: {value0}",
+  "Game text field": "کادر ورود متن در بازی"
 }

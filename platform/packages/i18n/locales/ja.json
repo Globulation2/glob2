@@ -2887,5 +2887,6 @@
   "More filters": "その他のフィルター",
   "Clear filters": "フィルターをクリア",
   "No results match these filters.": "これらのフィルターに一致する結果はありません。",
-  "Results: {value0}": "結果: {value0}"
+  "Results: {value0}": "結果: {value0}",
+  "Game text field": "ゲーム内のテキスト入力欄"
 }

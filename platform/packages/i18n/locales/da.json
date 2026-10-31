@@ -2914,5 +2914,6 @@
   "More filters": "Flere filtre",
   "Clear filters": "Ryd filtre",
   "No results match these filters.": "Ingen resultater matcher disse filtre.",
-  "Results: {value0}": "Resultater: {value0}"
+  "Results: {value0}": "Resultater: {value0}",
+  "Game text field": "Tekstfelt i spillet"
 }

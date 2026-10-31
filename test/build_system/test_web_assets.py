@@ -1,5 +1,6 @@
 """Browser data packages: what ships, where it goes, and how it is installed."""
 import ast
+import hashlib
 import json
 from pathlib import Path
 import subprocess
@@ -23,6 +24,21 @@ class WebAssetPlanTests(unittest.TestCase):
             for path in paths:
                 cls.owner.setdefault(path, name)
 
+    def test_standalone_launcher_has_exact_http_fonts_and_rebased_styles(self):
+        with tempfile.TemporaryDirectory() as folder:
+            output = Path(folder)
+            web_assets.launcher_script_fonts(ROOT, output)
+            css = (output / 'script-fonts.css').read_text()
+            self.assertNotIn('../../../data/', css)
+            manifest = json.loads((ROOT / 'data/fonts/scripts/manifest.json').read_text())
+            for font in manifest['fonts']:
+                name = font['name'] + '-Regular.ttf'
+                data = (output / 'fonts' / name).read_bytes()
+                self.assertEqual(hashlib.sha256(data).hexdigest(), font['sha256'])
+                self.assertIn('fonts/' + name, css)
+            self.assertEqual((output / 'fonts/LICENSE-Noto.txt').read_bytes(),
+                             (ROOT / 'data/fonts/LICENSE-Noto.txt').read_bytes())
+
     def test_skin_meshes_are_only_in_the_on_demand_package(self):
         meshes = list((ROOT / 'data/skins/colony-v1').glob('*.gsk'))
         manifest = json.loads((ROOT / 'data/skins/colony-v1/manifest.json').read_text())
@@ -38,9 +54,19 @@ class WebAssetPlanTests(unittest.TestCase):
 
     def test_build_files_and_documentation_are_not_shipped(self):
         for path in ('data/SConscript', 'data/check_translations.py', 'data/fonts/build_chinese_font.py',
-                     'data/fonts/README.md', 'campaigns/SConscript', 'data/screenshots/globulation2-gameplay.png'):
+                     'data/fonts/README.md', 'data/fonts/script-probes.json',
+                     'campaigns/SConscript', 'data/screenshots/globulation2-gameplay.png'):
             self.assertIn(path, self.skipped)
         self.assertFalse([p for p in self.owner if p.endswith(('SConscript', '.py', '.md'))])
+
+    def test_script_fonts_are_available_before_optional_downloads(self):
+        fonts = sorted((ROOT / 'data/fonts/scripts').glob('*.ttf'))
+        self.assertEqual(len(fonts), 13, 'All approved shaping fonts must ship')
+        for font in fonts:
+            path = font.relative_to(ROOT).as_posix()
+            self.assertEqual(self.owner.get(path), 'core', path)
+            self.assertNotIn(path, self.packages.get('font-cjk', []))
+            self.assertEqual(web_assets.contents(ROOT, 'core', path, {}), font.read_bytes())
 
     def test_only_current_tutorial_assets_ship(self):
         catalog = json.loads((ROOT / 'scripts/tutorials/catalog.json').read_text())

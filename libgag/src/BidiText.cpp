@@ -256,7 +256,7 @@ namespace GAGCore
 		}
 	}
 
-	std::string visualOrder(const std::string &logical)
+	static std::string bidiOrder(const std::string &logical, std::vector<LogicalBidiRun> *runs)
 	{
 		const std::vector<Char> source = decode(logical);
 		if (std::none_of(source.begin(), source.end(), [](Char c) {
@@ -264,13 +264,76 @@ namespace GAGCore
 			const BidiClass type = classOf(c);
 			return type == R || type == AL || type == AN || type == BN || c == 0x200E;
 		}))
+		{
+			if (runs && !logical.empty()) runs->push_back({logical, false});
 			return logical;
+		}
 
-		const std::vector<Char> text = shapeArabic(source);
+		const std::vector<Char> text = runs ? source : shapeArabic(source);
 		const size_t count = text.size();
 		std::vector<BidiClass> original(count), types(count);
 		for (size_t i = 0; i < count; ++i)
 			original[i] = types[i] = classOf(text[i]);
+		if (runs)
+		{
+			// ASCII technical tokens (URLs, IDs, parenthesized numbers) are
+			// authored left-to-right even when their final punctuation is neutral.
+			for (size_t i = 0; i < count;)
+			{
+				if (text[i] < 0x21 || text[i] > 0x7E) { ++i; continue; }
+				size_t end = i;
+				bool technical = false;
+				while (end < count && text[end] >= 0x21 && text[end] <= 0x7E)
+				{
+					technical |= (text[end] >= 'A' && text[end] <= 'Z') ||
+						(text[end] >= 'a' && text[end] <= 'z') || (text[end] >= '0' && text[end] <= '9');
+					++end;
+				}
+				if (technical)
+				{
+					// A token cut by whitespace must not force just one end of a
+					// bracket pair LTR: "(100 %)" otherwise gets two opening
+					// brackets after shaping. Complete ASCII pairs remain atomic
+					// with URLs; unmatched ends retain their neutral class for N0.
+					std::vector<size_t> opens;
+					for (size_t j = i; j < end; ++j)
+					{
+						const Char c = text[j];
+						if (c == '(' || c == '[' || c == '{' || c == '<')
+							opens.push_back(j);
+						else if (c == ')' || c == ']' || c == '}' || c == '>')
+						{
+							if (!opens.empty() && mirror(text[opens.back()]) == c)
+							{
+								types[opens.back()] = types[j] = L;
+								opens.pop_back();
+							}
+						}
+						else types[j] = L;
+					}
+				}
+				i = end;
+			}
+			// Keep ratios/dates as single LTR spans in
+			// an RTL interface, including neutral separators between digits.
+			for (size_t i = 0; i < count; ++i)
+			{
+				auto digit = [](Char c) { return (c >= '0' && c <= '9') ||
+					(c >= 0x0660 && c <= 0x0669) || (c >= 0x06F0 && c <= 0x06F9); };
+				if (digit(text[i]))
+				{
+					if (i && (text[i - 1] == '-' || text[i - 1] == '+' || text[i - 1] == 0x2212)) types[i - 1] = L;
+					size_t end = i + 1;
+					while (end < count && (digit(text[end]) ||
+					       text[end] == ' ' || text[end] == '/' || text[end] == ':' ||
+					       text[end] == '.' || text[end] == '-' || text[end] == '%' ||
+					       text[end] == 0x066B || text[end] == 0x066C)) ++end;
+					while (end > i + 1 && text[end - 1] == ' ') --end;
+					for (size_t j = i; j < end; ++j) types[j] = L;
+					i = end - 1;
+				}
+			}
+		}
 
 		// P2-P3: the first strong character sets the paragraph direction.
 		int base = 0;
@@ -474,6 +537,28 @@ namespace GAGCore
 			}
 
 		// Like fribidi, keep combining marks after their base in right-to-left runs.
+		if (runs)
+		{
+			std::vector<size_t> position(count);
+			for (size_t i = 0; i < count; ++i) position[order[i]] = i;
+			std::vector<std::pair<size_t, LogicalBidiRun>> result;
+			for (size_t start = 0; start < count;)
+			{
+				size_t end = start + 1, first = position[start];
+				while (end < count && levels[end] == levels[start])
+				{ first = std::min(first, position[end]); ++end; }
+				LogicalBidiRun run{"", bool(levels[start] & 1)};
+				for (size_t i = start; i < end; ++i)
+					if ((original[i] != BN || text[i] == 0x200C || text[i] == 0x200D) &&
+					    text[i] != 0x200E && text[i] != 0x200F && text[i] != 0x061C)
+						encode(text[i], run.text);
+				if (!run.text.empty()) result.push_back({first, std::move(run)});
+				start = end;
+			}
+			std::sort(result.begin(), result.end(), [](const auto &a, const auto &b) { return a.first < b.first; });
+			for (auto &item : result) runs->push_back(std::move(item.second));
+			return {};
+		}
 		for (size_t i = 0; i < count; ++i)
 		{
 			if (original[order[i]] != NSM || !(levels[order[i]] & 1))
@@ -492,5 +577,13 @@ namespace GAGCore
 			if (original[i] != BN && text[i] != 0x200E && text[i] != 0x200F && text[i] != 0x061C)
 				encode(visual[i], result);
 		return result;
+	}
+
+	std::string visualOrder(const std::string &logical) { return bidiOrder(logical, nullptr); }
+	std::vector<LogicalBidiRun> logicalBidiRuns(const std::string &logical)
+	{
+		std::vector<LogicalBidiRun> runs;
+		bidiOrder(logical, &runs);
+		return runs;
 	}
 }

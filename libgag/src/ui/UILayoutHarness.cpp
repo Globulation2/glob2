@@ -301,6 +301,57 @@ void checkText()
 	require(nextGlyph("é", 0) == 2 && previousGlyph("aé", 3) == 1, "utf8 stepping");
 }
 
+// Fixture boundaries are independent of the wrapping implementation. Actual
+// SDL_ttf/HarfBuzz cluster discovery is covered by the production font tests.
+void checkShapingClusterWrapping()
+{
+    struct ClusterFixture : FixedTextMeasurer
+    {
+        std::string cluster;
+        explicit ClusterFixture(std::string cluster) : cluster(std::move(cluster)) {}
+        std::vector<std::size_t> clusterEnds(FontRole role, const std::string &text) const override
+        {
+            if (text.rfind(cluster, 0) != 0) return FixedTextMeasurer::clusterEnds(role, text);
+            std::vector<std::size_t> ends{cluster.size()};
+            for (std::size_t at = cluster.size(); at < text.size();) {
+                at = nextGlyph(text, at);
+                ends.push_back(at);
+            }
+            return ends;
+        }
+    };
+    // Yoruba decomposed vowel with underdot+tone, Indic conjunct+matra,
+    // Myanmar stacked consonants, and Thai consonant+tone mark.
+    for (const std::string cluster : {"o\u0323\u0301", "क्षि", "က္က", "ก้"}) {
+        ClusterFixture shaped(cluster);
+        const auto source = cluster + "x";
+        const auto lines = wrapText(shaped, FontRole::Body, source, 8);
+        require(lines.size() == 2 && lines[0] == cluster && lines[1] == "x",
+                "oversized shaping cluster stays whole instead of losing its marks");
+        const auto block = layoutText(shaped, FontRole::Body, source, 8, 0);
+        require(block.width == shaped.width(FontRole::Body, cluster) && block.width > 8,
+                "layout exposes an oversized indivisible cluster instead of clamping evidence");
+        const int clusterAndEllipsis = shaped.width(FontRole::Body, cluster + "…");
+        require(ellipsize(shaped, FontRole::Body, cluster + "bc", clusterAndEllipsis) == cluster + "…",
+                "ellipsis removes complete shaping clusters");
+        require(ellipsize(shaped, FontRole::Body, cluster + "bc", 8) == "…",
+                "slot cannot keep part of an oversized shaping cluster");
+        const auto explicitLines = wrapText(shaped, FontRole::Body, cluster + "\nx", 800);
+        require(explicitLines.size() == 2 && explicitLines.front() == cluster,
+                "explicit newline keeps preceding cluster intact");
+    }
+    struct InvalidBoundaries : FixedTextMeasurer
+    {
+        std::vector<std::size_t> clusterEnds(FontRole, const std::string &) const override
+        { return {1}; } // Inside the first multibyte character in the fixture.
+    } invalid;
+    const auto invalidLines = wrapText(invalid, FontRole::Body, "éx", 8);
+    require(invalidLines.size() == 1 && invalidLines.front() == "éx",
+            "invalid segmentation is conservatively treated as one unsplittable run");
+    require(ellipsize(invalid, FontRole::Body, "éx", 8) == "…",
+            "invalid segmentation never leaves a partial UTF-8 character");
+}
+
 void checkColumnAndFlex()
 {
 	Fixture f(
@@ -979,6 +1030,7 @@ TEST_SUITE("UILayout")
 	}
 	TEST_CASE("geometry") { checkGeometry(); }
 	TEST_CASE("text") { checkText(); }
+	TEST_CASE("wrap and ellipsis preserve shaping clusters") { checkShapingClusterWrapping(); }
 	TEST_CASE("column and flex") { checkColumnAndFlex(); }
 	TEST_CASE("row cross align") { checkRowCrossAlign(); }
 	TEST_CASE("paragraph wraps with width") { checkParagraphWrapsWithWidth(); }

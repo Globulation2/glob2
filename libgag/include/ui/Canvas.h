@@ -82,6 +82,7 @@ class ToolkitTextMeasurer : public TextMeasurer
 	ToolkitTextMeasurer(const Theme &theme, bool touch, double textScale);
 	int width(FontRole role, const std::string &text) const override;
 	int lineHeight(FontRole role) const override;
+	std::vector<std::size_t> clusterEnds(FontRole role, const std::string &text) const override;
 	GAGCore::Font *font(FontRole role) const;
 	double scale() const { return textScale; }
 

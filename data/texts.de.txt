@@ -6359,421 +6359,421 @@ Deine Auswahl konnte nicht gespeichert werden. Der Ton bleibt aus. Bitte versuch
 [audio choices description]
 Stille: ein stummgeschalteter Lautsprecher. Ton: ein Lautsprecher mit Schallwellen.
 [intro menu]
-
+Einführung
 [intro briefing]
-
+Lerne die indirekte Steuerung: Erkunde mit einer Flagge, versorge deine Kolonie und leite einen Angriff.
 [intro try]
-
+Einführung starten
 [intro preflight]
-
+Deine Globules handeln selbstständig. Über Gebäude und Flaggen wählst du ihre Aufgaben. In dieser kurzen Einführung erkundest du einen Orientierungspunkt, baust die Versorgung aus, vergrößerst die Arbeiterschaft und leitest einen kleinen Angriff.
 [intro preflight save]
-
+Plane etwa 10 Minuten ein. Du kannst im Spielmenü speichern und über Spiel laden fortfahren. Die normalen Hunger- und Kampfregeln gelten. Wähle im Hauptmenü die Übungslektionen, um weitere Fähigkeiten zu üben.
 [intro preference failed]
-
+Deine Auswahl konnte nicht gespeichert werden. Du kannst weiterspielen; diese Empfehlung erscheint möglicherweise beim nächsten Mal erneut.
 [intro goal scout]
-
+Die Steinformation erkunden
 [intro goal build]
-
+Einen weiteren Gasthof bauen
 [intro goal supply]
-
+Den neuen Gasthof versorgen
 [intro goal grow]
-
+Die Arbeiterschaft vergrößern
 [intro goal attack]
-
+Den feindlichen Stock zerstören
 [intro instruction scout]
-
+Öffne die Flaggen und setze eine Entdeckerflagge auf die Steine östlich deiner Kolonie. Fordere einen Entdecker an. Beobachte seinen Weg zur Flagge.
 [intro instruction build]
-
+Öffne Bauen und platziere einen Gasthof nahe dem Weizen. Fordere verfügbare Arbeiter zum Bau an. Halte den bestehenden Gasthof versorgt.
 [intro instruction supply]
-
+Wähle den fertigen neuen Gasthof und fordere mindestens einen Versorger an. Warte, bis ein Arbeiter Weizen liefert.
 [intro instruction grow]
-
+Wähle den Stock. Stelle die angeforderte Arbeiterzahl auf mindestens 2 und die Produktionsverhältnisse auf ausschließlich Arbeiter. Versorge beide Gasthöfe, während ein neuer Arbeiter geboren wird.
 [intro instruction attack]
-
+Finde den feindlichen Stock weiter östlich. Lenke deine Krieger mit einer Kriegsflagge gegen ihn. Die Hilfe erklärt dir die nötigen Schritte.
 [intro help]
-
+Hilfe / warum?
 [intro help scout]
-
+Bewege die Ansicht mit der Minikarte nach Osten zu den Steinen. Wähle unter Flaggen die Entdeckerflagge, setze sie auf die Steine und beende das Platzieren mit der sekundären Maustaste. Wähle die Flagge und fordere 1 Entdecker an. Flaggen fordern Einheiten an; sie versetzen sie nicht sofort. Entdecker können zum Essen anhalten.
 [intro help build]
-
+Beim Bauen wird Holz verbraucht, das Arbeiter liefern. Wähle in der Gebäudepalette den Gasthof, setze ihn auf freies Gelände nahe dem Weizen und fordere 2 Bauarbeiter an. Die Sollzahl ist eine Anforderung, keine Zahl bereits anwesender Arbeiter. Lass Versorger am bestehenden Gasthof und am Stock. Jeder gültige Standort zählt.
 [intro help supply]
-
+Bau und laufende Versorgung haben getrennte Arbeiter-Sollzahlen. Wähle den fertigen Gasthof und erhöhe die Sollzahl für den Betrieb. Ein Versorger erntet Weizen und bringt es hierher. Hungrige Globules essen in Gasthöfen; ohne Versorger gehen deren Vorräte aus. Halte den Zugang zum Weizen frei.
 [intro help grow]
-
+Der Stock verbraucht Weizen zur Einheitenproduktion. Stelle die Arbeiterproduktion auf 1 und die Entdecker- und Kriegerproduktion auf 0. Fordere am Stock mindestens 2 Arbeiter an. Mehr Versorger liefern schneller, fehlen dann aber bei anderen Aufgaben. Versorge beide Gasthöfe.
 [intro help attack]
-
+Öffne Flaggen, wähle die Kriegsflagge und setze sie auf den feindlichen Stock östlich der Steine. Wähle die Flagge und fordere bis zu 4 Krieger an. Ein kleiner Radius hält sie zusammen. Beende das Platzieren vor der Auswahl mit der sekundären Maustaste. Wenn keine Krieger übrig sind, produziere neue am Stock. Krieger können zum Essen anhalten; versorge die Gasthöfe.
 [intro hint scout]
-
+Dein Entdecker braucht eine Entdeckerflagge mit Einheitenanforderung an den östlichen Steinen. Prüfe ihren Zielort und die angeforderte Entdeckerzahl.
 [intro hint build]
-
+Falls du den neuen Gasthof entfernt hast, baue einen weiteren. Prüfe sonst die Baustelle und ihre Arbeiter-Sollzahl. Bestehende Versorgungsaufgaben können Arbeiter binden; halte die Versorgung aufrecht und stelle Bauarbeiter frei.
 [intro hint supply]
-
+Wähle den fertigen neuen Gasthof. Prüfe seine Arbeiter-Sollzahl und beobachte die Weizenlieferungen. Arbeiter brauchen eventuell Zeit zum Laufen oder Essen.
 [intro hint grow]
-
+Prüfe die Versorgung des Stocks und die ausschließliche Arbeiterproduktion. Versorge die Gasthöfe, während du auf einen weiteren Arbeiter wartest.
 [intro hint attack]
-
+Prüfe die Kriegsflagge, die angeforderte Kriegerzahl und die Versorgung. Deine Krieger brauchen Zeit zum Laufen und Angreifen.
 [intro hint no scout flag]
-
+Keine Entdeckerflagge mit Einheitenanforderung gefunden. Setze eine auf die Steine östlich deiner Basis und fordere 1 Entdecker an.
 [intro hint no suppliers]
-
+Dein neuer Gasthof oder seine Baustelle hat die Arbeiter-Sollzahl 0. Wähle ihn und fordere Arbeiter an.
 [intro hint no war flag]
-
+Keine Kriegsflagge mit Einheitenanforderung an der feindlichen Basis gefunden. Setze eine auf den östlichen feindlichen Stock und fordere Krieger an.
 [intro hint retry]
-
+Eine für diese Lektion nötige Einheit oder ein Gebäude ging verloren. Lade einen älteren Spielstand oder starte die Lektion im Spielmenü neu.
 [intro complete]
-
+Einführung abgeschlossen
 [intro complete body]
-
+Du hast selbstständige Globules gelenkt, Versorgung und Kolonie ausgebaut und einen Angriff organisiert. Übe in weiteren Lektionen Ausbildung, Ausbau und Verteidigung oder starte im Hauptmenü eine Partie.
 [intro play again]
-
+Erneut spielen
 [intro restart]
-
+Einführung neu starten
 [intro restart body]
-
+Bei der vorbereiteten Kolonie neu beginnen? Ungespeicherter Fortschritt dieser Einführung geht verloren.
 [intro help touch scout]
-
+Ziehe vor dem Setzen einer Flagge über freies Gelände, um die Ansicht zu bewegen. Finde die Steine östlich der Kolonie. Öffne Flaggen, wähle die Entdeckerflagge, setze sie auf die Steine und bestätige. Wähle die Flagge und fordere mit ihrer Einheiten-Sollzahl 1 Entdecker an. Globules laufen selbstständig und können zum Essen anhalten.
 [intro help touch build]
-
+Wähle unter Bauen den Gasthof. Setze ihn auf freies Gelände nahe dem Weizen und bestätige. Wähle die Baustelle und fordere 2 Bauarbeiter an. Die Sollzahl zählt nicht bereits anwesende Arbeiter. Versorge den bestehenden Gasthof und den Stock. Jeder gültige Standort zählt.
 [intro help touch supply]
-
+Wähle den fertigen neuen Gasthof und erhöhe seine Arbeiter-Sollzahl. Bau und Versorgung haben getrennte Sollzahlen. Ein Versorger erntet Weizen und bringt es hierher. Hungrige Globules essen in Gasthöfen; ohne Versorger gehen die Vorräte aus. Halte den Weizen zugänglich.
 [intro help touch grow]
-
+Wähle den Stock. Stelle Arbeiterproduktion auf 1 und Entdecker- und Kriegerproduktion auf 0. Fordere mindestens 2 Arbeiter an. Versorger bringen Weizen für neue Einheiten, fehlen dann aber bei anderen Aufgaben. Versorge beide Gasthöfe.
 [intro help touch attack]
-
+Öffne Flaggen, wähle die Kriegsflagge, setze sie auf den feindlichen Stock östlich der Steine und bestätige. Wähle die Flagge und fordere bis zu 4 Krieger an. Ein kleiner Radius hält sie zusammen. Falls keine übrig sind, produziere welche am Stock. Krieger können zum Essen anhalten; versorge die Gasthöfe.
 [intro show destination]
-
+Ziel anzeigen
 [intro scout destination]
-
+Hier erkunden
 [intro attack destination]
-
+Hier angreifen
 [intro compact scout]
-
+Flaggen → Entdeckerflagge. Auf die Steine setzen; 1 Entdecker anfordern.
 [intro compact build]
-
+Bauen → Gasthof. Nahe dem Weizen platzieren; 2 Bauarbeiter anfordern.
 [intro compact supply]
-
+Neuen Gasthof wählen; mindestens 1 Versorger anfordern. Auf Weizen warten.
 [intro compact grow]
-
+Stock wählen; 2 Versorger anfordern. Nur Arbeiter produzieren.
 [intro compact attack]
-
+Flaggen → Kriegsflagge. Auf den feindlichen Stock setzen; Krieger anfordern.
 [tutorial lessons]
-
+Übungslektionen
 [tutorial restart]
-
+Lektion neu starten
 [tutorial restart body]
-
+Diese Lektion bei ihrer vorbereiteten Kolonie neu beginnen? Ungespeicherter Fortschritt geht verloren.
 [tutorial complete]
-
+Lektion abgeschlossen
 [tutorial food title]
-
+Nahrungsversorgung üben
 [tutorial food briefing]
-
+Übe den Versorgungsausbau: Baue einen weiteren Gasthof, fordere Versorger an und beobachte die Weizenlieferungen.
 [tutorial food complete]
-
+Du hast einen Gasthof gebaut und mit Weizen versorgt. Versuche eine weitere Lektion oder kehre zum Hauptmenü zurück.
 [tutorial unavailable]
-
+Die Übungslektionen konnten nicht geladen werden.
 [lesson healing title]
-
+Krankenhäuser und Heilung
 [lesson healing briefing]
-
+Baue ein Krankenhaus und hilf einem verletzten Arbeiter bei der Genesung. Die Kolonie beginnt satt und mit einem verletzten Arbeiter.
 [lesson healing complete]
-
+Dein Krankenhaus hat einen verletzten Globule geheilt. Versorge die Gasthöfe: Hunger kann Einheiten erneut verletzen.
 [lesson healing build hint]
-
+Baue ein Krankenhaus auf freiem Gelände; fordere 2 Bauarbeiter an. Lass Platz zum Betreten und Verlassen. Krankenhäuser heilen Verletzungen; Gasthöfe liefern Nahrung. Dieser Patient ist bereits satt.
 [lesson healing build title]
-
+Ein Krankenhaus bauen
 [lesson healing build instruction]
-
+Baue ein Krankenhaus auf freiem Gelände; fordere 2 Bauarbeiter an.
 [lesson healing build help]
-
+Lass Platz zum Betreten und Verlassen. Krankenhäuser heilen Verletzungen; Gasthöfe liefern Nahrung. Dieser Patient ist bereits satt.
 [lesson healing build marker]
-
+Ein Krankenhaus bauen
 [lesson healing heal hint]
-
+Halte das Krankenhaus zugänglich. Beobachte die Genesung des verletzten Arbeiters. Globules suchen selbstständig Heilung. Verfolge den verletzten Arbeiter, keine neu geborene Einheit. Wenn er stirbt, starte neu oder lade einen Spielstand.
 [lesson healing heal title]
-
+Den Patienten genesen lassen
 [lesson healing heal instruction]
-
+Halte das Krankenhaus zugänglich. Beobachte die Genesung des verletzten Arbeiters.
 [lesson healing heal help]
-
+Globules suchen selbstständig Heilung. Verfolge den verletzten Arbeiter, keine neu geborene Einheit. Wenn er stirbt, starte neu oder lade einen Spielstand.
 [lesson healing heal marker]
-
+Den Patienten genesen lassen
 [lesson walking-training title]
-
+Lauftraining
 [lesson walking-training briefing]
-
+Baue eine Rennbahn und beobachte, wie ein vorhandener Arbeiter schneller laufen lernt.
 [lesson walking-training complete]
-
+Deine Arbeiter haben schnelleres Laufen gelernt. Ausbildung verbessert vorhandene Arbeiter; sie ersetzt nicht die Nahrungsversorgung.
 [lesson walking-training build hint]
-
+Baue eine Rennbahn auf der markierten Lichtung; fordere Bauarbeiter an. Eine Rennbahn braucht Holz und Stein. Lass an den Rändern Platz für Zugang, Ausgang und späteren Ausbau.
 [lesson walking-training build title]
-
+Eine Rennbahn bauen
 [lesson walking-training build instruction]
-
+Baue eine Rennbahn auf der markierten Lichtung; fordere Bauarbeiter an.
 [lesson walking-training build help]
-
+Eine Rennbahn braucht Holz und Stein. Lass an den Rändern Platz für Zugang, Ausgang und späteren Ausbau.
 [lesson walking-training build marker]
-
+Eine Rennbahn bauen
 [lesson walking-training train hint]
-
+Halte die Rennbahn zugänglich und lass einen Arbeiter seine Ausbildung abschließen. Geeignete Globules trainieren automatisch. Halte einige Arbeiter von Versorgungsaufgaben frei und beide Gasthöfe versorgt.
 [lesson walking-training train title]
-
+Einen vorhandenen Arbeiter ausbilden
 [lesson walking-training train instruction]
-
+Halte die Rennbahn zugänglich und lass einen Arbeiter seine Ausbildung abschließen.
 [lesson walking-training train help]
-
+Geeignete Globules trainieren automatisch. Halte einige Arbeiter von Versorgungsaufgaben frei und beide Gasthöfe versorgt.
 [lesson swimming title]
-
+Schwimmen und Wasserressourcen
 [lesson swimming briefing]
-
+Bilde Schwimmer aus und baue dann mit Algen aus dem Teich eine Schule.
 [lesson swimming complete]
-
+Ein Schwimmer hat Wasserressourcen für deine Schule geliefert. Wasserzugang erweitert die möglichen Aufgaben deiner Kolonie.
 [lesson swimming build hint]
-
+Baue ein Schwimmbecken westlich des Teichs; fordere Bauarbeiter an. Lass Platz um das Becken. Ein Arbeiter kann erst nach der Schwimmausbildung Algen im tiefen Wasser sammeln.
 [lesson swimming build title]
-
+Ein Schwimmbecken bauen
 [lesson swimming build instruction]
-
+Baue ein Schwimmbecken westlich des Teichs; fordere Bauarbeiter an.
 [lesson swimming build help]
-
+Lass Platz um das Becken. Ein Arbeiter kann erst nach der Schwimmausbildung Algen im tiefen Wasser sammeln.
 [lesson swimming build marker]
-
+Ein Schwimmbecken bauen
 [lesson swimming train hint]
-
+Lass einen vorhandenen Arbeiter seine Schwimmausbildung abschließen. Einheiten wählen ihre Ausbildung automatisch. Halte die Versorgung aufrecht und lass freie Arbeiter zum Becken gelangen.
 [lesson swimming train title]
-
+Einen Schwimmer ausbilden
 [lesson swimming train instruction]
-
+Lass einen vorhandenen Arbeiter seine Schwimmausbildung abschließen.
 [lesson swimming train help]
-
+Einheiten wählen ihre Ausbildung automatisch. Halte die Versorgung aufrecht und lass freie Arbeiter zum Becken gelangen.
 [lesson swimming water-job hint]
-
+Baue eine Schule nahe der Kolonie; fordere Bauarbeiter zum Holen von Holz und Algen an. Die Algen wachsen im Teich. Ein ausgebildeter Schwimmer muss sie im Wasser sammeln. Baue die Schule auf offenem Gelände mit Zugang für Versorger.
 [lesson swimming water-job title]
-
+Algen aus dem Teich nutzen
 [lesson swimming water-job instruction]
-
+Baue eine Schule nahe der Kolonie; fordere Bauarbeiter zum Holen von Holz und Algen an.
 [lesson swimming water-job help]
-
+Die Algen wachsen im Teich. Ein ausgebildeter Schwimmer muss sie im Wasser sammeln. Baue die Schule auf offenem Gelände mit Zugang für Versorger.
 [lesson swimming water-job marker]
-
+Algen aus dem Teich nutzen
 [lesson schools title]
-
+Schulen und Arbeiterfähigkeiten
 [lesson schools briefing]
-
+Nutze die vorbereiteten Schwimmer zum Schulbau und beobachte dann, wie Arbeiter Bauen und Ernten lernen.
 [lesson schools complete]
-
+Deine Schule hat die Arbeiterfähigkeiten verbessert. Geschulte Bauarbeiter ermöglichen Ausbauten; bessere Ernte hilft einer wachsenden Wirtschaft.
 [lesson schools build hint]
-
+Baue eine Schule auf der Lichtung; fordere Bauarbeiter an. Die Kolonie hat bereits Schwimmer für die Algen. Halte Holz und Wasser zugänglich. Obstbäume liefern Prestigeressourcen; Nahrung kommt weiterhin aus Weizen.
 [lesson schools build title]
-
+Eine Schule bauen
 [lesson schools build instruction]
-
+Baue eine Schule auf der Lichtung; fordere Bauarbeiter an.
 [lesson schools build help]
-
+Die Kolonie hat bereits Schwimmer für die Algen. Halte Holz und Wasser zugänglich. Obstbäume liefern Prestigeressourcen; Nahrung kommt weiterhin aus Weizen.
 [lesson schools build marker]
-
+Eine Schule bauen
 [lesson schools learn hint]
-
+Lass einen vorhandenen Arbeiter seine Schulausbildung abschließen. Die Schule lehrt Bauen und Ernten gemeinsam. Halte Arbeiter verfügbar; eine Baustelle allein bildet niemanden aus.
 [lesson schools learn title]
-
+Bauen und Ernten lehren
 [lesson schools learn instruction]
-
+Lass einen vorhandenen Arbeiter seine Schulausbildung abschließen.
 [lesson schools learn help]
-
+Die Schule lehrt Bauen und Ernten gemeinsam. Halte Arbeiter verfügbar; eine Baustelle allein bildet niemanden aus.
 [lesson upgrades title]
-
+Gebäude ausbauen
 [lesson upgrades briefing]
-
+Nutze die vorbereiteten geschulten Arbeiter, um eine Rennbahn auszubauen und über die erste Stufe hinaus zu trainieren.
 [lesson upgrades complete]
-
+Du hast ein Gebäude ausgebaut und seine bessere Ausbildung genutzt. Weitere Ausbauten wiederholen den Kreislauf mit besseren Schulen, Fähigkeiten, Materialien und mehr Platz bis Stufe 3.
 [lesson upgrades upgrade hint]
-
+Wähle die Rennbahn, wähle Verbessern und fordere geschulte Bauarbeiter an. Diese Arbeiter haben bereits die Schulfähigkeiten der ersten Stufe gelernt. Ausbauten brauchen zusätzlichen Platz und Material und unterbrechen den Gebäudebetrieb. Abgebrochene Ausbauten zählen nicht.
 [lesson upgrades upgrade title]
-
+Die Rennbahn ausbauen
 [lesson upgrades upgrade instruction]
-
+Wähle die Rennbahn, wähle Verbessern und fordere geschulte Bauarbeiter an.
 [lesson upgrades upgrade help]
-
+Diese Arbeiter haben bereits die Schulfähigkeiten der ersten Stufe gelernt. Ausbauten brauchen zusätzlichen Platz und Material und unterbrechen den Gebäudebetrieb. Abgebrochene Ausbauten zählen nicht.
 [lesson upgrades upgrade marker]
-
+Die Rennbahn ausbauen
 [lesson upgrades train hint]
-
+Lass einen vorhandenen Arbeiter auf der ausgebauten Rennbahn schnelleres Laufen lernen. Ein abgeschlossener Ausbau verbessert die verfügbare Ausbildung. Höhere Gebäudestufen verlangen bessere Baufähigkeiten; die angezeigte Stufe beginnt bei 1.
 [lesson upgrades train title]
-
+Die verbesserte Ausbildung nutzen
 [lesson upgrades train instruction]
-
+Lass einen vorhandenen Arbeiter auf der ausgebauten Rennbahn schnelleres Laufen lernen.
 [lesson upgrades train help]
-
+Ein abgeschlossener Ausbau verbessert die verfügbare Ausbildung. Höhere Gebäudestufen verlangen bessere Baufähigkeiten; die angezeigte Stufe beginnt bei 1.
 [lesson warrior-training title]
-
+Krieger produzieren und ausbilden
 [lesson warrior-training briefing]
-
+Produziere Krieger am Stock und bilde sie dann im Trainingslager aus.
 [lesson warrior-training complete]
-
+Du hast Militärproduktion gesteuert und Krieger ausgebildet. Halte ihre Versorgung aufrecht; Kampfeinheiten müssen ebenfalls essen.
 [lesson warrior-training produce hint]
-
+Stelle den Stock auf ausschließlich Krieger; fordere Versorger an und warte auf 2 Krieger. Stelle Arbeiter- und Entdeckerverhältnis auf 0, Kriegerverhältnis auf 1. Der Stock verbraucht Weizen für Geburten. Verhältnisse bestimmen die Einheitentypen; Versorger ermöglichen die Produktion.
 [lesson warrior-training produce title]
-
+Zwei Krieger produzieren
 [lesson warrior-training produce instruction]
-
+Stelle den Stock auf ausschließlich Krieger; fordere Versorger an und warte auf 2 Krieger.
 [lesson warrior-training produce help]
-
+Stelle Arbeiter- und Entdeckerverhältnis auf 0, Kriegerverhältnis auf 1. Der Stock verbraucht Weizen für Geburten. Verhältnisse bestimmen die Einheitentypen; Versorger ermöglichen die Produktion.
 [lesson warrior-training produce marker]
-
+Zwei Krieger produzieren
 [lesson warrior-training build hint]
-
+Baue ein Trainingslager auf der Lichtung; fordere Bauarbeiter an. Stoppe oder reduziere die Kriegerproduktion, sobald du genug hast. Trainingslager lehren Kampffähigkeiten und brauchen freien Platz am Rand.
 [lesson warrior-training build title]
-
+Ein Trainingslager bauen
 [lesson warrior-training build instruction]
-
+Baue ein Trainingslager auf der Lichtung; fordere Bauarbeiter an.
 [lesson warrior-training build help]
-
+Stoppe oder reduziere die Kriegerproduktion, sobald du genug hast. Trainingslager lehren Kampffähigkeiten und brauchen freien Platz am Rand.
 [lesson warrior-training build marker]
-
+Ein Trainingslager bauen
 [lesson warrior-training train hint]
-
+Lass einen Krieger eine Übung im Trainingslager abschließen. Krieger suchen automatisch Ausbildung. Versorge die Gasthöfe und halte das Lager zugänglich. Der Bau allein ist noch keine abgeschlossene Ausbildung.
 [lesson warrior-training train title]
-
+Deine Krieger ausbilden
 [lesson warrior-training train instruction]
-
+Lass einen Krieger eine Übung im Trainingslager abschließen.
 [lesson warrior-training train help]
-
+Krieger suchen automatisch Ausbildung. Versorge die Gasthöfe und halte das Lager zugänglich. Der Bau allein ist noch keine abgeschlossene Ausbildung.
 [lesson fortifications title]
-
+Türme und Schutzmauern
 [lesson fortifications briefing]
-
+Baue einen versorgten Turm und Schutzmauern und erprobe sie gegen einen kleinen Angriff.
 [lesson fortifications complete]
-
+Deine versorgte Verteidigung hat den Übungsangriff gestoppt. Türme brauchen Stein und Mauern brauchen Lücken, damit Versorger hindurchkommen.
 [lesson fortifications tower hint]
-
+Baue einen Turm im markierten Bereich; fordere Bauarbeiter an. Platziere ihn nahe den Steinen und lass Versorgerzugang frei. Vor Abschluss der Vorbereitungsziele beginnt kein Angriff.
 [lesson fortifications tower title]
-
+Einen Wachturm bauen
 [lesson fortifications tower instruction]
-
+Baue einen Turm im markierten Bereich; fordere Bauarbeiter an.
 [lesson fortifications tower help]
-
+Platziere ihn nahe den Steinen und lass Versorgerzugang frei. Vor Abschluss der Vorbereitungsziele beginnt kein Angriff.
 [lesson fortifications tower marker]
-
+Einen Wachturm bauen
 [lesson fortifications walls hint]
-
+Baue mindestens 2 Mauerstücke nahe dem Turm; halte seinen westlichen Zugangsweg offen. Mauern brauchen Stein und jede Baustelle fordert Arbeiter an. Schließe den Turm nicht ein: Versorger brauchen einen Weg. Die markierte Westgasse muss frei bleiben.
 [lesson fortifications walls title]
-
+Den Turm mit Mauern schützen
 [lesson fortifications walls instruction]
-
+Baue mindestens 2 Mauerstücke nahe dem Turm; halte seinen westlichen Zugangsweg offen.
 [lesson fortifications walls help]
-
+Mauern brauchen Stein und jede Baustelle fordert Arbeiter an. Schließe den Turm nicht ein: Versorger brauchen einen Weg. Die markierte Westgasse muss frei bleiben.
 [lesson fortifications walls marker]
-
+Den Turm mit Mauern schützen
 [lesson fortifications supply hint]
-
+Wähle den Turm und fordere Versorger an. Warte auf mindestens 2 Stein. Ein fertiger Turm braucht eine Arbeiter-Sollzahl für den Betrieb, damit Munition geliefert wird. Sie ist von der Bausollzahl getrennt.
 [lesson fortifications supply title]
-
+Munition liefern
 [lesson fortifications supply instruction]
-
+Wähle den Turm und fordere Versorger an. Warte auf mindestens 2 Stein.
 [lesson fortifications supply help]
-
+Ein fertiger Turm braucht eine Arbeiter-Sollzahl für den Betrieb, damit Munition geliefert wird. Sie ist von der Bausollzahl getrennt.
 [lesson fortifications supply marker]
-
+Munition liefern
 [lesson fortifications hold hint]
-
+Ein Übungskrieger nähert sich. Halte den Turm versorgt und zugänglich. Halte durch, bis der Angreifer besiegt oder vertrieben ist. Eine Mauer, die Versorger blockiert, kann den Turm von Munition abschneiden. Scheitert die Kolonie, starte neu oder lade einen älteren Spielstand.
 [lesson fortifications hold title]
-
+Die Befestigungen testen
 [lesson fortifications hold instruction]
-
+Ein Übungskrieger nähert sich. Halte den Turm versorgt und zugänglich.
 [lesson fortifications hold help]
-
+Halte durch, bis der Angreifer besiegt oder vertrieben ist. Eine Mauer, die Versorger blockiert, kann den Turm von Munition abschneiden. Scheitert die Kolonie, starte neu oder lade einen älteren Spielstand.
 [lesson fortifications hold marker]
-
+Die Befestigungen testen
 [lesson defensive-tactics title]
-
+Wachzonen und Flaggentaktik
 [lesson defensive-tactics briefing]
-
+Erkunde den Übungsgegner, richte eine Wachzone ein, verteidige sie und organisiere einen Gegenangriff.
 [lesson defensive-tactics complete]
-
+Du hast erkundet, eine Wachzone verteidigt und einen Gegenangriff geleitet. Die Sollzahlen der Flaggen fordern Einheiten an; der Radius bestimmt ihr Arbeitsgebiet.
 [lesson defensive-tactics scout hint]
-
+Setze eine Entdeckerflagge an die feindliche Basis; fordere 1 Entdecker an. Flaggen fordern automatisch Einheiten an. Ein Entdecker zeigt aktuelle Vorgänge im Kriegsnebel; er kann zum Essen anhalten.
 [lesson defensive-tactics scout title]
-
+Die feindliche Basis erkunden
 [lesson defensive-tactics scout instruction]
-
+Setze eine Entdeckerflagge an die feindliche Basis; fordere 1 Entdecker an.
 [lesson defensive-tactics scout help]
-
+Flaggen fordern automatisch Einheiten an. Ein Entdecker zeigt aktuelle Vorgänge im Kriegsnebel; er kann zum Essen anhalten.
 [lesson defensive-tactics scout marker]
-
+Die feindliche Basis erkunden
 [lesson defensive-tactics guard hint]
-
+Male eine Wachzone im markierten Bereich und lass 2 Krieger dorthin gelangen. Öffne Flaggen, wähle Wache und male mindestens 4 Felder im Bereich. Wachzonen ziehen untätige Krieger an. Sperrzonen verhindern Durchgang; Rodungszonen fordern Ressourcenentfernung an.
 [lesson defensive-tactics guard title]
-
+Eine Wachzone vorbereiten
 [lesson defensive-tactics guard instruction]
-
+Male eine Wachzone im markierten Bereich und lass 2 Krieger dorthin gelangen.
 [lesson defensive-tactics guard help]
-
+Öffne Flaggen, wähle Wache und male mindestens 4 Felder im Bereich. Wachzonen ziehen untätige Krieger an. Sperrzonen verhindern Durchgang; Rodungszonen fordern Ressourcenentfernung an.
 [lesson defensive-tactics guard marker]
-
+Eine Wachzone vorbereiten
 [lesson defensive-tactics repel hint]
-
+Der Feind greift an. Halte Krieger in der Wachzone und die Gasthöfe versorgt. Der kleine Angriff beginnt nach deinen Vorbereitungen. Besiege oder vertreibe beide Angreifer; verletzte Feinde können fliehen. Krieger können vorübergehend zum Essen gehen. Scheitert die Verteidigung, lade einen älteren Spielstand oder starte neu.
 [lesson defensive-tactics repel title]
-
+Den Übungsangriff abwehren
 [lesson defensive-tactics repel instruction]
-
+Der Feind greift an. Halte Krieger in der Wachzone und die Gasthöfe versorgt.
 [lesson defensive-tactics repel help]
-
+Der kleine Angriff beginnt nach deinen Vorbereitungen. Besiege oder vertreibe beide Angreifer; verletzte Feinde können fliehen. Krieger können vorübergehend zum Essen gehen. Scheitert die Verteidigung, lade einen älteren Spielstand oder starte neu.
 [lesson defensive-tactics repel marker]
-
+Den Übungsangriff abwehren
 [lesson defensive-tactics counterattack hint]
-
+Setze eine Kriegsflagge auf den feindlichen Stock; fordere 3 Krieger an und wähle Radius 4 oder kleiner. Wachzonen und Kriegsflaggen konkurrieren um Krieger. Entferne Wachfelder, wenn sie deine Armee zurückhalten. Halte Nahrung verfügbar, während Krieger laufen und angreifen.
 [lesson defensive-tactics counterattack title]
-
+Einen gezielten Gegenangriff leiten
 [lesson defensive-tactics counterattack instruction]
-
+Setze eine Kriegsflagge auf den feindlichen Stock; fordere 3 Krieger an und wähle Radius 4 oder kleiner.
 [lesson defensive-tactics counterattack help]
-
+Wachzonen und Kriegsflaggen konkurrieren um Krieger. Entferne Wachfelder, wenn sie deine Armee zurückhalten. Halte Nahrung verfügbar, während Krieger laufen und angreifen.
 [lesson defensive-tactics counterattack marker]
-
+Einen gezielten Gegenangriff leiten
 [lesson healing build compact]
-
+Bauen → Krankenhaus. Zugang freilassen; Bauarbeiter anfordern.
 [lesson healing heal compact]
-
+Lass den verletzten Arbeiter im Krankenhaus heilen.
 [lesson walking-training build compact]
-
+Bauen → Rennbahn. Platz am Rand freilassen.
 [lesson walking-training train compact]
-
+Lass einen Arbeiter das Rennbahntraining abschließen.
 [lesson swimming build compact]
-
+Bauen → Schwimmbecken, westlich des Teichs.
 [lesson swimming train compact]
-
+Lass einen Arbeiter schwimmen lernen.
 [lesson swimming water-job compact]
-
+Bauen → Schule. Bauarbeiter für Holz und Algen anfordern.
 [lesson schools build compact]
-
+Bauen → Schule. Bauarbeiter für Holz und Algen anfordern.
 [lesson schools learn compact]
-
+Lass einen Arbeiter die Schulausbildung abschließen.
 [lesson upgrades upgrade compact]
-
+Rennbahn → Verbessern. Geschulte Bauarbeiter anfordern.
 [lesson upgrades train compact]
-
+Lass einen Arbeiter auf der ausgebauten Rennbahn trainieren.
 [lesson warrior-training produce compact]
-
+Stock → nur Krieger. Weizen für 2 Krieger liefern.
 [lesson warrior-training build compact]
-
+Bauen → Trainingslager. Platz am Rand freilassen.
 [lesson warrior-training train compact]
-
+Lass einen Krieger die Lagerausbildung abschließen.
 [lesson fortifications tower compact]
-
+Bauen → Turm. Im markierten Bereich platzieren.
 [lesson fortifications walls compact]
-
+Baue 2 Mauern. Halte die Westgasse des Turms offen.
 [lesson fortifications supply compact]
-
+Turm → Versorger. Auf 2 Stein warten.
 [lesson fortifications hold compact]
-
+Halte den Turm gegen den Angreifer versorgt.
 [lesson defensive-tactics scout compact]
-
+Flaggen → Erkunden. Beim Feind setzen; 1 Entdecker anfordern.
 [lesson defensive-tactics guard compact]
-
+Flaggen → Wache. 4 Felder malen; 2 Krieger ankommen lassen.
 [lesson defensive-tactics repel compact]
-
+Halte die Wachzone. Versorge die Gasthöfe.
 [lesson defensive-tactics counterattack compact]
-
+Kriegsflagge → feindlicher Stock. 3 Krieger anfordern; Radius ≤4.
 [library GL only]
 Nur GL
 [Grassland]
@@ -6785,6 +6785,6 @@ Wildwechsel
 [Fish amount]
 Fischmenge
 [scenario messages]
-
+Nachrichten ▸
 [Camp-site amount]
 Anzahl der Lagerplätze

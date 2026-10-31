@@ -38,6 +38,16 @@ clearing orders. Missing reachable starts, stationary steps and repeated tiles
 reject the attempt without activating a partial dig. Valid routes retain the
 existing neighbor preference and clearing-flag spacing.
 
+Econo and Nicowar share the farming scan in
+`src/ai/shared_runtime/Farming.cpp`, running every 250 ticks. It protects seed
+resources on a checkerboard and temporarily protects edge donors to expand fields.
+Wood is reserved within six water-gradient steps and wheat within ten. Spreading
+wood beside wheat (including diagonals) or in the outer wheat band is cleared;
+obsolete clearing paint is released unless needed beside a friendly building.
+The farm-areas experiment uses farm paint for eligible wheat and forbidden paint
+for wood. Resource growth disabled skips the scan. These rules add clearance work
+and temporarily reserve harvestable resources to support future growth.
+
 Respect rules that disable training or building upgrades and release obsolete
 worker assignments where appropriate.
 

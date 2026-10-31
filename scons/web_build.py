@@ -150,7 +150,8 @@ def _build_variant(directory, identity, arguments, threaded=False, packaged=None
     else:
         assets, asset_manifest, asset_root = packaged
     env.Append(LINKFLAGS=['--pre-js', str(asset_manifest), '--pre-js', 'browser/asset-loader.js'])
-    env.Append(LIBPATH=[str(sdl_prefix / 'lib')], LIBS=['SDL3_ttf', 'SDL3_image', 'SDL3_net', 'SDL3', 'freetype', 'webpdemux', 'webpmux', 'webp', 'sharpyuv'])
+    # SDL_ttf's static archive requires HarfBuzz; HarfBuzz in turn uses FreeType.
+    env.Append(LIBPATH=[str(sdl_prefix / 'lib')], LIBS=['SDL3_ttf', 'SDL3_image', 'SDL3_net', 'SDL3', 'harfbuzz', 'freetype', 'webpdemux', 'webpmux', 'webp', 'sharpyuv'])
     env.Append(LIBS=[env.File(str(opus_prefix / 'lib' / ('lib' + name + '.a'))) for name in OPUS_LIBRARIES])
     env['LINKCOM'] = '${TEMPFILE("$LINK -o $TARGET $LINKFLAGS $__RPATH $SOURCES $_LIBDIRFLAGS $_LIBFLAGS", "$LINKCOMSTR")}'
     def prepare_ports(target, source, env):
@@ -381,7 +382,22 @@ def build_web(directory, identity, arguments):
     presentation_surface = env.Install(directory, 'browser/presentation-surface.js')
     localization = env.Install(directory, 'browser/i18n.js')
     localization += env.Install(str(Path(directory) / 'locales'), [str(path) for path in sorted(Path('platform/packages/i18n/locales').glob('*.json'))])
-    env.Depends(page, [loader, presentation_surface, localization])
+    # The pre-Wasm HTML launcher cannot use fonts inside Emscripten's VFS.
+    # Keep its same-origin, lazy HTTP font faces available on standalone hosts.
+    script_font_manifest = json.loads(Path('data/fonts/scripts/manifest.json').read_text())
+    script_font_files = ['data/fonts/scripts/' + font['name'] + '-Regular.ttf'
+                         for font in script_font_manifest['fonts']]
+    script_font_targets = [str(Path(directory) / 'script-fonts.css'),
+                           str(Path(directory) / 'fonts/LICENSE-Noto.txt')] + [
+        str(Path(directory) / 'fonts' / Path(name).name) for name in script_font_files]
+    def launcher_fonts(target, source, env):
+        web_assets.launcher_script_fonts(Path.cwd(), directory)
+        return 0
+    script_fonts = env.Command(script_font_targets,
+        ['platform/packages/i18n/script-fonts.css', 'data/fonts/scripts/manifest.json',
+         'data/fonts/LICENSE-Noto.txt', 'scons/web_assets.py'] + script_font_files,
+        Action(launcher_fonts, 'Packaging launcher script fonts'))
+    env.Depends(page, [loader, presentation_surface, localization, script_fonts])
     env.Alias('web-package', [page, loader, presentation_surface])
     if threaded: env.Alias('web-threaded', threaded)
     if serial: env.Alias('web-serial', serial)

@@ -533,6 +533,7 @@ PROGRAMS = [
     ('MapReportHarness', '#src/map/tools/MapReportHarness.cpp', 'map-report-test', 'test'),
     ('MaximaStrategyDump', '#src/ai/maxima/MaximaStrategyDump.cpp', 'maxima-strategy-dump', 'tools'),
     ('MenuColonyHarness', '#tools/MenuColonyHarness.cpp', 'menu-colony-harness', 'test'),
+    ('TranslationPreviewHarness', '#tools/TranslationPreviewHarness.cpp', 'translation-preview-harness', 'tools'),
     ('AssetLoadingBenchmark', '#tools/AssetLoadingBenchmark.cpp', 'asset-loading-benchmark', 'tools'),
     ('SoftwareRenderBenchmark', '#src/render/SoftwareRenderBenchmark.cpp', 'software-render-benchmark', 'tools'),
     ('torus-render-benchmark', '#src/render/torus/TorusRenderBenchmark.cpp', 'torus-render-benchmark', 'tools'),

@@ -12,11 +12,13 @@
 #include <iostream>
 #include <utility>
 #include <AssetLoader.h>
+#include <StringTable.h>
+#include <BidiText.h>
+#include <limits>
+#include <tuple>
 
 #ifdef HAVE_FRIBIDI
 #include <fribidi/fribidi.h>
-#else
-#include <BidiText.h>
 #endif
 
 #define MAX_CACHE_SIZE 128
@@ -25,21 +27,71 @@ namespace GAGCore
 {
 namespace
 {
+struct Codepoint { Uint32 value; std::string bytes; };
+std::vector<Codepoint> codepoints(const std::string &text)
+{
+	std::vector<Codepoint> result;
+	for (size_t i = 0; i < text.size();)
+	{
+		const auto c = static_cast<unsigned char>(text[i]);
+		size_t length = c < 0x80 ? 1 : c < 0xE0 ? 2 : c < 0xF0 ? 3 : 4;
+		if (i + length > text.size()) length = 1;
+		Uint32 value = length == 1 ? c : c & (0x7F >> length);
+		for (size_t k = 1; k < length; ++k)
+			value = (value << 6) | (static_cast<unsigned char>(text[i + k]) & 0x3F);
+		result.push_back({value, text.substr(i, length)});
+		i += length;
+	}
+	return result;
+}
+
+std::string scriptFor(Uint32 c)
+{
+	if (c >= 0x0900 && c <= 0x097F) return "Devanagari";
+	if (c >= 0x0980 && c <= 0x09FF) return "Bengali";
+	if (c >= 0x0A00 && c <= 0x0A7F) return "Gurmukhi";
+	if (c >= 0x0A80 && c <= 0x0AFF) return "Gujarati";
+	if (c >= 0x0B00 && c <= 0x0B7F) return "Oriya";
+	if (c >= 0x0B80 && c <= 0x0BFF) return "Tamil";
+	if (c >= 0x0C00 && c <= 0x0C7F) return "Telugu";
+	if (c >= 0x0C80 && c <= 0x0CFF) return "Kannada";
+	if (c >= 0x0D00 && c <= 0x0D7F) return "Malayalam";
+	if (c >= 0x0E00 && c <= 0x0E7F) return "Thai";
+	if ((c >= 0x1000 && c <= 0x109F) || (c >= 0xA9E0 && c <= 0xA9FF) ||
+	    (c >= 0xAA60 && c <= 0xAA7F)) return "Myanmar";
+	if ((c >= 0x1200 && c <= 0x139F) || (c >= 0x2D80 && c <= 0x2DDF) ||
+	    (c >= 0xAB00 && c <= 0xAB2F)) return "Ethiopic";
+	if ((c >= 0x0600 && c <= 0x06FF) || (c >= 0x0750 && c <= 0x077F) ||
+	    (c >= 0x0870 && c <= 0x08FF) || (c >= 0xFB50 && c <= 0xFDFF) ||
+	    (c >= 0xFE70 && c <= 0xFEFF)) return "Arabic";
+	return {};
+}
+
+bool inheritsScript(Uint32 c)
+{
+	return c < 0x40 || (c >= 0x2000 && c <= 0x206F) ||
+		(c >= 0x1CD0 && c <= 0x1CFF) || (c >= 0x0300 && c <= 0x036F) ||
+		(c >= 0x1AB0 && c <= 0x1AFF) || (c >= 0x1DC0 && c <= 0x1DFF) ||
+		(c >= 0x20D0 && c <= 0x20FF) || (c >= 0xFE20 && c <= 0xFE2F);
+}
+
 // Convert cached glyph dimensions to logical units using the exact output
 // transform. Rounded layout axes may have slightly different pixel densities.
-std::pair<float, float> glyphDrawSize(float width, float height, float rasterScale, bool scaled)
+std::pair<float, float> glyphDrawSize(float width, float height, float rasterScale, bool scaled,
+                                    float requestedScale, float outputScaleX, float outputScaleY,
+                                    int authoredWidth)
 {
 	if (!scaled) return {width, height};
-	const float correction = rasterScale / _gc->textRenderScale();
-	width *= correction;
+	const float correction = rasterScale / requestedScale;
+	// Hinted advances do not scale linearly. A line that fits the authored
+	// layout can otherwise become several percent wider at high DPI. Preserve
+	// its complete high-resolution raster, but draw opted-in new locales into the
+	// same width used by wrapping, alignment and hit testing. Do not apply the
+	// raster-size quantization correction to this already-logical width.
+	width = authoredWidth >= 0 ? float(authoredWidth) : width * correction;
 	height *= correction;
-	if (_gc->isNativeDesktop())
-	{
-		const float sx = float(_gc->getDrawableW()) / _gc->getW();
-		const float sy = float(_gc->getDrawableH()) / _gc->getH();
-		width *= std::min(sx, sy) / sx;
-		height *= std::min(sx, sy) / sy;
-	}
+	width *= std::min(outputScaleX, outputScaleY) / outputScaleX;
+	height *= std::min(outputScaleX, outputScaleY) / outputScaleY;
 	return {width, height};
 }
 }
@@ -68,6 +120,7 @@ void TrueTypeFont::init(void)
 
 TrueTypeFont::~TrueTypeFont()
 {
+	clearScriptFonts();
 	if (font)
 	{
 		// display stats
@@ -173,6 +226,7 @@ bool TrueTypeFont::load(const std::string filename, unsigned size)
 		return false;
 	clearCache();
 	clearMetrics();
+	clearScriptFonts();
 	for (const auto &[rasterSize, raster] : rasterFonts)
 		TTF_CloseFont(raster);
 	rasterFonts.clear();
@@ -196,6 +250,7 @@ bool TrueTypeFont::reload(void)
 		return false;
 	clearCache();
 	clearMetrics();
+	clearScriptFonts();
 	for (const auto &[size, raster] : rasterFonts)
 		TTF_CloseFont(raster);
 	rasterFonts.clear();
@@ -284,6 +339,204 @@ std::string TrueTypeFont::shapeText(const std::string &text) const
 #endif
 }
 
+bool TrueTypeFont::needsScriptLayout(const std::string &text) const
+{
+	if (!activeScript.empty()) return true;
+	for (const auto &c : codepoints(text))
+	{
+		const auto script = scriptFor(c.value);
+		if (!script.empty() && (script != "Arabic" || useScriptArabic || !TTF_FontHasGlyph(font, c.value)))
+			return true;
+	}
+	return false;
+}
+
+void TrueTypeFont::refreshScriptLanguage()
+{
+	const auto *strings = Toolkit::getStringTable();
+	const std::string code = strings && strings->doesStringExist("[language-code]")
+		? strings->getString("[language-code]") : std::string();
+	std::string wanted;
+	if (code == "hi" || code == "mr" || code == "ne" || code == "bho") wanted = "Devanagari";
+	else if (code == "ur" || code == "pa-arab" || code == "ps" || code == "sd") wanted = "Arabic";
+	else if (code == "bn") wanted = "Bengali";
+	else if (code == "gu") wanted = "Gujarati";
+	else if (code == "pa-guru") wanted = "Gurmukhi";
+	else if (code == "ta") wanted = "Tamil";
+	else if (code == "te") wanted = "Telugu";
+	else if (code == "kn") wanted = "Kannada";
+	else if (code == "ml") wanted = "Malayalam";
+	else if (code == "or") wanted = "Oriya";
+	else if (code == "th") wanted = "Thai";
+	else if (code == "my") wanted = "Myanmar";
+	else if (code == "am") wanted = "Ethiopic";
+	// Languages sharing a script can have different OpenType locl features.
+	// Keep the language on the authored font, including across hi/mr/ne or
+	// ur/pa-arab/ps/sd switches that retain the same script family.
+	const auto properties = TTF_GetFontProperties(font);
+	const std::string previousLanguage = SDL_GetStringProperty(properties, "glob2.script-language", "");
+	if (wanted != activeScript || code != previousLanguage)
+	{
+		SDL_SetStringProperty(properties, "glob2.script-language", code.c_str());
+		activeScript = wanted;
+		useScriptArabic = wanted == "Arabic";
+		clearCache();
+		clearMetrics();
+	}
+}
+
+void TrueTypeFont::clearScriptFonts()
+{
+	// Fallbacks borrow the original fonts, so close these before base/raster fonts.
+	for (const auto &entry : scriptFonts) TTF_CloseFont(entry.second);
+	scriptFonts.clear();
+}
+
+TTF_Font *TrueTypeFont::scriptFont(const std::string &script, unsigned size, TTF_Font *fallback)
+{
+	int shapingVersion = 0;
+	TTF_GetHarfBuzzVersion(&shapingVersion, nullptr, nullptr);
+	if (!shapingVersion)
+	{
+		SDL_SetError("Script fonts require SDL3_ttf built with HarfBuzz");
+		return nullptr;
+	}
+	const auto key = std::make_pair(script, size);
+	auto found = scriptFonts.find(key);
+	const char *language = SDL_GetStringProperty(TTF_GetFontProperties(font), "glob2.script-language", "");
+	if (found != scriptFonts.end())
+		return TTF_SetFontLanguage(found->second, *language ? language : nullptr) ? found->second : nullptr;
+	TTF_Font *added = openFont("data/fonts/scripts/NotoSans" + script + "-Regular.ttf", size);
+	if (!added) return nullptr;
+	if (!TTF_AddFallbackFont(added, fallback) || !TTF_SetFontLanguage(added, *language ? language : nullptr))
+	{
+		TTF_CloseFont(added);
+		return nullptr;
+	}
+	scriptFonts.emplace(key, added);
+	return added;
+}
+
+std::pair<int, int> TrueTypeFont::layoutScriptText(const std::string &text, TTF_Font *base,
+                                                unsigned size, SDL_Color color, SDL_Surface **surface)
+{
+	struct Run { std::string text, script; bool rtl; TTF_Font *font; int w, h, ascent; };
+	std::vector<Run> runs;
+	for (const auto &bidi : logicalBidiRuns(text))
+	{
+		std::vector<Run> logical;
+		for (const auto &c : codepoints(bidi.text))
+		{
+			auto script = scriptFor(c.value);
+			// Common punctuation/combining join controls stay with their script.
+			if (script.empty() && !logical.empty() && inheritsScript(c.value))
+				script = logical.back().script;
+			if (logical.empty() || logical.back().script != script)
+				logical.push_back({"", script, bidi.rtl, nullptr, 0, 0, 0});
+			logical.back().text += c.bytes;
+		}
+		if (bidi.rtl) std::reverse(logical.begin(), logical.end());
+		for (auto &run : logical) runs.push_back(std::move(run));
+	}
+	int width = 0, baseline = TTF_GetFontAscent(base), below = TTF_GetFontHeight(base) - baseline;
+	if (!activeScript.empty())
+	{
+		TTF_Font *primary = scriptFont(activeScript, size, base);
+		if (!primary) return {0, 0};
+		TTF_SetFontStyle(primary, TTF_GetFontStyle(base));
+		baseline = std::max(baseline, TTF_GetFontAscent(primary));
+		// SDL_ttf's nominal height can be smaller than its hinted raster bounds:
+		// the pinned Noto Devanagari/Gujarati probes need one extra pixel and
+		// Gurmukhi needs two at the UI sizes. Reserve the rounding clearance in
+		// the locale's default line box too, including Latin-only labels.
+		below = std::max(below, TTF_GetFontHeight(primary) + 2 - TTF_GetFontAscent(primary));
+	}
+	for (auto &run : runs)
+	{
+		run.font = run.script.empty() ? base : scriptFont(run.script, size, base);
+		if (!run.font) return {0, 0};
+		TTF_SetFontStyle(run.font, TTF_GetFontStyle(base));
+		if (!TTF_SetFontDirection(run.font, run.rtl ? TTF_DIRECTION_RTL : TTF_DIRECTION_LTR)) return {0, 0};
+		const bool measured = TTF_GetStringSize(run.font, run.text.c_str(), 0, &run.w, &run.h);
+		TTF_SetFontDirection(run.font, TTF_DIRECTION_LTR);
+		if (!measured || run.w > std::numeric_limits<int>::max() - width) return {0, 0};
+		run.ascent = TTF_GetFontAscent(run.font);
+		baseline = std::max(baseline, run.ascent);
+		below = std::max(below, run.h - run.ascent);
+		width += run.w;
+	}
+	const int height = baseline + below;
+	if (surface)
+	{
+		*surface = SDL_CreateSurface(std::max(1, width), std::max(1, height), SDL_PIXELFORMAT_RGBA32);
+		if (!*surface) return {0, 0};
+		SDL_FillSurfaceRect(*surface, nullptr, 0);
+		int x = 0;
+		for (const auto &run : runs)
+		{
+			TTF_SetFontDirection(run.font, run.rtl ? TTF_DIRECTION_RTL : TTF_DIRECTION_LTR);
+			SDL_Surface *part = TTF_RenderText_Blended(run.font, run.text.c_str(), 0, color);
+			TTF_SetFontDirection(run.font, TTF_DIRECTION_LTR);
+			if (!part) { SDL_DestroySurface(*surface); *surface = nullptr; return {0, 0}; }
+			// Preserve straight alpha while assembling the cached glyph surface.
+			// Blending onto transparency here would multiply coverage into RGB
+			// before the completed text is blended onto its real background.
+			if (!SDL_SetSurfaceBlendMode(part, SDL_BLENDMODE_NONE))
+			{ SDL_DestroySurface(part); SDL_DestroySurface(*surface); *surface = nullptr; return {0, 0}; }
+			SDL_Rect dst{x, baseline - run.ascent, part->w, part->h};
+			const bool copied = SDL_BlitSurface(part, nullptr, *surface, &dst);
+			SDL_DestroySurface(part);
+			if (!copied) { SDL_DestroySurface(*surface); *surface = nullptr; return {0, 0}; }
+			x += run.w;
+		}
+	}
+	return {width, height};
+}
+
+std::vector<std::size_t> TrueTypeFont::getStringClusterEnds(const std::string &text)
+{
+	if (text.empty()) return {};
+	refreshScriptLanguage();
+	struct Span { std::string text, script; size_t offset; };
+	std::vector<Span> spans;
+	size_t offset = 0;
+	for (const auto &c : codepoints(text))
+	{
+		auto script = scriptFor(c.value);
+		if (script.empty() && !spans.empty() && inheritsScript(c.value)) script = spans.back().script;
+		if (spans.empty() || spans.back().script != script) spans.push_back({"", script, offset});
+		spans.back().text += c.bytes;
+		offset += c.bytes.size();
+	}
+	std::vector<std::size_t> ends;
+	for (const auto &span : spans)
+	{
+		TTF_Font *selected = span.script.empty() ? font : scriptFont(span.script, baseSize, font);
+		if (!selected) return {text.size()};
+		TTF_SetFontStyle(selected, TTF_GetFontStyle(font));
+		TTF_Text *layout = TTF_CreateText(nullptr, selected, span.text.c_str(), span.text.size());
+		if (!layout) return {text.size()};
+		bool valid = TTF_SetTextDirection(layout, span.script == "Arabic" ? TTF_DIRECTION_RTL : TTF_DIRECTION_LTR);
+		for (size_t at = 0; valid && at < span.text.size();)
+		{
+			TTF_SubString cluster{};
+			valid = at <= static_cast<size_t>(std::numeric_limits<int>::max()) &&
+				TTF_GetTextSubString(layout, static_cast<int>(at), &cluster) && cluster.offset >= 0 && cluster.length > 0;
+			if (!valid) break;
+			const size_t end = static_cast<size_t>(cluster.offset) + static_cast<size_t>(cluster.length);
+			if (end <= at || end > span.text.size()) { valid = false; break; }
+			ends.push_back(span.offset + end);
+			at = end;
+		}
+		TTF_DestroyText(layout);
+		if (!valid) return {text.size()};
+	}
+	ends.push_back(text.size());
+	std::sort(ends.begin(), ends.end());
+	ends.erase(std::unique(ends.begin(), ends.end()), ends.end());
+	return ends;
+}
+
 void TrueTypeFont::clearMetrics()
 {
 	metricsCache.clear();
@@ -295,8 +548,10 @@ std::pair<int, int> TrueTypeFont::measureString(const std::string &text)
 {
 	assert(font);
 	assert(!styleStack.empty());
+	refreshScriptLanguage();
 	if (text.empty())
-		return {0, TTF_GetFontHeight(font)};
+		return activeScript.empty() ? std::make_pair(0, TTF_GetFontHeight(font))
+			: layoutScriptText(text, font, baseSize, {255, 255, 255, 255}, nullptr);
 	MetricsKey key{text, styleStack.top().shape};
 	auto found = metricsCache.find(key);
 	if (found != metricsCache.end())
@@ -305,9 +560,13 @@ std::pair<int, int> TrueTypeFont::measureString(const std::string &text)
 		return {found->second.w, found->second.h};
 	}
 	int w = 0, h = 0;
-	const auto shaped = shapeText(text);
-	if (!TTF_GetStringSize(font, shaped.c_str(), 0, &w, &h))
-		return {0, 0};
+	if (needsScriptLayout(text))
+		std::tie(w, h) = layoutScriptText(text, font, baseSize, {255, 255, 255, 255}, nullptr);
+	else
+	{
+		const auto shaped = shapeText(text);
+		if (!TTF_GetStringSize(font, shaped.c_str(), 0, &w, &h)) return {0, 0};
+	}
 	constexpr size_t maximumEntries = 1024, maximumTextBytes = 1024 * 1024;
 	// A single oversized diagnostic string must not grow the cache beyond its budget.
 	if (text.size() > maximumTextBytes / 2)
@@ -372,7 +631,11 @@ bool TrueTypeFont::hasGlyphsFor(const std::string &utf8Text)
 			codepoint = (codepoint << 6) | (s[i] & 0x3F);
 
 		if (!TTF_FontHasGlyph(font, codepoint))
-			return false;
+		{
+			const auto script = scriptFor(codepoint);
+			TTF_Font *fallback = script.empty() ? nullptr : scriptFont(script, baseSize, font);
+			if (!fallback || !TTF_FontHasGlyph(fallback, codepoint)) return false;
+		}
 
 		s += len;
 	}
@@ -423,10 +686,24 @@ std::unique_ptr<DrawableSurface> TrueTypeFont::rasterizeString(const std::string
 	return result;
 }
 
+std::pair<float, float> TrueTypeFont::getStringDrawSize(const std::string &text, float scale,
+                                                     float outputScaleX, float outputScaleY)
+{
+	if (!(scale > 0.f) || !(outputScaleX > 0.f) || !(outputScaleY > 0.f) ||
+		!std::isfinite(scale) || !std::isfinite(outputScaleX) || !std::isfinite(outputScaleY)) return {0.f, 0.f};
+	const auto *data = getStringCached(text, true, scale);
+	if (!data) return {0.f, 0.f};
+	const auto size = glyphDrawSize(data->drawW, data->drawH, renderScale, true,
+		scale, outputScaleX, outputScaleY, data->authoredDrawWidth ? data->w : -1);
+	cleanupCache();
+	return size;
+}
+
 const TrueTypeFont::CacheData *TrueTypeFont::getStringCached(const std::string text, bool scaled, float explicitScale)
 {
 	assert(font);
 	assert(styleStack.size() > 0);
+	refreshScriptLanguage();
 
 	if (scaled)
 		updateRenderScale(explicitScale);
@@ -446,13 +723,21 @@ const TrueTypeFont::CacheData *TrueTypeFont::getStringCached(const std::string t
 		c.g = styleStack.top().color.g;
 		c.b = styleStack.top().color.b;
 		c.a = styleStack.top().color.a;
-		const std::string shaped = shapeText(text);
-		SDL_Surface *temp = TTF_RenderText_Blended(scaled ? renderFont : font, shaped.c_str(), 0, c);
+		const bool scripts = needsScriptLayout(text);
+		const std::string shaped = scripts ? std::string() : shapeText(text);
+		SDL_Surface *temp = nullptr;
+		if (scripts) layoutScriptText(text, scaled ? renderFont : font, key.rasterSize, c, &temp);
+		else temp = TTF_RenderText_Blended(scaled ? renderFont : font, shaped.c_str(), 0, c);
 		if (temp == NULL)
 			return NULL;
 
 		// create key
 		CacheData data;
+		// New locales opt into authored advances; preserve the existing Latin
+		// geometry for legacy locales. Swahili uses the original Latin font,
+		// not the script-font/bidi composition path.
+		data.authoredDrawWidth = scripts || std::string(SDL_GetStringProperty(
+			TTF_GetFontProperties(font), "glob2.script-language", "")) == "sw";
 		data.lastAccessed = now;
 		data.s = new DrawableSurface(temp);
 		assert(data.s);
@@ -461,7 +746,12 @@ const TrueTypeFont::CacheData *TrueTypeFont::getStringCached(const std::string t
 		const float rasterScale = (scaled && renderScale > 0.0f) ? renderScale : 1.0f;
 		data.drawW = data.s->getW() / rasterScale;
 		data.drawH = data.s->getH() / rasterScale;
-		if (!scaled || !TTF_GetStringSize(font, shaped.c_str(), 0, &data.w, &data.h))
+		if (scripts)
+		{
+			const auto measured = measureString(text);
+			data.w = measured.first; data.h = measured.second;
+		}
+		else if (!scaled || !TTF_GetStringSize(font, shaped.c_str(), 0, &data.w, &data.h))
 		{
 			data.w = static_cast<int>(std::lround(data.drawW));
 			data.h = static_cast<int>(std::lround(data.drawH));
@@ -526,7 +816,11 @@ void TrueTypeFont::drawString(DrawableSurface *surface, int x, int y, int w, con
 	if (data == NULL)
 		return;
 	DrawableSurface *s = data->s;
-	const auto [dw, dh] = glyphDrawSize(data->drawW, data->drawH, renderScale, scaled);
+	const auto [dw, dh] = glyphDrawSize(data->drawW, data->drawH, renderScale, scaled,
+		scaled ? _gc->textRenderScale() : 1.f,
+		scaled && _gc->isNativeDesktop() ? float(_gc->getDrawableW()) / _gc->getW() : 1.f,
+		scaled && _gc->isNativeDesktop() ? float(_gc->getDrawableH()) / _gc->getH() : 1.f,
+		data->authoredDrawWidth ? data->w : -1);
 
 	// render
 	if (w)
@@ -559,7 +853,11 @@ void TrueTypeFont::drawString(DrawableSurface *surface, float x, float y, float 
 	if (data == NULL)
 		return;
 	DrawableSurface *s = data->s;
-	const auto [dw, dh] = glyphDrawSize(data->drawW, data->drawH, renderScale, scaled);
+	const auto [dw, dh] = glyphDrawSize(data->drawW, data->drawH, renderScale, scaled,
+		scaled ? _gc->textRenderScale() : 1.f,
+		scaled && _gc->isNativeDesktop() ? float(_gc->getDrawableW()) / _gc->getW() : 1.f,
+		scaled && _gc->isNativeDesktop() ? float(_gc->getDrawableH()) / _gc->getH() : 1.f,
+		data->authoredDrawWidth ? data->w : -1);
 
 	// render
 	if (w != 0.0f)

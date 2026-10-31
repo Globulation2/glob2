@@ -6359,421 +6359,421 @@ Building Studio で作成
 [audio choices description]
 無音：ミュートされたスピーカー。音あり：音波の付いたスピーカー。
 [intro menu]
-
+はじめに
 [intro briefing]
-
+間接操作を学びましょう。旗で偵察し、コロニーに物資を補給し、攻撃を指示します。
 [intro try]
-
+入門を始める
 [intro preflight]
-
+グロビュールは自律的に行動します。建物や旗で仕事を指定しましょう。この短い入門では、目印の偵察、食料供給の拡大、労働者の増員、小規模な攻撃の指揮を練習します。
 [intro preflight save]
-
+所要時間は約10分です。ゲームメニューから保存し、「ゲームを読み込む」で再開できます。空腹や戦闘には通常のルールが適用されます。ほかの技能を練習するには、メインメニューの「チュートリアル」を選びましょう。
 [intro preference failed]
-
+選択を保存できませんでした。プレイは続けられますが、次回もこの案内が表示される場合があります。
 [intro goal scout]
-
+石の目印を偵察する
 [intro goal build]
-
+食堂をもう1軒建てる
 [intro goal supply]
-
+新しい食堂に補給する
 [intro goal grow]
-
+労働者を増やす
 [intro goal attack]
-
+敵の巣を破壊する
 [intro instruction scout]
-
+「旗」を開き、コロニーの東にある石の上に偵察の旗を置きます。偵察兵を1体割り当て、旗に向かう様子を見ましょう。
 [intro instruction build]
-
+「建設」を開き、小麦の近くに食堂を置きます。空いている労働者を建設に割り当てましょう。既存の食堂への補給も続けてください。
 [intro instruction supply]
-
+完成した新しい食堂を選び、補給係を1体以上割り当てます。労働者が小麦を届けるのを待ちましょう。
 [intro instruction grow]
-
+巣を選び、労働者の割当目標を2体以上にします。生産比率は労働者のみとし、新たな労働者が生まれるまで両方の食堂への補給を続けましょう。
 [intro instruction attack]
-
+さらに東にある敵の巣を探します。戦闘の旗で戦士に攻撃を指示しましょう。操作を確認したいときはヘルプを開けます。
 [intro help]
-
+ヘルプ・理由
 [intro help scout]
-
+ミニマップで視点を東へ移し、石を探します。「旗」から偵察の旗を選んで石の上に置き、マウスの副ボタンで配置を終了します。旗を選び、偵察兵を1体要請しましょう。旗はユニットを呼び寄せますが、瞬時に移動させるものではありません。偵察兵は食事のために立ち止まることがあります。
 [intro help build]
-
+建設には労働者が運ぶ木材を使います。建物の操作パレットで食堂を選び、小麦に近い空き地に置いて建設員を2体要請します。割当目標は要請数であり、すでに現場にいる労働者の数ではありません。既存の食堂と巣にも補給係を残しましょう。建設可能な場所ならどこでも構いません。
 [intro help supply]
-
+建設時と通常の補給時では、労働者の割当目標は別々です。完成した食堂を選び、稼働時の割当目標を増やしましょう。補給係が小麦を収穫してここに運びます。空腹のグロビュールは食堂で食べますが、補給係がいない建物はいずれ在庫が尽きます。小麦までの道を確保してください。
 [intro help grow]
-
+巣は小麦を消費してユニットを生みます。労働者の生産を1、偵察兵と戦士の生産を0に設定します。巣の労働者の割当目標を2体以上に増やしましょう。補給係が多いほど小麦を速く運べますが、ほかの仕事との取り合いになります。両方の食堂への食料供給を保ってください。
 [intro help attack]
-
+「旗」から戦闘の旗を選び、石より東にある敵の巣の上に置きます。旗を選び、戦士を最大4体要請します。半径を小さくすると戦士が集中します。旗を選ぶ前に、マウスの副ボタンで配置を終了してください。戦士が残っていなければ巣で生産しましょう。戦士も食事に立ち寄るので、食堂への補給を続けてください。
 [intro hint scout]
-
+偵察兵には、東の石に置かれ、ユニットを割り当てた偵察の旗が必要です。旗の位置と偵察兵の要請数を確認しましょう。
 [intro hint build]
-
+新しい食堂を撤去した場合は、もう1軒建てましょう。そうでなければ、建設現場と労働者の割当目標を確認します。補給の仕事で労働者が埋まっているかもしれません。食料供給を維持しつつ、建設員を確保してください。
 [intro hint supply]
-
+完成した新しい食堂を選びます。労働者の割当目標を確認し、小麦が届くか見ましょう。労働者は移動や食事に時間がかかることがあります。
 [intro hint grow]
-
+巣への補給と、労働者のみを生産する設定を確認します。次の労働者を待つ間も、食堂への補給を続けましょう。
 [intro hint attack]
-
+戦闘の旗、戦士の要請数、食料供給を確認しましょう。戦士の移動と攻撃には時間がかかります。
 [intro hint no scout flag]
-
+ユニットを割り当てた偵察の旗が見つかりません。拠点の東にある石の上に置き、偵察兵を1体要請してください。
 [intro hint no suppliers]
-
+新しい食堂かその建設現場の労働者の割当目標が0です。選択して労働者を要請してください。
 [intro hint no war flag]
-
+敵拠点に、ユニットを割り当てた戦闘の旗が見つかりません。東の敵の巣の上に置き、戦士を要請してください。
 [intro hint retry]
-
+このレッスンに必要なユニットか建物が失われました。以前のセーブを読み込むか、ゲームメニューからレッスンをやり直してください。
 [intro complete]
-
+入門完了
 [intro complete body]
-
+自律的に動くグロビュールを指揮し、食料供給とコロニーを拡大して攻撃を行いました。「チュートリアル」で訓練、改良、防衛を練習するか、メインメニューに戻って対戦を始めましょう。
 [intro play again]
-
+もう一度遊ぶ
 [intro restart]
-
+入門をやり直す
 [intro restart body]
-
+用意されたコロニーからやり直しますか？この入門で保存していない進行状況は失われます。
 [intro help touch scout]
-
+旗を置く前に、何もない地面をドラッグして視点を動かします。コロニーの東の石を探し、「旗」から偵察の旗を選んで石の上に置き、確定します。旗を選び、割当ユニット数で偵察兵を1体要請しましょう。グロビュールは自律的に移動し、食事に立ち止まることもあります。
 [intro help touch build]
-
+「建設」で食堂を選び、小麦に近い空き地に置いて確定します。建設現場を選び、建設員を2体要請します。割当目標は要請数であり、すでに現場にいる労働者の数ではありません。既存の食堂と巣にも補給を続けましょう。建設可能な場所ならどこでも構いません。
 [intro help touch supply]
-
+完成した新しい食堂を選び、労働者の割当目標を増やします。建設と通常の補給では目標が別々です。補給係が小麦を収穫してここに運びます。空腹のグロビュールは食堂で食べますが、補給係がいなければ在庫は尽きます。小麦への道を確保しましょう。
 [intro help touch grow]
-
+巣を選び、労働者の生産を1、偵察兵と戦士の生産を0に設定します。労働者の割当目標を2体以上に増やしましょう。補給係は新たなユニットのために小麦を運びますが、ほかの仕事との取り合いになります。両方の食堂への補給を続けてください。
 [intro help touch attack]
-
+「旗」から戦闘の旗を選び、石より東にある敵の巣の上に置いて確定します。旗を選び、戦士を最大4体要請します。半径を小さくすると戦士が集中します。戦士がいなければ自分の巣で生産しましょう。戦士も食事に立ち寄るので、食堂への補給を続けてください。
 [intro show destination]
-
+目的地を表示
 [intro scout destination]
-
+ここを偵察
 [intro attack destination]
-
+ここを攻撃
 [intro compact scout]
-
+旗 → 偵察の旗。石の上に置き、偵察兵を1体割り当てます。
 [intro compact build]
-
+建設 → 食堂。小麦の近くに置き、建設員を2体割り当てます。
 [intro compact supply]
-
+新しい食堂を選び、補給係を1体以上割り当てます。小麦を待ちましょう。
 [intro compact grow]
-
+巣を選び、補給係を2体割り当てます。労働者のみを生産します。
 [intro compact attack]
-
+旗 → 戦闘の旗。敵の巣の上に置き、戦士を割り当てます。
 [tutorial lessons]
-
+チュートリアル
 [tutorial restart]
-
+レッスンをやり直す
 [tutorial restart body]
-
+用意されたコロニーからこのレッスンをやり直しますか？保存していない進行状況は失われます。
 [tutorial complete]
-
+レッスン完了
 [tutorial food title]
-
+食料供給の練習
 [tutorial food briefing]
-
+食料供給の拡大を練習します。食堂をもう1軒建て、補給係を割り当て、小麦が届くのを見ましょう。
 [tutorial food complete]
-
+食堂を建て、小麦を補給できました。別のレッスンを試すか、メインメニューに戻りましょう。
 [tutorial unavailable]
-
+チュートリアルを読み込めませんでした。
 [lesson healing title]
-
+病院と治療
 [lesson healing briefing]
-
+病院を建て、負傷した労働者の回復を助けましょう。食事を済ませたコロニーに、負傷した労働者が1体いる状態で始まります。
 [lesson healing complete]
-
+病院が負傷したグロビュールを治療しました。食堂への補給も続けましょう。空腹になるとユニットはまた傷つきます。
 [lesson healing build hint]
-
+空き地に病院を建て、建設員を2体割り当てます。 グロビュールが出入りする場所を空けましょう。病院は傷を治し、食堂は食料を供給します。この患者はすでに食事を済ませています。
 [lesson healing build title]
-
+病院を建てる
 [lesson healing build instruction]
-
+空き地に病院を建て、建設員を2体割り当てます。
 [lesson healing build help]
-
+グロビュールが出入りする場所を空けましょう。病院は傷を治し、食堂は食料を供給します。この患者はすでに食事を済ませています。
 [lesson healing build marker]
-
+病院を建てる
 [lesson healing heal hint]
-
+病院への道を確保し、負傷した労働者が回復する様子を見ましょう。 グロビュールは自律的に治療を受けに行きます。新しく生まれたユニットではなく、負傷した労働者を追跡しましょう。死んだ場合はやり直すか、セーブを読み込んでください。
 [lesson healing heal title]
-
+患者の回復を待つ
 [lesson healing heal instruction]
-
+病院への道を確保し、負傷した労働者が回復する様子を見ましょう。
 [lesson healing heal help]
-
+グロビュールは自律的に治療を受けに行きます。新しく生まれたユニットではなく、負傷した労働者を追跡しましょう。死んだ場合はやり直すか、セーブを読み込んでください。
 [lesson healing heal marker]
-
+患者の回復を待つ
 [lesson walking-training title]
-
+歩行訓練
 [lesson walking-training briefing]
-
+走路を建て、既存の労働者が速く歩く技能を身につける様子を見ましょう。
 [lesson walking-training complete]
-
+労働者が速く歩けるようになりました。訓練は今いる労働者の能力を高めますが、コロニーの食料供給の代わりにはなりません。
 [lesson walking-training build hint]
-
+印のある空き地に走路を建て、建設員を割り当てます。 走路には木材と石が必要です。出入りや後の拡張のため、周囲に隙間を空けましょう。
 [lesson walking-training build title]
-
+走路を建てる
 [lesson walking-training build instruction]
-
+印のある空き地に走路を建て、建設員を割り当てます。
 [lesson walking-training build help]
-
+走路には木材と石が必要です。出入りや後の拡張のため、周囲に隙間を空けましょう。
 [lesson walking-training build marker]
-
+走路を建てる
 [lesson walking-training train hint]
-
+走路への道を確保し、労働者が訓練を終えるのを待ちます。 条件を満たすグロビュールは自動で訓練を受けます。補給の仕事に就いていない労働者を確保し、両方の食堂に食料を蓄えましょう。
 [lesson walking-training train title]
-
+既存の労働者を訓練する
 [lesson walking-training train instruction]
-
+走路への道を確保し、労働者が訓練を終えるのを待ちます。
 [lesson walking-training train help]
-
+条件を満たすグロビュールは自動で訓練を受けます。補給の仕事に就いていない労働者を確保し、両方の食堂に食料を蓄えましょう。
 [lesson swimming title]
-
+水泳と水中の資源
 [lesson swimming briefing]
-
+泳ぎ手を育て、池の藻を使って学校を建てましょう。
 [lesson swimming complete]
-
+泳ぎ手が学校に水中の資源を届けました。水に入れると、コロニーでできる仕事が増えます。
 [lesson swimming build hint]
-
+池の西にプールを建て、建設員を割り当てます。 プールの周囲に空間を残しましょう。労働者は泳ぎを覚えるまで深い水の中の藻を採れません。
 [lesson swimming build title]
-
+プールを建てる
 [lesson swimming build instruction]
-
+池の西にプールを建て、建設員を割り当てます。
 [lesson swimming build help]
-
+プールの周囲に空間を残しましょう。労働者は泳ぎを覚えるまで深い水の中の藻を採れません。
 [lesson swimming build marker]
-
+プールを建てる
 [lesson swimming train hint]
-
+既存の労働者が水泳訓練を終えるのを待ちます。 ユニットは自動で訓練を選びます。補給を維持し、空いている労働者がプールに行けるようにしましょう。
 [lesson swimming train title]
-
+泳ぎ手を育てる
 [lesson swimming train instruction]
-
+既存の労働者が水泳訓練を終えるのを待ちます。
 [lesson swimming train help]
-
+ユニットは自動で訓練を選びます。補給を維持し、空いている労働者がプールに行けるようにしましょう。
 [lesson swimming water-job hint]
-
+コロニーの近くに学校を建て、木材と藻を運ぶ建設員を割り当てます。 藻は池に生えています。採るには訓練済みの泳ぎ手が水に入る必要があります。学校は補給係が行き来できる開けた陸地に置きましょう。
 [lesson swimming water-job title]
-
+池の藻を使う
 [lesson swimming water-job instruction]
-
+コロニーの近くに学校を建て、木材と藻を運ぶ建設員を割り当てます。
 [lesson swimming water-job help]
-
+藻は池に生えています。採るには訓練済みの泳ぎ手が水に入る必要があります。学校は補給係が行き来できる開けた陸地に置きましょう。
 [lesson swimming water-job marker]
-
+池の藻を使う
 [lesson schools title]
-
+学校と労働者の技能
 [lesson schools briefing]
-
+用意された泳ぎ手を使って学校を建て、労働者が建設と収穫を学ぶ様子を見ましょう。
 [lesson schools complete]
-
+学校で労働者の技能が向上しました。熟練した建設員は建物を改良でき、収穫能力の向上は拡大する経済を支えます。
 [lesson schools build hint]
-
+空き地に学校を建て、建設員を割り当てます。 コロニーにはすでに藻を採れる泳ぎ手がいます。木材と水辺への道を残しましょう。果樹は名声用の資源をもたらしますが、食料は小麦から得ます。
 [lesson schools build title]
-
+学校を建てる
 [lesson schools build instruction]
-
+空き地に学校を建て、建設員を割り当てます。
 [lesson schools build help]
-
+コロニーにはすでに藻を採れる泳ぎ手がいます。木材と水辺への道を残しましょう。果樹は名声用の資源をもたらしますが、食料は小麦から得ます。
 [lesson schools build marker]
-
+学校を建てる
 [lesson schools learn hint]
-
+既存の労働者が学校での訓練を終えるのを待ちます。 学校では建設と収穫を同時に教えます。空いている労働者を確保しましょう。建設現場を置くだけでは誰も訓練されません。
 [lesson schools learn title]
-
+建設と収穫を教える
 [lesson schools learn instruction]
-
+既存の労働者が学校での訓練を終えるのを待ちます。
 [lesson schools learn help]
-
+学校では建設と収穫を同時に教えます。空いている労働者を確保しましょう。建設現場を置くだけでは誰も訓練されません。
 [lesson upgrades title]
-
+建物の改良
 [lesson upgrades briefing]
-
+用意された熟練の労働者で走路を改良し、初級を超える訓練を行いましょう。
 [lesson upgrades complete]
-
+建物を改良し、高度な訓練を活用できました。さらに改良するには、より高度な学校、技能、材料、空間をそろえ、レベル3まで同じ手順を繰り返します。
 [lesson upgrades upgrade hint]
-
+走路を選んで「改良」を選択し、熟練の建設員を割り当てます。 労働者はすでに学校の初級技能を習得しています。改良には追加の空間と材料が必要で、その間は建物の機能が停止します。中止した改良は達成に含まれません。
 [lesson upgrades upgrade title]
-
+走路を改良する
 [lesson upgrades upgrade instruction]
-
+走路を選んで「改良」を選択し、熟練の建設員を割り当てます。
 [lesson upgrades upgrade help]
-
+労働者はすでに学校の初級技能を習得しています。改良には追加の空間と材料が必要で、その間は建物の機能が停止します。中止した改良は達成に含まれません。
 [lesson upgrades upgrade marker]
-
+走路を改良する
 [lesson upgrades train hint]
-
+既存の労働者が改良済みの走路で速く歩く技能を学ぶのを待ちます。 改良が完成すると、受けられる訓練が向上します。建物のレベルが高いほど高い建設技能が必要です。画面に表示されるレベルは1から始まります。
 [lesson upgrades train title]
-
+改良後の訓練を使う
 [lesson upgrades train instruction]
-
+既存の労働者が改良済みの走路で速く歩く技能を学ぶのを待ちます。
 [lesson upgrades train help]
-
+改良が完成すると、受けられる訓練が向上します。建物のレベルが高いほど高い建設技能が必要です。画面に表示されるレベルは1から始まります。
 [lesson warrior-training title]
-
+戦士の生産と訓練
 [lesson warrior-training briefing]
-
+巣で戦士を生産し、兵舎で訓練しましょう。
 [lesson warrior-training complete]
-
+軍事ユニットの生産を調整し、戦士を訓練できました。戦闘ユニットにも食事が必要なので、食料供給を維持しましょう。
 [lesson warrior-training produce hint]
-
+巣を戦士のみの生産に設定し、補給係を割り当てて戦士2体を待ちます。 労働者と偵察兵の比率を0、戦士の比率を1にします。巣は誕生のために小麦を消費します。比率で生産する種類を選び、補給係の有無で生産を続けられるかが決まります。
 [lesson warrior-training produce title]
-
+戦士を2体生産する
 [lesson warrior-training produce instruction]
-
+巣を戦士のみの生産に設定し、補給係を割り当てて戦士2体を待ちます。
 [lesson warrior-training produce help]
-
+労働者と偵察兵の比率を0、戦士の比率を1にします。巣は誕生のために小麦を消費します。比率で生産する種類を選び、補給係の有無で生産を続けられるかが決まります。
 [lesson warrior-training produce marker]
-
+戦士を2体生産する
 [lesson warrior-training build hint]
-
+空き地に兵舎を建て、建設員を割り当てます。 十分な数がそろったら戦士の生産を止めるか減らしましょう。兵舎では戦闘技能を教えます。周囲に空間が必要です。
 [lesson warrior-training build title]
-
+兵舎を建てる
 [lesson warrior-training build instruction]
-
+空き地に兵舎を建て、建設員を割り当てます。
 [lesson warrior-training build help]
-
+十分な数がそろったら戦士の生産を止めるか減らしましょう。兵舎では戦闘技能を教えます。周囲に空間が必要です。
 [lesson warrior-training build marker]
-
+兵舎を建てる
 [lesson warrior-training train hint]
-
+戦士が兵舎での訓練を終えるのを待ちます。 戦士は自動で訓練を受けに行きます。食堂への補給と兵舎への道を確保しましょう。兵舎を建てただけでは訓練完了にはなりません。
 [lesson warrior-training train title]
-
+戦士を訓練する
 [lesson warrior-training train instruction]
-
+戦士が兵舎での訓練を終えるのを待ちます。
 [lesson warrior-training train help]
-
+戦士は自動で訓練を受けに行きます。食堂への補給と兵舎への道を確保しましょう。兵舎を建てただけでは訓練完了にはなりません。
 [lesson fortifications title]
-
+塔と防護壁
 [lesson fortifications briefing]
-
+補給のある塔と防護壁を建て、小規模な攻撃で試しましょう。
 [lesson fortifications complete]
-
+補給された防衛施設が練習用の攻撃を止めました。塔には石が必要で、補給係が通れるよう壁には隙間が必要です。
 [lesson fortifications tower hint]
-
+印のある区域に塔を建て、建設員を割り当てます。 石の採取場所の近くに置き、補給係の通路を確保しましょう。準備の目標をすべて達成するまで攻撃は始まりません。
 [lesson fortifications tower title]
-
+防衛塔を建てる
 [lesson fortifications tower instruction]
-
+印のある区域に塔を建て、建設員を割り当てます。
 [lesson fortifications tower help]
-
+石の採取場所の近くに置き、補給係の通路を確保しましょう。準備の目標をすべて達成するまで攻撃は始まりません。
 [lesson fortifications tower marker]
-
+防衛塔を建てる
 [lesson fortifications walls hint]
-
+塔の近くに壁を2区画以上建て、西側の通路を空けておきます。 壁には石を使い、各建設現場が労働者を要請します。塔を囲い込まないでください。補給係の通路が必要です。印のある西側の道は空けたままにしましょう。
 [lesson fortifications walls title]
-
+壁で塔を守る
 [lesson fortifications walls instruction]
-
+塔の近くに壁を2区画以上建て、西側の通路を空けておきます。
 [lesson fortifications walls help]
-
+壁には石を使い、各建設現場が労働者を要請します。塔を囲い込まないでください。補給係の通路が必要です。印のある西側の道は空けたままにしましょう。
 [lesson fortifications walls marker]
-
+壁で塔を守る
 [lesson fortifications supply hint]
-
+塔を選んで補給係を要請し、石が2個以上届くのを待ちます。 完成した塔に弾薬を運ぶには、稼働時の労働者の割当目標が必要です。これは建設時の目標とは別です。
 [lesson fortifications supply title]
-
+弾薬を補給する
 [lesson fortifications supply instruction]
-
+塔を選んで補給係を要請し、石が2個以上届くのを待ちます。
 [lesson fortifications supply help]
-
+完成した塔に弾薬を運ぶには、稼働時の労働者の割当目標が必要です。これは建設時の目標とは別です。
 [lesson fortifications supply marker]
-
+弾薬を補給する
 [lesson fortifications hold hint]
-
+練習用の戦士が近づいています。塔への補給と通路を確保しましょう。 攻撃者を倒すか追い返すまで持ちこたえましょう。補給係を遮る壁は塔の弾薬切れを招きます。コロニーが敗れたら、やり直すか以前のセーブを読み込んでください。
 [lesson fortifications hold title]
-
+防衛施設を試す
 [lesson fortifications hold instruction]
-
+練習用の戦士が近づいています。塔への補給と通路を確保しましょう。
 [lesson fortifications hold help]
-
+攻撃者を倒すか追い返すまで持ちこたえましょう。補給係を遮る壁は塔の弾薬切れを招きます。コロニーが敗れたら、やり直すか以前のセーブを読み込んでください。
 [lesson fortifications hold marker]
-
+防衛施設を試す
 [lesson defensive-tactics title]
-
+警備領域と旗の戦術
 [lesson defensive-tactics briefing]
-
+練習相手を偵察し、警備領域を準備して防衛し、反撃を組織しましょう。
 [lesson defensive-tactics complete]
-
+偵察し、警備領域を守り、反撃を指揮できました。旗の割当目標はユニットを要請し、半径はそのユニットが活動する範囲を決めます。
 [lesson defensive-tactics scout hint]
-
+敵拠点に偵察の旗を置き、偵察兵を1体割り当てます。 旗は自動でユニットを要請します。偵察兵は戦場の霧の向こうの現在の活動を明らかにしますが、食事に立ち止まることがあります。
 [lesson defensive-tactics scout title]
-
+敵拠点を偵察する
 [lesson defensive-tactics scout instruction]
-
+敵拠点に偵察の旗を置き、偵察兵を1体割り当てます。
 [lesson defensive-tactics scout help]
-
+旗は自動でユニットを要請します。偵察兵は戦場の霧の向こうの現在の活動を明らかにしますが、食事に立ち止まることがあります。
 [lesson defensive-tactics scout marker]
-
+敵拠点を偵察する
 [lesson defensive-tactics guard hint]
-
+印のある区域に警備領域を塗り、戦士2体が到着するのを待ちます。 「旗」で警備領域を選び、区域内の4マス以上を塗ります。警備領域は待機中の戦士を引き寄せます。立入禁止領域は移動を遮り、資源除去領域は資源の除去を要請します。
 [lesson defensive-tactics guard title]
-
+警備領域を準備する
 [lesson defensive-tactics guard instruction]
-
+印のある区域に警備領域を塗り、戦士2体が到着するのを待ちます。
 [lesson defensive-tactics guard help]
-
+「旗」で警備領域を選び、区域内の4マス以上を塗ります。警備領域は待機中の戦士を引き寄せます。立入禁止領域は移動を遮り、資源除去領域は資源の除去を要請します。
 [lesson defensive-tactics guard marker]
-
+警備領域を準備する
 [lesson defensive-tactics repel hint]
-
+敵が攻撃しています。警備領域に戦士を配置し、食堂への補給を続けましょう。 小規模な攻撃は準備が終わると始まります。襲撃者2体を倒すか追い返しましょう。負傷した敵は退却することがあります。戦士は食事で一時的に離れることがあります。防衛に失敗したら以前のセーブを使うか、やり直してください。
 [lesson defensive-tactics repel title]
-
+練習用の攻撃を撃退する
 [lesson defensive-tactics repel instruction]
-
+敵が攻撃しています。警備領域に戦士を配置し、食堂への補給を続けましょう。
 [lesson defensive-tactics repel help]
-
+小規模な攻撃は準備が終わると始まります。襲撃者2体を倒すか追い返しましょう。負傷した敵は退却することがあります。戦士は食事で一時的に離れることがあります。防衛に失敗したら以前のセーブを使うか、やり直してください。
 [lesson defensive-tactics repel marker]
-
+練習用の攻撃を撃退する
 [lesson defensive-tactics counterattack hint]
-
+敵の巣の上に戦闘の旗を置き、戦士を3体要請し、半径を4以下にします。 警備領域と戦闘の旗は戦士の取り合いになります。警備のマスに軍が引き留められるなら消しましょう。戦士が移動し攻撃している間も食料を確保してください。
 [lesson defensive-tactics counterattack title]
-
+集中した反撃を指揮する
 [lesson defensive-tactics counterattack instruction]
-
+敵の巣の上に戦闘の旗を置き、戦士を3体要請し、半径を4以下にします。
 [lesson defensive-tactics counterattack help]
-
+警備領域と戦闘の旗は戦士の取り合いになります。警備のマスに軍が引き留められるなら消しましょう。戦士が移動し攻撃している間も食料を確保してください。
 [lesson defensive-tactics counterattack marker]
-
+集中した反撃を指揮する
 [lesson healing build compact]
-
+建設 → 病院。通路を残し、建設員を割り当てます。
 [lesson healing heal compact]
-
+負傷した労働者が病院で回復するのを待ちます。
 [lesson walking-training build compact]
-
+建設 → 走路。周囲に空間を残します。
 [lesson walking-training train compact]
-
+労働者が走路の訓練を終えるのを待ちます。
 [lesson swimming build compact]
-
+建設 → プール。池の西に置きます。
 [lesson swimming train compact]
-
+労働者が泳ぎを覚えるのを待ちます。
 [lesson swimming water-job compact]
-
+建設 → 学校。木材と藻を運ぶ建設員を割り当てます。
 [lesson schools build compact]
-
+建設 → 学校。木材と藻を運ぶ建設員を割り当てます。
 [lesson schools learn compact]
-
+労働者が学校の訓練を終えるのを待ちます。
 [lesson upgrades upgrade compact]
-
+走路を選択 → 改良。熟練の建設員を割り当てます。
 [lesson upgrades train compact]
-
+労働者が改良済みの走路で訓練するのを待ちます。
 [lesson warrior-training produce compact]
-
+巣 → 戦士のみ。戦士2体分の小麦を補給します。
 [lesson warrior-training build compact]
-
+建設 → 兵舎。周囲に空間を残します。
 [lesson warrior-training train compact]
-
+戦士が兵舎の訓練を終えるのを待ちます。
 [lesson fortifications tower compact]
-
+建設 → 防衛塔。印のある区域に置きます。
 [lesson fortifications walls compact]
-
+壁を2区画建て、塔の西側の通路を空けます。
 [lesson fortifications supply compact]
-
+塔を選択 → 補給係。石2個が届くのを待ちます。
 [lesson fortifications hold compact]
-
+攻撃者に備え、塔への補給を続けます。
 [lesson defensive-tactics scout compact]
-
+旗 → 偵察。敵拠点に置き、偵察兵を1体割り当てます。
 [lesson defensive-tactics guard compact]
-
+旗 → 警備領域。4マスを塗り、戦士2体の到着を待ちます。
 [lesson defensive-tactics repel compact]
-
+警備領域を守り、食堂への補給を続けます。
 [lesson defensive-tactics counterattack compact]
-
+戦闘の旗 → 敵の巣。戦士3体、半径4以下にします。
 [library GL only]
 GL のみ
 [Grassland]
@@ -6785,6 +6785,6 @@ GL のみ
 [Fish amount]
 魚の量
 [scenario messages]
-
+メッセージ ▸
 [Camp-site amount]
 野営地の数

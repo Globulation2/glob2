@@ -6359,421 +6359,421 @@ Volbu se nepodařilo uložit. Zvuk je stále vypnutý. Zkuste to znovu.
 [audio choices description]
 Ticho: ztlumený reproduktor. Zvuk: reproduktor se zvukovými vlnami.
 [intro menu]
-
+Úvod
 [intro briefing]
-
+Naučte se nepřímé ovládání: prozkoumejte okolí pomocí praporu, zásobujte kolonii a veďte útok.
 [intro try]
-
+Spustit úvod
 [intro preflight]
-
+Vaši globulové jednají samostatně. Jejich úkoly určujete pomocí budov a praporů. V tomto krátkém úvodu prozkoumáte orientační bod, rozšíříte zásobování, zvýšíte počet dělníků a povedete malý útok.
 [intro preflight save]
-
+Vyhraďte si asi 10 minut. Hru můžete uložit v herní nabídce a pokračovat přes Načíst hru. Platí běžná pravidla hladu a boje. Pro další dovednosti zvolte v hlavní nabídce výukové lekce.
 [intro preference failed]
-
+Vaši volbu se nepodařilo uložit. Můžete pokračovat ve hře; doporučení se může příště zobrazit znovu.
 [intro goal scout]
-
+Prozkoumat kamenný orientační bod
 [intro goal build]
-
+Postavit další Hospodu
 [intro goal supply]
-
+Zásobovat novou Hospodu
 [intro goal grow]
-
+Zvýšit počet dělníků
 [intro goal attack]
-
+Zničit nepřátelský Úl
 [intro instruction scout]
-
+Otevřete prapory a umístěte Průzkumný prapor na kameny východně od kolonie. Přidělte jednoho průzkumníka. Sledujte jeho cestu k praporu.
 [intro instruction build]
-
+Otevřete stavbu a umístěte Hospodu poblíž pšenice. Přidělte dostupné dělníky ke stavbě. Stávající Hospodu udržujte zásobenou.
 [intro instruction supply]
-
+Vyberte dokončenou novou Hospodu a přidělte jí alespoň jednoho zásobovače. Počkejte, až dělník doručí pšenici.
 [intro instruction grow]
-
+Vyberte Úl. Nastavte požadovaný počet dělníků alespoň na 2 a výrobní poměry pouze na dělníky. Během narození nového dělníka zásobujte obě Hospody.
 [intro instruction attack]
-
+Najděte nepřátelský Úl dále na východě. Nasměrujte na něj válečníky Válečným praporem. Potřebujete-li připomenout postup, otevřete nápovědu.
 [intro help]
-
+Nápověda / proč?
 [intro help scout]
-
+Pomocí minimapy posuňte pohled na východ a najděte kameny. V praporech zvolte Průzkumný prapor, umístěte jej na kameny a ukončete umísťování vedlejším tlačítkem myši. Vyberte prapor a požadujte 1 průzkumníka. Prapory jednotky žádají, nepřemisťují je okamžitě. Průzkumníci se mohou zastavit na jídlo.
 [intro help build]
-
+Stavba spotřebovává dřevo dodané dělníky. V paletě budov zvolte Hospodu, umístěte ji na volný terén poblíž pšenice a požadujte 2 stavitele. Požadovaný počet není počet již přítomných dělníků. Ponechte zásobovače u stávající Hospody i Úlu. Počítá se každé platné místo.
 [intro help supply]
-
+Stavba a běžné zásobování mají samostatné požadované počty dělníků. Vyberte dokončenou Hospodu a zvyšte provozní počet. Zásobovač sklízí pšenici a nosí ji sem. Hladoví globulové jedí v Hospodách; bez zásobovačů zásoby časem dojdou. Udržujte přístup k pšenici.
 [intro help grow]
-
+Úl spotřebovává pšenici na tvorbu jednotek. Nastavte produkci dělníků na 1 a průzkumníků a válečníků na 0. Požadujte u Úlu alespoň 2 dělníky. Více zásobovačů dodá pšenici rychleji, ale chybí u jiných úkolů. Zásobujte obě Hospody.
 [intro help attack]
-
+Otevřete prapory, vyberte Válečný prapor a umístěte jej na nepřátelský Úl východně od kamenů. Vyberte prapor a požadujte až 4 válečníky. Malý poloměr je udrží pohromadě. Před výběrem praporu ukončete umísťování vedlejším tlačítkem myši. Pokud válečníci došli, vytvořte další v Úlu. Mohou se zastavit na jídlo; zásobujte Hospody.
 [intro hint scout]
-
+Průzkumník potřebuje Průzkumný prapor s přidělenými jednotkami u východních kamenů. Zkontrolujte jeho cíl a počet průzkumníků.
 [intro hint build]
-
+Pokud jste novou Hospodu odstranili, postavte další. Jinak zkontrolujte staveniště a požadovaný počet dělníků. Stávající zásobování je může zaměstnávat; zajistěte jídlo a současně uvolněte stavitele.
 [intro hint supply]
-
+Vyberte dokončenou novou Hospodu. Zkontrolujte požadovaný počet dělníků a sledujte dodávky pšenice. Dělníci potřebují čas na cestu i jídlo.
 [intro hint grow]
-
+Zkontrolujte zásobování Úlu a výrobu pouze dělníků. Při čekání na dalšího dělníka zásobujte Hospody.
 [intro hint attack]
-
+Zkontrolujte Válečný prapor, požadovaný počet válečníků a zásobování jídlem. Válečníci potřebují čas na cestu a útok.
 [intro hint no scout flag]
-
+Nebyl nalezen Průzkumný prapor s přidělenými jednotkami. Umístěte jej na kameny východně od základny a požadujte 1 průzkumníka.
 [intro hint no suppliers]
-
+Vaše nová Hospoda nebo její staveniště požaduje 0 dělníků. Vyberte ji a požadujte dělníky.
 [intro hint no war flag]
-
+Na nepřátelské základně nebyl nalezen Válečný prapor s přidělenými jednotkami. Umístěte jej na východní nepřátelský Úl a požadujte válečníky.
 [intro hint retry]
-
+Jednotka nebo budova potřebná pro tuto lekci byla ztracena. Načtěte starší uloženou hru nebo lekci restartujte z herní nabídky.
 [intro complete]
-
+Úvod dokončen
 [intro complete body]
-
+Řídili jste samostatné globuly, rozšířili zásobování i kolonii a zorganizovali útok. Pokračujte výukovými lekcemi pro výcvik, vylepšování a obranu, nebo v hlavní nabídce spusťte novou hru.
 [intro play again]
-
+Hrát znovu
 [intro restart]
-
+Restartovat úvod
 [intro restart body]
-
+Začít znovu s připravenou kolonií? Neuložený postup v tomto úvodu bude ztracen.
 [intro help touch scout]
-
+Před umístěním praporu posuňte pohled tažením po volném terénu. Najděte kameny východně od kolonie. Otevřete prapory, vyberte Průzkumný prapor, umístěte jej na kameny a potvrďte. Vyberte prapor a pomocí počtu přidělených jednotek požadujte 1 průzkumníka. Globulové cestují sami a mohou se zastavit na jídlo.
 [intro help touch build]
-
+Ve stavbě zvolte Hospodu. Umístěte ji na volný terén poblíž pšenice a potvrďte. Vyberte staveniště a požadujte 2 stavitele. Požadovaný počet neudává již přítomné dělníky. Zásobujte stávající Hospodu i Úl. Počítá se každé platné místo.
 [intro help touch supply]
-
+Vyberte dokončenou novou Hospodu a zvyšte požadovaný počet dělníků. Stavba a zásobování mají samostatné počty. Zásobovač sklízí pšenici a nosí ji sem. Hladoví globulové jedí v Hospodách; bez zásobovačů zásoby dojdou. Udržujte přístup k pšenici.
 [intro help touch grow]
-
+Vyberte Úl. Nastavte produkci dělníků na 1 a průzkumníků a válečníků na 0. Požadujte alespoň 2 dělníky. Zásobovači dodávají pšenici pro nové jednotky, ale chybí u jiných úkolů. Zásobujte obě Hospody.
 [intro help touch attack]
-
+Otevřete prapory, vyberte Válečný prapor, umístěte jej na nepřátelský Úl východně od kamenů a potvrďte. Vyberte prapor a požadujte až 4 válečníky. Malý poloměr je soustředí. Pokud žádní nezbyli, vytvořte je v Úlu. Mohou se zastavit na jídlo; zásobujte Hospody.
 [intro show destination]
-
+Zobrazit cíl
 [intro scout destination]
-
+Prozkoumat zde
 [intro attack destination]
-
+Zaútočit zde
 [intro compact scout]
-
+Prapory → Průzkumný prapor. Umístěte na kameny; přidělte 1 průzkumníka.
 [intro compact build]
-
+Stavba → Hospoda. Umístěte poblíž pšenice; přidělte 2 stavitele.
 [intro compact supply]
-
+Vyberte novou Hospodu; přidělte alespoň 1 zásobovače. Počkejte na pšenici.
 [intro compact grow]
-
+Vyberte Úl; přidělte 2 zásobovače. Vytvářejte pouze dělníky.
 [intro compact attack]
-
+Prapory → Válečný prapor. Umístěte na nepřátelský Úl; přidělte válečníky.
 [tutorial lessons]
-
+Výukové lekce
 [tutorial restart]
-
+Restartovat lekci
 [tutorial restart body]
-
+Restartovat tuto lekci s připravenou kolonií? Neuložený postup bude ztracen.
 [tutorial complete]
-
+Lekce dokončena
 [tutorial food title]
-
+Procvičení zásobování
 [tutorial food briefing]
-
+Procvičte rozšíření zásobování: postavte další Hospodu, přidělte zásobovače a sledujte dodávky pšenice.
 [tutorial food complete]
-
+Postavili jste Hospodu a zásobili ji pšenicí. Vyzkoušejte další lekci nebo se vraťte do hlavní nabídky.
 [tutorial unavailable]
-
+Výukové lekce se nepodařilo načíst.
 [lesson healing title]
-
+Nemocnice a léčení
 [lesson healing briefing]
-
+Postavte Nemocnici a pomozte zraněnému dělníkovi zotavit se. Kolonie začíná nasycená, s jedním zraněným dělníkem.
 [lesson healing complete]
-
+Vaše Nemocnice uzdravila zraněného globula. Zásobujte Hospody: hlad může jednotky znovu zranit.
 [lesson healing build hint]
-
+Postavte Nemocnici na volném terénu; přidělte 2 stavitele. Ponechte prostor pro vstup i výstup globulů. Nemocnice léčí zranění; Hospody zajišťují jídlo. Tento pacient už je nasycený.
 [lesson healing build title]
-
+Postavit Nemocnici
 [lesson healing build instruction]
-
+Postavte Nemocnici na volném terénu; přidělte 2 stavitele.
 [lesson healing build help]
-
+Ponechte prostor pro vstup i výstup globulů. Nemocnice léčí zranění; Hospody zajišťují jídlo. Tento pacient už je nasycený.
 [lesson healing build marker]
-
+Postavit Nemocnici
 [lesson healing heal hint]
-
+Udržujte Nemocnici přístupnou. Sledujte zotavování zraněného dělníka. Globulové vyhledávají léčení samostatně. Sledujte zraněného dělníka, nikoli nově narozenou jednotku. Pokud zemře, restartujte nebo načtěte uloženou hru.
 [lesson healing heal title]
-
+Nechat pacienta zotavit se
 [lesson healing heal instruction]
-
+Udržujte Nemocnici přístupnou. Sledujte zotavování zraněného dělníka.
 [lesson healing heal help]
-
+Globulové vyhledávají léčení samostatně. Sledujte zraněného dělníka, nikoli nově narozenou jednotku. Pokud zemře, restartujte nebo načtěte uloženou hru.
 [lesson healing heal marker]
-
+Nechat pacienta zotavit se
 [lesson walking-training title]
-
+Výcvik chůze
 [lesson walking-training briefing]
-
+Postavte Závodní dráhu a sledujte, jak se stávající dělník učí chodit rychleji.
 [lesson walking-training complete]
-
+Vaši dělníci se naučili chodit rychleji. Výcvik zlepšuje stávající dělníky; nenahrazuje zásobování kolonie.
 [lesson walking-training build hint]
-
+Postavte Závodní dráhu na označené mýtině; přidělte stavitele. Závodní dráha vyžaduje dřevo a kámen. Po obvodu ponechte prostor pro přístup, odchod a pozdější rozšíření.
 [lesson walking-training build title]
-
+Postavit Závodní dráhu
 [lesson walking-training build instruction]
-
+Postavte Závodní dráhu na označené mýtině; přidělte stavitele.
 [lesson walking-training build help]
-
+Závodní dráha vyžaduje dřevo a kámen. Po obvodu ponechte prostor pro přístup, odchod a pozdější rozšíření.
 [lesson walking-training build marker]
-
+Postavit Závodní dráhu
 [lesson walking-training train hint]
-
+Udržujte Závodní dráhu přístupnou a nechte dělníka dokončit výcvik. Vhodní globulové se cvičí automaticky. Ponechte několik dělníků bez zásobovacích úkolů a obě Hospody zásobené.
 [lesson walking-training train title]
-
+Vycvičit stávajícího dělníka
 [lesson walking-training train instruction]
-
+Udržujte Závodní dráhu přístupnou a nechte dělníka dokončit výcvik.
 [lesson walking-training train help]
-
+Vhodní globulové se cvičí automaticky. Ponechte několik dělníků bez zásobovacích úkolů a obě Hospody zásobené.
 [lesson swimming title]
-
+Plavání a vodní suroviny
 [lesson swimming briefing]
-
+Vycvičte plavce a pak použijte řasy z jezírka ke stavbě Školy.
 [lesson swimming complete]
-
+Plavec dodal vodní suroviny pro vaši Školu. Přístup k vodě rozšiřuje možnosti práce kolonie.
 [lesson swimming build hint]
-
+Postavte Koupaliště západně od jezírka; přidělte stavitele. Kolem Koupaliště ponechte prostor. Dělník nemůže sbírat řasy v hluboké vodě, dokud se nenaučí plavat.
 [lesson swimming build title]
-
+Postavit Koupaliště
 [lesson swimming build instruction]
-
+Postavte Koupaliště západně od jezírka; přidělte stavitele.
 [lesson swimming build help]
-
+Kolem Koupaliště ponechte prostor. Dělník nemůže sbírat řasy v hluboké vodě, dokud se nenaučí plavat.
 [lesson swimming build marker]
-
+Postavit Koupaliště
 [lesson swimming train hint]
-
+Nechte stávajícího dělníka dokončit plavecký výcvik. Jednotky volí výcvik automaticky. Udržujte zásobování a umožněte volným dělníkům přístup ke Koupališti.
 [lesson swimming train title]
-
+Vycvičit plavce
 [lesson swimming train instruction]
-
+Nechte stávajícího dělníka dokončit plavecký výcvik.
 [lesson swimming train help]
-
+Jednotky volí výcvik automaticky. Udržujte zásobování a umožněte volným dělníkům přístup ke Koupališti.
 [lesson swimming water-job hint]
-
+Postavte Školu poblíž kolonie; přidělte stavitele, kteří přinesou dřevo a řasy. Řasy rostou v jezírku. Vycvičený plavec pro ně musí do vody. Školu postavte na volném terénu s přístupem pro zásobovače.
 [lesson swimming water-job title]
-
+Použít řasy z jezírka
 [lesson swimming water-job instruction]
-
+Postavte Školu poblíž kolonie; přidělte stavitele, kteří přinesou dřevo a řasy.
 [lesson swimming water-job help]
-
+Řasy rostou v jezírku. Vycvičený plavec pro ně musí do vody. Školu postavte na volném terénu s přístupem pro zásobovače.
 [lesson swimming water-job marker]
-
+Použít řasy z jezírka
 [lesson schools title]
-
+Školy a schopnosti dělníků
 [lesson schools briefing]
-
+Využijte připravené plavce ke stavbě Školy a pak sledujte, jak se dělníci učí stavět a sklízet.
 [lesson schools complete]
-
+Vaše Škola zlepšila schopnosti dělníků. Zkušení stavitelé umožňují vylepšování; lepší sklizeň podporuje rostoucí hospodářství.
 [lesson schools build hint]
-
+Postavte Školu na mýtině; přidělte stavitele. Kolonie už má plavce pro řasy. Ponechte přístup ke dřevu a vodě. Ovocné stromy poskytují suroviny pro prestiž; jídlo stále pochází z pšenice.
 [lesson schools build title]
-
+Postavit Školu
 [lesson schools build instruction]
-
+Postavte Školu na mýtině; přidělte stavitele.
 [lesson schools build help]
-
+Kolonie už má plavce pro řasy. Ponechte přístup ke dřevu a vodě. Ovocné stromy poskytují suroviny pro prestiž; jídlo stále pochází z pšenice.
 [lesson schools build marker]
-
+Postavit Školu
 [lesson schools learn hint]
-
+Nechte stávajícího dělníka dokončit výuku ve Škole. Škola učí stavbu a sklizeň současně. Ponechte dostupné dělníky; samotné staveniště nikoho nevyškolí.
 [lesson schools learn title]
-
+Naučit stavbu a sklizeň
 [lesson schools learn instruction]
-
+Nechte stávajícího dělníka dokončit výuku ve Škole.
 [lesson schools learn help]
-
+Škola učí stavbu a sklizeň současně. Ponechte dostupné dělníky; samotné staveniště nikoho nevyškolí.
 [lesson upgrades title]
-
+Vylepšování budov
 [lesson upgrades briefing]
-
+Využijte připravené zkušené dělníky k vylepšení Závodní dráhy a výcviku nad první úroveň.
 [lesson upgrades complete]
-
+Vylepšili jste budovu a využili její lepší výcvik. Další vylepšení opakují tento cyklus s lepšími Školami, schopnostmi, materiály a větším prostorem až do úrovně 3.
 [lesson upgrades upgrade hint]
-
+Vyberte Závodní dráhu, zvolte Vylepšit a přidělte zkušené stavitele. Tito dělníci již získali schopnosti Školy první úrovně. Vylepšení vyžadují více prostoru a materiálu a přerušují služby budovy. Zrušená vylepšení se nepočítají.
 [lesson upgrades upgrade title]
-
+Vylepšit Závodní dráhu
 [lesson upgrades upgrade instruction]
-
+Vyberte Závodní dráhu, zvolte Vylepšit a přidělte zkušené stavitele.
 [lesson upgrades upgrade help]
-
+Tito dělníci již získali schopnosti Školy první úrovně. Vylepšení vyžadují více prostoru a materiálu a přerušují služby budovy. Zrušená vylepšení se nepočítají.
 [lesson upgrades upgrade marker]
-
+Vylepšit Závodní dráhu
 [lesson upgrades train hint]
-
+Nechte stávajícího dělníka naučit se rychlejší chůzi na vylepšené Závodní dráze. Dokončené vylepšení zlepšuje dostupný výcvik. Vyšší úrovně budov vyžadují lepší stavební schopnosti; zobrazená úroveň začíná na 1.
 [lesson upgrades train title]
-
+Využít lepší výcvik
 [lesson upgrades train instruction]
-
+Nechte stávajícího dělníka naučit se rychlejší chůzi na vylepšené Závodní dráze.
 [lesson upgrades train help]
-
+Dokončené vylepšení zlepšuje dostupný výcvik. Vyšší úrovně budov vyžadují lepší stavební schopnosti; zobrazená úroveň začíná na 1.
 [lesson warrior-training title]
-
+Tvorba a výcvik válečníků
 [lesson warrior-training briefing]
-
+Vytvořte válečníky v Úlu a pak je vycvičte na Cvičišti.
 [lesson warrior-training complete]
-
+Řídili jste vojenskou výrobu a vycvičili válečníky. Udržujte jejich zásobování; i bojové jednotky potřebují jíst.
 [lesson warrior-training produce hint]
-
+Nastavte Úl pouze na válečníky; přidělte zásobovače a počkejte na 2 válečníky. Nastavte poměry dělníků a průzkumníků na 0 a válečníků na 1. Úl spotřebovává pšenici na narození jednotek. Poměry určují druh výroby; zásobovači umožňují její chod.
 [lesson warrior-training produce title]
-
+Vytvořit dva válečníky
 [lesson warrior-training produce instruction]
-
+Nastavte Úl pouze na válečníky; přidělte zásobovače a počkejte na 2 válečníky.
 [lesson warrior-training produce help]
-
+Nastavte poměry dělníků a průzkumníků na 0 a válečníků na 1. Úl spotřebovává pšenici na narození jednotek. Poměry určují druh výroby; zásobovači umožňují její chod.
 [lesson warrior-training produce marker]
-
+Vytvořit dva válečníky
 [lesson warrior-training build hint]
-
+Postavte Cvičiště na mýtině; přidělte stavitele. Jakmile máte dost válečníků, zastavte nebo omezte jejich výrobu. Cvičiště učí bojové schopnosti a potřebuje volný prostor kolem.
 [lesson warrior-training build title]
-
+Postavit Cvičiště
 [lesson warrior-training build instruction]
-
+Postavte Cvičiště na mýtině; přidělte stavitele.
 [lesson warrior-training build help]
-
+Jakmile máte dost válečníků, zastavte nebo omezte jejich výrobu. Cvičiště učí bojové schopnosti a potřebuje volný prostor kolem.
 [lesson warrior-training build marker]
-
+Postavit Cvičiště
 [lesson warrior-training train hint]
-
+Nechte válečníka dokončit cvičení na Cvičišti. Válečníci vyhledávají výcvik automaticky. Zásobujte Hospody a udržujte Cvičiště přístupné. Samotná stavba Cvičiště neznamená dokončený výcvik.
 [lesson warrior-training train title]
-
+Vycvičit válečníky
 [lesson warrior-training train instruction]
-
+Nechte válečníka dokončit cvičení na Cvičišti.
 [lesson warrior-training train help]
-
+Válečníci vyhledávají výcvik automaticky. Zásobujte Hospody a udržujte Cvičiště přístupné. Samotná stavba Cvičiště neznamená dokončený výcvik.
 [lesson fortifications title]
-
+Věže a ochranné hradby
 [lesson fortifications briefing]
-
+Postavte zásobenou věž a ochranné hradby a pak je vyzkoušejte proti malému útoku.
 [lesson fortifications complete]
-
+Vaše zásobená obrana zastavila cvičný útok. Věže potřebují kámen a hradby průchody pro zásobovače.
 [lesson fortifications tower hint]
-
+Postavte věž v označené oblasti; přidělte stavitele. Umístěte ji poblíž kamenů a ponechte přístup zásobovačům. Útok nezačne před splněním přípravných cílů.
 [lesson fortifications tower title]
-
+Postavit Obrannou věž
 [lesson fortifications tower instruction]
-
+Postavte věž v označené oblasti; přidělte stavitele.
 [lesson fortifications tower help]
-
+Umístěte ji poblíž kamenů a ponechte přístup zásobovačům. Útok nezačne před splněním přípravných cílů.
 [lesson fortifications tower marker]
-
+Postavit Obrannou věž
 [lesson fortifications walls hint]
-
+Postavte alespoň 2 úseky hradby poblíž věže; ponechte volný západní přístup. Hradby spotřebovávají kámen a každé staveniště žádá dělníky. Neuzavřete věž: zásobovači potřebují cestu. Označený západní průchod musí zůstat volný.
 [lesson fortifications walls title]
-
+Chránit věž hradbami
 [lesson fortifications walls instruction]
-
+Postavte alespoň 2 úseky hradby poblíž věže; ponechte volný západní přístup.
 [lesson fortifications walls help]
-
+Hradby spotřebovávají kámen a každé staveniště žádá dělníky. Neuzavřete věž: zásobovači potřebují cestu. Označený západní průchod musí zůstat volný.
 [lesson fortifications walls marker]
-
+Chránit věž hradbami
 [lesson fortifications supply hint]
-
+Vyberte věž a požadujte zásobovače. Počkejte alespoň na 2 kameny. Dokončená věž potřebuje provozní počet dělníků pro dodávky munice. Je oddělený od počtu pro stavbu.
 [lesson fortifications supply title]
-
+Dodávat munici
 [lesson fortifications supply instruction]
-
+Vyberte věž a požadujte zásobovače. Počkejte alespoň na 2 kameny.
 [lesson fortifications supply help]
-
+Dokončená věž potřebuje provozní počet dělníků pro dodávky munice. Je oddělený od počtu pro stavbu.
 [lesson fortifications supply marker]
-
+Dodávat munici
 [lesson fortifications hold hint]
-
+Blíží se cvičný válečník. Udržujte věž zásobenou a přístupnou. Vydržte, dokud útočníka neporazíte nebo nezaženete. Hradba blokující zásobovače může věž připravit o munici. Pokud kolonie selže, restartujte nebo načtěte starší uloženou hru.
 [lesson fortifications hold title]
-
+Vyzkoušet opevnění
 [lesson fortifications hold instruction]
-
+Blíží se cvičný válečník. Udržujte věž zásobenou a přístupnou.
 [lesson fortifications hold help]
-
+Vydržte, dokud útočníka neporazíte nebo nezaženete. Hradba blokující zásobovače může věž připravit o munici. Pokud kolonie selže, restartujte nebo načtěte starší uloženou hru.
 [lesson fortifications hold marker]
-
+Vyzkoušet opevnění
 [lesson defensive-tactics title]
-
+Hlídané oblasti a taktika praporů
 [lesson defensive-tactics briefing]
-
+Prozkoumejte cvičného nepřítele, připravte hlídanou oblast, braňte ji a pak zorganizujte protiútok.
 [lesson defensive-tactics complete]
-
+Prozkoumali jste okolí, ubránili hlídanou oblast a vedli protiútok. Počty u praporů žádají jednotky; poloměr určuje, kde pracují.
 [lesson defensive-tactics scout hint]
-
+Umístěte Průzkumný prapor na nepřátelskou základnu; přidělte 1 průzkumníka. Prapory automaticky žádají jednotky. Průzkumník odhaluje aktuální dění v mlze války; může se zastavit na jídlo.
 [lesson defensive-tactics scout title]
-
+Prozkoumat nepřátelskou základnu
 [lesson defensive-tactics scout instruction]
-
+Umístěte Průzkumný prapor na nepřátelskou základnu; přidělte 1 průzkumníka.
 [lesson defensive-tactics scout help]
-
+Prapory automaticky žádají jednotky. Průzkumník odhaluje aktuální dění v mlze války; může se zastavit na jídlo.
 [lesson defensive-tactics scout marker]
-
+Prozkoumat nepřátelskou základnu
 [lesson defensive-tactics guard hint]
-
+Vyznačte hlídanou oblast v označeném prostoru a nechte do ní dorazit 2 válečníky. Otevřete prapory, zvolte hlídání a označte alespoň 4 políčka uvnitř oblasti. Hlídané oblasti přitahují nečinné válečníky. Zakázané oblasti blokují průchod; oblasti čištění žádají odstranění surovin.
 [lesson defensive-tactics guard title]
-
+Připravit hlídanou oblast
 [lesson defensive-tactics guard instruction]
-
+Vyznačte hlídanou oblast v označeném prostoru a nechte do ní dorazit 2 válečníky.
 [lesson defensive-tactics guard help]
-
+Otevřete prapory, zvolte hlídání a označte alespoň 4 políčka uvnitř oblasti. Hlídané oblasti přitahují nečinné válečníky. Zakázané oblasti blokují průchod; oblasti čištění žádají odstranění surovin.
 [lesson defensive-tactics guard marker]
-
+Připravit hlídanou oblast
 [lesson defensive-tactics repel hint]
-
+Nepřítel útočí. Udržujte válečníky v hlídané oblasti a Hospody zásobené. Malý útok začne po přípravách. Porazte nebo zažeňte oba útočníky; zranění nepřátelé mohou ustoupit. Válečníci mohou dočasně odejít na jídlo. Pokud obrana selže, načtěte starší uloženou hru nebo restartujte.
 [lesson defensive-tactics repel title]
-
+Odrazit cvičný útok
 [lesson defensive-tactics repel instruction]
-
+Nepřítel útočí. Udržujte válečníky v hlídané oblasti a Hospody zásobené.
 [lesson defensive-tactics repel help]
-
+Malý útok začne po přípravách. Porazte nebo zažeňte oba útočníky; zranění nepřátelé mohou ustoupit. Válečníci mohou dočasně odejít na jídlo. Pokud obrana selže, načtěte starší uloženou hru nebo restartujte.
 [lesson defensive-tactics repel marker]
-
+Odrazit cvičný útok
 [lesson defensive-tactics counterattack hint]
-
+Umístěte Válečný prapor na nepřátelský Úl; požadujte 3 válečníky a poloměr nejvýše 4. Hlídané oblasti a Válečné prapory soupeří o válečníky. Pokud hlídaná políčka zadržují armádu, odstraňte je. Během cesty i útoku zajistěte jídlo.
 [lesson defensive-tactics counterattack title]
-
+Vést soustředěný protiútok
 [lesson defensive-tactics counterattack instruction]
-
+Umístěte Válečný prapor na nepřátelský Úl; požadujte 3 válečníky a poloměr nejvýše 4.
 [lesson defensive-tactics counterattack help]
-
+Hlídané oblasti a Válečné prapory soupeří o válečníky. Pokud hlídaná políčka zadržují armádu, odstraňte je. Během cesty i útoku zajistěte jídlo.
 [lesson defensive-tactics counterattack marker]
-
+Vést soustředěný protiútok
 [lesson healing build compact]
-
+Stavba → Nemocnice. Ponechte přístup; přidělte stavitele.
 [lesson healing heal compact]
-
+Nechte zraněného dělníka vyléčit v Nemocnici.
 [lesson walking-training build compact]
-
+Stavba → Závodní dráha. Ponechte prostor kolem.
 [lesson walking-training train compact]
-
+Nechte dělníka dokončit výcvik na Závodní dráze.
 [lesson swimming build compact]
-
+Stavba → Koupaliště, západně od jezírka.
 [lesson swimming train compact]
-
+Nechte dělníka naučit se plavat.
 [lesson swimming water-job compact]
-
+Stavba → Škola. Přidělte stavitele pro dřevo a řasy.
 [lesson schools build compact]
-
+Stavba → Škola. Přidělte stavitele pro dřevo a řasy.
 [lesson schools learn compact]
-
+Nechte dělníka dokončit výuku ve Škole.
 [lesson upgrades upgrade compact]
-
+Závodní dráha → Vylepšit. Přidělte zkušené stavitele.
 [lesson upgrades train compact]
-
+Nechte dělníka cvičit na vylepšené Závodní dráze.
 [lesson warrior-training produce compact]
-
+Úl → pouze válečníci. Dodejte pšenici pro 2 válečníky.
 [lesson warrior-training build compact]
-
+Stavba → Cvičiště. Ponechte prostor kolem.
 [lesson warrior-training train compact]
-
+Nechte válečníka dokončit cvičení na Cvičišti.
 [lesson fortifications tower compact]
-
+Stavba → Věž. Umístěte v označené oblasti.
 [lesson fortifications walls compact]
-
+Postavte 2 hradby. Ponechte západní přístup k věži volný.
 [lesson fortifications supply compact]
-
+Věž → zásobovači. Počkejte na 2 kameny.
 [lesson fortifications hold compact]
-
+Udržujte věž zásobenou proti útočníkovi.
 [lesson defensive-tactics scout compact]
-
+Prapory → Průzkum. Umístěte u nepřítele; přidělte 1 průzkumníka.
 [lesson defensive-tactics guard compact]
-
+Prapory → Hlídání. Označte 4 políčka; počkejte na 2 válečníky.
 [lesson defensive-tactics repel compact]
-
+Udržte hlídanou oblast. Zásobujte Hospody.
 [lesson defensive-tactics counterattack compact]
-
+Válečný prapor → nepřátelský Úl. Požadujte 3 válečníky; poloměr ≤4.
 [library %0 · revision %1]
 %0 · revize %1
 [Grassland]
@@ -6785,6 +6785,6 @@ Zvířecí stezky
 [Fish amount]
 Množství ryb
 [scenario messages]
-
+Zprávy ▸
 [Camp-site amount]
 Počet tábořišť

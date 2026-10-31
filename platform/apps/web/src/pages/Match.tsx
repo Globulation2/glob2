@@ -93,7 +93,7 @@ function TeamCards({ detail }: { detail: MatchDetail }) {
                   ? translate('Winner')
                   : outcome === 'draw'
                     ? translate('Draw')
-                    : outcome
+                    : statusLabel(outcome)
                 : translate('Team')}
             </div>
             <div style={{ fontWeight: 750, fontSize: 'var(--text-lg)' }}>
@@ -172,8 +172,10 @@ function Participants({ detail }: { detail: MatchDetail }) {
                 <td className="num">
                   {r ? (
                     <>
-                      {rating(r.before)} {translate(' → ')}
-                      {rating(r.after)}
+                      <bdi dir="ltr">
+                        {rating(r.before)} {translate(' → ')}
+                        {rating(r.after)}
+                      </bdi>
                       {r.provisional && (
                         <span className="caption"> {translate(' (provisional)')}</span>
                       )}
@@ -184,9 +186,9 @@ function Participants({ detail }: { detail: MatchDetail }) {
                 </td>
                 <td className="num hide-phone">
                   {r ? (
-                    <span className={r.after >= r.before ? 'up' : 'dn'}>
+                    <bdi dir="ltr" className={r.after >= r.before ? 'up' : 'dn'}>
                       {signed(r.after - r.before)}
-                    </span>
+                    </bdi>
                   ) : (
                     ''
                   )}
@@ -592,7 +594,7 @@ function Statistics({ detail }: { detail: MatchDetail }) {
       .map((key) => ({ key, label: statisticLabel(key), yesNo: false })),
   ];
   const value = (row: { key: string; yesNo?: boolean }, v: number | undefined) =>
-    v === undefined ? '–' : row.yesNo ? (v ? translate('Yes') : 'No') : v;
+    v === undefined ? '–' : row.yesNo ? (v ? translate('Yes') : translate('No')) : v;
   return (
     <>
       <h2>{translate('Final statistics')}</h2>

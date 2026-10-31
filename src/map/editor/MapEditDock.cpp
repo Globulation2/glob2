@@ -55,8 +55,8 @@ void MapEdit::drawStatus()
 		return;
 	const auto &theme = Glob2UI::inGameTheme();
 	const int pad = 5, gap = 4;
-	// Beside the zoom controls (MapZoomControls.h: 144 pixels from x 8, 22 high
-	// ending 4 above the bottom), on their baseline.
+	// Beside the zoom controls (MapZoomControls.h: at most 144 pixels from x 8),
+	// sharing their bottom margin; caption metrics determine their height.
 	const int margin = phone ? 8 : 8 + 144 + 8;
 	const int mapRight = gfx->getW() - dockWidth();
 	int bottom = gfx->getH() - 4;

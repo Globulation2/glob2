@@ -6359,421 +6359,421 @@ Alegerea nu a putut fi salvată. Sunetul rămâne oprit. Încearcă din nou.
 [audio choices description]
 Liniște: un difuzor dezactivat. Sunet: un difuzor cu unde sonore.
 [intro menu]
-
+Introducere
 [intro briefing]
-
+Învățați controlul indirect: cercetați cu un steag, aprovizionați colonia și dirijați un atac.
 [intro try]
-
+Începeți introducerea
 [intro preflight]
-
+Globulele acționează autonom. Le alegeți sarcinile prin clădiri și steaguri. În această scurtă introducere, cercetați un reper, extindeți aprovizionarea cu alimente, măriți forța de muncă și dirijați un mic atac.
 [intro preflight save]
-
+Planificați aproximativ 10 minute. Puteți salva din meniul jocului și puteți relua alegând Încărcare joc. Se aplică regulile normale de foame și luptă. Alegeți lecții de tutorial din meniul principal pentru a exersa mai multe abilități.
 [intro preference failed]
-
+Alegerea dvs. nu a putut fi salvată. Puteți continua să jucați; această recomandare poate apărea din nou data viitoare.
 [intro goal scout]
-
+Cercetați reperul de piatră
 [intro goal build]
-
+Construiți încă un Popas
 [intro goal supply]
-
+Aprovizionați noul Popas
 [intro goal grow]
-
+Creșteți forța de muncă
 [intro goal attack]
-
+Distrugeți Stupul inamic
 [intro instruction scout]
-
+Deschideți Steaguri și plasați un Steag de explorare pe depozitul de piatră de la est de colonie. Alocați un explorator și urmăriți-l deplasându-se spre steag.
 [intro instruction build]
-
+Deschideți Construire și plasați un Popas lângă grâu. Alocați muncitorii disponibili pentru construcție. Mențineți Popasul existent aprovizionat.
 [intro instruction supply]
-
+Selectați noul Popas terminat și alocați-i cel puțin un furnizor. Așteptați ca un muncitor să livreze grâu.
 [intro instruction grow]
-
+Selectați Stupul. Solicitați cel puțin 2 muncitori pentru aprovizionare și produceți numai muncitori. Mențineți ambele Popasuri aprovizionate până se naște un muncitor nou.
 [intro instruction attack]
-
+Găsiți Stupul inamic mai la est. Folosiți un Steag de luptă pentru a dirija războinicii împotriva lui. Consultați ajutorul dacă aveți nevoie de o reamintire.
 [intro help]
-
+Ajutor / de ce?
 [intro help scout]
-
+Folosiți minimapa pentru a deplasa vederea spre est și a găsi depozitul de piatră. În Steaguri, alegeți Steag de explorare și plasați-l pe piatră. Încheiați plasarea cu butonul secundar al mouse-ului. Selectați steagul și solicitați 1 explorator. Steagurile solicită unități; nu le deplasează instantaneu. Exploratorii se pot opri să mănânce.
 [intro help build]
-
+Construcția consumă lemnul livrat de muncitori. Alegeți Popas din paleta de clădiri, plasați-l pe teren liber lângă grâu și solicitați 2 constructori. Numărul cerut de muncitori este o solicitare, nu numărul celor deja prezenți. Păstrați furnizori la Popasul existent și la Stup. Orice locație validă contează.
 [intro help supply]
-
+Construcția și aprovizionarea zilnică au numere cerute de muncitori separate. Selectați Popasul terminat și măriți numărul cerut pentru funcționare. Un furnizor adună grâu și îl aduce aici. Globulele flămânde mănâncă în Popasuri; fără furnizori, rezervele unei clădiri se epuizează. Mențineți accesul la grâu.
 [intro help grow]
-
+Stupul consumă grâu pentru a produce unități. Setați producția de muncitori la 1, iar producția de exploratori și războinici la 0. Măriți numărul cerut de muncitori ai Stupului la 2 sau mai mult. Mai mulți furnizori livrează grâu mai repede, dar concurează cu alte sarcini pentru muncitori. Aprovizionați ambele Popasuri cu alimente.
 [intro help attack]
-
+Deschideți Steaguri, alegeți Steag de luptă și plasați-l peste Stupul inamic la est de piatră. Selectați steagul și solicitați până la 4 războinici. O rază mică îi ține grupați. Încheiați plasarea cu butonul secundar al mouse-ului înainte de a selecta steagul. Dacă nu mai aveți războinici, produceți alții la Stup. Războinicii se pot opri să mănânce; mențineți Popasurile aprovizionate.
 [intro hint scout]
-
+Exploratorul are nevoie de un Steag de explorare cu unități alocate pe depozitul de piatră din est. Verificați poziția steagului și numărul de exploratori solicitați.
 [intro hint build]
-
+Dacă ați eliminat noul Popas, construiți altul. Altfel, verificați șantierul și numărul cerut de muncitori. Sarcinile de aprovizionare vă pot ocupa muncitorii; mențineți hrana disponibilă și eliberați constructori.
 [intro hint supply]
-
+Selectați noul Popas terminat. Verificați numărul cerut de muncitori și urmăriți livrările de grâu. Muncitorii pot avea nevoie de timp pentru deplasare sau masă.
 [intro hint grow]
-
+Verificați dacă Stupul este alimentat cu grâu și produce numai muncitori. Păstrați popasurile aprovizionate cu alimente în timp ce așteptați un alt lucrător.
 [intro hint attack]
-
+Verificați-vă steagul de luptă, numărul de războinici solicitați și aprovizionarea cu alimente. Războinicii tăi au nevoie de timp pentru a călători și a ataca.
 [intro hint no scout flag]
-
+Nu s-a găsit niciun Steag de explorare cu unități alocate. Plasați unul pe piatra de la est de bază și solicitați 1 explorator.
 [intro hint no suppliers]
-
+Noul Popas sau șantierul are numărul cerut de muncitori 0. Selectați-l și solicitați muncitori.
 [intro hint no war flag]
-
+Nu a fost găsit niciun steag de luptă atribuit la baza inamică. Plasați unul peste Stupul inamicului estic și cereți războinici.
 [intro hint retry]
-
+O unitate sau o clădire necesară pentru această lecție a fost pierdută. Încărcați o salvare anterioară sau reporniți această lecție din meniul jocului.
 [intro complete]
-
+Introducere încheiată
 [intro complete body]
-
+Ați dirijat globule autonome, ați extins aprovizionarea cu alimente, ați dezvoltat colonia și ați organizat un atac. Continuați cu Lecții de instruire pentru antrenament, modernizări și apărare sau reveniți la meniul principal pentru a începe un meci.
 [intro play again]
-
+Joacă din nou
 [intro restart]
-
+Reporniți introducerea
 [intro restart body]
-
+Reporniți din colonia pregătită? Progresul nesalvat în această introducere se va pierde.
 [intro help touch scout]
-
+Trageți pe terenul gol pentru a muta vederea înainte de a plasa un steag. Găsiți piatra la est de colonie. Deschideți Steaguri, alegeți Steag de explorare, plasați-l pe piatră și confirmați. Selectați steagul și solicitați 1 explorator folosind numărul cerut de unități alocate. Globulele se deplasează autonom și se pot opri să mănânce.
 [intro help touch build]
-
+Alegeți Popas din Construire. Plasați-l pe teren liber lângă grâu și confirmați. Selectați șantierul și solicitați 2 constructori. Numărul cerut de muncitori este o solicitare, nu numărul celor deja prezenți. Mențineți Popasul existent și Stupul aprovizionate. Orice locație validă contează.
 [intro help touch supply]
-
+Selectați noul Popas terminat și măriți numărul cerut de muncitori alocați. Construcția și aprovizionarea zilnică au ținte separate. Un furnizor adună grâu și îl aduce aici. Globulele flămânde mănâncă în Popasuri; fără furnizori, rezervele se epuizează. Mențineți accesul la grâu.
 [intro help touch grow]
-
+Selectați Stupul. Setați producția de muncitori la 1, iar pe cea de exploratori și războinici la 0. Măriți numărul cerut de muncitori alocați la cel puțin 2. Furnizorii aduc grâu pentru unități noi, dar concurează cu alte sarcini pentru muncitori. Mențineți ambele Popasuri aprovizionate.
 [intro help touch attack]
-
+Deschideți Steaguri, alegeți Steag de luptă, plasați-l peste Stupul inamic la est de piatră și confirmați. Selectați steagul și solicitați până la 4 războinici. O rază mică îi ține grupați. Dacă nu mai aveți războinici, produceți alții la Stup. Ei se pot opri să mănânce; mențineți Popasurile aprovizionate.
 [intro show destination]
-
+Afișați destinația
 [intro scout destination]
-
+Cercetați aici
 [intro attack destination]
-
+Atacă aici
 [intro compact scout]
-
+Steaguri → Steag de explorare. Plasați-l pe piatră; alocați 1 explorator.
 [intro compact build]
-
+Construire → Popas. Plasați lângă grâu; alocați 2 constructori.
 [intro compact supply]
-
+Selectați noul Popas; alocați cel puțin 1 furnizor. Așteptați grâul.
 [intro compact grow]
-
+Selectați Stupul; alocați 2 furnizori. Produceți numai muncitori.
 [intro compact attack]
-
+Steaguri → Steag de luptă. Plasați-l peste Stupul inamic; alocați războinici.
 [tutorial lessons]
-
+Lecții de instruire
 [tutorial restart]
-
+Reporniți lecția
 [tutorial restart body]
-
+Reporniți această lecție din colonia ei pregătită? Progresul nesalvat se va pierde.
 [tutorial complete]
-
+Lecție încheiată
 [tutorial food title]
-
+Exercițiu de aprovizionare cu alimente
 [tutorial food briefing]
-
+Exersați extinderea aprovizionării cu hrană: construiți încă un Popas, alocați furnizori și urmăriți sosirea grâului.
 [tutorial food complete]
-
+Ați construit un Popas și l-ați aprovizionat cu grâu. Încercați altă lecție sau reveniți la meniul principal.
 [tutorial unavailable]
-
+Lecțiile de instruire nu au putut fi încărcate.
 [lesson healing title]
-
+Spitale și vindecare
 [lesson healing briefing]
-
+Construiți un spital și ajutați un muncitor rănit să se recupereze. Colonia începe sătulă, cu un muncitor rănit.
 [lesson healing complete]
-
+Spitalul a vindecat o globulă rănită. Mențineți Popasurile aprovizionate: foamea poate răni din nou unitățile.
 [lesson healing build hint]
-
+Construiți un spital pe teren liber; alocați 2 constructori. Lăsați loc pentru intrarea și ieșirea globulelor. Spitalele vindecă rănile; Popasurile furnizează alimente. Acest pacient este deja hrănit.
 [lesson healing build title]
-
+Construiți un spital
 [lesson healing build instruction]
-
+Construiți un spital pe teren liber; alocați 2 constructori.
 [lesson healing build help]
-
+Lăsați loc pentru intrarea și ieșirea globulelor. Spitalele vindecă rănile; Popasurile furnizează alimente. Acest pacient este deja hrănit.
 [lesson healing build marker]
-
+Construiți un spital
 [lesson healing heal hint]
-
+Păstrați Spitalul accesibil. Urmăriți cum se recuperează lucrătorul rănit. Globulele caută vindecare autonom. Urmăriți muncitorul rănit, nu o unitate nou-născută. Dacă moare, reporniți sau încărcați o salvare.
 [lesson healing heal title]
-
+Lăsați pacientul să se recupereze
 [lesson healing heal instruction]
-
+Păstrați Spitalul accesibil. Urmăriți cum se recuperează lucrătorul rănit.
 [lesson healing heal help]
-
+Globulele caută vindecare autonom. Urmăriți muncitorul rănit, nu o unitate nou-născută. Dacă moare, reporniți sau încărcați o salvare.
 [lesson healing heal marker]
-
+Lăsați pacientul să se recupereze
 [lesson walking-training title]
-
+Antrenament pentru mers mai rapid
 [lesson walking-training briefing]
-
+Construiți o pistă de alergare și observați cum un muncitor existent învață să meargă mai repede.
 [lesson walking-training complete]
-
+Muncitorii au învățat să meargă mai repede. Antrenamentul îmbunătățește muncitorii existenți; nu înlocuiește aprovizionarea coloniei cu hrană.
 [lesson walking-training build hint]
-
+Construiți o pistă de alergare în poiana marcată; alocați constructori. O pistă de alergare are nevoie de lemn și piatră. Lăsați spațiu în jurul clădirii pentru intrare, ieșire și extindere ulterioară.
 [lesson walking-training build title]
-
+Construiți o pistă de alergare
 [lesson walking-training build instruction]
-
+Construiți o pistă de alergare în poiana marcată; alocați constructori.
 [lesson walking-training build help]
-
+O pistă de alergare are nevoie de lemn și piatră. Lăsați spațiu în jurul clădirii pentru intrare, ieșire și extindere ulterioară.
 [lesson walking-training build marker]
-
+Construiți o pistă de alergare
 [lesson walking-training train hint]
-
+Păstrați pista de alergare accesibilă și lăsați un lucrător să termine antrenamentul. Globulele eligibile se antrenează automat. Păstrați câțiva muncitori liberi de sarcinile de aprovizionare și ambele Popasuri aprovizionate.
 [lesson walking-training train title]
-
+Antrenați un muncitor existent
 [lesson walking-training train instruction]
-
+Păstrați pista de alergare accesibilă și lăsați un lucrător să termine antrenamentul.
 [lesson walking-training train help]
-
+Globulele eligibile se antrenează automat. Păstrați câțiva muncitori liberi de sarcinile de aprovizionare și ambele Popasuri aprovizionate.
 [lesson swimming title]
-
+Înot și resurse în apă
 [lesson swimming briefing]
-
+Antrenați înotători, apoi folosiți algele din iaz pentru a construi o școală.
 [lesson swimming complete]
-
+Un înotător a livrat resurse din apă pentru a-ți construi școala. Accesul la apă permite coloniei dvs. să efectueze mai multe tipuri de lucrări.
 [lesson swimming build hint]
-
+Construiți o piscină la vest de iaz; alocați constructori. Lăsați spațiu în jurul piscinei. Un muncitor nu poate aduna alge în apă adâncă până când nu învață să înoate.
 [lesson swimming build title]
-
+Construiți o piscină
 [lesson swimming build instruction]
-
+Construiți o piscină la vest de iaz; alocați constructori.
 [lesson swimming build help]
-
+Lăsați spațiu în jurul piscinei. Un muncitor nu poate aduna alge în apă adâncă până când nu învață să înoate.
 [lesson swimming build marker]
-
+Construiți o piscină
 [lesson swimming train hint]
-
+Lăsați un lucrător existent să termine antrenamentul de înot. Unitățile aleg antrenamentul automat. Păstrați aprovizionarea în funcțiune și permiteți lucrătorilor liberi să ajungă la piscină.
 [lesson swimming train title]
-
+Antrenați un înotător
 [lesson swimming train instruction]
-
+Lăsați un lucrător existent să termine antrenamentul de înot.
 [lesson swimming train help]
-
+Unitățile aleg antrenamentul automat. Păstrați aprovizionarea în funcțiune și permiteți lucrătorilor liberi să ajungă la piscină.
 [lesson swimming water-job hint]
-
+Construiți o școală lângă colonie; alocați constructori să aducă lemn și alge. Algele cresc în iaz. Un înotător antrenat trebuie să intre în apă pentru a le colecta. Plasați școala pe teren deschis cu acces pentru furnizori.
 [lesson swimming water-job title]
-
+Folosiți algele din iaz
 [lesson swimming water-job instruction]
-
+Construiți o școală lângă colonie; alocați constructori să aducă lemn și alge.
 [lesson swimming water-job help]
-
+Algele cresc în iaz. Un înotător antrenat trebuie să intre în apă pentru a le colecta. Plasați școala pe teren deschis cu acces pentru furnizori.
 [lesson swimming water-job marker]
-
+Folosiți algele din iaz
 [lesson schools title]
-
+Școli și abilități ale lucrătorilor
 [lesson schools briefing]
-
+Utilizați înotătorii pregătiți pentru a construi o școală, apoi observați-i pe muncitori care învață construcția și recoltarea.
 [lesson schools complete]
-
+Școala dvs. a îmbunătățit abilitățile lucrătorilor. Constructorii pricepuți deblochează modernizări; o recoltare mai bună ajută la menținerea unei economii în expansiune.
 [lesson schools build hint]
-
+Construiți o școală în poiană; alocați constructori. Colonia are deja înotători pentru alge. Lăsați accesul la lemn și apă. Pomii fructiferi oferă resurse de prestigiu; mâncarea provine încă din grâu.
 [lesson schools build title]
-
+Construiți o școală
 [lesson schools build instruction]
-
+Construiți o școală în poiană; alocați constructori.
 [lesson schools build help]
-
+Colonia are deja înotători pentru alge. Lăsați accesul la lemn și apă. Pomii fructiferi oferă resurse de prestigiu; mâncarea provine încă din grâu.
 [lesson schools build marker]
-
+Construiți o școală
 [lesson schools learn hint]
-
+Lăsați un lucrător existent să finalizeze formarea la școală. Școala predă împreună construcția și recoltarea. Păstrați lucrătorii disponibili; un șantier singur nu antrenează pe nimeni.
 [lesson schools learn title]
-
+Predați construcția și recoltarea
 [lesson schools learn instruction]
-
+Lăsați un lucrător existent să finalizeze formarea la școală.
 [lesson schools learn help]
-
+Școala predă împreună construcția și recoltarea. Păstrați lucrătorii disponibili; un șantier singur nu antrenează pe nimeni.
 [lesson upgrades title]
-
+Modernizarea clădirilor
 [lesson upgrades briefing]
-
+Folosiți muncitori calificați pregătiți pentru a îmbunătăți o pistă de alergare și pentru a vă antrena dincolo de primul nivel.
 [lesson upgrades complete]
-
+Ați modernizat o clădire și ați folosit pregătirea ei îmbunătățită. Modernizări ulterioare repetă acest ciclu cu școli, abilități, materiale și spațiu mai bune, până la nivelul 3.
 [lesson upgrades upgrade hint]
-
+Selectați Pista de alergare, alegeți Modernizează și alocați constructori calificați. Acești muncitori au învățat deja abilitățile Școlii de primul nivel. Modernizările necesită spațiu și materiale suplimentare și întrerup funcționarea clădirii. Modernizările anulate nu contează.
 [lesson upgrades upgrade title]
-
+Modernizați pista de alergare
 [lesson upgrades upgrade instruction]
-
+Selectați Pista de alergare, alegeți Modernizează și alocați constructori calificați.
 [lesson upgrades upgrade help]
-
+Acești muncitori au învățat deja abilitățile Școlii de primul nivel. Modernizările necesită spațiu și materiale suplimentare și întrerup funcționarea clădirii. Modernizările anulate nu contează.
 [lesson upgrades upgrade marker]
-
+Modernizați pista de alergare
 [lesson upgrades train hint]
-
+Lăsați un muncitor existent să învețe să meargă mai repede pe pista de alergare modernizată. O modernizare finalizată îmbunătățește antrenamentul disponibil. Nivelurile superioare ale clădirilor necesită abilități de construcție mai avansate; nivelul afișat jucătorilor începe de la 1.
 [lesson upgrades train title]
-
+Utilizați formarea îmbunătățită
 [lesson upgrades train instruction]
-
+Lăsați un muncitor existent să învețe să meargă mai repede pe pista de alergare modernizată.
 [lesson upgrades train help]
-
+O modernizare finalizată îmbunătățește antrenamentul disponibil. Nivelurile superioare ale clădirilor necesită abilități de construcție mai avansate; nivelul afișat jucătorilor începe de la 1.
 [lesson warrior-training title]
-
+Producerea și antrenarea războinicilor
 [lesson warrior-training briefing]
-
+Produceți războinici la Stup, apoi antrenați-i într-un câmp de antrenament.
 [lesson warrior-training complete]
-
+Ați controlat producția militară și ați antrenat războinici. Mențineți aprovizionarea cu alimente; unitățile de luptă trebuie și ele să mănânce.
 [lesson warrior-training produce hint]
-
+Setați Stupul numai pentru războinici; atribuiți furnizori și așteptați 2 războinici. Setați raportul muncitor și explorator la 0 și raportul războinic la 1. Stupul consumă grâu pentru nașteri. Proporțiile aleg ceea ce se produce; furnizorii determină dacă poate rula.
 [lesson warrior-training produce title]
-
+Produceți doi războinici
 [lesson warrior-training produce instruction]
-
+Setați Stupul numai pentru războinici; atribuiți furnizori și așteptați 2 războinici.
 [lesson warrior-training produce help]
-
+Setați raportul muncitor și explorator la 0 și raportul războinic la 1. Stupul consumă grâu pentru nașteri. Proporțiile aleg ceea ce se produce; furnizorii determină dacă poate rula.
 [lesson warrior-training produce marker]
-
+Produceți doi războinici
 [lesson warrior-training build hint]
-
+Construiți un câmp de antrenament în poiană; alocați constructori. Opriți sau reduceți producția de războinici când aveți destui. Câmpurile de antrenament predau abilități de luptă și au nevoie de spațiu liber în jur.
 [lesson warrior-training build title]
-
+Construiți un câmp de antrenament
 [lesson warrior-training build instruction]
-
+Construiți un câmp de antrenament în poiană; alocați constructori.
 [lesson warrior-training build help]
-
+Opriți sau reduceți producția de războinici când aveți destui. Câmpurile de antrenament predau abilități de luptă și au nevoie de spațiu liber în jur.
 [lesson warrior-training build marker]
-
+Construiți un câmp de antrenament
 [lesson warrior-training train hint]
-
+Lăsați un războinic să termine antrenamentul în câmpul de antrenament. Războinicii caută antrenament automat. Mențineți Popasurile aprovizionate și câmpul de antrenament accesibil. Construirea câmpului nu este suficientă: un războinic trebuie să finalizeze antrenamentul acolo.
 [lesson warrior-training train title]
-
+Antrenați războinicii
 [lesson warrior-training train instruction]
-
+Lăsați un războinic să termine antrenamentul în câmpul de antrenament.
 [lesson warrior-training train help]
-
+Războinicii caută antrenament automat. Mențineți Popasurile aprovizionate și câmpul de antrenament accesibil. Construirea câmpului nu este suficientă: un războinic trebuie să finalizeze antrenamentul acolo.
 [lesson fortifications title]
-
+Turnuri și ziduri de protecție
 [lesson fortifications briefing]
-
+Construiți un turn aprovizionat și ziduri de protecție, apoi testați-le împotriva unui mic atac.
 [lesson fortifications complete]
-
+Apărările tale au avut suficientă muniție pentru a opri atacul de practică. Turnurile au nevoie de piatră. Lăsați goluri în pereți, astfel încât furnizorii să poată ajunge la turnuri.
 [lesson fortifications tower hint]
-
+Construiți un turn în zona marcată; alocați constructori. Așezați-l lângă cariera de piatră și lăsați accesul furnizorului. Niciun atac nu începe până când obiectivele pregătirii nu sunt îndeplinite.
 [lesson fortifications tower title]
-
+Construiți un turn de apărare
 [lesson fortifications tower instruction]
-
+Construiți un turn în zona marcată; alocați constructori.
 [lesson fortifications tower help]
-
+Așezați-l lângă cariera de piatră și lăsați accesul furnizorului. Niciun atac nu începe până când obiectivele pregătirii nu sunt îndeplinite.
 [lesson fortifications tower marker]
-
+Construiți un turn de apărare
 [lesson fortifications walls hint]
-
+Construiți cel puțin 2 secțiuni de zid lângă turn; mențineți deschisă calea de acces din vest. Zidurile consumă piatră, iar fiecare șantier solicită muncitori. Nu închideți turnul: furnizorii au nevoie de o cale de acces. Calea marcată din vest trebuie să rămână liberă.
 [lesson fortifications walls title]
-
+Protejați turnul cu ziduri
 [lesson fortifications walls instruction]
-
+Construiți cel puțin 2 secțiuni de zid lângă turn; mențineți deschisă calea de acces din vest.
 [lesson fortifications walls help]
-
+Zidurile consumă piatră, iar fiecare șantier solicită muncitori. Nu închideți turnul: furnizorii au nevoie de o cale de acces. Calea marcată din vest trebuie să rămână liberă.
 [lesson fortifications walls marker]
-
+Protejați turnul cu ziduri
 [lesson fortifications supply hint]
-
+Selectați turnul și solicitați furnizori. Așteptați până când turnul are cel puțin 2 unități de piatră. Odată ce turnul este construit, cereți muncitorilor să aducă muniție. Trebuie să setați acest număr separat de numărul de muncitori solicitați pentru construcții.
 [lesson fortifications supply title]
-
+Furnizați muniție
 [lesson fortifications supply instruction]
-
+Selectați turnul și solicitați furnizori. Așteptați până când turnul are cel puțin 2 unități de piatră.
 [lesson fortifications supply help]
-
+Odată ce turnul este construit, cereți muncitorilor să aducă muniție. Trebuie să setați acest număr separat de numărul de muncitori solicitați pentru construcții.
 [lesson fortifications supply marker]
-
+Furnizați muniție
 [lesson fortifications hold hint]
-
+Se apropie un războinic inamic trimis pentru acest exercițiu. Păstrați turnul dotat cu muniție și accesibil. Apărați-vă până când atacatorul este învins sau respins. Un zid care blochează furnizorii poate lăsa turnul fără muniție. Dacă pierdeți colonia, reporniți lecția sau încărcați o salvare anterioară.
 [lesson fortifications hold title]
-
+Testați fortificațiile
 [lesson fortifications hold instruction]
-
+Se apropie un războinic inamic trimis pentru acest exercițiu. Păstrați turnul dotat cu muniție și accesibil.
 [lesson fortifications hold help]
-
+Apărați-vă până când atacatorul este învins sau respins. Un zid care blochează furnizorii poate lăsa turnul fără muniție. Dacă pierdeți colonia, reporniți lecția sau încărcați o salvare anterioară.
 [lesson fortifications hold marker]
-
+Testați fortificațiile
 [lesson defensive-tactics title]
-
+Zone de pază și tactici cu steaguri
 [lesson defensive-tactics briefing]
-
+Cercetați inamicul din exercițiu, pregătiți o zonă de pază, apărați-vă, apoi organizați un contraatac.
 [lesson defensive-tactics complete]
-
+Ați cercetat, ați apărat o zonă de pază și ați dirijat un contraatac. Numărul setat pentru steag solicită unități; raza controlează unde acționează acestea.
 [lesson defensive-tactics scout hint]
-
+Plasați un steag de explorare la baza inamicului; atribuiți 1 explorator. Steagurile solicită unități care se deplasează singure. Un explorator dezvăluie activitatea curentă ascunsă de ceața războiului. Se poate opri să mănânce.
 [lesson defensive-tactics scout title]
-
+Cercetați baza inamicului
 [lesson defensive-tactics scout instruction]
-
+Plasați un steag de explorare la baza inamicului; atribuiți 1 explorator.
 [lesson defensive-tactics scout help]
-
+Steagurile solicită unități care se deplasează singure. Un explorator dezvăluie activitatea curentă ascunsă de ceața războiului. Se poate opri să mănânce.
 [lesson defensive-tactics scout marker]
-
+Cercetați baza inamicului
 [lesson defensive-tactics guard hint]
-
+Marcați o zonă de pază în zona indicată și lăsați 2 războinici să ajungă acolo. Deschideți Steaguri, alegeți Pază și marcați cel puțin 4 celule în zonă. Zonele de pază atrag războinici inactivi. Zonele interzise blochează deplasarea; zonele de curățare solicită eliminarea resurselor.
 [lesson defensive-tactics guard title]
-
+Pregătiți o zonă de pază
 [lesson defensive-tactics guard instruction]
-
+Marcați o zonă de pază în zona indicată și lăsați 2 războinici să ajungă acolo.
 [lesson defensive-tactics guard help]
-
+Deschideți Steaguri, alegeți Pază și marcați cel puțin 4 celule în zonă. Zonele de pază atrag războinici inactivi. Zonele interzise blochează deplasarea; zonele de curățare solicită eliminarea resurselor.
 [lesson defensive-tactics guard marker]
-
+Pregătiți o zonă de pază
 [lesson defensive-tactics repel hint]
-
+Inamicul atacă. Mențineți războinici în zona de pază și Popasurile aprovizionate. Micul atac începe după pregătirile tale. Învingeți sau alungați ambii atacatori; dușmanii răniți se pot retrage. Războinicii pot pleca temporar să mănânce. Dacă apărarea eșuează, utilizați o salvare anterioară sau reporniți.
 [lesson defensive-tactics repel title]
-
+Respingeți atacul de exercițiu
 [lesson defensive-tactics repel instruction]
-
+Inamicul atacă. Mențineți războinici în zona de pază și Popasurile aprovizionate.
 [lesson defensive-tactics repel help]
-
+Micul atac începe după pregătirile tale. Învingeți sau alungați ambii atacatori; dușmanii răniți se pot retrage. Războinicii pot pleca temporar să mănânce. Dacă apărarea eșuează, utilizați o salvare anterioară sau reporniți.
 [lesson defensive-tactics repel marker]
-
+Respingeți atacul de exercițiu
 [lesson defensive-tactics counterattack hint]
-
+Plasați un Steag de luptă peste Stupul inamic; solicitați 3 războinici și folosiți o rază de cel mult 4. Zonele de gardă și steagurile de luptă concurează pentru războinici. Îndepărtați celulele de gardă dacă vă rețin armata. Păstrați mâncarea disponibilă în timp ce războinicii călătoresc și atacă.
 [lesson defensive-tactics counterattack title]
-
+Dirijați un contraatac concentrat
 [lesson defensive-tactics counterattack instruction]
-
+Plasați un Steag de luptă peste Stupul inamic; solicitați 3 războinici și folosiți o rază de cel mult 4.
 [lesson defensive-tactics counterattack help]
-
+Zonele de gardă și steagurile de luptă concurează pentru războinici. Îndepărtați celulele de gardă dacă vă rețin armata. Păstrați mâncarea disponibilă în timp ce războinicii călătoresc și atacă.
 [lesson defensive-tactics counterattack marker]
-
+Dirijați un contraatac concentrat
 [lesson healing build compact]
-
+Construire → Spital. Lăsați accesul; alocați constructori.
 [lesson healing heal compact]
-
+Lăsați muncitorul rănit să se vindece la Spital.
 [lesson walking-training build compact]
-
+Construire → Pista de alergare. Lăsați spațiu în jurul marginilor sale.
 [lesson walking-training train compact]
-
+Lăsați un muncitor să finalizeze antrenamentul la pista de alergare.
 [lesson swimming build compact]
-
+Construire → Piscina, la vest de iaz.
 [lesson swimming train compact]
-
+Lăsați un muncitor să învețe să înoate.
 [lesson swimming water-job compact]
-
+Construire → Școală. Alocați constructori pentru lemn și alge.
 [lesson schools build compact]
-
+Construire → Școală. Alocați constructori pentru lemn și alge.
 [lesson schools learn compact]
-
+Lăsați un muncitor să finalizeze formarea la școală.
 [lesson upgrades upgrade compact]
-
+Selectați Pista de alergare → Modernizează. Alocați constructori calificați.
 [lesson upgrades train compact]
-
+Lăsați un muncitor să se antreneze pe pista de alergare modernizată.
 [lesson warrior-training produce compact]
-
+Stup → numai războinici. Furnizați grâu pentru a produce 2 războinici.
 [lesson warrior-training build compact]
-
+Construire → Câmp de antrenament. Lăsați spațiu în jurul marginilor sale.
 [lesson warrior-training train compact]
-
+Lăsați un războinic să termine antrenamentul în câmpul de antrenament.
 [lesson fortifications tower compact]
-
+Construire → Turn. Așezați în zona marcată.
 [lesson fortifications walls compact]
-
+Construiți 2 ziduri. Mențineți deschisă calea din vestul turnului.
 [lesson fortifications supply compact]
-
+Selectați turn → furnizori. Așteptați 2 pietre.
 [lesson fortifications hold compact]
-
+Mențineți turnul aprovizionat împotriva atacatorului.
 [lesson defensive-tactics scout compact]
-
+Steaguri → Explorare. Plasați steagul la baza inamicului; atribuiți 1 explorator.
 [lesson defensive-tactics guard compact]
-
+Steaguri → Pază. Marcați 4 celule; așteptați sosirea a 2 războinici.
 [lesson defensive-tactics repel compact]
-
+Apărați zona de pază. Mențineți Popasurile aprovizionate.
 [lesson defensive-tactics counterattack compact]
-
+Steag de luptă → Stup inamic. Solicitați 3 războinici; raza ≤4.
 [library GL only]
 Doar GL
 [Grassland]
@@ -6785,6 +6785,6 @@ Poteci de animale
 [Fish amount]
 Cantitate de pește
 [scenario messages]
-
+Mesaje ▸
 [Camp-site amount]
 Număr de tabere

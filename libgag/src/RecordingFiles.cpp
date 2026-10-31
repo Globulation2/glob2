@@ -48,7 +48,7 @@ struct Library
 		{
 			auto p = entry.path(); auto value = p.u8string();
 			std::string path(reinterpret_cast<const char *>(value.data()),value.size());
-			if (entry.is_regular_file() && p.extension() == ".mp4" && std::filesystem::exists(std::filesystem::u8path(path+".json"))) files.push_back({path,false});
+			if (entry.is_regular_file() && (p.extension() == ".mp4" || p.extension() == ".webm") && std::filesystem::exists(std::filesystem::u8path(path+".json"))) files.push_back({path,false});
 			if (entry.is_directory() && p.extension() == ".recording" && std::filesystem::exists(p/"manifest.json")) files.push_back({path.substr(0,path.size()-10),true});
 		}
 		for (const auto &path : recorder().status().outputs)

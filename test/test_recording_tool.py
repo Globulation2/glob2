@@ -100,9 +100,15 @@ class EncodedRecordingTests(unittest.TestCase):
         probe = json.loads(subprocess.check_output([
             os.environ["GLOB2_TEST_FFPROBE"], "-v", "error", "-show_streams", "-show_chapters", "-of", "json", str(self.video)]))
         streams = {stream["codec_type"]: stream for stream in probe["streams"]}
-        self.assertEqual(streams["video"]["codec_name"], "h264")
-        self.assertEqual(streams["audio"]["codec_name"], "aac")
-        self.assertLess(abs(float(streams["video"]["duration"]) - float(streams["audio"]["duration"])), .05)
+        self.assertEqual(streams["video"]["codec_name"], self.manifest.get("video_codec", "h264"))
+        self.assertEqual(streams["audio"]["codec_name"], self.manifest.get("audio_codec", "aac"))
+        def duration(stream):
+            if "duration" in stream:
+                return float(stream["duration"])
+            # Matroska stores each track's duration as a tag.
+            hours, minutes, seconds = stream["tags"]["DURATION"].split(":")
+            return int(hours) * 3600 + int(minutes) * 60 + float(seconds)
+        self.assertLess(abs(duration(streams["video"]) - duration(streams["audio"])), .05)
         self.assertEqual(len(probe["chapters"]), len(self.manifest["chapters"]))
         for actual, expected in zip(probe["chapters"], self.manifest["chapters"]):
             self.assertEqual(actual["tags"]["title"], expected["title"])
