@@ -3,25 +3,25 @@
 [%0 level %1]
 %0 nivå %1
 [%0 units can't access building]
-%0 enheter kan ikke nå bygningen
+Når ikke bygget: %0
 [%0 units can't access flag]
-%0 enheter kan ikke nå flagget
+Når ikke flagget: %0
 [%0 units can't access fruit]
-%0 enheter kan ikke nå frukten
+Når ikke frukt: %0
 [%0 units can't access resource]
-%0 enheter kan ikke nå nødvendige materialer
+Når ikke råvarer: %0
 [%0 units not available]
-%0 enheter er ikke tilgjengelige
+Ikke ledige: %0
 [%0 units too far from building]
-%0 enheter er for langt fra bygningen
+For langt til bygg: %0
 [%0 units too far from flag]
-%0 enheter er for langt fra flagget
+For langt til flagg: %0
 [%0 units too far from fruit]
-%0 enheter er for langt fra frukten
+For langt til frukt: %0
 [%0 units too far from resource]
-%0 enheter er for langt fra nødvendige materialer
+For langt til råvarer: %0
 [%0 units too low level]
-%0 enheter har for lavt nivå
+For lavt nivå: %0
 [%0% Uploaded]
 %0% lastet opp
 [%0's team unit got converted to your team]
