@@ -21,7 +21,6 @@ class MainMenuScreen : public Glob2UI::Screen
 		EDITOR,
 		CREDITS,
 		QUIT,
-        INTRODUCTION,
 	};
 	MainMenuScreen();
 	~MainMenuScreen() override;

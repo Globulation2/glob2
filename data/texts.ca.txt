@@ -6712,8 +6712,6 @@ Silenci: un altaveu silenciat. So: un altaveu amb ones sonores.
 
 [intro play again]
 
-[intro existing tutorial]
-
 [intro restart]
 
 [intro restart body]

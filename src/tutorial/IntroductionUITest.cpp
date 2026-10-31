@@ -8,6 +8,7 @@
 #include "Application.h"
 #include "IntroductionOfferScreen.h"
 #include "MainMenuScreen.h"
+#include "CampaignSelectorScreen.h"
 #include "GameGUITouch.h"
 #include "GlobalContainer.h"
 #include "ui/FrontendUI.h"
@@ -195,12 +196,33 @@ TEST_CASE("first-run recommendation can be declined and stays dismissed [display
     for (Uint32 tick=80;tick<400 && !dynamic_cast<MainMenuScreen*>(application.screens.top());tick+=40)
         application.screens.frame(tick,{});
     REQUIRE(dynamic_cast<MainMenuScreen*>(application.screens.top()));
+    CHECK(application.screens.top() != nullptr);
+    auto *main=static_cast<MainMenuScreen*>(application.screens.top());
+    CHECK(main->host().find("menu/1")!=nullptr);
+    CHECK(main->host().find("menu/10")==nullptr);
     CHECK(globals->settings.introductionOffered);
     Settings saved; saved.load(); CHECK(saved.introductionOffered);
-    application.choose(MainMenuScreen::INTRODUCTION);
+    application.choose(MainMenuScreen::TUTORIAL);
     application.screens.frame(440,{});
-    REQUIRE(dynamic_cast<IntroductionOfferScreen*>(application.screens.top()));
+    REQUIRE(dynamic_cast<Tutorial::LessonCatalogScreen*>(application.screens.top()));
     CHECK(globals->settings.introductionOffered);
+}
+
+TEST_CASE("retired tutorial progress stays on disk without appearing as a campaign [display]" * doctest::test_suite("IntroductionUI"))
+{
+    glob2test::HeadlessGlobals globals({.display=true,.loadStrings=true,.width=640,.height=480});
+    Campaign campaign;
+    REQUIRE(campaign.load((glob2test::sourceRoot()/"test/fixtures/campaign/Browser_Test_Campaign.txt").string()));
+    REQUIRE(campaign.getMapCount()==2);
+    REQUIRE(campaign.save(true));
+    campaign.setName("Tutorial Campaign");
+    REQUIRE(campaign.save(true));
+    CampaignSelectorScreen saved(true);
+    CHECK(std::find(saved.names.begin(),saved.names.end(),"Browser_Test_Campaign")!=saved.names.end());
+    CHECK(std::find(saved.names.begin(),saved.names.end(),"Tutorial_Campaign")==saved.names.end());
+    Campaign retained;
+    CHECK(retained.load("games/Tutorial_Campaign.txt"));
+    CHECK(retained.getMapCount()==2);
 }
 
 TEST_CASE("catalog and second lesson use generic guidance and restart navigation [display][artifacts]" * doctest::test_suite("IntroductionUI"))

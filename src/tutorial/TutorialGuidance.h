@@ -76,7 +76,6 @@ class Guidance : public Glob2UI::InGameDialog
             body.push_back(paragraph(tr(lesson->completionBody),{font}));
             body.push_back(button("intro/replay", tr("[intro play again]"), [this] { navigate(0); },options));
             body.push_back(button("tutorial/lessons",tr("[tutorial lessons]"),[this]{navigate(Lessons);},options));
-            body.push_back(button("intro/legacy", tr("[intro existing tutorial]"), [this] { navigate(LegacyTutorial); },options));
             body.push_back(button("intro/menu", tr("[goto main menu]"), [this] { navigate(MainMenu); },options));
         } else if (!lesson->complete()) {
             body.push_back(paragraph(tr(lesson->instruction)));

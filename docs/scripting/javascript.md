@@ -404,13 +404,15 @@ available in online multiplayer games.
 
 ## Data-authored tutorial lessons
 
-The experimental tutorial catalog uses one shared JavaScript runner and one
+The tutorial catalog uses one shared JavaScript runner and one
 desktop/touch guidance UI. It includes the introduction, Food supply practice,
 Hospitals and healing, Walking training, Swimming and water resources, Schools
 and worker skills, Upgrading buildings, Producing and training warriors, Towers
-and protective walls, and Guard zones and flag tactics. The existing legacy tutorial remains
-separate. The introduction recommendation can be skipped; the manual preflight
-and lesson completion screen also open **Tutorial lessons**.
+and protective walls, and Guard zones and flag tactics. **Tutorial** on the main
+menu opens this catalog. First-run onboarding recommends the Introduction, and
+lesson completion, quitting a lesson, and cancelling its loader return to the same catalog. The old SGSL tutorial campaign and
+its launch controls are retired. General campaign and SGSL support remain for
+custom content and existing saves.
 
 ### Authoring and packaging
 
@@ -548,7 +550,7 @@ presentation schemas fail explicitly. The original introduction prototype is
 covered by a separate compatibility adapter and fixture, preserving its saved
 script/progress and guidance. No save-format floor is raised.
 
-These lessons remain experimental until novice playtests establish independent
-completion and skill transfer. Keep playtest observations, screenshots, saves and
+Continue novice playtests to establish independent completion and skill transfer.
+Keep playtest observations, screenshots, saves and
 checksum evidence under `artifacts/`; automated completion does not demonstrate
 that players understand the game.

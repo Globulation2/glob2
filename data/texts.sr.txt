@@ -6712,8 +6712,6 @@ MCP сервер није доступан у овој апликацији
 
 [intro play again]
 
-[intro existing tutorial]
-
 [intro restart]
 
 [intro restart body]

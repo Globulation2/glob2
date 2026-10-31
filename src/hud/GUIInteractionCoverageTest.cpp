@@ -726,7 +726,7 @@ TEST_CASE("Old tutorial localization preserves script bytes and matches ordinary
     glob2test::HeadlessGlobals globals({.display=true,.loadStrings=true,.width=640,.height=480});
     GameGUI original(false);
     {
-        GAGCore::BinaryInputStream input(glob2OpenMapOrSaveInputStreamBackend(*GAGCore::Toolkit::getFileManager(), "campaigns/tutorial-part1.map.gz"));
+        GAGCore::BinaryInputStream input(glob2OpenMapOrSaveInputStreamBackend(*GAGCore::Toolkit::getFileManager(), "test/fixtures/tutorial/legacy/tutorial-part1.map.gz"));
         REQUIRE(original.load(&input));
     }
     REQUIRE(original.legacyTutorialScript);

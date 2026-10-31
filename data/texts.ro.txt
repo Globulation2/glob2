@@ -6712,8 +6712,6 @@ Liniște: un difuzor dezactivat. Sunet: un difuzor cu unde sonore.
 
 [intro play again]
 
-[intro existing tutorial]
-
 [intro restart]
 
 [intro restart body]

@@ -27,8 +27,6 @@ inline constexpr std::array<const char*, 5> TouchHelp = {
 inline constexpr std::array<const char*, 5> TouchInstructions = {
     "[intro compact scout]", "[intro compact build]", "[intro compact supply]",
     "[intro compact grow]", "[intro compact attack]"};
-// Navigation results belong to the client, never orders or serialized simulation state.
-inline constexpr int LegacyTutorial = 701, MainMenu = 702, ShowDestination = 703;
 inline bool active(const SimulationSnapshot::Session &s)
 {
     if (!s.missionBriefing || *s.missionBriefing != Briefing || !s.objectives ||

@@ -6,8 +6,6 @@
 #include "ChooseMapScreen.h"
 #include "GameSessionScreen.h"
 #include "MessageScreen.h"
-#include "IntroductionOfferScreen.h"
-#include "CampaignMenuScreen.h"
 #include "GlobalContainer.h"
 #include "tutorial/Introduction.h"
 #include "tutorial/TutorialModel.h"
@@ -20,24 +18,28 @@
 #include <ApplicationHost.h>
 #include <StringTable.h>
 
-void SinglePlayerFlow::launch(GameLoadScreen::Initializer initialize, bool repeatCustom,
+void SinglePlayerFlow::returnTo(ReturnTo destination)
+{
+    if(destination==ReturnTo::CustomSetup) custom();
+    else if(destination==ReturnTo::Lessons) lessons();
+}
+
+void SinglePlayerFlow::launch(GameLoadScreen::Initializer initialize, ReturnTo destination,
 							  std::shared_ptr<void> mapFile)
 {
 	// The stack destroys the choosing screen before this loader reads its map,
 	// so mapFile lives until the loader's own entry is released.
 	screens.push(
 		std::make_unique<GameLoadScreen>(std::move(initialize)),
-		[this, repeatCustom, mapFile = std::move(mapFile)](GAGGUI::Screen &screen, int result)
+		[this, destination, mapFile = std::move(mapFile)](GAGGUI::Screen &screen, int result)
 		{
 			if (result == 1)
 				screens.push(std::make_unique<GameSessionScreen>(
 								 screens, static_cast<GameLoadScreen &>(screen).takeEngine()),
-							 [this, repeatCustom](GAGGUI::Screen &, int destination)
+							 [this, destination](GAGGUI::Screen &, int navigation)
 							 {
-								 if (destination==Introduction::LegacyTutorial) tutorial();
-                                 else if (destination==Tutorial::Lessons) lessons();
-                                 else if (repeatCustom && destination!=Introduction::MainMenu)
-									 custom();
+								 if (navigation==Tutorial::Lessons) lessons();
+                                 else if (navigation!=Tutorial::MainMenu) returnTo(destination);
 							 });
 			else if (result == 2)
 			{
@@ -48,14 +50,12 @@ void SinglePlayerFlow::launch(GameLoadScreen::Initializer initialize, bool repea
 				screens.push(std::make_unique<MessageScreen>(
 								 static_cast<GameLoadScreen &>(screen).failureMessage(),
 								 std::vector<std::string>{strings.getString("[ok]")}),
-							 [this, repeatCustom](GAGGUI::Screen &, int)
+							 [this, destination](GAGGUI::Screen &, int)
 							 {
-								 if (repeatCustom)
-									 custom();
+								 returnTo(destination);
 							 });
 			}
-			else if (repeatCustom)
-				custom();
+			else returnTo(destination);
 		});
 }
 
@@ -80,11 +80,11 @@ void SinglePlayerFlow::custom(const std::optional<Online::MapPlayRequest> &map)
 					 if (auto bytes = selected.releaseSnapshot())
 						 launch([map, players, team, speed, bytes](Engine &engine)
 								{ return engine.initCustomFromBytesTask(map, players, team, speed, bytes); },
-								true, bytes);
+								ReturnTo::CustomSetup, bytes);
 					 else
 						 launch([map, players, team, speed, source = selected.sourceFile()](Engine &engine)
 								{ return engine.initCustomTask(map, players, team, speed, source); },
-								true, nullptr);
+								ReturnTo::CustomSetup, nullptr);
 				 });
 }
 
@@ -105,13 +105,13 @@ void SinglePlayerFlow::load()
 					return replay ? engine.loadReplayTask(filename)
 								  : engine.initCustomTask(filename);
 				},
-				false);
+				ReturnTo::MainMenu);
 		});
 }
 
 void SinglePlayerFlow::replay(const std::string &filename)
 {
-	launch([filename](Engine &engine) { return engine.loadReplayTask(filename); }, false);
+	launch([filename](Engine &engine) { return engine.loadReplayTask(filename); }, ReturnTo::MainMenu);
 }
 
 void SinglePlayerFlow::studio()
@@ -139,7 +139,7 @@ void SinglePlayerFlow::studio()
         header.getBasePlayer(1) = BasePlayer(1, opponent, 1, BasePlayer::playerTypeFromImplementationID(opponent == "numbi" ? AI::NUMBI : AI::NICOWAR));
         header.setAIConfig(0, Script::config(source, Script::inspectAI(source).apiVersion));
         co_return co_await engine.initCustomTask(map, header, 0, -1, path);
-    }, false);
+    }, ReturnTo::MainMenu);
 }
 
 void SinglePlayerFlow::generatorStudio()
@@ -153,27 +153,13 @@ void SinglePlayerFlow::generatorStudio()
 					 auto bytes = preview.snapshot;
 					 launch([map = preview.map, players = preview.players, bytes](Engine &engine)
 							{ return engine.initCustomFromBytesTask(map, players, 0, -1, bytes); },
-							false, bytes);
+							ReturnTo::MainMenu, bytes);
 				 });
 }
 
-void SinglePlayerFlow::tutorial()
+void SinglePlayerFlow::introduction()
 {
-    Campaign campaign;
-    const bool saved=campaign.load("games/Tutorial_Campaign.txt");
-    auto menu=std::make_unique<CampaignMenuScreen>(saved ? "games/Tutorial_Campaign.txt" : "campaigns/Tutorial_Campaign.txt",screens);
-    if (!saved) menu->setNewCampaign();
-    screens.push(std::move(menu));
-}
-
-void SinglePlayerFlow::introduction(bool preflight)
-{
-    if (preflight) {
-        screens.push(std::make_unique<IntroductionOfferScreen>(false),
-            [this](GAGGUI::Screen &,int result) { if (result==1) introduction(false); else if(result==2) lessons(); });
-        return;
-    }
-    launch([](Engine &engine) { return engine.initCampaignTask(Introduction::Map); },false);
+    launch([](Engine &engine) { return engine.initCampaignTask(Introduction::Map); },ReturnTo::Lessons);
 }
 
 void SinglePlayerFlow::lessons()
@@ -183,6 +169,6 @@ void SinglePlayerFlow::lessons()
             const auto &entries=static_cast<Tutorial::LessonCatalogScreen&>(screen).entries;
             if(result<=0 || size_t(result)>entries.size()) return;
             const auto map=entries[result-1].map;
-            launch([map](Engine &engine){return engine.initCampaignTask(map);},false);
+            launch([map](Engine &engine){return engine.initCampaignTask(map);},ReturnTo::Lessons);
         });
 }

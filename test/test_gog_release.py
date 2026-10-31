@@ -44,6 +44,14 @@ class GOGReleaseTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "inventory"):
             verify_manifest(self.depot, "windows")
 
+    def test_retired_tutorial_assets_are_rejected_even_when_inventoried(self):
+        retired = self.depot / 'campaigns/Tutorial_Campaign.txt'
+        retired.parent.mkdir(parents=True, exist_ok=True)
+        retired.write_text('retired campaign')
+        write_manifest(self.depot, self.metadata)
+        with self.assertRaisesRegex(ValueError, 'retired tutorial'):
+            verify_manifest(self.depot, 'windows')
+
     def test_verified_webp_artwork_can_replace_png(self):
         png = self.depot / "data/gfx/ressource0.png"
         png.with_suffix(".webp").write_bytes(b"exported artwork")

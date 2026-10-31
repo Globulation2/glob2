@@ -6645,17 +6645,17 @@ Your choice could not be saved. Audio is still off. Please try again.
 [audio choices description]
 Silence: a muted speaker. Sound: a speaker with sound waves.
 [intro menu]
-New introduction — experimental
+Introduction
 [intro briefing]
 Learn indirect control: scout with a flag, supply your colony, and direct an attack.
 [intro try]
-Try the new introduction
+Start introduction
 [intro start]
 Start introduction
 [intro preflight]
 Your globules act on their own. You choose their jobs through buildings and flags. In this short introduction, scout a landmark, expand food supply, grow your workforce, and direct a small attack.
 [intro preflight save]
-Allow about 10 minutes. You can save from the game menu and resume through Load game. Normal hunger and combat rules apply. The existing tutorial remains available separately.
+Allow about 10 minutes. You can save from the game menu and resume through Load game. Normal hunger and combat rules apply. Choose Tutorial lessons from the main menu to practice more skills.
 [intro preference failed]
 Your choice could not be saved. You can continue playing; this recommendation may appear again next time.
 [intro goal scout]
@@ -6711,11 +6711,9 @@ A unit or building needed for this lesson has been lost. Load an earlier save or
 [intro complete]
 Introduction complete
 [intro complete body]
-You directed autonomous globules, expanded food supply, grew the colony, and organized an attack. Try the existing tutorial for training, upgrades, and defense, or return to the main menu to start a match.
+You directed autonomous globules, expanded food supply, grew the colony, and organized an attack. Continue with Tutorial lessons for training, upgrades, and defense, or return to the main menu to start a match.
 [intro play again]
 Play again
-[intro existing tutorial]
-Existing tutorial
 [intro restart]
 Restart introduction
 [intro restart body]

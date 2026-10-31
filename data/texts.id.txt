@@ -6712,8 +6712,6 @@ Senyap: pengeras suara dibisukan. Suara: pengeras suara dengan gelombang suara.
 
 [intro play again]
 
-[intro existing tutorial]
-
 [intro restart]
 
 [intro restart body]

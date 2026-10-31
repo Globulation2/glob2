@@ -6712,8 +6712,6 @@ Silêncio: um altifalante silenciado. Som: um altifalante com ondas sonoras.
 
 [intro play again]
 
-[intro existing tutorial]
-
 [intro restart]
 
 [intro restart body]

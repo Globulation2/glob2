@@ -494,7 +494,7 @@ TEST_CASE("original tutorial scripts compile and available checkpoints roundtrip
     for(int part=1;part<=4;++part) {
         CAPTURE(part);
         glob2test::HeadlessGame w({.wDec=6,.hDec=6,.teams=2,.loadDefaultRace=true,.header=true,.seed=20261026});
-        const auto path=glob2test::sourceRoot()/("campaigns/tutorial-part"+std::to_string(part)+".map.gz");
+        const auto path=glob2test::sourceRoot()/("test/fixtures/tutorial/legacy/tutorial-part"+std::to_string(part)+".map.gz");
         gzFile file=gzopen(path.string().c_str(),"rb");REQUIRE(file);
         std::string bytes;char buffer[4096];int count;
         while((count=gzread(file,buffer,sizeof(buffer)))>0)bytes.append(buffer,count);

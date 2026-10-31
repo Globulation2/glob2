@@ -364,7 +364,7 @@ def audit(root=ROOT):
             'Lexical scanning does not prove every rendered string is translated; hard-coded prose and new wrappers require UI review.',
             'Computed generator, building, resource and keyboard names require contextual review.',
             'Online/platform locales and browser shell bindings use the platform i18n checker.',
-            'Legacy tutorial script counts describe authored sources; display_catalog_gaps describes current presentation translations. Alias generation checks cover shipped map copies; linguistic freshness still needs review.',
+            'SGSL coverage describes any custom authored scripts still present. Retired tutorial aliases are verified against test-only archives; active JS lesson keys are checked by the lesson authoring tool. Linguistic freshness still needs review.',
             'Font coverage, text fitting and visual layout require rendered language checks.',
         ],
     }

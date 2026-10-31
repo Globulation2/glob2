@@ -110,12 +110,13 @@ and map-overlay text is also rejected. A successful
 catalog check cannot detect every string assembled through variables or new helpers.
 
 The JSON `coverage` field records checked families and remaining review surfaces.
-Tutorial SGSL sources retain their legacy translation blocks, but the desktop
-message overlay, touch tutorial panel and history translate recognized tutorial
+Archived tutorial saves retain their legacy translation blocks, but the desktop
+message overlay, touch scenario-message panel and history translate recognized tutorial
 text through the current catalogs. `src/ui/TutorialTextAliases.h` contains exact
-aliases from both authored scripts and the scripts embedded in shipped tutorial
-maps. Regenerate it with `python3 tools/localization/generate_tutorial_aliases.py`
-when those inputs change; `--check` and the translation tests verify freshness.
+frozen aliases from retired authored scripts and map-embedded copies. They are
+save-reader compatibility data, not an active tutorial authoring system. Archived
+inputs live only under `test/fixtures/tutorial/legacy/`; the translation tests and
+`python3 test/support/legacy_tutorial_aliases.py --check` verify the table.
 Full-source fingerprints identify the four authored and four map-embedded tutorial
 scripts when loading a client session, treating LF and CRLF line endings equally. Generic phrases in custom scenarios are
 left untouched. This display mapping also covers old saved tutorial text without rewriting map

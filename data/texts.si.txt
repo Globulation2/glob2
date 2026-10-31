@@ -6712,8 +6712,6 @@ Tišina: utišan zvočnik. Zvok: zvočnik z zvočnimi valovi.
 
 [intro play again]
 
-[intro existing tutorial]
-
 [intro restart]
 
 [intro restart body]

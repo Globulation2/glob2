@@ -6712,8 +6712,6 @@ Tystnad: en tystad högtalare. Ljud: en högtalare med ljudvågor.
 
 [intro play again]
 
-[intro existing tutorial]
-
 [intro restart]
 
 [intro restart body]

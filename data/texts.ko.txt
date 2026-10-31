@@ -6712,8 +6712,6 @@ Building Studio에서 만들기
 
 [intro play again]
 
-[intro existing tutorial]
-
 [intro restart]
 
 [intro restart body]

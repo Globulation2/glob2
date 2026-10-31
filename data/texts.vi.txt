@@ -6712,8 +6712,6 @@ Im lặng: loa bị tắt tiếng. Âm thanh: loa có sóng âm.
 
 [intro play again]
 
-[intro existing tutorial]
-
 [intro restart]
 
 [intro restart body]

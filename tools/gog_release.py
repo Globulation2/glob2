@@ -19,9 +19,14 @@ ROOT = Path(__file__).resolve().parents[1]
 ASSETS = ("data", "maps", "campaigns", "scripts")
 REQUIRED_ASSETS = (
     "data/fonts/sans.ttf", "data/gfx/ressource0.png",
-    "maps/SmallForTwo.map.gz", "campaigns/Tutorial_Campaign.txt",
-    "scripts/tutorial_part1.sgsl",
+    "maps/SmallForTwo.map.gz", "campaigns/introduction.map.gz",
+    "scripts/tutorials/catalog.json",
 )
+# The catalog owns the shipped lesson inventory.
+REQUIRED_ASSETS += ("scripts/tutorials/runtime.js",) + tuple(
+    path for entry in json.loads((ROOT / "scripts/tutorials/catalog.json").read_text())
+    for path in (entry["definition"], entry["script"],
+                 json.loads((ROOT / entry["definition"]).read_text())["map"]))
 VERSION_PATTERN = re.compile(r'^PACKAGE_VERSION = "([0-9]+(?:\.[0-9]+)+)"$', re.MULTILINE)
 LIBRARY_PATTERN = re.compile(r"^\s*(\S+)\s+=>\s+(/\S+)", re.MULTILINE)
 SYSTEM_LIBRARY_PREFIXES = (
@@ -137,6 +142,10 @@ def verify_manifest(depot, platform):
     root = depot / "Glob2.app/Contents/Resources" if platform == "macos" else depot
     if platform == "linux":
         root = depot / "share/glob2"
+    retired = [root / "campaigns/Tutorial_Campaign.txt",
+               *root.glob("campaigns/tutorial-part*.map*"), *root.glob("scripts/tutorial_part*.sgsl")]
+    if any(path.is_file() for path in retired):
+        raise ValueError("retired tutorial assets must not ship")
     for asset in REQUIRED_ASSETS:
         if not (root / asset).is_file() and not (
                 asset.startswith("data/") and asset.endswith(".png") and

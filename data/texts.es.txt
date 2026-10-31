@@ -6712,8 +6712,6 @@ Silencio: un altavoz silenciado. Sonido: un altavoz con ondas sonoras.
 
 [intro play again]
 
-[intro existing tutorial]
-
 [intro restart]
 
 [intro restart body]

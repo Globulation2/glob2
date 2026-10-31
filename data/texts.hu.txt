@@ -6712,8 +6712,6 @@ Csend: némított hangszóró. Hang: hangszóró hanghullámokkal.
 
 [intro play again]
 
-[intro existing tutorial]
-
 [intro restart]
 
 [intro restart body]

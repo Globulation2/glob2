@@ -156,7 +156,7 @@ exports.gameURL = () => {
   return url.pathname + url.search;
 };
 
-const mainMenuCodes = {campaign:0, tutorial:1, load:2, custom:3, yog:4, lan:5, settings:6, editor:7, credits:8, quit:9, introduction:10};
+const mainMenuCodes = {campaign:0, tutorial:1, load:2, custom:3, yog:4, lan:5, settings:6, editor:7, credits:8, quit:9};
 exports.clickMainMenu = async (page, action) => {
   await exports.waitForMainMenu(page);
   const code = mainMenuCodes[action];

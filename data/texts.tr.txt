@@ -6712,8 +6712,6 @@ Sessizlik: sessize alınmış hoparlör. Ses: ses dalgaları olan hoparlör.
 
 [intro play again]
 
-[intro existing tutorial]
-
 [intro restart]
 
 [intro restart body]

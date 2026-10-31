@@ -34,8 +34,8 @@ for (const renderer of ['software','webgl2']) {
     await page.goto(entry.pathname+entry.search);
     await screen('MainMenuScreen');
     expect(await page.evaluate(() => glob2Diagnostics.snapshot().renderer)).toBe(renderer);
-    await clickMainMenu(page,'tutorial'); await screen('CampaignMenuScreen');
-    await clickListRow(page,'missions',0); await clickControl(page,'start');
+    await clickMainMenu(page,'tutorial'); await screen('LessonCatalogScreen');
+    await clickControl(page,'tutorial/lesson/0');
     await screen('match');
     for (const width of [1200,1280]) {
       await page.setViewportSize({width,height:900});

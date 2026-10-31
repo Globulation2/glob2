@@ -41,6 +41,16 @@ class WebAssetPlanTests(unittest.TestCase):
             self.assertIn(path, self.skipped)
         self.assertFalse([p for p in self.owner if p.endswith(('SConscript', '.py', '.md'))])
 
+    def test_only_current_tutorial_assets_ship(self):
+        catalog = json.loads((ROOT / 'scripts/tutorials/catalog.json').read_text())
+        self.assertEqual(self.owner.get('scripts/tutorials/catalog.json'), 'core')
+        for entry in catalog:
+            lesson = json.loads((ROOT / entry['definition']).read_text())
+            for path in (entry['definition'], entry['script'], lesson['map']):
+                self.assertEqual(self.owner.get(path), 'core', path)
+        self.assertNotIn('campaigns/Tutorial_Campaign.txt', self.owner)
+        self.assertFalse([p for p in self.owner if p.startswith(('campaigns/tutorial-part', 'scripts/tutorial_part', 'test/fixtures/'))])
+
     def test_runtime_files_the_menus_need_are_core(self):
         for path in ('data/fonts/sans.ttf', 'data/fonts/LICENSE-DejaVu.txt', 'data/texts.list.txt',
                      'data/texts.keys.txt', 'data/authors.txt', 'data/gfx/menu-wordmark.png',

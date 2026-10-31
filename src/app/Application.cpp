@@ -205,8 +205,8 @@ void Application::mainMenu()
 	}
     if (!globalContainer->settings.introductionOffered && !GAGCore::ApplicationHost::storageRestoreFailed())
     {
-        screens.push(std::make_unique<IntroductionOfferScreen>(true),
-            [this](GAGGUI::Screen &,int result) { mainMenu(); if (result==1) singlePlayer.introduction(false); });
+        screens.push(std::make_unique<IntroductionOfferScreen>(),
+            [this](GAGGUI::Screen &,int result) { mainMenu(); if (result==1) singlePlayer.introduction(); });
         return;
     }
 	// Rebuild translated labels after returning from settings.
@@ -222,10 +222,7 @@ void Application::choose(int choice)
 		screens.push(std::make_unique<CampaignMainMenu>(screens));
 		break;
     case MainMenuScreen::TUTORIAL:
-        singlePlayer.tutorial();
-        break;
-    case MainMenuScreen::INTRODUCTION:
-        singlePlayer.introduction();
+        singlePlayer.lessons();
         break;
 	case MainMenuScreen::CUSTOM:
 		singlePlayer.custom();

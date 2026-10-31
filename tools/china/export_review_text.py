@@ -3,14 +3,13 @@
 import argparse
 import csv
 from pathlib import Path
-import re
+import json
 import sys
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / 'data'))
 from check_translations import read_table  # noqa: E402
 
-SHOW = re.compile(r'^\s*show\("((?:\\.|[^"\\])*)"(?:,\s*([a-z][a-z-]*))?\)\s*$')
 
 
 def rows():
@@ -20,24 +19,22 @@ def rows():
     result = [('ui', 'data/texts.zh-cn.txt', '', key, value, '')
               for key, value in sorted(table.items())]
     missing = 0
-    for path in sorted((ROOT / 'scripts').glob('tutorial_part*.sgsl')):
-        messages = []
-        for number, line in enumerate(path.read_text(encoding='utf-8').splitlines(), 1):
-            if line.lstrip().startswith('#'):
-                continue
-            match = SHOW.match(line)
-            if not match:
-                continue
-            source, language = match.groups()
-            if language is None:
-                messages.append([number, source, ''])
-            elif language == 'zh-cn' and messages:
-                messages[-1][2] = source
-        for number, source, chinese in messages:
+    english, errors = read_table(ROOT / 'data/texts.en.txt')
+    if errors:
+        raise ValueError('\n'.join(errors))
+    def keys(value):
+        if isinstance(value, str):
+            return {value} if value.startswith('[') and value.endswith(']') else set()
+        values = value.values() if isinstance(value, dict) else value if isinstance(value, list) else []
+        return set().union(*(keys(item) for item in values))
+    for entry in json.loads((ROOT / 'scripts/tutorials/catalog.json').read_text()):
+        path = ROOT / entry['definition']
+        for key in sorted(keys(json.loads(path.read_text()))):
+            chinese = table.get(key, '')
             if not chinese:
                 missing += 1
-            result.append(('tutorial', str(path.relative_to(ROOT)), number,
-                           source, chinese, 'missing zh-cn' if not chinese else ''))
+            result.append(('tutorial', entry['definition'], '', english.get(key, key),
+                           chinese, 'missing zh-cn' if not chinese else ''))
     return result, missing
 
 

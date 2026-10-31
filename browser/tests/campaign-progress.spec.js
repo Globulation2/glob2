@@ -1,11 +1,25 @@
 const {waitForMainMenu}=require('./main-menu');
 const {test,expect}=require('@playwright/test');
-const {clickMainMenu,gameURL,clickControl}=require('./main-menu');
+const {clickMainMenu,gameURL,clickControl,clickListRow}=require('./main-menu');
 const fs=require('node:fs/promises');
 const state=page=>page.evaluate(()=>glob2Diagnostics.snapshot());
-const screen=(page,name)=>name==='MainMenuScreen' ? waitForMainMenu(page) : expect.poll(async()=>(await state(page)).screen).toContain(name);
-const stored=page=>page.evaluate(()=>glob2Diagnostics.campaignDigest('Tutorial_Campaign.txt'));
-async function tutorial(page) {await clickMainMenu(page,'tutorial');await screen(page,'CampaignMenuScreen');}
+const screen=async(page,name)=>{
+  if(name==='MainMenuScreen') {
+    await expect.poll(async()=>{const s=await state(page);if(s.screen.includes('CampaignMainMenu')) await clickControl(page,'back');return /MainMenuScreen|IntroductionOfferScreen/.test(s.screen+' '+s.screenClass);}).toBe(true);
+    return waitForMainMenu(page);
+  }
+  return expect.poll(async()=>(await state(page)).screen).toContain(name);
+};
+const stored=page=>page.evaluate(()=>glob2Diagnostics.campaignDigest('Browser_Test_Campaign.txt'));
+const fixture=require('node:fs').readFileSync(require('node:path').resolve(__dirname,'../../test/fixtures/campaign/Browser_Test_Campaign.txt'),'utf8');
+async function campaign(page) {
+  // A fixture definition is file input only; all progress and UI changes use real controls.
+  await page.evaluate(text=>FS.writeFile('/campaigns/Browser_Test_Campaign.txt',text),fixture);
+  await clickMainMenu(page,'campaign');await screen(page,'CampaignMainMenu');
+  await clickControl(page,(await stored(page)) ? 'load' : 'new');await screen(page,'CampaignSelectorScreen');
+  await clickListRow(page,'campaigns',0);await clickControl(page,'ok');
+  await screen(page,'CampaignMenuScreen');
+}
 async function backup(page) {
   const downloading=page.waitForEvent('download');await clickControl(page,'export');
   const download=await downloading;expect(download.suggestedFilename()).toBe('campaign-progress.campaign');
@@ -28,15 +42,15 @@ function completedFirst(original) {
   return bytes;
 }
 
-test.beforeEach(async({page})=>{await page.goto(gameURL());await screen(page,'MainMenuScreen');});
+test.beforeEach(async({page})=>{test.setTimeout(180000);await page.goto(gameURL());await screen(page,'MainMenuScreen');});
 
 test('campaign progress merges through the chooser, survives reload and rejects invalid backups',async({page},info)=>{
-  await tutorial(page);
+  await campaign(page);
   const initial=await backup(page), completed=completedFirst(initial);
   await restore(page,completed);await expect.poll(async()=>(await state(page)).import).toBe('succeeded');
   expect(await backup(page)).toEqual(completed);
   await page.screenshot({path:info.outputPath('campaign-progress-import.png')});
-  await page.reload();await screen(page,'MainMenuScreen');await tutorial(page);
+  await page.reload();await screen(page,'MainMenuScreen');await campaign(page);
   expect(await backup(page)).toEqual(completed);
   const future=Buffer.from(completed);future.writeUInt32BE(2,4);
   const mismatched=Buffer.from(completed);mismatched[12]^=1; // campaign identity
@@ -49,10 +63,10 @@ test('campaign progress merges through the chooser, survives reload and rejects 
 });
 
 for(const recovery of ['retry','discard']) test(`campaign persistence failure preserves the durable backup with ${recovery}`,async({page,context},info)=>{
-  await tutorial(page);const initial=await backup(page);
+  await campaign(page);const initial=await backup(page);
   await clickControl(page,'exit');await screen(page,'MainMenuScreen');
   const original=await stored(page);expect(original).not.toBeNull();
-  await tutorial(page);
+  await campaign(page);
   await page.evaluate(()=>{
     window.campaignQuota=true;
     const put=IDBObjectStore.prototype.put;
@@ -75,12 +89,12 @@ for(const recovery of ['retry','discard']) test(`campaign persistence failure pr
     await clickControl(page,'exit');await screen(page,'MainMenuScreen');
     await expect.poll(async()=>(await state(page)).persistence).toBe('persisted');
   }
-  await page.reload();await screen(page,'MainMenuScreen');await tutorial(page);
+  await page.reload();await screen(page,'MainMenuScreen');await campaign(page);
   expect(await backup(page)).toEqual(recovery==='retry'?completed:initial);
 });
 
 test('leaving a new campaign waits for persistence and discard removes its uncommitted file',async({page})=>{
-  await tutorial(page);
+  await campaign(page);
   await page.evaluate(()=>{
     window.campaignQuota=true;
     const put=IDBObjectStore.prototype.put;

@@ -6712,8 +6712,6 @@ Silence : un haut-parleur muet. Son : un haut-parleur avec des ondes sonores.
 
 [intro play again]
 
-[intro existing tutorial]
-
 [intro restart]
 
 [intro restart body]

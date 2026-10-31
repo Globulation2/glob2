@@ -6712,8 +6712,6 @@ Isiltasuna: bozgorailu isildua. Soinua: soinu-uhinak dituen bozgorailua.
 
 [intro play again]
 
-[intro existing tutorial]
-
 [intro restart]
 
 [intro restart body]

@@ -6712,8 +6712,6 @@ Stille: ein stummgeschalteter Lautsprecher. Ton: ein Lautsprecher mit Schallwell
 
 [intro play again]
 
-[intro existing tutorial]
-
 [intro restart]
 
 [intro restart body]

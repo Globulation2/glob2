@@ -6712,8 +6712,6 @@ Discord باز شد. هر زمان بخواهید می‌توانید به با�
 
 [intro play again]
 
-[intro existing tutorial]
-
 [intro restart]
 
 [intro restart body]

@@ -24,7 +24,7 @@ test('the loading page shows download progress and the game starts with core and
   expect((await snapshot(page)).assets.game).toBe('ready');
   // Simulation data starts with the game; build files never ship.
   for (const path of ['/data/maxima/base.strategy', '/data/nicowar.txt', '/data/usl/Glob2/Runtime/Game.usl',
-                      '/data/texts.list.txt', '/data/fonts/sans.ttf', '/maps', '/campaigns/Tutorial_Campaign.txt'])
+                      '/data/texts.list.txt', '/data/fonts/sans.ttf', '/maps', '/scripts/tutorials/catalog.json'])
     expect(await exists(page, path), path).toBe(true);
   for (const path of ['/data/SConscript', '/data/check_translations.py', '/data/fonts/README.md', '/data/screenshots'])
     expect(await exists(page, path), path).toBe(false);

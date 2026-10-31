@@ -6712,8 +6712,6 @@ Silenzio: un altoparlante disattivato. Audio: un altoparlante con onde sonore.
 
 [intro play again]
 
-[intro existing tutorial]
-
 [intro restart]
 
 [intro restart body]

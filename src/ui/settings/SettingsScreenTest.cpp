@@ -708,7 +708,7 @@ TEST_CASE("Legacy tutorial aliases use the selected catalog and preserve unknown
     CHECK(Glob2UI::tutorialText("Introduction and Basics") == "Introduction and Basics");
     for (int part = 1; part <= 4; ++part)
     {
-        const auto source = readFile((glob2test::sourceRoot() / ("scripts/tutorial_part" + std::to_string(part) + ".sgsl")).string());
+        const auto source = readFile((glob2test::sourceRoot() / ("test/fixtures/tutorial/legacy/tutorial_part" + std::to_string(part) + ".sgsl")).string());
         CHECK(Glob2UI::isTutorialSource(source));
         std::string windowsSource;
         for (const char byte : source)

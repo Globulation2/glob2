@@ -127,7 +127,7 @@ browser/unit/tutorial-lessons.test.js` covers shared target resolution, markers,
 entity generations, persistent step IDs and custom-condition hooks.
 
 `python3 test/run_tests.py --filter 'Introduction/*'` loads the shipped maps and verifies shared terrain/resources/regions, all ten real-order lessons, saved continuation at each stage, legacy
-prototype map/save continuity and original campaign load checks, atomic metadata validation and first-run preference
+prototype map/save continuity and archived SGSL save compatibility checks, atomic metadata validation and first-run preference
 migration. Regenerate maps with `python3 tools/tutorials/build.py --maps --binary
 BUILD_DIRECTORY/src/glob2`. Add `--check` to verify deterministic regeneration of
 all packaged map bytes. Creation-only JS APIs and the fixed training package use
@@ -140,7 +140,7 @@ build served with `browser/serve.py`, then run Playwright against this file. Set
 `GLOB2_INTRODUCTION_NATIVE_TRACE` to a native `introduction.trace`; place native
 `food-supply.trace`, `prototype.trace`, `expanded.trace` and
 `legacy-campaign.trace`, `water-access.trace`, `sustainability.trace` and
-`diplomacy.trace` beside it. All eight must match exactly.
+`diplomacy.trace` and `scripted-areas.trace` beside it. All nine must match exactly.
 Browser JUnit, logs and traces remain under `artifacts/introduction/browser/`.
 Compilation alone does not establish equivalent execution.
 
@@ -156,3 +156,10 @@ The archived third legacy chapter currently fails the unchanged SGSL checkpoint-
 validation. Its source still compiles; the compatibility case reports that
 checkpoint separately and roundtrips chapters 1, 2 and 4. Do not loosen SGSL
 validation or rewrite legacy maps as a side effect of authoring new JS lessons.
+
+The retired tutorial maps and SGSL sources are test-only archives under
+`test/fixtures/tutorial/legacy/`. They are excluded from shipped campaigns and
+scripts. Ordinary campaign UI and persistence checks use
+`test/fixtures/campaign/Browser_Test_Campaign.txt`; Tutorial opens the JS lesson
+catalog and cannot launch old campaign progress. Existing progress files are not
+deleted.

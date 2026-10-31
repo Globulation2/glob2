@@ -143,9 +143,19 @@ def verify_install(stage):
         "usr/share/glob2/data/usl/Language/Runtime/Control.usl",
         "usr/share/glob2/data/gfx/ressource0.png",
         "usr/share/glob2/maps/SmallForTwo.map.gz",
-        "usr/share/glob2/campaigns/Tutorial_Campaign.txt",
-        "usr/share/glob2/scripts/tutorial_part1.sgsl",
+        "usr/share/glob2/campaigns/introduction.map.gz",
+        "usr/share/glob2/scripts/tutorials/catalog.json",
     )
+    required += ("usr/share/glob2/scripts/tutorials/runtime.js",) + tuple(
+        "usr/share/glob2/" + path
+        for entry in json.loads((ROOT / "scripts/tutorials/catalog.json").read_text())
+        for path in (entry["definition"], entry["script"],
+                     json.loads((ROOT / entry["definition"]).read_text())["map"]))
+    assets = stage / "usr/share/glob2"
+    retired = [assets / "campaigns/Tutorial_Campaign.txt",
+               *assets.glob("campaigns/tutorial-part*.map*"), *assets.glob("scripts/tutorial_part*.sgsl")]
+    if any(path.is_file() for path in retired):
+        raise SystemExit("retired tutorial assets must not ship")
     missing = [name for name in required if not (stage / name).is_file()
                and not (name.startswith('usr/share/glob2/data/') and name.endswith('.png')
                         and (stage / Path(name).with_suffix('.webp')).is_file())]

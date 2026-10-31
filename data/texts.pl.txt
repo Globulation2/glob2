@@ -6712,8 +6712,6 @@ Cisza: wyciszony głośnik. Dźwięk: głośnik z falami dźwiękowymi.
 
 [intro play again]
 
-[intro existing tutorial]
-
 [intro restart]
 
 [intro restart body]

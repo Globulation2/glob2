@@ -19,7 +19,7 @@ struct Model
     std::optional<Destination> destination;
     bool complete() const { return index==count; }
 };
-inline constexpr int LegacyTutorial=701, MainMenu=702, ShowDestination=703, Lessons=704;
+inline constexpr int MainMenu=702, ShowDestination=703, Lessons=704;
 // Strict validation is part of the map callback's atomic effect transaction.
 Script::Value contentJson(const std::string &text);
 std::shared_ptr<const Model> parse(const Script::Value &value);

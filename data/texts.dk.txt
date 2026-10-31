@@ -6712,8 +6712,6 @@ Stilhed: en lydløs højttaler. Lyd: en højttaler med lydbølger.
 
 [intro play again]
 
-[intro existing tutorial]
-
 [intro restart]
 
 [intro restart body]

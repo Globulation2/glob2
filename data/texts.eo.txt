@@ -6712,8 +6712,6 @@ Silento: silentigita laŭtparolilo. Sono: laŭtparolilo kun sonondoj.
 
 [intro play again]
 
-[intro existing tutorial]
-
 [intro restart]
 
 [intro restart body]

@@ -51,11 +51,21 @@ class TutorialContentTest(unittest.TestCase):
             self.assertIn('tutorials/catalog.json',packed)
             self.assertIn('tutorials/healing.json',packed)
             self.assertIn('healing.js',packed)
-            self.assertIn('tutorial_part1.sgsl',packed)
+            for part in range(1,5):
+                self.assertNotIn(f'tutorial_part{part}.sgsl',packed)
             self.assertTrue(any('tutorials' in dest and source.endswith('catalog.json') for dest,source in installed))
     def test_an_additional_ordinary_step_needs_only_definition_data(self):
         d=copy.deepcopy(self.lesson)
         d['steps'].append(copy.deepcopy(d['steps'][1]));d['steps'][-1]['id']='build-another'
         self.assertEqual(len(builder.validate(d)['steps']),6)
+
+    def test_chinese_review_export_uses_current_lesson_definitions(self):
+        spec=importlib.util.spec_from_file_location('lesson_text_export',ROOT/'tools/china/export_review_text.py')
+        exporter=importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(exporter)
+        rows,missing=exporter.rows()
+        paths={row[1] for row in rows if row[0]=='tutorial'}
+        self.assertEqual(paths,{entry['definition'] for entry in json.loads((ROOT/'scripts/tutorials/catalog.json').read_text())})
+        self.assertFalse(any(path.endswith('.sgsl') for path in paths))
 
 if __name__=='__main__': unittest.main()

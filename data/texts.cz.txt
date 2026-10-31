@@ -6712,8 +6712,6 @@ Ticho: ztlumený reproduktor. Zvuk: reproduktor se zvukovými vlnami.
 
 [intro play again]
 
-[intro existing tutorial]
-
 [intro restart]
 
 [intro restart body]

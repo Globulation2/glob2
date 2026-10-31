@@ -6712,8 +6712,6 @@ Discord открыт. Вы можете вернуться в игру в люб
 
 [intro play again]
 
-[intro existing tutorial]
-
 [intro restart]
 
 [intro restart body]

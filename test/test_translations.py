@@ -110,9 +110,9 @@ panel.actions = {{"id", "Untranslated action", [] {}}, {"ok", tr("[localized]"),
             self.assertEqual({key for key, _ in checker.source_keys(experiment)}, {
                 '[experiment new-experiment]', '[experiment new-experiment help]'})
 
-    def test_tutorial_aliases_cover_shipped_maps_and_remain_current(self):
+    def test_frozen_tutorial_save_aliases_cover_archived_sources(self):
         root = Path(__file__).resolve().parents[1]
-        spec = importlib.util.spec_from_file_location('tutorial_aliases', root / 'tools/localization/generate_tutorial_aliases.py')
+        spec = importlib.util.spec_from_file_location('tutorial_aliases', root / 'test/support/legacy_tutorial_aliases.py')
         generator = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(generator)
         self.assertEqual((root / generator.OUTPUT).read_text(encoding='utf-8'), generator.render(root))
@@ -136,7 +136,7 @@ panel.actions = {{"id", "Untranslated action", [] {}}, {"ok", tr("[localized]"),
                                  table.get('[tutorial part2 message 30]'),
                                  'Ambiguous legacy pool aliases need the same complete instruction')
         for part, count in ((1, 28), (2, 39), (3, 30), (4, 19)):
-            script = (root / f'scripts/tutorial_part{part}.sgsl').read_text(encoding='utf-8')
+            script = (root / f'test/fixtures/tutorial/legacy/tutorial_part{part}.sgsl').read_text(encoding='utf-8')
             groups = {key for key, _ in generator.messages(script, part)}
             self.assertEqual(len(groups), count)
             self.assertTrue(groups <= set(aliases.values()))

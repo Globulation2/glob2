@@ -3356,7 +3356,6 @@
 [intro complete]
 [intro complete body]
 [intro play again]
-[intro existing tutorial]
 [intro restart]
 [intro restart body]
 [intro help touch scout]
