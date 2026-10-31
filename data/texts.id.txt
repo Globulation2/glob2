@@ -5546,14 +5546,6 @@ Batasi penggambaran di seluruh aplikasi. Nilai yang lebih rendah mengurangi peke
 Es
 [road]
 Jalur setapak
-[experiment ice-terrain]
-Medan es
-[experiment ice-terrain help]
-Menambahkan es ke editor peta. Unit darat bergerak dengan setengah kecepatan dan kehilangan satu poin kesehatan setiap 32 langkah simulasi di atas es. Es tidak dapat memuat bangunan atau sumber daya.
-[experiment road-terrain]
-Medan jalur setapak
-[experiment road-terrain help]
-Menambahkan jalur setapak yang aus ke editor peta. Unit darat bergerak dengan kecepatan dua kali lipat. Jalur setapak mendukung bangunan, tetapi tidak sumber daya. Unit terbang tidak terpengaruh.
 [experiment markets-v2]
 Pasar V2
 [experiment markets-v2 help]
@@ -5702,42 +5694,6 @@ Tanah subur
 Air dalam
 [terrain group void]
 Kehampaan
-[experiment obstacle-terrain]
-Medan penghalang
-[experiment obstacle-terrain help]
-Menambahkan batu besar, pagar tanaman, dan semak lebat ke editor peta. Unit darat tidak dapat melintasinya dan proyektil terhalang; unit terbang dapat melewatinya. Bangunan dan sumber daya tidak dapat ditempatkan di sana.
-[experiment ridge-terrain]
-Medan punggung bukit
-[experiment ridge-terrain help]
-Menambahkan punggung batu dan singkapan batu ke editor peta. Unit darat tidak dapat melintasinya, tetapi tembakan menara dan unit terbang dapat lewat di atasnya. Bangunan dan sumber daya tidak dapat ditempatkan di sana.
-[experiment barren-terrain]
-Tanah tandus
-[experiment barren-terrain help]
-Menambahkan tanah, tanah liat, kerikil, dan padang bunga ke editor peta. Bangunan dapat didirikan di sana, tetapi tidak ada yang tumbuh di atas atau di sekitarnya, dan medan ini tidak dianggap sebagai tepi air.
-[experiment rough-terrain]
-Tanah sulit dilalui
-[experiment rough-terrain help]
-Menambahkan lumpur, rawa, salju tebal, dan lereng berbatu ke editor peta. Unit darat bergerak dengan sekitar dua pertiga kecepatan normal. Bangunan dan sumber daya tidak dapat ditempatkan di sana.
-[experiment path-terrain]
-Medan jalan
-[experiment path-terrain help]
-Menambahkan jalan tanah dan jalan papan ke editor peta. Seperti jalur, unit darat bergerak dua kali lebih cepat dan bangunan dapat didirikan, tetapi tidak ada yang tumbuh.
-[experiment lava-terrain]
-Medan lava
-[experiment lava-terrain help]
-Menambahkan lava dan padang bara ke editor peta. Unit darat tidak dapat masuk; unit terbang yang melintas kehilangan kesehatan dengan cepat. Proyektil dapat lewat di atasnya.
-[experiment fertile-terrain]
-Tanah subur
-[experiment fertile-terrain help]
-Menambahkan tanah lempung, lumut, dan padang musim semi ke editor peta. Mendukung bangunan dan tanaman serta mengairi tanah di sekitarnya lebih kuat daripada air.
-[experiment deep-water-terrain]
-Air dalam
-[experiment deep-water-terrain help]
-Menambahkan air dalam dan air gelap ke editor peta. Perenang melintas lebih lambat, ganggang tidak tumbuh, dan medan ini tetap mengairi lahan di sekitarnya.
-[experiment void-terrain]
-Medan kehampaan
-[experiment void-terrain help]
-Menambahkan lubang dan jurang ke editor peta. Tidak ada yang dapat melintasinya, termasuk unit terbang, dan proyektil berhenti di tepinya.
 [terrain group custom]
 Kustom
 [terrain group classic]
@@ -5770,8 +5726,6 @@ Melukai unit terbang
 Pilih kuas. Anggota kelompok memiliki aturan yang sama dan hanya berbeda tampilannya.
 [terrain rule algae grow]
 Ganggang tumbuh
-[terrain palette experiments hint]
-Pilih kuas. Kelompok medan tambahan muncul setelah eksperimennya diaktifkan di Pengaturan > Eksperimen.
 [brush valid on %0]
 Dapat ditempatkan di: %0
 [brush valid nowhere]

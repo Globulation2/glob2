@@ -236,7 +236,7 @@ which implies water. The palette is:
 
 Ice, Trail and the catalogue types keep their imported vertices: seam repair and
 beaches reshape only grass, sand and water, and adjacent water is not converted
-into sand. Import records their required terrain experiments in the map. Their
+into sand. All imported terrains are available without experiment flags. Their
 colors are distinct from resource colors. Images exported before terrain moved
 to vertices used one pixel per whole tile for these types; they import as
 vertices, so a lone such pixel makes four mixed tiles rather than one whole tile.

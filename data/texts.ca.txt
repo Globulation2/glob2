@@ -5546,14 +5546,6 @@ Limita el dibuix a tota l’aplicació. Els valors més baixos redueixen el treb
 Gel
 [road]
 Sender
-[experiment ice-terrain]
-Terreny de gel
-[experiment ice-terrain help]
-Afegeix gel a l’editor de mapes. Les unitats terrestres es mouen a la meitat de velocitat i perden un punt de vida cada 32 passos de simulació exposades al gel. El gel no pot contenir edificis ni recursos.
-[experiment road-terrain]
-Terreny de sender
-[experiment road-terrain help]
-Afegeix senders desgastats a l’editor de mapes. Les unitats terrestres es mouen al doble de velocitat. Els senders permeten edificis, però no recursos. Les unitats voladores no es veuen afectades.
 [experiment markets-v2]
 Mercats V2
 [experiment markets-v2 help]
@@ -5702,42 +5694,6 @@ Sòl fèrtil
 Aigua profunda
 [terrain group void]
 Buit
-[experiment obstacle-terrain]
-Terreny amb obstacles
-[experiment obstacle-terrain help]
-Afegeix blocs de roca, bardisses i matollars a l'editor de mapes. Les unitats terrestres no poden travessar-los i aturen els projectils; les unitats voladores passen per sobre. No admeten edificis ni recursos.
-[experiment ridge-terrain]
-Terreny de crestes
-[experiment ridge-terrain help]
-Afegeix crestes rocoses i afloraments a l'editor de mapes. Les unitats terrestres no poden travessar-los, però les torres disparen per sobre i les unitats voladores passen. No admeten edificis ni recursos.
-[experiment barren-terrain]
-Sòl estèril
-[experiment barren-terrain help]
-Afegeix terra, argila, grava i prats de flors a l'editor de mapes. Hi pot haver edificis, no hi creix res ni al costat i no compten com a riba.
-[experiment rough-terrain]
-Sòl accidentat
-[experiment rough-terrain help]
-Afegeix fang, aiguamolls, neu profunda i tarteres a l'editor de mapes. Les unitats terrestres es mouen a uns dos terços de la velocitat. El sòl accidentat no admet edificis ni recursos.
-[experiment path-terrain]
-Terreny de camins
-[experiment path-terrain help]
-Afegeix camins de terra i passarel·les de fusta a l'editor de mapes. Com als senders, les unitats terrestres es mouen al doble de velocitat i s'hi permeten edificis, però no hi creix res.
-[experiment lava-terrain]
-Terreny de lava
-[experiment lava-terrain help]
-Afegeix lava i camps de brases a l'editor de mapes. Les unitats terrestres no hi poden entrar; les unitats voladores que els travessen perden salut ràpidament. Els projectils passen per sobre.
-[experiment fertile-terrain]
-Sòl fèrtil
-[experiment fertile-terrain help]
-Afegeix terra franca, molsa i prats primaverals a l'editor de mapes. Admeten edificis i conreus i irriguen el terreny del voltant amb més intensitat que l'aigua.
-[experiment deep-water-terrain]
-Aigua profunda
-[experiment deep-water-terrain help]
-Afegeix aigua profunda i fosca a l'editor de mapes. Els nedadors la travessen més lentament, no hi creixen algues i continua irrigant els camps propers.
-[experiment void-terrain]
-Terreny buit
-[experiment void-terrain help]
-Afegeix forats i avencs a l'editor de mapes. Res no els pot travessar, ni tan sols les unitats voladores, i els projectils s'aturen a la vora.
 [terrain group custom]
 Personalitzat
 [terrain group classic]
@@ -5770,8 +5726,6 @@ Fereix les unitats voladores
 Tria un pinzell. Els terrenys de cada grup comparteixen les mateixes regles i només difereixen en l’aspecte.
 [terrain rule algae grow]
 Hi creixen algues
-[terrain palette experiments hint]
-Tria un pinzell. Aquí apareixen més grups de terreny quan les seves funcions experimentals s'activen a Opcions > Funcions experimentals.
 [brush valid on %0]
 Vàlid sobre: %0
 [brush valid nowhere]

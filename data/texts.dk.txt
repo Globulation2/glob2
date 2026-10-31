@@ -5546,14 +5546,6 @@ Begræns tegningen i hele programmet. Lavere værdier reducerer tegningsarbejdet
 Is
 [road]
 Sti
-[experiment ice-terrain]
-Isterræn
-[experiment ice-terrain help]
-Tilføjer is til korteditoren. Landenheder bevæger sig med halv hastighed og mister ét livspoint for hver 32 simulationstrin på isen. Is kan ikke rumme bygninger eller ressourcer.
-[experiment road-terrain]
-Stiterræn
-[experiment road-terrain help]
-Tilføjer slidte stier til korteditoren. Landenheder bevæger sig med dobbelt hastighed. Stier tillader bygninger, men ingen ressourcer. Flyvende enheder påvirkes ikke.
 [experiment markets-v2]
 Markeder V2
 [experiment markets-v2 help]
@@ -5702,42 +5694,6 @@ Frugtbar jord
 Dybt vand
 [terrain group void]
 Tomrum
-[experiment obstacle-terrain]
-Terræn med forhindringer
-[experiment obstacle-terrain help]
-Føjer kampesten, hække og krat til korteditoren. Landenheder kan ikke krydse dem, og de stopper projektiler; flyvende enheder passerer over dem. De kan hverken rumme bygninger eller ressourcer.
-[experiment ridge-terrain]
-Terræn med klippekamme
-[experiment ridge-terrain help]
-Føjer klippekamme og klippefremspring til korteditoren. Landenheder kan ikke krydse dem, men tårne skyder over dem, og flyvende enheder passerer. De kan hverken rumme bygninger eller ressourcer.
-[experiment barren-terrain]
-Ufrugtbar jord
-[experiment barren-terrain help]
-Føjer jord, ler, grus og blomsterenge til korteditoren. Bygninger kan stå på dem, intet vokser på eller ved siden af dem, og de tæller ikke som kyst.
-[experiment rough-terrain]
-Ujævnt terræn
-[experiment rough-terrain help]
-Føjer mudder, sump, dyb sne og stenurer til korteditoren. Landenheder bevæger sig med omkring to tredjedele af hastigheden. Ujævnt terræn kan hverken rumme bygninger eller ressourcer.
-[experiment path-terrain]
-Terræn med stier
-[experiment path-terrain help]
-Føjer jordstier og plankestier til korteditoren. Ligesom på spor bevæger landenheder sig med dobbelt hastighed, og bygninger er tilladt, men intet vokser.
-[experiment lava-terrain]
-Lavaterræn
-[experiment lava-terrain help]
-Føjer lava og glødemarker til korteditoren. Landenheder kan ikke komme ind; flyvende enheder mister hurtigt helbred, når de krydser dem. Projektiler passerer over.
-[experiment fertile-terrain]
-Frugtbar jord
-[experiment fertile-terrain help]
-Føjer muldjord, mos og forårsenge til korteditoren. De understøtter bygninger og afgrøder og vander jorden omkring dem kraftigere end vand.
-[experiment deep-water-terrain]
-Dybt vand
-[experiment deep-water-terrain help]
-Føjer dybt og mørkt vand til korteditoren. Svømmere krydser det langsommere, ingen alger vokser i det, og det vander stadig nærliggende marker.
-[experiment void-terrain]
-Tomt terræn
-[experiment void-terrain help]
-Føjer huller og afgrunde til korteditoren. Intet kan krydse dem, ikke engang flyvende enheder, og projektiler stopper ved kanten.
 [terrain group custom]
 Brugerdefineret
 [terrain group classic]
@@ -5770,8 +5726,6 @@ Skader flyvende enheder
 Vælg en pensel. Terræntyperne i hver gruppe har de samme regler og adskiller sig kun i udseende.
 [terrain rule algae grow]
 Alger vokser
-[terrain palette experiments hint]
-Vælg en pensel. Flere terrængrupper vises her, når deres eksperimenter er aktiveret under Indstillinger > Eksperimenter.
 [brush valid on %0]
 Gyldig på: %0
 [brush valid nowhere]

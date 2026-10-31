@@ -21,7 +21,7 @@ STANDARD_CANCEL = ("${{ github.event_name == 'pull_request' || (github.event_nam
 
 # Release, publication and deployment workflows: never cancelled in progress.
 RELEASE = {
-    'amazon-appstore.yml', 'android-play-internal.yml', 'app-signing-fingerprints.yml', 'browser-release.yml',
+    'sync-wiki.yml', 'amazon-appstore.yml', 'android-play-internal.yml', 'app-signing-fingerprints.yml', 'browser-release.yml',
     'epic-windows-release.yml', 'fdroid-publication.yml', 'fdroid-release-validation.yml',
     'flathub-update.yml', 'github-release.yml', 'macos-signing-retry.yml', 'macos-downloads-qualification.yml', 'ios-testflight.yml', 'ios-production.yml', 'publish-desktop.yml',
     'release.yml', 'publish-free-cohort.yml', 'promote-downloads.yml', 'server-image.yml', 'snap-release.yml', 'steam-windows-upload.yml',

@@ -7,7 +7,6 @@
 #include "FileFormatVersions.h"
 #include "TerrainProperties.h"
 #include "TerrainPresentation.h"
-#include "TerrainExperiments.h"
 #include "LegacyTerrainFrames.h"
 #include "Game.h"
 #include "GameRuleOverrides.h"
@@ -404,7 +403,6 @@ Value Observations::query(const std::string &name, const std::vector<Value> &arg
 					const auto type = static_cast<TerrainType>(id);
 					const auto &p = world().terrain->properties(type);
 					const auto &presentation = world().terrain->presentation(type);
-					const auto experiment = terrainExperiment(type);
 					Value resources = Value::array();
 					for (unsigned resource = 0; resource < world().resourceRegistry->size(); ++resource)
 						if (MapState::terrainSupportsResourceType(world().state(), type, static_cast<ResourceId>(resource)))
@@ -416,9 +414,6 @@ Value Observations::query(const std::string &name, const std::vector<Value> &arg
 							.set("group", id < TERRAIN_COUNT
 											 ? Value(terrainGroupDefinition(terrainGroup(type)).key)
 											 : Value())
-							.set("experiment", experiment
-												   ? Value(experimentDefinition(*experiment).key)
-												   : Value())
 							.set("editorSelectable", presentation.editorSelectable)
 							.set("walkable", p.walkable)
 							.set("swimmable", p.swimmable)

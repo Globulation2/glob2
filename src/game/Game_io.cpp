@@ -273,8 +273,6 @@ GAGCore::CooperativeTask Game::loadTask(GAGCore::InputStream *stream,SaveLoadPro
 	if(!(co_await map.loadTask(stream, mapHeader, this)))
 		co_return false;
 
-	if (versionMinor >= FILE_FORMAT_VERSION_TERRAIN_PROPERTIES && map.requiredTerrainExperiments() != mapHeader.requiredTerrainExperiments)
-		co_return false;
 	if (versionMinor >= FILE_FORMAT_VERSION_RUNTIME_RESOURCES &&
 		(map.requiredResourceExperiments() != mapHeader.requiredResourceExperiments ||
 		 map.resourceRegistry().experiments() != mapHeader.resourceExperimentDefinitions ||
@@ -285,12 +283,6 @@ GAGCore::CooperativeTask Game::loadTask(GAGCore::InputStream *stream,SaveLoadPro
 		if (mapHeader.getIsSavedGame() && !gameHeader.getExperiments().has(key)) co_return false;
 		gameHeader.getExperiments().set(key, true, gameHeader.catalogExperimentKeys());
 	}
-	for (const auto& definition : experimentDefinitions())
-		if (mapHeader.requiredTerrainExperiments.has(definition.id))
-		{
-			if (mapHeader.getIsSavedGame() && !gameHeader.hasExperiment(definition.id)) co_return false;
-			gameHeader.getExperiments().set(definition.id);
-		}
 
 	if (!readMatchingSignature(stream, FILE_SIG_GAME_MAP, "signatureAfterMap"))
 		co_return false;
@@ -720,7 +712,6 @@ void Game::save(GAGCore::OutputStream *stream, bool fileIsAMap, const std::strin
 	Uint32 mapHeaderOffset = stream->getPosition();
 	mapHeader.setMapName(name);
 	mapHeader.setIsSavedGame(!fileIsAMap);
-	mapHeader.requiredTerrainExperiments = map.requiredTerrainExperiments();
 	mapHeader.requiredResourceExperiments = map.requiredResourceExperiments();
 	mapHeader.resourceExperimentDefinitions = map.resourceRegistry().experiments();
 	gameHeader.setResourceExperiments(map.resourceRegistry().experiments());

@@ -99,7 +99,7 @@ def save_header(path):
     skip(4, 'map offset')
     assert byte('saved-game flag') <= 1, 'invalid saved-game flag'
     skip(20, 'map SHA1')
-    if minor >= 134:
+    if 134 <= minor < 187:
         keys('required terrain experiments')
     if minor >= 140:
         count = word('resource experiment declaration count')

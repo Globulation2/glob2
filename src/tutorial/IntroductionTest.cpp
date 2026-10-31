@@ -9,6 +9,7 @@
 #include "Player.h"
 #include "WinningConditions.h"
 #include "ReplayWriter.h"
+#include "Version.h"
 #include "Brush.h"
 #include "FertilityCalculator.h"
 #include <BinaryStream.h>
@@ -65,23 +66,39 @@ void create(Game &g,const char *name,int x,int y,int workers,bool site=false)
     REQUIRE(g.checkRoomForBuilding(x,y,g.buildingsTypes.get(type),0,false));
     order(g,std::make_shared<OrderCreate>(0,x,y,type,workers,site ? 0 : workers, site ? std::nullopt : std::optional<Sint32>(4)));
 }
+std::vector<Uint32> continuationState(Game &game)
+{
+    std::vector<Uint32> state, buildings, units;
+    game.checkSum(&state,&buildings,&units);
+    // Saving upgrades the format header; every simulation component and every
+    // unit/building checksum must still continue identically after loading.
+    REQUIRE_FALSE(state.empty());
+    state.erase(state.begin());
+    state.insert(state.end(),buildings.begin(),buildings.end());
+    state.insert(state.end(),units.begin(),units.end());
+    return state;
+}
 void continuation(glob2test::HeadlessGame &w)
 {
     auto *memory=new GAGCore::MemoryStreamBackend;
     GAGCore::BinaryOutputStream output(memory);
     w.game.save(&output,false,w.game.mapHeader.getMapName()); output.flush();
     const std::string bytes(memory->getBuffer(),memory->getPosition());
-    std::vector<Uint32> trace;
+    std::vector<std::vector<Uint32>> trace;
     std::ofstream log(glob2test::artifactDir()/"introduction.trace",std::ios::app);
-    for (int i=0;i<96;++i) { w.step(); trace.push_back(w.game.checkSum()); log << w.game.stepCounter << " " << trace.back() << "\n"; }
+    for (int i=0;i<96;++i) {
+        w.step();trace.push_back(continuationState(w.game));
+        log << w.game.stepCounter << " " << w.game.checkSum() << "\n";
+    }
     GameGUI restored(false);
     GAGCore::BinaryInputStream input(new GAGCore::MemoryStreamBackend(bytes.data(),bytes.size()));
     input.seekFromStart(0);
     REQUIRE(restored.game.load(&input));
+    CHECK(restored.game.mapHeader.getVersionMinor()==VERSION_MINOR);
     restored.game.setWaitingOnMask(0);
     for (int i=0;i<96;++i) {
         restored.game.step(0);
-        REQUIRE(restored.game.checkSum()==trace[i]);
+        REQUIRE(continuationState(restored.game)==trace[i]);
     }
 }
 void until(glob2test::HeadlessGame &w,const std::function<bool()> &done,int limit=24000)
