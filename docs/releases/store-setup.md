@@ -40,6 +40,13 @@ deletion until activated. Install and test that active Dev build through the
 Epic launcher, then move the candidate through Stage and review, and promote
 it to Live in the portal.
 
+The native CLI accepts the documented Epic Launcher `-KEY=VALUE` fields and
+`-EpicPortal` switch without treating them as game commands. Their values are
+discarded instead of copied into the parsed game request; this does not add EOS
+authentication or change the game's account flow. Unsupported arguments still
+fail validation. Test Launcher-style arguments as well as the headless smoke
+command when qualifying the candidate.
+
 In the release repository, set `EPIC_ORGANIZATION_ID`, `EPIC_PRODUCT_ID`,
 `EPIC_WINDOWS_ARTIFACT_ID`, `EPIC_BPT_CLIENT_ID`, and `EPIC_BPT_SHA256` as
 `epic-dev` environment variables. Store `EPIC_BPT_CLIENT_SECRET` as an
