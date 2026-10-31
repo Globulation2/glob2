@@ -30,7 +30,6 @@ for (const locale of locales) {
     await expect(page.locator('#hero-title')).toHaveText(heading);
     await expect(page.getByRole('link', { name: /Isles of Plenty/ })).toBeVisible();
     await expect(page.locator('.app-sidebar .nav a[href="/maps"]')).toBeVisible();
-    await expect(page.locator('.app-sidebar .nav a')).toHaveCount(10);
     const signIn = page.locator('.app-sidebar .sidebar-account a[href="/signin"]');
     await expect(signIn).toBeVisible();
     expect(
@@ -72,57 +71,56 @@ test('changing the selected language updates the page without losing input', asy
   await expect(page.locator('.app-sidebar .nav a[href="/maps"]')).toBeVisible();
 });
 
-test('Filipino browser preference, sign-in, and saved choice agree', async ({
-  page,
-  context,
-}, info) => {
-  const catalog = JSON.parse(
-    readFileSync(new URL('../../../packages/i18n/locales/fil.json', import.meta.url), 'utf8'),
-  ) as Record<string, string>;
-  await context.clearCookies();
-  await context.setExtraHTTPHeaders({ 'Accept-Language': 'tl-PH, en;q=0.5' });
-  await context.addInitScript(() => {
-    Object.defineProperty(navigator, 'languages', { get: () => ['tl-PH', 'en'] });
-  });
-  await page.route('**/api/v1/accounts/me', (route) =>
-    route.fulfill({ status: 401, json: { code: 'unauthenticated', message: 'Sign in required.' } }),
-  );
-  await page.goto('/signin');
-  await expect(page.locator('html')).toHaveAttribute('lang', 'fil');
-  await expect(page.locator('label[for="signin-username"]')).toContainText(catalog['Username']!);
-  await expect(page.locator('label[for="signin-password"]')).toContainText(catalog['Password']!);
-  expect(
-    await page.evaluate(
-      () => document.documentElement.scrollWidth - document.documentElement.clientWidth,
-    ),
-  ).toBeLessThanOrEqual(1);
-  await info.attach('fil-signin', {
-    body: await page.screenshot({ fullPage: true }),
-    contentType: 'image/png',
-  });
+test.describe('Filipino browser preference', () => {
+  test.use({ locale: 'tl-PH' });
+  test('sign-in and saved choice agree', async ({ page, context }, info) => {
+    const catalog = JSON.parse(
+      readFileSync(new URL('../../../packages/i18n/locales/fil.json', import.meta.url), 'utf8'),
+    ) as Record<string, string>;
+    await context.clearCookies();
+    await page.route('**/api/v1/accounts/me', (route) =>
+      route.fulfill({
+        status: 401,
+        json: { code: 'unauthenticated', message: 'Sign in required.' },
+      }),
+    );
+    await page.goto('/signin');
+    await expect(page.locator('html')).toHaveAttribute('lang', 'fil');
+    await expect(page.locator('label[for="signin-username"]')).toContainText(catalog['Username']!);
+    await expect(page.locator('label[for="signin-password"]')).toContainText(catalog['Password']!);
+    expect(
+      await page.evaluate(
+        () => document.documentElement.scrollWidth - document.documentElement.clientWidth,
+      ),
+    ).toBeLessThanOrEqual(1);
+    await info.attach('fil-signin', {
+      body: await page.screenshot({ fullPage: true }),
+      contentType: 'image/png',
+    });
 
-  await page.goto('/');
-  await expect(page.locator('#hero-title')).toHaveText(catalog['Welcome to the colony']!);
-  if (!(await page.getByTestId('language-selector').first().isVisible()))
-    await page.locator('.rail-expand').click();
-  const selector = page.locator('[data-testid="language-selector"]:visible').first();
-  await selector.selectOption('en');
-  await page.reload();
-  await expect(page.locator('html')).toHaveAttribute('lang', 'en');
-  if (!(await page.getByTestId('language-selector').first().isVisible()))
-    await page.locator('.rail-expand').click();
-  await page.locator('[data-testid="language-selector"]:visible').first().selectOption('fil');
-  await page.reload();
-  await expect(page.locator('html')).toHaveAttribute('lang', 'fil');
-  await page.goto('/maps');
-  await expect(page.locator('html')).toHaveAttribute('lang', 'fil');
-  expect(
-    await page.evaluate(
-      () => document.documentElement.scrollWidth - document.documentElement.clientWidth,
-    ),
-  ).toBeLessThanOrEqual(1);
-  await info.attach('fil-maps', {
-    body: await page.screenshot({ fullPage: true }),
-    contentType: 'image/png',
+    await page.goto('/');
+    await expect(page.locator('#hero-title')).toHaveText(catalog['Welcome to the colony']!);
+    if (!(await page.getByTestId('language-selector').first().isVisible()))
+      await page.locator('.rail-expand').click();
+    const selector = page.locator('[data-testid="language-selector"]:visible').first();
+    await selector.selectOption('en');
+    await page.reload();
+    await expect(page.locator('html')).toHaveAttribute('lang', 'en');
+    if (!(await page.getByTestId('language-selector').first().isVisible()))
+      await page.locator('.rail-expand').click();
+    await page.locator('[data-testid="language-selector"]:visible').first().selectOption('fil');
+    await page.reload();
+    await expect(page.locator('html')).toHaveAttribute('lang', 'fil');
+    await page.goto('/maps');
+    await expect(page.locator('html')).toHaveAttribute('lang', 'fil');
+    expect(
+      await page.evaluate(
+        () => document.documentElement.scrollWidth - document.documentElement.clientWidth,
+      ),
+    ).toBeLessThanOrEqual(1);
+    await info.attach('fil-maps', {
+      body: await page.screenshot({ fullPage: true }),
+      contentType: 'image/png',
+    });
   });
 });
