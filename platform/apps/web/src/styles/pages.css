@@ -162,7 +162,7 @@
 .upload-form {
   max-width: 640px;
 }
-.upload-form input[type='file'] {
+.upload-form :is(input, select, textarea) {
   min-inline-size: 0;
   max-inline-size: 100%;
 }

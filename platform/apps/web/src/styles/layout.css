@@ -300,7 +300,8 @@ main:focus {
 .sidebar-collapsed .app-sidebar .nav-label,
 .sidebar-collapsed .app-sidebar .wordmark,
 .sidebar-collapsed .app-sidebar .nav-group-label,
-.sidebar-collapsed .app-sidebar .sidebar-toggle {
+.sidebar-collapsed .app-sidebar .sidebar-toggle,
+.sidebar-collapsed .app-sidebar .language-preference {
   display: none;
 }
 .sidebar-collapsed .app-sidebar .nav a {
@@ -370,7 +371,8 @@ main:focus {
   .app-sidebar .nav-label,
   .app-sidebar .wordmark,
   .app-sidebar .nav-group-label,
-  .app-sidebar .sidebar-toggle {
+  .app-sidebar .sidebar-toggle,
+  .app-sidebar .language-preference {
     display: none;
   }
   .app-sidebar .nav a {

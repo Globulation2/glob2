@@ -43,6 +43,25 @@ for (const locale of locales) {
       expect(font.faces).toEqual(
         expect.arrayContaining([expect.objectContaining({ status: 'loaded' })]),
       );
+      if ((page.viewportSize()?.width ?? 1280) < 1100) {
+        await expect(page.locator('.app-sidebar .language-preference')).toBeHidden();
+        await page.locator('.rail-expand').click();
+        const selector = page.locator('.drawer-content [data-testid="language-selector"]');
+        await selector.scrollIntoViewIfNeeded();
+        await expect(selector).toBeVisible();
+        await expect(selector.locator('option:checked')).toHaveText(locale.name);
+        expect((await selector.boundingBox())?.width ?? 0).toBeGreaterThan(180);
+        const directory = process.env.SCREENSHOT_DIR;
+        const path = directory
+          ? resolve(directory, info.project.name, 'te-language-drawer.png')
+          : undefined;
+        if (directory) mkdirSync(resolve(directory, info.project.name), { recursive: true });
+        await info.attach('te-language-drawer', {
+          body: await page.screenshot({ path }),
+          contentType: 'image/png',
+        });
+        await page.locator('.sidebar-close').click();
+      }
     }
     await expect(page.getByRole('link', { name: /Isles of Plenty/ })).toBeVisible();
     await expect(page.locator('.app-sidebar .nav a[href="/maps"]')).toBeVisible();
