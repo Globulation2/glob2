@@ -57,8 +57,8 @@ def render():
              '(4× for the 32px-native explorer set, ~3.37×/3.2× for the 38px/40px-native worker and warrior sets). '
              'Native canvas dimensions include transparent padding. '
              '“Recovered original” includes deterministic resizing, matte extraction, layer separation and renders from original Blender rigs, without AI. “Hand-authored vector” frames are drawn by hand as SVG for glob2 (`datasrc/gfx/authored`) and rendered with librsvg by `tools/artwork/render_authored.py`, without AI or recolouring.', '',
-             'Generated terrain combines selected generated materials with deterministic masks and edge correction. '
-             'Grass and sand are reconstructed from the classic pixels with seeded grain and a soft color constraint, without AI; transitions retain the previous border masks and shoreline alpha. '
+             'Catalog terrain materials use original procedural 8×8 blocks with shared boundaries and four seeded interiors. '
+             'The older connected terrain frames reconstruct grass and sand from classic pixels with seeded grain and a soft color constraint, without AI; their transitions retain the previous border masks and shoreline alpha. '
              'Mask resampling adds no invented texture detail. Unit animation textures are rendered from the original Blender rigs.', '',
              '| Source category | Frames |', '| --- | ---: |']
     lines += ['| %s | %d |' % item for item in sorted(counts.items())]

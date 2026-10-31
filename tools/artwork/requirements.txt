@@ -1,0 +1,9 @@
+# Procedural artwork generators and validators; never shipped with the game.
+# Builds install only the encoder set; these tools also need the array libraries.
+-r ../asset-requirements.txt
+
+# Full-block procedural terrain fields; match requirements-dev.txt's included pins.
+numpy==2.4.6
+
+# Exact indexed periodic distance queries for 8x8 terrain blocks.
+scipy==1.17.1

@@ -167,6 +167,7 @@ Catalog Catalog::parse(const nlohmann::json &j)
 		v.sprite = dataPath(m.at("sprite"));
 		require(!v.key.empty() && keys.insert(v.key).second, "duplicate material key");
 		v.salt = keyHash(v.key);
+		v.blockSalt = v.salt;
 		v.profile = findProfile(m.at("profile"));
 		// Water is an ordinary (animated) tile material; the scrolling ocean
 		// backdrop and per-material backdrops were retired.
@@ -182,19 +183,43 @@ Catalog Catalog::parse(const nlohmann::json &j)
 			require((v.variantGrid & (v.variantGrid - 1)) == 0, "variant_grid must be a power of two");
 			require(v.periodicEdges, "variant_grid requires periodic edges");
 		}
+		v.variantBlocks = integerInRange(m.value("variant_blocks", nlohmann::json(1)), 1, 16);
+		require(!m.contains("variant_blocks") || v.variantGrid, "variant_blocks requires variant_grid");
+		if (m.contains("variant_block_group"))
+		{
+			const auto &group = m.at("variant_block_group");
+			require(v.variantGrid && group.is_string() && !group.get<std::string>().empty() &&
+					group.get<std::string>().size() <= 64, "variant_block_group requires a grid and a short nonempty key");
+			v.blockSalt = keyHash(group.get<std::string>());
+		}
 		if (m.contains("decor"))
 		{
 			const auto &d = m.at("decor");
 			require(d.is_object(), "decor must be an object");
 			v.decor.sprite = dataPath(d.at("sprite"));
-			for (const auto *key : {"full", "edge"})
+			for (const auto *key : {"full", "edge", "connected", "connected_interior"})
 			{
-				auto &frames = std::string(key) == "full" ? v.decor.full : v.decor.edge;
+				const std::string name = key;
+				if (name.starts_with("connected") && !d.contains(key)) continue;
+				auto &frames = name == "full" ? v.decor.full : name == "edge" ? v.decor.edge :
+					name == "connected" ? v.decor.connected : v.decor.connectedInterior;
 				require(d.at(key).is_array() && !d.at(key).empty() && d.at(key).size() <= 256,
 						"decor frames must be a non-empty array");
 				for (const auto &frame : d.at(key))
 					frames.push_back(integerInRange(frame, 0, 65535));
 			}
+			require(v.decor.connected.empty() || v.decor.connected.size() % 16 == 0,
+				"connected decor needs equal variant counts for all 16 corner masks");
+			if (d.contains("connected_corners"))
+			{
+				require(d.at("connected_corners").is_boolean(), "connected_corners must be a boolean");
+				v.decor.connectedCorners = d.at("connected_corners").get<bool>();
+				require(!v.decor.connectedCorners || v.decor.connected.size() == 16 * 16,
+					"connected_corners needs 16 corner-colour variants per mask");
+			}
+			require(v.decor.connectedInterior.empty() ||
+				(v.decor.connectedCorners && v.decor.connectedInterior.size() % 16 == 0),
+				"connected_interior needs connected_corners and equal variants per colour");
 		}
 		v.animationFrames = integerInRange(m.value("animation_frames", nlohmann::json(1)), 1, 256);
 		v.animationTicks = integerInRange(m.value("animation_ticks", nlohmann::json(1)), 1,
@@ -253,8 +278,8 @@ Catalog Catalog::parse(const nlohmann::json &j)
 			v.variants.push_back({frame, unsigned(w)});
 			v.totalWeight += unsigned(w);
 		}
-		require(!v.variantGrid || v.variants.size() == std::size_t(v.variantGrid * v.variantGrid),
-				"variant_grid needs one variant per block cell");
+		require(!v.variantGrid || v.variants.size() == std::size_t(v.variantGrid * v.variantGrid * v.variantBlocks),
+				"variant_grid needs one variant per cell in every block");
 		c.materials.push_back(std::move(v));
 	}
 	require(j.at("bindings").is_object(), "bindings must be an object");
@@ -310,7 +335,12 @@ unsigned Catalog::variantIndex(MaterialId id, int x, int y, std::uint32_t seed) 
 	if (m.variantGrid)
 	{
 		const unsigned mask = unsigned(m.variantGrid) - 1;
-		return (unsigned(y) & mask) * unsigned(m.variantGrid) + (unsigned(x) & mask);
+		const unsigned cell = (unsigned(y) & mask) * unsigned(m.variantGrid) + (unsigned(x) & mask);
+		if (m.variantBlocks == 1) return cell;
+		// Unsigned floor-block coordinates also handle negative presentation coordinates.
+		const unsigned block = hash(unsigned(x) / unsigned(m.variantGrid), unsigned(y) / unsigned(m.variantGrid),
+									m.blockSalt ^ mapSeedSalt(seed) ^ 0xb10c4a7du) % unsigned(m.variantBlocks);
+		return block * unsigned(m.variantGrid * m.variantGrid) + cell;
 	}
 	unsigned n = hash(x, y, m.salt ^ mapSeedSalt(seed)) % m.totalWeight;
 	for (unsigned i = 0; i < m.variants.size(); ++i)
@@ -321,9 +351,32 @@ unsigned Catalog::variantIndex(MaterialId id, int x, int y, std::uint32_t seed) 
 	}
 	return unsigned(m.variants.size() - 1);
 }
-int Catalog::decorFrame(MaterialId id, int x, int y, bool edge, std::uint32_t seed) const
+unsigned cornerColours(int x, int y, unsigned maskW, unsigned maskH, std::uint32_t seed)
+{
+	const auto salt = mapSeedSalt(seed) ^ 0xca70b1u;
+	const auto bit = [&](unsigned vx, unsigned vy) { return hash(vx & maskW, vy & maskH, salt) >> 16 & 1u; };
+	const unsigned ux = unsigned(x), uy = unsigned(y);
+	return bit(ux, uy) | bit(ux + 1, uy) << 1 | bit(ux, uy + 1) << 2 | bit(ux + 1, uy + 1) << 3;
+}
+int Catalog::decorFrame(MaterialId id, int x, int y, bool edge, std::uint32_t seed, unsigned cornerMask,
+	unsigned colours) const
 {
 	const auto &d = materials[id].decor;
+	if (!d.connected.empty())
+	{
+		if (cornerMask == 0 || cornerMask > 15) return -1;
+		if (cornerMask == 15 && !d.connectedInterior.empty())
+		{
+			// Interiors never reach a cell edge, so filled cells choose freely.
+			const unsigned extra = unsigned(d.connectedInterior.size()) / 16;
+			if (const unsigned v = hash(x, y, mapSeedSalt(seed) ^ 0x1e7e10u) % (extra + 1))
+				return d.connectedInterior[(colours & 15u) * extra + v - 1];
+		}
+		const unsigned variants = unsigned(d.connected.size()) / 16;
+		const unsigned variant = d.connectedCorners ? colours & 15u :
+			hash(x, y, materials[id].salt ^ mapSeedSalt(seed) ^ 0x6dec0u) % variants;
+		return d.connected[cornerMask * variants + variant];
+	}
 	const auto &frames = edge ? d.edge : d.full;
 	if (frames.empty())
 		return -1;

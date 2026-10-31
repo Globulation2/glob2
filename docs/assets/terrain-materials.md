@@ -35,6 +35,8 @@ Each material supplies:
 - optional `animation_frames`, `animation_ticks`, and `animation_stride`;
 - optional `edges` (`blend` or `periodic`, see [Periodic edges](terrain-production.md#periodic-edges))
   and `variant_grid`, see [Positional variants](terrain-production.md#positional-variants);
+- optional `variant_blocks` for interchangeable interiors and `variant_block_group`
+  for materials that share layout selection, see [Interchangeable blocks](terrain-production.md#interchangeable-blocks);
 - optional `seam` (version 3) with `height`, `cast_q8`, `cast_width_q8`, `fringe`,
   `fringe_q8` and `fringe_width_q8`, see [Seams](terrain-rendering.md#seams).
 - optional `surf` (version 3) with `period`, `ticks`, `reach_q8`, `shallow`, `shallow_q8`,
@@ -130,7 +132,10 @@ The pipeline has three responsibilities:
 1. **Catalog/compiler:** validate the schema and native sources, prepare common
    variant borders, then emit paged texture metadata, contour tables and source
    provenance. Page sizes are powers of two from 64 to 8192; the default is 1024.
-   Each 32×32 source has four pixels of padding and three exported mip levels.
+   Only frames whose shared border the compiler blends are packed: periodic
+   materials and decor keep their native pixels, so the runtime reads those
+   sources directly instead of shipping a second copy. Each packed 32×32 source
+   has four pixels of padding on a single full-resolution page level.
 2. **Runtime asset exporter:** encode the game's sprite sources, generate the
    terrain pack and audit all output files. It records fingerprints of the actual
    decoded runtime sources, including lossy WebP and sheet frames, separately
@@ -138,9 +143,8 @@ The pipeline has three responsibilities:
 3. **Runtime compositor:** verify native source fingerprints, read prepared texture
    regions lazily from CPU pages, resolve coverage and compose visible terrain.
    It computes coverage directly from normalized profile controls. Exported
-   contour tables and source mips are validation/packaging data; runtime source
-   extraction currently reads mip 0. Composed view pages supply their own GPU
-   mipmaps and respect the device texture limit.
+   contour tables are validation/packaging data. Composed view pages supply their
+   own GPU mipmaps and respect the device texture limit.
 
 `compiled_pack` names `atlas.json` in its own data subdirectory, such as
 `data/terrain/my-pack/atlas.json`. An absent pack,
