@@ -8,9 +8,11 @@ for (const variant of ['serial', 'threaded']) {
   test(`${variant} Thai startup, composed input and refresh use the shipped catalog`, async ({page, context}, info) => {
     const url = new URL(gameURL(), String(info.project.use.baseURL || 'http://127.0.0.1:8770'));
     url.searchParams.set('threads', variant);
+    url.searchParams.set('renderer', 'software');
     await context.addCookies([{name: 'glob2_locale', value: 'th', url: url.origin}]);
     await page.goto(url.href);
     await waitForMainMenu(page);
+    expect(await page.evaluate(() => Module.executionMode)).toBe(variant);
     await expect(page.locator('html')).toHaveAttribute('lang', 'th');
     await expect(page.locator('#loading-language')).toHaveValue('th');
     const state = await page.evaluate(() => ({

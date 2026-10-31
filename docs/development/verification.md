@@ -88,6 +88,27 @@ ordinary PRs restore them. The cleanup sweep removes closed-PR caches and retain
 three generations per master compiler/object family. Cache timings and quota
 pressure must be measured before expanding retained cache data.
 
+## Native localization captures
+
+The manual `build.yml` input `desktop_localization=true` adds the production
+translation preview harness to the existing primary Linux, Mac and Windows release builds and
+uploads their native PNG/JSON evidence. `ci-macos.yml` accepts the same optional
+input for a Mac-only run. All defaults are false; normal native targets,
+regression cases and the full master inventory remain unchanged. Dependencies
+and game objects use the existing compiler/cache paths; only the extra harness
+and captures are requested in this mode.
+
+`tools/capture_localization_platform.py` derives its full screen input from the
+registered Thai game/online catalogs and retains source, executable, font and
+catalog provenance. It captures main/settings/lobby/player settings, gameplay
+and the introduction at desktop and explicit 390×844 touch presentation, plus a bounded
+40-native/20-online sample matrix at 10, 13 and 20 pixels at 1×/2× raster scale.
+Review the actual PNGs before accepting visual quality. These are native-platform
+CPU/HarfBuzz/software-SDL captures, not physical-screen, GPU or mobile-OS tests.
+The same helper can capture a separately built Linux release harness; keep each
+platform and build configuration's evidence distinct. Fixture profiles remain
+under the output's `profiles/` and must not be published as review evidence.
+
 ## Reviewed native shard timing profiles
 
 Native runners optionally accept `--timing-profile` and `--auxiliary-jobs`.

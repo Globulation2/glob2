@@ -11,6 +11,10 @@ on:
         type: choice
         options: [compatibility, full]
         default: full
+      desktop_localization:
+        description: Add native Thai preview captures to the existing native build
+        type: boolean
+        default: false
       ios_localization:
         description: Run only focused unsigned iOS simulator localization qualification
         type: boolean
@@ -27,6 +31,9 @@ on:
       coverage_profile:
         type: string
         default: compatibility
+      desktop_localization:
+        type: boolean
+        default: false
 concurrency:
   group: macos-development-${{ github.ref }}-${{ inputs.revision }}
   cancel-in-progress: ${{ github.event_name == 'pull_request' || (github.event_name == 'push' && startsWith(github.ref, 'refs/heads/') && github.ref != format('refs/heads/{0}', github.event.repository.default_branch)) }}
@@ -61,9 +68,22 @@ jobs:
           openssl="$(brew --prefix openssl@3)"
           python3 scons/sdl3_dependencies.py --prefix build/sdl3-ci/prefix --work build/sdl3-ci/sources --jobs 2
           export PATH="$PWD/build/sdl3-ci/prefix/bin:$PATH"
-          GLOB2_SDL3_PREFIX=build/sdl3-ci/prefix scons release=1 server=0 -j2 \
+          preview_target=""
+          if test "${{ inputs.desktop_localization }}" = true; then preview_target=translation-preview-harness; fi
+          GLOB2_SDL3_PREFIX=build/sdl3-ci/prefix scons release=1 server=0 -j2 $preview_target \
             build/darwin/client/release/src/glob2 unit-tests engine-tests map-generator-golden-test \
             CXXFLAGS="-I$openssl/include" LINKFLAGS="-L$openssl/lib"
+      - name: Capture actual registered Thai menus and gameplay on macOS
+        if: ${{ !cancelled() && inputs.desktop_localization && steps.build.outcome == 'success' }}
+        run: |
+          export DYLD_LIBRARY_PATH="$PWD/build/sdl3-ci/prefix/lib"
+          python3 tools/capture_localization_platform.py --binary build/darwin/client/release/test/TranslationPreviewHarness --output artifacts/localization-macos
+      - uses: actions/upload-artifact@v4
+        if: ${{ always() && inputs.desktop_localization }}
+        with:
+          name: localization-macos
+          path: artifacts/localization-macos/
+          if-no-files-found: error
       - name: Execute selected regression cases and continuation
         run: |
           export DYLD_LIBRARY_PATH="$PWD/build/sdl3-ci/prefix/lib"
