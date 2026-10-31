@@ -36,6 +36,9 @@ describe('online locale resolution', () => {
     expect(resolveLocale('in-ID')).toBe('id');
     expect(resolveLocale('th')).toBe('th');
     expect(resolveLocale('th-TH')).toBe('th');
+    expect(resolveLocale('th-Thai-TH')).toBe('th');
+    expect(resolveLocale(['th-Latn', 'en'])).toBe('en');
+    expect(resolveLocale('th-u-nu-latn')).toBe('th');
     expect(resolveLocale('xx, fr;q=0.2, de;q=0.8')).toBe('de');
     expect(resolveLocale('fr;q=0, de')).toBe('de');
   });
@@ -124,10 +127,10 @@ describe('message presentation', () => {
     ).toBe('Salon abc introuvable.');
     expect(translateError(new Error('private diagnostic'))).toBe('Veuillez réessayer.');
   });
-  it('contains 36 unique game catalog mappings', () => {
-    expect(locales).toHaveLength(36);
-    expect(new Set(locales.map((l) => l.gameCode)).size).toBe(36);
-    expect(new Set(locales.map((l) => l.code)).size).toBe(36);
+  it('contains 37 unique game catalog mappings', () => {
+    expect(locales).toHaveLength(37);
+    expect(new Set(locales.map((l) => l.gameCode)).size).toBe(37);
+    expect(new Set(locales.map((l) => l.code)).size).toBe(37);
   });
 });
 

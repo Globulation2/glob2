@@ -215,5 +215,11 @@ export const locales = [
     name: 'Kiswahili',
     dir: 'ltr',
   },
+  {
+    code: 'th',
+    gameCode: 'th',
+    name: 'ไทย',
+    dir: 'ltr',
+  },
 ] as const;
 export type Locale = (typeof locales)[number]['code'];

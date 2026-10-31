@@ -80,6 +80,8 @@ TEST_SUITE("SystemLanguage")
 		CHECK(code("yo", "NG") == "yo");
 		CHECK(code("th", "TH") == "th");
 		CHECK(code("th-TH") == "th");
+		CHECK(code("th-Thai", "TH") == "th");
+		CHECK(code("th-Latn").empty());
 		CHECK(code("pa", "PK") == "pa-arab");
 		CHECK(code("pa", "IN") == "pa-guru");
 		CHECK(code("pa-Guru", "PK") == "pa-guru");
