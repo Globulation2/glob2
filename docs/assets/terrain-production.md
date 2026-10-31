@@ -21,7 +21,7 @@ input:
 
 ```sh
 uv venv artifacts/asset-tools/venv
-uv pip install --python artifacts/asset-tools/venv/bin/python -r tools/asset-requirements.txt
+uv pip install --python artifacts/asset-tools/venv/bin/python -r tools/artwork/requirements.txt
 ENC=artifacts/asset-tools/venv/bin/python
 "$ENC" tools/artwork/terrain_synth.py                       # write all procedural frames
 "$ENC" tools/artwork/terrain_synth.py --material mud --contact-sheet artifacts/terrain/mud.png

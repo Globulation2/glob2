@@ -1,8 +1,2 @@
-# Build-time encoder and procedural artwork tools; never shipped with the game.
+# Build-time encoder only; never installed in the shipped application.
 Pillow==12.2.0
-
-# Full-block procedural terrain fields; match requirements-dev.txt's included pins.
-numpy==2.4.6
-
-# Exact indexed periodic distance queries for 8x8 terrain blocks.
-scipy==1.17.1
