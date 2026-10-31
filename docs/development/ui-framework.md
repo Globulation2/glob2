@@ -205,6 +205,15 @@ The Latin-script Pulaar catalog uses game code `fuc` and online tag `fuc-Latn`.
 Generic Fula tags resolve to it only for Senegal or Mauritania; Adlam and other
 Fula varieties must not be silently advertised as covered.
 
+The installed native catalog list also defines the language tokens accepted by
+the legacy SGSL lexer, including bare codes in `show("text", ms)`. Registering a
+new code therefore expands map/script acceptance even when no renderer or game
+rule changes. Bump `SIM_REVISION` and regenerate the golden match record/trace in
+the same change. Keep existing catalog order stable, verify saved SGSL source
+bytes and program counters across registration, and test the affected replay and
+network acceptance boundaries. This does not by itself change the save format or
+justify moving its minimum supported version.
+
 Each language needs a brief identifying its actual variety, script and region,
 with cited orthography, grammar and dictionary sources and terminology rationales.
 Unresolved uncertainty blocks finalization. Establish a source-based pilot before
