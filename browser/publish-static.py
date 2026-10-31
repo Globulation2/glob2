@@ -27,7 +27,9 @@ def upload_plan(directory, bucket):
     names = sorted(name for name in names if not name.endswith('.gz') and name != 'package.json')
     # Resolve every MIME type before any upload; never publish a partial new entry point.
     commands = []
-    for name in [name for name in names if name != 'index.html'] + ['index.html']:
+    ordered = [name for name in names if not name.endswith('.html')]
+    ordered += [name for name in names if name.endswith('.html') and name != 'index.html']
+    for name in ordered + ['index.html']:
         suffix = Path(name).suffix
         mime = TYPES.get(suffix, 'text/plain') if name.startswith('licenses/') else TYPES[suffix]
         versioned = re.search(r'(?:^|-)' + re.escape(version) + r'(?:-|\.)', Path(name).name)

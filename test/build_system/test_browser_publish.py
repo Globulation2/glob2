@@ -46,6 +46,10 @@ class BrowserPublishTests(unittest.TestCase):
         commands = [call.args[0] for call in run.call_args_list]
         by_name = {command[4].removeprefix('gs://fixture-bucket/'): command for command in commands}
         self.assertEqual(commands[-1][4], 'gs://fixture-bucket/index.html')
+        destinations = [command[4] for command in commands]
+        last_asset = max(i for i, name in enumerate(destinations) if not name.endswith('.html'))
+        self.assertTrue(all(name.endswith('.html') for name in destinations[last_asset + 1:]))
+        self.assertFalse(any(name.endswith('.html') for name in destinations[:last_asset + 1]))
         expected = {p.relative_to(self.output).as_posix()[:-3] for p in self.output.rglob('*.gz')}
         self.assertEqual(set(by_name), expected)
         for name, mime in [('locales/te.json', 'application/json'), ('script-fonts.css', 'text/css'),
