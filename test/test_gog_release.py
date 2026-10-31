@@ -356,6 +356,27 @@ class ReleasedPayloadTests(unittest.TestCase):
         self.assertEqual((self.root/'depot/licenses/ubuntu-runtime/codec/copyright').read_bytes(),copyright.read_bytes())
         self.assertEqual((self.root/'depot/licenses/ubuntu-runtime/common-licenses/LGPL-2.1').read_bytes(),common.read_bytes())
 
+    def test_common_licence_sentence_period_preserves_notice_and_real_missing_fails(self):
+        library=self.root/'libcodec.so.1';library.write_bytes(b'runtime')
+        notice=self.root/'notices/codec/copyright';notice.parent.mkdir(parents=True)
+        common=self.root/'common';common.mkdir();(common/'GPL').write_text('actual GPL fixture')
+        for reference, succeeds in [('GPL.',True),('REAL-MISSING.',False)]:
+            original=('Terms in /usr/share/common-licenses/'+reference+'\n').encode()
+            notice.write_bytes(original);records={}
+            with self.subTest(reference=reference), \
+                 patch('gog_release.UBUNTU_COPYRIGHT_ROOT',self.root/'notices'), \
+                 patch('gog_release.COMMON_LICENSE_ROOT',common), \
+                 patch('gog_release.subprocess.check_output',side_effect=['codec:amd64: file','codec\t1.2\tcodec-source\t1.2']):
+                if succeeds:
+                    record_host_library(library,self.root/'depot',records)
+                    self.assertEqual((self.root/'depot/licenses/ubuntu-runtime/codec/copyright').read_bytes(),original)
+                    self.assertEqual(records[library.name]['referenced_common_licences'][0]['name'],'GPL')
+                    self.assertEqual((self.root/'depot/licenses/ubuntu-runtime/common-licenses/GPL').read_bytes(),(common/'GPL').read_bytes())
+                else:
+                    with self.assertRaisesRegex(ValueError,'common licence is missing: REAL-MISSING'):
+                        record_host_library(library,self.root/'depot',records)
+            self.assertEqual(notice.read_bytes(),original)
+
     def test_workflow_released_jobs_have_no_build_or_upload_path(self):
         workflow=(Path(__file__).resolve().parents[1]/'.github/workflows/gog-staging.yml').read_text()
         released=workflow[workflow.index('  released-windows:'):]

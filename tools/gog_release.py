@@ -388,7 +388,10 @@ def record_host_library(path, depot, records):
     target.parent.mkdir(parents=True, exist_ok=True)
     shutil.copy2(notice, target)
     common = []
-    for name in sorted(set(re.findall(r"/usr/share/common-licenses/([A-Za-z0-9.+-]+)", notice.read_text(errors="replace")))):
+    references = re.findall(r"/usr/share/common-licenses/([A-Za-z0-9.+-]+)", notice.read_text(errors="replace"))
+    # Notices often finish a sentence with the path. Keep version dots (LGPL-2.1),
+    # remove only terminal prose periods, and still require the actual file.
+    for name in sorted({reference.rstrip(".") for reference in references}):
         actual = COMMON_LICENSE_ROOT / name
         if not actual.is_file():
             raise ValueError("referenced common licence is missing: " + name)
