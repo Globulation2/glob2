@@ -15,9 +15,9 @@ validator = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(validator)
 
 PASS = '''<XboxOneSubmissionValidator><engineversion>2610.309.15000.0</engineversion><ValidationSummary><TotalWarnings>0</TotalWarnings>
-<TotalFailures>0</TotalFailures><Result>Pass</Result></ValidationSummary>
+<TotalFailures>0</TotalFailures><Result>Success</Result></ValidationSummary>
 <testresults><testresult><component>Foreign Files Check</component><filecount>0</filecount>
-</testresult></testresults><validatorrun><result>Pass</result></validatorrun></XboxOneSubmissionValidator>'''
+</testresult></testresults><validatorrun><result>Success</result></validatorrun></XboxOneSubmissionValidator>'''
 
 
 class StoreValidatorTest(unittest.TestCase):
@@ -56,6 +56,10 @@ class StoreValidatorTest(unittest.TestCase):
                         validator.stage_validator(archive, root / 'staged')
                         self.assertEqual({p.name for p in (root / 'staged').iterdir()}, validator.VALIDATOR_FILES)
 
+    def test_unobserved_success_spelling_is_rejected(self):
+        with self.assertRaisesRegex(RuntimeError, 'did not pass'):
+            self.check(PASS.replace('>Success<', '>Pass<'))
+
     def test_passing_old_validator_is_not_accepted(self):
         with self.assertRaisesRegex(RuntimeError, 'version pin'):
             self.check(PASS.replace('2610.309.15000.0', '2610.307.18000.0'))
@@ -64,13 +68,13 @@ class StoreValidatorTest(unittest.TestCase):
         self.check(PASS)
 
     def test_real_update_failure_shape_is_rejected(self):
-        failed = PASS.replace('<TotalFailures>0', '<TotalFailures>1').replace('>Pass<', '>Fail<')
+        failed = PASS.replace('<TotalFailures>0', '<TotalFailures>1').replace('>Success<', '>Fail<')
         failed = failed.replace('</testresult>', '<failure Id="ILI_OnlineSubValUnsupportedGDK">Update required</failure></testresult>')
         with self.assertRaisesRegex(RuntimeError, 'ILI_OnlineSubValUnsupportedGDK'):
             self.check(failed)
 
     def test_cli_emits_counts_and_id_without_report_prose(self):
-        failed = PASS.replace('<TotalFailures>0', '<TotalFailures>1').replace('>Pass<', '>Fail<')
+        failed = PASS.replace('<TotalFailures>0', '<TotalFailures>1').replace('>Success<', '>Fail<')
         failed = failed.replace('</testresult>', '<failure Id="ILI_OnlineSubValUnsupportedGDK">Update required</failure></testresult>')
         with tempfile.TemporaryDirectory() as temporary:
             report = Path(temporary) / 'report.xml'
@@ -94,10 +98,11 @@ class StoreValidatorTest(unittest.TestCase):
             self.assertEqual(output.getvalue(), '::error::Submission Validator XML report is missing or malformed.\n')
 
     def test_fail_closed_for_missing_incomplete_or_inconsistent_results(self):
-        for text in ('<other/>', PASS.replace('<Result>Pass</Result>', ''),
+        for text in ('<other/>', PASS.replace('<Result>Success</Result>', ''),
+                     PASS.replace('>Success<', '>Unknown<'),
                      PASS.replace('<TotalFailures>0', '<TotalFailures>1'),
                      PASS.replace('<TotalWarnings>0', '<TotalWarnings>invalid'),
-                     PASS.replace('<result>Pass</result>', '<result>Fail</result>'),
+                     PASS.replace('<result>Success</result>', '<result>Fail</result>'),
                      PASS.replace('</testresult>', '<failure Id="hidden">Failure</failure></testresult>')):
             with self.subTest(text=text), self.assertRaises(RuntimeError):
                 self.check(text)

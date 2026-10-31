@@ -56,7 +56,7 @@ def require_passing_report(path):
     if (declared_failures != len(failures) or declared_warnings != len(warnings)
             or declared_failures < 0 or declared_warnings < 0):
         raise RuntimeError("Submission Validator result counts disagree with report")
-    if (summary.findtext("Result") != "Pass" or root.findtext("validatorrun/result") != "Pass"
+    if (summary.findtext("Result") != "Success" or root.findtext("validatorrun/result") != "Success"
             or failures or not root.findall("testresults/testresult")):
         ids = sorted({item.get("Id", "") for item in failures})
         ids = [value if re.fullmatch(r"[A-Za-z0-9_]{1,128}", value) else "invalid-id"
