@@ -184,6 +184,7 @@ pilot to selected manifest batches. Complete and review that pilot before runnin
 the full catalog.
 
 The runner protects substitutions, literal line breaks, authored markup and URLs
+(including standalone relative routes and `www` addresses)
 with non-translatable HTML spans and rejects changed tokens. Outer whitespace is
 restored for message fragments. These checks do not establish correct meaning or
 word order. Exact request/project/location matches reuse immutable provider
@@ -203,7 +204,9 @@ change. Provider output remains a machine draft, never a linguistic sign-off.
 
 Register finished catalogs in both inventories and their browser loaders, then
 test system-language selection against the installed catalog set. Mapping a
-system tag alone must never enable an unfinished locale. Punjabi scripts use
+system tag alone must never enable an unfinished locale. Norwegian Bokmål uses
+`nb`; generic `no` selects Bokmål, while explicit `nn` and legacy `no-nyn`
+preferences fall through to the next supported language. Punjabi scripts use
 `pa-guru` and `pa-arab`; explicit scripts take precedence over country defaults.
 The Latin-script Pulaar catalog uses game code `fuc` and online tag `fuc-Latn`.
 Generic Fula tags resolve to it only for Senegal or Mauritania; Adlam and other

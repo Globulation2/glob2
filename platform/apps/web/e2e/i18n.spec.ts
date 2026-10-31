@@ -30,7 +30,30 @@ for (const locale of locales) {
     await expect(page.locator('#hero-title')).toHaveText(heading);
     await expect(page.getByRole('link', { name: /Isles of Plenty/ })).toBeVisible();
     await expect(page.locator('.app-sidebar .nav a[href="/maps"]')).toBeVisible();
-    await expect(page.locator('.app-sidebar .nav a')).toHaveCount(10);
+    // The guest fixture has no skins.designer feature or moderation role.
+    // Assert destinations so a missing translated navigation item cannot pass.
+    expect(
+      await page
+        .locator('.app-sidebar .nav a')
+        .evaluateAll((links) => links.map((link) => link.getAttribute('href'))),
+    ).toEqual([
+      '/',
+      '/leaderboard',
+      '/players',
+      '/matches',
+      '/maps',
+      '/sets',
+      '/ais',
+      '/buildings',
+      '/music',
+    ]);
+    await expect(page.getByTestId('theme-toggle')).toHaveAttribute(
+      'aria-label',
+      catalog['{value0}. Change theme']!.replace(
+        '{value0}',
+        catalog['Theme: same as this device']!,
+      ),
+    );
     const signIn = page.locator('.app-sidebar .sidebar-account a[href="/signin"]');
     await expect(signIn).toBeVisible();
     expect(
