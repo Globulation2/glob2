@@ -145,8 +145,17 @@ class EngineJob:
                 raise ValueError('win_probability_permille must be 0 (off) or between 501 and 1000')
         elif 'map' not in seeds or not valid_generator(config.get('generator')):
             raise ValueError('generation requires map seed and generator ID')
-        if set(job['outputs']) - {'replay', 'saves', 'telemetry', 'map', 'reports', 'required', 'core', 'stack', 'result'}:
+        if set(job['outputs']) - {'replay', 'saves', 'telemetry', 'map', 'reports', 'required', 'core', 'stack', 'result', 'log_mode'}:
             raise ValueError('unknown requested output')
+        if job['outputs'].get('log_mode', 'full') not in ('full', 'win-probability', 'telemetry'):
+            raise ValueError('log_mode must be full, telemetry or win-probability')
+        if job['outputs'].get('log_mode') == 'telemetry' and not job['outputs'].get('telemetry'):
+            raise ValueError('telemetry log mode requires requested telemetry')
+        if job['outputs'].get('log_mode') == 'win-probability' and (self.kind != 'game' or 'team-timeline' not in job['outputs'].get('telemetry', [])):
+            raise ValueError('win-probability logs require game team-timeline telemetry')
+        if ('checksums' in job['outputs'].get('telemetry', []) and config.get('ticks', 90000) > 4096
+                and 'artifact_bytes' not in job['limits']):
+            raise ValueError('detailed checksums for long games require an explicit artifact_bytes limit; use short focused probes')
         if job['outputs'].get('result', 'full') not in ('full', 'outcome'):
             raise ValueError('result output must be full or outcome')
 

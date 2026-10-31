@@ -6,7 +6,8 @@ from .common import digest, hash_id, identifier
 PROTOCOL_VERSION = 1
 SCHEMA_VERSION = 1
 DEFAULTS = {'heartbeat_seconds': 15, 'lease_seconds': 300, 'prefetch': 2,
-            'infrastructure_attempts': 5, 'process_attempts': 2}
+            'infrastructure_attempts': 5, 'process_attempts': 2,
+            'artifact_budget_bytes': 10 * 1024**3, 'disk_reserve_bytes': 2 * 1024**3}
 
 
 def grid(parameters):
@@ -69,6 +70,9 @@ def validate_job(value):
     for key in ('timeout_seconds', 'memory_mb', 'estimated_seconds'):
         if key in value['limits'] and (not isinstance(value['limits'][key], (int, float)) or value['limits'][key] <= 0):
             raise ValueError(f'{key} must be positive')
+    for key in ('artifact_bytes', 'log_bytes'):
+        if key in value['limits'] and (type(value['limits'][key]) is not int or value['limits'][key] <= 0):
+            raise ValueError(f'{key} must be a positive integer')
     for dep in value['depends_on']:
         identifier(dep)
     for name, source in value['inputs'].items():
@@ -120,6 +124,9 @@ def validate_experiment(manifest):
         raise ValueError('prefetch must be a nonnegative integer')
     for key in ('infrastructure_attempts', 'process_attempts', 'input_transfer_slots', 'result_transfer_slots'):
         if type(settings.get(key, 8)) is not int or settings.get(key, 8) < 1:
+            raise ValueError(f'{key} must be a positive integer')
+    for key in ('artifact_budget_bytes', 'disk_reserve_bytes'):
+        if type(settings[key]) is not int or settings[key] <= 0:
             raise ValueError(f'{key} must be a positive integer')
     if settings.get('poll_seconds', 1) <= 0:
         raise ValueError('poll_seconds must be positive')
