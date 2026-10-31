@@ -293,6 +293,8 @@ static void textRoundTrip()
     game.teams[0]->race.loadDefault();
     require(game.addUnit(5, 5, 0, WORKER, 0, 0, 0, 0) != nullptr, "text fixture worker exists");
     for (unsigned tick = 1; tick <= 77; ++tick) sample(game, tick);
+    game.teams[0]->stats.recordWinProbability(0, 400, "text-model");
+    game.teams[0]->stats.recordWinProbability(77, 600, "text-model");
     auto* bytes = new GAGCore::MemoryStreamBackend;
     GAGCore::TextOutputStream writer(bytes);
     game.teams[0]->save(&writer);
@@ -305,6 +307,10 @@ static void textRoundTrip()
     loaded.game.map.setGame(&loaded.game);
     loaded.game.addTeam();
     require(loaded.game.teams[0]->load(&reader, &globalContainer->buildingsTypes, VERSION_MINOR), "text team save loads");
+    require(loaded.game.teams[0]->stats.getWinProbabilityModel() == "text-model" &&
+            loaded.game.teams[0]->stats.getWinProbabilityHistory().size() == 2 &&
+            loaded.game.teams[0]->stats.winProbabilityAreaTwice() == 77000,
+            "text saves retain probability model, explicit ticks and integral");
     compare(game.teams[0]->stats, loaded.game.teams[0]->stats);
     const unsigned start = game.stepCounter;
     for (unsigned i = 1; i <= 65; ++i)
@@ -847,10 +853,10 @@ static void measurementReplayBoundaries()
 	// Format 166 makes append-order populations authoritative; format 167
 	// changes completed-observation timing. Format 171 unifies flyer routing.
 	// Network and saved-game floors remain.
-	require(REPLAY_MINIMUM_VERSION_MINOR == VERSION_MINOR && NET_PROTOCOL_VERSION == 72,
+	require(REPLAY_MINIMUM_VERSION_MINOR == FILE_FORMAT_VERSION_MAINLINE_TERRAINS && NET_PROTOCOL_VERSION == 73,
 
-			"integrated simulation uses current replay and network gates");
-	for (int version : {98, 99, 100, 101, 102, 103, 104, 105, 106, 107, 115, 119, 120, 121, 122, 123, 124, 133, 134, 135, FILE_FORMAT_VERSION_RUNTIME_TERRAIN, FILE_FORMAT_VERSION_TERRAIN_SEED, 139, FILE_FORMAT_VERSION_RUNTIME_RESOURCES, FILE_FORMAT_VERSION_TERRAIN_CATALOGUE, FILE_FORMAT_VERSION_AI_PIPELINE, FILE_FORMAT_VERSION_BUILDING_ARTWORK, FILE_FORMAT_VERSION_VERTEX_TERRAIN, FILE_FORMAT_VERSION_GREEDY_FETCHING, FILE_FORMAT_VERSION_PRIVATE_RANDOM-1, FILE_FORMAT_VERSION_PRIVATE_RANDOM, FILE_FORMAT_VERSION_ENTITY_RANDOM, 155, 156, 167, 168, 169, 170, REPLAY_MINIMUM_VERSION_MINOR-1, VERSION_MINOR, VERSION_MINOR+1})
+			"diagnostic probability history preserves the mainline-terrain replay floor and network gate");
+	for (int version : {98, 99, 100, 101, 102, 103, 104, 105, 106, 107, 115, 119, 120, 121, 122, 123, 124, 133, 134, 135, FILE_FORMAT_VERSION_RUNTIME_TERRAIN, FILE_FORMAT_VERSION_TERRAIN_SEED, 139, FILE_FORMAT_VERSION_RUNTIME_RESOURCES, FILE_FORMAT_VERSION_TERRAIN_CATALOGUE, FILE_FORMAT_VERSION_AI_PIPELINE, FILE_FORMAT_VERSION_BUILDING_ARTWORK, FILE_FORMAT_VERSION_VERTEX_TERRAIN, FILE_FORMAT_VERSION_GREEDY_FETCHING, FILE_FORMAT_VERSION_PRIVATE_RANDOM-1, FILE_FORMAT_VERSION_PRIVATE_RANDOM, FILE_FORMAT_VERSION_ENTITY_RANDOM, 155, 156, 167, 168, 169, 170, REPLAY_MINIMUM_VERSION_MINOR-1, int(REPLAY_MINIMUM_VERSION_MINOR), VERSION_MINOR, VERSION_MINOR+1})
 	{
 		auto *bytes = new GAGCore::MemoryStreamBackend;
 		GAGCore::BinaryOutputStream writer(bytes);
@@ -1157,6 +1163,8 @@ static void measurementScreenshots(const std::string &directory)
 		for (unsigned tick = 0; tick <= 4096; tick += 512)
 		{
 			game.stepCounter = tick;
+            const int leader = 50 + int(tick * 750 / 4096);
+            stats.recordWinProbability(tick, t == 0 ? leader : (1000-leader)/(Team::MAX_COUNT-1), "screenshot-model");
 			stats.editMeasurements().births[WORKER] = (Uint64(1) << 40) + (t + 1) * tick;
 			stats.editMeasurements().harvested[WHEAT] = (t + 1) * tick;
 			stats.editMeasurements().completed[Measurements::NEW_BUILDING][0][0] = (t + 1) * tick / 512;
@@ -1201,7 +1209,7 @@ static void measurementScreenshots(const std::string &directory)
 			// The overview, then one chart of each form: a level, a smoothed rate, a
 			// split counter, bands of the population, a net value and a global series.
 			const std::pair<const char *, bool> charts[] = {{"population", false}, {"births", false}, {"births", true},
-															{"hunger", false},	 {"net growth", false}, {"growth map", false}, {"ground movement", true}};
+															{"hunger", false},	 {"net growth", false}, {"growth map", false}, {"ground movement", true}, {"win probability", false}};
 			screen.selectMetric(EndGameScreen::OVERVIEW);
 			screen.paintFrame(0);
 			require(IMG_SavePNG(globalContainer->gfx->getSDLSurface(), (directory + "/overview-" + suffix).c_str()),
@@ -1305,6 +1313,16 @@ TEST_CASE("clearing telemetry counts operations once by configured primary mater
 
 TEST_SUITE("TeamStatsSave")
 {
+    TEST_CASE("probability text history and integral survive a team save [save-format]")
+    {
+        glob2test::HeadlessGlobals globals;
+        textRoundTrip();
+    }
+    TEST_CASE("diagnostic probability history preserves replay acceptance boundaries [save-format]")
+    {
+        glob2test::HeadlessGlobals globals;
+        measurementReplayBoundaries();
+    }
     TEST_CASE("retained format152 magic levels count each explorer once through migration and current continuation [save-format]")
     {
         glob2test::HeadlessGlobals globals;

@@ -141,6 +141,9 @@ class EngineJob:
             if config.get('alliances') and len(config['alliances']) != len(config.get('players', [])):
                 raise ValueError('one alliance required per player')
             permille = config.get('win_probability_permille')
+            rule_probability = config.get('rules', {}).get('winProbabilityPermille')
+            if permille is not None and rule_probability is not None and permille != rule_probability:
+                raise ValueError('conflicting win probability thresholds')
             if permille is not None and (type(permille) is not int or not (permille == 0 or 501 <= permille <= 1000)):
                 raise ValueError('win_probability_permille must be 0 (off) or between 501 and 1000')
         elif 'map' not in seeds or not valid_generator(config.get('generator')):
@@ -195,13 +198,9 @@ class EngineJob:
                 add('--win-condition', condition)
             for name, value in sorted(config.get('rules', {}).items()):
                 add('--rule', f'{name}={value}')
-            # Ends a game once the fitted model is this sure of the result. Added
-            # to the conditions in force rather than replacing them, so a real win
-            # still decides the game when there is one. Off unless asked for: it
-            # changes the measured outcome, so an experiment that wants the compute
-            # back has to say so, and its results stay distinguishable by the
-            # "win_probability" termination the engine reports.
-            if config.get('win_probability_permille'):
+            # Planners freeze the threshold in the job. Low-level requests keep
+            # CLI defaults (95% on new games); an explicit zero disables it.
+            if 'win_probability_permille' in config:
                 add('--win-probability', config['win_probability_permille'])
             for save in outputs.get('saves', []):
                 add('--save', save)

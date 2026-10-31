@@ -334,3 +334,5 @@ static constexpr int FILE_FORMAT_VERSION_TEAM_BUILDING_GRADIENT_QUOTA = 186;
 
 // Terrain authoring requirements are retired; new headers omit their old slot.
 static constexpr int FILE_FORMAT_VERSION_MAINLINE_TERRAINS = 187;
+
+static constexpr int FILE_FORMAT_VERSION_WIN_PROBABILITY_HISTORY = 188;

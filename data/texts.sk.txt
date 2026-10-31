@@ -4884,6 +4884,10 @@ Jednotky uzavreté bez voľného políčka, na ktoré by mohli vstúpiť.
 Vyčistené suroviny
 [stat cleared about]
 Suroviny, ktoré robotníci odstránili v oblastiach čistenia, aby uvoľnili miesto.
+[stat win probability]
+
+[stat win probability about]
+
 [stat prestige]
 Prestíž
 [stat prestige about]

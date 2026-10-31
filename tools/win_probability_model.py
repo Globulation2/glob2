@@ -44,6 +44,7 @@ Commands:
 """
 import argparse
 import gzip
+import hashlib
 import json
 import math
 import sys
@@ -668,6 +669,10 @@ def emit_header(model, path, provenance):
     add('')
     add('namespace WinProbability')
     add('{')
+    identity = json.dumps({'intercept': to_fixed(model['intercept']),
+                           'features': [(f['name'], f['transform'], to_fixed(f['coefficient'])) for f in features]},
+                          sort_keys=True, separators=(',', ':')).encode()
+    add('inline constexpr char MODEL_ID[] = "conditional-logit-v1-' + hashlib.sha256(identity).hexdigest() + '";')
     add('/// Softmax fixes the scale of F but not its zero, so this level is a')
     add('/// convention and cancels between competitors. Differences are what the')
     add('/// games determined.')

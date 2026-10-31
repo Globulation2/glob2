@@ -1406,6 +1406,10 @@ std::optional<Engine::PendingLoad> Engine::finishSessionForHost()
     if (!session) throw std::logic_error("No active engine session");
     stopSimulationThread();
     if (gui.isRunning) throw std::logic_error("Cannot finish a running engine session");
+    // Capture the partial interval on the owner, after joining it. Results
+    // screens only read history. The structured driver does this after writing
+    // continuation saves, so a report endpoint cannot change resumed sampling.
+    if (!globalContainer->structuredHeadless) gui.game.winProbabilitySyncStep(true);
     if (globalContainer->automaticEndingGame) printAutomaticEndingSummary();
     const auto &scene=gui.drawnScene();
     const auto lesson=scene.world.session ? Tutorial::view(*scene.world.session) : gui.game.mapscript.tutorialView();

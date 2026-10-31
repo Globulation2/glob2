@@ -4884,6 +4884,10 @@ Lượng tài nguyên mọc ở mọi nơi trên bản đồ, tính bằng đi�
 Tài nguyên đã khai quang
 [stat cleared about]
 Tài nguyên công nhân dọn đi trong vùng khai quang để lấy chỗ trống.
+[stat win probability]
+
+[stat win probability about]
+
 [stat prestige]
 Uy danh
 [stat prestige about]

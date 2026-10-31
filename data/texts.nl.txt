@@ -4884,6 +4884,10 @@ Ingesloten eenheden zonder vrij vakje om naartoe te stappen.
 Grondstoffen weggeruimd
 [stat cleared about]
 Grondstoffen die werkers in ontruimingsgebieden weghaalden om ruimte te maken.
+[stat win probability]
+
+[stat win probability about]
+
 [stat prestige]
 Roem
 [stat prestige about]

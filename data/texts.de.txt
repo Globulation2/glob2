@@ -4884,6 +4884,10 @@ Eingeschlossene Einheiten ohne freies Feld zum Betreten.
 Gerodete Ressourcen
 [stat cleared about]
 Von Arbeitern in Rodungszonen entfernte Ressourcen, um Platz zu schaffen.
+[stat win probability]
+
+[stat win probability about]
+
 [stat prestige]
 Prestigepunkte
 [stat prestige about]

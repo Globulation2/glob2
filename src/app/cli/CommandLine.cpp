@@ -354,6 +354,12 @@ void constraints(const Request &r)
     }
 	if (r.command == "game run")
 	{
+        if (r.has("--win-probability"))
+        {
+            const auto threshold = std::stoll(r.get("--win-probability"));
+            if (threshold != 0 && threshold < 501)
+                throw std::invalid_argument("--win-probability must be 0 (off) or 501..1000");
+        }
 		const unsigned sources = r.has("--generator") + r.has("--map-file") + r.has("--load-game");
 		if (sources != 1)
 			throw std::invalid_argument(
@@ -375,7 +381,7 @@ void constraints(const Request &r)
 		if (r.has("--load-game"))
 			for (const auto &key :
 				 {"--player", "--ai-param", "--ai-script", "--map-script", "--alliance",
-				  "--win-condition", "--game-seed", "--experiment", "--rule", "--ai-order-delay"})
+				  "--win-condition", "--win-probability", "--game-seed", "--experiment", "--rule", "--ai-order-delay"})
 				if (r.has(key))
 					throw std::invalid_argument(std::string(key) + " cannot override a saved game");
 		if (!r.has("--load-game") && (!r.has("--game-seed") || !r.has("--player")))
@@ -532,7 +538,7 @@ const std::vector<Command> &commands()
 			 integer("--alliance", "Alliance per team", 1, 16, "", true),
 			 choice("--win-condition", "Winning condition",
 					{"death", "allies", "prestige", "opponents", "script"}, "", true),
-			 integer("--win-probability", "Early-victory threshold in permille", 501, 1000),
+			 integer("--win-probability", "New-game early-victory threshold: 0 off, or 501..1000 permille", 0, 1000, "950"),
 			 value("--experiment", "string", "Enable a registered experiment", "", true),
 			 value("--rule", "assignment", "Game rule KEY=VALUE", "", true),
 			 value("--fork-rule", "assignment", "Explicit saved-game fork: buildingGradientDelay=N",

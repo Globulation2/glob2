@@ -432,7 +432,7 @@ class AnalysisTests(unittest.TestCase):
         from tools.tournaments.analysis import adjudicate
         result={'termination':'tick_cap','winning_teams':[],
                 'teams':[self.team(0,prestige=2),self.team(1,warrior_attack=10)]}
-        self.assertEqual(adjudicate(result)['winners'],[0])
+        self.assertEqual(adjudicate(result,'prestige')['winners'],[0])
         self.assertEqual(adjudicate(result,'military')['winners'],[1])
         self.assertEqual(adjudicate(result,'survivor_draw')['winners'],[0,1])
         result['winning_teams']=[0]
@@ -447,7 +447,7 @@ class AnalysisTests(unittest.TestCase):
                self.team(2,alliance=2,prestige=1),self.team(3,alliance=2,prestige=1)]
         result={'termination':'tick_cap','winning_teams':[],'ticks':100,'teams':teams,
                 'players':[{'team':i,'ai':name} for i,name in enumerate(['cortex','nicowar','maxima','maxima'])]}
-        self.assertEqual(adjudicate(result,alliances=True)['placements'],{1:1.5,2:1.5})
+        self.assertEqual(adjudicate(result,'prestige',alliances=True)['placements'],{1:1.5,2:1.5})
         result['winning_teams']=[0,1]
         for policy in ('prestige','military','survivor_draw'):
             self.assertEqual(adjudicate(result,policy,alliances=True)['winners'],[1])
@@ -502,9 +502,8 @@ class AnalysisTests(unittest.TestCase):
             self.assertEqual(len(paired),3)
             self.assertEqual(len({j['inputs']['map']['job'] for j in paired}),1)
 
-    def test_the_win_probability_rule_is_off_unless_the_design_asks(self):
-        """It changes the outcome that gets measured, so it must never arrive by
-        default -- and when it is asked for it has to reach the engine."""
+    def test_the_win_probability_rule_defaults_to_95_and_can_be_disabled(self):
+        """The planner freezes the threshold, including explicit opt-outs."""
         from tools.tournaments.experiments import Planner
         from tools.tournaments.jobs import EngineJob
         bundle = {'id': 'a'*64, 'capabilities': {
@@ -513,7 +512,7 @@ class AnalysisTests(unittest.TestCase):
         base = {'id': 'sample', 'sample_games': 5, 'sample_seed': 3}
         plain = Planner('ai_comparison', dict(base), [bundle]).plan()
         for job in plain['jobs']:
-            self.assertNotIn('win_probability_permille', job['config'])
+            self.assertEqual(job['config']['win_probability_permille'], 950)
         asked = Planner('ai_comparison', dict(base, win_probability_permille=970), [bundle]).plan()
         games = [j for j in asked['jobs'] if j['type'] == 'game']
         self.assertTrue(games)
@@ -525,9 +524,10 @@ class AnalysisTests(unittest.TestCase):
         arguments = EngineJob('game').command(games[0], bundle_directory, '/tmp/attempt', {})
         self.assertIn('--win-probability', arguments)
         self.assertEqual(arguments[arguments.index('--win-probability') + 1], '970')
-        plain_game = next(j for j in plain['jobs'] if j['type'] == 'game')
-        self.assertNotIn('--win-probability',
-                         EngineJob('game').command(plain_game, bundle_directory, '/tmp/attempt', {}))
+        disabled = Planner('ai_comparison', dict(base, win_probability_permille=0), [bundle]).plan()
+        plain_game = next(j for j in disabled['jobs'] if j['type'] == 'game')
+        disabled_args = EngineJob('game').command(plain_game, bundle_directory, '/tmp/attempt', {})
+        self.assertEqual(disabled_args[disabled_args.index('--win-probability') + 1], '0')
 
     def test_sample_games_uses_standard_duels_via_inline_generation(self):
         """The standard Elo cohort uses 128x128 duels. Sampling remains the one
@@ -746,6 +746,163 @@ class ParameterSampling(unittest.TestCase):
         manifest = Planner('generator_stress', config, [self.bundle()]).plan()
         sampled = [j for j in manifest['jobs'] if j['labels']['variant'].startswith('catalog-')]
         self.assertIn(2, {j['config']['params']['shape'] for j in sampled})
+
+
+from tools.tournaments.analysis import adjudicate, paired_effects, probability_scores
+from tools.tournaments.probability import summary, group_summary
+
+
+def _probability_team(n, chance=500, area=1000000, start=0, end=1000, **extra):
+    return dict(team=n, alliance=n, alive=True, outcome='unresolved', prestige=100-n,
+                units=50, buildings=10, eliminated_tick=-1,
+                win_probability=dict(model='test-model', permille=chance, start_tick=start,
+                                     end_tick=end, area_twice_permille_ticks=area), **extra)
+
+
+def _probability_row(name='baseline', mean=500, block='one', build='build'):
+    return dict(build=build, block=block, pair=block, held_out=False, variant=name,
+                format='1v1', competitors=['subject', 'rival'], groups=[0, 1], subject_group=0,
+                ticks=1000, placements=[1, 2], probabilities=[summary(_probability_team(0, mean, mean*2000)),
+                                                          summary(_probability_team(1, 1000-mean, (1000-mean)*2000))])
+
+
+class ProbabilityTests(unittest.TestCase):
+    def test_same_ai_ablation_keeps_subject_score_separate_from_opponent(self):
+        row=_probability_row('improved', 510)
+        row['competitors']=['cortex','cortex']
+        scores=probability_scores([row], draws=10)
+        self.assertEqual(len(scores), 2)
+        subject=next(s for s in scores if s['role']=='subject')
+        opponent=next(s for s in scores if s['role']=='opponent')
+        self.assertEqual((subject['mean'], opponent['mean']), (.51,.49))
+        self.assertEqual((subject['wins'], opponent['losses']), (1,1))
+
+    def test_paired_probability_intervals_keep_same_seed_rotations_together(self):
+        rows=[]
+        for rotation in range(2):
+            for variant in ('baseline', 'improved'):
+                row=_probability_row(variant, 510, 'one-seed')
+                row['pair']='rotation-'+str(rotation)
+                rows.append(row)
+        effect=next(s for s in paired_effects(rows, 100) if s['metric']=='win_probability_mean')
+        self.assertEqual((effect['pairs'], effect['blocks']), (2,1))
+        self.assertIsNone(effect['interval'])
+
+    def test_default_reanalysis_exports_probability_beside_outcomes_without_logs(self):
+        from tools.tournaments.model import job
+        from tools.tournaments.analysis import reanalyze
+        request = job('game', 'a'*64, seeds={'game': 42},
+                      config={'players': ['castor', 'cortex'], 'win_probability_permille': 950},
+                      labels={'format': '1v1', 'block': 'paired-map'})
+        result = dict(termination='tick_cap', ticks=1000, winning_teams=[],
+                      teams=[_probability_team(0, 300), _probability_team(1, 700)],
+                      players=[{'team':0,'ai':'castor'}, {'team':1,'ai':'cortex'}])
+        with tempfile.TemporaryDirectory() as directory:
+            root=Path(directory)
+            (root/'results').mkdir()
+            (root/'experiment.json').write_text(json.dumps(dict(id='probability', jobs=[request])))
+            record=dict(id='attempt', host='local', category='success', job=request, result=outcome_only(result), artifacts=[])
+            (root/'results'/(request['id']+'.json')).write_text(json.dumps(record))
+            report=reanalyze(root, draws=10)
+            self.assertEqual(report['policy']['name'], 'win_probability')
+            winner=next(s for s in report['probability_scores'] if s['competitor']=='cortex')
+            self.assertEqual((winner['wins'], winner['losses'], winner['draws']), (1,0,0))
+            self.assertEqual(winner['mean'], .5)
+            self.assertTrue((root/'reports/win_probability/probability_scores.csv').is_file())
+            text=(root/'reports/win_probability/report.md').read_text()
+            self.assertIn('Mean whole-game win probability', text)
+            self.assertIn('W / L / D', text)
+
+    def test_cap_uses_final_probability_instead_of_economy(self):
+        result=dict(termination='tick_cap', winning_teams=[], teams=[_probability_team(0, 300), _probability_team(1, 700)])
+        self.assertEqual(adjudicate(result)['winners'], [1])
+        self.assertEqual(adjudicate(result, 'prestige')['winners'], [0])
+        result['teams'][0]['win_probability']['permille'] = 500
+        result['teams'][1]['win_probability']['permille'] = 500
+        self.assertEqual(adjudicate(result)['placements'], {0: 1.5, 1: 1.5})
+        result['winning_teams'] = [0]
+        self.assertEqual(adjudicate(result)['winners'], [0])
+
+    def test_missing_is_unavailable_and_legacy_policy_is_explicit(self):
+        old=_probability_team(0); old.pop('win_probability')
+        self.assertIsNone(summary(old))
+        result=dict(termination='tick_cap', teams=[old, _probability_team(1)])
+        with self.assertRaisesRegex(ValueError, 'explicit legacy policy'):
+            adjudicate(result)
+        self.assertEqual(adjudicate(result, 'prestige')['winners'], [0])
+
+    def test_alliances_count_once_and_do_not_sum_chances(self):
+        a,b,c=_probability_team(0, 400),_probability_team(1, 400),_probability_team(2, 600)
+        a['alliance']=b['alliance']=10
+        self.assertEqual(group_summary([a,b])['final'], .4)
+        self.assertEqual(adjudicate(dict(termination='tick_cap', teams=[a,b,c]), alliances=True)['winners'], [2])
+        b['win_probability']['permille']=401
+        with self.assertRaisesRegex(ValueError, 'inconsistent alliance'):
+            group_summary([a,b])
+
+    def test_compaction_keeps_exact_area_but_drops_large_histories(self):
+        a=_probability_team(0); a['win_probability_history']=[[0,500],[1000,500]]
+        result=dict(status='completed', ticks=1000, teams=[a], players=[], termination='tick_cap',
+                    resolved={'rules': {'winProbabilityPermille': 950}})
+        compact=outcome_only(result)
+        self.assertEqual(compact['teams'][0]['win_probability'], a['win_probability'])
+        self.assertNotIn('win_probability_history', compact['teams'][0])
+        self.assertEqual(summary(compact['teams'][0])['mean'], .5)
+        self.assertEqual(compact['win_probability_permille'], 950)
+
+    def test_time_normalization_and_partial_or_mixed_coverage(self):
+        a=summary(_probability_team(0, area=1000000, end=1000))
+        b=summary(_probability_team(0, area=2000000, end=2000))
+        self.assertEqual(a['mean'], b['mean'])
+        self.assertEqual(b['area'], 2*a['area'])
+        partial=summary(_probability_team(0, area=500000, start=500, end=1000))
+        self.assertEqual(partial['mean'], .5)
+        self.assertFalse(partial['whole_game'])
+        mixed=_probability_team(0); mixed['win_probability']['model']='mixed'
+        self.assertFalse(summary(mixed)['whole_game'])
+        for invalid in (_probability_team(0, chance=-1), _probability_team(0, area=2000001), _probability_team(0, start=1001)):
+            with self.assertRaises(ValueError): summary(invalid)
+
+    def test_stopping_rules_separate_cohorts_and_prevent_misleading_paired_effects(self):
+        baseline=_probability_row()
+        candidate=_probability_row('improved', 510)
+        baseline['win_probability_permille']=950
+        candidate['win_probability_permille']=0
+        self.assertFalse(any(s['metric']=='win_probability_mean' for s in paired_effects([baseline,candidate], 10)))
+        candidate['variant']='baseline'
+        scores=probability_scores([baseline,candidate], 10)
+        subject=[s for s in scores if s['competitor']=='subject']
+        self.assertEqual({s['win_probability_permille'] for s in subject}, {0,950})
+        self.assertEqual([s['games'] for s in subject], [1,1])
+        rows=[]
+        for block, threshold in (('one', 950), ('two', 0)):
+            for variant in ('baseline', 'improved'):
+                row=_probability_row(variant, 510, block)
+                row['win_probability_permille']=threshold
+                rows.append(row)
+        effects=[s for s in paired_effects(rows, 10) if s['metric']=='win_probability_mean']
+        self.assertEqual({s['win_probability_permille'] for s in effects}, {0,950})
+        self.assertTrue(all(s['pairs']==1 for s in effects))
+
+    def test_score_detects_small_paired_improvement_without_changed_wins(self):
+        rows=[_probability_row(block='one'), _probability_row('improved', 510, 'one'),
+              _probability_row(block='two'), _probability_row('improved', 520, 'two')]
+        effects=paired_effects(rows, draws=100, seed=42)
+        probability=next(x for x in effects if x['metric']=='win_probability_mean')
+        self.assertAlmostEqual(probability['mean_effect'], .015)
+        placement=next(x for x in effects if x['metric']=='placement')
+        self.assertEqual(placement['mean_effect'], 0)
+        scores=probability_scores(rows, draws=100, seed=42)
+        improved=next(x for x in scores if x['competitor']=='subject' and x['variant']=='improved')
+        self.assertEqual(improved['blocks'], 2)
+        self.assertEqual((improved['wins'], improved['losses'], improved['draws']), (2,0,0))
+        self.assertEqual(improved['scored_games'], improved['games'])
+        self.assertAlmostEqual(improved['mean'], .515)
+        self.assertEqual(scores, probability_scores(rows, draws=100, seed=42))
+        # Preserve build cohorts rather than silently pool different binaries.
+        rows.append(_probability_row('improved', 900, 'three', build='other'))
+        self.assertEqual(len(probability_scores(rows, 0)), 6)
+
 
 
 if __name__ == '__main__': unittest.main()

@@ -4884,6 +4884,10 @@ FFmpeg недоступен, поэтому запись отключена. У�
 Расчищено ресурсов
 [stat cleared about]
 Ресурсы, убранные рабочими в зонах очистки, чтобы освободить место.
+[stat win probability]
+
+[stat win probability about]
+
 [stat prestige]
 Престиж
 [stat prestige about]

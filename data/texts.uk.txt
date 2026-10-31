@@ -4884,6 +4884,10 @@ FFmpeg недоступний, тому запис вимкнено. Устан�
 Розчищено ресурсів
 [stat cleared about]
 Ресурси, прибрані робітниками на ділянках розчищення, щоб звільнити місце.
+[stat win probability]
+
+[stat win probability about]
+
 [stat prestige]
 Престиж
 [stat prestige about]

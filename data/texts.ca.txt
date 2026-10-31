@@ -4884,6 +4884,10 @@ Unitats encaixonades sense cap casella lliure on anar.
 Recursos netejats
 [stat cleared about]
 Recursos que els treballadors han tret a les zones de neteja per fer lloc.
+[stat win probability]
+
+[stat win probability about]
+
 [stat prestige]
 Prestigi
 [stat prestige about]

@@ -4884,6 +4884,10 @@ Enheder, der er lukket inde uden et ledigt felt at træde hen på.
 Ryddede ressourcer
 [stat cleared about]
 Ressourcer fjernet af arbejdere i rydningsområder for at skabe plads.
+[stat win probability]
+
+[stat win probability about]
+
 [stat prestige]
 Prestige
 [stat prestige about]

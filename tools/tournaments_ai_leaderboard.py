@@ -11,7 +11,7 @@ formats retain sequential Elo and the optional penalized finishing-order fit
 (`strengths`), which requires NumPy and SciPy. Those estimators are diagnostics;
 do not substitute them for an unavailable unregularized duel fit.
 
-Usage: python3 tools/tournaments_ai_leaderboard.py RESULTS_DIR [RESULTS_DIR ...] [--policy prestige] [--output report.json]
+Usage: python3 tools/tournaments_ai_leaderboard.py RESULTS_DIR [RESULTS_DIR ...] [--policy win_probability] [--output report.json]
 """
 
 import argparse
@@ -24,7 +24,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from collections import defaultdict
 import math
 
-from tools.tournaments.analysis import observations, rate, bootstrap_ratings, POLICIES
+from tools.tournaments.analysis import observations, rate, bootstrap_ratings, probability_scores, POLICIES
 from tools.tournaments.results import Results
 from tools.tournaments.duel_ratings import report as duel_report
 
@@ -102,7 +102,7 @@ def main():
     parser.add_argument(
         "directories", nargs="+", help="one results directory per size group"
     )
-    parser.add_argument("--policy", choices=POLICIES, default="prestige")
+    parser.add_argument("--policy", choices=POLICIES, default="win_probability")
     parser.add_argument("--k", type=float, default=32)
     parser.add_argument("--draws", type=int, default=1000)
     parser.add_argument("--seed", type=int, default=1)
@@ -130,6 +130,7 @@ def main():
     total = len(rows)
     report = {
         "policy": args.policy,
+        "probability_scores": probability_scores(rows, args.draws, args.seed),
         "k": args.k,
         "directories": args.directories,
         "games": total,
@@ -187,6 +188,13 @@ def main():
                 f"| {fmt} | {competitor} | {fmt_ratings[competitor]:.1f} | {shown} |",
                 file=sys.stderr,
             )
+
+    print("\n| Format | Build | Competitor | Role | Stop (permille) | W / L / D | Mean win probability | 95% interval |", file=sys.stderr)
+    print("| --- | --- | --- | --- | ---: | --- | ---: | --- |", file=sys.stderr)
+    for score in sorted(report['probability_scores'], key=lambda s: (s['format'], s['build'], -(s['mean'] if s['mean'] is not None else -1))):
+        mean = f"{score['mean']:.4f}" if score['mean'] is not None else 'unavailable'
+        print(f"| {score['format']} | {score['build'][:12]} | {score['competitor']} | {score['role']} | {score['win_probability_permille']} | "
+              f"{score['wins']} / {score['losses']} / {score['draws']} | {mean} | {score['interval']} |", file=sys.stderr)
 
 
 if __name__ == "__main__":

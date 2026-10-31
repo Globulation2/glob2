@@ -207,3 +207,5 @@
 [lesson defensive-tactics repel compact]
 [lesson defensive-tactics counterattack compact]
 [scenario messages]
+[stat win probability]
+[stat win probability about]

@@ -4884,6 +4884,10 @@ JavaScriptのAIは「設定」→「カスタムAI」で追加します。追加
 除去した資源
 [stat cleared about]
 場所を空けるため、資源除去領域で労働者が取り除いた資源です。
+[stat win probability]
+
+[stat win probability about]
+
 [stat prestige]
 名声
 [stat prestige about]

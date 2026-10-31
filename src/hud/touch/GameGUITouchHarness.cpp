@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include <Environment.h>
 #include "EngineFixtures.h"
+#include "ScopedEnvironment.h"
 #include <nlohmann/json.hpp>
 #include <string>
 #include <memory>
@@ -2293,6 +2294,8 @@ class GameGUITouchHarness
 				p = at(3);
 				tap(p.x, p.y);
 				require(gui.touch->statsOpen && !gui.touch->lensVisible(), "The statistics lens opens the sheet");
+                require(std::none_of(gui.touch->statsCatalog.begin(), gui.touch->statsCatalog.end(),
+                    [](const auto &m) { return m.winProbability; }), "Live players cannot see hidden-state win probabilities");
 				const auto stats = gui.touch->statsLayout();
 				require(stats.chart.h >= 100 * unit && stats.sheet.y + stats.sheet.h <= ui.actions.y + 0.5,
 						"The sheet sits above the toolbar with room for the chart");
@@ -2300,7 +2303,7 @@ class GameGUITouchHarness
 				require(gui.touch->statsMetric == 1, "The sheet's arrow shows the next metric");
 				tap(centre(stats.previous).x, centre(stats.previous).y);
 				tap(centre(stats.previous).x, centre(stats.previous).y);
-				require(gui.touch->statsMetric == int(Stats::catalog().size()) - 1, "Metrics wrap around");
+				require(gui.touch->statsMetric == int(gui.touch->statsCatalog.size()) - 1, "Metrics wrap around");
 				gui.touch->statsMetric = 0;
 				glob2test::drawGUI(gui,0);
 				gfx->printScreen(width < height ? "touch-stats-portrait.bmp" : "touch-stats-landscape.bmp");
@@ -5114,9 +5117,62 @@ class GameGUITouchHarness
 		gui.processEvent(&event);
 		REQUIRE(std::string(static_cast<LoadSaveDialog *>(dialog)->getName()) == "Scaled2");
 	}
+	static void liveStatisticsProbability()
+    {
+        glob2test::HeadlessGlobals globals({.display=true, .loadStrings=true, .width=360, .height=720,
+            .screenFlags=GAGCore::GraphicContext::PORTABLEGPU});
+        REQUIRE(NET_Init());
+        struct NetworkCleanup { ~NetworkCleanup() { NET_Quit(); } } network;
+        glob2test::ScopedEnvironment mobile("GLOB2_MOBILE_UI", "1");
+        GameGUI gui;
+        auto map = Engine::loadMapHeader("maps/balanced.map");
+        GameHeader players;
+        players.setNumberOfPlayers(1);
+        players.getBasePlayer(0) = BasePlayer(0, "Touch", 0, BasePlayer::P_LOCAL);
+        REQUIRE(gui.loadFromHeaders(map, players, true, true));
+        gui.localTeamNo=gui.localPlayer=0;
+        gui.adjustLocalTeam();
+        gui.localTeam->stats.recordWinProbability(0, 900, "visibility-test");
+        auto *gfx=globalContainer->gfx;
+        gfx->setResponsiveViewport(true,800,600);
+        for (auto [width,height] : {std::pair{360,720},std::pair{720,360}})
+        {
+            const int oldW=gfx->getW(),oldH=gfx->getH();
+            SDL_SetWindowSize(SDL_GetWindowFromID(gfx->windowID()),width,height);
+            REQUIRE(SDL_SyncWindow(SDL_GetWindowFromID(gfx->windowID())));
+            SDL_Event resize{};resize.type=SDL_EVENT_WINDOW_PIXEL_SIZE_CHANGED;
+            GAGCore::GraphicContext::translateMouseEvent(&resize);
+            gui.viewportResized(oldW,oldH,gfx->getW(),gfx->getH());
+            gui.prepareLocalPresentation();
+            const auto checksum=gui.game.checkSum();
+            gui.touch->menuAction(3);
+            REQUIRE(gui.touch->statsOpen);
+            REQUIRE_FALSE(gui.touch->statsCatalog.empty());
+            CHECK(std::none_of(gui.touch->statsCatalog.begin(),gui.touch->statsCatalog.end(),
+                [](const auto &m){return m.winProbability;}));
+            gui.touch->statsMetric=0;
+            const auto previous=gui.touch->statsLayout().previous;
+            gui.touch->interfaceTap({previous.x+previous.w/2,previous.y+previous.h/2});
+            CHECK(gui.touch->statsMetric==int(gui.touch->statsCatalog.size())-1);
+            CHECK_FALSE(gui.touch->statsCatalog[gui.touch->statsMetric].winProbability);
+            glob2test::drawGUI(gui,0);
+            CHECK(gui.game.checkSum()==checksum);
+            const auto screenshot="live-stats-"+std::to_string(width)+"x"+std::to_string(height)+".bmp";
+            gfx->printScreen(screenshot);
+            gfx->nextFrame();
+            REQUIRE(std::filesystem::exists(glob2test::profileDir()/screenshot));
+            gui.touch->statsOpen=false;
+        }
+        CHECK(glob2test::retainFromProfile(".bmp")==2);
+    }
 };
 TEST_SUITE("GameGUITouch")
 {
+    GLOB2_TEST_CASE("live statistics hide post-game probability and wrap correctly", "[display][artifacts]")
+    {
+        GameGUITouchHarness::liveStatisticsProbability();
+    }
+
 	GLOB2_TEST_CASE("attack marks follow mobile minimaps without extra lifetime ticks", "[display][artifacts]")
 	{
 		glob2test::GlobalsOptions options{.display = true, .loadStrings = true, .width = 800, .height = 600,

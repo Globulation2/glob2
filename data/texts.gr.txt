@@ -4884,6 +4884,10 @@ CPU %0%
 Πόροι που καθαρίστηκαν
 [stat cleared about]
 Πόροι που αφαίρεσαν οι εργάτες σε ζώνες καθαρισμού για να ανοίξουν χώρο.
+[stat win probability]
+
+[stat win probability about]
+
 [stat prestige]
 Κύρος
 [stat prestige about]

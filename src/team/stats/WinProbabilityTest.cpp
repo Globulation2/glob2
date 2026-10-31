@@ -4,6 +4,7 @@
 #include "ScopedEnvironment.h"
 #include <iostream>
 #include "TeamStat.h"
+#include "stats/MetricCatalog.h"
 #include "WinProbability.h"
 #include "WinningConditions.h"
 #include "BinaryStream.h"
@@ -17,6 +18,101 @@
 
 TEST_SUITE("WinProbability")
 {
+    TEST_CASE("live chances and automatic history use the same scout-role counts")
+    {
+        glob2test::HeadlessGlobals globals;
+        glob2test::HeadlessGame world({.teams=2, .header=true});
+        auto &game = world.game;
+        for (int t=0; t<2; ++t) game.teams[t]->stats.getLatestStat()->totalUnit = 10;
+        // Custom scout roles need not occupy the legacy EXPLORER unit slot.
+        game.teams[0]->stats.getLatestStat()->scouts = 9;
+        game.winProbabilitySyncStep();
+        PresentationFrame scene;
+        SceneExtractor().prepare(game.captureReadBoundary(SceneExtractor::captureOptions(SceneRequest{})), SceneRequest{}, scene);
+        REQUIRE(scene.panels.hud.winChances.size() == 2);
+        CHECK(scene.panels.hud.winChances[0].permille == game.teams[0]->stats.getWinProbabilityHistory().back().permille);
+        CHECK(scene.panels.hud.winChances[0].permille > 500);
+    }
+    TEST_CASE("automatic history records without telemetry, includes final partial ticks and shares alliance chances")
+    {
+        glob2test::HeadlessGlobals globals;
+        glob2test::ScopedEnvironment restore("GLOB2_TEAM_TIMELINE", "1");
+        glob2test::unsetEnv("GLOB2_TEAM_TIMELINE");
+        REQUIRE(std::getenv("GLOB2_TEAM_TIMELINE") == nullptr);
+        glob2test::HeadlessGame world({.teams=3, .header=true});
+        auto &game = world.game;
+        game.gameHeader.setAllyTeamNumber(0, 1);
+        game.gameHeader.setAllyTeamNumber(1, 1);
+        game.gameHeader.setAllyTeamNumber(2, 2);
+        game.teams[0]->prestige = 50;
+        game.winProbabilitySyncStep();
+        game.stepCounter = 512;
+        game.winProbabilitySyncStep();
+        game.stepCounter = 600;
+        game.winProbabilitySyncStep(); // no periodic sample here
+        REQUIRE(game.teams[0]->stats.winProbabilityHistory.size() == 2);
+        game.winProbabilitySyncStep(true);
+        game.winProbabilitySyncStep(true); // reporting is idempotent
+        const auto &history = game.teams[0]->stats.winProbabilityHistory;
+        REQUIRE(history.size() == 3);
+        CHECK(history.back().tick == 600);
+        CHECK(history[0].permille == game.teams[1]->stats.winProbabilityHistory[0].permille);
+        CHECK(history[0].permille > game.teams[2]->stats.winProbabilityHistory[0].permille);
+        CHECK(game.teams[0]->stats.winProbabilityModel == WinProbability::modelId());
+        CHECK(game.teams[0]->stats.frozenHistory()->winProbabilityHistory.size() == 3);
+    }
+
+    TEST_CASE("trapezoidal score uses actual ticks, survives saves and retains legacy coverage gaps")
+    {
+        glob2test::HeadlessGlobals globals;
+        glob2test::HeadlessGame world({.header=true});
+        auto &stats = world.team->stats;
+        stats.recordWinProbability(512, 200, WinProbability::modelId());
+        stats.recordWinProbability(1024, 800, WinProbability::modelId());
+        stats.recordWinProbability(1100, 1000, WinProbability::modelId());
+        CHECK(stats.winProbabilityAreaTwice() == 512000 + 136800);
+        const auto frozen = stats.frozenHistory();
+        stats.recordWinProbability(1200, 1000, WinProbability::modelId());
+        CHECK(frozen->winProbabilityHistory.size() == 3);
+        auto *backend = new GAGCore::MemoryStreamBackend;
+        GAGCore::BinaryOutputStream output(backend);
+        stats.save(&output);
+        output.flush();
+        const size_t size = backend->getPosition();
+        const void *bytes = backend->getBuffer();
+        GAGCore::BinaryInputStream input(new GAGCore::MemoryStreamBackend(bytes, size));
+        input.seekFromStart(0);
+        TeamStats loaded;
+        REQUIRE(loaded.load(&input, VERSION_MINOR));
+        CHECK(loaded.winProbabilityModel == WinProbability::modelId());
+        CHECK(loaded.winProbabilityAreaTwice() == stats.winProbabilityAreaTwice());
+        REQUIRE(loaded.winProbabilityHistory.size() == 4);
+        CHECK(loaded.winProbabilityHistory.front().tick == 512);
+        CHECK(loaded.winProbabilityHistory.back().tick == 1200);
+        loaded.recordWinProbability(1300, 1000, "another-model");
+        CHECK(loaded.winProbabilityModel == "mixed");
+    }
+
+    TEST_CASE("an early victory retains the prediction which triggered it")
+    {
+        glob2test::HeadlessGlobals globals;
+        glob2test::HeadlessGame world({.teams=2, .header=true});
+        auto &game = world.game;
+        game.stepCounter = WinProbability::MINIMUM_DECISION_TICK;
+        game.teams[0]->prestige = 150;
+        std::vector<int> allianceOf;
+        const auto expected = WinProbability::permille(WinProbability::slotsOf(game, allianceOf));
+        REQUIRE(expected[0] >= 950);
+        REQUIRE(expected[0] < 1000);
+        game.gameHeader.getWinningConditions().clear();
+        WinningCondition::setWinProbabilityWinCondition(game.gameHeader.getWinningConditions(), 950);
+        game.wonSyncStep();
+        REQUIRE(game.isGameEnded);
+        game.winProbabilitySyncStep();
+        CHECK(game.teams[0]->stats.winProbabilityHistory.back().permille == expected[0]);
+        CHECK(game.teams[1]->stats.winProbabilityHistory.back().permille == expected[1]);
+    }
+
     TEST_CASE("combat facilities count concrete providers once, including explicit construction targets")
     {
         glob2test::HeadlessGlobals globals;
@@ -90,6 +186,7 @@ TEST_SUITE("WinProbability")
         game.gameHeader.setAllyTeamNumber(2, 2);
         game.teams[0]->prestige = 1000;
         WinningConditionWinProbability condition;
+        CHECK(condition.thresholdPermille == 950);
         game.stepCounter = WinProbability::MINIMUM_DECISION_TICK - 512;
         CHECK_FALSE(condition.hasTeamWon(0, &game));
         game.stepCounter = WinProbability::MINIMUM_DECISION_TICK + 1;

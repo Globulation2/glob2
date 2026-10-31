@@ -4884,6 +4884,10 @@ AI 遥测
 清除的资源
 [stat cleared about]
 工人在清除区域中为腾出空间而移除的资源。
+[stat win probability]
+
+[stat win probability about]
+
 [stat prestige]
 声望
 [stat prestige about]

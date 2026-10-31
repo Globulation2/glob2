@@ -60,6 +60,26 @@ Add telemetry identity/schema only for meaningful measurements; use the
 [telemetry contract](telemetry.md) for field retention and freshness. Tests and
 examples must use the same public order/capability interfaces as the controller.
 
+## Assess effectiveness
+
+Use [the tournament framework](../tools/tournaments.md) for custom assessments as
+well as standard comparisons. Its CLI and planners default to 95% probability
+victory, and cap adjudication uses final win probability. Every game records the
+probability trajectory automatically, without a verbose telemetry request.
+
+Treat **mean whole-match win probability** (trapezoidal area divided by observed
+duration) as the standard continuous score for AI effectiveness, alongside wins,
+losses and draws. A small change can improve the probability trajectory across
+many games without flipping their eventual winners; looking only at outcomes
+throws that signal away. Standard reports include this score, seed-block
+intervals and paired ablation effects automatically. Custom scripts should read
+`probability_scores` or the compact per-team area/coverage summary, counting an
+alliance once. Use matched maps/seeds, seat rotations and held-out comparisons.
+Keep models and stopping rules identical; report missing or partial history as
+unavailable. Check actual outcomes and representative games as well: a fitted
+state model is a sensitive diagnostic, not a complete description of good play.
+See [whole-game scoring](../tools/tournaments.md#whole-game-probability-scores).
+
 ## Verify and review
 
 - Run focused strategy and affected engine harnesses, including order/rule guards.

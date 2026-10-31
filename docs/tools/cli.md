@@ -698,7 +698,7 @@ Platform: all.
 | `--map-script` | file | Map script source. |
 | `--alliance` | integer; 1..16 | Alliance per team. Repeatable. |
 | `--win-condition` | death, allies, prestige, opponents, script | Winning condition. Repeatable. |
-| `--win-probability` | integer; 501..1000 | Early-victory threshold in permille. |
+| `--win-probability` | integer; default 950; 0..1000 | New-game early-victory threshold: 0 off, or 501..1000 permille. |
 | `--experiment` | string | Enable a registered experiment. Repeatable. |
 | `--rule` | assignment | Game rule KEY=VALUE. Repeatable. |
 | `--fork-rule` | assignment | Explicit saved-game fork: buildingGradientDelay=N. Repeatable. |

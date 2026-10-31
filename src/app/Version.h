@@ -7,7 +7,8 @@
 // This is the version of map and savegame format, and all of the recorded data on the server
 #define VERSION_MAJOR 0
 #define MINIMUM_VERSION_MINOR 58
-#define VERSION_MINOR 187
+#define VERSION_MINOR 188
+// version 188 adds automatic, explicitly timestamped win-probability history.
 // version 187 graduates all terrains and removes terrain experiment observations.
 // version 186 admits four building gradients per team per tick and widens pending counts.
 // version 185 skips requests for unpainted Guard/Clear zones using derived tile counts.

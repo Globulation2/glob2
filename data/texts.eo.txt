@@ -4884,6 +4884,10 @@ Globuloj enfermitaj sen libera kvadrato por paŝi sur ĝin.
 Viŝitaj rimedoj
 [stat cleared about]
 Rimedoj forigitaj de laboristoj en viŝataj areoj por fari lokon.
+[stat win probability]
+
+[stat win probability about]
+
 [stat prestige]
 Prestiĝo
 [stat prestige about]

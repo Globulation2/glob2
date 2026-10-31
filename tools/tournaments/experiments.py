@@ -85,8 +85,7 @@ class Planner:
                             'players': players, 'ticks': config.get('ticks', 90000), 'ai_params': {},
                             **({'rules': config['rules']} if 'rules' in config else {}),
                             **({'alliances': alliances} if alliances else {}),
-                            **({'win_probability_permille': config['win_probability_permille']}
-                               if config.get('win_probability_permille') else {})},
+                            'win_probability_permille': config.get('win_probability_permille', config.get('rules', {}).get('winProbabilityPermille', 950))},
                     outputs=config.get('outputs', {}), limits={'timeout_seconds': config.get('timeout_seconds', 3600)},
                     labels=labels)
         self.jobs.append(value)
@@ -133,8 +132,7 @@ class Planner:
                     config={'players': players, 'ticks': config.get('ticks', 90000),
                             'ai_params': overrides or {}, **({'alliances': alliances} if alliances else {}),
                             **({'rules': config['rules']} if 'rules' in config else {}),
-                            **({'win_probability_permille': config['win_probability_permille']}
-                               if config.get('win_probability_permille') else {})},
+                            'win_probability_permille': config.get('win_probability_permille', config.get('rules', {}).get('winProbabilityPermille', 950))},
                     outputs=config.get('outputs', {}), limits={'timeout_seconds': config.get('timeout_seconds', 3600)},
                     labels=labels)
         self.jobs.append(value)
@@ -195,10 +193,8 @@ class Planner:
         else:
             ais = config.get('ais') or [a['name'] for a in self.bundles[self.builds[0]]['capabilities']['ais'] if a['id'] != 0]
             if not ais: raise ValueError('AI comparison needs selectable active AIs')
-            # Ratings use the final game result. Keep the standard Elo sample
-            # lightweight so workers spend their capacity simulating duels rather
-            # than producing and transferring per-tick histories. Callers that
-            # need AI decision traces can still request telemetry explicitly.
+            # Automatic probability summaries travel in compact results. Full
+            # per-sample/AI logs remain optional and consume the storage budget.
             config.setdefault('outputs', {})
             # The standard Elo cohort is a cheap, directly comparable duel at one
             # map size. Callers can still request teams or FFA explicitly.
@@ -260,14 +256,14 @@ def experiment_main(kind):
     for name in ('plan','submit'):
         p=sub.add_parser(name);p.add_argument('config');p.add_argument('--bundle',action='append',required=True)
         p.add_argument('--output',required=True)
-    p=sub.add_parser('reanalyze');p.add_argument('directory');p.add_argument('--policy',choices=POLICIES,default='prestige')
+    p=sub.add_parser('reanalyze');p.add_argument('directory');p.add_argument('--policy',choices=POLICIES,default='win_probability')
     p.add_argument('--seed',type=int,default=1);p.add_argument('--draws',type=int,default=1000);p.add_argument('--k',type=float,default=32)
     p.add_argument('--output')
     args=parser.parse_args()
     try:
         if args.command=='reanalyze':
             report=reanalyze(args.directory,args.policy,args.draws,args.seed,args.k,args.output)
-            print(json.dumps({'results':report['committed_results'],'ratings':report['ratings']},indent=2))
+            print(json.dumps({'results':report['committed_results'],'ratings':report['ratings'],'probability_scores':report['probability_scores']},indent=2))
         else:
             manifest=Planner(kind,read_json(args.config),[inspect_bundle(p) for p in args.bundle]).plan()
             if args.command=='plan': atomic_json(args.output,manifest)
