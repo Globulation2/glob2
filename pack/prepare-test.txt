@@ -1,0 +1,10 @@
+dev-orig 37.189130 s Status: SUCCESS  33.64 45.84 49.81
+after 27.108571 s Status: SUCCESS  34.54 44.90 49.33
+dev-orig 29.518205 s Status: SUCCESS  33.94 43.51 48.64
+after 25.836477 s Status: SUCCESS  33.59 42.69 48.19
+dev-orig 28.745881 s Status: SUCCESS  29.78 40.74 47.26
+after 27.899841 s Status: SUCCESS  36.39 41.35 47.26
+dev-orig 33.689980 s Status: SUCCESS  46.29 43.70 47.90
+after 29.545055 s Status: SUCCESS  45.55 43.85 47.79
+dev-orig 27.675614 s Status: SUCCESS  39.60 42.57 47.19
+after 22.257436 s Status: SUCCESS  36.84 41.75 46.79

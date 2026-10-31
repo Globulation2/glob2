@@ -1,0 +1,21 @@
+terrain-improvement-pr-review-b61172
+  HD other             3573 files     10.0 MB
+  HD terrain           1312 files      5.2 MB
+  native other          905 files      2.5 MB
+  native terrain       1386 files      0.5 MB
+  non-image/other       650 files    146.7 MB
+  TOTAL                7826 files    165.0 MB
+pr1268-measure
+  HD other             3573 files     10.8 MB
+  HD terrain          16976 files     24.9 MB
+  native other          905 files      2.5 MB
+  native terrain      17050 files      4.1 MB
+  non-image/other       725 files    169.7 MB
+  TOTAL               39229 files    212.0 MB
+pr1268-lite
+  HD other             3573 files     10.3 MB
+  HD terrain           7760 files     19.3 MB
+  native other          905 files      2.5 MB
+  native terrain       7834 files      2.6 MB
+  non-image/other       680 files    159.1 MB
+  TOTAL               20752 files    193.9 MB

@@ -1,0 +1,149 @@
+diff --git a/libgag/include/SDLGraphicContext.h b/libgag/include/SDLGraphicContext.h
+index a420e648af..cd28f7b19a 100644
+--- a/libgag/include/SDLGraphicContext.h
++++ b/libgag/include/SDLGraphicContext.h
+@@ -1002,6 +1002,8 @@ namespace GAGCore
+         static void refreshHighResolutionForRenderer();
+         static bool pollHighResolution(unsigned budgetMs = 2);
+         static bool pollHighResolutionUntil(std::chrono::steady_clock::time_point deadline);
++        // MEASUREMENT ONLY: HD frames requested but not yet published.
++        static size_t measureHighResolutionPending(size_t *wanted);
+ 		static void flushBatches(GraphicContext *gc);
+ 		//! Constructor
+ 		Sprite() : fileName("not loaded yet") { }
+diff --git a/libgag/src/Sprite.cpp b/libgag/src/Sprite.cpp
+index 9dae9b6949..f8329d920a 100644
+--- a/libgag/src/Sprite.cpp
++++ b/libgag/src/Sprite.cpp
+@@ -568,6 +568,14 @@ namespace GAGCore
+         }
+         requestHighResolution(highResolutionEnabled);
+     }
++
++    size_t Sprite::measureHighResolutionPending(size_t *wanted)
++    {
++        size_t pending = pendingHighResolution.size(), want = 0;
++        for (auto &[sprite, stream] : deferredHighResolution) { want += stream.wanted.size(); for (unsigned f : stream.wanted) if (!stream.completed.contains(f)) ++pending; }
++        if (wanted) *wanted = want;
++        return pending;
++    }
+     bool Sprite::pollHighResolution(unsigned budgetMs)
+     {
+         return pollHighResolutionUntil(std::chrono::steady_clock::now() + std::chrono::milliseconds(budgetMs));
+diff --git a/src/app/GlobalContainer.cpp b/src/app/GlobalContainer.cpp
+index d5d76d32c5..5b6fdd58ab 100644
+--- a/src/app/GlobalContainer.cpp
++++ b/src/app/GlobalContainer.cpp
+@@ -393,7 +393,7 @@ void GlobalContainer::requestGameGraphics()
+         Toolkit::requestSprite(std::string("data/gfx/") + name, std::string(name) == "ressource");
+ 	for (const auto &material : TerrainVisual::loadCatalog().materials)
+ 	{
+-		if (material.variantBlocks > 1) Sprite::deferHighResolution(material.sprite);
++		if (material.variantBlocks > 1 && !std::getenv("GLOB2_BENCH_NO_DEFER")) Sprite::deferHighResolution(material.sprite); // MEASURE
+ 		Toolkit::requestSprite(material.sprite);
+ 		if (!material.decor.sprite.empty())
+ 			Toolkit::requestSprite(material.decor.sprite);
+diff --git a/src/render/terrain/TerrainCompositor.cpp b/src/render/terrain/TerrainCompositor.cpp
+index e9b6be7952..ae0c76eb40 100644
+--- a/src/render/terrain/TerrainCompositor.cpp
++++ b/src/render/terrain/TerrainCompositor.cpp
+@@ -1,4 +1,5 @@
+ // SPDX-License-Identifier: GPL-3.0-or-later
++#include <cstdlib>
+ #include "TerrainCompositor.h"
+ #include "map/TerrainRegistry.h"
+ #include "TerrainCompiledPack.h"
+@@ -27,7 +28,7 @@ Compositor::Compositor(Catalog catalog, std::shared_ptr<const MapAssetBundle> as
+ 	}
+ 	for (const auto &m : definitions.materials)
+ 	{
+-		if (m.variantBlocks > 1) GAGCore::Sprite::deferHighResolution(m.sprite);
++		if (m.variantBlocks > 1 && !std::getenv("GLOB2_BENCH_NO_DEFER")) GAGCore::Sprite::deferHighResolution(m.sprite); // MEASURE
+         auto *sprite = customSprites.resolve(m.sprite);
+ 		if (!sprite)
+ 			throw std::runtime_error("Missing terrain material sprite: " + m.sprite);
+diff --git a/src/render/torus/TorusRenderBenchmark.cpp b/src/render/torus/TorusRenderBenchmark.cpp
+index e456838180..e4c5d5b25d 100644
+--- a/src/render/torus/TorusRenderBenchmark.cpp
++++ b/src/render/torus/TorusRenderBenchmark.cpp
+@@ -28,6 +28,23 @@
+ #include <stdexcept>
+ #include <MapGeometryCache.h>
+ #include <PerformanceTelemetry.h>
++#include <SDLGraphicContext.h>
++#include <thread>
++#include <chrono>
++#ifdef __APPLE__
++#include <mach/mach.h>
++#endif
++// MEASUREMENT ONLY helpers.
++static double measureFootprintMb()
++{
++#ifdef __APPLE__
++    task_vm_info_data_t info; mach_msg_type_number_t count = TASK_VM_INFO_COUNT;
++    if (task_info(mach_task_self(), TASK_VM_INFO, reinterpret_cast<task_info_t>(&info), &count) == KERN_SUCCESS)
++        return info.phys_footprint / 1048576.0;
++#endif
++    return -1;
++}
++static int measureEnv(const char *name, int fallback) { const char *v = std::getenv(name); return v ? std::atoi(v) : fallback; }
+ #include "TorusMapFixture.h"
+ #include "render/scene/SceneExtract.h"
+ #include "render/SoftwareTerrainCache.h"
+@@ -213,9 +230,11 @@ static int run(int argc, char **argv)
+     std::vector<std::string> launchArgs{"play"};
+         launchArgs.insert(launchArgs.end(),argv+1,argv+argc);
+         globalContainer->applyCommand(Cli::parse(launchArgs));
++    const auto measureLoadStart = std::chrono::steady_clock::now();
+     globalContainer->load();
+     // Finish deferred HD publication before comparing renderer workloads.
+     GAGCore::Sprite::setHighResolution(globalContainer->settings.highResolutionArtwork);
++    std::printf("MEASURE_LOAD ms=%.1f footprint_mb=%.1f\n", std::chrono::duration<double, std::milli>(std::chrono::steady_clock::now() - measureLoadStart).count(), measureFootprintMb());
+     auto *gfx=globalContainer->gfx;
+     const auto active=GAGCore::rendererBackendName(gfx->backendSwitchStatus().active);
+     const auto requested=GAGCore::rendererBackendName(gfx->backendSwitchStatus().requested);
+@@ -297,6 +316,17 @@ static int run(int argc, char **argv)
+             for (int i = -warmupFrames; i < frames; ++i)
+             {
+                 if(!finishRendering())ContextAccess::backend(*gfx)->present();
++                if (const int pollMs = measureEnv("GLOB2_BENCH_HD_POLL_MS", -1); pollMs >= 0)
++                {
++                    static auto paceNext = std::chrono::steady_clock::now();
++                    const int paceUs = measureEnv("GLOB2_BENCH_PACE_US", 0);
++                    if (paceUs) { std::this_thread::sleep_until(paceNext); paceNext = std::max(paceNext + std::chrono::microseconds(paceUs), std::chrono::steady_clock::now()); }
++                    const auto pollStart = std::chrono::steady_clock::now();
++                    GAGCore::Toolkit::pollAssets(unsigned(pollMs));
++                    const double pollTook = std::chrono::duration<double, std::milli>(std::chrono::steady_clock::now() - pollStart).count();
++                    size_t wanted = 0; const size_t pending = GAGCore::Sprite::measureHighResolutionPending(&wanted);
++                    std::printf("MEASURE_HD frame=%d pending=%zu wanted=%zu poll_ms=%.3f footprint_mb=%.1f\n", i, pending, wanted, pollTook, measureFootprintMb());
++                }
+                 const auto telemetryBefore=gfx->renderDevice()?gfx->renderDevice()->telemetry():GAGCore::RenderTelemetry{};
+                 const auto scopesBefore = PerformanceTelemetry::collector().window;
+                 Uint64 start = SDL_GetPerformanceCounter();
+@@ -458,9 +488,13 @@ static int run(int argc, char **argv)
+                     // zoomed-in measurement can look at a colony instead of open water.
+                     const int fixedPanX = std::getenv("GLOB2_BENCH_PAN_X") ? std::atoi(std::getenv("GLOB2_BENCH_PAN_X")) : 0;
+                     const int fixedPanY = std::getenv("GLOB2_BENCH_PAN_Y") ? std::atoi(std::getenv("GLOB2_BENCH_PAN_Y")) : 0;
+-                    const int panX = pan ? (fixedPanX + cameraFrame / 8)%gui.game.map.getW()
++                    const int jumpEvery = measureEnv("GLOB2_BENCH_JUMP_EVERY", 0);
++                    const int jump = jumpEvery ? cameraFrame / jumpEvery : 0;
++                    const int speed = measureEnv("GLOB2_BENCH_PAN_SPEED", 1);
++                    const int panFrame = jumpEvery ? 0 : cameraFrame * speed;
++                    const int panX = pan ? (fixedPanX + jump * 89 + panFrame / 8)%gui.game.map.getW()
+                         : sweep ? (cameraFrame*37)%gui.game.map.getW() : fixedPanX;
+-                    const int panY = pan ? (fixedPanY + cameraFrame / 16)%gui.game.map.getH()
++                    const int panY = pan ? (fixedPanY + jump * 53 + panFrame / 16)%gui.game.map.getH()
+                         : sweep ? (cameraFrame*19)%gui.game.map.getH() : fixedPanY;
+                     int drawW = int(std::ceil(width/zoom)), drawH = int(std::ceil(height/zoom));
+                     if (!sweep && std::getenv("GLOB2_BENCH_FULL_MAP"))
+@@ -472,8 +506,8 @@ static int run(int argc, char **argv)
+                     // camera between tiles does; seams between tiles only show then.
+                     const float fraction = std::getenv("GLOB2_BENCH_FRACTION") ? float(std::atof(std::getenv("GLOB2_BENCH_FRACTION"))) : 0.f;
+                     globalContainer->gfx->beginMapTransform(zoom,
+-                        -(pan ? cameraFrame % 8 * 4.f : fraction)*zoom,
+-                        -(pan ? cameraFrame % 16 * 2.f : fraction)*zoom, 0, 0, width, height);
++                        -(pan ? panFrame % 8 * 4.f : fraction)*zoom,
++                        -(pan ? panFrame % 16 * 2.f : fraction)*zoom, 0, 0, width, height);
+                     const bool pausePresentation = std::getenv("GLOB2_BENCH_PAUSE_PRESENTATION");
+                     if (pausePresentation) gui.view.render.animationTime = 22;
+                     Game::drawMap(0, 0, drawW, drawH, 0, 0,
