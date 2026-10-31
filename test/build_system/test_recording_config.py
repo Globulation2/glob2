@@ -41,6 +41,7 @@ class RecordingConfigTests(unittest.TestCase):
         selected = sources(GAG_SOURCES, 'disabled')
         self.assertTrue(CODEC_SOURCES.isdisjoint(selected))
         self.assertIn('RecordingDisabled.cpp', selected)
+        self.assertIn('RecordingMetadata.cpp', selected)
         self.assertEqual(sources(GAG_SOURCES, 'system'), list(GAG_SOURCES))
         self.assertEqual(sources(GAG_SOURCES, 'bundled'), list(GAG_SOURCES))
 

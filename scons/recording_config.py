@@ -1,7 +1,7 @@
 """Explicit native Linux recording variants for distribution packages."""
 
 MODES = ('bundled', 'system', 'disabled')
-CODEC_SOURCES = frozenset(('GameplayRecording.cpp', 'RecordingMetadata.cpp',
+CODEC_SOURCES = frozenset(('GameplayRecording.cpp',
                            'RecordingEncoder.cpp', 'RecordingFiles.cpp', 'RecordingSession.cpp'))
 
 
@@ -17,6 +17,9 @@ def resolve(arguments, target, role, toolchain):
 def sources(entries, mode):
     if mode != 'disabled':
         return list(entries)
+    # Renderer capture tickets also use the codec-free Context/JSON helpers in
+    # RecordingMetadata.cpp. Keep those definitions even in unoptimized builds,
+    # where the unavailable-recording branch is not eliminated by the compiler.
     return [source for source in entries if source not in CODEC_SOURCES] + ['RecordingDisabled.cpp']
 
 
