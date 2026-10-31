@@ -1,0 +1,506 @@
+{
+  "batch": "native-settings-003",
+  "target_sha256": "358465f9c64f0523435c72ea6d58ebad267edc416b234cd18a67f4c4d98131bd",
+  "rows": [
+    {
+      "id": "native:[settings Advanced graphics]",
+      "source": "Advanced graphics",
+      "target": "प्रगत ग्राफिक्स"
+    },
+    {
+      "id": "native:[settings Path lines]",
+      "source": "Path lines",
+      "target": "मार्ग रेषा"
+    },
+    {
+      "id": "native:[settings Choose translucent or opaque unit path lines.]",
+      "source": "Choose translucent or opaque unit path lines.",
+      "target": "अर्धपारदर्शक किंवा अपारदर्शक युनिट पाथ लाईन्स निवडा."
+    },
+    {
+      "id": "native:[settings Smooth progress indicators]",
+      "source": "Smooth progress indicators",
+      "target": "सुरळीत प्रगती निर्देशक"
+    },
+    {
+      "id": "native:[settings Smooth the moving edges of progress indicators.]",
+      "source": "Smooth the moving edges of progress indicators.",
+      "target": "प्रगती निर्देशकांच्या हलणाऱ्या कडा गुळगुळीत करा."
+    },
+    {
+      "id": "native:[settings Decorative interface animation]",
+      "source": "Decorative interface animation",
+      "target": "सजावटी इंटरफेस अॅनिमेशन"
+    },
+    {
+      "id": "native:[settings Animate victory artwork. Reduced motion also disables this animation.]",
+      "source": "Animate victory artwork. Reduced motion also disables this animation.",
+      "target": "विजयाचे कलाचित्र अॅनिमेट करा. कमी हालचाल हा पर्यायही हे अॅनिमेशन बंद करतो."
+    },
+    {
+      "id": "native:[settings Smooth unit motion]",
+      "source": "Smooth unit motion",
+      "target": "युनिटची सुरळीत हालचाल"
+    },
+    {
+      "id": "native:[settings Experimental: move and animate units between game ticks.]",
+      "source": "Experimental: move and animate units between game ticks.",
+      "target": "प्रायोगिक: गेम टिक्स दरम्यान युनिट्सना हलवा आणि अॅनिमेट करा."
+    },
+    {
+      "id": "native:[settings Smooth fog of war]",
+      "source": "Smooth fog of war",
+      "target": "युद्धाचे गुळगुळीत धुके"
+    },
+    {
+      "id": "native:[settings Fade the map into and out of the fog of war gradually.]",
+      "source": "Fade the map into and out of the fog of war gradually.",
+      "target": "नकाशाला युद्धाच्या धुक्यात हळूहळू आणा आणि त्यातून बाहेर काढा."
+    },
+    {
+      "id": "native:[settings Adaptive zoom detail]",
+      "source": "Adaptive zoom detail",
+      "target": "अनुकूलनीय झूम तपशील"
+    },
+    {
+      "id": "native:[settings Simplify bars, zones, terrain and units as the map zooms out, and keep them small zoomed in.]",
+      "source": "Simplify bars, zones, terrain and units as the map zooms out, and keep them small zoomed in.",
+      "target": "नकाशा झूम आउट करताना बार, झोन, भूभाग आणि युनिट्स सोपे करा आणि झूम इन केल्यावर त्यांना लहान ठेवा."
+    },
+    {
+      "id": "native:[settings Text size]",
+      "source": "Text size",
+      "target": "मजकुराचा आकार"
+    },
+    {
+      "id": "native:[settings Enlarge interface text without changing the map scale.]",
+      "source": "Enlarge interface text without changing the map scale.",
+      "target": "नकाशाचे प्रमाण न बदलता इंटरफेसवरील मजकूर मोठा करा."
+    },
+    {
+      "id": "native:[settings Online]",
+      "source": "Online",
+      "target": "ऑनलाइन"
+    },
+    {
+      "id": "native:[settings Another server]",
+      "source": "Another server",
+      "target": "दुसरा सर्व्हर"
+    },
+    {
+      "id": "native:[settings Check]",
+      "source": "Check",
+      "target": "तपासा"
+    },
+    {
+      "id": "native:[settings Checking…]",
+      "source": "Checking…",
+      "target": "तपासत आहे…"
+    },
+    {
+      "id": "native:[settings Choose which server you play on and how you sign in to it.]",
+      "source": "Choose which server you play on and how you sign in to it.",
+      "target": "तुम्ही कोणत्या सर्व्हरवर खेळता आणि त्यावर कसे साइन इन करता ते निवडा."
+    },
+    {
+      "id": "native:[settings Connecting…]",
+      "source": "Connecting…",
+      "target": "जोडत आहे…"
+    },
+    {
+      "id": "native:[settings Could not reach this server.]",
+      "source": "Could not reach this server.",
+      "target": "या सर्वरपर्यंत पोहोचता आले नाही."
+    },
+    {
+      "id": "native:[settings Display name saved.]",
+      "source": "Display name saved.",
+      "target": "प्रदर्शित नाव जतन केले आहे."
+    },
+    {
+      "id": "native:[settings Display name]",
+      "source": "Display name",
+      "target": "डिस्प्ले नाव"
+    },
+    {
+      "id": "native:[settings Download or delete my data]",
+      "source": "Delete my account",
+      "target": "माझे खाते हटवा"
+    },
+    {
+      "id": "native:[settings Enter an https:// address.]",
+      "source": "Enter an https:// address.",
+      "target": "https:// पत्ता प्रविष्ट करा."
+    },
+    {
+      "id": "native:[settings Forget]",
+      "source": "Forget",
+      "target": "विसरून जा"
+    },
+    {
+      "id": "native:[settings Guests keep a generated name; sign in to choose one.]",
+      "source": "Guests keep a generated name; sign in to choose one.",
+      "target": "अतिथींना आपोआप दिलेले नाव मिळते; स्वतःचे नाव निवडण्यासाठी साइन इन करा."
+    },
+    {
+      "id": "native:[settings Link]",
+      "source": "Link",
+      "target": "लिंक"
+    },
+    {
+      "id": "native:[settings Not a Globulation 2 server.]",
+      "source": "Not a Globulation 2 server.",
+      "target": "Globulation 2 सर्वर नाही."
+    },
+    {
+      "id": "native:[settings Not linked]",
+      "source": "Not linked",
+      "target": "जोडलेले नाही"
+    },
+    {
+      "id": "native:[settings Not signed in.]",
+      "source": "Not signed in.",
+      "target": "लॉग इन केलेले नाही."
+    },
+    {
+      "id": "native:[settings Open]",
+      "source": "Open",
+      "target": "उघडा"
+    },
+    {
+      "id": "native:[settings Opens your account page on %0.]",
+      "source": "Opens your account page on %0, where you can delete it.",
+      "target": "%0 वर तुमचे खाते पृष्ठ उघडते, जिथे तुम्ही ते हटवू शकता."
+    },
+    {
+      "id": "native:[settings Run by a community, a club or yourself. Paste its address.]",
+      "source": "Run by a community, a club or yourself. Paste its address.",
+      "target": "एखाद्या समुदायाद्वारे, क्लबद्वारे किंवा तुमच्या स्वतःद्वारे चालवले जाते. त्याचा पत्ता लिहा."
+    },
+    {
+      "id": "native:[settings Save]",
+      "source": "Save",
+      "target": "जतन करा"
+    },
+    {
+      "id": "native:[settings Server]",
+      "source": "Server",
+      "target": "सर्व्हर"
+    },
+    {
+      "id": "native:[settings Shown in rooms, matches and the leaderboard. Change once every 30 days.]",
+      "source": "Shown in rooms, matches and the leaderboard. Change once every 30 days.",
+      "target": "खोल्या, सामने आणि क्रमवारीत दाखवले जाते. दर 30 दिवसांतून एकदाच बदलता येते."
+    },
+    {
+      "id": "native:[settings Sign in with: %0 · queues: %1]",
+      "source": "Sign in with: %0 · queues: %1",
+      "target": "याने साइन इन करा: %0 · रांगा: %1"
+    },
+    {
+      "id": "native:[settings Sign out on this device]",
+      "source": "Sign out on this device",
+      "target": "या डिव्हाइसवरून साइन आउट करा"
+    },
+    {
+      "id": "native:[settings Sign out]",
+      "source": "Sign out",
+      "target": "साइन आउट"
+    },
+    {
+      "id": "native:[settings Switch to this server]",
+      "source": "Switch to this server",
+      "target": "या सर्व्हरवर स्विच करा"
+    },
+    {
+      "id": "native:[settings The last sign-in method can't be unlinked.]",
+      "source": "The last sign-in method can't be unlinked.",
+      "target": "शेवटची साइन-इन पद्धत वेगळी करता येत नाही."
+    },
+    {
+      "id": "native:[settings The official Globulation 2 server · ranked queues, leaderboards, map catalog]",
+      "source": "The official Globulation 2 server · ranked queues, leaderboards, map catalog",
+      "target": "अधिकृत Globulation 2 सर्व्हर · रँक्ड क्यूज, लीडरबोर्ड, मॅप कॅटलॉग"
+    },
+    {
+      "id": "native:[settings Unlink]",
+      "source": "Unlink",
+      "target": "लिंक काढा"
+    },
+    {
+      "id": "native:[settings Unlinking is done on the account page.]",
+      "source": "Unlinking is done on the account page.",
+      "target": "खाते पृष्ठावर अनलिंकिंग केले जाते."
+    },
+    {
+      "id": "native:[settings You'll be a new guest until you sign in again. Your account and matches stay on the server.]",
+      "source": "You'll be a new guest until you sign in again. Your account and matches stay on the server.",
+      "target": "तुम्ही पुन्हा साइन इन करेपर्यंत नवीन पाहुणे असाल. तुमचे खाते आणि सामने सर्वरवरच राहतील."
+    },
+    {
+      "id": "native:[settings Your account on %0]",
+      "source": "Your account on %0",
+      "target": "%0 वरील तुमचे खाते"
+    },
+    {
+      "id": "native:[settings compatible with this version]",
+      "source": "compatible with this version",
+      "target": "या आवृत्तीशी सुसंगत"
+    },
+    {
+      "id": "native:[settings connected]",
+      "source": "connected",
+      "target": "जोडलेले"
+    },
+    {
+      "id": "native:[settings connecting…]",
+      "source": "connecting…",
+      "target": "जोडत आहे…"
+    },
+    {
+      "id": "native:[settings guest]",
+      "source": "guest",
+      "target": "पाहुणे"
+    },
+    {
+      "id": "native:[settings linked]",
+      "source": "linked",
+      "target": "लिंक केलेले"
+    },
+    {
+      "id": "native:[settings plays another version]",
+      "source": "plays another version",
+      "target": "वेगळी आवृत्ती चालवतो"
+    },
+    {
+      "id": "native:[settings trusted]",
+      "source": "trusted",
+      "target": "विश्वसनीय"
+    },
+    {
+      "id": "native:[settings used before]",
+      "source": "used before",
+      "target": "पूर्वी वापरलेले"
+    },
+    {
+      "id": "native:[settings you were %0 there]",
+      "source": "you were %0 there",
+      "target": "तिथे तुमचे नाव %0 होते"
+    },
+    {
+      "id": "native:[settings not connected]",
+      "source": "not connected",
+      "target": "जोडलेले नाही"
+    },
+    {
+      "id": "native:[settings Open Play online to connect.]",
+      "source": "Open Play online to connect.",
+      "target": "कनेक्ट करण्यासाठी ऑनलाइन खेळा उघडा."
+    },
+    {
+      "id": "native:[settings %0 is no longer linked.]",
+      "source": "%0 is no longer linked.",
+      "target": "%0 आता जोडलेले नाही."
+    },
+    {
+      "id": "native:[settings Show colony skins]",
+      "source": "Show colony skins",
+      "target": "वसाहतींची रूपे दाखवा"
+    },
+    {
+      "id": "native:[settings Turn off to use classic units, swarms and building colors on this device.]",
+      "source": "Turn off to use classic units, swarms and building colors on this device.",
+      "target": "या उपकरणावर मूळ युनिट, पोळी आणि इमारतींचे रंग वापरण्यासाठी हा पर्याय बंद करा."
+    },
+    {
+      "id": "native:[settings Hive Mind]",
+      "source": "Hive Mind",
+      "target": "Hive Mind"
+    },
+    {
+      "id": "native:[settings Enable commander shortcuts]",
+      "source": "Enable commander shortcuts",
+      "target": "कमांडर शॉर्टकट सक्षम करा"
+    },
+    {
+      "id": "native:[settings Command your colony without opening a menu.]",
+      "source": "Command your colony without opening a menu.",
+      "target": "मेनू न उघडता आपल्या वसाहतीला आज्ञा द्या."
+    },
+    {
+      "id": "native:[settings Allow supervision for new commands]",
+      "source": "Allow supervision for new commands",
+      "target": "नवीन कमांडसाठी पर्यवेक्षणास परवानगी द्या"
+    },
+    {
+      "id": "native:[settings The commander may follow up on standing orders. Follow-ups use credits; installed orders keep running without credits.]",
+      "source": "The commander may follow up on standing orders. Follow-ups use credits; installed orders keep running without credits.",
+      "target": "कमांडर स्थायी आदेशांचा पाठपुरावा करू शकतो. पाठपुराव्यासाठी क्रेडिट्स वापरले जातात; स्थापित आदेश क्रेडिट्सशिवाय चालू राहतात."
+    },
+    {
+      "id": "native:[settings Default shortcuts: Ctrl+Enter to give an order; Ctrl+Shift+Enter to stop commander work. Change them under Controls. Standing-order cards have separate pause and cancel controls.]",
+      "source": "Default shortcuts: Ctrl+Enter to give an order; Ctrl+Shift+Enter to stop commander work. Change them under Controls. Standing-order cards have separate pause and cancel controls.",
+      "target": "डीफॉल्ट शॉर्टकट: आदेश देण्यासाठी Ctrl+Enter; कमांडरचे काम थांबवण्यासाठी Ctrl+Shift+Enter. कंट्रोल्स अंतर्गत ते बदला. स्टँडिंग-ऑर्डर कार्डसाठी पॉज आणि कॅन्सल करण्यासाठी स्वतंत्र कंट्रोल्स आहेत."
+    },
+    {
+      "id": "native:[settings Commander account and credits]",
+      "source": "Commander account and credits",
+      "target": "कमांडर खाते आणि क्रेडिट्स"
+    },
+    {
+      "id": "native:[settings Manage credits and purchases in your browser. Commander assistance is permitted in ranked play.]",
+      "source": "Manage credits and purchases in your browser. Commander assistance is permitted in ranked play.",
+      "target": "तुमच्या ब्राउझरमध्ये क्रेडिट्स आणि खरेदी व्यवस्थापित करा. रँक्ड प्लेमध्ये कमांडरची मदत घेण्यास परवानगी आहे."
+    },
+    {
+      "id": "native:[settings Recording]",
+      "source": "Recording",
+      "target": "रेकॉर्डिंग"
+    },
+    {
+      "id": "native:[settings Record your games as MP4 videos with sound. Recording needs FFmpeg with the libx264 and AAC encoders.]",
+      "source": "Record your games as MP4 videos with sound. Recording needs FFmpeg with the libx264 and AAC encoders.",
+      "target": "तुमचे गेम्स आवाजासह MP4 व्हिडिओ म्हणून रेकॉर्ड करा. रेकॉर्डिंगसाठी libx264 आणि AAC एन्कोडरसह FFmpeg आवश्यक आहे."
+    },
+    {
+      "id": "native:[settings Record your games as MP4 videos with sound.]",
+      "source": "Record your games as MP4 videos with sound.",
+      "target": "तुमचे गेम्स आवाजासह MP4 व्हिडिओ म्हणून रेकॉर्ड करा."
+    },
+    {
+      "id": "native:[settings Recording uses the full rendered resolution at 30 FPS.]",
+      "source": "Recording uses the full rendered resolution at 30 FPS.",
+      "target": "रेकॉर्डिंगमध्ये पूर्ण रेंडर केलेले रिझोल्यूशन ३० FPS वर वापरले जाते."
+    },
+    {
+      "id": "native:[settings FFmpeg is ready.]",
+      "source": "FFmpeg is ready.",
+      "target": "FFmpeg तयार आहे."
+    },
+    {
+      "id": "native:[settings FFmpeg is not available, so recording is turned off. Install FFmpeg and make sure it is on your PATH, then check again.]",
+      "source": "FFmpeg is not available, so recording is turned off. Install FFmpeg and make sure it is on your PATH, then check again.",
+      "target": "FFmpeg उपलब्ध नाही, त्यामुळे रेकॉर्डिंग बंद केले आहे. FFmpeg इन्स्टॉल करा आणि ते तुमच्या PATH मध्ये असल्याची खात्री करा, त्यानंतर पुन्हा तपासा."
+    },
+    {
+      "id": "native:[settings Check for FFmpeg again]",
+      "source": "Check for FFmpeg again",
+      "target": "FFmpeg पुन्हा तपासा"
+    },
+    {
+      "id": "native:[settings Checking for FFmpeg…]",
+      "source": "Checking for FFmpeg…",
+      "target": "FFmpeg तपासत आहे…"
+    },
+    {
+      "id": "native:[settings Hotkey: %0. It also works in menus and the editor.]",
+      "source": "Hotkey: %0. It also works in menus and the editor.",
+      "target": "हॉटकी: %0. ही मेन्यू आणि एडिटरमध्ये सुद्धा काम करते."
+    },
+    {
+      "id": "native:[settings Change the hotkey]",
+      "source": "Change the hotkey",
+      "target": "हॉटकी बदला"
+    },
+    {
+      "id": "native:[settings Recordings are saved in %0]",
+      "source": "Recordings are saved in %0",
+      "target": "रेकॉर्डिंग %0 मध्ये जतन केली जातात."
+    },
+    {
+      "id": "native:[Add JavaScript AIs in Settings → Custom AIs. They appear in each colony’s AI selector.]",
+      "source": "Add JavaScript AIs in Settings → Custom AIs. They appear in each colony’s AI selector.",
+      "target": "सेटिंग्ज → कस्टम एआय मध्ये JavaScript एआय जोडा. ते प्रत्येक कॉलनीच्या एआय सिलेक्टरमध्ये दिसतात."
+    },
+    {
+      "id": "native:[settings Music set]",
+      "source": "Music set",
+      "target": "संगीत संच"
+    },
+    {
+      "id": "native:[settings Random each match]",
+      "source": "Choose Random to select a soundtrack at each match start.",
+      "target": "प्रत्येक सामन्याच्या सुरुवातीला वेगळा संगीत संच निवडण्यासाठी «यादृच्छिक» निवडा."
+    },
+    {
+      "id": "native:[Sign in through Online settings to like and favourite AIs.]",
+      "source": "Sign in through Online settings to like and favourite AIs.",
+      "target": "एआयला लाईक आणि फेव्हरेट करण्यासाठी ऑनलाइन सेटिंग्जमधून साइन इन करा."
+    },
+    {
+      "id": "native:[music 2–5 minutes]",
+      "source": "2–5 minutes",
+      "target": "२-५ मिनिटे"
+    },
+    {
+      "id": "native:[music 5–15 minutes]",
+      "source": "5–15 minutes",
+      "target": "५-१५ मिनिटे"
+    },
+    {
+      "id": "native:[music AI-generated]",
+      "source": "AI-generated",
+      "target": "एआय-निर्मित"
+    },
+    {
+      "id": "native:[music All music]",
+      "source": "All music",
+      "target": "सर्व संगीत"
+    },
+    {
+      "id": "native:[music All open licences]",
+      "source": "All open licences",
+      "target": "सर्व खुले परवाने"
+    },
+    {
+      "id": "native:[music Any duration]",
+      "source": "Any duration",
+      "target": "कोणताही कालावधी"
+    },
+    {
+      "id": "native:[music Audition each mood for eight seconds]",
+      "source": "Audition each mood for eight seconds",
+      "target": "प्रत्येक भावछटा आठ सेकंद ऐकून पाहा"
+    },
+    {
+      "id": "native:[music Back]",
+      "source": "Back",
+      "target": "मागे"
+    },
+    {
+      "id": "native:[music Browse]",
+      "source": "Browse",
+      "target": "ब्राउझ करा"
+    },
+    {
+      "id": "native:[music Building]",
+      "source": "Building",
+      "target": "बांधकाम"
+    },
+    {
+      "id": "native:[music Calm]",
+      "source": "Calm",
+      "target": "शांत"
+    },
+    {
+      "id": "native:[music Calm → Building → Combat]",
+      "source": "Calm → Building → Combat",
+      "target": "शांत → बांधकाम → लढाई"
+    },
+    {
+      "id": "native:[music Choose Building]",
+      "source": "Choose Building",
+      "target": "बांधकाम निवडा"
+    },
+    {
+      "id": "native:[music Choose Calm]",
+      "source": "Choose Calm",
+      "target": "शांत संगीत निवडा"
+    },
+    {
+      "id": "native:[music Choose Combat]",
+      "source": "Choose Combat",
+      "target": "लढाई निवडा"
+    }
+  ]
+}

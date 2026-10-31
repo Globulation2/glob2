@@ -1,0 +1,506 @@
+{
+  "batch": "native-general-013",
+  "target_sha256": "f29f5aac280d7776c671c10d25721f533b4507e4cc1df0b2c174d487fdb98c4c",
+  "rows": [
+    {
+      "id": "native:[Slot]",
+      "source": "Slot",
+      "target": "स्लॉट"
+    },
+    {
+      "id": "native:[Color]",
+      "source": "Color",
+      "target": "रंग"
+    },
+    {
+      "id": "native:[Player / AI]",
+      "source": "Player / AI",
+      "target": "खेळाडू / संगणक"
+    },
+    {
+      "id": "native:[Group]",
+      "source": "Group",
+      "target": "गट"
+    },
+    {
+      "id": "native:[Forbid]",
+      "source": "Forbid",
+      "target": "मनाई करा"
+    },
+    {
+      "id": "native:[↓ Low]",
+      "source": "↓ Low",
+      "target": "↓ कमी"
+    },
+    {
+      "id": "native:[= Normal]",
+      "source": "= Normal",
+      "target": "= सामान्य"
+    },
+    {
+      "id": "native:[↑ High]",
+      "source": "↑ High",
+      "target": "↑ उच्च"
+    },
+    {
+      "id": "native:[Details]",
+      "source": "Details",
+      "target": "तपशील"
+    },
+    {
+      "id": "native:[Campaign name]",
+      "source": "Campaign name",
+      "target": "मोहिमेचे नाव"
+    },
+    {
+      "id": "native:[Unlocking]",
+      "source": "Unlocking",
+      "target": "अनलॉक करणे"
+    },
+    {
+      "id": "native:[Parameters]",
+      "source": "Parameters",
+      "target": "पॅरामीटर्स"
+    },
+    {
+      "id": "native:[Blank map]",
+      "source": "Blank map",
+      "target": "कोरा नकाशा"
+    },
+    {
+      "id": "native:[Generated]",
+      "source": "Generated",
+      "target": "निर्माण केले"
+    },
+    {
+      "id": "native:[Preview]",
+      "source": "Preview",
+      "target": "पूर्वावलोकन"
+    },
+    {
+      "id": "native:[Selected landscape]",
+      "source": "Selected landscape",
+      "target": "निवडलेले भूदृश्य"
+    },
+    {
+      "id": "native:[Representative preview]",
+      "source": "Representative preview",
+      "target": "प्रतिनिधी पूर्वावलोकन"
+    },
+    {
+      "id": "native:[Hide parameters]",
+      "source": "Hide parameters",
+      "target": "पॅरामीटर्स लपवा"
+    },
+    {
+      "id": "native:[Size and parameters]",
+      "source": "Size and parameters",
+      "target": "आकार आणि मापदंड"
+    },
+    {
+      "id": "native:[Choose a landscape]",
+      "source": "Choose a landscape",
+      "target": "भूदृश्य निवडा"
+    },
+    {
+      "id": "native:[%0 / Browse]",
+      "source": "%0  /  Browse",
+      "target": "%0 / ब्राउझ करा"
+    },
+    {
+      "id": "native:[%0 colonies · %1]",
+      "source": "%0 colonies · %1",
+      "target": "%0 वसाहती · %1"
+    },
+    {
+      "id": "native:[%0 · Team %1]",
+      "source": "%0 · Team %1",
+      "target": "%0 · संघ %1"
+    },
+    {
+      "id": "native:[Colonies: %0]",
+      "source": "Colonies: %0",
+      "target": "वसाहती: %0"
+    },
+    {
+      "id": "native:[%0 colonies · %1 AI]",
+      "source": "%0 colonies · %1 AI",
+      "target": "%0 वसाहती · %1 एआय"
+    },
+    {
+      "id": "native:[%0 · %1]",
+      "source": "%0 · %1",
+      "target": "%0 · %1"
+    },
+    {
+      "id": "native:[Fairness: %0]",
+      "source": "Fairness: %0",
+      "target": "निष्पक्षता: %0"
+    },
+    {
+      "id": "native:[Colony %0]",
+      "source": "Colony %0",
+      "target": "वसाहत %0"
+    },
+    {
+      "id": "native:[Win chance: %0 · Fitness: %1]",
+      "source": "Win chance: %0 · Fitness: %1",
+      "target": "जिंकण्याची शक्यता: %0 · क्षमता: %1"
+    },
+    {
+      "id": "native:[%0 · Contribution: %1]",
+      "source": "%0 · Contribution: %1",
+      "target": "%0 · योगदान: %1"
+    },
+    {
+      "id": "native:[Min required level %0]",
+      "source": "Minimum required level: %0",
+      "target": "आवश्यक किमान स्तर: %0"
+    },
+    {
+      "id": "native:[Confirm %0]",
+      "source": "Ok: %0",
+      "target": "ठीक आहे: %0"
+    },
+    {
+      "id": "native:[%0 %1]",
+      "source": "%0 %1",
+      "target": "%0 %1"
+    },
+    {
+      "id": "native:[resume game]",
+      "source": "Resume game",
+      "target": "खेळ पुन्हा सुरू करा"
+    },
+    {
+      "id": "native:[Add AI]",
+      "source": "Add AI",
+      "target": "संगणकीय खेळाडू जोडा"
+    },
+    {
+      "id": "native:[Experiments set by the host]",
+      "source": "Experiments set by the host",
+      "target": "यजमानाने ठरवलेले प्रयोग"
+    },
+    {
+      "id": "native:[Experiments]",
+      "source": "Experiments",
+      "target": "प्रयोग"
+    },
+    {
+      "id": "native:[experiment guard-area-balancing]",
+      "source": "Guard-area balancing",
+      "target": "संरक्षक-क्षेत्र संतुलन"
+    },
+    {
+      "id": "native:[experiment guard-area-balancing help]",
+      "source": "Free warriors spread between painted guard areas instead of all taking the nearest one: a bigger area gets more of them, and an over-full area thins out into the others.",
+      "target": "मोकळे योद्धे सगळे जवळच्या एकाच क्षेत्रात जाण्याऐवजी आखलेल्या राखण क्षेत्रांमध्ये पसरतात: मोठ्या क्षेत्राला जास्त योद्धे मिळतात आणि जास्त भरलेल्या क्षेत्रातील योद्धे इतरत्र जातात."
+    },
+    {
+      "id": "native:[experiment farm-areas]",
+      "source": "Farm areas",
+      "target": "शेती क्षेत्रे"
+    },
+    {
+      "id": "native:[experiment farm-areas help]",
+      "source": "Adds a farm area to the zone brushes. Workers harvesting inside one take from the ripest tile of the connected field and leave one grain on every tile, so the field regrows instead of being eaten from the edge. Wood growing into a farm is cleared.",
+      "target": "झोन ब्रशेसमध्ये एक शेतीचे क्षेत्र जोडले जाते. या क्षेत्राच्या आत कापणी करणारे कामगार, जोडलेल्या शेतातील सर्वात पिकलेल्या टाइलमधून दाणे घेतात आणि प्रत्येक टाइलवर एक दाणा शिल्लक ठेवतात, त्यामुळे शेत कडेने खाल्ले जाण्याऐवजी पुन्हा वाढते. शेतीमध्ये वाढणारे लाकूड साफ केले जाते."
+    },
+    {
+      "id": "native:[List momentum]",
+      "source": "List momentum",
+      "target": "यादीची गती"
+    },
+    {
+      "id": "native:[List bounce]",
+      "source": "List bounce",
+      "target": "यादी उसळी"
+    },
+    {
+      "id": "native:[lan pairing field]",
+      "source": "Host pairing string (or trusted WSS URL)",
+      "target": "होस्ट पेअरिंग स्ट्रिंग (किंवा विश्वसनीय WSS URL)"
+    },
+    {
+      "id": "native:[lan pairing connect]",
+      "source": "Pair and connect",
+      "target": "जोडी बनवा आणि कनेक्ट करा"
+    },
+    {
+      "id": "native:[lan discovery instructions]",
+      "source": "Select a host, then paste its pairing string to verify its identity.",
+      "target": "एक होस्ट निवडा, त्यानंतर त्याची ओळख पडताळण्यासाठी त्याची पेअरिंग स्ट्रिंग पेस्ट करा."
+    },
+    {
+      "id": "native:[lan discovery unavailable]",
+      "source": "LAN discovery is unavailable. Check local network permission or paste a host pairing string.",
+      "target": "लॅन शोधणे शक्य नाही. स्थानिक नेटवर्क परवानगी तपासा किंवा होस्ट पेअरिंग स्ट्रिंग पेस्ट करा."
+    },
+    {
+      "id": "native:[lan discovered host %0]",
+      "source": "Discovered host %0 — pair to view games",
+      "target": "होस्ट %0 सापडला — खेळ पाहण्यासाठी जोडी तयार करा"
+    },
+    {
+      "id": "native:[lan connection unavailable]",
+      "source": "Unable to reach the LAN host. Check local network permission and the host pairing string.",
+      "target": "लॅन होस्टपर्यंत पोहोचता येत नाही. स्थानिक नेटवर्क परवानगी आणि होस्ट पेअरिंग स्ट्रिंग तपासा."
+    },
+    {
+      "id": "native:[lan connection verification failed %0]",
+      "source": "Unable to verify or connect to the LAN host: %0",
+      "target": "LAN होस्टची पडताळणी किंवा त्याच्याशी कनेक्ट करणे शक्य नाही: %0"
+    },
+    {
+      "id": "native:[lan lobby endpoint required]",
+      "source": "Use the host lobby endpoint",
+      "target": "होस्ट लॉबी एंडपॉइंट वापरा"
+    },
+    {
+      "id": "native:[turn reconnecting]",
+      "source": "Connection to the host lost. Reconnecting...",
+      "target": "होस्टशी असलेले कनेक्शन तुटले आहे. पुन्हा कनेक्ट करत आहे..."
+    },
+    {
+      "id": "native:[turn waiting for players]",
+      "source": "Waiting for every player to load...",
+      "target": "प्रत्येक खेळाडू लोड होण्याची वाट पाहत आहे..."
+    },
+    {
+      "id": "native:[turn rejoining]",
+      "source": "Rejoining the game...",
+      "target": "खेळात पुन्हा सामील होत आहे..."
+    },
+    {
+      "id": "native:[turn catching up %0]",
+      "source": "Catching up: %0 turns behind",
+      "target": "सध्याच्या स्थितीपर्यंत येत आहे: %0 फेऱ्या मागे"
+    },
+    {
+      "id": "native:[turn player reconnecting %0]",
+      "source": "%0 is reconnecting...",
+      "target": "%0 पुन्हा कनेक्ट होत आहे..."
+    },
+    {
+      "id": "native:[turn player lagging %0]",
+      "source": "%0 is lagging",
+      "target": "%0 मागे पडत आहे"
+    },
+    {
+      "id": "native:[turn player resyncing %0]",
+      "source": "%0 is catching up",
+      "target": "%0 बरोबरी साधत आहे"
+    },
+    {
+      "id": "native:[turn player not connected %0]",
+      "source": "%0 has not connected yet",
+      "target": "%0 अजून कनेक्ट झालेले नाही"
+    },
+    {
+      "id": "native:[lan host left]",
+      "source": "The host left the game.",
+      "target": "यजमान खेळातून बाहेर पडला."
+    },
+    {
+      "id": "native:[lan host lost]",
+      "source": "The connection to the host was lost.",
+      "target": "होस्टशी असलेला संपर्क तुटला."
+    },
+    {
+      "id": "native:[lan version mismatch %0]",
+      "source": "The host runs a different version of Globulation 2 (%0).",
+      "target": "होस्ट Globulation 2 ची वेगळी आवृत्ती (%0) चालवतो."
+    },
+    {
+      "id": "native:[lan cannot host %0]",
+      "source": "Unable to host a LAN game: %0",
+      "target": "लॅन गेम होस्ट करता आला नाही: %0"
+    },
+    {
+      "id": "native:[play online]",
+      "source": "Play online",
+      "target": "ऑनलाइन खेळा"
+    },
+    {
+      "id": "native:[Use in room]",
+      "source": "Use in room",
+      "target": "खोलीत वापरा"
+    },
+    {
+      "id": "native:[conn ai]",
+      "source": "AI",
+      "target": "एआय"
+    },
+    {
+      "id": "native:[conn behind %0]",
+      "source": "Behind %0",
+      "target": "%0 च्या मागे"
+    },
+    {
+      "id": "native:[conn behind explanation %0 %1]",
+      "source": "Behind: how far a player's game runs behind the match clock; it includes their delay. Under %0 is normal; from %1 the player is marked slow.",
+      "target": "मागे: एखाद्या खेळाडूचा खेळ मॅच क्लॉकपेक्षा किती मागे चालतो; यात त्यांच्या विलंबाचा समावेश असतो. %0 च्या खाली असणे सामान्य आहे; %1 पासून खेळाडू धीमा असल्याचे चिन्हांकित केले जाते."
+    },
+    {
+      "id": "native:[conn behind]",
+      "source": "Behind",
+      "target": "मागे"
+    },
+    {
+      "id": "native:[conn card catching up]",
+      "source": "Catching up",
+      "target": "सध्याच्या स्थितीपर्यंत येत आहे"
+    },
+    {
+      "id": "native:[conn card colony works]",
+      "source": "Your colony keeps working on its own: units finish their jobs and buildings keep running.",
+      "target": "तुमची वसाहत स्वतः काम करत राहते: युनिट आपली कामे पूर्ण करतात आणि इमारतींचे कामकाज सुरू राहते."
+    },
+    {
+      "id": "native:[conn card desync detail]",
+      "source": "Rejoining from the match record so you see what everyone else sees. A report was sent automatically.",
+      "target": "मॅच रेकॉर्डमधून पुन्हा सामील होत आहे, जेणेकरून इतर सर्वांना जे दिसते ते तुम्हालाही दिसेल. एक अहवाल आपोआप पाठवण्यात आला होता."
+    },
+    {
+      "id": "native:[conn card desync]",
+      "source": "Your game fell out of sync",
+      "target": "तुमचा गेम सिंकच्या बाहेर गेला."
+    },
+    {
+      "id": "native:[conn card grace %0]",
+      "source": "Your colony keeps working on its own: units finish their jobs and buildings keep running. You have %0 to come back before you're removed from the match.",
+      "target": "तुमची वसाहत स्वतः काम करत राहते: युनिट आपली कामे पूर्ण करतात आणि इमारतींचे कामकाज सुरू राहते. सामन्यातून काढण्यापूर्वी परत येण्यासाठी तुमच्याकडे %0 वेळ आहे."
+    },
+    {
+      "id": "native:[conn card input paused]",
+      "source": "You are catching up · input paused",
+      "target": "सध्याच्या स्थितीपर्यंत येत आहात · आदेश थांबवले आहेत"
+    },
+    {
+      "id": "native:[conn card lost]",
+      "source": "Connection lost",
+      "target": "कनेक्शन तुटले."
+    },
+    {
+      "id": "native:[conn card progress %0 %1 %2]",
+      "source": "%0 % · %1 of %2 ticks",
+      "target": "%0 % · %2 टिक्सपैकी %1"
+    },
+    {
+      "id": "native:[conn card reconnecting %0]",
+      "source": "Reconnecting to the match… attempt %0",
+      "target": "सामन्याशी पुन्हा कनेक्ट होत आहे… प्रयत्न %0"
+    },
+    {
+      "id": "native:[conn card replaying %0]",
+      "source": "Replaying the %0 you missed. The screen updates when you're back to the present.",
+      "target": "तुम्ही चुकवलेला %0 पुन्हा प्ले होत आहे. तुम्ही वर्तमानात परत आल्यावर स्क्रीन अपडेट होते."
+    },
+    {
+      "id": "native:[conn card seconds left %0]",
+      "source": "about %0 s left",
+      "target": "सुमारे %0 सेकंद शिल्लक"
+    },
+    {
+      "id": "native:[conn connections]",
+      "source": "Connections",
+      "target": "कनेक्शन"
+    },
+    {
+      "id": "native:[conn connection]",
+      "source": "Connection",
+      "target": "कनेक्शन"
+    },
+    {
+      "id": "native:[conn delay explanation %0 %1]",
+      "source": "Delay: the time from your click until it happens, for everyone. It follows your own connection, not the other players'. Good under %0, poor from %1.",
+      "target": "विलंब: तुमच्या क्लिकपासून ते कृती घटेपर्यंतचा वेळ, सर्वांसाठी. हा वेळ तुमच्या स्वतःच्या कनेक्शननुसार असतो, इतर खेळाडूंच्या नाही. %0 अंतर्गत चांगले, %1 पासून खराब."
+    },
+    {
+      "id": "native:[conn fair]",
+      "source": "Fair",
+      "target": "योग्य"
+    },
+    {
+      "id": "native:[conn good]",
+      "source": "Good",
+      "target": "चांगले"
+    },
+    {
+      "id": "native:[conn grid legend]",
+      "source": "With more than four players the panel shows each player's ping in milliseconds, or how many seconds behind they are.",
+      "target": "चारपेक्षा जास्त खेळाडू असल्यास या पटलात प्रत्येकाचा पिंग मिलिसेकंदांत किंवा तो किती सेकंद मागे आहे ते दाखवले जाते."
+    },
+    {
+      "id": "native:[conn jitter %0]",
+      "source": "jitter %0",
+      "target": "जिटर %0"
+    },
+    {
+      "id": "native:[conn leave match]",
+      "source": "Leave match",
+      "target": "सामना सोडा"
+    },
+    {
+      "id": "native:[conn left]",
+      "source": "Left",
+      "target": "सोडून गेले"
+    },
+    {
+      "id": "native:[conn notice back %0]",
+      "source": "%0 is back.",
+      "target": "%0 परत आला आहे."
+    },
+    {
+      "id": "native:[conn notice left %0]",
+      "source": "%0 left the match.",
+      "target": "%0 ने सामना सोडला."
+    },
+    {
+      "id": "native:[conn notice lost %0 %1]",
+      "source": "%0 lost connection. The game continues; their colony keeps working while they reconnect (%1 left).",
+      "target": "%0 यांचे कनेक्शन तुटले. खेळ सुरू राहतो; ते पुन्हा जोडले जाईपर्यंत त्यांची वसाहत काम करत राहते (%1 वेळ शिल्लक)."
+    },
+    {
+      "id": "native:[conn ping explanation %0 %1]",
+      "source": "Ping: the round trip between a player and the relay. Good under %0, poor from %1.",
+      "target": "पिंग: खेळाडू आणि रिले यांच्यातील येण्या-जाण्याचा प्रवास. %0 अंतर्गत चांगले, %1 पासून खराब."
+    },
+    {
+      "id": "native:[conn ping]",
+      "source": "Ping",
+      "target": "पिंग"
+    },
+    {
+      "id": "native:[conn players]",
+      "source": "Players",
+      "target": "खेळाडू"
+    },
+    {
+      "id": "native:[conn poor]",
+      "source": "Poor",
+      "target": "खराब"
+    },
+    {
+      "id": "native:[conn reconnecting]",
+      "source": "Reconnecting",
+      "target": "पुन्हा जोडणे"
+    },
+    {
+      "id": "native:[conn relay %0]",
+      "source": "Relay: %0",
+      "target": "रिले: %0"
+    },
+    {
+      "id": "native:[conn resyncing]",
+      "source": "Rejoining",
+      "target": "पुन्हा सामील होणे"
+    },
+    {
+      "id": "native:[conn slow]",
+      "source": "Slow",
+      "target": "हळू"
+    }
+  ]
+}

@@ -1,0 +1,418 @@
+{
+  "request": {
+    "project": "bradley-personal-20261027",
+    "model": "general/nmt",
+    "payload": {
+      "sourceLanguageCode": "en",
+      "targetLanguageCode": "mr",
+      "mimeType": "text/plain",
+      "contents": [
+        "Core strategy: Shares unit production among construction, upgrades, defense, attacks and exploration. Separate managers request and reserve units, developing economy and military together.",
+        "Economy and development: Builds and upgrades a broad settlement, manages inn and tower staffing, clears building surroundings and protects renewable resources. Scouts fruit and advertises food to compete for converts.",
+        "Attack and defense: Chooses an enemy and prioritizes hospitals, then inns, then barracks. Supports up to four attacks, generally assigning eight to twenty warriors per target according to availability and nearby enemies. Uses separate defensive flags around threatened buildings.",
+        "Training: Requires enough suitable warriors and a completed barracks to attack, but does not wait for maximum technology. Continued upgrades and training strengthen later attacks.",
+        "Compared with other AIs: More purposeful about dismantling support buildings than Nicowar. Spreads attacks more than Maxima's gathered waves, using unit reservations to manage competing demands.",
+        "Strengths and weaknesses: Combines growth, training, defense and several attacks. Destroying food and healing can weaken an entire colony. Random opponent selection and fixed building priorities may miss opportunities; multiple attacks can divide its force.",
+        "Counterplay to try: Defend hospitals and inns. Contest exposed expansion and concentrate defenders against individual attacks. Damage food or training before it sustains several fronts.",
+        "Scouting: Its attack selector reads enemy building lists without an explicit visibility check. Some economic comparisons use enemy statistics directly.",
+        "Coordinates colony growth and trained attacks, targeting healing and food first.",
+        "Algae",
+        "Beach size",
+        "Blue",
+        "Brown",
+        "Built-in maps",
+        "Closed",
+        "Colonies",
+        "Colony",
+        "Conquest only",
+        "Conquest or prestige",
+        "Could not launch this map. Your setup is retained; try again.",
+        "Custom",
+        "Custom teams",
+        "Cyan",
+        "Desert weight",
+        "Easy",
+        "Extra colony assignments are retained for larger maps.",
+        "FFA",
+        "Game Rules",
+        "Game speed",
+        "Generate & play",
+        "Grass weight",
+        "Gray",
+        "Green",
+        "Hard",
+        "Height",
+        "Invalid colony count.",
+        "Isles",
+        "Landscape",
+        "Last colony standing",
+        "Layout",
+        "Magenta",
+        "Map",
+        "Match finished",
+        "Medium",
+        "Medium - Experimental",
+        "No AI orders",
+        "Shattered Coast",
+        "Open at least one colony to start a match.",
+        "Open book",
+        "Pink",
+        "Play this map",
+        "Players & Teams",
+        "Premade maps",
+        "Preview ready. Start plays this exact map.",
+        "Regenerate all",
+        "Generating preview...",
+        "Preview unavailable",
+        "Purple",
+        "Quick clash",
+        "Random map",
+        "Red",
+        "Repeat landscape",
+        "Resources",
+        "Sand weight",
+        "Select a valid map.",
+        "Shared control needs a free controller slot (maximum ZXQPH0QXZ).",
+        "Smoothing",
+        "Standard",
+        "Start game",
+        "Swamp",
+        "Team",
+        "Victory",
+        "Watch game",
+        "Water weight",
+        "White",
+        "Width",
+        "Yellow",
+        "You",
+        "You + AI",
+        "You and the AI both issue orders. Uses two controller slots."
+      ]
+    }
+  },
+  "response": {
+    "translations": [
+      {
+        "translatedText": "मुख्य धोरण: बांधकाम, सुधारणा, संरक्षण, हल्ले आणि शोध यांमध्ये युनिट उत्पादन विभागून दिले जाते. स्वतंत्र व्यवस्थापक युनिट्सची मागणी करतात आणि राखीव ठेवतात, तसेच अर्थव्यवस्था आणि सैन्य यांचा एकत्रितपणे विकास करतात.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अर्थव्यवस्था आणि विकास: एक मोठी वसाहत उभारतो आणि तिचा दर्जा सुधारतो, धर्मशाळा व बुरुजातील कर्मचाऱ्यांचे व्यवस्थापन करतो, इमारतींच्या सभोवतालचा परिसर स्वच्छ करतो आणि नवीकरणीय संसाधनांचे संरक्षण करतो. फळांची पाहणी करतो आणि धर्मांतरित मिळवण्यासाठी अन्नाची जाहिरात करतो.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "हल्ला आणि बचाव: एका शत्रूला निवडतो आणि रुग्णालयांना, त्यानंतर धर्मशाळांना आणि मग सैनिकी छावण्यांना प्राधान्य देतो. जास्तीत जास्त चार हल्ल्यांना समर्थन देतो, साधारणपणे उपलब्धतेनुसार आणि जवळपासच्या शत्रूंनुसार प्रत्येक लक्ष्यासाठी आठ ते वीस योद्धे नेमतो. धोक्यात असलेल्या इमारतींभोवती स्वतंत्र बचावात्मक ध्वज वापरतो.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "प्रशिक्षण: हल्ला करण्यासाठी पुरेसे योग्य योद्धे आणि एक पूर्ण झालेली लष्करी छावणी आवश्यक असते, परंतु ते सर्वोच्च तंत्रज्ञानाची वाट पाहत नाही. सततचे अपग्रेड आणि प्रशिक्षण पुढील हल्ल्यांना अधिक शक्तिशाली बनवतात.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "इतर एआयंच्या तुलनेत: निकोवारपेक्षा आधारभूत इमारती पाडण्याबाबत अधिक हेतुपूर्ण. मॅक्सिमाच्या एकत्रित लाटांपेक्षा हल्ले अधिक पसरवते, परस्परविरोधी मागण्या व्यवस्थापित करण्यासाठी युनिट आरक्षणाचा वापर करते.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सामर्थ्ये आणि कमकुवतपणा: यात वाढ, प्रशिक्षण, संरक्षण आणि अनेक हल्ल्यांचा समावेश आहे. अन्न आणि उपचार नष्ट केल्याने संपूर्ण वसाहत कमकुवत होऊ शकते. प्रतिस्पर्ध्याची यादृच्छिक निवड आणि इमारतींच्या निश्चित प्राधान्यक्रमांमुळे संधी हुकण्याची शक्यता असते; अनेक हल्ल्यांमुळे सैन्य विभागले जाऊ शकते.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "प्रयत्न करण्याजोगा प्रतिहल्ला: रुग्णालये आणि धर्मशाळांचे रक्षण करा. उघड्यावर होणाऱ्या विस्ताराला विरोध करा आणि वैयक्तिक हल्ल्यांविरुद्ध संरक्षकांना एकत्र करा. अन्न किंवा प्रशिक्षणाला अनेक आघाड्यांवर नुकसान पोहोचण्यापूर्वीच ते थांबवा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "टेहळणी: याचा अटॅक सिलेक्टर, प्रत्यक्ष दृश्यमानता तपासल्याशिवाय शत्रूच्या इमारतींच्या याद्या वाचतो. काही आर्थिक तुलनांमध्ये शत्रूच्या आकडेवारीचा थेट वापर केला जातो.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "वसाहतीच्या वाढीचे आणि प्रशिक्षित हल्ल्यांचे समन्वय साधते, ज्यामध्ये आरोग्य आणि अन्नाला प्रथम लक्ष्य केले जाते.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "शैवाल",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "समुद्रकिनाऱ्याचा आकार",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "निळा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ब्राऊन",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अंगभूत नकाशे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "बंद",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "वसाहती",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कॉलनी",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "फक्त विजय",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "विजय किंवा प्रतिष्ठा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "हा नकाशा सुरू करता आला नाही. तुमची सेटिंग कायम ठेवण्यात आली आहे; पुन्हा प्रयत्न करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सानुकूल",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सानुकूल संघ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सायन",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "वाळवंटी वजन",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सोपे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "मोठ्या नकाशांसाठी अतिरिक्त वसाहत नेमणुका कायम ठेवल्या जातात.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "एफएफए",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "खेळाचे नियम",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "खेळाचा वेग",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तयार करा आणि खेळा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "गवताचे वजन",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "राखाडी",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "हिरवा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कठीण",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "उंची",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "चुकीची कॉलनी गणना.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "बेटे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "भूदृश्य",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "शेवटची वसाहत शिल्लक",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "लेआउट",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "मॅजेंटा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नकाशा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सामना संपला.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "मध्यम",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "माध्यम - प्रायोगिक",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "एआय ऑर्डर नाहीत",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "शॅटर्ड कोस्ट",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सामना सुरू करण्यासाठी किमान एक कॉलनी उघडा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "उघडे पुस्तक",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "गुलाबी",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "हा नकाशा खेळा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "खेळाडू आणि संघ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पूर्वनिर्मित नकाशे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पूर्वावलोकन तयार आहे. हाच नकाशा खेळायला सुरुवात करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सर्व पुनरुज्जीवित करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पूर्वावलोकन तयार करत आहे...",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पूर्वावलोकन उपलब्ध नाही",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "जांभळा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "त्वरित संघर्ष",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "यादृच्छिक नकाशा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "लाल",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "लँडस्केपची पुनरावृत्ती करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "संसाधने",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "वाळूचे वजन",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "वैध नकाशा निवडा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सामायिक नियंत्रणासाठी एक मोकळा कंट्रोलर स्लॉट आवश्यक आहे (कमाल ZXQPH0QXZ).",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "गुळगुळीत करणे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "मानक",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "खेळ सुरू करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "दलदल",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "संघ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "विजय",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "खेळ पहा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पाण्याचे वजन",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पांढरा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "रुंदी",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पिवळा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तुम्ही",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तुम्ही + एआय",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तुम्ही आणि एआय दोघेही आदेश देता. दोन कंट्रोलर स्लॉट्स वापरते.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      }
+    ]
+  },
+  "response_sha256": "04413656c0e3c36ff48eb7e93780aba540db3dc162d1a779607bf7b413da10d3"
+}

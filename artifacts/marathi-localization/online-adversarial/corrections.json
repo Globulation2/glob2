@@ -1,0 +1,208 @@
+{
+  "By {slot0} · {slot1} · {slot2}": {
+    "key": "online:By {slot0} · {slot1} · {slot2}",
+    "before": "{slot0} · {slot1} · {slot2} द्वारे",
+    "after": "{slot0} द्वारे · {slot1} · {slot2}",
+    "reason": "Authorship must attach to the first value, not the final metadata value.",
+    "severity": "major",
+    "state": "proposed"
+  },
+  "By generator": {
+    "key": "online:By generator",
+    "before": "जनरेटरद्वारे",
+    "after": "जनरेटरनुसार",
+    "reason": "Player win-rate grouping is by generator, not an action performed by the generator.",
+    "severity": "minor",
+    "state": "proposed"
+  },
+  "By map": {
+    "key": "online:By map",
+    "before": "नकाशाद्वारे",
+    "after": "नकाशानुसार",
+    "reason": "Player win-rate grouping is by map, not an action performed by the map.",
+    "severity": "minor",
+    "state": "proposed"
+  },
+  "Building": {
+    "key": "online:Building",
+    "before": "इमारत",
+    "after": "बांधकाम",
+    "reason": "Shared key is used as music mood and building-progress status, not a building entity (music-studio/Workspace.tsx and studio/Conversation.tsx). Align native music label बांधकाम.",
+    "severity": "major",
+    "state": "proposed"
+  },
+  "AI library views": {
+    "key": "online:AI library views",
+    "before": "एआय संग्रहातील दृश्ये",
+    "after": "एआय संग्रहाचे विभाग",
+    "reason": "LibraryNav labels navigation views, not visual scenes.",
+    "severity": "minor",
+    "state": "proposed"
+  },
+  "Hue": {
+    "key": "online:Hue",
+    "before": "रंग",
+    "after": "रंगछटा",
+    "reason": "Distinguish hue from the separate Color field in paint controls.",
+    "severity": "minor",
+    "state": "proposed"
+  },
+  "Invalid shape dimensions": {
+    "key": "online:Invalid shape dimensions",
+    "before": "आकाराचे परिमाणे अवैध आहेत.",
+    "after": "आकाराची परिमाणे अवैध आहेत.",
+    "reason": "Correct Marathi agreement with plural neuter परिमाणे.",
+    "severity": "minor",
+    "state": "proposed"
+  },
+  "Manual blend · Calm → Building → Combat": {
+    "key": "online:Manual blend · Calm → Building → Combat",
+    "before": "मॅन्युअल ब्लेंड · शांतता → उभारणी → लढाई",
+    "after": "मॅन्युअल मिश्रण · शांत → बांधकाम → लढाई",
+    "reason": "Keep named music moods consistent with native and online mood selectors; Building is construction phase.",
+    "severity": "minor",
+    "state": "proposed"
+  },
+  "Only continue if you just started signing in from your own game and it shows the same code. If someone sent you this link, cancel.": {
+    "key": "online:Only continue if you just started signing in from your own game and it shows the same code. If someone sent you this link, cancel.",
+    "before": "तुम्ही तुमच्या स्वतःच्या गेममधून नुकतेच साइन इन केले असेल आणि तिथे तोच कोड दिसत असेल तरच पुढे सुरू ठेवा. जर कोणी तुम्हाला ही लिंक पाठवली असेल, तर रद्द करा.",
+    "after": "तुम्ही स्वतःच्या खेळातून नुकतीच साइन इन करण्याची प्रक्रिया सुरू केली असेल आणि तेथे हाच कोड दिसत असेल तरच पुढे जा. कोणी ही लिंक तुम्हाला पाठवली असेल तर रद्द करा.",
+    "reason": "Authentication confirmation is conditional on initiating sign-in, not having already completed it.",
+    "severity": "major",
+    "state": "proposed"
+  },
+  "Rate {slot0}: {slot1} credit per million input tokens, {slot2} for cached input, {slot3} for cache writes, and {slot4} for output including reasoning. Repairs and follow-ups use the same rates.": {
+    "key": "online:Rate {slot0}: {slot1} credit per million input tokens, {slot2} for cached input, {slot3} for cache writes, and {slot4} for output including reasoning. Repairs and follow-ups use the same rates.",
+    "before": {
+      "one": "{slot0} दर: प्रति दशलक्ष इनपुट टोकन्ससाठी {slot1} क्रेडिट, कॅश्ड इनपुटसाठी {slot2}, कॅशे राइट्ससाठी {slot3}, आणि कारणांसहित आउटपुटसाठी {slot4}. दुरुस्ती आणि पाठपुराव्यासाठी हेच दर वापरले जातात.",
+      "other": "{slot0} दर: प्रति दशलक्ष इनपुट टोकन्ससाठी {slot1} क्रेडिट्स, कॅश्ड इनपुटसाठी {slot2}, कॅशे राइट्ससाठी {slot3}, आणि कारणांसहित आउटपुटसाठी {slot4}. दुरुस्ती आणि पाठपुराव्यासाठी हेच दर वापरले जातात."
+    },
+    "after": {
+      "one": "{slot0} दर: प्रति दशलक्ष इनपुट टोकन्ससाठी {slot1} क्रेडिट, कॅश्ड इनपुटसाठी {slot2}, कॅशे राइट्ससाठी {slot3}, आणि विचारप्रक्रियेसह आउटपुटसाठी {slot4}. दुरुस्ती आणि पाठपुराव्यासाठी हेच दर वापरले जातात.",
+      "other": "{slot0} दर: प्रति दशलक्ष इनपुट टोकन्ससाठी {slot1} क्रेडिट्स, कॅश्ड इनपुटसाठी {slot2}, कॅशे राइट्ससाठी {slot3}, आणि विचारप्रक्रियेसह आउटपुटसाठी {slot4}. दुरुस्ती आणि पाठपुराव्यासाठी हेच दर वापरले जातात."
+    },
+    "reason": "Reasoning denotes the model thinking process whose tokens are billed, not explanatory reasons presented to the user.",
+    "severity": "minor",
+    "state": "proposed"
+  },
+  "Rate {slot0}: {slot1} credits per million input tokens, {slot2} for cached input, {slot3} for cache writes, and {slot4} for output including reasoning. Repairs and follow-ups use the same rates.": {
+    "key": "online:Rate {slot0}: {slot1} credits per million input tokens, {slot2} for cached input, {slot3} for cache writes, and {slot4} for output including reasoning. Repairs and follow-ups use the same rates.",
+    "before": "{slot0} दर: प्रति दशलक्ष इनपुट टोकन्ससाठी {slot1} क्रेडिट्स, कॅश्ड इनपुटसाठी {slot2}, कॅशे राइट्ससाठी {slot3}, आणि कारणांसहित आउटपुटसाठी {slot4}. दुरुस्ती आणि पाठपुराव्यासाठी हेच दर वापरले जातात.",
+    "after": "{slot0} दर: प्रति दशलक्ष इनपुट टोकन्ससाठी {slot1} क्रेडिट्स, कॅश्ड इनपुटसाठी {slot2}, कॅशे राइट्ससाठी {slot3}, आणि विचारप्रक्रियेसह आउटपुटसाठी {slot4}. दुरुस्ती आणि पाठपुराव्यासाठी हेच दर वापरले जातात.",
+    "reason": "Keep the standalone plural fallback consistent with the billing message plural forms.",
+    "severity": "minor",
+    "state": "proposed"
+  },
+  "Retry 3D canvas": {
+    "key": "online:Retry 3D canvas",
+    "before": "३डी कॅनव्हास पुन्हा प्रयत्न करा",
+    "after": "3D कॅनव्हास पुन्हा उघडून पाहा",
+    "reason": "Give a natural Marathi action label rather than the ungrammatical noun followed by पुन्हा प्रयत्न करा.",
+    "severity": "minor",
+    "state": "proposed"
+  },
+  "Retry image": {
+    "key": "online:Retry image",
+    "before": "प्रतिमा पुन्हा प्रयत्न करा",
+    "after": "प्रतिमा पुन्हा लोड करून पाहा",
+    "reason": "Natural Marathi label for retrying an image load.",
+    "severity": "minor",
+    "state": "proposed"
+  },
+  "Retry preview": {
+    "key": "online:Retry preview",
+    "before": "पूर्वावलोकन पुन्हा प्रयत्न करा",
+    "after": "पूर्वावलोकनाचा पुन्हा प्रयत्न करा",
+    "reason": "Correct the object construction in this retry action label.",
+    "severity": "minor",
+    "state": "proposed"
+  },
+  "Retry validation": {
+    "key": "online:Retry validation",
+    "before": "प्रमाणीकरण पुन्हा प्रयत्न करा",
+    "after": "पडताळणीचा पुन्हा प्रयत्न करा",
+    "reason": "Correct the object construction and use the existing validation terminology.",
+    "severity": "minor",
+    "state": "proposed"
+  },
+  "The game will switch to": {
+    "key": "online:The game will switch to",
+    "before": "खेळ बदलेल",
+    "after": "खेळात आता हे खाते वापरले जाईल:",
+    "reason": "signin.ts appends owner.display_name; the prefix should introduce that account naturally without requiring a suffix after the inserted name.",
+    "severity": "minor",
+    "state": "proposed"
+  },
+  "Top library content by lifetime recorded downloads": {
+    "key": "online:Top library content by lifetime recorded downloads",
+    "before": "आयुष्यभरात सर्वाधिक डाउनलोड झालेल्या लायब्ररीमधील सर्वोत्तम सामग्री",
+    "after": "आजवर नोंदवलेल्या डाउनलोडनुसार संग्रहातील आघाडीची सामग्री",
+    "reason": "The ranking is of content by its recorded downloads, not of the most-downloaded library.",
+    "severity": "minor",
+    "state": "proposed"
+  },
+  "by {slot0}{slot1}": {
+    "key": "online:by {slot0}{slot1}",
+    "before": "{slot0}{slot1} द्वारे",
+    "after": "{slot0} द्वारे{slot1}",
+    "reason": "Ais.tsx slot0 is the author and slot1 is an optional hidden badge; attach authorship before the badge.",
+    "severity": "major",
+    "state": "proposed"
+  },
+  "by ": {
+    "key": "online:by ",
+    "before": "द्वारे ",
+    "after": "लेखक: ",
+    "reason": "Maps.tsx renders this fragment before the author link; a Marathi postposition placed before the name gives the wrong word order.",
+    "severity": "minor",
+    "state": "proposed"
+  },
+  "{slot0} before buying so you can recover your purchases.": {
+    "key": "online:{slot0} before buying so you can recover your purchases.",
+    "before": "खरेदी करण्यापूर्वी {slot0} वापरा जेणेकरून तुम्ही तुमची खरेदी परत मिळवू शकाल.",
+    "after": "खरेदी करण्यापूर्वी {slot0}, म्हणजे पुढे त्या खरेदींवर पुन्हा प्रवेश मिळवता येईल.",
+    "reason": "Store.tsx slot0 is the imperative Sign in or link your account. Remove extra वापरा and distinguish account recovery from a refund.",
+    "severity": "minor",
+    "state": "proposed"
+  },
+  "{value0} Your credit was returned.": {
+    "key": "online:{value0} Your credit was returned.",
+    "before": "{value0} तुमची क्रेडिट रक्कम परत करण्यात आली आहे.",
+    "after": "{value0} तुमचे क्रेडिट परत मिळाले.",
+    "reason": "Keep a returned virtual credit distinct from a monetary refund; no need to introduce रक्कम.",
+    "severity": "minor",
+    "state": "proposed"
+  },
+  "Game text field": {
+    "key": "online:Game text field",
+    "before": "खेळाचे मजकूर क्षेत्र",
+    "after": "खेळातील मजकूर क्षेत्र",
+    "reason": "Correct Marathi relation: the text field is in the game.",
+    "severity": "minor",
+    "state": "proposed"
+  },
+  "{value0} request needs attention in Preview.": {
+    "key": "online:{value0} request needs attention in Preview.",
+    "before": "प्रीव्ह्यूमध्ये {value0} विनंतीकडे लक्ष देण्याची गरज आहे.",
+    "after": "पूर्वावलोकनात {value0} विनंतीकडे लक्ष देणे आवश्यक आहे.",
+    "reason": "Refer to the actual translated Preview tab label पूर्वावलोकन.",
+    "severity": "minor",
+    "state": "proposed"
+  },
+  "{value0} response ready in Preview.": {
+    "key": "online:{value0} response ready in Preview.",
+    "before": "{value0} प्रतिसाद प्रिव्ह्यूमध्ये तयार आहे.",
+    "after": "{value0} प्रतिसाद पूर्वावलोकनात तयार आहे.",
+    "reason": "Refer to the actual translated Preview tab label पूर्वावलोकन.",
+    "severity": "minor",
+    "state": "proposed"
+  },
+  "Keep listening and comparison controls in Preview. Select a delivered version to change through chat.": {
+    "key": "online:Keep listening and comparison controls in Preview. Select a delivered version to change through chat.",
+    "before": "प्रिव्ह्यूमध्ये ऐकण्याची आणि तुलना करण्याची नियंत्रणे चालू ठेवा. चॅटद्वारे बदल करण्यासाठी वितरित केलेली आवृत्ती निवडा.",
+    "after": "ऐकण्याची आणि तुलना करण्याची नियंत्रणे पूर्वावलोकनात ठेवा. चॅटमधून बदलण्यासाठी मिळालेली आवृत्ती निवडा.",
+    "reason": "Use the actual Preview tab name consistently in navigation instructions.",
+    "severity": "minor",
+    "state": "proposed"
+  }
+}

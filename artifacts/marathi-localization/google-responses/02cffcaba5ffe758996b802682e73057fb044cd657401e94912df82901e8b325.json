@@ -1,0 +1,418 @@
+{
+  "request": {
+    "project": "bradley-personal-20261027",
+    "model": "general/nmt",
+    "payload": {
+      "sourceLanguageCode": "en",
+      "targetLanguageCode": "mr",
+      "mimeType": "text/plain",
+      "contents": [
+        "Game",
+        "Game speed",
+        "Gameplay",
+        "Graphics detail",
+        "Interface scale",
+        "Keep",
+        "Keep this display mode?",
+        "Keep your volume levels while silencing audio.",
+        "Key",
+        "Keyboard shortcuts",
+        "Keys form a sequence in order. Each key can trigger on press or release.",
+        "Language",
+        "Language & player",
+        "Language used throughout the interface.",
+        "Level",
+        "Map editor",
+        "Match the desktop",
+        "Missing font",
+        "Music volume",
+        "Mute audio",
+        "Name shown to other players.",
+        "Off",
+        "On",
+        "OpenGL is not available in this build.",
+        "Player name",
+        "Press",
+        "Press a key. Escape cancels capture. Use Bind Escape to assign Escape.",
+        "Radius",
+        "Reduced",
+        "Reduced detail disables clouds and their shadows, simplifies magic effects, and reduces transparency.",
+        "Release",
+        "Remember assignments between games",
+        "Remove key",
+        "Remove shortcut",
+        "Renderer",
+        "Replace conflicting bindings",
+        "Replace shortcuts in this context with the defaults? This saves immediately.",
+        "Resolution",
+        "Restore default shortcuts",
+        "Retry",
+        "Revert",
+        "Reverting in",
+        "Save shortcut",
+        "Saved — restart required",
+        "Saving…",
+        "Scroll wheel enabled",
+        "Set starting unit assignments by building type and level.",
+        "Set your language and player name.",
+        "Settings",
+        "Single-player and replays only. Multiplayer runs at 1x.",
+        "Software",
+        "Starting unit counts and radius for newly placed flags.",
+        "This shortcut conflicts with existing bindings:",
+        "Trigger",
+        "Unbound",
+        "Unit counts assigned to new construction sites.",
+        "Unit counts for completed buildings.",
+        "Unit counts while a building is being upgraded.",
+        "Units",
+        "Upgrades",
+        "Use game cursor",
+        "Voice volume",
+        "Window mode",
+        "Window-only sizes also switch the game to windowed mode.",
+        "Windowed",
+        "Windowed only",
+        "seconds",
+        "Flag",
+        "High-resolution artwork",
+        "Apply artwork on the next game or editor load (OpenGL).",
+        "Automatic torus view",
+        "Automatically show the torus overview while moving around the map (OpenGL).",
+        "Autosave",
+        "Save the game automatically about every 10 seconds.",
+        "Optional major shortcuts",
+        "Portage Lakes cannot fit a useful dry woodland shortcut on this seed.",
+        "Portage Lakes cannot fit a useful swimming shortcut on this seed.",
+        "Continue",
+        "Settings save not confirmed. Retry, or continue.",
+        "Hide keyboard"
+      ]
+    }
+  },
+  "response": {
+    "translations": [
+      {
+        "translatedText": "खेळ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "खेळाचा वेग",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "गेमप्ले",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ग्राफिक्स तपशील",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "इंटरफेस स्केल",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ठेवा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "हा डिस्प्ले मोड ठेवायचा का?",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ऑडिओ सायलेंट करताना व्हॉल्यूमची पातळी कायम ठेवा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "मुख्य",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कीबोर्ड शॉर्टकट",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "बटणे क्रमाने एका अनुक्रमात मांडलेली आहेत. प्रत्येक बटण दाबल्यावर किंवा सोडल्यावर कार्यान्वित होऊ शकते.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "भाषा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "भाषा आणि खेळाडू",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "संपूर्ण इंटरफेसमध्ये वापरलेली भाषा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पातळी",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नकाशा संपादक",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "डेस्कटॉपशी जुळवा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "फॉन्ट गहाळ आहे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "संगीताचा आवाज",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ऑडिओ म्यूट करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "इतर खेळाडूंना दाखवलेले नाव.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "बंद",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "वर",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "या बिल्डमध्ये OpenGL उपलब्ध नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "खेळाडूचे नाव",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "प्रेस",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "एखादी कळ दाबा. एस्केप दाबल्याने कॅप्चर रद्द होते. एस्केप नियुक्त करण्यासाठी 'बाइंड एस्केप' वापरा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "त्रिज्या",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कमी केले",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कमी तपशीलामुळे ढग आणि त्यांच्या सावल्या अदृश्य होतात, जादूई परिणाम सोपे होतात आणि पारदर्शकता कमी होते.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "प्रकाशन",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सामन्यांच्या मधल्या वेळेत दिलेले काम लक्षात ठेवा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "चावी काढा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "शॉर्टकट काढून टाका",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "रेंडरर",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "परस्परविरोधी बंधने बदला",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "या संदर्भात शॉर्टकट डीफॉल्ट शॉर्टकटने बदलायचे आहेत का? हे लगेच सेव्ह होते.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ठराव",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "डीफॉल्ट शॉर्टकट पुनर्संचयित करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पुन्हा प्रयत्न करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "परत",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "परत येणे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "शॉर्टकट जतन करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "जतन केले — पुन्हा सुरू करणे आवश्यक आहे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "जतन करत आहे…",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "स्क्रोल व्हील सक्षम केले आहे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "इमारतीच्या प्रकारानुसार आणि स्तरानुसार सुरुवातीच्या युनिटची नेमणूक निश्चित करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तुमची भाषा आणि खेळाडूचे नाव सेट करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सेटिंग्ज",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "फक्त सिंगल-प्लेअर आणि रिप्लेसाठी. मल्टीप्लेअर 1x वर चालतो.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सॉफ्टवेअर",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नवीन लावलेल्या ध्वजांसाठी सुरुवातीची एकक संख्या आणि त्रिज्या.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "हा शॉर्टकट विद्यमान बाइंडिंगशी विसंगत आहे:",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ट्रिगर",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अनबाउंड",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नवीन बांधकाम स्थळांना नेमून दिलेली युनिट संख्या.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पूर्ण झालेल्या इमारतींची युनिट संख्या.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "इमारत अपग्रेड होत असताना युनिटची गणना केली जाते.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "युनिट्स",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अपग्रेड",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "गेम कर्सर वापरा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "आवाजाची पातळी",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "विंडो मोड",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "केवळ विंडोच्या आकारामुळे गेम विंडो मोडमध्ये बदलतो.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "विंडोड",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "फक्त विंडो असलेले",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सेकंद",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ध्वज",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "उच्च-रिझोल्यूशन कलाकृती",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पुढील गेम किंवा एडिटर लोड झाल्यावर आर्टवर्क लागू करा (OpenGL).",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "स्वयंचलित टोरस दृश्य",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नकाशावर फिरताना टोरसचे विहंगम दृश्य आपोआप दाखवा (OpenGL).",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ऑटोसेव्ह",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सुमारे दर १० सेकंदांनी गेम आपोआप सेव्ह होतो.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पर्यायी प्रमुख शॉर्टकट",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पोर्टेज लेक्स या सीडवर एक उपयुक्त कोरडा वनमार्ग शॉर्टकट बसवू शकत नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पोर्टेज लेक्स या सीडमध्ये पोहण्यासाठी एक उपयुक्त शॉर्टकट समाविष्ट करू शकत नाहीत.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पुढे चालू ठेवा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सेटिंग्ज सेव्ह झाल्याची पुष्टी झाली नाही. पुन्हा प्रयत्न करा, किंवा पुढे सुरू ठेवा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कीबोर्ड लपवा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      }
+    ]
+  },
+  "response_sha256": "9c46d9177ad76bf9e45f6026205051048f1340f7dadb628eb07cc17780b65354"
+}

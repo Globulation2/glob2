@@ -1,0 +1,418 @@
+{
+  "request": {
+    "project": "bradley-personal-20261027",
+    "model": "general/nmt",
+    "payload": {
+      "sourceLanguageCode": "en",
+      "targetLanguageCode": "mr",
+      "mimeType": "text/plain",
+      "contents": [
+        "Crop",
+        "Crop selection",
+        "Crop your photo",
+        "Cross-site request refused.",
+        "Crossfade to ZXQPH0QXZ",
+        "Currency",
+        "Current AI ZXQPH0QXZ source",
+        "Current custom terrain and resource sprites rendered by the game",
+        "Current mean",
+        "Current recorded",
+        "Current samples",
+        "Current saved draft",
+        "Current and previous reporting periods, in days: ZXQPH0QXZ and ZXQPH1QXZ. Activity totals count account-days; the active-account cards count distinct accounts. Studio/job statuses use request creation dates. Publications count versions; recorded downloads use each library’s existing counting rules.",
+        "Current and previous reporting periods, in days: ZXQPH0QXZ and ZXQPH1QXZ. Activity totals count account-days; the active-account cards count distinct accounts. Studio/job statuses use request creation dates. Publications count versions; recorded downloads use each library’s existing counting rules.",
+        "Current ZXQPH0QXZ days and previous ZXQPH1QXZ days. Activity totals count account-days; the active-account cards count distinct accounts. Studio/job statuses use request creation dates. Publications count versions; recorded downloads use each library’s existing counting rules.",
+        "Current: ZXQPH0QXZ through ZXQPH1QXZ (UTC; today is partial). Previous: ZXQPH2QXZ through ZXQPH3QXZ. Historical coverage may differ between periods.",
+        "Custom content credits",
+        "Custom map",
+        "Custom mood blend",
+        "Customize",
+        "Daily active accounts",
+        "Daily activity table",
+        "Daily values",
+        "Default colony",
+        "Defence power",
+        "Degraded",
+        "Delayed orders",
+        "Delete",
+        "Delete AI",
+        "Delete account",
+        "Delete conversation history",
+        "Delete draft",
+        "Delete history permanently",
+        "Delete map",
+        "Delete my account",
+        "Delete my account for good",
+        "Delete private release",
+        "Delete project",
+        "Delete project history",
+        "Delete skin",
+        "Delete skin?",
+        "Delete this project’s conversation, references and generated revisions permanently?",
+        "Delete ZXQPH0QXZ?ZXQPH1QXZ",
+        "Delete “ZXQPH0QXZ” and all its versions?",
+        "Deleted",
+        "Deletes sign-in identities, sessions, personal information and owned content. Match history remains anonymized. This cannot be undone.",
+        "Delivered",
+        "Delivered map",
+        "Dense",
+        "Density",
+        "Describe a building. Create its artwork and the way it works.",
+        "Describe a change or ask a question",
+        "Describe a map to build, ask a question, or explore an idea together.",
+        "Describe a world. Create its terrain and resources.",
+        "Describe what your building should do and how it should look. You can also brainstorm before creating it.",
+        "Describe your creation or ask a question",
+        "Describe your idea, request a creation, or ask a question. Your project and its history stay private until you publish.",
+        "Describe your landscape, or dream up a change…",
+        "Describe your map or discuss changes",
+        "Description",
+        "Design",
+        "Design brief ZXQPH0QXZ",
+        "Design conversation",
+        "Design the building",
+        "Design the set",
+        "Designer reply awaiting reconciliation",
+        "Designer request failed",
+        "Designer request status",
+        "Designer status",
+        "Destination: ZXQPH0QXZ library. Run checks before publication.",
+        "Detailed usage rates",
+        "Details",
+        "Development credits",
+        "Dimension",
+        "Disable",
+        "Disable skin and resolve",
+        "Disabled",
+        "Discard local retry",
+        "Discard manual edits and load saved revision",
+        "Disconnected"
+      ]
+    }
+  },
+  "response": {
+    "translations": [
+      {
+        "translatedText": "पीक",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पीक निवड",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तुमचा फोटो क्रॉप करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "क्रॉस-साइट विनंती नाकारण्यात आली.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ कडे क्रॉसफेड ​​करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "चलन",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "वर्तमान एआय ZXQPH0QXZ स्रोत",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "गेमद्वारे प्रस्तुत केलेले सध्याचे सानुकूल भूभाग आणि संसाधन स्प्राइट्स",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "वर्तमान सरासरी",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सध्या नोंदवलेले",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "वर्तमान नमुने",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सध्या जतन केलेला मसुदा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "चालू आणि मागील अहवाल कालावधी, दिवसांमध्ये: ZXQPH0QXZ आणि ZXQPH1QXZ. एकूण क्रियाकलापांची गणना खाते-दिवसांनुसार केली जाते; सक्रिय-खाते कार्ड स्वतंत्र खात्यांची गणना करतात. स्टुडिओ/कामाच्या स्थितीसाठी विनंती निर्मितीच्या तारखा वापरल्या जातात. प्रकाशनांच्या आवृत्त्यांची गणना केली जाते; नोंदवलेल्या डाउनलोडसाठी प्रत्येक लायब्ररीचे विद्यमान गणना नियम वापरले जातात.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "चालू आणि मागील अहवाल कालावधी, दिवसांमध्ये: ZXQPH0QXZ आणि ZXQPH1QXZ. एकूण क्रियाकलापांची गणना खाते-दिवसांनुसार केली जाते; सक्रिय-खाते कार्ड स्वतंत्र खात्यांची गणना करतात. स्टुडिओ/कामाच्या स्थितीसाठी विनंती निर्मितीच्या तारखा वापरल्या जातात. प्रकाशनांच्या आवृत्त्यांची गणना केली जाते; नोंदवलेल्या डाउनलोडसाठी प्रत्येक लायब्ररीचे विद्यमान गणना नियम वापरले जातात.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "चालू ZXQPH0QXZ दिवस आणि मागील ZXQPH1QXZ दिवस. एकूण क्रियाकलापांची गणना खाते-दिवसांनुसार केली जाते; सक्रिय-खाते कार्ड स्वतंत्र खात्यांची गणना करतात. स्टुडिओ/कामाच्या स्थितीसाठी विनंती निर्मितीच्या तारखा वापरल्या जातात. प्रकाशनांच्या आवृत्त्यांची गणना केली जाते; रेकॉर्ड केलेल्या डाउनलोडसाठी प्रत्येक लायब्ररीचे विद्यमान गणना नियम वापरले जातात.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "वर्तमान: ZXQPH0QXZ ते ZXQPH1QXZ (UTC; आजची माहिती अपूर्ण आहे). मागील: ZXQPH2QXZ ते ZXQPH3QXZ. ऐतिहासिक माहितीचे प्रमाण प्रत्येक कालावधीत भिन्न असू शकते.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सानुकूल सामग्री क्रेडिट्स",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सानुकूल नकाशा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सानुकूल मूड मिश्रण",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सानुकूल करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "दररोज सक्रिय खाती",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "दैनंदिन क्रियाकलाप तक्ता",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "दैनंदिन मूल्ये",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "डीफॉल्ट कॉलनी",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "संरक्षण शक्ती",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अधोगती",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "विलंबित ऑर्डर",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "हटवा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "एआय हटवा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "खाते हटवा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "संभाषणाचा इतिहास हटवा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "मसुदा हटवा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "इतिहास कायमचा हटवा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नकाशा हटवा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "माझे खाते हटवा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "माझे खाते कायमचे हटवा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "खाजगी प्रकाशन हटवा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "प्रकल्प हटवा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "प्रकल्पाचा इतिहास हटवा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "त्वचा हटवा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "स्किन डिलीट करायची का?",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "या प्रोजेक्टमधील संभाषण, संदर्भ आणि तयार केलेल्या आवृत्त्या कायमस्वरूपी हटवायच्या आहेत का?",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ?ZXQPH1QXZ हटवा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "“ZXQPH0QXZ” आणि त्याच्या सर्व आवृत्त्या हटवायच्या का?",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "हटवले",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "साइन-इन ओळख, सत्रे, वैयक्तिक माहिती आणि मालकीची सामग्री हटवली जाते. सामन्यांचा इतिहास अनामिक ठेवला जातो. ही प्रक्रिया पूर्ववत करता येणार नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "वितरित केले",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "वितरित नकाशा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "दाट",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "घनता",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "एका इमारतीचे वर्णन करा. त्यातील कलाकृती आणि तिच्या कार्यपद्धतीचे वर्णन करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "बदलाचे वर्णन करा किंवा प्रश्न विचारा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तयार करण्यासाठी नकाशाचे वर्णन करा, प्रश्न विचारा किंवा एकत्र एखाद्या कल्पनेचा शोध घ्या.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "एका जगाचे वर्णन करा. त्याचा भूप्रदेश आणि संसाधने तयार करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तुमची इमारत काय कार्य करेल आणि कशी दिसेल याचे वर्णन करा. ती तयार करण्यापूर्वी तुम्ही त्यावर विचारमंथनही करू शकता.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तुमच्या निर्मितीचे वर्णन करा किंवा प्रश्न विचारा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तुमची कल्पना सांगा, निर्मितीची विनंती करा किंवा प्रश्न विचारा. तुम्ही प्रकाशित करेपर्यंत तुमचा प्रकल्प आणि त्याचा इतिहास गोपनीय राहतो.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तुमच्या परिसराचे वर्णन करा, किंवा एखाद्या बदलाची कल्पना करा…",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तुमच्या नकाशाचे वर्णन करा किंवा बदलांवर चर्चा करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "वर्णन",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "डिझाइन",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "डिझाइन ब्रीफ ZXQPH0QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "डिझाइन संभाषण",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "इमारतीची रचना करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सेट डिझाइन करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "डिझायनरचे उत्तर सामंजस्याच्या प्रतीक्षेत आहे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "डिझाइनरची विनंती अयशस्वी झाली",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "डिझाइनर विनंती स्थिती",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "डिझायनर दर्जा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "गंतव्य: ZXQPH0QXZ लायब्ररी. प्रकाशनापूर्वी तपासण्या करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "वापराचे तपशीलवार दर",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तपशील",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "विकास क्रेडिट्स",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "परिमाण",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अक्षम करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "त्वचा अक्षम करा आणि निराकरण करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अक्षम",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "स्थानिक पुनर्प्रयत्न रद्द करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "मॅन्युअल बदल रद्द करा आणि जतन केलेली आवृत्ती लोड करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "डिस्कनेक्ट झाले",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      }
+    ]
+  },
+  "response_sha256": "aebe6bdcc83888dee7ea3221b0087fecf9d3c24a8db059ece07328b589b0f233"
+}

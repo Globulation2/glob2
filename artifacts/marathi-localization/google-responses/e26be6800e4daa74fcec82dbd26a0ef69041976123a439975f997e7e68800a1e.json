@@ -1,0 +1,418 @@
+{
+  "request": {
+    "project": "bradley-personal-20261027",
+    "model": "general/nmt",
+    "payload": {
+      "sourceLanguageCode": "en",
+      "targetLanguageCode": "mr",
+      "mimeType": "text/plain",
+      "contents": [
+        "Confirmed cash table",
+        "Confirmed cash uses Stripe charge/refund currency units; current and previous UTC periods. CSV exports preserve exact integer minor units.",
+        "Confirming your payment. Your credits appear once payment is confirmed.",
+        "Connected",
+        "Connection",
+        "Connection interrupted. Reconnecting to your saved project…",
+        "Connection quality per player",
+        "Consistent levels",
+        "Content",
+        "Content not found.",
+        "Contents",
+        "Contents & gameplay properties",
+        "Continue as ZXQPH0QXZ",
+        "Continue to uploads",
+        "Continue to ZXQPH0QXZ",
+        "Continue with ZXQPH0QXZ",
+        "Controls and compatibility evidence",
+        "Conversation",
+        "Convert and prepare preview",
+        "Converting",
+        "Copies the ZXQPH0QXZ texture and materials. Different models wrap that paint differently; inspect the results below.",
+        "Copy paint",
+        "Copy paint to all models",
+        "Copy paint to other models…",
+        "Copy recorded usage",
+        "Copy this link into Family link or ID in the game’s Building families picker to open this family directly.",
+        "Copyright",
+        "Correct the invalid ZXQPH0QXZ before saving.",
+        "Cortex",
+        "Could not check payment.",
+        "Could not crop this photo.",
+        "Could not delete this skin.",
+        "Could not load test map.",
+        "Could not load the material unwrap.",
+        "Could not load this language. Please try again.",
+        "Could not load this model. Please retry.",
+        "Could not load this ZXQPH0QXZ",
+        "Could not load your project.",
+        "Could not load ZXQPH0QXZ.ZXQPH1QXZ",
+        "Could not open this photo.",
+        "Could not save · retrying",
+        "Could not send report.",
+        "Could not update report.",
+        "Could not use this skin.",
+        "Count",
+        "Cover",
+        "Create",
+        "Create a building family",
+        "Create a building or an upgrade family with custom artwork.",
+        "Create a colony AI through conversation.",
+        "Create a family",
+        "Create a fungal swamp with slow marsh, glowing wood trees, and renewable mushroom food.",
+        "Create a look. Use it in your next match.",
+        "Create a map generator through conversation.",
+        "Create a mushroom hospital that heals workers and warriors, costs 10 wood, and holds four units.",
+        "Create a new room with this map and invite friends.",
+        "Create a ring of islands around a shared lagoon",
+        "Create a set",
+        "Create a winding river with room to grow",
+        "Create account",
+        "Create artwork",
+        "Create new release",
+        "Create with AI",
+        "Create your own room",
+        "Created",
+        "Created in ZXQPH0QXZ Studio, revision ZXQPH1QXZ",
+        "Creating accounts is turned off on this server.",
+        "Creation needs attention.",
+        "Creation ready.",
+        "Creation workspace",
+        "Creator credit",
+        "Credit activity",
+        "Credit flows and provider estimates include all recorded activity in this period, regardless of payment mode. Payment fees, hosting, exchange rates and profit are excluded.",
+        "Credit purchase",
+        "Credit purchases are currently unavailable.",
+        "Credit purchases are not available on this instance.",
+        "Credit purchases are not available.",
+        "Credits",
+        "Credits & sources",
+        "Credits pay for your commander’s thinking and follow-ups. Standing orders keep running when credits run out."
+      ]
+    }
+  },
+  "response": {
+    "translations": [
+      {
+        "translatedText": "कन्फर्म कॅश टेबल",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कन्फर्म्ड कॅशमध्ये स्ट्राइप चार्ज/रिफंड चलन एकके वापरली जातात; चालू आणि मागील UTC कालावधी. CSV निर्यातीमध्ये अचूक पूर्णांक मायनर युनिट्स जतन केली जातात.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तुमच्या पेमेंटची पुष्टी केली जात आहे. पेमेंटची पुष्टी झाल्यावर तुमच्या खात्यात पैसे जमा झालेले दिसतील.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "जोडलेले",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कनेक्शन",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कनेक्शन खंडित झाले आहे. तुमच्या सेव्ह केलेल्या प्रोजेक्टशी पुन्हा कनेक्ट करत आहोत…",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "प्रत्येक खेळाडूसाठी कनेक्शनची गुणवत्ता",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सातत्यपूर्ण पातळी",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सामग्री",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सामग्री आढळली नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सामग्री",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सामग्री आणि गेमप्लेची वैशिष्ट्ये",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ म्हणून सुरू ठेवा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अपलोड सुरू ठेवा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ वर सुरू ठेवा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ सह सुरू ठेवा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नियंत्रणे आणि सुसंगततेचा पुरावा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "संभाषण",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "रूपांतरित करा आणि पूर्वावलोकन तयार करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "रूपांतरण",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ टेक्सचर आणि मटेरियल्सची नक्कल करते. वेगवेगळे मॉडेल्स ते पेंट वेगवेगळ्या प्रकारे रॅप करतात; खालील परिणाम तपासा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कॉपी पेंट",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सर्व मॉडेल्सना पेंट कॉपी करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "इतर मॉडेल्सवर पेंट कॉपी करा…",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "रेकॉर्ड केलेल्या वापराची प्रत",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "हे कुटुंब थेट उघडण्यासाठी, गेममधील 'बिल्डिंग फॅमिलीज पिकर'मधील 'फॅमिली लिंक' किंवा 'आयडी' मध्ये ही लिंक कॉपी करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कॉपीराइट",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सेव्ह करण्यापूर्वी चुकीचे असलेले ZXQPH0QXZ दुरुस्त करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कॉर्टेक्स",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पेमेंट तपासता आले नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "हा फोटो क्रॉप करता आला नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ही स्किन हटवता आली नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "चाचणी नकाशा लोड करता आला नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "मटेरियल अनरॅप लोड करता आले नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ही भाषा लोड होऊ शकली नाही. कृपया पुन्हा प्रयत्न करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "हे मॉडेल लोड होऊ शकले नाही. कृपया पुन्हा प्रयत्न करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "हे ZXQPH0QXZ लोड करता आले नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तुमचा प्रकल्प लोड होऊ शकला नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ.ZXQPH1QXZ लोड करता आले नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "हा फोटो उघडता आला नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "जतन करता आले नाही · पुन्हा प्रयत्न करत आहे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अहवाल पाठवता आला नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अहवाल अद्ययावत करता आला नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ही स्किन वापरता आली नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "मोजणी",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कव्हर",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तयार करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "इमारत कुटुंब तयार करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सानुकूल कलाकृती वापरून इमारत किंवा अपग्रेड फॅमिली तयार करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "संभाषणाद्वारे वसाहत एआय तयार करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कुटुंब तयार करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "मंद दलदलीचा प्रदेश, चमकणारी लाकडी झाडे आणि पुनर्नवीकरणीय मशरूम अन्न वापरून बुरशीचे दलदल तयार करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "एक लुक तयार करा. तुमच्या पुढच्या सामन्यात त्याचा वापर करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "संभाषणाद्वारे नकाशा जनरेटर तयार करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कामगार आणि योद्ध्यांना बरे करणारे, १० लाकूड खर्च करणारे आणि चार युनिट्स सामावून घेणारे मशरूम रुग्णालय तयार करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "या नकाशाचा वापर करून एक नवीन रूम तयार करा आणि मित्रांना आमंत्रित करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "एका सामायिक सरोवराभोवती बेटांचे वलय तयार करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "एक संच तयार करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "वाढीसाठी जागा असलेली एक नागमोडी नदी तयार करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "खाते तयार करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कलाकृती तयार करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नवीन प्रकाशन तयार करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "एआय सह तयार करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तुमची स्वतःची खोली तयार करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तयार केले",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ स्टुडिओमध्ये तयार केले, आवृत्ती ZXQPH1QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "या सर्व्हरवर खाते तयार करणे बंद केले आहे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "निर्मितीला लक्ष देण्याची गरज असते.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "निर्मितीसाठी तयार आहे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "निर्मिती कार्यक्षेत्र",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "निर्माता श्रेय",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पत व्यवहार",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "क्रेडिट प्रवाह आणि प्रदात्याच्या अंदाजामध्ये, पेमेंटच्या पद्धतीचा विचार न करता, या कालावधीतील सर्व नोंदवलेल्या व्यवहारांचा समावेश आहे. पेमेंट शुल्क, होस्टिंग, विनिमय दर आणि नफा वगळण्यात आले आहेत.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "क्रेडिट खरेदी",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सध्या क्रेडिटवर खरेदी उपलब्ध नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "या इन्स्टन्सवर क्रेडिट खरेदीची सुविधा उपलब्ध नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "क्रेडिटवर खरेदी करता येत नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "श्रेय",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "श्रेय आणि स्रोत",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तुमच्या कमांडरच्या विचारमंथनाचा आणि पुढील कार्यवाहीचा खर्च क्रेडिट्समधून भागवला जातो. क्रेडिट्स संपल्यावरही स्थायी आदेश चालू राहतात.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      }
+    ]
+  },
+  "response_sha256": "262a4c3a9c59a43729f249a32f5fcdd16d746726d4e72c1c1cf22884ddb08910"
+}

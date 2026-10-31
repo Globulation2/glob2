@@ -1,0 +1,510 @@
+{
+  "source_sha256": "0ac44b4cdfb03e688983d6e3fb1e484cca57589665bff19c5c65388e649b292a",
+  "batch_target_sha256": "1101d7eb20d4c705ac7ad2b6c4f596f178b755d02205fecf3525ec94609864d2",
+  "catalog_sha256": {
+    "native": "5a9c064ea3ebf878f922e89df1b4f0040a70bcc855cfeef07154358b348e1f2e",
+    "online": "d7ae02f4d4453ebcb2acc37c15fd862acea8d2996d29cdb89bfb64c4f32cd5fa"
+  },
+  "entries": [
+    {
+      "id": "online:Engine launch timed out. Stop and retry the preview.",
+      "source": "Engine launch timed out. Stop and retry the preview.",
+      "target": "इंजिन सुरू होण्यासाठी लागणारा वेळ संपला. कृपया प्रिव्ह्यू थांबवा आणि पुन्हा प्रयत्न करा."
+    },
+    {
+      "id": "online:Engine version",
+      "source": "Engine version",
+      "target": "इंजिन आवृत्ती"
+    },
+    {
+      "id": "online:Engine {slot0} · suite {slot1}",
+      "source": "Engine {slot0} · suite {slot1}",
+      "target": "इंजिन {slot0} · चाचणीसंच {slot1}"
+    },
+    {
+      "id": "online:Engine {slot0} · {slot1}",
+      "source": "Engine {slot0} · {slot1}",
+      "target": "इंजिन {slot0} · {slot1}"
+    },
+    {
+      "id": "online:Enlarged 3×",
+      "source": "Enlarged 3×",
+      "target": "३ पट मोठे केलेले"
+    },
+    {
+      "id": "online:Enter a JSON array.",
+      "source": "Enter a JSON array.",
+      "target": "JSON अॅरे प्रविष्ट करा."
+    },
+    {
+      "id": "online:Enter a username.",
+      "source": "Enter a username.",
+      "target": "वापरकर्त्याचे नाव प्रविष्ट करा."
+    },
+    {
+      "id": "online:Enter to send · Shift + Enter for a new line",
+      "source": "Enter to send · Shift + Enter for a new line",
+      "target": "पाठवण्यासाठी Enter दाबा · नवीन ओळीसाठी Shift + Enter दाबा"
+    },
+    {
+      "id": "online:Enter to send · Shift + Enter for a new line. Creation requests build automatically · 1 credit on delivery.",
+      "source": "Enter to send · Shift + Enter for a new line. Creation requests build automatically · 1 credit on delivery.",
+      "target": "पाठवण्यासाठी Enter · नवीन ओळीसाठी Shift + Enter. निर्मितीच्या विनंत्यांवर आपोआप काम सुरू होते · तयार आवृत्ती मिळाल्यावर १ क्रेडिट."
+    },
+    {
+      "id": "online:Enter valid JSON.",
+      "source": "Enter valid JSON.",
+      "target": "वैध JSON प्रविष्ट करा."
+    },
+    {
+      "id": "online:Enter your password.",
+      "source": "Enter your password.",
+      "target": "तुमचा पासवर्ड टाका."
+    },
+    {
+      "id": "online:Eraser",
+      "source": "Eraser",
+      "target": "खोडरबर"
+    },
+    {
+      "id": "online:Error",
+      "source": "Error",
+      "target": "त्रुटी"
+    },
+    {
+      "id": "online:Estimated provider costs",
+      "source": "Estimated provider costs",
+      "target": "अंदाजित प्रदाता खर्च"
+    },
+    {
+      "id": "online:Estimates use measured usage and configured, versioned monetary rates. Missing usage/pricing remains unavailable. An estimate covers priced attempts only; it is a partial subtotal whenever any attempt has unavailable cost.",
+      "source": "Estimates use measured usage and configured, versioned monetary rates. Missing usage/pricing remains unavailable. An estimate covers priced attempts only; it is a partial subtotal whenever any attempt has unavailable cost.",
+      "target": "अंदाजासाठी मोजलेला वापर आणि निश्चित केलेले आवृत्तीबद्ध आर्थिक दर वापरले जातात. वापर किंवा दरांची माहिती नसल्यास ती अनुपलब्धच राहते. खर्च मोजता येणारे प्रयत्नच अंदाजात धरले जातात; एखाद्या प्रयत्नाचा खर्च अनुपलब्ध असल्यास ही केवळ आंशिक बेरीज असते."
+    },
+    {
+      "id": "online:Event",
+      "source": "Event",
+      "target": "घटना"
+    },
+    {
+      "id": "online:Every member needs generator sharing support.",
+      "source": "Every member needs generator sharing support.",
+      "target": "प्रत्येक सदस्याला जनरेटर शेअरिंग सपोर्टची गरज आहे."
+    },
+    {
+      "id": "online:Every room member must update before using a shared generator.",
+      "source": "Every room member must update before using a shared generator.",
+      "target": "सामायिक जनरेटर वापरण्यापूर्वी खोलीतील प्रत्येक सदस्याने खेळ अद्ययावत करणे आवश्यक आहे."
+    },
+    {
+      "id": "online:Every seated player must be ready.",
+      "source": "Every seated player must be ready.",
+      "target": "प्रत्येक बसलेल्या खेळाडूने तयार असले पाहिजे."
+    },
+    {
+      "id": "online:Example generation settings",
+      "source": "Example generation settings",
+      "target": "उदाहरण निर्मिती सेटिंग्ज"
+    },
+    {
+      "id": "online:Explore custom blends and fades. Restore game settings for the in-game transition.",
+      "source": "Explore custom blends and fades. Restore game settings for the in-game transition.",
+      "target": "सानुकूलित ब्लेंड्स आणि फेड्सचा शोध घ्या. गेममधील संक्रमणासाठी गेम सेटिंग्ज पुनर्संचयित करा."
+    },
+    {
+      "id": "online:Explore player and AI profiles",
+      "source": "Explore player and AI profiles",
+      "target": "खेळाडू आणि एआय प्रोफाइल एक्सप्लोर करा"
+    },
+    {
+      "id": "online:Explore ratings and games",
+      "source": "Explore ratings and games",
+      "target": "रेटिंग आणि गेम्स शोधा"
+    },
+    {
+      "id": "online:Explorers",
+      "source": "Explorers",
+      "target": "शोधक"
+    },
+    {
+      "id": "online:Export activity CSV",
+      "source": "Export activity CSV",
+      "target": "क्रियाकलाप CSV निर्यात करा"
+    },
+    {
+      "id": "online:Export cash CSV",
+      "source": "Export cash CSV",
+      "target": "रोख व्यवहारांची CSV निर्यात करा"
+    },
+    {
+      "id": "online:Export credits CSV",
+      "source": "Export credits CSV",
+      "target": "क्रेडिट्सची CSV निर्यात करा"
+    },
+    {
+      "id": "online:Export provider costs CSV",
+      "source": "Export provider costs CSV",
+      "target": "प्रदात्याच्या खर्चाची CSV निर्यात करा"
+    },
+    {
+      "id": "online:Export saved package",
+      "source": "Export saved package",
+      "target": "जतन केलेले पॅकेज निर्यात करा"
+    },
+    {
+      "id": "online:Export viewed revision",
+      "source": "Export viewed revision",
+      "target": "पाहिलेली आवृत्ती निर्यात करा"
+    },
+    {
+      "id": "online:Eyedropper",
+      "source": "Eyedropper",
+      "target": "आयड्रॉपर"
+    },
+    {
+      "id": "online:FINAL VIEW",
+      "source": "FINAL VIEW",
+      "target": "अंतिम दृश्य"
+    },
+    {
+      "id": "online:Fade duration: ",
+      "source": "Fade duration: ",
+      "target": "फेडचा कालावधी: "
+    },
+    {
+      "id": "online:Failed",
+      "source": "Failed",
+      "target": "अयशस्वी"
+    },
+    {
+      "id": "online:Family experiments",
+      "source": "Family experiments",
+      "target": "इमारत संचाचे प्रयोग"
+    },
+    {
+      "id": "online:Family experiments JSON",
+      "source": "Family experiments JSON",
+      "target": "इमारत संचाच्या प्रयोगांचे JSON"
+    },
+    {
+      "id": "online:Family link",
+      "source": "Family link",
+      "target": "इमारत संचाची लिंक"
+    },
+    {
+      "id": "online:Family name",
+      "source": "Family name",
+      "target": "इमारत संचाचे नाव"
+    },
+    {
+      "id": "online:Favourite",
+      "source": "Favourite",
+      "target": "आवडते"
+    },
+    {
+      "id": "online:Favourite AIs",
+      "source": "Favourite AIs",
+      "target": "आवडते एआय"
+    },
+    {
+      "id": "online:Favourite an AI to keep it close.",
+      "source": "Favourite an AI to keep it close.",
+      "target": "एखाद्या एआयला पसंती द्या, म्हणजे ते तुमच्या जवळ राहील."
+    },
+    {
+      "id": "online:Favourited",
+      "source": "Favourited",
+      "target": "पसंतीचे"
+    },
+    {
+      "id": "online:Favourites",
+      "source": "Favourites",
+      "target": "आवडते"
+    },
+    {
+      "id": "online:Fields",
+      "source": "Fields",
+      "target": "फील्ड्स"
+    },
+    {
+      "id": "online:File",
+      "source": "File",
+      "target": "फाईल"
+    },
+    {
+      "id": "online:File unavailable.",
+      "source": "File unavailable.",
+      "target": "फाईल उपलब्ध नाही."
+    },
+    {
+      "id": "online:Fills repeat across the model’s matching surfaces.",
+      "source": "Fills repeat across the model’s matching surfaces.",
+      "target": "मॉडेलच्या जुळणाऱ्या पृष्ठभागांवर रंग भरण्याची पुनरावृत्ती होते."
+    },
+    {
+      "id": "online:Filter",
+      "source": "Filter",
+      "target": "फिल्टर"
+    },
+    {
+      "id": "online:Final game view · {slot0}°",
+      "source": "Final game view · {slot0}°",
+      "target": "अंतिम खेळाचे दृश्य · {slot0}°"
+    },
+    {
+      "id": "online:Final statistics",
+      "source": "Final statistics",
+      "target": "अंतिम आकडेवारी"
+    },
+    {
+      "id": "online:Find a player",
+      "source": "Find a player",
+      "target": "खेळाडू शोधा"
+    },
+    {
+      "id": "online:Find content",
+      "source": "Find content",
+      "target": "सामग्री शोधा"
+    },
+    {
+      "id": "online:Finding players…",
+      "source": "Finding players…",
+      "target": "खेळाडू शोधणे…"
+    },
+    {
+      "id": "online:Finish or cancel an existing upload first (maximum three active uploads).",
+      "source": "Finish or cancel an existing upload first (maximum three active uploads).",
+      "target": "प्रथम चालू असलेले अपलोड पूर्ण करा किंवा रद्द करा (कमाल तीन सक्रिय अपलोड)."
+    },
+    {
+      "id": "online:Finished",
+      "source": "Finished",
+      "target": "पूर्ण झाले"
+    },
+    {
+      "id": "online:Finished buildings",
+      "source": "Finished buildings",
+      "target": "पूर्ण झालेल्या इमारती"
+    },
+    {
+      "id": "online:Finished: {value0}",
+      "source": "Finished: {value0}",
+      "target": "पूर्ण झाले: {value0}"
+    },
+    {
+      "id": "online:First page",
+      "source": "First page",
+      "target": "पहिले पान"
+    },
+    {
+      "id": "online:Fit",
+      "source": "Fit",
+      "target": "फिट"
+    },
+    {
+      "id": "online:Fit model",
+      "source": "Fit model",
+      "target": "मॉडेल चौकटीत बसवा"
+    },
+    {
+      "id": "online:Fit model · F",
+      "source": "Fit model · F",
+      "target": "मॉडेल चौकटीत बसवा · F"
+    },
+    {
+      "id": "online:Fitted {value0} unavailable, using the baked clip:",
+      "source": "Fitted {value0} unavailable, using the baked clip:",
+      "target": "फिट केलेले {value0} उपलब्ध नाही, बेक्ड क्लिप वापरून:"
+    },
+    {
+      "id": "online:Fix the failed checks and choose your updated file.",
+      "source": "Fix the failed checks and choose your updated file.",
+      "target": "अयशस्वी झालेल्या तपासण्या दुरुस्त करा आणि तुमची अद्ययावत फाईल निवडा."
+    },
+    {
+      "id": "online:Flow",
+      "source": "Flow",
+      "target": "प्रवाह"
+    },
+    {
+      "id": "online:Follow latest",
+      "source": "Follow latest",
+      "target": "नवीनतम आवृत्तीसोबत रहा"
+    },
+    {
+      "id": "online:Follow progress on the canvas.",
+      "source": "Follow progress on the canvas.",
+      "target": "कॅनव्हासवरील प्रगतीचा मागोवा घ्या."
+    },
+    {
+      "id": "online:Follow the composition, hear each candidate, and see what the checks find.",
+      "source": "Follow the composition, hear each candidate, and see what the checks find.",
+      "target": "रचनेची प्रगती पाहा, प्रत्येक प्रस्तावित आवृत्ती ऐका आणि तपासण्यांचे निष्कर्ष पाहा."
+    },
+    {
+      "id": "online:Food in inns",
+      "source": "Food in inns",
+      "target": "खानावळींतील अन्न"
+    },
+    {
+      "id": "online:Footprint height (tiles)",
+      "source": "Footprint height (tiles)",
+      "target": "फूटप्रिंटची उंची (टाईल्स)"
+    },
+    {
+      "id": "online:For an unlisted family, copy its page link and paste it into Family link or ID in the game’s Building families picker, then choose Open family. Use the same online instance where the family was published. Private families also require signing in as their owner.",
+      "source": "For an unlisted family, copy its page link and paste it into Family link or ID in the game’s Building families picker, then choose Open family. Use the same online instance where the family was published. Private families also require signing in as their owner.",
+      "target": "सूचीत नसलेल्या इमारत संचाची पृष्ठलिंक खेळातील इमारत संच निवडणीत «संचाची लिंक किंवा ID» येथे द्या आणि «संच उघडा» निवडा. संच प्रकाशित केलेलाच ऑनलाइन सर्व्हर वापरा. खाजगी संचांसाठी मालक म्हणून साइन इनही करावे लागते."
+    },
+    {
+      "id": "online:Force re-verification",
+      "source": "Force re-verification",
+      "target": "सक्तीची पुनर्तपासणी"
+    },
+    {
+      "id": "online:Force re-verification of {value0}?",
+      "source": "Force re-verification of {value0}?",
+      "target": "{value0} ची सक्तीची पुनर्तपासणी?"
+    },
+    {
+      "id": "online:Fork into Studio",
+      "source": "Fork into Studio",
+      "target": "स्टुडिओमध्ये फोर्क करा"
+    },
+    {
+      "id": "online:Frame",
+      "source": "Frame",
+      "target": "फ्रेम"
+    },
+    {
+      "id": "online:Frame dimensions must be whole numbers between 1 and 64.",
+      "source": "Frame dimensions must be whole numbers between 1 and 64.",
+      "target": "फ्रेमचे माप १ ते ६४ दरम्यानचे पूर्णांक असले पाहिजेत."
+    },
+    {
+      "id": "online:Frame height",
+      "source": "Frame height",
+      "target": "फ्रेमची उंची"
+    },
+    {
+      "id": "online:Frame width",
+      "source": "Frame width",
+      "target": "फ्रेमची रुंदी"
+    },
+    {
+      "id": "online:Frames run left to right, then top to bottom.",
+      "source": "Frames run left to right, then top to bottom.",
+      "target": "फ्रेम डावीकडून उजवीकडे, नंतर वरून खाली जातात."
+    },
+    {
+      "id": "online:Friends share a code or a link from their room.",
+      "source": "Friends share a code or a link from their room.",
+      "target": "मित्र त्यांच्या खोलीतून एक कोड किंवा लिंक शेअर करतात."
+    },
+    {
+      "id": "online:From (UTC)",
+      "source": "From (UTC)",
+      "target": "(UTC) पासून"
+    },
+    {
+      "id": "online:From this view",
+      "source": "From this view",
+      "target": "या दृष्टिकोनातून"
+    },
+    {
+      "id": "online:Full compatibility key: {slot0}",
+      "source": "Full compatibility key: {slot0}",
+      "target": "पूर्ण सुसंगतता की: {slot0}"
+    },
+    {
+      "id": "online:Full definition and frame mappings",
+      "source": "Full definition and frame mappings",
+      "target": "पूर्ण परिभाषा आणि फ्रेम मॅपिंग"
+    },
+    {
+      "id": "online:Full leaderboard",
+      "source": "Full leaderboard",
+      "target": "संपूर्ण लीडरबोर्ड"
+    },
+    {
+      "id": "online:Game preview",
+      "source": "Game preview",
+      "target": "खेळाचे पूर्वावलोकन"
+    },
+    {
+      "id": "online:Game scale",
+      "source": "Game scale",
+      "target": "खेळाचे प्रमाण"
+    },
+    {
+      "id": "online:Game version",
+      "source": "Game version",
+      "target": "गेम आवृत्ती"
+    },
+    {
+      "id": "online:Game versions",
+      "source": "Game versions",
+      "target": "गेम आवृत्त्या"
+    },
+    {
+      "id": "online:Game-engine preview of the checked set",
+      "source": "Game-engine preview of the checked set",
+      "target": "तपासलेल्या संचाचे खेळाच्या इंजिनमधील पूर्वावलोकन"
+    },
+    {
+      "id": "online:Game-size reference",
+      "source": "Game-size reference",
+      "target": "खेळाच्या आकाराचा संदर्भ"
+    },
+    {
+      "id": "online:Gameplay preset",
+      "source": "Gameplay preset",
+      "target": "गेमप्ले प्रीसेट"
+    },
+    {
+      "id": "online:Gameplay preset: {slot0}",
+      "source": "Gameplay preset: {slot0}",
+      "target": "गेमप्ले प्रीसेट: {slot0}"
+    },
+    {
+      "id": "online:Games",
+      "source": "Games",
+      "target": "खेळ"
+    },
+    {
+      "id": "online:Generate",
+      "source": "Generate",
+      "target": "निर्माण करा"
+    },
+    {
+      "id": "online:Generate a map to inspect its terrain and starting colonies, then watch AI colonies play.",
+      "source": "Generate a map to inspect its terrain and starting colonies, then watch AI colonies play.",
+      "target": "तेथील भूप्रदेश आणि सुरुवातीच्या वसाहती तपासण्यासाठी नकाशा तयार करा, त्यानंतर एआय वसाहतींना खेळताना पहा."
+    },
+    {
+      "id": "online:Generate new landscapes from community JavaScript packages. Install a release in Settings → Map generators, or select it in an online room.",
+      "source": "Generate new landscapes from community JavaScript packages. Install a release in Settings → Map generators, or select it in an online room.",
+      "target": "कम्युनिटी JavaScript पॅकेजेस वापरून नवीन लँडस्केप तयार करा. सेटिंग्स → मॅप जनरेटर्समध्ये एक रिलीज इन्स्टॉल करा, किंवा ऑनलाइन रूममध्ये ते निवडा."
+    },
+    {
+      "id": "online:Generated",
+      "source": "Generated",
+      "target": "निर्माण केले"
+    },
+    {
+      "id": "online:Generated by",
+      "source": "Generated by",
+      "target": "द्वारे निर्मित"
+    },
+    {
+      "id": "online:Generated edits applied to revision {slot0}.",
+      "source": "Generated edits applied to revision {slot0}.",
+      "target": "{slot0} या आवृत्तीवर तयार केलेले बदल लागू केले आहेत."
+    },
+    {
+      "id": "online:Generated example map",
+      "source": "Generated example map",
+      "target": "तयार केलेला उदाहरण नकाशा"
+    }
+  ]
+}

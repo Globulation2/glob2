@@ -1,0 +1,8 @@
+{
+  "pid": 1573613,
+  "cwd": "/home/bradley/.codex/worktrees/45cd/glob2/platform/apps/web",
+  "PORT": "4587",
+  "TEST_DATABASE_URL": "postgres://glob2:glob2@127.0.0.1:32768/postgres",
+  "command": "node e2e/server.ts ",
+  "build": "Final compactpicker production Vite build37.11s"
+}

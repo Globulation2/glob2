@@ -1,0 +1,245 @@
+{
+  "reviewer": "/root/draft_tool",
+  "role": "independent online semantic reviewer",
+  "source_sha256": "0ac44b4cdfb03e688983d6e3fb1e484cca57589665bff19c5c65388e649b292a",
+  "batch_target_sha256": "4563ae9ce4add269c571e275d978a49ca34838c9a3a70b2c147faed48fb40f95",
+  "catalog_sha256": {
+    "native": "683bcc1e1680e6cb9e2605ef9be42724a76d3e7b1f2868462e24ef50d1423642",
+    "online": "1ba40d342498f5e7704a63e5d175bd9e8a0ede31e3ca2ce88e8cb1fbc0ba68a6"
+  },
+  "reviewed_keys": [
+    "online:No release notes.",
+    "online:One JavaScript file.",
+    "online:One manifest and one JavaScript module.",
+    "online:Pause animation",
+    "online:Play animation",
+    "online:Play music",
+    "online:Playtest",
+    "online:Preparing your soundtrack…",
+    "online:Publish to music library",
+    "online:Publishing…",
+    "online:Refine your soundtrack",
+    "online:Replace generator package",
+    "online:Replace source with JavaScript file",
+    "online:Retry saved request",
+    "online:Review the technical results for this finding.",
+    "online:Run current revision",
+    "online:Saved candidate",
+    "online:Saved privately. Publishing shares only this version.",
+    "online:Saving…",
+    "online:Send",
+    "online:Send diagnostics to chat",
+    "online:Sign in with a registered account to like music",
+    "online:Signed HP per exposed tick, divided by 256; negative values damage units.",
+    "online:Something wonderful is taking shape.",
+    "online:Start live game",
+    "online:Start with a feeling",
+    "online:Terrain designer",
+    "online:The assistant edits your file. You decide when to test.",
+    "online:The assistant edits your manifest and JavaScript together. You decide when to generate or run checks.",
+    "online:The provider outcome needs reconciliation. No duplicate call will be sent.",
+    "online:The provider outcome needs reconciliation. Your credit remains reserved.",
+    "online:The provider outcome needs reconciliation. Your reserved {value0} credits remain held; new requests are paused. Manual editing and export remain available.",
+    "online:This match",
+    "online:This request is paused while its result is checked. Your reserved credit stays safe; you can leave and return later.",
+    "online:This version is public.",
+    "online:Try “a winding river with fertile banks” or ask how the current generator works.",
+    "online:Try “focus on food before expansion” or ask how the current code works.",
+    "online:Use working starter",
+    "online:VIEW",
+    "online:Validation failed",
+    "online:We could not finish this map. Your earlier maps are safe.",
+    "online:What kind of colony will you build?",
+    "online:What landscape will you create?",
+    "online:Working on your request…",
+    "online:YOU",
+    "online:Your colony AI",
+    "online:Your colony’s soundtrack, in three moods.",
+    "online:Your composer is working…",
+    "online:Your landscape",
+    "online:Your message could not be completed.",
+    "online:Your music takes shape here",
+    "online:Your next battlefield starts here.",
+    "online:Your projects",
+    "online:generated",
+    "online:hand-made",
+    "online:no sign-in methods",
+    "online:one unit per harvest",
+    "online:stock remains available after harvesting",
+    "online:the whole stock per harvest",
+    "online:usage pending",
+    "online:with {value0} ",
+    "online:{count} credit",
+    "online:{count} credits",
+    "online:{count} player on this page",
+    "online:{count} players on this page",
+    "online:{count} team · ",
+    "online:{count} teams · ",
+    "online:{count} version",
+    "online:{count} versions",
+    "online:{count} {status}",
+    "online:{slot0} · {count} image",
+    "online:{slot0} · {count} images",
+    "online:{value0} HP per exposed tick",
+    "online:{value0} Your credit was returned.",
+    "online:{value0} copy",
+    "online:{value0} not found",
+    "online:{value0} playing",
+    "online:{value0} request needs attention in Preview.",
+    "online:{value0} response ready in Preview.",
+    "online:{value0} seconds",
+    "online:{value0} selected",
+    "online:{value0} {value1} attention",
+    "online:{value0} · revision {value1}",
+    "online:{value0} × {value1} preview pixels",
+    "online:{value0} × {value1} · {value2} players",
+    "online:{value0}% saturation, {value1}% brightness",
+    "online:{value0}: {count} open",
+    "online:{value0}: {count} searching",
+    "online:{value0}× wheat",
+    "online:{value0}’s average",
+    "online:× Compatibility checks failed",
+    "online:▶ Let the globs roam",
+    "online:★ Favourited",
+    "online:☆ Favourite",
+    "online:♡ Like",
+    "online:♥ Liked",
+    "online:✓ Passed compatibility checks",
+    "online:✓ uploaded",
+    "online:❚❚ Pause the globs",
+    "online:Converted terrain"
+  ],
+  "findings": [
+    {
+      "key": "online:Play animation",
+      "before": "प्ले ॲनिमेशन",
+      "after": "ॲनिमेशन चालवा",
+      "reason": "Action imperative.",
+      "severity": "minor",
+      "state": "proposed"
+    },
+    {
+      "key": "online:Preparing your soundtrack…",
+      "before": "तुमच्या साउंडट्रॅकची तयारी करत आहात…",
+      "after": "तुमचा साउंडट्रॅक तयार करत आहे…",
+      "reason": "System progress, not addressing user as doing the preparation.",
+      "severity": "minor",
+      "state": "proposed"
+    },
+    {
+      "key": "online:Saved candidate",
+      "before": "जतन केलेला उमेदवार",
+      "after": "जतन केलेली प्रस्तावित आवृत्ती",
+      "reason": "Candidate is generated artifact, not a person.",
+      "severity": "minor",
+      "state": "proposed"
+    },
+    {
+      "key": "online:Signed HP per exposed tick, divided by 256; negative values damage units.",
+      "before": "प्रत्येक उघड टिकसाठी चिन्हांकित एचपी, भागिले २५६; ऋण मूल्यांचे नुकसान एकक.",
+      "after": "संपर्कात असताना प्रत्येक टिकमागील HP = दिलेले धन/ऋण मूल्य ÷ २५६; ऋण मूल्यांमुळे युनिटचे नुकसान होते.",
+      "reason": "Explain signed fixed-point health effect; tick is simulation step, not exposed adjective or parasite.",
+      "severity": "major",
+      "state": "proposed"
+    },
+    {
+      "key": "online:The assistant edits your manifest and JavaScript together. You decide when to generate or run checks.",
+      "before": "सहाय्यक तुमचा मॅनिफेस्ट आणि JavaScript एकत्र संपादित करतो. तपासण्या केव्हा जनरेट करायच्या किंवा चालवायच्या हे तुम्ही ठरवता.",
+      "after": "सहाय्यक तुमचा मॅनिफेस्ट आणि JavaScript एकत्र संपादित करतो. निर्मिती कधी करायची किंवा तपासण्या कधी चालवायच्या ते तुम्ही ठरवता.",
+      "reason": "Generate refers to map/artifact, not generating tests.",
+      "severity": "major",
+      "state": "proposed"
+    },
+    {
+      "key": "online:Try “a winding river with fertile banks” or ask how the current generator works.",
+      "before": "“सुपीक काठांची नागमोडी नदी” असे म्हणून बघा किंवा विद्युत प्रवाह जनरेटर कसे काम करतो ते विचारा.",
+      "after": "“सुपीक काठांची नागमोडी नदी” असे सुचवा किंवा सध्याचा जनरेटर कसा काम करतो ते विचारा.",
+      "reason": "Current means present generator, not electric current.",
+      "severity": "major",
+      "state": "proposed"
+    },
+    {
+      "key": "online:Your composer is working…",
+      "before": "तुमचा कंपोझर कार्यरत आहे…",
+      "after": "तुमचा संगीतकार काम करत आहे…",
+      "reason": "Match composer terminology.",
+      "severity": "minor",
+      "state": "proposed"
+    },
+    {
+      "key": "online:{count} player on this page",
+      "before": {
+        "one": "या पानावर {count} प्लेअर",
+        "other": "या पृष्ठावरील {count} खेळाडू"
+      },
+      "after": {
+        "one": "या पानावर {count} खेळाडू",
+        "other": "या पानावर {count} खेळाडू"
+      },
+      "reason": "Use consistent player noun across plural forms.",
+      "severity": "minor",
+      "state": "proposed"
+    },
+    {
+      "key": "online:{count} players on this page",
+      "before": "या पृष्ठावरील {count} खेळाडू",
+      "after": "या पानावर {count} खेळाडू",
+      "reason": "Match plural-source counterpart.",
+      "severity": "minor",
+      "state": "proposed"
+    },
+    {
+      "key": "online:{count} team · ",
+      "before": {
+        "one": "{count} टीम · ",
+        "other": "{count} संघ · "
+      },
+      "after": {
+        "one": "{count} संघ · ",
+        "other": "{count} संघ · "
+      },
+      "reason": "Use team glossary across plural forms.",
+      "severity": "minor",
+      "state": "proposed"
+    },
+    {
+      "key": "online:{value0} HP per exposed tick",
+      "before": "{value0} HP प्रति उघड्या गोचिड",
+      "after": "संपर्कात असताना प्रत्येक टिकमागे {value0} HP",
+      "reason": "Simulation tick, not a tick parasite गोचिड.",
+      "severity": "major",
+      "state": "proposed"
+    },
+    {
+      "key": "online:× Compatibility checks failed",
+      "before": "सुसंगतता तपासणी अयशस्वी झाली",
+      "after": "× सुसंगतता तपासणी अयशस्वी झाली",
+      "reason": "Restore status icon dropped by NMT.",
+      "severity": "minor",
+      "state": "proposed"
+    },
+    {
+      "key": "online:▶ Let the globs roam",
+      "before": "▶ ग्लोब्सना फिरू द्या",
+      "after": "▶ ग्लॉब्सना फिरू द्या",
+      "reason": "Consistent creature-name transliteration.",
+      "severity": "minor",
+      "state": "proposed"
+    },
+    {
+      "key": "online:❚❚ Pause the globs",
+      "before": "❚❚ गोळे थांबवा",
+      "after": "❚❚ ग्लॉब्सना थांबवा",
+      "reason": "Creature name, not balls.",
+      "severity": "major",
+      "state": "proposed"
+    }
+  ],
+  "accepted_english": [
+    {
+      "key": "online:{count} {status}",
+      "reason": "Formatted count plus separately localized status value contain no prose."
+    }
+  ],
+  "certification": "Agent-reviewed; not native-human-certified; editorial and final recheck pending"
+}

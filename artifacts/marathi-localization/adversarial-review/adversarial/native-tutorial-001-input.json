@@ -1,0 +1,75 @@
+{
+  "source_sha256": "0ac44b4cdfb03e688983d6e3fb1e484cca57589665bff19c5c65388e649b292a",
+  "batch_target_sha256": "48a1722757395cf8512a1d416f085da5b3e1cdc86c0726c4ba235ae7acb72a60",
+  "catalog_sha256": {
+    "native": "a6d0da95a3cf29e0bcfa904f80043a10fedc3124f7a26e3beebc82e8cdfa4411",
+    "online": "d7ae02f4d4453ebcb2acc37c15fd862acea8d2996d29cdb89bfb64c4f32cd5fa"
+  },
+  "entries": [
+    {
+      "id": "native:[tutorial text 1]",
+      "source": "Welcome to the Globulation 2 primary tutorial! This tutorial will cover everything from building inns, exploring zones, and destroying enemies! There is no shortage of useful knowledge here!",
+      "target": "Globulation 2 च्या प्राथमिक शिकवणीत तुमचे स्वागत आहे! यात खानावळी बांधणे, परिसराचा शोध घेणे आणि शत्रूंना हरवणे अशा सर्व गोष्टी शिकाल. इथे उपयोगी माहितीची कमतरता नाही!"
+    },
+    {
+      "id": "native:[tutorial text 2]",
+      "source": "Now that you have mastered the basics, it's time to get used to other buildings such as Racetracks, Swimming Pools, and Schools.",
+      "target": "आता तुम्ही मूलभूत गोष्टी शिकला आहात. पुढे धावपट्टी, जलतरण तलाव आणि शाळा अशा इतर इमारतींची ओळख करून घेऊया."
+    },
+    {
+      "id": "native:[tutorial text 3]",
+      "source": "You have done well to get this far. Now let's move on to Warriors, Barracks, and Upgrades.",
+      "target": "इथपर्यंत तुम्ही छान प्रगती केली आहे. आता योद्धे, बराकी आणि सुधारणा यांच्याकडे वळूया."
+    },
+    {
+      "id": "native:[tutorial text 4]",
+      "source": "You are almost finished. Only flags and attacking remain. Then you'll know enough to try Custom Games and eventually play online against some of Globulation 2's finest players.",
+      "target": "तुमची शिकवणी जवळजवळ पूर्ण झाली आहे. आता फक्त ध्वज आणि हल्ले शिकायचे आहेत. त्यानंतर तुम्ही स्वतःचे खेळ तयार करून पाहू शकाल आणि पुढे Globulation 2 च्या काही उत्तम खेळाडूंविरुद्ध ऑनलाइन खेळू शकाल."
+    },
+    {
+      "id": "native:[tutorial]",
+      "source": "Tutorial",
+      "target": "शिकवणी"
+    },
+    {
+      "id": "native:[tutorial lessons]",
+      "source": "Tutorial lessons",
+      "target": "शिकवणीचे धडे"
+    },
+    {
+      "id": "native:[tutorial restart]",
+      "source": "Restart lesson",
+      "target": "धडा पुन्हा सुरू करा"
+    },
+    {
+      "id": "native:[tutorial restart body]",
+      "source": "Restart this lesson from its prepared colony? Unsaved progress will be lost.",
+      "target": "हा धडा त्यासाठी तयार केलेल्या वसाहतीपासून पुन्हा सुरू करायचा का? जतन न केलेली प्रगती गमावली जाईल."
+    },
+    {
+      "id": "native:[tutorial complete]",
+      "source": "Lesson complete",
+      "target": "धडा पूर्ण झाला."
+    },
+    {
+      "id": "native:[tutorial food title]",
+      "source": "Food supply practice",
+      "target": "अन्नपुरवठ्याचा सराव"
+    },
+    {
+      "id": "native:[tutorial food briefing]",
+      "source": "Practice expanding food supply: build another Inn, then assign suppliers and watch wheat arrive.",
+      "target": "अन्नपुरवठा वाढवण्याचा सराव करा: आणखी एक खानावळ बांधा, मग पुरवठा करणारे कामगार नेमा आणि गहू येताना पाहा."
+    },
+    {
+      "id": "native:[tutorial food complete]",
+      "source": "You built an Inn and supplied it with wheat. Try another lesson or return to the main menu.",
+      "target": "तुम्ही खानावळ बांधली आणि तिला गव्हाचा पुरवठा केला. दुसरा धडा करून पाहा किंवा मुख्य मेनूवर परत जा."
+    },
+    {
+      "id": "native:[tutorial unavailable]",
+      "source": "Tutorial lessons could not be loaded.",
+      "target": "शिकवणीचे धडे लोड करता आले नाहीत."
+    }
+  ]
+}

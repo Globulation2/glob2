@@ -1,0 +1,418 @@
+{
+  "request": {
+    "project": "bradley-personal-20261027",
+    "model": "general/nmt",
+    "payload": {
+      "sourceLanguageCode": "en",
+      "targetLanguageCode": "mr",
+      "mimeType": "text/plain",
+      "contents": [
+        "Moderation reports",
+        "Moderation visibility",
+        "Moderator",
+        "Moderator access is required.",
+        "Mood contrast",
+        "Mood synchronization",
+        "More",
+        "More actions for ZXQPH0QXZ",
+        "Most downloaded",
+        "Most liked",
+        "Most recent provider attempts; unavailable usage is not zero. These numbers need verification against provider evidence.",
+        "Mottled",
+        "Music",
+        "Music Studio",
+        "Music composition conversation",
+        "Music couldn’t be loaded.",
+        "Music credits",
+        "Music for your colony",
+        "Music is unavailable.",
+        "Music projects",
+        "Music reports",
+        "Music revisions",
+        "Music-credit sales are not enabled.",
+        "Musical variety",
+        "Mute ZXQPH0QXZ",
+        "My AIs",
+        "My Colony",
+        "My colony",
+        "My families",
+        "My favourites",
+        "My generators",
+        "My landscape",
+        "My maps",
+        "My sets",
+        "My skins",
+        "Name",
+        "Name or content ID",
+        "Name, account id or email",
+        "Names like Guest-1234 are reserved for guests.",
+        "Navigation",
+        "Needs attention",
+        "New AI version",
+        "New building family",
+        "New composition",
+        "New display name",
+        "New here? Create an account",
+        "New map",
+        "New messages ",
+        "New set",
+        "New skin",
+        "New terrain set",
+        "New to ZXQPH0QXZ?",
+        "New version",
+        "Newest",
+        "Newest reports",
+        "News",
+        "Next",
+        "Next page",
+        "Next results",
+        "Next stage",
+        "Next stage: ZXQPH0QXZ",
+        "Nicowar",
+        "No AIs match these filters.",
+        "No Android app is associated with this instance.",
+        "No account needed to try it:",
+        "No accounts match.",
+        "No actions found.",
+        "No active account.",
+        "No attempt usage evidence is available.",
+        "No building validation engine is available. Try again later.",
+        "No commander activity yet.",
+        "No comparison",
+        "No compatible engine is available for this map.",
+        "No confirmed cash events in this range and payment mode.",
+        "No content found.",
+        "No data yet.",
+        "No engine agent can check files right now.",
+        "No engine agent can validate maps right now.",
+        "No engine agents are registered.",
+        "No families found."
+      ]
+    }
+  },
+  "response": {
+    "translations": [
+      {
+        "translatedText": "नियंत्रण अहवाल",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नियंत्रण दृश्यमानता",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "संचालक",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "मॉडरेटरचा प्रवेश आवश्यक आहे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "मूडमधील फरक",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "मूड सिंक्रोनाइझेशन",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अधिक",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ साठी अधिक कृती",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सर्वाधिक डाउनलोड केलेले",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सर्वाधिक आवडले",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "प्रदात्याचे सर्वात अलीकडील प्रयत्न; अनुपलब्ध वापर शून्य नाही. या आकड्यांची प्रदात्याच्या पुराव्याद्वारे पडताळणी करणे आवश्यक आहे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ठिपकेदार",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "संगीत",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "संगीत स्टुडिओ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "संगीत रचना संवाद",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "संगीत लोड होऊ शकले नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "संगीत श्रेय",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तुमच्या वसाहतीसाठी संगीत",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "संगीत उपलब्ध नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "संगीत प्रकल्प",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "संगीत अहवाल",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "संगीत सुधारणा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "संगीत क्रेडिटची विक्री सक्षम केलेली नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "संगीतातील विविधता",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "म्यूट ZXQPH0QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "माझे एआय",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "माझी वसाहत",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "माझी वसाहत",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "माझे कुटुंब",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "माझे आवडते",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "माझे जनरेटर",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "माझे लँडस्केप",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "माझे नकाशे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "माझे सेट",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "माझी त्वचा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नाव",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नाव किंवा सामग्री आयडी",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नाव, खाते आयडी किंवा ईमेल",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "Guest-1234 सारखी नावे पाहुण्यांसाठी राखीव असतात.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नेव्हिगेशन",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "लक्ष देण्याची गरज आहे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नवीन एआय आवृत्ती",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नवीन इमारत कुटुंब",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नवीन रचना",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नवीन डिस्प्ले नाव",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तुम्ही येथे नवीन आहात का? खाते तयार करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नवीन नकाशा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नवीन संदेश",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नवीन सेट",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नवीन त्वचा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नवीन भूभाग संच",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तुम्ही ZXQPH0QXZ साठी नवीन आहात का?",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नवीन आवृत्ती",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नवीनतम",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नवीनतम अहवाल",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "बातम्या",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पुढील",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पुढील पान",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पुढील निकाल",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पुढील टप्पा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पुढील टप्पा: ZXQPH0QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "निकोवार",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "या फिल्टरशी जुळणारे कोणतेही एआय नाहीत.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "या इन्स्टन्सशी कोणतेही अँड्रॉइड ॲप जोडलेले नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "हे वापरून पाहण्यासाठी खात्याची आवश्यकता नाही:",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कोणतेही खाते जुळत नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कोणतीही कृती आढळली नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कोणतेही सक्रिय खाते नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "वापरण्याच्या प्रयत्नाचा कोणताही पुरावा उपलब्ध नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "इमारत पडताळणी इंजिन उपलब्ध नाही. कृपया नंतर पुन्हा प्रयत्न करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अद्याप कमांडरकडून कोणतीही हालचाल झालेली नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तुलना नाही",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "या मॅपसाठी कोणतेही सुसंगत इंजिन उपलब्ध नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "या श्रेणीमध्ये आणि पेमेंट मोडमध्ये कोणतेही कन्फर्म केलेले कॅश व्यवहार नाहीत.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कोणतीही सामग्री आढळली नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अद्याप कोणताही डेटा उपलब्ध नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सध्या कोणताही इंजिन एजंट फाईल्स तपासू शकत नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सध्या कोणताही इंजिन एजंट मॅप्सची पडताळणी करू शकत नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कोणतेही इंजिन एजंट नोंदणीकृत नाहीत.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कोणतेही कुटुंब आढळले नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      }
+    ]
+  },
+  "response_sha256": "7975deff36e03880769101361e103f0e9f20341e42d6e1ec99f17bc5a4ea5f74"
+}

@@ -1,0 +1,418 @@
+{
+  "request": {
+    "project": "bradley-personal-20261027",
+    "model": "general/nmt",
+    "payload": {
+      "sourceLanguageCode": "en",
+      "targetLanguageCode": "mr",
+      "mimeType": "text/plain",
+      "contents": [
+        "The march has too little contested ground for that many prizes; use fewer prizes, a wider march or a bigger map.",
+        "The march has no room for a prize; use a bigger map, fewer colonies or a wider march.",
+        "Orchard Commons",
+        "Orchard spacing",
+        "Compact",
+        "Balanced",
+        "Spread",
+        "The Gauntlet",
+        "Partition thickness",
+        "The Comb",
+        "Peninsulas per shore",
+        "Encircled Kingdom",
+        "Fortress plan",
+        "Automatic",
+        "Elongated enclosure",
+        "Bastioned enclosure",
+        "Paired courtyards",
+        "Heartland farmland",
+        "The Faulted City",
+        "Fault displacement",
+        "Fault width",
+        "Ruin density",
+        "Surviving junctions",
+        "The Faulted City needs 256 or 512 tiles per side and one to twelve colonies.",
+        "The city has too few usable junctions.",
+        "The city neighbourhoods are too unequal; try another seed.",
+        "The fractured civic plaza did not survive.",
+        "Who Ate the Map?",
+        "Appetite",
+        "A Little Nibble",
+        "Hungry",
+        "Portage depth",
+        "Extra trails",
+        "Drowned Forest",
+        "Wooded neck thickness",
+        "Neutral clearing size",
+        "Bastion Keys",
+        "Plantation size",
+        "The Hungry Marches",
+        "Opening ration",
+        "Central concentration",
+        "The Last Treeline",
+        "Woodland depth",
+        "AI strategy",
+        "Balances sustainable growth and training, then gathers armies into waves.",
+        "Core strategy: Treats food, workers, births, training, construction and combat as competing demands. Sizes its army partly against estimated enemy strength, then tries to deliver that army effectively.",
+        "Economy and development: Budgets births against food and labor, preserves idle opportunities for training, and stops adding surplus workers when military production is needed. Scales training capacity and avoids taking too much infrastructure offline for upgrades.",
+        "Scouting and decisions: Estimates enemy forces from visible units and remembered sightings using a fitted model. Targets depend on value, distance, towers, exposed workers and persistence. Fruit missions support food variety and conversion.",
+        "Attack and defense: Reserves warriors for training and defense, then gathers eligible land forces near friendly food infrastructure before launching waves. Uses local defensive responses and evaluates approaches to the colony.",
+        "When attacks stall: After four consecutive wave-delivery failures, switches to continuously reinforced attack flags. Amphibious attacks can also use continuous reinforcement. This fallback does not solve every blockage before a rally can form.",
+        "Compared with other AIs: Integrates food, training, intelligence and deployment more tightly. Cabino emphasizes several building attacks; Maxima emphasizes estimated demand and delivering gathered forces.",
+        "Strengths and weaknesses: Sustains growth and military replacement while adapting to food pressure and observed threats. Needs food, training capacity and open gathering space; congestion and long routes can undermine delivery.",
+        "Counterplay to try: Contest exposed food sources, inns and barracks before waves gather. Keep a supplied defensive force together and disrupt reinforcement routes. Expect repeated pressure after the first wave.",
+        "Scouting: Force estimates use sightings and observation history, rather than hidden enemy troop totals.",
+        "Fertility",
+        "Deposits",
+        "Room",
+        "Isolation",
+        "The map could not be saved. Check the destination and available space. Your edits are still open.",
+        "Loading headers...",
+        "Loading teams...",
+        "Loading players...",
+        "Loading scripts...",
+        "Generating map...",
+        "The map could not be generated. Try different generation settings.",
+        "Loading units...",
+        "Resolving team links...",
+        "Saving...",
+        "Save failed. Retry.",
+        "Export save",
+        "Browser storage could not be restored. Existing saved data has not been changed. You can continue this session, but local changes cannot be persisted. Export important saves from the save-failure dialog. Reload to try restoring storage again.",
+        "Continue",
+        "Export file",
+        "File export failed",
+        "Import",
+        "Choose a file to import",
+        "Validating file...",
+        "File imported",
+        "Import cancelled",
+        "Import failed: invalid or unsupported file"
+      ]
+    }
+  },
+  "response": {
+    "translations": [
+      {
+        "translatedText": "एवढ्या बक्षिसांसाठी मोर्चातील लढण्याची जागा खूपच कमी आहे; त्याऐवजी कमी बक्षिसे, अधिक व्यापक मोर्चा किंवा मोठा नकाशा वापरा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "या मोहिमेत बक्षिसाला जागा नाही; मोठा नकाशा, कमी वसाहती किंवा अधिक विस्तृत मोहीम वापरा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ऑर्चर्ड कॉमन्स",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "फळबागेतील अंतर",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "संक्षिप्त",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "संतुलित",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "प्रसार",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "आव्हान",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "विभाजन जाडी",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कंघी",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "किनारपट्टीवरील द्वीपकल्प",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "वेढलेले राज्य",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "किल्ला योजना",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "स्वयंचलित",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "लांबट आवरण",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "बुरुजयुक्त तटबंदी",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "जोड अंगणे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "हार्टलँड शेतजमीन",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "दोषपूर्ण शहर",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "दोष विस्थापन",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "दोष रुंदी",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अवशेषांची घनता",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "टिकून राहणारे जंक्शन",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "फॉल्टेड सिटीला प्रत्येक बाजूला २५६ किंवा ५१२ टाइल्स आणि एक ते बारा वसाहतींची आवश्यकता असते.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "शहरात वापरण्यायोग्य जंक्शन खूप कमी आहेत.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "शहरातील वस्त्या खूपच असमान आहेत; दुसरे बी वापरून पहा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तो विखंडित नागरी चौक टिकला नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नकाशा कोणी खाल्ला?",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "भूक",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "एक छोटासा घास",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "भुकेलेला",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पोर्टेजची खोली",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अतिरिक्त पायवाटा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "बुडालेले जंगल",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "लाकडी मानेची जाडी",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तटस्थ क्लिअरिंग आकार",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "बॅस्टियन कीज",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "लागवडीचा आकार",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "भुकेले मार्च",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सुरुवातीचे प्रमाण",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "केंद्रीय एकाग्रता",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "शेवटची वृक्षरेषा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "वनक्षेत्राची खोली",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "एआय धोरण",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "शाश्वत वाढ आणि प्रशिक्षणात संतुलन साधते, आणि मग सैन्याच्या लाटा गोळा करते.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "मुख्य रणनीती: अन्न, कामगार, जन्म, प्रशिक्षण, बांधकाम आणि लढाई यांना परस्परविरोधी मागण्या मानते. आपल्या सैन्याचा आकार अंशतः शत्रूच्या अंदाजित सामर्थ्याच्या आधारावर ठरवते आणि मग ते सैन्य प्रभावीपणे तैनात करण्याचा प्रयत्न करते.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अर्थव्यवस्था आणि विकास: अन्न आणि श्रमाच्या खर्चाचे नियोजन करते, प्रशिक्षणाच्या उपलब्ध संधी जपते आणि लष्करी उत्पादनाची गरज असताना अतिरिक्त कामगार भरती थांबवते. प्रशिक्षण क्षमता वाढवते आणि अद्ययावतीकरणासाठी पायाभूत सुविधांचा जास्त वापर थांबवणे टाळते.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "टेहळणी आणि निर्णय: एका जुळवलेल्या मॉडेलचा वापर करून, दिसणाऱ्या तुकड्या आणि लक्षात ठेवलेल्या निरीक्षणांवरून शत्रू सैन्याचा अंदाज लावला जातो. लक्ष्ये त्यांचे मूल्य, अंतर, बुरुज, उघड्यावर असलेले कामगार आणि चिकाटी यांवर अवलंबून असतात. फळांच्या मोहिमा अन्नाची विविधता आणि रूपांतरणास मदत करतात.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "आक्रमण आणि बचाव: प्रशिक्षण आणि संरक्षणासाठी योद्धे राखीव ठेवते, त्यानंतर हल्ले करण्यापूर्वी मित्र राष्ट्रांच्या अन्नपुरवठा पायाभूत सुविधांजवळ पात्र भूदल गोळा करते. स्थानिक बचावात्मक प्रतिसादांचा वापर करते आणि वसाहतीकडे येण्याच्या मार्गांचे मूल्यांकन करते.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "जेव्हा हल्ले थांबतात: सलग चार वेळा हल्ले पोहोचवण्यात अपयश आल्यास, सतत बळकट होणाऱ्या हल्ला ध्वजांकडे वळते. उभयचर हल्ले देखील सतत बळकटीकरणाचा वापर करू शकतात. हल्ला पुन्हा सुरू होण्यापूर्वी येणारा प्रत्येक अडथळा हा पर्यायी उपाय दूर करत नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "इतर एआयंच्या तुलनेत: अन्न, प्रशिक्षण, गुप्त माहिती आणि तैनाती यांचे अधिक घट्टपणे एकत्रीकरण करते. कॅबिनो अनेक इमारतींवरील हल्ल्यांवर भर देतो; मॅक्सिमा अंदाजित मागणी आणि जमवलेल्या सैन्याला पोहोचवण्यावर भर देते.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सामर्थ्ये आणि मर्यादा: अन्नटंचाई आणि दिसून आलेल्या धोक्यांना तोंड देत विकास आणि लष्करी बदली टिकवून ठेवते. अन्न, प्रशिक्षण क्षमता आणि मोकळ्या एकत्र येण्याच्या जागेची आवश्यकता असते; गर्दी आणि लांबचे मार्ग वितरणात अडथळा आणू शकतात.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "प्रयत्न करण्याजोगा प्रतिकार: सैन्याच्या लाटा जमा होण्यापूर्वी उघड्यावर असलेले अन्नस्रोत, धर्मशाळा आणि सैनिकी छावण्यांवर ताबा मिळवा. रसद पुरवठा असलेले संरक्षण दल एकत्र ठेवा आणि कुमक येण्याचे मार्ग विस्कळीत करा. पहिल्या लाटेनंतर पुन्हा दबाव येण्याची शक्यता आहे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "टेहळणी: सैन्यबळाचा अंदाज हा लपलेल्या शत्रू सैन्याच्या एकूण संख्येऐवजी, प्रत्यक्ष दिसलेल्या शत्रूंच्या नोंदी आणि निरीक्षणाच्या इतिहासावरून लावला जातो.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "प्रजननक्षमता",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ठेवी",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "खोली",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अलगीकरण",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नकाशा जतन करता आला नाही. कृपया गंतव्यस्थान आणि उपलब्ध जागा तपासा. तुम्ही केलेले बदल अजूनही प्रलंबित आहेत.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "हेडर लोड होत आहेत...",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "संघ लोड होत आहेत...",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "खेळाडू लोड होत आहेत...",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "स्क्रिप्ट्स लोड होत आहेत...",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नकाशा तयार करत आहे...",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नकाशा तयार होऊ शकला नाही. कृपया वेगळ्या निर्मिती सेटिंग्ज वापरून पहा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "युनिट्स लोड होत आहेत...",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "टीममधील दुवे सोडवत आहे...",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "जतन करत आहे...",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सेव्ह अयशस्वी झाले. पुन्हा प्रयत्न करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "निर्यात जतन करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ब्राउझर स्टोरेज पुनर्संचयित करता आले नाही. आधीपासून जतन केलेला डेटा बदललेला नाही. तुम्ही हे सत्र सुरू ठेवू शकता, परंतु स्थानिक बदल जतन केले जाऊ शकत नाहीत. सेव्ह-फेल्युअर डायलॉगमधून महत्त्वाचे सेव्ह एक्सपोर्ट करा. स्टोरेज पुन्हा पुनर्संचयित करण्याचा प्रयत्न करण्यासाठी रीलोड करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पुढे चालू ठेवा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "फाइल निर्यात करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "फाइल निर्यात अयशस्वी झाली",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "आयात",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "आयात करण्यासाठी एक फाईल निवडा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "फाईलची पडताळणी करत आहे...",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "फाईल आयात केली",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "आयात रद्द करण्यात आली.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "आयात अयशस्वी झाले: अवैध किंवा असमर्थित फाइल",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      }
+    ]
+  },
+  "response_sha256": "037e59e9263b7e108ce6fde5c5f1e427e029682db422a78dd38dc0cb6da56c90"
+}

@@ -1,0 +1,188 @@
+{
+  "reviewer": "/root/draft_tool",
+  "role": "independent online semantic reviewer",
+  "source_sha256": "0ac44b4cdfb03e688983d6e3fb1e484cca57589665bff19c5c65388e649b292a",
+  "batch_target_sha256": "5886ecdbdcc5e725d75660c8ea95d5addfe6cf9a911a2a68d59ed5d96cd88626",
+  "catalog_sha256": {
+    "native": "683bcc1e1680e6cb9e2605ef9be42724a76d3e7b1f2868462e24ef50d1423642",
+    "online": "1ba40d342498f5e7704a63e5d175bd9e8a0ede31e3ca2ce88e8cb1fbc0ba68a6"
+  },
+  "reviewed_keys": [
+    "online:Native terrain preview · awaiting checks",
+    "online:Generated layout · intermediate image",
+    "online:Selected map area",
+    "online:Cropped layout · intermediate image",
+    "online:Landscape reference {count}",
+    "online:Composition source · edit {count}",
+    "online:Candidate {count} execution report",
+    "online:Candidate {count} score",
+    "online:Candidate {count} · validated",
+    "online:Candidate {count} · needs repairs",
+    "online:Candidate {count} report",
+    "online:Validation report",
+    "online:Game-rendered scene and resource gallery",
+    "online:Native validation report",
+    "online:Engine import and artwork",
+    "online:Engine definitions and artwork",
+    "online:Requested size and players",
+    "online:Valid colony starts",
+    "online:Resource growth enabled",
+    "online:Connected walking routes",
+    "online:Opening economy measured",
+    "online:Colony {count}: building space",
+    "online:Colony {count}: starter food",
+    "online:Colony {count}: starter timber",
+    "online:Colony {count}: renewable food ground",
+    "online:Properties",
+    "online:Semantics",
+    "online:Presentation",
+    "online:{value0} source",
+    "online:{value0} decor source",
+    "online:Your draft changed while the design was loading. Your changes were kept; try opening the design again.",
+    "online:More filters",
+    "online:Clear filters",
+    "online:No results match these filters.",
+    "online:Results: {value0}",
+    "online:Game text field"
+  ],
+  "findings": [
+    {
+      "key": "online:Native terrain preview · awaiting checks",
+      "before": "मूळ भूभागाचे पूर्वावलोकन · तपासणीची प्रतीक्षा",
+      "after": "खेळ इंजिनमधील भूभागाचे पूर्वावलोकन · तपासण्यांची प्रतीक्षा",
+      "reason": "Native means engine-produced preview, not original terrain.",
+      "severity": "major",
+      "state": "proposed"
+    },
+    {
+      "key": "online:Selected map area",
+      "before": "निवडलेला नकाशा क्षेत्र",
+      "after": "नकाशातील निवडलेला भाग",
+      "reason": "Natural agreement.",
+      "severity": "minor",
+      "state": "proposed"
+    },
+    {
+      "key": "online:Composition source · edit {count}",
+      "before": "रचना स्रोत · {count} संपादित करा",
+      "after": "रचनेचा स्रोत · संपादन {count}",
+      "reason": "Edit is numbered revision label, not command edit this count.",
+      "severity": "minor",
+      "state": "proposed"
+    },
+    {
+      "key": "online:Candidate {count} execution report",
+      "before": "उमेदवार {count} अंमलबजावणी अहवाल",
+      "after": "प्रस्तावित आवृत्ती {count} चा अंमलबजावणी अहवाल",
+      "reason": "Candidate is generated artifact, not person.",
+      "severity": "minor",
+      "state": "proposed"
+    },
+    {
+      "key": "online:Candidate {count} score",
+      "before": "उमेदवार {count} गुण",
+      "after": "प्रस्तावित आवृत्ती {count} चे गुण",
+      "reason": "Candidate is generated artifact.",
+      "severity": "minor",
+      "state": "proposed"
+    },
+    {
+      "key": "online:Candidate {count} · validated",
+      "before": "उमेदवार {count} · प्रमाणित",
+      "after": "प्रस्तावित आवृत्ती {count} · पडताळलेली",
+      "reason": "Candidate is generated artifact.",
+      "severity": "minor",
+      "state": "proposed"
+    },
+    {
+      "key": "online:Candidate {count} · needs repairs",
+      "before": "उमेदवार {count} · दुरुस्तीची गरज आहे",
+      "after": "प्रस्तावित आवृत्ती {count} · दुरुस्ती आवश्यक",
+      "reason": "Candidate is generated artifact.",
+      "severity": "minor",
+      "state": "proposed"
+    },
+    {
+      "key": "online:Candidate {count} report",
+      "before": "उमेदवार {count} अहवाल",
+      "after": "प्रस्तावित आवृत्ती {count} चा अहवाल",
+      "reason": "Candidate is generated artifact.",
+      "severity": "minor",
+      "state": "proposed"
+    },
+    {
+      "key": "online:Native validation report",
+      "before": "मूळ प्रमाणीकरण अहवाल",
+      "after": "खेळ इंजिनचा पडताळणी अहवाल",
+      "reason": "Native means engine validation, not original report.",
+      "severity": "minor",
+      "state": "proposed"
+    },
+    {
+      "key": "online:Valid colony starts",
+      "before": "वैध वसाहत सुरू होते",
+      "after": "वसाहतींची वैध सुरुवातीची ठिकाणे",
+      "reason": "Validated starting locations, not a verb saying colony starts.",
+      "severity": "major",
+      "state": "proposed"
+    },
+    {
+      "key": "online:Opening economy measured",
+      "before": "अर्थव्यवस्था उघडण्याचे मोजमाप",
+      "after": "सुरुवातीच्या अर्थव्यवस्थेचे मोजमाप झाले",
+      "reason": "Opening means initial game phase, not opening an economy.",
+      "severity": "major",
+      "state": "proposed"
+    },
+    {
+      "key": "online:Colony {count}: building space",
+      "before": "कॉलनी {count}: इमारत जागा",
+      "after": "वसाहत {count}: इमारतींसाठी जागा",
+      "reason": "Colony glossary and space for buildings.",
+      "severity": "minor",
+      "state": "proposed"
+    },
+    {
+      "key": "online:Colony {count}: starter food",
+      "before": "कॉलनी {count}: स्टार्टर फूड",
+      "after": "वसाहत {count}: सुरुवातीचे अन्न",
+      "reason": "Starter food is initial resource supply.",
+      "severity": "minor",
+      "state": "proposed"
+    },
+    {
+      "key": "online:Colony {count}: starter timber",
+      "before": "कॉलनी {count}: सुरुवातीचे लाकूड",
+      "after": "वसाहत {count}: सुरुवातीचे लाकूड",
+      "reason": "Use colony glossary.",
+      "severity": "minor",
+      "state": "proposed"
+    },
+    {
+      "key": "online:Colony {count}: renewable food ground",
+      "before": "कॉलनी {count}: नूतनीकरणक्षम अन्नभूमी",
+      "after": "वसाहत {count}: अन्न पुन्हा उगवणारी जमीन",
+      "reason": "Renewable food terrain means regrowth, not energy renewables.",
+      "severity": "minor",
+      "state": "proposed"
+    },
+    {
+      "key": "online:Properties",
+      "before": "मालमत्ता",
+      "after": "गुणधर्म",
+      "reason": "Object/gameplay properties, not real estate.",
+      "severity": "major",
+      "state": "proposed"
+    },
+    {
+      "key": "online:Semantics",
+      "before": "अर्थशास्त्र",
+      "after": "अर्थ",
+      "reason": "Semantics concerns meaning, not economics अर्थशास्त्र.",
+      "severity": "major",
+      "state": "proposed"
+    }
+  ],
+  "accepted_english": [],
+  "certification": "Agent-reviewed; not native-human-certified; editorial and final recheck pending"
+}

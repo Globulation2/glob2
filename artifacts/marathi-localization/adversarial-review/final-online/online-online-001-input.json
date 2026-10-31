@@ -1,0 +1,516 @@
+{
+  "source_sha256": "0ac44b4cdfb03e688983d6e3fb1e484cca57589665bff19c5c65388e649b292a",
+  "batch_target_sha256": "5871351e70ef732948d21d73d5639ff1e3fdada61b023c493d4e3523453fd1ed",
+  "catalog_sha256": {
+    "native": "a6d0da95a3cf29e0bcfa904f80043a10fedc3124f7a26e3beebc82e8cdfa4411",
+    "online": "d7ae02f4d4453ebcb2acc37c15fd862acea8d2996d29cdb89bfb64c4f32cd5fa"
+  },
+  "entries": [
+    {
+      "id": "online: (provisional)",
+      "source": " (provisional)",
+      "target": " (तात्पुरते)"
+    },
+    {
+      "id": "online: ({slot0})",
+      "source": " ({slot0})",
+      "target": " ({slot0})"
+    },
+    {
+      "id": "online: / {slot0}",
+      "source": " / {slot0}",
+      "target": " / {slot0}"
+    },
+    {
+      "id": "online: Building credits",
+      "source": " Building credits",
+      "target": " इमारत निर्मिती क्रेडिट्स"
+    },
+    {
+      "id": "online: COMPOSITION COMPLETE",
+      "source": " COMPOSITION COMPLETE",
+      "target": " रचना पूर्ण झाली"
+    },
+    {
+      "id": "online: Edit & release settings",
+      "source": " Edit & release settings",
+      "target": " संपादन आणि प्रकाशन सेटिंग्ज"
+    },
+    {
+      "id": "online: Follow latest",
+      "source": " Follow latest",
+      "target": " नवीनतम आवृत्तीसोबत रहा"
+    },
+    {
+      "id": "online: I can share these recordings and artwork under the selected licence.",
+      "source": " I can share these recordings and artwork under the selected licence.",
+      "target": " मला ही रेकॉर्डिंग आणि कलाकृती निवडलेल्या परवान्याअंतर्गत सामायिक करण्याचा अधिकार आहे."
+    },
+    {
+      "id": "online: Loading…",
+      "source": " Loading…",
+      "target": " लोडिंग…"
+    },
+    {
+      "id": "online: My releases and uploads",
+      "source": " My releases and uploads",
+      "target": " माझी प्रकाशने आणि अपलोड"
+    },
+    {
+      "id": "online: Pane widths",
+      "source": " Pane widths",
+      "target": " पॅनेलची रुंदी"
+    },
+    {
+      "id": "online: Projects",
+      "source": " Projects",
+      "target": " प्रकल्प"
+    },
+    {
+      "id": "online: Publish",
+      "source": " Publish",
+      "target": " प्रकाशित करा"
+    },
+    {
+      "id": "online: Reference images",
+      "source": " Reference images",
+      "target": " संदर्भ प्रतिमा"
+    },
+    {
+      "id": "online: Review & publish",
+      "source": " Review & publish",
+      "target": " पुनरावलोकन करा आणि प्रकाशित करा"
+    },
+    {
+      "id": "online: Review release settings",
+      "source": " Review release settings",
+      "target": " प्रकाशन सेटिंग्ज तपासा"
+    },
+    {
+      "id": "online: Send",
+      "source": " Send",
+      "target": " पाठवा"
+    },
+    {
+      "id": "online: Settings & references",
+      "source": " Settings & references",
+      "target": " सेटिंग्ज आणि संदर्भ"
+    },
+    {
+      "id": "online: Terrain credits",
+      "source": " Terrain credits",
+      "target": " भूभाग निर्मिती क्रेडिट्स"
+    },
+    {
+      "id": "online: Undo",
+      "source": " Undo",
+      "target": " पूर्ववत करा"
+    },
+    {
+      "id": "online: Your next match will use the default colony.",
+      "source": " Your next match will use the default colony.",
+      "target": " तुमच्या पुढील सामन्यात पूर्वनिर्धारित वसाहत वापरली जाईल."
+    },
+    {
+      "id": "online: checks",
+      "source": " checks",
+      "target": " तपासणी"
+    },
+    {
+      "id": "online: credits",
+      "source": " credits",
+      "target": " क्रेडिट्स"
+    },
+    {
+      "id": "online: diverged",
+      "source": " diverged",
+      "target": " विचलित झाले"
+    },
+    {
+      "id": "online: likes",
+      "source": " likes",
+      "target": " पसंती"
+    },
+    {
+      "id": "online: on {p0}",
+      "source": " on {p0}",
+      "target": " {p0} वर"
+    },
+    {
+      "id": "online: refused orders",
+      "source": " refused orders",
+      "target": " नाकारलेले आदेश"
+    },
+    {
+      "id": "online: seconds",
+      "source": " seconds",
+      "target": " सेकंद"
+    },
+    {
+      "id": "online: this version",
+      "source": " this version",
+      "target": " ही आवृत्ती"
+    },
+    {
+      "id": "online: to confirm",
+      "source": " to confirm",
+      "target": " पुष्टी करण्यासाठी"
+    },
+    {
+      "id": "online: · ",
+      "source": " · ",
+      "target": " · "
+    },
+    {
+      "id": "online: · Charged: ",
+      "source": " · Charged: ",
+      "target": " · आकारलेले शुल्क: "
+    },
+    {
+      "id": "online: · Completed ",
+      "source": " · Completed ",
+      "target": " · पूर्ण झाले "
+    },
+    {
+      "id": "online: · Content hidden",
+      "source": " · Content hidden",
+      "target": " · सामग्री लपवली"
+    },
+    {
+      "id": "online: · hidden",
+      "source": " · hidden",
+      "target": " · लपलेले"
+    },
+    {
+      "id": "online: · incomplete historical data",
+      "source": " · incomplete historical data",
+      "target": " · अपूर्ण ऐतिहासिक डेटा"
+    },
+    {
+      "id": "online: · stale",
+      "source": " · stale",
+      "target": " · कालबाह्य"
+    },
+    {
+      "id": "online: · updated ",
+      "source": " · updated ",
+      "target": " · अद्ययावत केले "
+    },
+    {
+      "id": "online: · {slot0}",
+      "source": " · {slot0}",
+      "target": " · {slot0}"
+    },
+    {
+      "id": "online: · {slot0} disconnect",
+      "source": {
+        "one": " · {slot0} disconnect",
+        "other": " · {slot0} disconnects"
+      },
+      "target": {
+        "one": " · {slot0} वेळा संपर्क तुटला",
+        "other": " · {slot0} वेळा संपर्क तुटला"
+      }
+    },
+    {
+      "id": "online: · {slot0} disconnects",
+      "source": " · {slot0} disconnects",
+      "target": " · {slot0} वेळा संपर्क तुटला"
+    },
+    {
+      "id": "online: — ",
+      "source": " — ",
+      "target": " — "
+    },
+    {
+      "id": "online: → ",
+      "source": " → ",
+      "target": " → "
+    },
+    {
+      "id": "online:#{slot0}",
+      "source": "#{slot0}",
+      "target": "#{slot0}"
+    },
+    {
+      "id": "online:(match)",
+      "source": "(match)",
+      "target": "(सामना)"
+    },
+    {
+      "id": "online:, and enter:",
+      "source": ", and enter:",
+      "target": ", आणि लिहा:"
+    },
+    {
+      "id": "online:, or create an account below",
+      "source": ", or create an account below",
+      "target": ", किंवा खाली खाते तयार करा"
+    },
+    {
+      "id": "online:, so it cannot be added to the account you are playing as. Accounts are never merged.",
+      "source": ", so it cannot be added to the account you are playing as. Accounts are never merged.",
+      "target": ", त्यामुळे ते तुम्ही ज्या खात्यावरून खेळत आहात त्यात जोडता येत नाही. खाती कधीही विलीन केली जात नाहीत."
+    },
+    {
+      "id": "online:, then",
+      "source": ", then",
+      "target": ", मग"
+    },
+    {
+      "id": "online:, to confirm",
+      "source": ", to confirm",
+      "target": ", पुष्टी करण्यासाठी"
+    },
+    {
+      "id": "online:.",
+      "source": ".",
+      "target": "."
+    },
+    {
+      "id": "online:. You can close this page.",
+      "source": ". You can close this page.",
+      "target": ". हे पृष्ठ बंद करू शकता."
+    },
+    {
+      "id": "online:/ais/favourites",
+      "source": "/ais/favourites",
+      "target": "/ais/favourites"
+    },
+    {
+      "id": "online:/ais/mine",
+      "source": "/ais/mine",
+      "target": "/ais/mine"
+    },
+    {
+      "id": "online:1.0.0",
+      "source": "1.0.0",
+      "target": "1.0.0"
+    },
+    {
+      "id": "online:3 to 32 letters, digits, dots, dashes or underscores. Other players see it.",
+      "source": "3 to 32 letters, digits, dots, dashes or underscores. Other players see it.",
+      "target": "३ ते ३२ अक्षरे, अंक, टिंब, डॅश किंवा अधोरेखन. हे इतर खेळाडूंना दिसते."
+    },
+    {
+      "id": "online:95%: {slot0}",
+      "source": "95%: {slot0}",
+      "target": "९५%: {slot0}"
+    },
+    {
+      "id": "online:: ",
+      "source": ": ",
+      "target": ": "
+    },
+    {
+      "id": "online:: create a room and invite your friends, or find a quick match.",
+      "source": ": create a room and invite your friends, or find a quick match.",
+      "target": ": खोली तयार करून मित्रांना आमंत्रित करा, किंवा जलद सामना शोधा."
+    },
+    {
+      "id": "online:; nothing to install.",
+      "source": "; nothing to install.",
+      "target": "; काहीही स्थापित करावे लागत नाही."
+    },
+    {
+      "id": "online:A Globulation 2 colony: globs at work around their swarm",
+      "source": "A Globulation 2 colony: globs at work around their swarm",
+      "target": "Globulation 2 ची वसाहत: पोळ्याभोवती काम करणारे ग्लॉब्स"
+    },
+    {
+      "id": "online:A JSON file with everything this server stores about your account: your profile, sign-in methods (without passwords or keys), matches, ratings, rooms and chat, matchmaking, maps and moderation records.",
+      "source": "A JSON file with everything this server stores about your account: your profile, sign-in methods (without passwords or keys), matches, ratings, rooms and chat, matchmaking, maps and moderation records.",
+      "target": "हा सर्व्हर तुमच्या खात्याबद्दल साठवत असलेली सर्व माहिती असलेली JSON फाइल: तुमचे प्रोफाइल, साइन-इन पद्धती (पासवर्ड किंवा की वगळून), सामने, रेटिंग, खोल्या आणि चॅट, प्रतिस्पर्धी शोध, नकाशे आणि नियंत्रण कारवाईच्या नोंदी."
+    },
+    {
+      "id": "online:A SOUNDTRACK FOR YOUR COLONY",
+      "source": "A SOUNDTRACK FOR YOUR COLONY",
+      "target": "तुमच्या वसाहतीसाठी एक पार्श्वसंगीत"
+    },
+    {
+      "id": "online:A colony takes shape",
+      "source": "A colony takes shape",
+      "target": "एक वसाहत आकार घेते"
+    },
+    {
+      "id": "online:A dismissed report cannot hide content.",
+      "source": "A dismissed report cannot hide content.",
+      "target": "फेटाळलेल्या तक्रारीमुळे सामग्री लपवता येत नाही."
+    },
+    {
+      "id": "online:A generated room map needs params.teams between 1 and 12.",
+      "source": "A generated room map needs params.teams between 1 and 12.",
+      "target": "तयार केलेल्या रूम मॅपसाठी params.teams हे 1 ते 12 च्या दरम्यान असणे आवश्यक आहे."
+    },
+    {
+      "id": "online:A hand-made map has no generator.",
+      "source": "A hand-made map has no generator.",
+      "target": "हाताने तयार केलेल्या नकाशाला जनरेटर नसतो."
+    },
+    {
+      "id": "online:A hidden set cannot publish new releases.",
+      "source": "A hidden set cannot publish new releases.",
+      "target": "लपवलेला संच नवीन आवृत्त्या प्रकाशित करू शकत नाही."
+    },
+    {
+      "id": "online:A map keeps at most {p0} versions; delete old ones first.",
+      "source": "A map keeps at most {p0} versions; delete old ones first.",
+      "target": "एका नकाशाच्या जास्तीत जास्त {p0} आवृत्त्या ठेवता येतात; आधी जुन्या आवृत्त्या हटवा."
+    },
+    {
+      "id": "online:A new library is taking shape. Share the first AI.",
+      "source": "A new library is taking shape. Share the first AI.",
+      "target": "नवीन संग्रह तयार होत आहे. पहिला एआय सामायिक करा."
+    },
+    {
+      "id": "online:A new mind for your colony",
+      "source": "A new mind for your colony",
+      "target": "तुमच्या वसाहतीसाठी एक नवीन विचार"
+    },
+    {
+      "id": "online:A newer draft prevents undo. Use history to restore it.",
+      "source": "A newer draft prevents undo. Use history to restore it.",
+      "target": "नवीन मसुद्यामुळे पूर्ववत करता येत नाही. पुनर्संचयित करण्यासाठी इतिहास वापरा."
+    },
+    {
+      "id": "online:A newer revision prevents undo. Restore a version in Changes.",
+      "source": "A newer revision prevents undo. Restore a version in Changes.",
+      "target": "नवीन आवृत्तीमुळे पूर्ववत करण्याची क्रिया थांबते. 'बदल' मध्ये आवृत्ती पुनर्संचयित करा."
+    },
+    {
+      "id": "online:A previous submission was not acknowledged. Sending it again safely retries the same request.",
+      "source": "A previous submission was not acknowledged. Sending it again safely retries the same request.",
+      "target": "आधी पाठवलेल्या विनंतीची पोच मिळाली नाही. ती पुन्हा पाठवल्यास त्याच विनंतीचा सुरक्षितपणे पुन्हा प्रयत्न होतो."
+    },
+    {
+      "id": "online:A recoverable active account is required for colony skins.",
+      "source": "A recoverable active account is required for colony skins.",
+      "target": "वसाहतीच्या रूपांसाठी पुनर्प्राप्त करता येणारे सक्रिय खाते आवश्यक आहे."
+    },
+    {
+      "id": "online:A registered account is required.",
+      "source": "A registered account is required.",
+      "target": "नोंदणीकृत खाते आवश्यक आहे."
+    },
+    {
+      "id": "online:A release must retain its package ID.",
+      "source": "A release must retain its package ID.",
+      "target": "प्रकाशनाचा पॅकेज आयडी कायम ठेवणे आवश्यक आहे."
+    },
+    {
+      "id": "online:A saved request is ready to send again safely.",
+      "source": "A saved request is ready to send again safely.",
+      "target": "जतन केलेली विनंती सुरक्षितपणे पुन्हा पाठवण्यासाठी तयार आहे."
+    },
+    {
+      "id": "online:A world of possibilities",
+      "source": "A world of possibilities",
+      "target": "शक्यतांचे जग"
+    },
+    {
+      "id": "online:A · V{slot0}",
+      "source": "A · V{slot0}",
+      "target": "A · V{slot0}"
+    },
+    {
+      "id": "online:AI",
+      "source": "AI",
+      "target": "एआय"
+    },
+    {
+      "id": "online:AI Building Studio",
+      "source": "AI Building Studio",
+      "target": "एआय बिल्डिंग स्टुडिओ"
+    },
+    {
+      "id": "online:AI Building Studio is not enabled on this instance.",
+      "source": "AI Building Studio is not enabled on this instance.",
+      "target": "या इन्स्टन्सवर एआय बिल्डिंग स्टुडिओ सक्षम केलेले नाही."
+    },
+    {
+      "id": "online:AI JavaScript source",
+      "source": "AI JavaScript source",
+      "target": "एआय JavaScript स्रोत"
+    },
+    {
+      "id": "online:AI Library",
+      "source": "AI Library",
+      "target": "एआय लायब्ररी"
+    },
+    {
+      "id": "online:AI MAP STUDIO",
+      "source": "AI MAP STUDIO",
+      "target": "एआय मॅप स्टुडिओ"
+    },
+    {
+      "id": "online:AI MUSIC STUDIO",
+      "source": "AI MUSIC STUDIO",
+      "target": "एआय म्युझिक स्टुडिओ"
+    },
+    {
+      "id": "online:AI Map Studio",
+      "source": "AI Map Studio",
+      "target": "एआय मॅप स्टुडिओ"
+    },
+    {
+      "id": "online:AI Map Studio is not enabled on this instance.",
+      "source": "AI Map Studio is not enabled on this instance.",
+      "target": "या इन्स्टन्सवर एआय मॅप स्टुडिओ सक्षम केलेले नाही."
+    },
+    {
+      "id": "online:AI Map Studio is not enabled on this instance. Your saved projects remain available.",
+      "source": "AI Map Studio is not enabled on this instance. Your saved projects remain available.",
+      "target": "या इन्स्टन्सवर एआय मॅप स्टुडिओ सक्षम केलेले नाही. तुमचे जतन केलेले प्रकल्प उपलब्ध राहतील."
+    },
+    {
+      "id": "online:AI Music Studio",
+      "source": "AI Music Studio",
+      "target": "एआय म्युझिक स्टुडिओ"
+    },
+    {
+      "id": "online:AI Music Studio is not enabled on this instance.",
+      "source": "AI Music Studio is not enabled on this instance.",
+      "target": "या इन्स्टन्सवर एआय म्युझिक स्टुडिओ सक्षम केलेले नाही."
+    },
+    {
+      "id": "online:AI Music Studio is not enabled on this instance. Your saved projects remain available.",
+      "source": "AI Music Studio is not enabled on this instance. Your saved projects remain available.",
+      "target": "या इन्स्टन्सवर एआय म्युझिक स्टुडिओ सक्षम केलेले नाही. तुमचे जतन केलेले प्रकल्प उपलब्ध राहतील."
+    },
+    {
+      "id": "online:AI Studio",
+      "source": "AI Studio",
+      "target": "एआय स्टुडिओ"
+    },
+    {
+      "id": "online:AI Terrain Studio",
+      "source": "AI Terrain Studio",
+      "target": "एआय टेरेन स्टुडिओ"
+    },
+    {
+      "id": "online:AI Terrain Studio is not enabled on this instance.",
+      "source": "AI Terrain Studio is not enabled on this instance.",
+      "target": "या इन्स्टन्सवर एआय टेरेन स्टुडिओ सक्षम केलेले नाही."
+    },
+    {
+      "id": "online:AI authoring resources",
+      "source": "AI authoring resources",
+      "target": "एआय निर्मिती संसाधने"
+    },
+    {
+      "id": "online:AI disclosure",
+      "source": "AI disclosure",
+      "target": "एआय प्रकटीकरण"
+    },
+    {
+      "id": "online:AI generated map",
+      "source": "AI generated map",
+      "target": "एआयने तयार केलेला नकाशा"
+    },
+    {
+      "id": "online:AI library views",
+      "source": "AI library views",
+      "target": "एआय संग्रहाचे विभाग"
+    }
+  ]
+}

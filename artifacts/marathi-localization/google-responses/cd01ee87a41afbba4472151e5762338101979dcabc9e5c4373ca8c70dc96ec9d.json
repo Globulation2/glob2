@@ -1,0 +1,418 @@
+{
+  "request": {
+    "project": "bradley-personal-20261027",
+    "model": "general/nmt",
+    "payload": {
+      "sourceLanguageCode": "en",
+      "targetLanguageCode": "mr",
+      "mimeType": "text/plain",
+      "contents": [
+        "Publish a new version",
+        "Publish a release",
+        "Publish a version",
+        "Publish map version",
+        "Publish music version",
+        "Publish release",
+        "Publish revision ZXQPH0QXZ",
+        "Publish revision ZXQPH0QXZ",
+        "Publish saved family",
+        "Publish saved revision ZXQPH0QXZ",
+        "Publish saved soundtrack ZXQPH0QXZ to the public Music library. Only this exact version is shared.",
+        "Publish the selected saved map (ZXQPH0QXZ) to the public Map library.",
+        "Publish this release",
+        "Publish this version",
+        "Published",
+        "Published description",
+        "Published family name",
+        "Published release",
+        "Published visibility",
+        "Published ZXQPH0QXZ.",
+        "Publishing allows reuse under ZXQPH0QXZ, including embedding and editing this content in shared maps. Confirm that the credits and reuse rights cover every uploaded image.",
+        "Publishing preserves these exact source bytes. Changes require a new version.",
+        "Purchase",
+        "Purchase confirmed. Your skin is ready to use in game.",
+        "Purchase not found.",
+        "Purchases are not configured on this server yet.",
+        "Quality",
+        "Questions and brainstorming are free and require an available credit. A creation or revision request starts one build of up to 12 entries. Failed generations return their reservation.",
+        "Questions and brainstorming are free. A creation or revision request starts one build of up to 12 building variants. Failed generations return their reservation.",
+        "Queued",
+        "Queues the stored match record for verification again. Force permits replacement of an existing verification result; confirm it separately.",
+        "Quick-match games and public rooms, newest first.",
+        "Quiet passage audibility",
+        "Range",
+        "Rank",
+        "Rate",
+        "Rate ZXQPH0QXZ: ZXQPH1QXZ credit per million input tokens, ZXQPH2QXZ for cached input, ZXQPH3QXZ for cache writes, and ZXQPH4QXZ for output including reasoning. Repairs and follow-ups use the same rates.",
+        "Rate ZXQPH0QXZ: ZXQPH1QXZ credits per million input tokens, ZXQPH2QXZ for cached input, ZXQPH3QXZ for cache writes, and ZXQPH4QXZ for output including reasoning. Repairs and follow-ups use the same rates.",
+        "Rate ZXQPH0QXZ: ZXQPH1QXZ credits per million input tokens, ZXQPH2QXZ for cached input, ZXQPH3QXZ for cache writes, and ZXQPH4QXZ for output including reasoning. Repairs and follow-ups use the same rates.",
+        "Rated queues are for registered accounts; sign in first.",
+        "Rating",
+        "Rating after each rated match",
+        "Re-verify ",
+        "Re-verify ZXQPH0QXZ",
+        "Reach to Infinity",
+        "Ready",
+        "Ready for your next adventure",
+        "Ready to download",
+        "Ready to listen",
+        "Ready to play",
+        "Ready to publish",
+        "Ready to use",
+        "Reason",
+        "Reason ",
+        "Reason (recorded in the audit log)",
+        "Reason and evidence",
+        "Reason: ZXQPH0QXZ",
+        "Reasons",
+        "Recent activity",
+        "Recent matches",
+        "Recently updated",
+        "Reconcile outstanding credit reservations before deleting this project.",
+        "Reconcile verified usage",
+        "Reconciling",
+        "Reconnecting to your saved project…",
+        "Recorded usage: ZXQPH0QXZ input tokens · ZXQPH1QXZ cached input · ZXQPH2QXZ cache write · ZXQPH3QXZ output tokens",
+        "Recovered edits belong to an older revision. Download them before reloading.",
+        "Recovered local edits",
+        "Recovery evidence for ZXQPH0QXZ",
+        "Redo",
+        "Reference",
+        "Reference limit reached for this project.",
+        "Reference upload could not be saved.",
+        "Refine the composition",
+        "Refresh",
+        "Refresh validation",
+        "Refund",
+        "Refunded",
+        "Refused",
+        "Register an account to create and share sets."
+      ]
+    }
+  },
+  "response": {
+    "translations": [
+      {
+        "translatedText": "नवीन आवृत्ती प्रकाशित करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "प्रकाशन प्रकाशित करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "एक आवृत्ती प्रकाशित करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नकाशा आवृत्ती प्रकाशित करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "संगीत आवृत्ती प्रकाशित करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "प्रकाशन",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "आवृत्ती ZXQPH0QXZ प्रकाशित करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "आवृत्ती ZXQPH0QXZ प्रकाशित करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "जतन केलेले कुटुंब प्रकाशित करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "जतन केलेली आवृत्ती ZXQPH0QXZ प्रकाशित करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "जतन केलेला साउंडट्रॅक ZXQPH0QXZ सार्वजनिक संगीत लायब्ररीमध्ये प्रकाशित करा. फक्त हीच अचूक आवृत्ती शेअर केली आहे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "निवडलेला जतन केलेला नकाशा (ZXQPH0QXZ) सार्वजनिक नकाशा लायब्ररीमध्ये प्रकाशित करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "हे प्रकाशन प्रकाशित करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ही आवृत्ती प्रकाशित करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "प्रकाशित",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "प्रकाशित वर्णन",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "प्रकाशित आडनाव",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "प्रकाशित प्रकाशन",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "प्रकाशित दृश्यमानता",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ प्रकाशित केले.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "प्रकाशित केल्याने ZXQPH0QXZ अंतर्गत पुनर्वापरास परवानगी मिळते, ज्यामध्ये सामायिक नकाशांमध्ये ही सामग्री एम्बेड करणे आणि संपादित करणे समाविष्ट आहे. श्रेय आणि पुनर्वापराचे अधिकार प्रत्येक अपलोड केलेल्या प्रतिमेवर लागू आहेत याची खात्री करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "प्रकाशित केल्याने हे मूळ बाइट्स जसेच्या तसे जतन होतात. बदलांसाठी नवीन आवृत्तीची आवश्यकता असते.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "खरेदी",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "खरेदीची पुष्टी झाली आहे. तुमची स्किन गेममध्ये वापरण्यासाठी तयार आहे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "खरेदी आढळली नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "या सर्व्हरवर खरेदी अद्याप कॉन्फिगर केलेली नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "गुणवत्ता",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "प्रश्न आणि विचारमंथन विनामूल्य आहेत आणि त्यासाठी उपलब्ध क्रेडिट आवश्यक आहे. निर्मिती किंवा सुधारणेच्या विनंतीमुळे १२ नोंदींपर्यंतचा एक बिल्ड सुरू होतो. अयशस्वी झालेल्या पिढ्या त्यांचे आरक्षण परत करतात.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "प्रश्न आणि विचारमंथन विनामूल्य आहेत. निर्मिती किंवा सुधारणेच्या विनंतीमुळे जास्तीत जास्त १२ बिल्डिंग व्हेरिएंट्सची एक बिल्ड सुरू होते. अयशस्वी झालेल्या पिढ्या त्यांचे आरक्षण परत करतात.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "रांगेत",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "साठवलेला जुळणारा रेकॉर्ड पुन्हा पडताळणीसाठी रांगेत ठेवतो. 'फोर्स' पर्यायामुळे अस्तित्वात असलेला पडताळणी निकाल बदलण्याची परवानगी मिळते; त्याची स्वतंत्रपणे पुष्टी करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "क्विक-मॅच गेम्स आणि पब्लिक रूम्स, सर्वात नवीन प्रथम.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "शांत मार्गातील श्रवणक्षमता",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "श्रेणी",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "रँक",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "दर",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ दर: प्रति दशलक्ष इनपुट टोकन्ससाठी ZXQPH1QXZ क्रेडिट, कॅश्ड इनपुटसाठी ZXQPH2QXZ, कॅशे राइट्ससाठी ZXQPH3QXZ, आणि कारणांसहित आउटपुटसाठी ZXQPH4QXZ. दुरुस्ती आणि पाठपुराव्यासाठी हेच दर वापरले जातात.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ दर: प्रति दशलक्ष इनपुट टोकन्ससाठी ZXQPH1QXZ क्रेडिट्स, कॅश्ड इनपुटसाठी ZXQPH2QXZ, कॅशे राइट्ससाठी ZXQPH3QXZ, आणि कारणांसहित आउटपुटसाठी ZXQPH4QXZ. दुरुस्ती आणि पाठपुराव्यासाठी हेच दर वापरले जातात.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ दर: प्रति दशलक्ष इनपुट टोकन्ससाठी ZXQPH1QXZ क्रेडिट्स, कॅश्ड इनपुटसाठी ZXQPH2QXZ, कॅशे राइट्ससाठी ZXQPH3QXZ, आणि कारणांसहित आउटपुटसाठी ZXQPH4QXZ. दुरुस्ती आणि पाठपुराव्यासाठी हेच दर वापरले जातात.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "रेटेड रांगा नोंदणीकृत खात्यांसाठी आहेत; प्रथम साइन इन करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "रेटिंग",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "प्रत्येक रेट केलेल्या सामन्यानंतर रेटिंग",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पुन्हा पडताळणी करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ ची पुन्हा पडताळणी करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अनंततेपर्यंत पोहोचा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तयार",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तुमच्या पुढच्या साहसासाठी सज्ज व्हा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "डाउनलोड करण्यासाठी तयार",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ऐकण्यासाठी तयार",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "खेळायला तयार",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "प्रकाशित करण्यास तयार",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "वापरण्यासाठी तयार",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कारण",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कारण",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कारण (ऑडिट लॉगमध्ये नोंदवलेले)",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तर्क आणि पुरावा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कारण: ZXQPH0QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कारणे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अलीकडील घडामोडी",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अलीकडील सामने",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अलीकडेच अद्यतनित केले",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "हा प्रकल्प हटवण्यापूर्वी प्रलंबित क्रेडिट आरक्षणांचा ताळमेळ घाला.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सत्यापित वापराची जुळवाजुळव करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सलोखा करणे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तुमच्या सेव्ह केलेल्या प्रोजेक्टशी पुन्हा कनेक्ट होत आहे…",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नोंदवलेला वापर: ZXQPH0QXZ इनपुट टोकन्स · ZXQPH1QXZ कॅश्ड इनपुट · ZXQPH2QXZ कॅशे राइट · ZXQPH3QXZ आउटपुट टोकन्स",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पुनर्प्राप्त केलेले बदल जुन्या आवृत्तीचे आहेत. रीलोड करण्यापूर्वी ते डाउनलोड करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पुनर्प्राप्त केलेले स्थानिक संपादन",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ साठी पुनर्प्राप्तीचा पुरावा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पुन्हा करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "संदर्भ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "या प्रकल्पासाठी संदर्भ मर्यादा गाठली आहे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "संदर्भ अपलोड जतन करता आला नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "रचना परिष्कृत करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "रिफ्रेश करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "प्रमाणीकरण रिफ्रेश करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "परतावा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "परतावा दिला",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नकार दिला",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सेट तयार करण्यासाठी आणि शेअर करण्यासाठी खाते नोंदणी करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      }
+    ]
+  },
+  "response_sha256": "c54d8060253cfab3768d91a5a14f809f9cebbc777366fdad402301b04852bfb0"
+}

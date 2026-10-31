@@ -1,0 +1,510 @@
+{
+  "source_sha256": "0ac44b4cdfb03e688983d6e3fb1e484cca57589665bff19c5c65388e649b292a",
+  "batch_target_sha256": "05900b5c6280d44e253420820e89b4a5dbc6ecb8fa1653cf08a93f71db98a8a8",
+  "catalog_sha256": {
+    "native": "9d9d27dc1179d0a59f88aa723606d7daebe5f9b1ff8903ce66622ee44b442cae",
+    "online": "1ba40d342498f5e7704a63e5d175bd9e8a0ede31e3ca2ce88e8cb1fbc0ba68a6"
+  },
+  "entries": [
+    {
+      "id": "online:Designer status",
+      "source": "Designer status",
+      "target": "डिझायनर दर्जा"
+    },
+    {
+      "id": "online:Destination: {slot0} library. Run checks before publication.",
+      "source": "Destination: {slot0} library. Run checks before publication.",
+      "target": "गंतव्य: {slot0} लायब्ररी. प्रकाशनापूर्वी तपासण्या करा."
+    },
+    {
+      "id": "online:Detailed usage rates",
+      "source": "Detailed usage rates",
+      "target": "वापराचे तपशीलवार दर"
+    },
+    {
+      "id": "online:Details",
+      "source": "Details",
+      "target": "तपशील"
+    },
+    {
+      "id": "online:Development credits",
+      "source": "Development credits",
+      "target": "विकास क्रेडिट्स"
+    },
+    {
+      "id": "online:Dimension",
+      "source": "Dimension",
+      "target": "परिमाण"
+    },
+    {
+      "id": "online:Disable",
+      "source": "Disable",
+      "target": "अक्षम करा"
+    },
+    {
+      "id": "online:Disable skin and resolve",
+      "source": "Disable skin and resolve",
+      "target": "त्वचा अक्षम करा आणि निराकरण करा"
+    },
+    {
+      "id": "online:Disabled",
+      "source": "Disabled",
+      "target": "अक्षम"
+    },
+    {
+      "id": "online:Discard local retry",
+      "source": "Discard local retry",
+      "target": "स्थानिक पुनर्प्रयत्न रद्द करा"
+    },
+    {
+      "id": "online:Discard manual edits and load saved revision",
+      "source": "Discard manual edits and load saved revision",
+      "target": "मॅन्युअल बदल रद्द करा आणि जतन केलेली आवृत्ती लोड करा"
+    },
+    {
+      "id": "online:Disconnected",
+      "source": "Disconnected",
+      "target": "डिस्कनेक्ट झाले"
+    },
+    {
+      "id": "online:Disconnects",
+      "source": "Disconnects",
+      "target": "कनेक्शन तुटणे"
+    },
+    {
+      "id": "online:Discover",
+      "source": "Discover",
+      "target": "शोधा"
+    },
+    {
+      "id": "online:Discover a new opponent. Find a new way to play.",
+      "source": "Discover a new opponent. Find a new way to play.",
+      "target": "नवीन प्रतिस्पर्धी शोधा. खेळण्याची नवीन पद्धत शोधा."
+    },
+    {
+      "id": "online:Discussion spends no credits; 1 available Building credit is required. Creation and edit requests start automatically and cost 1 credit on delivery.",
+      "source": "Discussion spends no credits; 1 available Building credit is required. Creation and edit requests start automatically and cost 1 credit on delivery.",
+      "target": "चर्चेसाठी कोणतेही क्रेडिट लागत नाही; १ उपलब्ध बिल्डिंग क्रेडिट आवश्यक आहे. निर्मिती आणि संपादनाच्या विनंत्या आपोआप सुरू होतात आणि त्या पूर्ण झाल्यावर १ क्रेडिट खर्च येतो."
+    },
+    {
+      "id": "online:Dismiss",
+      "source": "Dismiss",
+      "target": "बरखास्त करा"
+    },
+    {
+      "id": "online:Dismiss notification",
+      "source": "Dismiss notification",
+      "target": "सूचना रद्द करा"
+    },
+    {
+      "id": "online:Dismiss report",
+      "source": "Dismiss report",
+      "target": "अहवाल फेटाळा"
+    },
+    {
+      "id": "online:Dismissed",
+      "source": "Dismissed",
+      "target": "बडतर्फ केले"
+    },
+    {
+      "id": "online:Display names are at most {p0} bytes.",
+      "source": "Display names are at most {p0} bytes.",
+      "target": "डिस्प्ले नावे जास्तीत जास्त {p0} बाइट्सची असतात."
+    },
+    {
+      "id": "online:Display names can only be changed once per interval.",
+      "source": "Display names can only be changed once per interval.",
+      "target": "डिस्प्ले नावे प्रत्येक अंतरामध्ये फक्त एकदाच बदलता येतात."
+    },
+    {
+      "id": "online:Display names cannot contain control characters.",
+      "source": "Display names cannot contain control characters.",
+      "target": "डिस्प्ले नावांमध्ये नियंत्रक वर्ण असू शकत नाहीत."
+    },
+    {
+      "id": "online:Display names cannot start or end with spaces.",
+      "source": "Display names cannot start or end with spaces.",
+      "target": "डिस्प्ले नावांची सुरुवात किंवा शेवट स्पेसने होऊ शकत नाही."
+    },
+    {
+      "id": "online:Diverged",
+      "source": "Diverged",
+      "target": "विचलित"
+    },
+    {
+      "id": "online:Download",
+      "source": "Download",
+      "target": "डाउनलोड करा"
+    },
+    {
+      "id": "online:Download JavaScript (.js)",
+      "source": "Download JavaScript (.js)",
+      "target": "JavaScript (.js) डाउनलोड करा"
+    },
+    {
+      "id": "online:Download SHA-256: {slot0}",
+      "source": "Download SHA-256: {slot0}",
+      "target": "SHA-256 डाउनलोड करा: {slot0}"
+    },
+    {
+      "id": "online:Download ZIP",
+      "source": "Download ZIP",
+      "target": "झिप डाउनलोड करा"
+    },
+    {
+      "id": "online:Download candidate",
+      "source": "Download candidate",
+      "target": "उमेदवार डाउनलोड करा"
+    },
+    {
+      "id": "online:Download exact package",
+      "source": "Download exact package",
+      "target": "अचूक पॅकेज डाउनलोड करा"
+    },
+    {
+      "id": "online:Download family",
+      "source": "Download family",
+      "target": "कुटुंब डाउनलोड करा"
+    },
+    {
+      "id": "online:Download local changes",
+      "source": "Download local changes",
+      "target": "स्थानिक बदल डाउनलोड करा"
+    },
+    {
+      "id": "online:Download local edits",
+      "source": "Download local edits",
+      "target": "स्थानिक संपादने डाउनलोड करा"
+    },
+    {
+      "id": "online:Download my data",
+      "source": "Download my data",
+      "target": "माझा डेटा डाउनलोड करा"
+    },
+    {
+      "id": "online:Download progress",
+      "source": "Download progress",
+      "target": "डाउनलोड प्रगती"
+    },
+    {
+      "id": "online:Download replay",
+      "source": "Download replay",
+      "target": "रिप्ले डाउनलोड करा"
+    },
+    {
+      "id": "online:Download saved draft",
+      "source": "Download saved draft",
+      "target": "जतन केलेला मसुदा डाउनलोड करा"
+    },
+    {
+      "id": "online:Download selected",
+      "source": "Download selected",
+      "target": "निवडलेले डाउनलोड करा"
+    },
+    {
+      "id": "online:Download set",
+      "source": "Download set",
+      "target": "डाउनलोड सेट"
+    },
+    {
+      "id": "online:Download the game",
+      "source": "Download the game",
+      "target": "गेम डाउनलोड करा"
+    },
+    {
+      "id": "online:Download this release",
+      "source": "Download this release",
+      "target": "ही आवृत्ती डाउनलोड करा"
+    },
+    {
+      "id": "online:Download {slot0}",
+      "source": "Download {slot0}",
+      "target": "{slot0} डाउनलोड करा"
+    },
+    {
+      "id": "online:Downloading replay…",
+      "source": "Downloading replay…",
+      "target": "रिप्ले डाउनलोड होत आहे…"
+    },
+    {
+      "id": "online:Downloading the game…",
+      "source": "Downloading the game…",
+      "target": "गेम डाउनलोड होत आहे…"
+    },
+    {
+      "id": "online:Downloads",
+      "source": "Downloads",
+      "target": "डाउनलोड्स"
+    },
+    {
+      "id": "online:Download{slot0}",
+      "source": "Download{slot0}",
+      "target": "डाउनलोड{slot0}"
+    },
+    {
+      "id": "online:Draft",
+      "source": "Draft",
+      "target": "मसुदा"
+    },
+    {
+      "id": "online:Draft identities cannot change.",
+      "source": "Draft identities cannot change.",
+      "target": "मसुदा ओळख बदलू शकत नाही."
+    },
+    {
+      "id": "online:Draft is temporarily empty. Add source to save.",
+      "source": "Draft is temporarily empty. Add source to save.",
+      "target": "मसुदा तात्पुरता रिकामा आहे. जतन करण्यासाठी स्रोत जोडा."
+    },
+    {
+      "id": "online:Draft not found.",
+      "source": "Draft not found.",
+      "target": "मसुदा सापडला नाही."
+    },
+    {
+      "id": "online:Draft recovery failed",
+      "source": "Draft recovery failed",
+      "target": "मसुदा पुनर्प्राप्ती अयशस्वी झाली"
+    },
+    {
+      "id": "online:Draft recovery failed.",
+      "source": "Draft recovery failed.",
+      "target": "मसुदा पुनर्प्राप्ती अयशस्वी झाली."
+    },
+    {
+      "id": "online:Draft saved",
+      "source": "Draft saved",
+      "target": "मसुदा जतन केला."
+    },
+    {
+      "id": "online:Draft saved.",
+      "source": "Draft saved.",
+      "target": "मसुदा जतन केला."
+    },
+    {
+      "id": "online:Drafts",
+      "source": "Drafts",
+      "target": "मसुदे"
+    },
+    {
+      "id": "online:Drafts are private. Publish a saved family to share it in the {slot0}.",
+      "source": "Drafts are private. Publish a saved family to share it in the {slot0}.",
+      "target": "मसुदे खाजगी असतात. {slot0} मध्ये शेअर करण्यासाठी जतन केलेले कुटुंब प्रकाशित करा."
+    },
+    {
+      "id": "online:Drag or use arrow keys to explore the wraparound map.",
+      "source": "Drag or use arrow keys to explore the wraparound map.",
+      "target": "रॅपअराउंड नकाशा एक्सप्लोर करण्यासाठी ड्रॅग करा किंवा ॲरो की वापरा."
+    },
+    {
+      "id": "online:Drag the playhead to explore",
+      "source": "Drag the playhead to explore",
+      "target": "एक्सप्लोर करण्यासाठी प्लेहेड ड्रॅग करा"
+    },
+    {
+      "id": "online:Drag to choose your {slot0} angle",
+      "source": "Drag to choose your {slot0} angle",
+      "target": "तुमचा {slot0} कोन निवडण्यासाठी ड्रॅग करा"
+    },
+    {
+      "id": "online:Drag to explore when zoomed",
+      "source": "Drag to explore when zoomed",
+      "target": "झूम केल्यावर पाहण्यासाठी ड्रॅग करा."
+    },
+    {
+      "id": "online:Drag to paint · Rotate tool to turn · scroll or pinch to zoom",
+      "source": "Drag to paint · Rotate tool to turn · scroll or pinch to zoom",
+      "target": "रंगवण्यासाठी ड्रॅग करा · फिरवण्यासाठी रोटेट टूल वापरा · झूम करण्यासाठी स्क्रोल किंवा पिंच करा"
+    },
+    {
+      "id": "online:Drag to position. Use arrow keys to move and the slider to zoom.",
+      "source": "Drag to position. Use arrow keys to move and the slider to zoom.",
+      "target": "जागेवर ड्रॅग करा. हलवण्यासाठी ॲरो की वापरा आणि झूम करण्यासाठी स्लायडर वापरा."
+    },
+    {
+      "id": "online:Drag to rotate and tilt · scroll or pinch to zoom",
+      "source": "Drag to rotate and tilt · scroll or pinch to zoom",
+      "target": "फिरवण्यासाठी आणि झुकवण्यासाठी ओढा · झूम करण्यासाठी स्क्रोल करा किंवा पिंच करा"
+    },
+    {
+      "id": "online:Drag to turn · fixed height and scale",
+      "source": "Drag to turn · fixed height and scale",
+      "target": "वळवण्यासाठी ओढा · निश्चित उंची आणि प्रमाण"
+    },
+    {
+      "id": "online:Draw",
+      "source": "Draw",
+      "target": "ड्रॉ"
+    },
+    {
+      "id": "online:Duplicate",
+      "source": "Duplicate",
+      "target": "डुप्लिकेट"
+    },
+    {
+      "id": "online:Duplicate rig clip",
+      "source": "Duplicate rig clip",
+      "target": "डुप्लिकेट रिग क्लिप"
+    },
+    {
+      "id": "online:Duplicate shape clip",
+      "source": "Duplicate shape clip",
+      "target": "डुप्लिकेट शेप क्लिप"
+    },
+    {
+      "id": "online:Duration (steps)",
+      "source": "Duration (steps)",
+      "target": "कालावधी (पायऱ्या)"
+    },
+    {
+      "id": "online:Each point is a recorded UTC day. Gaps have no recorded measurement and are not interpolated or treated as zero. Hover or touch a point for its value; the daily table below provides the same values.",
+      "source": "Each point is a recorded UTC day. Gaps have no recorded measurement and are not interpolated or treated as zero. Hover or touch a point for its value; the daily table below provides the same values.",
+      "target": "प्रत्येक बिंदू हा नोंदवलेला UTC दिवस आहे. रिकाम्या जागांचे कोणतेही मोजमाप नोंदवलेले नाही आणि त्यांचे इंटरपोलेशन केलेले नाही किंवा त्यांना शून्य मानले जात नाही. बिंदूचे मूल्य पाहण्यासाठी त्यावर माउस फिरवा किंवा स्पर्श करा; खालील दैनिक तक्त्यामध्ये तीच मूल्ये दिलेली आहेत."
+    },
+    {
+      "id": "online:Each product has its own credit unit. Flows cover the current selected range across all payment modes. Usage/refund ledger entries are signed; reserved balances are current snapshots.",
+      "source": "Each product has its own credit unit. Flows cover the current selected range across all payment modes. Usage/refund ledger entries are signed; reserved balances are current snapshots.",
+      "target": "प्रत्येक उत्पादनाचे स्वतःचे क्रेडिट युनिट असते. प्रवाह सर्व पेमेंट पद्धतींमधील सध्या निवडलेल्या श्रेणीला व्यापतात. वापर/परतावा लेजर नोंदींवर स्वाक्षरी असते; राखीव शिल्लक ही सध्याची क्षणचित्रे असतात."
+    },
+    {
+      "id": "online:Each shape shares the swarm paint area. Check the result after switching.",
+      "source": "Each shape shares the swarm paint area. Check the result after switching.",
+      "target": "प्रत्येक आकार स्वार्म पेंट क्षेत्र सामायिक करतो. अदलाबदल केल्यानंतर परिणाम तपासा."
+    },
+    {
+      "id": "online:Econo",
+      "source": "Econo",
+      "target": "इकोनो"
+    },
+    {
+      "id": "online:Economy against each player’s average",
+      "source": "Economy against each player’s average",
+      "target": "प्रत्येक खेळाडूच्या सरासरीच्या तुलनेत अर्थव्यवस्था"
+    },
+    {
+      "id": "online:Economy {slot0}",
+      "source": "Economy {slot0}",
+      "target": "अर्थव्यवस्था {slot0}"
+    },
+    {
+      "id": "online:Edit",
+      "source": "Edit",
+      "target": "संपादन करा"
+    },
+    {
+      "id": "online:Edit AI details",
+      "source": "Edit AI details",
+      "target": "एआय तपशील संपादित करा"
+    },
+    {
+      "id": "online:Edit details",
+      "source": "Edit details",
+      "target": "तपशील संपादित करा"
+    },
+    {
+      "id": "online:Edit in AI Studio",
+      "source": "Edit in AI Studio",
+      "target": "एआय स्टुडिओमध्ये संपादन करा"
+    },
+    {
+      "id": "online:Edit in Generator Studio",
+      "source": "Edit in Generator Studio",
+      "target": "जनरेटर स्टुडिओमध्ये संपादन करा"
+    },
+    {
+      "id": "online:Edit this saved draft",
+      "source": "Edit this saved draft",
+      "target": "हा जतन केलेला मसुदा संपादित करा"
+    },
+    {
+      "id": "online:Edit this version",
+      "source": "Edit this version",
+      "target": "ही आवृत्ती संपादित करा"
+    },
+    {
+      "id": "online:Edit this version in chat",
+      "source": "Edit this version in chat",
+      "target": "चॅटमध्ये या आवृत्तीत बदल करा"
+    },
+    {
+      "id": "online:Edit with AI",
+      "source": "Edit with AI",
+      "target": "एआय सह संपादन करा"
+    },
+    {
+      "id": "online:Edit your map",
+      "source": "Edit your map",
+      "target": "तुमचा नकाशा संपादित करा"
+    },
+    {
+      "id": "online:Edit your soundtrack",
+      "source": "Edit your soundtrack",
+      "target": "तुमचा साउंडट्रॅक संपादित करा"
+    },
+    {
+      "id": "online:Edit {value0}",
+      "source": "Edit {value0}",
+      "target": "{value0} संपादित करा"
+    },
+    {
+      "id": "online:Editing current saved draft · {slot0}",
+      "source": "Editing current saved draft · {slot0}",
+      "target": "सध्या जतन केलेला मसुदा संपादित करत आहे · {slot0}"
+    },
+    {
+      "id": "online:Editing version {value0}",
+      "source": "Editing version {value0}",
+      "target": "संपादन आवृत्ती {value0}"
+    },
+    {
+      "id": "online:Editing {slot0}",
+      "source": "Editing {slot0}",
+      "target": "{slot0} चे संपादन"
+    },
+    {
+      "id": "online:Editor tool",
+      "source": "Editor tool",
+      "target": "संपादक साधन"
+    },
+    {
+      "id": "online:Editor tools",
+      "source": "Editor tools",
+      "target": "संपादक साधने"
+    },
+    {
+      "id": "online:Editor-only terrain cannot launch a colony game.",
+      "source": "Editor-only terrain cannot launch a colony game.",
+      "target": "केवळ संपादकाद्वारे तयार केलेल्या भूभागावरून वसाहतीचा खेळ सुरू करता येत नाही."
+    },
+    {
+      "id": "online:Empty the seat before locking it.",
+      "source": "Empty the seat before locking it.",
+      "target": "सीट लॉक करण्यापूर्वी ती रिकामी करा."
+    },
+    {
+      "id": "online:Empty the seat before putting an AI in it.",
+      "source": "Empty the seat before putting an AI in it.",
+      "target": "सीटवर एआय बसवण्यापूर्वी ती रिकामी करा."
+    },
+    {
+      "id": "online:Ended",
+      "source": "Ended",
+      "target": "समाप्त झाले"
+    },
+    {
+      "id": "online:Engine agent key required.",
+      "source": "Engine agent key required.",
+      "target": "इंजिन एजंट की आवश्यक आहे."
+    },
+    {
+      "id": "online:Engine agents",
+      "source": "Engine agents",
+      "target": "इंजिन एजंट"
+    },
+    {
+      "id": "online:Engine jobs",
+      "source": "Engine jobs",
+      "target": "इंजिनची कामे"
+    }
+  ]
+}

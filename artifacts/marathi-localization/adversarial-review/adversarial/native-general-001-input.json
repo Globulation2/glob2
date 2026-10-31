@@ -1,0 +1,510 @@
+{
+  "source_sha256": "0ac44b4cdfb03e688983d6e3fb1e484cca57589665bff19c5c65388e649b292a",
+  "batch_target_sha256": "cb5c67c58d05b52443fc64f8315eafc8089e65cb52d6c1f4f5cab190fc734c28",
+  "catalog_sha256": {
+    "native": "a6d0da95a3cf29e0bcfa904f80043a10fedc3124f7a26e3beebc82e8cdfa4411",
+    "online": "69046d810247a33fca1cddee9696f425ec589d8411e69f6d159f7060379310c1"
+  },
+  "entries": [
+    {
+      "id": "native:[hub finish in browser, game continues]",
+      "source": "Finish signing in in your browser. The game continues by itself once you are done.",
+      "target": "तुमच्या ब्राउझरमध्ये साइन इन करण्याची प्रक्रिया पूर्ण करा. एकदा प्रक्रिया पूर्ण झाल्यावर खेळ आपोआप पुढे चालू राहतो."
+    },
+    {
+      "id": "native:[hub browser did not open]",
+      "source": "Your browser did not open. Open the sign-in page to continue.",
+      "target": "तुमचा ब्राउझर उघडला नाही. पुढे जाण्यासाठी साइन-इन पृष्ठ उघडा."
+    },
+    {
+      "id": "native:[hub compare code %0]",
+      "source": "If the page asks, check that it shows %0.",
+      "target": "पृष्ठावर विचारल्यास, तिथे %0 दिसत असल्याची खात्री करा."
+    },
+    {
+      "id": "native:[hub code copied]",
+      "source": "Code copied",
+      "target": "कोड कॉपी केला"
+    },
+    {
+      "id": "native:[%0 has left the game]",
+      "source": "%0 has quit the game.",
+      "target": "%0 ने खेळ सोडला आहे."
+    },
+    {
+      "id": "native:[start recording]",
+      "source": "Start recording",
+      "target": "रेकॉर्डिंग सुरू करा"
+    },
+    {
+      "id": "native:[stop recording]",
+      "source": "Stop recording",
+      "target": "रेकॉर्डिंग थांबवा"
+    },
+    {
+      "id": "native:[finalizing recording]",
+      "source": "Finalizing recording…",
+      "target": "रेकॉर्डिंग पूर्ण करत आहे…"
+    },
+    {
+      "id": "native:[%0 level %1]",
+      "source": "%0 Level %1",
+      "target": "%0 स्तर %1"
+    },
+    {
+      "id": "native:[%0 units can't access resource]",
+      "source": "%0 units can't access needed materials",
+      "target": "%0 युनिट आवश्यक सामग्रीपर्यंत पोहोचू शकत नाहीत"
+    },
+    {
+      "id": "native:[%0 units not available]",
+      "source": "%0 units not available",
+      "target": "%0 युनिट उपलब्ध नाहीत"
+    },
+    {
+      "id": "native:[%0 units too far from resource]",
+      "source": "%0 units too far from needed materials",
+      "target": "%0 युनिट आवश्यक सामग्रीपासून खूप दूर आहेत"
+    },
+    {
+      "id": "native:[%0 units too low level]",
+      "source": "%0 units too low level",
+      "target": "%0 युनिटचा स्तर खूप कमी आहे"
+    },
+    {
+      "id": "native:[%0% Uploaded]",
+      "source": "%0% uploaded",
+      "target": "%0% अपलोड झाले"
+    },
+    {
+      "id": "native:[%0's team unit got converted to your team]",
+      "source": "A unit from %0's team has joined your team",
+      "target": "%0 यांच्या संघातील एक युनिट तुमच्या संघात सामील झाले आहे"
+    },
+    {
+      "id": "native:[abreaviation explanation A]",
+      "source": "A: Allies",
+      "target": "A: मित्रसंघ"
+    },
+    {
+      "id": "native:[abreaviation explanation C]",
+      "source": "C: Send chat messages to",
+      "target": "C: चॅट संदेश पाठवा"
+    },
+    {
+      "id": "native:[abreaviation explanation fV]",
+      "source": "fV: Show vision for Inn buildings (to steal units)",
+      "target": "fV: खानावळींचे दृष्टीक्षेत्र दाखवा (इतर संघांची युनिट आपल्या संघात आणण्यासाठी)"
+    },
+    {
+      "id": "native:[abreaviation explanation mV]",
+      "source": "mV: Show vision for Markets buildings (to exchange fruits)",
+      "target": "mV: बाजारांचे दृष्टीक्षेत्र दाखवा (फळांची देवाणघेवाण करण्यासाठी)"
+    },
+    {
+      "id": "native:[abreaviation explanation V]",
+      "source": "V: Show vision for all buildings",
+      "target": "V: सर्व इमारतींचे दृष्टीक्षेत्र दाखवा"
+    },
+    {
+      "id": "native:[add map]",
+      "source": "Add map",
+      "target": "नकाशा जोडा"
+    },
+    {
+      "id": "native:[AI Descriptions]",
+      "source": "AI Descriptions",
+      "target": "संगणकीय खेळाडूंची माहिती"
+    },
+    {
+      "id": "native:[AI]",
+      "source": "AI",
+      "target": "संगणकीय खेळाडू"
+    },
+    {
+      "id": "native:[ai]",
+      "source": "AI",
+      "target": "संगणकीय खेळाडू"
+    },
+    {
+      "id": "native:[AICastor-Description]",
+      "source": "Builds and trains while keeping growth tied to food supply.",
+      "target": "अन्नपुरवठ्याशी वाढ निगडित ठेवून बांधणी आणि प्रशिक्षण देते."
+    },
+    {
+      "id": "native:[AICastor]",
+      "source": "Castor",
+      "target": "Castor"
+    },
+    {
+      "id": "native:[AICortex-Description]",
+      "source": "Gathered warrior waves with food and healing support.",
+      "target": "अन्नपुरवठा आणि उपचारांच्या मदतीने योद्ध्यांच्या लाटा तयार करतो."
+    },
+    {
+      "id": "native:[AIMaxima-Description]",
+      "source": "Scouts, builds its food supply and gathers warrior waves.",
+      "target": "हेरगिरी करते, आपला अन्नसाठा तयार करते आणि योद्ध्यांच्या तुकड्या गोळा करते."
+    },
+    {
+      "id": "native:[AIMaxima]",
+      "source": "Maxima",
+      "target": "Maxima"
+    },
+    {
+      "id": "native:[AICortex]",
+      "source": "Cortex",
+      "target": "Cortex"
+    },
+    {
+      "id": "native:[AINicowar-Description]",
+      "source": "Builds up its population, trains warriors, then attacks.",
+      "target": "आपली लोकसंख्या वाढवते, योद्ध्यांना प्रशिक्षण देते, आणि मग हल्ला करते."
+    },
+    {
+      "id": "native:[AINicowar]",
+      "source": "Nicowar",
+      "target": "Nicowar"
+    },
+    {
+      "id": "native:[AINone-Description]",
+      "source": "None - Doesn't do anything.",
+      "target": "काहीही करत नाही."
+    },
+    {
+      "id": "native:[AINone]",
+      "source": "None",
+      "target": "काहीही नाही"
+    },
+    {
+      "id": "native:[AINumbi-Description]",
+      "source": "A forgiving opponent that still expands and attacks.",
+      "target": "नवशिक्यांना झेपणारा प्रतिस्पर्धी; तरीही विस्तार करतो आणि हल्ले करतो."
+    },
+    {
+      "id": "native:[AINumbi]",
+      "source": "Numbi",
+      "target": "Numbi"
+    },
+    {
+      "id": "native:[AIEcono-Description]",
+      "source": "Expands and competes for converts without producing warriors.",
+      "target": "योद्धे तयार न करता विस्तार करतो आणि इतर संघांची युनिट आपल्या संघात आणण्यासाठी स्पर्धा करतो."
+    },
+    {
+      "id": "native:[AIEcono]",
+      "source": "Econo",
+      "target": "Econo"
+    },
+    {
+      "id": "native:[AIWarrush-Description]",
+      "source": "Fast attacks that test your early defenses.",
+      "target": "तुमच्या सुरुवातीच्या बचावाची कसोटी घेणारे वेगवान हल्ले."
+    },
+    {
+      "id": "native:[AIWarrush]",
+      "source": "Warrush",
+      "target": "Warrush"
+    },
+    {
+      "id": "native:[AICabino-Description]",
+      "source": "A strong builder that fields trained attacking forces.",
+      "target": "बांधकामात कुशल खेळाडू, जो प्रशिक्षित आक्रमक सेना उभारतो."
+    },
+    {
+      "id": "native:[AICabino]",
+      "source": "Cabino",
+      "target": "Cabino"
+    },
+    {
+      "id": "native:[AIJavaScript]",
+      "source": "JavaScript",
+      "target": "JavaScript"
+    },
+    {
+      "id": "native:[AIJavaScript-Description]",
+      "source": "A controller using an embedded JavaScript source module.",
+      "target": "एम्बेडेड JavaScript सोर्स मॉड्यूल वापरणारा कंट्रोलर."
+    },
+    {
+      "id": "native:[Alga]",
+      "source": "Algae",
+      "target": "शैवाल"
+    },
+    {
+      "id": "native:[algae]",
+      "source": "algae",
+      "target": "शैवाल"
+    },
+    {
+      "id": "native:[alliances]",
+      "source": "Alliances",
+      "target": "युती"
+    },
+    {
+      "id": "native:[alt %0]",
+      "source": "alt-%0",
+      "target": "alt-%0"
+    },
+    {
+      "id": "native:[and]",
+      "source": "and",
+      "target": "आणि"
+    },
+    {
+      "id": "native:[are dying hungry]",
+      "source": "starving",
+      "target": "उपासमारीने मरत आहेत"
+    },
+    {
+      "id": "native:[are hungry]",
+      "source": "hungry",
+      "target": "भुकेले"
+    },
+    {
+      "id": "native:[are ok]",
+      "source": "ok",
+      "target": "ठीक आहे"
+    },
+    {
+      "id": "native:[are wonded]",
+      "source": "wounded",
+      "target": "जखमी"
+    },
+    {
+      "id": "native:[armor]",
+      "source": "Armour",
+      "target": "चिलखत"
+    },
+    {
+      "id": "native:[assigned]",
+      "source": "Assigned",
+      "target": "नेमून दिले"
+    },
+    {
+      "id": "native:[At. speed]",
+      "source": "Att. speed",
+      "target": "हल्ल्याचा वेग"
+    },
+    {
+      "id": "native:[At. strength]",
+      "source": "Att. str.",
+      "target": "हल्ल्याची ताकद"
+    },
+    {
+      "id": "native:[Attack]",
+      "source": "Attack",
+      "target": "हल्ला"
+    },
+    {
+      "id": "native:[audio]",
+      "source": "Audio",
+      "target": "ऑडिओ"
+    },
+    {
+      "id": "native:[auto save]",
+      "source": "Auto save",
+      "target": "आपोआप जतन"
+    },
+    {
+      "id": "native:[available lan games]",
+      "source": "Available local games",
+      "target": "उपलब्ध स्थानिक खेळ"
+    },
+    {
+      "id": "native:[away:]",
+      "source": "away:",
+      "target": "दूर:"
+    },
+    {
+      "id": "native:[Back]",
+      "source": "Back",
+      "target": "मागे"
+    },
+    {
+      "id": "native:[backspace]",
+      "source": "backspace",
+      "target": "Backspace"
+    },
+    {
+      "id": "native:[barracks explanation 2]",
+      "source": "level of your warriors",
+      "target": "लढाईचा स्तर वाढवते"
+    },
+    {
+      "id": "native:[barracks explanation]",
+      "source": "Improves the fighting",
+      "target": "तुमच्या योद्ध्यांचा"
+    },
+    {
+      "id": "native:[barracks]",
+      "source": "Barracks",
+      "target": "बराक"
+    },
+    {
+      "id": "native:[beach size]",
+      "source": "beach size",
+      "target": "किनाऱ्याचा आकार"
+    },
+    {
+      "id": "native:[break]",
+      "source": "break",
+      "target": "ब्रेक"
+    },
+    {
+      "id": "native:[briefing]",
+      "source": "Briefing",
+      "target": "संक्षिप्त माहिती"
+    },
+    {
+      "id": "native:[build %0 level %1]",
+      "source": "Construct %0 Level %1",
+      "target": "%0 स्तर %1 बांधा"
+    },
+    {
+      "id": "native:[Build]",
+      "source": "Build",
+      "target": "बांधा"
+    },
+    {
+      "id": "native:[Bullets]",
+      "source": "Bullets",
+      "target": "गोळ्या"
+    },
+    {
+      "id": "native:[campaign editor]",
+      "source": "Campaign Editor",
+      "target": "मोहीम संपादक"
+    },
+    {
+      "id": "native:[campaign]",
+      "source": "Campaign",
+      "target": "मोहीम"
+    },
+    {
+      "id": "native:[Can't connect, can't find host]",
+      "source": "Can't connect, can't find host",
+      "target": "कनेक्ट करता येत नाही, होस्ट सापडत नाही"
+    },
+    {
+      "id": "native:[Can't host game, port %0 in use]",
+      "source": "Can't host game, port %0 in use",
+      "target": "गेम होस्ट करता येत नाही, पोर्ट %0 वापरात आहे."
+    },
+    {
+      "id": "native:[Can't join game, game has started]",
+      "source": "Can't join game, game has started",
+      "target": "गेममध्ये सामील होऊ शकत नाही, गेम सुरू झाला आहे."
+    },
+    {
+      "id": "native:[Can't join game, game is full]",
+      "source": "Can't join game, game is full",
+      "target": "गेममध्ये सामील होऊ शकत नाही, गेम पूर्ण भरला आहे."
+    },
+    {
+      "id": "native:[cancel destroy]",
+      "source": "Cancel destroy",
+      "target": "पाडणे रद्द करा"
+    },
+    {
+      "id": "native:[cancel repair]",
+      "source": "Cancel repair",
+      "target": "दुरुस्ती रद्द करा"
+    },
+    {
+      "id": "native:[cancel upgrade]",
+      "source": "Cancel upgrade",
+      "target": "सुधारणा रद्द करा"
+    },
+    {
+      "id": "native:[Cancel]",
+      "source": "Cancel",
+      "target": "रद्द करा"
+    },
+    {
+      "id": "native:[caps lock]",
+      "source": "caps lock",
+      "target": "Caps Lock"
+    },
+    {
+      "id": "native:[carry]",
+      "source": "Carrying:",
+      "target": "वाहून नेत आहे:"
+    },
+    {
+      "id": "native:[Change Area Name]",
+      "source": "Change Area Name",
+      "target": "क्षेत्राचे नाव बदला"
+    },
+    {
+      "id": "native:[Cherry]",
+      "source": "Cherry",
+      "target": "चेरी"
+    },
+    {
+      "id": "native:[choose campaign]",
+      "source": "Choose a campaign",
+      "target": "मोहीम निवडा"
+    },
+    {
+      "id": "native:[choose game]",
+      "source": "Choose a game",
+      "target": "एक खेळ निवडा"
+    },
+    {
+      "id": "native:[choose map]",
+      "source": "Choose a map",
+      "target": "नकाशा निवडा"
+    },
+    {
+      "id": "native:[clear area]",
+      "source": "Clearing area",
+      "target": "जागा साफ करणे"
+    },
+    {
+      "id": "native:[farm area]",
+      "source": "Farm area",
+      "target": "शेती क्षेत्र"
+    },
+    {
+      "id": "native:[Clearing:]",
+      "source": "Clearing:",
+      "target": "साफ करणे:"
+    },
+    {
+      "id": "native:[closed]",
+      "source": "Closed",
+      "target": "बंद"
+    },
+    {
+      "id": "native:[combined vision]",
+      "source": "Combined vision",
+      "target": "संयुक्त दृष्टीक्षेत्र"
+    },
+    {
+      "id": "native:[compile]",
+      "source": "Compile script",
+      "target": "स्क्रिप्ट संकलित करा"
+    },
+    {
+      "id": "native:[compose]",
+      "source": "compose",
+      "target": "रचना करा"
+    },
+    {
+      "id": "native:[Computing Fertility]",
+      "source": "Computing Fertility",
+      "target": "जमिनीची सुपीकता मोजत आहे"
+    },
+    {
+      "id": "native:[connect]",
+      "source": "Connect",
+      "target": "कनेक्ट करा"
+    },
+    {
+      "id": "native:[connecting to game]",
+      "source": "Connecting To Game",
+      "target": "गेमशी कनेक्ट करत आहे"
+    }
+  ]
+}

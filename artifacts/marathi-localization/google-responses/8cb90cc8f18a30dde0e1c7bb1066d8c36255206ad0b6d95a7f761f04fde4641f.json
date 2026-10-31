@@ -1,0 +1,418 @@
+{
+  "request": {
+    "project": "bradley-personal-20261027",
+    "model": "general/nmt",
+    "payload": {
+      "sourceLanguageCode": "en",
+      "targetLanguageCode": "mr",
+      "mimeType": "text/plain",
+      "contents": [
+        "Show more",
+        "Starter project",
+        "downloads of this version",
+        "downloads",
+        "Update available",
+        "Browse versions",
+        "Download an AI, then choose it for a computer seat in a local game. Installed versions work offline. Updates affect future games; saves keep their original code.",
+        "Compatibility checks do not certify safety or playing strength. Only run code from authors you trust.",
+        "Back to results",
+        "Ice",
+        "Trail",
+        "Food",
+        "Paper",
+        "Cherries",
+        "Oranges",
+        "Prunes",
+        "Gold",
+        "Metal",
+        "Glass",
+        "Fabric",
+        "Import Resource Definitions",
+        "Resource palette",
+        "Trees",
+        "Rocks",
+        "Cherry tree",
+        "Orange tree",
+        "Prune tree",
+        "Gold ore",
+        "Iron ore",
+        "Silica",
+        "Cotton",
+        "Jungle trees",
+        "Pine trees",
+        "Dead trees",
+        "Ruins",
+        "Camp-site",
+        "Ancient debris",
+        "Scrub",
+        "Tall grass",
+        "Maize",
+        "Potatoes",
+        "Rice",
+        "Fish",
+        "Boulders",
+        "Hedge",
+        "Thicket",
+        "Ridge",
+        "Outcrop",
+        "Dirt",
+        "Clay",
+        "Gravel",
+        "Flower meadow",
+        "Mud",
+        "Marsh",
+        "Deep snow",
+        "Scree",
+        "Dirt track",
+        "Boardwalk",
+        "Lava",
+        "Ember field",
+        "Loam",
+        "Moss",
+        "Spring meadow",
+        "Deep water",
+        "Dark water",
+        "Hole",
+        "Chasm",
+        "Valid on: ZXQPH0QXZ",
+        "Cannot be placed on any terrain of this map",
+        "Requires the ZXQPH0QXZ experiment",
+        "Imported resources",
+        "Zones",
+        "Areas",
+        "Tools",
+        "Clearing area",
+        "Unsaved changes",
+        "Save your changes to this map before leaving the editor?",
+        "Save your changes to this map before opening another one?",
+        "Save…",
+        "Don't save"
+      ]
+    }
+  },
+  "response": {
+    "translations": [
+      {
+        "translatedText": "अधिक दाखवा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "स्टार्टर प्रकल्प",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "या आवृत्तीचे डाउनलोड",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "डाउनलोड्स",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अपडेट उपलब्ध आहे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "आवृत्त्या ब्राउझ करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "एक एआय डाउनलोड करा, आणि मग स्थानिक गेममध्ये त्याला कॉम्प्युटर सीटसाठी निवडा. इन्स्टॉल केलेल्या आवृत्त्या ऑफलाइन काम करतात. अपडेट्सचा परिणाम भविष्यातील गेम्सवर होतो; सेव्ह फाइल्स त्यांचा मूळ कोड कायम ठेवतात.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सुसंगतता तपासणी सुरक्षिततेची किंवा कार्यक्षमतेची खात्री देत ​​नाही. केवळ तुमच्या विश्वासातील लेखकांचाच कोड वापरा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "निकालांकडे परत जा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "बर्फ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पायवाट",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अन्न",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कागद",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "चेरी",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "संत्री",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "मनुका",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सोने",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "धातू",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "काच",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "फॅब्रिक",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "संसाधन व्याख्या आयात करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "रिसोर्स पॅलेट",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "झाडे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "खडक",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "चेरीचे झाड",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "संत्र्याचे झाड",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "छाटणीचे झाड",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सोन्याची धातू",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "लोहखनिज",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सिलिका",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कापूस",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "जंगलातील झाडे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पाइनची झाडे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "मेलेली झाडे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अवशेष",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कॅम्प-साइट",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "प्राचीन अवशेष",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "स्क्रब",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "उंच गवत",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "मका",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "बटाटे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "भात",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "मासे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "बोल्डर्स",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कुंपण",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "झुडूप",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "रिज",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "बाहेरचा खडक",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "माती",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "माती",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "खडी",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "फुलांचे कुरण",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "चिखल",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "मार्श",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "खोल बर्फ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "स्क्री",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "मातीचा ट्रॅक",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "बोर्डवॉक",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "लावा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "एम्बर फील्ड",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "लोम",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "शेवाळ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "वसंत ऋतूतील कुरण",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "खोल पाणी",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "गडद पाणी",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "छिद्र",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "दरी",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "यावर वैध: ZXQPH0QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "या नकाशावरील कोणत्याही भूभागावर ठेवता येणार नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ प्रयोगाची आवश्यकता आहे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "आयातित संसाधने",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "झोन",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "क्षेत्रे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "साधने",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "जागा साफ करणे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "न जतन केलेले बदल",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "एडिटरमधून बाहेर पडण्यापूर्वी या नकाशामधील तुमचे बदल जतन करायचे आहेत का?",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "दुसरा नकाशा उघडण्यापूर्वी या नकाशामधील तुमचे बदल जतन करायचे आहेत का?",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "जतन करा…",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "बचत करू नका",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      }
+    ]
+  },
+  "response_sha256": "634c7d4a893cec4344d28f5efc34c02fecd10e5dc37096fb0d939d415394f83b"
+}

@@ -1,0 +1,418 @@
+{
+  "request": {
+    "project": "bradley-personal-20261027",
+    "model": "general/nmt",
+    "payload": {
+      "sourceLanguageCode": "en",
+      "targetLanguageCode": "mr",
+      "mimeType": "text/plain",
+      "contents": [
+        "Internal server error.",
+        "Into the fray",
+        "Invalid",
+        "Invalid account cursor.",
+        "Invalid audit cursor.",
+        "Invalid checkout destination",
+        "Invalid checkout destination.",
+        "Invalid claimed generator provenance.",
+        "Invalid cursor.",
+        "Invalid date.",
+        "Invalid duration filter.",
+        "Invalid editor-only filter.",
+        "Invalid engine version.",
+        "Invalid identifier.",
+        "Invalid manifest ZXQPH0QXZ.",
+        "Invalid ZXQPH0QXZ.",
+        "Invalid material map dimensions.",
+        "Invalid material map.",
+        "Invalid material unwrap coordinate.",
+        "Invalid material unwrap dimensions.",
+        "Invalid model camera",
+        "Invalid model dimensions",
+        "Invalid model geometry",
+        "Invalid model size",
+        "Invalid model transform",
+        "Invalid page cursor.",
+        "Invalid page size.",
+        "Invalid pagination cursor.",
+        "Invalid pagination.",
+        "Invalid payment signature.",
+        "Invalid provider.",
+        "Invalid range or payment mode.",
+        "Invalid recovery reason.",
+        "Invalid report cursor.",
+        "Invalid report identifier.",
+        "Invalid report status.",
+        "Invalid request body.",
+        "Invalid request identifier.",
+        "Invalid rig UV",
+        "Invalid rig clip",
+        "Invalid rig dimensions",
+        "Invalid rig frame mapping",
+        "Invalid rig hierarchy",
+        "Invalid rig index",
+        "Invalid rig influence bone",
+        "Invalid rig inverse bind",
+        "Invalid rig normal",
+        "Invalid rig pose",
+        "Invalid rig radius",
+        "Invalid rig sample",
+        "Invalid rig size",
+        "Invalid rig track dimensions",
+        "Invalid rig transform",
+        "Invalid rig weights",
+        "Invalid shape UV",
+        "Invalid shape clip",
+        "Invalid shape dimensions",
+        "Invalid shape frame",
+        "Invalid shape heading",
+        "Invalid shape index",
+        "Invalid shape scale",
+        "Invalid shape size",
+        "Invalid skin dimensions.",
+        "Invalid studio event cursor.",
+        "Invalid visibility.",
+        "Invalid webhook signature.",
+        "Invalid webhook.",
+        "Invalid ZXQPH0QXZ camera",
+        "Invalid ZXQPH0QXZ dimensions",
+        "Invalid ZXQPH0QXZ normal camera",
+        "Invalid ZXQPH0QXZ scalar",
+        "Invite not found",
+        "It copies someone else’s work",
+        "It is broken or unplayable",
+        "It is offensive",
+        "It may not be installed on this device. You can",
+        "ZXQPH0QXZ",
+        "ZXQPH0QXZ controls require the set workspace.",
+        "ZXQPH0QXZ value",
+        "ZXQPH0QXZ API reference ↗"
+      ]
+    }
+  },
+  "response": {
+    "translations": [
+      {
+        "translatedText": "सर्व्हरमध्ये अंतर्गत त्रुटी आहे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "लढाईत",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अवैध",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अवैध खाते कर्सर.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अवैध ऑडिट कर्सर.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अवैध चेकआउट गंतव्यस्थान",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "चुकीचे चेकआउट ठिकाण.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "दावा केलेला जनरेटरचा स्रोत अवैध आहे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अमान्य कर्सर.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "चुकीची तारीख.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "चुकीचा कालावधी फिल्टर.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अवैध एडिटर-ओन्ली फिल्टर.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अवैध इंजिन आवृत्ती.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अवैध ओळखकर्ता.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अवैध मॅनिफेस्ट ZXQPH0QXZ.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अवैध ZXQPH0QXZ.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "मटेरियल मॅपची परिमाणे अवैध आहेत.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अवैध मटेरियल मॅप.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अवैध मटेरियल अनरॅप कोऑर्डिनेट.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "मटेरियल अनरॅपचे परिमाण अमान्य आहेत.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अवैध मॉडेल कॅमेरा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "मॉडेलचे परिमाण चुकीचे आहेत",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अमान्य मॉडेल भूमिती",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अमान्य मॉडेल आकार",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अमान्य मॉडेल रूपांतरण",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "चुकीचा पृष्ठ कर्सर.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पृष्ठाचा आकार अमान्य आहे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अमान्य पृष्ठांकन कर्सर.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "चुकीचे पृष्ठांकन.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पेमेंटची सही अवैध आहे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अवैध प्रदाता.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अवैध श्रेणी किंवा पेमेंट पद्धत.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "चुकीचे पुनर्प्राप्ती कारण.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "चुकीचा रिपोर्ट कर्सर.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अवैध अहवाल ओळखकर्ता.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अवैध अहवाल स्थिती.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अवैध विनंती बॉडी.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अवैध विनंती ओळखकर्ता.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अवैध रिग यूव्ही",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अवैध रिग क्लिप",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "चुकीचे रिग परिमाण",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अवैध रिग फ्रेम मॅपिंग",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अवैध रिग पदानुक्रम",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अवैध रिग इंडेक्स",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अवैध रिग प्रभाव हाड",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अवैध रिग इन्व्हर्स बाईंड",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अवैध रिग सामान्य",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "चुकीची रिग पोझ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अवैध रिग त्रिज्या",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अवैध रिग नमुना",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "चुकीचा रिग आकार",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "चुकीचे रिग ट्रॅक परिमाण",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अवैध रिग ट्रान्सफॉर्म",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अवैध रिग वजन",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अमान्य आकार UV",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अवैध आकार क्लिप",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "आकाराचे परिमाणे अवैध आहेत.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अवैध आकार फ्रेम",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अवैध आकार शीर्षक",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अवैध आकार निर्देशांक",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अमान्य आकार प्रमाण",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "चुकीचा आकार",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "त्वचेचे परिमाण अमान्य आहेत.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अवैध स्टुडिओ इव्हेंट कर्सर.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अमान्य दृश्यमानता.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अवैध वेबहुक स्वाक्षरी.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अवैध वेबहुक.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अवैध ZXQPH0QXZ कॅमेरा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ परिमाणे अवैध आहेत",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अवैध ZXQPH0QXZ सामान्य कॅमेरा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अवैध ZXQPH0QXZ स्केलर",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "आमंत्रण सापडले नाही",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ते दुसऱ्याच्या कामाची नक्कल करते",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ते तुटलेले आहे किंवा खेळण्यायोग्य नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "हे अपमानकारक आहे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "हे या डिव्हाइसवर इन्स्टॉल केलेले नसेल. तुम्ही",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ नियंत्रणांसाठी सेट केलेला वर्कस्पेस आवश्यक आहे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ मूल्य",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ API संदर्भ ↗",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      }
+    ]
+  },
+  "response_sha256": "7f181fcea450c0ed6e2eb8c199cd66a3e2d7925f52a09b353760eb17caaf66b1"
+}

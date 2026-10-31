@@ -1,0 +1,507 @@
+{
+  "batch": "native-general-006",
+  "source_sha256": "0ac44b4cdfb03e688983d6e3fb1e484cca57589665bff19c5c65388e649b292a",
+  "rows": [
+    {
+      "id": "native:[Players & Teams]",
+      "source": "Players & Teams",
+      "target": "खेळाडू आणि संघ"
+    },
+    {
+      "id": "native:[Premade maps]",
+      "source": "Premade maps",
+      "target": "पूर्वनिर्मित नकाशे"
+    },
+    {
+      "id": "native:[Preview ready. Start plays this exact map.]",
+      "source": "Preview ready. Start plays this exact map.",
+      "target": "पूर्वावलोकन तयार आहे. हाच नकाशा खेळायला सुरुवात करा."
+    },
+    {
+      "id": "native:[Regenerate all]",
+      "source": "Regenerate all",
+      "target": "सर्व पुनरुज्जीवित करा"
+    },
+    {
+      "id": "native:[Generating preview...]",
+      "source": "Generating preview...",
+      "target": "पूर्वावलोकन तयार करत आहे..."
+    },
+    {
+      "id": "native:[Preview unavailable]",
+      "source": "Preview unavailable",
+      "target": "पूर्वावलोकन उपलब्ध नाही"
+    },
+    {
+      "id": "native:[Purple]",
+      "source": "Purple",
+      "target": "जांभळा"
+    },
+    {
+      "id": "native:[Quick clash]",
+      "source": "Quick clash",
+      "target": "त्वरित संघर्ष"
+    },
+    {
+      "id": "native:[Random map]",
+      "source": "Random map",
+      "target": "यादृच्छिक नकाशा"
+    },
+    {
+      "id": "native:[Red]",
+      "source": "Red",
+      "target": "लाल"
+    },
+    {
+      "id": "native:[Repeat landscape]",
+      "source": "Repeat landscape",
+      "target": "लँडस्केपची पुनरावृत्ती करा"
+    },
+    {
+      "id": "native:[Resources]",
+      "source": "Resources",
+      "target": "संसाधने"
+    },
+    {
+      "id": "native:[Sand weight]",
+      "source": "Sand weight",
+      "target": "वाळूचे वजन"
+    },
+    {
+      "id": "native:[Select a valid map.]",
+      "source": "Select a valid map.",
+      "target": "वैध नकाशा निवडा."
+    },
+    {
+      "id": "native:[Shared control needs a free controller slot (maximum %0).]",
+      "source": "Shared control needs a free controller slot (maximum %0).",
+      "target": "सामायिक नियंत्रणासाठी एक मोकळा कंट्रोलर स्लॉट आवश्यक आहे (कमाल %0)."
+    },
+    {
+      "id": "native:[Smoothing]",
+      "source": "Smoothing",
+      "target": "गुळगुळीत करणे"
+    },
+    {
+      "id": "native:[Standard]",
+      "source": "Standard",
+      "target": "मानक"
+    },
+    {
+      "id": "native:[Start game]",
+      "source": "Start game",
+      "target": "खेळ सुरू करा"
+    },
+    {
+      "id": "native:[Swamp]",
+      "source": "Swamp",
+      "target": "दलदल"
+    },
+    {
+      "id": "native:[Team]",
+      "source": "Team",
+      "target": "संघ"
+    },
+    {
+      "id": "native:[Victory]",
+      "source": "Victory",
+      "target": "विजय"
+    },
+    {
+      "id": "native:[Watch game]",
+      "source": "Watch game",
+      "target": "खेळ पहा"
+    },
+    {
+      "id": "native:[Water weight]",
+      "source": "Water weight",
+      "target": "पाण्याचे वजन"
+    },
+    {
+      "id": "native:[White]",
+      "source": "White",
+      "target": "पांढरा"
+    },
+    {
+      "id": "native:[Width]",
+      "source": "Width",
+      "target": "रुंदी"
+    },
+    {
+      "id": "native:[Yellow]",
+      "source": "Yellow",
+      "target": "पिवळा"
+    },
+    {
+      "id": "native:[You]",
+      "source": "You",
+      "target": "तुम्ही"
+    },
+    {
+      "id": "native:[You + AI]",
+      "source": "You + AI",
+      "target": "तुम्ही + एआय"
+    },
+    {
+      "id": "native:[You and the AI both issue orders. Uses two controller slots.]",
+      "source": "You and the AI both issue orders. Uses two controller slots.",
+      "target": "तुम्ही आणि एआय दोघेही आदेश देता. दोन कंट्रोलर स्लॉट्स वापरते."
+    },
+    {
+      "id": "native:[You vs all]",
+      "source": "You vs all",
+      "target": "तुम्ही विरुद्ध सर्वजण"
+    },
+    {
+      "id": "native:[%0 vs %1]",
+      "source": "%0 vs %1",
+      "target": "%0 विरुद्ध %1"
+    },
+    {
+      "id": "native:[%0 vs all]",
+      "source": "%0 vs all",
+      "target": "%0 विरुद्ध सर्व"
+    },
+    {
+      "id": "native:[You will watch this match.]",
+      "source": "You will watch this match.",
+      "target": "तुम्ही हा सामना पाहाल."
+    },
+    {
+      "id": "native:[Your maps]",
+      "source": "Your maps",
+      "target": "तुमचे नकाशे"
+    },
+    {
+      "id": "native:[colonies]",
+      "source": "colonies",
+      "target": "वसाहती"
+    },
+    {
+      "id": "native:[Inactive]",
+      "source": "Inactive",
+      "target": "निष्क्रिय"
+    },
+    {
+      "id": "native:[Changes the pace of the whole simulation.]",
+      "source": "Changes the pace of the whole simulation.",
+      "target": "संपूर्ण सिम्युलेशनची गती बदलते."
+    },
+    {
+      "id": "native:[Choose whether teams can change during the match.]",
+      "source": "Choose whether teams can change during the match.",
+      "target": "सामन्यादरम्यान संघ बदलता येतील की नाही ते निवडा."
+    },
+    {
+      "id": "native:[Dimensions and colony count are set above.]",
+      "source": "Dimensions and colony count are set above.",
+      "target": "आकारमान आणि वसाहतींची संख्या वर निश्चित केली आहे."
+    },
+    {
+      "id": "native:[Generate & watch]",
+      "source": "Generate & watch",
+      "target": "निर्माण करा आणि पहा"
+    },
+    {
+      "id": "native:[Info]",
+      "source": "Info",
+      "target": "माहिती"
+    },
+    {
+      "id": "native:[Map-defined starting units]",
+      "source": "Map-defined starting units",
+      "target": "नकाशा-परिभाषित प्रारंभिक एकके"
+    },
+    {
+      "id": "native:[No maps in this library.]",
+      "source": "No maps in this library.",
+      "target": "या लायब्ररीमध्ये नकाशे नाहीत."
+    },
+    {
+      "id": "native:[Premade maps retain their authored starting units.]",
+      "source": "Premade maps retain their authored starting units.",
+      "target": "पूर्वनिर्मित नकाशे त्यांचे मूळचे घटक कायम ठेवतात."
+    },
+    {
+      "id": "native:[This colony will not join the match.]",
+      "source": "This colony will not join the match.",
+      "target": "ही वसाहत सामन्यात सामील होणार नाही."
+    },
+    {
+      "id": "native:[This landscape uses fixed resource placement.]",
+      "source": "This landscape uses fixed resource placement.",
+      "target": "या भूदृश्यात संसाधनांची मांडणी निश्चित असते."
+    },
+    {
+      "id": "native:[Win through conquest]",
+      "source": "Win through conquest",
+      "target": "विजय मिळवून जिंका"
+    },
+    {
+      "id": "native:[You control this colony.]",
+      "source": "You control this colony.",
+      "target": "या वसाहतीवर तुमचे नियंत्रण आहे."
+    },
+    {
+      "id": "native:[controllers]",
+      "source": "controllers",
+      "target": "नियंत्रक"
+    },
+    {
+      "id": "native:[Use]",
+      "source": "Use",
+      "target": "वापरा"
+    },
+    {
+      "id": "native:[Lime]",
+      "source": "Lime",
+      "target": "चुना"
+    },
+    {
+      "id": "native:[Teal]",
+      "source": "Teal",
+      "target": "टील"
+    },
+    {
+      "id": "native:[Azure]",
+      "source": "Azure",
+      "target": "अझूर"
+    },
+    {
+      "id": "native:[automatic torus view]",
+      "source": "Automatic torus view",
+      "target": "स्वयंचलित टोरस दृश्य"
+    },
+    {
+      "id": "native:[toggle torus view]",
+      "source": "Toggle 2D / torus view",
+      "target": "२डी / टोरस व्ह्यू टॉगल करा"
+    },
+    {
+      "id": "native:[Alliance]",
+      "source": "Alliance",
+      "target": "युती"
+    },
+    {
+      "id": "native:[Choose a rule to change it.]",
+      "source": "Choose a rule to change it.",
+      "target": "ते बदलण्यासाठी एक नियम निवडा."
+    },
+    {
+      "id": "native:[Control]",
+      "source": "Control",
+      "target": "नियंत्रण"
+    },
+    {
+      "id": "native:[Controller]",
+      "source": "Controller",
+      "target": "नियंत्रक"
+    },
+    {
+      "id": "native:[Generate preview]",
+      "source": "Generate preview",
+      "target": "पूर्वावलोकन तयार करा"
+    },
+    {
+      "id": "native:[Map-defined]",
+      "source": "Map-defined",
+      "target": "नकाशा-परिभाषित"
+    },
+    {
+      "id": "native:[Match format]",
+      "source": "Match format",
+      "target": "सामन्याचे स्वरूप"
+    },
+    {
+      "id": "native:[No current preview]",
+      "source": "No current preview",
+      "target": "सध्या कोणतेही पूर्वावलोकन नाही"
+    },
+    {
+      "id": "native:[Reroll]",
+      "source": "Reroll",
+      "target": "पुन्हा रोल करा"
+    },
+    {
+      "id": "native:[Randomize]",
+      "source": "Randomize",
+      "target": "यादृच्छिकीकरण"
+    },
+    {
+      "id": "native:[Reset to defaults]",
+      "source": "Reset to defaults",
+      "target": "डीफॉल्टवर रीसेट करा"
+    },
+    {
+      "id": "native:[Ruleset]",
+      "source": "Ruleset",
+      "target": "नियमसंच"
+    },
+    {
+      "id": "native:[Unavailable]",
+      "source": "Unavailable",
+      "target": "अनुपलब्ध"
+    },
+    {
+      "id": "native:[Use selection]",
+      "source": "Use selection",
+      "target": "निवड वापरा"
+    },
+    {
+      "id": "native:[Quick clash on premade maps: only speed changes (2x).]",
+      "source": "Quick clash on premade maps: only speed changes (2x).",
+      "target": "पूर्वनिर्मित नकाशांवर त्वरित संघर्ष: फक्त वेगात बदल (2x)."
+    },
+    {
+      "id": "native:[Generate a preview to explore this world.]",
+      "source": "Generate a preview to explore this world.",
+      "target": "या जगाचा शोध घेण्यासाठी एक पूर्वावलोकन तयार करा."
+    },
+    {
+      "id": "native:[Channel width]",
+      "source": "Channel width",
+      "target": "चॅनलची रुंदी"
+    },
+    {
+      "id": "native:[Land bridge width]",
+      "source": "Land bridge width",
+      "target": "भूसेतूची रुंदी"
+    },
+    {
+      "id": "native:[Contested commons]",
+      "source": "Contested commons",
+      "target": "वादग्रस्त सामायिक जागा"
+    },
+    {
+      "id": "native:[Maze]",
+      "source": "Maze",
+      "target": "भुलभुलैया"
+    },
+    {
+      "id": "native:[Fjord continent]",
+      "source": "Fjord continent",
+      "target": "फ्योर्ड खंड"
+    },
+    {
+      "id": "native:[Cell size]",
+      "source": "Cell size",
+      "target": "पेशीचा आकार"
+    },
+    {
+      "id": "native:[Loopiness]",
+      "source": "Loopiness",
+      "target": "वेडेपणा"
+    },
+    {
+      "id": "native:[Channels this wide leave too little grass in each cell; use narrower channels or bigger cells.]",
+      "source": "Channels this wide leave too little grass in each cell; use narrower channels or bigger cells.",
+      "target": "इतक्या रुंद चॅनेलमुळे प्रत्येक सेलमध्ये खूप कमी गवत राहते; त्याऐवजी अरुंद चॅनेल किंवा मोठे सेल वापरा."
+    },
+    {
+      "id": "native:[Commons size]",
+      "source": "Commons size",
+      "target": "कॉमन आकार"
+    },
+    {
+      "id": "native:[Moat width]",
+      "source": "Moat width",
+      "target": "खंदकाची रुंदी"
+    },
+    {
+      "id": "native:[Bridge count]",
+      "source": "Bridge count",
+      "target": "पुलांची संख्या"
+    },
+    {
+      "id": "native:[Continent size]",
+      "source": "Continent size",
+      "target": "खंडाचा आकार"
+    },
+    {
+      "id": "native:[Coast roughness]",
+      "source": "Coast roughness",
+      "target": "किनारपट्टीचा खडबडीतपणा"
+    },
+    {
+      "id": "native:[Fjord width]",
+      "source": "Fjord width",
+      "target": "फ्योर्डची रुंदी"
+    },
+    {
+      "id": "native:[Watershed]",
+      "source": "Watershed",
+      "target": "पाणलोट क्षेत्र"
+    },
+    {
+      "id": "native:[Dryness]",
+      "source": "Dryness",
+      "target": "कोरडेपणा"
+    },
+    {
+      "id": "native:[Fords]",
+      "source": "Fords",
+      "target": "फोर्ड्स"
+    },
+    {
+      "id": "native:[Stone highlands]",
+      "source": "Stone highlands",
+      "target": "स्टोन हाईलँड्स"
+    },
+    {
+      "id": "native:[Valley size]",
+      "source": "Valley size",
+      "target": "दरीचा आकार"
+    },
+    {
+      "id": "native:[Pass width]",
+      "source": "Pass width",
+      "target": "पास रुंदी"
+    },
+    {
+      "id": "native:[Pond size]",
+      "source": "Pond size",
+      "target": "तलावाचा आकार"
+    },
+    {
+      "id": "native:[Symmetric arena]",
+      "source": "Symmetric arena",
+      "target": "सममित आखाडा"
+    },
+    {
+      "id": "native:[Centre size]",
+      "source": "Centre size",
+      "target": "केंद्राचा आकार"
+    },
+    {
+      "id": "native:[Causeway width]",
+      "source": "Causeway width",
+      "target": "पुलाची रुंदी"
+    },
+    {
+      "id": "native:[Causeways]",
+      "source": "Causeways",
+      "target": "कॉजवे"
+    },
+    {
+      "id": "native:[Resource richness]",
+      "source": "Resource richness",
+      "target": "संसाधनांची समृद्धी"
+    },
+    {
+      "id": "native:[Symmetric arena needs 2, 4 or 8 colonies.]",
+      "source": "Symmetric arena needs 2, 4 or 8 colonies.",
+      "target": "सममित आखाड्याला २, ४ किंवा ८ वसाहतींची आवश्यकता असते."
+    },
+    {
+      "id": "native:[The centre is too small for an orchard on this map; use a bigger centre or a bigger map.]",
+      "source": "The centre is too small for an orchard on this map; use a bigger centre or a bigger map.",
+      "target": "या नकाशावर फळबागेसाठी केंद्र खूपच लहान आहे; मोठे केंद्र किंवा मोठा नकाशा वापरा."
+    },
+    {
+      "id": "native:[The arena leaves too little room for every colony; use a bigger map, a smaller centre or a narrower moat.]",
+      "source": "The arena leaves too little room for every colony; use a bigger map, a smaller centre or a narrower moat.",
+      "target": "आखाड्यात प्रत्येक वसाहतीसाठी खूप कमी जागा आहे; त्याऐवजी मोठा नकाशा, लहान केंद्र किंवा अरुंद खंदक वापरा."
+    }
+  ],
+  "subset_sha256": "68d773ac03a800633e724c220c92d580ec12f3833b314a51d5bd17d939f6b86e"
+}

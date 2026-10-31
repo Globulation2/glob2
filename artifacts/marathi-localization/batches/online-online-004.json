@@ -1,0 +1,509 @@
+{
+  "id": "online-online-004",
+  "source_sha256": "0ac44b4cdfb03e688983d6e3fb1e484cca57589665bff19c5c65388e649b292a",
+  "surface": "online",
+  "domain": "online",
+  "context": "Account, multiplayer, upload and browser workflows. Preserve URLs, licences, paths, format tokens and product names.",
+  "entries": [
+    {
+      "id": "online:Cancel editing",
+      "key": "Cancel editing",
+      "source": "Cancel editing"
+    },
+    {
+      "id": "online:Cancel generation",
+      "key": "Cancel generation",
+      "source": "Cancel generation"
+    },
+    {
+      "id": "online:Cancel report",
+      "key": "Cancel report",
+      "source": "Cancel report"
+    },
+    {
+      "id": "online:Cancel request",
+      "key": "Cancel request",
+      "source": "Cancel request"
+    },
+    {
+      "id": "online:Cancel upload",
+      "key": "Cancel upload",
+      "source": "Cancel upload"
+    },
+    {
+      "id": "online:Cancellation is unavailable while the provider outcome and reserved credits are reconciled. You can keep editing the saved source or export it.",
+      "key": "Cancellation is unavailable while the provider outcome and reserved credits are reconciled. You can keep editing the saved source or export it.",
+      "source": "Cancellation is unavailable while the provider outcome and reserved credits are reconciled. You can keep editing the saved source or export it."
+    },
+    {
+      "id": "online:Cancellation requested",
+      "key": "Cancellation requested",
+      "source": "Cancellation requested"
+    },
+    {
+      "id": "online:Cancelled",
+      "key": "Cancelled",
+      "source": "Cancelled"
+    },
+    {
+      "id": "online:Candidate preview · may need repairs",
+      "key": "Candidate preview · may need repairs",
+      "source": "Candidate preview · may need repairs"
+    },
+    {
+      "id": "online:Candidate previews & reports",
+      "key": "Candidate previews & reports",
+      "source": "Candidate previews & reports"
+    },
+    {
+      "id": "online:Candidate unavailable.",
+      "key": "Candidate unavailable.",
+      "source": "Candidate unavailable."
+    },
+    {
+      "id": "online:Candidate {slot0}",
+      "key": "Candidate {slot0}",
+      "source": "Candidate {slot0}"
+    },
+    {
+      "id": "online:Canonical package SHA-256: {slot0}",
+      "key": "Canonical package SHA-256: {slot0}",
+      "source": "Canonical package SHA-256: {slot0}"
+    },
+    {
+      "id": "online:Cash amount",
+      "key": "Cash amount",
+      "source": "Cash amount"
+    },
+    {
+      "id": "online:Castor",
+      "key": "Castor",
+      "source": "Castor"
+    },
+    {
+      "id": "online:Catalog",
+      "key": "Catalog",
+      "source": "Catalog"
+    },
+    {
+      "id": "online:Categorical",
+      "key": "Categorical",
+      "source": "Categorical"
+    },
+    {
+      "id": "online:Change",
+      "key": "Change",
+      "source": "Change"
+    },
+    {
+      "id": "online:Change role",
+      "key": "Change role",
+      "source": "Change role"
+    },
+    {
+      "id": "online:Change shape ⌄",
+      "key": "Change shape ⌄",
+      "source": "Change shape ⌄"
+    },
+    {
+      "id": "online:Changes",
+      "key": "Changes",
+      "source": "Changes"
+    },
+    {
+      "id": "online:Changing settings takes effect when you press Generate. One seed per preview.",
+      "key": "Changing settings takes effect when you press Generate. One seed per preview.",
+      "source": "Changing settings takes effect when you press Generate. One seed per preview."
+    },
+    {
+      "id": "online:Charged",
+      "key": "Charged",
+      "source": "Charged"
+    },
+    {
+      "id": "online:Charts appear once the server has replayed the match.",
+      "key": "Charts appear once the server has replayed the match.",
+      "source": "Charts appear once the server has replayed the match."
+    },
+    {
+      "id": "online:Chat",
+      "key": "Chat",
+      "source": "Chat"
+    },
+    {
+      "id": "online:Check & publish",
+      "key": "Check & publish",
+      "source": "Check & publish"
+    },
+    {
+      "id": "online:Check again",
+      "key": "Check again",
+      "source": "Check again"
+    },
+    {
+      "id": "online:Check payment",
+      "key": "Check payment",
+      "source": "Check payment"
+    },
+    {
+      "id": "online:Check the connection, then try again.",
+      "key": "Check the connection, then try again.",
+      "source": "Check the connection, then try again."
+    },
+    {
+      "id": "online:Check the essentials",
+      "key": "Check the essentials",
+      "source": "Check the essentials"
+    },
+    {
+      "id": "online:Check the score",
+      "key": "Check the score",
+      "source": "Check the score"
+    },
+    {
+      "id": "online:Checker",
+      "key": "Checker",
+      "source": "Checker"
+    },
+    {
+      "id": "online:Checking",
+      "key": "Checking",
+      "source": "Checking"
+    },
+    {
+      "id": "online:Checking generator…",
+      "key": "Checking generator…",
+      "source": "Checking generator…"
+    },
+    {
+      "id": "online:Checking the map with the game.",
+      "key": "Checking the map with the game.",
+      "source": "Checking the map with the game."
+    },
+    {
+      "id": "online:Checking the map…",
+      "key": "Checking the map…",
+      "source": "Checking the map…"
+    },
+    {
+      "id": "online:Checking your AI… {value0} of {value1} checks passed.{value2}",
+      "key": "Checking your AI… {value0} of {value1} checks passed.{value2}",
+      "source": "Checking your AI… {value0} of {value1} checks passed.{value2}"
+    },
+    {
+      "id": "online:Checking your set…",
+      "key": "Checking your set…",
+      "source": "Checking your set…"
+    },
+    {
+      "id": "online:Checking your world…",
+      "key": "Checking your world…",
+      "source": "Checking your world…"
+    },
+    {
+      "id": "online:Checkout could not be opened. Please try again.",
+      "key": "Checkout could not be opened. Please try again.",
+      "source": "Checkout could not be opened. Please try again."
+    },
+    {
+      "id": "online:Checkout does not match this purchase.",
+      "key": "Checkout does not match this purchase.",
+      "source": "Checkout does not match this purchase."
+    },
+    {
+      "id": "online:Checkout failed.",
+      "key": "Checkout failed.",
+      "source": "Checkout failed."
+    },
+    {
+      "id": "online:Checkout is not available yet; retry this event.",
+      "key": "Checkout is not available yet; retry this event.",
+      "source": "Checkout is not available yet; retry this event."
+    },
+    {
+      "id": "online:Checkout returned. Check the payment below to confirm your purchase.",
+      "key": "Checkout returned. Check the payment below to confirm your purchase.",
+      "source": "Checkout returned. Check the payment below to confirm your purchase."
+    },
+    {
+      "id": "online:Checkout was cancelled. Your project and draft are saved.",
+      "key": "Checkout was cancelled. Your project and draft are saved.",
+      "source": "Checkout was cancelled. Your project and draft are saved."
+    },
+    {
+      "id": "online:Checks",
+      "key": "Checks",
+      "source": "Checks"
+    },
+    {
+      "id": "online:Checks apply to the last saved revision. ",
+      "key": "Checks apply to the last saved revision. ",
+      "source": "Checks apply to the last saved revision. "
+    },
+    {
+      "id": "online:Checks cover the listed settings and do not certify game balance.",
+      "key": "Checks cover the listed settings and do not certify game balance.",
+      "source": "Checks cover the listed settings and do not certify game balance."
+    },
+    {
+      "id": "online:Checks failed",
+      "key": "Checks failed",
+      "source": "Checks failed"
+    },
+    {
+      "id": "online:Checks for {value0}",
+      "key": "Checks for {value0}",
+      "source": "Checks for {value0}"
+    },
+    {
+      "id": "online:Checks passed",
+      "key": "Checks passed",
+      "source": "Checks passed"
+    },
+    {
+      "id": "online:Checks validate gameplay properties, image bounds, frame mappings and rendering using the game engine. They do not establish map balance.",
+      "key": "Checks validate gameplay properties, image bounds, frame mappings and rendering using the game engine. They do not establish map balance.",
+      "source": "Checks validate gameplay properties, image bounds, frame mappings and rendering using the game engine. They do not establish map balance."
+    },
+    {
+      "id": "online:Checks · {slot0}",
+      "key": "Checks · {slot0}",
+      "source": "Checks · {slot0}"
+    },
+    {
+      "id": "online:Chevrons",
+      "key": "Chevrons",
+      "source": "Chevrons"
+    },
+    {
+      "id": "online:Choose 7, 30 or 90 days.",
+      "key": "Choose 7, 30 or 90 days.",
+      "source": "Choose 7, 30 or 90 days."
+    },
+    {
+      "id": "online:Choose a JPEG, PNG or WebP photo.",
+      "key": "Choose a JPEG, PNG or WebP photo.",
+      "source": "Choose a JPEG, PNG or WebP photo."
+    },
+    {
+      "id": "online:Choose a PNG or WebP frame.",
+      "key": "Choose a PNG or WebP frame.",
+      "source": "Choose a PNG or WebP frame."
+    },
+    {
+      "id": "online:Choose a PNG spritesheet.",
+      "key": "Choose a PNG spritesheet.",
+      "source": "Choose a PNG spritesheet."
+    },
+    {
+      "id": "online:Choose a PNG, JPEG or WebP up to 2048×2048.",
+      "key": "Choose a PNG, JPEG or WebP up to 2048×2048.",
+      "source": "Choose a PNG, JPEG or WebP up to 2048×2048."
+    },
+    {
+      "id": "online:Choose a building ZIP package.",
+      "key": "Choose a building ZIP package.",
+      "source": "Choose a building ZIP package."
+    },
+    {
+      "id": "online:Choose a draft or a released set.",
+      "key": "Choose a draft or a released set.",
+      "source": "Choose a draft or a released set."
+    },
+    {
+      "id": "online:Choose a family name.",
+      "key": "Choose a family name.",
+      "source": "Choose a family name."
+    },
+    {
+      "id": "online:Choose a file to begin.",
+      "key": "Choose a file to begin.",
+      "source": "Choose a file to begin."
+    },
+    {
+      "id": "online:Choose a local custom game or a multiplayer room with this map.",
+      "key": "Choose a local custom game or a multiplayer room with this map.",
+      "source": "Choose a local custom game or a multiplayer room with this map."
+    },
+    {
+      "id": "online:Choose a map file first: a .map or .map.gz file from the game.",
+      "key": "Choose a map file first: a .map or .map.gz file from the game.",
+      "source": "Choose a map file first: a .map or .map.gz file from the game."
+    },
+    {
+      "id": "online:Choose a map first.",
+      "key": "Choose a map first.",
+      "source": "Choose a map first."
+    },
+    {
+      "id": "online:Choose a nonempty JavaScript file without NUL bytes.",
+      "key": "Choose a nonempty JavaScript file without NUL bytes.",
+      "source": "Choose a nonempty JavaScript file without NUL bytes."
+    },
+    {
+      "id": "online:Choose a nonempty JavaScript file.",
+      "key": "Choose a nonempty JavaScript file.",
+      "source": "Choose a nonempty JavaScript file."
+    },
+    {
+      "id": "online:Choose a nonempty portable generator package without NUL bytes.",
+      "key": "Choose a nonempty portable generator package without NUL bytes.",
+      "source": "Choose a nonempty portable generator package without NUL bytes."
+    },
+    {
+      "id": "online:Choose a password",
+      "key": "Choose a password",
+      "source": "Choose a password"
+    },
+    {
+      "id": "online:Choose a password of at least {p0} characters.",
+      "key": "Choose a password of at least {p0} characters.",
+      "source": "Choose a password of at least {p0} characters."
+    },
+    {
+      "id": "online:Choose a photo no larger than 10 MiB.",
+      "key": "Choose a photo no larger than 10 MiB.",
+      "source": "Choose a photo no larger than 10 MiB."
+    },
+    {
+      "id": "online:Choose a photo no larger than 25 megapixels.",
+      "key": "Choose a photo no larger than 25 megapixels.",
+      "source": "Choose a photo no larger than 25 megapixels."
+    },
+    {
+      "id": "online:Choose a saved version, then describe the changes in chat. The saved map remains in history.",
+      "key": "Choose a saved version, then describe the changes in chat. The saved map remains in history.",
+      "source": "Choose a saved version, then describe the changes in chat. The saved map remains in history."
+    },
+    {
+      "id": "online:Choose a skin",
+      "key": "Choose a skin",
+      "source": "Choose a skin"
+    },
+    {
+      "id": "online:Choose a skin name.",
+      "key": "Choose a skin name.",
+      "source": "Choose a skin name."
+    },
+    {
+      "id": "online:Choose a sprite, frame, layer and current revision.",
+      "key": "Choose a sprite, frame, layer and current revision.",
+      "source": "Choose a sprite, frame, layer and current revision."
+    },
+    {
+      "id": "online:Choose a still JPEG, PNG or WebP photo, at most 25 megapixels.",
+      "key": "Choose a still JPEG, PNG or WebP photo, at most 25 megapixels.",
+      "source": "Choose a still JPEG, PNG or WebP photo, at most 25 megapixels."
+    },
+    {
+      "id": "online:Choose a still PNG or WebP frame no larger than 512 by 512.",
+      "key": "Choose a still PNG or WebP frame no larger than 512 by 512.",
+      "source": "Choose a still PNG or WebP frame no larger than 512 by 512."
+    },
+    {
+      "id": "online:Choose a still PNG or WebP frame.",
+      "key": "Choose a still PNG or WebP frame.",
+      "source": "Choose a still PNG or WebP frame."
+    },
+    {
+      "id": "online:Choose a still photo, not an animation.",
+      "key": "Choose a still photo, not an animation.",
+      "source": "Choose a still photo, not an animation."
+    },
+    {
+      "id": "online:Choose a username",
+      "key": "Choose a username",
+      "source": "Choose a username"
+    },
+    {
+      "id": "online:Choose a validated release for the simulation version you play. Each download includes its artwork.",
+      "key": "Choose a validated release for the simulation version you play. Each download includes its artwork.",
+      "source": "Choose a validated release for the simulation version you play. Each download includes its artwork."
+    },
+    {
+      "id": "online:Choose a version",
+      "key": "Choose a version",
+      "source": "Choose a version"
+    },
+    {
+      "id": "online:Choose an AI.",
+      "key": "Choose an AI.",
+      "source": "Choose an AI."
+    },
+    {
+      "id": "online:Choose an existing report to resolve.",
+      "key": "Choose an existing report to resolve.",
+      "source": "Choose an existing report to resolve."
+    },
+    {
+      "id": "online:Choose an updated file to try again.",
+      "key": "Choose an updated file to try again.",
+      "source": "Choose an updated file to try again."
+    },
+    {
+      "id": "online:Choose automatic or initials.",
+      "key": "Choose automatic or initials.",
+      "source": "Choose automatic or initials."
+    },
+    {
+      "id": "online:Choose either an import or a library version.",
+      "key": "Choose either an import or a library version.",
+      "source": "Choose either an import or a library version."
+    },
+    {
+      "id": "online:Choose final view",
+      "key": "Choose final view",
+      "source": "Choose final view"
+    },
+    {
+      "id": "online:Choose how to sign in to the game:",
+      "key": "Choose how to sign in to the game:",
+      "source": "Choose how to sign in to the game:"
+    },
+    {
+      "id": "online:Choose one bundled .js file.",
+      "key": "Choose one bundled .js file.",
+      "source": "Choose one bundled .js file."
+    },
+    {
+      "id": "online:Choose profile photo",
+      "key": "Choose profile photo",
+      "source": "Choose profile photo"
+    },
+    {
+      "id": "online:Choose property…",
+      "key": "Choose property…",
+      "source": "Choose property…"
+    },
+    {
+      "id": "online:Choose revision",
+      "key": "Choose revision",
+      "source": "Choose revision"
+    },
+    {
+      "id": "online:Choose sheet…",
+      "key": "Choose sheet…",
+      "source": "Choose sheet…"
+    },
+    {
+      "id": "online:Choose the current draft revision.",
+      "key": "Choose the current draft revision.",
+      "source": "Choose the current draft revision."
+    },
+    {
+      "id": "online:Choose up to five tags. These describe your strategy, not a tested strength rating.",
+      "key": "Choose up to five tags. These describe your strategy, not a tested strength rating.",
+      "source": "Choose up to five tags. These describe your strategy, not a tested strength rating."
+    },
+    {
+      "id": "online:Choose uploaded sheet…",
+      "key": "Choose uploaded sheet…",
+      "source": "Choose uploaded sheet…"
+    },
+    {
+      "id": "online:Choose visibility and a moderation reason.",
+      "key": "Choose visibility and a moderation reason.",
+      "source": "Choose visibility and a moderation reason."
+    }
+  ]
+}

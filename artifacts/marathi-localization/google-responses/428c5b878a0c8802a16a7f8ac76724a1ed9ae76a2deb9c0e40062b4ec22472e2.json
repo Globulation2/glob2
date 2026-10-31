@@ -1,0 +1,418 @@
+{
+  "request": {
+    "project": "bradley-personal-20261027",
+    "model": "general/nmt",
+    "payload": {
+      "sourceLanguageCode": "en",
+      "targetLanguageCode": "mr",
+      "mimeType": "text/plain",
+      "contents": [
+        "Disconnects",
+        "Discover",
+        "Discover a new opponent. Find a new way to play.",
+        "Discussion spends no credits; 1 available Building credit is required. Creation and edit requests start automatically and cost 1 credit on delivery.",
+        "Dismiss",
+        "Dismiss notification",
+        "Dismiss report",
+        "Dismissed",
+        "Display names are at most ZXQPH0QXZ bytes.",
+        "Display names can only be changed once per interval.",
+        "Display names cannot contain control characters.",
+        "Display names cannot start or end with spaces.",
+        "Diverged",
+        "Download",
+        "Download ZXQPH0QXZ (.js)",
+        "Download ZXQPH0QXZ: ZXQPH1QXZ",
+        "Download ZIP",
+        "Download candidate",
+        "Download exact package",
+        "Download family",
+        "Download local changes",
+        "Download local edits",
+        "Download my data",
+        "Download progress",
+        "Download replay",
+        "Download saved draft",
+        "Download selected",
+        "Download set",
+        "Download the game",
+        "Download this release",
+        "Download ZXQPH0QXZ",
+        "Downloading replay…",
+        "Downloading the game…",
+        "Downloads",
+        "DownloadZXQPH0QXZ",
+        "Draft",
+        "Draft identities cannot change.",
+        "Draft is temporarily empty. Add source to save.",
+        "Draft not found.",
+        "Draft recovery failed",
+        "Draft recovery failed.",
+        "Draft saved",
+        "Draft saved.",
+        "Drafts",
+        "Drafts are private. Publish a saved family to share it in the ZXQPH0QXZ.",
+        "Drag or use arrow keys to explore the wraparound map.",
+        "Drag the playhead to explore",
+        "Drag to choose your ZXQPH0QXZ angle",
+        "Drag to explore when zoomed",
+        "Drag to paint · Rotate tool to turn · scroll or pinch to zoom",
+        "Drag to position. Use arrow keys to move and the slider to zoom.",
+        "Drag to rotate and tilt · scroll or pinch to zoom",
+        "Drag to turn · fixed height and scale",
+        "Draw",
+        "Duplicate",
+        "Duplicate rig clip",
+        "Duplicate shape clip",
+        "Duration (steps)",
+        "Each point is a recorded UTC day. Gaps have no recorded measurement and are not interpolated or treated as zero. Hover or touch a point for its value; the daily table below provides the same values.",
+        "Each product has its own credit unit. Flows cover the current selected range across all payment modes. Usage/refund ledger entries are signed; reserved balances are current snapshots.",
+        "Each shape shares the swarm paint area. Check the result after switching.",
+        "Econo",
+        "Economy against each player’s average",
+        "Economy ZXQPH0QXZ",
+        "Edit",
+        "Edit AI details",
+        "Edit details",
+        "Edit in AI Studio",
+        "Edit in Generator Studio",
+        "Edit this saved draft",
+        "Edit this version",
+        "Edit this version in chat",
+        "Edit with AI",
+        "Edit your map",
+        "Edit your soundtrack",
+        "Edit ZXQPH0QXZ",
+        "Editing current saved draft · ZXQPH0QXZ",
+        "Editing version ZXQPH0QXZ",
+        "Editing ZXQPH0QXZ",
+        "Editor tool"
+      ]
+    }
+  },
+  "response": {
+    "translations": [
+      {
+        "translatedText": "कनेक्शन तुटणे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "शोधा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नवीन प्रतिस्पर्धी शोधा. खेळण्याची नवीन पद्धत शोधा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "चर्चेसाठी कोणतेही क्रेडिट लागत नाही; १ उपलब्ध बिल्डिंग क्रेडिट आवश्यक आहे. निर्मिती आणि संपादनाच्या विनंत्या आपोआप सुरू होतात आणि त्या पूर्ण झाल्यावर १ क्रेडिट खर्च येतो.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "बरखास्त करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सूचना रद्द करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अहवाल फेटाळा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "बडतर्फ केले",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "डिस्प्ले नावे जास्तीत जास्त ZXQPH0QXZ बाइट्सची असतात.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "डिस्प्ले नावे प्रत्येक अंतरामध्ये फक्त एकदाच बदलता येतात.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "डिस्प्ले नावांमध्ये नियंत्रक वर्ण असू शकत नाहीत.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "डिस्प्ले नावांची सुरुवात किंवा शेवट स्पेसने होऊ शकत नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "विचलित",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "डाउनलोड करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ (.js) डाउनलोड करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ डाउनलोड करा: ZXQPH1QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "झिप डाउनलोड करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "उमेदवार डाउनलोड करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अचूक पॅकेज डाउनलोड करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कुटुंब डाउनलोड करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "स्थानिक बदल डाउनलोड करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "स्थानिक संपादने डाउनलोड करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "माझा डेटा डाउनलोड करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "डाउनलोड प्रगती",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "रिप्ले डाउनलोड करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "जतन केलेला मसुदा डाउनलोड करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "निवडलेले डाउनलोड करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "डाउनलोड सेट",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "गेम डाउनलोड करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ही आवृत्ती डाउनलोड करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ डाउनलोड करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "रिप्ले डाउनलोड होत आहे…",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "गेम डाउनलोड होत आहे…",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "डाउनलोड्स",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "डाउनलोडZXQPH0QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "मसुदा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "मसुदा ओळख बदलू शकत नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "मसुदा तात्पुरता रिकामा आहे. जतन करण्यासाठी स्रोत जोडा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "मसुदा सापडला नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "मसुदा पुनर्प्राप्ती अयशस्वी झाली",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "मसुदा पुनर्प्राप्ती अयशस्वी झाली.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "मसुदा जतन केला.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "मसुदा जतन केला.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "मसुदे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "मसुदे खाजगी असतात. ZXQPH0QXZ मध्ये शेअर करण्यासाठी जतन केलेले कुटुंब प्रकाशित करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "रॅपअराउंड नकाशा एक्सप्लोर करण्यासाठी ड्रॅग करा किंवा ॲरो की वापरा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "एक्सप्लोर करण्यासाठी प्लेहेड ड्रॅग करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तुमचा ZXQPH0QXZ कोन निवडण्यासाठी ड्रॅग करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "झूम केल्यावर पाहण्यासाठी ड्रॅग करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "रंगवण्यासाठी ड्रॅग करा · फिरवण्यासाठी रोटेट टूल वापरा · झूम करण्यासाठी स्क्रोल किंवा पिंच करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "जागेवर ड्रॅग करा. हलवण्यासाठी ॲरो की वापरा आणि झूम करण्यासाठी स्लायडर वापरा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "फिरवण्यासाठी आणि झुकवण्यासाठी ओढा · झूम करण्यासाठी स्क्रोल करा किंवा पिंच करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "वळवण्यासाठी ओढा · निश्चित उंची आणि प्रमाण",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ड्रॉ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "डुप्लिकेट",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "डुप्लिकेट रिग क्लिप",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "डुप्लिकेट शेप क्लिप",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कालावधी (पायऱ्या)",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "प्रत्येक बिंदू हा नोंदवलेला UTC दिवस आहे. रिकाम्या जागांचे कोणतेही मोजमाप नोंदवलेले नाही आणि त्यांचे इंटरपोलेशन केलेले नाही किंवा त्यांना शून्य मानले जात नाही. बिंदूचे मूल्य पाहण्यासाठी त्यावर माउस फिरवा किंवा स्पर्श करा; खालील दैनिक तक्त्यामध्ये तीच मूल्ये दिलेली आहेत.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "प्रत्येक उत्पादनाचे स्वतःचे क्रेडिट युनिट असते. प्रवाह सर्व पेमेंट पद्धतींमधील सध्या निवडलेल्या श्रेणीला व्यापतात. वापर/परतावा लेजर नोंदींवर स्वाक्षरी असते; राखीव शिल्लक ही सध्याची क्षणचित्रे असतात.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "प्रत्येक आकार स्वार्म पेंट क्षेत्र सामायिक करतो. अदलाबदल केल्यानंतर परिणाम तपासा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "इकोनो",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "प्रत्येक खेळाडूच्या सरासरीच्या तुलनेत अर्थव्यवस्था",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अर्थव्यवस्था ZXQPH0QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "संपादन करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "एआय तपशील संपादित करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तपशील संपादित करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "एआय स्टुडिओमध्ये संपादन करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "जनरेटर स्टुडिओमध्ये संपादन करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "हा जतन केलेला मसुदा संपादित करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ही आवृत्ती संपादित करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "चॅटमध्ये या आवृत्तीत बदल करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "एआय सह संपादन करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तुमचा नकाशा संपादित करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तुमचा साउंडट्रॅक संपादित करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ संपादित करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सध्या जतन केलेला मसुदा संपादित करत आहे · ZXQPH0QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "संपादन आवृत्ती ZXQPH0QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ चे संपादन",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "संपादक साधन",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      }
+    ]
+  },
+  "response_sha256": "58b5b6549625be228860690faf14646d0b87dc78cf1869cbe31b8ae06f77ad71"
+}

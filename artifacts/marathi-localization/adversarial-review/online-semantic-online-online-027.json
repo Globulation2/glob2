@@ -1,0 +1,363 @@
+{
+  "reviewer": "/root/draft_tool",
+  "role": "independent online semantic reviewer",
+  "source_sha256": "0ac44b4cdfb03e688983d6e3fb1e484cca57589665bff19c5c65388e649b292a",
+  "batch_target_sha256": "8253302a34be622cd877128ebbfc6b9a655e835ba2a86bb1ab4963e9b97d18d9",
+  "catalog_sha256": {
+    "native": "683bcc1e1680e6cb9e2605ef9be42724a76d3e7b1f2868462e24ef50d1423642",
+    "online": "1ba40d342498f5e7704a63e5d175bd9e8a0ede31e3ca2ce88e8cb1fbc0ba68a6"
+  },
+  "reviewed_keys": [
+    "online:{value0}, frame {value1}, team color layer",
+    "online:{value0}, home",
+    "online:{value0}. Change theme",
+    "online:{value0}: terrain and resource previews",
+    "online:{value0}: units in this match and on average over recent matches",
+    "online:{value0}vs {value1}",
+    "online:×",
+    "online:–",
+    "online:•••",
+    "online:…",
+    "online:← Music library",
+    "online:← Set library",
+    "online:← {slot0}",
+    "online:← → saturation · ↑ ↓ brightness",
+    "online:↑",
+    "online:→",
+    "online:↓ {slot0} downloads",
+    "online:↗",
+    "online:↻ Continuous loop",
+    "online:−",
+    "online:⌄",
+    "online:◎",
+    "online:●",
+    "online:★",
+    "online:♥ {slot0}",
+    "online:♥ {slot0} likes",
+    "online:♥ {slot0} · {slot1}",
+    "online:✓ verified",
+    "online:✕",
+    "online:✧ Map designer",
+    "online:⠿ {slot0}",
+    "online:＋",
+    "online: (draw)",
+    "online: (log₂ tiles)",
+    "online: (lost)",
+    "online: (won)",
+    "online: ({value0}–{value1}, step {value2})",
+    "online: Colony {value0}.",
+    "online: Location: {value0}, {value1}.",
+    "online: properties",
+    "online: · AI-generated",
+    "online: · Changes not applied",
+    "online: · Used for your next match",
+    "online: · construction",
+    "online: · first at {value0}",
+    "online: · rated",
+    "online: · unrated",
+    "online: · {count} recorded downloads",
+    "online: · {count} team",
+    "online: · {count} teams",
+    "online: · {value0} unresolved",
+    "online:(current)",
+    "online:(older version)",
+    "online:A community-created colony controller.",
+    "online:AI Colony Studio",
+    "online:AI coding conversation",
+    "online:Add islands and sheltered starting colonies…",
+    "online:Applied to the draft",
+    "online:Building designer",
+    "online:COMPOSER",
+    "online:CREATION IN PROGRESS",
+    "online:Coding requests use up to {value0} {value1} credits. Manual editing and local playtests are free.",
+    "online:Coding requests use up to {value0} {value1} credits. Source acceptance does not mean engine checks passed.",
+    "online:Collapse sidebar",
+    "online:Collapse toolbox",
+    "online:Comparison with ",
+    "online:Copy my library version",
+    "online:Definition validation failed.",
+    "online:Definition validation passed.",
+    "online:Deleting…",
+    "online:Delivered to draft",
+    "online:Describe the landscape you have in mind. Watch its journey from first idea to a world you can play.",
+    "online:Editing saved revision {value0}",
+    "online:Engine validation failed.",
+    "online:Engine validation passed",
+    "online:Engine validation passed.",
+    "online:Enter usage verified against provider evidence. Input totals include cache creation/write tokens. Unknown usage must not be entered as zero.",
+    "online:Example of ",
+    "online:Expand sidebar",
+    "online:Expand toolbox",
+    "online:Explore this step.",
+    "online:Fix this",
+    "online:Fixed-point units: 256 = 1, 128 = 0.5, 512 = 2.",
+    "online:Follow latest generation",
+    "online:Following latest generation",
+    "online:Generation needs attention",
+    "online:Generator coding conversation",
+    "online:Generator package",
+    "online:Good under {value0}, fair under {value1}, poor from {value2}.",
+    "online:IMAGINATION, MEET POSSIBILITY",
+    "online:Images appear here as this stage completes.",
+    "online:Import .js",
+    "online:Import JavaScript",
+    "online:Import generator package",
+    "online:Loading workspace…",
+    "online:Make my colony more defensive…",
+    "online:Mute",
+    "online:No",
+    "online:No account needed for rooms and casual games; sign in to be ranked.",
+    "online:No additional details were recorded."
+  ],
+  "findings": [
+    {
+      "key": "online:{value0}, home",
+      "before": "{value0}, घर",
+      "after": "{value0}, मुख्यपृष्ठ",
+      "reason": "Home navigation target, not physical house.",
+      "severity": "minor",
+      "state": "proposed"
+    },
+    {
+      "key": "online:{value0}vs {value1}",
+      "before": "{value0}vs {value1}",
+      "after": "{value0} विरुद्ध {value1}",
+      "reason": "Match comparison contains actual English vs prose, translate rather than except.",
+      "severity": "minor",
+      "state": "proposed"
+    },
+    {
+      "key": "online:← Set library",
+      "before": "← लायब्ररी सेट करा",
+      "after": "← संचांचा संग्रह",
+      "reason": "Set is content collection, not configuring library.",
+      "severity": "minor",
+      "state": "proposed"
+    },
+    {
+      "key": "online:♥ {slot0} likes",
+      "before": "♥ {slot0} ला आवडले",
+      "after": "♥ {slot0} पसंती",
+      "reason": "Numeric like count, not an identified person liking something.",
+      "severity": "minor",
+      "state": "proposed"
+    },
+    {
+      "key": "online:⠿ {slot0}",
+      "before": "{slot0}",
+      "after": "⠿ {slot0}",
+      "reason": "Restore drag-handle indicator dropped by NMT.",
+      "severity": "minor",
+      "state": "proposed"
+    },
+    {
+      "key": "online:＋",
+      "before": "+",
+      "after": "＋",
+      "reason": "Preserve authored fullwidth plus icon glyph.",
+      "severity": "minor",
+      "state": "proposed"
+    },
+    {
+      "key": "online: (draw)",
+      "before": " (रेखाचित्र)",
+      "after": " (बरोबरी)",
+      "reason": "Match result, not a drawing.",
+      "severity": "major",
+      "state": "proposed"
+    },
+    {
+      "key": "online: (lost)",
+      "before": " (हरवले)",
+      "after": " (पराभव)",
+      "reason": "Match result, not a missing object.",
+      "severity": "major",
+      "state": "proposed"
+    },
+    {
+      "key": "online: Colony {value0}.",
+      "before": " कॉलनी {value0}.",
+      "after": " वसाहत {value0}.",
+      "reason": "Consistent colony glossary.",
+      "severity": "minor",
+      "state": "proposed"
+    },
+    {
+      "key": "online: properties",
+      "before": " मालमत्ता",
+      "after": " गुणधर्म",
+      "reason": "Gameplay properties, not real estate.",
+      "severity": "major",
+      "state": "proposed"
+    },
+    {
+      "key": "online: · {count} team",
+      "before": {
+        "one": " · {count} टीम",
+        "other": " · {count} संघ"
+      },
+      "after": {
+        "one": " · {count} संघ",
+        "other": " · {count} संघ"
+      },
+      "reason": "Use team glossary in both plural categories.",
+      "severity": "minor",
+      "state": "proposed"
+    },
+    {
+      "key": "online:AI Colony Studio",
+      "before": "एआय कॉलनी स्टुडिओ",
+      "after": "एआय वसाहत स्टुडिओ",
+      "reason": "Consistent colony glossary.",
+      "severity": "minor",
+      "state": "proposed"
+    },
+    {
+      "key": "online:Comparison with ",
+      "before": "तुलना ",
+      "after": "याच्याशी तुलना: ",
+      "reason": "Standalone label introduces compared version.",
+      "severity": "minor",
+      "state": "proposed"
+    },
+    {
+      "key": "online:Copy my library version",
+      "before": "माझ्या लायब्ररी आवृत्तीची प्रत",
+      "after": "संग्रहातील माझ्या आवृत्तीची प्रत करा",
+      "reason": "Action requires copy verb.",
+      "severity": "minor",
+      "state": "proposed"
+    },
+    {
+      "key": "online:Editing saved revision {value0}",
+      "before": "जतन केलेल्या आवृत्तीचे संपादन {value0}",
+      "after": "जतन केलेली आवृत्ती {value0} संपादित करत आहे",
+      "reason": "Natural placement of revision number with its noun.",
+      "severity": "minor",
+      "state": "proposed"
+    },
+    {
+      "key": "online:Enter usage verified against provider evidence. Input totals include cache creation/write tokens. Unknown usage must not be entered as zero.",
+      "before": "प्रोव्हायडरच्या पुराव्यानुसार सत्यापित केलेला वापर प्रविष्ट करा. प्रविष्ट केलेल्या एकूण रकमेमध्ये कॅशे निर्मिती/लेखन टोकन्सचा समावेश आहे. अज्ञात वापर शून्य म्हणून प्रविष्ट करू नये.",
+      "after": "प्रदात्याच्या पुराव्याशी पडताळलेला वापर प्रविष्ट करा. एकूण इनपुट टोकनमध्ये कॅशे तयार करण्याचे/लिहिण्याचे टोकन धरले जातात. अज्ञात वापर शून्य म्हणून प्रविष्ट करू नका.",
+      "reason": "Input totals are token counts, not monetary amounts.",
+      "severity": "major",
+      "state": "proposed"
+    },
+    {
+      "key": "online:Follow latest generation",
+      "before": "नवीनतम पिढीचे अनुसरण करा",
+      "after": "नवीनतम निर्मिती दाखवा",
+      "reason": "Artifact generation, not biological generation.",
+      "severity": "minor",
+      "state": "proposed"
+    },
+    {
+      "key": "online:Following latest generation",
+      "before": "नवीनतम पिढीचे अनुसरण करत आहे",
+      "after": "नवीनतम निर्मिती दाखवत आहे",
+      "reason": "Artifact generation, not biological generation.",
+      "severity": "minor",
+      "state": "proposed"
+    },
+    {
+      "key": "online:Generation needs attention",
+      "before": "पिढीकडे लक्ष देण्याची गरज आहे.",
+      "after": "निर्मितीकडे लक्ष देणे आवश्यक आहे",
+      "reason": "Artifact generation, not biological generation.",
+      "severity": "minor",
+      "state": "proposed"
+    },
+    {
+      "key": "online:Import generator package",
+      "before": "आयात जनरेटर पॅकेज",
+      "after": "जनरेटर पॅकेज आयात करा",
+      "reason": "Natural action order.",
+      "severity": "minor",
+      "state": "proposed"
+    },
+    {
+      "key": "online:Make my colony more defensive…",
+      "before": "माझ्या वसाहतीला अधिक संरक्षणक्षम बनवणे…",
+      "after": "माझी वसाहत अधिक संरक्षणक्षम करा…",
+      "reason": "Suggested prompt is an imperative, not infinitive.",
+      "severity": "minor",
+      "state": "proposed"
+    }
+  ],
+  "accepted_english": [
+    {
+      "key": "online:×",
+      "reason": "Multiplication/close icon retains authored symbol."
+    },
+    {
+      "key": "online:–",
+      "reason": "En dash separator retains authored symbol."
+    },
+    {
+      "key": "online:•••",
+      "reason": "Masked/password or overflow indicator retains authored dots."
+    },
+    {
+      "key": "online:…",
+      "reason": "Ellipsis/loading or overflow indicator remains unchanged."
+    },
+    {
+      "key": "online:← {slot0}",
+      "reason": "Back arrow and interpolated destination contain no prose."
+    },
+    {
+      "key": "online:↑",
+      "reason": "Upward navigation arrow remains unchanged."
+    },
+    {
+      "key": "online:→",
+      "reason": "Rightward navigation arrow remains unchanged."
+    },
+    {
+      "key": "online:↗",
+      "reason": "External-link arrow remains unchanged."
+    },
+    {
+      "key": "online:−",
+      "reason": "Minus icon retains the mathematical minus glyph."
+    },
+    {
+      "key": "online:⌄",
+      "reason": "Dropdown chevron remains unchanged."
+    },
+    {
+      "key": "online:◎",
+      "reason": "Selection/radio icon remains unchanged."
+    },
+    {
+      "key": "online:●",
+      "reason": "Solid-dot status icon remains unchanged."
+    },
+    {
+      "key": "online:★",
+      "reason": "Favourite/star icon remains unchanged."
+    },
+    {
+      "key": "online:♥ {slot0}",
+      "reason": "Heart icon and numeric approval count contain no prose."
+    },
+    {
+      "key": "online:♥ {slot0} · {slot1}",
+      "reason": "Heart count and interpolated metadata contain no prose."
+    },
+    {
+      "key": "online:✕",
+      "reason": "Close icon retains authored glyph."
+    },
+    {
+      "key": "online:⠿ {slot0}",
+      "reason": "Drag-handle icon and interpolated label retain authored structure."
+    },
+    {
+      "key": "online:＋",
+      "reason": "Fullwidth plus icon retains authored glyph."
+    }
+  ],
+  "certification": "Agent-reviewed; not native-human-certified; editorial and final recheck pending"
+}

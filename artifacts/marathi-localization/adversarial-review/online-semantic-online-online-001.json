@@ -1,0 +1,415 @@
+{
+  "reviewer": "/root/draft_tool",
+  "role": "independent online semantic reviewer",
+  "source_sha256": "0ac44b4cdfb03e688983d6e3fb1e484cca57589665bff19c5c65388e649b292a",
+  "batch_target_sha256": "990bd6a36bb58f7da2254da411942366300678e2f0fc6e29a95ade109f4ac2b7",
+  "catalog_sha256": {
+    "native": "feb2f29298db1e8ef564d5a7ec23b73562a82cdae34499a108bcc3bd5a0d7415",
+    "online": "1ba40d342498f5e7704a63e5d175bd9e8a0ede31e3ca2ce88e8cb1fbc0ba68a6"
+  },
+  "reviewed_keys": [
+    "online: (provisional)",
+    "online: ({slot0})",
+    "online: / {slot0}",
+    "online: Building credits",
+    "online: COMPOSITION COMPLETE",
+    "online: Edit & release settings",
+    "online: Follow latest",
+    "online: I can share these recordings and artwork under the selected licence.",
+    "online: Loading…",
+    "online: My releases and uploads",
+    "online: Pane widths",
+    "online: Projects",
+    "online: Publish",
+    "online: Reference images",
+    "online: Review & publish",
+    "online: Review release settings",
+    "online: Send",
+    "online: Settings & references",
+    "online: Terrain credits",
+    "online: Undo",
+    "online: Your next match will use the default colony.",
+    "online: checks",
+    "online: credits",
+    "online: diverged",
+    "online: likes",
+    "online: on {p0}",
+    "online: refused orders",
+    "online: seconds",
+    "online: this version",
+    "online: to confirm",
+    "online: · ",
+    "online: · Charged: ",
+    "online: · Completed ",
+    "online: · Content hidden",
+    "online: · hidden",
+    "online: · incomplete historical data",
+    "online: · stale",
+    "online: · updated ",
+    "online: · {slot0}",
+    "online: · {slot0} disconnect",
+    "online: · {slot0} disconnects",
+    "online: — ",
+    "online: → ",
+    "online:#{slot0}",
+    "online:(match)",
+    "online:, and enter:",
+    "online:, or create an account below",
+    "online:, so it cannot be added to the account you are playing as. Accounts are never merged.",
+    "online:, then",
+    "online:, to confirm",
+    "online:.",
+    "online:. You can close this page.",
+    "online:/ais/favourites",
+    "online:/ais/mine",
+    "online:1.0.0",
+    "online:3 to 32 letters, digits, dots, dashes or underscores. Other players see it.",
+    "online:95%: {slot0}",
+    "online:: ",
+    "online:: create a room and invite your friends, or find a quick match.",
+    "online:; nothing to install.",
+    "online:A Globulation 2 colony: globs at work around their swarm",
+    "online:A JSON file with everything this server stores about your account: your profile, sign-in methods (without passwords or keys), matches, ratings, rooms and chat, matchmaking, maps and moderation records.",
+    "online:A SOUNDTRACK FOR YOUR COLONY",
+    "online:A colony takes shape",
+    "online:A dismissed report cannot hide content.",
+    "online:A generated room map needs params.teams between 1 and 12.",
+    "online:A hand-made map has no generator.",
+    "online:A hidden set cannot publish new releases.",
+    "online:A map keeps at most {p0} versions; delete old ones first.",
+    "online:A new library is taking shape. Share the first AI.",
+    "online:A new mind for your colony",
+    "online:A newer draft prevents undo. Use history to restore it.",
+    "online:A newer revision prevents undo. Restore a version in Changes.",
+    "online:A previous submission was not acknowledged. Sending it again safely retries the same request.",
+    "online:A recoverable active account is required for colony skins.",
+    "online:A registered account is required.",
+    "online:A release must retain its package ID.",
+    "online:A saved request is ready to send again safely.",
+    "online:A world of possibilities",
+    "online:A · V{slot0}",
+    "online:AI",
+    "online:AI Building Studio",
+    "online:AI Building Studio is not enabled on this instance.",
+    "online:AI JavaScript source",
+    "online:AI Library",
+    "online:AI MAP STUDIO",
+    "online:AI MUSIC STUDIO",
+    "online:AI Map Studio",
+    "online:AI Map Studio is not enabled on this instance.",
+    "online:AI Map Studio is not enabled on this instance. Your saved projects remain available.",
+    "online:AI Music Studio",
+    "online:AI Music Studio is not enabled on this instance.",
+    "online:AI Music Studio is not enabled on this instance. Your saved projects remain available.",
+    "online:AI Studio",
+    "online:AI Terrain Studio",
+    "online:AI Terrain Studio is not enabled on this instance.",
+    "online:AI authoring resources",
+    "online:AI disclosure",
+    "online:AI generated map",
+    "online:AI library views"
+  ],
+  "findings": [
+    {
+      "key": "online: Your next match will use the default colony.",
+      "before": " तुमची पुढची जुळणी डीफॉल्ट कॉलनी वापरेल.",
+      "after": " तुमच्या पुढील सामन्यात पूर्वनिर्धारित वसाहत वापरली जाईल.",
+      "reason": "Match means game and colony is वसाहत; current जुळणी/callony wrong.",
+      "severity": "major",
+      "state": "proposed"
+    },
+    {
+      "key": "online: credits",
+      "before": " श्रेय",
+      "after": " क्रेडिट्स",
+      "reason": "Wallet credit unit must match other credit labels, not attribution श्रेय.",
+      "severity": "major",
+      "state": "proposed"
+    },
+    {
+      "key": "online: refused orders",
+      "before": " आदेश नाकारले.",
+      "after": " नाकारलेले आदेश",
+      "reason": "Statistic label is a count of refused orders, not an imperative/sentence.",
+      "severity": "minor",
+      "state": "proposed"
+    },
+    {
+      "key": "online: · Charged: ",
+      "before": " · आरोप लावला: ",
+      "after": " · आकारलेले शुल्क: ",
+      "reason": "Charged concerns credits/cost, not criminal accusation.",
+      "severity": "major",
+      "state": "proposed"
+    },
+    {
+      "key": "online: · stale",
+      "before": " · शिळे",
+      "after": " · कालबाह्य",
+      "reason": "Stale revision/data is out of date, not stale food.",
+      "severity": "minor",
+      "state": "proposed"
+    },
+    {
+      "key": "online: · {slot0} disconnect",
+      "before": {
+        "one": " · {slot0} डिस्कनेक्ट",
+        "other": " · {slot0} डिस्कनेक्ट होते"
+      },
+      "after": {
+        "one": " · {slot0} वेळा संपर्क तुटला",
+        "other": " · {slot0} वेळा संपर्क तुटला"
+      },
+      "reason": "Disconnect is count of connection drops, not a present-tense verb.",
+      "severity": "minor",
+      "state": "proposed"
+    },
+    {
+      "key": "online: · {slot0} disconnects",
+      "before": " · {slot0} डिस्कनेक्ट होते",
+      "after": " · {slot0} वेळा संपर्क तुटला",
+      "reason": "Match the plural statistic wording.",
+      "severity": "minor",
+      "state": "proposed"
+    },
+    {
+      "key": "online:, and enter:",
+      "before": "आणि प्रविष्ट करा:",
+      "after": ", आणि प्रविष्ट करा:",
+      "reason": "Keep connective comma and space in the composed sentence.",
+      "severity": "minor",
+      "state": "proposed"
+    },
+    {
+      "key": "online:, or create an account below",
+      "before": "किंवा खाली खाते तयार करा",
+      "after": ", किंवा खाली खाते तयार करा",
+      "reason": "Keep connective punctuation.",
+      "severity": "minor",
+      "state": "proposed"
+    },
+    {
+      "key": "online:, so it cannot be added to the account you are playing as. Accounts are never merged.",
+      "before": "त्यामुळे ते तुम्ही ज्या खात्यावरून खेळत आहात त्यात जोडले जाऊ शकत नाही. खाती कधीही विलीन केली जात नाहीत.",
+      "after": ", त्यामुळे ते तुम्ही ज्या खात्यावरून खेळत आहात त्यात जोडता येत नाही. खाती कधीही विलीन केली जात नाहीत.",
+      "reason": "Retain leading connective punctuation and natural modal construction.",
+      "severity": "minor",
+      "state": "proposed"
+    },
+    {
+      "key": "online:, then",
+      "before": "मग",
+      "after": ", मग",
+      "reason": "Keep connective comma for the surrounding instruction.",
+      "severity": "minor",
+      "state": "proposed"
+    },
+    {
+      "key": "online:, to confirm",
+      "before": "पुष्टी करण्यासाठी",
+      "after": ", पुष्टी करण्यासाठी",
+      "reason": "Keep leading comma in composed sentence.",
+      "severity": "minor",
+      "state": "proposed"
+    },
+    {
+      "key": "online:.",
+      "before": "...",
+      "after": ".",
+      "reason": "Sentence terminator must not become ellipsis.",
+      "severity": "major",
+      "state": "proposed"
+    },
+    {
+      "key": "online:. You can close this page.",
+      "before": "तुम्ही हे पान बंद करू शकता.",
+      "after": ". तुम्ही हे पान बंद करू शकता.",
+      "reason": "Keep sentence boundary before continuation.",
+      "severity": "minor",
+      "state": "proposed"
+    },
+    {
+      "key": "online:1.0.0",
+      "before": "१.०.०",
+      "after": "1.0.0",
+      "reason": "Semantic version is a technical identifier, not a localized quantity.",
+      "severity": "major",
+      "state": "proposed"
+    },
+    {
+      "key": "online:: create a room and invite your friends, or find a quick match.",
+      "before": "एक रूम तयार करा आणि तुमच्या मित्रांना आमंत्रित करा, किंवा पटकन मॅच शोधा.",
+      "after": ": खोली तयार करून तुमच्या मित्रांना आमंत्रित करा किंवा झटपट सामना शोधा.",
+      "reason": "Restore colon and use game/room terminology consistently.",
+      "severity": "minor",
+      "state": "proposed"
+    },
+    {
+      "key": "online:; nothing to install.",
+      "before": "काहीही स्थापित करण्याची आवश्यकता नाही.",
+      "after": "; काहीही स्थापित करण्याची गरज नाही.",
+      "reason": "Retain semicolon in composed browser-launch explanation.",
+      "severity": "minor",
+      "state": "proposed"
+    },
+    {
+      "key": "online:A Globulation 2 colony: globs at work around their swarm",
+      "before": "Globulation 2 वसाहत: त्यांच्या थव्याभोवती कार्यरत असलेले गोळे",
+      "after": "Globulation 2 ची वसाहत: पोळ्याभोवती काम करणारे ग्लॉब्स",
+      "reason": "Globs are creature name, not balls; swarm is the hive building.",
+      "severity": "major",
+      "state": "proposed"
+    },
+    {
+      "key": "online:A JSON file with everything this server stores about your account: your profile, sign-in methods (without passwords or keys), matches, ratings, rooms and chat, matchmaking, maps and moderation records.",
+      "before": "JSON फाईलमध्ये तुमच्या खात्याबद्दल हा सर्व्हर संग्रहित करत असलेली सर्व माहिती असते: तुमचे प्रोफाइल, साइन-इन पद्धती (पासवर्ड किंवा की शिवाय), मॅचेस, रेटिंग्ज, रूम्स आणि चॅट, मॅचमेकिंग, मॅप्स आणि मॉडरेशन रेकॉर्ड्स.",
+      "after": "हा सर्व्हर तुमच्या खात्याबद्दल साठवत असलेली सर्व माहिती असलेली JSON फाइल: तुमचे प्रोफाइल, साइन-इन पद्धती (पासवर्ड किंवा की वगळून), सामने, रेटिंग, खोल्या आणि चॅट, प्रतिस्पर्धी शोध, नकाशे आणि नियंत्रण कारवाईच्या नोंदी.",
+      "reason": "Use consistent game terms; preserve export contents and credential exclusion.",
+      "severity": "minor",
+      "state": "proposed"
+    },
+    {
+      "key": "online:A dismissed report cannot hide content.",
+      "before": "बरखास्त केलेला अहवाल मजकूर लपवू शकत नाही.",
+      "after": "फेटाळलेल्या अहवालामुळे सामग्री लपवता येत नाही.",
+      "reason": "Dismissed moderation report is rejected, not fired/dismissed employment.",
+      "severity": "minor",
+      "state": "proposed"
+    },
+    {
+      "key": "online:A hand-made map has no generator.",
+      "before": "हस्तनिर्मित नकाशाला जनरेटर नसतो.",
+      "after": "हाताने तयार केलेल्या नकाशाला जनरेटर नसतो.",
+      "reason": "Natural Marathi, avoid the Hindi-heavy हस्तनिर्मित adjective.",
+      "severity": "minor",
+      "state": "proposed"
+    },
+    {
+      "key": "online:A map keeps at most {p0} versions; delete old ones first.",
+      "before": "एका मॅपमध्ये जास्तीत जास्त {p0} आवृत्त्या ठेवल्या जातात; आधी जुन्या आवृत्त्या हटवा.",
+      "after": "एका नकाशाच्या जास्तीत जास्त {p0} आवृत्त्या ठेवता येतात; आधी जुन्या आवृत्त्या हटवा.",
+      "reason": "Map is consistently नकाशा and limit is a capability.",
+      "severity": "minor",
+      "state": "proposed"
+    },
+    {
+      "key": "online:A new library is taking shape. Share the first AI.",
+      "before": "एक नवीन ग्रंथालय आकार घेत आहे. पहिला एआय शेअर करा.",
+      "after": "नवीन संग्रह तयार होत आहे. पहिला एआय सामायिक करा.",
+      "reason": "Software library gallery is a collection; ग्रंथालय suggests books.",
+      "severity": "minor",
+      "state": "proposed"
+    },
+    {
+      "key": "online:A newer draft prevents undo. Use history to restore it.",
+      "before": "नवीन ड्राफ्टमुळे पूर्ववत करण्याची क्रिया थांबते. ते परत मिळवण्यासाठी हिस्ट्रीचा वापर करा.",
+      "after": "नवीन मसुद्यामुळे पूर्ववत करता येत नाही. पुनर्संचयित करण्यासाठी इतिहास वापरा.",
+      "reason": "Use the same draft/history vocabulary as controls.",
+      "severity": "minor",
+      "state": "proposed"
+    },
+    {
+      "key": "online:A previous submission was not acknowledged. Sending it again safely retries the same request.",
+      "before": "पूर्वी पाठवलेली विनंती स्वीकारली गेली नाही. ती पुन्हा पाठवल्यास, तीच विनंती सुरक्षितपणे पुन्हा केली जाते.",
+      "after": "आधी पाठवलेल्या विनंतीची पोच मिळाली नाही. ती पुन्हा पाठवल्यास त्याच विनंतीचा सुरक्षितपणे पुन्हा प्रयत्न होतो.",
+      "reason": "No acknowledgement is not an explicit rejection.",
+      "severity": "major",
+      "state": "proposed"
+    },
+    {
+      "key": "online:A recoverable active account is required for colony skins.",
+      "before": "कॉलनी स्किन्ससाठी पुनर्प्राप्त करण्यायोग्य सक्रिय खाते आवश्यक आहे.",
+      "after": "वसाहतीच्या रूपांसाठी पुनर्प्राप्त करता येणारे सक्रिय खाते आवश्यक आहे.",
+      "reason": "Colony uses वसाहत and skins are appearance variants.",
+      "severity": "minor",
+      "state": "proposed"
+    },
+    {
+      "key": "online:A release must retain its package ID.",
+      "before": "रिलीझने त्याचा पॅकेज आयडी कायम ठेवला पाहिजे.",
+      "after": "प्रकाशनाचा पॅकेज आयडी कायम ठेवणे आवश्यक आहे.",
+      "reason": "Use publication terminology consistently.",
+      "severity": "minor",
+      "state": "proposed"
+    },
+    {
+      "key": "online:A · V{slot0}",
+      "before": "",
+      "after": "A · V{slot0}",
+      "reason": "Authored compact status/version codes retain literal Latin letters.",
+      "severity": "major",
+      "state": "proposed"
+    },
+    {
+      "key": "online:AI JavaScript source",
+      "before": "",
+      "after": "एआय JavaScript स्रोत",
+      "reason": "Fill rejected draft, preserve JavaScript identifier.",
+      "severity": "major",
+      "state": "proposed"
+    },
+    {
+      "key": "online:AI library views",
+      "before": "एआय लायब्ररी व्ह्यूज",
+      "after": "एआय संग्रहातील दृश्ये",
+      "reason": "Views are collection presentation modes, not opinion/view-count here; verify page context in final editor.",
+      "severity": "minor",
+      "state": "proposed"
+    }
+  ],
+  "accepted_english": [
+    {
+      "key": "online: ({slot0})",
+      "reason": "Parenthesized interpolated value contains no translatable prose; preserve grouping."
+    },
+    {
+      "key": "online: / {slot0}",
+      "reason": "Slash-separated interpolated total contains no translatable prose."
+    },
+    {
+      "key": "online: · ",
+      "reason": "Middle-dot separator between metadata fields remains unchanged."
+    },
+    {
+      "key": "online: · {slot0}",
+      "reason": "Middle-dot metadata separator plus interpolated field remains unchanged."
+    },
+    {
+      "key": "online: — ",
+      "reason": "Em dash separating metadata fields remains unchanged."
+    },
+    {
+      "key": "online: → ",
+      "reason": "Arrow indicating direction remains unchanged."
+    },
+    {
+      "key": "online:#{slot0}",
+      "reason": "Hash-prefixed numeric identifier remains unchanged."
+    },
+    {
+      "key": "online:/ais/favourites",
+      "reason": "Literal application navigation route must remain ASCII and unchanged."
+    },
+    {
+      "key": "online:/ais/mine",
+      "reason": "Literal application navigation route must remain ASCII and unchanged."
+    },
+    {
+      "key": "online:: ",
+      "reason": "Colon field separator remains unchanged."
+    },
+    {
+      "key": "online:.",
+      "reason": "Single sentence terminator restored exactly; no language-specific prose."
+    },
+    {
+      "key": "online:1.0.0",
+      "reason": "Semantic-version identifier remains ASCII, not Marathi digits."
+    },
+    {
+      "key": "online:A · V{slot0}",
+      "reason": "Compact authored A and V status/version markers remain Latin identifiers."
+    }
+  ],
+  "certification": "Agent-reviewed; not native-human-certified; editorial and final recheck pending"
+}

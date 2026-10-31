@@ -1,0 +1,15 @@
+{
+  "payload_sha256": "f5fe895b9fdcda3ef34cd6fa74ce4001ac7894ff76d86740046b71892814b15c",
+  "failures": [
+    {
+      "id": "online:A · V{slot0}",
+      "category": null,
+      "reason": "Google response damaged protected tokens; inspect cached response"
+    },
+    {
+      "id": "online:AI JavaScript source",
+      "category": null,
+      "reason": "Google response damaged protected tokens; inspect cached response"
+    }
+  ]
+}

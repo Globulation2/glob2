@@ -1,0 +1,418 @@
+{
+  "request": {
+    "project": "bradley-personal-20261027",
+    "model": "general/nmt",
+    "payload": {
+      "sourceLanguageCode": "en",
+      "targetLanguageCode": "mr",
+      "mimeType": "text/plain",
+      "contents": [
+        "Maps are shared from their saved file. Save this map first, then share it.",
+        "This map has changes that are not saved yet. Sharing uploads the saved file.",
+        "Save and share…",
+        "Share saved version",
+        "Give every terrain tile a new random look? Terrain types and gameplay stay the same. This cannot be undone.",
+        "Reroll",
+        "Saving needs the fertility map, so the save was cancelled. Press OK to try again.",
+        "Fertility map is out of date · Click to refresh",
+        "No definition files found in ZXQPH0QXZ",
+        "From device…",
+        "A file named \"ZXQPH0QXZ\" already exists. Replace it?",
+        "Replace",
+        "Keep existing file",
+        "Save map",
+        "Open map…",
+        "Import resource definitions…",
+        "Teams…",
+        "Scenario…",
+        "Reroll terrain look…",
+        "File",
+        "Map",
+        "No-growth areas",
+        "Minimap",
+        "Search brushes",
+        "Brush shape ZXQPH0QXZ",
+        "Brush",
+        "Paint",
+        "Erase",
+        "Enable for this map",
+        "Enable ZXQPH0QXZ",
+        "Turns on the ZXQPH0QXZ experiment for this map only.",
+        "Area",
+        "Unit level",
+        "No brushes match the search.",
+        "Active team",
+        "Teams on this map: ZXQPH0QXZ",
+        "Add team",
+        "Remove team",
+        "Nothing is selected.",
+        "This object has no editable properties.",
+        "Search brushes",
+        "Switch to resources view",
+        "Standard resources",
+        "The fertility map is out of date.",
+        "Refresh fertility",
+        "Enabled ZXQPH0QXZ for this map",
+        "Fertility map out of date: tap to refresh",
+        "Import Terrain & Resource Set",
+        "Set Library",
+        "Loading sets…",
+        "Downloading exact release…",
+        "Cannot load sets. Check your connection and try again.",
+        "Downloaded set failed its hash check.",
+        "Invalid set package.",
+        "Invalid set listing.",
+        "Invalid set release.",
+        "Select entries to import. Required custom resources are included automatically.",
+        "No sets found.",
+        "Choose an exact release to inspect and import.",
+        "Terrain & resource sets",
+        "Browse online library",
+        "Map content, credits & local edits",
+        "Edit this map's copy. Original release credits remain attached. Changes do not update other maps or the online release.",
+        "Apply local changes",
+        "Local content updated.",
+        "Search themes and creators",
+        "Search",
+        "Set",
+        "This explicitly replaces matching placed terrain and resources, including local edits. Removed entries remain on the old release. Existing material amounts are capped to the new capacities.",
+        "Import selected entries",
+        "Next page",
+        "Back to results",
+        "License: ZXQPH0QXZ",
+        "release ZXQPH0QXZ",
+        "Replace placed entries from release ZXQPH0QXZ",
+        "Previews are shown for the first 64 entries. All entries remain selectable.",
+        "Properties definition (ZXQPH0QXZ)",
+        "Terrain artwork mapping (ZXQPH0QXZ)",
+        "Area upkeep",
+        "Colony eliminated."
+      ]
+    }
+  },
+  "response": {
+    "translations": [
+      {
+        "translatedText": "नकाशे त्यांच्या सेव्ह केलेल्या फाईलमधून शेअर केले जातात. आधी हा नकाशा सेव्ह करा, मग शेअर करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "या नकाशात असे बदल आहेत जे अद्याप जतन केलेले नाहीत. शेअर केल्यावर जतन केलेली फाईल अपलोड होईल.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "जतन करा आणि शेअर करा…",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "जतन केलेली आवृत्ती शेअर करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "प्रत्येक भूभागाच्या टाइलला एक नवीन यादृच्छिक स्वरूप द्यायचे का? भूभागाचे प्रकार आणि गेमप्ले तेच राहतील. हे बदलता येणार नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पुन्हा रोल करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सेव्ह करण्यासाठी फर्टिलिटी मॅपची आवश्यकता असल्याने, सेव्ह करण्याची प्रक्रिया रद्द करण्यात आली आहे. पुन्हा प्रयत्न करण्यासाठी ओके दाबा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "प्रजनन क्षमता नकाशा कालबाह्य झाला आहे · रिफ्रेश करण्यासाठी क्लिक करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ मध्ये कोणतीही परिभाषा फाईल आढळली नाही",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "डिव्हाइसवरून…",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "\"ZXQPH0QXZ\" नावाची फाईल आधीच अस्तित्वात आहे. ती बदलायची का?",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "बदला",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "विद्यमान फाईल ठेवा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नकाशा जतन करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नकाशा उघडा…",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "संसाधन व्याख्या आयात करा…",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "संघ…",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "परिस्थिती…",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "भूभाग पुन्हा रोल करा…",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "फाईल",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नकाशा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "वाढ नसलेले क्षेत्र",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "मिनीमॅप",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ब्रश शोधा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ब्रशचा आकार ZXQPH0QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ब्रश",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "रंग",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पुसून टाका",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "या नकाशासाठी सक्षम करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ सक्षम करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "फक्त या नकाशासाठी ZXQPH0QXZ प्रयोग चालू करतो.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "क्षेत्र",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "युनिट पातळी",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "शोधाशी जुळणारे कोणतेही ब्रश नाहीत.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सक्रिय संघ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "या नकाशावरील संघ: ZXQPH0QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "संघ जोडा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "संघ काढून टाका",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "काहीही निवडलेले नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "या ऑब्जेक्टमध्ये कोणतेही संपादन करण्यायोग्य गुणधर्म नाहीत.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ब्रश शोधा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "संसाधने दृश्यावर स्विच करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "मानक संसाधने",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "प्रजननक्षमतेचा नकाशा कालबाह्य झाला आहे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "प्रजनन क्षमता ताजी करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "या नकाशासाठी ZXQPH0QXZ सक्षम केले आहे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "प्रजनन नकाशा कालबाह्य झाला आहे: रिफ्रेश करण्यासाठी टॅप करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "भूभाग आणि संसाधन संच आयात करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "लायब्ररी सेट करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सेट लोड होत आहेत…",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अचूक आवृत्ती डाउनलोड करत आहे…",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सेट लोड करता येत नाहीत. तुमचे कनेक्शन तपासा आणि पुन्हा प्रयत्न करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "डाउनलोड केलेल्या सेटची हॅश तपासणी अयशस्वी झाली.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अवैध पॅकेज सेट केले आहे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अवैध संच सूची.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अवैध सेट रिलीझ.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "आयात करण्यासाठी नोंदी निवडा. आवश्यक सानुकूल संसाधने आपोआप समाविष्ट केली जातात.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कोणतेही संच आढळले नाहीत.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तपासणी आणि आयात करण्यासाठी अचूक रिलीज निवडा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "भूभाग आणि संसाधन संच",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ऑनलाइन ग्रंथालय ब्राउझ करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नकाशाची सामग्री, श्रेय आणि स्थानिक संपादने",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "या नकाशाच्या मजकुरात बदल करा. मूळ प्रकाशनाचे श्रेय कायम राहील. केलेल्या बदलांमुळे इतर नकाशे किंवा ऑनलाइन प्रकाशन अद्ययावत होणार नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "स्थानिक बदल लागू करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "स्थानिक सामग्री अद्ययावत केली.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "थीम आणि निर्माते शोधा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "शोध",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सेट",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "यामध्ये स्थानिक संपादनांसह, जुळणारे ठेवलेले भूभाग आणि संसाधने स्पष्टपणे बदलली जातात. काढून टाकलेल्या नोंदी जुन्या आवृत्तीवर कायम राहतात. विद्यमान सामग्रीचे प्रमाण नवीन क्षमतेनुसार मर्यादित केले आहे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "निवडलेल्या नोंदी आयात करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पुढील पान",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "निकालांकडे परत जा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "परवाना: ZXQPH0QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ सोडा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ रिलीझमधील ठेवलेल्या नोंदी बदला",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पहिल्या ६४ नोंदींचे पूर्वावलोकन दाखवले आहे. सर्व नोंदी निवडण्यायोग्य राहतील.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "गुणधर्मांची व्याख्या (ZXQPH0QXZ)",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "भूभागाच्या कलाकृतींचे मॅपिंग (ZXQPH0QXZ)",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "क्षेत्राची देखभाल",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "वसाहत नष्ट झाली.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      }
+    ]
+  },
+  "response_sha256": "60ec2ceb15255981e8557af7f041ac0c39ee1813deb02059778ae7a11ab83a56"
+}

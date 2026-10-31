@@ -1,0 +1,513 @@
+{
+  "batch": "online-online-027",
+  "source_sha256": "0ac44b4cdfb03e688983d6e3fb1e484cca57589665bff19c5c65388e649b292a",
+  "rows": [
+    {
+      "id": "online:{value0}, frame {value1}, team color layer",
+      "source": "{value0}, frame {value1}, team color layer",
+      "target": "{value0}, फ्रेम {value1}, टीम कलर लेयर"
+    },
+    {
+      "id": "online:{value0}, home",
+      "source": "{value0}, home",
+      "target": "{value0}, घर"
+    },
+    {
+      "id": "online:{value0}. Change theme",
+      "source": "{value0}. Change theme",
+      "target": "{value0}. थीम बदला"
+    },
+    {
+      "id": "online:{value0}: terrain and resource previews",
+      "source": "{value0}: terrain and resource previews",
+      "target": "{value0}: भूभाग आणि संसाधनांचे पूर्वावलोकन"
+    },
+    {
+      "id": "online:{value0}: units in this match and on average over recent matches",
+      "source": "{value0}: units in this match and on average over recent matches",
+      "target": "{value0}: या सामन्यातील युनिट्स आणि अलीकडील सामन्यांमधील सरासरी"
+    },
+    {
+      "id": "online:{value0}vs {value1}",
+      "source": "{value0}vs {value1}",
+      "target": "{value0}vs {value1}"
+    },
+    {
+      "id": "online:×",
+      "source": "×",
+      "target": "×"
+    },
+    {
+      "id": "online:–",
+      "source": "–",
+      "target": "–"
+    },
+    {
+      "id": "online:•••",
+      "source": "•••",
+      "target": "•••"
+    },
+    {
+      "id": "online:…",
+      "source": "…",
+      "target": "…"
+    },
+    {
+      "id": "online:← Music library",
+      "source": "← Music library",
+      "target": "← संगीत लायब्ररी"
+    },
+    {
+      "id": "online:← Set library",
+      "source": "← Set library",
+      "target": "← लायब्ररी सेट करा"
+    },
+    {
+      "id": "online:← {slot0}",
+      "source": "← {slot0}",
+      "target": "← {slot0}"
+    },
+    {
+      "id": "online:← → saturation · ↑ ↓ brightness",
+      "source": "← → saturation · ↑ ↓ brightness",
+      "target": "← → सॅचुरेशन · ↑ ↓ ब्राइटनेस"
+    },
+    {
+      "id": "online:↑",
+      "source": "↑",
+      "target": "↑"
+    },
+    {
+      "id": "online:→",
+      "source": "→",
+      "target": "→"
+    },
+    {
+      "id": "online:↓ {slot0} downloads",
+      "source": "↓ {slot0} downloads",
+      "target": "↓ {slot0} डाउनलोड्स"
+    },
+    {
+      "id": "online:↗",
+      "source": "↗",
+      "target": "↗"
+    },
+    {
+      "id": "online:↻ Continuous loop",
+      "source": "↻ Continuous loop",
+      "target": "↻ सतत लूप"
+    },
+    {
+      "id": "online:−",
+      "source": "−",
+      "target": "−"
+    },
+    {
+      "id": "online:⌄",
+      "source": "⌄",
+      "target": "⌄"
+    },
+    {
+      "id": "online:◎",
+      "source": "◎",
+      "target": "◎"
+    },
+    {
+      "id": "online:●",
+      "source": "●",
+      "target": "●"
+    },
+    {
+      "id": "online:★",
+      "source": "★",
+      "target": "★"
+    },
+    {
+      "id": "online:♥ {slot0}",
+      "source": "♥ {slot0}",
+      "target": "♥ {slot0}"
+    },
+    {
+      "id": "online:♥ {slot0} likes",
+      "source": "♥ {slot0} likes",
+      "target": "♥ {slot0} ला आवडले"
+    },
+    {
+      "id": "online:♥ {slot0} · {slot1}",
+      "source": "♥ {slot0} · {slot1}",
+      "target": "♥ {slot0} · {slot1}"
+    },
+    {
+      "id": "online:✓ verified",
+      "source": "✓ verified",
+      "target": "✓ सत्यापित"
+    },
+    {
+      "id": "online:✕",
+      "source": "✕",
+      "target": "✕"
+    },
+    {
+      "id": "online:✧ Map designer",
+      "source": "✧ Map designer",
+      "target": "✧ नकाशा डिझायनर"
+    },
+    {
+      "id": "online:⠿ {slot0}",
+      "source": "⠿ {slot0}",
+      "target": "{slot0}"
+    },
+    {
+      "id": "online:＋",
+      "source": "＋",
+      "target": "+"
+    },
+    {
+      "id": "online: (draw)",
+      "source": " (draw)",
+      "target": " (रेखाचित्र)"
+    },
+    {
+      "id": "online: (log₂ tiles)",
+      "source": " (log₂ tiles)",
+      "target": " (log₂ टाइल्स)"
+    },
+    {
+      "id": "online: (lost)",
+      "source": " (lost)",
+      "target": " (हरवले)"
+    },
+    {
+      "id": "online: (won)",
+      "source": " (won)",
+      "target": " (जिंकले)"
+    },
+    {
+      "id": "online: ({value0}–{value1}, step {value2})",
+      "source": " ({value0}–{value1}, step {value2})",
+      "target": " ({value0}–{value1}, पायरी {value2})"
+    },
+    {
+      "id": "online: Colony {value0}.",
+      "source": " Colony {value0}.",
+      "target": " कॉलनी {value0}."
+    },
+    {
+      "id": "online: Location: {value0}, {value1}.",
+      "source": " Location: {value0}, {value1}.",
+      "target": " स्थान: {value0}, {value1}."
+    },
+    {
+      "id": "online: properties",
+      "source": " properties",
+      "target": " मालमत्ता"
+    },
+    {
+      "id": "online: · AI-generated",
+      "source": " · AI-generated",
+      "target": " · एआय-निर्मित"
+    },
+    {
+      "id": "online: · Changes not applied",
+      "source": " · Changes not applied",
+      "target": " · बदल लागू केले नाहीत"
+    },
+    {
+      "id": "online: · Used for your next match",
+      "source": " · Used for your next match",
+      "target": " · तुमच्या पुढील सामन्यासाठी वापरले जाते"
+    },
+    {
+      "id": "online: · construction",
+      "source": " · construction",
+      "target": " · बांधकाम"
+    },
+    {
+      "id": "online: · first at {value0}",
+      "source": " · first at {value0}",
+      "target": " · प्रथम {value0} येथे"
+    },
+    {
+      "id": "online: · rated",
+      "source": " · rated",
+      "target": " · रेट केले"
+    },
+    {
+      "id": "online: · unrated",
+      "source": " · unrated",
+      "target": " · रेटिंग नाही"
+    },
+    {
+      "id": "online: · {count} recorded downloads",
+      "source": " · {count} recorded downloads",
+      "target": " · {count} रेकॉर्ड केलेले डाउनलोड"
+    },
+    {
+      "id": "online: · {count} team",
+      "source": {
+        "one": " · {count} team",
+        "other": " · {count} teams"
+      },
+      "target": {
+        "one": " · {count} टीम",
+        "other": " · {count} संघ"
+      }
+    },
+    {
+      "id": "online: · {count} teams",
+      "source": " · {count} teams",
+      "target": " · {count} संघ"
+    },
+    {
+      "id": "online: · {value0} unresolved",
+      "source": " · {value0} unresolved",
+      "target": " · {value0} निराकरण झालेले नाही"
+    },
+    {
+      "id": "online:(current)",
+      "source": "(current)",
+      "target": "(सध्याचे)"
+    },
+    {
+      "id": "online:(older version)",
+      "source": "(older version)",
+      "target": "(जुनी आवृत्ती)"
+    },
+    {
+      "id": "online:A community-created colony controller.",
+      "source": "A community-created colony controller.",
+      "target": "समुदायाने तयार केलेला वसाहत नियंत्रक."
+    },
+    {
+      "id": "online:AI Colony Studio",
+      "source": "AI Colony Studio",
+      "target": "एआय कॉलनी स्टुडिओ"
+    },
+    {
+      "id": "online:AI coding conversation",
+      "source": "AI coding conversation",
+      "target": "एआय कोडिंग संभाषण"
+    },
+    {
+      "id": "online:Add islands and sheltered starting colonies…",
+      "source": "Add islands and sheltered starting colonies…",
+      "target": "बेटे आणि सुरक्षित सुरुवातीच्या वसाहती जोडा…"
+    },
+    {
+      "id": "online:Applied to the draft",
+      "source": "Applied to the draft",
+      "target": "मसुद्याला लागू केले"
+    },
+    {
+      "id": "online:Building designer",
+      "source": "Building designer",
+      "target": "इमारत डिझाइनर"
+    },
+    {
+      "id": "online:COMPOSER",
+      "source": "COMPOSER",
+      "target": "संगीतकार"
+    },
+    {
+      "id": "online:CREATION IN PROGRESS",
+      "source": "CREATION IN PROGRESS",
+      "target": "निर्मिती चालू आहे"
+    },
+    {
+      "id": "online:Coding requests use up to {value0} {value1} credits. Manual editing and local playtests are free.",
+      "source": "Coding requests use up to {value0} {value1} credits. Manual editing and local playtests are free.",
+      "target": "कोडिंग विनंत्यांसाठी {value0} {value1} पर्यंत क्रेडिट्स वापरले जातात. मॅन्युअल एडिटिंग आणि लोकल प्लेटेस्ट्स विनामूल्य आहेत."
+    },
+    {
+      "id": "online:Coding requests use up to {value0} {value1} credits. Source acceptance does not mean engine checks passed.",
+      "source": "Coding requests use up to {value0} {value1} credits. Source acceptance does not mean engine checks passed.",
+      "target": "कोडिंग विनंत्यांसाठी {value0} {value1} पर्यंत क्रेडिट्स वापरले जातात. स्त्रोत स्वीकृतीचा अर्थ इंजिन तपासण्या यशस्वी झाल्या असा होत नाही."
+    },
+    {
+      "id": "online:Collapse sidebar",
+      "source": "Collapse sidebar",
+      "target": "साइडबार संकुचित करा"
+    },
+    {
+      "id": "online:Collapse toolbox",
+      "source": "Collapse toolbox",
+      "target": "टूलबॉक्स संकुचित करा"
+    },
+    {
+      "id": "online:Comparison with ",
+      "source": "Comparison with ",
+      "target": "तुलना "
+    },
+    {
+      "id": "online:Copy my library version",
+      "source": "Copy my library version",
+      "target": "माझ्या लायब्ररी आवृत्तीची प्रत"
+    },
+    {
+      "id": "online:Definition validation failed.",
+      "source": "Definition validation failed.",
+      "target": "व्याख्येची पडताळणी अयशस्वी झाली."
+    },
+    {
+      "id": "online:Definition validation passed.",
+      "source": "Definition validation passed.",
+      "target": "व्याख्येची पडताळणी यशस्वी झाली."
+    },
+    {
+      "id": "online:Deleting…",
+      "source": "Deleting…",
+      "target": "हटवत आहे…"
+    },
+    {
+      "id": "online:Delivered to draft",
+      "source": "Delivered to draft",
+      "target": "मसुद्याला सुपूर्द केले"
+    },
+    {
+      "id": "online:Describe the landscape you have in mind. Watch its journey from first idea to a world you can play.",
+      "source": "Describe the landscape you have in mind. Watch its journey from first idea to a world you can play.",
+      "target": "तुमच्या मनात असलेल्या भूदृश्याचे वर्णन करा. पहिल्या कल्पनेपासून ते तुम्ही खेळू शकाल अशा जगापर्यंतचा त्याचा प्रवास पाहा."
+    },
+    {
+      "id": "online:Editing saved revision {value0}",
+      "source": "Editing saved revision {value0}",
+      "target": "जतन केलेल्या आवृत्तीचे संपादन {value0}"
+    },
+    {
+      "id": "online:Engine validation failed.",
+      "source": "Engine validation failed.",
+      "target": "इंजिन प्रमाणीकरण अयशस्वी झाले."
+    },
+    {
+      "id": "online:Engine validation passed",
+      "source": "Engine validation passed",
+      "target": "इंजिन पडताळणी यशस्वी झाली."
+    },
+    {
+      "id": "online:Engine validation passed.",
+      "source": "Engine validation passed.",
+      "target": "इंजिन पडताळणी यशस्वी झाली."
+    },
+    {
+      "id": "online:Enter usage verified against provider evidence. Input totals include cache creation/write tokens. Unknown usage must not be entered as zero.",
+      "source": "Enter usage verified against provider evidence. Input totals include cache creation/write tokens. Unknown usage must not be entered as zero.",
+      "target": "प्रोव्हायडरच्या पुराव्यानुसार सत्यापित केलेला वापर प्रविष्ट करा. प्रविष्ट केलेल्या एकूण रकमेमध्ये कॅशे निर्मिती/लेखन टोकन्सचा समावेश आहे. अज्ञात वापर शून्य म्हणून प्रविष्ट करू नये."
+    },
+    {
+      "id": "online:Example of ",
+      "source": "Example of ",
+      "target": "उदाहरण "
+    },
+    {
+      "id": "online:Expand sidebar",
+      "source": "Expand sidebar",
+      "target": "साइडबारचा विस्तार करा"
+    },
+    {
+      "id": "online:Expand toolbox",
+      "source": "Expand toolbox",
+      "target": "टूलबॉक्सचा विस्तार करा"
+    },
+    {
+      "id": "online:Explore this step.",
+      "source": "Explore this step.",
+      "target": "या पायरीचा अभ्यास करा."
+    },
+    {
+      "id": "online:Fix this",
+      "source": "Fix this",
+      "target": "हे दुरुस्त करा"
+    },
+    {
+      "id": "online:Fixed-point units: 256 = 1, 128 = 0.5, 512 = 2.",
+      "source": "Fixed-point units: 256 = 1, 128 = 0.5, 512 = 2.",
+      "target": "स्थिर-बिंदू एकके: 256 = 1, 128 = 0.5, 512 = 2."
+    },
+    {
+      "id": "online:Follow latest generation",
+      "source": "Follow latest generation",
+      "target": "नवीनतम पिढीचे अनुसरण करा"
+    },
+    {
+      "id": "online:Following latest generation",
+      "source": "Following latest generation",
+      "target": "नवीनतम पिढीचे अनुसरण करत आहे"
+    },
+    {
+      "id": "online:Generation needs attention",
+      "source": "Generation needs attention",
+      "target": "पिढीकडे लक्ष देण्याची गरज आहे."
+    },
+    {
+      "id": "online:Generator coding conversation",
+      "source": "Generator coding conversation",
+      "target": "जनरेटर कोडिंग संभाषण"
+    },
+    {
+      "id": "online:Generator package",
+      "source": "Generator package",
+      "target": "जनरेटर पॅकेज"
+    },
+    {
+      "id": "online:Good under {value0}, fair under {value1}, poor from {value2}.",
+      "source": "Good under {value0}, fair under {value1}, poor from {value2}.",
+      "target": "{value0} अंतर्गत चांगले, {value1} अंतर्गत साधारण, {value2} पासून खराब."
+    },
+    {
+      "id": "online:IMAGINATION, MEET POSSIBILITY",
+      "source": "IMAGINATION, MEET POSSIBILITY",
+      "target": "कल्पनाशक्ती आणि शक्यता यांचा संगम"
+    },
+    {
+      "id": "online:Images appear here as this stage completes.",
+      "source": "Images appear here as this stage completes.",
+      "target": "हा टप्पा पूर्ण झाल्यावर येथे प्रतिमा दिसतात."
+    },
+    {
+      "id": "online:Import .js",
+      "source": "Import .js",
+      "target": ".js आयात करा"
+    },
+    {
+      "id": "online:Import JavaScript",
+      "source": "Import JavaScript",
+      "target": "JavaScript आयात करा"
+    },
+    {
+      "id": "online:Import generator package",
+      "source": "Import generator package",
+      "target": "आयात जनरेटर पॅकेज"
+    },
+    {
+      "id": "online:Loading workspace…",
+      "source": "Loading workspace…",
+      "target": "कार्यक्षेत्र लोड होत आहे…"
+    },
+    {
+      "id": "online:Make my colony more defensive…",
+      "source": "Make my colony more defensive…",
+      "target": "माझ्या वसाहतीला अधिक संरक्षणक्षम बनवणे…"
+    },
+    {
+      "id": "online:Mute",
+      "source": "Mute",
+      "target": "म्यूट"
+    },
+    {
+      "id": "online:No",
+      "source": "No",
+      "target": "नाही"
+    },
+    {
+      "id": "online:No account needed for rooms and casual games; sign in to be ranked.",
+      "source": "No account needed for rooms and casual games; sign in to be ranked.",
+      "target": "रूम्स आणि कॅज्युअल गेम्ससाठी खात्याची आवश्यकता नाही; रँक मिळवण्यासाठी साइन इन करा."
+    },
+    {
+      "id": "online:No additional details were recorded.",
+      "source": "No additional details were recorded.",
+      "target": "कोणताही अतिरिक्त तपशील नोंदवला गेला नाही."
+    }
+  ],
+  "subset_sha256": "8253302a34be622cd877128ebbfc6b9a655e835ba2a86bb1ab4963e9b97d18d9"
+}

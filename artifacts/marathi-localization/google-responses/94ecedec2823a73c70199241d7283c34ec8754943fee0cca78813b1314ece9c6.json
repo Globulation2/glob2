@@ -1,0 +1,418 @@
+{
+  "request": {
+    "project": "bradley-personal-20261027",
+    "model": "general/nmt",
+    "payload": {
+      "sourceLanguageCode": "en",
+      "targetLanguageCode": "mr",
+      "mimeType": "text/plain",
+      "contents": [
+        "Starting workers",
+        "Statistic",
+        "Status",
+        "Status: ZXQPH0QXZ",
+        "Status: ZXQPH0QXZ · Created ZXQPH1QXZZXQPH2QXZ",
+        "Still JPEG, PNG or WebP · up to 10 MiB and 25 megapixels. Choosing Gravatar or initials removes your uploaded photo.",
+        "Stock levels",
+        "Stop game",
+        "Stop preview",
+        "Stop request",
+        "Stop transition preview",
+        "Stopped",
+        "Stripes",
+        "Studio",
+        "Studio credit purchases are not available.",
+        "Studio view",
+        "Submitted",
+        "Succeeded",
+        "Supply",
+        "Supply valid example settings.",
+        "Sustained notes",
+        "Swarm shape",
+        "Swimming movement",
+        "Synchronized music player",
+        "Synth · warm bells, pads & pulse",
+        "THE LISTENING NOTES",
+        "THE LISTENING ROOM",
+        "TOOLBOX",
+        "Tag",
+        "Tags",
+        "Tags (comma separated)",
+        "Take a seat first.",
+        "Target ID or type",
+        "Team",
+        "Team color",
+        "Team color layers must match the base frame dimensions.",
+        "Team ZXQPH0QXZ",
+        "Teams",
+        "Technical checks do not establish balance or fun.",
+        "Technical checks passed",
+        "Technical details",
+        "Tell me about the world you want to hear. We’ll shape the melody, instruments and three moods together.",
+        "Terrain",
+        "Terrain & resource sets",
+        "Terrain & resources",
+        "Terrain Studio",
+        "Terrain Studio is disabled on this instance. Your saved projects remain available.",
+        "Terrain Studio is disabled.",
+        "Terrain design conversation",
+        "Terrain frames are 32×32. Resource and decor frames can be up to 64×64. Reupload the same PNG with new dimensions to replace its frame grid; then check its frame mappings.",
+        "Terrain projects",
+        "Terrain-credit sales are not enabled.",
+        "Test diagnostics attached.",
+        "Test store — real-money checkout is not enabled.",
+        "That account cannot sign in.",
+        "That display name is taken.",
+        "That password is not right for this username. Try again.",
+        "That player is not in this room.",
+        "That seat is not open.",
+        "That username is taken.",
+        "The 3D canvas could not start.",
+        "The 3D canvas was interrupted. Your painting is safe.",
+        "The 3D shader could not compile.",
+        "The ZXQPH0QXZ file must use ZXQPH1QXZ.",
+        "The access token is invalid.",
+        "The account no longer exists.",
+        "The app didn’t open.",
+        "The artwork artifact is not available.",
+        "The browser kept the page from opening.",
+        "The current draft changed. Close this panel and review the new revision.",
+        "The designer reply needs reconciliation. No map build has started.",
+        "The draft changed during publication. Reload it.",
+        "The draft changed elsewhere. Download your local edits before reloading.",
+        "The edit target changed. Choose a saved version in history.",
+        "The file is missing from storage.",
+        "The file is missing.",
+        "The file must be no larger than 128 KiB.",
+        "The first visit downloads the game once. Later visits start from this device's copy.",
+        "The game could not be downloaded.",
+        "The game will switch to"
+      ]
+    }
+  },
+  "response": {
+    "translations": [
+      {
+        "translatedText": "कामगार सुरू करणे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सांख्यिकी",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "स्थिती",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "स्थिती: ZXQPH0QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "स्थिती: ZXQPH0QXZ · ZXQPH1QXZZXQPH2QXZ तयार केले",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "स्थिर JPEG, PNG किंवा WebP · १० MiB आणि २५ मेगापिक्सेल पर्यंत. ग्राव्हार किंवा आद्याक्षरे निवडल्यास तुमचा अपलोड केलेला फोटो काढून टाकला जातो.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "स्टॉक पातळी",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "खेळ थांबवा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पूर्वावलोकन थांबवा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "विनंती थांबवा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "संक्रमण पूर्वावलोकन थांबवा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "थांबले",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पट्टे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "स्टुडिओ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "स्टुडिओ क्रेडिट खरेदी उपलब्ध नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "स्टुडिओ व्ह्यू",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सादर केले",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "यशस्वी झाले",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पुरवठा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "वैध उदाहरण सेटिंग्ज पुरवा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "दीर्घकाळ टिकणारे सूर",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "थव्याचा आकार",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पोहण्याची हालचाल",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सिंक्रोनाइझ्ड म्युझिक प्लेयर",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सिंथ · वॉर्म बेल्स, पॅड्स आणि पल्स",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ऐकण्याच्या नोंदी",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ऐकण्याची खोली",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "टूलबॉक्स",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "टॅग",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "टॅग",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "टॅग (स्वल्पविरामाने विभक्त केलेले)",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "आधी बसा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "लक्ष्य आयडी किंवा प्रकार",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "संघ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "संघाचा रंग",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "संघाच्या रंगांचे थर मूळ फ्रेमच्या मापांशी जुळले पाहिजेत.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "टीम ZXQPH0QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "संघ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तांत्रिक तपासण्यांमुळे संतुलन किंवा मजा निर्माण होत नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तांत्रिक तपासण्या यशस्वी झाल्या.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तांत्रिक तपशील",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तुम्हाला जे जग ऐकायचं आहे, त्याबद्दल मला सांगा. आपण मिळून चाल, वाद्यं आणि तीन भावछटा घडवू.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "भूभाग",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "भूभाग आणि संसाधन संच",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "भूभाग आणि संसाधने",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "टेरेन स्टुडिओ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "या इन्स्टन्सवर टेरेन स्टुडिओ अक्षम केले आहे. तुमचे जतन केलेले प्रकल्प उपलब्ध राहतील.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "टेरेन स्टुडिओ अक्षम आहे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "भूभाग डिझाइन संभाषण",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "टेरेन फ्रेम्स ३२×३२ आकाराच्या असतात. रिसोर्स आणि डेकोर फ्रेम्स ६४×६४ पर्यंत असू शकतात. त्याची फ्रेम ग्रिड बदलण्यासाठी, तीच PNG नवीन मापांसह पुन्हा अपलोड करा; त्यानंतर तिचे फ्रेम मॅपिंग तपासा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "भूभाग प्रकल्प",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "टेरेन-क्रेडिट विक्री सक्षम केलेली नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "चाचणीचा तपशील जोडला आहे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "चाचणी स्टोअर — प्रत्यक्ष पैशांचे चेकआउट सक्षम केलेले नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ते खाते साइन इन करू शकत नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ते डिस्प्ले नाव आधीच वापरले आहे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तो पासवर्ड या युझरनेमसाठी योग्य नाही. पुन्हा प्रयत्न करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तो खेळाडू या खोलीत नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ती जागा उपलब्ध नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ते वापरकर्तानाव आधीच घेतलेले आहे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "3D कॅनव्हास सुरू होऊ शकला नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "३डी कॅनव्हासमध्ये व्यत्यय आला. तुमचे चित्र सुरक्षित आहे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "3D शेडर संकलित होऊ शकला नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ फाईलमध्ये ZXQPH1QXZ चा वापर करणे आवश्यक आहे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अ‍ॅक्सेस टोकन अवैध आहे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "हे खाते आता अस्तित्वात नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अ‍ॅप उघडले नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कलाकृती उपलब्ध नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ब्राउझरने पान उघडण्यास प्रतिबंध केला.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सध्याचा मसुदा बदलला आहे. हे पॅनल बंद करा आणि नवीन सुधारणेचे पुनरावलोकन करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "डिझायनरच्या उत्तरामध्ये फेरफार करणे आवश्यक आहे. नकाशाची निर्मिती सुरू झालेली नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "प्रकाशनादरम्यान मसुद्यात बदल झाला आहे. तो पुन्हा लोड करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "मसुद्यात इतरत्र बदल करण्यात आला आहे. पुन्हा लोड करण्यापूर्वी तुमचे स्थानिक बदल डाउनलोड करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "संपादनाचे लक्ष्य बदलले आहे. इतिहासामधून जतन केलेली आवृत्ती निवडा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "फाइल स्टोरेजमधून गहाळ आहे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "फाईल उपलब्ध नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "फाईलचा आकार 128 KiB पेक्षा मोठा नसावा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पहिल्या भेटीत गेम एकदा डाउनलोड होतो. त्यानंतरच्या भेटी याच डिव्हाइसमधील कॉपीपासून सुरू होतात.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "गेम डाउनलोड करता आला नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "खेळ बदलेल",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      }
+    ]
+  },
+  "response_sha256": "dbb614fc08f799e7dadd3b3e39ca4dd8b9148faf9bbb07237807700ff3bdd980"
+}

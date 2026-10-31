@@ -1,0 +1,10 @@
+{
+  "payload_sha256": "cc5ff51ce70fac4809c52272bef3bf36e4ca31eb76b1f34425c879ff7b8e7642",
+  "failures": [
+    {
+      "id": "online:{slot0} within {slot1} minutes",
+      "category": null,
+      "reason": "Google response damaged protected tokens; inspect cached response"
+    }
+  ]
+}

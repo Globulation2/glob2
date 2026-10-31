@@ -1,0 +1,325 @@
+{
+  "reviewer": "/root/draft_tool",
+  "role": "independent online semantic reviewer",
+  "source_sha256": "0ac44b4cdfb03e688983d6e3fb1e484cca57589665bff19c5c65388e649b292a",
+  "batch_target_sha256": "e0241d668d38c784136abb6973434ae814cbdf69015d8a8829b83743e74327b2",
+  "catalog_sha256": {
+    "native": "9d9d27dc1179d0a59f88aa723606d7daebe5f9b1ff8903ce66622ee44b442cae",
+    "online": "1ba40d342498f5e7704a63e5d175bd9e8a0ede31e3ca2ce88e8cb1fbc0ba68a6"
+  },
+  "reviewed_keys": [
+    "online:Generated layout",
+    "online:Generated revisions",
+    "online:Generated source accepted as revision {slot0}. Run engine checks before publication.",
+    "online:Generated version accepted as your current edit target.",
+    "online:Generation history {slot0}",
+    "online:Generation is unavailable. Saved code, export and local tools remain accessible.",
+    "online:Generation report",
+    "online:Generation stages",
+    "online:Generation stopped. Your failed generation credit is returned.",
+    "online:Generation {value0} · {value1}",
+    "online:Generator",
+    "online:Generator JavaScript source",
+    "online:Generator Studio",
+    "online:Generator Studio is disabled on this instance. Recover saved files through",
+    "online:Generator Studio is not enabled on this instance.",
+    "online:Generator control values (JSON)",
+    "online:Generator manifest JSON",
+    "online:Generator preview revision {value0}",
+    "online:Generators",
+    "online:Give a bounded moderation reason without NUL characters.",
+    "online:Give a bounded recovery reason.",
+    "online:Give a moderation reason.",
+    "online:Give a reason and a valid content identifier.",
+    "online:Give a reason.",
+    "online:Give a report reason of at most 2000 characters.",
+    "online:Give orders. Receive reports. Lead your colony.",
+    "online:Give your colony controller a home. Every release keeps its own source and download history.",
+    "online:Globs",
+    "online:Globs (all)",
+    "online:Globulation 2",
+    "online:Globulation 2 Online website",
+    "online:Globulation 2 is free software (GPL 3).",
+    "online:Go back to the game: it has signed you in. You can close this tab.",
+    "online:Go to the home page",
+    "online:Go to {p1}",
+    "online:Go to {p6}",
+    "online:Got an invite code?",
+    "online:Got it",
+    "online:Grass",
+    "online:Gravatar when available, otherwise initials",
+    "online:Ground",
+    "online:Ground health change",
+    "online:Ground movement",
+    "online:Growth rate",
+    "online:Guest",
+    "online:Guest accounts are disabled on this instance.",
+    "online:Guest accounts created",
+    "online:Guest active account-days",
+    "online:Guest player",
+    "online:Guests are not ranked and keep no statistics. Their matches still appear below.",
+    "online:Guests get generated names; link a sign-in method to choose one.",
+    "online:Guests: {slot0} today · {slot1} weekly · {slot2} monthly",
+    "online:HTTP {value0}",
+    "online:Hand-made",
+    "online:Hand-made or generated",
+    "online:Hardness ",
+    "online:Health restored per tick",
+    "online:Hear it in the game",
+    "online:Height",
+    "online:Hex",
+    "online:Hidden",
+    "online:Hidden by a moderator",
+    "online:Hidden by a moderator: {slot0}",
+    "online:Hidden following community report.",
+    "online:Hidden following moderator review",
+    "online:Hidden: {slot0}",
+    "online:Hide",
+    "online:Hide family",
+    "online:Hide provisional ratings",
+    "online:Hide release and resolve",
+    "online:Hide set",
+    "online:Hide set and resolve",
+    "online:Historical amounts or payment modes are incomplete. {slot0} purchases have incomplete historical facts. Refund money is never inferred from reversed credits.",
+    "online:Historical coverage",
+    "online:History",
+    "online:Hive",
+    "online:Hive Mind",
+    "online:Hive Mind credits",
+    "online:Hive Mind is not available on this instance.",
+    "online:Hive Mind is not enabled on this instance.",
+    "online:Home",
+    "online:How AIs work {slot0}",
+    "online:How would you like to play?",
+    "online:Hue",
+    "online:Human match participants",
+    "online:Humans",
+    "online:Hungry globs",
+    "online:I checked these token counts against provider evidence, including any explicitly entered zeros.",
+    "online:IN GAME · {slot0}",
+    "online:INTERMEDIATE IMAGE",
+    "online:Image is missing from storage.",
+    "online:Image is too large.",
+    "online:Image not found.",
+    "online:Image unavailable.",
+    "online:Import",
+    "online:Import in Settings → Custom AIs to use in local games.",
+    "online:Import package",
+    "online:Import the downloaded JSON in Settings → Map generators. Online rooms use this exact release without requiring other players to install it.",
+    "online:Imported release {slot0}.",
+    "online:In match"
+  ],
+  "findings": [
+    {
+      "key": "online:Generated revisions",
+      "before": "तयार केलेल्या सुधारणा",
+      "after": "तयार केलेल्या आवृत्त्या",
+      "reason": "Saved revisions, not generic improvements.",
+      "severity": "minor",
+      "state": "proposed"
+    },
+    {
+      "key": "online:Generation history {slot0}",
+      "before": "पिढीचा इतिहास {slot0}",
+      "after": "निर्मितीचा इतिहास {slot0}",
+      "reason": "Artifact generation, not biological generation.",
+      "severity": "major",
+      "state": "proposed"
+    },
+    {
+      "key": "online:Generation report",
+      "before": "पिढी अहवाल",
+      "after": "निर्मिती अहवाल",
+      "reason": "Artifact generation, not biological generation.",
+      "severity": "major",
+      "state": "proposed"
+    },
+    {
+      "key": "online:Generation stages",
+      "before": "पिढीचे टप्पे",
+      "after": "निर्मितीचे टप्पे",
+      "reason": "Artifact generation, not biological generation.",
+      "severity": "major",
+      "state": "proposed"
+    },
+    {
+      "key": "online:Generation stopped. Your failed generation credit is returned.",
+      "before": "पिढी थांबली. तुमचे अयशस्वी पिढीचे क्रेडिट परत केले आहे.",
+      "after": "निर्मिती थांबली. अयशस्वी निर्मितीसाठीचे तुमचे क्रेडिट परत केले आहे.",
+      "reason": "Generation process and refund correctly distinguished.",
+      "severity": "major",
+      "state": "proposed"
+    },
+    {
+      "key": "online:Generation {value0} · {value1}",
+      "before": "पिढी {value0} · {value1}",
+      "after": "निर्मिती {value0} · {value1}",
+      "reason": "Generation attempt, not generation of people.",
+      "severity": "major",
+      "state": "proposed"
+    },
+    {
+      "key": "online:Generator Studio is disabled on this instance. Recover saved files through",
+      "before": "या इन्स्टन्सवर जनरेटर स्टुडिओ अक्षम आहे. जतन केलेल्या फाइल्स याद्वारे पुनर्प्राप्त करा.",
+      "after": "या स्थापनेत जनरेटर स्टुडिओ बंद आहे. जतन केलेल्या फाइल्स पुनर्प्राप्त करण्यासाठी वापरा:",
+      "reason": "Source fragment precedes a recovery link; keep clause open with colon.",
+      "severity": "minor",
+      "state": "proposed"
+    },
+    {
+      "key": "online:Give a moderation reason.",
+      "before": "मध्यमतेचे कारण द्या.",
+      "after": "नियंत्रण कारवाईचे कारण द्या.",
+      "reason": "Moderation action, not temperance/moderateness.",
+      "severity": "major",
+      "state": "proposed"
+    },
+    {
+      "key": "online:Give a bounded moderation reason without NUL characters.",
+      "before": "NUL वर्णांशिवाय मर्यादित नियंत्रणाचे कारण द्या.",
+      "after": "NUL वर्ण नसलेले, मर्यादित लांबीचे नियंत्रण कारवाईचे कारण द्या.",
+      "reason": "Bounded refers to reason text length, not limited moderation.",
+      "severity": "minor",
+      "state": "proposed"
+    },
+    {
+      "key": "online:Give a bounded recovery reason.",
+      "before": "मर्यादित पुनर्प्राप्तीचे कारण द्या.",
+      "after": "पुनर्प्राप्तीचे कारण मर्यादित लांबीच्या मजकुरात द्या.",
+      "reason": "Bounded refers to text length.",
+      "severity": "minor",
+      "state": "proposed"
+    },
+    {
+      "key": "online:Globs",
+      "before": "ग्लोब्स",
+      "after": "ग्लॉब्स",
+      "reason": "Creature name; use Marathi transliteration consistently.",
+      "severity": "minor",
+      "state": "proposed"
+    },
+    {
+      "key": "online:Globs (all)",
+      "before": "ग्लोब्स (सर्व)",
+      "after": "ग्लॉब्स (सर्व)",
+      "reason": "Match creature-name transliteration.",
+      "severity": "minor",
+      "state": "proposed"
+    },
+    {
+      "key": "online:Globulation 2 is free software (GPL 3).",
+      "before": "Globulation 2 हे मोफत सॉफ्टवेअर (GPL 3) आहे.",
+      "after": "Globulation 2 हे मुक्त सॉफ्टवेअर (GPL 3) आहे.",
+      "reason": "Free software concerns software freedoms, not only no charge.",
+      "severity": "major",
+      "state": "proposed"
+    },
+    {
+      "key": "online:Gravatar when available, otherwise initials",
+      "before": "उपलब्ध असल्यास ग्रॅव्हेटार, अन्यथा आद्याक्षरे.",
+      "after": "उपलब्ध असल्यास Gravatar, अन्यथा आद्याक्षरे",
+      "reason": "Service name remains recognizable and invariant.",
+      "severity": "minor",
+      "state": "proposed"
+    },
+    {
+      "key": "online:Ground",
+      "before": "ग्राउंड",
+      "after": "जमीन",
+      "reason": "Terrain/ground category.",
+      "severity": "minor",
+      "state": "proposed"
+    },
+    {
+      "key": "online:Ground health change",
+      "before": "ग्राउंड हेल्थ बदल",
+      "after": "जमिनीवरील युनिटच्या आरोग्यातील बदल",
+      "reason": "Resource effect on ground units, not soil health.",
+      "severity": "major",
+      "state": "proposed"
+    },
+    {
+      "key": "online:Ground movement",
+      "before": "जमिनीची हालचाल",
+      "after": "जमिनीवरील हालचाल",
+      "reason": "Movement of ground units, not movement of the ground.",
+      "severity": "major",
+      "state": "proposed"
+    },
+    {
+      "key": "online:Guests get generated names; link a sign-in method to choose one.",
+      "before": "पाहुण्यांना तयार नावे मिळतात; त्यापैकी एक निवडण्यासाठी साइन-इन पद्धत लिंक करा.",
+      "after": "पाहुण्यांना आपोआप नावे दिली जातात; स्वतःचे नाव निवडण्यासाठी साइन-इन पद्धत जोडा.",
+      "reason": "Users choose their own name, not one of generated options.",
+      "severity": "major",
+      "state": "proposed"
+    },
+    {
+      "key": "online:Hide family",
+      "before": "कुटुंब लपवा",
+      "after": "इमारत संच लपवा",
+      "reason": "Building group, not relatives.",
+      "severity": "minor",
+      "state": "proposed"
+    },
+    {
+      "key": "online:Hive",
+      "before": "हाईव्ह",
+      "after": "Hive",
+      "reason": "Shorthand product name for Hive Mind, retain source spelling.",
+      "severity": "minor",
+      "state": "proposed"
+    },
+    {
+      "key": "online:Home",
+      "before": "घर",
+      "after": "मुख्यपृष्ठ",
+      "reason": "Website navigation, not a physical house.",
+      "severity": "minor",
+      "state": "proposed"
+    },
+    {
+      "key": "online:Human match participants",
+      "before": "मानवी जुळणीतील सहभागी",
+      "after": "सामन्यातील मानवी सहभागी",
+      "reason": "Match means game, not matching pair.",
+      "severity": "major",
+      "state": "proposed"
+    },
+    {
+      "key": "online:Hungry globs",
+      "before": "भुकेले गोळे",
+      "after": "भुकेले ग्लॉब्स",
+      "reason": "Creature name, not hungry balls.",
+      "severity": "major",
+      "state": "proposed"
+    },
+    {
+      "key": "online:Import package",
+      "before": "आयात पॅकेज",
+      "after": "पॅकेज आयात करा",
+      "reason": "Action label, not imported package adjective.",
+      "severity": "minor",
+      "state": "proposed"
+    }
+  ],
+  "accepted_english": [
+    {
+      "key": "online:Globulation 2",
+      "reason": "Game title is a proper name retained consistently across surfaces."
+    },
+    {
+      "key": "online:HTTP {value0}",
+      "reason": "HTTP protocol name and numeric status code are technical identifiers."
+    },
+    {
+      "key": "online:Hive Mind",
+      "reason": "Named assistant feature is retained as the established product name."
+    },
+    {
+      "key": "online:Hive",
+      "reason": "Short product label for Hive Mind retains source spelling."
+    }
+  ],
+  "certification": "Agent-reviewed; not native-human-certified; editorial and final recheck pending"
+}

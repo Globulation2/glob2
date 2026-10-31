@@ -1,0 +1,510 @@
+{
+  "source_sha256": "0ac44b4cdfb03e688983d6e3fb1e484cca57589665bff19c5c65388e649b292a",
+  "batch_target_sha256": "2b125a113c9fb16dc1d54d26d26f0ad277f55bfef424b9c3e83eec3aeb0ee6e0",
+  "catalog_sha256": {
+    "native": "a6d0da95a3cf29e0bcfa904f80043a10fedc3124f7a26e3beebc82e8cdfa4411",
+    "online": "d7ae02f4d4453ebcb2acc37c15fd862acea8d2996d29cdb89bfb64c4f32cd5fa"
+  },
+  "entries": [
+    {
+      "id": "online:Cancel editing",
+      "source": "Cancel editing",
+      "target": "संपादन रद्द करा"
+    },
+    {
+      "id": "online:Cancel generation",
+      "source": "Cancel generation",
+      "target": "निर्मिती रद्द करा"
+    },
+    {
+      "id": "online:Cancel report",
+      "source": "Cancel report",
+      "target": "अहवाल रद्द करा"
+    },
+    {
+      "id": "online:Cancel request",
+      "source": "Cancel request",
+      "target": "विनंती रद्द करा"
+    },
+    {
+      "id": "online:Cancel upload",
+      "source": "Cancel upload",
+      "target": "अपलोड रद्द करा"
+    },
+    {
+      "id": "online:Cancellation is unavailable while the provider outcome and reserved credits are reconciled. You can keep editing the saved source or export it.",
+      "source": "Cancellation is unavailable while the provider outcome and reserved credits are reconciled. You can keep editing the saved source or export it.",
+      "target": "प्रदात्याचा निकाल आणि आरक्षित क्रेडिट्स यांचा ताळमेळ घातला जात असताना, रद्द करण्याची सुविधा उपलब्ध नाही. तुम्ही जतन केलेला स्रोत संपादित करणे सुरू ठेवू शकता किंवा तो निर्यात करू शकता."
+    },
+    {
+      "id": "online:Cancellation requested",
+      "source": "Cancellation requested",
+      "target": "रद्द करण्याची विनंती केली आहे."
+    },
+    {
+      "id": "online:Cancelled",
+      "source": "Cancelled",
+      "target": "रद्द केले"
+    },
+    {
+      "id": "online:Candidate preview · may need repairs",
+      "source": "Candidate preview · may need repairs",
+      "target": "उमेदवार पूर्वावलोकन · दुरुस्तीची आवश्यकता असू शकते"
+    },
+    {
+      "id": "online:Candidate previews & reports",
+      "source": "Candidate previews & reports",
+      "target": "उमेदवारांचे पूर्वावलोकन आणि अहवाल"
+    },
+    {
+      "id": "online:Candidate unavailable.",
+      "source": "Candidate unavailable.",
+      "target": "उमेदवार उपलब्ध नाही."
+    },
+    {
+      "id": "online:Candidate {slot0}",
+      "source": "Candidate {slot0}",
+      "target": "उमेदवार {slot0}"
+    },
+    {
+      "id": "online:Canonical package SHA-256: {slot0}",
+      "source": "Canonical package SHA-256: {slot0}",
+      "target": "कॅनोनिकल पॅकेज SHA-256: {slot0}"
+    },
+    {
+      "id": "online:Cash amount",
+      "source": "Cash amount",
+      "target": "रोख रक्कम"
+    },
+    {
+      "id": "online:Castor",
+      "source": "Castor",
+      "target": "Castor"
+    },
+    {
+      "id": "online:Catalog",
+      "source": "Catalog",
+      "target": "कॅटलॉग"
+    },
+    {
+      "id": "online:Categorical",
+      "source": "Categorical",
+      "target": "श्रेणीबद्ध"
+    },
+    {
+      "id": "online:Change",
+      "source": "Change",
+      "target": "बदल"
+    },
+    {
+      "id": "online:Change role",
+      "source": "Change role",
+      "target": "भूमिका बदला"
+    },
+    {
+      "id": "online:Change shape ⌄",
+      "source": "Change shape ⌄",
+      "target": "आकार बदला ⌄"
+    },
+    {
+      "id": "online:Changes",
+      "source": "Changes",
+      "target": "बदल"
+    },
+    {
+      "id": "online:Changing settings takes effect when you press Generate. One seed per preview.",
+      "source": "Changing settings takes effect when you press Generate. One seed per preview.",
+      "target": "तुम्ही जनरेट बटण दाबल्यावर सेटिंग्जमधील बदल लागू होतात. प्रत्येक प्रिव्ह्यूसाठी एक सीड."
+    },
+    {
+      "id": "online:Charged",
+      "source": "Charged",
+      "target": "शुल्क आकारले"
+    },
+    {
+      "id": "online:Charts appear once the server has replayed the match.",
+      "source": "Charts appear once the server has replayed the match.",
+      "target": "सर्वरने सामना पुन्हा चालवल्यानंतर चार्ट दिसतात."
+    },
+    {
+      "id": "online:Chat",
+      "source": "Chat",
+      "target": "चॅट"
+    },
+    {
+      "id": "online:Check & publish",
+      "source": "Check & publish",
+      "target": "तपासा आणि प्रकाशित करा"
+    },
+    {
+      "id": "online:Check again",
+      "source": "Check again",
+      "target": "पुन्हा तपासा"
+    },
+    {
+      "id": "online:Check payment",
+      "source": "Check payment",
+      "target": "पेमेंट तपासा"
+    },
+    {
+      "id": "online:Check the connection, then try again.",
+      "source": "Check the connection, then try again.",
+      "target": "कनेक्शन तपासा, मग पुन्हा प्रयत्न करा."
+    },
+    {
+      "id": "online:Check the essentials",
+      "source": "Check the essentials",
+      "target": "आवश्यक गोष्टी तपासा"
+    },
+    {
+      "id": "online:Check the score",
+      "source": "Check the score",
+      "target": "गुण तपासा"
+    },
+    {
+      "id": "online:Checker",
+      "source": "Checker",
+      "target": "चौकटी"
+    },
+    {
+      "id": "online:Checking",
+      "source": "Checking",
+      "target": "तपासणी"
+    },
+    {
+      "id": "online:Checking generator…",
+      "source": "Checking generator…",
+      "target": "जनरेटर तपासत आहे…"
+    },
+    {
+      "id": "online:Checking the map with the game.",
+      "source": "Checking the map with the game.",
+      "target": "खेळाच्या मदतीने नकाशा तपासत आहे."
+    },
+    {
+      "id": "online:Checking the map…",
+      "source": "Checking the map…",
+      "target": "नकाशा तपासत आहे…"
+    },
+    {
+      "id": "online:Checking your AI… {value0} of {value1} checks passed.{value2}",
+      "source": "Checking your AI… {value0} of {value1} checks passed.{value2}",
+      "target": "तुमचा AI तपासत आहे… {value1} पैकी {value0} तपासण्या यशस्वी झाल्या. {value2}"
+    },
+    {
+      "id": "online:Checking your set…",
+      "source": "Checking your set…",
+      "target": "तुमचा सेट तपासत आहे…"
+    },
+    {
+      "id": "online:Checking your world…",
+      "source": "Checking your world…",
+      "target": "तुमच्या जगाची तपासणी करत आहे…"
+    },
+    {
+      "id": "online:Checkout could not be opened. Please try again.",
+      "source": "Checkout could not be opened. Please try again.",
+      "target": "चेकआउट उघडता आले नाही. कृपया पुन्हा प्रयत्न करा."
+    },
+    {
+      "id": "online:Checkout does not match this purchase.",
+      "source": "Checkout does not match this purchase.",
+      "target": "चेकआउट या खरेदीशी जुळत नाही."
+    },
+    {
+      "id": "online:Checkout failed.",
+      "source": "Checkout failed.",
+      "target": "चेकआउट अयशस्वी झाले."
+    },
+    {
+      "id": "online:Checkout is not available yet; retry this event.",
+      "source": "Checkout is not available yet; retry this event.",
+      "target": "चेकआउट अद्याप उपलब्ध नाही; या इव्हेंटसाठी पुन्हा प्रयत्न करा."
+    },
+    {
+      "id": "online:Checkout returned. Check the payment below to confirm your purchase.",
+      "source": "Checkout returned. Check the payment below to confirm your purchase.",
+      "target": "पेमेंट पृष्ठावरून परत आलात. खरेदीची खात्री करण्यासाठी खाली पेमेंटची स्थिती तपासा."
+    },
+    {
+      "id": "online:Checkout was cancelled. Your project and draft are saved.",
+      "source": "Checkout was cancelled. Your project and draft are saved.",
+      "target": "चेकआउट रद्द करण्यात आले. तुमचा प्रकल्प आणि मसुदा जतन करण्यात आले आहेत."
+    },
+    {
+      "id": "online:Checks",
+      "source": "Checks",
+      "target": "तपासणी"
+    },
+    {
+      "id": "online:Checks apply to the last saved revision. ",
+      "source": "Checks apply to the last saved revision. ",
+      "target": "तपासणी शेवटच्या जतन केलेल्या आवृत्तीला लागू होते. "
+    },
+    {
+      "id": "online:Checks cover the listed settings and do not certify game balance.",
+      "source": "Checks cover the listed settings and do not certify game balance.",
+      "target": "तपासणीमध्ये नमूद केलेल्या सेटिंग्जचा समावेश असतो आणि त्या गेमच्या संतुलनाची खात्री देत ​​नाहीत."
+    },
+    {
+      "id": "online:Checks failed",
+      "source": "Checks failed",
+      "target": "तपासणी अयशस्वी झाली"
+    },
+    {
+      "id": "online:Checks for {value0}",
+      "source": "Checks for {value0}",
+      "target": "{value0} साठी तपासणी"
+    },
+    {
+      "id": "online:Checks passed",
+      "source": "Checks passed",
+      "target": "तपासणी यशस्वी झाली."
+    },
+    {
+      "id": "online:Checks validate gameplay properties, image bounds, frame mappings and rendering using the game engine. They do not establish map balance.",
+      "source": "Checks validate gameplay properties, image bounds, frame mappings and rendering using the game engine. They do not establish map balance.",
+      "target": "तपासण्या गेम इंजिन वापरून गेमप्लेचे गुणधर्म, इमेज बाउंड्स, फ्रेम मॅपिंग आणि रेंडरिंग प्रमाणित करतात. त्या मॅपचे संतुलन स्थापित करत नाहीत."
+    },
+    {
+      "id": "online:Checks · {slot0}",
+      "source": "Checks · {slot0}",
+      "target": "तपासणी · {slot0}"
+    },
+    {
+      "id": "online:Chevrons",
+      "source": "Chevrons",
+      "target": "शेवरॉन"
+    },
+    {
+      "id": "online:Choose 7, 30 or 90 days.",
+      "source": "Choose 7, 30 or 90 days.",
+      "target": "७, ३० किंवा ९० दिवस निवडा."
+    },
+    {
+      "id": "online:Choose a JPEG, PNG or WebP photo.",
+      "source": "Choose a JPEG, PNG or WebP photo.",
+      "target": "JPEG, PNG किंवा WebP फोटो निवडा."
+    },
+    {
+      "id": "online:Choose a PNG or WebP frame.",
+      "source": "Choose a PNG or WebP frame.",
+      "target": "PNG किंवा WebP फ्रेम निवडा."
+    },
+    {
+      "id": "online:Choose a PNG spritesheet.",
+      "source": "Choose a PNG spritesheet.",
+      "target": "एक PNG स्प्राइटशीट निवडा."
+    },
+    {
+      "id": "online:Choose a PNG, JPEG or WebP up to 2048×2048.",
+      "source": "Choose a PNG, JPEG or WebP up to 2048×2048.",
+      "target": "2048×2048 पर्यंतचा PNG, JPEG किंवा WebP निवडा."
+    },
+    {
+      "id": "online:Choose a building ZIP package.",
+      "source": "Choose a building ZIP package.",
+      "target": "इमारतीचे ZIP पॅकेज निवडा."
+    },
+    {
+      "id": "online:Choose a draft or a released set.",
+      "source": "Choose a draft or a released set.",
+      "target": "मसुदा किंवा प्रकाशित संच निवडा."
+    },
+    {
+      "id": "online:Choose a family name.",
+      "source": "Choose a family name.",
+      "target": "इमारत संचाचे नाव निवडा."
+    },
+    {
+      "id": "online:Choose a file to begin.",
+      "source": "Choose a file to begin.",
+      "target": "सुरुवात करण्यासाठी एक फाईल निवडा."
+    },
+    {
+      "id": "online:Choose a local custom game or a multiplayer room with this map.",
+      "source": "Choose a local custom game or a multiplayer room with this map.",
+      "target": "या नकाशासह स्थानिक कस्टम गेम किंवा मल्टीप्लेअर रूम निवडा."
+    },
+    {
+      "id": "online:Choose a map file first: a .map or .map.gz file from the game.",
+      "source": "Choose a map file first: a .map or .map.gz file from the game.",
+      "target": "सर्वप्रथम गेममधील .map किंवा .map.gz फाईल निवडा."
+    },
+    {
+      "id": "online:Choose a map first.",
+      "source": "Choose a map first.",
+      "target": "आधी नकाशा निवडा."
+    },
+    {
+      "id": "online:Choose a nonempty JavaScript file without NUL bytes.",
+      "source": "Choose a nonempty JavaScript file without NUL bytes.",
+      "target": "NUL बाइट्स नसलेली, रिकामी नसलेली JavaScript फाईल निवडा."
+    },
+    {
+      "id": "online:Choose a nonempty JavaScript file.",
+      "source": "Choose a nonempty JavaScript file.",
+      "target": "रिकामी नसलेली JavaScript फाईल निवडा."
+    },
+    {
+      "id": "online:Choose a nonempty portable generator package without NUL bytes.",
+      "source": "Choose a nonempty portable generator package without NUL bytes.",
+      "target": "NUL बाइट्स नसलेले, रिक्त नसलेले पोर्टेबल जनरेटर पॅकेज निवडा."
+    },
+    {
+      "id": "online:Choose a password",
+      "source": "Choose a password",
+      "target": "पासवर्ड निवडा"
+    },
+    {
+      "id": "online:Choose a password of at least {p0} characters.",
+      "source": "Choose a password of at least {p0} characters.",
+      "target": "किमान {p0} अक्षरांचा पासवर्ड निवडा."
+    },
+    {
+      "id": "online:Choose a photo no larger than 10 MiB.",
+      "source": "Choose a photo no larger than 10 MiB.",
+      "target": "१० MiB पेक्षा मोठा नसलेला फोटो निवडा."
+    },
+    {
+      "id": "online:Choose a photo no larger than 25 megapixels.",
+      "source": "Choose a photo no larger than 25 megapixels.",
+      "target": "२५ मेगापिक्सेलपेक्षा मोठा नसलेला फोटो निवडा."
+    },
+    {
+      "id": "online:Choose a saved version, then describe the changes in chat. The saved map remains in history.",
+      "source": "Choose a saved version, then describe the changes in chat. The saved map remains in history.",
+      "target": "जतन केलेली आवृत्ती निवडा, त्यानंतर चॅटमध्ये बदलांचे वर्णन करा. जतन केलेला नकाशा इतिहासात राहतो."
+    },
+    {
+      "id": "online:Choose a skin",
+      "source": "Choose a skin",
+      "target": "रूप निवडा"
+    },
+    {
+      "id": "online:Choose a skin name.",
+      "source": "Choose a skin name.",
+      "target": "रूपाचे नाव निवडा."
+    },
+    {
+      "id": "online:Choose a sprite, frame, layer and current revision.",
+      "source": "Choose a sprite, frame, layer and current revision.",
+      "target": "स्प्राइट, फ्रेम, लेयर आणि सध्याची आवृत्ती निवडा."
+    },
+    {
+      "id": "online:Choose a still JPEG, PNG or WebP photo, at most 25 megapixels.",
+      "source": "Choose a still JPEG, PNG or WebP photo, at most 25 megapixels.",
+      "target": "जास्तीत जास्त २५ मेगापिक्सेलचा एक स्थिर JPEG, PNG किंवा WebP फोटो निवडा."
+    },
+    {
+      "id": "online:Choose a still PNG or WebP frame no larger than 512 by 512.",
+      "source": "Choose a still PNG or WebP frame no larger than 512 by 512.",
+      "target": "512 बाय 512 पेक्षा मोठा नसलेला एक स्थिर PNG किंवा WebP फ्रेम निवडा."
+    },
+    {
+      "id": "online:Choose a still PNG or WebP frame.",
+      "source": "Choose a still PNG or WebP frame.",
+      "target": "एक स्थिर PNG किंवा WebP फ्रेम निवडा."
+    },
+    {
+      "id": "online:Choose a still photo, not an animation.",
+      "source": "Choose a still photo, not an animation.",
+      "target": "अॅनिमेशनऐवजी स्थिर फोटो निवडा."
+    },
+    {
+      "id": "online:Choose a username",
+      "source": "Choose a username",
+      "target": "वापरकर्तानाव निवडा"
+    },
+    {
+      "id": "online:Choose a validated release for the simulation version you play. Each download includes its artwork.",
+      "source": "Choose a validated release for the simulation version you play. Each download includes its artwork.",
+      "target": "तुम्ही खेळत असलेल्या सिम्युलेशन आवृत्तीसाठी एक प्रमाणित रिलीज निवडा. प्रत्येक डाउनलोडमध्ये त्याचे आर्टवर्क समाविष्ट असते."
+    },
+    {
+      "id": "online:Choose a version",
+      "source": "Choose a version",
+      "target": "आवृत्ती निवडा"
+    },
+    {
+      "id": "online:Choose an AI.",
+      "source": "Choose an AI.",
+      "target": "एआय निवडा."
+    },
+    {
+      "id": "online:Choose an existing report to resolve.",
+      "source": "Choose an existing report to resolve.",
+      "target": "निराकरण करण्यासाठी अस्तित्वात असलेला अहवाल निवडा."
+    },
+    {
+      "id": "online:Choose an updated file to try again.",
+      "source": "Choose an updated file to try again.",
+      "target": "पुन्हा प्रयत्न करण्यासाठी अद्ययावत फाईल निवडा."
+    },
+    {
+      "id": "online:Choose automatic or initials.",
+      "source": "Choose automatic or initials.",
+      "target": "स्वयंचलित किंवा आद्याक्षरे निवडा."
+    },
+    {
+      "id": "online:Choose either an import or a library version.",
+      "source": "Choose either an import or a library version.",
+      "target": "इम्पोर्ट किंवा लायब्ररी आवृत्तीपैकी एक निवडा."
+    },
+    {
+      "id": "online:Choose final view",
+      "source": "Choose final view",
+      "target": "अंतिम दृश्य निवडा"
+    },
+    {
+      "id": "online:Choose how to sign in to the game:",
+      "source": "Choose how to sign in to the game:",
+      "target": "गेममध्ये साइन इन करण्याचा मार्ग निवडा:"
+    },
+    {
+      "id": "online:Choose one bundled .js file.",
+      "source": "Choose one bundled .js file.",
+      "target": "बंडल केलेल्या .js फाईलपैकी एक निवडा."
+    },
+    {
+      "id": "online:Choose profile photo",
+      "source": "Choose profile photo",
+      "target": "प्रोफाइल फोटो निवडा"
+    },
+    {
+      "id": "online:Choose property…",
+      "source": "Choose property…",
+      "target": "गुणधर्म निवडा…"
+    },
+    {
+      "id": "online:Choose revision",
+      "source": "Choose revision",
+      "target": "आवृत्ती निवडा"
+    },
+    {
+      "id": "online:Choose sheet…",
+      "source": "Choose sheet…",
+      "target": "शीट निवडा…"
+    },
+    {
+      "id": "online:Choose the current draft revision.",
+      "source": "Choose the current draft revision.",
+      "target": "सध्याची मसुदा आवृत्ती निवडा."
+    },
+    {
+      "id": "online:Choose up to five tags. These describe your strategy, not a tested strength rating.",
+      "source": "Choose up to five tags. These describe your strategy, not a tested strength rating.",
+      "target": "जास्तीत जास्त पाच टॅग निवडा. हे तुमच्या रणनीतीचे वर्णन करतात, चाचणी केलेल्या सामर्थ्याचे मानांकन नव्हे."
+    },
+    {
+      "id": "online:Choose uploaded sheet…",
+      "source": "Choose uploaded sheet…",
+      "target": "अपलोड केलेली शीट निवडा…"
+    },
+    {
+      "id": "online:Choose visibility and a moderation reason.",
+      "source": "Choose visibility and a moderation reason.",
+      "target": "दृश्यमानता आणि नियंत्रणाचे कारण निवडा."
+    }
+  ]
+}

@@ -1,0 +1,418 @@
+{
+  "request": {
+    "project": "bradley-personal-20261027",
+    "model": "general/nmt",
+    "payload": {
+      "sourceLanguageCode": "en",
+      "targetLanguageCode": "mr",
+      "mimeType": "text/plain",
+      "contents": [
+        "Not saved: select Import to retry or Export file",
+        "Import progress",
+        "Export progress",
+        "Retry save",
+        "Campaign progress not saved. Retry or export a backup.",
+        "Leave without saving",
+        "Invalid progress file or different campaign version",
+        "Final save not confirmed. Retry, or quit without saving.",
+        "Quit without saving",
+        "Game closed. You can close this window or reload to play again.",
+        "Save not confirmed. OK retries; Cancel returns to the editor menu.",
+        "Actions",
+        "Minimap",
+        "Fast forward",
+        "Player slot",
+        "Team color",
+        "Alliance group",
+        "Menu",
+        "Tools",
+        "Pan map",
+        "Edit map",
+        "Map",
+        "Pause",
+        "Speed",
+        "Objectives",
+        "Menu",
+        "Goals",
+        "Teams",
+        "Use this landscape",
+        "Reset",
+        "Generating...",
+        "Players",
+        "Rules",
+        "Undo",
+        "No overlay",
+        "ZXQPH0QXZ×",
+        "More",
+        "No items",
+        "Review & Play",
+        "Edit opponents",
+        "Next",
+        "Done",
+        "Contribution",
+        "Choose who controls this colony",
+        "Settings",
+        "AI opponents",
+        "Assigned ZXQPH0QXZ · Target ZXQPH1QXZ",
+        "Range: ZXQPH0QXZ",
+        "Player ZXQPH0QXZ",
+        "Brush ZXQPH0QXZ",
+        "Team ZXQPH0QXZ",
+        "Your colony",
+        "ZXQPH0QXZ / ZXQPH1QXZ HP · ZXQPH2QXZ",
+        "Units: ZXQPH0QXZ",
+        "Need food: ZXQPH0QXZ",
+        "Need healing: ZXQPH0QXZ",
+        "Attack: ZXQPH0QXZ",
+        "Defense: ZXQPH0QXZ",
+        "Food: ZXQPH0QXZ / ZXQPH1QXZ",
+        "View team ZXQPH0QXZ",
+        "P ZXQPH0QXZ/ZXQPH1QXZ/ZXQPH2QXZ",
+        "CPU ZXQPH0QXZ%",
+        "Brush ZXQPH0QXZxZXQPH1QXZ",
+        "Level ZXQPH0QXZ",
+        "Manage teams (ZXQPH0QXZ)",
+        "Team ZXQPH0QXZ / Level ZXQPH1QXZ",
+        "Files · ZXQPH0QXZ",
+        "Hint ZXQPH0QXZ",
+        "Objective ZXQPH0QXZ",
+        "Entry ZXQPH0QXZ of 8 · empty entries are omitted",
+        "Teams ZXQPH0QXZ/ZXQPH1QXZ",
+        "Elapsed time · ZXQPH0QXZ",
+        "Alliance and shared vision are fixed for this match.",
+        "Share vision",
+        "Share food vision",
+        "Chat",
+        "No briefing for this match.",
+        "Chat · recipients selected in Teams",
+        "Filename",
+        "Reduced motion"
+      ]
+    }
+  },
+  "response": {
+    "translations": [
+      {
+        "translatedText": "सेव्ह झाले नाही: पुन्हा प्रयत्न करण्यासाठी इम्पोर्ट निवडा किंवा फाईल एक्सपोर्ट करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "आयात प्रगती",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "निर्यात प्रगती",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पुन्हा प्रयत्न करा सेव्ह करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "मोहिमेची प्रगती जतन झाली नाही. पुन्हा प्रयत्न करा किंवा बॅकअप निर्यात करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "बचत न करता निघून जा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अवैध प्रगती फाइल किंवा मोहिमेची वेगळी आवृत्ती",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अंतिम सेव्हची पुष्टी झालेली नाही. पुन्हा प्रयत्न करा, किंवा सेव्ह न करता बाहेर पडा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सेव्ह न करता बाहेर पडा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "खेळ बंद झाला आहे. पुन्हा खेळण्यासाठी तुम्ही ही विंडो बंद करू शकता किंवा रीलोड करू शकता.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सेव्हची पुष्टी झाली नाही. ओके केल्यावर पुन्हा प्रयत्न होतो; कॅन्सल केल्यावर एडिटर मेन्यूवर परत जाता येते.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कृती",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "मिनीमॅप",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पुढे जाऊया",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "खेळाडू स्लॉट",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "संघाचा रंग",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "युती गट",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "मेनू",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "साधने",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पॅन नकाशा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नकाशा संपादित करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नकाशा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "थांबा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "वेग",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "उद्दिष्टे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "मेनू",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ध्येये",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "संघ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "या लँडस्केपचा वापर करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "रीसेट करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "निर्माण करत आहे...",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "खेळाडू",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नियम",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पूर्ववत करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "आच्छादन नाही",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ×",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अधिक",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कोणतीही वस्तू नाही",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पुनरावलोकन आणि खेळा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "विरोधकांना संपादित करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पुढील",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पूर्ण झाले",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "योगदान",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "या वसाहतीवर कोणाचे नियंत्रण असेल ते निवडा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सेटिंग्ज",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "एआय प्रतिस्पर्धी",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ नियुक्त केले · लक्ष्य ZXQPH1QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "श्रेणी: ZXQPH0QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "खेळाडू ZXQPH0QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ब्रश ZXQPH0QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "टीम ZXQPH0QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तुमची वसाहत",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ / ZXQPH1QXZ HP · ZXQPH2QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "एकके: ZXQPH0QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अन्नाची गरज: ZXQPH0QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "उपचाराची गरज: ZXQPH0QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "हल्ला: ZXQPH0QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "संरक्षण: ZXQPH0QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अन्न: ZXQPH0QXZ / ZXQPH1QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "संघ पहा ZXQPH0QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पी झेडएक्सक्यूपीएच०क्यूएक्सझेड/झेडएक्सक्यूपीएच१क्यूएक्सझेड/झेडएक्सक्यूपीएच२क्यूएक्सझेड",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "CPU ZXQPH0QXZ%",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ब्रश ZXQPH0QXZxZXQPH1QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पातळी ZXQPH0QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "संघ व्यवस्थापित करा (ZXQPH0QXZ)",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "संघ ZXQPH0QXZ / स्तर ZXQPH1QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "फाईल्स · ZXQPH0QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सूचना ZXQPH0QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "उद्दिष्ट ZXQPH0QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "८ पैकी नोंद ZXQPH0QXZ · रिकाम्या नोंदी वगळण्यात आल्या आहेत",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "संघ ZXQPH0QXZ/ZXQPH1QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "गेलेला वेळ · ZXQPH0QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "या सामन्यासाठी युती आणि सामायिक दृष्टीकोन निश्चित आहेत.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "दृष्टी सामायिक करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अन्न दृष्टी शेअर करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "चॅट",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "या सामन्यासाठी कोणतीही माहिती दिली जाणार नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "चॅट · टीम्समध्ये निवडलेले प्राप्तकर्ते",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "फाइलचे नाव",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कमी झालेली हालचाल",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      }
+    ]
+  },
+  "response_sha256": "db8567bd45feb5e38ecded46c6e90cff853aafcc85424e6347ba35dc6be0dc72"
+}

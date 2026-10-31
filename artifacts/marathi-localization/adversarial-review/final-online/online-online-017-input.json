@@ -1,0 +1,516 @@
+{
+  "source_sha256": "0ac44b4cdfb03e688983d6e3fb1e484cca57589665bff19c5c65388e649b292a",
+  "batch_target_sha256": "6f7b55f45b80ff4262375303d19ad50757161de66c7a8e7691fef5ef9ed2e3e1",
+  "catalog_sha256": {
+    "native": "8b3f9e4972ee0eb1c3433110a7f0e83c9dc2fb7ea5f494b6925afa373c4fef97",
+    "online": "d7ae02f4d4453ebcb2acc37c15fd862acea8d2996d29cdb89bfb64c4f32cd5fa"
+  },
+  "entries": [
+    {
+      "id": "online:Remove {value0}",
+      "source": "Remove {value0}",
+      "target": "{value0} काढून टाका"
+    },
+    {
+      "id": "online:Rename",
+      "source": "Rename",
+      "target": "नाव बदला"
+    },
+    {
+      "id": "online:Render the instruments",
+      "source": "Render the instruments",
+      "target": "वाद्यांचे ध्वनी तयार करा"
+    },
+    {
+      "id": "online:Rendered by the browser game engine. Run publishing checks to validate the saved revision.",
+      "source": "Rendered by the browser game engine. Run publishing checks to validate the saved revision.",
+      "target": "ब्राउझर गेम इंजिनद्वारे प्रस्तुत केले आहे. जतन केलेली आवृत्ती प्रमाणित करण्यासाठी प्रकाशन तपासण्या चालवा."
+    },
+    {
+      "id": "online:Replace or remove the team layer before changing frame dimensions.",
+      "source": "Replace or remove the team layer before changing frame dimensions.",
+      "target": "फ्रेमचे परिमाण बदलण्यापूर्वी टीम लेयर बदला किंवा काढून टाका."
+    },
+    {
+      "id": "online:Replace the gaps too",
+      "source": "Replace the gaps too",
+      "target": "फटी देखील बदला"
+    },
+    {
+      "id": "online:Replay",
+      "source": "Replay",
+      "target": "रीप्ले"
+    },
+    {
+      "id": "online:Report",
+      "source": "Report",
+      "target": "अहवाल"
+    },
+    {
+      "id": "online:Report AI",
+      "source": "Report AI",
+      "target": "एआयची तक्रार करा"
+    },
+    {
+      "id": "online:Report a problem",
+      "source": "Report a problem",
+      "target": "समस्या कळवा"
+    },
+    {
+      "id": "online:Report already resolved.",
+      "source": "Report already resolved.",
+      "target": "अहवालाचे निराकरण आधीच झाले आहे."
+    },
+    {
+      "id": "online:Report for {value0}",
+      "source": "Report for {value0}",
+      "target": "{value0} साठी अहवाल"
+    },
+    {
+      "id": "online:Report has already been resolved. Refresh to review its resolution.",
+      "source": "Report has already been resolved. Refresh to review its resolution.",
+      "target": "अहवालाचे निराकरण आधीच झाले आहे. त्याचे निराकरण तपासण्यासाठी रिफ्रेश करा."
+    },
+    {
+      "id": "online:Report not found.",
+      "source": "Report not found.",
+      "target": "अहवाल आढळला नाही."
+    },
+    {
+      "id": "online:Report reason",
+      "source": "Report reason",
+      "target": "तक्रारीचे कारण"
+    },
+    {
+      "id": "online:Report received.",
+      "source": "Report received.",
+      "target": "अहवाल प्राप्त झाला."
+    },
+    {
+      "id": "online:Report skin",
+      "source": "Report skin",
+      "target": "रूपाची तक्रार करा"
+    },
+    {
+      "id": "online:Report this generator",
+      "source": "Report this generator",
+      "target": "या जनरेटरची तक्रार करा"
+    },
+    {
+      "id": "online:Report this map",
+      "source": "Report this map",
+      "target": "या नकाशाची तक्रार करा"
+    },
+    {
+      "id": "online:Report this release",
+      "source": "Report this release",
+      "target": "या प्रकाशनाची तक्रार करा"
+    },
+    {
+      "id": "online:Reported",
+      "source": "Reported",
+      "target": "रिपोर्ट केले"
+    },
+    {
+      "id": "online:Reported skin texture",
+      "source": "Reported skin texture",
+      "target": "तक्रार केलेल्या रूपाचे टेक्सचर"
+    },
+    {
+      "id": "online:Reporting range: {slot0} through {slot1} (UTC). Today is still in progress; the previous {slot2} day are complete calendar days. History may be incomplete; comparisons use recorded observations only.",
+      "source": {
+        "one": "Reporting range: {slot0} through {slot1} (UTC). Today is still in progress; the previous {slot2} day is a complete calendar day. History may be incomplete; comparisons use recorded observations only.",
+        "other": "Reporting range: {slot0} through {slot1} (UTC). Today is still in progress; the previous {slot2} days are complete calendar days. History may be incomplete; comparisons use recorded observations only."
+      },
+      "target": {
+        "one": "अहवाल देण्याची व्याप्ती: {slot0} ते {slot1} (UTC). आजचा दिवस अजूनही सुरू आहे; मागील {slot2} दिवस हा एक पूर्ण कॅलेंडर दिवस आहे. इतिहास अपूर्ण असू शकतो; तुलनेसाठी केवळ नोंदवलेल्या निरीक्षणांचा वापर केला जातो.",
+        "other": "अहवाल देण्याची व्याप्ती: {slot0} ते {slot1} (UTC). आजचा दिवस अजूनही सुरू आहे; मागील {slot2} दिवस हे पूर्ण कॅलेंडर दिवस आहेत. इतिहास अपूर्ण असू शकतो; तुलनेसाठी केवळ नोंदवलेल्या निरीक्षणांचा वापर केला जातो."
+      }
+    },
+    {
+      "id": "online:Reporting range: {slot0} through {slot1} (UTC). Today is still in progress; the previous {slot2} days are complete calendar days. History may be incomplete; comparisons use recorded observations only.",
+      "source": "Reporting range: {slot0} through {slot1} (UTC). Today is still in progress; the previous {slot2} days are complete calendar days. History may be incomplete; comparisons use recorded observations only.",
+      "target": "अहवाल देण्याची व्याप्ती: {slot0} ते {slot1} (UTC). आजचा दिवस अजूनही सुरू आहे; मागील {slot2} दिवस हे पूर्ण कॅलेंडर दिवस आहेत. इतिहास अपूर्ण असू शकतो; तुलनेसाठी केवळ नोंदवलेल्या निरीक्षणांचा वापर केला जातो."
+    },
+    {
+      "id": "online:Reports",
+      "source": "Reports",
+      "target": "अहवाल"
+    },
+    {
+      "id": "online:Request cap",
+      "source": "Request cap",
+      "target": "विनंतीची कमाल मर्यादा"
+    },
+    {
+      "id": "online:Request cap exceeds the configured limit.",
+      "source": "Request cap exceeds the configured limit.",
+      "target": "विनंतीची मर्यादा निर्धारित मर्यादेपेक्षा जास्त आहे."
+    },
+    {
+      "id": "online:Request failed.",
+      "source": "Request failed.",
+      "target": "विनंती अयशस्वी झाली."
+    },
+    {
+      "id": "online:Request not found.",
+      "source": "Request not found.",
+      "target": "विनंती आढळली नाही."
+    },
+    {
+      "id": "online:Requests needing attention",
+      "source": "Requests needing attention",
+      "target": "लक्ष देण्याची गरज असलेल्या विनंत्या"
+    },
+    {
+      "id": "online:Required experiment",
+      "source": "Required experiment",
+      "target": "आवश्यक प्रयोग"
+    },
+    {
+      "id": "online:Requires the {p0} role.",
+      "source": "Requires the {p0} role.",
+      "target": "{p0} भूमिकेची आवश्यकता आहे."
+    },
+    {
+      "id": "online:Reroll seed",
+      "source": "Reroll seed",
+      "target": "नवे यादृच्छिक बीज निवडा"
+    },
+    {
+      "id": "online:Reservation",
+      "source": "Reservation",
+      "target": "आरक्षण"
+    },
+    {
+      "id": "online:Reserved",
+      "source": "Reserved",
+      "target": "राखीव"
+    },
+    {
+      "id": "online:Reserved product credits",
+      "source": "Reserved product credits",
+      "target": "राखीव उत्पादन क्रेडिट्स"
+    },
+    {
+      "id": "online:Reserved: {slot0} product credits",
+      "source": "Reserved: {slot0} product credits",
+      "target": "राखीव: उत्पादनाचे {slot0} क्रेडिट्स"
+    },
+    {
+      "id": "online:Reserved: {slot0} product credits{slot1}",
+      "source": "Reserved: {slot0} product credits{slot1}",
+      "target": "राखीव: उत्पादनाचे {slot0} क्रेडिट्स{slot1}"
+    },
+    {
+      "id": "online:Reset angle",
+      "source": "Reset angle",
+      "target": "कोन रीसेट करा"
+    },
+    {
+      "id": "online:Reset filters",
+      "source": "Reset filters",
+      "target": "फिल्टर रीसेट करा"
+    },
+    {
+      "id": "online:Reset toolbox layout",
+      "source": "Reset toolbox layout",
+      "target": "टूलबॉक्स लेआउट रीसेट करा"
+    },
+    {
+      "id": "online:Reset view",
+      "source": "Reset view",
+      "target": "दृश्य रीसेट करा"
+    },
+    {
+      "id": "online:Reset · ",
+      "source": "Reset · ",
+      "target": "रीसेट करा · "
+    },
+    {
+      "id": "online:Resize conversation",
+      "source": "Resize conversation",
+      "target": "संभाषणाचा आकार बदला"
+    },
+    {
+      "id": "online:Resolution: {slot0}{slot1}",
+      "source": "Resolution: {slot0}{slot1}",
+      "target": "निराकरण: {slot0}{slot1}"
+    },
+    {
+      "id": "online:Resolve",
+      "source": "Resolve",
+      "target": "निराकरण करा"
+    },
+    {
+      "id": "online:Resolve invalid fields before saving.",
+      "source": "Resolve invalid fields before saving.",
+      "target": "सेव्ह करण्यापूर्वी अवैध फील्ड्स दुरुस्त करा."
+    },
+    {
+      "id": "online:Resolve the account changes before saving.",
+      "source": "Resolve the account changes before saving.",
+      "target": "सेव्ह करण्यापूर्वी खात्यातील बदल निश्चित करा."
+    },
+    {
+      "id": "online:Resolved",
+      "source": "Resolved",
+      "target": "निराकरण झाले"
+    },
+    {
+      "id": "online:Resolved by disabling",
+      "source": "Resolved by disabling",
+      "target": "अक्षम करून निराकरण केले."
+    },
+    {
+      "id": "online:Resource",
+      "source": "Resource",
+      "target": "संसाधन"
+    },
+    {
+      "id": "online:Resource growth",
+      "source": "Resource growth",
+      "target": "संसाधन वाढ"
+    },
+    {
+      "id": "online:Resource placement permissions",
+      "source": "Resource placement permissions",
+      "target": "संसाधन ठेवण्याची परवानगी"
+    },
+    {
+      "id": "online:Resources",
+      "source": "Resources",
+      "target": "संसाधने"
+    },
+    {
+      "id": "online:Restart same setup",
+      "source": "Restart same setup",
+      "target": "तोच सेटअप पुन्हा सुरू करा"
+    },
+    {
+      "id": "online:Restore",
+      "source": "Restore",
+      "target": "पुनर्संचयित करा"
+    },
+    {
+      "id": "online:Restore device copy",
+      "source": "Restore device copy",
+      "target": "डिव्हाइस प्रत पुनर्संचयित करा"
+    },
+    {
+      "id": "online:Restore family",
+      "source": "Restore family",
+      "target": "इमारत संच पुनर्संचयित करा"
+    },
+    {
+      "id": "online:Restore game settings",
+      "source": "Restore game settings",
+      "target": "गेम सेटिंग्ज पूर्ववत करा"
+    },
+    {
+      "id": "online:Restore skin",
+      "source": "Restore skin",
+      "target": "रूप पुनर्संचयित करा"
+    },
+    {
+      "id": "online:Restore this revision",
+      "source": "Restore this revision",
+      "target": "ही आवृत्ती पुनर्संचयित करा"
+    },
+    {
+      "id": "online:Restore this version as the current draft? The current version stays in history.",
+      "source": "Restore this version as the current draft? The current version stays in history.",
+      "target": "ही आवृत्ती चालू मसुदा म्हणून पुनर्संचयित करायची का? चालू आवृत्ती इतिहासातच राहते."
+    },
+    {
+      "id": "online:Restoring content removes its moderation restriction; each library’s publication rules still apply.",
+      "source": "Restoring content removes its moderation restriction; each library’s publication rules still apply.",
+      "target": "सामग्री पुनर्संचयित केल्याने त्यावरील नियंत्रणाचे निर्बंध हटतात; प्रत्येक ग्रंथालयाचे प्रकाशन नियम मात्र लागू राहतील."
+    },
+    {
+      "id": "online:Restrictions and deletion require a lower-role account.",
+      "source": "Restrictions and deletion require a lower-role account.",
+      "target": "निर्बंध घालण्यासाठी किंवा खाते हटवण्यासाठी त्या खात्याचे अधिकार तुमच्यापेक्षा कमी असणे आवश्यक आहे."
+    },
+    {
+      "id": "online:Result",
+      "source": "Result",
+      "target": "निकाल"
+    },
+    {
+      "id": "online:Reteaming names team {p0} of {p1}.",
+      "source": "Reteaming names team {p0} of {p1}.",
+      "target": "संघ फेरवाटपात संघ क्रमांक {p0} दिला आहे, पण एकूण {p1} संघ आहेत."
+    },
+    {
+      "id": "online:Retry",
+      "source": "Retry",
+      "target": "पुन्हा प्रयत्न करा"
+    },
+    {
+      "id": "online:Retry 3D canvas",
+      "source": "Retry 3D canvas",
+      "target": "3D कॅनव्हास पुन्हा उघडून पाहा"
+    },
+    {
+      "id": "online:Retry image",
+      "source": "Retry image",
+      "target": "प्रतिमा पुन्हा लोड करून पाहा"
+    },
+    {
+      "id": "online:Retry loading skins",
+      "source": "Retry loading skins",
+      "target": "रूपे पुन्हा लोड करण्याचा प्रयत्न करा"
+    },
+    {
+      "id": "online:Retry loading studio",
+      "source": "Retry loading studio",
+      "target": "स्टुडिओ पुन्हा लोड करण्याचा प्रयत्न करा"
+    },
+    {
+      "id": "online:Retry preview",
+      "source": "Retry preview",
+      "target": "पूर्वावलोकनाचा पुन्हा प्रयत्न करा"
+    },
+    {
+      "id": "online:Retry the same request",
+      "source": "Retry the same request",
+      "target": "तीच विनंती पुन्हा करून पहा"
+    },
+    {
+      "id": "online:Retry validation",
+      "source": "Retry validation",
+      "target": "पडताळणीचा पुन्हा प्रयत्न करा"
+    },
+    {
+      "id": "online:Retrying",
+      "source": "Retrying",
+      "target": "पुन्हा प्रयत्न करत आहे"
+    },
+    {
+      "id": "online:Return reserved credit",
+      "source": "Return reserved credit",
+      "target": "राखीव क्रेडिट परत करा"
+    },
+    {
+      "id": "online:Return to final set",
+      "source": "Return to final set",
+      "target": "अंतिम सेटवर परत जा"
+    },
+    {
+      "id": "online:Returning the reservation marks this generation failed. Inspect its details and confirm delivery cannot be recovered first.",
+      "source": "Returning the reservation marks this generation failed. Inspect its details and confirm delivery cannot be recovered first.",
+      "target": "राखीव क्रेडिट्स परत केल्यावर ही निर्मिती अयशस्वी म्हणून नोंदवली जाते. आधी तपशील पाहून तयार परिणाम पुनर्प्राप्त करता येत नाही याची खात्री करा."
+    },
+    {
+      "id": "online:Revenue and costs",
+      "source": "Revenue and costs",
+      "target": "महसूल आणि खर्च"
+    },
+    {
+      "id": "online:Review account changes to resume saving",
+      "source": "Review account changes to resume saving",
+      "target": "सेव्ह करणे पुन्हा सुरू करण्यासाठी खात्यातील बदलांचे पुनरावलोकन करा."
+    },
+    {
+      "id": "online:Review operations",
+      "source": "Review operations",
+      "target": "कार्यप्रणालीचे पुनरावलोकन करा"
+    },
+    {
+      "id": "online:Review reports",
+      "source": "Review reports",
+      "target": "तक्रारी तपासा"
+    },
+    {
+      "id": "online:Review set",
+      "source": "Review set",
+      "target": "संच तपासा"
+    },
+    {
+      "id": "online:Revise generated music in Music Studio.",
+      "source": "Revise generated music in Music Studio.",
+      "target": "म्युझिक स्टुडिओमध्ये तयार केलेल्या संगीतामध्ये सुधारणा करा."
+    },
+    {
+      "id": "online:Revise this version",
+      "source": "Revise this version",
+      "target": "या आवृत्तीत सुधारणा करा"
+    },
+    {
+      "id": "online:Revision restored to your saved draft.",
+      "source": "Revision restored to your saved draft.",
+      "target": "तुमच्या जतन केलेल्या मसुद्यात आवृत्ती पुनर्संचयित केली आहे."
+    },
+    {
+      "id": "online:Revision {slot0}",
+      "source": "Revision {slot0}",
+      "target": "आवृत्ती {slot0}"
+    },
+    {
+      "id": "online:Revision {slot0} checks: {slot1}",
+      "source": "Revision {slot0} checks: {slot1}",
+      "target": "आवृत्ती {slot0} च्या तपासण्या: {slot1}"
+    },
+    {
+      "id": "online:Revision {value0} · seed {value1} · {value2} seconds",
+      "source": "Revision {value0} · seed {value1} · {value2} seconds",
+      "target": "आवृत्ती {value0} · सीड {value1} · {value2} सेकंद"
+    },
+    {
+      "id": "online:Revision {value0} · tick {value1} · live",
+      "source": "Revision {value0} · tick {value1} · live",
+      "target": "आवृत्ती {value0} · टिक {value1} · लाइव्ह"
+    },
+    {
+      "id": "online:Role",
+      "source": "Role",
+      "target": "भूमिका"
+    },
+    {
+      "id": "online:Room",
+      "source": "Room",
+      "target": "खोली"
+    },
+    {
+      "id": "online:Room invite",
+      "source": "Room invite",
+      "target": "खोलीचे आमंत्रण"
+    },
+    {
+      "id": "online:Room match",
+      "source": "Room match",
+      "target": "खोलीतील सामना"
+    },
+    {
+      "id": "online:Room matches go back to their room instead.",
+      "source": "Room matches go back to their room instead.",
+      "target": "रूममधील सामने त्याऐवजी त्यांच्या खोलीत परत जातात."
+    },
+    {
+      "id": "online:Room to breathe",
+      "source": "Room to breathe",
+      "target": "श्वास घेण्यासाठी जागा"
+    },
+    {
+      "id": "online:Rooms",
+      "source": "Rooms",
+      "target": "खोल्या"
+    },
+    {
+      "id": "online:Rotate",
+      "source": "Rotate",
+      "target": "फिरवा"
+    },
+    {
+      "id": "online:Rotation ",
+      "source": "Rotation ",
+      "target": "रोटेशन "
+    },
+    {
+      "id": "online:Run checks",
+      "source": "Run checks",
+      "target": "तपासणी चालवा"
+    }
+  ]
+}

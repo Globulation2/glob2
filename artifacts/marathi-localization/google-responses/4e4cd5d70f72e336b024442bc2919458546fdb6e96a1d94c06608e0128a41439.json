@@ -1,0 +1,418 @@
+{
+  "request": {
+    "project": "bradley-personal-20261027",
+    "model": "general/nmt",
+    "payload": {
+      "sourceLanguageCode": "en",
+      "targetLanguageCode": "mr",
+      "mimeType": "text/plain",
+      "contents": [
+        "no change",
+        "Ranked",
+        "Recording the result…",
+        "Room match · unrated",
+        "Saved to your history",
+        "ZXQPH0QXZ s",
+        "The server couldn't reproduce this match, so it doesn't count for anyone's rating. It has been reported for investigation; you don't need to do anything.",
+        "Verified · provisional",
+        "Verified",
+        "The server is replaying the match to confirm it. Usually under a minute.",
+        "Verifying result…",
+        "Victory",
+        "Address",
+        "AI: ZXQPH0QXZ",
+        "Browser pairing",
+        "Catalog map",
+        "Change map…",
+        "Change rules…",
+        "Chat",
+        "Closed by the host",
+        "Closed",
+        "Colonies",
+        "Connecting to the room…",
+        "Copy",
+        "disconnected",
+        "Downloading map ZXQPH0QXZ %",
+        "Downloading the map…",
+        "The room has closed.",
+        "Generated once on the server, so everyone plays exactly this map.",
+        "guest",
+        "host ZXQPH0QXZ",
+        "The host closed the room.",
+        "host",
+        "Humans vs AI",
+        "Code ZXQPH0QXZ · opens in the app, on phones or in a browser",
+        "This invite has expired or does not exist.",
+        "Invite only",
+        "Invite",
+        "Joining on this network",
+        "Local network · not rated",
+        "Others on the same network see ZXQPH0QXZ in the LAN game list on the main menu.",
+        "Leave",
+        "Room",
+        "ZXQPH0QXZ joined.",
+        "ZXQPH0QXZ left.",
+        "ZXQPH0QXZ is ready.",
+        "Invite a friend or add an AI to start",
+        "No map yet",
+        "Not ready",
+        "Open for a person",
+        "Anyone with the invite can take it",
+        "Open seat",
+        "Person",
+        "Preparing map on the server…",
+        "Public",
+        "Ready",
+        "✓ Ready",
+        "Remove from room",
+        "Off",
+        "On",
+        "The rules changed.",
+        "Rules",
+        "Say something…",
+        "Players can move to an open seat themselves. Change Team to rebalance.",
+        "Seat options",
+        "ZXQPH0QXZ players · ZXQPH1QXZ AI · ZXQPH2QXZ open",
+        "Seats",
+        "Seed",
+        "Send",
+        "Set by the host",
+        "Join my ZXQPH0QXZ room: ZXQPH1QXZ",
+        "Share…",
+        "Size",
+        "Starting the match…",
+        "Take seat",
+        "Team ZXQPH0QXZ",
+        "This room plays another version of the game. Update to join it.",
+        "Uploaded map",
+        "Waiting for ZXQPH0QXZ to be ready",
+        "Press Ready when you're set"
+      ]
+    }
+  },
+  "response": {
+    "translations": [
+      {
+        "translatedText": "कोणताही बदल नाही",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "क्रमवारी लावली",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "निकाल नोंदवत आहे…",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "रूम मॅच · अनरेटेड",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तुमच्या इतिहासात जतन केले",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ s",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सर्वरला हा सामना पुन्हा चालवता आला नाही, त्यामुळे याची गणना कोणाच्याही रेटिंगमध्ये केली जाणार नाही. याची चौकशीसाठी तक्रार करण्यात आली आहे; तुम्हाला काहीही करण्याची आवश्यकता नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सत्यापित · तात्पुरते",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सत्यापित",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "याची खात्री करण्यासाठी सर्व्हर सामना पुन्हा चालवत आहे. साधारणपणे एका मिनिटाच्या आत.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "निकालाची पडताळणी करत आहे…",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "विजय",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पत्ता",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "एआय: ZXQPH0QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ब्राउझर पेअरिंग",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कॅटलॉग नकाशा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नकाशा बदला…",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नियम बदला…",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "चॅट",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "यजमानाने बंद केले",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "बंद",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "वसाहती",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "खोलीशी जोडणी करत आहे…",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "प्रत",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "डिस्कनेक्ट केलेले",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ % नकाशा डाउनलोड करत आहे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नकाशा डाउनलोड होत आहे…",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "खोली बंद झाली आहे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सर्व्हरवर एकदाच तयार केले जाते, त्यामुळे प्रत्येकजण नेमका हाच नकाशा खेळतो.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पाहुणे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "होस्ट ZXQPH0QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "यजमानाने खोली बंद केली.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "यजमान",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "मानव विरुद्ध एआय",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कोड ZXQPH0QXZ · अॅपमध्ये, फोनवर किंवा ब्राउझरमध्ये उघडतो",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "हे आमंत्रण कालबाह्य झाले आहे किंवा अस्तित्वात नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "निमंत्रितांसाठीच",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "आमंत्रित करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "या नेटवर्कवर सामील होणे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "स्थानिक नेटवर्क · रेटिंग नाही",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "त्याच नेटवर्कवरील इतरांना मुख्य मेनूवरील LAN गेम सूचीमध्ये ZXQPH0QXZ दिसते.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सोडा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "खोली",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ सामील झाले.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ डावीकडे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ तयार आहे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सुरू करण्यासाठी मित्राला आमंत्रित करा किंवा एआय जोडा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अद्याप नकाशा नाही",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तयार नाही",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "एका व्यक्तीसाठी उघडा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ज्याला आमंत्रण आहे तो ते घेऊ शकतो.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "मोकळी जागा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "व्यक्ती",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सर्व्हरवर मॅप तयार करत आहे…",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सार्वजनिक",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तयार",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "✓ तयार",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "खोलीतून काढून टाका",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "बंद",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "वर",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नियम बदलले.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नियम",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "काहीतरी बोल…",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "खेळाडू स्वतःहून मोकळ्या जागेवर जाऊ शकतात. संतुलन पुन्हा साधण्यासाठी संघ बदला.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "आसन पर्याय",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ खेळाडू · ZXQPH1QXZ एआय · ZXQPH2QXZ उघडा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "जागा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "बियाणे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पाठवा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "यजमानाने सेट केले",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "माझ्या ZXQPH0QXZ रूममध्ये सामील व्हा: ZXQPH1QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "शेअर करा…",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "आकार",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सामना सुरू करत आहे…",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "जागा घ्या",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "टीम ZXQPH0QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "या रूममध्ये गेमची दुसरी आवृत्ती खेळली जाते. त्यात सामील होण्यासाठी अपडेट करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अपलोड केलेला नकाशा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ तयार होण्याची वाट पाहत आहे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तुम्ही तयार झाल्यावर 'रेडी' बटण दाबा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      }
+    ]
+  },
+  "response_sha256": "9ddb26cd389e4ee32fc1460f96b25fee67b1e5c2aadff736cf837eb795fa0e4d"
+}

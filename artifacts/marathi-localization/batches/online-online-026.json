@@ -1,0 +1,536 @@
+{
+  "id": "online-online-026",
+  "source_sha256": "0ac44b4cdfb03e688983d6e3fb1e484cca57589665bff19c5c65388e649b292a",
+  "surface": "online",
+  "domain": "online",
+  "context": "Account, multiplayer, upload and browser workflows. Preserve URLs, licences, paths, format tokens and product names.",
+  "entries": [
+    {
+      "id": "online:{slot0} credit · {slot1}  {slot2}",
+      "key": "{slot0} credit · {slot1}  {slot2}",
+      "source": {
+        "one": "{slot0} credit · {slot1}  {slot2}",
+        "other": "{slot0} credits · {slot1}  {slot2}"
+      }
+    },
+    {
+      "id": "online:{slot0} credit — {slot1}",
+      "key": "{slot0} credit — {slot1}",
+      "source": {
+        "one": "{slot0} credit — {slot1}",
+        "other": "{slot0} credits — {slot1}"
+      }
+    },
+    {
+      "id": "online:{slot0} credits available",
+      "key": "{slot0} credits available",
+      "source": "{slot0} credits available"
+    },
+    {
+      "id": "online:{slot0} credits available · {slot1} reserved",
+      "key": "{slot0} credits available · {slot1} reserved",
+      "source": "{slot0} credits available · {slot1} reserved"
+    },
+    {
+      "id": "online:{slot0} credits reserved for work in progress.",
+      "key": "{slot0} credits reserved for work in progress.",
+      "source": "{slot0} credits reserved for work in progress."
+    },
+    {
+      "id": "online:{slot0} credits · {slot1}  {slot2}",
+      "key": "{slot0} credits · {slot1}  {slot2}",
+      "source": "{slot0} credits · {slot1}  {slot2}"
+    },
+    {
+      "id": "online:{slot0} credits — {slot1}",
+      "key": "{slot0} credits — {slot1}",
+      "source": "{slot0} credits — {slot1}"
+    },
+    {
+      "id": "online:{slot0} day",
+      "key": "{slot0} day",
+      "source": {
+        "one": "{slot0} day",
+        "other": "{slot0} days"
+      }
+    },
+    {
+      "id": "online:{slot0} days",
+      "key": "{slot0} days",
+      "source": "{slot0} days"
+    },
+    {
+      "id": "online:{slot0} likes · {slot1} downloads",
+      "key": "{slot0} likes · {slot1} downloads",
+      "source": "{slot0} likes · {slot1} downloads"
+    },
+    {
+      "id": "online:{slot0} likes · {slot1} downloads · {slot2}",
+      "key": "{slot0} likes · {slot1} downloads · {slot2}",
+      "source": "{slot0} likes · {slot1} downloads · {slot2}"
+    },
+    {
+      "id": "online:{slot0} live · {slot1} in the last 24 hours",
+      "key": "{slot0} live · {slot1} in the last 24 hours",
+      "source": "{slot0} live · {slot1} in the last 24 hours"
+    },
+    {
+      "id": "online:{slot0} loop",
+      "key": "{slot0} loop",
+      "source": "{slot0} loop"
+    },
+    {
+      "id": "online:{slot0} open reports · {slot1} uncertain requests · {slot2} failed engine jobs",
+      "key": "{slot0} open reports · {slot1} uncertain requests · {slot2} failed engine jobs",
+      "source": "{slot0} open reports · {slot1} uncertain requests · {slot2} failed engine jobs"
+    },
+    {
+      "id": "online:{slot0} or inspect the reported library item’s validation.",
+      "key": "{slot0} or inspect the reported library item’s validation.",
+      "source": "{slot0} or inspect the reported library item’s validation."
+    },
+    {
+      "id": "online:{slot0} passed · {slot1}  {slot2}{slot3}",
+      "key": "{slot0} passed · {slot1}  {slot2}{slot3}",
+      "source": "{slot0} passed · {slot1}  {slot2}{slot3}"
+    },
+    {
+      "id": "online:{slot0} properties",
+      "key": "{slot0} properties",
+      "source": "{slot0} properties"
+    },
+    {
+      "id": "online:{slot0} reserved. Credits belong to this studio.",
+      "key": "{slot0} reserved. Credits belong to this studio.",
+      "source": "{slot0} reserved. Credits belong to this studio."
+    },
+    {
+      "id": "online:{slot0} selected · up to 10 sets, 64 MiB",
+      "key": "{slot0} selected · up to 10 sets, 64 MiB",
+      "source": "{slot0} selected · up to 10 sets, 64 MiB"
+    },
+    {
+      "id": "online:{slot0} teams",
+      "key": "{slot0} teams",
+      "source": "{slot0} teams"
+    },
+    {
+      "id": "online:{slot0} terrain · {slot1} resources · revision {slot2}",
+      "key": "{slot0} terrain · {slot1} resources · revision {slot2}",
+      "source": {
+        "one": "{slot0} terrain · {slot1} resources · revision {slot2}",
+        "other": "{slot0} terrains · {slot1} resources · revision {slot2}"
+      }
+    },
+    {
+      "id": "online:{slot0} terrain · {slot1} resources · {slot2}",
+      "key": "{slot0} terrain · {slot1} resources · {slot2}",
+      "source": {
+        "one": "{slot0} terrain · {slot1} resources · {slot2}",
+        "other": "{slot0} terrains · {slot1} resources · {slot2}"
+      }
+    },
+    {
+      "id": "online:{slot0} terrains · {slot1} resources · revision {slot2}",
+      "key": "{slot0} terrains · {slot1} resources · revision {slot2}",
+      "source": "{slot0} terrains · {slot1} resources · revision {slot2}"
+    },
+    {
+      "id": "online:{slot0} terrains · {slot1} resources · {slot2}",
+      "key": "{slot0} terrains · {slot1} resources · {slot2}",
+      "source": "{slot0} terrains · {slot1} resources · {slot2}"
+    },
+    {
+      "id": "online:{slot0} tiles",
+      "key": "{slot0} tiles",
+      "source": "{slot0} tiles"
+    },
+    {
+      "id": "online:{slot0} to create and save drafts.",
+      "key": "{slot0} to create and save drafts.",
+      "source": "{slot0} to create and save drafts."
+    },
+    {
+      "id": "online:{slot0} to publish.",
+      "key": "{slot0} to publish.",
+      "source": "{slot0} to publish."
+    },
+    {
+      "id": "online:{slot0} to see and share your maps.",
+      "key": "{slot0} to see and share your maps.",
+      "source": "{slot0} to see and share your maps."
+    },
+    {
+      "id": "online:{slot0} to see your generators.",
+      "key": "{slot0} to see your generators.",
+      "source": "{slot0} to see your generators."
+    },
+    {
+      "id": "online:{slot0} to see your library.",
+      "key": "{slot0} to see your library.",
+      "source": "{slot0} to see your library."
+    },
+    {
+      "id": "online:{slot0} to share an AI.",
+      "key": "{slot0} to share an AI.",
+      "source": "{slot0} to share an AI."
+    },
+    {
+      "id": "online:{slot0} to share maps.",
+      "key": "{slot0} to share maps.",
+      "source": "{slot0} to share maps."
+    },
+    {
+      "id": "online:{slot0} today · {slot1} in 7 days · {slot2} in 30 days",
+      "key": "{slot0} today · {slot1} in 7 days · {slot2} in 30 days",
+      "source": "{slot0} today · {slot1} in 7 days · {slot2} in 30 days"
+    },
+    {
+      "id": "online:{slot0} unique accounts · previous period {slot1}",
+      "key": "{slot0} unique accounts · previous period {slot1}",
+      "source": "{slot0} unique accounts · previous period {slot1}"
+    },
+    {
+      "id": "online:{slot0} with a moderator account.",
+      "key": "{slot0} with a moderator account.",
+      "source": "{slot0} with a moderator account."
+    },
+    {
+      "id": "online:{slot0} within {slot1} minutes",
+      "key": "{slot0} within {slot1} minutes",
+      "source": "{slot0} within {slot1} minutes"
+    },
+    {
+      "id": "online:{slot0} {slot1} · AI composition is disclosed.",
+      "key": "{slot0} {slot1} · AI composition is disclosed.",
+      "source": "{slot0} {slot1} · AI composition is disclosed."
+    },
+    {
+      "id": "online:{slot0} · Continue editing",
+      "key": "{slot0} · Continue editing",
+      "source": "{slot0} · Continue editing"
+    },
+    {
+      "id": "online:{slot0} · Custom artwork and gameplay properties",
+      "key": "{slot0} · Custom artwork and gameplay properties",
+      "source": "{slot0} · Custom artwork and gameplay properties"
+    },
+    {
+      "id": "online:{slot0} · based on revision {slot1}",
+      "key": "{slot0} · based on revision {slot1}",
+      "source": "{slot0} · based on revision {slot1}"
+    },
+    {
+      "id": "online:{slot0} · last seen {slot1}{slot2}",
+      "key": "{slot0} · last seen {slot1}{slot2}",
+      "source": "{slot0} · last seen {slot1}{slot2}"
+    },
+    {
+      "id": "online:{slot0} · per million tokens: {slot1} input / {slot2} cached / {slot3} output credits.",
+      "key": "{slot0} · per million tokens: {slot1} input / {slot2} cached / {slot3} output credits.",
+      "source": "{slot0} · per million tokens: {slot1} input / {slot2} cached / {slot3} output credits."
+    },
+    {
+      "id": "online:{slot0} · playing since {slot1}{slot2}",
+      "key": "{slot0} · playing since {slot1}{slot2}",
+      "source": "{slot0} · playing since {slot1}{slot2}"
+    },
+    {
+      "id": "online:{slot0} · revision {slot1}",
+      "key": "{slot0} · revision {slot1}",
+      "source": "{slot0} · revision {slot1}"
+    },
+    {
+      "id": "online:{slot0} · revision {slot1} · {slot2}",
+      "key": "{slot0} · revision {slot1} · {slot2}",
+      "source": "{slot0} · revision {slot1} · {slot2}"
+    },
+    {
+      "id": "online:{slot0} · saved generation preview",
+      "key": "{slot0} · saved generation preview",
+      "source": "{slot0} · saved generation preview"
+    },
+    {
+      "id": "online:{slot0} · seed {slot1} · {slot2}",
+      "key": "{slot0} · seed {slot1} · {slot2}",
+      "source": "{slot0} · seed {slot1} · {slot2}"
+    },
+    {
+      "id": "online:{slot0} · seed {slot1} · {slot2}{slot3}",
+      "key": "{slot0} · seed {slot1} · {slot2}{slot3}",
+      "source": "{slot0} · seed {slot1} · {slot2}{slot3}"
+    },
+    {
+      "id": "online:{slot0} · {slot1}",
+      "key": "{slot0} · {slot1}",
+      "source": "{slot0} · {slot1}"
+    },
+    {
+      "id": "online:{slot0} · {slot1} MiB stored",
+      "key": "{slot0} · {slot1} MiB stored",
+      "source": "{slot0} · {slot1} MiB stored"
+    },
+    {
+      "id": "online:{slot0} · {slot1} likes",
+      "key": "{slot0} · {slot1} likes",
+      "source": "{slot0} · {slot1} likes"
+    },
+    {
+      "id": "online:{slot0} · {slot1} second",
+      "key": "{slot0} · {slot1} second",
+      "source": {
+        "one": "{slot0} · {slot1} second",
+        "other": "{slot0} · {slot1} seconds"
+      }
+    },
+    {
+      "id": "online:{slot0} · {slot1} seconds",
+      "key": "{slot0} · {slot1} seconds",
+      "source": "{slot0} · {slot1} seconds"
+    },
+    {
+      "id": "online:{slot0} · {slot1} since {slot2}",
+      "key": "{slot0} · {slot1} since {slot2}",
+      "source": "{slot0} · {slot1} since {slot2}"
+    },
+    {
+      "id": "online:{slot0} · {slot1} {slot2}",
+      "key": "{slot0} · {slot1} {slot2}",
+      "source": "{slot0} · {slot1} {slot2}"
+    },
+    {
+      "id": "online:{slot0} · {slot1} · last renewed {slot2}{slot3}",
+      "key": "{slot0} · {slot1} · last renewed {slot2}{slot3}",
+      "source": "{slot0} · {slot1} · last renewed {slot2}{slot3}"
+    },
+    {
+      "id": "online:{slot0} · {slot1} · {slot2}",
+      "key": "{slot0} · {slot1} · {slot2}",
+      "source": "{slot0} · {slot1} · {slot2}"
+    },
+    {
+      "id": "online:{slot0} · {slot1} · {slot2} downloads",
+      "key": "{slot0} · {slot1} · {slot2} downloads",
+      "source": "{slot0} · {slot1} · {slot2} downloads"
+    },
+    {
+      "id": "online:{slot0} · {slot1} · {slot2} × {slot3}",
+      "key": "{slot0} · {slot1} · {slot2} × {slot3}",
+      "source": "{slot0} · {slot1} · {slot2} × {slot3}"
+    },
+    {
+      "id": "online:{slot0} · {slot1} · {slot2}{slot3}",
+      "key": "{slot0} · {slot1} · {slot2}{slot3}",
+      "source": "{slot0} · {slot1} · {slot2}{slot3}"
+    },
+    {
+      "id": "online:{slot0} · {slot1}{slot2}",
+      "key": "{slot0} · {slot1}{slot2}",
+      "source": "{slot0} · {slot1}{slot2}"
+    },
+    {
+      "id": "online:{slot0} · {slot1}×{slot2}",
+      "key": "{slot0} · {slot1}×{slot2}",
+      "source": "{slot0} · {slot1}×{slot2}"
+    },
+    {
+      "id": "online:{slot0} × {slot1}  {slot2} UNCHARTED TERRITORY",
+      "key": "{slot0} × {slot1}  {slot2} UNCHARTED TERRITORY",
+      "source": "{slot0} × {slot1}  {slot2} UNCHARTED TERRITORY"
+    },
+    {
+      "id": "online:{slot0} × {slot1} · {slot2} player",
+      "key": "{slot0} × {slot1} · {slot2} player",
+      "source": {
+        "one": "{slot0} × {slot1} · {slot2} player",
+        "other": "{slot0} × {slot1} · {slot2} players"
+      }
+    },
+    {
+      "id": "online:{slot0} × {slot1} · {slot2} player · Private until published",
+      "key": "{slot0} × {slot1} · {slot2} player · Private until published",
+      "source": {
+        "one": "{slot0} × {slot1} · {slot2} player · Private until published",
+        "other": "{slot0} × {slot1} · {slot2} players · Private until published"
+      }
+    },
+    {
+      "id": "online:{slot0} × {slot1} · {slot2} players",
+      "key": "{slot0} × {slot1} · {slot2} players",
+      "source": "{slot0} × {slot1} · {slot2} players"
+    },
+    {
+      "id": "online:{slot0} × {slot1} · {slot2} players · Private until published",
+      "key": "{slot0} × {slot1} · {slot2} players · Private until published",
+      "source": "{slot0} × {slot1} · {slot2} players · Private until published"
+    },
+    {
+      "id": "online:{slot0} ↗",
+      "key": "{slot0} ↗",
+      "source": "{slot0} ↗"
+    },
+    {
+      "id": "online:{slot0}%",
+      "key": "{slot0}%",
+      "source": "{slot0}%"
+    },
+    {
+      "id": "online:{slot0}/32",
+      "key": "{slot0}/32",
+      "source": "{slot0}/32"
+    },
+    {
+      "id": "online:{slot0}: collected {slot1} · refunded {slot2} · collected less refunds {slot3}",
+      "key": "{slot0}: collected {slot1} · refunded {slot2} · collected less refunds {slot3}",
+      "source": "{slot0}: collected {slot1} · refunded {slot2} · collected less refunds {slot3}"
+    },
+    {
+      "id": "online:{slot0}: default {slot1}{slot2}",
+      "key": "{slot0}: default {slot1}{slot2}",
+      "source": "{slot0}: default {slot1}{slot2}"
+    },
+    {
+      "id": "online:{slot0}: since {slot1}{slot2}",
+      "key": "{slot0}: since {slot1}{slot2}",
+      "source": "{slot0}: since {slot1}{slot2}"
+    },
+    {
+      "id": "online:{slot0}: starts at {slot1}, holds {slot2}; {slot3}",
+      "key": "{slot0}: starts at {slot1}, holds {slot2}; {slot3}",
+      "source": "{slot0}: starts at {slot1}, holds {slot2}; {slot3}"
+    },
+    {
+      "id": "online:{slot0}: {slot1}",
+      "key": "{slot0}: {slot1}",
+      "source": "{slot0}: {slot1}"
+    },
+    {
+      "id": "online:{slot0}: {slot1} · {slot2}",
+      "key": "{slot0}: {slot1} · {slot2}",
+      "source": "{slot0}: {slot1} · {slot2}"
+    },
+    {
+      "id": "online:{slot0}: {slot1} · {slot2} credit",
+      "key": "{slot0}: {slot1} · {slot2} credit",
+      "source": {
+        "one": "{slot0}: {slot1} · {slot2} credit",
+        "other": "{slot0}: {slot1} · {slot2} credits"
+      }
+    },
+    {
+      "id": "online:{slot0}: {slot1} · {slot2} credits",
+      "key": "{slot0}: {slot1} · {slot2} credits",
+      "source": "{slot0}: {slot1} · {slot2} credits"
+    },
+    {
+      "id": "online:{slot0}by {slot1} · ♥ {slot2}",
+      "key": "{slot0}by {slot1} · ♥ {slot2}",
+      "source": "{slot0}by {slot1} · ♥ {slot2}"
+    },
+    {
+      "id": "online:{slot0}{slot1} · ♥ {slot2}{slot3}",
+      "key": "{slot0}{slot1} · ♥ {slot2}{slot3}",
+      "source": "{slot0}{slot1} · ♥ {slot2}{slot3}"
+    },
+    {
+      "id": "online:{slot0}{slot1}% chat",
+      "key": "{slot0}{slot1}% chat",
+      "source": "{slot0}{slot1}% chat"
+    },
+    {
+      "id": "online:{slot0}°",
+      "key": "{slot0}°",
+      "source": "{slot0}°"
+    },
+    {
+      "id": "online:{slot0}×{slot1}",
+      "key": "{slot0}×{slot1}",
+      "source": "{slot0}×{slot1}"
+    },
+    {
+      "id": "online:{slot0}–{slot1}",
+      "key": "{slot0}–{slot1}",
+      "source": "{slot0}–{slot1}"
+    },
+    {
+      "id": "online:{value0} (no preview)",
+      "key": "{value0} (no preview)",
+      "source": "{value0} (no preview)"
+    },
+    {
+      "id": "online:{value0} Map credits",
+      "key": "{value0} Map credits",
+      "source": "{value0} Map credits"
+    },
+    {
+      "id": "online:{value0} Music credits",
+      "key": "{value0} Music credits",
+      "source": "{value0} Music credits"
+    },
+    {
+      "id": "online:{value0} Stripe minor units",
+      "key": "{value0} Stripe minor units",
+      "source": "{value0} Stripe minor units"
+    },
+    {
+      "id": "online:{value0} artwork",
+      "key": "{value0} artwork",
+      "source": "{value0} artwork"
+    },
+    {
+      "id": "online:{value0} conversation",
+      "key": "{value0} conversation",
+      "source": "{value0} conversation"
+    },
+    {
+      "id": "online:{value0} cover",
+      "key": "{value0} cover",
+      "source": "{value0} cover"
+    },
+    {
+      "id": "online:{value0} credits",
+      "key": "{value0} credits",
+      "source": "{value0} credits"
+    },
+    {
+      "id": "online:{value0} hue",
+      "key": "{value0} hue",
+      "source": "{value0} hue"
+    },
+    {
+      "id": "online:{value0} rendered preview",
+      "key": "{value0} rendered preview",
+      "source": "{value0} rendered preview"
+    },
+    {
+      "id": "online:{value0} saturation and brightness",
+      "key": "{value0} saturation and brightness",
+      "source": "{value0} saturation and brightness"
+    },
+    {
+      "id": "online:{value0} swatches",
+      "key": "{value0} swatches",
+      "source": "{value0} swatches"
+    },
+    {
+      "id": "online:{value0} terrain illustration",
+      "key": "{value0} terrain illustration",
+      "source": "{value0} terrain illustration"
+    },
+    {
+      "id": "online:{value0} waveform",
+      "key": "{value0} waveform",
+      "source": "{value0} waveform"
+    },
+    {
+      "id": "online:{value0} {value1} · {value2} likes",
+      "key": "{value0} {value1} · {value2} likes",
+      "source": "{value0} {value1} · {value2} likes"
+    },
+    {
+      "id": "online:{value0}, frame {value1}",
+      "key": "{value0}, frame {value1}",
+      "source": "{value0}, frame {value1}"
+    }
+  ]
+}

@@ -1,0 +1,506 @@
+{
+  "batch": "native-general-012",
+  "target_sha256": "ee0bebe4f30f48c5a1b291eceac781a97a6994e6c2409a415a696f556c4321ec",
+  "rows": [
+    {
+      "id": "native:[Pan map]",
+      "source": "Pan map",
+      "target": "नकाशा हलवा"
+    },
+    {
+      "id": "native:[Edit map]",
+      "source": "Edit map",
+      "target": "नकाशा संपादित करा"
+    },
+    {
+      "id": "native:[Editor map]",
+      "source": "Map",
+      "target": "नकाशा"
+    },
+    {
+      "id": "native:[Pause]",
+      "source": "Pause",
+      "target": "थांबा"
+    },
+    {
+      "id": "native:[Speed]",
+      "source": "Speed",
+      "target": "वेग"
+    },
+    {
+      "id": "native:[Objectives]",
+      "source": "Objectives",
+      "target": "उद्दिष्टे"
+    },
+    {
+      "id": "native:[Menu]",
+      "source": "Menu",
+      "target": "मेनू"
+    },
+    {
+      "id": "native:[Goals]",
+      "source": "Goals",
+      "target": "ध्येये"
+    },
+    {
+      "id": "native:[Teams]",
+      "source": "Teams",
+      "target": "संघ"
+    },
+    {
+      "id": "native:[Use this landscape]",
+      "source": "Use this landscape",
+      "target": "हे भूदृश्य वापरा"
+    },
+    {
+      "id": "native:[Reset]",
+      "source": "Reset",
+      "target": "रीसेट करा"
+    },
+    {
+      "id": "native:[Generating...]",
+      "source": "Generating...",
+      "target": "निर्माण करत आहे..."
+    },
+    {
+      "id": "native:[Players]",
+      "source": "Players",
+      "target": "खेळाडू"
+    },
+    {
+      "id": "native:[Rules]",
+      "source": "Rules",
+      "target": "नियम"
+    },
+    {
+      "id": "native:[Undo stroke]",
+      "source": "Undo",
+      "target": "पूर्ववत करा"
+    },
+    {
+      "id": "native:[No overlay]",
+      "source": "No overlay",
+      "target": "आच्छादन नाही"
+    },
+    {
+      "id": "native:[zoom factor %0]",
+      "source": "%0×",
+      "target": "%0×"
+    },
+    {
+      "id": "native:[More]",
+      "source": "More",
+      "target": "अधिक"
+    },
+    {
+      "id": "native:[No items]",
+      "source": "No items",
+      "target": "कोणतीही वस्तू नाही"
+    },
+    {
+      "id": "native:[Review & Play]",
+      "source": "Review & Play",
+      "target": "तपासा आणि खेळा"
+    },
+    {
+      "id": "native:[Edit opponents]",
+      "source": "Edit opponents",
+      "target": "प्रतिस्पर्ध्यांची सेटिंग्ज बदला"
+    },
+    {
+      "id": "native:[Next]",
+      "source": "Next",
+      "target": "पुढील"
+    },
+    {
+      "id": "native:[Done]",
+      "source": "Done",
+      "target": "पूर्ण झाले"
+    },
+    {
+      "id": "native:[Contribution]",
+      "source": "Contribution",
+      "target": "योगदान"
+    },
+    {
+      "id": "native:[Choose who controls this colony]",
+      "source": "Choose who controls this colony",
+      "target": "या वसाहतीवर कोणाचे नियंत्रण असेल ते निवडा."
+    },
+    {
+      "id": "native:[Settings]",
+      "source": "Settings",
+      "target": "सेटिंग्ज"
+    },
+    {
+      "id": "native:[AI opponents]",
+      "source": "AI opponents",
+      "target": "संगणकीय प्रतिस्पर्धी"
+    },
+    {
+      "id": "native:[Assigned %0 · Target %1]",
+      "source": "Assigned %0 · Target %1",
+      "target": "नेमलेले %0 · मागणी %1"
+    },
+    {
+      "id": "native:[Range: %0]",
+      "source": "Range: %0",
+      "target": "टप्पा: %0"
+    },
+    {
+      "id": "native:[Player %0]",
+      "source": "Player %0",
+      "target": "खेळाडू %0"
+    },
+    {
+      "id": "native:[Brush %0]",
+      "source": "Brush %0",
+      "target": "ब्रश %0"
+    },
+    {
+      "id": "native:[Team %0]",
+      "source": "Team %0",
+      "target": "संघ %0"
+    },
+    {
+      "id": "native:[Your colony]",
+      "source": "Your colony",
+      "target": "तुमची वसाहत"
+    },
+    {
+      "id": "native:[%0 / %1 HP · %2]",
+      "source": "%0 / %1 HP · %2",
+      "target": "%0 / %1 HP · %2"
+    },
+    {
+      "id": "native:[Units: %0]",
+      "source": "Units: %0",
+      "target": "युनिट: %0"
+    },
+    {
+      "id": "native:[Need food: %0]",
+      "source": "Need food: %0",
+      "target": "अन्नाची गरज: %0"
+    },
+    {
+      "id": "native:[Need healing: %0]",
+      "source": "Need healing: %0",
+      "target": "उपचाराची गरज: %0"
+    },
+    {
+      "id": "native:[Attack: %0]",
+      "source": "Attack: %0",
+      "target": "हल्ला: %0"
+    },
+    {
+      "id": "native:[Defense: %0]",
+      "source": "Defense: %0",
+      "target": "संरक्षण: %0"
+    },
+    {
+      "id": "native:[Food: %0 / %1]",
+      "source": "Food: %0 / %1",
+      "target": "अन्न: %0 / %1"
+    },
+    {
+      "id": "native:[View team %0]",
+      "source": "View team %0",
+      "target": "संघ %0 पहा"
+    },
+    {
+      "id": "native:[P %0/%1/%2]",
+      "source": "P %0/%1/%2",
+      "target": "P %0/%1/%2"
+    },
+    {
+      "id": "native:[CPU load %0]",
+      "source": "CPU %0%",
+      "target": "CPU %0%"
+    },
+    {
+      "id": "native:[Brush %0x%1]",
+      "source": "Brush %0x%1",
+      "target": "ब्रश %0x%1"
+    },
+    {
+      "id": "native:[Level %0]",
+      "source": "Level %0",
+      "target": "स्तर %0"
+    },
+    {
+      "id": "native:[Manage teams (%0)]",
+      "source": "Manage teams (%0)",
+      "target": "संघ व्यवस्थापित करा (%0)"
+    },
+    {
+      "id": "native:[Team %0 / Level %1]",
+      "source": "Team %0 / Level %1",
+      "target": "संघ %0 / स्तर %1"
+    },
+    {
+      "id": "native:[Files · %0]",
+      "source": "Files · %0",
+      "target": "फाईल्स · %0"
+    },
+    {
+      "id": "native:[Hint %0]",
+      "source": "Hint %0",
+      "target": "सूचना %0"
+    },
+    {
+      "id": "native:[Objective %0]",
+      "source": "Objective %0",
+      "target": "उद्दिष्ट %0"
+    },
+    {
+      "id": "native:[Entry %0 of 8 · empty entries are omitted]",
+      "source": "Entry %0 of 8 · empty entries are omitted",
+      "target": "८ पैकी नोंद %0 · रिकाम्या नोंदी वगळण्यात आल्या आहेत"
+    },
+    {
+      "id": "native:[Teams %0/%1]",
+      "source": "Teams %0/%1",
+      "target": "संघ %0/%1"
+    },
+    {
+      "id": "native:[Elapsed time · %0]",
+      "source": "Elapsed time · %0",
+      "target": "गेलेला वेळ · %0"
+    },
+    {
+      "id": "native:[Alliance and shared vision are fixed for this match.]",
+      "source": "Alliance and shared vision are fixed for this match.",
+      "target": "या सामन्यात युती आणि सामायिक दृष्टीक्षेत्र निश्चित आहेत."
+    },
+    {
+      "id": "native:[Share vision]",
+      "source": "Share vision",
+      "target": "दृष्टीक्षेत्र सामायिक करा"
+    },
+    {
+      "id": "native:[Share food vision]",
+      "source": "Share food vision",
+      "target": "अन्नपुरवठ्याचे दृष्टीक्षेत्र सामायिक करा"
+    },
+    {
+      "id": "native:[Chat]",
+      "source": "Chat",
+      "target": "चॅट"
+    },
+    {
+      "id": "native:[No briefing for this match.]",
+      "source": "No briefing for this match.",
+      "target": "या सामन्यासाठी प्रारंभिक सूचना नाहीत."
+    },
+    {
+      "id": "native:[Chat · recipients selected in Teams]",
+      "source": "Chat · recipients selected in Teams",
+      "target": "चॅट · प्राप्तकर्ते संघांच्या विभागात निवडलेले"
+    },
+    {
+      "id": "native:[Filename]",
+      "source": "Filename",
+      "target": "फाइलचे नाव"
+    },
+    {
+      "id": "native:[Reduced motion]",
+      "source": "Reduced motion",
+      "target": "कमी हालचाली"
+    },
+    {
+      "id": "native:[Send]",
+      "source": "Send",
+      "target": "पाठवा"
+    },
+    {
+      "id": "native:[Close]",
+      "source": "Close",
+      "target": "बंद करा"
+    },
+    {
+      "id": "native:[Forbidden]",
+      "source": "Forbidden",
+      "target": "निषिद्ध"
+    },
+    {
+      "id": "native:[Guard]",
+      "source": "Guard",
+      "target": "राखण"
+    },
+    {
+      "id": "native:[Clear]",
+      "source": "Clear",
+      "target": "सफाई"
+    },
+    {
+      "id": "native:[Farm]",
+      "source": "Farm",
+      "target": "शेत"
+    },
+    {
+      "id": "native:[Paint]",
+      "source": "Paint",
+      "target": "रंगवा"
+    },
+    {
+      "id": "native:[Erase]",
+      "source": "Erase",
+      "target": "पुसून टाका"
+    },
+    {
+      "id": "native:[Paint on the map; two fingers move]",
+      "source": "Paint on the map; two fingers move",
+      "target": "नकाशावर रंगवा; दोन बोटांनी नकाशा हलवा"
+    },
+    {
+      "id": "native:[Back to tools]",
+      "source": "Back to tools",
+      "target": "साधनांवर परत जा"
+    },
+    {
+      "id": "native:[Starvation overlay]",
+      "source": "Starvation overlay",
+      "target": "उपासमार आच्छादन"
+    },
+    {
+      "id": "native:[Damage overlay]",
+      "source": "Damage overlay",
+      "target": "नुकसान आच्छादन"
+    },
+    {
+      "id": "native:[Defense overlay]",
+      "source": "Defense overlay",
+      "target": "संरक्षण आच्छादन"
+    },
+    {
+      "id": "native:[Fertility overlay]",
+      "source": "Fertility overlay",
+      "target": "सुपीकतेचे आच्छादन"
+    },
+    {
+      "id": "native:[Health and food bars]",
+      "source": "Health and food bars",
+      "target": "आरोग्य आणि अन्न बार"
+    },
+    {
+      "id": "native:[Message history]",
+      "source": "Message history",
+      "target": "संदेश इतिहास"
+    },
+    {
+      "id": "native:[Show zones]",
+      "source": "Show zones",
+      "target": "झोन दाखवा"
+    },
+    {
+      "id": "native:[Pan]",
+      "source": "Pan",
+      "target": "हलवा"
+    },
+    {
+      "id": "native:[Select]",
+      "source": "Select",
+      "target": "निवडा"
+    },
+    {
+      "id": "native:[Show palette]",
+      "source": "Show palette",
+      "target": "पॅलेट दाखवा"
+    },
+    {
+      "id": "native:[Release to place]",
+      "source": "Release to place",
+      "target": "ठेवण्यासाठी सोडा"
+    },
+    {
+      "id": "native:[Blocked placement]",
+      "source": "Blocked placement",
+      "target": "येथे ठेवता येत नाही"
+    },
+    {
+      "id": "native:[File name]",
+      "source": "File name",
+      "target": "फाईलचे नाव"
+    },
+    {
+      "id": "native:[Load map]",
+      "source": "Load map",
+      "target": "नकाशा लोड करा"
+    },
+    {
+      "id": "native:[Save map]",
+      "source": "Save map",
+      "target": "नकाशा जतन करा"
+    },
+    {
+      "id": "native:[No files in this folder]",
+      "source": "No files in this folder",
+      "target": "या फोल्डरमध्ये कोणतीही फाईल नाही"
+    },
+    {
+      "id": "native:[No files saved yet]",
+      "source": "No files saved yet",
+      "target": "अद्याप कोणतीही फाईल जतन केलेली नाही."
+    },
+    {
+      "id": "native:[Export]",
+      "source": "Export",
+      "target": "निर्यात"
+    },
+    {
+      "id": "native:[Tap to write the mission briefing]",
+      "source": "Tap to write the mission briefing",
+      "target": "मोहिमेच्या प्रारंभिक सूचना लिहिण्यासाठी टॅप करा"
+    },
+    {
+      "id": "native:[Script]",
+      "source": "Script",
+      "target": "स्क्रिप्ट"
+    },
+    {
+      "id": "native:[Previous]",
+      "source": "Previous",
+      "target": "मागील"
+    },
+    {
+      "id": "native:[Compile]",
+      "source": "Compile",
+      "target": "संकलन करा"
+    },
+    {
+      "id": "native:[Tap to write this hint]",
+      "source": "Tap to write this hint",
+      "target": "ही सूचना लिहिण्यासाठी टॅप करा"
+    },
+    {
+      "id": "native:[Tap to write this objective]",
+      "source": "Tap to write this objective",
+      "target": "हे उद्दिष्ट लिहिण्यासाठी टॅप करा"
+    },
+    {
+      "id": "native:[Mission briefing · tap to edit, swipe to scroll]",
+      "source": "Mission briefing · tap to edit, swipe to scroll",
+      "target": "मोहिमेची माहिती · संपादन करण्यासाठी टॅप करा, स्क्रोल करण्यासाठी स्वाइप करा"
+    },
+    {
+      "id": "native:[Not enough recorded history yet.]",
+      "source": "Not enough recorded history yet.",
+      "target": "अद्याप पुरेसा नोंदवलेला इतिहास नाही."
+    },
+    {
+      "id": "native:[Select a team to show its history.]",
+      "source": "Select a team to show its history.",
+      "target": "त्याचा इतिहास दाखवण्यासाठी एक संघ निवडा."
+    },
+    {
+      "id": "native:[Back to chart]",
+      "source": "Back to chart",
+      "target": "चार्टवर परत जा"
+    },
+    {
+      "id": "native:[Expand chart]",
+      "source": "Expand chart",
+      "target": "चार्ट विस्तृत करा"
+    }
+  ]
+}

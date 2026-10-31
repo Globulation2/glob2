@@ -1,0 +1,418 @@
+{
+  "request": {
+    "project": "bradley-personal-20261027",
+    "model": "general/nmt",
+    "payload": {
+      "sourceLanguageCode": "en",
+      "targetLanguageCode": "mr",
+      "mimeType": "text/plain",
+      "contents": [
+        "Smoothing",
+        "space",
+        "Start Mission",
+        "Start New Campaign",
+        "Start",
+        "Starving Map",
+        "starving",
+        "Statistics",
+        "Still",
+        "Still",
+        "One unit still working",
+        "Still one",
+        "Stone",
+        "stone",
+        "element",
+        "Passive defense",
+        "Stone Wall",
+        "Server hostname",
+        "Swim",
+        "speed of your units",
+        "Improves the swimming",
+        "Swimming pool",
+        "Switch To Adding Areas",
+        "Switch To Area Brush 1",
+        "Switch To Area Brush 2",
+        "Switch To Area Brush 3",
+        "Switch To Area Brush 4",
+        "Switch To Area Brush 5",
+        "Switch To Area Brush 6",
+        "Switch To Area Brush 7",
+        "Switch To Area Brush 8",
+        "Switch To Removing Areas",
+        "Switch to Team view",
+        "sys req",
+        "tab",
+        "Teams Editor",
+        "Teams Fixed",
+        " teams",
+        "The barracks is finished.",
+        "The barracks is under attack.",
+        "The defense tower is finished.",
+        "The defense tower is under attack.",
+        "The game has not been finished.",
+        "Games",
+        "The hospital is finished.",
+        "The hospital is under attack.",
+        "The host has cancelled the game.",
+        "Maps",
+        "The racetrack is finished.",
+        "The racetrack is under attack.",
+        "Replays",
+        "The school is finished.",
+        "The school is under attack.",
+        "A wall section is finished.",
+        "The enemy is at your walls.",
+        "The swimming pool is finished.",
+        "The swimming pool is under attack.",
+        "Time",
+        "to:",
+        "Toggle team numbers",
+        "Toggle Draw Information",
+        "Toggle Draw Unit Paths",
+        "Toggle Menu Screen",
+        "Toggle Recording Voice",
+        "Total Attack Power",
+        "Total Defence Power",
+        "Total Hitpoints",
+        "Total prestige reached",
+        "Total",
+        "Uncontrolled",
+        "undo",
+        "Unit editor",
+        " units working",
+        "Units",
+        "Unlocked At Start",
+        "Unlocked By",
+        "Unnamed area",
+        "up",
+        "Upgrade Defaults",
+        "Upgrade"
+      ]
+    }
+  },
+  "response": {
+    "translations": [
+      {
+        "translatedText": "गुळगुळीत करणे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "जागा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "मिशन सुरू करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नवीन मोहीम सुरू करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सुरुवात करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "स्टार्व्हिंग मॅप",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "भुकेले",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "आकडेवारी",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तरीही",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तरीही",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "एक युनिट अजूनही कार्यरत आहे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तरीही एक",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "दगड",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "दगड",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "घटक",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "निष्क्रिय संरक्षण",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "दगडी भिंत",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सर्व्हर होस्टनेम",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पोहणे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तुमच्या युनिट्सचा वेग",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पोहणे सुधारते",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "जलतरण तलाव",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "क्षेत्रे जोडण्याकडे स्विच करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "एरिया ब्रश १ वर स्विच करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "एरिया ब्रश २ वर स्विच करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "एरिया ब्रश ३ वर स्विच करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "एरिया ब्रश ४ वर स्विच करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "एरिया ब्रश ५ वर स्विच करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "एरिया ब्रश ६ वर स्विच करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "एरिया ब्रश ७ वर स्विच करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "एरिया ब्रश ८ वर स्विच करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "क्षेत्रे काढून टाकण्याकडे स्विच करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "टीम व्ह्यूवर स्विच करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सिस्टम आवश्यकता",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "टॅब",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "संघ संपादक",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "संघ निश्चित केले",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "संघ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "बॅरेकचे बांधकाम पूर्ण झाले आहे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "छावणीवर हल्ला होत आहे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "संरक्षण बुरुजाचे काम पूर्ण झाले आहे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "संरक्षण बुरुजावर हल्ला होत आहे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "खेळ अजून संपलेला नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "खेळ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "रुग्णालयाचे काम पूर्ण झाले आहे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "रुग्णालयावर हल्ला झाला आहे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "यजमानाने सामना रद्द केला आहे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नकाशे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "रेसट्रॅकचे काम पूर्ण झाले आहे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "रेसट्रॅकवर हल्ला झाला आहे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पुन्हा प्ले करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "शाळा पूर्ण झाली आहे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "शाळेवर हल्ला झाला आहे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "भिंतीचा एक भाग पूर्ण झाला आहे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "शत्रू तुमच्या तटबंदीशी भिडला आहे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "स्विमिंग पूलचे काम पूर्ण झाले आहे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "जलतरण तलावावर हल्ला झाला आहे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "वेळ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "प्रति:",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "संघ क्रमांक टॉगल करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ड्रॉ माहिती टॉगल करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "युनिट मार्ग काढणे चालू/बंद करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "मेनू स्क्रीन टॉगल करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "आवाज रेकॉर्डिंग चालू/बंद करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "एकूण हल्ला शक्ती",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "एकूण संरक्षण शक्ती",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "एकूण हिटपॉइंट्स",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "एकूण प्रतिष्ठा गाठली",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "एकूण",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अनियंत्रित",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पूर्ववत करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "युनिट संपादक",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कार्यरत युनिट्स",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "युनिट्स",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सुरुवातीला अनलॉक केलेले",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "यांच्याद्वारे अनलॉक केले",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अनामिक क्षेत्र",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "वर",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "डीफॉल्ट अपग्रेड करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अपग्रेड करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      }
+    ]
+  },
+  "response_sha256": "fcd1723b975ffc38d8d0e593f87fc58c5343f9345b095d55fd982c0d72fb92b2"
+}

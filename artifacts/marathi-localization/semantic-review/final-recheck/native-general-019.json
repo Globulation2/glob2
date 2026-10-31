@@ -1,0 +1,506 @@
+{
+  "batch": "native-general-019",
+  "target_sha256": "6d4118e29d672ba31e325524f46141d500ea17a4a4cb57e7f3476e467226d9a0",
+  "rows": [
+    {
+      "id": "native:[room picker more options]",
+      "source": "More options…",
+      "target": "अधिक पर्याय…"
+    },
+    {
+      "id": "native:[room picker use]",
+      "source": "Use this map",
+      "target": "हा नकाशा वापरा"
+    },
+    {
+      "id": "native:[game draw]",
+      "source": "Draw",
+      "target": "बरोबरी"
+    },
+    {
+      "id": "native:[open commander]",
+      "source": "Open commander",
+      "target": "कमांडर उघडा"
+    },
+    {
+      "id": "native:[stop commander]",
+      "source": "Stop commander",
+      "target": "कमांडरला थांबवा"
+    },
+    {
+      "id": "native:[toggle recording]",
+      "source": "Start or stop recording",
+      "target": "रेकॉर्डिंग सुरू करा किंवा थांबवा"
+    },
+    {
+      "id": "native:[File selection is unavailable.]",
+      "source": "File selection is unavailable.",
+      "target": "फाईल निवडण्याची सोय उपलब्ध नाही."
+    },
+    {
+      "id": "native:[Saving custom AI…]",
+      "source": "Saving custom AI…",
+      "target": "कस्टम एआय जतन करत आहे…"
+    },
+    {
+      "id": "native:[Could not read the selected JavaScript file.]",
+      "source": "Could not read the selected JavaScript file.",
+      "target": "निवडलेली JavaScript फाईल वाचता आली नाही."
+    },
+    {
+      "id": "native:[Custom AI library saved.]",
+      "source": "Custom AI library saved.",
+      "target": "सानुकूलित एआय लायब्ररी जतन केली."
+    },
+    {
+      "id": "native:[Storage could not be saved. The previous library is retained.]",
+      "source": "Storage could not be saved. The previous library is retained.",
+      "target": "साठवण जतन करता आली नाही. मागील संग्रह कायम ठेवला आहे."
+    },
+    {
+      "id": "native:[Import a single JavaScript AI file, then select it when setting up a local game.]",
+      "source": "Import a single JavaScript AI file, then select it when setting up a local game.",
+      "target": "एकच JavaScript AI फाईल इम्पोर्ट करा, त्यानंतर लोकल गेम सेट करताना ती निवडा."
+    },
+    {
+      "id": "native:[Imports keep a copy in Glob2. Update replaces that copy for future games; saves keep their original AI.]",
+      "source": "Imports keep a copy in Glob2. Update replaces that copy for future games; saves keep their original AI.",
+      "target": "इम्पोर्टची एक प्रत Glob2 मध्ये ठेवली जाते. अपडेट भविष्यातील गेम्ससाठी ती प्रत बदलून टाकते; सेव्हमधील मूळ AI कायम राहतो."
+    },
+    {
+      "id": "native:[Waiting for file selection or storage…]",
+      "source": "Waiting for file selection or storage…",
+      "target": "फाईल निवड किंवा साठवणुकीची प्रतीक्षा करत आहे…"
+    },
+    {
+      "id": "native:[Import JavaScript AI]",
+      "source": "Import JavaScript AI",
+      "target": "JavaScript AI आयात करा"
+    },
+    {
+      "id": "native:[Link development file]",
+      "source": "Link development file",
+      "target": "विकासातील फाईल जोडा"
+    },
+    {
+      "id": "native:[Linked files are read at game start. Rebuild before starting a new game. Removing a link never deletes your file.]",
+      "source": "Linked files are read at game start. Rebuild before starting a new game. Removing a link never deletes your file.",
+      "target": "गेम सुरू झाल्यावर लिंक केलेल्या फाईल्स वाचल्या जातात. नवीन गेम सुरू करण्यापूर्वी फाईल पुन्हा तयार करा. लिंक काढल्याने तुमची फाईल कधीही डिलीट होत नाही."
+    },
+    {
+      "id": "native:[Example AI and authoring guide]",
+      "source": "Example AI and authoring guide",
+      "target": "उदाहरण एआय आणि लेखन मार्गदर्शक"
+    },
+    {
+      "id": "native:[No custom AIs yet. Import a bundled .js file to get started.]",
+      "source": "No custom AIs yet. Import a bundled .js file to get started.",
+      "target": "अद्याप कोणतेही सानुकूल एआय नाहीत. सुरुवात करण्यासाठी बंडल केलेली .js फाईल आयात करा."
+    },
+    {
+      "id": "native:[Relink]",
+      "source": "Relink",
+      "target": "पुन्हा लिंक करा"
+    },
+    {
+      "id": "native:[Update]",
+      "source": "Update",
+      "target": "अपडेट करा"
+    },
+    {
+      "id": "native:[Validate]",
+      "source": "Validate",
+      "target": "प्रमाणित करा"
+    },
+    {
+      "id": "native:[AI startup and persistent globals are valid.]",
+      "source": "AI startup and persistent globals are valid.",
+      "target": "एआय स्टार्टअप आणि पर्सिस्टंट ग्लोबल्स वैध आहेत."
+    },
+    {
+      "id": "native:[Remove from library]",
+      "source": "Remove from library",
+      "target": "लायब्ररीमधून काढून टाका"
+    },
+    {
+      "id": "native:[AI telemetry]",
+      "source": "AI telemetry",
+      "target": "एआय टेलीमेट्री"
+    },
+    {
+      "id": "native:[No accessible AI telemetry.]",
+      "source": "No accessible AI telemetry.",
+      "target": "कोणतीही उपलब्ध एआय टेलिमेट्री नाही."
+    },
+    {
+      "id": "native:[Search fields]",
+      "source": "Search fields",
+      "target": "नोंदी शोधा"
+    },
+    {
+      "id": "native:[Telemetry unavailable for this recording or controller.]",
+      "source": "Telemetry unavailable for this recording or controller.",
+      "target": "या रेकॉर्डिंग किंवा कंट्रोलरसाठी टेलिमेट्री उपलब्ध नाही."
+    },
+    {
+      "id": "native:[Linked]",
+      "source": "Linked",
+      "target": "लिंक्ड"
+    },
+    {
+      "id": "native:[Imported]",
+      "source": "Imported",
+      "target": "आयातित"
+    },
+    {
+      "id": "native:[Player]",
+      "source": "Player",
+      "target": "खेळाडू"
+    },
+    {
+      "id": "native:[Updated at tick %0]",
+      "source": "Updated at tick %0",
+      "target": "%0 या टिकवर अद्यतनित केले"
+    },
+    {
+      "id": "native:[No values published yet.]",
+      "source": "No values published yet.",
+      "target": "अद्याप कोणतीही मूल्ये प्रकाशित केलेली नाहीत."
+    },
+    {
+      "id": "native:[No fields match your search.]",
+      "source": "No fields match your search.",
+      "target": "तुमच्या शोधाशी जुळणारे कोणतेही क्षेत्र नाही."
+    },
+    {
+      "id": "native:[Missing custom AI]",
+      "source": "Missing custom AI",
+      "target": "सानुकूल एआय गहाळ आहे"
+    },
+    {
+      "id": "native:[bases]",
+      "source": "bases",
+      "target": "तळ"
+    },
+    {
+      "id": "native:[bases per colony]",
+      "source": "Bases per colony; a base is one team of the map as drawn, its buildings and units",
+      "target": "प्रत्येक वसाहतीचे तळ; तळ म्हणजे नकाशावर रेखाटलेला एक संघ, त्याच्या इमारती आणि तुकड्या."
+    },
+    {
+      "id": "native:[Ends the match when the model reaches the selected confidence. Spectators can see the predicted win chances in statistics.]",
+      "source": "Ends the match when the model reaches the selected confidence. Spectators can see the predicted win chances in statistics.",
+      "target": "मॉडेलची निकालाबद्दलची खात्री निवडलेल्या पातळीवर पोहोचल्यावर सामना संपतो. प्रेक्षक आकडेवारीत जिंकण्याच्या अंदाजित शक्यता पाहू शकतात."
+    },
+    {
+      "id": "native:[stat group population]",
+      "source": "Population",
+      "target": "लोकसंख्या"
+    },
+    {
+      "id": "native:[stat group food]",
+      "source": "Food and wellbeing",
+      "target": "अन्न आणि आरोग्य"
+    },
+    {
+      "id": "native:[stat group resources]",
+      "source": "Materials",
+      "target": "साहित्य"
+    },
+    {
+      "id": "native:[stat group military]",
+      "source": "Military",
+      "target": "लष्करी"
+    },
+    {
+      "id": "native:[stat group map]",
+      "source": "Land",
+      "target": "जमीन"
+    },
+    {
+      "id": "native:[stat group score]",
+      "source": "Score",
+      "target": "गुण"
+    },
+    {
+      "id": "native:[stat overview]",
+      "source": "Overview",
+      "target": "आढावा"
+    },
+    {
+      "id": "native:[stat overview about]",
+      "source": "Each colony's figures for the whole match. The highest is highlighted where more is better; click a column heading to see how it changed over time.",
+      "target": "संपूर्ण सामन्यासाठी प्रत्येक वसाहतीची आकडेवारी. सर्वाधिक आकडेवारी हायलाइट केली आहे, जिथे जास्त असणे चांगले असते; कालांतराने त्यात कसा बदल झाला हे पाहण्यासाठी कॉलमच्या शीर्षकावर क्लिक करा."
+    },
+    {
+      "id": "native:[stat population]",
+      "source": "Population",
+      "target": "लोकसंख्या"
+    },
+    {
+      "id": "native:[stat population about]",
+      "source": "How many units the colony had alive: workers, explorers and warriors together.",
+      "target": "वसाहतीत जिवंत असलेल्या कामगार, शोधक आणि योद्धे या सर्व युनिटची एकत्रित संख्या."
+    },
+    {
+      "id": "native:[stat births]",
+      "source": "Units born",
+      "target": "जन्मलेली युनिट"
+    },
+    {
+      "id": "native:[stat births about]",
+      "source": "How fast swarms were producing new units. Split it to see workers, explorers and warriors separately.",
+      "target": "पोळ्यांत नवीन युनिट किती वेगाने तयार होत होती. कामगार, शोधक आणि योद्धे स्वतंत्रपणे पाहण्यासाठी आकडेवारीचे विभाजन करा."
+    },
+    {
+      "id": "native:[stat deaths]",
+      "source": "Units lost",
+      "target": "युनिट्स गमावले"
+    },
+    {
+      "id": "native:[stat deaths about]",
+      "source": "How fast the colony was losing units, whatever the cause: combat, starvation, injuries while clearing, or being trapped.",
+      "target": "लढाई, उपासमार, सफाई करतानाच्या जखमा किंवा अडकणे अशा कोणत्याही कारणाने वसाहतीतील युनिट किती वेगाने गमावली जात होती."
+    },
+    {
+      "id": "native:[stat net growth]",
+      "source": "Population growth",
+      "target": "लोकसंख्या वाढ"
+    },
+    {
+      "id": "native:[stat net growth about]",
+      "source": "Units born minus units lost. Above zero the colony was growing; below zero it was shrinking.",
+      "target": "जन्मलेली युनिट वजा गमावलेली युनिट. शून्यापेक्षा जास्त असल्यास वसाहत वाढत होती; कमी असल्यास घटत होती."
+    },
+    {
+      "id": "native:[stat death causes]",
+      "source": "Causes of death",
+      "target": "मृत्यूची कारणे"
+    },
+    {
+      "id": "native:[stat death causes about]",
+      "source": "What the colony's units died of: fighting, starvation, injuries while clearing resources, being trapped with no way out, or other causes.",
+      "target": "वसाहतीतील तुकड्यांचा मृत्यू कशामुळे झाला: लढाई, उपासमार, संसाधने साफ करताना झालेल्या जखमा, बाहेर पडण्याचा मार्ग नसताना अडकून पडणे किंवा इतर कारणांमुळे."
+    },
+    {
+      "id": "native:[stat conversions]",
+      "source": "Net conversions",
+      "target": "निव्वळ संघांतर"
+    },
+    {
+      "id": "native:[stat conversions about]",
+      "source": "Units won over from other colonies minus units lost to them. Units change sides when another colony feeds them better.",
+      "target": "इतर वसाहतींतून आलेली युनिट्स वजा त्यांच्याकडे गेलेली युनिट्स. दुसरी वसाहत अधिक चांगले अन्न देत असेल तर युनिट्स संघ बदलतात."
+    },
+    {
+      "id": "native:[stat hunger]",
+      "source": "Food reserves",
+      "target": "अन्नसाठा"
+    },
+    {
+      "id": "native:[stat hunger about]",
+      "source": "How much food the colony's units were carrying inside them. Each unit is placed by how much of its food reserve is left: nearly empty (a quarter or less), low (up to half), half full (up to three quarters) or well fed. Units go looking for an inn as their reserve runs down, so a colony always has some that are low.",
+      "target": "वसाहतीतील प्रत्येक घटकाने स्वतःमध्ये किती अन्न वाहून नेले होते. प्रत्येक घटकाचे वर्गीकरण त्याच्या अन्नसाठ्यात किती शिल्लक आहे यानुसार केले जाते: जवळजवळ रिकामा (एक चतुर्थांश किंवा त्यापेक्षा कमी), कमी (अर्ध्यापर्यंत), अर्धा भरलेला (पाऊणपर्यंत) किंवा चांगला पोषित. जसा जसा साठा कमी होतो, तसे तसे घटक खानावळीच्या शोधात निघतात, त्यामुळे वसाहतीत नेहमीच काही घटकांकडे साठा कमी असतो."
+    },
+    {
+      "id": "native:[stat health]",
+      "source": "Health",
+      "target": "आरोग्य"
+    },
+    {
+      "id": "native:[stat health about]",
+      "source": "How healthy the colony's units were. Each unit is placed by how many of its hit points are left: critical (a quarter or less), wounded (up to half), hurt (up to three quarters) or healthy.",
+      "target": "वसाहतीचे सैनिक किती निरोगी होते. प्रत्येक सैनिकाचे वर्गीकरण त्याच्या शिल्लक हिट पॉइंट्सनुसार केले जाते: गंभीर (एक चतुर्थांश किंवा त्यापेक्षा कमी), जखमी (अर्ध्यापर्यंत), इजाग्रस्त (पाऊणपर्यंत) किंवा निरोगी."
+    },
+    {
+      "id": "native:[stat seeking food]",
+      "source": "Units looking for food",
+      "target": "अन्नाच्या शोधात असलेले युनिट्स"
+    },
+    {
+      "id": "native:[stat seeking food about]",
+      "source": "Units that had stopped work to find an inn. Those that are also below full health are counted as weakening.",
+      "target": "खानावळी शोधण्यासाठी काम थांबवलेले घटक. ज्यांची प्रकृती पूर्णपणे निरोगी नाही, त्यांना कमजोर होत असल्याचे गणले जाते."
+    },
+    {
+      "id": "native:[stat in care]",
+      "source": "Units eating or healing",
+      "target": "खाणारे किंवा बरे होणारे घटक"
+    },
+    {
+      "id": "native:[stat in care about]",
+      "source": "Units inside an inn eating or inside a hospital being healed, and so not working.",
+      "target": "खानावळीत जेवणारे किंवा रुग्णालयात बरे होणारे युनिट, आणि त्यामुळे काम करत नाहीत."
+    },
+    {
+      "id": "native:[stat wheat harvested]",
+      "source": "Food harvested",
+      "target": "अन्नाची कापणी"
+    },
+    {
+      "id": "native:[stat wheat harvested about]",
+      "source": "Loads of food harvested by workers from food-producing resources. Inns turn food into meals.",
+      "target": "कामगारांनी अन्न तयार करणाऱ्या संसाधनांतून काढलेल्या अन्नाच्या खेपा. खानावळी त्या अन्नातून जेवण तयार करतात."
+    },
+    {
+      "id": "native:[stat wheat stored]",
+      "source": "Food in storage",
+      "target": "साठवलेले अन्न"
+    },
+    {
+      "id": "native:[stat wheat stored about]",
+      "source": "Food sitting in the colony's buildings, ready to be served or used.",
+      "target": "वसाहतीच्या इमारतींमध्ये वाढण्यासाठी किंवा वापरण्यासाठी तयार असलेले अन्न."
+    },
+    {
+      "id": "native:[stat meals]",
+      "source": "Meals served",
+      "target": "जेवण दिले"
+    },
+    {
+      "id": "native:[stat meals about]",
+      "source": "Meals the colony's inns served, to its own units and to visitors from other colonies.",
+      "target": "वसाहतीतील खानावळींनी स्वतःच्या तुकड्यांना आणि इतर वसाहतींतील अभ्यागतांना जेवण दिले."
+    },
+    {
+      "id": "native:[stat starvation]",
+      "source": "Starvation deaths",
+      "target": "उपासमारीमुळे मृत्यू"
+    },
+    {
+      "id": "native:[stat starvation about]",
+      "source": "Units that died because they could not find food in time.",
+      "target": "वेळेवर अन्न न मिळाल्याने मरण पावलेल्या तुकड्या."
+    },
+    {
+      "id": "native:[stat healing]",
+      "source": "Health restored",
+      "target": "आरोग्य पूर्ववत झाले"
+    },
+    {
+      "id": "native:[stat healing about]",
+      "source": "Hit points the colony's hospitals gave back to wounded units.",
+      "target": "वसाहतीच्या रुग्णालयांनी जखमी तुकड्यांना परत दिलेले हिट पॉइंट्स."
+    },
+    {
+      "id": "native:[stat gathered]",
+      "source": "Materials gathered",
+      "target": "गोळा केलेले साहित्य"
+    },
+    {
+      "id": "native:[stat gathered about]",
+      "source": "Loads of every material harvested by workers. Split it to see each material.",
+      "target": "कामगारांनी काढलेल्या प्रत्येक सामग्रीच्या खेपा. प्रत्येक सामग्री स्वतंत्रपणे पाहण्यासाठी आकडेवारीचे विभाजन करा."
+    },
+    {
+      "id": "native:[stat stored]",
+      "source": "Materials in storage",
+      "target": "साठवणुकीतील साहित्य"
+    },
+    {
+      "id": "native:[stat stored about]",
+      "source": "Materials sitting in the colony's buildings. Split it to see each material.",
+      "target": "वसाहतीच्या इमारतींमध्ये असलेले साहित्य. प्रत्येक साहित्य पाहण्यासाठी त्याचे विभाजन करा."
+    },
+    {
+      "id": "native:[stat spending]",
+      "source": "Material spending",
+      "target": "सामग्री खर्च"
+    },
+    {
+      "id": "native:[stat spending about]",
+      "source": "Where delivered materials went: meals, new units, tower ammunition, new buildings or upgrades.",
+      "target": "वितरित केलेले साहित्य कुठे गेले: जेवण, नवीन युनिट्स, टॉवरमधील दारुगोळा, नवीन इमारती किंवा सुधारणा."
+    },
+    {
+      "id": "native:[stat delivered]",
+      "source": "Materials delivered",
+      "target": "वितरित केलेले साहित्य"
+    },
+    {
+      "id": "native:[stat delivered about]",
+      "source": "Loads workers carried into buildings.",
+      "target": "कामगारांनी इमारतींमध्ये वाहून नेलेला माल."
+    },
+    {
+      "id": "native:[stat traded]",
+      "source": "Net trade",
+      "target": "निव्वळ व्यापार"
+    },
+    {
+      "id": "native:[stat traded about]",
+      "source": "Materials received through markets minus materials given away.",
+      "target": "बाजारातून मिळालेली सामग्री वजा बदल्यात दिलेली सामग्री."
+    },
+    {
+      "id": "native:[stat construction]",
+      "source": "Building work completed",
+      "target": "बांधकाम पूर्ण झाले."
+    },
+    {
+      "id": "native:[stat construction about]",
+      "source": "Building work completed: new buildings, upgrades and repairs.",
+      "target": "पूर्ण झालेले बांधकाम: नवीन इमारती, सुधारणा आणि दुरुस्ती."
+    },
+    {
+      "id": "native:[stat attack]",
+      "source": "Attack strength",
+      "target": "हल्ल्याची ताकद"
+    },
+    {
+      "id": "native:[stat attack about]",
+      "source": "A score for the combined fighting power of the colony's warriors: how hard and how fast they hit.",
+      "target": "वसाहतीच्या योद्ध्यांच्या एकत्रित युद्धशक्तीचा स्कोर: त्यांनी किती जोरदार आणि किती वेगाने हल्ला केला."
+    },
+    {
+      "id": "native:[stat defence]",
+      "source": "Defence strength",
+      "target": "संरक्षण शक्ती"
+    },
+    {
+      "id": "native:[stat defence about]",
+      "source": "A score for the combined firepower of the colony's defence towers.",
+      "target": "वसाहतीच्या संरक्षण बुरुजांच्या एकत्रित मारक क्षमतेसाठी दिलेला स्कोअर."
+    },
+    {
+      "id": "native:[stat hit points]",
+      "source": "Total hit points",
+      "target": "एकूण हिट पॉइंट्स"
+    },
+    {
+      "id": "native:[stat hit points about]",
+      "source": "The hit points of all the colony's units and buildings added together.",
+      "target": "वसाहतीतील सर्व युनिट्स आणि इमारतींचे एकूण हिट पॉइंट्स."
+    },
+    {
+      "id": "native:[stat damage dealt]",
+      "source": "Damage dealt",
+      "target": "केलेली हानी"
+    },
+    {
+      "id": "native:[stat damage dealt about]",
+      "source": "Damage the colony did to enemy units and buildings. Split it to see warriors, magic and towers.",
+      "target": "वसाहतीने शत्रूच्या तुकड्या आणि इमारतींचे केलेले नुकसान. योद्धे, जादू आणि बुरुज पाहण्यासाठी तिचे विभाजन करा."
+    },
+    {
+      "id": "native:[stat damage taken]",
+      "source": "Damage taken",
+      "target": "सोसलेली हानी"
+    },
+    {
+      "id": "native:[stat damage taken about]",
+      "source": "Damage enemies did to the colony's units and buildings.",
+      "target": "शत्रूंनी वसाहतीच्या तुकड्या आणि इमारतींना केलेले नुकसान."
+    },
+    {
+      "id": "native:[stat damage traded]",
+      "source": "Damage balance",
+      "target": "हानीचा ताळेबंद"
+    },
+    {
+      "id": "native:[stat damage traded about]",
+      "source": "Damage dealt minus damage taken. Above zero the colony was winning its fights.",
+      "target": "केलेली हानी वजा सोसलेली हानी. शून्यापेक्षा जास्त असल्यास वसाहत लढायांत वरचढ होती."
+    }
+  ]
+}

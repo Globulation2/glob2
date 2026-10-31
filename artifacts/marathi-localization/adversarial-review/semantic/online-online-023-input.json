@@ -1,0 +1,516 @@
+{
+  "source_sha256": "0ac44b4cdfb03e688983d6e3fb1e484cca57589665bff19c5c65388e649b292a",
+  "batch_target_sha256": "065c2042d75461778c5c0965b59ab9ad3c3b4299f78e687fb5ea38df6924d43d",
+  "catalog_sha256": {
+    "native": "683bcc1e1680e6cb9e2605ef9be42724a76d3e7b1f2868462e24ef50d1423642",
+    "online": "1ba40d342498f5e7704a63e5d175bd9e8a0ede31e3ca2ce88e8cb1fbc0ba68a6"
+  },
+  "entries": [
+    {
+      "id": "online:Upload still PNG or WebP frames up to 512 × 512. Team-color layers use the same dimensions as the base frame.",
+      "source": "Upload still PNG or WebP frames up to 512 × 512. Team-color layers use the same dimensions as the base frame.",
+      "target": "512 × 512 पर्यंतच्या स्थिर PNG किंवा WebP फ्रेम्स अपलोड करा. टीम-कलर लेयर्स मूळ फ्रेमप्रमाणेच परिमाणे वापरतात."
+    },
+    {
+      "id": "online:Upload the map first (POST /api/v1/uploads).",
+      "source": "Upload the map first (POST /api/v1/uploads).",
+      "target": "सर्वप्रथम नकाशा अपलोड करा (POST /api/v1/uploads)."
+    },
+    {
+      "id": "online:Upload the match record (PUT …/record) first.",
+      "source": "Upload the match record (PUT …/record) first.",
+      "target": "सर्वप्रथम मॅच रेकॉर्ड अपलोड करा (PUT …/record)."
+    },
+    {
+      "id": "online:Upload the portable JSON exported from Settings → Map generators. {slot0}",
+      "source": "Upload the portable JSON exported from Settings → Map generators. {slot0}",
+      "target": "सेटिंग्ज → मॅप जनरेटर्स मधून एक्सपोर्ट केलेला पोर्टेबल JSON अपलोड करा. {slot0}"
+    },
+    {
+      "id": "online:Upload version",
+      "source": "Upload version",
+      "target": "आवृत्ती अपलोड करा"
+    },
+    {
+      "id": "online:Uploaded",
+      "source": "Uploaded",
+      "target": "अपलोड केले"
+    },
+    {
+      "id": "online:Uploaded spritesheet; click a tile to select its frame",
+      "source": "Uploaded spritesheet; click a tile to select its frame",
+      "target": "स्प्राइटशीट अपलोड केली आहे; फ्रेम निवडण्यासाठी टाइलवर क्लिक करा."
+    },
+    {
+      "id": "online:Uploading",
+      "source": "Uploading",
+      "target": "अपलोड करत आहे"
+    },
+    {
+      "id": "online:Usage",
+      "source": "Usage",
+      "target": "वापर"
+    },
+    {
+      "id": "online:Usage measured",
+      "source": "Usage measured",
+      "target": "वापर मोजला गेला"
+    },
+    {
+      "id": "online:Use Gravatar",
+      "source": "Use Gravatar",
+      "target": "ग्राव्हार वापरा"
+    },
+    {
+      "id": "online:Use a PNG or WebP {p0} no larger than {p1} KiB.",
+      "source": "Use a PNG or WebP {p0} no larger than {p1} KiB.",
+      "target": "{p1} KiB पेक्षा मोठे नसलेले PNG किंवा WebP {p0} वापरा."
+    },
+    {
+      "id": "online:Use a PNG or WebP {p0}.",
+      "source": "Use a PNG or WebP {p0}.",
+      "target": "PNG किंवा WebP {p0} वापरा."
+    },
+    {
+      "id": "online:Use a photo from your device, or the Gravatar associated with a linked email address. Your photo is public.",
+      "source": "Use a photo from your device, or the Gravatar associated with a linked email address. Your photo is public.",
+      "target": "तुमच्या डिव्हाइसमधील फोटो किंवा जोडलेल्या ईमेल पत्त्याशी संबंधित ग्राव्हार वापरा. ​​तुमचा फोटो सार्वजनिक आहे."
+    },
+    {
+      "id": "online:Use a valid, still 512 by 512 pixel 8-bit material map.",
+      "source": "Use a valid, still 512 by 512 pixel 8-bit material map.",
+      "target": "वैध, स्थिर ५१२ बाय ५१२ पिक्सेलचा ८-बिट मटेरियल मॅप वापरा."
+    },
+    {
+      "id": "online:Use a valid, still 512 by 512 pixel image.",
+      "source": "Use a valid, still 512 by 512 pixel image.",
+      "target": "एक वैध, स्थिर ५१२ बाय ५१२ पिक्सेलचा फोटो वापरा."
+    },
+    {
+      "id": "online:Use buildings in the game",
+      "source": "Use buildings in the game",
+      "target": "खेळामध्ये इमारतींचा वापर करा"
+    },
+    {
+      "id": "online:Use in a map",
+      "source": "Use in a map",
+      "target": "नकाशात वापरा"
+    },
+    {
+      "id": "online:Use in game",
+      "source": "Use in game",
+      "target": "खेळात वापरा"
+    },
+    {
+      "id": "online:Use initials",
+      "source": "Use initials",
+      "target": "आद्याक्षरे वापरा"
+    },
+    {
+      "id": "online:Use reference",
+      "source": "Use reference",
+      "target": "संदर्भ वापरा"
+    },
+    {
+      "id": "online:Use this view",
+      "source": "Use this view",
+      "target": "हा व्ह्यू वापरा"
+    },
+    {
+      "id": "online:Use {slot0} in gameSprite or miniSprite to select an uploaded sprite.",
+      "source": "Use {slot0} in gameSprite or miniSprite to select an uploaded sprite.",
+      "target": "अपलोड केलेला स्प्राइट निवडण्यासाठी gameSprite किंवा miniSprite मध्ये {slot0} वापरा."
+    },
+    {
+      "id": "online:Used for your next match.",
+      "source": "Used for your next match.",
+      "target": "तुमच्या पुढील सामन्यासाठी वापरले जाईल."
+    },
+    {
+      "id": "online:User",
+      "source": "User",
+      "target": "वापरकर्ता"
+    },
+    {
+      "id": "online:Username",
+      "source": "Username",
+      "target": "वापरकर्तानाव"
+    },
+    {
+      "id": "online:Username and password",
+      "source": "Username and password",
+      "target": "वापरकर्तानाव आणि पासवर्ड"
+    },
+    {
+      "id": "online:Usernames are 3 to 32 characters long; this one has {p0}.",
+      "source": "Usernames are 3 to 32 characters long; this one has {p0}.",
+      "target": "वापरकर्त्याची नावे ३ ते ३२ अक्षरांची असतात; याचे नाव {p0} आहे."
+    },
+    {
+      "id": "online:Usernames can only use letters, digits, dots, dashes and underscores (no spaces).",
+      "source": "Usernames can only use letters, digits, dots, dashes and underscores (no spaces).",
+      "target": "युझरनेममध्ये फक्त अक्षरे, अंक, टिंब, डॅश आणि अंडरस्कोर वापरता येतात (स्पेस नाही)."
+    },
+    {
+      "id": "online:V",
+      "source": "V",
+      "target": "व्ही"
+    },
+    {
+      "id": "online:Valid",
+      "source": "Valid",
+      "target": "वैध"
+    },
+    {
+      "id": "online:Validate and preview",
+      "source": "Validate and preview",
+      "target": "प्रमाणीकरण आणि पूर्वावलोकन"
+    },
+    {
+      "id": "online:Validate package",
+      "source": "Validate package",
+      "target": "पॅकेज प्रमाणित करा"
+    },
+    {
+      "id": "online:Validate the audio",
+      "source": "Validate the audio",
+      "target": "ऑडिओ प्रमाणित करा"
+    },
+    {
+      "id": "online:Validated definitions are importable. Review gameplay on your own maps before relying on balance.",
+      "source": "Validated definitions are importable. Review gameplay on your own maps before relying on balance.",
+      "target": "प्रमाणित व्याख्या आयात करता येतात. संतुलनावर अवलंबून राहण्यापूर्वी तुमच्या स्वतःच्या नकाशांवर गेमप्लेचे पुनरावलोकन करा."
+    },
+    {
+      "id": "online:Validation did not pass",
+      "source": "Validation did not pass",
+      "target": "पडताळणी यशस्वी झाली नाही."
+    },
+    {
+      "id": "online:Validation was interrupted. Your AI has not been published.",
+      "source": "Validation was interrupted. Your AI has not been published.",
+      "target": "पडताळणीत व्यत्यय आला. तुमचा एआय प्रकाशित झालेला नाही."
+    },
+    {
+      "id": "online:Value",
+      "source": "Value",
+      "target": "मूल्य"
+    },
+    {
+      "id": "online:Variation",
+      "source": "Variation",
+      "target": "फरक"
+    },
+    {
+      "id": "online:Verification",
+      "source": "Verification",
+      "target": "पडताळणी"
+    },
+    {
+      "id": "online:Verification ",
+      "source": "Verification ",
+      "target": "पडताळणी "
+    },
+    {
+      "id": "online:Verification and connection details",
+      "source": "Verification and connection details",
+      "target": "पडताळणी आणि कनेक्शन तपशील"
+    },
+    {
+      "id": "online:Verification failed",
+      "source": "Verification failed",
+      "target": "पडताळणी अयशस्वी झाली"
+    },
+    {
+      "id": "online:Verified",
+      "source": "Verified",
+      "target": "सत्यापित"
+    },
+    {
+      "id": "online:Version",
+      "source": "Version",
+      "target": "आवृत्ती"
+    },
+    {
+      "id": "online:Version history",
+      "source": "Version history",
+      "target": "आवृत्ती इतिहास"
+    },
+    {
+      "id": "online:Version label",
+      "source": "Version label",
+      "target": "आवृत्ती लेबल"
+    },
+    {
+      "id": "online:Version {slot0}",
+      "source": "Version {slot0}",
+      "target": "आवृत्ती {slot0}"
+    },
+    {
+      "id": "online:Version {value0}",
+      "source": "Version {value0}",
+      "target": "आवृत्ती {value0}"
+    },
+    {
+      "id": "online:Version {value0}{value1}",
+      "source": "Version {value0}{value1}",
+      "target": "आवृत्ती {value0}{value1}"
+    },
+    {
+      "id": "online:Versions",
+      "source": "Versions",
+      "target": "आवृत्त्या"
+    },
+    {
+      "id": "online:Versions of {slot0}",
+      "source": "Versions of {slot0}",
+      "target": "{slot0} च्या आवृत्त्या"
+    },
+    {
+      "id": "online:Versions of {value0}",
+      "source": "Versions of {value0}",
+      "target": "{value0} च्या आवृत्त्या"
+    },
+    {
+      "id": "online:View orientation",
+      "source": "View orientation",
+      "target": "अभिमुखता पहा"
+    },
+    {
+      "id": "online:View profile and games",
+      "source": "View profile and games",
+      "target": "प्रोफाइल आणि खेळ पहा"
+    },
+    {
+      "id": "online:View reported paint",
+      "source": "View reported paint",
+      "target": "रिपोर्ट केलेला पेंट पहा"
+    },
+    {
+      "id": "online:View revision",
+      "source": "View revision",
+      "target": "आवृत्ती पहा"
+    },
+    {
+      "id": "online:View {slot0}",
+      "source": "View {slot0}",
+      "target": "{slot0} पहा"
+    },
+    {
+      "id": "online:Viewing a saved revision. Restore it to make it the current draft.",
+      "source": "Viewing a saved revision. Restore it to make it the current draft.",
+      "target": "जतन केलेली आवृत्ती पाहत आहे. तिला सध्याचा मसुदा बनवण्यासाठी पुनर्संचयित करा."
+    },
+    {
+      "id": "online:Viewing {slot0}",
+      "source": "Viewing {slot0}",
+      "target": "{slot0} पाहत आहे"
+    },
+    {
+      "id": "online:View…",
+      "source": "View…",
+      "target": "पहा…"
+    },
+    {
+      "id": "online:Visibility",
+      "source": "Visibility",
+      "target": "दृश्यमानता"
+    },
+    {
+      "id": "online:Volume",
+      "source": "Volume",
+      "target": "व्हॉल्यूम"
+    },
+    {
+      "id": "online:V{slot0} · {slot1}",
+      "source": "V{slot0} · {slot1}",
+      "target": "V{slot0} · {slot1}"
+    },
+    {
+      "id": "online:Wait for a pending compatibility check.",
+      "source": "Wait for a pending compatibility check.",
+      "target": "प्रलंबित सुसंगतता तपासणीची प्रतीक्षा करा."
+    },
+    {
+      "id": "online:Wait for a pending generator check.",
+      "source": "Wait for a pending generator check.",
+      "target": "प्रलंबित जनरेटर तपासणीची प्रतीक्षा करा."
+    },
+    {
+      "id": "online:Wait for the provider call to return before cancelling.",
+      "source": "Wait for the provider call to return before cancelling.",
+      "target": "सेवा पुरवठादाराकडून परत कॉल येईपर्यंत रद्द करू नका."
+    },
+    {
+      "id": "online:Waiting",
+      "source": "Waiting",
+      "target": "प्रतीक्षा करणे"
+    },
+    {
+      "id": "online:Waiting for service capacity. Your place is saved.",
+      "source": "Waiting for service capacity. Your place is saved.",
+      "target": "सेवेच्या क्षमतेची प्रतीक्षा करत आहोत. तुमची जागा आरक्षित आहे."
+    },
+    {
+      "id": "online:Waived",
+      "source": "Waived",
+      "target": "माफ केले"
+    },
+    {
+      "id": "online:Warning",
+      "source": "Warning",
+      "target": "चेतावणी"
+    },
+    {
+      "id": "online:Warrior attack",
+      "source": "Warrior attack",
+      "target": "योद्धा हल्ला"
+    },
+    {
+      "id": "online:Warrior health",
+      "source": "Warrior health",
+      "target": "योद्धा आरोग्य"
+    },
+    {
+      "id": "online:Warriors",
+      "source": "Warriors",
+      "target": "योद्धे"
+    },
+    {
+      "id": "online:Warrush",
+      "source": "Warrush",
+      "target": "वॉरश"
+    },
+    {
+      "id": "online:Watch AI play",
+      "source": "Watch AI play",
+      "target": "एआय खेळताना पहा"
+    },
+    {
+      "id": "online:Watch in browser",
+      "source": "Watch in browser",
+      "target": "ब्राउझरमध्ये पहा"
+    },
+    {
+      "id": "online:Watch your AI against a built-in opponent on the fixed test map. The game runs on this computer and ends when you close it.",
+      "source": "Watch your AI against a built-in opponent on the fixed test map. The game runs on this computer and ends when you close it.",
+      "target": "निश्चित चाचणी नकाशावर एका अंगभूत प्रतिस्पर्ध्याविरुद्ध तुमच्या एआयची लढाई पहा. हा खेळ या संगणकावर चालतो आणि तुम्ही तो बंद केल्यावर संपतो."
+    },
+    {
+      "id": "online:Water",
+      "source": "Water",
+      "target": "पाणी"
+    },
+    {
+      "id": "online:Waves",
+      "source": "Waves",
+      "target": "लाटा"
+    },
+    {
+      "id": "online:Webhook mode mismatch.",
+      "source": "Webhook mode mismatch.",
+      "target": "वेबहुक मोड जुळत नाही."
+    },
+    {
+      "id": "online:Weight",
+      "source": "Weight",
+      "target": "वजन"
+    },
+    {
+      "id": "online:Welcome to the colony",
+      "source": "Welcome to the colony",
+      "target": "वसाहतीत आपले स्वागत आहे"
+    },
+    {
+      "id": "online:Welcome, {value0}",
+      "source": "Welcome, {value0}",
+      "target": "स्वागत आहे, {value0}"
+    },
+    {
+      "id": "online:What changed",
+      "source": "What changed",
+      "target": "काय बदलले"
+    },
+    {
+      "id": "online:What will your world look like?",
+      "source": "What will your world look like?",
+      "target": "तुमचं जग कसं दिसेल?"
+    },
+    {
+      "id": "online:What would you like to create?",
+      "source": "What would you like to create?",
+      "target": "तुम्हाला काय तयार करायला आवडेल?"
+    },
+    {
+      "id": "online:Whole model",
+      "source": "Whole model",
+      "target": "संपूर्ण मॉडेल"
+    },
+    {
+      "id": "online:Why hide this map? (shown to its owner)",
+      "source": "Why hide this map? (shown to its owner)",
+      "target": "हा नकाशा का लपवला आहे? (त्याच्या मालकाला दाखवला आहे)"
+    },
+    {
+      "id": "online:Wide",
+      "source": "Wide",
+      "target": "विस्तृत"
+    },
+    {
+      "id": "online:Width",
+      "source": "Width",
+      "target": "रुंदी"
+    },
+    {
+      "id": "online:Win rate",
+      "source": "Win rate",
+      "target": "विजय दर"
+    },
+    {
+      "id": "online:Win rate {slot0}",
+      "source": "Win rate {slot0}",
+      "target": "विजय दर {slot0}"
+    },
+    {
+      "id": "online:Win rate, {slot0} day",
+      "source": {
+        "one": "Win rate, {slot0} day",
+        "other": "Win rate, {slot0} days"
+      },
+      "target": {
+        "one": "जिंकण्याचा दर, {slot0} दिवस",
+        "other": "जिंकण्याचा दर, {slot0} दिवस"
+      }
+    },
+    {
+      "id": "online:Win rate, {slot0} days",
+      "source": "Win rate, {slot0} days",
+      "target": "जिंकण्याचा दर, {slot0} दिवस"
+    },
+    {
+      "id": "online:Winner",
+      "source": "Winner",
+      "target": "विजेता"
+    },
+    {
+      "id": "online:Withdraw from library",
+      "source": "Withdraw from library",
+      "target": "ग्रंथालयातून माघार घ्या"
+    },
+    {
+      "id": "online:Withdraw published family",
+      "source": "Withdraw published family",
+      "target": "प्रकाशित कुटुंब मागे घ्या"
+    },
+    {
+      "id": "online:Withdraw release",
+      "source": "Withdraw release",
+      "target": "प्रकाशन मागे घ्या"
+    },
+    {
+      "id": "online:Withdrawn",
+      "source": "Withdrawn",
+      "target": "मागे घेतले"
+    }
+  ]
+}

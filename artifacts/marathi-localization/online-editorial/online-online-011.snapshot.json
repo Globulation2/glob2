@@ -1,0 +1,513 @@
+{
+  "batch": "online-online-011",
+  "source_sha256": "0ac44b4cdfb03e688983d6e3fb1e484cca57589665bff19c5c65388e649b292a",
+  "rows": [
+    {
+      "id": "online:Invalid {value0} dimensions",
+      "source": "Invalid {value0} dimensions",
+      "target": "{value0} परिमाणे अवैध आहेत"
+    },
+    {
+      "id": "online:Invalid {value0} normal camera",
+      "source": "Invalid {value0} normal camera",
+      "target": "अवैध {value0} सामान्य कॅमेरा"
+    },
+    {
+      "id": "online:Invalid {value0} scalar",
+      "source": "Invalid {value0} scalar",
+      "target": "अवैध {value0} स्केलर"
+    },
+    {
+      "id": "online:Invite not found",
+      "source": "Invite not found",
+      "target": "आमंत्रण सापडले नाही"
+    },
+    {
+      "id": "online:It copies someone else’s work",
+      "source": "It copies someone else’s work",
+      "target": "ते दुसऱ्याच्या कामाची नक्कल करते"
+    },
+    {
+      "id": "online:It is broken or unplayable",
+      "source": "It is broken or unplayable",
+      "target": "ते तुटलेले आहे किंवा खेळण्यायोग्य नाही."
+    },
+    {
+      "id": "online:It is offensive",
+      "source": "It is offensive",
+      "target": "हे अपमानकारक आहे"
+    },
+    {
+      "id": "online:It may not be installed on this device. You can",
+      "source": "It may not be installed on this device. You can",
+      "target": "हे या डिव्हाइसवर इन्स्टॉल केलेले नसेल. तुम्ही"
+    },
+    {
+      "id": "online:JSON",
+      "source": "JSON",
+      "target": "JSON"
+    },
+    {
+      "id": "online:JSON controls require the set workspace.",
+      "source": "JSON controls require the set workspace.",
+      "target": "JSON नियंत्रणांसाठी सेट केलेला वर्कस्पेस आवश्यक आहे."
+    },
+    {
+      "id": "online:JSON value",
+      "source": "JSON value",
+      "target": "JSON मूल्य"
+    },
+    {
+      "id": "online:JavaScript API reference ↗",
+      "source": "JavaScript API reference ↗",
+      "target": "JavaScript API संदर्भ ↗"
+    },
+    {
+      "id": "online:JavaScript · {slot0}",
+      "source": "JavaScript · {slot0}",
+      "target": "JavaScript · {slot0}"
+    },
+    {
+      "id": "online:Join",
+      "source": "Join",
+      "target": "सामील व्हा"
+    },
+    {
+      "id": "online:Join by code",
+      "source": "Join by code",
+      "target": "कोडद्वारे सामील व्हा"
+    },
+    {
+      "id": "online:Join {p0}",
+      "source": "Join {p0}",
+      "target": "{p0} मध्ये सामील व्हा"
+    },
+    {
+      "id": "online:Keep available and resolve",
+      "source": "Keep available and resolve",
+      "target": "उपलब्ध रहा आणि निराकरण करा"
+    },
+    {
+      "id": "online:Keep history",
+      "source": "Keep history",
+      "target": "इतिहास जतन करा"
+    },
+    {
+      "id": "online:Keep lengths (must already match)",
+      "source": "Keep lengths (must already match)",
+      "target": "लांबी तशीच ठेवा (आधीच जुळत असली पाहिजे)"
+    },
+    {
+      "id": "online:Keep listening and comparison controls in Preview. Select a delivered version to change through chat.",
+      "source": "Keep listening and comparison controls in Preview. Select a delivered version to change through chat.",
+      "target": "प्रिव्ह्यूमध्ये ऐकण्याची आणि तुलना करण्याची नियंत्रणे चालू ठेवा. चॅटद्वारे बदल करण्यासाठी वितरित केलेली आवृत्ती निवडा."
+    },
+    {
+      "id": "online:Keep mine as a new skin",
+      "source": "Keep mine as a new skin",
+      "target": "माझी नवीन त्वचा म्हणून ठेवा"
+    },
+    {
+      "id": "online:Keep my current account",
+      "source": "Keep my current account",
+      "target": "माझे चालू खाते ठेवा"
+    },
+    {
+      "id": "online:Keep the melody, but make calm more spacious…",
+      "source": "Keep the melody, but make calm more spacious…",
+      "target": "सूर कायम ठेवा, पण शांततेला अधिक विस्तार द्या…"
+    },
+    {
+      "id": "online:Keep this family namespace. Import a fork to create a different family.",
+      "source": "Keep this family namespace. Import a fork to create a different family.",
+      "target": "हे फॅमिली नेमस्पेस कायम ठेवा. वेगळे फॅमिली तयार करण्यासाठी एक फोर्क इम्पोर्ट करा."
+    },
+    {
+      "id": "online:Known-cost subtotal",
+      "source": "Known-cost subtotal",
+      "target": "ज्ञात-खर्च उपएकूण"
+    },
+    {
+      "id": "online:Ladders",
+      "source": "Ladders",
+      "target": "शिड्या"
+    },
+    {
+      "id": "online:Language",
+      "source": "Language",
+      "target": "भाषा"
+    },
+    {
+      "id": "online:Large",
+      "source": "Large",
+      "target": "मोठे"
+    },
+    {
+      "id": "online:Last {slot0} day",
+      "source": {
+        "one": "Last {slot0} day",
+        "other": "Last {slot0} days"
+      },
+      "target": {
+        "one": "शेवटचा {slot0} दिवस",
+        "other": "शेवटचे {slot0} दिवस"
+      }
+    },
+    {
+      "id": "online:Last {slot0} days",
+      "source": "Last {slot0} days",
+      "target": "शेवटचे {slot0} दिवस"
+    },
+    {
+      "id": "online:Late",
+      "source": "Late",
+      "target": "उशीरा"
+    },
+    {
+      "id": "online:Layer",
+      "source": "Layer",
+      "target": "थर"
+    },
+    {
+      "id": "online:Leaderboard",
+      "source": "Leaderboard",
+      "target": "लीडरबोर्ड"
+    },
+    {
+      "id": "online:Leaderboard participants",
+      "source": "Leaderboard participants",
+      "target": "लीडरबोर्ड सहभागी"
+    },
+    {
+      "id": "online:Leaderboards",
+      "source": "Leaderboards",
+      "target": "लीडरबोर्ड"
+    },
+    {
+      "id": "online:Leave the room instead.",
+      "source": "Leave the room instead.",
+      "target": "त्याऐवजी खोलीतून बाहेर पडा."
+    },
+    {
+      "id": "online:Leave this set and discard unsaved changes?",
+      "source": "Leave this set and discard unsaved changes?",
+      "target": "हा संच तसाच ठेवून न जतन केलेले बदल रद्द करायचे का?"
+    },
+    {
+      "id": "online:Leave with unsaved changes? A recovery copy stays on this device.",
+      "source": "Leave with unsaved changes? A recovery copy stays on this device.",
+      "target": "बदल जतन न करताच निघून जायचे आहे का? रिकव्हरी कॉपी या डिव्हाइसवर राहते."
+    },
+    {
+      "id": "online:Leave with unsaved edits? A recovery copy stays on this device.",
+      "source": "Leave with unsaved edits? A recovery copy stays on this device.",
+      "target": "जतन न केलेल्या बदलांसह निघून जायचे आहे का? पुनर्प्राप्ती प्रत या डिव्हाइसवर राहते."
+    },
+    {
+      "id": "online:Length repair",
+      "source": "Length repair",
+      "target": "लांबी दुरुस्ती"
+    },
+    {
+      "id": "online:Library",
+      "source": "Library",
+      "target": "ग्रंथालय"
+    },
+    {
+      "id": "online:Licence",
+      "source": "Licence",
+      "target": "परवाना"
+    },
+    {
+      "id": "online:License",
+      "source": "License",
+      "target": "परवाना"
+    },
+    {
+      "id": "online:License for this version",
+      "source": "License for this version",
+      "target": "या आवृत्तीसाठी परवाना"
+    },
+    {
+      "id": "online:License: {slot0}",
+      "source": "License: {slot0}",
+      "target": "परवाना: {slot0}"
+    },
+    {
+      "id": "online:License: {slot0} · AI composition is disclosed.",
+      "source": "License: {slot0} · AI composition is disclosed.",
+      "target": "परवाना: {slot0} · एआयची रचना उघड केली आहे."
+    },
+    {
+      "id": "online:Lift ban",
+      "source": "Lift ban",
+      "target": "बंदी उठवा"
+    },
+    {
+      "id": "online:Light",
+      "source": "Light",
+      "target": "प्रकाश"
+    },
+    {
+      "id": "online:Like",
+      "source": "Like",
+      "target": "जसे"
+    },
+    {
+      "id": "online:Likes",
+      "source": "Likes",
+      "target": "पसंती"
+    },
+    {
+      "id": "online:Limit must be between 1 and 100.",
+      "source": "Limit must be between 1 and 100.",
+      "target": "मर्यादा 1 ते 100 च्या दरम्यान असली पाहिजे."
+    },
+    {
+      "id": "online:Link a recoverable account first.",
+      "source": "Link a recoverable account first.",
+      "target": "सर्वप्रथम पुनर्प्राप्त करण्यायोग्य खाते लिंक करा."
+    },
+    {
+      "id": "online:Link an active recoverable account before purchasing.",
+      "source": "Link an active recoverable account before purchasing.",
+      "target": "खरेदी करण्यापूर्वी एक सक्रिय आणि पुनर्प्राप्त करण्यायोग्य खाते जोडा."
+    },
+    {
+      "id": "online:Link an active recoverable account to sync drafts.",
+      "source": "Link an active recoverable account to sync drafts.",
+      "target": "मसुदे सिंक करण्यासाठी एक सक्रिय आणि पुनर्प्राप्त करण्यायोग्य खाते लिंक करा."
+    },
+    {
+      "id": "online:Listening note",
+      "source": "Listening note",
+      "target": "ऐकण्याची नोंद"
+    },
+    {
+      "id": "online:Live AI playtest revision {value0}",
+      "source": "Live AI playtest revision {value0}",
+      "target": "थेट एआय प्लेटेस्ट आवृत्ती {value0}"
+    },
+    {
+      "id": "online:Live updates are unavailable. Refreshing saved work…",
+      "source": "Live updates are unavailable. Refreshing saved work…",
+      "target": "थेट अपडेट्स उपलब्ध नाहीत. जतन केलेले काम रिफ्रेश करत आहे…"
+    },
+    {
+      "id": "online:Load account changes",
+      "source": "Load account changes",
+      "target": "खाते बदल लोड करा"
+    },
+    {
+      "id": "online:Load earlier conversation and versions",
+      "source": "Load earlier conversation and versions",
+      "target": "मागील संभाषण आणि आवृत्त्या लोड करा"
+    },
+    {
+      "id": "online:Load more",
+      "source": "Load more",
+      "target": "अधिक लोड करा"
+    },
+    {
+      "id": "online:Load more drafts",
+      "source": "Load more drafts",
+      "target": "आणखी मसुदे लोड करा"
+    },
+    {
+      "id": "online:Loading ",
+      "source": "Loading ",
+      "target": "लोडिंग "
+    },
+    {
+      "id": "online:Loading code editor…",
+      "source": "Loading code editor…",
+      "target": "कोड एडिटर लोड होत आहे…"
+    },
+    {
+      "id": "online:Loading comparison…",
+      "source": "Loading comparison…",
+      "target": "तुलना लोड होत आहे…"
+    },
+    {
+      "id": "online:Loading drafts…",
+      "source": "Loading drafts…",
+      "target": "मसुदे लोड होत आहेत…"
+    },
+    {
+      "id": "online:Loading editor…",
+      "source": "Loading editor…",
+      "target": "एडिटर लोड होत आहे…"
+    },
+    {
+      "id": "online:Loading engine…",
+      "source": "Loading engine…",
+      "target": "इंजिन लोड होत आहे…"
+    },
+    {
+      "id": "online:Loading game…",
+      "source": "Loading game…",
+      "target": "गेम लोड होत आहे…"
+    },
+    {
+      "id": "online:Loading map preview…",
+      "source": "Loading map preview…",
+      "target": "नकाशाचे पूर्वावलोकन लोड होत आहे…"
+    },
+    {
+      "id": "online:Loading matches…",
+      "source": "Loading matches…",
+      "target": "सामने लोड होत आहेत…"
+    },
+    {
+      "id": "online:Loading music…",
+      "source": "Loading music…",
+      "target": "संगीत लोड होत आहे…"
+    },
+    {
+      "id": "online:Loading preview…",
+      "source": "Loading preview…",
+      "target": "पूर्वावलोकन लोड होत आहे…"
+    },
+    {
+      "id": "online:Loading reports…",
+      "source": "Loading reports…",
+      "target": "अहवाल लोड होत आहेत…"
+    },
+    {
+      "id": "online:Loading revision comparison…",
+      "source": "Loading revision comparison…",
+      "target": "आवृत्ती तुलना लोड होत आहे…"
+    },
+    {
+      "id": "online:Loading sets…",
+      "source": "Loading sets…",
+      "target": "सेट लोड होत आहेत…"
+    },
+    {
+      "id": "online:Loading set…",
+      "source": "Loading set…",
+      "target": "लोडिंग सेट…"
+    },
+    {
+      "id": "online:Loading the inspected version…",
+      "source": "Loading the inspected version…",
+      "target": "तपासलेली आवृत्ती लोड होत आहे…"
+    },
+    {
+      "id": "online:Loading this version…",
+      "source": "Loading this version…",
+      "target": "ही आवृत्ती लोड होत आहे…"
+    },
+    {
+      "id": "online:Loading your building workspace…",
+      "source": "Loading your building workspace…",
+      "target": "तुमच्या बिल्डिंगमधील वर्कस्पेस लोड होत आहे…"
+    },
+    {
+      "id": "online:Loading your skins…",
+      "source": "Loading your skins…",
+      "target": "तुमची स्किन्स लोड होत आहेत…"
+    },
+    {
+      "id": "online:Loading…",
+      "source": "Loading…",
+      "target": "लोडिंग…"
+    },
+    {
+      "id": "online:Local accounts are not enabled on this instance.",
+      "source": "Local accounts are not enabled on this instance.",
+      "target": "या इन्स्टन्सवर स्थानिक खाती सक्षम केलेली नाहीत."
+    },
+    {
+      "id": "online:Local accounts are not enabled.",
+      "source": "Local accounts are not enabled.",
+      "target": "स्थानिक खाती सक्षम केलेली नाहीत."
+    },
+    {
+      "id": "online:Loop continuity",
+      "source": "Loop continuity",
+      "target": "लूप सातत्य"
+    },
+    {
+      "id": "online:Lost",
+      "source": "Lost",
+      "target": "हरवले"
+    },
+    {
+      "id": "online:Made",
+      "source": "Made",
+      "target": "बनवले"
+    },
+    {
+      "id": "online:Made for your next match.",
+      "source": "Made for your next match.",
+      "target": "तुमच्या पुढच्या सामन्यासाठी बनवलेले."
+    },
+    {
+      "id": "online:Made with",
+      "source": "Made with",
+      "target": "यापासून बनवलेले"
+    },
+    {
+      "id": "online:Main",
+      "source": "Main",
+      "target": "मुख्य"
+    },
+    {
+      "id": "online:Main material",
+      "source": "Main material",
+      "target": "मुख्य साहित्य"
+    },
+    {
+      "id": "online:Make public",
+      "source": "Make public",
+      "target": "सार्वजनिक करा"
+    },
+    {
+      "id": "online:Malformed Authorization header.",
+      "source": "Malformed Authorization header.",
+      "target": "चुकीच्या स्वरूपातील ऑथोरायझेशन हेडर."
+    },
+    {
+      "id": "online:Manage",
+      "source": "Manage",
+      "target": "व्यवस्थापन करा"
+    },
+    {
+      "id": "online:Manage credits",
+      "source": "Manage credits",
+      "target": "क्रेडिट्स व्यवस्थापित करा"
+    },
+    {
+      "id": "online:Manage published family",
+      "source": "Manage published family",
+      "target": "प्रकाशित कुटुंबाचे व्यवस्थापन करा"
+    },
+    {
+      "id": "online:Manage the credits for your in-game AI commander.",
+      "source": "Manage the credits for your in-game AI commander.",
+      "target": "तुमच्या इन-गेम एआय कमांडरच्या क्रेडिट्सचे व्यवस्थापन करा."
+    },
+    {
+      "id": "online:Manifest",
+      "source": "Manifest",
+      "target": "जाहीर"
+    },
+    {
+      "id": "online:Manifest JSON: {slot0}",
+      "source": "Manifest JSON: {slot0}",
+      "target": "मॅनिफेस्ट JSON: {slot0}"
+    },
+    {
+      "id": "online:Manifest release revision: {slot0}. Publishing a new release requires a larger manifest revision.",
+      "source": "Manifest release revision: {slot0}. Publishing a new release requires a larger manifest revision.",
+      "target": "मॅनिफेस्ट रिलीज रिव्हिजन: {slot0}. नवीन रिलीज प्रकाशित करण्यासाठी मोठ्या मॅनिफेस्ट रिव्हिजनची आवश्यकता आहे."
+    },
+    {
+      "id": "online:Manual blend · Calm → Building → Combat",
+      "source": "Manual blend · Calm → Building → Combat",
+      "target": "मॅन्युअल ब्लेंड · शांतता → उभारणी → लढाई"
+    }
+  ],
+  "subset_sha256": "061b2b08b3c33d2c6044a455778f5f301ac2f655bae988bf4e89d7f1c3085fcc"
+}

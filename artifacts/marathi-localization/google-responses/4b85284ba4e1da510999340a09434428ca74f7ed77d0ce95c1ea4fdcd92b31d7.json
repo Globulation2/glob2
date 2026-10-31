@@ -1,0 +1,418 @@
+{
+  "request": {
+    "project": "bradley-personal-20261027",
+    "model": "general/nmt",
+    "payload": {
+      "sourceLanguageCode": "en",
+      "targetLanguageCode": "mr",
+      "mimeType": "text/plain",
+      "contents": [
+        "Match over. Ready up for another round!",
+        "Waiting for the host to start",
+        "Waiting for ZXQPH0QXZ players to be ready",
+        "Who can find it",
+        "You created the room.",
+        "You joined ZXQPH0QXZ.",
+        "The host removed you from the room.",
+        "you",
+        "Invited to room ZXQPH0QXZ",
+        "Join as guest",
+        "This server isn't run by the ZXQPH0QXZ project.",
+        "Remember this server",
+        "You'll join as a guest there. Your ZXQPH0QXZ account, rating and history stay where they are.",
+        "Join a game on another server?",
+        "The server sees your display name, your connection's address and the games you play on it.",
+        "Code",
+        "Draw",
+        "2 vs 2",
+        "1 vs 1",
+        "Ping about",
+        "Ranked",
+        "Casual ZXQPH0QXZ",
+        "Ranked",
+        "Unrated",
+        "solo queue",
+        "AI joins after ZXQPH0QXZ",
+        "Maps: ZXQPH0QXZ",
+        "You declined a match. You can search again in ZXQPH0QXZ.",
+        "Ranked queues are for signed-in accounts; sign in first.",
+        "This version of the game is too old for the server; update to play online.",
+        "The server hasn't been updated to this version yet; online play opens once it is.",
+        "The server plays a different version of the game; online play isn't available with this copy.",
+        "You are already searching or in a match.",
+        "The server could not be reached.",
+        "Find match",
+        "Opponents rated ZXQPH0QXZ to ZXQPH1QXZ",
+        "Region ZXQPH0QXZ",
+        "Searching",
+        "Measuring relays",
+        "Joining the queue",
+        "Waiting for a person: AI opponents are off.",
+        "If no one is found, you'll play the closest-rated AI in ZXQPH0QXZ",
+        "If no one is found, an AI joins in ZXQPH0QXZ",
+        "If no one is found, an AI takes the seat after ZXQPH0QXZ",
+        "Allow AI",
+        "Allow an AI opponent",
+        "Cancel",
+        "Cancel search",
+        "usual wait ZXQPH0QXZ",
+        "widening as you wait",
+        "(rated: AIs have ratings too)",
+        "Your opponent didn't accept. You're back at the front of the queue.",
+        "ZXQPH0QXZ didn't accept. You're back at the front of the queue.",
+        "The match could not start. You're searching again.",
+        "You declined the match. You can search again after a short wait.",
+        "You didn't accept in time. You can search again after a short wait.",
+        "The search ended.",
+        "Try again",
+        "Connecting…",
+        "This server has no quick-match queues.",
+        "Quick match",
+        "The search keeps running if you leave this screen.",
+        "Pick a queue below; the search runs while you browse.",
+        "Online",
+        "The search keeps running if you leave this screen.",
+        "AI",
+        "provisional",
+        "✓ accepted",
+        "declined",
+        "waiting…",
+        "AI",
+        "Match found",
+        "Playing an AI",
+        "vs",
+        "No one in your rating range was searching. You'll play the AI closest to your rating; the result counts for your rating and the AI's.",
+        "No one was searching. You'll play the AI closest to your rating; this game is unrated.",
+        "The match starts straight away; casual games are unrated.",
+        "Accepted",
+        "Accept",
+        "Decline"
+      ]
+    }
+  },
+  "response": {
+    "translations": [
+      {
+        "translatedText": "सामना संपला. पुढच्या फेरीसाठी तयार व्हा!",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "होस्ट सुरू होण्याची वाट पाहत आहे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ खेळाडूंच्या तयार होण्याची वाट पाहत आहे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ते कोण शोधू शकेल?",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तुम्ही खोली तयार केली.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तुम्ही ZXQPH0QXZ मध्ये सामील झालात.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "यजमानाने तुम्हाला खोलीतून बाहेर काढले.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तुम्ही",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "खोली क्रमांक ZXQPH0QXZ मध्ये आमंत्रित केले आहे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पाहुणे म्हणून सामील व्हा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "हा सर्वर ZXQPH0QXZ प्रकल्पाद्वारे चालवला जात नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "हा सर्व्हर लक्षात ठेवा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तुम्ही तिथे पाहुणे म्हणून सामील व्हाल. तुमचे ZXQPH0QXZ खाते, रेटिंग आणि इतिहास जसेच्या तसे राहतील.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "दुसऱ्या सर्व्हरवर गेममध्ये सामील व्हायचे आहे का?",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सर्वरला तुमचे डिस्प्ले नाव, तुमच्या कनेक्शनचा पत्ता आणि तुम्ही त्यावर खेळत असलेले गेम्स दिसतात.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कोड",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ड्रॉ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "२ विरुद्ध २",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "१ विरुद्ध १",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पिंगबद्दल",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "क्रमवारी लावली",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कॅज्युअल ZXQPH0QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "क्रमवारी लावली",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "रेटिंग नाही",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "एकल रांग",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ नंतर AI सामील होते",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नकाशे: ZXQPH0QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तुम्ही एक जुळणी नाकारली आहे. तुम्ही ZXQPH0QXZ मध्ये पुन्हा शोधू शकता.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "रँक्ड क्यू (Ranked queues) साइन-इन केलेल्या खात्यांसाठी आहेत; आधी साइन इन करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "गेमची ही आवृत्ती सर्व्हरसाठी खूप जुनी आहे; ऑनलाइन खेळण्यासाठी अपडेट करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सर्व्हर अजून या आवृत्तीमध्ये अद्ययावत केलेला नाही; तो अद्ययावत झाल्यावर ऑनलाइन खेळ सुरू होईल.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सर्व्हरवर गेमची वेगळी आवृत्ती चालते; या कॉपीवर ऑनलाइन खेळता येत नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तुम्ही आधीच शोधत आहात किंवा जुळणीमध्ये आहात.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सर्व्हरशी संपर्क होऊ शकला नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "जुळणी शोधा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "प्रतिस्पर्धकांना ZXQPH0QXZ ते ZXQPH1QXZ असे रेटिंग देण्यात आले.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "प्रदेश ZXQPH0QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "शोधणे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "रिले मोजणे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "रांगेत सामील होणे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "व्यक्तीची प्रतीक्षा: एआय प्रतिस्पर्धी बंद आहेत.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "जर कोणी सापडले नाही, तर तुम्ही ZXQPH0QXZ मधील सर्वात जवळच्या रेटिंगच्या AI सोबत खेळाल.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "जर कोणी सापडले नाही, तर एक AI ZXQPH0QXZ मध्ये सामील होतो.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "जर कोणी सापडले नाही, तर ZXQPH0QXZ नंतर एक AI ती जागा घेतो.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "एआयला परवानगी द्या",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "एआय प्रतिस्पर्ध्याला परवानगी द्या",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "रद्द करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "शोध रद्द करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नेहमीची प्रतीक्षा ZXQPH0QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तुम्ही वाट पाहता तसे रुंदावणे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "(रेटिंग: एआयला सुद्धा रेटिंग असते)",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तुमच्या प्रतिस्पर्ध्याने स्वीकारले नाही. तुम्ही पुन्हा रांगेत सर्वात पुढे आला आहात.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ ने स्वीकारले नाही. तुम्ही पुन्हा रांगेत सर्वात पुढे आहात.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सामना सुरू होऊ शकला नाही. तुम्ही पुन्हा शोधत आहात.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तुम्ही जुळणी नाकारली आहे. थोड्या वेळानंतर तुम्ही पुन्हा शोधू शकता.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तुम्ही वेळेत स्वीकारले नाही. थोड्या वेळानंतर तुम्ही पुन्हा शोधू शकता.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "शोध संपला.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पुन्हा प्रयत्न करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "जोडत आहे…",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "या सर्व्हरवर क्विक-मॅच क्यू नाहीत.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "जलद सामना",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तुम्ही ही स्क्रीन सोडल्यास देखील शोध चालू राहतो.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "खालीलपैकी एक रांग निवडा; तुम्ही ब्राउझ करत असताना शोध सुरू राहील.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ऑनलाइन",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तुम्ही ही स्क्रीन सोडल्यास देखील शोध चालू राहतो.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "एआय",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तात्पुरते",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "✓ स्वीकारले",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नाकारले",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "प्रतीक्षा करत आहे…",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "एआय",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "जुळणी सापडली",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "एआय खेळणे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "विरुद्ध",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तुमच्या रेटिंग श्रेणीतील कोणीही शोधत नव्हते. तुम्ही तुमच्या रेटिंगच्या सर्वात जवळच्या AI सोबत खेळाल; त्याचा निकाल तुमच्या आणि AI च्या रेटिंगसाठी ग्राह्य धरला जाईल.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कोणीही शोधत नव्हते. तुम्ही तुमच्या रेटिंगच्या सर्वात जवळच्या AI सोबत खेळाल; या गेमला रेटिंग दिलेले नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सामना लगेच सुरू होतो; प्रासंगिक खेळांना रेटिंग दिले जात नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "स्वीकृत",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "स्वीकारा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नकार",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      }
+    ]
+  },
+  "response_sha256": "c897d2050738c34d717d97560a3bf9c68f452102171a3a71b8b8b3d356eb2e2e"
+}

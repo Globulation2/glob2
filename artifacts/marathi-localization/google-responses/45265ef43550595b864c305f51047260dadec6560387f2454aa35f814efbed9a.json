@@ -1,0 +1,418 @@
+{
+  "request": {
+    "project": "bradley-personal-20261027",
+    "model": "general/nmt",
+    "payload": {
+      "sourceLanguageCode": "en",
+      "targetLanguageCode": "mr",
+      "mimeType": "text/plain",
+      "contents": [
+        "Additional credits and source attribution",
+        "Additional field",
+        "Address",
+        "Administration",
+        "Administration sections",
+        "Administrator",
+        "Administrator access is required.",
+        "Administrator access required.",
+        "Advanced mixing",
+        "Advanced properties ZXQPH0QXZ",
+        "After payment, your balance updates once payment is confirmed. You can return to your colony while it is processed.",
+        "Agreed so far",
+        "Air health change",
+        "All",
+        "All candidate measurements",
+        "All compatibility checks must pass before publishing.",
+        "All downloads",
+        "All engine versions",
+        "All generation attempts",
+        "All generators",
+        "All libraries",
+        "All licenses",
+        "All matches",
+        "All music",
+        "All open licences",
+        "All properties and capabilities",
+        "All rankings",
+        "All sets",
+        "All-time library totals; this ranking does not change with the selected reporting range. Counts follow each library’s rules and do not represent unique people.",
+        "Allowed resource keys (null uses habitats)",
+        "Already in the game? Choose",
+        "Always available",
+        "An account is required to publish publicly.",
+        "An available Building credit is needed to chat or build.",
+        "An available Terrain credit is needed to chat or build.",
+        "An available ZXQPH0QXZ credit is needed.",
+        "Analytics display is disabled.",
+        "Animation phase",
+        "Another session saved revision ZXQPH0QXZ. Your local edits are preserved.",
+        "Another upload is in progress. Please retry shortly.",
+        "Any",
+        "Any size",
+        "Any status",
+        "Any teams",
+        "Anyone with the link",
+        "Appearance",
+        "Applied",
+        "Applies to",
+        "Apply soundtrack loudness targets and peak limiting",
+        "Apply to ZXQPH0QXZ",
+        "Artifact view",
+        "Artwork",
+        "Artwork and font credits",
+        "Artwork could not be prepared for some older devices. Those devices will use the default colony.",
+        "Artwork for some older devices is still preparing. Those devices may temporarily show the default colony.",
+        "Assemble the family",
+        "Assemble the pack",
+        "At least ZXQPH0QXZ characters.",
+        "At least ZXQPH0QXZ seats must be taken.",
+        "Attached diagnostics",
+        "Attack power",
+        "Attempts",
+        "Audible comparison version",
+        "Audio quality checks",
+        "Audit history",
+        "Authenticated account activity; anonymous visitors are excluded.",
+        "Author-reported generator",
+        "Authoring guide",
+        "Authoring guide ↗",
+        "Average successful completion time",
+        "Awaiting provider outcome",
+        "Awaiting validation",
+        "Back to ZXQPH0QXZ",
+        "Back to My skins",
+        "Back to sign in",
+        "Back to the home page",
+        "Background color",
+        "Background material",
+        "Background noise",
+        "Balanced"
+      ]
+    }
+  },
+  "response": {
+    "translations": [
+      {
+        "translatedText": "अतिरिक्त श्रेय आणि स्रोताचा उल्लेख",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अतिरिक्त फील्ड",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पत्ता",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "प्रशासन",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "प्रशासकीय विभाग",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "प्रशासक",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "प्रशासकीय प्रवेश आवश्यक आहे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "प्रशासकीय प्रवेश आवश्यक आहे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "प्रगत मिश्रण",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "प्रगत गुणधर्म ZXQPH0QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पेमेंट केल्यानंतर, पेमेंटची पुष्टी झाल्यावर तुमची शिल्लक रक्कम अपडेट होते. पेमेंटची प्रक्रिया सुरू असताना तुम्ही तुमच्या कॉलनीत परत जाऊ शकता.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "इथपर्यंत सहमत आहे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "हवेच्या आरोग्यात बदल",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सर्व",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सर्व उमेदवारांची मोजमापे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "प्रकाशित करण्यापूर्वी सर्व सुसंगतता तपासण्या यशस्वी होणे आवश्यक आहे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सर्व डाउनलोड",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सर्व इंजिन आवृत्त्या",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सर्व पिढ्यांचे प्रयत्न",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सर्व जनरेटर",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सर्व ग्रंथालये",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सर्व परवाने",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सर्व सामने",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सर्व संगीत",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सर्व खुले परवाने",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सर्व गुणधर्म आणि क्षमता",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सर्व क्रमवारी",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सर्व संच",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ग्रंथालयाची आजवरची एकूण आकडेवारी; निवडलेल्या अहवाल श्रेणीनुसार ही क्रमवारी बदलत नाही. गणना प्रत्येक ग्रंथालयाच्या नियमांनुसार केली जाते आणि ती विशिष्ट व्यक्ती दर्शवत नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अनुमत संसाधन की (शून्य अधिवास वापरते)",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "आधीच खेळात आहात का? निवडा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नेहमी उपलब्ध",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सार्वजनिकरित्या प्रकाशित करण्यासाठी खाते आवश्यक आहे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "चॅट करण्यासाठी किंवा बांधकाम करण्यासाठी उपलब्ध बिल्डिंग क्रेडिटची आवश्यकता आहे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "चॅट करण्यासाठी किंवा बांधकाम करण्यासाठी उपलब्ध टेरेन क्रेडिटची आवश्यकता आहे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "उपलब्ध असलेले ZXQPH0QXZ क्रेडिट आवश्यक आहे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ॲनालिटिक्स प्रदर्शन अक्षम केले आहे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अ‍ॅनिमेशन टप्पा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "दुसऱ्या सत्रात ZXQPH0QXZ ही आवृत्ती जतन करण्यात आली. तुमचे स्थानिक बदल जतन केले आहेत.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "दुसरे अपलोड सुरू आहे. कृपया थोड्या वेळाने पुन्हा प्रयत्न करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कोणतेही",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कोणत्याही आकाराचे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कोणतीही स्थिती",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कोणतेही संघ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ज्यांच्याकडे लिंक आहे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "देखावा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "लागू केले",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "याला लागू होते",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "साउंडट्रॅक लाउडनेस लक्ष्य आणि पीक लिमिटिंग लागू करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ वर अर्ज करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कलाकृती दृश्य",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कलाकृती",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कलाकृती आणि फॉन्टचे श्रेय",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "काही जुन्या उपकरणांसाठी आर्टवर्क तयार करता आले नाही. ती उपकरणे डीफॉल्ट कॉलनी वापरतील.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "काही जुन्या उपकरणांसाठी आर्टवर्क अजूनही तयार होत आहे. त्या उपकरणांवर तात्पुरते डीफॉल्ट कॉलनी दिसू शकते.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कुटुंबाला एकत्र करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पॅक एकत्र करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "किमान ZXQPH0QXZ अक्षरे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "किमान ZXQPH0QXZ जागा भरल्या पाहिजेत.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "संलग्न निदान",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "हल्ला करण्याची शक्ती",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "प्रयत्न",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ऑडिबल तुलनात्मक आवृत्ती",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ऑडिओ गुणवत्तेची तपासणी",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ऑडिट इतिहास",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "प्रमाणीकृत खात्याची हालचाल; अनामिक अभ्यागतांना वगळण्यात आले आहे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "लेखकाने नोंदवलेला जनरेटर",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "लेखक मार्गदर्शक",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "लेखन मार्गदर्शक ↗",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सरासरी यशस्वी पूर्ण होण्याची वेळ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "प्रदात्याच्या निकालाची प्रतीक्षा आहे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पडताळणीची प्रतीक्षा आहे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ वर परत जा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "माझ्या त्वचेकडे परत",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "साइन इन करण्यासाठी परत जा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "मुख्य पृष्ठावर परत जा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पार्श्वभूमीचा रंग",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पार्श्वभूमी साहित्य",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पार्श्वभूमीतील आवाज",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "संतुलित",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      }
+    ]
+  },
+  "response_sha256": "f4d325cdc430c188572f3883d65ac92e3035fbaf3958cf4ed3dfc1d281dd9f7d"
+}

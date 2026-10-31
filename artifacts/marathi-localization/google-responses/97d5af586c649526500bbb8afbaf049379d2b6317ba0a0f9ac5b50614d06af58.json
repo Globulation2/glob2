@@ -1,0 +1,418 @@
+{
+  "request": {
+    "project": "bradley-personal-20261027",
+    "model": "general/nmt",
+    "payload": {
+      "sourceLanguageCode": "en",
+      "targetLanguageCode": "mr",
+      "mimeType": "text/plain",
+      "contents": [
+        "All opponents defeated.",
+        "An allied colony won.",
+        "Prestige goal reached.",
+        "Scenario rules decided the outcome.",
+        "Time limit reached.",
+        "Win probability threshold reached.",
+        "Discord community",
+        "ZXQPH0QXZ Discord",
+        "Find opponents, ask for help, and share your maps with the ZXQPH0QXZ community.",
+        "Join our Discord server. This opens Discord or your browser.",
+        "Join Discord",
+        "Copy link",
+        "Discord opened. You can return to the game at any time.",
+        "Could not open Discord. Copy the invitation link and open it in your browser.",
+        "Invitation link copied.",
+        "Left or right hand?",
+        "Hold your phone naturally. Tap the hand you play with.",
+        "A phone outline with left and right hands on top. Press either beveled thumb target to choose that side.",
+        "You can change sides later in Settings.",
+        "Could not save your choice. Please try again.",
+        "Left hand",
+        "Right hand",
+        "Could not copy the link. Select the invitation above to copy it manually.",
+        "Ground movement",
+        "Living ground units by approximate speed ratio. 'Swim 2x' means swimming twice as fast as running. Flying and immobile units are excluded.",
+        "By movement",
+        "Land only",
+        "Swim 2x",
+        "Swim 1.4x",
+        "Equal",
+        "Run 1.3x",
+        "Run 2x",
+        "Run 3x",
+        "Water only",
+        "Stopping…",
+        "Stopped",
+        "Stop failed; retry the stop shortcut",
+        "Updating…",
+        "Requested",
+        "Update failed; try again",
+        "Give order",
+        "Less",
+        "Reports / details",
+        "Needs a fresh order",
+        "Active",
+        "Resume",
+        "Recordings",
+        "Delete recording?",
+        "The recording and its metadata will be removed.",
+        "Delete",
+        "Working…",
+        "No recordings yet.",
+        "Interrupted recording",
+        "Recover",
+        "Export video",
+        "Export metadata",
+        "Export events",
+        "Could not export recording.",
+        "Delete recording",
+        "Refresh",
+        " Could not restore the previous library: ZXQPH0QXZ",
+        " The previous library is retained.",
+        " · Installed",
+        " · Update available",
+        "A different release is installed. Install the selected release to update explicitly.",
+        "All engines",
+        "Available families",
+        "Back",
+        "Choose an online instance before opening a family link.",
+        "Compatible with this engine",
+        "Confirm replacement",
+        "Editor tools",
+        "Family link or ID",
+        "Family links must be at most 1024 characters.",
+        "Family removed.",
+        "Family unavailable. Private families require signing in through Online with an account that can access them.",
+        "Install compatible release",
+        "Install selected release",
+        "Installed",
+        "Installed families"
+      ]
+    }
+  },
+  "response": {
+    "translations": [
+      {
+        "translatedText": "सर्व विरोधक पराभूत झाले.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "मित्र राष्ट्रांची एक वसाहत जिंकली.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "प्रतिष्ठेचे ध्येय गाठले.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "परिस्थितीच्या नियमांनी निकाल ठरवला.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "वेळेची मर्यादा संपली आहे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "विजयाच्या संभाव्यतेची मर्यादा गाठली.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "डिस्कॉर्ड समुदाय",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ डिस्कॉर्ड",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ समुदायासोबत प्रतिस्पर्धी शोधा, मदत मागा आणि तुमचे नकाशे शेअर करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "आमच्या डिस्कॉर्ड सर्वरमध्ये सामील व्हा. हे डिस्कॉर्ड किंवा तुमच्या ब्राउझरमध्ये उघडेल.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "डिस्कॉर्डमध्ये सामील व्हा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "लिंक कॉपी करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "डिस्कॉर्ड सुरू झाला आहे. तुम्ही कधीही गेममध्ये परत येऊ शकता.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "डिस्कॉर्ड उघडता आले नाही. आमंत्रण लिंक कॉपी करून तुमच्या ब्राउझरमध्ये उघडा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "आमंत्रणाची लिंक कॉपी केली.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "डावा की उजवा हात?",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तुमचा फोन नैसर्गिकपणे धरा. तुम्ही ज्या हाताने खेळता त्या हाताने टॅप करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "वरच्या बाजूला डावा आणि उजवा हात असलेली फोनची बाह्यरेखा. ती बाजू निवडण्यासाठी दोन्हीपैकी कोणत्याही तिरकस अंगठ्याच्या लक्ष्यावर दाबा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तुम्ही नंतर सेटिंग्जमध्ये बाजू बदलू शकता.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तुमची निवड जतन करता आली नाही. कृपया पुन्हा प्रयत्न करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "डावा हात",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "उजवा हात",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "लिंक कॉपी करता आली नाही. ती स्वतः कॉपी करण्यासाठी वरील आमंत्रण निवडा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "जमिनीची हालचाल",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अंदाजे वेगाच्या गुणोत्तरानुसार सजीव जमिनीवरील घटक. 'स्विम 2x' म्हणजे धावण्यापेक्षा दुप्पट वेगाने पोहणे. उडणारे आणि स्थिर घटक वगळण्यात आले आहेत.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "हालचालीने",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "फक्त जमीन",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "दोनदा पोहा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "१.४x पोहणे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "समान",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "रन १.३x",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "दोनदा चालवा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "३ वेळा धावा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "फक्त पाणी",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "थांबत आहे…",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "थांबले",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "थांबण्यात अयशस्वी झाले; थांबवण्याचा शॉर्टकट पुन्हा वापरून पहा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अद्ययावत होत आहे…",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "विनंती केली",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अपडेट अयशस्वी झाले; पुन्हा प्रयत्न करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ऑर्डर द्या",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कमी",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अहवाल / तपशील",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नवीन ऑर्डरची गरज आहे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सक्रिय",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सारांश",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "रेकॉर्डिंग्ज",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "रेकॉर्डिंग हटवायचे आहे का?",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "रेकॉर्डिंग आणि त्याचा मेटाडेटा काढून टाकला जाईल.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "हटवा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "काम चालू आहे…",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अद्याप कोणतेही रेकॉर्डिंग झालेले नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "रेकॉर्डिंगमध्ये व्यत्यय आला.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "बरे व्हा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "व्हिडिओ निर्यात करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "मेटाडेटा निर्यात करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "निर्यात कार्यक्रम",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "रेकॉर्डिंग निर्यात करता आले नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "रेकॉर्डिंग हटवा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "रिफ्रेश करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "मागील लायब्ररी पुनर्संचयित करता आली नाही: ZXQPH0QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "मागील लायब्ररी कायम ठेवण्यात आली आहे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "· स्थापित केले",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "· अपडेट उपलब्ध आहे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "वेगळी आवृत्ती स्थापित केली आहे. स्पष्टपणे अद्ययावत करण्यासाठी निवडलेली आवृत्ती स्थापित करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सर्व इंजिन",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "उपलब्ध कुटुंबे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "मागे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "फॅमिली लिंक उघडण्यापूर्वी ऑनलाइन इन्स्टन्स निवडा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "या इंजिनशी सुसंगत",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "बदलीची पुष्टी करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "संपादक साधने",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "फॅमिली लिंक किंवा आयडी",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कौटुंबिक दुवे जास्तीत जास्त १०२४ अक्षरांचे असले पाहिजेत.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कुटुंबाला बाहेर काढले.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कुटुंब उपलब्ध नाही. खाजगी कुटुंबांना त्यांच्याशी संपर्क साधू शकणाऱ्या खात्याद्वारे ऑनलाइन साइन इन करणे आवश्यक आहे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सुसंगत आवृत्ती स्थापित करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "निवडलेली आवृत्ती स्थापित करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "स्थापित केले",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "स्थापित कुटुंबे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      }
+    ]
+  },
+  "response_sha256": "997072738894073ab3990af7584816404e8af8e434a8ce20ec2188ce45107d07"
+}

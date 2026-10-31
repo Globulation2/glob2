@@ -1,0 +1,418 @@
+{
+  "request": {
+    "project": "bradley-personal-20261027",
+    "model": "general/nmt",
+    "payload": {
+      "sourceLanguageCode": "en",
+      "targetLanguageCode": "mr",
+      "mimeType": "text/plain",
+      "contents": [
+        "Nothing here: this page wandered off like an explorer glob. ZXQPH0QXZ.",
+        "Numbi",
+        "OK",
+        "Offensive",
+        "Offline",
+        "Offline · changes pending",
+        "Older reports",
+        "Oldest queued engine job: ZXQPH0QXZ",
+        "One .js file · up to 128 KiB · profiles 1 and 2",
+        "One melody. Three moods.",
+        "One soundtrack, three synchronized moods. Switch moods while listening to hear how the game adapts.",
+        "One-time purchases stay with your account. Preview and paint before buying.",
+        "Only a successfully converted release can be published.",
+        "Only continue if you just started signing in from your own game and it shows the same code. If someone sent you this link, cancel.",
+        "Only if you have installed the game on this device.",
+        "Only me",
+        "Only registered accounts can be moderators or administrators.",
+        "Only the host assigns seats in this room.",
+        "Only the host can add AIs.",
+        "Only the host can change the room.",
+        "Only the host can empty other seats.",
+        "Only the host can lock seats.",
+        "Only the host can remove players.",
+        "Only the host can start the match.",
+        "Only the map owner can do that.",
+        "Only uncertain calls can be reconciled.",
+        "Only uncertain requests need reconciliation.",
+        "Opacity ",
+        "Open",
+        "Open AI Map Studio",
+        "Open Building families when creating a new game or a new map in the editor, install a compatible release, and enable it. Enabled families apply to future generated maps alongside stock buildings. Existing maps and saves keep their own buildings.",
+        "Open in installed app",
+        "Open in the ZXQPH0QXZ app",
+        "Open music release",
+        "Open navigation",
+        "Open the map editor’s Set Library to import a release, or import this downloaded package. Only custom content is included in shared maps. Each map keeps its own editable copy.",
+        "Open ZXQPH0QXZ ↗",
+        "Opening ZXQPH0QXZ…",
+        "Opening studio…",
+        "Opening your studio…",
+        "Opens the app if it is installed.",
+        "Operations",
+        "Opponent",
+        "Orders the server refused (a modified or broken client sends these)",
+        "Original game artwork",
+        "Other",
+        "Output tokens",
+        "Overview",
+        "Owned",
+        "PLAYABLE MAP",
+        "Package",
+        "Pad ends with silence to longest",
+        "Page not found",
+        "Paint color",
+        "Paint directly on the 3D ZXQPH0QXZ model",
+        "Paint repeats on matching surfaces",
+        "Paint tools",
+        "Painting is unavailable in this browser.",
+        "Painting needs WebGL 2. You can still save your draft, browse My skins, or visit the shop.",
+        "Passed",
+        "Password",
+        "Passwords can be at most ZXQPH0QXZ characters.",
+        "Paste the invite link, or type its code (6 to 16 letters and digits).",
+        "Pattern color",
+        "Pattern coverage",
+        "Pattern rotation",
+        "Pattern size",
+        "Patterns",
+        "Patterns & fills",
+        "Pause",
+        "Payment",
+        "Payment mode",
+        "Payment status: ZXQPH0QXZ.",
+        "Payments are not configured.",
+        "Pen pressure",
+        "Pending",
+        "Period",
+        "Petals cupped open around a central bud.",
+        "Photo updated.",
+        "Ping"
+      ]
+    }
+  },
+  "response": {
+    "translations": [
+      {
+        "translatedText": "इथे काही नाही: हे पान एखाद्या शोधकाच्या गोळ्याप्रमाणे भरकटले आहे. ZXQPH0QXZ.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नंबी",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ठीक आहे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "आक्रमक",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ऑफलाइन",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ऑफलाइन · बदल प्रलंबित",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "जुने अहवाल",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सर्वात जुने रांगेतील इंजिन कार्य: ZXQPH0QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "एक .js फाईल · १२८ केबी पर्यंत · प्रोफाइल १ आणि २",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "एक सूर. तीन भाव.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "एकच साउंडट्रॅक, तीन सुसंगत मूड. गेम कसा जुळवून घेतो हे ऐकण्यासाठी, ऐकत असतानाच मूड बदला.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "एक-वेळची खरेदी तुमच्या खात्यामध्येच राहते. खरेदी करण्यापूर्वी पूर्वावलोकन करा आणि रंगवून पहा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "केवळ यशस्वीरित्या रूपांतरित केलेली आवृत्तीच प्रकाशित केली जाऊ शकते.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तुम्ही तुमच्या स्वतःच्या गेममधून नुकतेच साइन इन केले असेल आणि तिथे तोच कोड दिसत असेल तरच पुढे सुरू ठेवा. जर कोणी तुम्हाला ही लिंक पाठवली असेल, तर रद्द करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तुम्ही या डिव्हाइसवर गेम इन्स्टॉल केला असेल तरच.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "फक्त मी",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "फक्त नोंदणीकृत खातीच नियंत्रक किंवा प्रशासक असू शकतात.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "या खोलीत फक्त यजमानच जागांचे वाटप करतो.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "फक्त होस्टच एआय जोडू शकतो.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "फक्त यजमानच खोली बदलू शकतो.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "फक्त यजमानच इतर जागा रिकाम्या करू शकतो.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "फक्त होस्टच जागा लॉक करू शकतो.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "फक्त होस्टच खेळाडूंना काढू शकतो.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "फक्त यजमानच सामना सुरू करू शकतो.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "फक्त नकाशाचा मालकच ते करू शकतो.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "केवळ अनिश्चित निर्णयांचेच निराकरण होऊ शकते.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "केवळ अनिश्चित विनंत्यांचेच जुळवणी करणे आवश्यक आहे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अपारदर्शकता",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "उघडा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ओपन एआय मॅप स्टुडिओ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "एडिटरमध्ये नवीन गेम किंवा नवीन नकाशा तयार करताना बिल्डिंग फॅमिली उघडा, एक सुसंगत रिलीज इन्स्टॉल करा आणि ते सक्षम करा. सक्षम केलेल्या फॅमिली स्टॉक बिल्डिंग्ससोबत भविष्यात तयार होणाऱ्या नकाशांवर लागू होतात. विद्यमान नकाशे आणि सेव्ह फाइल्स त्यांच्या स्वतःच्या बिल्डिंग्स कायम ठेवतात.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "इंस्टॉल केलेल्या ॲपमध्ये उघडा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ अॅपमध्ये उघडा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "संगीत प्रकाशन खुले आहे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नेव्हिगेशन उघडा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "रिलीज इम्पोर्ट करण्यासाठी मॅप एडिटरची सेट लायब्ररी उघडा, किंवा हे डाउनलोड केलेले पॅकेज इम्पोर्ट करा. शेअर केलेल्या मॅप्समध्ये फक्त कस्टम कंटेंटचा समावेश असतो. प्रत्येक मॅप स्वतःची संपादन करण्यायोग्य प्रत ठेवतो.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ उघडा ↗",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ उघडत आहे…",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "स्टुडिओ उघडत आहे…",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तुमचा स्टुडिओ सुरू करत आहात…",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अॅप इन्स्टॉल केलेले असल्यास ते उघडते.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ऑपरेशन्स",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "प्रतिस्पर्धी",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सर्व्हरने नाकारलेले आदेश (बदल केलेला किंवा सदोष क्लायंट हे पाठवतो)",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "मूळ खेळाची कलाकृती",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "इतर",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "आउटपुट टोकन",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "आढावा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "मालकीचे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "खेळण्यायोग्य नकाशा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पॅकेज",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सर्वात लांब पॅड शांततेने संपतो.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पृष्ठ सापडले नाही",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पेंटचा रंग",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "3D ZXQPH0QXZ मॉडेलवर थेट रंगवा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "जुळणाऱ्या पृष्ठभागांवर रंगाची पुनरावृत्ती",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पेंट टूल्स",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "या ब्राउझरमध्ये पेंटिंग उपलब्ध नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पेंटिंगसाठी WebGL 2 आवश्यक आहे. तरीही तुम्ही तुमचा ड्राफ्ट सेव्ह करू शकता, 'माय स्किन्स' ब्राउझ करू शकता किंवा शॉपला भेट देऊ शकता.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पास झाले",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पासवर्ड",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पासवर्डमध्ये जास्तीत जास्त ZXQPH0QXZ अक्षरे असू शकतात.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "आमंत्रण लिंक पेस्ट करा, किंवा त्याचा कोड (६ ते १६ अक्षरे आणि अंक) टाईप करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नमुन्याचा रंग",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नमुना कव्हरेज",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नमुना फिरवणे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नमुन्याचा आकार",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नमुने",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नमुने आणि भरण",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "थांबा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पेमेंट",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पेमेंट मोड",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पेमेंटची स्थिती: ZXQPH0QXZ.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पेमेंट कॉन्फिगर केलेले नाहीत.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पेनचा दाब",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "प्रलंबित",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कालावधी",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "मध्यवर्ती कळीभोवती वाटीप्रमाणे उघडलेल्या पाकळ्या.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "फोटो अपडेट केला आहे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पिंग",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      }
+    ]
+  },
+  "response_sha256": "a8696c54c4782163ef3b40aadd0d30a921163135f03f0ff212e16ead32f99b8a"
+}

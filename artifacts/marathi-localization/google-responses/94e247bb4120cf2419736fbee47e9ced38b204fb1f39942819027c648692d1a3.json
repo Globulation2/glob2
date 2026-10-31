@@ -1,0 +1,418 @@
+{
+  "request": {
+    "project": "bradley-personal-20261027",
+    "model": "general/nmt",
+    "payload": {
+      "sourceLanguageCode": "en",
+      "targetLanguageCode": "mr",
+      "mimeType": "text/plain",
+      "contents": [
+        "Sand patches",
+        "Tidal flats",
+        "Everglades",
+        "Pool spacing",
+        "Pool size",
+        "Clearing size",
+        "Levee",
+        "Sloughs",
+        "Everglades need at least one colony.",
+        "Coral",
+        "Fork angle",
+        "Lean",
+        "Home size",
+        "The coral does not fit this map; use a bigger map, narrower straits or fewer colonies.",
+        "Branching",
+        "Branch width",
+        "Coral needs at least one colony.",
+        "Carousel",
+        "Amphitheatre",
+        "Switchbacks",
+        "Corridor width",
+        "Spoke width",
+        "Court size",
+        "Court wall",
+        "Plaza size",
+        "Starting tower level",
+        "Towers per colony",
+        "Rings",
+        "Ramp width",
+        "Pit size",
+        "Terrace width",
+        "Bay size",
+        "Border wall",
+        "Plateau size",
+        "Trail width",
+        "Wall between legs",
+        "Sand bridges over water",
+        "Sand lanes through crops",
+        "Carousels need at least two colonies.",
+        "Switchbacks need at least two colonies.",
+        "An amphitheatre needs at least two colonies.",
+        "The carousel does not fit this map; use a bigger map, smaller homes or fewer colonies.",
+        "The switchbacks do not fit this map; use a bigger map, a smaller plateau, narrower trails or fewer colonies.",
+        "The amphitheatre does not fit this map; use a bigger map, fewer rings, narrower terraces or fewer colonies.",
+        "Spider webs need at least one colony.",
+        "Spiral",
+        "Dew drops",
+        "Hub size",
+        "Torn strands",
+        "Sag",
+        "Thread width",
+        "Ring spacing",
+        "Spokes per colony",
+        "Spider web",
+        "Tide pools",
+        "Lagoons",
+        "Tidal flats need at least one colony.",
+        "The commons and the strait leave too little room for the home bases; use a bigger map, fewer colonies, a smaller commons or a narrower strait.",
+        "Wheat amount",
+        "Wood amount",
+        "Stone amount",
+        "Algae amount",
+        "Stone on hilltops",
+        "Sandy beaches",
+        "Land bridges",
+        "Colony meadows",
+        "Extra starting deposit",
+        "Moat bridges",
+        "Jagged coastlines",
+        "Sand roads",
+        "Treasure in dead ends",
+        "Fjord bank deposits",
+        "Moat",
+        "Stone in the orchard",
+        "Colonies on both coasts",
+        "Winding belt",
+        "Cell shape",
+        "Squares",
+        "Hexagons",
+        "Warp"
+      ]
+    }
+  },
+  "response": {
+    "translations": [
+      {
+        "translatedText": "वाळूचे ठिपके",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "भरती-ओहोटीचे सपाट प्रदेश",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "एव्हरग्लेड्स",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पूलमधील अंतर",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पूलचा आकार",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "साफ करण्याचे आकार",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "लेव्ही",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "दलदली",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "एव्हरग्लेड्सला किमान एका वसाहतीची गरज आहे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "प्रवाळ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "काटा कोन",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "लीन",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "घराचा आकार",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "प्रवाळ या नकाशात बसत नाही; मोठा नकाशा, अरुंद सामुद्रधुनी किंवा कमी वसाहती वापरा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "शाखा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "फांदीची रुंदी",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "प्रवाळाला किमान एका वसाहतीची गरज असते.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कॅरोसेल",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अॅम्फीथिएटर",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "स्विचबॅक",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कॉरिडॉरची रुंदी",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "स्पोकची रुंदी",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कोर्टाचा आकार",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "न्यायालयाची भिंत",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "प्लाझा आकार",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "टॉवरची सुरुवातीची पातळी",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "प्रत्येक वसाहतीतील टॉवर",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "रिंग्ज",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "रॅम्पची रुंदी",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "खड्ड्याचा आकार",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "टेरेसची रुंदी",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "खाडीचा आकार",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सीमा भिंत",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पठाराचा आकार",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पायवाटेची रुंदी",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पायांमधील भिंत",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पाण्यावरील वाळूचे पूल",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पिकांमधून जाणारे वाळूचे पट्टे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कॅरोसेलला किमान दोन वसाहतींची आवश्यकता असते.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "वळणांना किमान दोन वसाहतींची गरज असते.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "एका ॲम्फिथिएटरला किमान दोन वसाहतींची आवश्यकता असते.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कॅरोसेल या नकाशात बसत नाही; मोठा नकाशा, लहान घरे किंवा कमी वसाहती वापरा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "हे नागमोडी मार्ग या नकाशात बसत नाहीत; मोठा नकाशा, लहान पठार, अरुंद पायवाटा किंवा कमी वसाहती वापरा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "हे ॲम्फिथिएटर या नकाशात बसत नाही; मोठा नकाशा, कमी कड्या, अरुंद सज्जे किंवा कमी वसाहती वापरा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कोळ्याच्या जाळ्याला किमान एका वसाहतीची गरज असते.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सर्पिल",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "दवबिंदू",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "हब आकार",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "फाटलेले धागे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सॅग",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "धाग्याची रुंदी",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "रिंग अंतर",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "प्रत्येक वसाहतीचे स्पोक्स",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कोळ्याचे जाळे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "भरती-ओहोटीचे डबके",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सरोवरे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "भरती-ओहोटीच्या सपाट प्रदेशाला किमान एका वसाहतीची गरज असते.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सामाईक प्रदेश आणि सामुद्रधुनीमुळे मुख्य तळांसाठी खूपच कमी जागा उरते; त्याऐवजी मोठा नकाशा, कमी वसाहती, लहान सामाईक प्रदेश किंवा अरुंद सामुद्रधुनी वापरा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "गव्हाचे प्रमाण",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "लाकडाचे प्रमाण",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "दगडाचे प्रमाण",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "शैवालाचे प्रमाण",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "टेकड्यांवरील दगड",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "वाळूचे किनारे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "भूसेतू",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "वसाहतीची कुरणे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अतिरिक्त सुरुवातीची ठेव",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "खंदकाचे पूल",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "खडबडीत किनारपट्टी",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "वाळूचे रस्ते",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "बंद मार्गांमधील खजिना",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "फ्योर्ड बँक ठेवी",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "खंदक",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "फळबागेतील दगड",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "दोन्ही किनाऱ्यांवरील वसाहती",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "विंडिंग बेल्ट",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पेशीचा आकार",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "चौरस",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "षटकोन",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "वार्प",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      }
+    ]
+  },
+  "response_sha256": "c68b0e827d30e95a760f799fb8e2c96d90a126c9189d288422cd9ba1794a9d58"
+}

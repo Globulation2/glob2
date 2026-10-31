@@ -1,0 +1,418 @@
+{
+  "request": {
+    "project": "bradley-personal-20261027",
+    "model": "general/nmt",
+    "payload": {
+      "sourceLanguageCode": "en",
+      "targetLanguageCode": "mr",
+      "mimeType": "text/plain",
+      "contents": [
+        "ZXQPH0QXZ units can't access building",
+        "Finish signing in in your browser. The game continues by itself once you are done.",
+        "Separate Islands",
+        "Finish in your browser. The game continues by itself.",
+        "Welcome to the ZXQPH0QXZ primary tutorial! This tutorial will cover everything from building inns, exploring zones, and destroying enemies! There is no shortage of useful knowledge here!",
+        " (provisional)",
+        "ZXQPH0QXZ units can't access flag",
+        "Your browser did not open. Open the sign-in page to continue.",
+        "Crater Lakes",
+        "Music set",
+        "Now that you have mastered the basics, it's time to get used to other buildings such as Racetracks, Swimming Pools, and Schools.",
+        " (ZXQPH0QXZ)",
+        "ZXQPH0QXZ units can't access fruit",
+        "If the page asks, check that it shows ZXQPH0QXZ.",
+        "empty islands",
+        "Random each match",
+        "You have done well to get this far. Now let's move on to Warriors, Barracks, and Upgrades.",
+        " / ZXQPH0QXZ",
+        "ZXQPH0QXZ units too far from building",
+        "Code copied",
+        "island size",
+        "Playing: ZXQPH0QXZ",
+        "You are almost finished. Only flags and attacking remain. Then you'll know enough to try Custom Games and eventually play online against some of ZXQPH0QXZ's finest players.",
+        " Building credits",
+        "ZXQPH0QXZ units too far from flag",
+        "ZXQPH0QXZ has quit the game.",
+        "Islands",
+        "Could not load this music set.",
+        "Tutorial",
+        " COMPOSITION COMPLETE",
+        "ZXQPH0QXZ units too far from fruit",
+        "Start recording",
+        "Isles",
+        "Edge scrolling",
+        "Tutorial lessons",
+        " Edit & release settings",
+        "any explorer",
+        "Stop recording",
+        "Description",
+        "Edge scrolling in fullscreen",
+        "Restart lesson",
+        " Follow latest",
+        "Building Defaults",
+        "Finalizing recording…",
+        "Map Discovered",
+        "Edge scrolling in windowed mode",
+        "Restart this lesson from its prepared colony? Unsaved progress will be lost.",
+        " I can share these recordings and artwork under the selected licence.",
+        "Building Settings",
+        "ZXQPH0QXZ Level ZXQPH1QXZ",
+        "Name",
+        "Move the game and editor maps when the mouse reaches the window edge.",
+        "Lesson complete",
+        " Loading…",
+        "construction site",
+        "ZXQPH0QXZ units can't access needed materials",
+        "Map Script",
+        "Add Shortcut",
+        "Food supply practice",
+        " My releases and uploads",
+        "Shift + Drag = Box",
+        "ZXQPH0QXZ units not available",
+        "Map width",
+        "Editor Shortcuts",
+        "Practice expanding food supply: build another Inn, then assign suppliers and watch wheat arrive.",
+        " Pane widths",
+        "Ctrl + Drag = Line",
+        "ZXQPH0QXZ units too far from needed materials",
+        "Map height",
+        "The default radius of the flag",
+        "You built an Inn and supplied it with wheat. Try another lesson or return to the main menu.",
+        " Projects",
+        "Buildings",
+        "ZXQPH0QXZ units too low level",
+        "Rugged Archipelago",
+        "Game Shortcuts",
+        "Tutorial lessons could not be loaded.",
+        " Publish",
+        "Clears resources",
+        "ZXQPH0QXZ% uploaded"
+      ]
+    }
+  },
+  "response": {
+    "translations": [
+      {
+        "translatedText": "ZXQPH0QXZ युनिट्सना इमारतीत प्रवेश करता येत नाही",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तुमच्या ब्राउझरमध्ये साइन इन करण्याची प्रक्रिया पूर्ण करा. एकदा प्रक्रिया पूर्ण झाल्यावर खेळ आपोआप पुढे चालू राहतो.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "वेगळी बेटे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तुमच्या ब्राउझरमध्ये पूर्ण करा. खेळ आपोआप पुढे चालू राहतो.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ च्या मुख्य ट्युटोरियलमध्ये आपले स्वागत आहे! या ट्युटोरियलमध्ये धर्मशाळा बांधण्यापासून, झोन शोधण्यापर्यंत आणि शत्रूंना नष्ट करण्यापर्यंत सर्व काही शिकवले जाईल! येथे उपयुक्त ज्ञानाची अजिबात कमतरता नाही!",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "(तात्पुरते)",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ युनिट्स फ्लॅग ऍक्सेस करू शकत नाहीत",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तुमचा ब्राउझर उघडला नाही. पुढे जाण्यासाठी साइन-इन पृष्ठ उघडा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "क्रेटर लेक्स",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "संगीत सेट",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "आता तुम्ही मूलभूत गोष्टींमध्ये पारंगत झाला आहात, त्यामुळे रेसट्रॅक, जलतरण तलाव आणि शाळा यांसारख्या इतर इमारतींची सवय करून घेण्याची वेळ आली आहे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "(ZXQPH0QXZ)",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ युनिट्सना फळे मिळवता येत नाहीत",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "जर पेजवर विचारले तर, तिथे ZXQPH0QXZ दिसत आहे का ते तपासा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "रिकामी बेटे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "प्रत्येक सामना यादृच्छिक",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तुम्ही इथपर्यंत पोहोचून चांगली कामगिरी केली आहे. आता आपण वॉरियर्स, बॅरॅक्स आणि अपग्रेड्सकडे वळूया.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "/ ZXQPH0QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ युनिट्स इमारतीपासून खूप दूर आहेत",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कोड कॉपी केला",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "बेटाचा आकार",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "खेळत आहे: ZXQPH0QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तुमचं काम जवळजवळ पूर्ण झालं आहे. फक्त फ्लॅग्ज आणि अटॅकिंग बाकी आहे. त्यानंतर तुम्हाला कस्टम गेम्स खेळून पाहण्याइतकं ज्ञान मिळेल आणि अखेरीस तुम्ही ZXQPH0QXZ च्या काही सर्वोत्कृष्ट खेळाडूंविरुद्ध ऑनलाइन खेळू शकाल.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "क्रेडिट्स तयार करणे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ एकके ध्वजापासून खूप दूर आहेत",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ ने खेळ सोडला आहे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "बेटे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "हा संगीत संच लोड करता आला नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ट्यूटोरियल",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "रचना पूर्ण झाली",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ युनिट्स फळांपासून खूप दूर आहेत",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "रेकॉर्डिंग सुरू करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "बेटे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "एज स्क्रोलिंग",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "शिकवणीचे धडे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सेटिंग्ज संपादित करा आणि सोडा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कोणताही शोधक",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "रेकॉर्डिंग थांबवा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "वर्णन",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पूर्ण स्क्रीनमध्ये कडेने स्क्रोलिंग",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "धडा पुन्हा सुरू करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नवीनतम फॉलो करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "डीफॉल्ट तयार करणे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "रेकॉर्डिंग अंतिम करत आहे…",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नकाशा सापडला",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "विंडो मोडमध्ये एज स्क्रोलिंग",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "हा धडा त्याच्या तयार केलेल्या भागातून पुन्हा सुरू करायचा का? जतन न केलेली प्रगती गमावली जाईल.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "मी निवडलेल्या परवान्याअंतर्गत ही रेकॉर्डिंग आणि कलाकृती शेअर करू शकेन.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "बिल्डिंग सेटिंग्ज",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ पातळी ZXQPH1QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नाव",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "जेव्हा माउस विंडोच्या कडेला पोहोचेल, तेव्हा गेम आणि एडिटरचे मॅप्स हलवा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "धडा पूर्ण झाला.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "लोडिंग…",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "बांधकाम स्थळ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ युनिट्सना आवश्यक सामग्री मिळू शकत नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "मॅप स्क्रिप्ट",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "शॉर्टकट जोडा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अन्न पुरवठा पद्धती",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "माझे प्रकाशन आणि अपलोड",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "शिफ्ट + ड्रॅग = बॉक्स",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ युनिट्स उपलब्ध नाहीत",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नकाशाची रुंदी",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "संपादक शॉर्टकट",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अन्नपुरवठा वाढवण्याचा सराव करा: आणखी एक धर्मशाळा बांधा, मग पुरवठादार नेमा आणि गहू येताना बघा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पॅनेलची रुंदी",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "Ctrl + Drag = रेषा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ युनिट्स आवश्यक सामग्रीपासून खूप दूर आहेत",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नकाशाची उंची",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ध्वजाची डीफॉल्ट त्रिज्या",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तुम्ही एक धर्मशाळा बांधली आणि तिला गव्हाचा पुरवठा केला. दुसरा धडा वापरून पहा किंवा मुख्य मेन्यूवर परत जा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "प्रकल्प",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "इमारती",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ युनिट्स खूप कमी पातळीवर आहेत",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "खडबडीत द्वीपसमूह",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "गेम शॉर्टकट",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ट्यूटोरियलचे धडे लोड होऊ शकले नाहीत.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "प्रकाशित करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "संसाधने साफ करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ% अपलोड केले",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      }
+    ]
+  },
+  "response_sha256": "bae7b452b9d5ada17432e4381c5cba14a246e99d874058b107733878f9329eb8"
+}

@@ -1,0 +1,512 @@
+{
+  "id": "online-online-023",
+  "source_sha256": "0ac44b4cdfb03e688983d6e3fb1e484cca57589665bff19c5c65388e649b292a",
+  "surface": "online",
+  "domain": "online",
+  "context": "Account, multiplayer, upload and browser workflows. Preserve URLs, licences, paths, format tokens and product names.",
+  "entries": [
+    {
+      "id": "online:Upload still PNG or WebP frames up to 512 × 512. Team-color layers use the same dimensions as the base frame.",
+      "key": "Upload still PNG or WebP frames up to 512 × 512. Team-color layers use the same dimensions as the base frame.",
+      "source": "Upload still PNG or WebP frames up to 512 × 512. Team-color layers use the same dimensions as the base frame."
+    },
+    {
+      "id": "online:Upload the map first (POST /api/v1/uploads).",
+      "key": "Upload the map first (POST /api/v1/uploads).",
+      "source": "Upload the map first (POST /api/v1/uploads)."
+    },
+    {
+      "id": "online:Upload the match record (PUT …/record) first.",
+      "key": "Upload the match record (PUT …/record) first.",
+      "source": "Upload the match record (PUT …/record) first."
+    },
+    {
+      "id": "online:Upload the portable JSON exported from Settings → Map generators. {slot0}",
+      "key": "Upload the portable JSON exported from Settings → Map generators. {slot0}",
+      "source": "Upload the portable JSON exported from Settings → Map generators. {slot0}"
+    },
+    {
+      "id": "online:Upload version",
+      "key": "Upload version",
+      "source": "Upload version"
+    },
+    {
+      "id": "online:Uploaded",
+      "key": "Uploaded",
+      "source": "Uploaded"
+    },
+    {
+      "id": "online:Uploaded spritesheet; click a tile to select its frame",
+      "key": "Uploaded spritesheet; click a tile to select its frame",
+      "source": "Uploaded spritesheet; click a tile to select its frame"
+    },
+    {
+      "id": "online:Uploading",
+      "key": "Uploading",
+      "source": "Uploading"
+    },
+    {
+      "id": "online:Usage",
+      "key": "Usage",
+      "source": "Usage"
+    },
+    {
+      "id": "online:Usage measured",
+      "key": "Usage measured",
+      "source": "Usage measured"
+    },
+    {
+      "id": "online:Use Gravatar",
+      "key": "Use Gravatar",
+      "source": "Use Gravatar"
+    },
+    {
+      "id": "online:Use a PNG or WebP {p0} no larger than {p1} KiB.",
+      "key": "Use a PNG or WebP {p0} no larger than {p1} KiB.",
+      "source": "Use a PNG or WebP {p0} no larger than {p1} KiB."
+    },
+    {
+      "id": "online:Use a PNG or WebP {p0}.",
+      "key": "Use a PNG or WebP {p0}.",
+      "source": "Use a PNG or WebP {p0}."
+    },
+    {
+      "id": "online:Use a photo from your device, or the Gravatar associated with a linked email address. Your photo is public.",
+      "key": "Use a photo from your device, or the Gravatar associated with a linked email address. Your photo is public.",
+      "source": "Use a photo from your device, or the Gravatar associated with a linked email address. Your photo is public."
+    },
+    {
+      "id": "online:Use a valid, still 512 by 512 pixel 8-bit material map.",
+      "key": "Use a valid, still 512 by 512 pixel 8-bit material map.",
+      "source": "Use a valid, still 512 by 512 pixel 8-bit material map."
+    },
+    {
+      "id": "online:Use a valid, still 512 by 512 pixel image.",
+      "key": "Use a valid, still 512 by 512 pixel image.",
+      "source": "Use a valid, still 512 by 512 pixel image."
+    },
+    {
+      "id": "online:Use buildings in the game",
+      "key": "Use buildings in the game",
+      "source": "Use buildings in the game"
+    },
+    {
+      "id": "online:Use in a map",
+      "key": "Use in a map",
+      "source": "Use in a map"
+    },
+    {
+      "id": "online:Use in game",
+      "key": "Use in game",
+      "source": "Use in game"
+    },
+    {
+      "id": "online:Use initials",
+      "key": "Use initials",
+      "source": "Use initials"
+    },
+    {
+      "id": "online:Use reference",
+      "key": "Use reference",
+      "source": "Use reference"
+    },
+    {
+      "id": "online:Use this view",
+      "key": "Use this view",
+      "source": "Use this view"
+    },
+    {
+      "id": "online:Use {slot0} in gameSprite or miniSprite to select an uploaded sprite.",
+      "key": "Use {slot0} in gameSprite or miniSprite to select an uploaded sprite.",
+      "source": "Use {slot0} in gameSprite or miniSprite to select an uploaded sprite."
+    },
+    {
+      "id": "online:Used for your next match.",
+      "key": "Used for your next match.",
+      "source": "Used for your next match."
+    },
+    {
+      "id": "online:User",
+      "key": "User",
+      "source": "User"
+    },
+    {
+      "id": "online:Username",
+      "key": "Username",
+      "source": "Username"
+    },
+    {
+      "id": "online:Username and password",
+      "key": "Username and password",
+      "source": "Username and password"
+    },
+    {
+      "id": "online:Usernames are 3 to 32 characters long; this one has {p0}.",
+      "key": "Usernames are 3 to 32 characters long; this one has {p0}.",
+      "source": "Usernames are 3 to 32 characters long; this one has {p0}."
+    },
+    {
+      "id": "online:Usernames can only use letters, digits, dots, dashes and underscores (no spaces).",
+      "key": "Usernames can only use letters, digits, dots, dashes and underscores (no spaces).",
+      "source": "Usernames can only use letters, digits, dots, dashes and underscores (no spaces)."
+    },
+    {
+      "id": "online:V",
+      "key": "V",
+      "source": "V"
+    },
+    {
+      "id": "online:Valid",
+      "key": "Valid",
+      "source": "Valid"
+    },
+    {
+      "id": "online:Validate and preview",
+      "key": "Validate and preview",
+      "source": "Validate and preview"
+    },
+    {
+      "id": "online:Validate package",
+      "key": "Validate package",
+      "source": "Validate package"
+    },
+    {
+      "id": "online:Validate the audio",
+      "key": "Validate the audio",
+      "source": "Validate the audio"
+    },
+    {
+      "id": "online:Validated definitions are importable. Review gameplay on your own maps before relying on balance.",
+      "key": "Validated definitions are importable. Review gameplay on your own maps before relying on balance.",
+      "source": "Validated definitions are importable. Review gameplay on your own maps before relying on balance."
+    },
+    {
+      "id": "online:Validation did not pass",
+      "key": "Validation did not pass",
+      "source": "Validation did not pass"
+    },
+    {
+      "id": "online:Validation was interrupted. Your AI has not been published.",
+      "key": "Validation was interrupted. Your AI has not been published.",
+      "source": "Validation was interrupted. Your AI has not been published."
+    },
+    {
+      "id": "online:Value",
+      "key": "Value",
+      "source": "Value"
+    },
+    {
+      "id": "online:Variation",
+      "key": "Variation",
+      "source": "Variation"
+    },
+    {
+      "id": "online:Verification",
+      "key": "Verification",
+      "source": "Verification"
+    },
+    {
+      "id": "online:Verification ",
+      "key": "Verification ",
+      "source": "Verification "
+    },
+    {
+      "id": "online:Verification and connection details",
+      "key": "Verification and connection details",
+      "source": "Verification and connection details"
+    },
+    {
+      "id": "online:Verification failed",
+      "key": "Verification failed",
+      "source": "Verification failed"
+    },
+    {
+      "id": "online:Verified",
+      "key": "Verified",
+      "source": "Verified"
+    },
+    {
+      "id": "online:Version",
+      "key": "Version",
+      "source": "Version"
+    },
+    {
+      "id": "online:Version history",
+      "key": "Version history",
+      "source": "Version history"
+    },
+    {
+      "id": "online:Version label",
+      "key": "Version label",
+      "source": "Version label"
+    },
+    {
+      "id": "online:Version {slot0}",
+      "key": "Version {slot0}",
+      "source": "Version {slot0}"
+    },
+    {
+      "id": "online:Version {value0}",
+      "key": "Version {value0}",
+      "source": "Version {value0}"
+    },
+    {
+      "id": "online:Version {value0}{value1}",
+      "key": "Version {value0}{value1}",
+      "source": "Version {value0}{value1}"
+    },
+    {
+      "id": "online:Versions",
+      "key": "Versions",
+      "source": "Versions"
+    },
+    {
+      "id": "online:Versions of {slot0}",
+      "key": "Versions of {slot0}",
+      "source": "Versions of {slot0}"
+    },
+    {
+      "id": "online:Versions of {value0}",
+      "key": "Versions of {value0}",
+      "source": "Versions of {value0}"
+    },
+    {
+      "id": "online:View orientation",
+      "key": "View orientation",
+      "source": "View orientation"
+    },
+    {
+      "id": "online:View profile and games",
+      "key": "View profile and games",
+      "source": "View profile and games"
+    },
+    {
+      "id": "online:View reported paint",
+      "key": "View reported paint",
+      "source": "View reported paint"
+    },
+    {
+      "id": "online:View revision",
+      "key": "View revision",
+      "source": "View revision"
+    },
+    {
+      "id": "online:View {slot0}",
+      "key": "View {slot0}",
+      "source": "View {slot0}"
+    },
+    {
+      "id": "online:Viewing a saved revision. Restore it to make it the current draft.",
+      "key": "Viewing a saved revision. Restore it to make it the current draft.",
+      "source": "Viewing a saved revision. Restore it to make it the current draft."
+    },
+    {
+      "id": "online:Viewing {slot0}",
+      "key": "Viewing {slot0}",
+      "source": "Viewing {slot0}"
+    },
+    {
+      "id": "online:View…",
+      "key": "View…",
+      "source": "View…"
+    },
+    {
+      "id": "online:Visibility",
+      "key": "Visibility",
+      "source": "Visibility"
+    },
+    {
+      "id": "online:Volume",
+      "key": "Volume",
+      "source": "Volume"
+    },
+    {
+      "id": "online:V{slot0} · {slot1}",
+      "key": "V{slot0} · {slot1}",
+      "source": "V{slot0} · {slot1}"
+    },
+    {
+      "id": "online:Wait for a pending compatibility check.",
+      "key": "Wait for a pending compatibility check.",
+      "source": "Wait for a pending compatibility check."
+    },
+    {
+      "id": "online:Wait for a pending generator check.",
+      "key": "Wait for a pending generator check.",
+      "source": "Wait for a pending generator check."
+    },
+    {
+      "id": "online:Wait for the provider call to return before cancelling.",
+      "key": "Wait for the provider call to return before cancelling.",
+      "source": "Wait for the provider call to return before cancelling."
+    },
+    {
+      "id": "online:Waiting",
+      "key": "Waiting",
+      "source": "Waiting"
+    },
+    {
+      "id": "online:Waiting for service capacity. Your place is saved.",
+      "key": "Waiting for service capacity. Your place is saved.",
+      "source": "Waiting for service capacity. Your place is saved."
+    },
+    {
+      "id": "online:Waived",
+      "key": "Waived",
+      "source": "Waived"
+    },
+    {
+      "id": "online:Warning",
+      "key": "Warning",
+      "source": "Warning"
+    },
+    {
+      "id": "online:Warrior attack",
+      "key": "Warrior attack",
+      "source": "Warrior attack"
+    },
+    {
+      "id": "online:Warrior health",
+      "key": "Warrior health",
+      "source": "Warrior health"
+    },
+    {
+      "id": "online:Warriors",
+      "key": "Warriors",
+      "source": "Warriors"
+    },
+    {
+      "id": "online:Warrush",
+      "key": "Warrush",
+      "source": "Warrush"
+    },
+    {
+      "id": "online:Watch AI play",
+      "key": "Watch AI play",
+      "source": "Watch AI play"
+    },
+    {
+      "id": "online:Watch in browser",
+      "key": "Watch in browser",
+      "source": "Watch in browser"
+    },
+    {
+      "id": "online:Watch your AI against a built-in opponent on the fixed test map. The game runs on this computer and ends when you close it.",
+      "key": "Watch your AI against a built-in opponent on the fixed test map. The game runs on this computer and ends when you close it.",
+      "source": "Watch your AI against a built-in opponent on the fixed test map. The game runs on this computer and ends when you close it."
+    },
+    {
+      "id": "online:Water",
+      "key": "Water",
+      "source": "Water"
+    },
+    {
+      "id": "online:Waves",
+      "key": "Waves",
+      "source": "Waves"
+    },
+    {
+      "id": "online:Webhook mode mismatch.",
+      "key": "Webhook mode mismatch.",
+      "source": "Webhook mode mismatch."
+    },
+    {
+      "id": "online:Weight",
+      "key": "Weight",
+      "source": "Weight"
+    },
+    {
+      "id": "online:Welcome to the colony",
+      "key": "Welcome to the colony",
+      "source": "Welcome to the colony"
+    },
+    {
+      "id": "online:Welcome, {value0}",
+      "key": "Welcome, {value0}",
+      "source": "Welcome, {value0}"
+    },
+    {
+      "id": "online:What changed",
+      "key": "What changed",
+      "source": "What changed"
+    },
+    {
+      "id": "online:What will your world look like?",
+      "key": "What will your world look like?",
+      "source": "What will your world look like?"
+    },
+    {
+      "id": "online:What would you like to create?",
+      "key": "What would you like to create?",
+      "source": "What would you like to create?"
+    },
+    {
+      "id": "online:Whole model",
+      "key": "Whole model",
+      "source": "Whole model"
+    },
+    {
+      "id": "online:Why hide this map? (shown to its owner)",
+      "key": "Why hide this map? (shown to its owner)",
+      "source": "Why hide this map? (shown to its owner)"
+    },
+    {
+      "id": "online:Wide",
+      "key": "Wide",
+      "source": "Wide"
+    },
+    {
+      "id": "online:Width",
+      "key": "Width",
+      "source": "Width"
+    },
+    {
+      "id": "online:Win rate",
+      "key": "Win rate",
+      "source": "Win rate"
+    },
+    {
+      "id": "online:Win rate {slot0}",
+      "key": "Win rate {slot0}",
+      "source": "Win rate {slot0}"
+    },
+    {
+      "id": "online:Win rate, {slot0} day",
+      "key": "Win rate, {slot0} day",
+      "source": {
+        "one": "Win rate, {slot0} day",
+        "other": "Win rate, {slot0} days"
+      }
+    },
+    {
+      "id": "online:Win rate, {slot0} days",
+      "key": "Win rate, {slot0} days",
+      "source": "Win rate, {slot0} days"
+    },
+    {
+      "id": "online:Winner",
+      "key": "Winner",
+      "source": "Winner"
+    },
+    {
+      "id": "online:Withdraw from library",
+      "key": "Withdraw from library",
+      "source": "Withdraw from library"
+    },
+    {
+      "id": "online:Withdraw published family",
+      "key": "Withdraw published family",
+      "source": "Withdraw published family"
+    },
+    {
+      "id": "online:Withdraw release",
+      "key": "Withdraw release",
+      "source": "Withdraw release"
+    },
+    {
+      "id": "online:Withdrawn",
+      "key": "Withdrawn",
+      "source": "Withdrawn"
+    }
+  ]
+}

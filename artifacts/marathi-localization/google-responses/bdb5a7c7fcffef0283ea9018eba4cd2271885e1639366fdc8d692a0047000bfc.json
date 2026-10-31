@@ -1,0 +1,418 @@
+{
+  "request": {
+    "project": "bradley-personal-20261027",
+    "model": "general/nmt",
+    "payload": {
+      "sourceLanguageCode": "en",
+      "targetLanguageCode": "mr",
+      "mimeType": "text/plain",
+      "contents": [
+        "3 to 32 letters, digits, dots, dashes or underscores. Other players see it.",
+        "95%: ZXQPH0QXZ",
+        ": ",
+        ": create a room and invite your friends, or find a quick match.",
+        "; nothing to install.",
+        "A ZXQPH0QXZ colony: globs at work around their swarm",
+        "A ZXQPH0QXZ file with everything this server stores about your account: your profile, sign-in methods (without passwords or keys), matches, ratings, rooms and chat, matchmaking, maps and moderation records.",
+        "A SOUNDTRACK FOR YOUR COLONY",
+        "A colony takes shape",
+        "A dismissed report cannot hide content.",
+        "A generated room map needs ZXQPH0QXZ between 1 and 12.",
+        "A hand-made map has no generator.",
+        "A hidden set cannot publish new releases.",
+        "A map keeps at most ZXQPH0QXZ versions; delete old ones first.",
+        "A new library is taking shape. Share the first AI.",
+        "A new mind for your colony",
+        "A newer draft prevents undo. Use history to restore it.",
+        "A newer revision prevents undo. Restore a version in Changes.",
+        "A previous submission was not acknowledged. Sending it again safely retries the same request.",
+        "A recoverable active account is required for colony skins.",
+        "A registered account is required.",
+        "A release must retain its package ID.",
+        "A saved request is ready to send again safely.",
+        "A world of possibilities",
+        "A · VZXQPH0QXZ",
+        "AI",
+        "AI Building Studio",
+        "AI Building Studio is not enabled on this instance.",
+        "AI ZXQPH0QXZ source",
+        "AI Library",
+        "AI MAP STUDIO",
+        "AI MUSIC STUDIO",
+        "AI Map Studio",
+        "AI Map Studio is not enabled on this instance.",
+        "AI Map Studio is not enabled on this instance. Your saved projects remain available.",
+        "AI Music Studio",
+        "AI Music Studio is not enabled on this instance.",
+        "AI Music Studio is not enabled on this instance. Your saved projects remain available.",
+        "AI Studio",
+        "AI Terrain Studio",
+        "AI Terrain Studio is not enabled on this instance.",
+        "AI authoring resources",
+        "AI disclosure",
+        "AI generated map",
+        "AI library views",
+        "AI map versions are immutable. Create a revision in AI Map Studio or upload an edited copy as a new map.",
+        "AI opponent · ratings and games belong to this game version",
+        "AI ratings belong to a game version. ZXQPH0QXZ to see older versions.",
+        "AI tags",
+        "AI-generated",
+        "API ZXQPH0QXZ, toolkit ZXQPH1QXZ, suite ZXQPH2QXZ. These checks sample settings and do not certify balance.",
+        "Abandoned",
+        "About",
+        "About & help",
+        "Accepted",
+        "Account adjustment",
+        "Account already in use",
+        "Account changes",
+        "Account changes need review",
+        "Account draft saved",
+        "Account inactive.",
+        "Account is unavailable.",
+        "Acoustic · woodwinds, strings & folk",
+        "Across",
+        "Action",
+        "Active",
+        "Active accounts",
+        "Activity comparison table",
+        "Activity trends",
+        "Actor account ID",
+        "Actual game size · 1×",
+        "Add",
+        "Add a property override",
+        "Add a terrain or resource to begin. Built-in presets supply properties without copying their artwork into your set.",
+        "Add frames in order.",
+        "Add selected frame",
+        "Add stage",
+        "Add stock level",
+        "Add the base frame first.",
+        "Add ZXQPH0QXZ"
+      ]
+    }
+  },
+  "response": {
+    "translations": [
+      {
+        "translatedText": "३ ते ३२ अक्षरे, अंक, टिंब, डॅश किंवा अधोरेखन. हे इतर खेळाडूंना दिसते.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "९५%: ZXQPH0QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": ":",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "एक रूम तयार करा आणि तुमच्या मित्रांना आमंत्रित करा, किंवा पटकन मॅच शोधा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "काहीही स्थापित करण्याची आवश्यकता नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ वसाहत: त्यांच्या थव्याभोवती कार्यरत असलेले गोळे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ फाईलमध्ये तुमच्या खात्याबद्दल हा सर्व्हर संग्रहित करत असलेली सर्व माहिती असते: तुमचे प्रोफाइल, साइन-इन पद्धती (पासवर्ड किंवा की शिवाय), मॅचेस, रेटिंग्ज, रूम्स आणि चॅट, मॅचमेकिंग, मॅप्स आणि मॉडरेशन रेकॉर्ड्स.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तुमच्या वसाहतीसाठी एक पार्श्वसंगीत",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "एक वसाहत आकार घेते",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "बरखास्त केलेला अहवाल मजकूर लपवू शकत नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तयार केलेल्या रूम मॅपसाठी ZXQPH0QXZ हे 1 ते 12 च्या दरम्यान असणे आवश्यक आहे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "हस्तनिर्मित नकाशाला जनरेटर नसतो.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "लपवलेला संच नवीन आवृत्त्या प्रकाशित करू शकत नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "एका मॅपमध्ये जास्तीत जास्त ZXQPH0QXZ आवृत्त्या ठेवल्या जातात; आधी जुन्या आवृत्त्या हटवा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "एक नवीन ग्रंथालय आकार घेत आहे. पहिला एआय शेअर करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तुमच्या वसाहतीसाठी एक नवीन विचार",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नवीन ड्राफ्टमुळे पूर्ववत करण्याची क्रिया थांबते. ते परत मिळवण्यासाठी हिस्ट्रीचा वापर करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नवीन आवृत्तीमुळे पूर्ववत करण्याची क्रिया थांबते. 'बदल' मध्ये आवृत्ती पुनर्संचयित करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पूर्वी पाठवलेली विनंती स्वीकारली गेली नाही. ती पुन्हा पाठवल्यास, तीच विनंती सुरक्षितपणे पुन्हा केली जाते.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कॉलनी स्किन्ससाठी पुनर्प्राप्त करण्यायोग्य सक्रिय खाते आवश्यक आहे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नोंदणीकृत खाते आवश्यक आहे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "रिलीझने त्याचा पॅकेज आयडी कायम ठेवला पाहिजे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "जतन केलेली विनंती सुरक्षितपणे पुन्हा पाठवण्यासाठी तयार आहे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "शक्यतांचे जग",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ए · व्हीझेडएक्सक्यूपीएच०क्यूएक्सझेड",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "एआय",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "एआय बिल्डिंग स्टुडिओ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "या इन्स्टन्सवर एआय बिल्डिंग स्टुडिओ सक्षम केलेले नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "एआय झेडएक्सक्यूपीएच०क्यूएक्सझेड स्रोत",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "एआय लायब्ररी",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "एआय मॅप स्टुडिओ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "एआय म्युझिक स्टुडिओ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "एआय मॅप स्टुडिओ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "या इन्स्टन्सवर एआय मॅप स्टुडिओ सक्षम केलेले नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "या इन्स्टन्सवर एआय मॅप स्टुडिओ सक्षम केलेले नाही. तुमचे जतन केलेले प्रकल्प उपलब्ध राहतील.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "एआय म्युझिक स्टुडिओ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "या इन्स्टन्सवर एआय म्युझिक स्टुडिओ सक्षम केलेले नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "या इन्स्टन्सवर एआय म्युझिक स्टुडिओ सक्षम केलेले नाही. तुमचे जतन केलेले प्रकल्प उपलब्ध राहतील.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "एआय स्टुडिओ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "एआय टेरेन स्टुडिओ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "या इन्स्टन्सवर एआय टेरेन स्टुडिओ सक्षम केलेले नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "एआय निर्मिती संसाधने",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "एआय प्रकटीकरण",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "एआयने तयार केलेला नकाशा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "एआय लायब्ररी व्ह्यूज",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "एआय नकाशाच्या आवृत्त्या अपरिवर्तनीय असतात. एआय मॅप स्टुडिओमध्ये एक सुधारित आवृत्ती तयार करा किंवा संपादित केलेली प्रत नवीन नकाशा म्हणून अपलोड करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "एआय प्रतिस्पर्धी · रेटिंग आणि गेम्स या गेम आवृत्तीशी संबंधित आहेत",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "एआय रेटिंग्ज गेमच्या आवृत्तीशी संबंधित असतात. जुन्या आवृत्त्या पाहण्यासाठी ZXQPH0QXZ वापरा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "एआय टॅग",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "एआय-निर्मित",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "API ZXQPH0QXZ, टूलकिट ZXQPH1QXZ, सूट ZXQPH2QXZ. ह्या तपासण्या नमुना सेटिंग्ज तपासतात आणि शिल्लक प्रमाणित करत नाहीत.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सोडून दिलेले",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "बद्दल",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "माहिती आणि मदत",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "स्वीकृत",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "खाते समायोजन",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "खाते आधीच वापरात आहे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "खाते बदल",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "खात्यातील बदलांचे पुनरावलोकन करणे आवश्यक आहे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "खाते मसुदा जतन केला.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "खाते निष्क्रिय आहे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "खाते उपलब्ध नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अकॉस्टिक · वुडविंड्स, स्ट्रिंग्स आणि लोकसंगीत",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ओलांडून",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कृती",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सक्रिय",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सक्रिय खाती",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "क्रियाकलाप तुलना सारणी",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "क्रियाकलाप ट्रेंड",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अभिनेता खाते आयडी",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "खेळाचा वास्तविक आकार · 1×",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "जोडा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "प्रॉपर्टी ओव्हरराइड जोडा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सुरुवात करण्यासाठी एखादा भूभाग किंवा संसाधन जोडा. अंगभूत प्रीसेट्स त्यांचे आर्टवर्क तुमच्या सेटमध्ये कॉपी न करता गुणधर्म पुरवतात.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "फ्रेम्स क्रमाने जोडा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "निवडलेली फ्रेम जोडा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "स्टेज जोडा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "स्टॉक पातळी जोडा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सर्वप्रथम पायाची चौकट जोडा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ जोडा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      }
+    ]
+  },
+  "response_sha256": "b8e13610c04b00e8cd0a9cb0523a4d79df7f53b6ac82fd2bca34cb41f604b7a1"
+}

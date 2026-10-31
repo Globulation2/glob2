@@ -1,0 +1,854 @@
+{
+  "reviewer": "/root/draft_tool",
+  "role": "independent adversarial Marathi pilot reviewer",
+  "source_sha256": "0ac44b4cdfb03e688983d6e3fb1e484cca57589665bff19c5c65388e649b292a",
+  "catalog_sha256": {
+    "native": "bac15fae5d61cf48e6bbcd28a506c9d6d8be83ae73d29c7ac33879f290539320",
+    "online": "79e058f94dc446e39be3ce983192070524f8b5b0476daadb077eac0cd5d0d793"
+  },
+  "reviewed_keys": [
+    "native:[%0 has left the game]",
+    "native:[%0 level %1]",
+    "native:[%0 units can't access building]",
+    "native:[%0 units can't access flag]",
+    "native:[%0 units can't access fruit]",
+    "native:[%0 units can't access resource]",
+    "native:[%0 units not available]",
+    "native:[%0 units too far from building]",
+    "native:[%0 units too far from flag]",
+    "native:[%0 units too far from fruit]",
+    "native:[%0 units too far from resource]",
+    "native:[%0 units too low level]",
+    "native:[%0% Uploaded]",
+    "native:[%0's team unit got converted to your team]",
+    "native:[abreaviation explanation A]",
+    "native:[abreaviation explanation C]",
+    "native:[abreaviation explanation fV]",
+    "native:[add shortcut]",
+    "native:[any explorer]",
+    "native:[Building Defaults]",
+    "native:[building settings]",
+    "native:[building site]",
+    "native:[Building Tool Box Explanation]",
+    "native:[Building Tool Line Explanation]",
+    "native:[Buildings]",
+    "native:[clearingflag explanation]",
+    "native:[clearingflag]",
+    "native:[concrete islands terrain]",
+    "native:[crater lakes terrain]",
+    "native:[destroy building]",
+    "native:[editor shortcuts]",
+    "native:[explorationflag explanation]",
+    "native:[explorationflag]",
+    "native:[extra islands]",
+    "native:[flag settings explanation]",
+    "native:[game shortcuts]",
+    "native:[music set]",
+    "native:[random music set]",
+    "native:[playing music set %0]",
+    "native:[music set failed]",
+    "native:[islands size]",
+    "native:[islands terrain]",
+    "native:[isles terrain]",
+    "native:[keyboard settings]",
+    "native:[map description]",
+    "native:[Map Discovered]",
+    "native:[map name]",
+    "native:[map script]",
+    "native:[map size x]",
+    "native:[map size y]",
+    "native:[Music volume]",
+    "native:[old islands terrain]",
+    "native:[old random terrain]",
+    "native:[remove shortcut]",
+    "native:[restore default shortcuts]",
+    "native:[Reroll terrain look]",
+    "native:[river diameter]",
+    "native:[river terrain]",
+    "native:[tutorial]",
+    "native:[tutorial text 1]",
+    "native:[tutorial text 2]",
+    "native:[tutorial text 3]",
+    "native:[tutorial text 4]",
+    "native:[start recording]",
+    "native:[stop recording]",
+    "native:[finalizing recording]",
+    "native:[settings Edge scrolling]",
+    "native:[settings Edge scrolling in fullscreen]",
+    "native:[settings Edge scrolling in windowed mode]",
+    "native:[settings Move the game and editor maps when the mouse reaches the window edge.]",
+    "native:[hub finish in browser, game continues]",
+    "native:[hub browser did not open]",
+    "native:[hub compare code %0]",
+    "native:[hub code copied]",
+    "native:[settings Finish in your browser. The game continues by itself.]",
+    "native:[tutorial lessons]",
+    "native:[tutorial restart]",
+    "native:[tutorial restart body]",
+    "native:[tutorial complete]",
+    "native:[tutorial food title]",
+    "native:[tutorial food briefing]",
+    "native:[tutorial food complete]",
+    "native:[tutorial unavailable]",
+    "online: (provisional)",
+    "online: ({slot0})",
+    "online: / {slot0}",
+    "online: Building credits",
+    "online: COMPOSITION COMPLETE",
+    "online: Edit & release settings",
+    "online: Follow latest",
+    "online: I can share these recordings and artwork under the selected licence.",
+    "online: Loading…",
+    "online: My releases and uploads",
+    "online: Pane widths",
+    "online: Projects",
+    "online: Publish",
+    "online: Reference images",
+    "online: Review & publish",
+    "online: Review release settings",
+    "online: Send"
+  ],
+  "reviewed_entries": [
+    {
+      "id": "native:[%0 has left the game]",
+      "source": "%0 has quit the game.",
+      "target": "%0 ने खेळ सोडला आहे."
+    },
+    {
+      "id": "native:[%0 level %1]",
+      "source": "%0 Level %1",
+      "target": "%0 पातळी %1"
+    },
+    {
+      "id": "native:[%0 units can't access building]",
+      "source": "%0 units can't access building",
+      "target": "%0 युनिट्सना इमारतीत प्रवेश करता येत नाही"
+    },
+    {
+      "id": "native:[%0 units can't access flag]",
+      "source": "%0 units can't access flag",
+      "target": "%0 युनिट्स फ्लॅग ऍक्सेस करू शकत नाहीत"
+    },
+    {
+      "id": "native:[%0 units can't access fruit]",
+      "source": "%0 units can't access fruit",
+      "target": "%0 युनिट्सना फळे मिळवता येत नाहीत"
+    },
+    {
+      "id": "native:[%0 units can't access resource]",
+      "source": "%0 units can't access needed materials",
+      "target": "%0 युनिट्सना आवश्यक सामग्री मिळू शकत नाही."
+    },
+    {
+      "id": "native:[%0 units not available]",
+      "source": "%0 units not available",
+      "target": "%0 युनिट्स उपलब्ध नाहीत"
+    },
+    {
+      "id": "native:[%0 units too far from building]",
+      "source": "%0 units too far from building",
+      "target": "%0 युनिट्स इमारतीपासून खूप दूर आहेत"
+    },
+    {
+      "id": "native:[%0 units too far from flag]",
+      "source": "%0 units too far from flag",
+      "target": "%0 एकके ध्वजापासून खूप दूर आहेत"
+    },
+    {
+      "id": "native:[%0 units too far from fruit]",
+      "source": "%0 units too far from fruit",
+      "target": "%0 युनिट्स फळांपासून खूप दूर आहेत"
+    },
+    {
+      "id": "native:[%0 units too far from resource]",
+      "source": "%0 units too far from needed materials",
+      "target": "%0 युनिट्स आवश्यक सामग्रीपासून खूप दूर आहेत"
+    },
+    {
+      "id": "native:[%0 units too low level]",
+      "source": "%0 units too low level",
+      "target": "%0 युनिट्स खूप कमी पातळीवर आहेत"
+    },
+    {
+      "id": "native:[%0% Uploaded]",
+      "source": "%0% uploaded",
+      "target": "%0% अपलोड केले"
+    },
+    {
+      "id": "native:[%0's team unit got converted to your team]",
+      "source": "A unit from %0's team has joined your team",
+      "target": "%0 यांच्या टीममधील एक युनिट तुमच्या टीममध्ये सामील झाले आहे."
+    },
+    {
+      "id": "native:[abreaviation explanation A]",
+      "source": "A: Allies",
+      "target": "अ: सहयोगी"
+    },
+    {
+      "id": "native:[abreaviation explanation C]",
+      "source": "C: Send chat messages to",
+      "target": "C: चॅट संदेश पाठवा"
+    },
+    {
+      "id": "native:[abreaviation explanation fV]",
+      "source": "fV: Show vision for Inn buildings (to steal units)",
+      "target": "fV: धर्मशाळेच्या इमारतींसाठी दृष्टी दाखवा (युनिट्स चोरण्यासाठी)"
+    },
+    {
+      "id": "native:[add shortcut]",
+      "source": "Add Shortcut",
+      "target": "शॉर्टकट जोडा"
+    },
+    {
+      "id": "native:[any explorer]",
+      "source": "any explorer",
+      "target": "कोणताही शोधक"
+    },
+    {
+      "id": "native:[Building Defaults]",
+      "source": "Building Defaults",
+      "target": "डीफॉल्ट तयार करणे"
+    },
+    {
+      "id": "native:[building settings]",
+      "source": "Building Settings",
+      "target": "बिल्डिंग सेटिंग्ज"
+    },
+    {
+      "id": "native:[building site]",
+      "source": "construction site",
+      "target": "बांधकाम स्थळ"
+    },
+    {
+      "id": "native:[Building Tool Box Explanation]",
+      "source": "Shift + Drag = Box",
+      "target": "शिफ्ट + ड्रॅग = बॉक्स"
+    },
+    {
+      "id": "native:[Building Tool Line Explanation]",
+      "source": "Ctrl + Drag = Line",
+      "target": "Ctrl + Drag = रेषा"
+    },
+    {
+      "id": "native:[Buildings]",
+      "source": "Buildings",
+      "target": "इमारती"
+    },
+    {
+      "id": "native:[clearingflag explanation]",
+      "source": "Clears resources",
+      "target": "संसाधने साफ करा"
+    },
+    {
+      "id": "native:[clearingflag]",
+      "source": "Clearing Flag",
+      "target": "क्लिअरिंग फ्लॅग"
+    },
+    {
+      "id": "native:[concrete islands terrain]",
+      "source": "Separate Islands",
+      "target": "वेगळी बेटे"
+    },
+    {
+      "id": "native:[crater lakes terrain]",
+      "source": "Crater Lakes",
+      "target": "क्रेटर लेक्स"
+    },
+    {
+      "id": "native:[destroy building]",
+      "source": "Destroy Selected Building",
+      "target": "निवडलेली इमारत नष्ट करा"
+    },
+    {
+      "id": "native:[editor shortcuts]",
+      "source": "Editor Shortcuts",
+      "target": "संपादक शॉर्टकट"
+    },
+    {
+      "id": "native:[explorationflag explanation]",
+      "source": "Attracts explorers",
+      "target": "संशोधकांना आकर्षित करते"
+    },
+    {
+      "id": "native:[explorationflag]",
+      "source": "Exploration Flag",
+      "target": "शोध ध्वज"
+    },
+    {
+      "id": "native:[extra islands]",
+      "source": "empty islands",
+      "target": "रिकामी बेटे"
+    },
+    {
+      "id": "native:[flag settings explanation]",
+      "source": "The default radius of the flag",
+      "target": "ध्वजाची डीफॉल्ट त्रिज्या"
+    },
+    {
+      "id": "native:[game shortcuts]",
+      "source": "Game Shortcuts",
+      "target": "गेम शॉर्टकट"
+    },
+    {
+      "id": "native:[music set]",
+      "source": "Music set",
+      "target": "संगीत सेट"
+    },
+    {
+      "id": "native:[random music set]",
+      "source": "Random each match",
+      "target": "प्रत्येक सामना यादृच्छिक"
+    },
+    {
+      "id": "native:[playing music set %0]",
+      "source": "Playing: %0",
+      "target": "खेळत आहे: %0"
+    },
+    {
+      "id": "native:[music set failed]",
+      "source": "Could not load this music set.",
+      "target": "हा संगीत संच लोड करता आला नाही."
+    },
+    {
+      "id": "native:[islands size]",
+      "source": "island size",
+      "target": "बेटाचा आकार"
+    },
+    {
+      "id": "native:[islands terrain]",
+      "source": "Islands",
+      "target": "बेटे"
+    },
+    {
+      "id": "native:[isles terrain]",
+      "source": "Isles",
+      "target": "बेटे"
+    },
+    {
+      "id": "native:[keyboard settings]",
+      "source": "Keyboard Settings",
+      "target": "कीबोर्ड सेटिंग्ज"
+    },
+    {
+      "id": "native:[map description]",
+      "source": "Description",
+      "target": "वर्णन"
+    },
+    {
+      "id": "native:[Map Discovered]",
+      "source": "Map Discovered",
+      "target": "नकाशा सापडला"
+    },
+    {
+      "id": "native:[map name]",
+      "source": "Name",
+      "target": "नाव"
+    },
+    {
+      "id": "native:[map script]",
+      "source": "Map Script",
+      "target": "मॅप स्क्रिप्ट"
+    },
+    {
+      "id": "native:[map size x]",
+      "source": "Map width",
+      "target": "नकाशाची रुंदी"
+    },
+    {
+      "id": "native:[map size y]",
+      "source": "Map height",
+      "target": "नकाशाची उंची"
+    },
+    {
+      "id": "native:[Music volume]",
+      "source": "Volume (music)",
+      "target": "आवाज (संगीत)"
+    },
+    {
+      "id": "native:[old islands terrain]",
+      "source": "Rugged Archipelago",
+      "target": "खडबडीत द्वीपसमूह"
+    },
+    {
+      "id": "native:[old random terrain]",
+      "source": "Shattered Coast",
+      "target": "शॅटर्ड कोस्ट"
+    },
+    {
+      "id": "native:[remove shortcut]",
+      "source": "Remove Shortcut",
+      "target": "शॉर्टकट काढा"
+    },
+    {
+      "id": "native:[restore default shortcuts]",
+      "source": "Restore Default Keyboard Shortcuts",
+      "target": "डीफॉल्ट कीबोर्ड शॉर्टकट पुनर्संचयित करा"
+    },
+    {
+      "id": "native:[Reroll terrain look]",
+      "source": "Reroll terrain look",
+      "target": "भूभाग पुन्हा रोल करा"
+    },
+    {
+      "id": "native:[river diameter]",
+      "source": "width of river",
+      "target": "नदीची रुंदी"
+    },
+    {
+      "id": "native:[river terrain]",
+      "source": "River",
+      "target": "नदी"
+    },
+    {
+      "id": "native:[tutorial]",
+      "source": "Tutorial",
+      "target": "ट्यूटोरियल"
+    },
+    {
+      "id": "native:[tutorial text 1]",
+      "source": "Welcome to the Globulation 2 primary tutorial! This tutorial will cover everything from building inns, exploring zones, and destroying enemies! There is no shortage of useful knowledge here!",
+      "target": "Globulation 2 च्या मुख्य ट्युटोरियलमध्ये आपले स्वागत आहे! या ट्युटोरियलमध्ये धर्मशाळा बांधण्यापासून, झोन शोधण्यापर्यंत आणि शत्रूंना नष्ट करण्यापर्यंत सर्व काही शिकवले जाईल! येथे उपयुक्त ज्ञानाची अजिबात कमतरता नाही!"
+    },
+    {
+      "id": "native:[tutorial text 2]",
+      "source": "Now that you have mastered the basics, it's time to get used to other buildings such as Racetracks, Swimming Pools, and Schools.",
+      "target": "आता तुम्ही मूलभूत गोष्टींमध्ये पारंगत झाला आहात, त्यामुळे रेसट्रॅक, जलतरण तलाव आणि शाळा यांसारख्या इतर इमारतींची सवय करून घेण्याची वेळ आली आहे."
+    },
+    {
+      "id": "native:[tutorial text 3]",
+      "source": "You have done well to get this far. Now let's move on to Warriors, Barracks, and Upgrades.",
+      "target": "तुम्ही इथपर्यंत पोहोचून चांगली कामगिरी केली आहे. आता आपण वॉरियर्स, बॅरॅक्स आणि अपग्रेड्सकडे वळूया."
+    },
+    {
+      "id": "native:[tutorial text 4]",
+      "source": "You are almost finished. Only flags and attacking remain. Then you'll know enough to try Custom Games and eventually play online against some of Globulation 2's finest players.",
+      "target": "तुमचं काम जवळजवळ पूर्ण झालं आहे. फक्त फ्लॅग्ज आणि अटॅकिंग बाकी आहे. त्यानंतर तुम्हाला कस्टम गेम्स खेळून पाहण्याइतकं ज्ञान मिळेल आणि अखेरीस तुम्ही Globulation 2 च्या काही सर्वोत्कृष्ट खेळाडूंविरुद्ध ऑनलाइन खेळू शकाल."
+    },
+    {
+      "id": "native:[start recording]",
+      "source": "Start recording",
+      "target": "रेकॉर्डिंग सुरू करा"
+    },
+    {
+      "id": "native:[stop recording]",
+      "source": "Stop recording",
+      "target": "रेकॉर्डिंग थांबवा"
+    },
+    {
+      "id": "native:[finalizing recording]",
+      "source": "Finalizing recording…",
+      "target": "रेकॉर्डिंग अंतिम करत आहे…"
+    },
+    {
+      "id": "native:[settings Edge scrolling]",
+      "source": "Edge scrolling",
+      "target": "एज स्क्रोलिंग"
+    },
+    {
+      "id": "native:[settings Edge scrolling in fullscreen]",
+      "source": "Edge scrolling in fullscreen",
+      "target": "पूर्ण स्क्रीनमध्ये कडेने स्क्रोलिंग"
+    },
+    {
+      "id": "native:[settings Edge scrolling in windowed mode]",
+      "source": "Edge scrolling in windowed mode",
+      "target": "विंडो मोडमध्ये एज स्क्रोलिंग"
+    },
+    {
+      "id": "native:[settings Move the game and editor maps when the mouse reaches the window edge.]",
+      "source": "Move the game and editor maps when the mouse reaches the window edge.",
+      "target": "जेव्हा माउस विंडोच्या कडेला पोहोचेल, तेव्हा गेम आणि एडिटरचे मॅप्स हलवा."
+    },
+    {
+      "id": "native:[hub finish in browser, game continues]",
+      "source": "Finish signing in in your browser. The game continues by itself once you are done.",
+      "target": "तुमच्या ब्राउझरमध्ये साइन इन करण्याची प्रक्रिया पूर्ण करा. एकदा प्रक्रिया पूर्ण झाल्यावर खेळ आपोआप पुढे चालू राहतो."
+    },
+    {
+      "id": "native:[hub browser did not open]",
+      "source": "Your browser did not open. Open the sign-in page to continue.",
+      "target": "तुमचा ब्राउझर उघडला नाही. पुढे जाण्यासाठी साइन-इन पृष्ठ उघडा."
+    },
+    {
+      "id": "native:[hub compare code %0]",
+      "source": "If the page asks, check that it shows %0.",
+      "target": "जर पेजवर विचारले तर, तिथे %0 दिसत आहे का ते तपासा."
+    },
+    {
+      "id": "native:[hub code copied]",
+      "source": "Code copied",
+      "target": "कोड कॉपी केला"
+    },
+    {
+      "id": "native:[settings Finish in your browser. The game continues by itself.]",
+      "source": "Finish in your browser. The game continues by itself.",
+      "target": "तुमच्या ब्राउझरमध्ये पूर्ण करा. खेळ आपोआप पुढे चालू राहतो."
+    },
+    {
+      "id": "native:[tutorial lessons]",
+      "source": "Tutorial lessons",
+      "target": "शिकवणीचे धडे"
+    },
+    {
+      "id": "native:[tutorial restart]",
+      "source": "Restart lesson",
+      "target": "धडा पुन्हा सुरू करा"
+    },
+    {
+      "id": "native:[tutorial restart body]",
+      "source": "Restart this lesson from its prepared colony? Unsaved progress will be lost.",
+      "target": "हा धडा त्याच्या तयार केलेल्या भागातून पुन्हा सुरू करायचा का? जतन न केलेली प्रगती गमावली जाईल."
+    },
+    {
+      "id": "native:[tutorial complete]",
+      "source": "Lesson complete",
+      "target": "धडा पूर्ण झाला."
+    },
+    {
+      "id": "native:[tutorial food title]",
+      "source": "Food supply practice",
+      "target": "अन्न पुरवठा पद्धती"
+    },
+    {
+      "id": "native:[tutorial food briefing]",
+      "source": "Practice expanding food supply: build another Inn, then assign suppliers and watch wheat arrive.",
+      "target": "अन्नपुरवठा वाढवण्याचा सराव करा: आणखी एक धर्मशाळा बांधा, मग पुरवठादार नेमा आणि गहू येताना बघा."
+    },
+    {
+      "id": "native:[tutorial food complete]",
+      "source": "You built an Inn and supplied it with wheat. Try another lesson or return to the main menu.",
+      "target": "तुम्ही एक धर्मशाळा बांधली आणि तिला गव्हाचा पुरवठा केला. दुसरा धडा वापरून पहा किंवा मुख्य मेन्यूवर परत जा."
+    },
+    {
+      "id": "native:[tutorial unavailable]",
+      "source": "Tutorial lessons could not be loaded.",
+      "target": "ट्यूटोरियलचे धडे लोड होऊ शकले नाहीत."
+    },
+    {
+      "id": "online: (provisional)",
+      "source": " (provisional)",
+      "target": " (तात्पुरते)"
+    },
+    {
+      "id": "online: ({slot0})",
+      "source": " ({slot0})",
+      "target": " ({slot0})"
+    },
+    {
+      "id": "online: / {slot0}",
+      "source": " / {slot0}",
+      "target": " / {slot0}"
+    },
+    {
+      "id": "online: Building credits",
+      "source": " Building credits",
+      "target": " क्रेडिट्स तयार करणे"
+    },
+    {
+      "id": "online: COMPOSITION COMPLETE",
+      "source": " COMPOSITION COMPLETE",
+      "target": " रचना पूर्ण झाली"
+    },
+    {
+      "id": "online: Edit & release settings",
+      "source": " Edit & release settings",
+      "target": " सेटिंग्ज संपादित करा आणि सोडा"
+    },
+    {
+      "id": "online: Follow latest",
+      "source": " Follow latest",
+      "target": " नवीनतम फॉलो करा"
+    },
+    {
+      "id": "online: I can share these recordings and artwork under the selected licence.",
+      "source": " I can share these recordings and artwork under the selected licence.",
+      "target": " मी निवडलेल्या परवान्याअंतर्गत ही रेकॉर्डिंग आणि कलाकृती शेअर करू शकेन."
+    },
+    {
+      "id": "online: Loading…",
+      "source": " Loading…",
+      "target": " लोडिंग…"
+    },
+    {
+      "id": "online: My releases and uploads",
+      "source": " My releases and uploads",
+      "target": " माझे प्रकाशन आणि अपलोड"
+    },
+    {
+      "id": "online: Pane widths",
+      "source": " Pane widths",
+      "target": " पॅनेलची रुंदी"
+    },
+    {
+      "id": "online: Projects",
+      "source": " Projects",
+      "target": " प्रकल्प"
+    },
+    {
+      "id": "online: Publish",
+      "source": " Publish",
+      "target": " प्रकाशित करा"
+    },
+    {
+      "id": "online: Reference images",
+      "source": " Reference images",
+      "target": " संदर्भ प्रतिमा"
+    },
+    {
+      "id": "online: Review & publish",
+      "source": " Review & publish",
+      "target": " पुनरावलोकन करा आणि प्रकाशित करा"
+    },
+    {
+      "id": "online: Review release settings",
+      "source": " Review release settings",
+      "target": " रिलीझ सेटिंग्जचे पुनरावलोकन करा"
+    },
+    {
+      "id": "online: Send",
+      "source": " Send",
+      "target": " पाठवा"
+    }
+  ],
+  "findings": [
+    {
+      "key": "native:[Building Defaults]",
+      "severity": "major",
+      "state": "open",
+      "reason": "Building is interpreted as the verb creating, rather than the building entity.",
+      "suggestion": "इमारतींच्या पूर्वनिर्धारित सेटिंग्ज"
+    },
+    {
+      "key": "native:[abreaviation explanation A]",
+      "severity": "major",
+      "state": "open",
+      "reason": "The Latin A used in the legend is changed to Devanagari अ; breaks correspondence to the displayed control.",
+      "suggestion": "A: मित्रपक्ष"
+    },
+    {
+      "key": "native:[tutorial restart body]",
+      "severity": "major",
+      "state": "open",
+      "reason": "Prepared colony is changed to prepared area/part (भाग), losing the reset state meaning.",
+      "suggestion": "हा धडा त्याच्या आधीच तयार केलेल्या वसाहतीपासून पुन्हा सुरू करायचा? जतन न केलेली प्रगती गमावली जाईल."
+    },
+    {
+      "key": "native:[tutorial food title]",
+      "severity": "major",
+      "state": "open",
+      "reason": "Practice as an activity becomes methods (पद्धती), not an exercise.",
+      "suggestion": "अन्नपुरवठ्याचा सराव"
+    },
+    {
+      "key": "native:[playing music set %0]",
+      "severity": "major",
+      "state": "open",
+      "reason": "Playing audio is translated as playing a game (खेळत आहे).",
+      "suggestion": "वाजत आहे: %0"
+    },
+    {
+      "key": "native:[settings Move the game and editor maps when the mouse reaches the window edge.]",
+      "severity": "major",
+      "state": "open",
+      "reason": "Explanatory setting text reads as an instruction to move maps manually; this describes automatic edge scrolling.",
+      "suggestion": "माउस खिडकीच्या कडेला पोहोचल्यावर खेळातील आणि संपादकातील नकाशे सरकतात."
+    },
+    {
+      "key": "native:[Map Discovered]",
+      "severity": "major",
+      "state": "open",
+      "reason": "Map found/discovered sounds like acquiring a map; this custom-game toggle reveals the terrain.",
+      "suggestion": "नकाशा उघड केलेला"
+    },
+    {
+      "key": "online: Building credits",
+      "severity": "major",
+      "state": "open",
+      "reason": "Building is interpreted as the verb creating rather than the Building Studio credit type.",
+      "suggestion": " इमारत क्रेडिट"
+    },
+    {
+      "key": "online: Edit & release settings",
+      "severity": "major",
+      "state": "open",
+      "reason": "Release is translated as let go/leave (सोडा) rather than publication configuration.",
+      "suggestion": " संपादन आणि प्रकाशनाच्या सेटिंग्ज"
+    },
+    {
+      "key": "online: I can share these recordings and artwork under the selected licence.",
+      "severity": "major",
+      "state": "open",
+      "reason": "Rights attestation becomes future ability (शेअर करू शकेन); ensure the chosen wording clearly affirms permission to license.",
+      "suggestion": "निवडलेल्या परवान्याअंतर्गत ही ध्वनिमुद्रणे आणि कलाकृती सामायिक करण्याचा मला अधिकार आहे."
+    },
+    {
+      "key": "native:[%0 units can't access flag]",
+      "severity": "minor",
+      "state": "open",
+      "reason": "Inconsistent units/flag labels and excessive English verb loan ऍक्सेस; access is path reachability.",
+      "suggestion": "%0 युनिट ध्वजापर्यंत पोहोचू शकत नाहीत"
+    },
+    {
+      "key": "native:[%0 units can't access building]",
+      "severity": "minor",
+      "state": "open",
+      "reason": "Entering the building may suggest an entry permission restriction rather than path reachability.",
+      "suggestion": "%0 युनिट इमारतीपर्यंत पोहोचू शकत नाहीत"
+    },
+    {
+      "key": "native:[%0 units too far from flag]",
+      "severity": "minor",
+      "state": "open",
+      "reason": "Unit uses एकके here and युनिट्स elsewhere; choose one player-facing label.",
+      "suggestion": "%0 युनिट ध्वजापासून खूप दूर आहेत"
+    },
+    {
+      "key": "native:[explorationflag explanation]",
+      "severity": "minor",
+      "state": "open",
+      "reason": "Explorer changes from शोधक to संशोधक (researcher); keep the scouting role consistent.",
+      "suggestion": "शोधकांना आकर्षित करतो"
+    },
+    {
+      "key": "native:[clearingflag explanation]",
+      "severity": "minor",
+      "state": "open",
+      "reason": "Description changes into an imperative (clear resources), unlike the source description of what the flag does.",
+      "suggestion": "संसाधने हटवतो"
+    },
+    {
+      "key": "native:[clearingflag]",
+      "severity": "minor",
+      "state": "open",
+      "reason": "Core gameplay object left as English transliteration.",
+      "suggestion": "साफसफाईचा ध्वज"
+    },
+    {
+      "key": "native:[tutorial text 3]",
+      "severity": "minor",
+      "state": "open",
+      "reason": "All three core gameplay concepts left as English transliterations.",
+      "suggestion": "तुम्ही इथवर चांगली प्रगती केली आहे. आता योद्धे, छावणी आणि सुधारणांकडे वळूया."
+    },
+    {
+      "key": "native:[tutorial text 4]",
+      "severity": "minor",
+      "state": "open",
+      "reason": "Inconsistent respectful register switches तुम्ही→तुमचं and leaves flag/attack terms in English.",
+      "suggestion": "तुमचा धडा जवळजवळ पूर्ण झाला आहे. आता फक्त ध्वज आणि हल्ले शिकायचे आहेत. त्यानंतर तुम्हाला सानुकूल खेळ खेळून पाहता येतील आणि पुढे Globulation 2 च्या अनुभवी खेळाडूंविरुद्ध ऑनलाइन खेळता येईल."
+    },
+    {
+      "key": "native:[tutorial text 1]",
+      "severity": "minor",
+      "state": "open",
+      "reason": "Inn gloss धर्मशाळा implies a religious rest house; food-serving function favors खानावळ. ट्युटोरियल spelling inconsistent with ट्यूटोरियल.",
+      "suggestion": "Use खानावळ for Inn and शिकवणी for tutorial consistently after glossary decision."
+    },
+    {
+      "key": "native:[tutorial food briefing]",
+      "severity": "minor",
+      "state": "open",
+      "reason": "Inn terminology requires consistency and role suppliers must mean assigned resource-carrying workers.",
+      "suggestion": "अन्नपुरवठा वाढवण्याचा सराव करा: आणखी एक खानावळ बांधा, मग पुरवठ्यासाठी कामगार नेमा आणि गहू पोहोचताना पाहा."
+    },
+    {
+      "key": "native:[random music set]",
+      "severity": "minor",
+      "state": "open",
+      "reason": "Word order lacks the per-match selection meaning.",
+      "suggestion": "प्रत्येक सामन्यात यादृच्छिक"
+    },
+    {
+      "key": "native:[Reroll terrain look]",
+      "severity": "minor",
+      "state": "open",
+      "reason": "Literal reroll (पुन्हा रोल करा) does not convey randomizing appearance.",
+      "suggestion": "भूभागाचे रूप यादृच्छिक बदला"
+    },
+    {
+      "key": "native:[old random terrain]",
+      "severity": "minor",
+      "state": "open",
+      "reason": "Terrain description remains English transliteration.",
+      "suggestion": "तुटक किनारा"
+    },
+    {
+      "key": "native:[crater lakes terrain]",
+      "severity": "minor",
+      "state": "open",
+      "reason": "Terrain name remains English transliteration.",
+      "suggestion": "विवरांतील सरोवरे"
+    },
+    {
+      "key": "native:[old islands terrain]",
+      "severity": "minor",
+      "state": "open",
+      "reason": "खडबडीत suggests surface roughness; rugged geography may favor खडकाळ/दुर्गम depending generator.",
+      "suggestion": "खडकाळ द्वीपसमूह, after inspecting generator geography"
+    },
+    {
+      "key": "native:[settings Edge scrolling]",
+      "severity": "minor",
+      "state": "open",
+      "reason": "Use a Marathi description consistently across all three related labels.",
+      "suggestion": "कडेवर स्क्रोलिंग"
+    },
+    {
+      "key": "native:[Building Tool Box Explanation]",
+      "severity": "minor",
+      "state": "open",
+      "reason": "Shift is transliterated while Ctrl remains Latin; both should match actual keyboard legends.",
+      "suggestion": "Shift + ओढा = चौकट"
+    },
+    {
+      "key": "native:[Building Tool Line Explanation]",
+      "severity": "minor",
+      "state": "open",
+      "reason": "Drag remains English while the parallel box explanation is inconsistent.",
+      "suggestion": "Ctrl + ओढा = रेषा"
+    },
+    {
+      "key": "online: Follow latest",
+      "severity": "minor",
+      "state": "open",
+      "reason": "Latest what is underspecified and uses unnecessary follow transliteration; control follows current revision.",
+      "suggestion": " नवीनतम आवृत्ती दाखवा"
+    },
+    {
+      "key": "online: My releases and uploads",
+      "severity": "minor",
+      "state": "open",
+      "reason": "माझे प्रकाशन is singular/inflexible against multiple published releases.",
+      "suggestion": " माझी प्रकाशने आणि अपलोड"
+    }
+  ],
+  "reference_catalogs": [
+    "data/texts.hi.txt",
+    "platform/packages/i18n/locales/hi.json"
+  ],
+  "context_lookups": [
+    "src/game/screens/CustomGameOtherOptions.cpp:61",
+    "platform/apps/web/src/pages/AiBuildingStudio.tsx:231,246,759",
+    "platform/apps/web/src/pages/TerrainStudio.tsx:800",
+    "platform/apps/web/src/components/studio/Studio.tsx:543-568"
+  ],
+  "glossary_recommendations": {
+    "unit": "युनिट (unchanged count noun), consistently; avoid alternating with एकक",
+    "worker": "कामगार",
+    "explorer": "शोधक",
+    "warrior": "योद्धा / plural योद्धे",
+    "Inn": "खानावळ (food-serving function), rather than धर्मशाळा",
+    "flag": "ध्वज",
+    "colony": "वसाहत",
+    "tutorial": "शिकवणी",
+    "lesson": "धडा",
+    "building": "इमारत",
+    "building credits": "इमारत क्रेडिट",
+    "release": "प्रकाशन",
+    "upgrade": "सुधारणा",
+    "level": "पातळी",
+    "register": "Consistent respectful तुम्ही / तुमचा / करा; avoid colloquial तुमचं/तुम्हाला ... इतकं in the same tutorial"
+  },
+  "verdict": "Do not publish this pilot unchanged. Google NMT is usable as a rough draft; bulk drafting may proceed only with glossary locked and these systematic ambiguities assigned to full-catalog reviewers. Protected format tokens survive, but keyboard legends need manual protection/review beyond interpolation tokens. No large Hindi-contamination pattern found; several Marathi words are shared with Hindi legitimately. Main defects are English-sense ambiguity, English transliterations, and inconsistent technical nouns.",
+  "snapshot": "Original 100-message Google pilot before semantic edits; original outputs recovered from immutable Google response cache. Later bulk drafts are not reviewed by this record."
+}

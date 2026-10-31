@@ -1,0 +1,494 @@
+{
+  "id": "native-general-026",
+  "source_sha256": "0ac44b4cdfb03e688983d6e3fb1e484cca57589665bff19c5c65388e649b292a",
+  "surface": "native",
+  "domain": "general",
+  "context": "Read neighbouring source entries and inspect usage before translating ambiguous short labels.",
+  "entries": [
+    {
+      "id": "native:[lesson swimming water-job marker]",
+      "key": "[lesson swimming water-job marker]",
+      "source": "Use algae from the pond"
+    },
+    {
+      "id": "native:[lesson schools title]",
+      "key": "[lesson schools title]",
+      "source": "Schools and worker skills"
+    },
+    {
+      "id": "native:[lesson schools briefing]",
+      "key": "[lesson schools briefing]",
+      "source": "Use the prepared swimmers to build a School, then observe workers learn construction and harvesting."
+    },
+    {
+      "id": "native:[lesson schools complete]",
+      "key": "[lesson schools complete]",
+      "source": "Your School improved worker skills. Skilled builders unlock upgrades; better harvesting helps maintain an expanding economy."
+    },
+    {
+      "id": "native:[lesson schools build hint]",
+      "key": "[lesson schools build hint]",
+      "source": "Build a School in the clearing; assign builders. The colony already has swimmers for algae. Leave access to wood and water. Fruit trees provide prestige resources; food still comes from wheat."
+    },
+    {
+      "id": "native:[lesson schools build title]",
+      "key": "[lesson schools build title]",
+      "source": "Build a School"
+    },
+    {
+      "id": "native:[lesson schools build instruction]",
+      "key": "[lesson schools build instruction]",
+      "source": "Build a School in the clearing; assign builders."
+    },
+    {
+      "id": "native:[lesson schools build help]",
+      "key": "[lesson schools build help]",
+      "source": "The colony already has swimmers for algae. Leave access to wood and water. Fruit trees provide prestige resources; food still comes from wheat."
+    },
+    {
+      "id": "native:[lesson schools build marker]",
+      "key": "[lesson schools build marker]",
+      "source": "Build a School"
+    },
+    {
+      "id": "native:[lesson schools learn hint]",
+      "key": "[lesson schools learn hint]",
+      "source": "Let an existing worker finish its School training. The School teaches construction and harvesting together. Keep workers available; a construction site alone does not train anyone."
+    },
+    {
+      "id": "native:[lesson schools learn title]",
+      "key": "[lesson schools learn title]",
+      "source": "Teach construction and harvesting"
+    },
+    {
+      "id": "native:[lesson schools learn instruction]",
+      "key": "[lesson schools learn instruction]",
+      "source": "Let an existing worker finish its School training."
+    },
+    {
+      "id": "native:[lesson schools learn help]",
+      "key": "[lesson schools learn help]",
+      "source": "The School teaches construction and harvesting together. Keep workers available; a construction site alone does not train anyone."
+    },
+    {
+      "id": "native:[lesson upgrades title]",
+      "key": "[lesson upgrades title]",
+      "source": "Upgrading buildings"
+    },
+    {
+      "id": "native:[lesson upgrades briefing]",
+      "key": "[lesson upgrades briefing]",
+      "source": "Use prepared skilled workers to upgrade a Racetrack and train beyond the first level."
+    },
+    {
+      "id": "native:[lesson upgrades complete]",
+      "key": "[lesson upgrades complete]",
+      "source": "You upgraded a building and used its improved training. Further upgrades repeat this cycle with better Schools, skills, materials and space, up to level 3."
+    },
+    {
+      "id": "native:[lesson upgrades upgrade hint]",
+      "key": "[lesson upgrades upgrade hint]",
+      "source": "Select the Racetrack, choose Upgrade and assign skilled builders. These workers already learned first-level School skills. Upgrades need extra space and materials, and interrupt the building service. Cancelled upgrades do not count."
+    },
+    {
+      "id": "native:[lesson upgrades upgrade title]",
+      "key": "[lesson upgrades upgrade title]",
+      "source": "Upgrade the Racetrack"
+    },
+    {
+      "id": "native:[lesson upgrades upgrade instruction]",
+      "key": "[lesson upgrades upgrade instruction]",
+      "source": "Select the Racetrack, choose Upgrade and assign skilled builders."
+    },
+    {
+      "id": "native:[lesson upgrades upgrade help]",
+      "key": "[lesson upgrades upgrade help]",
+      "source": "These workers already learned first-level School skills. Upgrades need extra space and materials, and interrupt the building service. Cancelled upgrades do not count."
+    },
+    {
+      "id": "native:[lesson upgrades upgrade marker]",
+      "key": "[lesson upgrades upgrade marker]",
+      "source": "Upgrade the Racetrack"
+    },
+    {
+      "id": "native:[lesson upgrades train hint]",
+      "key": "[lesson upgrades train hint]",
+      "source": "Let an existing worker learn faster walking at the upgraded Racetrack. A completed upgrade improves available training. Higher building levels need higher construction skills; the level shown to players starts at 1."
+    },
+    {
+      "id": "native:[lesson upgrades train title]",
+      "key": "[lesson upgrades train title]",
+      "source": "Use the upgraded training"
+    },
+    {
+      "id": "native:[lesson upgrades train instruction]",
+      "key": "[lesson upgrades train instruction]",
+      "source": "Let an existing worker learn faster walking at the upgraded Racetrack."
+    },
+    {
+      "id": "native:[lesson upgrades train help]",
+      "key": "[lesson upgrades train help]",
+      "source": "A completed upgrade improves available training. Higher building levels need higher construction skills; the level shown to players starts at 1."
+    },
+    {
+      "id": "native:[lesson fortifications title]",
+      "key": "[lesson fortifications title]",
+      "source": "Towers and protective walls"
+    },
+    {
+      "id": "native:[lesson fortifications briefing]",
+      "key": "[lesson fortifications briefing]",
+      "source": "Build a supplied tower and protective walls, then test them against one small attack."
+    },
+    {
+      "id": "native:[lesson fortifications complete]",
+      "key": "[lesson fortifications complete]",
+      "source": "Your supplied defenses stopped the practice attack. Towers need stone and walls need gaps so suppliers can keep reaching them."
+    },
+    {
+      "id": "native:[lesson fortifications tower hint]",
+      "key": "[lesson fortifications tower hint]",
+      "source": "Build a tower in the marked area; assign builders. Place it near the stone quarry and leave supplier access. No attack starts until the preparation goals are complete."
+    },
+    {
+      "id": "native:[lesson fortifications tower title]",
+      "key": "[lesson fortifications tower title]",
+      "source": "Build a defense tower"
+    },
+    {
+      "id": "native:[lesson fortifications tower instruction]",
+      "key": "[lesson fortifications tower instruction]",
+      "source": "Build a tower in the marked area; assign builders."
+    },
+    {
+      "id": "native:[lesson fortifications tower help]",
+      "key": "[lesson fortifications tower help]",
+      "source": "Place it near the stone quarry and leave supplier access. No attack starts until the preparation goals are complete."
+    },
+    {
+      "id": "native:[lesson fortifications tower marker]",
+      "key": "[lesson fortifications tower marker]",
+      "source": "Build a defense tower"
+    },
+    {
+      "id": "native:[lesson fortifications walls hint]",
+      "key": "[lesson fortifications walls hint]",
+      "source": "Build at least 2 wall sections near the tower; keep its west access lane open. Walls use stone and each site requests workers. Do not seal the tower in: suppliers need a route. The marked west lane must remain clear."
+    },
+    {
+      "id": "native:[lesson fortifications walls title]",
+      "key": "[lesson fortifications walls title]",
+      "source": "Protect the tower with walls"
+    },
+    {
+      "id": "native:[lesson fortifications walls instruction]",
+      "key": "[lesson fortifications walls instruction]",
+      "source": "Build at least 2 wall sections near the tower; keep its west access lane open."
+    },
+    {
+      "id": "native:[lesson fortifications walls help]",
+      "key": "[lesson fortifications walls help]",
+      "source": "Walls use stone and each site requests workers. Do not seal the tower in: suppliers need a route. The marked west lane must remain clear."
+    },
+    {
+      "id": "native:[lesson fortifications walls marker]",
+      "key": "[lesson fortifications walls marker]",
+      "source": "Protect the tower with walls"
+    },
+    {
+      "id": "native:[lesson fortifications supply hint]",
+      "key": "[lesson fortifications supply hint]",
+      "source": "Select the tower and request suppliers. Wait for at least 2 stone. A finished tower needs an operating worker target to bring ammunition. This is separate from its construction target."
+    },
+    {
+      "id": "native:[lesson fortifications supply title]",
+      "key": "[lesson fortifications supply title]",
+      "source": "Supply ammunition"
+    },
+    {
+      "id": "native:[lesson fortifications supply instruction]",
+      "key": "[lesson fortifications supply instruction]",
+      "source": "Select the tower and request suppliers. Wait for at least 2 stone."
+    },
+    {
+      "id": "native:[lesson fortifications supply help]",
+      "key": "[lesson fortifications supply help]",
+      "source": "A finished tower needs an operating worker target to bring ammunition. This is separate from its construction target."
+    },
+    {
+      "id": "native:[lesson fortifications supply marker]",
+      "key": "[lesson fortifications supply marker]",
+      "source": "Supply ammunition"
+    },
+    {
+      "id": "native:[lesson fortifications hold hint]",
+      "key": "[lesson fortifications hold hint]",
+      "source": "A practice warrior is approaching. Keep the tower supplied and accessible. Hold until the attacker is defeated or driven back. A wall that blocks suppliers can starve the tower of ammunition. If the colony fails, restart or load an earlier save."
+    },
+    {
+      "id": "native:[lesson fortifications hold title]",
+      "key": "[lesson fortifications hold title]",
+      "source": "Test the fortifications"
+    },
+    {
+      "id": "native:[lesson fortifications hold instruction]",
+      "key": "[lesson fortifications hold instruction]",
+      "source": "A practice warrior is approaching. Keep the tower supplied and accessible."
+    },
+    {
+      "id": "native:[lesson fortifications hold help]",
+      "key": "[lesson fortifications hold help]",
+      "source": "Hold until the attacker is defeated or driven back. A wall that blocks suppliers can starve the tower of ammunition. If the colony fails, restart or load an earlier save."
+    },
+    {
+      "id": "native:[lesson fortifications hold marker]",
+      "key": "[lesson fortifications hold marker]",
+      "source": "Test the fortifications"
+    },
+    {
+      "id": "native:[lesson defensive-tactics title]",
+      "key": "[lesson defensive-tactics title]",
+      "source": "Guard zones and flag tactics"
+    },
+    {
+      "id": "native:[lesson defensive-tactics briefing]",
+      "key": "[lesson defensive-tactics briefing]",
+      "source": "Scout the practice enemy, prepare a guard zone, defend, then organize a counterattack."
+    },
+    {
+      "id": "native:[lesson defensive-tactics complete]",
+      "key": "[lesson defensive-tactics complete]",
+      "source": "You scouted, defended a guard zone and directed a counterattack. Flag targets request units; radius controls where those units work."
+    },
+    {
+      "id": "native:[lesson defensive-tactics scout hint]",
+      "key": "[lesson defensive-tactics scout hint]",
+      "source": "Place an Exploration Flag at the enemy base; assign 1 explorer. Flags request units autonomously. An explorer reveals current activity through fog of war; it may stop to eat."
+    },
+    {
+      "id": "native:[lesson defensive-tactics scout title]",
+      "key": "[lesson defensive-tactics scout title]",
+      "source": "Scout the enemy base"
+    },
+    {
+      "id": "native:[lesson defensive-tactics scout instruction]",
+      "key": "[lesson defensive-tactics scout instruction]",
+      "source": "Place an Exploration Flag at the enemy base; assign 1 explorer."
+    },
+    {
+      "id": "native:[lesson defensive-tactics scout help]",
+      "key": "[lesson defensive-tactics scout help]",
+      "source": "Flags request units autonomously. An explorer reveals current activity through fog of war; it may stop to eat."
+    },
+    {
+      "id": "native:[lesson defensive-tactics scout marker]",
+      "key": "[lesson defensive-tactics scout marker]",
+      "source": "Scout the enemy base"
+    },
+    {
+      "id": "native:[lesson defensive-tactics guard hint]",
+      "key": "[lesson defensive-tactics guard hint]",
+      "source": "Paint a guard zone in the marked area and let 2 warriors reach it. Open Flags, choose Guard and paint at least 4 tiles inside the area. Guard zones attract idle warriors. Forbidden zones block travel; clearing zones request resource removal."
+    },
+    {
+      "id": "native:[lesson defensive-tactics guard title]",
+      "key": "[lesson defensive-tactics guard title]",
+      "source": "Prepare a guard zone"
+    },
+    {
+      "id": "native:[lesson defensive-tactics guard instruction]",
+      "key": "[lesson defensive-tactics guard instruction]",
+      "source": "Paint a guard zone in the marked area and let 2 warriors reach it."
+    },
+    {
+      "id": "native:[lesson defensive-tactics guard help]",
+      "key": "[lesson defensive-tactics guard help]",
+      "source": "Open Flags, choose Guard and paint at least 4 tiles inside the area. Guard zones attract idle warriors. Forbidden zones block travel; clearing zones request resource removal."
+    },
+    {
+      "id": "native:[lesson defensive-tactics guard marker]",
+      "key": "[lesson defensive-tactics guard marker]",
+      "source": "Prepare a guard zone"
+    },
+    {
+      "id": "native:[lesson defensive-tactics repel hint]",
+      "key": "[lesson defensive-tactics repel hint]",
+      "source": "The enemy is attacking. Keep the guard zone covered and Inns supplied. The small attack starts after your preparations. Defeat or drive back both raiders; wounded enemies may retreat. Warriors may leave temporarily to eat. If the defense fails, use an earlier save or restart."
+    },
+    {
+      "id": "native:[lesson defensive-tactics repel title]",
+      "key": "[lesson defensive-tactics repel title]",
+      "source": "Repel the practice attack"
+    },
+    {
+      "id": "native:[lesson defensive-tactics repel instruction]",
+      "key": "[lesson defensive-tactics repel instruction]",
+      "source": "The enemy is attacking. Keep the guard zone covered and Inns supplied."
+    },
+    {
+      "id": "native:[lesson defensive-tactics repel help]",
+      "key": "[lesson defensive-tactics repel help]",
+      "source": "The small attack starts after your preparations. Defeat or drive back both raiders; wounded enemies may retreat. Warriors may leave temporarily to eat. If the defense fails, use an earlier save or restart."
+    },
+    {
+      "id": "native:[lesson defensive-tactics repel marker]",
+      "key": "[lesson defensive-tactics repel marker]",
+      "source": "Repel the practice attack"
+    },
+    {
+      "id": "native:[lesson defensive-tactics counterattack hint]",
+      "key": "[lesson defensive-tactics counterattack hint]",
+      "source": "Place a War Flag over the enemy Swarm; request 3 warriors and use radius 4 or smaller. Guard zones and War Flags compete for warriors. Remove guard tiles if they hold your army back. Keep food available while warriors travel and attack."
+    },
+    {
+      "id": "native:[lesson defensive-tactics counterattack title]",
+      "key": "[lesson defensive-tactics counterattack title]",
+      "source": "Direct a focused counterattack"
+    },
+    {
+      "id": "native:[lesson defensive-tactics counterattack instruction]",
+      "key": "[lesson defensive-tactics counterattack instruction]",
+      "source": "Place a War Flag over the enemy Swarm; request 3 warriors and use radius 4 or smaller."
+    },
+    {
+      "id": "native:[lesson defensive-tactics counterattack help]",
+      "key": "[lesson defensive-tactics counterattack help]",
+      "source": "Guard zones and War Flags compete for warriors. Remove guard tiles if they hold your army back. Keep food available while warriors travel and attack."
+    },
+    {
+      "id": "native:[lesson defensive-tactics counterattack marker]",
+      "key": "[lesson defensive-tactics counterattack marker]",
+      "source": "Direct a focused counterattack"
+    },
+    {
+      "id": "native:[lesson healing build compact]",
+      "key": "[lesson healing build compact]",
+      "source": "Build → Hospital. Leave access; assign builders."
+    },
+    {
+      "id": "native:[lesson healing heal compact]",
+      "key": "[lesson healing heal compact]",
+      "source": "Let the wounded worker heal at the Hospital."
+    },
+    {
+      "id": "native:[lesson walking-training build compact]",
+      "key": "[lesson walking-training build compact]",
+      "source": "Build → Racetrack. Leave space around its edges."
+    },
+    {
+      "id": "native:[lesson walking-training train compact]",
+      "key": "[lesson walking-training train compact]",
+      "source": "Let a worker finish Racetrack training."
+    },
+    {
+      "id": "native:[lesson swimming build compact]",
+      "key": "[lesson swimming build compact]",
+      "source": "Build → Swimming Pool, west of the pond."
+    },
+    {
+      "id": "native:[lesson swimming train compact]",
+      "key": "[lesson swimming train compact]",
+      "source": "Let a worker learn to swim."
+    },
+    {
+      "id": "native:[lesson swimming water-job compact]",
+      "key": "[lesson swimming water-job compact]",
+      "source": "Build → School. Assign builders for wood and algae."
+    },
+    {
+      "id": "native:[lesson schools build compact]",
+      "key": "[lesson schools build compact]",
+      "source": "Build → School. Assign builders for wood and algae."
+    },
+    {
+      "id": "native:[lesson schools learn compact]",
+      "key": "[lesson schools learn compact]",
+      "source": "Let a worker finish School training."
+    },
+    {
+      "id": "native:[lesson upgrades upgrade compact]",
+      "key": "[lesson upgrades upgrade compact]",
+      "source": "Select Racetrack → Upgrade. Assign skilled builders."
+    },
+    {
+      "id": "native:[lesson upgrades train compact]",
+      "key": "[lesson upgrades train compact]",
+      "source": "Let a worker train at the upgraded Racetrack."
+    },
+    {
+      "id": "native:[lesson fortifications tower compact]",
+      "key": "[lesson fortifications tower compact]",
+      "source": "Build → Tower. Place in the marked area."
+    },
+    {
+      "id": "native:[lesson fortifications walls compact]",
+      "key": "[lesson fortifications walls compact]",
+      "source": "Build 2 walls. Keep the tower’s west lane open."
+    },
+    {
+      "id": "native:[lesson fortifications supply compact]",
+      "key": "[lesson fortifications supply compact]",
+      "source": "Select tower → suppliers. Wait for 2 stone."
+    },
+    {
+      "id": "native:[lesson fortifications hold compact]",
+      "key": "[lesson fortifications hold compact]",
+      "source": "Keep the tower supplied against the attacker."
+    },
+    {
+      "id": "native:[lesson defensive-tactics scout compact]",
+      "key": "[lesson defensive-tactics scout compact]",
+      "source": "Flags → Exploration. Place at the enemy; assign 1 explorer."
+    },
+    {
+      "id": "native:[lesson defensive-tactics guard compact]",
+      "key": "[lesson defensive-tactics guard compact]",
+      "source": "Flags → Guard. Paint 4 tiles; let 2 warriors arrive."
+    },
+    {
+      "id": "native:[lesson defensive-tactics repel compact]",
+      "key": "[lesson defensive-tactics repel compact]",
+      "source": "Hold the guard zone. Keep Inns supplied."
+    },
+    {
+      "id": "native:[lesson defensive-tactics counterattack compact]",
+      "key": "[lesson defensive-tactics counterattack compact]",
+      "source": "War Flag → enemy Swarm. Request 3 warriors; radius ≤4."
+    },
+    {
+      "id": "native:[intro attack destination]",
+      "key": "[intro attack destination]",
+      "source": "Attack here"
+    },
+    {
+      "id": "native:[Grassland]",
+      "key": "[Grassland]",
+      "source": "Grassland"
+    },
+    {
+      "id": "native:[Kopjes]",
+      "key": "[Kopjes]",
+      "source": "Kopjes"
+    },
+    {
+      "id": "native:[Game trails]",
+      "key": "[Game trails]",
+      "source": "Game trails"
+    },
+    {
+      "id": "native:[Fish amount]",
+      "key": "[Fish amount]",
+      "source": "Fish amount"
+    },
+    {
+      "id": "native:[scenario messages]",
+      "key": "[scenario messages]",
+      "source": "Messages ▸"
+    },
+    {
+      "id": "native:[Camp-site amount]",
+      "key": "[Camp-site amount]",
+      "source": "Camp-site amount"
+    }
+  ]
+}

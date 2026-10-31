@@ -1,0 +1,510 @@
+{
+  "source_sha256": "0ac44b4cdfb03e688983d6e3fb1e484cca57589665bff19c5c65388e649b292a",
+  "batch_target_sha256": "e235496d15b2b2780ebdb15fd09b03d4c0e5b24e08adbd958ff8cdb11b71e10d",
+  "catalog_sha256": {
+    "native": "8b3f9e4972ee0eb1c3433110a7f0e83c9dc2fb7ea5f494b6925afa373c4fef97",
+    "online": "d7ae02f4d4453ebcb2acc37c15fd862acea8d2996d29cdb89bfb64c4f32cd5fa"
+  },
+  "entries": [
+    {
+      "id": "online:Pause",
+      "source": "Pause",
+      "target": "थांबा"
+    },
+    {
+      "id": "online:Payment",
+      "source": "Payment",
+      "target": "पेमेंट"
+    },
+    {
+      "id": "online:Payment mode",
+      "source": "Payment mode",
+      "target": "पेमेंट मोड"
+    },
+    {
+      "id": "online:Payment status: {value0}.",
+      "source": "Payment status: {value0}.",
+      "target": "पेमेंटची स्थिती: {value0}."
+    },
+    {
+      "id": "online:Payments are not configured.",
+      "source": "Payments are not configured.",
+      "target": "पेमेंट कॉन्फिगर केलेले नाहीत."
+    },
+    {
+      "id": "online:Pen pressure",
+      "source": "Pen pressure",
+      "target": "पेनचा दाब"
+    },
+    {
+      "id": "online:Pending",
+      "source": "Pending",
+      "target": "प्रलंबित"
+    },
+    {
+      "id": "online:Period",
+      "source": "Period",
+      "target": "कालावधी"
+    },
+    {
+      "id": "online:Petals cupped open around a central bud.",
+      "source": "Petals cupped open around a central bud.",
+      "target": "मध्यवर्ती कळीभोवती वाटीप्रमाणे उघडलेल्या पाकळ्या."
+    },
+    {
+      "id": "online:Photo updated.",
+      "source": "Photo updated.",
+      "target": "फोटो अपडेट केला आहे."
+    },
+    {
+      "id": "online:Ping",
+      "source": "Ping",
+      "target": "पिंग"
+    },
+    {
+      "id": "online:Play",
+      "source": "Play",
+      "target": "खेळा"
+    },
+    {
+      "id": "online:Play Locally in Custom Game",
+      "source": "Play Locally in Custom Game",
+      "target": "कस्टम गेममध्ये स्थानिकरित्या खेळा"
+    },
+    {
+      "id": "online:Play as {p3} instead",
+      "source": "Play as {p3} instead",
+      "target": "त्याऐवजी {p3} म्हणून खेळा"
+    },
+    {
+      "id": "online:Play in Multiplayer",
+      "source": "Play in Multiplayer",
+      "target": "मल्टीप्लेअरमध्ये खेळा"
+    },
+    {
+      "id": "online:Play in browser",
+      "source": "Play in browser",
+      "target": "ब्राउझरमध्ये खेळा"
+    },
+    {
+      "id": "online:Play in your browser",
+      "source": "Play in your browser",
+      "target": "तुमच्या ब्राउझरमध्ये खेळा"
+    },
+    {
+      "id": "online:Play online",
+      "source": "Play online",
+      "target": "ऑनलाइन खेळा"
+    },
+    {
+      "id": "online:Play this map",
+      "source": "Play this map",
+      "target": "हा नकाशा खेळा"
+    },
+    {
+      "id": "online:Play {slot0}",
+      "source": "Play {slot0}",
+      "target": "{slot0} खेळा"
+    },
+    {
+      "id": "online:Playability checks",
+      "source": "Playability checks",
+      "target": "खेळण्यायोग्यता तपासणी"
+    },
+    {
+      "id": "online:Playability checks passed",
+      "source": "Playability checks passed",
+      "target": "खेळण्यायोग्यतेच्या चाचण्या यशस्वी झाल्या."
+    },
+    {
+      "id": "online:Playable",
+      "source": "Playable",
+      "target": "खेळण्यायोग्य"
+    },
+    {
+      "id": "online:Playable generator",
+      "source": "Playable generator",
+      "target": "खेळण्यायोग्य जनरेटर"
+    },
+    {
+      "id": "online:Playable terrain",
+      "source": "Playable terrain",
+      "target": "खेळण्यायोग्य भूभाग"
+    },
+    {
+      "id": "online:Playback format",
+      "source": "Playback format",
+      "target": "प्लेबॅक स्वरूप"
+    },
+    {
+      "id": "online:Playback position",
+      "source": "Playback position",
+      "target": "प्लेबॅक स्थिती"
+    },
+    {
+      "id": "online:Player",
+      "source": "Player",
+      "target": "खेळाडू"
+    },
+    {
+      "id": "online:Player guides",
+      "source": "Player guides",
+      "target": "खेळाडू मार्गदर्शक"
+    },
+    {
+      "id": "online:Player types",
+      "source": "Player types",
+      "target": "खेळाडूंचे प्रकार"
+    },
+    {
+      "id": "online:Players",
+      "source": "Players",
+      "target": "खेळाडू"
+    },
+    {
+      "id": "online:Players and AI opponents, ranked by their conservative rating: it rises as the game becomes sure of your skill. Guests are not ranked.",
+      "source": "Players and AI opponents, ranked by their conservative rating: it rises as the game becomes sure of your skill. Guests are not ranked.",
+      "target": "खेळाडू आणि संगणकीय प्रतिस्पर्धी त्यांच्या कौशल्याच्या सावध किमान अंदाजानुसार क्रमवारीत आहेत. तुमच्या कौशल्याची अधिक खात्री पटल्यावर हे मानांकन वाढते. अतिथींना क्रमवारी दिली जात नाही."
+    },
+    {
+      "id": "online:Players and results",
+      "source": "Players and results",
+      "target": "खेळाडू आणि निकाल"
+    },
+    {
+      "id": "online:Players cannot be removed while a match is starting or running.",
+      "source": "Players cannot be removed while a match is starting or running.",
+      "target": "सामना सुरू असताना किंवा चालू असताना खेळाडूंना काढता येत नाही."
+    },
+    {
+      "id": "online:Players online",
+      "source": "Players online",
+      "target": "ऑनलाइन खेळाडू"
+    },
+    {
+      "id": "online:Plays",
+      "source": "Plays",
+      "target": "खेळ"
+    },
+    {
+      "id": "online:Please fix the issues in the attached test diagnostics.",
+      "source": "Please fix the issues in the attached test diagnostics.",
+      "target": "कृपया सोबत जोडलेल्या चाचणी निदानातील समस्यांचे निराकरण करा."
+    },
+    {
+      "id": "online:Please try building the map again and address this issue: {value0}",
+      "source": "Please try building the map again and address this issue: {value0}",
+      "target": "कृपया नकाशा पुन्हा तयार करण्याचा प्रयत्न करा आणि ही समस्या सोडवा: {value0}"
+    },
+    {
+      "id": "online:Pose",
+      "source": "Pose",
+      "target": "पोझ"
+    },
+    {
+      "id": "online:Prepare Calm, Building, and Combat arrangements of the same piece. Each must last 10 seconds to 15 minutes. Originals are deleted after conversion; keep your own source files.",
+      "source": "Prepare Calm, Building, and Combat arrangements of the same piece. Each must last 10 seconds to 15 minutes. Originals are deleted after conversion; keep your own source files.",
+      "target": "एकाच संगीतरचनेच्या शांत, बांधकाम आणि लढाई या अवस्थांसाठी आवृत्त्या तयार करा. प्रत्येक आवृत्ती १० सेकंद ते १५ मिनिटे असावी. रूपांतरणानंतर मूळ प्रती हटवल्या जातात; तुमच्या मूळ फाइल्स स्वतःकडे जपून ठेवा."
+    },
+    {
+      "id": "online:Prepare retry",
+      "source": "Prepare retry",
+      "target": "पुन्हा प्रयत्न करण्याची तयारी करा"
+    },
+    {
+      "id": "online:Prepare the design",
+      "source": "Prepare the design",
+      "target": "डिझाइन तयार करा"
+    },
+    {
+      "id": "online:Prepare this release",
+      "source": "Prepare this release",
+      "target": "हे प्रकाशन तयार करा"
+    },
+    {
+      "id": "online:Preparing photo…",
+      "source": "Preparing photo…",
+      "target": "फोटोची तयारी करत आहे…"
+    },
+    {
+      "id": "online:Preparing your model…",
+      "source": "Preparing your model…",
+      "target": "तुमचे मॉडेल तयार करत आहे…"
+    },
+    {
+      "id": "online:Prestige ",
+      "source": "Prestige ",
+      "target": "प्रतिष्ठा "
+    },
+    {
+      "id": "online:Prestige {slot0}",
+      "source": "Prestige {slot0}",
+      "target": "प्रतिष्ठा {slot0}"
+    },
+    {
+      "id": "online:Preview",
+      "source": "Preview",
+      "target": "पूर्वावलोकन"
+    },
+    {
+      "id": "online:Preview current changes",
+      "source": "Preview current changes",
+      "target": "सध्याच्या बदलांचे पूर्वावलोकन करा"
+    },
+    {
+      "id": "online:Preview game transitions",
+      "source": "Preview game transitions",
+      "target": "खेळातील संक्रमणांचे पूर्वावलोकन करा"
+    },
+    {
+      "id": "online:Preview not found.",
+      "source": "Preview not found.",
+      "target": "पूर्वावलोकन आढळले नाही."
+    },
+    {
+      "id": "online:Preview of {value0}",
+      "source": "Preview of {value0}",
+      "target": "{value0} चे पूर्वावलोकन"
+    },
+    {
+      "id": "online:Preview unavailable",
+      "source": "Preview unavailable",
+      "target": "पूर्वावलोकन उपलब्ध नाही"
+    },
+    {
+      "id": "online:Preview unavailable.",
+      "source": "Preview unavailable.",
+      "target": "पूर्वावलोकन उपलब्ध नाही."
+    },
+    {
+      "id": "online:Preview · {value0}",
+      "source": "Preview · {value0}",
+      "target": "पूर्वावलोकन · {value0}"
+    },
+    {
+      "id": "online:Previewing game transitions · {slot0} · game fade timing",
+      "source": "Previewing game transitions · {slot0} · game fade timing",
+      "target": "गेम ट्रान्झिशन्सचे पूर्वावलोकन करणे · {slot0} · गेम फेड टायमिंग"
+    },
+    {
+      "id": "online:Previous",
+      "source": "Previous",
+      "target": "मागील"
+    },
+    {
+      "id": "online:Previous mean",
+      "source": "Previous mean",
+      "target": "मागील सरासरी"
+    },
+    {
+      "id": "online:Previous recorded",
+      "source": "Previous recorded",
+      "target": "पूर्वी रेकॉर्ड केलेले"
+    },
+    {
+      "id": "online:Previous samples",
+      "source": "Previous samples",
+      "target": "मागील नमुने"
+    },
+    {
+      "id": "online:Previous saved drafts",
+      "source": "Previous saved drafts",
+      "target": "मागील जतन केलेले मसुदे"
+    },
+    {
+      "id": "online:Previous stage",
+      "source": "Previous stage",
+      "target": "मागील टप्पा"
+    },
+    {
+      "id": "online:Priced",
+      "source": "Priced",
+      "target": "खर्च उपलब्ध"
+    },
+    {
+      "id": "online:Private",
+      "source": "Private",
+      "target": "खाजगी"
+    },
+    {
+      "id": "online:Private or uploaded map",
+      "source": "Private or uploaded map",
+      "target": "खाजगी किंवा अपलोड केलेला नकाशा"
+    },
+    {
+      "id": "online:Private project",
+      "source": "Private project",
+      "target": "खाजगी प्रकल्प"
+    },
+    {
+      "id": "online:Private — only you",
+      "source": "Private — only you",
+      "target": "खाजगी — फक्त तुम्ही"
+    },
+    {
+      "id": "online:Processing",
+      "source": "Processing",
+      "target": "प्रक्रिया"
+    },
+    {
+      "id": "online:Product",
+      "source": "Product",
+      "target": "उत्पादन"
+    },
+    {
+      "id": "online:Product / model",
+      "source": "Product / model",
+      "target": "उत्पादन / मॉडेल"
+    },
+    {
+      "id": "online:Product credit flow table",
+      "source": "Product credit flow table",
+      "target": "उत्पादन क्रेडिट प्रवाह तक्ता"
+    },
+    {
+      "id": "online:Product credits",
+      "source": "Product credits",
+      "target": "उत्पादन क्रेडिट्स"
+    },
+    {
+      "id": "online:Profile photo",
+      "source": "Profile photo",
+      "target": "प्रोफाइल फोटो"
+    },
+    {
+      "id": "online:Profile {slot0} · {slot1} downloads of this version",
+      "source": "Profile {slot0} · {slot1} downloads of this version",
+      "target": "प्रोफाइल {slot0} · {slot1} या आवृत्तीचे डाउनलोड"
+    },
+    {
+      "id": "online:Progress does not match the leased AI validation.",
+      "source": "Progress does not match the leased AI validation.",
+      "target": "प्रगती तात्पुरते सोपवलेल्या एआय पडताळणीच्या कामाशी जुळत नाही."
+    },
+    {
+      "id": "online:Project",
+      "source": "Project",
+      "target": "प्रकल्प"
+    },
+    {
+      "id": "online:Project actions",
+      "source": "Project actions",
+      "target": "प्रकल्प कृती"
+    },
+    {
+      "id": "online:Project has not loaded.",
+      "source": "Project has not loaded.",
+      "target": "प्रकल्प लोड झालेला नाही."
+    },
+    {
+      "id": "online:Project name",
+      "source": "Project name",
+      "target": "प्रकल्पाचे नाव"
+    },
+    {
+      "id": "online:Project options",
+      "source": "Project options",
+      "target": "प्रकल्पाचे पर्याय"
+    },
+    {
+      "id": "online:Project title",
+      "source": "Project title",
+      "target": "प्रकल्पाचे शीर्षक"
+    },
+    {
+      "id": "online:Projects onto visible surfaces. Shared surfaces repeat the paint.",
+      "source": "Projects onto visible surfaces. Shared surfaces repeat the paint.",
+      "target": "दृश्यमान पृष्ठभागांवर रंग प्रक्षेपित होतो. सामायिक पृष्ठभागांवर रंगाची पुनरावृत्ती होते."
+    },
+    {
+      "id": "online:Properties inherit this preset until you add an override.",
+      "source": "Properties inherit this preset until you add an override.",
+      "target": "जोपर्यंत तुम्ही ओव्हरराइड जोडत नाही, तोपर्यंत प्रॉपर्टीज हा प्रीसेट वारसा म्हणून घेतात."
+    },
+    {
+      "id": "online:Provider attempt evidence for {value0}",
+      "source": "Provider attempt evidence for {value0}",
+      "target": "{value0} साठी प्रदात्याच्या प्रयत्नाचा पुरावा"
+    },
+    {
+      "id": "online:Provider cost table",
+      "source": "Provider cost table",
+      "target": "प्रदाता खर्च तक्ता"
+    },
+    {
+      "id": "online:Public",
+      "source": "Public",
+      "target": "सार्वजनिक"
+    },
+    {
+      "id": "online:Public library",
+      "source": "Public library",
+      "target": "सार्वजनिक संग्रह"
+    },
+    {
+      "id": "online:Public — listed for everyone",
+      "source": "Public — listed for everyone",
+      "target": "सार्वजनिक — सर्वांसाठी सूचीबद्ध"
+    },
+    {
+      "id": "online:Publish",
+      "source": "Publish",
+      "target": "प्रकाशित करा"
+    },
+    {
+      "id": "online:Publish a generator release",
+      "source": "Publish a generator release",
+      "target": "जनरेटर रिलीज प्रकाशित करा"
+    },
+    {
+      "id": "online:Publish a new release",
+      "source": "Publish a new release",
+      "target": "नवीन आवृत्ती प्रकाशित करा"
+    },
+    {
+      "id": "online:Publish a new version",
+      "source": "Publish a new version",
+      "target": "नवीन आवृत्ती प्रकाशित करा"
+    },
+    {
+      "id": "online:Publish a release",
+      "source": "Publish a release",
+      "target": "आवृत्ती प्रकाशित करा"
+    },
+    {
+      "id": "online:Publish a version",
+      "source": "Publish a version",
+      "target": "एक आवृत्ती प्रकाशित करा"
+    },
+    {
+      "id": "online:Publish map version",
+      "source": "Publish map version",
+      "target": "नकाशा आवृत्ती प्रकाशित करा"
+    },
+    {
+      "id": "online:Publish music version",
+      "source": "Publish music version",
+      "target": "संगीत आवृत्ती प्रकाशित करा"
+    },
+    {
+      "id": "online:Publish release",
+      "source": "Publish release",
+      "target": "आवृत्ती प्रकाशित करा"
+    },
+    {
+      "id": "online:Publish revision {slot0}",
+      "source": "Publish revision {slot0}",
+      "target": "आवृत्ती {slot0} प्रकाशित करा"
+    },
+    {
+      "id": "online:Publish revision {value0}",
+      "source": "Publish revision {value0}",
+      "target": "आवृत्ती {value0} प्रकाशित करा"
+    },
+    {
+      "id": "online:Publish saved family",
+      "source": "Publish saved family",
+      "target": "जतन केलेला इमारत संच प्रकाशित करा"
+    }
+  ]
+}

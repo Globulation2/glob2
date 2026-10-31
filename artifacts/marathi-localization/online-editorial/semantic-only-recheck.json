@@ -1,0 +1,760 @@
+[
+  {
+    "id": "online: refused orders",
+    "source": " refused orders",
+    "target": " नाकारलेले आदेश"
+  },
+  {
+    "id": "online:, so it cannot be added to the account you are playing as. Accounts are never merged.",
+    "source": ", so it cannot be added to the account you are playing as. Accounts are never merged.",
+    "target": ", त्यामुळे ते तुम्ही ज्या खात्यावरून खेळत आहात त्यात जोडता येत नाही. खाती कधीही विलीन केली जात नाहीत."
+  },
+  {
+    "id": "online:A JSON file with everything this server stores about your account: your profile, sign-in methods (without passwords or keys), matches, ratings, rooms and chat, matchmaking, maps and moderation records.",
+    "source": "A JSON file with everything this server stores about your account: your profile, sign-in methods (without passwords or keys), matches, ratings, rooms and chat, matchmaking, maps and moderation records.",
+    "target": "हा सर्व्हर तुमच्या खात्याबद्दल साठवत असलेली सर्व माहिती असलेली JSON फाइल: तुमचे प्रोफाइल, साइन-इन पद्धती (पासवर्ड किंवा की वगळून), सामने, रेटिंग, खोल्या आणि चॅट, प्रतिस्पर्धी शोध, नकाशे आणि नियंत्रण कारवाईच्या नोंदी."
+  },
+  {
+    "id": "online:A hand-made map has no generator.",
+    "source": "A hand-made map has no generator.",
+    "target": "हाताने तयार केलेल्या नकाशाला जनरेटर नसतो."
+  },
+  {
+    "id": "online:A map keeps at most {p0} versions; delete old ones first.",
+    "source": "A map keeps at most {p0} versions; delete old ones first.",
+    "target": "एका नकाशाच्या जास्तीत जास्त {p0} आवृत्त्या ठेवता येतात; आधी जुन्या आवृत्त्या हटवा."
+  },
+  {
+    "id": "online:A new library is taking shape. Share the first AI.",
+    "source": "A new library is taking shape. Share the first AI.",
+    "target": "नवीन संग्रह तयार होत आहे. पहिला एआय सामायिक करा."
+  },
+  {
+    "id": "online:A newer draft prevents undo. Use history to restore it.",
+    "source": "A newer draft prevents undo. Use history to restore it.",
+    "target": "नवीन मसुद्यामुळे पूर्ववत करता येत नाही. पुनर्संचयित करण्यासाठी इतिहास वापरा."
+  },
+  {
+    "id": "online:A recoverable active account is required for colony skins.",
+    "source": "A recoverable active account is required for colony skins.",
+    "target": "वसाहतीच्या रूपांसाठी पुनर्प्राप्त करता येणारे सक्रिय खाते आवश्यक आहे."
+  },
+  {
+    "id": "online:A release must retain its package ID.",
+    "source": "A release must retain its package ID.",
+    "target": "प्रकाशनाचा पॅकेज आयडी कायम ठेवणे आवश्यक आहे."
+  },
+  {
+    "id": "online:AI library views",
+    "source": "AI library views",
+    "target": "एआय संग्रहातील दृश्ये"
+  },
+  {
+    "id": "online:AI opponent · ratings and games belong to this game version",
+    "source": "AI opponent · ratings and games belong to this game version",
+    "target": "एआय प्रतिस्पर्धी · रेटिंग आणि सामने खेळाच्या या आवृत्तीशी संबंधित आहेत"
+  },
+  {
+    "id": "online:Acoustic · woodwinds, strings & folk",
+    "source": "Acoustic · woodwinds, strings & folk",
+    "target": "ध्वनिक · सुषिरवाद्ये, तंतुवाद्ये आणि लोकसंगीत"
+  },
+  {
+    "id": "online:After payment, your balance updates once payment is confirmed. You can return to your colony while it is processed.",
+    "source": "After payment, your balance updates once payment is confirmed. You can return to your colony while it is processed.",
+    "target": "पैसे भरल्याची पुष्टी झाल्यावर तुमची शिल्लक अद्ययावत होते. प्रक्रिया सुरू असताना तुम्ही तुमच्या वसाहतीत परत जाऊ शकता."
+  },
+  {
+    "id": "online:All libraries",
+    "source": "All libraries",
+    "target": "सर्व संग्रह"
+  },
+  {
+    "id": "online:All-time library totals; this ranking does not change with the selected reporting range. Counts follow each library’s rules and do not represent unique people.",
+    "source": "All-time library totals; this ranking does not change with the selected reporting range. Counts follow each library’s rules and do not represent unique people.",
+    "target": "संग्रहांची आजवरची एकूण आकडेवारी; निवडलेल्या अहवाल कालावधीमुळे ही क्रमवारी बदलत नाही. प्रत्येक संग्रहाच्या नियमांनुसार मोजणी होते; हे आकडे वेगवेगळ्या व्यक्तींची संख्या दर्शवत नाहीत."
+  },
+  {
+    "id": "online:An available Building credit is needed to chat or build.",
+    "source": "An available Building credit is needed to chat or build.",
+    "target": "चॅट करण्यासाठी किंवा निर्मितीसाठी इमारत निर्मितीचे उपलब्ध क्रेडिट आवश्यक आहे."
+  },
+  {
+    "id": "online:An available Terrain credit is needed to chat or build.",
+    "source": "An available Terrain credit is needed to chat or build.",
+    "target": "चॅट करण्यासाठी किंवा निर्मितीसाठी भूभागाचे उपलब्ध क्रेडिट आवश्यक आहे."
+  },
+  {
+    "id": "online:Artwork could not be prepared for some older devices. Those devices will use the default colony.",
+    "source": "Artwork could not be prepared for some older devices. Those devices will use the default colony.",
+    "target": "काही जुन्या उपकरणांसाठी कलाकृती तयार करता आली नाही. त्या उपकरणांवर पूर्वनिर्धारित वसाहत वापरली जाईल."
+  },
+  {
+    "id": "online:Artwork for some older devices is still preparing. Those devices may temporarily show the default colony.",
+    "source": "Artwork for some older devices is still preparing. Those devices may temporarily show the default colony.",
+    "target": "काही जुन्या उपकरणांसाठी कलाकृती अद्याप तयार होत आहे. त्या उपकरणांवर तात्पुरती पूर्वनिर्धारित वसाहत दिसू शकते."
+  },
+  {
+    "id": "online:Assemble the family",
+    "source": "Assemble the family",
+    "target": "इमारतींचा संच तयार करा"
+  },
+  {
+    "id": "online:Assemble the pack",
+    "source": "Assemble the pack",
+    "target": "संच तयार करा"
+  },
+  {
+    "id": "online:Authoring guide",
+    "source": "Authoring guide",
+    "target": "निर्मिती मार्गदर्शक"
+  },
+  {
+    "id": "online:Authoring guide ↗",
+    "source": "Authoring guide ↗",
+    "target": "निर्मिती मार्गदर्शक ↗"
+  },
+  {
+    "id": "online:Band width",
+    "source": "Band width",
+    "target": "पट्ट्याची रुंदी"
+  },
+  {
+    "id": "online:Browse the library",
+    "source": "Browse the library",
+    "target": "संग्रह पाहा"
+  },
+  {
+    "id": "online:Brush and eraser reach hidden surfaces underneath the cursor. Some front/back and top/bottom surfaces share paint. A stroke may appear on their matching side too, keeping the glob’s flips seamless.",
+    "source": "Brush and eraser reach hidden surfaces underneath the cursor. Some front/back and top/bottom surfaces share paint. A stroke may appear on their matching side too, keeping the glob’s flips seamless.",
+    "target": "ब्रश आणि खोडरबर कर्सरखाली लपलेल्या पृष्ठभागांवरही काम करतात. काही पुढील/मागील आणि वरील/खालील पृष्ठभागांवर समान रंग वापरला जातो. रंगाचा फटका जुळणाऱ्या बाजूवरही दिसू शकतो, त्यामुळे ग्लॉब उलटल्यावर रंग सलग दिसतो."
+  },
+  {
+    "id": "online:Building Studio is disabled on this instance. Your saved projects remain available.",
+    "source": "Building Studio is disabled on this instance. Your saved projects remain available.",
+    "target": "या स्थापनेत इमारत निर्मिती स्टुडिओ बंद आहे. तुमचे जतन केलेले प्रकल्प उपलब्ध राहतील."
+  },
+  {
+    "id": "online:Building Studio is disabled.",
+    "source": "Building Studio is disabled.",
+    "target": "इमारत निर्मिती स्टुडिओ बंद आहे."
+  },
+  {
+    "id": "online:Building projects",
+    "source": "Building projects",
+    "target": "इमारत निर्मिती प्रकल्प"
+  },
+  {
+    "id": "online:Buildings allowed",
+    "source": "Buildings allowed",
+    "target": "परवानगी असलेल्या इमारती"
+  },
+  {
+    "id": "online:COLONY STUDIO",
+    "source": "COLONY STUDIO",
+    "target": "वसाहत स्टुडिओ"
+  },
+  {
+    "id": "online:Checker",
+    "source": "Checker",
+    "target": "चौकटी"
+  },
+  {
+    "id": "online:Checking the map with the game.",
+    "source": "Checking the map with the game.",
+    "target": "खेळाच्या मदतीने नकाशा तपासत आहे."
+  },
+  {
+    "id": "online:Choose a building ZIP package.",
+    "source": "Choose a building ZIP package.",
+    "target": "इमारतीचे ZIP पॅकेज निवडा."
+  },
+  {
+    "id": "online:Colony AI",
+    "source": "Colony AI",
+    "target": "वसाहतीचा एआय"
+  },
+  {
+    "id": "online:Colors your buildings; painted units stay unchanged.",
+    "source": "Colors your buildings; painted units stay unchanged.",
+    "target": "तुमच्या इमारतींना रंग लावतो; रंगवलेली युनिट तशीच राहतात."
+  },
+  {
+    "id": "online:Configure Hive Mind in Settings → Online. In a match, press Ctrl+Enter to give an order. Assistance is permitted in ranked matches.",
+    "source": "Configure Hive Mind in Settings → Online. In a match, press Ctrl+Enter to give an order. Assistance is permitted in ranked matches.",
+    "target": "सेटिंग्ज → ऑनलाइनमध्ये Hive Mind ची व्यवस्था करा. सामन्यात आदेश देण्यासाठी Ctrl+Enter दाबा. क्रमवारीच्या सामन्यांमध्ये सहाय्य वापरण्यास परवानगी आहे."
+  },
+  {
+    "id": "online:Confirmed cash",
+    "source": "Confirmed cash",
+    "target": "पुष्टी झालेली रक्कम"
+  },
+  {
+    "id": "online:Confirmed cash table",
+    "source": "Confirmed cash table",
+    "target": "पुष्टी झालेल्या रकमेची सारणी"
+  },
+  {
+    "id": "online:Confirmed cash uses Stripe charge/refund currency units; current and previous UTC periods. CSV exports preserve exact integer minor units.",
+    "source": "Confirmed cash uses Stripe charge/refund currency units; current and previous UTC periods. CSV exports preserve exact integer minor units.",
+    "target": "पुष्टी झालेल्या रकमेसाठी Stripe च्या शुल्क/परताव्याची चलन एकके वापरली जातात; चालू आणि मागील UTC कालावधी दाखवले जातात. CSV निर्यातीमध्ये लहान चलन एककांतील अचूक पूर्णांक जतन केले जातात."
+  },
+  {
+    "id": "online:Continue to {p1}",
+    "source": "Continue to {p1}",
+    "target": "{p1} कडे पुढे जा"
+  },
+  {
+    "id": "online:Create a fungal swamp with slow marsh, glowing wood trees, and renewable mushroom food.",
+    "source": "Create a fungal swamp with slow marsh, glowing wood trees, and renewable mushroom food.",
+    "target": "हालचाल मंदावणारी दलदल, चमकणाऱ्या लाकडाची झाडे आणि पुन्हा उगवणारे मशरूम अन्न असलेला बुरशीमय दलदलीचा प्रदेश तयार करा."
+  },
+  {
+    "id": "online:Create a mushroom hospital that heals workers and warriors, costs 10 wood, and holds four units.",
+    "source": "Create a mushroom hospital that heals workers and warriors, costs 10 wood, and holds four units.",
+    "target": "कामगार आणि योद्ध्यांना बरे करणारे, १० लाकूड लागणारे आणि चार युनिट सामावणारे मशरूम रुग्णालय तयार करा."
+  },
+  {
+    "id": "online:Creation needs attention.",
+    "source": "Creation needs attention.",
+    "target": "निर्मितीकडे लक्ष देणे आवश्यक आहे."
+  },
+  {
+    "id": "online:Download ZIP",
+    "source": "Download ZIP",
+    "target": "ZIP डाउनलोड करा"
+  },
+  {
+    "id": "online:Duration (steps)",
+    "source": "Duration (steps)",
+    "target": "कालावधी (टप्पे)"
+  },
+  {
+    "id": "online:Editing version {value0}",
+    "source": "Editing version {value0}",
+    "target": "आवृत्ती {value0} संपादित करत आहे"
+  },
+  {
+    "id": "online:Engine {slot0} · suite {slot1}",
+    "source": "Engine {slot0} · suite {slot1}",
+    "target": "इंजिन {slot0} · चाचणीसंच {slot1}"
+  },
+  {
+    "id": "online:Enter to send · Shift + Enter for a new line. Creation requests build automatically · 1 credit on delivery.",
+    "source": "Enter to send · Shift + Enter for a new line. Creation requests build automatically · 1 credit on delivery.",
+    "target": "पाठवण्यासाठी Enter · नवीन ओळीसाठी Shift + Enter. निर्मितीच्या विनंत्यांवर आपोआप काम सुरू होते · तयार आवृत्ती मिळाल्यावर १ क्रेडिट."
+  },
+  {
+    "id": "online:Estimates use measured usage and configured, versioned monetary rates. Missing usage/pricing remains unavailable. An estimate covers priced attempts only; it is a partial subtotal whenever any attempt has unavailable cost.",
+    "source": "Estimates use measured usage and configured, versioned monetary rates. Missing usage/pricing remains unavailable. An estimate covers priced attempts only; it is a partial subtotal whenever any attempt has unavailable cost.",
+    "target": "अंदाजासाठी मोजलेला वापर आणि निश्चित केलेले आवृत्तीबद्ध आर्थिक दर वापरले जातात. वापर किंवा दरांची माहिती नसल्यास ती अनुपलब्धच राहते. खर्च मोजता येणारे प्रयत्नच अंदाजात धरले जातात; एखाद्या प्रयत्नाचा खर्च अनुपलब्ध असल्यास ही केवळ आंशिक बेरीज असते."
+  },
+  {
+    "id": "online:Generated revisions",
+    "source": "Generated revisions",
+    "target": "तयार केलेल्या आवृत्त्या"
+  },
+  {
+    "id": "online:Generator Studio is disabled on this instance. Recover saved files through",
+    "source": "Generator Studio is disabled on this instance. Recover saved files through",
+    "target": "या स्थापनेत जनरेटर स्टुडिओ बंद आहे. जतन केलेल्या फाइल्स पुनर्प्राप्त करण्यासाठी वापरा:"
+  },
+  {
+    "id": "online:Globs",
+    "source": "Globs",
+    "target": "ग्लॉब्स"
+  },
+  {
+    "id": "online:Globs (all)",
+    "source": "Globs (all)",
+    "target": "ग्लॉब्स (सर्व)"
+  },
+  {
+    "id": "online:Gravatar when available, otherwise initials",
+    "source": "Gravatar when available, otherwise initials",
+    "target": "उपलब्ध असल्यास Gravatar, अन्यथा आद्याक्षरे"
+  },
+  {
+    "id": "online:Ground",
+    "source": "Ground",
+    "target": "जमीन"
+  },
+  {
+    "id": "online:Hive",
+    "source": "Hive",
+    "target": "Hive"
+  },
+  {
+    "id": "online:Hungry globs",
+    "source": "Hungry globs",
+    "target": "भुकेले ग्लॉब्स"
+  },
+  {
+    "id": "online:Installed preset artwork",
+    "source": "Installed preset artwork",
+    "target": "स्थापित पूर्वनिर्धारित कलाकृती"
+  },
+  {
+    "id": "online:Invalid rig UV",
+    "source": "Invalid rig UV",
+    "target": "अवैध रिग UV"
+  },
+  {
+    "id": "online:Last {slot0} day",
+    "source": {
+      "one": "Last {slot0} day",
+      "other": "Last {slot0} days"
+    },
+    "target": {
+      "one": "मागील {slot0} दिवस",
+      "other": "मागील {slot0} दिवस"
+    }
+  },
+  {
+    "id": "online:Last {slot0} days",
+    "source": "Last {slot0} days",
+    "target": "मागील {slot0} दिवस"
+  },
+  {
+    "id": "online:Leave this set and discard unsaved changes?",
+    "source": "Leave this set and discard unsaved changes?",
+    "target": "या संचातून बाहेर पडून जतन न केलेले बदल रद्द करायचे का?"
+  },
+  {
+    "id": "online:Library",
+    "source": "Library",
+    "target": "संग्रह"
+  },
+  {
+    "id": "online:License: {slot0} · AI composition is disclosed.",
+    "source": "License: {slot0} · AI composition is disclosed.",
+    "target": "परवाना: {slot0} · रचना एआयने तयार केल्याचे स्पष्ट केले आहे."
+  },
+  {
+    "id": "online:Made with",
+    "source": "Made with",
+    "target": "निर्मितीची पद्धत"
+  },
+  {
+    "id": "online:Map build",
+    "source": "Map build",
+    "target": "नकाशा निर्मिती"
+  },
+  {
+    "id": "online:Mean seconds per successful delivery, with the number of measured completions.",
+    "source": "Mean seconds per successful delivery, with the number of measured completions.",
+    "target": "प्रत्येक यशस्वी वितरणासाठी लागणारे सरासरी सेकंद आणि मोजलेल्या पूर्ण वितरणांची संख्या."
+  },
+  {
+    "id": "online:Missing payment signature.",
+    "source": "Missing payment signature.",
+    "target": "देयकाची स्वाक्षरी उपलब्ध नाही."
+  },
+  {
+    "id": "online:Moderator",
+    "source": "Moderator",
+    "target": "मॉडरेटर"
+  },
+  {
+    "id": "online:Music revisions",
+    "source": "Music revisions",
+    "target": "संगीताच्या आवृत्त्या"
+  },
+  {
+    "id": "online:New to Globulation 2?",
+    "source": "New to Globulation 2?",
+    "target": "Globulation 2 प्रथमच खेळत आहात का?"
+  },
+  {
+    "id": "online:No open reports.",
+    "source": "No open reports.",
+    "target": "कोणतेही प्रलंबित अहवाल नाहीत."
+  },
+  {
+    "id": "online:Nothing here: this page wandered off like an explorer glob. {slot0}.",
+    "source": "Nothing here: this page wandered off like an explorer glob. {slot0}.",
+    "target": "येथे काही नाही: एखाद्या शोधक ग्लॉबसारखे हे पान भरकटले आहे. {slot0}."
+  },
+  {
+    "id": "online:One .js file · up to 128 KiB · profiles 1 and 2",
+    "source": "One .js file · up to 128 KiB · profiles 1 and 2",
+    "target": "एक .js फाइल · कमाल १२८ KiB · प्रोफाइल १ आणि २"
+  },
+  {
+    "id": "online:Open Building families when creating a new game or a new map in the editor, install a compatible release, and enable it. Enabled families apply to future generated maps alongside stock buildings. Existing maps and saves keep their own buildings.",
+    "source": "Open Building families when creating a new game or a new map in the editor, install a compatible release, and enable it. Enabled families apply to future generated maps alongside stock buildings. Existing maps and saves keep their own buildings.",
+    "target": "नवीन खेळ किंवा संपादकात नवीन नकाशा तयार करताना इमारत संच उघडा, सुसंगत प्रकाशन स्थापित करा आणि ते सुरू करा. सुरू केलेले संच मूळ इमारतींसोबत पुढे तयार होणाऱ्या नकाशांमध्ये वापरले जातील. विद्यमान नकाशे आणि जतन केलेले खेळ त्यांच्या मूळ इमारतीच ठेवतात."
+  },
+  {
+    "id": "online:Painting needs WebGL 2. You can still save your draft, browse My skins, or visit the shop.",
+    "source": "Painting needs WebGL 2. You can still save your draft, browse My skins, or visit the shop.",
+    "target": "रंगवण्यासाठी WebGL 2 आवश्यक आहे. तरीही तुम्ही मसुदा जतन करू शकता, माझी रूपे पाहू शकता किंवा दुकानात जाऊ शकता."
+  },
+  {
+    "id": "online:Prepare Calm, Building, and Combat arrangements of the same piece. Each must last 10 seconds to 15 minutes. Originals are deleted after conversion; keep your own source files.",
+    "source": "Prepare Calm, Building, and Combat arrangements of the same piece. Each must last 10 seconds to 15 minutes. Originals are deleted after conversion; keep your own source files.",
+    "target": "एकाच संगीतरचनेच्या शांत, बांधकाम आणि लढाई या अवस्थांसाठी आवृत्त्या तयार करा. प्रत्येक आवृत्ती १० सेकंद ते १५ मिनिटे असावी. रूपांतरणानंतर मूळ प्रती हटवल्या जातात; तुमच्या मूळ फाइल्स स्वतःकडे जपून ठेवा."
+  },
+  {
+    "id": "online:Preparing your model…",
+    "source": "Preparing your model…",
+    "target": "तुमचे मॉडेल तयार करत आहे…"
+  },
+  {
+    "id": "online:Public library",
+    "source": "Public library",
+    "target": "सार्वजनिक संग्रह"
+  },
+  {
+    "id": "online:Publish saved soundtrack {slot0} to the public Music library. Only this exact version is shared.",
+    "source": "Publish saved soundtrack {slot0} to the public Music library. Only this exact version is shared.",
+    "target": "जतन केलेला साउंडट्रॅक {slot0} सार्वजनिक संगीत संग्रहात प्रकाशित करा. केवळ हीच आवृत्ती सामायिक केली जाईल."
+  },
+  {
+    "id": "online:Ready for your next adventure",
+    "source": "Ready for your next adventure",
+    "target": "तुमच्या पुढील साहसासाठी सज्ज"
+  },
+  {
+    "id": "online:Render the instruments",
+    "source": "Render the instruments",
+    "target": "वाद्यांचे ध्वनी तयार करा"
+  },
+  {
+    "id": "online:Resolution: {slot0}{slot1}",
+    "source": "Resolution: {slot0}{slot1}",
+    "target": "निराकरण: {slot0}{slot1}"
+  },
+  {
+    "id": "online:Restrictions and deletion require a lower-role account.",
+    "source": "Restrictions and deletion require a lower-role account.",
+    "target": "निर्बंध घालण्यासाठी किंवा खाते हटवण्यासाठी त्या खात्याचे अधिकार तुमच्यापेक्षा कमी असणे आवश्यक आहे."
+  },
+  {
+    "id": "online:Reteaming names team {p0} of {p1}.",
+    "source": "Reteaming names team {p0} of {p1}.",
+    "target": "संघ फेरवाटपात संघ क्रमांक {p0} दिला आहे, पण एकूण {p1} संघ आहेत."
+  },
+  {
+    "id": "online:Revision restored to your saved draft.",
+    "source": "Revision restored to your saved draft.",
+    "target": "तुमच्या जतन केलेल्या मसुद्यात आवृत्ती पुनर्संचयित केली आहे."
+  },
+  {
+    "id": "online:Save your manual building edits in Edit before generating, restoring a version, or undoing.",
+    "source": "Save your manual building edits in Edit before generating, restoring a version, or undoing.",
+    "target": "निर्मिती करण्यापूर्वी, आवृत्ती पुनर्संचयित करण्यापूर्वी किंवा पूर्ववत करण्यापूर्वी इमारतीत हाताने केलेले बदल संपादन विभागात जतन करा."
+  },
+  {
+    "id": "online:Save your manual terrain edits in Edit before generating, restoring a version, or undoing.",
+    "source": "Save your manual terrain edits in Edit before generating, restoring a version, or undoing.",
+    "target": "निर्मिती करण्यापूर्वी, आवृत्ती पुनर्संचयित करण्यापूर्वी किंवा पूर्ववत करण्यापूर्वी भूभागात हाताने केलेले बदल संपादन विभागात जतन करा."
+  },
+  {
+    "id": "online:Search matches",
+    "source": "Search matches",
+    "target": "सामने शोधा"
+  },
+  {
+    "id": "online:Set the goals and your globs get to work. Feed your colony, train your units and explore together.",
+    "source": "Set the goals and your globs get to work. Feed your colony, train your units and explore together.",
+    "target": "उद्दिष्टे ठरवा की तुमचे ग्लॉब्स कामाला लागतील. वसाहतीला अन्न द्या, युनिटना प्रशिक्षण द्या आणि एकत्र शोधमोहीम करा."
+  },
+  {
+    "id": "online:Sign in to see your library.",
+    "source": "Sign in to see your library.",
+    "target": "तुमचा संग्रह पाहण्यासाठी साइन इन करा."
+  },
+  {
+    "id": "online:Sign out",
+    "source": "Sign out",
+    "target": "साइन आउट करा"
+  },
+  {
+    "id": "online:Six brood eggs nested in a low rim.",
+    "source": "Six brood eggs nested in a low rim.",
+    "target": "कमी उंचीच्या कडेने वेढलेली सहा अंडी."
+  },
+  {
+    "id": "online:Start from a preset",
+    "source": "Start from a preset",
+    "target": "पूर्वनिर्धारित नमुन्यापासून सुरुवात करा"
+  },
+  {
+    "id": "online:Still JPEG, PNG or WebP · up to 10 MiB and 25 megapixels. Choosing Gravatar or initials removes your uploaded photo.",
+    "source": "Still JPEG, PNG or WebP · up to 10 MiB and 25 megapixels. Choosing Gravatar or initials removes your uploaded photo.",
+    "target": "स्थिर JPEG, PNG किंवा WebP · कमाल १० MiB आणि २५ मेगापिक्सेल. Gravatar किंवा आद्याक्षरे निवडल्यास अपलोड केलेला फोटो हटवला जातो."
+  },
+  {
+    "id": "online:The current draft changed. Close this panel and review the new revision.",
+    "source": "The current draft changed. Close this panel and review the new revision.",
+    "target": "सध्याचा मसुदा बदलला आहे. हे पॅनेल बंद करून नवीन आवृत्ती तपासा."
+  },
+  {
+    "id": "online:The leased job does not use this blob.",
+    "source": "The leased job does not use this blob.",
+    "target": "सोपवलेल्या कामात हा ब्लॉब वापरला जात नाही."
+  },
+  {
+    "id": "online:The ticket is no longer waiting.",
+    "source": "The ticket is no longer waiting.",
+    "target": "हे तिकीट आता प्रतीक्षेच्या रांगेत नाही."
+  },
+  {
+    "id": "online:This checkout is being recovered. Check your purchase status before trying again.",
+    "source": "This checkout is being recovered. Check your purchase status before trying again.",
+    "target": "या खरेदी प्रक्रियेची स्थिती पुनर्प्राप्त केली जात आहे. पुन्हा प्रयत्न करण्यापूर्वी खरेदीची स्थिती तपासा."
+  },
+  {
+    "id": "online:This {p0} sign-in already belongs to the player",
+    "source": "This {p0} sign-in already belongs to the player",
+    "target": "हे {p0} साइन-इन आधीच या खेळाडूशी जोडलेले आहे:"
+  },
+  {
+    "id": "online:Trailing {value0} data",
+    "source": "Trailing {value0} data",
+    "target": "{value0} च्या शेवटी अतिरिक्त डेटा आहे"
+  },
+  {
+    "id": "online:Type your name, ",
+    "source": "Type your name, ",
+    "target": "तुमचे नाव टाइप करा, "
+  },
+  {
+    "id": "online:UTC day",
+    "source": "UTC day",
+    "target": "UTC दिवस"
+  },
+  {
+    "id": "online:Undo revision",
+    "source": "Undo revision",
+    "target": "आवृत्तीतील बदल पूर्ववत करा"
+  },
+  {
+    "id": "online:Units",
+    "source": "Units",
+    "target": "युनिट"
+  },
+  {
+    "id": "online:Units can cross",
+    "source": "Units can cross",
+    "target": "युनिट ओलांडू शकतात"
+  },
+  {
+    "id": "online:Unknown library.",
+    "source": "Unknown library.",
+    "target": "अज्ञात संग्रह."
+  },
+  {
+    "id": "online:Unmute",
+    "source": "Unmute",
+    "target": "म्यूट रद्द करा"
+  },
+  {
+    "id": "online:Unverified",
+    "source": "Unverified",
+    "target": "पडताळलेले नाही"
+  },
+  {
+    "id": "online:Upload PNG",
+    "source": "Upload PNG",
+    "target": "PNG अपलोड करा"
+  },
+  {
+    "id": "online:Upload artwork you may use as a reference. Up to four selected images guide the visual style.",
+    "source": "Upload artwork you may use as a reference. Up to four selected images guide the visual style.",
+    "target": "संदर्भ म्हणून वापरण्याची परवानगी असलेली कलाकृती अपलोड करा. निवडलेल्या कमाल चार प्रतिमा दृश्यशैलीला दिशा देतील."
+  },
+  {
+    "id": "online:Use a photo from your device, or the Gravatar associated with a linked email address. Your photo is public.",
+    "source": "Use a photo from your device, or the Gravatar associated with a linked email address. Your photo is public.",
+    "target": "उपकरणावरील फोटो किंवा जोडलेल्या ईमेल पत्त्याशी संबंधित Gravatar वापरा. तुमचा फोटो सार्वजनिक असतो."
+  },
+  {
+    "id": "online:Validate and preview",
+    "source": "Validate and preview",
+    "target": "पडताळणी करून पूर्वावलोकन करा"
+  },
+  {
+    "id": "online:Why hide this map? (shown to its owner)",
+    "source": "Why hide this map? (shown to its owner)",
+    "target": "हा नकाशा का लपवत आहात? (मालकाला दाखवले जाते)"
+  },
+  {
+    "id": "online:You are muted.",
+    "source": "You are muted.",
+    "target": "तुम्हाला चॅट संदेश पाठवण्यास मनाई आहे."
+  },
+  {
+    "id": "online:You can only ban accounts with a lower role.",
+    "source": "You can only ban accounts with a lower role.",
+    "target": "तुमच्यापेक्षा कमी अधिकार असलेल्या खात्यांवरच बंदी घालता येते."
+  },
+  {
+    "id": "online:You can only delete accounts with a lower role.",
+    "source": "You can only delete accounts with a lower role.",
+    "target": "तुमच्यापेक्षा कमी अधिकार असलेली खातीच हटवता येतात."
+  },
+  {
+    "id": "online:You can only mute accounts with a lower role.",
+    "source": "You can only mute accounts with a lower role.",
+    "target": "तुमच्यापेक्षा कमी अधिकार असलेल्या खात्यांनाच चॅटबंदी घालता येते."
+  },
+  {
+    "id": "online:Your match is already starting.",
+    "source": "Your match is already starting.",
+    "target": "तुमचा सामना आधीच सुरू होत आहे."
+  },
+  {
+    "id": "online:finding",
+    "source": "finding",
+    "target": "निष्कर्ष"
+  },
+  {
+    "id": "online:format must be map or save.",
+    "source": "format must be map or save.",
+    "target": "format हे map किंवा save असावे."
+  },
+  {
+    "id": "online:starting",
+    "source": "starting",
+    "target": "सुरू होत आहे"
+  },
+  {
+    "id": "online:{loaded} of {total} MB",
+    "source": "{loaded} of {total} MB",
+    "target": "{total} MB पैकी {loaded}"
+  },
+  {
+    "id": "online:{p0} invited you to their Globulation 2 room{p1}.",
+    "source": "{p0} invited you to their Globulation 2 room{p1}.",
+    "target": "{p0} यांनी त्यांच्या Globulation 2 खोलीत तुम्हाला आमंत्रित केले आहे{p1}."
+  },
+  {
+    "id": "online:{slot0} {slot1} · AI composition is disclosed.",
+    "source": "{slot0} {slot1} · AI composition is disclosed.",
+    "target": "{slot0} {slot1} · रचना एआयने तयार केल्याचे स्पष्ट केले आहे."
+  },
+  {
+    "id": "online:{slot0} · {slot1} likes",
+    "source": "{slot0} · {slot1} likes",
+    "target": "{slot0} · {slot1} पसंती"
+  },
+  {
+    "id": "online:{slot0} × {slot1} · {slot2} player",
+    "source": {
+      "one": "{slot0} × {slot1} · {slot2} player",
+      "other": "{slot0} × {slot1} · {slot2} players"
+    },
+    "target": {
+      "one": "{slot0} × {slot1} · {slot2} खेळाडू",
+      "other": "{slot0} × {slot1} · {slot2} खेळाडू"
+    }
+  },
+  {
+    "id": "online:{slot0} × {slot1} · {slot2} player · Private until published",
+    "source": {
+      "one": "{slot0} × {slot1} · {slot2} player · Private until published",
+      "other": "{slot0} × {slot1} · {slot2} players · Private until published"
+    },
+    "target": {
+      "one": "{slot0} × {slot1} · {slot2} खेळाडू · प्रकाशित होईपर्यंत खाजगी",
+      "other": "{slot0} × {slot1} · {slot2} खेळाडू · प्रकाशित होईपर्यंत खाजगी"
+    }
+  },
+  {
+    "id": "online:{slot0}: starts at {slot1}, holds {slot2}; {slot3}",
+    "source": "{slot0}: starts at {slot1}, holds {slot2}; {slot3}",
+    "target": "{slot0}: सुरुवातीला {slot1}, कमाल क्षमता {slot2}; {slot3}"
+  },
+  {
+    "id": "online:{value0}, home",
+    "source": "{value0}, home",
+    "target": "{value0}, मुख्यपृष्ठ"
+  },
+  {
+    "id": "online:♥ {slot0} likes",
+    "source": "♥ {slot0} likes",
+    "target": "♥ {slot0} पसंती"
+  },
+  {
+    "id": "online:＋",
+    "source": "＋",
+    "target": "＋"
+  },
+  {
+    "id": "online:AI Colony Studio",
+    "source": "AI Colony Studio",
+    "target": "एआय वसाहत स्टुडिओ"
+  },
+  {
+    "id": "online:Comparison with ",
+    "source": "Comparison with ",
+    "target": "याच्याशी तुलना: "
+  },
+  {
+    "id": "online:Copy my library version",
+    "source": "Copy my library version",
+    "target": "संग्रहातील माझ्या आवृत्तीची प्रत करा"
+  },
+  {
+    "id": "online:Editing saved revision {value0}",
+    "source": "Editing saved revision {value0}",
+    "target": "जतन केलेली आवृत्ती {value0} संपादित करत आहे"
+  },
+  {
+    "id": "online:Preparing your soundtrack…",
+    "source": "Preparing your soundtrack…",
+    "target": "तुमचा साउंडट्रॅक तयार करत आहे…"
+  },
+  {
+    "id": "online:Saved candidate",
+    "source": "Saved candidate",
+    "target": "जतन केलेली प्रस्तावित आवृत्ती"
+  },
+  {
+    "id": "online:Your composer is working…",
+    "source": "Your composer is working…",
+    "target": "तुमचा संगीतकार काम करत आहे…"
+  },
+  {
+    "id": "online:{count} players on this page",
+    "source": "{count} players on this page",
+    "target": "या पानावर {count} खेळाडू"
+  },
+  {
+    "id": "online:▶ Let the globs roam",
+    "source": "▶ Let the globs roam",
+    "target": "▶ ग्लॉब्सना फिरू द्या"
+  },
+  {
+    "id": "online:❚❚ Pause the globs",
+    "source": "❚❚ Pause the globs",
+    "target": "❚❚ ग्लॉब्सना थांबवा"
+  },
+  {
+    "id": "online:Candidate {count} execution report",
+    "source": "Candidate {count} execution report",
+    "target": "प्रस्तावित आवृत्ती {count} चा अंमलबजावणी अहवाल"
+  },
+  {
+    "id": "online:Candidate {count} score",
+    "source": "Candidate {count} score",
+    "target": "प्रस्तावित आवृत्ती {count} चे गुण"
+  },
+  {
+    "id": "online:Candidate {count} · validated",
+    "source": "Candidate {count} · validated",
+    "target": "प्रस्तावित आवृत्ती {count} · पडताळलेली"
+  },
+  {
+    "id": "online:Candidate {count} · needs repairs",
+    "source": "Candidate {count} · needs repairs",
+    "target": "प्रस्तावित आवृत्ती {count} · दुरुस्ती आवश्यक"
+  },
+  {
+    "id": "online:Candidate {count} report",
+    "source": "Candidate {count} report",
+    "target": "प्रस्तावित आवृत्ती {count} चा अहवाल"
+  }
+]

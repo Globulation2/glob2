@@ -1,0 +1,53 @@
+{
+  "request": {
+    "project": "bradley-personal-20261027",
+    "model": "general/nmt",
+    "payload": {
+      "sourceLanguageCode": "en",
+      "targetLanguageCode": "mr",
+      "mimeType": "text/plain",
+      "contents": [
+        "ZXQPH0QXZ decor source",
+        "Your draft changed while the design was loading. Your changes were kept; try opening the design again.",
+        "More filters",
+        "Clear filters",
+        "No results match these filters.",
+        "Results: ZXQPH0QXZ",
+        "Game text field"
+      ]
+    }
+  },
+  "response": {
+    "translations": [
+      {
+        "translatedText": "ZXQPH0QXZ सजावटीचा स्रोत",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "डिझाइन लोड होत असताना तुमच्या मसुद्यात बदल झाला. तुमचे बदल जतन करण्यात आले आहेत; डिझाइन पुन्हा उघडून पहा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अधिक फिल्टर",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "फिल्टर साफ करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "या फिल्टरशी जुळणारे कोणतेही निकाल नाहीत.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "निकाल: ZXQPH0QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "खेळाचे मजकूर क्षेत्र",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      }
+    ]
+  },
+  "response_sha256": "275da8e3fbb42d8cccc61863846bbce9ada47508b911a999c1c0688571972bd7"
+}

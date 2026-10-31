@@ -1,0 +1,418 @@
+{
+  "request": {
+    "project": "bradley-personal-20261027",
+    "model": "general/nmt",
+    "payload": {
+      "sourceLanguageCode": "en",
+      "targetLanguageCode": "mr",
+      "mimeType": "text/plain",
+      "contents": [
+        "ZXQPH0QXZ · ZXQPH1QXZ",
+        "Join",
+        "Join by code",
+        "Join ZXQPH0QXZ",
+        "Keep available and resolve",
+        "Keep history",
+        "Keep lengths (must already match)",
+        "Keep listening and comparison controls in Preview. Select a delivered version to change through chat.",
+        "Keep mine as a new skin",
+        "Keep my current account",
+        "Keep the melody, but make calm more spacious…",
+        "Keep this family namespace. Import a fork to create a different family.",
+        "Known-cost subtotal",
+        "Ladders",
+        "Language",
+        "Large",
+        "Last ZXQPH0QXZ day",
+        "Last ZXQPH0QXZ days",
+        "Last ZXQPH0QXZ days",
+        "Late",
+        "Layer",
+        "Leaderboard",
+        "Leaderboard participants",
+        "Leaderboards",
+        "Leave the room instead.",
+        "Leave this set and discard unsaved changes?",
+        "Leave with unsaved changes? A recovery copy stays on this device.",
+        "Leave with unsaved edits? A recovery copy stays on this device.",
+        "Length repair",
+        "Library",
+        "Licence",
+        "License",
+        "License for this version",
+        "License: ZXQPH0QXZ",
+        "License: ZXQPH0QXZ · AI composition is disclosed.",
+        "Lift ban",
+        "Light",
+        "Like",
+        "Likes",
+        "Limit must be between 1 and 100.",
+        "Link a recoverable account first.",
+        "Link an active recoverable account before purchasing.",
+        "Link an active recoverable account to sync drafts.",
+        "Listening note",
+        "Live AI playtest revision ZXQPH0QXZ",
+        "Live updates are unavailable. Refreshing saved work…",
+        "Load account changes",
+        "Load earlier conversation and versions",
+        "Load more",
+        "Load more drafts",
+        "Loading ",
+        "Loading code editor…",
+        "Loading comparison…",
+        "Loading drafts…",
+        "Loading editor…",
+        "Loading engine…",
+        "Loading game…",
+        "Loading map preview…",
+        "Loading matches…",
+        "Loading music…",
+        "Loading preview…",
+        "Loading reports…",
+        "Loading revision comparison…",
+        "Loading sets…",
+        "Loading set…",
+        "Loading the inspected version…",
+        "Loading this version…",
+        "Loading your building workspace…",
+        "Loading your skins…",
+        "Loading…",
+        "Local accounts are not enabled on this instance.",
+        "Local accounts are not enabled.",
+        "Loop continuity",
+        "Lost",
+        "Made",
+        "Made for your next match.",
+        "Made with",
+        "Main",
+        "Main material",
+        "Make public"
+      ]
+    }
+  },
+  "response": {
+    "translations": [
+      {
+        "translatedText": "ZXQPH0QXZ · ZXQPH1QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सामील व्हा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कोडद्वारे सामील व्हा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ मध्ये सामील व्हा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "उपलब्ध रहा आणि निराकरण करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "इतिहास जतन करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "लांबी तशीच ठेवा (आधीच जुळत असली पाहिजे)",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "प्रिव्ह्यूमध्ये ऐकण्याची आणि तुलना करण्याची नियंत्रणे चालू ठेवा. चॅटद्वारे बदल करण्यासाठी वितरित केलेली आवृत्ती निवडा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "माझी नवीन त्वचा म्हणून ठेवा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "माझे चालू खाते ठेवा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सूर कायम ठेवा, पण शांततेला अधिक विस्तार द्या…",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "हे फॅमिली नेमस्पेस कायम ठेवा. वेगळे फॅमिली तयार करण्यासाठी एक फोर्क इम्पोर्ट करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ज्ञात-खर्च उपएकूण",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "शिड्या",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "भाषा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "मोठे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "शेवटचा ZXQPH0QXZ दिवस",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "शेवटचे ZXQPH0QXZ दिवस",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "शेवटचे ZXQPH0QXZ दिवस",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "उशीरा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "थर",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "लीडरबोर्ड",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "लीडरबोर्ड सहभागी",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "लीडरबोर्ड",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "त्याऐवजी खोलीतून बाहेर पडा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "हा संच तसाच ठेवून न जतन केलेले बदल रद्द करायचे का?",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "बदल जतन न करताच निघून जायचे आहे का? रिकव्हरी कॉपी या डिव्हाइसवर राहते.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "जतन न केलेल्या बदलांसह निघून जायचे आहे का? पुनर्प्राप्ती प्रत या डिव्हाइसवर राहते.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "लांबी दुरुस्ती",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ग्रंथालय",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "परवाना",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "परवाना",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "या आवृत्तीसाठी परवाना",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "परवाना: ZXQPH0QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "परवाना: ZXQPH0QXZ · एआयची रचना उघड केली आहे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "बंदी उठवा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "प्रकाश",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "जसे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पसंती",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "मर्यादा 1 ते 100 च्या दरम्यान असली पाहिजे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सर्वप्रथम पुनर्प्राप्त करण्यायोग्य खाते लिंक करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "खरेदी करण्यापूर्वी एक सक्रिय आणि पुनर्प्राप्त करण्यायोग्य खाते जोडा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "मसुदे सिंक करण्यासाठी एक सक्रिय आणि पुनर्प्राप्त करण्यायोग्य खाते लिंक करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ऐकण्याची नोंद",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "थेट एआय प्लेटेस्ट आवृत्ती ZXQPH0QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "थेट अपडेट्स उपलब्ध नाहीत. जतन केलेले काम रिफ्रेश करत आहे…",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "खाते बदल लोड करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "मागील संभाषण आणि आवृत्त्या लोड करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अधिक लोड करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "आणखी मसुदे लोड करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "लोडिंग",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कोड एडिटर लोड होत आहे…",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तुलना लोड होत आहे…",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "मसुदे लोड होत आहेत…",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "एडिटर लोड होत आहे…",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "इंजिन लोड होत आहे…",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "गेम लोड होत आहे…",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नकाशाचे पूर्वावलोकन लोड होत आहे…",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सामने लोड होत आहेत…",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "संगीत लोड होत आहे…",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पूर्वावलोकन लोड होत आहे…",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अहवाल लोड होत आहेत…",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "आवृत्ती तुलना लोड होत आहे…",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सेट लोड होत आहेत…",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "लोडिंग सेट…",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तपासलेली आवृत्ती लोड होत आहे…",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ही आवृत्ती लोड होत आहे…",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तुमच्या बिल्डिंगमधील वर्कस्पेस लोड होत आहे…",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तुमची स्किन्स लोड होत आहेत…",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "लोडिंग…",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "या इन्स्टन्सवर स्थानिक खाती सक्षम केलेली नाहीत.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "स्थानिक खाती सक्षम केलेली नाहीत.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "लूप सातत्य",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "हरवले",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "बनवले",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तुमच्या पुढच्या सामन्यासाठी बनवलेले.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "यापासून बनवलेले",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "मुख्य",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "मुख्य साहित्य",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सार्वजनिक करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      }
+    ]
+  },
+  "response_sha256": "ea6f9a7b4904d787b847c62e9e99b316b37e443db831a4678030328cad8ab72a"
+}

@@ -1,0 +1,506 @@
+{
+  "batch": "native-general-009",
+  "target_sha256": "56341f7a4d012dd51c17cff97468e32eaac8f0089b9d11dbbb21dcedfac6f8f9",
+  "rows": [
+    {
+      "id": "native:[Stats meals per minute]",
+      "source": "Food/min",
+      "target": "अन्न/मिनिट"
+    },
+    {
+      "id": "native:[Stats occupancy]",
+      "source": "Feed / heal",
+      "target": "आहार / उपचार"
+    },
+    {
+      "id": "native:[Stats page one]",
+      "source": "Statistics 1/3  >",
+      "target": "आकडेवारी १/३ >"
+    },
+    {
+      "id": "native:[Stats page two]",
+      "source": "Statistics 2/3  >",
+      "target": "आकडेवारी २/३ >"
+    },
+    {
+      "id": "native:[Stats page three]",
+      "source": "Statistics 3/3  >",
+      "target": "आकडेवारी ३/३ >"
+    },
+    {
+      "id": "native:[Stats next page]",
+      "source": "Page (P)",
+      "target": "पृष्ठ (P)"
+    },
+    {
+      "id": "native:[Stats blocked units]",
+      "source": "Units blocked S/C",
+      "target": "मार्ग अडलेली युनिट S/C"
+    },
+    {
+      "id": "native:[Stats current blocked units]",
+      "source": "Currently blocked units",
+      "target": "सध्या मार्ग अडलेली युनिट"
+    },
+    {
+      "id": "native:[Stats growth global]",
+      "source": "Growth added amount",
+      "target": "वाढलेले एकूण प्रमाण"
+    },
+    {
+      "id": "native:[Stats growth new tiles]",
+      "source": "New resource tiles",
+      "target": "नवीन संसाधन टाइल्स"
+    },
+    {
+      "id": "native:[Stats growth reductions]",
+      "source": "Natural reductions",
+      "target": "नैसर्गिक घट"
+    },
+    {
+      "id": "native:[Stats growth per minute]",
+      "source": "Food growth/min",
+      "target": "अन्न वाढ/मिनिट"
+    },
+    {
+      "id": "native:[Stats growth near 8]",
+      "source": "Growth within 8 tiles",
+      "target": "८ टाइल्सच्या आत वाढ"
+    },
+    {
+      "id": "native:[Stats growth near 16]",
+      "source": "Growth within 16 tiles",
+      "target": "१६ टाइल्सच्या आत वाढ"
+    },
+    {
+      "id": "native:[Stats growth near 32]",
+      "source": "Growth within 32 tiles",
+      "target": "३२ टाइल्सच्या आत वाढ"
+    },
+    {
+      "id": "native:[Stats low HP 25]",
+      "source": "Units at 25% HP",
+      "target": "25% HP असलेली युनिट"
+    },
+    {
+      "id": "native:[Stats low food 25]",
+      "source": "Units at 25% food reserve",
+      "target": "२५% अन्नसाठा असलेल्या युनिट्स"
+    },
+    {
+      "id": "native:[Stats low HP 50]",
+      "source": "Units at 50% HP",
+      "target": "50% HP असलेली युनिट"
+    },
+    {
+      "id": "native:[Stats low HP 75]",
+      "source": "Units at 75% HP",
+      "target": "75% HP असलेली युनिट"
+    },
+    {
+      "id": "native:[Stats low food 50]",
+      "source": "Units at 50% food reserve",
+      "target": "५०% अन्नसाठा असलेल्या युनिट्स"
+    },
+    {
+      "id": "native:[Stats low food 75]",
+      "source": "Units at 75% food reserve",
+      "target": "७५% अन्नसाठा असलेले युनिट्स"
+    },
+    {
+      "id": "native:[Stats structural units]",
+      "source": "Structurally blocked units",
+      "target": "रचनेमुळे मार्ग अडलेली युनिट"
+    },
+    {
+      "id": "native:[Stats low HP ranges]",
+      "source": "HP ≤25/50/75%",
+      "target": "HP ≤25/50/75%"
+    },
+    {
+      "id": "native:[Stats low food ranges]",
+      "source": "Food ≤25/50/75%",
+      "target": "अन्न ≤२५/५०/७५%"
+    },
+    {
+      "id": "native:[Emoji]",
+      "source": "Emoji",
+      "target": "इमोजी"
+    },
+    {
+      "id": "native:[Emoji character]",
+      "source": "Emoji character",
+      "target": "इमोजी अक्षर"
+    },
+    {
+      "id": "native:[Smiley]",
+      "source": "Smiley",
+      "target": "स्माईली"
+    },
+    {
+      "id": "native:[Sad face]",
+      "source": "Sad face",
+      "target": "दुःखी चेहरा"
+    },
+    {
+      "id": "native:[Winking face]",
+      "source": "Winking face",
+      "target": "डोळा मिचकावणारा चेहरा"
+    },
+    {
+      "id": "native:[Surprised face]",
+      "source": "Surprised face",
+      "target": "आश्चर्यचकित चेहरा"
+    },
+    {
+      "id": "native:[Heart eyes]",
+      "source": "Heart eyes",
+      "target": "हृदयाचे डोळे"
+    },
+    {
+      "id": "native:[Sunglasses]",
+      "source": "Sunglasses",
+      "target": "सनग्लासेस"
+    },
+    {
+      "id": "native:[Heart]",
+      "source": "Heart",
+      "target": "हृदय"
+    },
+    {
+      "id": "native:[Star]",
+      "source": "Star",
+      "target": "स्टार"
+    },
+    {
+      "id": "native:[Neutral face]",
+      "source": "Neutral face",
+      "target": "तटस्थ चेहरा"
+    },
+    {
+      "id": "native:[Sleeping face]",
+      "source": "Sleeping face",
+      "target": "झोपलेला चेहरा"
+    },
+    {
+      "id": "native:[Grinning face]",
+      "source": "Grinning face",
+      "target": "हसणारा चेहरा"
+    },
+    {
+      "id": "native:[Kissing face]",
+      "source": "Kissing face",
+      "target": "चुंबन चेहरा"
+    },
+    {
+      "id": "native:[Angry face]",
+      "source": "Angry face",
+      "target": "रागावलेला चेहरा"
+    },
+    {
+      "id": "native:[Tongue out]",
+      "source": "Tongue out",
+      "target": "जीभ बाहेर"
+    },
+    {
+      "id": "native:[Skull]",
+      "source": "Skull",
+      "target": "कवटी"
+    },
+    {
+      "id": "native:[Flower]",
+      "source": "Flower",
+      "target": "फूल"
+    },
+    {
+      "id": "native:[Four-leaf clover]",
+      "source": "Four-leaf clover",
+      "target": "चार पानी तिपर्णी"
+    },
+    {
+      "id": "native:[Teardrop]",
+      "source": "Teardrop",
+      "target": "अश्रू"
+    },
+    {
+      "id": "native:[Cloud]",
+      "source": "Cloud",
+      "target": "ढग"
+    },
+    {
+      "id": "native:[Gem]",
+      "source": "Gem",
+      "target": "रत्न"
+    },
+    {
+      "id": "native:[Apple]",
+      "source": "Apple",
+      "target": "सफरचंद"
+    },
+    {
+      "id": "native:[Speech bubble]",
+      "source": "Speech bubble",
+      "target": "संवाद फुगा"
+    },
+    {
+      "id": "native:[Shield]",
+      "source": "Shield",
+      "target": "ढाल"
+    },
+    {
+      "id": "native:[Emoji style]",
+      "source": "Emoji style",
+      "target": "इमोजी शैली"
+    },
+    {
+      "id": "native:[Outline]",
+      "source": "Outline",
+      "target": "रूपरेषा"
+    },
+    {
+      "id": "native:[Filled]",
+      "source": "Filled",
+      "target": "भरलेले"
+    },
+    {
+      "id": "native:[Regular]",
+      "source": "Regular",
+      "target": "नियमित"
+    },
+    {
+      "id": "native:[Inverse]",
+      "source": "Inverse",
+      "target": "उलटे"
+    },
+    {
+      "id": "native:[Crossings]",
+      "source": "Crossings",
+      "target": "ओलांडण्याचे मार्ग"
+    },
+    {
+      "id": "native:[Forts]",
+      "source": "Forts",
+      "target": "किल्ले"
+    },
+    {
+      "id": "native:[Gate width]",
+      "source": "Gate width",
+      "target": "प्रवेशद्वाराची रुंदी"
+    },
+    {
+      "id": "native:[Braided Delta]",
+      "source": "Braided Delta",
+      "target": "वेणीसारखा त्रिभुज प्रदेश"
+    },
+    {
+      "id": "native:[Braid count]",
+      "source": "Braid count",
+      "target": "गुंफलेल्या प्रवाहांची संख्या"
+    },
+    {
+      "id": "native:[Rejoining frequency]",
+      "source": "Rejoining frequency",
+      "target": "पुन्हा सामील होण्याची वारंवारता"
+    },
+    {
+      "id": "native:[Crossing spacing]",
+      "source": "Crossing spacing",
+      "target": "ओलांडण्याच्या मार्गांमधील अंतर"
+    },
+    {
+      "id": "native:[Breachable highlands]",
+      "source": "Breachable highlands",
+      "target": "भेद्य उंच प्रदेश"
+    },
+    {
+      "id": "native:[Ridge depth]",
+      "source": "Ridge depth",
+      "target": "कटक खोली"
+    },
+    {
+      "id": "native:[Extra open passes]",
+      "source": "Extra open passes",
+      "target": "अतिरिक्त खुल्या खिंडी"
+    },
+    {
+      "id": "native:[Wooded saddles]",
+      "source": "Wooded saddles",
+      "target": "झाडीयुक्त खिंडी"
+    },
+    {
+      "id": "native:[Hedgerow Country]",
+      "source": "Hedgerow Country",
+      "target": "झाडांच्या कुंपणांचा प्रदेश"
+    },
+    {
+      "id": "native:[Field size]",
+      "source": "Field size",
+      "target": "शेताचा आकार"
+    },
+    {
+      "id": "native:[Hedge thickness]",
+      "source": "Hedge thickness",
+      "target": "कुंपणाची जाडी"
+    },
+    {
+      "id": "native:[Existing gateways]",
+      "source": "Existing gateways",
+      "target": "विद्यमान प्रवेशद्वार"
+    },
+    {
+      "id": "native:[Wooded boundary share]",
+      "source": "Wooded boundary share",
+      "target": "झाडीयुक्त सीमेचा हिस्सा"
+    },
+    {
+      "id": "native:[The Glacis]",
+      "source": "The Glacis",
+      "target": "ग्लासिस"
+    },
+    {
+      "id": "native:[Allotments]",
+      "source": "Allotments",
+      "target": "वाटप"
+    },
+    {
+      "id": "native:[Caravanserai]",
+      "source": "Caravanserai",
+      "target": "कारवानसराय"
+    },
+    {
+      "id": "native:[Mixed]",
+      "source": "Mixed",
+      "target": "मिश्रित"
+    },
+    {
+      "id": "native:[Fort size]",
+      "source": "Fort size",
+      "target": "किल्ल्याचा आकार"
+    },
+    {
+      "id": "native:[Bastions]",
+      "source": "Bastions",
+      "target": "बुरुज"
+    },
+    {
+      "id": "native:[Four-pointed]",
+      "source": "Four-pointed",
+      "target": "चार-टोके असलेला"
+    },
+    {
+      "id": "native:[Five-pointed]",
+      "source": "Five-pointed",
+      "target": "पाच-टोके असलेला"
+    },
+    {
+      "id": "native:[Six-pointed]",
+      "source": "Six-pointed",
+      "target": "सहा-टोके असलेला"
+    },
+    {
+      "id": "native:[Glacis width]",
+      "source": "Glacis width",
+      "target": "किल्ल्याबाहेरील उताराची रुंदी"
+    },
+    {
+      "id": "native:[Gates]",
+      "source": "Gates",
+      "target": "प्रवेशद्वारे"
+    },
+    {
+      "id": "native:[Site size]",
+      "source": "Site size",
+      "target": "जागेचा आकार"
+    },
+    {
+      "id": "native:[Plot width]",
+      "source": "Plot width",
+      "target": "प्लॉटची रुंदी"
+    },
+    {
+      "id": "native:[Plot mix]",
+      "source": "Plot mix",
+      "target": "भूखंडांचे मिश्रण"
+    },
+    {
+      "id": "native:[Tended]",
+      "source": "Tended",
+      "target": "निगा राखलेले"
+    },
+    {
+      "id": "native:[Overgrown]",
+      "source": "Overgrown",
+      "target": "रान माजलेले"
+    },
+    {
+      "id": "native:[Commons]",
+      "source": "Commons",
+      "target": "सामायिक प्रदेश"
+    },
+    {
+      "id": "native:[Few]",
+      "source": "Few",
+      "target": "थोडे"
+    },
+    {
+      "id": "native:[Some]",
+      "source": "Some",
+      "target": "काही"
+    },
+    {
+      "id": "native:[Home oasis size]",
+      "source": "Home oasis size",
+      "target": "तळाच्या मरूद्यानाचा आकार"
+    },
+    {
+      "id": "native:[Caravanserais per colony]",
+      "source": "Caravanserais per colony",
+      "target": "प्रत्येक वसाहतीतील कारवाँ सराय"
+    },
+    {
+      "id": "native:[Desert]",
+      "source": "Desert",
+      "target": "वाळवंट"
+    },
+    {
+      "id": "native:[Open erg]",
+      "source": "Open erg",
+      "target": "खुले वाळवंट"
+    },
+    {
+      "id": "native:[Dunes and mesas]",
+      "source": "Dunes and mesas",
+      "target": "वाळूचे ढिगारे आणि पठारे"
+    },
+    {
+      "id": "native:[Canyon country]",
+      "source": "Canyon country",
+      "target": "खोल दऱ्यांचा प्रदेश"
+    },
+    {
+      "id": "native:[A wall would stand on a beach; try another seed.]",
+      "source": "A wall would stand on a beach; try another seed.",
+      "target": "भिंत किनाऱ्यावर येईल; दुसरे बीज वापरा."
+    },
+    {
+      "id": "native:[The fort is too small for its gardens; raise Fort size.]",
+      "source": "The fort is too small for its gardens; raise Fort size.",
+      "target": "किल्ला त्याच्या बागांच्या मानाने खूप लहान आहे; किल्ल्याचा आकार वाढवा."
+    },
+    {
+      "id": "native:[The home oasis is too small; raise Home oasis size.]",
+      "source": "The home oasis is too small; raise Home oasis size.",
+      "target": "तळाचे मरूद्यान खूप लहान आहे; तळाच्या मरूद्यानाचा आकार वाढवा."
+    },
+    {
+      "id": "native:[Braid width]",
+      "source": "Braid width",
+      "target": "गुंफलेल्या प्रवाहांची रुंदी"
+    },
+    {
+      "id": "native:[Bar size]",
+      "source": "Bar size",
+      "target": "गाळाच्या पट्ट्याचा आकार"
+    }
+  ]
+}

@@ -1,0 +1,519 @@
+{
+  "batch": "online-online-003",
+  "source_sha256": "0ac44b4cdfb03e688983d6e3fb1e484cca57589665bff19c5c65388e649b292a",
+  "rows": [
+    {
+      "id": "online:Authenticated account activity; anonymous visitors are excluded.",
+      "source": "Authenticated account activity; anonymous visitors are excluded.",
+      "target": "प्रमाणीकृत खात्याची हालचाल; अनामिक अभ्यागतांना वगळण्यात आले आहे."
+    },
+    {
+      "id": "online:Author-reported generator",
+      "source": "Author-reported generator",
+      "target": "लेखकाने नोंदवलेला जनरेटर"
+    },
+    {
+      "id": "online:Authoring guide",
+      "source": "Authoring guide",
+      "target": "लेखक मार्गदर्शक"
+    },
+    {
+      "id": "online:Authoring guide ↗",
+      "source": "Authoring guide ↗",
+      "target": "लेखन मार्गदर्शक ↗"
+    },
+    {
+      "id": "online:Average successful completion time",
+      "source": "Average successful completion time",
+      "target": "सरासरी यशस्वी पूर्ण होण्याची वेळ"
+    },
+    {
+      "id": "online:Awaiting provider outcome",
+      "source": "Awaiting provider outcome",
+      "target": "प्रदात्याच्या निकालाची प्रतीक्षा आहे"
+    },
+    {
+      "id": "online:Awaiting validation",
+      "source": "Awaiting validation",
+      "target": "पडताळणीची प्रतीक्षा आहे"
+    },
+    {
+      "id": "online:Back to Globulation 2",
+      "source": "Back to Globulation 2",
+      "target": "Globulation 2 वर परत जा"
+    },
+    {
+      "id": "online:Back to My skins",
+      "source": "Back to My skins",
+      "target": "माझ्या त्वचेकडे परत"
+    },
+    {
+      "id": "online:Back to sign in",
+      "source": "Back to sign in",
+      "target": "साइन इन करण्यासाठी परत जा"
+    },
+    {
+      "id": "online:Back to the home page",
+      "source": "Back to the home page",
+      "target": "मुख्य पृष्ठावर परत जा"
+    },
+    {
+      "id": "online:Background color",
+      "source": "Background color",
+      "target": "पार्श्वभूमीचा रंग"
+    },
+    {
+      "id": "online:Background material",
+      "source": "Background material",
+      "target": "पार्श्वभूमी साहित्य"
+    },
+    {
+      "id": "online:Background noise",
+      "source": "Background noise",
+      "target": "पार्श्वभूमीतील आवाज"
+    },
+    {
+      "id": "online:Balanced",
+      "source": "Balanced",
+      "target": "संतुलित"
+    },
+    {
+      "id": "online:Ban",
+      "source": "Ban",
+      "target": "बंदी"
+    },
+    {
+      "id": "online:Ban {value0}? This signs them out everywhere.",
+      "source": "Ban {value0}? This signs them out everywhere.",
+      "target": "{value0} वर बंदी घालायची? यामुळे ते सर्व ठिकाणांहून लॉग आउट होतात."
+    },
+    {
+      "id": "online:Band width",
+      "source": "Band width",
+      "target": "बँडची रुंदी"
+    },
+    {
+      "id": "online:Banned",
+      "source": "Banned",
+      "target": "बंदी घातली"
+    },
+    {
+      "id": "online:Base artwork",
+      "source": "Base artwork",
+      "target": "मूळ कलाकृती"
+    },
+    {
+      "id": "online:Behind",
+      "source": "Behind",
+      "target": "मागे"
+    },
+    {
+      "id": "online:Best {slot0}",
+      "source": "Best {slot0}",
+      "target": "सर्वोत्तम {slot0}"
+    },
+    {
+      "id": "online:Both",
+      "source": "Both",
+      "target": "दोन्ही"
+    },
+    {
+      "id": "online:Boundary style",
+      "source": "Boundary style",
+      "target": "सीमा शैली"
+    },
+    {
+      "id": "online:Branching spires rising from a mound.",
+      "source": "Branching spires rising from a mound.",
+      "target": "टेकडीवरून वर येणारे फांद्यांसारखे मनोरे."
+    },
+    {
+      "id": "online:Broken",
+      "source": "Broken",
+      "target": "तुटलेले"
+    },
+    {
+      "id": "online:Browse",
+      "source": "Browse",
+      "target": "ब्राउझ करा"
+    },
+    {
+      "id": "online:Browse library",
+      "source": "Browse library",
+      "target": "लायब्ररी ब्राउझ करा"
+    },
+    {
+      "id": "online:Browse maps",
+      "source": "Browse maps",
+      "target": "नकाशे ब्राउझ करा"
+    },
+    {
+      "id": "online:Browse the library",
+      "source": "Browse the library",
+      "target": "ग्रंथालय ब्राउझ करा"
+    },
+    {
+      "id": "online:Browser recovery is unavailable. Keep this page open until changes are saved.",
+      "source": "Browser recovery is unavailable. Keep this page open until changes are saved.",
+      "target": "ब्राउझर पुनर्प्राप्ती उपलब्ध नाही. बदल जतन होईपर्यंत हे पृष्ठ उघडे ठेवा."
+    },
+    {
+      "id": "online:Brush",
+      "source": "Brush",
+      "target": "ब्रश"
+    },
+    {
+      "id": "online:Brush and eraser reach hidden surfaces underneath the cursor. Some front/back and top/bottom surfaces share paint. A stroke may appear on their matching side too, keeping the glob’s flips seamless.",
+      "source": "Brush and eraser reach hidden surfaces underneath the cursor. Some front/back and top/bottom surfaces share paint. A stroke may appear on their matching side too, keeping the glob’s flips seamless.",
+      "target": "ब्रश आणि इरेझर कर्सरखालील लपलेल्या पृष्ठभागांपर्यंत पोहोचतात. काही पुढचे/मागचे आणि वरचे/खालचे पृष्ठभाग रंग सामायिक करतात. एक स्ट्रोक त्याच्या जुळणाऱ्या बाजूवर देखील दिसू शकतो, ज्यामुळे रंगाच्या गोळ्याचे उलटणे अखंड राहते."
+    },
+    {
+      "id": "online:Brush paints",
+      "source": "Brush paints",
+      "target": "ब्रश पेंट्स"
+    },
+    {
+      "id": "online:Brush size ",
+      "source": "Brush size ",
+      "target": "ब्रशचा आकार "
+    },
+    {
+      "id": "online:Build",
+      "source": "Build",
+      "target": "तयार करा"
+    },
+    {
+      "id": "online:Build a consistent world with custom terrain, resources, and artwork.",
+      "source": "Build a consistent world with custom terrain, resources, and artwork.",
+      "target": "सानुकूलित भूभाग, संसाधने आणि कलाकृती वापरून एक सुसंगत जग तयार करा."
+    },
+    {
+      "id": "online:Build details",
+      "source": "Build details",
+      "target": "बिल्ड तपशील"
+    },
+    {
+      "id": "online:Build in AI Map Studio",
+      "source": "Build in AI Map Studio",
+      "target": "एआय मॅप स्टुडिओमध्ये तयार करा"
+    },
+    {
+      "id": "online:Build in AI Music Studio",
+      "source": "Build in AI Music Studio",
+      "target": "एआय म्युझिक स्टुडिओमध्ये तयार करा"
+    },
+    {
+      "id": "online:Build in AI Studio",
+      "source": "Build in AI Studio",
+      "target": "एआय स्टुडिओमध्ये तयार करा"
+    },
+    {
+      "id": "online:Build the playable map",
+      "source": "Build the playable map",
+      "target": "खेळण्यायोग्य नकाशा तयार करा"
+    },
+    {
+      "id": "online:Build wooded hills with wide routes between colonies",
+      "source": "Build wooded hills with wide routes between colonies",
+      "target": "वसाहतींमध्ये रुंद मार्ग असलेल्या वनराईने भरलेल्या टेकड्या बांधा."
+    },
+    {
+      "id": "online:Building",
+      "source": "Building",
+      "target": "इमारत"
+    },
+    {
+      "id": "online:Building Studio",
+      "source": "Building Studio",
+      "target": "स्टुडिओची इमारत"
+    },
+    {
+      "id": "online:Building Studio is disabled on this instance. Your saved projects remain available.",
+      "source": "Building Studio is disabled on this instance. Your saved projects remain available.",
+      "target": "या इन्स्टन्सवर बिल्ड स्टुडिओ अक्षम केले आहे. तुमचे जतन केलेले प्रकल्प उपलब्ध राहतील."
+    },
+    {
+      "id": "online:Building Studio is disabled.",
+      "source": "Building Studio is disabled.",
+      "target": "बिल्डिंग स्टुडिओ अक्षम आहे."
+    },
+    {
+      "id": "online:Building color",
+      "source": "Building color",
+      "target": "इमारतीचा रंग"
+    },
+    {
+      "id": "online:Building color preview",
+      "source": "Building color preview",
+      "target": "इमारतीच्या रंगाचे पूर्वावलोकन"
+    },
+    {
+      "id": "online:Building design conversation",
+      "source": "Building design conversation",
+      "target": "इमारत डिझाइन संभाषण"
+    },
+    {
+      "id": "online:Building family",
+      "source": "Building family",
+      "target": "कुटुंब तयार करणे"
+    },
+    {
+      "id": "online:Building family editor",
+      "source": "Building family editor",
+      "target": "कुटुंब संपादक तयार करत आहे"
+    },
+    {
+      "id": "online:Building library",
+      "source": "Building library",
+      "target": "ग्रंथालय इमारत"
+    },
+    {
+      "id": "online:Building projects",
+      "source": "Building projects",
+      "target": "बांधकाम प्रकल्प"
+    },
+    {
+      "id": "online:Building-credit sales are not enabled.",
+      "source": "Building-credit sales are not enabled.",
+      "target": "इमारत कर्जाची विक्री सक्षम केलेली नाही."
+    },
+    {
+      "id": "online:Buildings",
+      "source": "Buildings",
+      "target": "इमारती"
+    },
+    {
+      "id": "online:Buildings allowed",
+      "source": "Buildings allowed",
+      "target": "इमारतींना परवानगी दिली"
+    },
+    {
+      "id": "online:Buildings and upgrade stages",
+      "source": "Buildings and upgrade stages",
+      "target": "इमारती आणि सुधारणा टप्पे"
+    },
+    {
+      "id": "online:Buildings under construction",
+      "source": "Buildings under construction",
+      "target": "बांधकाम सुरू असलेल्या इमारती"
+    },
+    {
+      "id": "online:Buildings: latest verified match against recent average",
+      "source": "Buildings: latest verified match against recent average",
+      "target": "इमारती: अलीकडील सरासरीच्या तुलनेत नवीनतम सत्यापित जुळणी"
+    },
+    {
+      "id": "online:Bundled JavaScript file",
+      "source": "Bundled JavaScript file",
+      "target": "बंडल केलेली JavaScript फाईल"
+    },
+    {
+      "id": "online:Buy {slot0}",
+      "source": "Buy {slot0}",
+      "target": "{slot0} खरेदी करा"
+    },
+    {
+      "id": "online:Buy {slot0} credit · {slot1}",
+      "source": {
+        "one": "Buy {slot0} credit · {slot1}",
+        "other": "Buy {slot0} credits · {slot1}"
+      },
+      "target": {
+        "one": "{slot0} क्रेडिट खरेदी करा · {slot1}",
+        "other": "{slot0} क्रेडिट्स खरेदी करा · {slot1}"
+      }
+    },
+    {
+      "id": "online:Buy {slot0} credits · {slot1}",
+      "source": "Buy {slot0} credits · {slot1}",
+      "target": "{slot0} क्रेडिट्स खरेदी करा · {slot1}"
+    },
+    {
+      "id": "online:By a map generator",
+      "source": "By a map generator",
+      "target": "नकाशा जनरेटरद्वारे"
+    },
+    {
+      "id": "online:By generator",
+      "source": "By generator",
+      "target": "जनरेटरद्वारे"
+    },
+    {
+      "id": "online:By map",
+      "source": "By map",
+      "target": "नकाशाद्वारे"
+    },
+    {
+      "id": "online:By queue",
+      "source": "By queue",
+      "target": "रांगेनुसार"
+    },
+    {
+      "id": "online:By {slot0}",
+      "source": "By {slot0}",
+      "target": "{slot0} द्वारे"
+    },
+    {
+      "id": "online:By {slot0} · {slot1} likes · {slot2}",
+      "source": "By {slot0} · {slot1} likes · {slot2}",
+      "target": "{slot0} द्वारे · {slot1} पसंती · {slot2}"
+    },
+    {
+      "id": "online:By {slot0} · {slot1} terrain · {slot2} resources",
+      "source": {
+        "one": "By {slot0} · {slot1} terrain · {slot2} resources",
+        "other": "By {slot0} · {slot1} terrains · {slot2} resources"
+      },
+      "target": {
+        "one": "{slot0} द्वारे · {slot1} भूभाग · {slot2} संसाधने",
+        "other": "{slot0} द्वारे · {slot1} भूभाग · {slot2} संसाधने"
+      }
+    },
+    {
+      "id": "online:By {slot0} · {slot1} terrains · {slot2} resources",
+      "source": "By {slot0} · {slot1} terrains · {slot2} resources",
+      "target": "{slot0} द्वारे · {slot1} भूभाग · {slot2} संसाधने"
+    },
+    {
+      "id": "online:By {slot0} · {slot1} · {slot2}",
+      "source": "By {slot0} · {slot1} · {slot2}",
+      "target": "{slot0} · {slot1} · {slot2} द्वारे"
+    },
+    {
+      "id": "online:B{slot0}",
+      "source": "B{slot0}",
+      "target": "B{slot0}"
+    },
+    {
+      "id": "online:CC BY",
+      "source": "CC BY",
+      "target": "CC BY"
+    },
+    {
+      "id": "online:CC BY 4.0",
+      "source": "CC BY 4.0",
+      "target": "CC BY 4.0"
+    },
+    {
+      "id": "online:CC BY 4.0 — credit required",
+      "source": "CC BY 4.0 — credit required",
+      "target": "CC BY 4.0 — क्रेडिट आवश्यक"
+    },
+    {
+      "id": "online:CC BY-SA 4.0",
+      "source": "CC BY-SA 4.0",
+      "target": "CC BY-SA 4.0"
+    },
+    {
+      "id": "online:CC-BY-4.0",
+      "source": "CC-BY-4.0",
+      "target": "CC-BY-4.0"
+    },
+    {
+      "id": "online:CC-BY-SA-4.0",
+      "source": "CC-BY-SA-4.0",
+      "target": "CC-BY-SA-4.0"
+    },
+    {
+      "id": "online:CC0",
+      "source": "CC0",
+      "target": "CC0"
+    },
+    {
+      "id": "online:CC0 1.0",
+      "source": "CC0 1.0",
+      "target": "CC0 1.0"
+    },
+    {
+      "id": "online:CC0 — public domain",
+      "source": "CC0 — public domain",
+      "target": "CC0 — सार्वजनिक डोमेन"
+    },
+    {
+      "id": "online:CC0-1.0",
+      "source": "CC0-1.0",
+      "target": "CC0-1.0"
+    },
+    {
+      "id": "online:CHOOSE FINAL VIEW",
+      "source": "CHOOSE FINAL VIEW",
+      "target": "अंतिम दृश्य निवडा"
+    },
+    {
+      "id": "online:COLONY STUDIO",
+      "source": "COLONY STUDIO",
+      "target": "कॉलनी स्टुडिओ"
+    },
+    {
+      "id": "online:COMMUNITY SOUNDTRACKS",
+      "source": "COMMUNITY SOUNDTRACKS",
+      "target": "सामुदायिक साउंडट्रॅक"
+    },
+    {
+      "id": "online:COMMUNITY · LOCAL PLAY",
+      "source": "COMMUNITY · LOCAL PLAY",
+      "target": "समुदाय · स्थानिक खेळ"
+    },
+    {
+      "id": "online:CURRENT POSE",
+      "source": "CURRENT POSE",
+      "target": "वर्तमान स्थिती"
+    },
+    {
+      "id": "online:Cabino",
+      "source": "Cabino",
+      "target": "कॅबिनो"
+    },
+    {
+      "id": "online:Cache write tokens",
+      "source": "Cache write tokens",
+      "target": "कॅशे राइट टोकन"
+    },
+    {
+      "id": "online:Cached input",
+      "source": "Cached input",
+      "target": "कॅश्ड इनपुट"
+    },
+    {
+      "id": "online:Cached input tokens",
+      "source": "Cached input tokens",
+      "target": "कॅश केलेले इनपुट टोकन"
+    },
+    {
+      "id": "online:Calm",
+      "source": "Calm",
+      "target": "शांत"
+    },
+    {
+      "id": "online:Calm → Building → Combat → Calm · eight seconds per mood",
+      "source": "Calm → Building → Combat → Calm · eight seconds per mood",
+      "target": "शांत → बांधकाम → लढाई → शांत · प्रत्येक मनःस्थितीसाठी आठ सेकंद"
+    },
+    {
+      "id": "online:Camera angle ",
+      "source": "Camera angle ",
+      "target": "कॅमेरा अँगल "
+    },
+    {
+      "id": "online:Camera view",
+      "source": "Camera view",
+      "target": "कॅमेरा दृश्य"
+    },
+    {
+      "id": "online:Can be farmed",
+      "source": "Can be farmed",
+      "target": "शेती करता येते"
+    },
+    {
+      "id": "online:Can be retried",
+      "source": "Can be retried",
+      "target": "पुन्हा प्रयत्न करता येईल."
+    },
+    {
+      "id": "online:Cancel",
+      "source": "Cancel",
+      "target": "रद्द करा"
+    }
+  ],
+  "subset_sha256": "913d2fbf03c65f4f6088ebdbec582bce9a1dc03e734dbba5ab3136f4d3a1e08e"
+}

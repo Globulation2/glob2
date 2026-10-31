@@ -1,0 +1,516 @@
+{
+  "source_sha256": "0ac44b4cdfb03e688983d6e3fb1e484cca57589665bff19c5c65388e649b292a",
+  "batch_target_sha256": "beadc756ae829c2be507385ef373a48a3cb2235d22197ea1f4c9ef710645208c",
+  "catalog_sha256": {
+    "native": "a6d0da95a3cf29e0bcfa904f80043a10fedc3124f7a26e3beebc82e8cdfa4411",
+    "online": "d7ae02f4d4453ebcb2acc37c15fd862acea8d2996d29cdb89bfb64c4f32cd5fa"
+  },
+  "entries": [
+    {
+      "id": "online:Create a building family",
+      "source": "Create a building family",
+      "target": "इमारत संच तयार करा"
+    },
+    {
+      "id": "online:Create a building or an upgrade family with custom artwork.",
+      "source": "Create a building or an upgrade family with custom artwork.",
+      "target": "सानुकूल कलाकृतीसह इमारत किंवा तिच्या सुधारणा टप्प्यांचा संच तयार करा."
+    },
+    {
+      "id": "online:Create a colony AI through conversation.",
+      "source": "Create a colony AI through conversation.",
+      "target": "संभाषणाद्वारे वसाहत एआय तयार करा."
+    },
+    {
+      "id": "online:Create a family",
+      "source": "Create a family",
+      "target": "इमारत संच तयार करा"
+    },
+    {
+      "id": "online:Create a fungal swamp with slow marsh, glowing wood trees, and renewable mushroom food.",
+      "source": "Create a fungal swamp with slow marsh, glowing wood trees, and renewable mushroom food.",
+      "target": "हालचाल मंदावणारी दलदल, चमकणाऱ्या लाकडाची झाडे आणि पुन्हा उगवणारे मशरूम अन्न असलेला बुरशीमय दलदलीचा प्रदेश तयार करा."
+    },
+    {
+      "id": "online:Create a look. Use it in your next match.",
+      "source": "Create a look. Use it in your next match.",
+      "target": "एक लुक तयार करा. तुमच्या पुढच्या सामन्यात त्याचा वापर करा."
+    },
+    {
+      "id": "online:Create a map generator through conversation.",
+      "source": "Create a map generator through conversation.",
+      "target": "संभाषणाद्वारे नकाशा जनरेटर तयार करा."
+    },
+    {
+      "id": "online:Create a mushroom hospital that heals workers and warriors, costs 10 wood, and holds four units.",
+      "source": "Create a mushroom hospital that heals workers and warriors, costs 10 wood, and holds four units.",
+      "target": "कामगार आणि योद्ध्यांना बरे करणारे, १० लाकूड लागणारे आणि चार युनिट सामावणारे मशरूम रुग्णालय तयार करा."
+    },
+    {
+      "id": "online:Create a new room with this map and invite friends.",
+      "source": "Create a new room with this map and invite friends.",
+      "target": "या नकाशाचा वापर करून एक नवीन रूम तयार करा आणि मित्रांना आमंत्रित करा."
+    },
+    {
+      "id": "online:Create a ring of islands around a shared lagoon",
+      "source": "Create a ring of islands around a shared lagoon",
+      "target": "एका सामायिक सरोवराभोवती बेटांचे वलय तयार करा"
+    },
+    {
+      "id": "online:Create a set",
+      "source": "Create a set",
+      "target": "एक संच तयार करा"
+    },
+    {
+      "id": "online:Create a winding river with room to grow",
+      "source": "Create a winding river with room to grow",
+      "target": "वाढीसाठी जागा असलेली एक नागमोडी नदी तयार करा."
+    },
+    {
+      "id": "online:Create account",
+      "source": "Create account",
+      "target": "खाते तयार करा"
+    },
+    {
+      "id": "online:Create artwork",
+      "source": "Create artwork",
+      "target": "कलाकृती तयार करा"
+    },
+    {
+      "id": "online:Create new release",
+      "source": "Create new release",
+      "target": "नवीन प्रकाशन तयार करा"
+    },
+    {
+      "id": "online:Create with AI",
+      "source": "Create with AI",
+      "target": "एआय सह तयार करा"
+    },
+    {
+      "id": "online:Create your own room",
+      "source": "Create your own room",
+      "target": "तुमची स्वतःची खोली तयार करा"
+    },
+    {
+      "id": "online:Created",
+      "source": "Created",
+      "target": "तयार केले"
+    },
+    {
+      "id": "online:Created in {value0} Studio, revision {value1}",
+      "source": "Created in {value0} Studio, revision {value1}",
+      "target": "{value0} स्टुडिओमध्ये तयार केले, आवृत्ती {value1}"
+    },
+    {
+      "id": "online:Creating accounts is turned off on this server.",
+      "source": "Creating accounts is turned off on this server.",
+      "target": "या सर्व्हरवर खाते तयार करणे बंद केले आहे."
+    },
+    {
+      "id": "online:Creation needs attention.",
+      "source": "Creation needs attention.",
+      "target": "निर्मितीकडे लक्ष देणे आवश्यक आहे."
+    },
+    {
+      "id": "online:Creation ready.",
+      "source": "Creation ready.",
+      "target": "निर्मिती तयार आहे."
+    },
+    {
+      "id": "online:Creation workspace",
+      "source": "Creation workspace",
+      "target": "निर्मिती कार्यक्षेत्र"
+    },
+    {
+      "id": "online:Creator credit",
+      "source": "Creator credit",
+      "target": "निर्माता श्रेय"
+    },
+    {
+      "id": "online:Credit activity",
+      "source": "Credit activity",
+      "target": "क्रेडिट्सचे व्यवहार"
+    },
+    {
+      "id": "online:Credit flows and provider estimates include all recorded activity in this period, regardless of payment mode. Payment fees, hosting, exchange rates and profit are excluded.",
+      "source": "Credit flows and provider estimates include all recorded activity in this period, regardless of payment mode. Payment fees, hosting, exchange rates and profit are excluded.",
+      "target": "क्रेडिट प्रवाह आणि प्रदात्याच्या अंदाजामध्ये, पेमेंटच्या पद्धतीचा विचार न करता, या कालावधीतील सर्व नोंदवलेल्या व्यवहारांचा समावेश आहे. पेमेंट शुल्क, होस्टिंग, विनिमय दर आणि नफा वगळण्यात आले आहेत."
+    },
+    {
+      "id": "online:Credit purchase",
+      "source": "Credit purchase",
+      "target": "क्रेडिट खरेदी"
+    },
+    {
+      "id": "online:Credit purchases are currently unavailable.",
+      "source": "Credit purchases are currently unavailable.",
+      "target": "सध्या क्रेडिट्स खरेदी करता येत नाहीत."
+    },
+    {
+      "id": "online:Credit purchases are not available on this instance.",
+      "source": "Credit purchases are not available on this instance.",
+      "target": "या इन्स्टन्सवर क्रेडिट खरेदीची सुविधा उपलब्ध नाही."
+    },
+    {
+      "id": "online:Credit purchases are not available.",
+      "source": "Credit purchases are not available.",
+      "target": "क्रेडिट्स खरेदी करता येत नाहीत."
+    },
+    {
+      "id": "online:Credits",
+      "source": "Credits",
+      "target": "क्रेडिट्स"
+    },
+    {
+      "id": "online:Credits & sources",
+      "source": "Credits & sources",
+      "target": "श्रेय आणि स्रोत"
+    },
+    {
+      "id": "online:Credits pay for your commander’s thinking and follow-ups. Standing orders keep running when credits run out.",
+      "source": "Credits pay for your commander’s thinking and follow-ups. Standing orders keep running when credits run out.",
+      "target": "तुमच्या कमांडरच्या विचारमंथनाचा आणि पुढील कार्यवाहीचा खर्च क्रेडिट्समधून भागवला जातो. क्रेडिट्स संपल्यावरही स्थायी आदेश चालू राहतात."
+    },
+    {
+      "id": "online:Crop",
+      "source": "Crop",
+      "target": "कापा"
+    },
+    {
+      "id": "online:Crop selection",
+      "source": "Crop selection",
+      "target": "निवडलेला भाग कापा"
+    },
+    {
+      "id": "online:Crop your photo",
+      "source": "Crop your photo",
+      "target": "तुमचा फोटो क्रॉप करा"
+    },
+    {
+      "id": "online:Cross-site request refused.",
+      "source": "Cross-site request refused.",
+      "target": "क्रॉस-साइट विनंती नाकारण्यात आली."
+    },
+    {
+      "id": "online:Crossfade to {value0}",
+      "source": "Crossfade to {value0}",
+      "target": "{value0} कडे क्रॉसफेड ​​करा"
+    },
+    {
+      "id": "online:Currency",
+      "source": "Currency",
+      "target": "चलन"
+    },
+    {
+      "id": "online:Current AI JavaScript source",
+      "source": "Current AI JavaScript source",
+      "target": "वर्तमान एआय JavaScript स्रोत"
+    },
+    {
+      "id": "online:Current custom terrain and resource sprites rendered by the game",
+      "source": "Current custom terrain and resource sprites rendered by the game",
+      "target": "गेमद्वारे प्रस्तुत केलेले सध्याचे सानुकूल भूभाग आणि संसाधन स्प्राइट्स"
+    },
+    {
+      "id": "online:Current mean",
+      "source": "Current mean",
+      "target": "वर्तमान सरासरी"
+    },
+    {
+      "id": "online:Current recorded",
+      "source": "Current recorded",
+      "target": "सध्या नोंदवलेले"
+    },
+    {
+      "id": "online:Current samples",
+      "source": "Current samples",
+      "target": "वर्तमान नमुने"
+    },
+    {
+      "id": "online:Current saved draft",
+      "source": "Current saved draft",
+      "target": "सध्या जतन केलेला मसुदा"
+    },
+    {
+      "id": "online:Current {slot0} day and previous {slot1} days. Activity totals count account-days; the active-account cards count distinct accounts. Studio/job statuses use request creation dates. Publications count versions; recorded downloads use each library’s existing counting rules.",
+      "source": {
+        "one": "Current and previous reporting periods, in days: {slot0} and {slot1}. Activity totals count account-days; the active-account cards count distinct accounts. Studio/job statuses use request creation dates. Publications count versions; recorded downloads use each library’s existing counting rules.",
+        "other": "Current and previous reporting periods, in days: {slot0} and {slot1}. Activity totals count account-days; the active-account cards count distinct accounts. Studio/job statuses use request creation dates. Publications count versions; recorded downloads use each library’s existing counting rules."
+      },
+      "target": {
+        "one": "चालू आणि मागील अहवाल कालावधी, दिवसांमध्ये: {slot0} आणि {slot1}. एकूण क्रियाकलापांची गणना खाते-दिवसांनुसार केली जाते; सक्रिय-खाते कार्ड स्वतंत्र खात्यांची गणना करतात. स्टुडिओ/कामाच्या स्थितीसाठी विनंती निर्मितीच्या तारखा वापरल्या जातात. प्रकाशनांच्या आवृत्त्यांची गणना केली जाते; नोंदवलेल्या डाउनलोडसाठी प्रत्येक लायब्ररीचे विद्यमान गणना नियम वापरले जातात.",
+        "other": "चालू आणि मागील अहवाल कालावधी, दिवसांमध्ये: {slot0} आणि {slot1}. एकूण क्रियाकलापांची गणना खाते-दिवसांनुसार केली जाते; सक्रिय-खाते कार्ड स्वतंत्र खात्यांची गणना करतात. स्टुडिओ/कामाच्या स्थितीसाठी विनंती निर्मितीच्या तारखा वापरल्या जातात. प्रकाशनांच्या आवृत्त्यांची गणना केली जाते; नोंदवलेल्या डाउनलोडसाठी प्रत्येक लायब्ररीचे विद्यमान गणना नियम वापरले जातात."
+      }
+    },
+    {
+      "id": "online:Current {slot0} days and previous {slot1} days. Activity totals count account-days; the active-account cards count distinct accounts. Studio/job statuses use request creation dates. Publications count versions; recorded downloads use each library’s existing counting rules.",
+      "source": "Current {slot0} days and previous {slot1} days. Activity totals count account-days; the active-account cards count distinct accounts. Studio/job statuses use request creation dates. Publications count versions; recorded downloads use each library’s existing counting rules.",
+      "target": "चालू {slot0} दिवस आणि मागील {slot1} दिवस. एकूण क्रियाकलापांची गणना खाते-दिवसांनुसार केली जाते; सक्रिय-खाते कार्ड स्वतंत्र खात्यांची गणना करतात. स्टुडिओ/कामाच्या स्थितीसाठी विनंती निर्मितीच्या तारखा वापरल्या जातात. प्रकाशनांच्या आवृत्त्यांची गणना केली जाते; रेकॉर्ड केलेल्या डाउनलोडसाठी प्रत्येक लायब्ररीचे विद्यमान गणना नियम वापरले जातात."
+    },
+    {
+      "id": "online:Current: {slot0} through {slot1} (UTC; today is partial). Previous: {slot2} through {slot3}. Historical coverage may differ between periods.",
+      "source": "Current: {slot0} through {slot1} (UTC; today is partial). Previous: {slot2} through {slot3}. Historical coverage may differ between periods.",
+      "target": "वर्तमान: {slot0} ते {slot1} (UTC; आजची माहिती अपूर्ण आहे). मागील: {slot2} ते {slot3}. ऐतिहासिक माहितीचे प्रमाण प्रत्येक कालावधीत भिन्न असू शकते."
+    },
+    {
+      "id": "online:Custom content credits",
+      "source": "Custom content credits",
+      "target": "सानुकूल सामग्रीचे श्रेय"
+    },
+    {
+      "id": "online:Custom map",
+      "source": "Custom map",
+      "target": "सानुकूल नकाशा"
+    },
+    {
+      "id": "online:Custom mood blend",
+      "source": "Custom mood blend",
+      "target": "सानुकूल मूड मिश्रण"
+    },
+    {
+      "id": "online:Customize",
+      "source": "Customize",
+      "target": "सानुकूल करा"
+    },
+    {
+      "id": "online:Daily active accounts",
+      "source": "Daily active accounts",
+      "target": "दररोज सक्रिय खाती"
+    },
+    {
+      "id": "online:Daily activity table",
+      "source": "Daily activity table",
+      "target": "दैनंदिन क्रियाकलाप तक्ता"
+    },
+    {
+      "id": "online:Daily values",
+      "source": "Daily values",
+      "target": "दैनंदिन मूल्ये"
+    },
+    {
+      "id": "online:Default colony",
+      "source": "Default colony",
+      "target": "पूर्वनिर्धारित वसाहत"
+    },
+    {
+      "id": "online:Defence power",
+      "source": "Defence power",
+      "target": "संरक्षण शक्ती"
+    },
+    {
+      "id": "online:Degraded",
+      "source": "Degraded",
+      "target": "अधोगती"
+    },
+    {
+      "id": "online:Delayed orders",
+      "source": "Delayed orders",
+      "target": "विलंबित आदेश"
+    },
+    {
+      "id": "online:Delete",
+      "source": "Delete",
+      "target": "हटवा"
+    },
+    {
+      "id": "online:Delete AI",
+      "source": "Delete AI",
+      "target": "एआय हटवा"
+    },
+    {
+      "id": "online:Delete account",
+      "source": "Delete account",
+      "target": "खाते हटवा"
+    },
+    {
+      "id": "online:Delete conversation history",
+      "source": "Delete conversation history",
+      "target": "संभाषणाचा इतिहास हटवा"
+    },
+    {
+      "id": "online:Delete draft",
+      "source": "Delete draft",
+      "target": "मसुदा हटवा"
+    },
+    {
+      "id": "online:Delete history permanently",
+      "source": "Delete history permanently",
+      "target": "इतिहास कायमचा हटवा"
+    },
+    {
+      "id": "online:Delete map",
+      "source": "Delete map",
+      "target": "नकाशा हटवा"
+    },
+    {
+      "id": "online:Delete my account",
+      "source": "Delete my account",
+      "target": "माझे खाते हटवा"
+    },
+    {
+      "id": "online:Delete my account for good",
+      "source": "Delete my account for good",
+      "target": "माझे खाते कायमचे हटवा"
+    },
+    {
+      "id": "online:Delete private release",
+      "source": "Delete private release",
+      "target": "खाजगी प्रकाशन हटवा"
+    },
+    {
+      "id": "online:Delete project",
+      "source": "Delete project",
+      "target": "प्रकल्प हटवा"
+    },
+    {
+      "id": "online:Delete project history",
+      "source": "Delete project history",
+      "target": "प्रकल्पाचा इतिहास हटवा"
+    },
+    {
+      "id": "online:Delete skin",
+      "source": "Delete skin",
+      "target": "रूप हटवा"
+    },
+    {
+      "id": "online:Delete skin?",
+      "source": "Delete skin?",
+      "target": "हे रूप हटवायचे का?"
+    },
+    {
+      "id": "online:Delete this project’s conversation, references and generated revisions permanently?",
+      "source": "Delete this project’s conversation, references and generated revisions permanently?",
+      "target": "या प्रोजेक्टमधील संभाषण, संदर्भ आणि तयार केलेल्या आवृत्त्या कायमस्वरूपी हटवायच्या आहेत का?"
+    },
+    {
+      "id": "online:Delete {slot0}?{slot1}",
+      "source": "Delete {slot0}?{slot1}",
+      "target": "{slot0} हटवायचे का?{slot1}"
+    },
+    {
+      "id": "online:Delete “{value0}” and all its versions?",
+      "source": "Delete “{value0}” and all its versions?",
+      "target": "“{value0}” आणि त्याच्या सर्व आवृत्त्या हटवायच्या का?"
+    },
+    {
+      "id": "online:Deleted",
+      "source": "Deleted",
+      "target": "हटवले"
+    },
+    {
+      "id": "online:Deletes sign-in identities, sessions, personal information and owned content. Match history remains anonymized. This cannot be undone.",
+      "source": "Deletes sign-in identities, sessions, personal information and owned content. Match history remains anonymized. This cannot be undone.",
+      "target": "साइन-इन ओळख, सत्रे, वैयक्तिक माहिती आणि मालकीची सामग्री हटवली जाते. सामन्यांचा इतिहास अनामिक ठेवला जातो. ही प्रक्रिया पूर्ववत करता येणार नाही."
+    },
+    {
+      "id": "online:Delivered",
+      "source": "Delivered",
+      "target": "वितरित केले"
+    },
+    {
+      "id": "online:Delivered map",
+      "source": "Delivered map",
+      "target": "वितरित नकाशा"
+    },
+    {
+      "id": "online:Dense",
+      "source": "Dense",
+      "target": "दाट"
+    },
+    {
+      "id": "online:Density",
+      "source": "Density",
+      "target": "घनता"
+    },
+    {
+      "id": "online:Describe a building. Create its artwork and the way it works.",
+      "source": "Describe a building. Create its artwork and the way it works.",
+      "target": "इमारतीचे वर्णन करा. तिची कलाकृती आणि कार्यपद्धती तयार करा."
+    },
+    {
+      "id": "online:Describe a change or ask a question",
+      "source": "Describe a change or ask a question",
+      "target": "बदलाचे वर्णन करा किंवा प्रश्न विचारा"
+    },
+    {
+      "id": "online:Describe a map to build, ask a question, or explore an idea together.",
+      "source": "Describe a map to build, ask a question, or explore an idea together.",
+      "target": "तयार करण्यासाठी नकाशाचे वर्णन करा, प्रश्न विचारा किंवा एकत्र एखाद्या कल्पनेचा शोध घ्या."
+    },
+    {
+      "id": "online:Describe a world. Create its terrain and resources.",
+      "source": "Describe a world. Create its terrain and resources.",
+      "target": "एका जगाचे वर्णन करा. त्याचा भूप्रदेश आणि संसाधने तयार करा."
+    },
+    {
+      "id": "online:Describe what your building should do and how it should look. You can also brainstorm before creating it.",
+      "source": "Describe what your building should do and how it should look. You can also brainstorm before creating it.",
+      "target": "तुमची इमारत काय कार्य करेल आणि कशी दिसेल याचे वर्णन करा. ती तयार करण्यापूर्वी तुम्ही त्यावर विचारमंथनही करू शकता."
+    },
+    {
+      "id": "online:Describe your creation or ask a question",
+      "source": "Describe your creation or ask a question",
+      "target": "तुमच्या निर्मितीचे वर्णन करा किंवा प्रश्न विचारा"
+    },
+    {
+      "id": "online:Describe your idea, request a creation, or ask a question. Your project and its history stay private until you publish.",
+      "source": "Describe your idea, request a creation, or ask a question. Your project and its history stay private until you publish.",
+      "target": "तुमची कल्पना सांगा, निर्मितीची विनंती करा किंवा प्रश्न विचारा. तुम्ही प्रकाशित करेपर्यंत तुमचा प्रकल्प आणि त्याचा इतिहास गोपनीय राहतो."
+    },
+    {
+      "id": "online:Describe your landscape, or dream up a change…",
+      "source": "Describe your landscape, or dream up a change…",
+      "target": "तुमच्या परिसराचे वर्णन करा, किंवा एखाद्या बदलाची कल्पना करा…"
+    },
+    {
+      "id": "online:Describe your map or discuss changes",
+      "source": "Describe your map or discuss changes",
+      "target": "तुमच्या नकाशाचे वर्णन करा किंवा बदलांवर चर्चा करा"
+    },
+    {
+      "id": "online:Description",
+      "source": "Description",
+      "target": "वर्णन"
+    },
+    {
+      "id": "online:Design",
+      "source": "Design",
+      "target": "डिझाइन"
+    },
+    {
+      "id": "online:Design brief {slot0}",
+      "source": "Design brief {slot0}",
+      "target": "डिझाइन ब्रीफ {slot0}"
+    },
+    {
+      "id": "online:Design conversation",
+      "source": "Design conversation",
+      "target": "डिझाइन संभाषण"
+    },
+    {
+      "id": "online:Design the building",
+      "source": "Design the building",
+      "target": "इमारतीची रचना करा"
+    },
+    {
+      "id": "online:Design the set",
+      "source": "Design the set",
+      "target": "सेट डिझाइन करा"
+    },
+    {
+      "id": "online:Designer reply awaiting reconciliation",
+      "source": "Designer reply awaiting reconciliation",
+      "target": "डिझाइनरच्या उत्तराची स्थिती पडताळणे बाकी आहे"
+    },
+    {
+      "id": "online:Designer request failed",
+      "source": "Designer request failed",
+      "target": "डिझाइनरची विनंती अयशस्वी झाली"
+    },
+    {
+      "id": "online:Designer request status",
+      "source": "Designer request status",
+      "target": "डिझाइनर विनंती स्थिती"
+    }
+  ]
+}

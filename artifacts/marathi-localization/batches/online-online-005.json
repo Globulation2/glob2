@@ -1,0 +1,509 @@
+{
+  "id": "online-online-005",
+  "source_sha256": "0ac44b4cdfb03e688983d6e3fb1e484cca57589665bff19c5c65388e649b292a",
+  "surface": "online",
+  "domain": "online",
+  "context": "Account, multiplayer, upload and browser workflows. Preserve URLs, licences, paths, format tokens and product names.",
+  "entries": [
+    {
+      "id": "online:Choose {value0}",
+      "key": "Choose {value0}",
+      "source": "Choose {value0}"
+    },
+    {
+      "id": "online:Clear selection",
+      "key": "Clear selection",
+      "source": "Clear selection"
+    },
+    {
+      "id": "online:Close",
+      "key": "Close",
+      "source": "Close"
+    },
+    {
+      "id": "online:Close credits",
+      "key": "Close credits",
+      "source": "Close credits"
+    },
+    {
+      "id": "online:Close navigation",
+      "key": "Close navigation",
+      "source": "Close navigation"
+    },
+    {
+      "id": "online:Close panel",
+      "key": "Close panel",
+      "source": "Close panel"
+    },
+    {
+      "id": "online:Close panel · Escape",
+      "key": "Close panel · Escape",
+      "source": "Close panel · Escape"
+    },
+    {
+      "id": "online:Close play choices",
+      "key": "Close play choices",
+      "source": "Close play choices"
+    },
+    {
+      "id": "online:Close preview",
+      "key": "Close preview",
+      "source": "Close preview"
+    },
+    {
+      "id": "online:Close {value0}",
+      "key": "Close {value0}",
+      "source": "Close {value0}"
+    },
+    {
+      "id": "online:Closed",
+      "key": "Closed",
+      "source": "Closed"
+    },
+    {
+      "id": "online:Code",
+      "key": "Code",
+      "source": "Code"
+    },
+    {
+      "id": "online:Code or invite link",
+      "key": "Code or invite link",
+      "source": "Code or invite link"
+    },
+    {
+      "id": "online:Collection disabled",
+      "key": "Collection disabled",
+      "source": "Collection disabled"
+    },
+    {
+      "id": "online:Collection enabled",
+      "key": "Collection enabled",
+      "source": "Collection enabled"
+    },
+    {
+      "id": "online:Colonies",
+      "key": "Colonies",
+      "source": "Colonies"
+    },
+    {
+      "id": "online:Colony AI",
+      "key": "Colony AI",
+      "source": "Colony AI"
+    },
+    {
+      "id": "online:Colony skins",
+      "key": "Colony skins",
+      "source": "Colony skins"
+    },
+    {
+      "id": "online:Colony still standing",
+      "key": "Colony still standing",
+      "source": "Colony still standing"
+    },
+    {
+      "id": "online:Colony {slot0}",
+      "key": "Colony {slot0}",
+      "source": "Colony {slot0}"
+    },
+    {
+      "id": "online:Colony {value0} paint",
+      "key": "Colony {value0} paint",
+      "source": "Colony {value0} paint"
+    },
+    {
+      "id": "online:Colony {value0} skin",
+      "key": "Colony {value0} skin",
+      "source": "Colony {value0} skin"
+    },
+    {
+      "id": "online:Color",
+      "key": "Color",
+      "source": "Color"
+    },
+    {
+      "id": "online:Colors your buildings; painted units stay unchanged.",
+      "key": "Colors your buildings; painted units stay unchanged.",
+      "source": "Colors your buildings; painted units stay unchanged."
+    },
+    {
+      "id": "online:Colors, seams and raised decor",
+      "key": "Colors, seams and raised decor",
+      "source": "Colors, seams and raised decor"
+    },
+    {
+      "id": "online:Combat",
+      "key": "Combat",
+      "source": "Combat"
+    },
+    {
+      "id": "online:Commander account",
+      "key": "Commander account",
+      "source": "Commander account"
+    },
+    {
+      "id": "online:Commander work",
+      "key": "Commander work",
+      "source": "Commander work"
+    },
+    {
+      "id": "online:Community",
+      "key": "Community",
+      "source": "Community"
+    },
+    {
+      "id": "online:Community-made JavaScript players control a colony through Glob2’s AI API. Download a version, import it in Settings → Custom AIs, then choose it for a computer seat in a local game. Installed versions work offline; saved games keep their original code.",
+      "key": "Community-made JavaScript players control a colony through Glob2’s AI API. Download a version, import it in Settings → Custom AIs, then choose it for a computer seat in a local game. Installed versions work offline; saved games keep their original code.",
+      "source": "Community-made JavaScript players control a colony through Glob2’s AI API. Download a version, import it in Settings → Custom AIs, then choose it for a computer seat in a local game. Installed versions work offline; saved games keep their original code."
+    },
+    {
+      "id": "online:Compare revision",
+      "key": "Compare revision",
+      "source": "Compare revision"
+    },
+    {
+      "id": "online:Compare with",
+      "key": "Compare with",
+      "source": "Compare with"
+    },
+    {
+      "id": "online:Compare with version",
+      "key": "Compare with version",
+      "source": "Compare with version"
+    },
+    {
+      "id": "online:Compared revision",
+      "key": "Compared revision",
+      "source": "Compared revision"
+    },
+    {
+      "id": "online:Compared revision {slot0}",
+      "key": "Compared revision {slot0}",
+      "source": "Compared revision {slot0}"
+    },
+    {
+      "id": "online:Compared revision: {slot0}",
+      "key": "Compared revision: {slot0}",
+      "source": "Compared revision: {slot0}"
+    },
+    {
+      "id": "online:Compare…",
+      "key": "Compare…",
+      "source": "Compare…"
+    },
+    {
+      "id": "online:Compatibility checklist",
+      "key": "Compatibility checklist",
+      "source": "Compatibility checklist"
+    },
+    {
+      "id": "online:Compatibility checks",
+      "key": "Compatibility checks",
+      "source": "Compatibility checks"
+    },
+    {
+      "id": "online:Compatibility checks exercise short games and save/resume. They do not certify safety or playing strength. Only run code from authors you trust.",
+      "key": "Compatibility checks exercise short games and save/resume. They do not certify safety or playing strength. Only run code from authors you trust.",
+      "source": "Compatibility checks exercise short games and save/resume. They do not certify safety or playing strength. Only run code from authors you trust."
+    },
+    {
+      "id": "online:Compatibility of your active skin",
+      "key": "Compatibility of your active skin",
+      "source": "Compatibility of your active skin"
+    },
+    {
+      "id": "online:Complete",
+      "key": "Complete",
+      "source": "Complete"
+    },
+    {
+      "id": "online:Complete family JSON",
+      "key": "Complete family JSON",
+      "source": "Complete family JSON"
+    },
+    {
+      "id": "online:Complete passing checks before publishing.",
+      "key": "Complete passing checks before publishing.",
+      "source": "Complete passing checks before publishing."
+    },
+    {
+      "id": "online:Completed",
+      "key": "Completed",
+      "source": "Completed"
+    },
+    {
+      "id": "online:Completion time comparison table",
+      "key": "Completion time comparison table",
+      "source": "Completion time comparison table"
+    },
+    {
+      "id": "online:Compose the music",
+      "key": "Compose the music",
+      "source": "Compose the music"
+    },
+    {
+      "id": "online:Composer’s progress",
+      "key": "Composer’s progress",
+      "source": "Composer’s progress"
+    },
+    {
+      "id": "online:Composition",
+      "key": "Composition",
+      "source": "Composition"
+    },
+    {
+      "id": "online:Configure Hive Mind in Settings → Online. In a match, press Ctrl+Enter to give an order. Assistance is permitted in ranked matches.",
+      "key": "Configure Hive Mind in Settings → Online. In a match, press Ctrl+Enter to give an order. Assistance is permitted in ranked matches.",
+      "source": "Configure Hive Mind in Settings → Online. In a match, press Ctrl+Enter to give an order. Assistance is permitted in ranked matches."
+    },
+    {
+      "id": "online:Confirm history deletion",
+      "key": "Confirm history deletion",
+      "source": "Confirm history deletion"
+    },
+    {
+      "id": "online:Confirm the license chosen when composing this version.",
+      "key": "Confirm the license chosen when composing this version.",
+      "source": "Confirm the license chosen when composing this version."
+    },
+    {
+      "id": "online:Confirmed cash",
+      "key": "Confirmed cash",
+      "source": "Confirmed cash"
+    },
+    {
+      "id": "online:Confirmed cash table",
+      "key": "Confirmed cash table",
+      "source": "Confirmed cash table"
+    },
+    {
+      "id": "online:Confirmed cash uses Stripe charge/refund currency units; current and previous UTC periods. CSV exports preserve exact integer minor units.",
+      "key": "Confirmed cash uses Stripe charge/refund currency units; current and previous UTC periods. CSV exports preserve exact integer minor units.",
+      "source": "Confirmed cash uses Stripe charge/refund currency units; current and previous UTC periods. CSV exports preserve exact integer minor units."
+    },
+    {
+      "id": "online:Confirming your payment. Your credits appear once payment is confirmed.",
+      "key": "Confirming your payment. Your credits appear once payment is confirmed.",
+      "source": "Confirming your payment. Your credits appear once payment is confirmed."
+    },
+    {
+      "id": "online:Connected",
+      "key": "Connected",
+      "source": "Connected"
+    },
+    {
+      "id": "online:Connection",
+      "key": "Connection",
+      "source": "Connection"
+    },
+    {
+      "id": "online:Connection interrupted. Reconnecting to your saved project…",
+      "key": "Connection interrupted. Reconnecting to your saved project…",
+      "source": "Connection interrupted. Reconnecting to your saved project…"
+    },
+    {
+      "id": "online:Connection quality per player",
+      "key": "Connection quality per player",
+      "source": "Connection quality per player"
+    },
+    {
+      "id": "online:Consistent levels",
+      "key": "Consistent levels",
+      "source": "Consistent levels"
+    },
+    {
+      "id": "online:Content",
+      "key": "Content",
+      "source": "Content"
+    },
+    {
+      "id": "online:Content not found.",
+      "key": "Content not found.",
+      "source": "Content not found."
+    },
+    {
+      "id": "online:Contents",
+      "key": "Contents",
+      "source": "Contents"
+    },
+    {
+      "id": "online:Contents & gameplay properties",
+      "key": "Contents & gameplay properties",
+      "source": "Contents & gameplay properties"
+    },
+    {
+      "id": "online:Continue as {p1}",
+      "key": "Continue as {p1}",
+      "source": "Continue as {p1}"
+    },
+    {
+      "id": "online:Continue to uploads",
+      "key": "Continue to uploads",
+      "source": "Continue to uploads"
+    },
+    {
+      "id": "online:Continue to {p1}",
+      "key": "Continue to {p1}",
+      "source": "Continue to {p1}"
+    },
+    {
+      "id": "online:Continue with {p3}",
+      "key": "Continue with {p3}",
+      "source": "Continue with {p3}"
+    },
+    {
+      "id": "online:Controls and compatibility evidence",
+      "key": "Controls and compatibility evidence",
+      "source": "Controls and compatibility evidence"
+    },
+    {
+      "id": "online:Conversation",
+      "key": "Conversation",
+      "source": "Conversation"
+    },
+    {
+      "id": "online:Convert and prepare preview",
+      "key": "Convert and prepare preview",
+      "source": "Convert and prepare preview"
+    },
+    {
+      "id": "online:Converting",
+      "key": "Converting",
+      "source": "Converting"
+    },
+    {
+      "id": "online:Copies the {slot0} texture and materials. Different models wrap that paint differently; inspect the results below.",
+      "key": "Copies the {slot0} texture and materials. Different models wrap that paint differently; inspect the results below.",
+      "source": "Copies the {slot0} texture and materials. Different models wrap that paint differently; inspect the results below."
+    },
+    {
+      "id": "online:Copy paint",
+      "key": "Copy paint",
+      "source": "Copy paint"
+    },
+    {
+      "id": "online:Copy paint to all models",
+      "key": "Copy paint to all models",
+      "source": "Copy paint to all models"
+    },
+    {
+      "id": "online:Copy paint to other models…",
+      "key": "Copy paint to other models…",
+      "source": "Copy paint to other models…"
+    },
+    {
+      "id": "online:Copy recorded usage",
+      "key": "Copy recorded usage",
+      "source": "Copy recorded usage"
+    },
+    {
+      "id": "online:Copy this link into Family link or ID in the game’s Building families picker to open this family directly.",
+      "key": "Copy this link into Family link or ID in the game’s Building families picker to open this family directly.",
+      "source": "Copy this link into Family link or ID in the game’s Building families picker to open this family directly."
+    },
+    {
+      "id": "online:Copyright",
+      "key": "Copyright",
+      "source": "Copyright"
+    },
+    {
+      "id": "online:Correct the invalid JSON before saving.",
+      "key": "Correct the invalid JSON before saving.",
+      "source": "Correct the invalid JSON before saving."
+    },
+    {
+      "id": "online:Cortex",
+      "key": "Cortex",
+      "source": "Cortex"
+    },
+    {
+      "id": "online:Could not check payment.",
+      "key": "Could not check payment.",
+      "source": "Could not check payment."
+    },
+    {
+      "id": "online:Could not crop this photo.",
+      "key": "Could not crop this photo.",
+      "source": "Could not crop this photo."
+    },
+    {
+      "id": "online:Could not delete this skin.",
+      "key": "Could not delete this skin.",
+      "source": "Could not delete this skin."
+    },
+    {
+      "id": "online:Could not load test map.",
+      "key": "Could not load test map.",
+      "source": "Could not load test map."
+    },
+    {
+      "id": "online:Could not load the material unwrap.",
+      "key": "Could not load the material unwrap.",
+      "source": "Could not load the material unwrap."
+    },
+    {
+      "id": "online:Could not load this language. Please try again.",
+      "key": "Could not load this language. Please try again.",
+      "source": "Could not load this language. Please try again."
+    },
+    {
+      "id": "online:Could not load this model. Please retry.",
+      "key": "Could not load this model. Please retry.",
+      "source": "Could not load this model. Please retry."
+    },
+    {
+      "id": "online:Could not load this {value0}",
+      "key": "Could not load this {value0}",
+      "source": "Could not load this {value0}"
+    },
+    {
+      "id": "online:Could not load your project.",
+      "key": "Could not load your project.",
+      "source": "Could not load your project."
+    },
+    {
+      "id": "online:Could not load {value0}.{value1}",
+      "key": "Could not load {value0}.{value1}",
+      "source": "Could not load {value0}.{value1}"
+    },
+    {
+      "id": "online:Could not open this photo.",
+      "key": "Could not open this photo.",
+      "source": "Could not open this photo."
+    },
+    {
+      "id": "online:Could not save · retrying",
+      "key": "Could not save · retrying",
+      "source": "Could not save · retrying"
+    },
+    {
+      "id": "online:Could not send report.",
+      "key": "Could not send report.",
+      "source": "Could not send report."
+    },
+    {
+      "id": "online:Could not update report.",
+      "key": "Could not update report.",
+      "source": "Could not update report."
+    },
+    {
+      "id": "online:Could not use this skin.",
+      "key": "Could not use this skin.",
+      "source": "Could not use this skin."
+    },
+    {
+      "id": "online:Count",
+      "key": "Count",
+      "source": "Count"
+    },
+    {
+      "id": "online:Cover",
+      "key": "Cover",
+      "source": "Cover"
+    },
+    {
+      "id": "online:Create",
+      "key": "Create",
+      "source": "Create"
+    }
+  ]
+}

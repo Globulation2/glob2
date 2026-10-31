@@ -1,0 +1,418 @@
+{
+  "request": {
+    "project": "bradley-personal-20261027",
+    "model": "general/nmt",
+    "payload": {
+      "sourceLanguageCode": "en",
+      "targetLanguageCode": "mr",
+      "mimeType": "text/plain",
+      "contents": [
+        "Registered",
+        "Registered active account-days",
+        "Registered player",
+        "Registered signups",
+        "Registered: ZXQPH0QXZ today · ZXQPH1QXZ weekly · ZXQPH2QXZ monthly",
+        "Rejected",
+        "Relay key required.",
+        "Release",
+        "Release archive failed its integrity check.",
+        "Release archive is too large.",
+        "Release archive is unavailable.",
+        "Release artwork failed its integrity check.",
+        "Release exceeds package limits.",
+        "Release label",
+        "Release not found.",
+        "Release notes",
+        "Release unavailable.",
+        "Releases",
+        "Releases & credits",
+        "Reload saved revision",
+        "Reload the current saved draft before publishing.",
+        "Remix with AI",
+        "Remove",
+        "Remove entry",
+        "Remove favourite",
+        "Remove generator",
+        "Remove sheet",
+        "Remove stage",
+        "Remove stock level",
+        "Remove variant",
+        "Remove ZXQPH0QXZ",
+        "Rename",
+        "Render the instruments",
+        "Rendered by the browser game engine. Run publishing checks to validate the saved revision.",
+        "Replace or remove the team layer before changing frame dimensions.",
+        "Replace the gaps too",
+        "Replay",
+        "Report",
+        "Report AI",
+        "Report a problem",
+        "Report already resolved.",
+        "Report for ZXQPH0QXZ",
+        "Report has already been resolved. Refresh to review its resolution.",
+        "Report not found.",
+        "Report reason",
+        "Report received.",
+        "Report skin",
+        "Report this generator",
+        "Report this map",
+        "Report this release",
+        "Reported",
+        "Reported skin texture",
+        "Reporting range: ZXQPH0QXZ through ZXQPH1QXZ (UTC). Today is still in progress; the previous ZXQPH2QXZ day is a complete calendar day. History may be incomplete; comparisons use recorded observations only.",
+        "Reporting range: ZXQPH0QXZ through ZXQPH1QXZ (UTC). Today is still in progress; the previous ZXQPH2QXZ days are complete calendar days. History may be incomplete; comparisons use recorded observations only.",
+        "Reporting range: ZXQPH0QXZ through ZXQPH1QXZ (UTC). Today is still in progress; the previous ZXQPH2QXZ days are complete calendar days. History may be incomplete; comparisons use recorded observations only.",
+        "Reports",
+        "Request cap",
+        "Request cap exceeds the configured limit.",
+        "Request failed.",
+        "Request not found.",
+        "Requests needing attention",
+        "Required experiment",
+        "Requires the ZXQPH0QXZ role.",
+        "Reroll seed",
+        "Reservation",
+        "Reserved",
+        "Reserved product credits",
+        "Reserved: ZXQPH0QXZ product credits",
+        "Reserved: ZXQPH0QXZ product creditsZXQPH1QXZ",
+        "Reset angle",
+        "Reset filters",
+        "Reset toolbox layout",
+        "Reset view",
+        "Reset · ",
+        "Resize conversation",
+        "Resolution: ZXQPH0QXZZXQPH1QXZ",
+        "Resolve",
+        "Resolve invalid fields before saving.",
+        "Resolve the account changes before saving.",
+        "Resolved"
+      ]
+    }
+  },
+  "response": {
+    "translations": [
+      {
+        "translatedText": "नोंदणीकृत",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नोंदणीकृत सक्रिय खाते-दिवस",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नोंदणीकृत खेळाडू",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नोंदणीकृत साइनअप्स",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नोंदणीकृत: ZXQPH0QXZ आज · ZXQPH1QXZ साप्ताहिक · ZXQPH2QXZ मासिक",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नाकारले",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "रिले की आवश्यक आहे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "प्रकाशन",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "रिलीज आर्काइव्हची अखंडता तपासणी अयशस्वी झाली.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "रिलीज आर्काइव्ह खूप मोठा आहे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "रिलीज आर्काइव्ह उपलब्ध नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "रिलीज आर्टवर्क सत्यता तपासणीत अयशस्वी ठरले.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "रिलीझ पॅकेजच्या मर्यादा ओलांडत आहे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "प्रकाशन लेबल",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "रिलीझ सापडला नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "प्रकाशन नोट्स",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "प्रकाशन उपलब्ध नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "प्रकाशनं",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "प्रकाशन आणि श्रेय",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "जतन केलेली आवृत्ती पुन्हा लोड करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "प्रकाशित करण्यापूर्वी सध्या जतन केलेला मसुदा पुन्हा लोड करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "एआय सह रीमिक्स करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "काढून टाका",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नोंद काढून टाका",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "आवडते काढून टाका",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "जनरेटर काढा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "शीट काढा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "स्टेज काढा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "स्टॉक पातळी काढून टाका",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "व्हेरिएंट काढा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ काढून टाका",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नाव बदला",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "वाद्ये सादर करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ब्राउझर गेम इंजिनद्वारे प्रस्तुत केले आहे. जतन केलेली आवृत्ती प्रमाणित करण्यासाठी प्रकाशन तपासण्या चालवा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "फ्रेमचे परिमाण बदलण्यापूर्वी टीम लेयर बदला किंवा काढून टाका.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "फटी देखील बदला",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पुन्हा प्ले करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अहवाल",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "एआय अहवाल",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "समस्या कळवा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अहवालाचे निराकरण आधीच झाले आहे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ साठी अहवाल",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अहवालाचे निराकरण आधीच झाले आहे. त्याचे निराकरण तपासण्यासाठी रिफ्रेश करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अहवाल आढळला नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कारणाचा अहवाल द्या",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अहवाल प्राप्त झाला.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "त्वचेचा अहवाल",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "या जनरेटरची तक्रार करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "या नकाशाची तक्रार करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "या प्रकाशनाची तक्रार करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "रिपोर्ट केले",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "त्वचेच्या पोताची माहिती दिली",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अहवाल देण्याची व्याप्ती: ZXQPH0QXZ ते ZXQPH1QXZ (UTC). आजचा दिवस अजूनही सुरू आहे; मागील ZXQPH2QXZ दिवस हा एक पूर्ण कॅलेंडर दिवस आहे. इतिहास अपूर्ण असू शकतो; तुलनेसाठी केवळ नोंदवलेल्या निरीक्षणांचा वापर केला जातो.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अहवाल देण्याची व्याप्ती: ZXQPH0QXZ ते ZXQPH1QXZ (UTC). आजचा दिवस अजूनही सुरू आहे; मागील ZXQPH2QXZ दिवस हे पूर्ण कॅलेंडर दिवस आहेत. इतिहास अपूर्ण असू शकतो; तुलनेसाठी केवळ नोंदवलेल्या निरीक्षणांचा वापर केला जातो.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अहवाल देण्याची व्याप्ती: ZXQPH0QXZ ते ZXQPH1QXZ (UTC). आजचा दिवस अजूनही सुरू आहे; मागील ZXQPH2QXZ दिवस हे पूर्ण कॅलेंडर दिवस आहेत. इतिहास अपूर्ण असू शकतो; तुलनेसाठी केवळ नोंदवलेल्या निरीक्षणांचा वापर केला जातो.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अहवाल",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कॅपची विनंती करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "विनंतीची मर्यादा निर्धारित मर्यादेपेक्षा जास्त आहे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "विनंती अयशस्वी झाली.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "विनंती आढळली नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "लक्ष देण्याची गरज असलेल्या विनंत्या",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "आवश्यक प्रयोग",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ भूमिकेची आवश्यकता आहे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पुन्हा रोल सीड",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "आरक्षण",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "राखीव",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "राखीव उत्पादन क्रेडिट्स",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "राखीव: ZXQPH0QXZ उत्पादन श्रेय",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "राखीव: ZXQPH0QXZ उत्पादन श्रेय ZXQPH1QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कोन रीसेट करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "फिल्टर रीसेट करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "टूलबॉक्स लेआउट रीसेट करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "दृश्य रीसेट करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "रीसेट करा ·",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "संभाषणाचा आकार बदला",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "रिझोल्यूशन: ZXQPH0QXZZXQPH1QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "निराकरण करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सेव्ह करण्यापूर्वी अवैध फील्ड्स दुरुस्त करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सेव्ह करण्यापूर्वी खात्यातील बदल निश्चित करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "निराकरण झाले",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      }
+    ]
+  },
+  "response_sha256": "132f819dd227494957e5410d8f0ac9955f3e9d94ea453cc7c96bf99bf0f71e7f"
+}

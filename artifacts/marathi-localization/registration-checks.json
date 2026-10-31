@@ -1,0 +1,78 @@
+{
+  "revision": "ed4ac0901f85a8e13d11b741ad3dea1f0a31df54",
+  "node_runtime": "/usr/lib/chatgpt/resources/cua_node/bin/node v24.22.1",
+  "catalog_sha256": {
+    "data/texts.mr.txt": "8b3f9e4972ee0eb1c3433110a7f0e83c9dc2fb7ea5f494b6925afa373c4fef97",
+    "platform/packages/i18n/locales/mr.json": "0a35ecc3e76fd00b68db89ca5dd18967304524eb7c3c0b8cc81c37b70e5694a4",
+    "browser/locales/mr.json": "0a35ecc3e76fd00b68db89ca5dd18967304524eb7c3c0b8cc81c37b70e5694a4"
+  },
+  "commands": {
+    "generation": "PATH=/usr/lib/chatgpt/resources/cua_node/bin:$PATH npm run i18n:browser",
+    "online_inventory": "PATH=/usr/lib/chatgpt/resources/cua_node/bin:$PATH npm run i18n:check",
+    "focused_platform": "PATH=/usr/lib/chatgpt/resources/cua_node/bin:$PATH npx vitest run packages/i18n/test/runtime.test.ts packages/i18n/test/source-contract.test.ts packages/i18n/test/build-browser.test.ts apps/api/test/pages.test.ts",
+    "native_strict": "python3 data/check_translations.py --strict",
+    "native_regressions": "python3 test/test_translations.py",
+    "draft_helper": "python3 test/test_google_draft.py",
+    "typecheck": "PATH=/usr/lib/chatgpt/resources/cua_node/bin:$PATH npm run typecheck",
+    "web_e2e": "PATH=/usr/lib/chatgpt/resources/cua_node/bin:$PATH TEST_DATABASE_URL=postgres://glob2:glob2@127.0.0.1:32768/postgres PORT=4587 SCREENSHOT_DIR=/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/web-screenshots npm run e2e -w @glob2/web -- i18n.spec.ts --grep \"renders mr|Marathi switching|changing the selected language\"",
+    "web_i18n_unit": "PATH=/usr/lib/chatgpt/resources/cua_node/bin:$PATH npx vitest run apps/web/test/i18n.test.tsx",
+    "website_final_build": "PATH=/usr/lib/chatgpt/resources/cua_node/bin:$PATH npm exec --workspace @glob2/web -- vite build",
+    "final_web_typecheck_refresh": "PATH=/usr/lib/chatgpt/resources/cua_node/bin:$PATH ./node_modules/.bin/tsc -p apps/web/tsconfig.json",
+    "desktop_capture_recheck": "PATH=/usr/lib/chatgpt/resources/cua_node/bin:$PATH TEST_DATABASE_URL=postgres://glob2:glob2@127.0.0.1:32768/postgres PORT=4587 SCREENSHOT_DIR=/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/web-screenshots npm run e2e -w @glob2/web -- i18n.spec.ts --project desktop --grep 'renders mr'"
+  },
+  "passed": {
+    "online_inventory": "37 languages x2836 messages; source, parameter, plural and generated runtime contracts passed",
+    "focused_platform": "4files33tests passed",
+    "native_strict": "All37 catalogs0 untranslated,0missing,0obsolete;0structuralerrors",
+    "native_regressions": "10tests passed",
+    "draft_helper": "9tests passed",
+    "format": "Changed TS plus frozenmrJSON and online exceptions alreadyPrettier clean",
+    "post_rendering_contract": "25runtime/source-contract tests plus final37x2836strict online catalog contracts passed",
+    "web_i18n_unit": "12tests passed",
+    "website_final_build": "Vite release build after theme fix succeeded49.67s; separate website music decoder release build succeeded before UI-only rebuild",
+    "pre_compact_web_e2e": "6/6 passed desktop and Pixel7; ownserver4587/PostgreSQL32768; actual bundle-font loading incl Marathi-specific \u0933 \u0931 \u090d \u0911 \u0915\u094d\u0937 \u091c\u094d\u091e \u0936\u094d\u0930, RTL-to-LTR, cookie persistence, form preservation, translated theme accessiblelabel, required navigation, horizontaloverflow and sign-in textfit",
+    "compactpicker_contract": "21webi18n/source-contract tests passed; strict37x2836catalog/generatedruntime recheck passed",
+    "compactpicker_website_release_build": "37.11sVite buildsuccess",
+    "full_typecheck": "npm run typecheck root+web+E2E projects all passed exit0",
+    "final_web_typecheck_refresh": "Fresh tsc -p apps/web/tsconfig.json after compactpicker source passed exit0",
+    "final_web_e2e": "All6distinct finalcase/project combinations pass: compact-picker-six-cases.log has5passed plus desktop screenshot protocolfailure after allassertions; unchanged desktop homecase rerun PASS in compact-picker-desktop-capture-recheck.log"
+  },
+  "pending": [],
+  "command_working_directories": {
+    "npm_and_npx": "/home/bradley/.codex/worktrees/45cd/glob2/platform",
+    "python": "/home/bradley/.codex/worktrees/45cd/glob2"
+  },
+  "web_music_dependency_reuse": {
+    "source": "private-web-store/dependencies/build-c9a1a036d1ef403097d78cfd/prefix",
+    "destination": "build/music-web/opus",
+    "manifest": "opus-manifest.json unchanged; website music builder validated original pinned manifest/archive hashes and returned without compiling Opus",
+    "reason": "Avoid duplicate tool-only website decoder dependency build; actual decoder rebuilt with current source and privateEMcache"
+  },
+  "notes": [
+    "First E2E launch on4287 found an unrelated Bengali server and was stopped before accepting results. Final isolated run uses4587 and Marathi PostgreSQL32768.",
+    "Initial home rendering assertions assumed10navigation links despite skins feature gating. Replaced hardcount with explicit required9hrefs; retained originalfailures.",
+    "Actual Marathi accessible theme suffix remained English because a translated string was interpolated into the lookup key. Fixed to existing parameterized key; no catalog/source-digest change.",
+    "Parent requested compactpicker improvement after phone screenshot. Compact rail now usesMR locale-code badge, native optionnames and expanded fullnames retained. Final rebuild/geometry checks pending."
+  ],
+  "screenshots": {
+    "web-screenshots/desktop/mr-home.png": "c0015db5d25cc81c0e2e9737592ea60239dd5b57e6359adc046c0a5d1c89ccb0",
+    "web-screenshots/phone/mr-home.png": "f3b7d30b1bd2ad612c4493023cd7d4f70d95d21949b6d96865edb0a4a680609b"
+  },
+  "tested_working_tree_inputs_sha256": {
+    "platform/apps/web/src/i18n.tsx": "f1ef17e4c1508754aa8c9f6fb86824f7e6399eb3e4dc445f5b597751fba754da",
+    "platform/apps/web/src/styles/layout.css": "4c0d6c2b963c55baacbfd74712a76bd8626f45397a0fc95b73fff8ccca87544a",
+    "platform/apps/web/src/theme.tsx": "3334537cb5e1294e848a7cd783fcf4c83e9406034d5a6e0f22d8faa0a2f35203",
+    "platform/apps/web/e2e/i18n.spec.ts": "73444aaffe4d4798d6d3822c458f5de3e558ec10989a378a9fe9c46f7fae4727",
+    "platform/packages/i18n/src/index.ts": "9b3c887570a9e03ba383b04eb682c382a9e16a0a27816e0b767b643b8672c47f",
+    "platform/packages/i18n/src/locales.ts": "08dfc6456972c76b118b4477b8a8bafeea975feb60a99933a1890f6fc4810c02",
+    "platform/packages/i18n/test/runtime.test.ts": "d02662da2d5dbf08f402d4d3facc048d7440d8e099165ced0f4efb9bc48a9d56",
+    "platform/packages/i18n/shared-values.json": "ebec69c8cae53d080295f17c9954c946280f20cc1ec7437bc9895a0835b2b04e",
+    "data/texts.mr.txt": "8b3f9e4972ee0eb1c3433110a7f0e83c9dc2fb7ea5f494b6925afa373c4fef97",
+    "platform/packages/i18n/locales/mr.json": "0a35ecc3e76fd00b68db89ca5dd18967304524eb7c3c0b8cc81c37b70e5694a4",
+    "browser/i18n.js": "ef1cafb103446eb76ef7c95d9ea1fc41b53ba3dec8f5e85972da333ed0905be4",
+    "data/texts.list.txt": "a3fbae9834ba4e209b718d8fd59d360b29d217f22cebccda4e175b08dda254fd",
+    "data/texts.incomplete.txt": "e4772b1300840f71164a654f5a9107fcc062e7ef8a6ab7bb49175a638290e5ba",
+    "test/translation_shared_values.json": "e5184d34817105d8a915c26ba51861ca92a858d62545ea3cedb7a93144db408c"
+  },
+  "verified_final_revision": "c9d772635398c57582069b58208eb337cee2787b"
+}

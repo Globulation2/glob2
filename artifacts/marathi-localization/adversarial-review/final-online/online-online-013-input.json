@@ -1,0 +1,510 @@
+{
+  "source_sha256": "0ac44b4cdfb03e688983d6e3fb1e484cca57589665bff19c5c65388e649b292a",
+  "batch_target_sha256": "d96a84d3f6dd756931379eef1467de934001703932c97653f4624965346a8cdd",
+  "catalog_sha256": {
+    "native": "8b3f9e4972ee0eb1c3433110a7f0e83c9dc2fb7ea5f494b6925afa373c4fef97",
+    "online": "d7ae02f4d4453ebcb2acc37c15fd862acea8d2996d29cdb89bfb64c4f32cd5fa"
+  },
+  "entries": [
+    {
+      "id": "online:My favourites",
+      "source": "My favourites",
+      "target": "माझे आवडते"
+    },
+    {
+      "id": "online:My generators",
+      "source": "My generators",
+      "target": "माझे जनरेटर"
+    },
+    {
+      "id": "online:My landscape",
+      "source": "My landscape",
+      "target": "माझे लँडस्केप"
+    },
+    {
+      "id": "online:My maps",
+      "source": "My maps",
+      "target": "माझे नकाशे"
+    },
+    {
+      "id": "online:My sets",
+      "source": "My sets",
+      "target": "माझे सेट"
+    },
+    {
+      "id": "online:My skins",
+      "source": "My skins",
+      "target": "माझी रूपे"
+    },
+    {
+      "id": "online:Name",
+      "source": "Name",
+      "target": "नाव"
+    },
+    {
+      "id": "online:Name or content ID",
+      "source": "Name or content ID",
+      "target": "नाव किंवा सामग्री आयडी"
+    },
+    {
+      "id": "online:Name, account id or email",
+      "source": "Name, account id or email",
+      "target": "नाव, खाते आयडी किंवा ईमेल"
+    },
+    {
+      "id": "online:Names like Guest-1234 are reserved for guests.",
+      "source": "Names like Guest-1234 are reserved for guests.",
+      "target": "Guest-1234 सारखी नावे पाहुण्यांसाठी राखीव असतात."
+    },
+    {
+      "id": "online:Navigation",
+      "source": "Navigation",
+      "target": "नेव्हिगेशन"
+    },
+    {
+      "id": "online:Needs attention",
+      "source": "Needs attention",
+      "target": "लक्ष देण्याची गरज आहे"
+    },
+    {
+      "id": "online:New AI version",
+      "source": "New AI version",
+      "target": "नवीन एआय आवृत्ती"
+    },
+    {
+      "id": "online:New building family",
+      "source": "New building family",
+      "target": "नवीन इमारत संच"
+    },
+    {
+      "id": "online:New composition",
+      "source": "New composition",
+      "target": "नवीन रचना"
+    },
+    {
+      "id": "online:New display name",
+      "source": "New display name",
+      "target": "नवीन डिस्प्ले नाव"
+    },
+    {
+      "id": "online:New here? Create an account",
+      "source": "New here? Create an account",
+      "target": "तुम्ही येथे नवीन आहात का? खाते तयार करा"
+    },
+    {
+      "id": "online:New map",
+      "source": "New map",
+      "target": "नवीन नकाशा"
+    },
+    {
+      "id": "online:New messages ",
+      "source": "New messages ",
+      "target": "नवीन संदेश "
+    },
+    {
+      "id": "online:New set",
+      "source": "New set",
+      "target": "नवीन सेट"
+    },
+    {
+      "id": "online:New skin",
+      "source": "New skin",
+      "target": "नवीन रूप"
+    },
+    {
+      "id": "online:New terrain set",
+      "source": "New terrain set",
+      "target": "नवीन भूभाग संच"
+    },
+    {
+      "id": "online:New to Globulation 2?",
+      "source": "New to Globulation 2?",
+      "target": "Globulation 2 प्रथमच खेळत आहात का?"
+    },
+    {
+      "id": "online:New version",
+      "source": "New version",
+      "target": "नवीन आवृत्ती"
+    },
+    {
+      "id": "online:Newest",
+      "source": "Newest",
+      "target": "नवीनतम"
+    },
+    {
+      "id": "online:Newest reports",
+      "source": "Newest reports",
+      "target": "नवीनतम अहवाल"
+    },
+    {
+      "id": "online:News",
+      "source": "News",
+      "target": "बातम्या"
+    },
+    {
+      "id": "online:Next",
+      "source": "Next",
+      "target": "पुढील"
+    },
+    {
+      "id": "online:Next page",
+      "source": "Next page",
+      "target": "पुढील पान"
+    },
+    {
+      "id": "online:Next results",
+      "source": "Next results",
+      "target": "पुढील निकाल"
+    },
+    {
+      "id": "online:Next stage",
+      "source": "Next stage",
+      "target": "पुढील टप्पा"
+    },
+    {
+      "id": "online:Next stage: {slot0}",
+      "source": "Next stage: {slot0}",
+      "target": "पुढील टप्पा: {slot0}"
+    },
+    {
+      "id": "online:Nicowar",
+      "source": "Nicowar",
+      "target": "Nicowar"
+    },
+    {
+      "id": "online:No AIs match these filters.",
+      "source": "No AIs match these filters.",
+      "target": "या फिल्टरशी जुळणारे कोणतेही एआय नाहीत."
+    },
+    {
+      "id": "online:No Android app is associated with this instance.",
+      "source": "No Android app is associated with this instance.",
+      "target": "या इन्स्टन्सशी कोणतेही अँड्रॉइड ॲप जोडलेले नाही."
+    },
+    {
+      "id": "online:No account needed to try it:",
+      "source": "No account needed to try it:",
+      "target": "हे वापरून पाहण्यासाठी खात्याची आवश्यकता नाही:"
+    },
+    {
+      "id": "online:No accounts match.",
+      "source": "No accounts match.",
+      "target": "कोणतेही खाते जुळत नाही."
+    },
+    {
+      "id": "online:No actions found.",
+      "source": "No actions found.",
+      "target": "कोणतीही कृती आढळली नाही."
+    },
+    {
+      "id": "online:No active account.",
+      "source": "No active account.",
+      "target": "कोणतेही सक्रिय खाते नाही."
+    },
+    {
+      "id": "online:No attempt usage evidence is available.",
+      "source": "No attempt usage evidence is available.",
+      "target": "कोणत्याही प्रयत्नाच्या वापराचा पुरावा उपलब्ध नाही."
+    },
+    {
+      "id": "online:No building validation engine is available. Try again later.",
+      "source": "No building validation engine is available. Try again later.",
+      "target": "इमारत पडताळणी इंजिन उपलब्ध नाही. कृपया नंतर पुन्हा प्रयत्न करा."
+    },
+    {
+      "id": "online:No commander activity yet.",
+      "source": "No commander activity yet.",
+      "target": "अद्याप कमांडरकडून कोणतीही हालचाल झालेली नाही."
+    },
+    {
+      "id": "online:No comparison",
+      "source": "No comparison",
+      "target": "तुलना नाही"
+    },
+    {
+      "id": "online:No compatible engine is available for this map.",
+      "source": "No compatible engine is available for this map.",
+      "target": "या मॅपसाठी कोणतेही सुसंगत इंजिन उपलब्ध नाही."
+    },
+    {
+      "id": "online:No confirmed cash events in this range and payment mode.",
+      "source": "No confirmed cash events in this range and payment mode.",
+      "target": "या श्रेणीमध्ये आणि पेमेंट मोडमध्ये कोणतेही कन्फर्म केलेले कॅश व्यवहार नाहीत."
+    },
+    {
+      "id": "online:No content found.",
+      "source": "No content found.",
+      "target": "कोणतीही सामग्री आढळली नाही."
+    },
+    {
+      "id": "online:No data yet.",
+      "source": "No data yet.",
+      "target": "अद्याप कोणताही डेटा उपलब्ध नाही."
+    },
+    {
+      "id": "online:No engine agent can check files right now.",
+      "source": "No engine agent can check files right now.",
+      "target": "सध्या कोणताही इंजिन एजंट फाईल्स तपासू शकत नाही."
+    },
+    {
+      "id": "online:No engine agent can validate maps right now.",
+      "source": "No engine agent can validate maps right now.",
+      "target": "सध्या कोणताही इंजिन एजंट मॅप्सची पडताळणी करू शकत नाही."
+    },
+    {
+      "id": "online:No engine agents are registered.",
+      "source": "No engine agents are registered.",
+      "target": "कोणतेही इंजिन एजंट नोंदणीकृत नाहीत."
+    },
+    {
+      "id": "online:No families found.",
+      "source": "No families found.",
+      "target": "कोणताही इमारत संच सापडला नाही."
+    },
+    {
+      "id": "online:No game servers are online right now.",
+      "source": "No game servers are online right now.",
+      "target": "सध्या कोणतेही गेम सर्व्हर ऑनलाइन नाहीत."
+    },
+    {
+      "id": "online:No games yet. This AI’s results will appear here after it plays.",
+      "source": "No games yet. This AI’s results will appear here after it plays.",
+      "target": "अद्याप एकही सामना झालेला नाही. हा एआय खेळल्यानंतर त्याचे निकाल येथे दिसतील."
+    },
+    {
+      "id": "online:No generators match these filters.",
+      "source": "No generators match these filters.",
+      "target": "या फिल्टरशी जुळणारे कोणतेही जनरेटर नाहीत."
+    },
+    {
+      "id": "online:No iOS app is associated with this instance.",
+      "source": "No iOS app is associated with this instance.",
+      "target": "या इन्स्टन्सशी कोणतेही iOS ॲप जोडलेले नाही."
+    },
+    {
+      "id": "online:No isolated AI validator is available.",
+      "source": "No isolated AI validator is available.",
+      "target": "कोणताही स्वतंत्र एआय व्हॅलिडेटर उपलब्ध नाही."
+    },
+    {
+      "id": "online:No isolated AI validator is available. Please try again later.",
+      "source": "No isolated AI validator is available. Please try again later.",
+      "target": "कोणताही स्वतंत्र एआय व्हॅलिडेटर उपलब्ध नाही. कृपया नंतर पुन्हा प्रयत्न करा."
+    },
+    {
+      "id": "online:No isolated generator validator is available.",
+      "source": "No isolated generator validator is available.",
+      "target": "कोणताही आयसोलेटेड जनरेटर व्हॅलिडेटर उपलब्ध नाही."
+    },
+    {
+      "id": "online:No isolated generator validator is available. Please try again later.",
+      "source": "No isolated generator validator is available. Please try again later.",
+      "target": "कोणताही आयसोलेटेड जनरेटर व्हॅलिडेटर उपलब्ध नाही. कृपया नंतर पुन्हा प्रयत्न करा."
+    },
+    {
+      "id": "online:No isolated generator worker is available.",
+      "source": "No isolated generator worker is available.",
+      "target": "कोणताही आयसोलेटेड जनरेटर वर्कर उपलब्ध नाही."
+    },
+    {
+      "id": "online:No map build has started. Waiting for the provider outcome.",
+      "source": "No map build has started. Waiting for the provider outcome.",
+      "target": "मॅप बिल्ड सुरू झालेला नाही. प्रोव्हायडरच्या निकालाची प्रतीक्षा आहे."
+    },
+    {
+      "id": "online:No maps match these filters.",
+      "source": "No maps match these filters.",
+      "target": "या फिल्टरशी जुळणारे नकाशे उपलब्ध नाहीत."
+    },
+    {
+      "id": "online:No matches yet.",
+      "source": "No matches yet.",
+      "target": "अद्याप एकही सामना झालेला नाही."
+    },
+    {
+      "id": "online:No measured results are available for this version.",
+      "source": "No measured results are available for this version.",
+      "target": "या आवृत्तीसाठी कोणतेही मोजमाप केलेले निकाल उपलब्ध नाहीत."
+    },
+    {
+      "id": "online:No music found. Try different filters, or share the first set.",
+      "source": "No music found. Try different filters, or share the first set.",
+      "target": "कोणतेही संगीत आढळले नाही. वेगवेगळे फिल्टर वापरून पहा, किंवा पहिला संच शेअर करा."
+    },
+    {
+      "id": "online:No open reports.",
+      "source": "No open reports.",
+      "target": "कोणतेही प्रलंबित अहवाल नाहीत."
+    },
+    {
+      "id": "online:No other relay is available; try again shortly.",
+      "source": "No other relay is available; try again shortly.",
+      "target": "दुसरा कोणताही रिले उपलब्ध नाही; थोड्या वेळाने पुन्हा प्रयत्न करा."
+    },
+    {
+      "id": "online:No owned building family.",
+      "source": "No owned building family.",
+      "target": "तुमच्या मालकीचा इमारत संच नाही."
+    },
+    {
+      "id": "online:No owned {p0} version.",
+      "source": "No owned {p0} version.",
+      "target": "{p0} ची कोणतीही मालकीची आवृत्ती नाही."
+    },
+    {
+      "id": "online:No photo.",
+      "source": "No photo.",
+      "target": "फोटो नाही."
+    },
+    {
+      "id": "online:No players found. Try another name.",
+      "source": "No players found. Try another name.",
+      "target": "कोणतेही खेळाडू आढळले नाहीत. दुसरे नाव वापरून पहा."
+    },
+    {
+      "id": "online:No queue {p0}.",
+      "source": "No queue {p0}.",
+      "target": "{p0} ही रांग नाही."
+    },
+    {
+      "id": "online:No queue.",
+      "source": "No queue.",
+      "target": "रांग नाही."
+    },
+    {
+      "id": "online:No rated players in this view yet. Play a ranked match to start climbing.",
+      "source": "No rated players in this view yet. Play a ranked match to start climbing.",
+      "target": "या दृश्यात अद्याप एकही मानांकित खेळाडू नाही. रँक वाढवण्यासाठी एक रँक्ड सामना खेळा."
+    },
+    {
+      "id": "online:No rated players yet. The first wins will put you here.",
+      "source": "No rated players yet. The first wins will put you here.",
+      "target": "अद्याप एकही मानांकित खेळाडू नाही. पहिले विजय मिळवल्यावर तुम्हाला येथे स्थान मिळेल."
+    },
+    {
+      "id": "online:No relay accepted the match.",
+      "source": "No relay accepted the match.",
+      "target": "कोणत्याही रिलेने सामना स्वीकारला नाही."
+    },
+    {
+      "id": "online:No reports.",
+      "source": "No reports.",
+      "target": "कोणतेही अहवाल नाहीत."
+    },
+    {
+      "id": "online:No requests need attention.",
+      "source": "No requests need attention.",
+      "target": "कोणत्याही विनंत्यांकडे लक्ष देण्याची गरज नाही."
+    },
+    {
+      "id": "online:No set validator is available. Your draft is saved; try checks later.",
+      "source": "No set validator is available. Your draft is saved; try checks later.",
+      "target": "संच तपासणारे साधन उपलब्ध नाही. मसुदा जतन झाला आहे; नंतर तपासण्या करून पाहा."
+    },
+    {
+      "id": "online:No sets found. Try another search or create the first one.",
+      "source": "No sets found. Try another search or create the first one.",
+      "target": "कोणतेही संच सापडले नाहीत. वेगळा शोध घ्या किंवा पहिला संच तयार करा."
+    },
+    {
+      "id": "online:No shared maps yet. Be the first to share one.",
+      "source": "No shared maps yet. Be the first to share one.",
+      "target": "अद्याप एकही नकाशा शेअर केलेला नाही. पहिला नकाशा शेअर करणारे तुम्हीच व्हा."
+    },
+    {
+      "id": "online:No sign-in provider {p0}.",
+      "source": "No sign-in provider {p0}.",
+      "target": "{p0} हा साइन-इन प्रदाता नाही."
+    },
+    {
+      "id": "online:No skin reports.",
+      "source": "No skin reports.",
+      "target": "रूपांविषयी तक्रारी नाहीत."
+    },
+    {
+      "id": "online:No such AI version.",
+      "source": "No such AI version.",
+      "target": "अशी कोणतीही एआय आवृत्ती नाही."
+    },
+    {
+      "id": "online:No such AI.",
+      "source": "No such AI.",
+      "target": "असा कोणताही एआय नाही."
+    },
+    {
+      "id": "online:No such account.",
+      "source": "No such account.",
+      "target": "असे कोणतेही खाते नाही."
+    },
+    {
+      "id": "online:No such agent.",
+      "source": "No such agent.",
+      "target": "असा कोणताही एजंट नाही."
+    },
+    {
+      "id": "online:No such artifact.",
+      "source": "No such artifact.",
+      "target": "अशी कोणतीही वस्तू नाही."
+    },
+    {
+      "id": "online:No such artwork.",
+      "source": "No such artwork.",
+      "target": "अशी कोणतीही कलाकृती नाही."
+    },
+    {
+      "id": "online:No such blob.",
+      "source": "No such blob.",
+      "target": "असा डेटा ब्लॉब नाही."
+    },
+    {
+      "id": "online:No such building family.",
+      "source": "No such building family.",
+      "target": "असा कोणताही इमारत संच नाही."
+    },
+    {
+      "id": "online:No such delivered map.",
+      "source": "No such delivered map.",
+      "target": "असा कोणताही नकाशा वितरित केलेला नाही."
+    },
+    {
+      "id": "online:No such draft.",
+      "source": "No such draft.",
+      "target": "असा कोणताही मसुदा नाही."
+    },
+    {
+      "id": "online:No such generator.",
+      "source": "No such generator.",
+      "target": "असा कोणताही जनरेटर नाही."
+    },
+    {
+      "id": "online:No such job.",
+      "source": "No such job.",
+      "target": "असे काम नाही."
+    },
+    {
+      "id": "online:No such leaderboard.",
+      "source": "No such leaderboard.",
+      "target": "असा कोणताही लीडरबोर्ड नाही."
+    },
+    {
+      "id": "online:No such map.",
+      "source": "No such map.",
+      "target": "असा कोणताही नकाशा नाही."
+    },
+    {
+      "id": "online:No such match.",
+      "source": "No such match.",
+      "target": "असा कोणताही सामना नाही."
+    },
+    {
+      "id": "online:No such music release.",
+      "source": "No such music release.",
+      "target": "असे कोणतेही संगीत प्रकाशन नाही."
+    },
+    {
+      "id": "online:No such player.",
+      "source": "No such player.",
+      "target": "असा कोणताही खेळाडू नाही."
+    }
+  ]
+}

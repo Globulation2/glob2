@@ -1,0 +1,510 @@
+{
+  "source_sha256": "0ac44b4cdfb03e688983d6e3fb1e484cca57589665bff19c5c65388e649b292a",
+  "batch_target_sha256": "f87c34568d493dcd8b0f68e0cf96729585f1a568e7be9432b1de9c9884cdd37c",
+  "catalog_sha256": {
+    "native": "8b3f9e4972ee0eb1c3433110a7f0e83c9dc2fb7ea5f494b6925afa373c4fef97",
+    "online": "d7ae02f4d4453ebcb2acc37c15fd862acea8d2996d29cdb89bfb64c4f32cd5fa"
+  },
+  "entries": [
+    {
+      "id": "online:The selected generator release is no longer available for this room.",
+      "source": "The selected generator release is no longer available for this room.",
+      "target": "या खोलीसाठी निवडलेला जनरेटर रिलीज आता उपलब्ध नाही."
+    },
+    {
+      "id": "online:The server first loads the file with the game to check it; the map page is created only if it loads. Unlisted maps are reachable by link only; you can make a map public later.",
+      "source": "The server first loads the file with the game to check it; the map page is created only if it loads. Unlisted maps are reachable by link only; you can make a map public later.",
+      "target": "फाईल तपासण्यासाठी सर्व्हर ती आधी खेळात लोड करतो; ती लोड झाली तरच नकाशाचे पृष्ठ तयार होते. सूचीत नसलेले नकाशे फक्त लिंकने उघडता येतात; नंतर नकाशा सार्वजनिक करू शकता."
+    },
+    {
+      "id": "online:The server’s verified replay. Open it in the game (Load game → Replays) or watch it here.",
+      "source": "The server’s verified replay. Open it in the game (Load game → Replays) or watch it here.",
+      "target": "सर्वरचा सत्यापित रिप्ले. तो गेममध्ये उघडा (गेम लोड करा → रिप्ले) किंवा येथे पहा."
+    },
+    {
+      "id": "online:The session has ended.",
+      "source": "The session has ended.",
+      "target": "सत्र संपले आहे."
+    },
+    {
+      "id": "online:The sheet must be at most 2048×2048 and fit its frame grid exactly.",
+      "source": "The sheet must be at most 2048×2048 and fit its frame grid exactly.",
+      "target": "स्प्राइटशीट जास्तीत जास्त 2048×2048 असावी आणि तिच्या फ्रेमच्या जाळीत तंतोतंत बसली पाहिजे."
+    },
+    {
+      "id": "online:The sign-in response is missing its state.",
+      "source": "The sign-in response is missing its state.",
+      "target": "साइन-इन प्रतिसादात त्याची स्थिती दिलेली नाही."
+    },
+    {
+      "id": "online:The single JavaScript file must be at most 128 KiB.",
+      "source": "The single JavaScript file must be at most 128 KiB.",
+      "target": "JavaScript ही एकच फाईल जास्तीत जास्त 128 KiB ची असली पाहिजे."
+    },
+    {
+      "id": "online:The stage audio is not available.",
+      "source": "The stage audio is not available.",
+      "target": "स्टेजवरील ऑडिओ उपलब्ध नाही."
+    },
+    {
+      "id": "online:The stage image is not available.",
+      "source": "The stage image is not available.",
+      "target": "स्टेजचे चित्र उपलब्ध नाही."
+    },
+    {
+      "id": "online:The ticket is no longer waiting.",
+      "source": "The ticket is no longer waiting.",
+      "target": "हे तिकीट आता प्रतीक्षेच्या रांगेत नाही."
+    },
+    {
+      "id": "online:The upload is not ready for this action.",
+      "source": "The upload is not ready for this action.",
+      "target": "या कार्यवाहीसाठी अपलोड तयार नाही."
+    },
+    {
+      "id": "online:The uploaded file is not usable: {p0}.",
+      "source": "The uploaded file is not usable: {p0}.",
+      "target": "अपलोड केलेली फाईल वापरण्यायोग्य नाही: {p0}."
+    },
+    {
+      "id": "online:The username {p0} is taken. Choose another one, or sign in above if it is yours.",
+      "source": "The username {p0} is taken. Choose another one, or sign in above if it is yours.",
+      "target": "{p0} हे युझरनेम वापरले गेले आहे. दुसरे निवडा, किंवा ते तुमचे असल्यास वर साइन इन करा."
+    },
+    {
+      "id": "online:The validation receipt expired. Run checks again.",
+      "source": "The validation receipt expired. Run checks again.",
+      "target": "पडताळणी पावतीची मुदत संपली आहे. तपासणी पुन्हा करा."
+    },
+    {
+      "id": "online:The workspace is still loading.",
+      "source": "The workspace is still loading.",
+      "target": "कार्यक्षेत्र अजूनही लोड होत आहे."
+    },
+    {
+      "id": "online:Theme, title or creator",
+      "source": "Theme, title or creator",
+      "target": "थीम, शीर्षक किंवा निर्माता"
+    },
+    {
+      "id": "online:Theme: dark (night colony)",
+      "source": "Theme: dark (night colony)",
+      "target": "थीम: गडद (रात्रीची वसाहत)"
+    },
+    {
+      "id": "online:Theme: light (meadow)",
+      "source": "Theme: light (meadow)",
+      "target": "थीम: फिकट (कुरण)"
+    },
+    {
+      "id": "online:Theme: same as this device",
+      "source": "Theme: same as this device",
+      "target": "थीम: या डिव्हाइसप्रमाणेच"
+    },
+    {
+      "id": "online:There is no account called {p0}.",
+      "source": "There is no account called {p0}.",
+      "target": "{p0} नावाचे कोणतेही खाते अस्तित्वात नाही."
+    },
+    {
+      "id": "online:There is no account called {p0}. Check the spelling{p1}.",
+      "source": "There is no account called {p0}. Check the spelling{p1}.",
+      "target": "{p0} नावाचे खाते नाही. नावाचे लेखन तपासा{p1}."
+    },
+    {
+      "id": "online:These details apply to every release. Changing visibility also changes who can download them. Edit building definitions in your Studio draft and publish a new release.",
+      "source": "These details apply to every release. Changing visibility also changes who can download them. Edit building definitions in your Studio draft and publish a new release.",
+      "target": "हे तपशील प्रत्येक रिलीझला लागू होतात. दृश्यमानता बदलल्याने ते कोण डाउनलोड करू शकेल हे देखील बदलते. तुमच्या स्टुडिओ ड्राफ्टमध्ये बिल्डिंग डेफिनिशन्स संपादित करा आणि एक नवीन रिलीझ प्रकाशित करा."
+    },
+    {
+      "id": "online:They are playing a match right now; you can join the room and wait for the next one.",
+      "source": "They are playing a match right now; you can join the room and wait for the next one.",
+      "target": "ते सध्या सामना खेळत आहेत; तुम्ही रूममध्ये सामील होऊन पुढच्या सामन्याची वाट पाहू शकता."
+    },
+    {
+      "id": "online:Thin",
+      "source": "Thin",
+      "target": "पातळ"
+    },
+    {
+      "id": "online:This AI has reached its version limit.",
+      "source": "This AI has reached its version limit.",
+      "target": "हा एआय त्याच्या आवृत्तीच्या मर्यादेपर्यंत पोहोचला आहे."
+    },
+    {
+      "id": "online:This PNG exceeds the sheet upload limit.",
+      "source": "This PNG exceeds the sheet upload limit.",
+      "target": "ही PNG शीट अपलोड मर्यादेपेक्षा जास्त आहे."
+    },
+    {
+      "id": "online:This account cannot publish generators.",
+      "source": "This account cannot publish generators.",
+      "target": "हे खाते जनरेटर प्रकाशित करू शकत नाही."
+    },
+    {
+      "id": "online:This account cannot upload generators.",
+      "source": "This account cannot upload generators.",
+      "target": "या खात्यावरून जनरेटर अपलोड करता येत नाहीत."
+    },
+    {
+      "id": "online:This account does not own this colony skin.",
+      "source": "This account does not own this colony skin.",
+      "target": "हे वसाहतीचे रूप या खात्याच्या मालकीचे नाही."
+    },
+    {
+      "id": "online:This account is banned.",
+      "source": "This account is banned.",
+      "target": "हे खाते प्रतिबंधित केले आहे."
+    },
+    {
+      "id": "online:This account was deleted.",
+      "source": "This account was deleted.",
+      "target": "हे खाते हटवण्यात आले आहे."
+    },
+    {
+      "id": "online:This building uses installed game artwork. Create or revise its appearance to preview custom artwork here.",
+      "source": "This building uses installed game artwork. Create or revise its appearance to preview custom artwork here.",
+      "target": "या इमारतीमध्ये गेममधील स्थापित कलाकृती वापरली आहे. सानुकूल कलाकृतीचे पूर्वावलोकन करण्यासाठी, तिचे स्वरूप तयार करा किंवा त्यात बदल करा."
+    },
+    {
+      "id": "online:This cannot be undone. Deleting your account:",
+      "source": "This cannot be undone. Deleting your account:",
+      "target": "हे पूर्ववत करता येणार नाही. तुमचे खाते हटवणे:"
+    },
+    {
+      "id": "online:This changes the map’s visibility. Conversation history remains private.",
+      "source": "This changes the map’s visibility. Conversation history remains private.",
+      "target": "यामुळे नकाशाची दृश्यमानता बदलते. संभाषणाचा इतिहास खाजगी राहतो."
+    },
+    {
+      "id": "online:This checkout is already finished.",
+      "source": "This checkout is already finished.",
+      "target": "ही खरेदी प्रक्रिया आधीच पूर्ण झाली आहे."
+    },
+    {
+      "id": "online:This checkout is being recovered. Check your purchase status before trying again.",
+      "source": "This checkout is being recovered. Check your purchase status before trying again.",
+      "target": "या खरेदी प्रक्रियेची स्थिती पुनर्प्राप्त केली जात आहे. पुन्हा प्रयत्न करण्यापूर्वी खरेदीची स्थिती तपासा."
+    },
+    {
+      "id": "online:This checkout request was already used for another product.",
+      "source": "This checkout request was already used for another product.",
+      "target": "ही चेकआउट विनंती दुसऱ्या उत्पादनासाठी आधीच वापरली गेली आहे."
+    },
+    {
+      "id": "online:This colony skin is unavailable.",
+      "source": "This colony skin is unavailable.",
+      "target": "वसाहतीचे हे रूप उपलब्ध नाही."
+    },
+    {
+      "id": "online:This custom skin belongs to another account.",
+      "source": "This custom skin belongs to another account.",
+      "target": "हे सानुकूल रूप दुसऱ्या खात्याच्या मालकीचे आहे."
+    },
+    {
+      "id": "online:This device has a recovery copy.",
+      "source": "This device has a recovery copy.",
+      "target": "या डिव्हाइसमध्ये रिकव्हरी कॉपी आहे."
+    },
+    {
+      "id": "online:This draft already exists. Open it to continue.",
+      "source": "This draft already exists. Open it to continue.",
+      "target": "हा मसुदा आधीपासूनच अस्तित्वात आहे. पुढे जाण्यासाठी तो उघडा."
+    },
+    {
+      "id": "online:This draft changed or was published. Reload it before saving.",
+      "source": "This draft changed or was published. Reload it before saving.",
+      "target": "या मसुद्यात बदल झाला आहे किंवा तो प्रकाशित झाला आहे. जतन करण्यापूर्वी तो पुन्हा लोड करा."
+    },
+    {
+      "id": "online:This draft changed. Check it again.",
+      "source": "This draft changed. Check it again.",
+      "target": "या मसुद्यात बदल झाला आहे. तो पुन्हा तपासा."
+    },
+    {
+      "id": "online:This draft changed. Reload it before saving again.",
+      "source": "This draft changed. Reload it before saving again.",
+      "target": "या मसुद्यात बदल झाला आहे. पुन्हा सेव्ह करण्यापूर्वी तो रीलोड करा."
+    },
+    {
+      "id": "online:This draft changed. Save and check its current revision.",
+      "source": "This draft changed. Save and check its current revision.",
+      "target": "या मसुद्यात बदल झाला आहे. तो जतन करा आणि त्याची सद्य आवृत्ती तपासा."
+    },
+    {
+      "id": "online:This family has 50 releases.",
+      "source": "This family has 50 releases.",
+      "target": "या इमारत संचाच्या 50 आवृत्त्या प्रकाशित झाल्या आहेत."
+    },
+    {
+      "id": "online:This family has been hidden by a moderator.",
+      "source": "This family has been hidden by a moderator.",
+      "target": "नियंत्रकाने हा इमारत संच लपवला आहे."
+    },
+    {
+      "id": "online:This family uses stock artwork.",
+      "source": "This family uses stock artwork.",
+      "target": "हा इमारत संच मूळ खेळातील कलाकृती वापरतो."
+    },
+    {
+      "id": "online:This file is too big: uploads are limited to {p0}.",
+      "source": "This file is too big: uploads are limited to {p0}.",
+      "target": "ही फाईल खूप मोठी आहे: अपलोड फक्त {p0} पर्यंतच मर्यादित आहेत."
+    },
+    {
+      "id": "online:This game version is not supported here; update the game.",
+      "source": "This game version is not supported here; update the game.",
+      "target": "ही गेम आवृत्ती येथे समर्थित नाही; गेम अपडेट करा."
+    },
+    {
+      "id": "online:This generator has reached its version limit.",
+      "source": "This generator has reached its version limit.",
+      "target": "हा जनरेटर त्याच्या आवृत्ती मर्यादेपर्यंत पोहोचला आहे."
+    },
+    {
+      "id": "online:This generator release is unavailable, editor-only, or not validated for this engine.",
+      "source": "This generator release is unavailable, editor-only, or not validated for this engine.",
+      "target": "जनरेटरची ही आवृत्ती अनुपलब्ध आहे, केवळ संपादकांसाठी आहे, किंवा या इंजिनसाठी प्रमाणित केलेली नाही."
+    },
+    {
+      "id": "online:This image could not be loaded.",
+      "source": "This image could not be loaded.",
+      "target": "ही प्रतिमा लोड होऊ शकली नाही."
+    },
+    {
+      "id": "online:This instance",
+      "source": "This instance",
+      "target": "हा सर्व्हर"
+    },
+    {
+      "id": "online:This instance cannot validate files of that version.",
+      "source": "This instance cannot validate files of that version.",
+      "target": "हा इन्स्टन्स त्या आवृत्तीच्या फाईल्स प्रमाणित करू शकत नाही."
+    },
+    {
+      "id": "online:This instance cannot validate maps of that version.",
+      "source": "This instance cannot validate maps of that version.",
+      "target": "हा इन्स्टन्स त्या आवृत्तीच्या मॅप्सची पडताळणी करू शकत नाही."
+    },
+    {
+      "id": "online:This instance has no rated queues.",
+      "source": "This instance has no rated queues.",
+      "target": "या इन्स्टन्समध्ये रेटेड क्यू नाहीत."
+    },
+    {
+      "id": "online:This invite has expired or does not exist.",
+      "source": "This invite has expired or does not exist.",
+      "target": "हे आमंत्रण कालबाह्य झाले आहे किंवा अस्तित्वात नाही."
+    },
+    {
+      "id": "online:This invite has expired or does not exist. Ask for a new link.",
+      "source": "This invite has expired or does not exist. Ask for a new link.",
+      "target": "हे आमंत्रण कालबाह्य झाले आहे किंवा अस्तित्वात नाही. नवीन लिंकची मागणी करा."
+    },
+    {
+      "id": "online:This is the last way to sign in to this account; link another method first.",
+      "source": "This is the last way to sign in to this account; link another method first.",
+      "target": "या खात्यात साइन इन करण्याचा हा शेवटचा मार्ग आहे; आधी दुसरी पद्धत जोडा."
+    },
+    {
+      "id": "online:This key belongs to engine agent {p0}.",
+      "source": "This key belongs to engine agent {p0}.",
+      "target": "ही की इंजिन एजंट {p0} ची आहे."
+    },
+    {
+      "id": "online:This key belongs to relay {p0}.",
+      "source": "This key belongs to relay {p0}.",
+      "target": "ही की {p0} या रिलेची आहे."
+    },
+    {
+      "id": "online:This match is still being played.",
+      "source": "This match is still being played.",
+      "target": "हा सामना अजूनही खेळला जात आहे."
+    },
+    {
+      "id": "online:This music includes AI-generated audio",
+      "source": "This music includes AI-generated audio",
+      "target": "या संगीतामध्ये एआय-निर्मित ऑडिओचा समावेश आहे."
+    },
+    {
+      "id": "online:This namespace belongs to another author. Fork the family first.",
+      "source": "This namespace belongs to another author. Fork the family first.",
+      "target": "हे नामक्षेत्र दुसऱ्या लेखकाचे आहे. आधी इमारत संचाची स्वतंत्र प्रत तयार करा."
+    },
+    {
+      "id": "online:This namespace was claimed by another author. Fork it first.",
+      "source": "This namespace was claimed by another author. Fork it first.",
+      "target": "या नेमस्पेसवर दुसऱ्या लेखकाने हक्क सांगितला आहे. आधी ते फोर्क करा."
+    },
+    {
+      "id": "online:This older generation has limited stage history. Available images are preserved.",
+      "source": "This older generation has limited stage history. Available images are preserved.",
+      "target": "या जुन्या निर्मितीच्या टप्प्यांचा इतिहास मर्यादित आहे. उपलब्ध प्रतिमा जतन केल्या आहेत."
+    },
+    {
+      "id": "online:This package ID is already reserved. Forks need a new ID.",
+      "source": "This package ID is already reserved. Forks need a new ID.",
+      "target": "हा पॅकेज आयडी आधीच आरक्षित आहे. फोर्कसाठी नवीन आयडी आवश्यक आहे."
+    },
+    {
+      "id": "online:This page is for moderators.",
+      "source": "This page is for moderators.",
+      "target": "हे पान नियंत्रकांसाठी आहे."
+    },
+    {
+      "id": "online:This password is too short: it has {p0} characters, and passwords need at least {p1}.",
+      "source": "This password is too short: it has {p0} characters, and passwords need at least {p1}.",
+      "target": "हा पासवर्ड खूपच लहान आहे: त्यात {p0} अक्षरे आहेत, आणि पासवर्डमध्ये किमान {p1} अक्षरे असणे आवश्यक आहे."
+    },
+    {
+      "id": "online:This preview could not be loaded.",
+      "source": "This preview could not be loaded.",
+      "target": "हे पूर्वावलोकन लोड करता आले नाही."
+    },
+    {
+      "id": "online:This product is not available for purchase yet.",
+      "source": "This product is not available for purchase yet.",
+      "target": "हे उत्पादन अद्याप खरेदीसाठी उपलब्ध नाही."
+    },
+    {
+      "id": "online:This release label or package is already published.",
+      "source": "This release label or package is already published.",
+      "target": "हे रिलीज लेबल किंवा पॅकेज आधीच प्रकाशित झाले आहे."
+    },
+    {
+      "id": "online:This release no longer accepts uploads.",
+      "source": "This release no longer accepts uploads.",
+      "target": "या आवृत्तीमध्ये आता अपलोड स्वीकारले जात नाहीत."
+    },
+    {
+      "id": "online:This release uses the current saved draft. Unsaved edits are not included.",
+      "source": "This release uses the current saved draft. Unsaved edits are not included.",
+      "target": "या आवृत्तीमध्ये सध्या जतन केलेला मसुदा वापरण्यात आला आहे. जतन न केलेले बदल समाविष्ट नाहीत."
+    },
+    {
+      "id": "online:This room has closed",
+      "source": "This room has closed",
+      "target": "ही खोली बंद झाली आहे."
+    },
+    {
+      "id": "online:This room has closed. Ask the host for a new invite.",
+      "source": "This room has closed. Ask the host for a new invite.",
+      "target": "ही खोली बंद झाली आहे. नवीन आमंत्रणासाठी यजमानांना विचारा."
+    },
+    {
+      "id": "online:This room is for another game version.",
+      "source": "This room is for another game version.",
+      "target": "ही खोली खेळाच्या दुसऱ्या आवृत्तीसाठी आहे."
+    },
+    {
+      "id": "online:This set has reached its 100-draft limit. Delete unused drafts first.",
+      "source": "This set has reached its 100-draft limit. Delete unused drafts first.",
+      "target": "या संचाने १०० मसुद्यांची मर्यादा गाठली आहे. प्रथम न वापरलेले मसुदे हटवा."
+    },
+    {
+      "id": "online:This set has reached its 50-release limit.",
+      "source": "This set has reached its 50-release limit.",
+      "target": "या सेटने ५० प्रकाशनांची मर्यादा गाठली आहे."
+    },
+    {
+      "id": "online:This set is hidden. {slot0}",
+      "source": "This set is hidden. {slot0}",
+      "target": "हा संच लपवलेला आहे. {slot0}"
+    },
+    {
+      "id": "online:This sign-in has expired or belongs to another browser.",
+      "source": "This sign-in has expired or belongs to another browser.",
+      "target": "हे साइन-इन कालबाह्य झाले आहे किंवा दुसऱ्या ब्राउझरचे आहे."
+    },
+    {
+      "id": "online:This sign-in has expired or was already used. Please start again.",
+      "source": "This sign-in has expired or was already used. Please start again.",
+      "target": "या साइन-इनची मुदत संपली आहे किंवा ते आधीच वापरले गेले आहे. कृपया पुन्हा सुरू करा."
+    },
+    {
+      "id": "online:This sign-in has expired.",
+      "source": "This sign-in has expired.",
+      "target": "या साइन-इनची मुदत संपली आहे."
+    },
+    {
+      "id": "online:This sign-in has expired. Start signing in again from the game.",
+      "source": "This sign-in has expired. Start signing in again from the game.",
+      "target": "या साइन-इनची मुदत संपली आहे. गेममधून पुन्हा साइन इन करण्यास सुरुवात करा."
+    },
+    {
+      "id": "online:This sign-in is linked to another account.",
+      "source": "This sign-in is linked to another account.",
+      "target": "हे साइन-इन दुसऱ्या खात्याशी जोडलेले आहे."
+    },
+    {
+      "id": "online:This sign-in link has expired or belongs to another browser.",
+      "source": "This sign-in link has expired or belongs to another browser.",
+      "target": "ही साइन-इन लिंक कालबाह्य झाली आहे किंवा दुसऱ्या ब्राउझरची आहे."
+    },
+    {
+      "id": "online:This sign-in link has expired or was already used. Start signing in again from the game.",
+      "source": "This sign-in link has expired or was already used. Start signing in again from the game.",
+      "target": "ही साइन-इन लिंक कालबाह्य झाली आहे किंवा आधीच वापरली गेली आहे. गेममधून पुन्हा साइन इन करण्यास सुरुवात करा."
+    },
+    {
+      "id": "online:This sign-in was already opened in another browser.",
+      "source": "This sign-in was already opened in another browser.",
+      "target": "हे साइन-इन आधीच दुसऱ्या ब्राउझरमध्ये उघडले होते."
+    },
+    {
+      "id": "online:This skin changed on another device. Reload it before using it.",
+      "source": "This skin changed on another device. Reload it before using it.",
+      "target": "हे रूप दुसऱ्या उपकरणावर बदलले आहे. वापरण्यापूर्वी ते पुन्हा लोड करा."
+    },
+    {
+      "id": "online:This skin changed on another device. Your changes are safe here.",
+      "source": "This skin changed on another device. Your changes are safe here.",
+      "target": "हे रूप दुसऱ्या उपकरणावर बदलले आहे. तुमचे बदल येथे सुरक्षित आहेत."
+    },
+    {
+      "id": "online:This skin changed on another device. Your work is safe in this browser.",
+      "source": "This skin changed on another device. Your work is safe in this browser.",
+      "target": "हे रूप दुसऱ्या उपकरणावर बदलले आहे. तुमचे काम या ब्राउझरमध्ये सुरक्षित आहे."
+    },
+    {
+      "id": "online:This source or version label has already been published for this AI.",
+      "source": "This source or version label has already been published for this AI.",
+      "target": "या AI साठी हे स्रोत किंवा आवृत्ती लेबल आधीच प्रकाशित केले गेले आहे."
+    },
+    {
+      "id": "online:This source or version label has already been published for this generator.",
+      "source": "This source or version label has already been published for this generator.",
+      "target": "या जनरेटरसाठी हे स्रोत किंवा आवृत्ती लेबल आधीच प्रकाशित केले गेले आहे."
+    },
+    {
+      "id": "online:This version has a different or unverified musical timeline. Playback starts from the beginning.",
+      "source": "This version has a different or unverified musical timeline. Playback starts from the beginning.",
+      "target": "या आवृत्तीमध्ये संगीताची कालरेखा वेगळी किंवा अप्रमाणित आहे. प्लेबॅक सुरुवातीपासून सुरू होतो."
+    },
+    {
+      "id": "online:This version keeps its original map. Create a revision in AI Map Studio or upload an edited copy as a new map.",
+      "source": "This version keeps its original map. Create a revision in AI Map Studio or upload an edited copy as a new map.",
+      "target": "ही आवृत्ती तिचा मूळ नकाशा कायम ठेवते. एआय मॅप स्टुडिओमध्ये एक सुधारित आवृत्ती तयार करा किंवा संपादित केलेली प्रत नवीन नकाशा म्हणून अपलोड करा."
+    },
+    {
+      "id": "online:This {p0} sign-in already belongs to the player",
+      "source": "This {p0} sign-in already belongs to the player",
+      "target": "हे {p0} साइन-इन आधीच या खेळाडूशी जोडलेले आहे:"
+    },
+    {
+      "id": "online:Three moods. One shared rhythm. Find your next soundtrack.",
+      "source": "Three moods. One shared rhythm. Find your next soundtrack.",
+      "target": "तीन मनःस्थिती. एक सामायिक लय. तुमच्या पुढच्या साउंडट्रॅकचा शोध घ्या."
+    },
+    {
+      "id": "online:Through (UTC)",
+      "source": "Through (UTC)",
+      "target": "पर्यंत (UTC)"
+    },
+    {
+      "id": "online:Time between shots (ticks)",
+      "source": "Time between shots (ticks)",
+      "target": "शॉट्समधील वेळ (टिक्स)"
+    }
+  ]
+}

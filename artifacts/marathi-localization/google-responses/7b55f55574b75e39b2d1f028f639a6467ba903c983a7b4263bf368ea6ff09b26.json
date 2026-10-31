@@ -1,0 +1,418 @@
+{
+  "request": {
+    "project": "bradley-personal-20261027",
+    "model": "general/nmt",
+    "payload": {
+      "sourceLanguageCode": "en",
+      "targetLanguageCode": "mr",
+      "mimeType": "text/plain",
+      "contents": [
+        "You vs all",
+        "ZXQPH0QXZ vs ZXQPH1QXZ",
+        "ZXQPH0QXZ vs all",
+        "You will watch this match.",
+        "Your maps",
+        "colonies",
+        "Inactive",
+        "Changes the pace of the whole simulation.",
+        "Choose whether teams can change during the match.",
+        "Dimensions and colony count are set above.",
+        "Generate & watch",
+        "Info",
+        "Map-defined starting units",
+        "No maps in this library.",
+        "Premade maps retain their authored starting units.",
+        "This colony will not join the match.",
+        "This landscape uses fixed resource placement.",
+        "Win through conquest",
+        "You control this colony.",
+        "controllers",
+        "Use",
+        "Lime",
+        "Teal",
+        "Azure",
+        "Automatic torus view",
+        "Toggle 2D / torus view",
+        "Alliance",
+        "Choose a rule to change it.",
+        "Control",
+        "Controller",
+        "Generate preview",
+        "Map-defined",
+        "Match format",
+        "No current preview",
+        "Reroll",
+        "Randomize",
+        "Reset to defaults",
+        "Ruleset",
+        "Unavailable",
+        "Use selection",
+        "Quick clash on premade maps: only speed changes (2x).",
+        "Generate a preview to explore this world.",
+        "Channel width",
+        "Land bridge width",
+        "Contested commons",
+        "Maze",
+        "Fjord continent",
+        "Cell size",
+        "Loopiness",
+        "Channels this wide leave too little grass in each cell; use narrower channels or bigger cells.",
+        "Commons size",
+        "Moat width",
+        "Bridge count",
+        "Continent size",
+        "Coast roughness",
+        "Fjord width",
+        "Watershed",
+        "Dryness",
+        "Fords",
+        "Stone highlands",
+        "Valley size",
+        "Pass width",
+        "Pond size",
+        "Symmetric arena",
+        "Centre size",
+        "Causeway width",
+        "Causeways",
+        "Resource richness",
+        "Symmetric arena needs 2, 4 or 8 colonies.",
+        "The centre is too small for an orchard on this map; use a bigger centre or a bigger map.",
+        "The arena leaves too little room for every colony; use a bigger map, a smaller centre or a narrower moat.",
+        "The causeways are too close together; use fewer or narrower causeways, or a bigger centre.",
+        "Ring world",
+        "Belt width",
+        "City states",
+        "Strait width",
+        "Valleys",
+        "Frontier richness",
+        "City states need at least one colony.",
+        "Stone walls"
+      ]
+    }
+  },
+  "response": {
+    "translations": [
+      {
+        "translatedText": "तुम्ही विरुद्ध सर्वजण",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ विरुद्ध ZXQPH1QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ विरुद्ध सर्व",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तुम्ही हा सामना पाहाल.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तुमचे नकाशे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "वसाहती",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "निष्क्रिय",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "संपूर्ण सिम्युलेशनची गती बदलते.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सामन्यादरम्यान संघ बदलता येतील की नाही ते निवडा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "आकारमान आणि वसाहतींची संख्या वर निश्चित केली आहे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "निर्माण करा आणि पहा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "माहिती",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नकाशा-परिभाषित प्रारंभिक एकके",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "या लायब्ररीमध्ये नकाशे नाहीत.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पूर्वनिर्मित नकाशे त्यांचे मूळचे घटक कायम ठेवतात.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ही वसाहत सामन्यात सामील होणार नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "या भूदृश्यात संसाधनांची मांडणी निश्चित असते.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "विजय मिळवून जिंका",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "या वसाहतीवर तुमचे नियंत्रण आहे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नियंत्रक",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "वापरा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "चुना",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "टील",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अझूर",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "स्वयंचलित टोरस दृश्य",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "२डी / टोरस व्ह्यू टॉगल करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "युती",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ते बदलण्यासाठी एक नियम निवडा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नियंत्रण",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नियंत्रक",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पूर्वावलोकन तयार करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नकाशा-परिभाषित",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सामन्याचे स्वरूप",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सध्या कोणतेही पूर्वावलोकन नाही",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पुन्हा रोल करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "यादृच्छिकीकरण",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "डीफॉल्टवर रीसेट करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नियमसंच",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अनुपलब्ध",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "निवड वापरा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पूर्वनिर्मित नकाशांवर त्वरित संघर्ष: फक्त वेगात बदल (2x).",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "या जगाचा शोध घेण्यासाठी एक पूर्वावलोकन तयार करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "चॅनलची रुंदी",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "भूसेतूची रुंदी",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "वादग्रस्त सामायिक जागा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "भुलभुलैया",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "फ्योर्ड खंड",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पेशीचा आकार",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "वेडेपणा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "इतक्या रुंद चॅनेलमुळे प्रत्येक सेलमध्ये खूप कमी गवत राहते; त्याऐवजी अरुंद चॅनेल किंवा मोठे सेल वापरा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कॉमन आकार",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "खंदकाची रुंदी",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पुलांची संख्या",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "खंडाचा आकार",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "किनारपट्टीचा खडबडीतपणा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "फ्योर्डची रुंदी",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पाणलोट क्षेत्र",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कोरडेपणा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "फोर्ड्स",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "स्टोन हाईलँड्स",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "दरीचा आकार",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पास रुंदी",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तलावाचा आकार",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सममित आखाडा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "केंद्राचा आकार",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पुलाची रुंदी",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कॉजवे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "संसाधनांची समृद्धी",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सममित आखाड्याला २, ४ किंवा ८ वसाहतींची आवश्यकता असते.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "या नकाशावर फळबागेसाठी केंद्र खूपच लहान आहे; मोठे केंद्र किंवा मोठा नकाशा वापरा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "आखाड्यात प्रत्येक वसाहतीसाठी खूप कमी जागा आहे; त्याऐवजी मोठा नकाशा, लहान केंद्र किंवा अरुंद खंदक वापरा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पूल खूप जवळजवळ आहेत; कमी किंवा अरुंद पूल वापरा, किंवा एक मोठे केंद्र वापरा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "रिंग वर्ल्ड",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "बेल्टची रुंदी",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "शहर राज्ये",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सामुद्रधुनीची रुंदी",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "दऱ्या",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सीमावर्ती समृद्धी",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "शहर राज्यांना किमान एका वसाहतीची गरज असते.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "दगडी भिंती",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      }
+    ]
+  },
+  "response_sha256": "bc84f272d73a874eff80a1a30e5386cced5f8503090541d3f0569e8f5f135942"
+}

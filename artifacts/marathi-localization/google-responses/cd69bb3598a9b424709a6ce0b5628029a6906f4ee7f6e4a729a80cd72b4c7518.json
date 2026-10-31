@@ -1,0 +1,418 @@
+{
+  "request": {
+    "project": "bradley-personal-20261027",
+    "model": "general/nmt",
+    "payload": {
+      "sourceLanguageCode": "en",
+      "targetLanguageCode": "mr",
+      "mimeType": "text/plain",
+      "contents": [
+        "The generator package must fit the 256 KiB draft limit.",
+        "The generator package must use ZXQPH0QXZ.",
+        "The host removed you from this room; try again later.",
+        "The job is leased by another engine agent.",
+        "The lease expired or the job was already reported.",
+        "The leased job does not use this blob.",
+        "The map designer is replying",
+        "The map designer is replying…",
+        "The map file is missing from storage.",
+        "The map is fine. Saving it.",
+        "The map was created but its file did not upload. Upload it again below.",
+        "The match already ended with a different record.",
+        "The match has not ended yet.",
+        "The match is placed on another relay.",
+        "The match was played with another game version.",
+        "The music decoder could not be loaded.",
+        "The operation could not finish.",
+        "The original swarm: spires ringed around an egg.",
+        "The platform is unavailable: ZXQPH0QXZ",
+        "The preview engine did not finish. Check the game runtime and try again.",
+        "The proposal is over.",
+        "The provider outcome must be reconciled before cancellation.",
+        "The refresh token is not valid.",
+        "The replay is available once the server has verified the match.",
+        "The request could not be completed.",
+        "The room changed; apply your change to the latest state.",
+        "The room has no seat ZXQPH0QXZ.",
+        "The room is already starting.",
+        "The room is full.",
+        "The room is starting a match.",
+        "The saved draft could not be restored.",
+        "The selected generator release is no longer available for this room.",
+        "The server first loads the file with the game to check it; the map page is created only if it loads. Unlisted maps are reachable by link only; you can make a map public later.",
+        "The server’s verified replay. Open it in the game (Load game → Replays) or watch it here.",
+        "The session has ended.",
+        "The sheet must be at most 2048×2048 and fit its frame grid exactly.",
+        "The sign-in response is missing its state.",
+        "The single ZXQPH0QXZ file must be at most 128 KiB.",
+        "The stage audio is not available.",
+        "The stage image is not available.",
+        "The ticket is no longer waiting.",
+        "The upload is not ready for this action.",
+        "The uploaded file is not usable: ZXQPH0QXZ.",
+        "The username ZXQPH0QXZ is taken. Choose another one, or sign in above if it is yours.",
+        "The validation receipt expired. Run checks again.",
+        "The workspace is still loading.",
+        "Theme, title or creator",
+        "Theme: dark (night colony)",
+        "Theme: light (meadow)",
+        "Theme: same as this device",
+        "There is no account called ZXQPH0QXZ.",
+        "There is no account called ZXQPH0QXZ. Check the spellingZXQPH1QXZ.",
+        "These details apply to every release. Changing visibility also changes who can download them. Edit building definitions in your Studio draft and publish a new release.",
+        "They are playing a match right now; you can join the room and wait for the next one.",
+        "Thin",
+        "This AI has reached its version limit.",
+        "This PNG exceeds the sheet upload limit.",
+        "This account cannot publish generators.",
+        "This account cannot upload generators.",
+        "This account does not own this colony skin.",
+        "This account is banned.",
+        "This account was deleted.",
+        "This building uses installed game artwork. Create or revise its appearance to preview custom artwork here.",
+        "This cannot be undone. Deleting your account:",
+        "This changes the map’s visibility. Conversation history remains private.",
+        "This checkout is already finished.",
+        "This checkout is being recovered. Check your purchase status before trying again.",
+        "This checkout request was already used for another product.",
+        "This colony skin is unavailable.",
+        "This custom skin belongs to another account.",
+        "This device has a recovery copy.",
+        "This draft already exists. Open it to continue.",
+        "This draft changed or was published. Reload it before saving.",
+        "This draft changed. Check it again.",
+        "This draft changed. Reload it before saving again.",
+        "This draft changed. Save and check its current revision.",
+        "This family has 50 releases.",
+        "This family has been hidden by a moderator.",
+        "This family uses stock artwork.",
+        "This file is too big: uploads are limited to ZXQPH0QXZ."
+      ]
+    }
+  },
+  "response": {
+    "translations": [
+      {
+        "translatedText": "जनरेटर पॅकेज २५६ केबी ड्राफ्ट मर्यादेत बसले पाहिजे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "जनरेटर पॅकेजमध्ये ZXQPH0QXZ चा वापर करणे आवश्यक आहे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "यजमानाने तुम्हाला या रूममधून बाहेर काढले आहे; कृपया नंतर पुन्हा प्रयत्न करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "हे काम दुसऱ्या इंजिन एजंटला भाड्याने दिले आहे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "भाडेकरार संपला किंवा कामाची नोंद आधीच झाली होती.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "लीजवर घेतलेले काम हा ब्लॉब वापरत नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नकाशा डिझाइनर उत्तर देत आहे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नकाशा डिझाइनर उत्तर देत आहे…",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "मॅप फाईल स्टोरेजमधून गहाळ आहे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नकाशा ठीक आहे. तो जतन करत आहे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नकाशा तयार झाला पण त्याची फाईल अपलोड झाली नाही. कृपया ती खाली पुन्हा अपलोड करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सामना आधीच एका वेगळ्या विक्रमासह संपला आहे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सामना अजून संपलेला नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सामना दुसऱ्या रिलेवर ठेवण्यात आला आहे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सामना गेमच्या दुसऱ्या आवृत्तीसह खेळला गेला.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "संगीत डिकोडर लोड होऊ शकला नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ऑपरेशन पूर्ण होऊ शकले नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "मूळ थवा: अंड्याच्या भोवती वेढलेले शिखरांचे कडे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "प्लॅटफॉर्म उपलब्ध नाही: ZXQPH0QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "प्रिव्ह्यू इंजिन पूर्ण झाले नाही. गेमचा रनटाइम तपासा आणि पुन्हा प्रयत्न करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "प्रस्ताव संपला आहे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "रद्द करण्यापूर्वी सेवा पुरवठादाराच्या परिणामाचे निराकरण करणे आवश्यक आहे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "रिफ्रेश टोकन वैध नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सर्व्हरने सामन्याची पडताळणी केल्यावर रीप्ले उपलब्ध होतो.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "विनंती पूर्ण होऊ शकली नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "खोली बदलली आहे; तुमचा बदल नवीनतम स्थितीवर लागू करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "खोलीत आसन नाही ZXQPH0QXZ.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "खोली आधीच सुरू होत आहे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "खोली भरलेली आहे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "खोलीत सामना सुरू होत आहे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "जतन केलेला मसुदा पुनर्संचयित करता आला नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "या खोलीसाठी निवडलेला जनरेटर रिलीज आता उपलब्ध नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सर्व्हर प्रथम गेम असलेली फाईल तपासण्यासाठी लोड करतो; ती लोड झाल्यावरच नकाशाचे पान तयार केले जाते. सूचीमध्ये नसलेले नकाशे फक्त लिंकद्वारेच उपलब्ध असतात; तुम्ही नंतर नकाशा सार्वजनिक करू शकता.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सर्वरचा सत्यापित रिप्ले. तो गेममध्ये उघडा (गेम लोड करा → रिप्ले) किंवा येथे पहा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सत्र संपले आहे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कागद जास्तीत जास्त २०४८×२०४८ आकाराचा असावा आणि तो त्याच्या फ्रेम ग्रिडमध्ये तंतोतंत बसला पाहिजे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "साइन-इन प्रतिसादात त्याची स्थिती दिलेली नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ ही एकच फाईल जास्तीत जास्त 128 KiB ची असली पाहिजे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "स्टेजवरील ऑडिओ उपलब्ध नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "स्टेजचे चित्र उपलब्ध नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तिकिटाला आता प्रतीक्षा करावी लागत नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "या कार्यवाहीसाठी अपलोड तयार नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अपलोड केलेली फाईल वापरण्यायोग्य नाही: ZXQPH0QXZ.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ हे युझरनेम वापरले गेले आहे. दुसरे निवडा, किंवा ते तुमचे असल्यास वर साइन इन करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पडताळणी पावतीची मुदत संपली आहे. तपासणी पुन्हा करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कार्यक्षेत्र अजूनही लोड होत आहे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "थीम, शीर्षक किंवा निर्माता",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "थीम: गडद (रात्रीची वसाहत)",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "थीम: प्रकाश (कुरण)",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "थीम: या डिव्हाइसप्रमाणेच",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ नावाचे कोणतेही खाते अस्तित्वात नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ नावाचे कोणतेही खाते नाही. ZXQPH1QXZ ही स्पेलिंग तपासा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "हे तपशील प्रत्येक रिलीझला लागू होतात. दृश्यमानता बदलल्याने ते कोण डाउनलोड करू शकेल हे देखील बदलते. तुमच्या स्टुडिओ ड्राफ्टमध्ये बिल्डिंग डेफिनिशन्स संपादित करा आणि एक नवीन रिलीझ प्रकाशित करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ते सध्या सामना खेळत आहेत; तुम्ही रूममध्ये सामील होऊन पुढच्या सामन्याची वाट पाहू शकता.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पातळ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "हा एआय त्याच्या आवृत्तीच्या मर्यादेपर्यंत पोहोचला आहे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ही PNG शीट अपलोड मर्यादेपेक्षा जास्त आहे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "हे खाते जनरेटर प्रकाशित करू शकत नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "या खात्यावरून जनरेटर अपलोड करता येत नाहीत.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "या खात्याकडे या कॉलनी स्किनची मालकी नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "हे खाते प्रतिबंधित केले आहे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "हे खाते हटवण्यात आले आहे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "या इमारतीमध्ये गेममधील स्थापित कलाकृती वापरली आहे. सानुकूल कलाकृतीचे पूर्वावलोकन करण्यासाठी, तिचे स्वरूप तयार करा किंवा त्यात बदल करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "हे पूर्ववत करता येणार नाही. तुमचे खाते हटवणे:",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "यामुळे नकाशाची दृश्यमानता बदलते. संभाषणाचा इतिहास खाजगी राहतो.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ही खरेदी प्रक्रिया आधीच पूर्ण झाली आहे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ही खरेदी प्रक्रिया पुन्हा सुरू केली जात आहे. पुन्हा प्रयत्न करण्यापूर्वी तुमच्या खरेदीची स्थिती तपासा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ही चेकआउट विनंती दुसऱ्या उत्पादनासाठी आधीच वापरली गेली आहे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "या कॉलनीची त्वचा उपलब्ध नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ही कस्टम स्किन दुसऱ्या अकाउंटची आहे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "या डिव्हाइसमध्ये रिकव्हरी कॉपी आहे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "हा मसुदा आधीपासूनच अस्तित्वात आहे. पुढे जाण्यासाठी तो उघडा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "या मसुद्यात बदल झाला आहे किंवा तो प्रकाशित झाला आहे. जतन करण्यापूर्वी तो पुन्हा लोड करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "या मसुद्यात बदल झाला आहे. तो पुन्हा तपासा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "या मसुद्यात बदल झाला आहे. पुन्हा सेव्ह करण्यापूर्वी तो रीलोड करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "या मसुद्यात बदल झाला आहे. तो जतन करा आणि त्याची सद्य आवृत्ती तपासा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "या कुटुंबाने ५० चित्रपट प्रदर्शित केले आहेत.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "या कुटुंबाला एका नियंत्रकाने लपवले आहे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "हे कुटुंब स्टॉक आर्टवर्क वापरते.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ही फाईल खूप मोठी आहे: अपलोड फक्त ZXQPH0QXZ पर्यंतच मर्यादित आहेत.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      }
+    ]
+  },
+  "response_sha256": "c972f177280e2e1872f66f9f13aa9fff0af83308c39dbaaf2590ae7c038a558d"
+}

@@ -1,0 +1,102 @@
+[
+  {
+    "key": "native:[AICastor]",
+    "reason": "Castor is the built-in AI controller name, retained so the selector matches its published identity."
+  },
+  {
+    "key": "native:[AIMaxima]",
+    "reason": "Maxima is the built-in AI controller name, retained so the selector matches its published identity."
+  },
+  {
+    "key": "native:[AICortex]",
+    "reason": "Cortex is the built-in AI controller name, retained so the selector matches its published identity."
+  },
+  {
+    "key": "native:[AINicowar]",
+    "reason": "Nicowar is the built-in AI controller name, retained so the selector matches its published identity."
+  },
+  {
+    "key": "native:[AINumbi]",
+    "reason": "Numbi is the built-in AI controller name, retained so the selector matches its published identity."
+  },
+  {
+    "key": "native:[AIEcono]",
+    "reason": "Econo is the built-in AI controller name, retained so the selector matches its published identity."
+  },
+  {
+    "key": "native:[AIWarrush]",
+    "reason": "Warrush is the built-in AI controller name, retained so the selector matches its published identity."
+  },
+  {
+    "key": "native:[AICabino]",
+    "reason": "Cabino is the built-in AI controller name, retained so the selector matches its published identity."
+  },
+  {
+    "key": "native:[AIJavaScript]",
+    "reason": "JavaScript is the programming language/product identity of the embedded AI controller."
+  },
+  {
+    "key": "native:[alt %0]",
+    "reason": "alt is a physical modifier-key identifier combined with a dynamic key name; preserve the keyboard marking."
+  },
+  {
+    "key": "native:[control %0]",
+    "reason": "control is a physical modifier-key identifier combined with a dynamic key name; preserve the keyboard marking."
+  },
+  {
+    "key": "native:[hp]",
+    "reason": "HP is the existing short hit-point indicator used consistently in numerical game HUD fields."
+  },
+  {
+    "key": "native:[meta %0]",
+    "reason": "meta is the physical Meta modifier identifier combined with a dynamic key name."
+  },
+  {
+    "key": "native:[OpenGL]",
+    "reason": "OpenGL is the graphics API proper name and must remain recognizable in renderer selection."
+  },
+  {
+    "key": "native:[shift %0]",
+    "reason": "shift is the physical modifier-key identifier combined with a dynamic key name."
+  },
+  {
+    "key": "native:[Stats low HP ranges]",
+    "reason": "HP and the mathematical threshold notation are intentionally preserved in this compact statistics heading."
+  },
+  {
+    "key": "native:[zoom factor %0]",
+    "reason": "This is a dynamic numeric zoom factor followed by a multiplication sign, with no prose to translate."
+  },
+  {
+    "key": "native:[%0 / %1 HP · %2]",
+    "reason": "This numerical HUD template preserves placeholders, the HP abbreviation and separators; it contains no prose."
+  },
+  {
+    "key": "native:[P %0/%1/%2]",
+    "reason": "The existing compact P HUD indicator and its three numerical substitutions are retained."
+  },
+  {
+    "key": "native:[CPU load %0]",
+    "reason": "CPU is the standard processor abbreviation in a percentage-load template."
+  },
+  {
+    "key": "native:[%0 · %1]",
+    "reason": "Only two dynamic values and a separator are displayed; no prose occurs in this template."
+  },
+  {
+    "key": "native:[%0 %1]",
+    "reason": "This template concatenates dynamic translated values and contains no fixed prose."
+  },
+  {
+    "key": "native:[profile draw letter]",
+    "reason": "An en dash is the compact match-draw symbol, not an English word."
+  },
+  {
+    "key": "native:[maps %0 kb]",
+    "reason": "KB is the standard kilobyte abbreviation shown after the dynamic file size."
+  },
+  {
+    "key": "native:[settings Hive Mind]",
+    "reason": "Hive Mind is the name of the existing commander feature and is protected as a product name."
+  }
+]

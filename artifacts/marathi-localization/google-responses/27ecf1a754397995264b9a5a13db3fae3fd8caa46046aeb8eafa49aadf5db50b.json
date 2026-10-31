@@ -1,0 +1,418 @@
+{
+  "request": {
+    "project": "bradley-personal-20261027",
+    "model": "general/nmt",
+    "payload": {
+      "sourceLanguageCode": "en",
+      "targetLanguageCode": "mr",
+      "mimeType": "text/plain",
+      "contents": [
+        "Send",
+        "Close",
+        "Forbidden",
+        "Guard",
+        "Clear",
+        "Farm",
+        "Paint",
+        "Erase",
+        "Paint on the map; two fingers move",
+        "Back to tools",
+        "Starvation overlay",
+        "Damage overlay",
+        "Defense overlay",
+        "Fertility overlay",
+        "Health and food bars",
+        "Message history",
+        "Show zones",
+        "Pan",
+        "Select",
+        "Show palette",
+        "Release to place",
+        "Blocked placement",
+        "File name",
+        "Load map",
+        "Save map",
+        "No files in this folder",
+        "No files saved yet",
+        "Export",
+        "Tap to write the mission briefing",
+        "Script",
+        "Previous",
+        "Compile",
+        "Tap to write this hint",
+        "Tap to write this objective",
+        "Mission briefing · tap to edit, swipe to scroll",
+        "Not enough recorded history yet.",
+        "Select a team to show its history.",
+        "Back to chart",
+        "Expand chart",
+        "Slot",
+        "Color",
+        "Player / AI",
+        "Group",
+        "Forbid",
+        "↓ Low",
+        "= Normal",
+        "↑ High",
+        "Details",
+        "Campaign name",
+        "Unlocking",
+        "Parameters",
+        "Blank map",
+        "Generated",
+        "Preview",
+        "Selected landscape",
+        "Representative preview",
+        "Hide parameters",
+        "Size and parameters",
+        "Choose a landscape",
+        "ZXQPH0QXZ  /  Browse",
+        "ZXQPH0QXZ colonies · ZXQPH1QXZ",
+        "ZXQPH0QXZ · Team ZXQPH1QXZ",
+        "Colonies: ZXQPH0QXZ",
+        "ZXQPH0QXZ colonies · ZXQPH1QXZ AI",
+        "ZXQPH0QXZ · ZXQPH1QXZ",
+        "Fairness: ZXQPH0QXZ",
+        "Colony ZXQPH0QXZ",
+        "Win chance: ZXQPH0QXZ · Fitness: ZXQPH1QXZ",
+        "ZXQPH0QXZ · Contribution: ZXQPH1QXZ",
+        "Minimum required level: ZXQPH0QXZ",
+        "Ok: ZXQPH0QXZ",
+        "ZXQPH0QXZ ZXQPH1QXZ",
+        "Resume game",
+        "Add AI",
+        "Experiments set by the host",
+        "Experiments",
+        "Guard-area balancing",
+        "Free warriors spread between painted guard areas instead of all taking the nearest one: a bigger area gets more of them, and an over-full area thins out into the others.",
+        "Farm areas",
+        "Adds a farm area to the zone brushes. Workers harvesting inside one take from the ripest tile of the connected field and leave one grain on every tile, so the field regrows instead of being eaten from the edge. Wood growing into a farm is cleared."
+      ]
+    }
+  },
+  "response": {
+    "translations": [
+      {
+        "translatedText": "पाठवा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "बंद करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "निषिद्ध",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "रक्षक",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "स्पष्ट",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "शेत",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "रंग",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पुसून टाका",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नकाशावर रंगवा; दोन बोटे हलवा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "साधनांवर परत जा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "उपासमार आच्छादन",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नुकसान आच्छादन",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "संरक्षण आच्छादन",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "प्रजनन क्षमता आच्छादन",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "आरोग्य आणि अन्न बार",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "संदेश इतिहास",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "झोन दाखवा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पॅन",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "निवडा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पॅलेट दाखवा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सोडण्यासाठी",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अवरोधित प्लेसमेंट",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "फाईलचे नाव",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नकाशा लोड करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नकाशा जतन करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "या फोल्डरमध्ये कोणतीही फाईल नाही",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अद्याप कोणतीही फाईल जतन केलेली नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "निर्यात",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "मोहिमेचा अहवाल लिहिण्यासाठी टॅप करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "स्क्रिप्ट",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "मागील",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "संकलन करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ही सूचना लिहिण्यासाठी टॅप करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "हे उद्दिष्ट लिहिण्यासाठी टॅप करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "मोहिमेची माहिती · संपादन करण्यासाठी टॅप करा, स्क्रोल करण्यासाठी स्वाइप करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अद्याप पुरेसा नोंदवलेला इतिहास नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "त्याचा इतिहास दाखवण्यासाठी एक संघ निवडा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "चार्टवर परत जा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "चार्ट विस्तृत करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "स्लॉट",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "रंग",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "खेळाडू / एआय",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "गट",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "मनाई करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "↓ कमी",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "= सामान्य",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "↑ उच्च",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तपशील",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "मोहिमेचे नाव",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अनलॉक करणे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पॅरामीटर्स",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कोरा नकाशा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "निर्माण केले",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पूर्वावलोकन",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "निवडलेले लँडस्केप",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "प्रतिनिधी पूर्वावलोकन",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पॅरामीटर्स लपवा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "आकार आणि मापदंड",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "लँडस्केप निवडा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ / ब्राउझ करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ वसाहती · ZXQPH1QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ · टीम ZXQPH1QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "वसाहती: ZXQPH0QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ वसाहती · ZXQPH1QXZ एआय",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ · ZXQPH1QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "निष्पक्षता: ZXQPH0QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कॉलनी ZXQPH0QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "जिंकण्याची शक्यता: ZXQPH0QXZ · तंदुरुस्ती: ZXQPH1QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ · योगदान: ZXQPH1QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "किमान आवश्यक पातळी: ZXQPH0QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ठीक आहे: ZXQPH0QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ ZXQPH1QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "खेळ पुन्हा सुरू करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "एआय जोडा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "यजमानाने ठरवलेले प्रयोग",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "प्रयोग",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "संरक्षक-क्षेत्र संतुलन",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "स्वतंत्र योद्धे जवळच्याच एका क्षेत्रात जाण्याऐवजी रंगवलेल्या संरक्षक क्षेत्रांमध्ये पसरतात: मोठ्या क्षेत्रात जास्त योद्धे येतात, आणि जास्त भरलेले क्षेत्र इतर क्षेत्रांमध्ये विखुरले जाते.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "शेती क्षेत्रे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "झोन ब्रशेसमध्ये एक शेतीचे क्षेत्र जोडले जाते. या क्षेत्राच्या आत कापणी करणारे कामगार, जोडलेल्या शेतातील सर्वात पिकलेल्या टाइलमधून दाणे घेतात आणि प्रत्येक टाइलवर एक दाणा शिल्लक ठेवतात, त्यामुळे शेत कडेने खाल्ले जाण्याऐवजी पुन्हा वाढते. शेतीमध्ये वाढणारे लाकूड साफ केले जाते.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      }
+    ]
+  },
+  "response_sha256": "c4032a8baab623fd4c26f04cd91c0626d20856da48247fbaf3451d9e90595470"
+}

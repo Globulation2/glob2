@@ -1,0 +1,233 @@
+{
+  "request": {
+    "project": "bradley-personal-20261027",
+    "model": "general/nmt",
+    "payload": {
+      "sourceLanguageCode": "en",
+      "targetLanguageCode": "mr",
+      "mimeType": "text/plain",
+      "contents": [
+        "Select the Racetrack, choose Upgrade and assign skilled builders. These workers already learned first-level School skills. Upgrades need extra space and materials, and interrupt the building service. Cancelled upgrades do not count.",
+        "Upgrade the Racetrack",
+        "Select the Racetrack, choose Upgrade and assign skilled builders.",
+        "These workers already learned first-level School skills. Upgrades need extra space and materials, and interrupt the building service. Cancelled upgrades do not count.",
+        "Upgrade the Racetrack",
+        "Let an existing worker learn faster walking at the upgraded Racetrack. A completed upgrade improves available training. Higher building levels need higher construction skills; the level shown to players starts at 1.",
+        "Use the upgraded training",
+        "Let an existing worker learn faster walking at the upgraded Racetrack.",
+        "A completed upgrade improves available training. Higher building levels need higher construction skills; the level shown to players starts at 1.",
+        "Towers and protective walls",
+        "Build a supplied tower and protective walls, then test them against one small attack.",
+        "Your supplied defenses stopped the practice attack. Towers need stone and walls need gaps so suppliers can keep reaching them.",
+        "Build a tower in the marked area; assign builders. Place it near the stone quarry and leave supplier access. No attack starts until the preparation goals are complete.",
+        "Build a defense tower",
+        "Build a tower in the marked area; assign builders.",
+        "Place it near the stone quarry and leave supplier access. No attack starts until the preparation goals are complete.",
+        "Build a defense tower",
+        "Build at least 2 wall sections near the tower; keep its west access lane open. Walls use stone and each site requests workers. Do not seal the tower in: suppliers need a route. The marked west lane must remain clear.",
+        "Protect the tower with walls",
+        "Build at least 2 wall sections near the tower; keep its west access lane open.",
+        "Walls use stone and each site requests workers. Do not seal the tower in: suppliers need a route. The marked west lane must remain clear.",
+        "Protect the tower with walls",
+        "Select the tower and request suppliers. Wait for at least 2 stone. A finished tower needs an operating worker target to bring ammunition. This is separate from its construction target.",
+        "Supply ammunition",
+        "Select the tower and request suppliers. Wait for at least 2 stone.",
+        "A finished tower needs an operating worker target to bring ammunition. This is separate from its construction target.",
+        "Supply ammunition",
+        "A practice warrior is approaching. Keep the tower supplied and accessible. Hold until the attacker is defeated or driven back. A wall that blocks suppliers can starve the tower of ammunition. If the colony fails, restart or load an earlier save.",
+        "Test the fortifications",
+        "A practice warrior is approaching. Keep the tower supplied and accessible.",
+        "Hold until the attacker is defeated or driven back. A wall that blocks suppliers can starve the tower of ammunition. If the colony fails, restart or load an earlier save.",
+        "Test the fortifications",
+        "Guard zones and flag tactics",
+        "Scout the practice enemy, prepare a guard zone, defend, then organize a counterattack.",
+        "You scouted, defended a guard zone and directed a counterattack. Flag targets request units; radius controls where those units work.",
+        "Place an Exploration Flag at the enemy base; assign 1 explorer. Flags request units autonomously. An explorer reveals current activity through fog of war; it may stop to eat.",
+        "Scout the enemy base",
+        "Place an Exploration Flag at the enemy base; assign 1 explorer.",
+        "Flags request units autonomously. An explorer reveals current activity through fog of war; it may stop to eat.",
+        "Scout the enemy base",
+        "Paint a guard zone in the marked area and let 2 warriors reach it. Open Flags, choose Guard and paint at least 4 tiles inside the area. Guard zones attract idle warriors. Forbidden zones block travel; clearing zones request resource removal.",
+        "Prepare a guard zone",
+        "Paint a guard zone in the marked area and let 2 warriors reach it."
+      ]
+    }
+  },
+  "response": {
+    "translations": [
+      {
+        "translatedText": "रेसट्रॅक निवडा, 'अपग्रेड' निवडा आणि कुशल बांधकाम व्यावसायिकांना नियुक्त करा. या कामगारांनी आधीच पहिल्या स्तरावरील शालेय कौशल्ये शिकलेली आहेत. अपग्रेडसाठी अतिरिक्त जागा आणि साहित्य लागते, आणि त्यामुळे बांधकाम सेवेत व्यत्यय येतो. रद्द केलेले अपग्रेड गणले जात नाहीत.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "रेसट्रॅक अपग्रेड करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "रेसट्रॅक निवडा, अपग्रेड निवडा आणि कुशल बांधकाम व्यावसायिकांना नियुक्त करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "या कामगारांनी आधीच प्राथमिक स्तरावरील शालेय कौशल्ये आत्मसात केली आहेत. सुधारणांसाठी अतिरिक्त जागा आणि साहित्याची आवश्यकता असते, आणि त्यामुळे इमारतीच्या सेवेत व्यत्यय येतो. रद्द केलेल्या सुधारणा विचारात घेतल्या जात नाहीत.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "रेसट्रॅक अपग्रेड करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सध्याच्या कामगाराला अपग्रेड केलेल्या रेसट्रॅकवर अधिक वेगाने चालायला शिकू द्या. पूर्ण झालेले अपग्रेड उपलब्ध प्रशिक्षणात सुधारणा करते. इमारतीच्या उच्च स्तरांसाठी उच्च बांधकाम कौशल्यांची आवश्यकता असते; खेळाडूंना दाखवला जाणारा स्तर १ पासून सुरू होतो.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सुधारित प्रशिक्षणाचा वापर करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सध्याच्या कामगाराला सुधारित रेसट्रॅकवर अधिक वेगाने चालायला शिकू द्या.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पूर्ण झालेले अपग्रेड उपलब्ध प्रशिक्षणात सुधारणा करते. इमारतीच्या उच्च स्तरांसाठी उच्च बांधकाम कौशल्यांची आवश्यकता असते; खेळाडूंना दाखवला जाणारा स्तर १ पासून सुरू होतो.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "बुरुज आणि संरक्षक भिंती",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पुरवठा केलेला बुरुज आणि संरक्षक भिंती बांधा, आणि मग एका लहान हल्ल्याविरुद्ध त्यांची चाचणी घ्या.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तुम्ही पुरवलेल्या संरक्षणाने सराव हल्ला थांबवला. बुरुजांना दगडांची आणि भिंतींना फटींची गरज असते, जेणेकरून पुरवठादार त्यांच्यापर्यंत पोहोचत राहू शकतील.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "चिन्हांकित क्षेत्रात एक टॉवर बांधा; बांधकाम करणाऱ्यांना नियुक्त करा. तो दगडाच्या खाणीजवळ ठेवा आणि पुरवठादारांना प्रवेश द्या. तयारीची उद्दिष्ट्ये पूर्ण होईपर्यंत कोणताही हल्ला सुरू होणार नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "संरक्षण बुरुज बांधा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "चिन्हांकित जागेत मनोरा बांधा; बांधकाम करणाऱ्यांची नेमणूक करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ते दगडाच्या खाणीजवळ ठेवा आणि पुरवठादारांना प्रवेश द्या. तयारीची उद्दिष्ट्ये पूर्ण होईपर्यंत कोणताही हल्ला सुरू होणार नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "संरक्षण बुरुज बांधा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "टॉवरजवळ भिंतीचे किमान २ भाग बांधा; त्याचा पश्चिमेकडील प्रवेश मार्ग खुला ठेवा. भिंतींसाठी दगडांचा वापर केला जातो आणि प्रत्येक ठिकाणी कामगारांची आवश्यकता असते. टॉवर पूर्णपणे बंद करू नका: पुरवठादारांना मार्गाची गरज आहे. चिन्हांकित केलेला पश्चिमेकडील मार्ग मोकळा ठेवला पाहिजे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "बुरुजाचे भिंतींनी संरक्षण करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "बुरुजाजवळ भिंतीचे किमान २ भाग बांधा; त्याचा पश्चिमेकडील प्रवेश मार्ग खुला ठेवा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "भिंतींसाठी दगडांचा वापर केला जातो आणि प्रत्येक ठिकाणी कामगारांची आवश्यकता असते. टॉवर बंद करू नका: पुरवठादारांना मार्गाची गरज आहे. चिन्हांकित पश्चिम मार्ग मोकळा ठेवला पाहिजे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "बुरुजाचे भिंतींनी संरक्षण करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "टॉवर निवडा आणि पुरवठादारांना विनंती करा. किमान २ दगडांची वाट पहा. पूर्ण झालेल्या टॉवरला दारुगोळा आणण्यासाठी एका कार्यरत कामगाराच्या लक्ष्याची आवश्यकता असते. हे त्याच्या बांधकामाच्या लक्ष्यापेक्षा वेगळे आहे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "दारूगोळा पुरवठा करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "टॉवर निवडा आणि पुरवठादारांना विनंती करा. किमान २ दगडांची वाट पहा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पूर्ण झालेल्या टॉवरला दारुगोळा आणण्यासाठी एका कार्यरत कामगाराच्या लक्ष्याची आवश्यकता असते. हे त्याच्या बांधकाम लक्ष्यापेक्षा वेगळे असते.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "दारूगोळा पुरवठा करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "एक सराव योद्धा जवळ येत आहे. टॉवरला पुरवठा चालू ठेवा आणि तो सहज पोहोचण्यायोग्य ठेवा. आक्रमणकर्ता पराभूत होईपर्यंत किंवा मागे हटेपर्यंत टिकाव धरा. पुरवठादारांना अडवणारी भिंत टॉवरला दारुगोळ्यापासून वंचित ठेवू शकते. जर वसाहत अयशस्वी झाली, तर खेळ पुन्हा सुरू करा किंवा आधीची सेव्ह केलेली फाईल लोड करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "किल्ल्यांची तपासणी करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "एक सराव योद्धा जवळ येत आहे. टॉवरला पुरवठा चालू ठेवा आणि तो सहज उपलब्ध राहील याची खात्री करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "आक्रमणकर्ता पराभूत होईपर्यंत किंवा मागे हटेपर्यंत टिकून राहा. पुरवठादारांना अडवणारी भिंत टॉवरला दारुगोळ्यापासून वंचित ठेवू शकते. जर वसाहत अयशस्वी झाली, तर पुन्हा सुरुवात करा किंवा आधीची सेव्ह केलेली फाईल लोड करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "किल्ल्यांची तपासणी करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "गार्ड झोन आणि ध्वज डावपेच",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सराव शत्रूची टेहळणी करा, संरक्षण क्षेत्र तयार करा, बचाव करा आणि मग प्रतिहल्ला आयोजित करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तुम्ही टेहळणी केली, एका सुरक्षा क्षेत्राचे रक्षण केले आणि प्रतिहल्ल्याचे निर्देश दिले. ध्वजांकित लक्ष्ये तुकड्यांची मागणी करतात; त्रिज्या नियंत्रित करते की त्या तुकड्या कोठे काम करतील.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "शत्रूच्या तळावर एक शोध ध्वज लावा; १ शोधक नियुक्त करा. ध्वज आपोआप तुकड्यांची मागणी करतात. एक शोधक युद्धाच्या धुक्यातून सध्याची हालचाल उघड करतो; तो जेवण्यासाठी थांबू शकतो.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "शत्रूच्या तळाची टेहळणी करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "शत्रूच्या तळावर एक शोध ध्वज लावा; १ शोधक नियुक्त करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ध्वज आपोआप तुकड्यांची मागणी करतात. एक शोधक युद्धाच्या धुक्यातून सध्याची हालचाल उघड करतो; तो जेवण्यासाठी थांबू शकतो.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "शत्रूच्या तळाची टेहळणी करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "चिन्हांकित क्षेत्रात एक संरक्षक क्षेत्र रंगवा आणि २ योद्ध्यांना तिथे पोहोचू द्या. ध्वज उघडा, 'संरक्षक' निवडा आणि क्षेत्राच्या आत किमान ४ टाइल्स रंगवा. संरक्षक क्षेत्रे निष्क्रिय योद्ध्यांना आकर्षित करतात. निषिद्ध क्षेत्रे प्रवासात अडथळा आणतात; क्षेत्रे मोकळी करण्यासाठी संसाधने काढून टाकण्याची आवश्यकता असते.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सुरक्षा क्षेत्र तयार करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "चिन्हांकित क्षेत्रात एक सुरक्षा क्षेत्र रंगवा आणि दोन योद्ध्यांना तिथे पोहोचू द्या.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      }
+    ]
+  },
+  "response_sha256": "178c74bafeb08dcee182b682e3d55cbba8b7f28f82b8fd0b2efe6337e9e17e06"
+}

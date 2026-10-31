@@ -1,0 +1,509 @@
+{
+  "id": "native-general-014",
+  "source_sha256": "0ac44b4cdfb03e688983d6e3fb1e484cca57589665bff19c5c65388e649b292a",
+  "surface": "native",
+  "domain": "general",
+  "context": "Read neighbouring source entries and inspect usage before translating ambiguous short labels.",
+  "entries": [
+    {
+      "id": "native:[conn unstable]",
+      "key": "[conn unstable]",
+      "source": "unstable"
+    },
+    {
+      "id": "native:[conn waiting]",
+      "key": "[conn waiting]",
+      "source": "Connecting…"
+    },
+    {
+      "id": "native:[conn you %0]",
+      "key": "[conn you %0]",
+      "source": "%0 (you)"
+    },
+    {
+      "id": "native:[conn you]",
+      "key": "[conn you]",
+      "source": "You"
+    },
+    {
+      "id": "native:[conn your delay %0]",
+      "key": "[conn your delay %0]",
+      "source": "Your delay %0"
+    },
+    {
+      "id": "native:[hub account menu]",
+      "key": "[hub account menu]",
+      "source": "Account"
+    },
+    {
+      "id": "native:[hub ai joins after %0]",
+      "key": "[hub ai joins after %0]",
+      "source": "AI joins after %0"
+    },
+    {
+      "id": "native:[hub all rooms]",
+      "key": "[hub all rooms]",
+      "source": "All"
+    },
+    {
+      "id": "native:[hub cant reach %0]",
+      "key": "[hub cant reach %0]",
+      "source": "Can't reach %0."
+    },
+    {
+      "id": "native:[hub change server]",
+      "key": "[hub change server]",
+      "source": "Change server…"
+    },
+    {
+      "id": "native:[hub code placeholder]",
+      "key": "[hub code placeholder]",
+      "source": "Code or invite link"
+    },
+    {
+      "id": "native:[hub connecting to %0]",
+      "key": "[hub connecting to %0]",
+      "source": "%0 · connecting…"
+    },
+    {
+      "id": "native:[hub continue with %0]",
+      "key": "[hub continue with %0]",
+      "source": "Continue with %0"
+    },
+    {
+      "id": "native:[hub create room]",
+      "key": "[hub create room]",
+      "source": "Create room"
+    },
+    {
+      "id": "native:[hub find match]",
+      "key": "[hub find match]",
+      "source": "Find match"
+    },
+    {
+      "id": "native:[hub free seat]",
+      "key": "[hub free seat]",
+      "source": "Free seat"
+    },
+    {
+      "id": "native:[hub get update]",
+      "key": "[hub get update]",
+      "source": "Get the update"
+    },
+    {
+      "id": "native:[hub guest kept on device]",
+      "key": "[hub guest kept on device]",
+      "source": "Guest · kept on this device"
+    },
+    {
+      "id": "native:[hub invalid code]",
+      "key": "[hub invalid code]",
+      "source": "That isn't an invite code or link."
+    },
+    {
+      "id": "native:[hub join by code]",
+      "key": "[hub join by code]",
+      "source": "Join by code"
+    },
+    {
+      "id": "native:[hub join code]",
+      "key": "[hub join code]",
+      "source": "Join code"
+    },
+    {
+      "id": "native:[hub join]",
+      "key": "[hub join]",
+      "source": "Join"
+    },
+    {
+      "id": "native:[hub leaderboard]",
+      "key": "[hub leaderboard]",
+      "source": "Leaderboard"
+    },
+    {
+      "id": "native:[hub maps]",
+      "key": "[hub maps]",
+      "source": "Maps"
+    },
+    {
+      "id": "native:[hub no queues]",
+      "key": "[hub no queues]",
+      "source": "This server has no quick-match queues."
+    },
+    {
+      "id": "native:[hub no rooms]",
+      "key": "[hub no rooms]",
+      "source": "No open rooms right now. Create one and share the invite."
+    },
+    {
+      "id": "native:[hub offline at %0]",
+      "key": "[hub offline at %0]",
+      "source": "%0 · offline"
+    },
+    {
+      "id": "native:[hub offline detail %0]",
+      "key": "[hub offline detail %0]",
+      "source": "Trying again in %0 s. Quick match and online rooms are unavailable. LAN game on the main menu doesn't need this server."
+    },
+    {
+      "id": "native:[hub online at %0]",
+      "key": "[hub online at %0]",
+      "source": "%0 · online"
+    },
+    {
+      "id": "native:[hub online settings]",
+      "key": "[hub online settings]",
+      "source": "Online settings"
+    },
+    {
+      "id": "native:[hub online]",
+      "key": "[hub online]",
+      "source": "Online"
+    },
+    {
+      "id": "native:[hub open page again]",
+      "key": "[hub open page again]",
+      "source": "Open the page again"
+    },
+    {
+      "id": "native:[hub open rooms]",
+      "key": "[hub open rooms]",
+      "source": "Open rooms"
+    },
+    {
+      "id": "native:[hub play]",
+      "key": "[hub play]",
+      "source": "Play"
+    },
+    {
+      "id": "native:[hub rooms]",
+      "key": "[hub rooms]",
+      "source": "Rooms"
+    },
+    {
+      "id": "native:[hub ranks]",
+      "key": "[hub ranks]",
+      "source": "Ranks"
+    },
+    {
+      "id": "native:[hub play with friends]",
+      "key": "[hub play with friends]",
+      "source": "Play with friends"
+    },
+    {
+      "id": "native:[hub also search %0]",
+      "key": "[hub also search %0]",
+      "source": "Also search %0"
+    },
+    {
+      "id": "native:[hub online now %0 %1]",
+      "key": "[hub online now %0 %1]",
+      "source": "%0 players online · %1 searching this queue"
+    },
+    {
+      "id": "native:[hub show in open rooms]",
+      "key": "[hub show in open rooms]",
+      "source": "Show in Open rooms"
+    },
+    {
+      "id": "native:[hub last match]",
+      "key": "[hub last match]",
+      "source": "Last match"
+    },
+    {
+      "id": "native:[hub your rank %0 %1]",
+      "key": "[hub your rank %0 %1]",
+      "source": "You are #%0 · rating %1"
+    },
+    {
+      "id": "native:[hub not placed]",
+      "key": "[hub not placed]",
+      "source": "You don't have a rank here yet. Play ranked matches to place."
+    },
+    {
+      "id": "native:[hub queues unavailable]",
+      "key": "[hub queues unavailable]",
+      "source": "Quick match appears when the server answers."
+    },
+    {
+      "id": "native:[hub quick match unavailable]",
+      "key": "[hub quick match unavailable]",
+      "source": "Quick match isn't available in this version yet."
+    },
+    {
+      "id": "native:[hub quick match]",
+      "key": "[hub quick match]",
+      "source": "Quick match"
+    },
+    {
+      "id": "native:[hub ranked]",
+      "key": "[hub ranked]",
+      "source": "Ranked"
+    },
+    {
+      "id": "native:[hub refresh]",
+      "key": "[hub refresh]",
+      "source": "Refresh"
+    },
+    {
+      "id": "native:[hub retry now]",
+      "key": "[hub retry now]",
+      "source": "Retry now"
+    },
+    {
+      "id": "native:[hub room match]",
+      "key": "[hub room match]",
+      "source": "Room"
+    },
+    {
+      "id": "native:[hub room name %0]",
+      "key": "[hub room name %0]",
+      "source": "%0's room"
+    },
+    {
+      "id": "native:[hub room]",
+      "key": "[hub room]",
+      "source": "Room"
+    },
+    {
+      "id": "native:[hub seats %0 %1]",
+      "key": "[hub seats %0 %1]",
+      "source": "%0/%1 seats"
+    },
+    {
+      "id": "native:[hub sign in browser]",
+      "key": "[hub sign in browser]",
+      "source": "Open the sign-in page"
+    },
+    {
+      "id": "native:[hub sign in conflict]",
+      "key": "[hub sign in conflict]",
+      "source": "That sign-in already belongs to another account."
+    },
+    {
+      "id": "native:[hub sign in failed %0]",
+      "key": "[hub sign in failed %0]",
+      "source": "Sign-in didn't finish (%0)."
+    },
+    {
+      "id": "native:[hub sign in intro]",
+      "key": "[hub sign in intro]",
+      "source": "Sign in or create an account in your browser. Your guest matches come with you."
+    },
+    {
+      "id": "native:[hub sign in]",
+      "key": "[hub sign in]",
+      "source": "Sign in"
+    },
+    {
+      "id": "native:[hub sign out]",
+      "key": "[hub sign out]",
+      "source": "Sign out on this device"
+    },
+    {
+      "id": "native:[hub signed in as %0]",
+      "key": "[hub signed in as %0]",
+      "source": "Signed in as %0."
+    },
+    {
+      "id": "native:[hub signed in on %0]",
+      "key": "[hub signed in on %0]",
+      "source": "Signed in on %0"
+    },
+    {
+      "id": "native:[hub signing in]",
+      "key": "[hub signing in]",
+      "source": "Signing in…"
+    },
+    {
+      "id": "native:[hub sim %0]",
+      "key": "[hub sim %0]",
+      "source": "sim %0"
+    },
+    {
+      "id": "native:[hub unrated]",
+      "key": "[hub unrated]",
+      "source": "Unrated"
+    },
+    {
+      "id": "native:[hub update required at %0]",
+      "key": "[hub update required at %0]",
+      "source": "%0 · update required"
+    },
+    {
+      "id": "native:[hub update required detail %0]",
+      "key": "[hub update required detail %0]",
+      "source": "%0 plays a newer version, so this copy can't join online games until it updates. LAN games still work."
+    },
+    {
+      "id": "native:[hub update required]",
+      "key": "[hub update required]",
+      "source": "Update required"
+    },
+    {
+      "id": "native:[hub server behind]",
+      "key": "[hub server behind]",
+      "source": "Server update pending"
+    },
+    {
+      "id": "native:[hub server behind at %0]",
+      "key": "[hub server behind at %0]",
+      "source": "%0 · server update pending"
+    },
+    {
+      "id": "native:[hub server behind detail %0]",
+      "key": "[hub server behind detail %0]",
+      "source": "This copy is newer than %0, which hasn't been updated to it yet. Online games will open once the server updates. LAN games still work."
+    },
+    {
+      "id": "native:[hub version mismatch]",
+      "key": "[hub version mismatch]",
+      "source": "Different version"
+    },
+    {
+      "id": "native:[hub version mismatch at %0]",
+      "key": "[hub version mismatch at %0]",
+      "source": "%0 · different version"
+    },
+    {
+      "id": "native:[hub version mismatch detail %0]",
+      "key": "[hub version mismatch detail %0]",
+      "source": "%0 plays a different version of the game, so this copy can't join online games. LAN games still work."
+    },
+    {
+      "id": "native:[hub versus %0]",
+      "key": "[hub versus %0]",
+      "source": "vs %0"
+    },
+    {
+      "id": "native:[match ai]",
+      "key": "[match ai]",
+      "source": "AI"
+    },
+    {
+      "id": "native:[match failed]",
+      "key": "[match failed]",
+      "source": "The match could not start."
+    },
+    {
+      "id": "native:[match leave]",
+      "key": "[match leave]",
+      "source": "Leave"
+    },
+    {
+      "id": "native:[match loading]",
+      "key": "[match loading]",
+      "source": "Loading the game"
+    },
+    {
+      "id": "native:[Loading game graphics]",
+      "key": "[Loading game graphics]",
+      "source": "Loading game graphics"
+    },
+    {
+      "id": "native:[match map]",
+      "key": "[match map]",
+      "source": "Downloading the map"
+    },
+    {
+      "id": "native:[match relay %0]",
+      "key": "[match relay %0]",
+      "source": "Connected to relay %0"
+    },
+    {
+      "id": "native:[match seat confirmed]",
+      "key": "[match seat confirmed]",
+      "source": "Seat confirmed"
+    },
+    {
+      "id": "native:[match starting]",
+      "key": "[match starting]",
+      "source": "Starting match"
+    },
+    {
+      "id": "native:[match tip input]",
+      "key": "[match tip input]",
+      "source": "Tip: your orders reach everyone after your own input delay; other players' connections don't slow you down."
+    },
+    {
+      "id": "native:[match tip select]",
+      "key": "[match tip select]",
+      "source": "Tip: double-click a building to select every building of that type."
+    },
+    {
+      "id": "native:[match waiting for players]",
+      "key": "[match waiting for players]",
+      "source": "Waiting for every player"
+    },
+    {
+      "id": "native:[match you %0]",
+      "key": "[match you %0]",
+      "source": "%0 (you)"
+    },
+    {
+      "id": "native:[match player map]",
+      "key": "[match player map]",
+      "source": "map"
+    },
+    {
+      "id": "native:[match player loading]",
+      "key": "[match player loading]",
+      "source": "loading"
+    },
+    {
+      "id": "native:[match player connecting]",
+      "key": "[match player connecting]",
+      "source": "connecting"
+    },
+    {
+      "id": "native:[match player ready]",
+      "key": "[match player ready]",
+      "source": "ready"
+    },
+    {
+      "id": "native:[match player left]",
+      "key": "[match player left]",
+      "source": "left"
+    },
+    {
+      "id": "native:[results back to online]",
+      "key": "[results back to online]",
+      "source": "Back to online"
+    },
+    {
+      "id": "native:[results back to room]",
+      "key": "[results back to room]",
+      "source": "Back to room"
+    },
+    {
+      "id": "native:[results find another match]",
+      "key": "[results find another match]",
+      "source": "Find another match"
+    },
+    {
+      "id": "native:[results defeat]",
+      "key": "[results defeat]",
+      "source": "Defeat"
+    },
+    {
+      "id": "native:[results ladder rating %0]",
+      "key": "[results ladder rating %0]",
+      "source": "%0 rating"
+    },
+    {
+      "id": "native:[results left]",
+      "key": "[results left]",
+      "source": "You left the match"
+    },
+    {
+      "id": "native:[results match over]",
+      "key": "[results match over]",
+      "source": "Match over"
+    },
+    {
+      "id": "native:[results match page]",
+      "key": "[results match page]",
+      "source": "Match page"
+    }
+  ]
+}

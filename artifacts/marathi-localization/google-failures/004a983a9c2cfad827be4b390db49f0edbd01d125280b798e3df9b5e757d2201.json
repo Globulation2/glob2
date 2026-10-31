@@ -1,0 +1,10 @@
+{
+  "payload_sha256": "004a983a9c2cfad827be4b390db49f0edbd01d125280b798e3df9b5e757d2201",
+  "failures": [
+    {
+      "id": "native:[room close body %0]",
+      "category": null,
+      "reason": "Google response damaged protected tokens; inspect cached response"
+    }
+  ]
+}

@@ -1,0 +1,418 @@
+{
+  "request": {
+    "project": "bradley-personal-20261027",
+    "model": "general/nmt",
+    "payload": {
+      "sourceLanguageCode": "en",
+      "targetLanguageCode": "mr",
+      "mimeType": "text/plain",
+      "contents": [
+        "Usage measured",
+        "Use Gravatar",
+        "Use a PNG or WebP ZXQPH0QXZ no larger than ZXQPH1QXZ KiB.",
+        "Use a PNG or WebP ZXQPH0QXZ.",
+        "Use a photo from your device, or the Gravatar associated with a linked email address. Your photo is public.",
+        "Use a valid, still 512 by 512 pixel 8-bit material map.",
+        "Use a valid, still 512 by 512 pixel image.",
+        "Use buildings in the game",
+        "Use in a map",
+        "Use in game",
+        "Use initials",
+        "Use reference",
+        "Use this view",
+        "Use ZXQPH0QXZ in ZXQPH1QXZ or ZXQPH2QXZ to select an uploaded sprite.",
+        "Used for your next match.",
+        "User",
+        "Username",
+        "Username and password",
+        "Usernames are 3 to 32 characters long; this one has ZXQPH0QXZ.",
+        "Usernames can only use letters, digits, dots, dashes and underscores (no spaces).",
+        "V",
+        "Valid",
+        "Validate and preview",
+        "Validate package",
+        "Validate the audio",
+        "Validated definitions are importable. Review gameplay on your own maps before relying on balance.",
+        "Validation did not pass",
+        "Validation was interrupted. Your AI has not been published.",
+        "Value",
+        "Variation",
+        "Verification",
+        "Verification ",
+        "Verification and connection details",
+        "Verification failed",
+        "Verified",
+        "Version",
+        "Version history",
+        "Version label",
+        "Version ZXQPH0QXZ",
+        "Version ZXQPH0QXZ",
+        "Version ZXQPH0QXZZXQPH1QXZ",
+        "Versions",
+        "Versions of ZXQPH0QXZ",
+        "Versions of ZXQPH0QXZ",
+        "View orientation",
+        "View profile and games",
+        "View reported paint",
+        "View revision",
+        "View ZXQPH0QXZ",
+        "Viewing a saved revision. Restore it to make it the current draft.",
+        "Viewing ZXQPH0QXZ",
+        "View…",
+        "Visibility",
+        "Volume",
+        "VZXQPH0QXZ · ZXQPH1QXZ",
+        "Wait for a pending compatibility check.",
+        "Wait for a pending generator check.",
+        "Wait for the provider call to return before cancelling.",
+        "Waiting",
+        "Waiting for service capacity. Your place is saved.",
+        "Waived",
+        "Warning",
+        "Warrior attack",
+        "Warrior health",
+        "Warriors",
+        "Warrush",
+        "Watch AI play",
+        "Watch in browser",
+        "Watch your AI against a built-in opponent on the fixed test map. The game runs on this computer and ends when you close it.",
+        "Water",
+        "Waves",
+        "Webhook mode mismatch.",
+        "Weight",
+        "Welcome to the colony",
+        "Welcome, ZXQPH0QXZ",
+        "What changed",
+        "What will your world look like?",
+        "What would you like to create?",
+        "Whole model",
+        "Why hide this map? (shown to its owner)"
+      ]
+    }
+  },
+  "response": {
+    "translations": [
+      {
+        "translatedText": "वापर मोजला गेला",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ग्राव्हार वापरा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH1QXZ KiB पेक्षा मोठे नसलेले PNG किंवा WebP ZXQPH0QXZ वापरा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "PNG किंवा WebP ZXQPH0QXZ वापरा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तुमच्या डिव्हाइसमधील फोटो किंवा जोडलेल्या ईमेल पत्त्याशी संबंधित ग्राव्हार वापरा. ​​तुमचा फोटो सार्वजनिक आहे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "वैध, स्थिर ५१२ बाय ५१२ पिक्सेलचा ८-बिट मटेरियल मॅप वापरा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "एक वैध, स्थिर ५१२ बाय ५१२ पिक्सेलचा फोटो वापरा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "खेळामध्ये इमारतींचा वापर करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नकाशात वापरा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "खेळात वापरा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "आद्याक्षरे वापरा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "संदर्भ वापरा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "हा व्ह्यू वापरा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अपलोड केलेला स्प्राइट निवडण्यासाठी ZXQPH1QXZ किंवा ZXQPH2QXZ मध्ये ZXQPH0QXZ वापरा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तुमच्या पुढील सामन्यासाठी वापरले जाईल.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "वापरकर्ता",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "वापरकर्तानाव",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "वापरकर्तानाव आणि पासवर्ड",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "वापरकर्त्याची नावे ३ ते ३२ अक्षरांची असतात; याचे नाव ZXQPH0QXZ आहे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "युझरनेममध्ये फक्त अक्षरे, अंक, टिंब, डॅश आणि अंडरस्कोर वापरता येतात (स्पेस नाही).",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "व्ही",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "वैध",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "प्रमाणीकरण आणि पूर्वावलोकन",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पॅकेज प्रमाणित करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ऑडिओ प्रमाणित करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "प्रमाणित व्याख्या आयात करता येतात. संतुलनावर अवलंबून राहण्यापूर्वी तुमच्या स्वतःच्या नकाशांवर गेमप्लेचे पुनरावलोकन करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पडताळणी यशस्वी झाली नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पडताळणीत व्यत्यय आला. तुमचा एआय प्रकाशित झालेला नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "मूल्य",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "फरक",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पडताळणी",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पडताळणी",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पडताळणी आणि कनेक्शन तपशील",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पडताळणी अयशस्वी झाली",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सत्यापित",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "आवृत्ती",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "आवृत्ती इतिहास",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "आवृत्ती लेबल",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "आवृत्ती ZXQPH0QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "आवृत्ती ZXQPH0QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "आवृत्ती ZXQPH0QXZZXQPH1QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "आवृत्त्या",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ च्या आवृत्त्या",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ च्या आवृत्त्या",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अभिमुखता पहा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "प्रोफाइल आणि खेळ पहा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "रिपोर्ट केलेला पेंट पहा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "आवृत्ती पहा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ पहा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "जतन केलेली आवृत्ती पाहत आहे. तिला सध्याचा मसुदा बनवण्यासाठी पुनर्संचयित करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ पाहत आहे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पहा…",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "दृश्यमानता",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "व्हॉल्यूम",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "VZXQPH0QXZ · ZXQPH1QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "प्रलंबित सुसंगतता तपासणीची प्रतीक्षा करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "प्रलंबित जनरेटर तपासणीची प्रतीक्षा करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सेवा पुरवठादाराकडून परत कॉल येईपर्यंत रद्द करू नका.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "प्रतीक्षा करणे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सेवेच्या क्षमतेची प्रतीक्षा करत आहोत. तुमची जागा आरक्षित आहे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "माफ केले",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "चेतावणी",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "योद्धा हल्ला",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "योद्धा आरोग्य",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "योद्धे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "वॉरश",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "एआय खेळताना पहा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ब्राउझरमध्ये पहा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "निश्चित चाचणी नकाशावर एका अंगभूत प्रतिस्पर्ध्याविरुद्ध तुमच्या एआयची लढाई पहा. हा खेळ या संगणकावर चालतो आणि तुम्ही तो बंद केल्यावर संपतो.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पाणी",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "लाटा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "वेबहुक मोड जुळत नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "वजन",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "वसाहतीत आपले स्वागत आहे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "स्वागत आहे, ZXQPH0QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "काय बदलले",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तुमचं जग कसं दिसेल?",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तुम्हाला काय तयार करायला आवडेल?",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "संपूर्ण मॉडेल",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "हा नकाशा का लपवला आहे? (त्याच्या मालकाला दाखवला आहे)",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      }
+    ]
+  },
+  "response_sha256": "c5755279d43918200648a5487ed7f5e0406b79eb1a9b4ec2f56e12567d9e3d3b"
+}

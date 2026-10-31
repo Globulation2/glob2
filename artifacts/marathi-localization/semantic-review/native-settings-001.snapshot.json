@@ -1,0 +1,507 @@
+{
+  "batch": "native-settings-001",
+  "source_sha256": "0ac44b4cdfb03e688983d6e3fb1e484cca57589665bff19c5c65388e649b292a",
+  "rows": [
+    {
+      "id": "native:[settings Finish in your browser. The game continues by itself.]",
+      "source": "Finish in your browser. The game continues by itself.",
+      "target": "तुमच्या ब्राउझरमध्ये पूर्ण करा. खेळ आपोआप पुढे चालू राहतो."
+    },
+    {
+      "id": "native:[music set]",
+      "source": "Music set",
+      "target": "संगीत संच"
+    },
+    {
+      "id": "native:[random music set]",
+      "source": "Random each match",
+      "target": "प्रत्येक सामन्यात यादृच्छिक संच"
+    },
+    {
+      "id": "native:[playing music set %0]",
+      "source": "Playing: %0",
+      "target": "वाजत आहे: %0"
+    },
+    {
+      "id": "native:[music set failed]",
+      "source": "Could not load this music set.",
+      "target": "हा संगीत संच लोड करता आला नाही."
+    },
+    {
+      "id": "native:[settings Edge scrolling]",
+      "source": "Edge scrolling",
+      "target": "कडेवरून नकाशा हलवणे"
+    },
+    {
+      "id": "native:[settings Edge scrolling in fullscreen]",
+      "source": "Edge scrolling in fullscreen",
+      "target": "पूर्ण स्क्रीनमध्ये कडेवरून नकाशा हलवणे"
+    },
+    {
+      "id": "native:[settings Edge scrolling in windowed mode]",
+      "source": "Edge scrolling in windowed mode",
+      "target": "विंडोमध्ये कडेवरून नकाशा हलवणे"
+    },
+    {
+      "id": "native:[settings Move the game and editor maps when the mouse reaches the window edge.]",
+      "source": "Move the game and editor maps when the mouse reaches the window edge.",
+      "target": "माउस विंडोच्या कडेला पोहोचल्यावर खेळातील आणि संपादकातील नकाशे हलवा."
+    },
+    {
+      "id": "native:[add shortcut]",
+      "source": "Add Shortcut",
+      "target": "शॉर्टकट जोडा"
+    },
+    {
+      "id": "native:[editor shortcuts]",
+      "source": "Editor Shortcuts",
+      "target": "संपादक शॉर्टकट"
+    },
+    {
+      "id": "native:[flag settings explanation]",
+      "source": "The default radius of the flag",
+      "target": "ध्वजाची पूर्वनिर्धारित त्रिज्या"
+    },
+    {
+      "id": "native:[game shortcuts]",
+      "source": "Game Shortcuts",
+      "target": "खेळातील शॉर्टकट"
+    },
+    {
+      "id": "native:[keyboard settings]",
+      "source": "Keyboard Settings",
+      "target": "कीबोर्ड सेटिंग्ज"
+    },
+    {
+      "id": "native:[Music volume]",
+      "source": "Volume (music)",
+      "target": "आवाज (संगीत)"
+    },
+    {
+      "id": "native:[remove shortcut]",
+      "source": "Remove Shortcut",
+      "target": "शॉर्टकट काढा"
+    },
+    {
+      "id": "native:[restore default shortcuts]",
+      "source": "Restore Default Keyboard Shortcuts",
+      "target": "पूर्वनिर्धारित कीबोर्ड शॉर्टकट पुन्हा आणा"
+    },
+    {
+      "id": "native:[shortcut explanation enter]",
+      "source": "Enter: send a chat message",
+      "target": "प्रवेश करा: चॅट संदेश पाठवा"
+    },
+    {
+      "id": "native:[shortcut explanation v]",
+      "source": "V: hold to speak",
+      "target": "V: बोलण्यासाठी धरून ठेवा"
+    },
+    {
+      "id": "native:[unit settings explanation]",
+      "source": "The default number of units assigned",
+      "target": "नेमून दिलेल्या युनिट्सची डीफॉल्ट संख्या"
+    },
+    {
+      "id": "native:[Generation failed. Adjust settings or press Start to retry.]",
+      "source": "Generation failed. Adjust settings or press Start to retry.",
+      "target": "निर्मिती अयशस्वी झाली. सेटिंग्जमध्ये बदल करा किंवा पुन्हा प्रयत्न करण्यासाठी 'स्टार्ट' दाबा."
+    },
+    {
+      "id": "native:[Preview unavailable. Adjust settings or start to retry.]",
+      "source": "Preview unavailable. Adjust settings or start to retry.",
+      "target": "पूर्वावलोकन उपलब्ध नाही. सेटिंग्जमध्ये बदल करा किंवा पुन्हा प्रयत्न करा."
+    },
+    {
+      "id": "native:[Generation failed. Adjust settings or try again.]",
+      "source": "Generation failed. Adjust settings or try again.",
+      "target": "निर्मिती अयशस्वी झाली. सेटिंग्जमध्ये बदल करा किंवा पुन्हा प्रयत्न करा."
+    },
+    {
+      "id": "native:[Map settings changed. Generate a new preview or start.]",
+      "source": "Map settings changed. Generate a new preview or start.",
+      "target": "नकाशाची सेटिंग्ज बदलली आहेत. नवीन पूर्वावलोकन तयार करा किंवा सुरू करा."
+    },
+    {
+      "id": "native:[settings Add key to sequence]",
+      "source": "Add key to sequence",
+      "target": "अनुक्रमात की जोडा"
+    },
+    {
+      "id": "native:[settings Add shortcut]",
+      "source": "Add shortcut",
+      "target": "शॉर्टकट जोडा"
+    },
+    {
+      "id": "native:[settings Adjust assigned units with the wheel. When off, hold Ctrl. Shift adjusts flag radius. Also controls wheel input in other menus.]",
+      "source": "Adjust assigned units with the wheel. When off, hold Ctrl. Shift adjusts flag radius. Also controls wheel input in other menus.",
+      "target": "व्हील वापरून नेमून दिलेले युनिट्स समायोजित करा. बंद असताना, Ctrl दाबून ठेवा. Shift दाबून फ्लॅगची त्रिज्या समायोजित करता येते. तसेच, इतर मेन्यूमधील व्हील इनपुटवरही नियंत्रण ठेवते."
+    },
+    {
+      "id": "native:[settings Adjust music and voice volume.]",
+      "source": "Adjust music and voice volume.",
+      "target": "संगीत आणि आवाजाची पातळी समायोजित करा."
+    },
+    {
+      "id": "native:[settings Adjust the pace of play.]",
+      "source": "Adjust the pace of play.",
+      "target": "खेळाची गती समायोजित करा."
+    },
+    {
+      "id": "native:[settings Advanced binding]",
+      "source": "Advanced binding",
+      "target": "प्रगत बंधन"
+    },
+    {
+      "id": "native:[settings Artwork & effects]",
+      "source": "Artwork & effects",
+      "target": "कलाकृती आणि प्रभाव"
+    },
+    {
+      "id": "native:[settings Audio]",
+      "source": "Audio",
+      "target": "ऑडिओ"
+    },
+    {
+      "id": "native:[settings Bind Escape]",
+      "source": "Bind Escape",
+      "target": "बंधन सुटका"
+    },
+    {
+      "id": "native:[settings Building]",
+      "source": "Building",
+      "target": "इमारत"
+    },
+    {
+      "id": "native:[settings Building defaults]",
+      "source": "Building defaults",
+      "target": "डीफॉल्ट तयार करणे"
+    },
+    {
+      "id": "native:[settings Cancel]",
+      "source": "Cancel",
+      "target": "रद्द करा"
+    },
+    {
+      "id": "native:[settings Changes saved automatically]",
+      "source": "Changes saved automatically",
+      "target": "बदल आपोआप जतन झाले"
+    },
+    {
+      "id": "native:[settings Changes you make during play update these defaults for future games.]",
+      "source": "Changes you make during play update these defaults for future games.",
+      "target": "खेळताना तुम्ही केलेले बदल भविष्यातील खेळांसाठी हे डीफॉल्ट्स अद्ययावत करतात."
+    },
+    {
+      "id": "native:[settings Changing the renderer requires a restart.]",
+      "source": "Changing the renderer requires a restart.",
+      "target": "रेंडरर बदलण्यासाठी रीस्टार्ट करणे आवश्यक आहे."
+    },
+    {
+      "id": "native:[settings Choose a binding to change it, or add another shortcut for an action.]",
+      "source": "Choose a binding to change it, or add another shortcut for an action.",
+      "target": "ते बदलण्यासाठी बाइंडिंग निवडा, किंवा एखाद्या कृतीसाठी दुसरा शॉर्टकट जोडा."
+    },
+    {
+      "id": "native:[settings Choose a window or fill the screen.]",
+      "source": "Choose a window or fill the screen.",
+      "target": "एक विंडो निवडा किंवा स्क्रीन भरा."
+    },
+    {
+      "id": "native:[settings Choose how the game looks on your screen.]",
+      "source": "Choose how the game looks on your screen.",
+      "target": "तुमच्या स्क्रीनवर गेम कसा दिसेल ते निवडा."
+    },
+    {
+      "id": "native:[settings Completed]",
+      "source": "Completed",
+      "target": "पूर्ण झाले"
+    },
+    {
+      "id": "native:[settings Construction]",
+      "source": "Construction",
+      "target": "बांधकाम"
+    },
+    {
+      "id": "native:[settings Controls]",
+      "source": "Controls",
+      "target": "नियंत्रणे"
+    },
+    {
+      "id": "native:[settings Could not change display mode. The previous mode was restored.]",
+      "source": "Could not change display mode. The previous mode was restored.",
+      "target": "डिस्प्ले मोड बदलता आला नाही. पूर्वीचा मोड पूर्ववत करण्यात आला."
+    },
+    {
+      "id": "native:[settings Could not save]",
+      "source": "Could not save",
+      "target": "वाचवता आले नाही"
+    },
+    {
+      "id": "native:[settings Current display]",
+      "source": "Current display",
+      "target": "वर्तमान प्रदर्शन"
+    },
+    {
+      "id": "native:[settings Default]",
+      "source": "Default",
+      "target": "डीफॉल्ट"
+    },
+    {
+      "id": "native:[settings Display]",
+      "source": "Display",
+      "target": "प्रदर्शन"
+    },
+    {
+      "id": "native:[settings Display & graphics]",
+      "source": "Display & graphics",
+      "target": "डिस्प्ले आणि ग्राफिक्स"
+    },
+    {
+      "id": "native:[settings Display the Globulation 2 cursor.]",
+      "source": "Display the Globulation 2 cursor.",
+      "target": "Globulation 2 कर्सर दाखवा."
+    },
+    {
+      "id": "native:[settings Done]",
+      "source": "Done",
+      "target": "पूर्ण झाले"
+    },
+    {
+      "id": "native:[settings Edit shortcut]",
+      "source": "Edit shortcut",
+      "target": "शॉर्टकट संपादित करा"
+    },
+    {
+      "id": "native:[settings Multiply the operating system display scale for menus, text and the sidebar.]",
+      "source": "Multiply the operating system display scale for menus, text and the sidebar.",
+      "target": "मेनू, मजकूर आणि साइडबारसाठी ऑपरेटिंग सिस्टम डिस्प्ले स्केलला गुणाकार करा."
+    },
+    {
+      "id": "native:[settings Flags]",
+      "source": "Flags",
+      "target": "ध्वज"
+    },
+    {
+      "id": "native:[settings Full]",
+      "source": "Full",
+      "target": "पूर्ण"
+    },
+    {
+      "id": "native:[settings Fullscreen]",
+      "source": "Fullscreen",
+      "target": "पूर्ण स्क्रीन"
+    },
+    {
+      "id": "native:[settings Game]",
+      "source": "Game",
+      "target": "खेळ"
+    },
+    {
+      "id": "native:[settings Game speed]",
+      "source": "Game speed",
+      "target": "खेळाचा वेग"
+    },
+    {
+      "id": "native:[settings Gameplay]",
+      "source": "Gameplay",
+      "target": "गेमप्ले"
+    },
+    {
+      "id": "native:[settings Graphics detail]",
+      "source": "Graphics detail",
+      "target": "ग्राफिक्स तपशील"
+    },
+    {
+      "id": "native:[settings Interface scale]",
+      "source": "Interface scale",
+      "target": "इंटरफेस स्केल"
+    },
+    {
+      "id": "native:[settings Keep]",
+      "source": "Keep",
+      "target": "ठेवा"
+    },
+    {
+      "id": "native:[settings Keep this display mode?]",
+      "source": "Keep this display mode?",
+      "target": "हा डिस्प्ले मोड ठेवायचा का?"
+    },
+    {
+      "id": "native:[settings Keep your volume levels while silencing audio.]",
+      "source": "Keep your volume levels while silencing audio.",
+      "target": "ऑडिओ सायलेंट करताना व्हॉल्यूमची पातळी कायम ठेवा."
+    },
+    {
+      "id": "native:[settings Key]",
+      "source": "Key",
+      "target": "मुख्य"
+    },
+    {
+      "id": "native:[settings Keyboard shortcuts]",
+      "source": "Keyboard shortcuts",
+      "target": "कीबोर्ड शॉर्टकट"
+    },
+    {
+      "id": "native:[settings Keys form a sequence in order. Each key can trigger on press or release.]",
+      "source": "Keys form a sequence in order. Each key can trigger on press or release.",
+      "target": "बटणे क्रमाने एका अनुक्रमात मांडलेली आहेत. प्रत्येक बटण दाबल्यावर किंवा सोडल्यावर कार्यान्वित होऊ शकते."
+    },
+    {
+      "id": "native:[settings Language]",
+      "source": "Language",
+      "target": "भाषा"
+    },
+    {
+      "id": "native:[settings Language & player]",
+      "source": "Language & player",
+      "target": "भाषा आणि खेळाडू"
+    },
+    {
+      "id": "native:[settings Language used throughout the interface.]",
+      "source": "Language used throughout the interface.",
+      "target": "संपूर्ण इंटरफेसमध्ये वापरलेली भाषा."
+    },
+    {
+      "id": "native:[settings Level]",
+      "source": "Level",
+      "target": "पातळी"
+    },
+    {
+      "id": "native:[settings Map editor]",
+      "source": "Map editor",
+      "target": "नकाशा संपादक"
+    },
+    {
+      "id": "native:[settings Match the desktop]",
+      "source": "Match the desktop",
+      "target": "डेस्कटॉपशी जुळवा"
+    },
+    {
+      "id": "native:[settings Missing font]",
+      "source": "Missing font",
+      "target": "फॉन्ट गहाळ आहे"
+    },
+    {
+      "id": "native:[settings Music volume]",
+      "source": "Music volume",
+      "target": "संगीताचा आवाज"
+    },
+    {
+      "id": "native:[settings Mute audio]",
+      "source": "Mute audio",
+      "target": "ऑडिओ म्यूट करा"
+    },
+    {
+      "id": "native:[settings Name shown to other players.]",
+      "source": "Name shown to other players.",
+      "target": "इतर खेळाडूंना दाखवलेले नाव."
+    },
+    {
+      "id": "native:[settings Off]",
+      "source": "Off",
+      "target": "बंद"
+    },
+    {
+      "id": "native:[settings On]",
+      "source": "On",
+      "target": "वर"
+    },
+    {
+      "id": "native:[settings OpenGL is not available in this build.]",
+      "source": "OpenGL is not available in this build.",
+      "target": "या बिल्डमध्ये OpenGL उपलब्ध नाही."
+    },
+    {
+      "id": "native:[settings Player name]",
+      "source": "Player name",
+      "target": "खेळाडूचे नाव"
+    },
+    {
+      "id": "native:[settings Press]",
+      "source": "Press",
+      "target": "प्रेस"
+    },
+    {
+      "id": "native:[settings Press a key. Escape cancels capture. Use Bind Escape to assign Escape.]",
+      "source": "Press a key. Escape cancels capture. Use Bind Escape to assign Escape.",
+      "target": "एखादी कळ दाबा. एस्केप दाबल्याने कॅप्चर रद्द होते. एस्केप नियुक्त करण्यासाठी 'बाइंड एस्केप' वापरा."
+    },
+    {
+      "id": "native:[settings Radius]",
+      "source": "Radius",
+      "target": "त्रिज्या"
+    },
+    {
+      "id": "native:[settings Reduced]",
+      "source": "Reduced",
+      "target": "कमी केले"
+    },
+    {
+      "id": "native:[settings Reduced detail disables clouds and their shadows, simplifies magic effects, and reduces transparency.]",
+      "source": "Reduced detail disables clouds and their shadows, simplifies magic effects, and reduces transparency.",
+      "target": "कमी तपशीलामुळे ढग आणि त्यांच्या सावल्या अदृश्य होतात, जादूई परिणाम सोपे होतात आणि पारदर्शकता कमी होते."
+    },
+    {
+      "id": "native:[settings Release]",
+      "source": "Release",
+      "target": "प्रकाशन"
+    },
+    {
+      "id": "native:[settings Remember assignments between games]",
+      "source": "Remember assignments between games",
+      "target": "सामन्यांच्या मधल्या वेळेत दिलेले काम लक्षात ठेवा"
+    },
+    {
+      "id": "native:[settings Remove key]",
+      "source": "Remove key",
+      "target": "चावी काढा"
+    },
+    {
+      "id": "native:[settings Remove shortcut]",
+      "source": "Remove shortcut",
+      "target": "शॉर्टकट काढून टाका"
+    },
+    {
+      "id": "native:[settings Renderer]",
+      "source": "Renderer",
+      "target": "रेंडरर"
+    },
+    {
+      "id": "native:[settings Replace conflicting bindings]",
+      "source": "Replace conflicting bindings",
+      "target": "परस्परविरोधी बंधने बदला"
+    },
+    {
+      "id": "native:[settings Replace shortcuts in this context with the defaults? This saves immediately.]",
+      "source": "Replace shortcuts in this context with the defaults? This saves immediately.",
+      "target": "या संदर्भात शॉर्टकट डीफॉल्ट शॉर्टकटने बदलायचे आहेत का? हे लगेच सेव्ह होते."
+    },
+    {
+      "id": "native:[settings Resolution]",
+      "source": "Resolution",
+      "target": "ठराव"
+    },
+    {
+      "id": "native:[settings Restore default shortcuts]",
+      "source": "Restore default shortcuts",
+      "target": "डीफॉल्ट शॉर्टकट पुनर्संचयित करा"
+    },
+    {
+      "id": "native:[settings Retry]",
+      "source": "Retry",
+      "target": "पुन्हा प्रयत्न करा"
+    },
+    {
+      "id": "native:[settings Revert]",
+      "source": "Revert",
+      "target": "परत"
+    },
+    {
+      "id": "native:[settings Reverting in]",
+      "source": "Reverting in",
+      "target": "परत येणे"
+    }
+  ],
+  "subset_sha256": "047fca86bb4ceccef43f3ddd90e84515c9eb697a412cdce0c6cd3d7d7928d2b0"
+}

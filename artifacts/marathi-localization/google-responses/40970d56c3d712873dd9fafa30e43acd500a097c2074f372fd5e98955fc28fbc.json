@@ -1,0 +1,418 @@
+{
+  "request": {
+    "project": "bradley-personal-20261027",
+    "model": "general/nmt",
+    "payload": {
+      "sourceLanguageCode": "en",
+      "targetLanguageCode": "mr",
+      "mimeType": "text/plain",
+      "contents": [
+        "ZXQPH0QXZ ZXQPH1QXZ",
+        "Hand-made",
+        "Hand-made or generated",
+        "Hardness ",
+        "Health restored per tick",
+        "Hear it in the game",
+        "Height",
+        "Hex",
+        "Hidden",
+        "Hidden by a moderator",
+        "Hidden by a moderator: ZXQPH0QXZ",
+        "Hidden following community report.",
+        "Hidden following moderator review",
+        "Hidden: ZXQPH0QXZ",
+        "Hide",
+        "Hide family",
+        "Hide provisional ratings",
+        "Hide release and resolve",
+        "Hide set",
+        "Hide set and resolve",
+        "Historical amounts or payment modes are incomplete. ZXQPH0QXZ purchases have incomplete historical facts. Refund money is never inferred from reversed credits.",
+        "Historical coverage",
+        "History",
+        "Hive",
+        "ZXQPH0QXZ",
+        "ZXQPH0QXZ credits",
+        "ZXQPH0QXZ is not available on this instance.",
+        "ZXQPH0QXZ is not enabled on this instance.",
+        "Home",
+        "How AIs work ZXQPH0QXZ",
+        "How would you like to play?",
+        "Hue",
+        "Human match participants",
+        "Humans",
+        "Hungry globs",
+        "I checked these token counts against provider evidence, including any explicitly entered zeros.",
+        "IN GAME · ZXQPH0QXZ",
+        "INTERMEDIATE IMAGE",
+        "Image is missing from storage.",
+        "Image is too large.",
+        "Image not found.",
+        "Image unavailable.",
+        "Import",
+        "Import in Settings → Custom AIs to use in local games.",
+        "Import package",
+        "Import the downloaded ZXQPH0QXZ in Settings → Map generators. Online rooms use this exact release without requiring other players to install it.",
+        "Imported release ZXQPH0QXZ.",
+        "In match",
+        "In the game, choose",
+        "In the map editor",
+        "In use",
+        "In use · changes not applied",
+        "Inappropriate content",
+        "Incomplete music release.",
+        "Increase the manifest revision for a new release.",
+        "Individual moods",
+        "Information",
+        "Initial health",
+        "Initials only",
+        "Inn capacity",
+        "Input tokens",
+        "Input tokens (including cached)",
+        "Inspect candidate",
+        "Inspect latest release",
+        "Inspect library content",
+        "Inspect match verification",
+        "Inspect matches",
+        "Inspect recovery details",
+        "Inspect requesting account",
+        "Inspect sheet",
+        "Inspect this version",
+        "Inspect tracks",
+        "Inspect version ",
+        "Inspect version ZXQPH0QXZ · ZXQPH1QXZ",
+        "Inspected",
+        "Inspecting",
+        "Inspection zoom",
+        "Install community AIs for local games. Versions work offline. Only run code from authors you trust.",
+        "Installed preset artwork",
+        "Integer rate: 196608 means one growth opportunity or probability one. Zero disables it."
+      ]
+    }
+  },
+  "response": {
+    "translations": [
+      {
+        "translatedText": "ZXQPH0QXZ ZXQPH1QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "हाताने बनवलेले",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "हाताने बनवलेले किंवा तयार केलेले",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कठोरता",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "प्रत्येक टिकमागे आरोग्य पुनर्संचयित होते",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "खेळात ऐका",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "उंची",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "हेक्स",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "लपलेले",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "मॉडरेटरने लपवलेले",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "मॉडरेटरने लपवले आहे: ZXQPH0QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "समुदायाच्या तक्रारीनंतर लपवले आहे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "मॉडरेटरच्या पुनरावलोकनानंतर लपवलेले",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "लपवलेले: ZXQPH0QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "लपवा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कुटुंब लपवा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तात्पुरते रेटिंग लपवा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "प्रकाशन लपवा आणि निराकरण करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सेट लपवा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सेट लपवा आणि निराकरण करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पूर्वीची रक्कम किंवा पेमेंट पद्धती अपूर्ण आहेत. ZXQPH0QXZ खरेदीची ऐतिहासिक माहिती अपूर्ण आहे. उलटवलेल्या क्रेडिट्सवरून परताव्याच्या रकमेचा कधीही निष्कर्ष काढला जात नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ऐतिहासिक कव्हरेज",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "इतिहास",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "हाईव्ह",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ क्रेडिट्स",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ या इन्स्टन्सवर उपलब्ध नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "या इन्स्टन्सवर ZXQPH0QXZ सक्षम केलेले नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "घर",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "एआय कसे काम करतात ZXQPH0QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तुम्हाला कसे खेळायला आवडेल?",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "रंग",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "मानवी जुळणीतील सहभागी",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "मानव",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "भुकेले गोळे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "मी या टोकन संख्या प्रोव्हायडरच्या पुराव्याशी पडताळून पाहिल्या, ज्यामध्ये स्पष्टपणे नमूद केलेल्या शून्यांचाही समावेश होता.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "खेळामध्ये · ZXQPH0QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "मध्यवर्ती प्रतिमा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "प्रतिमा स्टोरेजमधून गहाळ आहे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "प्रतिमा खूप मोठी आहे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "प्रतिमा सापडली नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "प्रतिमा उपलब्ध नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "आयात",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "स्थानिक गेममध्ये वापरण्यासाठी सेटिंग्ज → कस्टम एआय मध्ये आयात करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "आयात पॅकेज",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सेटिंग्ज → मॅप जनरेटर्समध्ये डाउनलोड केलेला ZXQPH0QXZ इम्पोर्ट करा. ऑनलाइन रूम्स इतर खेळाडूंना इन्स्टॉल करण्याची आवश्यकता न ठेवता हीच आवृत्ती वापरतात.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "आयातित प्रकाशन ZXQPH0QXZ.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सामन्यात",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "खेळात, निवडा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नकाशा संपादकामध्ये",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "वापरात",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "वापरात आहे · बदल लागू केलेले नाहीत",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अयोग्य सामग्री",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अपूर्ण संगीत प्रकाशन.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नवीन रिलीझसाठी मॅनिफेस्ट रिव्हिजन वाढवा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "वैयक्तिक मनःस्थिती",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "माहिती",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सुरुवातीचे आरोग्य",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "फक्त आद्याक्षरे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सराय क्षमता",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "इनपुट टोकन",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "इनपुट टोकन (कॅश केलेल्यांसह)",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "उमेदवाराची तपासणी करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नवीनतम प्रकाशन तपासा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "लायब्ररीमधील सामग्री तपासा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "जुळणी पडताळणी तपासा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सामने तपासा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पुनर्प्राप्ती तपशील तपासा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "विनंती करणाऱ्या खात्याची तपासणी करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तपासणी पत्रक",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "या आवृत्तीची तपासणी करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ट्रॅक तपासा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "आवृत्ती तपासा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "आवृत्ती तपासा ZXQPH0QXZ · ZXQPH1QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तपासले",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तपासणी करणे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तपासणी झूम",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "स्थानिक खेळांसाठी सामुदायिक एआय स्थापित करा. आवृत्त्या ऑफलाइन काम करतात. केवळ तुमच्या विश्वासातील लेखकांचाच कोड चालवा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "प्रीसेट आर्टवर्क स्थापित केले",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पूर्णांक दर: १९६६०८ म्हणजे वाढीची एक संधी किंवा संभाव्यता एक. शून्य असल्यास ती संधी नाहीशी होते.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      }
+    ]
+  },
+  "response_sha256": "2701afaccc3496f7724610716495a7a81ae71b66f58098a37fc62b647ce4a8c1"
+}

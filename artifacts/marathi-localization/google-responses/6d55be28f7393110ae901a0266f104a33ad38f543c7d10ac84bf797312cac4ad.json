@@ -1,0 +1,418 @@
+{
+  "request": {
+    "project": "bradley-personal-20261027",
+    "model": "general/nmt",
+    "payload": {
+      "sourceLanguageCode": "en",
+      "targetLanguageCode": "mr",
+      "mimeType": "text/plain",
+      "contents": [
+        "River delta",
+        "Meandering rivers",
+        "Inland lakes",
+        "Drag to wrap. Wheel to zoom. Right-click or double-click to reset.",
+        "Drag to wrap; wheel to zoom.",
+        "Loading...",
+        "Preview failed",
+        "Click to retry",
+        "Please wait",
+        "Choose a map",
+        "Emoji terrain",
+        "A fort cannot reach its ford; use a bigger map or fewer colonies.",
+        "Braided river",
+        "The braid leaves too little terrace for the homes; use a bigger map or a narrower braid.",
+        "The map is too narrow across for a braid; use a bigger map.",
+        "Mountain ranges",
+        "Great rivers",
+        "The map is too small to hold a continent.",
+        "This continent has no room for that many colonies at this map size; use a bigger map or fewer colonies.",
+        "Valley river",
+        "Islands per colony",
+        "The islands are too small for their plots; use a bigger map, a smaller plot or fewer colonies.",
+        "Hilbert River",
+        "The rivers found no way between the homes; use a bigger map or fewer colonies.",
+        "River meander",
+        "The lake does not fit this map; use a smaller lake or a bigger map.",
+        "A sand bar did not reach the island.",
+        "This map has no room for that many colonies; use a bigger map or fewer colonies.",
+        "The island has no room for its quarry; use a bigger island.",
+        "The massif does not fit this map; use a bigger map or fewer colonies.",
+        "This map is too small to solve on; use a bigger map.",
+        "Too many colonies to balance on a map this size; use a bigger map or fewer colonies.",
+        "Too many colonies for this map to give each a homeland; use a bigger map or fewer colonies.",
+        "This map has no room to spread the colonies out; use a bigger map or fewer colonies.",
+        "A colony's homeland has no way out onto the march; use a bigger map or a narrower march.",
+        "The Gauntlet needs a larger map or fewer colonies to fit its two guarded fronts.",
+        "Portage Lakes",
+        "Lake elongation",
+        "Portage Lakes needs sides between 64 and 512 tiles.",
+        "Portage Lakes cannot fit shoreline settlements on this seed.",
+        "Portage Lakes cannot fit renewable shore fields beside every settlement.",
+        "Portage Lakes cannot connect its shoreline trails.",
+        "Portage Lakes needs separate swimming lakes on this seed.",
+        "Sandbar connections",
+        "Outlying islands",
+        "Loading terrain...",
+        "Map settings",
+        "Release on valid terrain to place",
+        "Mark map for allies",
+        "Tap to write the map script",
+        "Starting terrain",
+        "Map momentum",
+        "Downloading map ZXQPH0QXZ",
+        "already on this device",
+        "The map changed to ZXQPH0QXZ.",
+        "The map could not be prepared",
+        "Map page",
+        "Upload a map",
+        "Update a map",
+        "This map file could not be read.",
+        "The map could not be shared with the room.",
+        "The map could not be shared with the room: ZXQPH0QXZ",
+        "Everyone in the room plays this map file; it downloads before the match.",
+        "Play ZXQPH0QXZ",
+        "this map",
+        "Create a room and invite your friends: the room plays this map.",
+        "Cannot repeat this map. Use an unscripted starting map, or reduce the repeats and bases.",
+        "Repeat map horizontally",
+        "Repeat map vertically",
+        "How much material stock grew in resources anywhere on the map, in growth points rather than harvested loads. This is the same for every colony.",
+        "Reveal terrain",
+        "Players see the map's terrain from the start; enemy units stay hidden.",
+        "Import Terrain Definitions",
+        "Terrain palette",
+        "Water",
+        "Sand",
+        "Grass",
+        "Ice",
+        "Paths",
+        "Obstacles"
+      ]
+    }
+  },
+  "response": {
+    "translations": [
+      {
+        "translatedText": "नदीचा त्रिभुज प्रदेश",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नागमोडी नद्या",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अंतर्देशीय तलाव",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "गुंडाळण्यासाठी ड्रॅग करा. झूम करण्यासाठी व्हील वापरा. ​​रीसेट करण्यासाठी राईट-क्लिक किंवा डबल-क्लिक करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "गुंडाळण्यासाठी ओढा; झूम करण्यासाठी चाक फिरवा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "लोडिंग...",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पूर्वावलोकन अयशस्वी झाले",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पुन्हा प्रयत्न करण्यासाठी क्लिक करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कृपया थांबा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नकाशा निवडा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "इमोजी भूप्रदेश",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "किल्ला त्याच्या ओलांडण्याच्या जागेपर्यंत पोहोचू शकत नाही; मोठा नकाशा वापरा किंवा कमी वसाहती ठेवा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "वेणी नदी",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "या वेणीमुळे घरांसाठी खूपच कमी जागा उरते; त्याऐवजी मोठा नकाशा किंवा अरुंद वेणी वापरा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "वेणी घालण्यासाठी नकाशा खूप अरुंद आहे; मोठा नकाशा वापरा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पर्वतरांगा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "महान नद्या",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नकाशा खंड सामावून घेण्यासाठी खूपच लहान आहे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "या नकाशाच्या आकारात या खंडात तेवढ्या वसाहतींसाठी जागा नाही; मोठा नकाशा वापरा किंवा कमी वसाहती ठेवा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "व्हॅली नदी",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "प्रत्येक वसाहतीमधील बेटे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ही बेटे त्यांच्या भूखंडांसाठी खूपच लहान आहेत; मोठा नकाशा, लहान भूखंड किंवा कमी वसाहती वापरा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "हिल्बर्ट नदी",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नद्यांना घरांच्या मधून मार्ग सापडला नाही; मोठा नकाशा वापरा किंवा कमी वसाहती वापरा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नदीचे नागमोडी वळण",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "हे सरोवर या नकाशात बसत नाही; लहान सरोवर किंवा मोठा नकाशा वापरा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "वाळूचा दांडा बेटापर्यंत पोहोचला नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "या नकाशावर तेवढ्या वसाहतींसाठी जागा नाही; मोठा नकाशा वापरा किंवा कमी वसाहती ठेवा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "बेटावर त्याच्या खाणीसाठी जागा नाही; मोठे बेट वापरा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "हा पर्वतसमूह या नकाशात बसत नाही; मोठा नकाशा वापरा किंवा कमी वसाहती वापरा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "हा नकाशा सोडवण्यासाठी खूप लहान आहे; मोठा नकाशा वापरा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "एवढ्या मोठ्या नकाशावर संतुलन साधण्यासाठी खूप जास्त वसाहती आहेत; मोठा नकाशा वापरा किंवा कमी वसाहती वापरा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "या नकाशावर प्रत्येक वसाहतीला स्वतंत्र मातृभूमी देणे शक्य नाही; त्याऐवजी मोठा नकाशा वापरा किंवा कमी वसाहती ठेवा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "या नकाशात वसाहती पसरवण्यासाठी जागा नाही; मोठा नकाशा वापरा किंवा कमी वसाहती ठेवा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "वसाहतीच्या मातृभूमीला विस्तारावर बाहेर पडण्याचा मार्ग नसतो; त्यामुळे मोठा नकाशा किंवा अरुंद विस्तार वापरा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "त्याच्या दोन संरक्षित आघाड्या सामावून घेण्यासाठी गॉन्टलेटला अधिक मोठ्या नकाशाची किंवा कमी वसाहतींची आवश्यकता आहे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पोर्टेज तलाव",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सरोवराची लांबी",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पोर्टेज लेक्सला ६४ ते ५१२ टाइल्सच्या दरम्यानच्या बाजूंची आवश्यकता आहे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "या सीडवर पोर्टेज लेक्सच्या किनाऱ्यावर वसत्या बसवता येणार नाहीत.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पोर्टेज लेक्स प्रत्येक वस्तीच्या शेजारी नूतनीकरणक्षम किनारी शेतजमिनी सामावून घेऊ शकत नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पोर्टेज लेक्स आपल्या किनाऱ्यावरील पायवाटा जोडू शकत नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "या सीडवर पोर्टेज लेक्ससाठी स्वतंत्र पोहण्याच्या तलावांची आवश्यकता आहे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सँडबार कनेक्शन",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "बाहेरील बेटे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "भूभाग लोड होत आहे...",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नकाशा सेटिंग्ज",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ठेवण्यासाठी योग्य भूभागावर सोडा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "मित्रपक्षांसाठी नकाशा चिन्हांकित करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नकाशा स्क्रिप्ट लिहिण्यासाठी टॅप करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सुरुवातीचा भूप्रदेश",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नकाशाची गती",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ नकाशा डाउनलोड करत आहे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "या डिव्हाइसवर आधीच",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नकाशा ZXQPH0QXZ मध्ये बदलला.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नकाशा तयार करता आला नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नकाशा पृष्ठ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नकाशा अपलोड करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नकाशा अपडेट करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ही मॅप फाईल वाचता आली नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "खोलीत नकाशा शेअर करता आला नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ या रूमसोबत नकाशा शेअर करता आला नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "खोलीतील प्रत्येकजण ही मॅप फाईल खेळतो; ती सामन्यापूर्वी डाउनलोड होते.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ खेळा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "हा नकाशा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "एक रूम तयार करा आणि तुमच्या मित्रांना आमंत्रित करा: रूममध्ये हा मॅप खेळला जाईल.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "हा नकाशा पुन्हा वापरता येणार नाही. अनस्क्रिप्टेड सुरुवातीचा नकाशा वापरा, किंवा पुनरावृत्ती आणि बेस कमी करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नकाशाची आडव्या दिशेने पुनरावृत्ती करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नकाशाची उभ्या दिशेने पुनरावृत्ती करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नकाशावर कुठेही संसाधनांचा भौतिक साठा किती वाढला, हे काढलेल्या भारांऐवजी वाढीच्या बिंदूंमध्ये मोजले जाते. हे प्रत्येक वसाहतीसाठी सारखेच आहे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "भूभाग उघड करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "खेळाडूंना नकाशाचा भूप्रदेश सुरुवातीपासूनच दिसतो; शत्रूचे सैन्यदल लपलेले राहते.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "भूभाग व्याख्या आयात करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "भूभाग पॅलेट",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पाणी",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "वाळू",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "गवत",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "बर्फ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "मार्ग",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अडथळे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      }
+    ]
+  },
+  "response_sha256": "b9d0d19252cf0e6cddc5d5f0636e9d99d8b7bed840119fdbb934514374a8a3bb"
+}

@@ -1,0 +1,540 @@
+{
+  "source_sha256": "0ac44b4cdfb03e688983d6e3fb1e484cca57589665bff19c5c65388e649b292a",
+  "batch_target_sha256": "f2eb799e8775ab20cc4c08b98e0f26cc5cb08969589ca136895a6659631dc8a8",
+  "catalog_sha256": {
+    "native": "8b3f9e4972ee0eb1c3433110a7f0e83c9dc2fb7ea5f494b6925afa373c4fef97",
+    "online": "d7ae02f4d4453ebcb2acc37c15fd862acea8d2996d29cdb89bfb64c4f32cd5fa"
+  },
+  "entries": [
+    {
+      "id": "online:No release notes.",
+      "source": "No release notes.",
+      "target": "प्रकाशन नोंदी नाहीत."
+    },
+    {
+      "id": "online:One JavaScript file.",
+      "source": "One JavaScript file.",
+      "target": "एक JavaScript फाईल."
+    },
+    {
+      "id": "online:One manifest and one JavaScript module.",
+      "source": "One manifest and one JavaScript module.",
+      "target": "एक मॅनिफेस्ट आणि एक JavaScript मॉड्यूल."
+    },
+    {
+      "id": "online:Pause animation",
+      "source": "Pause animation",
+      "target": "ॲनिमेशन थांबवा"
+    },
+    {
+      "id": "online:Play animation",
+      "source": "Play animation",
+      "target": "अॅनिमेशन सुरू करा"
+    },
+    {
+      "id": "online:Play music",
+      "source": "Play music",
+      "target": "संगीत वाजवा"
+    },
+    {
+      "id": "online:Playtest",
+      "source": "Playtest",
+      "target": "प्लेटेस्ट"
+    },
+    {
+      "id": "online:Preparing your soundtrack…",
+      "source": "Preparing your soundtrack…",
+      "target": "तुमचा साउंडट्रॅक तयार करत आहे…"
+    },
+    {
+      "id": "online:Publish to music library",
+      "source": "Publish to music library",
+      "target": "संगीत लायब्ररीमध्ये प्रकाशित करा"
+    },
+    {
+      "id": "online:Publishing…",
+      "source": "Publishing…",
+      "target": "प्रकाशित करत आहे…"
+    },
+    {
+      "id": "online:Refine your soundtrack",
+      "source": "Refine your soundtrack",
+      "target": "तुमच्या साउंडट्रॅकला परिष्कृत करा"
+    },
+    {
+      "id": "online:Replace generator package",
+      "source": "Replace generator package",
+      "target": "जनरेटर पॅकेज बदला"
+    },
+    {
+      "id": "online:Replace source with JavaScript file",
+      "source": "Replace source with JavaScript file",
+      "target": "स्रोत JavaScript फाईलने बदला"
+    },
+    {
+      "id": "online:Retry saved request",
+      "source": "Retry saved request",
+      "target": "जतन केलेल्या विनंतीचा पुन्हा प्रयत्न करा"
+    },
+    {
+      "id": "online:Review the technical results for this finding.",
+      "source": "Review the technical results for this finding.",
+      "target": "या निष्कर्षासाठी तांत्रिक निकालांचे पुनरावलोकन करा."
+    },
+    {
+      "id": "online:Run current revision",
+      "source": "Run current revision",
+      "target": "वर्तमान आवृत्ती चालवा"
+    },
+    {
+      "id": "online:Saved candidate",
+      "source": "Saved candidate",
+      "target": "जतन केलेली प्रस्तावित आवृत्ती"
+    },
+    {
+      "id": "online:Saved privately. Publishing shares only this version.",
+      "source": "Saved privately. Publishing shares only this version.",
+      "target": "खाजगीरित्या जतन केले आहे. प्रकाशित करताना फक्त हीच आवृत्ती शेअर केली जाईल."
+    },
+    {
+      "id": "online:Saving…",
+      "source": "Saving…",
+      "target": "जतन करत आहे…"
+    },
+    {
+      "id": "online:Send",
+      "source": "Send",
+      "target": "पाठवा"
+    },
+    {
+      "id": "online:Send diagnostics to chat",
+      "source": "Send diagnostics to chat",
+      "target": "निदान चॅटवर पाठवा"
+    },
+    {
+      "id": "online:Sign in with a registered account to like music",
+      "source": "Sign in with a registered account to like music",
+      "target": "संगीत लाईक करण्यासाठी नोंदणीकृत खात्यासह साइन इन करा."
+    },
+    {
+      "id": "online:Signed HP per exposed tick, divided by 256; negative values damage units.",
+      "source": "Signed HP per exposed tick, divided by 256; negative values damage units.",
+      "target": "प्रभावाखालील प्रत्येक टिकमधील धन किंवा ऋण HP बदल, भागिले 256; ऋण मूल्यांमुळे युनिटना हानी होते."
+    },
+    {
+      "id": "online:Something wonderful is taking shape.",
+      "source": "Something wonderful is taking shape.",
+      "target": "काहीतरी अद्भुत आकार घेत आहे."
+    },
+    {
+      "id": "online:Start live game",
+      "source": "Start live game",
+      "target": "थेट खेळ सुरू करा"
+    },
+    {
+      "id": "online:Start with a feeling",
+      "source": "Start with a feeling",
+      "target": "एका भावनेने सुरुवात करा"
+    },
+    {
+      "id": "online:Terrain designer",
+      "source": "Terrain designer",
+      "target": "भूभाग डिझाइनर"
+    },
+    {
+      "id": "online:The assistant edits your file. You decide when to test.",
+      "source": "The assistant edits your file. You decide when to test.",
+      "target": "सहाय्यक तुमची फाईल संपादित करतो. चाचणी केव्हा घ्यायची हे तुम्ही ठरवता."
+    },
+    {
+      "id": "online:The assistant edits your manifest and JavaScript together. You decide when to generate or run checks.",
+      "source": "The assistant edits your manifest and JavaScript together. You decide when to generate or run checks.",
+      "target": "सहाय्यक मॅनिफेस्ट आणि JavaScript एकत्र संपादित करतो. निर्मिती केव्हा करायची किंवा तपासण्या केव्हा चालवायच्या हे तुम्ही ठरवता."
+    },
+    {
+      "id": "online:The provider outcome needs reconciliation. No duplicate call will be sent.",
+      "source": "The provider outcome needs reconciliation. No duplicate call will be sent.",
+      "target": "प्रदात्याच्या निकालाची जुळवाजुळव करणे आवश्यक आहे. कोणताही दुहेरी कॉल पाठवला जाणार नाही."
+    },
+    {
+      "id": "online:The provider outcome needs reconciliation. Your credit remains reserved.",
+      "source": "The provider outcome needs reconciliation. Your credit remains reserved.",
+      "target": "सेवा पुरवठादाराच्या निकालाची जुळवाजुळव करणे आवश्यक आहे. तुमचे क्रेडिट राखीव राहील."
+    },
+    {
+      "id": "online:The provider outcome needs reconciliation. Your reserved {value0} credits remain held; new requests are paused. Manual editing and export remain available.",
+      "source": "The provider outcome needs reconciliation. Your reserved {value0} credits remain held; new requests are paused. Manual editing and export remain available.",
+      "target": "प्रदात्याच्या निकालाचे जुळवणी करणे आवश्यक आहे. तुमचे आरक्षित {value0} क्रेडिट्स कायम आहेत; नवीन विनंत्या थांबवण्यात आल्या आहेत. मॅन्युअल संपादन आणि निर्यात उपलब्ध राहतील."
+    },
+    {
+      "id": "online:This match",
+      "source": "This match",
+      "target": "हा सामना"
+    },
+    {
+      "id": "online:This request is paused while its result is checked. Your reserved credit stays safe; you can leave and return later.",
+      "source": "This request is paused while its result is checked. Your reserved credit stays safe; you can leave and return later.",
+      "target": "या विनंतीचा निकाल तपासला जात असताना ती थांबवण्यात आली आहे. तुमचे राखून ठेवलेले क्रेडिट सुरक्षित राहील; तुम्ही निघून जाऊ शकता आणि नंतर परत येऊ शकता."
+    },
+    {
+      "id": "online:This version is public.",
+      "source": "This version is public.",
+      "target": "ही आवृत्ती सार्वजनिक आहे."
+    },
+    {
+      "id": "online:Try “a winding river with fertile banks” or ask how the current generator works.",
+      "source": "Try “a winding river with fertile banks” or ask how the current generator works.",
+      "target": "«सुपीक काठांची नागमोडी नदी» असे सांगून पाहा किंवा सध्याचा जनरेटर कसा काम करतो ते विचारा."
+    },
+    {
+      "id": "online:Try “focus on food before expansion” or ask how the current code works.",
+      "source": "Try “focus on food before expansion” or ask how the current code works.",
+      "target": "“विस्तारापूर्वी अन्नावर लक्ष केंद्रित करा” असे म्हणून बघा किंवा सध्याचा कोड कसा काम करतो ते विचारा."
+    },
+    {
+      "id": "online:Use working starter",
+      "source": "Use working starter",
+      "target": "कार्यरत स्टार्टर वापरा"
+    },
+    {
+      "id": "online:VIEW",
+      "source": "VIEW",
+      "target": "पहा"
+    },
+    {
+      "id": "online:Validation failed",
+      "source": "Validation failed",
+      "target": "पडताळणी अयशस्वी झाली"
+    },
+    {
+      "id": "online:We could not finish this map. Your earlier maps are safe.",
+      "source": "We could not finish this map. Your earlier maps are safe.",
+      "target": "आम्ही हा नकाशा पूर्ण करू शकलो नाही. तुमचे पूर्वीचे नकाशे सुरक्षित आहेत."
+    },
+    {
+      "id": "online:What kind of colony will you build?",
+      "source": "What kind of colony will you build?",
+      "target": "तुम्ही कोणत्या प्रकारची वसाहत उभारणार आहात?"
+    },
+    {
+      "id": "online:What landscape will you create?",
+      "source": "What landscape will you create?",
+      "target": "तुम्ही कोणते भूदृश्य तयार कराल?"
+    },
+    {
+      "id": "online:Working on your request…",
+      "source": "Working on your request…",
+      "target": "तुमच्या विनंतीवर काम सुरू आहे…"
+    },
+    {
+      "id": "online:YOU",
+      "source": "YOU",
+      "target": "तुम्ही"
+    },
+    {
+      "id": "online:Your colony AI",
+      "source": "Your colony AI",
+      "target": "तुमच्या वसाहतीचा एआय"
+    },
+    {
+      "id": "online:Your colony’s soundtrack, in three moods.",
+      "source": "Your colony’s soundtrack, in three moods.",
+      "target": "तुमच्या वसाहतीचे पार्श्वसंगीत, तीन वेगवेगळ्या मनस्थितींमध्ये."
+    },
+    {
+      "id": "online:Your composer is working…",
+      "source": "Your composer is working…",
+      "target": "तुमचा संगीतकार काम करत आहे…"
+    },
+    {
+      "id": "online:Your landscape",
+      "source": "Your landscape",
+      "target": "तुमचा भूप्रदेश"
+    },
+    {
+      "id": "online:Your message could not be completed.",
+      "source": "Your message could not be completed.",
+      "target": "तुमचा संदेश पूर्ण होऊ शकला नाही."
+    },
+    {
+      "id": "online:Your music takes shape here",
+      "source": "Your music takes shape here",
+      "target": "तुमच्या संगीताला इथे आकार मिळतो."
+    },
+    {
+      "id": "online:Your next battlefield starts here.",
+      "source": "Your next battlefield starts here.",
+      "target": "तुमचे पुढचे रणांगण येथून सुरू होते."
+    },
+    {
+      "id": "online:Your projects",
+      "source": "Your projects",
+      "target": "तुमचे प्रकल्प"
+    },
+    {
+      "id": "online:generated",
+      "source": "generated",
+      "target": "निर्माण केले"
+    },
+    {
+      "id": "online:hand-made",
+      "source": "hand-made",
+      "target": "हस्तनिर्मित"
+    },
+    {
+      "id": "online:no sign-in methods",
+      "source": "no sign-in methods",
+      "target": "साइन-इन पद्धती नाहीत"
+    },
+    {
+      "id": "online:one unit per harvest",
+      "source": "one unit per harvest",
+      "target": "प्रत्येक कापणीसाठी एक युनिट"
+    },
+    {
+      "id": "online:stock remains available after harvesting",
+      "source": "stock remains available after harvesting",
+      "target": "कापणीनंतर साठा उपलब्ध राहतो."
+    },
+    {
+      "id": "online:the whole stock per harvest",
+      "source": "the whole stock per harvest",
+      "target": "प्रत्येक कापणीला संपूर्ण साठा"
+    },
+    {
+      "id": "online:usage pending",
+      "source": "usage pending",
+      "target": "वापर प्रलंबित"
+    },
+    {
+      "id": "online:with {value0} ",
+      "source": "with {value0} ",
+      "target": "{value0} सह "
+    },
+    {
+      "id": "online:{count} credit",
+      "source": {
+        "one": "{count} credit",
+        "other": "{count} credits"
+      },
+      "target": {
+        "one": "{count} क्रेडिट",
+        "other": "{count} क्रेडिट्स"
+      }
+    },
+    {
+      "id": "online:{count} credits",
+      "source": "{count} credits",
+      "target": "{count} क्रेडिट्स"
+    },
+    {
+      "id": "online:{count} player on this page",
+      "source": {
+        "one": "{count} player on this page",
+        "other": "{count} players on this page"
+      },
+      "target": {
+        "one": "या पृष्ठावर {count} खेळाडू",
+        "other": "या पृष्ठावर {count} खेळाडू"
+      }
+    },
+    {
+      "id": "online:{count} players on this page",
+      "source": "{count} players on this page",
+      "target": "या पानावर {count} खेळाडू"
+    },
+    {
+      "id": "online:{count} team · ",
+      "source": {
+        "one": "{count} team · ",
+        "other": "{count} teams · "
+      },
+      "target": {
+        "one": "{count} संघ · ",
+        "other": "{count} संघ · "
+      }
+    },
+    {
+      "id": "online:{count} teams · ",
+      "source": "{count} teams · ",
+      "target": "{count} संघ · "
+    },
+    {
+      "id": "online:{count} version",
+      "source": {
+        "one": "{count} version",
+        "other": "{count} versions"
+      },
+      "target": {
+        "one": "{count} आवृत्ती",
+        "other": "{count} आवृत्त्या"
+      }
+    },
+    {
+      "id": "online:{count} versions",
+      "source": "{count} versions",
+      "target": "{count} आवृत्त्या"
+    },
+    {
+      "id": "online:{count} {status}",
+      "source": "{count} {status}",
+      "target": "{count} {status}"
+    },
+    {
+      "id": "online:{slot0} · {count} image",
+      "source": {
+        "one": "{slot0} · {count} image",
+        "other": "{slot0} · {count} images"
+      },
+      "target": {
+        "one": "{slot0} · {count} प्रतिमा",
+        "other": "{slot0} · {count} प्रतिमा"
+      }
+    },
+    {
+      "id": "online:{slot0} · {count} images",
+      "source": "{slot0} · {count} images",
+      "target": "{slot0} · {count} प्रतिमा"
+    },
+    {
+      "id": "online:{value0} HP per exposed tick",
+      "source": "{value0} HP per exposed tick",
+      "target": "प्रभावाखालील प्रत्येक टिकला {value0} HP"
+    },
+    {
+      "id": "online:{value0} Your credit was returned.",
+      "source": "{value0} Your credit was returned.",
+      "target": "{value0} तुमचे क्रेडिट परत मिळाले."
+    },
+    {
+      "id": "online:{value0} copy",
+      "source": "{value0} copy",
+      "target": "{value0} प्रत"
+    },
+    {
+      "id": "online:{value0} not found",
+      "source": "{value0} not found",
+      "target": "{value0} सापडले नाही"
+    },
+    {
+      "id": "online:{value0} playing",
+      "source": "{value0} playing",
+      "target": "{value0} वाजत आहे"
+    },
+    {
+      "id": "online:{value0} request needs attention in Preview.",
+      "source": "{value0} request needs attention in Preview.",
+      "target": "पूर्वावलोकनात {value0} विनंतीकडे लक्ष देणे आवश्यक आहे."
+    },
+    {
+      "id": "online:{value0} response ready in Preview.",
+      "source": "{value0} response ready in Preview.",
+      "target": "{value0} प्रतिसाद पूर्वावलोकनात तयार आहे."
+    },
+    {
+      "id": "online:{value0} seconds",
+      "source": "{value0} seconds",
+      "target": "{value0} सेकंद"
+    },
+    {
+      "id": "online:{value0} selected",
+      "source": "{value0} selected",
+      "target": "{value0} निवडले"
+    },
+    {
+      "id": "online:{value0} {value1} attention",
+      "source": "{value0} {value1} attention",
+      "target": "{value0} {value1} लक्ष द्या"
+    },
+    {
+      "id": "online:{value0} · revision {value1}",
+      "source": "{value0} · revision {value1}",
+      "target": "{value0} · सुधारित आवृत्ती {value1}"
+    },
+    {
+      "id": "online:{value0} × {value1} preview pixels",
+      "source": "{value0} × {value1} preview pixels",
+      "target": "{value0} × {value1} पूर्वावलोकन पिक्सेल"
+    },
+    {
+      "id": "online:{value0} × {value1} · {value2} players",
+      "source": "{value0} × {value1} · {value2} players",
+      "target": "{value0} × {value1} · {value2} खेळाडू"
+    },
+    {
+      "id": "online:{value0}% saturation, {value1}% brightness",
+      "source": "{value0}% saturation, {value1}% brightness",
+      "target": "{value0}% सॅचुरेशन, {value1}% ब्राइटनेस"
+    },
+    {
+      "id": "online:{value0}: {count} open",
+      "source": "{value0}: {count} open",
+      "target": "{value0}: {count} उघडे"
+    },
+    {
+      "id": "online:{value0}: {count} searching",
+      "source": "{value0}: {count} searching",
+      "target": "{value0}: {count} शोधत आहे"
+    },
+    {
+      "id": "online:{value0}× wheat",
+      "source": "{value0}× wheat",
+      "target": "{value0}× गहू"
+    },
+    {
+      "id": "online:{value0}’s average",
+      "source": "{value0}’s average",
+      "target": "{value0} ची सरासरी"
+    },
+    {
+      "id": "online:× Compatibility checks failed",
+      "source": "× Compatibility checks failed",
+      "target": "× सुसंगतता तपासण्या अयशस्वी झाल्या"
+    },
+    {
+      "id": "online:▶ Let the globs roam",
+      "source": "▶ Let the globs roam",
+      "target": "▶ ग्लॉब्सना फिरू द्या"
+    },
+    {
+      "id": "online:★ Favourited",
+      "source": "★ Favourited",
+      "target": "★ पसंतीचे"
+    },
+    {
+      "id": "online:☆ Favourite",
+      "source": "☆ Favourite",
+      "target": "☆ आवडते"
+    },
+    {
+      "id": "online:♡ Like",
+      "source": "♡ Like",
+      "target": "♡ लाईक"
+    },
+    {
+      "id": "online:♥ Liked",
+      "source": "♥ Liked",
+      "target": "♥ आवडले"
+    },
+    {
+      "id": "online:✓ Passed compatibility checks",
+      "source": "✓ Passed compatibility checks",
+      "target": "✓ सुसंगतता तपासणी यशस्वी"
+    },
+    {
+      "id": "online:✓ uploaded",
+      "source": "✓ uploaded",
+      "target": "✓ अपलोड केले"
+    },
+    {
+      "id": "online:❚❚ Pause the globs",
+      "source": "❚❚ Pause the globs",
+      "target": "❚❚ ग्लॉब्सना थांबवा"
+    },
+    {
+      "id": "online:Converted terrain",
+      "source": "Converted terrain",
+      "target": "रूपांतरित भूभाग"
+    }
+  ]
+}

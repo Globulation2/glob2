@@ -1,0 +1,510 @@
+{
+  "source_sha256": "0ac44b4cdfb03e688983d6e3fb1e484cca57589665bff19c5c65388e649b292a",
+  "batch_target_sha256": "3c1376939a6afc3d552fdc9f75126c5a2dc39167d74d58ae86cb10b82630b66b",
+  "catalog_sha256": {
+    "native": "8b3f9e4972ee0eb1c3433110a7f0e83c9dc2fb7ea5f494b6925afa373c4fef97",
+    "online": "d7ae02f4d4453ebcb2acc37c15fd862acea8d2996d29cdb89bfb64c4f32cd5fa"
+  },
+  "entries": [
+    {
+      "id": "online:Timeline",
+      "source": "Timeline",
+      "target": "कालरेषा"
+    },
+    {
+      "id": "online:Title",
+      "source": "Title",
+      "target": "शीर्षक"
+    },
+    {
+      "id": "online:Title, artist, description…",
+      "source": "Title, artist, description…",
+      "target": "शीर्षक, कलाकार, वर्णन…"
+    },
+    {
+      "id": "online:To play online, publish the generated map in the map library and select it for your room. Download family exports a ZIP for importing or editing in Building Studio.",
+      "source": "To play online, publish the generated map in the map library and select it for your room. Download family exports a ZIP for importing or editing in Building Studio.",
+      "target": "ऑनलाइन खेळण्यासाठी तयार केलेला नकाशा नकाशा संग्रहात प्रकाशित करा आणि खोलीसाठी तो निवडा. संच डाउनलोड करा हा पर्याय इमारत निर्मिती स्टुडिओमध्ये आयात किंवा संपादन करता येणारे ZIP पॅकेज देतो."
+    },
+    {
+      "id": "online:Too many live Building Studio connections.",
+      "source": "Too many live Building Studio connections.",
+      "target": "खूप जास्त लाईव्ह बिल्डिंग स्टुडिओ कनेक्शन्स."
+    },
+    {
+      "id": "online:Too many live Music Studio connections.",
+      "source": "Too many live Music Studio connections.",
+      "target": "खूप जास्त लाईव्ह म्युझिक स्टुडिओ कनेक्शन्स."
+    },
+    {
+      "id": "online:Too many live Terrain Studio connections.",
+      "source": "Too many live Terrain Studio connections.",
+      "target": "खूप जास्त चालू टेरेन स्टुडिओ कनेक्शन्स."
+    },
+    {
+      "id": "online:Too many requests.",
+      "source": "Too many requests.",
+      "target": "खूप जास्त विनंत्या."
+    },
+    {
+      "id": "online:Too many sign-in attempts from here. Wait a minute and try again.",
+      "source": "Too many sign-in attempts from here. Wait a minute and try again.",
+      "target": "इथून साइन-इन करण्याचे खूप जास्त प्रयत्न झाले आहेत. कृपया एक मिनिट थांबा आणि पुन्हा प्रयत्न करा."
+    },
+    {
+      "id": "online:Too many sign-ins in progress on this connection.",
+      "source": "Too many sign-ins in progress on this connection.",
+      "target": "या कनेक्शनवर एकाच वेळी अनेक साइन-इन होत आहेत."
+    },
+    {
+      "id": "online:Too many unknown invite codes; try again later.",
+      "source": "Too many unknown invite codes; try again later.",
+      "target": "अनेक अनोळखी इनव्हाइट कोड आहेत; कृपया नंतर पुन्हा प्रयत्न करा."
+    },
+    {
+      "id": "online:Too many wrong codes, so this sign-in was stopped. Start signing in again from the game.",
+      "source": "Too many wrong codes, so this sign-in was stopped. Start signing in again from the game.",
+      "target": "खूप जास्त चुकीचे कोड आल्यामुळे हे साइन-इन थांबवण्यात आले आहे. कृपया गेममधून पुन्हा साइन-इन करण्यास सुरुवात करा."
+    },
+    {
+      "id": "online:Too many wrong passwords. Wait 15 minutes and try again, or sign in another way.",
+      "source": "Too many wrong passwords. Wait 15 minutes and try again, or sign in another way.",
+      "target": "खूप वेळा चुकीचे पासवर्ड टाकले आहेत. कृपया १५ मिनिटे थांबा आणि पुन्हा प्रयत्न करा, किंवा दुसऱ्या मार्गाने साइन इन करा."
+    },
+    {
+      "id": "online:Toolbox options",
+      "source": "Toolbox options",
+      "target": "टूलबॉक्स पर्याय"
+    },
+    {
+      "id": "online:Top library content by lifetime recorded downloads",
+      "source": "Top library content by lifetime recorded downloads",
+      "target": "आजवर नोंदवलेल्या डाउनलोडनुसार संग्रहातील आघाडीची सामग्री"
+    },
+    {
+      "id": "online:Total health",
+      "source": "Total health",
+      "target": "संपूर्ण आरोग्य"
+    },
+    {
+      "id": "online:Toubib",
+      "source": "Toubib",
+      "target": "Toubib"
+    },
+    {
+      "id": "online:Trailing {value0} data",
+      "source": "Trailing {value0} data",
+      "target": "{value0} च्या शेवटी अतिरिक्त डेटा आहे"
+    },
+    {
+      "id": "online:Transitioning to {value0}…",
+      "source": "Transitioning to {value0}…",
+      "target": "{value0} मध्ये संक्रमण होत आहे…"
+    },
+    {
+      "id": "online:Trim ends to shortest",
+      "source": "Trim ends to shortest",
+      "target": "सर्वात लहान ट्रॅकइतकी लांबी होण्यासाठी शेवट कापा"
+    },
+    {
+      "id": "online:Truncated rig geometry",
+      "source": "Truncated rig geometry",
+      "target": "ट्रंकेटेड रिग भूमिती"
+    },
+    {
+      "id": "online:Truncated rig tracks",
+      "source": "Truncated rig tracks",
+      "target": "ट्रंकेटेड रिग ट्रॅक"
+    },
+    {
+      "id": "online:Truncated {value0} payload",
+      "source": "Truncated {value0} payload",
+      "target": "अपूर्ण {value0} पेलोड"
+    },
+    {
+      "id": "online:Try again",
+      "source": "Try again",
+      "target": "पुन्हा प्रयत्न करा"
+    },
+    {
+      "id": "online:Turn around the ring. Height and scale stay fixed.",
+      "source": "Turn around the ring. Height and scale stay fixed.",
+      "target": "रिंगभोवती फिरवा. उंची आणि माप स्थिर राहतात."
+    },
+    {
+      "id": "online:Type",
+      "source": "Type",
+      "target": "प्रकार"
+    },
+    {
+      "id": "online:Type ",
+      "source": "Type ",
+      "target": "प्रकार "
+    },
+    {
+      "id": "online:Type your display name exactly to confirm.",
+      "source": "Type your display name exactly to confirm.",
+      "target": "पुष्टी करण्यासाठी तुमचे डिस्प्ले नाव तंतोतंत टाइप करा."
+    },
+    {
+      "id": "online:Type your name, ",
+      "source": "Type your name, ",
+      "target": "तुमचे नाव टाइप करा, "
+    },
+    {
+      "id": "online:Typical game",
+      "source": "Typical game",
+      "target": "सामान्य खेळ"
+    },
+    {
+      "id": "online:UTC day",
+      "source": "UTC day",
+      "target": "UTC दिवस"
+    },
+    {
+      "id": "online:Unavailable",
+      "source": "Unavailable",
+      "target": "अनुपलब्ध"
+    },
+    {
+      "id": "online:Unavailable cost",
+      "source": "Unavailable cost",
+      "target": "अनुपलब्ध खर्च"
+    },
+    {
+      "id": "online:Unbounded rig scale",
+      "source": "Unbounded rig scale",
+      "target": "अमर्याद रिग स्केल"
+    },
+    {
+      "id": "online:Uncertain",
+      "source": "Uncertain",
+      "target": "अनिश्चित"
+    },
+    {
+      "id": "online:Uncertain requests and queued/failed engine jobs, oldest first.",
+      "source": "Uncertain requests and queued/failed engine jobs, oldest first.",
+      "target": "अनिश्चित विनंत्या आणि रांगेतील/अयशस्वी इंजिन कार्ये, सर्वात जुन्यापासून सुरुवात."
+    },
+    {
+      "id": "online:Undo",
+      "source": "Undo",
+      "target": "पूर्ववत करा"
+    },
+    {
+      "id": "online:Undo revision",
+      "source": "Undo revision",
+      "target": "आवृत्तीतील बदल पूर्ववत करा"
+    },
+    {
+      "id": "online:Unexpected checkout address.",
+      "source": "Unexpected checkout address.",
+      "target": "अनपेक्षित चेकआउट पत्ता."
+    },
+    {
+      "id": "online:Unhide",
+      "source": "Unhide",
+      "target": "उघड करा"
+    },
+    {
+      "id": "online:Units",
+      "source": "Units",
+      "target": "युनिट"
+    },
+    {
+      "id": "online:Units can cross",
+      "source": "Units can cross",
+      "target": "युनिट ओलांडू शकतात"
+    },
+    {
+      "id": "online:Units: latest verified match against recent average",
+      "source": "Units: latest verified match against recent average",
+      "target": "युनिट: अलीकडील सरासरीच्या तुलनेत नवीनतम पडताळलेला सामना"
+    },
+    {
+      "id": "online:Unknown",
+      "source": "Unknown",
+      "target": "अज्ञात"
+    },
+    {
+      "id": "online:Unknown AI tag.",
+      "source": "Unknown AI tag.",
+      "target": "अज्ञात एआय टॅग."
+    },
+    {
+      "id": "online:Unknown building sort.",
+      "source": "Unknown building sort.",
+      "target": "इमारतींची क्रमवारी लावण्याची पद्धत अज्ञात आहे."
+    },
+    {
+      "id": "online:Unknown contentType.",
+      "source": "Unknown contentType.",
+      "target": "contentType अज्ञात आहे."
+    },
+    {
+      "id": "online:Unknown device credential.",
+      "source": "Unknown device credential.",
+      "target": "अज्ञात डिव्हाइस क्रेडेन्शियल."
+    },
+    {
+      "id": "online:Unknown engine agent key.",
+      "source": "Unknown engine agent key.",
+      "target": "अज्ञात इंजिन एजंट की."
+    },
+    {
+      "id": "online:Unknown generator tag.",
+      "source": "Unknown generator tag.",
+      "target": "अज्ञात जनरेटर टॅग."
+    },
+    {
+      "id": "online:Unknown library.",
+      "source": "Unknown library.",
+      "target": "अज्ञात संग्रह."
+    },
+    {
+      "id": "online:Unknown license.",
+      "source": "Unknown license.",
+      "target": "अज्ञात परवाना."
+    },
+    {
+      "id": "online:Unknown or unavailable catalog map.",
+      "source": "Unknown or unavailable catalog map.",
+      "target": "अज्ञात किंवा अनुपलब्ध कॅटलॉग नकाशा."
+    },
+    {
+      "id": "online:Unknown product.",
+      "source": "Unknown product.",
+      "target": "अज्ञात उत्पादन."
+    },
+    {
+      "id": "online:Unknown queue result.",
+      "source": "Unknown queue result.",
+      "target": "अज्ञात रांगेचा निकाल."
+    },
+    {
+      "id": "online:Unknown queue.",
+      "source": "Unknown queue.",
+      "target": "अज्ञात रांग."
+    },
+    {
+      "id": "online:Unknown relay key.",
+      "source": "Unknown relay key.",
+      "target": "अज्ञात रिले की."
+    },
+    {
+      "id": "online:Unknown set kind.",
+      "source": "Unknown set kind.",
+      "target": "अज्ञात संच प्रकार."
+    },
+    {
+      "id": "online:Unknown sign-in provider.",
+      "source": "Unknown sign-in provider.",
+      "target": "अज्ञात साइन-इन प्रदाता."
+    },
+    {
+      "id": "online:Unknown sort.",
+      "source": "Unknown sort.",
+      "target": "क्रमवारी लावण्याची पद्धत अज्ञात आहे."
+    },
+    {
+      "id": "online:Unknown status.",
+      "source": "Unknown status.",
+      "target": "अज्ञात स्थिती."
+    },
+    {
+      "id": "online:Unknown upload slot.",
+      "source": "Unknown upload slot.",
+      "target": "अज्ञात अपलोड स्लॉट."
+    },
+    {
+      "id": "online:Unknown verification state.",
+      "source": "Unknown verification state.",
+      "target": "अज्ञात पडताळणी स्थिती."
+    },
+    {
+      "id": "online:Unlike",
+      "source": "Unlike",
+      "target": "पसंती काढा"
+    },
+    {
+      "id": "online:Unlisted",
+      "source": "Unlisted",
+      "target": "सूचीबद्ध नसलेले"
+    },
+    {
+      "id": "online:Unlisted (people with the link)",
+      "source": "Unlisted (people with the link)",
+      "target": "सूचीबद्ध नसलेले (लिंक असलेल्या व्यक्ती)"
+    },
+    {
+      "id": "online:Unlisted — accessible by link",
+      "source": "Unlisted — accessible by link",
+      "target": "सूचीत नसलेले — लिंकद्वारे प्रवेशयोग्य"
+    },
+    {
+      "id": "online:Unlock designer",
+      "source": "Unlock designer",
+      "target": "डिझायनर अनलॉक करा"
+    },
+    {
+      "id": "online:Unlock the skin designer to use custom skins.",
+      "source": "Unlock the skin designer to use custom skins.",
+      "target": "सानुकूल रूपे वापरण्यासाठी रूप डिझाइनर अनलॉक करा."
+    },
+    {
+      "id": "online:Unmute",
+      "source": "Unmute",
+      "target": "म्यूट रद्द करा"
+    },
+    {
+      "id": "online:Unreadable icon source: {value0}",
+      "source": "Unreadable icon source: {value0}",
+      "target": "वाचता न येणाऱ्या आयकॉनचा स्रोत: {value0}"
+    },
+    {
+      "id": "online:Unsaved changes",
+      "source": "Unsaved changes",
+      "target": "न जतन केलेले बदल"
+    },
+    {
+      "id": "online:Unsupported realtime protocol version.",
+      "source": "Unsupported realtime protocol version.",
+      "target": "असमर्थित रिअलटाइम प्रोटोकॉल आवृत्ती."
+    },
+    {
+      "id": "online:Unsupported rig format",
+      "source": "Unsupported rig format",
+      "target": "असमर्थित रिग फॉरमॅट"
+    },
+    {
+      "id": "online:Unsupported shape clip frames",
+      "source": "Unsupported shape clip frames",
+      "target": "असमर्थित आकार क्लिप फ्रेम्स"
+    },
+    {
+      "id": "online:Unsupported shape format",
+      "source": "Unsupported shape format",
+      "target": "असमर्थित आकार स्वरूप"
+    },
+    {
+      "id": "online:Unverifiable",
+      "source": "Unverifiable",
+      "target": "पडताळता येत नाही"
+    },
+    {
+      "id": "online:Unverified",
+      "source": "Unverified",
+      "target": "पडताळलेले नाही"
+    },
+    {
+      "id": "online:Up / down",
+      "source": "Up / down",
+      "target": "वर / खाली"
+    },
+    {
+      "id": "online:Update the game to join rooms using shared generators.",
+      "source": "Update the game to join rooms using shared generators.",
+      "target": "सामायिक जनरेटर वापरणाऱ्या रूममध्ये सामील होण्यासाठी गेम अपडेट करा."
+    },
+    {
+      "id": "online:Update the game to reconnect to this shared generator match.",
+      "source": "Update the game to reconnect to this shared generator match.",
+      "target": "या शेअर्ड जनरेटर मॅचशी पुन्हा कनेक्ट होण्यासाठी गेम अपडेट करा."
+    },
+    {
+      "id": "online:Update the game to reconnect to your shared generator room or match.",
+      "source": "Update the game to reconnect to your shared generator room or match.",
+      "target": "तुमच्या शेअर केलेल्या जनरेटर रूम किंवा मॅचशी पुन्हा कनेक्ट होण्यासाठी गेम अपडेट करा."
+    },
+    {
+      "id": "online:Update the game to use shared generator rooms and matches.",
+      "source": "Update the game to use shared generator rooms and matches.",
+      "target": "सामायिक जनरेटर रूम आणि सामने वापरण्यासाठी गेम अपडेट करा."
+    },
+    {
+      "id": "online:Update the game to use shared generators.",
+      "source": "Update the game to use shared generators.",
+      "target": "सामायिक जनरेटर वापरण्यासाठी गेम अपडेट करा."
+    },
+    {
+      "id": "online:Updated",
+      "source": "Updated",
+      "target": "अपडेट केले"
+    },
+    {
+      "id": "online:Updated {slot0} · UTC days · {slot1}",
+      "source": "Updated {slot0} · UTC days · {slot1}",
+      "target": "अद्यतनित {slot0} · UTC दिवस · {slot1}"
+    },
+    {
+      "id": "online:Updated {slot0} · UTC periods · {slot1} payments",
+      "source": "Updated {slot0} · UTC periods · {slot1} payments",
+      "target": "अद्यतनित {slot0} · UTC कालावधी · {slot1} देयके"
+    },
+    {
+      "id": "online:Upload",
+      "source": "Upload",
+      "target": "अपलोड करा"
+    },
+    {
+      "id": "online:Upload PNG",
+      "source": "Upload PNG",
+      "target": "PNG अपलोड करा"
+    },
+    {
+      "id": "online:Upload a map",
+      "source": "Upload a map",
+      "target": "नकाशा अपलोड करा"
+    },
+    {
+      "id": "online:Upload all three moods first.",
+      "source": "Upload all three moods first.",
+      "target": "आधी तिन्ही मूड अपलोड करा."
+    },
+    {
+      "id": "online:Upload already published elsewhere.",
+      "source": "Upload already published elsewhere.",
+      "target": "इतरत्र आधीच प्रकाशित केलेले अपलोड."
+    },
+    {
+      "id": "online:Upload an audio file, or cover art up to 8 MiB.",
+      "source": "Upload an audio file, or cover art up to 8 MiB.",
+      "target": "ऑडिओ फाईल किंवा जास्तीत जास्त 8 MiB ची आवरण प्रतिमा अपलोड करा."
+    },
+    {
+      "id": "online:Upload an image as binary data.",
+      "source": "Upload an image as binary data.",
+      "target": "प्रतिमा बायनरी डेटा म्हणून अपलोड करा."
+    },
+    {
+      "id": "online:Upload artwork you may use as a reference. Up to four selected images guide the visual style.",
+      "source": "Upload artwork you may use as a reference. Up to four selected images guide the visual style.",
+      "target": "संदर्भ म्हणून वापरण्याची परवानगी असलेली कलाकृती अपलोड करा. निवडलेल्या कमाल चार प्रतिमा दृश्यशैलीला दिशा देतील."
+    },
+    {
+      "id": "online:Upload expired; choose the file again.",
+      "source": "Upload expired; choose the file again.",
+      "target": "अपलोडची मुदत संपली आहे; फाईल पुन्हा निवडा."
+    },
+    {
+      "id": "online:Upload expired; validate again.",
+      "source": "Upload expired; validate again.",
+      "target": "अपलोडची मुदत संपली आहे; पुन्हा पडताळणी करा."
+    },
+    {
+      "id": "online:Upload frame",
+      "source": "Upload frame",
+      "target": "फ्रेम अपलोड करा"
+    },
+    {
+      "id": "online:Upload image bytes.",
+      "source": "Upload image bytes.",
+      "target": "इमेजचे बाइट्स अपलोड करा."
+    },
+    {
+      "id": "online:Upload photo",
+      "source": "Upload photo",
+      "target": "फोटो अपलोड करा"
+    }
+  ]
+}

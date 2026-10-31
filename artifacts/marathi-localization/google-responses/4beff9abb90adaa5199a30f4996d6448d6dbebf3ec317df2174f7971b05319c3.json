@@ -1,0 +1,418 @@
+{
+  "request": {
+    "project": "bradley-personal-20261027",
+    "model": "general/nmt",
+    "payload": {
+      "sourceLanguageCode": "en",
+      "targetLanguageCode": "mr",
+      "mimeType": "text/plain",
+      "contents": [
+        "ZXQPH0QXZ",
+        "ZXQPH0QXZ differs from the uploaded record.",
+        "refund",
+        "removed from end",
+        "replaces your name with “Deleted player” in your past matches, chat and records;",
+        "resynced",
+        "right away, or",
+        "rZXQPH0QXZ · ZXQPH1QXZ",
+        "signs you out on every device and removes your sign-in methods and e-mail address;",
+        "silence added at end",
+        "ZXQPH0QXZ (a sim version key) is required.",
+        "ZXQPH0QXZ differs from the match setup.",
+        "ZXQPH0QXZ must be a sim version key.",
+        "size unknown",
+        "sort must be one of ZXQPH0QXZ.",
+        "starting",
+        "status must be ZXQPH0QXZ, ZXQPH1QXZ, ZXQPH2QXZ or ZXQPH3QXZ.",
+        "teams must list the map's ZXQPH0QXZ teams in order 0..ZXQPH1QXZ.",
+        "ZXQPH0QXZ",
+        "today ZXQPH0QXZ",
+        "unexpected instance response: ZXQPH0QXZ",
+        "unverifiable",
+        "valid",
+        "vZXQPH0QXZ",
+        "world ZXQPH0QXZ",
+        "ZXQPH0QXZ ZXQPH1QXZ",
+        "ZXQPH0QXZ of ZXQPH1QXZ MB",
+        "ZXQPH0QXZ No app?",
+        "ZXQPH0QXZ Studio is not enabled on this instance.",
+        "ZXQPH0QXZ as",
+        "ZXQPH0QXZ invited you to their ZXQPH1QXZ roomZXQPH2QXZ.",
+        "ZXQPH0QXZ must be an integer from ZXQPH1QXZ to ZXQPH2QXZ.",
+        "ZXQPH0QXZ sign-in is unavailable right now.",
+        "ZXQPH0QXZ’s room has closed, so this invite no longer works. Ask them for a new link, or start a game of your own.",
+        "ZXQPH0QXZ  ZXQPH1QXZ credit available",
+        "ZXQPH0QXZ  ZXQPH1QXZ credits available",
+        "ZXQPH0QXZ  ZXQPH1QXZ credits available",
+        "ZXQPH0QXZ (ZXQPH1QXZ%)",
+        "ZXQPH0QXZ (ZXQPH1QXZ)",
+        "ZXQPH0QXZ / ZXQPH1QXZ",
+        "ZXQPH0QXZ / ZXQPH1QXZ passed",
+        "ZXQPH0QXZ Manual editing and local playtests use no credits.",
+        "ZXQPH0QXZ The preview shows exactly what will be saved.",
+        "ZXQPH0QXZ Try again, or download the set to listen locally.",
+        "ZXQPH0QXZ W · ZXQPH1QXZ L",
+        "ZXQPH0QXZ W · ZXQPH1QXZ LZXQPH2QXZ",
+        "ZXQPH0QXZ and resolve",
+        "ZXQPH0QXZ available · ZXQPH1QXZ reserved. Discussion requires an available credit; each delivered map or revision costs 1 credit. Failed generations return the credit.",
+        "ZXQPH0QXZ available · ZXQPH1QXZ reserved. Discussion requires an available credit; each delivered set or revision costs 1 credit. Failed generations return the credit.",
+        "ZXQPH0QXZ before buying so you can recover your purchases.",
+        "ZXQPH0QXZ credit available",
+        "ZXQPH0QXZ credits available",
+        "ZXQPH0QXZ credit available · ZXQPH1QXZ reserved",
+        "ZXQPH0QXZ credits available · ZXQPH1QXZ reserved",
+        "ZXQPH0QXZ credit reserved for work in progress.",
+        "ZXQPH0QXZ credits reserved for work in progress.",
+        "ZXQPH0QXZ credit · ZXQPH1QXZ  ZXQPH2QXZ",
+        "ZXQPH0QXZ credits · ZXQPH1QXZ  ZXQPH2QXZ",
+        "ZXQPH0QXZ credit — ZXQPH1QXZ",
+        "ZXQPH0QXZ credits — ZXQPH1QXZ",
+        "ZXQPH0QXZ credits available",
+        "ZXQPH0QXZ credits available · ZXQPH1QXZ reserved",
+        "ZXQPH0QXZ credits reserved for work in progress.",
+        "ZXQPH0QXZ credits · ZXQPH1QXZ  ZXQPH2QXZ",
+        "ZXQPH0QXZ credits — ZXQPH1QXZ",
+        "ZXQPH0QXZ day",
+        "ZXQPH0QXZ days",
+        "ZXQPH0QXZ days",
+        "ZXQPH0QXZ likes · ZXQPH1QXZ downloads",
+        "ZXQPH0QXZ likes · ZXQPH1QXZ downloads · ZXQPH2QXZ",
+        "ZXQPH0QXZ live · ZXQPH1QXZ in the last 24 hours",
+        "ZXQPH0QXZ loop",
+        "ZXQPH0QXZ open reports · ZXQPH1QXZ uncertain requests · ZXQPH2QXZ failed engine jobs",
+        "ZXQPH0QXZ or inspect the reported library item’s validation.",
+        "ZXQPH0QXZ passed · ZXQPH1QXZ  ZXQPH2QXZZXQPH3QXZ",
+        "ZXQPH0QXZ properties",
+        "ZXQPH0QXZ reserved. Credits belong to this studio.",
+        "ZXQPH0QXZ selected · up to 10 sets, 64 MiB",
+        "ZXQPH0QXZ teams",
+        "ZXQPH0QXZ terrain · ZXQPH1QXZ resources · revision ZXQPH2QXZ"
+      ]
+    }
+  },
+  "response": {
+    "translations": [
+      {
+        "translatedText": "ZXQPH0QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ हे अपलोड केलेल्या रेकॉर्डपेक्षा वेगळे आहे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "परतावा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "शेवटून काढले",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तुमच्या मागील सामन्यांमध्ये, चॅटमध्ये आणि रेकॉर्डमध्ये तुमचे नाव बदलून “हटवलेला खेळाडू” असे ठेवले जाते;",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पुन्हा सिंक केले",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "लगेच, किंवा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "rZXQPH0QXZ · ZXQPH1QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तुम्हाला प्रत्येक डिव्हाइसवरून साइन आउट करते आणि तुमच्या साइन-इन पद्धती व ई-मेल पत्ता काढून टाकते;",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "शेवटी शांतता जोडली गेली",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ (सिम व्हर्जन की) आवश्यक आहे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ मॅच सेटअपपेक्षा वेगळे आहे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ ही सिम आवृत्तीची की असली पाहिजे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "आकार अज्ञात",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "sort हा ZXQPH0QXZ पैकी एक असला पाहिजे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सुरुवात करणे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "स्थिती ZXQPH0QXZ, ZXQPH1QXZ, ZXQPH2QXZ किंवा ZXQPH3QXZ असणे आवश्यक आहे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "संघांनी नकाशावरील ZXQPH0QXZ संघांची यादी 0..ZXQPH1QXZ या क्रमाने करणे आवश्यक आहे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "आज ZXQPH0QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अनपेक्षित इन्स्टन्स प्रतिसाद: ZXQPH0QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अपुष्ट",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "वैध",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "vZXQPH0QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "जग ZXQPH0QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ ZXQPH1QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH1QXZ MB चे ZXQPH0QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ ॲप नाही?",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "या इन्स्टन्सवर ZXQPH0QXZ स्टुडिओ सक्षम केलेला नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ म्हणून",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ यांनी तुम्हाला त्यांच्या ZXQPH1QXZ खोली ZXQPH2QXZ मध्ये आमंत्रित केले आहे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ हा ZXQPH1QXZ ते ZXQPH2QXZ पर्यंतचा एक पूर्णांक असला पाहिजे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ साइन-इन सध्या उपलब्ध नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ यांची रूम बंद झाली आहे, त्यामुळे हे आमंत्रण आता चालणार नाही. त्यांना नवीन लिंकसाठी विचारा, किंवा तुमचा स्वतःचा गेम सुरू करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ ZXQPH1QXZ क्रेडिट उपलब्ध",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ ZXQPH1QXZ क्रेडिट्स उपलब्ध आहेत",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ ZXQPH1QXZ क्रेडिट्स उपलब्ध आहेत",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ (ZXQPH1QXZ%)",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ (ZXQPH1QXZ)",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ / ZXQPH1QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ / ZXQPH1QXZ उत्तीर्ण झाले",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ मॅन्युअल एडिटिंग आणि लोकल प्लेटेस्टमध्ये कोणतेही क्रेडिट्स वापरले जात नाहीत.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ प्रिव्ह्यूमध्ये नेमके काय सेव्ह केले जाईल हे दिसते.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ पुन्हा प्रयत्न करा, किंवा स्थानिक पातळीवर ऐकण्यासाठी सेट डाउनलोड करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ W · ZXQPH1QXZ L",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ W · ZXQPH1QXZ LZXQPH2QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ आणि निराकरण करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ उपलब्ध · ZXQPH1QXZ आरक्षित. चर्चेसाठी उपलब्ध क्रेडिट आवश्यक आहे; प्रत्येक वितरित नकाशा किंवा सुधारणेसाठी १ क्रेडिट आकारले जाईल. अयशस्वी निर्मितीमुळे क्रेडिट परत केले जाईल.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ उपलब्ध · ZXQPH1QXZ आरक्षित. चर्चेसाठी उपलब्ध क्रेडिट आवश्यक आहे; प्रत्येक वितरित संच किंवा सुधारणेसाठी १ क्रेडिट आकारले जाईल. अयशस्वी झालेल्या पिढ्यांसाठी क्रेडिट परत केले जाईल.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "खरेदी करण्यापूर्वी ZXQPH0QXZ वापरा जेणेकरून तुम्ही तुमची खरेदी परत मिळवू शकाल.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ क्रेडिट उपलब्ध",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ क्रेडिट्स उपलब्ध आहेत",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ क्रेडिट उपलब्ध · ZXQPH1QXZ राखीव",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ क्रेडिट्स उपलब्ध · ZXQPH1QXZ राखीव",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ क्रेडिट प्रगतीपथावरील कामासाठी राखीव.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ क्रेडिट्स प्रगतीपथावरील कामासाठी राखीव आहेत.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ क्रेडिट · ZXQPH1QXZ ZXQPH2QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ श्रेय · ZXQPH1QXZ ZXQPH2QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ क्रेडिट — ZXQPH1QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ क्रेडिट्स — ZXQPH1QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ क्रेडिट्स उपलब्ध आहेत",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ क्रेडिट्स उपलब्ध · ZXQPH1QXZ राखीव",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ क्रेडिट्स प्रगतीपथावरील कामासाठी राखीव आहेत.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ श्रेय · ZXQPH1QXZ ZXQPH2QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ क्रेडिट्स — ZXQPH1QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ दिवस",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ दिवस",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ दिवस",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ पसंती · ZXQPH1QXZ डाउनलोड",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ पसंती · ZXQPH1QXZ डाउनलोड · ZXQPH2QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ थेट प्रक्षेपण · गेल्या २४ तासांत ZXQPH1QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ लूप",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ खुले अहवाल · ZXQPH1QXZ अनिश्चित विनंत्या · ZXQPH2QXZ अयशस्वी इंजिन कार्ये",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ किंवा रिपोर्ट केलेल्या लायब्ररी आयटमचे व्हॅलिडेशन तपासा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ उत्तीर्ण · ZXQPH1QXZ ZXQPH2QXZZXQPH3QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ गुणधर्म",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ राखीव. श्रेय या स्टुडिओला जाते.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ निवडले · १० संचांपर्यंत, ६४ MiB",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ संघ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ भूभाग · ZXQPH1QXZ संसाधने · आवृत्ती ZXQPH2QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      }
+    ]
+  },
+  "response_sha256": "f5e74ee50620efbbb3fb2cd06cbf85b1daab43e01a9f0ed67b037ae6adca3a87"
+}

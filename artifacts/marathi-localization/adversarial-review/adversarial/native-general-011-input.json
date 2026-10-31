@@ -1,0 +1,510 @@
+{
+  "source_sha256": "0ac44b4cdfb03e688983d6e3fb1e484cca57589665bff19c5c65388e649b292a",
+  "batch_target_sha256": "35e93a4d4828818d78327c567a19680982cffba149a40e3766eee0b921afc959",
+  "catalog_sha256": {
+    "native": "a6d0da95a3cf29e0bcfa904f80043a10fedc3124f7a26e3beebc82e8cdfa4411",
+    "online": "feb4b9a71595724a0995b0cf0f42c94742ef29030b66c9488c77ebc6be7a89db"
+  },
+  "entries": [
+    {
+      "id": "native:[Solver effort]",
+      "source": "Solver effort",
+      "target": "निराकरण प्रयत्न"
+    },
+    {
+      "id": "native:[Brief]",
+      "source": "Brief",
+      "target": "संक्षिप्त"
+    },
+    {
+      "id": "native:[Patient]",
+      "source": "Patient",
+      "target": "संयमी"
+    },
+    {
+      "id": "native:[The colonies could not be spread out on this map.]",
+      "source": "The colonies could not be spread out on this map.",
+      "target": "या नकाशावर वसाहती पसरवता आल्या नाहीत."
+    },
+    {
+      "id": "native:[Marchland]",
+      "source": "Marchland",
+      "target": "सीमाप्रदेश"
+    },
+    {
+      "id": "native:[Prizes on the rope]",
+      "source": "Prizes on the rope",
+      "target": "दोरीवरची बक्षिसे"
+    },
+    {
+      "id": "native:[March width]",
+      "source": "March width",
+      "target": "सीमाप्रदेशाची रुंदी"
+    },
+    {
+      "id": "native:[Levelling]",
+      "source": "Levelling",
+      "target": "समतलीकरण"
+    },
+    {
+      "id": "native:[A march needs a country on each side; use at least two colonies.]",
+      "source": "A march needs a country on each side; use at least two colonies.",
+      "target": "सीमाप्रदेशाच्या दोन्ही बाजूंना एकेक प्रदेश हवा; किमान दोन वसाहती वापरा."
+    },
+    {
+      "id": "native:[The march has too little contested ground for that many prizes; use fewer prizes, a wider march or a bigger map.]",
+      "source": "The march has too little contested ground for that many prizes; use fewer prizes, a wider march or a bigger map.",
+      "target": "इतक्या बक्षिसांसाठी सीमाप्रदेशात स्पर्धेची जागा अपुरी आहे; कमी बक्षिसे, रुंद सीमाप्रदेश किंवा मोठा नकाशा वापरा."
+    },
+    {
+      "id": "native:[The march has no room for a prize; use a bigger map, fewer colonies or a wider march.]",
+      "source": "The march has no room for a prize; use a bigger map, fewer colonies or a wider march.",
+      "target": "सीमाप्रदेशात बक्षिसासाठी जागा नाही; मोठा नकाशा, कमी वसाहती किंवा रुंद सीमाप्रदेश वापरा."
+    },
+    {
+      "id": "native:[Orchard Commons]",
+      "source": "Orchard Commons",
+      "target": "सामायिक फळबागा"
+    },
+    {
+      "id": "native:[Orchard spacing]",
+      "source": "Orchard spacing",
+      "target": "फळबागेतील अंतर"
+    },
+    {
+      "id": "native:[Compact]",
+      "source": "Compact",
+      "target": "दाट"
+    },
+    {
+      "id": "native:[Balanced]",
+      "source": "Balanced",
+      "target": "संतुलित"
+    },
+    {
+      "id": "native:[Spread]",
+      "source": "Spread",
+      "target": "पसरलेले"
+    },
+    {
+      "id": "native:[The Gauntlet]",
+      "source": "The Gauntlet",
+      "target": "आव्हान"
+    },
+    {
+      "id": "native:[Partition thickness]",
+      "source": "Partition thickness",
+      "target": "विभाजन जाडी"
+    },
+    {
+      "id": "native:[The Comb]",
+      "source": "The Comb",
+      "target": "कंगवा"
+    },
+    {
+      "id": "native:[Peninsulas per shore]",
+      "source": "Peninsulas per shore",
+      "target": "किनारपट्टीवरील द्वीपकल्प"
+    },
+    {
+      "id": "native:[Encircled Kingdom]",
+      "source": "Encircled Kingdom",
+      "target": "वेढलेले राज्य"
+    },
+    {
+      "id": "native:[Fortress plan]",
+      "source": "Fortress plan",
+      "target": "किल्ल्याची मांडणी"
+    },
+    {
+      "id": "native:[Automatic]",
+      "source": "Automatic",
+      "target": "स्वयंचलित"
+    },
+    {
+      "id": "native:[Elongated enclosure]",
+      "source": "Elongated enclosure",
+      "target": "लांबट आवरण"
+    },
+    {
+      "id": "native:[Bastioned enclosure]",
+      "source": "Bastioned enclosure",
+      "target": "बुरुजयुक्त तटबंदी"
+    },
+    {
+      "id": "native:[Paired courtyards]",
+      "source": "Paired courtyards",
+      "target": "जोड अंगणे"
+    },
+    {
+      "id": "native:[Heartland farmland]",
+      "source": "Heartland farmland",
+      "target": "मुख्य प्रदेशातील शेतजमीन"
+    },
+    {
+      "id": "native:[The Faulted City]",
+      "source": "The Faulted City",
+      "target": "भूभंग झालेले शहर"
+    },
+    {
+      "id": "native:[Fault displacement]",
+      "source": "Fault displacement",
+      "target": "भूभंगामुळे विस्थापन"
+    },
+    {
+      "id": "native:[Fault width]",
+      "source": "Fault width",
+      "target": "भूभंगाची रुंदी"
+    },
+    {
+      "id": "native:[Ruin density]",
+      "source": "Ruin density",
+      "target": "अवशेषांची घनता"
+    },
+    {
+      "id": "native:[Surviving junctions]",
+      "source": "Surviving junctions",
+      "target": "टिकून राहणारे जंक्शन"
+    },
+    {
+      "id": "native:[The Faulted City needs 256 or 512 tiles per side and one to twelve colonies.]",
+      "source": "The Faulted City needs 256 or 512 tiles per side and one to twelve colonies.",
+      "target": "भूभंग झालेल्या शहराला प्रत्येक बाजूला 256 किंवा 512 चौकोन आणि एक ते बारा वसाहती लागतात."
+    },
+    {
+      "id": "native:[The city has too few usable junctions.]",
+      "source": "The city has too few usable junctions.",
+      "target": "शहरात वापरण्यायोग्य जंक्शन खूप कमी आहेत."
+    },
+    {
+      "id": "native:[The city neighbourhoods are too unequal; try another seed.]",
+      "source": "The city neighbourhoods are too unequal; try another seed.",
+      "target": "शहरातील वस्त्या खूप असमान आहेत; दुसरे सीड वापरून पाहा."
+    },
+    {
+      "id": "native:[The fractured civic plaza did not survive.]",
+      "source": "The fractured civic plaza did not survive.",
+      "target": "तो विखंडित नागरी चौक टिकला नाही."
+    },
+    {
+      "id": "native:[Who Ate the Map?]",
+      "source": "Who Ate the Map?",
+      "target": "नकाशा कोणी खाल्ला?"
+    },
+    {
+      "id": "native:[Appetite]",
+      "source": "Appetite",
+      "target": "भूक"
+    },
+    {
+      "id": "native:[A Little Nibble]",
+      "source": "A Little Nibble",
+      "target": "एक छोटासा घास"
+    },
+    {
+      "id": "native:[Hungry]",
+      "source": "Hungry",
+      "target": "भुकेलेला"
+    },
+    {
+      "id": "native:[Portage depth]",
+      "source": "Portage depth",
+      "target": "पोर्टेजची खोली"
+    },
+    {
+      "id": "native:[Extra trails]",
+      "source": "Extra trails",
+      "target": "अतिरिक्त पायवाटा"
+    },
+    {
+      "id": "native:[Drowned Forest]",
+      "source": "Drowned Forest",
+      "target": "बुडालेले जंगल"
+    },
+    {
+      "id": "native:[Wooded neck thickness]",
+      "source": "Wooded neck thickness",
+      "target": "झाडीयुक्त अरुंद पट्ट्याची जाडी"
+    },
+    {
+      "id": "native:[Neutral clearing size]",
+      "source": "Neutral clearing size",
+      "target": "तटस्थ मोकळ्या जागेचा आकार"
+    },
+    {
+      "id": "native:[Bastion Keys]",
+      "source": "Bastion Keys",
+      "target": "बॅस्टियन कीज"
+    },
+    {
+      "id": "native:[Plantation size]",
+      "source": "Plantation size",
+      "target": "लागवडीचा आकार"
+    },
+    {
+      "id": "native:[The Hungry Marches]",
+      "source": "The Hungry Marches",
+      "target": "भुकेले सीमाप्रदेश"
+    },
+    {
+      "id": "native:[Opening ration]",
+      "source": "Opening ration",
+      "target": "सुरुवातीचा अन्नवाटा"
+    },
+    {
+      "id": "native:[Central concentration]",
+      "source": "Central concentration",
+      "target": "मध्यवर्ती एकवटणे"
+    },
+    {
+      "id": "native:[The Last Treeline]",
+      "source": "The Last Treeline",
+      "target": "शेवटची वृक्षरेषा"
+    },
+    {
+      "id": "native:[Woodland depth]",
+      "source": "Woodland depth",
+      "target": "वनक्षेत्राची खोली"
+    },
+    {
+      "id": "native:[AI strategy]",
+      "source": "AI strategy",
+      "target": "संगणकीय खेळाडूची रणनीती"
+    },
+    {
+      "id": "native:[AIMaxima-Summary]",
+      "source": "Balances sustainable growth and training, then gathers armies into waves.",
+      "target": "शाश्वत वाढ आणि प्रशिक्षणात संतुलन साधते, आणि मग सैन्याच्या लाटा गोळा करते."
+    },
+    {
+      "id": "native:[AIMaxima-Profile]",
+      "source": "Core strategy: Treats food, workers, births, training, construction and combat as competing demands. Sizes its army partly against estimated enemy strength, then tries to deliver that army effectively.\\n\\nEconomy and development: Budgets births against food and labor, preserves idle opportunities for training, and stops adding surplus workers when military production is needed. Scales training capacity and avoids taking too much infrastructure offline for upgrades.\\n\\nScouting and decisions: Estimates enemy forces from visible units and remembered sightings using a fitted model. Targets depend on value, distance, towers, exposed workers and persistence. Fruit missions support food variety and conversion.\\n\\nAttack and defense: Reserves warriors for training and defense, then gathers eligible land forces near friendly food infrastructure before launching waves. Uses local defensive responses and evaluates approaches to the colony.\\n\\nWhen attacks stall: After four consecutive wave-delivery failures, switches to continuously reinforced attack flags. Amphibious attacks can also use continuous reinforcement. This fallback does not solve every blockage before a rally can form.\\n\\nCompared with other AIs: Integrates food, training, intelligence and deployment more tightly. Cabino emphasizes several building attacks; Maxima emphasizes estimated demand and delivering gathered forces.\\n\\nStrengths and weaknesses: Sustains growth and military replacement while adapting to food pressure and observed threats. Needs food, training capacity and open gathering space; congestion and long routes can undermine delivery.\\n\\nCounterplay to try: Contest exposed food sources, inns and barracks before waves gather. Keep a supplied defensive force together and disrupt reinforcement routes. Expect repeated pressure after the first wave.\\n\\nScouting: Force estimates use sightings and observation history, rather than hidden enemy troop totals.",
+      "target": "मुख्य रणनीती: अन्न, कामगार, जन्म, प्रशिक्षण, बांधकाम आणि लढाई यांना परस्परविरोधी मागण्या मानते. आपल्या सैन्याचा आकार अंशतः शत्रूच्या अंदाजित सामर्थ्याच्या आधारावर ठरवते आणि मग ते सैन्य प्रभावीपणे तैनात करण्याचा प्रयत्न करते.\\n\\nअर्थव्यवस्था आणि विकास: अन्नपुरवठा आणि कामगारांच्या उपलब्धतेनुसार जन्मांचे नियोजन करतो, प्रशिक्षणाच्या उपलब्ध संधी जपते आणि लष्करी उत्पादनाची गरज असताना अतिरिक्त कामगार भरती थांबवते. प्रशिक्षण क्षमता वाढवते आणि सुधारणा करण्यासाठी एकाच वेळी खूप सुविधा बंद ठेवणे टाळतो.\\n\\nटेहळणी आणि निर्णय: एका जुळवलेल्या मॉडेलचा वापर करून, दिसणाऱ्या तुकड्या आणि लक्षात ठेवलेल्या निरीक्षणांवरून शत्रू सैन्याचा अंदाज लावला जातो. लक्ष्ये त्यांचे मूल्य, अंतर, बुरुज, उघड्यावर असलेले कामगार आणि चिकाटी यांवर अवलंबून असतात. फळांच्या मोहिमांमुळे अन्नात विविधता येते आणि इतर संघांची युनिट आपल्या संघात येण्यास मदत होते.\\n\\nआक्रमण आणि बचाव: प्रशिक्षण आणि संरक्षणासाठी योद्धे राखीव ठेवते, त्यानंतर हल्ले करण्यापूर्वी मित्रसंघांच्या अन्नपुरवठा पायाभूत सुविधांजवळ पात्र भूदल गोळा करते. स्थानिक बचावात्मक प्रतिसादांचा वापर करते आणि वसाहतीकडे येण्याच्या मार्गांचे मूल्यांकन करते.\\n\\nजेव्हा हल्ले थांबतात: सलग चार वेळा हल्ले पोहोचवण्यात अपयश आल्यास, सतत नवीन कुमक मिळणाऱ्या हल्ला ध्वजांकडे वळतो. उभयचर हल्ले देखील सतत बळकटीकरणाचा वापर करू शकतात. हल्ला पुन्हा सुरू होण्यापूर्वी येणारा प्रत्येक अडथळा हा पर्यायी उपाय दूर करत नाही.\\n\\nइतर एआयंच्या तुलनेत: अन्न, प्रशिक्षण, गुप्त माहिती आणि तैनाती यांचे अधिक घट्टपणे एकत्रीकरण करते. Cabino अनेक इमारतींवरील हल्ल्यांवर भर देतो; Maxima अंदाजित मागणी आणि जमवलेल्या सैन्याला पोहोचवण्यावर भर देते.\\n\\nसामर्थ्ये आणि मर्यादा: अन्नटंचाई आणि दिसून आलेल्या धोक्यांना तोंड देत विकास आणि लष्करी हानीची भरपाई करत राहतो. अन्न, प्रशिक्षण क्षमता आणि मोकळ्या एकत्र येण्याच्या जागेची आवश्यकता असते; गर्दी आणि लांबचे मार्ग वितरणात अडथळा आणू शकतात.\\n\\nप्रयत्न करण्याजोगा प्रतिकार: सैन्याच्या लाटा जमा होण्यापूर्वी उघड्यावर असलेले अन्नस्रोत, खानावळी आणि बराकींवर ताबा मिळवा. रसद पुरवठा असलेले संरक्षण दल एकत्र ठेवा आणि कुमक येण्याचे मार्ग विस्कळीत करा. पहिल्या लाटेनंतर पुन्हा दबाव येण्याची शक्यता आहे.\\n\\nटेहळणी: सैन्यबळाचा अंदाज हा लपलेल्या शत्रू सैन्याच्या एकूण संख्येऐवजी, प्रत्यक्ष दिसलेल्या शत्रूंच्या नोंदी आणि निरीक्षणाच्या इतिहासावरून लावला जातो."
+    },
+    {
+      "id": "native:[Fertility]",
+      "source": "Fertility",
+      "target": "सुपीकता"
+    },
+    {
+      "id": "native:[Deposits]",
+      "source": "Deposits",
+      "target": "साठे"
+    },
+    {
+      "id": "native:[Room]",
+      "source": "Room",
+      "target": "जागा"
+    },
+    {
+      "id": "native:[Isolation]",
+      "source": "Isolation",
+      "target": "अलगीकरण"
+    },
+    {
+      "id": "native:[ERROR_CANT_SAVE_MAP]",
+      "source": "The map could not be saved. Check the destination and available space. Your edits are still open.",
+      "target": "नकाशा जतन करता आला नाही. गंतव्यस्थान आणि उपलब्ध जागा तपासा. तुमचे संपादन अजून उघडे आहे."
+    },
+    {
+      "id": "native:[Loading headers]",
+      "source": "Loading headers...",
+      "target": "हेडर लोड होत आहेत..."
+    },
+    {
+      "id": "native:[Loading teams]",
+      "source": "Loading teams...",
+      "target": "संघ लोड होत आहेत..."
+    },
+    {
+      "id": "native:[Loading players]",
+      "source": "Loading players...",
+      "target": "खेळाडू लोड होत आहेत..."
+    },
+    {
+      "id": "native:[Loading scripts]",
+      "source": "Loading scripts...",
+      "target": "स्क्रिप्ट्स लोड होत आहेत..."
+    },
+    {
+      "id": "native:[Generating map]",
+      "source": "Generating map...",
+      "target": "नकाशा तयार करत आहे..."
+    },
+    {
+      "id": "native:[ERROR_CANT_GENERATE_MAP]",
+      "source": "The map could not be generated. Try different generation settings.",
+      "target": "नकाशा तयार होऊ शकला नाही. कृपया वेगळ्या निर्मिती सेटिंग्ज वापरून पहा."
+    },
+    {
+      "id": "native:[Loading units]",
+      "source": "Loading units...",
+      "target": "युनिट्स लोड होत आहेत..."
+    },
+    {
+      "id": "native:[Resolving team links]",
+      "source": "Resolving team links...",
+      "target": "संघांमधील संबंध जुळवत आहे..."
+    },
+    {
+      "id": "native:[saving to storage]",
+      "source": "Saving...",
+      "target": "जतन करत आहे..."
+    },
+    {
+      "id": "native:[save failed retry]",
+      "source": "Save failed. Retry.",
+      "target": "सेव्ह अयशस्वी झाले. पुन्हा प्रयत्न करा."
+    },
+    {
+      "id": "native:[export save]",
+      "source": "Export save",
+      "target": "जतन केलेला खेळ निर्यात करा"
+    },
+    {
+      "id": "native:[storage restore failed]",
+      "source": "Browser storage could not be restored. Existing saved data has not been changed. You can continue this session, but local changes cannot be persisted. Export important saves from the save-failure dialog. Reload to try restoring storage again.",
+      "target": "ब्राउझर स्टोरेज पुनर्संचयित करता आले नाही. आधीपासून जतन केलेला डेटा बदललेला नाही. तुम्ही हे सत्र सुरू ठेवू शकता, परंतु स्थानिक बदल जतन केले जाऊ शकत नाहीत. सेव्ह-फेल्युअर डायलॉगमधून महत्त्वाचे सेव्ह एक्सपोर्ट करा. स्टोरेज पुन्हा पुनर्संचयित करण्याचा प्रयत्न करण्यासाठी रीलोड करा."
+    },
+    {
+      "id": "native:[continue]",
+      "source": "Continue",
+      "target": "पुढे चालू ठेवा"
+    },
+    {
+      "id": "native:[export file]",
+      "source": "Export file",
+      "target": "फाइल निर्यात करा"
+    },
+    {
+      "id": "native:[export failed]",
+      "source": "File export failed",
+      "target": "फाइल निर्यात अयशस्वी झाली"
+    },
+    {
+      "id": "native:[import file]",
+      "source": "Import",
+      "target": "आयात"
+    },
+    {
+      "id": "native:[select import file]",
+      "source": "Choose a file to import",
+      "target": "आयात करण्यासाठी एक फाईल निवडा"
+    },
+    {
+      "id": "native:[validating import]",
+      "source": "Validating file...",
+      "target": "फाईलची पडताळणी करत आहे..."
+    },
+    {
+      "id": "native:[import succeeded]",
+      "source": "File imported",
+      "target": "फाईल आयात केली"
+    },
+    {
+      "id": "native:[import cancelled]",
+      "source": "Import cancelled",
+      "target": "आयात रद्द करण्यात आली."
+    },
+    {
+      "id": "native:[import failed]",
+      "source": "Import failed: invalid or unsupported file",
+      "target": "आयात अयशस्वी झाले: अवैध किंवा असमर्थित फाइल"
+    },
+    {
+      "id": "native:[import persistence failed]",
+      "source": "Not saved: select Import to retry or Export file",
+      "target": "सेव्ह झाले नाही: पुन्हा प्रयत्न करण्यासाठी इम्पोर्ट निवडा किंवा फाईल एक्सपोर्ट करा"
+    },
+    {
+      "id": "native:[import progress]",
+      "source": "Import progress",
+      "target": "आयात प्रगती"
+    },
+    {
+      "id": "native:[export progress]",
+      "source": "Export progress",
+      "target": "निर्यात प्रगती"
+    },
+    {
+      "id": "native:[retry save]",
+      "source": "Retry save",
+      "target": "पुन्हा जतन करा"
+    },
+    {
+      "id": "native:[campaign save failed]",
+      "source": "Campaign progress not saved. Retry or export a backup.",
+      "target": "मोहिमेची प्रगती जतन झाली नाही. पुन्हा प्रयत्न करा किंवा बॅकअप निर्यात करा."
+    },
+    {
+      "id": "native:[leave without saving]",
+      "source": "Leave without saving",
+      "target": "जतन न करता बाहेर पडा"
+    },
+    {
+      "id": "native:[campaign import failed]",
+      "source": "Invalid progress file or different campaign version",
+      "target": "अवैध प्रगती फाइल किंवा मोहिमेची वेगळी आवृत्ती"
+    },
+    {
+      "id": "native:[shutdown save failed]",
+      "source": "Final save not confirmed. Retry, or quit without saving.",
+      "target": "अंतिम सेव्हची पुष्टी झालेली नाही. पुन्हा प्रयत्न करा, किंवा सेव्ह न करता बाहेर पडा."
+    },
+    {
+      "id": "native:[quit without saving]",
+      "source": "Quit without saving",
+      "target": "सेव्ह न करता बाहेर पडा"
+    },
+    {
+      "id": "native:[game closed]",
+      "source": "Game closed. You can close this window or reload to play again.",
+      "target": "खेळ बंद झाला आहे. पुन्हा खेळण्यासाठी तुम्ही ही विंडो बंद करू शकता किंवा रीलोड करू शकता."
+    },
+    {
+      "id": "native:[campaign editor save failed]",
+      "source": "Save not confirmed. OK retries; Cancel returns to the editor menu.",
+      "target": "सेव्हची पुष्टी झाली नाही. ओके केल्यावर पुन्हा प्रयत्न होतो; कॅन्सल केल्यावर एडिटर मेन्यूवर परत जाता येते."
+    },
+    {
+      "id": "native:[Actions]",
+      "source": "Actions",
+      "target": "कृती"
+    },
+    {
+      "id": "native:[Minimap]",
+      "source": "Minimap",
+      "target": "मिनीमॅप"
+    },
+    {
+      "id": "native:[Fast forward]",
+      "source": "Fast forward",
+      "target": "वेगाने पुढे जा"
+    },
+    {
+      "id": "native:[Player slot]",
+      "source": "Player slot",
+      "target": "खेळाडू स्लॉट"
+    },
+    {
+      "id": "native:[Team color]",
+      "source": "Team color",
+      "target": "संघाचा रंग"
+    },
+    {
+      "id": "native:[Alliance group]",
+      "source": "Alliance group",
+      "target": "युती गट"
+    },
+    {
+      "id": "native:[menu]",
+      "source": "Menu",
+      "target": "मेनू"
+    },
+    {
+      "id": "native:[Editor tools]",
+      "source": "Tools",
+      "target": "साधने"
+    }
+  ]
+}

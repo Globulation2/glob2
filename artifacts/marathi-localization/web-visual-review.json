@@ -1,0 +1,22 @@
+{
+  "reviewer": "/root/locale_integration",
+  "catalog_sha256": {
+    "data/texts.mr.txt": "8b3f9e4972ee0eb1c3433110a7f0e83c9dc2fb7ea5f494b6925afa373c4fef97",
+    "platform/packages/i18n/locales/mr.json": "0a35ecc3e76fd00b68db89ca5dd18967304524eb7c3c0b8cc81c37b70e5694a4",
+    "browser/locales/mr.json": "0a35ecc3e76fd00b68db89ca5dd18967304524eb7c3c0b8cc81c37b70e5694a4"
+  },
+  "actual_images_viewed": {
+    "web-screenshots/desktop/mr-home.png": "c0015db5d25cc81c0e2e9737592ea60239dd5b57e6359adc046c0a5d1c89ccb0",
+    "web-screenshots/phone/mr-home.png": "f3b7d30b1bd2ad612c4493023cd7d4f70d95d21949b6d96865edb0a4a680609b"
+  },
+  "results": [
+    "Desktop Marathi headline/sidebar/body/button text forms correct Devanagari clusters, no tofu or clipped vowel marks visible.",
+    "Phone main content wraps without horizontal overflow; heading/buttons/invitecard/statistics/maps/leaderboard/footer remain legible.",
+    "Proper names and authored player/map/queue titles retain source text.",
+    "Theme accessible label was English due constructed translated lookup; canonical existing key fixed and actual desktop+phone E2E assertion passes.",
+    "Final compactpicker screenshot actually viewed on phone:MR centered and readable; native language options keep fullnames. Final desktop screenshot viewed after capture rerun:मराठी fullselectlabel fits."
+  ],
+  "remaining_observations": [],
+  "certification": "Agent visual review, not native-human certification",
+  "final_revision": "c9d772635398c57582069b58208eb337cee2787b"
+}

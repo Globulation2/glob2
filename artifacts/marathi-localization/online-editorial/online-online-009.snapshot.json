@@ -1,0 +1,507 @@
+{
+  "batch": "online-online-009",
+  "source_sha256": "0ac44b4cdfb03e688983d6e3fb1e484cca57589665bff19c5c65388e649b292a",
+  "rows": [
+    {
+      "id": "online:Generated layout",
+      "source": "Generated layout",
+      "target": "तयार केलेला लेआउट"
+    },
+    {
+      "id": "online:Generated revisions",
+      "source": "Generated revisions",
+      "target": "तयार केलेल्या सुधारणा"
+    },
+    {
+      "id": "online:Generated source accepted as revision {slot0}. Run engine checks before publication.",
+      "source": "Generated source accepted as revision {slot0}. Run engine checks before publication.",
+      "target": "तयार केलेला सोर्स {slot0} या रिव्हिजन नावाने स्वीकारण्यात आला आहे. प्रकाशित करण्यापूर्वी इंजिन तपासण्या चालवा."
+    },
+    {
+      "id": "online:Generated version accepted as your current edit target.",
+      "source": "Generated version accepted as your current edit target.",
+      "target": "तयार केलेली आवृत्ती तुमचे सध्याचे संपादन लक्ष्य म्हणून स्वीकारण्यात आली आहे."
+    },
+    {
+      "id": "online:Generation history {slot0}",
+      "source": "Generation history {slot0}",
+      "target": "पिढीचा इतिहास {slot0}"
+    },
+    {
+      "id": "online:Generation is unavailable. Saved code, export and local tools remain accessible.",
+      "source": "Generation is unavailable. Saved code, export and local tools remain accessible.",
+      "target": "निर्मिती उपलब्ध नाही. जतन केलेला कोड, निर्यात आणि स्थानिक साधने वापरता येतील."
+    },
+    {
+      "id": "online:Generation report",
+      "source": "Generation report",
+      "target": "पिढी अहवाल"
+    },
+    {
+      "id": "online:Generation stages",
+      "source": "Generation stages",
+      "target": "पिढीचे टप्पे"
+    },
+    {
+      "id": "online:Generation stopped. Your failed generation credit is returned.",
+      "source": "Generation stopped. Your failed generation credit is returned.",
+      "target": "पिढी थांबली. तुमचे अयशस्वी पिढीचे क्रेडिट परत केले आहे."
+    },
+    {
+      "id": "online:Generation {value0} · {value1}",
+      "source": "Generation {value0} · {value1}",
+      "target": "पिढी {value0} · {value1}"
+    },
+    {
+      "id": "online:Generator",
+      "source": "Generator",
+      "target": "जनरेटर"
+    },
+    {
+      "id": "online:Generator JavaScript source",
+      "source": "Generator JavaScript source",
+      "target": "जनरेटर JavaScript स्रोत"
+    },
+    {
+      "id": "online:Generator Studio",
+      "source": "Generator Studio",
+      "target": "जनरेटर स्टुडिओ"
+    },
+    {
+      "id": "online:Generator Studio is disabled on this instance. Recover saved files through",
+      "source": "Generator Studio is disabled on this instance. Recover saved files through",
+      "target": "या इन्स्टन्सवर जनरेटर स्टुडिओ अक्षम आहे. जतन केलेल्या फाइल्स याद्वारे पुनर्प्राप्त करा."
+    },
+    {
+      "id": "online:Generator Studio is not enabled on this instance.",
+      "source": "Generator Studio is not enabled on this instance.",
+      "target": "या इन्स्टन्सवर जनरेटर स्टुडिओ सक्षम केलेला नाही."
+    },
+    {
+      "id": "online:Generator control values (JSON)",
+      "source": "Generator control values (JSON)",
+      "target": "जनरेटर नियंत्रण मूल्ये (JSON)"
+    },
+    {
+      "id": "online:Generator manifest JSON",
+      "source": "Generator manifest JSON",
+      "target": "जनरेटर मॅनिफेस्ट JSON"
+    },
+    {
+      "id": "online:Generator preview revision {value0}",
+      "source": "Generator preview revision {value0}",
+      "target": "जनरेटर पूर्वावलोकन आवृत्ती {value0}"
+    },
+    {
+      "id": "online:Generators",
+      "source": "Generators",
+      "target": "जनरेटर"
+    },
+    {
+      "id": "online:Give a bounded moderation reason without NUL characters.",
+      "source": "Give a bounded moderation reason without NUL characters.",
+      "target": "NUL वर्णांशिवाय मर्यादित नियंत्रणाचे कारण द्या."
+    },
+    {
+      "id": "online:Give a bounded recovery reason.",
+      "source": "Give a bounded recovery reason.",
+      "target": "मर्यादित पुनर्प्राप्तीचे कारण द्या."
+    },
+    {
+      "id": "online:Give a moderation reason.",
+      "source": "Give a moderation reason.",
+      "target": "मध्यमतेचे कारण द्या."
+    },
+    {
+      "id": "online:Give a reason and a valid content identifier.",
+      "source": "Give a reason and a valid content identifier.",
+      "target": "कारण आणि वैध सामग्री ओळखकर्ता द्या."
+    },
+    {
+      "id": "online:Give a reason.",
+      "source": "Give a reason.",
+      "target": "कारण सांगा."
+    },
+    {
+      "id": "online:Give a report reason of at most 2000 characters.",
+      "source": "Give a report reason of at most 2000 characters.",
+      "target": "अहवालाचे कारण जास्तीत जास्त २००० अक्षरांमध्ये द्या."
+    },
+    {
+      "id": "online:Give orders. Receive reports. Lead your colony.",
+      "source": "Give orders. Receive reports. Lead your colony.",
+      "target": "आदेश द्या. अहवाल स्वीकारा. आपल्या वसाहतीचे नेतृत्व करा."
+    },
+    {
+      "id": "online:Give your colony controller a home. Every release keeps its own source and download history.",
+      "source": "Give your colony controller a home. Every release keeps its own source and download history.",
+      "target": "तुमच्या कॉलनी कंट्रोलरला एक जागा द्या. प्रत्येक रिलीज स्वतःचा सोर्स आणि डाउनलोड इतिहास जपून ठेवते."
+    },
+    {
+      "id": "online:Globs",
+      "source": "Globs",
+      "target": "ग्लोब्स"
+    },
+    {
+      "id": "online:Globs (all)",
+      "source": "Globs (all)",
+      "target": "ग्लोब्स (सर्व)"
+    },
+    {
+      "id": "online:Globulation 2",
+      "source": "Globulation 2",
+      "target": "Globulation 2"
+    },
+    {
+      "id": "online:Globulation 2 Online website",
+      "source": "Globulation 2 Online website",
+      "target": "Globulation 2 ऑनलाइन वेबसाइट"
+    },
+    {
+      "id": "online:Globulation 2 is free software (GPL 3).",
+      "source": "Globulation 2 is free software (GPL 3).",
+      "target": "Globulation 2 हे मोफत सॉफ्टवेअर (GPL 3) आहे."
+    },
+    {
+      "id": "online:Go back to the game: it has signed you in. You can close this tab.",
+      "source": "Go back to the game: it has signed you in. You can close this tab.",
+      "target": "गेमवर परत जा: तुम्ही साइन इन झाले आहात. तुम्ही ही टॅब बंद करू शकता."
+    },
+    {
+      "id": "online:Go to the home page",
+      "source": "Go to the home page",
+      "target": "मुख्य पृष्ठावर जा"
+    },
+    {
+      "id": "online:Go to {p1}",
+      "source": "Go to {p1}",
+      "target": "{p1} वर जा"
+    },
+    {
+      "id": "online:Go to {p6}",
+      "source": "Go to {p6}",
+      "target": "{p6} वर जा"
+    },
+    {
+      "id": "online:Got an invite code?",
+      "source": "Got an invite code?",
+      "target": "तुम्हाला इन्व्हाइट कोड मिळाला आहे का?"
+    },
+    {
+      "id": "online:Got it",
+      "source": "Got it",
+      "target": "समजलं."
+    },
+    {
+      "id": "online:Grass",
+      "source": "Grass",
+      "target": "गवत"
+    },
+    {
+      "id": "online:Gravatar when available, otherwise initials",
+      "source": "Gravatar when available, otherwise initials",
+      "target": "उपलब्ध असल्यास ग्रॅव्हेटार, अन्यथा आद्याक्षरे."
+    },
+    {
+      "id": "online:Ground",
+      "source": "Ground",
+      "target": "ग्राउंड"
+    },
+    {
+      "id": "online:Ground health change",
+      "source": "Ground health change",
+      "target": "ग्राउंड हेल्थ बदल"
+    },
+    {
+      "id": "online:Ground movement",
+      "source": "Ground movement",
+      "target": "जमिनीची हालचाल"
+    },
+    {
+      "id": "online:Growth rate",
+      "source": "Growth rate",
+      "target": "वाढीचा दर"
+    },
+    {
+      "id": "online:Guest",
+      "source": "Guest",
+      "target": "पाहुणे"
+    },
+    {
+      "id": "online:Guest accounts are disabled on this instance.",
+      "source": "Guest accounts are disabled on this instance.",
+      "target": "या इन्स्टन्सवर अतिथी खाती निष्क्रिय करण्यात आली आहेत."
+    },
+    {
+      "id": "online:Guest accounts created",
+      "source": "Guest accounts created",
+      "target": "अतिथी खाती तयार केली"
+    },
+    {
+      "id": "online:Guest active account-days",
+      "source": "Guest active account-days",
+      "target": "अतिथी सक्रिय खाते-दिवस"
+    },
+    {
+      "id": "online:Guest player",
+      "source": "Guest player",
+      "target": "पाहुणा खेळाडू"
+    },
+    {
+      "id": "online:Guests are not ranked and keep no statistics. Their matches still appear below.",
+      "source": "Guests are not ranked and keep no statistics. Their matches still appear below.",
+      "target": "पाहुण्यांना क्रमवारी दिली जात नाही आणि त्यांची कोणतीही आकडेवारी ठेवली जात नाही. तरीही त्यांचे सामने खाली दिसतात."
+    },
+    {
+      "id": "online:Guests get generated names; link a sign-in method to choose one.",
+      "source": "Guests get generated names; link a sign-in method to choose one.",
+      "target": "पाहुण्यांना तयार नावे मिळतात; त्यापैकी एक निवडण्यासाठी साइन-इन पद्धत लिंक करा."
+    },
+    {
+      "id": "online:Guests: {slot0} today · {slot1} weekly · {slot2} monthly",
+      "source": "Guests: {slot0} today · {slot1} weekly · {slot2} monthly",
+      "target": "पाहुणे: {slot0} आज · {slot1} साप्ताहिक · {slot2} मासिक"
+    },
+    {
+      "id": "online:HTTP {value0}",
+      "source": "HTTP {value0}",
+      "target": "HTTP {value0}"
+    },
+    {
+      "id": "online:Hand-made",
+      "source": "Hand-made",
+      "target": "हाताने बनवलेले"
+    },
+    {
+      "id": "online:Hand-made or generated",
+      "source": "Hand-made or generated",
+      "target": "हाताने बनवलेले किंवा तयार केलेले"
+    },
+    {
+      "id": "online:Hardness ",
+      "source": "Hardness ",
+      "target": "कठोरता "
+    },
+    {
+      "id": "online:Health restored per tick",
+      "source": "Health restored per tick",
+      "target": "प्रत्येक टिकमागे आरोग्य पुनर्संचयित होते"
+    },
+    {
+      "id": "online:Hear it in the game",
+      "source": "Hear it in the game",
+      "target": "खेळात ऐका"
+    },
+    {
+      "id": "online:Height",
+      "source": "Height",
+      "target": "उंची"
+    },
+    {
+      "id": "online:Hex",
+      "source": "Hex",
+      "target": "हेक्स"
+    },
+    {
+      "id": "online:Hidden",
+      "source": "Hidden",
+      "target": "लपलेले"
+    },
+    {
+      "id": "online:Hidden by a moderator",
+      "source": "Hidden by a moderator",
+      "target": "मॉडरेटरने लपवलेले"
+    },
+    {
+      "id": "online:Hidden by a moderator: {slot0}",
+      "source": "Hidden by a moderator: {slot0}",
+      "target": "मॉडरेटरने लपवले आहे: {slot0}"
+    },
+    {
+      "id": "online:Hidden following community report.",
+      "source": "Hidden following community report.",
+      "target": "समुदायाच्या तक्रारीनंतर लपवले आहे."
+    },
+    {
+      "id": "online:Hidden following moderator review",
+      "source": "Hidden following moderator review",
+      "target": "मॉडरेटरच्या पुनरावलोकनानंतर लपवलेले"
+    },
+    {
+      "id": "online:Hidden: {slot0}",
+      "source": "Hidden: {slot0}",
+      "target": "लपवलेले: {slot0}"
+    },
+    {
+      "id": "online:Hide",
+      "source": "Hide",
+      "target": "लपवा"
+    },
+    {
+      "id": "online:Hide family",
+      "source": "Hide family",
+      "target": "कुटुंब लपवा"
+    },
+    {
+      "id": "online:Hide provisional ratings",
+      "source": "Hide provisional ratings",
+      "target": "तात्पुरते रेटिंग लपवा"
+    },
+    {
+      "id": "online:Hide release and resolve",
+      "source": "Hide release and resolve",
+      "target": "प्रकाशन लपवा आणि निराकरण करा"
+    },
+    {
+      "id": "online:Hide set",
+      "source": "Hide set",
+      "target": "सेट लपवा"
+    },
+    {
+      "id": "online:Hide set and resolve",
+      "source": "Hide set and resolve",
+      "target": "सेट लपवा आणि निराकरण करा"
+    },
+    {
+      "id": "online:Historical amounts or payment modes are incomplete. {slot0} purchases have incomplete historical facts. Refund money is never inferred from reversed credits.",
+      "source": "Historical amounts or payment modes are incomplete. {slot0} purchases have incomplete historical facts. Refund money is never inferred from reversed credits.",
+      "target": "पूर्वीची रक्कम किंवा पेमेंट पद्धती अपूर्ण आहेत. {slot0} खरेदीची ऐतिहासिक माहिती अपूर्ण आहे. उलटवलेल्या क्रेडिट्सवरून परताव्याच्या रकमेचा कधीही निष्कर्ष काढला जात नाही."
+    },
+    {
+      "id": "online:Historical coverage",
+      "source": "Historical coverage",
+      "target": "ऐतिहासिक कव्हरेज"
+    },
+    {
+      "id": "online:History",
+      "source": "History",
+      "target": "इतिहास"
+    },
+    {
+      "id": "online:Hive",
+      "source": "Hive",
+      "target": "हाईव्ह"
+    },
+    {
+      "id": "online:Hive Mind",
+      "source": "Hive Mind",
+      "target": "Hive Mind"
+    },
+    {
+      "id": "online:Hive Mind credits",
+      "source": "Hive Mind credits",
+      "target": "Hive Mind क्रेडिट्स"
+    },
+    {
+      "id": "online:Hive Mind is not available on this instance.",
+      "source": "Hive Mind is not available on this instance.",
+      "target": "Hive Mind या इन्स्टन्सवर उपलब्ध नाही."
+    },
+    {
+      "id": "online:Hive Mind is not enabled on this instance.",
+      "source": "Hive Mind is not enabled on this instance.",
+      "target": "या इन्स्टन्सवर Hive Mind सक्षम केलेले नाही."
+    },
+    {
+      "id": "online:Home",
+      "source": "Home",
+      "target": "घर"
+    },
+    {
+      "id": "online:How AIs work {slot0}",
+      "source": "How AIs work {slot0}",
+      "target": "एआय कसे काम करतात {slot0}"
+    },
+    {
+      "id": "online:How would you like to play?",
+      "source": "How would you like to play?",
+      "target": "तुम्हाला कसे खेळायला आवडेल?"
+    },
+    {
+      "id": "online:Hue",
+      "source": "Hue",
+      "target": "रंग"
+    },
+    {
+      "id": "online:Human match participants",
+      "source": "Human match participants",
+      "target": "मानवी जुळणीतील सहभागी"
+    },
+    {
+      "id": "online:Humans",
+      "source": "Humans",
+      "target": "मानव"
+    },
+    {
+      "id": "online:Hungry globs",
+      "source": "Hungry globs",
+      "target": "भुकेले गोळे"
+    },
+    {
+      "id": "online:I checked these token counts against provider evidence, including any explicitly entered zeros.",
+      "source": "I checked these token counts against provider evidence, including any explicitly entered zeros.",
+      "target": "मी या टोकन संख्या प्रोव्हायडरच्या पुराव्याशी पडताळून पाहिल्या, ज्यामध्ये स्पष्टपणे नमूद केलेल्या शून्यांचाही समावेश होता."
+    },
+    {
+      "id": "online:IN GAME · {slot0}",
+      "source": "IN GAME · {slot0}",
+      "target": "खेळामध्ये · {slot0}"
+    },
+    {
+      "id": "online:INTERMEDIATE IMAGE",
+      "source": "INTERMEDIATE IMAGE",
+      "target": "मध्यवर्ती प्रतिमा"
+    },
+    {
+      "id": "online:Image is missing from storage.",
+      "source": "Image is missing from storage.",
+      "target": "प्रतिमा स्टोरेजमधून गहाळ आहे."
+    },
+    {
+      "id": "online:Image is too large.",
+      "source": "Image is too large.",
+      "target": "प्रतिमा खूप मोठी आहे."
+    },
+    {
+      "id": "online:Image not found.",
+      "source": "Image not found.",
+      "target": "प्रतिमा सापडली नाही."
+    },
+    {
+      "id": "online:Image unavailable.",
+      "source": "Image unavailable.",
+      "target": "प्रतिमा उपलब्ध नाही."
+    },
+    {
+      "id": "online:Import",
+      "source": "Import",
+      "target": "आयात"
+    },
+    {
+      "id": "online:Import in Settings → Custom AIs to use in local games.",
+      "source": "Import in Settings → Custom AIs to use in local games.",
+      "target": "स्थानिक गेममध्ये वापरण्यासाठी सेटिंग्ज → कस्टम एआय मध्ये आयात करा."
+    },
+    {
+      "id": "online:Import package",
+      "source": "Import package",
+      "target": "आयात पॅकेज"
+    },
+    {
+      "id": "online:Import the downloaded JSON in Settings → Map generators. Online rooms use this exact release without requiring other players to install it.",
+      "source": "Import the downloaded JSON in Settings → Map generators. Online rooms use this exact release without requiring other players to install it.",
+      "target": "सेटिंग्ज → मॅप जनरेटर्समध्ये डाउनलोड केलेला JSON इम्पोर्ट करा. ऑनलाइन रूम्स इतर खेळाडूंना इन्स्टॉल करण्याची आवश्यकता न ठेवता हीच आवृत्ती वापरतात."
+    },
+    {
+      "id": "online:Imported release {slot0}.",
+      "source": "Imported release {slot0}.",
+      "target": "आयातित प्रकाशन {slot0}."
+    },
+    {
+      "id": "online:In match",
+      "source": "In match",
+      "target": "सामन्यात"
+    }
+  ],
+  "subset_sha256": "e0241d668d38c784136abb6973434ae814cbdf69015d8a8829b83743e74327b2"
+}

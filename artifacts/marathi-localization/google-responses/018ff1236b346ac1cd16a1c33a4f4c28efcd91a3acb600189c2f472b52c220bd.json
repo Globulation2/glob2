@@ -1,0 +1,418 @@
+{
+  "request": {
+    "project": "bradley-personal-20261027",
+    "model": "general/nmt",
+    "payload": {
+      "sourceLanguageCode": "en",
+      "targetLanguageCode": "mr",
+      "mimeType": "text/plain",
+      "contents": [
+        "Where delivered materials went: meals, new units, tower ammunition, new buildings or upgrades.",
+        "Materials delivered",
+        "Loads workers carried into buildings.",
+        "Net trade",
+        "Materials received through markets minus materials given away.",
+        "Building work completed",
+        "Building work completed: new buildings, upgrades and repairs.",
+        "Attack strength",
+        "A score for the combined fighting power of the colony's warriors: how hard and how fast they hit.",
+        "Defence strength",
+        "A score for the combined firepower of the colony's defence towers.",
+        "Total hit points",
+        "The hit points of all the colony's units and buildings added together.",
+        "Damage dealt",
+        "Damage the colony did to enemy units and buildings. Split it to see warriors, magic and towers.",
+        "Damage taken",
+        "Damage enemies did to the colony's units and buildings.",
+        "Damage balance",
+        "Damage dealt minus damage taken. Above zero the colony was winning its fights.",
+        "Units killed in combat",
+        "Units of this colony killed by enemies. Split it to see workers, explorers and warriors separately.",
+        "Shots that hit",
+        "The share of shots fired by the colony's towers and explorers that hit their target.",
+        "Training",
+        "Visits by units to schools, barracks, racetracks and swimming pools to learn a skill.",
+        "Skills gained",
+        "Skill levels the colony's units gained through training.",
+        "Resource growth near the colony",
+        "How much material stock grew in resources within 32 squares of the colony's buildings, in growth points rather than harvested loads. Split it to see how close to home they grew.",
+        "Resource growth across the map",
+        "Units unable to move",
+        "Units boxed in with no free square to step onto.",
+        "Resources cleared",
+        "Resources removed by workers in clearing areas to make room.",
+        "Prestige",
+        "The colony's prestige, earned by top-level buildings. A match with a prestige goal ends when it is reached.",
+        "Combat",
+        "Starvation",
+        "Clearing injuries",
+        "Trapped",
+        "Other",
+        "Nearly empty",
+        "Low",
+        "Half full",
+        "Well fed",
+        "Critical",
+        "Wounded",
+        "Hurt",
+        "Healthy",
+        "Weakening",
+        "Looking for an inn",
+        "Eating",
+        "Healing",
+        "Meals",
+        "New units",
+        "Ammunition",
+        "New buildings",
+        "Upgrades",
+        "Built",
+        "Upgraded",
+        "Repaired",
+        "Destroyed",
+        "Demolished",
+        "Warriors",
+        "Magic",
+        "Towers",
+        "Within 8 squares",
+        "8 to 16 squares",
+        "16 to 32 squares",
+        "units",
+        "food",
+        "meals",
+        "hit points",
+        "units",
+        "score",
+        "damage",
+        "shots",
+        "visits",
+        "skill levels",
+        "prestige"
+      ]
+    }
+  },
+  "response": {
+    "translations": [
+      {
+        "translatedText": "वितरित केलेले साहित्य कुठे गेले: जेवण, नवीन युनिट्स, टॉवरमधील दारुगोळा, नवीन इमारती किंवा सुधारणा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "वितरित केलेले साहित्य",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कामगारांनी इमारतींमध्ये वाहून नेलेला माल.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "निव्वळ व्यापार",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "बाजारातून मिळालेला माल वजा दान केलेला माल.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "बांधकाम पूर्ण झाले.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पूर्ण झालेले बांधकाम: नवीन इमारती, सुधारणा आणि दुरुस्ती.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "हल्ल्याची ताकद",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "वसाहतीच्या योद्ध्यांच्या एकत्रित युद्धशक्तीचा स्कोर: त्यांनी किती जोरदार आणि किती वेगाने हल्ला केला.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "संरक्षण शक्ती",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "वसाहतीच्या संरक्षण बुरुजांच्या एकत्रित मारक क्षमतेसाठी दिलेला स्कोअर.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "एकूण हिट पॉइंट्स",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "वसाहतीतील सर्व युनिट्स आणि इमारतींचे एकूण हिट पॉइंट्स.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "झालेले नुकसान",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "वसाहतीने शत्रूच्या तुकड्या आणि इमारतींचे केलेले नुकसान. योद्धे, जादू आणि बुरुज पाहण्यासाठी तिचे विभाजन करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "झालेले नुकसान",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "शत्रूंनी वसाहतीच्या तुकड्या आणि इमारतींना केलेले नुकसान.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नुकसान शिल्लक",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "दिलेले नुकसान वजा झालेले नुकसान. शून्याच्या वर असल्यास वसाहत आपल्या लढाया जिंकत होती.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "लढाईत मारले गेलेले सैनिक",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "या वसाहतीचे घटक शत्रूंनी मारले. कामगार, शोधक आणि योद्धे स्वतंत्रपणे पाहण्यासाठी तिची विभागणी करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "लागलेले फटके",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "वसाहतीच्या बुरुजांनी आणि शोधकांनी डागलेल्या गोळ्यांपैकी लक्ष्यावर लागलेल्या गोळ्यांचा वाटा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "प्रशिक्षण",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कौशल्य शिकण्यासाठी तुकड्यांनी शाळा, छावण्या, शर्यतीचे मैदान आणि जलतरण तलावांना दिलेल्या भेटी.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कौशल्ये प्राप्त केली",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "वसाहतीच्या सैनिकांनी प्रशिक्षणाद्वारे मिळवलेले कौशल्य स्तर.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "वसाहतीजवळ संसाधनांची वाढ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "वसाहतीच्या इमारतींच्या ३२ चौरसांच्या परिसरात संसाधनांचा भौतिक साठा किती वाढला, हे काढलेल्या भारांऐवजी वाढीच्या गुणांमध्ये मोजा. ते घराच्या किती जवळ वाढले हे पाहण्यासाठी त्याचे विभाजन करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नकाशावर संसाधनांची वाढ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "हलण्यास असमर्थ युनिट्स",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "युनिट्स बंदिस्त असून त्यावर पाऊल ठेवण्यासाठी मोकळी जागा नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "संसाधने मोकळी झाली",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "जागा मोकळी करण्यासाठी कामगारांनी काढलेली संसाधने.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "प्रतिष्ठा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "उच्च-स्तरीय इमारती उभारून मिळवलेली वसाहतीची प्रतिष्ठा. प्रतिष्ठेचे ध्येय असलेला सामना ते ध्येय गाठल्यावर संपतो.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "लढाई",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "उपासमार",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "जखमा बऱ्या करणे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अडकलेले",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "इतर",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "जवळजवळ रिकामे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कमी",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अर्धा भरलेला",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पोटभर जेवण",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "गंभीर",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "जखमी",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "दुखापत",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "निरोगी",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कमजोर करणे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "धर्मशाळेच्या शोधात",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "खाणे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "उपचार",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "जेवण",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नवीन युनिट्स",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "दारुगोळा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नवीन इमारती",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अपग्रेड",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "बांधले",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सुधारित",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "दुरुस्त केले",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नष्ट केले",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पाडलेले",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "योद्धे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "जादू",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "टॉवर्स",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "८ चौरसांच्या आत",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "८ ते १६ चौरस",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "१६ ते ३२ चौरस",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "युनिट्स",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अन्न",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "जेवण",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "हिट पॉइंट्स",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "युनिट्स",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "गुण",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नुकसान",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "शॉट्स",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "भेटी",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कौशल्य पातळी",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "प्रतिष्ठा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      }
+    ]
+  },
+  "response_sha256": "104867929cb4fd51fcb99b35eb177a7bd0f241c1cb93e4f7def795c346a75d5a"
+}

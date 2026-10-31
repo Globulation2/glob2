@@ -1,0 +1,98 @@
+{
+  "request": {
+    "project": "bradley-personal-20261027",
+    "model": "general/nmt",
+    "payload": {
+      "sourceLanguageCode": "en",
+      "targetLanguageCode": "mr",
+      "mimeType": "text/plain",
+      "contents": [
+        "Core strategy: Produces workers and explorers, expands its economy, and attracts enemy units through food and fruit. Has no conventional warrior offensive.",
+        "Economy and development: Builds inns and swarms near food sources, adds education and movement training, and upgrades infrastructure. Tracks food supplies and retains its buildings and exploration flags even when supplies deteriorate or targets disappear.",
+        "Farming and conversion: Protects renewable food and wood sources near water. Sends explorers to fruit deposits and enemy colonies, and advertises food to enemies when pursuing fruit supply. Better food and fruit can help attract converts.",
+        "Compared with other AIs: The most specialized economic opponent. Cabino and Maxima pursue fruit too, but combine it with armies.",
+        "Strengths and weaknesses: Can grow while military opponents exhaust themselves, with conversion providing another form of competition. Produces no warriors to answer a sustained assault. Food, fruit, geography and victory rules strongly affect its opportunities.",
+        "Counterplay to try: Pressure exposed expansion. Keep your own inns supplied with food and fruit to retain units. Avoid exhausting your colony in unnecessary fights while it grows.",
+        "Grows a food-rich colony and competes for converts without producing warriors.",
+        "Core strategy: Attacks before opponents finish a long economic or technological buildup. Expects combat to decide the game before a large support network becomes necessary.",
+        "Economy and development: Once six units can harvest, sets production to four workers, one explorer and three warriors. Adds barracks as training fills up, but restricts new inns. Spare construction often goes toward hospitals and movement training.",
+        "Attack and defense: Marks discovered enemy buildings with guard areas so warriors apply continuing pressure. Does not wait for a carefully assembled wave. Clears obstructing resources and protects some renewable sources.",
+        "Fruit policy: Forbids fruit harvesting, avoiding fruit-related armor penalties and declining Econo's conversion strategy.",
+        "Compared with other AIs: More committed to early pressure than Numbi or Castor. Nicowar also opens aggressively, but follows through with a broader upgrade and tactical program.",
+        "Strengths and weaknesses: Punishes slow openings and forces early defensive spending. Limited systematic upgrading and lean food support make a stalled offensive costly. Terrain and long journeys can erode its early advantage.",
+        "Counterplay to try: Protect inns and swarms early. Replace workers as well as defenders, develop training, then counterattack once its rush loses momentum.",
+        "Scouting: Opening exploration flags use enemy starting locations directly. Later attack-area placement requires visibility.",
+        "Early warrior pressure backed by a deliberately lean support economy."
+      ]
+    }
+  },
+  "response": {
+    "translations": [
+      {
+        "translatedText": "मुख्य रणनीती: कामगार आणि शोधक तयार करते, आपल्या अर्थव्यवस्थेचा विस्तार करते आणि अन्न व फळांच्या माध्यमातून शत्रूच्या तुकड्यांना आकर्षित करते. यात पारंपरिक योद्ध्यांचा हल्ला नसतो.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अर्थव्यवस्था आणि विकास: अन्न स्रोतांजवळ धर्मशाळा आणि वसाहती उभारते, शिक्षण आणि हालचाल प्रशिक्षण जोडते, आणि पायाभूत सुविधा अद्ययावत करते. अन्न पुरवठ्यावर लक्ष ठेवते आणि पुरवठा कमी झाल्यावर किंवा लक्ष्ये नाहीशी झाल्यावरही आपल्या इमारती आणि शोध ध्वज टिकवून ठेवते.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "शेती आणि धर्मांतर: पाण्याजवळील नूतनीकरणक्षम अन्न आणि लाकडाच्या स्रोतांचे संरक्षण करते. फळांच्या साठ्यांवर आणि शत्रूंच्या वसाहतींमध्ये शोधक पाठवते, आणि फळांच्या पुरवठ्याचा पाठलाग करताना शत्रूंना अन्नाची जाहिरात करते. उत्तम अन्न आणि फळे धर्मांतरितांना आकर्षित करण्यास मदत करू शकतात.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "इतर एआयंच्या तुलनेत: सर्वात विशेषज्ञ आर्थिक प्रतिस्पर्धी. कॅबिनो आणि मॅक्सिमा सुद्धा फळांचा पाठलाग करतात, पण त्यासाठी सैन्याचाही वापर करतात.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सामर्थ्ये आणि मर्यादा: लष्करी प्रतिस्पर्धी थकून जात असताना याची वाढ होऊ शकते, आणि धर्मांतरणामुळे स्पर्धेचे आणखी एक स्वरूप निर्माण होते. दीर्घकाळ चाललेल्या हल्ल्याला प्रत्युत्तर देण्यासाठी योद्धे तयार होत नाहीत. अन्न, फळे, भौगोलिक परिस्थिती आणि विजयाचे नियम याच्या संधींवर जोरदार परिणाम करतात.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "वापरून पाहण्यासारखी प्रतिचाल: विस्तारासाठी दबाव आणा. सैनिकांना टिकवून ठेवण्यासाठी आपल्या धर्मशाळांमध्ये अन्न आणि फळांचा पुरवठा चालू ठेवा. तुमची वसाहत वाढत असताना, तिला अनावश्यक लढायांमध्ये थकवणे टाळा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अन्नसंपन्न वसाहत वाढवते आणि योद्धे निर्माण न करता धर्मांतरितांसाठी स्पर्धा करते.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "मुख्य रणनीती: प्रतिस्पर्धकांची दीर्घ आर्थिक किंवा तांत्रिक उभारणी पूर्ण होण्यापूर्वीच हल्ला करणे. मोठ्या साहाय्यक जाळ्याची आवश्यकता भासण्यापूर्वीच लढाई खेळाचा निकाल ठरवेल अशी अपेक्षा ठेवणे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अर्थव्यवस्था आणि विकास: एकदा सहा युनिट्स कापणी करू लागल्यावर, उत्पादन चार कामगार, एक शोधक आणि तीन योद्ध्यांपर्यंत मर्यादित केले जाते. प्रशिक्षण पूर्ण झाल्यावर सैनिकी छावण्या जोडल्या जातात, परंतु नवीन धर्मशाळा बांधण्यावर निर्बंध येतात. अतिरिक्त बांधकाम बहुतेकदा रुग्णालये आणि हालचाल प्रशिक्षणासाठी वापरले जाते.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "हल्ला आणि बचाव: शत्रूच्या शोधलेल्या इमारतींवर संरक्षण क्षेत्रे चिन्हांकित करते, जेणेकरून योद्धे सतत दबाव ठेवू शकतील. काळजीपूर्वक जमवलेल्या सैन्याच्या लाटेची वाट पाहत नाही. अडथळा आणणारी संसाधने दूर करते आणि काही अक्षय ऊर्जा स्रोतांचे संरक्षण करते.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "फळ धोरण: फळे काढण्यास मनाई करते, फळांशी संबंधित चिलखत दंड टाळते आणि इकोनोची रूपांतरण रणनीती नाकारते.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "इतर एआयंच्या तुलनेत: नम्बी किंवा कॅस्टरपेक्षा सुरुवातीलाच दबाव टाकण्यावर अधिक भर देतो. निकोवार देखील आक्रमकपणे सुरुवात करतो, पण त्यानंतर अधिक व्यापक अपग्रेड आणि रणनीतिक कार्यक्रम राबवतो.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सामर्थ्ये आणि कमकुवतपणा: संथ सुरुवातीस शिक्षा देते आणि सुरुवातीलाच बचावात्मक खर्च करण्यास भाग पाडते. मर्यादित पद्धतशीर अपग्रेडिंग आणि तुटपुंज्या अन्नपुरवठ्यामुळे थांबलेला हल्ला खर्चिक ठरतो. भूभाग आणि लांबचा प्रवास सुरुवातीचा फायदा कमी करू शकतात.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "प्रतिकार म्हणून वापरून पाहण्यासारखी रणनीती: सुरुवातीलाच धर्मशाळा आणि झुंडींचे संरक्षण करा. कामगार तसेच संरक्षकांना बदला, प्रशिक्षण विकसित करा, आणि एकदा का त्यांच्या हल्ल्याचा जोर कमी झाला की प्रतिहल्ला करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "टेहळणी: शोधमोहिमेचे ध्वज उघडण्यासाठी शत्रूच्या सुरुवातीच्या ठिकाणांचा थेट वापर केला जातो. नंतर हल्ला-क्षेत्र निश्चित करण्यासाठी दृश्यमानता आवश्यक असते.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "हेतुपुरस्सर मर्यादित सहाय्यक अर्थव्यवस्थेच्या पाठबळावर सुरुवातीच्या काळात योद्ध्यांचा दबाव.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      }
+    ]
+  },
+  "response_sha256": "cbdf52f31b8e19e444334dd69d0c594ebc232c7d7b91d40135f8909054feb2c5"
+}

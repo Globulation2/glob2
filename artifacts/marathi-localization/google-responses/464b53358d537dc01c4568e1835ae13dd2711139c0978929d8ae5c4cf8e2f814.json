@@ -1,0 +1,203 @@
+{
+  "request": {
+    "project": "bradley-personal-20261027",
+    "model": "general/nmt",
+    "payload": {
+      "sourceLanguageCode": "en",
+      "targetLanguageCode": "mr",
+      "mimeType": "text/plain",
+      "contents": [
+        "Username",
+        "Version",
+        "View History",
+        "Volume (voice)",
+        "Waiting for ZXQPH0QXZ",
+        "waiting for key...",
+        "Walk",
+        "Warning, you need to restart the game for changes to take effect",
+        "Watch again",
+        "Watching:",
+        "Water",
+        "Wheat",
+        "Won: you defeated your opponents",
+        "Won: you have the most prestige",
+        "Won: your ally ZXQPH0QXZ has the most prestige",
+        "Wood",
+        "wood",
+        "Working",
+        "wounded",
+        "Yes",
+        "The YOG metaserver has refused connection because your ZXQPH0QXZ client is out of date. Please obtain the latest version from www.globulation2.org to play online.",
+        "You have lost!",
+        "You have won!",
+        "You were kicked from the game",
+        "Your ZXQPH0QXZ is under attack",
+        "Your unit has joined ZXQPH0QXZ's team",
+        "Single-player and replays only. Multiplayer runs at 1x.",
+        "Maximum",
+        "Game speed: 1x (multiplayer)",
+        "Still inside: ZXQPH0QXZ",
+        "Still working: ZXQPH0QXZ",
+        "2 vs 2",
+        "AI strategy & counterplay",
+        "Core strategy: Invests in a productive colony and technology before committing substantial attacks. Prioritized construction projects build up its settlement; development, military infrastructure and time increase war readiness.ZXQPH0QXZZXQPH1QXZEconomy and development: Studies hydration, food-source growth, obstacles and worker reach. Manages food expansion, upgrades and defenses alongside production.ZXQPH2QXZZXQPH3QXZAttack and defense: Estimates healthy warriors' attack power and begins strikes when power or timing conditions are met. Favors previously seen, accessible buildings, especially barracks and schools, and moves its attack flags toward valuable targets.ZXQPH4QXZZXQPH5QXZCompared with other AIs: More deliberate about terrain and target value than Numbi. More patient than Warrush, trading early pressure for a developed base and stronger troops.ZXQPH6QXZZXQPH7QXZStrengths and weaknesses: Broad infrastructure planning and valuable military targets give its strikes purpose. Preparation takes time, allowing faster opponents to contest resources before its main force is ready.ZXQPH8QXZZXQPH9QXZCounterplay to try: Contest expansion early. Protect barracks and schools as well as food, and keep a reserve when attacking its developed settlement.",
+        "Develops a fortified colony, then strikes at military and science buildings.",
+        "Core strategy: Uses reactive priorities to grow a working economy and turn spare labor into food, technology and military pressure. Its normal policy is rule-based; learned-policy experiments require separate configuration.ZXQPH0QXZZXQPH1QXZEconomy and development: Adjusts worker production to staffing demand and keeps births going. Food trouble suppresses expansion and technology spending. Adds swimming when water access materially helps.ZXQPH2QXZZXQPH3QXZAttack and defense: Prepares attacks using observed enemy technology and available troops. Water-crossing campaigns need swimming-capable warriors. Supports long campaigns with forward inns and hospitals, and can stage forces before advancing.ZXQPH4QXZZXQPH5QXZCommitment and emergencies: Holds an offensive through minor harassment instead of repeatedly marching home. Serious attacks can recall defenders. Early emergencies can trigger warrior-only production and a hospital; famine can trigger a smaller desperation attack.ZXQPH6QXZZXQPH7QXZCompared with other AIs: More concerned with forward support than Warrush. Maxima goes further in budgeting sustainable births, training and deployment against estimated enemy strength.ZXQPH8QXZZXQPH9QXZStrengths and weaknesses: Connects pressure to food, healing and reachability. Forward infrastructure must stay supplied, and continued births can keep pressure on limited food. Emergency priorities force tradeoffs between growth and survival.ZXQPH10QXZZXQPH11QXZCounterplay to try: Contest forward inns, hospitals and food sources. Keep defenders together against its push; minor harassment may not persuade it to retreat.ZXQPH12QXZZXQPH13QXZScouting: Uses discovered enemy buildings and observed enemy troops.",
+        "Supports committed military pushes with forward food and healing."
+      ]
+    }
+  },
+  "response": {
+    "translations": [
+      {
+        "translatedText": "वापरकर्तानाव",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "आवृत्ती",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "इतिहास पहा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "आवाज (व्हॉइस)",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ ची वाट पाहत आहे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "चावीची वाट पाहत आहे...",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "चालणे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सूचना: बदल लागू होण्यासाठी तुम्हाला गेम पुन्हा सुरू करावा लागेल.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पुन्हा पहा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पाहत आहे:",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पाणी",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "गहू",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "जिंकले: तुम्ही तुमच्या प्रतिस्पर्धकांना हरवले.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "जिंकले: तुमच्याकडे सर्वाधिक प्रतिष्ठा आहे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "जिंकले: तुमचा सहकारी ZXQPH0QXZ सर्वात जास्त प्रतिष्ठित आहे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "लाकूड",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "लाकूड",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "काम करत आहे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "जखमी",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "होय",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तुमचा ZXQPH0QXZ क्लायंट जुना असल्यामुळे YOG मेटासर्व्हरने कनेक्शन नाकारले आहे. ऑनलाइन खेळण्यासाठी कृपया www.globulation2.org वरून नवीनतम आवृत्ती मिळवा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तुम्ही हरला आहात!",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तुम्ही जिंकलात!",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तुम्हाला खेळातून बाहेर काढण्यात आले.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तुमच्या ZXQPH0QXZ वर हल्ला होत आहे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तुमचे युनिट ZXQPH0QXZ च्या टीममध्ये सामील झाले आहे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "फक्त सिंगल-प्लेअर आणि रिप्लेसाठी. मल्टीप्लेअर 1x वर चालतो.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कमाल",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "खेळाचा वेग: १x (मल्टीप्लेअर)",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "आतच: ZXQPH0QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अजूनही कार्यरत आहे: ZXQPH0QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "२ विरुद्ध २",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "एआय रणनीती आणि प्रतिहल्ला",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "मुख्य रणनीती: मोठे हल्ले करण्यापूर्वी उत्पादनक्षम वसाहत आणि तंत्रज्ञानामध्ये गुंतवणूक करते. प्राधान्यक्रमानुसार बांधकाम प्रकल्प वसाहत उभारतात; विकास, लष्करी पायाभूत सुविधा आणि वेळ युद्धसज्जता वाढवतात. अर्थव्यवस्था आणि विकास: पाण्याचे प्रमाण, अन्नस्रोतांची वाढ, अडथळे आणि कामगारांची पोहोच यांचा अभ्यास करते. उत्पादनासोबतच अन्नपुरवठा, सुधारणा आणि संरक्षण यांचे व्यवस्थापन करते. हल्ला आणि संरक्षण: निरोगी योद्ध्यांच्या हल्ला करण्याच्या शक्तीचा अंदाज घेते आणि शक्ती किंवा वेळेच्या अटी पूर्ण झाल्यावर हल्ले सुरू करते. पूर्वी पाहिलेल्या, सहज पोहोचता येणाऱ्या इमारतींना, विशेषतः बराकी आणि शाळांना प्राधान्य देते आणि आपले हल्ल्याचे ध्वज मौल्यवान लक्ष्यांकडे हलवते. इतर एआयच्या तुलनेत: नंबीपेक्षा भूभाग आणि लक्ष्याच्या मूल्याबद्दल अधिक विचारपूर्वक वागते. वॉरशपेक्षा अधिक संयमी, सुरुवातीच्या दबावाच्या बदल्यात विकसित तळ आणि अधिक शक्तिशाली सैन्य मिळवते. सामर्थ्ये आणि कमकुवतपणा: व्यापक पायाभूत सुविधांचे नियोजन आणि मौल्यवान लष्करी लक्ष्ये त्याच्या हल्ल्यांना उद्देश देतात. तयारीला वेळ लागतो, ज्यामुळे त्याचे मुख्य सैन्य तयार होण्यापूर्वीच वेगवान प्रतिस्पर्धकांना संसाधनांवर ताबा मिळवण्याची संधी मिळते. प्रयत्न करण्यासारखी प्रति-खेळी: विस्ताराला सुरुवातीलाच विरोध करा. सैनिकी छावण्या आणि शाळा तसेच अन्नाचे संरक्षण करा आणि त्याच्या विकसित वस्तीवर हल्ला करताना राखीव सैन्य ठेवा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "एक किल्लेबंद वसाहत विकसित करते, मग लष्करी आणि वैज्ञानिक इमारतींवर हल्ला करते.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "मुख्य रणनीती: कार्यरत अर्थव्यवस्था वाढवण्यासाठी आणि अतिरिक्त श्रमाचे अन्न, तंत्रज्ञान आणि लष्करी दबावात रूपांतर करण्यासाठी प्रतिक्रियात्मक प्राधान्यक्रम वापरते. तिचे सामान्य धोरण नियमांवर आधारित असते; शिकलेल्या-धोरणांच्या प्रयोगांसाठी स्वतंत्र संरचनेची आवश्यकता असते. अर्थव्यवस्था आणि विकास: मनुष्यबळाच्या मागणीनुसार कामगार उत्पादन समायोजित करते आणि जन्मदर चालू ठेवते. अन्नटंचाईमुळे विस्तार आणि तंत्रज्ञानावरील खर्च कमी होतो. जेव्हा पाण्याच्या उपलब्धतेमुळे लक्षणीय मदत होते, तेव्हा पोहण्याची सोय जोडते. हल्ला आणि संरक्षण: शत्रूचे निरीक्षण केलेले तंत्रज्ञान आणि उपलब्ध सैन्याचा वापर करून हल्ल्यांची तयारी करते. पाणी ओलांडण्याच्या मोहिमांसाठी पोहता येण्याजोग्या योद्ध्यांची आवश्यकता असते. पुढील धर्मशाळा आणि रुग्णालयांच्या साहाय्याने दीर्घकालीन मोहिमांना आधार देते आणि पुढे जाण्यापूर्वी सैन्य तैनात करू शकते. वचनबद्धता आणि आणीबाणी: वारंवार माघार घेण्याऐवजी किरकोळ त्रासाद्वारे आक्रमण चालू ठेवते. गंभीर हल्ल्यांमुळे बचाव करणाऱ्यांना परत बोलावले जाऊ शकते. सुरुवातीच्या आणीबाणीच्या परिस्थितीत केवळ योद्ध्यांचे उत्पादन आणि रुग्णालय सुरू केले जाऊ शकते; दुष्काळामुळे एक लहानसा हताश हल्ला होऊ शकतो. इतर एआयच्या तुलनेत: वॉररशपेक्षा आघाडीच्या समर्थनावर अधिक लक्ष केंद्रित करते. मॅक्सिमा अंदाजित शत्रूच्या सामर्थ्याविरुद्ध शाश्वत जन्म, प्रशिक्षण आणि तैनातीचे बजेट आखण्यात अधिक पुढे जाते. सामर्थ्ये आणि कमकुवतपणा: अन्न, उपचार आणि पोहोचण्याच्या क्षमतेशी दबाव जोडते. आघाडीच्या पायाभूत सुविधांचा पुरवठा चालू ठेवणे आवश्यक आहे, आणि सततच्या जन्मांमुळे मर्यादित अन्नावर दबाव कायम राहू शकतो. आपत्कालीन प्राधान्यांमुळे वाढ आणि जगणे यात तडजोड करावी लागते. प्रयत्न करण्यासाठी प्रति-खेळ: आघाडीची धर्मशाळा, रुग्णालये आणि अन्न स्रोतांवर ताबा मिळवा. त्याच्या आक्रमणाविरुद्ध बचाव करणाऱ्यांना एकत्र ठेवा; किरकोळ त्रास दिल्याने ते माघार घेण्यास तयार होणार नाही. टेहळणी: शोधलेल्या शत्रूच्या इमारती आणि निरीक्षित शत्रू सैन्याचा वापर करते.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "लष्करी मोहिमांना अन्न आणि आरोग्य सेवा पुरवून पाठिंबा दिला जातो.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      }
+    ]
+  },
+  "response_sha256": "2db34148746f27032c8ec0b8cc2790105edec5376652c20d02c900acec2908c3"
+}

@@ -1,0 +1,187 @@
+{
+  "editor": "/root/semantic_review",
+  "catalog_sha256": "d7ae02f4d4453ebcb2acc37c15fd862acea8d2996d29cdb89bfb64c4f32cd5fa",
+  "dispositions": {
+    "By {slot0} · {slot1} · {slot2}": {
+      "disposition": "accepted",
+      "editor": "/root/semantic_review",
+      "reason": "Authorship must attach to the first value, not the final metadata value.",
+      "before": "{slot0} · {slot1} · {slot2} द्वारे",
+      "after": "{slot0} द्वारे · {slot1} · {slot2}"
+    },
+    "By generator": {
+      "disposition": "accepted",
+      "editor": "/root/semantic_review",
+      "reason": "Player win-rate grouping is by generator, not an action performed by the generator.",
+      "before": "जनरेटरद्वारे",
+      "after": "जनरेटरनुसार"
+    },
+    "By map": {
+      "disposition": "accepted",
+      "editor": "/root/semantic_review",
+      "reason": "Player win-rate grouping is by map, not an action performed by the map.",
+      "before": "नकाशाद्वारे",
+      "after": "नकाशानुसार"
+    },
+    "Building": {
+      "disposition": "accepted",
+      "editor": "/root/semantic_review",
+      "reason": "Shared key is used as music mood and building-progress status, not a building entity (music-studio/Workspace.tsx and studio/Conversation.tsx). Align native music label बांधकाम.",
+      "before": "इमारत",
+      "after": "बांधकाम"
+    },
+    "AI library views": {
+      "disposition": "accepted",
+      "editor": "/root/semantic_review",
+      "reason": "LibraryNav labels navigation views, not visual scenes.",
+      "before": "एआय संग्रहातील दृश्ये",
+      "after": "एआय संग्रहाचे विभाग"
+    },
+    "Hue": {
+      "disposition": "accepted",
+      "editor": "/root/semantic_review",
+      "reason": "Distinguish hue from the separate Color field in paint controls.",
+      "before": "रंग",
+      "after": "रंगछटा"
+    },
+    "Invalid shape dimensions": {
+      "disposition": "accepted",
+      "editor": "/root/semantic_review",
+      "reason": "Correct Marathi agreement with plural neuter परिमाणे.",
+      "before": "आकाराचे परिमाणे अवैध आहेत.",
+      "after": "आकाराची परिमाणे अवैध आहेत."
+    },
+    "Manual blend · Calm → Building → Combat": {
+      "disposition": "accepted",
+      "editor": "/root/semantic_review",
+      "reason": "Keep named music moods consistent with native and online mood selectors; Building is construction phase.",
+      "before": "मॅन्युअल ब्लेंड · शांतता → उभारणी → लढाई",
+      "after": "मॅन्युअल मिश्रण · शांत → बांधकाम → लढाई"
+    },
+    "Only continue if you just started signing in from your own game and it shows the same code. If someone sent you this link, cancel.": {
+      "disposition": "accepted",
+      "editor": "/root/semantic_review",
+      "reason": "Authentication confirmation is conditional on initiating sign-in, not having already completed it.",
+      "before": "तुम्ही तुमच्या स्वतःच्या गेममधून नुकतेच साइन इन केले असेल आणि तिथे तोच कोड दिसत असेल तरच पुढे सुरू ठेवा. जर कोणी तुम्हाला ही लिंक पाठवली असेल, तर रद्द करा.",
+      "after": "तुम्ही स्वतःच्या खेळातून नुकतीच साइन इन करण्याची प्रक्रिया सुरू केली असेल आणि तेथे हाच कोड दिसत असेल तरच पुढे जा. कोणी ही लिंक तुम्हाला पाठवली असेल तर रद्द करा."
+    },
+    "Rate {slot0}: {slot1} credit per million input tokens, {slot2} for cached input, {slot3} for cache writes, and {slot4} for output including reasoning. Repairs and follow-ups use the same rates.": {
+      "disposition": "accepted",
+      "editor": "/root/semantic_review",
+      "reason": "Reasoning denotes the model thinking process whose tokens are billed, not explanatory reasons presented to the user.",
+      "before": {
+        "one": "{slot0} दर: प्रति दशलक्ष इनपुट टोकन्ससाठी {slot1} क्रेडिट, कॅश्ड इनपुटसाठी {slot2}, कॅशे राइट्ससाठी {slot3}, आणि कारणांसहित आउटपुटसाठी {slot4}. दुरुस्ती आणि पाठपुराव्यासाठी हेच दर वापरले जातात.",
+        "other": "{slot0} दर: प्रति दशलक्ष इनपुट टोकन्ससाठी {slot1} क्रेडिट्स, कॅश्ड इनपुटसाठी {slot2}, कॅशे राइट्ससाठी {slot3}, आणि कारणांसहित आउटपुटसाठी {slot4}. दुरुस्ती आणि पाठपुराव्यासाठी हेच दर वापरले जातात."
+      },
+      "after": {
+        "one": "{slot0} दर: प्रति दशलक्ष इनपुट टोकन्ससाठी {slot1} क्रेडिट, कॅश्ड इनपुटसाठी {slot2}, कॅशे राइट्ससाठी {slot3}, आणि विचारप्रक्रियेसह आउटपुटसाठी {slot4}. दुरुस्ती आणि पाठपुराव्यासाठी हेच दर वापरले जातात.",
+        "other": "{slot0} दर: प्रति दशलक्ष इनपुट टोकन्ससाठी {slot1} क्रेडिट्स, कॅश्ड इनपुटसाठी {slot2}, कॅशे राइट्ससाठी {slot3}, आणि विचारप्रक्रियेसह आउटपुटसाठी {slot4}. दुरुस्ती आणि पाठपुराव्यासाठी हेच दर वापरले जातात."
+      }
+    },
+    "Rate {slot0}: {slot1} credits per million input tokens, {slot2} for cached input, {slot3} for cache writes, and {slot4} for output including reasoning. Repairs and follow-ups use the same rates.": {
+      "disposition": "accepted",
+      "editor": "/root/semantic_review",
+      "reason": "Keep the standalone plural fallback consistent with the billing message plural forms.",
+      "before": "{slot0} दर: प्रति दशलक्ष इनपुट टोकन्ससाठी {slot1} क्रेडिट्स, कॅश्ड इनपुटसाठी {slot2}, कॅशे राइट्ससाठी {slot3}, आणि कारणांसहित आउटपुटसाठी {slot4}. दुरुस्ती आणि पाठपुराव्यासाठी हेच दर वापरले जातात.",
+      "after": "{slot0} दर: प्रति दशलक्ष इनपुट टोकन्ससाठी {slot1} क्रेडिट्स, कॅश्ड इनपुटसाठी {slot2}, कॅशे राइट्ससाठी {slot3}, आणि विचारप्रक्रियेसह आउटपुटसाठी {slot4}. दुरुस्ती आणि पाठपुराव्यासाठी हेच दर वापरले जातात."
+    },
+    "Retry 3D canvas": {
+      "disposition": "accepted",
+      "editor": "/root/semantic_review",
+      "reason": "Give a natural Marathi action label rather than the ungrammatical noun followed by पुन्हा प्रयत्न करा.",
+      "before": "३डी कॅनव्हास पुन्हा प्रयत्न करा",
+      "after": "3D कॅनव्हास पुन्हा उघडून पाहा"
+    },
+    "Retry image": {
+      "disposition": "accepted",
+      "editor": "/root/semantic_review",
+      "reason": "Natural Marathi label for retrying an image load.",
+      "before": "प्रतिमा पुन्हा प्रयत्न करा",
+      "after": "प्रतिमा पुन्हा लोड करून पाहा"
+    },
+    "Retry preview": {
+      "disposition": "accepted",
+      "editor": "/root/semantic_review",
+      "reason": "Correct the object construction in this retry action label.",
+      "before": "पूर्वावलोकन पुन्हा प्रयत्न करा",
+      "after": "पूर्वावलोकनाचा पुन्हा प्रयत्न करा"
+    },
+    "Retry validation": {
+      "disposition": "accepted",
+      "editor": "/root/semantic_review",
+      "reason": "Correct the object construction and use the existing validation terminology.",
+      "before": "प्रमाणीकरण पुन्हा प्रयत्न करा",
+      "after": "पडताळणीचा पुन्हा प्रयत्न करा"
+    },
+    "The game will switch to": {
+      "disposition": "accepted",
+      "editor": "/root/semantic_review",
+      "reason": "signin.ts appends owner.display_name; the prefix should introduce that account naturally without requiring a suffix after the inserted name.",
+      "before": "खेळ बदलेल",
+      "after": "खेळात आता हे खाते वापरले जाईल:"
+    },
+    "Top library content by lifetime recorded downloads": {
+      "disposition": "accepted",
+      "editor": "/root/semantic_review",
+      "reason": "The ranking is of content by its recorded downloads, not of the most-downloaded library.",
+      "before": "आयुष्यभरात सर्वाधिक डाउनलोड झालेल्या लायब्ररीमधील सर्वोत्तम सामग्री",
+      "after": "आजवर नोंदवलेल्या डाउनलोडनुसार संग्रहातील आघाडीची सामग्री"
+    },
+    "by {slot0}{slot1}": {
+      "disposition": "accepted",
+      "editor": "/root/semantic_review",
+      "reason": "Ais.tsx slot0 is the author and slot1 is an optional hidden badge; attach authorship before the badge.",
+      "before": "{slot0}{slot1} द्वारे",
+      "after": "{slot0} द्वारे{slot1}"
+    },
+    "by ": {
+      "disposition": "accepted",
+      "editor": "/root/semantic_review",
+      "reason": "Maps.tsx renders this fragment before the author link; a Marathi postposition placed before the name gives the wrong word order.",
+      "before": "द्वारे ",
+      "after": "लेखक: "
+    },
+    "{slot0} before buying so you can recover your purchases.": {
+      "disposition": "accepted",
+      "editor": "/root/semantic_review",
+      "reason": "Store.tsx slot0 is the imperative Sign in or link your account. Remove extra वापरा and distinguish account recovery from a refund.",
+      "before": "खरेदी करण्यापूर्वी {slot0} वापरा जेणेकरून तुम्ही तुमची खरेदी परत मिळवू शकाल.",
+      "after": "खरेदी करण्यापूर्वी {slot0}, म्हणजे पुढे त्या खरेदींवर पुन्हा प्रवेश मिळवता येईल."
+    },
+    "{value0} Your credit was returned.": {
+      "disposition": "accepted",
+      "editor": "/root/semantic_review",
+      "reason": "Keep a returned virtual credit distinct from a monetary refund; no need to introduce रक्कम.",
+      "before": "{value0} तुमची क्रेडिट रक्कम परत करण्यात आली आहे.",
+      "after": "{value0} तुमचे क्रेडिट परत मिळाले."
+    },
+    "Game text field": {
+      "disposition": "accepted",
+      "editor": "/root/semantic_review",
+      "reason": "Correct Marathi relation: the text field is in the game.",
+      "before": "खेळाचे मजकूर क्षेत्र",
+      "after": "खेळातील मजकूर क्षेत्र"
+    },
+    "{value0} request needs attention in Preview.": {
+      "disposition": "accepted",
+      "editor": "/root/semantic_review",
+      "reason": "Refer to the actual translated Preview tab label पूर्वावलोकन.",
+      "before": "प्रीव्ह्यूमध्ये {value0} विनंतीकडे लक्ष देण्याची गरज आहे.",
+      "after": "पूर्वावलोकनात {value0} विनंतीकडे लक्ष देणे आवश्यक आहे."
+    },
+    "{value0} response ready in Preview.": {
+      "disposition": "accepted",
+      "editor": "/root/semantic_review",
+      "reason": "Refer to the actual translated Preview tab label पूर्वावलोकन.",
+      "before": "{value0} प्रतिसाद प्रिव्ह्यूमध्ये तयार आहे.",
+      "after": "{value0} प्रतिसाद पूर्वावलोकनात तयार आहे."
+    },
+    "Keep listening and comparison controls in Preview. Select a delivered version to change through chat.": {
+      "disposition": "accepted",
+      "editor": "/root/semantic_review",
+      "reason": "Use the actual Preview tab name consistently in navigation instructions.",
+      "before": "प्रिव्ह्यूमध्ये ऐकण्याची आणि तुलना करण्याची नियंत्रणे चालू ठेवा. चॅटद्वारे बदल करण्यासाठी वितरित केलेली आवृत्ती निवडा.",
+      "after": "ऐकण्याची आणि तुलना करण्याची नियंत्रणे पूर्वावलोकनात ठेवा. चॅटमधून बदलण्यासाठी मिळालेली आवृत्ती निवडा."
+    }
+  }
+}

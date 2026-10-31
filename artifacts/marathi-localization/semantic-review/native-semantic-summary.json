@@ -1,0 +1,16 @@
+{
+  "reviewer": "/root/semantic_review",
+  "stage": "first semantic pass; proposals await author/editor integration",
+  "native_keys_read": 3393,
+  "proposed_corrections": 853,
+  "coverage_file": "coverage.json",
+  "coverage_sha256": "4ea5f7a86ca6e39549902d4d4b9a8913e4a9df0bac3203159616029c05973a96",
+  "corrections_file": "native-corrections.json",
+  "corrections_sha256": "e10e8e2a873bb267b0143e180131944f285ff47d04b0791e8d1cece074844d35",
+  "certification": "Agent-reviewed; not native-human-certified",
+  "notes": [
+    "Read every translated key against frozen English; consulted Hindi/French gameplay anchors and code use for ambiguous metadata.",
+    "Six empty English second explanation lines are intentionally empty target values.",
+    "Final source-based recheck after author/editor corrections is still pending; no final language sign-off yet."
+  ]
+}

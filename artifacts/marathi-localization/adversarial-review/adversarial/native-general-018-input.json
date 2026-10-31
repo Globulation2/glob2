@@ -1,0 +1,510 @@
+{
+  "source_sha256": "0ac44b4cdfb03e688983d6e3fb1e484cca57589665bff19c5c65388e649b292a",
+  "batch_target_sha256": "d3453c89a61b3ae3e5fee443e66a96f37c31c6848bd5eeb227066a6931dcf068",
+  "catalog_sha256": {
+    "native": "a6d0da95a3cf29e0bcfa904f80043a10fedc3124f7a26e3beebc82e8cdfa4411",
+    "online": "feb4b9a71595724a0995b0cf0f42c94742ef29030b66c9488c77ebc6be7a89db"
+  },
+  "entries": [
+    {
+      "id": "native:[online mon]",
+      "source": "Mon",
+      "target": "सोमवार"
+    },
+    {
+      "id": "native:[online tue]",
+      "source": "Tue",
+      "target": "मंगळवार"
+    },
+    {
+      "id": "native:[online wed]",
+      "source": "Wed",
+      "target": "बुधवार"
+    },
+    {
+      "id": "native:[online thu]",
+      "source": "Thu",
+      "target": "गुरुवार"
+    },
+    {
+      "id": "native:[online fri]",
+      "source": "Fri",
+      "target": "शुक्रवार"
+    },
+    {
+      "id": "native:[online sat]",
+      "source": "Sat",
+      "target": "शनिवार"
+    },
+    {
+      "id": "native:[online %0 weeks ago]",
+      "source": "%0 weeks ago",
+      "target": "%0 आठवड्यांपूर्वी"
+    },
+    {
+      "id": "native:[online %0 months ago]",
+      "source": "%0 months ago",
+      "target": "%0 महिन्यांपूर्वी"
+    },
+    {
+      "id": "native:[online %0 years ago]",
+      "source": "%0 years ago",
+      "target": "%0 वर्षांपूर्वी"
+    },
+    {
+      "id": "native:[maps share online]",
+      "source": "Share online…",
+      "target": "ऑनलाइन शेअर करा…"
+    },
+    {
+      "id": "native:[maps mine]",
+      "source": "Mine",
+      "target": "माझे"
+    },
+    {
+      "id": "native:[results waiting for players]",
+      "source": "Waiting for the other players to leave…",
+      "target": "इतर खेळाडूंच्या निघून जाण्याची वाट पाहत आहे…"
+    },
+    {
+      "id": "native:[results waiting detail]",
+      "source": "The result is recorded once everyone has left the match.",
+      "target": "सर्वजण सामना सोडून गेल्यावर निकाल नोंदवला जातो."
+    },
+    {
+      "id": "native:[results waiting slow]",
+      "source": "A player who lost the connection has up to 3 minutes to come back. The result will appear in your history and on the match page.",
+      "target": "ज्या खेळाडूचे कनेक्शन तुटले आहे, त्याला परत येण्यासाठी ३ मिनिटांपर्यंत वेळ मिळतो. निकाल तुमच्या हिस्ट्रीमध्ये आणि मॅच पेजवर दिसेल."
+    },
+    {
+      "id": "native:[results verifying slow]",
+      "source": "Verification is taking longer than usual. The result will appear in your history and on the match page.",
+      "target": "सत्यापनाला नेहमीपेक्षा जास्त वेळ लागत आहे. निकाल तुमच्या हिस्ट्रीमध्ये आणि मॅच पेजवर दिसेल."
+    },
+    {
+      "id": "native:[results rematch]",
+      "source": "Rematch",
+      "target": "पुन्हा सामना"
+    },
+    {
+      "id": "native:[results join rematch %0]",
+      "source": "Join %0's rematch",
+      "target": "%0 च्या पुनर्सामन्यामध्ये सामील व्हा"
+    },
+    {
+      "id": "native:[hub profile history]",
+      "source": "Profile & history",
+      "target": "प्रोफाइल आणि इतिहास"
+    },
+    {
+      "id": "native:[hub leaderboard %0]",
+      "source": "Leaderboard · %0",
+      "target": "लीडरबोर्ड · %0"
+    },
+    {
+      "id": "native:[hub leaderboard empty]",
+      "source": "No ranked players yet.",
+      "target": "अद्याप एकही रँक असलेला खेळाडू नाही."
+    },
+    {
+      "id": "native:[hub guests not ranked]",
+      "source": "Guests aren't ranked. Sign in to appear here.",
+      "target": "पाहुण्यांना क्रमवारी दिली जात नाही. येथे दिसण्यासाठी साइन इन करा."
+    },
+    {
+      "id": "native:[hub full leaderboard]",
+      "source": "Full leaderboard",
+      "target": "संपूर्ण लीडरबोर्ड"
+    },
+    {
+      "id": "native:[room uploading map]",
+      "source": "Sharing the map with the room…",
+      "target": "खोलीतील खेळाडूंना नकाशा पाठवत आहे…"
+    },
+    {
+      "id": "native:[room take a seat to play]",
+      "source": "Take an open seat to play",
+      "target": "खेळण्यासाठी मोकळी जागा घ्या"
+    },
+    {
+      "id": "native:[room waiting for a seat]",
+      "source": "Every seat is taken. You can take one when it opens.",
+      "target": "सर्व जागा भरलेल्या आहेत. जागा मोकळी झाल्यावर तुम्ही एक घेऊ शकता."
+    },
+    {
+      "id": "native:[room not seated]",
+      "source": "Not seated",
+      "target": "खेळाची जागा घेतलेली नाही"
+    },
+    {
+      "id": "native:[room copied]",
+      "source": "Copied",
+      "target": "कॉपी केले"
+    },
+    {
+      "id": "native:[room copy failed]",
+      "source": "Could not copy",
+      "target": "कॉपी करता आले नाही"
+    },
+    {
+      "id": "native:[room closed title]",
+      "source": "Room closed",
+      "target": "खोली बंद आहे"
+    },
+    {
+      "id": "native:[room removed title]",
+      "source": "Removed from the room",
+      "target": "खोलीतून बाहेर काढले"
+    },
+    {
+      "id": "native:[room back to online]",
+      "source": "Back to online",
+      "target": "ऑनलाइनवर परत जा"
+    },
+    {
+      "id": "native:[leave match]",
+      "source": "Leave match",
+      "target": "सामना सोडा"
+    },
+    {
+      "id": "native:[leave match title]",
+      "source": "Leave this match?",
+      "target": "हा सामना सोडून जायचे आहे का?"
+    },
+    {
+      "id": "native:[leave lan title]",
+      "source": "Leave this LAN game?",
+      "target": "हा LAN खेळ सोडायचा का?"
+    },
+    {
+      "id": "native:[leave rated body]",
+      "source": "You lose this ranked match and your rating drops. The others play on, and you cannot come back to it.",
+      "target": "तुम्ही हा रँक्ड सामना हरता आणि तुमचे रेटिंग कमी होते. बाकीचे खेळत राहतात आणि तुम्हाला परत येता येत नाही."
+    },
+    {
+      "id": "native:[leave casual body]",
+      "source": "This quick match counts as a loss for you. The others play on, and you cannot come back to it.",
+      "target": "हा जलद सामना तुमच्यासाठी पराभव म्हणून गणला जाईल. इतर खेळाडू खेळत राहतील आणि तुम्हाला त्यात परत येता येणार नाही."
+    },
+    {
+      "id": "native:[leave room body]",
+      "source": "You leave the room's match and it counts as a loss in your history. The others play on, and you cannot come back to it.",
+      "target": "तुम्ही खोलीतील सामना सोडून जाता आणि तुमच्या इतिहासात त्याची नोंद पराभव म्हणून होते. इतरजण खेळत राहतात, आणि तुम्हाला त्यात परत येता येत नाही."
+    },
+    {
+      "id": "native:[leave lan body]",
+      "source": "The others play on without you, and you cannot come back to this game.",
+      "target": "इतरजण तुमच्याशिवाय खेळत राहतात, आणि तुम्ही या खेळात परत येऊ शकत नाही."
+    },
+    {
+      "id": "native:[leave match confirm]",
+      "source": "Leave match",
+      "target": "सामना सोडा"
+    },
+    {
+      "id": "native:[keep playing]",
+      "source": "Keep playing",
+      "target": "खेळत रहा"
+    },
+    {
+      "id": "native:[results team]",
+      "source": "Team",
+      "target": "संघ"
+    },
+    {
+      "id": "native:[results quick unrated]",
+      "source": "Quick match · unrated",
+      "target": "जलद सामना · रेटिंग नाही"
+    },
+    {
+      "id": "native:[conn card cannot keep up]",
+      "source": "Your device can't keep up with this match",
+      "target": "तुमचे डिव्हाइस या सामन्याचा वेग राखू शकत नाही."
+    },
+    {
+      "id": "native:[conn card cannot keep up body]",
+      "source": "It replays the match more slowly than the match runs, so it will not catch up. You can leave the match, or lower the graphics settings and keep waiting.",
+      "target": "सामना जसा चालतो त्यापेक्षा तो हळू रीप्ले होतो, त्यामुळे तो बरोबरी साधू शकणार नाही. तुम्ही सामना सोडून देऊ शकता, किंवा ग्राफिक्स सेटिंग्ज कमी करून वाट पाहत राहू शकता."
+    },
+    {
+      "id": "native:[conn card not gaining]",
+      "source": "not gaining",
+      "target": "अंतर कमी होत नाही"
+    },
+    {
+      "id": "native:[results reason opponents left]",
+      "source": "Your opponents left the match.",
+      "target": "तुमचे प्रतिस्पर्धी सामन्यातून बाहेर पडले."
+    },
+    {
+      "id": "native:[results reason victory]",
+      "source": "Every opposing colony was defeated.",
+      "target": "प्रत्येक विरोधी वसाहतीचा पराभव झाला."
+    },
+    {
+      "id": "native:[results reason defeat]",
+      "source": "Your colony was defeated.",
+      "target": "तुमची वसाहत पराभूत झाली."
+    },
+    {
+      "id": "native:[results reason you left]",
+      "source": "You left the match. It counts as a loss.",
+      "target": "तुम्ही सामना सोडून गेलात. हा तुमचा पराभव मानला जाईल."
+    },
+    {
+      "id": "native:[results final after end]",
+      "source": "Final result after the match ends.",
+      "target": "सामना संपल्यानंतर अंतिम निकाल."
+    },
+    {
+      "id": "native:[pause none left]",
+      "source": "No pauses left",
+      "target": "आता एकही विराम शिल्लक नाही"
+    },
+    {
+      "id": "native:[pause game left %0]",
+      "source": "Pause game (%0 left)",
+      "target": "खेळ थांबवा (%0 विराम शिल्लक)"
+    },
+    {
+      "id": "native:[pause by %0]",
+      "source": "Paused by %0",
+      "target": "%0 द्वारे थांबवले"
+    },
+    {
+      "id": "native:[pause by %0 resumes in %1]",
+      "source": "Paused by %0 · resumes in %1",
+      "target": "%0 द्वारे थांबवले · %1 मध्ये पुन्हा सुरू होते"
+    },
+    {
+      "id": "native:[turn too many actions]",
+      "source": "Too many actions: some are still waiting to be sent",
+      "target": "खूप जास्त कृती: काही अजून पाठवण्याच्या प्रतीक्षेत आहेत"
+    },
+    {
+      "id": "native:[turn no pauses left]",
+      "source": "You have no pauses left in this match",
+      "target": "या सामन्यात तुमच्याकडे एकही थांबा शिल्लक नाही."
+    },
+    {
+      "id": "native:[turn pause time used %0]",
+      "source": "%0 has used all their pause time: the game resumes",
+      "target": "%0 ने त्यांचा संपूर्ण पॉज वेळ वापरला आहे: खेळ पुन्हा सुरू होतो."
+    },
+    {
+      "id": "native:[room seats one person %0 %1]",
+      "source": "1 player · %0 AI · %1 open",
+      "target": "1 खेळाडू · %0 संगणक · %1 मोकळ्या जागा"
+    },
+    {
+      "id": "native:[room rules otherwise standard]",
+      "source": "Every other rule is as in Standard.",
+      "target": "बाकी सर्व नियम मानकाप्रमाणेच आहेत."
+    },
+    {
+      "id": "native:[room browser link]",
+      "source": "Link for browser players",
+      "target": "ब्राउझर प्लेयर्ससाठी लिंक"
+    },
+    {
+      "id": "native:[room browser link hint]",
+      "source": "Players in a browser paste this link to join.",
+      "target": "ब्राउझरमधील खेळाडूंनी सामील होण्यासाठी ही लिंक पेस्ट करावी."
+    },
+    {
+      "id": "native:[room browser link code %0]",
+      "source": "Players in a browser paste this link to join. Their game shows code %0.",
+      "target": "खेळाडू ब्राउझरमध्ये सामील होण्यासाठी ही लिंक पेस्ट करतात. त्यांच्या गेममध्ये %0 हा कोड दिसतो."
+    },
+    {
+      "id": "native:[room copy link]",
+      "source": "Copy link",
+      "target": "लिंक कॉपी करा"
+    },
+    {
+      "id": "native:[room lan open seat detail]",
+      "source": "Anyone on this network can take it",
+      "target": "या नेटवर्कवरील कोणीही ते घेऊ शकतो."
+    },
+    {
+      "id": "native:[room close title]",
+      "source": "Close the room?",
+      "target": "खोली बंद करायची का?"
+    },
+    {
+      "id": "native:[room close body one]",
+      "source": "Leaving closes the room for everyone, including the other player in it.",
+      "target": "बाहेर पडल्याने खोलीतील दुसऱ्या खेळाडूसह सर्वांसाठी खोली बंद होते."
+    },
+    {
+      "id": "native:[room close body %0]",
+      "source": "Leaving closes the room for everyone, including the %0 other players in it.",
+      "target": "तुम्ही बाहेर पडल्यास, खोलीतील इतर %0 खेळाडूंसह सर्वांसाठी ही खोली बंद होईल."
+    },
+    {
+      "id": "native:[room close confirm]",
+      "source": "Close room",
+      "target": "खोली बंद करा"
+    },
+    {
+      "id": "native:[room stay]",
+      "source": "Stay",
+      "target": "राहा"
+    },
+    {
+      "id": "native:[room colours changed]",
+      "source": "The new map gave the seats new colours. Check yours before you start.",
+      "target": "नवीन नकाशाने जागांना नवीन रंग दिले आहेत. सुरुवात करण्यापूर्वी तुमच्या जागेचे रंग तपासा."
+    },
+    {
+      "id": "native:[room copy by hand]",
+      "source": "Copying didn't work. Copy the invite yourself:",
+      "target": "कॉपी करणे यशस्वी झाले नाही. आमंत्रण स्वतः कॉपी करा:"
+    },
+    {
+      "id": "native:[room copy by hand close]",
+      "source": "Close",
+      "target": "बंद करा"
+    },
+    {
+      "id": "native:[room copy by hand touch]",
+      "source": "Touch and hold the link, then choose Copy.",
+      "target": "लिंकला स्पर्श करून धरून ठेवा, त्यानंतर कॉपी निवडा."
+    },
+    {
+      "id": "native:[room copy by hand keys]",
+      "source": "The link is selected: press Ctrl+C (⌘C on a Mac).",
+      "target": "लिंक निवडली आहे: Ctrl+C दाबा (मॅकवर ⌘C)."
+    },
+    {
+      "id": "native:[room code]",
+      "source": "Code",
+      "target": "कोड"
+    },
+    {
+      "id": "native:[online under a minute]",
+      "source": "under a minute",
+      "target": "एका मिनिटापेक्षा कमी"
+    },
+    {
+      "id": "native:[online about %0 min]",
+      "source": "about %0 min",
+      "target": "सुमारे %0 मिनिटे"
+    },
+    {
+      "id": "native:[online %0 s]",
+      "source": "%0 s",
+      "target": "%0 सेकंद"
+    },
+    {
+      "id": "native:[online %0 min %1 s]",
+      "source": "%0 min %1 s",
+      "target": "%0 मिनिटे %1 सेकंद"
+    },
+    {
+      "id": "native:[qm ai opponent %0]",
+      "source": "AI opponent: %0",
+      "target": "एआय प्रतिस्पर्धी: %0"
+    },
+    {
+      "id": "native:[match relay connected]",
+      "source": "Connected to the game server",
+      "target": "गेम सर्वरशी कनेक्ट केले आहे"
+    },
+    {
+      "id": "native:[room picker title]",
+      "source": "Choose a map",
+      "target": "नकाशा निवडा"
+    },
+    {
+      "id": "native:[room picker for one]",
+      "source": "For the 1 player in the room",
+      "target": "खोलीतील १ खेळाडूसाठी"
+    },
+    {
+      "id": "native:[room picker for %0]",
+      "source": "For the %0 players in the room",
+      "target": "खोलीतील %0 खेळाडूंसाठी"
+    },
+    {
+      "id": "native:[room picker generated]",
+      "source": "Generated",
+      "target": "निर्माण केले"
+    },
+    {
+      "id": "native:[room picker premade]",
+      "source": "Premade",
+      "target": "पूर्वनिर्मित"
+    },
+    {
+      "id": "native:[room picker catalog]",
+      "source": "Catalog",
+      "target": "कॅटलॉग"
+    },
+    {
+      "id": "native:[room picker size]",
+      "source": "Size",
+      "target": "आकार"
+    },
+    {
+      "id": "native:[room picker colonies]",
+      "source": "Colonies",
+      "target": "वसाहती"
+    },
+    {
+      "id": "native:[room picker fair]",
+      "source": "Fair start for every colony",
+      "target": "प्रत्येक वसाहतीसाठी समान चांगली सुरुवात"
+    },
+    {
+      "id": "native:[room picker does not fit]",
+      "source": "Does not fit this size; try another",
+      "target": "हे माप योग्य नाही; दुसरे वापरून पहा."
+    },
+    {
+      "id": "native:[room picker preparing]",
+      "source": "Preparing the preview…",
+      "target": "प्रिव्ह्यूची तयारी करत आहे…"
+    },
+    {
+      "id": "native:[room picker generated note]",
+      "source": "Each landscape gives every colony an equally good start, and the server makes the same map for everyone.",
+      "target": "प्रत्येक भूप्रदेश प्रत्येक वसाहतीला समान चांगली सुरुवात देतो आणि सर्व्हर सर्वांसाठी एकच नकाशा तयार करतो."
+    },
+    {
+      "id": "native:[room picker players %0]",
+      "source": "%0 players",
+      "target": "%0 खेळाडू"
+    },
+    {
+      "id": "native:[room picker unreadable]",
+      "source": "can't be read",
+      "target": "वाचता येत नाही"
+    },
+    {
+      "id": "native:[room picker no premade]",
+      "source": "No premade maps were found.",
+      "target": "कोणतेही पूर्वनिर्मित नकाशे आढळले नाहीत."
+    },
+    {
+      "id": "native:[room picker too small %0]",
+      "source": "This map has fewer colonies than the %0 players in the room.",
+      "target": "या नकाशावर खोलीतील %0 खेळाडूंपेक्षा कमी वसाहती आहेत."
+    },
+    {
+      "id": "native:[room picker pick premade]",
+      "source": "Pick a map to see it here.",
+      "target": "ते पाहण्यासाठी येथे नकाशा निवडा."
+    },
+    {
+      "id": "native:[room picker catalog intro]",
+      "source": "Maps other players shared. Open one and choose Use in a room.",
+      "target": "इतर खेळाडूंनी सामायिक केलेले नकाशे. एखादा उघडा आणि «खोलीत वापरा» निवडा."
+    },
+    {
+      "id": "native:[room picker browse catalog]",
+      "source": "Browse shared maps",
+      "target": "सामायिक नकाशे ब्राउझ करा"
+    }
+  ]
+}

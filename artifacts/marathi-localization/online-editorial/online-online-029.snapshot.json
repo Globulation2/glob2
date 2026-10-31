@@ -1,0 +1,187 @@
+{
+  "batch": "online-online-029",
+  "source_sha256": "0ac44b4cdfb03e688983d6e3fb1e484cca57589665bff19c5c65388e649b292a",
+  "rows": [
+    {
+      "id": "online:Native terrain preview · awaiting checks",
+      "source": "Native terrain preview · awaiting checks",
+      "target": "मूळ भूभागाचे पूर्वावलोकन · तपासणीची प्रतीक्षा"
+    },
+    {
+      "id": "online:Generated layout · intermediate image",
+      "source": "Generated layout · intermediate image",
+      "target": "तयार केलेला लेआउट · मध्यवर्ती प्रतिमा"
+    },
+    {
+      "id": "online:Selected map area",
+      "source": "Selected map area",
+      "target": "निवडलेला नकाशा क्षेत्र"
+    },
+    {
+      "id": "online:Cropped layout · intermediate image",
+      "source": "Cropped layout · intermediate image",
+      "target": "क्रॉप केलेला लेआउट · मध्यवर्ती प्रतिमा"
+    },
+    {
+      "id": "online:Landscape reference {count}",
+      "source": "Landscape reference {count}",
+      "target": "लँडस्केप संदर्भ {count}"
+    },
+    {
+      "id": "online:Composition source · edit {count}",
+      "source": "Composition source · edit {count}",
+      "target": "रचना स्रोत · {count} संपादित करा"
+    },
+    {
+      "id": "online:Candidate {count} execution report",
+      "source": "Candidate {count} execution report",
+      "target": "उमेदवार {count} अंमलबजावणी अहवाल"
+    },
+    {
+      "id": "online:Candidate {count} score",
+      "source": "Candidate {count} score",
+      "target": "उमेदवार {count} गुण"
+    },
+    {
+      "id": "online:Candidate {count} · validated",
+      "source": "Candidate {count} · validated",
+      "target": "उमेदवार {count} · प्रमाणित"
+    },
+    {
+      "id": "online:Candidate {count} · needs repairs",
+      "source": "Candidate {count} · needs repairs",
+      "target": "उमेदवार {count} · दुरुस्तीची गरज आहे"
+    },
+    {
+      "id": "online:Candidate {count} report",
+      "source": "Candidate {count} report",
+      "target": "उमेदवार {count} अहवाल"
+    },
+    {
+      "id": "online:Validation report",
+      "source": "Validation report",
+      "target": "पडताळणी अहवाल"
+    },
+    {
+      "id": "online:Game-rendered scene and resource gallery",
+      "source": "Game-rendered scene and resource gallery",
+      "target": "गेम-रेंडर केलेले दृश्य आणि संसाधन गॅलरी"
+    },
+    {
+      "id": "online:Native validation report",
+      "source": "Native validation report",
+      "target": "मूळ प्रमाणीकरण अहवाल"
+    },
+    {
+      "id": "online:Engine import and artwork",
+      "source": "Engine import and artwork",
+      "target": "इंजिन आयात आणि कलाकृती"
+    },
+    {
+      "id": "online:Engine definitions and artwork",
+      "source": "Engine definitions and artwork",
+      "target": "इंजिन व्याख्या आणि कलाकृती"
+    },
+    {
+      "id": "online:Requested size and players",
+      "source": "Requested size and players",
+      "target": "मागितलेला आकार आणि खेळाडू"
+    },
+    {
+      "id": "online:Valid colony starts",
+      "source": "Valid colony starts",
+      "target": "वैध वसाहत सुरू होते"
+    },
+    {
+      "id": "online:Resource growth enabled",
+      "source": "Resource growth enabled",
+      "target": "संसाधन वाढीस सक्षम केले"
+    },
+    {
+      "id": "online:Connected walking routes",
+      "source": "Connected walking routes",
+      "target": "जोडलेले चालण्याचे मार्ग"
+    },
+    {
+      "id": "online:Opening economy measured",
+      "source": "Opening economy measured",
+      "target": "अर्थव्यवस्था उघडण्याचे मोजमाप"
+    },
+    {
+      "id": "online:Colony {count}: building space",
+      "source": "Colony {count}: building space",
+      "target": "कॉलनी {count}: इमारत जागा"
+    },
+    {
+      "id": "online:Colony {count}: starter food",
+      "source": "Colony {count}: starter food",
+      "target": "कॉलनी {count}: स्टार्टर फूड"
+    },
+    {
+      "id": "online:Colony {count}: starter timber",
+      "source": "Colony {count}: starter timber",
+      "target": "कॉलनी {count}: सुरुवातीचे लाकूड"
+    },
+    {
+      "id": "online:Colony {count}: renewable food ground",
+      "source": "Colony {count}: renewable food ground",
+      "target": "कॉलनी {count}: नूतनीकरणक्षम अन्नभूमी"
+    },
+    {
+      "id": "online:Properties",
+      "source": "Properties",
+      "target": "मालमत्ता"
+    },
+    {
+      "id": "online:Semantics",
+      "source": "Semantics",
+      "target": "अर्थशास्त्र"
+    },
+    {
+      "id": "online:Presentation",
+      "source": "Presentation",
+      "target": "सादरीकरण"
+    },
+    {
+      "id": "online:{value0} source",
+      "source": "{value0} source",
+      "target": "{value0} स्रोत"
+    },
+    {
+      "id": "online:{value0} decor source",
+      "source": "{value0} decor source",
+      "target": "{value0} सजावटीचा स्रोत"
+    },
+    {
+      "id": "online:Your draft changed while the design was loading. Your changes were kept; try opening the design again.",
+      "source": "Your draft changed while the design was loading. Your changes were kept; try opening the design again.",
+      "target": "डिझाइन लोड होत असताना तुमच्या मसुद्यात बदल झाला. तुमचे बदल जतन करण्यात आले आहेत; डिझाइन पुन्हा उघडून पहा."
+    },
+    {
+      "id": "online:More filters",
+      "source": "More filters",
+      "target": "अधिक फिल्टर"
+    },
+    {
+      "id": "online:Clear filters",
+      "source": "Clear filters",
+      "target": "फिल्टर साफ करा"
+    },
+    {
+      "id": "online:No results match these filters.",
+      "source": "No results match these filters.",
+      "target": "या फिल्टरशी जुळणारे कोणतेही निकाल नाहीत."
+    },
+    {
+      "id": "online:Results: {value0}",
+      "source": "Results: {value0}",
+      "target": "निकाल: {value0}"
+    },
+    {
+      "id": "online:Game text field",
+      "source": "Game text field",
+      "target": "खेळाचे मजकूर क्षेत्र"
+    }
+  ],
+  "subset_sha256": "5886ecdbdcc5e725d75660c8ea95d5addfe6cf9a911a2a68d59ed5d96cd88626"
+}

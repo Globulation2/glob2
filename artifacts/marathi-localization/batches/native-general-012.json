@@ -1,0 +1,509 @@
+{
+  "id": "native-general-012",
+  "source_sha256": "0ac44b4cdfb03e688983d6e3fb1e484cca57589665bff19c5c65388e649b292a",
+  "surface": "native",
+  "domain": "general",
+  "context": "Read neighbouring source entries and inspect usage before translating ambiguous short labels.",
+  "entries": [
+    {
+      "id": "native:[Pan map]",
+      "key": "[Pan map]",
+      "source": "Pan map"
+    },
+    {
+      "id": "native:[Edit map]",
+      "key": "[Edit map]",
+      "source": "Edit map"
+    },
+    {
+      "id": "native:[Editor map]",
+      "key": "[Editor map]",
+      "source": "Map"
+    },
+    {
+      "id": "native:[Pause]",
+      "key": "[Pause]",
+      "source": "Pause"
+    },
+    {
+      "id": "native:[Speed]",
+      "key": "[Speed]",
+      "source": "Speed"
+    },
+    {
+      "id": "native:[Objectives]",
+      "key": "[Objectives]",
+      "source": "Objectives"
+    },
+    {
+      "id": "native:[Menu]",
+      "key": "[Menu]",
+      "source": "Menu"
+    },
+    {
+      "id": "native:[Goals]",
+      "key": "[Goals]",
+      "source": "Goals"
+    },
+    {
+      "id": "native:[Teams]",
+      "key": "[Teams]",
+      "source": "Teams"
+    },
+    {
+      "id": "native:[Use this landscape]",
+      "key": "[Use this landscape]",
+      "source": "Use this landscape"
+    },
+    {
+      "id": "native:[Reset]",
+      "key": "[Reset]",
+      "source": "Reset"
+    },
+    {
+      "id": "native:[Generating...]",
+      "key": "[Generating...]",
+      "source": "Generating..."
+    },
+    {
+      "id": "native:[Players]",
+      "key": "[Players]",
+      "source": "Players"
+    },
+    {
+      "id": "native:[Rules]",
+      "key": "[Rules]",
+      "source": "Rules"
+    },
+    {
+      "id": "native:[Undo stroke]",
+      "key": "[Undo stroke]",
+      "source": "Undo"
+    },
+    {
+      "id": "native:[No overlay]",
+      "key": "[No overlay]",
+      "source": "No overlay"
+    },
+    {
+      "id": "native:[zoom factor %0]",
+      "key": "[zoom factor %0]",
+      "source": "%0×"
+    },
+    {
+      "id": "native:[More]",
+      "key": "[More]",
+      "source": "More"
+    },
+    {
+      "id": "native:[No items]",
+      "key": "[No items]",
+      "source": "No items"
+    },
+    {
+      "id": "native:[Review & Play]",
+      "key": "[Review & Play]",
+      "source": "Review & Play"
+    },
+    {
+      "id": "native:[Edit opponents]",
+      "key": "[Edit opponents]",
+      "source": "Edit opponents"
+    },
+    {
+      "id": "native:[Next]",
+      "key": "[Next]",
+      "source": "Next"
+    },
+    {
+      "id": "native:[Done]",
+      "key": "[Done]",
+      "source": "Done"
+    },
+    {
+      "id": "native:[Contribution]",
+      "key": "[Contribution]",
+      "source": "Contribution"
+    },
+    {
+      "id": "native:[Choose who controls this colony]",
+      "key": "[Choose who controls this colony]",
+      "source": "Choose who controls this colony"
+    },
+    {
+      "id": "native:[Settings]",
+      "key": "[Settings]",
+      "source": "Settings"
+    },
+    {
+      "id": "native:[AI opponents]",
+      "key": "[AI opponents]",
+      "source": "AI opponents"
+    },
+    {
+      "id": "native:[Assigned %0 · Target %1]",
+      "key": "[Assigned %0 · Target %1]",
+      "source": "Assigned %0 · Target %1"
+    },
+    {
+      "id": "native:[Range: %0]",
+      "key": "[Range: %0]",
+      "source": "Range: %0"
+    },
+    {
+      "id": "native:[Player %0]",
+      "key": "[Player %0]",
+      "source": "Player %0"
+    },
+    {
+      "id": "native:[Brush %0]",
+      "key": "[Brush %0]",
+      "source": "Brush %0"
+    },
+    {
+      "id": "native:[Team %0]",
+      "key": "[Team %0]",
+      "source": "Team %0"
+    },
+    {
+      "id": "native:[Your colony]",
+      "key": "[Your colony]",
+      "source": "Your colony"
+    },
+    {
+      "id": "native:[%0 / %1 HP · %2]",
+      "key": "[%0 / %1 HP · %2]",
+      "source": "%0 / %1 HP · %2"
+    },
+    {
+      "id": "native:[Units: %0]",
+      "key": "[Units: %0]",
+      "source": "Units: %0"
+    },
+    {
+      "id": "native:[Need food: %0]",
+      "key": "[Need food: %0]",
+      "source": "Need food: %0"
+    },
+    {
+      "id": "native:[Need healing: %0]",
+      "key": "[Need healing: %0]",
+      "source": "Need healing: %0"
+    },
+    {
+      "id": "native:[Attack: %0]",
+      "key": "[Attack: %0]",
+      "source": "Attack: %0"
+    },
+    {
+      "id": "native:[Defense: %0]",
+      "key": "[Defense: %0]",
+      "source": "Defense: %0"
+    },
+    {
+      "id": "native:[Food: %0 / %1]",
+      "key": "[Food: %0 / %1]",
+      "source": "Food: %0 / %1"
+    },
+    {
+      "id": "native:[View team %0]",
+      "key": "[View team %0]",
+      "source": "View team %0"
+    },
+    {
+      "id": "native:[P %0/%1/%2]",
+      "key": "[P %0/%1/%2]",
+      "source": "P %0/%1/%2"
+    },
+    {
+      "id": "native:[CPU load %0]",
+      "key": "[CPU load %0]",
+      "source": "CPU %0%"
+    },
+    {
+      "id": "native:[Brush %0x%1]",
+      "key": "[Brush %0x%1]",
+      "source": "Brush %0x%1"
+    },
+    {
+      "id": "native:[Level %0]",
+      "key": "[Level %0]",
+      "source": "Level %0"
+    },
+    {
+      "id": "native:[Manage teams (%0)]",
+      "key": "[Manage teams (%0)]",
+      "source": "Manage teams (%0)"
+    },
+    {
+      "id": "native:[Team %0 / Level %1]",
+      "key": "[Team %0 / Level %1]",
+      "source": "Team %0 / Level %1"
+    },
+    {
+      "id": "native:[Files · %0]",
+      "key": "[Files · %0]",
+      "source": "Files · %0"
+    },
+    {
+      "id": "native:[Hint %0]",
+      "key": "[Hint %0]",
+      "source": "Hint %0"
+    },
+    {
+      "id": "native:[Objective %0]",
+      "key": "[Objective %0]",
+      "source": "Objective %0"
+    },
+    {
+      "id": "native:[Entry %0 of 8 · empty entries are omitted]",
+      "key": "[Entry %0 of 8 · empty entries are omitted]",
+      "source": "Entry %0 of 8 · empty entries are omitted"
+    },
+    {
+      "id": "native:[Teams %0/%1]",
+      "key": "[Teams %0/%1]",
+      "source": "Teams %0/%1"
+    },
+    {
+      "id": "native:[Elapsed time · %0]",
+      "key": "[Elapsed time · %0]",
+      "source": "Elapsed time · %0"
+    },
+    {
+      "id": "native:[Alliance and shared vision are fixed for this match.]",
+      "key": "[Alliance and shared vision are fixed for this match.]",
+      "source": "Alliance and shared vision are fixed for this match."
+    },
+    {
+      "id": "native:[Share vision]",
+      "key": "[Share vision]",
+      "source": "Share vision"
+    },
+    {
+      "id": "native:[Share food vision]",
+      "key": "[Share food vision]",
+      "source": "Share food vision"
+    },
+    {
+      "id": "native:[Chat]",
+      "key": "[Chat]",
+      "source": "Chat"
+    },
+    {
+      "id": "native:[No briefing for this match.]",
+      "key": "[No briefing for this match.]",
+      "source": "No briefing for this match."
+    },
+    {
+      "id": "native:[Chat · recipients selected in Teams]",
+      "key": "[Chat · recipients selected in Teams]",
+      "source": "Chat · recipients selected in Teams"
+    },
+    {
+      "id": "native:[Filename]",
+      "key": "[Filename]",
+      "source": "Filename"
+    },
+    {
+      "id": "native:[Reduced motion]",
+      "key": "[Reduced motion]",
+      "source": "Reduced motion"
+    },
+    {
+      "id": "native:[Send]",
+      "key": "[Send]",
+      "source": "Send"
+    },
+    {
+      "id": "native:[Close]",
+      "key": "[Close]",
+      "source": "Close"
+    },
+    {
+      "id": "native:[Forbidden]",
+      "key": "[Forbidden]",
+      "source": "Forbidden"
+    },
+    {
+      "id": "native:[Guard]",
+      "key": "[Guard]",
+      "source": "Guard"
+    },
+    {
+      "id": "native:[Clear]",
+      "key": "[Clear]",
+      "source": "Clear"
+    },
+    {
+      "id": "native:[Farm]",
+      "key": "[Farm]",
+      "source": "Farm"
+    },
+    {
+      "id": "native:[Paint]",
+      "key": "[Paint]",
+      "source": "Paint"
+    },
+    {
+      "id": "native:[Erase]",
+      "key": "[Erase]",
+      "source": "Erase"
+    },
+    {
+      "id": "native:[Paint on the map; two fingers move]",
+      "key": "[Paint on the map; two fingers move]",
+      "source": "Paint on the map; two fingers move"
+    },
+    {
+      "id": "native:[Back to tools]",
+      "key": "[Back to tools]",
+      "source": "Back to tools"
+    },
+    {
+      "id": "native:[Starvation overlay]",
+      "key": "[Starvation overlay]",
+      "source": "Starvation overlay"
+    },
+    {
+      "id": "native:[Damage overlay]",
+      "key": "[Damage overlay]",
+      "source": "Damage overlay"
+    },
+    {
+      "id": "native:[Defense overlay]",
+      "key": "[Defense overlay]",
+      "source": "Defense overlay"
+    },
+    {
+      "id": "native:[Fertility overlay]",
+      "key": "[Fertility overlay]",
+      "source": "Fertility overlay"
+    },
+    {
+      "id": "native:[Health and food bars]",
+      "key": "[Health and food bars]",
+      "source": "Health and food bars"
+    },
+    {
+      "id": "native:[Message history]",
+      "key": "[Message history]",
+      "source": "Message history"
+    },
+    {
+      "id": "native:[Show zones]",
+      "key": "[Show zones]",
+      "source": "Show zones"
+    },
+    {
+      "id": "native:[Pan]",
+      "key": "[Pan]",
+      "source": "Pan"
+    },
+    {
+      "id": "native:[Select]",
+      "key": "[Select]",
+      "source": "Select"
+    },
+    {
+      "id": "native:[Show palette]",
+      "key": "[Show palette]",
+      "source": "Show palette"
+    },
+    {
+      "id": "native:[Release to place]",
+      "key": "[Release to place]",
+      "source": "Release to place"
+    },
+    {
+      "id": "native:[Blocked placement]",
+      "key": "[Blocked placement]",
+      "source": "Blocked placement"
+    },
+    {
+      "id": "native:[File name]",
+      "key": "[File name]",
+      "source": "File name"
+    },
+    {
+      "id": "native:[Load map]",
+      "key": "[Load map]",
+      "source": "Load map"
+    },
+    {
+      "id": "native:[Save map]",
+      "key": "[Save map]",
+      "source": "Save map"
+    },
+    {
+      "id": "native:[No files in this folder]",
+      "key": "[No files in this folder]",
+      "source": "No files in this folder"
+    },
+    {
+      "id": "native:[No files saved yet]",
+      "key": "[No files saved yet]",
+      "source": "No files saved yet"
+    },
+    {
+      "id": "native:[Export]",
+      "key": "[Export]",
+      "source": "Export"
+    },
+    {
+      "id": "native:[Tap to write the mission briefing]",
+      "key": "[Tap to write the mission briefing]",
+      "source": "Tap to write the mission briefing"
+    },
+    {
+      "id": "native:[Script]",
+      "key": "[Script]",
+      "source": "Script"
+    },
+    {
+      "id": "native:[Previous]",
+      "key": "[Previous]",
+      "source": "Previous"
+    },
+    {
+      "id": "native:[Compile]",
+      "key": "[Compile]",
+      "source": "Compile"
+    },
+    {
+      "id": "native:[Tap to write this hint]",
+      "key": "[Tap to write this hint]",
+      "source": "Tap to write this hint"
+    },
+    {
+      "id": "native:[Tap to write this objective]",
+      "key": "[Tap to write this objective]",
+      "source": "Tap to write this objective"
+    },
+    {
+      "id": "native:[Mission briefing · tap to edit, swipe to scroll]",
+      "key": "[Mission briefing · tap to edit, swipe to scroll]",
+      "source": "Mission briefing · tap to edit, swipe to scroll"
+    },
+    {
+      "id": "native:[Not enough recorded history yet.]",
+      "key": "[Not enough recorded history yet.]",
+      "source": "Not enough recorded history yet."
+    },
+    {
+      "id": "native:[Select a team to show its history.]",
+      "key": "[Select a team to show its history.]",
+      "source": "Select a team to show its history."
+    },
+    {
+      "id": "native:[Back to chart]",
+      "key": "[Back to chart]",
+      "source": "Back to chart"
+    },
+    {
+      "id": "native:[Expand chart]",
+      "key": "[Expand chart]",
+      "source": "Expand chart"
+    }
+  ]
+}

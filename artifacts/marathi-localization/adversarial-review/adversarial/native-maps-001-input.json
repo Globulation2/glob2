@@ -1,0 +1,510 @@
+{
+  "source_sha256": "0ac44b4cdfb03e688983d6e3fb1e484cca57589665bff19c5c65388e649b292a",
+  "batch_target_sha256": "eeb3930629494989b4a1ba31f17b661686d6a896cb283cd8c539740c69d44bd9",
+  "catalog_sha256": {
+    "native": "a6d0da95a3cf29e0bcfa904f80043a10fedc3124f7a26e3beebc82e8cdfa4411",
+    "online": "feb4b9a71595724a0995b0cf0f42c94742ef29030b66c9488c77ebc6be7a89db"
+  },
+  "entries": [
+    {
+      "id": "native:[concrete islands terrain]",
+      "source": "Separate Islands",
+      "target": "वेगळी बेटे"
+    },
+    {
+      "id": "native:[crater lakes terrain]",
+      "source": "Crater Lakes",
+      "target": "विवरांतील सरोवरे"
+    },
+    {
+      "id": "native:[extra islands]",
+      "source": "empty islands",
+      "target": "रिकामी बेटे"
+    },
+    {
+      "id": "native:[islands size]",
+      "source": "island size",
+      "target": "बेटाचा आकार"
+    },
+    {
+      "id": "native:[islands terrain]",
+      "source": "Islands",
+      "target": "बेटे"
+    },
+    {
+      "id": "native:[isles terrain]",
+      "source": "Isles",
+      "target": "बेटे"
+    },
+    {
+      "id": "native:[map description]",
+      "source": "Description",
+      "target": "वर्णन"
+    },
+    {
+      "id": "native:[Map Discovered]",
+      "source": "Map Discovered",
+      "target": "नकाशा आधीच उघड झालेला"
+    },
+    {
+      "id": "native:[map name]",
+      "source": "Name",
+      "target": "नाव"
+    },
+    {
+      "id": "native:[map script]",
+      "source": "Map Script",
+      "target": "नकाशाची स्क्रिप्ट"
+    },
+    {
+      "id": "native:[map size x]",
+      "source": "Map width",
+      "target": "नकाशाची रुंदी"
+    },
+    {
+      "id": "native:[map size y]",
+      "source": "Map height",
+      "target": "नकाशाची उंची"
+    },
+    {
+      "id": "native:[old islands terrain]",
+      "source": "Rugged Archipelago",
+      "target": "खडबडीत द्वीपसमूह"
+    },
+    {
+      "id": "native:[old random terrain]",
+      "source": "Shattered Coast",
+      "target": "खंडित किनारा"
+    },
+    {
+      "id": "native:[river diameter]",
+      "source": "width of river",
+      "target": "नदीची रुंदी"
+    },
+    {
+      "id": "native:[river terrain]",
+      "source": "River",
+      "target": "नदी"
+    },
+    {
+      "id": "native:[Reroll terrain look]",
+      "source": "Reroll terrain look",
+      "target": "भूभागाचे रूप पुन्हा निवडा"
+    },
+    {
+      "id": "native:[swamp terrain]",
+      "source": "Swamp",
+      "target": "दलदल"
+    },
+    {
+      "id": "native:[switch to terrain view]",
+      "source": "Switch to Terrain view",
+      "target": "भूभागाच्या दृश्याकडे वळा"
+    },
+    {
+      "id": "native:[uniform terrain]",
+      "source": "Uniform terrain",
+      "target": "एकसमान भूभाग"
+    },
+    {
+      "id": "native:[Concrete islands]",
+      "source": "Concrete islands",
+      "target": "स्वतंत्र बेटे"
+    },
+    {
+      "id": "native:[Could not load this map. Choose another map or retry.]",
+      "source": "Could not load this map. Choose another map or retry.",
+      "target": "हा नकाशा लोड होऊ शकला नाही. कृपया दुसरा नकाशा निवडा किंवा पुन्हा प्रयत्न करा."
+    },
+    {
+      "id": "native:[Crater lakes]",
+      "source": "Crater lakes",
+      "target": "विवर सरोवरे"
+    },
+    {
+      "id": "native:[Extra islands]",
+      "source": "Extra islands",
+      "target": "अतिरिक्त बेटे"
+    },
+    {
+      "id": "native:[Give at least one terrain type a nonzero weight.]",
+      "source": "Give at least one terrain type a nonzero weight.",
+      "target": "किमान एका भूप्रदेश प्रकाराला शून्येतर भार द्या."
+    },
+    {
+      "id": "native:[Island size]",
+      "source": "Island size",
+      "target": "बेटाचा आकार"
+    },
+    {
+      "id": "native:[Islands]",
+      "source": "Islands",
+      "target": "बेटे"
+    },
+    {
+      "id": "native:[Lake density]",
+      "source": "Lake density",
+      "target": "तलावाची घनता"
+    },
+    {
+      "id": "native:[Old islands]",
+      "source": "Rugged Archipelago",
+      "target": "खडबडीत द्वीपसमूह"
+    },
+    {
+      "id": "native:[Each landscape is shown as a real map at your current size and colony count. Use one to play the map shown.]",
+      "source": "Each landscape is shown as a real map at your current size and colony count. Use one to play the map shown.",
+      "target": "प्रत्येक भूप्रदेश तुमच्या सध्याच्या आकारानुसार आणि वसाहतींच्या संख्येनुसार एका वास्तविक नकाशाच्या स्वरूपात दाखवला आहे. दाखवलेला नकाशा खेळण्यासाठी त्यापैकी एकाचा वापर करा."
+    },
+    {
+      "id": "native:[River]",
+      "source": "River",
+      "target": "नदी"
+    },
+    {
+      "id": "native:[River width]",
+      "source": "River width",
+      "target": "नदीची रुंदी"
+    },
+    {
+      "id": "native:[Terrain]",
+      "source": "Terrain",
+      "target": "भूभाग"
+    },
+    {
+      "id": "native:[Start with terrain known]",
+      "source": "Start with terrain known",
+      "target": "सुरुवातीपासून भूभाग दिसू द्या"
+    },
+    {
+      "id": "native:[This landscape uses a fixed terrain recipe.]",
+      "source": "This landscape uses a fixed terrain recipe.",
+      "target": "या भूप्रदेशात एक निश्चित भूभाग रचना वापरली आहे."
+    },
+    {
+      "id": "native:[Updating map preview...]",
+      "source": "Updating map preview...",
+      "target": "नकाशाचे पूर्वावलोकन अद्ययावत करत आहे..."
+    },
+    {
+      "id": "native:[Conquest only removes prestige victory; map scripts still apply.]",
+      "source": "Conquest only removes prestige victory; map scripts still apply.",
+      "target": "फक्त शत्रूंचा पराभव या पर्यायाने प्रतिष्ठेचा विजय बंद होतो; नकाशाच्या स्क्रिप्ट मात्र लागू राहतात."
+    },
+    {
+      "id": "native:[Map source]",
+      "source": "Map source",
+      "target": "नकाशा स्रोत"
+    },
+    {
+      "id": "native:[Select a map from the library.]",
+      "source": "Select a map from the library.",
+      "target": "लायब्ररीमधून एक नकाशा निवडा."
+    },
+    {
+      "id": "native:[Lake size]",
+      "source": "Lake size",
+      "target": "तलावाचा आकार"
+    },
+    {
+      "id": "native:[The maze needs at least two cells across and down; use a bigger map or smaller cells.]",
+      "source": "The maze needs at least two cells across and down; use a bigger map or smaller cells.",
+      "target": "भूलभुलैयामध्ये आडवे आणि उभे किमान दोन कप्पे हवेत; मोठा नकाशा किंवा लहान कप्पे वापरा."
+    },
+    {
+      "id": "native:[The maze has too few cul-de-sacs for this many colonies; use a bigger map or smaller cells.]",
+      "source": "The maze has too few cul-de-sacs for this many colonies; use a bigger map or smaller cells.",
+      "target": "इतक्या वसाहतींसाठी भूलभुलैयामध्ये पुरेसे बंद मार्ग नाहीत; मोठा नकाशा किंवा लहान कप्पे वापरा."
+    },
+    {
+      "id": "native:[Home island size]",
+      "source": "Home island size",
+      "target": "तळाच्या बेटाचा आकार"
+    },
+    {
+      "id": "native:[Lake connects to fjords]",
+      "source": "Lake connects to fjords",
+      "target": "सरोवर फ्योर्डला जोडते"
+    },
+    {
+      "id": "native:[Resource islands]",
+      "source": "Resource islands",
+      "target": "संसाधन बेटे"
+    },
+    {
+      "id": "native:[River density]",
+      "source": "River density",
+      "target": "नदीची घनता"
+    },
+    {
+      "id": "native:[The watershed has too little floodplain for this many colonies; use a bigger map or fewer colonies.]",
+      "source": "The watershed has too little floodplain for this many colonies; use a bigger map or fewer colonies.",
+      "target": "या वसाहतींसाठी पाणलोट क्षेत्रात पूरमैदान खूपच कमी आहे; मोठा नकाशा वापरा किंवा कमी वसाहती ठेवा."
+    },
+    {
+      "id": "native:[These valleys are too big for the map; use a bigger map or smaller valleys.]",
+      "source": "These valleys are too big for the map; use a bigger map or smaller valleys.",
+      "target": "या दऱ्या नकाशासाठी खूप मोठ्या आहेत; मोठा नकाशा वापरा किंवा लहान दऱ्या वापरा."
+    },
+    {
+      "id": "native:[The highlands have too little room for this many colonies; use a bigger map or fewer colonies.]",
+      "source": "The highlands have too little room for this many colonies; use a bigger map or fewer colonies.",
+      "target": "उंच प्रदेशात एवढ्या वसाहतींसाठी जागा खूपच कमी आहे; मोठा नकाशा वापरा किंवा कमी वसाहती ठेवा."
+    },
+    {
+      "id": "native:[Lakes]",
+      "source": "Lakes",
+      "target": "तलाव"
+    },
+    {
+      "id": "native:[Eight colonies need a square map in the symmetric arena.]",
+      "source": "Eight colonies need a square map in the symmetric arena.",
+      "target": "आठ वसाहतींना सममित आखाड्यात चौरसाकृती नकाशाची गरज आहे."
+    },
+    {
+      "id": "native:[The belt is too short for this many colonies; use a longer map or fewer colonies.]",
+      "source": "The belt is too short for this many colonies; use a longer map or fewer colonies.",
+      "target": "एवढ्या वसाहतींसाठी हा पट्टा खूपच लहान आहे; अधिक मोठा नकाशा वापरा किंवा कमी वसाहती ठेवा."
+    },
+    {
+      "id": "native:[Too many colonies for this map; use a bigger map or fewer colonies.]",
+      "source": "Too many colonies for this map; use a bigger map or fewer colonies.",
+      "target": "या नकाशासाठी वसाहतींची संख्या खूप जास्त आहे; मोठा नकाशा वापरा किंवा कमी वसाहती वापरा."
+    },
+    {
+      "id": "native:[Coral needs a map at least 128 tiles across.]",
+      "source": "Coral needs a map at least 128 tiles across.",
+      "target": "प्रवाळासाठी किमान १२८ चौक रुंद नकाशा हवा."
+    },
+    {
+      "id": "native:[Sandbars]",
+      "source": "Sandbars",
+      "target": "वाळूचे पट्टे"
+    },
+    {
+      "id": "native:[Central island]",
+      "source": "Central island",
+      "target": "मध्यवर्ती बेट"
+    },
+    {
+      "id": "native:[The home islands do not fit on this map; use a bigger map, fewer colonies or smaller islands.]",
+      "source": "The home islands do not fit on this map; use a bigger map, fewer colonies or smaller islands.",
+      "target": "मुख्य बेटे या नकाशावर बसत नाहीत; मोठा नकाशा, कमी वसाहती किंवा लहान बेटे वापरा."
+    },
+    {
+      "id": "native:[Winding river]",
+      "source": "Winding river",
+      "target": "नागमोडी नदी"
+    },
+    {
+      "id": "native:[Sandy lake shore]",
+      "source": "Sandy lake shore",
+      "target": "वाळूचा तलाव किनारा"
+    },
+    {
+      "id": "native:[River delta]",
+      "source": "River delta",
+      "target": "नदीचा त्रिभुज प्रदेश"
+    },
+    {
+      "id": "native:[Meandering rivers]",
+      "source": "Meandering rivers",
+      "target": "नागमोडी नद्या"
+    },
+    {
+      "id": "native:[Inland lakes]",
+      "source": "Inland lakes",
+      "target": "अंतर्देशीय तलाव"
+    },
+    {
+      "id": "native:[Map preview controls]",
+      "source": "Drag to wrap. Wheel to zoom. Right-click or double-click to reset.",
+      "target": "नकाशा ओढून फिरवा. झूमसाठी माउसचे चाक वापरा. मूळ दृश्यासाठी उजवे बटण किंवा डबल-क्लिक करा."
+    },
+    {
+      "id": "native:[Map preview drag help]",
+      "source": "Drag to wrap; wheel to zoom.",
+      "target": "नकाशा ओढून फिरवा; झूमसाठी माउसचे चाक वापरा."
+    },
+    {
+      "id": "native:[Map preview loading]",
+      "source": "Loading...",
+      "target": "लोडिंग..."
+    },
+    {
+      "id": "native:[Map preview failed]",
+      "source": "Preview failed",
+      "target": "पूर्वावलोकन अयशस्वी झाले"
+    },
+    {
+      "id": "native:[Map preview retry]",
+      "source": "Click to retry",
+      "target": "पुन्हा प्रयत्न करण्यासाठी क्लिक करा"
+    },
+    {
+      "id": "native:[Map preview please wait]",
+      "source": "Please wait",
+      "target": "कृपया थांबा"
+    },
+    {
+      "id": "native:[Map preview choose another]",
+      "source": "Choose a map",
+      "target": "नकाशा निवडा"
+    },
+    {
+      "id": "native:[Emoji terrain]",
+      "source": "Emoji terrain",
+      "target": "इमोजी भूप्रदेश"
+    },
+    {
+      "id": "native:[A fort cannot reach its ford; use a bigger map or fewer colonies.]",
+      "source": "A fort cannot reach its ford; use a bigger map or fewer colonies.",
+      "target": "किल्ला त्याच्या ओलांडण्याच्या जागेपर्यंत पोहोचू शकत नाही; मोठा नकाशा वापरा किंवा कमी वसाहती ठेवा."
+    },
+    {
+      "id": "native:[Braided river]",
+      "source": "Braided river",
+      "target": "वेणीसारखी गुंफलेली नदी"
+    },
+    {
+      "id": "native:[The braid leaves too little terrace for the homes; use a bigger map or a narrower braid.]",
+      "source": "The braid leaves too little terrace for the homes; use a bigger map or a narrower braid.",
+      "target": "गुंफलेल्या नदीमुळे तळांसाठी खूप कमी सपाट जागा उरते; मोठा नकाशा किंवा अरुंद नदी वापरा."
+    },
+    {
+      "id": "native:[The map is too narrow across for a braid; use a bigger map.]",
+      "source": "The map is too narrow across for a braid; use a bigger map.",
+      "target": "गुंफलेल्या नदीसाठी नकाशा खूप अरुंद आहे; मोठा नकाशा वापरा."
+    },
+    {
+      "id": "native:[Mountain ranges]",
+      "source": "Mountain ranges",
+      "target": "पर्वतरांगा"
+    },
+    {
+      "id": "native:[Great rivers]",
+      "source": "Great rivers",
+      "target": "मोठ्या नद्या"
+    },
+    {
+      "id": "native:[The map is too small to hold a continent.]",
+      "source": "The map is too small to hold a continent.",
+      "target": "नकाशा खंड सामावून घेण्यासाठी खूपच लहान आहे."
+    },
+    {
+      "id": "native:[This continent has no room for that many colonies at this map size; use a bigger map or fewer colonies.]",
+      "source": "This continent has no room for that many colonies at this map size; use a bigger map or fewer colonies.",
+      "target": "या नकाशाच्या आकारात या खंडात तेवढ्या वसाहतींसाठी जागा नाही; मोठा नकाशा वापरा किंवा कमी वसाहती ठेवा."
+    },
+    {
+      "id": "native:[Valley river]",
+      "source": "Valley river",
+      "target": "दरीतील नदी"
+    },
+    {
+      "id": "native:[Islands per colony]",
+      "source": "Islands per colony",
+      "target": "प्रत्येक वसाहतीमधील बेटे"
+    },
+    {
+      "id": "native:[The islands are too small for their plots; use a bigger map, a smaller plot or fewer colonies.]",
+      "source": "The islands are too small for their plots; use a bigger map, a smaller plot or fewer colonies.",
+      "target": "ही बेटे त्यांच्या भूखंडांसाठी खूपच लहान आहेत; मोठा नकाशा, लहान भूखंड किंवा कमी वसाहती वापरा."
+    },
+    {
+      "id": "native:[Hilbert River]",
+      "source": "Hilbert River",
+      "target": "हिल्बर्ट नदी"
+    },
+    {
+      "id": "native:[The rivers found no way between the homes; use a bigger map or fewer colonies.]",
+      "source": "The rivers found no way between the homes; use a bigger map or fewer colonies.",
+      "target": "नद्यांना घरांच्या मधून मार्ग सापडला नाही; मोठा नकाशा वापरा किंवा कमी वसाहती वापरा."
+    },
+    {
+      "id": "native:[River meander]",
+      "source": "River meander",
+      "target": "नदीचे नागमोडी वळण"
+    },
+    {
+      "id": "native:[The lake does not fit this map; use a smaller lake or a bigger map.]",
+      "source": "The lake does not fit this map; use a smaller lake or a bigger map.",
+      "target": "हे सरोवर या नकाशात बसत नाही; लहान सरोवर किंवा मोठा नकाशा वापरा."
+    },
+    {
+      "id": "native:[A sand bar did not reach the island.]",
+      "source": "A sand bar did not reach the island.",
+      "target": "वाळूचा पट्टा बेटापर्यंत पोहोचला नाही."
+    },
+    {
+      "id": "native:[This map has no room for that many colonies; use a bigger map or fewer colonies.]",
+      "source": "This map has no room for that many colonies; use a bigger map or fewer colonies.",
+      "target": "या नकाशावर तेवढ्या वसाहतींसाठी जागा नाही; मोठा नकाशा वापरा किंवा कमी वसाहती ठेवा."
+    },
+    {
+      "id": "native:[The island has no room for its quarry; use a bigger island.]",
+      "source": "The island has no room for its quarry; use a bigger island.",
+      "target": "बेटावर त्याच्या खाणीसाठी जागा नाही; मोठे बेट वापरा."
+    },
+    {
+      "id": "native:[The massif does not fit this map; use a bigger map or fewer colonies.]",
+      "source": "The massif does not fit this map; use a bigger map or fewer colonies.",
+      "target": "हा पर्वतसमूह या नकाशात बसत नाही; मोठा नकाशा वापरा किंवा कमी वसाहती वापरा."
+    },
+    {
+      "id": "native:[This map is too small to solve on; use a bigger map.]",
+      "source": "This map is too small to solve on; use a bigger map.",
+      "target": "हा नकाशा सोडवण्यासाठी खूप लहान आहे; मोठा नकाशा वापरा."
+    },
+    {
+      "id": "native:[Too many colonies to balance on a map this size; use a bigger map or fewer colonies.]",
+      "source": "Too many colonies to balance on a map this size; use a bigger map or fewer colonies.",
+      "target": "या आकाराच्या नकाशावर समतोल साधण्यासाठी वसाहती खूप जास्त आहेत; मोठा नकाशा किंवा कमी वसाहती वापरा."
+    },
+    {
+      "id": "native:[Too many colonies for this map to give each a homeland; use a bigger map or fewer colonies.]",
+      "source": "Too many colonies for this map to give each a homeland; use a bigger map or fewer colonies.",
+      "target": "या नकाशावर प्रत्येक वसाहतीला स्वतंत्र मातृभूमी देणे शक्य नाही; त्याऐवजी मोठा नकाशा वापरा किंवा कमी वसाहती ठेवा."
+    },
+    {
+      "id": "native:[This map has no room to spread the colonies out; use a bigger map or fewer colonies.]",
+      "source": "This map has no room to spread the colonies out; use a bigger map or fewer colonies.",
+      "target": "या नकाशात वसाहती पसरवण्यासाठी जागा नाही; मोठा नकाशा वापरा किंवा कमी वसाहती ठेवा."
+    },
+    {
+      "id": "native:[A colony's homeland has no way out onto the march; use a bigger map or a narrower march.]",
+      "source": "A colony's homeland has no way out onto the march; use a bigger map or a narrower march.",
+      "target": "एका वसाहतीच्या प्रदेशातून सीमाप्रदेशात जाण्याचा मार्ग नाही; मोठा नकाशा किंवा अरुंद सीमाप्रदेश वापरा."
+    },
+    {
+      "id": "native:[The Gauntlet needs a larger map or fewer colonies to fit its two guarded fronts.]",
+      "source": "The Gauntlet needs a larger map or fewer colonies to fit its two guarded fronts.",
+      "target": "त्याच्या दोन संरक्षित आघाड्या सामावून घेण्यासाठी गॉन्टलेटला अधिक मोठ्या नकाशाची किंवा कमी वसाहतींची आवश्यकता आहे."
+    },
+    {
+      "id": "native:[Portage Lakes]",
+      "source": "Portage Lakes",
+      "target": "पोर्टेज तलाव"
+    },
+    {
+      "id": "native:[Lake elongation]",
+      "source": "Lake elongation",
+      "target": "सरोवराची लांबी"
+    },
+    {
+      "id": "native:[Portage Lakes needs sides between 64 and 512 tiles.]",
+      "source": "Portage Lakes needs sides between 64 and 512 tiles.",
+      "target": "पोर्टेज लेक्सला ६४ ते ५१२ टाइल्सच्या दरम्यानच्या बाजूंची आवश्यकता आहे."
+    },
+    {
+      "id": "native:[Portage Lakes cannot fit shoreline settlements on this seed.]",
+      "source": "Portage Lakes cannot fit shoreline settlements on this seed.",
+      "target": "या सीडवर पोर्टेज लेक्सच्या किनाऱ्यावर वसत्या बसवता येणार नाहीत."
+    },
+    {
+      "id": "native:[Portage Lakes cannot fit renewable shore fields beside every settlement.]",
+      "source": "Portage Lakes cannot fit renewable shore fields beside every settlement.",
+      "target": "पोर्टेज लेक्स प्रत्येक वस्तीच्या शेजारी नूतनीकरणक्षम किनारी शेतजमिनी सामावून घेऊ शकत नाही."
+    }
+  ]
+}

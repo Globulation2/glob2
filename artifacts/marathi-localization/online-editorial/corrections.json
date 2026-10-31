@@ -1,0 +1,2390 @@
+{
+  "online: Terrain credits": {
+    "before": " भूभाग क्रेडिट्स",
+    "after": " भूभाग निर्मिती क्रेडिट्स",
+    "batch": "online-online-001",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online: Your next match will use the default colony.": {
+    "before": " तुमची पुढची जुळणी डीफॉल्ट कॉलनी वापरेल.",
+    "after": " पुढच्या सामन्यात पूर्वनिर्धारित वसाहत वापरली जाईल.",
+    "batch": "online-online-001",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online: credits": {
+    "before": " श्रेय",
+    "after": " क्रेडिट्स",
+    "batch": "online-online-001",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online: · Charged: ": {
+    "before": " · आरोप लावला: ",
+    "after": " · आकारलेले शुल्क: ",
+    "batch": "online-online-001",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online: · stale": {
+    "before": " · शिळे",
+    "after": " · कालबाह्य",
+    "batch": "online-online-001",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online: · {slot0} disconnect": {
+    "before": {
+      "one": " · {slot0} डिस्कनेक्ट",
+      "other": " · {slot0} डिस्कनेक्ट होते"
+    },
+    "after": {
+      "one": " · {slot0} वेळा संपर्क तुटला",
+      "other": " · {slot0} वेळा संपर्क तुटला"
+    },
+    "batch": "online-online-001",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online: · {slot0} disconnects": {
+    "before": " · {slot0} डिस्कनेक्ट होते",
+    "after": " · {slot0} वेळा संपर्क तुटला",
+    "batch": "online-online-001",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:, and enter:": {
+    "before": "आणि प्रविष्ट करा:",
+    "after": ", आणि लिहा:",
+    "batch": "online-online-001",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:, or create an account below": {
+    "before": "किंवा खाली खाते तयार करा",
+    "after": ", किंवा खाली खाते तयार करा",
+    "batch": "online-online-001",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:, then": {
+    "before": "मग",
+    "after": ", मग",
+    "batch": "online-online-001",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:, to confirm": {
+    "before": "पुष्टी करण्यासाठी",
+    "after": ", पुष्टी करण्यासाठी",
+    "batch": "online-online-001",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:.": {
+    "before": "...",
+    "after": ".",
+    "batch": "online-online-001",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:. You can close this page.": {
+    "before": "तुम्ही हे पान बंद करू शकता.",
+    "after": ". हे पृष्ठ बंद करू शकता.",
+    "batch": "online-online-001",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:1.0.0": {
+    "before": "१.०.०",
+    "after": "1.0.0",
+    "batch": "online-online-001",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:: create a room and invite your friends, or find a quick match.": {
+    "before": "एक रूम तयार करा आणि तुमच्या मित्रांना आमंत्रित करा, किंवा पटकन मॅच शोधा.",
+    "after": ": खोली तयार करून मित्रांना आमंत्रित करा, किंवा जलद सामना शोधा.",
+    "batch": "online-online-001",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:; nothing to install.": {
+    "before": "काहीही स्थापित करण्याची आवश्यकता नाही.",
+    "after": "; काहीही स्थापित करावे लागत नाही.",
+    "batch": "online-online-001",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:A Globulation 2 colony: globs at work around their swarm": {
+    "before": "Globulation 2 वसाहत: त्यांच्या थव्याभोवती कार्यरत असलेले गोळे",
+    "after": "Globulation 2 ची वसाहत: पोळ्याभोवती काम करणारे ग्लॉब",
+    "batch": "online-online-001",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:A dismissed report cannot hide content.": {
+    "before": "बरखास्त केलेला अहवाल मजकूर लपवू शकत नाही.",
+    "after": "फेटाळलेल्या तक्रारीमुळे सामग्री लपवता येत नाही.",
+    "batch": "online-online-001",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:A previous submission was not acknowledged. Sending it again safely retries the same request.": {
+    "before": "पूर्वी पाठवलेली विनंती स्वीकारली गेली नाही. ती पुन्हा पाठवल्यास, तीच विनंती सुरक्षितपणे पुन्हा केली जाते.",
+    "after": "आधीची विनंती पोहोचल्याची पुष्टी मिळाली नाही. ती पुन्हा पाठवणे म्हणजे त्याच विनंतीचा सुरक्षित पुनर्प्रयत्न.",
+    "batch": "online-online-001",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:A · V{slot0}": {
+    "before": "",
+    "after": "A · V{slot0}",
+    "batch": "online-online-001",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:AI JavaScript source": {
+    "before": "",
+    "after": "संगणकीय खेळाडूचा JavaScript स्रोत",
+    "batch": "online-online-001",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:API {slot0}, toolkit {slot1}, suite {slot2}. These checks sample settings and do not certify balance.": {
+    "before": "API {slot0}, टूलकिट {slot1}, सूट {slot2}. ह्या तपासण्या नमुना सेटिंग्ज तपासतात आणि शिल्लक प्रमाणित करत नाहीत.",
+    "after": "API {slot0}, टूलकिट {slot1}, संच {slot2}. या तपासण्या काही सेटिंग्ज तपासतात; खेळाच्या संतुलनाची हमी देत नाहीत.",
+    "batch": "online-online-002",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Actor account ID": {
+    "before": "अभिनेता खाते आयडी",
+    "after": "कृती करणाऱ्या खात्याचा ID",
+    "batch": "online-online-002",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Add the base frame first.": {
+    "before": "सर्वप्रथम पायाची चौकट जोडा.",
+    "after": "आधी मूळ फ्रेम जोडा.",
+    "batch": "online-online-002",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Air health change": {
+    "before": "हवेच्या आरोग्यात बदल",
+    "after": "हवेतील युनिटच्या आरोग्यात बदल",
+    "batch": "online-online-002",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:All generation attempts": {
+    "before": "सर्व पिढ्यांचे प्रयत्न",
+    "after": "निर्मितीचे सर्व प्रयत्न",
+    "batch": "online-online-002",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Allowed resource keys (null uses habitats)": {
+    "before": "अनुमत संसाधन की (शून्य अधिवास वापरते)",
+    "after": "परवानगी असलेल्या संसाधनांच्या की (null असल्यास अधिवास वापरले जातात)",
+    "batch": "online-online-002",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Apply to {slot0}": {
+    "before": "{slot0} वर अर्ज करा",
+    "after": "{slot0} ला लागू करा",
+    "batch": "online-online-002",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Audible comparison version": {
+    "before": "ऑडिबल तुलनात्मक आवृत्ती",
+    "after": "ऐकून तुलना करण्याची आवृत्ती",
+    "batch": "online-online-002",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Authenticated account activity; anonymous visitors are excluded.": {
+    "before": "प्रमाणीकृत खात्याची हालचाल; अनामिक अभ्यागतांना वगळण्यात आले आहे.",
+    "after": "साइन इन केलेल्या खात्यांच्या कृती; अनामिक अभ्यागत वगळले आहेत.",
+    "batch": "online-online-003",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Back to My skins": {
+    "before": "माझ्या त्वचेकडे परत",
+    "after": "माझ्या रूपांकडे परत जा",
+    "batch": "online-online-003",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Brush paints": {
+    "before": "ब्रश पेंट्स",
+    "after": "ब्रशने रंगवणे",
+    "batch": "online-online-003",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Building Studio": {
+    "before": "स्टुडिओची इमारत",
+    "after": "इमारत स्टुडिओ",
+    "batch": "online-online-003",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Building family": {
+    "before": "कुटुंब तयार करणे",
+    "after": "इमारत संच",
+    "batch": "online-online-003",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Building family editor": {
+    "before": "कुटुंब संपादक तयार करत आहे",
+    "after": "इमारत संच संपादक",
+    "batch": "online-online-003",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Building library": {
+    "before": "ग्रंथालय इमारत",
+    "after": "इमारतींचा संग्रह",
+    "batch": "online-online-003",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Building-credit sales are not enabled.": {
+    "before": "इमारत कर्जाची विक्री सक्षम केलेली नाही.",
+    "after": "इमारत निर्मिती क्रेडिट्सची विक्री सुरू केलेली नाही.",
+    "batch": "online-online-003",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Buildings: latest verified match against recent average": {
+    "before": "इमारती: अलीकडील सरासरीच्या तुलनेत नवीनतम सत्यापित जुळणी",
+    "after": "इमारती: अलीकडील सरासरीशी तुलना केलेला नवीनतम पडताळलेला सामना",
+    "batch": "online-online-003",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:CC BY 4.0 — credit required": {
+    "before": "CC BY 4.0 — क्रेडिट आवश्यक",
+    "after": "CC BY 4.0 — श्रेय देणे आवश्यक",
+    "batch": "online-online-003",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Cabino": {
+    "before": "कॅबिनो",
+    "after": "Cabino",
+    "batch": "online-online-003",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Cancel generation": {
+    "before": "पिढी रद्द करा",
+    "after": "निर्मिती रद्द करा",
+    "batch": "online-online-004",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Castor": {
+    "before": "कॅस्टर",
+    "after": "Castor",
+    "batch": "online-online-004",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Checkout returned. Check the payment below to confirm your purchase.": {
+    "before": "चेकआउट प्रक्रिया पूर्ण झाली आहे. तुमची खरेदी निश्चित करण्यासाठी खालील पेमेंट पर्याय तपासा.",
+    "after": "पेमेंट पृष्ठावरून परत आलात. खरेदीची खात्री करण्यासाठी खाली पेमेंटची स्थिती तपासा.",
+    "batch": "online-online-004",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Choose a family name.": {
+    "before": "आडनाव निवडा.",
+    "after": "इमारत संचाचे नाव निवडा.",
+    "batch": "online-online-004",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Choose a skin": {
+    "before": "त्वचा निवडा",
+    "after": "रूप निवडा",
+    "batch": "online-online-004",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Choose a skin name.": {
+    "before": "त्वचेचे नाव निवडा.",
+    "after": "रूपाचे नाव निवडा.",
+    "batch": "online-online-004",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Choose property…": {
+    "before": "मालमत्ता निवडा…",
+    "after": "गुणधर्म निवडा…",
+    "batch": "online-online-004",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Choose revision": {
+    "before": "पुनरावृत्ती निवडा",
+    "after": "आवृत्ती निवडा",
+    "batch": "online-online-004",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Close panel · Escape": {
+    "before": "पॅनल बंद करा · बाहेर पडा",
+    "after": "पटल बंद करा · Escape",
+    "batch": "online-online-005",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Close play choices": {
+    "before": "जवळचे खेळाचे पर्याय",
+    "after": "खेळाचे पर्याय बंद करा",
+    "batch": "online-online-005",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Colony skins": {
+    "before": "कॉलनी स्किन्स",
+    "after": "वसाहतींची रूपे",
+    "batch": "online-online-005",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Colony {slot0}": {
+    "before": "कॉलनी {slot0}",
+    "after": "वसाहत {slot0}",
+    "batch": "online-online-005",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Colony {value0} paint": {
+    "before": "कॉलनी {value0} पेंट",
+    "after": "वसाहत {value0} चे रंगकाम",
+    "batch": "online-online-005",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Colony {value0} skin": {
+    "before": "कॉलनी {value0} त्वचा",
+    "after": "वसाहत {value0} चे रूप",
+    "batch": "online-online-005",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Compare revision": {
+    "before": "पुनरावृत्तीची तुलना करा",
+    "after": "आवृत्तीची तुलना करा",
+    "batch": "online-online-005",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Compared revision": {
+    "before": "तुलनात्मक सुधारणा",
+    "after": "तुलनेसाठीची आवृत्ती",
+    "batch": "online-online-005",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Compared revision {slot0}": {
+    "before": "{slot0} या सुधारित आवृत्तीची तुलना केली.",
+    "after": "तुलनेसाठीची आवृत्ती {slot0}",
+    "batch": "online-online-005",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Compatibility of your active skin": {
+    "before": "तुमच्या सक्रिय त्वचेची अनुकूलता",
+    "after": "वापरात असलेल्या रूपाची सुसंगतता",
+    "batch": "online-online-005",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Complete family JSON": {
+    "before": "संपूर्ण कुटुंब JSON",
+    "after": "इमारत संचाचे संपूर्ण JSON",
+    "batch": "online-online-005",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Complete passing checks before publishing.": {
+    "before": "प्रकाशित करण्यापूर्वी सर्व तपासण्या पूर्ण करा.",
+    "after": "प्रकाशित करण्यापूर्वी सर्व तपासण्या यशस्वी करा.",
+    "batch": "online-online-005",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Confirming your payment. Your credits appear once payment is confirmed.": {
+    "before": "तुमच्या पेमेंटची पुष्टी केली जात आहे. पेमेंटची पुष्टी झाल्यावर तुमच्या खात्यात पैसे जमा झालेले दिसतील.",
+    "after": "पेमेंटची पुष्टी करत आहे. पुष्टी झाल्यावर तुमचे क्रेडिट्स दिसतील.",
+    "batch": "online-online-005",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Continue to uploads": {
+    "before": "अपलोड सुरू ठेवा",
+    "after": "अपलोडच्या विभागात पुढे जा",
+    "batch": "online-online-005",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Copy paint": {
+    "before": "कॉपी पेंट",
+    "after": "रंगकामाची प्रत करा",
+    "batch": "online-online-005",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Copy recorded usage": {
+    "before": "रेकॉर्ड केलेल्या वापराची प्रत",
+    "after": "नोंदवलेल्या वापराची प्रत करा",
+    "batch": "online-online-005",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Copy this link into Family link or ID in the game’s Building families picker to open this family directly.": {
+    "before": "हे कुटुंब थेट उघडण्यासाठी, गेममधील 'बिल्डिंग फॅमिलीज पिकर'मधील 'फॅमिली लिंक' किंवा 'आयडी' मध्ये ही लिंक कॉपी करा.",
+    "after": "हा इमारत संच थेट उघडण्यासाठी खेळातील इमारत संच निवडणीत «संचाची लिंक किंवा ID» येथे ही लिंक द्या.",
+    "batch": "online-online-005",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Cortex": {
+    "before": "कॉर्टेक्स",
+    "after": "Cortex",
+    "batch": "online-online-005",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Could not delete this skin.": {
+    "before": "ही स्किन हटवता आली नाही.",
+    "after": "हे रूप हटवता आले नाही.",
+    "batch": "online-online-005",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Could not use this skin.": {
+    "before": "ही स्किन वापरता आली नाही.",
+    "after": "हे रूप वापरता आले नाही.",
+    "batch": "online-online-005",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Create a building family": {
+    "before": "इमारत कुटुंब तयार करा",
+    "after": "इमारत संच तयार करा",
+    "batch": "online-online-006",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Create a building or an upgrade family with custom artwork.": {
+    "before": "सानुकूल कलाकृती वापरून इमारत किंवा अपग्रेड फॅमिली तयार करा.",
+    "after": "स्वतःच्या कलाकृतींसह इमारत किंवा सुधारणा संच तयार करा.",
+    "batch": "online-online-006",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Create a family": {
+    "before": "कुटुंब तयार करा",
+    "after": "इमारत संच तयार करा",
+    "batch": "online-online-006",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Creation ready.": {
+    "before": "निर्मितीसाठी तयार आहे.",
+    "after": "निर्मिती तयार आहे.",
+    "batch": "online-online-006",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Credit activity": {
+    "before": "पत व्यवहार",
+    "after": "क्रेडिट्सचे व्यवहार",
+    "batch": "online-online-006",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Credit purchases are currently unavailable.": {
+    "before": "सध्या क्रेडिटवर खरेदी उपलब्ध नाही.",
+    "after": "सध्या क्रेडिट्स खरेदी करता येत नाहीत.",
+    "batch": "online-online-006",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Credit purchases are not available.": {
+    "before": "क्रेडिटवर खरेदी करता येत नाही.",
+    "after": "क्रेडिट्स खरेदी करता येत नाहीत.",
+    "batch": "online-online-006",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Credits": {
+    "before": "श्रेय",
+    "after": "क्रेडिट्स",
+    "batch": "online-online-006",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Crop": {
+    "before": "पीक",
+    "after": "कापा",
+    "batch": "online-online-006",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Crop selection": {
+    "before": "पीक निवड",
+    "after": "निवडलेला भाग कापा",
+    "batch": "online-online-006",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Custom content credits": {
+    "before": "सानुकूल सामग्री क्रेडिट्स",
+    "after": "सानुकूल सामग्रीचे श्रेय",
+    "batch": "online-online-006",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Default colony": {
+    "before": "डीफॉल्ट कॉलनी",
+    "after": "पूर्वनिर्धारित वसाहत",
+    "batch": "online-online-006",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Delayed orders": {
+    "before": "विलंबित ऑर्डर",
+    "after": "विलंबित आदेश",
+    "batch": "online-online-006",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Delete skin": {
+    "before": "त्वचा हटवा",
+    "after": "रूप हटवा",
+    "batch": "online-online-006",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Delete skin?": {
+    "before": "स्किन डिलीट करायची का?",
+    "after": "रूप हटवायचे का?",
+    "batch": "online-online-006",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Delete {slot0}?{slot1}": {
+    "before": "{slot0}?{slot1} हटवा",
+    "after": "{slot0} हटवायचे का?{slot1}",
+    "batch": "online-online-006",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Describe a building. Create its artwork and the way it works.": {
+    "before": "एका इमारतीचे वर्णन करा. त्यातील कलाकृती आणि तिच्या कार्यपद्धतीचे वर्णन करा.",
+    "after": "इमारतीचे वर्णन करा. तिची कलाकृती आणि कार्यपद्धती तयार करा.",
+    "batch": "online-online-006",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Designer reply awaiting reconciliation": {
+    "before": "डिझायनरचे उत्तर सामंजस्याच्या प्रतीक्षेत आहे.",
+    "after": "डिझाइनरच्या उत्तराची स्थिती पडताळणे बाकी आहे",
+    "batch": "online-online-006",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Designer status": {
+    "before": "डिझायनर दर्जा",
+    "after": "डिझाइनरची स्थिती",
+    "batch": "online-online-007",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Development credits": {
+    "before": "विकास क्रेडिट्स",
+    "after": "विकासासाठीचे क्रेडिट्स",
+    "batch": "online-online-007",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Disable skin and resolve": {
+    "before": "त्वचा अक्षम करा आणि निराकरण करा",
+    "after": "रूप बंद करून तक्रार निकाली काढा",
+    "batch": "online-online-007",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Dismiss": {
+    "before": "बरखास्त करा",
+    "after": "बंद करा",
+    "batch": "online-online-007",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Dismissed": {
+    "before": "बडतर्फ केले",
+    "after": "फेटाळले",
+    "batch": "online-online-007",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Download SHA-256: {slot0}": {
+    "before": "SHA-256 डाउनलोड करा: {slot0}",
+    "after": "डाउनलोडचा SHA-256: {slot0}",
+    "batch": "online-online-007",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Download family": {
+    "before": "कुटुंब डाउनलोड करा",
+    "after": "इमारत संच डाउनलोड करा",
+    "batch": "online-online-007",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Download set": {
+    "before": "डाउनलोड सेट",
+    "after": "संच डाउनलोड करा",
+    "batch": "online-online-007",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Drafts are private. Publish a saved family to share it in the {slot0}.": {
+    "before": "मसुदे खाजगी असतात. {slot0} मध्ये शेअर करण्यासाठी जतन केलेले कुटुंब प्रकाशित करा.",
+    "after": "मसुदे खाजगी असतात. {slot0} मध्ये सामायिक करण्यासाठी जतन केलेला इमारत संच प्रकाशित करा.",
+    "batch": "online-online-007",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Draw": {
+    "before": "ड्रॉ",
+    "after": "बरोबरी",
+    "batch": "online-online-007",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Duplicate": {
+    "before": "डुप्लिकेट",
+    "after": "प्रत बनवा",
+    "batch": "online-online-007",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Duplicate rig clip": {
+    "before": "डुप्लिकेट रिग क्लिप",
+    "after": "रिग क्लिपची प्रत बनवा",
+    "batch": "online-online-007",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Duplicate shape clip": {
+    "before": "डुप्लिकेट शेप क्लिप",
+    "after": "आकार क्लिपची प्रत बनवा",
+    "batch": "online-online-007",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Each product has its own credit unit. Flows cover the current selected range across all payment modes. Usage/refund ledger entries are signed; reserved balances are current snapshots.": {
+    "before": "प्रत्येक उत्पादनाचे स्वतःचे क्रेडिट युनिट असते. प्रवाह सर्व पेमेंट पद्धतींमधील सध्या निवडलेल्या श्रेणीला व्यापतात. वापर/परतावा लेजर नोंदींवर स्वाक्षरी असते; राखीव शिल्लक ही सध्याची क्षणचित्रे असतात.",
+    "after": "प्रत्येक उत्पादनाचे स्वतंत्र क्रेडिट एकक असते. प्रवाहात निवडलेल्या कालावधीतील सर्व पेमेंट पद्धतींचा समावेश असतो. वापर/परतावा नोंदी धन किंवा ऋण असतात; राखीव शिल्लक सध्याची स्थिती दाखवते.",
+    "batch": "online-online-007",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Each shape shares the swarm paint area. Check the result after switching.": {
+    "before": "प्रत्येक आकार स्वार्म पेंट क्षेत्र सामायिक करतो. अदलाबदल केल्यानंतर परिणाम तपासा.",
+    "after": "प्रत्येक आकार पोळ्याचे रंगकाम क्षेत्र वापरतो. आकार बदलल्यावर परिणाम तपासा.",
+    "batch": "online-online-007",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Econo": {
+    "before": "इकोनो",
+    "after": "Econo",
+    "batch": "online-online-007",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Editor-only terrain cannot launch a colony game.": {
+    "before": "केवळ संपादकाद्वारे तयार केलेल्या भूभागावरून वसाहतीचा खेळ सुरू करता येत नाही.",
+    "after": "फक्त संपादकासाठी असलेल्या भूभागावर वसाहतीचा खेळ सुरू करता येत नाही.",
+    "batch": "online-online-007",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Event": {
+    "before": "कार्यक्रम",
+    "after": "घटना",
+    "batch": "online-online-008",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Every room member must update before using a shared generator.": {
+    "before": "सामायिक जनरेटर वापरण्यापूर्वी खोलीतील प्रत्येक सदस्याने माहिती अद्ययावत करणे आवश्यक आहे.",
+    "after": "सामायिक जनरेटर वापरण्यापूर्वी खोलीतील प्रत्येकाने खेळ अद्ययावत करणे आवश्यक आहे.",
+    "batch": "online-online-008",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Export cash CSV": {
+    "before": "रोख रक्कम निर्यात करा CSV",
+    "after": "रोख व्यवहारांची CSV निर्यात करा",
+    "batch": "online-online-008",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Export credits CSV": {
+    "before": "निर्यात क्रेडिट्स CSV",
+    "after": "क्रेडिट्सची CSV निर्यात करा",
+    "batch": "online-online-008",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Export provider costs CSV": {
+    "before": "निर्यात प्रदाता खर्च CSV",
+    "after": "प्रदात्याच्या खर्चाची CSV निर्यात करा",
+    "batch": "online-online-008",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Family experiments": {
+    "before": "कौटुंबिक प्रयोग",
+    "after": "इमारत संचाचे प्रयोग",
+    "batch": "online-online-008",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Family experiments JSON": {
+    "before": "कौटुंबिक प्रयोग JSON",
+    "after": "इमारत संचाच्या प्रयोगांचे JSON",
+    "batch": "online-online-008",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Family link": {
+    "before": "कौटुंबिक दुवा",
+    "after": "संचाची लिंक",
+    "batch": "online-online-008",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Family name": {
+    "before": "आडनाव",
+    "after": "संचाचे नाव",
+    "batch": "online-online-008",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Fit model": {
+    "before": "फिट मॉडेल",
+    "after": "मॉडेल मापात बसवा",
+    "batch": "online-online-008",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Fit model · F": {
+    "before": "फिट मॉडेल · एफ",
+    "after": "मॉडेल मापात बसवा · F",
+    "batch": "online-online-008",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Follow latest": {
+    "before": "नवीनतम फॉलो करा",
+    "after": "नवीनतम आवृत्तीसोबत रहा",
+    "batch": "online-online-008",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Follow the composition, hear each candidate, and see what the checks find.": {
+    "before": "रचनेचा मागोवा घ्या, प्रत्येक उमेदवाराचे म्हणणे ऐका आणि तपासणीत काय आढळते ते पहा.",
+    "after": "रचनेची प्रगती पाहा, प्रत्येक प्रस्तावित धून ऐका आणि तपासण्यांत काय आढळते ते पाहा.",
+    "batch": "online-online-008",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Food in inns": {
+    "before": "धर्मशाळांमधील अन्न",
+    "after": "खानावळींमधील अन्न",
+    "batch": "online-online-008",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:For an unlisted family, copy its page link and paste it into Family link or ID in the game’s Building families picker, then choose Open family. Use the same online instance where the family was published. Private families also require signing in as their owner.": {
+    "before": "सूचीमध्ये नसलेल्या कुटुंबासाठी, त्याच्या पेजची लिंक कॉपी करा आणि गेमच्या 'बिल्डिंग फॅमिलीज' पिकरमधील 'फॅमिली लिंक' किंवा 'आयडी' मध्ये पेस्ट करा, त्यानंतर 'ओपन फॅमिली' निवडा. ज्या ऑनलाइन इन्स्टन्सवर कुटुंब प्रकाशित केले होते, तोच वापरा. ​​खाजगी कुटुंबांसाठी देखील त्यांचे मालक म्हणून साइन इन करणे आवश्यक आहे.",
+    "after": "सूचीत नसलेल्या इमारत संचाची पृष्ठलिंक खेळातील इमारत संच निवडणीत «संचाची लिंक किंवा ID» येथे द्या आणि «संच उघडा» निवडा. संच प्रकाशित केलेलाच ऑनलाइन सर्व्हर वापरा. खाजगी संचांसाठी मालक म्हणून साइन इनही करावे लागते.",
+    "batch": "online-online-008",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Game scale": {
+    "before": "खेळाच्या प्रमाणावर",
+    "after": "खेळातील प्रमाण",
+    "batch": "online-online-008",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Game-engine preview of the checked set": {
+    "before": "निवडलेल्या संचाचे गेम-इंजिन पूर्वावलोकन",
+    "after": "तपासलेल्या संचाचे खेळाच्या इंजिनमधील पूर्वावलोकन",
+    "batch": "online-online-008",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Generation history {slot0}": {
+    "before": "पिढीचा इतिहास {slot0}",
+    "after": "निर्मितीचा इतिहास {slot0}",
+    "batch": "online-online-009",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Generation report": {
+    "before": "पिढी अहवाल",
+    "after": "निर्मितीचा अहवाल",
+    "batch": "online-online-009",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Generation stages": {
+    "before": "पिढीचे टप्पे",
+    "after": "निर्मितीचे टप्पे",
+    "batch": "online-online-009",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Generation stopped. Your failed generation credit is returned.": {
+    "before": "पिढी थांबली. तुमचे अयशस्वी पिढीचे क्रेडिट परत केले आहे.",
+    "after": "निर्मिती थांबली. अयशस्वी प्रयत्नासाठी वापरलेले क्रेडिट परत मिळाले आहे.",
+    "batch": "online-online-009",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Generation {value0} · {value1}": {
+    "before": "पिढी {value0} · {value1}",
+    "after": "निर्मिती {value0} · {value1}",
+    "batch": "online-online-009",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Give a bounded moderation reason without NUL characters.": {
+    "before": "NUL वर्णांशिवाय मर्यादित नियंत्रणाचे कारण द्या.",
+    "after": "NUL वर्ण नसलेले, मर्यादित लांबीचे नियंत्रणाचे कारण द्या.",
+    "batch": "online-online-009",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Give a bounded recovery reason.": {
+    "before": "मर्यादित पुनर्प्राप्तीचे कारण द्या.",
+    "after": "मर्यादित लांबीचे पुनर्प्राप्तीचे कारण द्या.",
+    "batch": "online-online-009",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Give a moderation reason.": {
+    "before": "मध्यमतेचे कारण द्या.",
+    "after": "नियंत्रणाच्या कारवाईचे कारण द्या.",
+    "batch": "online-online-009",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Globulation 2 is free software (GPL 3).": {
+    "before": "Globulation 2 हे मोफत सॉफ्टवेअर (GPL 3) आहे.",
+    "after": "Globulation 2 हे मुक्त सॉफ्टवेअर (GPL 3) आहे.",
+    "batch": "online-online-009",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Got it": {
+    "before": "समजलं.",
+    "after": "समजले",
+    "batch": "online-online-009",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Ground health change": {
+    "before": "ग्राउंड हेल्थ बदल",
+    "after": "जमिनीवरील युनिटच्या आरोग्यात बदल",
+    "batch": "online-online-009",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Ground movement": {
+    "before": "जमिनीची हालचाल",
+    "after": "जमिनीवरील हालचाल",
+    "batch": "online-online-009",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Guests get generated names; link a sign-in method to choose one.": {
+    "before": "पाहुण्यांना तयार नावे मिळतात; त्यापैकी एक निवडण्यासाठी साइन-इन पद्धत लिंक करा.",
+    "after": "अतिथींना आपोआप नाव दिले जाते; स्वतः नाव निवडण्यासाठी साइन इनची पद्धत जोडा.",
+    "batch": "online-online-009",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Hide family": {
+    "before": "कुटुंब लपवा",
+    "after": "इमारत संच लपवा",
+    "batch": "online-online-009",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Home": {
+    "before": "घर",
+    "after": "मुख्यपृष्ठ",
+    "batch": "online-online-009",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Human match participants": {
+    "before": "मानवी जुळणीतील सहभागी",
+    "after": "सामन्यातील मानवी सहभागी",
+    "batch": "online-online-009",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Import package": {
+    "before": "आयात पॅकेज",
+    "after": "पॅकेज आयात करा",
+    "batch": "online-online-009",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Inn capacity": {
+    "before": "सराय क्षमता",
+    "after": "खानावळीची क्षमता",
+    "batch": "online-online-010",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Inspect match verification": {
+    "before": "जुळणी पडताळणी तपासा",
+    "after": "सामन्याची पडताळणी तपासा",
+    "batch": "online-online-010",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Inspect sheet": {
+    "before": "तपासणी पत्रक",
+    "after": "स्प्राइटशीट तपासा",
+    "batch": "online-online-010",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Invalid rig normal": {
+    "before": "अवैध रिग सामान्य",
+    "after": "रिगचा नॉर्मल सदिश अवैध आहे",
+    "batch": "online-online-010",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Invalid shape heading": {
+    "before": "अवैध आकार शीर्षक",
+    "after": "आकाराची दिशा अवैध आहे",
+    "batch": "online-online-010",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Invalid skin dimensions.": {
+    "before": "त्वचेचे परिमाण अमान्य आहेत.",
+    "after": "रूपाची मापे अवैध आहेत.",
+    "batch": "online-online-010",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Invalid {value0} normal camera": {
+    "before": "अवैध {value0} सामान्य कॅमेरा",
+    "after": "{value0} चा नॉर्मल कॅमेरा अवैध आहे",
+    "batch": "online-online-011",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:JSON controls require the set workspace.": {
+    "before": "JSON नियंत्रणांसाठी सेट केलेला वर्कस्पेस आवश्यक आहे.",
+    "after": "JSON नियंत्रणांसाठी संचाचे कार्यक्षेत्र वापरावे लागते.",
+    "batch": "online-online-011",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Keep available and resolve": {
+    "before": "उपलब्ध रहा आणि निराकरण करा",
+    "after": "उपलब्ध ठेवून तक्रार निकाली काढा",
+    "batch": "online-online-011",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Keep mine as a new skin": {
+    "before": "माझी नवीन त्वचा म्हणून ठेवा",
+    "after": "माझे रूप नवीन रूप म्हणून ठेवा",
+    "batch": "online-online-011",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Keep this family namespace. Import a fork to create a different family.": {
+    "before": "हे फॅमिली नेमस्पेस कायम ठेवा. वेगळे फॅमिली तयार करण्यासाठी एक फोर्क इम्पोर्ट करा.",
+    "after": "या इमारत संचाचे नामक्षेत्र कायम ठेवा. वेगळा संच तयार करण्यासाठी स्वतंत्र प्रत आयात करा.",
+    "batch": "online-online-011",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Ladders": {
+    "before": "शिड्या",
+    "after": "मानांकन याद्या",
+    "batch": "online-online-011",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Light": {
+    "before": "प्रकाश",
+    "after": "फिकट",
+    "batch": "online-online-011",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Like": {
+    "before": "जसे",
+    "after": "आवडले",
+    "batch": "online-online-011",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Loading your building workspace…": {
+    "before": "तुमच्या बिल्डिंगमधील वर्कस्पेस लोड होत आहे…",
+    "after": "इमारत निर्मितीचे कार्यक्षेत्र लोड होत आहे…",
+    "batch": "online-online-011",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Loading your skins…": {
+    "before": "तुमची स्किन्स लोड होत आहेत…",
+    "after": "तुमची रूपे लोड होत आहेत…",
+    "batch": "online-online-011",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Lost": {
+    "before": "हरवले",
+    "after": "पराभव",
+    "batch": "online-online-011",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Manage published family": {
+    "before": "प्रकाशित कुटुंबाचे व्यवस्थापन करा",
+    "after": "प्रकाशित इमारत संच व्यवस्थापित करा",
+    "batch": "online-online-011",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Manifest": {
+    "before": "जाहीर",
+    "after": "मॅनिफेस्ट",
+    "batch": "online-online-011",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Map credits": {
+    "before": "नकाशा श्रेय",
+    "after": "नकाशा निर्मिती क्रेडिट्स",
+    "batch": "online-online-012",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Mark this generation failed and return {value0} reserved product credit(s)? Confirm that its delivery cannot be recovered.": {
+    "before": "ही पिढी अयशस्वी म्हणून चिन्हांकित करा आणि {value0} आरक्षित उत्पादन क्रेडिट्स परत करा? त्याची डिलिव्हरी परत मिळवता येणार नाही याची पुष्टी करा.",
+    "after": "ही निर्मिती अयशस्वी ठरवून उत्पादनाचे {value0} राखीव क्रेडिट्स परत द्यायचे का? तयार केलेले काम परत मिळू शकत नाही याची खात्री करा.",
+    "batch": "online-online-012",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Match activity": {
+    "before": "जुळणी क्रियाकलाप",
+    "after": "सामन्यांतील कृती",
+    "batch": "online-online-012",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Match colony skins": {
+    "before": "वसाहतीच्या त्वचेशी जुळणारे",
+    "after": "सामन्यातील वसाहतींची रूपे",
+    "batch": "online-online-012",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Match not found.": {
+    "before": "जुळणी आढळली नाही.",
+    "after": "सामना सापडला नाही.",
+    "batch": "online-online-012",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Material map pixels must be grey: red, green and blue equal to the material id.": {
+    "before": "मटेरियल मॅप पिक्सेल हे मटेरियल आयडी प्रमाणे राखाडी: लाल, हिरवा आणि निळा रंगाचे असले पाहिजेत.",
+    "after": "मटेरियल नकाशातील पिक्सेल राखाडी असावेत: लाल, हिरवा आणि निळा या तिन्ही घटकांची मूल्ये मटेरियल ID इतकी असावीत.",
+    "batch": "online-online-012",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Maxima": {
+    "before": "मॅक्सिमा",
+    "after": "Maxima",
+    "batch": "online-online-012",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Moderate": {
+    "before": "मध्यम",
+    "after": "कारवाई करा",
+    "batch": "online-online-012",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Moderation": {
+    "before": "संयम",
+    "after": "सामग्री नियंत्रण",
+    "batch": "online-online-012",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Moderation reason": {
+    "before": "संयमाचे कारण",
+    "after": "कारवाईचे कारण",
+    "batch": "online-online-012",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Music credits": {
+    "before": "संगीत श्रेय",
+    "after": "संगीत निर्मिती क्रेडिट्स",
+    "batch": "online-online-012",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Mute {slot0}": {
+    "before": "म्यूट {slot0}",
+    "after": "{slot0} म्यूट करा",
+    "batch": "online-online-012",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:My families": {
+    "before": "माझे कुटुंब",
+    "after": "माझे इमारत संच",
+    "batch": "online-online-012",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:My skins": {
+    "before": "माझी त्वचा",
+    "after": "माझी रूपे",
+    "batch": "online-online-013",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:New building family": {
+    "before": "नवीन इमारत कुटुंब",
+    "after": "नवीन इमारत संच",
+    "batch": "online-online-013",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:New skin": {
+    "before": "नवीन त्वचा",
+    "after": "नवीन रूप",
+    "batch": "online-online-013",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Nicowar": {
+    "before": "निकोवार",
+    "after": "Nicowar",
+    "batch": "online-online-013",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:No attempt usage evidence is available.": {
+    "before": "वापरण्याच्या प्रयत्नाचा कोणताही पुरावा उपलब्ध नाही.",
+    "after": "कोणत्याही प्रयत्नाच्या वापराचा पुरावा उपलब्ध नाही.",
+    "batch": "online-online-013",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:No families found.": {
+    "before": "कोणतेही कुटुंब आढळले नाही.",
+    "after": "इमारत संच सापडले नाहीत.",
+    "batch": "online-online-013",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:No owned building family.": {
+    "before": "मालकीच्या इमारतीचे कुटुंब नाही.",
+    "after": "तुमच्या मालकीचा इमारत संच नाही.",
+    "batch": "online-online-013",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:No queue {p0}.": {
+    "before": "{p0} कोणतीही रांग नाही.",
+    "after": "{p0} ही रांग नाही.",
+    "batch": "online-online-013",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:No set validator is available. Your draft is saved; try checks later.": {
+    "before": "कोणताही निश्चित व्हॅलिडेटर उपलब्ध नाही. तुमचा मसुदा जतन केला आहे; तपासण्या नंतर करून पहा.",
+    "after": "संच तपासणारे साधन उपलब्ध नाही. मसुदा जतन झाला आहे; नंतर तपासण्या करून पाहा.",
+    "batch": "online-online-013",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:No sets found. Try another search or create the first one.": {
+    "before": "कोणतेही संच सापडले नाहीत. दुसरा शोध करून पहा किंवा नवीन शोध तयार करा.",
+    "after": "संच सापडले नाहीत. वेगळा शोध घ्या किंवा पहिला संच तयार करा.",
+    "batch": "online-online-013",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:No skin reports.": {
+    "before": "त्वचेसंबंधी कोणतेही अहवाल नाहीत.",
+    "after": "रूपांविषयी तक्रारी नाहीत.",
+    "batch": "online-online-013",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:No such blob.": {
+    "before": "असा कोणताही ठिपका नाही.",
+    "after": "असा डेटा ब्लॉब नाही.",
+    "batch": "online-online-013",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:No such building family.": {
+    "before": "असा कोणताही इमारत परिवार नाही.",
+    "after": "असा इमारत संच नाही.",
+    "batch": "online-online-013",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:No such job.": {
+    "before": "अशी कोणतीही नोकरी नाही.",
+    "after": "असे काम नाही.",
+    "batch": "online-online-013",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:No such match.": {
+    "before": "अशी कोणतीही जुळणी नाही.",
+    "after": "असा सामना नाही.",
+    "batch": "online-online-013",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:No such release.": {
+    "before": "असा कोणताही प्रकाशन नाही.",
+    "after": "अशी प्रकाशित आवृत्ती नाही.",
+    "batch": "online-online-014",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:No such sign-in on this connection.": {
+    "before": "या कनेक्शनवर असे साइन-इन करता येत नाही.",
+    "after": "या कनेक्शनवर ते साइन इन सापडले नाही.",
+    "batch": "online-online-014",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:No timeline was recorded for this match.": {
+    "before": "या सामन्यासाठी कोणतीही वेळ नोंदवली गेली नाही.",
+    "after": "या सामन्याचा घटनाक्रम नोंदवलेला नाही.",
+    "batch": "online-online-014",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:No uncertain request.": {
+    "before": "निःसंदिग्ध विनंती नाही.",
+    "after": "स्थिती अनिश्चित असलेली विनंती नाही.",
+    "batch": "online-online-014",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:No worker leases are recorded.": {
+    "before": "कामगारांचे कोणतेही भाडेकरार नोंदवले जात नाहीत.",
+    "after": "वर्करच्या आरक्षणाची नोंद नाही.",
+    "batch": "online-online-014",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Not run": {
+    "before": "धावू नका",
+    "after": "अद्याप चालवलेले नाही",
+    "batch": "online-online-014",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Numbi": {
+    "before": "नंबी",
+    "after": "Numbi",
+    "batch": "online-online-014",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Offensive": {
+    "before": "आक्रमक",
+    "after": "आक्षेपार्ह",
+    "batch": "online-online-014",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Only uncertain calls can be reconciled.": {
+    "before": "केवळ अनिश्चित निर्णयांचेच निराकरण होऊ शकते.",
+    "after": "स्थिती अनिश्चित असलेल्या कॉलचीच पडताळणी करून ताळमेळ घालता येतो.",
+    "batch": "online-online-014",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Open AI Map Studio": {
+    "before": "ओपन एआय मॅप स्टुडिओ",
+    "after": "एआय मॅप स्टुडिओ उघडा",
+    "batch": "online-online-014",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Open music release": {
+    "before": "संगीत प्रकाशन खुले आहे",
+    "after": "संगीताची प्रकाशित आवृत्ती उघडा",
+    "batch": "online-online-014",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Pad ends with silence to longest": {
+    "before": "सर्वात लांब पॅड शांततेने संपतो.",
+    "after": "सर्वात लांब ट्रॅकइतकी लांबी होण्यासाठी शेवटी शांतता जोडा",
+    "batch": "online-online-014",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Players and AI opponents, ranked by their conservative rating: it rises as the game becomes sure of your skill. Guests are not ranked.": {
+    "before": "खेळाडू आणि एआय प्रतिस्पर्धी, त्यांच्या सुरक्षित रेटिंगनुसार क्रमवारी लावलेले असतात: जसजसा खेळाला तुमच्या कौशल्याची खात्री पटते, तसतसे तुमचे रेटिंग वाढते. पाहुण्यांना क्रमवारी दिली जात नाही.",
+    "after": "खेळाडू आणि संगणकीय प्रतिस्पर्धी त्यांच्या कौशल्याच्या सावध किमान अंदाजानुसार क्रमवारीत आहेत. तुमच्या कौशल्याची अधिक खात्री पटल्यावर हे मानांकन वाढते. अतिथींना क्रमवारी दिली जात नाही.",
+    "batch": "online-online-015",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Prestige {slot0}": {
+    "before": "प्रेस्टीज {slot0}",
+    "after": "प्रतिष्ठा {slot0}",
+    "batch": "online-online-015",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Previous mean": {
+    "before": "मागील म्हणजे",
+    "after": "मागील सरासरी",
+    "batch": "online-online-015",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Priced": {
+    "before": "किंमत",
+    "after": "खर्च मोजलेला",
+    "batch": "online-online-015",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Progress does not match the leased AI validation.": {
+    "before": "प्रगती भाडेतत्त्वावर घेतलेल्या एआय प्रमाणीकरणाशी जुळत नाही.",
+    "after": "प्रगती आरक्षित केलेल्या एआय पडताळणीशी जुळत नाही.",
+    "batch": "online-online-015",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Publish a new release": {
+    "before": "नवीन प्रकाशन प्रकाशित करा",
+    "after": "नवीन आवृत्ती प्रकाशित करा",
+    "batch": "online-online-015",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Publish a release": {
+    "before": "प्रकाशन प्रकाशित करा",
+    "after": "आवृत्ती प्रकाशित करा",
+    "batch": "online-online-015",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Publish release": {
+    "before": "प्रकाशन",
+    "after": "आवृत्ती प्रकाशित करा",
+    "batch": "online-online-015",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Publish saved family": {
+    "before": "जतन केलेले कुटुंब प्रकाशित करा",
+    "after": "जतन केलेला इमारत संच प्रकाशित करा",
+    "batch": "online-online-015",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Published family name": {
+    "before": "प्रकाशित आडनाव",
+    "after": "प्रकाशित इमारत संचाचे नाव",
+    "batch": "online-online-016",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Published release": {
+    "before": "प्रकाशित प्रकाशन",
+    "after": "प्रकाशित आवृत्ती",
+    "batch": "online-online-016",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Purchase confirmed. Your skin is ready to use in game.": {
+    "before": "खरेदीची पुष्टी झाली आहे. तुमची स्किन गेममध्ये वापरण्यासाठी तयार आहे.",
+    "after": "खरेदीची पुष्टी झाली. तुमचे रूप खेळात वापरण्यास तयार आहे.",
+    "batch": "online-online-016",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Questions and brainstorming are free and require an available credit. A creation or revision request starts one build of up to 12 entries. Failed generations return their reservation.": {
+    "before": "प्रश्न आणि विचारमंथन विनामूल्य आहेत आणि त्यासाठी उपलब्ध क्रेडिट आवश्यक आहे. निर्मिती किंवा सुधारणेच्या विनंतीमुळे १२ नोंदींपर्यंतचा एक बिल्ड सुरू होतो. अयशस्वी झालेल्या पिढ्या त्यांचे आरक्षण परत करतात.",
+    "after": "प्रश्न आणि विचारमंथन विनामूल्य आहेत, पण उपलब्ध क्रेडिट हवे. निर्मिती किंवा सुधारणेची विनंती केल्यावर जास्तीत जास्त 12 नोंदींची एक निर्मिती सुरू होते. अयशस्वी प्रयत्नांचे राखीव क्रेडिट्स परत मिळतात.",
+    "batch": "online-online-016",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Questions and brainstorming are free. A creation or revision request starts one build of up to 12 building variants. Failed generations return their reservation.": {
+    "before": "प्रश्न आणि विचारमंथन विनामूल्य आहेत. निर्मिती किंवा सुधारणेच्या विनंतीमुळे जास्तीत जास्त १२ बिल्डिंग व्हेरिएंट्सची एक बिल्ड सुरू होते. अयशस्वी झालेल्या पिढ्या त्यांचे आरक्षण परत करतात.",
+    "after": "प्रश्न आणि विचारमंथन विनामूल्य आहेत. निर्मिती किंवा सुधारणेची विनंती केल्यावर जास्तीत जास्त 12 इमारत प्रकारांची एक निर्मिती सुरू होते. अयशस्वी प्रयत्नांचे राखीव क्रेडिट्स परत मिळतात.",
+    "batch": "online-online-016",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Queues the stored match record for verification again. Force permits replacement of an existing verification result; confirm it separately.": {
+    "before": "साठवलेला जुळणारा रेकॉर्ड पुन्हा पडताळणीसाठी रांगेत ठेवतो. 'फोर्स' पर्यायामुळे अस्तित्वात असलेला पडताळणी निकाल बदलण्याची परवानगी मिळते; त्याची स्वतंत्रपणे पुष्टी करा.",
+    "after": "जतन केलेल्या सामन्याची नोंद पुन्हा पडताळण्यासाठी रांगेत ठेवते. सक्तीचा पर्याय जुना पडताळणी निकाल बदलू देतो; त्याची स्वतंत्र पुष्टी करा.",
+    "batch": "online-online-016",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Quiet passage audibility": {
+    "before": "शांत मार्गातील श्रवणक्षमता",
+    "after": "शांत संगीतमय भागांची ऐकू येण्याची क्षमता",
+    "batch": "online-online-016",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Reason and evidence": {
+    "before": "तर्क आणि पुरावा",
+    "after": "कारण आणि पुरावा",
+    "batch": "online-online-016",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Reconciling": {
+    "before": "सलोखा करणे",
+    "after": "ताळमेळ घालत आहे",
+    "batch": "online-online-016",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Releases": {
+    "before": "प्रकाशनं",
+    "after": "प्रकाशित आवृत्त्या",
+    "batch": "online-online-016",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Replay": {
+    "before": "पुन्हा प्ले करा",
+    "after": "रीप्ले",
+    "batch": "online-online-017",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Report AI": {
+    "before": "एआय अहवाल",
+    "after": "एआयची तक्रार करा",
+    "batch": "online-online-017",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Report reason": {
+    "before": "कारणाचा अहवाल द्या",
+    "after": "तक्रारीचे कारण",
+    "batch": "online-online-017",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Report skin": {
+    "before": "त्वचेचा अहवाल",
+    "after": "रूपाची तक्रार करा",
+    "batch": "online-online-017",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Reported skin texture": {
+    "before": "त्वचेच्या पोताची माहिती दिली",
+    "after": "तक्रार केलेल्या रूपाचे टेक्सचर",
+    "batch": "online-online-017",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Request cap": {
+    "before": "कॅपची विनंती करा",
+    "after": "विनंतीची मर्यादा",
+    "batch": "online-online-017",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Reroll seed": {
+    "before": "पुन्हा रोल सीड",
+    "after": "नवे यादृच्छिक बीज निवडा",
+    "batch": "online-online-017",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Reserved: {slot0} product credits": {
+    "before": "राखीव: {slot0} उत्पादन श्रेय",
+    "after": "राखीव: उत्पादनाचे {slot0} क्रेडिट्स",
+    "batch": "online-online-017",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Reserved: {slot0} product credits{slot1}": {
+    "before": "राखीव: {slot0} उत्पादन श्रेय {slot1}",
+    "after": "राखीव: उत्पादनाचे {slot0} क्रेडिट्स{slot1}",
+    "batch": "online-online-017",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Restore family": {
+    "before": "कुटुंब पुनर्संचयित करा",
+    "after": "इमारत संच पुनर्संचयित करा",
+    "batch": "online-online-017",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Restore skin": {
+    "before": "त्वचा पुनर्संचयित करा",
+    "after": "रूप पुनर्संचयित करा",
+    "batch": "online-online-017",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Retry loading skins": {
+    "before": "स्किन्स लोड करण्याचा पुन्हा प्रयत्न करा.",
+    "after": "रूपे पुन्हा लोड करा",
+    "batch": "online-online-017",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Returning the reservation marks this generation failed. Inspect its details and confirm delivery cannot be recovered first.": {
+    "before": "या पिढीतील आरक्षित खुणा परत मिळवण्यात अपयश आले आहे. कृपया त्याचा तपशील तपासा आणि प्रथम खात्री करा की वितरण परत मिळवता येणार नाही.",
+    "after": "राखीव क्रेडिट्स परत दिल्यास ही निर्मिती अयशस्वी ठरते. आधी तपशील तपासून तयार झालेले काम परत मिळू शकत नाही याची खात्री करा.",
+    "batch": "online-online-017",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Review reports": {
+    "before": "पुनरावलोकन अहवाल",
+    "after": "तक्रारी तपासा",
+    "batch": "online-online-017",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Review set": {
+    "before": "पुनरावलोकन संच",
+    "after": "संच तपासा",
+    "batch": "online-online-017",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Revision {slot0} checks: {slot1}": {
+    "before": "आवृत्ती {slot0} तपासते: {slot1}",
+    "after": "आवृत्ती {slot0} च्या तपासण्या: {slot1}",
+    "batch": "online-online-017",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Room match": {
+    "before": "खोली जुळणी",
+    "after": "खोलीतील सामना",
+    "batch": "online-online-017",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Running": {
+    "before": "धावणे",
+    "after": "चालू",
+    "batch": "online-online-018",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Saving account changes…": {
+    "before": "बचत खात्यातील बदल…",
+    "after": "खात्यातील बदल जतन करत आहे…",
+    "batch": "online-online-018",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Seed": {
+    "before": "बियाणे",
+    "after": "बीज",
+    "batch": "online-online-018",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Send skin report": {
+    "before": "त्वचेचा अहवाल पाठवा",
+    "after": "रूपाविषयी तक्रार पाठवा",
+    "batch": "online-online-018",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Set contents": {
+    "before": "सामग्री सेट करा",
+    "after": "संचातील सामग्री",
+    "batch": "online-online-018",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Set library": {
+    "before": "लायब्ररी सेट करा",
+    "after": "संचांचा संग्रह",
+    "batch": "online-online-018",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Set preview engine": {
+    "before": "प्रीव्ह्यू इंजिन सेट करा",
+    "after": "संचाचे पूर्वावलोकन इंजिन",
+    "batch": "online-online-018",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Set reports": {
+    "before": "अहवाल सेट करा",
+    "after": "संचांविषयी तक्रारी",
+    "batch": "online-online-018",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Set unavailable.": {
+    "before": "अनुपलब्ध सेट केले.",
+    "after": "संच उपलब्ध नाही.",
+    "batch": "online-online-018",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Set workspace": {
+    "before": "कार्यक्षेत्र सेट करा",
+    "after": "संचाचे कार्यक्षेत्र",
+    "batch": "online-online-018",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Sign in to report this skin": {
+    "before": "या त्वचेची तक्रार करण्यासाठी साइन इन करा",
+    "after": "या रूपाची तक्रार करण्यासाठी साइन इन करा",
+    "batch": "online-online-018",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Sign in to save your skins.": {
+    "before": "तुमची स्किन्स सेव्ह करण्यासाठी साइन इन करा.",
+    "after": "तुमची रूपे जतन करण्यासाठी साइन इन करा.",
+    "batch": "online-online-018",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Sign in with an account to publish maps; guests can share unlisted maps.": {
+    "before": "नकाशे प्रकाशित करण्यासाठी खात्याद्वारे साइन इन करा; अतिथी नोंदणी नसलेले नकाशे शेअर करू शकतात.",
+    "after": "नकाशे सार्वजनिक करण्यासाठी खात्याने साइन इन करा; अतिथी सूचीत नसलेले नकाशे सामायिक करू शकतात.",
+    "batch": "online-online-019",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Sign in with an account to save favourites and like generators.": {
+    "before": "आवडीचे पदार्थ जतन करण्यासाठी आणि लाईक जनरेटर वापरण्यासाठी खात्याद्वारे साइन इन करा.",
+    "after": "आवडते जतन करण्यासाठी आणि जनरेटरना पसंती देण्यासाठी खात्याने साइन इन करा.",
+    "batch": "online-online-019",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Sign in with an active account to save skins.": {
+    "before": "स्किन्स सेव्ह करण्यासाठी सक्रिय खात्यासह साइन इन करा.",
+    "after": "रूपे जतन करण्यासाठी सक्रिय खात्याने साइन इन करा.",
+    "batch": "online-online-019",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Sign in with an active account to use a custom skin.": {
+    "before": "सानुकूल स्किन वापरण्यासाठी सक्रिय खात्यासह साइन इन करा.",
+    "after": "स्वतःचे रूप वापरण्यासाठी सक्रिय खात्याने साइन इन करा.",
+    "batch": "online-online-019",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Singular {value0} camera": {
+    "before": "एकवचनी {value0} कॅमेरा",
+    "after": "सिंग्युलर {value0} कॅमेरा",
+    "batch": "online-online-019",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Skin artwork is unavailable.": {
+    "before": "त्वचेची कलाकृती उपलब्ध नाही.",
+    "after": "रूपाची कलाकृती उपलब्ध नाही.",
+    "batch": "online-online-019",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Skin artwork not found.": {
+    "before": "त्वचेवरील कलाकृती आढळली नाही.",
+    "after": "रूपाची कलाकृती सापडली नाही.",
+    "batch": "online-online-019",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Skin collection pages": {
+    "before": "त्वचा संग्रह पृष्ठे",
+    "after": "रूपांच्या संग्रहाची पृष्ठे",
+    "batch": "online-online-019",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Skin deleted.": {
+    "before": "स्किन हटवली.",
+    "after": "रूप हटवले.",
+    "batch": "online-online-019",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Skin designer": {
+    "before": "त्वचा डिझायनर",
+    "after": "रूप डिझाइनर",
+    "batch": "online-online-019",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Skin disabled": {
+    "before": "त्वचा अक्षम",
+    "after": "रूप बंद केले",
+    "batch": "online-online-019",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Skin name": {
+    "before": "त्वचेचे नाव",
+    "after": "रूपाचे नाव",
+    "batch": "online-online-019",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Skin not found.": {
+    "before": "त्वचा आढळली नाही.",
+    "after": "रूप सापडले नाही.",
+    "batch": "online-online-019",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Skin page not found.": {
+    "before": "त्वचेचे पृष्ठ सापडले नाही.",
+    "after": "रूपाचे पृष्ठ सापडले नाही.",
+    "batch": "online-online-019",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Skin report resolutions need at most 1000 characters and disabling for a resolved report.": {
+    "before": "स्किन रिपोर्टच्या निराकरणासाठी जास्तीत जास्त १००० अक्षरे आवश्यक आहेत आणि निराकरण झालेल्या रिपोर्टसाठी ते अक्षम करणे आवश्यक आहे.",
+    "after": "रूपाच्या तक्रारीवरील निर्णय जास्तीत जास्त 1000 अक्षरांचा असावा; तक्रार निकाली काढण्यासाठी रूप बंद करावे लागते.",
+    "batch": "online-online-019",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Skin report status": {
+    "before": "त्वचेच्या अहवालाची स्थिती",
+    "after": "रूपाच्या तक्रारीची स्थिती",
+    "batch": "online-online-019",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Skin reports": {
+    "before": "त्वचेचे अहवाल",
+    "after": "रूपांविषयी तक्रारी",
+    "batch": "online-online-019",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Skin shop": {
+    "before": "त्वचेचे दुकान",
+    "after": "रूपांचे दुकान",
+    "batch": "online-online-019",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Skin texture": {
+    "before": "त्वचेचा पोत",
+    "after": "रूपाचे टेक्सचर",
+    "batch": "online-online-019",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Skin version not found.": {
+    "before": "स्किनची आवृत्ती सापडली नाही.",
+    "after": "रूपाची आवृत्ती सापडली नाही.",
+    "batch": "online-online-019",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Skins": {
+    "before": "त्वचा",
+    "after": "रूपे",
+    "batch": "online-online-019",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Solid": {
+    "before": "ठोस",
+    "after": "एकरंगी",
+    "batch": "online-online-019",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Stable key": {
+    "before": "स्थिर चावी",
+    "after": "स्थिर की",
+    "batch": "online-online-019",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Starting workers": {
+    "before": "कामगार सुरू करणे",
+    "after": "सुरुवातीचे कामगार",
+    "batch": "online-online-019",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Swarm shape": {
+    "before": "थव्याचा आकार",
+    "after": "पोळ्याचा आकार",
+    "batch": "online-online-020",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Take a seat first.": {
+    "before": "आधी बसा.",
+    "after": "आधी खेळाची जागा घ्या.",
+    "batch": "online-online-020",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Team {value0}": {
+    "before": "टीम {value0}",
+    "after": "संघ {value0}",
+    "batch": "online-online-020",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Technical checks do not establish balance or fun.": {
+    "before": "तांत्रिक तपासण्यांमुळे संतुलन किंवा मजा निर्माण होत नाही.",
+    "after": "तांत्रिक तपासण्या खेळ संतुलित किंवा मजेदार असल्याची खात्री देत नाहीत.",
+    "batch": "online-online-020",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:The designer reply needs reconciliation. No map build has started.": {
+    "before": "डिझायनरच्या उत्तरामध्ये फेरफार करणे आवश्यक आहे. नकाशाची निर्मिती सुरू झालेली नाही.",
+    "after": "डिझाइनरच्या उत्तराची स्थिती पडताळणे बाकी आहे. नकाशाची निर्मिती सुरू झालेली नाही.",
+    "batch": "online-online-020",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:The generator package must fit the 256 KiB draft limit.": {
+    "before": "जनरेटर पॅकेज २५६ केबी ड्राफ्ट मर्यादेत बसले पाहिजे.",
+    "after": "जनरेटर पॅकेज मसुद्याच्या 256 KiB मर्यादेत बसले पाहिजे.",
+    "batch": "online-online-020",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:The job is leased by another engine agent.": {
+    "before": "हे काम दुसऱ्या इंजिन एजंटला भाड्याने दिले आहे.",
+    "after": "हे काम दुसऱ्या इंजिन एजंटसाठी आरक्षित आहे.",
+    "batch": "online-online-020",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:The lease expired or the job was already reported.": {
+    "before": "भाडेकरार संपला किंवा कामाची नोंद आधीच झाली होती.",
+    "after": "आरक्षणाची मुदत संपली किंवा कामाचा अहवाल आधीच मिळाला आहे.",
+    "batch": "online-online-020",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:The match already ended with a different record.": {
+    "before": "सामना आधीच एका वेगळ्या विक्रमासह संपला आहे.",
+    "after": "सामना आधीच वेगळ्या नोंदीसह संपला आहे.",
+    "batch": "online-online-020",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:The original swarm: spires ringed around an egg.": {
+    "before": "मूळ थवा: अंड्याच्या भोवती वेढलेले शिखरांचे कडे.",
+    "after": "मूळ पोळे: अंड्याभोवती वर्तुळात उभे असलेले मनोरे.",
+    "batch": "online-online-020",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:The room has no seat {p0}.": {
+    "before": "खोलीत आसन नाही {p0}.",
+    "after": "खोलीत {p0} ही जागा नाही.",
+    "batch": "online-online-020",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:The server first loads the file with the game to check it; the map page is created only if it loads. Unlisted maps are reachable by link only; you can make a map public later.": {
+    "before": "सर्व्हर प्रथम गेम असलेली फाईल तपासण्यासाठी लोड करतो; ती लोड झाल्यावरच नकाशाचे पान तयार केले जाते. सूचीमध्ये नसलेले नकाशे फक्त लिंकद्वारेच उपलब्ध असतात; तुम्ही नंतर नकाशा सार्वजनिक करू शकता.",
+    "after": "फाईल तपासण्यासाठी सर्व्हर ती आधी खेळात लोड करतो; ती लोड झाली तरच नकाशाचे पृष्ठ तयार होते. सूचीत नसलेले नकाशे फक्त लिंकने उघडता येतात; नंतर नकाशा सार्वजनिक करू शकता.",
+    "batch": "online-online-021",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:The sheet must be at most 2048×2048 and fit its frame grid exactly.": {
+    "before": "कागद जास्तीत जास्त २०४८×२०४८ आकाराचा असावा आणि तो त्याच्या फ्रेम ग्रिडमध्ये तंतोतंत बसला पाहिजे.",
+    "after": "स्प्राइटशीट जास्तीत जास्त 2048×2048 असावी आणि तिच्या फ्रेमच्या जाळीत तंतोतंत बसली पाहिजे.",
+    "batch": "online-online-021",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Theme: light (meadow)": {
+    "before": "थीम: प्रकाश (कुरण)",
+    "after": "थीम: फिकट (कुरण)",
+    "batch": "online-online-021",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:There is no account called {p0}. Check the spelling{p1}.": {
+    "before": "{p0} नावाचे कोणतेही खाते नाही. {p1} ही स्पेलिंग तपासा.",
+    "after": "{p0} नावाचे खाते नाही. नावाचे लेखन तपासा{p1}.",
+    "batch": "online-online-021",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:This account does not own this colony skin.": {
+    "before": "या खात्याकडे या कॉलनी स्किनची मालकी नाही.",
+    "after": "या वसाहतीच्या रूपाची मालकी या खात्याकडे नाही.",
+    "batch": "online-online-021",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:This colony skin is unavailable.": {
+    "before": "या कॉलनीची त्वचा उपलब्ध नाही.",
+    "after": "वसाहतीचे हे रूप उपलब्ध नाही.",
+    "batch": "online-online-021",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:This custom skin belongs to another account.": {
+    "before": "ही कस्टम स्किन दुसऱ्या अकाउंटची आहे.",
+    "after": "हे सानुकूल रूप दुसऱ्या खात्याच्या मालकीचे आहे.",
+    "batch": "online-online-021",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:This family has 50 releases.": {
+    "before": "या कुटुंबाने ५० चित्रपट प्रदर्शित केले आहेत.",
+    "after": "या इमारत संचाच्या 50 आवृत्त्या प्रकाशित झाल्या आहेत.",
+    "batch": "online-online-021",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:This family has been hidden by a moderator.": {
+    "before": "या कुटुंबाला एका नियंत्रकाने लपवले आहे.",
+    "after": "नियंत्रकाने हा इमारत संच लपवला आहे.",
+    "batch": "online-online-021",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:This family uses stock artwork.": {
+    "before": "हे कुटुंब स्टॉक आर्टवर्क वापरते.",
+    "after": "हा इमारत संच मूळ खेळातील कलाकृती वापरतो.",
+    "batch": "online-online-021",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:This instance": {
+    "before": "हे उदाहरण",
+    "after": "हा सर्व्हर",
+    "batch": "online-online-021",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:This namespace belongs to another author. Fork the family first.": {
+    "before": "हा नेमस्पेस दुसऱ्या लेखकाचा आहे. प्रथम फॅमिली फोर्क करा.",
+    "after": "हे नामक्षेत्र दुसऱ्या लेखकाचे आहे. आधी इमारत संचाची स्वतंत्र प्रत तयार करा.",
+    "batch": "online-online-021",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:This older generation has limited stage history. Available images are preserved.": {
+    "before": "या जुन्या पिढीचा रंगमंचावरील अनुभव मर्यादित आहे. उपलब्ध छायाचित्रे जतन करून ठेवण्यात आली आहेत.",
+    "after": "या जुन्या निर्मितीच्या टप्प्यांचा इतिहास मर्यादित आहे. उपलब्ध प्रतिमा जतन केल्या आहेत.",
+    "batch": "online-online-021",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:This preview could not be loaded.": {
+    "before": "हा पूर्वावलोकन लोड होऊ शकला नाही.",
+    "after": "हे पूर्वावलोकन लोड करता आले नाही.",
+    "batch": "online-online-021",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:This skin changed on another device. Reload it before using it.": {
+    "before": "दुसऱ्या डिव्हाइसवर ही स्किन बदलली आहे. वापरण्यापूर्वी ती पुन्हा लोड करा.",
+    "after": "हे रूप दुसऱ्या उपकरणावर बदलले आहे. वापरण्यापूर्वी पुन्हा लोड करा.",
+    "batch": "online-online-021",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:This skin changed on another device. Your changes are safe here.": {
+    "before": "ही स्किन दुसऱ्या डिव्हाइसवर बदलली आहे. तुमचे बदल येथे सुरक्षित आहेत.",
+    "after": "हे रूप दुसऱ्या उपकरणावर बदलले आहे. तुमचे बदल येथे सुरक्षित आहेत.",
+    "batch": "online-online-021",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:This skin changed on another device. Your work is safe in this browser.": {
+    "before": "दुसऱ्या डिव्हाइसवर ही स्किन बदलली आहे. या ब्राउझरमध्ये तुमचे काम सुरक्षित आहे.",
+    "after": "हे रूप दुसऱ्या उपकरणावर बदलले आहे. तुमचे काम या ब्राउझरमध्ये सुरक्षित आहे.",
+    "batch": "online-online-021",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Through (UTC)": {
+    "before": "(UTC) द्वारे",
+    "after": "पर्यंत (UTC)",
+    "batch": "online-online-021",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:To play online, publish the generated map in the map library and select it for your room. Download family exports a ZIP for importing or editing in Building Studio.": {
+    "before": "ऑनलाइन खेळण्यासाठी, तयार केलेला नकाशा नकाशा लायब्ररीमध्ये प्रकाशित करा आणि तो तुमच्या खोलीसाठी निवडा. बिल्डिंग स्टुडिओमध्ये आयात करण्यासाठी किंवा संपादन करण्यासाठी फॅमिली एक्सपोर्टची ZIP फाईल डाउनलोड करा.",
+    "after": "ऑनलाइन खेळण्यासाठी तयार नकाशा नकाशांच्या संग्रहात प्रकाशित करून खोलीसाठी निवडा. «इमारत संच डाउनलोड करा» हा पर्याय इमारत स्टुडिओत आयात किंवा संपादन करण्यासाठी ZIP फाईल निर्यात करतो.",
+    "batch": "online-online-022",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Toubib": {
+    "before": "तौबीब",
+    "after": "Toubib",
+    "batch": "online-online-022",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Trim ends to shortest": {
+    "before": "टोके सर्वात लहान करा",
+    "after": "सर्वात लहान ट्रॅकइतकी लांबी होण्यासाठी शेवट कापा",
+    "batch": "online-online-022",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Truncated {value0} payload": {
+    "before": "संक्षिप्त {value0} पेलोड",
+    "after": "अपूर्ण {value0} पेलोड",
+    "batch": "online-online-022",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Units: latest verified match against recent average": {
+    "before": "एकके: अलीकडील सरासरीच्या तुलनेत नवीनतम सत्यापित जुळणी",
+    "after": "युनिट: अलीकडील सरासरीशी तुलना केलेला नवीनतम पडताळलेला सामना",
+    "batch": "online-online-022",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Unknown building sort.": {
+    "before": "इमारतीचा प्रकार अज्ञात आहे.",
+    "after": "इमारतींची क्रमवारी लावण्याची पद्धत अज्ञात आहे.",
+    "batch": "online-online-022",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Unknown contentType.": {
+    "before": "अज्ञात सामग्री प्रकार.",
+    "after": "contentType अज्ञात आहे.",
+    "batch": "online-online-022",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Unknown sort.": {
+    "before": "अज्ञात प्रकार.",
+    "after": "क्रमवारी लावण्याची पद्धत अज्ञात आहे.",
+    "batch": "online-online-022",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Unlike": {
+    "before": "विपरीत",
+    "after": "पसंती काढा",
+    "batch": "online-online-022",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Unlock the skin designer to use custom skins.": {
+    "before": "सानुकूलित स्किन्स वापरण्यासाठी स्किन डिझायनर अनलॉक करा.",
+    "after": "सानुकूल रूपे वापरण्यासाठी रूप डिझाइनर अनलॉक करा.",
+    "batch": "online-online-022",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Unverifiable": {
+    "before": "अपुष्ट करण्यायोग्य",
+    "after": "पडताळता न येणारे",
+    "batch": "online-online-022",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Upload an audio file, or cover art up to 8 MiB.": {
+    "before": "८ MiB पर्यंतची ऑडिओ फाईल किंवा कव्हर आर्ट अपलोड करा.",
+    "after": "ऑडिओ फाईल किंवा जास्तीत जास्त 8 MiB ची आवरण प्रतिमा अपलोड करा.",
+    "batch": "online-online-022",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Use Gravatar": {
+    "before": "ग्राव्हार वापरा",
+    "after": "Gravatar वापरा",
+    "batch": "online-online-023",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Usernames are 3 to 32 characters long; this one has {p0}.": {
+    "before": "वापरकर्त्याची नावे ३ ते ३२ अक्षरांची असतात; याचे नाव {p0} आहे.",
+    "after": "वापरकर्तानाव 3 ते 32 अक्षरांचे असावे; यात {p0} अक्षरे आहेत.",
+    "batch": "online-online-023",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:V": {
+    "before": "व्ही",
+    "after": "V",
+    "batch": "online-online-023",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:View orientation": {
+    "before": "अभिमुखता पहा",
+    "after": "दृश्याची दिशा",
+    "batch": "online-online-023",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Wait for the provider call to return before cancelling.": {
+    "before": "सेवा पुरवठादाराकडून परत कॉल येईपर्यंत रद्द करू नका.",
+    "after": "रद्द करण्यापूर्वी प्रदात्याच्या कॉलचा प्रतिसाद येण्याची वाट पाहा.",
+    "batch": "online-online-023",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Warrush": {
+    "before": "वॉरश",
+    "after": "Warrush",
+    "batch": "online-online-023",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:What will your world look like?": {
+    "before": "तुमचं जग कसं दिसेल?",
+    "after": "तुमचे जग कसे दिसेल?",
+    "batch": "online-online-023",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Withdraw from library": {
+    "before": "ग्रंथालयातून माघार घ्या",
+    "after": "संग्रहातून मागे घ्या",
+    "batch": "online-online-023",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Withdraw published family": {
+    "before": "प्रकाशित कुटुंब मागे घ्या",
+    "after": "प्रकाशित इमारत संच मागे घ्या",
+    "batch": "online-online-023",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Worker leases": {
+    "before": "कामगार भाडेपट्टे",
+    "after": "वर्करची आरक्षणे",
+    "batch": "online-online-024",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Worker slots": {
+    "before": "कामगार स्लॉट",
+    "after": "वर्करच्या जागा",
+    "batch": "online-online-024",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:You have no seat in a running match with that id.": {
+    "before": "त्या ओळखपत्रासह चालू असलेल्या सामन्यात तुम्हाला जागा मिळणार नाही.",
+    "after": "त्या ID च्या चालू सामन्यात तुमची जागा नाही.",
+    "batch": "online-online-024",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Your account cannot host rooms.": {
+    "before": "तुमच्या खात्यावर खोल्या ठेवता येत नाहीत.",
+    "after": "तुमच्या खात्याने खोल्या तयार करता येत नाहीत.",
+    "batch": "online-online-024",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Your building workspace is full.": {
+    "before": "तुमच्या इमारतीमधील कामाची जागा पूर्ण भरली आहे.",
+    "after": "इमारत निर्मितीचे कार्यक्षेत्र भरले आहे.",
+    "batch": "online-online-024",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Your building workspace is limited to 64 MiB. Export and delete an old draft first.": {
+    "before": "तुमच्या बिल्डिंगमधील वर्कस्पेस ६४ MiB पर्यंत मर्यादित आहे. प्रथम एक जुना ड्राफ्ट एक्सपोर्ट करून डिलीट करा.",
+    "after": "इमारत निर्मितीच्या कार्यक्षेत्राची मर्यादा 64 MiB आहे. आधी जुना मसुदा निर्यात करून हटवा.",
+    "batch": "online-online-024",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Your changes were saved as a new skin.": {
+    "before": "तुमचे बदल नवीन स्किन म्हणून जतन करण्यात आले.",
+    "after": "तुमचे बदल नवीन रूप म्हणून जतन झाले.",
+    "batch": "online-online-024",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Your first design starts with New skin. Your work saves automatically.": {
+    "before": "तुमची पहिली डिझाइन 'न्यू स्किन'ने सुरू होते. तुमचे काम आपोआप सेव्ह होते.",
+    "after": "पहिली रचना करण्यासाठी «नवीन रूप» निवडा. तुमचे काम आपोआप जतन होते.",
+    "batch": "online-online-024",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Your swarm, in the game": {
+    "before": "खेळामधील तुमचा थवा",
+    "after": "खेळातील तुमचे पोळे",
+    "batch": "online-online-024",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Your world is taking shape…": {
+    "before": "तुमचं जग आकार घेत आहे…",
+    "after": "तुमचे जग आकार घेत आहे…",
+    "batch": "online-online-024",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:about {seconds} s left": {
+    "before": "सुमारे {seconds} शिल्लक राहिले",
+    "after": "सुमारे {seconds} सेकंद शिल्लक",
+    "batch": "online-online-024",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:b-": {
+    "before": "ब-",
+    "after": "b-",
+    "batch": "online-online-024",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:building library": {
+    "before": "ग्रंथालय तयार करणे",
+    "after": "इमारतींचा संग्रह",
+    "batch": "online-online-024",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:by {slot0} · updated {slot1}": {
+    "before": "{slot0} द्वारा · {slot1} द्वारे अद्यतनित",
+    "after": "{slot0} यांच्याकडून · अद्ययावत {slot1}",
+    "batch": "online-online-024",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:median length": {
+    "before": "मध्यक लांबी",
+    "after": "मध्यक कालावधी",
+    "batch": "online-online-025",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:owner must be \"me\" or an account id.": {
+    "before": "मालक \"me\" किंवा खाते आयडी असणे आवश्यक आहे.",
+    "after": "owner हे \"me\" किंवा खात्याचा ID असावे.",
+    "batch": "online-online-025",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:participants must be all, humans or ai.": {
+    "before": "सहभागी all, humans किंवा ai असणे आवश्यक आहे.",
+    "after": "participants हे all, humans किंवा ai असावे.",
+    "batch": "online-online-025",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:provisional must be include or exclude.": {
+    "before": "तात्पुरते include किंवा exclude असले पाहिजे.",
+    "after": "provisional हे include किंवा exclude असावे.",
+    "batch": "online-online-025",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:status must be open, resolved, dismissed or all.": {
+    "before": "स्थिती open, resolved, dismissed किंवा all असणे आवश्यक आहे.",
+    "after": "status हे open, resolved, dismissed किंवा all असावे.",
+    "batch": "online-online-025",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:teams must list the map's {p0} teams in order 0..{p1}.": {
+    "before": "संघांनी नकाशावरील {p0} संघांची यादी 0..{p1} या क्रमाने करणे आवश्यक आहे.",
+    "after": "teams मध्ये नकाशातील {p0} संघांची यादी 0..{p1} या क्रमाने असावी.",
+    "batch": "online-online-025",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:unverifiable": {
+    "before": "अपुष्ट",
+    "after": "पडताळता न येणारे",
+    "batch": "online-online-025",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:{slot0} W · {slot1} L": {
+    "before": "{slot0} W · {slot1} L",
+    "after": "{slot0} विजय · {slot1} पराभव",
+    "batch": "online-online-025",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:{slot0} W · {slot1} L{slot2}": {
+    "before": "{slot0} W · {slot1} L{slot2}",
+    "after": "{slot0} विजय · {slot1} पराभव{slot2}",
+    "batch": "online-online-025",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:{slot0} available · {slot1} reserved. Discussion requires an available credit; each delivered set or revision costs 1 credit. Failed generations return the credit.": {
+    "before": "{slot0} उपलब्ध · {slot1} आरक्षित. चर्चेसाठी उपलब्ध क्रेडिट आवश्यक आहे; प्रत्येक वितरित संच किंवा सुधारणेसाठी १ क्रेडिट आकारले जाईल. अयशस्वी झालेल्या पिढ्यांसाठी क्रेडिट परत केले जाईल.",
+    "after": "{slot0} उपलब्ध · {slot1} राखीव. चर्चेसाठी उपलब्ध क्रेडिट हवे; प्रत्येक तयार संच किंवा सुधारित आवृत्तीसाठी 1 क्रेडिट लागते. अयशस्वी निर्मितीचे क्रेडिट परत मिळते.",
+    "batch": "online-online-025",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:{slot0} credit · {slot1}  {slot2}": {
+    "before": {
+      "one": "{slot0} क्रेडिट · {slot1} {slot2}",
+      "other": "{slot0} श्रेय · {slot1} {slot2}"
+    },
+    "after": {
+      "one": "{slot0} क्रेडिट · {slot1}  {slot2}",
+      "other": "{slot0} क्रेडिट्स · {slot1}  {slot2}"
+    },
+    "batch": "online-online-026",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:{slot0} credits · {slot1}  {slot2}": {
+    "before": "{slot0} श्रेय · {slot1} {slot2}",
+    "after": "{slot0} क्रेडिट्स · {slot1}  {slot2}",
+    "batch": "online-online-026",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:{slot0} live · {slot1} in the last 24 hours": {
+    "before": "{slot0} थेट प्रक्षेपण · गेल्या २४ तासांत {slot1}",
+    "after": "{slot0} सध्या चालू · गेल्या 24 तासांत {slot1}",
+    "batch": "online-online-026",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:{slot0} reserved. Credits belong to this studio.": {
+    "before": "{slot0} राखीव. श्रेय या स्टुडिओला जाते.",
+    "after": "{slot0} राखीव. हे क्रेडिट्स याच स्टुडिओसाठी आहेत.",
+    "batch": "online-online-026",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:{slot0} within {slot1} minutes": {
+    "before": "",
+    "after": "{slot1} मिनिटांच्या आत {slot0}",
+    "batch": "online-online-026",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:{slot0} · saved generation preview": {
+    "before": "{slot0} · जतन केलेल्या पिढीचे पूर्वावलोकन",
+    "after": "{slot0} · जतन केलेल्या निर्मितीचे पूर्वावलोकन",
+    "batch": "online-online-026",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:{slot0} · {slot1} second": {
+    "before": {
+      "one": "{slot0} · {slot1} दुसरा",
+      "other": "{slot0} · {slot1} सेकंद"
+    },
+    "after": {
+      "one": "{slot0} · {slot1} सेकंद",
+      "other": "{slot0} · {slot1} सेकंद"
+    },
+    "batch": "online-online-026",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:{slot0}: collected {slot1} · refunded {slot2} · collected less refunds {slot3}": {
+    "before": "{slot0}: गोळा केले {slot1} · परत केले {slot2} · परत केलेल्या रकमेपेक्षा कमी गोळा केले {slot3}",
+    "after": "{slot0}: जमा {slot1} · परतावा {slot2} · जमा वजा परतावा {slot3}",
+    "batch": "online-online-026",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:{slot0}by {slot1} · ♥ {slot2}": {
+    "before": "{slot0}by {slot1} · ♥ {slot2}",
+    "after": "{slot0}{slot1} यांच्याकडून · ♥ {slot2}",
+    "batch": "online-online-026",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:{value0} Map credits": {
+    "before": "{value0} नकाशा श्रेय",
+    "after": "{value0} नकाशा निर्मिती क्रेडिट्स",
+    "batch": "online-online-026",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:{value0} Music credits": {
+    "before": "{value0} संगीत श्रेय",
+    "after": "{value0} संगीत निर्मिती क्रेडिट्स",
+    "batch": "online-online-026",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:{value0} Stripe minor units": {
+    "before": "{value0} पट्टेदार लहान एकके",
+    "after": "{value0} Stripe ची लघु चलन एकके",
+    "batch": "online-online-026",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:{value0}vs {value1}": {
+    "before": "{value0}vs {value1}",
+    "after": "{value0} विरुद्ध {value1}",
+    "batch": "online-online-027",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:← Set library": {
+    "before": "← लायब्ररी सेट करा",
+    "after": "← संचांचा संग्रह",
+    "batch": "online-online-027",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:⠿ {slot0}": {
+    "before": "{slot0}",
+    "after": "⠿ {slot0}",
+    "batch": "online-online-027",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online: (draw)": {
+    "before": " (रेखाचित्र)",
+    "after": " (बरोबरी)",
+    "batch": "online-online-027",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online: (lost)": {
+    "before": " (हरवले)",
+    "after": " (पराभव)",
+    "batch": "online-online-027",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online: Colony {value0}.": {
+    "before": " कॉलनी {value0}.",
+    "after": " वसाहत {value0}.",
+    "batch": "online-online-027",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online: properties": {
+    "before": " मालमत्ता",
+    "after": " गुणधर्म",
+    "batch": "online-online-027",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online: · rated": {
+    "before": " · रेट केले",
+    "after": " · मानांकित",
+    "batch": "online-online-027",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online: · unrated": {
+    "before": " · रेटिंग नाही",
+    "after": " · मानांकनरहित",
+    "batch": "online-online-027",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online: · {count} team": {
+    "before": {
+      "one": " · {count} टीम",
+      "other": " · {count} संघ"
+    },
+    "after": {
+      "one": " · {count} संघ",
+      "other": " · {count} संघ"
+    },
+    "batch": "online-online-027",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Enter usage verified against provider evidence. Input totals include cache creation/write tokens. Unknown usage must not be entered as zero.": {
+    "before": "प्रोव्हायडरच्या पुराव्यानुसार सत्यापित केलेला वापर प्रविष्ट करा. प्रविष्ट केलेल्या एकूण रकमेमध्ये कॅशे निर्मिती/लेखन टोकन्सचा समावेश आहे. अज्ञात वापर शून्य म्हणून प्रविष्ट करू नये.",
+    "after": "प्रदात्याच्या पुराव्याशी पडताळलेला वापर लिहा. एकूण इनपुटमध्ये कॅश निर्मिती/लेखन टोकन समाविष्ट असतात. अज्ञात वापर शून्य म्हणून लिहू नका.",
+    "batch": "online-online-027",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Follow latest generation": {
+    "before": "नवीनतम पिढीचे अनुसरण करा",
+    "after": "नवीनतम निर्मितीसोबत रहा",
+    "batch": "online-online-027",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Following latest generation": {
+    "before": "नवीनतम पिढीचे अनुसरण करत आहे",
+    "after": "नवीनतम निर्मितीसोबत आहात",
+    "batch": "online-online-027",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Generation needs attention": {
+    "before": "पिढीकडे लक्ष देण्याची गरज आहे.",
+    "after": "निर्मितीकडे लक्ष द्यावे लागेल",
+    "batch": "online-online-027",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Import generator package": {
+    "before": "आयात जनरेटर पॅकेज",
+    "after": "जनरेटर पॅकेज आयात करा",
+    "batch": "online-online-027",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Make my colony more defensive…": {
+    "before": "माझ्या वसाहतीला अधिक संरक्षणक्षम बनवणे…",
+    "after": "माझी वसाहत अधिक संरक्षणक्षम करा…",
+    "batch": "online-online-027",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Play animation": {
+    "before": "प्ले ॲनिमेशन",
+    "after": "अॅनिमेशन सुरू करा",
+    "batch": "online-online-028",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Retry saved request": {
+    "before": "जतन केलेली विनंती पुन्हा प्रयत्न करा",
+    "after": "जतन केलेल्या विनंतीचा पुन्हा प्रयत्न करा",
+    "batch": "online-online-028",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Signed HP per exposed tick, divided by 256; negative values damage units.": {
+    "before": "प्रत्येक उघड टिकसाठी चिन्हांकित एचपी, भागिले २५६; ऋण मूल्यांचे नुकसान एकक.",
+    "after": "प्रभावाखालील प्रत्येक टिकमधील धन किंवा ऋण HP बदल, भागिले 256; ऋण मूल्यांमुळे युनिटना हानी होते.",
+    "batch": "online-online-028",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:The assistant edits your manifest and JavaScript together. You decide when to generate or run checks.": {
+    "before": "सहाय्यक तुमचा मॅनिफेस्ट आणि JavaScript एकत्र संपादित करतो. तपासण्या केव्हा जनरेट करायच्या किंवा चालवायच्या हे तुम्ही ठरवता.",
+    "after": "सहाय्यक मॅनिफेस्ट आणि JavaScript एकत्र संपादित करतो. निर्मिती केव्हा करायची किंवा तपासण्या केव्हा चालवायच्या हे तुम्ही ठरवता.",
+    "batch": "online-online-028",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Try “a winding river with fertile banks” or ask how the current generator works.": {
+    "before": "“सुपीक काठांची नागमोडी नदी” असे म्हणून बघा किंवा विद्युत प्रवाह जनरेटर कसे काम करतो ते विचारा.",
+    "after": "«सुपीक काठांची नागमोडी नदी» असे सांगून पाहा किंवा सध्याचा जनरेटर कसा काम करतो ते विचारा.",
+    "batch": "online-online-028",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:{count} player on this page": {
+    "before": {
+      "one": "या पानावर {count} प्लेअर",
+      "other": "या पृष्ठावरील {count} खेळाडू"
+    },
+    "after": {
+      "one": "या पृष्ठावर {count} खेळाडू",
+      "other": "या पृष्ठावर {count} खेळाडू"
+    },
+    "batch": "online-online-028",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:{count} team · ": {
+    "before": {
+      "one": "{count} टीम · ",
+      "other": "{count} संघ · "
+    },
+    "after": {
+      "one": "{count} संघ · ",
+      "other": "{count} संघ · "
+    },
+    "batch": "online-online-028",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:{value0} HP per exposed tick": {
+    "before": "{value0} HP प्रति उघड्या गोचिड",
+    "after": "प्रभावाखालील प्रत्येक टिकला {value0} HP",
+    "batch": "online-online-028",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:{value0} playing": {
+    "before": "{value0} खेळत आहे",
+    "after": "{value0} वाजत आहे",
+    "batch": "online-online-028",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:× Compatibility checks failed": {
+    "before": "सुसंगतता तपासणी अयशस्वी झाली",
+    "after": "× सुसंगतता तपासण्या अयशस्वी झाल्या",
+    "batch": "online-online-028",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Native terrain preview · awaiting checks": {
+    "before": "मूळ भूभागाचे पूर्वावलोकन · तपासणीची प्रतीक्षा",
+    "after": "खेळाच्या इंजिनमधील भूभागाचे पूर्वावलोकन · तपासण्या बाकी",
+    "batch": "online-online-029",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Selected map area": {
+    "before": "निवडलेला नकाशा क्षेत्र",
+    "after": "नकाशातील निवडलेले क्षेत्र",
+    "batch": "online-online-029",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Composition source · edit {count}": {
+    "before": "रचना स्रोत · {count} संपादित करा",
+    "after": "रचनेचा स्रोत · संपादन {count}",
+    "batch": "online-online-029",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Native validation report": {
+    "before": "मूळ प्रमाणीकरण अहवाल",
+    "after": "खेळाच्या इंजिनमधील पडताळणीचा अहवाल",
+    "batch": "online-online-029",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Valid colony starts": {
+    "before": "वैध वसाहत सुरू होते",
+    "after": "वसाहतींची वैध सुरुवातीची ठिकाणे",
+    "batch": "online-online-029",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Opening economy measured": {
+    "before": "अर्थव्यवस्था उघडण्याचे मोजमाप",
+    "after": "सुरुवातीची अर्थव्यवस्था मोजली",
+    "batch": "online-online-029",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Colony {count}: building space": {
+    "before": "कॉलनी {count}: इमारत जागा",
+    "after": "वसाहत {count}: बांधकामाची जागा",
+    "batch": "online-online-029",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Colony {count}: starter food": {
+    "before": "कॉलनी {count}: स्टार्टर फूड",
+    "after": "वसाहत {count}: सुरुवातीचे अन्न",
+    "batch": "online-online-029",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Colony {count}: starter timber": {
+    "before": "कॉलनी {count}: सुरुवातीचे लाकूड",
+    "after": "वसाहत {count}: सुरुवातीचे लाकूड",
+    "batch": "online-online-029",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Colony {count}: renewable food ground": {
+    "before": "कॉलनी {count}: नूतनीकरणक्षम अन्नभूमी",
+    "after": "वसाहत {count}: पुन्हा अन्न उगवणारी जमीन",
+    "batch": "online-online-029",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Properties": {
+    "before": "मालमत्ता",
+    "after": "गुणधर्म",
+    "batch": "online-online-029",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  },
+  "online:Semantics": {
+    "before": "अर्थशास्त्र",
+    "after": "कार्यनियम",
+    "batch": "online-online-029",
+    "reason": "Independent Marathi editorial correction for natural register, terminology, or complete contextual sentence meaning."
+  }
+}

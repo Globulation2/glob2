@@ -1,0 +1,88 @@
+{
+  "request": {
+    "project": "bradley-personal-20261027",
+    "model": "general/nmt",
+    "payload": {
+      "sourceLanguageCode": "en",
+      "targetLanguageCode": "mr",
+      "mimeType": "text/plain",
+      "contents": [
+        "Core strategy: Invests in a productive colony and technology before committing substantial attacks. Prioritized construction projects build up its settlement; development, military infrastructure and time increase war readiness.",
+        "Economy and development: Studies hydration, food-source growth, obstacles and worker reach. Manages food expansion, upgrades and defenses alongside production.",
+        "Attack and defense: Estimates healthy warriors' attack power and begins strikes when power or timing conditions are met. Favors previously seen, accessible buildings, especially barracks and schools, and moves its attack flags toward valuable targets.",
+        "Compared with other AIs: More deliberate about terrain and target value than Numbi. More patient than Warrush, trading early pressure for a developed base and stronger troops.",
+        "Strengths and weaknesses: Broad infrastructure planning and valuable military targets give its strikes purpose. Preparation takes time, allowing faster opponents to contest resources before its main force is ready.",
+        "Counterplay to try: Contest expansion early. Protect barracks and schools as well as food, and keep a reserve when attacking its developed settlement.",
+        "Core strategy: Uses reactive priorities to grow a working economy and turn spare labor into food, technology and military pressure. Its normal policy is rule-based; learned-policy experiments require separate configuration.",
+        "Economy and development: Adjusts worker production to staffing demand and keeps births going. Food trouble suppresses expansion and technology spending. Adds swimming when water access materially helps.",
+        "Attack and defense: Prepares attacks using observed enemy technology and available troops. Water-crossing campaigns need swimming-capable warriors. Supports long campaigns with forward inns and hospitals, and can stage forces before advancing.",
+        "Commitment and emergencies: Holds an offensive through minor harassment instead of repeatedly marching home. Serious attacks can recall defenders. Early emergencies can trigger warrior-only production and a hospital; famine can trigger a smaller desperation attack.",
+        "Compared with other AIs: More concerned with forward support than Warrush. Maxima goes further in budgeting sustainable births, training and deployment against estimated enemy strength.",
+        "Strengths and weaknesses: Connects pressure to food, healing and reachability. Forward infrastructure must stay supplied, and continued births can keep pressure on limited food. Emergency priorities force tradeoffs between growth and survival.",
+        "Counterplay to try: Contest forward inns, hospitals and food sources. Keep defenders together against its push; minor harassment may not persuade it to retreat.",
+        "Scouting: Uses discovered enemy buildings and observed enemy troops."
+      ]
+    }
+  },
+  "response": {
+    "translations": [
+      {
+        "translatedText": "मुख्य रणनीती: मोठे हल्ले करण्यापूर्वी एका उत्पादक वसाहतीत आणि तंत्रज्ञानामध्ये गुंतवणूक करणे. प्राधान्यक्रमानुसार बांधकाम प्रकल्पांद्वारे वसाहत उभारली जाते; विकास, लष्करी पायाभूत सुविधा आणि वेळ युद्धसज्जता वाढवतात.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अर्थव्यवस्था आणि विकास: जलपुरवठा, अन्नस्रोतांची वाढ, अडथळे आणि कामगारांची पोहोच यांचा अभ्यास करते. उत्पादनासोबतच अन्नपुरवठा विस्तार, सुधारणा आणि संरक्षण यांचे व्यवस्थापन करते.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "आक्रमण आणि बचाव: निरोगी योद्ध्यांच्या आक्रमण शक्तीचा अंदाज घेते आणि शक्ती किंवा वेळेच्या अटी पूर्ण झाल्यावर हल्ले सुरू करते. पूर्वी पाहिलेल्या, सहज पोहोचता येणाऱ्या इमारतींना, विशेषतः सैनिकी छावण्या आणि शाळांना प्राधान्य देते आणि आपले आक्रमणाचे ध्वज मौल्यवान लक्ष्यांकडे हलवते.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "इतर एआयंच्या तुलनेत: नम्बीपेक्षा भूभाग आणि लक्ष्याच्या मूल्याबाबत अधिक विचारपूर्वक निर्णय घेते. वॉरशपेक्षा अधिक संयमी आहे, सुरुवातीच्या दबावाच्या बदल्यात विकसित तळ आणि अधिक शक्तिशाली सैन्य मिळवते.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सामर्थ्ये आणि मर्यादा: व्यापक पायाभूत सुविधांचे नियोजन आणि मौल्यवान लष्करी लक्ष्ये त्याच्या हल्ल्यांना उद्देश देतात. तयारीला वेळ लागतो, ज्यामुळे त्याची मुख्य फौज तयार होण्यापूर्वीच अधिक वेगवान विरोधकांना संसाधनांवर ताबा मिळवण्याची संधी मिळते.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "वापरून पाहण्यासारखी प्रतिचाल: सुरुवातीलाच विस्ताराला विरोध करा. सैनिकी छावण्या, शाळा तसेच अन्नसाठ्याचे संरक्षण करा आणि त्यांच्या विकसित वस्तीवर हल्ला करताना राखीव सैन्य ठेवा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "मुख्य धोरण: कार्यरत अर्थव्यवस्थेच्या वाढीसाठी आणि अतिरिक्त श्रमाचे अन्न, तंत्रज्ञान व लष्करी दबावात रूपांतर करण्यासाठी प्रतिक्रियात्मक प्राधान्यक्रमांचा वापर करते. त्याचे सामान्य धोरण नियमांवर आधारित असते; शिकलेल्या धोरणांच्या प्रयोगांसाठी स्वतंत्र संरचनेची आवश्यकता असते.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अर्थव्यवस्था आणि विकास: मनुष्यबळाच्या मागणीनुसार कामगारांच्या उत्पादनात बदल करते आणि जन्मदर कायम ठेवते. अन्नटंचाईमुळे विस्तार आणि तंत्रज्ञानावरील खर्च मंदावतो. जेव्हा पाण्याची उपलब्धता लक्षणीय मदत करते, तेव्हा पोहण्याचा समावेश केला जातो.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "आक्रमण आणि बचाव: शत्रूचे निरीक्षण केलेले तंत्रज्ञान आणि उपलब्ध सैन्याचा वापर करून आक्रमणाची तयारी करते. जलमार्गावरील मोहिमांसाठी पोहता येणाऱ्या योद्ध्यांची आवश्यकता असते. अग्रिम धर्मशाळा आणि रुग्णालयांच्या साहाय्याने दीर्घकालीन मोहिमांना साहाय्य करते, आणि पुढे कूच करण्यापूर्वी सैन्य तैनात करू शकते.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "वचनबद्धता आणि आणीबाणी: वारंवार माघार घेण्याऐवजी किरकोळ त्रास देऊन आक्रमण चालू ठेवते. गंभीर हल्ल्यांमुळे बचावकर्त्यांना परत बोलावले जाऊ शकते. सुरुवातीच्या आणीबाणीमुळे केवळ योद्ध्यांद्वारे उत्पादन आणि रुग्णालय सुरू होऊ शकते; दुष्काळामुळे एक लहानसा हताश हल्ला होऊ शकतो.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "इतर एआयंच्या तुलनेत: वॉरशपेक्षा आघाडीच्या मदतीवर अधिक लक्ष केंद्रित करते. मॅक्सिमा अंदाजित शत्रूच्या सामर्थ्याच्या तुलनेत शाश्वत निर्मिती, प्रशिक्षण आणि तैनातीचे नियोजन अधिक प्रभावीपणे करते.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सामर्थ्ये आणि मर्यादा: अन्न, आरोग्य आणि पोहोचण्याच्या सुलभतेवर दबाव येतो. पुढील पायाभूत सुविधांचा पुरवठा अखंडित राहणे आवश्यक आहे, आणि सततच्या जन्मांमुळे मर्यादित अन्नावर दबाव कायम राहू शकतो. आपत्कालीन प्राधान्यक्रमांमुळे विकास आणि अस्तित्व यांमध्ये तडजोड करावी लागते.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "प्रति-खेळीचा प्रयत्न: पुढील धर्मशाळा, रुग्णालये आणि अन्नस्रोतांवर ताबा मिळवा. त्याच्या आक्रमणाविरुद्ध बचाव करणाऱ्यांना एकत्र ठेवा; किरकोळ छळामुळे ते माघार घेणार नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "टेहळणी: शोधलेल्या शत्रूच्या इमारती आणि निरीक्षित शत्रू सैन्याचा वापर करते.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      }
+    ]
+  },
+  "response_sha256": "36d77405368645505282e89605983bd68acccf977d73d083229e585836c871b6"
+}

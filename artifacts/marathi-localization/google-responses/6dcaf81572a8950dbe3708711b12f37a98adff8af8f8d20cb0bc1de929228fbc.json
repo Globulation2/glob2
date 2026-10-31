@@ -1,0 +1,418 @@
+{
+  "request": {
+    "project": "bradley-personal-20261027",
+    "model": "general/nmt",
+    "payload": {
+      "sourceLanguageCode": "en",
+      "targetLanguageCode": "mr",
+      "mimeType": "text/plain",
+      "contents": [
+        "Choose Calm",
+        "Choose Combat",
+        "Choose ZIP",
+        "Choose a music file.",
+        "Combat",
+        "Could not open this music set.",
+        "Credits, downloads and reporting",
+        "Downloading music…",
+        "Export recovery files",
+        "Fade duration",
+        "File selection cancelled or failed.",
+        "Import ZIP",
+        "Import ZIP or three tracks",
+        "Import music",
+        "Import three tracks",
+        "Includes AI-generated audio",
+        "Install",
+        "Install selected",
+        "Installed",
+        "Load more",
+        "Loading music…",
+        "Most downloaded",
+        "Most liked",
+        "Music decoding failed.",
+        "Music download failed.",
+        "Music installed.",
+        "Music installed. It is now available in Audio settings.",
+        "Music is not yet saved permanently. Retry saving before leaving.",
+        "Music library",
+        "Music request failed.",
+        "Newest",
+        "No community music installed yet. Import files or browse the online library.",
+        "No music found.",
+        "Not AI-generated",
+        "Pause",
+        "Play",
+        "Playback position",
+        "Preview",
+        "Ready to import.",
+        "Remove",
+        "Reset to game behavior",
+        "Retry saving",
+        "Saved.",
+        "Saving music…",
+        "Search",
+        "Search title, artist, description…",
+        "Select for installation",
+        "Share music on the web",
+        "Some catalogue entries could not be read.",
+        "Storage could not be saved. Retry or export your files before leaving.",
+        "Tag",
+        "Test crossfades",
+        "Up to 2 minutes",
+        "Use this music",
+        "Validating music…",
+        "Music library · Browse, install and import",
+        "Filters",
+        "Leave without saving",
+        "Import a downloaded music ZIP or the three Opus tracks. Metadata and cover art are read from Calm; no extra files are required.",
+        "Target render FPS",
+        "Unlimited",
+        "Limit drawing across the application. Lower values reduce rendering work. Game speed is unchanged.",
+        "Map generators",
+        "Import a generator package, then select its landscape when creating a map or game.",
+        "Import map generator",
+        "No custom map generators installed.",
+        "Replace package",
+        "Export package",
+        "Remove generator",
+        "Saving generator library…",
+        "Could not read generator package.",
+        "Generator library saved.",
+        "Storage could not be saved. The previous library is retained.",
+        "Waiting for file selection or storage…",
+        "File selection is unavailable.",
+        "Package export is unavailable.",
+        "CPU automatic",
+        "Scalar",
+        "Unavailable",
+        "Initializing"
+      ]
+    }
+  },
+  "response": {
+    "translations": [
+      {
+        "translatedText": "शांतता निवडा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "लढाई निवडा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पिन कोड निवडा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "संगीत फाईल निवडा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "लढाई",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "हा संगीत संच उघडता आला नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "श्रेय, डाउनलोड आणि अहवाल देणे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "संगीत डाउनलोड करत आहे…",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "रिकव्हरी फाइल्स निर्यात करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "फिकट होण्याचा कालावधी",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "फाईल निवड रद्द झाली किंवा अयशस्वी झाली.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "झिप आयात करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "झिप किंवा तीन ट्रॅक आयात करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "संगीत आयात करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तीन ट्रॅक आयात करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "एआय-निर्मित ऑडिओचा समावेश आहे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "स्थापित करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "निवडलेले स्थापित करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "स्थापित केले",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अधिक लोड करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "संगीत लोड होत आहे…",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सर्वाधिक डाउनलोड केलेले",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सर्वाधिक आवडले",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "संगीत डीकोडिंग अयशस्वी झाले.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "संगीत डाउनलोड अयशस्वी झाले.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "संगीत स्थापित केले.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "संगीत इन्स्टॉल झाले आहे. ते आता ऑडिओ सेटिंग्जमध्ये उपलब्ध आहे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "संगीत अद्याप कायमस्वरूपी जतन झालेले नाही. जाण्यापूर्वी पुन्हा जतन करण्याचा प्रयत्न करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "संगीत लायब्ररी",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "संगीताची विनंती अयशस्वी झाली.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नवीनतम",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अद्याप कोणतेही सामुदायिक संगीत स्थापित केलेले नाही. फाईल्स आयात करा किंवा ऑनलाइन लायब्ररी ब्राउझ करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कोणतेही संगीत आढळले नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "एआय-निर्मित नाही",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "थांबा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "खेळा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "प्लेबॅक स्थिती",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पूर्वावलोकन",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "आयात करण्यास तयार.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "काढून टाका",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "खेळाच्या वर्तनावर परत जा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सेव्ह करण्याचा पुन्हा प्रयत्न करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "जतन केले.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "संगीत जतन करत आहे…",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "शोध",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "शीर्षक, कलाकार, वर्णन शोधा…",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "स्थापनेसाठी निवडा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "वेबवर संगीत शेअर करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कॅटलॉगमधील काही नोंदी वाचता आल्या नाहीत.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "स्टोरेज जतन करता आले नाही. कृपया पुन्हा प्रयत्न करा किंवा जाण्यापूर्वी तुमच्या फाईल्स एक्सपोर्ट करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "टॅग",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "क्रॉसफेड्सची चाचणी करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "२ मिनिटांपर्यंत",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "हे संगीत वापरा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "संगीताला मान्यता देणे…",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "संगीत लायब्ररी · ब्राउझ करा, इन्स्टॉल करा आणि आयात करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "फिल्टर",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "बचत न करता निघून जा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "डाउनलोड केलेली म्युझिक झिप फाईल किंवा तीन ओपस ट्रॅक्स इम्पोर्ट करा. मेटाडेटा आणि कव्हर आर्ट 'Calm' मधून वाचले जातात; कोणत्याही अतिरिक्त फाईल्सची आवश्यकता नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "लक्ष्यित रेंडर एफपीएस",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अमर्याद",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "संपूर्ण ॲप्लिकेशनमध्ये रेखांकन मर्यादित करा. कमी मूल्यांमुळे रेंडरिंगचे काम कमी होते. गेमच्या वेगात कोणताही बदल होत नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नकाशा जनरेटर",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "जनरेटर पॅकेज आयात करा, त्यानंतर नकाशा किंवा गेम तयार करताना त्याचे भूदृश्य निवडा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "आयात नकाशा जनरेटर",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कोणतेही सानुकूल नकाशा जनरेटर स्थापित केलेले नाहीत.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पॅकेज बदला",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "निर्यात पॅकेज",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "जनरेटर काढा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "जनरेटर लायब्ररी जतन करत आहे…",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "जनरेटर पॅकेज वाचता आले नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "जनरेटर लायब्ररी जतन केली.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "स्टोरेज वाचवता आले नाही. मागील लायब्ररी कायम ठेवण्यात आली आहे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "फाईल निवड किंवा साठवणुकीची प्रतीक्षा करत आहे…",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "फाईल निवडण्याची सोय उपलब्ध नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पॅकेज निर्यात उपलब्ध नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सीपीयू स्वयंचलित",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "स्केलर",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अनुपलब्ध",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "आरंभ करत आहे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      }
+    ]
+  },
+  "response_sha256": "9fea69c4ec56f5a5a3b756ca439ec0efa7a6437b0cb36e7d48a5af3ebdf74e59"
+}

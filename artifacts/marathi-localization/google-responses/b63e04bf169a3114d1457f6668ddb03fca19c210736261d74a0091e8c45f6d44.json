@@ -1,0 +1,418 @@
+{
+  "request": {
+    "project": "bradley-personal-20261027",
+    "model": "general/nmt",
+    "payload": {
+      "sourceLanguageCode": "en",
+      "targetLanguageCode": "mr",
+      "mimeType": "text/plain",
+      "contents": [
+        "Explorer Ratio",
+        "Explorer",
+        "explorers",
+        "Flag Defaults",
+        "fruit",
+        "Feeds your units",
+        "fruits with others",
+        "Allows the exchange of",
+        "Market",
+        "Min. unit level",
+        "Number Of Buildings",
+        "Start/Stop Repair",
+        "Select Barracks",
+        "Select Clearing Flag",
+        "Select Construct Market",
+        "Select Construct Swarm",
+        "Select Exploration Flag",
+        "Select Hospital",
+        "Select Inn",
+        "Select Market",
+        "Select Place Clearing Flag",
+        "Select Place Exploration Flag",
+        "Select Place War Flag",
+        "Select Racetrack",
+        "Select School",
+        "Select Swarm",
+        "Select Swimming Pool",
+        "Select Defense Tower",
+        "Select Wall",
+        "Select War Flag",
+        "Show flags",
+        "Creates new units",
+        "Swarm",
+        "Switch To Building view",
+        "Switch to Flags view",
+        "The building is finished.",
+        "The building is under attack.",
+        "Clearing flag placed.",
+        "Clearing flag is under attack.",
+        "Exploration flag placed.",
+        "Exploration flag is under attack.",
+        "The Inn is finished.",
+        "The Inn is under attack.",
+        "The market is finished.",
+        "The market is under attack.",
+        "The swarm is finished.",
+        "The swarm is under attack.",
+        "War flag placed.",
+        "War flag is under attack.",
+        "Start/Stop Upgrade",
+        "Attracts warriors",
+        "War Flag",
+        "Warrior Ratio",
+        "Warrior",
+        "warriors",
+        "Worker Ratio",
+        "Worker",
+        "workers",
+        "Fruit",
+        "Starting workers",
+        "Starting workers: Game Rules tab.",
+        "8 workers / 2x speed",
+        "Classic colony building",
+        "Quick clash: 2x speed; generated maps start with 8 workers.",
+        "Starting workers affects generated maps only.",
+        "More workers jump-start colony growth. Changes the generated map.",
+        "No warriors",
+        "Farm building plots",
+        "Fruit amount",
+        "Fruit in home valleys",
+        "Building sites complete immediately, skipping delivery.",
+        "Higher tiers give every building much more HP.",
+        "New buildings",
+        "Buildings blocked S/C",
+        "Swim exits S/C",
+        "Currently blocked buildings",
+        "Structurally blocked buildings",
+        "A colony's homeland has no room for a swarm; use a bigger map, fewer colonies or a narrower march.",
+        "A city neighbourhood lacks reachable crops or building room.",
+        "Each colony's start is measured on the finished map: the walk to food and wood sources, how well its ground regrows, the deposits and building sites within reach, and its distance from rivals. Every factor scores from 0 to 1 against a fixed bar, the total weighs them, fairness is the worst colony's total over the best, and the score is the worst total times the fairness."
+      ]
+    }
+  },
+  "response": {
+    "translations": [
+      {
+        "translatedText": "एक्सप्लोरर गुणोत्तर",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "शोधक",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "शोधक",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ध्वज डीफॉल्ट",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "फळ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तुमच्या युनिट्सना खाद्य पुरवते",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "इतरांसोबत फळे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "देवाणघेवाणीची परवानगी देते",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "बाजार",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "किमान युनिट पातळी",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "इमारतींची संख्या",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "दुरुस्ती सुरू/थांबवा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "बॅरेक्स निवडा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "क्लिअरिंग फ्लॅग निवडा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "निवडक बांधकाम बाजार",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "स्वॉर्म तयार करा निवडा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "एक्सप्लोरेशन फ्लॅग निवडा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "रुग्णालय निवडा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सिलेक्ट इन",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "निवडक बाजार",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "जागा निवडण्याचा ध्वज",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ठिकाण निवडा अन्वेषण ध्वज",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "जागा निवडा युद्ध ध्वज",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "रेसट्रॅक निवडा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "शाळा निवडा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "स्वार्म निवडा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "स्विमिंग पूल निवडा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "डिफेन्स टॉवर निवडा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "भिंत निवडा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "युद्ध ध्वज निवडा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ध्वज दाखवा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नवीन युनिट्स तयार करते",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "थवा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "बिल्डिंग व्ह्यूवर स्विच करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ध्वज दृश्यावर स्विच करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "इमारतीचे बांधकाम पूर्ण झाले आहे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "इमारतीवर हल्ला होत आहे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "क्लिअरिंग फ्लॅग लावला.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "क्लिअरिंग फ्लॅगवर हल्ला होत आहे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "शोध मोहिमेचा ध्वज लावण्यात आला.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "एक्सप्लोरेशन फ्लॅगवर हल्ला होत आहे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "धर्मशाळेचे काम पूर्ण झाले आहे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "धर्मशाळेवर हल्ला झाला आहे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "बाजार संपला आहे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "बाजारावर हल्ला होत आहे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "थवा संपला आहे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "थव्यावर हल्ला होत आहे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "युद्धाचा झेंडा लावण्यात आला.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "युद्धध्वजावर हल्ला होत आहे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अपग्रेड सुरू/थांबवा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "योद्ध्यांना आकर्षित करते",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "युद्ध ध्वज",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "योद्धा गुणोत्तर",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "योद्धा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "योद्धे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कामगार गुणोत्तर",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कामगार",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कामगार",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "फळ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कामगार सुरू करणे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सुरुवातीचे कामगार: खेळाचे नियम टॅब.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "८ कामगार / दुप्पट वेग",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "क्लासिक वसाहत इमारत",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "क्विक क्लॅश: २x वेग; तयार झालेले नकाशे ८ कामगारांसह सुरू होतात.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कामगार सुरू केल्याने फक्त तयार झालेल्या नकाशांवर परिणाम होतो.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अधिक कामगार वसाहतीच्या वाढीला चालना देतात. तयार होणाऱ्या नकाशात बदल होतो.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "योद्धे नाहीत",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "शेती बांधकाम भूखंड",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "फळांचे प्रमाण",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "घरगुती खोऱ्यांमधील फळे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "डिलिव्हरी वगळून, बांधकाम स्थळे त्वरित पूर्ण होतात.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "उच्च स्तरांमुळे प्रत्येक इमारतीला अधिक एचपी मिळते.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नवीन इमारती",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "इमारतींनी एस/सी ला अडथळा आणला",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "स्विम एक्झिट्स एस/सी",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सध्या बंद असलेल्या इमारती",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "संरचनात्मकदृष्ट्या अवरोधित इमारती",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "वसाहतीच्या मातृभूमीत थव्याला जागा नसते; त्यामुळे मोठा नकाशा, कमी वसाहती किंवा अरुंद सीमा वापरा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "शहरी वस्तीमध्ये पोहोचण्याजोगी पिके किंवा बांधकामासाठी जागा नसते.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "प्रत्येक वसाहतीची सुरुवात अंतिम नकाशावर मोजली जाते: अन्न आणि लाकडाच्या स्रोतांपर्यंतचा चालण्याचा मार्ग, जमिनीची पुनरुत्पत्ती किती चांगली होते, आवाक्यात असलेले साठे आणि बांधकाम स्थळे, आणि प्रतिस्पर्धकांपासूनचे अंतर. प्रत्येक घटकाला एका निश्चित मापदंडाच्या तुलनेत ० ते १ पर्यंत गुण दिले जातात, एकूण गुणांचे वजन मोजले जाते, निष्पक्षता म्हणजे सर्वात वाईट वसाहतीच्या एकूण गुणांना सर्वोत्तम वसाहतीच्या एकूण गुणांनी भागून काढलेली असते, आणि अंतिम गुण म्हणजे सर्वात वाईट एकूण गुणांना निष्पक्षतेने गुणून काढलेला असतो.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      }
+    ]
+  },
+  "response_sha256": "c6c25e38bf43d96d023220d7ccf216edba1da50595afe68f50ba31c762705cff"
+}

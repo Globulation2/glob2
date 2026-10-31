@@ -1,0 +1,418 @@
+{
+  "request": {
+    "project": "bradley-personal-20261027",
+    "model": "general/nmt",
+    "payload": {
+      "sourceLanguageCode": "en",
+      "targetLanguageCode": "mr",
+      "mimeType": "text/plain",
+      "contents": [
+        "Checking…",
+        "Choose which server you play on and how you sign in to it.",
+        "Connecting…",
+        "Could not reach this server.",
+        "Display name saved.",
+        "Display name",
+        "Delete my account",
+        "Enter an https:// address.",
+        "Forget",
+        "Guests keep a generated name; sign in to choose one.",
+        "Link",
+        "Not a ZXQPH0QXZ server.",
+        "Not linked",
+        "Not signed in.",
+        "Open",
+        "Opens your account page on ZXQPH0QXZ, where you can delete it.",
+        "Run by a community, a club or yourself. Paste its address.",
+        "Save",
+        "Server",
+        "Shown in rooms, matches and the leaderboard. Change once every 30 days.",
+        "Sign in with: ZXQPH0QXZ · queues: ZXQPH1QXZ",
+        "Sign out on this device",
+        "Sign out",
+        "Switch to this server",
+        "The last sign-in method can't be unlinked.",
+        "The official ZXQPH0QXZ server · ranked queues, leaderboards, map catalog",
+        "Unlink",
+        "Unlinking is done on the account page.",
+        "You'll be a new guest until you sign in again. Your account and matches stay on the server.",
+        "Your account on ZXQPH0QXZ",
+        "compatible with this version",
+        "connected",
+        "connecting…",
+        "guest",
+        "linked",
+        "plays another version",
+        "trusted",
+        "used before",
+        "you were ZXQPH0QXZ there",
+        "not connected",
+        "Open Play online to connect.",
+        "ZXQPH0QXZ is no longer linked.",
+        "Show colony skins",
+        "Turn off to use classic units, swarms and building colors on this device.",
+        "ZXQPH0QXZ",
+        "Enable commander shortcuts",
+        "Command your colony without opening a menu.",
+        "Allow supervision for new commands",
+        "The commander may follow up on standing orders. Follow-ups use credits; installed orders keep running without credits.",
+        "Default shortcuts: Ctrl+Enter to give an order; Ctrl+Shift+Enter to stop commander work. Change them under Controls. Standing-order cards have separate pause and cancel controls.",
+        "Commander account and credits",
+        "Manage credits and purchases in your browser. Commander assistance is permitted in ranked play.",
+        "Recording",
+        "Record your games as MP4 videos with sound. Recording needs FFmpeg with the libx264 and AAC encoders.",
+        "Record your games as MP4 videos with sound.",
+        "Recording uses the full rendered resolution at 30 FPS.",
+        "FFmpeg is ready.",
+        "FFmpeg is not available, so recording is turned off. Install FFmpeg and make sure it is on your PATH, then check again.",
+        "Check for FFmpeg again",
+        "Checking for FFmpeg…",
+        "Hotkey: ZXQPH0QXZ. It also works in menus and the editor.",
+        "Change the hotkey",
+        "Recordings are saved in ZXQPH0QXZ",
+        "Add ZXQPH0QXZ AIs in Settings → Custom AIs. They appear in each colony’s AI selector.",
+        "Music set",
+        "Choose Random to select a soundtrack at each match start.",
+        "Sign in through Online settings to like and favourite AIs.",
+        "2–5 minutes",
+        "5–15 minutes",
+        "AI-generated",
+        "All music",
+        "All open licences",
+        "Any duration",
+        "Audition each mood for eight seconds",
+        "Back",
+        "Browse",
+        "Building",
+        "Calm",
+        "Calm → Building → Combat",
+        "Choose Building"
+      ]
+    }
+  },
+  "response": {
+    "translations": [
+      {
+        "translatedText": "तपासत आहे…",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तुम्ही कोणत्या सर्व्हरवर खेळता आणि त्यावर कसे साइन इन करता ते निवडा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "जोडत आहे…",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "या सर्वरपर्यंत पोहोचता आले नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "प्रदर्शित नाव जतन केले आहे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "डिस्प्ले नाव",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "माझे खाते हटवा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "https:// पत्ता प्रविष्ट करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "विसरून जा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पाहुणे तयार केलेले नाव ठेवतात; एक नाव निवडण्यासाठी साइन इन करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "लिंक",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ सर्वर नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "जोडलेले नाही",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "लॉग इन केलेले नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "उघडा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ वर तुमचे खाते पृष्ठ उघडते, जिथे तुम्ही ते हटवू शकता.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "एखाद्या समुदायाद्वारे, क्लबद्वारे किंवा तुमच्या स्वतःद्वारे चालवले जाते. त्याचा पत्ता लिहा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "जतन करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सर्व्हर",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "रूम्स, मॅचेस आणि लीडरबोर्डमध्ये दाखवले जाते. दर ३० दिवसांनी एकदा बदल होतो.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "याने साइन इन करा: ZXQPH0QXZ · रांगा: ZXQPH1QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "या डिव्हाइसवरून साइन आउट करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "साइन आउट",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "या सर्व्हरवर स्विच करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "शेवटची साइन-इन पद्धत वेगळी करता येत नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अधिकृत ZXQPH0QXZ सर्व्हर · रँक्ड क्यूज, लीडरबोर्ड, मॅप कॅटलॉग",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "लिंक काढा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "खाते पृष्ठावर अनलिंकिंग केले जाते.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तुम्ही पुन्हा साइन इन करेपर्यंत नवीन पाहुणे असाल. तुमचे खाते आणि सामने सर्वरवरच राहतील.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ वरील तुमचे खाते",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "या आवृत्तीशी सुसंगत",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "जोडलेले",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "जोडत आहे…",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पाहुणे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "लिंक केलेले",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "दुसरी आवृत्ती सादर करतो",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "विश्वसनीय",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पूर्वी वापरलेले",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तुम्ही तिथे होता",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "जोडलेले नाही",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कनेक्ट करण्यासाठी प्ले ऑनलाइन उघडा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ आता जोडलेले नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "वसाहतीची त्वचा दाखवा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "या डिव्हाइसवर क्लासिक युनिट्स, स्वार्म्स आणि बिल्डिंग कलर्स वापरणे बंद करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कमांडर शॉर्टकट सक्षम करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "मेनू न उघडता आपल्या वसाहतीला आज्ञा द्या.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नवीन कमांडसाठी पर्यवेक्षणास परवानगी द्या",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कमांडर स्थायी आदेशांचा पाठपुरावा करू शकतो. पाठपुराव्यासाठी क्रेडिट्स वापरले जातात; स्थापित आदेश क्रेडिट्सशिवाय चालू राहतात.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "डीफॉल्ट शॉर्टकट: आदेश देण्यासाठी Ctrl+Enter; कमांडरचे काम थांबवण्यासाठी Ctrl+Shift+Enter. कंट्रोल्स अंतर्गत ते बदला. स्टँडिंग-ऑर्डर कार्डसाठी पॉज आणि कॅन्सल करण्यासाठी स्वतंत्र कंट्रोल्स आहेत.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कमांडर खाते आणि क्रेडिट्स",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तुमच्या ब्राउझरमध्ये क्रेडिट्स आणि खरेदी व्यवस्थापित करा. रँक्ड प्लेमध्ये कमांडरची मदत घेण्यास परवानगी आहे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "रेकॉर्डिंग",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तुमचे गेम्स आवाजासह MP4 व्हिडिओ म्हणून रेकॉर्ड करा. रेकॉर्डिंगसाठी libx264 आणि AAC एन्कोडरसह FFmpeg आवश्यक आहे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तुमचे गेम्स आवाजासह MP4 व्हिडिओ म्हणून रेकॉर्ड करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "रेकॉर्डिंगमध्ये पूर्ण रेंडर केलेले रिझोल्यूशन ३० FPS वर वापरले जाते.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "FFmpeg तयार आहे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "FFmpeg उपलब्ध नाही, त्यामुळे रेकॉर्डिंग बंद केले आहे. FFmpeg इन्स्टॉल करा आणि ते तुमच्या PATH मध्ये असल्याची खात्री करा, त्यानंतर पुन्हा तपासा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "FFmpeg पुन्हा तपासा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "FFmpeg तपासत आहे…",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "हॉटकी: ZXQPH0QXZ. ही मेन्यू आणि एडिटरमध्ये सुद्धा काम करते.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "हॉटकी बदला",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "रेकॉर्डिंग ZXQPH0QXZ मध्ये जतन केली जातात.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सेटिंग्ज → कस्टम एआय मध्ये ZXQPH0QXZ एआय जोडा. ते प्रत्येक कॉलनीच्या एआय सिलेक्टरमध्ये दिसतात.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "संगीत सेट",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "प्रत्येक सामन्याच्या सुरुवातीला साउंडट्रॅक निवडण्यासाठी 'Random' निवडा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "एआयला लाईक आणि फेव्हरेट करण्यासाठी ऑनलाइन सेटिंग्जमधून साइन इन करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "२-५ मिनिटे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "५-१५ मिनिटे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "एआय-निर्मित",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सर्व संगीत",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सर्व खुले परवाने",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कोणत्याही कालावधीत",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "प्रत्येक मूड आठ सेकंदांसाठी आजमावून पहा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "मागे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ब्राउझ करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "इमारत",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "शांत",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "शांतता → बांधकाम → लढाई",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "इमारत निवडा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      }
+    ]
+  },
+  "response_sha256": "c6946e27683069f500b2d2483444b9720a9385df18e4fdcf97fcadd75a95986d"
+}

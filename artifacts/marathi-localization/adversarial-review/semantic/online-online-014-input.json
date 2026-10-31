@@ -1,0 +1,510 @@
+{
+  "source_sha256": "0ac44b4cdfb03e688983d6e3fb1e484cca57589665bff19c5c65388e649b292a",
+  "batch_target_sha256": "4b3befd5d3fc2cb2e8039d5be97e07c990efcd551b9983b744eb31b6889149e4",
+  "catalog_sha256": {
+    "native": "9d9d27dc1179d0a59f88aa723606d7daebe5f9b1ff8903ce66622ee44b442cae",
+    "online": "1ba40d342498f5e7704a63e5d175bd9e8a0ede31e3ca2ce88e8cb1fbc0ba68a6"
+  },
+  "entries": [
+    {
+      "id": "online:No such proposal.",
+      "source": "No such proposal.",
+      "target": "असा कोणताही प्रस्ताव नाही."
+    },
+    {
+      "id": "online:No such queue ticket.",
+      "source": "No such queue ticket.",
+      "target": "असे कोणतेही रांगेचे तिकीट नाही."
+    },
+    {
+      "id": "online:No such release.",
+      "source": "No such release.",
+      "target": "असा कोणताही प्रकाशन नाही."
+    },
+    {
+      "id": "online:No such report.",
+      "source": "No such report.",
+      "target": "असा कोणताही अहवाल नाही."
+    },
+    {
+      "id": "online:No such room.",
+      "source": "No such room.",
+      "target": "अशी खोली नाही."
+    },
+    {
+      "id": "online:No such sign-in on this connection.",
+      "source": "No such sign-in on this connection.",
+      "target": "या कनेक्शनवर असे साइन-इन करता येत नाही."
+    },
+    {
+      "id": "online:No such sign-in.",
+      "source": "No such sign-in.",
+      "target": "असे कोणतेही साइन-इन नाही."
+    },
+    {
+      "id": "online:No such track.",
+      "source": "No such track.",
+      "target": "असा कोणताही ट्रॅक नाही."
+    },
+    {
+      "id": "online:No such upload.",
+      "source": "No such upload.",
+      "target": "असे कोणतेही अपलोड नाही."
+    },
+    {
+      "id": "online:No such version.",
+      "source": "No such version.",
+      "target": "अशी कोणतीही आवृत्ती नाही."
+    },
+    {
+      "id": "online:No timeline was recorded for this match.",
+      "source": "No timeline was recorded for this match.",
+      "target": "या सामन्यासाठी कोणतीही वेळ नोंदवली गेली नाही."
+    },
+    {
+      "id": "online:No uncertain request.",
+      "source": "No uncertain request.",
+      "target": "निःसंदिग्ध विनंती नाही."
+    },
+    {
+      "id": "online:No unpublished drafts.",
+      "source": "No unpublished drafts.",
+      "target": "कोणतेही अप्रकाशित मसुदे नाहीत."
+    },
+    {
+      "id": "online:No validated building release.",
+      "source": "No validated building release.",
+      "target": "प्रमाणित बिल्डिंग रिलीज नाही."
+    },
+    {
+      "id": "online:No validated release",
+      "source": "No validated release",
+      "target": "प्रमाणित प्रकाशन नाही"
+    },
+    {
+      "id": "online:No worker leases are recorded.",
+      "source": "No worker leases are recorded.",
+      "target": "कामगारांचे कोणतेही भाडेकरार नोंदवले जात नाहीत."
+    },
+    {
+      "id": "online:No {p0} sign-in is linked to this account.",
+      "source": "No {p0} sign-in is linked to this account.",
+      "target": "या खात्याशी कोणतेही {p0} साइन-इन जोडलेले नाही."
+    },
+    {
+      "id": "online:Nobody",
+      "source": "Nobody",
+      "target": "कोणीही नाही"
+    },
+    {
+      "id": "online:None",
+      "source": "None",
+      "target": "काहीही नाही"
+    },
+    {
+      "id": "online:None: this guest account lives on the device that created it.",
+      "source": "None: this guest account lives on the device that created it.",
+      "target": "काहीही नाही: हे अतिथी खाते ज्या डिव्हाइसवर तयार केले आहे, त्याच डिव्हाइसवर आहे."
+    },
+    {
+      "id": "online:Not AI-generated",
+      "source": "Not AI-generated",
+      "target": "एआय-निर्मित नाही"
+    },
+    {
+      "id": "online:Not applicable",
+      "source": "Not applicable",
+      "target": "लागू नाही"
+    },
+    {
+      "id": "online:Not available yet",
+      "source": "Not available yet",
+      "target": "अद्याप उपलब्ध नाही"
+    },
+    {
+      "id": "online:Not evaluated",
+      "source": "Not evaluated",
+      "target": "मूल्यांकन केलेले नाही"
+    },
+    {
+      "id": "online:Not found.",
+      "source": "Not found.",
+      "target": "आढळले नाही."
+    },
+    {
+      "id": "online:Not found. It may have been removed, or the link is wrong.",
+      "source": "Not found. It may have been removed, or the link is wrong.",
+      "target": "आढळले नाही. ते काढून टाकले गेले असावे, किंवा लिंक चुकीची आहे."
+    },
+    {
+      "id": "online:Not hidden",
+      "source": "Not hidden",
+      "target": "लपवलेले नाही"
+    },
+    {
+      "id": "online:Not run",
+      "source": "Not run",
+      "target": "धावू नका"
+    },
+    {
+      "id": "online:Not saved",
+      "source": "Not saved",
+      "target": "जतन केले नाही"
+    },
+    {
+      "id": "online:Notes",
+      "source": "Notes",
+      "target": "नोंदी"
+    },
+    {
+      "id": "online:Nothing changed",
+      "source": "Nothing changed",
+      "target": "काहीही बदलले नाही"
+    },
+    {
+      "id": "online:Nothing here: this page wandered off like an explorer glob. {slot0}.",
+      "source": "Nothing here: this page wandered off like an explorer glob. {slot0}.",
+      "target": "इथे काही नाही: हे पान एखाद्या शोधकाच्या गोळ्याप्रमाणे भरकटले आहे. {slot0}."
+    },
+    {
+      "id": "online:Numbi",
+      "source": "Numbi",
+      "target": "नंबी"
+    },
+    {
+      "id": "online:OK",
+      "source": "OK",
+      "target": "ठीक आहे"
+    },
+    {
+      "id": "online:Offensive",
+      "source": "Offensive",
+      "target": "आक्रमक"
+    },
+    {
+      "id": "online:Offline",
+      "source": "Offline",
+      "target": "ऑफलाइन"
+    },
+    {
+      "id": "online:Offline · changes pending",
+      "source": "Offline · changes pending",
+      "target": "ऑफलाइन · बदल प्रलंबित"
+    },
+    {
+      "id": "online:Older reports",
+      "source": "Older reports",
+      "target": "जुने अहवाल"
+    },
+    {
+      "id": "online:Oldest queued engine job: {slot0}",
+      "source": "Oldest queued engine job: {slot0}",
+      "target": "सर्वात जुने रांगेतील इंजिन कार्य: {slot0}"
+    },
+    {
+      "id": "online:One .js file · up to 128 KiB · profiles 1 and 2",
+      "source": "One .js file · up to 128 KiB · profiles 1 and 2",
+      "target": "एक .js फाईल · १२८ केबी पर्यंत · प्रोफाइल १ आणि २"
+    },
+    {
+      "id": "online:One melody. Three moods.",
+      "source": "One melody. Three moods.",
+      "target": "एक सूर. तीन भाव."
+    },
+    {
+      "id": "online:One soundtrack, three synchronized moods. Switch moods while listening to hear how the game adapts.",
+      "source": "One soundtrack, three synchronized moods. Switch moods while listening to hear how the game adapts.",
+      "target": "एकच साउंडट्रॅक, तीन सुसंगत मूड. गेम कसा जुळवून घेतो हे ऐकण्यासाठी, ऐकत असतानाच मूड बदला."
+    },
+    {
+      "id": "online:One-time purchases stay with your account. Preview and paint before buying.",
+      "source": "One-time purchases stay with your account. Preview and paint before buying.",
+      "target": "एक-वेळची खरेदी तुमच्या खात्यामध्येच राहते. खरेदी करण्यापूर्वी पूर्वावलोकन करा आणि रंगवून पहा."
+    },
+    {
+      "id": "online:Only a successfully converted release can be published.",
+      "source": "Only a successfully converted release can be published.",
+      "target": "केवळ यशस्वीरित्या रूपांतरित केलेली आवृत्तीच प्रकाशित केली जाऊ शकते."
+    },
+    {
+      "id": "online:Only continue if you just started signing in from your own game and it shows the same code. If someone sent you this link, cancel.",
+      "source": "Only continue if you just started signing in from your own game and it shows the same code. If someone sent you this link, cancel.",
+      "target": "तुम्ही तुमच्या स्वतःच्या गेममधून नुकतेच साइन इन केले असेल आणि तिथे तोच कोड दिसत असेल तरच पुढे सुरू ठेवा. जर कोणी तुम्हाला ही लिंक पाठवली असेल, तर रद्द करा."
+    },
+    {
+      "id": "online:Only if you have installed the game on this device.",
+      "source": "Only if you have installed the game on this device.",
+      "target": "तुम्ही या डिव्हाइसवर गेम इन्स्टॉल केला असेल तरच."
+    },
+    {
+      "id": "online:Only me",
+      "source": "Only me",
+      "target": "फक्त मी"
+    },
+    {
+      "id": "online:Only registered accounts can be moderators or administrators.",
+      "source": "Only registered accounts can be moderators or administrators.",
+      "target": "फक्त नोंदणीकृत खातीच नियंत्रक किंवा प्रशासक असू शकतात."
+    },
+    {
+      "id": "online:Only the host assigns seats in this room.",
+      "source": "Only the host assigns seats in this room.",
+      "target": "या खोलीत फक्त यजमानच जागांचे वाटप करतो."
+    },
+    {
+      "id": "online:Only the host can add AIs.",
+      "source": "Only the host can add AIs.",
+      "target": "फक्त होस्टच एआय जोडू शकतो."
+    },
+    {
+      "id": "online:Only the host can change the room.",
+      "source": "Only the host can change the room.",
+      "target": "फक्त यजमानच खोली बदलू शकतो."
+    },
+    {
+      "id": "online:Only the host can empty other seats.",
+      "source": "Only the host can empty other seats.",
+      "target": "फक्त यजमानच इतर जागा रिकाम्या करू शकतो."
+    },
+    {
+      "id": "online:Only the host can lock seats.",
+      "source": "Only the host can lock seats.",
+      "target": "फक्त होस्टच जागा लॉक करू शकतो."
+    },
+    {
+      "id": "online:Only the host can remove players.",
+      "source": "Only the host can remove players.",
+      "target": "फक्त होस्टच खेळाडूंना काढू शकतो."
+    },
+    {
+      "id": "online:Only the host can start the match.",
+      "source": "Only the host can start the match.",
+      "target": "फक्त यजमानच सामना सुरू करू शकतो."
+    },
+    {
+      "id": "online:Only the map owner can do that.",
+      "source": "Only the map owner can do that.",
+      "target": "फक्त नकाशाचा मालकच ते करू शकतो."
+    },
+    {
+      "id": "online:Only uncertain calls can be reconciled.",
+      "source": "Only uncertain calls can be reconciled.",
+      "target": "केवळ अनिश्चित निर्णयांचेच निराकरण होऊ शकते."
+    },
+    {
+      "id": "online:Only uncertain requests need reconciliation.",
+      "source": "Only uncertain requests need reconciliation.",
+      "target": "केवळ अनिश्चित विनंत्यांचेच जुळवणी करणे आवश्यक आहे."
+    },
+    {
+      "id": "online:Opacity ",
+      "source": "Opacity ",
+      "target": "अपारदर्शकता "
+    },
+    {
+      "id": "online:Open",
+      "source": "Open",
+      "target": "उघडा"
+    },
+    {
+      "id": "online:Open AI Map Studio",
+      "source": "Open AI Map Studio",
+      "target": "ओपन एआय मॅप स्टुडिओ"
+    },
+    {
+      "id": "online:Open Building families when creating a new game or a new map in the editor, install a compatible release, and enable it. Enabled families apply to future generated maps alongside stock buildings. Existing maps and saves keep their own buildings.",
+      "source": "Open Building families when creating a new game or a new map in the editor, install a compatible release, and enable it. Enabled families apply to future generated maps alongside stock buildings. Existing maps and saves keep their own buildings.",
+      "target": "एडिटरमध्ये नवीन गेम किंवा नवीन नकाशा तयार करताना बिल्डिंग फॅमिली उघडा, एक सुसंगत रिलीज इन्स्टॉल करा आणि ते सक्षम करा. सक्षम केलेल्या फॅमिली स्टॉक बिल्डिंग्ससोबत भविष्यात तयार होणाऱ्या नकाशांवर लागू होतात. विद्यमान नकाशे आणि सेव्ह फाइल्स त्यांच्या स्वतःच्या बिल्डिंग्स कायम ठेवतात."
+    },
+    {
+      "id": "online:Open in installed app",
+      "source": "Open in installed app",
+      "target": "इंस्टॉल केलेल्या ॲपमध्ये उघडा"
+    },
+    {
+      "id": "online:Open in the Globulation 2 app",
+      "source": "Open in the Globulation 2 app",
+      "target": "Globulation 2 अॅपमध्ये उघडा"
+    },
+    {
+      "id": "online:Open music release",
+      "source": "Open music release",
+      "target": "संगीत प्रकाशन खुले आहे"
+    },
+    {
+      "id": "online:Open navigation",
+      "source": "Open navigation",
+      "target": "नेव्हिगेशन उघडा"
+    },
+    {
+      "id": "online:Open the map editor’s Set Library to import a release, or import this downloaded package. Only custom content is included in shared maps. Each map keeps its own editable copy.",
+      "source": "Open the map editor’s Set Library to import a release, or import this downloaded package. Only custom content is included in shared maps. Each map keeps its own editable copy.",
+      "target": "रिलीज इम्पोर्ट करण्यासाठी मॅप एडिटरची सेट लायब्ररी उघडा, किंवा हे डाउनलोड केलेले पॅकेज इम्पोर्ट करा. शेअर केलेल्या मॅप्समध्ये फक्त कस्टम कंटेंटचा समावेश असतो. प्रत्येक मॅप स्वतःची संपादन करण्यायोग्य प्रत ठेवतो."
+    },
+    {
+      "id": "online:Open {target} ↗",
+      "source": "Open {target} ↗",
+      "target": "{target} उघडा ↗"
+    },
+    {
+      "id": "online:Opening Globulation 2…",
+      "source": "Opening Globulation 2…",
+      "target": "Globulation 2 उघडत आहे…"
+    },
+    {
+      "id": "online:Opening studio…",
+      "source": "Opening studio…",
+      "target": "स्टुडिओ उघडत आहे…"
+    },
+    {
+      "id": "online:Opening your studio…",
+      "source": "Opening your studio…",
+      "target": "तुमचा स्टुडिओ सुरू करत आहात…"
+    },
+    {
+      "id": "online:Opens the app if it is installed.",
+      "source": "Opens the app if it is installed.",
+      "target": "अॅप इन्स्टॉल केलेले असल्यास ते उघडते."
+    },
+    {
+      "id": "online:Operations",
+      "source": "Operations",
+      "target": "ऑपरेशन्स"
+    },
+    {
+      "id": "online:Opponent",
+      "source": "Opponent",
+      "target": "प्रतिस्पर्धी"
+    },
+    {
+      "id": "online:Orders the server refused (a modified or broken client sends these)",
+      "source": "Orders the server refused (a modified or broken client sends these)",
+      "target": "सर्व्हरने नाकारलेले आदेश (बदल केलेला किंवा सदोष क्लायंट हे पाठवतो)"
+    },
+    {
+      "id": "online:Original game artwork",
+      "source": "Original game artwork",
+      "target": "मूळ खेळाची कलाकृती"
+    },
+    {
+      "id": "online:Other",
+      "source": "Other",
+      "target": "इतर"
+    },
+    {
+      "id": "online:Output tokens",
+      "source": "Output tokens",
+      "target": "आउटपुट टोकन"
+    },
+    {
+      "id": "online:Overview",
+      "source": "Overview",
+      "target": "आढावा"
+    },
+    {
+      "id": "online:Owned",
+      "source": "Owned",
+      "target": "मालकीचे"
+    },
+    {
+      "id": "online:PLAYABLE MAP",
+      "source": "PLAYABLE MAP",
+      "target": "खेळण्यायोग्य नकाशा"
+    },
+    {
+      "id": "online:Package",
+      "source": "Package",
+      "target": "पॅकेज"
+    },
+    {
+      "id": "online:Pad ends with silence to longest",
+      "source": "Pad ends with silence to longest",
+      "target": "सर्वात लांब पॅड शांततेने संपतो."
+    },
+    {
+      "id": "online:Page not found",
+      "source": "Page not found",
+      "target": "पृष्ठ सापडले नाही"
+    },
+    {
+      "id": "online:Paint color",
+      "source": "Paint color",
+      "target": "पेंटचा रंग"
+    },
+    {
+      "id": "online:Paint directly on the 3D {value0} model",
+      "source": "Paint directly on the 3D {value0} model",
+      "target": "3D {value0} मॉडेलवर थेट रंगवा"
+    },
+    {
+      "id": "online:Paint repeats on matching surfaces",
+      "source": "Paint repeats on matching surfaces",
+      "target": "जुळणाऱ्या पृष्ठभागांवर रंगाची पुनरावृत्ती"
+    },
+    {
+      "id": "online:Paint tools",
+      "source": "Paint tools",
+      "target": "पेंट टूल्स"
+    },
+    {
+      "id": "online:Painting is unavailable in this browser.",
+      "source": "Painting is unavailable in this browser.",
+      "target": "या ब्राउझरमध्ये पेंटिंग उपलब्ध नाही."
+    },
+    {
+      "id": "online:Painting needs WebGL 2. You can still save your draft, browse My skins, or visit the shop.",
+      "source": "Painting needs WebGL 2. You can still save your draft, browse My skins, or visit the shop.",
+      "target": "पेंटिंगसाठी WebGL 2 आवश्यक आहे. तरीही तुम्ही तुमचा ड्राफ्ट सेव्ह करू शकता, 'माय स्किन्स' ब्राउझ करू शकता किंवा शॉपला भेट देऊ शकता."
+    },
+    {
+      "id": "online:Passed",
+      "source": "Passed",
+      "target": "पास झाले"
+    },
+    {
+      "id": "online:Password",
+      "source": "Password",
+      "target": "पासवर्ड"
+    },
+    {
+      "id": "online:Passwords can be at most {p0} characters.",
+      "source": "Passwords can be at most {p0} characters.",
+      "target": "पासवर्डमध्ये जास्तीत जास्त {p0} अक्षरे असू शकतात."
+    },
+    {
+      "id": "online:Paste the invite link, or type its code (6 to 16 letters and digits).",
+      "source": "Paste the invite link, or type its code (6 to 16 letters and digits).",
+      "target": "आमंत्रण लिंक पेस्ट करा, किंवा त्याचा कोड (६ ते १६ अक्षरे आणि अंक) टाईप करा."
+    },
+    {
+      "id": "online:Pattern color",
+      "source": "Pattern color",
+      "target": "नमुन्याचा रंग"
+    },
+    {
+      "id": "online:Pattern coverage",
+      "source": "Pattern coverage",
+      "target": "नमुना कव्हरेज"
+    },
+    {
+      "id": "online:Pattern rotation",
+      "source": "Pattern rotation",
+      "target": "नमुना फिरवणे"
+    },
+    {
+      "id": "online:Pattern size",
+      "source": "Pattern size",
+      "target": "नमुन्याचा आकार"
+    },
+    {
+      "id": "online:Patterns",
+      "source": "Patterns",
+      "target": "नमुने"
+    },
+    {
+      "id": "online:Patterns & fills",
+      "source": "Patterns & fills",
+      "target": "नमुने आणि भरण"
+    }
+  ]
+}

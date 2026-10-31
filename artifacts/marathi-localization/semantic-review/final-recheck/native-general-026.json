@@ -1,0 +1,491 @@
+{
+  "batch": "native-general-026",
+  "target_sha256": "d760589ffb9d4dd35670773f4e1ed15ca323142b692074752a637c912373efeb",
+  "rows": [
+    {
+      "id": "native:[lesson swimming water-job marker]",
+      "source": "Use algae from the pond",
+      "target": "तलावातील शेवाळ वापरा"
+    },
+    {
+      "id": "native:[lesson schools title]",
+      "source": "Schools and worker skills",
+      "target": "शाळा आणि कामगारांची कौशल्ये"
+    },
+    {
+      "id": "native:[lesson schools briefing]",
+      "source": "Use the prepared swimmers to build a School, then observe workers learn construction and harvesting.",
+      "target": "तयार केलेल्या जलतरणपटूंचा वापर करून एक शाळा बांधा, त्यानंतर कामगारांना बांधकाम आणि कापणी शिकताना पाहा."
+    },
+    {
+      "id": "native:[lesson schools complete]",
+      "source": "Your School improved worker skills. Skilled builders unlock upgrades; better harvesting helps maintain an expanding economy.",
+      "target": "शाळेमुळे कामगारांची कौशल्ये सुधारली. कुशल बांधकाम कामगारांमुळे इमारतींच्या सुधारणा करता येतात; सामग्री गोळा करण्याचे कौशल्य वाढल्याने विस्तारणारी अर्थव्यवस्था टिकवता येते."
+    },
+    {
+      "id": "native:[lesson schools build hint]",
+      "source": "Build a School in the clearing; assign builders. The colony already has swimmers for algae. Leave access to wood and water. Fruit trees provide prestige resources; food still comes from wheat.",
+      "target": "मोकळ्या जागेत शाळा बांधा; बांधकाम कामगार नेमा. शेवाळ आणण्यासाठी पोहता येणारे कामगार आधीच आहेत. लाकूड आणि पाण्याकडे जाणारे मार्ग मोकळे ठेवा. फळझाडे प्रतिष्ठेसाठी सामग्री देतात; अन्न मात्र गव्हातूनच मिळते."
+    },
+    {
+      "id": "native:[lesson schools build title]",
+      "source": "Build a School",
+      "target": "शाळा बांधा"
+    },
+    {
+      "id": "native:[lesson schools build instruction]",
+      "source": "Build a School in the clearing; assign builders.",
+      "target": "मोकळ्या जागेत शाळा बांधा; बांधकाम करणाऱ्यांची नेमणूक करा."
+    },
+    {
+      "id": "native:[lesson schools build help]",
+      "source": "The colony already has swimmers for algae. Leave access to wood and water. Fruit trees provide prestige resources; food still comes from wheat.",
+      "target": "शेवाळ आणण्यासाठी वसाहतीत पोहता येणारे कामगार आधीच आहेत. लाकूड आणि पाण्याकडे जाणारे मार्ग मोकळे ठेवा. फळझाडे प्रतिष्ठेसाठी लागणारी सामग्री देतात; अन्न मात्र गव्हातूनच मिळते."
+    },
+    {
+      "id": "native:[lesson schools build marker]",
+      "source": "Build a School",
+      "target": "शाळा बांधा"
+    },
+    {
+      "id": "native:[lesson schools learn hint]",
+      "source": "Let an existing worker finish its School training. The School teaches construction and harvesting together. Keep workers available; a construction site alone does not train anyone.",
+      "target": "सध्याच्या कामगाराला शाळेतील प्रशिक्षण पूर्ण करू द्या. शाळेत बांधकाम आणि कापणी एकत्र शिकवतात. कामगार उपलब्ध ठेवा; फक्त बांधकाम स्थळ तयार केल्याने प्रशिक्षण मिळत नाही."
+    },
+    {
+      "id": "native:[lesson schools learn title]",
+      "source": "Teach construction and harvesting",
+      "target": "बांधकाम आणि कापणी शिकवा"
+    },
+    {
+      "id": "native:[lesson schools learn instruction]",
+      "source": "Let an existing worker finish its School training.",
+      "target": "सध्याच्या कामगाराला शाळेतील प्रशिक्षण पूर्ण करू द्या."
+    },
+    {
+      "id": "native:[lesson schools learn help]",
+      "source": "The School teaches construction and harvesting together. Keep workers available; a construction site alone does not train anyone.",
+      "target": "ही शाळा बांधकाम आणि कापणी एकत्र शिकवते. कामगार उपलब्ध ठेवा; केवळ बांधकाम स्थळावर कोणालाही प्रशिक्षण देता येत नाही."
+    },
+    {
+      "id": "native:[lesson upgrades title]",
+      "source": "Upgrading buildings",
+      "target": "इमारतींच्या सुधारणा"
+    },
+    {
+      "id": "native:[lesson upgrades briefing]",
+      "source": "Use prepared skilled workers to upgrade a Racetrack and train beyond the first level.",
+      "target": "तयार असलेल्या कुशल कामगारांकडून धावपट्टी सुधारा आणि पहिल्या स्तरापुढील प्रशिक्षण घ्या."
+    },
+    {
+      "id": "native:[lesson upgrades complete]",
+      "source": "You upgraded a building and used its improved training. Further upgrades repeat this cycle with better Schools, skills, materials and space, up to level 3.",
+      "target": "तुम्ही इमारत सुधारली आणि तिचे सुधारित प्रशिक्षण वापरले. पुढील सुधारणांसाठी अधिक चांगल्या शाळा, कौशल्ये, सामग्री आणि जागा लागते. ही प्रक्रिया स्तर ३ पर्यंत चालते."
+    },
+    {
+      "id": "native:[lesson upgrades upgrade hint]",
+      "source": "Select the Racetrack, choose Upgrade and assign skilled builders. These workers already learned first-level School skills. Upgrades need extra space and materials, and interrupt the building service. Cancelled upgrades do not count.",
+      "target": "धावपट्टी निवडा, सुधारणा निवडा आणि कुशल बांधकाम कामगार नेमा. या कामगारांनी शाळेत पहिल्या स्तराची कौशल्ये शिकली आहेत. सुधारणांसाठी अतिरिक्त जागा आणि सामग्री लागते व इमारतीची सेवा तात्पुरती थांबते. रद्द केलेल्या सुधारणा मोजल्या जात नाहीत."
+    },
+    {
+      "id": "native:[lesson upgrades upgrade title]",
+      "source": "Upgrade the Racetrack",
+      "target": "धावपट्टी सुधारा"
+    },
+    {
+      "id": "native:[lesson upgrades upgrade instruction]",
+      "source": "Select the Racetrack, choose Upgrade and assign skilled builders.",
+      "target": "धावपट्टी निवडा, सुधारणा निवडा आणि कुशल बांधकाम कामगार नेमा."
+    },
+    {
+      "id": "native:[lesson upgrades upgrade help]",
+      "source": "These workers already learned first-level School skills. Upgrades need extra space and materials, and interrupt the building service. Cancelled upgrades do not count.",
+      "target": "या कामगारांनी शाळेत पहिल्या स्तराची कौशल्ये शिकली आहेत. सुधारणांसाठी अतिरिक्त जागा आणि सामग्री लागते व इमारतीची सेवा तात्पुरती थांबते. रद्द केलेल्या सुधारणा मोजल्या जात नाहीत."
+    },
+    {
+      "id": "native:[lesson upgrades upgrade marker]",
+      "source": "Upgrade the Racetrack",
+      "target": "धावपट्टी सुधारा"
+    },
+    {
+      "id": "native:[lesson upgrades train hint]",
+      "source": "Let an existing worker learn faster walking at the upgraded Racetrack. A completed upgrade improves available training. Higher building levels need higher construction skills; the level shown to players starts at 1.",
+      "target": "सुधारलेल्या धावपट्टीवर सध्याच्या कामगाराला अधिक वेगाने चालायला शिकू द्या. सुधारणा पूर्ण झाल्यावर अधिक चांगले प्रशिक्षण मिळते. इमारतींच्या उच्च स्तरांसाठी अधिक प्रगत बांधकाम कौशल्ये लागतात; खेळाडूंना दिसणारे स्तर १ पासून सुरू होतात."
+    },
+    {
+      "id": "native:[lesson upgrades train title]",
+      "source": "Use the upgraded training",
+      "target": "सुधारित प्रशिक्षणाचा वापर करा"
+    },
+    {
+      "id": "native:[lesson upgrades train instruction]",
+      "source": "Let an existing worker learn faster walking at the upgraded Racetrack.",
+      "target": "सध्याच्या कामगाराला सुधारलेल्या धावपट्टीवर अधिक वेगाने चालायला शिकू द्या."
+    },
+    {
+      "id": "native:[lesson upgrades train help]",
+      "source": "A completed upgrade improves available training. Higher building levels need higher construction skills; the level shown to players starts at 1.",
+      "target": "सुधारणा पूर्ण झाल्यावर अधिक चांगले प्रशिक्षण मिळते. इमारतींच्या उच्च स्तरांसाठी अधिक प्रगत बांधकाम कौशल्ये लागतात; खेळाडूंना दिसणारे स्तर १ पासून सुरू होतात."
+    },
+    {
+      "id": "native:[lesson fortifications title]",
+      "source": "Towers and protective walls",
+      "target": "बुरुज आणि संरक्षक भिंती"
+    },
+    {
+      "id": "native:[lesson fortifications briefing]",
+      "source": "Build a supplied tower and protective walls, then test them against one small attack.",
+      "target": "मनोरा बांधून त्याला पुरवठा करा, संरक्षणासाठी भिंती बांधा आणि मग छोटा हल्ला परतवून त्यांची चाचणी घ्या."
+    },
+    {
+      "id": "native:[lesson fortifications complete]",
+      "source": "Your supplied defenses stopped the practice attack. Towers need stone and walls need gaps so suppliers can keep reaching them.",
+      "target": "पुरवठा सुरू असलेल्या तुमच्या संरक्षणाने सरावाचा हल्ला थांबवला. मनोऱ्यांना दगड लागतात आणि पुरवठादार पोहोचावेत म्हणून भिंतींमध्ये मोकळे मार्ग हवेत."
+    },
+    {
+      "id": "native:[lesson fortifications tower hint]",
+      "source": "Build a tower in the marked area; assign builders. Place it near the stone quarry and leave supplier access. No attack starts until the preparation goals are complete.",
+      "target": "चिन्हांकित क्षेत्रात एक मनोरा बांधा; बांधकाम करणाऱ्यांना नियुक्त करा. तो दगडाच्या खाणीजवळ ठेवा आणि पुरवठादारांना प्रवेश द्या. तयारीची उद्दिष्ट्ये पूर्ण होईपर्यंत कोणताही हल्ला सुरू होणार नाही."
+    },
+    {
+      "id": "native:[lesson fortifications tower title]",
+      "source": "Build a defense tower",
+      "target": "संरक्षण बुरुज बांधा"
+    },
+    {
+      "id": "native:[lesson fortifications tower instruction]",
+      "source": "Build a tower in the marked area; assign builders.",
+      "target": "चिन्हांकित जागेत मनोरा बांधा; बांधकाम करणाऱ्यांची नेमणूक करा."
+    },
+    {
+      "id": "native:[lesson fortifications tower help]",
+      "source": "Place it near the stone quarry and leave supplier access. No attack starts until the preparation goals are complete.",
+      "target": "ते दगडाच्या खाणीजवळ ठेवा आणि पुरवठादारांना प्रवेश द्या. तयारीची उद्दिष्ट्ये पूर्ण होईपर्यंत कोणताही हल्ला सुरू होणार नाही."
+    },
+    {
+      "id": "native:[lesson fortifications tower marker]",
+      "source": "Build a defense tower",
+      "target": "संरक्षण बुरुज बांधा"
+    },
+    {
+      "id": "native:[lesson fortifications walls hint]",
+      "source": "Build at least 2 wall sections near the tower; keep its west access lane open. Walls use stone and each site requests workers. Do not seal the tower in: suppliers need a route. The marked west lane must remain clear.",
+      "target": "मनोऱ्याजवळ भिंतीचे किमान २ भाग बांधा; पश्चिमेकडील प्रवेशमार्ग मोकळा ठेवा. भिंतींसाठी दगड लागतात आणि प्रत्येक बांधकाम स्थळासाठी कामगार मागवावे लागतात. मनोरा बंदिस्त करू नका: पुरवठादारांना मार्ग हवा. चिन्हांकित पश्चिमेकडील मार्ग मोकळा राहिला पाहिजे."
+    },
+    {
+      "id": "native:[lesson fortifications walls title]",
+      "source": "Protect the tower with walls",
+      "target": "बुरुजाचे भिंतींनी संरक्षण करा"
+    },
+    {
+      "id": "native:[lesson fortifications walls instruction]",
+      "source": "Build at least 2 wall sections near the tower; keep its west access lane open.",
+      "target": "बुरुजाजवळ भिंतीचे किमान २ भाग बांधा; त्याचा पश्चिमेकडील प्रवेश मार्ग खुला ठेवा."
+    },
+    {
+      "id": "native:[lesson fortifications walls help]",
+      "source": "Walls use stone and each site requests workers. Do not seal the tower in: suppliers need a route. The marked west lane must remain clear.",
+      "target": "भिंतींसाठी दगड लागतात आणि प्रत्येक बांधकाम स्थळासाठी कामगार मागवावे लागतात. मनोरा बंदिस्त करू नका: पुरवठादारांना मार्ग हवा. चिन्हांकित पश्चिमेकडील मार्ग मोकळा राहिला पाहिजे."
+    },
+    {
+      "id": "native:[lesson fortifications walls marker]",
+      "source": "Protect the tower with walls",
+      "target": "बुरुजाचे भिंतींनी संरक्षण करा"
+    },
+    {
+      "id": "native:[lesson fortifications supply hint]",
+      "source": "Select the tower and request suppliers. Wait for at least 2 stone. A finished tower needs an operating worker target to bring ammunition. This is separate from its construction target.",
+      "target": "मनोरा निवडून पुरवठा करणारे कामगार मागवा. किमान 2 दगड येण्याची वाट पाहा. पूर्ण झालेल्या मनोऱ्याला दारुगोळा आणण्यासाठी कामकाजाचे कामगार मागवावे लागतात. ही मागणी बांधकामाच्या मागणीपेक्षा वेगळी असते."
+    },
+    {
+      "id": "native:[lesson fortifications supply title]",
+      "source": "Supply ammunition",
+      "target": "दारूगोळा पुरवठा करा"
+    },
+    {
+      "id": "native:[lesson fortifications supply instruction]",
+      "source": "Select the tower and request suppliers. Wait for at least 2 stone.",
+      "target": "मनोरा निवडा आणि पुरवठादारांना विनंती करा. किमान २ दगडांची वाट पहा."
+    },
+    {
+      "id": "native:[lesson fortifications supply help]",
+      "source": "A finished tower needs an operating worker target to bring ammunition. This is separate from its construction target.",
+      "target": "पूर्ण झालेल्या मनोऱ्याला दारुगोळा आणण्यासाठी कामकाजाचे कामगार मागवावे लागतात. ही मागणी बांधकामाच्या मागणीपेक्षा वेगळी असते."
+    },
+    {
+      "id": "native:[lesson fortifications supply marker]",
+      "source": "Supply ammunition",
+      "target": "दारूगोळा पुरवठा करा"
+    },
+    {
+      "id": "native:[lesson fortifications hold hint]",
+      "source": "A practice warrior is approaching. Keep the tower supplied and accessible. Hold until the attacker is defeated or driven back. A wall that blocks suppliers can starve the tower of ammunition. If the colony fails, restart or load an earlier save.",
+      "target": "एक सराव योद्धा जवळ येत आहे. मनोराला पुरवठा चालू ठेवा आणि तो सहज पोहोचण्यायोग्य ठेवा. आक्रमणकर्ता पराभूत होईपर्यंत किंवा मागे हटेपर्यंत टिकाव धरा. पुरवठादारांना अडवणारी भिंत मनोराला दारुगोळ्यापासून वंचित ठेवू शकते. जर वसाहत अयशस्वी झाली, तर खेळ पुन्हा सुरू करा किंवा आधीची सेव्ह केलेली फाईल लोड करा."
+    },
+    {
+      "id": "native:[lesson fortifications hold title]",
+      "source": "Test the fortifications",
+      "target": "तटबंदीची चाचणी करा"
+    },
+    {
+      "id": "native:[lesson fortifications hold instruction]",
+      "source": "A practice warrior is approaching. Keep the tower supplied and accessible.",
+      "target": "एक सराव योद्धा जवळ येत आहे. मनोराला पुरवठा चालू ठेवा आणि तो सहज उपलब्ध राहील याची खात्री करा."
+    },
+    {
+      "id": "native:[lesson fortifications hold help]",
+      "source": "Hold until the attacker is defeated or driven back. A wall that blocks suppliers can starve the tower of ammunition. If the colony fails, restart or load an earlier save.",
+      "target": "आक्रमणकर्ता पराभूत होईपर्यंत किंवा मागे हटेपर्यंत टिकून राहा. पुरवठादारांना अडवणारी भिंत मनोराला दारुगोळ्यापासून वंचित ठेवू शकते. जर वसाहत अयशस्वी झाली, तर पुन्हा सुरुवात करा किंवा आधीची सेव्ह केलेली फाईल लोड करा."
+    },
+    {
+      "id": "native:[lesson fortifications hold marker]",
+      "source": "Test the fortifications",
+      "target": "तटबंदीची चाचणी करा"
+    },
+    {
+      "id": "native:[lesson defensive-tactics title]",
+      "source": "Guard zones and flag tactics",
+      "target": "राखण क्षेत्रे आणि ध्वजांचे डावपेच"
+    },
+    {
+      "id": "native:[lesson defensive-tactics briefing]",
+      "source": "Scout the practice enemy, prepare a guard zone, defend, then organize a counterattack.",
+      "target": "सराव शत्रूची टेहळणी करा, संरक्षण क्षेत्र तयार करा, बचाव करा आणि मग प्रतिहल्ला आयोजित करा."
+    },
+    {
+      "id": "native:[lesson defensive-tactics complete]",
+      "source": "You scouted, defended a guard zone and directed a counterattack. Flag targets request units; radius controls where those units work.",
+      "target": "तुम्ही टेहळणी केली, राखण क्षेत्राचे संरक्षण केले आणि प्रतिहल्ला घडवला. ध्वजावरील मागणीने युनिट मागवली जातात; त्रिज्येने ती कुठे काम करतात ते ठरते."
+    },
+    {
+      "id": "native:[lesson defensive-tactics scout hint]",
+      "source": "Place an Exploration Flag at the enemy base; assign 1 explorer. Flags request units autonomously. An explorer reveals current activity through fog of war; it may stop to eat.",
+      "target": "शत्रूच्या तळावर एक शोध ध्वज लावा; १ शोधक नियुक्त करा. ध्वज आपोआप तुकड्यांची मागणी करतात. एक शोधक युद्धाच्या धुक्यातून सध्याची हालचाल उघड करतो; तो जेवण्यासाठी थांबू शकतो."
+    },
+    {
+      "id": "native:[lesson defensive-tactics scout title]",
+      "source": "Scout the enemy base",
+      "target": "शत्रूच्या तळाची टेहळणी करा"
+    },
+    {
+      "id": "native:[lesson defensive-tactics scout instruction]",
+      "source": "Place an Exploration Flag at the enemy base; assign 1 explorer.",
+      "target": "शत्रूच्या तळावर एक शोध ध्वज लावा; १ शोधक नियुक्त करा."
+    },
+    {
+      "id": "native:[lesson defensive-tactics scout help]",
+      "source": "Flags request units autonomously. An explorer reveals current activity through fog of war; it may stop to eat.",
+      "target": "ध्वज आपोआप तुकड्यांची मागणी करतात. एक शोधक युद्धाच्या धुक्यातून सध्याची हालचाल उघड करतो; तो जेवण्यासाठी थांबू शकतो."
+    },
+    {
+      "id": "native:[lesson defensive-tactics scout marker]",
+      "source": "Scout the enemy base",
+      "target": "शत्रूच्या तळाची टेहळणी करा"
+    },
+    {
+      "id": "native:[lesson defensive-tactics guard hint]",
+      "source": "Paint a guard zone in the marked area and let 2 warriors reach it. Open Flags, choose Guard and paint at least 4 tiles inside the area. Guard zones attract idle warriors. Forbidden zones block travel; clearing zones request resource removal.",
+      "target": "चिन्हांकित क्षेत्रात राखण क्षेत्र रंगवा आणि 2 योद्धे येऊ द्या. ध्वज उघडून राखण निवडा आणि किमान 4 चौकोन रंगवा. राखण क्षेत्रे मोकळ्या योद्ध्यांना आकर्षित करतात. प्रतिबंधित क्षेत्रे येजा थांबवतात; सफाई क्षेत्रे संसाधने काढण्याची मागणी करतात."
+    },
+    {
+      "id": "native:[lesson defensive-tactics guard title]",
+      "source": "Prepare a guard zone",
+      "target": "राखण क्षेत्र तयार करा"
+    },
+    {
+      "id": "native:[lesson defensive-tactics guard instruction]",
+      "source": "Paint a guard zone in the marked area and let 2 warriors reach it.",
+      "target": "चिन्हांकित क्षेत्रात एक राखण क्षेत्र रंगवा आणि दोन योद्ध्यांना तिथे पोहोचू द्या."
+    },
+    {
+      "id": "native:[lesson defensive-tactics guard help]",
+      "source": "Open Flags, choose Guard and paint at least 4 tiles inside the area. Guard zones attract idle warriors. Forbidden zones block travel; clearing zones request resource removal.",
+      "target": "ध्वज उघडून राखण निवडा आणि चिन्हांकित क्षेत्रात किमान 4 चौकोन रंगवा. राखण क्षेत्रे मोकळ्या योद्ध्यांना आकर्षित करतात. प्रतिबंधित क्षेत्रे येजा थांबवतात; सफाई क्षेत्रे संसाधने काढण्याची मागणी करतात."
+    },
+    {
+      "id": "native:[lesson defensive-tactics guard marker]",
+      "source": "Prepare a guard zone",
+      "target": "राखण क्षेत्र तयार करा"
+    },
+    {
+      "id": "native:[lesson defensive-tactics repel hint]",
+      "source": "The enemy is attacking. Keep the guard zone covered and Inns supplied. The small attack starts after your preparations. Defeat or drive back both raiders; wounded enemies may retreat. Warriors may leave temporarily to eat. If the defense fails, use an earlier save or restart.",
+      "target": "शत्रू हल्ला करत आहे. राखण क्षेत्र सुरक्षित ठेवा आणि खानावळींना पुरवठा चालू ठेवा. तुमच्या तयारीनंतर छोटा हल्ला सुरू होईल. दोन्ही हल्लेखोरांना पराभूत करा किंवा मागे हटवा; जखमी शत्रू माघार घेऊ शकतात. योद्धे जेवणासाठी तात्पुरते बाहेर जाऊ शकतात. जर संरक्षण अयशस्वी झाले, तर आधीची सेव्ह वापरा किंवा गेम पुन्हा सुरू करा."
+    },
+    {
+      "id": "native:[lesson defensive-tactics repel title]",
+      "source": "Repel the practice attack",
+      "target": "सराव हल्ला परतवून लावा"
+    },
+    {
+      "id": "native:[lesson defensive-tactics repel instruction]",
+      "source": "The enemy is attacking. Keep the guard zone covered and Inns supplied.",
+      "target": "शत्रू हल्ला करत आहे. राखण क्षेत्र संरक्षित ठेवा आणि खानावळींना पुरवठा चालू ठेवा."
+    },
+    {
+      "id": "native:[lesson defensive-tactics repel help]",
+      "source": "The small attack starts after your preparations. Defeat or drive back both raiders; wounded enemies may retreat. Warriors may leave temporarily to eat. If the defense fails, use an earlier save or restart.",
+      "target": "तुमच्या तयारीनंतर छोटा हल्ला सुरू होतो. दोन्ही हल्लेखोरांना पराभूत करा किंवा मागे हटवा; जखमी शत्रू माघार घेऊ शकतात. योद्धे जेवणासाठी तात्पुरते बाहेर जाऊ शकतात. जर बचाव अयशस्वी झाला, तर आधीची सेव्ह वापरा किंवा गेम पुन्हा सुरू करा."
+    },
+    {
+      "id": "native:[lesson defensive-tactics repel marker]",
+      "source": "Repel the practice attack",
+      "target": "सराव हल्ला परतवून लावा"
+    },
+    {
+      "id": "native:[lesson defensive-tactics counterattack hint]",
+      "source": "Place a War Flag over the enemy Swarm; request 3 warriors and use radius 4 or smaller. Guard zones and War Flags compete for warriors. Remove guard tiles if they hold your army back. Keep food available while warriors travel and attack.",
+      "target": "शत्रूच्या पोळ्यावर युद्ध ध्वज ठेवा; ३ योद्धे मागवा आणि त्रिज्या ४ किंवा कमी ठेवा. राखण क्षेत्रे आणि युद्ध ध्वज दोन्ही योद्ध्यांना मागवतात. राखण क्षेत्रांमुळे सैन्य अडत असेल तर ती काढा. प्रवास व हल्ल्यादरम्यान अन्नपुरवठा सुरू ठेवा."
+    },
+    {
+      "id": "native:[lesson defensive-tactics counterattack title]",
+      "source": "Direct a focused counterattack",
+      "target": "एका केंद्रित प्रतिहल्ल्याचे निर्देश द्या"
+    },
+    {
+      "id": "native:[lesson defensive-tactics counterattack instruction]",
+      "source": "Place a War Flag over the enemy Swarm; request 3 warriors and use radius 4 or smaller.",
+      "target": "शत्रूच्या पोळ्यावर युद्धध्वज ठेवा; ३ योद्ध्यांची मागणी करा आणि ४ किंवा त्यापेक्षा कमी त्रिज्या वापरा."
+    },
+    {
+      "id": "native:[lesson defensive-tactics counterattack help]",
+      "source": "Guard zones and War Flags compete for warriors. Remove guard tiles if they hold your army back. Keep food available while warriors travel and attack.",
+      "target": "राखण क्षेत्रे आणि युद्धध्वज योद्ध्यांसाठी स्पर्धा करतात. जर राखण क्षेत्रांमुळे तुमच्या सैन्याची प्रगती खुंटत असेल, तर ती क्षेत्रे काढून टाका. योद्धे प्रवास करत असताना आणि हल्ले करत असताना अन्न उपलब्ध ठेवा."
+    },
+    {
+      "id": "native:[lesson defensive-tactics counterattack marker]",
+      "source": "Direct a focused counterattack",
+      "target": "एका केंद्रित प्रतिहल्ल्याचे निर्देश द्या"
+    },
+    {
+      "id": "native:[lesson healing build compact]",
+      "source": "Build → Hospital. Leave access; assign builders.",
+      "target": "बांधकाम करा → रुग्णालय. प्रवेश कायम ठेवा; बांधकाम कामगारांना नियुक्त करा."
+    },
+    {
+      "id": "native:[lesson healing heal compact]",
+      "source": "Let the wounded worker heal at the Hospital.",
+      "target": "जखमी कामगाराला रुग्णालयात बरे होऊ द्या."
+    },
+    {
+      "id": "native:[lesson walking-training build compact]",
+      "source": "Build → Racetrack. Leave space around its edges.",
+      "target": "तयार करा → धावपट्टी. त्याच्या कडांभोवती जागा सोडा."
+    },
+    {
+      "id": "native:[lesson walking-training train compact]",
+      "source": "Let a worker finish Racetrack training.",
+      "target": "एका कामगाराला धावपट्टी प्रशिक्षण पूर्ण करू द्या."
+    },
+    {
+      "id": "native:[lesson swimming build compact]",
+      "source": "Build → Swimming Pool, west of the pond.",
+      "target": "बांधकाम → जलतरण तलाव, तळ्याच्या पश्चिमेला."
+    },
+    {
+      "id": "native:[lesson swimming train compact]",
+      "source": "Let a worker learn to swim.",
+      "target": "एका कामगाराला पोहायला शिकू द्या."
+    },
+    {
+      "id": "native:[lesson swimming water-job compact]",
+      "source": "Build → School. Assign builders for wood and algae.",
+      "target": "बांधकाम करा → शाळा. लाकूड आणि शेवाळासाठी बांधकाम करणारे नेमा."
+    },
+    {
+      "id": "native:[lesson schools build compact]",
+      "source": "Build → School. Assign builders for wood and algae.",
+      "target": "बांधकाम करा → शाळा. लाकूड आणि शेवाळासाठी बांधकाम करणारे नेमा."
+    },
+    {
+      "id": "native:[lesson schools learn compact]",
+      "source": "Let a worker finish School training.",
+      "target": "कामगाराला शाळेतील प्रशिक्षण पूर्ण करू द्या."
+    },
+    {
+      "id": "native:[lesson upgrades upgrade compact]",
+      "source": "Select Racetrack → Upgrade. Assign skilled builders.",
+      "target": "धावपट्टी निवडा → सुधारणा करा. कुशल बांधकाम कामगारांची नेमणूक करा."
+    },
+    {
+      "id": "native:[lesson upgrades train compact]",
+      "source": "Let a worker train at the upgraded Racetrack.",
+      "target": "एका कामगाराला सुधारित धावपट्टीवर प्रशिक्षण घेऊ द्या."
+    },
+    {
+      "id": "native:[lesson fortifications tower compact]",
+      "source": "Build → Tower. Place in the marked area.",
+      "target": "बांधा → मनोरा. चिन्हांकित जागेवर ठेवा."
+    },
+    {
+      "id": "native:[lesson fortifications walls compact]",
+      "source": "Build 2 walls. Keep the tower’s west lane open.",
+      "target": "दोन भिंती बांधा. बुरुजाचा पश्चिम मार्ग खुला ठेवा."
+    },
+    {
+      "id": "native:[lesson fortifications supply compact]",
+      "source": "Select tower → suppliers. Wait for 2 stone.",
+      "target": "मनोरा निवडा → पुरवठादार. २ दगडांची वाट पहा."
+    },
+    {
+      "id": "native:[lesson fortifications hold compact]",
+      "source": "Keep the tower supplied against the attacker.",
+      "target": "हल्लेखोराविरुद्ध मनोराला पुरवठा चालू ठेवा."
+    },
+    {
+      "id": "native:[lesson defensive-tactics scout compact]",
+      "source": "Flags → Exploration. Place at the enemy; assign 1 explorer.",
+      "target": "ध्वज → शोधमोहीम. शत्रूच्या ठिकाणी ठेवा; १ शोधक नेमा."
+    },
+    {
+      "id": "native:[lesson defensive-tactics guard compact]",
+      "source": "Flags → Guard. Paint 4 tiles; let 2 warriors arrive.",
+      "target": "ध्वज → रक्षण करा. ४ फरशा रंगवा; २ योद्ध्यांना येऊ द्या."
+    },
+    {
+      "id": "native:[lesson defensive-tactics repel compact]",
+      "source": "Hold the guard zone. Keep Inns supplied.",
+      "target": "राखण क्षेत्र सांभाळा. खानावळींना पुरवठा चालू ठेवा."
+    },
+    {
+      "id": "native:[lesson defensive-tactics counterattack compact]",
+      "source": "War Flag → enemy Swarm. Request 3 warriors; radius ≤4.",
+      "target": "युद्धाचा ध्वज → शत्रूचे पोळे. ३ योद्ध्यांची विनंती; त्रिज्या ≤४."
+    },
+    {
+      "id": "native:[intro attack destination]",
+      "source": "Attack here",
+      "target": "येथे हल्ला करा"
+    },
+    {
+      "id": "native:[Grassland]",
+      "source": "Grassland",
+      "target": "गवताळ प्रदेश"
+    },
+    {
+      "id": "native:[Kopjes]",
+      "source": "Kopjes",
+      "target": "कोप्जेस"
+    },
+    {
+      "id": "native:[Game trails]",
+      "source": "Game trails",
+      "target": "वन्य प्राण्यांच्या वाटा"
+    },
+    {
+      "id": "native:[Fish amount]",
+      "source": "Fish amount",
+      "target": "माशांची संख्या"
+    },
+    {
+      "id": "native:[scenario messages]",
+      "source": "Messages ▸",
+      "target": "संदेश ▸"
+    },
+    {
+      "id": "native:[Camp-site amount]",
+      "source": "Camp-site amount",
+      "target": "छावणीच्या जागांचे प्रमाण"
+    }
+  ]
+}

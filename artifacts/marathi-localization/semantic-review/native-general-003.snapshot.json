@@ -1,0 +1,507 @@
+{
+  "batch": "native-general-003",
+  "source_sha256": "0ac44b4cdfb03e688983d6e3fb1e484cca57589665bff19c5c65388e649b292a",
+  "rows": [
+    {
+      "id": "native:[language incomplete]",
+      "source": "English - Incomplete",
+      "target": "इंग्रजी - अपूर्ण"
+    },
+    {
+      "id": "native:[language-code]",
+      "source": "en",
+      "target": "एन"
+    },
+    {
+      "id": "native:[language-tr]",
+      "source": "Language",
+      "target": "भाषा"
+    },
+    {
+      "id": "native:[language]",
+      "source": "English",
+      "target": "इंग्रजी"
+    },
+    {
+      "id": "native:[left meta]",
+      "source": "left meta",
+      "target": "डावी मेटा"
+    },
+    {
+      "id": "native:[left super]",
+      "source": "left windows key",
+      "target": "डावी विंडोज की"
+    },
+    {
+      "id": "native:[left]",
+      "source": "left",
+      "target": "डावीकडे"
+    },
+    {
+      "id": "native:[level]",
+      "source": "Level",
+      "target": "पातळी"
+    },
+    {
+      "id": "native:[levels]",
+      "source": "Levels",
+      "target": "स्तर"
+    },
+    {
+      "id": "native:[load campaign]",
+      "source": "Load Campaign",
+      "target": "मोहीम लोड करा"
+    },
+    {
+      "id": "native:[load game]",
+      "source": "Load game",
+      "target": "गेम लोड करा"
+    },
+    {
+      "id": "native:[load map]",
+      "source": "Load Map",
+      "target": "नकाशा लोड करा"
+    },
+    {
+      "id": "native:[load replay]",
+      "source": "Load Replay",
+      "target": "रीप्ले लोड करा"
+    },
+    {
+      "id": "native:[load script]",
+      "source": "Load Script",
+      "target": "स्क्रिप्ट लोड करा"
+    },
+    {
+      "id": "native:[load]",
+      "source": "Load",
+      "target": "लोड करा"
+    },
+    {
+      "id": "native:[look around]",
+      "source": "Look around",
+      "target": "आजूबाजूला बघा"
+    },
+    {
+      "id": "native:[Lost : %0 has more prestige than you]",
+      "source": "Lost: %0 has more prestige than you",
+      "target": "हरवले: %0 ची प्रतिष्ठा तुमच्यापेक्षा जास्त आहे"
+    },
+    {
+      "id": "native:[Lost : your colony is dead]",
+      "source": "Lost: your colony is dead",
+      "target": "तुमची वसाहत नष्ट झाली आहे."
+    },
+    {
+      "id": "native:[low priority]",
+      "source": "low",
+      "target": "कमी"
+    },
+    {
+      "id": "native:[lowquality]",
+      "source": "Low quality",
+      "target": "कमी दर्जाचे"
+    },
+    {
+      "id": "native:[Magic At. Air]",
+      "source": "Air dmg.",
+      "target": "हवेमुळे होणारे नुकसान."
+    },
+    {
+      "id": "native:[Magic At. Ground]",
+      "source": "Ground dmg.",
+      "target": "जमिनीमुळे होणारे नुकसान."
+    },
+    {
+      "id": "native:[mark map]",
+      "source": "Mark Map For Allies",
+      "target": "मित्रपक्षांसाठी नकाशा चिन्हांकित करा"
+    },
+    {
+      "id": "native:[medium priority]",
+      "source": "mid",
+      "target": "मध्य"
+    },
+    {
+      "id": "native:[meta %0]",
+      "source": "meta-%0",
+      "target": "मेटा-%0"
+    },
+    {
+      "id": "native:[Min required level:]",
+      "source": "Minimum required level:",
+      "target": "किमान आवश्यक पातळी:"
+    },
+    {
+      "id": "native:[Mute]",
+      "source": "Mute",
+      "target": "म्यूट"
+    },
+    {
+      "id": "native:[mute]",
+      "source": "mute",
+      "target": "म्यूट"
+    },
+    {
+      "id": "native:[new campaign]",
+      "source": "New Campaign",
+      "target": "नवीन मोहीम"
+    },
+    {
+      "id": "native:[new map]",
+      "source": "New Map",
+      "target": "नवीन नकाशा"
+    },
+    {
+      "id": "native:[no fullscreen]",
+      "source": "* only in windowed mode",
+      "target": "फक्त विंडो मोडमध्ये"
+    },
+    {
+      "id": "native:[No Hints]",
+      "source": "No Hints",
+      "target": "कोणतेही संकेत नाहीत"
+    },
+    {
+      "id": "native:[no key]",
+      "source": "no key yet",
+      "target": "अद्याप चावी नाही"
+    },
+    {
+      "id": "native:[No Objectives]",
+      "source": "No Objectives",
+      "target": "कोणतेही उद्दिष्ट नाही"
+    },
+    {
+      "id": "native:[no ressources growth areas]",
+      "source": "No Growth Areas",
+      "target": "वाढ नसलेले क्षेत्र"
+    },
+    {
+      "id": "native:[No]",
+      "source": "No",
+      "target": "नाही"
+    },
+    {
+      "id": "native:[number of teams]",
+      "source": "number of teams",
+      "target": "संघांची संख्या"
+    },
+    {
+      "id": "native:[Number Of Units]",
+      "source": "Number Of Units",
+      "target": "युनिट्सची संख्या"
+    },
+    {
+      "id": "native:[numlock]",
+      "source": "numlock",
+      "target": "नमलॉक"
+    },
+    {
+      "id": "native:[objectives]",
+      "source": "Objectives",
+      "target": "उद्दिष्टे"
+    },
+    {
+      "id": "native:[of which]",
+      "source": "there are",
+      "target": "तेथे आहेत"
+    },
+    {
+      "id": "native:[ok]",
+      "source": "Ok",
+      "target": "ठीक आहे"
+    },
+    {
+      "id": "native:[on press]",
+      "source": "On Press",
+      "target": "प्रेसवर"
+    },
+    {
+      "id": "native:[On the spot]",
+      "source": "Here",
+      "target": "येथे"
+    },
+    {
+      "id": "native:[on unpress]",
+      "source": "On release",
+      "target": "रिलीजवर"
+    },
+    {
+      "id": "native:[open chat box]",
+      "source": "Open Chat Box",
+      "target": "चॅट बॉक्स उघडा"
+    },
+    {
+      "id": "native:[open load menu]",
+      "source": "Open Load Menu",
+      "target": "लोड मेनू उघडा"
+    },
+    {
+      "id": "native:[open save menu]",
+      "source": "Open Save Menu",
+      "target": "सेव्ह मेनू उघडा"
+    },
+    {
+      "id": "native:[open scenario editor]",
+      "source": "Open Scenario Editor",
+      "target": "ओपन सिनारिओ एडिटर"
+    },
+    {
+      "id": "native:[open teams editor]",
+      "source": "Open Teams Editor",
+      "target": "ओपन टीम्स एडिटर"
+    },
+    {
+      "id": "native:[open]",
+      "source": "open",
+      "target": "उघडा"
+    },
+    {
+      "id": "native:[OpenGL]",
+      "source": "OpenGL",
+      "target": "ओपनजीएल"
+    },
+    {
+      "id": "native:[Options]",
+      "source": "Options",
+      "target": "पर्याय"
+    },
+    {
+      "id": "native:[options]",
+      "source": "options",
+      "target": "पर्याय"
+    },
+    {
+      "id": "native:[Orange]",
+      "source": "Orange",
+      "target": "नारंगी"
+    },
+    {
+      "id": "native:[Other Options]",
+      "source": "Other Options",
+      "target": "इतर पर्याय"
+    },
+    {
+      "id": "native:[page down]",
+      "source": "page down",
+      "target": "पेज डाउन"
+    },
+    {
+      "id": "native:[page up]",
+      "source": "page up",
+      "target": "पेज अप"
+    },
+    {
+      "id": "native:[Papyrus]",
+      "source": "Papyrus",
+      "target": "पॅपिरस"
+    },
+    {
+      "id": "native:[pause game]",
+      "source": "Pause game",
+      "target": "खेळ थांबवा"
+    },
+    {
+      "id": "native:[pause]",
+      "source": "pause",
+      "target": "थांबा"
+    },
+    {
+      "id": "native:[Paused]",
+      "source": "Paused",
+      "target": "थांबवले"
+    },
+    {
+      "id": "native:[player name]",
+      "source": "Player name",
+      "target": "खेळाडूचे नाव"
+    },
+    {
+      "id": "native:[players]",
+      "source": "Players",
+      "target": "खेळाडू"
+    },
+    {
+      "id": "native:[please wait]",
+      "source": "Please wait",
+      "target": "कृपया थांबा"
+    },
+    {
+      "id": "native:[power]",
+      "source": "power",
+      "target": "शक्ती"
+    },
+    {
+      "id": "native:[press space]",
+      "source": "Press space to continue.",
+      "target": "पुढे जाण्यासाठी स्पेस दाबा."
+    },
+    {
+      "id": "native:[Prestige Score]",
+      "source": "Prestige Score",
+      "target": "प्रतिष्ठेचा स्कोअर"
+    },
+    {
+      "id": "native:[Prestige Win Enabled]",
+      "source": "Prestige Win Enabled",
+      "target": "प्रतिष्ठेचा विजय सक्षम केला"
+    },
+    {
+      "id": "native:[Prestige]",
+      "source": "Prestige",
+      "target": "प्रतिष्ठा"
+    },
+    {
+      "id": "native:[Primary Objectives]",
+      "source": "Primary",
+      "target": "प्राथमिक"
+    },
+    {
+      "id": "native:[print screen]",
+      "source": "print screen",
+      "target": "प्रिंट स्क्रीन"
+    },
+    {
+      "id": "native:[priority]",
+      "source": "Priority",
+      "target": "प्राधान्य"
+    },
+    {
+      "id": "native:[Prune]",
+      "source": "Plum",
+      "target": "प्लम"
+    },
+    {
+      "id": "native:[quit the editor]",
+      "source": "Quit the editor",
+      "target": "संपादक सोडा"
+    },
+    {
+      "id": "native:[quit the game]",
+      "source": "Quit the game",
+      "target": "खेळ सोडा"
+    },
+    {
+      "id": "native:[quit the replay]",
+      "source": "Quit the replay",
+      "target": "रिप्लेमधून बाहेर पडा"
+    },
+    {
+      "id": "native:[quit]",
+      "source": "Quit",
+      "target": "सोडून द्या"
+    },
+    {
+      "id": "native:[racetrack explanation 2]",
+      "source": "speed of your units",
+      "target": "तुमच्या युनिट्सचा वेग"
+    },
+    {
+      "id": "native:[racetrack explanation]",
+      "source": "Improves the walking",
+      "target": "चालण्यात सुधारणा होते"
+    },
+    {
+      "id": "native:[racetrack]",
+      "source": "Racetrack",
+      "target": "रेसट्रॅक"
+    },
+    {
+      "id": "native:[range]",
+      "source": "Range",
+      "target": "श्रेणी"
+    },
+    {
+      "id": "native:[ratios]",
+      "source": "Proportions",
+      "target": "प्रमाण"
+    },
+    {
+      "id": "native:[remember unit]",
+      "source": "Remember unit counts",
+      "target": "एकक मोजणी लक्षात ठेवा"
+    },
+    {
+      "id": "native:[remove map]",
+      "source": "Remove Map",
+      "target": "नकाशा काढा"
+    },
+    {
+      "id": "native:[repair]",
+      "source": "Repair",
+      "target": "दुरुस्ती"
+    },
+    {
+      "id": "native:[repeat area]",
+      "source": "times the same landscape",
+      "target": "वेळा तोच भूप्रदेश"
+    },
+    {
+      "id": "native:[replay ended]",
+      "source": "Replay Ended",
+      "target": "रीप्ले समाप्त झाला"
+    },
+    {
+      "id": "native:[return to editor]",
+      "source": "Return to the editor",
+      "target": "संपादकाकडे परत जा"
+    },
+    {
+      "id": "native:[return to game]",
+      "source": "Return to game",
+      "target": "खेळाकडे परत जा"
+    },
+    {
+      "id": "native:[return to replay]",
+      "source": "Return to the replay",
+      "target": "रिप्लेवर परत जा"
+    },
+    {
+      "id": "native:[return]",
+      "source": "enter",
+      "target": "प्रवेश करा"
+    },
+    {
+      "id": "native:[right meta]",
+      "source": "right meta",
+      "target": "योग्य मेटा"
+    },
+    {
+      "id": "native:[right super]",
+      "source": "right windows key",
+      "target": "उजवीकडील विंडोज की"
+    },
+    {
+      "id": "native:[right]",
+      "source": "right",
+      "target": "बरोबर"
+    },
+    {
+      "id": "native:[sand]",
+      "source": "Sand",
+      "target": "वाळू"
+    },
+    {
+      "id": "native:[save before quit?]",
+      "source": "Do you want to save before quitting?",
+      "target": "बाहेर पडण्यापूर्वी तुम्हाला सेव्ह करायचे आहे का?"
+    },
+    {
+      "id": "native:[save game]",
+      "source": "Save game",
+      "target": "गेम सेव्ह करा"
+    },
+    {
+      "id": "native:[save map]",
+      "source": "Save Map",
+      "target": "नकाशा जतन करा"
+    },
+    {
+      "id": "native:[save replay]",
+      "source": "Save Replay",
+      "target": "पुन्हा प्ले करा"
+    }
+  ],
+  "subset_sha256": "c5ee5a61e3a8ba1702053ae6c9649448b158036a6fa32788080cc6f6f4503676"
+}

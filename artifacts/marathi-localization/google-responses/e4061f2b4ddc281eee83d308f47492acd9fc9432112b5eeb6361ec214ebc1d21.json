@@ -1,0 +1,418 @@
+{
+  "request": {
+    "project": "bradley-personal-20261027",
+    "model": "general/nmt",
+    "payload": {
+      "sourceLanguageCode": "en",
+      "targetLanguageCode": "mr",
+      "mimeType": "text/plain",
+      "contents": [
+        "Start trained, train no further",
+        "Shifting alliances",
+        "Teams can change in a 60-minute race",
+        "Changed from ZXQPH0QXZ: ZXQPH1QXZ",
+        "Combat is off, so the rules below have no effect.",
+        "ZXQPH0QXZ more rules are at their Standard values.",
+        "Each team starts with extra materials in its shared pool.",
+        "Units hit harder but have less HP and armor.",
+        "Teams can attack each other. Turn off for a peaceful match.",
+        "Hurt units go back to heal instead of fighting to the death.",
+        "Units die when they run out of HP. Turn off to stop them at 1 HP.",
+        "Workers' time",
+        "What workers were working on",
+        "How many workers were supplying each kind of building: swarms (to make new units), inns (to make meals), buildings being built or upgraded, or other buildings such as towers, schools and barracks.",
+        "Distance to resources",
+        "How far, on average, a harvesting worker was from the building it was supplying, in map squares in a straight line.",
+        "Fetching and carrying",
+        "How the workers supplying buildings divided between walking to a resource, harvesting it, carrying materials back, and delivering it or waiting for a resource they can reach. Most of it is walking, so the closer the resources, the more gets done.",
+        "Workers going to eat",
+        "How many workers were away from work to eat: walking to an inn, eating inside one, or hungry with no inn that could take them. Workers left with no inn means the colony has outgrown its inns or their food.",
+        "Enemy warriors at home",
+        "How many enemy warriors were within 16 squares of the colony's buildings. Where two colonies are close together, each counts the other's defenders.",
+        "Home defence strength margin",
+        "The strength of the colony's own warriors near its buildings minus that of the enemy warriors there, counting each warrior and each of its attack levels. Below zero the colony was outmatched at home.",
+        "Where units fell in combat",
+        "Where the colony's units were when they were killed: near its own buildings, near an enemy's buildings, or in open ground between colonies. Losses at home mean the colony was being attacked; losses at an enemy colony mean it was attacking. Ground close to both colonies counts as home.",
+        "Working",
+        "Idle",
+        "Training",
+        "No inn or hospital free",
+        "Inns",
+        "Building and upgrading",
+        "Walking to a resource",
+        "Harvesting",
+        "Carrying it back",
+        "Delivering or waiting",
+        "Walking to an inn",
+        "No inn free",
+        "At home",
+        "At an enemy colony",
+        "In open ground",
+        "Seeking healing",
+        "Free",
+        "squares",
+        "attack level",
+        "strength",
+        "By place",
+        "AI Library",
+        "Authoring guide",
+        "Beginner-friendly",
+        "Defensive",
+        "Discover",
+        "Download & install",
+        "Downloading AI…",
+        "Expansion",
+        "Experimental",
+        "Favourite",
+        "Favourited",
+        "Favourites",
+        "Got it",
+        "How AIs work",
+        "Install selected version",
+        "Installed",
+        "Invalid AI catalogue response",
+        "ZXQPH0QXZ API reference",
+        "Like",
+        "Liked",
+        "Loading AI library…",
+        "Most downloaded",
+        "Most liked",
+        "Newest",
+        "No AIs match these filters.",
+        "Not validated for this game version",
+        "Open AI Library",
+        "Open AI page",
+        "Passed compatibility checks",
+        "Recently updated",
+        "Rush",
+        "Search",
+        "Share your AI"
+      ]
+    }
+  },
+  "response": {
+    "translations": [
+      {
+        "translatedText": "प्रशिक्षण सुरू करा, पुढे प्रशिक्षण घेऊ नका.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "बदलत्या युती",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "६० मिनिटांच्या शर्यतीत संघ बदलू शकतात.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ मधून ZXQPH1QXZ मध्ये बदलले",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "लढाई बंद आहे, त्यामुळे खालील नियम लागू होणार नाहीत.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ अधिक नियम त्यांच्या मानक मूल्यांवर आहेत.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "प्रत्येक संघ आपल्या सामायिक साठ्यात अतिरिक्त साहित्यासह सुरुवात करतो.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "युनिट्स अधिक जोरदार हल्ला करतात, पण त्यांचे एचपी आणि चिलखत कमी असते.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "संघ एकमेकांवर हल्ला करू शकतात. शांततापूर्ण सामन्यासाठी ते बंद करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "जखमी सैनिक जीवघेणी लढाई करण्याऐवजी बरे होण्यासाठी परत जातात.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "युनिट्सचे HP संपल्यावर ते मरतात. त्यांना १ HP वर थांबवण्यासाठी बंद करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कामगारांचा वेळ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कामगार कशावर काम करत होते",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "प्रत्येक प्रकारच्या इमारतीला किती कामगार पुरवठा करत होते: समूह (नवीन युनिट्स बनवण्यासाठी), धर्मशाळा (जेवण बनवण्यासाठी), बांधल्या जात असलेल्या किंवा सुधारित केल्या जात असलेल्या इमारती, किंवा टॉवर, शाळा आणि बराकी यांसारख्या इतर इमारती.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "संसाधनांचे अंतर",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सरासरी, एक कापणी करणारा कामगार तो ज्या इमारतीला पुरवठा करत होता, त्यापासून नकाशावरील सरळ रेषेतील चौकोनांमध्ये किती दूर होता.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "आणणे आणि वाहून नेणे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "इमारतींना पुरवठा करणारे कामगार संसाधनापर्यंत चालत जाणे, ते गोळा करणे, साहित्य परत आणणे आणि पोहोचवणे किंवा आपल्या आवाक्यात असलेल्या संसाधनाची वाट पाहणे, या कामांमध्ये विभागलेले असतात. यातला बहुतेक भाग चालण्याचाच असतो, त्यामुळे संसाधने जितकी जवळ असतील, तितके जास्त काम होते.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "जेवायला जाणारे कामगार",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "किती कामगार जेवण्यासाठी कामापासून दूर होते: धर्मशाळेत चालत जाणे, धर्मशाळेतच जेवणे, किंवा त्यांना आश्रय देऊ शकेल अशी धर्मशाळा न मिळाल्याने उपाशी राहणे. कामगारांना धर्मशाळा न मिळणे याचा अर्थ असा की, वसाहतीची लोकसंख्या तिच्या धर्मशाळा किंवा अन्नाच्या साठ्यापेक्षा जास्त झाली आहे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "घरी असलेले शत्रू योद्धे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "वसाहतीच्या इमारतींच्या १६ चौरसांच्या आत किती शत्रू योद्धे होते. जिथे दोन वसाहती एकमेकांच्या जवळ असतात, तिथे प्रत्येक वसाहत दुसऱ्याच्या संरक्षकांची गणना करते.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "घरच्या संघाच्या संरक्षण ताकदीतील फरक",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "वसाहतीच्या इमारतींजवळील स्वतःच्या योद्ध्यांच्या सामर्थ्यातून तेथील शत्रू योद्ध्यांचे सामर्थ्य वजा केल्यावर मिळणारी संख्या, ज्यामध्ये प्रत्येक योद्धा आणि त्याच्या हल्ल्याची पातळी मोजली जाते. ही पातळी शून्यापेक्षा कमी असल्यास, वसाहत स्वतःच्याच मैदानावर कमी पडत होती.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "जिथे सैन्य तुकड्या लढाईत पडल्या",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "वसाहतीचे सैनिक मारले गेले तेव्हा ते कोठे होते: स्वतःच्या इमारतींजवळ, शत्रूच्या इमारतींजवळ, किंवा वसाहतींच्या मधल्या मोकळ्या मैदानात. स्वगृही झालेले नुकसान म्हणजे वसाहतीवर हल्ला होत होता; शत्रूच्या वसाहतीत झालेले नुकसान म्हणजे ती हल्ला करत होती. दोन्ही वसाहतींच्या जवळची जागा स्वगृही मानली जाते.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "काम करत आहे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "निष्क्रिय",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "प्रशिक्षण",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कोणतेही निवासस्थान किंवा रुग्णालय मोफत नाही",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सराय",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "बांधकाम आणि सुधारणा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "संसाधनाकडे चालत जाणे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कापणी",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ते परत घेऊन जाणे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "डिलिव्हरी करणे किंवा प्रतीक्षा करणे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "धर्मशाळेकडे चालत जाणे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कोणतेही निवासस्थान मोफत नाही",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "घरी",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "शत्रूच्या वसाहतीत",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "मोकळ्या मैदानात",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "उपचार शोधत आहे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "मोफत",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "चौरस",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "हल्ला पातळी",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सामर्थ्य",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ठिकाणानुसार",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "एआय लायब्ररी",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "लेखक मार्गदर्शक",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नवशिक्यांसाठी अनुकूल",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "बचावात्मक",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "शोधा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "डाउनलोड आणि इन्स्टॉल करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "एआय डाउनलोड करत आहे…",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "विस्तार",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "प्रायोगिक",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "आवडते",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पसंतीचे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "आवडते",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "समजलं.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "एआय कसे काम करतात",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "निवडलेली आवृत्ती स्थापित करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "स्थापित केले",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अवैध एआय कॅटलॉग प्रतिसाद",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ API संदर्भ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "जसे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "आवडले",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "एआय लायब्ररी लोड होत आहे…",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सर्वाधिक डाउनलोड केलेले",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सर्वाधिक आवडले",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नवीनतम",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "या फिल्टरशी जुळणारे कोणतेही एआय नाहीत.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "या गेम आवृत्तीसाठी प्रमाणित नाही",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ओपन एआय लायब्ररी",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "एआय पृष्ठ उघडा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सुसंगतता तपासण्या यशस्वी झाल्या.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अलीकडेच अद्यतनित केले",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "घाई",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "शोध",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तुमचा एआय शेअर करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      }
+    ]
+  },
+  "response_sha256": "e051e17f54d3a09efa3799284fb5e852a0d28c6b5b234626a2849eff9d621e3a"
+}

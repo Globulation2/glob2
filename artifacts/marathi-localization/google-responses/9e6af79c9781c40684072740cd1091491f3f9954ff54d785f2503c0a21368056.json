@@ -1,0 +1,418 @@
+{
+  "request": {
+    "project": "bradley-personal-20261027",
+    "model": "general/nmt",
+    "payload": {
+      "sourceLanguageCode": "en",
+      "targetLanguageCode": "mr",
+      "mimeType": "text/plain",
+      "contents": [
+        "Resolved by disabling",
+        "Resource",
+        "Resource growth",
+        "Resource placement permissions",
+        "Resources",
+        "Restart same setup",
+        "Restore",
+        "Restore device copy",
+        "Restore family",
+        "Restore game settings",
+        "Restore skin",
+        "Restore this revision",
+        "Restore this version as the current draft? The current version stays in history.",
+        "Restoring content removes its moderation restriction; each library’s publication rules still apply.",
+        "Restrictions and deletion require a lower-role account.",
+        "Result",
+        "Reteaming names team ZXQPH0QXZ of ZXQPH1QXZ.",
+        "Retry",
+        "Retry 3D canvas",
+        "Retry image",
+        "Retry loading skins",
+        "Retry loading studio",
+        "Retry preview",
+        "Retry the same request",
+        "Retry validation",
+        "Retrying",
+        "Return reserved credit",
+        "Return to final set",
+        "Returning the reservation marks this generation failed. Inspect its details and confirm delivery cannot be recovered first.",
+        "Revenue and costs",
+        "Review account changes to resume saving",
+        "Review operations",
+        "Review reports",
+        "Review set",
+        "Revise generated music in Music Studio.",
+        "Revise this version",
+        "Revision restored to your saved draft.",
+        "Revision ZXQPH0QXZ",
+        "Revision ZXQPH0QXZ checks: ZXQPH1QXZ",
+        "Revision ZXQPH0QXZ · seed ZXQPH1QXZ · ZXQPH2QXZ seconds",
+        "Revision ZXQPH0QXZ · tick ZXQPH1QXZ · live",
+        "Role",
+        "Room",
+        "Room invite",
+        "Room match",
+        "Room matches go back to their room instead.",
+        "Room to breathe",
+        "Rooms",
+        "Rotate",
+        "Rotation ",
+        "Run checks",
+        "Run checks & preview",
+        "Run checks to create a preview.",
+        "Run compatibility checks on the current saved revision first.",
+        "Run identifier already used.",
+        "Running",
+        "Runtime diagnostics (ZXQPH0QXZ)",
+        "Sand",
+        "Save",
+        "Save and run checks on the current revision before publishing.",
+        "Save changes first. Publishing creates a pinned release of the saved package. The engine checks it before people can download it. Private releases are visible only to you; unlisted releases can be opened with their link.",
+        "Save details",
+        "Save draft",
+        "Save photo",
+        "Save published details",
+        "Save your changes before importing or uploading artwork. Export uses the saved draft.",
+        "Save your changes before publishing.",
+        "Save your draft before leaving for checkout. Device storage is unavailable.",
+        "Save your manual building edits in Edit before generating, restoring a version, or undoing.",
+        "Save your manual edits before asking AI to revise the building.",
+        "Save your manual edits before asking AI to revise the set.",
+        "Save your manual terrain edits in Edit before generating, restoring a version, or undoing.",
+        "Saved",
+        "Saved draft history",
+        "Saved draft · validation remains version-specific.",
+        "Saving account changes…",
+        "Scale",
+        "Scene and resource gallery",
+        "Search",
+        "Search AIs"
+      ]
+    }
+  },
+  "response": {
+    "translations": [
+      {
+        "translatedText": "अक्षम करून निराकरण केले.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "संसाधन",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "संसाधन वाढ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "संसाधन ठेवण्याची परवानगी",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "संसाधने",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तोच सेटअप पुन्हा सुरू करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पुनर्संचयित करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "डिव्हाइस प्रत पुनर्संचयित करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कुटुंब पुनर्संचयित करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "गेम सेटिंग्ज पूर्ववत करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "त्वचा पुनर्संचयित करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ही आवृत्ती पुनर्संचयित करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ही आवृत्ती चालू मसुदा म्हणून पुनर्संचयित करायची का? चालू आवृत्ती इतिहासातच राहते.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सामग्री पुनर्संचयित केल्याने त्यावरील नियंत्रणाचे निर्बंध हटतात; प्रत्येक ग्रंथालयाचे प्रकाशन नियम मात्र लागू राहतील.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "निर्बंध आणि हटवण्यासाठी कमी भूमिकेच्या खात्याची आवश्यकता असते.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "निकाल",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH1QXZ च्या संघाचे नाव बदलून ZXQPH0QXZ असे ठेवण्यात आले आहे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पुन्हा प्रयत्न करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "३डी कॅनव्हास पुन्हा प्रयत्न करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "प्रतिमा पुन्हा प्रयत्न करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "स्किन्स लोड करण्याचा पुन्हा प्रयत्न करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "स्टुडिओ पुन्हा लोड करण्याचा प्रयत्न करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पूर्वावलोकन पुन्हा प्रयत्न करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तीच विनंती पुन्हा करून पहा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "प्रमाणीकरण पुन्हा प्रयत्न करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पुन्हा प्रयत्न करत आहे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "राखीव क्रेडिट परत करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अंतिम सेटवर परत जा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "या पिढीतील आरक्षित खुणा परत मिळवण्यात अपयश आले आहे. कृपया त्याचा तपशील तपासा आणि प्रथम खात्री करा की वितरण परत मिळवता येणार नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "महसूल आणि खर्च",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सेव्ह करणे पुन्हा सुरू करण्यासाठी खात्यातील बदलांचे पुनरावलोकन करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कार्यप्रणालीचे पुनरावलोकन करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पुनरावलोकन अहवाल",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पुनरावलोकन संच",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "म्युझिक स्टुडिओमध्ये तयार केलेल्या संगीतामध्ये सुधारणा करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "या आवृत्तीत सुधारणा करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तुमच्या जतन केलेल्या मसुद्यामध्ये सुधारणा पुनर्संचयित केली आहे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "आवृत्ती ZXQPH0QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "आवृत्ती ZXQPH0QXZ तपासते: ZXQPH1QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "आवृत्ती ZXQPH0QXZ · सीड ZXQPH1QXZ · ZXQPH2QXZ सेकंद",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "आवृत्ती ZXQPH0QXZ · टिक ZXQPH1QXZ · लाइव्ह",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "भूमिका",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "खोली",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "खोलीचे आमंत्रण",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "खोली जुळणी",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "रूममधील सामने त्याऐवजी त्यांच्या खोलीत परत जातात.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "श्वास घेण्यासाठी जागा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "खोल्या",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "फिरवा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "रोटेशन",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तपासणी चालवा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तपासणी चालवा आणि पूर्वावलोकन करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पूर्वावलोकन तयार करण्यासाठी तपासण्या चालवा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सर्वप्रथम सध्याच्या जतन केलेल्या आवृत्तीवर सुसंगतता तपासणी करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "रन आयडेंटिफायर आधीच वापरला गेला आहे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "धावणे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "रनटाइम डायग्नोस्टिक्स (ZXQPH0QXZ)",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "वाळू",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "जतन करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "प्रकाशित करण्यापूर्वी सध्याची आवृत्ती जतन करा आणि त्यावर तपासण्या करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "प्रथम बदल जतन करा. प्रकाशित केल्यावर जतन केलेल्या पॅकेजची एक पिन केलेली आवृत्ती तयार होते. लोक ते डाउनलोड करू शकण्यापूर्वी इंजिन त्याची तपासणी करते. खाजगी आवृत्त्या फक्त तुम्हालाच दिसतात; सूचीत नसलेल्या आवृत्त्या त्यांच्या लिंकद्वारे उघडता येतात.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तपशील जतन करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "मसुदा जतन करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "फोटो जतन करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "प्रकाशित तपशील जतन करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "आर्टवर्क आयात किंवा अपलोड करण्यापूर्वी तुमचे बदल जतन करा. निर्यातीसाठी जतन केलेला मसुदा वापरला जातो.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "प्रकाशित करण्यापूर्वी केलेले बदल जतन करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "चेकआउटला जाण्यापूर्वी तुमचा मसुदा जतन करा. डिव्हाइसवर स्टोरेज उपलब्ध नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "जनरेट करण्यापूर्वी, व्हर्जन रिस्टोअर करण्यापूर्वी किंवा अनडू करण्यापूर्वी, तुमचे मॅन्युअल बिल्डिंग एडिट्स एडिटमध्ये सेव्ह करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "एआयला इमारत सुधारण्यास सांगण्यापूर्वी, तुम्ही केलेले मॅन्युअल बदल सेव्ह करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "एआयला संच सुधारण्यास सांगण्यापूर्वी, तुम्ही केलेले मॅन्युअल बदल जतन करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "जनरेट करण्यापूर्वी, व्हर्जन रिस्टोअर करण्यापूर्वी किंवा अनडू करण्यापूर्वी, तुमचे मॅन्युअल टेरेन एडिट्स एडिटमध्ये सेव्ह करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "जतन केले",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "जतन केलेला मसुदा इतिहास",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "जतन केलेला मसुदा · पडताळणी आवृत्तीनुसारच राहते.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "बचत खात्यातील बदल…",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "स्केल",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "दृश्य आणि संसाधन गॅलरी",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "शोध",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "एआय शोधा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      }
+    ]
+  },
+  "response_sha256": "40bf508f2f71a63f1293dc08882945288c5d5359fc818602ebb5801dd3cba527"
+}

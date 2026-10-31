@@ -1,0 +1,341 @@
+{
+  "reviewer": "/root/draft_tool",
+  "role": "independent online semantic reviewer",
+  "source_sha256": "0ac44b4cdfb03e688983d6e3fb1e484cca57589665bff19c5c65388e649b292a",
+  "batch_target_sha256": "30b041bccf2571ae98a5071f78d455b58b68edd299eb3de29db1186756888028",
+  "catalog_sha256": {
+    "native": "683bcc1e1680e6cb9e2605ef9be42724a76d3e7b1f2868462e24ef50d1423642",
+    "online": "1ba40d342498f5e7704a63e5d175bd9e8a0ede31e3ca2ce88e8cb1fbc0ba68a6"
+  },
+  "reviewed_keys": [
+    "online:{slot0} credit · {slot1}  {slot2}",
+    "online:{slot0} credit — {slot1}",
+    "online:{slot0} credits available",
+    "online:{slot0} credits available · {slot1} reserved",
+    "online:{slot0} credits reserved for work in progress.",
+    "online:{slot0} credits · {slot1}  {slot2}",
+    "online:{slot0} credits — {slot1}",
+    "online:{slot0} day",
+    "online:{slot0} days",
+    "online:{slot0} likes · {slot1} downloads",
+    "online:{slot0} likes · {slot1} downloads · {slot2}",
+    "online:{slot0} live · {slot1} in the last 24 hours",
+    "online:{slot0} loop",
+    "online:{slot0} open reports · {slot1} uncertain requests · {slot2} failed engine jobs",
+    "online:{slot0} or inspect the reported library item’s validation.",
+    "online:{slot0} passed · {slot1}  {slot2}{slot3}",
+    "online:{slot0} properties",
+    "online:{slot0} reserved. Credits belong to this studio.",
+    "online:{slot0} selected · up to 10 sets, 64 MiB",
+    "online:{slot0} teams",
+    "online:{slot0} terrain · {slot1} resources · revision {slot2}",
+    "online:{slot0} terrain · {slot1} resources · {slot2}",
+    "online:{slot0} terrains · {slot1} resources · revision {slot2}",
+    "online:{slot0} terrains · {slot1} resources · {slot2}",
+    "online:{slot0} tiles",
+    "online:{slot0} to create and save drafts.",
+    "online:{slot0} to publish.",
+    "online:{slot0} to see and share your maps.",
+    "online:{slot0} to see your generators.",
+    "online:{slot0} to see your library.",
+    "online:{slot0} to share an AI.",
+    "online:{slot0} to share maps.",
+    "online:{slot0} today · {slot1} in 7 days · {slot2} in 30 days",
+    "online:{slot0} unique accounts · previous period {slot1}",
+    "online:{slot0} with a moderator account.",
+    "online:{slot0} within {slot1} minutes",
+    "online:{slot0} {slot1} · AI composition is disclosed.",
+    "online:{slot0} · Continue editing",
+    "online:{slot0} · Custom artwork and gameplay properties",
+    "online:{slot0} · based on revision {slot1}",
+    "online:{slot0} · last seen {slot1}{slot2}",
+    "online:{slot0} · per million tokens: {slot1} input / {slot2} cached / {slot3} output credits.",
+    "online:{slot0} · playing since {slot1}{slot2}",
+    "online:{slot0} · revision {slot1}",
+    "online:{slot0} · revision {slot1} · {slot2}",
+    "online:{slot0} · saved generation preview",
+    "online:{slot0} · seed {slot1} · {slot2}",
+    "online:{slot0} · seed {slot1} · {slot2}{slot3}",
+    "online:{slot0} · {slot1}",
+    "online:{slot0} · {slot1} MiB stored",
+    "online:{slot0} · {slot1} likes",
+    "online:{slot0} · {slot1} second",
+    "online:{slot0} · {slot1} seconds",
+    "online:{slot0} · {slot1} since {slot2}",
+    "online:{slot0} · {slot1} {slot2}",
+    "online:{slot0} · {slot1} · last renewed {slot2}{slot3}",
+    "online:{slot0} · {slot1} · {slot2}",
+    "online:{slot0} · {slot1} · {slot2} downloads",
+    "online:{slot0} · {slot1} · {slot2} × {slot3}",
+    "online:{slot0} · {slot1} · {slot2}{slot3}",
+    "online:{slot0} · {slot1}{slot2}",
+    "online:{slot0} · {slot1}×{slot2}",
+    "online:{slot0} × {slot1}  {slot2} UNCHARTED TERRITORY",
+    "online:{slot0} × {slot1} · {slot2} player",
+    "online:{slot0} × {slot1} · {slot2} player · Private until published",
+    "online:{slot0} × {slot1} · {slot2} players",
+    "online:{slot0} × {slot1} · {slot2} players · Private until published",
+    "online:{slot0} ↗",
+    "online:{slot0}%",
+    "online:{slot0}/32",
+    "online:{slot0}: collected {slot1} · refunded {slot2} · collected less refunds {slot3}",
+    "online:{slot0}: default {slot1}{slot2}",
+    "online:{slot0}: since {slot1}{slot2}",
+    "online:{slot0}: starts at {slot1}, holds {slot2}; {slot3}",
+    "online:{slot0}: {slot1}",
+    "online:{slot0}: {slot1} · {slot2}",
+    "online:{slot0}: {slot1} · {slot2} credit",
+    "online:{slot0}: {slot1} · {slot2} credits",
+    "online:{slot0}by {slot1} · ♥ {slot2}",
+    "online:{slot0}{slot1} · ♥ {slot2}{slot3}",
+    "online:{slot0}{slot1}% chat",
+    "online:{slot0}°",
+    "online:{slot0}×{slot1}",
+    "online:{slot0}–{slot1}",
+    "online:{value0} (no preview)",
+    "online:{value0} Map credits",
+    "online:{value0} Music credits",
+    "online:{value0} Stripe minor units",
+    "online:{value0} artwork",
+    "online:{value0} conversation",
+    "online:{value0} cover",
+    "online:{value0} credits",
+    "online:{value0} hue",
+    "online:{value0} rendered preview",
+    "online:{value0} saturation and brightness",
+    "online:{value0} swatches",
+    "online:{value0} terrain illustration",
+    "online:{value0} waveform",
+    "online:{value0} {value1} · {value2} likes",
+    "online:{value0}, frame {value1}"
+  ],
+  "findings": [
+    {
+      "key": "online:{slot0} credit · {slot1}  {slot2}",
+      "before": {
+        "one": "{slot0} क्रेडिट · {slot1} {slot2}",
+        "other": "{slot0} श्रेय · {slot1} {slot2}"
+      },
+      "after": {
+        "one": "{slot0} क्रेडिट · {slot1} {slot2}",
+        "other": "{slot0} क्रेडिट्स · {slot1} {slot2}"
+      },
+      "reason": "Product credit quantity, not attribution श्रेय.",
+      "severity": "major",
+      "state": "proposed"
+    },
+    {
+      "key": "online:{slot0} credits · {slot1}  {slot2}",
+      "before": "{slot0} श्रेय · {slot1} {slot2}",
+      "after": "{slot0} क्रेडिट्स · {slot1} {slot2}",
+      "reason": "Product credit quantity, not attribution.",
+      "severity": "major",
+      "state": "proposed"
+    },
+    {
+      "key": "online:{slot0} live · {slot1} in the last 24 hours",
+      "before": "{slot0} थेट प्रक्षेपण · गेल्या २४ तासांत {slot1}",
+      "after": "{slot0} सध्या चालू · मागील २४ तासांत {slot1}",
+      "reason": "Live jobs/connections count, not live broadcast.",
+      "severity": "major",
+      "state": "proposed"
+    },
+    {
+      "key": "online:{slot0} reserved. Credits belong to this studio.",
+      "before": "{slot0} राखीव. श्रेय या स्टुडिओला जाते.",
+      "after": "{slot0} राखीव. हे क्रेडिट्स याच स्टुडिओसाठी आहेत.",
+      "reason": "Credits are studio-specific purchased usage units, not artistic attribution.",
+      "severity": "major",
+      "state": "proposed"
+    },
+    {
+      "key": "online:{slot0} within {slot1} minutes",
+      "before": "",
+      "after": "{slot1} मिनिटांत {slot0}",
+      "reason": "Fill rejected blank while preserving both values.",
+      "severity": "major",
+      "state": "proposed"
+    },
+    {
+      "key": "online:{slot0} {slot1} · AI composition is disclosed.",
+      "before": "{slot0} {slot1} · एआयची रचना जाहीर केली आहे.",
+      "after": "{slot0} {slot1} · रचना एआयने तयार केल्याचे स्पष्ट केले आहे.",
+      "reason": "Disclosure acknowledges AI authorship, not exposing the composition itself.",
+      "severity": "minor",
+      "state": "proposed"
+    },
+    {
+      "key": "online:{slot0} · saved generation preview",
+      "before": "{slot0} · जतन केलेल्या पिढीचे पूर्वावलोकन",
+      "after": "{slot0} · जतन केलेल्या निर्मितीचे पूर्वावलोकन",
+      "reason": "Artifact generation, not biological generation.",
+      "severity": "major",
+      "state": "proposed"
+    },
+    {
+      "key": "online:{slot0} · {slot1} likes",
+      "before": "{slot0} · {slot1} ला आवडले",
+      "after": "{slot0} · {slot1} पसंती",
+      "reason": "Count of approvals, not a numeric person liking something.",
+      "severity": "minor",
+      "state": "proposed"
+    },
+    {
+      "key": "online:{slot0} · {slot1} second",
+      "before": {
+        "one": "{slot0} · {slot1} दुसरा",
+        "other": "{slot0} · {slot1} सेकंद"
+      },
+      "after": {
+        "one": "{slot0} · {slot1} सेकंद",
+        "other": "{slot0} · {slot1} सेकंद"
+      },
+      "reason": "Second is time unit, not ordinal दुसरा.",
+      "severity": "major",
+      "state": "proposed"
+    },
+    {
+      "key": "online:{slot0} × {slot1} · {slot2} player",
+      "before": {
+        "one": "{slot0} × {slot1} · {slot2} प्लेअर",
+        "other": "{slot0} × {slot1} · {slot2} खेळाडू"
+      },
+      "after": {
+        "one": "{slot0} × {slot1} · {slot2} खेळाडू",
+        "other": "{slot0} × {slot1} · {slot2} खेळाडू"
+      },
+      "reason": "Use same player noun for Marathi one/other categories.",
+      "severity": "minor",
+      "state": "proposed"
+    },
+    {
+      "key": "online:{slot0} × {slot1} · {slot2} player · Private until published",
+      "before": {
+        "one": "{slot0} × {slot1} · {slot2} प्लेअर · प्रकाशित होईपर्यंत खाजगी",
+        "other": "{slot0} × {slot1} · {slot2} खेळाडू · प्रकाशित होईपर्यंत खाजगी"
+      },
+      "after": {
+        "one": "{slot0} × {slot1} · {slot2} खेळाडू · प्रकाशित होईपर्यंत खाजगी",
+        "other": "{slot0} × {slot1} · {slot2} खेळाडू · प्रकाशित होईपर्यंत खाजगी"
+      },
+      "reason": "Consistent player noun in both plural forms.",
+      "severity": "minor",
+      "state": "proposed"
+    },
+    {
+      "key": "online:{slot0}: collected {slot1} · refunded {slot2} · collected less refunds {slot3}",
+      "before": "{slot0}: गोळा केले {slot1} · परत केले {slot2} · परत केलेल्या रकमेपेक्षा कमी गोळा केले {slot3}",
+      "after": "{slot0}: जमा {slot1} · परतावा {slot2} · परतावे वजा केल्यावर जमा {slot3}",
+      "reason": "Less means subtraction yielding net receipts, not less than refunds comparison.",
+      "severity": "major",
+      "state": "proposed"
+    },
+    {
+      "key": "online:{slot0}: starts at {slot1}, holds {slot2}; {slot3}",
+      "before": "{slot0}: {slot1} पासून सुरू होते, {slot2}; {slot3} कायम ठेवते",
+      "after": "{slot0}: सुरुवातीला {slot1}, कमाल क्षमता {slot2}; {slot3}",
+      "reason": "Stock initial value and capacity, not statement retaining suffix.",
+      "severity": "minor",
+      "state": "proposed"
+    },
+    {
+      "key": "online:{slot0}by {slot1} · ♥ {slot2}",
+      "before": "{slot0}by {slot1} · ♥ {slot2}",
+      "after": "{slot0}लेखक: {slot1} · ♥ {slot2}",
+      "reason": "Translate actual English by instead of accepting untranslated prose.",
+      "severity": "minor",
+      "state": "proposed"
+    },
+    {
+      "key": "online:{value0} Map credits",
+      "before": "{value0} नकाशा श्रेय",
+      "after": "{value0} नकाशा क्रेडिट्स",
+      "reason": "Wallet amount, not source attribution.",
+      "severity": "major",
+      "state": "proposed"
+    },
+    {
+      "key": "online:{value0} Music credits",
+      "before": "{value0} संगीत श्रेय",
+      "after": "{value0} संगीत क्रेडिट्स",
+      "reason": "Wallet amount, not source attribution.",
+      "severity": "major",
+      "state": "proposed"
+    },
+    {
+      "key": "online:{value0} Stripe minor units",
+      "before": "{value0} पट्टेदार लहान एकके",
+      "after": "{value0} Stripe लहान चलन एकके",
+      "reason": "Stripe is payment-provider proper name, not striped pattern.",
+      "severity": "major",
+      "state": "proposed"
+    }
+  ],
+  "accepted_english": [
+    {
+      "key": "online:{slot0} · {slot1}",
+      "reason": "Two interpolated metadata fields separated by a middle dot contain no translatable prose."
+    },
+    {
+      "key": "online:{slot0} · {slot1} {slot2}",
+      "reason": "Interpolated metadata fields with authored space and dot separators contain no prose."
+    },
+    {
+      "key": "online:{slot0} · {slot1} · {slot2}",
+      "reason": "Three interpolated metadata fields with dot separators contain no prose."
+    },
+    {
+      "key": "online:{slot0} · {slot1} · {slot2} × {slot3}",
+      "reason": "Interpolated fields and dimension multiplication format contain no prose."
+    },
+    {
+      "key": "online:{slot0} · {slot1} · {slot2}{slot3}",
+      "reason": "Interpolated metadata values and adjoining suffix use authored separators."
+    },
+    {
+      "key": "online:{slot0} · {slot1}{slot2}",
+      "reason": "Interpolated metadata fields and suffix contain no prose."
+    },
+    {
+      "key": "online:{slot0} · {slot1}×{slot2}",
+      "reason": "Interpolated name and dimensions contain no prose."
+    },
+    {
+      "key": "online:{slot0} ↗",
+      "reason": "Interpolated link label plus external-link arrow remain unchanged."
+    },
+    {
+      "key": "online:{slot0}%",
+      "reason": "Numeric percentage format contains no prose."
+    },
+    {
+      "key": "online:{slot0}/32",
+      "reason": "Numeric capacity ratio with fixed maximum32 contains no prose."
+    },
+    {
+      "key": "online:{slot0}: {slot1}",
+      "reason": "Interpolated field name/value format contains no prose."
+    },
+    {
+      "key": "online:{slot0}: {slot1} · {slot2}",
+      "reason": "Interpolated field name and metadata values contain no prose."
+    },
+    {
+      "key": "online:{slot0}{slot1} · ♥ {slot2}{slot3}",
+      "reason": "Interpolated content and like count use authored heart notation; no prose."
+    },
+    {
+      "key": "online:{slot0}°",
+      "reason": "Numeric angle and degree sign remain unchanged."
+    },
+    {
+      "key": "online:{slot0}×{slot1}",
+      "reason": "Dimension multiplication format contains no prose."
+    },
+    {
+      "key": "online:{slot0}–{slot1}",
+      "reason": "Numeric range uses authored en dash; no prose."
+    }
+  ],
+  "certification": "Agent-reviewed; not native-human-certified; editorial and final recheck pending"
+}

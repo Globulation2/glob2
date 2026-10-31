@@ -1,0 +1,506 @@
+{
+  "batch": "native-general-010",
+  "target_sha256": "dc0b2a9e76645f437a4fe2e1d9cb34b934e0ac4ac02b18f6d3734ab52d13aa08",
+  "rows": [
+    {
+      "id": "native:[Extra riffles]",
+      "source": "Extra riffles",
+      "target": "अतिरिक्त उथळ खळखळते प्रवाह"
+    },
+    {
+      "id": "native:[Moraine hummocks]",
+      "source": "Moraine hummocks",
+      "target": "मोरेन टेकड्या"
+    },
+    {
+      "id": "native:[Drumlin field]",
+      "source": "Drumlin field",
+      "target": "लांबट हिमानी टेकड्यांचा प्रदेश"
+    },
+    {
+      "id": "native:[Drumlin spacing]",
+      "source": "Drumlin spacing",
+      "target": "ड्रमलिन अंतर"
+    },
+    {
+      "id": "native:[Drumlin length]",
+      "source": "Drumlin length",
+      "target": "ड्रमलिनची लांबी"
+    },
+    {
+      "id": "native:[Water gap]",
+      "source": "Water gap",
+      "target": "पाण्याची दरी"
+    },
+    {
+      "id": "native:[Esker loops]",
+      "source": "Esker loops",
+      "target": "एस्कर लूप्स"
+    },
+    {
+      "id": "native:[The eskers could not join every drumlin; use a smaller water gap or a bigger map.]",
+      "source": "The eskers could not join every drumlin; use a smaller water gap or a bigger map.",
+      "target": "एस्कर प्रत्येक ड्रमलिनला जोडू शकत नव्हते; लहान जलमार्ग किंवा मोठा नकाशा वापरा."
+    },
+    {
+      "id": "native:[Continents]",
+      "source": "Continents",
+      "target": "खंड"
+    },
+    {
+      "id": "native:[Continent]",
+      "source": "Continent",
+      "target": "खंड"
+    },
+    {
+      "id": "native:[North America]",
+      "source": "North America",
+      "target": "उत्तर अमेरिका"
+    },
+    {
+      "id": "native:[South America]",
+      "source": "South America",
+      "target": "दक्षिण अमेरिका"
+    },
+    {
+      "id": "native:[Africa]",
+      "source": "Africa",
+      "target": "आफ्रिका"
+    },
+    {
+      "id": "native:[Europe]",
+      "source": "Europe",
+      "target": "युरोप"
+    },
+    {
+      "id": "native:[Asia]",
+      "source": "Asia",
+      "target": "आशिया"
+    },
+    {
+      "id": "native:[Oceania]",
+      "source": "Oceania",
+      "target": "ओशेनिया"
+    },
+    {
+      "id": "native:[Orientation]",
+      "source": "Orientation",
+      "target": "अभिमुखता"
+    },
+    {
+      "id": "native:[Turn to fit]",
+      "source": "Turn to fit",
+      "target": "बसवण्यासाठी फिरवा"
+    },
+    {
+      "id": "native:[Upright]",
+      "source": "Upright",
+      "target": "सरळ"
+    },
+    {
+      "id": "native:[Islets]",
+      "source": "Islets",
+      "target": "लहान बेटे"
+    },
+    {
+      "id": "native:[Oases]",
+      "source": "Oases",
+      "target": "मरूद्याने"
+    },
+    {
+      "id": "native:[The world atlas has no such continent.]",
+      "source": "The world atlas has no such continent.",
+      "target": "जागतिक नकाशासंग्रहात असा कोणताही खंड नाही."
+    },
+    {
+      "id": "native:[Savannah]",
+      "source": "Savannah",
+      "target": "सवाना"
+    },
+    {
+      "id": "native:[Watering holes]",
+      "source": "Watering holes",
+      "target": "पाणवठे"
+    },
+    {
+      "id": "native:[Dry patches]",
+      "source": "Dry patches",
+      "target": "कोरडे ठिपके"
+    },
+    {
+      "id": "native:[Sparse]",
+      "source": "Sparse",
+      "target": "विरळ"
+    },
+    {
+      "id": "native:[Normal]",
+      "source": "Normal",
+      "target": "सामान्य"
+    },
+    {
+      "id": "native:[Many]",
+      "source": "Many",
+      "target": "अनेक"
+    },
+    {
+      "id": "native:[Rice terraces]",
+      "source": "Rice terraces",
+      "target": "भाताच्या पायऱ्या"
+    },
+    {
+      "id": "native:[Unoccupied hills]",
+      "source": "Unoccupied hills",
+      "target": "रिकाम्या टेकड्या"
+    },
+    {
+      "id": "native:[Hill radius]",
+      "source": "Hill radius",
+      "target": "टेकडीची त्रिज्या"
+    },
+    {
+      "id": "native:[Contour band width]",
+      "source": "Contour band width",
+      "target": "कॉन्टूर बँडची रुंदी"
+    },
+    {
+      "id": "native:[Stairs per hill]",
+      "source": "Stairs per hill",
+      "target": "प्रत्येक टेकडीवरील पायऱ्या"
+    },
+    {
+      "id": "native:[Hills]",
+      "source": "Hills",
+      "target": "टेकड्या"
+    },
+    {
+      "id": "native:[Hillsides]",
+      "source": "Hillsides",
+      "target": "टेकड्यांचे उतार"
+    },
+    {
+      "id": "native:[Terraces per slope]",
+      "source": "Terraces per slope",
+      "target": "प्रत्येक उतारावरील पायऱ्या"
+    },
+    {
+      "id": "native:[Waviness]",
+      "source": "Waviness",
+      "target": "लाटांसारखे वळण"
+    },
+    {
+      "id": "native:[Stair spacing]",
+      "source": "Stair spacing",
+      "target": "पायऱ्यांमधील अंतर"
+    },
+    {
+      "id": "native:[Locust]",
+      "source": "Locust",
+      "target": "टोळ"
+    },
+    {
+      "id": "native:[Plantations]",
+      "source": "Plantations",
+      "target": "वृक्षारोपण"
+    },
+    {
+      "id": "native:[Plot size]",
+      "source": "Plot size",
+      "target": "भूखंडाचा आकार"
+    },
+    {
+      "id": "native:[Farm width]",
+      "source": "Farm width",
+      "target": "शेताची रुंदी"
+    },
+    {
+      "id": "native:[Outpost inns]",
+      "source": "Outpost inns",
+      "target": "दूरच्या ठाण्यांवरील खानावळी"
+    },
+    {
+      "id": "native:[Sierpiński Gardens]",
+      "source": "Sierpiński Gardens",
+      "target": "सिएर्पिन्स्की उद्याने"
+    },
+    {
+      "id": "native:[Maximum nesting]",
+      "source": "Maximum nesting",
+      "target": "कमाल अंतर्गत पातळ्या"
+    },
+    {
+      "id": "native:[Minimum terminal district side]",
+      "source": "Minimum terminal district side",
+      "target": "शेवटच्या विभागाची किमान बाजू"
+    },
+    {
+      "id": "native:[Major crossing pairs]",
+      "source": "Major crossing pairs",
+      "target": "प्रमुख ओलांडमार्गांच्या जोड्या"
+    },
+    {
+      "id": "native:[Maximum fold depth]",
+      "source": "Maximum fold depth",
+      "target": "कमाल घडीची खोली"
+    },
+    {
+      "id": "native:[Minimum land spacing]",
+      "source": "Minimum land spacing",
+      "target": "किमान जमिनीचे अंतर"
+    },
+    {
+      "id": "native:[Optional local crossings per parent]",
+      "source": "Optional local crossings per parent",
+      "target": "प्रत्येक मोठ्या विभागातील ऐच्छिक स्थानिक ओलांडमार्ग"
+    },
+    {
+      "id": "native:[Lava shield]",
+      "source": "Lava shield",
+      "target": "लावा शील्ड"
+    },
+    {
+      "id": "native:[Lava tongues]",
+      "source": "Lava tongues",
+      "target": "लाव्हाचे लांब पट्टे"
+    },
+    {
+      "id": "native:[Long tongues]",
+      "source": "Long tongues",
+      "target": "लांब पट्टे"
+    },
+    {
+      "id": "native:[Crater rim width]",
+      "source": "Crater rim width",
+      "target": "विवराच्या कडेची रुंदी"
+    },
+    {
+      "id": "native:[Honeycomb isle]",
+      "source": "Honeycomb isle",
+      "target": "पोळ्याच्या रचनेचे बेट"
+    },
+    {
+      "id": "native:[Blocks per colony]",
+      "source": "Blocks per colony",
+      "target": "प्रत्येक वसाहतीमधील ब्लॉक्स"
+    },
+    {
+      "id": "native:[Rubble]",
+      "source": "Rubble",
+      "target": "ढिगारा"
+    },
+    {
+      "id": "native:[Outline gaps]",
+      "source": "Outline gaps",
+      "target": "बाह्यरेषेतील फटी"
+    },
+    {
+      "id": "native:[Craters per colony]",
+      "source": "Craters per colony",
+      "target": "प्रत्येक वसाहतीतील विवरे"
+    },
+    {
+      "id": "native:[Wheat fields]",
+      "source": "Wheat fields",
+      "target": "गव्हाची शेतं"
+    },
+    {
+      "id": "native:[Bridges]",
+      "source": "Bridges",
+      "target": "पूल"
+    },
+    {
+      "id": "native:[Karst towers]",
+      "source": "Karst towers",
+      "target": "कार्स्ट टॉवर्स"
+    },
+    {
+      "id": "native:[Tower spacing]",
+      "source": "Tower spacing",
+      "target": "टॉवरमधील अंतर"
+    },
+    {
+      "id": "native:[Tower density]",
+      "source": "Tower density",
+      "target": "टॉवर घनता"
+    },
+    {
+      "id": "native:[Paddy depth]",
+      "source": "Paddy depth",
+      "target": "भातशेतीतील पाण्याची खोली"
+    },
+    {
+      "id": "native:[Home design]",
+      "source": "Home design",
+      "target": "तळाची रचना"
+    },
+    {
+      "id": "native:[Horseshoe]",
+      "source": "Horseshoe",
+      "target": "घोड्याचा नाल"
+    },
+    {
+      "id": "native:[Twin gates]",
+      "source": "Twin gates",
+      "target": "दुहेरी दरवाजे"
+    },
+    {
+      "id": "native:[Three gates]",
+      "source": "Three gates",
+      "target": "तीन दरवाजे"
+    },
+    {
+      "id": "native:[Four gates]",
+      "source": "Four gates",
+      "target": "चार दरवाजे"
+    },
+    {
+      "id": "native:[Flooded terraces]",
+      "source": "Flooded terraces",
+      "target": "पाण्याने भरलेल्या पायऱ्या"
+    },
+    {
+      "id": "native:[Sinkholes]",
+      "source": "Sinkholes",
+      "target": "सिंकहोल"
+    },
+    {
+      "id": "native:[Bajada]",
+      "source": "Bajada",
+      "target": "बाजाडा"
+    },
+    {
+      "id": "native:[Range spacing]",
+      "source": "Range spacing",
+      "target": "डोंगररांगांमधील अंतर"
+    },
+    {
+      "id": "native:[Ridge width]",
+      "source": "Ridge width",
+      "target": "डोंगररांगेची रुंदी"
+    },
+    {
+      "id": "native:[Passes]",
+      "source": "Passes",
+      "target": "खिंडी"
+    },
+    {
+      "id": "native:[Fans per range]",
+      "source": "Fans per range",
+      "target": "प्रत्येक डोंगररांगेतील पंखाकार प्रदेश"
+    },
+    {
+      "id": "native:[Stream reach]",
+      "source": "Stream reach",
+      "target": "प्रवाहाची लांबी"
+    },
+    {
+      "id": "native:[Playa]",
+      "source": "Playa",
+      "target": "प्लाया"
+    },
+    {
+      "id": "native:[Broad fan]",
+      "source": "Broad fan",
+      "target": "रुंद पंखाकार प्रदेश"
+    },
+    {
+      "id": "native:[Long fan]",
+      "source": "Long fan",
+      "target": "लांब पंखाकार प्रदेश"
+    },
+    {
+      "id": "native:[Twin springs]",
+      "source": "Twin springs",
+      "target": "जोड झरे"
+    },
+    {
+      "id": "native:[The bajadas are too narrow for the homes; use a bigger map, a wider range spacing, narrower ridges or a smaller playa.]",
+      "source": "The bajadas are too narrow for the homes; use a bigger map, a wider range spacing, narrower ridges or a smaller playa.",
+      "target": "तळांसाठी बाजाडा खूप अरुंद आहेत; मोठा नकाशा, डोंगररांगांमध्ये अधिक अंतर, अरुंद डोंगररांगा किंवा लहान प्लाया वापरा."
+    },
+    {
+      "id": "native:[Central Quarry]",
+      "source": "Central Quarry",
+      "target": "मध्यवर्ती खाण"
+    },
+    {
+      "id": "native:[Quarry size]",
+      "source": "Quarry size",
+      "target": "खाणीचा आकार"
+    },
+    {
+      "id": "native:[Sand bars]",
+      "source": "Sand bars",
+      "target": "वाळूचे पट्टे"
+    },
+    {
+      "id": "native:[Woodland]",
+      "source": "Woodland",
+      "target": "वनप्रदेश"
+    },
+    {
+      "id": "native:[Central Quarry needs at least two colonies.]",
+      "source": "Central Quarry needs at least two colonies.",
+      "target": "मध्यवर्ती खाणीला किमान दोन वसाहतींची आवश्यकता आहे."
+    },
+    {
+      "id": "native:[Hidden Oasis]",
+      "source": "Hidden Oasis",
+      "target": "लपलेले मरूद्यान"
+    },
+    {
+      "id": "native:[Pond algae]",
+      "source": "Pond algae",
+      "target": "तलावातील शेवाळ"
+    },
+    {
+      "id": "native:[Starting towers]",
+      "source": "Starting towers",
+      "target": "सुरुवातीचे मनोरे"
+    },
+    {
+      "id": "native:[Starting school]",
+      "source": "Starting school",
+      "target": "सुरुवातीची शाळा"
+    },
+    {
+      "id": "native:[Mesas]",
+      "source": "Mesas",
+      "target": "मेसा"
+    },
+    {
+      "id": "native:[Springs]",
+      "source": "Springs",
+      "target": "झरे"
+    },
+    {
+      "id": "native:[Hidden Oasis needs at least two colonies.]",
+      "source": "Hidden Oasis needs at least two colonies.",
+      "target": "लपलेल्या मरूद्यानाला किमान दोन वसाहती लागतात."
+    },
+    {
+      "id": "native:[Hidden Oasis holds at most eight colonies.]",
+      "source": "Hidden Oasis holds at most eight colonies.",
+      "target": "लपलेल्या मरूद्यानात जास्तीत जास्त आठ वसाहती सामावतात."
+    },
+    {
+      "id": "native:[The pond has no room for that much algae; use a bigger pond.]",
+      "source": "The pond has no room for that much algae; use a bigger pond.",
+      "target": "या तलावात इतक्या शेवाळाला जागा नाही; मोठा तलाव वापरा."
+    },
+    {
+      "id": "native:[Even Ground]",
+      "source": "Even Ground",
+      "target": "समतल जमीन"
+    },
+    {
+      "id": "native:[Balance]",
+      "source": "Balance",
+      "target": "संतुलन"
+    },
+    {
+      "id": "native:[Tight passes]",
+      "source": "Tight passes",
+      "target": "अरुंद खिंडी"
+    }
+  ]
+}

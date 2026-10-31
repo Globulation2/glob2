@@ -1,0 +1,104 @@
+{
+  "id": "native-settings-005",
+  "source_sha256": "0ac44b4cdfb03e688983d6e3fb1e484cca57589665bff19c5c65388e649b292a",
+  "surface": "native",
+  "domain": "settings",
+  "context": "Labels and help describe settings. Prefer short labels and explain their effect plainly.",
+  "entries": [
+    {
+      "id": "native:[settings Error: %0]",
+      "key": "[settings Error: %0]",
+      "source": "Error: %0"
+    },
+    {
+      "id": "native:[settings None]",
+      "key": "[settings None]",
+      "source": "None"
+    },
+    {
+      "id": "native:[settings Starting]",
+      "key": "[settings Starting]",
+      "source": "Starting"
+    },
+    {
+      "id": "native:[settings Browse shared generators]",
+      "key": "[settings Browse shared generators]",
+      "source": "Browse shared generators"
+    },
+    {
+      "id": "native:[settings Apply artwork on the next game or editor load.]",
+      "key": "[settings Apply artwork on the next game or editor load.]",
+      "source": "Apply artwork on the next game or editor load."
+    },
+    {
+      "id": "native:[settings Requires a renderer with texture filtering. Your saved choice is retained.]",
+      "key": "[settings Requires a renderer with texture filtering. Your saved choice is retained.]",
+      "source": "Requires a renderer with texture filtering. Your saved choice is retained."
+    },
+    {
+      "id": "native:[settings Automatically show the torus overview while moving around the map.]",
+      "key": "[settings Automatically show the torus overview while moving around the map.]",
+      "source": "Automatically show the torus overview while moving around the map."
+    },
+    {
+      "id": "native:[settings Requires a renderer with torus support. Your saved choice is retained.]",
+      "key": "[settings Requires a renderer with torus support. Your saved choice is retained.]",
+      "source": "Requires a renderer with torus support. Your saved choice is retained."
+    },
+    {
+      "id": "native:[settings Move and animate units between game ticks.]",
+      "key": "[settings Move and animate units between game ticks.]",
+      "source": "Move and animate units between game ticks."
+    },
+    {
+      "id": "native:[settings Renderer unavailable]",
+      "key": "[settings Renderer unavailable]",
+      "source": "Renderer unavailable"
+    },
+    {
+      "id": "native:[settings Apply at the next completed frame. Your game stays running.]",
+      "key": "[settings Apply at the next completed frame. Your game stays running.]",
+      "source": "Apply at the next completed frame. Your game stays running."
+    },
+    {
+      "id": "native:[settings Active renderer: %0]",
+      "key": "[settings Active renderer: %0]",
+      "source": "Active renderer: %0"
+    },
+    {
+      "id": "native:[settings Changing renderer…]",
+      "key": "[settings Changing renderer…]",
+      "source": "Changing renderer…"
+    },
+    {
+      "id": "native:[settings Menu scroll wheel enabled]",
+      "key": "[settings Menu scroll wheel enabled]",
+      "source": "Menu scroll wheel enabled"
+    },
+    {
+      "id": "native:[settings Controls wheel scrolling in menus. The wheel always zooms the game and editor maps.]",
+      "key": "[settings Controls wheel scrolling in menus. The wheel always zooms the game and editor maps.]",
+      "source": "Controls wheel scrolling in menus. The wheel always zooms the game and editor maps."
+    },
+    {
+      "id": "native:[settings Gesture scrolling]",
+      "key": "[settings Gesture scrolling]",
+      "source": "Gesture scrolling"
+    },
+    {
+      "id": "native:[settings Touch and Mac gesture scrolling. 0 turns an effect off; 50 is the touch default.]",
+      "key": "[settings Touch and Mac gesture scrolling. 0 turns an effect off; 50 is the touch default.]",
+      "source": "Touch and Mac gesture scrolling. 0 turns an effect off; 50 is the touch default."
+    },
+    {
+      "id": "native:[settings How far lists and panels keep scrolling after a touch flick. Mac gestures use system momentum; zero disables their glide.]",
+      "key": "[settings How far lists and panels keep scrolling after a touch flick. Mac gestures use system momentum; zero disables their glide.]",
+      "source": "How far lists and panels keep scrolling after a touch flick. Mac gestures use system momentum; zero disables their glide."
+    },
+    {
+      "id": "native:[settings How much lists and panels stretch past their ends and spring back. Mac gestures use a gentler stretch.]",
+      "key": "[settings How much lists and panels stretch past their ends and spring back. Mac gestures use a gentler stretch.]",
+      "source": "How much lists and panels stretch past their ends and spring back. Mac gestures use a gentler stretch."
+    }
+  ]
+}

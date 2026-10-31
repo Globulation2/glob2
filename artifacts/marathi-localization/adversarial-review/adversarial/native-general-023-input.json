@@ -1,0 +1,510 @@
+{
+  "source_sha256": "0ac44b4cdfb03e688983d6e3fb1e484cca57589665bff19c5c65388e649b292a",
+  "batch_target_sha256": "7cf156415d0e4cd3809b3538172e7f316692e19c084cb332cc77318b1642f927",
+  "catalog_sha256": {
+    "native": "a6d0da95a3cf29e0bcfa904f80043a10fedc3124f7a26e3beebc82e8cdfa4411",
+    "online": "feb4b9a71595724a0995b0cf0f42c94742ef29030b66c9488c77ebc6be7a89db"
+  },
+  "entries": [
+    {
+      "id": "native:[editor discard]",
+      "source": "Don't save",
+      "target": "जतन करू नका"
+    },
+    {
+      "id": "native:[editor share never saved]",
+      "source": "Maps are shared from their saved file. Save this map first, then share it.",
+      "target": "नकाशे त्यांच्या सेव्ह केलेल्या फाईलमधून शेअर केले जातात. आधी हा नकाशा सेव्ह करा, मग शेअर करा."
+    },
+    {
+      "id": "native:[editor share unsaved]",
+      "source": "This map has changes that are not saved yet. Sharing uploads the saved file.",
+      "target": "या नकाशात असे बदल आहेत जे अद्याप जतन केलेले नाहीत. शेअर केल्यावर जतन केलेली फाईल अपलोड होईल."
+    },
+    {
+      "id": "native:[editor save and share]",
+      "source": "Save and share…",
+      "target": "जतन करा आणि शेअर करा…"
+    },
+    {
+      "id": "native:[editor share saved version]",
+      "source": "Share saved version",
+      "target": "जतन केलेली आवृत्ती शेअर करा"
+    },
+    {
+      "id": "native:[editor reroll confirm]",
+      "source": "Give every terrain tile a new random look? Terrain types and gameplay stay the same. This cannot be undone.",
+      "target": "प्रत्येक भूभागाच्या चौकाला नवे यादृच्छिक रूप द्यायचे का? भूभागाचे प्रकार आणि खेळातील वर्तन तसेच राहतील. हे पूर्ववत करता येणार नाही."
+    },
+    {
+      "id": "native:[editor reroll]",
+      "source": "Reroll",
+      "target": "रूप पुन्हा निवडा"
+    },
+    {
+      "id": "native:[editor save needs fertility]",
+      "source": "Saving needs the fertility map, so the save was cancelled. Press OK to try again.",
+      "target": "जतन करण्यासाठी सुपीकतेचा नकाशा लागतो, म्हणून जतन करणे रद्द केले. पुन्हा प्रयत्न करण्यासाठी ठीक आहे दाबा."
+    },
+    {
+      "id": "native:[editor fertility stale]",
+      "source": "Fertility map is out of date · Click to refresh",
+      "target": "सुपीकतेचा नकाशा जुना झाला आहे · अद्ययावत करण्यासाठी क्लिक करा"
+    },
+    {
+      "id": "native:[No definition files found in %0]",
+      "source": "No definition files found in %0",
+      "target": "%0 मध्ये कोणतीही परिभाषा फाईल आढळली नाही"
+    },
+    {
+      "id": "native:[From device…]",
+      "source": "From device…",
+      "target": "डिव्हाइसवरून…"
+    },
+    {
+      "id": "native:[replace existing file %0?]",
+      "source": "A file named \"%0\" already exists. Replace it?",
+      "target": "\"%0\" नावाची फाईल आधीच अस्तित्वात आहे. ती बदलायची का?"
+    },
+    {
+      "id": "native:[Replace]",
+      "source": "Replace",
+      "target": "बदला"
+    },
+    {
+      "id": "native:[Keep existing file]",
+      "source": "Keep existing file",
+      "target": "विद्यमान फाईल ठेवा"
+    },
+    {
+      "id": "native:[editor menu save]",
+      "source": "Save map",
+      "target": "नकाशा जतन करा"
+    },
+    {
+      "id": "native:[editor menu load]",
+      "source": "Open map…",
+      "target": "नकाशा उघडा…"
+    },
+    {
+      "id": "native:[editor menu import resources]",
+      "source": "Import resource definitions…",
+      "target": "संसाधन व्याख्या आयात करा…"
+    },
+    {
+      "id": "native:[editor menu teams]",
+      "source": "Teams…",
+      "target": "संघ…"
+    },
+    {
+      "id": "native:[editor menu scenario]",
+      "source": "Scenario…",
+      "target": "प्रसंग…"
+    },
+    {
+      "id": "native:[editor menu reroll]",
+      "source": "Reroll terrain look…",
+      "target": "भूभागाचे रूप पुन्हा निवडा…"
+    },
+    {
+      "id": "native:[editor menu file]",
+      "source": "File",
+      "target": "फाईल"
+    },
+    {
+      "id": "native:[editor menu map]",
+      "source": "Map",
+      "target": "नकाशा"
+    },
+    {
+      "id": "native:[no resource growth areas]",
+      "source": "No-growth areas",
+      "target": "वाढ नसलेले क्षेत्र"
+    },
+    {
+      "id": "native:[dock minimap]",
+      "source": "Minimap",
+      "target": "मिनीमॅप"
+    },
+    {
+      "id": "native:[dock search brushes]",
+      "source": "Search brushes",
+      "target": "ब्रश शोधा"
+    },
+    {
+      "id": "native:[dock brush shape %0]",
+      "source": "Brush shape %0",
+      "target": "ब्रशचा आकार %0"
+    },
+    {
+      "id": "native:[dock brush]",
+      "source": "Brush",
+      "target": "ब्रश"
+    },
+    {
+      "id": "native:[dock brush paint]",
+      "source": "Paint",
+      "target": "रंगवा"
+    },
+    {
+      "id": "native:[dock brush erase]",
+      "source": "Erase",
+      "target": "पुसून टाका"
+    },
+    {
+      "id": "native:[dock enable for map]",
+      "source": "Enable for this map",
+      "target": "या नकाशासाठी सक्षम करा"
+    },
+    {
+      "id": "native:[dock enable experiment %0]",
+      "source": "Enable %0",
+      "target": "%0 सक्षम करा"
+    },
+    {
+      "id": "native:[dock enable experiment hint %0]",
+      "source": "Turns on the %0 experiment for this map only.",
+      "target": "फक्त या नकाशासाठी %0 प्रयोग चालू करतो."
+    },
+    {
+      "id": "native:[dock area number]",
+      "source": "Area",
+      "target": "क्षेत्र"
+    },
+    {
+      "id": "native:[dock unit level]",
+      "source": "Unit level",
+      "target": "युनिटचा स्तर"
+    },
+    {
+      "id": "native:[dock no brushes match]",
+      "source": "No brushes match the search.",
+      "target": "शोधाशी जुळणारे कोणतेही ब्रश नाहीत."
+    },
+    {
+      "id": "native:[dock active team]",
+      "source": "Active team",
+      "target": "सक्रिय संघ"
+    },
+    {
+      "id": "native:[dock team count %0]",
+      "source": "Teams on this map: %0",
+      "target": "या नकाशावरील संघ: %0"
+    },
+    {
+      "id": "native:[dock add team]",
+      "source": "Add team",
+      "target": "संघ जोडा"
+    },
+    {
+      "id": "native:[dock remove team]",
+      "source": "Remove team",
+      "target": "संघ काढून टाका"
+    },
+    {
+      "id": "native:[dock nothing selected]",
+      "source": "Nothing is selected.",
+      "target": "काहीही निवडलेले नाही."
+    },
+    {
+      "id": "native:[dock no properties]",
+      "source": "This object has no editable properties.",
+      "target": "या ऑब्जेक्टमध्ये कोणतेही संपादन करण्यायोग्य गुणधर्म नाहीत."
+    },
+    {
+      "id": "native:[focus brush search]",
+      "source": "Search brushes",
+      "target": "ब्रश शोधा"
+    },
+    {
+      "id": "native:[switch to resources view]",
+      "source": "Switch to resources view",
+      "target": "संसाधनांच्या दृश्याकडे वळा"
+    },
+    {
+      "id": "native:[dock resources base]",
+      "source": "Standard resources",
+      "target": "मानक संसाधने"
+    },
+    {
+      "id": "native:[dock fertility stale]",
+      "source": "The fertility map is out of date.",
+      "target": "सुपीकतेचा नकाशा जुना झाला आहे."
+    },
+    {
+      "id": "native:[dock fertility refresh]",
+      "source": "Refresh fertility",
+      "target": "सुपीकता अद्ययावत करा"
+    },
+    {
+      "id": "native:[Enabled %0 for this map]",
+      "source": "Enabled %0 for this map",
+      "target": "या नकाशासाठी %0 सक्षम केले आहे"
+    },
+    {
+      "id": "native:[editor fertility tap refresh]",
+      "source": "Fertility map out of date: tap to refresh",
+      "target": "सुपीकतेचा नकाशा जुना झाला आहे: अद्ययावत करण्यासाठी टॅप करा"
+    },
+    {
+      "id": "native:[editor menu import set]",
+      "source": "Import Terrain & Resource Set",
+      "target": "भूभाग आणि संसाधन संच आयात करा"
+    },
+    {
+      "id": "native:[editor menu set library]",
+      "source": "Set Library",
+      "target": "संचांचा संग्रह"
+    },
+    {
+      "id": "native:[set library loading]",
+      "source": "Loading sets…",
+      "target": "संच लोड होत आहेत…"
+    },
+    {
+      "id": "native:[set library downloading]",
+      "source": "Downloading exact release…",
+      "target": "अचूक आवृत्ती डाउनलोड करत आहे…"
+    },
+    {
+      "id": "native:[set library connection error]",
+      "source": "Cannot load sets. Check your connection and try again.",
+      "target": "संच लोड करता येत नाहीत. कनेक्शन तपासून पुन्हा प्रयत्न करा."
+    },
+    {
+      "id": "native:[set library hash error]",
+      "source": "Downloaded set failed its hash check.",
+      "target": "डाउनलोड केलेल्या संचाची हॅश तपासणी अयशस्वी झाली."
+    },
+    {
+      "id": "native:[set library package error]",
+      "source": "Invalid set package.",
+      "target": "संचाचे पॅकेज अवैध आहे."
+    },
+    {
+      "id": "native:[set library listing error]",
+      "source": "Invalid set listing.",
+      "target": "अवैध संच सूची."
+    },
+    {
+      "id": "native:[set library release error]",
+      "source": "Invalid set release.",
+      "target": "संचाची प्रकाशित आवृत्ती अवैध आहे."
+    },
+    {
+      "id": "native:[set library selection help]",
+      "source": "Select entries to import. Required custom resources are included automatically.",
+      "target": "आयात करण्यासाठी नोंदी निवडा. आवश्यक सानुकूल संसाधने आपोआप समाविष्ट केली जातात."
+    },
+    {
+      "id": "native:[set library empty]",
+      "source": "No sets found.",
+      "target": "कोणतेही संच आढळले नाहीत."
+    },
+    {
+      "id": "native:[set library release help]",
+      "source": "Choose an exact release to inspect and import.",
+      "target": "तपासण्यासाठी आणि आयात करण्यासाठी नेमकी प्रकाशित आवृत्ती निवडा."
+    },
+    {
+      "id": "native:[set library heading]",
+      "source": "Terrain & resource sets",
+      "target": "भूभाग आणि संसाधन संच"
+    },
+    {
+      "id": "native:[set library browse]",
+      "source": "Browse online library",
+      "target": "ऑनलाइन संग्रह पाहा"
+    },
+    {
+      "id": "native:[set library local]",
+      "source": "Map content, credits & local edits",
+      "target": "नकाशाची सामग्री, श्रेय आणि स्थानिक संपादने"
+    },
+    {
+      "id": "native:[set library local help]",
+      "source": "Edit this map's copy. Original release credits remain attached. Changes do not update other maps or the online release.",
+      "target": "या नकाशातील प्रत संपादित करा. मूळ प्रकाशित आवृत्तीचे श्रेय जोडलेले राहते. या बदलांनी इतर नकाशे किंवा ऑनलाइन आवृत्ती बदलत नाही."
+    },
+    {
+      "id": "native:[set library apply]",
+      "source": "Apply local changes",
+      "target": "स्थानिक बदल लागू करा"
+    },
+    {
+      "id": "native:[set library updated]",
+      "source": "Local content updated.",
+      "target": "स्थानिक सामग्री अद्ययावत केली."
+    },
+    {
+      "id": "native:[set library search hint]",
+      "source": "Search themes and creators",
+      "target": "थीम आणि निर्माते शोधा"
+    },
+    {
+      "id": "native:[set library search]",
+      "source": "Search",
+      "target": "शोध"
+    },
+    {
+      "id": "native:[set library set]",
+      "source": "Set",
+      "target": "संच"
+    },
+    {
+      "id": "native:[set library update help]",
+      "source": "This explicitly replaces matching placed terrain and resources, including local edits. Removed entries remain on the old release. Existing material amounts are capped to the new capacities.",
+      "target": "यामध्ये स्थानिक संपादनांसह, जुळणारे ठेवलेले भूभाग आणि संसाधने स्पष्टपणे बदलली जातात. काढून टाकलेल्या नोंदी जुन्या आवृत्तीवर कायम राहतात. विद्यमान सामग्रीचे प्रमाण नवीन क्षमतेनुसार मर्यादित केले आहे."
+    },
+    {
+      "id": "native:[set library import]",
+      "source": "Import selected entries",
+      "target": "निवडलेल्या नोंदी आयात करा"
+    },
+    {
+      "id": "native:[set library next]",
+      "source": "Next page",
+      "target": "पुढील पान"
+    },
+    {
+      "id": "native:[set library back]",
+      "source": "Back to results",
+      "target": "निकालांकडे परत जा"
+    },
+    {
+      "id": "native:[set library license %0]",
+      "source": "License: %0",
+      "target": "परवाना: %0"
+    },
+    {
+      "id": "native:[set library release %0]",
+      "source": "release %0",
+      "target": "आवृत्ती %0"
+    },
+    {
+      "id": "native:[set library replace %0]",
+      "source": "Replace placed entries from release %0",
+      "target": "%0 रिलीझमधील ठेवलेल्या नोंदी बदला"
+    },
+    {
+      "id": "native:[set library preview limit]",
+      "source": "Previews are shown for the first 64 entries. All entries remain selectable.",
+      "target": "पहिल्या ६४ नोंदींचे पूर्वावलोकन दाखवले आहे. सर्व नोंदी निवडण्यायोग्य राहतील."
+    },
+    {
+      "id": "native:[set library definition]",
+      "source": "Properties definition (JSON)",
+      "target": "गुणधर्मांची व्याख्या (JSON)"
+    },
+    {
+      "id": "native:[set library artwork]",
+      "source": "Terrain artwork mapping (JSON)",
+      "target": "भूभागाच्या कलाकृतींचे मॅपिंग (JSON)"
+    },
+    {
+      "id": "native:[stat band area upkeep]",
+      "source": "Area upkeep",
+      "target": "क्षेत्राची देखभाल"
+    },
+    {
+      "id": "native:[outcome reason eliminated]",
+      "source": "Colony eliminated.",
+      "target": "वसाहत नष्ट झाली."
+    },
+    {
+      "id": "native:[outcome reason opponents defeated]",
+      "source": "All opponents defeated.",
+      "target": "सर्व विरोधक पराभूत झाले."
+    },
+    {
+      "id": "native:[outcome reason ally won]",
+      "source": "An allied colony won.",
+      "target": "मित्रसंघाची वसाहत जिंकली."
+    },
+    {
+      "id": "native:[outcome reason prestige]",
+      "source": "Prestige goal reached.",
+      "target": "प्रतिष्ठेचे ध्येय गाठले."
+    },
+    {
+      "id": "native:[outcome reason scenario]",
+      "source": "Scenario rules decided the outcome.",
+      "target": "प्रसंगाच्या नियमांनी निकाल ठरवला."
+    },
+    {
+      "id": "native:[outcome reason timer]",
+      "source": "Time limit reached.",
+      "target": "वेळेची मर्यादा संपली आहे."
+    },
+    {
+      "id": "native:[outcome reason probability]",
+      "source": "Win probability threshold reached.",
+      "target": "विजयाच्या संभाव्यतेची मर्यादा गाठली."
+    },
+    {
+      "id": "native:[Discord community]",
+      "source": "Discord community",
+      "target": "डिस्कॉर्ड समुदाय"
+    },
+    {
+      "id": "native:[Globulation 2 Discord]",
+      "source": "Globulation 2 Discord",
+      "target": "Globulation 2 डिस्कॉर्ड"
+    },
+    {
+      "id": "native:[discord community intro]",
+      "source": "Find opponents, ask for help, and share your maps with the Globulation 2 community.",
+      "target": "Globulation 2 समुदायासोबत प्रतिस्पर्धी शोधा, मदत मागा आणि तुमचे नकाशे शेअर करा."
+    },
+    {
+      "id": "native:[discord opens externally]",
+      "source": "Join our Discord server. This opens Discord or your browser.",
+      "target": "आमच्या डिस्कॉर्ड सर्वरमध्ये सामील व्हा. हे डिस्कॉर्ड किंवा तुमच्या ब्राउझरमध्ये उघडेल."
+    },
+    {
+      "id": "native:[Join Discord]",
+      "source": "Join Discord",
+      "target": "डिस्कॉर्डमध्ये सामील व्हा"
+    },
+    {
+      "id": "native:[Copy link]",
+      "source": "Copy link",
+      "target": "लिंक कॉपी करा"
+    },
+    {
+      "id": "native:[discord opened]",
+      "source": "Discord opened. You can return to the game at any time.",
+      "target": "डिस्कॉर्ड सुरू झाला आहे. तुम्ही कधीही गेममध्ये परत येऊ शकता."
+    },
+    {
+      "id": "native:[discord open failed]",
+      "source": "Could not open Discord. Copy the invitation link and open it in your browser.",
+      "target": "डिस्कॉर्ड उघडता आले नाही. आमंत्रण लिंक कॉपी करून तुमच्या ब्राउझरमध्ये उघडा."
+    },
+    {
+      "id": "native:[discord link copied]",
+      "source": "Invitation link copied.",
+      "target": "आमंत्रणाची लिंक कॉपी केली."
+    },
+    {
+      "id": "native:[Which hand holds your phone?]",
+      "source": "Left or right hand?",
+      "target": "डावा की उजवा हात?"
+    },
+    {
+      "id": "native:[hand preference explanation]",
+      "source": "Hold your phone naturally. Tap the hand you play with.",
+      "target": "फोन नेहमीप्रमाणे धरा. ज्या हाताने खेळता त्याचे चिन्ह निवडा."
+    },
+    {
+      "id": "native:[hand silhouettes description]",
+      "source": "A phone outline with left and right hands on top. Press either beveled thumb target to choose that side.",
+      "target": "वरच्या बाजूला डावा आणि उजवा हात असलेली फोनची बाह्यरेखा. ती बाजू निवडण्यासाठी दोन्हीपैकी कोणत्याही तिरकस अंगठ्याच्या लक्ष्यावर दाबा."
+    },
+    {
+      "id": "native:[hand preference change later]",
+      "source": "You can change sides later in Settings.",
+      "target": "तुम्ही नंतर सेटिंग्जमध्ये बाजू बदलू शकता."
+    }
+  ]
+}

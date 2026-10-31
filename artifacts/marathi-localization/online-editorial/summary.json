@@ -1,0 +1,13 @@
+{
+  "editor": "/root/semantic_review",
+  "stage": "Complete first editorial read; proposals awaiting integration and final subset reconciliation",
+  "edited_keys_count": 2836,
+  "candidate_changes": 392,
+  "placeholder_errors": [],
+  "certification": "Agent-reviewed; not native-human-certified",
+  "notes": [
+    "Every original Google entry and plural form was read against frozen English.",
+    "Root will integrate independent semantic and editorial proposals. Changed final targets must be checked before final editorial hashes are bound.",
+    "No blanket substitution was applied to online candidate values."
+  ]
+}

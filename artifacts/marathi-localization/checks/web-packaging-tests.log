@@ -1,0 +1,42 @@
+....s.....F...F.............
+======================================================================
+FAIL: test_packages_round_trip_and_are_content_addressed (test_web_assets.WebAssetPackageTests.test_packages_round_trip_and_are_content_addressed)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/45cd/glob2/test/build_system/test_web_assets.py", line 271, in test_packages_round_trip_and_are_content_addressed
+    self.assertEqual(again, manifest)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+AssertionError: {'ver[62 chars]ze': 15181314, 'parts': [{'url': 'assets/core.[574455 chars]}]}]} != {'ver[62 chars]ze': 7641545, 'parts': [{'url': 'assets/core.c[573218 chars]}]}]}
+Diff is 1904440 characters long. Set self.maxDiff to None to see it.
+
+======================================================================
+FAIL: test_core_ships_the_browser_copies_and_font_cjk_the_full_font (test_web_assets.WebAssetPlanTests.test_core_ships_the_browser_copies_and_font_cjk_the_full_font)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/45cd/glob2/test/build_system/test_web_assets.py", line 192, in test_core_ships_the_browser_copies_and_font_cjk_the_full_font
+    self.assertEqual(sorted(self.substitutes), ['data/fonts/sans.ttf', 'data/gfx/menu-colony.png',
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                                                'data/gfx/menu-wordmark.png'],
+                                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                     'browser/assets is stale: run python3 browser/derive_assets.py')
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: ['data/gfx/menu-colony.png', 'data/gfx/menu-wordmark.png'] != ['data/fonts/sans.ttf', 'data/gfx/menu-colony.pn[28 chars]png']
+
+First differing element 0:
+'data/gfx/menu-colony.png'
+'data/fonts/sans.ttf'
+
+Second list contains 1 additional elements.
+First extra element 2:
+'data/gfx/menu-wordmark.png'
+
+- ['data/gfx/menu-colony.png', 'data/gfx/menu-wordmark.png']
++ ['data/fonts/sans.ttf',
++  'data/gfx/menu-colony.png',
++  'data/gfx/menu-wordmark.png'] : browser/assets is stale: run python3 browser/derive_assets.py
+
+----------------------------------------------------------------------
+Ran 28 tests in 598.385s
+
+FAILED (failures=2, skipped=1)
+web client: /tmp/tmpog9m7jh3/served (0 asset files)

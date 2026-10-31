@@ -1,0 +1,510 @@
+{
+  "source_sha256": "0ac44b4cdfb03e688983d6e3fb1e484cca57589665bff19c5c65388e649b292a",
+  "batch_target_sha256": "9ddf1d2cf73a94ae7e801531e66bba26b704f050e7499bbd5f6c055d39e0ea6e",
+  "catalog_sha256": {
+    "native": "a6d0da95a3cf29e0bcfa904f80043a10fedc3124f7a26e3beebc82e8cdfa4411",
+    "online": "feb4b9a71595724a0995b0cf0f42c94742ef29030b66c9488c77ebc6be7a89db"
+  },
+  "entries": [
+    {
+      "id": "native:[Ridge thickness]",
+      "source": "Ridge thickness",
+      "target": "डोंगररांगेची जाडी"
+    },
+    {
+      "id": "native:[Pass spacing]",
+      "source": "Pass spacing",
+      "target": "खिंडींमधील अंतर"
+    },
+    {
+      "id": "native:[Lee width]",
+      "source": "Lee width",
+      "target": "वाऱ्याच्या आडच्या भागाची रुंदी"
+    },
+    {
+      "id": "native:[Old growth]",
+      "source": "Old growth",
+      "target": "जुने दाट जंगल"
+    },
+    {
+      "id": "native:[Canals]",
+      "source": "Canals",
+      "target": "कालवे"
+    },
+    {
+      "id": "native:[Forest density]",
+      "source": "Forest density",
+      "target": "वन घनता"
+    },
+    {
+      "id": "native:[Hidden groves]",
+      "source": "Hidden groves",
+      "target": "लपलेली झाडी"
+    },
+    {
+      "id": "native:[Starting trails]",
+      "source": "Starting trails",
+      "target": "सुरुवातीच्या पायवाटा"
+    },
+    {
+      "id": "native:[Block size]",
+      "source": "Block size",
+      "target": "खंडाचा आकार"
+    },
+    {
+      "id": "native:[Canal width]",
+      "source": "Canal width",
+      "target": "कालव्याची रुंदी"
+    },
+    {
+      "id": "native:[Extra bridges]",
+      "source": "Extra bridges",
+      "target": "अतिरिक्त पूल"
+    },
+    {
+      "id": "native:[Polder]",
+      "source": "Polder",
+      "target": "पोल्डर"
+    },
+    {
+      "id": "native:[Old town]",
+      "source": "Old town",
+      "target": "जुने शहर"
+    },
+    {
+      "id": "native:[Anthill]",
+      "source": "Anthill",
+      "target": "मुंग्यांचे वारूळ"
+    },
+    {
+      "id": "native:[Row angle]",
+      "source": "Row angle",
+      "target": "ओळींचा कोन"
+    },
+    {
+      "id": "native:[Diagonal]",
+      "source": "Diagonal",
+      "target": "तिरकस"
+    },
+    {
+      "id": "native:[Dyke spacing]",
+      "source": "Dyke spacing",
+      "target": "बंधाऱ्याचे अंतर"
+    },
+    {
+      "id": "native:[Village size]",
+      "source": "Village size",
+      "target": "गावाचा आकार"
+    },
+    {
+      "id": "native:[Hamlets]",
+      "source": "Hamlets",
+      "target": "लहान वस्त्या"
+    },
+    {
+      "id": "native:[City size]",
+      "source": "City size",
+      "target": "शहराचा आकार"
+    },
+    {
+      "id": "native:[Street width]",
+      "source": "Street width",
+      "target": "रस्त्याची रुंदी"
+    },
+    {
+      "id": "native:[Plazas]",
+      "source": "Plazas",
+      "target": "मोकळे चौक"
+    },
+    {
+      "id": "native:[Chamber spacing]",
+      "source": "Chamber spacing",
+      "target": "कप्प्यांमधील अंतर"
+    },
+    {
+      "id": "native:[Chamber size]",
+      "source": "Chamber size",
+      "target": "कप्प्यांचा आकार"
+    },
+    {
+      "id": "native:[Queen room]",
+      "source": "Queen room",
+      "target": "राणीचा कप्पा"
+    },
+    {
+      "id": "native:[Tunnel width]",
+      "source": "Tunnel width",
+      "target": "बोगद्याची रुंदी"
+    },
+    {
+      "id": "native:[Loops]",
+      "source": "Loops",
+      "target": "चक्रीय मार्ग"
+    },
+    {
+      "id": "native:[Home pools]",
+      "source": "Home pools",
+      "target": "तळाजवळची डबकी"
+    },
+    {
+      "id": "native:[Farm plots]",
+      "source": "Farm plots",
+      "target": "शेतातील भूखंड"
+    },
+    {
+      "id": "native:[Tendril roads]",
+      "source": "Tendril roads",
+      "target": "वेलींसारखे रस्ते"
+    },
+    {
+      "id": "native:[Random]",
+      "source": "Random",
+      "target": "यादृच्छिक"
+    },
+    {
+      "id": "native:[Vertical]",
+      "source": "Vertical",
+      "target": "उभ्या"
+    },
+    {
+      "id": "native:[Horizontal]",
+      "source": "Horizontal",
+      "target": "आडवे"
+    },
+    {
+      "id": "native:[Block shape]",
+      "source": "Block shape",
+      "target": "खंडाचा आकार"
+    },
+    {
+      "id": "native:[Random parameters]",
+      "source": "Random parameters",
+      "target": "यादृच्छिक पॅरामीटर्स"
+    },
+    {
+      "id": "native:[Randomize parameters]",
+      "source": "Randomize parameters",
+      "target": "पॅरामीटर्स यादृच्छिक करा"
+    },
+    {
+      "id": "native:[Start quality]",
+      "source": "Start quality",
+      "target": "सुरुवातीची गुणवत्ता"
+    },
+    {
+      "id": "native:[Fairness]",
+      "source": "Fairness",
+      "target": "निष्पक्षता"
+    },
+    {
+      "id": "native:[Fitness]",
+      "source": "Fitness",
+      "target": "जिंकण्याची क्षमता"
+    },
+    {
+      "id": "native:[Win chance]",
+      "source": "Win chance",
+      "target": "जिंकण्याची शक्यता"
+    },
+    {
+      "id": "native:[Coefficient]",
+      "source": "Coefficient",
+      "target": "गुणांक"
+    },
+    {
+      "id": "native:[Average]",
+      "source": "Average",
+      "target": "सरासरी"
+    },
+    {
+      "id": "native:[Fitted on games:]",
+      "source": "Fitted on games:",
+      "target": "मॉडेलसाठी वापरलेले सामने:"
+    },
+    {
+      "id": "native:[Every colony's start is measured on the finished map, and a model fitted to thousands of games between equal opponents turns those measurements into a fitness. The fitness says how likely that colony is to win. Fairness is how evenly those chances are shared: 1 when every colony is as likely to win as any other, 0 when one colony would take the map.]",
+      "source": "Every colony's start is measured on the finished map, and a model fitted to thousands of games between equal opponents turns those measurements into a fitness. The fitness says how likely that colony is to win. Fairness is how evenly those chances are shared: 1 when every colony is as likely to win as any other, 0 when one colony would take the map.",
+      "target": "प्रत्येक वसाहतीची सुरुवात अंतिम नकाशावर मोजली जाते, आणि समान प्रतिस्पर्धकांमधील हजारो खेळांच्या आधारावर तयार केलेले एक मॉडेल त्या मोजमापांचे 'फिटनेस'मध्ये रूपांतर करते. फिटनेस हे सांगते की त्या वसाहतीच्या जिंकण्याची शक्यता किती आहे. निष्पक्षता म्हणजे या शक्यता किती समान रीतीने विभागल्या गेल्या आहेत: जेव्हा प्रत्येक वसाहतीच्या जिंकण्याची शक्यता इतर कोणत्याही वसाहतीइतकीच असते तेव्हा १, आणि जेव्हा एखादी वसाहत संपूर्ण नकाशा काबीज करेल तेव्हा ०."
+    },
+    {
+      "id": "native:[Worst]",
+      "source": "Worst",
+      "target": "सर्वात वाईट"
+    },
+    {
+      "id": "native:[Best]",
+      "source": "Best",
+      "target": "सर्वोत्तम"
+    },
+    {
+      "id": "native:[No growth]",
+      "source": "No growth",
+      "target": "वाढ नाही"
+    },
+    {
+      "id": "native:[Units get hungry]",
+      "source": "Units get hungry",
+      "target": "युनिट्सना भूक लागते"
+    },
+    {
+      "id": "native:[No hunger]",
+      "source": "No hunger",
+      "target": "भूक नाही"
+    },
+    {
+      "id": "native:[Scarce (2x slower)]",
+      "source": "Scarce (2x slower)",
+      "target": "दुर्मिळ (२ पट हळू)"
+    },
+    {
+      "id": "native:[Very scarce (4x slower)]",
+      "source": "Very scarce (4x slower)",
+      "target": "अत्यंत दुर्मिळ (४ पट मंद)"
+    },
+    {
+      "id": "native:[Extremely scarce (8x slower)]",
+      "source": "Extremely scarce (8x slower)",
+      "target": "अतिशय तुटपुंजे (८ पट मंद)"
+    },
+    {
+      "id": "native:[Small (+50 each)]",
+      "source": "Small (+50 each)",
+      "target": "लहान (+५० प्रत्येकी)"
+    },
+    {
+      "id": "native:[Medium (+150 each)]",
+      "source": "Medium (+150 each)",
+      "target": "मध्यम (+१५० प्रत्येकी)"
+    },
+    {
+      "id": "native:[Large (+300 each)]",
+      "source": "Large (+300 each)",
+      "target": "मोठे (+३०० प्रत्येकी)"
+    },
+    {
+      "id": "native:[No resource growth]",
+      "source": "No resource growth",
+      "target": "संसाधनांची वाढ नाही"
+    },
+    {
+      "id": "native:[Economy]",
+      "source": "Economy",
+      "target": "अर्थव्यवस्था"
+    },
+    {
+      "id": "native:[Instant construction]",
+      "source": "Instant construction",
+      "target": "झटपट बांधकाम"
+    },
+    {
+      "id": "native:[Starting units spawn already leveled up. Changes the generated map.]",
+      "source": "Starting units spawn already leveled up. Changes the generated map.",
+      "target": "सुरुवातीची युनिट वाढलेल्या स्तरासह जन्मतात. यामुळे तयार होणारा नकाशा बदलतो."
+    },
+    {
+      "id": "native:[No upgrades]",
+      "source": "No upgrades",
+      "target": "सुधारणा नाहीत"
+    },
+    {
+      "id": "native:[No permadeath]",
+      "source": "No permadeath",
+      "target": "कायमस्वरूपी मृत्यू नाही"
+    },
+    {
+      "id": "native:[Glass cannon x2]",
+      "source": "Glass cannon x2",
+      "target": "नाजूक पण घातक x2"
+    },
+    {
+      "id": "native:[Glass cannon x3]",
+      "source": "Glass cannon x3",
+      "target": "नाजूक पण घातक x3"
+    },
+    {
+      "id": "native:[Fortress x5]",
+      "source": "Fortress x5",
+      "target": "किल्ला x5"
+    },
+    {
+      "id": "native:[Fortress x10]",
+      "source": "Fortress x10",
+      "target": "किल्ला x10"
+    },
+    {
+      "id": "native:[Veteran]",
+      "source": "Veteran",
+      "target": "अनुभवी"
+    },
+    {
+      "id": "native:[Elite]",
+      "source": "Elite",
+      "target": "एलिट"
+    },
+    {
+      "id": "native:[Legendary]",
+      "source": "Legendary",
+      "target": "दिग्गज"
+    },
+    {
+      "id": "native:[Combat]",
+      "source": "Combat",
+      "target": "लढाई"
+    },
+    {
+      "id": "native:[Glass cannon]",
+      "source": "Glass cannon",
+      "target": "नाजूक पण घातक"
+    },
+    {
+      "id": "native:[Match ends at the timer; highest prestige at that instant wins.]",
+      "source": "Match ends at the timer; highest prestige at that instant wins.",
+      "target": "वेळ संपल्यावर सामना संपतो; त्या क्षणी सर्वाधिक प्रतिष्ठा असलेला खेळाडू जिंकतो."
+    },
+    {
+      "id": "native:[Off (no timer)]",
+      "source": "Off (no timer)",
+      "target": "बंद (टायमर नाही)"
+    },
+    {
+      "id": "native:[90 minutes]",
+      "source": "90 minutes",
+      "target": "९० मिनिटे"
+    },
+    {
+      "id": "native:[30 minutes]",
+      "source": "30 minutes",
+      "target": "३० मिनिटे"
+    },
+    {
+      "id": "native:[45 minutes]",
+      "source": "45 minutes",
+      "target": "४५ मिनिटे"
+    },
+    {
+      "id": "native:[60 minutes]",
+      "source": "60 minutes",
+      "target": "६० मिनिटे"
+    },
+    {
+      "id": "native:[Probability victory]",
+      "source": "Probability victory",
+      "target": "अंदाजावर विजय"
+    },
+    {
+      "id": "native:[Off (play it out)]",
+      "source": "Off (play it out)",
+      "target": "बंद करा (खेळ पूर्ण करा)"
+    },
+    {
+      "id": "native:[95% sure]",
+      "source": "95% sure",
+      "target": "९५% खात्री आहे"
+    },
+    {
+      "id": "native:[97% sure]",
+      "source": "97% sure",
+      "target": "९७% खात्री"
+    },
+    {
+      "id": "native:[99% sure]",
+      "source": "99% sure",
+      "target": "९९% खात्री आहे"
+    },
+    {
+      "id": "native:[Stats births]",
+      "source": "Births",
+      "target": "जन्म"
+    },
+    {
+      "id": "native:[Stats deaths]",
+      "source": "Deaths",
+      "target": "मृतांची संख्या"
+    },
+    {
+      "id": "native:[Stats starvation]",
+      "source": "Starvation",
+      "target": "उपासमार"
+    },
+    {
+      "id": "native:[Stats wheat stock]",
+      "source": "Food stock",
+      "target": "अन्नसाठा"
+    },
+    {
+      "id": "native:[Stats wheat loads]",
+      "source": "Food loads",
+      "target": "अन्नाच्या खेपा"
+    },
+    {
+      "id": "native:[Stats meals]",
+      "source": "Meals served",
+      "target": "जेवण दिले"
+    },
+    {
+      "id": "native:[Stats upgrades]",
+      "source": "Upgrades",
+      "target": "सुधारणा"
+    },
+    {
+      "id": "native:[Stats training]",
+      "source": "Training visits",
+      "target": "प्रशिक्षण भेटी"
+    },
+    {
+      "id": "native:[Stats damage dealt]",
+      "source": "Damage dealt",
+      "target": "केलेली हानी"
+    },
+    {
+      "id": "native:[Stats damage received]",
+      "source": "Damage received",
+      "target": "सोसलेली हानी"
+    },
+    {
+      "id": "native:[Stats HP restored]",
+      "source": "HP restored",
+      "target": "परत मिळालेले HP"
+    },
+    {
+      "id": "native:[Stats since tick]",
+      "source": "Since tick",
+      "target": "टिक पासून"
+    },
+    {
+      "id": "native:[Stats combat deaths]",
+      "source": "Combat",
+      "target": "लढाई"
+    },
+    {
+      "id": "native:[Stats clearing deaths]",
+      "source": "Clearing injury",
+      "target": "सफाई करताना इजा"
+    },
+    {
+      "id": "native:[Stats trapped deaths]",
+      "source": "Trapped",
+      "target": "अडकलेले"
+    },
+    {
+      "id": "native:[Stats unknown deaths]",
+      "source": "Other/unknown",
+      "target": "इतर/अज्ञात"
+    },
+    {
+      "id": "native:[Stats conversions]",
+      "source": "In / out",
+      "target": "आत / बाहेर"
+    },
+    {
+      "id": "native:[Stats unavailable]",
+      "source": "Unavailable",
+      "target": "अनुपलब्ध"
+    },
+    {
+      "id": "native:[Stats wheat per minute]",
+      "source": "Loads/min",
+      "target": "खेपा/मिनिट"
+    }
+  ]
+}

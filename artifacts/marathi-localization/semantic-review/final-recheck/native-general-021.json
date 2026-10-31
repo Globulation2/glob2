@@ -1,0 +1,506 @@
+{
+  "batch": "native-general-021",
+  "target_sha256": "cf6e419e8f45f44d4df4a25741bc2564cb875e98558dc9ad0a856b57d6d2e1f6",
+  "rows": [
+    {
+      "id": "native:[stat view by weapon]",
+      "source": "By weapon",
+      "target": "शस्त्रानुसार"
+    },
+    {
+      "id": "native:[stat view by distance]",
+      "source": "By distance",
+      "target": "अंतरानुसार"
+    },
+    {
+      "id": "native:[stat nothing to show]",
+      "source": "Nothing to show: this did not happen in this match.",
+      "target": "दाखवण्यासारखे काही नाही: या सामन्यात असे घडले नाही."
+    },
+    {
+      "id": "native:[stat %0 nothing]",
+      "source": "%0 (none)",
+      "target": "%0 (काहीही नाही)"
+    },
+    {
+      "id": "native:[Match]",
+      "source": "Match",
+      "target": "सामना"
+    },
+    {
+      "id": "native:[Time limit]",
+      "source": "Time limit",
+      "target": "वेळेची मर्यादा"
+    },
+    {
+      "id": "native:[Alliances can change]",
+      "source": "Alliances can change",
+      "target": "युती बदलू शकतात"
+    },
+    {
+      "id": "native:[Starting unit level]",
+      "source": "Starting unit level",
+      "target": "युनिटचा सुरुवातीचा स्तर"
+    },
+    {
+      "id": "native:[Starting stockpile]",
+      "source": "Starting stockpile",
+      "target": "सुरुवातीचा साठा"
+    },
+    {
+      "id": "native:[Regrowth]",
+      "source": "Regrowth",
+      "target": "पुन्हा वाढ"
+    },
+    {
+      "id": "native:[Wounded units retreat]",
+      "source": "Wounded units retreat",
+      "target": "जखमी तुकड्या माघार घेतात"
+    },
+    {
+      "id": "native:[Units can die]",
+      "source": "Units can die",
+      "target": "युनिट्स नष्ट होऊ शकतात"
+    },
+    {
+      "id": "native:[Upgrades]",
+      "source": "Upgrades",
+      "target": "सुधारणा"
+    },
+    {
+      "id": "native:[No stockpile]",
+      "source": "None",
+      "target": "काहीही नाही"
+    },
+    {
+      "id": "native:[No glass cannon]",
+      "source": "Off",
+      "target": "बंद"
+    },
+    {
+      "id": "native:[How quickly harvested resources grow back and spread.]",
+      "source": "How quickly harvested resources grow back and spread.",
+      "target": "कापणी केलेली संसाधने किती लवकर पुन्हा वाढतात आणि पसरतात."
+    },
+    {
+      "id": "native:[Units must eat to keep working.]",
+      "source": "Units must eat to keep working.",
+      "target": "युनिटना काम करत राहण्यासाठी अन्न लागते."
+    },
+    {
+      "id": "native:[Summary]",
+      "source": "Summary",
+      "target": "सारांश"
+    },
+    {
+      "id": "native:[All rules]",
+      "source": "All rules",
+      "target": "सर्व नियम"
+    },
+    {
+      "id": "native:[Show all rules]",
+      "source": "Show all rules",
+      "target": "सर्व नियम दाखवा"
+    },
+    {
+      "id": "native:[Choose a ruleset]",
+      "source": "Choose a ruleset",
+      "target": "नियमसंच निवडा"
+    },
+    {
+      "id": "native:[Reset to %0]",
+      "source": "Reset to %0",
+      "target": "%0 वर रीसेट करा"
+    },
+    {
+      "id": "native:[ruleset one change %0]",
+      "source": "%0 + 1 change",
+      "target": "%0 + १ बदल"
+    },
+    {
+      "id": "native:[ruleset changes %0 %1]",
+      "source": "%0 + %1 changes",
+      "target": "%0 + %1 बदल"
+    },
+    {
+      "id": "native:[This match cannot end. Turn on prestige victory or set a time limit.]",
+      "source": "This match cannot end. Turn on prestige victory or set a time limit.",
+      "target": "हा सामना संपू शकत नाही. प्रतिष्ठेने विजय मिळवण्याचा पर्याय सुरू करा किंवा वेळेची मर्यादा ठेवा."
+    },
+    {
+      "id": "native:[Prestige usually appears after 13 to 28 minutes, so a 30-minute limit often ends in a tie.]",
+      "source": "Prestige usually appears after 13 to 28 minutes, so a 30-minute limit often ends in a tie.",
+      "target": "प्रतिष्ठा साधारण 13 ते 28 मिनिटांनंतर मिळू लागते, त्यामुळे 30 मिनिटांची मर्यादा असल्यास सामना बहुधा बरोबरीत संपतो."
+    },
+    {
+      "id": "native:[Blitz]",
+      "source": "Blitz",
+      "target": "ब्लिट्झ"
+    },
+    {
+      "id": "native:[ruleset blitz description]",
+      "source": "Fast start, early finish",
+      "target": "जलद सुरुवात, लवकर शेवट"
+    },
+    {
+      "id": "native:[Gentle]",
+      "source": "Gentle",
+      "target": "सौम्य"
+    },
+    {
+      "id": "native:[ruleset gentle description]",
+      "source": "Forgiving rules for a first match",
+      "target": "पहिल्या सामन्यासाठी सोपे नियम"
+    },
+    {
+      "id": "native:[Sandbox]",
+      "source": "Sandbox",
+      "target": "सँडबॉक्स"
+    },
+    {
+      "id": "native:[ruleset sandbox description]",
+      "source": "No fighting, no starving, build anything",
+      "target": "भांडण नाही, उपासमार नाही, काहीही बांधा."
+    },
+    {
+      "id": "native:[Bloodbath]",
+      "source": "Bloodbath",
+      "target": "रक्तपात"
+    },
+    {
+      "id": "native:[ruleset bloodbath description]",
+      "source": "Fragile, fearless armies",
+      "target": "नाजूक, निर्भय सैन्य"
+    },
+    {
+      "id": "native:[Siege]",
+      "source": "Siege",
+      "target": "वेढा"
+    },
+    {
+      "id": "native:[ruleset siege description]",
+      "source": "Fortress walls and long wars",
+      "target": "किल्ल्यांच्या भिंती आणि दीर्घकाळ चालणारी युद्धे"
+    },
+    {
+      "id": "native:[Lean years]",
+      "source": "Lean years",
+      "target": "दुष्काळाची वर्षे"
+    },
+    {
+      "id": "native:[ruleset lean years description]",
+      "source": "Resources barely come back",
+      "target": "संसाधने क्वचितच परत येतात."
+    },
+    {
+      "id": "native:[Gold rush]",
+      "source": "Gold rush",
+      "target": "सोन्याचा शोध"
+    },
+    {
+      "id": "native:[ruleset gold rush description]",
+      "source": "What's on the map is all there is",
+      "target": "नकाशावर जे आहे, तेवढेच सर्व काही आहे."
+    },
+    {
+      "id": "native:[Elite ranks]",
+      "source": "Elite ranks",
+      "target": "प्रशिक्षित फौजा"
+    },
+    {
+      "id": "native:[ruleset elite ranks description]",
+      "source": "Start trained, train no further",
+      "target": "प्रशिक्षणासह सुरुवात; पुढे प्रशिक्षण नाही"
+    },
+    {
+      "id": "native:[Shifting alliances]",
+      "source": "Shifting alliances",
+      "target": "बदलत्या युती"
+    },
+    {
+      "id": "native:[ruleset shifting alliances description]",
+      "source": "Teams can change in a 60-minute race",
+      "target": "६० मिनिटांच्या शर्यतीत संघ बदलू शकतात."
+    },
+    {
+      "id": "native:[Changed from %0: %1]",
+      "source": "Changed from %0: %1",
+      "target": "%0 पासून केलेले बदल: %1"
+    },
+    {
+      "id": "native:[Combat is off, so the rules below have no effect.]",
+      "source": "Combat is off, so the rules below have no effect.",
+      "target": "लढाई बंद आहे, त्यामुळे खालील नियम लागू होणार नाहीत."
+    },
+    {
+      "id": "native:[%0 more rules are at their Standard values.]",
+      "source": "%0 more rules are at their Standard values.",
+      "target": "%0 अधिक नियम त्यांच्या मानक मूल्यांवर आहेत."
+    },
+    {
+      "id": "native:[Each team starts with extra resources in its shared pool.]",
+      "source": "Each team starts with extra materials in its shared pool.",
+      "target": "प्रत्येक संघ आपल्या सामायिक साठ्यात अतिरिक्त साहित्यासह सुरुवात करतो."
+    },
+    {
+      "id": "native:[Units hit harder but have less HP and armor.]",
+      "source": "Units hit harder but have less HP and armor.",
+      "target": "युनिट्स अधिक जोरदार हल्ला करतात, पण त्यांचे एचपी आणि चिलखत कमी असते."
+    },
+    {
+      "id": "native:[Teams can attack each other. Turn off for a peaceful match.]",
+      "source": "Teams can attack each other. Turn off for a peaceful match.",
+      "target": "संघ एकमेकांवर हल्ला करू शकतात. शांततापूर्ण सामन्यासाठी ते बंद करा."
+    },
+    {
+      "id": "native:[Hurt units go back to heal instead of fighting to the death.]",
+      "source": "Hurt units go back to heal instead of fighting to the death.",
+      "target": "जखमी सैनिक जीवघेणी लढाई करण्याऐवजी बरे होण्यासाठी परत जातात."
+    },
+    {
+      "id": "native:[Units die when they run out of HP. Turn off to stop them at 1 HP.]",
+      "source": "Units die when they run out of HP. Turn off to stop them at 1 HP.",
+      "target": "युनिट्सचे HP संपल्यावर ते मरतात. त्यांना १ HP वर थांबवण्यासाठी बंद करा."
+    },
+    {
+      "id": "native:[stat group work]",
+      "source": "Workers' time",
+      "target": "कामगारांचा वेळ"
+    },
+    {
+      "id": "native:[stat work by job]",
+      "source": "What workers were working on",
+      "target": "कामगार कशावर काम करत होते"
+    },
+    {
+      "id": "native:[stat work by job about]",
+      "source": "How many workers were supplying each kind of building: swarms (to make new units), inns (to make meals), buildings being built or upgraded, or other buildings such as towers, schools and barracks.",
+      "target": "प्रत्येक प्रकारच्या इमारतीला किती कामगार पुरवठा करत होते: पोळी (नवीन युनिट तयार करण्यासाठी), खानावळी (जेवण बनवण्यासाठी), बांधल्या जात असलेल्या किंवा सुधारित केल्या जात असलेल्या इमारती, किंवा टॉवर, शाळा आणि बराकी यांसारख्या इतर इमारती."
+    },
+    {
+      "id": "native:[stat haul distance]",
+      "source": "Distance to resources",
+      "target": "संसाधनांचे अंतर"
+    },
+    {
+      "id": "native:[stat haul distance about]",
+      "source": "How far, on average, a harvesting worker was from the building it was supplying, in map squares in a straight line.",
+      "target": "सरासरी, एक कापणी करणारा कामगार तो ज्या इमारतीला पुरवठा करत होता, त्यापासून नकाशावरील सरळ रेषेतील चौकोनांमध्ये किती दूर होता."
+    },
+    {
+      "id": "native:[stat hauling]",
+      "source": "Fetching and carrying",
+      "target": "आणणे आणि वाहून नेणे"
+    },
+    {
+      "id": "native:[stat hauling about]",
+      "source": "How the workers supplying buildings divided between walking to a resource, harvesting it, carrying materials back, and delivering it or waiting for a resource they can reach. Most of it is walking, so the closer the resources, the more gets done.",
+      "target": "इमारतींना पुरवठा करणारे कामगार संसाधनापर्यंत चालत जाणे, ते गोळा करणे, साहित्य परत आणणे आणि पोहोचवणे किंवा आपल्या आवाक्यात असलेल्या संसाधनाची वाट पाहणे, या कामांमध्ये विभागलेले असतात. यातला बहुतेक भाग चालण्याचाच असतो, त्यामुळे संसाधने जितकी जवळ असतील, तितके जास्त काम होते."
+    },
+    {
+      "id": "native:[stat eating time]",
+      "source": "Workers going to eat",
+      "target": "जेवायला जाणारे कामगार"
+    },
+    {
+      "id": "native:[stat eating time about]",
+      "source": "How many workers were away from work to eat: walking to an inn, eating inside one, or hungry with no inn that could take them. Workers left with no inn means the colony has outgrown its inns or their food.",
+      "target": "किती कामगार जेवण्यासाठी कामापासून दूर होते: खानावळीत चालत जाणे, खानावळीतच जेवणे, किंवा त्यांना जेवण देऊ शकेल अशी खानावळी न मिळाल्याने उपाशी राहणे. कामगारांना खानावळी न मिळणे याचा अर्थ असा की, वसाहतीची लोकसंख्या तिच्या खानावळी किंवा अन्नाच्या साठ्यापेक्षा जास्त झाली आहे."
+    },
+    {
+      "id": "native:[stat intruders]",
+      "source": "Enemy warriors at home",
+      "target": "घरी असलेले शत्रू योद्धे"
+    },
+    {
+      "id": "native:[stat intruders about]",
+      "source": "How many enemy warriors were within 16 squares of the colony's buildings. Where two colonies are close together, each counts the other's defenders.",
+      "target": "वसाहतीच्या इमारतींच्या १६ चौरसांच्या आत किती शत्रू योद्धे होते. जिथे दोन वसाहती एकमेकांच्या जवळ असतात, तिथे प्रत्येक वसाहत दुसऱ्याच्या संरक्षकांची गणना करते."
+    },
+    {
+      "id": "native:[stat home defence]",
+      "source": "Home defence strength margin",
+      "target": "तळाच्या संरक्षण सामर्थ्यातील फरक"
+    },
+    {
+      "id": "native:[stat home defence about]",
+      "source": "The strength of the colony's own warriors near its buildings minus that of the enemy warriors there, counting each warrior and each of its attack levels. Below zero the colony was outmatched at home.",
+      "target": "वसाहतीच्या इमारतींजवळील स्वतःच्या योद्ध्यांच्या सामर्थ्यातून तेथील शत्रू योद्ध्यांचे सामर्थ्य वजा केल्यावर मिळणारी संख्या, ज्यामध्ये प्रत्येक योद्धा आणि त्याच्या हल्ल्याची पातळी मोजली जाते. ही पातळी शून्यापेक्षा कमी असल्यास, वसाहत स्वतःच्याच मैदानावर कमी पडत होती."
+    },
+    {
+      "id": "native:[stat combat death places]",
+      "source": "Where units fell in combat",
+      "target": "जिथे सैन्य तुकड्या लढाईत पडल्या"
+    },
+    {
+      "id": "native:[stat combat death places about]",
+      "source": "Where the colony's units were when they were killed: near its own buildings, near an enemy's buildings, or in open ground between colonies. Losses at home mean the colony was being attacked; losses at an enemy colony mean it was attacking. Ground close to both colonies counts as home.",
+      "target": "वसाहतीचे सैनिक मारले गेले तेव्हा ते कोठे होते: स्वतःच्या इमारतींजवळ, शत्रूच्या इमारतींजवळ, किंवा वसाहतींच्या मधल्या मोकळ्या मैदानात. स्वगृही झालेले नुकसान म्हणजे वसाहतीवर हल्ला होत होता; शत्रूच्या वसाहतीत झालेले नुकसान म्हणजे ती हल्ला करत होती. दोन्ही वसाहतींच्या जवळची जागा स्वगृही मानली जाते."
+    },
+    {
+      "id": "native:[stat band working]",
+      "source": "Working",
+      "target": "काम करत आहे"
+    },
+    {
+      "id": "native:[stat band idle]",
+      "source": "Idle",
+      "target": "निष्क्रिय"
+    },
+    {
+      "id": "native:[stat band training]",
+      "source": "Training",
+      "target": "प्रशिक्षण"
+    },
+    {
+      "id": "native:[stat band unserved]",
+      "source": "No inn or hospital free",
+      "target": "खानावळीत किंवा रुग्णालयात जागा नाही"
+    },
+    {
+      "id": "native:[stat band inns]",
+      "source": "Inns",
+      "target": "खानावळी"
+    },
+    {
+      "id": "native:[stat band sites]",
+      "source": "Building and upgrading",
+      "target": "बांधकाम आणि सुधारणा"
+    },
+    {
+      "id": "native:[stat band to resource]",
+      "source": "Walking to a resource",
+      "target": "संसाधनाकडे चालत जाणे"
+    },
+    {
+      "id": "native:[stat band harvesting]",
+      "source": "Harvesting",
+      "target": "कापणी"
+    },
+    {
+      "id": "native:[stat band carrying]",
+      "source": "Carrying it back",
+      "target": "ते परत घेऊन जाणे"
+    },
+    {
+      "id": "native:[stat band delivering]",
+      "source": "Delivering or waiting",
+      "target": "डिलिव्हरी करणे किंवा प्रतीक्षा करणे"
+    },
+    {
+      "id": "native:[stat band walking to inn]",
+      "source": "Walking to an inn",
+      "target": "खानावळीकडे चालत जाणे"
+    },
+    {
+      "id": "native:[stat band no inn]",
+      "source": "No inn free",
+      "target": "खानावळीत जागा नाही"
+    },
+    {
+      "id": "native:[stat band at home]",
+      "source": "At home",
+      "target": "घरी"
+    },
+    {
+      "id": "native:[stat band at enemy]",
+      "source": "At an enemy colony",
+      "target": "शत्रूच्या वसाहतीत"
+    },
+    {
+      "id": "native:[stat band in the open]",
+      "source": "In open ground",
+      "target": "मोकळ्या मैदानात"
+    },
+    {
+      "id": "native:[stat band seeking healing]",
+      "source": "Seeking healing",
+      "target": "उपचार शोधत आहे"
+    },
+    {
+      "id": "native:[stat band free]",
+      "source": "Free",
+      "target": "मोकळे"
+    },
+    {
+      "id": "native:[stat unit squares]",
+      "source": "squares",
+      "target": "चौरस"
+    },
+    {
+      "id": "native:[stat unit attack level]",
+      "source": "attack level",
+      "target": "हल्ल्याचा स्तर"
+    },
+    {
+      "id": "native:[stat unit strength count]",
+      "source": "strength",
+      "target": "सामर्थ्य"
+    },
+    {
+      "id": "native:[stat view by place]",
+      "source": "By place",
+      "target": "ठिकाणानुसार"
+    },
+    {
+      "id": "native:[AI Library]",
+      "source": "AI Library",
+      "target": "एआय लायब्ररी"
+    },
+    {
+      "id": "native:[Authoring guide]",
+      "source": "Authoring guide",
+      "target": "लेखक मार्गदर्शक"
+    },
+    {
+      "id": "native:[Beginner-friendly]",
+      "source": "Beginner-friendly",
+      "target": "नवशिक्यांसाठी अनुकूल"
+    },
+    {
+      "id": "native:[Defensive]",
+      "source": "Defensive",
+      "target": "बचावात्मक"
+    },
+    {
+      "id": "native:[Discover]",
+      "source": "Discover",
+      "target": "शोधा"
+    },
+    {
+      "id": "native:[Download & install]",
+      "source": "Download & install",
+      "target": "डाउनलोड आणि इन्स्टॉल करा"
+    },
+    {
+      "id": "native:[Downloading AI…]",
+      "source": "Downloading AI…",
+      "target": "एआय डाउनलोड करत आहे…"
+    },
+    {
+      "id": "native:[Expansion]",
+      "source": "Expansion",
+      "target": "विस्तार"
+    },
+    {
+      "id": "native:[Experimental]",
+      "source": "Experimental",
+      "target": "प्रायोगिक"
+    },
+    {
+      "id": "native:[Favourite]",
+      "source": "Favourite",
+      "target": "आवडते"
+    },
+    {
+      "id": "native:[Favourited]",
+      "source": "Favourited",
+      "target": "पसंतीचे"
+    },
+    {
+      "id": "native:[Favourites]",
+      "source": "Favourites",
+      "target": "आवडते"
+    }
+  ]
+}

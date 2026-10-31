@@ -1,0 +1,418 @@
+{
+  "request": {
+    "project": "bradley-personal-20261027",
+    "model": "general/nmt",
+    "payload": {
+      "sourceLanguageCode": "en",
+      "targetLanguageCode": "mr",
+      "mimeType": "text/plain",
+      "contents": [
+        "Fingerprint",
+        "Wavelength",
+        "Pattern",
+        "Labyrinth",
+        "Channels",
+        "Barrier",
+        "Water",
+        "Grain",
+        "Rain shadow",
+        "Ridges",
+        "Slant",
+        "Ridge thickness",
+        "Pass spacing",
+        "Lee width",
+        "Old growth",
+        "Canals",
+        "Forest density",
+        "Hidden groves",
+        "Starting trails",
+        "Block size",
+        "Canal width",
+        "Extra bridges",
+        "Polder",
+        "Old town",
+        "Anthill",
+        "Row angle",
+        "Diagonal",
+        "Dyke spacing",
+        "Village size",
+        "Hamlets",
+        "City size",
+        "Street width",
+        "Plazas",
+        "Chamber spacing",
+        "Chamber size",
+        "Queen room",
+        "Tunnel width",
+        "Loops",
+        "Home pools",
+        "Farm plots",
+        "Tendril roads",
+        "Random",
+        "Vertical",
+        "Horizontal",
+        "Block shape",
+        "Random parameters",
+        "Randomize parameters",
+        "Start quality",
+        "Fairness",
+        "Fitness",
+        "Win chance",
+        "Coefficient",
+        "Average",
+        "Fitted on games:",
+        "Every colony's start is measured on the finished map, and a model fitted to thousands of games between equal opponents turns those measurements into a fitness. The fitness says how likely that colony is to win. Fairness is how evenly those chances are shared: 1 when every colony is as likely to win as any other, 0 when one colony would take the map.",
+        "Worst",
+        "Best",
+        "No growth",
+        "Units get hungry",
+        "No hunger",
+        "Scarce (2x slower)",
+        "Very scarce (4x slower)",
+        "Extremely scarce (8x slower)",
+        "Small (+50 each)",
+        "Medium (+150 each)",
+        "Large (+300 each)",
+        "No resource growth",
+        "Economy",
+        "Instant construction",
+        "Starting units spawn already leveled up. Changes the generated map.",
+        "No upgrades",
+        "No permadeath",
+        "Glass cannon x2",
+        "Glass cannon x3",
+        "Fortress x5",
+        "Fortress x10",
+        "Veteran",
+        "Elite",
+        "Legendary",
+        "Combat"
+      ]
+    }
+  },
+  "response": {
+    "translations": [
+      {
+        "translatedText": "बोटांचे ठसे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तरंगलांबी",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नमुना",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "भूलभुलैया",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "चॅनेल",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अडथळा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पाणी",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "धान्य",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पर्जन्यछाये",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कटक",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तिरकस",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "रिजची जाडी",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पास स्पेसिंग",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ली रुंदी",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "जुनी वाढ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कालवे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "वन घनता",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "लपलेली झाडी",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पायवाट सुरू करणे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ब्लॉक आकार",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कालव्याची रुंदी",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अतिरिक्त पूल",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पोल्डर",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "जुने शहर",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "मुंग्यांचे वारूळ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पंक्ती कोन",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तिरकस",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "बंधाऱ्याचे अंतर",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "गावाचा आकार",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "हॅम्लेट्स",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "शहराचा आकार",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "रस्त्याची रुंदी",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "प्लाझा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "चेंबरमधील अंतर",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "चेंबरचा आकार",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "क्वीन रूम",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "बोगद्याची रुंदी",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "लूप्स",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "घरातील जलतरण तलाव",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "शेतातील भूखंड",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "वेंड्रिल रस्ते",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "यादृच्छिक",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "उभ्या",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "आडवे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ठोकळ्याचा आकार",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "यादृच्छिक पॅरामीटर्स",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पॅरामीटर्स यादृच्छिक करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "गुणवत्ता सुरू करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "निष्पक्षता",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "फिटनेस",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "जिंकण्याची संधी",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "गुणांक",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सरासरी",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "खेळांवर बसवलेले:",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "प्रत्येक वसाहतीची सुरुवात अंतिम नकाशावर मोजली जाते, आणि समान प्रतिस्पर्धकांमधील हजारो खेळांच्या आधारावर तयार केलेले एक मॉडेल त्या मोजमापांचे 'फिटनेस'मध्ये रूपांतर करते. फिटनेस हे सांगते की त्या वसाहतीच्या जिंकण्याची शक्यता किती आहे. निष्पक्षता म्हणजे या शक्यता किती समान रीतीने विभागल्या गेल्या आहेत: जेव्हा प्रत्येक वसाहतीच्या जिंकण्याची शक्यता इतर कोणत्याही वसाहतीइतकीच असते तेव्हा १, आणि जेव्हा एखादी वसाहत संपूर्ण नकाशा काबीज करेल तेव्हा ०.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सर्वात वाईट",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सर्वोत्तम",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "वाढ नाही",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "युनिट्सना भूक लागते",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "भूक नाही",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "दुर्मिळ (२ पट हळू)",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अत्यंत दुर्मिळ (४ पट मंद)",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अत्यंत दुर्मिळ (८ पट मंद)",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "लहान (+५० प्रत्येकी)",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "मध्यम (+१५० प्रत्येकी)",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "मोठे (+३०० प्रत्येकी)",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "संसाधनांची वाढ नाही",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अर्थव्यवस्था",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "झटपट बांधकाम",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सुरुवातीचे युनिट्स आधीच लेव्हल अप केलेले असतात. यामुळे तयार होणारा नकाशा बदलतो.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कोणतेही अपग्रेड नाहीत",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कायमस्वरूपी मृत्यू नाही",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ग्लास कॅनन x2",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ग्लास कॅनन x3",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "किल्ला x5",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "किल्ला x10",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अनुभवी",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "एलिट",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पौराणिक",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "लढाई",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      }
+    ]
+  },
+  "response_sha256": "f1f8e1abca7d3889ae9357f6a7fd6d5c96447a91386202e89135e672e1db51f0"
+}

@@ -1,0 +1,317 @@
+{
+  "reviewer": "/root/draft_tool",
+  "role": "independent online semantic reviewer",
+  "source_sha256": "0ac44b4cdfb03e688983d6e3fb1e484cca57589665bff19c5c65388e649b292a",
+  "batch_target_sha256": "913d2fbf03c65f4f6088ebdbec582bce9a1dc03e734dbba5ab3136f4d3a1e08e",
+  "catalog_sha256": {
+    "native": "feb2f29298db1e8ef564d5a7ec23b73562a82cdae34499a108bcc3bd5a0d7415",
+    "online": "1ba40d342498f5e7704a63e5d175bd9e8a0ede31e3ca2ce88e8cb1fbc0ba68a6"
+  },
+  "reviewed_keys": [
+    "online:Authenticated account activity; anonymous visitors are excluded.",
+    "online:Author-reported generator",
+    "online:Authoring guide",
+    "online:Authoring guide ↗",
+    "online:Average successful completion time",
+    "online:Awaiting provider outcome",
+    "online:Awaiting validation",
+    "online:Back to Globulation 2",
+    "online:Back to My skins",
+    "online:Back to sign in",
+    "online:Back to the home page",
+    "online:Background color",
+    "online:Background material",
+    "online:Background noise",
+    "online:Balanced",
+    "online:Ban",
+    "online:Ban {value0}? This signs them out everywhere.",
+    "online:Band width",
+    "online:Banned",
+    "online:Base artwork",
+    "online:Behind",
+    "online:Best {slot0}",
+    "online:Both",
+    "online:Boundary style",
+    "online:Branching spires rising from a mound.",
+    "online:Broken",
+    "online:Browse",
+    "online:Browse library",
+    "online:Browse maps",
+    "online:Browse the library",
+    "online:Browser recovery is unavailable. Keep this page open until changes are saved.",
+    "online:Brush",
+    "online:Brush and eraser reach hidden surfaces underneath the cursor. Some front/back and top/bottom surfaces share paint. A stroke may appear on their matching side too, keeping the glob’s flips seamless.",
+    "online:Brush paints",
+    "online:Brush size ",
+    "online:Build",
+    "online:Build a consistent world with custom terrain, resources, and artwork.",
+    "online:Build details",
+    "online:Build in AI Map Studio",
+    "online:Build in AI Music Studio",
+    "online:Build in AI Studio",
+    "online:Build the playable map",
+    "online:Build wooded hills with wide routes between colonies",
+    "online:Building",
+    "online:Building Studio",
+    "online:Building Studio is disabled on this instance. Your saved projects remain available.",
+    "online:Building Studio is disabled.",
+    "online:Building color",
+    "online:Building color preview",
+    "online:Building design conversation",
+    "online:Building family",
+    "online:Building family editor",
+    "online:Building library",
+    "online:Building projects",
+    "online:Building-credit sales are not enabled.",
+    "online:Buildings",
+    "online:Buildings allowed",
+    "online:Buildings and upgrade stages",
+    "online:Buildings under construction",
+    "online:Buildings: latest verified match against recent average",
+    "online:Bundled JavaScript file",
+    "online:Buy {slot0}",
+    "online:Buy {slot0} credit · {slot1}",
+    "online:Buy {slot0} credits · {slot1}",
+    "online:By a map generator",
+    "online:By generator",
+    "online:By map",
+    "online:By queue",
+    "online:By {slot0}",
+    "online:By {slot0} · {slot1} likes · {slot2}",
+    "online:By {slot0} · {slot1} terrain · {slot2} resources",
+    "online:By {slot0} · {slot1} terrains · {slot2} resources",
+    "online:By {slot0} · {slot1} · {slot2}",
+    "online:B{slot0}",
+    "online:CC BY",
+    "online:CC BY 4.0",
+    "online:CC BY 4.0 — credit required",
+    "online:CC BY-SA 4.0",
+    "online:CC-BY-4.0",
+    "online:CC-BY-SA-4.0",
+    "online:CC0",
+    "online:CC0 1.0",
+    "online:CC0 — public domain",
+    "online:CC0-1.0",
+    "online:CHOOSE FINAL VIEW",
+    "online:COLONY STUDIO",
+    "online:COMMUNITY SOUNDTRACKS",
+    "online:COMMUNITY · LOCAL PLAY",
+    "online:CURRENT POSE",
+    "online:Cabino",
+    "online:Cache write tokens",
+    "online:Cached input",
+    "online:Cached input tokens",
+    "online:Calm",
+    "online:Calm → Building → Combat → Calm · eight seconds per mood",
+    "online:Camera angle ",
+    "online:Camera view",
+    "online:Can be farmed",
+    "online:Can be retried",
+    "online:Cancel"
+  ],
+  "findings": [
+    {
+      "key": "online:Authoring guide",
+      "before": "लेखक मार्गदर्शक",
+      "after": "निर्मिती मार्गदर्शक",
+      "reason": "Authoring is content creation, not guide author.",
+      "severity": "minor",
+      "state": "proposed"
+    },
+    {
+      "key": "online:Authoring guide ↗",
+      "before": "लेखन मार्गदर्शक ↗",
+      "after": "निर्मिती मार्गदर्शक ↗",
+      "reason": "Match same guide label.",
+      "severity": "minor",
+      "state": "proposed"
+    },
+    {
+      "key": "online:Back to My skins",
+      "before": "माझ्या त्वचेकडे परत",
+      "after": "माझ्या रूपांकडे परत जा",
+      "reason": "Skins are appearance assets, not human skin.",
+      "severity": "major",
+      "state": "proposed"
+    },
+    {
+      "key": "online:Band width",
+      "before": "बँडची रुंदी",
+      "after": "पट्ट्याची रुंदी",
+      "reason": "Pattern band is a painted stripe, not a musical/radio band.",
+      "severity": "minor",
+      "state": "proposed"
+    },
+    {
+      "key": "online:Browse the library",
+      "before": "ग्रंथालय ब्राउझ करा",
+      "after": "संग्रह पाहा",
+      "reason": "Content gallery, not book library.",
+      "severity": "minor",
+      "state": "proposed"
+    },
+    {
+      "key": "online:Brush and eraser reach hidden surfaces underneath the cursor. Some front/back and top/bottom surfaces share paint. A stroke may appear on their matching side too, keeping the glob’s flips seamless.",
+      "before": "ब्रश आणि इरेझर कर्सरखालील लपलेल्या पृष्ठभागांपर्यंत पोहोचतात. काही पुढचे/मागचे आणि वरचे/खालचे पृष्ठभाग रंग सामायिक करतात. एक स्ट्रोक त्याच्या जुळणाऱ्या बाजूवर देखील दिसू शकतो, ज्यामुळे रंगाच्या गोळ्याचे उलटणे अखंड राहते.",
+      "after": "ब्रश आणि खोडरबर कर्सरखाली लपलेल्या पृष्ठभागांवरही काम करतात. काही पुढील/मागील आणि वरील/खालील पृष्ठभागांवर समान रंग वापरला जातो. रंगाचा फटका जुळणाऱ्या बाजूवरही दिसू शकतो, त्यामुळे ग्लॉब उलटल्यावर रंग सलग दिसतो.",
+      "reason": "Glob is creature name, not a ball of paint; preserve mirrored surface behavior.",
+      "severity": "major",
+      "state": "proposed"
+    },
+    {
+      "key": "online:Brush paints",
+      "before": "ब्रश पेंट्स",
+      "after": "ब्रशने रंगवले जाते",
+      "reason": "Brush paints describes painting action, not plural paint products.",
+      "severity": "minor",
+      "state": "proposed"
+    },
+    {
+      "key": "online:Building Studio",
+      "before": "स्टुडिओची इमारत",
+      "after": "इमारत निर्मिती स्टुडिओ",
+      "reason": "Studio for creating buildings, not a studio building.",
+      "severity": "major",
+      "state": "proposed"
+    },
+    {
+      "key": "online:Building Studio is disabled on this instance. Your saved projects remain available.",
+      "before": "या इन्स्टन्सवर बिल्ड स्टुडिओ अक्षम केले आहे. तुमचे जतन केलेले प्रकल्प उपलब्ध राहतील.",
+      "after": "या स्थापनेत इमारत निर्मिती स्टुडिओ बंद आहे. तुमचे जतन केलेले प्रकल्प उपलब्ध राहतील.",
+      "reason": "Use same product label; preserve saved project availability.",
+      "severity": "minor",
+      "state": "proposed"
+    },
+    {
+      "key": "online:Building Studio is disabled.",
+      "before": "बिल्डिंग स्टुडिओ अक्षम आहे.",
+      "after": "इमारत निर्मिती स्टुडिओ बंद आहे.",
+      "reason": "Match product label.",
+      "severity": "minor",
+      "state": "proposed"
+    },
+    {
+      "key": "online:Building family",
+      "before": "कुटुंब तयार करणे",
+      "after": "इमारतींचा संच",
+      "reason": "Building is a noun; family groups building stages/types.",
+      "severity": "major",
+      "state": "proposed"
+    },
+    {
+      "key": "online:Building family editor",
+      "before": "कुटुंब संपादक तयार करत आहे",
+      "after": "इमारत संचाचा संपादक",
+      "reason": "Editor for building families, not actively building a family.",
+      "severity": "major",
+      "state": "proposed"
+    },
+    {
+      "key": "online:Building library",
+      "before": "ग्रंथालय इमारत",
+      "after": "इमारतींचा संग्रह",
+      "reason": "Collection of building assets, not a library building.",
+      "severity": "major",
+      "state": "proposed"
+    },
+    {
+      "key": "online:Building projects",
+      "before": "बांधकाम प्रकल्प",
+      "after": "इमारत निर्मिती प्रकल्प",
+      "reason": "Distinguish authoring projects from an active in-game construction site.",
+      "severity": "minor",
+      "state": "proposed"
+    },
+    {
+      "key": "online:Building-credit sales are not enabled.",
+      "before": "इमारत कर्जाची विक्री सक्षम केलेली नाही.",
+      "after": "इमारत निर्मिती क्रेडिट्सची विक्री सुरू नाही.",
+      "reason": "Credits are purchased currency, not loans.",
+      "severity": "major",
+      "state": "proposed"
+    },
+    {
+      "key": "online:Buildings allowed",
+      "before": "इमारतींना परवानगी दिली",
+      "after": "परवानगी असलेल्या इमारती",
+      "reason": "Configuration list, not a sentence stating permission granted.",
+      "severity": "minor",
+      "state": "proposed"
+    },
+    {
+      "key": "online:Buildings: latest verified match against recent average",
+      "before": "इमारती: अलीकडील सरासरीच्या तुलनेत नवीनतम सत्यापित जुळणी",
+      "after": "इमारती: अलीकडील सरासरीच्या तुलनेत नवीनतम पडताळलेला सामना",
+      "reason": "Match means played game, not matching pair.",
+      "severity": "major",
+      "state": "proposed"
+    },
+    {
+      "key": "online:CC BY 4.0 — credit required",
+      "before": "CC BY 4.0 — क्रेडिट आवश्यक",
+      "after": "CC BY 4.0 — श्रेय देणे आवश्यक",
+      "reason": "License attribution credit is not paid currency.",
+      "severity": "major",
+      "state": "proposed"
+    },
+    {
+      "key": "online:COLONY STUDIO",
+      "before": "कॉलनी स्टुडिओ",
+      "after": "वसाहत स्टुडिओ",
+      "reason": "Use colony glossary consistently.",
+      "severity": "minor",
+      "state": "proposed"
+    },
+    {
+      "key": "online:Cabino",
+      "before": "कॅबिनो",
+      "after": "Cabino",
+      "reason": "AI implementation proper name should match in-game identifier.",
+      "severity": "minor",
+      "state": "proposed"
+    }
+  ],
+  "accepted_english": [
+    {
+      "key": "online:B{slot0}",
+      "reason": "Compact B-prefixed building/version code remains Latin with its value."
+    },
+    {
+      "key": "online:CC BY",
+      "reason": "Creative Commons license identifier is invariant."
+    },
+    {
+      "key": "online:CC BY 4.0",
+      "reason": "Creative Commons license/version identifier is invariant."
+    },
+    {
+      "key": "online:CC BY-SA 4.0",
+      "reason": "Creative Commons ShareAlike license/version identifier is invariant."
+    },
+    {
+      "key": "online:CC-BY-4.0",
+      "reason": "Machine-readable license code is invariant."
+    },
+    {
+      "key": "online:CC-BY-SA-4.0",
+      "reason": "Machine-readable ShareAlike license code is invariant."
+    },
+    {
+      "key": "online:CC0",
+      "reason": "Public-domain dedication identifier is invariant."
+    },
+    {
+      "key": "online:CC0 1.0",
+      "reason": "Public-domain dedication/version identifier is invariant."
+    },
+    {
+      "key": "online:CC0-1.0",
+      "reason": "Machine-readable public-domain dedication code is invariant."
+    },
+    {
+      "key": "online:Cabino",
+      "reason": "Named AI implementation retains its source spelling, matching in-game label."
+    }
+  ],
+  "certification": "Agent-reviewed; not native-human-certified; editorial and final recheck pending"
+}

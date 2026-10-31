@@ -1,0 +1,418 @@
+{
+  "request": {
+    "project": "bradley-personal-20261027",
+    "model": "general/nmt",
+    "payload": {
+      "sourceLanguageCode": "en",
+      "targetLanguageCode": "mr",
+      "mimeType": "text/plain",
+      "contents": [
+        "ZXQPH0QXZ terrains · ZXQPH1QXZ resources · revision ZXQPH2QXZ",
+        "ZXQPH0QXZ terrain · ZXQPH1QXZ resources · ZXQPH2QXZ",
+        "ZXQPH0QXZ terrains · ZXQPH1QXZ resources · ZXQPH2QXZ",
+        "ZXQPH0QXZ terrains · ZXQPH1QXZ resources · revision ZXQPH2QXZ",
+        "ZXQPH0QXZ terrains · ZXQPH1QXZ resources · ZXQPH2QXZ",
+        "ZXQPH0QXZ tiles",
+        "ZXQPH0QXZ to create and save drafts.",
+        "ZXQPH0QXZ to publish.",
+        "ZXQPH0QXZ to see and share your maps.",
+        "ZXQPH0QXZ to see your generators.",
+        "ZXQPH0QXZ to see your library.",
+        "ZXQPH0QXZ to share an AI.",
+        "ZXQPH0QXZ to share maps.",
+        "ZXQPH0QXZ today · ZXQPH1QXZ in 7 days · ZXQPH2QXZ in 30 days",
+        "ZXQPH0QXZ unique accounts · previous period ZXQPH1QXZ",
+        "ZXQPH0QXZ with a moderator account.",
+        "ZXQPH0QXZ within ZXQPH1QXZ minutes",
+        "ZXQPH0QXZ ZXQPH1QXZ · AI composition is disclosed.",
+        "ZXQPH0QXZ · Continue editing",
+        "ZXQPH0QXZ · Custom artwork and gameplay properties",
+        "ZXQPH0QXZ · based on revision ZXQPH1QXZ",
+        "ZXQPH0QXZ · last seen ZXQPH1QXZZXQPH2QXZ",
+        "ZXQPH0QXZ · per million tokens: ZXQPH1QXZ input / ZXQPH2QXZ cached / ZXQPH3QXZ output credits.",
+        "ZXQPH0QXZ · playing since ZXQPH1QXZZXQPH2QXZ",
+        "ZXQPH0QXZ · revision ZXQPH1QXZ",
+        "ZXQPH0QXZ · revision ZXQPH1QXZ · ZXQPH2QXZ",
+        "ZXQPH0QXZ · saved generation preview",
+        "ZXQPH0QXZ · seed ZXQPH1QXZ · ZXQPH2QXZ",
+        "ZXQPH0QXZ · seed ZXQPH1QXZ · ZXQPH2QXZZXQPH3QXZ",
+        "ZXQPH0QXZ · ZXQPH1QXZ",
+        "ZXQPH0QXZ · ZXQPH1QXZ MiB stored",
+        "ZXQPH0QXZ · ZXQPH1QXZ likes",
+        "ZXQPH0QXZ · ZXQPH1QXZ second",
+        "ZXQPH0QXZ · ZXQPH1QXZ seconds",
+        "ZXQPH0QXZ · ZXQPH1QXZ seconds",
+        "ZXQPH0QXZ · ZXQPH1QXZ since ZXQPH2QXZ",
+        "ZXQPH0QXZ · ZXQPH1QXZ ZXQPH2QXZ",
+        "ZXQPH0QXZ · ZXQPH1QXZ · last renewed ZXQPH2QXZZXQPH3QXZ",
+        "ZXQPH0QXZ · ZXQPH1QXZ · ZXQPH2QXZ",
+        "ZXQPH0QXZ · ZXQPH1QXZ · ZXQPH2QXZ downloads",
+        "ZXQPH0QXZ · ZXQPH1QXZ · ZXQPH2QXZ × ZXQPH3QXZ",
+        "ZXQPH0QXZ · ZXQPH1QXZ · ZXQPH2QXZZXQPH3QXZ",
+        "ZXQPH0QXZ · ZXQPH1QXZZXQPH2QXZ",
+        "ZXQPH0QXZ · ZXQPH1QXZ×ZXQPH2QXZ",
+        "ZXQPH0QXZ × ZXQPH1QXZ  ZXQPH2QXZ UNCHARTED TERRITORY",
+        "ZXQPH0QXZ × ZXQPH1QXZ · ZXQPH2QXZ player",
+        "ZXQPH0QXZ × ZXQPH1QXZ · ZXQPH2QXZ players",
+        "ZXQPH0QXZ × ZXQPH1QXZ · ZXQPH2QXZ player · Private until published",
+        "ZXQPH0QXZ × ZXQPH1QXZ · ZXQPH2QXZ players · Private until published",
+        "ZXQPH0QXZ × ZXQPH1QXZ · ZXQPH2QXZ players",
+        "ZXQPH0QXZ × ZXQPH1QXZ · ZXQPH2QXZ players · Private until published",
+        "ZXQPH0QXZ ↗",
+        "ZXQPH0QXZ%",
+        "ZXQPH0QXZ/32",
+        "ZXQPH0QXZ: collected ZXQPH1QXZ · refunded ZXQPH2QXZ · collected less refunds ZXQPH3QXZ",
+        "ZXQPH0QXZ: default ZXQPH1QXZZXQPH2QXZ",
+        "ZXQPH0QXZ: since ZXQPH1QXZZXQPH2QXZ",
+        "ZXQPH0QXZ: starts at ZXQPH1QXZ, holds ZXQPH2QXZ; ZXQPH3QXZ",
+        "ZXQPH0QXZ: ZXQPH1QXZ",
+        "ZXQPH0QXZ: ZXQPH1QXZ · ZXQPH2QXZ",
+        "ZXQPH0QXZ: ZXQPH1QXZ · ZXQPH2QXZ credit",
+        "ZXQPH0QXZ: ZXQPH1QXZ · ZXQPH2QXZ credits",
+        "ZXQPH0QXZ: ZXQPH1QXZ · ZXQPH2QXZ credits",
+        "ZXQPH0QXZby ZXQPH1QXZ · ♥ ZXQPH2QXZ",
+        "ZXQPH0QXZZXQPH1QXZ · ♥ ZXQPH2QXZZXQPH3QXZ",
+        "ZXQPH0QXZZXQPH1QXZ% chat",
+        "ZXQPH0QXZ°",
+        "ZXQPH0QXZ×ZXQPH1QXZ",
+        "ZXQPH0QXZ–ZXQPH1QXZ",
+        "ZXQPH0QXZ (no preview)",
+        "ZXQPH0QXZ Map credits",
+        "ZXQPH0QXZ Music credits",
+        "ZXQPH0QXZ Stripe minor units",
+        "ZXQPH0QXZ artwork",
+        "ZXQPH0QXZ conversation",
+        "ZXQPH0QXZ cover",
+        "ZXQPH0QXZ credits",
+        "ZXQPH0QXZ hue",
+        "ZXQPH0QXZ rendered preview",
+        "ZXQPH0QXZ saturation and brightness"
+      ]
+    }
+  },
+  "response": {
+    "translations": [
+      {
+        "translatedText": "ZXQPH0QXZ भूप्रदेश · ZXQPH1QXZ संसाधने · आवृत्ती ZXQPH2QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ भूभाग · ZXQPH1QXZ संसाधने · ZXQPH2QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ भूभाग · ZXQPH1QXZ संसाधने · ZXQPH2QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ भूप्रदेश · ZXQPH1QXZ संसाधने · आवृत्ती ZXQPH2QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ भूभाग · ZXQPH1QXZ संसाधने · ZXQPH2QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ टाइल्स",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "मसुदे तयार करण्यासाठी आणि जतन करण्यासाठी ZXQPH0QXZ वापरा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "प्रकाशित करण्यासाठी ZXQPH0QXZ.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तुमचे नकाशे पाहण्यासाठी आणि शेअर करण्यासाठी ZXQPH0QXZ वापरा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तुमचे जनरेटर पाहण्यासाठी ZXQPH0QXZ वापरा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तुमची लायब्ररी पाहण्यासाठी ZXQPH0QXZ वापरा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "एआय शेअर करण्यासाठी ZXQPH0QXZ वापरा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नकाशे शेअर करण्यासाठी ZXQPH0QXZ वापरा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ आज · ZXQPH1QXZ ७ दिवसांत · ZXQPH2QXZ ३० दिवसांत",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ अद्वितीय खाती · मागील कालावधी ZXQPH1QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ मॉडरेटर खात्यासह.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ मिनिटांच्या आत",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ ZXQPH1QXZ · एआयची रचना जाहीर केली आहे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ · संपादन सुरू ठेवा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ · सानुकूल कलाकृती आणि गेमप्ले गुणधर्म",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ · ZXQPH1QXZ या आवृत्तीवर आधारित",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ · शेवटचे पाहिले ZXQPH1QXZZXQPH2QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ · प्रति दशलक्ष टोकन: ZXQPH1QXZ इनपुट / ZXQPH2QXZ कॅश्ड / ZXQPH3QXZ आउटपुट क्रेडिट्स.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ · ZXQPH1QXZZXQPH2QXZ पासून खेळत आहे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ · सुधारित आवृत्ती ZXQPH1QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ · सुधारित आवृत्ती ZXQPH1QXZ · ZXQPH2QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ · जतन केलेल्या पिढीचे पूर्वावलोकन",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ · सीड ZXQPH1QXZ · ZXQPH2QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ · सीड ZXQPH1QXZ · ZXQPH2QXZZXQPH3QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ · ZXQPH1QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ · ZXQPH1QXZ MiB साठवले",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ · ZXQPH1QXZ ला आवडले",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ · ZXQPH1QXZ दुसरा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ · ZXQPH1QXZ सेकंद",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ · ZXQPH1QXZ सेकंद",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ · ZXQPH1QXZ हे ZXQPH2QXZ पासून",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ · ZXQPH1QXZ ZXQPH2QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ · ZXQPH1QXZ · शेवटचे नूतनीकरण ZXQPH2QXZZXQPH3QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ · ZXQPH1QXZ · ZXQPH2QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ · ZXQPH1QXZ · ZXQPH2QXZ डाउनलोड्स",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ · ZXQPH1QXZ · ZXQPH2QXZ × ZXQPH3QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ · ZXQPH1QXZ · ZXQPH2QXZZXQPH3QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ · ZXQPH1QXZZXQPH2QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ · ZXQPH1QXZ×ZXQPH2QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ × ZXQPH1QXZ ZXQPH2QXZ अज्ञात प्रदेश",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ × ZXQPH1QXZ · ZXQPH2QXZ प्लेअर",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ × ZXQPH1QXZ · ZXQPH2QXZ खेळाडू",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ × ZXQPH1QXZ · ZXQPH2QXZ प्लेअर · प्रकाशित होईपर्यंत खाजगी",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ × ZXQPH1QXZ · ZXQPH2QXZ खेळाडू · प्रकाशित होईपर्यंत खाजगी",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ × ZXQPH1QXZ · ZXQPH2QXZ खेळाडू",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ × ZXQPH1QXZ · ZXQPH2QXZ खेळाडू · प्रकाशित होईपर्यंत खाजगी",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ ↗",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ%",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ/32",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ: गोळा केले ZXQPH1QXZ · परत केले ZXQPH2QXZ · परत केलेल्या रकमेपेक्षा कमी गोळा केले ZXQPH3QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ: डीफॉल्ट ZXQPH1QXZZXQPH2QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ: ZXQPH1QXZZXQPH2QXZ पासून",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ: ZXQPH1QXZ पासून सुरू होते, ZXQPH2QXZ; ZXQPH3QXZ कायम ठेवते",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ: ZXQPH1QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ: ZXQPH1QXZ · ZXQPH2QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ: ZXQPH1QXZ · ZXQPH2QXZ क्रेडिट",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ: ZXQPH1QXZ · ZXQPH2QXZ क्रेडिट्स",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ: ZXQPH1QXZ · ZXQPH2QXZ क्रेडिट्स",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZby ZXQPH1QXZ · ♥ ZXQPH2QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZZXQPH1QXZ · ♥ ZXQPH2QXZZXQPH3QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZZXQPH1QXZ% चॅट",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ°",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ×ZXQPH1QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ–ZXQPH1QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ (पूर्वावलोकन नाही)",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ नकाशा श्रेय",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ संगीत श्रेय",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ पट्टेदार लहान एकके",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ कलाकृती",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ संभाषण",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ कव्हर",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ क्रेडिट्स",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ रंगछटा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ प्रस्तुत केलेले पूर्वावलोकन",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ सॅचुरेशन आणि ब्राइटनेस",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      }
+    ]
+  },
+  "response_sha256": "49693afd520da329728910dce63c292edbe521a26da421d4a94ea9e34267da20"
+}

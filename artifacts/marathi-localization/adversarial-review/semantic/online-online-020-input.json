@@ -1,0 +1,510 @@
+{
+  "source_sha256": "0ac44b4cdfb03e688983d6e3fb1e484cca57589665bff19c5c65388e649b292a",
+  "batch_target_sha256": "1de06ed2723ef7166c8837ac09b7feec1bbb966d4e0101ba80d9cd76d5f98a9f",
+  "catalog_sha256": {
+    "native": "683bcc1e1680e6cb9e2605ef9be42724a76d3e7b1f2868462e24ef50d1423642",
+    "online": "1ba40d342498f5e7704a63e5d175bd9e8a0ede31e3ca2ce88e8cb1fbc0ba68a6"
+  },
+  "entries": [
+    {
+      "id": "online:Stopped",
+      "source": "Stopped",
+      "target": "थांबले"
+    },
+    {
+      "id": "online:Stripes",
+      "source": "Stripes",
+      "target": "पट्टे"
+    },
+    {
+      "id": "online:Studio",
+      "source": "Studio",
+      "target": "स्टुडिओ"
+    },
+    {
+      "id": "online:Studio credit purchases are not available.",
+      "source": "Studio credit purchases are not available.",
+      "target": "स्टुडिओ क्रेडिट खरेदी उपलब्ध नाही."
+    },
+    {
+      "id": "online:Studio view",
+      "source": "Studio view",
+      "target": "स्टुडिओ व्ह्यू"
+    },
+    {
+      "id": "online:Submitted",
+      "source": "Submitted",
+      "target": "सादर केले"
+    },
+    {
+      "id": "online:Succeeded",
+      "source": "Succeeded",
+      "target": "यशस्वी झाले"
+    },
+    {
+      "id": "online:Supply",
+      "source": "Supply",
+      "target": "पुरवठा"
+    },
+    {
+      "id": "online:Supply valid example settings.",
+      "source": "Supply valid example settings.",
+      "target": "वैध उदाहरण सेटिंग्ज पुरवा."
+    },
+    {
+      "id": "online:Sustained notes",
+      "source": "Sustained notes",
+      "target": "दीर्घकाळ टिकणारे सूर"
+    },
+    {
+      "id": "online:Swarm shape",
+      "source": "Swarm shape",
+      "target": "थव्याचा आकार"
+    },
+    {
+      "id": "online:Swimming movement",
+      "source": "Swimming movement",
+      "target": "पोहण्याची हालचाल"
+    },
+    {
+      "id": "online:Synchronized music player",
+      "source": "Synchronized music player",
+      "target": "सिंक्रोनाइझ्ड म्युझिक प्लेयर"
+    },
+    {
+      "id": "online:Synth · warm bells, pads & pulse",
+      "source": "Synth · warm bells, pads & pulse",
+      "target": "सिंथ · वॉर्म बेल्स, पॅड्स आणि पल्स"
+    },
+    {
+      "id": "online:THE LISTENING NOTES",
+      "source": "THE LISTENING NOTES",
+      "target": "ऐकण्याच्या नोंदी"
+    },
+    {
+      "id": "online:THE LISTENING ROOM",
+      "source": "THE LISTENING ROOM",
+      "target": "ऐकण्याची खोली"
+    },
+    {
+      "id": "online:TOOLBOX",
+      "source": "TOOLBOX",
+      "target": "टूलबॉक्स"
+    },
+    {
+      "id": "online:Tag",
+      "source": "Tag",
+      "target": "टॅग"
+    },
+    {
+      "id": "online:Tags",
+      "source": "Tags",
+      "target": "टॅग"
+    },
+    {
+      "id": "online:Tags (comma separated)",
+      "source": "Tags (comma separated)",
+      "target": "टॅग (स्वल्पविरामाने विभक्त केलेले)"
+    },
+    {
+      "id": "online:Take a seat first.",
+      "source": "Take a seat first.",
+      "target": "आधी बसा."
+    },
+    {
+      "id": "online:Target ID or type",
+      "source": "Target ID or type",
+      "target": "लक्ष्य आयडी किंवा प्रकार"
+    },
+    {
+      "id": "online:Team",
+      "source": "Team",
+      "target": "संघ"
+    },
+    {
+      "id": "online:Team color",
+      "source": "Team color",
+      "target": "संघाचा रंग"
+    },
+    {
+      "id": "online:Team color layers must match the base frame dimensions.",
+      "source": "Team color layers must match the base frame dimensions.",
+      "target": "संघाच्या रंगांचे थर मूळ फ्रेमच्या मापांशी जुळले पाहिजेत."
+    },
+    {
+      "id": "online:Team {value0}",
+      "source": "Team {value0}",
+      "target": "टीम {value0}"
+    },
+    {
+      "id": "online:Teams",
+      "source": "Teams",
+      "target": "संघ"
+    },
+    {
+      "id": "online:Technical checks do not establish balance or fun.",
+      "source": "Technical checks do not establish balance or fun.",
+      "target": "तांत्रिक तपासण्यांमुळे संतुलन किंवा मजा निर्माण होत नाही."
+    },
+    {
+      "id": "online:Technical checks passed",
+      "source": "Technical checks passed",
+      "target": "तांत्रिक तपासण्या यशस्वी झाल्या."
+    },
+    {
+      "id": "online:Technical details",
+      "source": "Technical details",
+      "target": "तांत्रिक तपशील"
+    },
+    {
+      "id": "online:Tell me about the world you want to hear. We’ll shape the melody, instruments and three moods together.",
+      "source": "Tell me about the world you want to hear. We’ll shape the melody, instruments and three moods together.",
+      "target": "तुम्हाला जे जग ऐकायचं आहे, त्याबद्दल मला सांगा. आपण मिळून चाल, वाद्यं आणि तीन भावछटा घडवू."
+    },
+    {
+      "id": "online:Terrain",
+      "source": "Terrain",
+      "target": "भूभाग"
+    },
+    {
+      "id": "online:Terrain & resource sets",
+      "source": "Terrain & resource sets",
+      "target": "भूभाग आणि संसाधन संच"
+    },
+    {
+      "id": "online:Terrain & resources",
+      "source": "Terrain & resources",
+      "target": "भूभाग आणि संसाधने"
+    },
+    {
+      "id": "online:Terrain Studio",
+      "source": "Terrain Studio",
+      "target": "टेरेन स्टुडिओ"
+    },
+    {
+      "id": "online:Terrain Studio is disabled on this instance. Your saved projects remain available.",
+      "source": "Terrain Studio is disabled on this instance. Your saved projects remain available.",
+      "target": "या इन्स्टन्सवर टेरेन स्टुडिओ अक्षम केले आहे. तुमचे जतन केलेले प्रकल्प उपलब्ध राहतील."
+    },
+    {
+      "id": "online:Terrain Studio is disabled.",
+      "source": "Terrain Studio is disabled.",
+      "target": "टेरेन स्टुडिओ अक्षम आहे."
+    },
+    {
+      "id": "online:Terrain design conversation",
+      "source": "Terrain design conversation",
+      "target": "भूभाग डिझाइन संभाषण"
+    },
+    {
+      "id": "online:Terrain frames are 32×32. Resource and decor frames can be up to 64×64. Reupload the same PNG with new dimensions to replace its frame grid; then check its frame mappings.",
+      "source": "Terrain frames are 32×32. Resource and decor frames can be up to 64×64. Reupload the same PNG with new dimensions to replace its frame grid; then check its frame mappings.",
+      "target": "टेरेन फ्रेम्स ३२×३२ आकाराच्या असतात. रिसोर्स आणि डेकोर फ्रेम्स ६४×६४ पर्यंत असू शकतात. त्याची फ्रेम ग्रिड बदलण्यासाठी, तीच PNG नवीन मापांसह पुन्हा अपलोड करा; त्यानंतर तिचे फ्रेम मॅपिंग तपासा."
+    },
+    {
+      "id": "online:Terrain projects",
+      "source": "Terrain projects",
+      "target": "भूभाग प्रकल्प"
+    },
+    {
+      "id": "online:Terrain-credit sales are not enabled.",
+      "source": "Terrain-credit sales are not enabled.",
+      "target": "टेरेन-क्रेडिट विक्री सक्षम केलेली नाही."
+    },
+    {
+      "id": "online:Test diagnostics attached.",
+      "source": "Test diagnostics attached.",
+      "target": "चाचणीचा तपशील जोडला आहे."
+    },
+    {
+      "id": "online:Test store — real-money checkout is not enabled.",
+      "source": "Test store — real-money checkout is not enabled.",
+      "target": "चाचणी स्टोअर — प्रत्यक्ष पैशांचे चेकआउट सक्षम केलेले नाही."
+    },
+    {
+      "id": "online:That account cannot sign in.",
+      "source": "That account cannot sign in.",
+      "target": "ते खाते साइन इन करू शकत नाही."
+    },
+    {
+      "id": "online:That display name is taken.",
+      "source": "That display name is taken.",
+      "target": "ते डिस्प्ले नाव आधीच वापरले आहे."
+    },
+    {
+      "id": "online:That password is not right for this username. Try again.",
+      "source": "That password is not right for this username. Try again.",
+      "target": "तो पासवर्ड या युझरनेमसाठी योग्य नाही. पुन्हा प्रयत्न करा."
+    },
+    {
+      "id": "online:That player is not in this room.",
+      "source": "That player is not in this room.",
+      "target": "तो खेळाडू या खोलीत नाही."
+    },
+    {
+      "id": "online:That seat is not open.",
+      "source": "That seat is not open.",
+      "target": "ती जागा उपलब्ध नाही."
+    },
+    {
+      "id": "online:That username is taken.",
+      "source": "That username is taken.",
+      "target": "ते वापरकर्तानाव आधीच घेतलेले आहे."
+    },
+    {
+      "id": "online:The 3D canvas could not start.",
+      "source": "The 3D canvas could not start.",
+      "target": "3D कॅनव्हास सुरू होऊ शकला नाही."
+    },
+    {
+      "id": "online:The 3D canvas was interrupted. Your painting is safe.",
+      "source": "The 3D canvas was interrupted. Your painting is safe.",
+      "target": "३डी कॅनव्हासमध्ये व्यत्यय आला. तुमचे चित्र सुरक्षित आहे."
+    },
+    {
+      "id": "online:The 3D shader could not compile.",
+      "source": "The 3D shader could not compile.",
+      "target": "3D शेडर संकलित होऊ शकला नाही."
+    },
+    {
+      "id": "online:The JavaScript file must use UTF-8.",
+      "source": "The JavaScript file must use UTF-8.",
+      "target": "JavaScript फाईलमध्ये UTF-8 चा वापर करणे आवश्यक आहे."
+    },
+    {
+      "id": "online:The access token is invalid.",
+      "source": "The access token is invalid.",
+      "target": "अ‍ॅक्सेस टोकन अवैध आहे."
+    },
+    {
+      "id": "online:The account no longer exists.",
+      "source": "The account no longer exists.",
+      "target": "हे खाते आता अस्तित्वात नाही."
+    },
+    {
+      "id": "online:The app didn’t open.",
+      "source": "The app didn’t open.",
+      "target": "अ‍ॅप उघडले नाही."
+    },
+    {
+      "id": "online:The artwork artifact is not available.",
+      "source": "The artwork artifact is not available.",
+      "target": "कलाकृती उपलब्ध नाही."
+    },
+    {
+      "id": "online:The browser kept the page from opening.",
+      "source": "The browser kept the page from opening.",
+      "target": "ब्राउझरने पान उघडण्यास प्रतिबंध केला."
+    },
+    {
+      "id": "online:The current draft changed. Close this panel and review the new revision.",
+      "source": "The current draft changed. Close this panel and review the new revision.",
+      "target": "सध्याचा मसुदा बदलला आहे. हे पॅनल बंद करा आणि नवीन सुधारणेचे पुनरावलोकन करा."
+    },
+    {
+      "id": "online:The designer reply needs reconciliation. No map build has started.",
+      "source": "The designer reply needs reconciliation. No map build has started.",
+      "target": "डिझायनरच्या उत्तरामध्ये फेरफार करणे आवश्यक आहे. नकाशाची निर्मिती सुरू झालेली नाही."
+    },
+    {
+      "id": "online:The draft changed during publication. Reload it.",
+      "source": "The draft changed during publication. Reload it.",
+      "target": "प्रकाशनादरम्यान मसुद्यात बदल झाला आहे. तो पुन्हा लोड करा."
+    },
+    {
+      "id": "online:The draft changed elsewhere. Download your local edits before reloading.",
+      "source": "The draft changed elsewhere. Download your local edits before reloading.",
+      "target": "मसुद्यात इतरत्र बदल करण्यात आला आहे. पुन्हा लोड करण्यापूर्वी तुमचे स्थानिक बदल डाउनलोड करा."
+    },
+    {
+      "id": "online:The edit target changed. Choose a saved version in history.",
+      "source": "The edit target changed. Choose a saved version in history.",
+      "target": "संपादनाचे लक्ष्य बदलले आहे. इतिहासामधून जतन केलेली आवृत्ती निवडा."
+    },
+    {
+      "id": "online:The file is missing from storage.",
+      "source": "The file is missing from storage.",
+      "target": "फाइल स्टोरेजमधून गहाळ आहे."
+    },
+    {
+      "id": "online:The file is missing.",
+      "source": "The file is missing.",
+      "target": "फाईल उपलब्ध नाही."
+    },
+    {
+      "id": "online:The file must be no larger than 128 KiB.",
+      "source": "The file must be no larger than 128 KiB.",
+      "target": "फाईलचा आकार 128 KiB पेक्षा मोठा नसावा."
+    },
+    {
+      "id": "online:The first visit downloads the game once. Later visits start from this device's copy.",
+      "source": "The first visit downloads the game once. Later visits start from this device's copy.",
+      "target": "पहिल्या भेटीत गेम एकदा डाउनलोड होतो. त्यानंतरच्या भेटी याच डिव्हाइसमधील कॉपीपासून सुरू होतात."
+    },
+    {
+      "id": "online:The game could not be downloaded.",
+      "source": "The game could not be downloaded.",
+      "target": "गेम डाउनलोड करता आला नाही."
+    },
+    {
+      "id": "online:The game will switch to",
+      "source": "The game will switch to",
+      "target": "खेळ बदलेल"
+    },
+    {
+      "id": "online:The generator package must fit the 256 KiB draft limit.",
+      "source": "The generator package must fit the 256 KiB draft limit.",
+      "target": "जनरेटर पॅकेज २५६ केबी ड्राफ्ट मर्यादेत बसले पाहिजे."
+    },
+    {
+      "id": "online:The generator package must use UTF-8.",
+      "source": "The generator package must use UTF-8.",
+      "target": "जनरेटर पॅकेजमध्ये UTF-8 चा वापर करणे आवश्यक आहे."
+    },
+    {
+      "id": "online:The host removed you from this room; try again later.",
+      "source": "The host removed you from this room; try again later.",
+      "target": "यजमानाने तुम्हाला या रूममधून बाहेर काढले आहे; कृपया नंतर पुन्हा प्रयत्न करा."
+    },
+    {
+      "id": "online:The job is leased by another engine agent.",
+      "source": "The job is leased by another engine agent.",
+      "target": "हे काम दुसऱ्या इंजिन एजंटला भाड्याने दिले आहे."
+    },
+    {
+      "id": "online:The lease expired or the job was already reported.",
+      "source": "The lease expired or the job was already reported.",
+      "target": "भाडेकरार संपला किंवा कामाची नोंद आधीच झाली होती."
+    },
+    {
+      "id": "online:The leased job does not use this blob.",
+      "source": "The leased job does not use this blob.",
+      "target": "लीजवर घेतलेले काम हा ब्लॉब वापरत नाही."
+    },
+    {
+      "id": "online:The map designer is replying",
+      "source": "The map designer is replying",
+      "target": "नकाशा डिझाइनर उत्तर देत आहे"
+    },
+    {
+      "id": "online:The map designer is replying…",
+      "source": "The map designer is replying…",
+      "target": "नकाशा डिझाइनर उत्तर देत आहे…"
+    },
+    {
+      "id": "online:The map file is missing from storage.",
+      "source": "The map file is missing from storage.",
+      "target": "मॅप फाईल स्टोरेजमधून गहाळ आहे."
+    },
+    {
+      "id": "online:The map is fine. Saving it.",
+      "source": "The map is fine. Saving it.",
+      "target": "नकाशा ठीक आहे. तो जतन करत आहे."
+    },
+    {
+      "id": "online:The map was created but its file did not upload. Upload it again below.",
+      "source": "The map was created but its file did not upload. Upload it again below.",
+      "target": "नकाशा तयार झाला पण त्याची फाईल अपलोड झाली नाही. कृपया ती खाली पुन्हा अपलोड करा."
+    },
+    {
+      "id": "online:The match already ended with a different record.",
+      "source": "The match already ended with a different record.",
+      "target": "सामना आधीच एका वेगळ्या विक्रमासह संपला आहे."
+    },
+    {
+      "id": "online:The match has not ended yet.",
+      "source": "The match has not ended yet.",
+      "target": "सामना अजून संपलेला नाही."
+    },
+    {
+      "id": "online:The match is placed on another relay.",
+      "source": "The match is placed on another relay.",
+      "target": "सामना दुसऱ्या रिलेवर ठेवण्यात आला आहे."
+    },
+    {
+      "id": "online:The match was played with another game version.",
+      "source": "The match was played with another game version.",
+      "target": "सामना गेमच्या दुसऱ्या आवृत्तीसह खेळला गेला."
+    },
+    {
+      "id": "online:The music decoder could not be loaded.",
+      "source": "The music decoder could not be loaded.",
+      "target": "संगीत डिकोडर लोड होऊ शकला नाही."
+    },
+    {
+      "id": "online:The operation could not finish.",
+      "source": "The operation could not finish.",
+      "target": "ऑपरेशन पूर्ण होऊ शकले नाही."
+    },
+    {
+      "id": "online:The original swarm: spires ringed around an egg.",
+      "source": "The original swarm: spires ringed around an egg.",
+      "target": "मूळ थवा: अंड्याच्या भोवती वेढलेले शिखरांचे कडे."
+    },
+    {
+      "id": "online:The platform is unavailable: {slot0}",
+      "source": "The platform is unavailable: {slot0}",
+      "target": "प्लॅटफॉर्म उपलब्ध नाही: {slot0}"
+    },
+    {
+      "id": "online:The preview engine did not finish. Check the game runtime and try again.",
+      "source": "The preview engine did not finish. Check the game runtime and try again.",
+      "target": "प्रिव्ह्यू इंजिन पूर्ण झाले नाही. गेमचा रनटाइम तपासा आणि पुन्हा प्रयत्न करा."
+    },
+    {
+      "id": "online:The proposal is over.",
+      "source": "The proposal is over.",
+      "target": "प्रस्ताव संपला आहे."
+    },
+    {
+      "id": "online:The provider outcome must be reconciled before cancellation.",
+      "source": "The provider outcome must be reconciled before cancellation.",
+      "target": "रद्द करण्यापूर्वी सेवा पुरवठादाराच्या परिणामाचे निराकरण करणे आवश्यक आहे."
+    },
+    {
+      "id": "online:The refresh token is not valid.",
+      "source": "The refresh token is not valid.",
+      "target": "रिफ्रेश टोकन वैध नाही."
+    },
+    {
+      "id": "online:The replay is available once the server has verified the match.",
+      "source": "The replay is available once the server has verified the match.",
+      "target": "सर्व्हरने सामन्याची पडताळणी केल्यावर रीप्ले उपलब्ध होतो."
+    },
+    {
+      "id": "online:The request could not be completed.",
+      "source": "The request could not be completed.",
+      "target": "विनंती पूर्ण होऊ शकली नाही."
+    },
+    {
+      "id": "online:The room changed; apply your change to the latest state.",
+      "source": "The room changed; apply your change to the latest state.",
+      "target": "खोली बदलली आहे; तुमचा बदल नवीनतम स्थितीवर लागू करा."
+    },
+    {
+      "id": "online:The room has no seat {p0}.",
+      "source": "The room has no seat {p0}.",
+      "target": "खोलीत आसन नाही {p0}."
+    },
+    {
+      "id": "online:The room is already starting.",
+      "source": "The room is already starting.",
+      "target": "खोली आधीच सुरू होत आहे."
+    },
+    {
+      "id": "online:The room is full.",
+      "source": "The room is full.",
+      "target": "खोली भरलेली आहे."
+    },
+    {
+      "id": "online:The room is starting a match.",
+      "source": "The room is starting a match.",
+      "target": "खोलीत सामना सुरू होत आहे."
+    },
+    {
+      "id": "online:The saved draft could not be restored.",
+      "source": "The saved draft could not be restored.",
+      "target": "जतन केलेला मसुदा पुनर्संचयित करता आला नाही."
+    }
+  ]
+}

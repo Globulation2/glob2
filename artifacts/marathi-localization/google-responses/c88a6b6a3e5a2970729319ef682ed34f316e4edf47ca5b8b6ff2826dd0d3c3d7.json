@@ -1,0 +1,418 @@
+{
+  "request": {
+    "project": "bradley-personal-20261027",
+    "model": "general/nmt",
+    "payload": {
+      "sourceLanguageCode": "en",
+      "targetLanguageCode": "mr",
+      "mimeType": "text/plain",
+      "contents": [
+        "This game version is not supported here; update the game.",
+        "This generator has reached its version limit.",
+        "This generator release is unavailable, editor-only, or not validated for this engine.",
+        "This image could not be loaded.",
+        "This instance",
+        "This instance cannot validate files of that version.",
+        "This instance cannot validate maps of that version.",
+        "This instance has no rated queues.",
+        "This invite has expired or does not exist.",
+        "This invite has expired or does not exist. Ask for a new link.",
+        "This is the last way to sign in to this account; link another method first.",
+        "This key belongs to engine agent ZXQPH0QXZ.",
+        "This key belongs to relay ZXQPH0QXZ.",
+        "This match is still being played.",
+        "This music includes AI-generated audio",
+        "This namespace belongs to another author. Fork the family first.",
+        "This namespace was claimed by another author. Fork it first.",
+        "This older generation has limited stage history. Available images are preserved.",
+        "This package ID is already reserved. Forks need a new ID.",
+        "This page is for moderators.",
+        "This password is too short: it has ZXQPH0QXZ characters, and passwords need at least ZXQPH1QXZ.",
+        "This preview could not be loaded.",
+        "This product is not available for purchase yet.",
+        "This release label or package is already published.",
+        "This release no longer accepts uploads.",
+        "This release uses the current saved draft. Unsaved edits are not included.",
+        "This room has closed",
+        "This room has closed. Ask the host for a new invite.",
+        "This room is for another game version.",
+        "This set has reached its 100-draft limit. Delete unused drafts first.",
+        "This set has reached its 50-release limit.",
+        "This set is hidden. ZXQPH0QXZ",
+        "This sign-in has expired or belongs to another browser.",
+        "This sign-in has expired or was already used. Please start again.",
+        "This sign-in has expired.",
+        "This sign-in has expired. Start signing in again from the game.",
+        "This sign-in is linked to another account.",
+        "This sign-in link has expired or belongs to another browser.",
+        "This sign-in link has expired or was already used. Start signing in again from the game.",
+        "This sign-in was already opened in another browser.",
+        "This skin changed on another device. Reload it before using it.",
+        "This skin changed on another device. Your changes are safe here.",
+        "This skin changed on another device. Your work is safe in this browser.",
+        "This source or version label has already been published for this AI.",
+        "This source or version label has already been published for this generator.",
+        "This version has a different or unverified musical timeline. Playback starts from the beginning.",
+        "This version keeps its original map. Create a revision in AI Map Studio or upload an edited copy as a new map.",
+        "This ZXQPH0QXZ sign-in already belongs to the player",
+        "Three moods. One shared rhythm. Find your next soundtrack.",
+        "Through (UTC)",
+        "Time between shots (ticks)",
+        "Timeline",
+        "Title",
+        "Title, artist, description…",
+        "To play online, publish the generated map in the map library and select it for your room. Download family exports a ZIP for importing or editing in Building Studio.",
+        "Too many live Building Studio connections.",
+        "Too many live Music Studio connections.",
+        "Too many live Terrain Studio connections.",
+        "Too many requests.",
+        "Too many sign-in attempts from here. Wait a minute and try again.",
+        "Too many sign-ins in progress on this connection.",
+        "Too many unknown invite codes; try again later.",
+        "Too many wrong codes, so this sign-in was stopped. Start signing in again from the game.",
+        "Too many wrong passwords. Wait 15 minutes and try again, or sign in another way.",
+        "Toolbox options",
+        "Top library content by lifetime recorded downloads",
+        "Total health",
+        "Toubib",
+        "Trailing ZXQPH0QXZ data",
+        "Transitioning to ZXQPH0QXZ…",
+        "Trim ends to shortest",
+        "Truncated rig geometry",
+        "Truncated rig tracks",
+        "Truncated ZXQPH0QXZ payload",
+        "Try again",
+        "Turn around the ring. Height and scale stay fixed.",
+        "Type",
+        "Type ",
+        "Type your display name exactly to confirm.",
+        "Type your name, "
+      ]
+    }
+  },
+  "response": {
+    "translations": [
+      {
+        "translatedText": "ही गेम आवृत्ती येथे समर्थित नाही; गेम अपडेट करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "हा जनरेटर त्याच्या आवृत्ती मर्यादेपर्यंत पोहोचला आहे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "जनरेटरची ही आवृत्ती अनुपलब्ध आहे, केवळ संपादकांसाठी आहे, किंवा या इंजिनसाठी प्रमाणित केलेली नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ही प्रतिमा लोड होऊ शकली नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "हे उदाहरण",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "हा इन्स्टन्स त्या आवृत्तीच्या फाईल्स प्रमाणित करू शकत नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "हा इन्स्टन्स त्या आवृत्तीच्या मॅप्सची पडताळणी करू शकत नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "या इन्स्टन्समध्ये रेटेड क्यू नाहीत.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "हे आमंत्रण कालबाह्य झाले आहे किंवा अस्तित्वात नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "हे आमंत्रण कालबाह्य झाले आहे किंवा अस्तित्वात नाही. नवीन लिंकची मागणी करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "या खात्यात साइन इन करण्याचा हा शेवटचा मार्ग आहे; आधी दुसरी पद्धत जोडा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ही की इंजिन एजंट ZXQPH0QXZ ची आहे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ही की ZXQPH0QXZ या रिलेची आहे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "हा सामना अजूनही खेळला जात आहे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "या संगीतामध्ये एआय-निर्मित ऑडिओचा समावेश आहे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "हा नेमस्पेस दुसऱ्या लेखकाचा आहे. प्रथम फॅमिली फोर्क करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "या नेमस्पेसवर दुसऱ्या लेखकाने हक्क सांगितला आहे. आधी ते फोर्क करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "या जुन्या पिढीचा रंगमंचावरील अनुभव मर्यादित आहे. उपलब्ध छायाचित्रे जतन करून ठेवण्यात आली आहेत.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "हा पॅकेज आयडी आधीच आरक्षित आहे. फोर्कसाठी नवीन आयडी आवश्यक आहे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "हे पान नियंत्रकांसाठी आहे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "हा पासवर्ड खूपच लहान आहे: त्यात ZXQPH0QXZ अक्षरे आहेत, आणि पासवर्डमध्ये किमान ZXQPH1QXZ अक्षरे असणे आवश्यक आहे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "हा पूर्वावलोकन लोड होऊ शकला नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "हे उत्पादन अद्याप खरेदीसाठी उपलब्ध नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "हे रिलीज लेबल किंवा पॅकेज आधीच प्रकाशित झाले आहे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "या आवृत्तीमध्ये आता अपलोड स्वीकारले जात नाहीत.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "या आवृत्तीमध्ये सध्या जतन केलेला मसुदा वापरण्यात आला आहे. जतन न केलेले बदल समाविष्ट नाहीत.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ही खोली बंद झाली आहे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ही खोली बंद झाली आहे. नवीन आमंत्रणासाठी यजमानांना विचारा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ही खोली खेळाच्या दुसऱ्या आवृत्तीसाठी आहे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "या संचाने १०० मसुद्यांची मर्यादा गाठली आहे. प्रथम न वापरलेले मसुदे हटवा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "या सेटने ५० प्रकाशनांची मर्यादा गाठली आहे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "हा संच लपवलेला आहे. ZXQPH0QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "हे साइन-इन कालबाह्य झाले आहे किंवा दुसऱ्या ब्राउझरचे आहे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "या साइन-इनची मुदत संपली आहे किंवा ते आधीच वापरले गेले आहे. कृपया पुन्हा सुरू करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "या साइन-इनची मुदत संपली आहे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "या साइन-इनची मुदत संपली आहे. गेममधून पुन्हा साइन इन करण्यास सुरुवात करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "हे साइन-इन दुसऱ्या खात्याशी जोडलेले आहे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ही साइन-इन लिंक कालबाह्य झाली आहे किंवा दुसऱ्या ब्राउझरची आहे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ही साइन-इन लिंक कालबाह्य झाली आहे किंवा आधीच वापरली गेली आहे. गेममधून पुन्हा साइन इन करण्यास सुरुवात करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "हे साइन-इन आधीच दुसऱ्या ब्राउझरमध्ये उघडले होते.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "दुसऱ्या डिव्हाइसवर ही स्किन बदलली आहे. वापरण्यापूर्वी ती पुन्हा लोड करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ही स्किन दुसऱ्या डिव्हाइसवर बदलली आहे. तुमचे बदल येथे सुरक्षित आहेत.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "दुसऱ्या डिव्हाइसवर ही स्किन बदलली आहे. या ब्राउझरमध्ये तुमचे काम सुरक्षित आहे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "या AI साठी हे स्रोत किंवा आवृत्ती लेबल आधीच प्रकाशित केले गेले आहे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "या जनरेटरसाठी हे स्रोत किंवा आवृत्ती लेबल आधीच प्रकाशित केले गेले आहे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "या आवृत्तीमध्ये संगीताची कालरेखा वेगळी किंवा अप्रमाणित आहे. प्लेबॅक सुरुवातीपासून सुरू होतो.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ही आवृत्ती तिचा मूळ नकाशा कायम ठेवते. एआय मॅप स्टुडिओमध्ये एक सुधारित आवृत्ती तयार करा किंवा संपादित केलेली प्रत नवीन नकाशा म्हणून अपलोड करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "हे ZXQPH0QXZ साइन-इन आधीपासूनच खेळाडूचे आहे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तीन मनःस्थिती. एक सामायिक लय. तुमच्या पुढच्या साउंडट्रॅकचा शोध घ्या.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "(UTC) द्वारे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "शॉट्समधील वेळ (टिक्स)",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कालरेषा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "शीर्षक",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "शीर्षक, कलाकार, वर्णन…",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ऑनलाइन खेळण्यासाठी, तयार केलेला नकाशा नकाशा लायब्ररीमध्ये प्रकाशित करा आणि तो तुमच्या खोलीसाठी निवडा. बिल्डिंग स्टुडिओमध्ये आयात करण्यासाठी किंवा संपादन करण्यासाठी फॅमिली एक्सपोर्टची ZIP फाईल डाउनलोड करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "खूप जास्त लाईव्ह बिल्डिंग स्टुडिओ कनेक्शन्स.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "खूप जास्त लाईव्ह म्युझिक स्टुडिओ कनेक्शन्स.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "खूप जास्त चालू टेरेन स्टुडिओ कनेक्शन्स.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "खूप जास्त विनंत्या.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "इथून साइन-इन करण्याचे खूप जास्त प्रयत्न झाले आहेत. कृपया एक मिनिट थांबा आणि पुन्हा प्रयत्न करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "या कनेक्शनवर एकाच वेळी अनेक साइन-इन होत आहेत.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अनेक अनोळखी इनव्हाइट कोड आहेत; कृपया नंतर पुन्हा प्रयत्न करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "खूप जास्त चुकीचे कोड आल्यामुळे हे साइन-इन थांबवण्यात आले आहे. कृपया गेममधून पुन्हा साइन-इन करण्यास सुरुवात करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "खूप वेळा चुकीचे पासवर्ड टाकले आहेत. कृपया १५ मिनिटे थांबा आणि पुन्हा प्रयत्न करा, किंवा दुसऱ्या मार्गाने साइन इन करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "टूलबॉक्स पर्याय",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "आयुष्यभरात सर्वाधिक डाउनलोड झालेल्या लायब्ररीमधील सर्वोत्तम सामग्री",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "संपूर्ण आरोग्य",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तौबीब",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "मागील ZXQPH0QXZ डेटा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ मध्ये संक्रमण होत आहे…",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "टोके सर्वात लहान करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ट्रंकेटेड रिग भूमिती",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ट्रंकेटेड रिग ट्रॅक",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "संक्षिप्त ZXQPH0QXZ पेलोड",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पुन्हा प्रयत्न करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "रिंगभोवती फिरवा. उंची आणि माप स्थिर राहतात.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "प्रकार",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "प्रकार",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पुष्टी करण्यासाठी तुमचे डिस्प्ले नाव तंतोतंत टाइप करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तुमचे नाव टाईप करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      }
+    ]
+  },
+  "response_sha256": "a17c5da928a8067038bcc48526e88b187ae6a2b157a0a6da407116d5c384bef1"
+}

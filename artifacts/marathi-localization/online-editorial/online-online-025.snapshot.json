@@ -1,0 +1,531 @@
+{
+  "batch": "online-online-025",
+  "source_sha256": "0ac44b4cdfb03e688983d6e3fb1e484cca57589665bff19c5c65388e649b292a",
+  "rows": [
+    {
+      "id": "online:checking…",
+      "source": "checking…",
+      "target": "तपासत आहे…"
+    },
+    {
+      "id": "online:checks need",
+      "source": "checks need",
+      "target": "तपासणीची गरज आहे"
+    },
+    {
+      "id": "online:deletes your maps, likes, uploads and your rating’s place on the leaderboards.",
+      "source": "deletes your maps, likes, uploads and your rating’s place on the leaderboards.",
+      "target": "तुमचे नकाशे, लाईक्स, अपलोड्स आणि लीडरबोर्डवरील तुमचे रेटिंगचे स्थान हटवते."
+    },
+    {
+      "id": "online:diverged",
+      "source": "diverged",
+      "target": "विचलित झाले"
+    },
+    {
+      "id": "online:dropped",
+      "source": "dropped",
+      "target": "टाकले"
+    },
+    {
+      "id": "online:finding",
+      "source": "finding",
+      "target": "शोधणे"
+    },
+    {
+      "id": "online:findings",
+      "source": "findings",
+      "target": "निष्कर्ष"
+    },
+    {
+      "id": "online:forest",
+      "source": "forest",
+      "target": "जंगल"
+    },
+    {
+      "id": "online:format must be map or save.",
+      "source": "format must be map or save.",
+      "target": "स्वरूप map किंवा save असले पाहिजे."
+    },
+    {
+      "id": "online:format {value0}, network {value1}",
+      "source": "format {value0}, network {value1}",
+      "target": "स्वरूप {value0}, नेटवर्क {value1}"
+    },
+    {
+      "id": "online:get the game",
+      "source": "get the game",
+      "target": "खेळ मिळवा"
+    },
+    {
+      "id": "online:hidden",
+      "source": "hidden",
+      "target": "लपवलेले"
+    },
+    {
+      "id": "online:hidden by a moderator",
+      "source": "hidden by a moderator",
+      "target": "मॉडरेटरने लपवलेले"
+    },
+    {
+      "id": "online:icon {value0}",
+      "source": "icon {value0}",
+      "target": "चिन्ह {value0}"
+    },
+    {
+      "id": "online:in a web browser",
+      "source": "in a web browser",
+      "target": "वेब ब्राउझरमध्ये"
+    },
+    {
+      "id": "online:inspection",
+      "source": "inspection",
+      "target": "तपासणी"
+    },
+    {
+      "id": "online:invalid",
+      "source": "invalid",
+      "target": "अवैध"
+    },
+    {
+      "id": "online:joined {slot0} · last seen {slot1} · {slot2}",
+      "source": "joined {slot0} · last seen {slot1} · {slot2}",
+      "target": "{slot0} मध्ये सामील झाले · शेवटचे दिसले {slot1} · {slot2}"
+    },
+    {
+      "id": "online:launch timeout",
+      "source": "launch timeout",
+      "target": "लाँच टाइमआउट"
+    },
+    {
+      "id": "online:limit must be an integer from 1 to {p0}.",
+      "source": "limit must be an integer from 1 to {p0}.",
+      "target": "मर्यादा ही 1 ते {p0} पर्यंतचा पूर्णांक असणे आवश्यक आहे."
+    },
+    {
+      "id": "online:live",
+      "source": "live",
+      "target": "थेट"
+    },
+    {
+      "id": "online:madeWith must be hand or generator.",
+      "source": "madeWith must be hand or generator.",
+      "target": "madeWith हे hand किंवा generator असले पाहिजे."
+    },
+    {
+      "id": "online:map",
+      "source": "map",
+      "target": "नकाशा"
+    },
+    {
+      "id": "online:match on now",
+      "source": "match on now",
+      "target": "सामना आता सुरू आहे"
+    },
+    {
+      "id": "online:match today",
+      "source": "match today",
+      "target": "आजचा सामना"
+    },
+    {
+      "id": "online:matchId differs from the path.",
+      "source": "matchId differs from the path.",
+      "target": "matchId हा मार्गापेक्षा वेगळा आहे."
+    },
+    {
+      "id": "online:matches on now",
+      "source": "matches on now",
+      "target": "सामने आता सुरू आहेत"
+    },
+    {
+      "id": "online:matches today",
+      "source": "matches today",
+      "target": "आजचे सामने"
+    },
+    {
+      "id": "online:median length",
+      "source": "median length",
+      "target": "मध्यक लांबी"
+    },
+    {
+      "id": "online:muted until {slot0}",
+      "source": "muted until {slot0}",
+      "target": "{slot0} पर्यंत म्यूट केलेले"
+    },
+    {
+      "id": "online:none",
+      "source": "none",
+      "target": "काहीही नाही"
+    },
+    {
+      "id": "online:not checked",
+      "source": "not checked",
+      "target": "तपासले नाही"
+    },
+    {
+      "id": "online:not set",
+      "source": "not set",
+      "target": "सेट केलेले नाही"
+    },
+    {
+      "id": "online:on a computer",
+      "source": "on a computer",
+      "target": "संगणकावर"
+    },
+    {
+      "id": "online:on an Android device",
+      "source": "on an Android device",
+      "target": "अँड्रॉइड डिव्हाइसवर"
+    },
+    {
+      "id": "online:on an iPhone or iPad",
+      "source": "on an iPhone or iPad",
+      "target": "आयफोन किंवा आयपॅडवर"
+    },
+    {
+      "id": "online:owner must be \"me\" or an account id.",
+      "source": "owner must be \"me\" or an account id.",
+      "target": "मालक \"me\" किंवा खाते आयडी असणे आवश्यक आहे."
+    },
+    {
+      "id": "online:package:",
+      "source": "package:",
+      "target": "पॅकेज:"
+    },
+    {
+      "id": "online:participants must be all, humans or ai.",
+      "source": "participants must be all, humans or ai.",
+      "target": "सहभागी all, humans किंवा ai असणे आवश्यक आहे."
+    },
+    {
+      "id": "online:payment",
+      "source": "payment",
+      "target": "पेमेंट"
+    },
+    {
+      "id": "online:play in your browser",
+      "source": "play in your browser",
+      "target": "तुमच्या ब्राउझरमध्ये खेळा"
+    },
+    {
+      "id": "online:player online",
+      "source": "player online",
+      "target": "खेळाडू ऑनलाइन"
+    },
+    {
+      "id": "online:players online",
+      "source": "players online",
+      "target": "ऑनलाइन खेळाडू"
+    },
+    {
+      "id": "online:projection",
+      "source": "projection",
+      "target": "प्रक्षेपण"
+    },
+    {
+      "id": "online:provider sign-in failed",
+      "source": "provider sign-in failed",
+      "target": "प्रदाता साइन-इन अयशस्वी झाले"
+    },
+    {
+      "id": "online:provider unavailable",
+      "source": "provider unavailable",
+      "target": "प्रदाता अनुपलब्ध आहे"
+    },
+    {
+      "id": "online:provisional",
+      "source": "provisional",
+      "target": "तात्पुरते"
+    },
+    {
+      "id": "online:provisional must be include or exclude.",
+      "source": "provisional must be include or exclude.",
+      "target": "तात्पुरते include किंवा exclude असले पाहिजे."
+    },
+    {
+      "id": "online:public, max-age=604800",
+      "source": "public, max-age=604800",
+      "target": "public, max-age=604800"
+    },
+    {
+      "id": "online:record.sha256 differs from the uploaded record.",
+      "source": "record.sha256 differs from the uploaded record.",
+      "target": "record.sha256 हे अपलोड केलेल्या रेकॉर्डपेक्षा वेगळे आहे."
+    },
+    {
+      "id": "online:refund",
+      "source": "refund",
+      "target": "परतावा"
+    },
+    {
+      "id": "online:removed from end",
+      "source": "removed from end",
+      "target": "शेवटून काढले"
+    },
+    {
+      "id": "online:replaces your name with “Deleted player” in your past matches, chat and records;",
+      "source": "replaces your name with “Deleted player” in your past matches, chat and records;",
+      "target": "तुमच्या मागील सामन्यांमध्ये, चॅटमध्ये आणि रेकॉर्डमध्ये तुमचे नाव बदलून “हटवलेला खेळाडू” असे ठेवले जाते;"
+    },
+    {
+      "id": "online:resynced",
+      "source": "resynced",
+      "target": "पुन्हा सिंक केले"
+    },
+    {
+      "id": "online:right away, or",
+      "source": "right away, or",
+      "target": "लगेच, किंवा"
+    },
+    {
+      "id": "online:r{slot0} · {slot1}",
+      "source": "r{slot0} · {slot1}",
+      "target": "r{slot0} · {slot1}"
+    },
+    {
+      "id": "online:signs you out on every device and removes your sign-in methods and e-mail address;",
+      "source": "signs you out on every device and removes your sign-in methods and e-mail address;",
+      "target": "तुम्हाला प्रत्येक डिव्हाइसवरून साइन आउट करते आणि तुमच्या साइन-इन पद्धती व ई-मेल पत्ता काढून टाकते;"
+    },
+    {
+      "id": "online:silence added at end",
+      "source": "silence added at end",
+      "target": "शेवटी शांतता जोडली गेली"
+    },
+    {
+      "id": "online:simVersion (a sim version key) is required.",
+      "source": "simVersion (a sim version key) is required.",
+      "target": "simVersion (सिम व्हर्जन की) आवश्यक आहे."
+    },
+    {
+      "id": "online:simVersion differs from the match setup.",
+      "source": "simVersion differs from the match setup.",
+      "target": "simVersion मॅच सेटअपपेक्षा वेगळे आहे."
+    },
+    {
+      "id": "online:simVersion must be a sim version key.",
+      "source": "simVersion must be a sim version key.",
+      "target": "simVersion ही सिम आवृत्तीची की असली पाहिजे."
+    },
+    {
+      "id": "online:size unknown",
+      "source": "size unknown",
+      "target": "आकार अज्ञात"
+    },
+    {
+      "id": "online:sort must be one of {p0}.",
+      "source": "sort must be one of {p0}.",
+      "target": "sort हा {p0} पैकी एक असला पाहिजे."
+    },
+    {
+      "id": "online:starting",
+      "source": "starting",
+      "target": "सुरुवात करणे"
+    },
+    {
+      "id": "online:status must be open, resolved, dismissed or all.",
+      "source": "status must be open, resolved, dismissed or all.",
+      "target": "स्थिती open, resolved, dismissed किंवा all असणे आवश्यक आहे."
+    },
+    {
+      "id": "online:teams must list the map's {p0} teams in order 0..{p1}.",
+      "source": "teams must list the map's {p0} teams in order 0..{p1}.",
+      "target": "संघांनी नकाशावरील {p0} संघांची यादी 0..{p1} या क्रमाने करणे आवश्यक आहे."
+    },
+    {
+      "id": "online:text/html; charset=utf-8",
+      "source": "text/html; charset=utf-8",
+      "target": "text/html; charset=utf-8"
+    },
+    {
+      "id": "online:today {time}",
+      "source": "today {time}",
+      "target": "आज {time}"
+    },
+    {
+      "id": "online:unexpected instance response: {value0}",
+      "source": "unexpected instance response: {value0}",
+      "target": "अनपेक्षित इन्स्टन्स प्रतिसाद: {value0}"
+    },
+    {
+      "id": "online:unverifiable",
+      "source": "unverifiable",
+      "target": "अपुष्ट"
+    },
+    {
+      "id": "online:valid",
+      "source": "valid",
+      "target": "वैध"
+    },
+    {
+      "id": "online:v{slot0}",
+      "source": "v{slot0}",
+      "target": "v{slot0}"
+    },
+    {
+      "id": "online:world {value0}",
+      "source": "world {value0}",
+      "target": "जग {value0}"
+    },
+    {
+      "id": "online:{hours} {minutes}",
+      "source": "{hours} {minutes}",
+      "target": "{hours} {minutes}"
+    },
+    {
+      "id": "online:{loaded} of {total} MB",
+      "source": "{loaded} of {total} MB",
+      "target": "{total} MB चे {loaded}"
+    },
+    {
+      "id": "online:{p0} No app?",
+      "source": "{p0} No app?",
+      "target": "{p0} ॲप नाही?"
+    },
+    {
+      "id": "online:{p0} Studio is not enabled on this instance.",
+      "source": "{p0} Studio is not enabled on this instance.",
+      "target": "या इन्स्टन्सवर {p0} स्टुडिओ सक्षम केलेला नाही."
+    },
+    {
+      "id": "online:{p0} as",
+      "source": "{p0} as",
+      "target": "{p0} म्हणून"
+    },
+    {
+      "id": "online:{p0} invited you to their Globulation 2 room{p1}.",
+      "source": "{p0} invited you to their Globulation 2 room{p1}.",
+      "target": "{p0} यांनी तुम्हाला त्यांच्या Globulation 2 खोली {p1} मध्ये आमंत्रित केले आहे."
+    },
+    {
+      "id": "online:{p0} must be an integer from {p1} to {p2}.",
+      "source": "{p0} must be an integer from {p1} to {p2}.",
+      "target": "{p0} हा {p1} ते {p2} पर्यंतचा एक पूर्णांक असला पाहिजे."
+    },
+    {
+      "id": "online:{p0} sign-in is unavailable right now.",
+      "source": "{p0} sign-in is unavailable right now.",
+      "target": "{p0} साइन-इन सध्या उपलब्ध नाही."
+    },
+    {
+      "id": "online:{p0}’s room has closed, so this invite no longer works. Ask them for a new link, or start a game of your own.",
+      "source": "{p0}’s room has closed, so this invite no longer works. Ask them for a new link, or start a game of your own.",
+      "target": "{p0} यांची रूम बंद झाली आहे, त्यामुळे हे आमंत्रण आता चालणार नाही. त्यांना नवीन लिंकसाठी विचारा, किंवा तुमचा स्वतःचा गेम सुरू करा."
+    },
+    {
+      "id": "online:{slot0}  {slot1} credit available",
+      "source": {
+        "one": "{slot0}  {slot1} credit available",
+        "other": "{slot0}  {slot1} credits available"
+      },
+      "target": {
+        "one": "{slot0} {slot1} क्रेडिट उपलब्ध",
+        "other": "{slot0} {slot1} क्रेडिट्स उपलब्ध आहेत"
+      }
+    },
+    {
+      "id": "online:{slot0}  {slot1} credits available",
+      "source": "{slot0}  {slot1} credits available",
+      "target": "{slot0} {slot1} क्रेडिट्स उपलब्ध आहेत"
+    },
+    {
+      "id": "online:{slot0} ({slot1}%)",
+      "source": "{slot0} ({slot1}%)",
+      "target": "{slot0} ({slot1}%)"
+    },
+    {
+      "id": "online:{slot0} ({slot1})",
+      "source": "{slot0} ({slot1})",
+      "target": "{slot0} ({slot1})"
+    },
+    {
+      "id": "online:{slot0} / {slot1}",
+      "source": "{slot0} / {slot1}",
+      "target": "{slot0} / {slot1}"
+    },
+    {
+      "id": "online:{slot0} / {slot1} passed",
+      "source": "{slot0} / {slot1} passed",
+      "target": "{slot0} / {slot1} उत्तीर्ण झाले"
+    },
+    {
+      "id": "online:{slot0} Manual editing and local playtests use no credits.",
+      "source": "{slot0} Manual editing and local playtests use no credits.",
+      "target": "{slot0} मॅन्युअल एडिटिंग आणि लोकल प्लेटेस्टमध्ये कोणतेही क्रेडिट्स वापरले जात नाहीत."
+    },
+    {
+      "id": "online:{slot0} The preview shows exactly what will be saved.",
+      "source": "{slot0} The preview shows exactly what will be saved.",
+      "target": "{slot0} प्रिव्ह्यूमध्ये नेमके काय सेव्ह केले जाईल हे दिसते."
+    },
+    {
+      "id": "online:{slot0} Try again, or download the set to listen locally.",
+      "source": "{slot0} Try again, or download the set to listen locally.",
+      "target": "{slot0} पुन्हा प्रयत्न करा, किंवा स्थानिक पातळीवर ऐकण्यासाठी सेट डाउनलोड करा."
+    },
+    {
+      "id": "online:{slot0} W · {slot1} L",
+      "source": "{slot0} W · {slot1} L",
+      "target": "{slot0} W · {slot1} L"
+    },
+    {
+      "id": "online:{slot0} W · {slot1} L{slot2}",
+      "source": "{slot0} W · {slot1} L{slot2}",
+      "target": "{slot0} W · {slot1} L{slot2}"
+    },
+    {
+      "id": "online:{slot0} and resolve",
+      "source": "{slot0} and resolve",
+      "target": "{slot0} आणि निराकरण करा"
+    },
+    {
+      "id": "online:{slot0} available · {slot1} reserved. Discussion requires an available credit; each delivered map or revision costs 1 credit. Failed generations return the credit.",
+      "source": "{slot0} available · {slot1} reserved. Discussion requires an available credit; each delivered map or revision costs 1 credit. Failed generations return the credit.",
+      "target": "{slot0} उपलब्ध · {slot1} आरक्षित. चर्चेसाठी उपलब्ध क्रेडिट आवश्यक आहे; प्रत्येक वितरित नकाशा किंवा सुधारणेसाठी १ क्रेडिट आकारले जाईल. अयशस्वी निर्मितीमुळे क्रेडिट परत केले जाईल."
+    },
+    {
+      "id": "online:{slot0} available · {slot1} reserved. Discussion requires an available credit; each delivered set or revision costs 1 credit. Failed generations return the credit.",
+      "source": "{slot0} available · {slot1} reserved. Discussion requires an available credit; each delivered set or revision costs 1 credit. Failed generations return the credit.",
+      "target": "{slot0} उपलब्ध · {slot1} आरक्षित. चर्चेसाठी उपलब्ध क्रेडिट आवश्यक आहे; प्रत्येक वितरित संच किंवा सुधारणेसाठी १ क्रेडिट आकारले जाईल. अयशस्वी झालेल्या पिढ्यांसाठी क्रेडिट परत केले जाईल."
+    },
+    {
+      "id": "online:{slot0} before buying so you can recover your purchases.",
+      "source": "{slot0} before buying so you can recover your purchases.",
+      "target": "खरेदी करण्यापूर्वी {slot0} वापरा जेणेकरून तुम्ही तुमची खरेदी परत मिळवू शकाल."
+    },
+    {
+      "id": "online:{slot0} credit available",
+      "source": {
+        "one": "{slot0} credit available",
+        "other": "{slot0} credits available"
+      },
+      "target": {
+        "one": "{slot0} क्रेडिट उपलब्ध",
+        "other": "{slot0} क्रेडिट्स उपलब्ध आहेत"
+      }
+    },
+    {
+      "id": "online:{slot0} credit available · {slot1} reserved",
+      "source": {
+        "one": "{slot0} credit available · {slot1} reserved",
+        "other": "{slot0} credits available · {slot1} reserved"
+      },
+      "target": {
+        "one": "{slot0} क्रेडिट उपलब्ध · {slot1} राखीव",
+        "other": "{slot0} क्रेडिट्स उपलब्ध · {slot1} राखीव"
+      }
+    },
+    {
+      "id": "online:{slot0} credit reserved for work in progress.",
+      "source": {
+        "one": "{slot0} credit reserved for work in progress.",
+        "other": "{slot0} credits reserved for work in progress."
+      },
+      "target": {
+        "one": "{slot0} क्रेडिट प्रगतीपथावरील कामासाठी राखीव.",
+        "other": "{slot0} क्रेडिट्स प्रगतीपथावरील कामासाठी राखीव आहेत."
+      }
+    }
+  ],
+  "subset_sha256": "4348a361b5c1ec4f249070f09a1b36ac46d316515c0fae95cc202fbc3c8b7628"
+}

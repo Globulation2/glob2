@@ -1,0 +1,418 @@
+{
+  "request": {
+    "project": "bradley-personal-20261027",
+    "model": "general/nmt",
+    "payload": {
+      "sourceLanguageCode": "en",
+      "targetLanguageCode": "mr",
+      "mimeType": "text/plain",
+      "contents": [
+        "Full leaderboard",
+        "Sharing the map with the room…",
+        "Take an open seat to play",
+        "Every seat is taken. You can take one when it opens.",
+        "Not seated",
+        "Copied",
+        "Could not copy",
+        "Room closed",
+        "Removed from the room",
+        "Back to online",
+        "Leave match",
+        "Leave this match?",
+        "Leave this LAN game?",
+        "You lose this ranked match and your rating drops. The others play on, and you cannot come back to it.",
+        "This quick match counts as a loss for you. The others play on, and you cannot come back to it.",
+        "You leave the room's match and it counts as a loss in your history. The others play on, and you cannot come back to it.",
+        "The others play on without you, and you cannot come back to this game.",
+        "Leave match",
+        "Keep playing",
+        "Team",
+        "Quick match · unrated",
+        "Your device can't keep up with this match",
+        "It replays the match more slowly than the match runs, so it will not catch up. You can leave the match, or lower the graphics settings and keep waiting.",
+        "not gaining",
+        "Your opponents left the match.",
+        "Every opposing colony was defeated.",
+        "Your colony was defeated.",
+        "You left the match. It counts as a loss.",
+        "Final result after the match ends.",
+        "No pauses left",
+        "Pause game (ZXQPH0QXZ left)",
+        "Paused by ZXQPH0QXZ",
+        "Paused by ZXQPH0QXZ · resumes in ZXQPH1QXZ",
+        "Too many actions: some are still waiting to be sent",
+        "You have no pauses left in this match",
+        "ZXQPH0QXZ has used all their pause time: the game resumes",
+        "1 player · ZXQPH0QXZ AI · ZXQPH1QXZ open",
+        "Every other rule is as in Standard.",
+        "Link for browser players",
+        "Players in a browser paste this link to join.",
+        "Players in a browser paste this link to join. Their game shows code ZXQPH0QXZ.",
+        "Copy link",
+        "Anyone on this network can take it",
+        "Close the room?",
+        "Leaving closes the room for everyone, including the other player in it.",
+        "Leaving closes the room for everyone, including the ZXQPH0QXZ other players in it.",
+        "Close room",
+        "Stay",
+        "The new map gave the seats new colours. Check yours before you start.",
+        "Copying didn't work. Copy the invite yourself:",
+        "Close",
+        "Touch and hold the link, then choose Copy.",
+        "The link is selected: press Ctrl+C (⌘C on a Mac).",
+        "Code",
+        "under a minute",
+        "about ZXQPH0QXZ min",
+        "ZXQPH0QXZ s",
+        "ZXQPH0QXZ min ZXQPH1QXZ s",
+        "AI opponent: ZXQPH0QXZ",
+        "Connected to the game server",
+        "Choose a map",
+        "For the 1 player in the room",
+        "For the ZXQPH0QXZ players in the room",
+        "Generated",
+        "Premade",
+        "Catalog",
+        "Size",
+        "Colonies",
+        "Fair start for every colony",
+        "Does not fit this size; try another",
+        "Preparing the preview…",
+        "Each landscape gives every colony an equally good start, and the server makes the same map for everyone.",
+        "ZXQPH0QXZ players",
+        "can't be read",
+        "No premade maps were found.",
+        "This map has fewer colonies than the ZXQPH0QXZ players in the room.",
+        "Pick a map to see it here.",
+        "Maps other players shared. Open one and choose Use in a room.",
+        "Browse shared maps",
+        "More options…"
+      ]
+    }
+  },
+  "response": {
+    "translations": [
+      {
+        "translatedText": "संपूर्ण लीडरबोर्ड",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "खोलीतील सर्वांना नकाशा दाखवणे…",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "खेळण्यासाठी मोकळी जागा घ्या",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सर्व जागा भरलेल्या आहेत. जागा मोकळी झाल्यावर तुम्ही एक घेऊ शकता.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "बसलेले नाही",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कॉपी केले",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कॉपी करता आले नाही",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "खोली बंद आहे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "खोलीतून बाहेर काढले",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ऑनलाइनवर परत जा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सामना सोडा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "हा सामना सोडून जायचे आहे का?",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "हा लॅन गेम सोडून जायचं का?",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तुम्ही हा रँक्ड सामना हरता आणि तुमचे रेटिंग कमी होते. बाकीचे खेळत राहतात आणि तुम्हाला परत येता येत नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "हा जलद सामना तुमच्यासाठी पराभव म्हणून गणला जाईल. इतर खेळाडू खेळत राहतील आणि तुम्हाला त्यात परत येता येणार नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तुम्ही खोलीतील सामना सोडून जाता आणि तुमच्या इतिहासात त्याची नोंद पराभव म्हणून होते. इतरजण खेळत राहतात, आणि तुम्हाला त्यात परत येता येत नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "इतरजण तुमच्याशिवाय खेळत राहतात, आणि तुम्ही या खेळात परत येऊ शकत नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सामना सोडा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "खेळत रहा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "संघ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "जलद सामना · रेटिंग नाही",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तुमचे डिव्हाइस या सामन्याचा वेग राखू शकत नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सामना जसा चालतो त्यापेक्षा तो हळू रीप्ले होतो, त्यामुळे तो बरोबरी साधू शकणार नाही. तुम्ही सामना सोडून देऊ शकता, किंवा ग्राफिक्स सेटिंग्ज कमी करून वाट पाहत राहू शकता.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "न मिळवणे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तुमचे प्रतिस्पर्धी सामन्यातून बाहेर पडले.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "प्रत्येक विरोधी वसाहतीचा पराभव झाला.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तुमची वसाहत पराभूत झाली.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तुम्ही सामना सोडून गेलात. हा तुमचा पराभव मानला जाईल.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सामना संपल्यानंतर अंतिम निकाल.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "आता एकही विराम शिल्लक नाही",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "खेळ थांबवा (ZXQPH0QXZ डावीकडे)",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ द्वारे थांबवले",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ द्वारे थांबवले · ZXQPH1QXZ मध्ये पुन्हा सुरू होते",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "खूप जास्त कृती: काही अजून पाठवण्याच्या प्रतीक्षेत आहेत",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "या सामन्यात तुमच्याकडे एकही थांबा शिल्लक नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ ने त्यांचा संपूर्ण पॉज वेळ वापरला आहे: खेळ पुन्हा सुरू होतो.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "१ खेळाडू · ZXQPH0QXZ एआय · ZXQPH1QXZ उघडा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "बाकी सर्व नियम मानकाप्रमाणेच आहेत.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ब्राउझर प्लेयर्ससाठी लिंक",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ब्राउझरमधील खेळाडूंनी सामील होण्यासाठी ही लिंक पेस्ट करावी.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "खेळाडू ब्राउझरमध्ये सामील होण्यासाठी ही लिंक पेस्ट करतात. त्यांच्या गेममध्ये ZXQPH0QXZ हा कोड दिसतो.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "लिंक कॉपी करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "या नेटवर्कवरील कोणीही ते घेऊ शकतो.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "खोली बंद करायची का?",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "बाहेर पडल्याने खोलीतील दुसऱ्या खेळाडूसह सर्वांसाठी खोली बंद होते.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "बाहेर पडल्याने खोली सर्वांसाठी बंद होते, त्यात असलेल्या इतर खेळाडूंसहित.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "खोली बंद करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "राहा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नवीन नकाशाने जागांना नवीन रंग दिले आहेत. सुरुवात करण्यापूर्वी तुमच्या जागेचे रंग तपासा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कॉपी करणे यशस्वी झाले नाही. आमंत्रण स्वतः कॉपी करा:",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "बंद करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "लिंकला स्पर्श करून धरून ठेवा, त्यानंतर कॉपी निवडा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "लिंक निवडली आहे: Ctrl+C दाबा (मॅकवर ⌘C).",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कोड",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "एका मिनिटापेक्षा कमी",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सुमारे ZXQPH0QXZ मिनिटे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ s",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ min ZXQPH1QXZ s",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "एआय प्रतिस्पर्धी: ZXQPH0QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "गेम सर्वरशी कनेक्ट केले आहे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नकाशा निवडा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "खोलीतील १ खेळाडूसाठी",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "खोलीतील ZXQPH0QXZ खेळाडूंसाठी",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "निर्माण केले",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पूर्वनिर्मित",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कॅटलॉग",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "आकार",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "वसाहती",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "प्रत्येक वसाहतीसाठी एक चांगली सुरुवात",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "हे माप योग्य नाही; दुसरे वापरून पहा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "प्रिव्ह्यूची तयारी करत आहे…",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "प्रत्येक भूप्रदेश प्रत्येक वसाहतीला समान चांगली सुरुवात देतो आणि सर्व्हर सर्वांसाठी एकच नकाशा तयार करतो.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ खेळाडू",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "वाचता येत नाही",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कोणतेही पूर्वनिर्मित नकाशे आढळले नाहीत.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "या नकाशावर खोलीतील ZXQPH0QXZ खेळाडूंपेक्षा कमी वसाहती आहेत.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ते पाहण्यासाठी येथे नकाशा निवडा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "इतर खेळाडूंनी शेअर केलेले नकाशे. त्यापैकी एक उघडा आणि 'रूममध्ये वापरा' (Use in a room) हा पर्याय निवडा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सामायिक नकाशे ब्राउझ करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अधिक पर्याय…",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      }
+    ]
+  },
+  "response_sha256": "78919679ca22bca0ba102f8e5febfa42e0541b98eba585ccee669c45e5cbfbf3"
+}

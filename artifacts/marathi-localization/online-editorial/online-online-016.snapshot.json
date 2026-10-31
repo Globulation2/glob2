@@ -1,0 +1,513 @@
+{
+  "batch": "online-online-016",
+  "source_sha256": "0ac44b4cdfb03e688983d6e3fb1e484cca57589665bff19c5c65388e649b292a",
+  "rows": [
+    {
+      "id": "online:Publish saved revision {value0}",
+      "source": "Publish saved revision {value0}",
+      "target": "जतन केलेली आवृत्ती {value0} प्रकाशित करा"
+    },
+    {
+      "id": "online:Publish saved soundtrack {slot0} to the public Music library. Only this exact version is shared.",
+      "source": "Publish saved soundtrack {slot0} to the public Music library. Only this exact version is shared.",
+      "target": "जतन केलेला साउंडट्रॅक {slot0} सार्वजनिक संगीत लायब्ररीमध्ये प्रकाशित करा. फक्त हीच अचूक आवृत्ती शेअर केली आहे."
+    },
+    {
+      "id": "online:Publish the selected saved map ({slot0}) to the public Map library.",
+      "source": "Publish the selected saved map ({slot0}) to the public Map library.",
+      "target": "निवडलेला जतन केलेला नकाशा ({slot0}) सार्वजनिक नकाशा लायब्ररीमध्ये प्रकाशित करा."
+    },
+    {
+      "id": "online:Publish this release",
+      "source": "Publish this release",
+      "target": "हे प्रकाशन प्रकाशित करा"
+    },
+    {
+      "id": "online:Publish this version",
+      "source": "Publish this version",
+      "target": "ही आवृत्ती प्रकाशित करा"
+    },
+    {
+      "id": "online:Published",
+      "source": "Published",
+      "target": "प्रकाशित"
+    },
+    {
+      "id": "online:Published description",
+      "source": "Published description",
+      "target": "प्रकाशित वर्णन"
+    },
+    {
+      "id": "online:Published family name",
+      "source": "Published family name",
+      "target": "प्रकाशित आडनाव"
+    },
+    {
+      "id": "online:Published release",
+      "source": "Published release",
+      "target": "प्रकाशित प्रकाशन"
+    },
+    {
+      "id": "online:Published visibility",
+      "source": "Published visibility",
+      "target": "प्रकाशित दृश्यमानता"
+    },
+    {
+      "id": "online:Published {slot0}.",
+      "source": "Published {slot0}.",
+      "target": "{slot0} प्रकाशित केले."
+    },
+    {
+      "id": "online:Publishing allows reuse under {slot0}, including embedding and editing this content in shared maps. Confirm that the credits and reuse rights cover every uploaded image.",
+      "source": "Publishing allows reuse under {slot0}, including embedding and editing this content in shared maps. Confirm that the credits and reuse rights cover every uploaded image.",
+      "target": "प्रकाशित केल्याने {slot0} अंतर्गत पुनर्वापरास परवानगी मिळते, ज्यामध्ये सामायिक नकाशांमध्ये ही सामग्री एम्बेड करणे आणि संपादित करणे समाविष्ट आहे. श्रेय आणि पुनर्वापराचे अधिकार प्रत्येक अपलोड केलेल्या प्रतिमेवर लागू आहेत याची खात्री करा."
+    },
+    {
+      "id": "online:Publishing preserves these exact source bytes. Changes require a new version.",
+      "source": "Publishing preserves these exact source bytes. Changes require a new version.",
+      "target": "प्रकाशित केल्याने हे मूळ बाइट्स जसेच्या तसे जतन होतात. बदलांसाठी नवीन आवृत्तीची आवश्यकता असते."
+    },
+    {
+      "id": "online:Purchase",
+      "source": "Purchase",
+      "target": "खरेदी"
+    },
+    {
+      "id": "online:Purchase confirmed. Your skin is ready to use in game.",
+      "source": "Purchase confirmed. Your skin is ready to use in game.",
+      "target": "खरेदीची पुष्टी झाली आहे. तुमची स्किन गेममध्ये वापरण्यासाठी तयार आहे."
+    },
+    {
+      "id": "online:Purchase not found.",
+      "source": "Purchase not found.",
+      "target": "खरेदी आढळली नाही."
+    },
+    {
+      "id": "online:Purchases are not configured on this server yet.",
+      "source": "Purchases are not configured on this server yet.",
+      "target": "या सर्व्हरवर खरेदी अद्याप कॉन्फिगर केलेली नाही."
+    },
+    {
+      "id": "online:Quality",
+      "source": "Quality",
+      "target": "गुणवत्ता"
+    },
+    {
+      "id": "online:Questions and brainstorming are free and require an available credit. A creation or revision request starts one build of up to 12 entries. Failed generations return their reservation.",
+      "source": "Questions and brainstorming are free and require an available credit. A creation or revision request starts one build of up to 12 entries. Failed generations return their reservation.",
+      "target": "प्रश्न आणि विचारमंथन विनामूल्य आहेत आणि त्यासाठी उपलब्ध क्रेडिट आवश्यक आहे. निर्मिती किंवा सुधारणेच्या विनंतीमुळे १२ नोंदींपर्यंतचा एक बिल्ड सुरू होतो. अयशस्वी झालेल्या पिढ्या त्यांचे आरक्षण परत करतात."
+    },
+    {
+      "id": "online:Questions and brainstorming are free. A creation or revision request starts one build of up to 12 building variants. Failed generations return their reservation.",
+      "source": "Questions and brainstorming are free. A creation or revision request starts one build of up to 12 building variants. Failed generations return their reservation.",
+      "target": "प्रश्न आणि विचारमंथन विनामूल्य आहेत. निर्मिती किंवा सुधारणेच्या विनंतीमुळे जास्तीत जास्त १२ बिल्डिंग व्हेरिएंट्सची एक बिल्ड सुरू होते. अयशस्वी झालेल्या पिढ्या त्यांचे आरक्षण परत करतात."
+    },
+    {
+      "id": "online:Queued",
+      "source": "Queued",
+      "target": "रांगेत"
+    },
+    {
+      "id": "online:Queues the stored match record for verification again. Force permits replacement of an existing verification result; confirm it separately.",
+      "source": "Queues the stored match record for verification again. Force permits replacement of an existing verification result; confirm it separately.",
+      "target": "साठवलेला जुळणारा रेकॉर्ड पुन्हा पडताळणीसाठी रांगेत ठेवतो. 'फोर्स' पर्यायामुळे अस्तित्वात असलेला पडताळणी निकाल बदलण्याची परवानगी मिळते; त्याची स्वतंत्रपणे पुष्टी करा."
+    },
+    {
+      "id": "online:Quick-match games and public rooms, newest first.",
+      "source": "Quick-match games and public rooms, newest first.",
+      "target": "क्विक-मॅच गेम्स आणि पब्लिक रूम्स, सर्वात नवीन प्रथम."
+    },
+    {
+      "id": "online:Quiet passage audibility",
+      "source": "Quiet passage audibility",
+      "target": "शांत मार्गातील श्रवणक्षमता"
+    },
+    {
+      "id": "online:Range",
+      "source": "Range",
+      "target": "श्रेणी"
+    },
+    {
+      "id": "online:Rank",
+      "source": "Rank",
+      "target": "रँक"
+    },
+    {
+      "id": "online:Rate",
+      "source": "Rate",
+      "target": "दर"
+    },
+    {
+      "id": "online:Rate {slot0}: {slot1} credit per million input tokens, {slot2} for cached input, {slot3} for cache writes, and {slot4} for output including reasoning. Repairs and follow-ups use the same rates.",
+      "source": {
+        "one": "Rate {slot0}: {slot1} credit per million input tokens, {slot2} for cached input, {slot3} for cache writes, and {slot4} for output including reasoning. Repairs and follow-ups use the same rates.",
+        "other": "Rate {slot0}: {slot1} credits per million input tokens, {slot2} for cached input, {slot3} for cache writes, and {slot4} for output including reasoning. Repairs and follow-ups use the same rates."
+      },
+      "target": {
+        "one": "{slot0} दर: प्रति दशलक्ष इनपुट टोकन्ससाठी {slot1} क्रेडिट, कॅश्ड इनपुटसाठी {slot2}, कॅशे राइट्ससाठी {slot3}, आणि कारणांसहित आउटपुटसाठी {slot4}. दुरुस्ती आणि पाठपुराव्यासाठी हेच दर वापरले जातात.",
+        "other": "{slot0} दर: प्रति दशलक्ष इनपुट टोकन्ससाठी {slot1} क्रेडिट्स, कॅश्ड इनपुटसाठी {slot2}, कॅशे राइट्ससाठी {slot3}, आणि कारणांसहित आउटपुटसाठी {slot4}. दुरुस्ती आणि पाठपुराव्यासाठी हेच दर वापरले जातात."
+      }
+    },
+    {
+      "id": "online:Rate {slot0}: {slot1} credits per million input tokens, {slot2} for cached input, {slot3} for cache writes, and {slot4} for output including reasoning. Repairs and follow-ups use the same rates.",
+      "source": "Rate {slot0}: {slot1} credits per million input tokens, {slot2} for cached input, {slot3} for cache writes, and {slot4} for output including reasoning. Repairs and follow-ups use the same rates.",
+      "target": "{slot0} दर: प्रति दशलक्ष इनपुट टोकन्ससाठी {slot1} क्रेडिट्स, कॅश्ड इनपुटसाठी {slot2}, कॅशे राइट्ससाठी {slot3}, आणि कारणांसहित आउटपुटसाठी {slot4}. दुरुस्ती आणि पाठपुराव्यासाठी हेच दर वापरले जातात."
+    },
+    {
+      "id": "online:Rated queues are for registered accounts; sign in first.",
+      "source": "Rated queues are for registered accounts; sign in first.",
+      "target": "रेटेड रांगा नोंदणीकृत खात्यांसाठी आहेत; प्रथम साइन इन करा."
+    },
+    {
+      "id": "online:Rating",
+      "source": "Rating",
+      "target": "रेटिंग"
+    },
+    {
+      "id": "online:Rating after each rated match",
+      "source": "Rating after each rated match",
+      "target": "प्रत्येक रेट केलेल्या सामन्यानंतर रेटिंग"
+    },
+    {
+      "id": "online:Re-verify ",
+      "source": "Re-verify ",
+      "target": "पुन्हा पडताळणी करा "
+    },
+    {
+      "id": "online:Re-verify {slot0}",
+      "source": "Re-verify {slot0}",
+      "target": "{slot0} ची पुन्हा पडताळणी करा"
+    },
+    {
+      "id": "online:Reach to Infinity",
+      "source": "Reach to Infinity",
+      "target": "अनंततेपर्यंत पोहोचा"
+    },
+    {
+      "id": "online:Ready",
+      "source": "Ready",
+      "target": "तयार"
+    },
+    {
+      "id": "online:Ready for your next adventure",
+      "source": "Ready for your next adventure",
+      "target": "तुमच्या पुढच्या साहसासाठी सज्ज व्हा."
+    },
+    {
+      "id": "online:Ready to download",
+      "source": "Ready to download",
+      "target": "डाउनलोड करण्यासाठी तयार"
+    },
+    {
+      "id": "online:Ready to listen",
+      "source": "Ready to listen",
+      "target": "ऐकण्यासाठी तयार"
+    },
+    {
+      "id": "online:Ready to play",
+      "source": "Ready to play",
+      "target": "खेळायला तयार"
+    },
+    {
+      "id": "online:Ready to publish",
+      "source": "Ready to publish",
+      "target": "प्रकाशित करण्यास तयार"
+    },
+    {
+      "id": "online:Ready to use",
+      "source": "Ready to use",
+      "target": "वापरण्यासाठी तयार"
+    },
+    {
+      "id": "online:Reason",
+      "source": "Reason",
+      "target": "कारण"
+    },
+    {
+      "id": "online:Reason ",
+      "source": "Reason ",
+      "target": "कारण "
+    },
+    {
+      "id": "online:Reason (recorded in the audit log)",
+      "source": "Reason (recorded in the audit log)",
+      "target": "कारण (ऑडिट लॉगमध्ये नोंदवलेले)"
+    },
+    {
+      "id": "online:Reason and evidence",
+      "source": "Reason and evidence",
+      "target": "तर्क आणि पुरावा"
+    },
+    {
+      "id": "online:Reason: {slot0}",
+      "source": "Reason: {slot0}",
+      "target": "कारण: {slot0}"
+    },
+    {
+      "id": "online:Reasons",
+      "source": "Reasons",
+      "target": "कारणे"
+    },
+    {
+      "id": "online:Recent activity",
+      "source": "Recent activity",
+      "target": "अलीकडील घडामोडी"
+    },
+    {
+      "id": "online:Recent matches",
+      "source": "Recent matches",
+      "target": "अलीकडील सामने"
+    },
+    {
+      "id": "online:Recently updated",
+      "source": "Recently updated",
+      "target": "अलीकडेच अद्यतनित केले"
+    },
+    {
+      "id": "online:Reconcile outstanding credit reservations before deleting this project.",
+      "source": "Reconcile outstanding credit reservations before deleting this project.",
+      "target": "हा प्रकल्प हटवण्यापूर्वी प्रलंबित क्रेडिट आरक्षणांचा ताळमेळ घाला."
+    },
+    {
+      "id": "online:Reconcile verified usage",
+      "source": "Reconcile verified usage",
+      "target": "सत्यापित वापराची जुळवाजुळव करा"
+    },
+    {
+      "id": "online:Reconciling",
+      "source": "Reconciling",
+      "target": "सलोखा करणे"
+    },
+    {
+      "id": "online:Reconnecting to your saved project…",
+      "source": "Reconnecting to your saved project…",
+      "target": "तुमच्या सेव्ह केलेल्या प्रोजेक्टशी पुन्हा कनेक्ट होत आहे…"
+    },
+    {
+      "id": "online:Recorded usage: {slot0} input tokens · {slot1} cached input · {slot2} cache write · {slot3} output tokens",
+      "source": "Recorded usage: {slot0} input tokens · {slot1} cached input · {slot2} cache write · {slot3} output tokens",
+      "target": "नोंदवलेला वापर: {slot0} इनपुट टोकन्स · {slot1} कॅश्ड इनपुट · {slot2} कॅशे राइट · {slot3} आउटपुट टोकन्स"
+    },
+    {
+      "id": "online:Recovered edits belong to an older revision. Download them before reloading.",
+      "source": "Recovered edits belong to an older revision. Download them before reloading.",
+      "target": "पुनर्प्राप्त केलेले बदल जुन्या आवृत्तीचे आहेत. रीलोड करण्यापूर्वी ते डाउनलोड करा."
+    },
+    {
+      "id": "online:Recovered local edits",
+      "source": "Recovered local edits",
+      "target": "पुनर्प्राप्त केलेले स्थानिक संपादन"
+    },
+    {
+      "id": "online:Recovery evidence for {value0}",
+      "source": "Recovery evidence for {value0}",
+      "target": "{value0} साठी पुनर्प्राप्तीचा पुरावा"
+    },
+    {
+      "id": "online:Redo",
+      "source": "Redo",
+      "target": "पुन्हा करा"
+    },
+    {
+      "id": "online:Reference",
+      "source": "Reference",
+      "target": "संदर्भ"
+    },
+    {
+      "id": "online:Reference limit reached for this project.",
+      "source": "Reference limit reached for this project.",
+      "target": "या प्रकल्पासाठी संदर्भ मर्यादा गाठली आहे."
+    },
+    {
+      "id": "online:Reference upload could not be saved.",
+      "source": "Reference upload could not be saved.",
+      "target": "संदर्भ अपलोड जतन करता आला नाही."
+    },
+    {
+      "id": "online:Refine the composition",
+      "source": "Refine the composition",
+      "target": "रचना परिष्कृत करा"
+    },
+    {
+      "id": "online:Refresh",
+      "source": "Refresh",
+      "target": "रिफ्रेश करा"
+    },
+    {
+      "id": "online:Refresh validation",
+      "source": "Refresh validation",
+      "target": "प्रमाणीकरण रिफ्रेश करा"
+    },
+    {
+      "id": "online:Refund",
+      "source": "Refund",
+      "target": "परतावा"
+    },
+    {
+      "id": "online:Refunded",
+      "source": "Refunded",
+      "target": "परतावा दिला"
+    },
+    {
+      "id": "online:Refused",
+      "source": "Refused",
+      "target": "नकार दिला"
+    },
+    {
+      "id": "online:Register an account to create and share sets.",
+      "source": "Register an account to create and share sets.",
+      "target": "सेट तयार करण्यासाठी आणि शेअर करण्यासाठी खाते नोंदणी करा."
+    },
+    {
+      "id": "online:Registered",
+      "source": "Registered",
+      "target": "नोंदणीकृत"
+    },
+    {
+      "id": "online:Registered active account-days",
+      "source": "Registered active account-days",
+      "target": "नोंदणीकृत सक्रिय खाते-दिवस"
+    },
+    {
+      "id": "online:Registered player",
+      "source": "Registered player",
+      "target": "नोंदणीकृत खेळाडू"
+    },
+    {
+      "id": "online:Registered signups",
+      "source": "Registered signups",
+      "target": "नोंदणीकृत साइनअप्स"
+    },
+    {
+      "id": "online:Registered: {slot0} today · {slot1} weekly · {slot2} monthly",
+      "source": "Registered: {slot0} today · {slot1} weekly · {slot2} monthly",
+      "target": "नोंदणीकृत: {slot0} आज · {slot1} साप्ताहिक · {slot2} मासिक"
+    },
+    {
+      "id": "online:Rejected",
+      "source": "Rejected",
+      "target": "नाकारले"
+    },
+    {
+      "id": "online:Relay key required.",
+      "source": "Relay key required.",
+      "target": "रिले की आवश्यक आहे."
+    },
+    {
+      "id": "online:Release",
+      "source": "Release",
+      "target": "प्रकाशन"
+    },
+    {
+      "id": "online:Release archive failed its integrity check.",
+      "source": "Release archive failed its integrity check.",
+      "target": "रिलीज आर्काइव्हची अखंडता तपासणी अयशस्वी झाली."
+    },
+    {
+      "id": "online:Release archive is too large.",
+      "source": "Release archive is too large.",
+      "target": "रिलीज आर्काइव्ह खूप मोठा आहे."
+    },
+    {
+      "id": "online:Release archive is unavailable.",
+      "source": "Release archive is unavailable.",
+      "target": "रिलीज आर्काइव्ह उपलब्ध नाही."
+    },
+    {
+      "id": "online:Release artwork failed its integrity check.",
+      "source": "Release artwork failed its integrity check.",
+      "target": "रिलीज आर्टवर्क सत्यता तपासणीत अयशस्वी ठरले."
+    },
+    {
+      "id": "online:Release exceeds package limits.",
+      "source": "Release exceeds package limits.",
+      "target": "रिलीझ पॅकेजच्या मर्यादा ओलांडत आहे."
+    },
+    {
+      "id": "online:Release label",
+      "source": "Release label",
+      "target": "प्रकाशन लेबल"
+    },
+    {
+      "id": "online:Release not found.",
+      "source": "Release not found.",
+      "target": "रिलीझ सापडला नाही."
+    },
+    {
+      "id": "online:Release notes",
+      "source": "Release notes",
+      "target": "प्रकाशन नोट्स"
+    },
+    {
+      "id": "online:Release unavailable.",
+      "source": "Release unavailable.",
+      "target": "प्रकाशन उपलब्ध नाही."
+    },
+    {
+      "id": "online:Releases",
+      "source": "Releases",
+      "target": "प्रकाशनं"
+    },
+    {
+      "id": "online:Releases & credits",
+      "source": "Releases & credits",
+      "target": "प्रकाशन आणि श्रेय"
+    },
+    {
+      "id": "online:Reload saved revision",
+      "source": "Reload saved revision",
+      "target": "जतन केलेली आवृत्ती पुन्हा लोड करा"
+    },
+    {
+      "id": "online:Reload the current saved draft before publishing.",
+      "source": "Reload the current saved draft before publishing.",
+      "target": "प्रकाशित करण्यापूर्वी सध्या जतन केलेला मसुदा पुन्हा लोड करा."
+    },
+    {
+      "id": "online:Remix with AI",
+      "source": "Remix with AI",
+      "target": "एआय सह रीमिक्स करा"
+    },
+    {
+      "id": "online:Remove",
+      "source": "Remove",
+      "target": "काढून टाका"
+    },
+    {
+      "id": "online:Remove entry",
+      "source": "Remove entry",
+      "target": "नोंद काढून टाका"
+    },
+    {
+      "id": "online:Remove favourite",
+      "source": "Remove favourite",
+      "target": "आवडते काढून टाका"
+    },
+    {
+      "id": "online:Remove generator",
+      "source": "Remove generator",
+      "target": "जनरेटर काढा"
+    },
+    {
+      "id": "online:Remove sheet",
+      "source": "Remove sheet",
+      "target": "शीट काढा"
+    },
+    {
+      "id": "online:Remove stage",
+      "source": "Remove stage",
+      "target": "स्टेज काढा"
+    },
+    {
+      "id": "online:Remove stock level",
+      "source": "Remove stock level",
+      "target": "स्टॉक पातळी काढून टाका"
+    },
+    {
+      "id": "online:Remove variant",
+      "source": "Remove variant",
+      "target": "व्हेरिएंट काढा"
+    }
+  ],
+  "subset_sha256": "6f0856743faf839511105321e29dba57fe3c761cfcc5355753e04cfd997d7d5b"
+}

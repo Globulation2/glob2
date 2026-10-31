@@ -1,0 +1,418 @@
+{
+  "request": {
+    "project": "bradley-personal-20261027",
+    "model": "general/nmt",
+    "payload": {
+      "sourceLanguageCode": "en",
+      "targetLanguageCode": "mr",
+      "mimeType": "text/plain",
+      "contents": [
+        "Join",
+        "Leaderboard",
+        "Maps",
+        "This server has no quick-match queues.",
+        "No open rooms right now. Create one and share the invite.",
+        "ZXQPH0QXZ · offline",
+        "Trying again in ZXQPH0QXZ s. Quick match and online rooms are unavailable. LAN game on the main menu doesn't need this server.",
+        "ZXQPH0QXZ · online",
+        "Online settings",
+        "Online",
+        "Open the page again",
+        "Open rooms",
+        "Play",
+        "Rooms",
+        "Ranks",
+        "Play with friends",
+        "Also search ZXQPH0QXZ",
+        "ZXQPH0QXZ players online · ZXQPH1QXZ searching this queue",
+        "Show in Open rooms",
+        "Last match",
+        "You are #ZXQPH0QXZ · rating ZXQPH1QXZ",
+        "You don't have a rank here yet. Play ranked matches to place.",
+        "Quick match appears when the server answers.",
+        "Quick match isn't available in this version yet.",
+        "Quick match",
+        "Ranked",
+        "Refresh",
+        "Retry now",
+        "Room",
+        "ZXQPH0QXZ's room",
+        "Room",
+        "ZXQPH0QXZ/ZXQPH1QXZ seats",
+        "Open the sign-in page",
+        "That sign-in already belongs to another account.",
+        "Sign-in didn't finish (ZXQPH0QXZ).",
+        "Sign in or create an account in your browser. Your guest matches come with you.",
+        "Sign in",
+        "Sign out on this device",
+        "Signed in as ZXQPH0QXZ.",
+        "Signed in on ZXQPH0QXZ",
+        "Signing in…",
+        "sim ZXQPH0QXZ",
+        "Unrated",
+        "ZXQPH0QXZ · update required",
+        "ZXQPH0QXZ plays a newer version, so this copy can't join online games until it updates. LAN games still work.",
+        "Update required",
+        "Server update pending",
+        "ZXQPH0QXZ · server update pending",
+        "This copy is newer than ZXQPH0QXZ, which hasn't been updated to it yet. Online games will open once the server updates. LAN games still work.",
+        "Different version",
+        "ZXQPH0QXZ · different version",
+        "ZXQPH0QXZ plays a different version of the game, so this copy can't join online games. LAN games still work.",
+        "vs ZXQPH0QXZ",
+        "AI",
+        "The match could not start.",
+        "Leave",
+        "Loading the game",
+        "Loading game graphics",
+        "Downloading the map",
+        "Connected to relay ZXQPH0QXZ",
+        "Seat confirmed",
+        "Starting match",
+        "Tip: your orders reach everyone after your own input delay; other players' connections don't slow you down.",
+        "Tip: double-click a building to select every building of that type.",
+        "Waiting for every player",
+        "ZXQPH0QXZ (you)",
+        "map",
+        "loading",
+        "connecting",
+        "ready",
+        "left",
+        "Back to online",
+        "Back to room",
+        "Find another match",
+        "Defeat",
+        "ZXQPH0QXZ rating",
+        "You left the match",
+        "Match over",
+        "Match page",
+        "ZXQPH0QXZ min"
+      ]
+    }
+  },
+  "response": {
+    "translations": [
+      {
+        "translatedText": "सामील व्हा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "लीडरबोर्ड",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नकाशे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "या सर्व्हरवर क्विक-मॅच क्यू नाहीत.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सध्या एकही रूम उपलब्ध नाही. एक रूम तयार करा आणि आमंत्रण शेअर करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ · ऑफलाइन",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ मध्ये पुन्हा प्रयत्न करत आहे. क्विक मॅच आणि ऑनलाइन रूम्स उपलब्ध नाहीत. मुख्य मेन्यूवरील लॅन गेमला या सर्व्हरची आवश्यकता नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ · ऑनलाइन",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ऑनलाइन सेटिंग्ज",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ऑनलाइन",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पान पुन्हा उघडा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "मोकळ्या खोल्या",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "खेळा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "खोल्या",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "रँक",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "मित्रांसोबत खेळा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ देखील शोधा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ खेळाडू ऑनलाइन · ZXQPH1QXZ या रांगेत शोधत आहे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "मोकळ्या खोल्यांमध्ये दाखवा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "शेवटचा सामना",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तुम्ही #ZXQPH0QXZ आहात · ZXQPH1QXZ ला रेटिंग देत आहात",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तुम्हाला येथे अजून रँक मिळालेला नाही. रँक मिळवण्यासाठी रँक्ड सामने खेळा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सर्व्हरने प्रतिसाद दिल्यावर क्विक मॅच दिसते.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "या आवृत्तीमध्ये क्विक मॅच अद्याप उपलब्ध नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "जलद सामना",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "क्रमवारी लावली",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "रिफ्रेश करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "आता पुन्हा प्रयत्न करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "खोली",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ ची खोली",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "खोली",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ/ZXQPH1QXZ जागा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "साइन-इन पेज उघडा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ते साइन-इन आधीच दुसऱ्या खात्याचे आहे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "साइन-इन पूर्ण झाले नाही (ZXQPH0QXZ).",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तुमच्या ब्राउझरमध्ये साइन इन करा किंवा खाते तयार करा. तुमचे गेस्ट मॅचेस तुमच्यासोबत येतात.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "साइन इन करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "या डिव्हाइसवरून साइन आउट करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ म्हणून साइन इन केले आहे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ वर साइन इन केले",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "साइन इन करत आहे…",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सिम ZXQPH0QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "रेटिंग नाही",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ · अद्ययावत करणे आवश्यक आहे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ नवीन आवृत्ती वापरत असल्यामुळे, अपडेट होईपर्यंत ही प्रत ऑनलाइन गेममध्ये सामील होऊ शकत नाही. लॅन गेम्स मात्र व्यवस्थित चालतात.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अपडेट आवश्यक आहे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सर्व्हर अपडेट प्रलंबित आहे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ · सर्व्हर अद्ययावतीकरण प्रलंबित आहे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ही प्रत ZXQPH0QXZ पेक्षा नवीन आहे, जी अद्याप अद्ययावत केलेली नाही. सर्व्हर अद्ययावत झाल्यावर ऑनलाइन गेम्स सुरू होतील. लॅन गेम्स अजूनही चालतात.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "वेगळी आवृत्ती",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ · भिन्न आवृत्ती",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ गेमची वेगळी आवृत्ती खेळत असल्यामुळे, ही प्रत ऑनलाइन गेममध्ये सामील होऊ शकत नाही. लॅन गेम्स मात्र चालतात.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "विरुद्ध ZXQPH0QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "एआय",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सामना सुरू होऊ शकला नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सोडा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "गेम लोड होत आहे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "गेमचे ग्राफिक्स लोड होत आहेत",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नकाशा डाउनलोड करणे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ रिलेशी जोडलेले",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "जागा निश्चित झाली आहे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सामना सुरू करणे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "टीप: तुमच्या स्वतःच्या इनपुटमधील विलंबानंतर तुमच्या ऑर्डर्स सर्वांपर्यंत पोहोचतात; इतर खेळाडूंच्या कनेक्शन्समुळे तुमचा वेग कमी होत नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सूचना: एखाद्या इमारतीवर डबल-क्लिक करून त्या प्रकारच्या सर्व इमारती निवडा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "प्रत्येक खेळाडूची वाट पाहत आहे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ (तुम्ही)",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नकाशा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "लोडिंग",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कनेक्ट करत आहे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तयार",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "डावीकडे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ऑनलाइनवर परत जा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "खोलीत परत",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "दुसरा सामना शोधा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पराभव",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ रेटिंग",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तुम्ही सामना सोडून गेलात",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सामना संपला",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सामना पृष्ठ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ किमान",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      }
+    ]
+  },
+  "response_sha256": "807cc026043938e4b7c4785424caea705315ee7a8a5e57807efe3faff3860f52"
+}

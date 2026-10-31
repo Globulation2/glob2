@@ -1,0 +1,510 @@
+{
+  "source_sha256": "0ac44b4cdfb03e688983d6e3fb1e484cca57589665bff19c5c65388e649b292a",
+  "batch_target_sha256": "f0adb506f116c0050c98338e3eb7f32e00ead9de247e97b0a91bd61efa7f977e",
+  "catalog_sha256": {
+    "native": "683bcc1e1680e6cb9e2605ef9be42724a76d3e7b1f2868462e24ef50d1423642",
+    "online": "1ba40d342498f5e7704a63e5d175bd9e8a0ede31e3ca2ce88e8cb1fbc0ba68a6"
+  },
+  "entries": [
+    {
+      "id": "online:Sign in to see your sets.",
+      "source": "Sign in to see your sets.",
+      "target": "तुमचे सेट पाहण्यासाठी साइन इन करा."
+    },
+    {
+      "id": "online:Sign in to upload a map",
+      "source": "Sign in to upload a map",
+      "target": "नकाशा अपलोड करण्यासाठी साइन इन करा"
+    },
+    {
+      "id": "online:Sign in to upload a photo.",
+      "source": "Sign in to upload a photo.",
+      "target": "फोटो अपलोड करण्यासाठी साइन इन करा."
+    },
+    {
+      "id": "online:Sign in to view draft artwork.",
+      "source": "Sign in to view draft artwork.",
+      "target": "मसुदा कलाकृती पाहण्यासाठी साइन इन करा."
+    },
+    {
+      "id": "online:Sign in to view your commander and credits.",
+      "source": "Sign in to view your commander and credits.",
+      "target": "तुमचा कमांडर आणि क्रेडिट्स पाहण्यासाठी साइन इन करा."
+    },
+    {
+      "id": "online:Sign in with a registered account to compose, refine, and share your own soundtrack.",
+      "source": "Sign in with a registered account to compose, refine, and share your own soundtrack.",
+      "target": "तुमचा स्वतःचा साउंडट्रॅक तयार करण्यासाठी, त्यात सुधारणा करण्यासाठी आणि तो शेअर करण्यासाठी नोंदणीकृत खात्याद्वारे साइन इन करा."
+    },
+    {
+      "id": "online:Sign in with a registered account to design, refine, and play your own maps.",
+      "source": "Sign in with a registered account to design, refine, and play your own maps.",
+      "target": "तुमचे स्वतःचे नकाशे डिझाइन करण्यासाठी, सुधारण्यासाठी आणि खेळण्यासाठी नोंदणीकृत खात्यासह साइन इन करा."
+    },
+    {
+      "id": "online:Sign in with a registered account to publish music.",
+      "source": "Sign in with a registered account to publish music.",
+      "target": "संगीत प्रकाशित करण्यासाठी नोंदणीकृत खात्याद्वारे साइन इन करा."
+    },
+    {
+      "id": "online:Sign in with a registered account to save and publish custom sets.",
+      "source": "Sign in with a registered account to save and publish custom sets.",
+      "target": "सानुकूल संच जतन आणि प्रकाशित करण्यासाठी नोंदणीकृत खात्याद्वारे साइन इन करा."
+    },
+    {
+      "id": "online:Sign in with a registered account to use AI Building Studio.",
+      "source": "Sign in with a registered account to use AI Building Studio.",
+      "target": "एआय बिल्डिंग स्टुडिओ वापरण्यासाठी नोंदणीकृत खात्याद्वारे साइन इन करा."
+    },
+    {
+      "id": "online:Sign in with a registered account to use AI Map Studio.",
+      "source": "Sign in with a registered account to use AI Map Studio.",
+      "target": "एआय मॅप स्टुडिओ वापरण्यासाठी नोंदणीकृत खात्याद्वारे साइन इन करा."
+    },
+    {
+      "id": "online:Sign in with a registered account to use AI Music Studio.",
+      "source": "Sign in with a registered account to use AI Music Studio.",
+      "target": "एआय म्युझिक स्टुडिओ वापरण्यासाठी नोंदणीकृत खात्याद्वारे साइन इन करा."
+    },
+    {
+      "id": "online:Sign in with a registered account to use AI Terrain Studio.",
+      "source": "Sign in with a registered account to use AI Terrain Studio.",
+      "target": "एआय टेरेन स्टुडिओ वापरण्यासाठी नोंदणीकृत खात्याद्वारे साइन इन करा."
+    },
+    {
+      "id": "online:Sign in with a registered account.",
+      "source": "Sign in with a registered account.",
+      "target": "नोंदणीकृत खात्याद्वारे साइन इन करा."
+    },
+    {
+      "id": "online:Sign in with an account to like maps.",
+      "source": "Sign in with an account to like maps.",
+      "target": "नकाशे लाईक करण्यासाठी खात्याद्वारे साइन इन करा."
+    },
+    {
+      "id": "online:Sign in with an account to publish maps; guests can share unlisted maps.",
+      "source": "Sign in with an account to publish maps; guests can share unlisted maps.",
+      "target": "नकाशे प्रकाशित करण्यासाठी खात्याद्वारे साइन इन करा; अतिथी नोंदणी नसलेले नकाशे शेअर करू शकतात."
+    },
+    {
+      "id": "online:Sign in with an account to publish publicly.",
+      "source": "Sign in with an account to publish publicly.",
+      "target": "सार्वजनिकरित्या प्रकाशित करण्यासाठी खात्याद्वारे साइन इन करा."
+    },
+    {
+      "id": "online:Sign in with an account to save favourites and like AIs.",
+      "source": "Sign in with an account to save favourites and like AIs.",
+      "target": "आवडीचे जतन करण्यासाठी आणि एआयला लाईक करण्यासाठी खात्याद्वारे साइन इन करा."
+    },
+    {
+      "id": "online:Sign in with an account to save favourites and like generators.",
+      "source": "Sign in with an account to save favourites and like generators.",
+      "target": "आवडीचे पदार्थ जतन करण्यासाठी आणि लाईक जनरेटर वापरण्यासाठी खात्याद्वारे साइन इन करा."
+    },
+    {
+      "id": "online:Sign in with an active account to save building drafts.",
+      "source": "Sign in with an active account to save building drafts.",
+      "target": "इमारतीचे मसुदे जतन करण्यासाठी सक्रिय खात्यासह साइन इन करा."
+    },
+    {
+      "id": "online:Sign in with an active account to save skins.",
+      "source": "Sign in with an active account to save skins.",
+      "target": "स्किन्स सेव्ह करण्यासाठी सक्रिय खात्यासह साइन इन करा."
+    },
+    {
+      "id": "online:Sign in with an active account to use a custom skin.",
+      "source": "Sign in with an active account to use a custom skin.",
+      "target": "सानुकूल स्किन वापरण्यासाठी सक्रिय खात्यासह साइन इन करा."
+    },
+    {
+      "id": "online:Sign in with an active registered account.",
+      "source": "Sign in with an active registered account.",
+      "target": "सक्रिय नोंदणीकृत खात्याद्वारे साइन इन करा."
+    },
+    {
+      "id": "online:Sign out",
+      "source": "Sign out",
+      "target": "साइन आउट"
+    },
+    {
+      "id": "online:Sign-in cancelled",
+      "source": "Sign-in cancelled",
+      "target": "साइन-इन रद्द केले"
+    },
+    {
+      "id": "online:Sign-in methods",
+      "source": "Sign-in methods",
+      "target": "साइन-इन पद्धती"
+    },
+    {
+      "id": "online:Sign-in problem",
+      "source": "Sign-in problem",
+      "target": "साइन-इन समस्या"
+    },
+    {
+      "id": "online:Sign-in was cancelled.",
+      "source": "Sign-in was cancelled.",
+      "target": "साइन-इन रद्द करण्यात आले."
+    },
+    {
+      "id": "online:Signed in",
+      "source": "Signed in",
+      "target": "साइन इन केले"
+    },
+    {
+      "id": "online:Signed in as",
+      "source": "Signed in as",
+      "target": "म्हणून साइन इन केले"
+    },
+    {
+      "id": "online:Signed in as {slot0} ({slot1}). Every administrative change is recorded.",
+      "source": "Signed in as {slot0} ({slot1}). Every administrative change is recorded.",
+      "target": "{slot0} ({slot1}) म्हणून साइन इन केले आहे. प्रत्येक प्रशासकीय बदल नोंदवला जातो."
+    },
+    {
+      "id": "online:Signing in with {p0} did not work. Please try again.",
+      "source": "Signing in with {p0} did not work. Please try again.",
+      "target": "{p0} वापरून साइन इन करणे यशस्वी झाले नाही. कृपया पुन्हा प्रयत्न करा."
+    },
+    {
+      "id": "online:Simulation {slot0}",
+      "source": "Simulation {slot0}",
+      "target": "सिम्युलेशन {slot0}"
+    },
+    {
+      "id": "online:Singular {value0} camera",
+      "source": "Singular {value0} camera",
+      "target": "एकवचनी {value0} कॅमेरा"
+    },
+    {
+      "id": "online:Six brood eggs nested in a low rim.",
+      "source": "Six brood eggs nested in a low rim.",
+      "target": "एका लहान कड्यामध्ये सहा अंडी होती."
+    },
+    {
+      "id": "online:Size",
+      "source": "Size",
+      "target": "आकार"
+    },
+    {
+      "id": "online:Skin artwork is unavailable.",
+      "source": "Skin artwork is unavailable.",
+      "target": "त्वचेची कलाकृती उपलब्ध नाही."
+    },
+    {
+      "id": "online:Skin artwork not found.",
+      "source": "Skin artwork not found.",
+      "target": "त्वचेवरील कलाकृती आढळली नाही."
+    },
+    {
+      "id": "online:Skin collection pages",
+      "source": "Skin collection pages",
+      "target": "त्वचा संग्रह पृष्ठे"
+    },
+    {
+      "id": "online:Skin deleted.",
+      "source": "Skin deleted.",
+      "target": "स्किन हटवली."
+    },
+    {
+      "id": "online:Skin designer",
+      "source": "Skin designer",
+      "target": "त्वचा डिझायनर"
+    },
+    {
+      "id": "online:Skin disabled",
+      "source": "Skin disabled",
+      "target": "त्वचा अक्षम"
+    },
+    {
+      "id": "online:Skin name",
+      "source": "Skin name",
+      "target": "त्वचेचे नाव"
+    },
+    {
+      "id": "online:Skin not found.",
+      "source": "Skin not found.",
+      "target": "त्वचा आढळली नाही."
+    },
+    {
+      "id": "online:Skin page not found.",
+      "source": "Skin page not found.",
+      "target": "त्वचेचे पृष्ठ सापडले नाही."
+    },
+    {
+      "id": "online:Skin report resolutions need at most 1000 characters and disabling for a resolved report.",
+      "source": "Skin report resolutions need at most 1000 characters and disabling for a resolved report.",
+      "target": "स्किन रिपोर्टच्या निराकरणासाठी जास्तीत जास्त १००० अक्षरे आवश्यक आहेत आणि निराकरण झालेल्या रिपोर्टसाठी ते अक्षम करणे आवश्यक आहे."
+    },
+    {
+      "id": "online:Skin report status",
+      "source": "Skin report status",
+      "target": "त्वचेच्या अहवालाची स्थिती"
+    },
+    {
+      "id": "online:Skin reports",
+      "source": "Skin reports",
+      "target": "त्वचेचे अहवाल"
+    },
+    {
+      "id": "online:Skin shop",
+      "source": "Skin shop",
+      "target": "त्वचेचे दुकान"
+    },
+    {
+      "id": "online:Skin texture",
+      "source": "Skin texture",
+      "target": "त्वचेचा पोत"
+    },
+    {
+      "id": "online:Skin version not found.",
+      "source": "Skin version not found.",
+      "target": "स्किनची आवृत्ती सापडली नाही."
+    },
+    {
+      "id": "online:Skins",
+      "source": "Skins",
+      "target": "त्वचा"
+    },
+    {
+      "id": "online:Skip to content",
+      "source": "Skip to content",
+      "target": "सामग्रीवर जा"
+    },
+    {
+      "id": "online:Skipped",
+      "source": "Skipped",
+      "target": "वगळले"
+    },
+    {
+      "id": "online:Small",
+      "source": "Small",
+      "target": "लहान"
+    },
+    {
+      "id": "online:Solid",
+      "source": "Solid",
+      "target": "ठोस"
+    },
+    {
+      "id": "online:Some results could not be displayed.",
+      "source": "Some results could not be displayed.",
+      "target": "काही निकाल दाखवता आले नाहीत."
+    },
+    {
+      "id": "online:Something else",
+      "source": "Something else",
+      "target": "दुसरे काहीतरी"
+    },
+    {
+      "id": "online:Something went wrong. Please try again.",
+      "source": "Something went wrong. Please try again.",
+      "target": "काहीतरी चूक झाली आहे. कृपया पुन्हा प्रयत्न करा."
+    },
+    {
+      "id": "online:Sort",
+      "source": "Sort",
+      "target": "क्रमवारी लावा"
+    },
+    {
+      "id": "online:Sort AIs",
+      "source": "Sort AIs",
+      "target": "एआयची क्रमवारी लावा"
+    },
+    {
+      "id": "online:Sound palette",
+      "source": "Sound palette",
+      "target": "ध्वनी पॅलेट"
+    },
+    {
+      "id": "online:Soundtrack mood",
+      "source": "Soundtrack mood",
+      "target": "साउंडट्रॅक मूड"
+    },
+    {
+      "id": "online:Source code",
+      "source": "Source code",
+      "target": "सोर्स कोड"
+    },
+    {
+      "id": "online:Source identity",
+      "source": "Source identity",
+      "target": "स्रोत ओळख"
+    },
+    {
+      "id": "online:Source links (one per line)",
+      "source": "Source links (one per line)",
+      "target": "स्रोत दुवे (प्रत्येक ओळीत एक)"
+    },
+    {
+      "id": "online:Source set",
+      "source": "Source set",
+      "target": "स्रोत संच"
+    },
+    {
+      "id": "online:Source too large.",
+      "source": "Source too large.",
+      "target": "स्रोत खूप मोठा आहे."
+    },
+    {
+      "id": "online:Source unavailable.",
+      "source": "Source unavailable.",
+      "target": "स्रोत उपलब्ध नाही."
+    },
+    {
+      "id": "online:Speckles",
+      "source": "Speckles",
+      "target": "ठिपके"
+    },
+    {
+      "id": "online:Spot size",
+      "source": "Spot size",
+      "target": "स्पॉट आकार"
+    },
+    {
+      "id": "online:Spots",
+      "source": "Spots",
+      "target": "स्पॉट्स"
+    },
+    {
+      "id": "online:Spread rate",
+      "source": "Spread rate",
+      "target": "प्रसार दर"
+    },
+    {
+      "id": "online:Sprite key",
+      "source": "Sprite key",
+      "target": "स्प्राइट की"
+    },
+    {
+      "id": "online:Sprite manifest",
+      "source": "Sprite manifest",
+      "target": "स्प्राइट मॅनिफेस्ट"
+    },
+    {
+      "id": "online:Sprite manifest JSON",
+      "source": "Sprite manifest JSON",
+      "target": "स्प्राइट मॅनिफेस्ट JSON"
+    },
+    {
+      "id": "online:Spritesheet",
+      "source": "Spritesheet",
+      "target": "स्प्राइटशीट"
+    },
+    {
+      "id": "online:Spritesheets",
+      "source": "Spritesheets",
+      "target": "स्प्राइटशीट"
+    },
+    {
+      "id": "online:Stable key",
+      "source": "Stable key",
+      "target": "स्थिर चावी"
+    },
+    {
+      "id": "online:Stage",
+      "source": "Stage",
+      "target": "स्टेज"
+    },
+    {
+      "id": "online:Stage details are not available for this version.",
+      "source": "Stage details are not available for this version.",
+      "target": "या आवृत्तीसाठी स्टेजचा तपशील उपलब्ध नाही."
+    },
+    {
+      "id": "online:Stage details could not be loaded.",
+      "source": "Stage details could not be loaded.",
+      "target": "स्टेजचा तपशील लोड होऊ शकला नाही."
+    },
+    {
+      "id": "online:Start a project",
+      "source": "Start a project",
+      "target": "प्रकल्प सुरू करा"
+    },
+    {
+      "id": "online:Start building an AI ↗",
+      "source": "Start building an AI ↗",
+      "target": "एआय तयार करण्यास सुरुवात करा ↗"
+    },
+    {
+      "id": "online:Start fresh",
+      "source": "Start fresh",
+      "target": "नव्याने सुरुवात करा"
+    },
+    {
+      "id": "online:Start from a preset",
+      "source": "Start from a preset",
+      "target": "पूर्वनिर्धारित पासून सुरुवात करा"
+    },
+    {
+      "id": "online:Start with one building, add stages for upgrades, then save and publish. Artwork uploads are saved immediately; choose their sprite keys in gameSprite and miniSprite.",
+      "source": "Start with one building, add stages for upgrades, then save and publish. Artwork uploads are saved immediately; choose their sprite keys in gameSprite and miniSprite.",
+      "target": "एका इमारतीने सुरुवात करा, अपग्रेडसाठी टप्पे जोडा, नंतर सेव्ह आणि पब्लिश करा. आर्टवर्क अपलोड्स त्वरित सेव्ह केले जातात; त्यांचे स्प्राइट की gameSprite आणि miniSprite मधून निवडा."
+    },
+    {
+      "id": "online:Starting",
+      "source": "Starting",
+      "target": "सुरुवात"
+    },
+    {
+      "id": "online:Starting the game…",
+      "source": "Starting the game…",
+      "target": "खेळ सुरू करत आहे…"
+    },
+    {
+      "id": "online:Starting workers",
+      "source": "Starting workers",
+      "target": "कामगार सुरू करणे"
+    },
+    {
+      "id": "online:Statistic",
+      "source": "Statistic",
+      "target": "सांख्यिकी"
+    },
+    {
+      "id": "online:Status",
+      "source": "Status",
+      "target": "स्थिती"
+    },
+    {
+      "id": "online:Status: {slot0}",
+      "source": "Status: {slot0}",
+      "target": "स्थिती: {slot0}"
+    },
+    {
+      "id": "online:Status: {slot0} · Created {slot1}{slot2}",
+      "source": "Status: {slot0} · Created {slot1}{slot2}",
+      "target": "स्थिती: {slot0} · {slot1}{slot2} तयार केले"
+    },
+    {
+      "id": "online:Still JPEG, PNG or WebP · up to 10 MiB and 25 megapixels. Choosing Gravatar or initials removes your uploaded photo.",
+      "source": "Still JPEG, PNG or WebP · up to 10 MiB and 25 megapixels. Choosing Gravatar or initials removes your uploaded photo.",
+      "target": "स्थिर JPEG, PNG किंवा WebP · १० MiB आणि २५ मेगापिक्सेल पर्यंत. ग्राव्हार किंवा आद्याक्षरे निवडल्यास तुमचा अपलोड केलेला फोटो काढून टाकला जातो."
+    },
+    {
+      "id": "online:Stock levels",
+      "source": "Stock levels",
+      "target": "स्टॉक पातळी"
+    },
+    {
+      "id": "online:Stop game",
+      "source": "Stop game",
+      "target": "खेळ थांबवा"
+    },
+    {
+      "id": "online:Stop preview",
+      "source": "Stop preview",
+      "target": "पूर्वावलोकन थांबवा"
+    },
+    {
+      "id": "online:Stop request",
+      "source": "Stop request",
+      "target": "विनंती थांबवा"
+    },
+    {
+      "id": "online:Stop transition preview",
+      "source": "Stop transition preview",
+      "target": "संक्रमण पूर्वावलोकन थांबवा"
+    }
+  ]
+}

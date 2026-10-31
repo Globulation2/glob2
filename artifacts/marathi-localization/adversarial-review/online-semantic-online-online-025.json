@@ -1,0 +1,253 @@
+{
+  "reviewer": "/root/draft_tool",
+  "role": "independent online semantic reviewer",
+  "source_sha256": "0ac44b4cdfb03e688983d6e3fb1e484cca57589665bff19c5c65388e649b292a",
+  "batch_target_sha256": "4348a361b5c1ec4f249070f09a1b36ac46d316515c0fae95cc202fbc3c8b7628",
+  "catalog_sha256": {
+    "native": "683bcc1e1680e6cb9e2605ef9be42724a76d3e7b1f2868462e24ef50d1423642",
+    "online": "1ba40d342498f5e7704a63e5d175bd9e8a0ede31e3ca2ce88e8cb1fbc0ba68a6"
+  },
+  "reviewed_keys": [
+    "online:checking…",
+    "online:checks need",
+    "online:deletes your maps, likes, uploads and your rating’s place on the leaderboards.",
+    "online:diverged",
+    "online:dropped",
+    "online:finding",
+    "online:findings",
+    "online:forest",
+    "online:format must be map or save.",
+    "online:format {value0}, network {value1}",
+    "online:get the game",
+    "online:hidden",
+    "online:hidden by a moderator",
+    "online:icon {value0}",
+    "online:in a web browser",
+    "online:inspection",
+    "online:invalid",
+    "online:joined {slot0} · last seen {slot1} · {slot2}",
+    "online:launch timeout",
+    "online:limit must be an integer from 1 to {p0}.",
+    "online:live",
+    "online:madeWith must be hand or generator.",
+    "online:map",
+    "online:match on now",
+    "online:match today",
+    "online:matchId differs from the path.",
+    "online:matches on now",
+    "online:matches today",
+    "online:median length",
+    "online:muted until {slot0}",
+    "online:none",
+    "online:not checked",
+    "online:not set",
+    "online:on a computer",
+    "online:on an Android device",
+    "online:on an iPhone or iPad",
+    "online:owner must be \"me\" or an account id.",
+    "online:package:",
+    "online:participants must be all, humans or ai.",
+    "online:payment",
+    "online:play in your browser",
+    "online:player online",
+    "online:players online",
+    "online:projection",
+    "online:provider sign-in failed",
+    "online:provider unavailable",
+    "online:provisional",
+    "online:provisional must be include or exclude.",
+    "online:public, max-age=604800",
+    "online:record.sha256 differs from the uploaded record.",
+    "online:refund",
+    "online:removed from end",
+    "online:replaces your name with “Deleted player” in your past matches, chat and records;",
+    "online:resynced",
+    "online:right away, or",
+    "online:r{slot0} · {slot1}",
+    "online:signs you out on every device and removes your sign-in methods and e-mail address;",
+    "online:silence added at end",
+    "online:simVersion (a sim version key) is required.",
+    "online:simVersion differs from the match setup.",
+    "online:simVersion must be a sim version key.",
+    "online:size unknown",
+    "online:sort must be one of {p0}.",
+    "online:starting",
+    "online:status must be open, resolved, dismissed or all.",
+    "online:teams must list the map's {p0} teams in order 0..{p1}.",
+    "online:text/html; charset=utf-8",
+    "online:today {time}",
+    "online:unexpected instance response: {value0}",
+    "online:unverifiable",
+    "online:valid",
+    "online:v{slot0}",
+    "online:world {value0}",
+    "online:{hours} {minutes}",
+    "online:{loaded} of {total} MB",
+    "online:{p0} No app?",
+    "online:{p0} Studio is not enabled on this instance.",
+    "online:{p0} as",
+    "online:{p0} invited you to their Globulation 2 room{p1}.",
+    "online:{p0} must be an integer from {p1} to {p2}.",
+    "online:{p0} sign-in is unavailable right now.",
+    "online:{p0}’s room has closed, so this invite no longer works. Ask them for a new link, or start a game of your own.",
+    "online:{slot0}  {slot1} credit available",
+    "online:{slot0}  {slot1} credits available",
+    "online:{slot0} ({slot1}%)",
+    "online:{slot0} ({slot1})",
+    "online:{slot0} / {slot1}",
+    "online:{slot0} / {slot1} passed",
+    "online:{slot0} Manual editing and local playtests use no credits.",
+    "online:{slot0} The preview shows exactly what will be saved.",
+    "online:{slot0} Try again, or download the set to listen locally.",
+    "online:{slot0} W · {slot1} L",
+    "online:{slot0} W · {slot1} L{slot2}",
+    "online:{slot0} and resolve",
+    "online:{slot0} available · {slot1} reserved. Discussion requires an available credit; each delivered map or revision costs 1 credit. Failed generations return the credit.",
+    "online:{slot0} available · {slot1} reserved. Discussion requires an available credit; each delivered set or revision costs 1 credit. Failed generations return the credit.",
+    "online:{slot0} before buying so you can recover your purchases.",
+    "online:{slot0} credit available",
+    "online:{slot0} credit available · {slot1} reserved",
+    "online:{slot0} credit reserved for work in progress."
+  ],
+  "findings": [
+    {
+      "key": "online:finding",
+      "before": "शोधणे",
+      "after": "निष्कर्ष",
+      "reason": "Diagnostic finding is a noun, not act of searching.",
+      "severity": "minor",
+      "state": "proposed"
+    },
+    {
+      "key": "online:owner must be \"me\" or an account id.",
+      "before": "मालक \"me\" किंवा खाते आयडी असणे आवश्यक आहे.",
+      "after": "owner हे \"me\" किंवा खाते आयडी असावे.",
+      "reason": "Preserve API field name and literal accepted value.",
+      "severity": "minor",
+      "state": "proposed"
+    },
+    {
+      "key": "online:participants must be all, humans or ai.",
+      "before": "सहभागी all, humans किंवा ai असणे आवश्यक आहे.",
+      "after": "participants हे all, humans किंवा ai असावे.",
+      "reason": "Preserve API field and literal enum values.",
+      "severity": "minor",
+      "state": "proposed"
+    },
+    {
+      "key": "online:provisional must be include or exclude.",
+      "before": "तात्पुरते include किंवा exclude असले पाहिजे.",
+      "after": "provisional हे include किंवा exclude असावे.",
+      "reason": "API field name, not an adjective meaning temporary.",
+      "severity": "minor",
+      "state": "proposed"
+    },
+    {
+      "key": "online:status must be open, resolved, dismissed or all.",
+      "before": "स्थिती open, resolved, dismissed किंवा all असणे आवश्यक आहे.",
+      "after": "status हे open, resolved, dismissed किंवा all असावे.",
+      "reason": "Preserve API field and accepted enum values.",
+      "severity": "minor",
+      "state": "proposed"
+    },
+    {
+      "key": "online:starting",
+      "before": "सुरुवात करणे",
+      "after": "सुरू होत आहे",
+      "reason": "Process state, not infinitive.",
+      "severity": "minor",
+      "state": "proposed"
+    },
+    {
+      "key": "online:format must be map or save.",
+      "before": "स्वरूप map किंवा save असले पाहिजे.",
+      "after": "format हे map किंवा save असावे.",
+      "reason": "Preserve API field and accepted enum values.",
+      "severity": "minor",
+      "state": "proposed"
+    },
+    {
+      "key": "online:teams must list the map's {p0} teams in order 0..{p1}.",
+      "before": "संघांनी नकाशावरील {p0} संघांची यादी 0..{p1} या क्रमाने करणे आवश्यक आहे.",
+      "after": "teams मध्ये नकाशावरील {p0} संघ 0..{p1} या क्रमाने दिलेले असावेत.",
+      "reason": "Array schema constraint, not asking teams to create a list.",
+      "severity": "major",
+      "state": "proposed"
+    },
+    {
+      "key": "online:unverifiable",
+      "before": "अपुष्ट",
+      "after": "पडताळता येत नाही",
+      "reason": "Impossible to verify differs from not yet verified.",
+      "severity": "minor",
+      "state": "proposed"
+    },
+    {
+      "key": "online:{loaded} of {total} MB",
+      "before": "{total} MB चे {loaded}",
+      "after": "{total} MB पैकी {loaded}",
+      "reason": "Progress fraction natural Marathi order.",
+      "severity": "minor",
+      "state": "proposed"
+    },
+    {
+      "key": "online:{p0} invited you to their Globulation 2 room{p1}.",
+      "before": "{p0} यांनी तुम्हाला त्यांच्या Globulation 2 खोली {p1} मध्ये आमंत्रित केले आहे.",
+      "after": "{p0} यांनी त्यांच्या Globulation 2 खोलीत तुम्हाला आमंत्रित केले आहे{p1}.",
+      "reason": "Keep optional trailing qualifier separate from room postposition.",
+      "severity": "minor",
+      "state": "proposed"
+    },
+    {
+      "key": "online:{slot0} available · {slot1} reserved. Discussion requires an available credit; each delivered set or revision costs 1 credit. Failed generations return the credit.",
+      "before": "{slot0} उपलब्ध · {slot1} आरक्षित. चर्चेसाठी उपलब्ध क्रेडिट आवश्यक आहे; प्रत्येक वितरित संच किंवा सुधारणेसाठी १ क्रेडिट आकारले जाईल. अयशस्वी झालेल्या पिढ्यांसाठी क्रेडिट परत केले जाईल.",
+      "after": "{slot0} उपलब्ध · {slot1} राखीव. चर्चेसाठी उपलब्ध क्रेडिट आवश्यक आहे; मिळालेल्या प्रत्येक संचासाठी किंवा बदललेल्या आवृत्तीसाठी १ क्रेडिट आकारले जाते. निर्मिती अयशस्वी झाल्यास क्रेडिट परत मिळते.",
+      "reason": "Artifact generations, not biological generations; billing on delivery.",
+      "severity": "major",
+      "state": "proposed"
+    }
+  ],
+  "accepted_english": [
+    {
+      "key": "online:public, max-age=604800",
+      "reason": "Literal HTTP Cache-Control value is a protocol identifier."
+    },
+    {
+      "key": "online:r{slot0} · {slot1}",
+      "reason": "Compact revision marker r plus revision and metadata values remains literal."
+    },
+    {
+      "key": "online:v{slot0}",
+      "reason": "Compact version marker v plus numeric version remains literal."
+    },
+    {
+      "key": "online:{hours} {minutes}",
+      "reason": "Already formatted hour and minute values are composed with a space; no prose to translate."
+    },
+    {
+      "key": "online:{slot0} ({slot1}%)",
+      "reason": "Value and parenthesized percentage format contains no prose."
+    },
+    {
+      "key": "online:{slot0} ({slot1})",
+      "reason": "Value with a parenthesized secondary value contains no prose."
+    },
+    {
+      "key": "online:{slot0} / {slot1}",
+      "reason": "Numeric ratio/progress format contains no prose."
+    },
+    {
+      "key": "online:{slot0} W · {slot1} L",
+      "reason": "Compact match-statistics W/L markers retained consistently with existing UI notation."
+    },
+    {
+      "key": "online:{slot0} W · {slot1} L{slot2}",
+      "reason": "Compact W/L outcome counters and optional suffix retain authored notation."
+    },
+    {
+      "key": "online:text/html; charset=utf-8",
+      "reason": "Literal HTTP content type/charset value must remain unchanged."
+    }
+  ],
+  "certification": "Agent-reviewed; not native-human-certified; editorial and final recheck pending"
+}

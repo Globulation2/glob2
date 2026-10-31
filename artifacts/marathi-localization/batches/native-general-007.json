@@ -1,0 +1,509 @@
+{
+  "id": "native-general-007",
+  "source_sha256": "0ac44b4cdfb03e688983d6e3fb1e484cca57589665bff19c5c65388e649b292a",
+  "surface": "native",
+  "domain": "general",
+  "context": "Read neighbouring source entries and inspect usage before translating ambiguous short labels.",
+  "entries": [
+    {
+      "id": "native:[The causeways are too close together; use fewer or narrower causeways, or a bigger centre.]",
+      "key": "[The causeways are too close together; use fewer or narrower causeways, or a bigger centre.]",
+      "source": "The causeways are too close together; use fewer or narrower causeways, or a bigger centre."
+    },
+    {
+      "id": "native:[Ring world]",
+      "key": "[Ring world]",
+      "source": "Ring world"
+    },
+    {
+      "id": "native:[Belt width]",
+      "key": "[Belt width]",
+      "source": "Belt width"
+    },
+    {
+      "id": "native:[City states]",
+      "key": "[City states]",
+      "source": "City states"
+    },
+    {
+      "id": "native:[Strait width]",
+      "key": "[Strait width]",
+      "source": "Strait width"
+    },
+    {
+      "id": "native:[Valleys]",
+      "key": "[Valleys]",
+      "source": "Valleys"
+    },
+    {
+      "id": "native:[Frontier richness]",
+      "key": "[Frontier richness]",
+      "source": "Frontier richness"
+    },
+    {
+      "id": "native:[City states need at least one colony.]",
+      "key": "[City states need at least one colony.]",
+      "source": "City states need at least one colony."
+    },
+    {
+      "id": "native:[Stone walls]",
+      "key": "[Stone walls]",
+      "source": "Stone walls"
+    },
+    {
+      "id": "native:[Sand patches]",
+      "key": "[Sand patches]",
+      "source": "Sand patches"
+    },
+    {
+      "id": "native:[Tidal flats]",
+      "key": "[Tidal flats]",
+      "source": "Tidal flats"
+    },
+    {
+      "id": "native:[Everglades]",
+      "key": "[Everglades]",
+      "source": "Everglades"
+    },
+    {
+      "id": "native:[Pool spacing]",
+      "key": "[Pool spacing]",
+      "source": "Pool spacing"
+    },
+    {
+      "id": "native:[Pool size]",
+      "key": "[Pool size]",
+      "source": "Pool size"
+    },
+    {
+      "id": "native:[Clearing size]",
+      "key": "[Clearing size]",
+      "source": "Clearing size"
+    },
+    {
+      "id": "native:[Levee]",
+      "key": "[Levee]",
+      "source": "Levee"
+    },
+    {
+      "id": "native:[Sloughs]",
+      "key": "[Sloughs]",
+      "source": "Sloughs"
+    },
+    {
+      "id": "native:[Everglades need at least one colony.]",
+      "key": "[Everglades need at least one colony.]",
+      "source": "Everglades need at least one colony."
+    },
+    {
+      "id": "native:[Coral]",
+      "key": "[Coral]",
+      "source": "Coral"
+    },
+    {
+      "id": "native:[Fork angle]",
+      "key": "[Fork angle]",
+      "source": "Fork angle"
+    },
+    {
+      "id": "native:[Lean]",
+      "key": "[Lean]",
+      "source": "Lean"
+    },
+    {
+      "id": "native:[Home size]",
+      "key": "[Home size]",
+      "source": "Home size"
+    },
+    {
+      "id": "native:[The coral does not fit this map; use a bigger map, narrower straits or fewer colonies.]",
+      "key": "[The coral does not fit this map; use a bigger map, narrower straits or fewer colonies.]",
+      "source": "The coral does not fit this map; use a bigger map, narrower straits or fewer colonies."
+    },
+    {
+      "id": "native:[Branching]",
+      "key": "[Branching]",
+      "source": "Branching"
+    },
+    {
+      "id": "native:[Branch width]",
+      "key": "[Branch width]",
+      "source": "Branch width"
+    },
+    {
+      "id": "native:[Coral needs at least one colony.]",
+      "key": "[Coral needs at least one colony.]",
+      "source": "Coral needs at least one colony."
+    },
+    {
+      "id": "native:[Carousel]",
+      "key": "[Carousel]",
+      "source": "Carousel"
+    },
+    {
+      "id": "native:[Amphitheatre]",
+      "key": "[Amphitheatre]",
+      "source": "Amphitheatre"
+    },
+    {
+      "id": "native:[Switchbacks]",
+      "key": "[Switchbacks]",
+      "source": "Switchbacks"
+    },
+    {
+      "id": "native:[Corridor width]",
+      "key": "[Corridor width]",
+      "source": "Corridor width"
+    },
+    {
+      "id": "native:[Spoke width]",
+      "key": "[Spoke width]",
+      "source": "Spoke width"
+    },
+    {
+      "id": "native:[Court size]",
+      "key": "[Court size]",
+      "source": "Court size"
+    },
+    {
+      "id": "native:[Court wall]",
+      "key": "[Court wall]",
+      "source": "Court wall"
+    },
+    {
+      "id": "native:[Plaza size]",
+      "key": "[Plaza size]",
+      "source": "Plaza size"
+    },
+    {
+      "id": "native:[Starting tower level]",
+      "key": "[Starting tower level]",
+      "source": "Starting tower level"
+    },
+    {
+      "id": "native:[Towers per colony]",
+      "key": "[Towers per colony]",
+      "source": "Towers per colony"
+    },
+    {
+      "id": "native:[Rings]",
+      "key": "[Rings]",
+      "source": "Rings"
+    },
+    {
+      "id": "native:[Ramp width]",
+      "key": "[Ramp width]",
+      "source": "Ramp width"
+    },
+    {
+      "id": "native:[Pit size]",
+      "key": "[Pit size]",
+      "source": "Pit size"
+    },
+    {
+      "id": "native:[Terrace width]",
+      "key": "[Terrace width]",
+      "source": "Terrace width"
+    },
+    {
+      "id": "native:[Bay size]",
+      "key": "[Bay size]",
+      "source": "Bay size"
+    },
+    {
+      "id": "native:[Border wall]",
+      "key": "[Border wall]",
+      "source": "Border wall"
+    },
+    {
+      "id": "native:[Plateau size]",
+      "key": "[Plateau size]",
+      "source": "Plateau size"
+    },
+    {
+      "id": "native:[Trail width]",
+      "key": "[Trail width]",
+      "source": "Trail width"
+    },
+    {
+      "id": "native:[Wall between legs]",
+      "key": "[Wall between legs]",
+      "source": "Wall between legs"
+    },
+    {
+      "id": "native:[Sand bridges over water]",
+      "key": "[Sand bridges over water]",
+      "source": "Sand bridges over water"
+    },
+    {
+      "id": "native:[Sand lanes through crops]",
+      "key": "[Sand lanes through crops]",
+      "source": "Sand lanes through crops"
+    },
+    {
+      "id": "native:[Carousels need at least two colonies.]",
+      "key": "[Carousels need at least two colonies.]",
+      "source": "Carousels need at least two colonies."
+    },
+    {
+      "id": "native:[Switchbacks need at least two colonies.]",
+      "key": "[Switchbacks need at least two colonies.]",
+      "source": "Switchbacks need at least two colonies."
+    },
+    {
+      "id": "native:[An amphitheatre needs at least two colonies.]",
+      "key": "[An amphitheatre needs at least two colonies.]",
+      "source": "An amphitheatre needs at least two colonies."
+    },
+    {
+      "id": "native:[The carousel does not fit this map; use a bigger map, smaller homes or fewer colonies.]",
+      "key": "[The carousel does not fit this map; use a bigger map, smaller homes or fewer colonies.]",
+      "source": "The carousel does not fit this map; use a bigger map, smaller homes or fewer colonies."
+    },
+    {
+      "id": "native:[The switchbacks do not fit this map; use a bigger map, a smaller plateau, narrower trails or fewer colonies.]",
+      "key": "[The switchbacks do not fit this map; use a bigger map, a smaller plateau, narrower trails or fewer colonies.]",
+      "source": "The switchbacks do not fit this map; use a bigger map, a smaller plateau, narrower trails or fewer colonies."
+    },
+    {
+      "id": "native:[The amphitheatre does not fit this map; use a bigger map, fewer rings, narrower terraces or fewer colonies.]",
+      "key": "[The amphitheatre does not fit this map; use a bigger map, fewer rings, narrower terraces or fewer colonies.]",
+      "source": "The amphitheatre does not fit this map; use a bigger map, fewer rings, narrower terraces or fewer colonies."
+    },
+    {
+      "id": "native:[Spider webs need at least one colony.]",
+      "key": "[Spider webs need at least one colony.]",
+      "source": "Spider webs need at least one colony."
+    },
+    {
+      "id": "native:[Spiral]",
+      "key": "[Spiral]",
+      "source": "Spiral"
+    },
+    {
+      "id": "native:[Dew drops]",
+      "key": "[Dew drops]",
+      "source": "Dew drops"
+    },
+    {
+      "id": "native:[Hub size]",
+      "key": "[Hub size]",
+      "source": "Hub size"
+    },
+    {
+      "id": "native:[Torn strands]",
+      "key": "[Torn strands]",
+      "source": "Torn strands"
+    },
+    {
+      "id": "native:[Sag]",
+      "key": "[Sag]",
+      "source": "Sag"
+    },
+    {
+      "id": "native:[Thread width]",
+      "key": "[Thread width]",
+      "source": "Thread width"
+    },
+    {
+      "id": "native:[Ring spacing]",
+      "key": "[Ring spacing]",
+      "source": "Ring spacing"
+    },
+    {
+      "id": "native:[Spokes per colony]",
+      "key": "[Spokes per colony]",
+      "source": "Spokes per colony"
+    },
+    {
+      "id": "native:[Spider web]",
+      "key": "[Spider web]",
+      "source": "Spider web"
+    },
+    {
+      "id": "native:[Tide pools]",
+      "key": "[Tide pools]",
+      "source": "Tide pools"
+    },
+    {
+      "id": "native:[Lagoons]",
+      "key": "[Lagoons]",
+      "source": "Lagoons"
+    },
+    {
+      "id": "native:[Tidal flats need at least one colony.]",
+      "key": "[Tidal flats need at least one colony.]",
+      "source": "Tidal flats need at least one colony."
+    },
+    {
+      "id": "native:[The commons and the strait leave too little room for the home bases; use a bigger map, fewer colonies, a smaller commons or a narrower strait.]",
+      "key": "[The commons and the strait leave too little room for the home bases; use a bigger map, fewer colonies, a smaller commons or a narrower strait.]",
+      "source": "The commons and the strait leave too little room for the home bases; use a bigger map, fewer colonies, a smaller commons or a narrower strait."
+    },
+    {
+      "id": "native:[Wheat amount]",
+      "key": "[Wheat amount]",
+      "source": "Wheat amount"
+    },
+    {
+      "id": "native:[Wood amount]",
+      "key": "[Wood amount]",
+      "source": "Wood amount"
+    },
+    {
+      "id": "native:[Stone amount]",
+      "key": "[Stone amount]",
+      "source": "Stone amount"
+    },
+    {
+      "id": "native:[Algae amount]",
+      "key": "[Algae amount]",
+      "source": "Algae amount"
+    },
+    {
+      "id": "native:[Stone on hilltops]",
+      "key": "[Stone on hilltops]",
+      "source": "Stone on hilltops"
+    },
+    {
+      "id": "native:[Sandy beaches]",
+      "key": "[Sandy beaches]",
+      "source": "Sandy beaches"
+    },
+    {
+      "id": "native:[Land bridges]",
+      "key": "[Land bridges]",
+      "source": "Land bridges"
+    },
+    {
+      "id": "native:[Colony meadows]",
+      "key": "[Colony meadows]",
+      "source": "Colony meadows"
+    },
+    {
+      "id": "native:[Extra starting deposit]",
+      "key": "[Extra starting deposit]",
+      "source": "Extra starting deposit"
+    },
+    {
+      "id": "native:[Moat bridges]",
+      "key": "[Moat bridges]",
+      "source": "Moat bridges"
+    },
+    {
+      "id": "native:[Jagged coastlines]",
+      "key": "[Jagged coastlines]",
+      "source": "Jagged coastlines"
+    },
+    {
+      "id": "native:[Sand roads]",
+      "key": "[Sand roads]",
+      "source": "Sand roads"
+    },
+    {
+      "id": "native:[Treasure in dead ends]",
+      "key": "[Treasure in dead ends]",
+      "source": "Treasure in dead ends"
+    },
+    {
+      "id": "native:[Fjord bank deposits]",
+      "key": "[Fjord bank deposits]",
+      "source": "Fjord bank deposits"
+    },
+    {
+      "id": "native:[Moat]",
+      "key": "[Moat]",
+      "source": "Moat"
+    },
+    {
+      "id": "native:[Stone in the orchard]",
+      "key": "[Stone in the orchard]",
+      "source": "Stone in the orchard"
+    },
+    {
+      "id": "native:[Colonies on both coasts]",
+      "key": "[Colonies on both coasts]",
+      "source": "Colonies on both coasts"
+    },
+    {
+      "id": "native:[Winding belt]",
+      "key": "[Winding belt]",
+      "source": "Winding belt"
+    },
+    {
+      "id": "native:[Cell shape]",
+      "key": "[Cell shape]",
+      "source": "Cell shape"
+    },
+    {
+      "id": "native:[Squares]",
+      "key": "[Squares]",
+      "source": "Squares"
+    },
+    {
+      "id": "native:[Hexagons]",
+      "key": "[Hexagons]",
+      "source": "Hexagons"
+    },
+    {
+      "id": "native:[Warp]",
+      "key": "[Warp]",
+      "source": "Warp"
+    },
+    {
+      "id": "native:[Fingerprint]",
+      "key": "[Fingerprint]",
+      "source": "Fingerprint"
+    },
+    {
+      "id": "native:[Wavelength]",
+      "key": "[Wavelength]",
+      "source": "Wavelength"
+    },
+    {
+      "id": "native:[Pattern]",
+      "key": "[Pattern]",
+      "source": "Pattern"
+    },
+    {
+      "id": "native:[Labyrinth]",
+      "key": "[Labyrinth]",
+      "source": "Labyrinth"
+    },
+    {
+      "id": "native:[Channels]",
+      "key": "[Channels]",
+      "source": "Channels"
+    },
+    {
+      "id": "native:[Barrier]",
+      "key": "[Barrier]",
+      "source": "Barrier"
+    },
+    {
+      "id": "native:[Water]",
+      "key": "[Water]",
+      "source": "Water"
+    },
+    {
+      "id": "native:[Grain]",
+      "key": "[Grain]",
+      "source": "Grain"
+    },
+    {
+      "id": "native:[Rain shadow]",
+      "key": "[Rain shadow]",
+      "source": "Rain shadow"
+    },
+    {
+      "id": "native:[Ridges]",
+      "key": "[Ridges]",
+      "source": "Ridges"
+    },
+    {
+      "id": "native:[Slant]",
+      "key": "[Slant]",
+      "source": "Slant"
+    }
+  ]
+}

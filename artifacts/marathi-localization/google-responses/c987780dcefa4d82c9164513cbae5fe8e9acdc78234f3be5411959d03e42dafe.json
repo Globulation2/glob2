@@ -1,0 +1,253 @@
+{
+  "request": {
+    "project": "bradley-personal-20261027",
+    "model": "general/nmt",
+    "payload": {
+      "sourceLanguageCode": "en",
+      "targetLanguageCode": "mr",
+      "mimeType": "text/plain",
+      "contents": [
+        "Keep the Hospital accessible. Watch the injured worker recover.",
+        "Globules seek healing autonomously. Track the injured worker, not a newly born unit. If it dies, restart or load a save.",
+        "Let the patient recover",
+        "Walking training",
+        "Build a Racetrack and observe an existing worker learn to walk faster.",
+        "Your workers learned faster walking. Training improves the workers you have; it does not replace the colony food supply.",
+        "Build a Racetrack in the marked clearing; assign builders. A Racetrack needs wood and stone. Leave a gap around its edges for entry, exit and later expansion.",
+        "Build a Racetrack",
+        "Build a Racetrack in the marked clearing; assign builders.",
+        "A Racetrack needs wood and stone. Leave a gap around its edges for entry, exit and later expansion.",
+        "Build a Racetrack",
+        "Keep the Racetrack accessible and let a worker finish training. Training is automatic for eligible globules. Keep some workers free from supply jobs and keep both Inns stocked.",
+        "Train an existing worker",
+        "Keep the Racetrack accessible and let a worker finish training.",
+        "Training is automatic for eligible globules. Keep some workers free from supply jobs and keep both Inns stocked.",
+        "Swimming and water resources",
+        "Train swimmers, then use algae from the pond to construct a School.",
+        "A swimmer delivered water resources for your School. Water access expands the jobs your colony can perform.",
+        "Build a Swimming Pool west of the pond; assign builders. Leave space around the pool. A worker cannot gather algae in deep water until it has learned to swim.",
+        "Build a Swimming Pool",
+        "Build a Swimming Pool west of the pond; assign builders.",
+        "Leave space around the pool. A worker cannot gather algae in deep water until it has learned to swim.",
+        "Build a Swimming Pool",
+        "Let an existing worker finish swimming training. Units choose training automatically. Keep supply running and allow free workers to reach the pool.",
+        "Train a swimmer",
+        "Let an existing worker finish swimming training.",
+        "Units choose training automatically. Keep supply running and allow free workers to reach the pool.",
+        "Build a School near the colony; assign builders to fetch wood and algae. The algae grows in the pond. A trained swimmer must enter water to collect it. Keep the School on open land with access for suppliers.",
+        "Use algae from the pond",
+        "Build a School near the colony; assign builders to fetch wood and algae.",
+        "The algae grows in the pond. A trained swimmer must enter water to collect it. Keep the School on open land with access for suppliers.",
+        "Use algae from the pond",
+        "Schools and worker skills",
+        "Use the prepared swimmers to build a School, then observe workers learn construction and harvesting.",
+        "Your School improved worker skills. Skilled builders unlock upgrades; better harvesting helps maintain an expanding economy.",
+        "Build a School in the clearing; assign builders. The colony already has swimmers for algae. Leave access to wood and water. Fruit trees provide prestige resources; food still comes from wheat.",
+        "Build a School",
+        "Build a School in the clearing; assign builders.",
+        "The colony already has swimmers for algae. Leave access to wood and water. Fruit trees provide prestige resources; food still comes from wheat.",
+        "Build a School",
+        "Let an existing worker finish its School training. The School teaches construction and harvesting together. Keep workers available; a construction site alone does not train anyone.",
+        "Teach construction and harvesting",
+        "Let an existing worker finish its School training.",
+        "The School teaches construction and harvesting together. Keep workers available; a construction site alone does not train anyone.",
+        "Upgrading buildings",
+        "Use prepared skilled workers to upgrade a Racetrack and train beyond the first level.",
+        "You upgraded a building and used its improved training. Further upgrades repeat this cycle with better Schools, skills, materials and space, up to level 3."
+      ]
+    }
+  },
+  "response": {
+    "translations": [
+      {
+        "translatedText": "रुग्णालय सर्वांसाठी सुलभ ठेवा. जखमी कामगार बरा होताना पाहा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ग्लोब्यूल्स स्वतःहून उपचार शोधतात. जखमी कामगारावर लक्ष ठेवा, नवजात युनिटवर नाही. जर ते मरण पावले, तर गेम पुन्हा सुरू करा किंवा सेव्ह केलेला डेटा लोड करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "रुग्णाला बरे होऊ द्या",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "चालण्याचे प्रशिक्षण",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "एक रेसट्रॅक तयार करा आणि आधीपासून काम करणारा एक कामगार अधिक वेगाने चालायला कसा शिकतो याचे निरीक्षण करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तुमचे कामगार अधिक वेगाने चालायला शिकले. प्रशिक्षणामुळे तुमच्या कामगारांची कार्यक्षमता वाढते; ते वसाहतीच्या अन्नपुरवठ्याची जागा घेत नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "खुणावलेल्या मोकळ्या जागेत शर्यतीचा ट्रॅक बांधा; बांधकाम करणाऱ्यांची नेमणूक करा. शर्यतीच्या ट्रॅकसाठी लाकूड आणि दगड लागतात. आत-बाहेर जाण्यासाठी आणि नंतरच्या विस्तारासाठी त्याच्या कडांभोवती जागा सोडा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "रेसट्रॅक तयार करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "चिन्हांकित मोकळ्या जागेत शर्यतीचा ट्रॅक बांधा; बांधकाम करणाऱ्यांची नेमणूक करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "रेसट्रॅकसाठी लाकूड आणि दगड लागतात. आत-बाहेर जाण्यासाठी आणि नंतरच्या विस्तारासाठी त्याच्या कडांभोवती जागा सोडा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "रेसट्रॅक तयार करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "रेसट्रॅक वापरासाठी खुला ठेवा आणि एका कामगाराला प्रशिक्षण पूर्ण करू द्या. पात्र ग्लोब्यूल्ससाठी प्रशिक्षण स्वयंचलित आहे. काही कामगारांना पुरवठ्याच्या कामांपासून मोकळे ठेवा आणि दोन्ही धर्मशाळांमध्ये पुरेसा साठा ठेवा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "विद्यमान कामगाराला प्रशिक्षण द्या",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "रेसट्रॅक खुला ठेवा आणि एका कामगाराला प्रशिक्षण पूर्ण करू द्या.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पात्र ग्लोब्यूल्ससाठी प्रशिक्षण स्वयंचलित आहे. काही कामगारांना पुरवठ्याच्या कामांपासून मोकळे ठेवा आणि दोन्ही इनमध्ये मालसाठा ठेवा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पोहणे आणि जलस्रोत",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "जलतरणपटूंना प्रशिक्षण द्या, त्यानंतर तलावातील शेवाळाचा वापर करून शाळा बांधा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "एका जलतरणपटूने तुमच्या शाळेसाठी पाणी आणले. पाण्याच्या उपलब्धतेमुळे तुमच्या वसाहतीला करता येणाऱ्या कामांची व्याप्ती वाढते.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तलावाच्या पश्चिमेला एक जलतरण तलाव बांधा; बांधकाम करणाऱ्यांची नेमणूक करा. तलावाभोवती जागा सोडा. जोपर्यंत एखादा कामगार पोहायला शिकत नाही, तोपर्यंत तो खोल पाण्यातून शेवाळ गोळा करू शकत नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "जलतरण तलाव बांधा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तलावाच्या पश्चिमेला एक जलतरण तलाव बांधा; बांधकाम करणाऱ्यांची नेमणूक करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तलावाच्या भोवती जागा सोडा. कामगार पोहायला शिकल्याशिवाय खोल पाण्यातून शेवाळ गोळा करू शकत नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "जलतरण तलाव बांधा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सध्याच्या कामगाराला पोहण्याचे प्रशिक्षण पूर्ण करू द्या. युनिट्स आपोआप प्रशिक्षण निवडतात. पुरवठा चालू ठेवा आणि मोकळ्या कामगारांना तलावापर्यंत पोहोचू द्या.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "जलतरणपटूला प्रशिक्षण द्या",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "विद्यमान कामगाराला पोहण्याचे प्रशिक्षण पूर्ण करू द्या.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "युनिट्स आपोआप प्रशिक्षण निवडतात. पुरवठा चालू ठेवा आणि मोकळ्या कामगारांना उपलब्ध होऊ द्या.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "वसाहतीजवळ एक शाळा बांधा; लाकूड आणि शेवाळ आणण्यासाठी बांधकाम व्यावसायिकांना नेमा. शेवाळ तलावात वाढते. ते गोळा करण्यासाठी एका प्रशिक्षित जलतरणपटूला पाण्यात उतरावे लागेल. शाळा पुरवठादारांना सहज पोहोचता येईल अशा मोकळ्या जागेवर ठेवा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तलावातील शेवाळ वापरा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "वसाहतीजवळ एक शाळा बांधा; लाकूड आणि शेवाळ आणण्यासाठी बांधकाम व्यावसायिकांना नेमा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तलावात शेवाळ वाढते. ते गोळा करण्यासाठी एका प्रशिक्षित जलतरणपटूला पाण्यात उतरावे लागेल. शाळा पुरवठादारांना प्रवेश मिळेल अशा मोकळ्या जागेवर ठेवावी.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तलावातील शेवाळ वापरा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "शाळा आणि कामगारांची कौशल्ये",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तयार केलेल्या जलतरणपटूंचा वापर करून एक शाळा बांधा, त्यानंतर कामगारांना बांधकाम आणि कापणी शिकताना पाहा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तुमच्या शाळेने कामगारांची कौशल्ये सुधारली. कुशल बांधकाम व्यावसायिकांमुळे अपग्रेड्स अनलॉक होतात; उत्तम पीक उत्पादनामुळे विस्तारणारी अर्थव्यवस्था टिकवून ठेवण्यास मदत होते.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "मोकळ्या जागेत एक शाळा बांधा; बांधकाम करणाऱ्यांची नेमणूक करा. वसाहतीकडे शेवाळासाठी पोहणारे आधीच आहेत. लाकूड आणि पाण्याचा पुरवठा चालू ठेवा. फळझाडे प्रतिष्ठेची संसाधने पुरवतात; अन्न अजूनही गव्हातूनच मिळते.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "शाळा बांधा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "मोकळ्या जागेत शाळा बांधा; बांधकाम करणाऱ्यांची नेमणूक करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "वसाहतीमध्ये शैवालासाठी आधीच पोहणारे जीव आहेत. लाकूड आणि पाण्याचा पुरवठा कायम ठेवा. फळझाडे प्रतिष्ठेची संसाधने पुरवतात; अन्न अजूनही गव्हातूनच मिळते.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "शाळा बांधा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सध्याच्या कामगाराला त्याचे शालेय प्रशिक्षण पूर्ण करू द्या. शाळेत बांधकाम आणि कापणी एकत्र शिकवली जाते. कामगार उपलब्ध ठेवा; केवळ बांधकाम स्थळावर कोणीही प्रशिक्षित होत नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "बांधकाम आणि कापणी शिकवा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "विद्यमान कामगाराला त्याचे शालेय प्रशिक्षण पूर्ण करू द्या.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ही शाळा बांधकाम आणि कापणी एकत्र शिकवते. कामगार उपलब्ध ठेवा; केवळ बांधकाम स्थळावर कोणालाही प्रशिक्षण देता येत नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "इमारतींचे अपग्रेडिंग",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "रेसट्रॅक अपग्रेड करण्यासाठी आणि पहिल्या स्तराच्या पुढे प्रशिक्षण देण्यासाठी तयार कुशल कामगारांचा वापर करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तुम्ही एक इमारत अपग्रेड केली आणि तिच्या सुधारित प्रशिक्षणाचा वापर केला. पुढील अपग्रेड्समध्ये, उत्तम शाळा, कौशल्ये, साहित्य आणि जागेसह ही प्रक्रिया स्तर ३ पर्यंत पुन्हा सुरू होते.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      }
+    ]
+  },
+  "response_sha256": "d6065defa11a1cc2990ecbbcf349b8484b2ba4824540492290eb01bc13e99bea"
+}

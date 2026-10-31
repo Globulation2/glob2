@@ -1,0 +1,2185 @@
+[
+  {
+    "key": "online: Terrain credits",
+    "disposition": "editorial accepted, semantic unchanged",
+    "value": " भूभाग निर्मिती क्रेडिट्स"
+  },
+  {
+    "key": "online: credits",
+    "disposition": "already agrees",
+    "value": " क्रेडिट्स"
+  },
+  {
+    "key": "online: · Charged: ",
+    "disposition": "already agrees",
+    "value": " · आकारलेले शुल्क: "
+  },
+  {
+    "key": "online: · stale",
+    "disposition": "already agrees",
+    "value": " · कालबाह्य"
+  },
+  {
+    "key": "online: · {slot0} disconnect",
+    "disposition": "already agrees",
+    "value": {
+      "one": " · {slot0} वेळा संपर्क तुटला",
+      "other": " · {slot0} वेळा संपर्क तुटला"
+    }
+  },
+  {
+    "key": "online: · {slot0} disconnects",
+    "disposition": "already agrees",
+    "value": " · {slot0} वेळा संपर्क तुटला"
+  },
+  {
+    "key": "online:, or create an account below",
+    "disposition": "already agrees",
+    "value": ", किंवा खाली खाते तयार करा"
+  },
+  {
+    "key": "online:, then",
+    "disposition": "already agrees",
+    "value": ", मग"
+  },
+  {
+    "key": "online:, to confirm",
+    "disposition": "already agrees",
+    "value": ", पुष्टी करण्यासाठी"
+  },
+  {
+    "key": "online:.",
+    "disposition": "already agrees",
+    "value": "."
+  },
+  {
+    "key": "online:1.0.0",
+    "disposition": "already agrees",
+    "value": "1.0.0"
+  },
+  {
+    "key": "online:A · V{slot0}",
+    "disposition": "already agrees",
+    "value": "A · V{slot0}"
+  },
+  {
+    "key": "online:All generation attempts",
+    "disposition": "already agrees",
+    "value": "निर्मितीचे सर्व प्रयत्न"
+  },
+  {
+    "key": "online:Audible comparison version",
+    "disposition": "already agrees",
+    "value": "ऐकून तुलना करण्याची आवृत्ती"
+  },
+  {
+    "key": "online:Authenticated account activity; anonymous visitors are excluded.",
+    "disposition": "editorial accepted, semantic unchanged",
+    "value": "साइन इन केलेल्या खात्यांच्या कृती; अनामिक अभ्यागत वगळले आहेत."
+  },
+  {
+    "key": "online:Back to My skins",
+    "disposition": "already agrees",
+    "value": "माझ्या रूपांकडे परत जा"
+  },
+  {
+    "key": "online:Building library",
+    "disposition": "already agrees",
+    "value": "इमारतींचा संग्रह"
+  },
+  {
+    "key": "online:CC BY 4.0 — credit required",
+    "disposition": "already agrees",
+    "value": "CC BY 4.0 — श्रेय देणे आवश्यक"
+  },
+  {
+    "key": "online:Cabino",
+    "disposition": "already agrees",
+    "value": "Cabino"
+  },
+  {
+    "key": "online:Cancel generation",
+    "disposition": "already agrees",
+    "value": "निर्मिती रद्द करा"
+  },
+  {
+    "key": "online:Castor",
+    "disposition": "already agrees",
+    "value": "Castor"
+  },
+  {
+    "key": "online:Choose a family name.",
+    "disposition": "already agrees",
+    "value": "इमारत संचाचे नाव निवडा."
+  },
+  {
+    "key": "online:Choose a skin",
+    "disposition": "already agrees",
+    "value": "रूप निवडा"
+  },
+  {
+    "key": "online:Choose a skin name.",
+    "disposition": "already agrees",
+    "value": "रूपाचे नाव निवडा."
+  },
+  {
+    "key": "online:Choose property…",
+    "disposition": "already agrees",
+    "value": "गुणधर्म निवडा…"
+  },
+  {
+    "key": "online:Choose revision",
+    "disposition": "already agrees",
+    "value": "आवृत्ती निवडा"
+  },
+  {
+    "key": "online:Close play choices",
+    "disposition": "already agrees",
+    "value": "खेळाचे पर्याय बंद करा"
+  },
+  {
+    "key": "online:Colony {slot0}",
+    "disposition": "already agrees",
+    "value": "वसाहत {slot0}"
+  },
+  {
+    "key": "online:Colony {value0} skin",
+    "disposition": "already agrees",
+    "value": "वसाहत {value0} चे रूप"
+  },
+  {
+    "key": "online:Compare revision",
+    "disposition": "already agrees",
+    "value": "आवृत्तीची तुलना करा"
+  },
+  {
+    "key": "online:Copy recorded usage",
+    "disposition": "editorial accepted, semantic unchanged",
+    "value": "नोंदवलेल्या वापराची प्रत करा"
+  },
+  {
+    "key": "online:Cortex",
+    "disposition": "already agrees",
+    "value": "Cortex"
+  },
+  {
+    "key": "online:Could not delete this skin.",
+    "disposition": "already agrees",
+    "value": "हे रूप हटवता आले नाही."
+  },
+  {
+    "key": "online:Could not use this skin.",
+    "disposition": "already agrees",
+    "value": "हे रूप वापरता आले नाही."
+  },
+  {
+    "key": "online:Creation ready.",
+    "disposition": "already agrees",
+    "value": "निर्मिती तयार आहे."
+  },
+  {
+    "key": "online:Credit purchases are currently unavailable.",
+    "disposition": "already agrees",
+    "value": "सध्या क्रेडिट्स खरेदी करता येत नाहीत."
+  },
+  {
+    "key": "online:Credit purchases are not available.",
+    "disposition": "already agrees",
+    "value": "क्रेडिट्स खरेदी करता येत नाहीत."
+  },
+  {
+    "key": "online:Credits",
+    "disposition": "already agrees",
+    "value": "क्रेडिट्स"
+  },
+  {
+    "key": "online:Crop",
+    "disposition": "already agrees",
+    "value": "कापा"
+  },
+  {
+    "key": "online:Crop selection",
+    "disposition": "already agrees",
+    "value": "निवडलेला भाग कापा"
+  },
+  {
+    "key": "online:Custom content credits",
+    "disposition": "editorial accepted, semantic unchanged",
+    "value": "सानुकूल सामग्रीचे श्रेय"
+  },
+  {
+    "key": "online:Default colony",
+    "disposition": "already agrees",
+    "value": "पूर्वनिर्धारित वसाहत"
+  },
+  {
+    "key": "online:Delayed orders",
+    "disposition": "already agrees",
+    "value": "विलंबित आदेश"
+  },
+  {
+    "key": "online:Delete skin",
+    "disposition": "already agrees",
+    "value": "रूप हटवा"
+  },
+  {
+    "key": "online:Delete {slot0}?{slot1}",
+    "disposition": "already agrees",
+    "value": "{slot0} हटवायचे का?{slot1}"
+  },
+  {
+    "key": "online:Describe a building. Create its artwork and the way it works.",
+    "disposition": "already agrees",
+    "value": "इमारतीचे वर्णन करा. तिची कलाकृती आणि कार्यपद्धती तयार करा."
+  },
+  {
+    "key": "online:Development credits",
+    "disposition": "already agrees",
+    "value": "विकासासाठीचे क्रेडिट्स"
+  },
+  {
+    "key": "online:Dismissed",
+    "disposition": "already agrees",
+    "value": "फेटाळले"
+  },
+  {
+    "key": "online:Download SHA-256: {slot0}",
+    "disposition": "already agrees",
+    "value": "डाउनलोडचा SHA-256: {slot0}"
+  },
+  {
+    "key": "online:Download set",
+    "disposition": "already agrees",
+    "value": "संच डाउनलोड करा"
+  },
+  {
+    "key": "online:Draw",
+    "disposition": "already agrees",
+    "value": "बरोबरी"
+  },
+  {
+    "key": "online:Duplicate",
+    "disposition": "editorial accepted, semantic unchanged",
+    "value": "प्रत बनवा"
+  },
+  {
+    "key": "online:Econo",
+    "disposition": "already agrees",
+    "value": "Econo"
+  },
+  {
+    "key": "online:Event",
+    "disposition": "editorial accepted, semantic unchanged",
+    "value": "घटना"
+  },
+  {
+    "key": "online:Export credits CSV",
+    "disposition": "already agrees",
+    "value": "क्रेडिट्सची CSV निर्यात करा"
+  },
+  {
+    "key": "online:Export provider costs CSV",
+    "disposition": "already agrees",
+    "value": "प्रदात्याच्या खर्चाची CSV निर्यात करा"
+  },
+  {
+    "key": "online:Family experiments",
+    "disposition": "already agrees",
+    "value": "इमारत संचाचे प्रयोग"
+  },
+  {
+    "key": "online:Follow latest",
+    "disposition": "already agrees",
+    "value": "नवीनतम आवृत्तीसोबत रहा"
+  },
+  {
+    "key": "online:Generation history {slot0}",
+    "disposition": "already agrees",
+    "value": "निर्मितीचा इतिहास {slot0}"
+  },
+  {
+    "key": "online:Generation stages",
+    "disposition": "already agrees",
+    "value": "निर्मितीचे टप्पे"
+  },
+  {
+    "key": "online:Generation {value0} · {value1}",
+    "disposition": "already agrees",
+    "value": "निर्मिती {value0} · {value1}"
+  },
+  {
+    "key": "online:Globulation 2 is free software (GPL 3).",
+    "disposition": "already agrees",
+    "value": "Globulation 2 हे मुक्त सॉफ्टवेअर (GPL 3) आहे."
+  },
+  {
+    "key": "online:Got it",
+    "disposition": "editorial accepted, semantic unchanged",
+    "value": "समजले"
+  },
+  {
+    "key": "online:Ground movement",
+    "disposition": "already agrees",
+    "value": "जमिनीवरील हालचाल"
+  },
+  {
+    "key": "online:Hide family",
+    "disposition": "already agrees",
+    "value": "इमारत संच लपवा"
+  },
+  {
+    "key": "online:Home",
+    "disposition": "already agrees",
+    "value": "मुख्यपृष्ठ"
+  },
+  {
+    "key": "online:Human match participants",
+    "disposition": "already agrees",
+    "value": "सामन्यातील मानवी सहभागी"
+  },
+  {
+    "key": "online:Import package",
+    "disposition": "already agrees",
+    "value": "पॅकेज आयात करा"
+  },
+  {
+    "key": "online:Inn capacity",
+    "disposition": "already agrees",
+    "value": "खानावळीची क्षमता"
+  },
+  {
+    "key": "online:Inspect match verification",
+    "disposition": "already agrees",
+    "value": "सामन्याची पडताळणी तपासा"
+  },
+  {
+    "key": "online:Inspect sheet",
+    "disposition": "already agrees",
+    "value": "स्प्राइटशीट तपासा"
+  },
+  {
+    "key": "online:Invalid shape heading",
+    "disposition": "already agrees",
+    "value": "आकाराची दिशा अवैध आहे"
+  },
+  {
+    "key": "online:Invalid {value0} normal camera",
+    "disposition": "already agrees",
+    "value": "{value0} चा नॉर्मल कॅमेरा अवैध आहे"
+  },
+  {
+    "key": "online:Light",
+    "disposition": "already agrees",
+    "value": "फिकट"
+  },
+  {
+    "key": "online:Loading your skins…",
+    "disposition": "already agrees",
+    "value": "तुमची रूपे लोड होत आहेत…"
+  },
+  {
+    "key": "online:Lost",
+    "disposition": "already agrees",
+    "value": "पराभव"
+  },
+  {
+    "key": "online:Manifest",
+    "disposition": "already agrees",
+    "value": "मॅनिफेस्ट"
+  },
+  {
+    "key": "online:Match colony skins",
+    "disposition": "already agrees",
+    "value": "सामन्यातील वसाहतींची रूपे"
+  },
+  {
+    "key": "online:Match not found.",
+    "disposition": "already agrees",
+    "value": "सामना सापडला नाही."
+  },
+  {
+    "key": "online:Maxima",
+    "disposition": "already agrees",
+    "value": "Maxima"
+  },
+  {
+    "key": "online:My families",
+    "disposition": "already agrees",
+    "value": "माझे इमारत संच"
+  },
+  {
+    "key": "online:My skins",
+    "disposition": "already agrees",
+    "value": "माझी रूपे"
+  },
+  {
+    "key": "online:New building family",
+    "disposition": "already agrees",
+    "value": "नवीन इमारत संच"
+  },
+  {
+    "key": "online:New skin",
+    "disposition": "already agrees",
+    "value": "नवीन रूप"
+  },
+  {
+    "key": "online:Nicowar",
+    "disposition": "already agrees",
+    "value": "Nicowar"
+  },
+  {
+    "key": "online:No attempt usage evidence is available.",
+    "disposition": "already agrees",
+    "value": "कोणत्याही प्रयत्नाच्या वापराचा पुरावा उपलब्ध नाही."
+  },
+  {
+    "key": "online:No owned building family.",
+    "disposition": "already agrees",
+    "value": "तुमच्या मालकीचा इमारत संच नाही."
+  },
+  {
+    "key": "online:No queue {p0}.",
+    "disposition": "already agrees",
+    "value": "{p0} ही रांग नाही."
+  },
+  {
+    "key": "online:Not run",
+    "disposition": "already agrees",
+    "value": "अद्याप चालवलेले नाही"
+  },
+  {
+    "key": "online:Numbi",
+    "disposition": "already agrees",
+    "value": "Numbi"
+  },
+  {
+    "key": "online:Offensive",
+    "disposition": "already agrees",
+    "value": "आक्षेपार्ह"
+  },
+  {
+    "key": "online:Open AI Map Studio",
+    "disposition": "already agrees",
+    "value": "एआय मॅप स्टुडिओ उघडा"
+  },
+  {
+    "key": "online:Players and AI opponents, ranked by their conservative rating: it rises as the game becomes sure of your skill. Guests are not ranked.",
+    "disposition": "editorial accepted, semantic unchanged",
+    "value": "खेळाडू आणि संगणकीय प्रतिस्पर्धी त्यांच्या कौशल्याच्या सावध किमान अंदाजानुसार क्रमवारीत आहेत. तुमच्या कौशल्याची अधिक खात्री पटल्यावर हे मानांकन वाढते. अतिथींना क्रमवारी दिली जात नाही."
+  },
+  {
+    "key": "online:Prestige {slot0}",
+    "disposition": "already agrees",
+    "value": "प्रतिष्ठा {slot0}"
+  },
+  {
+    "key": "online:Previous mean",
+    "disposition": "already agrees",
+    "value": "मागील सरासरी"
+  },
+  {
+    "key": "online:Publish a new release",
+    "disposition": "editorial accepted, semantic unchanged",
+    "value": "नवीन आवृत्ती प्रकाशित करा"
+  },
+  {
+    "key": "online:Publish a release",
+    "disposition": "editorial accepted, semantic unchanged",
+    "value": "आवृत्ती प्रकाशित करा"
+  },
+  {
+    "key": "online:Publish saved family",
+    "disposition": "already agrees",
+    "value": "जतन केलेला इमारत संच प्रकाशित करा"
+  },
+  {
+    "key": "online:Published family name",
+    "disposition": "already agrees",
+    "value": "प्रकाशित इमारत संचाचे नाव"
+  },
+  {
+    "key": "online:Published release",
+    "disposition": "editorial accepted, semantic unchanged",
+    "value": "प्रकाशित आवृत्ती"
+  },
+  {
+    "key": "online:Reason and evidence",
+    "disposition": "already agrees",
+    "value": "कारण आणि पुरावा"
+  },
+  {
+    "key": "online:Replay",
+    "disposition": "editorial accepted, semantic unchanged",
+    "value": "रीप्ले"
+  },
+  {
+    "key": "online:Report AI",
+    "disposition": "already agrees",
+    "value": "एआयची तक्रार करा"
+  },
+  {
+    "key": "online:Report reason",
+    "disposition": "already agrees",
+    "value": "तक्रारीचे कारण"
+  },
+  {
+    "key": "online:Report skin",
+    "disposition": "already agrees",
+    "value": "रूपाची तक्रार करा"
+  },
+  {
+    "key": "online:Reported skin texture",
+    "disposition": "already agrees",
+    "value": "तक्रार केलेल्या रूपाचे टेक्सचर"
+  },
+  {
+    "key": "online:Restore family",
+    "disposition": "already agrees",
+    "value": "इमारत संच पुनर्संचयित करा"
+  },
+  {
+    "key": "online:Restore skin",
+    "disposition": "already agrees",
+    "value": "रूप पुनर्संचयित करा"
+  },
+  {
+    "key": "online:Review set",
+    "disposition": "already agrees",
+    "value": "संच तपासा"
+  },
+  {
+    "key": "online:Revision {slot0} checks: {slot1}",
+    "disposition": "already agrees",
+    "value": "आवृत्ती {slot0} च्या तपासण्या: {slot1}"
+  },
+  {
+    "key": "online:Room match",
+    "disposition": "already agrees",
+    "value": "खोलीतील सामना"
+  },
+  {
+    "key": "online:Saving account changes…",
+    "disposition": "already agrees",
+    "value": "खात्यातील बदल जतन करत आहे…"
+  },
+  {
+    "key": "online:Set contents",
+    "disposition": "already agrees",
+    "value": "संचातील सामग्री"
+  },
+  {
+    "key": "online:Set library",
+    "disposition": "already agrees",
+    "value": "संचांचा संग्रह"
+  },
+  {
+    "key": "online:Set preview engine",
+    "disposition": "already agrees",
+    "value": "संचाचे पूर्वावलोकन इंजिन"
+  },
+  {
+    "key": "online:Set unavailable.",
+    "disposition": "already agrees",
+    "value": "संच उपलब्ध नाही."
+  },
+  {
+    "key": "online:Set workspace",
+    "disposition": "already agrees",
+    "value": "संचाचे कार्यक्षेत्र"
+  },
+  {
+    "key": "online:Sign in to report this skin",
+    "disposition": "already agrees",
+    "value": "या रूपाची तक्रार करण्यासाठी साइन इन करा"
+  },
+  {
+    "key": "online:Sign in to save your skins.",
+    "disposition": "already agrees",
+    "value": "तुमची रूपे जतन करण्यासाठी साइन इन करा."
+  },
+  {
+    "key": "online:Skin artwork is unavailable.",
+    "disposition": "already agrees",
+    "value": "रूपाची कलाकृती उपलब्ध नाही."
+  },
+  {
+    "key": "online:Skin artwork not found.",
+    "disposition": "already agrees",
+    "value": "रूपाची कलाकृती सापडली नाही."
+  },
+  {
+    "key": "online:Skin deleted.",
+    "disposition": "already agrees",
+    "value": "रूप हटवले."
+  },
+  {
+    "key": "online:Skin disabled",
+    "disposition": "already agrees",
+    "value": "रूप बंद केले"
+  },
+  {
+    "key": "online:Skin name",
+    "disposition": "already agrees",
+    "value": "रूपाचे नाव"
+  },
+  {
+    "key": "online:Skin not found.",
+    "disposition": "already agrees",
+    "value": "रूप सापडले नाही."
+  },
+  {
+    "key": "online:Skin report status",
+    "disposition": "already agrees",
+    "value": "रूपाच्या तक्रारीची स्थिती"
+  },
+  {
+    "key": "online:Skin shop",
+    "disposition": "already agrees",
+    "value": "रूपांचे दुकान"
+  },
+  {
+    "key": "online:Skin texture",
+    "disposition": "already agrees",
+    "value": "रूपाचे टेक्सचर"
+  },
+  {
+    "key": "online:Skin version not found.",
+    "disposition": "already agrees",
+    "value": "रूपाची आवृत्ती सापडली नाही."
+  },
+  {
+    "key": "online:Skins",
+    "disposition": "already agrees",
+    "value": "रूपे"
+  },
+  {
+    "key": "online:Solid",
+    "disposition": "already agrees",
+    "value": "एकरंगी"
+  },
+  {
+    "key": "online:Stable key",
+    "disposition": "already agrees",
+    "value": "स्थिर की"
+  },
+  {
+    "key": "online:Starting workers",
+    "disposition": "already agrees",
+    "value": "सुरुवातीचे कामगार"
+  },
+  {
+    "key": "online:Swarm shape",
+    "disposition": "already agrees",
+    "value": "पोळ्याचा आकार"
+  },
+  {
+    "key": "online:Take a seat first.",
+    "disposition": "editorial accepted, semantic unchanged",
+    "value": "आधी खेळाची जागा घ्या."
+  },
+  {
+    "key": "online:Team {value0}",
+    "disposition": "already agrees",
+    "value": "संघ {value0}"
+  },
+  {
+    "key": "online:Theme: light (meadow)",
+    "disposition": "already agrees",
+    "value": "थीम: फिकट (कुरण)"
+  },
+  {
+    "key": "online:This colony skin is unavailable.",
+    "disposition": "already agrees",
+    "value": "वसाहतीचे हे रूप उपलब्ध नाही."
+  },
+  {
+    "key": "online:This custom skin belongs to another account.",
+    "disposition": "already agrees",
+    "value": "हे सानुकूल रूप दुसऱ्या खात्याच्या मालकीचे आहे."
+  },
+  {
+    "key": "online:This preview could not be loaded.",
+    "disposition": "already agrees",
+    "value": "हे पूर्वावलोकन लोड करता आले नाही."
+  },
+  {
+    "key": "online:This skin changed on another device. Your changes are safe here.",
+    "disposition": "already agrees",
+    "value": "हे रूप दुसऱ्या उपकरणावर बदलले आहे. तुमचे बदल येथे सुरक्षित आहेत."
+  },
+  {
+    "key": "online:Through (UTC)",
+    "disposition": "already agrees",
+    "value": "पर्यंत (UTC)"
+  },
+  {
+    "key": "online:Toubib",
+    "disposition": "already agrees",
+    "value": "Toubib"
+  },
+  {
+    "key": "online:Trim ends to shortest",
+    "disposition": "already agrees",
+    "value": "सर्वात लहान ट्रॅकइतकी लांबी होण्यासाठी शेवट कापा"
+  },
+  {
+    "key": "online:Unknown building sort.",
+    "disposition": "already agrees",
+    "value": "इमारतींची क्रमवारी लावण्याची पद्धत अज्ञात आहे."
+  },
+  {
+    "key": "online:Unlike",
+    "disposition": "already agrees",
+    "value": "पसंती काढा"
+  },
+  {
+    "key": "online:Use Gravatar",
+    "disposition": "already agrees",
+    "value": "Gravatar वापरा"
+  },
+  {
+    "key": "online:V",
+    "disposition": "already agrees",
+    "value": "V"
+  },
+  {
+    "key": "online:View orientation",
+    "disposition": "editorial accepted, semantic unchanged",
+    "value": "दृश्याची दिशा"
+  },
+  {
+    "key": "online:Warrush",
+    "disposition": "already agrees",
+    "value": "Warrush"
+  },
+  {
+    "key": "online:What will your world look like?",
+    "disposition": "already agrees",
+    "value": "तुमचे जग कसे दिसेल?"
+  },
+  {
+    "key": "online:Withdraw from library",
+    "disposition": "already agrees",
+    "value": "संग्रहातून मागे घ्या"
+  },
+  {
+    "key": "online:Withdraw published family",
+    "disposition": "already agrees",
+    "value": "प्रकाशित इमारत संच मागे घ्या"
+  },
+  {
+    "key": "online:Your swarm, in the game",
+    "disposition": "already agrees",
+    "value": "खेळातील तुमचे पोळे"
+  },
+  {
+    "key": "online:Your world is taking shape…",
+    "disposition": "already agrees",
+    "value": "तुमचे जग आकार घेत आहे…"
+  },
+  {
+    "key": "online:about {seconds} s left",
+    "disposition": "already agrees",
+    "value": "सुमारे {seconds} सेकंद शिल्लक"
+  },
+  {
+    "key": "online:b-",
+    "disposition": "already agrees",
+    "value": "b-"
+  },
+  {
+    "key": "online:building library",
+    "disposition": "already agrees",
+    "value": "इमारतींचा संग्रह"
+  },
+  {
+    "key": "online:median length",
+    "disposition": "editorial accepted, semantic unchanged",
+    "value": "मध्यक कालावधी"
+  },
+  {
+    "key": "online:participants must be all, humans or ai.",
+    "disposition": "already agrees",
+    "value": "participants हे all, humans किंवा ai असावे."
+  },
+  {
+    "key": "online:provisional must be include or exclude.",
+    "disposition": "already agrees",
+    "value": "provisional हे include किंवा exclude असावे."
+  },
+  {
+    "key": "online:status must be open, resolved, dismissed or all.",
+    "disposition": "already agrees",
+    "value": "status हे open, resolved, dismissed किंवा all असावे."
+  },
+  {
+    "key": "online:{slot0} W · {slot1} L",
+    "disposition": "editorial accepted, semantic unchanged",
+    "value": "{slot0} विजय · {slot1} पराभव"
+  },
+  {
+    "key": "online:{slot0} W · {slot1} L{slot2}",
+    "disposition": "editorial accepted, semantic unchanged",
+    "value": "{slot0} विजय · {slot1} पराभव{slot2}"
+  },
+  {
+    "key": "online:{slot0} reserved. Credits belong to this studio.",
+    "disposition": "already agrees",
+    "value": "{slot0} राखीव. हे क्रेडिट्स याच स्टुडिओसाठी आहेत."
+  },
+  {
+    "key": "online:{slot0} · saved generation preview",
+    "disposition": "already agrees",
+    "value": "{slot0} · जतन केलेल्या निर्मितीचे पूर्वावलोकन"
+  },
+  {
+    "key": "online:{slot0} · {slot1} second",
+    "disposition": "already agrees",
+    "value": {
+      "one": "{slot0} · {slot1} सेकंद",
+      "other": "{slot0} · {slot1} सेकंद"
+    }
+  },
+  {
+    "key": "online:{value0}vs {value1}",
+    "disposition": "already agrees",
+    "value": "{value0} विरुद्ध {value1}"
+  },
+  {
+    "key": "online:← Set library",
+    "disposition": "already agrees",
+    "value": "← संचांचा संग्रह"
+  },
+  {
+    "key": "online:⠿ {slot0}",
+    "disposition": "already agrees",
+    "value": "⠿ {slot0}"
+  },
+  {
+    "key": "online: (draw)",
+    "disposition": "already agrees",
+    "value": " (बरोबरी)"
+  },
+  {
+    "key": "online: (lost)",
+    "disposition": "already agrees",
+    "value": " (पराभव)"
+  },
+  {
+    "key": "online: Colony {value0}.",
+    "disposition": "already agrees",
+    "value": " वसाहत {value0}."
+  },
+  {
+    "key": "online: properties",
+    "disposition": "already agrees",
+    "value": " गुणधर्म"
+  },
+  {
+    "key": "online: · rated",
+    "disposition": "editorial accepted, semantic unchanged",
+    "value": " · मानांकित"
+  },
+  {
+    "key": "online: · unrated",
+    "disposition": "editorial accepted, semantic unchanged",
+    "value": " · मानांकनरहित"
+  },
+  {
+    "key": "online: · {count} team",
+    "disposition": "already agrees",
+    "value": {
+      "one": " · {count} संघ",
+      "other": " · {count} संघ"
+    }
+  },
+  {
+    "key": "online:Import generator package",
+    "disposition": "already agrees",
+    "value": "जनरेटर पॅकेज आयात करा"
+  },
+  {
+    "key": "online:Make my colony more defensive…",
+    "disposition": "already agrees",
+    "value": "माझी वसाहत अधिक संरक्षणक्षम करा…"
+  },
+  {
+    "key": "online:Retry saved request",
+    "disposition": "editorial accepted, semantic unchanged",
+    "value": "जतन केलेल्या विनंतीचा पुन्हा प्रयत्न करा"
+  },
+  {
+    "key": "online:{count} team · ",
+    "disposition": "already agrees",
+    "value": {
+      "one": "{count} संघ · ",
+      "other": "{count} संघ · "
+    }
+  },
+  {
+    "key": "online:{value0} playing",
+    "disposition": "editorial accepted, semantic unchanged",
+    "value": "{value0} वाजत आहे"
+  },
+  {
+    "key": "online:Composition source · edit {count}",
+    "disposition": "already agrees",
+    "value": "रचनेचा स्रोत · संपादन {count}"
+  },
+  {
+    "key": "online:Valid colony starts",
+    "disposition": "already agrees",
+    "value": "वसाहतींची वैध सुरुवातीची ठिकाणे"
+  },
+  {
+    "key": "online:Colony {count}: starter food",
+    "disposition": "already agrees",
+    "value": "वसाहत {count}: सुरुवातीचे अन्न"
+  },
+  {
+    "key": "online:Colony {count}: starter timber",
+    "disposition": "already agrees",
+    "value": "वसाहत {count}: सुरुवातीचे लाकूड"
+  },
+  {
+    "key": "online:Properties",
+    "disposition": "already agrees",
+    "value": "गुणधर्म"
+  },
+  {
+    "key": "online: Your next match will use the default colony.",
+    "disposition": "semantic candidate selected after independent editorial conflict reading",
+    "value": " तुमच्या पुढील सामन्यात पूर्वनिर्धारित वसाहत वापरली जाईल.",
+    "reason": "Compared both candidates against frozen source; retained the clearer context and grammatical form."
+  },
+  {
+    "key": "online:, and enter:",
+    "disposition": "editorial candidate selected after independent editorial conflict reading",
+    "value": ", आणि लिहा:",
+    "reason": "Compared both candidates against frozen source; retained the clearer context and grammatical form."
+  },
+  {
+    "key": "online:. You can close this page.",
+    "disposition": "editorial candidate selected after independent editorial conflict reading",
+    "value": ". हे पृष्ठ बंद करू शकता.",
+    "reason": "Compared both candidates against frozen source; retained the clearer context and grammatical form."
+  },
+  {
+    "key": "online:: create a room and invite your friends, or find a quick match.",
+    "disposition": "editorial candidate selected after independent editorial conflict reading",
+    "value": ": खोली तयार करून मित्रांना आमंत्रित करा, किंवा जलद सामना शोधा.",
+    "reason": "Compared both candidates against frozen source; retained the clearer context and grammatical form."
+  },
+  {
+    "key": "online:; nothing to install.",
+    "disposition": "editorial candidate selected after independent editorial conflict reading",
+    "value": "; काहीही स्थापित करावे लागत नाही.",
+    "reason": "Compared both candidates against frozen source; retained the clearer context and grammatical form."
+  },
+  {
+    "key": "online:A Globulation 2 colony: globs at work around their swarm",
+    "disposition": "semantic candidate selected after independent editorial conflict reading",
+    "value": "Globulation 2 ची वसाहत: पोळ्याभोवती काम करणारे ग्लॉब्स",
+    "reason": "Compared both candidates against frozen source; retained the clearer context and grammatical form."
+  },
+  {
+    "key": "online:A dismissed report cannot hide content.",
+    "disposition": "editorial candidate selected after independent editorial conflict reading",
+    "value": "फेटाळलेल्या तक्रारीमुळे सामग्री लपवता येत नाही.",
+    "reason": "Compared both candidates against frozen source; retained the clearer context and grammatical form."
+  },
+  {
+    "key": "online:A previous submission was not acknowledged. Sending it again safely retries the same request.",
+    "disposition": "semantic candidate selected after independent editorial conflict reading",
+    "value": "आधी पाठवलेल्या विनंतीची पोच मिळाली नाही. ती पुन्हा पाठवल्यास त्याच विनंतीचा सुरक्षितपणे पुन्हा प्रयत्न होतो.",
+    "reason": "Compared both candidates against frozen source; retained the clearer context and grammatical form."
+  },
+  {
+    "key": "online:AI JavaScript source",
+    "disposition": "semantic candidate selected after independent editorial conflict reading",
+    "value": "एआय JavaScript स्रोत",
+    "reason": "Compared both candidates against frozen source; retained the clearer context and grammatical form."
+  },
+  {
+    "key": "online:API {slot0}, toolkit {slot1}, suite {slot2}. These checks sample settings and do not certify balance.",
+    "disposition": "semantic candidate selected after independent editorial conflict reading",
+    "value": "API {slot0}, टूलकिट {slot1}, चाचणीसंच {slot2}. या तपासण्या काही निवडक सेटिंग्ज तपासतात; त्या खेळाचा समतोल प्रमाणित करत नाहीत.",
+    "reason": "Compared both candidates against frozen source; retained the clearer context and grammatical form."
+  },
+  {
+    "key": "online:Actor account ID",
+    "disposition": "editorial candidate selected after independent editorial conflict reading",
+    "value": "कृती करणाऱ्या खात्याचा ID",
+    "reason": "Compared both candidates against frozen source; retained the clearer context and grammatical form."
+  },
+  {
+    "key": "online:Add the base frame first.",
+    "disposition": "editorial candidate selected after independent editorial conflict reading",
+    "value": "आधी मूळ फ्रेम जोडा.",
+    "reason": "Compared both candidates against frozen source; retained the clearer context and grammatical form."
+  },
+  {
+    "key": "online:Air health change",
+    "disposition": "semantic candidate selected after independent editorial conflict reading",
+    "value": "उडणाऱ्या युनिटच्या आरोग्यातील बदल",
+    "reason": "Compared both candidates against frozen source; retained the clearer context and grammatical form."
+  },
+  {
+    "key": "online:Allowed resource keys (null uses habitats)",
+    "disposition": "editorial candidate selected after independent editorial conflict reading",
+    "value": "परवानगी असलेल्या संसाधनांच्या की (null असल्यास अधिवास वापरले जातात)",
+    "reason": "Compared both candidates against frozen source; retained the clearer context and grammatical form."
+  },
+  {
+    "key": "online:Apply to {slot0}",
+    "disposition": "editorial candidate selected after independent editorial conflict reading",
+    "value": "{slot0} ला लागू करा",
+    "reason": "Compared both candidates against frozen source; retained the clearer context and grammatical form."
+  },
+  {
+    "key": "online:Brush paints",
+    "disposition": "semantic candidate selected after independent editorial conflict reading",
+    "value": "ब्रशने रंगवले जाते",
+    "reason": "Compared both candidates against frozen source; retained the clearer context and grammatical form."
+  },
+  {
+    "key": "online:Building Studio",
+    "disposition": "semantic candidate selected after independent editorial conflict reading",
+    "value": "इमारत निर्मिती स्टुडिओ",
+    "reason": "Compared both candidates against frozen source; retained the clearer context and grammatical form."
+  },
+  {
+    "key": "online:Building family",
+    "disposition": "editorial candidate selected after independent editorial conflict reading",
+    "value": "इमारत संच",
+    "reason": "Compared both candidates against frozen source; retained the clearer context and grammatical form."
+  },
+  {
+    "key": "online:Building family editor",
+    "disposition": "editorial candidate selected after independent editorial conflict reading",
+    "value": "इमारत संच संपादक",
+    "reason": "Compared both candidates against frozen source; retained the clearer context and grammatical form."
+  },
+  {
+    "key": "online:Building-credit sales are not enabled.",
+    "disposition": "semantic candidate selected after independent editorial conflict reading",
+    "value": "इमारत निर्मिती क्रेडिट्सची विक्री सुरू नाही.",
+    "reason": "Compared both candidates against frozen source; retained the clearer context and grammatical form."
+  },
+  {
+    "key": "online:Buildings: latest verified match against recent average",
+    "disposition": "semantic candidate selected after independent editorial conflict reading",
+    "value": "इमारती: अलीकडील सरासरीच्या तुलनेत नवीनतम पडताळलेला सामना",
+    "reason": "Compared both candidates against frozen source; retained the clearer context and grammatical form."
+  },
+  {
+    "key": "online:Checkout returned. Check the payment below to confirm your purchase.",
+    "disposition": "editorial candidate selected after independent editorial conflict reading",
+    "value": "पेमेंट पृष्ठावरून परत आलात. खरेदीची खात्री करण्यासाठी खाली पेमेंटची स्थिती तपासा.",
+    "reason": "Compared both candidates against frozen source; retained the clearer context and grammatical form."
+  },
+  {
+    "key": "online:Close panel · Escape",
+    "disposition": "editorial candidate selected after independent editorial conflict reading",
+    "value": "पटल बंद करा · Escape",
+    "reason": "Compared both candidates against frozen source; retained the clearer context and grammatical form."
+  },
+  {
+    "key": "online:Colony skins",
+    "disposition": "editorial candidate selected after independent editorial conflict reading",
+    "value": "वसाहतींची रूपे",
+    "reason": "Compared both candidates against frozen source; retained the clearer context and grammatical form."
+  },
+  {
+    "key": "online:Colony {value0} paint",
+    "disposition": "editorial candidate selected after independent editorial conflict reading",
+    "value": "वसाहत {value0} चे रंगकाम",
+    "reason": "Compared both candidates against frozen source; retained the clearer context and grammatical form."
+  },
+  {
+    "key": "online:Compared revision",
+    "disposition": "semantic candidate selected after independent editorial conflict reading",
+    "value": "तुलना केलेली आवृत्ती",
+    "reason": "Compared both candidates against frozen source; retained the clearer context and grammatical form."
+  },
+  {
+    "key": "online:Compared revision {slot0}",
+    "disposition": "semantic candidate selected after independent editorial conflict reading",
+    "value": "तुलना केलेली आवृत्ती {slot0}",
+    "reason": "Compared both candidates against frozen source; retained the clearer context and grammatical form."
+  },
+  {
+    "key": "online:Compatibility of your active skin",
+    "disposition": "editorial candidate selected after independent editorial conflict reading",
+    "value": "वापरात असलेल्या रूपाची सुसंगतता",
+    "reason": "Compared both candidates against frozen source; retained the clearer context and grammatical form."
+  },
+  {
+    "key": "online:Complete family JSON",
+    "disposition": "editorial candidate selected after independent editorial conflict reading",
+    "value": "इमारत संचाचे संपूर्ण JSON",
+    "reason": "Compared both candidates against frozen source; retained the clearer context and grammatical form."
+  },
+  {
+    "key": "online:Complete passing checks before publishing.",
+    "disposition": "semantic candidate selected after independent editorial conflict reading",
+    "value": "प्रकाशित करण्यापूर्वी सर्व तपासण्या यशस्वीपणे पूर्ण करा.",
+    "reason": "Compared both candidates against frozen source; retained the clearer context and grammatical form."
+  },
+  {
+    "key": "online:Confirming your payment. Your credits appear once payment is confirmed.",
+    "disposition": "editorial candidate selected after independent editorial conflict reading",
+    "value": "पेमेंटची पुष्टी करत आहे. पुष्टी झाल्यावर तुमचे क्रेडिट्स दिसतील.",
+    "reason": "Compared both candidates against frozen source; retained the clearer context and grammatical form."
+  },
+  {
+    "key": "online:Continue to uploads",
+    "disposition": "editorial candidate selected after independent editorial conflict reading",
+    "value": "अपलोडच्या विभागात पुढे जा",
+    "reason": "Compared both candidates against frozen source; retained the clearer context and grammatical form."
+  },
+  {
+    "key": "online:Copy paint",
+    "disposition": "editorial candidate selected after independent editorial conflict reading",
+    "value": "रंगकामाची प्रत करा",
+    "reason": "Compared both candidates against frozen source; retained the clearer context and grammatical form."
+  },
+  {
+    "key": "online:Copy this link into Family link or ID in the game’s Building families picker to open this family directly.",
+    "disposition": "editorial candidate selected after independent editorial conflict reading",
+    "value": "हा इमारत संच थेट उघडण्यासाठी खेळातील इमारत संच निवडणीत «संचाची लिंक किंवा ID» येथे ही लिंक द्या.",
+    "reason": "Compared both candidates against frozen source; retained the clearer context and grammatical form."
+  },
+  {
+    "key": "online:Create a building family",
+    "disposition": "editorial candidate selected after independent editorial conflict reading",
+    "value": "इमारत संच तयार करा",
+    "reason": "Compared both candidates against frozen source; retained the clearer context and grammatical form."
+  },
+  {
+    "key": "online:Create a building or an upgrade family with custom artwork.",
+    "disposition": "semantic candidate selected after independent editorial conflict reading",
+    "value": "सानुकूल कलाकृतीसह इमारत किंवा तिच्या सुधारणा टप्प्यांचा संच तयार करा.",
+    "reason": "Family packages describe additive upgrade stages; retain explicit stage grouping from semantic reviewer."
+  },
+  {
+    "key": "online:Create a family",
+    "disposition": "editorial candidate selected after independent editorial conflict reading",
+    "value": "इमारत संच तयार करा",
+    "reason": "Compared both candidates against frozen source; retained the clearer context and grammatical form."
+  },
+  {
+    "key": "online:Credit activity",
+    "disposition": "editorial candidate selected after independent editorial conflict reading",
+    "value": "क्रेडिट्सचे व्यवहार",
+    "reason": "Compared both candidates against frozen source; retained the clearer context and grammatical form."
+  },
+  {
+    "key": "online:Delete skin?",
+    "disposition": "semantic candidate selected after independent editorial conflict reading",
+    "value": "हे रूप हटवायचे का?",
+    "reason": "Compared both candidates against frozen source; retained the clearer context and grammatical form."
+  },
+  {
+    "key": "online:Designer reply awaiting reconciliation",
+    "disposition": "editorial candidate selected after independent editorial conflict reading",
+    "value": "डिझाइनरच्या उत्तराची स्थिती पडताळणे बाकी आहे",
+    "reason": "Compared both candidates against frozen source; retained the clearer context and grammatical form."
+  },
+  {
+    "key": "online:Designer status",
+    "disposition": "editorial candidate selected after independent editorial conflict reading",
+    "value": "डिझाइनरची स्थिती",
+    "reason": "Compared both candidates against frozen source; retained the clearer context and grammatical form."
+  },
+  {
+    "key": "online:Disable skin and resolve",
+    "disposition": "editorial candidate selected after independent editorial conflict reading",
+    "value": "रूप बंद करून तक्रार निकाली काढा",
+    "reason": "Compared both candidates against frozen source; retained the clearer context and grammatical form."
+  },
+  {
+    "key": "online:Dismiss",
+    "disposition": "semantic candidate selected after independent editorial conflict reading",
+    "value": "फेटाळा",
+    "reason": "Both call sites are report-dismissal actions (sets/Library.tsx and admin/Moderation.tsx); फेटाळा is correct."
+  },
+  {
+    "key": "online:Download family",
+    "disposition": "editorial candidate selected after independent editorial conflict reading",
+    "value": "इमारत संच डाउनलोड करा",
+    "reason": "Compared both candidates against frozen source; retained the clearer context and grammatical form."
+  },
+  {
+    "key": "online:Drafts are private. Publish a saved family to share it in the {slot0}.",
+    "disposition": "editorial candidate selected after independent editorial conflict reading",
+    "value": "मसुदे खाजगी असतात. {slot0} मध्ये सामायिक करण्यासाठी जतन केलेला इमारत संच प्रकाशित करा.",
+    "reason": "Compared both candidates against frozen source; retained the clearer context and grammatical form."
+  },
+  {
+    "key": "online:Duplicate rig clip",
+    "disposition": "semantic candidate selected after independent editorial conflict reading",
+    "value": "रिग क्लिपची प्रत तयार करा",
+    "reason": "Compared both candidates against frozen source; retained the clearer context and grammatical form."
+  },
+  {
+    "key": "online:Duplicate shape clip",
+    "disposition": "semantic candidate selected after independent editorial conflict reading",
+    "value": "आकार क्लिपची प्रत तयार करा",
+    "reason": "Compared both candidates against frozen source; retained the clearer context and grammatical form."
+  },
+  {
+    "key": "online:Each product has its own credit unit. Flows cover the current selected range across all payment modes. Usage/refund ledger entries are signed; reserved balances are current snapshots.",
+    "disposition": "semantic candidate selected after independent editorial conflict reading",
+    "value": "प्रत्येक उत्पादनाचे स्वतंत्र क्रेडिट एकक आहे. सर्व देयक पद्धतींतील निवडलेल्या कालावधीचे व्यवहार दाखवले जातात. वापर/परताव्याच्या नोंदींना धन किंवा ऋण चिन्ह असते; राखीव शिल्लक सध्याच्या क्षणाची असते.",
+    "reason": "Compared both candidates against frozen source; retained the clearer context and grammatical form."
+  },
+  {
+    "key": "online:Each shape shares the swarm paint area. Check the result after switching.",
+    "disposition": "editorial candidate selected after independent editorial conflict reading",
+    "value": "प्रत्येक आकार पोळ्याचे रंगकाम क्षेत्र वापरतो. आकार बदलल्यावर परिणाम तपासा.",
+    "reason": "Compared both candidates against frozen source; retained the clearer context and grammatical form."
+  },
+  {
+    "key": "online:Editor-only terrain cannot launch a colony game.",
+    "disposition": "semantic candidate selected after independent editorial conflict reading",
+    "value": "केवळ संपादकात वापरता येणाऱ्या भूभागावर वसाहतीचा खेळ सुरू करता येत नाही.",
+    "reason": "Compared both candidates against frozen source; retained the clearer context and grammatical form."
+  },
+  {
+    "key": "online:Every room member must update before using a shared generator.",
+    "disposition": "semantic candidate selected after independent editorial conflict reading",
+    "value": "सामायिक जनरेटर वापरण्यापूर्वी खोलीतील प्रत्येक सदस्याने खेळ अद्ययावत करणे आवश्यक आहे.",
+    "reason": "Compared both candidates against frozen source; retained the clearer context and grammatical form."
+  },
+  {
+    "key": "online:Export cash CSV",
+    "disposition": "editorial candidate selected after independent editorial conflict reading",
+    "value": "रोख व्यवहारांची CSV निर्यात करा",
+    "reason": "Compared both candidates against frozen source; retained the clearer context and grammatical form."
+  },
+  {
+    "key": "online:Family experiments JSON",
+    "disposition": "editorial candidate selected after independent editorial conflict reading",
+    "value": "इमारत संचाच्या प्रयोगांचे JSON",
+    "reason": "Compared both candidates against frozen source; retained the clearer context and grammatical form."
+  },
+  {
+    "key": "online:Family link",
+    "disposition": "semantic candidate selected after independent editorial conflict reading",
+    "value": "इमारत संचाची लिंक",
+    "reason": "Compared both candidates against frozen source; retained the clearer context and grammatical form."
+  },
+  {
+    "key": "online:Family name",
+    "disposition": "semantic candidate selected after independent editorial conflict reading",
+    "value": "इमारत संचाचे नाव",
+    "reason": "Compared both candidates against frozen source; retained the clearer context and grammatical form."
+  },
+  {
+    "key": "online:Fit model",
+    "disposition": "semantic candidate selected after independent editorial conflict reading",
+    "value": "मॉडेल चौकटीत बसवा",
+    "reason": "Compared both candidates against frozen source; retained the clearer context and grammatical form."
+  },
+  {
+    "key": "online:Fit model · F",
+    "disposition": "semantic candidate selected after independent editorial conflict reading",
+    "value": "मॉडेल चौकटीत बसवा · F",
+    "reason": "Compared both candidates against frozen source; retained the clearer context and grammatical form."
+  },
+  {
+    "key": "online:Follow the composition, hear each candidate, and see what the checks find.",
+    "disposition": "semantic candidate selected after independent editorial conflict reading",
+    "value": "रचनेची प्रगती पाहा, प्रत्येक प्रस्तावित आवृत्ती ऐका आणि तपासण्यांचे निष्कर्ष पाहा.",
+    "reason": "Compared both candidates against frozen source; retained the clearer context and grammatical form."
+  },
+  {
+    "key": "online:Food in inns",
+    "disposition": "semantic candidate selected after independent editorial conflict reading",
+    "value": "खानावळींतील अन्न",
+    "reason": "Compared both candidates against frozen source; retained the clearer context and grammatical form."
+  },
+  {
+    "key": "online:For an unlisted family, copy its page link and paste it into Family link or ID in the game’s Building families picker, then choose Open family. Use the same online instance where the family was published. Private families also require signing in as their owner.",
+    "disposition": "editorial candidate selected after independent editorial conflict reading",
+    "value": "सूचीत नसलेल्या इमारत संचाची पृष्ठलिंक खेळातील इमारत संच निवडणीत «संचाची लिंक किंवा ID» येथे द्या आणि «संच उघडा» निवडा. संच प्रकाशित केलेलाच ऑनलाइन सर्व्हर वापरा. खाजगी संचांसाठी मालक म्हणून साइन इनही करावे लागते.",
+    "reason": "Compared both candidates against frozen source; retained the clearer context and grammatical form."
+  },
+  {
+    "key": "online:Game scale",
+    "disposition": "semantic candidate selected after independent editorial conflict reading",
+    "value": "खेळाचे प्रमाण",
+    "reason": "Compared both candidates against frozen source; retained the clearer context and grammatical form."
+  },
+  {
+    "key": "online:Game-engine preview of the checked set",
+    "disposition": "editorial candidate selected after independent editorial conflict reading",
+    "value": "तपासलेल्या संचाचे खेळाच्या इंजिनमधील पूर्वावलोकन",
+    "reason": "Compared both candidates against frozen source; retained the clearer context and grammatical form."
+  },
+  {
+    "key": "online:Generation report",
+    "disposition": "editorial candidate selected after independent editorial conflict reading",
+    "value": "निर्मितीचा अहवाल",
+    "reason": "Compared both candidates against frozen source; retained the clearer context and grammatical form."
+  },
+  {
+    "key": "online:Generation stopped. Your failed generation credit is returned.",
+    "disposition": "semantic candidate selected after independent editorial conflict reading",
+    "value": "निर्मिती थांबली. अयशस्वी निर्मितीसाठीचे तुमचे क्रेडिट परत केले आहे.",
+    "reason": "Compared both candidates against frozen source; retained the clearer context and grammatical form."
+  },
+  {
+    "key": "online:Give a bounded moderation reason without NUL characters.",
+    "disposition": "semantic candidate selected after independent editorial conflict reading",
+    "value": "NUL वर्ण नसलेले, मर्यादित लांबीचे नियंत्रण कारवाईचे कारण द्या.",
+    "reason": "Compared both candidates against frozen source; retained the clearer context and grammatical form."
+  },
+  {
+    "key": "online:Give a bounded recovery reason.",
+    "disposition": "editorial candidate selected after independent editorial conflict reading",
+    "value": "मर्यादित लांबीचे पुनर्प्राप्तीचे कारण द्या.",
+    "reason": "Compared both candidates against frozen source; retained the clearer context and grammatical form."
+  },
+  {
+    "key": "online:Give a moderation reason.",
+    "disposition": "editorial candidate selected after independent editorial conflict reading",
+    "value": "नियंत्रणाच्या कारवाईचे कारण द्या.",
+    "reason": "Compared both candidates against frozen source; retained the clearer context and grammatical form."
+  },
+  {
+    "key": "online:Ground health change",
+    "disposition": "semantic candidate selected after independent editorial conflict reading",
+    "value": "जमिनीवरील युनिटच्या आरोग्यातील बदल",
+    "reason": "Compared both candidates against frozen source; retained the clearer context and grammatical form."
+  },
+  {
+    "key": "online:Guests get generated names; link a sign-in method to choose one.",
+    "disposition": "semantic candidate selected after independent editorial conflict reading",
+    "value": "पाहुण्यांना आपोआप नावे दिली जातात; स्वतःचे नाव निवडण्यासाठी साइन-इन पद्धत जोडा.",
+    "reason": "Compared both candidates against frozen source; retained the clearer context and grammatical form."
+  },
+  {
+    "key": "online:Invalid rig normal",
+    "disposition": "editorial candidate selected after independent editorial conflict reading",
+    "value": "रिगचा नॉर्मल सदिश अवैध आहे",
+    "reason": "Compared both candidates against frozen source; retained the clearer context and grammatical form."
+  },
+  {
+    "key": "online:Invalid skin dimensions.",
+    "disposition": "editorial candidate selected after independent editorial conflict reading",
+    "value": "रूपाची मापे अवैध आहेत.",
+    "reason": "Compared both candidates against frozen source; retained the clearer context and grammatical form."
+  },
+  {
+    "key": "online:JSON controls require the set workspace.",
+    "disposition": "semantic candidate selected after independent editorial conflict reading",
+    "value": "JSON नियंत्रणांसाठी संचाचे कार्यक्षेत्र आवश्यक आहे.",
+    "reason": "Compared both candidates against frozen source; retained the clearer context and grammatical form."
+  },
+  {
+    "key": "online:Keep available and resolve",
+    "disposition": "editorial candidate selected after independent editorial conflict reading",
+    "value": "उपलब्ध ठेवून तक्रार निकाली काढा",
+    "reason": "Compared both candidates against frozen source; retained the clearer context and grammatical form."
+  },
+  {
+    "key": "online:Keep mine as a new skin",
+    "disposition": "semantic candidate selected after independent editorial conflict reading",
+    "value": "माझे बदल नवीन रूप म्हणून ठेवा",
+    "reason": "Compared both candidates against frozen source; retained the clearer context and grammatical form."
+  },
+  {
+    "key": "online:Keep this family namespace. Import a fork to create a different family.",
+    "disposition": "editorial candidate selected after independent editorial conflict reading",
+    "value": "या इमारत संचाचे नामक्षेत्र कायम ठेवा. वेगळा संच तयार करण्यासाठी स्वतंत्र प्रत आयात करा.",
+    "reason": "Compared both candidates against frozen source; retained the clearer context and grammatical form."
+  },
+  {
+    "key": "online:Ladders",
+    "disposition": "semantic candidate selected after independent editorial conflict reading",
+    "value": "स्पर्धेच्या क्रमवारी",
+    "reason": "Compared both candidates against frozen source; retained the clearer context and grammatical form."
+  },
+  {
+    "key": "online:Like",
+    "disposition": "semantic candidate selected after independent editorial conflict reading",
+    "value": "पसंती द्या",
+    "reason": "Compared both candidates against frozen source; retained the clearer context and grammatical form."
+  },
+  {
+    "key": "online:Loading your building workspace…",
+    "disposition": "editorial candidate selected after independent editorial conflict reading",
+    "value": "इमारत निर्मितीचे कार्यक्षेत्र लोड होत आहे…",
+    "reason": "Compared both candidates against frozen source; retained the clearer context and grammatical form."
+  },
+  {
+    "key": "online:Manage published family",
+    "disposition": "editorial candidate selected after independent editorial conflict reading",
+    "value": "प्रकाशित इमारत संच व्यवस्थापित करा",
+    "reason": "Compared both candidates against frozen source; retained the clearer context and grammatical form."
+  },
+  {
+    "key": "online:Map credits",
+    "disposition": "editorial candidate selected after independent editorial conflict reading",
+    "value": "नकाशा निर्मिती क्रेडिट्स",
+    "reason": "Compared both candidates against frozen source; retained the clearer context and grammatical form."
+  },
+  {
+    "key": "online:Mark this generation failed and return {value0} reserved product credit(s)? Confirm that its delivery cannot be recovered.",
+    "disposition": "semantic candidate selected after independent editorial conflict reading",
+    "value": "ही निर्मिती अयशस्वी म्हणून नोंदवून उत्पादनाचे {value0} राखीव क्रेडिट्स परत करायचे का? तयार परिणाम पुनर्प्राप्त करता येत नाही याची खात्री करा.",
+    "reason": "Compared both candidates against frozen source; retained the clearer context and grammatical form."
+  },
+  {
+    "key": "online:Match activity",
+    "disposition": "editorial candidate selected after independent editorial conflict reading",
+    "value": "सामन्यांतील कृती",
+    "reason": "Compared both candidates against frozen source; retained the clearer context and grammatical form."
+  },
+  {
+    "key": "online:Material map pixels must be grey: red, green and blue equal to the material id.",
+    "disposition": "editorial candidate selected after independent editorial conflict reading",
+    "value": "मटेरियल नकाशातील पिक्सेल राखाडी असावेत: लाल, हिरवा आणि निळा या तिन्ही घटकांची मूल्ये मटेरियल ID इतकी असावीत.",
+    "reason": "Compared both candidates against frozen source; retained the clearer context and grammatical form."
+  },
+  {
+    "key": "online:Moderate",
+    "disposition": "editorial candidate selected after independent editorial conflict reading",
+    "value": "कारवाई करा",
+    "reason": "Compared both candidates against frozen source; retained the clearer context and grammatical form."
+  },
+  {
+    "key": "online:Moderation",
+    "disposition": "semantic candidate selected after independent editorial conflict reading",
+    "value": "नियंत्रण कारवाई",
+    "reason": "Compared both candidates against frozen source; retained the clearer context and grammatical form."
+  },
+  {
+    "key": "online:Moderation reason",
+    "disposition": "editorial candidate selected after independent editorial conflict reading",
+    "value": "कारवाईचे कारण",
+    "reason": "Compared both candidates against frozen source; retained the clearer context and grammatical form."
+  },
+  {
+    "key": "online:Music credits",
+    "disposition": "editorial candidate selected after independent editorial conflict reading",
+    "value": "संगीत निर्मिती क्रेडिट्स",
+    "reason": "Compared both candidates against frozen source; retained the clearer context and grammatical form."
+  },
+  {
+    "key": "online:Mute {slot0}",
+    "disposition": "semantic candidate selected after independent editorial conflict reading",
+    "value": "{slot0} यांना चॅटबंदी घाला",
+    "reason": "Actual usage is admin chat restriction, not muting audio; preserve semantic reviewer’s source-use finding."
+  },
+  {
+    "key": "online:No families found.",
+    "disposition": "semantic candidate selected after independent editorial conflict reading",
+    "value": "कोणताही इमारत संच सापडला नाही.",
+    "reason": "Compared both candidates against frozen source; retained the clearer context and grammatical form."
+  },
+  {
+    "key": "online:No set validator is available. Your draft is saved; try checks later.",
+    "disposition": "editorial candidate selected after independent editorial conflict reading",
+    "value": "संच तपासणारे साधन उपलब्ध नाही. मसुदा जतन झाला आहे; नंतर तपासण्या करून पाहा.",
+    "reason": "Compared both candidates against frozen source; retained the clearer context and grammatical form."
+  },
+  {
+    "key": "online:No sets found. Try another search or create the first one.",
+    "disposition": "semantic candidate selected after independent editorial conflict reading",
+    "value": "कोणतेही संच सापडले नाहीत. वेगळा शोध घ्या किंवा पहिला संच तयार करा.",
+    "reason": "Compared both candidates against frozen source; retained the clearer context and grammatical form."
+  },
+  {
+    "key": "online:No skin reports.",
+    "disposition": "editorial candidate selected after independent editorial conflict reading",
+    "value": "रूपांविषयी तक्रारी नाहीत.",
+    "reason": "Compared both candidates against frozen source; retained the clearer context and grammatical form."
+  },
+  {
+    "key": "online:No such blob.",
+    "disposition": "editorial candidate selected after independent editorial conflict reading",
+    "value": "असा डेटा ब्लॉब नाही.",
+    "reason": "Compared both candidates against frozen source; retained the clearer context and grammatical form."
+  },
+  {
+    "key": "online:No such building family.",
+    "disposition": "semantic candidate selected after independent editorial conflict reading",
+    "value": "असा कोणताही इमारत संच नाही.",
+    "reason": "Compared both candidates against frozen source; retained the clearer context and grammatical form."
+  },
+  {
+    "key": "online:No such job.",
+    "disposition": "editorial candidate selected after independent editorial conflict reading",
+    "value": "असे काम नाही.",
+    "reason": "Compared both candidates against frozen source; retained the clearer context and grammatical form."
+  },
+  {
+    "key": "online:No such match.",
+    "disposition": "semantic candidate selected after independent editorial conflict reading",
+    "value": "असा कोणताही सामना नाही.",
+    "reason": "Compared both candidates against frozen source; retained the clearer context and grammatical form."
+  },
+  {
+    "key": "online:No such release.",
+    "disposition": "editorial candidate selected after independent editorial conflict reading",
+    "value": "अशी प्रकाशित आवृत्ती नाही.",
+    "reason": "Compared both candidates against frozen source; retained the clearer context and grammatical form."
+  },
+  {
+    "key": "online:No such sign-in on this connection.",
+    "disposition": "semantic candidate selected after independent editorial conflict reading",
+    "value": "या कनेक्शनवर असे कोणतेही साइन-इन नाही.",
+    "reason": "Compared both candidates against frozen source; retained the clearer context and grammatical form."
+  },
+  {
+    "key": "online:No timeline was recorded for this match.",
+    "disposition": "editorial candidate selected after independent editorial conflict reading",
+    "value": "या सामन्याचा घटनाक्रम नोंदवलेला नाही.",
+    "reason": "Compared both candidates against frozen source; retained the clearer context and grammatical form."
+  },
+  {
+    "key": "online:No uncertain request.",
+    "disposition": "editorial candidate selected after independent editorial conflict reading",
+    "value": "स्थिती अनिश्चित असलेली विनंती नाही.",
+    "reason": "Compared both candidates against frozen source; retained the clearer context and grammatical form."
+  },
+  {
+    "key": "online:No worker leases are recorded.",
+    "disposition": "semantic candidate selected after independent editorial conflict reading",
+    "value": "वर्करला तात्पुरते काम सोपवल्याच्या नोंदी नाहीत.",
+    "reason": "Compared both candidates against frozen source; retained the clearer context and grammatical form."
+  },
+  {
+    "key": "online:Only uncertain calls can be reconciled.",
+    "disposition": "semantic candidate selected after independent editorial conflict reading",
+    "value": "निकाल अनिश्चित असलेल्या कॉलचाच ताळमेळ तपासता येतो.",
+    "reason": "Compared both candidates against frozen source; retained the clearer context and grammatical form."
+  },
+  {
+    "key": "online:Open music release",
+    "disposition": "editorial candidate selected after independent editorial conflict reading",
+    "value": "संगीताची प्रकाशित आवृत्ती उघडा",
+    "reason": "Compared both candidates against frozen source; retained the clearer context and grammatical form."
+  },
+  {
+    "key": "online:Pad ends with silence to longest",
+    "disposition": "semantic candidate selected after independent editorial conflict reading",
+    "value": "सर्वात लांब ट्रॅकइतकी लांबी होईपर्यंत शेवटी शांतता जोडा",
+    "reason": "Compared both candidates against frozen source; retained the clearer context and grammatical form."
+  },
+  {
+    "key": "online:Priced",
+    "disposition": "semantic candidate selected after independent editorial conflict reading",
+    "value": "खर्च उपलब्ध",
+    "reason": "Compared both candidates against frozen source; retained the clearer context and grammatical form."
+  },
+  {
+    "key": "online:Progress does not match the leased AI validation.",
+    "disposition": "semantic candidate selected after independent editorial conflict reading",
+    "value": "प्रगती तात्पुरते सोपवलेल्या एआय पडताळणीच्या कामाशी जुळत नाही.",
+    "reason": "Compared both candidates against frozen source; retained the clearer context and grammatical form."
+  },
+  {
+    "key": "online:Publish release",
+    "disposition": "editorial candidate selected after independent editorial conflict reading",
+    "value": "आवृत्ती प्रकाशित करा",
+    "reason": "Compared both candidates against frozen source; retained the clearer context and grammatical form."
+  },
+  {
+    "key": "online:Purchase confirmed. Your skin is ready to use in game.",
+    "disposition": "editorial candidate selected after independent editorial conflict reading",
+    "value": "खरेदीची पुष्टी झाली. तुमचे रूप खेळात वापरण्यास तयार आहे.",
+    "reason": "Compared both candidates against frozen source; retained the clearer context and grammatical form."
+  },
+  {
+    "key": "online:Questions and brainstorming are free and require an available credit. A creation or revision request starts one build of up to 12 entries. Failed generations return their reservation.",
+    "disposition": "semantic candidate selected after independent editorial conflict reading",
+    "value": "प्रश्न आणि विचारमंथन विनामूल्य आहेत, पण उपलब्ध क्रेडिट आवश्यक आहे. निर्मिती किंवा बदलाची विनंती केल्यावर जास्तीत जास्त १२ नोंदींची एक निर्मिती प्रक्रिया सुरू होते. निर्मिती अयशस्वी झाल्यास राखीव क्रेडिट्स परत मिळतात.",
+    "reason": "Compared both candidates against frozen source; retained the clearer context and grammatical form."
+  },
+  {
+    "key": "online:Questions and brainstorming are free. A creation or revision request starts one build of up to 12 building variants. Failed generations return their reservation.",
+    "disposition": "semantic candidate selected after independent editorial conflict reading",
+    "value": "प्रश्न आणि विचारमंथन विनामूल्य आहेत. निर्मिती किंवा बदलाची विनंती केल्यावर इमारतीच्या जास्तीत जास्त १२ प्रकारांची एक निर्मिती प्रक्रिया सुरू होते. निर्मिती अयशस्वी झाल्यास राखीव क्रेडिट्स परत मिळतात.",
+    "reason": "Compared both candidates against frozen source; retained the clearer context and grammatical form."
+  },
+  {
+    "key": "online:Queues the stored match record for verification again. Force permits replacement of an existing verification result; confirm it separately.",
+    "disposition": "semantic candidate selected after independent editorial conflict reading",
+    "value": "जतन केलेली सामन्याची नोंद पुन्हा पडताळणीच्या रांगेत ठेवतो. सक्तीचा पर्याय वापरल्यास विद्यमान पडताळणीचा निकाल बदलता येतो; त्याची स्वतंत्रपणे पुष्टी करा.",
+    "reason": "Compared both candidates against frozen source; retained the clearer context and grammatical form."
+  },
+  {
+    "key": "online:Quiet passage audibility",
+    "disposition": "editorial candidate selected after independent editorial conflict reading",
+    "value": "शांत संगीतमय भागांची ऐकू येण्याची क्षमता",
+    "reason": "Compared both candidates against frozen source; retained the clearer context and grammatical form."
+  },
+  {
+    "key": "online:Reconciling",
+    "disposition": "semantic candidate selected after independent editorial conflict reading",
+    "value": "ताळमेळ तपासत आहे",
+    "reason": "Compared both candidates against frozen source; retained the clearer context and grammatical form."
+  },
+  {
+    "key": "online:Releases",
+    "disposition": "editorial candidate selected after independent editorial conflict reading",
+    "value": "प्रकाशित आवृत्त्या",
+    "reason": "Compared both candidates against frozen source; retained the clearer context and grammatical form."
+  },
+  {
+    "key": "online:Request cap",
+    "disposition": "semantic candidate selected after independent editorial conflict reading",
+    "value": "विनंतीची कमाल मर्यादा",
+    "reason": "Compared both candidates against frozen source; retained the clearer context and grammatical form."
+  },
+  {
+    "key": "online:Reroll seed",
+    "disposition": "editorial candidate selected after independent editorial conflict reading",
+    "value": "नवे यादृच्छिक बीज निवडा",
+    "reason": "Compared both candidates against frozen source; retained the clearer context and grammatical form."
+  },
+  {
+    "key": "online:Reserved: {slot0} product credits",
+    "disposition": "editorial candidate selected after independent editorial conflict reading",
+    "value": "राखीव: उत्पादनाचे {slot0} क्रेडिट्स",
+    "reason": "Compared both candidates against frozen source; retained the clearer context and grammatical form."
+  },
+  {
+    "key": "online:Reserved: {slot0} product credits{slot1}",
+    "disposition": "editorial candidate selected after independent editorial conflict reading",
+    "value": "राखीव: उत्पादनाचे {slot0} क्रेडिट्स{slot1}",
+    "reason": "Compared both candidates against frozen source; retained the clearer context and grammatical form."
+  },
+  {
+    "key": "online:Retry loading skins",
+    "disposition": "semantic candidate selected after independent editorial conflict reading",
+    "value": "रूपे पुन्हा लोड करण्याचा प्रयत्न करा",
+    "reason": "Compared both candidates against frozen source; retained the clearer context and grammatical form."
+  },
+  {
+    "key": "online:Returning the reservation marks this generation failed. Inspect its details and confirm delivery cannot be recovered first.",
+    "disposition": "semantic candidate selected after independent editorial conflict reading",
+    "value": "राखीव क्रेडिट्स परत केल्यावर ही निर्मिती अयशस्वी म्हणून नोंदवली जाते. आधी तपशील पाहून तयार परिणाम पुनर्प्राप्त करता येत नाही याची खात्री करा.",
+    "reason": "Compared both candidates against frozen source; retained the clearer context and grammatical form."
+  },
+  {
+    "key": "online:Review reports",
+    "disposition": "editorial candidate selected after independent editorial conflict reading",
+    "value": "तक्रारी तपासा",
+    "reason": "Compared both candidates against frozen source; retained the clearer context and grammatical form."
+  },
+  {
+    "key": "online:Running",
+    "disposition": "semantic candidate selected after independent editorial conflict reading",
+    "value": "चालू आहे",
+    "reason": "Compared both candidates against frozen source; retained the clearer context and grammatical form."
+  },
+  {
+    "key": "online:Seed",
+    "disposition": "editorial candidate selected after independent editorial conflict reading",
+    "value": "बीज",
+    "reason": "Compared both candidates against frozen source; retained the clearer context and grammatical form."
+  },
+  {
+    "key": "online:Send skin report",
+    "disposition": "editorial candidate selected after independent editorial conflict reading",
+    "value": "रूपाविषयी तक्रार पाठवा",
+    "reason": "Compared both candidates against frozen source; retained the clearer context and grammatical form."
+  },
+  {
+    "key": "online:Set reports",
+    "disposition": "editorial candidate selected after independent editorial conflict reading",
+    "value": "संचांविषयी तक्रारी",
+    "reason": "Compared both candidates against frozen source; retained the clearer context and grammatical form."
+  },
+  {
+    "key": "online:Sign in with an account to publish maps; guests can share unlisted maps.",
+    "disposition": "semantic candidate selected after independent editorial conflict reading",
+    "value": "नकाशे सार्वजनिकपणे प्रकाशित करण्यासाठी खात्यात साइन इन करा; पाहुणे सूचीत न दिसणारे नकाशे सामायिक करू शकतात.",
+    "reason": "Compared both candidates against frozen source; retained the clearer context and grammatical form."
+  },
+  {
+    "key": "online:Sign in with an account to save favourites and like generators.",
+    "disposition": "semantic candidate selected after independent editorial conflict reading",
+    "value": "आवडते जनरेटर जतन करण्यासाठी आणि त्यांना पसंती देण्यासाठी खात्यात साइन इन करा.",
+    "reason": "Compared both candidates against frozen source; retained the clearer context and grammatical form."
+  },
+  {
+    "key": "online:Sign in with an active account to save skins.",
+    "disposition": "semantic candidate selected after independent editorial conflict reading",
+    "value": "रूपे जतन करण्यासाठी सक्रिय खात्यात साइन इन करा.",
+    "reason": "Compared both candidates against frozen source; retained the clearer context and grammatical form."
+  },
+  {
+    "key": "online:Sign in with an active account to use a custom skin.",
+    "disposition": "semantic candidate selected after independent editorial conflict reading",
+    "value": "सानुकूल रूप वापरण्यासाठी सक्रिय खात्यात साइन इन करा.",
+    "reason": "Compared both candidates against frozen source; retained the clearer context and grammatical form."
+  },
+  {
+    "key": "online:Singular {value0} camera",
+    "disposition": "semantic candidate selected after independent editorial conflict reading",
+    "value": "{value0} कॅमेराच्या मॅट्रिक्सचा व्युत्क्रम काढता येत नाही",
+    "reason": "Camera singularity is a noninvertible matrix, not grammatical singular; semantic explanation is precise."
+  },
+  {
+    "key": "online:Skin collection pages",
+    "disposition": "editorial candidate selected after independent editorial conflict reading",
+    "value": "रूपांच्या संग्रहाची पृष्ठे",
+    "reason": "Compared both candidates against frozen source; retained the clearer context and grammatical form."
+  },
+  {
+    "key": "online:Skin designer",
+    "disposition": "editorial candidate selected after independent editorial conflict reading",
+    "value": "रूप डिझाइनर",
+    "reason": "Compared both candidates against frozen source; retained the clearer context and grammatical form."
+  },
+  {
+    "key": "online:Skin page not found.",
+    "disposition": "editorial candidate selected after independent editorial conflict reading",
+    "value": "रूपाचे पृष्ठ सापडले नाही.",
+    "reason": "Compared both candidates against frozen source; retained the clearer context and grammatical form."
+  },
+  {
+    "key": "online:Skin report resolutions need at most 1000 characters and disabling for a resolved report.",
+    "disposition": "semantic candidate selected after independent editorial conflict reading",
+    "value": "रूपाच्या तक्रारीच्या निराकरणाचा मजकूर जास्तीत जास्त १००० अक्षरांचा असावा. तक्रारीचे निराकरण झाले म्हणून नोंदवताना रूप बंद करणे आवश्यक आहे.",
+    "reason": "Compared both candidates against frozen source; retained the clearer context and grammatical form."
+  },
+  {
+    "key": "online:Skin reports",
+    "disposition": "editorial candidate selected after independent editorial conflict reading",
+    "value": "रूपांविषयी तक्रारी",
+    "reason": "Compared both candidates against frozen source; retained the clearer context and grammatical form."
+  },
+  {
+    "key": "online:Technical checks do not establish balance or fun.",
+    "disposition": "editorial candidate selected after independent editorial conflict reading",
+    "value": "तांत्रिक तपासण्या खेळ संतुलित किंवा मजेदार असल्याची खात्री देत नाहीत.",
+    "reason": "Compared both candidates against frozen source; retained the clearer context and grammatical form."
+  },
+  {
+    "key": "online:The designer reply needs reconciliation. No map build has started.",
+    "disposition": "editorial candidate selected after independent editorial conflict reading",
+    "value": "डिझाइनरच्या उत्तराची स्थिती पडताळणे बाकी आहे. नकाशाची निर्मिती सुरू झालेली नाही.",
+    "reason": "Compared both candidates against frozen source; retained the clearer context and grammatical form."
+  },
+  {
+    "key": "online:The generator package must fit the 256 KiB draft limit.",
+    "disposition": "editorial candidate selected after independent editorial conflict reading",
+    "value": "जनरेटर पॅकेज मसुद्याच्या 256 KiB मर्यादेत बसले पाहिजे.",
+    "reason": "Compared both candidates against frozen source; retained the clearer context and grammatical form."
+  },
+  {
+    "key": "online:The job is leased by another engine agent.",
+    "disposition": "semantic candidate selected after independent editorial conflict reading",
+    "value": "हे काम सध्या दुसऱ्या इंजिन एजंटकडे सोपवलेले आहे.",
+    "reason": "Compared both candidates against frozen source; retained the clearer context and grammatical form."
+  },
+  {
+    "key": "online:The lease expired or the job was already reported.",
+    "disposition": "semantic candidate selected after independent editorial conflict reading",
+    "value": "कामाच्या तात्पुरत्या नेमणुकीची मुदत संपली किंवा त्याचा निकाल आधीच नोंदवला आहे.",
+    "reason": "Compared both candidates against frozen source; retained the clearer context and grammatical form."
+  },
+  {
+    "key": "online:The match already ended with a different record.",
+    "disposition": "semantic candidate selected after independent editorial conflict reading",
+    "value": "हा सामना वेगळ्या नोंदीसह आधीच संपला आहे.",
+    "reason": "Compared both candidates against frozen source; retained the clearer context and grammatical form."
+  },
+  {
+    "key": "online:The original swarm: spires ringed around an egg.",
+    "disposition": "editorial candidate selected after independent editorial conflict reading",
+    "value": "मूळ पोळे: अंड्याभोवती वर्तुळात उभे असलेले मनोरे.",
+    "reason": "Compared both candidates against frozen source; retained the clearer context and grammatical form."
+  },
+  {
+    "key": "online:The room has no seat {p0}.",
+    "disposition": "semantic candidate selected after independent editorial conflict reading",
+    "value": "खोलीत {p0} क्रमांकाची जागा नाही.",
+    "reason": "Compared both candidates against frozen source; retained the clearer context and grammatical form."
+  },
+  {
+    "key": "online:The server first loads the file with the game to check it; the map page is created only if it loads. Unlisted maps are reachable by link only; you can make a map public later.",
+    "disposition": "editorial candidate selected after independent editorial conflict reading",
+    "value": "फाईल तपासण्यासाठी सर्व्हर ती आधी खेळात लोड करतो; ती लोड झाली तरच नकाशाचे पृष्ठ तयार होते. सूचीत नसलेले नकाशे फक्त लिंकने उघडता येतात; नंतर नकाशा सार्वजनिक करू शकता.",
+    "reason": "Compared both candidates against frozen source; retained the clearer context and grammatical form."
+  },
+  {
+    "key": "online:The sheet must be at most 2048×2048 and fit its frame grid exactly.",
+    "disposition": "editorial candidate selected after independent editorial conflict reading",
+    "value": "स्प्राइटशीट जास्तीत जास्त 2048×2048 असावी आणि तिच्या फ्रेमच्या जाळीत तंतोतंत बसली पाहिजे.",
+    "reason": "Compared both candidates against frozen source; retained the clearer context and grammatical form."
+  },
+  {
+    "key": "online:There is no account called {p0}. Check the spelling{p1}.",
+    "disposition": "editorial candidate selected after independent editorial conflict reading",
+    "value": "{p0} नावाचे खाते नाही. नावाचे लेखन तपासा{p1}.",
+    "reason": "Compared both candidates against frozen source; retained the clearer context and grammatical form."
+  },
+  {
+    "key": "online:This account does not own this colony skin.",
+    "disposition": "semantic candidate selected after independent editorial conflict reading",
+    "value": "हे वसाहतीचे रूप या खात्याच्या मालकीचे नाही.",
+    "reason": "Compared both candidates against frozen source; retained the clearer context and grammatical form."
+  },
+  {
+    "key": "online:This family has 50 releases.",
+    "disposition": "editorial candidate selected after independent editorial conflict reading",
+    "value": "या इमारत संचाच्या 50 आवृत्त्या प्रकाशित झाल्या आहेत.",
+    "reason": "Compared both candidates against frozen source; retained the clearer context and grammatical form."
+  },
+  {
+    "key": "online:This family has been hidden by a moderator.",
+    "disposition": "editorial candidate selected after independent editorial conflict reading",
+    "value": "नियंत्रकाने हा इमारत संच लपवला आहे.",
+    "reason": "Compared both candidates against frozen source; retained the clearer context and grammatical form."
+  },
+  {
+    "key": "online:This family uses stock artwork.",
+    "disposition": "editorial candidate selected after independent editorial conflict reading",
+    "value": "हा इमारत संच मूळ खेळातील कलाकृती वापरतो.",
+    "reason": "Compared both candidates against frozen source; retained the clearer context and grammatical form."
+  },
+  {
+    "key": "online:This instance",
+    "disposition": "editorial candidate selected after independent editorial conflict reading",
+    "value": "हा सर्व्हर",
+    "reason": "Compared both candidates against frozen source; retained the clearer context and grammatical form."
+  },
+  {
+    "key": "online:This namespace belongs to another author. Fork the family first.",
+    "disposition": "editorial candidate selected after independent editorial conflict reading",
+    "value": "हे नामक्षेत्र दुसऱ्या लेखकाचे आहे. आधी इमारत संचाची स्वतंत्र प्रत तयार करा.",
+    "reason": "Compared both candidates against frozen source; retained the clearer context and grammatical form."
+  },
+  {
+    "key": "online:This older generation has limited stage history. Available images are preserved.",
+    "disposition": "editorial candidate selected after independent editorial conflict reading",
+    "value": "या जुन्या निर्मितीच्या टप्प्यांचा इतिहास मर्यादित आहे. उपलब्ध प्रतिमा जतन केल्या आहेत.",
+    "reason": "Compared both candidates against frozen source; retained the clearer context and grammatical form."
+  },
+  {
+    "key": "online:This skin changed on another device. Reload it before using it.",
+    "disposition": "semantic candidate selected after independent editorial conflict reading",
+    "value": "हे रूप दुसऱ्या उपकरणावर बदलले आहे. वापरण्यापूर्वी ते पुन्हा लोड करा.",
+    "reason": "Compared both candidates against frozen source; retained the clearer context and grammatical form."
+  },
+  {
+    "key": "online:This skin changed on another device. Your work is safe in this browser.",
+    "disposition": "editorial candidate selected after independent editorial conflict reading",
+    "value": "हे रूप दुसऱ्या उपकरणावर बदलले आहे. तुमचे काम या ब्राउझरमध्ये सुरक्षित आहे.",
+    "reason": "Compared both candidates against frozen source; retained the clearer context and grammatical form."
+  },
+  {
+    "key": "online:To play online, publish the generated map in the map library and select it for your room. Download family exports a ZIP for importing or editing in Building Studio.",
+    "disposition": "semantic candidate selected after independent editorial conflict reading",
+    "value": "ऑनलाइन खेळण्यासाठी तयार केलेला नकाशा नकाशा संग्रहात प्रकाशित करा आणि खोलीसाठी तो निवडा. संच डाउनलोड करा हा पर्याय इमारत निर्मिती स्टुडिओमध्ये आयात किंवा संपादन करता येणारे ZIP पॅकेज देतो.",
+    "reason": "Compared both candidates against frozen source; retained the clearer context and grammatical form."
+  },
+  {
+    "key": "online:Truncated {value0} payload",
+    "disposition": "editorial candidate selected after independent editorial conflict reading",
+    "value": "अपूर्ण {value0} पेलोड",
+    "reason": "Compared both candidates against frozen source; retained the clearer context and grammatical form."
+  },
+  {
+    "key": "online:Units: latest verified match against recent average",
+    "disposition": "semantic candidate selected after independent editorial conflict reading",
+    "value": "युनिट: अलीकडील सरासरीच्या तुलनेत नवीनतम पडताळलेला सामना",
+    "reason": "Compared both candidates against frozen source; retained the clearer context and grammatical form."
+  },
+  {
+    "key": "online:Unknown contentType.",
+    "disposition": "editorial candidate selected after independent editorial conflict reading",
+    "value": "contentType अज्ञात आहे.",
+    "reason": "Compared both candidates against frozen source; retained the clearer context and grammatical form."
+  },
+  {
+    "key": "online:Unknown sort.",
+    "disposition": "editorial candidate selected after independent editorial conflict reading",
+    "value": "क्रमवारी लावण्याची पद्धत अज्ञात आहे.",
+    "reason": "Compared both candidates against frozen source; retained the clearer context and grammatical form."
+  },
+  {
+    "key": "online:Unlock the skin designer to use custom skins.",
+    "disposition": "editorial candidate selected after independent editorial conflict reading",
+    "value": "सानुकूल रूपे वापरण्यासाठी रूप डिझाइनर अनलॉक करा.",
+    "reason": "Compared both candidates against frozen source; retained the clearer context and grammatical form."
+  },
+  {
+    "key": "online:Unverifiable",
+    "disposition": "semantic candidate selected after independent editorial conflict reading",
+    "value": "पडताळता येत नाही",
+    "reason": "Compared both candidates against frozen source; retained the clearer context and grammatical form."
+  },
+  {
+    "key": "online:Upload an audio file, or cover art up to 8 MiB.",
+    "disposition": "editorial candidate selected after independent editorial conflict reading",
+    "value": "ऑडिओ फाईल किंवा जास्तीत जास्त 8 MiB ची आवरण प्रतिमा अपलोड करा.",
+    "reason": "Compared both candidates against frozen source; retained the clearer context and grammatical form."
+  },
+  {
+    "key": "online:Usernames are 3 to 32 characters long; this one has {p0}.",
+    "disposition": "editorial candidate selected after independent editorial conflict reading",
+    "value": "वापरकर्तानाव 3 ते 32 अक्षरांचे असावे; यात {p0} अक्षरे आहेत.",
+    "reason": "Compared both candidates against frozen source; retained the clearer context and grammatical form."
+  },
+  {
+    "key": "online:Wait for the provider call to return before cancelling.",
+    "disposition": "semantic candidate selected after independent editorial conflict reading",
+    "value": "रद्द करण्यापूर्वी प्रदात्याच्या कॉलचा प्रतिसाद येईपर्यंत थांबा.",
+    "reason": "Compared both candidates against frozen source; retained the clearer context and grammatical form."
+  },
+  {
+    "key": "online:Worker leases",
+    "disposition": "semantic candidate selected after independent editorial conflict reading",
+    "value": "वर्करकडे सोपवलेली कामे",
+    "reason": "Compared both candidates against frozen source; retained the clearer context and grammatical form."
+  },
+  {
+    "key": "online:Worker slots",
+    "disposition": "semantic candidate selected after independent editorial conflict reading",
+    "value": "वर्कर स्लॉट",
+    "reason": "Compared both candidates against frozen source; retained the clearer context and grammatical form."
+  },
+  {
+    "key": "online:You have no seat in a running match with that id.",
+    "disposition": "editorial candidate selected after independent editorial conflict reading",
+    "value": "त्या ID च्या चालू सामन्यात तुमची जागा नाही.",
+    "reason": "Compared both candidates against frozen source; retained the clearer context and grammatical form."
+  },
+  {
+    "key": "online:Your account cannot host rooms.",
+    "disposition": "semantic candidate selected after independent editorial conflict reading",
+    "value": "तुमच्या खात्यातून खोल्या तयार करता येत नाहीत.",
+    "reason": "Compared both candidates against frozen source; retained the clearer context and grammatical form."
+  },
+  {
+    "key": "online:Your building workspace is full.",
+    "disposition": "editorial candidate selected after independent editorial conflict reading",
+    "value": "इमारत निर्मितीचे कार्यक्षेत्र भरले आहे.",
+    "reason": "Compared both candidates against frozen source; retained the clearer context and grammatical form."
+  },
+  {
+    "key": "online:Your building workspace is limited to 64 MiB. Export and delete an old draft first.",
+    "disposition": "editorial candidate selected after independent editorial conflict reading",
+    "value": "इमारत निर्मितीच्या कार्यक्षेत्राची मर्यादा 64 MiB आहे. आधी जुना मसुदा निर्यात करून हटवा.",
+    "reason": "Compared both candidates against frozen source; retained the clearer context and grammatical form."
+  },
+  {
+    "key": "online:Your changes were saved as a new skin.",
+    "disposition": "editorial candidate selected after independent editorial conflict reading",
+    "value": "तुमचे बदल नवीन रूप म्हणून जतन झाले.",
+    "reason": "Compared both candidates against frozen source; retained the clearer context and grammatical form."
+  },
+  {
+    "key": "online:Your first design starts with New skin. Your work saves automatically.",
+    "disposition": "editorial candidate selected after independent editorial conflict reading",
+    "value": "पहिली रचना करण्यासाठी «नवीन रूप» निवडा. तुमचे काम आपोआप जतन होते.",
+    "reason": "Compared both candidates against frozen source; retained the clearer context and grammatical form."
+  },
+  {
+    "key": "online:by {slot0} · updated {slot1}",
+    "disposition": "semantic candidate selected after independent editorial conflict reading",
+    "value": "लेखक: {slot0} · अद्ययावत: {slot1}",
+    "reason": "Compared both candidates against frozen source; retained the clearer context and grammatical form."
+  },
+  {
+    "key": "online:owner must be \"me\" or an account id.",
+    "disposition": "editorial candidate selected after independent editorial conflict reading",
+    "value": "owner हे \"me\" किंवा खात्याचा ID असावे.",
+    "reason": "Compared both candidates against frozen source; retained the clearer context and grammatical form."
+  },
+  {
+    "key": "online:teams must list the map's {p0} teams in order 0..{p1}.",
+    "disposition": "semantic candidate selected after independent editorial conflict reading",
+    "value": "teams मध्ये नकाशावरील {p0} संघ 0..{p1} या क्रमाने दिलेले असावेत.",
+    "reason": "Compared both candidates against frozen source; retained the clearer context and grammatical form."
+  },
+  {
+    "key": "online:unverifiable",
+    "disposition": "semantic candidate selected after independent editorial conflict reading",
+    "value": "पडताळता येत नाही",
+    "reason": "Compared both candidates against frozen source; retained the clearer context and grammatical form."
+  },
+  {
+    "key": "online:{slot0} available · {slot1} reserved. Discussion requires an available credit; each delivered set or revision costs 1 credit. Failed generations return the credit.",
+    "disposition": "semantic candidate selected after independent editorial conflict reading",
+    "value": "{slot0} उपलब्ध · {slot1} राखीव. चर्चेसाठी उपलब्ध क्रेडिट आवश्यक आहे; मिळालेल्या प्रत्येक संचासाठी किंवा बदललेल्या आवृत्तीसाठी १ क्रेडिट आकारले जाते. निर्मिती अयशस्वी झाल्यास क्रेडिट परत मिळते.",
+    "reason": "Compared both candidates against frozen source; retained the clearer context and grammatical form."
+  },
+  {
+    "key": "online:{slot0} credit · {slot1}  {slot2}",
+    "disposition": "editorial candidate selected after independent editorial conflict reading",
+    "value": {
+      "one": "{slot0} क्रेडिट · {slot1}  {slot2}",
+      "other": "{slot0} क्रेडिट्स · {slot1}  {slot2}"
+    },
+    "reason": "Compared both candidates against frozen source; retained the clearer context and grammatical form."
+  },
+  {
+    "key": "online:{slot0} credits · {slot1}  {slot2}",
+    "disposition": "editorial candidate selected after independent editorial conflict reading",
+    "value": "{slot0} क्रेडिट्स · {slot1}  {slot2}",
+    "reason": "Compared both candidates against frozen source; retained the clearer context and grammatical form."
+  },
+  {
+    "key": "online:{slot0} live · {slot1} in the last 24 hours",
+    "disposition": "editorial candidate selected after independent editorial conflict reading",
+    "value": "{slot0} सध्या चालू · गेल्या 24 तासांत {slot1}",
+    "reason": "Compared both candidates against frozen source; retained the clearer context and grammatical form."
+  },
+  {
+    "key": "online:{slot0} within {slot1} minutes",
+    "disposition": "editorial candidate selected after independent editorial conflict reading",
+    "value": "{slot1} मिनिटांच्या आत {slot0}",
+    "reason": "Compared both candidates against frozen source; retained the clearer context and grammatical form."
+  },
+  {
+    "key": "online:{slot0}: collected {slot1} · refunded {slot2} · collected less refunds {slot3}",
+    "disposition": "editorial candidate selected after independent editorial conflict reading",
+    "value": "{slot0}: जमा {slot1} · परतावा {slot2} · जमा वजा परतावा {slot3}",
+    "reason": "Compared both candidates against frozen source; retained the clearer context and grammatical form."
+  },
+  {
+    "key": "online:{slot0}by {slot1} · ♥ {slot2}",
+    "disposition": "semantic candidate selected after independent editorial conflict reading",
+    "value": "{slot0}लेखक: {slot1} · ♥ {slot2}",
+    "reason": "Compared both candidates against frozen source; retained the clearer context and grammatical form."
+  },
+  {
+    "key": "online:{value0} Map credits",
+    "disposition": "editorial candidate selected after independent editorial conflict reading",
+    "value": "{value0} नकाशा निर्मिती क्रेडिट्स",
+    "reason": "Compared both candidates against frozen source; retained the clearer context and grammatical form."
+  },
+  {
+    "key": "online:{value0} Music credits",
+    "disposition": "editorial candidate selected after independent editorial conflict reading",
+    "value": "{value0} संगीत निर्मिती क्रेडिट्स",
+    "reason": "Compared both candidates against frozen source; retained the clearer context and grammatical form."
+  },
+  {
+    "key": "online:{value0} Stripe minor units",
+    "disposition": "editorial candidate selected after independent editorial conflict reading",
+    "value": "{value0} Stripe ची लघु चलन एकके",
+    "reason": "Compared both candidates against frozen source; retained the clearer context and grammatical form."
+  },
+  {
+    "key": "online:Enter usage verified against provider evidence. Input totals include cache creation/write tokens. Unknown usage must not be entered as zero.",
+    "disposition": "semantic candidate selected after independent editorial conflict reading",
+    "value": "प्रदात्याच्या पुराव्याशी पडताळलेला वापर प्रविष्ट करा. एकूण इनपुट टोकनमध्ये कॅशे तयार करण्याचे/लिहिण्याचे टोकन धरले जातात. अज्ञात वापर शून्य म्हणून प्रविष्ट करू नका.",
+    "reason": "Compared both candidates against frozen source; retained the clearer context and grammatical form."
+  },
+  {
+    "key": "online:Follow latest generation",
+    "disposition": "semantic candidate selected after independent editorial conflict reading",
+    "value": "नवीनतम निर्मिती दाखवा",
+    "reason": "Compared both candidates against frozen source; retained the clearer context and grammatical form."
+  },
+  {
+    "key": "online:Following latest generation",
+    "disposition": "semantic candidate selected after independent editorial conflict reading",
+    "value": "नवीनतम निर्मिती दाखवत आहे",
+    "reason": "Compared both candidates against frozen source; retained the clearer context and grammatical form."
+  },
+  {
+    "key": "online:Generation needs attention",
+    "disposition": "semantic candidate selected after independent editorial conflict reading",
+    "value": "निर्मितीकडे लक्ष देणे आवश्यक आहे",
+    "reason": "Compared both candidates against frozen source; retained the clearer context and grammatical form."
+  },
+  {
+    "key": "online:Play animation",
+    "disposition": "editorial candidate selected after independent editorial conflict reading",
+    "value": "अॅनिमेशन सुरू करा",
+    "reason": "Compared both candidates against frozen source; retained the clearer context and grammatical form."
+  },
+  {
+    "key": "online:Signed HP per exposed tick, divided by 256; negative values damage units.",
+    "disposition": "editorial candidate selected after independent editorial conflict reading",
+    "value": "प्रभावाखालील प्रत्येक टिकमधील धन किंवा ऋण HP बदल, भागिले 256; ऋण मूल्यांमुळे युनिटना हानी होते.",
+    "reason": "Compared both candidates against frozen source; retained the clearer context and grammatical form."
+  },
+  {
+    "key": "online:The assistant edits your manifest and JavaScript together. You decide when to generate or run checks.",
+    "disposition": "editorial candidate selected after independent editorial conflict reading",
+    "value": "सहाय्यक मॅनिफेस्ट आणि JavaScript एकत्र संपादित करतो. निर्मिती केव्हा करायची किंवा तपासण्या केव्हा चालवायच्या हे तुम्ही ठरवता.",
+    "reason": "Compared both candidates against frozen source; retained the clearer context and grammatical form."
+  },
+  {
+    "key": "online:Try “a winding river with fertile banks” or ask how the current generator works.",
+    "disposition": "editorial candidate selected after independent editorial conflict reading",
+    "value": "«सुपीक काठांची नागमोडी नदी» असे सांगून पाहा किंवा सध्याचा जनरेटर कसा काम करतो ते विचारा.",
+    "reason": "Compared both candidates against frozen source; retained the clearer context and grammatical form."
+  },
+  {
+    "key": "online:{count} player on this page",
+    "disposition": "editorial candidate selected after independent editorial conflict reading",
+    "value": {
+      "one": "या पृष्ठावर {count} खेळाडू",
+      "other": "या पृष्ठावर {count} खेळाडू"
+    },
+    "reason": "Compared both candidates against frozen source; retained the clearer context and grammatical form."
+  },
+  {
+    "key": "online:{value0} HP per exposed tick",
+    "disposition": "editorial candidate selected after independent editorial conflict reading",
+    "value": "प्रभावाखालील प्रत्येक टिकला {value0} HP",
+    "reason": "Compared both candidates against frozen source; retained the clearer context and grammatical form."
+  },
+  {
+    "key": "online:× Compatibility checks failed",
+    "disposition": "editorial candidate selected after independent editorial conflict reading",
+    "value": "× सुसंगतता तपासण्या अयशस्वी झाल्या",
+    "reason": "Compared both candidates against frozen source; retained the clearer context and grammatical form."
+  },
+  {
+    "key": "online:Native terrain preview · awaiting checks",
+    "disposition": "editorial candidate selected after independent editorial conflict reading",
+    "value": "खेळाच्या इंजिनमधील भूभागाचे पूर्वावलोकन · तपासण्या बाकी",
+    "reason": "Compared both candidates against frozen source; retained the clearer context and grammatical form."
+  },
+  {
+    "key": "online:Selected map area",
+    "disposition": "editorial candidate selected after independent editorial conflict reading",
+    "value": "नकाशातील निवडलेले क्षेत्र",
+    "reason": "Compared both candidates against frozen source; retained the clearer context and grammatical form."
+  },
+  {
+    "key": "online:Native validation report",
+    "disposition": "editorial candidate selected after independent editorial conflict reading",
+    "value": "खेळाच्या इंजिनमधील पडताळणीचा अहवाल",
+    "reason": "Compared both candidates against frozen source; retained the clearer context and grammatical form."
+  },
+  {
+    "key": "online:Opening economy measured",
+    "disposition": "semantic candidate selected after independent editorial conflict reading",
+    "value": "सुरुवातीच्या अर्थव्यवस्थेचे मोजमाप झाले",
+    "reason": "Compared both candidates against frozen source; retained the clearer context and grammatical form."
+  },
+  {
+    "key": "online:Colony {count}: building space",
+    "disposition": "editorial candidate selected after independent editorial conflict reading",
+    "value": "वसाहत {count}: बांधकामाची जागा",
+    "reason": "Compared both candidates against frozen source; retained the clearer context and grammatical form."
+  },
+  {
+    "key": "online:Colony {count}: renewable food ground",
+    "disposition": "editorial candidate selected after independent editorial conflict reading",
+    "value": "वसाहत {count}: पुन्हा अन्न उगवणारी जमीन",
+    "reason": "Compared both candidates against frozen source; retained the clearer context and grammatical form."
+  },
+  {
+    "key": "online:Semantics",
+    "disposition": "editorial candidate selected after independent editorial conflict reading",
+    "value": "कार्यनियम",
+    "reason": "BuildingStudio labels Properties/Semantics/Presentation; कार्यनियम conveys building behavior instead of economics."
+  }
+]

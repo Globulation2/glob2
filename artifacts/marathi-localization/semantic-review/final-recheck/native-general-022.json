@@ -1,0 +1,506 @@
+{
+  "batch": "native-general-022",
+  "target_sha256": "bbd72dc755d3f348e7ffbd2e73c4ac8c7576bd9551b2b3f803da2d57e7c6b6d5",
+  "rows": [
+    {
+      "id": "native:[Got it]",
+      "source": "Got it",
+      "target": "समजले"
+    },
+    {
+      "id": "native:[How AIs work]",
+      "source": "How AIs work",
+      "target": "एआय कसे काम करतात"
+    },
+    {
+      "id": "native:[Install selected version]",
+      "source": "Install selected version",
+      "target": "निवडलेली आवृत्ती स्थापित करा"
+    },
+    {
+      "id": "native:[Installed]",
+      "source": "Installed",
+      "target": "स्थापित केले"
+    },
+    {
+      "id": "native:[Invalid AI catalogue response]",
+      "source": "Invalid AI catalogue response",
+      "target": "अवैध एआय कॅटलॉग प्रतिसाद"
+    },
+    {
+      "id": "native:[JavaScript API reference]",
+      "source": "JavaScript API reference",
+      "target": "JavaScript API संदर्भ"
+    },
+    {
+      "id": "native:[Like]",
+      "source": "Like",
+      "target": "आवडले"
+    },
+    {
+      "id": "native:[Liked]",
+      "source": "Liked",
+      "target": "आवडले"
+    },
+    {
+      "id": "native:[Loading AI library…]",
+      "source": "Loading AI library…",
+      "target": "एआय लायब्ररी लोड होत आहे…"
+    },
+    {
+      "id": "native:[Most downloaded]",
+      "source": "Most downloaded",
+      "target": "सर्वाधिक डाउनलोड केलेले"
+    },
+    {
+      "id": "native:[Most liked]",
+      "source": "Most liked",
+      "target": "सर्वाधिक आवडले"
+    },
+    {
+      "id": "native:[Newest]",
+      "source": "Newest",
+      "target": "नवीनतम"
+    },
+    {
+      "id": "native:[No AIs match these filters.]",
+      "source": "No AIs match these filters.",
+      "target": "या फिल्टरशी जुळणारे कोणतेही एआय नाहीत."
+    },
+    {
+      "id": "native:[Not validated for this game version]",
+      "source": "Not validated for this game version",
+      "target": "या गेम आवृत्तीसाठी प्रमाणित नाही"
+    },
+    {
+      "id": "native:[Open AI Library]",
+      "source": "Open AI Library",
+      "target": "संगणकीय खेळाडूंचा संग्रह उघडा"
+    },
+    {
+      "id": "native:[Open AI page]",
+      "source": "Open AI page",
+      "target": "एआय पृष्ठ उघडा"
+    },
+    {
+      "id": "native:[Passed compatibility checks]",
+      "source": "Passed compatibility checks",
+      "target": "सुसंगतता तपासण्या यशस्वी झाल्या."
+    },
+    {
+      "id": "native:[Recently updated]",
+      "source": "Recently updated",
+      "target": "अलीकडेच अद्यतनित केले"
+    },
+    {
+      "id": "native:[Rush]",
+      "source": "Rush",
+      "target": "झटपट हल्ला"
+    },
+    {
+      "id": "native:[Search]",
+      "source": "Search",
+      "target": "शोध"
+    },
+    {
+      "id": "native:[Share your AI]",
+      "source": "Share your AI",
+      "target": "तुमचा एआय शेअर करा"
+    },
+    {
+      "id": "native:[Show more]",
+      "source": "Show more",
+      "target": "अधिक दाखवा"
+    },
+    {
+      "id": "native:[Starter project]",
+      "source": "Starter project",
+      "target": "सुरुवातीचा प्रकल्प"
+    },
+    {
+      "id": "native:[downloads of this version]",
+      "source": "downloads of this version",
+      "target": "या आवृत्तीचे डाउनलोड"
+    },
+    {
+      "id": "native:[downloads]",
+      "source": "downloads",
+      "target": "डाउनलोड्स"
+    },
+    {
+      "id": "native:[Update available]",
+      "source": "Update available",
+      "target": "अपडेट उपलब्ध आहे"
+    },
+    {
+      "id": "native:[Browse versions]",
+      "source": "Browse versions",
+      "target": "आवृत्त्या ब्राउझ करा"
+    },
+    {
+      "id": "native:[Download an AI, then choose it for a computer seat in a local game. Installed versions work offline. Updates affect future games; saves keep their original code.]",
+      "source": "Download an AI, then choose it for a computer seat in a local game. Installed versions work offline. Updates affect future games; saves keep their original code.",
+      "target": "एक एआय डाउनलोड करा, आणि मग स्थानिक गेममध्ये त्याला कॉम्प्युटर सीटसाठी निवडा. इन्स्टॉल केलेल्या आवृत्त्या ऑफलाइन काम करतात. अपडेट्सचा परिणाम भविष्यातील गेम्सवर होतो; सेव्ह फाइल्स त्यांचा मूळ कोड कायम ठेवतात."
+    },
+    {
+      "id": "native:[Compatibility checks do not certify safety or playing strength. Only run code from authors you trust.]",
+      "source": "Compatibility checks do not certify safety or playing strength. Only run code from authors you trust.",
+      "target": "सुसंगतता तपासण्या सुरक्षिततेची किंवा खेळातील ताकदीची हमी देत नाहीत. विश्वासू लेखकांचाच कोड चालवा."
+    },
+    {
+      "id": "native:[Back to results]",
+      "source": "Back to results",
+      "target": "निकालांकडे परत जा"
+    },
+    {
+      "id": "native:[ice]",
+      "source": "Ice",
+      "target": "बर्फ"
+    },
+    {
+      "id": "native:[road]",
+      "source": "Trail",
+      "target": "पायवाट"
+    },
+    {
+      "id": "native:[Food]",
+      "source": "Food",
+      "target": "अन्न"
+    },
+    {
+      "id": "native:[Paper]",
+      "source": "Paper",
+      "target": "कागद"
+    },
+    {
+      "id": "native:[Cherries]",
+      "source": "Cherries",
+      "target": "चेरी"
+    },
+    {
+      "id": "native:[Oranges]",
+      "source": "Oranges",
+      "target": "संत्री"
+    },
+    {
+      "id": "native:[Prunes]",
+      "source": "Prunes",
+      "target": "प्लम"
+    },
+    {
+      "id": "native:[Gold]",
+      "source": "Gold",
+      "target": "सोने"
+    },
+    {
+      "id": "native:[Metal]",
+      "source": "Metal",
+      "target": "धातू"
+    },
+    {
+      "id": "native:[Glass]",
+      "source": "Glass",
+      "target": "काच"
+    },
+    {
+      "id": "native:[Fabric]",
+      "source": "Fabric",
+      "target": "कापड"
+    },
+    {
+      "id": "native:[Import Resource Definitions]",
+      "source": "Import Resource Definitions",
+      "target": "संसाधन व्याख्या आयात करा"
+    },
+    {
+      "id": "native:[Resource palette]",
+      "source": "Resource palette",
+      "target": "संसाधनांचा तक्ता"
+    },
+    {
+      "id": "native:[Trees]",
+      "source": "Trees",
+      "target": "झाडे"
+    },
+    {
+      "id": "native:[Rocks]",
+      "source": "Rocks",
+      "target": "खडक"
+    },
+    {
+      "id": "native:[Cherry tree]",
+      "source": "Cherry tree",
+      "target": "चेरीचे झाड"
+    },
+    {
+      "id": "native:[Orange tree]",
+      "source": "Orange tree",
+      "target": "संत्र्याचे झाड"
+    },
+    {
+      "id": "native:[Prune tree]",
+      "source": "Prune tree",
+      "target": "प्लमचे झाड"
+    },
+    {
+      "id": "native:[Gold ore]",
+      "source": "Gold ore",
+      "target": "सुवर्णखनिज"
+    },
+    {
+      "id": "native:[Iron ore]",
+      "source": "Iron ore",
+      "target": "लोहखनिज"
+    },
+    {
+      "id": "native:[Silica]",
+      "source": "Silica",
+      "target": "सिलिका"
+    },
+    {
+      "id": "native:[Cotton]",
+      "source": "Cotton",
+      "target": "कापूस"
+    },
+    {
+      "id": "native:[Jungle trees]",
+      "source": "Jungle trees",
+      "target": "जंगलातील झाडे"
+    },
+    {
+      "id": "native:[Pine trees]",
+      "source": "Pine trees",
+      "target": "पाइनची झाडे"
+    },
+    {
+      "id": "native:[Dead trees]",
+      "source": "Dead trees",
+      "target": "वाळलेली झाडे"
+    },
+    {
+      "id": "native:[Ruins]",
+      "source": "Ruins",
+      "target": "अवशेष"
+    },
+    {
+      "id": "native:[Camp-site]",
+      "source": "Camp-site",
+      "target": "छावणीची जागा"
+    },
+    {
+      "id": "native:[Ancient debris]",
+      "source": "Ancient debris",
+      "target": "प्राचीन अवशेष"
+    },
+    {
+      "id": "native:[Scrub]",
+      "source": "Scrub",
+      "target": "विरळ झुडपे"
+    },
+    {
+      "id": "native:[Tall grass]",
+      "source": "Tall grass",
+      "target": "उंच गवत"
+    },
+    {
+      "id": "native:[Maize]",
+      "source": "Maize",
+      "target": "मका"
+    },
+    {
+      "id": "native:[Potatoes]",
+      "source": "Potatoes",
+      "target": "बटाटे"
+    },
+    {
+      "id": "native:[Rice]",
+      "source": "Rice",
+      "target": "भात"
+    },
+    {
+      "id": "native:[Fish]",
+      "source": "Fish",
+      "target": "मासे"
+    },
+    {
+      "id": "native:[boulders]",
+      "source": "Boulders",
+      "target": "मोठे खडक"
+    },
+    {
+      "id": "native:[hedge]",
+      "source": "Hedge",
+      "target": "कुंपण"
+    },
+    {
+      "id": "native:[thicket]",
+      "source": "Thicket",
+      "target": "दाट झुडपे"
+    },
+    {
+      "id": "native:[ridge_rock]",
+      "source": "Ridge",
+      "target": "डोंगररांग"
+    },
+    {
+      "id": "native:[outcrop]",
+      "source": "Outcrop",
+      "target": "जमिनीतून बाहेर आलेला खडक"
+    },
+    {
+      "id": "native:[dirt]",
+      "source": "Dirt",
+      "target": "माती"
+    },
+    {
+      "id": "native:[clay]",
+      "source": "Clay",
+      "target": "चिकणमाती"
+    },
+    {
+      "id": "native:[gravel]",
+      "source": "Gravel",
+      "target": "खडी"
+    },
+    {
+      "id": "native:[flower_meadow]",
+      "source": "Flower meadow",
+      "target": "फुलांचे कुरण"
+    },
+    {
+      "id": "native:[mud]",
+      "source": "Mud",
+      "target": "चिखल"
+    },
+    {
+      "id": "native:[marsh]",
+      "source": "Marsh",
+      "target": "दलदल"
+    },
+    {
+      "id": "native:[deep_snow]",
+      "source": "Deep snow",
+      "target": "दाट बर्फ"
+    },
+    {
+      "id": "native:[scree]",
+      "source": "Scree",
+      "target": "स्क्री"
+    },
+    {
+      "id": "native:[dirt_track]",
+      "source": "Dirt track",
+      "target": "मातीची वाट"
+    },
+    {
+      "id": "native:[boardwalk]",
+      "source": "Boardwalk",
+      "target": "लाकडी फळ्यांची वाट"
+    },
+    {
+      "id": "native:[lava]",
+      "source": "Lava",
+      "target": "लावा"
+    },
+    {
+      "id": "native:[ember_field]",
+      "source": "Ember field",
+      "target": "निखाऱ्यांचा प्रदेश"
+    },
+    {
+      "id": "native:[loam]",
+      "source": "Loam",
+      "target": "पोयट्याची माती"
+    },
+    {
+      "id": "native:[moss]",
+      "source": "Moss",
+      "target": "शेवाळ"
+    },
+    {
+      "id": "native:[spring_meadow]",
+      "source": "Spring meadow",
+      "target": "वसंत ऋतूतील कुरण"
+    },
+    {
+      "id": "native:[deep_water]",
+      "source": "Deep water",
+      "target": "खोल पाणी"
+    },
+    {
+      "id": "native:[dark_water]",
+      "source": "Dark water",
+      "target": "गडद पाणी"
+    },
+    {
+      "id": "native:[void_hole]",
+      "source": "Hole",
+      "target": "छिद्र"
+    },
+    {
+      "id": "native:[chasm]",
+      "source": "Chasm",
+      "target": "दरी"
+    },
+    {
+      "id": "native:[brush valid on %0]",
+      "source": "Valid on: %0",
+      "target": "यावर वैध: %0"
+    },
+    {
+      "id": "native:[brush valid nowhere]",
+      "source": "Cannot be placed on any terrain of this map",
+      "target": "या नकाशावरील कोणत्याही भूभागावर ठेवता येणार नाही."
+    },
+    {
+      "id": "native:[brush requires experiment %0]",
+      "source": "Requires the %0 experiment",
+      "target": "%0 प्रयोगाची आवश्यकता आहे"
+    },
+    {
+      "id": "native:[brush resources custom]",
+      "source": "Imported resources",
+      "target": "आयातित संसाधने"
+    },
+    {
+      "id": "native:[brush section zones]",
+      "source": "Zones",
+      "target": "झोन"
+    },
+    {
+      "id": "native:[brush section areas]",
+      "source": "Areas",
+      "target": "क्षेत्रे"
+    },
+    {
+      "id": "native:[brush section tools]",
+      "source": "Tools",
+      "target": "साधने"
+    },
+    {
+      "id": "native:[brush clearing area]",
+      "source": "Clearing area",
+      "target": "सफाई क्षेत्र"
+    },
+    {
+      "id": "native:[editor unsaved title]",
+      "source": "Unsaved changes",
+      "target": "न जतन केलेले बदल"
+    },
+    {
+      "id": "native:[editor quit unsaved]",
+      "source": "Save your changes to this map before leaving the editor?",
+      "target": "एडिटरमधून बाहेर पडण्यापूर्वी या नकाशामधील तुमचे बदल जतन करायचे आहेत का?"
+    },
+    {
+      "id": "native:[editor load unsaved]",
+      "source": "Save your changes to this map before opening another one?",
+      "target": "दुसरा नकाशा उघडण्यापूर्वी या नकाशामधील तुमचे बदल जतन करायचे आहेत का?"
+    },
+    {
+      "id": "native:[editor save]",
+      "source": "Save…",
+      "target": "जतन करा…"
+    }
+  ]
+}

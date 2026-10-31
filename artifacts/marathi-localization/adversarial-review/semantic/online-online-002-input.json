@@ -1,0 +1,510 @@
+{
+  "source_sha256": "0ac44b4cdfb03e688983d6e3fb1e484cca57589665bff19c5c65388e649b292a",
+  "batch_target_sha256": "20963a23abad3865e0c1d2d71364535fb245277511f7ff0cd06ef3faab004f50",
+  "catalog_sha256": {
+    "native": "feb2f29298db1e8ef564d5a7ec23b73562a82cdae34499a108bcc3bd5a0d7415",
+    "online": "1ba40d342498f5e7704a63e5d175bd9e8a0ede31e3ca2ce88e8cb1fbc0ba68a6"
+  },
+  "entries": [
+    {
+      "id": "online:AI map versions are immutable. Create a revision in AI Map Studio or upload an edited copy as a new map.",
+      "source": "AI map versions are immutable. Create a revision in AI Map Studio or upload an edited copy as a new map.",
+      "target": "एआय नकाशाच्या आवृत्त्या अपरिवर्तनीय असतात. एआय मॅप स्टुडिओमध्ये एक सुधारित आवृत्ती तयार करा किंवा संपादित केलेली प्रत नवीन नकाशा म्हणून अपलोड करा."
+    },
+    {
+      "id": "online:AI opponent · ratings and games belong to this game version",
+      "source": "AI opponent · ratings and games belong to this game version",
+      "target": "एआय प्रतिस्पर्धी · रेटिंग आणि गेम्स या गेम आवृत्तीशी संबंधित आहेत"
+    },
+    {
+      "id": "online:AI ratings belong to a game version. {slot0} to see older versions.",
+      "source": "AI ratings belong to a game version. {slot0} to see older versions.",
+      "target": "एआय रेटिंग्ज गेमच्या आवृत्तीशी संबंधित असतात. जुन्या आवृत्त्या पाहण्यासाठी {slot0} वापरा."
+    },
+    {
+      "id": "online:AI tags",
+      "source": "AI tags",
+      "target": "एआय टॅग"
+    },
+    {
+      "id": "online:AI-generated",
+      "source": "AI-generated",
+      "target": "एआय-निर्मित"
+    },
+    {
+      "id": "online:API {slot0}, toolkit {slot1}, suite {slot2}. These checks sample settings and do not certify balance.",
+      "source": "API {slot0}, toolkit {slot1}, suite {slot2}. These checks sample settings and do not certify balance.",
+      "target": "API {slot0}, टूलकिट {slot1}, सूट {slot2}. ह्या तपासण्या नमुना सेटिंग्ज तपासतात आणि शिल्लक प्रमाणित करत नाहीत."
+    },
+    {
+      "id": "online:Abandoned",
+      "source": "Abandoned",
+      "target": "सोडून दिलेले"
+    },
+    {
+      "id": "online:About",
+      "source": "About",
+      "target": "बद्दल"
+    },
+    {
+      "id": "online:About & help",
+      "source": "About & help",
+      "target": "माहिती आणि मदत"
+    },
+    {
+      "id": "online:Accepted",
+      "source": "Accepted",
+      "target": "स्वीकृत"
+    },
+    {
+      "id": "online:Account adjustment",
+      "source": "Account adjustment",
+      "target": "खाते समायोजन"
+    },
+    {
+      "id": "online:Account already in use",
+      "source": "Account already in use",
+      "target": "खाते आधीच वापरात आहे"
+    },
+    {
+      "id": "online:Account changes",
+      "source": "Account changes",
+      "target": "खाते बदल"
+    },
+    {
+      "id": "online:Account changes need review",
+      "source": "Account changes need review",
+      "target": "खात्यातील बदलांचे पुनरावलोकन करणे आवश्यक आहे."
+    },
+    {
+      "id": "online:Account draft saved",
+      "source": "Account draft saved",
+      "target": "खाते मसुदा जतन केला."
+    },
+    {
+      "id": "online:Account inactive.",
+      "source": "Account inactive.",
+      "target": "खाते निष्क्रिय आहे."
+    },
+    {
+      "id": "online:Account is unavailable.",
+      "source": "Account is unavailable.",
+      "target": "खाते उपलब्ध नाही."
+    },
+    {
+      "id": "online:Acoustic · woodwinds, strings & folk",
+      "source": "Acoustic · woodwinds, strings & folk",
+      "target": "अकॉस्टिक · वुडविंड्स, स्ट्रिंग्स आणि लोकसंगीत"
+    },
+    {
+      "id": "online:Across",
+      "source": "Across",
+      "target": "ओलांडून"
+    },
+    {
+      "id": "online:Action",
+      "source": "Action",
+      "target": "कृती"
+    },
+    {
+      "id": "online:Active",
+      "source": "Active",
+      "target": "सक्रिय"
+    },
+    {
+      "id": "online:Active accounts",
+      "source": "Active accounts",
+      "target": "सक्रिय खाती"
+    },
+    {
+      "id": "online:Activity comparison table",
+      "source": "Activity comparison table",
+      "target": "क्रियाकलाप तुलना सारणी"
+    },
+    {
+      "id": "online:Activity trends",
+      "source": "Activity trends",
+      "target": "क्रियाकलाप ट्रेंड"
+    },
+    {
+      "id": "online:Actor account ID",
+      "source": "Actor account ID",
+      "target": "अभिनेता खाते आयडी"
+    },
+    {
+      "id": "online:Actual game size · 1×",
+      "source": "Actual game size · 1×",
+      "target": "खेळाचा वास्तविक आकार · 1×"
+    },
+    {
+      "id": "online:Add",
+      "source": "Add",
+      "target": "जोडा"
+    },
+    {
+      "id": "online:Add a property override",
+      "source": "Add a property override",
+      "target": "प्रॉपर्टी ओव्हरराइड जोडा"
+    },
+    {
+      "id": "online:Add a terrain or resource to begin. Built-in presets supply properties without copying their artwork into your set.",
+      "source": "Add a terrain or resource to begin. Built-in presets supply properties without copying their artwork into your set.",
+      "target": "सुरुवात करण्यासाठी एखादा भूभाग किंवा संसाधन जोडा. अंगभूत प्रीसेट्स त्यांचे आर्टवर्क तुमच्या सेटमध्ये कॉपी न करता गुणधर्म पुरवतात."
+    },
+    {
+      "id": "online:Add frames in order.",
+      "source": "Add frames in order.",
+      "target": "फ्रेम्स क्रमाने जोडा."
+    },
+    {
+      "id": "online:Add selected frame",
+      "source": "Add selected frame",
+      "target": "निवडलेली फ्रेम जोडा"
+    },
+    {
+      "id": "online:Add stage",
+      "source": "Add stage",
+      "target": "स्टेज जोडा"
+    },
+    {
+      "id": "online:Add stock level",
+      "source": "Add stock level",
+      "target": "स्टॉक पातळी जोडा"
+    },
+    {
+      "id": "online:Add the base frame first.",
+      "source": "Add the base frame first.",
+      "target": "सर्वप्रथम पायाची चौकट जोडा."
+    },
+    {
+      "id": "online:Add {slot0}",
+      "source": "Add {slot0}",
+      "target": "{slot0} जोडा"
+    },
+    {
+      "id": "online:Additional credits and source attribution",
+      "source": "Additional credits and source attribution",
+      "target": "अतिरिक्त श्रेय आणि स्रोताचा उल्लेख"
+    },
+    {
+      "id": "online:Additional field",
+      "source": "Additional field",
+      "target": "अतिरिक्त फील्ड"
+    },
+    {
+      "id": "online:Address",
+      "source": "Address",
+      "target": "पत्ता"
+    },
+    {
+      "id": "online:Administration",
+      "source": "Administration",
+      "target": "प्रशासन"
+    },
+    {
+      "id": "online:Administration sections",
+      "source": "Administration sections",
+      "target": "प्रशासकीय विभाग"
+    },
+    {
+      "id": "online:Administrator",
+      "source": "Administrator",
+      "target": "प्रशासक"
+    },
+    {
+      "id": "online:Administrator access is required.",
+      "source": "Administrator access is required.",
+      "target": "प्रशासकीय प्रवेश आवश्यक आहे."
+    },
+    {
+      "id": "online:Administrator access required.",
+      "source": "Administrator access required.",
+      "target": "प्रशासकीय प्रवेश आवश्यक आहे."
+    },
+    {
+      "id": "online:Advanced mixing",
+      "source": "Advanced mixing",
+      "target": "प्रगत मिश्रण"
+    },
+    {
+      "id": "online:Advanced properties JSON",
+      "source": "Advanced properties JSON",
+      "target": "प्रगत गुणधर्म JSON"
+    },
+    {
+      "id": "online:After payment, your balance updates once payment is confirmed. You can return to your colony while it is processed.",
+      "source": "After payment, your balance updates once payment is confirmed. You can return to your colony while it is processed.",
+      "target": "पेमेंट केल्यानंतर, पेमेंटची पुष्टी झाल्यावर तुमची शिल्लक रक्कम अपडेट होते. पेमेंटची प्रक्रिया सुरू असताना तुम्ही तुमच्या कॉलनीत परत जाऊ शकता."
+    },
+    {
+      "id": "online:Agreed so far",
+      "source": "Agreed so far",
+      "target": "इथपर्यंत सहमत आहे"
+    },
+    {
+      "id": "online:Air health change",
+      "source": "Air health change",
+      "target": "हवेच्या आरोग्यात बदल"
+    },
+    {
+      "id": "online:All",
+      "source": "All",
+      "target": "सर्व"
+    },
+    {
+      "id": "online:All candidate measurements",
+      "source": "All candidate measurements",
+      "target": "सर्व उमेदवारांची मोजमापे"
+    },
+    {
+      "id": "online:All compatibility checks must pass before publishing.",
+      "source": "All compatibility checks must pass before publishing.",
+      "target": "प्रकाशित करण्यापूर्वी सर्व सुसंगतता तपासण्या यशस्वी होणे आवश्यक आहे."
+    },
+    {
+      "id": "online:All downloads",
+      "source": "All downloads",
+      "target": "सर्व डाउनलोड"
+    },
+    {
+      "id": "online:All engine versions",
+      "source": "All engine versions",
+      "target": "सर्व इंजिन आवृत्त्या"
+    },
+    {
+      "id": "online:All generation attempts",
+      "source": "All generation attempts",
+      "target": "सर्व पिढ्यांचे प्रयत्न"
+    },
+    {
+      "id": "online:All generators",
+      "source": "All generators",
+      "target": "सर्व जनरेटर"
+    },
+    {
+      "id": "online:All libraries",
+      "source": "All libraries",
+      "target": "सर्व ग्रंथालये"
+    },
+    {
+      "id": "online:All licenses",
+      "source": "All licenses",
+      "target": "सर्व परवाने"
+    },
+    {
+      "id": "online:All matches",
+      "source": "All matches",
+      "target": "सर्व सामने"
+    },
+    {
+      "id": "online:All music",
+      "source": "All music",
+      "target": "सर्व संगीत"
+    },
+    {
+      "id": "online:All open licences",
+      "source": "All open licences",
+      "target": "सर्व खुले परवाने"
+    },
+    {
+      "id": "online:All properties and capabilities",
+      "source": "All properties and capabilities",
+      "target": "सर्व गुणधर्म आणि क्षमता"
+    },
+    {
+      "id": "online:All rankings",
+      "source": "All rankings",
+      "target": "सर्व क्रमवारी"
+    },
+    {
+      "id": "online:All sets",
+      "source": "All sets",
+      "target": "सर्व संच"
+    },
+    {
+      "id": "online:All-time library totals; this ranking does not change with the selected reporting range. Counts follow each library’s rules and do not represent unique people.",
+      "source": "All-time library totals; this ranking does not change with the selected reporting range. Counts follow each library’s rules and do not represent unique people.",
+      "target": "ग्रंथालयाची आजवरची एकूण आकडेवारी; निवडलेल्या अहवाल श्रेणीनुसार ही क्रमवारी बदलत नाही. गणना प्रत्येक ग्रंथालयाच्या नियमांनुसार केली जाते आणि ती विशिष्ट व्यक्ती दर्शवत नाही."
+    },
+    {
+      "id": "online:Allowed resource keys (null uses habitats)",
+      "source": "Allowed resource keys (null uses habitats)",
+      "target": "अनुमत संसाधन की (शून्य अधिवास वापरते)"
+    },
+    {
+      "id": "online:Already in the game? Choose",
+      "source": "Already in the game? Choose",
+      "target": "आधीच खेळात आहात का? निवडा"
+    },
+    {
+      "id": "online:Always available",
+      "source": "Always available",
+      "target": "नेहमी उपलब्ध"
+    },
+    {
+      "id": "online:An account is required to publish publicly.",
+      "source": "An account is required to publish publicly.",
+      "target": "सार्वजनिकरित्या प्रकाशित करण्यासाठी खाते आवश्यक आहे."
+    },
+    {
+      "id": "online:An available Building credit is needed to chat or build.",
+      "source": "An available Building credit is needed to chat or build.",
+      "target": "चॅट करण्यासाठी किंवा बांधकाम करण्यासाठी उपलब्ध बिल्डिंग क्रेडिटची आवश्यकता आहे."
+    },
+    {
+      "id": "online:An available Terrain credit is needed to chat or build.",
+      "source": "An available Terrain credit is needed to chat or build.",
+      "target": "चॅट करण्यासाठी किंवा बांधकाम करण्यासाठी उपलब्ध टेरेन क्रेडिटची आवश्यकता आहे."
+    },
+    {
+      "id": "online:An available {value0} credit is needed.",
+      "source": "An available {value0} credit is needed.",
+      "target": "उपलब्ध असलेले {value0} क्रेडिट आवश्यक आहे."
+    },
+    {
+      "id": "online:Analytics display is disabled.",
+      "source": "Analytics display is disabled.",
+      "target": "ॲनालिटिक्स प्रदर्शन अक्षम केले आहे."
+    },
+    {
+      "id": "online:Animation phase",
+      "source": "Animation phase",
+      "target": "अ‍ॅनिमेशन टप्पा"
+    },
+    {
+      "id": "online:Another session saved revision {slot0}. Your local edits are preserved.",
+      "source": "Another session saved revision {slot0}. Your local edits are preserved.",
+      "target": "दुसऱ्या सत्रात {slot0} ही आवृत्ती जतन करण्यात आली. तुमचे स्थानिक बदल जतन केले आहेत."
+    },
+    {
+      "id": "online:Another upload is in progress. Please retry shortly.",
+      "source": "Another upload is in progress. Please retry shortly.",
+      "target": "दुसरे अपलोड सुरू आहे. कृपया थोड्या वेळाने पुन्हा प्रयत्न करा."
+    },
+    {
+      "id": "online:Any",
+      "source": "Any",
+      "target": "कोणतेही"
+    },
+    {
+      "id": "online:Any size",
+      "source": "Any size",
+      "target": "कोणत्याही आकाराचे"
+    },
+    {
+      "id": "online:Any status",
+      "source": "Any status",
+      "target": "कोणतीही स्थिती"
+    },
+    {
+      "id": "online:Any teams",
+      "source": "Any teams",
+      "target": "कोणतेही संघ"
+    },
+    {
+      "id": "online:Anyone with the link",
+      "source": "Anyone with the link",
+      "target": "ज्यांच्याकडे लिंक आहे"
+    },
+    {
+      "id": "online:Appearance",
+      "source": "Appearance",
+      "target": "देखावा"
+    },
+    {
+      "id": "online:Applied",
+      "source": "Applied",
+      "target": "लागू केले"
+    },
+    {
+      "id": "online:Applies to",
+      "source": "Applies to",
+      "target": "याला लागू होते"
+    },
+    {
+      "id": "online:Apply soundtrack loudness targets and peak limiting",
+      "source": "Apply soundtrack loudness targets and peak limiting",
+      "target": "साउंडट्रॅक लाउडनेस लक्ष्य आणि पीक लिमिटिंग लागू करा"
+    },
+    {
+      "id": "online:Apply to {slot0}",
+      "source": "Apply to {slot0}",
+      "target": "{slot0} वर अर्ज करा"
+    },
+    {
+      "id": "online:Artifact view",
+      "source": "Artifact view",
+      "target": "कलाकृती दृश्य"
+    },
+    {
+      "id": "online:Artwork",
+      "source": "Artwork",
+      "target": "कलाकृती"
+    },
+    {
+      "id": "online:Artwork and font credits",
+      "source": "Artwork and font credits",
+      "target": "कलाकृती आणि फॉन्टचे श्रेय"
+    },
+    {
+      "id": "online:Artwork could not be prepared for some older devices. Those devices will use the default colony.",
+      "source": "Artwork could not be prepared for some older devices. Those devices will use the default colony.",
+      "target": "काही जुन्या उपकरणांसाठी आर्टवर्क तयार करता आले नाही. ती उपकरणे डीफॉल्ट कॉलनी वापरतील."
+    },
+    {
+      "id": "online:Artwork for some older devices is still preparing. Those devices may temporarily show the default colony.",
+      "source": "Artwork for some older devices is still preparing. Those devices may temporarily show the default colony.",
+      "target": "काही जुन्या उपकरणांसाठी आर्टवर्क अजूनही तयार होत आहे. त्या उपकरणांवर तात्पुरते डीफॉल्ट कॉलनी दिसू शकते."
+    },
+    {
+      "id": "online:Assemble the family",
+      "source": "Assemble the family",
+      "target": "कुटुंबाला एकत्र करा"
+    },
+    {
+      "id": "online:Assemble the pack",
+      "source": "Assemble the pack",
+      "target": "पॅक एकत्र करा"
+    },
+    {
+      "id": "online:At least {p0} characters.",
+      "source": "At least {p0} characters.",
+      "target": "किमान {p0} अक्षरे."
+    },
+    {
+      "id": "online:At least {p0} seats must be taken.",
+      "source": "At least {p0} seats must be taken.",
+      "target": "किमान {p0} जागा भरल्या पाहिजेत."
+    },
+    {
+      "id": "online:Attached diagnostics",
+      "source": "Attached diagnostics",
+      "target": "संलग्न निदान"
+    },
+    {
+      "id": "online:Attack power",
+      "source": "Attack power",
+      "target": "हल्ला करण्याची शक्ती"
+    },
+    {
+      "id": "online:Attempts",
+      "source": "Attempts",
+      "target": "प्रयत्न"
+    },
+    {
+      "id": "online:Audible comparison version",
+      "source": "Audible comparison version",
+      "target": "ऑडिबल तुलनात्मक आवृत्ती"
+    },
+    {
+      "id": "online:Audio quality checks",
+      "source": "Audio quality checks",
+      "target": "ऑडिओ गुणवत्तेची तपासणी"
+    },
+    {
+      "id": "online:Audit history",
+      "source": "Audit history",
+      "target": "ऑडिट इतिहास"
+    }
+  ]
+}

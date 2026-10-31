@@ -1,0 +1,10 @@
+{
+  "payload_sha256": "80ee2ca74c728c307e1207be3359c9a1edd4f1994f5f7875a8d38e739c89a9fb",
+  "failures": [
+    {
+      "id": "native:[settings you were %0 there]",
+      "category": null,
+      "reason": "Google response damaged protected tokens; inspect cached response"
+    }
+  ]
+}

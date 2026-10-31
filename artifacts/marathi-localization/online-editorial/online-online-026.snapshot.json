@@ -1,0 +1,561 @@
+{
+  "batch": "online-online-026",
+  "source_sha256": "0ac44b4cdfb03e688983d6e3fb1e484cca57589665bff19c5c65388e649b292a",
+  "rows": [
+    {
+      "id": "online:{slot0} credit · {slot1}  {slot2}",
+      "source": {
+        "one": "{slot0} credit · {slot1}  {slot2}",
+        "other": "{slot0} credits · {slot1}  {slot2}"
+      },
+      "target": {
+        "one": "{slot0} क्रेडिट · {slot1} {slot2}",
+        "other": "{slot0} श्रेय · {slot1} {slot2}"
+      }
+    },
+    {
+      "id": "online:{slot0} credit — {slot1}",
+      "source": {
+        "one": "{slot0} credit — {slot1}",
+        "other": "{slot0} credits — {slot1}"
+      },
+      "target": {
+        "one": "{slot0} क्रेडिट — {slot1}",
+        "other": "{slot0} क्रेडिट्स — {slot1}"
+      }
+    },
+    {
+      "id": "online:{slot0} credits available",
+      "source": "{slot0} credits available",
+      "target": "{slot0} क्रेडिट्स उपलब्ध आहेत"
+    },
+    {
+      "id": "online:{slot0} credits available · {slot1} reserved",
+      "source": "{slot0} credits available · {slot1} reserved",
+      "target": "{slot0} क्रेडिट्स उपलब्ध · {slot1} राखीव"
+    },
+    {
+      "id": "online:{slot0} credits reserved for work in progress.",
+      "source": "{slot0} credits reserved for work in progress.",
+      "target": "{slot0} क्रेडिट्स प्रगतीपथावरील कामासाठी राखीव आहेत."
+    },
+    {
+      "id": "online:{slot0} credits · {slot1}  {slot2}",
+      "source": "{slot0} credits · {slot1}  {slot2}",
+      "target": "{slot0} श्रेय · {slot1} {slot2}"
+    },
+    {
+      "id": "online:{slot0} credits — {slot1}",
+      "source": "{slot0} credits — {slot1}",
+      "target": "{slot0} क्रेडिट्स — {slot1}"
+    },
+    {
+      "id": "online:{slot0} day",
+      "source": {
+        "one": "{slot0} day",
+        "other": "{slot0} days"
+      },
+      "target": {
+        "one": "{slot0} दिवस",
+        "other": "{slot0} दिवस"
+      }
+    },
+    {
+      "id": "online:{slot0} days",
+      "source": "{slot0} days",
+      "target": "{slot0} दिवस"
+    },
+    {
+      "id": "online:{slot0} likes · {slot1} downloads",
+      "source": "{slot0} likes · {slot1} downloads",
+      "target": "{slot0} पसंती · {slot1} डाउनलोड"
+    },
+    {
+      "id": "online:{slot0} likes · {slot1} downloads · {slot2}",
+      "source": "{slot0} likes · {slot1} downloads · {slot2}",
+      "target": "{slot0} पसंती · {slot1} डाउनलोड · {slot2}"
+    },
+    {
+      "id": "online:{slot0} live · {slot1} in the last 24 hours",
+      "source": "{slot0} live · {slot1} in the last 24 hours",
+      "target": "{slot0} थेट प्रक्षेपण · गेल्या २४ तासांत {slot1}"
+    },
+    {
+      "id": "online:{slot0} loop",
+      "source": "{slot0} loop",
+      "target": "{slot0} लूप"
+    },
+    {
+      "id": "online:{slot0} open reports · {slot1} uncertain requests · {slot2} failed engine jobs",
+      "source": "{slot0} open reports · {slot1} uncertain requests · {slot2} failed engine jobs",
+      "target": "{slot0} खुले अहवाल · {slot1} अनिश्चित विनंत्या · {slot2} अयशस्वी इंजिन कार्ये"
+    },
+    {
+      "id": "online:{slot0} or inspect the reported library item’s validation.",
+      "source": "{slot0} or inspect the reported library item’s validation.",
+      "target": "{slot0} किंवा रिपोर्ट केलेल्या लायब्ररी आयटमचे व्हॅलिडेशन तपासा."
+    },
+    {
+      "id": "online:{slot0} passed · {slot1}  {slot2}{slot3}",
+      "source": "{slot0} passed · {slot1}  {slot2}{slot3}",
+      "target": "{slot0} उत्तीर्ण · {slot1} {slot2}{slot3}"
+    },
+    {
+      "id": "online:{slot0} properties",
+      "source": "{slot0} properties",
+      "target": "{slot0} गुणधर्म"
+    },
+    {
+      "id": "online:{slot0} reserved. Credits belong to this studio.",
+      "source": "{slot0} reserved. Credits belong to this studio.",
+      "target": "{slot0} राखीव. श्रेय या स्टुडिओला जाते."
+    },
+    {
+      "id": "online:{slot0} selected · up to 10 sets, 64 MiB",
+      "source": "{slot0} selected · up to 10 sets, 64 MiB",
+      "target": "{slot0} निवडले · १० संचांपर्यंत, ६४ MiB"
+    },
+    {
+      "id": "online:{slot0} teams",
+      "source": "{slot0} teams",
+      "target": "{slot0} संघ"
+    },
+    {
+      "id": "online:{slot0} terrain · {slot1} resources · revision {slot2}",
+      "source": {
+        "one": "{slot0} terrain · {slot1} resources · revision {slot2}",
+        "other": "{slot0} terrains · {slot1} resources · revision {slot2}"
+      },
+      "target": {
+        "one": "{slot0} भूभाग · {slot1} संसाधने · आवृत्ती {slot2}",
+        "other": "{slot0} भूप्रदेश · {slot1} संसाधने · आवृत्ती {slot2}"
+      }
+    },
+    {
+      "id": "online:{slot0} terrain · {slot1} resources · {slot2}",
+      "source": {
+        "one": "{slot0} terrain · {slot1} resources · {slot2}",
+        "other": "{slot0} terrains · {slot1} resources · {slot2}"
+      },
+      "target": {
+        "one": "{slot0} भूभाग · {slot1} संसाधने · {slot2}",
+        "other": "{slot0} भूभाग · {slot1} संसाधने · {slot2}"
+      }
+    },
+    {
+      "id": "online:{slot0} terrains · {slot1} resources · revision {slot2}",
+      "source": "{slot0} terrains · {slot1} resources · revision {slot2}",
+      "target": "{slot0} भूप्रदेश · {slot1} संसाधने · आवृत्ती {slot2}"
+    },
+    {
+      "id": "online:{slot0} terrains · {slot1} resources · {slot2}",
+      "source": "{slot0} terrains · {slot1} resources · {slot2}",
+      "target": "{slot0} भूभाग · {slot1} संसाधने · {slot2}"
+    },
+    {
+      "id": "online:{slot0} tiles",
+      "source": "{slot0} tiles",
+      "target": "{slot0} टाइल्स"
+    },
+    {
+      "id": "online:{slot0} to create and save drafts.",
+      "source": "{slot0} to create and save drafts.",
+      "target": "मसुदे तयार करण्यासाठी आणि जतन करण्यासाठी {slot0} वापरा."
+    },
+    {
+      "id": "online:{slot0} to publish.",
+      "source": "{slot0} to publish.",
+      "target": "प्रकाशित करण्यासाठी {slot0}."
+    },
+    {
+      "id": "online:{slot0} to see and share your maps.",
+      "source": "{slot0} to see and share your maps.",
+      "target": "तुमचे नकाशे पाहण्यासाठी आणि शेअर करण्यासाठी {slot0} वापरा."
+    },
+    {
+      "id": "online:{slot0} to see your generators.",
+      "source": "{slot0} to see your generators.",
+      "target": "तुमचे जनरेटर पाहण्यासाठी {slot0} वापरा."
+    },
+    {
+      "id": "online:{slot0} to see your library.",
+      "source": "{slot0} to see your library.",
+      "target": "तुमची लायब्ररी पाहण्यासाठी {slot0} वापरा."
+    },
+    {
+      "id": "online:{slot0} to share an AI.",
+      "source": "{slot0} to share an AI.",
+      "target": "एआय शेअर करण्यासाठी {slot0} वापरा."
+    },
+    {
+      "id": "online:{slot0} to share maps.",
+      "source": "{slot0} to share maps.",
+      "target": "नकाशे शेअर करण्यासाठी {slot0} वापरा."
+    },
+    {
+      "id": "online:{slot0} today · {slot1} in 7 days · {slot2} in 30 days",
+      "source": "{slot0} today · {slot1} in 7 days · {slot2} in 30 days",
+      "target": "{slot0} आज · {slot1} ७ दिवसांत · {slot2} ३० दिवसांत"
+    },
+    {
+      "id": "online:{slot0} unique accounts · previous period {slot1}",
+      "source": "{slot0} unique accounts · previous period {slot1}",
+      "target": "{slot0} अद्वितीय खाती · मागील कालावधी {slot1}"
+    },
+    {
+      "id": "online:{slot0} with a moderator account.",
+      "source": "{slot0} with a moderator account.",
+      "target": "{slot0} मॉडरेटर खात्यासह."
+    },
+    {
+      "id": "online:{slot0} within {slot1} minutes",
+      "source": "{slot0} within {slot1} minutes",
+      "target": ""
+    },
+    {
+      "id": "online:{slot0} {slot1} · AI composition is disclosed.",
+      "source": "{slot0} {slot1} · AI composition is disclosed.",
+      "target": "{slot0} {slot1} · एआयची रचना जाहीर केली आहे."
+    },
+    {
+      "id": "online:{slot0} · Continue editing",
+      "source": "{slot0} · Continue editing",
+      "target": "{slot0} · संपादन सुरू ठेवा"
+    },
+    {
+      "id": "online:{slot0} · Custom artwork and gameplay properties",
+      "source": "{slot0} · Custom artwork and gameplay properties",
+      "target": "{slot0} · सानुकूल कलाकृती आणि गेमप्ले गुणधर्म"
+    },
+    {
+      "id": "online:{slot0} · based on revision {slot1}",
+      "source": "{slot0} · based on revision {slot1}",
+      "target": "{slot0} · {slot1} या आवृत्तीवर आधारित"
+    },
+    {
+      "id": "online:{slot0} · last seen {slot1}{slot2}",
+      "source": "{slot0} · last seen {slot1}{slot2}",
+      "target": "{slot0} · शेवटचे पाहिले {slot1}{slot2}"
+    },
+    {
+      "id": "online:{slot0} · per million tokens: {slot1} input / {slot2} cached / {slot3} output credits.",
+      "source": "{slot0} · per million tokens: {slot1} input / {slot2} cached / {slot3} output credits.",
+      "target": "{slot0} · प्रति दशलक्ष टोकन: {slot1} इनपुट / {slot2} कॅश्ड / {slot3} आउटपुट क्रेडिट्स."
+    },
+    {
+      "id": "online:{slot0} · playing since {slot1}{slot2}",
+      "source": "{slot0} · playing since {slot1}{slot2}",
+      "target": "{slot0} · {slot1}{slot2} पासून खेळत आहे"
+    },
+    {
+      "id": "online:{slot0} · revision {slot1}",
+      "source": "{slot0} · revision {slot1}",
+      "target": "{slot0} · सुधारित आवृत्ती {slot1}"
+    },
+    {
+      "id": "online:{slot0} · revision {slot1} · {slot2}",
+      "source": "{slot0} · revision {slot1} · {slot2}",
+      "target": "{slot0} · सुधारित आवृत्ती {slot1} · {slot2}"
+    },
+    {
+      "id": "online:{slot0} · saved generation preview",
+      "source": "{slot0} · saved generation preview",
+      "target": "{slot0} · जतन केलेल्या पिढीचे पूर्वावलोकन"
+    },
+    {
+      "id": "online:{slot0} · seed {slot1} · {slot2}",
+      "source": "{slot0} · seed {slot1} · {slot2}",
+      "target": "{slot0} · सीड {slot1} · {slot2}"
+    },
+    {
+      "id": "online:{slot0} · seed {slot1} · {slot2}{slot3}",
+      "source": "{slot0} · seed {slot1} · {slot2}{slot3}",
+      "target": "{slot0} · सीड {slot1} · {slot2}{slot3}"
+    },
+    {
+      "id": "online:{slot0} · {slot1}",
+      "source": "{slot0} · {slot1}",
+      "target": "{slot0} · {slot1}"
+    },
+    {
+      "id": "online:{slot0} · {slot1} MiB stored",
+      "source": "{slot0} · {slot1} MiB stored",
+      "target": "{slot0} · {slot1} MiB साठवले"
+    },
+    {
+      "id": "online:{slot0} · {slot1} likes",
+      "source": "{slot0} · {slot1} likes",
+      "target": "{slot0} · {slot1} ला आवडले"
+    },
+    {
+      "id": "online:{slot0} · {slot1} second",
+      "source": {
+        "one": "{slot0} · {slot1} second",
+        "other": "{slot0} · {slot1} seconds"
+      },
+      "target": {
+        "one": "{slot0} · {slot1} दुसरा",
+        "other": "{slot0} · {slot1} सेकंद"
+      }
+    },
+    {
+      "id": "online:{slot0} · {slot1} seconds",
+      "source": "{slot0} · {slot1} seconds",
+      "target": "{slot0} · {slot1} सेकंद"
+    },
+    {
+      "id": "online:{slot0} · {slot1} since {slot2}",
+      "source": "{slot0} · {slot1} since {slot2}",
+      "target": "{slot0} · {slot1} हे {slot2} पासून"
+    },
+    {
+      "id": "online:{slot0} · {slot1} {slot2}",
+      "source": "{slot0} · {slot1} {slot2}",
+      "target": "{slot0} · {slot1} {slot2}"
+    },
+    {
+      "id": "online:{slot0} · {slot1} · last renewed {slot2}{slot3}",
+      "source": "{slot0} · {slot1} · last renewed {slot2}{slot3}",
+      "target": "{slot0} · {slot1} · शेवटचे नूतनीकरण {slot2}{slot3}"
+    },
+    {
+      "id": "online:{slot0} · {slot1} · {slot2}",
+      "source": "{slot0} · {slot1} · {slot2}",
+      "target": "{slot0} · {slot1} · {slot2}"
+    },
+    {
+      "id": "online:{slot0} · {slot1} · {slot2} downloads",
+      "source": "{slot0} · {slot1} · {slot2} downloads",
+      "target": "{slot0} · {slot1} · {slot2} डाउनलोड्स"
+    },
+    {
+      "id": "online:{slot0} · {slot1} · {slot2} × {slot3}",
+      "source": "{slot0} · {slot1} · {slot2} × {slot3}",
+      "target": "{slot0} · {slot1} · {slot2} × {slot3}"
+    },
+    {
+      "id": "online:{slot0} · {slot1} · {slot2}{slot3}",
+      "source": "{slot0} · {slot1} · {slot2}{slot3}",
+      "target": "{slot0} · {slot1} · {slot2}{slot3}"
+    },
+    {
+      "id": "online:{slot0} · {slot1}{slot2}",
+      "source": "{slot0} · {slot1}{slot2}",
+      "target": "{slot0} · {slot1}{slot2}"
+    },
+    {
+      "id": "online:{slot0} · {slot1}×{slot2}",
+      "source": "{slot0} · {slot1}×{slot2}",
+      "target": "{slot0} · {slot1}×{slot2}"
+    },
+    {
+      "id": "online:{slot0} × {slot1}  {slot2} UNCHARTED TERRITORY",
+      "source": "{slot0} × {slot1}  {slot2} UNCHARTED TERRITORY",
+      "target": "{slot0} × {slot1} {slot2} अज्ञात प्रदेश"
+    },
+    {
+      "id": "online:{slot0} × {slot1} · {slot2} player",
+      "source": {
+        "one": "{slot0} × {slot1} · {slot2} player",
+        "other": "{slot0} × {slot1} · {slot2} players"
+      },
+      "target": {
+        "one": "{slot0} × {slot1} · {slot2} प्लेअर",
+        "other": "{slot0} × {slot1} · {slot2} खेळाडू"
+      }
+    },
+    {
+      "id": "online:{slot0} × {slot1} · {slot2} player · Private until published",
+      "source": {
+        "one": "{slot0} × {slot1} · {slot2} player · Private until published",
+        "other": "{slot0} × {slot1} · {slot2} players · Private until published"
+      },
+      "target": {
+        "one": "{slot0} × {slot1} · {slot2} प्लेअर · प्रकाशित होईपर्यंत खाजगी",
+        "other": "{slot0} × {slot1} · {slot2} खेळाडू · प्रकाशित होईपर्यंत खाजगी"
+      }
+    },
+    {
+      "id": "online:{slot0} × {slot1} · {slot2} players",
+      "source": "{slot0} × {slot1} · {slot2} players",
+      "target": "{slot0} × {slot1} · {slot2} खेळाडू"
+    },
+    {
+      "id": "online:{slot0} × {slot1} · {slot2} players · Private until published",
+      "source": "{slot0} × {slot1} · {slot2} players · Private until published",
+      "target": "{slot0} × {slot1} · {slot2} खेळाडू · प्रकाशित होईपर्यंत खाजगी"
+    },
+    {
+      "id": "online:{slot0} ↗",
+      "source": "{slot0} ↗",
+      "target": "{slot0} ↗"
+    },
+    {
+      "id": "online:{slot0}%",
+      "source": "{slot0}%",
+      "target": "{slot0}%"
+    },
+    {
+      "id": "online:{slot0}/32",
+      "source": "{slot0}/32",
+      "target": "{slot0}/32"
+    },
+    {
+      "id": "online:{slot0}: collected {slot1} · refunded {slot2} · collected less refunds {slot3}",
+      "source": "{slot0}: collected {slot1} · refunded {slot2} · collected less refunds {slot3}",
+      "target": "{slot0}: गोळा केले {slot1} · परत केले {slot2} · परत केलेल्या रकमेपेक्षा कमी गोळा केले {slot3}"
+    },
+    {
+      "id": "online:{slot0}: default {slot1}{slot2}",
+      "source": "{slot0}: default {slot1}{slot2}",
+      "target": "{slot0}: डीफॉल्ट {slot1}{slot2}"
+    },
+    {
+      "id": "online:{slot0}: since {slot1}{slot2}",
+      "source": "{slot0}: since {slot1}{slot2}",
+      "target": "{slot0}: {slot1}{slot2} पासून"
+    },
+    {
+      "id": "online:{slot0}: starts at {slot1}, holds {slot2}; {slot3}",
+      "source": "{slot0}: starts at {slot1}, holds {slot2}; {slot3}",
+      "target": "{slot0}: {slot1} पासून सुरू होते, {slot2}; {slot3} कायम ठेवते"
+    },
+    {
+      "id": "online:{slot0}: {slot1}",
+      "source": "{slot0}: {slot1}",
+      "target": "{slot0}: {slot1}"
+    },
+    {
+      "id": "online:{slot0}: {slot1} · {slot2}",
+      "source": "{slot0}: {slot1} · {slot2}",
+      "target": "{slot0}: {slot1} · {slot2}"
+    },
+    {
+      "id": "online:{slot0}: {slot1} · {slot2} credit",
+      "source": {
+        "one": "{slot0}: {slot1} · {slot2} credit",
+        "other": "{slot0}: {slot1} · {slot2} credits"
+      },
+      "target": {
+        "one": "{slot0}: {slot1} · {slot2} क्रेडिट",
+        "other": "{slot0}: {slot1} · {slot2} क्रेडिट्स"
+      }
+    },
+    {
+      "id": "online:{slot0}: {slot1} · {slot2} credits",
+      "source": "{slot0}: {slot1} · {slot2} credits",
+      "target": "{slot0}: {slot1} · {slot2} क्रेडिट्स"
+    },
+    {
+      "id": "online:{slot0}by {slot1} · ♥ {slot2}",
+      "source": "{slot0}by {slot1} · ♥ {slot2}",
+      "target": "{slot0}by {slot1} · ♥ {slot2}"
+    },
+    {
+      "id": "online:{slot0}{slot1} · ♥ {slot2}{slot3}",
+      "source": "{slot0}{slot1} · ♥ {slot2}{slot3}",
+      "target": "{slot0}{slot1} · ♥ {slot2}{slot3}"
+    },
+    {
+      "id": "online:{slot0}{slot1}% chat",
+      "source": "{slot0}{slot1}% chat",
+      "target": "{slot0}{slot1}% चॅट"
+    },
+    {
+      "id": "online:{slot0}°",
+      "source": "{slot0}°",
+      "target": "{slot0}°"
+    },
+    {
+      "id": "online:{slot0}×{slot1}",
+      "source": "{slot0}×{slot1}",
+      "target": "{slot0}×{slot1}"
+    },
+    {
+      "id": "online:{slot0}–{slot1}",
+      "source": "{slot0}–{slot1}",
+      "target": "{slot0}–{slot1}"
+    },
+    {
+      "id": "online:{value0} (no preview)",
+      "source": "{value0} (no preview)",
+      "target": "{value0} (पूर्वावलोकन नाही)"
+    },
+    {
+      "id": "online:{value0} Map credits",
+      "source": "{value0} Map credits",
+      "target": "{value0} नकाशा श्रेय"
+    },
+    {
+      "id": "online:{value0} Music credits",
+      "source": "{value0} Music credits",
+      "target": "{value0} संगीत श्रेय"
+    },
+    {
+      "id": "online:{value0} Stripe minor units",
+      "source": "{value0} Stripe minor units",
+      "target": "{value0} पट्टेदार लहान एकके"
+    },
+    {
+      "id": "online:{value0} artwork",
+      "source": "{value0} artwork",
+      "target": "{value0} कलाकृती"
+    },
+    {
+      "id": "online:{value0} conversation",
+      "source": "{value0} conversation",
+      "target": "{value0} संभाषण"
+    },
+    {
+      "id": "online:{value0} cover",
+      "source": "{value0} cover",
+      "target": "{value0} कव्हर"
+    },
+    {
+      "id": "online:{value0} credits",
+      "source": "{value0} credits",
+      "target": "{value0} क्रेडिट्स"
+    },
+    {
+      "id": "online:{value0} hue",
+      "source": "{value0} hue",
+      "target": "{value0} रंगछटा"
+    },
+    {
+      "id": "online:{value0} rendered preview",
+      "source": "{value0} rendered preview",
+      "target": "{value0} प्रस्तुत केलेले पूर्वावलोकन"
+    },
+    {
+      "id": "online:{value0} saturation and brightness",
+      "source": "{value0} saturation and brightness",
+      "target": "{value0} सॅचुरेशन आणि ब्राइटनेस"
+    },
+    {
+      "id": "online:{value0} swatches",
+      "source": "{value0} swatches",
+      "target": "{value0} नमुने"
+    },
+    {
+      "id": "online:{value0} terrain illustration",
+      "source": "{value0} terrain illustration",
+      "target": "{value0} भूभागाचे चित्रण"
+    },
+    {
+      "id": "online:{value0} waveform",
+      "source": "{value0} waveform",
+      "target": "{value0} वेव्हफॉर्म"
+    },
+    {
+      "id": "online:{value0} {value1} · {value2} likes",
+      "source": "{value0} {value1} · {value2} likes",
+      "target": "{value0} {value1} · {value2} लाईक्स"
+    },
+    {
+      "id": "online:{value0}, frame {value1}",
+      "source": "{value0}, frame {value1}",
+      "target": "{value0}, फ्रेम {value1}"
+    }
+  ],
+  "subset_sha256": "30b041bccf2571ae98a5071f78d455b58b68edd299eb3de29db1186756888028"
+}

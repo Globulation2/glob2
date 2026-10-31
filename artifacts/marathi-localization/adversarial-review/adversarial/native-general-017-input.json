@@ -1,0 +1,510 @@
+{
+  "source_sha256": "0ac44b4cdfb03e688983d6e3fb1e484cca57589665bff19c5c65388e649b292a",
+  "batch_target_sha256": "a67c33c6c902fd6364eb17cd2381140f41a761a35e9202450213f104aec45abc",
+  "catalog_sha256": {
+    "native": "a6d0da95a3cf29e0bcfa904f80043a10fedc3124f7a26e3beebc82e8cdfa4411",
+    "online": "feb4b9a71595724a0995b0cf0f42c94742ef29030b66c9488c77ebc6be7a89db"
+  },
+  "entries": [
+    {
+      "id": "native:[profile best map]",
+      "source": "Best map",
+      "target": "सर्वोत्तम नकाशा"
+    },
+    {
+      "id": "native:[profile %0 w %1 l]",
+      "source": "%0 W · %1 L",
+      "target": "%0 विजय · %1 पराभव"
+    },
+    {
+      "id": "native:[profile no rated games]",
+      "source": "Play a ranked match to get a rating.",
+      "target": "मानांकन मिळवण्यासाठी मानांकित सामना खेळा."
+    },
+    {
+      "id": "native:[profile all]",
+      "source": "All",
+      "target": "सर्व"
+    },
+    {
+      "id": "native:[profile rooms]",
+      "source": "Rooms",
+      "target": "खोल्या"
+    },
+    {
+      "id": "native:[profile vs ai]",
+      "source": "vs AI",
+      "target": "विरुद्ध एआय"
+    },
+    {
+      "id": "native:[profile matches]",
+      "source": "Matches",
+      "target": "सामने"
+    },
+    {
+      "id": "native:[online loading]",
+      "source": "Loading…",
+      "target": "लोडिंग…"
+    },
+    {
+      "id": "native:[profile no matches]",
+      "source": "No matches yet.",
+      "target": "अद्याप एकही सामना झालेला नाही."
+    },
+    {
+      "id": "native:[online load more]",
+      "source": "Load more",
+      "target": "अधिक लोड करा"
+    },
+    {
+      "id": "native:[profile title]",
+      "source": "Profile",
+      "target": "प्रोफाइल"
+    },
+    {
+      "id": "native:[profile guest]",
+      "source": "guest",
+      "target": "पाहुणे"
+    },
+    {
+      "id": "native:[profile playing since %0]",
+      "source": "playing since %0",
+      "target": "%0 पासून खेळत आहे"
+    },
+    {
+      "id": "native:[profile full profile web]",
+      "source": "Full profile on the web",
+      "target": "वेबवर संपूर्ण प्रोफाइल"
+    },
+    {
+      "id": "native:[profile replays note]",
+      "source": "Replays are downloaded from the server when you open them; ones you saved locally stay in Load game → Replays.",
+      "target": "जेव्हा तुम्ही रिप्ले उघडता तेव्हा ते सर्व्हरवरून डाउनलोड होतात; तुम्ही स्थानिक पातळीवर सेव्ह केलेले रिप्ले 'लोड गेम → रिप्ले' मध्ये राहतात."
+    },
+    {
+      "id": "native:[profile web profile]",
+      "source": "Web profile",
+      "target": "वेब प्रोफाइल"
+    },
+    {
+      "id": "native:[maps most played]",
+      "source": "Most played",
+      "target": "सर्वाधिक खेळले"
+    },
+    {
+      "id": "native:[maps most liked]",
+      "source": "Most liked",
+      "target": "सर्वाधिक आवडले"
+    },
+    {
+      "id": "native:[maps newest]",
+      "source": "Newest",
+      "target": "नवीनतम"
+    },
+    {
+      "id": "native:[maps most downloaded]",
+      "source": "Most downloaded",
+      "target": "सर्वाधिक डाउनलोड केलेले"
+    },
+    {
+      "id": "native:[maps any size]",
+      "source": "Any size",
+      "target": "कोणत्याही आकाराचे"
+    },
+    {
+      "id": "native:[maps up to 128]",
+      "source": "Up to 128 × 128",
+      "target": "128 × 128 पर्यंत"
+    },
+    {
+      "id": "native:[maps 256]",
+      "source": "256 × 256",
+      "target": "२५६ × २५६"
+    },
+    {
+      "id": "native:[maps 512 and larger]",
+      "source": "512 and larger",
+      "target": "५१२ आणि त्याहून मोठे"
+    },
+    {
+      "id": "native:[maps report broken]",
+      "source": "It does not work",
+      "target": "ते काम करत नाही"
+    },
+    {
+      "id": "native:[maps report offensive]",
+      "source": "Offensive",
+      "target": "आक्षेपार्ह"
+    },
+    {
+      "id": "native:[maps report copyright]",
+      "source": "Someone else's work",
+      "target": "दुसऱ्याचे काम"
+    },
+    {
+      "id": "native:[maps report other]",
+      "source": "Something else",
+      "target": "दुसरे काहीतरी"
+    },
+    {
+      "id": "native:[maps public]",
+      "source": "Public",
+      "target": "सार्वजनिक"
+    },
+    {
+      "id": "native:[maps unlisted]",
+      "source": "Unlisted",
+      "target": "सूचीबद्ध नसलेले"
+    },
+    {
+      "id": "native:[maps private]",
+      "source": "Private",
+      "target": "खाजगी"
+    },
+    {
+      "id": "native:[maps cannot read file]",
+      "source": "The map file could not be read.",
+      "target": "मॅप फाईल वाचता आली नाही."
+    },
+    {
+      "id": "native:[maps file too large]",
+      "source": "The map file is too large to share.",
+      "target": "नकाशाची फाईल शेअर करण्यासाठी खूप मोठी आहे."
+    },
+    {
+      "id": "native:[maps saved for next room]",
+      "source": "The map is downloaded; it will be used when you open a room.",
+      "target": "नकाशा डाउनलोड झाला आहे; तुम्ही खोली उघडल्यावर त्याचा वापर केला जाईल."
+    },
+    {
+      "id": "native:[maps download failed]",
+      "source": "The map could not be downloaded.",
+      "target": "नकाशा डाउनलोड करता आला नाही."
+    },
+    {
+      "id": "native:[maps %0 colonies]",
+      "source": "%0 colonies",
+      "target": "%0 वसाहती"
+    },
+    {
+      "id": "native:[maps version %0]",
+      "source": "version %0",
+      "target": "आवृत्ती %0"
+    },
+    {
+      "id": "native:[maps updated %0]",
+      "source": "updated %0",
+      "target": "%0 अद्यतनित केले"
+    },
+    {
+      "id": "native:[maps downloading]",
+      "source": "Downloading the map…",
+      "target": "नकाशा डाउनलोड होत आहे…"
+    },
+    {
+      "id": "native:[maps like needs account]",
+      "source": "Liking maps needs a signed-in account.",
+      "target": "नकाशे लाईक करण्यासाठी खात्यामध्ये साइन-इन करणे आवश्यक आहे."
+    },
+    {
+      "id": "native:[maps report sent]",
+      "source": "Thank you; the moderators will look at it.",
+      "target": "धन्यवाद; नियंत्रक ते तपासून पाहतील."
+    },
+    {
+      "id": "native:[maps select a map]",
+      "source": "Select a map to see its details.",
+      "target": "नकाशाचे तपशील पाहण्यासाठी तो निवडा."
+    },
+    {
+      "id": "native:[maps by %0]",
+      "source": "by %0",
+      "target": "%0 द्वारे"
+    },
+    {
+      "id": "native:[maps stats %0 %1 %2]",
+      "source": "▶ %0 plays · ⬇ %1 downloads · ♥ %2",
+      "target": "▶ %0 प्ले · ⬇ %1 डाउनलोड · ♥ %2"
+    },
+    {
+      "id": "native:[maps use in room]",
+      "source": "Use in a room",
+      "target": "खोलीत वापरा"
+    },
+    {
+      "id": "native:[maps liked]",
+      "source": "Liked",
+      "target": "आवडले"
+    },
+    {
+      "id": "native:[maps like]",
+      "source": "Like",
+      "target": "आवडले"
+    },
+    {
+      "id": "native:[maps reported]",
+      "source": "Reported",
+      "target": "रिपोर्ट केले"
+    },
+    {
+      "id": "native:[maps report]",
+      "source": "Report…",
+      "target": "तक्रार करा…"
+    },
+    {
+      "id": "native:[maps report why]",
+      "source": "What is wrong with this map?",
+      "target": "या नकाशात काय चूक आहे?"
+    },
+    {
+      "id": "native:[maps search placeholder]",
+      "source": "Search maps or authors",
+      "target": "नकाशे किंवा लेखक शोधा"
+    },
+    {
+      "id": "native:[maps none found]",
+      "source": "No maps match.",
+      "target": "कोणतेही नकाशे जुळत नाहीत."
+    },
+    {
+      "id": "native:[maps catalog empty]",
+      "source": "No maps have been shared on this server yet.",
+      "target": "या सर्व्हरवर अद्याप कोणतेही नकाशे शेअर केलेले नाहीत."
+    },
+    {
+      "id": "native:[maps clear filters]",
+      "source": "Clear filters",
+      "target": "फिल्टर साफ करा"
+    },
+    {
+      "id": "native:[maps any colonies]",
+      "source": "Any colonies",
+      "target": "कोणत्याही वसाहती"
+    },
+    {
+      "id": "native:[maps checking]",
+      "source": "Checking…",
+      "target": "तपासत आहे…"
+    },
+    {
+      "id": "native:[maps no version yet]",
+      "source": "No version has been uploaded yet.",
+      "target": "अद्याप कोणतीही आवृत्ती अपलोड केलेली नाही."
+    },
+    {
+      "id": "native:[maps rejected]",
+      "source": "Rejected",
+      "target": "नाकारले"
+    },
+    {
+      "id": "native:[maps did not load %0]",
+      "source": "The map did not load: %0",
+      "target": "नकाशा लोड झाला नाही: %0"
+    },
+    {
+      "id": "native:[maps unknown reason]",
+      "source": "no reason was given",
+      "target": "कोणतेही कारण दिले नाही"
+    },
+    {
+      "id": "native:[maps fix and upload again]",
+      "source": "fix it in the editor, then upload again",
+      "target": "एडिटरमध्ये दुरुस्त करा, मग पुन्हा अपलोड करा."
+    },
+    {
+      "id": "native:[maps uploaded just now]",
+      "source": "uploaded just now",
+      "target": "आत्ताच अपलोड केले आहे"
+    },
+    {
+      "id": "native:[maps loading on server]",
+      "source": "loading it on the server",
+      "target": "सर्व्हरवर लोड करत आहे"
+    },
+    {
+      "id": "native:[maps %0 plays]",
+      "source": "%0 plays",
+      "target": "%0 वेळा खेळले"
+    },
+    {
+      "id": "native:[maps hidden]",
+      "source": "Hidden",
+      "target": "लपलेले"
+    },
+    {
+      "id": "native:[maps upload again]",
+      "source": "Upload again…",
+      "target": "पुन्हा अपलोड करा…"
+    },
+    {
+      "id": "native:[maps delete]",
+      "source": "Delete",
+      "target": "हटवा"
+    },
+    {
+      "id": "native:[maps update]",
+      "source": "Update…",
+      "target": "अपडेट…"
+    },
+    {
+      "id": "native:[maps upload a map]",
+      "source": "Upload a map…",
+      "target": "नकाशा अपलोड करा…"
+    },
+    {
+      "id": "native:[maps upload hint]",
+      "source": ".map files from your maps folder or the editor",
+      "target": "तुमच्या मॅप्स फोल्डरमधील किंवा एडिटरमधील .map फाईल्स"
+    },
+    {
+      "id": "native:[maps no maps yet]",
+      "source": "You have not shared any maps yet.",
+      "target": "तुम्ही अद्याप कोणताही नकाशा शेअर केलेला नाही."
+    },
+    {
+      "id": "native:[maps my maps]",
+      "source": "My maps",
+      "target": "माझे नकाशे"
+    },
+    {
+      "id": "native:[maps my maps %0]",
+      "source": "My maps (%0)",
+      "target": "माझे नकाशे (%0)"
+    },
+    {
+      "id": "native:[maps browse]",
+      "source": "Browse",
+      "target": "ब्राउझ करा"
+    },
+    {
+      "id": "native:[maps title]",
+      "source": "Maps",
+      "target": "नकाशे"
+    },
+    {
+      "id": "native:[maps browse note %0]",
+      "source": "%0 catalog · only maps that load in this version are shown",
+      "target": "%0 कॅटलॉग · फक्त या आवृत्तीमध्ये लोड होणारे नकाशे दाखवले आहेत"
+    },
+    {
+      "id": "native:[maps visibility note]",
+      "source": "Public maps appear in Browse. Unlisted maps work in your rooms and through their link. Private maps only in your own rooms.",
+      "target": "सार्वजनिक नकाशे 'ब्राउझ'मध्ये दिसतात. सूचीत नसलेले नकाशे तुमच्या खोल्यांमध्ये आणि त्यांच्या लिंकद्वारे चालतात. खाजगी नकाशे फक्त तुमच्या स्वतःच्या खोल्यांमध्येच चालतात."
+    },
+    {
+      "id": "native:[maps use %0]",
+      "source": "Use %0",
+      "target": "%0 वापरा"
+    },
+    {
+      "id": "native:[maps %0 kb]",
+      "source": "%0 KB",
+      "target": "%0 KB"
+    },
+    {
+      "id": "native:[maps field title]",
+      "source": "Title",
+      "target": "शीर्षक"
+    },
+    {
+      "id": "native:[maps field description]",
+      "source": "Description",
+      "target": "वर्णन"
+    },
+    {
+      "id": "native:[maps who can use it]",
+      "source": "Who can use it",
+      "target": "कोण वापरू शकतो"
+    },
+    {
+      "id": "native:[maps guests unlisted]",
+      "source": "Guests can share unlisted and private maps; sign in to publish to Browse.",
+      "target": "अतिथी सूचीबद्ध नसलेले आणि खाजगी नकाशे शेअर करू शकतात; ब्राउझमध्ये प्रकाशित करण्यासाठी साइन इन करा."
+    },
+    {
+      "id": "native:[maps visibility help]",
+      "source": "Unlisted maps work in your rooms and through their link; public maps also appear in Browse.",
+      "target": "सूचीत नसलेले नकाशे तुमच्या खोल्यांमध्ये आणि त्यांच्या लिंकद्वारे काम करतात; सार्वजनिक नकाशे 'ब्राउझ'मध्ये देखील दिसतात."
+    },
+    {
+      "id": "native:[maps new version of %0]",
+      "source": "Upload this file as a new version of %0.",
+      "target": "ही फाईल %0 ची नवीन आवृत्ती म्हणून अपलोड करा."
+    },
+    {
+      "id": "native:[maps upload]",
+      "source": "Upload",
+      "target": "अपलोड करा"
+    },
+    {
+      "id": "native:[maps uploading]",
+      "source": "Uploading…",
+      "target": "अपलोड करत आहे…"
+    },
+    {
+      "id": "native:[maps checking detail]",
+      "source": "The server is loading the map and drawing its preview. Until then the map cannot be used.",
+      "target": "सर्व्हर नकाशा लोड करत आहे आणि त्याचे पूर्वावलोकन दाखवत आहे. तोपर्यंत नकाशा वापरता येणार नाही."
+    },
+    {
+      "id": "native:[maps ready]",
+      "source": "Ready",
+      "target": "तयार"
+    },
+    {
+      "id": "native:[maps ready public]",
+      "source": "The map is ready and listed in Browse.",
+      "target": "नकाशा तयार असून तो ब्राउझमध्ये सूचीबद्ध आहे."
+    },
+    {
+      "id": "native:[maps ready unlisted]",
+      "source": "The map is ready. Unlisted maps work in your rooms and through their link.",
+      "target": "नकाशा तयार आहे. सूचीमध्ये नसलेले नकाशे तुमच्या खोल्यांमध्ये आणि त्यांच्या लिंकद्वारे काम करतात."
+    },
+    {
+      "id": "native:[maps ready private]",
+      "source": "The map is ready. Private maps work only in your own rooms.",
+      "target": "नकाशा तयार आहे. खाजगी नकाशे फक्त तुमच्या स्वतःच्या खोल्यांमध्येच काम करतात."
+    },
+    {
+      "id": "native:[maps upload failed]",
+      "source": "The upload failed",
+      "target": "अपलोड अयशस्वी झाले."
+    },
+    {
+      "id": "native:[maps server read %0 %1]",
+      "source": "The server read it as %0 with %1 colonies.",
+      "target": "सर्व्हरने ते %0 असे वाचले, ज्यामध्ये %1 वसाहती होत्या."
+    },
+    {
+      "id": "native:[maps continue in background]",
+      "source": "Close",
+      "target": "बंद करा"
+    },
+    {
+      "id": "native:[maps upload note]",
+      "source": "The server loads every upload before it can be used.",
+      "target": "सर्व्हर प्रत्येक अपलोड वापरण्यापूर्वी लोड करतो."
+    },
+    {
+      "id": "native:[online just now]",
+      "source": "just now",
+      "target": "आत्ताच"
+    },
+    {
+      "id": "native:[online today %0]",
+      "source": "today %0",
+      "target": "आज %0"
+    },
+    {
+      "id": "native:[online yesterday]",
+      "source": "yesterday",
+      "target": "काल"
+    },
+    {
+      "id": "native:[online sun]",
+      "source": "Sun",
+      "target": "रविवार"
+    }
+  ]
+}

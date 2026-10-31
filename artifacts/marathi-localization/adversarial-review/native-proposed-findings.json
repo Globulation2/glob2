@@ -1,0 +1,442 @@
+[
+  {
+    "key": "native:[range]",
+    "before": "टप्पा",
+    "after": "पल्ला",
+    "reason": "GameGUIDrawBuildingHelpers.cpp uses shootingRange; this is firing range, not a stage टप्पा.",
+    "severity": "major",
+    "state": "proposed"
+  },
+  {
+    "key": "native:[Range: %0]",
+    "before": "टप्पा: %0",
+    "after": "पल्ला: %0",
+    "reason": "Same weapon/flag range label, not stage number.",
+    "severity": "major",
+    "state": "proposed"
+  },
+  {
+    "key": "native:[Grain]",
+    "before": "धान्य",
+    "after": "पोत",
+    "reason": "FingerprintGenerator grain noise amount and DrumlinFieldGenerator directional grain control are terrain texture, not edible grain धान्य.",
+    "severity": "major",
+    "state": "proposed"
+  },
+  {
+    "key": "native:[Fords]",
+    "before": "उथळ उतार",
+    "after": "उथळ मार्ग",
+    "reason": "Watershed/Karst controls count shallow water crossings; उथळ मार्ग is clearer than shallow slopes.",
+    "severity": "minor",
+    "state": "proposed"
+  },
+  {
+    "key": "native:[Plantations]",
+    "before": "वृक्षारोपण",
+    "after": "मळे",
+    "reason": "docs/map-generators/plantations.md describes small wheat/wood farm islands, not only tree-planting action वृक्षारोपण.",
+    "severity": "major",
+    "state": "proposed"
+  },
+  {
+    "key": "native:[Allotments]",
+    "before": "वाटप",
+    "after": "छोटे शेतीभूखंड",
+    "reason": "Generator depicts small cultivated garden plots, not abstract allocation process.",
+    "severity": "minor",
+    "state": "proposed"
+  },
+  {
+    "key": "native:[equals]",
+    "before": "समान",
+    "after": "=",
+    "reason": "Keyboard-name legend should identify the equals key directly, not adjective समान.",
+    "severity": "minor",
+    "state": "proposed"
+  },
+  {
+    "key": "native:[AICastor-Description]",
+    "before": "अन्नपुरवठ्याशी वाढ निगडित ठेवून बांधणी आणि प्रशिक्षण देते.",
+    "after": "अन्नपुरवठ्याच्या प्रमाणात वाढ राखून बांधकाम आणि प्रशिक्षण करतो.",
+    "reason": "Clear construction/training activity and consistent opponent subject.",
+    "severity": "minor",
+    "state": "proposed"
+  },
+  {
+    "key": "native:[AIMaxima-Description]",
+    "before": "हेरगिरी करते, आपला अन्नसाठा तयार करते आणि योद्ध्यांच्या तुकड्या गोळा करते.",
+    "after": "शोधमोहीम करतो, अन्नपुरवठा वाढवतो आणि योद्ध्यांच्या लाटा जमवतो.",
+    "reason": "Source scouts and grows food supply; clearer gameplay role than spying and food stock alone.",
+    "severity": "minor",
+    "state": "proposed"
+  },
+  {
+    "key": "native:[AICabino-Summary]",
+    "before": "वसाहतीच्या वाढीचे आणि प्रशिक्षित हल्ल्यांचे समन्वय साधते, ज्यामध्ये आरोग्य आणि अन्नाला प्रथम लक्ष्य केले जाते.",
+    "after": "वसाहतीची वाढ आणि प्रशिक्षित हल्ले यांचा समन्वय साधतो; उपचार आणि अन्नपुरवठ्याला आधी लक्ष्य करतो.",
+    "reason": "Fix genitive agreement in वाढीचे ... समन्वय and preserve support-building targeting.",
+    "severity": "minor",
+    "state": "proposed"
+  },
+  {
+    "key": "native:[the hospital is under attack]",
+    "before": "रुग्णालयावर हल्ला झाला आहे.",
+    "after": "रुग्णालयावर हल्ला होत आहे.",
+    "reason": "Under attack is ongoing warning, consistent with other building alerts.",
+    "severity": "minor",
+    "state": "proposed"
+  },
+  {
+    "key": "native:[the school is under attack]",
+    "before": "शाळेवर हल्ला झाला आहे.",
+    "after": "शाळेवर हल्ला होत आहे.",
+    "reason": "Under attack is ongoing warning, consistent with other building alerts.",
+    "severity": "minor",
+    "state": "proposed"
+  },
+  {
+    "key": "native:[the swimmingpool is under attack]",
+    "before": "जलतरण तलावावर हल्ला झाला आहे.",
+    "after": "जलतरण तलावावर हल्ला होत आहे.",
+    "reason": "Under attack is ongoing warning, consistent with other building alerts.",
+    "severity": "minor",
+    "state": "proposed"
+  },
+  {
+    "key": "native:[turn player resyncing %0]",
+    "before": "%0 बरोबरी साधत आहे",
+    "after": "%0 सध्याच्या स्थितीपर्यंत येत आहे",
+    "reason": "Resynchronizing catches up simulation time, not equalizing match score.",
+    "severity": "major",
+    "state": "proposed"
+  },
+  {
+    "key": "native:[game closed]",
+    "before": "खेळ बंद झाला आहे. पुन्हा खेळण्यासाठी तुम्ही ही विंडो बंद करू शकता किंवा रीलोड करू शकता.",
+    "after": "खेळ बंद झाला आहे. तुम्ही ही खिडकी बंद करू शकता किंवा पुन्हा खेळण्यासाठी ती रीलोड करू शकता.",
+    "reason": "Avoid implying closing the window starts another game.",
+    "severity": "minor",
+    "state": "proposed"
+  },
+  {
+    "key": "native:[AIEcono-Profile]",
+    "before": "मुख्य रणनीती: कामगार आणि शोधक तयार करते, आपल्या अर्थव्यवस्थेचा विस्तार करते आणि अन्न व फळांच्या माध्यमातून शत्रूच्या तुकड्यांना आकर्षित करते. यात पारंपरिक योद्ध्यांचा हल्ला नसतो.\\n\\nअर्थव्यवस्था आणि विकास: अन्न स्रोतांजवळ खानावळी आणि पोळी उभारते, शिक्षण आणि हालचाल प्रशिक्षण जोडते, आणि पायाभूत सुविधा अद्ययावत करते. अन्न पुरवठ्यावर लक्ष ठेवते आणि पुरवठा कमी झाल्यावर किंवा लक्ष्ये नाहीशी झाल्यावरही आपल्या इमारती आणि शोध ध्वज टिकवून ठेवते.\\n\\nशेती आणि संघांतर: पाण्याजवळील नूतनीकरणक्षम अन्न आणि लाकडाच्या स्रोतांचे संरक्षण करते. फळांच्या साठ्यांवर आणि शत्रूंच्या वसाहतींमध्ये शोधक पाठवते, आणि फळांच्या पुरवठ्याचा पाठलाग करताना शत्रूंना अन्नाची जाहिरात करते. चांगले अन्न आणि फळे मिळाल्याने शत्रूची युनिट आपल्या संघात येऊ शकतात.\\n\\nइतर एआयंच्या तुलनेत: सर्वात विशेषज्ञ आर्थिक प्रतिस्पर्धी. Cabino आणि Maxima सुद्धा फळांचा पाठलाग करतात, पण त्यासाठी सैन्याचाही वापर करतात.\\n\\nसामर्थ्ये आणि मर्यादा: लष्करी प्रतिस्पर्धी थकून जात असताना याची वाढ होऊ शकते, आणि इतर संघांची युनिट आपल्या संघात आणूनही स्पर्धा करतो. दीर्घकाळ चाललेल्या हल्ल्याला प्रत्युत्तर देण्यासाठी योद्धे तयार होत नाहीत. अन्न, फळे, भौगोलिक परिस्थिती आणि विजयाचे नियम याच्या संधींवर जोरदार परिणाम करतात.\\n\\nवापरून पाहण्यासारखी प्रतिचाल: त्याच्या उघड्या पडलेल्या विस्तारावर दबाव आणा. आपली युनिट्स टिकवून ठेवण्यासाठी खानावळींना अन्न आणि फळांचा पुरवठा सुरू ठेवा. तो वाढत असताना अनावश्यक लढायांनी आपली वसाहत थकवू नका.",
+    "after": "मुख्य रणनीती: कामगार आणि शोधक तयार करते, आपल्या अर्थव्यवस्थेचा विस्तार करते आणि अन्न व फळांच्या माध्यमातून शत्रूची युनिट आकर्षित करते. यात पारंपरिक योद्ध्यांचा हल्ला नसतो.\\n\\nअर्थव्यवस्था आणि विकास: अन्न स्रोतांजवळ खानावळी आणि पोळी उभारते, शिक्षण आणि हालचाल प्रशिक्षण जोडते, आणि पायाभूत सुविधा अद्ययावत करते. अन्न पुरवठ्यावर लक्ष ठेवते आणि पुरवठा कमी झाल्यावर किंवा लक्ष्ये नाहीशी झाल्यावरही आपल्या इमारती आणि शोध ध्वज टिकवून ठेवते.\\n\\nशेती आणि संघांतर: पाण्याजवळील नूतनीकरणक्षम अन्न आणि लाकडाच्या स्रोतांचे संरक्षण करते. फळांच्या साठ्यांवर आणि शत्रूंच्या वसाहतींमध्ये शोधक पाठवते, आणि फळांच्या पुरवठ्याचा पाठलाग करताना शत्रूंना अन्नाची जाहिरात करते. चांगले अन्न आणि फळे मिळाल्याने शत्रूची युनिट आपल्या संघात येऊ शकतात.\\n\\nइतर एआयंच्या तुलनेत: सर्वात विशेषज्ञ आर्थिक प्रतिस्पर्धी. Cabino आणि Maxima सुद्धा फळांचा पाठलाग करतात, पण त्यासाठी सैन्याचाही वापर करतात.\\n\\nसामर्थ्ये आणि मर्यादा: लष्करी प्रतिस्पर्धी थकून जात असताना याची वाढ होऊ शकते, आणि इतर संघांची युनिट आपल्या संघात आणूनही स्पर्धा करतो. दीर्घकाळ चाललेल्या हल्ल्याला प्रत्युत्तर देण्यासाठी योद्धे तयार होत नाहीत. अन्न, फळे, भौगोलिक परिस्थिती आणि विजयाचे नियम याच्या संधींवर जोरदार परिणाम करतात.\\n\\nवापरून पाहण्यासारखी प्रतिचाल: त्याच्या उघड्या पडलेल्या विस्तारावर दबाव आणा. आपली युनिट्स टिकवून ठेवण्यासाठी खानावळींना अन्न आणि फळांचा पुरवठा सुरू ठेवा. तो वाढत असताना अनावश्यक लढायांनी आपली वसाहत थकवू नका.",
+    "reason": "Conversions attract individual units, not necessarily military squads.",
+    "severity": "minor",
+    "state": "proposed"
+  },
+  {
+    "key": "native:[Each colony's start is measured on the finished map: the walk to wheat and to wood, how well its ground regrows, the deposits and building sites within reach, and its distance from rivals. Every factor scores from 0 to 1 against a fixed bar, the total weighs them, fairness is the worst colony's total over the best, and the score is the worst total times the fairness.]",
+    "before": "प्रत्येक वसाहतीची सुरुवात अंतिम नकाशावर मोजली जाते: अन्न आणि लाकडाच्या स्रोतांपर्यंतचा चालण्याचा मार्ग, जमिनीची पुनरुत्पत्ती किती चांगली होते, आवाक्यात असलेले साठे आणि बांधकाम स्थळे, आणि प्रतिस्पर्धकांपासूनचे अंतर. प्रत्येक घटकाला एका निश्चित मापदंडाच्या तुलनेत ० ते १ पर्यंत गुण दिले जातात, एकूण गुणांचे वजन मोजले जाते, निष्पक्षता म्हणजे सर्वात वाईट वसाहतीच्या एकूण गुणांना सर्वोत्तम वसाहतीच्या एकूण गुणांनी भागून काढलेली असते, आणि अंतिम गुण म्हणजे सर्वात वाईट एकूण गुणांना निष्पक्षतेने गुणून काढलेला असतो.",
+    "after": "प्रत्येक वसाहतीची सुरुवात अंतिम नकाशावर मोजली जाते: अन्न आणि लाकडाच्या स्रोतांपर्यंतचा चालण्याचा मार्ग, जमिनीची पुनरुत्पत्ती किती चांगली होते, आवाक्यात असलेले साठे आणि बांधकाम स्थळे, आणि प्रतिस्पर्धकांपासूनचे अंतर. प्रत्येक घटकाला एका निश्चित मापदंडाच्या तुलनेत ० ते १ पर्यंत गुण दिले जातात, एकूण गुण ही या घटकांची भारित बेरीज असते, निष्पक्षता म्हणजे सर्वात वाईट वसाहतीच्या एकूण गुणांना सर्वोत्तम वसाहतीच्या एकूण गुणांनी भागून काढलेली असते, आणि अंतिम गुण म्हणजे सर्वात वाईट एकूण गुणांना निष्पक्षतेने गुणून काढलेला असतो.",
+    "reason": "Source total weighs factors; clarify weighted aggregation rather than weighing total score.",
+    "severity": "major",
+    "state": "proposed"
+  },
+  {
+    "key": "native:[you have lost]",
+    "before": "तुम्ही हरला आहात!",
+    "after": "तुमचा पराभव झाला!",
+    "reason": "Natural gender-neutral defeat message.",
+    "severity": "minor",
+    "state": "proposed"
+  },
+  {
+    "key": "native:[qm you declined]",
+    "before": "तुम्ही जुळणी नाकारली आहे. थोड्या वेळानंतर तुम्ही पुन्हा शोधू शकता.",
+    "after": "तुम्ही सामना नाकारला आहे. थोड्या वेळाने पुन्हा शोधू शकता.",
+    "reason": "Match outcome/queue action, align with other decline messages.",
+    "severity": "minor",
+    "state": "proposed"
+  },
+  {
+    "key": "native:[qm casual explanation]",
+    "before": "सामना लगेच सुरू होतो; प्रासंगिक खेळांना रेटिंग दिले जात नाही.",
+    "after": "सामना लगेच सुरू होतो; अनौपचारिक सामन्यांना मानांकन दिले जात नाही.",
+    "reason": "Casual means unranked play, not incidental/contextual प्रासंगिक.",
+    "severity": "minor",
+    "state": "proposed"
+  },
+  {
+    "key": "native:[qm measuring relays]",
+    "before": "रिले मोजणे",
+    "after": "रिलेचा विलंब मोजत आहे",
+    "reason": "Measures relay latency, not number of relays.",
+    "severity": "minor",
+    "state": "proposed"
+  },
+  {
+    "key": "native:[maps like]",
+    "before": "आवडले",
+    "after": "पसंती द्या",
+    "reason": "Like action should differ from already-liked state.",
+    "severity": "minor",
+    "state": "proposed"
+  },
+  {
+    "key": "native:[Like]",
+    "before": "आवडले",
+    "after": "पसंती द्या",
+    "reason": "Like action should differ from Liked state.",
+    "severity": "minor",
+    "state": "proposed"
+  },
+  {
+    "key": "native:[Authoring guide]",
+    "before": "लेखक मार्गदर्शक",
+    "after": "निर्मिती मार्गदर्शक",
+    "reason": "Content authoring guide, not guide author.",
+    "severity": "minor",
+    "state": "proposed"
+  },
+  {
+    "key": "native:[conn card cannot keep up body]",
+    "before": "सामना जसा चालतो त्यापेक्षा तो हळू रीप्ले होतो, त्यामुळे तो बरोबरी साधू शकणार नाही. तुम्ही सामना सोडून देऊ शकता, किंवा ग्राफिक्स सेटिंग्ज कमी करून वाट पाहत राहू शकता.",
+    "after": "सामना ज्या वेगाने चालतो त्यापेक्षा हे उपकरण हळू रीप्ले करते, त्यामुळे ते सध्याच्या स्थितीपर्यंत पोहोचू शकत नाही. तुम्ही सामना सोडू शकता किंवा ग्राफिक्स सेटिंग्ज कमी करून वाट पाहू शकता.",
+    "reason": "Catching up is replay/simulation progress, not tying the score.",
+    "severity": "major",
+    "state": "proposed"
+  },
+  {
+    "key": "native:[stat death causes about]",
+    "before": "वसाहतीतील तुकड्यांचा मृत्यू कशामुळे झाला: लढाई, उपासमार, संसाधने साफ करताना झालेल्या जखमा, बाहेर पडण्याचा मार्ग नसताना अडकून पडणे किंवा इतर कारणांमुळे.",
+    "after": "वसाहतीतील युनिटचा मृत्यू कशामुळे झाला: लढाई, उपासमार, संसाधने साफ करताना झालेल्या जखमा, बाहेर पडण्याचा मार्ग नसल्याने अडकणे किंवा इतर कारणे.",
+    "reason": "All unit types, not military squads.",
+    "severity": "minor",
+    "state": "proposed"
+  },
+  {
+    "key": "native:[stat hunger about]",
+    "before": "वसाहतीतील प्रत्येक घटकाने स्वतःमध्ये किती अन्न वाहून नेले होते. प्रत्येक घटकाचे वर्गीकरण त्याच्या अन्नसाठ्यात किती शिल्लक आहे यानुसार केले जाते: जवळजवळ रिकामा (एक चतुर्थांश किंवा त्यापेक्षा कमी), कमी (अर्ध्यापर्यंत), अर्धा भरलेला (पाऊणपर्यंत) किंवा चांगला पोषित. जसा जसा साठा कमी होतो, तसे तसे घटक खानावळीच्या शोधात निघतात, त्यामुळे वसाहतीत नेहमीच काही घटकांकडे साठा कमी असतो.",
+    "after": "वसाहतीतील युनिटच्या शरीरात किती अन्नसाठा शिल्लक होता. प्रत्येक युनिटचे वर्गीकरण उरलेल्या अन्नसाठ्यानुसार होते: जवळजवळ रिकामा (पाव किंवा कमी), कमी (अर्ध्यापर्यंत), अर्धा भरलेला (पाऊणपर्यंत) किंवा पोटभर जेवलेले. साठा कमी झाल्यावर युनिट खानावळीच्या शोधात जातात, त्यामुळे वसाहतीत नेहमी काही युनिटचा साठा कमी असतो.",
+    "reason": "Describe internal food reserve and use unit glossary instead of abstract components.",
+    "severity": "minor",
+    "state": "proposed"
+  },
+  {
+    "key": "native:[stat seeking food]",
+    "before": "अन्नाच्या शोधात असलेले युनिट्स",
+    "after": "अन्न शोधणारी युनिट",
+    "reason": "Consistent unit noun.",
+    "severity": "minor",
+    "state": "proposed"
+  },
+  {
+    "key": "native:[stat seeking food about]",
+    "before": "खानावळी शोधण्यासाठी काम थांबवलेले घटक. ज्यांची प्रकृती पूर्णपणे निरोगी नाही, त्यांना कमजोर होत असल्याचे गणले जाते.",
+    "after": "खानावळ शोधण्यासाठी काम थांबवलेली युनिट. त्यांचे आरोग्यही पूर्ण नसेल तर ती कमकुवत होत असलेली म्हणून मोजली जातात.",
+    "reason": "Use entity glossary and preserve conjunction of hunger and reduced health.",
+    "severity": "minor",
+    "state": "proposed"
+  },
+  {
+    "key": "native:[stat in care]",
+    "before": "खाणारे किंवा बरे होणारे घटक",
+    "after": "जेवण किंवा उपचार घेणारी युनिट",
+    "reason": "Entity glossary, not generic components.",
+    "severity": "minor",
+    "state": "proposed"
+  },
+  {
+    "key": "native:[stat meals about]",
+    "before": "वसाहतीतील खानावळींनी स्वतःच्या तुकड्यांना आणि इतर वसाहतींतील अभ्यागतांना जेवण दिले.",
+    "after": "वसाहतीच्या खानावळींनी स्वतःच्या युनिटना आणि इतर वसाहतींतील पाहुण्यांना दिलेली जेवणे.",
+    "reason": "Meals is the counted quantity; units are individuals, not military squads.",
+    "severity": "minor",
+    "state": "proposed"
+  },
+  {
+    "key": "native:[stat starvation about]",
+    "before": "वेळेवर अन्न न मिळाल्याने मरण पावलेल्या तुकड्या.",
+    "after": "वेळेवर अन्न न मिळाल्याने मरण पावलेली युनिट.",
+    "reason": "Counts individual unit deaths, not military squads.",
+    "severity": "minor",
+    "state": "proposed"
+  },
+  {
+    "key": "native:[stat healing about]",
+    "before": "वसाहतीच्या रुग्णालयांनी जखमी तुकड्यांना परत दिलेले हिट पॉइंट्स.",
+    "after": "वसाहतीच्या रुग्णालयांनी जखमी युनिटना परत दिलेले हिट पॉइंट्स.",
+    "reason": "All units, not military squads.",
+    "severity": "minor",
+    "state": "proposed"
+  },
+  {
+    "key": "native:[stat damage dealt about]",
+    "before": "वसाहतीने शत्रूच्या तुकड्या आणि इमारतींचे केलेले नुकसान. योद्धे, जादू आणि बुरुज पाहण्यासाठी तिचे विभाजन करा.",
+    "after": "वसाहतीने शत्रूच्या युनिटना आणि इमारतींना केलेली हानी. योद्धे, जादू आणि मनोरे यांचा स्वतंत्र तपशील पाहण्यासाठी विभागणी करा.",
+    "reason": "Damage source breakdown should be clear and units are individuals.",
+    "severity": "minor",
+    "state": "proposed"
+  },
+  {
+    "key": "native:[stat damage taken about]",
+    "before": "शत्रूंनी वसाहतीच्या तुकड्या आणि इमारतींना केलेले नुकसान.",
+    "after": "शत्रूंनी वसाहतीच्या युनिटना आणि इमारतींना केलेली हानी.",
+    "reason": "All units, not military squads.",
+    "severity": "minor",
+    "state": "proposed"
+  },
+  {
+    "key": "native:[stat growth nearby about]",
+    "before": "वसाहतीच्या इमारतींच्या ३२ चौरसांच्या परिसरात संसाधनांचा भौतिक साठा किती वाढला, हे काढलेल्या भारांऐवजी वाढीच्या गुणांमध्ये मोजा. ते घराच्या किती जवळ वाढले हे पाहण्यासाठी त्याचे विभाजन करा.",
+    "after": "वसाहतीच्या इमारतींपासून ३२ चौकोनांच्या आत संसाधनांतील सामग्रीचा साठा किती वाढला हे दाखवते. मोजणी कापणीच्या खेपांऐवजी वाढीच्या गुणांत होते. तळाजवळ किती वाढ झाली ते पाहण्यासाठी विभागणी करा.",
+    "reason": "Statistic description, not instruction to manually measure; distinguish stock growth from harvested loads.",
+    "severity": "minor",
+    "state": "proposed"
+  },
+  {
+    "key": "native:[stat unit units]",
+    "before": "युनिट्स",
+    "after": "युनिट",
+    "reason": "Entity count noun consistent with glossary; resource quantity units remain एकके separately.",
+    "severity": "minor",
+    "state": "proposed"
+  },
+  {
+    "key": "native:[stat view highlight none]",
+    "before": "ठळक वैशिष्ट्य: काहीही नाही",
+    "after": "ठळक केलेले: काहीही नाही",
+    "reason": "Chart highlighting state, not a special feature.",
+    "severity": "minor",
+    "state": "proposed"
+  },
+  {
+    "key": "native:[Wounded units retreat]",
+    "before": "जखमी तुकड्या माघार घेतात",
+    "after": "जखमी युनिट माघार घेतात",
+    "reason": "Rule concerns individual game units, not squads.",
+    "severity": "minor",
+    "state": "proposed"
+  },
+  {
+    "key": "native:[stat ground movement about]",
+    "before": "अंदाजे वेगाच्या गुणोत्तरानुसार सजीव जमिनीवरील घटक. 'स्विम 2x' म्हणजे धावण्यापेक्षा दुप्पट वेगाने पोहणे. उडणारे आणि स्थिर घटक वगळण्यात आले आहेत.",
+    "after": "अंदाजे वेगाच्या गुणोत्तरानुसार जिवंत जमिनीवरील युनिट. «पोहणे 2x» म्हणजे धावण्यापेक्षा दुप्पट वेगाने पोहणे. उडणारी आणि हालचाल न करणारी युनिट वगळली आहेत.",
+    "reason": "Use exact Swim 2x band label and distinguish units from abstract components.",
+    "severity": "minor",
+    "state": "proposed"
+  },
+  {
+    "key": "native:[The Gauntlet needs a larger map or fewer colonies to fit its two guarded fronts.]",
+    "before": "त्याच्या दोन संरक्षित आघाड्या सामावून घेण्यासाठी गॉन्टलेटला अधिक मोठ्या नकाशाची किंवा कमी वसाहतींची आवश्यकता आहे.",
+    "after": "दोन्ही संरक्षित आघाड्या सामावण्यासाठी आव्हान या भूदृश्याला मोठा नकाशा किंवा कमी वसाहती लागतात.",
+    "reason": "Error should reference actual Marathi landscape label आव्हान, not unrelated transliteration गॉन्टलेट.",
+    "severity": "minor",
+    "state": "proposed"
+  },
+  {
+    "key": "native:[Lake elongation]",
+    "before": "सरोवराची लांबी",
+    "after": "सरोवराचा लांबटपणा",
+    "reason": "Aspect elongation control, not absolute length.",
+    "severity": "minor",
+    "state": "proposed"
+  },
+  {
+    "key": "native:[Sandbar connections]",
+    "before": "सँडबार कनेक्शन",
+    "after": "वाळूच्या पट्ट्यांनी जोडणी",
+    "reason": "Use sandbar geography, not unexplained transliteration.",
+    "severity": "minor",
+    "state": "proposed"
+  },
+  {
+    "key": "native:[lesson healing briefing]",
+    "before": "रुग्णालय बांधून जखमी कामगाराला बरे होण्यास मदत करा. सुरुवातीला वसाहतीचे पोट भरलेले आहे आणि एक कामगार जखमी आहे.",
+    "after": "रुग्णालय बांधून जखमी कामगाराला बरे होण्यास मदत करा. सुरुवातीला वसाहतीतील सर्व युनिटनी जेवलेले असते आणि एक कामगार जखमी असतो.",
+    "reason": "Source colony starts fed concerns all units, not literal colony stomach.",
+    "severity": "minor",
+    "state": "proposed"
+  },
+  {
+    "key": "native:[lesson swimming title]",
+    "before": "पोहणे आणि जलस्रोत",
+    "after": "पोहणे आणि पाण्यातील संसाधने",
+    "reason": "Water resources are harvestable algae, not only sources of water.",
+    "severity": "minor",
+    "state": "proposed"
+  },
+  {
+    "key": "native:[lesson fortifications supply title]",
+    "before": "दारूगोळा पुरवठा करा",
+    "after": "दारुगोळा पुरवा",
+    "reason": "Natural ammunition supply action, align spelling with other tower instructions.",
+    "severity": "minor",
+    "state": "proposed"
+  },
+  {
+    "key": "native:[lesson fortifications supply marker]",
+    "before": "दारूगोळा पुरवठा करा",
+    "after": "दारुगोळा पुरवा",
+    "reason": "Natural ammunition supply action, align spelling with other tower instructions.",
+    "severity": "minor",
+    "state": "proposed"
+  },
+  {
+    "key": "native:[lesson fortifications supply instruction]",
+    "before": "मनोरा निवडा आणि पुरवठादारांना विनंती करा. किमान २ दगडांची वाट पहा.",
+    "after": "मनोरा निवडा आणि पुरवठा करणारे कामगार मागवा. किमान २ दगड येण्याची वाट पाहा.",
+    "reason": "Request assigned suppliers, not asking external vendors.",
+    "severity": "minor",
+    "state": "proposed"
+  },
+  {
+    "key": "native:[lesson healing build compact]",
+    "before": "बांधकाम करा → रुग्णालय. प्रवेश कायम ठेवा; बांधकाम कामगारांना नियुक्त करा.",
+    "after": "बांधा → रुग्णालय. प्रवेश कायम ठेवा; बांधकाम कामगारांना नियुक्त करा.",
+    "reason": "Compact instruction must name actual Build control बांधा, as introduction and tower instructions do.",
+    "severity": "minor",
+    "state": "proposed"
+  },
+  {
+    "key": "native:[lesson walking-training build compact]",
+    "before": "तयार करा → धावपट्टी. त्याच्या कडांभोवती जागा सोडा.",
+    "after": "बांधा → धावपट्टी. त्याच्या कडांभोवती जागा सोडा.",
+    "reason": "Compact instruction must name actual Build control बांधा, as introduction and tower instructions do.",
+    "severity": "minor",
+    "state": "proposed"
+  },
+  {
+    "key": "native:[lesson swimming build compact]",
+    "before": "बांधकाम → जलतरण तलाव, तळ्याच्या पश्चिमेला.",
+    "after": "बांधा → जलतरण तलाव, तळ्याच्या पश्चिमेला.",
+    "reason": "Compact instruction must name actual Build control बांधा, as introduction and tower instructions do.",
+    "severity": "minor",
+    "state": "proposed"
+  },
+  {
+    "key": "native:[lesson swimming water-job compact]",
+    "before": "बांधकाम करा → शाळा. लाकूड आणि शेवाळासाठी बांधकाम करणारे नेमा.",
+    "after": "बांधा → शाळा. लाकूड आणि शेवाळासाठी बांधकाम करणारे नेमा.",
+    "reason": "Compact instruction must name actual Build control बांधा, as introduction and tower instructions do.",
+    "severity": "minor",
+    "state": "proposed"
+  },
+  {
+    "key": "native:[lesson schools build compact]",
+    "before": "बांधकाम करा → शाळा. लाकूड आणि शेवाळासाठी बांधकाम करणारे नेमा.",
+    "after": "बांधा → शाळा. लाकूड आणि शेवाळासाठी बांधकाम करणारे नेमा.",
+    "reason": "Compact instruction must name actual Build control बांधा, as introduction and tower instructions do.",
+    "severity": "minor",
+    "state": "proposed"
+  },
+  {
+    "key": "native:[settings Multiply the operating system display scale for menus, text and the sidebar.]",
+    "before": "मेनू, मजकूर आणि साइडबारसाठी ऑपरेटिंग सिस्टम डिस्प्ले स्केलला गुणाकार करा.",
+    "after": "मेनू, मजकूर आणि साइडबारचा आकार ठरवण्यासाठी ऑपरेटिंग सिस्टमच्या डिस्प्ले स्केलला निवडलेला गुणक लावा.",
+    "reason": "Natural Marathi explanation of display-scale multiplier.",
+    "severity": "minor",
+    "state": "proposed"
+  },
+  {
+    "key": "native:[settings Random each match]",
+    "before": "प्रत्येक सामन्याच्या सुरुवातीला वेगळा संगीत संच निवडण्यासाठी «यादृच्छिक» निवडा.",
+    "after": "प्रत्येक सामन्याच्या सुरुवातीला संगीत संच यादृच्छिक निवडण्यासाठी «यादृच्छिक» निवडा.",
+    "reason": "Random selection may repeat a previous soundtrack; do not guarantee a different one.",
+    "severity": "minor",
+    "state": "proposed"
+  }
+]

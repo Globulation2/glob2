@@ -1,0 +1,418 @@
+{
+  "request": {
+    "project": "bradley-personal-20261027",
+    "model": "general/nmt",
+    "payload": {
+      "sourceLanguageCode": "en",
+      "targetLanguageCode": "mr",
+      "mimeType": "text/plain",
+      "contents": [
+        "No game servers are online right now.",
+        "No games yet. This AI’s results will appear here after it plays.",
+        "No generators match these filters.",
+        "No iOS app is associated with this instance.",
+        "No isolated AI validator is available.",
+        "No isolated AI validator is available. Please try again later.",
+        "No isolated generator validator is available.",
+        "No isolated generator validator is available. Please try again later.",
+        "No isolated generator worker is available.",
+        "No map build has started. Waiting for the provider outcome.",
+        "No maps match these filters.",
+        "No matches yet.",
+        "No measured results are available for this version.",
+        "No music found. Try different filters, or share the first set.",
+        "No open reports.",
+        "No other relay is available; try again shortly.",
+        "No owned building family.",
+        "No owned ZXQPH0QXZ version.",
+        "No photo.",
+        "No players found. Try another name.",
+        "No queue ZXQPH0QXZ.",
+        "No queue.",
+        "No rated players in this view yet. Play a ranked match to start climbing.",
+        "No rated players yet. The first wins will put you here.",
+        "No relay accepted the match.",
+        "No reports.",
+        "No requests need attention.",
+        "No set validator is available. Your draft is saved; try checks later.",
+        "No sets found. Try another search or create the first one.",
+        "No shared maps yet. Be the first to share one.",
+        "No sign-in provider ZXQPH0QXZ.",
+        "No skin reports.",
+        "No such AI version.",
+        "No such AI.",
+        "No such account.",
+        "No such agent.",
+        "No such artifact.",
+        "No such artwork.",
+        "No such blob.",
+        "No such building family.",
+        "No such delivered map.",
+        "No such draft.",
+        "No such generator.",
+        "No such job.",
+        "No such leaderboard.",
+        "No such map.",
+        "No such match.",
+        "No such music release.",
+        "No such player.",
+        "No such proposal.",
+        "No such queue ticket.",
+        "No such release.",
+        "No such report.",
+        "No such room.",
+        "No such sign-in on this connection.",
+        "No such sign-in.",
+        "No such track.",
+        "No such upload.",
+        "No such version.",
+        "No timeline was recorded for this match.",
+        "No uncertain request.",
+        "No unpublished drafts.",
+        "No validated building release.",
+        "No validated release",
+        "No worker leases are recorded.",
+        "No ZXQPH0QXZ sign-in is linked to this account.",
+        "Nobody",
+        "None",
+        "None: this guest account lives on the device that created it.",
+        "Not AI-generated",
+        "Not applicable",
+        "Not available yet",
+        "Not evaluated",
+        "Not found.",
+        "Not found. It may have been removed, or the link is wrong.",
+        "Not hidden",
+        "Not run",
+        "Not saved",
+        "Notes",
+        "Nothing changed"
+      ]
+    }
+  },
+  "response": {
+    "translations": [
+      {
+        "translatedText": "सध्या कोणतेही गेम सर्व्हर ऑनलाइन नाहीत.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अद्याप एकही सामना झालेला नाही. हा एआय खेळल्यानंतर त्याचे निकाल येथे दिसतील.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "या फिल्टरशी जुळणारे कोणतेही जनरेटर नाहीत.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "या इन्स्टन्सशी कोणतेही iOS ॲप जोडलेले नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कोणताही स्वतंत्र एआय व्हॅलिडेटर उपलब्ध नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कोणताही स्वतंत्र एआय व्हॅलिडेटर उपलब्ध नाही. कृपया नंतर पुन्हा प्रयत्न करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कोणताही आयसोलेटेड जनरेटर व्हॅलिडेटर उपलब्ध नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कोणताही आयसोलेटेड जनरेटर व्हॅलिडेटर उपलब्ध नाही. कृपया नंतर पुन्हा प्रयत्न करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कोणताही आयसोलेटेड जनरेटर वर्कर उपलब्ध नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "मॅप बिल्ड सुरू झालेला नाही. प्रोव्हायडरच्या निकालाची प्रतीक्षा आहे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "या फिल्टरशी जुळणारे नकाशे उपलब्ध नाहीत.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अद्याप एकही सामना झालेला नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "या आवृत्तीसाठी कोणतेही मोजमाप केलेले निकाल उपलब्ध नाहीत.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कोणतेही संगीत आढळले नाही. वेगवेगळे फिल्टर वापरून पहा, किंवा पहिला संच शेअर करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कोणतेही अहवाल उघडे नाहीत.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "दुसरा कोणताही रिले उपलब्ध नाही; थोड्या वेळाने पुन्हा प्रयत्न करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "मालकीच्या इमारतीचे कुटुंब नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ ची कोणतीही मालकीची आवृत्ती नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "फोटो नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कोणतेही खेळाडू आढळले नाहीत. दुसरे नाव वापरून पहा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ कोणतीही रांग नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "रांग नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "या दृश्यात अद्याप एकही मानांकित खेळाडू नाही. रँक वाढवण्यासाठी एक रँक्ड सामना खेळा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अद्याप एकही मानांकित खेळाडू नाही. पहिले विजय मिळवल्यावर तुम्हाला येथे स्थान मिळेल.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कोणत्याही रिलेने सामना स्वीकारला नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कोणतेही अहवाल नाहीत.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कोणत्याही विनंत्यांकडे लक्ष देण्याची गरज नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कोणताही निश्चित व्हॅलिडेटर उपलब्ध नाही. तुमचा मसुदा जतन केला आहे; तपासण्या नंतर करून पहा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कोणतेही संच सापडले नाहीत. दुसरा शोध करून पहा किंवा नवीन शोध तयार करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अद्याप एकही नकाशा शेअर केलेला नाही. पहिला नकाशा शेअर करणारे तुम्हीच व्हा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ हा साइन-इन प्रदाता नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "त्वचेसंबंधी कोणतेही अहवाल नाहीत.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अशी कोणतीही एआय आवृत्ती नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "असा कोणताही एआय नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "असे कोणतेही खाते नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "असा कोणताही एजंट नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अशी कोणतीही वस्तू नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अशी कोणतीही कलाकृती नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "असा कोणताही ठिपका नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "असा कोणताही इमारत परिवार नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "असा कोणताही नकाशा वितरित केलेला नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "असा कोणताही मसुदा नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "असा कोणताही जनरेटर नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अशी कोणतीही नोकरी नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "असा कोणताही लीडरबोर्ड नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "असा कोणताही नकाशा नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अशी कोणतीही जुळणी नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "असे कोणतेही संगीत प्रकाशन नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "असा कोणताही खेळाडू नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "असा कोणताही प्रस्ताव नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "असे कोणतेही रांगेचे तिकीट नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "असा कोणताही प्रकाशन नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "असा कोणताही अहवाल नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अशी खोली नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "या कनेक्शनवर असे साइन-इन करता येत नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "असे कोणतेही साइन-इन नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "असा कोणताही ट्रॅक नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "असे कोणतेही अपलोड नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अशी कोणतीही आवृत्ती नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "या सामन्यासाठी कोणतीही वेळ नोंदवली गेली नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "निःसंदिग्ध विनंती नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कोणतेही अप्रकाशित मसुदे नाहीत.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "प्रमाणित बिल्डिंग रिलीज नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "प्रमाणित प्रकाशन नाही",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कामगारांचे कोणतेही भाडेकरार नोंदवले जात नाहीत.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "या खात्याशी कोणतेही ZXQPH0QXZ साइन-इन जोडलेले नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कोणीही नाही",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "काहीही नाही",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "काहीही नाही: हे अतिथी खाते ज्या डिव्हाइसवर तयार केले आहे, त्याच डिव्हाइसवर आहे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "एआय-निर्मित नाही",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "लागू नाही",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अद्याप उपलब्ध नाही",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "मूल्यांकन केलेले नाही",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "आढळले नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "आढळले नाही. ते काढून टाकले गेले असावे, किंवा लिंक चुकीची आहे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "लपवलेले नाही",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "धावू नका",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "जतन केले नाही",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नोंदी",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "काहीही बदलले नाही",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      }
+    ]
+  },
+  "response_sha256": "fb9e88f755af2019a98fa5cc735b54b8b8f5c4e6d5e30334aed881749afddf8e"
+}

@@ -1,0 +1,418 @@
+{
+  "request": {
+    "project": "bradley-personal-20261027",
+    "model": "general/nmt",
+    "payload": {
+      "sourceLanguageCode": "en",
+      "targetLanguageCode": "mr",
+      "mimeType": "text/plain",
+      "contents": [
+        "Ridges",
+        "Barren ground",
+        "Rough ground",
+        "Lava",
+        "Fertile ground",
+        "Deep water",
+        "Void",
+        "Custom",
+        "Classic ground",
+        "Walkable",
+        "Swimmable",
+        "Impassable",
+        "No flying",
+        "Buildable",
+        "Speed ZXQPH0QXZ%",
+        "Crops grow",
+        "Irrigates nearby land",
+        "Stops nearby growth",
+        "Blocks shots",
+        "Hurts walkers",
+        "Hurts fliers",
+        "Pick a brush. Groups share one set of rules; their members differ only in look.",
+        "Algae grow",
+        "Map saved",
+        "Map shared online",
+        "Import terrain definitions…",
+        "All generators",
+        "Downloading generator…",
+        "Each landscape is shown as a real map at the size and colony count below, which you can change here. Use one to play the map shown.",
+        "Editor tool: generates terrain for the map editor.",
+        "Enable installed families below. Selection is saved in this local profile; existing maps and saves keep their own buildings. For online play, generate a map with these families, publish it in the map library, then choose that map in your room.",
+        "Generator file hash mismatch",
+        "Generator installed. Future selections use this release.",
+        "Generator package identity mismatch",
+        "Generators",
+        "Map generators",
+        "My generators",
+        "Playable generator",
+        "Saving generator library…",
+        "Enter: send a chat message",
+        "V: hold to speak",
+        "The default number of units assigned",
+        "Generation failed. Adjust settings or press Start to retry.",
+        "Preview unavailable. Adjust settings or start to retry.",
+        "Generation failed. Adjust settings or try again.",
+        "Map settings changed. Generate a new preview or start.",
+        "Add key to sequence",
+        "Add shortcut",
+        "Adjust assigned units with the wheel. When off, hold Ctrl. Shift adjusts flag radius. Also controls wheel input in other menus.",
+        "Adjust music and voice volume.",
+        "Adjust the pace of play.",
+        "Advanced binding",
+        "Artwork & effects",
+        "Audio",
+        "Bind Escape",
+        "Building",
+        "Building defaults",
+        "Cancel",
+        "Changes saved automatically",
+        "Changes you make during play update these defaults for future games.",
+        "Changing the renderer requires a restart.",
+        "Choose a binding to change it, or add another shortcut for an action.",
+        "Choose a window or fill the screen.",
+        "Choose how the game looks on your screen.",
+        "Completed",
+        "Construction",
+        "Controls",
+        "Could not change display mode. The previous mode was restored.",
+        "Could not save",
+        "Current display",
+        "Default",
+        "Display",
+        "Display & graphics",
+        "Display the ZXQPH0QXZ cursor.",
+        "Done",
+        "Edit shortcut",
+        "Multiply the operating system display scale for menus, text and the sidebar.",
+        "Flags",
+        "Full",
+        "Fullscreen"
+      ]
+    }
+  },
+  "response": {
+    "translations": [
+      {
+        "translatedText": "कटक",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पडीक जमीन",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "खडबडीत जमीन",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "लावा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सुपीक जमीन",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "खोल पाणी",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "रिक्त",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सानुकूल",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "क्लासिक ग्राउंड",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "चालण्यायोग्य",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पोहण्यायोग्य",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "दुर्गम",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "उड्डाण नाही",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "बांधण्यायोग्य",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "वेग ZXQPH0QXZ%",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पिके वाढतात",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "जवळच्या जमिनीला पाणी देते",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "जवळपासची वाढ थांबवते",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "शॉट्स अडवतो",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "चालणाऱ्यांना दुखापत होते",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "प्रवाशांना इजा होते",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "एक ब्रश निवडा. गटांचे नियम एकच असतात; त्यांचे सदस्य फक्त दिसण्यात वेगळे असतात.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "शेवाळ वाढते",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नकाशा जतन केला",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ऑनलाइन शेअर केलेला नकाशा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "भूभागाच्या व्याख्या आयात करा…",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सर्व जनरेटर",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "जनरेटर डाउनलोड करत आहे…",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "प्रत्येक भूप्रदेश खाली दिलेल्या आकारात आणि वसाहतींच्या संख्येसह एका वास्तविक नकाशाच्या स्वरूपात दाखवला आहे, जो तुम्ही येथे बदलू शकता. दाखवलेला नकाशा खेळण्यासाठी त्यापैकी एकाचा वापर करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "एडिटर टूल: मॅप एडिटरसाठी भूभाग तयार करते.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "खालील इन्स्टॉल केलेले फॅमिली सक्षम करा. निवड या लोकल प्रोफाइलमध्ये सेव्ह केली जाते; विद्यमान नकाशे आणि सेव्ह केलेल्या फाइल्स त्यांच्या स्वतःच्या इमारती कायम ठेवतात. ऑनलाइन खेळण्यासाठी, या फॅमिली वापरून एक नकाशा तयार करा, तो नकाशा लायब्ररीमध्ये प्रकाशित करा, आणि मग तुमच्या रूममध्ये तो नकाशा निवडा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "जनरेटर फाइल हॅश जुळत नाही",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "जनरेटर स्थापित झाला आहे. पुढील निवडींसाठी हीच आवृत्ती वापरली जाईल.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "जनरेटर पॅकेज आयडेंटिटी जुळत नाही",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "जनरेटर",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नकाशा जनरेटर",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "माझे जनरेटर",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "खेळण्यायोग्य जनरेटर",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "जनरेटर लायब्ररी जतन करत आहे…",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "प्रवेश करा: चॅट संदेश पाठवा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "V: बोलण्यासाठी धरून ठेवा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नेमून दिलेल्या युनिट्सची डीफॉल्ट संख्या",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "निर्मिती अयशस्वी झाली. सेटिंग्जमध्ये बदल करा किंवा पुन्हा प्रयत्न करण्यासाठी 'स्टार्ट' दाबा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पूर्वावलोकन उपलब्ध नाही. सेटिंग्जमध्ये बदल करा किंवा पुन्हा प्रयत्न करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "निर्मिती अयशस्वी झाली. सेटिंग्जमध्ये बदल करा किंवा पुन्हा प्रयत्न करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नकाशाची सेटिंग्ज बदलली आहेत. नवीन पूर्वावलोकन तयार करा किंवा सुरू करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अनुक्रमात की जोडा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "शॉर्टकट जोडा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "व्हील वापरून नेमून दिलेले युनिट्स समायोजित करा. बंद असताना, Ctrl दाबून ठेवा. Shift दाबून फ्लॅगची त्रिज्या समायोजित करता येते. तसेच, इतर मेन्यूमधील व्हील इनपुटवरही नियंत्रण ठेवते.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "संगीत आणि आवाजाची पातळी समायोजित करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "खेळाची गती समायोजित करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "प्रगत बंधन",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कलाकृती आणि प्रभाव",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ऑडिओ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "बंधन सुटका",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "इमारत",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "डीफॉल्ट तयार करणे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "रद्द करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "बदल आपोआप जतन झाले",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "खेळताना तुम्ही केलेले बदल भविष्यातील खेळांसाठी हे डीफॉल्ट्स अद्ययावत करतात.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "रेंडरर बदलण्यासाठी रीस्टार्ट करणे आवश्यक आहे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ते बदलण्यासाठी बाइंडिंग निवडा, किंवा एखाद्या कृतीसाठी दुसरा शॉर्टकट जोडा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "एक विंडो निवडा किंवा स्क्रीन भरा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तुमच्या स्क्रीनवर गेम कसा दिसेल ते निवडा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पूर्ण झाले",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "बांधकाम",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नियंत्रणे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "डिस्प्ले मोड बदलता आला नाही. पूर्वीचा मोड पूर्ववत करण्यात आला.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "वाचवता आले नाही",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "वर्तमान प्रदर्शन",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "डीफॉल्ट",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "प्रदर्शन",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "डिस्प्ले आणि ग्राफिक्स",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ कर्सर दाखवा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पूर्ण झाले",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "शॉर्टकट संपादित करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "मेनू, मजकूर आणि साइडबारसाठी ऑपरेटिंग सिस्टम डिस्प्ले स्केलला गुणाकार करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ध्वज",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पूर्ण",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पूर्ण स्क्रीन",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      }
+    ]
+  },
+  "response_sha256": "e4d8943325373eb15b02de42846dc6cedcdf4ad57ccdcfe7e145f611ca737ed6"
+}

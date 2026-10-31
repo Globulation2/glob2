@@ -1,0 +1,507 @@
+{
+  "batch": "native-general-007",
+  "source_sha256": "0ac44b4cdfb03e688983d6e3fb1e484cca57589665bff19c5c65388e649b292a",
+  "rows": [
+    {
+      "id": "native:[The causeways are too close together; use fewer or narrower causeways, or a bigger centre.]",
+      "source": "The causeways are too close together; use fewer or narrower causeways, or a bigger centre.",
+      "target": "पूल खूप जवळजवळ आहेत; कमी किंवा अरुंद पूल वापरा, किंवा एक मोठे केंद्र वापरा."
+    },
+    {
+      "id": "native:[Ring world]",
+      "source": "Ring world",
+      "target": "रिंग वर्ल्ड"
+    },
+    {
+      "id": "native:[Belt width]",
+      "source": "Belt width",
+      "target": "बेल्टची रुंदी"
+    },
+    {
+      "id": "native:[City states]",
+      "source": "City states",
+      "target": "शहर राज्ये"
+    },
+    {
+      "id": "native:[Strait width]",
+      "source": "Strait width",
+      "target": "सामुद्रधुनीची रुंदी"
+    },
+    {
+      "id": "native:[Valleys]",
+      "source": "Valleys",
+      "target": "दऱ्या"
+    },
+    {
+      "id": "native:[Frontier richness]",
+      "source": "Frontier richness",
+      "target": "सीमावर्ती समृद्धी"
+    },
+    {
+      "id": "native:[City states need at least one colony.]",
+      "source": "City states need at least one colony.",
+      "target": "शहर राज्यांना किमान एका वसाहतीची गरज असते."
+    },
+    {
+      "id": "native:[Stone walls]",
+      "source": "Stone walls",
+      "target": "दगडी भिंती"
+    },
+    {
+      "id": "native:[Sand patches]",
+      "source": "Sand patches",
+      "target": "वाळूचे ठिपके"
+    },
+    {
+      "id": "native:[Tidal flats]",
+      "source": "Tidal flats",
+      "target": "भरती-ओहोटीचे सपाट प्रदेश"
+    },
+    {
+      "id": "native:[Everglades]",
+      "source": "Everglades",
+      "target": "एव्हरग्लेड्स"
+    },
+    {
+      "id": "native:[Pool spacing]",
+      "source": "Pool spacing",
+      "target": "पूलमधील अंतर"
+    },
+    {
+      "id": "native:[Pool size]",
+      "source": "Pool size",
+      "target": "पूलचा आकार"
+    },
+    {
+      "id": "native:[Clearing size]",
+      "source": "Clearing size",
+      "target": "साफ करण्याचे आकार"
+    },
+    {
+      "id": "native:[Levee]",
+      "source": "Levee",
+      "target": "लेव्ही"
+    },
+    {
+      "id": "native:[Sloughs]",
+      "source": "Sloughs",
+      "target": "दलदली"
+    },
+    {
+      "id": "native:[Everglades need at least one colony.]",
+      "source": "Everglades need at least one colony.",
+      "target": "एव्हरग्लेड्सला किमान एका वसाहतीची गरज आहे."
+    },
+    {
+      "id": "native:[Coral]",
+      "source": "Coral",
+      "target": "प्रवाळ"
+    },
+    {
+      "id": "native:[Fork angle]",
+      "source": "Fork angle",
+      "target": "काटा कोन"
+    },
+    {
+      "id": "native:[Lean]",
+      "source": "Lean",
+      "target": "लीन"
+    },
+    {
+      "id": "native:[Home size]",
+      "source": "Home size",
+      "target": "घराचा आकार"
+    },
+    {
+      "id": "native:[The coral does not fit this map; use a bigger map, narrower straits or fewer colonies.]",
+      "source": "The coral does not fit this map; use a bigger map, narrower straits or fewer colonies.",
+      "target": "प्रवाळ या नकाशात बसत नाही; मोठा नकाशा, अरुंद सामुद्रधुनी किंवा कमी वसाहती वापरा."
+    },
+    {
+      "id": "native:[Branching]",
+      "source": "Branching",
+      "target": "शाखा"
+    },
+    {
+      "id": "native:[Branch width]",
+      "source": "Branch width",
+      "target": "फांदीची रुंदी"
+    },
+    {
+      "id": "native:[Coral needs at least one colony.]",
+      "source": "Coral needs at least one colony.",
+      "target": "प्रवाळाला किमान एका वसाहतीची गरज असते."
+    },
+    {
+      "id": "native:[Carousel]",
+      "source": "Carousel",
+      "target": "कॅरोसेल"
+    },
+    {
+      "id": "native:[Amphitheatre]",
+      "source": "Amphitheatre",
+      "target": "अॅम्फीथिएटर"
+    },
+    {
+      "id": "native:[Switchbacks]",
+      "source": "Switchbacks",
+      "target": "स्विचबॅक"
+    },
+    {
+      "id": "native:[Corridor width]",
+      "source": "Corridor width",
+      "target": "कॉरिडॉरची रुंदी"
+    },
+    {
+      "id": "native:[Spoke width]",
+      "source": "Spoke width",
+      "target": "स्पोकची रुंदी"
+    },
+    {
+      "id": "native:[Court size]",
+      "source": "Court size",
+      "target": "कोर्टाचा आकार"
+    },
+    {
+      "id": "native:[Court wall]",
+      "source": "Court wall",
+      "target": "न्यायालयाची भिंत"
+    },
+    {
+      "id": "native:[Plaza size]",
+      "source": "Plaza size",
+      "target": "प्लाझा आकार"
+    },
+    {
+      "id": "native:[Starting tower level]",
+      "source": "Starting tower level",
+      "target": "टॉवरची सुरुवातीची पातळी"
+    },
+    {
+      "id": "native:[Towers per colony]",
+      "source": "Towers per colony",
+      "target": "प्रत्येक वसाहतीतील टॉवर"
+    },
+    {
+      "id": "native:[Rings]",
+      "source": "Rings",
+      "target": "रिंग्ज"
+    },
+    {
+      "id": "native:[Ramp width]",
+      "source": "Ramp width",
+      "target": "रॅम्पची रुंदी"
+    },
+    {
+      "id": "native:[Pit size]",
+      "source": "Pit size",
+      "target": "खड्ड्याचा आकार"
+    },
+    {
+      "id": "native:[Terrace width]",
+      "source": "Terrace width",
+      "target": "टेरेसची रुंदी"
+    },
+    {
+      "id": "native:[Bay size]",
+      "source": "Bay size",
+      "target": "खाडीचा आकार"
+    },
+    {
+      "id": "native:[Border wall]",
+      "source": "Border wall",
+      "target": "सीमा भिंत"
+    },
+    {
+      "id": "native:[Plateau size]",
+      "source": "Plateau size",
+      "target": "पठाराचा आकार"
+    },
+    {
+      "id": "native:[Trail width]",
+      "source": "Trail width",
+      "target": "पायवाटेची रुंदी"
+    },
+    {
+      "id": "native:[Wall between legs]",
+      "source": "Wall between legs",
+      "target": "पायांमधील भिंत"
+    },
+    {
+      "id": "native:[Sand bridges over water]",
+      "source": "Sand bridges over water",
+      "target": "पाण्यावरील वाळूचे पूल"
+    },
+    {
+      "id": "native:[Sand lanes through crops]",
+      "source": "Sand lanes through crops",
+      "target": "पिकांमधून जाणारे वाळूचे पट्टे"
+    },
+    {
+      "id": "native:[Carousels need at least two colonies.]",
+      "source": "Carousels need at least two colonies.",
+      "target": "कॅरोसेलला किमान दोन वसाहतींची आवश्यकता असते."
+    },
+    {
+      "id": "native:[Switchbacks need at least two colonies.]",
+      "source": "Switchbacks need at least two colonies.",
+      "target": "वळणांना किमान दोन वसाहतींची गरज असते."
+    },
+    {
+      "id": "native:[An amphitheatre needs at least two colonies.]",
+      "source": "An amphitheatre needs at least two colonies.",
+      "target": "एका ॲम्फिथिएटरला किमान दोन वसाहतींची आवश्यकता असते."
+    },
+    {
+      "id": "native:[The carousel does not fit this map; use a bigger map, smaller homes or fewer colonies.]",
+      "source": "The carousel does not fit this map; use a bigger map, smaller homes or fewer colonies.",
+      "target": "कॅरोसेल या नकाशात बसत नाही; मोठा नकाशा, लहान घरे किंवा कमी वसाहती वापरा."
+    },
+    {
+      "id": "native:[The switchbacks do not fit this map; use a bigger map, a smaller plateau, narrower trails or fewer colonies.]",
+      "source": "The switchbacks do not fit this map; use a bigger map, a smaller plateau, narrower trails or fewer colonies.",
+      "target": "हे नागमोडी मार्ग या नकाशात बसत नाहीत; मोठा नकाशा, लहान पठार, अरुंद पायवाटा किंवा कमी वसाहती वापरा."
+    },
+    {
+      "id": "native:[The amphitheatre does not fit this map; use a bigger map, fewer rings, narrower terraces or fewer colonies.]",
+      "source": "The amphitheatre does not fit this map; use a bigger map, fewer rings, narrower terraces or fewer colonies.",
+      "target": "हे ॲम्फिथिएटर या नकाशात बसत नाही; मोठा नकाशा, कमी कड्या, अरुंद सज्जे किंवा कमी वसाहती वापरा."
+    },
+    {
+      "id": "native:[Spider webs need at least one colony.]",
+      "source": "Spider webs need at least one colony.",
+      "target": "कोळ्याच्या जाळ्याला किमान एका वसाहतीची गरज असते."
+    },
+    {
+      "id": "native:[Spiral]",
+      "source": "Spiral",
+      "target": "सर्पिल"
+    },
+    {
+      "id": "native:[Dew drops]",
+      "source": "Dew drops",
+      "target": "दवबिंदू"
+    },
+    {
+      "id": "native:[Hub size]",
+      "source": "Hub size",
+      "target": "हब आकार"
+    },
+    {
+      "id": "native:[Torn strands]",
+      "source": "Torn strands",
+      "target": "फाटलेले धागे"
+    },
+    {
+      "id": "native:[Sag]",
+      "source": "Sag",
+      "target": "सॅग"
+    },
+    {
+      "id": "native:[Thread width]",
+      "source": "Thread width",
+      "target": "धाग्याची रुंदी"
+    },
+    {
+      "id": "native:[Ring spacing]",
+      "source": "Ring spacing",
+      "target": "रिंग अंतर"
+    },
+    {
+      "id": "native:[Spokes per colony]",
+      "source": "Spokes per colony",
+      "target": "प्रत्येक वसाहतीचे स्पोक्स"
+    },
+    {
+      "id": "native:[Spider web]",
+      "source": "Spider web",
+      "target": "कोळ्याचे जाळे"
+    },
+    {
+      "id": "native:[Tide pools]",
+      "source": "Tide pools",
+      "target": "भरती-ओहोटीचे डबके"
+    },
+    {
+      "id": "native:[Lagoons]",
+      "source": "Lagoons",
+      "target": "सरोवरे"
+    },
+    {
+      "id": "native:[Tidal flats need at least one colony.]",
+      "source": "Tidal flats need at least one colony.",
+      "target": "भरती-ओहोटीच्या सपाट प्रदेशाला किमान एका वसाहतीची गरज असते."
+    },
+    {
+      "id": "native:[The commons and the strait leave too little room for the home bases; use a bigger map, fewer colonies, a smaller commons or a narrower strait.]",
+      "source": "The commons and the strait leave too little room for the home bases; use a bigger map, fewer colonies, a smaller commons or a narrower strait.",
+      "target": "सामाईक प्रदेश आणि सामुद्रधुनीमुळे मुख्य तळांसाठी खूपच कमी जागा उरते; त्याऐवजी मोठा नकाशा, कमी वसाहती, लहान सामाईक प्रदेश किंवा अरुंद सामुद्रधुनी वापरा."
+    },
+    {
+      "id": "native:[Wheat amount]",
+      "source": "Wheat amount",
+      "target": "गव्हाचे प्रमाण"
+    },
+    {
+      "id": "native:[Wood amount]",
+      "source": "Wood amount",
+      "target": "लाकडाचे प्रमाण"
+    },
+    {
+      "id": "native:[Stone amount]",
+      "source": "Stone amount",
+      "target": "दगडाचे प्रमाण"
+    },
+    {
+      "id": "native:[Algae amount]",
+      "source": "Algae amount",
+      "target": "शैवालाचे प्रमाण"
+    },
+    {
+      "id": "native:[Stone on hilltops]",
+      "source": "Stone on hilltops",
+      "target": "टेकड्यांवरील दगड"
+    },
+    {
+      "id": "native:[Sandy beaches]",
+      "source": "Sandy beaches",
+      "target": "वाळूचे किनारे"
+    },
+    {
+      "id": "native:[Land bridges]",
+      "source": "Land bridges",
+      "target": "भूसेतू"
+    },
+    {
+      "id": "native:[Colony meadows]",
+      "source": "Colony meadows",
+      "target": "वसाहतीची कुरणे"
+    },
+    {
+      "id": "native:[Extra starting deposit]",
+      "source": "Extra starting deposit",
+      "target": "अतिरिक्त सुरुवातीची ठेव"
+    },
+    {
+      "id": "native:[Moat bridges]",
+      "source": "Moat bridges",
+      "target": "खंदकाचे पूल"
+    },
+    {
+      "id": "native:[Jagged coastlines]",
+      "source": "Jagged coastlines",
+      "target": "खडबडीत किनारपट्टी"
+    },
+    {
+      "id": "native:[Sand roads]",
+      "source": "Sand roads",
+      "target": "वाळूचे रस्ते"
+    },
+    {
+      "id": "native:[Treasure in dead ends]",
+      "source": "Treasure in dead ends",
+      "target": "बंद मार्गांमधील खजिना"
+    },
+    {
+      "id": "native:[Fjord bank deposits]",
+      "source": "Fjord bank deposits",
+      "target": "फ्योर्ड बँक ठेवी"
+    },
+    {
+      "id": "native:[Moat]",
+      "source": "Moat",
+      "target": "खंदक"
+    },
+    {
+      "id": "native:[Stone in the orchard]",
+      "source": "Stone in the orchard",
+      "target": "फळबागेतील दगड"
+    },
+    {
+      "id": "native:[Colonies on both coasts]",
+      "source": "Colonies on both coasts",
+      "target": "दोन्ही किनाऱ्यांवरील वसाहती"
+    },
+    {
+      "id": "native:[Winding belt]",
+      "source": "Winding belt",
+      "target": "विंडिंग बेल्ट"
+    },
+    {
+      "id": "native:[Cell shape]",
+      "source": "Cell shape",
+      "target": "पेशीचा आकार"
+    },
+    {
+      "id": "native:[Squares]",
+      "source": "Squares",
+      "target": "चौरस"
+    },
+    {
+      "id": "native:[Hexagons]",
+      "source": "Hexagons",
+      "target": "षटकोन"
+    },
+    {
+      "id": "native:[Warp]",
+      "source": "Warp",
+      "target": "वार्प"
+    },
+    {
+      "id": "native:[Fingerprint]",
+      "source": "Fingerprint",
+      "target": "बोटांचे ठसे"
+    },
+    {
+      "id": "native:[Wavelength]",
+      "source": "Wavelength",
+      "target": "तरंगलांबी"
+    },
+    {
+      "id": "native:[Pattern]",
+      "source": "Pattern",
+      "target": "नमुना"
+    },
+    {
+      "id": "native:[Labyrinth]",
+      "source": "Labyrinth",
+      "target": "भूलभुलैया"
+    },
+    {
+      "id": "native:[Channels]",
+      "source": "Channels",
+      "target": "चॅनेल"
+    },
+    {
+      "id": "native:[Barrier]",
+      "source": "Barrier",
+      "target": "अडथळा"
+    },
+    {
+      "id": "native:[Water]",
+      "source": "Water",
+      "target": "पाणी"
+    },
+    {
+      "id": "native:[Grain]",
+      "source": "Grain",
+      "target": "धान्य"
+    },
+    {
+      "id": "native:[Rain shadow]",
+      "source": "Rain shadow",
+      "target": "पर्जन्यछाये"
+    },
+    {
+      "id": "native:[Ridges]",
+      "source": "Ridges",
+      "target": "कटक"
+    },
+    {
+      "id": "native:[Slant]",
+      "source": "Slant",
+      "target": "तिरकस"
+    }
+  ],
+  "subset_sha256": "92077c631b9dab24d3cb7b2fce5c1fda2358cecd902b6019c54360bf381f8620"
+}

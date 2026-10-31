@@ -1,0 +1,418 @@
+{
+  "request": {
+    "project": "bradley-personal-20261027",
+    "model": "general/nmt",
+    "payload": {
+      "sourceLanguageCode": "en",
+      "targetLanguageCode": "mr",
+      "mimeType": "text/plain",
+      "contents": [
+        "% of ZXQPH0QXZ",
+        "% of all colonies",
+        "% of the colony's units",
+        "ZXQPH0QXZ per minute, per 100 units in the colony",
+        "ZXQPH0QXZ per 100 units in the colony",
+        "ZXQPH0QXZ per minute",
+        "ZXQPH0QXZ, running total",
+        "ZXQPH0QXZ-minute average",
+        "Per minute",
+        "Total",
+        "ZXQPH0QXZ min",
+        "Split by kind",
+        "As % of total",
+        "As % of colony",
+        "Relative to colony size",
+        "Share of all colonies",
+        "Highlight: none",
+        "Peak units",
+        "Born",
+        "Lost",
+        "Food",
+        "Damage dealt",
+        "Damage taken",
+        "Built",
+        "Prestige",
+        "last unit lost",
+        "first unit killed in combat",
+        "This statistic was not recorded for this match.",
+        "The result was no longer in doubt.",
+        "/min",
+        "Colony",
+        "ZXQPH0QXZ/ZXQPH1QXZ  >",
+        "deaths",
+        "growth",
+        "By unit type",
+        "By state",
+        "By material",
+        "By kind of work",
+        "By cause",
+        "By weapon",
+        "By distance",
+        "Nothing to show: this did not happen in this match.",
+        "ZXQPH0QXZ (none)",
+        "Match",
+        "Time limit",
+        "Alliances can change",
+        "Starting unit level",
+        "Starting stockpile",
+        "Regrowth",
+        "Wounded units retreat",
+        "Units can die",
+        "Upgrades",
+        "None",
+        "Off",
+        "How quickly harvested resources grow back and spread.",
+        "Units must eat to keep working.",
+        "Summary",
+        "All rules",
+        "Show all rules",
+        "Choose a ruleset",
+        "Reset to ZXQPH0QXZ",
+        "ZXQPH0QXZ + 1 change",
+        "ZXQPH0QXZ + ZXQPH1QXZ changes",
+        "This match cannot end. Turn on prestige victory or set a time limit.",
+        "Prestige usually appears after 13 to 28 minutes, so a 30-minute limit often ends in a tie.",
+        "Blitz",
+        "Fast start, early finish",
+        "Gentle",
+        "Forgiving rules for a first match",
+        "Sandbox",
+        "No fighting, no starving, build anything",
+        "Bloodbath",
+        "Fragile, fearless armies",
+        "Siege",
+        "Fortress walls and long wars",
+        "Lean years",
+        "Resources barely come back",
+        "Gold rush",
+        "What's on the map is all there is",
+        "Elite ranks"
+      ]
+    }
+  },
+  "response": {
+    "translations": [
+      {
+        "translatedText": "ZXQPH0QXZ ची टक्केवारी",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सर्व वसाहतींची टक्केवारी",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "वसाहतीच्या युनिट्सची टक्केवारी",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ प्रति मिनिट, वसाहतीमधील प्रति १०० युनिट्स",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "वसाहतीमध्ये प्रति १०० युनिट्स ZXQPH0QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ प्रति मिनिट",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ, चालू एकूण",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ-मिनिटांची सरासरी",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "प्रति मिनिट",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "एकूण",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ किमान",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "प्रकारानुसार विभागणी",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "एकूणच्या टक्केवारीनुसार",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "वसाहतीच्या टक्केवारीनुसार",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "वसाहतीच्या आकाराच्या तुलनेत",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सर्व वसाहतींचा वाटा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ठळक वैशिष्ट्य: काहीही नाही",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "शिखर युनिट्स",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "जन्म",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "हरवले",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अन्न",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "झालेले नुकसान",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "झालेले नुकसान",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "बांधले",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "प्रतिष्ठा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "शेवटचे युनिट गमावले",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "लढाईत ठार झालेले पहिले पथक",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "या सामन्यासाठी ही आकडेवारी नोंदवली गेली नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "निकालाबाबत आता कोणतीही शंका उरली नव्हती.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "/मिनिट",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कॉलनी",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ/ZXQPH1QXZ >",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "मृतांची संख्या",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "वाढ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "युनिट प्रकारानुसार",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "राज्यानुसार",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सामग्रीनुसार",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कामाच्या प्रकारानुसार",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कारणामुळे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "शस्त्राने",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अंतराने",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "दाखवण्यासारखे काही नाही: या सामन्यात असे घडले नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ (काहीही नाही)",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सामना",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "वेळेची मर्यादा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "युती बदलू शकतात",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सुरुवातीच्या युनिट स्तरावर",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सुरुवातीचा साठा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पुन्हा वाढ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "जखमी तुकड्या माघार घेतात",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "युनिट्स नष्ट होऊ शकतात",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अपग्रेड",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "काहीही नाही",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "बंद",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कापणी केलेली संसाधने किती लवकर पुन्हा वाढतात आणि पसरतात.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "यंत्रांना काम करत राहण्यासाठी अन्नाची गरज असते.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सारांश",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सर्व नियम",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सर्व नियम दाखवा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नियमसंच निवडा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ वर रीसेट करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ + १ बदल",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ + ZXQPH1QXZ बदल",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "हा सामना संपू शकत नाही. प्रतिष्ठेचा विजय मिळवा किंवा वेळेची मर्यादा निश्चित करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "साधारणपणे १३ ते २८ मिनिटांनंतर सामन्याची रंगत दिसून येते, त्यामुळे ३० मिनिटांची मर्यादा अनेकदा बरोबरीत संपते.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ब्लिट्झ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "जलद सुरुवात, लवकर शेवट",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सौम्य",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पहिल्या सामन्यासाठी सोपे नियम",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सँडबॉक्स",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "भांडण नाही, उपासमार नाही, काहीही बांधा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "रक्तपात",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नाजूक, निर्भय सैन्य",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "वेढा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "किल्ल्यांच्या भिंती आणि दीर्घकाळ चालणारी युद्धे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "दुष्काळाची वर्षे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "संसाधने क्वचितच परत येतात.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सोन्याचा शोध",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नकाशावर जे आहे, तेवढेच सर्व काही आहे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "उच्चभ्रू श्रेणी",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      }
+    ]
+  },
+  "response_sha256": "1a158cd75fec297886f659417e15620227df74168d890c20a7b08a37fcb39162"
+}

@@ -1,0 +1,418 @@
+{
+  "request": {
+    "project": "bradley-personal-20261027",
+    "model": "general/nmt",
+    "payload": {
+      "sourceLanguageCode": "en",
+      "targetLanguageCode": "mr",
+      "mimeType": "text/plain",
+      "contents": [
+        "hand-made",
+        "no sign-in methods",
+        "one unit per harvest",
+        "stock remains available after harvesting",
+        "the whole stock per harvest",
+        "usage pending",
+        "with ZXQPH0QXZ ",
+        "ZXQPH0QXZ credit",
+        "ZXQPH0QXZ credits",
+        "ZXQPH0QXZ credits",
+        "ZXQPH0QXZ player on this page",
+        "ZXQPH0QXZ players on this page",
+        "ZXQPH0QXZ players on this page",
+        "ZXQPH0QXZ team · ",
+        "ZXQPH0QXZ teams · ",
+        "ZXQPH0QXZ teams · ",
+        "ZXQPH0QXZ version",
+        "ZXQPH0QXZ versions",
+        "ZXQPH0QXZ versions",
+        "ZXQPH0QXZ ZXQPH1QXZ",
+        "ZXQPH0QXZ · ZXQPH1QXZ image",
+        "ZXQPH0QXZ · ZXQPH1QXZ images",
+        "ZXQPH0QXZ · ZXQPH1QXZ images",
+        "ZXQPH0QXZ HP per exposed tick",
+        "ZXQPH0QXZ Your credit was returned.",
+        "ZXQPH0QXZ copy",
+        "ZXQPH0QXZ not found",
+        "ZXQPH0QXZ playing",
+        "ZXQPH0QXZ request needs attention in Preview.",
+        "ZXQPH0QXZ response ready in Preview.",
+        "ZXQPH0QXZ seconds",
+        "ZXQPH0QXZ selected",
+        "ZXQPH0QXZ ZXQPH1QXZ attention",
+        "ZXQPH0QXZ · revision ZXQPH1QXZ",
+        "ZXQPH0QXZ × ZXQPH1QXZ preview pixels",
+        "ZXQPH0QXZ × ZXQPH1QXZ · ZXQPH2QXZ players",
+        "ZXQPH0QXZ% saturation, ZXQPH1QXZ% brightness",
+        "ZXQPH0QXZ: ZXQPH1QXZ open",
+        "ZXQPH0QXZ: ZXQPH1QXZ searching",
+        "ZXQPH0QXZ× wheat",
+        "ZXQPH0QXZ’s average",
+        "× Compatibility checks failed",
+        "▶ Let the globs roam",
+        "★ Favourited",
+        "☆ Favourite",
+        "♡ Like",
+        "♥ Liked",
+        "✓ Passed compatibility checks",
+        "✓ uploaded",
+        "❚❚ Pause the globs",
+        "Converted terrain",
+        "Native terrain preview · awaiting checks",
+        "Generated layout · intermediate image",
+        "Selected map area",
+        "Cropped layout · intermediate image",
+        "Landscape reference ZXQPH0QXZ",
+        "Composition source · edit ZXQPH0QXZ",
+        "Candidate ZXQPH0QXZ execution report",
+        "Candidate ZXQPH0QXZ score",
+        "Candidate ZXQPH0QXZ · validated",
+        "Candidate ZXQPH0QXZ · needs repairs",
+        "Candidate ZXQPH0QXZ report",
+        "Validation report",
+        "Game-rendered scene and resource gallery",
+        "Native validation report",
+        "Engine import and artwork",
+        "Engine definitions and artwork",
+        "Requested size and players",
+        "Valid colony starts",
+        "Resource growth enabled",
+        "Connected walking routes",
+        "Opening economy measured",
+        "Colony ZXQPH0QXZ: building space",
+        "Colony ZXQPH0QXZ: starter food",
+        "Colony ZXQPH0QXZ: starter timber",
+        "Colony ZXQPH0QXZ: renewable food ground",
+        "Properties",
+        "Semantics",
+        "Presentation",
+        "ZXQPH0QXZ source"
+      ]
+    }
+  },
+  "response": {
+    "translations": [
+      {
+        "translatedText": "हस्तनिर्मित",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "साइन-इन पद्धती नाहीत",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "प्रत्येक कापणीसाठी एक युनिट",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कापणीनंतर साठा उपलब्ध राहतो.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "प्रत्येक कापणीला संपूर्ण साठा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "वापर प्रलंबित",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ सह",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ क्रेडिट",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ क्रेडिट्स",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ क्रेडिट्स",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "या पानावर ZXQPH0QXZ प्लेअर",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "या पृष्ठावरील ZXQPH0QXZ खेळाडू",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "या पृष्ठावरील ZXQPH0QXZ खेळाडू",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ टीम ·",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ संघ ·",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ संघ ·",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ आवृत्ती",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ आवृत्त्या",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ आवृत्त्या",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ ZXQPH1QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ · ZXQPH1QXZ प्रतिमा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ · ZXQPH1QXZ प्रतिमा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ · ZXQPH1QXZ प्रतिमा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ HP प्रति उघड्या गोचिड",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ तुमची क्रेडिट रक्कम परत करण्यात आली आहे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ प्रत",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ सापडले नाही",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ खेळत आहे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "प्रीव्ह्यूमध्ये ZXQPH0QXZ विनंतीकडे लक्ष देण्याची गरज आहे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ प्रतिसाद प्रिव्ह्यूमध्ये तयार आहे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ सेकंद",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ निवडले",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ ZXQPH1QXZ लक्ष द्या",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ · सुधारित आवृत्ती ZXQPH1QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ × ZXQPH1QXZ पूर्वावलोकन पिक्सेल",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ × ZXQPH1QXZ · ZXQPH2QXZ खेळाडू",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ% सॅचुरेशन, ZXQPH1QXZ% ब्राइटनेस",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ: ZXQPH1QXZ उघडे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ: ZXQPH1QXZ शोधत आहे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ× गहू",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ ची सरासरी",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सुसंगतता तपासणी अयशस्वी झाली",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "▶ ग्लोब्सना फिरू द्या",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "★ पसंतीचे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "☆ आवडते",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "♡ लाईक",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "♥ आवडले",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "✓ सुसंगतता तपासणी यशस्वी",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "✓ अपलोड केले",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "❚❚ गोळे थांबवा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "रूपांतरित भूभाग",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "मूळ भूभागाचे पूर्वावलोकन · तपासणीची प्रतीक्षा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तयार केलेला लेआउट · मध्यवर्ती प्रतिमा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "निवडलेला नकाशा क्षेत्र",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "क्रॉप केलेला लेआउट · मध्यवर्ती प्रतिमा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "लँडस्केप संदर्भ ZXQPH0QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "रचना स्रोत · ZXQPH0QXZ संपादित करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "उमेदवार ZXQPH0QXZ अंमलबजावणी अहवाल",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "उमेदवार ZXQPH0QXZ गुण",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "उमेदवार ZXQPH0QXZ · प्रमाणित",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "उमेदवार ZXQPH0QXZ · दुरुस्तीची गरज आहे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "उमेदवार ZXQPH0QXZ अहवाल",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पडताळणी अहवाल",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "गेम-रेंडर केलेले दृश्य आणि संसाधन गॅलरी",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "मूळ प्रमाणीकरण अहवाल",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "इंजिन आयात आणि कलाकृती",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "इंजिन व्याख्या आणि कलाकृती",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "मागितलेला आकार आणि खेळाडू",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "वैध वसाहत सुरू होते",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "संसाधन वाढीस सक्षम केले",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "जोडलेले चालण्याचे मार्ग",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अर्थव्यवस्था उघडण्याचे मोजमाप",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कॉलनी ZXQPH0QXZ: इमारत जागा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कॉलनी ZXQPH0QXZ: स्टार्टर फूड",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कॉलनी ZXQPH0QXZ: सुरुवातीचे लाकूड",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कॉलनी ZXQPH0QXZ: नूतनीकरणक्षम अन्नभूमी",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "मालमत्ता",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अर्थशास्त्र",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सादरीकरण",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ स्रोत",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      }
+    ]
+  },
+  "response_sha256": "525e356ac63d74cb9e2d0874e14ccc78d7044c9e3d5f428ad82787455c499b90"
+}

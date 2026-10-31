@@ -1,0 +1,418 @@
+{
+  "request": {
+    "project": "bradley-personal-20261027",
+    "model": "general/nmt",
+    "payload": {
+      "sourceLanguageCode": "en",
+      "targetLanguageCode": "mr",
+      "mimeType": "text/plain",
+      "contents": [
+        "Malformed Authorization header.",
+        "Manage",
+        "Manage credits",
+        "Manage published family",
+        "Manage the credits for your in-game AI commander.",
+        "Manifest",
+        "Manifest ZXQPH0QXZ: ZXQPH1QXZ",
+        "Manifest release revision: ZXQPH0QXZ. Publishing a new release requires a larger manifest revision.",
+        "Manual blend · Calm → Building → Combat",
+        "Map",
+        "Map Studio",
+        "Map build",
+        "Map build: ZXQPH0QXZ",
+        "Map canvas",
+        "Map comparison",
+        "Map credits",
+        "Map design conversation",
+        "Map designer",
+        "Map details",
+        "Map file (.map or .map.gz)",
+        "Map file (.map or .map.gz, from the game or its map editor)",
+        "Map generator",
+        "Map generators",
+        "Map library",
+        "Map lists",
+        "Map location ZXQPH0QXZ, ZXQPH1QXZ",
+        "Map page",
+        "Map preview · validation did not pass",
+        "Map projects",
+        "Map settings",
+        "Map version uploaded ZXQPH0QXZ",
+        "Map viewport. Use plus and minus to zoom, arrow keys to pan, or zero to fit.",
+        "Map workshop",
+        "Map-credit sales are not enabled.",
+        "Maps",
+        "Maps players love",
+        "Maps players shared. Rooms play them by version, so everyone loads the same file.",
+        "Maps you shared, whatever their visibility.",
+        "Mark this generation failed and return ZXQPH0QXZ reserved product credit(s)? Confirm that its delivery cannot be recovered.",
+        "Match",
+        "Match activity",
+        "Match colony skins",
+        "Match id, account id, player name or relay",
+        "Match not found.",
+        "Match record",
+        "Matches",
+        "Matches you played stay in other players’ history, and their replay files still contain the name you had in the game.",
+        "Matching lengths does not align beats or harmony.",
+        "Material",
+        "Material map pixels must be fully opaque.",
+        "Material map pixels must be grey: red, green and blue equal to the material id.",
+        "Material map pixels must be material ids 0 to ZXQPH0QXZ.",
+        "Material yields",
+        "Maxima",
+        "Maximum health",
+        "Maximum seconds",
+        "Mean seconds per successful delivery, with the number of measured completions.",
+        "Measure",
+        "Measured by the relay; typical value first, then the 95th percentile. Ping: round trip between the player and the relay. ZXQPH0QXZ Behind: how far the player’s game ran behind the match clock, their input delay included. ZXQPH1QXZ Quality is the worst of these and of reconnects, time offline and delayed orders. Offline: time disconnected before reconnecting. Delayed orders: orders that ran a tick later than asked.",
+        "Measured from creation to completion, grouped by request creation day. Only successful requests/jobs with a known completion time contribute; late completions update their original period.",
+        "Measured model usage is charged, including code that later fails tests.",
+        "Measurements flag possible defects. Your ears decide whether the music feels right.",
+        "Medium",
+        "Meet the colonies. Find a player, explore their games, or get to know your next AI opponent.",
+        "Metric",
+        "Minimum seconds",
+        "Minimum total stock",
+        "Mirrored bands",
+        "Mirrored spots",
+        "Missing",
+        "Missing historical measurements are unavailable, rather than reconstructed from last-seen timestamps. Current periods may be partial. Retained account markers cover 90 days; anonymous daily totals cover 24 months.",
+        "Missing payment signature.",
+        "Mix and master",
+        "Mix balance",
+        "Model / stage",
+        "Model and camera versions do not match. Reload to update.",
+        "Model to paint",
+        "Moderate",
+        "Moderation",
+        "Moderation reason"
+      ]
+    }
+  },
+  "response": {
+    "translations": [
+      {
+        "translatedText": "चुकीच्या स्वरूपातील ऑथोरायझेशन हेडर.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "व्यवस्थापन करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "क्रेडिट्स व्यवस्थापित करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "प्रकाशित कुटुंबाचे व्यवस्थापन करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तुमच्या इन-गेम एआय कमांडरच्या क्रेडिट्सचे व्यवस्थापन करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "जाहीर",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "मॅनिफेस्ट ZXQPH0QXZ: ZXQPH1QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "मॅनिफेस्ट रिलीज रिव्हिजन: ZXQPH0QXZ. नवीन रिलीज प्रकाशित करण्यासाठी मोठ्या मॅनिफेस्ट रिव्हिजनची आवश्यकता आहे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "मॅन्युअल ब्लेंड · शांतता → उभारणी → लढाई",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नकाशा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "मॅप स्टुडिओ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नकाशा तयार करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नकाशा निर्मिती: ZXQPH0QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नकाशा कॅनव्हास",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नकाशा तुलना",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नकाशा श्रेय",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नकाशा डिझाइन चर्चा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नकाशा डिझायनर",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नकाशा तपशील",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "मॅप फाईल (.map किंवा .map.gz)",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "मॅप फाईल (.map किंवा .map.gz, गेममधून किंवा त्याच्या मॅप एडिटरमधून)",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नकाशा जनरेटर",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नकाशा जनरेटर",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नकाशा लायब्ररी",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नकाशा सूची",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नकाशावरील स्थान ZXQPH0QXZ, ZXQPH1QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नकाशा पृष्ठ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नकाशा पूर्वावलोकन · पडताळणी यशस्वी झाली नाही",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नकाशा प्रकल्प",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नकाशा सेटिंग्ज",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नकाशाची आवृत्ती अपलोड केली ZXQPH0QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नकाशा व्ह्यूपोर्ट. झूम करण्यासाठी प्लस आणि मायनस, पॅन करण्यासाठी ॲरो की किंवा फिट करण्यासाठी झिरो वापरा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नकाशा कार्यशाळा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "मॅप-क्रेडिट विक्री सक्षम केलेली नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नकाशे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "खेळाडूंना आवडणारे नकाशे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "खेळाडूंनी शेअर केलेले नकाशे. रूम्स ते आवृत्तीनुसार खेळतात, त्यामुळे प्रत्येकजण तीच फाईल लोड करतो.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तुम्ही शेअर केलेले नकाशे, त्यांची दृश्यमानता काहीही असो.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ही पिढी अयशस्वी म्हणून चिन्हांकित करा आणि ZXQPH0QXZ आरक्षित उत्पादन क्रेडिट्स परत करा? त्याची डिलिव्हरी परत मिळवता येणार नाही याची पुष्टी करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सामना",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "जुळणी क्रियाकलाप",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "वसाहतीच्या त्वचेशी जुळणारे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सामना आयडी, खाते आयडी, खेळाडूचे नाव किंवा रिले",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "जुळणी आढळली नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सामन्याचा रेकॉर्ड",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सामने",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तुम्ही खेळलेले सामने इतर खेळाडूंच्या इतिहासात राहतात आणि त्यांच्या रिप्ले फाइल्समध्ये गेममधील तुमचे नाव अजूनही असते.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "लांबी जुळवल्याने ताल किंवा सुसंवाद जुळत नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "साहित्य",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "मटेरियल मॅपचे पिक्सेल पूर्णपणे अपारदर्शक असले पाहिजेत.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "मटेरियल मॅप पिक्सेल हे मटेरियल आयडी प्रमाणे राखाडी: लाल, हिरवा आणि निळा रंगाचे असले पाहिजेत.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "मटेरियल मॅप पिक्सेल हे मटेरियल आयडी 0 ते ZXQPH0QXZ असणे आवश्यक आहे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सामग्री उत्पन्न",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "मॅक्सिमा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कमाल आरोग्य",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कमाल सेकंद",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "यशस्वी वितरणासाठी लागलेला सरासरी वेळ, आणि मोजलेल्या पूर्ण झालेल्या वितरणांची संख्या.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "मोजमाप",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "रिलेद्वारे मोजलेले; प्रथम सामान्य मूल्य, नंतर ९५ वे पर्सेन्टाइल. पिंग: खेळाडू आणि रिले यांच्यातील येण्या-जाण्याचा प्रवास. ZXQPH0QXZ मागे: खेळाडूचा गेम मॅच क्लॉकच्या किती मागे चालला, त्यात त्यांच्या इनपुटमधील विलंबाचा समावेश आहे. ZXQPH1QXZ गुणवत्ता ही या सर्वांमध्ये आणि पुन्हा कनेक्ट होणे, ऑफलाइन वेळ आणि विलंबित आदेशांमध्ये सर्वात वाईट आहे. ऑफलाइन: पुन्हा कनेक्ट होण्यापूर्वी डिस्कनेक्ट झालेला वेळ. विलंबित आदेश: मागितलेल्या वेळेपेक्षा एका टिकने उशिरा पूर्ण झालेले आदेश.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "निर्मितीपासून पूर्ण होईपर्यंत मोजले जाते, विनंती निर्मितीच्या दिवसानुसार गटबद्ध केलेले. केवळ यशस्वी विनंत्या/कामे, ज्यांच्या पूर्ण होण्याची वेळ ज्ञात आहे, त्यांचीच गणना केली जाते; उशिरा पूर्ण झाल्यास त्यांचा मूळ कालावधी अद्ययावत केला जातो.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "मॉडेलच्या मोजमाप केलेल्या वापरासाठी शुल्क आकारले जाते, ज्यामध्ये नंतर चाचण्यांमध्ये अयशस्वी होणाऱ्या कोडचाही समावेश आहे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "मोजमापांमुळे संभाव्य दोष लक्षात येतात. संगीत योग्य वाटते की नाही, हे तुमचे कान ठरवतात.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "मध्यम",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "वसाहतींना भेटा. एखादा खेळाडू शोधा, त्यांचे खेळ तपासा किंवा तुमच्या पुढील एआय प्रतिस्पर्ध्याला जाणून घ्या.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "मेट्रिक",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "किमान सेकंद",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "किमान एकूण साठा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "आरशातील पट्ट्या",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "आरशासारखे ठिपके",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "हरवलेले",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "गहाळ झालेली ऐतिहासिक मोजमापे शेवटच्या वेळी पाहिलेल्या टाइमस्टॅम्पवरून पुनर्रचित करण्याऐवजी अनुपलब्ध आहेत. वर्तमान कालावधी अपूर्ण असू शकतो. टिकवून ठेवलेले खाते मार्कर ९० दिवसांचा कालावधी व्यापतात; अनामिक दैनंदिन एकूण आकडे २४ महिन्यांचा कालावधी व्यापतात.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पेमेंटसाठी सही केलेली नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "मिक्स आणि मास्टर",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "मिश्रणाचे संतुलन",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "मॉडेल / स्टेज",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "मॉडेल आणि कॅमेरा आवृत्त्या जुळत नाहीत. अपडेट करण्यासाठी रीलोड करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "रंगवण्यासाठी मॉडेल",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "मध्यम",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "संयम",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "संयमाचे कारण",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      }
+    ]
+  },
+  "response_sha256": "b637cc57c2d2d46cd7e54dc36667ffa0ce40b047465e96de0b22316073f27158"
+}

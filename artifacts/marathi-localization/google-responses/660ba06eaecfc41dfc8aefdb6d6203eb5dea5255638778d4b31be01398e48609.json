@@ -1,0 +1,118 @@
+{
+  "request": {
+    "project": "bradley-personal-20261027",
+    "model": "general/nmt",
+    "payload": {
+      "sourceLanguageCode": "en",
+      "targetLanguageCode": "mr",
+      "mimeType": "text/plain",
+      "contents": [
+        "Shattered Coast",
+        "Keyboard Settings",
+        " Reference images",
+        "Clearing Flag",
+        "A unit from ZXQPH0QXZ's team has joined your team",
+        "width of river",
+        "Volume (music)",
+        " Review & publish",
+        "Destroy Selected Building",
+        "A: Allies",
+        "River",
+        "Remove Shortcut",
+        " Review release settings",
+        "Attracts explorers",
+        "C: Send chat messages to",
+        "Reroll terrain look",
+        "Restore Default Keyboard Shortcuts",
+        " Send",
+        "Exploration Flag",
+        "fV: Show vision for Inn buildings (to steal units)"
+      ]
+    }
+  },
+  "response": {
+    "translations": [
+      {
+        "translatedText": "शॅटर्ड कोस्ट",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कीबोर्ड सेटिंग्ज",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "संदर्भ प्रतिमा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "क्लिअरिंग फ्लॅग",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ यांच्या टीममधील एक युनिट तुमच्या टीममध्ये सामील झाले आहे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नदीची रुंदी",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "आवाज (संगीत)",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पुनरावलोकन करा आणि प्रकाशित करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "निवडलेली इमारत नष्ट करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अ: सहयोगी",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नदी",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "शॉर्टकट काढा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "रिलीझ सेटिंग्जचे पुनरावलोकन करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "संशोधकांना आकर्षित करते",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "C: चॅट संदेश पाठवा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "भूभाग पुन्हा रोल करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "डीफॉल्ट कीबोर्ड शॉर्टकट पुनर्संचयित करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पाठवा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "शोध ध्वज",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "fV: धर्मशाळेच्या इमारतींसाठी दृष्टी दाखवा (युनिट्स चोरण्यासाठी)",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      }
+    ]
+  },
+  "response_sha256": "11d009ebf00b3d3992058fa9c88891ef4ceb9f22e536fe8cd9402cd3413a6643"
+}

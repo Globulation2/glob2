@@ -1,0 +1,436 @@
+{
+  "native_catalog_sha256": "8b3f9e4972ee0eb1c3433110a7f0e83c9dc2fb7ea5f494b6925afa373c4fef97",
+  "online_catalog_sha256": "0a35ecc3e76fd00b68db89ca5dd18967304524eb7c3c0b8cc81c37b70e5694a4",
+  "native_shared_vocabulary": [
+    "%0 / %1 HP · %2",
+    "%0 KB",
+    "CPU %0%",
+    "HP ≤25/50/75%",
+    "Hive Mind",
+    "P %0/%1/%2",
+    "–"
+  ],
+  "online_shared_values": [
+    " ({slot0})",
+    " / {slot0}",
+    " · ",
+    " · {slot0}",
+    " — ",
+    " → ",
+    "#{slot0}",
+    ".",
+    "/ais/favourites",
+    "/ais/mine",
+    "1.0.0",
+    ": ",
+    "A · V{slot0}",
+    "B{slot0}",
+    "CC BY",
+    "CC BY 4.0",
+    "CC BY-SA 4.0",
+    "CC-BY-4.0",
+    "CC-BY-SA-4.0",
+    "CC0",
+    "CC0 1.0",
+    "CC0-1.0",
+    "Cabino",
+    "Castor",
+    "Cortex",
+    "Econo",
+    "Globulation 2",
+    "HTTP {value0}",
+    "Hive",
+    "Hive Mind",
+    "JSON",
+    "JavaScript · {slot0}",
+    "Maxima",
+    "Nicowar",
+    "Numbi",
+    "Toubib",
+    "V",
+    "V{slot0} · {slot1}",
+    "Warrush",
+    "b-",
+    "public, max-age=604800",
+    "r{slot0} · {slot1}",
+    "text/html; charset=utf-8",
+    "v{slot0}",
+    "{count} {status}",
+    "{hours} {minutes}",
+    "{slot0} ({slot1}%)",
+    "{slot0} ({slot1})",
+    "{slot0} / {slot1}",
+    "{slot0} · {slot1}",
+    "{slot0} · {slot1} {slot2}",
+    "{slot0} · {slot1} · {slot2}",
+    "{slot0} · {slot1} · {slot2} × {slot3}",
+    "{slot0} · {slot1} · {slot2}{slot3}",
+    "{slot0} · {slot1}{slot2}",
+    "{slot0} · {slot1}×{slot2}",
+    "{slot0} ↗",
+    "{slot0}%",
+    "{slot0}/32",
+    "{slot0}: {slot1}",
+    "{slot0}: {slot1} · {slot2}",
+    "{slot0}{slot1} · ♥ {slot2}{slot3}",
+    "{slot0}°",
+    "{slot0}×{slot1}",
+    "{slot0}–{slot1}",
+    "×",
+    "–",
+    "•••",
+    "…",
+    "← {slot0}",
+    "↑",
+    "→",
+    "↗",
+    "−",
+    "⌄",
+    "◎",
+    "●",
+    "★",
+    "♥ {slot0}",
+    "♥ {slot0} · {slot1}",
+    "✕",
+    "⠿ {slot0}",
+    "＋"
+  ],
+  "online_reasons": [
+    {
+      "key": " ({slot0})",
+      "reason": "Parenthesized interpolated value contains no translatable prose; preserve grouping."
+    },
+    {
+      "key": " / {slot0}",
+      "reason": "Slash-separated interpolated total contains no translatable prose."
+    },
+    {
+      "key": " · ",
+      "reason": "Middle-dot separator between metadata fields remains unchanged."
+    },
+    {
+      "key": " · {slot0}",
+      "reason": "Middle-dot metadata separator plus interpolated field remains unchanged."
+    },
+    {
+      "key": " — ",
+      "reason": "Em dash separating metadata fields remains unchanged."
+    },
+    {
+      "key": " → ",
+      "reason": "Arrow indicating direction remains unchanged."
+    },
+    {
+      "key": "#{slot0}",
+      "reason": "Hash-prefixed numeric identifier remains unchanged."
+    },
+    {
+      "key": ".",
+      "reason": "Single sentence terminator restored exactly; no language-specific prose."
+    },
+    {
+      "key": "/ais/favourites",
+      "reason": "Literal application navigation route must remain ASCII and unchanged."
+    },
+    {
+      "key": "/ais/mine",
+      "reason": "Literal application navigation route must remain ASCII and unchanged."
+    },
+    {
+      "key": "1.0.0",
+      "reason": "Semantic-version identifier remains ASCII, not Marathi digits."
+    },
+    {
+      "key": ": ",
+      "reason": "Colon field separator remains unchanged."
+    },
+    {
+      "key": "A · V{slot0}",
+      "reason": "Compact authored A and V status/version markers remain Latin identifiers."
+    },
+    {
+      "key": "B{slot0}",
+      "reason": "Compact B-prefixed building/version code remains Latin with its value."
+    },
+    {
+      "key": "CC BY",
+      "reason": "Creative Commons license identifier is invariant."
+    },
+    {
+      "key": "CC BY 4.0",
+      "reason": "Creative Commons license/version identifier is invariant."
+    },
+    {
+      "key": "CC BY-SA 4.0",
+      "reason": "Creative Commons ShareAlike license/version identifier is invariant."
+    },
+    {
+      "key": "CC-BY-4.0",
+      "reason": "Machine-readable license code is invariant."
+    },
+    {
+      "key": "CC-BY-SA-4.0",
+      "reason": "Machine-readable ShareAlike license code is invariant."
+    },
+    {
+      "key": "CC0",
+      "reason": "Public-domain dedication identifier is invariant."
+    },
+    {
+      "key": "CC0 1.0",
+      "reason": "Public-domain dedication/version identifier is invariant."
+    },
+    {
+      "key": "CC0-1.0",
+      "reason": "Machine-readable public-domain dedication code is invariant."
+    },
+    {
+      "key": "Cabino",
+      "reason": "Named AI implementation retains its source spelling, matching in-game label."
+    },
+    {
+      "key": "Castor",
+      "reason": "Named AI implementation retains the same proper-name spelling as the in-game AI list."
+    },
+    {
+      "key": "Cortex",
+      "reason": "Named AI implementation retains the same proper-name spelling as the in-game AI list."
+    },
+    {
+      "key": "Econo",
+      "reason": "Named AI implementation retains its game-list identifier."
+    },
+    {
+      "key": "Globulation 2",
+      "reason": "Game title is a proper name retained consistently across surfaces."
+    },
+    {
+      "key": "HTTP {value0}",
+      "reason": "HTTP protocol name and numeric status code are technical identifiers."
+    },
+    {
+      "key": "Hive",
+      "reason": "Short product label for Hive Mind retains source spelling."
+    },
+    {
+      "key": "Hive Mind",
+      "reason": "Named assistant feature is retained as the established product name."
+    },
+    {
+      "key": "JSON",
+      "reason": "Technical data-format acronym retains its standard spelling."
+    },
+    {
+      "key": "JavaScript · {slot0}",
+      "reason": "Programming-language name plus interpolated technical value has no translatable prose."
+    },
+    {
+      "key": "Maxima",
+      "reason": "Named AI implementation retains its source proper-name spelling."
+    },
+    {
+      "key": "Nicowar",
+      "reason": "Named AI implementation retains its source spelling, matching in-game labels."
+    },
+    {
+      "key": "Numbi",
+      "reason": "Named AI implementation retains its source proper-name spelling."
+    },
+    {
+      "key": "Toubib",
+      "reason": "Named AI implementation retains its proper-name spelling, matching in-game label."
+    },
+    {
+      "key": "V",
+      "reason": "Compact Latin version marker remains literal."
+    },
+    {
+      "key": "V{slot0} · {slot1}",
+      "reason": "Version marker V and interpolated version/metadata values contain no translatable prose."
+    },
+    {
+      "key": "Warrush",
+      "reason": "Named AI implementation retains its proper-name spelling."
+    },
+    {
+      "key": "b-",
+      "reason": "Literal building-key prefix is used in source-code string replacement; translating it breaks identifier display."
+    },
+    {
+      "key": "public, max-age=604800",
+      "reason": "Literal HTTP Cache-Control value is a protocol identifier."
+    },
+    {
+      "key": "r{slot0} · {slot1}",
+      "reason": "Compact revision marker r plus revision and metadata values remains literal."
+    },
+    {
+      "key": "text/html; charset=utf-8",
+      "reason": "Literal HTTP content type/charset value must remain unchanged."
+    },
+    {
+      "key": "v{slot0}",
+      "reason": "Compact version marker v plus numeric version remains literal."
+    },
+    {
+      "key": "{count} {status}",
+      "reason": "Formatted count plus separately localized status value contain no prose."
+    },
+    {
+      "key": "{hours} {minutes}",
+      "reason": "Already formatted hour and minute values are composed with a space; no prose to translate."
+    },
+    {
+      "key": "{slot0} ({slot1}%)",
+      "reason": "Value and parenthesized percentage format contains no prose."
+    },
+    {
+      "key": "{slot0} ({slot1})",
+      "reason": "Value with a parenthesized secondary value contains no prose."
+    },
+    {
+      "key": "{slot0} / {slot1}",
+      "reason": "Numeric ratio/progress format contains no prose."
+    },
+    {
+      "key": "{slot0} · {slot1}",
+      "reason": "Two interpolated metadata fields separated by a middle dot contain no translatable prose."
+    },
+    {
+      "key": "{slot0} · {slot1} {slot2}",
+      "reason": "Interpolated metadata fields with authored space and dot separators contain no prose."
+    },
+    {
+      "key": "{slot0} · {slot1} · {slot2}",
+      "reason": "Three interpolated metadata fields with dot separators contain no prose."
+    },
+    {
+      "key": "{slot0} · {slot1} · {slot2} × {slot3}",
+      "reason": "Interpolated fields and dimension multiplication format contain no prose."
+    },
+    {
+      "key": "{slot0} · {slot1} · {slot2}{slot3}",
+      "reason": "Interpolated metadata values and adjoining suffix use authored separators."
+    },
+    {
+      "key": "{slot0} · {slot1}{slot2}",
+      "reason": "Interpolated metadata fields and suffix contain no prose."
+    },
+    {
+      "key": "{slot0} · {slot1}×{slot2}",
+      "reason": "Interpolated name and dimensions contain no prose."
+    },
+    {
+      "key": "{slot0} ↗",
+      "reason": "Interpolated link label plus external-link arrow remain unchanged."
+    },
+    {
+      "key": "{slot0}%",
+      "reason": "Numeric percentage format contains no prose."
+    },
+    {
+      "key": "{slot0}/32",
+      "reason": "Numeric capacity ratio with fixed maximum32 contains no prose."
+    },
+    {
+      "key": "{slot0}: {slot1}",
+      "reason": "Interpolated field name/value format contains no prose."
+    },
+    {
+      "key": "{slot0}: {slot1} · {slot2}",
+      "reason": "Interpolated field name and metadata values contain no prose."
+    },
+    {
+      "key": "{slot0}{slot1} · ♥ {slot2}{slot3}",
+      "reason": "Interpolated content and like count use authored heart notation; no prose."
+    },
+    {
+      "key": "{slot0}°",
+      "reason": "Numeric angle and degree sign remain unchanged."
+    },
+    {
+      "key": "{slot0}×{slot1}",
+      "reason": "Dimension multiplication format contains no prose."
+    },
+    {
+      "key": "{slot0}–{slot1}",
+      "reason": "Numeric range uses authored en dash; no prose."
+    },
+    {
+      "key": "×",
+      "reason": "Multiplication/close icon retains authored symbol."
+    },
+    {
+      "key": "–",
+      "reason": "En dash separator retains authored symbol."
+    },
+    {
+      "key": "•••",
+      "reason": "Masked/password or overflow indicator retains authored dots."
+    },
+    {
+      "key": "…",
+      "reason": "Ellipsis/loading or overflow indicator remains unchanged."
+    },
+    {
+      "key": "← {slot0}",
+      "reason": "Back arrow and interpolated destination contain no prose."
+    },
+    {
+      "key": "↑",
+      "reason": "Upward navigation arrow remains unchanged."
+    },
+    {
+      "key": "→",
+      "reason": "Rightward navigation arrow remains unchanged."
+    },
+    {
+      "key": "↗",
+      "reason": "External-link arrow remains unchanged."
+    },
+    {
+      "key": "−",
+      "reason": "Minus icon retains the mathematical minus glyph."
+    },
+    {
+      "key": "⌄",
+      "reason": "Dropdown chevron remains unchanged."
+    },
+    {
+      "key": "◎",
+      "reason": "Selection/radio icon remains unchanged."
+    },
+    {
+      "key": "●",
+      "reason": "Solid-dot status icon remains unchanged."
+    },
+    {
+      "key": "★",
+      "reason": "Favourite/star icon remains unchanged."
+    },
+    {
+      "key": "♥ {slot0}",
+      "reason": "Heart icon and numeric approval count contain no prose."
+    },
+    {
+      "key": "♥ {slot0} · {slot1}",
+      "reason": "Heart count and interpolated metadata contain no prose."
+    },
+    {
+      "key": "✕",
+      "reason": "Close icon retains authored glyph."
+    },
+    {
+      "key": "⠿ {slot0}",
+      "reason": "Drag-handle icon and interpolated label retain authored structure."
+    },
+    {
+      "key": "＋",
+      "reason": "Fullwidth plus icon retains authored glyph."
+    }
+  ],
+  "notes": [
+    "Online checker compares a target string to its source key;83 such final values retain explicit independent semantic-review rationale. Two reviewer-approved W/L templates were subsequently translated and are excluded.",
+    "Native exceptions retain only7 equal values outside globally accepted standard names;25 total equal entries each have rationale in native editor signoff."
+  ]
+}

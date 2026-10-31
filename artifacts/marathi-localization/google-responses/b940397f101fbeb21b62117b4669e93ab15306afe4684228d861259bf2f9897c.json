@@ -1,0 +1,418 @@
+{
+  "request": {
+    "project": "bradley-personal-20261027",
+    "model": "general/nmt",
+    "payload": {
+      "sourceLanguageCode": "en",
+      "targetLanguageCode": "mr",
+      "mimeType": "text/plain",
+      "contents": [
+        "Interface layout",
+        "Automatic",
+        "Compact",
+        "Spacious",
+        "Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.",
+        "Menu theme",
+        "Colours and backdrop of menus, lobbies and results.",
+        "In-game theme",
+        "Colours of dialogs and the touch interface during a game and in the editor.",
+        "Light",
+        "Dark",
+        "Classic",
+        "Ocean",
+        "Dune",
+        "High contrast",
+        "One-finger zoom",
+        "Double-tap the map, hold, then drag to zoom.",
+        "Platform default",
+        "Drag up zooms in",
+        "Drag down zooms in",
+        "Thumb side",
+        "Phone controls gather in this bottom corner.",
+        "Right",
+        "Left",
+        "Back",
+        "Save the game automatically about every minute.",
+        "No other players have editable diplomatic settings in this match.",
+        "ZXQPH0QXZ · ZXQPH1QXZ Units",
+        "Level ZXQPH0QXZ",
+        "Match the desktop (ZXQPH0QXZ)",
+        "Current display: ZXQPH0QXZ × ZXQPH1QXZ · ZXQPH2QXZ · ZXQPH3QXZ",
+        "Experiments",
+        "Custom AIs",
+        "Try features we are still testing. They can change balance and pacing.",
+        "Experiments apply to new games you start or host, never to campaign missions. A saved game keeps the ones it started with.",
+        "No experiments in this build.",
+        "Touch scrolling",
+        "List momentum",
+        "How far lists and panels keep scrolling after a flick.",
+        "List bounce",
+        "How much lists and panels stretch past their ends and spring back.",
+        "Map momentum",
+        "How far the map keeps panning after a flick.",
+        "Touch scrolling feel. 0 turns an effect off; 50 is the default.",
+        "Artwork",
+        "Original",
+        "High resolution",
+        "Clouds",
+        "Show cloud cover above the map.",
+        "Cloud shadows",
+        "Show cloud shadows on the ground independently of cloud cover.",
+        "Building particles",
+        "Show smoke and other building particles.",
+        "Magic effects",
+        "Choose animated magic effects or a simple visible effect.",
+        "Simple",
+        "Requires the OpenGL renderer. Your saved choice is retained.",
+        "Interface appearance",
+        "Panels",
+        "Choose translucent or opaque interface panels.",
+        "Opaque",
+        "Translucent",
+        "Advanced graphics",
+        "Path lines",
+        "Choose translucent or opaque unit path lines.",
+        "Smooth progress indicators",
+        "Smooth the moving edges of progress indicators.",
+        "Decorative interface animation",
+        "Animate victory artwork. Reduced motion also disables this animation.",
+        "Smooth unit motion",
+        "Experimental: move and animate units between game ticks.",
+        "Smooth fog of war",
+        "Fade the map into and out of the fog of war gradually.",
+        "Adaptive zoom detail",
+        "Simplify bars, zones, terrain and units as the map zooms out, and keep them small zoomed in.",
+        "Text size",
+        "Enlarge interface text without changing the map scale.",
+        "Online",
+        "Another server",
+        "Check"
+      ]
+    }
+  },
+  "response": {
+    "translations": [
+      {
+        "translatedText": "इंटरफेस लेआउट",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "स्वयंचलित",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "संक्षिप्त",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "प्रशस्त",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "जागा असल्यास 'स्पेशियस'मध्ये बाजूचे पॅनल वापरले जाते. 'कॉम्पॅक्ट'मध्ये टूलबार आणि ड्रॉअर्स वापरले जातात.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "मेनू थीम",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "मेनू, लॉबी आणि निकालांचे रंग आणि पार्श्वभूमी.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "खेळातील थीम",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "गेम खेळताना आणि एडिटरमध्ये डायलॉग्स आणि टच इंटरफेसचे रंग.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "प्रकाश",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "गडद",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "क्लासिक",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "महासागर",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ड्यून",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "उच्च कॉन्ट्रास्ट",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "एका बोटाने झूम",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नकाशावर दोनदा टॅप करा, दाबून ठेवा, आणि नंतर झूम करण्यासाठी ड्रॅग करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "प्लॅटफॉर्म डीफॉल्ट",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "वरच्या दिशेने ओढा झूम इन करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "खाली ओढा झूम इन करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अंगठ्याची बाजू",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "फोनची नियंत्रणे या खालच्या कोपऱ्यात एकत्रित केलेली आहेत.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "बरोबर",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "डावीकडे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "मागे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सुमारे दर मिनिटाला गेम आपोआप सेव्ह होतो.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "या सामन्यात इतर कोणत्याही खेळाडूंकडे संपादन करण्यायोग्य राजनैतिक सेटिंग्ज नाहीत.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ · ZXQPH1QXZ एकके",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पातळी ZXQPH0QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "डेस्कटॉपशी जुळवा (ZXQPH0QXZ)",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सध्या प्रदर्शित: ZXQPH0QXZ × ZXQPH1QXZ · ZXQPH2QXZ · ZXQPH3QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "प्रयोग",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सानुकूल एआय",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "आम्ही अजूनही चाचणी करत असलेली वैशिष्ट्ये वापरून पहा. त्यामुळे संतुलन आणि गती बदलू शकते.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "प्रयोग तुम्ही सुरू केलेल्या किंवा होस्ट केलेल्या नवीन गेम्सना लागू होतात, कॅम्पेन मिशन्सना कधीही नाही. सेव्ह केलेला गेम सुरुवातीला असलेलेच कायम ठेवतो.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "या बिल्डमध्ये कोणतेही प्रयोग नाहीत.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "टच स्क्रोलिंग",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "यादीची गती",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "एका झटक्यानंतर याद्या आणि पॅनेल किती पुढे स्क्रोल होत राहतात.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "यादी उसळी",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "याद्या आणि पॅनेल त्यांच्या मर्यादेपलीकडे किती ताणले जातात आणि पुन्हा पूर्ववत होतात.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नकाशाची गती",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "एका झटक्यानंतर नकाशा किती दूर सरकत राहतो.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "टच स्क्रोलिंगचा अनुभव. 0 दाबल्यास इफेक्ट बंद होतो; 50 हे डीफॉल्ट आहे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कलाकृती",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "मूळ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "उच्च रिझोल्यूशन",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ढग",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नकाशाच्या वर ढगांचे आवरण दाखवा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ढगांच्या सावल्या",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ढगांच्या आच्छादनाचा विचार न करता जमिनीवर ढगांच्या सावल्या दाखवा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कण तयार करणे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "धूर आणि इमारतीचे इतर कण दाखवा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "जादूई प्रभाव",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अ‍ॅनिमेटेड जादुई प्रभाव किंवा साधा दृश्यमान प्रभाव निवडा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "साधे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "यासाठी OpenGL रेंडरर आवश्यक आहे. तुमची जतन केलेली निवड कायम ठेवली जाते.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "इंटरफेसचे स्वरूप",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पॅनेल",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अर्धपारदर्शक किंवा अपारदर्शक इंटरफेस पॅनेल निवडा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अपारदर्शक",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अर्धपारदर्शक",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "प्रगत ग्राफिक्स",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "मार्ग रेषा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अर्धपारदर्शक किंवा अपारदर्शक युनिट पाथ लाईन्स निवडा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सुरळीत प्रगती निर्देशक",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "प्रगती निर्देशकांच्या हलणाऱ्या कडा गुळगुळीत करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सजावटी इंटरफेस अॅनिमेशन",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "विजयाचे कलाचित्र अॅनिमेट करा. गती कमी केल्यास हे अॅनिमेशनदेखील बंद होते.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "युनिटची सुरळीत हालचाल",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "प्रायोगिक: गेम टिक्स दरम्यान युनिट्सना हलवा आणि अॅनिमेट करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "युद्धाचे गुळगुळीत धुके",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नकाशाला युद्धाच्या धुक्यात हळूहळू आणा आणि त्यातून बाहेर काढा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अनुकूलनीय झूम तपशील",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नकाशा झूम आउट करताना बार, झोन, भूभाग आणि युनिट्स सोपे करा आणि झूम इन केल्यावर त्यांना लहान ठेवा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "मजकुराचा आकार",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नकाशाचे प्रमाण न बदलता इंटरफेसवरील मजकूर मोठा करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ऑनलाइन",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "दुसरा सर्व्हर",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तपासा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      }
+    ]
+  },
+  "response_sha256": "560267bd067f73d8f6c43fa67cf617a0b578a0b4176a40da15ce9e378da3de82"
+}

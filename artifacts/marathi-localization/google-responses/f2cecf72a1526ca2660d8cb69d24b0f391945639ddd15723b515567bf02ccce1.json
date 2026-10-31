@@ -1,0 +1,418 @@
+{
+  "request": {
+    "project": "bradley-personal-20261027",
+    "model": "general/nmt",
+    "payload": {
+      "sourceLanguageCode": "en",
+      "targetLanguageCode": "mr",
+      "mimeType": "text/plain",
+      "contents": [
+        "Your purchases",
+        "Your saved building remains available in Building Studio.",
+        "Your set",
+        "Your swarm, in the game",
+        "Your terrain",
+        "Your uploaded photo",
+        "Your workspace has 100 drafts. Delete an old draft first.",
+        "Your world is taking shape…",
+        "You’re invited",
+        "Zoom",
+        "Zoom in",
+        "Zoom in (+)",
+        "Zoom out",
+        "Zoom out (−)",
+        "a few seconds left",
+        "aborted",
+        "about ZXQPH0QXZ min left",
+        "about ZXQPH0QXZ s left",
+        "account export",
+        "and use this link again.",
+        "as a guest, and sign in later to keep your games and rating.",
+        "b-",
+        "banned",
+        "browser sign-in completed",
+        "browser sign-in completed from web session",
+        "build",
+        "building library",
+        "by ",
+        "by ZXQPH0QXZ · updated ZXQPH1QXZ",
+        "by ZXQPH0QXZZXQPH1QXZ",
+        "cancelled",
+        "check needs",
+        "checking…",
+        "checks need",
+        "deletes your maps, likes, uploads and your rating’s place on the leaderboards.",
+        "diverged",
+        "dropped",
+        "finding",
+        "findings",
+        "forest",
+        "format must be ZXQPH0QXZ or ZXQPH1QXZ.",
+        "format ZXQPH0QXZ, network ZXQPH1QXZ",
+        "get the game",
+        "hidden",
+        "hidden by a moderator",
+        "icon ZXQPH0QXZ",
+        "in a web browser",
+        "inspection",
+        "invalid",
+        "joined ZXQPH0QXZ · last seen ZXQPH1QXZ · ZXQPH2QXZ",
+        "launch timeout",
+        "limit must be an integer from 1 to ZXQPH0QXZ.",
+        "live",
+        "ZXQPH0QXZ must be ZXQPH1QXZ or ZXQPH2QXZ.",
+        "map",
+        "match on now",
+        "match today",
+        "ZXQPH0QXZ differs from the path.",
+        "matches on now",
+        "matches today",
+        "median length",
+        "muted until ZXQPH0QXZ",
+        "none",
+        "not checked",
+        "not set",
+        "on a computer",
+        "on an Android device",
+        "on an iPhone or iPad",
+        "owner must be \"ZXQPH0QXZ\" or an account id.",
+        "package:",
+        "participants must be ZXQPH0QXZ, ZXQPH1QXZ or ZXQPH2QXZ.",
+        "payment",
+        "play in your browser",
+        "player online",
+        "players online",
+        "projection",
+        "provider sign-in failed",
+        "provider unavailable",
+        "provisional",
+        "provisional must be ZXQPH0QXZ or ZXQPH1QXZ."
+      ]
+    }
+  },
+  "response": {
+    "translations": [
+      {
+        "translatedText": "तुमच्या खरेदी",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तुमची जतन केलेली इमारत बिल्डिंग स्टुडिओमध्ये उपलब्ध राहते.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तुमचा सेट",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "खेळामधील तुमचा थवा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तुमचा भूप्रदेश",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तुमचा अपलोड केलेला फोटो",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तुमच्या वर्कस्पेसमध्ये १०० ड्राफ्ट आहेत. आधी एक जुना ड्राफ्ट डिलीट करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तुमचं जग आकार घेत आहे…",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तुम्हाला आमंत्रित केले आहे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "झूम",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "झूम इन करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "झूम इन करा (+)",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "झूम आउट",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "झूम आउट (−)",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "काही सेकंद शिल्लक आहेत",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "रद्द केले",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सुमारे ZXQPH0QXZ मिनिटे शिल्लक",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सुमारे ZXQPH0QXZ शिल्लक राहिले",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "खाते निर्यात",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "आणि ही लिंक पुन्हा वापरा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पाहुणे म्हणून, आणि तुमचे गेम्स व रेटिंग कायम ठेवण्यासाठी नंतर साइन इन करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ब-",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "बंदी घातली",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ब्राउझर साइन-इन पूर्ण झाले",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "वेब सत्रामधून ब्राउझर साइन-इन पूर्ण झाले.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तयार करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ग्रंथालय तयार करणे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "द्वारे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ द्वारा · ZXQPH1QXZ द्वारे अद्यतनित",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZZXQPH1QXZ द्वारे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "रद्द केले",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "गरजा तपासा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तपासत आहे…",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तपासणीची गरज आहे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तुमचे नकाशे, लाईक्स, अपलोड्स आणि लीडरबोर्डवरील तुमचे रेटिंगचे स्थान हटवते.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "विचलित झाले",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "टाकले",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "शोधणे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "निष्कर्ष",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "जंगल",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "स्वरूप ZXQPH0QXZ किंवा ZXQPH1QXZ असले पाहिजे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "स्वरूप ZXQPH0QXZ, नेटवर्क ZXQPH1QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "खेळ मिळवा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "लपवलेले",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "मॉडरेटरने लपवलेले",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "चिन्ह ZXQPH0QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "वेब ब्राउझरमध्ये",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तपासणी",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अवैध",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ मध्ये सामील झाले · शेवटचे दिसले ZXQPH1QXZ · ZXQPH2QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "लाँच टाइमआउट",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "मर्यादा ही 1 ते ZXQPH0QXZ पर्यंतचा पूर्णांक असणे आवश्यक आहे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "थेट",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ हे ZXQPH1QXZ किंवा ZXQPH2QXZ असले पाहिजे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नकाशा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सामना आता सुरू आहे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "आजचा सामना",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ हा मार्गापेक्षा वेगळा आहे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सामने आता सुरू आहेत",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "आजचे सामने",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "मध्यक लांबी",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ पर्यंत म्यूट केलेले",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "काहीही नाही",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तपासले नाही",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सेट केलेले नाही",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "संगणकावर",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अँड्रॉइड डिव्हाइसवर",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "आयफोन किंवा आयपॅडवर",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "मालक \"ZXQPH0QXZ\" किंवा खाते आयडी असणे आवश्यक आहे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पॅकेज:",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सहभागी ZXQPH0QXZ, ZXQPH1QXZ किंवा ZXQPH2QXZ असणे आवश्यक आहे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पेमेंट",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तुमच्या ब्राउझरमध्ये खेळा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "खेळाडू ऑनलाइन",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ऑनलाइन खेळाडू",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "प्रक्षेपण",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "प्रदाता साइन-इन अयशस्वी झाले",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "प्रदाता अनुपलब्ध आहे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तात्पुरते",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तात्पुरते ZXQPH0QXZ किंवा ZXQPH1QXZ असले पाहिजे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      }
+    ]
+  },
+  "response_sha256": "d095e8fa7f0011b90375e3d28d7fd86308d93375eb08a37efbad22c4badf506a"
+}

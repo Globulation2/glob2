@@ -1,0 +1,1250 @@
+[
+  {
+    "id": "online: Your next match will use the default colony.",
+    "source": " Your next match will use the default colony.",
+    "semantic": " तुमच्या पुढील सामन्यात पूर्वनिर्धारित वसाहत वापरली जाईल.",
+    "editorial": " पुढच्या सामन्यात पूर्वनिर्धारित वसाहत वापरली जाईल."
+  },
+  {
+    "id": "online:, and enter:",
+    "source": ", and enter:",
+    "semantic": ", आणि प्रविष्ट करा:",
+    "editorial": ", आणि लिहा:"
+  },
+  {
+    "id": "online:. You can close this page.",
+    "source": ". You can close this page.",
+    "semantic": ". तुम्ही हे पान बंद करू शकता.",
+    "editorial": ". हे पृष्ठ बंद करू शकता."
+  },
+  {
+    "id": "online:: create a room and invite your friends, or find a quick match.",
+    "source": ": create a room and invite your friends, or find a quick match.",
+    "semantic": ": खोली तयार करून तुमच्या मित्रांना आमंत्रित करा किंवा झटपट सामना शोधा.",
+    "editorial": ": खोली तयार करून मित्रांना आमंत्रित करा, किंवा जलद सामना शोधा."
+  },
+  {
+    "id": "online:; nothing to install.",
+    "source": "; nothing to install.",
+    "semantic": "; काहीही स्थापित करण्याची गरज नाही.",
+    "editorial": "; काहीही स्थापित करावे लागत नाही."
+  },
+  {
+    "id": "online:A Globulation 2 colony: globs at work around their swarm",
+    "source": "A Globulation 2 colony: globs at work around their swarm",
+    "semantic": "Globulation 2 ची वसाहत: पोळ्याभोवती काम करणारे ग्लॉब्स",
+    "editorial": "Globulation 2 ची वसाहत: पोळ्याभोवती काम करणारे ग्लॉब"
+  },
+  {
+    "id": "online:A dismissed report cannot hide content.",
+    "source": "A dismissed report cannot hide content.",
+    "semantic": "फेटाळलेल्या अहवालामुळे सामग्री लपवता येत नाही.",
+    "editorial": "फेटाळलेल्या तक्रारीमुळे सामग्री लपवता येत नाही."
+  },
+  {
+    "id": "online:A previous submission was not acknowledged. Sending it again safely retries the same request.",
+    "source": "A previous submission was not acknowledged. Sending it again safely retries the same request.",
+    "semantic": "आधी पाठवलेल्या विनंतीची पोच मिळाली नाही. ती पुन्हा पाठवल्यास त्याच विनंतीचा सुरक्षितपणे पुन्हा प्रयत्न होतो.",
+    "editorial": "आधीची विनंती पोहोचल्याची पुष्टी मिळाली नाही. ती पुन्हा पाठवणे म्हणजे त्याच विनंतीचा सुरक्षित पुनर्प्रयत्न."
+  },
+  {
+    "id": "online:AI JavaScript source",
+    "source": "AI JavaScript source",
+    "semantic": "एआय JavaScript स्रोत",
+    "editorial": "संगणकीय खेळाडूचा JavaScript स्रोत"
+  },
+  {
+    "id": "online:API {slot0}, toolkit {slot1}, suite {slot2}. These checks sample settings and do not certify balance.",
+    "source": "API {slot0}, toolkit {slot1}, suite {slot2}. These checks sample settings and do not certify balance.",
+    "semantic": "API {slot0}, टूलकिट {slot1}, चाचणीसंच {slot2}. या तपासण्या काही निवडक सेटिंग्ज तपासतात; त्या खेळाचा समतोल प्रमाणित करत नाहीत.",
+    "editorial": "API {slot0}, टूलकिट {slot1}, संच {slot2}. या तपासण्या काही सेटिंग्ज तपासतात; खेळाच्या संतुलनाची हमी देत नाहीत."
+  },
+  {
+    "id": "online:Actor account ID",
+    "source": "Actor account ID",
+    "semantic": "कारवाई करणाऱ्या खात्याचा आयडी",
+    "editorial": "कृती करणाऱ्या खात्याचा ID"
+  },
+  {
+    "id": "online:Add the base frame first.",
+    "source": "Add the base frame first.",
+    "semantic": "आधी मूलभूत फ्रेम जोडा.",
+    "editorial": "आधी मूळ फ्रेम जोडा."
+  },
+  {
+    "id": "online:Air health change",
+    "source": "Air health change",
+    "semantic": "उडणाऱ्या युनिटच्या आरोग्यातील बदल",
+    "editorial": "हवेतील युनिटच्या आरोग्यात बदल"
+  },
+  {
+    "id": "online:Allowed resource keys (null uses habitats)",
+    "source": "Allowed resource keys (null uses habitats)",
+    "semantic": "परवानगी असलेल्या संसाधन की (null असल्यास अधिवास वापरले जातात)",
+    "editorial": "परवानगी असलेल्या संसाधनांच्या की (null असल्यास अधिवास वापरले जातात)"
+  },
+  {
+    "id": "online:Apply to {slot0}",
+    "source": "Apply to {slot0}",
+    "semantic": "{slot0} वर लागू करा",
+    "editorial": "{slot0} ला लागू करा"
+  },
+  {
+    "id": "online:Brush paints",
+    "source": "Brush paints",
+    "semantic": "ब्रशने रंगवले जाते",
+    "editorial": "ब्रशने रंगवणे"
+  },
+  {
+    "id": "online:Building Studio",
+    "source": "Building Studio",
+    "semantic": "इमारत निर्मिती स्टुडिओ",
+    "editorial": "इमारत स्टुडिओ"
+  },
+  {
+    "id": "online:Building family",
+    "source": "Building family",
+    "semantic": "इमारतींचा संच",
+    "editorial": "इमारत संच"
+  },
+  {
+    "id": "online:Building family editor",
+    "source": "Building family editor",
+    "semantic": "इमारत संचाचा संपादक",
+    "editorial": "इमारत संच संपादक"
+  },
+  {
+    "id": "online:Building-credit sales are not enabled.",
+    "source": "Building-credit sales are not enabled.",
+    "semantic": "इमारत निर्मिती क्रेडिट्सची विक्री सुरू नाही.",
+    "editorial": "इमारत निर्मिती क्रेडिट्सची विक्री सुरू केलेली नाही."
+  },
+  {
+    "id": "online:Buildings: latest verified match against recent average",
+    "source": "Buildings: latest verified match against recent average",
+    "semantic": "इमारती: अलीकडील सरासरीच्या तुलनेत नवीनतम पडताळलेला सामना",
+    "editorial": "इमारती: अलीकडील सरासरीशी तुलना केलेला नवीनतम पडताळलेला सामना"
+  },
+  {
+    "id": "online:Checkout returned. Check the payment below to confirm your purchase.",
+    "source": "Checkout returned. Check the payment below to confirm your purchase.",
+    "semantic": "चेकआउटमधून परत आलात. खरेदीची खात्री करण्यासाठी खाली देयकाची स्थिती तपासा.",
+    "editorial": "पेमेंट पृष्ठावरून परत आलात. खरेदीची खात्री करण्यासाठी खाली पेमेंटची स्थिती तपासा."
+  },
+  {
+    "id": "online:Close panel · Escape",
+    "source": "Close panel · Escape",
+    "semantic": "पॅनेल बंद करा · Escape",
+    "editorial": "पटल बंद करा · Escape"
+  },
+  {
+    "id": "online:Colony skins",
+    "source": "Colony skins",
+    "semantic": "वसाहतीची रूपे",
+    "editorial": "वसाहतींची रूपे"
+  },
+  {
+    "id": "online:Colony {value0} paint",
+    "source": "Colony {value0} paint",
+    "semantic": "वसाहत {value0} चा रंग",
+    "editorial": "वसाहत {value0} चे रंगकाम"
+  },
+  {
+    "id": "online:Compared revision",
+    "source": "Compared revision",
+    "semantic": "तुलना केलेली आवृत्ती",
+    "editorial": "तुलनेसाठीची आवृत्ती"
+  },
+  {
+    "id": "online:Compared revision {slot0}",
+    "source": "Compared revision {slot0}",
+    "semantic": "तुलना केलेली आवृत्ती {slot0}",
+    "editorial": "तुलनेसाठीची आवृत्ती {slot0}"
+  },
+  {
+    "id": "online:Compatibility of your active skin",
+    "source": "Compatibility of your active skin",
+    "semantic": "तुमच्या सक्रिय रूपाची सुसंगतता",
+    "editorial": "वापरात असलेल्या रूपाची सुसंगतता"
+  },
+  {
+    "id": "online:Complete family JSON",
+    "source": "Complete family JSON",
+    "semantic": "इमारत संचाचा संपूर्ण JSON",
+    "editorial": "इमारत संचाचे संपूर्ण JSON"
+  },
+  {
+    "id": "online:Complete passing checks before publishing.",
+    "source": "Complete passing checks before publishing.",
+    "semantic": "प्रकाशित करण्यापूर्वी सर्व तपासण्या यशस्वीपणे पूर्ण करा.",
+    "editorial": "प्रकाशित करण्यापूर्वी सर्व तपासण्या यशस्वी करा."
+  },
+  {
+    "id": "online:Confirming your payment. Your credits appear once payment is confirmed.",
+    "source": "Confirming your payment. Your credits appear once payment is confirmed.",
+    "semantic": "तुमच्या देयकाची पुष्टी करत आहे. पुष्टी झाल्यावर तुमचे क्रेडिट्स दिसतील.",
+    "editorial": "पेमेंटची पुष्टी करत आहे. पुष्टी झाल्यावर तुमचे क्रेडिट्स दिसतील."
+  },
+  {
+    "id": "online:Continue to uploads",
+    "source": "Continue to uploads",
+    "semantic": "अपलोड पृष्ठावर पुढे जा",
+    "editorial": "अपलोडच्या विभागात पुढे जा"
+  },
+  {
+    "id": "online:Copy paint",
+    "source": "Copy paint",
+    "semantic": "रंगाची प्रत करा",
+    "editorial": "रंगकामाची प्रत करा"
+  },
+  {
+    "id": "online:Copy this link into Family link or ID in the game’s Building families picker to open this family directly.",
+    "source": "Copy this link into Family link or ID in the game’s Building families picker to open this family directly.",
+    "semantic": "हा इमारत संच थेट उघडण्यासाठी खेळातील इमारत संच निवडीत संचाची लिंक किंवा आयडी या जागी ही लिंक कॉपी करा.",
+    "editorial": "हा इमारत संच थेट उघडण्यासाठी खेळातील इमारत संच निवडणीत «संचाची लिंक किंवा ID» येथे ही लिंक द्या."
+  },
+  {
+    "id": "online:Create a building family",
+    "source": "Create a building family",
+    "semantic": "इमारतींचा संच तयार करा",
+    "editorial": "इमारत संच तयार करा"
+  },
+  {
+    "id": "online:Create a building or an upgrade family with custom artwork.",
+    "source": "Create a building or an upgrade family with custom artwork.",
+    "semantic": "सानुकूल कलाकृतीसह इमारत किंवा तिच्या सुधारणा टप्प्यांचा संच तयार करा.",
+    "editorial": "स्वतःच्या कलाकृतींसह इमारत किंवा सुधारणा संच तयार करा."
+  },
+  {
+    "id": "online:Create a family",
+    "source": "Create a family",
+    "semantic": "इमारतींचा संच तयार करा",
+    "editorial": "इमारत संच तयार करा"
+  },
+  {
+    "id": "online:Credit activity",
+    "source": "Credit activity",
+    "semantic": "क्रेडिट व्यवहार",
+    "editorial": "क्रेडिट्सचे व्यवहार"
+  },
+  {
+    "id": "online:Delete skin?",
+    "source": "Delete skin?",
+    "semantic": "हे रूप हटवायचे का?",
+    "editorial": "रूप हटवायचे का?"
+  },
+  {
+    "id": "online:Designer reply awaiting reconciliation",
+    "source": "Designer reply awaiting reconciliation",
+    "semantic": "डिझायनरच्या उत्तराचा ताळमेळ तपासणे बाकी आहे",
+    "editorial": "डिझाइनरच्या उत्तराची स्थिती पडताळणे बाकी आहे"
+  },
+  {
+    "id": "online:Designer status",
+    "source": "Designer status",
+    "semantic": "डिझायनरची स्थिती",
+    "editorial": "डिझाइनरची स्थिती"
+  },
+  {
+    "id": "online:Disable skin and resolve",
+    "source": "Disable skin and resolve",
+    "semantic": "रूप बंद करून निराकरण करा",
+    "editorial": "रूप बंद करून तक्रार निकाली काढा"
+  },
+  {
+    "id": "online:Dismiss",
+    "source": "Dismiss",
+    "semantic": "फेटाळा",
+    "editorial": "बंद करा"
+  },
+  {
+    "id": "online:Download family",
+    "source": "Download family",
+    "semantic": "इमारतींचा संच डाउनलोड करा",
+    "editorial": "इमारत संच डाउनलोड करा"
+  },
+  {
+    "id": "online:Drafts are private. Publish a saved family to share it in the {slot0}.",
+    "source": "Drafts are private. Publish a saved family to share it in the {slot0}.",
+    "semantic": "मसुदे खाजगी असतात. जतन केलेला इमारत संच {slot0} मध्ये सामायिक करण्यासाठी प्रकाशित करा.",
+    "editorial": "मसुदे खाजगी असतात. {slot0} मध्ये सामायिक करण्यासाठी जतन केलेला इमारत संच प्रकाशित करा."
+  },
+  {
+    "id": "online:Duplicate rig clip",
+    "source": "Duplicate rig clip",
+    "semantic": "रिग क्लिपची प्रत तयार करा",
+    "editorial": "रिग क्लिपची प्रत बनवा"
+  },
+  {
+    "id": "online:Duplicate shape clip",
+    "source": "Duplicate shape clip",
+    "semantic": "आकार क्लिपची प्रत तयार करा",
+    "editorial": "आकार क्लिपची प्रत बनवा"
+  },
+  {
+    "id": "online:Each product has its own credit unit. Flows cover the current selected range across all payment modes. Usage/refund ledger entries are signed; reserved balances are current snapshots.",
+    "source": "Each product has its own credit unit. Flows cover the current selected range across all payment modes. Usage/refund ledger entries are signed; reserved balances are current snapshots.",
+    "semantic": "प्रत्येक उत्पादनाचे स्वतंत्र क्रेडिट एकक आहे. सर्व देयक पद्धतींतील निवडलेल्या कालावधीचे व्यवहार दाखवले जातात. वापर/परताव्याच्या नोंदींना धन किंवा ऋण चिन्ह असते; राखीव शिल्लक सध्याच्या क्षणाची असते.",
+    "editorial": "प्रत्येक उत्पादनाचे स्वतंत्र क्रेडिट एकक असते. प्रवाहात निवडलेल्या कालावधीतील सर्व पेमेंट पद्धतींचा समावेश असतो. वापर/परतावा नोंदी धन किंवा ऋण असतात; राखीव शिल्लक सध्याची स्थिती दाखवते."
+  },
+  {
+    "id": "online:Each shape shares the swarm paint area. Check the result after switching.",
+    "source": "Each shape shares the swarm paint area. Check the result after switching.",
+    "semantic": "प्रत्येक आकार पोळ्याचे रंगक्षेत्र सामायिक करतो. आकार बदलल्यानंतर परिणाम तपासा.",
+    "editorial": "प्रत्येक आकार पोळ्याचे रंगकाम क्षेत्र वापरतो. आकार बदलल्यावर परिणाम तपासा."
+  },
+  {
+    "id": "online:Editor-only terrain cannot launch a colony game.",
+    "source": "Editor-only terrain cannot launch a colony game.",
+    "semantic": "केवळ संपादकात वापरता येणाऱ्या भूभागावर वसाहतीचा खेळ सुरू करता येत नाही.",
+    "editorial": "फक्त संपादकासाठी असलेल्या भूभागावर वसाहतीचा खेळ सुरू करता येत नाही."
+  },
+  {
+    "id": "online:Every room member must update before using a shared generator.",
+    "source": "Every room member must update before using a shared generator.",
+    "semantic": "सामायिक जनरेटर वापरण्यापूर्वी खोलीतील प्रत्येक सदस्याने खेळ अद्ययावत करणे आवश्यक आहे.",
+    "editorial": "सामायिक जनरेटर वापरण्यापूर्वी खोलीतील प्रत्येकाने खेळ अद्ययावत करणे आवश्यक आहे."
+  },
+  {
+    "id": "online:Export cash CSV",
+    "source": "Export cash CSV",
+    "semantic": "रकमेची CSV निर्यात करा",
+    "editorial": "रोख व्यवहारांची CSV निर्यात करा"
+  },
+  {
+    "id": "online:Family experiments JSON",
+    "source": "Family experiments JSON",
+    "semantic": "इमारत संचाच्या प्रयोगांचा JSON",
+    "editorial": "इमारत संचाच्या प्रयोगांचे JSON"
+  },
+  {
+    "id": "online:Family link",
+    "source": "Family link",
+    "semantic": "इमारत संचाची लिंक",
+    "editorial": "संचाची लिंक"
+  },
+  {
+    "id": "online:Family name",
+    "source": "Family name",
+    "semantic": "इमारत संचाचे नाव",
+    "editorial": "संचाचे नाव"
+  },
+  {
+    "id": "online:Fit model",
+    "source": "Fit model",
+    "semantic": "मॉडेल चौकटीत बसवा",
+    "editorial": "मॉडेल मापात बसवा"
+  },
+  {
+    "id": "online:Fit model · F",
+    "source": "Fit model · F",
+    "semantic": "मॉडेल चौकटीत बसवा · F",
+    "editorial": "मॉडेल मापात बसवा · F"
+  },
+  {
+    "id": "online:Follow the composition, hear each candidate, and see what the checks find.",
+    "source": "Follow the composition, hear each candidate, and see what the checks find.",
+    "semantic": "रचनेची प्रगती पाहा, प्रत्येक प्रस्तावित आवृत्ती ऐका आणि तपासण्यांचे निष्कर्ष पाहा.",
+    "editorial": "रचनेची प्रगती पाहा, प्रत्येक प्रस्तावित धून ऐका आणि तपासण्यांत काय आढळते ते पाहा."
+  },
+  {
+    "id": "online:Food in inns",
+    "source": "Food in inns",
+    "semantic": "खानावळींतील अन्न",
+    "editorial": "खानावळींमधील अन्न"
+  },
+  {
+    "id": "online:For an unlisted family, copy its page link and paste it into Family link or ID in the game’s Building families picker, then choose Open family. Use the same online instance where the family was published. Private families also require signing in as their owner.",
+    "source": "For an unlisted family, copy its page link and paste it into Family link or ID in the game’s Building families picker, then choose Open family. Use the same online instance where the family was published. Private families also require signing in as their owner.",
+    "semantic": "सूचीत नसलेला इमारत संच उघडण्यासाठी त्याच्या पानाची लिंक कॉपी करा. खेळातील इमारत संच निवडीत संचाची लिंक किंवा आयडी या जागी ती पेस्ट करा आणि संच उघडा निवडा. संच ज्या ऑनलाइन स्थापनेत प्रकाशित केला होता तीच वापरा. खाजगी संचांसाठी त्यांच्या मालकाच्या खात्यात साइन इन करणेही आवश्यक आहे.",
+    "editorial": "सूचीत नसलेल्या इमारत संचाची पृष्ठलिंक खेळातील इमारत संच निवडणीत «संचाची लिंक किंवा ID» येथे द्या आणि «संच उघडा» निवडा. संच प्रकाशित केलेलाच ऑनलाइन सर्व्हर वापरा. खाजगी संचांसाठी मालक म्हणून साइन इनही करावे लागते."
+  },
+  {
+    "id": "online:Game scale",
+    "source": "Game scale",
+    "semantic": "खेळाचे प्रमाण",
+    "editorial": "खेळातील प्रमाण"
+  },
+  {
+    "id": "online:Game-engine preview of the checked set",
+    "source": "Game-engine preview of the checked set",
+    "semantic": "तपासलेल्या संचाचे गेम-इंजिन पूर्वावलोकन",
+    "editorial": "तपासलेल्या संचाचे खेळाच्या इंजिनमधील पूर्वावलोकन"
+  },
+  {
+    "id": "online:Generation report",
+    "source": "Generation report",
+    "semantic": "निर्मिती अहवाल",
+    "editorial": "निर्मितीचा अहवाल"
+  },
+  {
+    "id": "online:Generation stopped. Your failed generation credit is returned.",
+    "source": "Generation stopped. Your failed generation credit is returned.",
+    "semantic": "निर्मिती थांबली. अयशस्वी निर्मितीसाठीचे तुमचे क्रेडिट परत केले आहे.",
+    "editorial": "निर्मिती थांबली. अयशस्वी प्रयत्नासाठी वापरलेले क्रेडिट परत मिळाले आहे."
+  },
+  {
+    "id": "online:Give a bounded moderation reason without NUL characters.",
+    "source": "Give a bounded moderation reason without NUL characters.",
+    "semantic": "NUL वर्ण नसलेले, मर्यादित लांबीचे नियंत्रण कारवाईचे कारण द्या.",
+    "editorial": "NUL वर्ण नसलेले, मर्यादित लांबीचे नियंत्रणाचे कारण द्या."
+  },
+  {
+    "id": "online:Give a bounded recovery reason.",
+    "source": "Give a bounded recovery reason.",
+    "semantic": "पुनर्प्राप्तीचे कारण मर्यादित लांबीच्या मजकुरात द्या.",
+    "editorial": "मर्यादित लांबीचे पुनर्प्राप्तीचे कारण द्या."
+  },
+  {
+    "id": "online:Give a moderation reason.",
+    "source": "Give a moderation reason.",
+    "semantic": "नियंत्रण कारवाईचे कारण द्या.",
+    "editorial": "नियंत्रणाच्या कारवाईचे कारण द्या."
+  },
+  {
+    "id": "online:Ground health change",
+    "source": "Ground health change",
+    "semantic": "जमिनीवरील युनिटच्या आरोग्यातील बदल",
+    "editorial": "जमिनीवरील युनिटच्या आरोग्यात बदल"
+  },
+  {
+    "id": "online:Guests get generated names; link a sign-in method to choose one.",
+    "source": "Guests get generated names; link a sign-in method to choose one.",
+    "semantic": "पाहुण्यांना आपोआप नावे दिली जातात; स्वतःचे नाव निवडण्यासाठी साइन-इन पद्धत जोडा.",
+    "editorial": "अतिथींना आपोआप नाव दिले जाते; स्वतः नाव निवडण्यासाठी साइन इनची पद्धत जोडा."
+  },
+  {
+    "id": "online:Invalid rig normal",
+    "source": "Invalid rig normal",
+    "semantic": "रिगचा नॉर्मल अवैध आहे",
+    "editorial": "रिगचा नॉर्मल सदिश अवैध आहे"
+  },
+  {
+    "id": "online:Invalid skin dimensions.",
+    "source": "Invalid skin dimensions.",
+    "semantic": "रूपाची परिमाणे अवैध आहेत.",
+    "editorial": "रूपाची मापे अवैध आहेत."
+  },
+  {
+    "id": "online:JSON controls require the set workspace.",
+    "source": "JSON controls require the set workspace.",
+    "semantic": "JSON नियंत्रणांसाठी संचाचे कार्यक्षेत्र आवश्यक आहे.",
+    "editorial": "JSON नियंत्रणांसाठी संचाचे कार्यक्षेत्र वापरावे लागते."
+  },
+  {
+    "id": "online:Keep available and resolve",
+    "source": "Keep available and resolve",
+    "semantic": "सामग्री उपलब्ध ठेवून निराकरण करा",
+    "editorial": "उपलब्ध ठेवून तक्रार निकाली काढा"
+  },
+  {
+    "id": "online:Keep mine as a new skin",
+    "source": "Keep mine as a new skin",
+    "semantic": "माझे बदल नवीन रूप म्हणून ठेवा",
+    "editorial": "माझे रूप नवीन रूप म्हणून ठेवा"
+  },
+  {
+    "id": "online:Keep this family namespace. Import a fork to create a different family.",
+    "source": "Keep this family namespace. Import a fork to create a different family.",
+    "semantic": "या इमारत संचाचे नेमस्पेस कायम ठेवा. वेगळा संच तयार करण्यासाठी स्वतंत्र प्रत आयात करा.",
+    "editorial": "या इमारत संचाचे नामक्षेत्र कायम ठेवा. वेगळा संच तयार करण्यासाठी स्वतंत्र प्रत आयात करा."
+  },
+  {
+    "id": "online:Ladders",
+    "source": "Ladders",
+    "semantic": "स्पर्धेच्या क्रमवारी",
+    "editorial": "मानांकन याद्या"
+  },
+  {
+    "id": "online:Like",
+    "source": "Like",
+    "semantic": "पसंती द्या",
+    "editorial": "आवडले"
+  },
+  {
+    "id": "online:Loading your building workspace…",
+    "source": "Loading your building workspace…",
+    "semantic": "तुमचे इमारत निर्मिती कार्यक्षेत्र लोड होत आहे…",
+    "editorial": "इमारत निर्मितीचे कार्यक्षेत्र लोड होत आहे…"
+  },
+  {
+    "id": "online:Manage published family",
+    "source": "Manage published family",
+    "semantic": "प्रकाशित इमारत संचाचे व्यवस्थापन करा",
+    "editorial": "प्रकाशित इमारत संच व्यवस्थापित करा"
+  },
+  {
+    "id": "online:Map credits",
+    "source": "Map credits",
+    "semantic": "नकाशा क्रेडिट्स",
+    "editorial": "नकाशा निर्मिती क्रेडिट्स"
+  },
+  {
+    "id": "online:Mark this generation failed and return {value0} reserved product credit(s)? Confirm that its delivery cannot be recovered.",
+    "source": "Mark this generation failed and return {value0} reserved product credit(s)? Confirm that its delivery cannot be recovered.",
+    "semantic": "ही निर्मिती अयशस्वी म्हणून नोंदवून उत्पादनाचे {value0} राखीव क्रेडिट्स परत करायचे का? तयार परिणाम पुनर्प्राप्त करता येत नाही याची खात्री करा.",
+    "editorial": "ही निर्मिती अयशस्वी ठरवून उत्पादनाचे {value0} राखीव क्रेडिट्स परत द्यायचे का? तयार केलेले काम परत मिळू शकत नाही याची खात्री करा."
+  },
+  {
+    "id": "online:Match activity",
+    "source": "Match activity",
+    "semantic": "सामन्यांतील हालचाल",
+    "editorial": "सामन्यांतील कृती"
+  },
+  {
+    "id": "online:Material map pixels must be grey: red, green and blue equal to the material id.",
+    "source": "Material map pixels must be grey: red, green and blue equal to the material id.",
+    "semantic": "मटेरियल मॅपचे पिक्सेल करडे असावेत: लाल, हिरवे आणि निळे या तिन्ही चॅनेलची मूल्ये मटेरियल आयडीइतकीच असावीत.",
+    "editorial": "मटेरियल नकाशातील पिक्सेल राखाडी असावेत: लाल, हिरवा आणि निळा या तिन्ही घटकांची मूल्ये मटेरियल ID इतकी असावीत."
+  },
+  {
+    "id": "online:Moderate",
+    "source": "Moderate",
+    "semantic": "नियंत्रण कारवाई करा",
+    "editorial": "कारवाई करा"
+  },
+  {
+    "id": "online:Moderation",
+    "source": "Moderation",
+    "semantic": "नियंत्रण कारवाई",
+    "editorial": "सामग्री नियंत्रण"
+  },
+  {
+    "id": "online:Moderation reason",
+    "source": "Moderation reason",
+    "semantic": "नियंत्रण कारवाईचे कारण",
+    "editorial": "कारवाईचे कारण"
+  },
+  {
+    "id": "online:Music credits",
+    "source": "Music credits",
+    "semantic": "संगीत क्रेडिट्स",
+    "editorial": "संगीत निर्मिती क्रेडिट्स"
+  },
+  {
+    "id": "online:Mute {slot0}",
+    "source": "Mute {slot0}",
+    "semantic": "{slot0} यांना चॅटबंदी घाला",
+    "editorial": "{slot0} म्यूट करा"
+  },
+  {
+    "id": "online:No families found.",
+    "source": "No families found.",
+    "semantic": "कोणताही इमारत संच सापडला नाही.",
+    "editorial": "इमारत संच सापडले नाहीत."
+  },
+  {
+    "id": "online:No set validator is available. Your draft is saved; try checks later.",
+    "source": "No set validator is available. Your draft is saved; try checks later.",
+    "semantic": "संचाची पडताळणी करणारे साधन उपलब्ध नाही. तुमचा मसुदा जतन केला आहे; नंतर तपासण्या करून पाहा.",
+    "editorial": "संच तपासणारे साधन उपलब्ध नाही. मसुदा जतन झाला आहे; नंतर तपासण्या करून पाहा."
+  },
+  {
+    "id": "online:No sets found. Try another search or create the first one.",
+    "source": "No sets found. Try another search or create the first one.",
+    "semantic": "कोणतेही संच सापडले नाहीत. वेगळा शोध घ्या किंवा पहिला संच तयार करा.",
+    "editorial": "संच सापडले नाहीत. वेगळा शोध घ्या किंवा पहिला संच तयार करा."
+  },
+  {
+    "id": "online:No skin reports.",
+    "source": "No skin reports.",
+    "semantic": "रूपांबद्दल कोणतेही अहवाल नाहीत.",
+    "editorial": "रूपांविषयी तक्रारी नाहीत."
+  },
+  {
+    "id": "online:No such blob.",
+    "source": "No such blob.",
+    "semantic": "असा कोणताही ब्लॉब नाही.",
+    "editorial": "असा डेटा ब्लॉब नाही."
+  },
+  {
+    "id": "online:No such building family.",
+    "source": "No such building family.",
+    "semantic": "असा कोणताही इमारत संच नाही.",
+    "editorial": "असा इमारत संच नाही."
+  },
+  {
+    "id": "online:No such job.",
+    "source": "No such job.",
+    "semantic": "असे कोणतेही कार्य नाही.",
+    "editorial": "असे काम नाही."
+  },
+  {
+    "id": "online:No such match.",
+    "source": "No such match.",
+    "semantic": "असा कोणताही सामना नाही.",
+    "editorial": "असा सामना नाही."
+  },
+  {
+    "id": "online:No such release.",
+    "source": "No such release.",
+    "semantic": "असे कोणतेही प्रकाशन नाही.",
+    "editorial": "अशी प्रकाशित आवृत्ती नाही."
+  },
+  {
+    "id": "online:No such sign-in on this connection.",
+    "source": "No such sign-in on this connection.",
+    "semantic": "या कनेक्शनवर असे कोणतेही साइन-इन नाही.",
+    "editorial": "या कनेक्शनवर ते साइन इन सापडले नाही."
+  },
+  {
+    "id": "online:No timeline was recorded for this match.",
+    "source": "No timeline was recorded for this match.",
+    "semantic": "या सामन्याचा कालक्रम नोंदवलेला नाही.",
+    "editorial": "या सामन्याचा घटनाक्रम नोंदवलेला नाही."
+  },
+  {
+    "id": "online:No uncertain request.",
+    "source": "No uncertain request.",
+    "semantic": "अनिश्चित निकाल असलेली कोणतीही विनंती नाही.",
+    "editorial": "स्थिती अनिश्चित असलेली विनंती नाही."
+  },
+  {
+    "id": "online:No worker leases are recorded.",
+    "source": "No worker leases are recorded.",
+    "semantic": "वर्करला तात्पुरते काम सोपवल्याच्या नोंदी नाहीत.",
+    "editorial": "वर्करच्या आरक्षणाची नोंद नाही."
+  },
+  {
+    "id": "online:Only uncertain calls can be reconciled.",
+    "source": "Only uncertain calls can be reconciled.",
+    "semantic": "निकाल अनिश्चित असलेल्या कॉलचाच ताळमेळ तपासता येतो.",
+    "editorial": "स्थिती अनिश्चित असलेल्या कॉलचीच पडताळणी करून ताळमेळ घालता येतो."
+  },
+  {
+    "id": "online:Open music release",
+    "source": "Open music release",
+    "semantic": "संगीत प्रकाशन उघडा",
+    "editorial": "संगीताची प्रकाशित आवृत्ती उघडा"
+  },
+  {
+    "id": "online:Pad ends with silence to longest",
+    "source": "Pad ends with silence to longest",
+    "semantic": "सर्वात लांब ट्रॅकइतकी लांबी होईपर्यंत शेवटी शांतता जोडा",
+    "editorial": "सर्वात लांब ट्रॅकइतकी लांबी होण्यासाठी शेवटी शांतता जोडा"
+  },
+  {
+    "id": "online:Priced",
+    "source": "Priced",
+    "semantic": "खर्च उपलब्ध",
+    "editorial": "खर्च मोजलेला"
+  },
+  {
+    "id": "online:Progress does not match the leased AI validation.",
+    "source": "Progress does not match the leased AI validation.",
+    "semantic": "प्रगती तात्पुरते सोपवलेल्या एआय पडताळणीच्या कामाशी जुळत नाही.",
+    "editorial": "प्रगती आरक्षित केलेल्या एआय पडताळणीशी जुळत नाही."
+  },
+  {
+    "id": "online:Publish release",
+    "source": "Publish release",
+    "semantic": "प्रकाशन प्रकाशित करा",
+    "editorial": "आवृत्ती प्रकाशित करा"
+  },
+  {
+    "id": "online:Purchase confirmed. Your skin is ready to use in game.",
+    "source": "Purchase confirmed. Your skin is ready to use in game.",
+    "semantic": "खरेदीची पुष्टी झाली आहे. तुमचे रूप खेळात वापरण्यास तयार आहे.",
+    "editorial": "खरेदीची पुष्टी झाली. तुमचे रूप खेळात वापरण्यास तयार आहे."
+  },
+  {
+    "id": "online:Questions and brainstorming are free and require an available credit. A creation or revision request starts one build of up to 12 entries. Failed generations return their reservation.",
+    "source": "Questions and brainstorming are free and require an available credit. A creation or revision request starts one build of up to 12 entries. Failed generations return their reservation.",
+    "semantic": "प्रश्न आणि विचारमंथन विनामूल्य आहेत, पण उपलब्ध क्रेडिट आवश्यक आहे. निर्मिती किंवा बदलाची विनंती केल्यावर जास्तीत जास्त १२ नोंदींची एक निर्मिती प्रक्रिया सुरू होते. निर्मिती अयशस्वी झाल्यास राखीव क्रेडिट्स परत मिळतात.",
+    "editorial": "प्रश्न आणि विचारमंथन विनामूल्य आहेत, पण उपलब्ध क्रेडिट हवे. निर्मिती किंवा सुधारणेची विनंती केल्यावर जास्तीत जास्त 12 नोंदींची एक निर्मिती सुरू होते. अयशस्वी प्रयत्नांचे राखीव क्रेडिट्स परत मिळतात."
+  },
+  {
+    "id": "online:Questions and brainstorming are free. A creation or revision request starts one build of up to 12 building variants. Failed generations return their reservation.",
+    "source": "Questions and brainstorming are free. A creation or revision request starts one build of up to 12 building variants. Failed generations return their reservation.",
+    "semantic": "प्रश्न आणि विचारमंथन विनामूल्य आहेत. निर्मिती किंवा बदलाची विनंती केल्यावर इमारतीच्या जास्तीत जास्त १२ प्रकारांची एक निर्मिती प्रक्रिया सुरू होते. निर्मिती अयशस्वी झाल्यास राखीव क्रेडिट्स परत मिळतात.",
+    "editorial": "प्रश्न आणि विचारमंथन विनामूल्य आहेत. निर्मिती किंवा सुधारणेची विनंती केल्यावर जास्तीत जास्त 12 इमारत प्रकारांची एक निर्मिती सुरू होते. अयशस्वी प्रयत्नांचे राखीव क्रेडिट्स परत मिळतात."
+  },
+  {
+    "id": "online:Queues the stored match record for verification again. Force permits replacement of an existing verification result; confirm it separately.",
+    "source": "Queues the stored match record for verification again. Force permits replacement of an existing verification result; confirm it separately.",
+    "semantic": "जतन केलेली सामन्याची नोंद पुन्हा पडताळणीच्या रांगेत ठेवतो. सक्तीचा पर्याय वापरल्यास विद्यमान पडताळणीचा निकाल बदलता येतो; त्याची स्वतंत्रपणे पुष्टी करा.",
+    "editorial": "जतन केलेल्या सामन्याची नोंद पुन्हा पडताळण्यासाठी रांगेत ठेवते. सक्तीचा पर्याय जुना पडताळणी निकाल बदलू देतो; त्याची स्वतंत्र पुष्टी करा."
+  },
+  {
+    "id": "online:Quiet passage audibility",
+    "source": "Quiet passage audibility",
+    "semantic": "मंद स्वरांच्या भागांची श्रवणक्षमता",
+    "editorial": "शांत संगीतमय भागांची ऐकू येण्याची क्षमता"
+  },
+  {
+    "id": "online:Reconciling",
+    "source": "Reconciling",
+    "semantic": "ताळमेळ तपासत आहे",
+    "editorial": "ताळमेळ घालत आहे"
+  },
+  {
+    "id": "online:Releases",
+    "source": "Releases",
+    "semantic": "प्रकाशने",
+    "editorial": "प्रकाशित आवृत्त्या"
+  },
+  {
+    "id": "online:Request cap",
+    "source": "Request cap",
+    "semantic": "विनंतीची कमाल मर्यादा",
+    "editorial": "विनंतीची मर्यादा"
+  },
+  {
+    "id": "online:Reroll seed",
+    "source": "Reroll seed",
+    "semantic": "नवीन यादृच्छिक सीड निवडा",
+    "editorial": "नवे यादृच्छिक बीज निवडा"
+  },
+  {
+    "id": "online:Reserved: {slot0} product credits",
+    "source": "Reserved: {slot0} product credits",
+    "semantic": "राखीव: {slot0} उत्पादन क्रेडिट्स",
+    "editorial": "राखीव: उत्पादनाचे {slot0} क्रेडिट्स"
+  },
+  {
+    "id": "online:Reserved: {slot0} product credits{slot1}",
+    "source": "Reserved: {slot0} product credits{slot1}",
+    "semantic": "राखीव: {slot0} उत्पादन क्रेडिट्स{slot1}",
+    "editorial": "राखीव: उत्पादनाचे {slot0} क्रेडिट्स{slot1}"
+  },
+  {
+    "id": "online:Retry loading skins",
+    "source": "Retry loading skins",
+    "semantic": "रूपे पुन्हा लोड करण्याचा प्रयत्न करा",
+    "editorial": "रूपे पुन्हा लोड करा"
+  },
+  {
+    "id": "online:Returning the reservation marks this generation failed. Inspect its details and confirm delivery cannot be recovered first.",
+    "source": "Returning the reservation marks this generation failed. Inspect its details and confirm delivery cannot be recovered first.",
+    "semantic": "राखीव क्रेडिट्स परत केल्यावर ही निर्मिती अयशस्वी म्हणून नोंदवली जाते. आधी तपशील पाहून तयार परिणाम पुनर्प्राप्त करता येत नाही याची खात्री करा.",
+    "editorial": "राखीव क्रेडिट्स परत दिल्यास ही निर्मिती अयशस्वी ठरते. आधी तपशील तपासून तयार झालेले काम परत मिळू शकत नाही याची खात्री करा."
+  },
+  {
+    "id": "online:Review reports",
+    "source": "Review reports",
+    "semantic": "अहवाल तपासा",
+    "editorial": "तक्रारी तपासा"
+  },
+  {
+    "id": "online:Running",
+    "source": "Running",
+    "semantic": "चालू आहे",
+    "editorial": "चालू"
+  },
+  {
+    "id": "online:Seed",
+    "source": "Seed",
+    "semantic": "सीड",
+    "editorial": "बीज"
+  },
+  {
+    "id": "online:Send skin report",
+    "source": "Send skin report",
+    "semantic": "रूपाची तक्रार पाठवा",
+    "editorial": "रूपाविषयी तक्रार पाठवा"
+  },
+  {
+    "id": "online:Set reports",
+    "source": "Set reports",
+    "semantic": "संचांबद्दलचे अहवाल",
+    "editorial": "संचांविषयी तक्रारी"
+  },
+  {
+    "id": "online:Sign in with an account to publish maps; guests can share unlisted maps.",
+    "source": "Sign in with an account to publish maps; guests can share unlisted maps.",
+    "semantic": "नकाशे सार्वजनिकपणे प्रकाशित करण्यासाठी खात्यात साइन इन करा; पाहुणे सूचीत न दिसणारे नकाशे सामायिक करू शकतात.",
+    "editorial": "नकाशे सार्वजनिक करण्यासाठी खात्याने साइन इन करा; अतिथी सूचीत नसलेले नकाशे सामायिक करू शकतात."
+  },
+  {
+    "id": "online:Sign in with an account to save favourites and like generators.",
+    "source": "Sign in with an account to save favourites and like generators.",
+    "semantic": "आवडते जनरेटर जतन करण्यासाठी आणि त्यांना पसंती देण्यासाठी खात्यात साइन इन करा.",
+    "editorial": "आवडते जतन करण्यासाठी आणि जनरेटरना पसंती देण्यासाठी खात्याने साइन इन करा."
+  },
+  {
+    "id": "online:Sign in with an active account to save skins.",
+    "source": "Sign in with an active account to save skins.",
+    "semantic": "रूपे जतन करण्यासाठी सक्रिय खात्यात साइन इन करा.",
+    "editorial": "रूपे जतन करण्यासाठी सक्रिय खात्याने साइन इन करा."
+  },
+  {
+    "id": "online:Sign in with an active account to use a custom skin.",
+    "source": "Sign in with an active account to use a custom skin.",
+    "semantic": "सानुकूल रूप वापरण्यासाठी सक्रिय खात्यात साइन इन करा.",
+    "editorial": "स्वतःचे रूप वापरण्यासाठी सक्रिय खात्याने साइन इन करा."
+  },
+  {
+    "id": "online:Singular {value0} camera",
+    "source": "Singular {value0} camera",
+    "semantic": "{value0} कॅमेराच्या मॅट्रिक्सचा व्युत्क्रम काढता येत नाही",
+    "editorial": "सिंग्युलर {value0} कॅमेरा"
+  },
+  {
+    "id": "online:Skin collection pages",
+    "source": "Skin collection pages",
+    "semantic": "रूप संग्रहाची पाने",
+    "editorial": "रूपांच्या संग्रहाची पृष्ठे"
+  },
+  {
+    "id": "online:Skin designer",
+    "source": "Skin designer",
+    "semantic": "रूप डिझायनर",
+    "editorial": "रूप डिझाइनर"
+  },
+  {
+    "id": "online:Skin page not found.",
+    "source": "Skin page not found.",
+    "semantic": "रूपाचे पान सापडले नाही.",
+    "editorial": "रूपाचे पृष्ठ सापडले नाही."
+  },
+  {
+    "id": "online:Skin report resolutions need at most 1000 characters and disabling for a resolved report.",
+    "source": "Skin report resolutions need at most 1000 characters and disabling for a resolved report.",
+    "semantic": "रूपाच्या तक्रारीच्या निराकरणाचा मजकूर जास्तीत जास्त १००० अक्षरांचा असावा. तक्रारीचे निराकरण झाले म्हणून नोंदवताना रूप बंद करणे आवश्यक आहे.",
+    "editorial": "रूपाच्या तक्रारीवरील निर्णय जास्तीत जास्त 1000 अक्षरांचा असावा; तक्रार निकाली काढण्यासाठी रूप बंद करावे लागते."
+  },
+  {
+    "id": "online:Skin reports",
+    "source": "Skin reports",
+    "semantic": "रूपांबद्दलच्या तक्रारी",
+    "editorial": "रूपांविषयी तक्रारी"
+  },
+  {
+    "id": "online:Technical checks do not establish balance or fun.",
+    "source": "Technical checks do not establish balance or fun.",
+    "semantic": "तांत्रिक तपासण्या खेळाचा समतोल किंवा मजा सिद्ध करत नाहीत.",
+    "editorial": "तांत्रिक तपासण्या खेळ संतुलित किंवा मजेदार असल्याची खात्री देत नाहीत."
+  },
+  {
+    "id": "online:The designer reply needs reconciliation. No map build has started.",
+    "source": "The designer reply needs reconciliation. No map build has started.",
+    "semantic": "डिझायनरच्या उत्तराचा ताळमेळ तपासणे आवश्यक आहे. नकाशाची निर्मिती सुरू झालेली नाही.",
+    "editorial": "डिझाइनरच्या उत्तराची स्थिती पडताळणे बाकी आहे. नकाशाची निर्मिती सुरू झालेली नाही."
+  },
+  {
+    "id": "online:The generator package must fit the 256 KiB draft limit.",
+    "source": "The generator package must fit the 256 KiB draft limit.",
+    "semantic": "जनरेटर पॅकेज मसुद्याच्या २५६ KiB मर्यादेत असावे.",
+    "editorial": "जनरेटर पॅकेज मसुद्याच्या 256 KiB मर्यादेत बसले पाहिजे."
+  },
+  {
+    "id": "online:The job is leased by another engine agent.",
+    "source": "The job is leased by another engine agent.",
+    "semantic": "हे काम सध्या दुसऱ्या इंजिन एजंटकडे सोपवलेले आहे.",
+    "editorial": "हे काम दुसऱ्या इंजिन एजंटसाठी आरक्षित आहे."
+  },
+  {
+    "id": "online:The lease expired or the job was already reported.",
+    "source": "The lease expired or the job was already reported.",
+    "semantic": "कामाच्या तात्पुरत्या नेमणुकीची मुदत संपली किंवा त्याचा निकाल आधीच नोंदवला आहे.",
+    "editorial": "आरक्षणाची मुदत संपली किंवा कामाचा अहवाल आधीच मिळाला आहे."
+  },
+  {
+    "id": "online:The match already ended with a different record.",
+    "source": "The match already ended with a different record.",
+    "semantic": "हा सामना वेगळ्या नोंदीसह आधीच संपला आहे.",
+    "editorial": "सामना आधीच वेगळ्या नोंदीसह संपला आहे."
+  },
+  {
+    "id": "online:The original swarm: spires ringed around an egg.",
+    "source": "The original swarm: spires ringed around an egg.",
+    "semantic": "मूळ पोळे: अंड्याभोवती वर्तुळात उभारलेले मनोरे.",
+    "editorial": "मूळ पोळे: अंड्याभोवती वर्तुळात उभे असलेले मनोरे."
+  },
+  {
+    "id": "online:The room has no seat {p0}.",
+    "source": "The room has no seat {p0}.",
+    "semantic": "खोलीत {p0} क्रमांकाची जागा नाही.",
+    "editorial": "खोलीत {p0} ही जागा नाही."
+  },
+  {
+    "id": "online:The server first loads the file with the game to check it; the map page is created only if it loads. Unlisted maps are reachable by link only; you can make a map public later.",
+    "source": "The server first loads the file with the game to check it; the map page is created only if it loads. Unlisted maps are reachable by link only; you can make a map public later.",
+    "semantic": "तपासणीसाठी सर्व्हर आधी खेळ वापरून फाइल उघडतो; ती उघडली तरच नकाशाचे पान तयार होते. सूचीत नसलेले नकाशे फक्त लिंकद्वारे उघडता येतात; नंतर तुम्ही नकाशा सार्वजनिक करू शकता.",
+    "editorial": "फाईल तपासण्यासाठी सर्व्हर ती आधी खेळात लोड करतो; ती लोड झाली तरच नकाशाचे पृष्ठ तयार होते. सूचीत नसलेले नकाशे फक्त लिंकने उघडता येतात; नंतर नकाशा सार्वजनिक करू शकता."
+  },
+  {
+    "id": "online:The sheet must be at most 2048×2048 and fit its frame grid exactly.",
+    "source": "The sheet must be at most 2048×2048 and fit its frame grid exactly.",
+    "semantic": "स्प्राइटशीट कमाल २०४८×२०४८ आकाराची असावी आणि तिच्या फ्रेम ग्रिडमध्ये तंतोतंत बसावी.",
+    "editorial": "स्प्राइटशीट जास्तीत जास्त 2048×2048 असावी आणि तिच्या फ्रेमच्या जाळीत तंतोतंत बसली पाहिजे."
+  },
+  {
+    "id": "online:There is no account called {p0}. Check the spelling{p1}.",
+    "source": "There is no account called {p0}. Check the spelling{p1}.",
+    "semantic": "{p0} नावाचे कोणतेही खाते नाही. स्पेलिंग तपासा{p1}.",
+    "editorial": "{p0} नावाचे खाते नाही. नावाचे लेखन तपासा{p1}."
+  },
+  {
+    "id": "online:This account does not own this colony skin.",
+    "source": "This account does not own this colony skin.",
+    "semantic": "हे वसाहतीचे रूप या खात्याच्या मालकीचे नाही.",
+    "editorial": "या वसाहतीच्या रूपाची मालकी या खात्याकडे नाही."
+  },
+  {
+    "id": "online:This family has 50 releases.",
+    "source": "This family has 50 releases.",
+    "semantic": "या इमारत संचाची ५० प्रकाशने आहेत.",
+    "editorial": "या इमारत संचाच्या 50 आवृत्त्या प्रकाशित झाल्या आहेत."
+  },
+  {
+    "id": "online:This family has been hidden by a moderator.",
+    "source": "This family has been hidden by a moderator.",
+    "semantic": "मॉडरेटरने हा इमारत संच लपवला आहे.",
+    "editorial": "नियंत्रकाने हा इमारत संच लपवला आहे."
+  },
+  {
+    "id": "online:This family uses stock artwork.",
+    "source": "This family uses stock artwork.",
+    "semantic": "हा इमारत संच मूळ कलाकृती वापरतो.",
+    "editorial": "हा इमारत संच मूळ खेळातील कलाकृती वापरतो."
+  },
+  {
+    "id": "online:This instance",
+    "source": "This instance",
+    "semantic": "ही स्थापना",
+    "editorial": "हा सर्व्हर"
+  },
+  {
+    "id": "online:This namespace belongs to another author. Fork the family first.",
+    "source": "This namespace belongs to another author. Fork the family first.",
+    "semantic": "हे नेमस्पेस दुसऱ्या लेखकाचे आहे. आधी इमारत संचाची स्वतंत्र प्रत तयार करा.",
+    "editorial": "हे नामक्षेत्र दुसऱ्या लेखकाचे आहे. आधी इमारत संचाची स्वतंत्र प्रत तयार करा."
+  },
+  {
+    "id": "online:This older generation has limited stage history. Available images are preserved.",
+    "source": "This older generation has limited stage history. Available images are preserved.",
+    "semantic": "या जुन्या निर्मितीच्या टप्प्यांचा इतिहास मर्यादित आहे. उपलब्ध प्रतिमा जतन केलेल्या आहेत.",
+    "editorial": "या जुन्या निर्मितीच्या टप्प्यांचा इतिहास मर्यादित आहे. उपलब्ध प्रतिमा जतन केल्या आहेत."
+  },
+  {
+    "id": "online:This skin changed on another device. Reload it before using it.",
+    "source": "This skin changed on another device. Reload it before using it.",
+    "semantic": "हे रूप दुसऱ्या उपकरणावर बदलले आहे. वापरण्यापूर्वी ते पुन्हा लोड करा.",
+    "editorial": "हे रूप दुसऱ्या उपकरणावर बदलले आहे. वापरण्यापूर्वी पुन्हा लोड करा."
+  },
+  {
+    "id": "online:This skin changed on another device. Your work is safe in this browser.",
+    "source": "This skin changed on another device. Your work is safe in this browser.",
+    "semantic": "हे रूप दुसऱ्या उपकरणावर बदलले आहे. या ब्राउझरमध्ये तुमचे काम सुरक्षित आहे.",
+    "editorial": "हे रूप दुसऱ्या उपकरणावर बदलले आहे. तुमचे काम या ब्राउझरमध्ये सुरक्षित आहे."
+  },
+  {
+    "id": "online:To play online, publish the generated map in the map library and select it for your room. Download family exports a ZIP for importing or editing in Building Studio.",
+    "source": "To play online, publish the generated map in the map library and select it for your room. Download family exports a ZIP for importing or editing in Building Studio.",
+    "semantic": "ऑनलाइन खेळण्यासाठी तयार केलेला नकाशा नकाशा संग्रहात प्रकाशित करा आणि खोलीसाठी तो निवडा. संच डाउनलोड करा हा पर्याय इमारत निर्मिती स्टुडिओमध्ये आयात किंवा संपादन करता येणारे ZIP पॅकेज देतो.",
+    "editorial": "ऑनलाइन खेळण्यासाठी तयार नकाशा नकाशांच्या संग्रहात प्रकाशित करून खोलीसाठी निवडा. «इमारत संच डाउनलोड करा» हा पर्याय इमारत स्टुडिओत आयात किंवा संपादन करण्यासाठी ZIP फाईल निर्यात करतो."
+  },
+  {
+    "id": "online:Truncated {value0} payload",
+    "source": "Truncated {value0} payload",
+    "semantic": "{value0} चा पेलोड अपुरा आहे",
+    "editorial": "अपूर्ण {value0} पेलोड"
+  },
+  {
+    "id": "online:Units: latest verified match against recent average",
+    "source": "Units: latest verified match against recent average",
+    "semantic": "युनिट: अलीकडील सरासरीच्या तुलनेत नवीनतम पडताळलेला सामना",
+    "editorial": "युनिट: अलीकडील सरासरीशी तुलना केलेला नवीनतम पडताळलेला सामना"
+  },
+  {
+    "id": "online:Unknown contentType.",
+    "source": "Unknown contentType.",
+    "semantic": "अज्ञात contentType.",
+    "editorial": "contentType अज्ञात आहे."
+  },
+  {
+    "id": "online:Unknown sort.",
+    "source": "Unknown sort.",
+    "semantic": "अज्ञात क्रमवारी पद्धत.",
+    "editorial": "क्रमवारी लावण्याची पद्धत अज्ञात आहे."
+  },
+  {
+    "id": "online:Unlock the skin designer to use custom skins.",
+    "source": "Unlock the skin designer to use custom skins.",
+    "semantic": "सानुकूल रूपे वापरण्यासाठी रूप डिझायनर सुरू करा.",
+    "editorial": "सानुकूल रूपे वापरण्यासाठी रूप डिझाइनर अनलॉक करा."
+  },
+  {
+    "id": "online:Unverifiable",
+    "source": "Unverifiable",
+    "semantic": "पडताळता येत नाही",
+    "editorial": "पडताळता न येणारे"
+  },
+  {
+    "id": "online:Upload an audio file, or cover art up to 8 MiB.",
+    "source": "Upload an audio file, or cover art up to 8 MiB.",
+    "semantic": "ऑडिओ फाइल किंवा कमाल ८ MiB आकाराची कव्हर प्रतिमा अपलोड करा.",
+    "editorial": "ऑडिओ फाईल किंवा जास्तीत जास्त 8 MiB ची आवरण प्रतिमा अपलोड करा."
+  },
+  {
+    "id": "online:Usernames are 3 to 32 characters long; this one has {p0}.",
+    "source": "Usernames are 3 to 32 characters long; this one has {p0}.",
+    "semantic": "वापरकर्तानावे ३ ते ३२ अक्षरांची असावीत; या नावात {p0} अक्षरे आहेत.",
+    "editorial": "वापरकर्तानाव 3 ते 32 अक्षरांचे असावे; यात {p0} अक्षरे आहेत."
+  },
+  {
+    "id": "online:Wait for the provider call to return before cancelling.",
+    "source": "Wait for the provider call to return before cancelling.",
+    "semantic": "रद्द करण्यापूर्वी प्रदात्याच्या कॉलचा प्रतिसाद येईपर्यंत थांबा.",
+    "editorial": "रद्द करण्यापूर्वी प्रदात्याच्या कॉलचा प्रतिसाद येण्याची वाट पाहा."
+  },
+  {
+    "id": "online:Worker leases",
+    "source": "Worker leases",
+    "semantic": "वर्करकडे सोपवलेली कामे",
+    "editorial": "वर्करची आरक्षणे"
+  },
+  {
+    "id": "online:Worker slots",
+    "source": "Worker slots",
+    "semantic": "वर्कर स्लॉट",
+    "editorial": "वर्करच्या जागा"
+  },
+  {
+    "id": "online:You have no seat in a running match with that id.",
+    "source": "You have no seat in a running match with that id.",
+    "semantic": "त्या आयडीच्या चालू सामन्यात तुमची जागा नाही.",
+    "editorial": "त्या ID च्या चालू सामन्यात तुमची जागा नाही."
+  },
+  {
+    "id": "online:Your account cannot host rooms.",
+    "source": "Your account cannot host rooms.",
+    "semantic": "तुमच्या खात्यातून खोल्या तयार करता येत नाहीत.",
+    "editorial": "तुमच्या खात्याने खोल्या तयार करता येत नाहीत."
+  },
+  {
+    "id": "online:Your building workspace is full.",
+    "source": "Your building workspace is full.",
+    "semantic": "तुमचे इमारत निर्मिती कार्यक्षेत्र भरले आहे.",
+    "editorial": "इमारत निर्मितीचे कार्यक्षेत्र भरले आहे."
+  },
+  {
+    "id": "online:Your building workspace is limited to 64 MiB. Export and delete an old draft first.",
+    "source": "Your building workspace is limited to 64 MiB. Export and delete an old draft first.",
+    "semantic": "तुमच्या इमारत निर्मिती कार्यक्षेत्राची मर्यादा ६४ MiB आहे. आधी जुना मसुदा निर्यात करून हटवा.",
+    "editorial": "इमारत निर्मितीच्या कार्यक्षेत्राची मर्यादा 64 MiB आहे. आधी जुना मसुदा निर्यात करून हटवा."
+  },
+  {
+    "id": "online:Your changes were saved as a new skin.",
+    "source": "Your changes were saved as a new skin.",
+    "semantic": "तुमचे बदल नवीन रूप म्हणून जतन केले.",
+    "editorial": "तुमचे बदल नवीन रूप म्हणून जतन झाले."
+  },
+  {
+    "id": "online:Your first design starts with New skin. Your work saves automatically.",
+    "source": "Your first design starts with New skin. Your work saves automatically.",
+    "semantic": "पहिले डिझाइन तयार करण्यासाठी नवीन रूप निवडा. तुमचे काम आपोआप जतन होते.",
+    "editorial": "पहिली रचना करण्यासाठी «नवीन रूप» निवडा. तुमचे काम आपोआप जतन होते."
+  },
+  {
+    "id": "online:by {slot0} · updated {slot1}",
+    "source": "by {slot0} · updated {slot1}",
+    "semantic": "लेखक: {slot0} · अद्ययावत: {slot1}",
+    "editorial": "{slot0} यांच्याकडून · अद्ययावत {slot1}"
+  },
+  {
+    "id": "online:owner must be \"me\" or an account id.",
+    "source": "owner must be \"me\" or an account id.",
+    "semantic": "owner हे \"me\" किंवा खाते आयडी असावे.",
+    "editorial": "owner हे \"me\" किंवा खात्याचा ID असावे."
+  },
+  {
+    "id": "online:teams must list the map's {p0} teams in order 0..{p1}.",
+    "source": "teams must list the map's {p0} teams in order 0..{p1}.",
+    "semantic": "teams मध्ये नकाशावरील {p0} संघ 0..{p1} या क्रमाने दिलेले असावेत.",
+    "editorial": "teams मध्ये नकाशातील {p0} संघांची यादी 0..{p1} या क्रमाने असावी."
+  },
+  {
+    "id": "online:unverifiable",
+    "source": "unverifiable",
+    "semantic": "पडताळता येत नाही",
+    "editorial": "पडताळता न येणारे"
+  },
+  {
+    "id": "online:{slot0} available · {slot1} reserved. Discussion requires an available credit; each delivered set or revision costs 1 credit. Failed generations return the credit.",
+    "source": "{slot0} available · {slot1} reserved. Discussion requires an available credit; each delivered set or revision costs 1 credit. Failed generations return the credit.",
+    "semantic": "{slot0} उपलब्ध · {slot1} राखीव. चर्चेसाठी उपलब्ध क्रेडिट आवश्यक आहे; मिळालेल्या प्रत्येक संचासाठी किंवा बदललेल्या आवृत्तीसाठी १ क्रेडिट आकारले जाते. निर्मिती अयशस्वी झाल्यास क्रेडिट परत मिळते.",
+    "editorial": "{slot0} उपलब्ध · {slot1} राखीव. चर्चेसाठी उपलब्ध क्रेडिट हवे; प्रत्येक तयार संच किंवा सुधारित आवृत्तीसाठी 1 क्रेडिट लागते. अयशस्वी निर्मितीचे क्रेडिट परत मिळते."
+  },
+  {
+    "id": "online:{slot0} credit · {slot1}  {slot2}",
+    "source": {
+      "one": "{slot0} credit · {slot1}  {slot2}",
+      "other": "{slot0} credits · {slot1}  {slot2}"
+    },
+    "semantic": {
+      "one": "{slot0} क्रेडिट · {slot1} {slot2}",
+      "other": "{slot0} क्रेडिट्स · {slot1} {slot2}"
+    },
+    "editorial": {
+      "one": "{slot0} क्रेडिट · {slot1}  {slot2}",
+      "other": "{slot0} क्रेडिट्स · {slot1}  {slot2}"
+    }
+  },
+  {
+    "id": "online:{slot0} credits · {slot1}  {slot2}",
+    "source": "{slot0} credits · {slot1}  {slot2}",
+    "semantic": "{slot0} क्रेडिट्स · {slot1} {slot2}",
+    "editorial": "{slot0} क्रेडिट्स · {slot1}  {slot2}"
+  },
+  {
+    "id": "online:{slot0} live · {slot1} in the last 24 hours",
+    "source": "{slot0} live · {slot1} in the last 24 hours",
+    "semantic": "{slot0} सध्या चालू · मागील २४ तासांत {slot1}",
+    "editorial": "{slot0} सध्या चालू · गेल्या 24 तासांत {slot1}"
+  },
+  {
+    "id": "online:{slot0} within {slot1} minutes",
+    "source": "{slot0} within {slot1} minutes",
+    "semantic": "{slot1} मिनिटांत {slot0}",
+    "editorial": "{slot1} मिनिटांच्या आत {slot0}"
+  },
+  {
+    "id": "online:{slot0}: collected {slot1} · refunded {slot2} · collected less refunds {slot3}",
+    "source": "{slot0}: collected {slot1} · refunded {slot2} · collected less refunds {slot3}",
+    "semantic": "{slot0}: जमा {slot1} · परतावा {slot2} · परतावे वजा केल्यावर जमा {slot3}",
+    "editorial": "{slot0}: जमा {slot1} · परतावा {slot2} · जमा वजा परतावा {slot3}"
+  },
+  {
+    "id": "online:{slot0}by {slot1} · ♥ {slot2}",
+    "source": "{slot0}by {slot1} · ♥ {slot2}",
+    "semantic": "{slot0}लेखक: {slot1} · ♥ {slot2}",
+    "editorial": "{slot0}{slot1} यांच्याकडून · ♥ {slot2}"
+  },
+  {
+    "id": "online:{value0} Map credits",
+    "source": "{value0} Map credits",
+    "semantic": "{value0} नकाशा क्रेडिट्स",
+    "editorial": "{value0} नकाशा निर्मिती क्रेडिट्स"
+  },
+  {
+    "id": "online:{value0} Music credits",
+    "source": "{value0} Music credits",
+    "semantic": "{value0} संगीत क्रेडिट्स",
+    "editorial": "{value0} संगीत निर्मिती क्रेडिट्स"
+  },
+  {
+    "id": "online:{value0} Stripe minor units",
+    "source": "{value0} Stripe minor units",
+    "semantic": "{value0} Stripe लहान चलन एकके",
+    "editorial": "{value0} Stripe ची लघु चलन एकके"
+  },
+  {
+    "id": "online:Enter usage verified against provider evidence. Input totals include cache creation/write tokens. Unknown usage must not be entered as zero.",
+    "source": "Enter usage verified against provider evidence. Input totals include cache creation/write tokens. Unknown usage must not be entered as zero.",
+    "semantic": "प्रदात्याच्या पुराव्याशी पडताळलेला वापर प्रविष्ट करा. एकूण इनपुट टोकनमध्ये कॅशे तयार करण्याचे/लिहिण्याचे टोकन धरले जातात. अज्ञात वापर शून्य म्हणून प्रविष्ट करू नका.",
+    "editorial": "प्रदात्याच्या पुराव्याशी पडताळलेला वापर लिहा. एकूण इनपुटमध्ये कॅश निर्मिती/लेखन टोकन समाविष्ट असतात. अज्ञात वापर शून्य म्हणून लिहू नका."
+  },
+  {
+    "id": "online:Follow latest generation",
+    "source": "Follow latest generation",
+    "semantic": "नवीनतम निर्मिती दाखवा",
+    "editorial": "नवीनतम निर्मितीसोबत रहा"
+  },
+  {
+    "id": "online:Following latest generation",
+    "source": "Following latest generation",
+    "semantic": "नवीनतम निर्मिती दाखवत आहे",
+    "editorial": "नवीनतम निर्मितीसोबत आहात"
+  },
+  {
+    "id": "online:Generation needs attention",
+    "source": "Generation needs attention",
+    "semantic": "निर्मितीकडे लक्ष देणे आवश्यक आहे",
+    "editorial": "निर्मितीकडे लक्ष द्यावे लागेल"
+  },
+  {
+    "id": "online:Play animation",
+    "source": "Play animation",
+    "semantic": "ॲनिमेशन चालवा",
+    "editorial": "अॅनिमेशन सुरू करा"
+  },
+  {
+    "id": "online:Signed HP per exposed tick, divided by 256; negative values damage units.",
+    "source": "Signed HP per exposed tick, divided by 256; negative values damage units.",
+    "semantic": "संपर्कात असताना प्रत्येक टिकमागील HP = दिलेले धन/ऋण मूल्य ÷ २५६; ऋण मूल्यांमुळे युनिटचे नुकसान होते.",
+    "editorial": "प्रभावाखालील प्रत्येक टिकमधील धन किंवा ऋण HP बदल, भागिले 256; ऋण मूल्यांमुळे युनिटना हानी होते."
+  },
+  {
+    "id": "online:The assistant edits your manifest and JavaScript together. You decide when to generate or run checks.",
+    "source": "The assistant edits your manifest and JavaScript together. You decide when to generate or run checks.",
+    "semantic": "सहाय्यक तुमचा मॅनिफेस्ट आणि JavaScript एकत्र संपादित करतो. निर्मिती कधी करायची किंवा तपासण्या कधी चालवायच्या ते तुम्ही ठरवता.",
+    "editorial": "सहाय्यक मॅनिफेस्ट आणि JavaScript एकत्र संपादित करतो. निर्मिती केव्हा करायची किंवा तपासण्या केव्हा चालवायच्या हे तुम्ही ठरवता."
+  },
+  {
+    "id": "online:Try “a winding river with fertile banks” or ask how the current generator works.",
+    "source": "Try “a winding river with fertile banks” or ask how the current generator works.",
+    "semantic": "“सुपीक काठांची नागमोडी नदी” असे सुचवा किंवा सध्याचा जनरेटर कसा काम करतो ते विचारा.",
+    "editorial": "«सुपीक काठांची नागमोडी नदी» असे सांगून पाहा किंवा सध्याचा जनरेटर कसा काम करतो ते विचारा."
+  },
+  {
+    "id": "online:{count} player on this page",
+    "source": {
+      "one": "{count} player on this page",
+      "other": "{count} players on this page"
+    },
+    "semantic": {
+      "one": "या पानावर {count} खेळाडू",
+      "other": "या पानावर {count} खेळाडू"
+    },
+    "editorial": {
+      "one": "या पृष्ठावर {count} खेळाडू",
+      "other": "या पृष्ठावर {count} खेळाडू"
+    }
+  },
+  {
+    "id": "online:{value0} HP per exposed tick",
+    "source": "{value0} HP per exposed tick",
+    "semantic": "संपर्कात असताना प्रत्येक टिकमागे {value0} HP",
+    "editorial": "प्रभावाखालील प्रत्येक टिकला {value0} HP"
+  },
+  {
+    "id": "online:× Compatibility checks failed",
+    "source": "× Compatibility checks failed",
+    "semantic": "× सुसंगतता तपासणी अयशस्वी झाली",
+    "editorial": "× सुसंगतता तपासण्या अयशस्वी झाल्या"
+  },
+  {
+    "id": "online:Native terrain preview · awaiting checks",
+    "source": "Native terrain preview · awaiting checks",
+    "semantic": "खेळ इंजिनमधील भूभागाचे पूर्वावलोकन · तपासण्यांची प्रतीक्षा",
+    "editorial": "खेळाच्या इंजिनमधील भूभागाचे पूर्वावलोकन · तपासण्या बाकी"
+  },
+  {
+    "id": "online:Selected map area",
+    "source": "Selected map area",
+    "semantic": "नकाशातील निवडलेला भाग",
+    "editorial": "नकाशातील निवडलेले क्षेत्र"
+  },
+  {
+    "id": "online:Native validation report",
+    "source": "Native validation report",
+    "semantic": "खेळ इंजिनचा पडताळणी अहवाल",
+    "editorial": "खेळाच्या इंजिनमधील पडताळणीचा अहवाल"
+  },
+  {
+    "id": "online:Opening economy measured",
+    "source": "Opening economy measured",
+    "semantic": "सुरुवातीच्या अर्थव्यवस्थेचे मोजमाप झाले",
+    "editorial": "सुरुवातीची अर्थव्यवस्था मोजली"
+  },
+  {
+    "id": "online:Colony {count}: building space",
+    "source": "Colony {count}: building space",
+    "semantic": "वसाहत {count}: इमारतींसाठी जागा",
+    "editorial": "वसाहत {count}: बांधकामाची जागा"
+  },
+  {
+    "id": "online:Colony {count}: renewable food ground",
+    "source": "Colony {count}: renewable food ground",
+    "semantic": "वसाहत {count}: अन्न पुन्हा उगवणारी जमीन",
+    "editorial": "वसाहत {count}: पुन्हा अन्न उगवणारी जमीन"
+  },
+  {
+    "id": "online:Semantics",
+    "source": "Semantics",
+    "semantic": "अर्थ",
+    "editorial": "कार्यनियम"
+  }
+]

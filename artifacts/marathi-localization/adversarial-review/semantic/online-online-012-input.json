@@ -1,0 +1,510 @@
+{
+  "source_sha256": "0ac44b4cdfb03e688983d6e3fb1e484cca57589665bff19c5c65388e649b292a",
+  "batch_target_sha256": "567ff339045c8fa3b6c517e3d1a66bae5510e624bd2cd40275c6a7240e0850ce",
+  "catalog_sha256": {
+    "native": "9d9d27dc1179d0a59f88aa723606d7daebe5f9b1ff8903ce66622ee44b442cae",
+    "online": "1ba40d342498f5e7704a63e5d175bd9e8a0ede31e3ca2ce88e8cb1fbc0ba68a6"
+  },
+  "entries": [
+    {
+      "id": "online:Map",
+      "source": "Map",
+      "target": "नकाशा"
+    },
+    {
+      "id": "online:Map Studio",
+      "source": "Map Studio",
+      "target": "मॅप स्टुडिओ"
+    },
+    {
+      "id": "online:Map build",
+      "source": "Map build",
+      "target": "नकाशा तयार करा"
+    },
+    {
+      "id": "online:Map build: {value0}",
+      "source": "Map build: {value0}",
+      "target": "नकाशा निर्मिती: {value0}"
+    },
+    {
+      "id": "online:Map canvas",
+      "source": "Map canvas",
+      "target": "नकाशा कॅनव्हास"
+    },
+    {
+      "id": "online:Map comparison",
+      "source": "Map comparison",
+      "target": "नकाशा तुलना"
+    },
+    {
+      "id": "online:Map credits",
+      "source": "Map credits",
+      "target": "नकाशा श्रेय"
+    },
+    {
+      "id": "online:Map design conversation",
+      "source": "Map design conversation",
+      "target": "नकाशा डिझाइन चर्चा"
+    },
+    {
+      "id": "online:Map designer",
+      "source": "Map designer",
+      "target": "नकाशा डिझायनर"
+    },
+    {
+      "id": "online:Map details",
+      "source": "Map details",
+      "target": "नकाशा तपशील"
+    },
+    {
+      "id": "online:Map file (.map or .map.gz)",
+      "source": "Map file (.map or .map.gz)",
+      "target": "मॅप फाईल (.map किंवा .map.gz)"
+    },
+    {
+      "id": "online:Map file (.map or .map.gz, from the game or its map editor)",
+      "source": "Map file (.map or .map.gz, from the game or its map editor)",
+      "target": "मॅप फाईल (.map किंवा .map.gz, गेममधून किंवा त्याच्या मॅप एडिटरमधून)"
+    },
+    {
+      "id": "online:Map generator",
+      "source": "Map generator",
+      "target": "नकाशा जनरेटर"
+    },
+    {
+      "id": "online:Map generators",
+      "source": "Map generators",
+      "target": "नकाशा जनरेटर"
+    },
+    {
+      "id": "online:Map library",
+      "source": "Map library",
+      "target": "नकाशा लायब्ररी"
+    },
+    {
+      "id": "online:Map lists",
+      "source": "Map lists",
+      "target": "नकाशा सूची"
+    },
+    {
+      "id": "online:Map location {value0}, {value1}",
+      "source": "Map location {value0}, {value1}",
+      "target": "नकाशावरील स्थान {value0}, {value1}"
+    },
+    {
+      "id": "online:Map page",
+      "source": "Map page",
+      "target": "नकाशा पृष्ठ"
+    },
+    {
+      "id": "online:Map preview · validation did not pass",
+      "source": "Map preview · validation did not pass",
+      "target": "नकाशा पूर्वावलोकन · पडताळणी यशस्वी झाली नाही"
+    },
+    {
+      "id": "online:Map projects",
+      "source": "Map projects",
+      "target": "नकाशा प्रकल्प"
+    },
+    {
+      "id": "online:Map settings",
+      "source": "Map settings",
+      "target": "नकाशा सेटिंग्ज"
+    },
+    {
+      "id": "online:Map version uploaded {slot0}",
+      "source": "Map version uploaded {slot0}",
+      "target": "नकाशाची आवृत्ती अपलोड केली {slot0}"
+    },
+    {
+      "id": "online:Map viewport. Use plus and minus to zoom, arrow keys to pan, or zero to fit.",
+      "source": "Map viewport. Use plus and minus to zoom, arrow keys to pan, or zero to fit.",
+      "target": "नकाशा व्ह्यूपोर्ट. झूम करण्यासाठी प्लस आणि मायनस, पॅन करण्यासाठी ॲरो की किंवा फिट करण्यासाठी झिरो वापरा."
+    },
+    {
+      "id": "online:Map workshop",
+      "source": "Map workshop",
+      "target": "नकाशा कार्यशाळा"
+    },
+    {
+      "id": "online:Map-credit sales are not enabled.",
+      "source": "Map-credit sales are not enabled.",
+      "target": "मॅप-क्रेडिट विक्री सक्षम केलेली नाही."
+    },
+    {
+      "id": "online:Maps",
+      "source": "Maps",
+      "target": "नकाशे"
+    },
+    {
+      "id": "online:Maps players love",
+      "source": "Maps players love",
+      "target": "खेळाडूंना आवडणारे नकाशे"
+    },
+    {
+      "id": "online:Maps players shared. Rooms play them by version, so everyone loads the same file.",
+      "source": "Maps players shared. Rooms play them by version, so everyone loads the same file.",
+      "target": "खेळाडूंनी शेअर केलेले नकाशे. रूम्स ते आवृत्तीनुसार खेळतात, त्यामुळे प्रत्येकजण तीच फाईल लोड करतो."
+    },
+    {
+      "id": "online:Maps you shared, whatever their visibility.",
+      "source": "Maps you shared, whatever their visibility.",
+      "target": "तुम्ही शेअर केलेले नकाशे, त्यांची दृश्यमानता काहीही असो."
+    },
+    {
+      "id": "online:Mark this generation failed and return {value0} reserved product credit(s)? Confirm that its delivery cannot be recovered.",
+      "source": "Mark this generation failed and return {value0} reserved product credit(s)? Confirm that its delivery cannot be recovered.",
+      "target": "ही पिढी अयशस्वी म्हणून चिन्हांकित करा आणि {value0} आरक्षित उत्पादन क्रेडिट्स परत करा? त्याची डिलिव्हरी परत मिळवता येणार नाही याची पुष्टी करा."
+    },
+    {
+      "id": "online:Match",
+      "source": "Match",
+      "target": "सामना"
+    },
+    {
+      "id": "online:Match activity",
+      "source": "Match activity",
+      "target": "जुळणी क्रियाकलाप"
+    },
+    {
+      "id": "online:Match colony skins",
+      "source": "Match colony skins",
+      "target": "वसाहतीच्या त्वचेशी जुळणारे"
+    },
+    {
+      "id": "online:Match id, account id, player name or relay",
+      "source": "Match id, account id, player name or relay",
+      "target": "सामना आयडी, खाते आयडी, खेळाडूचे नाव किंवा रिले"
+    },
+    {
+      "id": "online:Match not found.",
+      "source": "Match not found.",
+      "target": "जुळणी आढळली नाही."
+    },
+    {
+      "id": "online:Match record",
+      "source": "Match record",
+      "target": "सामन्याचा रेकॉर्ड"
+    },
+    {
+      "id": "online:Matches",
+      "source": "Matches",
+      "target": "सामने"
+    },
+    {
+      "id": "online:Matches you played stay in other players’ history, and their replay files still contain the name you had in the game.",
+      "source": "Matches you played stay in other players’ history, and their replay files still contain the name you had in the game.",
+      "target": "तुम्ही खेळलेले सामने इतर खेळाडूंच्या इतिहासात राहतात आणि त्यांच्या रिप्ले फाइल्समध्ये गेममधील तुमचे नाव अजूनही असते."
+    },
+    {
+      "id": "online:Matching lengths does not align beats or harmony.",
+      "source": "Matching lengths does not align beats or harmony.",
+      "target": "लांबी जुळवल्याने ताल किंवा सुसंवाद जुळत नाही."
+    },
+    {
+      "id": "online:Material",
+      "source": "Material",
+      "target": "साहित्य"
+    },
+    {
+      "id": "online:Material map pixels must be fully opaque.",
+      "source": "Material map pixels must be fully opaque.",
+      "target": "मटेरियल मॅपचे पिक्सेल पूर्णपणे अपारदर्शक असले पाहिजेत."
+    },
+    {
+      "id": "online:Material map pixels must be grey: red, green and blue equal to the material id.",
+      "source": "Material map pixels must be grey: red, green and blue equal to the material id.",
+      "target": "मटेरियल मॅप पिक्सेल हे मटेरियल आयडी प्रमाणे राखाडी: लाल, हिरवा आणि निळा रंगाचे असले पाहिजेत."
+    },
+    {
+      "id": "online:Material map pixels must be material ids 0 to {p0}.",
+      "source": "Material map pixels must be material ids 0 to {p0}.",
+      "target": "मटेरियल मॅप पिक्सेल हे मटेरियल आयडी 0 ते {p0} असणे आवश्यक आहे."
+    },
+    {
+      "id": "online:Material yields",
+      "source": "Material yields",
+      "target": "सामग्री उत्पन्न"
+    },
+    {
+      "id": "online:Maxima",
+      "source": "Maxima",
+      "target": "मॅक्सिमा"
+    },
+    {
+      "id": "online:Maximum health",
+      "source": "Maximum health",
+      "target": "कमाल आरोग्य"
+    },
+    {
+      "id": "online:Maximum seconds",
+      "source": "Maximum seconds",
+      "target": "कमाल सेकंद"
+    },
+    {
+      "id": "online:Mean seconds per successful delivery, with the number of measured completions.",
+      "source": "Mean seconds per successful delivery, with the number of measured completions.",
+      "target": "यशस्वी वितरणासाठी लागलेला सरासरी वेळ, आणि मोजलेल्या पूर्ण झालेल्या वितरणांची संख्या."
+    },
+    {
+      "id": "online:Measure",
+      "source": "Measure",
+      "target": "मोजमाप"
+    },
+    {
+      "id": "online:Measured by the relay; typical value first, then the 95th percentile. Ping: round trip between the player and the relay. {slot0} Behind: how far the player’s game ran behind the match clock, their input delay included. {slot1} Quality is the worst of these and of reconnects, time offline and delayed orders. Offline: time disconnected before reconnecting. Delayed orders: orders that ran a tick later than asked.",
+      "source": "Measured by the relay; typical value first, then the 95th percentile. Ping: round trip between the player and the relay. {slot0} Behind: how far the player’s game ran behind the match clock, their input delay included. {slot1} Quality is the worst of these and of reconnects, time offline and delayed orders. Offline: time disconnected before reconnecting. Delayed orders: orders that ran a tick later than asked.",
+      "target": "रिलेद्वारे मोजलेले; प्रथम सामान्य मूल्य, नंतर ९५ वे पर्सेन्टाइल. पिंग: खेळाडू आणि रिले यांच्यातील येण्या-जाण्याचा प्रवास. {slot0} मागे: खेळाडूचा गेम मॅच क्लॉकच्या किती मागे चालला, त्यात त्यांच्या इनपुटमधील विलंबाचा समावेश आहे. {slot1} गुणवत्ता ही या सर्वांमध्ये आणि पुन्हा कनेक्ट होणे, ऑफलाइन वेळ आणि विलंबित आदेशांमध्ये सर्वात वाईट आहे. ऑफलाइन: पुन्हा कनेक्ट होण्यापूर्वी डिस्कनेक्ट झालेला वेळ. विलंबित आदेश: मागितलेल्या वेळेपेक्षा एका टिकने उशिरा पूर्ण झालेले आदेश."
+    },
+    {
+      "id": "online:Measured from creation to completion, grouped by request creation day. Only successful requests/jobs with a known completion time contribute; late completions update their original period.",
+      "source": "Measured from creation to completion, grouped by request creation day. Only successful requests/jobs with a known completion time contribute; late completions update their original period.",
+      "target": "निर्मितीपासून पूर्ण होईपर्यंत मोजले जाते, विनंती निर्मितीच्या दिवसानुसार गटबद्ध केलेले. केवळ यशस्वी विनंत्या/कामे, ज्यांच्या पूर्ण होण्याची वेळ ज्ञात आहे, त्यांचीच गणना केली जाते; उशिरा पूर्ण झाल्यास त्यांचा मूळ कालावधी अद्ययावत केला जातो."
+    },
+    {
+      "id": "online:Measured model usage is charged, including code that later fails tests.",
+      "source": "Measured model usage is charged, including code that later fails tests.",
+      "target": "मॉडेलच्या मोजमाप केलेल्या वापरासाठी शुल्क आकारले जाते, ज्यामध्ये नंतर चाचण्यांमध्ये अयशस्वी होणाऱ्या कोडचाही समावेश आहे."
+    },
+    {
+      "id": "online:Measurements flag possible defects. Your ears decide whether the music feels right.",
+      "source": "Measurements flag possible defects. Your ears decide whether the music feels right.",
+      "target": "मोजमापांमुळे संभाव्य दोष लक्षात येतात. संगीत योग्य वाटते की नाही, हे तुमचे कान ठरवतात."
+    },
+    {
+      "id": "online:Medium",
+      "source": "Medium",
+      "target": "मध्यम"
+    },
+    {
+      "id": "online:Meet the colonies. Find a player, explore their games, or get to know your next AI opponent.",
+      "source": "Meet the colonies. Find a player, explore their games, or get to know your next AI opponent.",
+      "target": "वसाहतींना भेटा. एखादा खेळाडू शोधा, त्यांचे खेळ तपासा किंवा तुमच्या पुढील एआय प्रतिस्पर्ध्याला जाणून घ्या."
+    },
+    {
+      "id": "online:Metric",
+      "source": "Metric",
+      "target": "मेट्रिक"
+    },
+    {
+      "id": "online:Minimum seconds",
+      "source": "Minimum seconds",
+      "target": "किमान सेकंद"
+    },
+    {
+      "id": "online:Minimum total stock",
+      "source": "Minimum total stock",
+      "target": "किमान एकूण साठा"
+    },
+    {
+      "id": "online:Mirrored bands",
+      "source": "Mirrored bands",
+      "target": "आरशातील पट्ट्या"
+    },
+    {
+      "id": "online:Mirrored spots",
+      "source": "Mirrored spots",
+      "target": "आरशासारखे ठिपके"
+    },
+    {
+      "id": "online:Missing",
+      "source": "Missing",
+      "target": "हरवलेले"
+    },
+    {
+      "id": "online:Missing historical measurements are unavailable, rather than reconstructed from last-seen timestamps. Current periods may be partial. Retained account markers cover 90 days; anonymous daily totals cover 24 months.",
+      "source": "Missing historical measurements are unavailable, rather than reconstructed from last-seen timestamps. Current periods may be partial. Retained account markers cover 90 days; anonymous daily totals cover 24 months.",
+      "target": "गहाळ झालेली ऐतिहासिक मोजमापे शेवटच्या वेळी पाहिलेल्या टाइमस्टॅम्पवरून पुनर्रचित करण्याऐवजी अनुपलब्ध आहेत. वर्तमान कालावधी अपूर्ण असू शकतो. टिकवून ठेवलेले खाते मार्कर ९० दिवसांचा कालावधी व्यापतात; अनामिक दैनंदिन एकूण आकडे २४ महिन्यांचा कालावधी व्यापतात."
+    },
+    {
+      "id": "online:Missing payment signature.",
+      "source": "Missing payment signature.",
+      "target": "पेमेंटसाठी सही केलेली नाही."
+    },
+    {
+      "id": "online:Mix and master",
+      "source": "Mix and master",
+      "target": "मिक्स आणि मास्टर"
+    },
+    {
+      "id": "online:Mix balance",
+      "source": "Mix balance",
+      "target": "मिश्रणाचे संतुलन"
+    },
+    {
+      "id": "online:Model / stage",
+      "source": "Model / stage",
+      "target": "मॉडेल / स्टेज"
+    },
+    {
+      "id": "online:Model and camera versions do not match. Reload to update.",
+      "source": "Model and camera versions do not match. Reload to update.",
+      "target": "मॉडेल आणि कॅमेरा आवृत्त्या जुळत नाहीत. अपडेट करण्यासाठी रीलोड करा."
+    },
+    {
+      "id": "online:Model to paint",
+      "source": "Model to paint",
+      "target": "रंगवण्यासाठी मॉडेल"
+    },
+    {
+      "id": "online:Moderate",
+      "source": "Moderate",
+      "target": "मध्यम"
+    },
+    {
+      "id": "online:Moderation",
+      "source": "Moderation",
+      "target": "संयम"
+    },
+    {
+      "id": "online:Moderation reason",
+      "source": "Moderation reason",
+      "target": "संयमाचे कारण"
+    },
+    {
+      "id": "online:Moderation reports",
+      "source": "Moderation reports",
+      "target": "नियंत्रण अहवाल"
+    },
+    {
+      "id": "online:Moderation visibility",
+      "source": "Moderation visibility",
+      "target": "नियंत्रण दृश्यमानता"
+    },
+    {
+      "id": "online:Moderator",
+      "source": "Moderator",
+      "target": "संचालक"
+    },
+    {
+      "id": "online:Moderator access is required.",
+      "source": "Moderator access is required.",
+      "target": "मॉडरेटरचा प्रवेश आवश्यक आहे."
+    },
+    {
+      "id": "online:Mood contrast",
+      "source": "Mood contrast",
+      "target": "मूडमधील फरक"
+    },
+    {
+      "id": "online:Mood synchronization",
+      "source": "Mood synchronization",
+      "target": "मूड सिंक्रोनाइझेशन"
+    },
+    {
+      "id": "online:More",
+      "source": "More",
+      "target": "अधिक"
+    },
+    {
+      "id": "online:More actions for {value0}",
+      "source": "More actions for {value0}",
+      "target": "{value0} साठी अधिक कृती"
+    },
+    {
+      "id": "online:Most downloaded",
+      "source": "Most downloaded",
+      "target": "सर्वाधिक डाउनलोड केलेले"
+    },
+    {
+      "id": "online:Most liked",
+      "source": "Most liked",
+      "target": "सर्वाधिक आवडले"
+    },
+    {
+      "id": "online:Most recent provider attempts; unavailable usage is not zero. These numbers need verification against provider evidence.",
+      "source": "Most recent provider attempts; unavailable usage is not zero. These numbers need verification against provider evidence.",
+      "target": "प्रदात्याचे सर्वात अलीकडील प्रयत्न; अनुपलब्ध वापर शून्य नाही. या आकड्यांची प्रदात्याच्या पुराव्याद्वारे पडताळणी करणे आवश्यक आहे."
+    },
+    {
+      "id": "online:Mottled",
+      "source": "Mottled",
+      "target": "ठिपकेदार"
+    },
+    {
+      "id": "online:Music",
+      "source": "Music",
+      "target": "संगीत"
+    },
+    {
+      "id": "online:Music Studio",
+      "source": "Music Studio",
+      "target": "संगीत स्टुडिओ"
+    },
+    {
+      "id": "online:Music composition conversation",
+      "source": "Music composition conversation",
+      "target": "संगीत रचना संवाद"
+    },
+    {
+      "id": "online:Music couldn’t be loaded.",
+      "source": "Music couldn’t be loaded.",
+      "target": "संगीत लोड होऊ शकले नाही."
+    },
+    {
+      "id": "online:Music credits",
+      "source": "Music credits",
+      "target": "संगीत श्रेय"
+    },
+    {
+      "id": "online:Music for your colony",
+      "source": "Music for your colony",
+      "target": "तुमच्या वसाहतीसाठी संगीत"
+    },
+    {
+      "id": "online:Music is unavailable.",
+      "source": "Music is unavailable.",
+      "target": "संगीत उपलब्ध नाही."
+    },
+    {
+      "id": "online:Music projects",
+      "source": "Music projects",
+      "target": "संगीत प्रकल्प"
+    },
+    {
+      "id": "online:Music reports",
+      "source": "Music reports",
+      "target": "संगीत अहवाल"
+    },
+    {
+      "id": "online:Music revisions",
+      "source": "Music revisions",
+      "target": "संगीत सुधारणा"
+    },
+    {
+      "id": "online:Music-credit sales are not enabled.",
+      "source": "Music-credit sales are not enabled.",
+      "target": "संगीत क्रेडिटची विक्री सक्षम केलेली नाही."
+    },
+    {
+      "id": "online:Musical variety",
+      "source": "Musical variety",
+      "target": "संगीतातील विविधता"
+    },
+    {
+      "id": "online:Mute {slot0}",
+      "source": "Mute {slot0}",
+      "target": "म्यूट {slot0}"
+    },
+    {
+      "id": "online:My AIs",
+      "source": "My AIs",
+      "target": "माझे एआय"
+    },
+    {
+      "id": "online:My Colony",
+      "source": "My Colony",
+      "target": "माझी वसाहत"
+    },
+    {
+      "id": "online:My colony",
+      "source": "My colony",
+      "target": "माझी वसाहत"
+    },
+    {
+      "id": "online:My families",
+      "source": "My families",
+      "target": "माझे कुटुंब"
+    }
+  ]
+}

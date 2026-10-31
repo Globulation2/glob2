@@ -1,0 +1,418 @@
+{
+  "request": {
+    "project": "bradley-personal-20261027",
+    "model": "general/nmt",
+    "payload": {
+      "sourceLanguageCode": "en",
+      "targetLanguageCode": "mr",
+      "mimeType": "text/plain",
+      "contents": [
+        "Select a map to see its details.",
+        "by ZXQPH0QXZ",
+        "▶ ZXQPH0QXZ plays · ⬇ ZXQPH1QXZ downloads · ♥ ZXQPH2QXZ",
+        "Use in a room",
+        "Liked",
+        "Like",
+        "Reported",
+        "Report…",
+        "What is wrong with this map?",
+        "Search maps or authors",
+        "No maps match.",
+        "No maps have been shared on this server yet.",
+        "Clear filters",
+        "Any colonies",
+        "Checking…",
+        "No version has been uploaded yet.",
+        "Rejected",
+        "The map did not load: ZXQPH0QXZ",
+        "no reason was given",
+        "fix it in the editor, then upload again",
+        "uploaded just now",
+        "loading it on the server",
+        "ZXQPH0QXZ plays",
+        "Hidden",
+        "Upload again…",
+        "Delete",
+        "Update…",
+        "Upload a map…",
+        ".map files from your maps folder or the editor",
+        "You have not shared any maps yet.",
+        "My maps",
+        "My maps (ZXQPH0QXZ)",
+        "Browse",
+        "Maps",
+        "ZXQPH0QXZ catalog · only maps that load in this version are shown",
+        "Public maps appear in Browse. Unlisted maps work in your rooms and through their link. Private maps only in your own rooms.",
+        "Use ZXQPH0QXZ",
+        "ZXQPH0QXZ KB",
+        "Title",
+        "Description",
+        "Who can use it",
+        "Guests can share unlisted and private maps; sign in to publish to Browse.",
+        "Unlisted maps work in your rooms and through their link; public maps also appear in Browse.",
+        "Upload this file as a new version of ZXQPH0QXZ.",
+        "Upload",
+        "Uploading…",
+        "The server is loading the map and drawing its preview. Until then the map cannot be used.",
+        "Ready",
+        "The map is ready and listed in Browse.",
+        "The map is ready. Unlisted maps work in your rooms and through their link.",
+        "The map is ready. Private maps work only in your own rooms.",
+        "The upload failed",
+        "The server read it as ZXQPH0QXZ with ZXQPH1QXZ colonies.",
+        "Close",
+        "The server loads every upload before it can be used.",
+        "just now",
+        "today ZXQPH0QXZ",
+        "yesterday",
+        "Sun",
+        "Mon",
+        "Tue",
+        "Wed",
+        "Thu",
+        "Fri",
+        "Sat",
+        "ZXQPH0QXZ weeks ago",
+        "ZXQPH0QXZ months ago",
+        "ZXQPH0QXZ years ago",
+        "Share online…",
+        "Mine",
+        "Waiting for the other players to leave…",
+        "The result is recorded once everyone has left the match.",
+        "A player who lost the connection has up to 3 minutes to come back. The result will appear in your history and on the match page.",
+        "Verification is taking longer than usual. The result will appear in your history and on the match page.",
+        "Rematch",
+        "Join ZXQPH0QXZ's rematch",
+        "Profile & history",
+        "Leaderboard · ZXQPH0QXZ",
+        "No ranked players yet.",
+        "Guests aren't ranked. Sign in to appear here."
+      ]
+    }
+  },
+  "response": {
+    "translations": [
+      {
+        "translatedText": "नकाशाचे तपशील पाहण्यासाठी तो निवडा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ द्वारे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "▶ ZXQPH0QXZ प्ले · ⬇ ZXQPH1QXZ डाउनलोड · ♥ ZXQPH2QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "खोलीत वापरा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "आवडले",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "जसे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "रिपोर्ट केले",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अहवाल…",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "या नकाशात काय चूक आहे?",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नकाशे किंवा लेखक शोधा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कोणतेही नकाशे जुळत नाहीत.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "या सर्व्हरवर अद्याप कोणतेही नकाशे शेअर केलेले नाहीत.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "फिल्टर साफ करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कोणत्याही वसाहती",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तपासत आहे…",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अद्याप कोणतीही आवृत्ती अपलोड केलेली नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नाकारले",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नकाशा लोड झाला नाही: ZXQPH0QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कोणतेही कारण दिले नाही",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "एडिटरमध्ये दुरुस्त करा, मग पुन्हा अपलोड करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "आत्ताच अपलोड केले आहे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सर्व्हरवर लोड करत आहे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ खेळतो",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "लपलेले",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पुन्हा अपलोड करा…",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "हटवा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अपडेट…",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नकाशा अपलोड करा…",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तुमच्या मॅप्स फोल्डरमधील किंवा एडिटरमधील .map फाईल्स",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तुम्ही अद्याप कोणताही नकाशा शेअर केलेला नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "माझे नकाशे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "माझे नकाशे (ZXQPH0QXZ)",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ब्राउझ करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नकाशे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ कॅटलॉग · फक्त या आवृत्तीमध्ये लोड होणारे नकाशे दाखवले आहेत",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सार्वजनिक नकाशे 'ब्राउझ'मध्ये दिसतात. सूचीत नसलेले नकाशे तुमच्या खोल्यांमध्ये आणि त्यांच्या लिंकद्वारे चालतात. खाजगी नकाशे फक्त तुमच्या स्वतःच्या खोल्यांमध्येच चालतात.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ वापरा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ KB",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "शीर्षक",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "वर्णन",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कोण वापरू शकतो",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अतिथी सूचीबद्ध नसलेले आणि खाजगी नकाशे शेअर करू शकतात; ब्राउझमध्ये प्रकाशित करण्यासाठी साइन इन करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सूचीत नसलेले नकाशे तुमच्या खोल्यांमध्ये आणि त्यांच्या लिंकद्वारे काम करतात; सार्वजनिक नकाशे 'ब्राउझ'मध्ये देखील दिसतात.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ही फाईल ZXQPH0QXZ ची नवीन आवृत्ती म्हणून अपलोड करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अपलोड करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अपलोड करत आहे…",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सर्व्हर नकाशा लोड करत आहे आणि त्याचे पूर्वावलोकन दाखवत आहे. तोपर्यंत नकाशा वापरता येणार नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तयार",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नकाशा तयार असून तो ब्राउझमध्ये सूचीबद्ध आहे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नकाशा तयार आहे. सूचीमध्ये नसलेले नकाशे तुमच्या खोल्यांमध्ये आणि त्यांच्या लिंकद्वारे काम करतात.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नकाशा तयार आहे. खाजगी नकाशे फक्त तुमच्या स्वतःच्या खोल्यांमध्येच काम करतात.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अपलोड अयशस्वी झाले.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सर्व्हरने ते ZXQPH0QXZ असे वाचले, ज्यामध्ये ZXQPH1QXZ वसाहती होत्या.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "बंद करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सर्व्हर प्रत्येक अपलोड वापरण्यापूर्वी लोड करतो.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "आत्ताच",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "आज ZXQPH0QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "काल",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सूर्य",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सोमवार",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "मंगळवार",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "बुधवार",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "गुरुवार",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "शुक्रवार",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "शनिवार",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ आठवड्यांपूर्वी",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ महिन्यांपूर्वी",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ वर्षांपूर्वी",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ऑनलाइन शेअर करा…",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "माझं",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "इतर खेळाडूंच्या निघून जाण्याची वाट पाहत आहे…",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सर्वजण सामना सोडून गेल्यावर निकाल नोंदवला जातो.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ज्या खेळाडूचे कनेक्शन तुटले आहे, त्याला परत येण्यासाठी ३ मिनिटांपर्यंत वेळ मिळतो. निकाल तुमच्या हिस्ट्रीमध्ये आणि मॅच पेजवर दिसेल.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सत्यापनाला नेहमीपेक्षा जास्त वेळ लागत आहे. निकाल तुमच्या हिस्ट्रीमध्ये आणि मॅच पेजवर दिसेल.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पुन्हा सामना",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ च्या पुनर्सामन्यामध्ये सामील व्हा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "प्रोफाइल आणि इतिहास",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "लीडरबोर्ड · ZXQPH0QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अद्याप एकही रँक असलेला खेळाडू नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पाहुण्यांना क्रमवारी दिली जात नाही. येथे दिसण्यासाठी साइन इन करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      }
+    ]
+  },
+  "response_sha256": "57d92661b78ab2ca98e9e5030e194141eaaf814c17c45a43fd0e3cbd30658b7d"
+}

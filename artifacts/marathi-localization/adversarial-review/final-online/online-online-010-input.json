@@ -1,0 +1,510 @@
+{
+  "source_sha256": "0ac44b4cdfb03e688983d6e3fb1e484cca57589665bff19c5c65388e649b292a",
+  "batch_target_sha256": "e7e8071bc2d93b512f7729baed92a2fde2b6b484b8c6b6861af23c6f3e4ba5ea",
+  "catalog_sha256": {
+    "native": "8b3f9e4972ee0eb1c3433110a7f0e83c9dc2fb7ea5f494b6925afa373c4fef97",
+    "online": "d7ae02f4d4453ebcb2acc37c15fd862acea8d2996d29cdb89bfb64c4f32cd5fa"
+  },
+  "entries": [
+    {
+      "id": "online:In the game, choose",
+      "source": "In the game, choose",
+      "target": "खेळात, निवडा"
+    },
+    {
+      "id": "online:In the map editor",
+      "source": "In the map editor",
+      "target": "नकाशा संपादकामध्ये"
+    },
+    {
+      "id": "online:In use",
+      "source": "In use",
+      "target": "वापरात"
+    },
+    {
+      "id": "online:In use · changes not applied",
+      "source": "In use · changes not applied",
+      "target": "वापरात आहे · बदल लागू केलेले नाहीत"
+    },
+    {
+      "id": "online:Inappropriate content",
+      "source": "Inappropriate content",
+      "target": "अयोग्य सामग्री"
+    },
+    {
+      "id": "online:Incomplete music release.",
+      "source": "Incomplete music release.",
+      "target": "अपूर्ण संगीत प्रकाशन."
+    },
+    {
+      "id": "online:Increase the manifest revision for a new release.",
+      "source": "Increase the manifest revision for a new release.",
+      "target": "नवीन रिलीझसाठी मॅनिफेस्ट रिव्हिजन वाढवा."
+    },
+    {
+      "id": "online:Individual moods",
+      "source": "Individual moods",
+      "target": "वैयक्तिक मनःस्थिती"
+    },
+    {
+      "id": "online:Information",
+      "source": "Information",
+      "target": "माहिती"
+    },
+    {
+      "id": "online:Initial health",
+      "source": "Initial health",
+      "target": "सुरुवातीचे आरोग्य"
+    },
+    {
+      "id": "online:Initials only",
+      "source": "Initials only",
+      "target": "फक्त आद्याक्षरे"
+    },
+    {
+      "id": "online:Inn capacity",
+      "source": "Inn capacity",
+      "target": "खानावळीची क्षमता"
+    },
+    {
+      "id": "online:Input tokens",
+      "source": "Input tokens",
+      "target": "इनपुट टोकन"
+    },
+    {
+      "id": "online:Input tokens (including cached)",
+      "source": "Input tokens (including cached)",
+      "target": "इनपुट टोकन (कॅश केलेल्यांसह)"
+    },
+    {
+      "id": "online:Inspect candidate",
+      "source": "Inspect candidate",
+      "target": "उमेदवाराची तपासणी करा"
+    },
+    {
+      "id": "online:Inspect latest release",
+      "source": "Inspect latest release",
+      "target": "नवीनतम प्रकाशन तपासा"
+    },
+    {
+      "id": "online:Inspect library content",
+      "source": "Inspect library content",
+      "target": "लायब्ररीमधील सामग्री तपासा"
+    },
+    {
+      "id": "online:Inspect match verification",
+      "source": "Inspect match verification",
+      "target": "सामन्याची पडताळणी तपासा"
+    },
+    {
+      "id": "online:Inspect matches",
+      "source": "Inspect matches",
+      "target": "सामने तपासा"
+    },
+    {
+      "id": "online:Inspect recovery details",
+      "source": "Inspect recovery details",
+      "target": "पुनर्प्राप्ती तपशील तपासा"
+    },
+    {
+      "id": "online:Inspect requesting account",
+      "source": "Inspect requesting account",
+      "target": "विनंती करणाऱ्या खात्याची तपासणी करा"
+    },
+    {
+      "id": "online:Inspect sheet",
+      "source": "Inspect sheet",
+      "target": "स्प्राइटशीट तपासा"
+    },
+    {
+      "id": "online:Inspect this version",
+      "source": "Inspect this version",
+      "target": "या आवृत्तीची तपासणी करा"
+    },
+    {
+      "id": "online:Inspect tracks",
+      "source": "Inspect tracks",
+      "target": "ट्रॅक तपासा"
+    },
+    {
+      "id": "online:Inspect version ",
+      "source": "Inspect version ",
+      "target": "आवृत्ती तपासा "
+    },
+    {
+      "id": "online:Inspect version {slot0} · {slot1}",
+      "source": "Inspect version {slot0} · {slot1}",
+      "target": "आवृत्ती तपासा {slot0} · {slot1}"
+    },
+    {
+      "id": "online:Inspected",
+      "source": "Inspected",
+      "target": "तपासले"
+    },
+    {
+      "id": "online:Inspecting",
+      "source": "Inspecting",
+      "target": "तपासणी करणे"
+    },
+    {
+      "id": "online:Inspection zoom",
+      "source": "Inspection zoom",
+      "target": "तपासणी झूम"
+    },
+    {
+      "id": "online:Install community AIs for local games. Versions work offline. Only run code from authors you trust.",
+      "source": "Install community AIs for local games. Versions work offline. Only run code from authors you trust.",
+      "target": "स्थानिक खेळांसाठी सामुदायिक एआय स्थापित करा. आवृत्त्या ऑफलाइन काम करतात. केवळ तुमच्या विश्वासातील लेखकांचाच कोड चालवा."
+    },
+    {
+      "id": "online:Installed preset artwork",
+      "source": "Installed preset artwork",
+      "target": "स्थापित पूर्वनिर्धारित कलाकृती"
+    },
+    {
+      "id": "online:Integer rate: 196608 means one growth opportunity or probability one. Zero disables it.",
+      "source": "Integer rate: 196608 means one growth opportunity or probability one. Zero disables it.",
+      "target": "पूर्णांक दर: १९६६०८ म्हणजे वाढीची एक संधी किंवा संभाव्यता एक. शून्य असल्यास ती संधी नाहीशी होते."
+    },
+    {
+      "id": "online:Internal server error.",
+      "source": "Internal server error.",
+      "target": "सर्व्हरमध्ये अंतर्गत त्रुटी आहे."
+    },
+    {
+      "id": "online:Into the fray",
+      "source": "Into the fray",
+      "target": "लढाईत"
+    },
+    {
+      "id": "online:Invalid",
+      "source": "Invalid",
+      "target": "अवैध"
+    },
+    {
+      "id": "online:Invalid account cursor.",
+      "source": "Invalid account cursor.",
+      "target": "अवैध खाते कर्सर."
+    },
+    {
+      "id": "online:Invalid audit cursor.",
+      "source": "Invalid audit cursor.",
+      "target": "अवैध ऑडिट कर्सर."
+    },
+    {
+      "id": "online:Invalid checkout destination",
+      "source": "Invalid checkout destination",
+      "target": "अवैध चेकआउट गंतव्यस्थान"
+    },
+    {
+      "id": "online:Invalid checkout destination.",
+      "source": "Invalid checkout destination.",
+      "target": "चुकीचे चेकआउट ठिकाण."
+    },
+    {
+      "id": "online:Invalid claimed generator provenance.",
+      "source": "Invalid claimed generator provenance.",
+      "target": "दावा केलेला जनरेटरचा स्रोत अवैध आहे."
+    },
+    {
+      "id": "online:Invalid cursor.",
+      "source": "Invalid cursor.",
+      "target": "अमान्य कर्सर."
+    },
+    {
+      "id": "online:Invalid date.",
+      "source": "Invalid date.",
+      "target": "चुकीची तारीख."
+    },
+    {
+      "id": "online:Invalid duration filter.",
+      "source": "Invalid duration filter.",
+      "target": "चुकीचा कालावधी फिल्टर."
+    },
+    {
+      "id": "online:Invalid editor-only filter.",
+      "source": "Invalid editor-only filter.",
+      "target": "अवैध एडिटर-ओन्ली फिल्टर."
+    },
+    {
+      "id": "online:Invalid engine version.",
+      "source": "Invalid engine version.",
+      "target": "अवैध इंजिन आवृत्ती."
+    },
+    {
+      "id": "online:Invalid identifier.",
+      "source": "Invalid identifier.",
+      "target": "अवैध ओळखकर्ता."
+    },
+    {
+      "id": "online:Invalid manifest JSON.",
+      "source": "Invalid manifest JSON.",
+      "target": "अवैध मॅनिफेस्ट JSON."
+    },
+    {
+      "id": "online:Invalid mapId.",
+      "source": "Invalid mapId.",
+      "target": "अवैध mapId."
+    },
+    {
+      "id": "online:Invalid material map dimensions.",
+      "source": "Invalid material map dimensions.",
+      "target": "मटेरियल मॅपची परिमाणे अवैध आहेत."
+    },
+    {
+      "id": "online:Invalid material map.",
+      "source": "Invalid material map.",
+      "target": "अवैध मटेरियल मॅप."
+    },
+    {
+      "id": "online:Invalid material unwrap coordinate.",
+      "source": "Invalid material unwrap coordinate.",
+      "target": "अवैध मटेरियल अनरॅप कोऑर्डिनेट."
+    },
+    {
+      "id": "online:Invalid material unwrap dimensions.",
+      "source": "Invalid material unwrap dimensions.",
+      "target": "मटेरियल अनरॅपचे परिमाण अमान्य आहेत."
+    },
+    {
+      "id": "online:Invalid model camera",
+      "source": "Invalid model camera",
+      "target": "अवैध मॉडेल कॅमेरा"
+    },
+    {
+      "id": "online:Invalid model dimensions",
+      "source": "Invalid model dimensions",
+      "target": "मॉडेलचे परिमाण चुकीचे आहेत"
+    },
+    {
+      "id": "online:Invalid model geometry",
+      "source": "Invalid model geometry",
+      "target": "अमान्य मॉडेल भूमिती"
+    },
+    {
+      "id": "online:Invalid model size",
+      "source": "Invalid model size",
+      "target": "अमान्य मॉडेल आकार"
+    },
+    {
+      "id": "online:Invalid model transform",
+      "source": "Invalid model transform",
+      "target": "अमान्य मॉडेल रूपांतरण"
+    },
+    {
+      "id": "online:Invalid page cursor.",
+      "source": "Invalid page cursor.",
+      "target": "चुकीचा पृष्ठ कर्सर."
+    },
+    {
+      "id": "online:Invalid page size.",
+      "source": "Invalid page size.",
+      "target": "पृष्ठाचा आकार अमान्य आहे."
+    },
+    {
+      "id": "online:Invalid pagination cursor.",
+      "source": "Invalid pagination cursor.",
+      "target": "अमान्य पृष्ठांकन कर्सर."
+    },
+    {
+      "id": "online:Invalid pagination.",
+      "source": "Invalid pagination.",
+      "target": "चुकीचे पृष्ठांकन."
+    },
+    {
+      "id": "online:Invalid payment signature.",
+      "source": "Invalid payment signature.",
+      "target": "पेमेंटची सही अवैध आहे."
+    },
+    {
+      "id": "online:Invalid provider.",
+      "source": "Invalid provider.",
+      "target": "अवैध प्रदाता."
+    },
+    {
+      "id": "online:Invalid range or payment mode.",
+      "source": "Invalid range or payment mode.",
+      "target": "अवैध श्रेणी किंवा पेमेंट पद्धत."
+    },
+    {
+      "id": "online:Invalid recovery reason.",
+      "source": "Invalid recovery reason.",
+      "target": "चुकीचे पुनर्प्राप्ती कारण."
+    },
+    {
+      "id": "online:Invalid report cursor.",
+      "source": "Invalid report cursor.",
+      "target": "चुकीचा रिपोर्ट कर्सर."
+    },
+    {
+      "id": "online:Invalid report identifier.",
+      "source": "Invalid report identifier.",
+      "target": "अवैध अहवाल ओळखकर्ता."
+    },
+    {
+      "id": "online:Invalid report status.",
+      "source": "Invalid report status.",
+      "target": "अवैध अहवाल स्थिती."
+    },
+    {
+      "id": "online:Invalid request body.",
+      "source": "Invalid request body.",
+      "target": "अवैध विनंती बॉडी."
+    },
+    {
+      "id": "online:Invalid request identifier.",
+      "source": "Invalid request identifier.",
+      "target": "अवैध विनंती ओळखकर्ता."
+    },
+    {
+      "id": "online:Invalid rig UV",
+      "source": "Invalid rig UV",
+      "target": "अवैध रिग UV"
+    },
+    {
+      "id": "online:Invalid rig clip",
+      "source": "Invalid rig clip",
+      "target": "अवैध रिग क्लिप"
+    },
+    {
+      "id": "online:Invalid rig dimensions",
+      "source": "Invalid rig dimensions",
+      "target": "चुकीचे रिग परिमाण"
+    },
+    {
+      "id": "online:Invalid rig frame mapping",
+      "source": "Invalid rig frame mapping",
+      "target": "अवैध रिग फ्रेम मॅपिंग"
+    },
+    {
+      "id": "online:Invalid rig hierarchy",
+      "source": "Invalid rig hierarchy",
+      "target": "अवैध रिग पदानुक्रम"
+    },
+    {
+      "id": "online:Invalid rig index",
+      "source": "Invalid rig index",
+      "target": "अवैध रिग इंडेक्स"
+    },
+    {
+      "id": "online:Invalid rig influence bone",
+      "source": "Invalid rig influence bone",
+      "target": "अवैध रिग प्रभाव हाड"
+    },
+    {
+      "id": "online:Invalid rig inverse bind",
+      "source": "Invalid rig inverse bind",
+      "target": "अवैध रिग इन्व्हर्स बाईंड"
+    },
+    {
+      "id": "online:Invalid rig normal",
+      "source": "Invalid rig normal",
+      "target": "रिगचा नॉर्मल सदिश अवैध आहे"
+    },
+    {
+      "id": "online:Invalid rig pose",
+      "source": "Invalid rig pose",
+      "target": "चुकीची रिग पोझ"
+    },
+    {
+      "id": "online:Invalid rig radius",
+      "source": "Invalid rig radius",
+      "target": "अवैध रिग त्रिज्या"
+    },
+    {
+      "id": "online:Invalid rig sample",
+      "source": "Invalid rig sample",
+      "target": "अवैध रिग नमुना"
+    },
+    {
+      "id": "online:Invalid rig size",
+      "source": "Invalid rig size",
+      "target": "चुकीचा रिग आकार"
+    },
+    {
+      "id": "online:Invalid rig track dimensions",
+      "source": "Invalid rig track dimensions",
+      "target": "चुकीचे रिग ट्रॅक परिमाण"
+    },
+    {
+      "id": "online:Invalid rig transform",
+      "source": "Invalid rig transform",
+      "target": "अवैध रिग ट्रान्सफॉर्म"
+    },
+    {
+      "id": "online:Invalid rig weights",
+      "source": "Invalid rig weights",
+      "target": "अवैध रिग वजन"
+    },
+    {
+      "id": "online:Invalid shape UV",
+      "source": "Invalid shape UV",
+      "target": "अमान्य आकार UV"
+    },
+    {
+      "id": "online:Invalid shape clip",
+      "source": "Invalid shape clip",
+      "target": "अवैध आकार क्लिप"
+    },
+    {
+      "id": "online:Invalid shape dimensions",
+      "source": "Invalid shape dimensions",
+      "target": "आकाराची परिमाणे अवैध आहेत."
+    },
+    {
+      "id": "online:Invalid shape frame",
+      "source": "Invalid shape frame",
+      "target": "अवैध आकार फ्रेम"
+    },
+    {
+      "id": "online:Invalid shape heading",
+      "source": "Invalid shape heading",
+      "target": "आकाराची दिशा अवैध आहे"
+    },
+    {
+      "id": "online:Invalid shape index",
+      "source": "Invalid shape index",
+      "target": "अवैध आकार निर्देशांक"
+    },
+    {
+      "id": "online:Invalid shape scale",
+      "source": "Invalid shape scale",
+      "target": "अमान्य आकार प्रमाण"
+    },
+    {
+      "id": "online:Invalid shape size",
+      "source": "Invalid shape size",
+      "target": "चुकीचा आकार"
+    },
+    {
+      "id": "online:Invalid skin dimensions.",
+      "source": "Invalid skin dimensions.",
+      "target": "रूपाची मापे अवैध आहेत."
+    },
+    {
+      "id": "online:Invalid studio event cursor.",
+      "source": "Invalid studio event cursor.",
+      "target": "अवैध स्टुडिओ इव्हेंट कर्सर."
+    },
+    {
+      "id": "online:Invalid visibility.",
+      "source": "Invalid visibility.",
+      "target": "अमान्य दृश्यमानता."
+    },
+    {
+      "id": "online:Invalid webhook signature.",
+      "source": "Invalid webhook signature.",
+      "target": "अवैध वेबहुक स्वाक्षरी."
+    },
+    {
+      "id": "online:Invalid webhook.",
+      "source": "Invalid webhook.",
+      "target": "अवैध वेबहुक."
+    },
+    {
+      "id": "online:Invalid {value0} camera",
+      "source": "Invalid {value0} camera",
+      "target": "अवैध {value0} कॅमेरा"
+    }
+  ]
+}

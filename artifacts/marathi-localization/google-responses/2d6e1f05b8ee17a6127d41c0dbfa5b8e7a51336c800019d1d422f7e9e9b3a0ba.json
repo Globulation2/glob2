@@ -1,0 +1,418 @@
+{
+  "request": {
+    "project": "bradley-personal-20261027",
+    "model": "general/nmt",
+    "payload": {
+      "sourceLanguageCode": "en",
+      "targetLanguageCode": "mr",
+      "mimeType": "text/plain",
+      "contents": [
+        "Calm",
+        "Calm → Building → Combat → Calm · eight seconds per mood",
+        "Camera angle ",
+        "Camera view",
+        "Can be farmed",
+        "Can be retried",
+        "Cancel",
+        "Cancel editing",
+        "Cancel generation",
+        "Cancel report",
+        "Cancel request",
+        "Cancel upload",
+        "Cancellation is unavailable while the provider outcome and reserved credits are reconciled. You can keep editing the saved source or export it.",
+        "Cancellation requested",
+        "Cancelled",
+        "Candidate preview · may need repairs",
+        "Candidate previews & reports",
+        "Candidate unavailable.",
+        "Candidate ZXQPH0QXZ",
+        "Canonical package ZXQPH0QXZ: ZXQPH1QXZ",
+        "Cash amount",
+        "Castor",
+        "Catalog",
+        "Categorical",
+        "Change",
+        "Change role",
+        "Change shape ⌄",
+        "Changes",
+        "Changing settings takes effect when you press Generate. One seed per preview.",
+        "Charged",
+        "Charts appear once the server has replayed the match.",
+        "Chat",
+        "Check & publish",
+        "Check again",
+        "Check payment",
+        "Check the connection, then try again.",
+        "Check the essentials",
+        "Check the score",
+        "Checker",
+        "Checking",
+        "Checking generator…",
+        "Checking the map with the game.",
+        "Checking the map…",
+        "Checking your AI… ZXQPH0QXZ of ZXQPH1QXZ checks passed.ZXQPH2QXZ",
+        "Checking your set…",
+        "Checking your world…",
+        "Checkout could not be opened. Please try again.",
+        "Checkout does not match this purchase.",
+        "Checkout failed.",
+        "Checkout is not available yet; retry this event.",
+        "Checkout returned. Check the payment below to confirm your purchase.",
+        "Checkout was cancelled. Your project and draft are saved.",
+        "Checks",
+        "Checks apply to the last saved revision. ",
+        "Checks cover the listed settings and do not certify game balance.",
+        "Checks failed",
+        "Checks for ZXQPH0QXZ",
+        "Checks passed",
+        "Checks validate gameplay properties, image bounds, frame mappings and rendering using the game engine. They do not establish map balance.",
+        "Checks · ZXQPH0QXZ",
+        "Chevrons",
+        "Choose 7, 30 or 90 days.",
+        "Choose a JPEG, PNG or WebP photo.",
+        "Choose a PNG or WebP frame.",
+        "Choose a PNG spritesheet.",
+        "Choose a PNG, JPEG or WebP up to 2048×2048.",
+        "Choose a building ZIP package.",
+        "Choose a draft or a released set.",
+        "Choose a family name.",
+        "Choose a file to begin.",
+        "Choose a local custom game or a multiplayer room with this map.",
+        "Choose a map file first: a .map or .map.gz file from the game.",
+        "Choose a map first.",
+        "Choose a nonempty ZXQPH0QXZ file without ZXQPH1QXZ bytes.",
+        "Choose a nonempty ZXQPH0QXZ file.",
+        "Choose a nonempty portable generator package without ZXQPH0QXZ bytes.",
+        "Choose a password",
+        "Choose a password of at least ZXQPH0QXZ characters.",
+        "Choose a photo no larger than 10 MiB.",
+        "Choose a photo no larger than 25 megapixels."
+      ]
+    }
+  },
+  "response": {
+    "translations": [
+      {
+        "translatedText": "शांत",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "शांत → बांधकाम → लढाई → शांत · प्रत्येक मनःस्थितीसाठी आठ सेकंद",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कॅमेरा अँगल",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कॅमेरा दृश्य",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "शेती करता येते",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पुन्हा प्रयत्न करता येईल.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "रद्द करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "संपादन रद्द करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पिढी रद्द करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अहवाल रद्द करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "विनंती रद्द करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अपलोड रद्द करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "प्रदात्याचा निकाल आणि आरक्षित क्रेडिट्स यांचा ताळमेळ घातला जात असताना, रद्द करण्याची सुविधा उपलब्ध नाही. तुम्ही जतन केलेला स्रोत संपादित करणे सुरू ठेवू शकता किंवा तो निर्यात करू शकता.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "रद्द करण्याची विनंती केली आहे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "रद्द केले",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "उमेदवार पूर्वावलोकन · दुरुस्तीची आवश्यकता असू शकते",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "उमेदवारांचे पूर्वावलोकन आणि अहवाल",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "उमेदवार उपलब्ध नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "उमेदवार ZXQPH0QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कॅनोनिकल पॅकेज ZXQPH0QXZ: ZXQPH1QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "रोख रक्कम",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कॅस्टर",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कॅटलॉग",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "श्रेणीबद्ध",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "बदल",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "भूमिका बदला",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "आकार बदला ⌄",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "बदल",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तुम्ही जनरेट बटण दाबल्यावर सेटिंग्जमधील बदल लागू होतात. प्रत्येक प्रिव्ह्यूसाठी एक सीड.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "शुल्क आकारले",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सर्वरने सामना पुन्हा चालवल्यानंतर चार्ट दिसतात.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "चॅट",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तपासा आणि प्रकाशित करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पुन्हा तपासा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पेमेंट तपासा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कनेक्शन तपासा, मग पुन्हा प्रयत्न करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "आवश्यक गोष्टी तपासा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "गुण तपासा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तपासक",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तपासणी",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "जनरेटर तपासत आहे…",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "गेमच्या मदतीने नकाशा तपासणे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नकाशा तपासत आहे…",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तुमचा AI तपासत आहे… ZXQPH1QXZ पैकी ZXQPH0QXZ तपासण्या यशस्वी झाल्या. ZXQPH2QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तुमचा सेट तपासत आहे…",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तुमच्या जगाची तपासणी करत आहे…",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "चेकआउट उघडता आले नाही. कृपया पुन्हा प्रयत्न करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "चेकआउट या खरेदीशी जुळत नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "चेकआउट अयशस्वी झाले.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "चेकआउट अद्याप उपलब्ध नाही; या इव्हेंटसाठी पुन्हा प्रयत्न करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "चेकआउट प्रक्रिया पूर्ण झाली आहे. तुमची खरेदी निश्चित करण्यासाठी खालील पेमेंट पर्याय तपासा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "चेकआउट रद्द करण्यात आले. तुमचा प्रकल्प आणि मसुदा जतन करण्यात आले आहेत.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तपासणी",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तपासणी शेवटच्या जतन केलेल्या आवृत्तीला लागू होते.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तपासणीमध्ये नमूद केलेल्या सेटिंग्जचा समावेश असतो आणि त्या गेमच्या संतुलनाची खात्री देत ​​नाहीत.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तपासणी अयशस्वी झाली",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ साठी तपासणी",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तपासणी यशस्वी झाली.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तपासण्या गेम इंजिन वापरून गेमप्लेचे गुणधर्म, इमेज बाउंड्स, फ्रेम मॅपिंग आणि रेंडरिंग प्रमाणित करतात. त्या मॅपचे संतुलन स्थापित करत नाहीत.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तपासणी · ZXQPH0QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "शेवरॉन",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "७, ३० किंवा ९० दिवस निवडा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "JPEG, PNG किंवा WebP फोटो निवडा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "PNG किंवा WebP फ्रेम निवडा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "एक PNG स्प्राइटशीट निवडा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "2048×2048 पर्यंतचा PNG, JPEG किंवा WebP निवडा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "इमारतीचे झिप पॅकेज निवडा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "मसुदा किंवा प्रकाशित संच निवडा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "आडनाव निवडा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सुरुवात करण्यासाठी एक फाईल निवडा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "या नकाशासह स्थानिक कस्टम गेम किंवा मल्टीप्लेअर रूम निवडा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सर्वप्रथम गेममधील .map किंवा .map.gz फाईल निवडा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "आधी नकाशा निवडा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH1QXZ बाइट्स नसलेली, रिकामी नसलेली ZXQPH0QXZ फाईल निवडा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "रिकामी नसलेली ZXQPH0QXZ फाईल निवडा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ बाइट्स नसलेले, रिक्त नसलेले पोर्टेबल जनरेटर पॅकेज निवडा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पासवर्ड निवडा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "किमान ZXQPH0QXZ अक्षरांचा पासवर्ड निवडा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "१० MiB पेक्षा मोठा नसलेला फोटो निवडा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "२५ मेगापिक्सेलपेक्षा मोठा नसलेला फोटो निवडा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      }
+    ]
+  },
+  "response_sha256": "afc2fefd01fd680beb916b62cd20d694e6c6ffd21a6fb9f75c09224cd69ce2c8"
+}

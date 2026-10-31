@@ -1,0 +1,400 @@
+{
+  "source_sha256": "0ac44b4cdfb03e688983d6e3fb1e484cca57589665bff19c5c65388e649b292a",
+  "batch_target_sha256": "a50c51330d20ce98e3b0fde36421792df808514b2c4365800899bfed69613d11",
+  "catalog_sha256": {
+    "native": "a6d0da95a3cf29e0bcfa904f80043a10fedc3124f7a26e3beebc82e8cdfa4411",
+    "online": "feb4b9a71595724a0995b0cf0f42c94742ef29030b66c9488c77ebc6be7a89db"
+  },
+  "entries": [
+    {
+      "id": "native:[Portage Lakes cannot connect its shoreline trails.]",
+      "source": "Portage Lakes cannot connect its shoreline trails.",
+      "target": "पोर्टेज लेक्स आपल्या किनाऱ्यावरील पायवाटा जोडू शकत नाही."
+    },
+    {
+      "id": "native:[Portage Lakes needs separate swimming lakes on this seed.]",
+      "source": "Portage Lakes needs separate swimming lakes on this seed.",
+      "target": "या सीडवर पोर्टेज लेक्ससाठी स्वतंत्र पोहण्याच्या तलावांची आवश्यकता आहे."
+    },
+    {
+      "id": "native:[Sandbar connections]",
+      "source": "Sandbar connections",
+      "target": "सँडबार कनेक्शन"
+    },
+    {
+      "id": "native:[Outlying islands]",
+      "source": "Outlying islands",
+      "target": "बाहेरील बेटे"
+    },
+    {
+      "id": "native:[Loading terrain]",
+      "source": "Loading terrain...",
+      "target": "भूभाग लोड होत आहे..."
+    },
+    {
+      "id": "native:[Map settings]",
+      "source": "Map settings",
+      "target": "नकाशा सेटिंग्ज"
+    },
+    {
+      "id": "native:[Release on valid terrain to place]",
+      "source": "Release on valid terrain to place",
+      "target": "ठेवण्यासाठी योग्य भूभागावर सोडा"
+    },
+    {
+      "id": "native:[Mark map for allies]",
+      "source": "Mark map for allies",
+      "target": "मित्रपक्षांसाठी नकाशा चिन्हांकित करा"
+    },
+    {
+      "id": "native:[Tap to write the map script]",
+      "source": "Tap to write the map script",
+      "target": "नकाशा स्क्रिप्ट लिहिण्यासाठी टॅप करा"
+    },
+    {
+      "id": "native:[Starting terrain]",
+      "source": "Starting terrain",
+      "target": "सुरुवातीचा भूप्रदेश"
+    },
+    {
+      "id": "native:[Map momentum]",
+      "source": "Map momentum",
+      "target": "नकाशाची गती"
+    },
+    {
+      "id": "native:[match downloading map %0]",
+      "source": "Downloading map %0",
+      "target": "%0 नकाशा डाउनलोड करत आहे"
+    },
+    {
+      "id": "native:[match map cached]",
+      "source": "already on this device",
+      "target": "या डिव्हाइसवर आधीच"
+    },
+    {
+      "id": "native:[room map changed %0]",
+      "source": "The map changed to %0.",
+      "target": "नकाशा %0 मध्ये बदलला."
+    },
+    {
+      "id": "native:[room map failed]",
+      "source": "The map could not be prepared",
+      "target": "नकाशा तयार करता आला नाही."
+    },
+    {
+      "id": "native:[maps map page]",
+      "source": "Map page",
+      "target": "नकाशा पृष्ठ"
+    },
+    {
+      "id": "native:[maps upload a map title]",
+      "source": "Upload a map",
+      "target": "नकाशा अपलोड करा"
+    },
+    {
+      "id": "native:[maps update map title]",
+      "source": "Update a map",
+      "target": "नकाशा अपडेट करा"
+    },
+    {
+      "id": "native:[room map read failed]",
+      "source": "This map file could not be read.",
+      "target": "ही मॅप फाईल वाचता आली नाही."
+    },
+    {
+      "id": "native:[room map upload failed]",
+      "source": "The map could not be shared with the room.",
+      "target": "खोलीत नकाशा शेअर करता आला नाही."
+    },
+    {
+      "id": "native:[room map upload failed %0]",
+      "source": "The map could not be shared with the room: %0",
+      "target": "खोलीतील खेळाडूंना नकाशा पाठवता आला नाही: %0"
+    },
+    {
+      "id": "native:[room premade map shared]",
+      "source": "Everyone in the room plays this map file; it downloads before the match.",
+      "target": "खोलीतील प्रत्येकजण ही मॅप फाईल खेळतो; ती सामन्यापूर्वी डाउनलोड होते."
+    },
+    {
+      "id": "native:[room map ready title %0]",
+      "source": "Play %0",
+      "target": "%0 खेळा"
+    },
+    {
+      "id": "native:[room map ready unnamed]",
+      "source": "this map",
+      "target": "हा नकाशा"
+    },
+    {
+      "id": "native:[room map ready body]",
+      "source": "Create a room and invite your friends: the room plays this map.",
+      "target": "एक रूम तयार करा आणि तुमच्या मित्रांना आमंत्रित करा: रूममध्ये हा मॅप खेळला जाईल."
+    },
+    {
+      "id": "native:[Map repetition failed]",
+      "source": "Cannot repeat this map. Use an unscripted starting map, or reduce the repeats and bases.",
+      "target": "या नकाशाची पुनरावृत्ती करता येत नाही. स्क्रिप्ट नसलेला सुरुवातीचा नकाशा वापरा किंवा पुनरावृत्ती व तळांची संख्या कमी करा."
+    },
+    {
+      "id": "native:[repeat map horizontally]",
+      "source": "Repeat map horizontally",
+      "target": "नकाशाची आडव्या दिशेने पुनरावृत्ती करा"
+    },
+    {
+      "id": "native:[repeat map vertically]",
+      "source": "Repeat map vertically",
+      "target": "नकाशाची उभ्या दिशेने पुनरावृत्ती करा"
+    },
+    {
+      "id": "native:[stat growth map about]",
+      "source": "How much material stock grew in resources anywhere on the map, in growth points rather than harvested loads. This is the same for every colony.",
+      "target": "नकाशावर कुठेही संसाधनांचा भौतिक साठा किती वाढला, हे काढलेल्या भारांऐवजी वाढीच्या बिंदूंमध्ये मोजले जाते. हे प्रत्येक वसाहतीसाठी सारखेच आहे."
+    },
+    {
+      "id": "native:[Reveal terrain]",
+      "source": "Reveal terrain",
+      "target": "भूभाग उघड करा"
+    },
+    {
+      "id": "native:[Players see the map's terrain from the start; enemy units stay hidden.]",
+      "source": "Players see the map's terrain from the start; enemy units stay hidden.",
+      "target": "खेळाडूंना नकाशाचा भूभाग सुरुवातीपासून दिसतो; शत्रूची युनिट्स मात्र लपलेली राहतात."
+    },
+    {
+      "id": "native:[Import Terrain Definitions]",
+      "source": "Import Terrain Definitions",
+      "target": "भूभाग व्याख्या आयात करा"
+    },
+    {
+      "id": "native:[Terrain palette]",
+      "source": "Terrain palette",
+      "target": "भूभाग पॅलेट"
+    },
+    {
+      "id": "native:[terrain group water]",
+      "source": "Water",
+      "target": "पाणी"
+    },
+    {
+      "id": "native:[terrain group sand]",
+      "source": "Sand",
+      "target": "वाळू"
+    },
+    {
+      "id": "native:[terrain group grass]",
+      "source": "Grass",
+      "target": "गवत"
+    },
+    {
+      "id": "native:[terrain group ice]",
+      "source": "Ice",
+      "target": "बर्फ"
+    },
+    {
+      "id": "native:[terrain group paths]",
+      "source": "Paths",
+      "target": "मार्ग"
+    },
+    {
+      "id": "native:[terrain group obstacles]",
+      "source": "Obstacles",
+      "target": "अडथळे"
+    },
+    {
+      "id": "native:[terrain group ridges]",
+      "source": "Ridges",
+      "target": "कटक"
+    },
+    {
+      "id": "native:[terrain group barren]",
+      "source": "Barren ground",
+      "target": "पडीक जमीन"
+    },
+    {
+      "id": "native:[terrain group rough]",
+      "source": "Rough ground",
+      "target": "खडबडीत जमीन"
+    },
+    {
+      "id": "native:[terrain group lava]",
+      "source": "Lava",
+      "target": "लावा"
+    },
+    {
+      "id": "native:[terrain group fertile]",
+      "source": "Fertile ground",
+      "target": "सुपीक जमीन"
+    },
+    {
+      "id": "native:[terrain group deep-water]",
+      "source": "Deep water",
+      "target": "खोल पाणी"
+    },
+    {
+      "id": "native:[terrain group void]",
+      "source": "Void",
+      "target": "रिक्त"
+    },
+    {
+      "id": "native:[terrain group custom]",
+      "source": "Custom",
+      "target": "सानुकूल"
+    },
+    {
+      "id": "native:[terrain group classic]",
+      "source": "Classic ground",
+      "target": "क्लासिक ग्राउंड"
+    },
+    {
+      "id": "native:[terrain rule walkable]",
+      "source": "Walkable",
+      "target": "चालण्यायोग्य"
+    },
+    {
+      "id": "native:[terrain rule swimmable]",
+      "source": "Swimmable",
+      "target": "पोहण्यायोग्य"
+    },
+    {
+      "id": "native:[terrain rule impassable]",
+      "source": "Impassable",
+      "target": "ओलांडता येत नाही"
+    },
+    {
+      "id": "native:[terrain rule no flying]",
+      "source": "No flying",
+      "target": "उड्डाण नाही"
+    },
+    {
+      "id": "native:[terrain rule buildable]",
+      "source": "Buildable",
+      "target": "बांधण्यायोग्य"
+    },
+    {
+      "id": "native:[terrain rule speed %0]",
+      "source": "Speed %0%",
+      "target": "वेग %0%"
+    },
+    {
+      "id": "native:[terrain rule crops grow]",
+      "source": "Crops grow",
+      "target": "पिके वाढतात"
+    },
+    {
+      "id": "native:[terrain rule irrigates]",
+      "source": "Irrigates nearby land",
+      "target": "जवळच्या जमिनीला पाणी देते"
+    },
+    {
+      "id": "native:[terrain rule stops nearby growth]",
+      "source": "Stops nearby growth",
+      "target": "जवळपासची वाढ थांबवते"
+    },
+    {
+      "id": "native:[terrain rule blocks shots]",
+      "source": "Blocks shots",
+      "target": "शॉट्स अडवतो"
+    },
+    {
+      "id": "native:[terrain rule hurts walkers]",
+      "source": "Hurts walkers",
+      "target": "चालणाऱ्यांना दुखापत होते"
+    },
+    {
+      "id": "native:[terrain rule hurts fliers]",
+      "source": "Hurts fliers",
+      "target": "उडणाऱ्या युनिटना इजा होते"
+    },
+    {
+      "id": "native:[terrain palette hint]",
+      "source": "Pick a brush. Groups share one set of rules; their members differ only in look.",
+      "target": "ब्रश निवडा. प्रत्येक गटातील सर्व भूभागांचे नियम एकच असतात; ते फक्त दिसण्यात वेगळे असतात."
+    },
+    {
+      "id": "native:[terrain rule algae grow]",
+      "source": "Algae grow",
+      "target": "शेवाळ वाढते"
+    },
+    {
+      "id": "native:[editor map saved]",
+      "source": "Map saved",
+      "target": "नकाशा जतन केला"
+    },
+    {
+      "id": "native:[editor map shared]",
+      "source": "Map shared online",
+      "target": "ऑनलाइन शेअर केलेला नकाशा"
+    },
+    {
+      "id": "native:[editor menu import terrain]",
+      "source": "Import terrain definitions…",
+      "target": "भूभागाच्या व्याख्या आयात करा…"
+    },
+    {
+      "id": "native:[library All generators]",
+      "source": "All generators",
+      "target": "सर्व जनरेटर"
+    },
+    {
+      "id": "native:[library Downloading generator…]",
+      "source": "Downloading generator…",
+      "target": "जनरेटर डाउनलोड करत आहे…"
+    },
+    {
+      "id": "native:[library Each landscape is shown as a real map at the size and colony count below, which you can change here. Use one to play the map shown.]",
+      "source": "Each landscape is shown as a real map at the size and colony count below, which you can change here. Use one to play the map shown.",
+      "target": "प्रत्येक भूप्रदेश खाली दिलेल्या आकारात आणि वसाहतींच्या संख्येसह एका वास्तविक नकाशाच्या स्वरूपात दाखवला आहे, जो तुम्ही येथे बदलू शकता. दाखवलेला नकाशा खेळण्यासाठी त्यापैकी एकाचा वापर करा."
+    },
+    {
+      "id": "native:[library Editor tool: generates terrain for the map editor.]",
+      "source": "Editor tool: generates terrain for the map editor.",
+      "target": "एडिटर टूल: मॅप एडिटरसाठी भूभाग तयार करते."
+    },
+    {
+      "id": "native:[library Enable installed families below. Selection is saved in this local profile; existing maps and saves keep their own buildings. For online play, generate a map with these families, publish it in the map library, then choose that map in your room.]",
+      "source": "Enable installed families below. Selection is saved in this local profile; existing maps and saves keep their own buildings. For online play, generate a map with these families, publish it in the map library, then choose that map in your room.",
+      "target": "खाली स्थापित केलेले इमारत संच सक्षम करा. निवड या स्थानिक प्रोफाइलमध्ये जतन होते; आधीचे नकाशे आणि जतन केलेले खेळ स्वतःच्या इमारती कायम ठेवतात. ऑनलाइन खेळण्यासाठी या संचांसह नकाशा तयार करा, नकाशा संग्रहात प्रकाशित करा आणि आपल्या खेळाच्या खोलीत तो निवडा."
+    },
+    {
+      "id": "native:[library Generator file hash mismatch]",
+      "source": "Generator file hash mismatch",
+      "target": "जनरेटर फाइल हॅश जुळत नाही"
+    },
+    {
+      "id": "native:[library Generator installed. Future selections use this release.]",
+      "source": "Generator installed. Future selections use this release.",
+      "target": "जनरेटर स्थापित झाला आहे. पुढील निवडींसाठी हीच आवृत्ती वापरली जाईल."
+    },
+    {
+      "id": "native:[library Generator package identity mismatch]",
+      "source": "Generator package identity mismatch",
+      "target": "जनरेटर पॅकेज आयडेंटिटी जुळत नाही"
+    },
+    {
+      "id": "native:[library Generators]",
+      "source": "Generators",
+      "target": "जनरेटर"
+    },
+    {
+      "id": "native:[library Map generators]",
+      "source": "Map generators",
+      "target": "नकाशा जनरेटर"
+    },
+    {
+      "id": "native:[library My generators]",
+      "source": "My generators",
+      "target": "माझे जनरेटर"
+    },
+    {
+      "id": "native:[library Playable generator]",
+      "source": "Playable generator",
+      "target": "खेळण्यायोग्य जनरेटर"
+    },
+    {
+      "id": "native:[library Saving generator library…]",
+      "source": "Saving generator library…",
+      "target": "जनरेटर लायब्ररी जतन करत आहे…"
+    }
+  ]
+}

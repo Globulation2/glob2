@@ -1,0 +1,418 @@
+{
+  "request": {
+    "project": "bradley-personal-20261027",
+    "model": "general/nmt",
+    "payload": {
+      "sourceLanguageCode": "en",
+      "targetLanguageCode": "mr",
+      "mimeType": "text/plain",
+      "contents": [
+        "Use this map",
+        "Draw",
+        "Open commander",
+        "Stop commander",
+        "Start or stop recording",
+        "File selection is unavailable.",
+        "Saving custom AI…",
+        "Could not read the selected ZXQPH0QXZ file.",
+        "Custom AI library saved.",
+        "Storage could not be saved. The previous library is retained.",
+        "Import a single ZXQPH0QXZ AI file, then select it when setting up a local game.",
+        "Imports keep a copy in ZXQPH0QXZ. Update replaces that copy for future games; saves keep their original AI.",
+        "Waiting for file selection or storage…",
+        "Import ZXQPH0QXZ AI",
+        "Link development file",
+        "Linked files are read at game start. Rebuild before starting a new game. Removing a link never deletes your file.",
+        "Example AI and authoring guide",
+        "No custom AIs yet. Import a bundled .js file to get started.",
+        "Relink",
+        "Update",
+        "Validate",
+        "AI startup and persistent globals are valid.",
+        "Remove from library",
+        "AI telemetry",
+        "No accessible AI telemetry.",
+        "Search fields",
+        "Telemetry unavailable for this recording or controller.",
+        "Linked",
+        "Imported",
+        "Player",
+        "Updated at tick ZXQPH0QXZ",
+        "No values published yet.",
+        "No fields match your search.",
+        "Missing custom AI",
+        "bases",
+        "Bases per colony; a base is one team of the map as drawn, its buildings and units",
+        "Ends the match when the model reaches the selected confidence. Spectators can see the predicted win chances in statistics.",
+        "Population",
+        "Food and wellbeing",
+        "Materials",
+        "Military",
+        "Land",
+        "Score",
+        "Overview",
+        "Each colony's figures for the whole match. The highest is highlighted where more is better; click a column heading to see how it changed over time.",
+        "Population",
+        "How many units the colony had alive: workers, explorers and warriors together.",
+        "Units born",
+        "How fast swarms were producing new units. Split it to see workers, explorers and warriors separately.",
+        "Units lost",
+        "How fast the colony was losing units, whatever the cause: combat, starvation, injuries while clearing, or being trapped.",
+        "Population growth",
+        "Units born minus units lost. Above zero the colony was growing; below zero it was shrinking.",
+        "Causes of death",
+        "What the colony's units died of: fighting, starvation, injuries while clearing resources, being trapped with no way out, or other causes.",
+        "Net conversions",
+        "Units won over from other colonies minus units lost to them. Units change sides when another colony feeds them better.",
+        "Food reserves",
+        "How much food the colony's units were carrying inside them. Each unit is placed by how much of its food reserve is left: nearly empty (a quarter or less), low (up to half), half full (up to three quarters) or well fed. Units go looking for an inn as their reserve runs down, so a colony always has some that are low.",
+        "Health",
+        "How healthy the colony's units were. Each unit is placed by how many of its hit points are left: critical (a quarter or less), wounded (up to half), hurt (up to three quarters) or healthy.",
+        "Units looking for food",
+        "Units that had stopped work to find an inn. Those that are also below full health are counted as weakening.",
+        "Units eating or healing",
+        "Units inside an inn eating or inside a hospital being healed, and so not working.",
+        "Food harvested",
+        "Loads of food harvested by workers from food-producing resources. Inns turn food into meals.",
+        "Food in storage",
+        "Food sitting in the colony's buildings, ready to be served or used.",
+        "Meals served",
+        "Meals the colony's inns served, to its own units and to visitors from other colonies.",
+        "Starvation deaths",
+        "Units that died because they could not find food in time.",
+        "Health restored",
+        "Hit points the colony's hospitals gave back to wounded units.",
+        "Materials gathered",
+        "Loads of every material harvested by workers. Split it to see each material.",
+        "Materials in storage",
+        "Materials sitting in the colony's buildings. Split it to see each material.",
+        "Material spending"
+      ]
+    }
+  },
+  "response": {
+    "translations": [
+      {
+        "translatedText": "हा नकाशा वापरा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ड्रॉ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कमांडर उघडा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कमांडरला थांबवा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "रेकॉर्डिंग सुरू करा किंवा थांबवा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "फाईल निवडण्याची सोय उपलब्ध नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कस्टम एआय जतन करत आहे…",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "निवडलेली ZXQPH0QXZ फाईल वाचता आली नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सानुकूलित एआय लायब्ररी जतन केली.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "स्टोरेज वाचवता आले नाही. मागील लायब्ररी कायम ठेवण्यात आली आहे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "एकच ZXQPH0QXZ AI फाईल इम्पोर्ट करा, त्यानंतर लोकल गेम सेट करताना ती निवडा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "इम्पोर्टची एक प्रत ZXQPH0QXZ मध्ये ठेवली जाते. अपडेट भविष्यातील गेम्ससाठी ती प्रत बदलून टाकते; सेव्हमधील मूळ AI कायम राहतो.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "फाईल निवड किंवा साठवणुकीची प्रतीक्षा करत आहे…",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ AI आयात करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "लिंक डेव्हलपमेंट फाईल",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "गेम सुरू झाल्यावर लिंक केलेल्या फाईल्स वाचल्या जातात. नवीन गेम सुरू करण्यापूर्वी फाईल पुन्हा तयार करा. लिंक काढल्याने तुमची फाईल कधीही डिलीट होत नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "उदाहरण एआय आणि लेखन मार्गदर्शक",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अद्याप कोणतेही सानुकूल एआय नाहीत. सुरुवात करण्यासाठी बंडल केलेली .js फाईल आयात करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पुन्हा लिंक करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अपडेट करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "प्रमाणित करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "एआय स्टार्टअप आणि पर्सिस्टंट ग्लोबल्स वैध आहेत.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "लायब्ररीमधून काढून टाका",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "एआय टेलीमेट्री",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कोणतीही उपलब्ध एआय टेलिमेट्री नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "शोध क्षेत्रे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "या रेकॉर्डिंग किंवा कंट्रोलरसाठी टेलिमेट्री उपलब्ध नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "लिंक्ड",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "आयातित",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "खेळाडू",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ या टिकवर अद्यतनित केले",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अद्याप कोणतीही मूल्ये प्रकाशित केलेली नाहीत.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तुमच्या शोधाशी जुळणारे कोणतेही क्षेत्र नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सानुकूल एआय गहाळ आहे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "आधार",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "प्रत्येक वसाहतीचे तळ; तळ म्हणजे नकाशावर रेखाटलेला एक संघ, त्याच्या इमारती आणि तुकड्या.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "जेव्हा मॉडेल निवडलेल्या आत्मविश्वासाच्या पातळीवर पोहोचते, तेव्हा सामना संपतो. प्रेक्षक आकडेवारीमध्ये विजयाची अंदाजित शक्यता पाहू शकतात.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "लोकसंख्या",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अन्न आणि आरोग्य",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "साहित्य",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "लष्करी",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "जमीन",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "गुण",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "आढावा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "संपूर्ण सामन्यासाठी प्रत्येक वसाहतीची आकडेवारी. सर्वाधिक आकडेवारी हायलाइट केली आहे, जिथे जास्त असणे चांगले असते; कालांतराने त्यात कसा बदल झाला हे पाहण्यासाठी कॉलमच्या शीर्षकावर क्लिक करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "लोकसंख्या",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "वसाहतीमध्ये कामगार, संशोधक आणि योद्धे मिळून किती घटक जिवंत होते.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "जन्मलेले घटक",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "थवे किती वेगाने नवीन युनिट्स तयार करत होते. कामगार, शोधक आणि योद्धे यांना स्वतंत्रपणे पाहण्यासाठी त्याचे विभाजन करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "युनिट्स गमावले",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कारण काहीही असो: लढाई, उपासमार, साफसफाई करताना झालेल्या जखमा किंवा अडकून पडणे, वसाहतीतील सैनिक किती वेगाने नष्ट होत होते.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "लोकसंख्या वाढ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "जन्मलेली एकके वजा गमावलेली एकके. शून्याच्या वर वसाहत वाढत होती; शून्याच्या खाली ती आकुंचन पावत होती.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "मृत्यूची कारणे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "वसाहतीतील तुकड्यांचा मृत्यू कशामुळे झाला: लढाई, उपासमार, संसाधने साफ करताना झालेल्या जखमा, बाहेर पडण्याचा मार्ग नसताना अडकून पडणे किंवा इतर कारणांमुळे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "निव्वळ रूपांतरणे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "इतर वसाहतींकडून जिंकलेल्या तुकड्यांमधून त्यांच्याकडून गमावलेल्या तुकड्या वजा केल्या जातात. जेव्हा दुसरी वसाहत त्यांना अधिक चांगले अन्न पुरवते, तेव्हा तुकड्या बाजू बदलतात.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अन्नसाठा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "वसाहतीतील प्रत्येक घटकाने स्वतःमध्ये किती अन्न वाहून नेले होते. प्रत्येक घटकाचे वर्गीकरण त्याच्या अन्नसाठ्यात किती शिल्लक आहे यानुसार केले जाते: जवळजवळ रिकामा (एक चतुर्थांश किंवा त्यापेक्षा कमी), कमी (अर्ध्यापर्यंत), अर्धा भरलेला (पाऊणपर्यंत) किंवा चांगला पोषित. जसा जसा साठा कमी होतो, तसे तसे घटक निवाऱ्याच्या शोधात निघतात, त्यामुळे वसाहतीत नेहमीच काही घटकांकडे साठा कमी असतो.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "आरोग्य",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "वसाहतीचे सैनिक किती निरोगी होते. प्रत्येक सैनिकाचे वर्गीकरण त्याच्या शिल्लक हिट पॉइंट्सनुसार केले जाते: गंभीर (एक चतुर्थांश किंवा त्यापेक्षा कमी), जखमी (अर्ध्यापर्यंत), इजाग्रस्त (पाऊणपर्यंत) किंवा निरोगी.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अन्नाच्या शोधात असलेले युनिट्स",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "धर्मशाळा शोधण्यासाठी काम थांबवलेले घटक. ज्यांची प्रकृती पूर्णपणे निरोगी नाही, त्यांना कमजोर होत असल्याचे गणले जाते.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "खाणारे किंवा बरे होणारे घटक",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "धर्मशाळेत जेवणारे किंवा रुग्णालयात बरे होणारे रुग्ण, आणि त्यामुळे काम करत नाहीत.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अन्नाची कापणी",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कामगारांनी अन्न-उत्पादक स्रोतांमधून काढलेले भरपूर अन्न. धर्मशाळा त्या अन्नाचे जेवणात रूपांतर करतात.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "साठवलेले अन्न",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "वसाहतीच्या इमारतींमध्ये ठेवलेले अन्न, वाढण्यासाठी किंवा वापरण्यासाठी तयार.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "जेवण दिले",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "वसाहतीतील धर्मशाळांनी स्वतःच्या तुकड्यांना आणि इतर वसाहतींतील अभ्यागतांना जेवण दिले.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "उपासमारीमुळे मृत्यू",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "वेळेवर अन्न न मिळाल्याने मरण पावलेल्या तुकड्या.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "आरोग्य पूर्ववत झाले",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "वसाहतीच्या रुग्णालयांनी जखमी तुकड्यांना परत दिलेले हिट पॉइंट्स.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "गोळा केलेले साहित्य",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कामगारांनी काढलेल्या प्रत्येक सामग्रीचे ढिग. प्रत्येक सामग्री पाहण्यासाठी त्याचे विभाजन करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "साठवणुकीतील साहित्य",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "वसाहतीच्या इमारतींमध्ये असलेले साहित्य. प्रत्येक साहित्य पाहण्यासाठी त्याचे विभाजन करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सामग्री खर्च",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      }
+    ]
+  },
+  "response_sha256": "a803191d12c61b6509dcbbe42191a51e6371c4008ee10fdfb83b999d2c7ab878"
+}

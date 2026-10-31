@@ -1,0 +1,418 @@
+{
+  "request": {
+    "project": "bradley-personal-20261027",
+    "model": "general/nmt",
+    "payload": {
+      "sourceLanguageCode": "en",
+      "targetLanguageCode": "mr",
+      "mimeType": "text/plain",
+      "contents": [
+        "Play",
+        "Play Locally in Custom Game",
+        "Play as ZXQPH0QXZ instead",
+        "Play in Multiplayer",
+        "Play in browser",
+        "Play in your browser",
+        "Play online",
+        "Play this map",
+        "Play ZXQPH0QXZ",
+        "Playability checks",
+        "Playability checks passed",
+        "Playable",
+        "Playable generator",
+        "Playable terrain",
+        "Playback format",
+        "Playback position",
+        "Player",
+        "Player guides",
+        "Player types",
+        "Players",
+        "Players and AI opponents, ranked by their conservative rating: it rises as the game becomes sure of your skill. Guests are not ranked.",
+        "Players and results",
+        "Players cannot be removed while a match is starting or running.",
+        "Players online",
+        "Plays",
+        "Please fix the issues in the attached test diagnostics.",
+        "Please try building the map again and address this issue: ZXQPH0QXZ",
+        "Pose",
+        "Prepare Calm, Building, and Combat arrangements of the same piece. Each must last 10 seconds to 15 minutes. Originals are deleted after conversion; keep your own source files.",
+        "Prepare retry",
+        "Prepare the design",
+        "Prepare this release",
+        "Preparing photo…",
+        "Preparing your model…",
+        "Prestige ",
+        "Prestige ZXQPH0QXZ",
+        "Preview",
+        "Preview current changes",
+        "Preview game transitions",
+        "Preview not found.",
+        "Preview of ZXQPH0QXZ",
+        "Preview unavailable",
+        "Preview unavailable.",
+        "Preview · ZXQPH0QXZ",
+        "Previewing game transitions · ZXQPH0QXZ · game fade timing",
+        "Previous",
+        "Previous mean",
+        "Previous recorded",
+        "Previous samples",
+        "Previous saved drafts",
+        "Previous stage",
+        "Priced",
+        "Private",
+        "Private or uploaded map",
+        "Private project",
+        "Private — only you",
+        "Processing",
+        "Product",
+        "Product / model",
+        "Product credit flow table",
+        "Product credits",
+        "Profile photo",
+        "Profile ZXQPH0QXZ · ZXQPH1QXZ downloads of this version",
+        "Progress does not match the leased AI validation.",
+        "Project",
+        "Project actions",
+        "Project has not loaded.",
+        "Project name",
+        "Project options",
+        "Project title",
+        "Projects onto visible surfaces. Shared surfaces repeat the paint.",
+        "Properties inherit this preset until you add an override.",
+        "Provider attempt evidence for ZXQPH0QXZ",
+        "Provider cost table",
+        "Public",
+        "Public library",
+        "Public — listed for everyone",
+        "Publish",
+        "Publish a generator release",
+        "Publish a new release"
+      ]
+    }
+  },
+  "response": {
+    "translations": [
+      {
+        "translatedText": "खेळा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कस्टम गेममध्ये स्थानिकरित्या खेळा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "त्याऐवजी ZXQPH0QXZ म्हणून खेळा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "मल्टीप्लेअरमध्ये खेळा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ब्राउझरमध्ये खेळा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तुमच्या ब्राउझरमध्ये खेळा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ऑनलाइन खेळा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "हा नकाशा खेळा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ खेळा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "खेळण्यायोग्यता तपासणी",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "खेळण्यायोग्यतेच्या चाचण्या यशस्वी झाल्या.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "खेळण्यायोग्य",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "खेळण्यायोग्य जनरेटर",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "खेळण्यायोग्य भूभाग",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "प्लेबॅक स्वरूप",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "प्लेबॅक स्थिती",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "खेळाडू",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "खेळाडू मार्गदर्शक",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "खेळाडूंचे प्रकार",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "खेळाडू",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "खेळाडू आणि एआय प्रतिस्पर्धी, त्यांच्या सुरक्षित रेटिंगनुसार क्रमवारी लावलेले असतात: जसजसा खेळाला तुमच्या कौशल्याची खात्री पटते, तसतसे तुमचे रेटिंग वाढते. पाहुण्यांना क्रमवारी दिली जात नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "खेळाडू आणि निकाल",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सामना सुरू असताना किंवा चालू असताना खेळाडूंना काढता येत नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ऑनलाइन खेळाडू",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "खेळ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कृपया सोबत जोडलेल्या चाचणी निदानातील समस्यांचे निराकरण करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कृपया नकाशा पुन्हा तयार करण्याचा प्रयत्न करा आणि ही समस्या सोडवा: ZXQPH0QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पोझ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "एकाच संगीतरचनेच्या शांत, उत्साहवर्धक आणि लढाऊ अशा रचना तयार करा. प्रत्येक रचना १० सेकंद ते १५ मिनिटांपर्यंत चालली पाहिजे. रूपांतरणानंतर मूळ प्रती हटवल्या जातील; तुमच्या स्वतःच्या मूळ फाइल्स जपून ठेवा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पुन्हा प्रयत्न करण्याची तयारी करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "डिझाइन तयार करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "हे प्रकाशन तयार करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "फोटोची तयारी करत आहे…",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तुमचे मॉडेल तयार करत आहात…",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "प्रतिष्ठा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "प्रेस्टीज ZXQPH0QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पूर्वावलोकन",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सध्याच्या बदलांचे पूर्वावलोकन करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "खेळातील संक्रमणांचे पूर्वावलोकन करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पूर्वावलोकन आढळले नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ चे पूर्वावलोकन",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पूर्वावलोकन उपलब्ध नाही",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पूर्वावलोकन उपलब्ध नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पूर्वावलोकन · ZXQPH0QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "गेम ट्रान्झिशन्सचे पूर्वावलोकन करणे · ZXQPH0QXZ · गेम फेड टायमिंग",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "मागील",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "मागील म्हणजे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पूर्वी रेकॉर्ड केलेले",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "मागील नमुने",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "मागील जतन केलेले मसुदे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "मागील टप्पा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "किंमत",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "खाजगी",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "खाजगी किंवा अपलोड केलेला नकाशा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "खाजगी प्रकल्प",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "खाजगी — फक्त तुम्ही",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "प्रक्रिया",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "उत्पादन",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "उत्पादन / मॉडेल",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "उत्पादन क्रेडिट प्रवाह तक्ता",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "उत्पादन क्रेडिट्स",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "प्रोफाइल फोटो",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "प्रोफाइल ZXQPH0QXZ · ZXQPH1QXZ या आवृत्तीचे डाउनलोड",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "प्रगती भाडेतत्त्वावर घेतलेल्या एआय प्रमाणीकरणाशी जुळत नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "प्रकल्प",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "प्रकल्प कृती",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "प्रकल्प लोड झालेला नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "प्रकल्पाचे नाव",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "प्रकल्पाचे पर्याय",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "प्रकल्पाचे शीर्षक",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "दृश्यमान पृष्ठभागांवर रंग प्रक्षेपित होतो. सामायिक पृष्ठभागांवर रंगाची पुनरावृत्ती होते.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "जोपर्यंत तुम्ही ओव्हरराइड जोडत नाही, तोपर्यंत प्रॉपर्टीज हा प्रीसेट वारसा म्हणून घेतात.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ साठी प्रदात्याच्या प्रयत्नाचा पुरावा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "प्रदाता खर्च तक्ता",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सार्वजनिक",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सार्वजनिक ग्रंथालय",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सार्वजनिक — सर्वांसाठी सूचीबद्ध",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "प्रकाशित करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "जनरेटर रिलीज प्रकाशित करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नवीन प्रकाशन प्रकाशित करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      }
+    ]
+  },
+  "response_sha256": "de4a44c8ea768e2ca67fc4f7a825c4b93178de04b769502a04331db59d5d78ab"
+}

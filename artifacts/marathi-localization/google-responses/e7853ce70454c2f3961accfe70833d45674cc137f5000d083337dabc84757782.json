@@ -1,0 +1,418 @@
+{
+  "request": {
+    "project": "bradley-personal-20261027",
+    "model": "general/nmt",
+    "payload": {
+      "sourceLanguageCode": "en",
+      "targetLanguageCode": "mr",
+      "mimeType": "text/plain",
+      "contents": [
+        "ZXQPH0QXZ swatches",
+        "ZXQPH0QXZ terrain illustration",
+        "ZXQPH0QXZ waveform",
+        "ZXQPH0QXZ ZXQPH1QXZ · ZXQPH2QXZ likes",
+        "ZXQPH0QXZ, frame ZXQPH1QXZ",
+        "ZXQPH0QXZ, frame ZXQPH1QXZ, team color layer",
+        "ZXQPH0QXZ, home",
+        "ZXQPH0QXZ. Change theme",
+        "ZXQPH0QXZ: terrain and resource previews",
+        "ZXQPH0QXZ: units in this match and on average over recent matches",
+        "ZXQPH0QXZvs ZXQPH1QXZ",
+        "×",
+        "–",
+        "•••",
+        "…",
+        "← Music library",
+        "← Set library",
+        "← ZXQPH0QXZ",
+        "← → saturation · ↑ ↓ brightness",
+        "↑",
+        "→",
+        "↓ ZXQPH0QXZ downloads",
+        "↗",
+        "↻ Continuous loop",
+        "−",
+        "⌄",
+        "◎",
+        "●",
+        "★",
+        "♥ ZXQPH0QXZ",
+        "♥ ZXQPH0QXZ likes",
+        "♥ ZXQPH0QXZ · ZXQPH1QXZ",
+        "✓ verified",
+        "✕",
+        "✧ Map designer",
+        "⠿ ZXQPH0QXZ",
+        "＋",
+        " (draw)",
+        " (log₂ tiles)",
+        " (lost)",
+        " (won)",
+        " (ZXQPH0QXZ–ZXQPH1QXZ, step ZXQPH2QXZ)",
+        " Colony ZXQPH0QXZ.",
+        " Location: ZXQPH0QXZ, ZXQPH1QXZ.",
+        " properties",
+        " · AI-generated",
+        " · Changes not applied",
+        " · Used for your next match",
+        " · construction",
+        " · first at ZXQPH0QXZ",
+        " · rated",
+        " · unrated",
+        " · ZXQPH0QXZ recorded downloads",
+        " · ZXQPH0QXZ team",
+        " · ZXQPH0QXZ teams",
+        " · ZXQPH0QXZ teams",
+        " · ZXQPH0QXZ unresolved",
+        "(current)",
+        "(older version)",
+        "A community-created colony controller.",
+        "AI Colony Studio",
+        "AI coding conversation",
+        "Add islands and sheltered starting colonies…",
+        "Applied to the draft",
+        "Building designer",
+        "COMPOSER",
+        "CREATION IN PROGRESS",
+        "Coding requests use up to ZXQPH0QXZ ZXQPH1QXZ credits. Manual editing and local playtests are free.",
+        "Coding requests use up to ZXQPH0QXZ ZXQPH1QXZ credits. Source acceptance does not mean engine checks passed.",
+        "Collapse sidebar",
+        "Collapse toolbox",
+        "Comparison with ",
+        "Copy my library version",
+        "Definition validation failed.",
+        "Definition validation passed.",
+        "Deleting…",
+        "Delivered to draft",
+        "Describe the landscape you have in mind. Watch its journey from first idea to a world you can play.",
+        "Editing saved revision ZXQPH0QXZ",
+        "Engine validation failed."
+      ]
+    }
+  },
+  "response": {
+    "translations": [
+      {
+        "translatedText": "ZXQPH0QXZ नमुने",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ भूभागाचे चित्रण",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ वेव्हफॉर्म",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ ZXQPH1QXZ · ZXQPH2QXZ लाईक्स",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ, फ्रेम ZXQPH1QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ, फ्रेम ZXQPH1QXZ, टीम कलर लेयर",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ, घर",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ. थीम बदला",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ: भूभाग आणि संसाधनांचे पूर्वावलोकन",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ: या सामन्यातील युनिट्स आणि अलीकडील सामन्यांमधील सरासरी",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZvs ZXQPH1QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "×",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "–",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "•••",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "…",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "← संगीत लायब्ररी",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "← लायब्ररी सेट करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "← ZXQPH0QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "← → सॅचुरेशन · ↑ ↓ ब्राइटनेस",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "↑",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "→",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "↓ ZXQPH0QXZ डाउनलोड्स",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "↗",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "↻ सतत लूप",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "−",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "⌄",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "◎",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "●",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "★",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "♥ ZXQPH0QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "♥ ZXQPH0QXZ ला आवडले",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "♥ ZXQPH0QXZ · ZXQPH1QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "✓ सत्यापित",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "✕",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "✧ नकाशा डिझायनर",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "+",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "(रेखाचित्र)",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "(log₂ टाइल्स)",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "(हरवले)",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "(जिंकले)",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "(ZXQPH0QXZ–ZXQPH1QXZ, पायरी ZXQPH2QXZ)",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कॉलनी ZXQPH0QXZ.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "स्थान: ZXQPH0QXZ, ZXQPH1QXZ.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "मालमत्ता",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "· एआय-निर्मित",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "· बदल लागू केले नाहीत",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "· तुमच्या पुढील सामन्यासाठी वापरले जाते",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "· बांधकाम",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "· प्रथम ZXQPH0QXZ येथे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "· रेट केले",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "· रेटिंग नाही",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "· ZXQPH0QXZ रेकॉर्ड केलेले डाउनलोड",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "· ZXQPH0QXZ टीम",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "· ZXQPH0QXZ संघ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "· ZXQPH0QXZ संघ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "· ZXQPH0QXZ निराकरण झालेले नाही",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "(सध्याचे)",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "(जुनी आवृत्ती)",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "समुदायाने तयार केलेला वसाहत नियंत्रक.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "एआय कॉलनी स्टुडिओ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "एआय कोडिंग संभाषण",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "बेटे आणि सुरक्षित सुरुवातीच्या वसाहती जोडा…",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "मसुद्याला लागू केले",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "इमारत डिझाइनर",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "संगीतकार",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "निर्मिती चालू आहे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कोडिंग विनंत्यांसाठी ZXQPH0QXZ ZXQPH1QXZ पर्यंत क्रेडिट्स वापरले जातात. मॅन्युअल एडिटिंग आणि लोकल प्लेटेस्ट्स विनामूल्य आहेत.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कोडिंग विनंत्यांसाठी ZXQPH0QXZ ZXQPH1QXZ पर्यंत क्रेडिट्स वापरले जातात. स्त्रोत स्वीकृतीचा अर्थ इंजिन तपासण्या यशस्वी झाल्या असा होत नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "साइडबार संकुचित करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "टूलबॉक्स संकुचित करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तुलना",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "माझ्या लायब्ररी आवृत्तीची प्रत",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "व्याख्येची पडताळणी अयशस्वी झाली.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "व्याख्येची पडताळणी यशस्वी झाली.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "हटवत आहे…",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "मसुद्याला सुपूर्द केले",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तुमच्या मनात असलेल्या भूदृश्याचे वर्णन करा. पहिल्या कल्पनेपासून ते तुम्ही खेळू शकाल अशा जगापर्यंतचा त्याचा प्रवास पाहा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "जतन केलेल्या आवृत्तीचे संपादन ZXQPH0QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "इंजिन प्रमाणीकरण अयशस्वी झाले.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      }
+    ]
+  },
+  "response_sha256": "dd732ee3f19c3db824470d09f5659155c888d9c09f723418ed3d6ce6f07ad696"
+}

@@ -1,0 +1,418 @@
+{
+  "request": {
+    "project": "bradley-personal-20261027",
+    "model": "general/nmt",
+    "payload": {
+      "sourceLanguageCode": "en",
+      "targetLanguageCode": "mr",
+      "mimeType": "text/plain",
+      "contents": [
+        "List momentum",
+        "List bounce",
+        "Host pairing string (or trusted WSS URL)",
+        "Pair and connect",
+        "Select a host, then paste its pairing string to verify its identity.",
+        "LAN discovery is unavailable. Check local network permission or paste a host pairing string.",
+        "Discovered host ZXQPH0QXZ — pair to view games",
+        "Unable to reach the LAN host. Check local network permission and the host pairing string.",
+        "Unable to verify or connect to the LAN host: ZXQPH0QXZ",
+        "Use the host lobby endpoint",
+        "Connection to the host lost. Reconnecting...",
+        "Waiting for every player to load...",
+        "Rejoining the game...",
+        "Catching up: ZXQPH0QXZ turns behind",
+        "ZXQPH0QXZ is reconnecting...",
+        "ZXQPH0QXZ is lagging",
+        "ZXQPH0QXZ is catching up",
+        "ZXQPH0QXZ has not connected yet",
+        "The host left the game.",
+        "The connection to the host was lost.",
+        "The host runs a different version of ZXQPH0QXZ (ZXQPH1QXZ).",
+        "Unable to host a LAN game: ZXQPH0QXZ",
+        "Play online",
+        "Use in room",
+        "AI",
+        "Behind ZXQPH0QXZ",
+        "Behind: how far a player's game runs behind the match clock; it includes their delay. Under ZXQPH0QXZ is normal; from ZXQPH1QXZ the player is marked slow.",
+        "Behind",
+        "Catching up",
+        "Your colony keeps working on its own: units finish their jobs and buildings keep running.",
+        "Rejoining from the match record so you see what everyone else sees. A report was sent automatically.",
+        "Your game fell out of sync",
+        "Your colony keeps working on its own: units finish their jobs and buildings keep running. You have ZXQPH0QXZ to come back before you're removed from the match.",
+        "You are catching up · input paused",
+        "Connection lost",
+        "ZXQPH0QXZ % · ZXQPH1QXZ of ZXQPH2QXZ ticks",
+        "Reconnecting to the match… attempt ZXQPH0QXZ",
+        "Replaying the ZXQPH0QXZ you missed. The screen updates when you're back to the present.",
+        "about ZXQPH0QXZ s left",
+        "Connections",
+        "Connection",
+        "Delay: the time from your click until it happens, for everyone. It follows your own connection, not the other players'. Good under ZXQPH0QXZ, poor from ZXQPH1QXZ.",
+        "Fair",
+        "Good",
+        "With more than four players the panel shows each player's ping in milliseconds, or how many seconds behind they are.",
+        "jitter ZXQPH0QXZ",
+        "Leave match",
+        "Left",
+        "ZXQPH0QXZ is back.",
+        "ZXQPH0QXZ left the match.",
+        "ZXQPH0QXZ lost connection. The game continues; their colony keeps working while they reconnect (ZXQPH1QXZ left).",
+        "Ping: the round trip between a player and the relay. Good under ZXQPH0QXZ, poor from ZXQPH1QXZ.",
+        "Ping",
+        "Players",
+        "Poor",
+        "Reconnecting",
+        "Relay: ZXQPH0QXZ",
+        "Rejoining",
+        "Slow",
+        "unstable",
+        "Connecting…",
+        "ZXQPH0QXZ (you)",
+        "You",
+        "Your delay ZXQPH0QXZ",
+        "Account",
+        "AI joins after ZXQPH0QXZ",
+        "All",
+        "Can't reach ZXQPH0QXZ.",
+        "Change server…",
+        "Code or invite link",
+        "ZXQPH0QXZ · connecting…",
+        "Continue with ZXQPH0QXZ",
+        "Create room",
+        "Find match",
+        "Free seat",
+        "Get the update",
+        "Guest · kept on this device",
+        "That isn't an invite code or link.",
+        "Join by code",
+        "Join code"
+      ]
+    }
+  },
+  "response": {
+    "translations": [
+      {
+        "translatedText": "यादीची गती",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "यादी उसळी",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "होस्ट पेअरिंग स्ट्रिंग (किंवा विश्वसनीय WSS URL)",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "जोडी बनवा आणि कनेक्ट करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "एक होस्ट निवडा, त्यानंतर त्याची ओळख पडताळण्यासाठी त्याची पेअरिंग स्ट्रिंग पेस्ट करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "लॅन शोधणे शक्य नाही. स्थानिक नेटवर्क परवानगी तपासा किंवा होस्ट पेअरिंग स्ट्रिंग पेस्ट करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "होस्ट ZXQPH0QXZ सापडला — खेळ पाहण्यासाठी जोडी तयार करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "लॅन होस्टपर्यंत पोहोचता येत नाही. स्थानिक नेटवर्क परवानगी आणि होस्ट पेअरिंग स्ट्रिंग तपासा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "LAN होस्टची पडताळणी किंवा त्याच्याशी कनेक्ट करणे शक्य नाही: ZXQPH0QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "होस्ट लॉबी एंडपॉइंट वापरा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "होस्टशी असलेले कनेक्शन तुटले आहे. पुन्हा कनेक्ट करत आहे...",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "प्रत्येक खेळाडू लोड होण्याची वाट पाहत आहे...",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "खेळात पुन्हा सामील होत आहे...",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "मागे वळतो: ZXQPH0QXZ मागे वळतो",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ पुन्हा कनेक्ट होत आहे...",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ मागे पडत आहे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ बरोबरी साधत आहे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ अजून कनेक्ट झालेले नाही",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "यजमान खेळातून बाहेर पडला.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "होस्टशी असलेला संपर्क तुटला.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "होस्ट ZXQPH0QXZ ची वेगळी आवृत्ती (ZXQPH1QXZ) चालवतो.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "लॅन गेम होस्ट करता आला नाही: ZXQPH0QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ऑनलाइन खेळा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "खोलीत वापरा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "एआय",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ च्या मागे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "मागे: एखाद्या खेळाडूचा खेळ मॅच क्लॉकपेक्षा किती मागे चालतो; यात त्यांच्या विलंबाचा समावेश असतो. ZXQPH0QXZ च्या खाली असणे सामान्य आहे; ZXQPH1QXZ पासून खेळाडू धीमा असल्याचे चिन्हांकित केले जाते.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "मागे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "माहिती घेत आहे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तुमची वसाहत आपोआप काम करत राहते: सैनिक त्यांची कामे पूर्ण करतात आणि इमारतींचे कामकाज चालू राहते.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "मॅच रेकॉर्डमधून पुन्हा सामील होत आहे, जेणेकरून इतर सर्वांना जे दिसते ते तुम्हालाही दिसेल. एक अहवाल आपोआप पाठवण्यात आला होता.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तुमचा गेम सिंकच्या बाहेर गेला.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तुमची वसाहत आपोआप काम करत राहते: सैनिक त्यांची कामे पूर्ण करतात आणि इमारती चालू राहतात. सामन्यातून बाहेर काढले जाण्यापूर्वी तुम्हाला परत येण्यासाठी ZXQPH0QXZ वेळ आहे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तुम्ही माहिती घेत आहात · इनपुट थांबवले",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कनेक्शन तुटले.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ % · ZXQPH2QXZ टिक्सपैकी ZXQPH1QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सामन्याशी पुन्हा कनेक्ट होत आहे… प्रयत्न ZXQPH0QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तुम्ही चुकवलेला ZXQPH0QXZ पुन्हा प्ले होत आहे. तुम्ही वर्तमानात परत आल्यावर स्क्रीन अपडेट होते.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सुमारे ZXQPH0QXZ शिल्लक राहिले",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कनेक्शन",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कनेक्शन",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "विलंब: तुमच्या क्लिकपासून ते कृती घटेपर्यंतचा वेळ, सर्वांसाठी. हा वेळ तुमच्या स्वतःच्या कनेक्शननुसार असतो, इतर खेळाडूंच्या नाही. ZXQPH0QXZ अंतर्गत चांगले, ZXQPH1QXZ पासून खराब.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "योग्य",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "चांगले",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "चारपेक्षा जास्त खेळाडू असल्यास, पॅनल प्रत्येक खेळाडूचा पिंग मिलिसेकंदमध्ये दाखवतो, म्हणजेच ते किती सेकंदांनी मागे आहेत.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "जिटर ZXQPH0QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सामना सोडा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "डावीकडे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ परत आला आहे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ ने सामना सोडला.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ चे कनेक्शन तुटले. खेळ सुरू राहतो; ते पुन्हा कनेक्शन जोडत असताना त्यांची वसाहत कार्यरत राहते (ZXQPH1QXZ ने सोडले).",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पिंग: खेळाडू आणि रिले यांच्यातील येण्या-जाण्याचा प्रवास. ZXQPH0QXZ अंतर्गत चांगले, ZXQPH1QXZ पासून खराब.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पिंग",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "खेळाडू",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "गरीब",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पुन्हा जोडणे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "रिले: ZXQPH0QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पुन्हा सामील होणे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "हळू",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अस्थिर",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "जोडत आहे…",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ (तुम्ही)",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तुम्ही",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तुमचा विलंब ZXQPH0QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "खाते",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ नंतर AI सामील होते",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सर्व",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ पर्यंत पोहोचता येत नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सर्व्हर बदला…",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कोड किंवा आमंत्रण लिंक",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ · कनेक्ट करत आहे…",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ सह सुरू ठेवा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "जागा तयार करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "जुळणी शोधा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "मोफत जागा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अपडेट मिळवा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अतिथी · या डिव्हाइसवर ठेवले",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तो आमंत्रण कोड किंवा लिंक नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कोडद्वारे सामील व्हा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सामील होण्याचा कोड",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      }
+    ]
+  },
+  "response_sha256": "16ec3cdbca39c3ab81250018bf21267a92cab70f2b9a7af3bda18079563b9767"
+}

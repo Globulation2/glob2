@@ -1,0 +1,506 @@
+{
+  "batch": "native-settings-002",
+  "target_sha256": "d8f5ec7f242b8bd97eeb0c3bbb9acd38572c0710b4cf0d049c2ad22b35e2a60a",
+  "rows": [
+    {
+      "id": "native:[settings Save shortcut]",
+      "source": "Save shortcut",
+      "target": "शॉर्टकट जतन करा"
+    },
+    {
+      "id": "native:[settings Saved — restart required]",
+      "source": "Saved — restart required",
+      "target": "जतन केले — पुन्हा सुरू करणे आवश्यक आहे"
+    },
+    {
+      "id": "native:[settings Saving…]",
+      "source": "Saving…",
+      "target": "जतन करत आहे…"
+    },
+    {
+      "id": "native:[settings Scroll wheel enabled]",
+      "source": "Scroll wheel enabled",
+      "target": "स्क्रोल व्हील सक्षम केले आहे"
+    },
+    {
+      "id": "native:[settings Set starting unit assignments by building type and level.]",
+      "source": "Set starting unit assignments by building type and level.",
+      "target": "इमारतीच्या प्रकारानुसार आणि स्तरानुसार सुरुवातीच्या युनिटची नेमणूक निश्चित करा."
+    },
+    {
+      "id": "native:[settings Set your language and player name.]",
+      "source": "Set your language and player name.",
+      "target": "तुमची भाषा आणि खेळाडूचे नाव सेट करा."
+    },
+    {
+      "id": "native:[settings Settings]",
+      "source": "Settings",
+      "target": "सेटिंग्ज"
+    },
+    {
+      "id": "native:[settings Single-player and replays only. Multiplayer runs at 1x.]",
+      "source": "Single-player and replays only. Multiplayer runs at 1x.",
+      "target": "फक्त एकट्याने खेळताना आणि रीप्लेमध्ये. अनेक खेळाडूंचा सामना 1x वेगाने चालतो."
+    },
+    {
+      "id": "native:[settings Software]",
+      "source": "Software",
+      "target": "सॉफ्टवेअर"
+    },
+    {
+      "id": "native:[settings Starting unit counts and radius for newly placed flags.]",
+      "source": "Starting unit counts and radius for newly placed flags.",
+      "target": "नव्या ध्वजांसाठी मागवायच्या युनिट्सची सुरुवातीची संख्या आणि त्रिज्या."
+    },
+    {
+      "id": "native:[settings This shortcut conflicts with existing bindings:]",
+      "source": "This shortcut conflicts with existing bindings:",
+      "target": "हा शॉर्टकट विद्यमान बाइंडिंगशी विसंगत आहे:"
+    },
+    {
+      "id": "native:[settings Trigger]",
+      "source": "Trigger",
+      "target": "ट्रिगर"
+    },
+    {
+      "id": "native:[settings Unbound]",
+      "source": "Unbound",
+      "target": "नेमलेले नाही"
+    },
+    {
+      "id": "native:[settings Unit counts assigned to new construction sites.]",
+      "source": "Unit counts assigned to new construction sites.",
+      "target": "नवीन बांधकाम स्थळांना नेमून दिलेली युनिट संख्या."
+    },
+    {
+      "id": "native:[settings Unit counts for completed buildings.]",
+      "source": "Unit counts for completed buildings.",
+      "target": "पूर्ण झालेल्या इमारतींसाठी नेमायच्या युनिटची संख्या."
+    },
+    {
+      "id": "native:[settings Unit counts while a building is being upgraded.]",
+      "source": "Unit counts while a building is being upgraded.",
+      "target": "इमारतीची सुधारणा सुरू असताना नेमायच्या युनिटची संख्या."
+    },
+    {
+      "id": "native:[settings Units]",
+      "source": "Units",
+      "target": "युनिट्स"
+    },
+    {
+      "id": "native:[settings Upgrades]",
+      "source": "Upgrades",
+      "target": "सुधारणा"
+    },
+    {
+      "id": "native:[settings Use game cursor]",
+      "source": "Use game cursor",
+      "target": "गेम कर्सर वापरा"
+    },
+    {
+      "id": "native:[settings Voice volume]",
+      "source": "Voice volume",
+      "target": "आवाजाची पातळी"
+    },
+    {
+      "id": "native:[settings Window mode]",
+      "source": "Window mode",
+      "target": "विंडो मोड"
+    },
+    {
+      "id": "native:[settings Window-only sizes also switch the game to windowed mode.]",
+      "source": "Window-only sizes also switch the game to windowed mode.",
+      "target": "फक्त विंडोसाठी असलेला आकार निवडल्यास खेळ विंडो मोडमध्येही बदलतो."
+    },
+    {
+      "id": "native:[settings Windowed]",
+      "source": "Windowed",
+      "target": "विंडोड"
+    },
+    {
+      "id": "native:[settings Windowed only]",
+      "source": "Windowed only",
+      "target": "फक्त विंडोमध्ये"
+    },
+    {
+      "id": "native:[settings seconds]",
+      "source": "seconds",
+      "target": "सेकंद"
+    },
+    {
+      "id": "native:[settings Flag]",
+      "source": "Flag",
+      "target": "ध्वज"
+    },
+    {
+      "id": "native:[settings High-resolution artwork]",
+      "source": "High-resolution artwork",
+      "target": "उच्च-रिझोल्यूशन कलाकृती"
+    },
+    {
+      "id": "native:[settings Apply artwork on the next game or editor load (OpenGL).]",
+      "source": "Apply artwork on the next game or editor load (OpenGL).",
+      "target": "पुढील गेम किंवा एडिटर लोड झाल्यावर आर्टवर्क लागू करा (OpenGL)."
+    },
+    {
+      "id": "native:[settings Automatic torus view]",
+      "source": "Automatic torus view",
+      "target": "स्वयंचलित टोरस दृश्य"
+    },
+    {
+      "id": "native:[settings Automatically show the torus overview while moving around the map (OpenGL).]",
+      "source": "Automatically show the torus overview while moving around the map (OpenGL).",
+      "target": "नकाशावर फिरताना टोरसचे विहंगम दृश्य आपोआप दाखवा (OpenGL)."
+    },
+    {
+      "id": "native:[settings Autosave]",
+      "source": "Autosave",
+      "target": "ऑटोसेव्ह"
+    },
+    {
+      "id": "native:[settings Save the game automatically about every 10 seconds.]",
+      "source": "Save the game automatically about every 10 seconds.",
+      "target": "सुमारे दर १० सेकंदांनी गेम आपोआप सेव्ह होतो."
+    },
+    {
+      "id": "native:[Optional major shortcuts]",
+      "source": "Optional major shortcuts",
+      "target": "पर्यायी प्रमुख शॉर्टकट"
+    },
+    {
+      "id": "native:[Portage Lakes cannot fit a useful dry woodland shortcut on this seed.]",
+      "source": "Portage Lakes cannot fit a useful dry woodland shortcut on this seed.",
+      "target": "पोर्टेज लेक्स या सीडवर एक उपयुक्त कोरडा वनमार्ग शॉर्टकट बसवू शकत नाही."
+    },
+    {
+      "id": "native:[Portage Lakes cannot fit a useful swimming shortcut on this seed.]",
+      "source": "Portage Lakes cannot fit a useful swimming shortcut on this seed.",
+      "target": "पोर्टेज लेक्स या सीडमध्ये पोहण्यासाठी एक उपयुक्त शॉर्टकट समाविष्ट करू शकत नाहीत."
+    },
+    {
+      "id": "native:[settings continue]",
+      "source": "Continue",
+      "target": "पुढे चालू ठेवा"
+    },
+    {
+      "id": "native:[settings save failed]",
+      "source": "Settings save not confirmed. Retry, or continue.",
+      "target": "सेटिंग्ज सेव्ह झाल्याची पुष्टी झाली नाही. पुन्हा प्रयत्न करा, किंवा पुढे सुरू ठेवा."
+    },
+    {
+      "id": "native:[Hide keyboard]",
+      "source": "Hide keyboard",
+      "target": "कीबोर्ड लपवा"
+    },
+    {
+      "id": "native:[settings Interface layout]",
+      "source": "Interface layout",
+      "target": "इंटरफेस लेआउट"
+    },
+    {
+      "id": "native:[settings Automatic]",
+      "source": "Automatic",
+      "target": "स्वयंचलित"
+    },
+    {
+      "id": "native:[settings Compact]",
+      "source": "Compact",
+      "target": "संक्षिप्त"
+    },
+    {
+      "id": "native:[settings Spacious]",
+      "source": "Spacious",
+      "target": "प्रशस्त"
+    },
+    {
+      "id": "native:[settings Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.]",
+      "source": "Spacious uses a side panel when there is room. Compact uses a toolbar and drawers.",
+      "target": "प्रशस्त मांडणीत जागा असल्यास बाजूचे पटल वापरले जाते. संक्षिप्त मांडणीत साधनपट्टी आणि उघडबंद पटल असतात."
+    },
+    {
+      "id": "native:[settings Menu theme]",
+      "source": "Menu theme",
+      "target": "मेनू थीम"
+    },
+    {
+      "id": "native:[settings Colours and backdrop of menus, lobbies and results.]",
+      "source": "Colours and backdrop of menus, lobbies and results.",
+      "target": "मेनू, लॉबी आणि निकालांचे रंग आणि पार्श्वभूमी."
+    },
+    {
+      "id": "native:[settings In-game theme]",
+      "source": "In-game theme",
+      "target": "खेळातील थीम"
+    },
+    {
+      "id": "native:[settings Colours of dialogs and the touch interface during a game and in the editor.]",
+      "source": "Colours of dialogs and the touch interface during a game and in the editor.",
+      "target": "गेम खेळताना आणि एडिटरमध्ये डायलॉग्स आणि टच इंटरफेसचे रंग."
+    },
+    {
+      "id": "native:[theme light]",
+      "source": "Light",
+      "target": "फिकट"
+    },
+    {
+      "id": "native:[theme dark]",
+      "source": "Dark",
+      "target": "गडद"
+    },
+    {
+      "id": "native:[theme classic]",
+      "source": "Classic",
+      "target": "क्लासिक"
+    },
+    {
+      "id": "native:[theme ocean]",
+      "source": "Ocean",
+      "target": "महासागर"
+    },
+    {
+      "id": "native:[theme dune]",
+      "source": "Dune",
+      "target": "ड्यून"
+    },
+    {
+      "id": "native:[theme high-contrast]",
+      "source": "High contrast",
+      "target": "उच्च कॉन्ट्रास्ट"
+    },
+    {
+      "id": "native:[settings One-finger zoom]",
+      "source": "One-finger zoom",
+      "target": "एका बोटाने झूम"
+    },
+    {
+      "id": "native:[settings Double-tap the map, hold, then drag to zoom.]",
+      "source": "Double-tap the map, hold, then drag to zoom.",
+      "target": "नकाशावर दोनदा टॅप करा, दाबून ठेवा, आणि नंतर झूम करण्यासाठी ड्रॅग करा."
+    },
+    {
+      "id": "native:[settings Platform default]",
+      "source": "Platform default",
+      "target": "प्लॅटफॉर्म डीफॉल्ट"
+    },
+    {
+      "id": "native:[settings Drag up zooms in]",
+      "source": "Drag up zooms in",
+      "target": "वर ओढल्यावर जवळून दिसते"
+    },
+    {
+      "id": "native:[settings Drag down zooms in]",
+      "source": "Drag down zooms in",
+      "target": "खाली ओढल्यावर जवळून दिसते"
+    },
+    {
+      "id": "native:[settings Thumb side]",
+      "source": "Thumb side",
+      "target": "अंगठ्याची बाजू"
+    },
+    {
+      "id": "native:[settings Phone controls gather in this bottom corner.]",
+      "source": "Phone controls gather in this bottom corner.",
+      "target": "फोनची नियंत्रणे या खालच्या कोपऱ्यात एकत्रित केलेली आहेत."
+    },
+    {
+      "id": "native:[settings Right]",
+      "source": "Right",
+      "target": "उजवीकडे"
+    },
+    {
+      "id": "native:[settings Left]",
+      "source": "Left",
+      "target": "डावीकडे"
+    },
+    {
+      "id": "native:[settings Back]",
+      "source": "Back",
+      "target": "मागे"
+    },
+    {
+      "id": "native:[settings Save the game automatically about every minute.]",
+      "source": "Save the game automatically about every minute.",
+      "target": "सुमारे दर मिनिटाला गेम आपोआप सेव्ह होतो."
+    },
+    {
+      "id": "native:[No other players have editable diplomatic settings in this match.]",
+      "source": "No other players have editable diplomatic settings in this match.",
+      "target": "या सामन्यात इतर कोणत्याही खेळाडूंकडे संपादन करण्यायोग्य राजनैतिक सेटिंग्ज नाहीत."
+    },
+    {
+      "id": "native:[settings %0 · %1 Units]",
+      "source": "%0 · %1 Units",
+      "target": "%0 · %1 युनिट"
+    },
+    {
+      "id": "native:[settings Level %0]",
+      "source": "Level %0",
+      "target": "स्तर %0"
+    },
+    {
+      "id": "native:[settings Match the desktop %0]",
+      "source": "Match the desktop (%0)",
+      "target": "डेस्कटॉपशी जुळवा (%0)"
+    },
+    {
+      "id": "native:[settings Current display %0 %1 %2 %3]",
+      "source": "Current display: %0 × %1 · %2 · %3",
+      "target": "सध्याची स्क्रीन: %0 × %1 · %2 · %3"
+    },
+    {
+      "id": "native:[settings Experiments]",
+      "source": "Experiments",
+      "target": "प्रयोग"
+    },
+    {
+      "id": "native:[settings Custom AIs]",
+      "source": "Custom AIs",
+      "target": "सानुकूल एआय"
+    },
+    {
+      "id": "native:[settings Try features we are still testing. They can change balance and pacing.]",
+      "source": "Try features we are still testing. They can change balance and pacing.",
+      "target": "आम्ही अजूनही चाचणी करत असलेली वैशिष्ट्ये वापरून पहा. त्यामुळे संतुलन आणि गती बदलू शकते."
+    },
+    {
+      "id": "native:[settings Experiments apply to new games you start or host, never to campaign missions. A saved game keeps the ones it started with.]",
+      "source": "Experiments apply to new games you start or host, never to campaign missions. A saved game keeps the ones it started with.",
+      "target": "प्रयोग तुम्ही सुरू केलेल्या किंवा होस्ट केलेल्या नवीन गेम्सना लागू होतात, कॅम्पेन मिशन्सना कधीही नाही. सेव्ह केलेला गेम सुरुवातीला असलेलेच कायम ठेवतो."
+    },
+    {
+      "id": "native:[settings No experiments in this build.]",
+      "source": "No experiments in this build.",
+      "target": "या बिल्डमध्ये कोणतेही प्रयोग नाहीत."
+    },
+    {
+      "id": "native:[settings Touch scrolling]",
+      "source": "Touch scrolling",
+      "target": "टच स्क्रोलिंग"
+    },
+    {
+      "id": "native:[settings List momentum]",
+      "source": "List momentum",
+      "target": "यादीची गती"
+    },
+    {
+      "id": "native:[settings How far lists and panels keep scrolling after a flick.]",
+      "source": "How far lists and panels keep scrolling after a flick.",
+      "target": "एका झटक्यानंतर याद्या आणि पॅनेल किती पुढे स्क्रोल होत राहतात."
+    },
+    {
+      "id": "native:[settings List bounce]",
+      "source": "List bounce",
+      "target": "यादी उसळी"
+    },
+    {
+      "id": "native:[settings How much lists and panels stretch past their ends and spring back.]",
+      "source": "How much lists and panels stretch past their ends and spring back.",
+      "target": "याद्या आणि पॅनेल त्यांच्या मर्यादेपलीकडे किती ताणले जातात आणि पुन्हा पूर्ववत होतात."
+    },
+    {
+      "id": "native:[settings Map momentum]",
+      "source": "Map momentum",
+      "target": "नकाशाची गती"
+    },
+    {
+      "id": "native:[settings How far the map keeps panning after a flick.]",
+      "source": "How far the map keeps panning after a flick.",
+      "target": "एका झटक्यानंतर नकाशा किती दूर सरकत राहतो."
+    },
+    {
+      "id": "native:[settings Touch scrolling feel. 0 turns an effect off; 50 is the default.]",
+      "source": "Touch scrolling feel. 0 turns an effect off; 50 is the default.",
+      "target": "स्पर्शाने स्क्रोल करण्याचा अनुभव. मूल्य 0 असल्यास परिणाम बंद होतो; पूर्वनिर्धारित मूल्य 50 आहे."
+    },
+    {
+      "id": "native:[settings Artwork]",
+      "source": "Artwork",
+      "target": "कलाकृती"
+    },
+    {
+      "id": "native:[settings Original]",
+      "source": "Original",
+      "target": "मूळ"
+    },
+    {
+      "id": "native:[settings High resolution]",
+      "source": "High resolution",
+      "target": "उच्च रिझोल्यूशन"
+    },
+    {
+      "id": "native:[settings Clouds]",
+      "source": "Clouds",
+      "target": "ढग"
+    },
+    {
+      "id": "native:[settings Show cloud cover above the map.]",
+      "source": "Show cloud cover above the map.",
+      "target": "नकाशाच्या वर ढगांचे आवरण दाखवा."
+    },
+    {
+      "id": "native:[settings Cloud shadows]",
+      "source": "Cloud shadows",
+      "target": "ढगांच्या सावल्या"
+    },
+    {
+      "id": "native:[settings Show cloud shadows on the ground independently of cloud cover.]",
+      "source": "Show cloud shadows on the ground independently of cloud cover.",
+      "target": "ढगांच्या आच्छादनाचा विचार न करता जमिनीवर ढगांच्या सावल्या दाखवा."
+    },
+    {
+      "id": "native:[settings Building particles]",
+      "source": "Building particles",
+      "target": "इमारतींमधून निघणारे कण"
+    },
+    {
+      "id": "native:[settings Show smoke and other building particles.]",
+      "source": "Show smoke and other building particles.",
+      "target": "धूर आणि इमारतीचे इतर कण दाखवा."
+    },
+    {
+      "id": "native:[settings Magic effects]",
+      "source": "Magic effects",
+      "target": "जादूई प्रभाव"
+    },
+    {
+      "id": "native:[settings Choose animated magic effects or a simple visible effect.]",
+      "source": "Choose animated magic effects or a simple visible effect.",
+      "target": "अ‍ॅनिमेटेड जादुई प्रभाव किंवा साधा दृश्यमान प्रभाव निवडा."
+    },
+    {
+      "id": "native:[settings Simple]",
+      "source": "Simple",
+      "target": "साधे"
+    },
+    {
+      "id": "native:[settings Requires the OpenGL renderer. Your saved choice is retained.]",
+      "source": "Requires the OpenGL renderer. Your saved choice is retained.",
+      "target": "यासाठी OpenGL रेंडरर आवश्यक आहे. तुमची जतन केलेली निवड कायम ठेवली जाते."
+    },
+    {
+      "id": "native:[settings Interface appearance]",
+      "source": "Interface appearance",
+      "target": "इंटरफेसचे स्वरूप"
+    },
+    {
+      "id": "native:[settings Panels]",
+      "source": "Panels",
+      "target": "पॅनेल"
+    },
+    {
+      "id": "native:[settings Choose translucent or opaque interface panels.]",
+      "source": "Choose translucent or opaque interface panels.",
+      "target": "अर्धपारदर्शक किंवा अपारदर्शक इंटरफेस पॅनेल निवडा."
+    },
+    {
+      "id": "native:[settings Opaque]",
+      "source": "Opaque",
+      "target": "अपारदर्शक"
+    },
+    {
+      "id": "native:[settings Translucent]",
+      "source": "Translucent",
+      "target": "अर्धपारदर्शक"
+    }
+  ]
+}

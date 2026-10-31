@@ -1,0 +1,510 @@
+{
+  "source_sha256": "0ac44b4cdfb03e688983d6e3fb1e484cca57589665bff19c5c65388e649b292a",
+  "batch_target_sha256": "22679b3498b70fbea959770760f637a1e784dd5bffd487d60c56911c887d9f27",
+  "catalog_sha256": {
+    "native": "a6d0da95a3cf29e0bcfa904f80043a10fedc3124f7a26e3beebc82e8cdfa4411",
+    "online": "feb4b9a71595724a0995b0cf0f42c94742ef29030b66c9488c77ebc6be7a89db"
+  },
+  "entries": [
+    {
+      "id": "native:[conn unstable]",
+      "source": "unstable",
+      "target": "अस्थिर"
+    },
+    {
+      "id": "native:[conn waiting]",
+      "source": "Connecting…",
+      "target": "जोडत आहे…"
+    },
+    {
+      "id": "native:[conn you %0]",
+      "source": "%0 (you)",
+      "target": "%0 (तुम्ही)"
+    },
+    {
+      "id": "native:[conn you]",
+      "source": "You",
+      "target": "तुम्ही"
+    },
+    {
+      "id": "native:[conn your delay %0]",
+      "source": "Your delay %0",
+      "target": "तुमचा विलंब %0"
+    },
+    {
+      "id": "native:[hub account menu]",
+      "source": "Account",
+      "target": "खाते"
+    },
+    {
+      "id": "native:[hub ai joins after %0]",
+      "source": "AI joins after %0",
+      "target": "%0 नंतर AI सामील होते"
+    },
+    {
+      "id": "native:[hub all rooms]",
+      "source": "All",
+      "target": "सर्व"
+    },
+    {
+      "id": "native:[hub cant reach %0]",
+      "source": "Can't reach %0.",
+      "target": "%0 पर्यंत पोहोचता येत नाही."
+    },
+    {
+      "id": "native:[hub change server]",
+      "source": "Change server…",
+      "target": "सर्व्हर बदला…"
+    },
+    {
+      "id": "native:[hub code placeholder]",
+      "source": "Code or invite link",
+      "target": "कोड किंवा आमंत्रण लिंक"
+    },
+    {
+      "id": "native:[hub connecting to %0]",
+      "source": "%0 · connecting…",
+      "target": "%0 · कनेक्ट करत आहे…"
+    },
+    {
+      "id": "native:[hub continue with %0]",
+      "source": "Continue with %0",
+      "target": "%0 सह सुरू ठेवा"
+    },
+    {
+      "id": "native:[hub create room]",
+      "source": "Create room",
+      "target": "खोली तयार करा"
+    },
+    {
+      "id": "native:[hub find match]",
+      "source": "Find match",
+      "target": "सामना शोधा"
+    },
+    {
+      "id": "native:[hub free seat]",
+      "source": "Free seat",
+      "target": "मोकळी जागा"
+    },
+    {
+      "id": "native:[hub get update]",
+      "source": "Get the update",
+      "target": "अपडेट मिळवा"
+    },
+    {
+      "id": "native:[hub guest kept on device]",
+      "source": "Guest · kept on this device",
+      "target": "अतिथी · या डिव्हाइसवर ठेवले"
+    },
+    {
+      "id": "native:[hub invalid code]",
+      "source": "That isn't an invite code or link.",
+      "target": "तो आमंत्रण कोड किंवा लिंक नाही."
+    },
+    {
+      "id": "native:[hub join by code]",
+      "source": "Join by code",
+      "target": "कोडद्वारे सामील व्हा"
+    },
+    {
+      "id": "native:[hub join code]",
+      "source": "Join code",
+      "target": "सामील होण्याचा कोड"
+    },
+    {
+      "id": "native:[hub join]",
+      "source": "Join",
+      "target": "सामील व्हा"
+    },
+    {
+      "id": "native:[hub leaderboard]",
+      "source": "Leaderboard",
+      "target": "लीडरबोर्ड"
+    },
+    {
+      "id": "native:[hub maps]",
+      "source": "Maps",
+      "target": "नकाशे"
+    },
+    {
+      "id": "native:[hub no queues]",
+      "source": "This server has no quick-match queues.",
+      "target": "या सर्व्हरवर क्विक-मॅच क्यू नाहीत."
+    },
+    {
+      "id": "native:[hub no rooms]",
+      "source": "No open rooms right now. Create one and share the invite.",
+      "target": "सध्या एकही रूम उपलब्ध नाही. एक रूम तयार करा आणि आमंत्रण शेअर करा."
+    },
+    {
+      "id": "native:[hub offline at %0]",
+      "source": "%0 · offline",
+      "target": "%0 · ऑफलाइन"
+    },
+    {
+      "id": "native:[hub offline detail %0]",
+      "source": "Trying again in %0 s. Quick match and online rooms are unavailable. LAN game on the main menu doesn't need this server.",
+      "target": "%0 सेकंदांनी पुन्हा प्रयत्न करू. जलद सामना आणि ऑनलाइन खोल्या उपलब्ध नाहीत. मुख्य मेनूवरील LAN खेळाला हा सर्व्हर लागत नाही."
+    },
+    {
+      "id": "native:[hub online at %0]",
+      "source": "%0 · online",
+      "target": "%0 · ऑनलाइन"
+    },
+    {
+      "id": "native:[hub online settings]",
+      "source": "Online settings",
+      "target": "ऑनलाइन सेटिंग्ज"
+    },
+    {
+      "id": "native:[hub online]",
+      "source": "Online",
+      "target": "ऑनलाइन"
+    },
+    {
+      "id": "native:[hub open page again]",
+      "source": "Open the page again",
+      "target": "पान पुन्हा उघडा"
+    },
+    {
+      "id": "native:[hub open rooms]",
+      "source": "Open rooms",
+      "target": "मोकळ्या खोल्या"
+    },
+    {
+      "id": "native:[hub play]",
+      "source": "Play",
+      "target": "खेळा"
+    },
+    {
+      "id": "native:[hub rooms]",
+      "source": "Rooms",
+      "target": "खोल्या"
+    },
+    {
+      "id": "native:[hub ranks]",
+      "source": "Ranks",
+      "target": "रँक"
+    },
+    {
+      "id": "native:[hub play with friends]",
+      "source": "Play with friends",
+      "target": "मित्रांसोबत खेळा"
+    },
+    {
+      "id": "native:[hub also search %0]",
+      "source": "Also search %0",
+      "target": "%0 देखील शोधा"
+    },
+    {
+      "id": "native:[hub online now %0 %1]",
+      "source": "%0 players online · %1 searching this queue",
+      "target": "%0 खेळाडू ऑनलाइन · %1 या रांगेत शोधत आहे"
+    },
+    {
+      "id": "native:[hub show in open rooms]",
+      "source": "Show in Open rooms",
+      "target": "मोकळ्या खोल्यांमध्ये दाखवा"
+    },
+    {
+      "id": "native:[hub last match]",
+      "source": "Last match",
+      "target": "शेवटचा सामना"
+    },
+    {
+      "id": "native:[hub your rank %0 %1]",
+      "source": "You are #%0 · rating %1",
+      "target": "तुमचा क्रमांक #%0 · मानांकन %1"
+    },
+    {
+      "id": "native:[hub not placed]",
+      "source": "You don't have a rank here yet. Play ranked matches to place.",
+      "target": "तुम्हाला येथे अजून रँक मिळालेला नाही. रँक मिळवण्यासाठी रँक्ड सामने खेळा."
+    },
+    {
+      "id": "native:[hub queues unavailable]",
+      "source": "Quick match appears when the server answers.",
+      "target": "सर्व्हरने प्रतिसाद दिल्यावर क्विक मॅच दिसते."
+    },
+    {
+      "id": "native:[hub quick match unavailable]",
+      "source": "Quick match isn't available in this version yet.",
+      "target": "या आवृत्तीमध्ये क्विक मॅच अद्याप उपलब्ध नाही."
+    },
+    {
+      "id": "native:[hub quick match]",
+      "source": "Quick match",
+      "target": "जलद सामना"
+    },
+    {
+      "id": "native:[hub ranked]",
+      "source": "Ranked",
+      "target": "मानांकित"
+    },
+    {
+      "id": "native:[hub refresh]",
+      "source": "Refresh",
+      "target": "रिफ्रेश करा"
+    },
+    {
+      "id": "native:[hub retry now]",
+      "source": "Retry now",
+      "target": "आता पुन्हा प्रयत्न करा"
+    },
+    {
+      "id": "native:[hub room match]",
+      "source": "Room",
+      "target": "खोली"
+    },
+    {
+      "id": "native:[hub room name %0]",
+      "source": "%0's room",
+      "target": "%0 ची खोली"
+    },
+    {
+      "id": "native:[hub room]",
+      "source": "Room",
+      "target": "खोली"
+    },
+    {
+      "id": "native:[hub seats %0 %1]",
+      "source": "%0/%1 seats",
+      "target": "%0/%1 जागा"
+    },
+    {
+      "id": "native:[hub sign in browser]",
+      "source": "Open the sign-in page",
+      "target": "साइन-इन पेज उघडा"
+    },
+    {
+      "id": "native:[hub sign in conflict]",
+      "source": "That sign-in already belongs to another account.",
+      "target": "ते साइन-इन आधीच दुसऱ्या खात्याचे आहे."
+    },
+    {
+      "id": "native:[hub sign in failed %0]",
+      "source": "Sign-in didn't finish (%0).",
+      "target": "साइन-इन पूर्ण झाले नाही (%0)."
+    },
+    {
+      "id": "native:[hub sign in intro]",
+      "source": "Sign in or create an account in your browser. Your guest matches come with you.",
+      "target": "ब्राउझरमध्ये साइन इन करा किंवा खाते तयार करा. अतिथी म्हणून खेळलेले तुमचे सामनेही सोबत जोडले जातील."
+    },
+    {
+      "id": "native:[hub sign in]",
+      "source": "Sign in",
+      "target": "साइन इन करा"
+    },
+    {
+      "id": "native:[hub sign out]",
+      "source": "Sign out on this device",
+      "target": "या डिव्हाइसवरून साइन आउट करा"
+    },
+    {
+      "id": "native:[hub signed in as %0]",
+      "source": "Signed in as %0.",
+      "target": "%0 म्हणून साइन इन केले आहे."
+    },
+    {
+      "id": "native:[hub signed in on %0]",
+      "source": "Signed in on %0",
+      "target": "%0 वर साइन इन केले"
+    },
+    {
+      "id": "native:[hub signing in]",
+      "source": "Signing in…",
+      "target": "साइन इन करत आहे…"
+    },
+    {
+      "id": "native:[hub sim %0]",
+      "source": "sim %0",
+      "target": "सिम %0"
+    },
+    {
+      "id": "native:[hub unrated]",
+      "source": "Unrated",
+      "target": "मानांकनरहित"
+    },
+    {
+      "id": "native:[hub update required at %0]",
+      "source": "%0 · update required",
+      "target": "%0 · अद्ययावत करणे आवश्यक आहे"
+    },
+    {
+      "id": "native:[hub update required detail %0]",
+      "source": "%0 plays a newer version, so this copy can't join online games until it updates. LAN games still work.",
+      "target": "%0 नवीन आवृत्ती वापरत असल्यामुळे, अपडेट होईपर्यंत ही प्रत ऑनलाइन गेममध्ये सामील होऊ शकत नाही. लॅन गेम्स मात्र व्यवस्थित चालतात."
+    },
+    {
+      "id": "native:[hub update required]",
+      "source": "Update required",
+      "target": "अपडेट आवश्यक आहे"
+    },
+    {
+      "id": "native:[hub server behind]",
+      "source": "Server update pending",
+      "target": "सर्व्हर अपडेट प्रलंबित आहे"
+    },
+    {
+      "id": "native:[hub server behind at %0]",
+      "source": "%0 · server update pending",
+      "target": "%0 · सर्व्हर अद्ययावतीकरण प्रलंबित आहे"
+    },
+    {
+      "id": "native:[hub server behind detail %0]",
+      "source": "This copy is newer than %0, which hasn't been updated to it yet. Online games will open once the server updates. LAN games still work.",
+      "target": "ही प्रत %0 पेक्षा नवीन आहे, जी अद्याप अद्ययावत केलेली नाही. सर्व्हर अद्ययावत झाल्यावर ऑनलाइन गेम्स सुरू होतील. लॅन गेम्स अजूनही चालतात."
+    },
+    {
+      "id": "native:[hub version mismatch]",
+      "source": "Different version",
+      "target": "वेगळी आवृत्ती"
+    },
+    {
+      "id": "native:[hub version mismatch at %0]",
+      "source": "%0 · different version",
+      "target": "%0 · भिन्न आवृत्ती"
+    },
+    {
+      "id": "native:[hub version mismatch detail %0]",
+      "source": "%0 plays a different version of the game, so this copy can't join online games. LAN games still work.",
+      "target": "%0 गेमची वेगळी आवृत्ती खेळत असल्यामुळे, ही प्रत ऑनलाइन गेममध्ये सामील होऊ शकत नाही. लॅन गेम्स मात्र चालतात."
+    },
+    {
+      "id": "native:[hub versus %0]",
+      "source": "vs %0",
+      "target": "विरुद्ध %0"
+    },
+    {
+      "id": "native:[match ai]",
+      "source": "AI",
+      "target": "एआय"
+    },
+    {
+      "id": "native:[match failed]",
+      "source": "The match could not start.",
+      "target": "सामना सुरू होऊ शकला नाही."
+    },
+    {
+      "id": "native:[match leave]",
+      "source": "Leave",
+      "target": "सोडा"
+    },
+    {
+      "id": "native:[match loading]",
+      "source": "Loading the game",
+      "target": "गेम लोड होत आहे"
+    },
+    {
+      "id": "native:[Loading game graphics]",
+      "source": "Loading game graphics",
+      "target": "गेमचे ग्राफिक्स लोड होत आहेत"
+    },
+    {
+      "id": "native:[match map]",
+      "source": "Downloading the map",
+      "target": "नकाशा डाउनलोड करणे"
+    },
+    {
+      "id": "native:[match relay %0]",
+      "source": "Connected to relay %0",
+      "target": "%0 रिलेशी जोडलेले"
+    },
+    {
+      "id": "native:[match seat confirmed]",
+      "source": "Seat confirmed",
+      "target": "जागा निश्चित झाली आहे"
+    },
+    {
+      "id": "native:[match starting]",
+      "source": "Starting match",
+      "target": "सामना सुरू करणे"
+    },
+    {
+      "id": "native:[match tip input]",
+      "source": "Tip: your orders reach everyone after your own input delay; other players' connections don't slow you down.",
+      "target": "सूचना: तुमच्या आदेशांना तुमच्या कनेक्शनचा विलंब लागू झाल्यावर ते सर्वांपर्यंत पोहोचतात; इतर खेळाडूंच्या कनेक्शनमुळे तुमचा वेग कमी होत नाही."
+    },
+    {
+      "id": "native:[match tip select]",
+      "source": "Tip: double-click a building to select every building of that type.",
+      "target": "सूचना: एखाद्या इमारतीवर डबल-क्लिक करून त्या प्रकारच्या सर्व इमारती निवडा."
+    },
+    {
+      "id": "native:[match waiting for players]",
+      "source": "Waiting for every player",
+      "target": "प्रत्येक खेळाडूची वाट पाहत आहे"
+    },
+    {
+      "id": "native:[match you %0]",
+      "source": "%0 (you)",
+      "target": "%0 (तुम्ही)"
+    },
+    {
+      "id": "native:[match player map]",
+      "source": "map",
+      "target": "नकाशा"
+    },
+    {
+      "id": "native:[match player loading]",
+      "source": "loading",
+      "target": "लोडिंग"
+    },
+    {
+      "id": "native:[match player connecting]",
+      "source": "connecting",
+      "target": "कनेक्ट करत आहे"
+    },
+    {
+      "id": "native:[match player ready]",
+      "source": "ready",
+      "target": "तयार"
+    },
+    {
+      "id": "native:[match player left]",
+      "source": "left",
+      "target": "सोडून गेले"
+    },
+    {
+      "id": "native:[results back to online]",
+      "source": "Back to online",
+      "target": "ऑनलाइनवर परत जा"
+    },
+    {
+      "id": "native:[results back to room]",
+      "source": "Back to room",
+      "target": "खोलीत परत"
+    },
+    {
+      "id": "native:[results find another match]",
+      "source": "Find another match",
+      "target": "दुसरा सामना शोधा"
+    },
+    {
+      "id": "native:[results defeat]",
+      "source": "Defeat",
+      "target": "पराभव"
+    },
+    {
+      "id": "native:[results ladder rating %0]",
+      "source": "%0 rating",
+      "target": "%0 रेटिंग"
+    },
+    {
+      "id": "native:[results left]",
+      "source": "You left the match",
+      "target": "तुम्ही सामना सोडून गेलात"
+    },
+    {
+      "id": "native:[results match over]",
+      "source": "Match over",
+      "target": "सामना संपला"
+    },
+    {
+      "id": "native:[results match page]",
+      "source": "Match page",
+      "target": "सामना पृष्ठ"
+    }
+  ]
+}

@@ -1,0 +1,329 @@
+{
+  "reviewer": "/root/draft_tool",
+  "role": "independent online semantic reviewer",
+  "source_sha256": "0ac44b4cdfb03e688983d6e3fb1e484cca57589665bff19c5c65388e649b292a",
+  "batch_target_sha256": "f1705f3cd9caa26ee649c36229893379cf7f184325389542f363955b59a3c98d",
+  "catalog_sha256": {
+    "native": "9d9d27dc1179d0a59f88aa723606d7daebe5f9b1ff8903ce66622ee44b442cae",
+    "online": "1ba40d342498f5e7704a63e5d175bd9e8a0ede31e3ca2ce88e8cb1fbc0ba68a6"
+  },
+  "reviewed_keys": [
+    "online:Choose {value0}",
+    "online:Clear selection",
+    "online:Close",
+    "online:Close credits",
+    "online:Close navigation",
+    "online:Close panel",
+    "online:Close panel · Escape",
+    "online:Close play choices",
+    "online:Close preview",
+    "online:Close {value0}",
+    "online:Closed",
+    "online:Code",
+    "online:Code or invite link",
+    "online:Collection disabled",
+    "online:Collection enabled",
+    "online:Colonies",
+    "online:Colony AI",
+    "online:Colony skins",
+    "online:Colony still standing",
+    "online:Colony {slot0}",
+    "online:Colony {value0} paint",
+    "online:Colony {value0} skin",
+    "online:Color",
+    "online:Colors your buildings; painted units stay unchanged.",
+    "online:Colors, seams and raised decor",
+    "online:Combat",
+    "online:Commander account",
+    "online:Commander work",
+    "online:Community",
+    "online:Community-made JavaScript players control a colony through Glob2’s AI API. Download a version, import it in Settings → Custom AIs, then choose it for a computer seat in a local game. Installed versions work offline; saved games keep their original code.",
+    "online:Compare revision",
+    "online:Compare with",
+    "online:Compare with version",
+    "online:Compared revision",
+    "online:Compared revision {slot0}",
+    "online:Compared revision: {slot0}",
+    "online:Compare…",
+    "online:Compatibility checklist",
+    "online:Compatibility checks",
+    "online:Compatibility checks exercise short games and save/resume. They do not certify safety or playing strength. Only run code from authors you trust.",
+    "online:Compatibility of your active skin",
+    "online:Complete",
+    "online:Complete family JSON",
+    "online:Complete passing checks before publishing.",
+    "online:Completed",
+    "online:Completion time comparison table",
+    "online:Compose the music",
+    "online:Composer’s progress",
+    "online:Composition",
+    "online:Configure Hive Mind in Settings → Online. In a match, press Ctrl+Enter to give an order. Assistance is permitted in ranked matches.",
+    "online:Confirm history deletion",
+    "online:Confirm the license chosen when composing this version.",
+    "online:Confirmed cash",
+    "online:Confirmed cash table",
+    "online:Confirmed cash uses Stripe charge/refund currency units; current and previous UTC periods. CSV exports preserve exact integer minor units.",
+    "online:Confirming your payment. Your credits appear once payment is confirmed.",
+    "online:Connected",
+    "online:Connection",
+    "online:Connection interrupted. Reconnecting to your saved project…",
+    "online:Connection quality per player",
+    "online:Consistent levels",
+    "online:Content",
+    "online:Content not found.",
+    "online:Contents",
+    "online:Contents & gameplay properties",
+    "online:Continue as {p1}",
+    "online:Continue to uploads",
+    "online:Continue to {p1}",
+    "online:Continue with {p3}",
+    "online:Controls and compatibility evidence",
+    "online:Conversation",
+    "online:Convert and prepare preview",
+    "online:Converting",
+    "online:Copies the {slot0} texture and materials. Different models wrap that paint differently; inspect the results below.",
+    "online:Copy paint",
+    "online:Copy paint to all models",
+    "online:Copy paint to other models…",
+    "online:Copy recorded usage",
+    "online:Copy this link into Family link or ID in the game’s Building families picker to open this family directly.",
+    "online:Copyright",
+    "online:Correct the invalid JSON before saving.",
+    "online:Cortex",
+    "online:Could not check payment.",
+    "online:Could not crop this photo.",
+    "online:Could not delete this skin.",
+    "online:Could not load test map.",
+    "online:Could not load the material unwrap.",
+    "online:Could not load this language. Please try again.",
+    "online:Could not load this model. Please retry.",
+    "online:Could not load this {value0}",
+    "online:Could not load your project.",
+    "online:Could not load {value0}.{value1}",
+    "online:Could not open this photo.",
+    "online:Could not save · retrying",
+    "online:Could not send report.",
+    "online:Could not update report.",
+    "online:Could not use this skin.",
+    "online:Count",
+    "online:Cover",
+    "online:Create"
+  ],
+  "findings": [
+    {
+      "key": "online:Close panel · Escape",
+      "before": "पॅनल बंद करा · बाहेर पडा",
+      "after": "पॅनेल बंद करा · Escape",
+      "reason": "Escape names a keyboard key, not the action escape.",
+      "severity": "major",
+      "state": "proposed"
+    },
+    {
+      "key": "online:Close play choices",
+      "before": "जवळचे खेळाचे पर्याय",
+      "after": "खेळाचे पर्याय बंद करा",
+      "reason": "Close is a verb, not nearby.",
+      "severity": "major",
+      "state": "proposed"
+    },
+    {
+      "key": "online:Colony AI",
+      "before": "कॉलनी एआय",
+      "after": "वसाहतीचा एआय",
+      "reason": "Use colony glossary.",
+      "severity": "minor",
+      "state": "proposed"
+    },
+    {
+      "key": "online:Colony skins",
+      "before": "कॉलनी स्किन्स",
+      "after": "वसाहतीची रूपे",
+      "reason": "Use colony glossary and avoid literal human skins.",
+      "severity": "minor",
+      "state": "proposed"
+    },
+    {
+      "key": "online:Colony {slot0}",
+      "before": "कॉलनी {slot0}",
+      "after": "वसाहत {slot0}",
+      "reason": "Use colony glossary.",
+      "severity": "minor",
+      "state": "proposed"
+    },
+    {
+      "key": "online:Colony {value0} paint",
+      "before": "कॉलनी {value0} पेंट",
+      "after": "वसाहत {value0} चा रंग",
+      "reason": "Use colony and painted appearance terminology.",
+      "severity": "minor",
+      "state": "proposed"
+    },
+    {
+      "key": "online:Colony {value0} skin",
+      "before": "कॉलनी {value0} त्वचा",
+      "after": "वसाहत {value0} चे रूप",
+      "reason": "Skin is appearance, not human skin.",
+      "severity": "major",
+      "state": "proposed"
+    },
+    {
+      "key": "online:Colors your buildings; painted units stay unchanged.",
+      "before": "तुमच्या इमारतींना रंग द्या; रंगवलेले घटक अपरिवर्तित राहतात.",
+      "after": "तुमच्या इमारतींना रंग लावतो; रंगवलेली युनिट तशीच राहतात.",
+      "reason": "Description of control effect and unit glossary.",
+      "severity": "minor",
+      "state": "proposed"
+    },
+    {
+      "key": "online:Compare revision",
+      "before": "पुनरावृत्तीची तुलना करा",
+      "after": "आवृत्तीची तुलना करा",
+      "reason": "Saved revision, not repetition.",
+      "severity": "minor",
+      "state": "proposed"
+    },
+    {
+      "key": "online:Compared revision",
+      "before": "तुलनात्मक सुधारणा",
+      "after": "तुलना केलेली आवृत्ती",
+      "reason": "Saved revision, not improvement.",
+      "severity": "minor",
+      "state": "proposed"
+    },
+    {
+      "key": "online:Compared revision {slot0}",
+      "before": "{slot0} या सुधारित आवृत्तीची तुलना केली.",
+      "after": "तुलना केलेली आवृत्ती {slot0}",
+      "reason": "Revision label, not a past-tense action.",
+      "severity": "minor",
+      "state": "proposed"
+    },
+    {
+      "key": "online:Compatibility of your active skin",
+      "before": "तुमच्या सक्रिय त्वचेची अनुकूलता",
+      "after": "तुमच्या सक्रिय रूपाची सुसंगतता",
+      "reason": "Skin is appearance asset.",
+      "severity": "minor",
+      "state": "proposed"
+    },
+    {
+      "key": "online:Complete family JSON",
+      "before": "संपूर्ण कुटुंब JSON",
+      "after": "इमारत संचाचा संपूर्ण JSON",
+      "reason": "Family groups building stages/types.",
+      "severity": "minor",
+      "state": "proposed"
+    },
+    {
+      "key": "online:Complete passing checks before publishing.",
+      "before": "प्रकाशित करण्यापूर्वी सर्व तपासण्या पूर्ण करा.",
+      "after": "प्रकाशित करण्यापूर्वी सर्व तपासण्या यशस्वीपणे पूर्ण करा.",
+      "reason": "Passing is required, not mere test completion.",
+      "severity": "major",
+      "state": "proposed"
+    },
+    {
+      "key": "online:Configure Hive Mind in Settings → Online. In a match, press Ctrl+Enter to give an order. Assistance is permitted in ranked matches.",
+      "before": "सेटिंग्ज → ऑनलाइन मध्ये Hive Mind कॉन्फिगर करा. मॅचमध्ये, आदेश देण्यासाठी Ctrl+Enter दाबा. रँक्ड मॅचेसमध्ये सहाय्य करण्यास परवानगी आहे.",
+      "after": "सेटिंग्ज → ऑनलाइनमध्ये Hive Mind ची व्यवस्था करा. सामन्यात आदेश देण्यासाठी Ctrl+Enter दाबा. क्रमवारीच्या सामन्यांमध्ये सहाय्य वापरण्यास परवानगी आहे.",
+      "reason": "Assistance is allowed to the player; do not imply player is giving help.",
+      "severity": "minor",
+      "state": "proposed"
+    },
+    {
+      "key": "online:Confirmed cash",
+      "before": "कन्फर्म कॅश",
+      "after": "पुष्टी झालेली रक्कम",
+      "reason": "Cash confirmation is financial report label.",
+      "severity": "minor",
+      "state": "proposed"
+    },
+    {
+      "key": "online:Confirmed cash table",
+      "before": "कन्फर्म कॅश टेबल",
+      "after": "पुष्टी झालेल्या रकमेची सारणी",
+      "reason": "Match financial report label.",
+      "severity": "minor",
+      "state": "proposed"
+    },
+    {
+      "key": "online:Confirmed cash uses Stripe charge/refund currency units; current and previous UTC periods. CSV exports preserve exact integer minor units.",
+      "before": "कन्फर्म्ड कॅशमध्ये स्ट्राइप चार्ज/रिफंड चलन एकके वापरली जातात; चालू आणि मागील UTC कालावधी. CSV निर्यातीमध्ये अचूक पूर्णांक मायनर युनिट्स जतन केली जातात.",
+      "after": "पुष्टी झालेल्या रकमेसाठी Stripe च्या शुल्क/परताव्याची चलन एकके वापरली जातात; चालू आणि मागील UTC कालावधी दाखवले जातात. CSV निर्यातीमध्ये लहान चलन एककांतील अचूक पूर्णांक जतन केले जातात.",
+      "reason": "Minor units are currency subunits, not a vague minor measurement.",
+      "severity": "minor",
+      "state": "proposed"
+    },
+    {
+      "key": "online:Confirming your payment. Your credits appear once payment is confirmed.",
+      "before": "तुमच्या पेमेंटची पुष्टी केली जात आहे. पेमेंटची पुष्टी झाल्यावर तुमच्या खात्यात पैसे जमा झालेले दिसतील.",
+      "after": "तुमच्या देयकाची पुष्टी करत आहे. पुष्टी झाल्यावर तुमचे क्रेडिट्स दिसतील.",
+      "reason": "Credits are not cash deposited into an account.",
+      "severity": "major",
+      "state": "proposed"
+    },
+    {
+      "key": "online:Continue to uploads",
+      "before": "अपलोड सुरू ठेवा",
+      "after": "अपलोड पृष्ठावर पुढे जा",
+      "reason": "Navigation to uploads, not continuing an upload transfer.",
+      "severity": "minor",
+      "state": "proposed"
+    },
+    {
+      "key": "online:Continue to {p1}",
+      "before": "{p1} वर सुरू ठेवा",
+      "after": "{p1} कडे पुढे जा",
+      "reason": "Navigation destination rather than ongoing action.",
+      "severity": "minor",
+      "state": "proposed"
+    },
+    {
+      "key": "online:Copy paint",
+      "before": "कॉपी पेंट",
+      "after": "रंगाची प्रत करा",
+      "reason": "Action label, not noun phrase.",
+      "severity": "minor",
+      "state": "proposed"
+    },
+    {
+      "key": "online:Copy this link into Family link or ID in the game’s Building families picker to open this family directly.",
+      "before": "हे कुटुंब थेट उघडण्यासाठी, गेममधील 'बिल्डिंग फॅमिलीज पिकर'मधील 'फॅमिली लिंक' किंवा 'आयडी' मध्ये ही लिंक कॉपी करा.",
+      "after": "हा इमारत संच थेट उघडण्यासाठी खेळातील इमारत संच निवडीत संचाची लिंक किंवा आयडी या जागी ही लिंक कॉपी करा.",
+      "reason": "Family is building group; align game picker concepts.",
+      "severity": "minor",
+      "state": "proposed"
+    },
+    {
+      "key": "online:Cortex",
+      "before": "कॉर्टेक्स",
+      "after": "Cortex",
+      "reason": "Named AI implementation remains consistent with game list.",
+      "severity": "minor",
+      "state": "proposed"
+    },
+    {
+      "key": "online:Could not delete this skin.",
+      "before": "ही स्किन हटवता आली नाही.",
+      "after": "हे रूप हटवता आले नाही.",
+      "reason": "Appearance asset terminology.",
+      "severity": "minor",
+      "state": "proposed"
+    },
+    {
+      "key": "online:Could not use this skin.",
+      "before": "ही स्किन वापरता आली नाही.",
+      "after": "हे रूप वापरता आले नाही.",
+      "reason": "Appearance asset terminology.",
+      "severity": "minor",
+      "state": "proposed"
+    }
+  ],
+  "accepted_english": [
+    {
+      "key": "online:Cortex",
+      "reason": "Named AI implementation retains the same proper-name spelling as the in-game AI list."
+    }
+  ],
+  "certification": "Agent-reviewed; not native-human-certified; editorial and final recheck pending"
+}

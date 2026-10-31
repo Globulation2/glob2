@@ -1,0 +1,58 @@
+
+> @glob2/web@0.1.0 e2e
+> playwright test -c e2e/playwright.config.ts i18n.spec.ts --grep renders mr|Marathi switching|changing the selected language
+
+[WebServer] (node:1573613) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 6 tests using 1 worker
+
+(node:1576693) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  1 [desktop] › e2e/i18n.spec.ts:7:3 › home loads and renders mr (3.6s)
+(node:1577855) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  2 [desktop] › e2e/i18n.spec.ts:104:1 › changing the selected language updates the page without losing input (2.3s)
+  ✓  3 [desktop] › e2e/i18n.spec.ts:121:1 › Marathi switching restores LTR, loads the bundled font and keeps the chosen locale (5.4s)
+(node:1578414) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  4 [phone] › e2e/i18n.spec.ts:7:3 › home loads and renders mr (24.7s)
+  ✓  5 [phone] › e2e/i18n.spec.ts:104:1 › changing the selected language updates the page without losing input (3.1s)
+  ✓  6 [phone] › e2e/i18n.spec.ts:121:1 › Marathi switching restores LTR, loads the bundled font and keeps the chosen locale (5.0s)
+
+
+  1) [desktop] › e2e/i18n.spec.ts:7:3 › home loads and renders mr ──────────────────────────────────
+
+    Error: page.screenshot: Protocol error (Page.captureScreenshot): Unable to capture screenshot
+    Call log:
+      - taking page screenshot
+      - waiting for fonts to load...
+      - fonts loaded
+
+
+      94 |     }
+      95 |     await info.attach(`${locale.code}-home`, {
+    > 96 |       body: await page.screenshot({ fullPage: true, path: screenshotPath }),
+         |                        ^
+      97 |       contentType: 'image/png',
+      98 |     });
+      99 |     await page.reload();
+        at /home/bradley/.codex/worktrees/45cd/glob2/platform/apps/web/e2e/i18n.spec.ts:96:24
+
+    Error Context: ../../../artifacts/web-app/test-results/i18n-home-loads-and-renders-mr-desktop/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    ../../../artifacts/web-app/test-results/i18n-home-loads-and-renders-mr-desktop/trace.zip
+    Usage:
+
+        npx playwright show-trace ../../../artifacts/web-app/test-results/i18n-home-loads-and-renders-mr-desktop/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 failed
+    [desktop] › e2e/i18n.spec.ts:7:3 › home loads and renders mr ───────────────────────────────────
+  5 passed (1.7m)
+npm ERR! Lifecycle script `e2e` failed with error: 
+npm ERR! Error: command failed 
+npm ERR!   in workspace: @glob2/web@0.1.0 
+npm ERR!   at location: /home/bradley/.codex/worktrees/45cd/glob2/platform/apps/web 

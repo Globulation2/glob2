@@ -1,0 +1,510 @@
+{
+  "source_sha256": "0ac44b4cdfb03e688983d6e3fb1e484cca57589665bff19c5c65388e649b292a",
+  "batch_target_sha256": "8ec057f30e38b19f50574a03505f8abdf6bce86a8778a3eb4dcd243b9776afe4",
+  "catalog_sha256": {
+    "native": "a6d0da95a3cf29e0bcfa904f80043a10fedc3124f7a26e3beebc82e8cdfa4411",
+    "online": "69046d810247a33fca1cddee9696f425ec589d8411e69f6d159f7060379310c1"
+  },
+  "entries": [
+    {
+      "id": "native:[%0 units can't access building]",
+      "source": "%0 units can't access building",
+      "target": "%0 युनिट इमारतीपर्यंत पोहोचू शकत नाहीत"
+    },
+    {
+      "id": "native:[%0 units can't access flag]",
+      "source": "%0 units can't access flag",
+      "target": "%0 युनिट ध्वजापर्यंत पोहोचू शकत नाहीत"
+    },
+    {
+      "id": "native:[%0 units can't access fruit]",
+      "source": "%0 units can't access fruit",
+      "target": "%0 युनिट फळांपर्यंत पोहोचू शकत नाहीत"
+    },
+    {
+      "id": "native:[%0 units too far from building]",
+      "source": "%0 units too far from building",
+      "target": "%0 युनिट इमारतीपासून खूप दूर आहेत"
+    },
+    {
+      "id": "native:[%0 units too far from flag]",
+      "source": "%0 units too far from flag",
+      "target": "%0 युनिट ध्वजापासून खूप दूर आहेत"
+    },
+    {
+      "id": "native:[%0 units too far from fruit]",
+      "source": "%0 units too far from fruit",
+      "target": "%0 युनिट फळांपासून खूप दूर आहेत"
+    },
+    {
+      "id": "native:[any explorer]",
+      "source": "any explorer",
+      "target": "कोणताही शोधक"
+    },
+    {
+      "id": "native:[Building Defaults]",
+      "source": "Building Defaults",
+      "target": "इमारतींची पूर्वनिर्धारित सेटिंग्ज"
+    },
+    {
+      "id": "native:[building settings]",
+      "source": "Building Settings",
+      "target": "इमारतींची सेटिंग्ज"
+    },
+    {
+      "id": "native:[building site]",
+      "source": "construction site",
+      "target": "बांधकाम स्थळ"
+    },
+    {
+      "id": "native:[Building Tool Box Explanation]",
+      "source": "Shift + Drag = Box",
+      "target": "Shift + ओढा = चौकट"
+    },
+    {
+      "id": "native:[Building Tool Line Explanation]",
+      "source": "Ctrl + Drag = Line",
+      "target": "Ctrl + ओढा = रेषा"
+    },
+    {
+      "id": "native:[Buildings]",
+      "source": "Buildings",
+      "target": "इमारती"
+    },
+    {
+      "id": "native:[clearingflag explanation 2]",
+      "source": "",
+      "target": ""
+    },
+    {
+      "id": "native:[clearingflag explanation]",
+      "source": "Clears resources",
+      "target": "संसाधने साफ करतो"
+    },
+    {
+      "id": "native:[clearingflag]",
+      "source": "Clearing Flag",
+      "target": "सफाई ध्वज"
+    },
+    {
+      "id": "native:[destroy building]",
+      "source": "Destroy Selected Building",
+      "target": "निवडलेली इमारत नष्ट करा"
+    },
+    {
+      "id": "native:[explorationflag explanation 2]",
+      "source": "",
+      "target": ""
+    },
+    {
+      "id": "native:[explorationflag explanation]",
+      "source": "Attracts explorers",
+      "target": "शोधकांना आकर्षित करतो"
+    },
+    {
+      "id": "native:[explorationflag]",
+      "source": "Exploration Flag",
+      "target": "शोध ध्वज"
+    },
+    {
+      "id": "native:[Explorer Ratio]",
+      "source": "Explorer Ratio",
+      "target": "शोधकांचे प्रमाण"
+    },
+    {
+      "id": "native:[Explorer]",
+      "source": "Explorer",
+      "target": "शोधक"
+    },
+    {
+      "id": "native:[explorers]",
+      "source": "explorers",
+      "target": "शोधक"
+    },
+    {
+      "id": "native:[Flag Defaults]",
+      "source": "Flag Defaults",
+      "target": "ध्वजांची पूर्वनिर्धारित सेटिंग्ज"
+    },
+    {
+      "id": "native:[fruit]",
+      "source": "fruit",
+      "target": "फळ"
+    },
+    {
+      "id": "native:[inn explanation 2]",
+      "source": "",
+      "target": ""
+    },
+    {
+      "id": "native:[inn explanation]",
+      "source": "Feeds your units",
+      "target": "तुमच्या युनिटना अन्न देते"
+    },
+    {
+      "id": "native:[market explanation 2]",
+      "source": "fruits with others",
+      "target": "देवाणघेवाण करता येते"
+    },
+    {
+      "id": "native:[market explanation]",
+      "source": "Allows the exchange of",
+      "target": "इतरांशी फळांची"
+    },
+    {
+      "id": "native:[market]",
+      "source": "Market",
+      "target": "बाजार"
+    },
+    {
+      "id": "native:[Minimum Level To Flag]",
+      "source": "Min. unit level",
+      "target": "युनिटचा किमान स्तर"
+    },
+    {
+      "id": "native:[Number Of Buildings]",
+      "source": "Number Of Buildings",
+      "target": "इमारतींची संख्या"
+    },
+    {
+      "id": "native:[repair building]",
+      "source": "Start/Stop Repair",
+      "target": "दुरुस्ती सुरू/थांबवा"
+    },
+    {
+      "id": "native:[select barracks building]",
+      "source": "Select Barracks",
+      "target": "बराक निवडा"
+    },
+    {
+      "id": "native:[select clearingflag]",
+      "source": "Select Clearing Flag",
+      "target": "सफाई ध्वज निवडा"
+    },
+    {
+      "id": "native:[select construct market]",
+      "source": "Select Construct Market",
+      "target": "बाजार बांधणे निवडा"
+    },
+    {
+      "id": "native:[select construct swarm]",
+      "source": "Select Construct Swarm",
+      "target": "पोळे बांधणे निवडा"
+    },
+    {
+      "id": "native:[select explorationflag]",
+      "source": "Select Exploration Flag",
+      "target": "शोध ध्वज निवडा"
+    },
+    {
+      "id": "native:[select hospital building]",
+      "source": "Select Hospital",
+      "target": "रुग्णालय निवडा"
+    },
+    {
+      "id": "native:[select inn building]",
+      "source": "Select Inn",
+      "target": "खानावळ निवडा"
+    },
+    {
+      "id": "native:[select market building]",
+      "source": "Select Market",
+      "target": "बाजार निवडा"
+    },
+    {
+      "id": "native:[select place clearingflag]",
+      "source": "Select Place Clearing Flag",
+      "target": "सफाई ध्वज ठेवणे निवडा"
+    },
+    {
+      "id": "native:[select place explorationflag]",
+      "source": "Select Place Exploration Flag",
+      "target": "शोध ध्वज ठेवणे निवडा"
+    },
+    {
+      "id": "native:[select place warflag]",
+      "source": "Select Place War Flag",
+      "target": "युद्ध ध्वज ठेवणे निवडा"
+    },
+    {
+      "id": "native:[select racetrack building]",
+      "source": "Select Racetrack",
+      "target": "धावपट्टी निवडा"
+    },
+    {
+      "id": "native:[select school building]",
+      "source": "Select School",
+      "target": "शाळा निवडा"
+    },
+    {
+      "id": "native:[select swarm building]",
+      "source": "Select Swarm",
+      "target": "पोळे निवडा"
+    },
+    {
+      "id": "native:[select swimmingpool building]",
+      "source": "Select Swimming Pool",
+      "target": "जलतरण तलाव निवडा"
+    },
+    {
+      "id": "native:[select tower building]",
+      "source": "Select Defense Tower",
+      "target": "संरक्षण मनोरा निवडा"
+    },
+    {
+      "id": "native:[select wall building]",
+      "source": "Select Wall",
+      "target": "भिंत निवडा"
+    },
+    {
+      "id": "native:[select warflag]",
+      "source": "Select War Flag",
+      "target": "युद्ध ध्वज निवडा"
+    },
+    {
+      "id": "native:[show flags]",
+      "source": "Show flags",
+      "target": "ध्वज दाखवा"
+    },
+    {
+      "id": "native:[swarm explanation 2]",
+      "source": "",
+      "target": ""
+    },
+    {
+      "id": "native:[swarm explanation]",
+      "source": "Creates new units",
+      "target": "नवीन युनिट तयार करते"
+    },
+    {
+      "id": "native:[swarm]",
+      "source": "Swarm",
+      "target": "पोळे"
+    },
+    {
+      "id": "native:[switch to building view]",
+      "source": "Switch To Building view",
+      "target": "इमारतींच्या दृश्यावर जा"
+    },
+    {
+      "id": "native:[switch to flag view]",
+      "source": "Switch to Flags view",
+      "target": "ध्वजांच्या दृश्यावर जा"
+    },
+    {
+      "id": "native:[the building is finished]",
+      "source": "The building is finished.",
+      "target": "इमारतीचे बांधकाम पूर्ण झाले आहे."
+    },
+    {
+      "id": "native:[the building is under attack]",
+      "source": "The building is under attack.",
+      "target": "इमारतीवर हल्ला होत आहे."
+    },
+    {
+      "id": "native:[the clearingflag is finished]",
+      "source": "Clearing flag placed.",
+      "target": "सफाई ध्वज ठेवला."
+    },
+    {
+      "id": "native:[the clearingflag is under attack]",
+      "source": "Clearing flag is under attack.",
+      "target": "सफाई ध्वजावर हल्ला होत आहे."
+    },
+    {
+      "id": "native:[the explorationflag is finished]",
+      "source": "Exploration flag placed.",
+      "target": "शोध ध्वज ठेवला."
+    },
+    {
+      "id": "native:[the explorationflag is under attack]",
+      "source": "Exploration flag is under attack.",
+      "target": "शोध ध्वजावर हल्ला होत आहे."
+    },
+    {
+      "id": "native:[the inn is finished]",
+      "source": "The Inn is finished.",
+      "target": "खानावळीचे बांधकाम पूर्ण झाले."
+    },
+    {
+      "id": "native:[the inn is under attack]",
+      "source": "The Inn is under attack.",
+      "target": "खानावळीवर हल्ला होत आहे."
+    },
+    {
+      "id": "native:[the market is finished]",
+      "source": "The market is finished.",
+      "target": "बाजाराचे बांधकाम पूर्ण झाले."
+    },
+    {
+      "id": "native:[the market is under attack]",
+      "source": "The market is under attack.",
+      "target": "बाजारावर हल्ला होत आहे."
+    },
+    {
+      "id": "native:[the swarm is finished]",
+      "source": "The swarm is finished.",
+      "target": "पोळ्याचे बांधकाम पूर्ण झाले."
+    },
+    {
+      "id": "native:[the swarm is under attack]",
+      "source": "The swarm is under attack.",
+      "target": "पोळ्यावर हल्ला होत आहे."
+    },
+    {
+      "id": "native:[the warflag is finished]",
+      "source": "War flag placed.",
+      "target": "युद्ध ध्वज ठेवला."
+    },
+    {
+      "id": "native:[the warflag is under attack]",
+      "source": "War flag is under attack.",
+      "target": "युद्ध ध्वजावर हल्ला होत आहे."
+    },
+    {
+      "id": "native:[upgrade building]",
+      "source": "Start/Stop Upgrade",
+      "target": "सुधारणा सुरू/थांबवा"
+    },
+    {
+      "id": "native:[warflag explanation 2]",
+      "source": "",
+      "target": ""
+    },
+    {
+      "id": "native:[warflag explanation]",
+      "source": "Attracts warriors",
+      "target": "योद्ध्यांना आकर्षित करतो"
+    },
+    {
+      "id": "native:[warflag]",
+      "source": "War Flag",
+      "target": "युद्ध ध्वज"
+    },
+    {
+      "id": "native:[Warrior Ratio]",
+      "source": "Warrior Ratio",
+      "target": "योद्ध्यांचे प्रमाण"
+    },
+    {
+      "id": "native:[Warrior]",
+      "source": "Warrior",
+      "target": "योद्धा"
+    },
+    {
+      "id": "native:[warriors]",
+      "source": "warriors",
+      "target": "योद्धे"
+    },
+    {
+      "id": "native:[Worker Ratio]",
+      "source": "Worker Ratio",
+      "target": "कामगारांचे प्रमाण"
+    },
+    {
+      "id": "native:[Worker]",
+      "source": "Worker",
+      "target": "कामगार"
+    },
+    {
+      "id": "native:[workers]",
+      "source": "workers",
+      "target": "कामगार"
+    },
+    {
+      "id": "native:[Fruit]",
+      "source": "Fruit",
+      "target": "फळ"
+    },
+    {
+      "id": "native:[Starting workers]",
+      "source": "Starting workers",
+      "target": "सुरुवातीचे कामगार"
+    },
+    {
+      "id": "native:[Starting workers: Game Rules tab.]",
+      "source": "Starting workers: Game Rules tab.",
+      "target": "सुरुवातीचे कामगार: खेळाचे नियम टॅब."
+    },
+    {
+      "id": "native:[8 workers / 2x speed]",
+      "source": "8 workers / 2x speed",
+      "target": "८ कामगार / दुप्पट वेग"
+    },
+    {
+      "id": "native:[Classic colony building]",
+      "source": "Classic colony building",
+      "target": "नेहमीप्रमाणे वसाहत उभारणे"
+    },
+    {
+      "id": "native:[Quick clash: 2x speed; generated maps start with 8 workers.]",
+      "source": "Quick clash: 2x speed; generated maps start with 8 workers.",
+      "target": "झटपट लढत: दुप्पट वेग; तयार केलेल्या नकाशांवर सुरुवातीला 8 कामगार असतात."
+    },
+    {
+      "id": "native:[Starting workers affects generated maps only.]",
+      "source": "Starting workers affects generated maps only.",
+      "target": "सुरुवातीच्या कामगारांची संख्या फक्त नव्याने तयार केलेल्या नकाशांना लागू होते."
+    },
+    {
+      "id": "native:[More workers jump-start colony growth. Changes the generated map.]",
+      "source": "More workers jump-start colony growth. Changes the generated map.",
+      "target": "अधिक कामगार वसाहतीच्या वाढीला चालना देतात. तयार होणाऱ्या नकाशात बदल होतो."
+    },
+    {
+      "id": "native:[No warriors]",
+      "source": "No warriors",
+      "target": "योद्धे नाहीत"
+    },
+    {
+      "id": "native:[Farm building plots]",
+      "source": "Farm building plots",
+      "target": "शेतांमधील बांधकाम जागा"
+    },
+    {
+      "id": "native:[Fruit amount]",
+      "source": "Fruit amount",
+      "target": "फळांचे प्रमाण"
+    },
+    {
+      "id": "native:[Fruit in home valleys]",
+      "source": "Fruit in home valleys",
+      "target": "सुरुवातीच्या दऱ्यांमधील फळे"
+    },
+    {
+      "id": "native:[Building sites complete immediately, skipping delivery.]",
+      "source": "Building sites complete immediately, skipping delivery.",
+      "target": "सामग्रीचा पुरवठा न करता बांधकाम त्वरित पूर्ण होते."
+    },
+    {
+      "id": "native:[Higher tiers give every building much more HP.]",
+      "source": "Higher tiers give every building much more HP.",
+      "target": "उच्च स्तरांवर प्रत्येक इमारतीला खूप जास्त HP मिळते."
+    },
+    {
+      "id": "native:[Stats new buildings]",
+      "source": "New buildings",
+      "target": "नवीन इमारती"
+    },
+    {
+      "id": "native:[Stats blocked buildings]",
+      "source": "Buildings blocked S/C",
+      "target": "अडलेल्या इमारती S/C"
+    },
+    {
+      "id": "native:[Stats blocked buildings swim]",
+      "source": "Swim exits S/C",
+      "target": "पोहून बाहेर पडण्याचे मार्ग S/C"
+    },
+    {
+      "id": "native:[Stats current blocked buildings]",
+      "source": "Currently blocked buildings",
+      "target": "सध्या मार्ग अडलेल्या इमारती"
+    },
+    {
+      "id": "native:[Stats structural buildings]",
+      "source": "Structurally blocked buildings",
+      "target": "संरचनात्मकदृष्ट्या अवरोधित इमारती"
+    }
+  ]
+}

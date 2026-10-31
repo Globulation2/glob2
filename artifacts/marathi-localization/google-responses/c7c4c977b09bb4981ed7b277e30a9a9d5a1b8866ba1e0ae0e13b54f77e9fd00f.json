@@ -1,0 +1,418 @@
+{
+  "request": {
+    "project": "bradley-personal-20261027",
+    "model": "general/nmt",
+    "payload": {
+      "sourceLanguageCode": "en",
+      "targetLanguageCode": "mr",
+      "mimeType": "text/plain",
+      "contents": [
+        "Build a Training Camp in the clearing; assign builders.",
+        "Stop or reduce warrior production once you have enough. Training Camps teach combat skills; they need free space around their edges.",
+        "Build a Training Camp",
+        "Let a warrior complete Training Camp practice. Warriors seek training automatically. Keep Inns supplied and the Camp accessible. Building a Camp alone is not a completed training session.",
+        "Train your warriors",
+        "Let a warrior complete Training Camp practice.",
+        "Warriors seek training automatically. Keep Inns supplied and the Camp accessible. Building a Camp alone is not a completed training session.",
+        "Swarm → warriors only. Supply wheat for 2 warriors.",
+        "Build → Training Camp. Leave space around its edges.",
+        "Let a warrior finish Training Camp practice.",
+        "mV: Show vision for Markets buildings (to exchange fruits)",
+        "V: Show vision for all buildings",
+        "Add map",
+        "AI Descriptions",
+        "AI",
+        "AI",
+        "Builds and trains while keeping growth tied to food supply.",
+        "Castor",
+        "Gathered warrior waves with food and healing support.",
+        "Scouts, builds its food supply and gathers warrior waves.",
+        "Maxima",
+        "Cortex",
+        "Builds up its population, trains warriors, then attacks.",
+        "Nicowar",
+        "None - Doesn't do anything.",
+        "None",
+        "A forgiving opponent that still expands and attacks.",
+        "Numbi",
+        "Expands and competes for converts without producing warriors.",
+        "Econo",
+        "Fast attacks that test your early defenses.",
+        "Warrush",
+        "A strong builder that fields trained attacking forces.",
+        "Cabino",
+        "ZXQPH0QXZ",
+        "A controller using an embedded ZXQPH0QXZ source module.",
+        "Algae",
+        "algae",
+        "Alliances",
+        "alt-ZXQPH0QXZ",
+        "and",
+        "starving",
+        "hungry",
+        "ok",
+        "wounded",
+        "Armour",
+        "Assigned",
+        "Att. speed",
+        "Att. str.",
+        "Attack",
+        "Audio",
+        "Auto save",
+        "Available local games",
+        "away:",
+        "Back",
+        "backspace",
+        "level of your warriors",
+        "Improves the fighting",
+        "Barracks",
+        "beach size",
+        "break",
+        "Briefing",
+        "Construct ZXQPH0QXZ Level ZXQPH1QXZ",
+        "Build",
+        "Bullets",
+        "Campaign Editor",
+        "Campaign",
+        "Can't connect, can't find host",
+        "Can't host game, port ZXQPH0QXZ in use",
+        "Can't join game, game has started",
+        "Can't join game, game is full",
+        "Cancel destroy",
+        "Cancel repair",
+        "Cancel upgrade",
+        "Cancel",
+        "caps lock",
+        "Carrying:",
+        "Change Area Name",
+        "Cherry",
+        "Choose a campaign"
+      ]
+    }
+  },
+  "response": {
+    "translations": [
+      {
+        "translatedText": "मोकळ्या जागेत प्रशिक्षण शिबिर उभारा; बांधकाम करणाऱ्यांची नेमणूक करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पुरेसे योद्धे झाल्यावर त्यांचे उत्पादन थांबवा किंवा कमी करा. प्रशिक्षण शिबिरे लढाईची कौशल्ये शिकवतात; त्यांच्या कडांभोवती मोकळी जागा आवश्यक असते.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "प्रशिक्षण शिबिर तयार करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "योद्ध्याला प्रशिक्षण शिबिरातील सराव पूर्ण करू द्या. योद्धे आपोआपच प्रशिक्षणाच्या शोधात असतात. धर्मशाळांमध्ये पुरवठा चालू ठेवा आणि शिबिर सर्वांसाठी सुलभ ठेवा. केवळ शिबिर उभारणे म्हणजे एक पूर्ण प्रशिक्षण सत्र नव्हे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "आपल्या योद्ध्यांना प्रशिक्षण द्या",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "योद्ध्याला प्रशिक्षण शिबिरातील सराव पूर्ण करू द्या.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "योद्धे आपोआपच प्रशिक्षणाच्या शोधात असतात. धर्मशाळांना पुरवठा चालू ठेवा आणि छावणी सर्वांसाठी खुली ठेवा. केवळ छावणी उभारणे हे एक पूर्ण झालेले प्रशिक्षण सत्र नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "थवा → फक्त योद्धे. २ योद्ध्यांसाठी गहू पुरवा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "प्रशिक्षण शिबिर उभारा. त्याच्या कडांभोवती जागा सोडा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "एका योद्ध्याला प्रशिक्षण शिबिराचा सराव पूर्ण करू द्या.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "mV: फळांची देवाणघेवाण करण्यासाठीच्या बाजार इमारतींचे व्हिजन दाखवा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "V: सर्व इमारतींसाठी दूरदृष्टी दाखवा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नकाशा जोडा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "एआय वर्णने",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "एआय",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "एआय",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अन्नपुरवठ्याशी वाढ निगडित ठेवून बांधणी आणि प्रशिक्षण देते.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कॅस्टर",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अन्न आणि आरोग्यविषयक मदतीसह योद्ध्यांच्या लाटा एकत्र जमल्या.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "हेरगिरी करते, आपला अन्नसाठा तयार करते आणि योद्ध्यांच्या तुकड्या गोळा करते.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "मॅक्सिमा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कॉर्टेक्स",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "आपली लोकसंख्या वाढवते, योद्ध्यांना प्रशिक्षण देते, आणि मग हल्ला करते.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "निकोवार",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "काहीही करत नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "काहीही नाही",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "क्षमाशील प्रतिस्पर्धी जो तरीही विस्तार करतो आणि हल्ला करतो.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नंबी",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "योद्धे निर्माण न करता विस्तार करतो आणि धर्मांतरितांसाठी स्पर्धा करतो.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "इकोनो",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तुमच्या सुरुवातीच्या बचावाची कसोटी घेणारे वेगवान हल्ले.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "वॉरश",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "प्रशिक्षित आक्रमण दल तैनात करणारा एक सशक्त बांधकाम व्यावसायिक.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कॅबिनो",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "एम्बेडेड ZXQPH0QXZ सोर्स मॉड्यूल वापरणारा कंट्रोलर.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "शैवाल",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "शैवाल",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "युती",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "alt-ZXQPH0QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "आणि",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "भुकेले",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "भुकेले",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ठीक आहे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "जखमी",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "चिलखत",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नेमून दिले",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "लक्ष देण्याचा वेग",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अट. स्ट्र.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "हल्ला",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ऑडिओ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ऑटो सेव्ह",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "उपलब्ध स्थानिक खेळ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "दूर:",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "मागे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "बॅकस्पेस",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तुमच्या योद्ध्यांची पातळी",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "लढाई सुधारते",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "बॅरेक्स",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "समुद्रकिनाऱ्याच्या आकाराचे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ब्रेक",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "संक्षिप्त माहिती",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ पातळी ZXQPH1QXZ तयार करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तयार करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "गोळ्या",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "मोहीम संपादक",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "मोहीम",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कनेक्ट करता येत नाही, होस्ट सापडत नाही",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "गेम होस्ट करता येत नाही, पोर्ट ZXQPH0QXZ वापरात आहे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "गेममध्ये सामील होऊ शकत नाही, गेम सुरू झाला आहे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "गेममध्ये सामील होऊ शकत नाही, गेम पूर्ण भरला आहे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "रद्द करा नष्ट करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "दुरुस्ती रद्द करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अपग्रेड रद्द करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "रद्द करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कॅप्स लॉक",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "वाहून नेणे:",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "क्षेत्राचे नाव बदला",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "चेरी",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "मोहीम निवडा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      }
+    ]
+  },
+  "response_sha256": "49c56394eb16c978bfe5c7ed462874e5325b5317e8b7dffa616d08f8cc43ec9e"
+}

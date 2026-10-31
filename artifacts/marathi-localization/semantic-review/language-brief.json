@@ -1,0 +1,90 @@
+{
+  "reviewer": "/root/semantic_review",
+  "variety": "Contemporary standard Marathi",
+  "script": "Devanagari (Balbodh)",
+  "region": "Maharashtra, India; mr / mr-IN",
+  "certification": "Agent-reviewed; not native-human-certified",
+  "register": "Respectful concise plural imperatives (करा, निवडा, जतन करा); तुमचे/तुम्ही consistently; labels compact, complete sentences natural rather than word substitution. Avoid Hindi-only morphology such as हैं/करें/आपका. Preserve Latin product names and key bindings where identifiers.",
+  "sources": [
+    {
+      "url": "https://shabdakosh.marathi.gov.in/node/134456",
+      "consulted": "worker entry, line 12",
+      "short_excerpt": "कामगार (पु.), कामकरी (पु.)",
+      "interpretation": "कामगार is attested for workers and suits autonomous gathering/building units; use Marathi case endings in sentences."
+    },
+    {
+      "url": "https://www.microsoft.com/mr-in/servicesagreement/",
+      "local_snapshot": "microsoft.html",
+      "sha256": "3daf297ebc18f5f56aadf344a892aca62aa0aec87bdb26a97f3231d6796b6565",
+      "consulted": "Marathi text on accounts, stored content, Xbox privacy settings",
+      "short_excerpt": "खाते; जतन; सेटिंग्ज",
+      "interpretation": "Contemporary software usage supports खाते for account, जतन for save, सेटिंग्ज for settings. Source is usage evidence, not a grammar authority."
+    },
+    {
+      "url": "https://www.nwcmc.gov.in/web/upload_files/website/img/header/%E0%A4%AA%E0%A5%8D%E0%A4%B0%E0%A4%AE%E0%A4%BE%E0%A4%A3%E0%A4%B2%E0%A5%87%E0%A4%96%E0%A4%A8%20%E0%A4%A8%E0%A4%BF%E0%A4%AF%E0%A4%AE%E0%A4%BE%E0%A4%B5%E0%A4%B2%E0%A5%80.pdf",
+      "title": "प्रमाणलेखन नियमावली — भाषा संचालनालय, महाराष्ट्र शासन",
+      "local_snapshot": "orthography.pdf",
+      "sha256": "455b468cc233a33fa6621f7a3c25540e78403de6df454f19a171f63d80728699",
+      "consulted": "PDF pages 10–11, printed pages 1–2; rules 1–5 and explanation of सामान्यरूप. Cover and foreword also visually inspected.",
+      "interpretation": "Use anusvara on nasal sounds and plural oblique forms with case endings; distinguish singular/plural forms (घरातील / घरांतील). Use standard written Marathi rather than obsolete unnecessary nasal signs. Sanskrit-derived final i/u word vowels become long in Marathi except specified indeclinables. These rules guide inflection and spelling without dictating gameplay terminology."
+    }
+  ],
+  "terminology_rationales": [
+    {
+      "concept": "worker",
+      "mr": "कामगार",
+      "rationale": "Attested Marathi worker term; source mechanic is autonomous gathering/building."
+    },
+    {
+      "concept": "explorer",
+      "mr": "शोधक",
+      "rationale": "Contextual terminology decision: short Marathi agent noun for units that scout and reveal terrain, distinguishable from योद्धा. English [explorationflag explanation] says Attracts explorers and introduction instructions say scout with a flag. No external dictionary attestation claimed for this choice."
+    },
+    {
+      "concept": "warrior",
+      "mr": "योद्धा",
+      "rationale": "Combat unit; standard Marathi/Sanskrit-derived noun shared with Hindi, not a reason to replace."
+    },
+    {
+      "concept": "inn",
+      "mr": "खानावळ",
+      "rationale": "Gameplay [inn explanation] = Feeds your units. खानावळ emphasizes feeding rather than a generic lodging house; preserve conversion attraction in any longer instructions that mention it."
+    },
+    {
+      "concept": "swarm",
+      "mr": "पोळे",
+      "rationale": "Building that creates units. French Ruche and Hindi छत्ता establish hive concept; avoid generic थवा/झुंड for building. Inflect पोळ्यात/पोळ्याचे naturally."
+    },
+    {
+      "concept": "market",
+      "mr": "बाजार",
+      "rationale": "Fruit exchange building; no financial stock-exchange interpretation."
+    },
+    {
+      "concept": "flag",
+      "mr": "ध्वज",
+      "rationale": "Assignment/attention marker. Do not suggest direct unit orders. Inflect ध्वजाचा/ध्वजाकडे."
+    },
+    {
+      "concept": "colony",
+      "mr": "वसाहत",
+      "rationale": "Player-controlled collective; distinguish team संघ and building पोळे."
+    },
+    {
+      "concept": "terrain pass",
+      "mr": "खिंड",
+      "rationale": "Mountain route, not pass/fail or permission."
+    },
+    {
+      "concept": "river bank",
+      "mr": "नदीकाठ",
+      "rationale": "Geographical bank, not bank institution."
+    },
+    {
+      "concept": "unit",
+      "mr": "युनिट",
+      "rationale": "Reviewed Marathi loanword for individual game entities, agreed in semantic/editorial glossary discussion. Counted plural %0 युनिट; use natural Marathi case endings. Distinguish statistical resource measurement units (एकके) from living game entities."
+    }
+  ],
+  "unresolved_uncertainty": []
+}

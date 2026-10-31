@@ -1,0 +1,418 @@
+{
+  "request": {
+    "project": "bradley-personal-20261027",
+    "model": "general/nmt",
+    "payload": {
+      "sourceLanguageCode": "en",
+      "targetLanguageCode": "mr",
+      "mimeType": "text/plain",
+      "contents": [
+        "Choose a saved version, then describe the changes in chat. The saved map remains in history.",
+        "Choose a skin",
+        "Choose a skin name.",
+        "Choose a sprite, frame, layer and current revision.",
+        "Choose a still JPEG, PNG or WebP photo, at most 25 megapixels.",
+        "Choose a still PNG or WebP frame no larger than 512 by 512.",
+        "Choose a still PNG or WebP frame.",
+        "Choose a still photo, not an animation.",
+        "Choose a username",
+        "Choose a validated release for the simulation version you play. Each download includes its artwork.",
+        "Choose a version",
+        "Choose an AI.",
+        "Choose an existing report to resolve.",
+        "Choose an updated file to try again.",
+        "Choose automatic or initials.",
+        "Choose either an import or a library version.",
+        "Choose final view",
+        "Choose how to sign in to the game:",
+        "Choose one bundled .js file.",
+        "Choose profile photo",
+        "Choose property…",
+        "Choose revision",
+        "Choose sheet…",
+        "Choose the current draft revision.",
+        "Choose up to five tags. These describe your strategy, not a tested strength rating.",
+        "Choose uploaded sheet…",
+        "Choose visibility and a moderation reason.",
+        "Choose ZXQPH0QXZ",
+        "Clear selection",
+        "Close",
+        "Close credits",
+        "Close navigation",
+        "Close panel",
+        "Close panel · Escape",
+        "Close play choices",
+        "Close preview",
+        "Close ZXQPH0QXZ",
+        "Closed",
+        "Code",
+        "Code or invite link",
+        "Collection disabled",
+        "Collection enabled",
+        "Colonies",
+        "Colony AI",
+        "Colony skins",
+        "Colony still standing",
+        "Colony ZXQPH0QXZ",
+        "Colony ZXQPH0QXZ paint",
+        "Colony ZXQPH0QXZ skin",
+        "Color",
+        "Colors your buildings; painted units stay unchanged.",
+        "Colors, seams and raised decor",
+        "Combat",
+        "Commander account",
+        "Commander work",
+        "Community",
+        "Community-made ZXQPH0QXZ players control a colony through ZXQPH1QXZ’s AI API. Download a version, import it in Settings → Custom AIs, then choose it for a computer seat in a local game. Installed versions work offline; saved games keep their original code.",
+        "Compare revision",
+        "Compare with",
+        "Compare with version",
+        "Compared revision",
+        "Compared revision ZXQPH0QXZ",
+        "Compared revision: ZXQPH0QXZ",
+        "Compare…",
+        "Compatibility checklist",
+        "Compatibility checks",
+        "Compatibility checks exercise short games and save/resume. They do not certify safety or playing strength. Only run code from authors you trust.",
+        "Compatibility of your active skin",
+        "Complete",
+        "Complete family ZXQPH0QXZ",
+        "Complete passing checks before publishing.",
+        "Completed",
+        "Completion time comparison table",
+        "Compose the music",
+        "Composer’s progress",
+        "Composition",
+        "Configure ZXQPH0QXZ in Settings → Online. In a match, press ZXQPH1QXZ to give an order. Assistance is permitted in ranked matches.",
+        "Confirm history deletion",
+        "Confirm the license chosen when composing this version.",
+        "Confirmed cash"
+      ]
+    }
+  },
+  "response": {
+    "translations": [
+      {
+        "translatedText": "जतन केलेली आवृत्ती निवडा, त्यानंतर चॅटमध्ये बदलांचे वर्णन करा. जतन केलेला नकाशा इतिहासात राहतो.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "त्वचा निवडा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "त्वचेचे नाव निवडा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "स्प्राइट, फ्रेम, लेयर आणि सध्याची आवृत्ती निवडा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "जास्तीत जास्त २५ मेगापिक्सेलचा एक स्थिर JPEG, PNG किंवा WebP फोटो निवडा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "512 बाय 512 पेक्षा मोठा नसलेला एक स्थिर PNG किंवा WebP फ्रेम निवडा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "एक स्थिर PNG किंवा WebP फ्रेम निवडा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अॅनिमेशनऐवजी स्थिर फोटो निवडा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "वापरकर्तानाव निवडा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तुम्ही खेळत असलेल्या सिम्युलेशन आवृत्तीसाठी एक प्रमाणित रिलीज निवडा. प्रत्येक डाउनलोडमध्ये त्याचे आर्टवर्क समाविष्ट असते.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "आवृत्ती निवडा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "एआय निवडा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "निराकरण करण्यासाठी अस्तित्वात असलेला अहवाल निवडा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पुन्हा प्रयत्न करण्यासाठी अद्ययावत फाईल निवडा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "स्वयंचलित किंवा आद्याक्षरे निवडा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "इम्पोर्ट किंवा लायब्ररी आवृत्तीपैकी एक निवडा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अंतिम दृश्य निवडा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "गेममध्ये साइन इन करण्याचा मार्ग निवडा:",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "बंडल केलेल्या .js फाईलपैकी एक निवडा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "प्रोफाइल फोटो निवडा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "मालमत्ता निवडा…",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पुनरावृत्ती निवडा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "शीट निवडा…",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सध्याची मसुदा आवृत्ती निवडा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "जास्तीत जास्त पाच टॅग निवडा. हे तुमच्या रणनीतीचे वर्णन करतात, चाचणी केलेल्या सामर्थ्याचे मानांकन नव्हे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अपलोड केलेली शीट निवडा…",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "दृश्यमानता आणि नियंत्रणाचे कारण निवडा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ निवडा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "निवड साफ करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "बंद करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "श्रेय बंद करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नेव्हिगेशन बंद करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पॅनल बंद करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पॅनल बंद करा · बाहेर पडा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "जवळचे खेळाचे पर्याय",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पूर्वावलोकन बंद करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ बंद करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "बंद",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कोड",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कोड किंवा आमंत्रण लिंक",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "संकलन अक्षम केले आहे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "संकलन सक्षम केले",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "वसाहती",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कॉलनी एआय",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कॉलनी स्किन्स",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "वसाहत अजूनही उभी आहे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कॉलनी ZXQPH0QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कॉलनी ZXQPH0QXZ पेंट",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कॉलनी ZXQPH0QXZ त्वचा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "रंग",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तुमच्या इमारतींना रंग द्या; रंगवलेले घटक अपरिवर्तित राहतात.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "रंग, शिवण आणि उठावदार सजावट",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "लढाई",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कमांडर खाते",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कमांडरचे काम",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "समुदाय",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "समुदायाने तयार केलेले ZXQPH0QXZ खेळाडू ZXQPH1QXZ च्या AI API द्वारे एका वसाहतीवर नियंत्रण ठेवतात. एक आवृत्ती डाउनलोड करा, ती सेटिंग्ज → कस्टम एआय मध्ये इम्पोर्ट करा, आणि मग स्थानिक गेममध्ये कॉम्प्युटर सीटसाठी ती निवडा. इन्स्टॉल केलेल्या आवृत्त्या ऑफलाइन काम करतात; सेव्ह केलेल्या गेम्सचा मूळ कोड तसाच राहतो.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पुनरावृत्तीची तुलना करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तुलना करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "आवृत्तीशी तुलना करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तुलनात्मक सुधारणा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ या सुधारित आवृत्तीची तुलना केली.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तुलनात्मक आवृत्ती: ZXQPH0QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तुलना करा…",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सुसंगतता तपासणी सूची",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सुसंगतता तपासणी",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सुसंगतता तपासण्या लहान खेळांची आणि सेव्ह/रिझ्युमची चाचणी घेतात. त्या सुरक्षिततेची किंवा खेळण्याच्या क्षमतेची खात्री देत ​​नाहीत. केवळ तुमच्या विश्वासातील लेखकांचाच कोड वापरा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तुमच्या सक्रिय त्वचेची अनुकूलता",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पूर्ण",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "संपूर्ण कुटुंब ZXQPH0QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "प्रकाशित करण्यापूर्वी सर्व तपासण्या पूर्ण करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पूर्ण झाले",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पूर्ण होण्याच्या वेळेची तुलना सारणी",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "संगीत तयार करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "संगीतकाराची प्रगती",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "रचना",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सेटिंग्ज → ऑनलाइन मध्ये ZXQPH0QXZ कॉन्फिगर करा. मॅचमध्ये, आदेश देण्यासाठी ZXQPH1QXZ दाबा. रँक्ड मॅचेसमध्ये सहाय्य करण्यास परवानगी आहे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "इतिहास हटवण्याची पुष्टी करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ही आवृत्ती तयार करताना निवडलेल्या परवान्याची पुष्टी करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कन्फर्म कॅश",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      }
+    ]
+  },
+  "response_sha256": "b954f9e131ab6558e2d02169af66db65c2d6241000618508471b524da3036599"
+}

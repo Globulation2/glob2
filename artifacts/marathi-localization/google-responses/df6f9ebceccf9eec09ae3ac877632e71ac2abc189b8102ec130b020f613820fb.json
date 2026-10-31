@@ -1,0 +1,418 @@
+{
+  "request": {
+    "project": "bradley-personal-20261027",
+    "model": "general/nmt",
+    "payload": {
+      "sourceLanguageCode": "en",
+      "targetLanguageCode": "mr",
+      "mimeType": "text/plain",
+      "contents": [
+        "Open Flags, choose Guard and paint at least 4 tiles inside the area. Guard zones attract idle warriors. Forbidden zones block travel; clearing zones request resource removal.",
+        "Prepare a guard zone",
+        "The enemy is attacking. Keep the guard zone covered and Inns supplied. The small attack starts after your preparations. Defeat or drive back both raiders; wounded enemies may retreat. Warriors may leave temporarily to eat. If the defense fails, use an earlier save or restart.",
+        "Repel the practice attack",
+        "The enemy is attacking. Keep the guard zone covered and Inns supplied.",
+        "The small attack starts after your preparations. Defeat or drive back both raiders; wounded enemies may retreat. Warriors may leave temporarily to eat. If the defense fails, use an earlier save or restart.",
+        "Repel the practice attack",
+        "Place a War Flag over the enemy Swarm; request 3 warriors and use radius 4 or smaller. Guard zones and War Flags compete for warriors. Remove guard tiles if they hold your army back. Keep food available while warriors travel and attack.",
+        "Direct a focused counterattack",
+        "Place a War Flag over the enemy Swarm; request 3 warriors and use radius 4 or smaller.",
+        "Guard zones and War Flags compete for warriors. Remove guard tiles if they hold your army back. Keep food available while warriors travel and attack.",
+        "Direct a focused counterattack",
+        "Build → Hospital. Leave access; assign builders.",
+        "Let the wounded worker heal at the Hospital.",
+        "Build → Racetrack. Leave space around its edges.",
+        "Let a worker finish Racetrack training.",
+        "Build → Swimming Pool, west of the pond.",
+        "Let a worker learn to swim.",
+        "Build → School. Assign builders for wood and algae.",
+        "Build → School. Assign builders for wood and algae.",
+        "Let a worker finish School training.",
+        "Select Racetrack → Upgrade. Assign skilled builders.",
+        "Let a worker train at the upgraded Racetrack.",
+        "Build → Tower. Place in the marked area.",
+        "Build 2 walls. Keep the tower’s west lane open.",
+        "Select tower → suppliers. Wait for 2 stone.",
+        "Keep the tower supplied against the attacker.",
+        "Flags → Exploration. Place at the enemy; assign 1 explorer.",
+        "Flags → Guard. Paint 4 tiles; let 2 warriors arrive.",
+        "Hold the guard zone. Keep Inns supplied.",
+        "War Flag → enemy Swarm. Request 3 warriors; radius ≤4.",
+        "Attack here",
+        "Grassland",
+        "Kopjes",
+        "Game trails",
+        "Fish amount",
+        "Messages ▸",
+        "Camp-site amount",
+        "Swamp",
+        "Switch to Terrain view",
+        "Uniform terrain",
+        "Concrete islands",
+        "Could not load this map. Choose another map or retry.",
+        "Crater lakes",
+        "Extra islands",
+        "Give at least one terrain type a nonzero weight.",
+        "Island size",
+        "Islands",
+        "Lake density",
+        "Rugged Archipelago",
+        "Each landscape is shown as a real map at your current size and colony count. Use one to play the map shown.",
+        "River",
+        "River width",
+        "Terrain",
+        "Start with terrain known",
+        "This landscape uses a fixed terrain recipe.",
+        "Updating map preview...",
+        "Conquest only removes prestige victory; map scripts still apply.",
+        "Map source",
+        "Select a map from the library.",
+        "Lake size",
+        "The maze needs at least two cells across and down; use a bigger map or smaller cells.",
+        "The maze has too few cul-de-sacs for this many colonies; use a bigger map or smaller cells.",
+        "Home island size",
+        "Lake connects to fjords",
+        "Resource islands",
+        "River density",
+        "The watershed has too little floodplain for this many colonies; use a bigger map or fewer colonies.",
+        "These valleys are too big for the map; use a bigger map or smaller valleys.",
+        "The highlands have too little room for this many colonies; use a bigger map or fewer colonies.",
+        "Lakes",
+        "Eight colonies need a square map in the symmetric arena.",
+        "The belt is too short for this many colonies; use a longer map or fewer colonies.",
+        "Too many colonies for this map; use a bigger map or fewer colonies.",
+        "Coral needs a map at least 128 tiles across.",
+        "Sandbars",
+        "Central island",
+        "The home islands do not fit on this map; use a bigger map, fewer colonies or smaller islands.",
+        "Winding river",
+        "Sandy lake shore"
+      ]
+    }
+  },
+  "response": {
+    "translations": [
+      {
+        "translatedText": "ध्वज उघडा, 'गार्ड' निवडा आणि क्षेत्राच्या आत किमान ४ टाइल्स रंगवा. गार्ड झोन निष्क्रिय योद्ध्यांना आकर्षित करतात. प्रतिबंधित झोन प्रवास रोखतात; झोन साफ ​​करण्यासाठी संसाधने काढून टाकण्याची आवश्यकता असते.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सुरक्षा क्षेत्र तयार करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "शत्रू हल्ला करत आहे. सुरक्षा क्षेत्र सुरक्षित ठेवा आणि धर्मशाळांना पुरवठा चालू ठेवा. तुमच्या तयारीनंतर छोटा हल्ला सुरू होईल. दोन्ही हल्लेखोरांना पराभूत करा किंवा मागे हटवा; जखमी शत्रू माघार घेऊ शकतात. योद्धे जेवणासाठी तात्पुरते बाहेर जाऊ शकतात. जर संरक्षण अयशस्वी झाले, तर आधीची सेव्ह वापरा किंवा गेम पुन्हा सुरू करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सराव हल्ला परतवून लावा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "शत्रू हल्ला करत आहे. सुरक्षा क्षेत्र संरक्षित ठेवा आणि धर्मशाळांना पुरवठा चालू ठेवा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तुमच्या तयारीनंतर छोटा हल्ला सुरू होतो. दोन्ही हल्लेखोरांना पराभूत करा किंवा मागे हटवा; जखमी शत्रू माघार घेऊ शकतात. योद्धे जेवणासाठी तात्पुरते बाहेर जाऊ शकतात. जर बचाव अयशस्वी झाला, तर आधीची सेव्ह वापरा किंवा गेम पुन्हा सुरू करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सराव हल्ला परतवून लावा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "शत्रूंच्या थव्यावर युद्धध्वज ठेवा; ३ योद्ध्यांची मागणी करा आणि ४ किंवा त्यापेक्षा कमी त्रिज्या वापरा. ​​संरक्षक क्षेत्रे आणि युद्धध्वज योद्ध्यांसाठी स्पर्धा करतात. जर संरक्षक फरशा तुमच्या सैन्याला मागे खेचत असतील तर त्या काढून टाका. योद्धे प्रवास करत असताना आणि हल्ला करत असताना अन्न उपलब्ध ठेवा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "एका केंद्रित प्रतिहल्ल्याचे निर्देश द्या",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "शत्रूंच्या थव्यावर युद्धध्वज ठेवा; ३ योद्ध्यांची मागणी करा आणि ४ किंवा त्यापेक्षा कमी त्रिज्या वापरा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "संरक्षक क्षेत्रे आणि युद्धध्वज योद्ध्यांसाठी स्पर्धा करतात. जर संरक्षक क्षेत्रांमुळे तुमच्या सैन्याची प्रगती खुंटत असेल, तर ती क्षेत्रे काढून टाका. योद्धे प्रवास करत असताना आणि हल्ले करत असताना अन्न उपलब्ध ठेवा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "एका केंद्रित प्रतिहल्ल्याचे निर्देश द्या",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "बांधकाम करा → रुग्णालय. प्रवेश कायम ठेवा; बांधकाम व्यावसायिकांना नियुक्त करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "जखमी कामगाराला रुग्णालयात बरे होऊ द्या.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तयार करा → रेसट्रॅक. त्याच्या कडांभोवती जागा सोडा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "एका कामगाराला रेसट्रॅक प्रशिक्षण पूर्ण करू द्या.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "बांधकाम → जलतरण तलाव, तळ्याच्या पश्चिमेला.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "एका कामगाराला पोहायला शिकू द्या.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "बांधकाम करा → शाळा. लाकूड आणि शेवाळासाठी बांधकाम करणारे नेमा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "बांधकाम करा → शाळा. लाकूड आणि शेवाळासाठी बांधकाम करणारे नेमा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कामगाराला शालेय प्रशिक्षण पूर्ण करू द्या.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "रेसट्रॅक निवडा → अपग्रेड करा. कुशल बांधकाम व्यावसायिकांची नेमणूक करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "एका कामगाराला सुधारित रेसट्रॅकवर प्रशिक्षण घेऊ द्या.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "बांधा → टॉवर. चिन्हांकित जागेवर ठेवा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "दोन भिंती बांधा. बुरुजाचा पश्चिम मार्ग खुला ठेवा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "टॉवर निवडा → पुरवठादार. २ दगडांची वाट पहा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "हल्लेखोराविरुद्ध टॉवरला पुरवठा चालू ठेवा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ध्वज → शोधमोहीम. शत्रूच्या ठिकाणी ठेवा; १ शोधक नेमा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ध्वज → रक्षण करा. ४ फरशा रंगवा; २ योद्ध्यांना येऊ द्या.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सुरक्षा क्षेत्र सांभाळा. धर्मशाळांना पुरवठा चालू ठेवा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "युद्धाचा ध्वज → शत्रूंचा थवा. ३ योद्ध्यांची विनंती; त्रिज्या ≤४.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "येथे हल्ला करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "गवताळ प्रदेश",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कोप्जेस",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "शिकारीचे मार्ग",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "माशांची संख्या",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "संदेश ▸",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कॅम्प-साइटची रक्कम",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "दलदल",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "भूभाग दृश्यावर स्विच करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "एकसमान भूभाग",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "काँक्रीटची बेटे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "हा नकाशा लोड होऊ शकला नाही. कृपया दुसरा नकाशा निवडा किंवा पुन्हा प्रयत्न करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "विवर सरोवरे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अतिरिक्त बेटे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "किमान एका भूप्रदेश प्रकाराला शून्येतर भार द्या.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "बेटाचा आकार",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "बेटे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तलावाची घनता",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "खडबडीत द्वीपसमूह",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "प्रत्येक भूप्रदेश तुमच्या सध्याच्या आकारानुसार आणि वसाहतींच्या संख्येनुसार एका वास्तविक नकाशाच्या स्वरूपात दाखवला आहे. दाखवलेला नकाशा खेळण्यासाठी त्यापैकी एकाचा वापर करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नदी",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नदीची रुंदी",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "भूभाग",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ज्ञात भूभागापासून सुरुवात करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "या भूप्रदेशात एक निश्चित भूभाग रचना वापरली आहे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नकाशाचे पूर्वावलोकन अद्ययावत करत आहे...",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "विजय मिळवल्याने केवळ प्रतिष्ठेचा विजय काढून टाकला जातो; नकाशावरील स्क्रिप्ट्स मात्र लागू राहतात.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नकाशा स्रोत",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "लायब्ररीमधून एक नकाशा निवडा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तलावाचा आकार",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "भूलभुलैयासाठी आडव्या आणि उभ्या दिशेने किमान दोन सेलची आवश्यकता आहे; मोठा नकाशा किंवा लहान सेल वापरा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "एवढ्या वसाहतींसाठी चक्रव्यूहात बंद रस्ते खूप कमी आहेत; मोठा नकाशा किंवा लहान चौकोन वापरा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "होम आयलंडचा आकार",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सरोवर फ्योर्डला जोडते",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "संसाधन बेटे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नदीची घनता",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "या वसाहतींसाठी पाणलोट क्षेत्रात पूरमैदान खूपच कमी आहे; मोठा नकाशा वापरा किंवा कमी वसाहती ठेवा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "या दऱ्या नकाशासाठी खूप मोठ्या आहेत; मोठा नकाशा वापरा किंवा लहान दऱ्या वापरा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "उंच प्रदेशात एवढ्या वसाहतींसाठी जागा खूपच कमी आहे; मोठा नकाशा वापरा किंवा कमी वसाहती ठेवा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तलाव",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "आठ वसाहतींना सममित आखाड्यात चौरसाकृती नकाशाची गरज आहे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "एवढ्या वसाहतींसाठी हा पट्टा खूपच लहान आहे; अधिक मोठा नकाशा वापरा किंवा कमी वसाहती ठेवा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "या नकाशासाठी वसाहतींची संख्या खूप जास्त आहे; मोठा नकाशा वापरा किंवा कमी वसाहती वापरा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कोरलला किमान १२८ टाइल्स रुंदीचा नकाशा आवश्यक आहे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "वाळूचे दांडे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "मध्यवर्ती बेट",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "मुख्य बेटे या नकाशावर बसत नाहीत; मोठा नकाशा, कमी वसाहती किंवा लहान बेटे वापरा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नागमोडी नदी",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "वाळूचा तलाव किनारा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      }
+    ]
+  },
+  "response_sha256": "e72baef731a7ff741a35792f989e63d20993c8ddaeee175ba2e2a88ea9c136da"
+}

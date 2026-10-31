@@ -1,0 +1,26 @@
+{
+  "font": "/home/bradley/.codex/worktrees/45cd/glob2/data/fonts/sans.ttf",
+  "font_sha256": "5701af44225833421b6f59a7ecaadf93c0f2630dbbdfc4ac59c794f5c5d889c1",
+  "fallback_fonts": [
+    {
+      "path": "/home/bradley/.codex/worktrees/45cd/glob2/data/fonts/scripts/NotoSansDevanagari-Regular.ttf",
+      "sha256": "385e78e6359a9d88a0f243d53b1209d7548361ba2194e2b9ec779bcaa7e8949d"
+    }
+  ],
+  "sdl_library": "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/native-deps/lib/libSDL3.so.0.4.16",
+  "ttf_library": "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/native-deps/lib/libSDL3_ttf.so.0.2.2",
+  "harfbuzz_version": [
+    10,
+    1,
+    0
+  ],
+  "limits": "Direct SDL_ttf probe; not the game bidi/wrapping path. Glyph coverage and successful rasterization do not prove correct shaping.",
+  "locales": {
+    "mr": {
+      "text": "मराठी — खेळाडूची प्रगती; ळ ऱ ऍ ऑ क्ष ज्ञ श्र; १२ / १०० · 12 / 100 · Glob2 · Ctrl+A",
+      "missing": [],
+      "missing_codepoints": [],
+      "render": "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/font-diagnostics/20/mr.bmp"
+    }
+  }
+}

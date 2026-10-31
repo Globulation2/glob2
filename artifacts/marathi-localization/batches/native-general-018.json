@@ -1,0 +1,509 @@
+{
+  "id": "native-general-018",
+  "source_sha256": "0ac44b4cdfb03e688983d6e3fb1e484cca57589665bff19c5c65388e649b292a",
+  "surface": "native",
+  "domain": "general",
+  "context": "Read neighbouring source entries and inspect usage before translating ambiguous short labels.",
+  "entries": [
+    {
+      "id": "native:[online mon]",
+      "key": "[online mon]",
+      "source": "Mon"
+    },
+    {
+      "id": "native:[online tue]",
+      "key": "[online tue]",
+      "source": "Tue"
+    },
+    {
+      "id": "native:[online wed]",
+      "key": "[online wed]",
+      "source": "Wed"
+    },
+    {
+      "id": "native:[online thu]",
+      "key": "[online thu]",
+      "source": "Thu"
+    },
+    {
+      "id": "native:[online fri]",
+      "key": "[online fri]",
+      "source": "Fri"
+    },
+    {
+      "id": "native:[online sat]",
+      "key": "[online sat]",
+      "source": "Sat"
+    },
+    {
+      "id": "native:[online %0 weeks ago]",
+      "key": "[online %0 weeks ago]",
+      "source": "%0 weeks ago"
+    },
+    {
+      "id": "native:[online %0 months ago]",
+      "key": "[online %0 months ago]",
+      "source": "%0 months ago"
+    },
+    {
+      "id": "native:[online %0 years ago]",
+      "key": "[online %0 years ago]",
+      "source": "%0 years ago"
+    },
+    {
+      "id": "native:[maps share online]",
+      "key": "[maps share online]",
+      "source": "Share online…"
+    },
+    {
+      "id": "native:[maps mine]",
+      "key": "[maps mine]",
+      "source": "Mine"
+    },
+    {
+      "id": "native:[results waiting for players]",
+      "key": "[results waiting for players]",
+      "source": "Waiting for the other players to leave…"
+    },
+    {
+      "id": "native:[results waiting detail]",
+      "key": "[results waiting detail]",
+      "source": "The result is recorded once everyone has left the match."
+    },
+    {
+      "id": "native:[results waiting slow]",
+      "key": "[results waiting slow]",
+      "source": "A player who lost the connection has up to 3 minutes to come back. The result will appear in your history and on the match page."
+    },
+    {
+      "id": "native:[results verifying slow]",
+      "key": "[results verifying slow]",
+      "source": "Verification is taking longer than usual. The result will appear in your history and on the match page."
+    },
+    {
+      "id": "native:[results rematch]",
+      "key": "[results rematch]",
+      "source": "Rematch"
+    },
+    {
+      "id": "native:[results join rematch %0]",
+      "key": "[results join rematch %0]",
+      "source": "Join %0's rematch"
+    },
+    {
+      "id": "native:[hub profile history]",
+      "key": "[hub profile history]",
+      "source": "Profile & history"
+    },
+    {
+      "id": "native:[hub leaderboard %0]",
+      "key": "[hub leaderboard %0]",
+      "source": "Leaderboard · %0"
+    },
+    {
+      "id": "native:[hub leaderboard empty]",
+      "key": "[hub leaderboard empty]",
+      "source": "No ranked players yet."
+    },
+    {
+      "id": "native:[hub guests not ranked]",
+      "key": "[hub guests not ranked]",
+      "source": "Guests aren't ranked. Sign in to appear here."
+    },
+    {
+      "id": "native:[hub full leaderboard]",
+      "key": "[hub full leaderboard]",
+      "source": "Full leaderboard"
+    },
+    {
+      "id": "native:[room uploading map]",
+      "key": "[room uploading map]",
+      "source": "Sharing the map with the room…"
+    },
+    {
+      "id": "native:[room take a seat to play]",
+      "key": "[room take a seat to play]",
+      "source": "Take an open seat to play"
+    },
+    {
+      "id": "native:[room waiting for a seat]",
+      "key": "[room waiting for a seat]",
+      "source": "Every seat is taken. You can take one when it opens."
+    },
+    {
+      "id": "native:[room not seated]",
+      "key": "[room not seated]",
+      "source": "Not seated"
+    },
+    {
+      "id": "native:[room copied]",
+      "key": "[room copied]",
+      "source": "Copied"
+    },
+    {
+      "id": "native:[room copy failed]",
+      "key": "[room copy failed]",
+      "source": "Could not copy"
+    },
+    {
+      "id": "native:[room closed title]",
+      "key": "[room closed title]",
+      "source": "Room closed"
+    },
+    {
+      "id": "native:[room removed title]",
+      "key": "[room removed title]",
+      "source": "Removed from the room"
+    },
+    {
+      "id": "native:[room back to online]",
+      "key": "[room back to online]",
+      "source": "Back to online"
+    },
+    {
+      "id": "native:[leave match]",
+      "key": "[leave match]",
+      "source": "Leave match"
+    },
+    {
+      "id": "native:[leave match title]",
+      "key": "[leave match title]",
+      "source": "Leave this match?"
+    },
+    {
+      "id": "native:[leave lan title]",
+      "key": "[leave lan title]",
+      "source": "Leave this LAN game?"
+    },
+    {
+      "id": "native:[leave rated body]",
+      "key": "[leave rated body]",
+      "source": "You lose this ranked match and your rating drops. The others play on, and you cannot come back to it."
+    },
+    {
+      "id": "native:[leave casual body]",
+      "key": "[leave casual body]",
+      "source": "This quick match counts as a loss for you. The others play on, and you cannot come back to it."
+    },
+    {
+      "id": "native:[leave room body]",
+      "key": "[leave room body]",
+      "source": "You leave the room's match and it counts as a loss in your history. The others play on, and you cannot come back to it."
+    },
+    {
+      "id": "native:[leave lan body]",
+      "key": "[leave lan body]",
+      "source": "The others play on without you, and you cannot come back to this game."
+    },
+    {
+      "id": "native:[leave match confirm]",
+      "key": "[leave match confirm]",
+      "source": "Leave match"
+    },
+    {
+      "id": "native:[keep playing]",
+      "key": "[keep playing]",
+      "source": "Keep playing"
+    },
+    {
+      "id": "native:[results team]",
+      "key": "[results team]",
+      "source": "Team"
+    },
+    {
+      "id": "native:[results quick unrated]",
+      "key": "[results quick unrated]",
+      "source": "Quick match · unrated"
+    },
+    {
+      "id": "native:[conn card cannot keep up]",
+      "key": "[conn card cannot keep up]",
+      "source": "Your device can't keep up with this match"
+    },
+    {
+      "id": "native:[conn card cannot keep up body]",
+      "key": "[conn card cannot keep up body]",
+      "source": "It replays the match more slowly than the match runs, so it will not catch up. You can leave the match, or lower the graphics settings and keep waiting."
+    },
+    {
+      "id": "native:[conn card not gaining]",
+      "key": "[conn card not gaining]",
+      "source": "not gaining"
+    },
+    {
+      "id": "native:[results reason opponents left]",
+      "key": "[results reason opponents left]",
+      "source": "Your opponents left the match."
+    },
+    {
+      "id": "native:[results reason victory]",
+      "key": "[results reason victory]",
+      "source": "Every opposing colony was defeated."
+    },
+    {
+      "id": "native:[results reason defeat]",
+      "key": "[results reason defeat]",
+      "source": "Your colony was defeated."
+    },
+    {
+      "id": "native:[results reason you left]",
+      "key": "[results reason you left]",
+      "source": "You left the match. It counts as a loss."
+    },
+    {
+      "id": "native:[results final after end]",
+      "key": "[results final after end]",
+      "source": "Final result after the match ends."
+    },
+    {
+      "id": "native:[pause none left]",
+      "key": "[pause none left]",
+      "source": "No pauses left"
+    },
+    {
+      "id": "native:[pause game left %0]",
+      "key": "[pause game left %0]",
+      "source": "Pause game (%0 left)"
+    },
+    {
+      "id": "native:[pause by %0]",
+      "key": "[pause by %0]",
+      "source": "Paused by %0"
+    },
+    {
+      "id": "native:[pause by %0 resumes in %1]",
+      "key": "[pause by %0 resumes in %1]",
+      "source": "Paused by %0 · resumes in %1"
+    },
+    {
+      "id": "native:[turn too many actions]",
+      "key": "[turn too many actions]",
+      "source": "Too many actions: some are still waiting to be sent"
+    },
+    {
+      "id": "native:[turn no pauses left]",
+      "key": "[turn no pauses left]",
+      "source": "You have no pauses left in this match"
+    },
+    {
+      "id": "native:[turn pause time used %0]",
+      "key": "[turn pause time used %0]",
+      "source": "%0 has used all their pause time: the game resumes"
+    },
+    {
+      "id": "native:[room seats one person %0 %1]",
+      "key": "[room seats one person %0 %1]",
+      "source": "1 player · %0 AI · %1 open"
+    },
+    {
+      "id": "native:[room rules otherwise standard]",
+      "key": "[room rules otherwise standard]",
+      "source": "Every other rule is as in Standard."
+    },
+    {
+      "id": "native:[room browser link]",
+      "key": "[room browser link]",
+      "source": "Link for browser players"
+    },
+    {
+      "id": "native:[room browser link hint]",
+      "key": "[room browser link hint]",
+      "source": "Players in a browser paste this link to join."
+    },
+    {
+      "id": "native:[room browser link code %0]",
+      "key": "[room browser link code %0]",
+      "source": "Players in a browser paste this link to join. Their game shows code %0."
+    },
+    {
+      "id": "native:[room copy link]",
+      "key": "[room copy link]",
+      "source": "Copy link"
+    },
+    {
+      "id": "native:[room lan open seat detail]",
+      "key": "[room lan open seat detail]",
+      "source": "Anyone on this network can take it"
+    },
+    {
+      "id": "native:[room close title]",
+      "key": "[room close title]",
+      "source": "Close the room?"
+    },
+    {
+      "id": "native:[room close body one]",
+      "key": "[room close body one]",
+      "source": "Leaving closes the room for everyone, including the other player in it."
+    },
+    {
+      "id": "native:[room close body %0]",
+      "key": "[room close body %0]",
+      "source": "Leaving closes the room for everyone, including the %0 other players in it."
+    },
+    {
+      "id": "native:[room close confirm]",
+      "key": "[room close confirm]",
+      "source": "Close room"
+    },
+    {
+      "id": "native:[room stay]",
+      "key": "[room stay]",
+      "source": "Stay"
+    },
+    {
+      "id": "native:[room colours changed]",
+      "key": "[room colours changed]",
+      "source": "The new map gave the seats new colours. Check yours before you start."
+    },
+    {
+      "id": "native:[room copy by hand]",
+      "key": "[room copy by hand]",
+      "source": "Copying didn't work. Copy the invite yourself:"
+    },
+    {
+      "id": "native:[room copy by hand close]",
+      "key": "[room copy by hand close]",
+      "source": "Close"
+    },
+    {
+      "id": "native:[room copy by hand touch]",
+      "key": "[room copy by hand touch]",
+      "source": "Touch and hold the link, then choose Copy."
+    },
+    {
+      "id": "native:[room copy by hand keys]",
+      "key": "[room copy by hand keys]",
+      "source": "The link is selected: press Ctrl+C (⌘C on a Mac)."
+    },
+    {
+      "id": "native:[room code]",
+      "key": "[room code]",
+      "source": "Code"
+    },
+    {
+      "id": "native:[online under a minute]",
+      "key": "[online under a minute]",
+      "source": "under a minute"
+    },
+    {
+      "id": "native:[online about %0 min]",
+      "key": "[online about %0 min]",
+      "source": "about %0 min"
+    },
+    {
+      "id": "native:[online %0 s]",
+      "key": "[online %0 s]",
+      "source": "%0 s"
+    },
+    {
+      "id": "native:[online %0 min %1 s]",
+      "key": "[online %0 min %1 s]",
+      "source": "%0 min %1 s"
+    },
+    {
+      "id": "native:[qm ai opponent %0]",
+      "key": "[qm ai opponent %0]",
+      "source": "AI opponent: %0"
+    },
+    {
+      "id": "native:[match relay connected]",
+      "key": "[match relay connected]",
+      "source": "Connected to the game server"
+    },
+    {
+      "id": "native:[room picker title]",
+      "key": "[room picker title]",
+      "source": "Choose a map"
+    },
+    {
+      "id": "native:[room picker for one]",
+      "key": "[room picker for one]",
+      "source": "For the 1 player in the room"
+    },
+    {
+      "id": "native:[room picker for %0]",
+      "key": "[room picker for %0]",
+      "source": "For the %0 players in the room"
+    },
+    {
+      "id": "native:[room picker generated]",
+      "key": "[room picker generated]",
+      "source": "Generated"
+    },
+    {
+      "id": "native:[room picker premade]",
+      "key": "[room picker premade]",
+      "source": "Premade"
+    },
+    {
+      "id": "native:[room picker catalog]",
+      "key": "[room picker catalog]",
+      "source": "Catalog"
+    },
+    {
+      "id": "native:[room picker size]",
+      "key": "[room picker size]",
+      "source": "Size"
+    },
+    {
+      "id": "native:[room picker colonies]",
+      "key": "[room picker colonies]",
+      "source": "Colonies"
+    },
+    {
+      "id": "native:[room picker fair]",
+      "key": "[room picker fair]",
+      "source": "Fair start for every colony"
+    },
+    {
+      "id": "native:[room picker does not fit]",
+      "key": "[room picker does not fit]",
+      "source": "Does not fit this size; try another"
+    },
+    {
+      "id": "native:[room picker preparing]",
+      "key": "[room picker preparing]",
+      "source": "Preparing the preview…"
+    },
+    {
+      "id": "native:[room picker generated note]",
+      "key": "[room picker generated note]",
+      "source": "Each landscape gives every colony an equally good start, and the server makes the same map for everyone."
+    },
+    {
+      "id": "native:[room picker players %0]",
+      "key": "[room picker players %0]",
+      "source": "%0 players"
+    },
+    {
+      "id": "native:[room picker unreadable]",
+      "key": "[room picker unreadable]",
+      "source": "can't be read"
+    },
+    {
+      "id": "native:[room picker no premade]",
+      "key": "[room picker no premade]",
+      "source": "No premade maps were found."
+    },
+    {
+      "id": "native:[room picker too small %0]",
+      "key": "[room picker too small %0]",
+      "source": "This map has fewer colonies than the %0 players in the room."
+    },
+    {
+      "id": "native:[room picker pick premade]",
+      "key": "[room picker pick premade]",
+      "source": "Pick a map to see it here."
+    },
+    {
+      "id": "native:[room picker catalog intro]",
+      "key": "[room picker catalog intro]",
+      "source": "Maps other players shared. Open one and choose Use in a room."
+    },
+    {
+      "id": "native:[room picker browse catalog]",
+      "key": "[room picker browse catalog]",
+      "source": "Browse shared maps"
+    }
+  ]
+}

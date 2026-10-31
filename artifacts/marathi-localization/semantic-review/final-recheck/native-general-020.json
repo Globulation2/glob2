@@ -1,0 +1,506 @@
+{
+  "batch": "native-general-020",
+  "target_sha256": "a92c521b049bfbc01c1c556cf1b431f50db9920b46bcc3b2fdd7619a45de0a7a",
+  "rows": [
+    {
+      "id": "native:[stat combat deaths]",
+      "source": "Units killed in combat",
+      "target": "लढाईत मारलेली युनिट"
+    },
+    {
+      "id": "native:[stat combat deaths about]",
+      "source": "Units of this colony killed by enemies. Split it to see workers, explorers and warriors separately.",
+      "target": "या वसाहतीची शत्रूंनी मारलेली युनिट. कामगार, शोधक आणि योद्धे स्वतंत्रपणे पाहण्यासाठी आकडेवारीचे विभाजन करा."
+    },
+    {
+      "id": "native:[stat accuracy]",
+      "source": "Shots that hit",
+      "target": "लक्ष्यावर लागलेले गोळे"
+    },
+    {
+      "id": "native:[stat accuracy about]",
+      "source": "The share of shots fired by the colony's towers and explorers that hit their target.",
+      "target": "वसाहतीच्या बुरुजांनी आणि शोधकांनी डागलेल्या गोळ्यांपैकी लक्ष्यावर लागलेल्या गोळ्यांचा वाटा."
+    },
+    {
+      "id": "native:[stat training]",
+      "source": "Training",
+      "target": "प्रशिक्षण"
+    },
+    {
+      "id": "native:[stat training about]",
+      "source": "Visits by units to schools, barracks, racetracks and swimming pools to learn a skill.",
+      "target": "कौशल्य शिकण्यासाठी युनिटनी शाळा, बराकी, धावपट्ट्या आणि जलतरण तलावांना दिलेल्या भेटी."
+    },
+    {
+      "id": "native:[stat skills]",
+      "source": "Skills gained",
+      "target": "कौशल्ये प्राप्त केली"
+    },
+    {
+      "id": "native:[stat skills about]",
+      "source": "Skill levels the colony's units gained through training.",
+      "target": "वसाहतीतील युनिटनी प्रशिक्षणातून मिळवलेले कौशल्य स्तर."
+    },
+    {
+      "id": "native:[stat growth nearby]",
+      "source": "Resource growth near the colony",
+      "target": "वसाहतीजवळ संसाधनांची वाढ"
+    },
+    {
+      "id": "native:[stat growth nearby about]",
+      "source": "How much material stock grew in resources within 32 squares of the colony's buildings, in growth points rather than harvested loads. Split it to see how close to home they grew.",
+      "target": "वसाहतीच्या इमारतींच्या ३२ चौरसांच्या परिसरात संसाधनांचा भौतिक साठा किती वाढला, हे काढलेल्या भारांऐवजी वाढीच्या गुणांमध्ये मोजा. ते घराच्या किती जवळ वाढले हे पाहण्यासाठी त्याचे विभाजन करा."
+    },
+    {
+      "id": "native:[stat growth map]",
+      "source": "Resource growth across the map",
+      "target": "नकाशावर संसाधनांची वाढ"
+    },
+    {
+      "id": "native:[stat stranded]",
+      "source": "Units unable to move",
+      "target": "हलण्यास असमर्थ युनिट्स"
+    },
+    {
+      "id": "native:[stat stranded about]",
+      "source": "Units boxed in with no free square to step onto.",
+      "target": "आजूबाजूला एकही मोकळा चौक नसल्याने अडकलेली युनिट्स."
+    },
+    {
+      "id": "native:[stat cleared]",
+      "source": "Resources cleared",
+      "target": "हटवलेली संसाधने"
+    },
+    {
+      "id": "native:[stat cleared about]",
+      "source": "Resources removed by workers in clearing areas to make room.",
+      "target": "जागा मोकळी करण्यासाठी कामगारांनी काढलेली संसाधने."
+    },
+    {
+      "id": "native:[stat prestige]",
+      "source": "Prestige",
+      "target": "प्रतिष्ठा"
+    },
+    {
+      "id": "native:[stat prestige about]",
+      "source": "The colony's prestige, earned by top-level buildings. A match with a prestige goal ends when it is reached.",
+      "target": "उच्च-स्तरीय इमारती उभारून मिळवलेली वसाहतीची प्रतिष्ठा. प्रतिष्ठेचे ध्येय असलेला सामना ते ध्येय गाठल्यावर संपतो."
+    },
+    {
+      "id": "native:[stat band combat]",
+      "source": "Combat",
+      "target": "लढाई"
+    },
+    {
+      "id": "native:[stat band starvation]",
+      "source": "Starvation",
+      "target": "उपासमार"
+    },
+    {
+      "id": "native:[stat band clearing]",
+      "source": "Clearing injuries",
+      "target": "सफाई करतानाच्या जखमा"
+    },
+    {
+      "id": "native:[stat band trapped]",
+      "source": "Trapped",
+      "target": "अडकलेले"
+    },
+    {
+      "id": "native:[stat band other]",
+      "source": "Other",
+      "target": "इतर"
+    },
+    {
+      "id": "native:[stat band starving]",
+      "source": "Nearly empty",
+      "target": "जवळजवळ रिकामे"
+    },
+    {
+      "id": "native:[stat band hungry]",
+      "source": "Low",
+      "target": "कमी"
+    },
+    {
+      "id": "native:[stat band peckish]",
+      "source": "Half full",
+      "target": "अर्धा भरलेला"
+    },
+    {
+      "id": "native:[stat band fed]",
+      "source": "Well fed",
+      "target": "पोटभर जेवण"
+    },
+    {
+      "id": "native:[stat band critical]",
+      "source": "Critical",
+      "target": "गंभीर"
+    },
+    {
+      "id": "native:[stat band wounded]",
+      "source": "Wounded",
+      "target": "जखमी"
+    },
+    {
+      "id": "native:[stat band hurt]",
+      "source": "Hurt",
+      "target": "दुखापत"
+    },
+    {
+      "id": "native:[stat band healthy]",
+      "source": "Healthy",
+      "target": "निरोगी"
+    },
+    {
+      "id": "native:[stat band weakening]",
+      "source": "Weakening",
+      "target": "कमकुवत होत आहेत"
+    },
+    {
+      "id": "native:[stat band looking]",
+      "source": "Looking for an inn",
+      "target": "खानावळीच्या शोधात"
+    },
+    {
+      "id": "native:[stat band eating]",
+      "source": "Eating",
+      "target": "खाणे"
+    },
+    {
+      "id": "native:[stat band healing]",
+      "source": "Healing",
+      "target": "उपचार"
+    },
+    {
+      "id": "native:[stat band meals]",
+      "source": "Meals",
+      "target": "जेवण"
+    },
+    {
+      "id": "native:[stat band new units]",
+      "source": "New units",
+      "target": "नवीन युनिट्स"
+    },
+    {
+      "id": "native:[stat band ammunition]",
+      "source": "Ammunition",
+      "target": "दारुगोळा"
+    },
+    {
+      "id": "native:[stat band construction]",
+      "source": "New buildings",
+      "target": "नवीन इमारती"
+    },
+    {
+      "id": "native:[stat band upgrades]",
+      "source": "Upgrades",
+      "target": "सुधारणा"
+    },
+    {
+      "id": "native:[stat band built]",
+      "source": "Built",
+      "target": "बांधले"
+    },
+    {
+      "id": "native:[stat band upgraded]",
+      "source": "Upgraded",
+      "target": "सुधारित"
+    },
+    {
+      "id": "native:[stat band repaired]",
+      "source": "Repaired",
+      "target": "दुरुस्त केले"
+    },
+    {
+      "id": "native:[stat band destroyed]",
+      "source": "Destroyed",
+      "target": "नष्ट केले"
+    },
+    {
+      "id": "native:[stat band demolished]",
+      "source": "Demolished",
+      "target": "पाडलेले"
+    },
+    {
+      "id": "native:[stat band melee]",
+      "source": "Warriors",
+      "target": "योद्धे"
+    },
+    {
+      "id": "native:[stat band magic]",
+      "source": "Magic",
+      "target": "जादू"
+    },
+    {
+      "id": "native:[stat band towers]",
+      "source": "Towers",
+      "target": "मनोरे"
+    },
+    {
+      "id": "native:[stat band within 8]",
+      "source": "Within 8 squares",
+      "target": "८ चौरसांच्या आत"
+    },
+    {
+      "id": "native:[stat band 8 to 16]",
+      "source": "8 to 16 squares",
+      "target": "८ ते १६ चौरस"
+    },
+    {
+      "id": "native:[stat band 16 to 32]",
+      "source": "16 to 32 squares",
+      "target": "१६ ते ३२ चौरस"
+    },
+    {
+      "id": "native:[stat unit units]",
+      "source": "units",
+      "target": "युनिट्स"
+    },
+    {
+      "id": "native:[stat unit wheat]",
+      "source": "food",
+      "target": "अन्न"
+    },
+    {
+      "id": "native:[stat unit meals]",
+      "source": "meals",
+      "target": "जेवण"
+    },
+    {
+      "id": "native:[stat unit hit points]",
+      "source": "hit points",
+      "target": "हिट पॉइंट्स"
+    },
+    {
+      "id": "native:[stat unit resources]",
+      "source": "units",
+      "target": "एकके"
+    },
+    {
+      "id": "native:[stat unit strength]",
+      "source": "score",
+      "target": "गुण"
+    },
+    {
+      "id": "native:[stat unit damage]",
+      "source": "damage",
+      "target": "नुकसान"
+    },
+    {
+      "id": "native:[stat unit shots]",
+      "source": "shots",
+      "target": "शॉट्स"
+    },
+    {
+      "id": "native:[stat unit visits]",
+      "source": "visits",
+      "target": "भेटी"
+    },
+    {
+      "id": "native:[stat unit skills]",
+      "source": "skill levels",
+      "target": "कौशल्य स्तर"
+    },
+    {
+      "id": "native:[stat unit prestige]",
+      "source": "prestige",
+      "target": "प्रतिष्ठा"
+    },
+    {
+      "id": "native:[stat axis percent of %0]",
+      "source": "% of %0",
+      "target": "%0 ची टक्केवारी"
+    },
+    {
+      "id": "native:[stat axis share of all teams]",
+      "source": "% of all colonies",
+      "target": "सर्व वसाहतींची टक्केवारी"
+    },
+    {
+      "id": "native:[stat axis percent of units]",
+      "source": "% of the colony's units",
+      "target": "वसाहतीच्या युनिट्सची टक्केवारी"
+    },
+    {
+      "id": "native:[stat axis %0 per minute per 100 units]",
+      "source": "%0 per minute, per 100 units in the colony",
+      "target": "%0 प्रति मिनिट, वसाहतीमधील प्रति १०० युनिट्स"
+    },
+    {
+      "id": "native:[stat axis %0 per 100 units]",
+      "source": "%0 per 100 units in the colony",
+      "target": "वसाहतीमध्ये प्रति १०० युनिट्स %0"
+    },
+    {
+      "id": "native:[stat axis %0 per minute]",
+      "source": "%0 per minute",
+      "target": "%0 प्रति मिनिट"
+    },
+    {
+      "id": "native:[stat axis %0 so far]",
+      "source": "%0, running total",
+      "target": "%0, चालू एकूण"
+    },
+    {
+      "id": "native:[stat axis %0 minute average]",
+      "source": "%0-minute average",
+      "target": "%0-मिनिटांची सरासरी"
+    },
+    {
+      "id": "native:[stat view per minute]",
+      "source": "Per minute",
+      "target": "प्रति मिनिट"
+    },
+    {
+      "id": "native:[stat view total]",
+      "source": "Total",
+      "target": "एकूण"
+    },
+    {
+      "id": "native:[stat view %0 min]",
+      "source": "%0 min",
+      "target": "%0 मिनिटे"
+    },
+    {
+      "id": "native:[stat view split]",
+      "source": "Split by kind",
+      "target": "प्रकारानुसार विभागणी"
+    },
+    {
+      "id": "native:[stat view percentages]",
+      "source": "As % of total",
+      "target": "एकूणच्या टक्केवारीनुसार"
+    },
+    {
+      "id": "native:[stat view percent of units]",
+      "source": "As % of colony",
+      "target": "वसाहतीच्या टक्केवारीनुसार"
+    },
+    {
+      "id": "native:[stat view per 100 units]",
+      "source": "Relative to colony size",
+      "target": "वसाहतीच्या आकाराच्या तुलनेत"
+    },
+    {
+      "id": "native:[stat view share]",
+      "source": "Share of all colonies",
+      "target": "सर्व वसाहतींचा वाटा"
+    },
+    {
+      "id": "native:[stat view highlight none]",
+      "source": "Highlight: none",
+      "target": "ठळक वैशिष्ट्य: काहीही नाही"
+    },
+    {
+      "id": "native:[stat column peak units]",
+      "source": "Peak units",
+      "target": "युनिटची कमाल संख्या"
+    },
+    {
+      "id": "native:[stat column born]",
+      "source": "Born",
+      "target": "जन्म"
+    },
+    {
+      "id": "native:[stat column lost]",
+      "source": "Lost",
+      "target": "हरवले"
+    },
+    {
+      "id": "native:[stat column wheat]",
+      "source": "Food",
+      "target": "अन्न"
+    },
+    {
+      "id": "native:[stat column damage dealt]",
+      "source": "Damage dealt",
+      "target": "केलेली हानी"
+    },
+    {
+      "id": "native:[stat column damage taken]",
+      "source": "Damage taken",
+      "target": "सोसलेली हानी"
+    },
+    {
+      "id": "native:[stat column built]",
+      "source": "Built",
+      "target": "बांधले"
+    },
+    {
+      "id": "native:[stat column prestige]",
+      "source": "Prestige",
+      "target": "प्रतिष्ठा"
+    },
+    {
+      "id": "native:[stat marker wiped out]",
+      "source": "last unit lost",
+      "target": "शेवटचे युनिट गमावले"
+    },
+    {
+      "id": "native:[stat marker first combat death]",
+      "source": "first unit killed in combat",
+      "target": "लढाईत मारलेले पहिले युनिट"
+    },
+    {
+      "id": "native:[stat not recorded for this match]",
+      "source": "This statistic was not recorded for this match.",
+      "target": "या सामन्यासाठी ही आकडेवारी नोंदवली गेली नाही."
+    },
+    {
+      "id": "native:[results reason beyond doubt]",
+      "source": "The result was no longer in doubt.",
+      "target": "निकालाबाबत आता कोणतीही शंका उरली नव्हती."
+    },
+    {
+      "id": "native:[stat per minute short]",
+      "source": "/min",
+      "target": "/मिनिट"
+    },
+    {
+      "id": "native:[stat page colony]",
+      "source": "Colony",
+      "target": "वसाहत"
+    },
+    {
+      "id": "native:[stat page %0 of %1]",
+      "source": "%0/%1  >",
+      "target": "%0/%1 >"
+    },
+    {
+      "id": "native:[stat unit deaths]",
+      "source": "deaths",
+      "target": "मृतांची संख्या"
+    },
+    {
+      "id": "native:[stat unit growth]",
+      "source": "growth",
+      "target": "वाढ"
+    },
+    {
+      "id": "native:[stat view by unit type]",
+      "source": "By unit type",
+      "target": "युनिट प्रकारानुसार"
+    },
+    {
+      "id": "native:[stat view by state]",
+      "source": "By state",
+      "target": "स्थितीनुसार"
+    },
+    {
+      "id": "native:[stat view by resource]",
+      "source": "By material",
+      "target": "सामग्रीनुसार"
+    },
+    {
+      "id": "native:[stat view by work]",
+      "source": "By kind of work",
+      "target": "कामाच्या प्रकारानुसार"
+    },
+    {
+      "id": "native:[stat view by cause]",
+      "source": "By cause",
+      "target": "कारणानुसार"
+    }
+  ]
+}

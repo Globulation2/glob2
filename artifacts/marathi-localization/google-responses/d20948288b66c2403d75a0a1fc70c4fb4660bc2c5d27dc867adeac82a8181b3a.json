@@ -1,0 +1,418 @@
+{
+  "request": {
+    "project": "bradley-personal-20261027",
+    "model": "general/nmt",
+    "payload": {
+      "sourceLanguageCode": "en",
+      "targetLanguageCode": "mr",
+      "mimeType": "text/plain",
+      "contents": [
+        "Gradient backend",
+        "Applies at the next simulation boundary. Unsupported work uses CPU automatic; rendering is independent.",
+        "Gradient algorithm",
+        "All choices compute the same exact field.",
+        "Bucket propagation",
+        "Verify gradient results",
+        "Compare GPU results with scalar CPU before publication. Adds computation and stops the game on a mismatch.",
+        "Gradient computation",
+        "CPU fallback",
+        "GPU fields",
+        "CPU fallbacks",
+        "MCP server",
+        "Enabling the MCP server permits local clients to see and operate the game.",
+        "Enable MCP server",
+        "Port",
+        "Current controller: ZXQPH0QXZ",
+        "Copy endpoint",
+        "Retry listener",
+        "Revoke control",
+        "MCP server unavailable in this application",
+        "Disabled",
+        "Running",
+        "Error: ZXQPH0QXZ",
+        "None",
+        "Starting",
+        "Browse shared generators",
+        "Apply artwork on the next game or editor load.",
+        "Requires a renderer with texture filtering. Your saved choice is retained.",
+        "Automatically show the torus overview while moving around the map.",
+        "Requires a renderer with torus support. Your saved choice is retained.",
+        "Move and animate units between game ticks.",
+        "Renderer unavailable",
+        "Apply at the next completed frame. Your game stays running.",
+        "Active renderer: ZXQPH0QXZ",
+        "Changing renderer…",
+        "Menu scroll wheel enabled",
+        "Controls wheel scrolling in menus. The wheel always zooms the game and editor maps.",
+        "Gesture scrolling",
+        "Touch and Mac gesture scrolling. 0 turns an effect off; 50 is the touch default.",
+        "How far lists and panels keep scrolling after a touch flick. Mac gestures use system momentum; zero disables their glide.",
+        "How much lists and panels stretch past their ends and spring back. Mac gestures use a gentler stretch.",
+        " Settings & references",
+        " Terrain credits",
+        " Undo",
+        " Your next match will use the default colony.",
+        " checks",
+        " credits",
+        " diverged",
+        " likes",
+        " on ZXQPH0QXZ",
+        " refused orders",
+        " seconds",
+        " this version",
+        " to confirm",
+        " · ",
+        " · Charged: ",
+        " · Completed ",
+        " · Content hidden",
+        " · hidden",
+        " · incomplete historical data",
+        " · stale",
+        " · updated ",
+        " · ZXQPH0QXZ",
+        " · ZXQPH0QXZ disconnect",
+        " · ZXQPH0QXZ disconnects",
+        " · ZXQPH0QXZ disconnects",
+        " — ",
+        " → ",
+        "#ZXQPH0QXZ",
+        "(match)",
+        ", and enter:",
+        ", or create an account below",
+        ", so it cannot be added to the account you are playing as. Accounts are never merged.",
+        ", then",
+        ", to confirm",
+        ".",
+        ". You can close this page.",
+        "/ais/favourites",
+        "/ais/mine",
+        "1.0.0"
+      ]
+    }
+  },
+  "response": {
+    "translations": [
+      {
+        "translatedText": "ग्रेडियंट बॅकएंड",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पुढील सिम्युलेशन सीमेवर लागू होते. असमर्थित कार्यासाठी CPU स्वयंचलितपणे वापरला जातो; रेंडरिंग स्वतंत्र असते.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ग्रेडियंट अल्गोरिदम",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सर्व पर्याय एकसारखेच क्षेत्र मोजतात.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "बकेट प्रसार",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ग्रेडियंट निकालांची पडताळणी करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "प्रकाशित करण्यापूर्वी GPU परिणामांची स्केलर CPU परिणामांशी तुलना करा. यामुळे गणना वाढते आणि जुळणी न झाल्यास खेळ थांबवला जातो.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ग्रेडियंट गणना",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सीपीयू फॉलबॅक",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "जीपीयू फील्ड्स",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सीपीयू फॉलबॅक",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "एमसीपी सर्व्हर",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "MCP सर्व्हर सक्षम केल्याने स्थानिक क्लायंटना गेम पाहता येतो आणि चालवता येतो.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "MCP सर्व्हर सक्षम करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "बंदर",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "वर्तमान नियंत्रक: ZXQPH0QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "एंडपॉइंट कॉपी करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पुन्हा प्रयत्न करणारा श्रोता",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नियंत्रण रद्द करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "या ॲप्लिकेशनमध्ये MCP सर्वर उपलब्ध नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अक्षम",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "धावणे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "त्रुटी: ZXQPH0QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "काहीही नाही",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सुरुवात",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सामायिक जनरेटर ब्राउझ करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पुढील गेम किंवा एडिटर लोड झाल्यावर कलाकृती लागू करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "टेक्सचर फिल्टरिंग असलेल्या रेंडररची आवश्यकता आहे. तुमची जतन केलेली निवड कायम ठेवली जाते.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नकाशावर फिरताना टोरसचे विहंगम दृश्य आपोआप दाखवा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "टोरस सपोर्ट असलेल्या रेंडररची आवश्यकता आहे. तुमची जतन केलेली निवड कायम ठेवली जाते.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "गेम टिक्स दरम्यान युनिट्सना हलवा आणि अॅनिमेट करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "रेंडरर अनुपलब्ध आहे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पुढील पूर्ण झालेल्या फ्रेमवर लागू करा. तुमचा गेम चालू राहतो.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सक्रिय रेंडरर: ZXQPH0QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "रेंडरर बदलत आहे…",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "मेनू स्क्रोल व्हील सक्षम केले आहे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "मेन्यूमध्ये कंट्रोल व्हील स्क्रोलिंग करते. हे व्हील नेहमी गेम आणि एडिटर मॅप्स झूम करते.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "हावभाव स्क्रोलिंग",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "टच आणि मॅक जेश्चर स्क्रोलिंग. 0 दाबल्यास इफेक्ट बंद होतो; 50 हे टचसाठी डीफॉल्ट सेटिंग आहे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "टच फ्लिक केल्यानंतर याद्या आणि पॅनेल किती पुढे स्क्रोल होत राहतात. मॅक जेश्चर सिस्टीम मोमेंटमचा वापर करतात; झिरो दाबल्यास त्यांचे ग्लाइड अक्षम होते.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सूची आणि पॅनेल त्यांच्या टोकांच्या पलीकडे किती ताणले जातात आणि परत मूळ स्थितीत येतात. मॅक जेश्चरमध्ये अधिक सौम्य ताण वापरला जातो.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सेटिंग्ज आणि संदर्भ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "भूभाग क्रेडिट्स",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पूर्ववत करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तुमची पुढची जुळणी डीफॉल्ट कॉलनी वापरेल.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तपासणी",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "श्रेय",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "विचलित झाले",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पसंती",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ वर",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "आदेश नाकारले.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सेकंद",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ही आवृत्ती",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पुष्टी करण्यासाठी",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "·",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "· आरोप लावला:",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "· पूर्ण झाले",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "· सामग्री लपवली",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "· लपलेले",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "· अपूर्ण ऐतिहासिक डेटा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "· शिळे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "· अद्ययावत केले",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "· ZXQPH0QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "· ZXQPH0QXZ डिस्कनेक्ट",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "· ZXQPH0QXZ डिस्कनेक्ट होते",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "· ZXQPH0QXZ डिस्कनेक्ट होते",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "—",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "→",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "#ZXQPH0QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "(सामना)",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "आणि प्रविष्ट करा:",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "किंवा खाली खाते तयार करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "त्यामुळे ते तुम्ही ज्या खात्यावरून खेळत आहात त्यात जोडले जाऊ शकत नाही. खाती कधीही विलीन केली जात नाहीत.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "मग",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पुष्टी करण्यासाठी",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "...",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तुम्ही हे पान बंद करू शकता.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "/ais/favourites",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "/ais/mine",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "१.०.०",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      }
+    ]
+  },
+  "response_sha256": "7715ee516640a5015322c9c32131a52ab0e02a91c5d58032599420da96eb1062"
+}

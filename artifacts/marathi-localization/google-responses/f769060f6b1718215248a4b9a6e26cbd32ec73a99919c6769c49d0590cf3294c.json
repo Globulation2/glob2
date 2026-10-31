@@ -1,0 +1,418 @@
+{
+  "request": {
+    "project": "bradley-personal-20261027",
+    "model": "general/nmt",
+    "payload": {
+      "sourceLanguageCode": "en",
+      "targetLanguageCode": "mr",
+      "mimeType": "text/plain",
+      "contents": [
+        "Engine validation passed",
+        "Engine validation passed.",
+        "Enter usage verified against provider evidence. Input totals include cache creation/write tokens. Unknown usage must not be entered as zero.",
+        "Example of ",
+        "Expand sidebar",
+        "Expand toolbox",
+        "Explore this step.",
+        "Fix this",
+        "Fixed-point units: 256 = 1, 128 = 0.5, 512 = 2.",
+        "Follow latest generation",
+        "Following latest generation",
+        "Generation needs attention",
+        "Generator coding conversation",
+        "Generator package",
+        "Good under ZXQPH0QXZ, fair under ZXQPH1QXZ, poor from ZXQPH2QXZ.",
+        "IMAGINATION, MEET POSSIBILITY",
+        "Images appear here as this stage completes.",
+        "Import .js",
+        "Import ZXQPH0QXZ",
+        "Import generator package",
+        "Loading workspace…",
+        "Make my colony more defensive…",
+        "Mute",
+        "No",
+        "No account needed for rooms and casual games; sign in to be ranked.",
+        "No additional details were recorded.",
+        "No release notes.",
+        "One ZXQPH0QXZ file.",
+        "One manifest and one ZXQPH0QXZ module.",
+        "Pause animation",
+        "Play animation",
+        "Play music",
+        "Playtest",
+        "Preparing your soundtrack…",
+        "Publish to music library",
+        "Publishing…",
+        "Refine your soundtrack",
+        "Replace generator package",
+        "Replace source with ZXQPH0QXZ file",
+        "Retry saved request",
+        "Review the technical results for this finding.",
+        "Run current revision",
+        "Saved candidate",
+        "Saved privately. Publishing shares only this version.",
+        "Saving…",
+        "Send",
+        "Send diagnostics to chat",
+        "Sign in with a registered account to like music",
+        "Signed HP per exposed tick, divided by 256; negative values damage units.",
+        "Something wonderful is taking shape.",
+        "Start live game",
+        "Start with a feeling",
+        "Terrain designer",
+        "The assistant edits your file. You decide when to test.",
+        "The assistant edits your manifest and ZXQPH0QXZ together. You decide when to generate or run checks.",
+        "The provider outcome needs reconciliation. No duplicate call will be sent.",
+        "The provider outcome needs reconciliation. Your credit remains reserved.",
+        "The provider outcome needs reconciliation. Your reserved ZXQPH0QXZ credits remain held; new requests are paused. Manual editing and export remain available.",
+        "This match",
+        "This request is paused while its result is checked. Your reserved credit stays safe; you can leave and return later.",
+        "This version is public.",
+        "Try “a winding river with fertile banks” or ask how the current generator works.",
+        "Try “focus on food before expansion” or ask how the current code works.",
+        "Use working starter",
+        "VIEW",
+        "Validation failed",
+        "We could not finish this map. Your earlier maps are safe.",
+        "What kind of colony will you build?",
+        "What landscape will you create?",
+        "Working on your request…",
+        "YOU",
+        "Your colony AI",
+        "Your colony’s soundtrack, in three moods.",
+        "Your composer is working…",
+        "Your landscape",
+        "Your message could not be completed.",
+        "Your music takes shape here",
+        "Your next battlefield starts here.",
+        "Your projects",
+        "generated"
+      ]
+    }
+  },
+  "response": {
+    "translations": [
+      {
+        "translatedText": "इंजिन पडताळणी यशस्वी झाली.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "इंजिन पडताळणी यशस्वी झाली.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "प्रोव्हायडरच्या पुराव्यानुसार सत्यापित केलेला वापर प्रविष्ट करा. प्रविष्ट केलेल्या एकूण रकमेमध्ये कॅशे निर्मिती/लेखन टोकन्सचा समावेश आहे. अज्ञात वापर शून्य म्हणून प्रविष्ट करू नये.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "उदाहरण",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "साइडबारचा विस्तार करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "टूलबॉक्सचा विस्तार करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "या पायरीचा अभ्यास करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "हे दुरुस्त करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "स्थिर-बिंदू एकके: 256 = 1, 128 = 0.5, 512 = 2.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नवीनतम पिढीचे अनुसरण करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नवीनतम पिढीचे अनुसरण करत आहे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पिढीकडे लक्ष देण्याची गरज आहे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "जनरेटर कोडिंग संभाषण",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "जनरेटर पॅकेज",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ अंतर्गत चांगले, ZXQPH1QXZ अंतर्गत साधारण, ZXQPH2QXZ पासून खराब.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कल्पनाशक्ती आणि शक्यता यांचा संगम",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "हा टप्पा पूर्ण झाल्यावर येथे प्रतिमा दिसतात.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": ".js आयात करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ आयात करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "आयात जनरेटर पॅकेज",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कार्यक्षेत्र लोड होत आहे…",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "माझ्या वसाहतीला अधिक संरक्षणक्षम बनवणे…",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "म्यूट",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नाही",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "रूम्स आणि कॅज्युअल गेम्ससाठी खात्याची आवश्यकता नाही; रँक मिळवण्यासाठी साइन इन करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कोणताही अतिरिक्त तपशील नोंदवला गेला नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "प्रकाशन नोंदी नाहीत.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "एक ZXQPH0QXZ फाईल.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "एक मॅनिफेस्ट आणि एक ZXQPH0QXZ मॉड्यूल.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ॲनिमेशन थांबवा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "प्ले ॲनिमेशन",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "संगीत वाजवा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "प्लेटेस्ट",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तुमच्या साउंडट्रॅकची तयारी करत आहात…",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "संगीत लायब्ररीमध्ये प्रकाशित करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "प्रकाशित करत आहे…",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तुमच्या साउंडट्रॅकला परिष्कृत करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "जनरेटर पॅकेज बदला",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "स्रोत ZXQPH0QXZ फाईलने बदला",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "जतन केलेली विनंती पुन्हा प्रयत्न करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "या निष्कर्षासाठी तांत्रिक निकालांचे पुनरावलोकन करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "वर्तमान आवृत्ती चालवा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "जतन केलेला उमेदवार",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "खाजगीरित्या जतन केले आहे. प्रकाशित करताना फक्त हीच आवृत्ती शेअर केली जाईल.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "जतन करत आहे…",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पाठवा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "निदान चॅटवर पाठवा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "संगीत लाईक करण्यासाठी नोंदणीकृत खात्यासह साइन इन करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "प्रत्येक उघड टिकसाठी चिन्हांकित एचपी, भागिले २५६; ऋण मूल्यांचे नुकसान एकक.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "काहीतरी अद्भुत आकार घेत आहे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "थेट खेळ सुरू करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "एका भावनेने सुरुवात करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "भूभाग डिझाइनर",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सहाय्यक तुमची फाईल संपादित करतो. चाचणी केव्हा घ्यायची हे तुम्ही ठरवता.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सहाय्यक तुमचा मॅनिफेस्ट आणि ZXQPH0QXZ एकत्र संपादित करतो. तपासण्या केव्हा जनरेट करायच्या किंवा चालवायच्या हे तुम्ही ठरवता.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "प्रदात्याच्या निकालाची जुळवाजुळव करणे आवश्यक आहे. कोणताही दुहेरी कॉल पाठवला जाणार नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सेवा पुरवठादाराच्या निकालाची जुळवाजुळव करणे आवश्यक आहे. तुमचे क्रेडिट राखीव राहील.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "प्रदात्याच्या निकालाचे जुळवणी करणे आवश्यक आहे. तुमचे आरक्षित ZXQPH0QXZ क्रेडिट्स कायम आहेत; नवीन विनंत्या थांबवण्यात आल्या आहेत. मॅन्युअल संपादन आणि निर्यात उपलब्ध राहतील.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "हा सामना",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "या विनंतीचा निकाल तपासला जात असताना ती थांबवण्यात आली आहे. तुमचे राखून ठेवलेले क्रेडिट सुरक्षित राहील; तुम्ही निघून जाऊ शकता आणि नंतर परत येऊ शकता.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ही आवृत्ती सार्वजनिक आहे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "“सुपीक काठांची नागमोडी नदी” असे म्हणून बघा किंवा विद्युत प्रवाह जनरेटर कसे काम करतो ते विचारा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "“विस्तारापूर्वी अन्नावर लक्ष केंद्रित करा” असे म्हणून बघा किंवा सध्याचा कोड कसा काम करतो ते विचारा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कार्यरत स्टार्टर वापरा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पहा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पडताळणी अयशस्वी झाली",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "आम्ही हा नकाशा पूर्ण करू शकलो नाही. तुमचे पूर्वीचे नकाशे सुरक्षित आहेत.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तुम्ही कोणत्या प्रकारची वसाहत उभारणार आहात?",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तुम्ही कोणते भूदृश्य तयार कराल?",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तुमच्या विनंतीवर काम सुरू आहे…",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तुम्ही",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तुमच्या वसाहतीचा एआय",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तुमच्या वसाहतीचे पार्श्वसंगीत, तीन वेगवेगळ्या मनस्थितींमध्ये.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तुमचा कंपोझर कार्यरत आहे…",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तुमचा भूप्रदेश",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तुमचा संदेश पूर्ण होऊ शकला नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तुमच्या संगीताला इथे आकार मिळतो.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तुमचे पुढचे रणांगण येथून सुरू होते.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तुमचे प्रकल्प",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "निर्माण केले",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      }
+    ]
+  },
+  "response_sha256": "eefdc7451809b20c94e149e2a73075d84dc8ed5029110f5a39f2b1adf6314322"
+}

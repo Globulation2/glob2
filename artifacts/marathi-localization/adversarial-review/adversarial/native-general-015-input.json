@@ -1,0 +1,510 @@
+{
+  "source_sha256": "0ac44b4cdfb03e688983d6e3fb1e484cca57589665bff19c5c65388e649b292a",
+  "batch_target_sha256": "4943d0e9dc7ab391a3f9883158c593ad06c21bd949c58ad3b58730090dd8f295",
+  "catalog_sha256": {
+    "native": "a6d0da95a3cf29e0bcfa904f80043a10fedc3124f7a26e3beebc82e8cdfa4411",
+    "online": "feb4b9a71595724a0995b0cf0f42c94742ef29030b66c9488c77ebc6be7a89db"
+  },
+  "entries": [
+    {
+      "id": "native:[results minutes %0]",
+      "source": "%0 min",
+      "target": "%0 मिनिटे"
+    },
+    {
+      "id": "native:[results no change]",
+      "source": "no change",
+      "target": "कोणताही बदल नाही"
+    },
+    {
+      "id": "native:[results ranked]",
+      "source": "Ranked",
+      "target": "मानांकित"
+    },
+    {
+      "id": "native:[results recording]",
+      "source": "Recording the result…",
+      "target": "निकाल नोंदवत आहे…"
+    },
+    {
+      "id": "native:[results room unrated]",
+      "source": "Room match · unrated",
+      "target": "खोलीतील सामना · मानांकनरहित"
+    },
+    {
+      "id": "native:[results saved to history]",
+      "source": "Saved to your history",
+      "target": "तुमच्या इतिहासात जतन केले"
+    },
+    {
+      "id": "native:[results seconds %0]",
+      "source": "%0 s",
+      "target": "%0 सेकंद"
+    },
+    {
+      "id": "native:[results unverifiable]",
+      "source": "The server couldn't reproduce this match, so it doesn't count for anyone's rating. It has been reported for investigation; you don't need to do anything.",
+      "target": "सर्वरला हा सामना पुन्हा चालवता आला नाही, त्यामुळे याची गणना कोणाच्याही रेटिंगमध्ये केली जाणार नाही. याची चौकशीसाठी तक्रार करण्यात आली आहे; तुम्हाला काहीही करण्याची आवश्यकता नाही."
+    },
+    {
+      "id": "native:[results verified provisional]",
+      "source": "Verified · provisional",
+      "target": "सत्यापित · तात्पुरते"
+    },
+    {
+      "id": "native:[results verified]",
+      "source": "Verified",
+      "target": "सत्यापित"
+    },
+    {
+      "id": "native:[results verifying detail]",
+      "source": "The server is replaying the match to confirm it. Usually under a minute.",
+      "target": "याची खात्री करण्यासाठी सर्व्हर सामना पुन्हा चालवत आहे. साधारणपणे एका मिनिटाच्या आत."
+    },
+    {
+      "id": "native:[results verifying]",
+      "source": "Verifying result…",
+      "target": "निकालाची पडताळणी करत आहे…"
+    },
+    {
+      "id": "native:[results victory]",
+      "source": "Victory",
+      "target": "विजय"
+    },
+    {
+      "id": "native:[room address]",
+      "source": "Address",
+      "target": "पत्ता"
+    },
+    {
+      "id": "native:[room ai %0]",
+      "source": "AI: %0",
+      "target": "एआय: %0"
+    },
+    {
+      "id": "native:[room browser pairing]",
+      "source": "Browser pairing",
+      "target": "ब्राउझर पेअरिंग"
+    },
+    {
+      "id": "native:[room catalog map]",
+      "source": "Catalog map",
+      "target": "कॅटलॉग नकाशा"
+    },
+    {
+      "id": "native:[room change map]",
+      "source": "Change map…",
+      "target": "नकाशा बदला…"
+    },
+    {
+      "id": "native:[room change rules]",
+      "source": "Change rules…",
+      "target": "नियम बदला…"
+    },
+    {
+      "id": "native:[room chat]",
+      "source": "Chat",
+      "target": "चॅट"
+    },
+    {
+      "id": "native:[room closed seat detail]",
+      "source": "Closed by the host",
+      "target": "यजमानाने बंद केले"
+    },
+    {
+      "id": "native:[room closed seat]",
+      "source": "Closed",
+      "target": "बंद"
+    },
+    {
+      "id": "native:[room colonies]",
+      "source": "Colonies",
+      "target": "वसाहती"
+    },
+    {
+      "id": "native:[room connecting]",
+      "source": "Connecting to the room…",
+      "target": "खोलीशी जोडणी करत आहे…"
+    },
+    {
+      "id": "native:[room copy]",
+      "source": "Copy",
+      "target": "प्रत करा"
+    },
+    {
+      "id": "native:[room disconnected]",
+      "source": "disconnected",
+      "target": "डिस्कनेक्ट केलेले"
+    },
+    {
+      "id": "native:[room downloading %0]",
+      "source": "Downloading map %0 %",
+      "target": "नकाशा डाउनलोड होत आहे: %0 %"
+    },
+    {
+      "id": "native:[room downloading map]",
+      "source": "Downloading the map…",
+      "target": "नकाशा डाउनलोड होत आहे…"
+    },
+    {
+      "id": "native:[room expired]",
+      "source": "The room has closed.",
+      "target": "खोली बंद झाली आहे."
+    },
+    {
+      "id": "native:[room generated on server]",
+      "source": "Generated once on the server, so everyone plays exactly this map.",
+      "target": "सर्व्हरवर एकदाच तयार केले जाते, त्यामुळे प्रत्येकजण नेमका हाच नकाशा खेळतो."
+    },
+    {
+      "id": "native:[room guest]",
+      "source": "guest",
+      "target": "पाहुणे"
+    },
+    {
+      "id": "native:[room host %0]",
+      "source": "host %0",
+      "target": "होस्ट %0"
+    },
+    {
+      "id": "native:[room host closed]",
+      "source": "The host closed the room.",
+      "target": "यजमानाने खोली बंद केली."
+    },
+    {
+      "id": "native:[room host]",
+      "source": "host",
+      "target": "यजमान"
+    },
+    {
+      "id": "native:[room humans vs ai]",
+      "source": "Humans vs AI",
+      "target": "मानव विरुद्ध एआय"
+    },
+    {
+      "id": "native:[room invite code %0]",
+      "source": "Code %0 · opens in the app, on phones or in a browser",
+      "target": "कोड %0 · अॅपमध्ये, फोनवर किंवा ब्राउझरमध्ये उघडतो"
+    },
+    {
+      "id": "native:[room invite not found]",
+      "source": "This invite has expired or does not exist.",
+      "target": "हे आमंत्रण कालबाह्य झाले आहे किंवा अस्तित्वात नाही."
+    },
+    {
+      "id": "native:[room invite only]",
+      "source": "Invite only",
+      "target": "निमंत्रितांसाठीच"
+    },
+    {
+      "id": "native:[room invite]",
+      "source": "Invite",
+      "target": "आमंत्रित करा"
+    },
+    {
+      "id": "native:[room joining on network]",
+      "source": "Joining on this network",
+      "target": "या नेटवर्कवर सामील होणे"
+    },
+    {
+      "id": "native:[room lan badge]",
+      "source": "Local network · not rated",
+      "target": "स्थानिक नेटवर्क · रेटिंग नाही"
+    },
+    {
+      "id": "native:[room lan list hint %0]",
+      "source": "Others on the same network see %0 in the LAN game list on the main menu.",
+      "target": "त्याच नेटवर्कवरील इतरांना मुख्य मेनूवरील LAN गेम सूचीमध्ये %0 दिसते."
+    },
+    {
+      "id": "native:[room leave]",
+      "source": "Leave",
+      "target": "सोडा"
+    },
+    {
+      "id": "native:[room match label]",
+      "source": "Room",
+      "target": "खोली"
+    },
+    {
+      "id": "native:[room member joined %0]",
+      "source": "%0 joined.",
+      "target": "%0 सामील झाले."
+    },
+    {
+      "id": "native:[room member left %0]",
+      "source": "%0 left.",
+      "target": "%0 सोडून गेले."
+    },
+    {
+      "id": "native:[room member ready %0]",
+      "source": "%0 is ready.",
+      "target": "%0 तयार आहे."
+    },
+    {
+      "id": "native:[room needs two seats]",
+      "source": "Invite a friend or add an AI to start",
+      "target": "सुरू करण्यासाठी मित्राला आमंत्रित करा किंवा एआय जोडा."
+    },
+    {
+      "id": "native:[room no map]",
+      "source": "No map yet",
+      "target": "अद्याप नकाशा नाही"
+    },
+    {
+      "id": "native:[room not ready]",
+      "source": "Not ready",
+      "target": "तयार नाही"
+    },
+    {
+      "id": "native:[room open for a person]",
+      "source": "Open for a person",
+      "target": "एका व्यक्तीसाठी उघडा"
+    },
+    {
+      "id": "native:[room open seat detail]",
+      "source": "Anyone with the invite can take it",
+      "target": "ज्याला आमंत्रण आहे तो ते घेऊ शकतो."
+    },
+    {
+      "id": "native:[room open seat]",
+      "source": "Open seat",
+      "target": "मोकळी जागा"
+    },
+    {
+      "id": "native:[room person]",
+      "source": "Person",
+      "target": "व्यक्ती"
+    },
+    {
+      "id": "native:[room preparing map]",
+      "source": "Preparing map on the server…",
+      "target": "सर्व्हरवर मॅप तयार करत आहे…"
+    },
+    {
+      "id": "native:[room public]",
+      "source": "Public",
+      "target": "सार्वजनिक"
+    },
+    {
+      "id": "native:[room ready?]",
+      "source": "Ready",
+      "target": "तयार"
+    },
+    {
+      "id": "native:[room ready]",
+      "source": "✓ Ready",
+      "target": "✓ तयार"
+    },
+    {
+      "id": "native:[room remove from room]",
+      "source": "Remove from room",
+      "target": "खोलीतून काढून टाका"
+    },
+    {
+      "id": "native:[room rule off]",
+      "source": "Off",
+      "target": "बंद"
+    },
+    {
+      "id": "native:[room rule on]",
+      "source": "On",
+      "target": "चालू"
+    },
+    {
+      "id": "native:[room rules changed]",
+      "source": "The rules changed.",
+      "target": "नियम बदलले."
+    },
+    {
+      "id": "native:[room rules]",
+      "source": "Rules",
+      "target": "नियम"
+    },
+    {
+      "id": "native:[room say something]",
+      "source": "Say something…",
+      "target": "काहीतरी लिहा…"
+    },
+    {
+      "id": "native:[room seat hint]",
+      "source": "Players can move to an open seat themselves. Change Team to rebalance.",
+      "target": "खेळाडू स्वतःहून मोकळ्या जागेवर जाऊ शकतात. संतुलन पुन्हा साधण्यासाठी संघ बदला."
+    },
+    {
+      "id": "native:[room seat options]",
+      "source": "Seat options",
+      "target": "आसन पर्याय"
+    },
+    {
+      "id": "native:[room seats summary %0 %1 %2]",
+      "source": "%0 players · %1 AI · %2 open",
+      "target": "%0 खेळाडू · %1 संगणक · %2 मोकळ्या जागा"
+    },
+    {
+      "id": "native:[room seats]",
+      "source": "Seats",
+      "target": "जागा"
+    },
+    {
+      "id": "native:[room seed]",
+      "source": "Seed",
+      "target": "बीज"
+    },
+    {
+      "id": "native:[room send]",
+      "source": "Send",
+      "target": "पाठवा"
+    },
+    {
+      "id": "native:[room set by host]",
+      "source": "Set by the host",
+      "target": "यजमानाने सेट केले"
+    },
+    {
+      "id": "native:[room share text %0]",
+      "source": "Join my Globulation 2 room: %0",
+      "target": "माझ्या Globulation 2 रूममध्ये सामील व्हा: %0"
+    },
+    {
+      "id": "native:[room share]",
+      "source": "Share…",
+      "target": "शेअर करा…"
+    },
+    {
+      "id": "native:[room size]",
+      "source": "Size",
+      "target": "आकार"
+    },
+    {
+      "id": "native:[room starting match]",
+      "source": "Starting the match…",
+      "target": "सामना सुरू करत आहे…"
+    },
+    {
+      "id": "native:[room take seat]",
+      "source": "Take seat",
+      "target": "जागा घ्या"
+    },
+    {
+      "id": "native:[room team %0]",
+      "source": "Team %0",
+      "target": "संघ %0"
+    },
+    {
+      "id": "native:[room update required]",
+      "source": "This room plays another version of the game. Update to join it.",
+      "target": "या रूममध्ये गेमची दुसरी आवृत्ती खेळली जाते. त्यात सामील होण्यासाठी अपडेट करा."
+    },
+    {
+      "id": "native:[room uploaded map]",
+      "source": "Uploaded map",
+      "target": "अपलोड केलेला नकाशा"
+    },
+    {
+      "id": "native:[room waiting for %0]",
+      "source": "Waiting for %0 to be ready",
+      "target": "%0 तयार होण्याची वाट पाहत आहे"
+    },
+    {
+      "id": "native:[room waiting for you]",
+      "source": "Press Ready when you're set",
+      "target": "तयार झाल्यावर «तयार» दाबा"
+    },
+    {
+      "id": "native:[room match over]",
+      "source": "Match over. Ready up for another round!",
+      "target": "सामना संपला. पुढच्या फेरीसाठी तयार व्हा!"
+    },
+    {
+      "id": "native:[room waiting for host]",
+      "source": "Waiting for the host to start",
+      "target": "यजमानाने सुरू करण्याची वाट पाहत आहे"
+    },
+    {
+      "id": "native:[room waiting for players %0]",
+      "source": "Waiting for %0 players to be ready",
+      "target": "%0 खेळाडूंच्या तयार होण्याची वाट पाहत आहे"
+    },
+    {
+      "id": "native:[room who can find it]",
+      "source": "Who can find it",
+      "target": "ते कोण शोधू शकेल?"
+    },
+    {
+      "id": "native:[room you created]",
+      "source": "You created the room.",
+      "target": "तुम्ही खोली तयार केली."
+    },
+    {
+      "id": "native:[room you joined %0]",
+      "source": "You joined %0.",
+      "target": "तुम्ही %0 मध्ये सामील झालात."
+    },
+    {
+      "id": "native:[room you were removed]",
+      "source": "The host removed you from the room.",
+      "target": "यजमानाने तुम्हाला खोलीतून बाहेर काढले."
+    },
+    {
+      "id": "native:[room you]",
+      "source": "you",
+      "target": "तुम्ही"
+    },
+    {
+      "id": "native:[trust invited to room %0]",
+      "source": "Invited to room %0",
+      "target": "%0 या खोलीत आमंत्रण"
+    },
+    {
+      "id": "native:[trust join as guest]",
+      "source": "Join as guest",
+      "target": "पाहुणे म्हणून सामील व्हा"
+    },
+    {
+      "id": "native:[trust not official]",
+      "source": "This server isn't run by the Globulation 2 project.",
+      "target": "हा सर्वर Globulation 2 प्रकल्पाद्वारे चालवला जात नाही."
+    },
+    {
+      "id": "native:[trust remember]",
+      "source": "Remember this server",
+      "target": "हा सर्व्हर लक्षात ठेवा"
+    },
+    {
+      "id": "native:[trust separate identity %0]",
+      "source": "You'll join as a guest there. Your %0 account, rating and history stay where they are.",
+      "target": "तुम्ही तिथे पाहुणे म्हणून सामील व्हाल. तुमचे %0 खाते, रेटिंग आणि इतिहास जसेच्या तसे राहतील."
+    },
+    {
+      "id": "native:[trust title]",
+      "source": "Join a game on another server?",
+      "target": "दुसऱ्या सर्व्हरवर गेममध्ये सामील व्हायचे आहे का?"
+    },
+    {
+      "id": "native:[trust what it sees]",
+      "source": "The server sees your display name, your connection's address and the games you play on it.",
+      "target": "सर्वरला तुमचे डिस्प्ले नाव, तुमच्या कनेक्शनचा पत्ता आणि तुम्ही त्यावर खेळत असलेले गेम्स दिसतात."
+    },
+    {
+      "id": "native:[hub code]",
+      "source": "Code",
+      "target": "कोड"
+    },
+    {
+      "id": "native:[results draw]",
+      "source": "Draw",
+      "target": "बरोबरी"
+    },
+    {
+      "id": "native:[qm 2 vs 2]",
+      "source": "2 vs 2",
+      "target": "२ विरुद्ध २"
+    },
+    {
+      "id": "native:[qm 1 vs 1]",
+      "source": "1 vs 1",
+      "target": "१ विरुद्ध १"
+    }
+  ]
+}

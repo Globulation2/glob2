@@ -1,0 +1,383 @@
+{
+  "request": {
+    "project": "bradley-personal-20261027",
+    "model": "general/nmt",
+    "payload": {
+      "sourceLanguageCode": "en",
+      "targetLanguageCode": "mr",
+      "mimeType": "text/plain",
+      "contents": [
+        "Installed. Enable the family below for new maps.",
+        "Invalid library cursor",
+        "Invalid release identity",
+        "Load more",
+        "Load more families",
+        "Loading…",
+        "Maps",
+        "Most downloaded",
+        "Most liked",
+        "Newest",
+        "No validated release for this game version.",
+        "Online server changed during download",
+        "Open an unlisted family by its link or ID. For private families, sign in through Online first.",
+        "Open family",
+        "Opened family. Install its compatible release below.",
+        "Playable",
+        "Privacy policy",
+        "Public library",
+        "Recently updated",
+        "Refresh library",
+        "Release identity changed during installation",
+        "Reroll",
+        "Reroll seed",
+        "Search",
+        "Seed",
+        "Selection saved for new maps.",
+        "Storage failed.",
+        "Storage persistence unavailable",
+        "Tags",
+        "Technical checks passed for this engine. Balance is not certified.",
+        "The server returned a different family.",
+        "This link is from another instance. Switch to that instance in Online first.",
+        "This package ID is installed. Confirm replacement to use the selected release.",
+        "This release has no passing checks for this engine.",
+        "This release is installed.",
+        "Update installed family",
+        "Use in a room",
+        "By ZXQPH0QXZ",
+        "Installed release ZXQPH0QXZ",
+        "Release ZXQPH0QXZ",
+        "Remove ZXQPH0QXZ",
+        "Seed: ZXQPH0QXZ",
+        "ZXQPH0QXZ · revision ZXQPH1QXZ",
+        "Fit",
+        "GL only",
+        "Sound or silence?",
+        "Silence",
+        "Sound",
+        "The game starts quietly. Would you like silence, or music and game audio?",
+        "You can change this anytime in Settings → Audio.",
+        "Your choice could not be saved. Audio is still off. Please try again.",
+        "Silence: a muted speaker. Sound: a speaker with sound waves.",
+        "Introduction",
+        "Learn indirect control: scout with a flag, supply your colony, and direct an attack.",
+        "Start introduction",
+        "Your globules act on their own. You choose their jobs through buildings and flags. In this short introduction, scout a landmark, expand food supply, grow your workforce, and direct a small attack.",
+        "Allow about 10 minutes. You can save from the game menu and resume through Load game. Normal hunger and combat rules apply. Choose Tutorial lessons from the main menu to practice more skills.",
+        "Your choice could not be saved. You can continue playing; this recommendation may appear again next time.",
+        "Scout the stone landmark",
+        "Build another Inn",
+        "Supply your new Inn",
+        "Grow the workforce",
+        "Destroy the enemy Swarm",
+        "Open Flags and place an Exploration Flag over the stone patch east of your colony. Assign one explorer. Watch it travel to the flag.",
+        "Open Build and place an Inn near wheat. Assign available workers to construct it. Leave your existing Inn supplied.",
+        "Select your finished new Inn and give it at least one supplier. Wait for a worker to deliver wheat.",
+        "Select the Swarm. Set its worker target to at least 2, and its production ratios to workers only. Keep both Inns supplied while a new worker is born.",
+        "Find the enemy Swarm farther east. Use a War Flag to direct your warriors against it. Help is available if you need a reminder.",
+        "Help / why?",
+        "Use the minimap to move the view east and find the stone patch. Choose Exploration Flag in Flags, place it on the stone, then leave placement with the secondary mouse button. Select the flag and request 1 explorer. Flags request units; they do not move them instantly. Explorers may stop to eat.",
+        "Construction consumes wood delivered by workers. Choose Inn from the building controls (the building palette), place it in clear ground near wheat, and request 2 builders. A worker target is a request, not a count of workers already present. Keep suppliers at your existing Inn and Swarm. Any valid location counts.",
+        "Construction and everyday supply have separate worker targets. Select the finished Inn and increase its operating target. A supplier gathers wheat and carries it here. Hungry globules eat at Inns; a building with no suppliers will eventually run out. Keep the wheat patch accessible.",
+        "The Swarm consumes wheat to produce units. Set worker production to 1 and explorer and warrior production to 0. Increase the Swarm worker target to 2 or more. More suppliers can deliver wheat faster, but they compete with other jobs. Maintain food supply at both Inns."
+      ]
+    }
+  },
+  "response": {
+    "translations": [
+      {
+        "translatedText": "स्थापित केले. नवीन नकाशे मिळवण्यासाठी खालील फॅमिली सक्षम करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अवैध लायब्ररी कर्सर",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अवैध प्रकाशन ओळख",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अधिक लोड करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "आणखी कुटुंबे लोड करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "लोडिंग…",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नकाशे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सर्वाधिक डाउनलोड केलेले",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सर्वाधिक आवडले",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नवीनतम",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "या गेम आवृत्तीसाठी कोणतीही प्रमाणित रिलीज उपलब्ध नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "डाउनलोड चालू असताना ऑनलाइन सर्व्हर बदलला.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नोंदणी नसलेले कुटुंब त्याच्या लिंक किंवा आयडीद्वारे उघडा. खाजगी कुटुंबांसाठी, प्रथम ऑनलाइन साइन इन करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "खुले कुटुंब",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "फॅमिली उघडली आहे. खाली दिलेली त्याची सुसंगत आवृत्ती स्थापित करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "खेळण्यायोग्य",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "गोपनीयता धोरण",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सार्वजनिक ग्रंथालय",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अलीकडेच अद्यतनित केले",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "लायब्ररी रिफ्रेश करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "इन्स्टॉलेशन दरम्यान रिलीजची ओळख बदलली.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पुन्हा रोल करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पुन्हा रोल सीड",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "शोध",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "बियाणे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नवीन नकाशांसाठी निवड जतन केली आहे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "साठवणूक अयशस्वी झाली.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "स्टोरेज टिकवून ठेवणे अनुपलब्ध आहे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "टॅग",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "या इंजिनची तांत्रिक तपासणी यशस्वी झाली आहे. बॅलन्स प्रमाणित नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सर्व्हरने वेगळे कुटुंब परत केले.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ही लिंक दुसऱ्या इन्स्टन्सची आहे. आधी ऑनलाइनमध्ये त्या इन्स्टन्सवर स्विच करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "हा पॅकेज आयडी स्थापित केलेला आहे. निवडलेली आवृत्ती वापरण्यासाठी प्रतिस्थापनेची पुष्टी करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "या रिलीझमध्ये या इंजिनसाठी उत्तीर्ण होणाऱ्या तपासण्या नाहीत.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ही आवृत्ती स्थापित केली आहे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "स्थापित फॅमिली अपडेट करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "खोलीत वापरा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ द्वारे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "स्थापित आवृत्ती ZXQPH0QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ सोडा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ काढून टाका",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सीड: ZXQPH0QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ · सुधारित आवृत्ती ZXQPH1QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "फिट",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "फक्त जीएल",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "आवाज की शांतता?",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "शांतता",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "आवाज",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "खेळ शांतपणे सुरू होतो. तुम्हाला शांतता हवी आहे, की संगीत आणि खेळाचा आवाज?",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तुम्ही हे सेटिंग्ज → ऑडिओ मध्ये कधीही बदलू शकता.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तुमची निवड जतन होऊ शकली नाही. ऑडिओ अजूनही बंद आहे. कृपया पुन्हा प्रयत्न करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "शांतता: म्यूट केलेला स्पीकर. ध्वनी: ध्वनी लहरी असलेला स्पीकर.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "प्रस्तावना",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अप्रत्यक्ष नियंत्रण शिका: ध्वज घेऊन टेहळणी करा, आपल्या वसाहतीला रसद पुरवा आणि हल्ल्याचे निर्देश द्या.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "परिचय सुरू करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तुमचे गोळे स्वतःहून कृती करतात. तुम्ही इमारती आणि ध्वजांच्या माध्यमातून त्यांची कामे निवडता. या छोट्याशा परिचयात, एका महत्त्वाच्या स्थळाची टेहळणी करा, अन्नपुरवठा वाढवा, तुमची मनुष्यबळ संख्या वाढवा आणि एका छोट्या हल्ल्याचे निर्देशन करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सुमारे १० मिनिटे थांबा. तुम्ही गेम मेन्यूमधून सेव्ह करू शकता आणि 'लोड गेम'मधून पुन्हा सुरू करू शकता. भूक आणि लढाईचे नेहमीचे नियम लागू होतील. अधिक कौशल्यांचा सराव करण्यासाठी मुख्य मेन्यूमधून 'ट्युटोरियल लेसन्स' निवडा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तुमची निवड जतन करता आली नाही. तुम्ही खेळणे सुरू ठेवू शकता; ही शिफारस पुढच्या वेळी पुन्हा दिसू शकते.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "दगडी खुणांचा शोध घ्या",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "आणखी एक सराय बांधा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तुमच्या नवीन हॉटेलला पुरवठा करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कर्मचारी संख्या वाढवा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "शत्रूच्या थव्याचा नाश करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "फ्लॅग्ज उघडा आणि तुमच्या वसाहतीच्या पूर्वेकडील दगडांच्या तुकड्यावर एक एक्सप्लोरेशन फ्लॅग लावा. एका एक्सप्लोररला नियुक्त करा. तो फ्लॅगपर्यंत कसा जातो ते पाहा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "बिल्ड उघडा आणि गव्हाजवळ एक धर्मशाळा बांधा. ती बांधण्यासाठी उपलब्ध कामगारांना नियुक्त करा. तुमची सध्याची धर्मशाळा पुरवठायुक्त ठेवा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तुमचे तयार झालेले नवीन निवासस्थान निवडा आणि त्याला किमान एक पुरवठादार द्या. एका कामगाराने गहू आणून देण्याची वाट पाहा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "स्वॉर्म निवडा. त्याचे कामगार लक्ष्य किमान २ ठेवा आणि त्याचे उत्पादन गुणोत्तर फक्त कामगारांसाठी ठेवा. नवीन कामगार जन्माला येईपर्यंत दोन्ही इन्स पुरवठायुक्त ठेवा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पूर्वेकडे दूरवर शत्रूंचा थवा शोधा. आपल्या योद्ध्यांना त्यावर हल्ला करण्यासाठी युद्धध्वजाचा वापर करा. आठवण करून देण्याची गरज भासल्यास मदत उपलब्ध आहे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "मदत / का?",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "मिनीमॅप वापरून दृश्य पूर्वेकडे न्या आणि दगडांचा समूह शोधा. फ्लॅग्जमधून एक्सप्लोरेशन फ्लॅग निवडा, तो दगडावर ठेवा, नंतर माऊसच्या दुसऱ्या बटणाने प्लेसमेंटमधून बाहेर पडा. फ्लॅग निवडा आणि १ एक्सप्लोररची मागणी करा. फ्लॅग्ज युनिट्सची मागणी करतात; ते त्यांना त्वरित हलवत नाहीत. एक्सप्लोरर्स जेवण्यासाठी थांबू शकतात.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "बांधकामासाठी कामगारांनी आणलेले लाकूड लागते. बिल्डिंग कंट्रोल्समधून (बिल्डिंग पॅलेट) 'इन' (Inn) निवडा, ते गव्हाजवळच्या मोकळ्या जागेत ठेवा आणि २ बांधकाम कामगारांची मागणी करा. कामगारांचे लक्ष्य ही एक मागणी आहे, आधीपासून उपस्थित असलेल्या कामगारांची संख्या नाही. पुरवठादारांना तुमच्या सध्याच्या 'इन' आणि 'स्वॉर्म' (Swarm) येथे ठेवा. कोणतेही वैध ठिकाण ग्राह्य धरले जाईल.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "बांधकाम आणि दैनंदिन पुरवठ्यासाठी कामगारांची वेगवेगळी उद्दिष्टे आहेत. पूर्ण झालेले सराय निवडा आणि त्याचे कार्यान्वयन उद्दिष्ट वाढवा. एक पुरवठादार गहू गोळा करून येथे आणतो. भुकेले गोळे सरायांमध्ये जेवतात; ज्या इमारतीला पुरवठादार नाहीत, तिचा साठा अखेरीस संपेल. गव्हाचे शेत सहज उपलब्ध ठेवा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "स्वार्म युनिट्स तयार करण्यासाठी गहू वापरतो. कामगारांचे उत्पादन १ वर आणि शोधक व योद्ध्यांचे उत्पादन ० वर सेट करा. स्वार्मच्या कामगारांचे लक्ष्य २ किंवा अधिक पर्यंत वाढवा. अधिक पुरवठादार गहू अधिक वेगाने पोहोचवू शकतात, परंतु ते इतर कामांशी स्पर्धा करतात. दोन्ही धर्मशाळांमध्ये अन्नपुरवठा कायम ठेवा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      }
+    ]
+  },
+  "response_sha256": "6b976b516376af70a6b8df8e0c3a210f87e88c2ee885bd18d25b0d36c5c49d87"
+}

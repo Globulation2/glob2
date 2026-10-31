@@ -1,0 +1,507 @@
+{
+  "batch": "native-general-025",
+  "source_sha256": "0ac44b4cdfb03e688983d6e3fb1e484cca57589665bff19c5c65388e649b292a",
+  "rows": [
+    {
+      "id": "native:[library Release %0]",
+      "source": "Release %0",
+      "target": "%0 सोडा"
+    },
+    {
+      "id": "native:[library Remove %0]",
+      "source": "Remove %0",
+      "target": "%0 काढून टाका"
+    },
+    {
+      "id": "native:[library Seed: %0]",
+      "source": "Seed: %0",
+      "target": "सीड: %0"
+    },
+    {
+      "id": "native:[library %0 · revision %1]",
+      "source": "%0 · revision %1",
+      "target": "%0 · सुधारित आवृत्ती %1"
+    },
+    {
+      "id": "native:[library Fit]",
+      "source": "Fit",
+      "target": "फिट"
+    },
+    {
+      "id": "native:[library GL only]",
+      "source": "GL only",
+      "target": "फक्त जीएल"
+    },
+    {
+      "id": "native:[Sound or silence?]",
+      "source": "Sound or silence?",
+      "target": "आवाज की शांतता?"
+    },
+    {
+      "id": "native:[Silence]",
+      "source": "Silence",
+      "target": "शांतता"
+    },
+    {
+      "id": "native:[Sound]",
+      "source": "Sound",
+      "target": "आवाज"
+    },
+    {
+      "id": "native:[audio preference explanation]",
+      "source": "The game starts quietly. Would you like silence, or music and game audio?",
+      "target": "खेळ शांतपणे सुरू होतो. तुम्हाला शांतता हवी आहे, की संगीत आणि खेळाचा आवाज?"
+    },
+    {
+      "id": "native:[audio preference change later]",
+      "source": "You can change this anytime in Settings → Audio.",
+      "target": "तुम्ही हे सेटिंग्ज → ऑडिओ मध्ये कधीही बदलू शकता."
+    },
+    {
+      "id": "native:[audio preference save failed]",
+      "source": "Your choice could not be saved. Audio is still off. Please try again.",
+      "target": "तुमची निवड जतन होऊ शकली नाही. ऑडिओ अजूनही बंद आहे. कृपया पुन्हा प्रयत्न करा."
+    },
+    {
+      "id": "native:[audio choices description]",
+      "source": "Silence: a muted speaker. Sound: a speaker with sound waves.",
+      "target": "शांतता: म्यूट केलेला स्पीकर. ध्वनी: ध्वनी लहरी असलेला स्पीकर."
+    },
+    {
+      "id": "native:[intro menu]",
+      "source": "Introduction",
+      "target": "प्रस्तावना"
+    },
+    {
+      "id": "native:[intro briefing]",
+      "source": "Learn indirect control: scout with a flag, supply your colony, and direct an attack.",
+      "target": "अप्रत्यक्ष नियंत्रण शिका: ध्वज घेऊन टेहळणी करा, आपल्या वसाहतीला रसद पुरवा आणि हल्ल्याचे निर्देश द्या."
+    },
+    {
+      "id": "native:[intro try]",
+      "source": "Start introduction",
+      "target": "परिचय सुरू करा"
+    },
+    {
+      "id": "native:[intro preflight]",
+      "source": "Your globules act on their own. You choose their jobs through buildings and flags. In this short introduction, scout a landmark, expand food supply, grow your workforce, and direct a small attack.",
+      "target": "तुमचे गोळे स्वतःहून कृती करतात. तुम्ही इमारती आणि ध्वजांच्या माध्यमातून त्यांची कामे निवडता. या छोट्याशा परिचयात, एका महत्त्वाच्या स्थळाची टेहळणी करा, अन्नपुरवठा वाढवा, तुमची मनुष्यबळ संख्या वाढवा आणि एका छोट्या हल्ल्याचे निर्देशन करा."
+    },
+    {
+      "id": "native:[intro preflight save]",
+      "source": "Allow about 10 minutes. You can save from the game menu and resume through Load game. Normal hunger and combat rules apply. Choose Tutorial lessons from the main menu to practice more skills.",
+      "target": "सुमारे १० मिनिटे थांबा. तुम्ही गेम मेन्यूमधून सेव्ह करू शकता आणि 'लोड गेम'मधून पुन्हा सुरू करू शकता. भूक आणि लढाईचे नेहमीचे नियम लागू होतील. अधिक कौशल्यांचा सराव करण्यासाठी मुख्य मेन्यूमधून 'ट्युटोरियल लेसन्स' निवडा."
+    },
+    {
+      "id": "native:[intro preference failed]",
+      "source": "Your choice could not be saved. You can continue playing; this recommendation may appear again next time.",
+      "target": "तुमची निवड जतन करता आली नाही. तुम्ही खेळणे सुरू ठेवू शकता; ही शिफारस पुढच्या वेळी पुन्हा दिसू शकते."
+    },
+    {
+      "id": "native:[intro goal scout]",
+      "source": "Scout the stone landmark",
+      "target": "दगडी खुणांचा शोध घ्या"
+    },
+    {
+      "id": "native:[intro goal build]",
+      "source": "Build another Inn",
+      "target": "आणखी एक सराय बांधा"
+    },
+    {
+      "id": "native:[intro goal supply]",
+      "source": "Supply your new Inn",
+      "target": "तुमच्या नवीन हॉटेलला पुरवठा करा"
+    },
+    {
+      "id": "native:[intro goal grow]",
+      "source": "Grow the workforce",
+      "target": "कर्मचारी संख्या वाढवा"
+    },
+    {
+      "id": "native:[intro goal attack]",
+      "source": "Destroy the enemy Swarm",
+      "target": "शत्रूच्या थव्याचा नाश करा"
+    },
+    {
+      "id": "native:[intro instruction scout]",
+      "source": "Open Flags and place an Exploration Flag over the stone patch east of your colony. Assign one explorer. Watch it travel to the flag.",
+      "target": "फ्लॅग्ज उघडा आणि तुमच्या वसाहतीच्या पूर्वेकडील दगडांच्या तुकड्यावर एक एक्सप्लोरेशन फ्लॅग लावा. एका एक्सप्लोररला नियुक्त करा. तो फ्लॅगपर्यंत कसा जातो ते पाहा."
+    },
+    {
+      "id": "native:[intro instruction build]",
+      "source": "Open Build and place an Inn near wheat. Assign available workers to construct it. Leave your existing Inn supplied.",
+      "target": "बिल्ड उघडा आणि गव्हाजवळ एक धर्मशाळा बांधा. ती बांधण्यासाठी उपलब्ध कामगारांना नियुक्त करा. तुमची सध्याची धर्मशाळा पुरवठायुक्त ठेवा."
+    },
+    {
+      "id": "native:[intro instruction supply]",
+      "source": "Select your finished new Inn and give it at least one supplier. Wait for a worker to deliver wheat.",
+      "target": "तुमचे तयार झालेले नवीन निवासस्थान निवडा आणि त्याला किमान एक पुरवठादार द्या. एका कामगाराने गहू आणून देण्याची वाट पाहा."
+    },
+    {
+      "id": "native:[intro instruction grow]",
+      "source": "Select the Swarm. Set its worker target to at least 2, and its production ratios to workers only. Keep both Inns supplied while a new worker is born.",
+      "target": "स्वॉर्म निवडा. त्याचे कामगार लक्ष्य किमान २ ठेवा आणि त्याचे उत्पादन गुणोत्तर फक्त कामगारांसाठी ठेवा. नवीन कामगार जन्माला येईपर्यंत दोन्ही इन्स पुरवठायुक्त ठेवा."
+    },
+    {
+      "id": "native:[intro instruction attack]",
+      "source": "Find the enemy Swarm farther east. Use a War Flag to direct your warriors against it. Help is available if you need a reminder.",
+      "target": "पूर्वेकडे दूरवर शत्रूंचा थवा शोधा. आपल्या योद्ध्यांना त्यावर हल्ला करण्यासाठी युद्धध्वजाचा वापर करा. आठवण करून देण्याची गरज भासल्यास मदत उपलब्ध आहे."
+    },
+    {
+      "id": "native:[intro help]",
+      "source": "Help / why?",
+      "target": "मदत / का?"
+    },
+    {
+      "id": "native:[intro help scout]",
+      "source": "Use the minimap to move the view east and find the stone patch. Choose Exploration Flag in Flags, place it on the stone, then leave placement with the secondary mouse button. Select the flag and request 1 explorer. Flags request units; they do not move them instantly. Explorers may stop to eat.",
+      "target": "मिनीमॅप वापरून दृश्य पूर्वेकडे न्या आणि दगडांचा समूह शोधा. फ्लॅग्जमधून एक्सप्लोरेशन फ्लॅग निवडा, तो दगडावर ठेवा, नंतर माऊसच्या दुसऱ्या बटणाने प्लेसमेंटमधून बाहेर पडा. फ्लॅग निवडा आणि १ एक्सप्लोररची मागणी करा. फ्लॅग्ज युनिट्सची मागणी करतात; ते त्यांना त्वरित हलवत नाहीत. एक्सप्लोरर्स जेवण्यासाठी थांबू शकतात."
+    },
+    {
+      "id": "native:[intro help build]",
+      "source": "Construction consumes wood delivered by workers. Choose Inn from the building controls (the building palette), place it in clear ground near wheat, and request 2 builders. A worker target is a request, not a count of workers already present. Keep suppliers at your existing Inn and Swarm. Any valid location counts.",
+      "target": "बांधकामासाठी कामगारांनी आणलेले लाकूड लागते. बिल्डिंग कंट्रोल्समधून (बिल्डिंग पॅलेट) 'इन' (Inn) निवडा, ते गव्हाजवळच्या मोकळ्या जागेत ठेवा आणि २ बांधकाम कामगारांची मागणी करा. कामगारांचे लक्ष्य ही एक मागणी आहे, आधीपासून उपस्थित असलेल्या कामगारांची संख्या नाही. पुरवठादारांना तुमच्या सध्याच्या 'इन' आणि 'स्वॉर्म' (Swarm) येथे ठेवा. कोणतेही वैध ठिकाण ग्राह्य धरले जाईल."
+    },
+    {
+      "id": "native:[intro help supply]",
+      "source": "Construction and everyday supply have separate worker targets. Select the finished Inn and increase its operating target. A supplier gathers wheat and carries it here. Hungry globules eat at Inns; a building with no suppliers will eventually run out. Keep the wheat patch accessible.",
+      "target": "बांधकाम आणि दैनंदिन पुरवठ्यासाठी कामगारांची वेगवेगळी उद्दिष्टे आहेत. पूर्ण झालेले सराय निवडा आणि त्याचे कार्यान्वयन उद्दिष्ट वाढवा. एक पुरवठादार गहू गोळा करून येथे आणतो. भुकेले गोळे सरायांमध्ये जेवतात; ज्या इमारतीला पुरवठादार नाहीत, तिचा साठा अखेरीस संपेल. गव्हाचे शेत सहज उपलब्ध ठेवा."
+    },
+    {
+      "id": "native:[intro help grow]",
+      "source": "The Swarm consumes wheat to produce units. Set worker production to 1 and explorer and warrior production to 0. Increase the Swarm worker target to 2 or more. More suppliers can deliver wheat faster, but they compete with other jobs. Maintain food supply at both Inns.",
+      "target": "स्वार्म युनिट्स तयार करण्यासाठी गहू वापरतो. कामगारांचे उत्पादन १ वर आणि शोधक व योद्ध्यांचे उत्पादन ० वर सेट करा. स्वार्मच्या कामगारांचे लक्ष्य २ किंवा अधिक पर्यंत वाढवा. अधिक पुरवठादार गहू अधिक वेगाने पोहोचवू शकतात, परंतु ते इतर कामांशी स्पर्धा करतात. दोन्ही धर्मशाळांमध्ये अन्नपुरवठा कायम ठेवा."
+    },
+    {
+      "id": "native:[intro help attack]",
+      "source": "Open Flags, choose War Flag, and place it over the enemy Swarm east of the stone. Select the flag and request up to 4 warriors. A small radius keeps them concentrated. Leave placement with the secondary mouse button before selecting the flag. If no warriors remain, produce more at the Swarm. Warriors may stop to eat; keep the Inns supplied.",
+      "target": "ध्वज उघडा, युद्ध ध्वज निवडा आणि तो दगडाच्या पूर्वेकडील शत्रूंच्या झुंडीवर ठेवा. ध्वज निवडा आणि जास्तीत जास्त ४ योद्ध्यांची मागणी करा. एका लहान त्रिज्येमुळे ते एकाच ठिकाणी केंद्रित राहतात. ध्वज निवडण्यापूर्वी, माऊसच्या दुय्यम बटणाने ध्वज ठेवलेल्या जागेवरून निघून जा. जर एकही योद्धा शिल्लक राहिला नाही, तर झुंडीवर अधिक योद्धे तयार करा. योद्धे जेवण्यासाठी थांबू शकतात; धर्मशाळांना पुरवठा चालू ठेवा."
+    },
+    {
+      "id": "native:[intro hint scout]",
+      "source": "Your explorer needs an assigned Exploration Flag at the eastern stone patch. Check its target and explorer count.",
+      "target": "तुमच्या एक्सप्लोररला पूर्वेकडील दगडी समूहावर एक नेमून दिलेला एक्सप्लोरेशन फ्लॅग आवश्यक आहे. त्याचे लक्ष्य आणि एक्सप्लोररची संख्या तपासा."
+    },
+    {
+      "id": "native:[intro hint build]",
+      "source": "If you removed the new Inn, build another. Otherwise check the construction site and its worker target. Existing supply jobs may occupy your workers; keep food running while making builders available.",
+      "target": "जर तुम्ही नवीन धर्मशाळा काढली असेल, तर दुसरी बांधा. अन्यथा, बांधकाम स्थळ आणि तेथील कामगारांची संख्या तपासा. सध्याची पुरवठ्याची कामे तुमच्या कामगारांना व्यस्त ठेवू शकतात; बांधकाम करणारे उपलब्ध करून देताना अन्नपुरवठा चालू ठेवा."
+    },
+    {
+      "id": "native:[intro hint supply]",
+      "source": "Select the finished new Inn. Check its worker target and watch for wheat deliveries. Workers may need time to travel or eat.",
+      "target": "तयार झालेले नवीन निवासस्थान निवडा. त्याच्या कामगारांच्या उद्दिष्टाची तपासणी करा आणि गव्हाच्या वितरणावर लक्ष ठेवा. कामगारांना प्रवासासाठी किंवा जेवणासाठी वेळ लागू शकतो."
+    },
+    {
+      "id": "native:[intro hint grow]",
+      "source": "Check Swarm supply and worker-only production. Keep the Inns supplied while waiting for another worker.",
+      "target": "स्वॉर्मचा पुरवठा आणि केवळ कामगारांद्वारे होणारे उत्पादन तपासा. दुसऱ्या कामगाराची वाट पाहत असताना धर्मशाळांना पुरवठा चालू ठेवा."
+    },
+    {
+      "id": "native:[intro hint attack]",
+      "source": "Check your War Flag, requested warrior count, and food supply. Your warriors need time to travel and attack.",
+      "target": "तुमचा युद्धध्वज, मागितलेली योद्ध्यांची संख्या आणि अन्नसाठा तपासा. तुमच्या योद्ध्यांना प्रवास करून हल्ला करण्यासाठी वेळ लागेल."
+    },
+    {
+      "id": "native:[intro hint no suppliers]",
+      "source": "Your new Inn or building site has a worker target of 0. Select it and request workers.",
+      "target": "तुमच्या नवीन सराय किंवा बांधकाम स्थळाचे कामगार लक्ष्य ० आहे. ते निवडा आणि कामगारांची विनंती करा."
+    },
+    {
+      "id": "native:[intro hint retry]",
+      "source": "A unit or building needed for this lesson has been lost. Load an earlier save or restart this lesson from the game menu.",
+      "target": "या पाठासाठी आवश्यक असलेले एक युनिट किंवा इमारत गहाळ झाली आहे. कृपया आधीची सेव्ह लोड करा किंवा गेम मेन्यूमधून हा पाठ पुन्हा सुरू करा."
+    },
+    {
+      "id": "native:[intro complete]",
+      "source": "Introduction complete",
+      "target": "प्रस्तावना पूर्ण झाली."
+    },
+    {
+      "id": "native:[intro complete body]",
+      "source": "You directed autonomous globules, expanded food supply, grew the colony, and organized an attack. Continue with Tutorial lessons for training, upgrades, and defense, or return to the main menu to start a match.",
+      "target": "तुम्ही स्वायत्त ग्लोब्यूल्सना दिशा दिली, अन्नपुरवठा वाढवला, वसाहत वाढवली आणि हल्ल्याचे आयोजन केले. प्रशिक्षण, अपग्रेड्स आणि संरक्षणासाठी ट्युटोरियलमधील धडे सुरू ठेवा, किंवा सामना सुरू करण्यासाठी मुख्य मेन्यूवर परत जा."
+    },
+    {
+      "id": "native:[intro play again]",
+      "source": "Play again",
+      "target": "पुन्हा खेळा"
+    },
+    {
+      "id": "native:[intro restart]",
+      "source": "Restart introduction",
+      "target": "परिचय पुन्हा सुरू करा"
+    },
+    {
+      "id": "native:[intro restart body]",
+      "source": "Restart from the prepared colony? Unsaved progress in this introduction will be lost.",
+      "target": "तयार केलेल्या वसाहतीपासून पुन्हा सुरुवात करायची का? या प्रस्तावनेतील जतन न केलेली प्रगती नाहीशी होईल."
+    },
+    {
+      "id": "native:[intro help touch scout]",
+      "source": "Drag empty ground to move the view before placing a flag. Find the stone patch east of the colony. Open Flags, choose Exploration Flag, place it on the stone and confirm. Select the flag and request 1 explorer using its assigned-unit target. Globules travel on their own and may stop to eat.",
+      "target": "ध्वज लावण्यापूर्वी दृश्य हलवण्यासाठी रिकामी जमीन ड्रॅग करा. वसाहतीच्या पूर्वेकडील दगडांचा समूह शोधा. 'फ्लॅग्स' उघडा, 'एक्सप्लोरेशन फ्लॅग' निवडा, तो दगडावर लावा आणि कन्फर्म करा. ध्वज निवडा आणि त्याच्या नेमलेल्या युनिट लक्ष्याचा वापर करून १ एक्सप्लोररची विनंती करा. ग्लोब्यूल्स स्वतःहून प्रवास करतात आणि खाण्यासाठी थांबू शकतात."
+    },
+    {
+      "id": "native:[intro help touch build]",
+      "source": "Choose Inn from Build. Place it in clear ground near wheat and confirm. Select the site and request 2 builders. A worker target is a request, not a count of workers already present. Keep the existing Inn and Swarm supplied. Any valid location counts.",
+      "target": "बिल्डमधून इन निवडा. ते गव्हाजवळच्या मोकळ्या जागेत ठेवा आणि कन्फर्म करा. जागा निवडा आणि २ बिल्डर्सची विनंती करा. वर्कर टार्गेट ही एक विनंती आहे, आधीपासून उपस्थित असलेल्या कामगारांची संख्या नाही. सध्याचे इन आणि पुरवलेला स्वॉर्म कायम ठेवा. कोणतीही वैध जागा ग्राह्य धरली जाईल."
+    },
+    {
+      "id": "native:[intro help touch supply]",
+      "source": "Select the finished new Inn and increase its assigned-worker target. Construction and everyday supply have separate targets. A supplier gathers wheat and carries it here. Hungry globules eat at Inns; a building with no suppliers eventually runs out. Keep the wheat accessible.",
+      "target": "पूर्ण झालेले नवीन सराय निवडा आणि त्यासाठी नेमलेल्या कामगारांचे लक्ष्य वाढवा. बांधकाम आणि दैनंदिन पुरवठा यांची वेगवेगळी लक्ष्ये आहेत. एक पुरवठादार गहू गोळा करून येथे आणतो. भुकेले गोळे सरायमध्ये जेवतात; ज्या इमारतीला पुरवठादार नसतात, तिचा साठा अखेरीस संपतो. गहू सहज उपलब्ध राहील याची खात्री करा."
+    },
+    {
+      "id": "native:[intro help touch grow]",
+      "source": "Select the Swarm. Set worker production to 1 and explorer and warrior production to 0. Increase its assigned-worker target to 2 or more. Suppliers bring wheat for new units, but they compete with other jobs. Keep both Inns supplied.",
+      "target": "स्वॉर्म निवडा. कामगारांचे उत्पादन १ वर आणि शोधक व योद्ध्यांचे उत्पादन ० वर सेट करा. त्याचे नेमून दिलेल्या कामगारांचे लक्ष्य २ किंवा अधिकपर्यंत वाढवा. पुरवठादार नवीन युनिट्ससाठी गहू आणतात, पण ते इतर कामांशी स्पर्धा करतात. दोन्ही धर्मशाळांना पुरवठा चालू ठेवा."
+    },
+    {
+      "id": "native:[intro help touch attack]",
+      "source": "Open Flags, choose War Flag, place it over the enemy Swarm east of the stone and confirm. Select the flag and request up to 4 warriors. A small radius concentrates them. If none remain, produce warriors at your Swarm. Warriors may stop to eat; keep the Inns supplied.",
+      "target": "ध्वज उघडा, युद्ध ध्वज निवडा, तो दगडाच्या पूर्वेकडील शत्रूंच्या थव्यावर ठेवा आणि पुष्टी करा. ध्वज निवडा आणि जास्तीत जास्त ४ योद्ध्यांची मागणी करा. एका लहान त्रिज्येमध्ये ते एकत्र येतात. जर एकही शिल्लक राहिला नाही, तर तुमच्या थव्यावर योद्धे तयार करा. योद्धे जेवण्यासाठी थांबू शकतात; धर्मशाळांना पुरवठा चालू ठेवा."
+    },
+    {
+      "id": "native:[intro show destination]",
+      "source": "Show destination",
+      "target": "गंतव्यस्थान दाखवा"
+    },
+    {
+      "id": "native:[intro scout destination]",
+      "source": "Scout here",
+      "target": "येथे स्काउट"
+    },
+    {
+      "id": "native:[intro compact scout]",
+      "source": "Flags → Exploration Flag. Place it on the stone; assign 1 explorer.",
+      "target": "ध्वज → शोध मोहिमेचा ध्वज. तो दगडावर ठेवा; १ शोधक नेमा."
+    },
+    {
+      "id": "native:[intro compact build]",
+      "source": "Build → Inn. Place near wheat; assign 2 builders.",
+      "target": "धर्मशाळा बांधा. गव्हाजवळ ठेवा; २ बांधकाम करणारे नेमा."
+    },
+    {
+      "id": "native:[intro compact supply]",
+      "source": "Select your new Inn; assign at least 1 supplier. Wait for wheat.",
+      "target": "तुमचे नवीन निवासस्थान निवडा; किमान १ पुरवठादार नेमा. गव्हाची वाट पहा."
+    },
+    {
+      "id": "native:[intro compact grow]",
+      "source": "Select the Swarm; assign 2 suppliers. Produce workers only.",
+      "target": "स्वॉर्म निवडा; २ पुरवठादार नेमा. फक्त कामगार तयार करा."
+    },
+    {
+      "id": "native:[intro compact attack]",
+      "source": "Flags → War Flag. Place over the enemy Swarm; assign warriors.",
+      "target": "ध्वज → युद्धध्वज. शत्रूच्या थव्यावर ठेवा; योद्धे नियुक्त करा."
+    },
+    {
+      "id": "native:[lesson healing title]",
+      "source": "Hospitals and healing",
+      "target": "रुग्णालये आणि उपचार"
+    },
+    {
+      "id": "native:[lesson healing briefing]",
+      "source": "Build a Hospital and help a wounded worker recover. The colony starts fed, with one injured worker.",
+      "target": "रुग्णालय बांधा आणि एका जखमी कामगाराला बरे होण्यास मदत करा. वसाहतीची सुरुवात अन्नाने होते, पण तिथे एक जखमी कामगार असतो."
+    },
+    {
+      "id": "native:[lesson healing complete]",
+      "source": "Your Hospital restored an injured globule. Keep Inns supplied: hunger can injure units again.",
+      "target": "तुमच्या रुग्णालयाने एका जखमी गोळ्याला पुनर्संचयित केले. धर्मशाळांना पुरवठा चालू ठेवा: उपासमारीमुळे युनिट्स पुन्हा जखमी होऊ शकतात."
+    },
+    {
+      "id": "native:[lesson healing build hint]",
+      "source": "Build a Hospital in clear ground; assign 2 builders. Leave room for globules to enter and exit. Hospitals heal injuries; Inns supply food. This patient is already fed.",
+      "target": "मोकळ्या जागेवर रुग्णालय बांधा; २ बांधकाम व्यावसायिक नेमा. गोळ्यांना आत-बाहेर जाण्यासाठी जागा सोडा. रुग्णालये जखमा बऱ्या करतात; धर्मशाळा अन्न पुरवतात. या रुग्णाला आधीच खाऊ घातलेले आहे."
+    },
+    {
+      "id": "native:[lesson healing build title]",
+      "source": "Build a Hospital",
+      "target": "रुग्णालय बांधा"
+    },
+    {
+      "id": "native:[lesson healing build instruction]",
+      "source": "Build a Hospital in clear ground; assign 2 builders.",
+      "target": "मोकळ्या जागेवर रुग्णालय बांधा; दोन बांधकाम व्यावसायिक नेमा."
+    },
+    {
+      "id": "native:[lesson healing build help]",
+      "source": "Leave room for globules to enter and exit. Hospitals heal injuries; Inns supply food. This patient is already fed.",
+      "target": "गोळ्यांच्या आत-बाहेर जाण्यासाठी जागा सोडा. रुग्णालये जखमा बऱ्या करतात; धर्मशाळा अन्न पुरवतात. या रुग्णाला आधीच खाऊ घातले आहे."
+    },
+    {
+      "id": "native:[lesson healing build marker]",
+      "source": "Build a Hospital",
+      "target": "रुग्णालय बांधा"
+    },
+    {
+      "id": "native:[lesson healing heal hint]",
+      "source": "Keep the Hospital accessible. Watch the injured worker recover. Globules seek healing autonomously. Track the injured worker, not a newly born unit. If it dies, restart or load a save.",
+      "target": "रुग्णालय उपलब्ध ठेवा. जखमी कामगार बरा होत असताना त्याच्यावर लक्ष ठेवा. ग्लोब्यूल्स आपोआप बरे होण्याचा प्रयत्न करतात. जखमी कामगारावर लक्ष ठेवा, नवजात युनिटवर नाही. जर ते मरण पावले, तर गेम पुन्हा सुरू करा किंवा सेव्ह केलेली फाईल लोड करा."
+    },
+    {
+      "id": "native:[lesson healing heal title]",
+      "source": "Let the patient recover",
+      "target": "रुग्णाला बरे होऊ द्या"
+    },
+    {
+      "id": "native:[lesson healing heal instruction]",
+      "source": "Keep the Hospital accessible. Watch the injured worker recover.",
+      "target": "रुग्णालय सर्वांसाठी सुलभ ठेवा. जखमी कामगार बरा होताना पाहा."
+    },
+    {
+      "id": "native:[lesson healing heal help]",
+      "source": "Globules seek healing autonomously. Track the injured worker, not a newly born unit. If it dies, restart or load a save.",
+      "target": "ग्लोब्यूल्स स्वतःहून उपचार शोधतात. जखमी कामगारावर लक्ष ठेवा, नवजात युनिटवर नाही. जर ते मरण पावले, तर गेम पुन्हा सुरू करा किंवा सेव्ह केलेला डेटा लोड करा."
+    },
+    {
+      "id": "native:[lesson healing heal marker]",
+      "source": "Let the patient recover",
+      "target": "रुग्णाला बरे होऊ द्या"
+    },
+    {
+      "id": "native:[lesson walking-training title]",
+      "source": "Walking training",
+      "target": "चालण्याचे प्रशिक्षण"
+    },
+    {
+      "id": "native:[lesson walking-training briefing]",
+      "source": "Build a Racetrack and observe an existing worker learn to walk faster.",
+      "target": "एक रेसट्रॅक तयार करा आणि आधीपासून काम करणारा एक कामगार अधिक वेगाने चालायला कसा शिकतो याचे निरीक्षण करा."
+    },
+    {
+      "id": "native:[lesson walking-training complete]",
+      "source": "Your workers learned faster walking. Training improves the workers you have; it does not replace the colony food supply.",
+      "target": "तुमचे कामगार अधिक वेगाने चालायला शिकले. प्रशिक्षणामुळे तुमच्या कामगारांची कार्यक्षमता वाढते; ते वसाहतीच्या अन्नपुरवठ्याची जागा घेत नाही."
+    },
+    {
+      "id": "native:[lesson walking-training build hint]",
+      "source": "Build a Racetrack in the marked clearing; assign builders. A Racetrack needs wood and stone. Leave a gap around its edges for entry, exit and later expansion.",
+      "target": "खुणावलेल्या मोकळ्या जागेत शर्यतीचा ट्रॅक बांधा; बांधकाम करणाऱ्यांची नेमणूक करा. शर्यतीच्या ट्रॅकसाठी लाकूड आणि दगड लागतात. आत-बाहेर जाण्यासाठी आणि नंतरच्या विस्तारासाठी त्याच्या कडांभोवती जागा सोडा."
+    },
+    {
+      "id": "native:[lesson walking-training build title]",
+      "source": "Build a Racetrack",
+      "target": "रेसट्रॅक तयार करा"
+    },
+    {
+      "id": "native:[lesson walking-training build instruction]",
+      "source": "Build a Racetrack in the marked clearing; assign builders.",
+      "target": "चिन्हांकित मोकळ्या जागेत शर्यतीचा ट्रॅक बांधा; बांधकाम करणाऱ्यांची नेमणूक करा."
+    },
+    {
+      "id": "native:[lesson walking-training build help]",
+      "source": "A Racetrack needs wood and stone. Leave a gap around its edges for entry, exit and later expansion.",
+      "target": "रेसट्रॅकसाठी लाकूड आणि दगड लागतात. आत-बाहेर जाण्यासाठी आणि नंतरच्या विस्तारासाठी त्याच्या कडांभोवती जागा सोडा."
+    },
+    {
+      "id": "native:[lesson walking-training build marker]",
+      "source": "Build a Racetrack",
+      "target": "रेसट्रॅक तयार करा"
+    },
+    {
+      "id": "native:[lesson walking-training train hint]",
+      "source": "Keep the Racetrack accessible and let a worker finish training. Training is automatic for eligible globules. Keep some workers free from supply jobs and keep both Inns stocked.",
+      "target": "रेसट्रॅक वापरासाठी खुला ठेवा आणि एका कामगाराला प्रशिक्षण पूर्ण करू द्या. पात्र ग्लोब्यूल्ससाठी प्रशिक्षण स्वयंचलित आहे. काही कामगारांना पुरवठ्याच्या कामांपासून मोकळे ठेवा आणि दोन्ही धर्मशाळांमध्ये पुरेसा साठा ठेवा."
+    },
+    {
+      "id": "native:[lesson walking-training train title]",
+      "source": "Train an existing worker",
+      "target": "विद्यमान कामगाराला प्रशिक्षण द्या"
+    },
+    {
+      "id": "native:[lesson walking-training train instruction]",
+      "source": "Keep the Racetrack accessible and let a worker finish training.",
+      "target": "रेसट्रॅक खुला ठेवा आणि एका कामगाराला प्रशिक्षण पूर्ण करू द्या."
+    },
+    {
+      "id": "native:[lesson walking-training train help]",
+      "source": "Training is automatic for eligible globules. Keep some workers free from supply jobs and keep both Inns stocked.",
+      "target": "पात्र ग्लोब्यूल्ससाठी प्रशिक्षण स्वयंचलित आहे. काही कामगारांना पुरवठ्याच्या कामांपासून मोकळे ठेवा आणि दोन्ही इनमध्ये मालसाठा ठेवा."
+    },
+    {
+      "id": "native:[lesson swimming title]",
+      "source": "Swimming and water resources",
+      "target": "पोहणे आणि जलस्रोत"
+    },
+    {
+      "id": "native:[lesson swimming briefing]",
+      "source": "Train swimmers, then use algae from the pond to construct a School.",
+      "target": "जलतरणपटूंना प्रशिक्षण द्या, त्यानंतर तलावातील शेवाळाचा वापर करून शाळा बांधा."
+    },
+    {
+      "id": "native:[lesson swimming complete]",
+      "source": "A swimmer delivered water resources for your School. Water access expands the jobs your colony can perform.",
+      "target": "एका जलतरणपटूने तुमच्या शाळेसाठी पाणी आणले. पाण्याच्या उपलब्धतेमुळे तुमच्या वसाहतीला करता येणाऱ्या कामांची व्याप्ती वाढते."
+    },
+    {
+      "id": "native:[lesson swimming build hint]",
+      "source": "Build a Swimming Pool west of the pond; assign builders. Leave space around the pool. A worker cannot gather algae in deep water until it has learned to swim.",
+      "target": "तलावाच्या पश्चिमेला एक जलतरण तलाव बांधा; बांधकाम करणाऱ्यांची नेमणूक करा. तलावाभोवती जागा सोडा. जोपर्यंत एखादा कामगार पोहायला शिकत नाही, तोपर्यंत तो खोल पाण्यातून शेवाळ गोळा करू शकत नाही."
+    },
+    {
+      "id": "native:[lesson swimming build title]",
+      "source": "Build a Swimming Pool",
+      "target": "जलतरण तलाव बांधा"
+    },
+    {
+      "id": "native:[lesson swimming build instruction]",
+      "source": "Build a Swimming Pool west of the pond; assign builders.",
+      "target": "तलावाच्या पश्चिमेला एक जलतरण तलाव बांधा; बांधकाम करणाऱ्यांची नेमणूक करा."
+    },
+    {
+      "id": "native:[lesson swimming build help]",
+      "source": "Leave space around the pool. A worker cannot gather algae in deep water until it has learned to swim.",
+      "target": "तलावाच्या भोवती जागा सोडा. कामगार पोहायला शिकल्याशिवाय खोल पाण्यातून शेवाळ गोळा करू शकत नाही."
+    },
+    {
+      "id": "native:[lesson swimming build marker]",
+      "source": "Build a Swimming Pool",
+      "target": "जलतरण तलाव बांधा"
+    },
+    {
+      "id": "native:[lesson swimming train hint]",
+      "source": "Let an existing worker finish swimming training. Units choose training automatically. Keep supply running and allow free workers to reach the pool.",
+      "target": "सध्याच्या कामगाराला पोहण्याचे प्रशिक्षण पूर्ण करू द्या. युनिट्स आपोआप प्रशिक्षण निवडतात. पुरवठा चालू ठेवा आणि मोकळ्या कामगारांना तलावापर्यंत पोहोचू द्या."
+    },
+    {
+      "id": "native:[lesson swimming train title]",
+      "source": "Train a swimmer",
+      "target": "जलतरणपटूला प्रशिक्षण द्या"
+    },
+    {
+      "id": "native:[lesson swimming train instruction]",
+      "source": "Let an existing worker finish swimming training.",
+      "target": "विद्यमान कामगाराला पोहण्याचे प्रशिक्षण पूर्ण करू द्या."
+    },
+    {
+      "id": "native:[lesson swimming train help]",
+      "source": "Units choose training automatically. Keep supply running and allow free workers to reach the pool.",
+      "target": "युनिट्स आपोआप प्रशिक्षण निवडतात. पुरवठा चालू ठेवा आणि मोकळ्या कामगारांना उपलब्ध होऊ द्या."
+    },
+    {
+      "id": "native:[lesson swimming water-job hint]",
+      "source": "Build a School near the colony; assign builders to fetch wood and algae. The algae grows in the pond. A trained swimmer must enter water to collect it. Keep the School on open land with access for suppliers.",
+      "target": "वसाहतीजवळ एक शाळा बांधा; लाकूड आणि शेवाळ आणण्यासाठी बांधकाम व्यावसायिकांना नेमा. शेवाळ तलावात वाढते. ते गोळा करण्यासाठी एका प्रशिक्षित जलतरणपटूला पाण्यात उतरावे लागेल. शाळा पुरवठादारांना सहज पोहोचता येईल अशा मोकळ्या जागेवर ठेवा."
+    },
+    {
+      "id": "native:[lesson swimming water-job title]",
+      "source": "Use algae from the pond",
+      "target": "तलावातील शेवाळ वापरा"
+    },
+    {
+      "id": "native:[lesson swimming water-job instruction]",
+      "source": "Build a School near the colony; assign builders to fetch wood and algae.",
+      "target": "वसाहतीजवळ एक शाळा बांधा; लाकूड आणि शेवाळ आणण्यासाठी बांधकाम व्यावसायिकांना नेमा."
+    },
+    {
+      "id": "native:[lesson swimming water-job help]",
+      "source": "The algae grows in the pond. A trained swimmer must enter water to collect it. Keep the School on open land with access for suppliers.",
+      "target": "तलावात शेवाळ वाढते. ते गोळा करण्यासाठी एका प्रशिक्षित जलतरणपटूला पाण्यात उतरावे लागेल. शाळा पुरवठादारांना प्रवेश मिळेल अशा मोकळ्या जागेवर ठेवावी."
+    }
+  ],
+  "subset_sha256": "046963eaef21ca336b8be25ddf14fe29d8e682da10ba0875391bb80ed4ac2b41"
+}

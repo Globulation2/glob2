@@ -1,0 +1,105 @@
+{
+  "source_sha256": "0ac44b4cdfb03e688983d6e3fb1e484cca57589665bff19c5c65388e649b292a",
+  "batch_target_sha256": "67b8c653bc654799c5b97505238cd53b7c5b915c87efc3869fca7b520559e2de",
+  "catalog_sha256": {
+    "native": "a6d0da95a3cf29e0bcfa904f80043a10fedc3124f7a26e3beebc82e8cdfa4411",
+    "online": "d7ae02f4d4453ebcb2acc37c15fd862acea8d2996d29cdb89bfb64c4f32cd5fa"
+  },
+  "entries": [
+    {
+      "id": "native:[settings Error: %0]",
+      "source": "Error: %0",
+      "target": "त्रुटी: %0"
+    },
+    {
+      "id": "native:[settings None]",
+      "source": "None",
+      "target": "काहीही नाही"
+    },
+    {
+      "id": "native:[settings Starting]",
+      "source": "Starting",
+      "target": "सुरुवात"
+    },
+    {
+      "id": "native:[settings Browse shared generators]",
+      "source": "Browse shared generators",
+      "target": "सामायिक जनरेटर ब्राउझ करा"
+    },
+    {
+      "id": "native:[settings Apply artwork on the next game or editor load.]",
+      "source": "Apply artwork on the next game or editor load.",
+      "target": "पुढील गेम किंवा एडिटर लोड झाल्यावर कलाकृती लागू करा."
+    },
+    {
+      "id": "native:[settings Requires a renderer with texture filtering. Your saved choice is retained.]",
+      "source": "Requires a renderer with texture filtering. Your saved choice is retained.",
+      "target": "टेक्सचर फिल्टरिंग असलेल्या रेंडररची आवश्यकता आहे. तुमची जतन केलेली निवड कायम ठेवली जाते."
+    },
+    {
+      "id": "native:[settings Automatically show the torus overview while moving around the map.]",
+      "source": "Automatically show the torus overview while moving around the map.",
+      "target": "नकाशावर फिरताना टोरसचे विहंगम दृश्य आपोआप दाखवा."
+    },
+    {
+      "id": "native:[settings Requires a renderer with torus support. Your saved choice is retained.]",
+      "source": "Requires a renderer with torus support. Your saved choice is retained.",
+      "target": "टोरस सपोर्ट असलेल्या रेंडररची आवश्यकता आहे. तुमची जतन केलेली निवड कायम ठेवली जाते."
+    },
+    {
+      "id": "native:[settings Move and animate units between game ticks.]",
+      "source": "Move and animate units between game ticks.",
+      "target": "गेम टिक्स दरम्यान युनिट्सना हलवा आणि अॅनिमेट करा."
+    },
+    {
+      "id": "native:[settings Renderer unavailable]",
+      "source": "Renderer unavailable",
+      "target": "रेंडरर अनुपलब्ध आहे"
+    },
+    {
+      "id": "native:[settings Apply at the next completed frame. Your game stays running.]",
+      "source": "Apply at the next completed frame. Your game stays running.",
+      "target": "पुढील पूर्ण झालेल्या फ्रेमवर लागू करा. तुमचा गेम चालू राहतो."
+    },
+    {
+      "id": "native:[settings Active renderer: %0]",
+      "source": "Active renderer: %0",
+      "target": "सक्रिय रेंडरर: %0"
+    },
+    {
+      "id": "native:[settings Changing renderer…]",
+      "source": "Changing renderer…",
+      "target": "रेंडरर बदलत आहे…"
+    },
+    {
+      "id": "native:[settings Menu scroll wheel enabled]",
+      "source": "Menu scroll wheel enabled",
+      "target": "मेनू स्क्रोल व्हील सक्षम केले आहे"
+    },
+    {
+      "id": "native:[settings Controls wheel scrolling in menus. The wheel always zooms the game and editor maps.]",
+      "source": "Controls wheel scrolling in menus. The wheel always zooms the game and editor maps.",
+      "target": "मेनूमध्ये चाकाने स्क्रोल करणे नियंत्रित करते. खेळातील आणि संपादकातील नकाशांवर चाक नेहमी झूम करते."
+    },
+    {
+      "id": "native:[settings Gesture scrolling]",
+      "source": "Gesture scrolling",
+      "target": "हावभाव स्क्रोलिंग"
+    },
+    {
+      "id": "native:[settings Touch and Mac gesture scrolling. 0 turns an effect off; 50 is the touch default.]",
+      "source": "Touch and Mac gesture scrolling. 0 turns an effect off; 50 is the touch default.",
+      "target": "स्पर्श आणि Mac वरील हालचालींनी स्क्रोल करणे. मूल्य 0 असल्यास परिणाम बंद होतो; स्पर्शासाठी पूर्वनिर्धारित मूल्य 50 आहे."
+    },
+    {
+      "id": "native:[settings How far lists and panels keep scrolling after a touch flick. Mac gestures use system momentum; zero disables their glide.]",
+      "source": "How far lists and panels keep scrolling after a touch flick. Mac gestures use system momentum; zero disables their glide.",
+      "target": "स्पर्शाने झटका दिल्यावर याद्या आणि पटले किती पुढे सरकतात. Mac वरील हालचाली प्रणालीची गती वापरतात; मूल्य शून्य असल्यास त्यांची पुढे घसरण बंद होते."
+    },
+    {
+      "id": "native:[settings How much lists and panels stretch past their ends and spring back. Mac gestures use a gentler stretch.]",
+      "source": "How much lists and panels stretch past their ends and spring back. Mac gestures use a gentler stretch.",
+      "target": "सूची आणि पॅनेल त्यांच्या टोकांच्या पलीकडे किती ताणले जातात आणि परत मूळ स्थितीत येतात. मॅक जेश्चरमध्ये अधिक सौम्य ताण वापरला जातो."
+    }
+  ]
+}

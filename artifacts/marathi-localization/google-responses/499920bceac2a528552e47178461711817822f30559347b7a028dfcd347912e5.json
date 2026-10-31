@@ -1,0 +1,383 @@
+{
+  "request": {
+    "project": "bradley-personal-20261027",
+    "model": "general/nmt",
+    "payload": {
+      "sourceLanguageCode": "en",
+      "targetLanguageCode": "mr",
+      "mimeType": "text/plain",
+      "contents": [
+        "Building gradients...",
+        "Loading buildings...",
+        "Flags",
+        "Buildings: ZXQPH0QXZ",
+        "Read-only building",
+        "Share market vision",
+        "Tip: exploration flags send explorers to reveal the map; war flags gather your warriors.",
+        "Buildings",
+        "Buildings standing",
+        "Finished buildings the colony had. Split it to see each kind of building.",
+        "Buildings lost",
+        "Buildings destroyed by enemies or demolished by the colony itself.",
+        "Buildings with no way in",
+        "Buildings whose entrances were blocked, so units could not get in or out.",
+        "buildings",
+        "Buildings lost",
+        "first building destroyed",
+        "Workers",
+        "Explorers",
+        "Warriors",
+        "By building",
+        "Building strength",
+        "Units gain levels at training buildings and buildings can be upgraded. Repairs remain available when off.",
+        "How workers spent their time",
+        "What the colony's workers were doing, moment by moment: working for a building, working at a flag, training, eating, healing, waiting hungry or hurt with no inn or hospital free, or idle with nothing to do. A healthy colony keeps most of its workers working, few idle and none waiting.",
+        "Idle workers",
+        "The share of workers' time spent with nothing to do. High values mean more workers than work; near zero means every worker is busy and jobs may be waiting.",
+        "Distance from the inn",
+        "How far hungry workers were, on average over their walk, from the inn they were heading for, in map squares in a straight line. A whole trip is roughly twice this. High values mean inns are far from where workers work.",
+        "Warriors",
+        "How many warriors the colony had. Split it to see how many were near home, near an enemy colony, or in open ground. Ground close to both colonies counts as home.",
+        "Average warrior attack level",
+        "The average attack level of the colony's warriors, counting attack speed and attack strength equally, on the 1 to 4 scale the game shows. Barracks raise it; new untrained warriors pull it down.",
+        "What warriors were doing",
+        "How the colony's warriors divided between those sent to a war flag, those hurt badly enough to leave the fight for a hospital (including those being healed), and those free.",
+        "At a flag",
+        "Swarms",
+        "Other buildings",
+        "On a war flag",
+        "workers",
+        "workers' time",
+        "workers supplying buildings",
+        "warriors",
+        "enemy warriors",
+        "Markets V2",
+        "Workers can fetch supplies from shared market stock. Markets can upgrade to store food and wood, then every material. Trading between teams remains fruit-only. Applies to new games; saves keep their original setting.",
+        "Flags & units",
+        "Level",
+        "Destroy this building?",
+        "Building families",
+        "Building library",
+        "Checking building release",
+        "Create in Building Studio",
+        "Enter a building family ID or a link to its family page.",
+        "Install individual buildings or upgrade families alongside the stock buildings. Selection applies only to newly generated maps.",
+        "Invalid building family ID.",
+        "Invalid building library response",
+        "Loading building families",
+        "No building families installed.",
+        "No public building families yet",
+        "Opening building family",
+        "No assigned Exploration Flag was found. Place one on the stone east of your base and request 1 explorer.",
+        "No assigned War Flag was found at the enemy base. Place one over the eastern enemy Swarm and request warriors.",
+        "Producing and training warriors",
+        "Produce warriors at the Swarm, then train them at a Training Camp.",
+        "You controlled military production and trained warriors. Keep their food supply running; combat units still need to eat.",
+        "Set the Swarm to warriors only; assign suppliers and wait for 2 warriors. Set worker and explorer ratios to 0 and warrior ratio to 1. The Swarm consumes wheat for births. Ratios choose what is produced; suppliers determine whether it can run.",
+        "Produce two warriors",
+        "Set the Swarm to warriors only; assign suppliers and wait for 2 warriors.",
+        "Set worker and explorer ratios to 0 and warrior ratio to 1. The Swarm consumes wheat for births. Ratios choose what is produced; suppliers determine whether it can run.",
+        "Produce two warriors",
+        "Build a Training Camp in the clearing; assign builders. Stop or reduce warrior production once you have enough. Training Camps teach combat skills; they need free space around their edges.",
+        "Build a Training Camp"
+      ]
+    }
+  },
+  "response": {
+    "translations": [
+      {
+        "translatedText": "ग्रेडियंट्स तयार करणे...",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "इमारती लोड होत आहेत...",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ध्वज",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "इमारती: ZXQPH0QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "केवळ वाचनीय इमारत",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "शेअर बाजाराची दृष्टी",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सूचना: शोध ध्वज नकाशा उघड करण्यासाठी शोधकांना पाठवतात; युद्ध ध्वज तुमच्या योद्ध्यांना एकत्र करतात.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "इमारती",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "उभ्या असलेल्या इमारती",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "वसाहतीमधील पूर्ण झालेल्या इमारती. प्रत्येक प्रकारची इमारत पाहण्यासाठी त्याचे विभाजन करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "इमारती नष्ट झाल्या",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "शत्रूंनी नष्ट केलेल्या किंवा वसाहतीनेच पाडलेल्या इमारती.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "आत जाण्याचा मार्ग नसलेल्या इमारती",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ज्या इमारतींचे प्रवेशद्वार बंद होते, त्यामुळे व्यक्तींना आत किंवा बाहेर जाता येत नव्हते.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "इमारती",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "इमारती नष्ट झाल्या",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पहिली इमारत नष्ट झाली",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कामगार",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "शोधक",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "योद्धे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "बांधून",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ताकद निर्माण करणे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "प्रशिक्षण इमारतींमध्ये युनिट्सची पातळी वाढते आणि इमारती अपग्रेड केल्या जाऊ शकतात. दुरुस्ती बंद असतानाही उपलब्ध राहते.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कामगारांनी आपला वेळ कसा घालवला",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "वसाहतीचे कामगार क्षणोक्षणी काय करत होते: इमारत बांधण्याचे काम, ध्वज उभारण्याचे काम, प्रशिक्षण, खाणेपिणे, उपचार घेणे, कोणतेही धर्मशाळा किंवा रुग्णालय मोकळे नसल्यामुळे भुकेले किंवा जखमी अवस्थेत वाट पाहणे, किंवा काहीही काम नसल्यामुळे निष्क्रिय राहणे. एक सुदृढ वसाहत आपल्या बहुतेक कामगारांना कामात व्यस्त ठेवते, फार कमी कामगारांना निष्क्रिय ठेवते आणि कोणालाही वाट पाहत बसू देत नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "निष्क्रिय कामगार",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कामगारांच्या काहीही काम नसलेल्या वेळेचा वाटा. उच्च मूल्यांचा अर्थ कामापेक्षा कामगार जास्त असणे असा होतो; शून्याच्या जवळपास असण्याचा अर्थ प्रत्येक कामगार व्यस्त आहे आणि कामे प्रतीक्षेत असू शकतात.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "धर्मशाळेपासूनचे अंतर",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "भुकेले कामगार त्यांच्या चालण्याच्या मार्गावर, ज्या धर्मशाळेकडे जात होते, तिथून सरासरी किती दूर होते, हे नकाशावरील सरळ रेषेतील चौकोनांमध्ये दर्शवले आहे. संपूर्ण प्रवासाचे अंतर साधारणपणे याच्या दुप्पट असते. जास्त मूल्ये दर्शवतात की धर्मशाळा कामगारांच्या कामाच्या ठिकाणापासून दूर आहेत.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "योद्धे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "वसाहतीत किती योद्धे होते. त्यापैकी किती जण घराच्या जवळ, शत्रूच्या वसाहतीजवळ किंवा मोकळ्या मैदानात होते हे पाहण्यासाठी वसाहतीची विभागणी करा. दोन्ही वसाहतींच्या जवळची जागा घर म्हणून गणली जाते.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सरासरी योद्धा हल्ला पातळी",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "वसाहतीच्या योद्ध्यांची सरासरी आक्रमण पातळी, ज्यात आक्रमणाचा वेग आणि आक्रमणाची ताकद समान प्रमाणात मोजली जाते, जी गेममध्ये दाखवलेल्या १ ते ४ च्या स्केलवर असते. सैनिकी छावण्यांमुळे ती वाढते; नवीन अप्रशिक्षित योद्ध्यांमुळे ती कमी होते.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "योद्धे काय करत होते",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "वसाहतीचे योद्धे कसे विभागले गेले होते: ज्यांना युद्धध्वजाकडे पाठवले गेले, जे लढाई सोडून रुग्णालयात जाण्याइतके गंभीर जखमी झाले होते (यात बरे होत असलेल्यांचाही समावेश होता), आणि जे स्वतंत्र होते.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ध्वजाजवळ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "थवे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "इतर इमारती",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "युद्धाच्या ध्वजावर",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कामगार",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कामगारांचा वेळ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "इमारती पुरवणारे कामगार",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "योद्धे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "शत्रू योद्धे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "मार्केट्स V2",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कामगार सामायिक बाजार साठ्यातून पुरवठा आणू शकतात. अन्न आणि लाकूड, त्यानंतर प्रत्येक वस्तू साठवण्यासाठी बाजारपेठा अद्ययावत केल्या जाऊ शकतात. संघांमधील व्यापार केवळ फळांपुरताच मर्यादित राहतो. हे नवीन खेळांना लागू होते; सेव्ह केलेल्या फाइल्स त्यांची मूळ सेटिंग कायम ठेवतात.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ध्वज आणि एकके",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पातळी",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ही इमारत पाडून टाकायची?",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कुटुंब निर्माण करणे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ग्रंथालय इमारत",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "इमारत सोडण्याची तपासणी",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "बिल्डिंग स्टुडिओमध्ये तयार करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "इमारतीचा फॅमिली आयडी किंवा त्याच्या फॅमिली पेजची लिंक प्रविष्ट करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "स्टॉक इमारतींसोबत स्वतंत्र इमारती स्थापित करा किंवा फॅमिली अपग्रेड करा. ही निवड केवळ नव्याने तयार केलेल्या नकाशांवरच लागू होते.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अवैध इमारत परिवार आयडी.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अवैध बिल्डिंग लायब्ररी प्रतिसाद",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कुटुंब तयार करणे लोड करत आहे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कोणत्याही इमारतीतील कुटुंबे स्थापित केली नाहीत.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अद्याप सार्वजनिक इमारतींमध्ये कुटुंबे नाहीत",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "इमारत कुटुंब उघडणे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नेमून दिलेला कोणताही शोध ध्वज आढळला नाही. तुमच्या तळाच्या पूर्वेकडील दगडावर एक ध्वज ठेवा आणि १ शोधकाची विनंती करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "शत्रूच्या तळावर नेमून दिलेला युद्धध्वज आढळला नाही. पूर्वेकडील शत्रूंच्या थव्यावर एक ध्वज लावा आणि योद्ध्यांची मागणी करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "योद्धे तयार करणे आणि त्यांना प्रशिक्षण देणे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "स्वॉर्ममध्ये योद्धे तयार करा, मग त्यांना प्रशिक्षण शिबिरात प्रशिक्षित करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तुम्ही लष्करी उत्पादनावर नियंत्रण ठेवले आणि योद्ध्यांना प्रशिक्षण दिले. त्यांचा अन्नपुरवठा चालू ठेवा; लढाऊ तुकड्यांनाही खाण्याची गरज असते.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "स्वार्ममध्ये फक्त योद्धे ठेवा; पुरवठादार नेमा आणि २ योद्ध्यांची वाट पहा. कामगार आणि शोधक यांचे गुणोत्तर ० आणि योद्ध्यांचे गुणोत्तर १ ठेवा. स्वार्म जन्मासाठी गहू वापरतो. गुणोत्तरांवरून काय उत्पादन करायचे हे ठरते; पुरवठादार ठरवतात की ते चालू शकेल की नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "दोन योद्धे तयार करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "स्वार्ममध्ये फक्त योद्धे ठेवा; पुरवठादार नेमा आणि २ योद्ध्यांची वाट पहा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कामगार आणि शोधक यांचे गुणोत्तर ० वर आणि योद्ध्यांचे गुणोत्तर १ वर सेट करा. थवा जन्मासाठी गहू वापरतो. गुणोत्तरांवरून काय उत्पादन करायचे हे ठरते; पुरवठादार ते चालू शकेल की नाही हे ठरवतात.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "दोन योद्धे तयार करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "मोकळ्या जागेत एक प्रशिक्षण शिबिर उभारा; बांधकाम करणाऱ्यांना नियुक्त करा. पुरेसे योद्धे झाल्यावर त्यांचे उत्पादन थांबवा किंवा कमी करा. प्रशिक्षण शिबिरे लढाईची कौशल्ये शिकवतात; त्यांच्या कडांभोवती मोकळी जागा आवश्यक असते.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "प्रशिक्षण शिबिर तयार करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      }
+    ]
+  },
+  "response_sha256": "317777e5197e5c9efe7708a8070f7afe6ae455251a5748c35c1b6de4bc9366cb"
+}

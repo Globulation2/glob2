@@ -1,0 +1,510 @@
+{
+  "source_sha256": "0ac44b4cdfb03e688983d6e3fb1e484cca57589665bff19c5c65388e649b292a",
+  "batch_target_sha256": "f1705f3cd9caa26ee649c36229893379cf7f184325389542f363955b59a3c98d",
+  "catalog_sha256": {
+    "native": "9d9d27dc1179d0a59f88aa723606d7daebe5f9b1ff8903ce66622ee44b442cae",
+    "online": "1ba40d342498f5e7704a63e5d175bd9e8a0ede31e3ca2ce88e8cb1fbc0ba68a6"
+  },
+  "entries": [
+    {
+      "id": "online:Choose {value0}",
+      "source": "Choose {value0}",
+      "target": "{value0} निवडा"
+    },
+    {
+      "id": "online:Clear selection",
+      "source": "Clear selection",
+      "target": "निवड साफ करा"
+    },
+    {
+      "id": "online:Close",
+      "source": "Close",
+      "target": "बंद करा"
+    },
+    {
+      "id": "online:Close credits",
+      "source": "Close credits",
+      "target": "श्रेय बंद करा"
+    },
+    {
+      "id": "online:Close navigation",
+      "source": "Close navigation",
+      "target": "नेव्हिगेशन बंद करा"
+    },
+    {
+      "id": "online:Close panel",
+      "source": "Close panel",
+      "target": "पॅनल बंद करा"
+    },
+    {
+      "id": "online:Close panel · Escape",
+      "source": "Close panel · Escape",
+      "target": "पॅनल बंद करा · बाहेर पडा"
+    },
+    {
+      "id": "online:Close play choices",
+      "source": "Close play choices",
+      "target": "जवळचे खेळाचे पर्याय"
+    },
+    {
+      "id": "online:Close preview",
+      "source": "Close preview",
+      "target": "पूर्वावलोकन बंद करा"
+    },
+    {
+      "id": "online:Close {value0}",
+      "source": "Close {value0}",
+      "target": "{value0} बंद करा"
+    },
+    {
+      "id": "online:Closed",
+      "source": "Closed",
+      "target": "बंद"
+    },
+    {
+      "id": "online:Code",
+      "source": "Code",
+      "target": "कोड"
+    },
+    {
+      "id": "online:Code or invite link",
+      "source": "Code or invite link",
+      "target": "कोड किंवा आमंत्रण लिंक"
+    },
+    {
+      "id": "online:Collection disabled",
+      "source": "Collection disabled",
+      "target": "संकलन अक्षम केले आहे"
+    },
+    {
+      "id": "online:Collection enabled",
+      "source": "Collection enabled",
+      "target": "संकलन सक्षम केले"
+    },
+    {
+      "id": "online:Colonies",
+      "source": "Colonies",
+      "target": "वसाहती"
+    },
+    {
+      "id": "online:Colony AI",
+      "source": "Colony AI",
+      "target": "कॉलनी एआय"
+    },
+    {
+      "id": "online:Colony skins",
+      "source": "Colony skins",
+      "target": "कॉलनी स्किन्स"
+    },
+    {
+      "id": "online:Colony still standing",
+      "source": "Colony still standing",
+      "target": "वसाहत अजूनही उभी आहे"
+    },
+    {
+      "id": "online:Colony {slot0}",
+      "source": "Colony {slot0}",
+      "target": "कॉलनी {slot0}"
+    },
+    {
+      "id": "online:Colony {value0} paint",
+      "source": "Colony {value0} paint",
+      "target": "कॉलनी {value0} पेंट"
+    },
+    {
+      "id": "online:Colony {value0} skin",
+      "source": "Colony {value0} skin",
+      "target": "कॉलनी {value0} त्वचा"
+    },
+    {
+      "id": "online:Color",
+      "source": "Color",
+      "target": "रंग"
+    },
+    {
+      "id": "online:Colors your buildings; painted units stay unchanged.",
+      "source": "Colors your buildings; painted units stay unchanged.",
+      "target": "तुमच्या इमारतींना रंग द्या; रंगवलेले घटक अपरिवर्तित राहतात."
+    },
+    {
+      "id": "online:Colors, seams and raised decor",
+      "source": "Colors, seams and raised decor",
+      "target": "रंग, शिवण आणि उठावदार सजावट"
+    },
+    {
+      "id": "online:Combat",
+      "source": "Combat",
+      "target": "लढाई"
+    },
+    {
+      "id": "online:Commander account",
+      "source": "Commander account",
+      "target": "कमांडर खाते"
+    },
+    {
+      "id": "online:Commander work",
+      "source": "Commander work",
+      "target": "कमांडरचे काम"
+    },
+    {
+      "id": "online:Community",
+      "source": "Community",
+      "target": "समुदाय"
+    },
+    {
+      "id": "online:Community-made JavaScript players control a colony through Glob2’s AI API. Download a version, import it in Settings → Custom AIs, then choose it for a computer seat in a local game. Installed versions work offline; saved games keep their original code.",
+      "source": "Community-made JavaScript players control a colony through Glob2’s AI API. Download a version, import it in Settings → Custom AIs, then choose it for a computer seat in a local game. Installed versions work offline; saved games keep their original code.",
+      "target": "समुदायाने तयार केलेले JavaScript खेळाडू Glob2 च्या AI API द्वारे एका वसाहतीवर नियंत्रण ठेवतात. एक आवृत्ती डाउनलोड करा, ती सेटिंग्ज → कस्टम एआय मध्ये इम्पोर्ट करा, आणि मग स्थानिक गेममध्ये कॉम्प्युटर सीटसाठी ती निवडा. इन्स्टॉल केलेल्या आवृत्त्या ऑफलाइन काम करतात; सेव्ह केलेल्या गेम्सचा मूळ कोड तसाच राहतो."
+    },
+    {
+      "id": "online:Compare revision",
+      "source": "Compare revision",
+      "target": "पुनरावृत्तीची तुलना करा"
+    },
+    {
+      "id": "online:Compare with",
+      "source": "Compare with",
+      "target": "तुलना करा"
+    },
+    {
+      "id": "online:Compare with version",
+      "source": "Compare with version",
+      "target": "आवृत्तीशी तुलना करा"
+    },
+    {
+      "id": "online:Compared revision",
+      "source": "Compared revision",
+      "target": "तुलनात्मक सुधारणा"
+    },
+    {
+      "id": "online:Compared revision {slot0}",
+      "source": "Compared revision {slot0}",
+      "target": "{slot0} या सुधारित आवृत्तीची तुलना केली."
+    },
+    {
+      "id": "online:Compared revision: {slot0}",
+      "source": "Compared revision: {slot0}",
+      "target": "तुलनात्मक आवृत्ती: {slot0}"
+    },
+    {
+      "id": "online:Compare…",
+      "source": "Compare…",
+      "target": "तुलना करा…"
+    },
+    {
+      "id": "online:Compatibility checklist",
+      "source": "Compatibility checklist",
+      "target": "सुसंगतता तपासणी सूची"
+    },
+    {
+      "id": "online:Compatibility checks",
+      "source": "Compatibility checks",
+      "target": "सुसंगतता तपासणी"
+    },
+    {
+      "id": "online:Compatibility checks exercise short games and save/resume. They do not certify safety or playing strength. Only run code from authors you trust.",
+      "source": "Compatibility checks exercise short games and save/resume. They do not certify safety or playing strength. Only run code from authors you trust.",
+      "target": "सुसंगतता तपासण्या लहान खेळांची आणि सेव्ह/रिझ्युमची चाचणी घेतात. त्या सुरक्षिततेची किंवा खेळण्याच्या क्षमतेची खात्री देत ​​नाहीत. केवळ तुमच्या विश्वासातील लेखकांचाच कोड वापरा."
+    },
+    {
+      "id": "online:Compatibility of your active skin",
+      "source": "Compatibility of your active skin",
+      "target": "तुमच्या सक्रिय त्वचेची अनुकूलता"
+    },
+    {
+      "id": "online:Complete",
+      "source": "Complete",
+      "target": "पूर्ण"
+    },
+    {
+      "id": "online:Complete family JSON",
+      "source": "Complete family JSON",
+      "target": "संपूर्ण कुटुंब JSON"
+    },
+    {
+      "id": "online:Complete passing checks before publishing.",
+      "source": "Complete passing checks before publishing.",
+      "target": "प्रकाशित करण्यापूर्वी सर्व तपासण्या पूर्ण करा."
+    },
+    {
+      "id": "online:Completed",
+      "source": "Completed",
+      "target": "पूर्ण झाले"
+    },
+    {
+      "id": "online:Completion time comparison table",
+      "source": "Completion time comparison table",
+      "target": "पूर्ण होण्याच्या वेळेची तुलना सारणी"
+    },
+    {
+      "id": "online:Compose the music",
+      "source": "Compose the music",
+      "target": "संगीत तयार करा"
+    },
+    {
+      "id": "online:Composer’s progress",
+      "source": "Composer’s progress",
+      "target": "संगीतकाराची प्रगती"
+    },
+    {
+      "id": "online:Composition",
+      "source": "Composition",
+      "target": "रचना"
+    },
+    {
+      "id": "online:Configure Hive Mind in Settings → Online. In a match, press Ctrl+Enter to give an order. Assistance is permitted in ranked matches.",
+      "source": "Configure Hive Mind in Settings → Online. In a match, press Ctrl+Enter to give an order. Assistance is permitted in ranked matches.",
+      "target": "सेटिंग्ज → ऑनलाइन मध्ये Hive Mind कॉन्फिगर करा. मॅचमध्ये, आदेश देण्यासाठी Ctrl+Enter दाबा. रँक्ड मॅचेसमध्ये सहाय्य करण्यास परवानगी आहे."
+    },
+    {
+      "id": "online:Confirm history deletion",
+      "source": "Confirm history deletion",
+      "target": "इतिहास हटवण्याची पुष्टी करा"
+    },
+    {
+      "id": "online:Confirm the license chosen when composing this version.",
+      "source": "Confirm the license chosen when composing this version.",
+      "target": "ही आवृत्ती तयार करताना निवडलेल्या परवान्याची पुष्टी करा."
+    },
+    {
+      "id": "online:Confirmed cash",
+      "source": "Confirmed cash",
+      "target": "कन्फर्म कॅश"
+    },
+    {
+      "id": "online:Confirmed cash table",
+      "source": "Confirmed cash table",
+      "target": "कन्फर्म कॅश टेबल"
+    },
+    {
+      "id": "online:Confirmed cash uses Stripe charge/refund currency units; current and previous UTC periods. CSV exports preserve exact integer minor units.",
+      "source": "Confirmed cash uses Stripe charge/refund currency units; current and previous UTC periods. CSV exports preserve exact integer minor units.",
+      "target": "कन्फर्म्ड कॅशमध्ये स्ट्राइप चार्ज/रिफंड चलन एकके वापरली जातात; चालू आणि मागील UTC कालावधी. CSV निर्यातीमध्ये अचूक पूर्णांक मायनर युनिट्स जतन केली जातात."
+    },
+    {
+      "id": "online:Confirming your payment. Your credits appear once payment is confirmed.",
+      "source": "Confirming your payment. Your credits appear once payment is confirmed.",
+      "target": "तुमच्या पेमेंटची पुष्टी केली जात आहे. पेमेंटची पुष्टी झाल्यावर तुमच्या खात्यात पैसे जमा झालेले दिसतील."
+    },
+    {
+      "id": "online:Connected",
+      "source": "Connected",
+      "target": "जोडलेले"
+    },
+    {
+      "id": "online:Connection",
+      "source": "Connection",
+      "target": "कनेक्शन"
+    },
+    {
+      "id": "online:Connection interrupted. Reconnecting to your saved project…",
+      "source": "Connection interrupted. Reconnecting to your saved project…",
+      "target": "कनेक्शन खंडित झाले आहे. तुमच्या सेव्ह केलेल्या प्रोजेक्टशी पुन्हा कनेक्ट करत आहोत…"
+    },
+    {
+      "id": "online:Connection quality per player",
+      "source": "Connection quality per player",
+      "target": "प्रत्येक खेळाडूसाठी कनेक्शनची गुणवत्ता"
+    },
+    {
+      "id": "online:Consistent levels",
+      "source": "Consistent levels",
+      "target": "सातत्यपूर्ण पातळी"
+    },
+    {
+      "id": "online:Content",
+      "source": "Content",
+      "target": "सामग्री"
+    },
+    {
+      "id": "online:Content not found.",
+      "source": "Content not found.",
+      "target": "सामग्री आढळली नाही."
+    },
+    {
+      "id": "online:Contents",
+      "source": "Contents",
+      "target": "सामग्री"
+    },
+    {
+      "id": "online:Contents & gameplay properties",
+      "source": "Contents & gameplay properties",
+      "target": "सामग्री आणि गेमप्लेची वैशिष्ट्ये"
+    },
+    {
+      "id": "online:Continue as {p1}",
+      "source": "Continue as {p1}",
+      "target": "{p1} म्हणून सुरू ठेवा"
+    },
+    {
+      "id": "online:Continue to uploads",
+      "source": "Continue to uploads",
+      "target": "अपलोड सुरू ठेवा"
+    },
+    {
+      "id": "online:Continue to {p1}",
+      "source": "Continue to {p1}",
+      "target": "{p1} वर सुरू ठेवा"
+    },
+    {
+      "id": "online:Continue with {p3}",
+      "source": "Continue with {p3}",
+      "target": "{p3} सह सुरू ठेवा"
+    },
+    {
+      "id": "online:Controls and compatibility evidence",
+      "source": "Controls and compatibility evidence",
+      "target": "नियंत्रणे आणि सुसंगततेचा पुरावा"
+    },
+    {
+      "id": "online:Conversation",
+      "source": "Conversation",
+      "target": "संभाषण"
+    },
+    {
+      "id": "online:Convert and prepare preview",
+      "source": "Convert and prepare preview",
+      "target": "रूपांतरित करा आणि पूर्वावलोकन तयार करा"
+    },
+    {
+      "id": "online:Converting",
+      "source": "Converting",
+      "target": "रूपांतरण"
+    },
+    {
+      "id": "online:Copies the {slot0} texture and materials. Different models wrap that paint differently; inspect the results below.",
+      "source": "Copies the {slot0} texture and materials. Different models wrap that paint differently; inspect the results below.",
+      "target": "{slot0} टेक्सचर आणि मटेरियल्सची नक्कल करते. वेगवेगळे मॉडेल्स ते पेंट वेगवेगळ्या प्रकारे रॅप करतात; खालील परिणाम तपासा."
+    },
+    {
+      "id": "online:Copy paint",
+      "source": "Copy paint",
+      "target": "कॉपी पेंट"
+    },
+    {
+      "id": "online:Copy paint to all models",
+      "source": "Copy paint to all models",
+      "target": "सर्व मॉडेल्सना पेंट कॉपी करा"
+    },
+    {
+      "id": "online:Copy paint to other models…",
+      "source": "Copy paint to other models…",
+      "target": "इतर मॉडेल्सवर पेंट कॉपी करा…"
+    },
+    {
+      "id": "online:Copy recorded usage",
+      "source": "Copy recorded usage",
+      "target": "रेकॉर्ड केलेल्या वापराची प्रत"
+    },
+    {
+      "id": "online:Copy this link into Family link or ID in the game’s Building families picker to open this family directly.",
+      "source": "Copy this link into Family link or ID in the game’s Building families picker to open this family directly.",
+      "target": "हे कुटुंब थेट उघडण्यासाठी, गेममधील 'बिल्डिंग फॅमिलीज पिकर'मधील 'फॅमिली लिंक' किंवा 'आयडी' मध्ये ही लिंक कॉपी करा."
+    },
+    {
+      "id": "online:Copyright",
+      "source": "Copyright",
+      "target": "कॉपीराइट"
+    },
+    {
+      "id": "online:Correct the invalid JSON before saving.",
+      "source": "Correct the invalid JSON before saving.",
+      "target": "सेव्ह करण्यापूर्वी चुकीचे असलेले JSON दुरुस्त करा."
+    },
+    {
+      "id": "online:Cortex",
+      "source": "Cortex",
+      "target": "कॉर्टेक्स"
+    },
+    {
+      "id": "online:Could not check payment.",
+      "source": "Could not check payment.",
+      "target": "पेमेंट तपासता आले नाही."
+    },
+    {
+      "id": "online:Could not crop this photo.",
+      "source": "Could not crop this photo.",
+      "target": "हा फोटो क्रॉप करता आला नाही."
+    },
+    {
+      "id": "online:Could not delete this skin.",
+      "source": "Could not delete this skin.",
+      "target": "ही स्किन हटवता आली नाही."
+    },
+    {
+      "id": "online:Could not load test map.",
+      "source": "Could not load test map.",
+      "target": "चाचणी नकाशा लोड करता आला नाही."
+    },
+    {
+      "id": "online:Could not load the material unwrap.",
+      "source": "Could not load the material unwrap.",
+      "target": "मटेरियल अनरॅप लोड करता आले नाही."
+    },
+    {
+      "id": "online:Could not load this language. Please try again.",
+      "source": "Could not load this language. Please try again.",
+      "target": "ही भाषा लोड होऊ शकली नाही. कृपया पुन्हा प्रयत्न करा."
+    },
+    {
+      "id": "online:Could not load this model. Please retry.",
+      "source": "Could not load this model. Please retry.",
+      "target": "हे मॉडेल लोड होऊ शकले नाही. कृपया पुन्हा प्रयत्न करा."
+    },
+    {
+      "id": "online:Could not load this {value0}",
+      "source": "Could not load this {value0}",
+      "target": "हे {value0} लोड करता आले नाही."
+    },
+    {
+      "id": "online:Could not load your project.",
+      "source": "Could not load your project.",
+      "target": "तुमचा प्रकल्प लोड होऊ शकला नाही."
+    },
+    {
+      "id": "online:Could not load {value0}.{value1}",
+      "source": "Could not load {value0}.{value1}",
+      "target": "{value0}.{value1} लोड करता आले नाही."
+    },
+    {
+      "id": "online:Could not open this photo.",
+      "source": "Could not open this photo.",
+      "target": "हा फोटो उघडता आला नाही."
+    },
+    {
+      "id": "online:Could not save · retrying",
+      "source": "Could not save · retrying",
+      "target": "जतन करता आले नाही · पुन्हा प्रयत्न करत आहे"
+    },
+    {
+      "id": "online:Could not send report.",
+      "source": "Could not send report.",
+      "target": "अहवाल पाठवता आला नाही."
+    },
+    {
+      "id": "online:Could not update report.",
+      "source": "Could not update report.",
+      "target": "अहवाल अद्ययावत करता आला नाही."
+    },
+    {
+      "id": "online:Could not use this skin.",
+      "source": "Could not use this skin.",
+      "target": "ही स्किन वापरता आली नाही."
+    },
+    {
+      "id": "online:Count",
+      "source": "Count",
+      "target": "मोजणी"
+    },
+    {
+      "id": "online:Cover",
+      "source": "Cover",
+      "target": "कव्हर"
+    },
+    {
+      "id": "online:Create",
+      "source": "Create",
+      "target": "तयार करा"
+    }
+  ]
+}

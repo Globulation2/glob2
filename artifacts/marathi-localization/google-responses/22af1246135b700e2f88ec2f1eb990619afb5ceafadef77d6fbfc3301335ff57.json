@@ -1,0 +1,418 @@
+{
+  "request": {
+    "project": "bradley-personal-20261027",
+    "model": "general/nmt",
+    "payload": {
+      "sourceLanguageCode": "en",
+      "targetLanguageCode": "mr",
+      "mimeType": "text/plain",
+      "contents": [
+        "Search accounts",
+        "Search buildings",
+        "Search maps",
+        "Search matches",
+        "Search must be at most 64 characters.",
+        "Search must be text.",
+        "Search names, descriptions, authors…",
+        "Search players and AI opponents…",
+        "Search titles",
+        "Search unavailable",
+        "Seat ZXQPH0QXZ",
+        "Seed",
+        "Select fewer sets: each ZIP is limited to 64 MiB so it can be imported on every game platform.",
+        "Select for download",
+        "Selected frame",
+        "Selected music",
+        "Selected terrain",
+        "Send report",
+        "Send skin report",
+        "Send the blob as the body.",
+        "Send the file as the request body (ZXQPH0QXZ: ZXQPH1QXZ).",
+        "Send the job's lease token in ZXQPH0QXZ.",
+        "Send the match record as the body.",
+        "Set contents",
+        "Set exceeds 16 MiB.",
+        "Set file not found.",
+        "Set library",
+        "Set not found.",
+        "Set preview engine",
+        "Set reports",
+        "Set the goals and your globs get to work. Feed your colony, train your units and explore together.",
+        "Set unavailable.",
+        "Set up your colonies and AI opponents.",
+        "Set workspace",
+        "Seven smooth spires around a central egg.",
+        "Shape asset length mismatch",
+        "Shape the terrain",
+        "Share a generator",
+        "Share a map generator",
+        "Share a map you made in the editor or with a generator.",
+        "Share a soundtrack",
+        "Share music",
+        "Share your AI",
+        "Shop",
+        "Short seeded games check runtime behaviour, repeatability, and save/resume. Passing does not certify safety or playing strength.",
+        "Show",
+        "Show game view",
+        "Show matches from",
+        "Show more",
+        "Show technical results ZXQPH0QXZ",
+        "Shuffle pattern · ZXQPH0QXZ",
+        "Sign in",
+        "Sign in first (ZXQPH0QXZ).",
+        "Sign in first.",
+        "Sign in or link your account",
+        "Sign in to ZXQPH0QXZ",
+        "Sign in to ZXQPH0QXZ ZXQPH1QXZ? Your game shows this code:",
+        "Sign in to create",
+        "Sign in to create a building",
+        "Sign in to create a set",
+        "Sign in to download the match record.",
+        "Sign in to download this map.",
+        "Sign in to like or favourite",
+        "Sign in to like or report",
+        "Sign in to list your maps.",
+        "Sign in to play on this server.",
+        "Sign in to report this skin",
+        "Sign in to save",
+        "Sign in to save your skins.",
+        "Sign in to see your account or to delete it.",
+        "Sign in to see your library.",
+        "Sign in to see your sets.",
+        "Sign in to upload a map",
+        "Sign in to upload a photo.",
+        "Sign in to view draft artwork.",
+        "Sign in to view your commander and credits.",
+        "Sign in with a registered account to compose, refine, and share your own soundtrack.",
+        "Sign in with a registered account to design, refine, and play your own maps.",
+        "Sign in with a registered account to publish music.",
+        "Sign in with a registered account to save and publish custom sets."
+      ]
+    }
+  },
+  "response": {
+    "translations": [
+      {
+        "translatedText": "खाती शोधा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "इमारती शोधा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नकाशे शोधा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "जुळणारे सामने शोधा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "शोध जास्तीत जास्त ६४ अक्षरांचा असावा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "शोध मजकूर स्वरूपातच असला पाहिजे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नावे, वर्णने, लेखक शोधा…",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "खेळाडू आणि एआय प्रतिस्पर्धी शोधा…",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "शीर्षक शोधा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "शोध उपलब्ध नाही",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सीट ZXQPH0QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "बियाणे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कमी सेट निवडा: प्रत्येक ZIP फाईल 64 MiB पर्यंत मर्यादित आहे, जेणेकरून ती प्रत्येक गेम प्लॅटफॉर्मवर आयात करता येईल.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "डाउनलोड करण्यासाठी निवडा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "निवडलेली फ्रेम",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "निवडलेले संगीत",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "निवडलेला भूप्रदेश",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अहवाल पाठवा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "त्वचेचा अहवाल पाठवा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ब्लॉब बॉडी म्हणून पाठवा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "फाइल रिक्वेस्ट बॉडी म्हणून पाठवा (ZXQPH0QXZ: ZXQPH1QXZ).",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "जॉबचा लीज टोकन ZXQPH0QXZ मध्ये पाठवा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सामन्याचा रेकॉर्ड मुख्य मजकूर म्हणून पाठवा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सामग्री सेट करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "संच १६ MiB पेक्षा जास्त आहे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सेट फाईल सापडली नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "लायब्ररी सेट करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "संच सापडला नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "प्रीव्ह्यू इंजिन सेट करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अहवाल सेट करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ध्येये निश्चित करा आणि तुमचे ग्लोब्स कामाला लागतील. तुमच्या वसाहतीला अन्न द्या, तुमच्या युनिट्सना प्रशिक्षण द्या आणि एकत्र मिळून शोधमोहीम करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अनुपलब्ध सेट केले.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तुमच्या वसाहती आणि एआय प्रतिस्पर्धी तयार करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कार्यक्षेत्र सेट करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "मध्यभागी असलेल्या अंड्याच्या भोवती सात गुळगुळीत शिखरे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "आकार मालमत्तेच्या लांबीतील तफावत",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "भूभागाला आकार द्या",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "जनरेटर शेअर करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नकाशा जनरेटर शेअर करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तुम्ही एडिटरमध्ये किंवा जनरेटरच्या मदतीने तयार केलेला नकाशा शेअर करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "साउंडट्रॅक शेअर करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "संगीत शेअर करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तुमचा एआय शेअर करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "दुकान",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कमी कालावधीचे सीडेड गेम्स रनटाइमची कार्यपद्धती, पुनरावृत्तीक्षमता आणि सेव्ह/रिझ्युम तपासतात. पास झाल्याने सुरक्षितता किंवा खेळाची ताकद प्रमाणित होत नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "दाखवा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "गेम व्ह्यू दाखवा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पासून सामने दाखवा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अधिक दाखवा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तांत्रिक निकाल दाखवा ZXQPH0QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "शफल पॅटर्न · ZXQPH0QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "साइन इन करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "प्रथम साइन इन करा (ZXQPH0QXZ).",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "आधी साइन इन करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "साइन इन करा किंवा तुमचे खाते लिंक करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ मध्ये साइन इन करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ ZXQPH1QXZ मध्ये साइन इन करायचे आहे का? तुमचा गेम हा कोड दाखवत आहे:",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तयार करण्यासाठी साइन इन करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "इमारत तयार करण्यासाठी साइन इन करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सेट तयार करण्यासाठी साइन इन करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सामन्याची नोंद डाउनलोड करण्यासाठी साइन इन करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "हा नकाशा डाउनलोड करण्यासाठी साइन इन करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "लाईक किंवा फेव्हरेट करण्यासाठी साइन इन करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "लाईक करण्यासाठी किंवा तक्रार करण्यासाठी साइन इन करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तुमचे नकाशे पाहण्यासाठी साइन इन करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "या सर्व्हरवर खेळण्यासाठी साइन इन करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "या त्वचेची तक्रार करण्यासाठी साइन इन करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सेव्ह करण्यासाठी साइन इन करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तुमची स्किन्स सेव्ह करण्यासाठी साइन इन करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "आपले खाते पाहण्यासाठी किंवा ते हटवण्यासाठी साइन इन करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तुमचे ग्रंथालय पाहण्यासाठी साइन इन करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तुमचे सेट पाहण्यासाठी साइन इन करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नकाशा अपलोड करण्यासाठी साइन इन करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "फोटो अपलोड करण्यासाठी साइन इन करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "मसुदा कलाकृती पाहण्यासाठी साइन इन करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तुमचा कमांडर आणि क्रेडिट्स पाहण्यासाठी साइन इन करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तुमचा स्वतःचा साउंडट्रॅक तयार करण्यासाठी, त्यात सुधारणा करण्यासाठी आणि तो शेअर करण्यासाठी नोंदणीकृत खात्याद्वारे साइन इन करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तुमचे स्वतःचे नकाशे डिझाइन करण्यासाठी, सुधारण्यासाठी आणि खेळण्यासाठी नोंदणीकृत खात्यासह साइन इन करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "संगीत प्रकाशित करण्यासाठी नोंदणीकृत खात्याद्वारे साइन इन करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सानुकूल संच जतन आणि प्रकाशित करण्यासाठी नोंदणीकृत खात्याद्वारे साइन इन करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      }
+    ]
+  },
+  "response_sha256": "c29b5d441b8ee4dbc83c964d6a65b60d453d4145b50ac2c6966671616ebc92af"
+}

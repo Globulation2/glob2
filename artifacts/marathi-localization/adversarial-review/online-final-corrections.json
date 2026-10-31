@@ -1,0 +1,22 @@
+[
+  {
+    "key": "online:This generator release is unavailable, editor-only, or not validated for this engine.",
+    "source": "This generator release is unavailable, editor-only, or not validated for this engine.",
+    "before": "जनरेटरची ही आवृत्ती अनुपलब्ध आहे, केवळ संपादकांसाठी आहे, किंवा या इंजिनसाठी प्रमाणित केलेली नाही.",
+    "after": "जनरेटरची ही आवृत्ती अनुपलब्ध आहे, केवळ नकाशा संपादकात वापरण्यासाठी आहे, किंवा या इंजिनसाठी प्रमाणित केलेली नाही.",
+    "reason": "Editor-only restricts use to the map editor, not to people who hold an editor role. Explicitly name the application surface.",
+    "severity": "minor",
+    "context": "platform/apps/api/src/play/rooms.ts:642; usableGenerator rejects editor-only releases for room play",
+    "state": "proposed"
+  },
+  {
+    "key": "online:Good under {value0}, fair under {value1}, poor from {value2}.",
+    "source": "Good under {value0}, fair under {value1}, poor from {value2}.",
+    "before": "{value0} अंतर्गत चांगले, {value1} अंतर्गत साधारण, {value2} पासून खराब.",
+    "after": "{value0} पेक्षा कमी असल्यास चांगले, {value1} पेक्षा कमी असल्यास साधारण, {value2} पासून खराब.",
+    "reason": "Connection-quality boundaries are numeric less-than thresholds; अंतर्गत can mean within an entity rather than below a measurement. Make the comparison explicit.",
+    "severity": "minor",
+    "context": "platform/apps/web/src/pages/Match.tsx:251 limits(metric), fairMs/poorMs thresholds",
+    "state": "proposed"
+  }
+]

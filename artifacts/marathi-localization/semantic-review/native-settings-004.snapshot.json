@@ -1,0 +1,507 @@
+{
+  "batch": "native-settings-004",
+  "source_sha256": "0ac44b4cdfb03e688983d6e3fb1e484cca57589665bff19c5c65388e649b292a",
+  "rows": [
+    {
+      "id": "native:[music Choose ZIP]",
+      "source": "Choose ZIP",
+      "target": "पिन कोड निवडा"
+    },
+    {
+      "id": "native:[music Choose a music file.]",
+      "source": "Choose a music file.",
+      "target": "संगीत फाईल निवडा."
+    },
+    {
+      "id": "native:[music Combat]",
+      "source": "Combat",
+      "target": "लढाई"
+    },
+    {
+      "id": "native:[music Could not open this music set.]",
+      "source": "Could not open this music set.",
+      "target": "हा संगीत संच उघडता आला नाही."
+    },
+    {
+      "id": "native:[music Credits, downloads and reporting]",
+      "source": "Credits, downloads and reporting",
+      "target": "श्रेय, डाउनलोड आणि अहवाल देणे"
+    },
+    {
+      "id": "native:[music Downloading music…]",
+      "source": "Downloading music…",
+      "target": "संगीत डाउनलोड करत आहे…"
+    },
+    {
+      "id": "native:[music Export recovery files]",
+      "source": "Export recovery files",
+      "target": "रिकव्हरी फाइल्स निर्यात करा"
+    },
+    {
+      "id": "native:[music Fade duration]",
+      "source": "Fade duration",
+      "target": "फिकट होण्याचा कालावधी"
+    },
+    {
+      "id": "native:[music File selection cancelled or failed.]",
+      "source": "File selection cancelled or failed.",
+      "target": "फाईल निवड रद्द झाली किंवा अयशस्वी झाली."
+    },
+    {
+      "id": "native:[music Import ZIP]",
+      "source": "Import ZIP",
+      "target": "झिप आयात करा"
+    },
+    {
+      "id": "native:[music Import ZIP or three tracks]",
+      "source": "Import ZIP or three tracks",
+      "target": "झिप किंवा तीन ट्रॅक आयात करा"
+    },
+    {
+      "id": "native:[music Import music]",
+      "source": "Import music",
+      "target": "संगीत आयात करा"
+    },
+    {
+      "id": "native:[music Import three tracks]",
+      "source": "Import three tracks",
+      "target": "तीन ट्रॅक आयात करा"
+    },
+    {
+      "id": "native:[music Includes AI-generated audio]",
+      "source": "Includes AI-generated audio",
+      "target": "एआय-निर्मित ऑडिओचा समावेश आहे"
+    },
+    {
+      "id": "native:[music Install]",
+      "source": "Install",
+      "target": "स्थापित करा"
+    },
+    {
+      "id": "native:[music Install selected]",
+      "source": "Install selected",
+      "target": "निवडलेले स्थापित करा"
+    },
+    {
+      "id": "native:[music Installed]",
+      "source": "Installed",
+      "target": "स्थापित केले"
+    },
+    {
+      "id": "native:[music Load more]",
+      "source": "Load more",
+      "target": "अधिक लोड करा"
+    },
+    {
+      "id": "native:[music Loading music…]",
+      "source": "Loading music…",
+      "target": "संगीत लोड होत आहे…"
+    },
+    {
+      "id": "native:[music Most downloaded]",
+      "source": "Most downloaded",
+      "target": "सर्वाधिक डाउनलोड केलेले"
+    },
+    {
+      "id": "native:[music Most liked]",
+      "source": "Most liked",
+      "target": "सर्वाधिक आवडले"
+    },
+    {
+      "id": "native:[music Music decoding failed.]",
+      "source": "Music decoding failed.",
+      "target": "संगीत डीकोडिंग अयशस्वी झाले."
+    },
+    {
+      "id": "native:[music Music download failed.]",
+      "source": "Music download failed.",
+      "target": "संगीत डाउनलोड अयशस्वी झाले."
+    },
+    {
+      "id": "native:[music Music installed.]",
+      "source": "Music installed.",
+      "target": "संगीत स्थापित केले."
+    },
+    {
+      "id": "native:[music Music installed. It is now available in Audio settings.]",
+      "source": "Music installed. It is now available in Audio settings.",
+      "target": "संगीत इन्स्टॉल झाले आहे. ते आता ऑडिओ सेटिंग्जमध्ये उपलब्ध आहे."
+    },
+    {
+      "id": "native:[music Music is not yet saved permanently. Retry saving before leaving.]",
+      "source": "Music is not yet saved permanently. Retry saving before leaving.",
+      "target": "संगीत अद्याप कायमस्वरूपी जतन झालेले नाही. जाण्यापूर्वी पुन्हा जतन करण्याचा प्रयत्न करा."
+    },
+    {
+      "id": "native:[music Music library]",
+      "source": "Music library",
+      "target": "संगीत लायब्ररी"
+    },
+    {
+      "id": "native:[music Music request failed.]",
+      "source": "Music request failed.",
+      "target": "संगीताची विनंती अयशस्वी झाली."
+    },
+    {
+      "id": "native:[music Newest]",
+      "source": "Newest",
+      "target": "नवीनतम"
+    },
+    {
+      "id": "native:[music No community music installed yet. Import files or browse the online library.]",
+      "source": "No community music installed yet. Import files or browse the online library.",
+      "target": "अद्याप कोणतेही सामुदायिक संगीत स्थापित केलेले नाही. फाईल्स आयात करा किंवा ऑनलाइन लायब्ररी ब्राउझ करा."
+    },
+    {
+      "id": "native:[music No music found.]",
+      "source": "No music found.",
+      "target": "कोणतेही संगीत आढळले नाही."
+    },
+    {
+      "id": "native:[music Not AI-generated]",
+      "source": "Not AI-generated",
+      "target": "एआय-निर्मित नाही"
+    },
+    {
+      "id": "native:[music Pause]",
+      "source": "Pause",
+      "target": "थांबा"
+    },
+    {
+      "id": "native:[music Play]",
+      "source": "Play",
+      "target": "खेळा"
+    },
+    {
+      "id": "native:[music Playback position]",
+      "source": "Playback position",
+      "target": "प्लेबॅक स्थिती"
+    },
+    {
+      "id": "native:[music Preview]",
+      "source": "Preview",
+      "target": "पूर्वावलोकन"
+    },
+    {
+      "id": "native:[music Ready to import.]",
+      "source": "Ready to import.",
+      "target": "आयात करण्यास तयार."
+    },
+    {
+      "id": "native:[music Remove]",
+      "source": "Remove",
+      "target": "काढून टाका"
+    },
+    {
+      "id": "native:[music Reset to game behavior]",
+      "source": "Reset to game behavior",
+      "target": "खेळाच्या वर्तनावर परत जा"
+    },
+    {
+      "id": "native:[music Retry saving]",
+      "source": "Retry saving",
+      "target": "सेव्ह करण्याचा पुन्हा प्रयत्न करा."
+    },
+    {
+      "id": "native:[music Saved.]",
+      "source": "Saved.",
+      "target": "जतन केले."
+    },
+    {
+      "id": "native:[music Saving music…]",
+      "source": "Saving music…",
+      "target": "संगीत जतन करत आहे…"
+    },
+    {
+      "id": "native:[music Search]",
+      "source": "Search",
+      "target": "शोध"
+    },
+    {
+      "id": "native:[music Search title, artist, description…]",
+      "source": "Search title, artist, description…",
+      "target": "शीर्षक, कलाकार, वर्णन शोधा…"
+    },
+    {
+      "id": "native:[music Select for installation]",
+      "source": "Select for installation",
+      "target": "स्थापनेसाठी निवडा"
+    },
+    {
+      "id": "native:[music Share music on the web]",
+      "source": "Share music on the web",
+      "target": "वेबवर संगीत शेअर करा"
+    },
+    {
+      "id": "native:[music Some catalogue entries could not be read.]",
+      "source": "Some catalogue entries could not be read.",
+      "target": "कॅटलॉगमधील काही नोंदी वाचता आल्या नाहीत."
+    },
+    {
+      "id": "native:[music Storage could not be saved. Retry or export your files before leaving.]",
+      "source": "Storage could not be saved. Retry or export your files before leaving.",
+      "target": "स्टोरेज जतन करता आले नाही. कृपया पुन्हा प्रयत्न करा किंवा जाण्यापूर्वी तुमच्या फाईल्स एक्सपोर्ट करा."
+    },
+    {
+      "id": "native:[music Tag]",
+      "source": "Tag",
+      "target": "टॅग"
+    },
+    {
+      "id": "native:[music Test crossfades]",
+      "source": "Test crossfades",
+      "target": "क्रॉसफेड्सची चाचणी करा"
+    },
+    {
+      "id": "native:[music Up to 2 minutes]",
+      "source": "Up to 2 minutes",
+      "target": "२ मिनिटांपर्यंत"
+    },
+    {
+      "id": "native:[music Use this music]",
+      "source": "Use this music",
+      "target": "हे संगीत वापरा"
+    },
+    {
+      "id": "native:[music Validating music…]",
+      "source": "Validating music…",
+      "target": "संगीताला मान्यता देणे…"
+    },
+    {
+      "id": "native:[settings Music library · Browse, install and import]",
+      "source": "Music library · Browse, install and import",
+      "target": "संगीत लायब्ररी · ब्राउझ करा, इन्स्टॉल करा आणि आयात करा"
+    },
+    {
+      "id": "native:[music Filters]",
+      "source": "Filters",
+      "target": "फिल्टर"
+    },
+    {
+      "id": "native:[music Leave without saving]",
+      "source": "Leave without saving",
+      "target": "बचत न करता निघून जा"
+    },
+    {
+      "id": "native:[music Import a downloaded music ZIP or the three Opus tracks. Metadata and cover art are read from Calm; no extra files are required.]",
+      "source": "Import a downloaded music ZIP or the three Opus tracks. Metadata and cover art are read from Calm; no extra files are required.",
+      "target": "डाउनलोड केलेली म्युझिक झिप फाईल किंवा तीन ओपस ट्रॅक्स इम्पोर्ट करा. मेटाडेटा आणि कव्हर आर्ट 'Calm' मधून वाचले जातात; कोणत्याही अतिरिक्त फाईल्सची आवश्यकता नाही."
+    },
+    {
+      "id": "native:[settings Target render FPS]",
+      "source": "Target render FPS",
+      "target": "लक्ष्यित रेंडर एफपीएस"
+    },
+    {
+      "id": "native:[settings Unlimited]",
+      "source": "Unlimited",
+      "target": "अमर्याद"
+    },
+    {
+      "id": "native:[settings Limit drawing across the application. Lower values reduce rendering work. Game speed is unchanged.]",
+      "source": "Limit drawing across the application. Lower values reduce rendering work. Game speed is unchanged.",
+      "target": "संपूर्ण ॲप्लिकेशनमध्ये रेखांकन मर्यादित करा. कमी मूल्यांमुळे रेंडरिंगचे काम कमी होते. गेमच्या वेगात कोणताही बदल होत नाही."
+    },
+    {
+      "id": "native:[settings Map generators]",
+      "source": "Map generators",
+      "target": "नकाशा जनरेटर"
+    },
+    {
+      "id": "native:[settings Import a generator package, then select its landscape when creating a map or game.]",
+      "source": "Import a generator package, then select its landscape when creating a map or game.",
+      "target": "जनरेटर पॅकेज आयात करा, त्यानंतर नकाशा किंवा गेम तयार करताना त्याचे भूदृश्य निवडा."
+    },
+    {
+      "id": "native:[settings Import map generator]",
+      "source": "Import map generator",
+      "target": "आयात नकाशा जनरेटर"
+    },
+    {
+      "id": "native:[settings No custom map generators installed.]",
+      "source": "No custom map generators installed.",
+      "target": "कोणतेही सानुकूल नकाशा जनरेटर स्थापित केलेले नाहीत."
+    },
+    {
+      "id": "native:[settings Replace package]",
+      "source": "Replace package",
+      "target": "पॅकेज बदला"
+    },
+    {
+      "id": "native:[settings Export package]",
+      "source": "Export package",
+      "target": "निर्यात पॅकेज"
+    },
+    {
+      "id": "native:[settings Remove generator]",
+      "source": "Remove generator",
+      "target": "जनरेटर काढा"
+    },
+    {
+      "id": "native:[settings Saving generator library…]",
+      "source": "Saving generator library…",
+      "target": "जनरेटर लायब्ररी जतन करत आहे…"
+    },
+    {
+      "id": "native:[settings Could not read generator package.]",
+      "source": "Could not read generator package.",
+      "target": "जनरेटर पॅकेज वाचता आले नाही."
+    },
+    {
+      "id": "native:[settings Generator library saved.]",
+      "source": "Generator library saved.",
+      "target": "जनरेटर लायब्ररी जतन केली."
+    },
+    {
+      "id": "native:[settings Storage could not be saved. The previous library is retained.]",
+      "source": "Storage could not be saved. The previous library is retained.",
+      "target": "स्टोरेज वाचवता आले नाही. मागील लायब्ररी कायम ठेवण्यात आली आहे."
+    },
+    {
+      "id": "native:[settings Waiting for file selection or storage…]",
+      "source": "Waiting for file selection or storage…",
+      "target": "फाईल निवड किंवा साठवणुकीची प्रतीक्षा करत आहे…"
+    },
+    {
+      "id": "native:[settings File selection is unavailable.]",
+      "source": "File selection is unavailable.",
+      "target": "फाईल निवडण्याची सोय उपलब्ध नाही."
+    },
+    {
+      "id": "native:[settings Package export is unavailable.]",
+      "source": "Package export is unavailable.",
+      "target": "पॅकेज निर्यात उपलब्ध नाही."
+    },
+    {
+      "id": "native:[settings CPU automatic]",
+      "source": "CPU automatic",
+      "target": "सीपीयू स्वयंचलित"
+    },
+    {
+      "id": "native:[settings Scalar]",
+      "source": "Scalar",
+      "target": "स्केलर"
+    },
+    {
+      "id": "native:[settings Unavailable]",
+      "source": "Unavailable",
+      "target": "अनुपलब्ध"
+    },
+    {
+      "id": "native:[settings Initializing]",
+      "source": "Initializing",
+      "target": "आरंभ करत आहे"
+    },
+    {
+      "id": "native:[settings Gradient backend]",
+      "source": "Gradient backend",
+      "target": "ग्रेडियंट बॅकएंड"
+    },
+    {
+      "id": "native:[settings Applies at the next simulation boundary. Unsupported work uses CPU automatic; rendering is independent.]",
+      "source": "Applies at the next simulation boundary. Unsupported work uses CPU automatic; rendering is independent.",
+      "target": "पुढील सिम्युलेशन सीमेवर लागू होते. असमर्थित कार्यासाठी CPU स्वयंचलितपणे वापरला जातो; रेंडरिंग स्वतंत्र असते."
+    },
+    {
+      "id": "native:[settings Gradient algorithm]",
+      "source": "Gradient algorithm",
+      "target": "ग्रेडियंट अल्गोरिदम"
+    },
+    {
+      "id": "native:[settings All choices compute the same exact field.]",
+      "source": "All choices compute the same exact field.",
+      "target": "सर्व पर्याय एकसारखेच क्षेत्र मोजतात."
+    },
+    {
+      "id": "native:[settings Bucket propagation]",
+      "source": "Bucket propagation",
+      "target": "बकेट प्रसार"
+    },
+    {
+      "id": "native:[settings Verify gradient results]",
+      "source": "Verify gradient results",
+      "target": "ग्रेडियंट निकालांची पडताळणी करा"
+    },
+    {
+      "id": "native:[settings Compare GPU results with scalar CPU before publication. Adds computation and stops the game on a mismatch.]",
+      "source": "Compare GPU results with scalar CPU before publication. Adds computation and stops the game on a mismatch.",
+      "target": "प्रकाशित करण्यापूर्वी GPU परिणामांची स्केलर CPU परिणामांशी तुलना करा. यामुळे गणना वाढते आणि जुळणी न झाल्यास खेळ थांबवला जातो."
+    },
+    {
+      "id": "native:[settings Gradient computation]",
+      "source": "Gradient computation",
+      "target": "ग्रेडियंट गणना"
+    },
+    {
+      "id": "native:[settings CPU fallback]",
+      "source": "CPU fallback",
+      "target": "सीपीयू फॉलबॅक"
+    },
+    {
+      "id": "native:[settings GPU fields]",
+      "source": "GPU fields",
+      "target": "जीपीयू फील्ड्स"
+    },
+    {
+      "id": "native:[settings CPU fallbacks]",
+      "source": "CPU fallbacks",
+      "target": "सीपीयू फॉलबॅक"
+    },
+    {
+      "id": "native:[settings MCP server]",
+      "source": "MCP server",
+      "target": "एमसीपी सर्व्हर"
+    },
+    {
+      "id": "native:[settings Enabling the MCP server permits local clients to see and operate the game.]",
+      "source": "Enabling the MCP server permits local clients to see and operate the game.",
+      "target": "MCP सर्व्हर सक्षम केल्याने स्थानिक क्लायंटना गेम पाहता येतो आणि चालवता येतो."
+    },
+    {
+      "id": "native:[settings Enable MCP server]",
+      "source": "Enable MCP server",
+      "target": "MCP सर्व्हर सक्षम करा"
+    },
+    {
+      "id": "native:[settings Port]",
+      "source": "Port",
+      "target": "बंदर"
+    },
+    {
+      "id": "native:[settings Current controller: %0]",
+      "source": "Current controller: %0",
+      "target": "वर्तमान नियंत्रक: %0"
+    },
+    {
+      "id": "native:[settings Copy endpoint]",
+      "source": "Copy endpoint",
+      "target": "एंडपॉइंट कॉपी करा"
+    },
+    {
+      "id": "native:[settings Retry listener]",
+      "source": "Retry listener",
+      "target": "पुन्हा प्रयत्न करणारा श्रोता"
+    },
+    {
+      "id": "native:[settings Revoke control]",
+      "source": "Revoke control",
+      "target": "नियंत्रण रद्द करा"
+    },
+    {
+      "id": "native:[settings MCP server unavailable in this application]",
+      "source": "MCP server unavailable in this application",
+      "target": "या ॲप्लिकेशनमध्ये MCP सर्वर उपलब्ध नाही."
+    },
+    {
+      "id": "native:[settings Disabled]",
+      "source": "Disabled",
+      "target": "अक्षम"
+    },
+    {
+      "id": "native:[settings Running]",
+      "source": "Running",
+      "target": "धावणे"
+    }
+  ],
+  "subset_sha256": "56f41fe2044df075850abe45b643deab8d27b21f9e16d430cd6bb3d87466e611"
+}

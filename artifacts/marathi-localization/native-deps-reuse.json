@@ -1,0 +1,99 @@
+{
+  "source_prefix": "/home/bradley/.codex/worktrees/2dff/glob2/artifacts/recording-dependencies/native-sdl/prefix",
+  "destination_prefix": "/home/bradley/.codex/worktrees/45cd/glob2/artifacts/marathi-localization/native-deps",
+  "manifest_sha256": "f4bcd64be2dc1815dd0dc855bc78c5e5af1ac985e38296ca3531d3dad7c1e484",
+  "relocated_metadata": [
+    {
+      "path": "lib/pkgconfig/libsharpyuv.pc",
+      "original_sha256": "ed53def39776c695eec23fc6a7c60fbdbe85d4aa0a0d7ad7080bb41b253ffc48",
+      "relocated_sha256": "6540c7c156d76715ec8e89f1d384f2e1bd1858a479afa38fc6d693421c993c83"
+    },
+    {
+      "path": "lib/pkgconfig/libwebpdecoder.pc",
+      "original_sha256": "c0bc59b4026a2020bcf791b1c390eab47330117e13a7577d66f72507b3c55917",
+      "relocated_sha256": "3617f00ca77ccfdcc72f04ce635976b14f8ce7f553a1fc373e1e9418e86f6cd1"
+    },
+    {
+      "path": "lib/pkgconfig/libwebp.pc",
+      "original_sha256": "e8216093e590a62193ff6501726018934ac1378cdaab2bfffa1ec07eb337b120",
+      "relocated_sha256": "7c714dbd7e128230521b1bf1c1360c62ef9403f0266e9cd90755b10e0b0f1a95"
+    },
+    {
+      "path": "lib/pkgconfig/libwebpdemux.pc",
+      "original_sha256": "6cc63890a8d97f1e1bc537cfd022ce1dc18ad54c88f016b216f43d0972c1d535",
+      "relocated_sha256": "990bc2cd6dbd1d5667315f13ad428935428ee8b7464ad3ec4599c1e9ce712f3a"
+    },
+    {
+      "path": "lib/pkgconfig/libwebpmux.pc",
+      "original_sha256": "b629fdaaab5f331d35e4d5987c75746c6cf235bf190d7a1adaf4e7ec3240efb2",
+      "relocated_sha256": "8ef573867b8d14b0616a4bca9bdc8a7be3b852e54b3b18122823b0c590c9e605"
+    },
+    {
+      "path": "lib/pkgconfig/sdl3.pc",
+      "original_sha256": "61e874dc6cbb4c6b3fd3b7fdefc5835d3b4147bda1a512a092991f204c1c8166",
+      "relocated_sha256": "24cbea6f6058196494d5c63b94bd65317c8cc77bb06f0a007fbfd2b578d72da0"
+    },
+    {
+      "path": "lib/pkgconfig/sdl3-image.pc",
+      "original_sha256": "cc443671b41a09ec3078acfad6a1134e69fc1386cbb1bf00489f1d18fd3ab6fe",
+      "relocated_sha256": "990d85ba90f98e644d2dd4d2cc5ca550bbea0e042f436a07eb206a6ee4cf1480"
+    },
+    {
+      "path": "lib/pkgconfig/sdl3-net.pc",
+      "original_sha256": "b02c130adc6087e42f2a551dd528b3067ad2943a2fa3b379dc1ac9a90c261ba4",
+      "relocated_sha256": "540fc0aa2e4b3add1837dbea5275502f910616c057a686f4ed0cf70a05efc9f3"
+    },
+    {
+      "path": "lib/pkgconfig/harfbuzz.pc",
+      "original_sha256": "1a38e7fbabcce1de95c5c90e2836e2acaa0afe57f3cd779ab2e2cca149e8f17d",
+      "relocated_sha256": "56993a882bd16cdc4e1a499d34e33f2c2274a8c830fb2c0ab94582a40b9944c0"
+    },
+    {
+      "path": "lib/pkgconfig/sdl3-ttf.pc",
+      "original_sha256": "4883e2ba2861dece1f5d5fb1753d1caea6d174fa0ec5f2df8e5ea3c42645b0c5",
+      "relocated_sha256": "280a3bc05b299256d3ad2d797fcd0c880e1809afee6605014f3ff822ff00e1b0"
+    }
+  ],
+  "unchanged_libraries": [
+    {
+      "path": "lib/libsharpyuv.a",
+      "sha256": "46375bd7e40bfb5bde9372c63dbce53365a1cd89e50d7e1454b465057b6ea6be"
+    },
+    {
+      "path": "lib/libwebpdecoder.a",
+      "sha256": "156396e3c52e0a6a8b7b2fc75d490a390329a2d660384111d9579a759795d698"
+    },
+    {
+      "path": "lib/libwebp.a",
+      "sha256": "94d0df2f64d0ec0ab37d487a4fe411f57e83337aeb46554eb83937396055ad30"
+    },
+    {
+      "path": "lib/libwebpdemux.a",
+      "sha256": "003db4736c9bfa37e554ba6c150ff224f1c69920377029a720f20116fcb3813b"
+    },
+    {
+      "path": "lib/libwebpmux.a",
+      "sha256": "1643c8f226006b35fcc4ed2273d2c148d702e9250cbc96e365799eee0608d24c"
+    },
+    {
+      "path": "lib/libSDL3.so.0.4.16",
+      "sha256": "28f4c0e8d82b5b140d6f180a47e1740aa5454dc21b3a4ed0a72a3c2a8d39ee09"
+    },
+    {
+      "path": "lib/libSDL3_image.so.0.4.6",
+      "sha256": "7200867f9417db8720fda9ae1bba4fcd75478cc7fe128b5c63d23150ca1cc6ea"
+    },
+    {
+      "path": "lib/libSDL3_net.so.0.2.0",
+      "sha256": "d89360cadb82454dbe2eed6f0362ebffdc2e60e6cb7d8666502267bee112767d"
+    },
+    {
+      "path": "lib/libharfbuzz.a",
+      "sha256": "f1aff20bd93aaf273c218d3fe11111d47c0206d2f523ba25ff271e2f1e3ce9e8"
+    },
+    {
+      "path": "lib/libSDL3_ttf.so.0.2.2",
+      "sha256": "04fd566a9fe3ac4b93ec9bd444f0f33e88b0d94d54802ce446c97ec817cbee01"
+    }
+  ]
+}

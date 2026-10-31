@@ -1,0 +1,14 @@
+{
+  "native:[Each colony's start is measured on the finished map: the walk to wheat and to wood, how well its ground regrows, the deposits and building sites within reach, and its distance from rivals. Every factor scores from 0 to 1 against a fixed bar, the total weighs them, fairness is the worst colony's total over the best, and the score is the worst total times the fairness.]": {
+    "before": "प्रत्येक वसाहतीची सुरुवात अंतिम नकाशावर मोजली जाते: अन्न आणि लाकडाच्या स्रोतांपर्यंतचा चालण्याचा मार्ग, जमिनीची पुनरुत्पत्ती किती चांगली होते, आवाक्यात असलेले साठे आणि बांधकाम स्थळे, आणि प्रतिस्पर्धकांपासूनचे अंतर. प्रत्येक घटकाला एका निश्चित मापदंडाच्या तुलनेत ० ते १ पर्यंत गुण दिले जातात, एकूण गुण ही या घटकांची भारित बेरीज असते, निष्पक्षता म्हणजे सर्वात वाईट वसाहतीच्या एकूण गुणांना सर्वोत्तम वसाहतीच्या एकूण गुणांनी भागून काढलेली असते, आणि अंतिम गुण म्हणजे सर्वात वाईट एकूण गुणांना निष्पक्षतेने गुणून काढलेला असतो.",
+    "after": "प्रत्येक वसाहतीची सुरुवात अंतिम नकाशावर मोजली जाते: अन्न आणि लाकडाच्या स्रोतांपर्यंतचा चालण्याचा मार्ग, जमिनीची पुनरुत्पत्ती किती चांगली होते, आवाक्यात असलेले साठे आणि बांधकाम स्थळे, आणि प्रतिस्पर्धकांपासूनचे अंतर. प्रत्येक घटकाला एका निश्चित मापदंडाच्या तुलनेत ० ते १ पर्यंत गुण दिले जातात, एकूण गुण या घटकांच्या भारित बेरजेइतके असतात, निष्पक्षता म्हणजे सर्वात वाईट वसाहतीच्या एकूण गुणांना सर्वोत्तम वसाहतीच्या एकूण गुणांनी भागून काढलेली असते, आणि अंतिम गुण म्हणजे सर्वात वाईट एकूण गुणांना निष्पक्षतेने गुणून काढलेला असतो.",
+    "batch": "native-colony-002",
+    "reason": "Avoid plural गुण with feminine singular ही/असते; preserve weighted-sum semantics."
+  },
+  "native:[lesson walking-training build compact]": {
+    "before": "बांधा → धावपट्टी. त्याच्या कडांभोवती जागा सोडा.",
+    "after": "बांधा → धावपट्टी. तिच्या कडांभोवती जागा सोडा.",
+    "batch": "native-general-026",
+    "reason": "धावपट्टी is feminine; correct possessive agreement."
+  }
+}

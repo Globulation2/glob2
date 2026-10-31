@@ -1,0 +1,507 @@
+{
+  "batch": "online-online-024",
+  "source_sha256": "0ac44b4cdfb03e688983d6e3fb1e484cca57589665bff19c5c65388e649b292a",
+  "rows": [
+    {
+      "id": "online:Won",
+      "source": "Won",
+      "target": "जिंकले"
+    },
+    {
+      "id": "online:Worker leases",
+      "source": "Worker leases",
+      "target": "कामगार भाडेपट्टे"
+    },
+    {
+      "id": "online:Worker slots",
+      "source": "Worker slots",
+      "target": "कामगार स्लॉट"
+    },
+    {
+      "id": "online:Workers",
+      "source": "Workers",
+      "target": "कामगार"
+    },
+    {
+      "id": "online:Working…",
+      "source": "Working…",
+      "target": "काम चालू आहे…"
+    },
+    {
+      "id": "online:Workspace view",
+      "source": "Workspace view",
+      "target": "कार्यक्षेत्र दृश्य"
+    },
+    {
+      "id": "online:Wrong username or password.",
+      "source": "Wrong username or password.",
+      "target": "चुकीचे वापरकर्तानाव किंवा पासवर्ड."
+    },
+    {
+      "id": "online:YOUR COLONY",
+      "source": "YOUR COLONY",
+      "target": "तुमची वसाहत"
+    },
+    {
+      "id": "online:YOUR COMPOSER",
+      "source": "YOUR COMPOSER",
+      "target": "तुमचा संगीतकार"
+    },
+    {
+      "id": "online:Yes",
+      "source": "Yes",
+      "target": "होय"
+    },
+    {
+      "id": "online:Yes, continue",
+      "source": "Yes, continue",
+      "target": "हो, पुढे चालू ठेवा"
+    },
+    {
+      "id": "online:You",
+      "source": "You",
+      "target": "तुम्ही"
+    },
+    {
+      "id": "online:You already own this product.",
+      "source": "You already own this product.",
+      "target": "हे उत्पादन आधीपासूनच तुमच्या मालकीचे आहे."
+    },
+    {
+      "id": "online:You already reported this map.",
+      "source": "You already reported this map.",
+      "target": "तुम्ही या नकाशाची तक्रार आधीच केली आहे."
+    },
+    {
+      "id": "online:You are already in a queue.",
+      "source": "You are already in a queue.",
+      "target": "तुम्ही आधीच रांगेत आहात."
+    },
+    {
+      "id": "online:You are muted.",
+      "source": "You are muted.",
+      "target": "तुम्ही म्यूट आहात."
+    },
+    {
+      "id": "online:You are not in this room.",
+      "source": "You are not in this room.",
+      "target": "तुम्ही या खोलीत नाही आहात."
+    },
+    {
+      "id": "online:You are sending messages too quickly.",
+      "source": "You are sending messages too quickly.",
+      "target": "तुम्ही खूप घाईने संदेश पाठवत आहात."
+    },
+    {
+      "id": "online:You are signed in",
+      "source": "You are signed in",
+      "target": "तुम्ही साइन इन केले आहे"
+    },
+    {
+      "id": "online:You are signed in as",
+      "source": "You are signed in as",
+      "target": "तुम्ही या नावाने साइन इन केले आहे"
+    },
+    {
+      "id": "online:You are signed out everywhere. Your name is gone from your past matches, which now show “Deleted player”. Thanks for playing.",
+      "source": "You are signed out everywhere. Your name is gone from your past matches, which now show “Deleted player”. Thanks for playing.",
+      "target": "तुम्ही सर्व ठिकाणांहून साइन आउट झाला आहात. तुमच्या मागील सामन्यांमधून तुमचे नाव काढून टाकण्यात आले आहे आणि आता त्या जागी “हटवलेला खेळाडू” असे दिसत आहे. खेळल्याबद्दल धन्यवाद."
+    },
+    {
+      "id": "online:You can close this page.",
+      "source": "You can close this page.",
+      "target": "तुम्ही हे पान बंद करू शकता."
+    },
+    {
+      "id": "online:You can only ban accounts with a lower role.",
+      "source": "You can only ban accounts with a lower role.",
+      "target": "तुम्ही फक्त कमी भूमिका असलेल्या खात्यांवर बंदी घालू शकता."
+    },
+    {
+      "id": "online:You can only delete accounts with a lower role.",
+      "source": "You can only delete accounts with a lower role.",
+      "target": "तुम्ही फक्त कमी पदाची खातीच हटवू शकता."
+    },
+    {
+      "id": "online:You can only mute accounts with a lower role.",
+      "source": "You can only mute accounts with a lower role.",
+      "target": "तुम्ही फक्त कमी भूमिका असलेल्या खात्यांनाच म्यूट करू शकता."
+    },
+    {
+      "id": "online:You can send a new message to try again.",
+      "source": "You can send a new message to try again.",
+      "target": "तुम्ही पुन्हा प्रयत्न करण्यासाठी नवीन संदेश पाठवू शकता."
+    },
+    {
+      "id": "online:You cannot ban yourself.",
+      "source": "You cannot ban yourself.",
+      "target": "तुम्ही स्वतःवर बंदी घालू शकत नाही."
+    },
+    {
+      "id": "online:You cannot change your own role.",
+      "source": "You cannot change your own role.",
+      "target": "तुम्ही तुमची स्वतःची भूमिका बदलू शकत नाही."
+    },
+    {
+      "id": "online:You cannot delete your own account here.",
+      "source": "You cannot delete your own account here.",
+      "target": "तुम्ही येथे तुमचे स्वतःचे खाते हटवू शकत नाही."
+    },
+    {
+      "id": "online:You declined a match; wait before queueing again.",
+      "source": "You declined a match; wait before queueing again.",
+      "target": "तुम्ही एक सामना नाकारला आहे; पुन्हा रांगेत लागण्यापूर्वी प्रतीक्षा करा."
+    },
+    {
+      "id": "online:You did not play in that match.",
+      "source": "You did not play in that match.",
+      "target": "तुम्ही त्या सामन्यात खेळला नाहीत."
+    },
+    {
+      "id": "online:You have no seat in a running match with that id.",
+      "source": "You have no seat in a running match with that id.",
+      "target": "त्या ओळखपत्रासह चालू असलेल्या सामन्यात तुम्हाला जागा मिळणार नाही."
+    },
+    {
+      "id": "online:You have not shared any maps yet.",
+      "source": "You have not shared any maps yet.",
+      "target": "तुम्ही अद्याप कोणताही नकाशा शेअर केलेला नाही."
+    },
+    {
+      "id": "online:Your account",
+      "source": "Your account",
+      "target": "तुमचे खाते"
+    },
+    {
+      "id": "online:Your account cannot host rooms.",
+      "source": "Your account cannot host rooms.",
+      "target": "तुमच्या खात्यावर खोल्या ठेवता येत नाहीत."
+    },
+    {
+      "id": "online:Your account cannot join rooms.",
+      "source": "Your account cannot join rooms.",
+      "target": "तुमचे खाते रूममध्ये सामील होऊ शकत नाही."
+    },
+    {
+      "id": "online:Your account cannot play.",
+      "source": "Your account cannot play.",
+      "target": "तुमच्या खात्यावर खेळता येणार नाही."
+    },
+    {
+      "id": "online:Your account could not be refreshed. Please try again shortly.",
+      "source": "Your account could not be refreshed. Please try again shortly.",
+      "target": "तुमचे खाते रिफ्रेश होऊ शकले नाही. कृपया थोड्या वेळाने पुन्हा प्रयत्न करा."
+    },
+    {
+      "id": "online:Your account draft changed. Save your work on this device, then restore the account draft before saving again.",
+      "source": "Your account draft changed. Save your work on this device, then restore the account draft before saving again.",
+      "target": "तुमच्या खात्याचा मसुदा बदलला आहे. या डिव्हाइसवर तुमचे काम जतन करा, त्यानंतर पुन्हा जतन करण्यापूर्वी खात्याचा मसुदा पुनर्संचयित करा."
+    },
+    {
+      "id": "online:Your account is now linked",
+      "source": "Your account is now linked",
+      "target": "तुमचे खाते आता जोडले गेले आहे."
+    },
+    {
+      "id": "online:Your account was deleted",
+      "source": "Your account was deleted",
+      "target": "तुमचे खाते हटवण्यात आले आहे."
+    },
+    {
+      "id": "online:Your browser could not prepare this photo.",
+      "source": "Your browser could not prepare this photo.",
+      "target": "तुमचा ब्राउझर हा फोटो तयार करू शकला नाही."
+    },
+    {
+      "id": "online:Your building",
+      "source": "Your building",
+      "target": "तुमची इमारत"
+    },
+    {
+      "id": "online:Your building drafts",
+      "source": "Your building drafts",
+      "target": "तुमच्या इमारतीचे मसुदे"
+    },
+    {
+      "id": "online:Your building references are limited to 64 MiB. Delete old project history before uploading more.",
+      "source": "Your building references are limited to 64 MiB. Delete old project history before uploading more.",
+      "target": "तुमच्या बिल्डिंगचे संदर्भ ६४ MiB पर्यंत मर्यादित आहेत. अधिक अपलोड करण्यापूर्वी जुना प्रोजेक्ट इतिहास हटवा."
+    },
+    {
+      "id": "online:Your building workspace is full.",
+      "source": "Your building workspace is full.",
+      "target": "तुमच्या इमारतीमधील कामाची जागा पूर्ण भरली आहे."
+    },
+    {
+      "id": "online:Your building workspace is limited to 64 MiB. Export and delete an old draft first.",
+      "source": "Your building workspace is limited to 64 MiB. Export and delete an old draft first.",
+      "target": "तुमच्या बिल्डिंगमधील वर्कस्पेस ६४ MiB पर्यंत मर्यादित आहे. प्रथम एक जुना ड्राफ्ट एक्सपोर्ट करून डिलीट करा."
+    },
+    {
+      "id": "online:Your changes were saved as a new skin.",
+      "source": "Your changes were saved as a new skin.",
+      "target": "तुमचे बदल नवीन स्किन म्हणून जतन करण्यात आले."
+    },
+    {
+      "id": "online:Your collection has 100 designs. Delete an unused design to make room.",
+      "source": "Your collection has 100 designs. Delete an unused design to make room.",
+      "target": "तुमच्या संग्रहात १०० डिझाइन्स आहेत. जागा करण्यासाठी न वापरलेले डिझाइन हटवा."
+    },
+    {
+      "id": "online:Your colony has a sound.",
+      "source": "Your colony has a sound.",
+      "target": "तुमच्या वसाहतीला आवाज आहे."
+    },
+    {
+      "id": "online:Your creation will appear here. You can inspect, edit, compare, and publish saved versions.",
+      "source": "Your creation will appear here. You can inspect, edit, compare, and publish saved versions.",
+      "target": "तुमची निर्मिती येथे दिसेल. तुम्ही जतन केलेल्या आवृत्त्या तपासू शकता, संपादित करू शकता, तुलना करू शकता आणि प्रकाशित करू शकता."
+    },
+    {
+      "id": "online:Your credit is reserved while the provider outcome is reconciled.",
+      "source": "Your credit is reserved while the provider outcome is reconciled.",
+      "target": "प्रदात्याच्या निकालाची जुळवाजुळव होईपर्यंत तुमचे क्रेडिट राखून ठेवण्यात आले आहे."
+    },
+    {
+      "id": "online:Your credit remains reserved while the provider outcome is reconciled.",
+      "source": "Your credit remains reserved while the provider outcome is reconciled.",
+      "target": "सेवा पुरवठादाराच्या निकालाची जुळवाजुळव होईपर्यंत तुमचे क्रेडिट राखीव राहील."
+    },
+    {
+      "id": "online:Your credits are ready. Let’s create.",
+      "source": "Your credits are ready. Let’s create.",
+      "target": "तुमचे क्रेडिट्स तयार आहेत. चला, तयार करूया."
+    },
+    {
+      "id": "online:Your drafts",
+      "source": "Your drafts",
+      "target": "तुमचे मसुदे"
+    },
+    {
+      "id": "online:Your first AI belongs here.",
+      "source": "Your first AI belongs here.",
+      "target": "तुमचा पहिला एआय इथेच तयार होईल."
+    },
+    {
+      "id": "online:Your first design starts with New skin. Your work saves automatically.",
+      "source": "Your first design starts with New skin. Your work saves automatically.",
+      "target": "तुमची पहिली डिझाइन 'न्यू स्किन'ने सुरू होते. तुमचे काम आपोआप सेव्ह होते."
+    },
+    {
+      "id": "online:Your first idea",
+      "source": "Your first idea",
+      "target": "तुमची पहिली कल्पना"
+    },
+    {
+      "id": "online:Your game keeps its current account. You can close this page.",
+      "source": "Your game keeps its current account. You can close this page.",
+      "target": "तुमचा गेम त्याचे चालू खाते जतन करून ठेवतो. तुम्ही हे पान बंद करू शकता."
+    },
+    {
+      "id": "online:Your idea or next change",
+      "source": "Your idea or next change",
+      "target": "तुमची कल्पना किंवा पुढील बदल"
+    },
+    {
+      "id": "online:Your map is ready to play.",
+      "source": "Your map is ready to play.",
+      "target": "तुमचा नकाशा खेळण्यासाठी तयार आहे."
+    },
+    {
+      "id": "online:Your match is already starting.",
+      "source": "Your match is already starting.",
+      "target": "तुमचा सामना आधीच सुरू झाला आहे."
+    },
+    {
+      "id": "online:Your next colony starts here. Play in your browser or join your friends.",
+      "source": "Your next colony starts here. Play in your browser or join your friends.",
+      "target": "तुमची पुढची वसाहत येथून सुरू होते. तुमच्या ब्राउझरमध्ये खेळा किंवा तुमच्या मित्रांसोबत सामील व्हा."
+    },
+    {
+      "id": "online:Your next great map",
+      "source": "Your next great map",
+      "target": "तुमचा पुढील महान नकाशा"
+    },
+    {
+      "id": "online:Your next soundtrack",
+      "source": "Your next soundtrack",
+      "target": "तुमचा पुढचा साउंडट्रॅक"
+    },
+    {
+      "id": "online:Your next world starts with an idea.",
+      "source": "Your next world starts with an idea.",
+      "target": "तुमच्या पुढच्या जगाची सुरुवात एका कल्पनेने होते."
+    },
+    {
+      "id": "online:Your profile",
+      "source": "Your profile",
+      "target": "तुमचे प्रोफाइल"
+    },
+    {
+      "id": "online:Your projects will be saved here.",
+      "source": "Your projects will be saved here.",
+      "target": "तुमचे प्रकल्प येथे जतन केले जातील."
+    },
+    {
+      "id": "online:Your purchases",
+      "source": "Your purchases",
+      "target": "तुमच्या खरेदी"
+    },
+    {
+      "id": "online:Your saved building remains available in Building Studio.",
+      "source": "Your saved building remains available in Building Studio.",
+      "target": "तुमची जतन केलेली इमारत बिल्डिंग स्टुडिओमध्ये उपलब्ध राहते."
+    },
+    {
+      "id": "online:Your set",
+      "source": "Your set",
+      "target": "तुमचा सेट"
+    },
+    {
+      "id": "online:Your swarm, in the game",
+      "source": "Your swarm, in the game",
+      "target": "खेळामधील तुमचा थवा"
+    },
+    {
+      "id": "online:Your terrain",
+      "source": "Your terrain",
+      "target": "तुमचा भूप्रदेश"
+    },
+    {
+      "id": "online:Your uploaded photo",
+      "source": "Your uploaded photo",
+      "target": "तुमचा अपलोड केलेला फोटो"
+    },
+    {
+      "id": "online:Your workspace has 100 drafts. Delete an old draft first.",
+      "source": "Your workspace has 100 drafts. Delete an old draft first.",
+      "target": "तुमच्या वर्कस्पेसमध्ये १०० ड्राफ्ट आहेत. आधी एक जुना ड्राफ्ट डिलीट करा."
+    },
+    {
+      "id": "online:Your world is taking shape…",
+      "source": "Your world is taking shape…",
+      "target": "तुमचं जग आकार घेत आहे…"
+    },
+    {
+      "id": "online:You’re invited",
+      "source": "You’re invited",
+      "target": "तुम्हाला आमंत्रित केले आहे"
+    },
+    {
+      "id": "online:Zoom",
+      "source": "Zoom",
+      "target": "झूम"
+    },
+    {
+      "id": "online:Zoom in",
+      "source": "Zoom in",
+      "target": "झूम इन करा"
+    },
+    {
+      "id": "online:Zoom in (+)",
+      "source": "Zoom in (+)",
+      "target": "झूम इन करा (+)"
+    },
+    {
+      "id": "online:Zoom out",
+      "source": "Zoom out",
+      "target": "झूम आउट"
+    },
+    {
+      "id": "online:Zoom out (−)",
+      "source": "Zoom out (−)",
+      "target": "झूम आउट (−)"
+    },
+    {
+      "id": "online:a few seconds left",
+      "source": "a few seconds left",
+      "target": "काही सेकंद शिल्लक आहेत"
+    },
+    {
+      "id": "online:aborted",
+      "source": "aborted",
+      "target": "रद्द केले"
+    },
+    {
+      "id": "online:about {minutes} min left",
+      "source": "about {minutes} min left",
+      "target": "सुमारे {minutes} मिनिटे शिल्लक"
+    },
+    {
+      "id": "online:about {seconds} s left",
+      "source": "about {seconds} s left",
+      "target": "सुमारे {seconds} शिल्लक राहिले"
+    },
+    {
+      "id": "online:account export",
+      "source": "account export",
+      "target": "खाते निर्यात"
+    },
+    {
+      "id": "online:and use this link again.",
+      "source": "and use this link again.",
+      "target": "आणि ही लिंक पुन्हा वापरा."
+    },
+    {
+      "id": "online:as a guest, and sign in later to keep your games and rating.",
+      "source": "as a guest, and sign in later to keep your games and rating.",
+      "target": "पाहुणे म्हणून, आणि तुमचे गेम्स व रेटिंग कायम ठेवण्यासाठी नंतर साइन इन करा."
+    },
+    {
+      "id": "online:b-",
+      "source": "b-",
+      "target": "ब-"
+    },
+    {
+      "id": "online:banned",
+      "source": "banned",
+      "target": "बंदी घातली"
+    },
+    {
+      "id": "online:browser sign-in completed",
+      "source": "browser sign-in completed",
+      "target": "ब्राउझर साइन-इन पूर्ण झाले"
+    },
+    {
+      "id": "online:browser sign-in completed from web session",
+      "source": "browser sign-in completed from web session",
+      "target": "वेब सत्रामधून ब्राउझर साइन-इन पूर्ण झाले."
+    },
+    {
+      "id": "online:build",
+      "source": "build",
+      "target": "तयार करा"
+    },
+    {
+      "id": "online:building library",
+      "source": "building library",
+      "target": "ग्रंथालय तयार करणे"
+    },
+    {
+      "id": "online:by ",
+      "source": "by ",
+      "target": "द्वारे "
+    },
+    {
+      "id": "online:by {slot0} · updated {slot1}",
+      "source": "by {slot0} · updated {slot1}",
+      "target": "{slot0} द्वारा · {slot1} द्वारे अद्यतनित"
+    },
+    {
+      "id": "online:by {slot0}{slot1}",
+      "source": "by {slot0}{slot1}",
+      "target": "{slot0}{slot1} द्वारे"
+    },
+    {
+      "id": "online:cancelled",
+      "source": "cancelled",
+      "target": "रद्द केले"
+    },
+    {
+      "id": "online:check needs",
+      "source": "check needs",
+      "target": "गरजा तपासा"
+    }
+  ],
+  "subset_sha256": "034b7171aeeda934a8b14c1cbca0ec34b996473b8454aac77af58ce41796251b"
+}

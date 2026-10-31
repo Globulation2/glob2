@@ -1,0 +1,509 @@
+{
+  "id": "online-online-015",
+  "source_sha256": "0ac44b4cdfb03e688983d6e3fb1e484cca57589665bff19c5c65388e649b292a",
+  "surface": "online",
+  "domain": "online",
+  "context": "Account, multiplayer, upload and browser workflows. Preserve URLs, licences, paths, format tokens and product names.",
+  "entries": [
+    {
+      "id": "online:Pause",
+      "key": "Pause",
+      "source": "Pause"
+    },
+    {
+      "id": "online:Payment",
+      "key": "Payment",
+      "source": "Payment"
+    },
+    {
+      "id": "online:Payment mode",
+      "key": "Payment mode",
+      "source": "Payment mode"
+    },
+    {
+      "id": "online:Payment status: {value0}.",
+      "key": "Payment status: {value0}.",
+      "source": "Payment status: {value0}."
+    },
+    {
+      "id": "online:Payments are not configured.",
+      "key": "Payments are not configured.",
+      "source": "Payments are not configured."
+    },
+    {
+      "id": "online:Pen pressure",
+      "key": "Pen pressure",
+      "source": "Pen pressure"
+    },
+    {
+      "id": "online:Pending",
+      "key": "Pending",
+      "source": "Pending"
+    },
+    {
+      "id": "online:Period",
+      "key": "Period",
+      "source": "Period"
+    },
+    {
+      "id": "online:Petals cupped open around a central bud.",
+      "key": "Petals cupped open around a central bud.",
+      "source": "Petals cupped open around a central bud."
+    },
+    {
+      "id": "online:Photo updated.",
+      "key": "Photo updated.",
+      "source": "Photo updated."
+    },
+    {
+      "id": "online:Ping",
+      "key": "Ping",
+      "source": "Ping"
+    },
+    {
+      "id": "online:Play",
+      "key": "Play",
+      "source": "Play"
+    },
+    {
+      "id": "online:Play Locally in Custom Game",
+      "key": "Play Locally in Custom Game",
+      "source": "Play Locally in Custom Game"
+    },
+    {
+      "id": "online:Play as {p3} instead",
+      "key": "Play as {p3} instead",
+      "source": "Play as {p3} instead"
+    },
+    {
+      "id": "online:Play in Multiplayer",
+      "key": "Play in Multiplayer",
+      "source": "Play in Multiplayer"
+    },
+    {
+      "id": "online:Play in browser",
+      "key": "Play in browser",
+      "source": "Play in browser"
+    },
+    {
+      "id": "online:Play in your browser",
+      "key": "Play in your browser",
+      "source": "Play in your browser"
+    },
+    {
+      "id": "online:Play online",
+      "key": "Play online",
+      "source": "Play online"
+    },
+    {
+      "id": "online:Play this map",
+      "key": "Play this map",
+      "source": "Play this map"
+    },
+    {
+      "id": "online:Play {slot0}",
+      "key": "Play {slot0}",
+      "source": "Play {slot0}"
+    },
+    {
+      "id": "online:Playability checks",
+      "key": "Playability checks",
+      "source": "Playability checks"
+    },
+    {
+      "id": "online:Playability checks passed",
+      "key": "Playability checks passed",
+      "source": "Playability checks passed"
+    },
+    {
+      "id": "online:Playable",
+      "key": "Playable",
+      "source": "Playable"
+    },
+    {
+      "id": "online:Playable generator",
+      "key": "Playable generator",
+      "source": "Playable generator"
+    },
+    {
+      "id": "online:Playable terrain",
+      "key": "Playable terrain",
+      "source": "Playable terrain"
+    },
+    {
+      "id": "online:Playback format",
+      "key": "Playback format",
+      "source": "Playback format"
+    },
+    {
+      "id": "online:Playback position",
+      "key": "Playback position",
+      "source": "Playback position"
+    },
+    {
+      "id": "online:Player",
+      "key": "Player",
+      "source": "Player"
+    },
+    {
+      "id": "online:Player guides",
+      "key": "Player guides",
+      "source": "Player guides"
+    },
+    {
+      "id": "online:Player types",
+      "key": "Player types",
+      "source": "Player types"
+    },
+    {
+      "id": "online:Players",
+      "key": "Players",
+      "source": "Players"
+    },
+    {
+      "id": "online:Players and AI opponents, ranked by their conservative rating: it rises as the game becomes sure of your skill. Guests are not ranked.",
+      "key": "Players and AI opponents, ranked by their conservative rating: it rises as the game becomes sure of your skill. Guests are not ranked.",
+      "source": "Players and AI opponents, ranked by their conservative rating: it rises as the game becomes sure of your skill. Guests are not ranked."
+    },
+    {
+      "id": "online:Players and results",
+      "key": "Players and results",
+      "source": "Players and results"
+    },
+    {
+      "id": "online:Players cannot be removed while a match is starting or running.",
+      "key": "Players cannot be removed while a match is starting or running.",
+      "source": "Players cannot be removed while a match is starting or running."
+    },
+    {
+      "id": "online:Players online",
+      "key": "Players online",
+      "source": "Players online"
+    },
+    {
+      "id": "online:Plays",
+      "key": "Plays",
+      "source": "Plays"
+    },
+    {
+      "id": "online:Please fix the issues in the attached test diagnostics.",
+      "key": "Please fix the issues in the attached test diagnostics.",
+      "source": "Please fix the issues in the attached test diagnostics."
+    },
+    {
+      "id": "online:Please try building the map again and address this issue: {value0}",
+      "key": "Please try building the map again and address this issue: {value0}",
+      "source": "Please try building the map again and address this issue: {value0}"
+    },
+    {
+      "id": "online:Pose",
+      "key": "Pose",
+      "source": "Pose"
+    },
+    {
+      "id": "online:Prepare Calm, Building, and Combat arrangements of the same piece. Each must last 10 seconds to 15 minutes. Originals are deleted after conversion; keep your own source files.",
+      "key": "Prepare Calm, Building, and Combat arrangements of the same piece. Each must last 10 seconds to 15 minutes. Originals are deleted after conversion; keep your own source files.",
+      "source": "Prepare Calm, Building, and Combat arrangements of the same piece. Each must last 10 seconds to 15 minutes. Originals are deleted after conversion; keep your own source files."
+    },
+    {
+      "id": "online:Prepare retry",
+      "key": "Prepare retry",
+      "source": "Prepare retry"
+    },
+    {
+      "id": "online:Prepare the design",
+      "key": "Prepare the design",
+      "source": "Prepare the design"
+    },
+    {
+      "id": "online:Prepare this release",
+      "key": "Prepare this release",
+      "source": "Prepare this release"
+    },
+    {
+      "id": "online:Preparing photo…",
+      "key": "Preparing photo…",
+      "source": "Preparing photo…"
+    },
+    {
+      "id": "online:Preparing your model…",
+      "key": "Preparing your model…",
+      "source": "Preparing your model…"
+    },
+    {
+      "id": "online:Prestige ",
+      "key": "Prestige ",
+      "source": "Prestige "
+    },
+    {
+      "id": "online:Prestige {slot0}",
+      "key": "Prestige {slot0}",
+      "source": "Prestige {slot0}"
+    },
+    {
+      "id": "online:Preview",
+      "key": "Preview",
+      "source": "Preview"
+    },
+    {
+      "id": "online:Preview current changes",
+      "key": "Preview current changes",
+      "source": "Preview current changes"
+    },
+    {
+      "id": "online:Preview game transitions",
+      "key": "Preview game transitions",
+      "source": "Preview game transitions"
+    },
+    {
+      "id": "online:Preview not found.",
+      "key": "Preview not found.",
+      "source": "Preview not found."
+    },
+    {
+      "id": "online:Preview of {value0}",
+      "key": "Preview of {value0}",
+      "source": "Preview of {value0}"
+    },
+    {
+      "id": "online:Preview unavailable",
+      "key": "Preview unavailable",
+      "source": "Preview unavailable"
+    },
+    {
+      "id": "online:Preview unavailable.",
+      "key": "Preview unavailable.",
+      "source": "Preview unavailable."
+    },
+    {
+      "id": "online:Preview · {value0}",
+      "key": "Preview · {value0}",
+      "source": "Preview · {value0}"
+    },
+    {
+      "id": "online:Previewing game transitions · {slot0} · game fade timing",
+      "key": "Previewing game transitions · {slot0} · game fade timing",
+      "source": "Previewing game transitions · {slot0} · game fade timing"
+    },
+    {
+      "id": "online:Previous",
+      "key": "Previous",
+      "source": "Previous"
+    },
+    {
+      "id": "online:Previous mean",
+      "key": "Previous mean",
+      "source": "Previous mean"
+    },
+    {
+      "id": "online:Previous recorded",
+      "key": "Previous recorded",
+      "source": "Previous recorded"
+    },
+    {
+      "id": "online:Previous samples",
+      "key": "Previous samples",
+      "source": "Previous samples"
+    },
+    {
+      "id": "online:Previous saved drafts",
+      "key": "Previous saved drafts",
+      "source": "Previous saved drafts"
+    },
+    {
+      "id": "online:Previous stage",
+      "key": "Previous stage",
+      "source": "Previous stage"
+    },
+    {
+      "id": "online:Priced",
+      "key": "Priced",
+      "source": "Priced"
+    },
+    {
+      "id": "online:Private",
+      "key": "Private",
+      "source": "Private"
+    },
+    {
+      "id": "online:Private or uploaded map",
+      "key": "Private or uploaded map",
+      "source": "Private or uploaded map"
+    },
+    {
+      "id": "online:Private project",
+      "key": "Private project",
+      "source": "Private project"
+    },
+    {
+      "id": "online:Private — only you",
+      "key": "Private — only you",
+      "source": "Private — only you"
+    },
+    {
+      "id": "online:Processing",
+      "key": "Processing",
+      "source": "Processing"
+    },
+    {
+      "id": "online:Product",
+      "key": "Product",
+      "source": "Product"
+    },
+    {
+      "id": "online:Product / model",
+      "key": "Product / model",
+      "source": "Product / model"
+    },
+    {
+      "id": "online:Product credit flow table",
+      "key": "Product credit flow table",
+      "source": "Product credit flow table"
+    },
+    {
+      "id": "online:Product credits",
+      "key": "Product credits",
+      "source": "Product credits"
+    },
+    {
+      "id": "online:Profile photo",
+      "key": "Profile photo",
+      "source": "Profile photo"
+    },
+    {
+      "id": "online:Profile {slot0} · {slot1} downloads of this version",
+      "key": "Profile {slot0} · {slot1} downloads of this version",
+      "source": "Profile {slot0} · {slot1} downloads of this version"
+    },
+    {
+      "id": "online:Progress does not match the leased AI validation.",
+      "key": "Progress does not match the leased AI validation.",
+      "source": "Progress does not match the leased AI validation."
+    },
+    {
+      "id": "online:Project",
+      "key": "Project",
+      "source": "Project"
+    },
+    {
+      "id": "online:Project actions",
+      "key": "Project actions",
+      "source": "Project actions"
+    },
+    {
+      "id": "online:Project has not loaded.",
+      "key": "Project has not loaded.",
+      "source": "Project has not loaded."
+    },
+    {
+      "id": "online:Project name",
+      "key": "Project name",
+      "source": "Project name"
+    },
+    {
+      "id": "online:Project options",
+      "key": "Project options",
+      "source": "Project options"
+    },
+    {
+      "id": "online:Project title",
+      "key": "Project title",
+      "source": "Project title"
+    },
+    {
+      "id": "online:Projects onto visible surfaces. Shared surfaces repeat the paint.",
+      "key": "Projects onto visible surfaces. Shared surfaces repeat the paint.",
+      "source": "Projects onto visible surfaces. Shared surfaces repeat the paint."
+    },
+    {
+      "id": "online:Properties inherit this preset until you add an override.",
+      "key": "Properties inherit this preset until you add an override.",
+      "source": "Properties inherit this preset until you add an override."
+    },
+    {
+      "id": "online:Provider attempt evidence for {value0}",
+      "key": "Provider attempt evidence for {value0}",
+      "source": "Provider attempt evidence for {value0}"
+    },
+    {
+      "id": "online:Provider cost table",
+      "key": "Provider cost table",
+      "source": "Provider cost table"
+    },
+    {
+      "id": "online:Public",
+      "key": "Public",
+      "source": "Public"
+    },
+    {
+      "id": "online:Public library",
+      "key": "Public library",
+      "source": "Public library"
+    },
+    {
+      "id": "online:Public — listed for everyone",
+      "key": "Public — listed for everyone",
+      "source": "Public — listed for everyone"
+    },
+    {
+      "id": "online:Publish",
+      "key": "Publish",
+      "source": "Publish"
+    },
+    {
+      "id": "online:Publish a generator release",
+      "key": "Publish a generator release",
+      "source": "Publish a generator release"
+    },
+    {
+      "id": "online:Publish a new release",
+      "key": "Publish a new release",
+      "source": "Publish a new release"
+    },
+    {
+      "id": "online:Publish a new version",
+      "key": "Publish a new version",
+      "source": "Publish a new version"
+    },
+    {
+      "id": "online:Publish a release",
+      "key": "Publish a release",
+      "source": "Publish a release"
+    },
+    {
+      "id": "online:Publish a version",
+      "key": "Publish a version",
+      "source": "Publish a version"
+    },
+    {
+      "id": "online:Publish map version",
+      "key": "Publish map version",
+      "source": "Publish map version"
+    },
+    {
+      "id": "online:Publish music version",
+      "key": "Publish music version",
+      "source": "Publish music version"
+    },
+    {
+      "id": "online:Publish release",
+      "key": "Publish release",
+      "source": "Publish release"
+    },
+    {
+      "id": "online:Publish revision {slot0}",
+      "key": "Publish revision {slot0}",
+      "source": "Publish revision {slot0}"
+    },
+    {
+      "id": "online:Publish revision {value0}",
+      "key": "Publish revision {value0}",
+      "source": "Publish revision {value0}"
+    },
+    {
+      "id": "online:Publish saved family",
+      "key": "Publish saved family",
+      "source": "Publish saved family"
+    }
+  ]
+}

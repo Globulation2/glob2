@@ -1,0 +1,418 @@
+{
+  "request": {
+    "project": "bradley-personal-20261027",
+    "model": "general/nmt",
+    "payload": {
+      "sourceLanguageCode": "en",
+      "targetLanguageCode": "mr",
+      "mimeType": "text/plain",
+      "contents": [
+        "Typical game",
+        "UTC day",
+        "Unavailable",
+        "Unavailable cost",
+        "Unbounded rig scale",
+        "Uncertain",
+        "Uncertain requests and queued/failed engine jobs, oldest first.",
+        "Undo",
+        "Undo revision",
+        "Unexpected checkout address.",
+        "Unhide",
+        "Units",
+        "Units can cross",
+        "Units: latest verified match against recent average",
+        "Unknown",
+        "Unknown AI tag.",
+        "Unknown building sort.",
+        "Unknown contentType.",
+        "Unknown device credential.",
+        "Unknown engine agent key.",
+        "Unknown generator tag.",
+        "Unknown library.",
+        "Unknown license.",
+        "Unknown or unavailable catalog map.",
+        "Unknown product.",
+        "Unknown queue result.",
+        "Unknown queue.",
+        "Unknown relay key.",
+        "Unknown set kind.",
+        "Unknown sign-in provider.",
+        "Unknown sort.",
+        "Unknown status.",
+        "Unknown upload slot.",
+        "Unknown verification state.",
+        "Unlike",
+        "Unlisted",
+        "Unlisted (people with the link)",
+        "Unlisted — accessible by link",
+        "Unlock designer",
+        "Unlock the skin designer to use custom skins.",
+        "Unmute",
+        "Unreadable icon source: ZXQPH0QXZ",
+        "Unsaved changes",
+        "Unsupported realtime protocol version.",
+        "Unsupported rig format",
+        "Unsupported shape clip frames",
+        "Unsupported shape format",
+        "Unverifiable",
+        "Unverified",
+        "Up / down",
+        "Update the game to join rooms using shared generators.",
+        "Update the game to reconnect to this shared generator match.",
+        "Update the game to reconnect to your shared generator room or match.",
+        "Update the game to use shared generator rooms and matches.",
+        "Update the game to use shared generators.",
+        "Updated",
+        "Updated ZXQPH0QXZ · UTC days · ZXQPH1QXZ",
+        "Updated ZXQPH0QXZ · UTC periods · ZXQPH1QXZ payments",
+        "Upload",
+        "Upload PNG",
+        "Upload a map",
+        "Upload all three moods first.",
+        "Upload already published elsewhere.",
+        "Upload an audio file, or cover art up to 8 MiB.",
+        "Upload an image as binary data.",
+        "Upload artwork you may use as a reference. Up to four selected images guide the visual style.",
+        "Upload expired; choose the file again.",
+        "Upload expired; validate again.",
+        "Upload frame",
+        "Upload image bytes.",
+        "Upload photo",
+        "Upload still PNG or WebP frames up to 512 × 512. Team-color layers use the same dimensions as the base frame.",
+        "Upload the map first (POST /api/v1/uploads).",
+        "Upload the match record (PUT …/record) first.",
+        "Upload the portable ZXQPH0QXZ exported from Settings → Map generators. ZXQPH1QXZ",
+        "Upload version",
+        "Uploaded",
+        "Uploaded spritesheet; click a tile to select its frame",
+        "Uploading",
+        "Usage"
+      ]
+    }
+  },
+  "response": {
+    "translations": [
+      {
+        "translatedText": "सामान्य खेळ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "यूटीसी दिवस",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अनुपलब्ध",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अनुपलब्ध खर्च",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अमर्याद रिग स्केल",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अनिश्चित",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अनिश्चित विनंत्या आणि रांगेतील/अयशस्वी इंजिन कार्ये, सर्वात जुन्यापासून सुरुवात.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पूर्ववत करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सुधारणा पूर्ववत करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अनपेक्षित चेकआउट पत्ता.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "उघड करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "युनिट्स",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "युनिट्स ओलांडू शकतात",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "एकके: अलीकडील सरासरीच्या तुलनेत नवीनतम सत्यापित जुळणी",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अज्ञात",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अज्ञात एआय टॅग.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "इमारतीचा प्रकार अज्ञात आहे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अज्ञात सामग्री प्रकार.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अज्ञात डिव्हाइस क्रेडेन्शियल.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अज्ञात इंजिन एजंट की.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अज्ञात जनरेटर टॅग.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अज्ञात ग्रंथालय.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अज्ञात परवाना.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अज्ञात किंवा अनुपलब्ध कॅटलॉग नकाशा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अज्ञात उत्पादन.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अज्ञात रांगेचा निकाल.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अज्ञात रांग.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अज्ञात रिले की.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अज्ञात संच प्रकार.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अज्ञात साइन-इन प्रदाता.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अज्ञात प्रकार.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अज्ञात स्थिती.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अज्ञात अपलोड स्लॉट.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अज्ञात पडताळणी स्थिती.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "विपरीत",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सूचीबद्ध नसलेले",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सूचीबद्ध नसलेले (लिंक असलेल्या व्यक्ती)",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सूचीत नसलेले — लिंकद्वारे प्रवेशयोग्य",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "डिझायनर अनलॉक करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सानुकूलित स्किन्स वापरण्यासाठी स्किन डिझायनर अनलॉक करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अनम्यूट",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "वाचता न येणाऱ्या आयकॉनचा स्रोत: ZXQPH0QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "न जतन केलेले बदल",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "असमर्थित रिअलटाइम प्रोटोकॉल आवृत्ती.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "असमर्थित रिग फॉरमॅट",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "असमर्थित आकार क्लिप फ्रेम्स",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "असमर्थित आकार स्वरूप",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अपुष्ट करण्यायोग्य",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अपुष्ट",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "वर / खाली",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सामायिक जनरेटर वापरणाऱ्या रूममध्ये सामील होण्यासाठी गेम अपडेट करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "या शेअर्ड जनरेटर मॅचशी पुन्हा कनेक्ट होण्यासाठी गेम अपडेट करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तुमच्या शेअर केलेल्या जनरेटर रूम किंवा मॅचशी पुन्हा कनेक्ट होण्यासाठी गेम अपडेट करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सामायिक जनरेटर रूम आणि सामने वापरण्यासाठी गेम अपडेट करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सामायिक जनरेटर वापरण्यासाठी गेम अपडेट करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अपडेट केले",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अद्यतनित ZXQPH0QXZ · UTC दिवस · ZXQPH1QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अद्यतनित ZXQPH0QXZ · UTC कालावधी · ZXQPH1QXZ देयके",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अपलोड करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पीएनजी अपलोड करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नकाशा अपलोड करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "आधी तिन्ही मूड अपलोड करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "इतरत्र आधीच प्रकाशित केलेले अपलोड.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "८ MiB पर्यंतची ऑडिओ फाईल किंवा कव्हर आर्ट अपलोड करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "प्रतिमा बायनरी डेटा म्हणून अपलोड करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तुम्ही संदर्भ म्हणून वापरू शकाल अशी कलाकृती अपलोड करा. निवडलेल्या जास्तीत जास्त चार प्रतिमा दृश्यात्मक शैलीला दिशा देतील.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अपलोडची मुदत संपली आहे; फाईल पुन्हा निवडा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अपलोडची मुदत संपली आहे; पुन्हा पडताळणी करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "फ्रेम अपलोड करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "इमेजचे बाइट्स अपलोड करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "फोटो अपलोड करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "512 × 512 पर्यंतच्या स्थिर PNG किंवा WebP फ्रेम्स अपलोड करा. टीम-कलर लेयर्स मूळ फ्रेमप्रमाणेच परिमाणे वापरतात.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सर्वप्रथम नकाशा अपलोड करा (POST /api/v1/uploads).",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सर्वप्रथम मॅच रेकॉर्ड अपलोड करा (PUT …/record).",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सेटिंग्ज → मॅप जनरेटर्स मधून एक्सपोर्ट केलेला पोर्टेबल ZXQPH0QXZ अपलोड करा. ZXQPH1QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "आवृत्ती अपलोड करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अपलोड केले",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "स्प्राइटशीट अपलोड केली आहे; फ्रेम निवडण्यासाठी टाइलवर क्लिक करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अपलोड करत आहे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "वापर",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      }
+    ]
+  },
+  "response_sha256": "f1489dc7aece2a84ea16251ecec80383133d83dc61d0d718be107343350ff2a6"
+}

@@ -1,0 +1,5 @@
+
+> typecheck
+> tsc -p tsconfig.json && tsc -p apps/web/tsconfig.json && tsc -p apps/web/e2e/tsconfig.json
+
+packages/i18n/src/index.ts(111,20): error TS2307: Cannot find module '../locales/mr.json' or its corresponding type declarations.

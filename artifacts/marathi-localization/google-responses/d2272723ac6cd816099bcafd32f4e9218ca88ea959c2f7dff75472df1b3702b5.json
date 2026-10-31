@@ -1,0 +1,418 @@
+{
+  "request": {
+    "project": "bradley-personal-20261027",
+    "model": "general/nmt",
+    "payload": {
+      "sourceLanguageCode": "en",
+      "targetLanguageCode": "mr",
+      "mimeType": "text/plain",
+      "contents": [
+        "Ban",
+        "Ban ZXQPH0QXZ? This signs them out everywhere.",
+        "Band width",
+        "Banned",
+        "Base artwork",
+        "Behind",
+        "Best ZXQPH0QXZ",
+        "Both",
+        "Boundary style",
+        "Branching spires rising from a mound.",
+        "Broken",
+        "Browse",
+        "Browse library",
+        "Browse maps",
+        "Browse the library",
+        "Browser recovery is unavailable. Keep this page open until changes are saved.",
+        "Brush",
+        "Brush and eraser reach hidden surfaces underneath the cursor. Some front/back and top/bottom surfaces share paint. A stroke may appear on their matching side too, keeping the glob’s flips seamless.",
+        "Brush paints",
+        "Brush size ",
+        "Build",
+        "Build a consistent world with custom terrain, resources, and artwork.",
+        "Build details",
+        "Build in AI Map Studio",
+        "Build in AI Music Studio",
+        "Build in AI Studio",
+        "Build the playable map",
+        "Build wooded hills with wide routes between colonies",
+        "Building",
+        "Building Studio",
+        "Building Studio is disabled on this instance. Your saved projects remain available.",
+        "Building Studio is disabled.",
+        "Building color",
+        "Building color preview",
+        "Building design conversation",
+        "Building family",
+        "Building family editor",
+        "Building library",
+        "Building projects",
+        "Building-credit sales are not enabled.",
+        "Buildings",
+        "Buildings allowed",
+        "Buildings and upgrade stages",
+        "Buildings under construction",
+        "Buildings: latest verified match against recent average",
+        "Bundled ZXQPH0QXZ file",
+        "Buy ZXQPH0QXZ",
+        "Buy ZXQPH0QXZ credit · ZXQPH1QXZ",
+        "Buy ZXQPH0QXZ credits · ZXQPH1QXZ",
+        "Buy ZXQPH0QXZ credits · ZXQPH1QXZ",
+        "By a map generator",
+        "By generator",
+        "By map",
+        "By queue",
+        "By ZXQPH0QXZ",
+        "By ZXQPH0QXZ · ZXQPH1QXZ likes · ZXQPH2QXZ",
+        "By ZXQPH0QXZ · ZXQPH1QXZ terrain · ZXQPH2QXZ resources",
+        "By ZXQPH0QXZ · ZXQPH1QXZ terrains · ZXQPH2QXZ resources",
+        "By ZXQPH0QXZ · ZXQPH1QXZ terrains · ZXQPH2QXZ resources",
+        "By ZXQPH0QXZ · ZXQPH1QXZ · ZXQPH2QXZ",
+        "BZXQPH0QXZ",
+        "ZXQPH0QXZ",
+        "ZXQPH0QXZ 4.0",
+        "ZXQPH0QXZ 4.0 — credit required",
+        "ZXQPH0QXZ 4.0",
+        "CC-BY-4.0",
+        "CC-BY-SA-4.0",
+        "ZXQPH0QXZ",
+        "ZXQPH0QXZ 1.0",
+        "ZXQPH0QXZ — public domain",
+        "ZXQPH0QXZ-1.0",
+        "CHOOSE FINAL VIEW",
+        "COLONY STUDIO",
+        "COMMUNITY SOUNDTRACKS",
+        "COMMUNITY · LOCAL PLAY",
+        "CURRENT POSE",
+        "Cabino",
+        "Cache write tokens",
+        "Cached input",
+        "Cached input tokens"
+      ]
+    }
+  },
+  "response": {
+    "translations": [
+      {
+        "translatedText": "बंदी",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ वर बंदी घालायची? यामुळे ते सर्व ठिकाणांहून लॉग आउट होतात.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "बँडची रुंदी",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "बंदी घातली",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "मूळ कलाकृती",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "मागे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सर्वोत्तम ZXQPH0QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "दोन्ही",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सीमा शैली",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "टेकडीवरून वर येणारे फांद्यांसारखे मनोरे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तुटलेले",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ब्राउझ करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "लायब्ररी ब्राउझ करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नकाशे ब्राउझ करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ग्रंथालय ब्राउझ करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ब्राउझर पुनर्प्राप्ती उपलब्ध नाही. बदल जतन होईपर्यंत हे पृष्ठ उघडे ठेवा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ब्रश",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ब्रश आणि इरेझर कर्सरखालील लपलेल्या पृष्ठभागांपर्यंत पोहोचतात. काही पुढचे/मागचे आणि वरचे/खालचे पृष्ठभाग रंग सामायिक करतात. एक स्ट्रोक त्याच्या जुळणाऱ्या बाजूवर देखील दिसू शकतो, ज्यामुळे रंगाच्या गोळ्याचे उलटणे अखंड राहते.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ब्रश पेंट्स",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ब्रशचा आकार",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तयार करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सानुकूलित भूभाग, संसाधने आणि कलाकृती वापरून एक सुसंगत जग तयार करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "बिल्ड तपशील",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "एआय मॅप स्टुडिओमध्ये तयार करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "एआय म्युझिक स्टुडिओमध्ये तयार करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "एआय स्टुडिओमध्ये तयार करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "खेळण्यायोग्य नकाशा तयार करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "वसाहतींमध्ये रुंद मार्ग असलेल्या वनराईने भरलेल्या टेकड्या बांधा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "इमारत",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "स्टुडिओची इमारत",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "या इन्स्टन्सवर बिल्ड स्टुडिओ अक्षम केले आहे. तुमचे जतन केलेले प्रकल्प उपलब्ध राहतील.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "बिल्डिंग स्टुडिओ अक्षम आहे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "इमारतीचा रंग",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "इमारतीच्या रंगाचे पूर्वावलोकन",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "इमारत डिझाइन संभाषण",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कुटुंब तयार करणे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कुटुंब संपादक तयार करत आहे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ग्रंथालय इमारत",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "बांधकाम प्रकल्प",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "इमारत कर्जाची विक्री सक्षम केलेली नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "इमारती",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "इमारतींना परवानगी दिली",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "इमारती आणि सुधारणा टप्पे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "बांधकाम सुरू असलेल्या इमारती",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "इमारती: अलीकडील सरासरीच्या तुलनेत नवीनतम सत्यापित जुळणी",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "बंडल केलेली ZXQPH0QXZ फाईल",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ खरेदी करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ क्रेडिट खरेदी करा · ZXQPH1QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ क्रेडिट्स खरेदी करा · ZXQPH1QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ क्रेडिट्स खरेदी करा · ZXQPH1QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नकाशा जनरेटरद्वारे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "जनरेटरद्वारे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नकाशाद्वारे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "रांगेनुसार",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ द्वारे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ द्वारे · ZXQPH1QXZ पसंती · ZXQPH2QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ द्वारे · ZXQPH1QXZ भूभाग · ZXQPH2QXZ संसाधने",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ द्वारे · ZXQPH1QXZ भूभाग · ZXQPH2QXZ संसाधने",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ द्वारे · ZXQPH1QXZ भूभाग · ZXQPH2QXZ संसाधने",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ · ZXQPH1QXZ · ZXQPH2QXZ द्वारे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "BZXQPH0QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ 4.0",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ 4.0 — क्रेडिट आवश्यक",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ 4.0",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "CC-BY-4.0",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "CC-BY-SA-4.0",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ 1.0",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ — सार्वजनिक डोमेन",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ-1.0",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अंतिम दृश्य निवडा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कॉलनी स्टुडिओ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सामुदायिक साउंडट्रॅक",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "समुदाय · स्थानिक खेळ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "वर्तमान स्थिती",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कॅबिनो",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कॅशे राइट टोकन",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कॅश्ड इनपुट",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कॅश केलेले इनपुट टोकन",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      }
+    ]
+  },
+  "response_sha256": "b5ae55297987c12227381baa63432c6fc374c98f9668a61ab0a75eaf0bfceabb"
+}

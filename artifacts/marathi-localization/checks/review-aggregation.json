@@ -1,0 +1,16 @@
+{
+  "batches": 65,
+  "keys": 6229,
+  "accepted_english": 108,
+  "pending_execution_gates": [
+    "language_brief is pending or lacks evidence",
+    "source_based_pilot is pending or lacks evidence",
+    "structural is pending or lacks evidence",
+    "desktop_rendering is pending or lacks evidence",
+    "phone_rendering is pending or lacks evidence",
+    "browser_startup is pending or lacks evidence",
+    "native_platforms is pending or lacks evidence",
+    "browser_platforms is pending or lacks evidence",
+    "mobile_platforms is pending or lacks evidence"
+  ]
+}

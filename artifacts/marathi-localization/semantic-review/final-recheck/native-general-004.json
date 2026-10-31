@@ -1,0 +1,506 @@
+{
+  "batch": "native-general-004",
+  "target_sha256": "9d305c3b850dfbf8f29ecc102b159e029b2edff38c484c9dcd1ed1d99385b49c",
+  "rows": [
+    {
+      "id": "native:[save script]",
+      "source": "Save Script",
+      "target": "स्क्रिप्ट जतन करा"
+    },
+    {
+      "id": "native:[Save]",
+      "source": "Save",
+      "target": "जतन करा"
+    },
+    {
+      "id": "native:[school explanation 2]",
+      "source": "level of your workers",
+      "target": "बांधकामाचा स्तर वाढवते"
+    },
+    {
+      "id": "native:[school explanation]",
+      "source": "Improves the building",
+      "target": "तुमच्या कामगारांचा"
+    },
+    {
+      "id": "native:[school]",
+      "source": "School",
+      "target": "शाळा"
+    },
+    {
+      "id": "native:[Script Areas]",
+      "source": "Script Areas",
+      "target": "स्क्रिप्ट क्षेत्रे"
+    },
+    {
+      "id": "native:[scroll lock]",
+      "source": "scroll lock",
+      "target": "Scroll Lock"
+    },
+    {
+      "id": "native:[scroll wheel enabled]",
+      "source": "Scroll Wheel Enabled",
+      "target": "स्क्रोल व्हील सक्षम केले आहे"
+    },
+    {
+      "id": "native:[Secondary Objectives]",
+      "source": "Secondary",
+      "target": "दुय्यम"
+    },
+    {
+      "id": "native:[seeking a job]",
+      "source": "seeking a job",
+      "target": "काम शोधत आहे"
+    },
+    {
+      "id": "native:[seeking]",
+      "source": "seeking",
+      "target": "शोधत आहे"
+    },
+    {
+      "id": "native:[select construct barracks]",
+      "source": "Select Construct Barracks",
+      "target": "बराक बांधणे निवडा"
+    },
+    {
+      "id": "native:[select construct defencetower]",
+      "source": "Select Construct Defense Tower",
+      "target": "संरक्षण मनोरा बांधणे निवडा"
+    },
+    {
+      "id": "native:[select construct hospital]",
+      "source": "Select Construct Hospital",
+      "target": "रुग्णालय बांधणे निवडा"
+    },
+    {
+      "id": "native:[select construct inn]",
+      "source": "Select Construct Inn",
+      "target": "खानावळ बांधणे निवडा"
+    },
+    {
+      "id": "native:[select construct racetrack]",
+      "source": "Select Construct Racetrack",
+      "target": "धावपट्टी बांधणे निवडा"
+    },
+    {
+      "id": "native:[select construct school]",
+      "source": "Select Construct School",
+      "target": "शाळा बांधणे निवडा"
+    },
+    {
+      "id": "native:[select construct stonewall]",
+      "source": "Select Construct Stone Wall",
+      "target": "दगडी भिंत बांधणे निवडा"
+    },
+    {
+      "id": "native:[select construct swimmingpool]",
+      "source": "Select Construct Swimming Pool",
+      "target": "जलतरण तलाव बांधणे निवडा"
+    },
+    {
+      "id": "native:[select delete tool]",
+      "source": "Select Delete Tool",
+      "target": "डिलीट टूल निवडा"
+    },
+    {
+      "id": "native:[select place clearing area]",
+      "source": "Select Place Clearing Area",
+      "target": "सफाई क्षेत्र आखणे निवडा"
+    },
+    {
+      "id": "native:[select place farm area]",
+      "source": "Select Place Farm Area",
+      "target": "शेती क्षेत्र आखणे निवडा"
+    },
+    {
+      "id": "native:[select place forbidden area]",
+      "source": "Select Place Forbidden Area",
+      "target": "प्रतिबंधित क्षेत्र आखणे निवडा"
+    },
+    {
+      "id": "native:[select place guard area]",
+      "source": "Select Place Guard Area",
+      "target": "राखण क्षेत्र आखणे निवडा"
+    },
+    {
+      "id": "native:[settings]",
+      "source": "Settings",
+      "target": "सेटिंग्ज"
+    },
+    {
+      "id": "native:[shift %0]",
+      "source": "shift-%0",
+      "target": "shift-%0"
+    },
+    {
+      "id": "native:[show areas]",
+      "source": "Show areas",
+      "target": "क्षेत्रे दाखवा"
+    },
+    {
+      "id": "native:[show main menu]",
+      "source": "Show Main Menu",
+      "target": "मुख्य मेनू दाखवा"
+    },
+    {
+      "id": "native:[skin]",
+      "source": "Display",
+      "target": "प्रदर्शन"
+    },
+    {
+      "id": "native:[smoothing]",
+      "source": "Smoothing",
+      "target": "गुळगुळीत करणे"
+    },
+    {
+      "id": "native:[space]",
+      "source": "space",
+      "target": "Space"
+    },
+    {
+      "id": "native:[start mission]",
+      "source": "Start Mission",
+      "target": "मिशन सुरू करा"
+    },
+    {
+      "id": "native:[start new campaign]",
+      "source": "Start New Campaign",
+      "target": "नवीन मोहीम सुरू करा"
+    },
+    {
+      "id": "native:[Start]",
+      "source": "Start",
+      "target": "सुरुवात करा"
+    },
+    {
+      "id": "native:[Starving Map]",
+      "source": "Starving Map",
+      "target": "उपासमारीचा नकाशा"
+    },
+    {
+      "id": "native:[starving]",
+      "source": "starving",
+      "target": "उपासमारीने मरत आहेत"
+    },
+    {
+      "id": "native:[Statistics]",
+      "source": "Statistics",
+      "target": "आकडेवारी"
+    },
+    {
+      "id": "native:[Still (i)]",
+      "source": "Still",
+      "target": "अजून"
+    },
+    {
+      "id": "native:[still (w)]",
+      "source": "Still",
+      "target": "अजून"
+    },
+    {
+      "id": "native:[still one unit working]",
+      "source": "One unit still working",
+      "target": "एक युनिट अजूनही कार्यरत आहे."
+    },
+    {
+      "id": "native:[Still one]",
+      "source": "Still one",
+      "target": "अजून एक"
+    },
+    {
+      "id": "native:[Stone]",
+      "source": "Stone",
+      "target": "दगड"
+    },
+    {
+      "id": "native:[stone]",
+      "source": "stone",
+      "target": "दगड"
+    },
+    {
+      "id": "native:[stonewall explanation 2]",
+      "source": "element",
+      "target": "घटक"
+    },
+    {
+      "id": "native:[stonewall explanation]",
+      "source": "Passive defense",
+      "target": "निष्क्रिय संरक्षणाचा"
+    },
+    {
+      "id": "native:[stonewall]",
+      "source": "Stone Wall",
+      "target": "दगडी भिंत"
+    },
+    {
+      "id": "native:[svr hostname]",
+      "source": "Server hostname",
+      "target": "सर्व्हर होस्टनेम"
+    },
+    {
+      "id": "native:[Swim]",
+      "source": "Swim",
+      "target": "पोहणे"
+    },
+    {
+      "id": "native:[swimmingpool explanation 2]",
+      "source": "speed of your units",
+      "target": "पोहण्याचा वेग वाढवते"
+    },
+    {
+      "id": "native:[swimmingpool explanation]",
+      "source": "Improves the swimming",
+      "target": "तुमच्या युनिटचा"
+    },
+    {
+      "id": "native:[swimmingpool]",
+      "source": "Swimming pool",
+      "target": "जलतरण तलाव"
+    },
+    {
+      "id": "native:[switch to adding areas]",
+      "source": "Switch To Adding Areas",
+      "target": "क्षेत्रे जोडण्याकडे स्विच करा"
+    },
+    {
+      "id": "native:[switch to area brush 1]",
+      "source": "Switch To Area Brush 1",
+      "target": "एरिया ब्रश १ वर स्विच करा"
+    },
+    {
+      "id": "native:[switch to area brush 2]",
+      "source": "Switch To Area Brush 2",
+      "target": "एरिया ब्रश २ वर स्विच करा"
+    },
+    {
+      "id": "native:[switch to area brush 3]",
+      "source": "Switch To Area Brush 3",
+      "target": "एरिया ब्रश ३ वर स्विच करा"
+    },
+    {
+      "id": "native:[switch to area brush 4]",
+      "source": "Switch To Area Brush 4",
+      "target": "एरिया ब्रश ४ वर स्विच करा"
+    },
+    {
+      "id": "native:[switch to area brush 5]",
+      "source": "Switch To Area Brush 5",
+      "target": "एरिया ब्रश ५ वर स्विच करा"
+    },
+    {
+      "id": "native:[switch to area brush 6]",
+      "source": "Switch To Area Brush 6",
+      "target": "एरिया ब्रश ६ वर स्विच करा"
+    },
+    {
+      "id": "native:[switch to area brush 7]",
+      "source": "Switch To Area Brush 7",
+      "target": "एरिया ब्रश ७ वर स्विच करा"
+    },
+    {
+      "id": "native:[switch to area brush 8]",
+      "source": "Switch To Area Brush 8",
+      "target": "एरिया ब्रश ८ वर स्विच करा"
+    },
+    {
+      "id": "native:[switch to removing areas]",
+      "source": "Switch To Removing Areas",
+      "target": "क्षेत्रे काढून टाकण्याकडे स्विच करा"
+    },
+    {
+      "id": "native:[switch to teams view]",
+      "source": "Switch to Team view",
+      "target": "संघांच्या दृश्यावर जा"
+    },
+    {
+      "id": "native:[sys req]",
+      "source": "sys req",
+      "target": "SysRq"
+    },
+    {
+      "id": "native:[tab]",
+      "source": "tab",
+      "target": "Tab"
+    },
+    {
+      "id": "native:[teams editor]",
+      "source": "Teams Editor",
+      "target": "संघ संपादक"
+    },
+    {
+      "id": "native:[Teams Fixed]",
+      "source": "Teams Fixed",
+      "target": "संघ निश्चित केले"
+    },
+    {
+      "id": "native:[teams]",
+      "source": " teams",
+      "target": " संघ"
+    },
+    {
+      "id": "native:[the barracks is finished]",
+      "source": "The barracks is finished.",
+      "target": "बराकीचे बांधकाम पूर्ण झाले."
+    },
+    {
+      "id": "native:[the barracks is under attack]",
+      "source": "The barracks is under attack.",
+      "target": "बराकीवर हल्ला होत आहे."
+    },
+    {
+      "id": "native:[the defencetower is finished]",
+      "source": "The defense tower is finished.",
+      "target": "संरक्षण मनोऱ्याचे बांधकाम पूर्ण झाले."
+    },
+    {
+      "id": "native:[the defencetower is under attack]",
+      "source": "The defense tower is under attack.",
+      "target": "संरक्षण मनोऱ्यावर हल्ला होत आहे."
+    },
+    {
+      "id": "native:[The game has not been finished]",
+      "source": "The game has not been finished.",
+      "target": "खेळ अजून संपलेला नाही."
+    },
+    {
+      "id": "native:[the games]",
+      "source": "Games",
+      "target": "खेळ"
+    },
+    {
+      "id": "native:[the hospital is finished]",
+      "source": "The hospital is finished.",
+      "target": "रुग्णालयाचे काम पूर्ण झाले आहे."
+    },
+    {
+      "id": "native:[the hospital is under attack]",
+      "source": "The hospital is under attack.",
+      "target": "रुग्णालयावर हल्ला झाला आहे."
+    },
+    {
+      "id": "native:[The host has cancelled the game]",
+      "source": "The host has cancelled the game.",
+      "target": "यजमानाने सामना रद्द केला आहे."
+    },
+    {
+      "id": "native:[the maps]",
+      "source": "Maps",
+      "target": "नकाशे"
+    },
+    {
+      "id": "native:[the racetrack is finished]",
+      "source": "The racetrack is finished.",
+      "target": "धावपट्टीचे बांधकाम पूर्ण झाले."
+    },
+    {
+      "id": "native:[the racetrack is under attack]",
+      "source": "The racetrack is under attack.",
+      "target": "धावपट्टीवर हल्ला होत आहे."
+    },
+    {
+      "id": "native:[the replays]",
+      "source": "Replays",
+      "target": "रीप्ले"
+    },
+    {
+      "id": "native:[the school is finished]",
+      "source": "The school is finished.",
+      "target": "शाळेचे बांधकाम पूर्ण झाले."
+    },
+    {
+      "id": "native:[the school is under attack]",
+      "source": "The school is under attack.",
+      "target": "शाळेवर हल्ला झाला आहे."
+    },
+    {
+      "id": "native:[the stonewall is finished]",
+      "source": "A wall section is finished.",
+      "target": "भिंतीचा एक भाग पूर्ण झाला आहे."
+    },
+    {
+      "id": "native:[the stonewall is under attack]",
+      "source": "The enemy is at your walls.",
+      "target": "शत्रू तुमच्या तटबंदीशी भिडला आहे."
+    },
+    {
+      "id": "native:[the swimmingpool is finished]",
+      "source": "The swimming pool is finished.",
+      "target": "जलतरण तलावाचे बांधकाम पूर्ण झाले."
+    },
+    {
+      "id": "native:[the swimmingpool is under attack]",
+      "source": "The swimming pool is under attack.",
+      "target": "जलतरण तलावावर हल्ला झाला आहे."
+    },
+    {
+      "id": "native:[time]",
+      "source": "Time",
+      "target": "वेळ"
+    },
+    {
+      "id": "native:[to:]",
+      "source": "to:",
+      "target": "प्रति:"
+    },
+    {
+      "id": "native:[toggle draw accessibility aids]",
+      "source": "Toggle team numbers",
+      "target": "संघ क्रमांक टॉगल करा"
+    },
+    {
+      "id": "native:[toggle draw information]",
+      "source": "Toggle Draw Information",
+      "target": "माहिती दाखवणे चालू/बंद करा"
+    },
+    {
+      "id": "native:[toggle draw unit paths]",
+      "source": "Toggle Draw Unit Paths",
+      "target": "युनिट मार्ग काढणे चालू/बंद करा"
+    },
+    {
+      "id": "native:[toggle menu screen]",
+      "source": "Toggle Menu Screen",
+      "target": "मेनू स्क्रीन टॉगल करा"
+    },
+    {
+      "id": "native:[toggle recording voice]",
+      "source": "Toggle Recording Voice",
+      "target": "आवाज रेकॉर्डिंग चालू/बंद करा"
+    },
+    {
+      "id": "native:[Total Attack Power]",
+      "source": "Total Attack Power",
+      "target": "एकूण हल्ला शक्ती"
+    },
+    {
+      "id": "native:[Total Defence Power]",
+      "source": "Total Defence Power",
+      "target": "एकूण संरक्षण शक्ती"
+    },
+    {
+      "id": "native:[Total Hitpoints]",
+      "source": "Total Hitpoints",
+      "target": "एकूण हिटपॉइंट्स"
+    },
+    {
+      "id": "native:[Total prestige reached]",
+      "source": "Total prestige reached",
+      "target": "एकूण प्रतिष्ठा गाठली"
+    },
+    {
+      "id": "native:[Total]",
+      "source": "Total",
+      "target": "एकूण"
+    },
+    {
+      "id": "native:[Uncontrolled]",
+      "source": "Uncontrolled",
+      "target": "अनियंत्रित"
+    },
+    {
+      "id": "native:[undo]",
+      "source": "undo",
+      "target": "पूर्ववत करा"
+    }
+  ]
+}

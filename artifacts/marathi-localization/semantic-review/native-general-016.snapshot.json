@@ -1,0 +1,507 @@
+{
+  "batch": "native-general-016",
+  "source_sha256": "0ac44b4cdfb03e688983d6e3fb1e484cca57589665bff19c5c65388e649b292a",
+  "rows": [
+    {
+      "id": "native:[qm ping about]",
+      "source": "Ping about",
+      "target": "पिंगबद्दल"
+    },
+    {
+      "id": "native:[qm ranked]",
+      "source": "Ranked",
+      "target": "क्रमवारी लावली"
+    },
+    {
+      "id": "native:[qm casual %0]",
+      "source": "Casual %0",
+      "target": "कॅज्युअल %0"
+    },
+    {
+      "id": "native:[qm rated]",
+      "source": "Ranked",
+      "target": "क्रमवारी लावली"
+    },
+    {
+      "id": "native:[qm unrated]",
+      "source": "Unrated",
+      "target": "रेटिंग नाही"
+    },
+    {
+      "id": "native:[qm solo queue]",
+      "source": "solo queue",
+      "target": "एकल रांग"
+    },
+    {
+      "id": "native:[qm ai joins after %0]",
+      "source": "AI joins after %0",
+      "target": "%0 नंतर AI सामील होते"
+    },
+    {
+      "id": "native:[qm fair maps %0]",
+      "source": "Maps: %0",
+      "target": "नकाशे: %0"
+    },
+    {
+      "id": "native:[qm cooldown %0]",
+      "source": "You declined a match. You can search again in %0.",
+      "target": "तुम्ही एक जुळणी नाकारली आहे. तुम्ही %0 मध्ये पुन्हा शोधू शकता."
+    },
+    {
+      "id": "native:[qm sign in to play ranked]",
+      "source": "Ranked queues are for signed-in accounts; sign in first.",
+      "target": "रँक्ड क्यू (Ranked queues) साइन-इन केलेल्या खात्यांसाठी आहेत; आधी साइन इन करा."
+    },
+    {
+      "id": "native:[online update required]",
+      "source": "This version of the game is too old for the server; update to play online.",
+      "target": "गेमची ही आवृत्ती सर्व्हरसाठी खूप जुनी आहे; ऑनलाइन खेळण्यासाठी अपडेट करा."
+    },
+    {
+      "id": "native:[online server behind]",
+      "source": "The server hasn't been updated to this version yet; online play opens once it is.",
+      "target": "सर्व्हर अजून या आवृत्तीमध्ये अद्ययावत केलेला नाही; तो अद्ययावत झाल्यावर ऑनलाइन खेळ सुरू होईल."
+    },
+    {
+      "id": "native:[online version mismatch]",
+      "source": "The server plays a different version of the game; online play isn't available with this copy.",
+      "target": "सर्व्हरवर गेमची वेगळी आवृत्ती चालते; या कॉपीवर ऑनलाइन खेळता येत नाही."
+    },
+    {
+      "id": "native:[qm already searching]",
+      "source": "You are already searching or in a match.",
+      "target": "तुम्ही आधीच शोधत आहात किंवा जुळणीमध्ये आहात."
+    },
+    {
+      "id": "native:[online connection problem]",
+      "source": "The server could not be reached.",
+      "target": "सर्व्हरशी संपर्क होऊ शकला नाही."
+    },
+    {
+      "id": "native:[qm find match]",
+      "source": "Find match",
+      "target": "जुळणी शोधा"
+    },
+    {
+      "id": "native:[qm opponents rated %0 to %1]",
+      "source": "Opponents rated %0 to %1",
+      "target": "प्रतिस्पर्धकांना %0 ते %1 असे रेटिंग देण्यात आले."
+    },
+    {
+      "id": "native:[qm region %0]",
+      "source": "Region %0",
+      "target": "प्रदेश %0"
+    },
+    {
+      "id": "native:[qm searching]",
+      "source": "Searching",
+      "target": "शोधणे"
+    },
+    {
+      "id": "native:[qm measuring relays]",
+      "source": "Measuring relays",
+      "target": "रिले मोजणे"
+    },
+    {
+      "id": "native:[qm joining queue]",
+      "source": "Joining the queue",
+      "target": "रांगेत सामील होणे"
+    },
+    {
+      "id": "native:[qm waiting for a person]",
+      "source": "Waiting for a person: AI opponents are off.",
+      "target": "व्यक्तीची प्रतीक्षा: एआय प्रतिस्पर्धी बंद आहेत."
+    },
+    {
+      "id": "native:[qm ai in %0 rated]",
+      "source": "If no one is found, you'll play the closest-rated AI in %0",
+      "target": "जर कोणी सापडले नाही, तर तुम्ही %0 मधील सर्वात जवळच्या रेटिंगच्या AI सोबत खेळाल."
+    },
+    {
+      "id": "native:[qm ai in %0]",
+      "source": "If no one is found, an AI joins in %0",
+      "target": "जर कोणी सापडले नाही, तर एक AI %0 मध्ये सामील होतो."
+    },
+    {
+      "id": "native:[qm ai after %0]",
+      "source": "If no one is found, an AI takes the seat after %0",
+      "target": "जर कोणी सापडले नाही, तर %0 नंतर एक AI ती जागा घेतो."
+    },
+    {
+      "id": "native:[qm allow ai short]",
+      "source": "Allow AI",
+      "target": "एआयला परवानगी द्या"
+    },
+    {
+      "id": "native:[qm allow ai]",
+      "source": "Allow an AI opponent",
+      "target": "एआय प्रतिस्पर्ध्याला परवानगी द्या"
+    },
+    {
+      "id": "native:[qm cancel]",
+      "source": "Cancel",
+      "target": "रद्द करा"
+    },
+    {
+      "id": "native:[qm cancel search]",
+      "source": "Cancel search",
+      "target": "शोध रद्द करा"
+    },
+    {
+      "id": "native:[qm usual wait %0]",
+      "source": "usual wait %0",
+      "target": "नेहमीची प्रतीक्षा %0"
+    },
+    {
+      "id": "native:[qm widening]",
+      "source": "widening as you wait",
+      "target": "तुम्ही वाट पाहता तसे रुंदावणे"
+    },
+    {
+      "id": "native:[qm ais are rated]",
+      "source": "(rated: AIs have ratings too)",
+      "target": "(रेटिंग: एआयला सुद्धा रेटिंग असते)"
+    },
+    {
+      "id": "native:[qm opponent declined]",
+      "source": "Your opponent didn't accept. You're back at the front of the queue.",
+      "target": "तुमच्या प्रतिस्पर्ध्याने स्वीकारले नाही. तुम्ही पुन्हा रांगेत सर्वात पुढे आला आहात."
+    },
+    {
+      "id": "native:[qm %0 did not accept]",
+      "source": "%0 didn't accept. You're back at the front of the queue.",
+      "target": "%0 ने स्वीकारले नाही. तुम्ही पुन्हा रांगेत सर्वात पुढे आहात."
+    },
+    {
+      "id": "native:[qm start failed]",
+      "source": "The match could not start. You're searching again.",
+      "target": "सामना सुरू होऊ शकला नाही. तुम्ही पुन्हा शोधत आहात."
+    },
+    {
+      "id": "native:[qm you declined]",
+      "source": "You declined the match. You can search again after a short wait.",
+      "target": "तुम्ही जुळणी नाकारली आहे. थोड्या वेळानंतर तुम्ही पुन्हा शोधू शकता."
+    },
+    {
+      "id": "native:[qm you did not answer]",
+      "source": "You didn't accept in time. You can search again after a short wait.",
+      "target": "तुम्ही वेळेत स्वीकारले नाही. थोड्या वेळानंतर तुम्ही पुन्हा शोधू शकता."
+    },
+    {
+      "id": "native:[qm search ended]",
+      "source": "The search ended.",
+      "target": "शोध संपला."
+    },
+    {
+      "id": "native:[qm try again]",
+      "source": "Try again",
+      "target": "पुन्हा प्रयत्न करा"
+    },
+    {
+      "id": "native:[online connecting]",
+      "source": "Connecting…",
+      "target": "जोडत आहे…"
+    },
+    {
+      "id": "native:[qm no queues]",
+      "source": "This server has no quick-match queues.",
+      "target": "या सर्व्हरवर क्विक-मॅच क्यू नाहीत."
+    },
+    {
+      "id": "native:[qm quick match]",
+      "source": "Quick match",
+      "target": "जलद सामना"
+    },
+    {
+      "id": "native:[qm phone searching note]",
+      "source": "The search keeps running if you leave this screen.",
+      "target": "तुम्ही ही स्क्रीन सोडल्यास देखील शोध चालू राहतो."
+    },
+    {
+      "id": "native:[qm phone intro]",
+      "source": "Pick a queue below; the search runs while you browse.",
+      "target": "खालीलपैकी एक रांग निवडा; तुम्ही ब्राउझ करत असताना शोध सुरू राहील."
+    },
+    {
+      "id": "native:[qm online]",
+      "source": "Online",
+      "target": "ऑनलाइन"
+    },
+    {
+      "id": "native:[qm keeps running note]",
+      "source": "The search keeps running if you leave this screen.",
+      "target": "तुम्ही ही स्क्रीन सोडल्यास देखील शोध चालू राहतो."
+    },
+    {
+      "id": "native:[qm ai]",
+      "source": "AI",
+      "target": "एआय"
+    },
+    {
+      "id": "native:[qm provisional]",
+      "source": "provisional",
+      "target": "तात्पुरते"
+    },
+    {
+      "id": "native:[qm accepted]",
+      "source": "✓ accepted",
+      "target": "✓ स्वीकारले"
+    },
+    {
+      "id": "native:[qm declined]",
+      "source": "declined",
+      "target": "नाकारले"
+    },
+    {
+      "id": "native:[qm waiting]",
+      "source": "waiting…",
+      "target": "प्रतीक्षा करत आहे…"
+    },
+    {
+      "id": "native:[qm ai badge]",
+      "source": "AI",
+      "target": "एआय"
+    },
+    {
+      "id": "native:[qm match found]",
+      "source": "Match found",
+      "target": "जुळणी सापडली"
+    },
+    {
+      "id": "native:[qm playing an ai]",
+      "source": "Playing an AI",
+      "target": "एआय खेळणे"
+    },
+    {
+      "id": "native:[qm vs]",
+      "source": "vs",
+      "target": "विरुद्ध"
+    },
+    {
+      "id": "native:[qm ai explanation rated]",
+      "source": "No one in your rating range was searching. You'll play the AI closest to your rating; the result counts for your rating and the AI's.",
+      "target": "तुमच्या रेटिंग श्रेणीतील कोणीही शोधत नव्हते. तुम्ही तुमच्या रेटिंगच्या सर्वात जवळच्या AI सोबत खेळाल; त्याचा निकाल तुमच्या आणि AI च्या रेटिंगसाठी ग्राह्य धरला जाईल."
+    },
+    {
+      "id": "native:[qm ai explanation]",
+      "source": "No one was searching. You'll play the AI closest to your rating; this game is unrated.",
+      "target": "कोणीही शोधत नव्हते. तुम्ही तुमच्या रेटिंगच्या सर्वात जवळच्या AI सोबत खेळाल; या गेमला रेटिंग दिलेले नाही."
+    },
+    {
+      "id": "native:[qm casual explanation]",
+      "source": "The match starts straight away; casual games are unrated.",
+      "target": "सामना लगेच सुरू होतो; प्रासंगिक खेळांना रेटिंग दिले जात नाही."
+    },
+    {
+      "id": "native:[qm accepted button]",
+      "source": "Accepted",
+      "target": "स्वीकृत"
+    },
+    {
+      "id": "native:[qm accept]",
+      "source": "Accept",
+      "target": "स्वीकारा"
+    },
+    {
+      "id": "native:[qm decline]",
+      "source": "Decline",
+      "target": "नकार"
+    },
+    {
+      "id": "native:[qm both must accept]",
+      "source": "Both must accept",
+      "target": "दोघांनीही स्वीकारले पाहिजे"
+    },
+    {
+      "id": "native:[qm accept explanation]",
+      "source": "Both players must accept. Declining or letting the timer run out puts you at the back of the queue.",
+      "target": "दोन्ही खेळाडूंनी स्वीकारणे आवश्यक आहे. नकार दिल्यास किंवा वेळ संपू दिल्यास, तुम्हाला रांगेत सर्वात मागे जावे लागेल."
+    },
+    {
+      "id": "native:[qm starting in %0]",
+      "source": "Starting in %0…",
+      "target": "%0 पासून सुरुवात…"
+    },
+    {
+      "id": "native:[qm preparing match]",
+      "source": "Preparing the match…",
+      "target": "सामन्याची तयारी…"
+    },
+    {
+      "id": "native:[qm match assigned %0 %1]",
+      "source": "Match %0 is ready on %1, but this build cannot connect to online matches yet.",
+      "target": "%1 वर %0 सामना तयार आहे, परंतु हा बिल्ड अद्याप ऑनलाइन सामन्यांशी कनेक्ट होऊ शकत नाही."
+    },
+    {
+      "id": "native:[online jan]",
+      "source": "Jan",
+      "target": "जानेवारी"
+    },
+    {
+      "id": "native:[online feb]",
+      "source": "Feb",
+      "target": "फेब्रुवारी"
+    },
+    {
+      "id": "native:[online mar]",
+      "source": "Mar",
+      "target": "मार"
+    },
+    {
+      "id": "native:[online apr]",
+      "source": "Apr",
+      "target": "एप्रिल"
+    },
+    {
+      "id": "native:[online may]",
+      "source": "May",
+      "target": "मे"
+    },
+    {
+      "id": "native:[online jun]",
+      "source": "Jun",
+      "target": "जून"
+    },
+    {
+      "id": "native:[online jul]",
+      "source": "Jul",
+      "target": "जुलै"
+    },
+    {
+      "id": "native:[online aug]",
+      "source": "Aug",
+      "target": "ऑगस्ट"
+    },
+    {
+      "id": "native:[online sep]",
+      "source": "Sep",
+      "target": "सप्टेंबर"
+    },
+    {
+      "id": "native:[online oct]",
+      "source": "Oct",
+      "target": "ऑक्टोबर"
+    },
+    {
+      "id": "native:[online nov]",
+      "source": "Nov",
+      "target": "नोव्हेंबर"
+    },
+    {
+      "id": "native:[online dec]",
+      "source": "Dec",
+      "target": "डिसेंबर"
+    },
+    {
+      "id": "native:[profile win letter]",
+      "source": "W",
+      "target": "डब्ल्यू"
+    },
+    {
+      "id": "native:[profile loss letter]",
+      "source": "L",
+      "target": "एल"
+    },
+    {
+      "id": "native:[profile draw letter]",
+      "source": "–",
+      "target": "–"
+    },
+    {
+      "id": "native:[profile history unavailable]",
+      "source": "This server does not offer match history yet.",
+      "target": "हा सर्व्हर अद्याप सामन्यांचा इतिहास उपलब्ध करून देत नाही."
+    },
+    {
+      "id": "native:[profile downloading replay]",
+      "source": "Downloading the replay…",
+      "target": "रिप्ले डाउनलोड करत आहे…"
+    },
+    {
+      "id": "native:[profile no replay]",
+      "source": "No replay is available for this match.",
+      "target": "या सामन्याचा रिप्ले उपलब्ध नाही."
+    },
+    {
+      "id": "native:[profile room with %0]",
+      "source": "Room · %0 colonies",
+      "target": "खोली · %0 वसाहती"
+    },
+    {
+      "id": "native:[profile with %0 vs %1]",
+      "source": "with %0 vs %1",
+      "target": "%0 विरुद्ध %1"
+    },
+    {
+      "id": "native:[profile vs %0]",
+      "source": "vs %0",
+      "target": "विरुद्ध %0"
+    },
+    {
+      "id": "native:[profile room]",
+      "source": "Room",
+      "target": "खोली"
+    },
+    {
+      "id": "native:[profile casual]",
+      "source": "Casual",
+      "target": "अनौपचारिक"
+    },
+    {
+      "id": "native:[profile ai filled]",
+      "source": "AI filled",
+      "target": "एआय भरलेले"
+    },
+    {
+      "id": "native:[profile provisional %0 games]",
+      "source": "provisional · %0 games",
+      "target": "तात्पुरते · %0 खेळ"
+    },
+    {
+      "id": "native:[profile unrated]",
+      "source": "unrated",
+      "target": "रेटिंग दिलेले नाही"
+    },
+    {
+      "id": "native:[profile checking]",
+      "source": "checking…",
+      "target": "तपासत आहे…"
+    },
+    {
+      "id": "native:[profile %0 min]",
+      "source": "%0 min",
+      "target": "%0 किमान"
+    },
+    {
+      "id": "native:[profile match page]",
+      "source": "Match page",
+      "target": "सामना पृष्ठ"
+    },
+    {
+      "id": "native:[profile replay]",
+      "source": "Replay",
+      "target": "पुन्हा प्ले करा"
+    },
+    {
+      "id": "native:[profile win rate last %0]",
+      "source": "Win rate, last %0",
+      "target": "विजय दर, शेवटचा %0"
+    },
+    {
+      "id": "native:[profile %0 w %1 l %2 d]",
+      "source": "%0 W · %1 L · %2 draw",
+      "target": "%0 W · %1 L · %2 रेखाटन"
+    },
+    {
+      "id": "native:[profile typical game]",
+      "source": "Typical game",
+      "target": "सामान्य खेळ"
+    },
+    {
+      "id": "native:[profile median length]",
+      "source": "your median length",
+      "target": "तुमची सरासरी लांबी"
+    }
+  ],
+  "subset_sha256": "85cf8f0c6f0ad3c0370211238c1597742b302733a2d49d02168ed8b8fe2b6bb4"
+}

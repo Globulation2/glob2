@@ -1,0 +1,118 @@
+{
+  "request": {
+    "project": "bradley-personal-20261027",
+    "model": "general/nmt",
+    "payload": {
+      "sourceLanguageCode": "en",
+      "targetLanguageCode": "mr",
+      "mimeType": "text/plain",
+      "contents": [
+        "Core strategy: Combines growth, training, upgrades and warfare through overlapping conditions. Can attack while expanding, and redirect economic effort toward recovery when feeding fails.",
+        "Opening: The shipped aggressive profile begins war preparation at five total units and permits war at five warriors, counting level-zero warriors too. Aims for three attack flags with five warriors each. Custom strategy files can change these thresholds.",
+        "Economy and development: Expands food and birth capacity, trains workers, develops swimming and movement, and upgrades buildings. Adjusts food staffing, responds to starvation and pursues fruit.",
+        "Attack and defense: Samples reachable enemy buildings for attacks. Can use clearing flags to open resource-blocked routes. Defensive flags cover clusters of threatened units and buildings. Later, trained ground-attacking explorers target enemy unit groups.",
+        "Compared with other AIs: Shares Warrush's early aggression but has more follow-through. Unlike Cabino, does not consistently prioritize hospitals and inns.",
+        "Strengths and weaknesses: Broad tactical coverage combines early pressure with continued development. Random target selection can spend effort on less valuable buildings. Its thresholds do not provide Maxima's detailed estimate of opposing fighting power.",
+        "Counterplay to try: Expect an early attack. Protect food and workers, contest expansion, and prepare for explorer attacks if it reaches advanced training.",
+        "An early rush supported by farming, upgrades, defense and explorer attacks.",
+        "Core strategy: Issues no AI orders.",
+        "Strengths: A predictable idle opponent for experiments.",
+        "Weaknesses: Does not expand or adapt.",
+        "An idle colony for experiments.",
+        "Core strategy: Builds food and population first, adds healing, science and training, then shifts toward warfare. Its broad phases advance with time rather than with the opponent's progress.",
+        "Economy and development: Scales building demand with population and estimates nearby food sources. Later phases add upgrades, defenses and expansion to support its growing army.",
+        "Attack and defense: Attacks when enough healthy fighters exist or a timeout expires. Places war flags on sampled enemy buildings. When its fighting force falls too low, removes attack flags and raises the thresholds for another attempt.",
+        "Compared with other AIs: More predictable than Castor or Nicowar. Castor considers terrain and target value more carefully; Nicowar applies pressure much earlier.",
+        "Strengths and weaknesses: Broad supporting infrastructure can make it dangerous after an uninterrupted buildup, but its timetable may not match the battle. Simple target selection and longer pauses after losses make its attacks easier to anticipate.",
+        "Counterplay to try: Apply pressure before its military phase. Grow food and training behind your attacks, and exploit the pause after defeating an assault.",
+        "Scouting: Its attack routine reads enemy building positions directly without a visibility check.",
+        "A gradual colony builder that follows a timetable, then attacks in numbers."
+      ]
+    }
+  },
+  "response": {
+    "translations": [
+      {
+        "translatedText": "मुख्य रणनीती: परस्परव्यापी अटींच्या माध्यमातून विकास, प्रशिक्षण, उन्नयन आणि युद्ध यांचा मेळ घालते. विस्तार करताना हल्ला करू शकते, आणि पोषणाचा पुरवठा कमी झाल्यास आर्थिक प्रयत्न पुनर्प्राप्तीकडे वळवू शकते.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सुरुवात: पाठवलेले आक्रमक प्रोफाइल एकूण पाच युनिट्सवर युद्धाची तयारी सुरू करते आणि शून्य-स्तरावरील योद्ध्यांसहित पाच योद्ध्यांवर युद्धाला परवानगी देते. प्रत्येकी पाच योद्ध्यांसह तीन आक्रमण ध्वज मिळवण्याचे उद्दिष्ट आहे. सानुकूल रणनीती फाइल्स या मर्यादा बदलू शकतात.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अर्थव्यवस्था आणि विकास: अन्न आणि जन्मक्षमता वाढवते, कामगारांना प्रशिक्षण देते, पोहणे आणि हालचाल विकसित करते, आणि इमारती अद्ययावत करते. अन्नपुरवठा करणाऱ्या कर्मचाऱ्यांची संख्या समायोजित करते, उपासमारीला प्रतिसाद देते आणि फळांचे उत्पादन वाढवते.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "हल्ला आणि बचाव: हल्ल्यांसाठी शत्रूच्या पोहोचण्यायोग्य इमारतींचे नमुने घेते. संसाधनांनी अडवलेले मार्ग मोकळे करण्यासाठी क्लिअरिंग फ्लॅग्जचा वापर करू शकते. डिफेन्सिव्ह फ्लॅग्ज धोक्यात असलेल्या युनिट्स आणि इमारतींच्या समूहांना संरक्षण देतात. नंतर, प्रशिक्षित जमिनीवरून हल्ला करणारे एक्सप्लोरर्स शत्रूच्या युनिट गटांना लक्ष्य करतात.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "इतर एआयंच्या तुलनेत: वॉरशप्रमाणेच सुरुवातीला आक्रमक असतो, पण केलेल्या कामाची अंमलबजावणी अधिक चांगल्या प्रकारे करतो. कॅबिनोच्या विपरीत, रुग्णालये आणि धर्मशाळांना सातत्याने प्राधान्य देत नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सामर्थ्ये आणि मर्यादा: व्यापक सामरिक व्याप्तीमुळे सुरुवातीच्या दबावाबरोबरच सातत्यपूर्ण विकासही साधता येतो. यादृच्छिक लक्ष्य निवडीमुळे कमी मौल्यवान इमारतींवर प्रयत्न खर्च होऊ शकतात. याच्या मर्यादांमुळे प्रतिस्पर्ध्याच्या लढाऊ शक्तीचा मॅक्सिमासारखा तपशीलवार अंदाज मिळत नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "प्रतिकार म्हणून वापरून पाहण्यासारखी रणनीती: सुरुवातीच्या हल्ल्याची अपेक्षा ठेवा. अन्न आणि कामगारांचे संरक्षण करा, विस्ताराला विरोध करा आणि जर ते प्रगत प्रशिक्षणापर्यंत पोहोचले तर शोधकांच्या हल्ल्यांसाठी तयार रहा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "शेती, अपग्रेड, संरक्षण आणि शोधक हल्ल्यांच्या पाठिंब्याने केलेली सुरुवातीची जोरदार धाव.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "मुख्य धोरण: एआयला कोणतेही आदेश देत नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सामर्थ्ये: प्रयोगांसाठी एक अंदाज बांधता येण्याजोगा निष्क्रिय प्रतिस्पर्धी.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कमतरता: विस्तारत नाही किंवा परिस्थितीशी जुळवून घेत नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "प्रयोगांसाठी एक पडीक वसाहत.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "मुख्य रणनीती: सर्वप्रथम अन्न आणि लोकसंख्या वाढवते, त्यानंतर आरोग्य, विज्ञान आणि प्रशिक्षण जोडते, आणि मग युद्धाकडे वळते. याचे व्यापक टप्पे प्रतिस्पर्ध्याच्या प्रगतीनुसार नव्हे, तर वेळेनुसार पुढे सरकतात.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अर्थव्यवस्था आणि विकास: लोकसंख्येनुसार मागणीचे प्रमाण ठरवते आणि जवळपासच्या अन्नस्रोतांचा अंदाज घेते. पुढील टप्प्यांमध्ये वाढत्या सैन्याला आधार देण्यासाठी सुधारणा, संरक्षण आणि विस्तार यांचा समावेश केला जातो.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "हल्ला आणि बचाव: पुरेसे निरोगी सैनिक उपलब्ध झाल्यावर किंवा वेळेची मर्यादा संपल्यावर हल्ला करते. निवडलेल्या शत्रूच्या इमारतींवर युद्धाचे ध्वज लावते. जेव्हा स्वतःची लढाऊ शक्ती खूप कमी होते, तेव्हा हल्ल्याचे ध्वज काढून टाकते आणि दुसऱ्या प्रयत्नासाठी मर्यादा वाढवते.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "इतर एआयंच्या तुलनेत: कॅस्टर किंवा निकोवारपेक्षा अधिक अंदाज लावता येण्याजोगा. कॅस्टर भूभाग आणि लक्ष्याच्या मूल्याचा अधिक काळजीपूर्वक विचार करतो; निकोवार खूप आधीच दबाव आणतो.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सामर्थ्ये आणि मर्यादा: विस्तृत सहाय्यक पायाभूत सुविधांमुळे अखंड उभारणीनंतर ते धोकादायक ठरू शकते, परंतु त्याचे वेळापत्रक प्रत्यक्ष लढाईशी जुळेलच असे नाही. सोपी लक्ष्य निवड आणि नुकसानीनंतर मिळणारा मोठा विराम यामुळे त्याच्या हल्ल्यांचा अंदाज लावणे सोपे होते.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "प्रति-खेळीचा प्रयत्न: त्यांच्या लष्करी टप्प्यापूर्वीच दबाव आणा. आपल्या हल्ल्यांच्या मागे अन्न आणि प्रशिक्षण वाढवा, आणि एक हल्ला परतवून लावल्यानंतर मिळालेल्या विश्रांतीचा फायदा घ्या.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "टेहळणी: याची हल्ला करण्याची पद्धत प्रत्यक्ष दृश्यमानता न तपासता शत्रूच्या इमारतींची स्थाने थेट वाचते.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "वेळापत्रकानुसार हळूहळू वसाहत उभारणारा, आणि मग मोठ्या संख्येने हल्ला करणारा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      }
+    ]
+  },
+  "response_sha256": "e165d0a0e461d7ef35eed6e541e333f936f4613f99cd9505aec6b4596152ecef"
+}

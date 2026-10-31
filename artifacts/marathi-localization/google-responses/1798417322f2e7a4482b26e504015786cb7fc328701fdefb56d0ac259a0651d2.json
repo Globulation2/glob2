@@ -1,0 +1,418 @@
+{
+  "request": {
+    "project": "bradley-personal-20261027",
+    "model": "general/nmt",
+    "payload": {
+      "sourceLanguageCode": "en",
+      "targetLanguageCode": "mr",
+      "mimeType": "text/plain",
+      "contents": [
+        "Editor tools",
+        "Editor-only terrain cannot launch a colony game.",
+        "Empty the seat before locking it.",
+        "Empty the seat before putting an AI in it.",
+        "Ended",
+        "Engine agent key required.",
+        "Engine agents",
+        "Engine jobs",
+        "Engine launch timed out. Stop and retry the preview.",
+        "Engine version",
+        "Engine ZXQPH0QXZ · suite ZXQPH1QXZ",
+        "Engine ZXQPH0QXZ · ZXQPH1QXZ",
+        "Enlarged 3×",
+        "Enter a ZXQPH0QXZ array.",
+        "Enter a username.",
+        "Enter to send · Shift + Enter for a new line",
+        "Enter to send · Shift + Enter for a new line. Creation requests build automatically · 1 credit on delivery.",
+        "Enter valid ZXQPH0QXZ.",
+        "Enter your password.",
+        "Eraser",
+        "Error",
+        "Estimated provider costs",
+        "Estimates use measured usage and configured, versioned monetary rates. Missing usage/pricing remains unavailable. An estimate covers priced attempts only; it is a partial subtotal whenever any attempt has unavailable cost.",
+        "Event",
+        "Every member needs generator sharing support.",
+        "Every room member must update before using a shared generator.",
+        "Every seated player must be ready.",
+        "Example generation settings",
+        "Explore custom blends and fades. Restore game settings for the in-game transition.",
+        "Explore player and AI profiles",
+        "Explore ratings and games",
+        "Explorers",
+        "Export activity CSV",
+        "Export cash CSV",
+        "Export credits CSV",
+        "Export provider costs CSV",
+        "Export saved package",
+        "Export viewed revision",
+        "Eyedropper",
+        "FINAL VIEW",
+        "Fade duration: ",
+        "Failed",
+        "Family experiments",
+        "Family experiments ZXQPH0QXZ",
+        "Family link",
+        "Family name",
+        "Favourite",
+        "Favourite AIs",
+        "Favourite an AI to keep it close.",
+        "Favourited",
+        "Favourites",
+        "Fields",
+        "File",
+        "File unavailable.",
+        "Fills repeat across the model’s matching surfaces.",
+        "Filter",
+        "Final game view · ZXQPH0QXZ°",
+        "Final statistics",
+        "Find a player",
+        "Find content",
+        "Finding players…",
+        "Finish or cancel an existing upload first (maximum three active uploads).",
+        "Finished",
+        "Finished buildings",
+        "Finished: ZXQPH0QXZ",
+        "First page",
+        "Fit",
+        "Fit model",
+        "Fit model · F",
+        "Fitted ZXQPH0QXZ unavailable, using the baked clip:",
+        "Fix the failed checks and choose your updated file.",
+        "Flow",
+        "Follow latest",
+        "Follow progress on the canvas.",
+        "Follow the composition, hear each candidate, and see what the checks find.",
+        "Food in inns",
+        "Footprint height (tiles)",
+        "For an unlisted family, copy its page link and paste it into Family link or ID in the game’s Building families picker, then choose Open family. Use the same online instance where the family was published. Private families also require signing in as their owner.",
+        "Force re-verification",
+        "Force re-verification of ZXQPH0QXZ?"
+      ]
+    }
+  },
+  "response": {
+    "translations": [
+      {
+        "translatedText": "संपादक साधने",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "केवळ संपादकाद्वारे तयार केलेल्या भूभागावरून वसाहतीचा खेळ सुरू करता येत नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सीट लॉक करण्यापूर्वी ती रिकामी करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सीटवर एआय बसवण्यापूर्वी ती रिकामी करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "समाप्त झाले",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "इंजिन एजंट की आवश्यक आहे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "इंजिन एजंट",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "इंजिनची कामे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "इंजिन सुरू होण्यासाठी लागणारा वेळ संपला. कृपया प्रिव्ह्यू थांबवा आणि पुन्हा प्रयत्न करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "इंजिन आवृत्ती",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "इंजिन ZXQPH0QXZ · सूट ZXQPH1QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "इंजिन ZXQPH0QXZ · ZXQPH1QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "३ पट मोठे केलेले",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ अॅरे प्रविष्ट करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "वापरकर्त्याचे नाव प्रविष्ट करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पाठवण्यासाठी Enter दाबा · नवीन ओळीसाठी Shift + Enter दाबा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पाठवण्यासाठी एंटर दाबा · नवीन ओळीसाठी शिफ्ट + एंटर दाबा. निर्मिती विनंत्या आपोआप तयार होतात · डिलिव्हरीवर १ क्रेडिट.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "वैध ZXQPH0QXZ प्रविष्ट करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "तुमचा पासवर्ड टाका.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "खोडरबर",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "त्रुटी",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अंदाजित प्रदाता खर्च",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अंदाजामध्ये मोजलेला वापर आणि कॉन्फिगर केलेले, आवृत्तीबद्ध आर्थिक दर वापरले जातात. गहाळ असलेला वापर/किंमत अनुपलब्ध राहते. अंदाजामध्ये केवळ सशुल्क प्रयत्नांचा समावेश असतो; जेव्हा कोणत्याही प्रयत्नाची किंमत अनुपलब्ध असते, तेव्हा तो एक आंशिक उप-एकूण असतो.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कार्यक्रम",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "प्रत्येक सदस्याला जनरेटर शेअरिंग सपोर्टची गरज आहे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सामायिक जनरेटर वापरण्यापूर्वी खोलीतील प्रत्येक सदस्याने माहिती अद्ययावत करणे आवश्यक आहे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "प्रत्येक बसलेल्या खेळाडूने तयार असले पाहिजे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "उदाहरण निर्मिती सेटिंग्ज",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सानुकूलित ब्लेंड्स आणि फेड्सचा शोध घ्या. गेममधील संक्रमणासाठी गेम सेटिंग्ज पुनर्संचयित करा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "खेळाडू आणि एआय प्रोफाइल एक्सप्लोर करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "रेटिंग आणि गेम्स शोधा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "शोधक",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "क्रियाकलाप CSV निर्यात करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "रोख रक्कम निर्यात करा CSV",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "निर्यात क्रेडिट्स CSV",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "निर्यात प्रदाता खर्च CSV",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "जतन केलेले पॅकेज निर्यात करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पाहिलेली आवृत्ती निर्यात करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "आयड्रॉपर",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अंतिम दृश्य",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "फेडचा कालावधी:",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अयशस्वी",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कौटुंबिक प्रयोग",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कौटुंबिक प्रयोग ZXQPH0QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कौटुंबिक दुवा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "आडनाव",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "आवडते",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "आवडते एआय",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "एखाद्या एआयला पसंती द्या, म्हणजे ते तुमच्या जवळ राहील.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पसंतीचे",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "आवडते",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "फील्ड्स",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "फाईल",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "फाईल उपलब्ध नाही.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "मॉडेलच्या जुळणाऱ्या पृष्ठभागांवर रंग भरण्याची पुनरावृत्ती होते.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "फिल्टर",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अंतिम खेळाचे दृश्य · ZXQPH0QXZ°",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अंतिम आकडेवारी",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "खेळाडू शोधा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सामग्री शोधा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "खेळाडू शोधणे…",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "प्रथम चालू असलेले अपलोड पूर्ण करा किंवा रद्द करा (कमाल तीन सक्रिय अपलोड).",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पूर्ण झाले",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पूर्ण झालेल्या इमारती",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पूर्ण झाले: ZXQPH0QXZ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "पहिले पान",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "फिट",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "फिट मॉडेल",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "फिट मॉडेल · एफ",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "फिट केलेले ZXQPH0QXZ उपलब्ध नाही, बेक्ड क्लिप वापरून:",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "अयशस्वी झालेल्या तपासण्या दुरुस्त करा आणि तुमची अद्ययावत फाईल निवडा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "प्रवाह",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "नवीनतम फॉलो करा",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "कॅनव्हासवरील प्रगतीचा मागोवा घ्या.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "रचनेचा मागोवा घ्या, प्रत्येक उमेदवाराचे म्हणणे ऐका आणि तपासणीत काय आढळते ते पहा.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "धर्मशाळांमधील अन्न",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "फूटप्रिंटची उंची (टाईल्स)",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सूचीमध्ये नसलेल्या कुटुंबासाठी, त्याच्या पेजची लिंक कॉपी करा आणि गेमच्या 'बिल्डिंग फॅमिलीज' पिकरमधील 'फॅमिली लिंक' किंवा 'आयडी' मध्ये पेस्ट करा, त्यानंतर 'ओपन फॅमिली' निवडा. ज्या ऑनलाइन इन्स्टन्सवर कुटुंब प्रकाशित केले होते, तोच वापरा. ​​खाजगी कुटुंबांसाठी देखील त्यांचे मालक म्हणून साइन इन करणे आवश्यक आहे.",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "सक्तीची पुनर्तपासणी",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      },
+      {
+        "translatedText": "ZXQPH0QXZ ची सक्तीची पुनर्तपासणी?",
+        "model": "projects/888234813688/locations/global/models/general/nmt"
+      }
+    ]
+  },
+  "response_sha256": "c161a3b1df2bff3c9ea2b7c3d0df80805168d71344afdfb184ef0fe92e2a3c97"
+}

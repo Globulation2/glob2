@@ -1,0 +1,510 @@
+{
+  "source_sha256": "0ac44b4cdfb03e688983d6e3fb1e484cca57589665bff19c5c65388e649b292a",
+  "batch_target_sha256": "e9f68d142528d8dafa98d4921934086ec6d54c3265c8a1d8642b7a4d736a443e",
+  "catalog_sha256": {
+    "native": "8b3f9e4972ee0eb1c3433110a7f0e83c9dc2fb7ea5f494b6925afa373c4fef97",
+    "online": "d7ae02f4d4453ebcb2acc37c15fd862acea8d2996d29cdb89bfb64c4f32cd5fa"
+  },
+  "entries": [
+    {
+      "id": "online:Run checks & preview",
+      "source": "Run checks & preview",
+      "target": "तपासणी चालवा आणि पूर्वावलोकन करा"
+    },
+    {
+      "id": "online:Run checks to create a preview.",
+      "source": "Run checks to create a preview.",
+      "target": "पूर्वावलोकन तयार करण्यासाठी तपासण्या चालवा."
+    },
+    {
+      "id": "online:Run compatibility checks on the current saved revision first.",
+      "source": "Run compatibility checks on the current saved revision first.",
+      "target": "सर्वप्रथम सध्याच्या जतन केलेल्या आवृत्तीवर सुसंगतता तपासणी करा."
+    },
+    {
+      "id": "online:Run identifier already used.",
+      "source": "Run identifier already used.",
+      "target": "रन आयडेंटिफायर आधीच वापरला गेला आहे."
+    },
+    {
+      "id": "online:Running",
+      "source": "Running",
+      "target": "चालू आहे"
+    },
+    {
+      "id": "online:Runtime diagnostics ({slot0})",
+      "source": "Runtime diagnostics ({slot0})",
+      "target": "रनटाइम डायग्नोस्टिक्स ({slot0})"
+    },
+    {
+      "id": "online:Sand",
+      "source": "Sand",
+      "target": "वाळू"
+    },
+    {
+      "id": "online:Save",
+      "source": "Save",
+      "target": "जतन करा"
+    },
+    {
+      "id": "online:Save and run checks on the current revision before publishing.",
+      "source": "Save and run checks on the current revision before publishing.",
+      "target": "प्रकाशित करण्यापूर्वी सध्याची आवृत्ती जतन करा आणि त्यावर तपासण्या करा."
+    },
+    {
+      "id": "online:Save changes first. Publishing creates a pinned release of the saved package. The engine checks it before people can download it. Private releases are visible only to you; unlisted releases can be opened with their link.",
+      "source": "Save changes first. Publishing creates a pinned release of the saved package. The engine checks it before people can download it. Private releases are visible only to you; unlisted releases can be opened with their link.",
+      "target": "प्रथम बदल जतन करा. प्रकाशित केल्यावर जतन केलेल्या पॅकेजची एक पिन केलेली आवृत्ती तयार होते. लोक ते डाउनलोड करू शकण्यापूर्वी इंजिन त्याची तपासणी करते. खाजगी आवृत्त्या फक्त तुम्हालाच दिसतात; सूचीत नसलेल्या आवृत्त्या त्यांच्या लिंकद्वारे उघडता येतात."
+    },
+    {
+      "id": "online:Save details",
+      "source": "Save details",
+      "target": "तपशील जतन करा"
+    },
+    {
+      "id": "online:Save draft",
+      "source": "Save draft",
+      "target": "मसुदा जतन करा"
+    },
+    {
+      "id": "online:Save photo",
+      "source": "Save photo",
+      "target": "फोटो जतन करा"
+    },
+    {
+      "id": "online:Save published details",
+      "source": "Save published details",
+      "target": "प्रकाशित तपशील जतन करा"
+    },
+    {
+      "id": "online:Save your changes before importing or uploading artwork. Export uses the saved draft.",
+      "source": "Save your changes before importing or uploading artwork. Export uses the saved draft.",
+      "target": "आर्टवर्क आयात किंवा अपलोड करण्यापूर्वी तुमचे बदल जतन करा. निर्यातीसाठी जतन केलेला मसुदा वापरला जातो."
+    },
+    {
+      "id": "online:Save your changes before publishing.",
+      "source": "Save your changes before publishing.",
+      "target": "प्रकाशित करण्यापूर्वी केलेले बदल जतन करा."
+    },
+    {
+      "id": "online:Save your draft before leaving for checkout. Device storage is unavailable.",
+      "source": "Save your draft before leaving for checkout. Device storage is unavailable.",
+      "target": "चेकआउटला जाण्यापूर्वी तुमचा मसुदा जतन करा. डिव्हाइसवर स्टोरेज उपलब्ध नाही."
+    },
+    {
+      "id": "online:Save your manual building edits in Edit before generating, restoring a version, or undoing.",
+      "source": "Save your manual building edits in Edit before generating, restoring a version, or undoing.",
+      "target": "निर्मिती करण्यापूर्वी, आवृत्ती पुनर्संचयित करण्यापूर्वी किंवा पूर्ववत करण्यापूर्वी इमारतीत हाताने केलेले बदल संपादन विभागात जतन करा."
+    },
+    {
+      "id": "online:Save your manual edits before asking AI to revise the building.",
+      "source": "Save your manual edits before asking AI to revise the building.",
+      "target": "एआयला इमारत सुधारण्यास सांगण्यापूर्वी, तुम्ही केलेले मॅन्युअल बदल सेव्ह करा."
+    },
+    {
+      "id": "online:Save your manual edits before asking AI to revise the set.",
+      "source": "Save your manual edits before asking AI to revise the set.",
+      "target": "एआयला संच सुधारण्यास सांगण्यापूर्वी, तुम्ही केलेले मॅन्युअल बदल जतन करा."
+    },
+    {
+      "id": "online:Save your manual terrain edits in Edit before generating, restoring a version, or undoing.",
+      "source": "Save your manual terrain edits in Edit before generating, restoring a version, or undoing.",
+      "target": "निर्मिती करण्यापूर्वी, आवृत्ती पुनर्संचयित करण्यापूर्वी किंवा पूर्ववत करण्यापूर्वी भूभागात हाताने केलेले बदल संपादन विभागात जतन करा."
+    },
+    {
+      "id": "online:Saved",
+      "source": "Saved",
+      "target": "जतन केले"
+    },
+    {
+      "id": "online:Saved draft history",
+      "source": "Saved draft history",
+      "target": "जतन केलेला मसुदा इतिहास"
+    },
+    {
+      "id": "online:Saved draft · validation remains version-specific.",
+      "source": "Saved draft · validation remains version-specific.",
+      "target": "जतन केलेला मसुदा · पडताळणी आवृत्तीनुसारच राहते."
+    },
+    {
+      "id": "online:Saving account changes…",
+      "source": "Saving account changes…",
+      "target": "खात्यातील बदल जतन करत आहे…"
+    },
+    {
+      "id": "online:Scale",
+      "source": "Scale",
+      "target": "स्केल"
+    },
+    {
+      "id": "online:Scene and resource gallery",
+      "source": "Scene and resource gallery",
+      "target": "दृश्य आणि संसाधन गॅलरी"
+    },
+    {
+      "id": "online:Search",
+      "source": "Search",
+      "target": "शोध"
+    },
+    {
+      "id": "online:Search AIs",
+      "source": "Search AIs",
+      "target": "एआय शोधा"
+    },
+    {
+      "id": "online:Search accounts",
+      "source": "Search accounts",
+      "target": "खाती शोधा"
+    },
+    {
+      "id": "online:Search buildings",
+      "source": "Search buildings",
+      "target": "इमारती शोधा"
+    },
+    {
+      "id": "online:Search maps",
+      "source": "Search maps",
+      "target": "नकाशे शोधा"
+    },
+    {
+      "id": "online:Search matches",
+      "source": "Search matches",
+      "target": "सामने शोधा"
+    },
+    {
+      "id": "online:Search must be at most 64 characters.",
+      "source": "Search must be at most 64 characters.",
+      "target": "शोध जास्तीत जास्त ६४ अक्षरांचा असावा."
+    },
+    {
+      "id": "online:Search must be text.",
+      "source": "Search must be text.",
+      "target": "शोध मजकूर स्वरूपातच असला पाहिजे."
+    },
+    {
+      "id": "online:Search names, descriptions, authors…",
+      "source": "Search names, descriptions, authors…",
+      "target": "नावे, वर्णने, लेखक शोधा…"
+    },
+    {
+      "id": "online:Search players and AI opponents…",
+      "source": "Search players and AI opponents…",
+      "target": "खेळाडू आणि एआय प्रतिस्पर्धी शोधा…"
+    },
+    {
+      "id": "online:Search titles",
+      "source": "Search titles",
+      "target": "शीर्षक शोधा"
+    },
+    {
+      "id": "online:Search unavailable",
+      "source": "Search unavailable",
+      "target": "शोध उपलब्ध नाही"
+    },
+    {
+      "id": "online:Seat {value0}",
+      "source": "Seat {value0}",
+      "target": "सीट {value0}"
+    },
+    {
+      "id": "online:Seed",
+      "source": "Seed",
+      "target": "बीज"
+    },
+    {
+      "id": "online:Select fewer sets: each ZIP is limited to 64 MiB so it can be imported on every game platform.",
+      "source": "Select fewer sets: each ZIP is limited to 64 MiB so it can be imported on every game platform.",
+      "target": "कमी सेट निवडा: प्रत्येक ZIP फाईल 64 MiB पर्यंत मर्यादित आहे, जेणेकरून ती प्रत्येक गेम प्लॅटफॉर्मवर आयात करता येईल."
+    },
+    {
+      "id": "online:Select for download",
+      "source": "Select for download",
+      "target": "डाउनलोड करण्यासाठी निवडा"
+    },
+    {
+      "id": "online:Selected frame",
+      "source": "Selected frame",
+      "target": "निवडलेली फ्रेम"
+    },
+    {
+      "id": "online:Selected music",
+      "source": "Selected music",
+      "target": "निवडलेले संगीत"
+    },
+    {
+      "id": "online:Selected terrain",
+      "source": "Selected terrain",
+      "target": "निवडलेला भूप्रदेश"
+    },
+    {
+      "id": "online:Send report",
+      "source": "Send report",
+      "target": "अहवाल पाठवा"
+    },
+    {
+      "id": "online:Send skin report",
+      "source": "Send skin report",
+      "target": "रूपाविषयी तक्रार पाठवा"
+    },
+    {
+      "id": "online:Send the blob as the body.",
+      "source": "Send the blob as the body.",
+      "target": "ब्लॉब बॉडी म्हणून पाठवा."
+    },
+    {
+      "id": "online:Send the file as the request body (Content-Type: application/octet-stream).",
+      "source": "Send the file as the request body (Content-Type: application/octet-stream).",
+      "target": "फाइल रिक्वेस्ट बॉडी म्हणून पाठवा (Content-Type: application/octet-stream)."
+    },
+    {
+      "id": "online:Send the job's lease token in {p0}.",
+      "source": "Send the job's lease token in {p0}.",
+      "target": "जॉबचा लीज टोकन {p0} मध्ये पाठवा."
+    },
+    {
+      "id": "online:Send the match record as the body.",
+      "source": "Send the match record as the body.",
+      "target": "सामन्याचा रेकॉर्ड मुख्य मजकूर म्हणून पाठवा."
+    },
+    {
+      "id": "online:Set contents",
+      "source": "Set contents",
+      "target": "संचातील सामग्री"
+    },
+    {
+      "id": "online:Set exceeds 16 MiB.",
+      "source": "Set exceeds 16 MiB.",
+      "target": "संच १६ MiB पेक्षा जास्त आहे."
+    },
+    {
+      "id": "online:Set file not found.",
+      "source": "Set file not found.",
+      "target": "सेट फाईल सापडली नाही."
+    },
+    {
+      "id": "online:Set library",
+      "source": "Set library",
+      "target": "संचांचा संग्रह"
+    },
+    {
+      "id": "online:Set not found.",
+      "source": "Set not found.",
+      "target": "संच सापडला नाही."
+    },
+    {
+      "id": "online:Set preview engine",
+      "source": "Set preview engine",
+      "target": "संचाचे पूर्वावलोकन इंजिन"
+    },
+    {
+      "id": "online:Set reports",
+      "source": "Set reports",
+      "target": "संचांविषयी तक्रारी"
+    },
+    {
+      "id": "online:Set the goals and your globs get to work. Feed your colony, train your units and explore together.",
+      "source": "Set the goals and your globs get to work. Feed your colony, train your units and explore together.",
+      "target": "उद्दिष्टे ठरवा की तुमचे ग्लॉब्स कामाला लागतील. वसाहतीला अन्न द्या, युनिटना प्रशिक्षण द्या आणि एकत्र शोधमोहीम करा."
+    },
+    {
+      "id": "online:Set unavailable.",
+      "source": "Set unavailable.",
+      "target": "संच उपलब्ध नाही."
+    },
+    {
+      "id": "online:Set up your colonies and AI opponents.",
+      "source": "Set up your colonies and AI opponents.",
+      "target": "तुमच्या वसाहती आणि एआय प्रतिस्पर्धी तयार करा."
+    },
+    {
+      "id": "online:Set workspace",
+      "source": "Set workspace",
+      "target": "संचाचे कार्यक्षेत्र"
+    },
+    {
+      "id": "online:Seven smooth spires around a central egg.",
+      "source": "Seven smooth spires around a central egg.",
+      "target": "मध्यभागी असलेल्या अंड्याच्या भोवती सात गुळगुळीत शिखरे."
+    },
+    {
+      "id": "online:Shape asset length mismatch",
+      "source": "Shape asset length mismatch",
+      "target": "आकार मालमत्तेच्या लांबीतील तफावत"
+    },
+    {
+      "id": "online:Shape the terrain",
+      "source": "Shape the terrain",
+      "target": "भूभागाला आकार द्या"
+    },
+    {
+      "id": "online:Share a generator",
+      "source": "Share a generator",
+      "target": "जनरेटर शेअर करा"
+    },
+    {
+      "id": "online:Share a map generator",
+      "source": "Share a map generator",
+      "target": "नकाशा जनरेटर शेअर करा"
+    },
+    {
+      "id": "online:Share a map you made in the editor or with a generator.",
+      "source": "Share a map you made in the editor or with a generator.",
+      "target": "तुम्ही एडिटरमध्ये किंवा जनरेटरच्या मदतीने तयार केलेला नकाशा शेअर करा."
+    },
+    {
+      "id": "online:Share a soundtrack",
+      "source": "Share a soundtrack",
+      "target": "साउंडट्रॅक शेअर करा"
+    },
+    {
+      "id": "online:Share music",
+      "source": "Share music",
+      "target": "संगीत शेअर करा"
+    },
+    {
+      "id": "online:Share your AI",
+      "source": "Share your AI",
+      "target": "तुमचा एआय शेअर करा"
+    },
+    {
+      "id": "online:Shop",
+      "source": "Shop",
+      "target": "दुकान"
+    },
+    {
+      "id": "online:Short seeded games check runtime behaviour, repeatability, and save/resume. Passing does not certify safety or playing strength.",
+      "source": "Short seeded games check runtime behaviour, repeatability, and save/resume. Passing does not certify safety or playing strength.",
+      "target": "कमी कालावधीचे सीडेड गेम्स रनटाइमची कार्यपद्धती, पुनरावृत्तीक्षमता आणि सेव्ह/रिझ्युम तपासतात. पास झाल्याने सुरक्षितता किंवा खेळाची ताकद प्रमाणित होत नाही."
+    },
+    {
+      "id": "online:Show",
+      "source": "Show",
+      "target": "दाखवा"
+    },
+    {
+      "id": "online:Show game view",
+      "source": "Show game view",
+      "target": "गेम व्ह्यू दाखवा"
+    },
+    {
+      "id": "online:Show matches from",
+      "source": "Show matches from",
+      "target": "पासून सामने दाखवा"
+    },
+    {
+      "id": "online:Show more",
+      "source": "Show more",
+      "target": "अधिक दाखवा"
+    },
+    {
+      "id": "online:Show technical results {slot0}",
+      "source": "Show technical results {slot0}",
+      "target": "तांत्रिक निकाल दाखवा {slot0}"
+    },
+    {
+      "id": "online:Shuffle pattern · {slot0}",
+      "source": "Shuffle pattern · {slot0}",
+      "target": "शफल पॅटर्न · {slot0}"
+    },
+    {
+      "id": "online:Sign in",
+      "source": "Sign in",
+      "target": "साइन इन करा"
+    },
+    {
+      "id": "online:Sign in first (session.authenticate).",
+      "source": "Sign in first (session.authenticate).",
+      "target": "प्रथम साइन इन करा (session.authenticate)."
+    },
+    {
+      "id": "online:Sign in first.",
+      "source": "Sign in first.",
+      "target": "आधी साइन इन करा."
+    },
+    {
+      "id": "online:Sign in or link your account",
+      "source": "Sign in or link your account",
+      "target": "साइन इन करा किंवा तुमचे खाते लिंक करा"
+    },
+    {
+      "id": "online:Sign in to Globulation 2",
+      "source": "Sign in to Globulation 2",
+      "target": "Globulation 2 मध्ये साइन इन करा"
+    },
+    {
+      "id": "online:Sign in to Globulation 2 {p0}? Your game shows this code:",
+      "source": "Sign in to Globulation 2 {p0}? Your game shows this code:",
+      "target": "Globulation 2 {p0} मध्ये साइन इन करायचे आहे का? तुमचा गेम हा कोड दाखवत आहे:"
+    },
+    {
+      "id": "online:Sign in to create",
+      "source": "Sign in to create",
+      "target": "तयार करण्यासाठी साइन इन करा"
+    },
+    {
+      "id": "online:Sign in to create a building",
+      "source": "Sign in to create a building",
+      "target": "इमारत तयार करण्यासाठी साइन इन करा"
+    },
+    {
+      "id": "online:Sign in to create a set",
+      "source": "Sign in to create a set",
+      "target": "सेट तयार करण्यासाठी साइन इन करा"
+    },
+    {
+      "id": "online:Sign in to download the match record.",
+      "source": "Sign in to download the match record.",
+      "target": "सामन्याची नोंद डाउनलोड करण्यासाठी साइन इन करा."
+    },
+    {
+      "id": "online:Sign in to download this map.",
+      "source": "Sign in to download this map.",
+      "target": "हा नकाशा डाउनलोड करण्यासाठी साइन इन करा."
+    },
+    {
+      "id": "online:Sign in to like or favourite",
+      "source": "Sign in to like or favourite",
+      "target": "लाईक किंवा फेव्हरेट करण्यासाठी साइन इन करा"
+    },
+    {
+      "id": "online:Sign in to like or report",
+      "source": "Sign in to like or report",
+      "target": "लाईक करण्यासाठी किंवा तक्रार करण्यासाठी साइन इन करा"
+    },
+    {
+      "id": "online:Sign in to list your maps.",
+      "source": "Sign in to list your maps.",
+      "target": "तुमचे नकाशे पाहण्यासाठी साइन इन करा."
+    },
+    {
+      "id": "online:Sign in to play on this server.",
+      "source": "Sign in to play on this server.",
+      "target": "या सर्व्हरवर खेळण्यासाठी साइन इन करा."
+    },
+    {
+      "id": "online:Sign in to report this skin",
+      "source": "Sign in to report this skin",
+      "target": "या रूपाची तक्रार करण्यासाठी साइन इन करा"
+    },
+    {
+      "id": "online:Sign in to save",
+      "source": "Sign in to save",
+      "target": "सेव्ह करण्यासाठी साइन इन करा"
+    },
+    {
+      "id": "online:Sign in to save your skins.",
+      "source": "Sign in to save your skins.",
+      "target": "तुमची रूपे जतन करण्यासाठी साइन इन करा."
+    },
+    {
+      "id": "online:Sign in to see your account or to delete it.",
+      "source": "Sign in to see your account or to delete it.",
+      "target": "आपले खाते पाहण्यासाठी किंवा ते हटवण्यासाठी साइन इन करा."
+    },
+    {
+      "id": "online:Sign in to see your library.",
+      "source": "Sign in to see your library.",
+      "target": "तुमचा संग्रह पाहण्यासाठी साइन इन करा."
+    }
+  ]
+}

@@ -1,0 +1,510 @@
+{
+  "source_sha256": "0ac44b4cdfb03e688983d6e3fb1e484cca57589665bff19c5c65388e649b292a",
+  "batch_target_sha256": "14e50b058041c3a77bba1bd62ea1bb9e35fe10690bf9af0fa48a439020295fd2",
+  "catalog_sha256": {
+    "native": "a6d0da95a3cf29e0bcfa904f80043a10fedc3124f7a26e3beebc82e8cdfa4411",
+    "online": "feb4b9a71595724a0995b0cf0f42c94742ef29030b66c9488c77ebc6be7a89db"
+  },
+  "entries": [
+    {
+      "id": "native:[hand preference save failed]",
+      "source": "Could not save your choice. Please try again.",
+      "target": "तुमची निवड जतन करता आली नाही. कृपया पुन्हा प्रयत्न करा."
+    },
+    {
+      "id": "native:[Left hand]",
+      "source": "Left hand",
+      "target": "डावा हात"
+    },
+    {
+      "id": "native:[Right hand]",
+      "source": "Right hand",
+      "target": "उजवा हात"
+    },
+    {
+      "id": "native:[discord copy failed]",
+      "source": "Could not copy the link. Select the invitation above to copy it manually.",
+      "target": "लिंक कॉपी करता आली नाही. ती स्वतः कॉपी करण्यासाठी वरील आमंत्रण निवडा."
+    },
+    {
+      "id": "native:[stat ground movement]",
+      "source": "Ground movement",
+      "target": "जमिनीवरील हालचाल"
+    },
+    {
+      "id": "native:[stat ground movement about]",
+      "source": "Living ground units by approximate speed ratio. 'Swim 2x' means swimming twice as fast as running. Flying and immobile units are excluded.",
+      "target": "अंदाजे वेगाच्या गुणोत्तरानुसार सजीव जमिनीवरील घटक. 'स्विम 2x' म्हणजे धावण्यापेक्षा दुप्पट वेगाने पोहणे. उडणारे आणि स्थिर घटक वगळण्यात आले आहेत."
+    },
+    {
+      "id": "native:[stat view by movement]",
+      "source": "By movement",
+      "target": "हालचालीनुसार"
+    },
+    {
+      "id": "native:[stat band land only]",
+      "source": "Land only",
+      "target": "फक्त जमीन"
+    },
+    {
+      "id": "native:[stat band swim twice run]",
+      "source": "Swim 2x",
+      "target": "पोहणे 2x"
+    },
+    {
+      "id": "native:[stat band swim faster run]",
+      "source": "Swim 1.4x",
+      "target": "पोहणे 1.4x"
+    },
+    {
+      "id": "native:[stat band swim equals run]",
+      "source": "Equal",
+      "target": "समान"
+    },
+    {
+      "id": "native:[stat band run faster swim]",
+      "source": "Run 1.3x",
+      "target": "धावणे 1.3x"
+    },
+    {
+      "id": "native:[stat band run twice swim]",
+      "source": "Run 2x",
+      "target": "धावणे 2x"
+    },
+    {
+      "id": "native:[stat band run triple swim]",
+      "source": "Run 3x",
+      "target": "धावणे 3x"
+    },
+    {
+      "id": "native:[stat band water only]",
+      "source": "Water only",
+      "target": "फक्त पाणी"
+    },
+    {
+      "id": "native:[hive stopping]",
+      "source": "Stopping…",
+      "target": "थांबत आहे…"
+    },
+    {
+      "id": "native:[hive stopped]",
+      "source": "Stopped",
+      "target": "थांबले"
+    },
+    {
+      "id": "native:[hive stop failed]",
+      "source": "Stop failed; retry the stop shortcut",
+      "target": "थांबण्यात अयशस्वी झाले; थांबवण्याचा शॉर्टकट पुन्हा वापरून पहा."
+    },
+    {
+      "id": "native:[hive updating]",
+      "source": "Updating…",
+      "target": "अद्ययावत होत आहे…"
+    },
+    {
+      "id": "native:[hive requested]",
+      "source": "Requested",
+      "target": "विनंती केली"
+    },
+    {
+      "id": "native:[hive update failed]",
+      "source": "Update failed; try again",
+      "target": "अपडेट अयशस्वी झाले; पुन्हा प्रयत्न करा."
+    },
+    {
+      "id": "native:[hive give order]",
+      "source": "Give order",
+      "target": "आदेश द्या"
+    },
+    {
+      "id": "native:[hive less]",
+      "source": "Less",
+      "target": "कमी"
+    },
+    {
+      "id": "native:[hive reports and details]",
+      "source": "Reports / details",
+      "target": "अहवाल / तपशील"
+    },
+    {
+      "id": "native:[hive needs fresh order]",
+      "source": "Needs a fresh order",
+      "target": "नवीन आदेश हवा"
+    },
+    {
+      "id": "native:[hive active]",
+      "source": "Active",
+      "target": "सक्रिय"
+    },
+    {
+      "id": "native:[hive resume]",
+      "source": "Resume",
+      "target": "पुन्हा सुरू करा"
+    },
+    {
+      "id": "native:[recordings]",
+      "source": "Recordings",
+      "target": "रेकॉर्डिंग्ज"
+    },
+    {
+      "id": "native:[recording delete confirm]",
+      "source": "Delete recording?",
+      "target": "रेकॉर्डिंग हटवायचे आहे का?"
+    },
+    {
+      "id": "native:[recording delete warning]",
+      "source": "The recording and its metadata will be removed.",
+      "target": "रेकॉर्डिंग आणि त्याचा मेटाडेटा काढून टाकला जाईल."
+    },
+    {
+      "id": "native:[recording delete]",
+      "source": "Delete",
+      "target": "हटवा"
+    },
+    {
+      "id": "native:[recording working]",
+      "source": "Working…",
+      "target": "काम चालू आहे…"
+    },
+    {
+      "id": "native:[recording none]",
+      "source": "No recordings yet.",
+      "target": "अद्याप कोणतेही रेकॉर्डिंग झालेले नाही."
+    },
+    {
+      "id": "native:[recording interrupted]",
+      "source": "Interrupted recording",
+      "target": "रेकॉर्डिंगमध्ये व्यत्यय आला."
+    },
+    {
+      "id": "native:[recording recover]",
+      "source": "Recover",
+      "target": "पुनर्प्राप्त करा"
+    },
+    {
+      "id": "native:[recording export video]",
+      "source": "Export video",
+      "target": "व्हिडिओ निर्यात करा"
+    },
+    {
+      "id": "native:[recording export metadata]",
+      "source": "Export metadata",
+      "target": "मेटाडेटा निर्यात करा"
+    },
+    {
+      "id": "native:[recording export events]",
+      "source": "Export events",
+      "target": "घटना निर्यात करा"
+    },
+    {
+      "id": "native:[recording export failed]",
+      "source": "Could not export recording.",
+      "target": "रेकॉर्डिंग निर्यात करता आले नाही."
+    },
+    {
+      "id": "native:[recording delete action]",
+      "source": "Delete recording",
+      "target": "रेकॉर्डिंग हटवा"
+    },
+    {
+      "id": "native:[recording refresh]",
+      "source": "Refresh",
+      "target": "रिफ्रेश करा"
+    },
+    {
+      "id": "native:[library  Could not restore the previous library: %0]",
+      "source": " Could not restore the previous library: %0",
+      "target": " मागील लायब्ररी पुनर्संचयित करता आली नाही: %0"
+    },
+    {
+      "id": "native:[library  The previous library is retained.]",
+      "source": " The previous library is retained.",
+      "target": " मागील लायब्ररी कायम ठेवण्यात आली आहे."
+    },
+    {
+      "id": "native:[library  · Installed]",
+      "source": " · Installed",
+      "target": " · स्थापित केले"
+    },
+    {
+      "id": "native:[library  · Update available]",
+      "source": " · Update available",
+      "target": " · अपडेट उपलब्ध आहे"
+    },
+    {
+      "id": "native:[library A different release is installed. Install the selected release to update explicitly.]",
+      "source": "A different release is installed. Install the selected release to update explicitly.",
+      "target": "वेगळी आवृत्ती स्थापित केली आहे. स्पष्टपणे अद्ययावत करण्यासाठी निवडलेली आवृत्ती स्थापित करा."
+    },
+    {
+      "id": "native:[library All engines]",
+      "source": "All engines",
+      "target": "सर्व इंजिन"
+    },
+    {
+      "id": "native:[library Available families]",
+      "source": "Available families",
+      "target": "उपलब्ध संच"
+    },
+    {
+      "id": "native:[library Back]",
+      "source": "Back",
+      "target": "मागे"
+    },
+    {
+      "id": "native:[library Choose an online instance before opening a family link.]",
+      "source": "Choose an online instance before opening a family link.",
+      "target": "संचाची लिंक उघडण्याआधी ऑनलाइन सर्व्हर निवडा."
+    },
+    {
+      "id": "native:[library Compatible with this engine]",
+      "source": "Compatible with this engine",
+      "target": "या इंजिनशी सुसंगत"
+    },
+    {
+      "id": "native:[library Confirm replacement]",
+      "source": "Confirm replacement",
+      "target": "बदलीची पुष्टी करा"
+    },
+    {
+      "id": "native:[library Editor tools]",
+      "source": "Editor tools",
+      "target": "संपादक साधने"
+    },
+    {
+      "id": "native:[library Family link or ID]",
+      "source": "Family link or ID",
+      "target": "संचाची लिंक किंवा ID"
+    },
+    {
+      "id": "native:[library Family links must be at most 1024 characters.]",
+      "source": "Family links must be at most 1024 characters.",
+      "target": "संचाची लिंक जास्तीत जास्त 1024 अक्षरांची असावी."
+    },
+    {
+      "id": "native:[library Family removed.]",
+      "source": "Family removed.",
+      "target": "संच काढला."
+    },
+    {
+      "id": "native:[library Family unavailable. Private families require signing in through Online with an account that can access them.]",
+      "source": "Family unavailable. Private families require signing in through Online with an account that can access them.",
+      "target": "संच उपलब्ध नाही. खाजगी संच उघडण्यासाठी त्यांचा प्रवेश असलेल्या खात्याने ऑनलाइन विभागातून साइन इन करा."
+    },
+    {
+      "id": "native:[library Install compatible release]",
+      "source": "Install compatible release",
+      "target": "सुसंगत आवृत्ती स्थापित करा"
+    },
+    {
+      "id": "native:[library Install selected release]",
+      "source": "Install selected release",
+      "target": "निवडलेली आवृत्ती स्थापित करा"
+    },
+    {
+      "id": "native:[library Installed]",
+      "source": "Installed",
+      "target": "स्थापित केले"
+    },
+    {
+      "id": "native:[library Installed families]",
+      "source": "Installed families",
+      "target": "स्थापित संच"
+    },
+    {
+      "id": "native:[library Installed. Enable the family below for new maps.]",
+      "source": "Installed. Enable the family below for new maps.",
+      "target": "स्थापित झाले. नवीन नकाशांसाठी खाली हा संच सक्षम करा."
+    },
+    {
+      "id": "native:[library Invalid library cursor]",
+      "source": "Invalid library cursor",
+      "target": "अवैध लायब्ररी कर्सर"
+    },
+    {
+      "id": "native:[library Invalid release identity]",
+      "source": "Invalid release identity",
+      "target": "अवैध प्रकाशन ओळख"
+    },
+    {
+      "id": "native:[library Load more]",
+      "source": "Load more",
+      "target": "अधिक लोड करा"
+    },
+    {
+      "id": "native:[library Load more families]",
+      "source": "Load more families",
+      "target": "आणखी संच लोड करा"
+    },
+    {
+      "id": "native:[library Loading…]",
+      "source": "Loading…",
+      "target": "लोडिंग…"
+    },
+    {
+      "id": "native:[library Maps]",
+      "source": "Maps",
+      "target": "नकाशे"
+    },
+    {
+      "id": "native:[library Most downloaded]",
+      "source": "Most downloaded",
+      "target": "सर्वाधिक डाउनलोड केलेले"
+    },
+    {
+      "id": "native:[library Most liked]",
+      "source": "Most liked",
+      "target": "सर्वाधिक आवडले"
+    },
+    {
+      "id": "native:[library Newest]",
+      "source": "Newest",
+      "target": "नवीनतम"
+    },
+    {
+      "id": "native:[library No validated release for this game version.]",
+      "source": "No validated release for this game version.",
+      "target": "खेळाच्या या आवृत्तीसाठी पडताळलेली प्रकाशित आवृत्ती नाही."
+    },
+    {
+      "id": "native:[library Online server changed during download]",
+      "source": "Online server changed during download",
+      "target": "डाउनलोड चालू असताना ऑनलाइन सर्व्हर बदलला."
+    },
+    {
+      "id": "native:[library Open an unlisted family by its link or ID. For private families, sign in through Online first.]",
+      "source": "Open an unlisted family by its link or ID. For private families, sign in through Online first.",
+      "target": "सूचीत नसलेला संच त्याच्या लिंक किंवा ID ने उघडा. खाजगी संचांसाठी आधी ऑनलाइन विभागातून साइन इन करा."
+    },
+    {
+      "id": "native:[library Open family]",
+      "source": "Open family",
+      "target": "संच उघडा"
+    },
+    {
+      "id": "native:[library Opened family. Install its compatible release below.]",
+      "source": "Opened family. Install its compatible release below.",
+      "target": "संच उघडला. खाली त्याची सुसंगत प्रकाशित आवृत्ती स्थापित करा."
+    },
+    {
+      "id": "native:[library Playable]",
+      "source": "Playable",
+      "target": "खेळण्यायोग्य"
+    },
+    {
+      "id": "native:[library Privacy policy]",
+      "source": "Privacy policy",
+      "target": "गोपनीयता धोरण"
+    },
+    {
+      "id": "native:[library Public library]",
+      "source": "Public library",
+      "target": "सार्वजनिक संग्रह"
+    },
+    {
+      "id": "native:[library Recently updated]",
+      "source": "Recently updated",
+      "target": "अलीकडेच अद्यतनित केले"
+    },
+    {
+      "id": "native:[library Refresh library]",
+      "source": "Refresh library",
+      "target": "लायब्ररी रिफ्रेश करा"
+    },
+    {
+      "id": "native:[library Release identity changed during installation]",
+      "source": "Release identity changed during installation",
+      "target": "इन्स्टॉलेशन दरम्यान रिलीजची ओळख बदलली."
+    },
+    {
+      "id": "native:[library Reroll]",
+      "source": "Reroll",
+      "target": "पुन्हा यादृच्छिक निवडा"
+    },
+    {
+      "id": "native:[library Reroll seed]",
+      "source": "Reroll seed",
+      "target": "नवे यादृच्छिक बीज निवडा"
+    },
+    {
+      "id": "native:[library Search]",
+      "source": "Search",
+      "target": "शोध"
+    },
+    {
+      "id": "native:[library Seed]",
+      "source": "Seed",
+      "target": "बीज"
+    },
+    {
+      "id": "native:[library Selection saved for new maps.]",
+      "source": "Selection saved for new maps.",
+      "target": "नवीन नकाशांसाठी निवड जतन केली आहे."
+    },
+    {
+      "id": "native:[library Storage failed.]",
+      "source": "Storage failed.",
+      "target": "साठवणूक अयशस्वी झाली."
+    },
+    {
+      "id": "native:[library Storage persistence unavailable]",
+      "source": "Storage persistence unavailable",
+      "target": "स्टोरेज टिकवून ठेवणे अनुपलब्ध आहे"
+    },
+    {
+      "id": "native:[library Tags]",
+      "source": "Tags",
+      "target": "टॅग"
+    },
+    {
+      "id": "native:[library Technical checks passed for this engine. Balance is not certified.]",
+      "source": "Technical checks passed for this engine. Balance is not certified.",
+      "target": "या इंजिनसाठीच्या तांत्रिक तपासण्या यशस्वी झाल्या. खेळाचे संतुलन प्रमाणित केलेले नाही."
+    },
+    {
+      "id": "native:[library The server returned a different family.]",
+      "source": "The server returned a different family.",
+      "target": "सर्व्हरने वेगळा संच पाठवला."
+    },
+    {
+      "id": "native:[library This link is from another instance. Switch to that instance in Online first.]",
+      "source": "This link is from another instance. Switch to that instance in Online first.",
+      "target": "ही लिंक दुसऱ्या इन्स्टन्सची आहे. आधी ऑनलाइनमध्ये त्या इन्स्टन्सवर स्विच करा."
+    },
+    {
+      "id": "native:[library This package ID is installed. Confirm replacement to use the selected release.]",
+      "source": "This package ID is installed. Confirm replacement to use the selected release.",
+      "target": "हा पॅकेज आयडी स्थापित केलेला आहे. निवडलेली आवृत्ती वापरण्यासाठी प्रतिस्थापनेची पुष्टी करा."
+    },
+    {
+      "id": "native:[library This release has no passing checks for this engine.]",
+      "source": "This release has no passing checks for this engine.",
+      "target": "या रिलीझमध्ये या इंजिनसाठी उत्तीर्ण होणाऱ्या तपासण्या नाहीत."
+    },
+    {
+      "id": "native:[library This release is installed.]",
+      "source": "This release is installed.",
+      "target": "ही आवृत्ती स्थापित केली आहे."
+    },
+    {
+      "id": "native:[library Update installed family]",
+      "source": "Update installed family",
+      "target": "स्थापित संच अद्ययावत करा"
+    },
+    {
+      "id": "native:[library Use in a room]",
+      "source": "Use in a room",
+      "target": "खोलीत वापरा"
+    },
+    {
+      "id": "native:[library By %0]",
+      "source": "By %0",
+      "target": "%0 द्वारे"
+    },
+    {
+      "id": "native:[library Installed release %0]",
+      "source": "Installed release %0",
+      "target": "स्थापित आवृत्ती %0"
+    }
+  ]
+}

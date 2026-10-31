@@ -1,0 +1,507 @@
+{
+  "batch": "native-general-002",
+  "source_sha256": "0ac44b4cdfb03e688983d6e3fb1e484cca57589665bff19c5c65388e649b292a",
+  "rows": [
+    {
+      "id": "native:[connecting to]",
+      "source": "Connecting to",
+      "target": "कनेक्ट करत आहे"
+    },
+    {
+      "id": "native:[Construction Site Defaults]",
+      "source": "Construction Site Defaults",
+      "target": "बांधकाम स्थळावरील त्रुटी"
+    },
+    {
+      "id": "native:[Continue playing]",
+      "source": "Continue playing",
+      "target": "खेळणे सुरू ठेवा"
+    },
+    {
+      "id": "native:[control %0]",
+      "source": "control-%0",
+      "target": "नियंत्रण-%0"
+    },
+    {
+      "id": "native:[Corn]",
+      "source": "Wheat",
+      "target": "गहू"
+    },
+    {
+      "id": "native:[crater density]",
+      "source": "crater count",
+      "target": "विवरांची संख्या"
+    },
+    {
+      "id": "native:[create map]",
+      "source": "Create map",
+      "target": "नकाशा तयार करा"
+    },
+    {
+      "id": "native:[credits]",
+      "source": "Credits",
+      "target": "श्रेय"
+    },
+    {
+      "id": "native:[ctrl - line]",
+      "source": "Ctrl - Line",
+      "target": "Ctrl - Line"
+    },
+    {
+      "id": "native:[current speed]",
+      "source": "Current speed",
+      "target": "सध्याचा वेग"
+    },
+    {
+      "id": "native:[custom game]",
+      "source": "Custom game",
+      "target": "सानुकूल खेळ"
+    },
+    {
+      "id": "native:[customcur]",
+      "source": "Custom cursor",
+      "target": "सानुकूल कर्सर"
+    },
+    {
+      "id": "native:[damage]",
+      "source": "Damage",
+      "target": "नुकसान"
+    },
+    {
+      "id": "native:[Damaged Map]",
+      "source": "Wounded Units Map",
+      "target": "जखमी तुकड्यांचा नकाशा"
+    },
+    {
+      "id": "native:[decrease game speed]",
+      "source": "Decrease Game Speed",
+      "target": "खेळाचा वेग कमी करा"
+    },
+    {
+      "id": "native:[decrease units working]",
+      "source": "Decrease Units Working",
+      "target": "कार्यरत युनिट्स कमी करा"
+    },
+    {
+      "id": "native:[Defeat Your Oppenents]",
+      "source": "Defeat Your Opponents",
+      "target": "आपल्या विरोधकांना पराभूत करा"
+    },
+    {
+      "id": "native:[defencetower explanation 2]",
+      "source": "units or buildings",
+      "target": "युनिट्स किंवा इमारती"
+    },
+    {
+      "id": "native:[defencetower explanation]",
+      "source": "Attacks nearby enemy",
+      "target": "जवळच्या शत्रूवर हल्ला करतो"
+    },
+    {
+      "id": "native:[defencetower]",
+      "source": "Defense Tower",
+      "target": "संरक्षण टॉवर"
+    },
+    {
+      "id": "native:[Defense Map]",
+      "source": "Defense Map",
+      "target": "संरक्षण नकाशा"
+    },
+    {
+      "id": "native:[Defense]",
+      "source": "Defense",
+      "target": "संरक्षण"
+    },
+    {
+      "id": "native:[Delete game]",
+      "source": "Delete the selected game",
+      "target": "निवडलेला गेम हटवा"
+    },
+    {
+      "id": "native:[delete]",
+      "source": "Delete",
+      "target": "हटवा"
+    },
+    {
+      "id": "native:[desert]",
+      "source": "desert",
+      "target": "वाळवंट"
+    },
+    {
+      "id": "native:[destroy]",
+      "source": "Destroy",
+      "target": "नष्ट करा"
+    },
+    {
+      "id": "native:[display]",
+      "source": "Display",
+      "target": "प्रदर्शन"
+    },
+    {
+      "id": "native:[do nothing]",
+      "source": "Do Nothing",
+      "target": "काहीही करू नका"
+    },
+    {
+      "id": "native:[don't carry anything]",
+      "source": "Not carrying anything",
+      "target": "काहीही न बाळगता"
+    },
+    {
+      "id": "native:[down]",
+      "source": "down",
+      "target": "खाली"
+    },
+    {
+      "id": "native:[edit map]",
+      "source": "Edit Map",
+      "target": "नकाशा संपादित करा"
+    },
+    {
+      "id": "native:[editing map]",
+      "source": "Editing Map",
+      "target": "नकाशा संपादन"
+    },
+    {
+      "id": "native:[editor]",
+      "source": "Editor",
+      "target": "संपादक"
+    },
+    {
+      "id": "native:[end]",
+      "source": "end",
+      "target": "शेवट"
+    },
+    {
+      "id": "native:[enter]",
+      "source": "enter",
+      "target": "प्रवेश करा"
+    },
+    {
+      "id": "native:[equals]",
+      "source": "equals",
+      "target": "समान"
+    },
+    {
+      "id": "native:[ERROR_CANT_LOAD_MAP]",
+      "source": "The map couldn't be loaded because the file is either damaged or an incompatible version.",
+      "target": "फाईल एकतर खराब झालेली आहे किंवा विसंगत आवृत्तीची आहे, त्यामुळे नकाशा लोड होऊ शकला नाही."
+    },
+    {
+      "id": "native:[ERROR_CANT_SAVE_CAMPAIGN]",
+      "source": "The campaign couldn't be saved. Check that the destination directory exists, is writable, and has free space.",
+      "target": "मोहीम जतन करता आली नाही. कृपया तपासा की डेस्टिनेशन डिरेक्टरी अस्तित्वात आहे, त्यावर लिहिता येते आणि त्यात मोकळी जागा आहे."
+    },
+    {
+      "id": "native:[escape]",
+      "source": "escape",
+      "target": "सुटका"
+    },
+    {
+      "id": "native:[f10]",
+      "source": "f10",
+      "target": "एफ१०"
+    },
+    {
+      "id": "native:[f11]",
+      "source": "f11",
+      "target": "एफ११"
+    },
+    {
+      "id": "native:[f12]",
+      "source": "f12",
+      "target": "एफ१२"
+    },
+    {
+      "id": "native:[f13]",
+      "source": "f13",
+      "target": "एफ१३"
+    },
+    {
+      "id": "native:[f14]",
+      "source": "f14",
+      "target": "एफ१४"
+    },
+    {
+      "id": "native:[f15]",
+      "source": "f15",
+      "target": "एफ१५"
+    },
+    {
+      "id": "native:[f1]",
+      "source": "f1",
+      "target": "एफ१"
+    },
+    {
+      "id": "native:[f2]",
+      "source": "f2",
+      "target": "एफ२"
+    },
+    {
+      "id": "native:[f3]",
+      "source": "f3",
+      "target": "एफ३"
+    },
+    {
+      "id": "native:[f4]",
+      "source": "f4",
+      "target": "एफ४"
+    },
+    {
+      "id": "native:[f5]",
+      "source": "f5",
+      "target": "एफ५"
+    },
+    {
+      "id": "native:[f6]",
+      "source": "f6",
+      "target": "एफ६"
+    },
+    {
+      "id": "native:[f7]",
+      "source": "f7",
+      "target": "एफ७"
+    },
+    {
+      "id": "native:[f8]",
+      "source": "f8",
+      "target": "एफ८"
+    },
+    {
+      "id": "native:[f9]",
+      "source": "f9",
+      "target": "एफ९"
+    },
+    {
+      "id": "native:[Fertility Map]",
+      "source": "Fertility Map",
+      "target": "प्रजनन नकाशा"
+    },
+    {
+      "id": "native:[fog of war]",
+      "source": "Fog of war",
+      "target": "युद्धाचे धुके"
+    },
+    {
+      "id": "native:[food]",
+      "source": "Food",
+      "target": "अन्न"
+    },
+    {
+      "id": "native:[forbidden area]",
+      "source": "Forbidden area",
+      "target": "प्रतिबंधित क्षेत्र"
+    },
+    {
+      "id": "native:[Free]",
+      "source": "Healthy",
+      "target": "निरोगी"
+    },
+    {
+      "id": "native:[free]",
+      "source": "free",
+      "target": "मोफत"
+    },
+    {
+      "id": "native:[from:]",
+      "source": "from:",
+      "target": "कडून:"
+    },
+    {
+      "id": "native:[fullscreen]",
+      "source": "Fullscreen",
+      "target": "पूर्ण स्क्रीन"
+    },
+    {
+      "id": "native:[game full]",
+      "source": "Game full",
+      "target": "खेळ पूर्ण"
+    },
+    {
+      "id": "native:[game speed]",
+      "source": "Game speed",
+      "target": "खेळाचा वेग"
+    },
+    {
+      "id": "native:[Game]",
+      "source": "Game",
+      "target": "खेळ"
+    },
+    {
+      "id": "native:[general settings]",
+      "source": "General Settings",
+      "target": "सामान्य सेटिंग्ज"
+    },
+    {
+      "id": "native:[go to event]",
+      "source": "Go To Event",
+      "target": "कार्यक्रमाला जा"
+    },
+    {
+      "id": "native:[go to home]",
+      "source": "Go To Home",
+      "target": "मुख्य पृष्ठावर जा"
+    },
+    {
+      "id": "native:[goto main menu]",
+      "source": "Go back to main menu",
+      "target": "मुख्य मेनूवर परत जा"
+    },
+    {
+      "id": "native:[grass]",
+      "source": "Grass",
+      "target": "गवत"
+    },
+    {
+      "id": "native:[ground attack]",
+      "source": "ground attack",
+      "target": "जमिनीवरील हल्ला"
+    },
+    {
+      "id": "native:[guard area]",
+      "source": "Guard area",
+      "target": "सुरक्षा क्षेत्र"
+    },
+    {
+      "id": "native:[GUIMapPreview text 0]",
+      "source": "Please choose",
+      "target": "कृपया निवडा"
+    },
+    {
+      "id": "native:[GUIMapPreview text 1]",
+      "source": "a map",
+      "target": "नकाशा"
+    },
+    {
+      "id": "native:[handmade map]",
+      "source": "Handmade map",
+      "target": "हस्तनिर्मित नकाशा"
+    },
+    {
+      "id": "native:[Happyness]",
+      "source": "Happiness",
+      "target": "आनंद"
+    },
+    {
+      "id": "native:[hard pause]",
+      "source": "Hard Pause",
+      "target": "हार्ड पॉज"
+    },
+    {
+      "id": "native:[Harvest]",
+      "source": "Harvest",
+      "target": "कापणी"
+    },
+    {
+      "id": "native:[high priority]",
+      "source": "high",
+      "target": "उच्च"
+    },
+    {
+      "id": "native:[hints]",
+      "source": "Hints",
+      "target": "सूचना"
+    },
+    {
+      "id": "native:[home]",
+      "source": "home",
+      "target": "घर"
+    },
+    {
+      "id": "native:[hospital explanation]",
+      "source": "Heals your units",
+      "target": "तुमच्या युनिट्सना बरे करते"
+    },
+    {
+      "id": "native:[hospital]",
+      "source": "Hospital",
+      "target": "रुग्णालय"
+    },
+    {
+      "id": "native:[host]",
+      "source": "Host a game",
+      "target": "खेळ आयोजित करा"
+    },
+    {
+      "id": "native:[hp]",
+      "source": "HP",
+      "target": "एचपी"
+    },
+    {
+      "id": "native:[Human]",
+      "source": "Human",
+      "target": "मानव"
+    },
+    {
+      "id": "native:[human]",
+      "source": "human",
+      "target": "मानवी"
+    },
+    {
+      "id": "native:[hungry]",
+      "source": "hungry",
+      "target": "भुकेले"
+    },
+    {
+      "id": "native:[hungryness]",
+      "source": "Hunger",
+      "target": "भूक"
+    },
+    {
+      "id": "native:[In way]",
+      "source": "On the way",
+      "target": "वाटेत"
+    },
+    {
+      "id": "native:[increase game speed]",
+      "source": "Increase Game Speed",
+      "target": "खेळाचा वेग वाढवा"
+    },
+    {
+      "id": "native:[increase units working]",
+      "source": "Increase Units Working",
+      "target": "कार्यरत युनिट्स वाढवा"
+    },
+    {
+      "id": "native:[inn]",
+      "source": "Inn",
+      "target": "सराय"
+    },
+    {
+      "id": "native:[insert]",
+      "source": "insert",
+      "target": "घाला"
+    },
+    {
+      "id": "native:[inside]",
+      "source": "Inside",
+      "target": "आत"
+    },
+    {
+      "id": "native:[iterate selection]",
+      "source": "Iterate to Next Selection",
+      "target": "पुढील निवडीकडे पुनरावृत्ती करा"
+    },
+    {
+      "id": "native:[jobs]",
+      "source": "jobs",
+      "target": "नोकऱ्या"
+    },
+    {
+      "id": "native:[join a game]",
+      "source": "Join a game",
+      "target": "खेळात सामील व्हा"
+    },
+    {
+      "id": "native:[lan]",
+      "source": "LAN Game",
+      "target": "लॅन गेम"
+    },
+    {
+      "id": "native:[hospital explanation 2]",
+      "source": "",
+      "target": ""
+    }
+  ],
+  "subset_sha256": "665242d8d46e9564b85141cc0c6d6115ee4aaab3dbedc3314bcc0cd1f7a137e4"
+}

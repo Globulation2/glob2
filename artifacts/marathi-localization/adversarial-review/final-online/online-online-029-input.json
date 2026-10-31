@@ -1,0 +1,190 @@
+{
+  "source_sha256": "0ac44b4cdfb03e688983d6e3fb1e484cca57589665bff19c5c65388e649b292a",
+  "batch_target_sha256": "4387be5879487047724cc1655a6057d1dd6cc39f554e87becaa5d26f73849853",
+  "catalog_sha256": {
+    "native": "8b3f9e4972ee0eb1c3433110a7f0e83c9dc2fb7ea5f494b6925afa373c4fef97",
+    "online": "d7ae02f4d4453ebcb2acc37c15fd862acea8d2996d29cdb89bfb64c4f32cd5fa"
+  },
+  "entries": [
+    {
+      "id": "online:Native terrain preview · awaiting checks",
+      "source": "Native terrain preview · awaiting checks",
+      "target": "खेळाच्या इंजिनमधील भूभागाचे पूर्वावलोकन · तपासण्या बाकी"
+    },
+    {
+      "id": "online:Generated layout · intermediate image",
+      "source": "Generated layout · intermediate image",
+      "target": "तयार केलेला लेआउट · मध्यवर्ती प्रतिमा"
+    },
+    {
+      "id": "online:Selected map area",
+      "source": "Selected map area",
+      "target": "नकाशातील निवडलेले क्षेत्र"
+    },
+    {
+      "id": "online:Cropped layout · intermediate image",
+      "source": "Cropped layout · intermediate image",
+      "target": "क्रॉप केलेला लेआउट · मध्यवर्ती प्रतिमा"
+    },
+    {
+      "id": "online:Landscape reference {count}",
+      "source": "Landscape reference {count}",
+      "target": "लँडस्केप संदर्भ {count}"
+    },
+    {
+      "id": "online:Composition source · edit {count}",
+      "source": "Composition source · edit {count}",
+      "target": "रचनेचा स्रोत · संपादन {count}"
+    },
+    {
+      "id": "online:Candidate {count} execution report",
+      "source": "Candidate {count} execution report",
+      "target": "प्रस्तावित आवृत्ती {count} चा अंमलबजावणी अहवाल"
+    },
+    {
+      "id": "online:Candidate {count} score",
+      "source": "Candidate {count} score",
+      "target": "प्रस्तावित आवृत्ती {count} चे गुण"
+    },
+    {
+      "id": "online:Candidate {count} · validated",
+      "source": "Candidate {count} · validated",
+      "target": "प्रस्तावित आवृत्ती {count} · पडताळलेली"
+    },
+    {
+      "id": "online:Candidate {count} · needs repairs",
+      "source": "Candidate {count} · needs repairs",
+      "target": "प्रस्तावित आवृत्ती {count} · दुरुस्ती आवश्यक"
+    },
+    {
+      "id": "online:Candidate {count} report",
+      "source": "Candidate {count} report",
+      "target": "प्रस्तावित आवृत्ती {count} चा अहवाल"
+    },
+    {
+      "id": "online:Validation report",
+      "source": "Validation report",
+      "target": "पडताळणी अहवाल"
+    },
+    {
+      "id": "online:Game-rendered scene and resource gallery",
+      "source": "Game-rendered scene and resource gallery",
+      "target": "गेम-रेंडर केलेले दृश्य आणि संसाधन गॅलरी"
+    },
+    {
+      "id": "online:Native validation report",
+      "source": "Native validation report",
+      "target": "खेळाच्या इंजिनमधील पडताळणीचा अहवाल"
+    },
+    {
+      "id": "online:Engine import and artwork",
+      "source": "Engine import and artwork",
+      "target": "इंजिन आयात आणि कलाकृती"
+    },
+    {
+      "id": "online:Engine definitions and artwork",
+      "source": "Engine definitions and artwork",
+      "target": "इंजिन व्याख्या आणि कलाकृती"
+    },
+    {
+      "id": "online:Requested size and players",
+      "source": "Requested size and players",
+      "target": "मागितलेला आकार आणि खेळाडू"
+    },
+    {
+      "id": "online:Valid colony starts",
+      "source": "Valid colony starts",
+      "target": "वसाहतींची वैध सुरुवातीची ठिकाणे"
+    },
+    {
+      "id": "online:Resource growth enabled",
+      "source": "Resource growth enabled",
+      "target": "संसाधन वाढीस सक्षम केले"
+    },
+    {
+      "id": "online:Connected walking routes",
+      "source": "Connected walking routes",
+      "target": "जोडलेले चालण्याचे मार्ग"
+    },
+    {
+      "id": "online:Opening economy measured",
+      "source": "Opening economy measured",
+      "target": "सुरुवातीच्या अर्थव्यवस्थेचे मोजमाप झाले"
+    },
+    {
+      "id": "online:Colony {count}: building space",
+      "source": "Colony {count}: building space",
+      "target": "वसाहत {count}: बांधकामाची जागा"
+    },
+    {
+      "id": "online:Colony {count}: starter food",
+      "source": "Colony {count}: starter food",
+      "target": "वसाहत {count}: सुरुवातीचे अन्न"
+    },
+    {
+      "id": "online:Colony {count}: starter timber",
+      "source": "Colony {count}: starter timber",
+      "target": "वसाहत {count}: सुरुवातीचे लाकूड"
+    },
+    {
+      "id": "online:Colony {count}: renewable food ground",
+      "source": "Colony {count}: renewable food ground",
+      "target": "वसाहत {count}: पुन्हा अन्न उगवणारी जमीन"
+    },
+    {
+      "id": "online:Properties",
+      "source": "Properties",
+      "target": "गुणधर्म"
+    },
+    {
+      "id": "online:Semantics",
+      "source": "Semantics",
+      "target": "कार्यनियम"
+    },
+    {
+      "id": "online:Presentation",
+      "source": "Presentation",
+      "target": "सादरीकरण"
+    },
+    {
+      "id": "online:{value0} source",
+      "source": "{value0} source",
+      "target": "{value0} स्रोत"
+    },
+    {
+      "id": "online:{value0} decor source",
+      "source": "{value0} decor source",
+      "target": "{value0} सजावटीचा स्रोत"
+    },
+    {
+      "id": "online:Your draft changed while the design was loading. Your changes were kept; try opening the design again.",
+      "source": "Your draft changed while the design was loading. Your changes were kept; try opening the design again.",
+      "target": "डिझाइन लोड होत असताना तुमच्या मसुद्यात बदल झाला. तुमचे बदल जतन करण्यात आले आहेत; डिझाइन पुन्हा उघडून पहा."
+    },
+    {
+      "id": "online:More filters",
+      "source": "More filters",
+      "target": "अधिक फिल्टर"
+    },
+    {
+      "id": "online:Clear filters",
+      "source": "Clear filters",
+      "target": "फिल्टर साफ करा"
+    },
+    {
+      "id": "online:No results match these filters.",
+      "source": "No results match these filters.",
+      "target": "या फिल्टरशी जुळणारे कोणतेही निकाल नाहीत."
+    },
+    {
+      "id": "online:Results: {value0}",
+      "source": "Results: {value0}",
+      "target": "निकाल: {value0}"
+    },
+    {
+      "id": "online:Game text field",
+      "source": "Game text field",
+      "target": "खेळातील मजकूर क्षेत्र"
+    }
+  ]
+}
