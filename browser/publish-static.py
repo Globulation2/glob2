@@ -28,7 +28,8 @@ def upload_plan(directory, bucket):
     # Resolve every MIME type before any upload; never publish a partial new entry point.
     commands = []
     for name in [name for name in names if name != 'index.html'] + ['index.html']:
-        mime = 'text/plain' if name.startswith('licenses/') else TYPES[Path(name).suffix]
+        suffix = Path(name).suffix
+        mime = TYPES.get(suffix, 'text/plain') if name.startswith('licenses/') else TYPES[suffix]
         versioned = re.search(r'(?:^|-)' + re.escape(version) + r'(?:-|\.)', Path(name).name)
         addressed = re.fullmatch(r'assets/[a-z0-9-]+\.[0-9a-f]{16}\.data', name)
         cache = IMMUTABLE if versioned or addressed else REVALIDATE

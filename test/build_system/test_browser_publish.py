@@ -33,6 +33,12 @@ class BrowserPublishTests(unittest.TestCase):
         web_assets.launcher_script_fonts(fixtures.module.ROOT, fixture.source)
         self.version = fixtures.module.package(fixture.source, fixture.output)
         self.output = fixture.output
+        for name, data in [('configuration.json', b'{"source":"fixture"}'), ('COPYING', b'Fixture licence')]:
+            license_file = self.output / 'licenses/recording' / name
+            license_file.parent.mkdir(parents=True, exist_ok=True)
+            license_file.write_bytes(data)
+            license_file.with_name(name + '.gz').write_bytes(gzip.compress(data, mtime=0))
+        fixture.refresh_checksums()
 
     def test_uploads_complete_localization_with_mime_gzip_cache_and_html_last(self):
         with patch.object(publisher.subprocess, 'run') as run:
@@ -44,7 +50,9 @@ class BrowserPublishTests(unittest.TestCase):
         self.assertEqual(set(by_name), expected)
         for name, mime in [('locales/te.json', 'application/json'), ('script-fonts.css', 'text/css'),
                            ('fonts/NotoSansTelugu-Regular.ttf', 'font/ttf'),
-                           ('fonts/LICENSE-Noto.txt', 'text/plain'), ('i18n.js', 'text/javascript')]:
+                           ('fonts/LICENSE-Noto.txt', 'text/plain'), ('i18n.js', 'text/javascript'),
+                           ('licenses/recording/configuration.json', 'application/json'),
+                           ('licenses/recording/COPYING', 'text/plain')]:
             with self.subTest(name=name):
                 command = by_name[name]
                 self.assertIn('--content-type=' + mime, command)
