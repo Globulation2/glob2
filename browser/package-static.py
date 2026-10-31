@@ -17,6 +17,11 @@ POLICY = b"browser-static-gzip-v1\0"
 MARKER = "package.json"
 ROOT = Path(__file__).resolve().parents[1]
 MUSIC_FILES = ("music-worker.js", "music-output.js", "music-runtime.js", "music-runtime.wasm")
+LAUNCHER_CORE_ASSETS = {
+    'fonts/sans-core.ttf': 'browser/assets/sans-core.ttf',
+    'fonts/LICENSE-DejaVu.txt': 'data/fonts/LICENSE-DejaVu.txt',
+    'fonts/LICENSE-Droid.txt': 'data/fonts/LICENSE-Droid.txt',
+}
 
 
 def require_translation_catalogs(names):
@@ -99,6 +104,11 @@ def package(source, destination):
                 raise ValueError('Launcher font checksum mismatch: ' + name)
             launcher_fonts[name] = data
         launcher_fonts['fonts/LICENSE-Noto.txt'] = (source / 'fonts/LICENSE-Noto.txt').read_bytes()
+        for name, canonical in LAUNCHER_CORE_ASSETS.items():
+            data = (source / name).read_bytes()
+            if data != (ROOT / canonical).read_bytes():
+                raise ValueError('Launcher font asset mismatch: ' + name)
+            launcher_fonts[name] = data
     version = hashlib.sha256(
         POLICY
         + b"".join(surface.values())
@@ -293,6 +303,11 @@ def verify(directory):
     names += [name for name in expected if (name == "i18n.js" or (name.startswith("locales/") and name.endswith(".json")))]
     if b'href="script-fonts.css"' in (directory / 'index.html').read_bytes():
         names += ['script-fonts.css', 'fonts/LICENSE-Noto.txt']
+        for name, canonical in LAUNCHER_CORE_ASSETS.items():
+            names.append(name)
+            path = directory / name
+            if not path.is_file() or path.read_bytes() != (ROOT / canonical).read_bytes():
+                raise ValueError('Missing or unpinned launcher font asset: ' + name)
         font_manifest = json.loads((ROOT / 'data/fonts/scripts/manifest.json').read_text())
         for font in font_manifest['fonts']:
             name = 'fonts/' + font['name'] + '-Regular.ttf'
