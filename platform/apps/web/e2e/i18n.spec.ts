@@ -38,7 +38,9 @@ for (const locale of locales) {
         (labels) =>
           labels.length === 3 &&
           labels.every((label) => {
-            const card = label.closest('.stat')!.getBoundingClientRect();
+            const parent = label.closest('.stat');
+            if (!parent) return false;
+            const card = parent.getBoundingClientRect();
             const text = document.createRange();
             text.selectNodeContents(label);
             return (
@@ -62,7 +64,9 @@ for (const locale of locales) {
         .boundingBox();
       expect(title).not.toBeNull();
       expect(browse).not.toBeNull();
-      expect(browse!.y).toBeGreaterThanOrEqual(title!.y + title!.height - 1);
+      if (!title || !browse)
+        throw new Error('Map section heading and browse link must have bounds');
+      expect(browse.y).toBeGreaterThanOrEqual(title.y + title.height - 1);
     }
     const signIn = page.locator('.app-sidebar .sidebar-account a[href="/signin"]');
     await expect(signIn).toBeVisible();
@@ -124,8 +128,12 @@ test.describe('Filipino browser preference', () => {
     );
     await page.goto('/signin');
     await expect(page.locator('html')).toHaveAttribute('lang', 'fil');
-    await expect(page.locator('label[for="signin-username"]')).toContainText(catalog['Username']!);
-    await expect(page.locator('label[for="signin-password"]')).toContainText(catalog['Password']!);
+    await expect(page.locator('label[for="signin-username"]')).toContainText(
+      catalog['Username'] ?? 'Username',
+    );
+    await expect(page.locator('label[for="signin-password"]')).toContainText(
+      catalog['Password'] ?? 'Password',
+    );
     expect(
       await page.evaluate(
         () => document.documentElement.scrollWidth - document.documentElement.clientWidth,
@@ -140,7 +148,9 @@ test.describe('Filipino browser preference', () => {
     });
 
     await page.goto('/');
-    await expect(page.locator('#hero-title')).toHaveText(catalog['Welcome to the colony']!);
+    await expect(page.locator('#hero-title')).toHaveText(
+      catalog['Welcome to the colony'] ?? 'Welcome to the colony',
+    );
     if (!(await page.getByTestId('language-selector').first().isVisible()))
       await page.locator('.rail-expand').click();
     const selector = page.locator('[data-testid="language-selector"]:visible').first();
