@@ -116,7 +116,7 @@ def build(prefix, work, jobs=2, emscripten=None, environment=None, threaded=Fals
     versions = json.loads(LOCK.read_text())
     if emscripten:
         versions = json.loads(LOCK.with_name('sdl3-vendored.json').read_text()) | versions
-    identity = {'configuration': 11, 'threaded': threaded, 'versions': versions, 'emscripten': str(emscripten) if emscripten else None,
+    identity = {'configuration': 14, 'threaded': threaded, 'versions': versions, 'emscripten': str(emscripten) if emscripten else None,
                 'platform': platform.platform(), 'machine': platform.machine(),
                 'source_patches': {patch.name: hashlib.sha256(patch.read_bytes()).hexdigest()
                                    for patch in SDL_PATCHES + TTF_PATCHES}}
@@ -136,7 +136,7 @@ def build(prefix, work, jobs=2, emscripten=None, environment=None, threaded=Fals
     download(work, versions)
     for name, spec in versions.items():
         archive = work / spec['archive']
-        source = work / archive.name.removesuffix('.tar.gz')
+        source = work / archive.name.removesuffix('.tar.gz').removesuffix('.tar.xz')
         if not source.exists():
             with tarfile.open(archive) as package:
                 package.extractall(work, filter='data')
@@ -162,8 +162,14 @@ def build(prefix, work, jobs=2, emscripten=None, environment=None, threaded=Fals
                    '-DCMAKE_PREFIX_PATH=' + str(prefix), '-DCMAKE_INSTALL_LIBDIR=lib',
                    '-DSDL_TESTS=OFF', '-DSDL_TEST_LIBRARY=OFF', '-DSDL_EXAMPLES=OFF',
                    '-DSDLIMAGE_WEBP=ON', '-DSDLIMAGE_WEBP_SAVE=OFF', '-DSDLIMAGE_SAMPLES=OFF', '-DSDLIMAGE_TESTS=OFF', '-DSDLIMAGE_DEPS_SHARED=OFF',
-                   '-DSDLTTF_SAMPLES=OFF', '-DSDLTTF_TESTS=OFF', '-DSDLTTF_HARFBUZZ=OFF',
+                   '-DSDLTTF_SAMPLES=OFF', '-DSDLTTF_TESTS=OFF', '-DSDLTTF_HARFBUZZ=ON',
                    '-DSDLNET_SAMPLES=OFF', '-DSDLNET_TESTS=OFF']
+        if name == 'harfbuzz':
+            # SDL_ttf is shared on Linux and links this static archive.
+            command += ['-DCMAKE_POSITION_INDEPENDENT_CODE=ON',
+                        '-DHB_BUILD_UTILS=OFF', '-DHB_BUILD_SUBSET=OFF',
+                        '-DHB_HAVE_FREETYPE=ON', '-DHB_HAVE_GLIB=OFF',
+                        '-DHB_HAVE_ICU=OFF', '-DHB_HAVE_CORETEXT=OFF']
         if name == 'SDL_image':
             # SDL_image's Findwebp omits static libwebp's private dependencies.
             # Its function table references encoders even when saving is off.
@@ -184,9 +190,9 @@ def build(prefix, work, jobs=2, emscripten=None, environment=None, threaded=Fals
                         '-DFT_DISABLE_BROTLI=ON', '-DFT_DISABLE_HARFBUZZ=ON',
                         '-DSDL_PTHREADS=' + ('ON' if threaded else 'OFF'),
                         '-DCMAKE_C_FLAGS=' + ('-pthread ' if threaded else '') + '-sSUPPORT_LONGJMP=wasm',
-                        '-DCMAKE_CXX_FLAGS=' + ('-pthread ' if threaded else '') + '-fwasm-exceptions',
+                        '-DCMAKE_CXX_FLAGS=' + ('-pthread ' if threaded else '') + '-fwasm-exceptions -sSUPPORT_LONGJMP=wasm',
                         '-DBUILD_SHARED_LIBS=OFF', '-DSDL_SHARED=OFF', '-DSDL_STATIC=ON',
-                        '-DSDLTTF_VENDORED=OFF', '-DSDLTTF_HARFBUZZ=OFF']
+                        '-DSDLTTF_VENDORED=OFF', '-DSDLTTF_HARFBUZZ=ON']
         subprocess.run(command, env=env, check=True)
         subprocess.run(['cmake', '--build', str(output), '--parallel', str(jobs)], env=env, check=True)
         subprocess.run(['cmake', '--install', str(output)], env=env, check=True)

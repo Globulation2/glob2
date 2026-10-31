@@ -27,9 +27,9 @@ export function Matches() {
     [queue, more],
   );
   const filters = [
-    { id: '', name: 'All' },
+    { id: '', name: t('All matches') },
     ...(instance?.queues.map((q) => ({ id: q.id, name: q.name })) ?? []),
-    { id: 'room', name: 'Rooms' },
+    { id: 'room', name: t('Rooms') },
   ];
   return (
     <>
@@ -56,7 +56,7 @@ export function Matches() {
               setMore(0);
             }}
           >
-            {f.name}
+            <bdi dir="auto">{f.name}</bdi>
           </button>
         ))}
       </div>

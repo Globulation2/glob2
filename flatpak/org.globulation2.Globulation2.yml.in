@@ -154,12 +154,28 @@ modules:
         url: https://github.com/libsdl-org/SDL_image/releases/download/release-3.4.6/SDL3_image-3.4.6.tar.gz
         sha256: d2e4637ae700f72e5196b8fbd749850ed2e5e1e09c5a5be8d06ff55aaccf3b01
 
+  - name: harfbuzz
+    buildsystem: meson
+    config-opts:
+      - -Dutilities=disabled
+      - -Dtests=disabled
+      - -Ddocs=disabled
+      - -Dglib=disabled
+      - -Dgobject=disabled
+      - -Dcairo=disabled
+      - -Dicu=disabled
+      - -Dfreetype=enabled
+    sources:
+      - type: archive
+        url: https://github.com/harfbuzz/harfbuzz/releases/download/10.1.0/harfbuzz-10.1.0.tar.xz
+        sha256: 6ce3520f2d089a33cef0fc48321334b8e0b72141f6a763719aaaecd2779ecb82
+
   - name: SDL3_ttf
     buildsystem: cmake-ninja
     builddir: true
     config-opts:
       - -DSDLTTF_SAMPLES=OFF
-      - -DSDLTTF_HARFBUZZ=OFF
+      - -DSDLTTF_HARFBUZZ=ON
     sources:
       - type: archive
         url: https://github.com/libsdl-org/SDL_ttf/releases/download/release-3.2.2/SDL3_ttf-3.2.2.tar.gz

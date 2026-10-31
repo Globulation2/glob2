@@ -1131,14 +1131,14 @@ Element CustomGameScreen::build(const Presentation &p)
 Element CustomGameScreen::mapTab(const Presentation &p, bool narrow)
 {
 	std::vector<Element> left;
-	// Content-sized pills at the left on desktop, stretched segments on touch.
+	// Narrow pointer windows need the same bounded segments as touch layouts.
 	auto pills = [&](const std::string &key, const std::vector<std::string> &labels, const std::vector<fe::UIIcon> &icons,
 					 int selected, std::function<void(int)> change)
 	{
 		std::vector<fe::IconRef> iconRefs;
 		for (auto icon : icons)
 			iconRefs.push_back(rowIcon(p, icon));
-		if (p.touch)
+		if (p.touch || narrow)
 			return fe::segments(key, labels, selected, change, {}, iconRefs);
 		std::vector<Element> buttons;
 		for (int i = 0; i < int(labels.size()); ++i)

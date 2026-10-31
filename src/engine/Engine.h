@@ -41,6 +41,7 @@ using std::shared_ptr;
 namespace GameDiagnostics { class Session; }
 class Engine
 {
+	friend struct TranslationPreviewAccess;
 	friend struct CustomGameSetupHarness;
 	friend struct HeadlessRunner;
 	friend class SimulationRunner;

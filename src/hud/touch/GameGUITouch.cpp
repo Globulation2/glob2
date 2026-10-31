@@ -61,6 +61,12 @@ MobileLayout GameGUITouch::layout() const
 		gfx->getW() / unit, gfx->getH() / unit, insets, 0, 1, panelOpen,
 		resolved.layout == PresentationLayout::Spacious,
 		resolved.layout == PresentationLayout::Spacious ? resolved.panelWidth : 288);
+	// Keep the icon band, then reserve the actual wrapped label height and
+	// bottom padding. Tall scripts and accessibility text grow upward into
+	// the world; drawing and hit regions share the resulting action strip.
+	const double labelHeight = navigationLabelHeight(result.actions.w / 6 - 4);
+	result.actions.h = std::max(result.actions.h, 32 + labelHeight + (labelHeight > 16 ? 4 : 0));
+	result.actions.y = result.safe.y + result.safe.h - result.actions.h;
 	// Persistent palettes float too: the map remains visible below their last
 	// icon, and opening an inspector never changes the camera's framing.
 	result.world = result.safe;
@@ -176,11 +182,19 @@ MobileLayout GameGUITouch::layout() const
 	}
 	return result;
 }
+double GameGUITouch::scenarioMessagePitch() const
+{
+	return scenarioMessageLineStep * InGameTouchTheme::textGrowth();
+}
+double GameGUITouch::scenarioMessageFooterHeight() const
+{
+	return gui.swallowSpaceKey ? std::max(48.0, scenarioMessageFontHeight * InGameTouchTheme::textGrowth() + 16) : 0;
+}
 double GameGUITouch::scenarioMessageMaximum() const
 {
 	const double unit = globalContainer->gfx->logicalUnitsPerPoint();
-	return std::max(0.0, scenarioMessageLines.size() * InGameTouchTheme::scenarioMessagePitch() - scenarioMessageRect().h / unit + 16 +
-							 (gui.swallowSpaceKey ? 48 : 0));
+	return std::max(0.0, scenarioMessageLines.size() * scenarioMessagePitch() - scenarioMessageRect().h / unit + 16 +
+							 scenarioMessageFooterHeight());
 }
 void GameGUITouch::clampScroll()
 {
@@ -1326,7 +1340,7 @@ void GameGUITouch::interfaceTap(ViewPoint point)
 			scenarioMessageCollapsed = true;
 			return;
 		}
-		if (point.y < message.y + message.h - 48 * globalContainer->gfx->logicalUnitsPerPoint())
+		if (point.y < message.y + message.h - scenarioMessageFooterHeight() * globalContainer->gfx->logicalUnitsPerPoint())
 			return;
 		if (!gui.swallowSpaceKey)
 		{
@@ -1655,8 +1669,8 @@ void GameGUITouch::prepareDraw()
 	}
 	if (usesHUD())
 	{
-		clampScroll();
 		prepareScenarioMessage();
+		clampScroll();
 	}
 	syncGestureExclusion();
 	if (gui.selectionMode != GameGUI::TOOL_SELECTION ||

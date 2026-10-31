@@ -18,7 +18,8 @@
     },
     {
       "name": "sdl3-ttf",
-      "default-features": false
+      "default-features": false,
+      "features": ["harfbuzz"]
     },
     "sdl3-net",
     {

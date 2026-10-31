@@ -51,6 +51,22 @@ export function resolveLocale(input: string | readonly string[]): Locale {
     const exact = locales.find((l) => l.code.toLowerCase() === tag);
     if (exact) return exact.code;
     const [language, ...parts] = tag.split('-');
+    // These catalogs cover a specific written form. Unicode extensions and
+    // private-use tags may contain script-like words without selecting a script.
+    const writtenScript =
+      language === 'hi'
+        ? 'deva'
+        : language === 'ur'
+          ? 'arab'
+          : language === 'sw'
+            ? 'latn'
+            : undefined;
+    if (writtenScript) {
+      const extension = parts.findIndex((part) => part.length === 1);
+      const subtags = extension < 0 ? parts : parts.slice(0, extension);
+      const script = subtags.find((part) => /^[a-z]{4}$/.test(part));
+      if (script && script !== writtenScript) continue;
+    }
     if (language === 'pt') return parts.includes('br') ? 'pt-BR' : 'pt-PT';
     if (language === 'zh')
       return parts.some((p) => ['hant', 'tw', 'hk', 'mo'].includes(p)) ? 'zh-Hant' : 'zh-Hans';
