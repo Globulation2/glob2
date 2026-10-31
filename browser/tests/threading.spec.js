@@ -1,9 +1,10 @@
+const {waitForMainMenu}=require('./main-menu');
 const {test,expect} = require('@playwright/test');
 const fs = require('node:fs');
 const path = require('node:path');
 const {gameURL,clickMainMenu,clickControl} = require('./main-menu');
 const {openRuntimeHost} = require('./runtime-host');
-const screen=(page,name)=>expect.poll(()=>page.evaluate(()=>glob2Diagnostics.snapshot().screen)).toContain(name);
+const screen=(page,name)=>name==='MainMenuScreen' ? waitForMainMenu(page) : expect.poll(()=>page.evaluate(()=>glob2Diagnostics.snapshot().screen)).toContain(name);
 for (const variant of ['threaded','serial']) {
 test(`${variant} runtime executes shared compute, gradients and save lifecycle tests`,async({page},info)=>{
   // This compiled corpus includes millions of assertions and save/load cycles.

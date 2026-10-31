@@ -1,8 +1,9 @@
+const {waitForMainMenu}=require('./main-menu');
 const {clickCreateMap}=require('./editor-controls');
 const {gameURL,clickMainMenu,clickSettingsDone,clickCustomGameStart,clickControl,control}=require('./main-menu');
 const {test, expect} = require('@playwright/test');
 const snapshot = page => page.evaluate(() => glob2Diagnostics.snapshot());
-const screen = (page, name) => expect.poll(async () => (await snapshot(page)).screen).toContain(name);
+const screen = (page, name) => name==='MainMenuScreen' ? waitForMainMenu(page) : expect.poll(async () => (await snapshot(page)).screen).toContain(name);
 async function resize(page,width,height,backingScale=1) {
   await page.setViewportSize({width,height});
   await expect.poll(async () => { const s=await snapshot(page); return [s.width,s.height]; }).toEqual([width*backingScale,height*backingScale]);

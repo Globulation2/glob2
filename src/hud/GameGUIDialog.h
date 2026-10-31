@@ -30,7 +30,8 @@ class InGameMainScreen : public Glob2UI::InGameDialog
 		PAUSE_GAME = 7,
 		HIVE_MIND = 8,
 		AI_TELEMETRY = 9,
-        SETTINGS = 10
+        SETTINGS = 10,
+        TUTORIAL_RESTART = 11
 	};
 	explicit InGameMainScreen(bool isReplay = false, bool canSave = true, bool paused = false);
 	Glob2UI::Element build(const Glob2UI::Presentation &presentation) override;
@@ -44,6 +45,7 @@ class InGameMainScreen : public Glob2UI::InGameDialog
 		pauseLabel = std::move(label);
 		pauseEnabled = enabled;
 	}
+	void setTutorial(bool value) { introduction=value; }
 	void setHiveMind(bool value) { hiveMind = value; }
 
   protected:
@@ -52,7 +54,7 @@ class InGameMainScreen : public Glob2UI::InGameDialog
 
   private:
 	bool replay, canSave, paused;
-	bool networked = false, hiveMind = false;
+	bool networked = false, hiveMind = false, introduction = false;
 	std::string pauseLabel;
 	bool pauseEnabled = true;
 };

@@ -6644,3 +6644,423 @@ You can change this anytime in Settings → Audio.
 Your choice could not be saved. Audio is still off. Please try again.
 [audio choices description]
 Silence: a muted speaker. Sound: a speaker with sound waves.
+[intro menu]
+New introduction — experimental
+[intro briefing]
+Learn indirect control: scout with a flag, supply your colony, and direct an attack.
+[intro try]
+Try the new introduction
+[intro start]
+Start introduction
+[intro preflight]
+Your globules act on their own. You choose their jobs through buildings and flags. In this short introduction, scout a landmark, expand food supply, grow your workforce, and direct a small attack.
+[intro preflight save]
+Allow about 10 minutes. You can save from the game menu and resume through Load game. Normal hunger and combat rules apply. The existing tutorial remains available separately.
+[intro preference failed]
+Your choice could not be saved. You can continue playing; this recommendation may appear again next time.
+[intro goal scout]
+Scout the stone landmark
+[intro goal build]
+Build another Inn
+[intro goal supply]
+Supply your new Inn
+[intro goal grow]
+Grow the workforce
+[intro goal attack]
+Destroy the enemy Swarm
+[intro instruction scout]
+Open Flags and place an Exploration Flag over the stone patch east of your colony. Assign one explorer. Watch it travel to the flag.
+[intro instruction build]
+Open Build and place an Inn near wheat. Assign available workers to construct it. Leave your existing Inn supplied.
+[intro instruction supply]
+Select your finished new Inn and give it at least one supplier. Wait for a worker to deliver wheat.
+[intro instruction grow]
+Select the Swarm. Set its worker target to at least 2, and its production ratios to workers only. Keep both Inns supplied while a new worker is born.
+[intro instruction attack]
+Find the enemy Swarm farther east. Use a War Flag to direct your warriors against it. Help is available if you need a reminder.
+[intro help]
+Help / why?
+[intro help scout]
+Use the minimap to move the view east and find the stone patch. Choose Exploration Flag in Flags, place it on the stone, then leave placement with the secondary mouse button. Select the flag and request 1 explorer. Flags request units; they do not move them instantly. Explorers may stop to eat.
+[intro help build]
+Construction consumes wood delivered by workers. Choose Inn from the building controls (the building palette), place it in clear ground near wheat, and request 2 builders. A worker target is a request, not a count of workers already present. Keep suppliers at your existing Inn and Swarm. Any valid location counts.
+[intro help supply]
+Construction and everyday supply have separate worker targets. Select the finished Inn and increase its operating target. A supplier gathers wheat and carries it here. Hungry globules eat at Inns; a building with no suppliers will eventually run out. Keep the wheat patch accessible.
+[intro help grow]
+The Swarm consumes wheat to produce units. Set worker production to 1 and explorer and warrior production to 0. Increase the Swarm worker target to 2 or more. More suppliers can deliver wheat faster, but they compete with other jobs. Maintain food supply at both Inns.
+[intro help attack]
+Open Flags, choose War Flag, and place it over the enemy Swarm east of the stone. Select the flag and request up to 4 warriors. A small radius keeps them concentrated. Leave placement with the secondary mouse button before selecting the flag. If no warriors remain, produce more at the Swarm. Warriors may stop to eat; keep the Inns supplied.
+[intro hint scout]
+Your explorer needs an assigned Exploration Flag at the eastern stone patch. Check its target and explorer count.
+[intro hint build]
+If you removed the new Inn, build another. Otherwise check the construction site and its worker target. Existing supply jobs may occupy your workers; keep food running while making builders available.
+[intro hint supply]
+Select the finished new Inn. Check its worker target and watch for wheat deliveries. Workers may need time to travel or eat.
+[intro hint grow]
+Check Swarm supply and worker-only production. Keep the Inns supplied while waiting for another worker.
+[intro hint attack]
+Check your War Flag, requested warrior count, and food supply. Your warriors need time to travel and attack.
+[intro hint no scout flag]
+No assigned Exploration Flag was found. Place one on the stone east of your base and request 1 explorer.
+[intro hint no suppliers]
+Your new Inn or building site has a worker target of 0. Select it and request workers.
+[intro hint no war flag]
+No assigned War Flag was found at the enemy base. Place one over the eastern enemy Swarm and request warriors.
+[intro hint retry]
+The colony has lost its Swarm or all workers. You can load an earlier save or restart the introduction from the game menu.
+[intro complete]
+Introduction complete
+[intro complete body]
+You directed autonomous globules, expanded food supply, grew the colony, and organized an attack. Try the existing tutorial for training, upgrades, and defense, or return to the main menu to start a match.
+[intro play again]
+Play again
+[intro existing tutorial]
+Existing tutorial
+[intro restart]
+Restart introduction
+[intro restart body]
+Restart from the prepared colony? Unsaved progress in this introduction will be lost.
+[intro help touch scout]
+Drag empty ground to move the view before placing a flag. Find the stone patch east of the colony. Open Flags, choose Exploration Flag, place it on the stone and confirm. Select the flag and request 1 explorer using its assigned-unit target. Globules travel on their own and may stop to eat.
+[intro help touch build]
+Choose Inn from Build. Place it in clear ground near wheat and confirm. Select the site and request 2 builders. A worker target is a request, not a count of workers already present. Keep the existing Inn and Swarm supplied. Any valid location counts.
+[intro help touch supply]
+Select the finished new Inn and increase its assigned-worker target. Construction and everyday supply have separate targets. A supplier gathers wheat and carries it here. Hungry globules eat at Inns; a building with no suppliers eventually runs out. Keep the wheat accessible.
+[intro help touch grow]
+Select the Swarm. Set worker production to 1 and explorer and warrior production to 0. Increase its assigned-worker target to 2 or more. Suppliers bring wheat for new units, but they compete with other jobs. Keep both Inns supplied.
+[intro help touch attack]
+Open Flags, choose War Flag, place it over the enemy Swarm east of the stone and confirm. Select the flag and request up to 4 warriors. A small radius concentrates them. If none remain, produce warriors at your Swarm. Warriors may stop to eat; keep the Inns supplied.
+[intro show destination]
+Show destination
+[intro scout destination]
+Scout here
+[intro compact scout]
+Flags → Exploration Flag. Place it on the stone; assign 1 explorer.
+[intro compact build]
+Build → Inn. Place near wheat; assign 2 builders.
+[intro compact supply]
+Select your new Inn; assign at least 1 supplier. Wait for wheat.
+[intro compact grow]
+Select the Swarm; assign 2 suppliers. Produce workers only.
+[intro compact attack]
+Flags → War Flag. Place over the enemy Swarm; assign warriors.
+[tutorial lessons]
+Tutorial lessons
+[tutorial restart]
+Restart lesson
+[tutorial restart body]
+Restart this lesson from its prepared colony? Unsaved progress will be lost.
+[tutorial complete]
+Lesson complete
+[tutorial food title]
+Food supply practice
+[tutorial food briefing]
+Practice expanding food supply: build another Inn, then assign suppliers and watch wheat arrive.
+[tutorial food complete]
+You built an Inn and supplied it with wheat. Try another lesson or return to the main menu.
+[tutorial unavailable]
+Tutorial lessons could not be loaded.
+[lesson healing title]
+Hospitals and healing
+[lesson healing briefing]
+Build a Hospital and help a wounded worker recover. The colony starts fed, with one injured worker.
+[lesson healing complete]
+Your Hospital restored an injured globule. Keep Inns supplied: hunger can injure units again.
+[lesson healing build hint]
+Build a Hospital in clear ground; assign 2 builders. Leave room for globules to enter and exit. Hospitals heal injuries; Inns supply food. This patient is already fed.
+[lesson healing build title]
+Build a Hospital
+[lesson healing build instruction]
+Build a Hospital in clear ground; assign 2 builders.
+[lesson healing build help]
+Leave room for globules to enter and exit. Hospitals heal injuries; Inns supply food. This patient is already fed.
+[lesson healing build marker]
+Build a Hospital
+[lesson healing heal hint]
+Keep the Hospital accessible. Watch the injured worker recover. Globules seek healing autonomously. Track the injured worker, not a newly born unit. If it dies, restart or load a save.
+[lesson healing heal title]
+Let the patient recover
+[lesson healing heal instruction]
+Keep the Hospital accessible. Watch the injured worker recover.
+[lesson healing heal help]
+Globules seek healing autonomously. Track the injured worker, not a newly born unit. If it dies, restart or load a save.
+[lesson healing heal marker]
+Let the patient recover
+[lesson walking-training title]
+Walking training
+[lesson walking-training briefing]
+Build a Racetrack and observe an existing worker learn to walk faster.
+[lesson walking-training complete]
+Your workers learned faster walking. Training improves the workers you have; it does not replace the colony food supply.
+[lesson walking-training build hint]
+Build a Racetrack in the marked clearing; assign builders. A Racetrack needs wood and stone. Leave a gap around its edges for entry, exit and later expansion.
+[lesson walking-training build title]
+Build a Racetrack
+[lesson walking-training build instruction]
+Build a Racetrack in the marked clearing; assign builders.
+[lesson walking-training build help]
+A Racetrack needs wood and stone. Leave a gap around its edges for entry, exit and later expansion.
+[lesson walking-training build marker]
+Build a Racetrack
+[lesson walking-training train hint]
+Keep the Racetrack accessible and let a worker finish training. Training is automatic for eligible globules. Keep some workers free from supply jobs and keep both Inns stocked.
+[lesson walking-training train title]
+Train an existing worker
+[lesson walking-training train instruction]
+Keep the Racetrack accessible and let a worker finish training.
+[lesson walking-training train help]
+Training is automatic for eligible globules. Keep some workers free from supply jobs and keep both Inns stocked.
+[lesson swimming title]
+Swimming and water resources
+[lesson swimming briefing]
+Train swimmers, then use algae from the pond to construct a School.
+[lesson swimming complete]
+A swimmer delivered water resources for your School. Water access expands the jobs your colony can perform.
+[lesson swimming build hint]
+Build a Swimming Pool west of the pond; assign builders. Leave space around the pool. A worker cannot gather algae in deep water until it has learned to swim.
+[lesson swimming build title]
+Build a Swimming Pool
+[lesson swimming build instruction]
+Build a Swimming Pool west of the pond; assign builders.
+[lesson swimming build help]
+Leave space around the pool. A worker cannot gather algae in deep water until it has learned to swim.
+[lesson swimming build marker]
+Build a Swimming Pool
+[lesson swimming train hint]
+Let an existing worker finish swimming training. Units choose training automatically. Keep supply running and allow free workers to reach the pool.
+[lesson swimming train title]
+Train a swimmer
+[lesson swimming train instruction]
+Let an existing worker finish swimming training.
+[lesson swimming train help]
+Units choose training automatically. Keep supply running and allow free workers to reach the pool.
+[lesson swimming water-job hint]
+Build a School near the colony; assign builders to fetch wood and algae. The algae grows in the pond. A trained swimmer must enter water to collect it. Keep the School on open land with access for suppliers.
+[lesson swimming water-job title]
+Use algae from the pond
+[lesson swimming water-job instruction]
+Build a School near the colony; assign builders to fetch wood and algae.
+[lesson swimming water-job help]
+The algae grows in the pond. A trained swimmer must enter water to collect it. Keep the School on open land with access for suppliers.
+[lesson swimming water-job marker]
+Use algae from the pond
+[lesson schools title]
+Schools and worker skills
+[lesson schools briefing]
+Use the prepared swimmers to build a School, then observe workers learn construction and harvesting.
+[lesson schools complete]
+Your School improved worker skills. Skilled builders unlock upgrades; better harvesting helps maintain an expanding economy.
+[lesson schools build hint]
+Build a School in the clearing; assign builders. The colony already has swimmers for algae. Leave access to wood and water. Fruit trees provide prestige resources; food still comes from wheat.
+[lesson schools build title]
+Build a School
+[lesson schools build instruction]
+Build a School in the clearing; assign builders.
+[lesson schools build help]
+The colony already has swimmers for algae. Leave access to wood and water. Fruit trees provide prestige resources; food still comes from wheat.
+[lesson schools build marker]
+Build a School
+[lesson schools learn hint]
+Let an existing worker finish its School training. The School teaches construction and harvesting together. Keep workers available; a construction site alone does not train anyone.
+[lesson schools learn title]
+Teach construction and harvesting
+[lesson schools learn instruction]
+Let an existing worker finish its School training.
+[lesson schools learn help]
+The School teaches construction and harvesting together. Keep workers available; a construction site alone does not train anyone.
+[lesson upgrades title]
+Upgrading buildings
+[lesson upgrades briefing]
+Use prepared skilled workers to upgrade a Racetrack and train beyond the first level.
+[lesson upgrades complete]
+You upgraded a building and used its improved training. Further upgrades repeat this cycle with better Schools, skills, materials and space, up to level 3.
+[lesson upgrades upgrade hint]
+Select the Racetrack, choose Upgrade and assign skilled builders. These workers already learned first-level School skills. Upgrades need extra space and materials, and interrupt the building service. Cancelled upgrades do not count.
+[lesson upgrades upgrade title]
+Upgrade the Racetrack
+[lesson upgrades upgrade instruction]
+Select the Racetrack, choose Upgrade and assign skilled builders.
+[lesson upgrades upgrade help]
+These workers already learned first-level School skills. Upgrades need extra space and materials, and interrupt the building service. Cancelled upgrades do not count.
+[lesson upgrades upgrade marker]
+Upgrade the Racetrack
+[lesson upgrades train hint]
+Let an existing worker learn faster walking at the upgraded Racetrack. A completed upgrade improves available training. Higher building levels need higher construction skills; the level shown to players starts at 1.
+[lesson upgrades train title]
+Use the upgraded training
+[lesson upgrades train instruction]
+Let an existing worker learn faster walking at the upgraded Racetrack.
+[lesson upgrades train help]
+A completed upgrade improves available training. Higher building levels need higher construction skills; the level shown to players starts at 1.
+[lesson warrior-training title]
+Producing and training warriors
+[lesson warrior-training briefing]
+Produce warriors at the Swarm, then train them at a Training Camp.
+[lesson warrior-training complete]
+You controlled military production and trained warriors. Keep their food supply running; combat units still need to eat.
+[lesson warrior-training produce hint]
+Set the Swarm to warriors only; assign suppliers and wait for 2 warriors. Set worker and explorer ratios to 0 and warrior ratio to 1. The Swarm consumes wheat for births. Ratios choose what is produced; suppliers determine whether it can run.
+[lesson warrior-training produce title]
+Produce two warriors
+[lesson warrior-training produce instruction]
+Set the Swarm to warriors only; assign suppliers and wait for 2 warriors.
+[lesson warrior-training produce help]
+Set worker and explorer ratios to 0 and warrior ratio to 1. The Swarm consumes wheat for births. Ratios choose what is produced; suppliers determine whether it can run.
+[lesson warrior-training produce marker]
+Produce two warriors
+[lesson warrior-training build hint]
+Build a Training Camp in the clearing; assign builders. Stop or reduce warrior production once you have enough. Training Camps teach combat skills; they need free space around their edges.
+[lesson warrior-training build title]
+Build a Training Camp
+[lesson warrior-training build instruction]
+Build a Training Camp in the clearing; assign builders.
+[lesson warrior-training build help]
+Stop or reduce warrior production once you have enough. Training Camps teach combat skills; they need free space around their edges.
+[lesson warrior-training build marker]
+Build a Training Camp
+[lesson warrior-training train hint]
+Let a warrior complete Training Camp practice. Warriors seek training automatically. Keep Inns supplied and the Camp accessible. Building a Camp alone is not a completed training session.
+[lesson warrior-training train title]
+Train your warriors
+[lesson warrior-training train instruction]
+Let a warrior complete Training Camp practice.
+[lesson warrior-training train help]
+Warriors seek training automatically. Keep Inns supplied and the Camp accessible. Building a Camp alone is not a completed training session.
+[lesson fortifications title]
+Towers and protective walls
+[lesson fortifications briefing]
+Build a supplied tower and protective walls, then test them against one small attack.
+[lesson fortifications complete]
+Your supplied defenses stopped the practice attack. Towers need stone and walls need gaps so suppliers can keep reaching them.
+[lesson fortifications tower hint]
+Build a tower in the marked area; assign builders. Place it near the stone quarry and leave supplier access. No attack starts until the preparation goals are complete.
+[lesson fortifications tower title]
+Build a defense tower
+[lesson fortifications tower instruction]
+Build a tower in the marked area; assign builders.
+[lesson fortifications tower help]
+Place it near the stone quarry and leave supplier access. No attack starts until the preparation goals are complete.
+[lesson fortifications tower marker]
+Build a defense tower
+[lesson fortifications walls hint]
+Build at least 2 wall sections near the tower; keep its west access lane open. Walls use stone and each site requests workers. Do not seal the tower in: suppliers need a route. The marked west lane must remain clear.
+[lesson fortifications walls title]
+Protect the tower with walls
+[lesson fortifications walls instruction]
+Build at least 2 wall sections near the tower; keep its west access lane open.
+[lesson fortifications walls help]
+Walls use stone and each site requests workers. Do not seal the tower in: suppliers need a route. The marked west lane must remain clear.
+[lesson fortifications walls marker]
+Protect the tower with walls
+[lesson fortifications supply hint]
+Select the tower and request suppliers. Wait for at least 2 stone. A finished tower needs an operating worker target to bring ammunition. This is separate from its construction target.
+[lesson fortifications supply title]
+Supply ammunition
+[lesson fortifications supply instruction]
+Select the tower and request suppliers. Wait for at least 2 stone.
+[lesson fortifications supply help]
+A finished tower needs an operating worker target to bring ammunition. This is separate from its construction target.
+[lesson fortifications supply marker]
+Supply ammunition
+[lesson fortifications hold hint]
+A practice warrior is approaching. Keep the tower supplied and accessible. Hold until the attacker is defeated or driven back. A wall that blocks suppliers can starve the tower of ammunition. If the colony fails, restart or load an earlier save.
+[lesson fortifications hold title]
+Test the fortifications
+[lesson fortifications hold instruction]
+A practice warrior is approaching. Keep the tower supplied and accessible.
+[lesson fortifications hold help]
+Hold until the attacker is defeated or driven back. A wall that blocks suppliers can starve the tower of ammunition. If the colony fails, restart or load an earlier save.
+[lesson fortifications hold marker]
+Test the fortifications
+[lesson defensive-tactics title]
+Guard zones and flag tactics
+[lesson defensive-tactics briefing]
+Scout the practice enemy, prepare a guard zone, defend, then organize a counterattack.
+[lesson defensive-tactics complete]
+You scouted, defended a guard zone and directed a counterattack. Flag targets request units; radius controls where those units work.
+[lesson defensive-tactics scout hint]
+Place an Exploration Flag at the enemy base; assign 1 explorer. Flags request units autonomously. An explorer reveals current activity through fog of war; it may stop to eat.
+[lesson defensive-tactics scout title]
+Scout the enemy base
+[lesson defensive-tactics scout instruction]
+Place an Exploration Flag at the enemy base; assign 1 explorer.
+[lesson defensive-tactics scout help]
+Flags request units autonomously. An explorer reveals current activity through fog of war; it may stop to eat.
+[lesson defensive-tactics scout marker]
+Scout the enemy base
+[lesson defensive-tactics guard hint]
+Paint a guard zone in the marked area and let 2 warriors reach it. Open Flags, choose Guard and paint at least 4 tiles inside the area. Guard zones attract idle warriors. Forbidden zones block travel; clearing zones request resource removal.
+[lesson defensive-tactics guard title]
+Prepare a guard zone
+[lesson defensive-tactics guard instruction]
+Paint a guard zone in the marked area and let 2 warriors reach it.
+[lesson defensive-tactics guard help]
+Open Flags, choose Guard and paint at least 4 tiles inside the area. Guard zones attract idle warriors. Forbidden zones block travel; clearing zones request resource removal.
+[lesson defensive-tactics guard marker]
+Prepare a guard zone
+[lesson defensive-tactics repel hint]
+The enemy is attacking. Keep the guard zone covered and Inns supplied. The small attack starts after your preparations. Defeat or drive back both raiders; wounded enemies may retreat. Warriors may leave temporarily to eat. If the defense fails, use an earlier save or restart.
+[lesson defensive-tactics repel title]
+Repel the practice attack
+[lesson defensive-tactics repel instruction]
+The enemy is attacking. Keep the guard zone covered and Inns supplied.
+[lesson defensive-tactics repel help]
+The small attack starts after your preparations. Defeat or drive back both raiders; wounded enemies may retreat. Warriors may leave temporarily to eat. If the defense fails, use an earlier save or restart.
+[lesson defensive-tactics repel marker]
+Repel the practice attack
+[lesson defensive-tactics counterattack hint]
+Place a War Flag over the enemy Swarm; request 3 warriors and use radius 4 or smaller. Guard zones and War Flags compete for warriors. Remove guard tiles if they hold your army back. Keep food available while warriors travel and attack.
+[lesson defensive-tactics counterattack title]
+Direct a focused counterattack
+[lesson defensive-tactics counterattack instruction]
+Place a War Flag over the enemy Swarm; request 3 warriors and use radius 4 or smaller.
+[lesson defensive-tactics counterattack help]
+Guard zones and War Flags compete for warriors. Remove guard tiles if they hold your army back. Keep food available while warriors travel and attack.
+[lesson defensive-tactics counterattack marker]
+Direct a focused counterattack
+[lesson healing build compact]
+Build → Hospital. Leave access; assign builders.
+[lesson healing heal compact]
+Let the wounded worker heal at the Hospital.
+[lesson walking-training build compact]
+Build → Racetrack. Leave space around its edges.
+[lesson walking-training train compact]
+Let a worker finish Racetrack training.
+[lesson swimming build compact]
+Build → Swimming Pool, west of the pond.
+[lesson swimming train compact]
+Let a worker learn to swim.
+[lesson swimming water-job compact]
+Build → School. Assign builders for wood and algae.
+[lesson schools build compact]
+Build → School. Assign builders for wood and algae.
+[lesson schools learn compact]
+Let a worker finish School training.
+[lesson upgrades upgrade compact]
+Select Racetrack → Upgrade. Assign skilled builders.
+[lesson upgrades train compact]
+Let a worker train at the upgraded Racetrack.
+[lesson warrior-training produce compact]
+Swarm → warriors only. Supply wheat for 2 warriors.
+[lesson warrior-training build compact]
+Build → Training Camp. Leave space around its edges.
+[lesson warrior-training train compact]
+Let a warrior finish Training Camp practice.
+[lesson fortifications tower compact]
+Build → Tower. Place in the marked area.
+[lesson fortifications walls compact]
+Build 2 walls. Keep the tower’s west lane open.
+[lesson fortifications supply compact]
+Select tower → suppliers. Wait for 2 stone.
+[lesson fortifications hold compact]
+Keep the tower supplied against the attacker.
+[lesson defensive-tactics scout compact]
+Flags → Exploration. Place at the enemy; assign 1 explorer.
+[lesson defensive-tactics guard compact]
+Flags → Guard. Paint 4 tiles; let 2 warriors arrive.
+[lesson defensive-tactics repel compact]
+Hold the guard zone. Keep Inns supplied.
+[lesson defensive-tactics counterattack compact]
+War Flag → enemy Swarm. Request 3 warriors; radius ≤4.
+[intro attack destination]
+Attack here

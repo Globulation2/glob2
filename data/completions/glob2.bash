@@ -70,7 +70,7 @@ _glob2_complete() {
     'script') opts='check attach';;
     'play') opts='--fullscreen --no-fullscreen --resizable --no-resizable --custom-cursor --no-custom-cursor --mute --no-mute --renderer --graphics-detail --window-size --username --editor-script --record --videoshot --record-fps --record-encoder --record-crf --record-chapter-ticks --data-dir --generator-package --building-catalog --compute-threads --compute-telemetry --gpu --gradient-backend --gradient-algorithm --help ';;
     'replay') opts='--fullscreen --no-fullscreen --resizable --no-resizable --custom-cursor --no-custom-cursor --mute --no-mute --renderer --graphics-detail --window-size --username --editor-script --record --videoshot --record-fps --record-encoder --record-crf --record-chapter-ticks --data-dir --generator-package --building-catalog --compute-threads --compute-telemetry --gpu --gradient-backend --gradient-algorithm --help ';;
-    'map generate') opts='--seed --set --width --height --teams --workers --preview --preview-size --preview-scale --data-dir --generator-package --output --report-file --config --map-image --export-generator-package --help ';;
+    'map generate') opts='--seed --set --width --height --teams --workers --preview --preview-size --preview-scale --data-dir --generator-package --output --report-file --config --scenario --scenario-config --map-image --export-generator-package --help ';;
     'map study') opts='--output-dir --profile --building-catalog --data-dir --generator-package --seed --set --candidates --rotations --write-map --report --perturb --building-artwork --help ';;
     'map generators') opts='--format --data-dir --generator-package --help ';;
     'map preview') opts='--data-dir --generator-package --output --report-file --preview --preview-size --preview-scale --help ';;
@@ -160,6 +160,8 @@ _glob2_complete() {
     'map generate|--output') kind='file'; values='';;
     'map generate|--report-file') kind='file'; values='';;
     'map generate|--config') kind='file'; values='';;
+    'map generate|--scenario') kind='file'; values='';;
+    'map generate|--scenario-config') kind='file'; values='';;
     'map generate|--map-image') kind='file'; values='';;
     'map generate|--export-generator-package') kind='file'; values='';;
     'map study|--output-dir') kind='directory'; values='';;

@@ -1,0 +1,446 @@
+{
+  "schema": 1,
+  "id": "fortifications",
+  "version": 1,
+  "map": "campaigns/fortifications.map.gz",
+  "name": "Towers and protective walls",
+  "title": "[lesson fortifications title]",
+  "briefing": "[lesson fortifications briefing]",
+  "completionTitle": "[tutorial complete]",
+  "completionBody": "[lesson fortifications complete]",
+  "confirmTicks": 90,
+  "hintTicks": 1350,
+  "targets": {
+    "workers": {
+      "kind": "unit",
+      "team": 0,
+      "type": 0
+    },
+    "swarm": {
+      "kind": "building",
+      "team": 0,
+      "type": 0
+    },
+    "trainees": {
+      "kind": "unit",
+      "team": 0,
+      "type": 0,
+      "bind": "lesson"
+    },
+    "buildArea": {
+      "kind": "area",
+      "region": "home"
+    },
+    "enemyWarriors": {
+      "kind": "unit",
+      "team": 1,
+      "type": 2
+    },
+    "defense": {
+      "kind": "area",
+      "region": "defense"
+    },
+    "towerArea": {
+      "kind": "area",
+      "region": "towerSite"
+    },
+    "tower": {
+      "kind": "building",
+      "team": 0,
+      "type": 7,
+      "baseline": "lesson"
+    },
+    "towerReady": {
+      "kind": "building",
+      "from": "tower",
+      "filters": [
+        {
+          "field": "construction",
+          "op": "eq",
+          "value": 0
+        }
+      ],
+      "within": "defense"
+    },
+    "walls": {
+      "kind": "building",
+      "team": 0,
+      "type": 11,
+      "baseline": "lesson"
+    },
+    "wallsReady": {
+      "kind": "building",
+      "from": "walls",
+      "filters": [
+        {
+          "field": "construction",
+          "op": "eq",
+          "value": 0
+        }
+      ]
+    },
+    "wallsInDefense": {
+      "kind": "building",
+      "from": "wallsReady",
+      "within": "defense"
+    },
+    "accessLane": {
+      "kind": "area",
+      "region": "defense",
+      "offsetX": 2,
+      "width": 1
+    },
+    "blockedLane": {
+      "kind": "building",
+      "team": 0,
+      "type": 11,
+      "within": "accessLane"
+    },
+    "loadedTower": {
+      "kind": "building",
+      "from": "towerReady",
+      "filters": [
+        {
+          "field": "resources.3",
+          "op": "gte",
+          "value": 2
+        }
+      ]
+    },
+    "practiceFlag": {
+      "kind": "building",
+      "team": 1,
+      "type": 9,
+      "bind": "lesson"
+    },
+    "healthyRaiders": {
+      "kind": "unit",
+      "from": "enemyWarriors",
+      "filters": [
+        {
+          "field": "hp",
+          "op": "gte",
+          "value": {
+            "field": "maxHp",
+            "scale": 0.95
+          }
+        }
+      ]
+    },
+    "raidersAtDefense": {
+      "kind": "unit",
+      "from": "enemyWarriors",
+      "within": "defense"
+    }
+  },
+  "steps": [
+    {
+      "id": "tower",
+      "title": "[lesson fortifications tower title]",
+      "instruction": "[lesson fortifications tower instruction]",
+      "touchInstruction": "[lesson fortifications tower compact]",
+      "help": "[lesson fortifications tower help]",
+      "touchHelp": "[lesson fortifications tower help]",
+      "complete": {
+        "type": "exists",
+        "target": "towerReady"
+      },
+      "activeOnly": true,
+      "highlights": [
+        "palette",
+        "build:defencetower"
+      ],
+      "hint": 0,
+      "milestones": [
+        {
+          "condition": {
+            "type": "exists",
+            "target": "towerReady"
+          }
+        }
+      ],
+      "destination": {
+        "target": "towerArea",
+        "label": "[lesson fortifications tower marker]"
+      }
+    },
+    {
+      "id": "walls",
+      "title": "[lesson fortifications walls title]",
+      "instruction": "[lesson fortifications walls instruction]",
+      "touchInstruction": "[lesson fortifications walls compact]",
+      "help": "[lesson fortifications walls help]",
+      "touchHelp": "[lesson fortifications walls help]",
+      "complete": {
+        "type": "all",
+        "conditions": [
+          {
+            "type": "count",
+            "target": "wallsInDefense",
+            "minimum": 2
+          },
+          {
+            "type": "none",
+            "target": "blockedLane"
+          }
+        ]
+      },
+      "activeOnly": true,
+      "highlights": [
+        "build:stonewall"
+      ],
+      "hint": 1,
+      "milestones": [
+        {
+          "condition": {
+            "type": "all",
+            "conditions": [
+              {
+                "type": "count",
+                "target": "wallsInDefense",
+                "minimum": 2
+              },
+              {
+                "type": "none",
+                "target": "blockedLane"
+              }
+            ]
+          }
+        }
+      ],
+      "destination": {
+        "target": "accessLane",
+        "label": "[lesson fortifications walls marker]"
+      }
+    },
+    {
+      "id": "supply",
+      "title": "[lesson fortifications supply title]",
+      "instruction": "[lesson fortifications supply instruction]",
+      "touchInstruction": "[lesson fortifications supply compact]",
+      "help": "[lesson fortifications supply help]",
+      "touchHelp": "[lesson fortifications supply help]",
+      "complete": {
+        "type": "exists",
+        "target": "loadedTower"
+      },
+      "activeOnly": true,
+      "highlights": [
+        "workers"
+      ],
+      "hint": 2,
+      "milestones": [
+        {
+          "condition": {
+            "type": "exists",
+            "target": "loadedTower"
+          }
+        }
+      ],
+      "destination": {
+        "target": "towerReady",
+        "label": "[lesson fortifications supply marker]"
+      }
+    },
+    {
+      "id": "hold",
+      "title": "[lesson fortifications hold title]",
+      "instruction": "[lesson fortifications hold instruction]",
+      "touchInstruction": "[lesson fortifications hold compact]",
+      "help": "[lesson fortifications hold help]",
+      "touchHelp": "[lesson fortifications hold help]",
+      "complete": {
+        "type": "all",
+        "conditions": [
+          {
+            "type": "none",
+            "target": "healthyRaiders",
+            "latch": true
+          },
+          {
+            "type": "none",
+            "target": "raidersAtDefense"
+          }
+        ]
+      },
+      "activeOnly": true,
+      "highlights": [
+        "workers"
+      ],
+      "hint": 3,
+      "milestones": [
+        {
+          "condition": {
+            "type": "all",
+            "conditions": [
+              {
+                "type": "none",
+                "target": "healthyRaiders",
+                "latch": true
+              },
+              {
+                "type": "none",
+                "target": "raidersAtDefense"
+              }
+            ]
+          }
+        }
+      ],
+      "destination": {
+        "target": "defense",
+        "label": "[lesson fortifications hold marker]"
+      },
+      "onEnter": [
+        {
+          "type": "scenarioOrder",
+          "team": 0,
+          "order": {
+            "type": "alliance",
+            "allies": [
+              0
+            ],
+            "enemies": [
+              1
+            ]
+          }
+        },
+        {
+          "type": "scenarioOrder",
+          "team": 1,
+          "order": {
+            "type": "alliance",
+            "allies": [
+              1
+            ],
+            "enemies": [
+              0
+            ]
+          }
+        },
+        {
+          "type": "scenarioOrder",
+          "team": 1,
+          "order": {
+            "type": "moveFlag",
+            "buildingTarget": "practiceFlag",
+            "destination": "defense"
+          }
+        }
+      ]
+    }
+  ],
+  "hints": [
+    "[lesson fortifications tower hint]",
+    "[lesson fortifications walls hint]",
+    "[lesson fortifications supply hint]",
+    "[lesson fortifications hold hint]",
+    "[intro hint retry]"
+  ],
+  "onStart": [
+    {
+      "type": "scenarioOrder",
+      "team": 0,
+      "order": {
+        "type": "alliance",
+        "allies": [
+          0
+        ],
+        "enemies": []
+      }
+    },
+    {
+      "type": "scenarioOrder",
+      "team": 1,
+      "order": {
+        "type": "alliance",
+        "allies": [
+          1
+        ],
+        "enemies": []
+      }
+    },
+    {
+      "type": "buildingChoice",
+      "name": "swarm",
+      "enabled": false
+    },
+    {
+      "type": "buildingChoice",
+      "name": "inn",
+      "enabled": true
+    },
+    {
+      "type": "buildingChoice",
+      "name": "hospital",
+      "enabled": false
+    },
+    {
+      "type": "buildingChoice",
+      "name": "racetrack",
+      "enabled": false
+    },
+    {
+      "type": "buildingChoice",
+      "name": "swimmingpool",
+      "enabled": false
+    },
+    {
+      "type": "buildingChoice",
+      "name": "barracks",
+      "enabled": false
+    },
+    {
+      "type": "buildingChoice",
+      "name": "school",
+      "enabled": false
+    },
+    {
+      "type": "buildingChoice",
+      "name": "defencetower",
+      "enabled": true
+    },
+    {
+      "type": "buildingChoice",
+      "name": "stonewall",
+      "enabled": true
+    },
+    {
+      "type": "buildingChoice",
+      "name": "market",
+      "enabled": false
+    },
+    {
+      "type": "flagChoice",
+      "name": "explorationflag",
+      "enabled": false
+    },
+    {
+      "type": "flagChoice",
+      "name": "warflag",
+      "enabled": false
+    },
+    {
+      "type": "flagChoice",
+      "name": "clearingflag",
+      "enabled": false
+    }
+  ],
+  "recovery": [
+    {
+      "hint": 4,
+      "when": {
+        "type": "any",
+        "conditions": [
+          {
+            "type": "none",
+            "target": "swarm"
+          },
+          {
+            "type": "none",
+            "target": "workers"
+          }
+        ]
+      }
+    }
+  ]
+}

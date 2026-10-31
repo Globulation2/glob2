@@ -1,3 +1,4 @@
+#include "tutorial/TutorialGuidance.h"
 #include <ui/TextLayout.h>
 #include "hive/HiveClient.h"
 #include "hive/HiveDialog.h"
@@ -99,6 +100,9 @@ std::array<Sint32, NB_UNIT_TYPE> GameGUI::displayedRatio(const Building& b) cons
 void GameGUI::init()
 {
     pendingSettings = false;
+    tutorialGuidance.reset();
+    tutorialHighlights.clear();
+    tutorialDestination=0;
 	torusView.reset();
 	torusPointerDown = false;
 	camera=MapCamera();zoomControlPushed=false;

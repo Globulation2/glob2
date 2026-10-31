@@ -395,6 +395,8 @@ Platform: all.
 | `--output` | file | Playable gzip map output; .gz is appended. |
 | `--report-file` | file | Detailed map JSON report. |
 | `--config` | file | KEY=VALUE configuration; CLI settings override it. |
+| `--scenario` | file | JavaScript scenario source to embed. |
+| `--scenario-config` | file | Scenario name, briefing, objectives and hints JSON. |
 | `--map-image` | file | Export categorical terrain PNG. |
 | `--export-generator-package` | file | Export selected custom generator package. |
 | `--help` | flag; default false | Show this command's help (also -h). |

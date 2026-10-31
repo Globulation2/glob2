@@ -3,6 +3,7 @@
 #include "ToolkitRecords.h"
 #include "GenerationWork.h"
 #include "EngineFixtures.h"
+#include "Unit.h"
 #include <nlohmann/json.hpp>
 
 namespace JSGen = MapGeneration::JavaScript;
@@ -248,4 +249,32 @@ TEST_CASE("All named stream consumers share creation limits and accounting" *
 	for (int i = 0; i < 257; ++i)
 		native.stream(std::string(129, 'x') + std::to_string(i));
 	CHECK(native.namedStreams().size() == 257);
+}
+
+TEST_CASE("Scenario creation validates options and cannot run in validators" * doctest::test_suite("ScriptGenerator"))
+{
+    glob2test::HeadlessGlobals globals;
+    glob2test::HeadlessGame world({.wDec=6,.hDec=6,.teams=2,.loadDefaultRace=true,.header=true});
+    GenerationRequest request; request.wDec=6;request.hDec=6;request.nbTeams=2;
+    GenerationContext context(request);
+    auto valid=package("c.defineArea('home',4,5,8,9);c.discover(0,4,5,8,9);c.placeBuilding(0,'swarm',0,10,10,{workers:0,production0:0});c.placeUnit(0,0,0,20,20,{healthPercent:1,walk:1,swim:1});");
+    CHECK(JSGen::invoke(*valid,"generate",request,&world.game,&context).empty());
+    REQUIRE(world.game.teams[0]->liveUnits.size()==1);
+    const auto *unit=*world.game.teams[0]->liveUnits.entries().begin();
+    CHECK(unit->hp>=1);CHECK(unit->level[WALK]==1);CHECK(unit->level[SWIM]==1);
+    CHECK(unit->speed==unit->performance[WALK]);
+    CHECK(world.game.map.getAreaName(0)=="home");CHECK(world.game.map.isPointSet(0,4,5));
+    for(const auto &body:{
+        "c.defineArea('huge',1,1,2147483647,1);", "c.discover(0,1,1,1,2147483647);",
+        "c.placeBuilding(0,'inn',0,30,30,{typo:1});", "c.placeUnit(0,0,0,30,30,{walk:99});",
+        "c.placeUnit(0,0,0,30,30,{healthPercent:0});", "c.defineArea('home',30,30,2,2);"}) {
+        const auto before=world.game.checkSum();
+        CHECK_THROWS(JSGen::invoke(*package(body),"generate",request,&world.game,&context));
+        CHECK(world.game.checkSum()==before);
+    }
+    for(const auto &body:{"c.placeUnit(0,0,0,30,30);","c.placeBuilding(0,'inn',0,30,30);","c.discover(0,1,1,2,2);","c.defineArea('other',1,1,2,2);"}) {
+        const auto before=world.game.checkSum();
+        CHECK_THROWS(JSGen::invoke(*package(body),"generate",request,&world.game,&context,true));
+        CHECK(world.game.checkSum()==before);
+    }
 }

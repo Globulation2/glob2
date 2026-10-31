@@ -89,7 +89,8 @@ Element MainMenuScreen::build(const Presentation &p)
 		case LOAD_GAME:
 			options.icon = uiIcon(UIIcon::LoadGame);
 			break;
-		case TUTORIAL:
+		case INTRODUCTION:
+        case TUTORIAL:
 			options.icon = uiIcon(UIIcon::Tutorial);
 			break;
 		case PLAY_ONLINE:
@@ -157,6 +158,7 @@ Element MainMenuScreen::build(const Presentation &p)
 				content.push_back(wrap(
 					{action("[campaign]", CAMPAIGN, small), action("[load game]", LOAD_GAME, small),
 					 action("[tutorial]", TUTORIAL, small),
+                     action("[intro menu]", INTRODUCTION, small),
 					 button(
 						 "menu/more", tr("[More]"), [this] { showMore(true); }, moreStyle)},
 					grid));
@@ -167,6 +169,7 @@ Element MainMenuScreen::build(const Presentation &p)
 				content.push_back(action("[campaign]", CAMPAIGN, rowStyle));
 				content.push_back(action("[load game]", LOAD_GAME, rowStyle));
 				content.push_back(action("[tutorial]", TUTORIAL, rowStyle));
+                content.push_back(action("[intro menu]", INTRODUCTION, rowStyle));
 				content.push_back(spacer(p.pt(4)));
 				content.push_back(
 					button("menu/more", tr("[More]"), [this] { showMore(true); }, moreStyle));
@@ -235,6 +238,7 @@ Element MainMenuScreen::build(const Presentation &p)
 	content.push_back(action("[campaign]", CAMPAIGN, launch));
 	content.push_back(action("[load game]", LOAD_GAME, launch));
 	content.push_back(action("[tutorial]", TUTORIAL, launch));
+    content.push_back(action("[intro menu]", INTRODUCTION, launch));
 	content.push_back(spacer(p.pt(compact ? 6 : 12)));
 #ifndef __EMSCRIPTEN__
 	content.push_back(action("[lan]", MULTIPLAYERS_LAN, utility));

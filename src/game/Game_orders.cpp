@@ -46,7 +46,7 @@ Building* Game::lookupBuilding(Uint16 gid) const
 	return teams[team]->myBuildings[id];
 }
 
-bool Game::executeOrder(std::shared_ptr<Order> order, int localPlayer)
+bool Game::executeOrder(std::shared_ptr<Order> order, int localPlayer, bool recordInput)
 {
 	const auto finish = [&](bool accepted) {
         if (accepted && order && order->getOrderType()!=ORDER_NULL
@@ -58,7 +58,7 @@ bool Game::executeOrder(std::shared_ptr<Order> order, int localPlayer)
 	if (!order || order->sender < 0 || order->sender >= gameHeader.getNumberOfPlayers() ||
 		!players[order->sender] || !players[order->sender]->team) return finish(false);
 
-	if (globalContainer->replayWriter && globalContainer->replayWriter->isValid())
+	if (recordInput && globalContainer->replayWriter && globalContainer->replayWriter->isValid())
 	{
 		globalContainer->replayWriter->pushOrder(order);
 	}
@@ -66,7 +66,7 @@ bool Game::executeOrder(std::shared_ptr<Order> order, int localPlayer)
 	// Mirror the order into the AI-trainer dataset if requested via
 	// GLOB2_DATASET_PATH. One record per executed order, tagged with
 	// the current order boundary, before its live simulation advancement.
-	if (globalContainer->datasetWriter && globalContainer->datasetWriter->isValid())
+	if (recordInput && globalContainer->datasetWriter && globalContainer->datasetWriter->isValid())
 	{
 		globalContainer->datasetWriter->writeRecord((Uint32)stepCounter, *order, *this);
 	}

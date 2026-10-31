@@ -1,0 +1,364 @@
+{
+  "schema": 1,
+  "id": "food-supply",
+  "version": 1,
+  "map": "campaigns/food-supply.map.gz",
+  "title": "[tutorial food title]",
+  "briefing": "[tutorial food briefing]",
+  "completionTitle": "[tutorial complete]",
+  "completionBody": "[tutorial food complete]",
+  "confirmTicks": 90,
+  "hintTicks": 1350,
+  "targets": {
+    "landmark": {
+      "kind": "area",
+      "region": "landmark"
+    },
+    "enemyBase": {
+      "kind": "area",
+      "region": "enemyOutpost"
+    },
+    "attackRoute": {
+      "kind": "area",
+      "region": "enemyApproach"
+    },
+    "workers": {
+      "kind": "unit",
+      "team": 0,
+      "type": 0
+    },
+    "swarm": {
+      "kind": "building",
+      "team": 0,
+      "type": 0,
+      "filters": [
+        {
+          "field": "construction",
+          "op": "eq",
+          "value": 0
+        }
+      ]
+    },
+    "productiveSwarm": {
+      "kind": "building",
+      "from": "swarm",
+      "filters": [
+        {
+          "field": "workers",
+          "op": "gte",
+          "value": 2
+        },
+        {
+          "field": "production.0",
+          "op": "gte",
+          "value": 1
+        },
+        {
+          "field": "production.1",
+          "op": "eq",
+          "value": 0
+        },
+        {
+          "field": "production.2",
+          "op": "eq",
+          "value": 0
+        }
+      ]
+    },
+    "newWorkers": {
+      "kind": "unit",
+      "from": "workers",
+      "baseline": "step"
+    },
+    "newInns": {
+      "kind": "building",
+      "team": 0,
+      "type": 1,
+      "baseline": "lesson"
+    },
+    "finishedInns": {
+      "kind": "building",
+      "from": "newInns",
+      "filters": [
+        {
+          "field": "construction",
+          "op": "eq",
+          "value": 0
+        }
+      ]
+    },
+    "suppliedInns": {
+      "kind": "building",
+      "from": "finishedInns",
+      "filters": [
+        {
+          "field": "resources.1",
+          "op": "gte",
+          "value": 1
+        }
+      ]
+    },
+    "staffedInns": {
+      "kind": "building",
+      "from": "newInns",
+      "filters": [
+        {
+          "field": "workers",
+          "op": "gte",
+          "value": 1
+        }
+      ]
+    },
+    "scoutFlags": {
+      "kind": "building",
+      "team": 0,
+      "type": 8,
+      "filters": [
+        {
+          "field": "workers",
+          "op": "gte",
+          "value": 1
+        }
+      ]
+    },
+    "scoutsAtLandmark": {
+      "kind": "unit",
+      "team": 0,
+      "type": 1,
+      "within": "landmark",
+      "assignedTo": "scoutFlags"
+    },
+    "warFlags": {
+      "kind": "building",
+      "team": 0,
+      "type": 9,
+      "within": "enemyBase",
+      "filters": [
+        {
+          "field": "workers",
+          "op": "gte",
+          "value": 1
+        }
+      ]
+    },
+    "directedWarriors": {
+      "kind": "unit",
+      "team": 0,
+      "type": 2,
+      "within": "attackRoute",
+      "assignedTo": "warFlags"
+    },
+    "enemySwarm": {
+      "kind": "building",
+      "team": 1,
+      "type": 0
+    }
+  },
+  "steps": [
+    {
+      "id": "build",
+      "title": "[intro goal build]",
+      "instruction": "[intro instruction build]",
+      "touchInstruction": "[intro compact build]",
+      "help": "[intro help build]",
+      "touchHelp": "[intro help touch build]",
+      "complete": {
+        "type": "exists",
+        "target": "finishedInns",
+        "latch": true
+      },
+      "activeOnly": false,
+      "highlights": [
+        "palette",
+        "build:inn"
+      ],
+      "hint": 1,
+      "milestones": [
+        {
+          "target": "newInns"
+        },
+        {
+          "target": "finishedInns"
+        }
+      ],
+      "recovery": [
+        {
+          "hint": 6,
+          "when": {
+            "type": "all",
+            "conditions": [
+              {
+                "type": "exists",
+                "target": "newInns"
+              },
+              {
+                "type": "none",
+                "target": "staffedInns"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "supply",
+      "title": "[intro goal supply]",
+      "instruction": "[intro instruction supply]",
+      "touchInstruction": "[intro compact supply]",
+      "help": "[intro help supply]",
+      "touchHelp": "[intro help touch supply]",
+      "complete": {
+        "type": "exists",
+        "target": "suppliedInns",
+        "latch": true
+      },
+      "activeOnly": false,
+      "highlights": [
+        "workers"
+      ],
+      "hint": 2,
+      "milestones": [
+        {
+          "target": "staffedInns"
+        },
+        {
+          "target": "suppliedInns"
+        }
+      ],
+      "recovery": [
+        {
+          "hint": 1,
+          "when": {
+            "type": "none",
+            "target": "finishedInns"
+          }
+        },
+        {
+          "hint": 6,
+          "when": {
+            "type": "all",
+            "conditions": [
+              {
+                "type": "exists",
+                "target": "newInns"
+              },
+              {
+                "type": "none",
+                "target": "staffedInns"
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ],
+  "hints": [
+    "[intro hint scout]",
+    "[intro hint build]",
+    "[intro hint supply]",
+    "[intro hint grow]",
+    "[intro hint attack]",
+    "[intro hint no scout flag]",
+    "[intro hint no suppliers]",
+    "[intro hint no war flag]",
+    "[intro hint retry]"
+  ],
+  "recovery": [
+    {
+      "hint": 8,
+      "when": {
+        "type": "any",
+        "conditions": [
+          {
+            "type": "none",
+            "target": "swarm"
+          },
+          {
+            "type": "none",
+            "target": "workers"
+          }
+        ]
+      }
+    }
+  ],
+  "onStart": [
+    {
+      "type": "scenarioOrder",
+      "team": 0,
+      "order": {
+        "type": "alliance",
+        "allies": [
+          0
+        ],
+        "enemies": []
+      }
+    },
+    {
+      "type": "scenarioOrder",
+      "team": 1,
+      "order": {
+        "type": "alliance",
+        "allies": [
+          1
+        ],
+        "enemies": []
+      }
+    },
+    {
+      "type": "buildingChoice",
+      "name": "swarm",
+      "enabled": false
+    },
+    {
+      "type": "buildingChoice",
+      "name": "hospital",
+      "enabled": false
+    },
+    {
+      "type": "buildingChoice",
+      "name": "racetrack",
+      "enabled": false
+    },
+    {
+      "type": "buildingChoice",
+      "name": "swimmingpool",
+      "enabled": false
+    },
+    {
+      "type": "buildingChoice",
+      "name": "barracks",
+      "enabled": false
+    },
+    {
+      "type": "buildingChoice",
+      "name": "school",
+      "enabled": false
+    },
+    {
+      "type": "buildingChoice",
+      "name": "defencetower",
+      "enabled": false
+    },
+    {
+      "type": "buildingChoice",
+      "name": "stonewall",
+      "enabled": false
+    },
+    {
+      "type": "buildingChoice",
+      "name": "market",
+      "enabled": false
+    },
+    {
+      "type": "flagChoice",
+      "name": "warflag",
+      "enabled": false
+    },
+    {
+      "type": "flagChoice",
+      "name": "clearingflag",
+      "enabled": false
+    }
+  ],
+  "name": "Food supply practice"
+}

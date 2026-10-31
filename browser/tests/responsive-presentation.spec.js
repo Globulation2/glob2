@@ -1,8 +1,9 @@
+const {waitForMainMenu}=require('./main-menu');
 const {test,expect}=require('@playwright/test');
 const {gameURL,clickMainMenu,clickCustomGameStart,clickSettingsDone,readBrowserFile,tapControl,clickControl,control}=require('./main-menu');
 const {clickCreateMap}=require('./editor-controls');
 const snapshot=page=>page.evaluate(()=>glob2Diagnostics.snapshot());
-const screen=(page,name)=>expect.poll(async()=>(await snapshot(page)).screen).toContain(name);
+const screen=(page,name)=>name==='MainMenuScreen' ? waitForMainMenu(page) : expect.poll(async()=>(await snapshot(page)).screen).toContain(name);
 async function matchFrame(page) {
   const frames=(await snapshot(page)).frames;
   await expect.poll(async()=>(await snapshot(page)).frames).toBeGreaterThan(frames+2);

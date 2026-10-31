@@ -1,5 +1,10 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "PowerOfTwo.h"
+#include "Unit.h"
+#include "UnitTiming.h"
+#include "Building.h"
+#include "BuildingType.h"
+#include "Race.h"
 #include "ToolkitRecords.h"
 #include "Grid.h"
 #include "GenerationWork.h"
@@ -571,6 +576,114 @@ void Binding::installContextDesign(JSValueConst result)
 }
 void Binding::installContextWorld(JSValueConst result)
 {
+	// Creation-only authoring calls. Validators and package inspection cannot mutate.
+	auto writable = [this]() {
+		if (!game || readonly || inspecting) throw TypeMismatch("Scenario authoring requires generation");
+	};
+	auto location = [this](int team, int x, int y) {
+		if (team < 0 || team >= game->teamsCount() || x < 0 || y < 0 ||
+			x >= game->map.getW() || y >= game->map.getH()) throw TypeMismatch("Invalid colony or position");
+	};
+    auto initialOptions = [this](JSValueConst value) {
+        if(!JS_IsObject(value) || JS_IsArray(value)) throw TypeMismatch("Initial options must be an object");
+        Script::JSEnumerationOwner properties(ctx);
+        if(JS_GetOwnPropertyNames(ctx,&properties.keys,&properties.count,value,JS_GPN_STRING_MASK|JS_GPN_ENUM_ONLY)<0) fail();
+        if(properties.count>16) throw TypeMismatch("Too many initial options");
+        std::map<std::string,int> options;
+        for(unsigned i=0;i<properties.count;++i) {
+            Script::JSValueOwner key(ctx,JS_AtomToString(ctx,properties.keys[i].atom));check(key.get());
+            Script::JSValueOwner property(ctx,JS_GetProperty(ctx,value,properties.keys[i].atom));check(property.get());
+            options.emplace(read<std::string>(key.get()),read<int>(property.get()));
+        }
+        return options;
+    };
+
+	add(result, "placeBuilding", [this,writable,location,initialOptions](JSValueConst,int n,JSValueConst *a) {
+		writable();
+		if (n < 5 || n > 6) throw TypeMismatch("placeBuilding(team, name, level, x, y, options?)");
+		const int team=read<int>(a[0]),level=read<int>(a[2]),x=read<int>(a[3]),y=read<int>(a[4]);
+		location(team,x,y);
+		const auto name=read<std::string>(a[1]);
+		const auto options=n==6 ? initialOptions(a[5]) : std::map<std::string,int>{};
+		const int type=game->buildingsTypes.getTypeNum(name,level,false);
+		if (level<0 || level>3 || type<0) throw TypeMismatch("Unknown building variant");
+		const auto *bt=game->buildingsTypes.get(type);
+		for (const auto &[key,v]:options) {
+			const int maximum=key=="workers" ? bt->semantics.assignmentLimit : key=="stocked" ? 1 : key=="range" ? 255 :
+				(key=="production0" || key=="production1" || key=="production2") ? 100 : -1;
+			if(v<0 || v>maximum) throw TypeMismatch("Invalid initial building option: "+key);
+		}
+		if(!game->checkRoomForBuilding(x,y,bt,team,false)) throw TypeMismatch("Initial building has no room");
+		const int workers=options.count("workers") ? options.at("workers") : 0;
+		auto *b=game->addBuilding(x,y,type,team,workers,workers);
+		if(!b) throw TypeMismatch("Cannot place initial building");
+		if(options.count("stocked") && options.at("stocked"))
+			for(unsigned i=0;i<MaterialCount;++i) b->setMaterial(i,bt->maxMaterial[i]);
+		for(int i=0;i<3;++i) { const auto key="production"+std::to_string(i); if(options.count(key)) b->setProductionRatio(i,options.at(key)); }
+		if(options.count("range")) b->unitStayRange=options.at("range");
+		game->teams[team]->addToStaticAbilitiesLists(b); b->updateCallLists();
+		if(type==game->buildingsTypes.getStartingBuildingTypeNum()) {game->teams[team]->startPosX=x;game->teams[team]->startPosY=y;}
+		return write(int(b->gid));
+	});
+	add(result, "placeUnit", [this,writable,location,initialOptions](JSValueConst,int n,JSValueConst *a) {
+		writable();
+		if(n<5 || n>6) throw TypeMismatch("placeUnit(team, type, level, x, y, options?)");
+		const int team=read<int>(a[0]),type=read<int>(a[1]),level=read<int>(a[2]),x=read<int>(a[3]),y=read<int>(a[4]);
+		location(team,x,y);
+		if(!game->isUnitTypeAvailable(type) || level<0 || level>=NB_UNIT_LEVELS) throw TypeMismatch("Unknown unit variant");
+		const auto options=n==6 ? initialOptions(a[5]) : std::map<std::string,int>{};
+		const std::map<std::string,int> abilities={{"walk",WALK},{"swim",SWIM},{"build",BUILD},{"harvest",HARVEST},{"attackSpeed",ATTACK_SPEED},{"attackStrength",ATTACK_STRENGTH}};
+		for(const auto &[key,v]:options)
+			if(key=="healthPercent" ? v<1 || v>100 : !abilities.count(key) || v<0 || v>=NB_UNIT_LEVELS)
+				throw TypeMismatch("Invalid initial unit option: "+key);
+		auto *u=game->addUnit(x,y,team,type,level,0,0,0);
+		if(!u) throw TypeMismatch("Cannot place initial unit");
+		for(const auto &[key,v]:options) if(abilities.count(key)) {
+			const auto ability=abilities.at(key); u->level[ability]=v;
+			u->setPerformance(ability,u->race->getUnitType(type,v)->performance[ability]);
+			if(ability==BUILD) u->constructionLevel=v;
+		}
+		u->rebindDefinitionForSetup();
+        const auto &terrain=game->map.terrainPropertiesAt(x,y);
+        u->speed=unitTerrainMovementSpeed(u->speed,u->performance[FLY] ? terrain.airSpeedQ8 : terrain.groundSpeedQ8);
+		u->hp=std::max(1,int(Sint64(u->performance[HP])*(options.count("healthPercent") ? options.at("healthPercent") : 100)/100));
+		u->hungry=u->configuredFoodCapacity;
+		return write(int(u->gid));
+	});
+	add(result, "defineArea", [this,writable](JSValueConst,int n,JSValueConst *a) {
+		writable();
+		if(n!=5) throw TypeMismatch("defineArea(name, x, y, width, height)");
+		const auto name=read<std::string>(a[0]);
+		const int x=read<int>(a[1]),y=read<int>(a[2]),w=read<int>(a[3]),h=read<int>(a[4]);
+		if(name.empty() || name.size()>80 || x<0 || y<0 || w<1 || h<1 || x>=game->map.getW() || y>=game->map.getH() || w>game->map.getW()-x || h>game->map.getH()-y)
+			throw TypeMismatch("Invalid named area");
+		int slot=-1;
+		for(unsigned i=0;i<game->map.areaNames.size();++i) {
+			if(game->map.getAreaName(i)==name) throw TypeMismatch("Duplicate area name");
+			if(game->map.getAreaName(i).empty() && slot<0) slot=i;
+		}
+		if(slot<0) throw TypeMismatch("No saved script area slots remain");
+		game->map.setAreaName(slot,name);
+		for(int yy=y;yy<y+h;++yy) for(int xx=x;xx<x+w;++xx) {charge();game->map.setPoint(slot,xx,yy);}
+		return write(slot);
+	});
+	add(result,"discover",[this,writable,location,initialOptions](JSValueConst,int n,JSValueConst *a) {
+		writable();if(n!=5) throw TypeMismatch("discover(team, x, y, width, height)");
+		int team=read<int>(a[0]),x=read<int>(a[1]),y=read<int>(a[2]),w=read<int>(a[3]),h=read<int>(a[4]);
+		location(team,x,y);
+		if(w<1 || h<1 || x>=game->map.getW() || y>=game->map.getH() || w>game->map.getW()-x || h>game->map.getH()-y) throw TypeMismatch("Invalid discovery rectangle");
+		chargeNative(uint64_t(w)*h);game->map.setMapDiscovered(x,y,w,h,game->teams[team]->me);return JS_UNDEFINED;
+	});
+
+    add(result,"canPlaceBuilding",[this](JSValueConst,int n,JSValueConst *a) {
+        if(!game || inspecting || n!=5) throw TypeMismatch("canPlaceBuilding(team, name, level, x, y) requires a world");
+        const int team=read<int>(a[0]),level=read<int>(a[2]),x=read<int>(a[3]),y=read<int>(a[4]);
+        if(team<0 || team>=game->teamsCount() || level<0 || level>3 || x<0 || y<0 || x>=game->map.getW() || y>=game->map.getH()) throw TypeMismatch("Invalid building placement query");
+        const int type=game->buildingsTypes.getTypeNum(read<std::string>(a[1]),level,false);
+        if(type<0) throw TypeMismatch("Unknown building variant");
+        return write(game->checkRoomForBuilding(x,y,game->buildingsTypes.get(type),team,false));
+    });
+
 	add(result, "buildingType",
 		[this](JSValueConst, int n, JSValueConst *a)
 		{

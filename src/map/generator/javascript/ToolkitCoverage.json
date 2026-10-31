@@ -2011,6 +2011,18 @@
   },
   {
     "header": "Grid",
+    "symbol": "MapGeneration::Torus::remainderX",
+    "signature": "auto (T) const -> decltype(v % this->w)",
+    "equivalent": "unmapped template parameter T"
+  },
+  {
+    "header": "Grid",
+    "symbol": "MapGeneration::Torus::remainderY",
+    "signature": "auto (T) const -> decltype(v % this->h)",
+    "equivalent": "unmapped template parameter T"
+  },
+  {
+    "header": "Grid",
     "symbol": "MapGeneration::axesFor",
     "signature": "Axes (int, int)",
     "binding": "axesFor"

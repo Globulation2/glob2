@@ -385,6 +385,8 @@ const std::vector<Command> &commands()
 		append(gen, {value("--output", "file", "Playable gzip map output; .gz is appended"),
 					 value("--report-file", "file", "Detailed map JSON report"),
 					 value("--config", "file", "KEY=VALUE configuration; CLI settings override it"),
+                     value("--scenario", "file", "JavaScript scenario source to embed"),
+                     value("--scenario-config", "file", "Scenario name, briefing, objectives and hints JSON"),
 					 value("--map-image", "file", "Export categorical terrain PNG"),
 					 value("--export-generator-package", "file",
 						   "Export selected custom generator package")});

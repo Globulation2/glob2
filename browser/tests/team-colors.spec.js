@@ -1,3 +1,4 @@
+const {waitForMainMenu}=require('./main-menu');
 const {test, expect} = require('@playwright/test');
 const {clickMainMenu,clickControl,clickListRow}=require('./main-menu');
 
@@ -26,7 +27,7 @@ async function workerColors(page, width) {
 for (const renderer of ['software','webgl2']) {
   test(`${renderer} preserves the red tutorial team before and after resize`, async ({page}, info) => {
     if (renderer === 'webgl2') test.setTimeout(120000);
-    const screen = name => expect.poll(() => page.evaluate(() => glob2Diagnostics.snapshot().screen),
+    const screen = name => name==='MainMenuScreen' ? waitForMainMenu(page) : expect.poll(() => page.evaluate(() => glob2Diagnostics.snapshot().screen),
       {timeout: renderer === 'webgl2' ? 60000 : 30000}).toContain(name);
     const entry = new URL(process.env.GLOB2_TEST_ENTRY_PATH || '/', 'http://localhost');
     entry.searchParams.set('renderer',renderer);
