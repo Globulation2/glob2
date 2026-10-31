@@ -393,6 +393,7 @@ void GlobalContainer::requestGameGraphics()
         Toolkit::requestSprite(std::string("data/gfx/") + name, std::string(name) == "ressource");
 	for (const auto &material : TerrainVisual::loadCatalog().materials)
 	{
+		if (material.variantBlocks > 1) Sprite::deferHighResolution(material.sprite);
 		Toolkit::requestSprite(material.sprite);
 		if (!material.decor.sprite.empty())
 			Toolkit::requestSprite(material.decor.sprite);

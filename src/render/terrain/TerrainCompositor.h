@@ -39,6 +39,11 @@ class Compositor
 	bool contextualBorders() const { return hasContextualProfiles; }
 	std::pair<GAGCore::Sprite *, unsigned> editorIcon(TerrainType type) const;
 	void prepare(bool hd, int time);
+    // Retain only requested variants; immutable CPU snapshots remain usable.
+    void prepareForRecipes(bool hd, int time, std::span<const Recipe> recipes);
+    // Inclusive world-cell bounds, wrapped to the map. HD streams asynchronously
+    // with native sources as fallback until each requested frame is available.
+    void prepareVisible(bool hd, int time, const SceneMap &, int left, int top, int right, int bottom);
 	Recipe describe(const SceneMap &, int x, int y) const;
 	// Coverage of one mixed cell at one sampling scale. It depends on the cell's
 	// geometry, never on the animation phase, so a page can keep it and re-blend
@@ -119,6 +124,8 @@ class Compositor
     };
     std::shared_ptr<const CpuMaterials> cpuMaterials(std::span<const MaterialId> needed = {});
     std::size_t cpuMaterialBytes(std::span<const MaterialId> needed = {}) const;
+    std::shared_ptr<const CpuMaterials> cpuMaterialsForRecipes(std::span<const Recipe> recipes);
+    std::size_t cpuMaterialBytesForRecipes(std::span<const Recipe> recipes) const;
 	std::uint64_t materialRevision(MaterialId id) const { return materialRevisions[id]; }
 	int scale() const { return resolution; }
 	std::size_t sourceBytes() const;
@@ -166,7 +173,14 @@ class Compositor
 		unsigned blend = ~0u;
 	};
 	std::vector<AnimationTextures> animationTextures;
-	bool prepareMaterial(unsigned id, bool hd, int phase, std::vector<Texture> &target);
+	using Usage = std::vector<std::vector<unsigned char>>;
+    void prepareSelected(bool hd, int time, const Usage *usage);
+    Usage recipeUsage(std::span<const Recipe> recipes) const;
+    std::size_t cpuMaterialBytesSelected(std::span<const MaterialId>, const Usage *) const;
+    std::shared_ptr<const CpuMaterials> cpuMaterialsSelected(std::span<const MaterialId>, const Usage *);
+    bool publishedSubset = false;
+    bool prepareMaterial(unsigned id, bool hd, int phase, std::vector<Texture> &target,
+                         const std::vector<unsigned char> *wanted);
 	std::vector<std::uint64_t> materialRevisions;
 	int resolution = 1;
 };

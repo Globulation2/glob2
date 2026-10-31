@@ -6644,3 +6644,13 @@ Dit valg kunne ikke gemmes. Lyden er stadig slået fra. Prøv igen.
 Stilhed: en lydløs højttaler. Lyd: en højttaler med lydbølger.
 [library GL only]
 Kun GL
+[Grassland]
+Græsland
+[Kopjes]
+Klippebakker
+[Game trails]
+Dyrestier
+[Fish amount]
+Fiskemængde
+[Camp-site amount]
+Antal lejrpladser

@@ -573,7 +573,7 @@ void checkTextField()
 void checkCopyField()
 {
 	// A failed Copy leaves the text in a field that opens selected and ignores edits.
-	std::string model = "https://app.glob2online.com/j/ABCDEFGHJK";
+	std::string model = "https://app.glob2.online/j/ABCDEFGHJK";
 	TextFieldOptions options;
 	options.selectForCopy = true;
 	Fixture f([&](const Presentation &) { return textField("copy", model, [&](const std::string &v) { model = v; }, options); }, 400, 100);
@@ -585,7 +585,7 @@ void checkCopyField()
 	text.text.text = "x";
 	f.host.event(text);
 	f.key(SDLK_BACKSPACE);
-	require(model == "https://app.glob2online.com/j/ABCDEFGHJK", "typing does not change text shown for copying");
+	require(model == "https://app.glob2.online/j/ABCDEFGHJK", "typing does not change text shown for copying");
 }
 
 void checkListView()

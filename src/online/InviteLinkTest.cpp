@@ -108,21 +108,23 @@ TEST_SUITE("InviteLink")
 
 	TEST_CASE("former official origins mean the official instance")
 	{
-		// The default build: the app moved from the apex to app.glob2online.com.
-		if (std::string(OFFICIAL_INSTANCE_ORIGIN) != "https://app.glob2online.com")
+		// The default build preserves both origins used before glob2.online.
+		if (std::string(OFFICIAL_INSTANCE_ORIGIN) != "https://app.glob2.online")
 			return;
 		for (const char *link :
 			 {"https://glob2online.com/j/KXQ742MNPR", "https://GLOB2ONLINE.com/j/KXQ742MNPR/",
 			  "https://app.glob2online.com/j/KXQ742MNPR",
+			  "https://app.glob2.online/j/KXQ742MNPR",
+			  "glob2://join?instance=https%3A%2F%2Fapp.glob2online.com&code=KXQ742MNPR",
 			  "glob2://join?instance=https%3A%2F%2Fglob2online.com&code=KXQ742MNPR"})
 		{
 			auto invite = parseInviteLink(link);
 			REQUIRE_MESSAGE(invite.has_value(), link);
-			CHECK_EQ(invite->origin, "https://app.glob2online.com");
+			CHECK_EQ(invite->origin, "https://app.glob2.online");
 			CHECK_EQ(invite->code, "KXQ742MNPR");
 		}
 		CHECK_EQ(parseInvite("KXQ742MNPR", "https://glob2online.com")->origin,
-				 "https://app.glob2online.com");
+				 "https://app.glob2.online");
 		// Only the exact former origin: other hosts and ports are not the app.
 		CHECK_EQ(parseInviteLink("https://www.glob2online.com/j/KXQ742MNPR")->origin,
 				 "https://www.glob2online.com");

@@ -3,6 +3,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const crypto = require('node:crypto');
 const {openRuntimeHost} = require('./runtime-host');
+const {compiledSuiteInventory,compareCaseInventory} = require('./compiled-case-inventory');
 
 // Run the compiled engine with the same fixture and orders as the native CI
 // lanes. A minimal host supplies CLI arguments without changing the game shell.
@@ -449,6 +450,7 @@ test('WebAssembly verifies ground gradient publication across serial and threade
     const root = path.resolve(__dirname, '../..');
     const output = path.join(root, 'artifacts/browser-determinism/gradient-publication', variant, info.project.name);
     fs.mkdirSync(output, {recursive: true});
+    const listing=await compiledSuiteInventory(page,variant,'DelayedGradientPublication');
     const progress = [];
     page.on('console', message => progress.push(message.text()));
     page.on('pageerror', error => progress.push(String(error)));
@@ -504,7 +506,10 @@ test('WebAssembly verifies ground gradient publication across serial and threade
     expect(junit).toMatch(/failures="0"/);
     expect(junit).toMatch(/errors="0"/);
     expect(junit).not.toMatch(/<skipped\b/);
-    expect(junit.match(/<testcase\b/g)).toHaveLength(3);
+    // A separate query lists the complete selected registry of this exact
+    // binary, so new cases expand coverage without a stale hard-coded count.
+    fs.writeFileSync(path.join(output,'compiled-case-inventory.xml'),listing);
+    await compareCaseInventory(page,listing,junit);
     for (const participants of [1, 2, 4, 8]) {
       expect(Object.keys(result.files).some(name => name.endsWith('/participants-' + participants + '.tsv'))).toBe(true);
       expect(Object.keys(result.files).some(name => name.endsWith('/participants-' + participants + '-kernel-entries.tsv'))).toBe(true);

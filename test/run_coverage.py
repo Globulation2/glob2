@@ -66,6 +66,17 @@ def compact_profiles(profiles, successful):
     return {'raw_profiles_retained': False, 'raw_profile_bytes_removed': size}
 
 
+def instrumentation_flags(optimization, debug_info):
+    debug = '-g' if debug_info == 'full' else '-gline-tables-only'
+    return f'{debug} -O{optimization} -fprofile-instr-generate -fcoverage-mapping -DGLOB2_TEST_COVERAGE'
+
+
+def profile_pattern(pool_size):
+    # LLVM locks and merges the pool at process exit. Keep each binary's pool
+    # in its own raw directory, just like the individual process profiles.
+    return f'%{pool_size}m.profraw' if pool_size else '%m-%p.profraw'
+
+
 def area(path):
     parts = Path(path).parts
     if parts[0] == 'src' and len(parts) > 2:
@@ -127,6 +138,10 @@ def main():
     parser.add_argument('--build-dir', type=Path)
     parser.add_argument('--optimization', type=int, choices=(0, 1, 2, 3), default=0,
                         help='Clang optimization level; use 1 for expensive slow integration coverage')
+    parser.add_argument('--debug-info', choices=('full', 'line-tables-only'), default='full',
+                        help='line-tables-only bounds CI object storage while preserving coverage mapping')
+    parser.add_argument('--profile-pool-size', type=int, choices=range(10), default=0,
+                        help='LLVM online merge pool per binary (1..9); 0 keeps per-process raw profiles')
     parser.add_argument('--output', type=Path, default=ROOT / 'artifacts/native-coverage')
     parser.add_argument('--filter', action='append', default=[])
     parser.add_argument('--exclude-tag', action='append', default=[])
@@ -161,7 +176,7 @@ def main():
         manifest['commands'].append(command)
         return run_logged(command, output / log, env=env, stream_logs=args.stream_logs)
 
-    flags = f'-g -O{args.optimization} -fprofile-instr-generate -fcoverage-mapping -DGLOB2_TEST_COVERAGE'
+    flags = instrumentation_flags(args.optimization, args.debug_info)
     command = ['scons', f'-j{args.jobs}', 'release=0', 'server=0', f'--build={build}', 'tests',
                f'CC={args.cc}', f'CXX={args.cxx}', f'CFLAGS={flags}', f'CXXFLAGS={flags}',
                'LINKFLAGS=-g -fprofile-instr-generate']
@@ -180,7 +195,7 @@ def main():
             raw = directory / 'raw'
             raw.mkdir(parents=True)
             env = os.environ.copy()
-            env['LLVM_PROFILE_FILE'] = str(raw / '%m-%p.profraw')
+            env['LLVM_PROFILE_FILE'] = str(raw / profile_pattern(args.profile_pool_size))
             command = [sys.executable, str(ROOT / 'test/run_tests.py'), '--build-dir', str(build),
                        '--binary', kind, '-j', str(args.jobs), '--display-jobs', '1',
                        '--exclude-tag', 'network', '--junit', str(directory / 'junit.xml'),

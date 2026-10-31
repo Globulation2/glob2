@@ -254,8 +254,11 @@ void Session::publishCapture(const FieldSink& completed) noexcept
 }
 SimulationSnapshot::CaptureOptions Session::captureOptions(Uint32 tick) const
 {
-    if (!png || pending()) return {};
-    bool needed=!reservations.empty();
+    if (!png) return {};
+    // A completed observation cannot gain components later in the same tick.
+    // Retain presentation while an export is pending: the graphics owner can
+    // drain it between simulation-owner calls and expose another sample.
+    bool needed=pending() || !reservations.empty();
     for (const auto& sink:sinks) needed|=sink->captured || tick>=sink->nextTick;
     return {.presentation=needed};
 }

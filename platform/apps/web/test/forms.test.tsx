@@ -272,8 +272,8 @@ describe('headings, tables and invites', () => {
 
   it('accepts a pasted invite link as well as a code', () => {
     expect(inviteCodeFrom('nvykahzud9')).toBe('NVYKAHZUD9');
-    expect(inviteCodeFrom(' https://app.glob2online.com/j/NVYKAHZUD9 ')).toBe('NVYKAHZUD9');
-    expect(inviteCodeFrom('https://app.glob2online.com/j/NVYKAHZUD9/?x=1')).toBe('NVYKAHZUD9');
+    expect(inviteCodeFrom(' https://app.glob2.online/j/NVYKAHZUD9 ')).toBe('NVYKAHZUD9');
+    expect(inviteCodeFrom('https://app.glob2.online/j/NVYKAHZUD9/?x=1')).toBe('NVYKAHZUD9');
     expect(inviteCodeFrom('glob2online')).toBe('GLOB2ONLINE');
     expect(inviteCodeFrom('https://example.org/')).toBeUndefined();
     expect(inviteCodeFrom('no')).toBeUndefined();
@@ -300,10 +300,10 @@ describe('links between the app and the website', () => {
 
   it('keeps the brand in the app and exposes the website and download in About', async () => {
     vi.resetModules();
-    vi.stubEnv('VITE_WEBSITE_URL', 'https://glob2online.com/');
+    vi.stubEnv('VITE_WEBSITE_URL', 'https://glob2.online/');
     const home = await import('../src/pages/Home.tsx');
-    expect(home.WEBSITE_URL).toBe('https://glob2online.com');
-    expect(home.DOWNLOAD_URL).toBe('https://glob2online.com/downloads/');
+    expect(home.WEBSITE_URL).toBe('https://glob2.online');
+    expect(home.DOWNLOAD_URL).toBe('https://glob2.online/downloads/');
     const { App: SiteApp } = await import('../src/App.tsx');
     window.history.replaceState(null, '', '/leaderboard');
     const { container } = render(<SiteApp />);
@@ -317,10 +317,10 @@ describe('links between the app and the website', () => {
       within(about)
         .getByRole('link', { name: 'Globulation 2 Online website' })
         .getAttribute('href'),
-    ).toBe('https://glob2online.com');
+    ).toBe('https://glob2.online');
     expect(
       within(about).getByRole('link', { name: 'Download the game' }).getAttribute('href'),
-    ).toBe('https://glob2online.com/downloads/');
+    ).toBe('https://glob2.online/downloads/');
     expect(within(main).getByRole('link', { name: 'Home' }).getAttribute('href')).toBe('/');
   });
 });

@@ -12,27 +12,32 @@ release until the maintainer chooses to publish it.
 | Field | Copy |
 | --- | --- |
 | Name | Globulation 2 |
-| Subtitle | Strategy without busywork |
+| Subtitle | Colony strategy under pressure |
 | Primary category | Games; Strategy and Simulation |
-| Promotional text | Build a thriving colony, set priorities for your globs, and focus on the bigger picture in this open-source real-time strategy game. |
+| Promotional text | Build a thriving colony in contested territory. Balance food, workers and expansion, shape a sprawling base, and compete with rival colonies for land and resources. |
 | Keywords | strategy,RTS,colony,simulation,skirmish,offline,empire,map editor |
 | Support URL | https://github.com/Globulation2/glob2 |
-| Marketing URL | https://glob2online.com/ |
+| Marketing URL | https://glob2.online/ |
 
 **Description**
 
-Globulation 2 is a real-time strategy game about guiding a colony rather than
-directing every unit. Set priorities, choose where to build, and assign globs to
-work. Your globs carry out those jobs while you focus on the shape of your
-settlement and your next move.
+Build a thriving colony in contested territory.
 
-Grow your economy, explore the map, and adapt your strategy as other colonies
-expand. Play a single-player game against computer opponents, try the included
-maps and campaigns, or create a map of your own.
+Globulation 2 is a real-time strategy game where food, workers and space shape your expansion. Grow a sprawling colony, balance its competing needs, and contend with rivals for land and resources. Your creatures act autonomously, letting you guide the colony as a whole.
+
+Grow an economy that can sustain your ambitions.
+Food, construction and training compete for your workforce. Decide where workers are needed and balance new ambitions with the needs of the colony you already have.
+
+Make the map part of your strategy.
+Different maps call for different strategies. Adapt your expansion to the terrain, choose what to defend, and find the routes and resources your colony needs.
+
+Defend what you've built.
+Your economy supports both growth and defense. Balance the needs of your colony while rivals compete for land and resources, and prepare for conflicts that can decide the match.
+
+Globulation 2 is free and open source.
 
 On iPhone and iPad, touch controls let you navigate the world and manage your
-colony. Single-player play does not require an account. The game is free and
-open source.
+colony. Single-player play does not require an account.
 
 **Version notes for the first public iOS version**
 
@@ -64,12 +69,12 @@ iPhone and iPad simulators or physical devices. Use actual gameplay and UI,
 without invented features or desktop screenshots. Select scenes that show:
 
 1. A readable colony overview with workers, buildings, and the game UI —
-   “Lead a living colony.”
+   “Build a thriving colony.”
 2. A close view of assigning work and building a settlement —
-   “Set jobs. Let globs work.”
+   “Balance food, workers and growth.”
 3. Exploration or a later-game encounter with another colony —
    “Outthink rival colonies.”
-4. The map or scenario selection screen — “New worlds to explore.”
+4. The map or scenario selection screen — “Different maps. Different strategies.”
 5. The map editor, if its iOS touch behavior passes a play test —
    “Create your own maps.”
 

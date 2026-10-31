@@ -167,6 +167,7 @@ Catalog Catalog::parse(const nlohmann::json &j)
 		v.sprite = dataPath(m.at("sprite"));
 		require(!v.key.empty() && keys.insert(v.key).second, "duplicate material key");
 		v.salt = keyHash(v.key);
+		v.blockSalt = v.salt;
 		v.profile = findProfile(m.at("profile"));
 		// Water is an ordinary (animated) tile material; the scrolling ocean
 		// backdrop and per-material backdrops were retired.
@@ -181,6 +182,15 @@ Catalog Catalog::parse(const nlohmann::json &j)
 			v.variantGrid = integerInRange(m.at("variant_grid"), 1, 16);
 			require((v.variantGrid & (v.variantGrid - 1)) == 0, "variant_grid must be a power of two");
 			require(v.periodicEdges, "variant_grid requires periodic edges");
+		}
+		v.variantBlocks = integerInRange(m.value("variant_blocks", nlohmann::json(1)), 1, 16);
+		require(!m.contains("variant_blocks") || v.variantGrid, "variant_blocks requires variant_grid");
+		if (m.contains("variant_block_group"))
+		{
+			const auto &group = m.at("variant_block_group");
+			require(v.variantGrid && group.is_string() && !group.get<std::string>().empty() &&
+					group.get<std::string>().size() <= 64, "variant_block_group requires a grid and a short nonempty key");
+			v.blockSalt = keyHash(group.get<std::string>());
 		}
 		if (m.contains("decor"))
 		{
@@ -231,8 +241,8 @@ Catalog Catalog::parse(const nlohmann::json &j)
 			v.variants.push_back({frame, unsigned(w)});
 			v.totalWeight += unsigned(w);
 		}
-		require(!v.variantGrid || v.variants.size() == std::size_t(v.variantGrid * v.variantGrid),
-				"variant_grid needs one variant per block cell");
+		require(!v.variantGrid || v.variants.size() == std::size_t(v.variantGrid * v.variantGrid * v.variantBlocks),
+				"variant_grid needs one variant per cell in every block");
 		c.materials.push_back(std::move(v));
 	}
 	require(j.at("bindings").is_object(), "bindings must be an object");
@@ -288,7 +298,12 @@ unsigned Catalog::variantIndex(MaterialId id, int x, int y, std::uint32_t seed) 
 	if (m.variantGrid)
 	{
 		const unsigned mask = unsigned(m.variantGrid) - 1;
-		return (unsigned(y) & mask) * unsigned(m.variantGrid) + (unsigned(x) & mask);
+		const unsigned cell = (unsigned(y) & mask) * unsigned(m.variantGrid) + (unsigned(x) & mask);
+		if (m.variantBlocks == 1) return cell;
+		// Unsigned floor-block coordinates also handle negative presentation coordinates.
+		const unsigned block = hash(unsigned(x) / unsigned(m.variantGrid), unsigned(y) / unsigned(m.variantGrid),
+									m.blockSalt ^ mapSeedSalt(seed) ^ 0xb10c4a7du) % unsigned(m.variantBlocks);
+		return block * unsigned(m.variantGrid * m.variantGrid) + cell;
 	}
 	unsigned n = hash(x, y, m.salt ^ mapSeedSalt(seed)) % m.totalWeight;
 	for (unsigned i = 0; i < m.variants.size(); ++i)

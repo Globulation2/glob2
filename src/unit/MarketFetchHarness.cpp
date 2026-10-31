@@ -264,8 +264,12 @@ TEST_CASE("MarketFetch/market fields and pending publications survive binary and
 		// Capture each queue phase, including a market job's publication deadline.
 		for (int tick=1; tick<=12; ++tick)
 		{
+            source.game.stepCounter=tick;
+            restored.game.stepCounter=tick;
 			source.game.map.advanceGradientPipeline();
 			source.game.map.syncStep(tick);
+            source.game.map.stagePeriodicGradientPreparation();
+            glob2test::prepareGradientBoundary(source.game);
 			const auto bytes=saveMap(source.game.map,text);
 			auto *backend=new GAGCore::MemoryStreamBackend;
 			backend->write(bytes.data(),bytes.size()); backend->seekFromStart(0);
@@ -279,10 +283,15 @@ TEST_CASE("MarketFetch/market fields and pending publications survive binary and
 				source.market->removeMaterialFromBuilding(CHERRY);
 				restored.market->removeMaterialFromBuilding(CHERRY);
 			}
+            source.game.stepCounter=restored.game.stepCounter=tick+1;
 			source.game.map.advanceGradientPipeline();
 			source.game.map.syncStep(tick+1);
 			restored.game.map.advanceGradientPipeline();
 			restored.game.map.syncStep(tick+1);
+            for (auto* game:{&source.game,&restored.game}) {
+                game->map.stagePeriodicGradientPreparation();
+                glob2test::prepareGradientBoundary(*game);
+            }
 			CHECK(saveMap(restored.game.map,text)==saveMap(source.game.map,text));
 		}
 	}

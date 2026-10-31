@@ -22,7 +22,7 @@ Google Cloud Workload Identity Federation through the `browser-release`
 GitHub environment; the build job has no cloud identity permission.
 
 The destination is `gs://glob2-browser-pharaoh-418820-20260909` in project
-`pharaoh-418820`. Versioned JavaScript, WebAssembly and data objects receive
+`bradley-personal-20261027`. Versioned JavaScript, WebAssembly and data objects receive
 explicit content types and immutable one-year caching. They are uploaded before
 `index.html`, which requires cache revalidation. Older assets remain available
 for open sessions and rollback; publication never synchronizes with deletion.

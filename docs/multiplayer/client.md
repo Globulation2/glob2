@@ -206,15 +206,15 @@ write with `ApplicationHost::persistStorage()`. Credentials are not in
 `preferences.txt`, which players attach to bug reports.
 
 The official origin is one build-time setting: `DEFAULT_ORIGIN` in
-`scons/official_instance.py` (currently `https://app.glob2online.com`), overridable
+`scons/official_instance.py` (currently `https://app.glob2.online`), overridable
 with `scons official_instance=https://example.org`. Every build path passes it to
 the client as `GLOB2_OFFICIAL_INSTANCE_ORIGIN`, and the Android and iOS packaging
 scripts derive the App Link host and associated domain from it.
 
 When the official instance moves, the origin it leaves goes into `FORMER_ORIGINS`
-there (`https://glob2online.com` became the public website when the app moved to
-`app.glob2online.com`). The client then reads a stored selection of a former
-origin as the official one (`Online::currentOrigin`), treats it as trusted, maps
+there. Keep both `https://glob2online.com` (the original app origin) and
+`https://app.glob2online.com` when moving to `https://app.glob2.online`. The client
+then reads a stored selection of a former origin as the official one (`Online::currentOrigin`), treats it as trusted, maps
 its invite links (`https://glob2online.com/j/<code>`, which the website also
 redirects) and `glob2://join?instance=` links to the official origin, and hides
 its record from the server list. The record itself, with its device credential
@@ -224,15 +224,17 @@ Builds with another `official_instance` carry no former origins.
 The browser shell selects its serving origin for a fresh profile, so hosted
 `/play/` clients connect to their own platform even when the compiled default
 predates a hostname cutover. On the official app host it also changes a saved
-apex selection to `https://app.glob2online.com`. Custom instance selections stay
-intact, and device credentials and refresh tokens remain keyed to their original
+selection of either former origin to `https://app.glob2.online`. Custom instance
+selections stay intact, and device credentials and refresh tokens remain keyed to their original
 origin; the shell never copies them to the new origin. Initialization waits for
-successful storage restoration before writing configuration.
+successful storage restoration before writing configuration. Browser storage is
+origin-scoped, so visiting the new hostname does not import an old hostname's
+local profile; players may need to sign in again.
 
 ```json
 {
   "version": 1,
-  "selected": "https://app.glob2online.com",
+  "selected": "https://app.glob2.online",
   "instances": {
     "https://games.example.org": {
       "trusted": true, "autoSignIn": true,
@@ -400,10 +402,10 @@ The `quick` role plays a casual quick match (AI backfill) and leaves after
 `GLOB2_E2E_QUICK_LEAVE` seconds. Every stage is captured:
 
 ```sh
-build/darwin/client/release/src/OnlinePlayHarness host https://app.glob2online.com artifacts/e2e &
+build/darwin/client/release/src/OnlinePlayHarness host https://app.glob2.online artifacts/e2e &
 sleep 20
-build/darwin/client/release/src/OnlinePlayHarness guest https://app.glob2online.com artifacts/e2e
-build/darwin/client/release/src/OnlinePlayHarness quick https://app.glob2online.com artifacts/e2e-quick
+build/darwin/client/release/src/OnlinePlayHarness guest https://app.glob2.online artifacts/e2e
+build/darwin/client/release/src/OnlinePlayHarness quick https://app.glob2.online artifacts/e2e-quick
 ```
 
 
@@ -469,7 +471,7 @@ declare none of these (`mobile/android.py` strips the invite intent filters,
 `/.well-known/assetlinks.json` (the release signing certificate's SHA-256) and
 `/.well-known/apple-app-site-association` (team id plus
 `org.globulation2.glob2`, path `/j/*`). For the official instance that is
-`app.glob2online.com`; the public website at the apex serves neither file and
+`app.glob2.online`; the public website at the apex serves neither file and
 redirects `/j/*` to the app, so an apex invite opens in the browser first. What the
 maintainer supplies for these files is in
 [hosting: mobile app links](../hosting/networking.md#mobile-app-links).
