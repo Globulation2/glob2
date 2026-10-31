@@ -84,7 +84,7 @@ def build(prefix, work, *, cc='cc', cxx='c++', ar='ar', ranlib='ranlib',
                     vaapi_api=vaapi, assembler=assembler, sdk=sdk_identity, environment={name:env.get(name,'') for name in ('CFLAGS','CXXFLAGS','CPPFLAGS','LDFLAGS','SDKROOT','MACOSX_DEPLOYMENT_TARGET','DEVELOPER_DIR')}, recipe=hashlib.sha256(Path(__file__).read_bytes()).hexdigest())
     manifest = prefix / 'recording-manifest.json'
     archives = [prefix / 'lib' / ('lib' + name + '.a') for name in codec_libraries(video_codec)]
-    if video_codec != 'h264' and (prefix / 'lib/pkgconfig/opus.pc').exists():
+    if video_codec != 'h264' and any((prefix / name).exists() for name in ('lib/libopus.a', 'lib/pkgconfig/opus.pc')):
         raise ValueError('Recording prefix contains bundled Opus; choose a clean recording prefix')
     if manifest.exists():
         installed = json.loads(manifest.read_text())

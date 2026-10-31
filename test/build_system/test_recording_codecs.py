@@ -102,3 +102,15 @@ class RecordingCodecsTests(unittest.TestCase):
                 changed = dict(configuration)
                 changed[key] += '-changed'
                 self.assertNotEqual(original, fingerprint(build, dict(arguments, opus_configuration=changed)))
+
+    def test_partially_installed_bundled_opus_is_not_reused(self):
+        import tempfile
+        with tempfile.TemporaryDirectory() as directory:
+            prefix = Path(directory)
+            (prefix / 'lib').mkdir()
+            (prefix / 'lib/libopus.a').touch()
+            with patch('recording_dependencies.native_opus_configuration', return_value={}), \
+                    patch('recording_dependencies.subprocess.check_output', return_value='fixture'), \
+                    patch('recording_dependencies.shutil.which', return_value='/tools/nasm'):
+                with self.assertRaisesRegex(ValueError, 'bundled Opus'):
+                    build(prefix, prefix / 'sources', target='linux', video_codec='vp9')
