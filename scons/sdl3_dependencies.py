@@ -116,7 +116,7 @@ def build(prefix, work, jobs=2, emscripten=None, environment=None, threaded=Fals
     versions = json.loads(LOCK.read_text())
     if emscripten:
         versions = json.loads(LOCK.with_name('sdl3-vendored.json').read_text()) | versions
-    identity = {'configuration': 13, 'threaded': threaded, 'versions': versions, 'emscripten': str(emscripten) if emscripten else None,
+    identity = {'configuration': 14, 'threaded': threaded, 'versions': versions, 'emscripten': str(emscripten) if emscripten else None,
                 'platform': platform.platform(), 'machine': platform.machine(),
                 'source_patches': {patch.name: hashlib.sha256(patch.read_bytes()).hexdigest()
                                    for patch in SDL_PATCHES + TTF_PATCHES}}
@@ -165,7 +165,9 @@ def build(prefix, work, jobs=2, emscripten=None, environment=None, threaded=Fals
                    '-DSDLTTF_SAMPLES=OFF', '-DSDLTTF_TESTS=OFF', '-DSDLTTF_HARFBUZZ=ON',
                    '-DSDLNET_SAMPLES=OFF', '-DSDLNET_TESTS=OFF']
         if name == 'harfbuzz':
-            command += ['-DHB_BUILD_UTILS=OFF', '-DHB_BUILD_SUBSET=OFF',
+            # SDL_ttf is shared on Linux and links this static archive.
+            command += ['-DCMAKE_POSITION_INDEPENDENT_CODE=ON',
+                        '-DHB_BUILD_UTILS=OFF', '-DHB_BUILD_SUBSET=OFF',
                         '-DHB_HAVE_FREETYPE=ON', '-DHB_HAVE_GLIB=OFF',
                         '-DHB_HAVE_ICU=OFF', '-DHB_HAVE_CORETEXT=OFF']
         if name == 'SDL_image':

@@ -5546,14 +5546,6 @@ Limitează desenarea în întreaga aplicație. Valorile mai mici reduc efortul d
 Gheață
 [road]
 Potecă
-[experiment ice-terrain]
-Teren de gheață
-[experiment ice-terrain help]
-Adaugă gheață în editorul de hărți. Unitățile terestre se deplasează cu jumătate din viteză și pierd un punct de sănătate la fiecare 32 de pași de simulare pe gheață. Gheața nu poate conține clădiri sau resurse.
-[experiment road-terrain]
-Teren de potecă
-[experiment road-terrain help]
-Adaugă poteci bătătorite în editorul de hărți. Unitățile terestre se deplasează cu viteză dublă. Potecile permit clădiri, dar nu resurse. Unitățile zburătoare nu sunt afectate.
 [experiment markets-v2]
 Piețe V2
 [experiment markets-v2 help]
@@ -5702,42 +5694,6 @@ Pământ fertil
 Apă adâncă
 [terrain group void]
 Vid
-[experiment obstacle-terrain]
-Teren cu obstacole
-[experiment obstacle-terrain help]
-Adaugă bolovani, garduri vii și desișuri în editorul de hărți. Unitățile terestre nu le pot traversa și proiectilele sunt oprite; unitățile zburătoare trec pe deasupra. Nu permit clădiri sau resurse.
-[experiment ridge-terrain]
-Teren cu creste
-[experiment ridge-terrain help]
-Adaugă creste stâncoase și aflorimente în editorul de hărți. Unitățile terestre nu le pot traversa, dar turnurile trag peste ele și unitățile zburătoare trec. Nu permit clădiri sau resurse.
-[experiment barren-terrain]
-Pământ sterp
-[experiment barren-terrain help]
-Adaugă pământ, argilă, pietriș și pajiști cu flori în editorul de hărți. Permit clădiri, dar nimic nu crește pe ele sau alături și nu sunt considerate țărm.
-[experiment rough-terrain]
-Teren dificil
-[experiment rough-terrain help]
-Adaugă noroi, mlaștini, zăpadă adâncă și grohotiș în editorul de hărți. Unitățile terestre se deplasează cu aproximativ două treimi din viteză. Nu permit clădiri sau resurse.
-[experiment path-terrain]
-Teren cu drumuri
-[experiment path-terrain help]
-Adaugă drumuri de pământ și podețe de lemn în editorul de hărți. Ca pe poteci, unitățile terestre se deplasează cu viteză dublă și clădirile sunt permise, dar nimic nu crește.
-[experiment lava-terrain]
-Teren cu lavă
-[experiment lava-terrain help]
-Adaugă lavă și câmpuri de jăratic în editorul de hărți. Unitățile terestre nu pot intra; cele zburătoare pierd rapid sănătate când trec pe deasupra. Proiectilele trec.
-[experiment fertile-terrain]
-Pământ fertil
-[experiment fertile-terrain help]
-Adaugă pământ fertil, mușchi și pajiști de primăvară în editorul de hărți. Permit clădiri și culturi și irigă terenul înconjurător mai puternic decât apa.
-[experiment deep-water-terrain]
-Apă adâncă
-[experiment deep-water-terrain help]
-Adaugă apă adâncă și întunecată în editorul de hărți. Înotătorii o traversează mai lent, algele nu cresc în ea, dar continuă să irige câmpurile din apropiere.
-[experiment void-terrain]
-Teren cu vid
-[experiment void-terrain help]
-Adaugă gropi și prăpăstii în editorul de hărți. Nimic nu le poate traversa, nici măcar unitățile zburătoare, iar proiectilele se opresc la margine.
 [terrain group custom]
 Personalizat
 [terrain group classic]
@@ -5770,8 +5726,6 @@ Rănește unitățile zburătoare
 Alege o pensulă. Terenurile din fiecare grup au aceleași reguli și diferă numai prin aspect.
 [terrain rule algae grow]
 Algele cresc
-[terrain palette experiments hint]
-Alege o pensulă. Mai multe grupuri de teren apar aici după activarea experimentelor lor în Setări > Experimente.
 [brush valid on %0]
 Valid pe: %0
 [brush valid nowhere]

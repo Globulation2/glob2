@@ -36,7 +36,6 @@ void MapHeader::reset()
 	mapOffset = 0;
 	isSavedGame=false;
 	fileNameOverride = "";
-	requiredTerrainExperiments.clear();
 	requiredResourceExperiments.clear();
 	resourceExperimentDefinitions.clear();
 	resetGameSHA1();
@@ -95,7 +94,11 @@ bool MapHeader::loadFields(GAGCore::InputStream *stream)
 		stream->read(SHA1, 20, "SHA1");
 	}
 	
-	if (versionMinor >= FILE_FORMAT_VERSION_TERRAIN_PROPERTIES && !requiredTerrainExperiments.load(stream, versionMinor, true)) return false;
+	// Consume the retired requirement list only in historical maps and saves.
+	ExperimentSet retiredTerrainRequirements;
+	if (versionMinor >= FILE_FORMAT_VERSION_TERRAIN_PROPERTIES &&
+		versionMinor < FILE_FORMAT_VERSION_MAINLINE_TERRAINS &&
+		(!retiredTerrainRequirements.load(stream, versionMinor, true) || !retiredTerrainRequirements.empty())) return false;
 	if (versionMinor >= FILE_FORMAT_VERSION_RUNTIME_RESOURCES)
 	{
 		resourceExperimentDefinitions = loadCatalogExperimentDefinitions(stream);
@@ -127,7 +130,6 @@ void MapHeader::save(GAGCore::OutputStream *stream, size_t *sha1Position) const
 	if (sha1Position)
 		*sha1Position = stream->getPosition();
 	stream->write(SHA1, 20, "SHA1");
-	requiredTerrainExperiments.save(stream);
 	saveCatalogExperimentDefinitions(stream, resourceExperimentDefinitions);
 	requiredResourceExperiments.save(stream, "resourceExperiments");
 	stream->writeEnterSection("teams");
@@ -285,8 +287,6 @@ Uint32 MapHeader::checkSum() const
 	cs^=versionMajor;
 	cs^=versionMinor;
 	cs^=numberOfTeams;
-	for (const auto& definition : experimentDefinitions())
-		if (requiredTerrainExperiments.has(definition.id)) cs ^= Sint32((1u + static_cast<unsigned>(definition.id)) * 0x9e3779b9u);
 	for (const auto& key : requiredResourceExperiments.keys())
 		for (unsigned char c : key) cs = Sint32((Uint32(cs) ^ c) * 16777619u);
 	// Keep the historical arithmetic right shift, but shift unsigned bits
@@ -302,7 +302,6 @@ bool MapHeader::operator!=(const MapHeader& rhs) const
 		rhs.mapOffset != mapOffset ||
 		rhs.isSavedGame != isSavedGame ||
 		rhs.mapName != mapName ||
-		rhs.requiredTerrainExperiments != requiredTerrainExperiments ||
 		rhs.requiredResourceExperiments != requiredResourceExperiments ||
 		rhs.resourceExperimentDefinitions != resourceExperimentDefinitions ||
 		!std::equal(SHA1, SHA1+20, rhs.SHA1))
@@ -318,7 +317,6 @@ bool MapHeader::operator==(const MapHeader& rhs) const
 		rhs.mapOffset == mapOffset &&
 		rhs.isSavedGame == isSavedGame &&
 		rhs.mapName == mapName &&
-		rhs.requiredTerrainExperiments == requiredTerrainExperiments &&
 		rhs.requiredResourceExperiments == requiredResourceExperiments &&
 		rhs.resourceExperimentDefinitions == resourceExperimentDefinitions &&
 		std::equal(SHA1, SHA1+20, rhs.SHA1))

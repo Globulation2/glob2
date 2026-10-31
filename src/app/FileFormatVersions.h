@@ -331,3 +331,6 @@ static constexpr int FILE_FORMAT_VERSION_PROACTIVE_BUILDINGS = 174;
 
 // Per-team building admission widens pending counts from 8 to 16 bits.
 static constexpr int FILE_FORMAT_VERSION_TEAM_BUILDING_GRADIENT_QUOTA = 186;
+
+// Terrain authoring requirements are retired; new headers omit their old slot.
+static constexpr int FILE_FORMAT_VERSION_MAINLINE_TERRAINS = 187;

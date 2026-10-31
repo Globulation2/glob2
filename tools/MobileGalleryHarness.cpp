@@ -1507,17 +1507,16 @@ class MobileGalleryGameplay
 		if (editor.dock)
 		{
 			// The desktop/tablet dock: a terrain brush, a resource brush with its
-			// placement rule, and a locked experiment group offering to enable it.
+			// placement rule, and the immediately available obstacle terrain group.
 			editor.dock->showTab(EditorDock::Tab::Terrain);
 			editor.performAction("select terrain water");
 			editCapture("editor-dock-terrain");
 			editor.dock->showTab(EditorDock::Tab::Resources);
 			editor.performAction("select resource wheat");
 			editCapture("editor-dock-resources");
-			// Bundled maps carry no foundation resources, so show a locked terrain
-			// group instead (the gallery runs with experiments off).
+			// Terrain groups are available with experiments off.
 			editor.performAction("open terrain palette obstacles");
-			editCapture("editor-dock-locked");
+			editCapture("editor-dock-obstacles");
 		}
 
 		// Existing-object inspection has its own composition, separate from the

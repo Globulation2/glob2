@@ -5546,14 +5546,6 @@ AI 생성 아님
 얼음
 [road]
 오솔길
-[experiment ice-terrain]
-얼음 지형
-[experiment ice-terrain help]
-지도 편집기에 얼음을 추가합니다. 지상 유닛은 절반의 속도로 이동하며 얼음 위에서 시뮬레이션이 32틱 진행될 때마다 체력을 1 잃습니다. 얼음에는 건물이나 자원을 배치할 수 없습니다.
-[experiment road-terrain]
-오솔길 지형
-[experiment road-terrain help]
-지도 편집기에 오래된 오솔길을 추가합니다. 지상 유닛은 두 배의 속도로 이동합니다. 오솔길에는 건물을 지을 수 있지만 자원은 놓을 수 없습니다. 비행 유닛은 영향을 받지 않습니다.
 [experiment markets-v2]
 시장 V2
 [experiment markets-v2 help]
@@ -5702,42 +5694,6 @@ AI 생성 아님
 깊은 물
 [terrain group void]
 공허
-[experiment obstacle-terrain]
-장애물 지형
-[experiment obstacle-terrain help]
-지도 편집기에 큰 바위, 생울타리, 덤불을 추가합니다. 지상 유닛과 투사체는 통과할 수 없지만 비행 유닛은 지나갈 수 있습니다. 건물이나 자원을 놓을 수 없습니다.
-[experiment ridge-terrain]
-능선 지형
-[experiment ridge-terrain help]
-지도 편집기에 바위 능선과 노출된 바위를 추가합니다. 지상 유닛은 통과할 수 없지만 탑의 공격과 비행 유닛은 지나갈 수 있습니다. 건물이나 자원을 놓을 수 없습니다.
-[experiment barren-terrain]
-척박한 땅
-[experiment barren-terrain help]
-지도 편집기에 흙, 점토, 자갈, 꽃 초원을 추가합니다. 건물을 세울 수 있지만 그 위나 주변에서는 아무것도 자라지 않으며 물가로 취급되지 않습니다.
-[experiment rough-terrain]
-험한 땅
-[experiment rough-terrain help]
-지도 편집기에 진흙, 습지, 깊은 눈, 돌무더기 비탈을 추가합니다. 지상 유닛의 이동 속도는 약 3분의 2가 됩니다. 건물이나 자원을 놓을 수 없습니다.
-[experiment path-terrain]
-길 지형
-[experiment path-terrain help]
-지도 편집기에 흙길과 나무 길을 추가합니다. 오솔길처럼 지상 유닛이 두 배 속도로 이동하며 건물을 세울 수 있지만 아무것도 자라지 않습니다.
-[experiment lava-terrain]
-용암 지형
-[experiment lava-terrain help]
-지도 편집기에 용암과 잿불 지대를 추가합니다. 지상 유닛은 들어갈 수 없으며, 통과하는 비행 유닛은 체력을 빠르게 잃습니다. 투사체는 지나갈 수 있습니다.
-[experiment fertile-terrain]
-비옥한 땅
-[experiment fertile-terrain help]
-지도 편집기에 양토, 이끼, 봄 초원을 추가합니다. 건물과 작물을 지원하며, 물보다 더 강하게 주변 땅에 수분을 공급합니다.
-[experiment deep-water-terrain]
-깊은 물
-[experiment deep-water-terrain help]
-지도 편집기에 깊은 물과 어두운 물을 추가합니다. 수영 유닛은 느리게 지나가고 조류는 자라지 않지만 주변 밭에 수분을 공급합니다.
-[experiment void-terrain]
-공허 지형
-[experiment void-terrain help]
-지도 편집기에 구멍과 깊은 틈을 추가합니다. 비행 유닛을 포함해 아무것도 지나갈 수 없으며 투사체는 가장자리에서 멈춥니다.
 [terrain group custom]
 사용자 지정
 [terrain group classic]
@@ -5770,8 +5726,6 @@ AI 생성 아님
 브러시를 선택하세요. 같은 그룹의 지형은 규칙을 공유하며 외형만 다릅니다.
 [terrain rule algae grow]
 조류가 자람
-[terrain palette experiments hint]
-브러시를 선택하세요. 설정 > 실험에서 실험 기능을 켜면 더 많은 지형 그룹이 나타납니다.
 [brush valid on %0]
 배치 가능: %0
 [brush valid nowhere]

@@ -5546,14 +5546,6 @@ Beperk het tekenen in de hele toepassing. Lagere waarden verminderen het tekenwe
 IJs
 [road]
 Pad
-[experiment ice-terrain]
-IJsterrein
-[experiment ice-terrain help]
-Voegt ijs toe aan de kaarteditor. Grondeenheden bewegen met halve snelheid en verliezen één gezondheidspunt per 32 simulatiestappen op het ijs. Op ijs kunnen geen gebouwen of grondstoffen staan.
-[experiment road-terrain]
-Padterrein
-[experiment road-terrain help]
-Voegt verweerde paden toe aan de kaarteditor. Grondeenheden bewegen met dubbele snelheid. Paden staan gebouwen toe, maar geen grondstoffen. Vliegende eenheden worden niet beïnvloed.
 [experiment markets-v2]
 Markten V2
 [experiment markets-v2 help]
@@ -5702,42 +5694,6 @@ Vruchtbare grond
 Diep water
 [terrain group void]
 Leegte
-[experiment obstacle-terrain]
-Terrein met obstakels
-[experiment obstacle-terrain help]
-Voegt rotsblokken, hagen en struikgewas aan de kaarteditor toe. Landeenheden kunnen er niet doorheen en projectielen worden tegengehouden; vliegende eenheden gaan eroverheen. Ze bieden geen plaats aan gebouwen of grondstoffen.
-[experiment ridge-terrain]
-Terrein met rotskammen
-[experiment ridge-terrain help]
-Voegt rotskammen en rotsuitsteeksels aan de kaarteditor toe. Landeenheden kunnen er niet doorheen, maar torens schieten eroverheen en vliegende eenheden passeren. Ze bieden geen plaats aan gebouwen of grondstoffen.
-[experiment barren-terrain]
-Onvruchtbare grond
-[experiment barren-terrain help]
-Voegt aarde, klei, grind en bloemenweiden aan de kaarteditor toe. Gebouwen zijn toegestaan, er groeit niets op of naast deze grond en deze telt niet als oever.
-[experiment rough-terrain]
-Ruwe grond
-[experiment rough-terrain help]
-Voegt modder, moeras, diepe sneeuw en puinhellingen aan de kaarteditor toe. Landeenheden bewegen met ongeveer twee derde van hun snelheid. Ruwe grond biedt geen plaats aan gebouwen of grondstoffen.
-[experiment path-terrain]
-Terrein met paden
-[experiment path-terrain help]
-Voegt aarden paden en vlonderpaden aan de kaarteditor toe. Net als op wegen bewegen landeenheden met dubbele snelheid en zijn gebouwen toegestaan, maar groeit er niets.
-[experiment lava-terrain]
-Lavaterrein
-[experiment lava-terrain help]
-Voegt lava en gloeivelden aan de kaarteditor toe. Landeenheden kunnen er niet in; vliegende eenheden verliezen snel gezondheid wanneer ze eroverheen vliegen. Projectielen passeren.
-[experiment fertile-terrain]
-Vruchtbare grond
-[experiment fertile-terrain help]
-Voegt leem, mos en lenteweiden aan de kaarteditor toe. Gebouwen en gewassen zijn toegestaan en ze bevloeien omliggende grond sterker dan water.
-[experiment deep-water-terrain]
-Diep water
-[experiment deep-water-terrain help]
-Voegt diep en donker water aan de kaarteditor toe. Zwemmers steken het langzamer over, er groeien geen algen en het bevloeit nog steeds nabijgelegen velden.
-[experiment void-terrain]
-Leeg terrein
-[experiment void-terrain help]
-Voegt gaten en kloven aan de kaarteditor toe. Niets kan ze oversteken, zelfs vliegende eenheden niet, en projectielen stoppen aan de rand.
 [terrain group custom]
 Aangepast
 [terrain group classic]
@@ -5770,8 +5726,6 @@ Beschadigt vliegende eenheden
 Kies een penseel. De terreintypen binnen elke groep delen dezelfde regels en verschillen alleen in uiterlijk.
 [terrain rule algae grow]
 Algen groeien
-[terrain palette experiments hint]
-Kies een penseel. Meer terreingroepen verschijnen hier zodra hun experimenten zijn ingeschakeld onder Instellingen > Experimenten.
 [brush valid on %0]
 Geldig op: %0
 [brush valid nowhere]
