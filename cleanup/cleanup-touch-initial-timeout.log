@@ -1,0 +1,206 @@
+TIMEOUT GameGUITouch/actual gameplay touch; toroidal pan; preview; confirmation; validation; cancellation and duplicate suppression [display][artifacts][writes-preferences] (300.1s)
+
+===== TIMEOUT GameGUITouch/actual gameplay touch; toroidal pan; preview; confirmation; validation; cancellation and duplicate suppression [display][artifacts][writes-preferences] =====
+        0x20022b (has no name): ()  1x1+0+0  +399+388
+        0x20022a (has no name): ()  1x1+0+0  +399+388
+        0x200229 (has no name): ()  1x1+0+0  +399+388
+        0x200228 (has no name): ()  1x1+0+0  +399+388
+        0x200227 (has no name): ()  1x1+0+0  +399+388
+        0x200226 (has no name): ()  1x1+0+0  +399+388
+        0x200225 (has no name): ()  1x1+0+0  +399+388
+        0x200224 (has no name): ()  1x1+0+0  +399+388
+        0x200223 (has no name): ()  1x1+0+0  +399+388
+        0x200222 (has no name): ()  1x1+0+0  +399+388
+        0x200221 (has no name): ()  1x1+0+0  +399+388
+        0x200220 (has no name): ()  1x1+0+0  +399+388
+        0x20021f (has no name): ()  1x1+0+0  +399+388
+        0x20021e (has no name): ()  1x1+0+0  +399+388
+        0x20021d (has no name): ()  1x1+0+0  +399+388
+        0x20021c (has no name): ()  1x1+0+0  +399+388
+        0x20021b (has no name): ()  1x1+0+0  +399+388
+        0x20021a (has no name): ()  1x1+0+0  +399+388
+        0x200219 (has no name): ()  1x1+0+0  +399+388
+        0x200218 (has no name): ()  1x1+0+0  +399+388
+        0x200217 (has no name): ()  26x1+295+590  +694+978
+        0x200216 (has no name): ()  1x1+0+0  +399+388
+        0x200215 (has no name): ()  1x25+321+566  +720+954
+        0x200214 (has no name): ()  26x1+1+590  +400+978
+        0x200213 (has no name): ()  1x1+0+0  +399+388
+        0x200212 (has no name): ()  1x25+0+566  +399+954
+        0x200211 (has no name): ()  268x1+27+590  +426+978
+        0x200210 (has no name): ()  1x1+0+0  +399+388
+        0x20020b (has no name): ()  1x1+0+0  +399+388
+           4 children:
+           0x20020f (has no name): ()  1x1+0+0  +399+388
+           0x20020e (has no name): ()  1x1+0+0  +399+388
+           0x20020d (has no name): ()  1x1+0+0  +399+388
+           0x20020c (has no name): ()  1x1+0+0  +399+388
+        0x200203 (has no name): ()  1x541+321+26  +720+414
+        0x200202 (has no name): ()  1x541+0+26  +399+414
+        0x2001fc (has no name): ()  320x1+1+21  +400+409
+        0x2001fb (has no name): ()  1x25+321+1  +720+389
+        0x2001fa (has no name): ()  26x1+296+0  +695+388
+        0x2001f9 (has no name): ()  26x1+0+0  +399+388
+        0x2001f8 (has no name): ()  270x1+26+0  +425+388
+        0x2001f7 (has no name): ()  1x25+0+1  +399+389
+        0x2001f6 (has no name): ()  320x20+1+1  +400+389
+           12 children:
+           0x20020a (has no name): ()  14x14+266+3  +666+392
+           0x200209 (has no name): ()  16x16+4+2  +404+391
+           0x200208 (has no name): ()  14x14+0+0  +400+389
+           0x200207 (has no name): ()  14x14+0+0  +400+389
+           0x200206 (has no name): ()  14x14+302+3  +702+392
+           0x200205 (has no name): ()  14x14+284+3  +684+392
+           0x200204 (has no name): ()  204x16+58+2  +458+391
+           0x200201 (has no name): ()  4x20+0+0  +400+389
+           0x200200 (has no name): ()  25x3+0+0  +400+389
+           0x2001ff (has no name): ()  4x20+0+0  +400+389
+           0x2001fe (has no name): ()  25x3+0+0  +400+389
+           0x2001fd (has no name): ()  1x1+0+0  +400+389
+        0x2001f1 (has no name): ()  1x1+0+0  +399+388
+           2 children:
+           0x2001f3 (has no name): ()  1x1+0+0  +399+388
+           0x2001f2 (has no name): ()  1x1+0+0  +399+388
+        0x2001f0 (has no name): ()  1x1+0+0  +399+388
+           1 child:
+           0x2001f5 (has no name): ()  1x1+0+0  +399+388
+        0x2001ef (has no name): ()  1x1+0+0  +399+388
+        0x2001ee (has no name): ()  1x1+0+0  +399+388
+           1 child:
+           0x2001f4 (has no name): ()  1x1+0+0  +399+388
+        0x2001ec (has no name): ()  320x568+1+22  +400+410
+           1 child:
+           0x2001ed (has no name): ()  320x568+0+0  +400+410
+
+
+
+xwininfo -id 0x20011f -all
+
+xwininfo: Window id: 0x20011f "Openbox"
+
+  Root window id: 0x3a7 (the root window) (has no name)
+  Parent window id: 0x3a7 (the root window) (has no name)
+     0 children.
+
+  Absolute upper-left X:  -100
+  Absolute upper-left Y:  -100
+  Relative upper-left X:  -100
+  Relative upper-left Y:  -100
+  Width: 1
+  Height: 1
+  Depth: 24
+  Visual: 0x21
+  Visual Class: TrueColor
+  Border width: 0
+  Class: InputOutput
+  Colormap: 0x20 (not installed)
+  Bit Gravity State: ForgetGravity
+  Window Gravity State: NorthWestGravity
+  Backing Store State: NotUseful
+  Save Under State: no
+  Map State: IsViewable
+  Override Redirect State: yes
+  Corners:  +-100+-100  -1699+-100  -1699-1499  +-100-1499
+  -geometry 1x1+-100+-100
+
+  Bit gravity: ForgetGravity
+  Window gravity: NorthWestGravity
+  Backing-store hint: NotUseful
+  Backing-planes to be preserved: 0xffffffff
+  Backing pixel: 0
+  Save-unders: No
+
+  Someone wants these events:
+      PropertyChange
+  Do not propagate these events:
+  Override redirection?: Yes
+
+  No window manager hints defined
+  Window manager hints:
+      Process id: (unknown)
+
+  No normal window size hints defined
+  No zoom window size hints defined
+
+  No window shape defined
+  No border shape defined
+
+
+
+xwininfo -id 0x400036 -all
+
+xwininfo: Window id: 0x400036 "Globulation 2"
+
+  Root window id: 0x3a7 (the root window) (has no name)
+  Parent window id: 0x2001eb (has no name)
+     0 children.
+
+  Absolute upper-left X:  400
+  Absolute upper-left Y:  410
+  Relative upper-left X:  1
+  Relative upper-left Y:  22
+  Width: 320
+  Height: 568
+  Depth: 24
+  Visual: 0x2fa
+  Visual Class: DirectColor
+  Border width: 0
+  Class: InputOutput
+  Colormap: 0x400035 (installed)
+  Bit Gravity State: ForgetGravity
+  Window Gravity State: NorthWestGravity
+  Backing Store State: NotUseful
+  Save Under State: no
+  Map State: IsViewable
+  Override Redirect State: no
+  Corners:  +400+410  -880+410  -880-422  +400-422
+  -geometry 320x568+399+388
+
+  Bit gravity: ForgetGravity
+  Window gravity: NorthWestGravity
+  Backing-store hint: NotUseful
+  Backing-planes to be preserved: 0xffffffff
+  Backing pixel: 0
+  Save-unders: No
+
+  Someone wants these events:
+      KeyPress
+      KeyRelease
+      EnterWindow
+      LeaveWindow
+      KeymapState
+      Exposure
+      StructureNotify
+      FocusChange
+      PropertyChange
+      ColormapChange
+  Do not propagate these events:
+      ButtonPress
+      ButtonRelease
+      ButtonMotion
+  Override redirection?: No
+
+  Window manager hints:
+      Client accepts input or input focus: Yes
+      Displayed on desktop 0
+      Window type:
+          Normal
+      Process id: 190050 on host therig
+      Frame extents: 1, 1, 22, 1
+
+  Normal window size hints:
+      User supplied location: 400, 410
+      Program supplied minimum size: 320 by 568
+      Program supplied maximum size: 320 by 568
+  No zoom window size hints defined
+
+  No window shape defined
+  No border shape defined
+
+
+
+
+[run_tests] killed after 300s
+
+0 passed, 1 failed, 0 skipped (300.1s of test time)
+[run_tests] JUnit report: artifacts/training/cleanup-touch.xml (1 cases)

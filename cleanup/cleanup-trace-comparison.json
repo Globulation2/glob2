@@ -1,0 +1,56 @@
+[
+  {
+    "name": "diplomacy.trace",
+    "bytes": 1338,
+    "sha256": "db0e2d821e32d8d0d36a7504677a060794bbadebc22e3185977ff233bf27744e",
+    "native_browser_equal": true
+  },
+  {
+    "name": "expanded.trace",
+    "bytes": 327529,
+    "sha256": "1708f8b535c9faab300bd7879a3aa4c21e97c7cc8821a0e20880feb483c76779",
+    "native_browser_equal": true
+  },
+  {
+    "name": "food-supply.trace",
+    "bytes": 18598,
+    "sha256": "2f03bad85755c8394aade965b285f997d087e4bf427313d598ce56f7fc12944a",
+    "native_browser_equal": true
+  },
+  {
+    "name": "introduction.trace",
+    "bytes": 119745,
+    "sha256": "0d438cdf0e2e3e54cba6cdd1499165adbe1ce63672651aee98c4ca3f8c254a7a",
+    "native_browser_equal": true
+  },
+  {
+    "name": "legacy-campaign.trace",
+    "bytes": 1351,
+    "sha256": "6aee04cc3121910161a6d18c8d777b7b5841d8e7c3d680aab6c3cea8f1ed1e49",
+    "native_browser_equal": true
+  },
+  {
+    "name": "prototype.trace",
+    "bytes": 6087,
+    "sha256": "6ebf8bc91e0e2678e749fa2bed9df49fc5a352666a3795c85cf4cae63511d0bc",
+    "native_browser_equal": true
+  },
+  {
+    "name": "scripted-areas.trace",
+    "bytes": 1304,
+    "sha256": "c74658c68e7f5138ec62a87b20b7077855beb5d91ec6a3067ed6527cb022c2dd",
+    "native_browser_equal": true
+  },
+  {
+    "name": "sustainability.trace",
+    "bytes": 1612,
+    "sha256": "740e36ef00ba119111f917651e8573f4601307ac4d57599b24efb55f29d461e6",
+    "native_browser_equal": true
+  },
+  {
+    "name": "water-access.trace",
+    "bytes": 1519,
+    "sha256": "55f3d7df800c2b48368325585113974d0667fc7dd28a9689c8996dcc7b87a926",
+    "native_browser_equal": true
+  }
+]

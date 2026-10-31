@@ -1,0 +1,5 @@
+PASS JavaScriptIntegration/JavaScript custom library and telemetry dialogs render [display:1280x800] [artifacts] (13.6s)
+PASS JavaScriptIntegration/JavaScript terrain resource permissions follow both catalogs and charge full enumeration [display] (22.3s)
+
+2 passed, 0 failed, 0 skipped (35.8s of test time)
+[run_tests] JUnit report: artifacts/training/cleanup-js-display.xml (2 cases)

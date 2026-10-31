@@ -1,0 +1,57 @@
+GLOB2_TEST_BUILD compiler=Clang 22.0.0git (https:/github.com/llvm/llvm-project 3388d40684742e950b3c5d1d2dafe5a40695cfc1) platform=Emscripten pointer_bits=32
+GLOB2_TEST_PROVENANCE {"compiler": "/home/bradley/.local/share/glob2/development/toolchains/emscripten/Linux-x86_64-88a621bc131cd4954413aa39/upstream/emscripten/em++", "dirty": true, "flags": {"CCFLAGS": "", "CPPDEFINES": "GLOB2_RENDER_SHADER_DIR \\\"/shaders\\\" HAVE_CONFIG_H GLOB2_OFFICIAL_INSTANCE_ORIGIN \\\"https://app.glob2.online\\\" GLOB2_OFFICIAL_INSTANCE_FORMER_ORIGINS \\\"https://glob2online.com https://app.glob2online.com\\\"", "CXXFLAGS": "-std=gnu++20 -fwasm-exceptions -g2 -O0 --use-port=zlib", "LINKFLAGS": "--js-library browser/canvas-size.js --js-library browser/webgpu-device.js --js-library browser/gradient-compute.js --preload-file /home/bradley/.codex/worktrees/159d/glob2/build/emscripten/client/debug/dev-dev_fast-true-linker-auto-web_variant-serial/shaders/webgl2@/shaders/webgl2 -fwasm-exceptions -O0 -sLEGACY_GL_EMULATION=1 -sFETCH=1 -sMIN_WEBGL_VERSION=2 -sMAX_WEBGL_VERSION=2 -sALLOW_MEMORY_GROWTH -sINITIAL_MEMORY=134217728 -sSTACK_SIZE=8388608 -sASSERTIONS=1 -sFORCE_FILESYSTEM -lidbfs.js -lwebsocket.js '-sEXPORTED_FUNCTIONS=[\"_main\",\"_malloc\",\"_free\"]' '-sEXPORTED_RUNTIME_METHODS=[\"callMain\",\"FS\"]' --pre-js browser/storage.js --pre-js browser/file-selection.js --pre-js browser/audio.js --pre-js browser/recording.js --pre-js browser/runtime.js --use-port=zlib --pre-js browser/legacy-gl-runtime.js --post-js browser/webgl-shaders.js --pre-js /home/bradley/.codex/worktrees/159d/glob2/build/emscripten/client/debug/dev-dev_fast-true-linker-auto-web_variant-serial/asset-manifest.js --pre-js browser/asset-loader.js"}, "revision": "9919ee40231486dd8cf1dde844ec191d555e14fb", "sourceStatus": [" M campaigns/defensive-tactics.map.gz", " M campaigns/food-supply.map.gz", " M campaigns/fortifications.map.gz", " M campaigns/healing.map.gz", " M campaigns/swimming.map.gz", " M campaigns/upgrades.map.gz", " M campaigns/warrior-training.map.gz"], "sourceTreeSha256": "7fa88728f5040a01ccb3f49954bb6d2cf6d8d0d7c2ef53f080b9c87eff5f9458"}
+readlink() error: No such file or directory
+Settings::load("preferences.txt") : error, can't open file.
+readlink() error: No such file or directory
+Settings::load("preferences.txt") : error, can't open file.
+readlink() error: No such file or directory
+Settings::load("preferences.txt") : error, can't open file.
+readlink() error: No such file or directory
+Settings::load("preferences.txt") : error, can't open file.
+readlink() error: No such file or directory
+Settings::load("preferences.txt") : error, can't open file.
+readlink() error: No such file or directory
+Settings::load("preferences.txt") : error, can't open file.
+Settings::load("/evidence/profile/intro-preferences.txt") : error, can't open file.
+readlink() error: No such file or directory
+Settings::load("preferences.txt") : error, can't open file.
+readlink() error: No such file or directory
+Settings::load("preferences.txt") : error, can't open file.
+readlink() error: No such file or directory
+Settings::load("preferences.txt") : error, can't open file.
+readlink() error: No such file or directory
+Settings::load("preferences.txt") : error, can't open file.
+readlink() error: No such file or directory
+Settings::load("preferences.txt") : error, can't open file.
+readlink() error: No such file or directory
+Settings::load("preferences.txt") : error, can't open file.
+readlink() error: No such file or directory
+Settings::load("preferences.txt") : error, can't open file.
+readlink() error: No such file or directory
+Settings::load("preferences.txt") : error, can't open file.
+Invalid coordinate X=52 for team 1 building 9 (racetrack) with X span [48:52[, healing!
+Invalid coordinate X=53 for team 1 building 9 (racetrack) with X span [48:52[, healing!
+Invalid coordinate X=52 for team 1 building 9 (racetrack) with X span [48:52[, healing!
+Invalid coordinate X=53 for team 1 building 9 (racetrack) with X span [48:52[, healing!
+Invalid coordinate X=52 for team 1 building 9 (racetrack) with X span [48:52[, healing!
+Invalid coordinate X=53 for team 1 building 9 (racetrack) with X span [48:52[, healing!
+Invalid coordinate X=52 for team 1 building 9 (racetrack) with X span [48:52[, healing!
+Invalid coordinate X=53 for team 1 building 9 (racetrack) with X span [48:52[, healing!
+Invalid coordinate Y=45 for team 1 building 9 (racetrack) with Y span [41:45[, healing!
+Invalid coordinate Y=45 for team 1 building 9 (racetrack) with Y span [41:45[, healing!
+Invalid coordinate Y=45 for team 1 building 9 (racetrack) with Y span [41:45[, healing!
+Invalid coordinate Y=45 for team 1 building 9 (racetrack) with Y span [41:45[, healing!
+Invalid coordinate X=52 for team 1 building 9 (racetrack) with X span [48:52[, healing!
+Invalid coordinate Y=45 for team 1 building 9 (racetrack) with Y span [41:45[, healing!
+Invalid coordinate X=53 for team 1 building 9 (racetrack) with X span [48:52[, healing!
+Invalid coordinate Y=45 for team 1 building 9 (racetrack) with Y span [41:45[, healing!
+Invalid coordinate Y=46 for team 1 building 9 (racetrack) with Y span [41:45[, healing!
+Invalid coordinate Y=46 for team 1 building 9 (racetrack) with Y span [41:45[, healing!
+Invalid coordinate Y=46 for team 1 building 9 (racetrack) with Y span [41:45[, healing!
+Invalid coordinate Y=46 for team 1 building 9 (racetrack) with Y span [41:45[, healing!
+Invalid coordinate X=52 for team 1 building 9 (racetrack) with X span [48:52[, healing!
+Invalid coordinate Y=46 for team 1 building 9 (racetrack) with Y span [41:45[, healing!
+Invalid coordinate X=53 for team 1 building 9 (racetrack) with X span [48:52[, healing!
+Invalid coordinate Y=46 for team 1 building 9 (racetrack) with Y span [41:45[, healing!
+readlink() error: No such file or directory
+Settings::load("preferences.txt") : error, can't open file.

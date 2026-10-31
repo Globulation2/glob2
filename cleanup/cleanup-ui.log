@@ -1,0 +1,12 @@
+PASS IntroductionUI/guidance preserves pointer ownership across map drags and concurrent touches [display] (2.5s)
+PASS ScenarioMessages/Scenario messages wrap unspaced UTF-8 text and continuation indents without changing simulation [display] (3.1s)
+PASS IntroductionUI/guidance releases keyboard focus when returning to gameplay [display] (7.0s)
+PASS IntroductionUI/first-run recommendation can be declined and stays dismissed [display][writes-preferences] (4.0s)
+PASS IntroductionUI/mobile guidance announces recovery hints without opening Help [display] (8.9s)
+PASS IntroductionUI/retired tutorial progress stays on disk without appearing as a campaign [display] (2.7s)
+PASS IntroductionUI/catalog and second lesson use generic guidance and restart navigation [display][artifacts] (4.7s)
+PASS IntroductionUI/guidance adapts to desktop touch and large text without consuming map input [display][artifacts] (23.4s)
+PASS IntroductionUI/expanded lesson catalog and guidance fit both phone orientations [display][artifacts] (51.9s)
+
+9 passed, 0 failed, 0 skipped (108.2s of test time)
+[run_tests] JUnit report: artifacts/training/cleanup-ui.xml (9 cases)

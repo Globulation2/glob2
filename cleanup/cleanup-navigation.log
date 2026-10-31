@@ -1,0 +1,44 @@
+
+Running 2 tests using 1 worker
+
+(node:195804) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+[1/2] [chromium] › tests/single-player.spec.js:79:1 › tutorial sessions quit through the end screen and can restart
+[2/2] [chromium] › tests/single-player.spec.js:280:1 › custom and tutorial startup can be cancelled and retried
+  1) [chromium] › tests/single-player.spec.js:280:1 › custom and tutorial startup can be cancelled and retried 
+
+    Test timeout of 90000ms exceeded.
+
+    Error: page.evaluate: Test timeout of 90000ms exceeded.
+
+       at main-menu.js:8
+
+       6 | // Layout runs inside the game's animation frame; two frames after a resize or
+       7 | // rebuild the published bounds are current.
+    >  8 | const settled = page => page.evaluate(() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve))));
+         |                              ^
+       9 | // The logical surface always fills the window at one uniform scale, so bounds
+      10 | // published for a previous window size (their surface has another aspect
+      11 | // ratio) are stale after a resize and must not be clicked.
+        at settled (/home/bradley/.codex/worktrees/159d/glob2/browser/tests/main-menu.js:8:30)
+        at control (/home/bradley/.codex/worktrees/159d/glob2/browser/tests/main-menu.js:22:9)
+        at controlOnScreen (/home/bradley/.codex/worktrees/159d/glob2/browser/tests/main-menu.js:84:21)
+        at Object.exports.clickControl (/home/bradley/.codex/worktrees/159d/glob2/browser/tests/main-menu.js:121:18)
+        at /home/bradley/.codex/worktrees/159d/glob2/browser/tests/single-player.spec.js:291:3
+
+    Error Context: ../artifacts/training/cleanup-navigation-output/single-player-custom-and-t-c58df-an-be-cancelled-and-retried-chromium/error-context.md
+
+    attachment #2: trace (application/zip) ─────────────────────────────────────────────────────────
+    ../artifacts/training/cleanup-navigation-output/single-player-custom-and-t-c58df-an-be-cancelled-and-retried-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace ../artifacts/training/cleanup-navigation-output/single-player-custom-and-t-c58df-an-be-cancelled-and-retried-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+
+  1 failed
+    [chromium] › tests/single-player.spec.js:280:1 › custom and tutorial startup can be cancelled and retried 
+  1 passed (3.0m)

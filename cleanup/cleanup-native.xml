@@ -1,0 +1,99 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="99" failures="0" errors="0" skipped="2"><testsuite name="Introduction"><testcase classname="Introduction" name="archived SGSL save retains embedded source and continuation" time="4.43271" status="run" />
+  <testcase classname="Introduction" name="expanded lessons complete through player orders and saved continuation" time="111.796" status="run" />
+  <testcase classname="Introduction" name="idle time and acknowledgments cannot complete the introduction" time="4.03439" status="run" />
+  <testcase classname="Introduction" name="only published scenario presentation activates tutorial guidance" time="2.865" status="run" />
+  <testcase classname="Introduction" name="packaged lesson maps embed their source and share geography" time="13.3225" status="run" />
+  <testcase classname="Introduction" name="prototype saves retain embedded source objectives and hints without special guidance" time="4.20969" status="run" />
+  <testcase classname="Introduction" name="real orders complete scouting construction supply growth and attack" time="54.8303" status="run" />
+  <testcase classname="Introduction" name="recommendation migrates existing profiles and persists an explicit choice" time="0.7958" status="run" />
+  <testcase classname="Introduction" name="scenario area and queued-building orders need no local presentation player" time="2.40939" status="run" />
+  <testcase classname="Introduction" name="scripted diplomacy is atomic and rejects invalid relationships" time="4.29927" status="run" />
+  <testcase classname="Introduction" name="second lesson completes and resumes with the shared runner" time="9.0268" status="run" />
+  <testcase classname="Introduction" name="training algae requires swimming and named regions survive loading" time="16.7172" status="run" />
+  <testcase classname="Introduction" name="training colonies remain supplied while a learner takes time" time="29.7414" status="run" />
+  <testcase classname="Introduction" name="tutorial metadata is validated atomically with scenario effects" time="2.4094" status="run" />
+  <testcase classname="Introduction" name="zone observations and scenario orders preserve map callback validation" time="2.42668" status="run" />
+  </testsuite><testsuite name="JavaScriptCompatibility"><testcase classname="JavaScriptCompatibility" name="Compact identity tables preserve unused slots and reject invalid entries" time="4.82456" status="run" />
+  <testcase classname="JavaScriptCompatibility" name="Current simulation rejects earlier replays and enforces acceptance boundaries" time="3.04572" status="run" />
+  <testcase classname="JavaScriptCompatibility" name="JavaScript current saves reject truncated generation tables" time="7.57891" status="run" />
+  <testcase classname="JavaScriptCompatibility" name="JavaScript current text saves validate unused generation counters" time="56.3627" status="run" />
+  <testcase classname="JavaScriptCompatibility" name="JavaScript pass assigns valid identities to released saves" time="3.37522" status="run" />
+  <testcase classname="JavaScriptCompatibility" name="JavaScript test environment scopes restore SDL and CRT readers" time="0.000163" status="run" />
+  <testcase classname="JavaScriptCompatibility" name="JavaScript upgrade retains genuine master124 experiments and continuation" time="2.66545" status="run" />
+  </testsuite><testsuite name="JavaScriptIntegration"><testcase classname="JavaScriptIntegration" name="JavaScript AI state RNG and disabled state survive continuation" time="3.16663" status="run" />
+  <testcase classname="JavaScriptIntegration" name="JavaScript bound observations and order encoding remain isolated from live mutations" time="0.636581" status="run" />
+  <testcase classname="JavaScriptIntegration" name="JavaScript building clearing materials retain full fixed slots and legacy view" time="1.2276" status="run" />
+  <testcase classname="JavaScriptIntegration" name="JavaScript compact population pagination preserves visibility and fixed query budgets" time="1.06004" status="run" />
+  <testcase classname="JavaScriptIntegration" name="JavaScript custom building descriptors and orders follow services" time="1.77092" status="run" />
+  <testcase classname="JavaScriptIntegration" name="JavaScript custom library atomic updates and frozen source" time="0.091655" status="run" />
+  <testcase classname="JavaScriptIntegration" name="JavaScript farm areas: experiments query, farmArea order and tile field" time="1.80165" status="run" />
+  <testcase classname="JavaScriptIntegration" name="JavaScript flag orders use explicit custom attraction roles" time="1.73891" status="run" />
+  <testcase classname="JavaScriptIntegration" name="JavaScript large world observations respect work limits" time="2.42826" status="run" />
+  <testcase classname="JavaScriptIntegration" name="JavaScript legacy empty resource memories discard unused stock bytes" time="1.24019" status="run" />
+  <testcase classname="JavaScriptIntegration" name="JavaScript linked sources freeze once and removal retains external files" time="0.044241" status="run" />
+  <testcase classname="JavaScriptIntegration" name="JavaScript managed controls use capabilities and independent bombing filter" time="1.76211" status="run" />
+  <testcase classname="JavaScriptIntegration" name="JavaScript material metadata and remembered multi-yield sources survive both stream formats" time="1.03203" status="run" />
+  <testcase classname="JavaScriptIntegration" name="JavaScript native spatial answers exclude hidden terrain resources and enemies" time="0.959008" status="run" />
+  <testcase classname="JavaScriptIntegration" name="JavaScript observations visibility memory pagination and stale references" time="2.53506" status="run" />
+  <testcase classname="JavaScriptIntegration" name="JavaScript ordered observations keep the first view of each logical tick" time="0.902929" status="run" />
+  <testcase classname="JavaScriptIntegration" name="JavaScript orders execute and survive save load" time="4.21782" status="run" />
+  <testcase classname="JavaScriptIntegration" name="JavaScript path diagonals retain the neutral strategic metric" time="1.10409" status="run" />
+  <testcase classname="JavaScriptIntegration" name="JavaScript path fields use terrain travel costs and invalidate speed-only changes" time="0.844314" status="run" />
+  <testcase classname="JavaScriptIntegration" name="JavaScript placement reserves footprints and explains impossible constraints" time="1.03243" status="run" />
+  <testcase classname="JavaScriptIntegration" name="JavaScript production updates retain developer recipes beyond the builtins" time="1.36443" status="run" />
+  <testcase classname="JavaScriptIntegration" name="JavaScript profile two spatial cache and queued save continuity" time="0.918498" status="run" />
+  <testcase classname="JavaScriptIntegration" name="JavaScript projected boundary preserves history and spatial resources without ecology fields" time="1.23557" status="run" />
+  <testcase classname="JavaScriptIntegration" name="JavaScript queued edits preserve fairness cancellation and stale targets" time="1.21803" status="run" />
+  <testcase classname="JavaScriptIntegration" name="JavaScript scenario effects commit atomically and resume" time="1.95393" status="run" />
+  <testcase classname="JavaScriptIntegration" name="JavaScript services reject unsavable transactions without changing state" time="1.77505" status="run" />
+  <testcase classname="JavaScriptIntegration" name="JavaScript solid attraction placement keeps both radius and footprint reservation" time="2.01353" status="run" />
+  <testcase classname="JavaScriptIntegration" name="JavaScript telemetry scene permissions and replay diagnostic roundtrip" time="0.948945" status="run" />
+  <testcase classname="JavaScriptIntegration" name="JavaScript terrain registry exposes immutable property capabilities in both profiles" time="1.4065" status="run" />
+  <testcase classname="JavaScriptIntegration" name="JavaScript upgrade dispatch survives tracking record growth" time="0.813513" status="run" />
+  <testcase classname="JavaScriptIntegration" name="Online AI installs verify bytes and preserve provenance on rollback" time="0.076958" status="run" />
+  <testcase classname="JavaScriptIntegration" name="JavaScript custom library and telemetry dialogs render [display:1280x800] [artifacts]" time="0.000"><skipped message="needs a display" /></testcase><testcase classname="JavaScriptIntegration" name="JavaScript terrain resource permissions follow both catalogs and charge full enumeration [display]" time="0.000"><skipped message="needs a display" /></testcase></testsuite><testsuite name="JavaScriptPresentation"><testcase classname="JavaScriptPresentation" name="Failed prepared map replacements preserve active globals and language" time="0.962871" status="run" />
+  <testcase classname="JavaScriptPresentation" name="JavaScript does not advance or display a retained SGSL timer" time="2.83302" status="run" />
+  <testcase classname="JavaScriptPresentation" name="JavaScript leaves stored SGSL execution and victory conditions dormant" time="2.21266" status="run" />
+  <testcase classname="JavaScriptPresentation" name="JavaScript load restores presentation without a callback or history entry" time="4.17627" status="run" />
+  <testcase classname="JavaScriptPresentation" name="JavaScript presentation publishes only changed localized messages" time="2.34751" status="run" />
+  <testcase classname="JavaScriptPresentation" name="Leaving a JavaScript scenario resets choices before loading a legacy map" time="2.83278" status="run" />
+  <testcase classname="JavaScriptPresentation" name="Prepared SGSL exchanges rebind stories in both runtimes" time="0.790171" status="run" />
+  </testsuite><testsuite name="ScriptGenerator"><testcase classname="ScriptGenerator" name="All named stream consumers share creation limits and accounting" time="0.104427" status="run" />
+  <testcase classname="ScriptGenerator" name="Boolean buffer proxies become JavaScript booleans" time="0.023611" status="run" />
+  <testcase classname="ScriptGenerator" name="By value copies reserve native payloads before allocation" time="0.013716" status="run" />
+  <testcase classname="ScriptGenerator" name="Conversion failures release intermediate QuickJS containers" time="0.011493" status="run" />
+  <testcase classname="ScriptGenerator" name="Custom preferences persist string identity and tolerate missing packages" time="0.022724" status="run" />
+  <testcase classname="ScriptGenerator" name="Every operation registration path shares the handle budget" time="0.352764" status="run" />
+  <testcase classname="ScriptGenerator" name="Fertility binding rejects incomplete fields and mismatched masks" time="0.087912" status="run" />
+  <testcase classname="ScriptGenerator" name="Fertility binding reserves native work and memory before rebuilding" time="1.0013" status="run" />
+  <testcase classname="ScriptGenerator" name="Frozen controls survive package replacement and catalogs are released" time="0.024305" status="run" />
+  <testcase classname="ScriptGenerator" name="Frozen selections retain defaults and rules after package removal" time="0.028432" status="run" />
+  <testcase classname="ScriptGenerator" name="Full toolkit records buffers geometry callbacks and solver" time="1.24103" status="run" />
+  <testcase classname="ScriptGenerator" name="Graph ownership optional callbacks and pointer outputs" time="0.573627" status="run" />
+  <testcase classname="ScriptGenerator" name="Initial training levels determine unit water placement before allocation" time="0.967612" status="run" />
+  <testcase classname="ScriptGenerator" name="Installed generator library writes to a fresh user profile [writes-preferences]" time="0.507497" status="run" />
+  <testcase classname="ScriptGenerator" name="Library mutations retain memory and disk when storage throws" time="0.013981" status="run" />
+  <testcase classname="ScriptGenerator" name="Moved callback arguments retain their converted storage" time="0.0098" status="run" />
+  <testcase classname="ScriptGenerator" name="Native scratch tables respect the allocation budget" time="4.48014" status="run" />
+  <testcase classname="ScriptGenerator" name="Native work and interpreter resource failures are sticky" time="20.3271" status="run" />
+  <testcase classname="ScriptGenerator" name="Nested buffer fills are accounted and returned rows own their data" time="0.008508" status="run" />
+  <testcase classname="ScriptGenerator" name="Nested buffer get fill and set reserve before copying" time="0.024072" status="run" />
+  <testcase classname="ScriptGenerator" name="Online generator installation verifies hashes and persists provenance transactionally" time="0.029655" status="run" />
+  <testcase classname="ScriptGenerator" name="Optional JavaScript examples generate repeatable validated worlds [slow]" time="58.2115" status="run" />
+  <testcase classname="ScriptGenerator" name="Owned classes preserve borrowed context and RNG expiration" time="1.73852" status="run" />
+  <testcase classname="ScriptGenerator" name="Package identity controls modules and installation rollback" time="0.047989" status="run" />
+  <testcase classname="ScriptGenerator" name="Repeated point handles share one owned prototype" time="0.009207" status="run" />
+  <testcase classname="ScriptGenerator" name="Request immutability RNG streams and module isolation" time="0.051911" status="run" />
+  <testcase classname="ScriptGenerator" name="Scenario creation validates options and cannot run in validators" time="1.30179" status="run" />
+  <testcase classname="ScriptGenerator" name="Script control mutations cannot bypass native domain contracts" time="0.090979" status="run" />
+  <testcase classname="ScriptGenerator" name="Script resource placement uses the world catalog and bounded brushes" time="0.941729" status="run" />
+  <testcase classname="ScriptGenerator" name="Script terrain and colonies go through engine world validation" time="5.33964" status="run" />
+  <testcase classname="ScriptGenerator" name="Shared generated worlds continue identically without installed generator code [golden]" time="11.2152" status="run" />
+  <testcase classname="ScriptGenerator" name="Site graphs share distance captures and account repeated graph copies" time="1.18102" status="run" />
+  <testcase classname="ScriptGenerator" name="Toolkit consumers reject empty fertility arguments" time="0.507978" status="run" />
+  </testsuite><testsuite name="TurnEngineHarness"><testcase classname="TurnEngineHarness" name="the committed match record verifies to the committed checksum trace [network-sim][golden]" time="5.88865" status="run" />
+  </testsuite><testsuite name="JavaScriptTransactions"><testcase classname="JavaScriptTransactions" name="JavaScript caught host resource failures remain fatal" time="0.008981" status="run" />
+    <testcase classname="JavaScriptTransactions" name="JavaScript initialization rejects unsupported rounding mode" time="0" status="run" />
+    <testcase classname="JavaScriptTransactions" name="JavaScript rejected callbacks roll back global mutations" time="0.012017" status="run" />
+  </testsuite></testsuites>

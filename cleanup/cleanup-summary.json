@@ -1,0 +1,41 @@
+{
+  "source": "6bd60263a4040dd3993b0c3c13e62725fd9a46ed",
+  "integrated_master": "b011f8f0ddeeb24d415408460c648ed287b724a0",
+  "native": {
+    "passed": 95,
+    "failed": 0,
+    "display_skipped": 2,
+    "separate_display_passed": 2
+  },
+  "tutorial_ui": {
+    "passed": 9,
+    "failed": 0
+  },
+  "javascript_unit": 149,
+  "authoring": 11,
+  "translations": 9,
+  "gog": 26,
+  "release_guards": 4,
+  "web_assets": {
+    "passed": 25,
+    "optional_fonttools_skip": 1
+  },
+  "chromium_serial": {
+    "introduction_cases": 15,
+    "identical_native_traces": 9,
+    "phone_tests": 2,
+    "quit_restart": 1,
+    "loader_cancel_retry": 1
+  },
+  "deterministic_map_regeneration": "all ten passed",
+  "sim_revision": 104,
+  "golden_match": "passed",
+  "physical_mobile_windows_macos_firefox_webkit_threaded_rerun": false,
+  "touch_harness": {
+    "passed": 1,
+    "failed": 0,
+    "duration_seconds": 443.9,
+    "budget_seconds": 900,
+    "initial_budget_timeout_seconds": 300
+  }
+}

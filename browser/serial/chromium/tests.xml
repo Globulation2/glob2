@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+  <testsuite name="./this.program" errors="0" failures="0" tests="4741" time="347.359" timestamp="2026-10-31T18:31:51Z" doctest_version="2.4.11">
+    <testcase classname="src/tutorial/IntroductionTest.cpp" name="packaged lesson maps embed their source and share geography" time="14.135" status="run"/>
+    <testcase classname="src/tutorial/IntroductionTest.cpp" name="training algae requires swimming and named regions survive loading" time="25.142" status="run"/>
+    <testcase classname="src/tutorial/IntroductionTest.cpp" name="training colonies remain supplied while a learner takes time" time="42.093" status="run"/>
+    <testcase classname="src/tutorial/IntroductionTest.cpp" name="real orders complete scouting construction supply growth and attack" time="77.101" status="run"/>
+    <testcase classname="src/tutorial/IntroductionTest.cpp" name="idle time and acknowledgments cannot complete the introduction" time="3.613" status="run"/>
+    <testcase classname="src/tutorial/IntroductionTest.cpp" name="recommendation migrates existing profiles and persists an explicit choice" time="0.677" status="run"/>
+    <testcase classname="src/tutorial/IntroductionTest.cpp" name="only published scenario presentation activates tutorial guidance" time="1.684" status="run"/>
+    <testcase classname="src/tutorial/IntroductionTest.cpp" name="second lesson completes and resumes with the shared runner" time="15.533" status="run"/>
+    <testcase classname="src/tutorial/IntroductionTest.cpp" name="prototype saves retain embedded source objectives and hints without special guidance" time="5.134" status="run"/>
+    <testcase classname="src/tutorial/IntroductionTest.cpp" name="tutorial metadata is validated atomically with scenario effects" time="2.904" status="run"/>
+    <testcase classname="src/tutorial/IntroductionTest.cpp" name="expanded lessons complete through player orders and saved continuation" time="145.484" status="run"/>
+    <testcase classname="src/tutorial/IntroductionTest.cpp" name="zone observations and scenario orders preserve map callback validation" time="2.023" status="run"/>
+    <testcase classname="src/tutorial/IntroductionTest.cpp" name="scenario area and queued-building orders need no local presentation player" time="1.971" status="run"/>
+    <testcase classname="src/tutorial/IntroductionTest.cpp" name="archived SGSL save retains embedded source and continuation" time="6.141" status="run"/>
+    <testcase classname="src/tutorial/IntroductionTest.cpp" name="scripted diplomacy is atomic and rejects invalid relationships" time="3.724" status="run"/>
+  </testsuite>
+</testsuites>
