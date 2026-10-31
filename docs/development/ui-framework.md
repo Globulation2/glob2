@@ -244,6 +244,46 @@ not an isolated dictionary sense. Preserve tutorial execution and campaign IDs;
 only their presentation is localized. Review legitimate names and loanwords
 explicitly rather than changing correct text merely to avoid an English match.
 
+### Google NMT draft preparation
+
+After preparing a frozen kit and blank draft, use
+`python3 tools/localization/google_draft.py --output artifacts/translation-program --locale fil --pilot 42`
+for a pilot spanning source domains and both surfaces. Omit `--pilot` to resume
+the remaining entries. The runner uses the existing `gcloud` login and defaults
+to the Bradley Personal project; `--project` selects another explicitly authorized
+project. It uses the NMT model with English as the source language.
+
+The runner protects tokens and invariants, retains raw responses, and caches
+identical requests. Nonblank draft values are retained so resuming cannot undo
+editorial work. Inspect rejected entries rather than repeatedly requesting them.
+The local attempt ledger reserves estimated charges before each request, including
+failed attempts, without assuming monthly credits. `--max-usd` bounds cumulative
+estimated charges, including HTML protection overhead; recheck provider pricing
+before use. Interrupted runs retain their evidence and may leave a lock that must
+be inspected before removal. These drafts still require the independent review
+and rendering gates above.
+
+### Filipino terminology
+
+Filipino (`fil`, including the `tl` system-language alias) uses contemporary
+standard Filipino in the Latin script. Use direct, respectful instructions and
+recognizable technical loanwords rather than awkward literal translations.
+Follow the [KWF orthography guide](https://kwfdiksiyonaryo.ph/gabay) for retained
+foreign spellings and affixes; ordinary UI text does not need dictionary stress
+marks.
+
+Use **manggagawa** for gathering/building workers, **mandirigma** for warriors,
+**tagapaggalugad** for explorers, **Pugad** for the unit-producing Swarm building,
+**Panuluyan** for Inns, **Pamilihan** for Markets, and **bandila** for flags.
+Explain unit conversion as joining another team. Distinguish credits acknowledging
+contributors from spendable studio credits, and computing workers from colony
+units. Consult gameplay context when these terms occur in other senses.
+
+Review complete sentences and assembled browser fragments. Preserve necessary
+boundary spaces, but avoid spaces introduced around protected placeholders before
+punctuation. Numeric counts usually take an unchanged noun; do not mechanically
+add `mga` or assume the runtime's `one` plural category means exactly one.
+
 ### Hindi, Urdu and Swahili terminology
 
 Use these concept anchors across the game, lessons and online messages. Inflect

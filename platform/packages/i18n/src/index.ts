@@ -58,20 +58,20 @@ export function resolveLocale(input: string | readonly string[]): Locale {
         ? 'deva'
         : language === 'ur'
           ? 'arab'
-          : language === 'sw'
+          : language === 'sw' || language === 'fil' || language === 'tl'
             ? 'latn'
             : undefined;
     if (writtenScript) {
       const extension = parts.findIndex((part) => part.length === 1);
       const subtags = extension < 0 ? parts : parts.slice(0, extension);
-      const script = subtags.find((part) => /^[a-z]{4}$/.test(part));
-      if (script && script !== writtenScript) continue;
+      if (subtags.some((part) => /^[a-z]{4}$/.test(part) && part !== writtenScript)) continue;
     }
     if (language === 'pt') return parts.includes('br') ? 'pt-BR' : 'pt-PT';
     if (language === 'zh')
       return parts.some((p) => ['hant', 'tw', 'hk', 'mo'].includes(p)) ? 'zh-Hant' : 'zh-Hans';
     if (language === 'sr') return 'sr-Cyrl';
     if (language === 'in') return 'id';
+    if (language === 'tl') return 'fil';
     const base = locales.find((l) => l.code === language);
     if (base) return base.code;
   }
@@ -107,6 +107,7 @@ export function hasMessage(source: string, locale = selected): boolean {
   return !!catalog && Object.hasOwn(catalog, source);
 }
 const loaders: Record<string, () => Promise<{ default: Catalog }>> = {
+  fil: () => import('../locales/fil.json', { with: { type: 'json' } }),
   hi: () => import('../locales/hi.json', { with: { type: 'json' } }),
   ur: () => import('../locales/ur.json', { with: { type: 'json' } }),
   sw: () => import('../locales/sw.json', { with: { type: 'json' } }),
