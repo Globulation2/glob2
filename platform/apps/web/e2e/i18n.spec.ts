@@ -121,8 +121,11 @@ test('Telugu renders shared online pages, authentication, invites and errors', a
     const response = await page.goto(path);
     expect(response?.status()).toBeLessThan(500);
     await expect(page.locator('html')).toHaveAttribute('lang', 'te');
-    if (heading)
-      await expect(page.getByRole('heading', { level: 1 })).toHaveText(catalog[heading]!);
+    if (heading) {
+      const translated = catalog[heading];
+      expect(translated).toBeTruthy();
+      await expect(page.getByRole('heading', { level: 1 })).toHaveText(translated ?? '');
+    }
     const loaded = await page.evaluate(async () => {
       const faces = await document.fonts.load('20px "Glob2 Scripts"', 'తెలుగు');
       await document.fonts.ready;
@@ -139,7 +142,7 @@ test('Telugu renders shared online pages, authentication, invites and errors', a
     const screenshotPath = directory
       ? resolve(directory, info.project.name, `te-${name}.png`)
       : undefined;
-    if (screenshotPath) mkdirSync(resolve(directory!, info.project.name), { recursive: true });
+    if (directory) mkdirSync(resolve(directory, info.project.name), { recursive: true });
     await info.attach(`te-${name}`, {
       body: await page.screenshot({ fullPage: true, path: screenshotPath }),
       contentType: 'image/png',
@@ -156,7 +159,7 @@ test('Telugu renders shared online pages, authentication, invites and errors', a
   await capture('/account', 'account', 'Your account');
   await expect(page.locator('main')).toContainText('Kestrel');
   await capture('/maps/new', 'upload', 'Upload a map');
-  await expect(page.locator('.upload-form option[value="unlisted"]')).toHaveText(
-    catalog['Unlisted — accessible by link']!,
-  );
+  const visibility = catalog['Unlisted — accessible by link'];
+  expect(visibility).toBeTruthy();
+  await expect(page.locator('.upload-form option[value="unlisted"]')).toHaveText(visibility ?? '');
 });
