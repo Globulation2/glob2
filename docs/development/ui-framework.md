@@ -289,6 +289,10 @@ game and the shared browser font CSS. Retain those tables and the OFL licence in
 packages. Check conjuncts, reph, vowel signs, mixed Latin text and Bengali digits
 at small sizes; glyph coverage alone does not establish correct shaping or fit.
 Explicit non-Bengali script tags must not select the Bengali-script catalog.
+After adding or changing a language's displayed name, regenerate the checked-in
+browser assets with the pinned exporter command in `browser/derive_assets.py`.
+Its font fingerprint includes the language-name inventory even when the resulting
+subset font bytes stay identical.
 
 ### Hindi, Urdu and Swahili terminology
 
