@@ -104,11 +104,13 @@ test.describe('Filipino browser preference', () => {
       await page.locator('.rail-expand').click();
     const selector = page.locator('[data-testid="language-selector"]:visible').first();
     await selector.selectOption('en');
+    await expect(page.locator('html')).toHaveAttribute('lang', 'en');
     await page.reload();
     await expect(page.locator('html')).toHaveAttribute('lang', 'en');
     if (!(await page.getByTestId('language-selector').first().isVisible()))
       await page.locator('.rail-expand').click();
     await page.locator('[data-testid="language-selector"]:visible').first().selectOption('fil');
+    await expect(page.locator('html')).toHaveAttribute('lang', 'fil');
     await page.reload();
     await expect(page.locator('html')).toHaveAttribute('lang', 'fil');
     await page.goto('/maps');
