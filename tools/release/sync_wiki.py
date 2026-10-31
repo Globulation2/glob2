@@ -86,6 +86,7 @@ def render(title, inventory, latest):
                  '[https://glob2.online/ Current website and downloads] · '
                  '[https://app.glob2.online/ Play in your browser]',
                  'See the linked release for its available packages and notes. Platform availability varies by release.',
+                 'Source code: [[Git|current repository and build instructions]].',
                  '=== Public previews ===']
         lines += [entry(r) for r in previews] or ['No public versioned previews are currently listed.']
         lines += ['See [[Changes]] and [[Older Releases]] for release history.']
@@ -128,12 +129,19 @@ class Wiki:
         return result
 
     def login(self, username, password):
-        if '@' not in username or not password:
-            raise SyncError('A bot username (Account@BotName) and bot password are required')
+        if not username or not password:
+            raise SyncError('Wiki username and password are required')
         token = self.call(action='query', meta='tokens', type='login')['query']['tokens']['logintoken']
-        result = self.call(action='login', lgname=username, lgpassword=password, lgtoken=token)
-        if result.get('login', {}).get('result') != 'Success':
-            raise SyncError('Bot login failed; check credentials, permissions and CAPTCHA requirements')
+        if '@' in username:
+            result = self.call(action='login', lgname=username, lgpassword=password, lgtoken=token)
+            success = result.get('login', {}).get('result') == 'Success'
+        else:
+            result = self.call(action='clientlogin', username=username, password=password,
+                               logintoken=token, loginreturnurl='https://globulation2.org/wiki/Main_Page',
+                               loginmessageformat='none')
+            success = result.get('clientlogin', {}).get('status') == 'PASS'
+        if not success:
+            raise SyncError('Wiki login failed or requires interaction; no automatic retry')
 
     def read(self, title):
         data = self.call(action='query', prop='revisions|info', titles=title,
@@ -169,7 +177,8 @@ def main():
     inventory, latest = releases(fetch)
     wiki = Wiki(fetch)
     if args.publish:
-        wiki.login(os.environ.get('WIKI_BOT_USERNAME', ''), os.environ.get('WIKI_BOT_PASSWORD', ''))
+        wiki.login(os.environ.get('WIKI_USERNAME', os.environ.get('WIKI_BOT_USERNAME', '')),
+                   os.environ.get('WIKI_PASSWORD', os.environ.get('WIKI_BOT_PASSWORD', '')))
     proposals = []
     for title in PAGES:
         page = wiki.read(title)

@@ -38,6 +38,7 @@ class WikiSyncTest(unittest.TestCase):
         text = sync.render('Download and Install', [stable, preview], stable['tag_name'])
         self.assertNotIn('malicious', text)
         self.assertIn('Public previews', text)
+        self.assertIn('[[Git|current repository and build instructions]]', text)
         self.assertIn('(preview;', text)
         self.assertFalse(sync.TAG.fullmatch('v0.11.4.0\n{{bad}}'))
 
@@ -64,14 +65,31 @@ class WikiSyncTest(unittest.TestCase):
         with self.assertRaises(sync.SyncError):
             sync.NoRedirect().redirect_request(None, None, 302, '', {}, 'http://other.invalid')
 
-    def test_login_requires_bot_credentials_and_success(self):
+    def test_login_requires_credentials_and_success(self):
         wiki = sync.Wiki(Mock())
         with self.assertRaises(sync.SyncError):
-            wiki.login('Genixpro', 'main-password')
+            wiki.login('', '')
         wiki.fetch = Mock(side_effect=[{'query': {'tokens': {'logintoken': 'token'}}},
                                        {'login': {'result': 'NeedToken'}}])
         with self.assertRaises(sync.SyncError):
             wiki.login('Genixpro@ReleaseSync', 'secret')
+
+    def test_account_login_uses_clientlogin_and_never_continues_challenges(self):
+        from urllib.parse import parse_qs
+        for status in ('PASS', 'FAIL', 'UI', 'REDIRECT', 'RESTART'):
+            fetch = Mock(side_effect=[{'query': {'tokens': {'logintoken': 'token'}}},
+                                      {'clientlogin': {'status': status}}])
+            wiki = sync.Wiki(fetch)
+            if status == 'PASS':
+                wiki.login('Genixpro', 'test-password')
+            else:
+                with self.assertRaises(sync.SyncError):
+                    wiki.login('Genixpro', 'test-password')
+            self.assertEqual(fetch.call_count, 2)
+            params = parse_qs(fetch.call_args.args[1].decode())
+            self.assertEqual(params['action'], ['clientlogin'])
+            self.assertEqual(params['username'], ['Genixpro'])
+            self.assertEqual(params['loginreturnurl'], ['https://globulation2.org/wiki/Main_Page'])
 
     def test_edit_conflict_captcha_and_session_loss_fail(self):
         page = dict(title='Changes', revid=5, timestamp='time', start='start')
