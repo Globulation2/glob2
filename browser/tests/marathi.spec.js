@@ -156,12 +156,13 @@ for (const device of [
     await screen(page, 'GameSessionScreen');
     await expect.poll(async () => (await snapshot(page)).tick, {timeout: 120000}).toBeGreaterThan(25);
     await expect.poll(() => label(page, 'intro/help')).toBe('मदत / का?');
-    if (device.hasTouch)
-      await expect.poll(() => label(page, 'intro/instruction')).toContain('शोध ध्वज');
     await control(page, 'intro/help');
     records.lesson = await snapshot(page);
     await page.screenshot({path: path.join(evidence, 'lesson.png')});
     await clickControl(page, 'intro/help');
+    // Help retains the instruction even if an inactivity hint has appeared.
+    if (device.hasTouch)
+      await expect.poll(() => label(page, 'intro/instruction')).toContain('शोध ध्वज');
     records.lessonHelp = await snapshot(page);
     await page.screenshot({path: path.join(evidence, 'lesson-help.png')});
     records.errors = errors;
