@@ -32,3 +32,6 @@ data/texts.id.txt
 data/texts.vi.txt
 data/texts.ja.txt
 data/texts.ko.txt
+data/texts.hi.txt
+data/texts.ur.txt
+data/texts.sw.txt

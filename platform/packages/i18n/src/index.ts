@@ -107,6 +107,9 @@ export function hasMessage(source: string, locale = selected): boolean {
   return !!catalog && Object.hasOwn(catalog, source);
 }
 const loaders: Record<string, () => Promise<{ default: Catalog }>> = {
+  hi: () => import('../locales/hi.json', { with: { type: 'json' } }),
+  ur: () => import('../locales/ur.json', { with: { type: 'json' } }),
+  sw: () => import('../locales/sw.json', { with: { type: 'json' } }),
   ar: () => import('../locales/ar.json', { with: { type: 'json' } }),
   ca: () => import('../locales/ca.json', { with: { type: 'json' } }),
   cs: () => import('../locales/cs.json', { with: { type: 'json' } }),
