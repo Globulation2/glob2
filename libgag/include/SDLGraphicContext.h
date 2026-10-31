@@ -147,6 +147,10 @@ namespace GAGCore
 		//! Whether every character of this UTF-8 string has a glyph in this font
 		virtual bool hasGlyphsFor(const std::string &utf8Text) { return true; }
 
+		//! Positive UTF-8 byte ends of indivisible shaping clusters, in logical order.
+		//! Legacy fonts default to code points; shaped fonts override this contract.
+		virtual std::vector<std::size_t> getStringClusterEnds(const std::string &text);
+
 		// width and height
 		virtual int getStringWidth(const std::string string) = 0;
 		virtual int getStringWidth(const std::string string, int len);

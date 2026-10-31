@@ -192,7 +192,7 @@ export function MusicPlayer({
       <div className="music-timeline">
         <div className="music-waveform-labels" aria-hidden="true">
           {MOODS.map((mood) => (
-            <span key={mood}>{mood}</span>
+            <span key={mood}>{t(mood)}</span>
           ))}
         </div>
         <div
@@ -205,7 +205,7 @@ export function MusicPlayer({
               className={`mood-${i}`}
               viewBox={`0 0 ${Math.max(1, track.waveform.length)} 40`}
               preserveAspectRatio="none"
-              aria-label={t('{value0} waveform', { value0: MOODS[i] })}
+              aria-label={t('{value0} waveform', { value0: t(MOODS[i]) })}
               style={{ opacity: 0.35 + (player.weights[i] ?? 0) * 0.65 }}
             >
               {track.waveform.map((peak, x) => (
@@ -299,7 +299,7 @@ export function MusicPlayer({
         <div className="music-mix-readout">
           {MOODS.map((mood, i) => (
             <span key={mood}>
-              {mood}{' '}
+              {t(mood)}{' '}
               <strong>
                 <RichMessage
                   source={'{slot0}%'}

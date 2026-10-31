@@ -2887,5 +2887,6 @@
   "More filters": "更多篩選條件",
   "Clear filters": "清除篩選條件",
   "No results match these filters.": "沒有符合這些篩選條件的結果。",
-  "Results: {value0}": "結果: {value0}"
+  "Results: {value0}": "結果: {value0}",
+  "Game text field": "遊戲內文字輸入欄位"
 }

@@ -316,6 +316,8 @@ jobs:
           python3 test/ci_run_commands.py \
             --check 'translation catalog' 'python3 data/check_translations.py --strict' \
             --check 'translation tests' 'python3 test/test_translations.py' \
+            --check 'translation review tooling' 'python3 test/test_translation_program.py' \
+            --check 'script support probe tooling' 'python3 test/test_script_support.py' \
             --check 'font coverage' 'GLOB2_SDL3_PREFIX=build/sdl3-ci/prefix python3 test/test_font_coverage.py'
       - name: Exercise production CLI and retain continuation traces
         if: ${{ !cancelled() }}

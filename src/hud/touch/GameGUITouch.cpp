@@ -61,6 +61,12 @@ MobileLayout GameGUITouch::layout() const
 		gfx->getW() / unit, gfx->getH() / unit, insets, 0, 1, panelOpen,
 		resolved.layout == PresentationLayout::Spacious,
 		resolved.layout == PresentationLayout::Spacious ? resolved.panelWidth : 288);
+	// Keep the icon band, then reserve the actual wrapped label height and
+	// bottom padding. Tall scripts and accessibility text grow upward into
+	// the world; drawing and hit regions share the resulting action strip.
+	const double labelHeight = navigationLabelHeight(result.actions.w / 6 - 4);
+	result.actions.h = std::max(result.actions.h, 32 + labelHeight + (labelHeight > 16 ? 4 : 0));
+	result.actions.y = result.safe.y + result.safe.h - result.actions.h;
 	// Persistent palettes float too: the map remains visible below their last
 	// icon, and opening an inspector never changes the camera's framing.
 	result.world = result.safe;
@@ -176,11 +182,19 @@ MobileLayout GameGUITouch::layout() const
 	}
 	return result;
 }
+double GameGUITouch::tutorialPitch() const
+{
+	return tutorialLineStep * InGameTouchTheme::textGrowth();
+}
+double GameGUITouch::tutorialFooterHeight() const
+{
+	return gui.swallowSpaceKey ? std::max(48.0, tutorialFontHeight * InGameTouchTheme::textGrowth() + 16) : 0;
+}
 double GameGUITouch::tutorialMaximum() const
 {
 	const double unit = globalContainer->gfx->logicalUnitsPerPoint();
-	return std::max(0.0, tutorialLines.size() * InGameTouchTheme::tutorialPitch() - tutorialRect().h / unit + 16 +
-							 (gui.swallowSpaceKey ? 48 : 0));
+	return std::max(0.0, tutorialLines.size() * tutorialPitch() - tutorialRect().h / unit + 16 +
+							 tutorialFooterHeight());
 }
 void GameGUITouch::clampScroll()
 {
@@ -1326,7 +1340,7 @@ void GameGUITouch::interfaceTap(ViewPoint point)
 			tutorialCollapsed = true;
 			return;
 		}
-		if (point.y < tutorial.y + tutorial.h - 48 * globalContainer->gfx->logicalUnitsPerPoint())
+		if (point.y < tutorial.y + tutorial.h - tutorialFooterHeight() * globalContainer->gfx->logicalUnitsPerPoint())
 			return;
 		if (!gui.swallowSpaceKey)
 		{
@@ -1655,8 +1669,8 @@ void GameGUITouch::prepareDraw()
 	}
 	if (usesHUD())
 	{
-		clampScroll();
 		prepareTutorial();
+		clampScroll();
 	}
 	syncGestureExclusion();
 	if (gui.selectionMode != GameGUI::TOOL_SELECTION ||

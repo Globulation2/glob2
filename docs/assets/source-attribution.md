@@ -5,6 +5,8 @@ Sources of files not created by the Globulation 2 project:
 Font :
 sans.ttf : Glob2 Sans, based on DejaVu Sans 2.26 from Ubuntu, with Droid Sans Fallback CJK outlines. See data/fonts/README.md and accompanying font licenses.
 
+data/fonts/scripts/ : Noto script fonts, pinned to noto-fonts commit ffebf8c1ee449e544955a7e813c54f9b73848eac, under SIL Open Font License 1.1. Their shaping tables are retained; see data/fonts/LICENSE-Noto.txt and data/fonts/README.md.
+
 Web font (platform web app and sign-in pages only, not the game) :
 Nunito, copyright 2014 The Nunito Project Authors, SIL Open Font License 1.1 (licence in platform/apps/web/public/fonts/LICENSE-Nunito.txt), from @fontsource-variable/nunito. See platform/apps/web/art/README.md.
 

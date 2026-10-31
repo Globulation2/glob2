@@ -1,10 +1,15 @@
 import { fileURLToPath } from 'node:url';
+import { copyFileSync } from 'node:fs';
 import { defineConfig, searchForWorkspaceRoot } from 'vite';
 import react from '@vitejs/plugin-react';
 import { syncDesignSystem, stageDesignAssets } from '../../scripts/design-system.mjs';
 
 const designSystem = syncDesignSystem();
 stageDesignAssets(fileURLToPath(new URL('./public', import.meta.url)), designSystem, false);
+copyFileSync(
+  fileURLToPath(new URL('../../../data/fonts/LICENSE-Noto.txt', import.meta.url)),
+  fileURLToPath(new URL('./public/fonts/LICENSE-Noto.txt', import.meta.url)),
+);
 
 export default defineConfig({
   plugins: [react()],
@@ -15,6 +20,7 @@ export default defineConfig({
         searchForWorkspaceRoot(fileURLToPath(new URL('.', import.meta.url))),
         fileURLToPath(new URL('../../../libgag/shaders', import.meta.url)),
         fileURLToPath(new URL('../../../datasrc/icons/tabler', import.meta.url)),
+        fileURLToPath(new URL('../../../data/fonts/scripts', import.meta.url)),
       ],
     },
     headers: {

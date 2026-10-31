@@ -2968,5 +2968,6 @@
   "More filters": "Більше фільтрів",
   "Clear filters": "Очистити фільтри",
   "No results match these filters.": "Немає результатів, що відповідають цим фільтрам.",
-  "Results: {value0}": "Результати: {value0}"
+  "Results: {value0}": "Результати: {value0}",
+  "Game text field": "Поле введення тексту в грі"
 }

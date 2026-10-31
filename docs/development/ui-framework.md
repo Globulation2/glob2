@@ -131,11 +131,117 @@ The JSON tutorial inventory distinguishes legacy language blocks from current
 built from runtime data and unregistered wrappers still need contextual review.
 Run `npm run i18n:check` from `platform/` for online catalogs and browser launcher
 bindings, and render representative screens in each language to check font
-coverage, text fitting and layout. `TrueTypeFont` shapes bidirectional text into
-visual order before rasterization, so every SDL_ttf font instance must use an
-explicit left-to-right direction. Allowing SDL_ttf to guess direction reorders
-Arabic and Persian a second time, including embedded Latin words and numbers.
-The FontKerning suite checks this at multiple raster scales and after font reload.
+coverage, text fitting and layout. The legacy Arabic/Persian route in
+`TrueTypeFont` shapes text into visual order before rasterization and uses an
+explicit left-to-right SDL_ttf direction to prevent a second reordering pass.
+Complex script fonts retain their shaping tables and use logical directional
+runs with HarfBuzz instead. Urdu, Shahmukhi Punjabi, Pashto and Sindhi select that
+route by language code; changing languages invalidates affected font caches.
+Do not send presentation-form Arabic through the logical shaping route. The
+FontKerning suite checks raster sizes, reloads and language switching.
+
+Tutorial panels use the active font’s measured line height. Desktop instructions
+retain a 20-pixel minimum advance; touch instructions use the shared cluster-aware
+wrapper and a 24-point minimum advance. The touch cache includes language, font,
+width and text-size inputs. Drawing, scroll limits and hit areas share the same
+measured footer and collapsed-label bounds. Test both expanded instructions and
+the collapsed control when changing fonts or text-size behavior.
+
+### Preparing independently reviewed locales
+
+Use `python3 tools/localization/translation_program.py prepare` to freeze the
+current English game/online sources and their contracts under
+`artifacts/translation-program/`. The kit records the source revision and hashes,
+groups messages into coherent domain batches, and initializes review records with
+all gates pending. Use a new `--output` directory after changing frozen source
+text; preparing an identical kit preserves existing work. Generated inventories,
+drafts, reviews and screenshots are local evidence, not committed documentation.
+Use `prepare --locales hi ur sw --output artifacts/localization-release` to limit
+a kit to a selected release scope. A changed source entry requires fresh review
+of that entry; carry older reviews forward only with explicit proof that their
+source and translated values are unchanged. Preserve the original evidence and
+describe that hash-based carry-forward rather than claiming a fresh reading.
+
+Run `python3 tools/localization/translation_program.py draft --locale hi` to create
+an unregistered draft with blank translations and the locale's required online
+plural forms. Drafts never overwrite existing work. `check-draft --locale hi`
+checks draft keys and tokens and reports untranslated entries and English matches
+for review; it does not replace the official checks above. Keep unfinished
+catalogs out of the selectable language inventory.
+
+Register finished catalogs in both inventories and their browser loaders, then
+test system-language selection against the installed catalog set. Mapping a
+system tag alone must never enable an unfinished locale. Punjabi scripts use
+`pa-guru` and `pa-arab`; explicit scripts take precedence over country defaults.
+The Latin-script Pulaar catalog uses game code `fuc` and online tag `fuc-Latn`.
+Generic Fula tags resolve to it only for Senegal or Mauritania; Adlam and other
+Fula varieties must not be silently advertised as covered.
+
+Each language needs a brief identifying its actual variety, script and region,
+with cited orthography, grammar and dictionary sources and terminology rationales.
+Unresolved uncertainty blocks finalization. Establish a source-based pilot before
+bulk translation, especially for languages with limited reference material. A
+backtranslation can expose a problem but is not evidence that a phrase is idiomatic.
+For disputed wording, compare actual dictionary or grammar entries, contemporary
+software usage and the game context. Record the consulted passage or lookup,
+locale variety and proposed interpretation; a search result or an unread source
+is not an attestation. Check reference material itself for template contamination
+or examples from another language. Google Translate or another provider may
+supply a comparison draft, but record its actual output and do not treat agreement
+between translation engines as independent linguistic approval. Reopen review
+after substantive corrections and repeat until meaning, idiom and terminology
+issues are resolved; retain uncertain terms as blockers rather than guessing.
+
+Assign distinct author, reviewer and editor identities per batch. The reviewer
+checks every key against the source and gameplay; the editor examines every key
+for idiom, register, consistency and length. `edited_keys` records that editorial
+pass, including text retained unchanged. After editing, the independent reviewer
+rechecks every final key. Record source SHA-256 and final catalog hashes in the locale record; each batch
+records the source hash and `target_sha256`, a hash of its translated key/value
+subset. Only edited batches need renewed linguistic sign-offs; release gates bind
+the complete final catalog hashes. Also record `reviewed_keys`, `edited_keys`,
+`rechecked_keys` and `rechecked_by`. Changed hashes invalidate stale sign-offs. `batch_target_hashes` computes each
+batch digest. English-identical text needs an individual `accepted_english` entry
+with the exact review-queue ID and a nonempty rationale; blanket exceptions are
+not accepted. `status` validates actual draft completeness before considering
+review records.
+Low-resource locales additionally require a complete adversarial pass by a fourth
+identity, recorded as `adversarial_reviewer` and `adversarial_reviewed_keys`.
+
+Findings identify the source key, severity, state, and reason for any accepted
+minor issue. No critical/major issue or linguistic uncertainty may remain open.
+`status --locale hi` audits these independently supplied records and requires
+evidence for the language brief, pilot, structural checks, rendering, browser
+startup and platform gates. Each passed gate includes the source/catalog hashes
+and evidence objects with `path` and `sha256`; relative paths resolve within the
+kit directory. Missing or changed evidence cannot pass. It never generates approvals or infers linguistic
+review from filled entries. An agent review is not native-human certification;
+describe it as agent-reviewed and keep unverified platforms explicit.
+
+Build `translation-preview-harness` for unregistered catalog captures. Its
+`matrix ROOT INPUT OUTPUT WIDTH HEIGHT` mode uses the actual game font and shared
+wrapper at several authored sizes and raster scales. `screen` adds a screen name
+(`main`, `settings`, `settings-audio`, `lobby` or `lobby-players`); `game` adds
+`gameplay` or `tutorial` and captures the real engine and menu dialog. Inputs are
+`native.json` and `online.json` key/value objects plus `metadata.json` identifying
+the locale. Preserve the original text-catalog hashes in that metadata when
+converting formats. A small pilot is a font diagnostic, not evidence that the
+whole catalog was displayed.
+
+Capture evidence includes the executable hash and compiled build provenance,
+as well as current source, catalog and font hashes. Freeze sources during builds
+and captures, and verify the compiled source identity before accepting evidence;
+current files alone cannot establish what an older executable contains. Keep
+platform, viewport and phone-presentation claims separate.
+
+Use a concise, respectful contemporary register consistently across game and
+online surfaces. Preserve placeholders and technical identifiers. Match repeated
+game concepts across both catalogs: workers gather and build, explorers scout,
+warriors fight, flags assign work or attention, Inns attract converts and Markets
+exchange fruits. Translate ambiguous terrain terms from their control's effect,
+not an isolated dictionary sense. Preserve tutorial execution and campaign IDs;
+only their presentation is localized. Review legitimate names and loanwords
+explicitly rather than changing correct text merely to avoid an English match.
 
 ## Anatomy of a screen
 
@@ -340,6 +446,23 @@ explicit physical scale; ordinary offscreen `drawString` retains the authored
 resolution. The touch inspector's curved labels rasterize their source at twice
 the final physical text size before warping, while keeping authored metrics for
 button fitting and display-density textures for the finished labels.
+
+The phone HUD's bottom navigation reserves its icon band and measures every
+translated, wrapped caption using the active font and text-size preference.
+Captions taller than the original 16-point slot expand the action strip upward
+with bottom padding; world bounds and hit regions use that same strip geometry.
+Do not shorten a translation to compensate for a fixed-height caption clip.
+Touch text wrapping preserves the active font's shaped clusters, including an
+indivisible cluster wider than its slot, and retains explicit blank lines.
+Navigation measurements keep one last result per HUD, invalidated by caption,
+locale, font metrics, width and scale changes; drawing uses the same wrapping.
+
+The small map-zoom bar measures its translated captions within the available
+sidebar or screen width. Its drawing and click handler share one bounded layout;
+button boundaries remain stable when the zoom changes between Fit and 100%.
+Long captions may use spare readout space and scale within their own clip, while
+taller fonts increase the bar height. Keep caption fitting and hit geometry
+together in `src/render/overlay/MapZoomControls.h`.
 
 Every screen uses the same scale, so menus read alike:
 

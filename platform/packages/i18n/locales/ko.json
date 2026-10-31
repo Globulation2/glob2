@@ -2887,5 +2887,6 @@
   "More filters": "추가 필터",
   "Clear filters": "필터 지우기",
   "No results match these filters.": "이 필터와 일치하는 결과가 없습니다.",
-  "Results: {value0}": "결과: {value0}"
+  "Results: {value0}": "결과: {value0}",
+  "Game text field": "게임 내 텍스트 입력란"
 }

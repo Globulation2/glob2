@@ -42,6 +42,32 @@ describe('online locale resolution', () => {
     expect(localeFromCookie('glob2_locale=%')).toBeUndefined();
     expect(localeFromCookie('glob2_locale=<script>')).toBeUndefined();
   });
+  it('respects written scripts when the new catalogs are installed', () => {
+    const inventory = locales as unknown as {
+      code: string;
+      gameCode: string;
+      name: string;
+      dir: string;
+    }[];
+    const originalLength = inventory.length;
+    inventory.push(
+      { code: 'hi', gameCode: 'hi', name: 'हिन्दी', dir: 'ltr' },
+      { code: 'ur', gameCode: 'ur', name: 'اردو', dir: 'rtl' },
+      { code: 'sw', gameCode: 'sw', name: 'Kiswahili', dir: 'ltr' },
+    );
+    try {
+      expect(resolveLocale('hi-Deva-IN')).toBe('hi');
+      expect(resolveLocale(['hi-Latn', 'fr'])).toBe('fr');
+      expect(resolveLocale('hi-u-nu-latn')).toBe('hi');
+      expect(resolveLocale('hi-x-arab')).toBe('hi');
+      expect(resolveLocale('ur-Arab-PK')).toBe('ur');
+      expect(resolveLocale(['ur-Latn', 'hi-IN'])).toBe('hi');
+      expect(resolveLocale('sw-Latn-KE')).toBe('sw');
+      expect(resolveLocale(['sw-Arab', 'de'])).toBe('de');
+    } finally {
+      inventory.splice(originalLength);
+    }
+  });
   it('preserves language and sends no event on unsupported switches', async () => {
     await expect(setLocale('unsupported')).rejects.toThrow();
     expect(getLocale()).toBe('en');

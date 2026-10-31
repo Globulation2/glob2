@@ -57,7 +57,8 @@ def include_asset(relative, platform="generic"):
         or p.name.endswith("~")
     ):
         return False
-    if p.as_posix() in ("data/highres/v1/manifest.json", "data/highres/v1/README.md"):
+    if p.as_posix() in ("data/highres/v1/manifest.json", "data/highres/v1/README.md",
+                        "data/fonts/script-probes.json"):
         return False
     if p.parts[:2] == ("data", "screenshots") and platform != "linux":
         return False

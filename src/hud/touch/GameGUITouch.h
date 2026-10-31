@@ -13,6 +13,7 @@
 #include <memory>
 #include <vector>
 #include <utility>
+#include <array>
 namespace GAGGUI::ui
 {
 class UIDialog;
@@ -21,6 +22,7 @@ namespace GAGCore
 {
 class DrawableSurface;
 class Sprite;
+class Font;
 }
 #include "sim/EntityRef.h"
 class GameGUI;
@@ -265,7 +267,21 @@ class GameGUITouch
 	bool confirmDestroy = false;
 	BuildingRef lastInspectedBuilding;
 	void drawPointLabel(GAGCore::ViewRect rect, const std::string &text, double textScale = 1.15,
-						bool leading = false);
+						bool leading = false, int lineHeight = 0);
+	std::string navigationLabel(int index) const;
+	int navigationLabelLineHeight(const std::vector<std::string> &lines) const;
+	double navigationLabelHeight(double width) const;
+	GAGCore::ViewRect navigationLabelRect(const GAGCore::MobileLayout &ui, int index) const;
+	struct NavigationMeasurement
+	{
+		const GAGCore::Font *font = nullptr;
+		double width = 0, unit = 0, growth = 0, height = 0;
+		int language = -1, lineHeight = 0;
+		bool replay = false;
+		std::array<std::string, 6> labels;
+		std::array<std::pair<int, int>, 6> metrics;
+	};
+	mutable std::optional<NavigationMeasurement> navigationMeasurement;
 	BuildingRef ownerBuilding;
 	const void *ownerDialog = nullptr;
 	bool panelOpen = false;
@@ -278,6 +294,11 @@ class GameGUITouch
 	std::string tutorialText;
 	std::vector<std::string> tutorialLines;
 	double tutorialWidth = 0, tutorialScroll = 0;
+	const GAGCore::Font *tutorialFont = nullptr;
+	int tutorialLanguage = -1, tutorialFontHeight = 0, tutorialTextWidth = 0, tutorialTextHeight = 0;
+	int tutorialLineStep = 24; // authored font pixels; converted to points by tutorialPitch()
+	double tutorialPitch() const;
+	double tutorialFooterHeight() const;
 	GAGCore::ViewRect tutorialRect() const;
 	void prepareTutorial();
 	void drawTutorial();

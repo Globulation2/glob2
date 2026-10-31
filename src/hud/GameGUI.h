@@ -75,6 +75,7 @@ class HudUnitConversionIcon;
 class ConnectionOverlay;
 class GameGUI : public ClientCommandSink
 {
+	friend struct TranslationPreviewAccess;
 	friend struct CustomGameSetupHarness;
 	friend struct TurnClient;
 	friend struct ScriptPresentationFixture;

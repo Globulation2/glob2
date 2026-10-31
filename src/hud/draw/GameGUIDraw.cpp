@@ -548,22 +548,31 @@ void GameGUI::drawOverlayInfos(void)
 
 		// TODO: die with SGSL
 		// show script text
+		auto tutorialLineStep = [&](const std::vector<std::string> &lines) {
+			int step = std::max(20, globalContainer->standardFont->getStringHeight(""));
+			for (const auto &line : lines)
+				step = std::max(step, globalContainer->standardFont->getStringHeight(line));
+			return step;
+		};
 		if (hud.state().legacyScriptTextShown && !touch->usesHUD())
 		{
 			std::vector<std::string> lines;
 			setMultiLine(Glob2UI::tutorialText(hud.state().legacyScriptText, legacyTutorialScript), &lines);
-			globalContainer->gfx->drawFilledRect(24, ymesg-8, globalContainer->gfx->getW()-RIGHT_MENU_WIDTH-64+16, lines.size()*20+16, 0,0,0,128);
+			const int lineStep = tutorialLineStep(lines);
+			globalContainer->gfx->drawFilledRect(24, ymesg-8, globalContainer->gfx->getW()-RIGHT_MENU_WIDTH-64+16, lines.size()*lineStep+16, 0,0,0,128);
 			for (unsigned i=0; i<lines.size(); i++)
 			{
 				globalContainer->gfx->drawString(32, ymesg+yinc, globalContainer->standardFont, lines[i].c_str());
-				yinc += 20;
+				yinc += lineStep;
 			}
 
 			if (swallowSpaceKey)
 			{
-				globalContainer->gfx->drawFilledRect(24, ymesg+yinc+8, globalContainer->gfx->getW()-RIGHT_MENU_WIDTH-64+16, 20, 0,0,0,128);
-				globalContainer->gfx->drawString(32, ymesg+yinc, globalContainer->standardFont, Toolkit::getStringTable()->getString("[press space]"));
-				yinc += 20;
+				const auto prompt = Toolkit::getStringTable()->getString("[press space]");
+				const int promptStep = std::max(lineStep, globalContainer->standardFont->getStringHeight(prompt));
+				globalContainer->gfx->drawFilledRect(24, ymesg+yinc+8, globalContainer->gfx->getW()-RIGHT_MENU_WIDTH-64+16, promptStep, 0,0,0,128);
+				globalContainer->gfx->drawString(32, ymesg+yinc, globalContainer->standardFont, prompt);
+				yinc += promptStep;
 			}
 			yinc += 8;
 		}
@@ -573,11 +582,12 @@ void GameGUI::drawOverlayInfos(void)
 		{
 			std::vector<std::string> lines;
 			setMultiLine(scriptText, &lines);
-			globalContainer->gfx->drawFilledRect(24, ymesg-8, globalContainer->gfx->getW()-RIGHT_MENU_WIDTH-64+16, lines.size()*20+16, 0,0,0,128);
+			const int lineStep = tutorialLineStep(lines);
+			globalContainer->gfx->drawFilledRect(24, ymesg+yinc-8, globalContainer->gfx->getW()-RIGHT_MENU_WIDTH-64+16, lines.size()*lineStep+16, 0,0,0,128);
 			for (unsigned i=0; i<lines.size(); i++)
 			{
 				globalContainer->gfx->drawString(32, ymesg+yinc, globalContainer->standardFont, lines[i].c_str());
-				yinc += 20;
+				yinc += lineStep;
 			}
 		}
 
