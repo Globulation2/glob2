@@ -2,9 +2,9 @@
 
 ## Replay import
 
-`cross-replay.replay` is an import/playback fixture recorded at file format 173
+`cross-replay.replay` is an import/playback fixture recorded at file format 186
 from the repository's unchanged `games/cross-replay.game.gz` (seed 42), for 1,500
-ticks. The replay reader's current minimum accepted format is 173.
+ticks. The replay reader's current minimum accepted format is 186.
 
 Re-record when the accepted replay floor changes, using an isolated profile:
 
@@ -25,6 +25,8 @@ tooling and must not be replaced just to keep browser import tests current.
 `studio-trace.json` pins the map, source, seed, opponent and tick count for the
 Studio determinism test. Its trace digest comes from native execution; both the
 serial and threaded browser runtime must match every byte of that checksum trace.
+Its engine/save and simulation revision fields are checked by the cheap Node
+contracts, so version advances require a reviewed native reference refresh.
 It is a compatibility assertion, not a browser-generated snapshot.
 
 For an intentional source, fixture or simulation change, build the native engine

@@ -41,6 +41,17 @@
 		-Server
 	}
 
+	# Begin canonical sign-in redirect.
+	# Keep OAuth state cookies and callbacks on the canonical host while the
+	# former app host remains available for local-file and credential recovery.
+	@formerSignin {
+		host {$GLOB2_AUTH_REDIRECT_DOMAIN:auth-redirect.invalid}
+		method GET
+		path /signin /signin/* /auth/*/start
+	}
+	redir @formerSignin {$GLOB2_PUBLIC_ORIGIN:https://localhost:8443}{uri} 302
+	# End canonical sign-in redirect.
+
 	# First: `handle` blocks are exclusive and run before a bare `respond`.
 	@private path /internal /internal/* /healthz /readyz /metrics
 	handle @private {

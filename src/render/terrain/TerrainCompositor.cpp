@@ -27,7 +27,8 @@ Compositor::Compositor(Catalog catalog, std::shared_ptr<const MapAssetBundle> as
 	}
 	for (const auto &m : definitions.materials)
 	{
-		auto *sprite = customSprites.resolve(m.sprite);
+		if (m.variantBlocks > 1) GAGCore::Sprite::deferHighResolution(m.sprite);
+        auto *sprite = customSprites.resolve(m.sprite);
 		if (!sprite)
 			throw std::runtime_error("Missing terrain material sprite: " + m.sprite);
 		for (const auto &v : m.variants)
@@ -109,26 +110,35 @@ std::size_t Compositor::sourceBytes() const
         bytes += cpuPublicationBytes();
 	return bytes;
 }
-bool Compositor::prepareMaterial(unsigned id, bool hd, int phase, std::vector<Texture> &target)
+bool Compositor::prepareMaterial(unsigned id, bool hd, int phase, std::vector<Texture> &target,
+                                 const std::vector<unsigned char> *wanted)
 {
 	const auto &m = definitions.materials[id];
-	bool refresh = false;
+    bool refresh = false, changed = false;
 	for (unsigned i = 0; i < m.variants.size(); ++i)
 	{
+		if (wanted && !(*wanted)[i]) continue;
 		const int frame = m.variants[i].frame + phase * m.animationStride;
 		auto *source = hd ? sprites[id]->baseFrame(frame) : sprites[id]->nativeFrame(frame);
 		if (!source)
 			throw std::runtime_error("Missing terrain texture: " + m.key);
 		auto &t = target[i];
-		refresh |= t.source != source || t.identity != source->lifetimeIdentity() ||
-				   t.revision != source->contentRevision();
+        const bool sourceChanged = t.source != source || t.identity != source->lifetimeIdentity() ||
+                                   t.revision != source->contentRevision();
+        // Residency is independent of content: revisiting unchanged art must
+        // not invalidate already composed pages elsewhere in the map.
+        changed |= t.identity != 0 && sourceChanged;
+        refresh |= sourceChanged || t.pixels.empty();
 	}
 	if (!refresh)
 		return false;
+    publishedCpu.reset();
 	bool packaged = pack != nullptr;
 	if (packaged)
-		for (const auto &variant : m.variants)
+		for (unsigned i = 0; i < m.variants.size(); ++i)
 		{
+            if (wanted && !(*wanted)[i]) continue;
+            const auto &variant = m.variants[i];
 			const int frame = variant.frame + phase * m.animationStride;
 			auto *source = hd ? sprites[id]->baseFrame(frame) : sprites[id]->nativeFrame(frame);
 			const auto clean = cleanSources.find(source->lifetimeIdentity());
@@ -140,6 +150,7 @@ bool Compositor::prepareMaterial(unsigned id, bool hd, int phase, std::vector<Te
 		}
 	for (unsigned i = 0; i < m.variants.size(); ++i)
 	{
+		if (wanted && !(*wanted)[i]) continue;
 		const int frame = m.variants[i].frame + phase * m.animationStride;
 		auto *source = hd ? sprites[id]->baseFrame(frame) : sprites[id]->nativeFrame(frame);
 		auto &t = target[i];
@@ -155,7 +166,7 @@ bool Compositor::prepareMaterial(unsigned id, bool hd, int phase, std::vector<Te
 			readTexture(t, source);
 	}
 	if (packaged || m.periodicEdges)
-		return true; // Sources already have their shared variant borders.
+		return changed; // Sources already have their shared variant borders.
 	// One periodic master boundary per material, not a different edge for
 	// each variant. Blend premultiplied color and alpha together so
 	// translucent variants cannot reintroduce rectangular seams.
@@ -182,36 +193,130 @@ bool Compositor::prepareMaterial(unsigned id, bool hd, int phase, std::vector<Te
 										   : 0;
 				destination[3] = alpha / band;
 			}
-	return true;
+	return changed;
 }
 void Compositor::prepare(bool hd, int time)
 {
+    // The complete catalogue is for one-shot callers: wait for deferred HD
+    // windows, then read the published frames.
+    prepareSelected(hd, time, nullptr);
+    if (!hd) return;
+    GAGCore::Sprite::finishHighResolution();
+    prepareSelected(hd, time, nullptr);
+}
+void Compositor::prepareForRecipes(bool hd, int time, std::span<const Recipe> recipes)
+{
+    Usage usage;
+    for (const auto &m : definitions.materials) usage.emplace_back(m.variants.size(), 0);
+    for (const auto &r : recipes)
+        for (const auto id : r.corners)
+            usage[id][definitions.variantIndex(id, r.x, r.y, r.seed)] = 1;
+    prepareSelected(hd, time, &usage);
+}
+void Compositor::prepareVisible(bool hd, int time, const SceneMap &map,
+                                int left, int top, int right, int bottom)
+{
+    Usage usage;
+    for (const auto &m : definitions.materials) usage.emplace_back(m.variants.size(), 0);
+    const int width = std::min(map.getW(), std::max(0, right - left + 1));
+    const int height = std::min(map.getH(), std::max(0, bottom - top + 1));
+    for (int y = 0; y < height; ++y)
+        for (int x = 0; x < width; ++x)
+        {
+            const auto r = describe(map, left + x, top + y);
+            for (const auto id : r.corners)
+                usage[id][definitions.variantIndex(id, r.x, r.y, r.seed)] = 1;
+        }
+    prepareSelected(hd, time, &usage);
+}
+void Compositor::prepareSelected(bool hd, int time, const Usage *requested)
+{
+    // Nonperiodic custom art uses variant zero as its shared boundary source.
+    Usage normalized;
+    if (requested)
+    {
+        normalized = *requested;
+        for (unsigned id = 0; id < normalized.size(); ++id)
+            if (!definitions.materials[id].periodicEdges &&
+                std::any_of(normalized[id].begin(), normalized[id].end(), [](auto v) { return v != 0; }))
+                normalized[id][0] = 1;
+        requested = &normalized;
+    }
+    // A sprite can back several materials: declare the union before any reads.
+    std::map<GAGCore::Sprite *, std::vector<unsigned>> windows;
+    for (unsigned id = 0; id < definitions.materials.size(); ++id)
+    {
+        const auto &m = definitions.materials[id];
+        auto &window = windows[sprites[id]];
+        if (!hd) continue;
+        const unsigned phase = unsigned(time) / m.animationTicks % m.animationFrames;
+        for (unsigned i = 0; i < m.variants.size(); ++i)
+            if (!requested || (*requested)[id][i])
+            {
+                window.push_back(m.variants[i].frame + phase * m.animationStride);
+                if (m.animationFrames > 1 && m.animationTicks > 1)
+                    window.push_back(m.variants[i].frame + (phase + 1) % m.animationFrames * m.animationStride);
+            }
+    }
+    for (auto &[sprite, window] : windows) sprite->setHighResolutionFrames(window);
+
 	int nextResolution = 1;
 	for (unsigned id = 0; id < definitions.materials.size(); ++id)
 	{
 		const auto &m = definitions.materials[id];
+        const auto *wanted = requested ? &(*requested)[id] : nullptr;
+        bool evicted = false;
+        const auto evict = [&](auto &set) {
+            for (unsigned i = 0; i < set.size(); ++i)
+                if (wanted && !(*wanted)[i] && set[i].size)
+                {
+                    // Keep only source stamps so a later identical reload is
+                    // distinguished from an actual artwork/HD revision.
+                    set[i].pixels = MaterialPixels{};
+                    set[i].size = 0;
+                    evicted = true;
+                }
+        };
+        evict(textures[id]);
+        evict(animationTextures[id].current);
+        evict(animationTextures[id].next);
+        if (evicted)
+        {
+            publishedCpu.reset();
+            if (id < publishedPixels.size()) publishedPixels[id].pixels.clear();
+        }
+        if (wanted && std::none_of(wanted->begin(), wanted->end(), [](auto v) { return v != 0; }))
+        {
+            continue;
+        }
 		const int phase = unsigned(time) / m.animationTicks % m.animationFrames;
 		auto &animation = animationTextures[id];
 		if (animation.current.empty())
 		{
-			if (prepareMaterial(id, hd, phase, textures[id])) ++materialRevisions[id];
+			if (prepareMaterial(id, hd, phase, textures[id], wanted)) ++materialRevisions[id];
 		}
 		else
 		{
 			// Reuse the previous next phase as the current endpoint on ordinary advances.
-			const int frame = m.variants.front().frame + phase * m.animationStride;
+			const unsigned first = wanted ? std::find(wanted->begin(), wanted->end(), 1) - wanted->begin() : 0;
+            const int frame = m.variants[first].frame + phase * m.animationStride;
 			auto *source = hd ? sprites[id]->baseFrame(frame) : sprites[id]->nativeFrame(frame);
-			const bool advanced = animation.next.front().source == source;
+			const bool advanced = animation.next[first].source == source;
 			if (advanced) animation.current.swap(animation.next);
-			const bool currentChanged = prepareMaterial(id, hd, phase, animation.current);
-			const bool nextChanged = prepareMaterial(id, hd, (phase + 1) % m.animationFrames, animation.next);
+			const bool currentChanged = prepareMaterial(id, hd, phase, animation.current, wanted);
+			const bool nextChanged = prepareMaterial(id, hd, (phase + 1) % m.animationFrames, animation.next, wanted);
 			const unsigned blend = unsigned(time) % m.animationTicks;
-			if (advanced || currentChanged || nextChanged || animation.blend != blend)
+            bool missingOutput = false;
+            for (unsigned i = 0; i < m.variants.size(); ++i)
+                if ((!wanted || (*wanted)[i]) && textures[id][i].pixels.empty()) missingOutput = true;
+            const bool animationChanged = advanced || currentChanged || nextChanged || animation.blend != blend;
+			if (animationChanged || missingOutput)
 			{
-				++materialRevisions[id];
+                if (animationChanged) ++materialRevisions[id];
 				animation.blend = blend;
 				for (unsigned i = 0; i < m.variants.size(); ++i)
 				{
+					if (wanted && !(*wanted)[i]) continue;
 					const auto &a = animation.current[i], &b = animation.next[i];
 					auto &out = textures[id][i];
 					out.size = std::max(a.size, b.size);
@@ -342,15 +447,41 @@ std::size_t Compositor::cpuPublicationBytes() const
     std::size_t bytes = sizeof(CpuMaterials) + sizeof(Catalog) + 256 +
         textures.capacity() * (sizeof(CpuPublication) + sizeof(std::uint64_t));
     for (const auto &set : textures)
-        bytes += set.size() * (sizeof(std::weak_ptr<const MaterialPixels>) + 64);
+    {
+        bytes += set.size() * sizeof(std::weak_ptr<const MaterialPixels>);
+        // Empty slots have no shared pixel allocation or control block.
+        for (const auto &texture : set) if (!texture.pixels.empty()) bytes += 64;
+    }
     return bytes;
 }
+Compositor::Usage Compositor::recipeUsage(std::span<const Recipe> recipes) const
+{
+    Usage usage;
+    for (const auto &m : definitions.materials) usage.emplace_back(m.variants.size(), 0);
+    for (const auto &r : recipes)
+        for (auto id : r.corners)
+            usage[id][definitions.variantIndex(id, r.x, r.y, r.seed)] = 1;
+    return usage;
+}
+std::size_t Compositor::cpuMaterialBytesForRecipes(std::span<const Recipe> recipes) const
+{
+    const auto usage = recipeUsage(recipes);
+    return cpuMaterialBytesSelected({}, &usage);
+}
+std::shared_ptr<const Compositor::CpuMaterials> Compositor::cpuMaterialsForRecipes(std::span<const Recipe> recipes)
+{
+    const auto usage = recipeUsage(recipes);
+    return cpuMaterialsSelected({}, &usage);
+}
 std::size_t Compositor::cpuMaterialBytes(std::span<const MaterialId> needed) const
+{
+    return cpuMaterialBytesSelected(needed, nullptr);
+}
+std::size_t Compositor::cpuMaterialBytesSelected(std::span<const MaterialId> needed, const Usage *usage) const
 {
     // Capacity accounting includes the catalog's nested allocations and
     // shared ownership/control storage; allocator headers receive headroom.
     std::size_t bytes = cpuPublicationBytes() + sizeof(CpuMaterials) + sizeof(Catalog) + 256 +
-                        definitions.serialized.capacity() + definitions.compiledPack.capacity() +
                         definitions.profiles.capacity() * sizeof(Profile) +
                         definitions.materials.capacity() * sizeof(Material) +
                         definitions.treatments.capacity() * sizeof(PairTreatment) +
@@ -372,22 +503,46 @@ std::size_t Compositor::cpuMaterialBytes(std::span<const MaterialId> needed) con
         bytes += sizeof(binding) + binding.first.capacity() + 128;
     bytes += textures.size();
     for (std::size_t id = 0; id < textures.size(); ++id)
-        if (needed.empty() || std::find(needed.begin(),needed.end(),id) != needed.end())
-            for (const auto& texture : textures[id])
-                bytes += sizeof(CpuMaterials::Texture)*2 + 128 + texture.pixels.capacity()*sizeof(MaterialPixels::value_type);
+        if (usage ? std::any_of((*usage)[id].begin(), (*usage)[id].end(), [](auto v) { return v != 0; })
+                  : needed.empty() || std::find(needed.begin(), needed.end(), id) != needed.end())
+        {
+            bytes += textures[id].size() * sizeof(CpuMaterials::Texture) * 2;
+            for (unsigned variant = 0; variant < textures[id].size(); ++variant)
+                if ((!usage || (*usage)[id][variant]) && !textures[id][variant].pixels.empty())
+                    bytes += 128 + textures[id][variant].pixels.capacity() * sizeof(MaterialPixels::value_type);
+        }
     return bytes;
 }
 std::shared_ptr<const Compositor::CpuMaterials> Compositor::cpuMaterials(std::span<const MaterialId> needed)
 {
+    return cpuMaterialsSelected(needed, nullptr);
+}
+std::shared_ptr<const Compositor::CpuMaterials> Compositor::cpuMaterialsSelected(std::span<const MaterialId> needed,
+                                                                             const Usage *usage)
+{
     auto previous = publishedCpu.lock();
-    std::vector<char> included(textures.size(),needed.empty());
+    std::vector<char> included(textures.size(), !usage && needed.empty());
     for (const auto id : needed) included.at(id) = true;
-    if (previous && previous->included == included && publishedRevisions == materialRevisions)
+    if (usage)
+        for (unsigned id = 0; id < usage->size(); ++id)
+            included[id] = std::any_of((*usage)[id].begin(), (*usage)[id].end(), [](auto v) { return v != 0; });
+    if (!usage && !publishedSubset && previous && previous->included == included && publishedRevisions == materialRevisions)
         return previous;
     auto next = std::make_shared<CpuMaterials>();
     next->definitions = publishedCatalog.lock();
     if (!next->definitions)
-        next->definitions = std::make_shared<const Catalog>(definitions);
+    {
+        // Copy only composition fields: even transient manifest-string copies
+        // would exceed the slim snapshot's reserved allocation.
+        auto copy = std::make_shared<Catalog>();
+        copy->version = definitions.version;
+        copy->boundaryWarp = definitions.boundaryWarp;
+        copy->profiles = definitions.profiles;
+        copy->materials = definitions.materials;
+        copy->treatments = definitions.treatments;
+        copy->bindings = definitions.bindings;
+        next->definitions = std::move(copy);
+    }
     publishedCatalog = next->definitions;
     publishedPixels.resize(textures.size());
     next->textures.resize(textures.size());
@@ -407,6 +562,11 @@ std::shared_ptr<const Compositor::CpuMaterials> Compositor::cpuMaterials(std::sp
         for (std::size_t variant = 0; variant < textures[id].size(); ++variant)
         {
             const auto &texture = textures[id][variant];
+            if ((usage && !(*usage)[id][variant]) || texture.pixels.empty())
+            {
+                next->textures[id].push_back({});
+                continue;
+            }
             auto pixels = record.pixels[variant].lock();
             if (!pixels)
             {
@@ -416,7 +576,8 @@ std::shared_ptr<const Compositor::CpuMaterials> Compositor::cpuMaterials(std::sp
             next->textures[id].push_back({texture.size, std::move(pixels)});
         }
     }
-    next->bytes = cpuMaterialBytes(needed);
+    next->bytes = cpuMaterialBytesSelected(needed, usage);
+    publishedSubset = usage != nullptr;
     publishedRevisions = materialRevisions;
     publishedCpu = next;
     return next;

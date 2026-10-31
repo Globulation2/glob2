@@ -143,7 +143,7 @@ void GeneratorStudioScreen::generate()
 		if (!terrain.isLoaded())
 			throw std::runtime_error("Cannot create map preview");
 		details["playable"] = playable;
-		details["checksum"] = game->checkSum(nullptr, nullptr, nullptr, true);
+
 		details["seconds"] =
 			std::chrono::duration<double>(std::chrono::steady_clock::now() - begin).count();
 		report = details.dump();
@@ -159,6 +159,32 @@ void GeneratorStudioScreen::generate()
 				.dump();
 	}
 	complete.store(true, std::memory_order_release);
+}
+void GeneratorStudioScreen::finalizeReport()
+{
+    if (!error.empty()) return;
+    const auto begin=std::chrono::steady_clock::now();
+    try
+    {
+        // Reloading resolves presentation assets, so it belongs to the owner
+        // after joining generation. The checksum still describes the frozen
+        // map that Play and external readers load, without match-only caches.
+        if (!snapshot) throw std::runtime_error("Missing frozen map preview");
+        Game frozen(nullptr);
+        BinaryInputStream input(new MemoryStreamBackend(snapshot->data(), snapshot->size()));
+        input.seekFromStart(0);
+        if (!frozen.load(&input)) throw std::runtime_error("Cannot reload frozen map preview");
+        auto details=nlohmann::json::parse(report);
+        details["checksum"]=frozen.checkSum(nullptr, nullptr, nullptr, true);
+        details["seconds"]=details.value("seconds",0.0)
+            +std::chrono::duration<double>(std::chrono::steady_clock::now()-begin).count();
+        report=details.dump();
+    }
+    catch (const std::exception& exception)
+    {
+        error=exception.what();
+        report=nlohmann::json{{"success",false},{"diagnostic",error.substr(0,2000)}}.dump();
+    }
 }
 void GeneratorStudioScreen::updateExecution(Uint32)
 {
@@ -186,6 +212,7 @@ void GeneratorStudioScreen::updateExecution(Uint32)
 		delivered = true;
 		if (worker.joinable())
 			worker.join();
+        finalizeReport();
 		if (!error.empty())
 		{
 			preview.setState(MapPreview::State::Failed);

@@ -138,7 +138,7 @@ and the existing narrow MapHeader version/SHA1 adjustments remain unchanged.
 The header-prefix parser bounds every count and byte range through the player
 count. Format 153 adds unit definitions later in GameHeader; it adds no
 MapHeader metadata or player-count offset.
-The parser accepts headers through format 167 and includes the statistics-delay
+The parser accepts headers through the current `VERSION_MINOR` in `Version.h` and includes the statistics-delay
 byte introduced in format 155. The current aggregate version adjustment includes
 both the unit-catalog and statistics checksum rotations; historical protocol
 checks retain their own rotation counts.

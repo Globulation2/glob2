@@ -6644,3 +6644,13 @@ Voľbu sa nepodarilo uložiť. Zvuk je stále vypnutý. Skúste to znova.
 Ticho: stíšený reproduktor. Zvuk: reproduktor so zvukovými vlnami.
 [library GL only]
 Len GL
+[Grassland]
+Lúky
+[Kopjes]
+Skalnaté pahorky
+[Game trails]
+Zvieracie chodníky
+[Fish amount]
+Množstvo rýb
+[Camp-site amount]
+Počet táborísk

@@ -190,6 +190,9 @@ SpriteLoad::SpriteLoad(std::string name, bool variableAtlas) : impl(std::make_un
         glGetIntegerv(GL_MAX_TEXTURE_SIZE, &impl->maxTextureSize);
 #endif
 
+    // Terrain composition reads CPU pixels; source frame atlases and uploads
+    // are unnecessary until an editor icon explicitly draws a source.
+    if (Sprite::highResolutionDeferred(impl->name)) impl->maxTextureSize = 0;
     auto &loader = Toolkit::assets();
     auto directory = loader.requestDirectory((impl->name.find('/') == std::string::npos ? std::string() : impl->name.substr(0, impl->name.rfind('/'))));
     auto index = loader.requestBytes(impl->name + ".sheet");
@@ -226,7 +229,8 @@ bool SpriteLoad::pollUntil(std::chrono::steady_clock::time_point deadline) {
             });
         // Establish native preparation before queuing the optional HD frames,
         // so the private sprite can consume their output as decoding proceeds.
-        impl->highResolution = prefetchHighResolutionIncremental(impl->name, impl->sources->frames);
+        if (!Sprite::highResolutionDeferred(impl->name))
+            impl->highResolution = prefetchHighResolutionIncremental(impl->name, impl->sources->frames);
     }
     if (!impl->pixels) {
         if (impl->prepared.pending()) { advanceInputs(); return false; }
@@ -250,7 +254,8 @@ bool SpriteLoad::pollUntil(std::chrono::steady_clock::time_point deadline) {
         impl->sprite->dynamicTeamColor = impl->name == "data/gfx/unit";
     }
     while (impl->frame < impl->sources->frames && std::chrono::steady_clock::now() < deadline) {
-        if (!highResolutionFrameReady(impl->name, impl->frame, impl->highResolution)) {
+        if (!Sprite::highResolutionDeferred(impl->name) &&
+            !highResolutionFrameReady(impl->name, impl->frame, impl->highResolution)) {
             advanceInputs(); return false;
         }
         auto adopt = [&](const std::shared_ptr<const AssetImage>& image) -> DrawableSurface* {
@@ -258,19 +263,23 @@ bool SpriteLoad::pollUntil(std::chrono::steady_clock::time_point deadline) {
             // Prepared frames can be shared by several requests; isolate mutable
             // live pixels. The copy happens once, with no format conversion.
             const bool exclusive = impl->pixels.use_count() == 1 && image.use_count() == 1;
-            auto result = DrawableSurface::fromAssetImage(*image, exclusive, !impl->pixels->atlas);
-            if (!impl->pixels->atlas) result->prepareTexture();
+            const bool prepareGPU = !Sprite::highResolutionDeferred(impl->name) && !impl->pixels->atlas;
+            auto result = DrawableSurface::fromAssetImage(*image, exclusive, prepareGPU);
+            if (prepareGPU) result->prepareTexture();
             return result.release();
         };
         const auto frame = impl->frame++;
         impl->sprite->images.push_back(adopt(impl->pixels->images[frame]));
         auto *rotated = adopt(impl->pixels->rotated[frame]);
         impl->sprite->rotated.push_back(rotated ? new Sprite::RotatedImage(rotated) : nullptr);
-        impl->sprite->appendHighResolutionFrame(frame, *impl->sprite, impl->highResolution);
+        if (Sprite::highResolutionDeferred(impl->name)) {
+            impl->sprite->experimentImages.push_back(nullptr);
+            impl->sprite->experimentRotated.push_back(nullptr);
+        } else impl->sprite->appendHighResolutionFrame(frame, *impl->sprite, impl->highResolution);
     }
     if (impl->frame != impl->sources->frames || std::chrono::steady_clock::now() >= deadline) return false;
-    if (!highResolutionAtlasReady(impl->name, impl->highResolution) ||
-        impl->highResolution.pending()) {
+    if (!Sprite::highResolutionDeferred(impl->name) &&
+        (!highResolutionAtlasReady(impl->name, impl->highResolution) || impl->highResolution.pending())) {
         advanceInputs(); return false;
     }
     const bool uncolored = std::all_of(impl->sprite->rotated.begin(), impl->sprite->rotated.end(), [](auto p) { return !p; });
@@ -305,8 +314,10 @@ bool SpriteLoad::pollUntil(std::chrono::steady_clock::time_point deadline) {
 #endif
         }
     }
-    if(!adoptedAtlas && uncolored)impl->sprite->createTextureAtlas(impl->variableAtlas);
-    impl->sprite->recomputeBlockCompleteHD(); impl->sprite->createHighResolutionAtlas(impl->highResolution);
+    if(!adoptedAtlas && uncolored && !Sprite::highResolutionDeferred(impl->name))
+        impl->sprite->createTextureAtlas(impl->variableAtlas);
+    impl->sprite->recomputeBlockCompleteHD();
+    if (!Sprite::highResolutionDeferred(impl->name)) impl->sprite->createHighResolutionAtlas(impl->highResolution);
     impl->sprite->registerLoaded();
     impl->pixels.reset(); impl->sources.reset(); impl->prepared = {}; impl->images.clear(); impl->highResolution.clear();
     impl->complete = true;

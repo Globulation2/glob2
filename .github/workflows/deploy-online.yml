@@ -1,4 +1,4 @@
-name: Deploy app.glob2online.com
+name: Deploy app.glob2.online
 
 # Public source of truth; runs only in the owner's mirror genixpro/glob2-release.
 # Mirror a reviewed commit there: every job below is skipped in any other
@@ -112,7 +112,7 @@ jobs:
           } >> "$GITHUB_STEP_SUMMARY"
 
   deploy:
-    name: Deploy to app.glob2online.com
+    name: Deploy to app.glob2.online
     needs: preflight
     if: >-
       github.repository == 'genixpro/glob2-release' &&
@@ -125,7 +125,7 @@ jobs:
     timeout-minutes: 120
     environment:
       name: online-production
-      url: https://app.glob2online.com
+      url: https://app.glob2.online
     permissions:
       contents: read
       id-token: write

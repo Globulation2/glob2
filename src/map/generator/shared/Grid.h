@@ -145,8 +145,8 @@ std::vector<unsigned char> tileMask(const Torus &, const std::vector<int> &tiles
 /// Where each of the first `teams` teams' ground units stand, as tile indices in row-major
 /// order.
 std::vector<std::vector<int>> unitTilesByTeam(const Map &, int teams);
-/// The tiles a ground unit can stand on and walk through: land carrying no deposit and no
-/// building.
+/// The tiles a ground unit can stand on and walk through: land carrying no building and no deposit
+/// that blocks ground units (tall grass and scrub are walked through).
 std::vector<unsigned char> walkableTiles(const Map &);
 /// The same question put to the engine's own rule, Map::isHardSpaceForGroundUnit, for a unit
 /// that cannot swim and belongs to no team.

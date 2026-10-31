@@ -2,6 +2,17 @@
 
 Configure store credentials and mirror-only publication workflows.
 
+## Store presentation
+
+Use the [approved colony/economy copy and media](https://github.com/Globulation2/glob2-marketing/blob/b759591/planning/approved-storefront-rollout.md)
+when maintaining Epic, Steam, GOG, itch.io or other project-controlled listings.
+The [desktop export pack](https://github.com/Globulation2/glob2-marketing/tree/a968359dc95d51e998f63ba4d984d33b04560b39/assets/storefront-approved-v1)
+records gameplay order, key-art/logo sources and image provenance. Adapt to each
+store's fields and crop preview, keeping illustrated key art separate from
+actual gameplay. Use device-specific release-candidate captures for mobile
+screenshot slots. Listing updates and binary release/availability are separate
+operations; preserve each platform's existing release controls.
+
 ## Store setup
 
 ### Epic Games Store

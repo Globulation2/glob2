@@ -233,10 +233,17 @@ def _validate(document, root):
                     if image.size != (32, 32):
                         raise ValueError(f"Invalid logical frame dimensions: {source}")
                 sources[relative] = hashlib.sha256(source.read_bytes()).hexdigest()
+        if "variant_block_group" in m:
+            group = m["variant_block_group"]
+            if "variant_grid" not in m or not isinstance(group, str) or not 1 <= len(group.encode("utf-8")) <= 64:
+                raise ValueError("variant_block_group requires a grid and a short nonempty key")
+        blocks = integer(m.get("variant_blocks", 1), 1, 16, "Variant blocks")
+        if "variant_blocks" in m and "variant_grid" not in m:
+            raise ValueError("variant_blocks requires variant_grid")
         if "variant_grid" in m:
             grid = integer(m["variant_grid"], 1, 16, "Variant grid")
-            if grid & (grid - 1) or m.get("edges") != "periodic" or len(m["variants"]) != grid * grid:
-                raise ValueError("variant_grid needs a power of two, periodic edges and grid*grid variants")
+            if grid & (grid - 1) or m.get("edges") != "periodic" or len(m["variants"]) != grid * grid * blocks:
+                raise ValueError("variant_grid needs a power of two, periodic edges and grid*grid*blocks variants")
         if "decor" in m:
             decor = m["decor"]
             decor_sprite = data_path(decor["sprite"], "Decor sprite")
@@ -331,6 +338,17 @@ def seamless_sources(document, root):
     return result
 
 
+def seamless_names(document, periodic):
+    """Frames referenced by materials with (or without) periodic edges."""
+    return {
+        f"{material['sprite']}{v['frame']+phase*material.get('animation_stride',0)}.png"
+        for material in document["materials"]
+        if (material.get("edges") == "periodic") == periodic
+        for phase in range(material.get("animation_frames", 1))
+        for v in material["variants"]
+    }
+
+
 def padded(image, border):
     n = image.width
     page = Image.new("RGBA", (n + border * 2, n + border * 2))
@@ -360,17 +378,15 @@ def compile_tileset(document, output, root=ROOT, page_size=1024, runtime_fingerp
     entries, pages = [], []
     border, tile = 4, 40
     columns = page_size // tile
-    filenames = sorted(sources)
+    # Only border-blended frames differ from their native sources. Periodic
+    # materials and decor are read directly; packing them would ship them twice.
+    filenames = sorted(set(prepared) & seamless_names(document, periodic=False))
     for start in range(0, len(filenames), columns * columns):
         batch = filenames[start : start + columns * columns]
         page = Image.new("RGBA", (page_size, page_size))
         page_id = len(pages)
         for i, name in enumerate(batch):
-            if name in prepared:
-                image = prepared[name]
-            else:
-                with Image.open(root / name) as im:
-                    image = im.convert("RGBA")
+            image = prepared[name]
             x, y = (i % columns) * tile, (i // columns) * tile
             page.paste(padded(image, border), (x, y))
             if runtime_fingerprints is None:
@@ -383,15 +399,13 @@ def compile_tileset(document, output, root=ROOT, page_size=1024, runtime_fingerp
                      native_rgba_fnv1a64=fingerprint)
             )
         levels = []
-        for mip in range(3):
-            name = f"textures-{page_id}-mip{mip}.webp"
-            # Premultiplied-alpha filtering prevents dark translucent borders.
-            page.convert("RGBa").resize(
-                (page_size >> mip, page_size >> mip), Image.Resampling.BOX
-            ).convert("RGBA").save(
-                output / name, lossless=True, exact=True, quality=75, method=4
-            )
-            levels.append(name)
+        # The runtime reads level 0 only and composed view pages make their own
+        # mips. The premultiplied round trip keeps the pixels earlier packs stored.
+        name = f"textures-{page_id}-mip0.webp"
+        page.convert("RGBa").convert("RGBA").save(
+            output / name, lossless=True, exact=True, quality=75, method=4
+        )
+        levels.append(name)
         pages.append(dict(size=[page_size, page_size], padding=border, levels=levels))
     # Shared normalized contours at native and HD resolution. These are reusable
     # edge displacement tables, not precomposed colored terrain combinations.
@@ -421,7 +435,7 @@ def compile_tileset(document, output, root=ROOT, page_size=1024, runtime_fingerp
         pages=pages,
         frames=entries,
         masks=masks,
-        sources=sources,
+        sources={name: sources[name] for name in filenames},
         catalog=document,
         catalog_sha256=hashlib.sha256(
             json.dumps(document, sort_keys=True, separators=(",", ":")).encode()
@@ -432,7 +446,7 @@ def compile_tileset(document, output, root=ROOT, page_size=1024, runtime_fingerp
             materials=material_provenance(document, root),
         ),
     )
-    (output / "atlas.json").write_text(json.dumps(manifest, indent=2) + "\n")
+    (output / "atlas.json").write_text(json.dumps(manifest, separators=(",", ":")) + "\n")
     return manifest
 
 

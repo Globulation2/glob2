@@ -14,7 +14,7 @@ import { useLoad, useSession } from '../state.tsx';
 
 /**
  * The instance's public website when it is hosted apart from this app (e.g.
- * glob2online.com beside app.glob2online.com); a build-time setting
+ * glob2.online beside app.glob2.online); a build-time setting
  * (VITE_WEBSITE_URL). Unset: no website links.
  */
 export const WEBSITE_URL: string | undefined =

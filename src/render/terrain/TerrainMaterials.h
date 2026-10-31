@@ -63,6 +63,7 @@ struct Material
 	std::vector<Variant> variants;
 	unsigned totalWeight = 0;
 	std::uint32_t salt = 0;
+	std::uint32_t blockSalt = 0;
 	unsigned profile = 0;
 	int animationFrames = 1, animationTicks = 1, animationStride = 0;
 	// Variants share one periodic edge band and join without the runtime's
@@ -73,6 +74,8 @@ struct Material
 	// periodic field larger than a cell continues across every cell edge.
 	// Zero picks variants by hash.
 	int variantGrid = 0;
+	// Interchangeable blocks share boundary geometry; choose one per map block.
+	int variantBlocks = 1;
 	Decor decor;
 	std::array<unsigned char, 3> preview{}, minimap{};
 	Seam seam;

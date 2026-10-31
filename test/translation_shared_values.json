@@ -1,5 +1,5 @@
 {
-  "_comment": "Identical text is allowed only for standard names/key legends, punctuation-only templates and reviewed shared vocabulary. These are not English fallback translations. Additions require linguistic review. For Savannah, Normal is the native control label in ca, de, dk, es, fr, pt, ro, sv, tr, and id; its other controls have local translations. Resource labels also share native spellings: Metal in Portuguese, Danish, Spanish, Polish, Romanian and Turkish; Paper and Prunes in Catalan; Gold in German; Oranges and Prunes in French. These cognates retain their normal local spelling. Reviewed localization additions retain native technical cognates (Port, Catalan/Spanish Error, Romanian Scalar), the Hungarian Globulation 2 Discord brand title, Danish/Swedish revision templates and the Slovak Seed template. These exceptions are scoped per language; no tutorial or explanatory sentence is exempted.",
+  "_comment": "Identical text is allowed only for standard names/key legends, punctuation-only templates and reviewed shared vocabulary. These are not English fallback translations. Additions require linguistic review. For Savannah, Normal is the native control label in ca, de, dk, es, fr, pt, ro, sv, tr, and id; its other controls have local translations. Resource labels also share native spellings: Metal in Portuguese, Danish, Spanish, Polish, Romanian and Turkish; Paper and Prunes in Catalan; Gold in German; Oranges and Prunes in French. These cognates retain their normal local spelling. Reviewed localization additions retain native technical cognates (Port, Catalan/Spanish Error, Romanian Scalar), the Hungarian Globulation 2 Discord brand title, Danish/Swedish revision templates and the Slovak Seed template. These exceptions are scoped per language; no tutorial or explanatory sentence is exempted. French Silence is the native spelling of the audio silence label; it is reviewed shared vocabulary, not an untranslated sentence.",
   "standard_names_and_key_legends": [
     "%0×",
     "%0 %1",
@@ -386,7 +386,8 @@
       "colonies",
       "options",
       "version %0",
-      "Port"
+      "Port",
+      "Silence"
     ],
     "texts.gr.txt": [
       "%0 / %1 HP · %2",

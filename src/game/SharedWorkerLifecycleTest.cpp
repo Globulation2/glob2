@@ -70,7 +70,6 @@ TEST_CASE("resource catalog import drains admitted material work before replacin
     REQUIRE(map.materialAmountAt(index, MaterialId::Gold) == 2);
     REQUIRE(map.materialAmountAt(index, MaterialId::Food) == 3);
     map.getMaterialGradient(0, MaterialId::Gold, 0);
-    map.getClearAreasGradient(0,0); // area work remains periodic without movement demand
     map.configureGradientPipeline(2, 3);
     map.advanceGradientPipeline();
     map.stagePeriodicGradientPreparation();
@@ -110,15 +109,12 @@ TEST_CASE("pending gradient work survives a save and continues at the same deadl
     });
     map.resetGradientPipeline();
     map.configureGradientPipeline(2,3);
+    map.addClearArea(10,10,0);
     map.getClearAreasGradient(0,0);
     source.game.stepCounter+=128;
-    // Successful planning reads are deliberately passive. Exercise actual
-    // movement demand so both warm fields join the cold area's saved batch.
-    EntityRandom random;
-    for (int r:{WHEAT,WOOD}) {
-        int dx=0,dy=0;bool stop=false;
-        map.pathfindMaterial(random,0,r,0,10,10,&dx,&dy,&stop,nullptr);
-    }
+    // Explicit recovery requests put both warm fields in the saved batch.
+    // A movement query at an unreachable cell need not demand a warm field.
+    for (int r:{WHEAT,WOOD}) map.updateMaterialGradient(0,r,0);
     source.game.observeCompletedWorld();
     REQUIRE_FALSE(map.hasPendingGradientPreparation());
     REQUIRE(map.gradientPipelineStatus().jobs >= 3); // two adaptive fields plus the area field

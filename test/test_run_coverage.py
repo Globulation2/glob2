@@ -1,7 +1,12 @@
-"""Coverage accounting regressions; no compiler or LLVM installation required."""
+"""Coverage accounting and optional matching-Clang storage regressions."""
 import importlib.util
 import contextlib
 import io
+import json
+import os
+import shlex
+import shutil
+import subprocess
 import sys
 from pathlib import Path
 import tempfile
@@ -129,6 +134,73 @@ class CoverageSummaryTests(unittest.TestCase):
                                ('src/map/editor/Action.cpp','src/map/editor'),('libgag/src/Stream.cpp','libgag')]:
             with self.subTest(path=path):
                 self.assertEqual(coverage.area(path),expected)
+
+
+@unittest.skipUnless(all(shutil.which(name) for name in
+                         ('clang++-18', 'llvm-profdata-18', 'llvm-cov-18')),
+                     'matching Clang/LLVM 18 tools unavailable')
+class CoverageStorageTests(unittest.TestCase):
+    def test_online_pool_and_line_tables_preserve_complete_coverage_and_failed_inputs(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            source = root / 'fixture.cpp'
+            source.write_text('''#include <cstdlib>
+#include <string>
+#include <vector>
+template<class T> int classify(const T& values) {
+    int total=0;
+    for (const auto& value:values) total += value.size()>2 ? 2 : 1;
+    return total;
+}
+int uncalled(int value) { return value>0 ? 1 : 0; }
+int main(int argc,char** argv) {
+    const int value=std::atoi(argv[1]);
+    std::vector<std::string> words={"a",value%2 ? "long" : "b"};
+    const int total=classify(words);
+    return value==7 && total>0 ? 3 : 0;
+}
+''')
+            exports, sizes = [], {}
+            for debug in ('full', 'line-tables-only'):
+                binary = root / debug
+                subprocess.run(['clang++-18', *shlex.split(coverage.instrumentation_flags(0, debug)),
+                                str(source), '-o', str(binary)], check=True, capture_output=True)
+                sizes[debug] = binary.stat().st_size
+                for pool in (0, 4):
+                    with self.subTest(debug=debug, pool=pool):
+                        directory = root / f'{debug}-{pool}'
+                        directory.mkdir()
+                        environment = dict(os.environ, LLVM_PROFILE_FILE=str(
+                            directory / coverage.profile_pattern(pool)))
+                        # Multiple batches exercise both concurrent locking and
+                        # reuse of existing pool files. One process fails normally.
+                        for start in range(0, 16, 4):
+                            children = [subprocess.Popen([str(binary), str(value)], env=environment,
+                                        stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                                        for value in range(start, start+4)]
+                            for value, child in zip(range(start, start+4), children):
+                                stdout, stderr = child.communicate(timeout=30)
+                                self.assertEqual(child.returncode, 3 if value==7 else 0)
+                                self.assertEqual((stdout, stderr), (b'', b''))
+                        profiles = sorted(directory.glob('*.profraw'))
+                        self.assertTrue(profiles)
+                        self.assertLessEqual(len(profiles), pool or 16)
+                        if not pool:
+                            self.assertEqual(len(profiles), 16)
+                        merged = directory / 'coverage.profdata'
+                        subprocess.run(['llvm-profdata-18', 'merge', '-sparse', *map(str, profiles),
+                                        '-o', str(merged)], check=True, capture_output=True)
+                        exported = subprocess.check_output(['llvm-cov-18', 'export', str(binary),
+                            f'-instr-profile={merged}', '-skip-expansions', str(source)], text=True)
+                        result = json.loads(exported)
+                        main = next(row for row in result['data'][0]['functions'] if row['name']=='main')
+                        self.assertEqual(main['count'], 16)
+                        exports.append(result)
+                        self.assertEqual(coverage.compact_profiles(profiles, successful=False),
+                                         {'raw_profiles_retained': True})
+                        self.assertTrue(all(path.exists() for path in profiles))
+            self.assertTrue(all(result==exports[0] for result in exports[1:]))
+            self.assertLess(sizes['line-tables-only'], sizes['full'])
 
 
 if __name__ == '__main__':

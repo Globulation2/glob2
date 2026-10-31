@@ -570,7 +570,7 @@ bool SoftwareTerrainCache::tryBuildCpuPage(Chunk &page,
     // admission space for materials used only by unchanged cells in this page.
     std::vector<unsigned> changed;
     changed.reserve(tiles.size());
-    std::vector<TerrainVisual::MaterialId> neededMaterials;
+    bool hasDiscoveredChanges = false;
     for (unsigned i = 0; i < tiles.size(); ++i)
     {
         const auto &tile = tiles[i];
@@ -579,33 +579,13 @@ bool SoftwareTerrainCache::tryBuildCpuPage(Chunk &page,
                                               tile.recipe.corners.end(), materialChanged)))
             continue;
         changed.push_back(i);
-        if (tile.discovered)
-            for (auto id : tile.recipe.corners)
-                if (std::find(neededMaterials.begin(), neededMaterials.end(), id) == neededMaterials.end())
-                    neededMaterials.push_back(id);
+        hasDiscoveredChanges = hasDiscoveredChanges || tile.discovered;
     }
-    if (neededMaterials.empty()) return false;
-    const std::size_t materialBytes = compositor.cpuMaterialBytes(neededMaterials);
+    if (!hasDiscoveredChanges) return false;
     const std::size_t perCell =
         cellPixels * sizeof(TerrainVisual::Compositor::CellMask::Sample) +
         sizeof(TerrainVisual::Compositor::CellMask) + sizeof(Tile) + 256;
-    const std::size_t allowance = bytes() <= budget ? std::min({inFlightLimit, budget - bytes(), GAGCore::RenderWorkReservation::available()}) : 0;
-    const std::size_t fixed = materialBytes * 2 + perCell * 2;
-    // Amortize synchronous tickets across more cells without increasing any
-    // callback's 16K-sample bound or exceeding the reservation/headroom limits.
-    const std::size_t groupCells =
-        allowance > fixed ? std::min(std::size_t(64), (allowance - fixed) / perCell) : 0;
-    const std::size_t reserve = fixed + perCell * groupCells;
-    if (groupCells < 2) return false;
-    GAGCore::RenderWorkReservation workReservation;
-    if (!workReservation.reserve(reserve)) return false;
     PERF_SCOPE_TIME(TerrainPlanning);
-    std::shared_ptr<const TerrainVisual::Compositor::CpuMaterials> materials;
-    {
-        PERF_SCOPE_TIME(TerrainMaterials);
-        materials = compositor.cpuMaterials(neededMaterials);
-    }
-    cpuMaterialLease = materials;
     // The page is unpublished for the whole rebuild. Lock on the owner once;
     // workers receive only disjoint raw cell rectangles and the stable pitch.
     // A failure may leave partial pixels, but the caller keeps the page invalid.
@@ -619,12 +599,39 @@ bool SoftwareTerrainCache::tryBuildCpuPage(Chunk &page,
     const int pitch = target->pitch, n = 32 * resolution;
     // Planning is owner-only. Masks cannot be evicted or
     // replaced until the synchronous group finishes.
-    for (std::size_t first = 0; first < changed.size(); first += groupCells)
+    for (std::size_t first = 0; first < changed.size();)
     {
+        // Snapshot only this bounded group's variants. A whole page can span
+        // several layouts and exceed the in-flight cap before any jobs start.
+        const std::size_t allowance = bytes() <= budget
+            ? std::min({inFlightLimit, budget - bytes(), GAGCore::RenderWorkReservation::available()}) : 0;
+        std::size_t groupCells = std::min(std::size_t(64), std::max(std::size_t(2), changed.size() - first));
+        std::size_t count = 0, reserve = 0;
+        std::vector<TerrainVisual::Recipe> recipes;
+        recipes.reserve(groupCells);
+        for (;;)
+        {
+            count = std::min(groupCells, changed.size() - first);
+            recipes.clear();
+            for (std::size_t k = first; k < first + count; ++k)
+                if (tiles[changed[k]].discovered) recipes.push_back(tiles[changed[k]].recipe);
+            const auto materialBytes = compositor.cpuMaterialBytesForRecipes(recipes);
+            reserve = materialBytes * 2 + perCell * (count + 2);
+            if (reserve <= allowance) break;
+            if (groupCells == 2) return false;
+            groupCells = std::max(std::size_t(2), groupCells / 2);
+        }
+        GAGCore::RenderWorkReservation workReservation;
+        if (!workReservation.reserve(reserve)) return false;
+        std::shared_ptr<const TerrainVisual::Compositor::CpuMaterials> materials;
+        {
+            PERF_SCOPE_TIME(TerrainMaterials);
+            materials = compositor.cpuMaterialsForRecipes(recipes);
+        }
+        cpuMaterialLease = materials;
         std::vector<TerrainCellResult> results;
-        const auto count = std::min(groupCells, changed.size() - first);
         results.reserve(count);
-        for (std::size_t k = first; k < changed.size() && k < first + groupCells; ++k)
+        for (std::size_t k = first; k < first + count; ++k)
         {
             const unsigned i = changed[k];
             TerrainCellResult result{};
@@ -672,6 +679,7 @@ bool SoftwareTerrainCache::tryBuildCpuPage(Chunk &page,
             page.opaque[result.index] = result.opaque;
             page.empty[result.index] = result.empty;
         }
+        first += count;
     }
     return true;
 }
@@ -710,7 +718,22 @@ bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Spr
 	const bool nextGPU = globalContainer->gfx->rendererCapabilities().accelerated;
     {
         PERF_SCOPE_TIME(TerrainMaterials);
-	compositor.prepare(nextGPU, time);
+	// CPU and device composition can rebuild complete pages beyond the
+	// viewport, so prepare every cell in those pages before collecting jobs.
+	const auto prepareMaterials = [&] {
+		compositor.prepareVisible(nextGPU, time, map,
+			chunkOf(left + vx) * ChunkTiles, chunkOf(top + vy) * ChunkTiles,
+			(chunkOf(right + vx) + 1) * ChunkTiles - 1,
+			(chunkOf(bottom + vy) + 1) * ChunkTiles - 1);
+	};
+	prepareMaterials();
+	// A capture is drawn once, so it waits for streamed HD rather than
+	// keeping the native fallback that interactive frames replace later.
+	if (tiledCapture && nextGPU)
+	{
+		GAGCore::Sprite::finishHighResolution();
+		prepareMaterials();
+	}
     }
 	const auto plan =
 		viewSamplingPlan(map, left, top, right, bottom, vx, vy,
@@ -1131,7 +1154,18 @@ void SoftwareTerrainCache::drawUncached(const SceneMap &map, GAGCore::Sprite &sp
 {
 	auto &compositor = globalContainer->terrainCompositor(map.frozenAssetBundle());
 	const bool gpu = globalContainer->gfx->rendererCapabilities().accelerated;
-	compositor.prepare(gpu, time);
+	const auto prepareMaterials = [&] {
+		compositor.prepareVisible(gpu, time, map,
+			chunkOf(left + vx) * ChunkTiles, chunkOf(top + vy) * ChunkTiles,
+			(chunkOf(right + vx) + 1) * ChunkTiles - 1,
+			(chunkOf(bottom + vy) + 1) * ChunkTiles - 1);
+	};
+	prepareMaterials();
+	if (tiledCapture && gpu)
+	{
+		GAGCore::Sprite::finishHighResolution();
+		prepareMaterials();
+	}
 	const auto plan =
 		viewSamplingPlan(map, left, top, right, bottom, vx, vy, compositor.scale(), tiledCapture);
 	if (mode == FallbackMode::EmergencyTiles || !plan.pageFits)

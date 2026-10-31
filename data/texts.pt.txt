@@ -6644,3 +6644,13 @@ Não foi possível guardar a sua escolha. O som continua desligado. Tente novame
 Silêncio: um altifalante silenciado. Som: um altifalante com ondas sonoras.
 [library GL only]
 Só GL
+[Grassland]
+Pradaria
+[Kopjes]
+Colinas rochosas
+[Game trails]
+Trilhos de animais
+[Fish amount]
+Quantidade de peixes
+[Camp-site amount]
+Número de acampamentos

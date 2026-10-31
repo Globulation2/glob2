@@ -22,7 +22,7 @@ ROOT = Path(__file__).resolve().parents[2]
 SCRIPT = ROOT / 'deploy/configure-signin.py'
 CLIENT = '123456789012-abcdefghijklmnop0123456789abcdef.apps.googleusercontent.com'
 
-INSTANCE = '''# app.glob2online.com staging instance.
+INSTANCE = '''# app.glob2.online staging instance.
 name: Globulation 2 (staging)
 
 guests:
