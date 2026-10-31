@@ -244,6 +244,45 @@ not an isolated dictionary sense. Preserve tutorial execution and campaign IDs;
 only their presentation is localized. Review legitimate names and loanwords
 explicitly rather than changing correct text merely to avoid an English match.
 
+### Cloud Translation drafts
+
+After preparing an unregistered kit, `tools/localization/cloud_draft.py --project
+PROJECT_ID` estimates a Bengali pilot without sending a paid request. Add
+`--execute` to request the pilot through Translation API v3 using the active
+`gcloud` credentials. Review the pilot before running `--phase bulk
+--pilot-reviewed --execute`. `--output` selects the kit and `--locale` selects its
+language. Existing translations are never overwritten.
+
+The runner defaults to a US$10 ceiling and accounts conservatively at US$20 per
+million NMT input characters without assuming free credits. Every request attempt
+is reserved before transmission, including retries whose outcome may be unknown.
+Successful responses are cached and checkpointed. Protected-token failures retain
+the response and block retransmission until a reviewer supplies a correction;
+formatting-only templates bypass translation. Keep the accounting and response
+files with the kit when resuming. A leftover runner lock needs investigation
+before removal. Credentials are never written into the kit.
+
+### Bengali conventions
+
+Bengali (`bn`, বাংলা) uses contemporary standard written Bengali for readers in
+Bangladesh and West Bengal, in Bengali script and logical left-to-right order.
+Use respectful আপনি/করুন forms and concise familiar wording, with consistent
+terms across lessons, game controls and the online platform. Preserve product
+names, code, filenames, shortcuts and formatting tokens. Dynamic online numbers
+continue to use the existing locale formatting functions.
+
+The concept anchors are শ্রমিক (Worker), অনুসন্ধানকারী (Explorer), যোদ্ধা
+(Warrior), সরাইখানা (Inn), মৌচাক (the Swarm building), বাজার (Market), and পতাকা
+(Flag). A moving swarm may be a ঝাঁক; the unit-producing building is a মৌচাক.
+Describe assignment targets as requested workers rather than workers already
+present. Terrain passes mean গিরিপথ, while river banks mean নদীর পাড়.
+
+The pinned Noto Sans Bengali asset supplies shaping tables for HarfBuzz in the
+game and the shared browser font CSS. Retain those tables and the OFL licence in
+packages. Check conjuncts, reph, vowel signs, mixed Latin text and Bengali digits
+at small sizes; glyph coverage alone does not establish correct shaping or fit.
+Explicit non-Bengali script tags must not select the Bengali-script catalog.
+
 ### Hindi, Urdu and Swahili terminology
 
 Use these concept anchors across the game, lessons and online messages. Inflect

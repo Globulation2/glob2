@@ -72,6 +72,19 @@ TEST_SUITE("SystemLanguage")
 		CHECK(code("").empty());
 	}
 
+	TEST_CASE("Bengali regions share the Bengali script catalog")
+	{
+		CHECK(code("bn") == "bn");
+		CHECK(code("bn", "BD") == "bn");
+		CHECK(code("bn-IN") == "bn");
+		CHECK(code("bn_Beng_BD") == "bn");
+		CHECK(code("bn-Beng", "IN") == "bn");
+		CHECK(code("bn-Latn").empty());
+		CHECK(code("bn-Deva", "IN").empty());
+		CHECK(code("bn-u-nu-latn") == "bn");
+		CHECK(code("bn-x-latn") == "bn");
+	}
+
 	TEST_CASE("expanded locales distinguish scripts and the precise Pulaar variety")
 	{
 		CHECK(code("hi", "IN") == "hi");

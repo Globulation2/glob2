@@ -322,7 +322,7 @@ void checkShapingClusterWrapping()
     };
     // Yoruba decomposed vowel with underdot+tone, Indic conjunct+matra,
     // Myanmar stacked consonants, and Thai consonant+tone mark.
-    for (const std::string cluster : {"o\u0323\u0301", "क्षि", "က္က", "ก้"}) {
+    for (const std::string cluster : {"o\u0323\u0301", "क्षि", "ক্ষি", "র্কি", "কৌ", "က္က", "ก้"}) {
         ClusterFixture shaped(cluster);
         const auto source = cluster + "x";
         const auto lines = wrapText(shaped, FontRole::Body, source, 8);
@@ -339,6 +339,19 @@ void checkShapingClusterWrapping()
         const auto explicitLines = wrapText(shaped, FontRole::Body, cluster + "\nx", 800);
         require(explicitLines.size() == 2 && explicitLines.front() == cluster,
                 "explicit newline keeps preceding cluster intact");
+
+        const auto editable = cluster + "x\n" + cluster + "y";
+        Fixture editor([&](const Presentation &) {
+            return column({textEditor("cluster-editor", editable, {}, {true, 8})});
+        }, 32, 300);
+        editor.host.setMeasurer(&shaped);
+        editor.host.layoutIfNeeded();
+        RecordingCanvas canvas(editor.presentation.viewport.size(), shaped);
+        editor.host.paint(canvas, 0);
+        require(canvas.texts.size() == 4 && canvas.texts[0].second == cluster &&
+                canvas.texts[1].second == "x" && canvas.texts[2].second == cluster &&
+                canvas.texts[3].second == "y",
+                "multiline editor keeps shaping clusters and explicit newlines intact");
     }
     struct InvalidBoundaries : FixedTextMeasurer
     {

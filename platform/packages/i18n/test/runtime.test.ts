@@ -52,6 +52,13 @@ describe('online locale resolution', () => {
     expect(resolveLocale('sw-Latn-KE')).toBe('sw');
     expect(resolveLocale(['sw-Arab', 'de'])).toBe('de');
   });
+  it('resolves Bengali regions and script without claiming Latin transliteration', () => {
+    for (const tag of ['bn', 'bn-BD', 'bn-IN', 'bn-Beng-BD', 'bn_Beng_IN', 'bn-u-nu-latn'])
+      expect(resolveLocale(tag)).toBe('bn');
+    expect(resolveLocale(['bn-Latn', 'fr'])).toBe('fr');
+    expect(resolveLocale(['bn-Deva-IN', 'de'])).toBe('de');
+    expect(resolveLocale('bn-x-latn')).toBe('bn');
+  });
   it('preserves language and sends no event on unsupported switches', async () => {
     await expect(setLocale('unsupported')).rejects.toThrow();
     expect(getLocale()).toBe('en');

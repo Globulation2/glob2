@@ -56,11 +56,13 @@ export function resolveLocale(input: string | readonly string[]): Locale {
     const writtenScript =
       language === 'hi'
         ? 'deva'
-        : language === 'ur'
-          ? 'arab'
-          : language === 'sw'
-            ? 'latn'
-            : undefined;
+        : language === 'bn'
+          ? 'beng'
+          : language === 'ur'
+            ? 'arab'
+            : language === 'sw'
+              ? 'latn'
+              : undefined;
     if (writtenScript) {
       const extension = parts.findIndex((part) => part.length === 1);
       const subtags = extension < 0 ? parts : parts.slice(0, extension);

@@ -28,6 +28,25 @@ for (const locale of locales) {
     const heading = catalog['Welcome to the colony'] ?? 'Welcome to the colony';
     if (locale.code !== 'en') expect(heading).not.toBe('Welcome to the colony');
     await expect(page.locator('#hero-title')).toHaveText(heading);
+    await page.evaluate(() => document.fonts.ready);
+    if (locale.code === 'bn') {
+      // Prove that the packaged Bengali face loaded, even on a host that also
+      // happens to have a Bengali system font. Screenshots alone can hide that.
+      const font = await page.evaluate(async () => {
+        const faces = await document.fonts.load('16px "Glob2 Scripts"', 'ক্ষুদ্র শ্রমিকের প্রস্তুতি ১২');
+        const heading = document.querySelector('#hero-title');
+        return {
+          loaded: faces.length > 0 && faces.every((face) => face.status === 'loaded'),
+          family: heading ? getComputedStyle(heading).fontFamily : '',
+          bundled: performance
+            .getEntriesByType('resource')
+            .some((entry) => entry.name.includes('NotoSansBengali-Regular')),
+        };
+      });
+      expect(font.loaded).toBe(true);
+      expect(font.family).toContain('Glob2 Scripts');
+      expect(font.bundled).toBe(true);
+    }
     await expect(page.getByRole('link', { name: /Isles of Plenty/ })).toBeVisible();
     await expect(page.locator('.app-sidebar .nav a[href="/maps"]')).toBeVisible();
     await expect(page.locator('.app-sidebar .nav a')).toHaveCount(10);
@@ -56,18 +75,23 @@ for (const locale of locales) {
   });
 }
 
-test('changing the selected language updates the page without losing input', async ({ page }) => {
-  await page.route('**/api/v1/accounts/me', (route) =>
-    route.fulfill({ status: 401, json: { code: 'unauthenticated', message: 'Sign in required.' } }),
-  );
-  await page.goto('/');
-  const code = page.locator('input[name="code"]');
-  await code.fill('ABCD');
-  if (!(await page.getByTestId('language-selector').first().isVisible()))
-    await page.locator('.rail-expand').click();
-  const selector = page.locator('[data-testid="language-selector"]:visible').first();
-  await selector.selectOption('fr');
-  await expect(page.locator('html')).toHaveAttribute('lang', 'fr');
-  await expect(code).toHaveValue('ABCD');
-  await expect(page.locator('.app-sidebar .nav a[href="/maps"]')).toBeVisible();
-});
+for (const language of ['fr', 'bn']) {
+  test(`changing to ${language} updates the page without losing input`, async ({ page }) => {
+    await page.route('**/api/v1/accounts/me', (route) =>
+      route.fulfill({ status: 401, json: { code: 'unauthenticated', message: 'Sign in required.' } }),
+    );
+    await page.goto('/');
+    const code = page.locator('input[name="code"]');
+    await code.fill('ABCD');
+    if (!(await page.getByTestId('language-selector').first().isVisible()))
+      await page.locator('.rail-expand').click();
+    const selector = page.locator('[data-testid="language-selector"]:visible').first();
+    await selector.selectOption(language);
+    await expect(page.locator('html')).toHaveAttribute('lang', language);
+    await expect(page.locator('html')).toHaveAttribute('dir', 'ltr');
+    await expect(code).toHaveValue('ABCD');
+    await expect(page.locator('.app-sidebar .nav a[href="/maps"]')).toBeVisible();
+    await page.reload();
+    await expect(page.locator('html')).toHaveAttribute('lang', language);
+  });
+}
