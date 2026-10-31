@@ -34,6 +34,9 @@ def build_identity(arguments, host=None):
     role = arguments.get('role', 'client')
     if role not in ('client', 'relay'):
         raise ValueError('role must be client or relay')
+    from recording_config import resolve as recording_mode
+    recording = recording_mode(arguments, target, role,
+        'mingw' if enabled(arguments.get('mingw', 0)) or enabled(arguments.get('mingwcross', 0)) else (host or platform.system().lower()))
     china = enabled(arguments.get('china', 0))
     if china and (target == 'web' or role != 'client'):
         raise ValueError('china=1 supports native and mobile clients only')
@@ -81,6 +84,8 @@ def build_identity(arguments, host=None):
     native_wss = target == 'native' and role == 'client' and enabled(arguments.get('wss', 1))
     identity = {'target': target, 'role': role, 'toolchain': toolchain, 'mode': mode,
                 'native_wss': native_wss}
+    if recording != 'bundled':
+        identity['recording'] = recording
     if target == 'web':
         legacy = str(arguments.get('web_legacy_gl', '1'))
         if legacy not in ('0', '1'):
@@ -106,6 +111,10 @@ def build_identity(arguments, host=None):
 
 
 def default_directory(identity):
+    if 'recording' in identity:
+        base = dict(identity)
+        mode = base.pop('recording')
+        return default_directory(base) / ('recording-' + mode)
     if identity.get('web_legacy_gl') is False:
         base = dict(identity); del base['web_legacy_gl']
         return default_directory(base) / 'direct'

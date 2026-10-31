@@ -2,6 +2,29 @@
 
 The recording build and native music playback use pinned codec inputs and bounded buffering. Asset authoring is described in the [music pipeline](../assets/music-pipeline.md).
 
+## Linux distribution recording variants
+
+Native Linux clients accept `recording=bundled|system|disabled`. The default
+remains `bundled`; other platforms retain their existing recording builds.
+Non-default modes are rejected for relay, mobile, browser and Windows builds.
+Each Linux variant has an isolated build identity and output directory.
+
+- `recording=system` uses pkg-config's `libavformat`, `libavcodec`, `libswscale`,
+  `libswresample` and `libavutil`, without provisioning private codecs. FFmpeg
+  owns its transitive codec dependencies. Qualify the actual version and encoder
+  configuration: MP4 recording requires `libx264` video and `aac` audio encoders.
+  Missing encoders produce a session error; hardware encoding is opportunistic.
+- `recording=disabled` links no recording encoder, session or file-management
+  implementation and needs no FFmpeg/x264/NASM recording dependencies. Recording
+  availability is false, hiding settings, shortcuts and menu controls. Requests
+  fail without creating or deleting files. Voice chat, simulation replays, saves
+  and multiplayer are independent of this switch.
+
+For example, `scons release=1 retain_symbols=1 recording=disabled` retains debug
+symbols for distro packages. Use matching options for `install`, with staged
+`BINDIR`/`INSTALLDIR` and final runtime `DATADIR`. System SDL3 is selected by
+leaving `GLOB2_SDL3_PREFIX` unset. See [downstream packaging](../releases/desktop.md#downstream-linux-distributions).
+
 ## Embedded recording dependencies
 
 Client builds compile a pinned minimal FFmpeg/x264 stack through

@@ -132,6 +132,103 @@ source checksum on a build-only run is for testing, not a release announcement.
 
 [Release index](README.md) · [Documentation index](../README.md).
 
+## Downstream Linux distributions
+
+Official distro updates are a separate release deliverable. An upstream RPM or
+successful distro compilation job does not update official repositories.
+For each stable release, nominate a consenting upstream coordinator and open a
+tracking issue recording the tag, source commit, archive SHA-256, downstream
+versions, maintainers, submission URLs, blockers and feature omissions. Use
+**preparing → submitted → accepted → available → installed-package verified**.
+A merged recipe alone does not establish installed-package verification.
+
+Prepare the handoff from the published source asset without replacing it:
+
+```sh
+python3 tools/release/downstream.py --tag vVERSION \
+  --archive artifacts/glob2-VERSION.tar.gz --coordinator GITHUB_LOGIN \
+  --output artifacts/downstream/VERSION
+```
+
+The tool checks the public stable release, resolves its tag to a commit and
+verifies the archive's size, published SHA-256 and internal version. It writes
+release identity, checksums and an initially unsubmitted campaign table, refusing
+to overwrite existing progress. Keep changing status in the issue and generated
+evidence in `artifacts/`, rather than committing campaign reports.
+
+### Migration from 0.9.4.4
+
+Use the release's source archive rather than legacy Savannah release discovery.
+Review and retire old compiler, Python 2/SCons and SDL 1.2 patches. Current builds
+use C++20, Python 3/SCons, SDL3 and its image/font/network libraries, OpenGL/epoxy,
+Opus/opusfile/Ogg, Speex, Boost, OpenSSL, zlib and FriBidi. Consult the selected
+release's build inputs for exact versions; the old SDL 1.2/Vorbis package list
+is insufficient.
+
+Leave `GLOB2_SDL3_PREFIX` unset for system SDL3. Review the release's SDL patches
+(X11 window lifecycle, PNG channel preservation and font kerning) and test their
+affected behavior before substituting unpatched libraries. Submit required fixes
+to dependency maintainers. The pinned helper installs private SDL libraries for
+upstream packages and does not establish distro unbundling.
+
+Select [recording mode](../development/media-dependencies.md#linux-distribution-recording-variants)
+explicitly. Distro packages may omit recording when policy or dependencies
+require it; document this difference. Keep patched QuickJS/OpenLibm together:
+their behavior is part of deterministic simulation, so arbitrary system
+replacements are unsafe. The [vendored inventory](../../third_party/README.md)
+and [licensing index](../development/licensing.md) identify code, asset, font,
+soundtrack and editable-artwork notices. Audit disabled components still present
+in the source archive; disabling recording does not remove its archived sources.
+
+The pinned Pillow/libwebp asset encoder is a build dependency. Pre-provision it
+with `tools/build_asset_encoder.py` and set `GLOB2_ASSET_ENCODER_PYTHON`;
+developer builds may otherwise provision it automatically. Supply every source
+generation input and build with networking disabled in a clean environment.
+Game builds/installations work directly from the source archive. Evidence-producing
+test harnesses require a Git checkout of the selected tag, with downstream patches
+applied, so their embedded source provenance cannot borrow an enclosing repository
+or mislabel archive contents as an unchanged commit.
+
+Use `release=1 retain_symbols=1 client_profile=free`, distro build flags and
+matching build/install options. Stage `BINDIR` and `INSTALLDIR`, keeping `DATADIR`
+at the final location, usually `/usr/share`. Verify executable, data, campaigns,
+maps, scripts, desktop metadata, icons, man page, completions and license notices.
+Reject build-directory runtime library search paths.
+
+Preserve profile/save locations and test upgrades from actual old distro
+packages. Save loading follows the declared minimum format, while old replays
+and mixed-client multiplayer have separate version gates: do not promise
+compatibility with 0.9.4.4 peers. Include the release notes' AI, interface,
+artwork, editor, online-platform and gameplay changes, with manual play evidence.
+
+### Submission and verification
+
+| Distribution | Packaging route |
+| --- | --- |
+| Debian | Start from [Games Team Salsa](https://salsa.debian.org/games-team/glob2), discovering its default branch. Preserve the executable/data split, add release watch metadata and propose an unstable upload. Follow testing migration. Do not revive upstream's historical `debian/` packaging. |
+| Ubuntu | Follow Debian with a [sync or merge](https://documentation.ubuntu.com/project/how-ubuntu-is-made/processes/merges-and-syncs/) into the development series, accounting for deltas/freezes. Released-series backports require separate review. |
+| Fedora | Work with the [maintainers](https://packages.fedoraproject.org/pkgs/glob2/glob2/) on dist-git, starting with Rawhide. Resolve bundled-library, codec and asset-source acceptance before supported-branch updates. |
+| Arch | Update the [Extra package](https://archlinux.org/packages/extra/x86_64/glob2/) with a clean-chroot-tested PKGBUILD, avoiding duplicate AUR packages. |
+| Gentoo | Check the current tree, removal history and bugs. Update or reintroduce with a consenting maintainer/proxy and tested keywords, following [submission guidance](https://devmanual.gentoo.org/ebuild-maintenance/new-ebuild/index.html). |
+| openSUSE | Identify the OBS development package and maintainers; submit toward Factory/Tumbleweed. Evaluate Leap independently. |
+
+Run native checks (lintian, RPM checks, namcap or pkgcheck), then qualify final
+installed packages: clean install, upgrade, tutorial, audio, editor, saves,
+online play and uninstall preserving user data. Compare identical seed/order
+fixtures and per-tick checksums with upstream, including save/resume and
+replay/network boundaries. Retain exact source/recipe revisions, environments,
+commands, results, package hashes, features and untested architectures in
+accessible evidence attached to the tracking issue.
+
+Review open submissions weekly during the campaign, following distro escalation
+rules. Configure Debian watch metadata and Fedora release monitoring for future
+stable releases. Inventory NixOS, Alpine, Void, Mageia and other active packages
+for a second wave. Existing Flatpak/Snap channels may bridge availability after
+checking live listings. This process does not create upstream APT/RPM repositories
+or guarantee downstream acceptance dates. If fixes require a new upstream source
+release, publish a new patch version and explicitly update the campaign target;
+never replace the selected release's source bytes.
+
 ## Steam Windows depot source
 
 Dispatch `steam-windows-package.yml` or `steam-windows-upload.yml` with a

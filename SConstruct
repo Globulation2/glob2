@@ -24,6 +24,8 @@ def establish_options(env):
     opts.Add("CC", "C compiler", env["CC"])
     opts.Add("CXX", "C++ compiler", env["CXX"])
     opts.Add("CXXFLAGS", "Manually add to the CXXFLAGS", "-g")
+    opts.Add("CFLAGS", "C compiler flags for distribution hardening", "")
+    opts.Add("CPPFLAGS", "Preprocessor flags for distribution hardening", "")
     opts.Add("LINKFLAGS", "Manually add to the LINKFLAGS", "-g")
     if isDarwinPlatform:
         opts.Add("INSTALLDIR", "Installation Directory", "./")
@@ -38,6 +40,7 @@ def establish_options(env):
     opts.Add("dependency_jobs", "Dependency build parallelism (defaults to SCons -j)", GetOption("num_jobs"))
     opts.Add(BoolVariable("release", "Build for release", 0))
     opts.Add(BoolVariable("retain_symbols", "Keep native release symbols for distro debug packages", 0))
+    opts.Add("recording", "Gameplay recording: bundled, system, or disabled (Linux)", "bundled")
     opts.Add("client_profile", "Client product profile: full or free", "free" if ARGUMENTS.get("release") == "1" else "full")
     opts.Add("distribution", "Distribution channel", "direct")
     for feature in ("commander", "authoring_links", "community_ai", "community_generators"):
@@ -99,6 +102,8 @@ def configure(env, server_only, relay=False):
     configfile.add("PACKAGE_TARNAME", "Define to the one symbol short name of this package.", "\"glob2\"")
     configfile.add("PACKAGE_VERSION", "Define to the version of this package.", "\""+env["VERSION"]+"\"")
     configfile.add("AUDIO_RECORDER_OSS", "Set the audio input type to OSS; the UNIX Open Sound System")
+    if env.get('recording') == 'disabled':
+        configfile.add("GLOB2_RECORDING_DISABLED", "Gameplay recording omitted by this package", "1")
     if isDarwinPlatform:
         configfile.add("USE_OSX", "Set when this build is OSX")
     if env['mingw'] or env['mingwcross'] or isWindowsPlatform:
@@ -339,7 +344,8 @@ def main():
         env['ENV']['SOURCE_DATE_EPOCH'] = os.environ['SOURCE_DATE_EPOCH']
     # Fedora's package-notes linker spec reads these from the subprocess
     # environment. SCons otherwise removes them before compiler probes.
-    for name in ('RPM_PACKAGE_NAME', 'RPM_PACKAGE_VERSION', 'RPM_PACKAGE_RELEASE', 'RPM_ARCH'):
+    for name in ('RPM_PACKAGE_NAME', 'RPM_PACKAGE_VERSION', 'RPM_PACKAGE_RELEASE', 'RPM_ARCH',
+                 'PKG_CONFIG_PATH', 'PKG_CONFIG_LIBDIR'):
         if name in os.environ:
             env['ENV'][name] = os.environ[name]
     # Compiler discovery also needs the selected SDK, not just compilation.
@@ -352,7 +358,7 @@ def main():
     env.Append(CPPDEFINES=official_instance.cppdefines(official_instance.origin({'official_instance': env['official_instance']})))
     # SCons treats a command-line flag string as one shell argument unless it
     # is split into a list. Distro RPM macros provide multiple flags at once.
-    for flags in ('CXXFLAGS', 'LINKFLAGS'):
+    for flags in ('CFLAGS', 'CPPFLAGS', 'CXXFLAGS', 'LINKFLAGS'):
         env[flags] = env.Split(env[flags])
     # Ordinary release builds outside macOS link with -s, which strips debug information
     # from every binary, so compiling it in only slows the build and multiplies
@@ -475,7 +481,10 @@ def main():
         env.ParseConfig("pkg-config opusfile --cflags")
     configure(env, server_only, relay)
 
-    if not server_only:
+    if not server_only and env['recording'] == 'system':
+        from recording_config import attach_system
+        attach_system(env)
+    if not server_only and env['recording'] == 'bundled':
         from recording_dependencies import build as build_recording, attach as attach_recording
         recording_target = 'mingw32' if env['mingw'] or env['mingwcross'] or isWindowsPlatform else 'darwin' if isDarwinPlatform else 'linux'
         shared_recording = Path(sdl_prefix) / 'recording' if sdl_prefix else None
@@ -510,8 +519,11 @@ def main():
         env.Append(LIBS=['opusfile', 'opus', 'ogg', 'SDL3_ttf', 'SDL3_image', 'speex'])
 
     if env['release']:
-        env.Append(CXXFLAGS=["-O3"])
-        env.Append(LINKFLAGS=["-O3"])
+        # Distro flags may select -O2/-Os and must take precedence over our
+        # release default. Strict simulation flags are appended separately.
+        for flags in ('CXXFLAGS', 'LINKFLAGS'):
+            if not any(flag.startswith('-O') for flag in env[flags]):
+                env.Append(**{flags: ['-O3']})
         if not isDarwinPlatform:
             env.Append(LINKFLAGS=["-fwhole-program"])
             if not env['retain_symbols']:

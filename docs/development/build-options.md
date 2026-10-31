@@ -1,5 +1,10 @@
 # Development build options
 
+Native Linux distribution builds can select `recording=system` or
+`recording=disabled`; the default remains `recording=bundled`. These variants
+use separate output directories. See [recording dependencies](media-dependencies.md#linux-distribution-recording-variants)
+for required libraries and feature differences.
+
 Fast builds accelerate editing; ordinary debug builds provide full symbols and release builds provide representative runtime behavior.
 
 Native distribution packages that extract separate debug symbols can use

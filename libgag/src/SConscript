@@ -1,6 +1,7 @@
 from sources import GAG_SOURCES
 Import("env")
-libgag_sources = list(GAG_SOURCES)
+from recording_config import sources as recording_sources
+libgag_sources = recording_sources(GAG_SOURCES, env.get('recording', 'bundled'))
 if env["PLATFORM"] == "darwin" and not env.get("mingw") and not env.get("mingwcross"):
     libgag_sources.append("MacScrollMonitor.mm")
 
