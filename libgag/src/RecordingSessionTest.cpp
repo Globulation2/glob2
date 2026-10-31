@@ -26,6 +26,23 @@ nlohmann::json manifest(const std::string &path)
 {
 	std::ifstream input(path); return nlohmann::json::parse(input);
 }
+std::vector<nlohmann::json> journal(const std::string &path)
+{
+	std::ifstream input(path); std::string line;
+	std::vector<nlohmann::json> entries;
+	while (std::getline(input,line)) entries.push_back(nlohmann::json::parse(line));
+	return entries;
+}
+void checkJournalOrder(const std::vector<nlohmann::json> &entries)
+{
+	std::int64_t previous = -1;
+	for (const auto &entry : entries)
+	{
+		const auto time = entry.at("time_us").get<std::int64_t>();
+		CHECK(time>=previous); previous=time;
+	}
+}
+
 class DeferredFlush final : public VideoEncoder
 {
 	std::unique_ptr<VideoEncoder> inner;
@@ -116,6 +133,101 @@ TEST_SUITE("RecordingSession")
 		CHECK(std::string(std::istreambuf_iterator<char>(saved), {}) == original);
 	}
 
+	TEST_CASE("control events wait for delayed video chapters without changing their timestamps")
+	{
+		const auto path=output("event-order"); auto files=nativeSessionStorage(); files.reserve(path);
+		Options options; options.encoder=EncoderPreference::Software;
+		Status status; Session session(path,options,files,[&](const Status &value) { status=value; });
+		constexpr std::int64_t start=1000000;
+		for (int n=0;n<30;++n)
+		{
+			const auto time=start+std::int64_t(n)*1000000/30;
+			session.frame(pixels(time)); session.step(time+50000);
+		}
+		session.event(start+1036673,"paused","true");
+		auto first=pixels(start+1000000); first.context.screen="settings";
+		session.frame(std::move(first)); session.step(start+1050000);
+		CHECK(journal(path+".recording/events.jsonl").size()==2);
+		auto second=pixels(start+1033333); second.context.screen="end_game";
+		session.frame(std::move(second)); session.step(start+1083333);
+		// A genuinely late input cannot be appended honestly after newer entries.
+		CHECK_THROWS_AS(session.event(start+1000000,"late","rejected"),std::runtime_error);
+		session.stop(start+1100000);
+		for (int n=0;n<10 && !session.step(start+1150000);++n) {}
+		REQUIRE(status.state==State::Complete);
+		const auto entries=journal(path+".events.jsonl"); checkJournalOrder(entries);
+		REQUIRE(entries.size()==4);
+		CHECK(entries[1]["time_us"]==1000000); CHECK(entries[1]["kind"]=="chapter");
+		CHECK(entries[2]["time_us"]==1033333); CHECK(entries[2]["kind"]=="chapter");
+		CHECK(entries[3]["time_us"]==1036673); CHECK(entries[3]["kind"]=="paused");
+	}
+	TEST_CASE("resize carries future controls to the new segment and journals one transition")
+	{
+		const auto path=output("resize-events"); auto files=nativeSessionStorage(); files.reserve(path);
+		Options options; options.encoder=EncoderPreference::Software;
+		Status status;
+		Session session(path,options,files,[&](const Status &value) { status=value; },
+			std::make_unique<DeferredFlush>(VideoConfiguration{66,38,30,23,true}));
+		constexpr std::int64_t start=1000000;
+		for (int n=0;n<16;++n)
+		{
+			const auto time=start+std::int64_t(n)*1000000/30;
+			session.frame(pixels(time,n<10?65:69,n<10?37:41)); session.step(time+50000);
+		}
+		session.event(start+560000,"speed","2");
+		session.frame(pixels(start+533333,69,41));
+		CHECK_FALSE(session.step(start+583333)); CHECK(status.outputs.empty());
+		CHECK_FALSE(session.step(start+583334)); REQUIRE(status.segment==2);
+		session.stop(start+566666); REQUIRE(session.step(start+650000));
+		REQUIRE(status.state==State::Complete); REQUIRE(status.outputs.size()==2);
+		const auto first=journal(path+".events.jsonl"); checkJournalOrder(first);
+		const auto duration=manifest(path+".json")["duration_us"].get<std::int64_t>();
+		for (const auto &entry : first) CHECK(entry["time_us"].get<std::int64_t>()<duration);
+		const auto next=journal(status.outputs.back()+".events.jsonl"); checkJournalOrder(next);
+		int transitions=0,controls=0;
+		const auto offset=manifest(status.outputs.back()+".json")["session_start_us"].get<std::int64_t>();
+		for (const auto &entry : next)
+		{
+			if (entry["kind"]=="resize") { ++transitions; CHECK(entry["time_us"]==0); }
+			if (entry["kind"]=="speed")
+			{
+				++controls; CHECK(entry["time_us"].get<std::int64_t>()+offset==560000);
+			}
+		}
+		CHECK(transitions==1); CHECK(controls==1);
+	}
+	TEST_CASE("stop rejects events beyond the final video interval and retains diagnostics")
+	{
+		const auto path=output("event-after-stop"); auto files=nativeSessionStorage(); files.reserve(path);
+		Options options; options.encoder=EncoderPreference::Software;
+		Status status; Session session(path,options,files,[&](const Status &value) { status=value; });
+		session.frame(pixels(1000000)); session.step(1050000);
+		session.event(1100000,"future","retained for diagnosis");
+		session.stop(1033333);
+		try { session.step(1100000); FAIL("An event after the final video interval must be rejected"); }
+		catch (const std::runtime_error &error) { session.fail(error.what()); }
+		REQUIRE(status.state==State::Failed);
+		CHECK(status.error.find("past the final video interval")!=std::string::npos);
+		CHECK_FALSE(std::filesystem::exists(path));
+		CHECK_FALSE(std::filesystem::exists(path+".json"));
+		CHECK_FALSE(manifest(path+".recording/manifest.json")["complete"].get<bool>());
+		CHECK(std::filesystem::exists(path+".recording/capture"+Extension));
+		const auto entries=journal(path+".recording/events.jsonl"); checkJournalOrder(entries);
+		REQUIRE(entries.size()==2); CHECK(entries.back()["time_us"]==100000);
+		CHECK(entries.back()["kind"]=="future");
+	}
+	TEST_CASE("journal backlog is bounded and failure retains queued diagnostic events")
+	{
+		const auto path=output("event-budget"); auto files=nativeSessionStorage(); files.reserve(path);
+		Options options; options.encoder=EncoderPreference::Software;
+		Status status; Session session(path,options,files,[&](const Status &value) { status=value; });
+		session.frame(pixels(1000000)); session.step(1050000);
+		for (int n=0;n<1024;++n) session.event(2000000+n,"pending","value");
+		CHECK_THROWS_AS(session.event(2001024,"overflow","rejected"),std::runtime_error);
+		session.fail("forced journal budget failure"); CHECK(status.state==State::Failed);
+		const auto entries=journal(path+".recording/events.jsonl"); checkJournalOrder(entries);
+		REQUIRE(entries.size()==1025); CHECK(entries.back()["time_us"]==1001023);
+	}
 	TEST_CASE("resize coalescing preserves full resolution and numbers completed segments")
 	{
 		auto path=output("resize"); auto files=nativeSessionStorage(); files.reserve(path);

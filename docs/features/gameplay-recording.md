@@ -100,7 +100,10 @@ current gameplay era.
 Times use integer microseconds relative to the recorded video, not a conversion
 from simulation ticks. Chapter transitions take effect on the first recorded
 frame showing the context. Pauses and replay speed changes therefore keep both
-timestamps and tick labels meaningful. Structured metadata is authoritative for
+timestamps and tick labels meaningful. Control events retain their capture-clock
+timestamps while waiting for the matching video slots, so the journal stays
+chronological even when encoding falls behind. A resize transition is logged at
+time zero in the new segment. Structured metadata is authoritative for
 automation; embedded chapter presentation varies between video players.
 
 ```sh
@@ -141,7 +144,10 @@ three-frame capture budget, segments and semantic context. Video encoders return
 packets asynchronously through an interface with no FFmpeg types. Audio encoding,
 alignment, container writing and storage belong to the worker. Audio callbacks copy into
 preallocated storage with a nonblocking lock; they neither allocate nor wait.
-Workers handle color conversion, encoding and file operations. Normal stop is
+Workers handle color conversion, encoding and file operations. The session orders
+journal entries in a bounded queue of 1024 entries; overflow, events arriving
+after their interval was committed, or controls beyond the final video interval
+fail recording with retained diagnostics. Normal stop is
 cooperative; native application shutdown joins outstanding workers.
 
 Default software encoding uses x264 ultrafast, CRF 23, one thread, zero latency, no B-frames and a
