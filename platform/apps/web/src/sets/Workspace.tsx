@@ -236,7 +236,8 @@ export function SetEditor({
       if (account) {
         const abort = new AbortController();
         queueMicrotask(() => {
-          if (!abort.signal.aborted) setPack(newPackage(account.displayName));
+          if (!abort.signal.aborted)
+            setPack({ ...newPackage(account.displayName), title: t('New set') });
         });
         return () => abort.abort();
       }
