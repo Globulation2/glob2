@@ -720,7 +720,11 @@ TEST_CASE("Malay display settings translate the software renderer label" * docte
         for (const auto &choice : row.choices)
             CHECK(choice.find("Software") == std::string::npos);
     }
+#ifdef GLOB2_MOBILE
+    CHECK(translatedStatusRows == 1); // The OS owns mobile display modes.
+#else
     CHECK(translatedStatusRows == 2); // Current display and active renderer.
+#endif
 }
 
 TEST_CASE("Controls render translated labels and help in every supported language [display:1400x1000][artifacts]" * doctest::test_suite("SettingsLocalization"))
