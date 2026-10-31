@@ -237,7 +237,7 @@ Ctrl-%0
 [create map]
 வரைபடத்தை உருவாக்கு
 [credits]
-பங்களிப்பாளர்கள்
+பங்களித்தோர்
 [ctrl - line]
 Ctrl - கோடு
 [current speed]
@@ -1533,7 +1533,7 @@ Globulation 2 சுட்டிக்குறியைக் காட்ட�
 [settings Map editor]
 வரைபடத் திருத்தி
 [settings Match the desktop]
-டெஸ்க்டாப்புடன் பொருந்துமாறு
+கணினிக்கு ஏற்ப
 [settings Missing font]
 விடுபட்ட எழுத்துரு
 [settings Music volume]
@@ -3209,7 +3209,7 @@ CPU %0%
 [settings Level %0]
 நிலை %0
 [settings Match the desktop %0]
-டெஸ்க்டாப்புடன் பொருத்துக (%0)
+கணினிக்கு ஏற்ப (%0)
 [settings Current display %0 %1 %2 %3]
 தற்போதைய காட்சி: %0 × %1 · %2 · %3
 [Fairness: %0]
