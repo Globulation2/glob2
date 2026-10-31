@@ -35,25 +35,25 @@
 [%0 level %1]
 %0 — ниво %1
 [%0 units can't access building]
-%0 единици нямат достъп до сградата
+Единици без достъп до сградата: %0
 [%0 units can't access flag]
-%0 единици нямат достъп до флага
+Единици без достъп до флага: %0
 [%0 units can't access fruit]
-%0 единици нямат достъп до плодовете
+Единици без достъп до плодовете: %0
 [%0 units can't access resource]
-%0 единици нямат достъп до необходимите материали
+Единици без достъп до нужните материали: %0
 [%0 units not available]
-%0 единици не са на разположение
+Единици, които не са на разположение: %0
 [%0 units too far from building]
-%0 единици са твърде далеч от сградата
+Единици твърде далеч от сградата: %0
 [%0 units too far from flag]
-%0 единици са твърде далеч от флага
+Единици твърде далеч от флага: %0
 [%0 units too far from fruit]
-%0 единици са твърде далеч от плодовете
+Единици твърде далеч от плодовете: %0
 [%0 units too far from resource]
-%0 единици са твърде далеч от необходимите материали
+Единици твърде далеч от нужните материали: %0
 [%0 units too low level]
-%0 единици са с твърде ниско ниво
+Единици с твърде ниско ниво: %0
 [%0% Uploaded]
 %0% качено
 [%0's team unit got converted to your team]
@@ -1129,7 +1129,7 @@ Tab
 [Units still inside: %0]
 Все още вътре: %0
 [Units still working: %0]
-Все още работят: %0
+Все още работещи: %0
 [2 vs 2]
 2 срещу 2
 [AI strategy & counterplay]
@@ -3219,17 +3219,17 @@ CPU %0%
 [%0 / Browse]
 %0 / Преглед
 [%0 colonies · %1]
-%0 колонии · %1
+Колонии: %0 · %1
 [%0 · Team %1]
 %0 · Отбор %1
 [Colonies: %0]
 Колонии: %0
 [%0 colonies · %1 AI]
-%0 колонии · %1 ИИ
+Колонии: %0 · ИИ: %1
 [%0 · %1]
 %0 · %1
 [settings %0 · %1 Units]
-%0 · %1 единици
+%0 · единици: %1
 [settings Level %0]
 Ниво %0
 [settings Match the desktop %0]
@@ -3387,7 +3387,7 @@ CPU %0%
 [turn rejoining]
 Включване отново в играта...
 [turn catching up %0]
-Наваксване: изоставане с %0 хода
+Наваксване · изоставане в ходове: %0
 [turn player reconnecting %0]
 %0 се свързва отново...
 [turn player lagging %0]
@@ -3431,13 +3431,13 @@ CPU %0%
 [conn card lost]
 Връзката е прекъсната
 [conn card progress %0 %1 %2]
-%0 % · %1 от %2 такта
+%0 % · тактове: %1 от %2
 [conn card reconnecting %0]
 Повторно свързване към мача… опит %0
 [conn card replaying %0]
-Възпроизвеждане на пропуснатите %0. Екранът се обновява, когато наваксате до настоящия момент.
+Възпроизвеждане на пропуснатото време: %0. Екранът се обновява, когато наваксате до настоящия момент.
 [conn card seconds left %0]
-остават около %0 s
+Оставащо време: около %0 s
 [conn connections]
 Връзки
 [conn connection]
@@ -3461,7 +3461,7 @@ CPU %0%
 [conn notice left %0]
 %0 напусна мача.
 [conn notice lost %0 %1]
-%0 загуби връзка. Играта продължава; колонията на играча продължава да работи, докато връзката се възстановява (остават %1).
+%0 загуби връзка. Играта продължава; колонията на играча продължава да работи, докато връзката се възстановява (време за връщане: %1).
 [conn ping explanation %0 %1]
 Пинг: времето за двупосочен обмен между играч и препредаващия сървър. Добър под %0, лош от %1 нагоре.
 [conn ping]
@@ -3555,7 +3555,7 @@ CPU %0%
 [hub also search %0]
 Търсете също %0
 [hub online now %0 %1]
-%0 играчи онлайн · %1 търсят в тази опашка
+Играчи онлайн: %0 · търсещи в тази опашка: %1
 [hub show in open rooms]
 Показване в отворените стаи
 [hub last match]
@@ -3583,7 +3583,7 @@ CPU %0%
 [hub room]
 Стая
 [hub seats %0 %1]
-%0/%1 места
+Места: %0/%1
 [hub sign in browser]
 Отваряне на страницата за вход
 [hub sign in conflict]
@@ -3821,7 +3821,7 @@ CPU %0%
 [room seat options]
 Настройки на мястото
 [room seats summary %0 %1 %2]
-%0 играчи · %1 ИИ · %2 свободни
+Играчи: %0 · ИИ: %1 · свободни места: %2
 [room seats]
 Места
 [room seed]
@@ -4145,7 +4145,7 @@ CPU %0%
 [profile no replay]
 Няма налично повторение за този мач.
 [profile room with %0]
-Стая · %0 колонии
+Стая · колонии: %0
 [profile with %0 vs %1]
 с %0 срещу %1
 [profile vs %0]
@@ -4157,7 +4157,7 @@ CPU %0%
 [profile ai filled]
 Място, заето от ИИ
 [profile provisional %0 games]
-временен · %0 мача
+временен · мачове: %0
 [profile unrated]
 неоценен
 [profile checking]
@@ -4169,9 +4169,9 @@ CPU %0%
 [profile replay]
 Повторение
 [profile win rate last %0]
-Процент победи за последните %0
+Процент победи · последни мачове: %0
 [profile %0 w %1 l %2 d]
-%0 П · %1 З · %2 равенства
+%0 П · %1 З · равенства: %2
 [profile typical game]
 Типична игра
 [profile median length]
@@ -4247,7 +4247,7 @@ CPU %0%
 [maps download failed]
 Картата не можа да бъде изтеглена.
 [maps %0 colonies]
-%0 колонии
+Колонии: %0
 [maps version %0]
 версия %0
 [maps updated %0]
@@ -4263,7 +4263,7 @@ CPU %0%
 [maps by %0]
 от %0
 [maps stats %0 %1 %2]
-▶ %0 изигравания · ⬇ %1 изтегляния · ♥ %2
+▶ изигравания: %0 · ⬇ изтегляния: %1 · ♥ %2
 [maps use in room]
 Използване в стая
 [maps liked]
@@ -4305,7 +4305,7 @@ CPU %0%
 [maps loading on server]
 зареждане на картата на сървъра
 [maps %0 plays]
-%0 изигравания
+Изигравания: %0
 [maps hidden]
 Скрито
 [maps upload again]
@@ -4365,7 +4365,7 @@ CPU %0%
 [maps upload failed]
 Качването не бе успешно
 [maps server read %0 %1]
-Сървърът разчете картата като %0 с %1 колонии.
+Сървърът разчете картата като %0; брой колонии: %1.
 [maps continue in background]
 Затваряне
 [maps upload a map title]
@@ -4395,11 +4395,11 @@ CPU %0%
 [online sat]
 съб.
 [online %0 weeks ago]
-преди %0 седмици
+преди %0 седм.
 [online %0 months ago]
-преди %0 месеца
+преди %0 мес.
 [online %0 years ago]
-преди %0 години
+преди %0 г.
 [maps share online]
 Споделяне онлайн…
 [maps mine]
@@ -4495,7 +4495,7 @@ CPU %0%
 [pause none left]
 Няма останали паузи
 [pause game left %0]
-Пауза на играта (остават %0)
+Пауза на играта (налични паузи: %0)
 [pause by %0]
 Паузирано от %0
 [pause by %0 resumes in %1]
@@ -4507,7 +4507,7 @@ CPU %0%
 [turn pause time used %0]
 %0 използва цялото си време за пауза: играта се възобновява
 [room seats one person %0 %1]
-1 играч · %0 ИИ · %1 свободни
+1 играч · ИИ: %0 · свободни места: %1
 [room rules otherwise standard]
 Всички останали правила са като в „Стандартен“.
 [room browser link]
@@ -4579,7 +4579,7 @@ CPU %0%
 [room picker generated note]
 Всеки пейзаж дава на всяка колония еднакво добър старт, а сървърът създава една и съща карта за всички.
 [room picker players %0]
-%0 играчи
+Играчи: %0
 [room picker unreadable]
 не може да се прочете
 [room picker no premade]
@@ -5175,7 +5175,7 @@ FFmpeg не е наличен, така че записът е изключен.
 [Combat is off, so the rules below have no effect.]
 Боят е изключен, така че правилата по-долу нямат ефект.
 [%0 more rules are at their Standard values.]
-%0 още правила са на стандартните си стойности.
+Още правила със стандартни стойности: %0.
 [Players see the map's terrain from the start; enemy units stay hidden.]
 Играчите виждат терена на картата от самото начало; вражеските единици остават скрити.
 [Each team starts with extra resources in its shared pool.]

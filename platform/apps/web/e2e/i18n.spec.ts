@@ -30,7 +30,9 @@ for (const locale of locales) {
     await expect(page.locator('#hero-title')).toHaveText(heading);
     await expect(page.getByRole('link', { name: /Isles of Plenty/ })).toBeVisible();
     await expect(page.locator('.app-sidebar .nav a[href="/maps"]')).toBeVisible();
-    await expect(page.locator('.app-sidebar .nav a')).toHaveCount(10);
+    // This guest fixture does not enable the optional skin designer.
+    await expect(page.locator('.app-sidebar .nav a')).toHaveCount(9);
+    await expect(page.locator('.app-sidebar .nav a[href="/skins"]')).toHaveCount(0);
     const signIn = page.locator('.app-sidebar .sidebar-account a[href="/signin"]');
     await expect(signIn).toBeVisible();
     expect(

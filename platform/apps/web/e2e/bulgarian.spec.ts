@@ -21,6 +21,13 @@ test('Bulgarian loads its bundled font and persists an explicit language choice'
   await expect(page.locator('html')).toHaveAttribute('lang', 'bg');
   await expect(page.locator('html')).toHaveAttribute('dir', 'ltr');
   await expect(page.locator('#hero-title')).toHaveText(catalog()['Welcome to the colony'] ?? '');
+  await expect(page.getByTestId('theme-toggle').first()).toHaveAttribute(
+    'aria-label',
+    (catalog()['{value0}. Change theme'] ?? '').replace(
+      '{value0}',
+      catalog()['Theme: same as this device'] ?? '',
+    ),
+  );
   const font = await page.locator('#hero-title').evaluate((element) => ({
     family: getComputedStyle(element).fontFamily,
     loaded: [...document.fonts].some(

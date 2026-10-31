@@ -191,7 +191,9 @@ review the affected entry before resuming rather than guessing a repair.
 
 Bulgarian additionally requires an independent adversarial pass over every batch,
 after semantic review and editorial correction. Use standard Bulgarian Cyrillic
-(`bg`, `Български`), polite plural instructions, and concise action labels. Game
+(`bg`, `Български`), polite plural instructions, and concise action labels. Flat
+game messages with varying quantities use count-neutral labels or abbreviations;
+check actual callers at 0, 1 and 2 rather than assuming every number is plural. Game
 terms include `работник`, `разузнавач`, `воин`, `рояк`, `хан` and `флаг`; read
 actual gameplay usage and Bulgarian dictionary entries before resolving ambiguous
 labels. English controls meaning; other locale catalogs provide comparisons.
