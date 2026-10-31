@@ -6,6 +6,9 @@ import subprocess
 import tempfile
 import unittest
 import wave
+
+import soundfile as sf
+
 from glob2music.community import convert, inspect, tag_opus, comments, decode, RATE
 
 
@@ -103,20 +106,26 @@ class CommunityTest(unittest.TestCase):
         ]:
             with self.subTest(format=extension):
                 target = self.root / ("source." + extension)
-                subprocess.run(
-                    [
-                        "ffmpeg",
-                        "-v",
-                        "error",
-                        "-y",
-                        "-i",
-                        self.sources["calm"],
-                        "-c:a",
-                        codec,
-                        str(target),
-                    ],
-                    check=True,
-                )
+                if extension == "ogg":
+                    # The core soundfile dependency can create this fixture even
+                    # when the local ffmpeg build omits the libvorbis encoder.
+                    samples, rate = sf.read(self.sources["calm"])
+                    sf.write(target, samples, rate, format="OGG", subtype="VORBIS")
+                else:
+                    subprocess.run(
+                        [
+                            "ffmpeg",
+                            "-v",
+                            "error",
+                            "-y",
+                            "-i",
+                            self.sources["calm"],
+                            "-c:a",
+                            codec,
+                            str(target),
+                        ],
+                        check=True,
+                    )
                 frames = decode(target, self.root / "decoded.pcm")
                 self.assertGreaterEqual(frames, 480000)
                 self.assertLess(

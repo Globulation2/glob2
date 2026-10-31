@@ -11,7 +11,7 @@ Every voice is a pure function of ``(pitch, velocity, rng)``: one ``numpy`` gene
 per part varies each hit slightly (pitch, decay, noise grain), so repeated notes never
 sound machine-identical, and these voices render bit-identically on every build. (That
 holds for this module only; see ``backends/surge.py`` for the Surge parts.) Envelopes
-and filters are the shared drum-synthesis helpers of ``adapt/percussion.py``.
+and filters are local one-shot helpers for these score-driven voices.
 
 Voices, chosen to sound wooden, skin-like or watery rather than electronic:
 
@@ -32,12 +32,28 @@ add no background hiss.
 """
 import numpy as np
 
-from ..adapt.percussion import band as _band, env as _env, low as _low
+import scipy.signal as ss
 from ..spec import SAMPLE_RATE
 
 SR = SAMPLE_RATE
 PREROLL_S = 0.5          # same layout as backends/surge.py
 TAIL_S = 3.0
+
+
+def _env(n, attack_s, decay_s):
+    """Linear attack followed by exponential decay for a synthesized hit."""
+    t = np.arange(n) / SR
+    return np.clip(t / max(attack_s, 1e-4), 0, 1) * np.exp(-t / decay_s)
+
+
+def _band(x, lo, hi):
+    """One-shot second-order band-pass for a hit starting from silence."""
+    return ss.sosfilt(ss.butter(2, [lo, hi], 'band', fs=SR, output='sos'), x)
+
+
+def _low(x, hz):
+    """One-shot second-order low-pass for a synthesized hit."""
+    return ss.sosfilt(ss.butter(2, hz, 'low', fs=SR, output='sos'), x)
 
 
 def mtof(pitch):
