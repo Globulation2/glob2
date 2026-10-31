@@ -59,6 +59,59 @@ TEST_SUITE("CommandLine")
 					 .get("--seed"),
 				 "4294967295");
 	}
+	TEST_CASE("Epic launcher metadata starts normal play without retaining credentials")
+	{
+		const auto request = Cli::parse({
+			"-AUTH_LOGIN=unused", "-AUTH_PASSWORD=fake-exchange-code", "-AUTH_TYPE=exchangecode",
+			"-epicapp=fake-artifact", "-epicenv=Prod", "-EpicPortal",
+			"-epicusername=Fake Player", "-epicuserid=fake-user", "-epiclocale=en-US",
+			"-epicovt=C:/Fake Game/.egstore/fake.ovt", "-epicsandboxid=fake-sandbox",
+			"-epicdeploymentid=fake-deployment"});
+		CHECK_EQ(request.command, "play");
+		CHECK(request.options.empty());
+		CHECK(request.occurrences.empty());
+		CHECK(request.positionals.empty());
+		CHECK_FALSE(request.help);
+		CHECK_EQ(Cli::parse({"-aUtH_pAsSwOrD=", "-EPICPORTAL"}).command, "play");
+	}
+	TEST_CASE("Epic metadata preserves real commands help URLs and literal filenames")
+	{
+		const auto request = Cli::parse({"-EpicPortal", "play", "--username=Player",
+			"-AUTH_PASSWORD=fake-code", "--data-dir=assets", "--mute"});
+		CHECK_EQ(request.command, "play");
+		CHECK_EQ(request.get("--username"), "Player");
+		CHECK_EQ(request.all("--data-dir"), std::vector<std::string>{"assets"});
+		CHECK(request.has("--mute"));
+		CHECK_EQ(request.occurrences.size(), 3);
+		CHECK(Cli::parse({"-epicapp=fake", "play", "--help"}).help);
+		CHECK_EQ(Cli::parse({"-epicapp=fake", "glob2://j/ABCDEF"}).command, "online join");
+		CHECK_EQ(Cli::parse({"replay", "--", "-AUTH_PASSWORD=literal.replay"})
+			.positionals.at(0), "-AUTH_PASSWORD=literal.replay");
+		CHECK_EQ(Cli::parse({"play", "--username=-epicapp=literal"}).get("--username"),
+			"-epicapp=literal");
+	}
+	TEST_CASE("unknown or malformed launcher arguments fail without exposing values")
+	{
+		const std::string secret = "fake-value-not-for-diagnostics";
+		for (const auto &arguments : std::vector<std::vector<std::string>>{
+			{"-EpicPortal=" + secret}, {"-AUTH_PASSWORD", secret},
+			{"-AUTH_PASSWORD " + secret}, {"--AUTH_PASSWORD=" + secret},
+			{"-AUTH_PASSWORD_EXTRA=" + secret}, {"-epicfuture=" + secret},
+			{"map", "-AUTH_PASSWORD_EXTRA=" + secret},
+			{"play", "-epicfuture=" + secret},
+			{"-AUTH_PASSWORD=" + secret, "--unknown"}})
+		{
+			try
+			{
+				Cli::parse(arguments);
+				FAIL("invalid launcher argument was accepted");
+			}
+			catch (const std::invalid_argument &error)
+			{
+				CHECK(std::string(error.what()).find(secret) == std::string::npos);
+			}
+		}
+	}
 	TEST_CASE("saved games can use the normal presentation loop with explicit display")
 	{
 		const auto r = Cli::parse({"game", "repeat", "saved.game.gz", "--display",
