@@ -137,7 +137,7 @@ Kaserne
 [beach size]
 strandstørrelse
 [break]
-brudd
+Break
 [briefing]
 Orientering
 [build %0 level %1]
@@ -293,7 +293,7 @@ Redigeringssnarveier
 [editor]
 Kartredigering
 [end]
-slutt
+End
 [enter]
 Enter
 [equals]
