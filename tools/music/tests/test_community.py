@@ -7,8 +7,6 @@ import tempfile
 import unittest
 import wave
 
-import soundfile as sf
-
 from glob2music.community import convert, inspect, tag_opus, comments, decode, RATE
 
 
@@ -101,31 +99,21 @@ class CommunityTest(unittest.TestCase):
             ("flac", "flac"),
             ("mp3", "libmp3lame"),
             ("m4a", "aac"),
-            ("ogg", "libvorbis"),
+            ("ogg", "vorbis"),
             ("opus", "libopus"),
         ]:
             with self.subTest(format=extension):
                 target = self.root / ("source." + extension)
-                if extension == "ogg":
-                    # The core soundfile dependency can create this fixture even
-                    # when the local ffmpeg build omits the libvorbis encoder.
-                    samples, rate = sf.read(self.sources["calm"])
-                    sf.write(target, samples, rate, format="OGG", subtype="VORBIS")
-                else:
-                    subprocess.run(
-                        [
-                            "ffmpeg",
-                            "-v",
-                            "error",
-                            "-y",
-                            "-i",
-                            self.sources["calm"],
-                            "-c:a",
-                            codec,
-                            str(target),
-                        ],
-                        check=True,
-                    )
+                # The native experimental Vorbis encoder also exists in minimal
+                # ffmpeg builds. It requires stereo; keep other fixtures mono.
+                options = ["-strict", "-2", "-ac", "2"] if codec == "vorbis" else []
+                subprocess.run(
+                    [
+                        "ffmpeg", "-v", "error", "-y", "-i", self.sources["calm"],
+                        "-c:a", codec, *options, str(target),
+                    ],
+                    check=True,
+                )
                 frames = decode(target, self.root / "decoded.pcm")
                 self.assertGreaterEqual(frames, 480000)
                 self.assertLess(
