@@ -63,3 +63,11 @@ test('translated blocked-link labels isolate the technical URL from RTL text', (
   assert.equal(anchor.nodes[1].textContent, 'glob2.org/account');
   assert.equal(anchor.nodes[2].text, ' ↗');
 });
+
+test('Thai online preference reaches native startup without requesting the CJK font', () => {
+  const context = profile(null, 'th');
+  context.applyOnlineLanguage();
+  assert.equal(context.ENV.SDL_PREFERRED_LOCALES, 'th');
+  assert.equal(context.interfaceLanguage(), 'th');
+  assert.equal(context.cjkInterface(), false);
+});
