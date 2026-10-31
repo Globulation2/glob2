@@ -8,6 +8,10 @@
 #include "MainMenuScreen.h"
 #include "SettingsScreen.h"
 #include "CustomGameScreen.h"
+#include "NewMapScreen.h"
+#include "MapEdit.h"
+#include "EditorDock.h"
+#include "Race.h"
 #include "FrontendTheme.h"
 #include "MenuColony.h"
 #include "Sha256.h"
@@ -129,6 +133,9 @@ Json evidenceIdentity(const fs::path &root, const fs::path &pilot)
              "libgag/include/TouchText.h", "libgag/include/TrueTypeFont.h",
              "libgag/include/ui/TextLayout.h", "libgag/src/DrawableSurfaceCompound.cpp",
              "src/game/screens/CustomGameScreen.cpp", "src/render/overlay/MapZoomControls.h",
+             "src/map/editor/screens/NewMapScreen.cpp", "src/map/editor/MapEditIO.cpp",
+             "src/map/editor/MapEditDraw.cpp", "src/map/editor/EditorDock.cpp",
+             "src/map/editor/PhoneEditor.cpp",
              "tools/TranslationPreviewHarness.cpp"})
         result["source_sha256"][name] = sha256(root / name);
     for (const auto *surface : {"native", "online"})
@@ -380,6 +387,9 @@ void screenPreview(const fs::path &root, const fs::path &pilot, const fs::path &
             Preview<CustomGameScreen> preview(stack);
             if (screen == "lobby-players") preview.selectTab(1);
             preview.render(); controls = preview.bounds();
+        } else if (screen == "new-map") {
+            Preview<NewMapScreen> preview;
+            preview.render(); controls = preview.bounds();
         } else throw std::runtime_error("Unknown screen: " + screen);
         GAGCore::DrawableSurface image(globals.gfx->getW(), globals.gfx->getH());
         image.drawSurface(0, 0, globals.gfx);
@@ -390,6 +400,106 @@ void screenPreview(const fs::path &root, const fs::path &pilot, const fs::path &
         {"controls", controls}, {"limits", {"Only supplied draft keys are translated; native_keys_overridden records their count. Missing draft keys use English.",
             "Control bounds include scrollable content and do not independently prove text fitting.",
             "Does not verify gameplay HUD, tutorial, dialogs, browser, mobile platform, or full locale."}}});
+    globalContainer = nullptr;
+}
+
+void editorPreview(const fs::path &root, const fs::path &pilot, const fs::path &output,
+                   int width, int height)
+{
+    GlobalContainer globals("glob2-translation-editor-preview");
+    globalContainer = &globals;
+    globals.fileManager->addDir(root.string());
+    globals.settings.mute = 1;
+    globals.settings.screenWidth = width;
+    globals.settings.screenHeight = height;
+    // PhoneEditor requires the portable renderer's UI transforms. Record this
+    // explicit production renderer choice rather than silently drawing a dock.
+    globals.settings.screenFlags = GAGCore::GraphicContext::PORTABLEGPU;
+    globals.rendererLaunchOverride = GAGCore::RendererBackend::PortableSDL;
+    globals.load();
+    require(globals.gfx->hasPortableRenderer(), "Editor capture needs the portable SDL renderer");
+    globals.gfx->setResponsiveViewport(true, 800, 600);
+    const auto localized = installDraftOverlay(root, pilot, output);
+    globals.settings.language = pilotLocale(pilot);
+    Json result = {{"kind", "production-editor-draft-overlay"}, {"pilot", pilot.string()},
+        {"evidence_identity", evidenceIdentity(root, pilot)}, {"native_keys_overridden", localized},
+        {"width", width}, {"height", height}, {"renderer", "portable-sdl"},
+        {"phone_presentation_requested", GAGCore::phonePresentationRequested()},
+        {"map_setup", "32 by 32 grass tiles, one default-race team; no simulation steps"},
+        {"captures", Json::array()},
+        {"limits", {"Production MapEdit drawEditing on a local blank map; not a native mobile-platform claim.",
+            "Menu actions are invoked through public performAction, not physical pointer input.",
+            "Dock/dialog control bounds do not independently establish text fitting; phone tray bounds are not inventoried.",
+            "No save/load, map generation, brush placement or online service is exercised."}}};
+    {
+        FrontendTheme theme;
+        FrontendScope editorTheme(false);
+        MapEdit editor;
+        // Same owner-side blank-map setup as EditorActionCoverageTest.
+        editor.game.map.setSize(5, 5, GRASS);
+        editor.game.map.setGame(&editor.game);
+        editor.game.addTeam();
+        editor.game.teams[0]->race.loadDefault();
+        for (int y = 0; y < 32; ++y) for (int x = 0; x < 32; ++x)
+            editor.game.map.clearImmobileUnit(x, y);
+        editor.viewportX = editor.viewportY = 0;
+        editor.updateCamera();
+        editor.minimap.setMapSize(editor.game.map.getW(), editor.game.map.getH());
+        editor.preparePresentation();
+        editor.beginEditing();
+        require(!GAGCore::phonePresentationRequested() || editor.usesPhone(),
+            "Requested phone editor presentation must be active");
+        result["uses_phone_editor"] = editor.usesPhone();
+        result["logical_width"] = globals.gfx->getW();
+        result["logical_height"] = globals.gfx->getH();
+        const auto profile = fs::path(globals.fileManager->getDir(0));
+        auto draw = [&] {
+            if (!globals.gfx->beginRenderFrame()) return false;
+            editor.drawEditing();
+            return true;
+        };
+        auto capture = [&](const std::string &name) {
+            const auto before = editor.game.checkSum();
+            const auto bitmap = profile / ("translation-preview-" + name + ".bmp");
+            fs::remove(bitmap);
+            const Uint64 readyDeadline = SDL_GetTicks() + 15000;
+            bool rendered = draw();
+            while (!rendered && SDL_GetTicks() < readyDeadline) { SDL_Delay(1); rendered = draw(); }
+            require(rendered, "Render current editor UI before capture");
+            globals.gfx->printScreen(bitmap.filename().string());
+            const Uint64 deadline = SDL_GetTicks() + 15000;
+            while (!fs::exists(bitmap) && SDL_GetTicks() < deadline) { draw(); SDL_Delay(1); }
+            require(fs::exists(bitmap), "Production editor screenshot completed");
+            Surface image(SDL_LoadBMP(bitmap.string().c_str()), SDL_DestroySurface);
+            require(bool(image), "Read production editor screenshot");
+            require(IMG_SavePNG(image.get(), (output / (name + ".png")).string().c_str()), "Save editor PNG");
+            const auto after = editor.game.checkSum();
+            require(before == after, "Editor drawing must preserve simulation checksum");
+            Json controls = Json::array();
+            auto *dialog = editor.activeDialog();
+            if (!dialog) dialog = editor.editorDock();
+            if (dialog) for (auto *node : dialog->host().interactiveNodes()) {
+                const auto r = node->bounds;
+                controls.push_back({{"key", node->key}, {"x", r.x}, {"y", r.y},
+                    {"width", r.w}, {"height", r.h},
+                    {"within_viewport", r.x >= 0 && r.y >= 0 &&
+                        r.x + r.w <= globals.gfx->getW() && r.y + r.h <= globals.gfx->getH()}});
+            }
+            result["captures"].push_back({{"name", name}, {"checksum_before_draw", before},
+                {"checksum_after_draw", after}, {"image_width", image->w}, {"image_height", image->h},
+                {"dialog_open", editor.hasDialog()}, {"controls", std::move(controls)}});
+        };
+        capture("editor");
+        const auto beforeNavigation = editor.game.checkSum();
+        editor.performAction("switch to terrain view");
+        capture("editor-terrain");
+        editor.performAction("open menu screen");
+        require(editor.hasDialog(), "Production editor menu opened");
+        capture("editor-dialog");
+        editor.performAction("close menu screen");
+        require(beforeNavigation == editor.game.checkSum(), "Editor UI navigation must preserve simulation checksum");
+    }
+    writeJson(output / "editor.json", result);
     globalContainer = nullptr;
 }
 
@@ -582,7 +692,7 @@ void gameplayPreview(const fs::path &root, const fs::path &pilot, const fs::path
 int main(int argc, char **argv)
 {
     try {
-        require(argc >= 7, "usage: TranslationPreviewHarness matrix ROOT DRAFT OUTPUT W H | screen ROOT DRAFT OUTPUT W H SCREEN | game ROOT DRAFT OUTPUT W H gameplay|tutorial[:LESSON-ID]");
+        require(argc >= 7, "usage: TranslationPreviewHarness matrix ROOT DRAFT OUTPUT W H | screen ROOT DRAFT OUTPUT W H SCREEN | editor ROOT DRAFT OUTPUT W H | game ROOT DRAFT OUTPUT W H gameplay|tutorial[:LESSON-ID]");
         executablePath = fs::absolute(argv[0]);
         const std::string mode = argv[1];
         const auto root = fs::absolute(argv[2]), pilot = fs::absolute(argv[3]), output = fs::absolute(argv[4]);
@@ -590,6 +700,10 @@ int main(int argc, char **argv)
         require(width >= 240 && width <= 4096 && height >= 240 && height <= 4096, "Viewport out of supported range");
         fs::create_directories(output);
         if (mode == "matrix") fontMatrix(root, pilot, output, width, height);
+        else if (mode == "editor") {
+            require(argc == 7, "Editor mode takes ROOT DRAFT OUTPUT W H");
+            editorPreview(root, pilot, output, width, height);
+        }
         else if (mode == "screen") {
             require(argc == 8, "Screen mode needs screen name");
             screenPreview(root, pilot, output, argv[7], width, height);
