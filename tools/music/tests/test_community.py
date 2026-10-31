@@ -6,6 +6,7 @@ import subprocess
 import tempfile
 import unittest
 import wave
+
 from glob2music.community import convert, inspect, tag_opus, comments, decode, RATE
 
 
@@ -98,22 +99,18 @@ class CommunityTest(unittest.TestCase):
             ("flac", "flac"),
             ("mp3", "libmp3lame"),
             ("m4a", "aac"),
-            ("ogg", "libvorbis"),
+            ("ogg", "vorbis"),
             ("opus", "libopus"),
         ]:
             with self.subTest(format=extension):
                 target = self.root / ("source." + extension)
+                # The native experimental Vorbis encoder also exists in minimal
+                # ffmpeg builds. It requires stereo; keep other fixtures mono.
+                options = ["-strict", "-2", "-ac", "2"] if codec == "vorbis" else []
                 subprocess.run(
                     [
-                        "ffmpeg",
-                        "-v",
-                        "error",
-                        "-y",
-                        "-i",
-                        self.sources["calm"],
-                        "-c:a",
-                        codec,
-                        str(target),
+                        "ffmpeg", "-v", "error", "-y", "-i", self.sources["calm"],
+                        "-c:a", codec, *options, str(target),
                     ],
                     check=True,
                 )

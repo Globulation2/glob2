@@ -21,6 +21,7 @@ seam        click, spectral jump, level jump at the wrap       yes
 repetition  envelope self-similarity, exact internal copies   yes
 alignment   onset lag, tempo drift, harmony between moods      yes
 contrast    mood distance, combat escalation, calm restraint   yes
+transition  local level steps and spectral shape between moods warn only
 noise       HF noise floor (hiss, fizz)                        yes
 balance     low-mid mud, brightness                            warn only
 audibility  quietest 3 s window                                warn only
@@ -41,7 +42,7 @@ import time
 
 from ..audio import Trio
 from ..spec import DEFAULT_SPEC
-from . import alignment, contrast, fileformat, level, loudness, repetition, seam, spectral
+from . import alignment, contrast, fileformat, level, loudness, repetition, seam, spectral, transition
 from .analysis import TrioAudio
 from .result import CheckResult, FAIL, Measure, Report
 
@@ -53,6 +54,7 @@ CHECKS = (
     ('repetition', repetition.check),
     ('alignment', alignment.check),
     ('contrast', contrast.check),
+    ('transition', transition.check),
     ('noise', spectral.check_noise),
     ('balance', spectral.check_balance),
     ('audibility', level.check_audibility),

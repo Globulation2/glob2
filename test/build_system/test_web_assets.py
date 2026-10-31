@@ -5,6 +5,7 @@ from pathlib import Path
 import subprocess
 import sys
 import tempfile
+import tomllib
 import unittest
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -175,13 +176,17 @@ class WebAssetPlanTests(unittest.TestCase):
         self.assertEqual(self.owner['data/zik/intro.opus'], 'menu-music')
         self.assertEqual(self.owner['data/zik/menu.opus'], 'menu-music')
         self.assertEqual(self.owner['data/zik/original/a1.opus'], 'music')
-        self.assertEqual(self.owner['data/zik/woodland/a1.opus'], 'music-sets')
+        self.assertEqual(self.owner['data/zik/moss-lanterns/a1.opus'], 'music-sets')
         self.assertEqual(self.owner['data/highres/v1/frames.txt'], 'hd')
         self.assertTrue(all(p.startswith('data/highres/') for p in self.packages['hd']))
 
     def test_every_installed_music_set_is_owned_and_opus_only(self):
         sets = [p for p in (ROOT / 'data/zik').iterdir() if p.is_dir()]
-        catalogue = {p.name for p in (ROOT / 'tools/music/sets').iterdir() if p.is_dir()}
+        catalogue = {'original'}
+        for manifest in (ROOT / 'tools/music/sets').glob('*/set.toml'):
+            with manifest.open('rb') as source:
+                if tomllib.load(source).get('shipped', False):
+                    catalogue.add(manifest.parent.name)
         self.assertTrue(catalogue)
         self.assertEqual({p.name for p in sets}, catalogue)
         for directory in sets:
