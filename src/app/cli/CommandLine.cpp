@@ -19,6 +19,52 @@ namespace Cli
 {
 namespace
 {
+std::string lowercase(std::string text)
+{
+	std::transform(text.begin(), text.end(), text.begin(),
+				   [](unsigned char c) { return char(std::tolower(c)); });
+	return text;
+}
+std::vector<std::string> withoutEpicLauncherMetadata(const std::vector<std::string> &arguments)
+{
+	// These are launcher transport metadata, not game options or an EOS login.
+	// Never retain or diagnose their values: AUTH_PASSWORD can be an exchange code.
+	static const std::vector<std::string> values = {
+		"-auth_login", "-auth_password", "-auth_type", "-epicapp", "-epicenv",
+		"-epicusername", "-epicuserid", "-epiclocale", "-epicovt",
+		"-epicsandboxid", "-epicdeploymentid"};
+	std::vector<std::string> result;
+	bool literal = false;
+	for (const auto &argument : arguments)
+	{
+		if (argument == "--")
+			literal = true;
+		if (!literal)
+		{
+			const auto equals = argument.find('=');
+			const auto name = lowercase(argument.substr(0, equals));
+			if (name == "-epicportal")
+			{
+				if (equals != std::string::npos)
+					throw std::invalid_argument("-EpicPortal is a switch and takes no value");
+				continue;
+			}
+			if (std::find(values.begin(), values.end(), name) != values.end())
+			{
+				if (equals == std::string::npos)
+					throw std::invalid_argument("Epic launcher parameter " + argument +
+												" requires =VALUE");
+				continue;
+			}
+			if (name.rfind("-auth_", 0) == 0 || name.rfind("-epic", 0) == 0 ||
+				name.rfind("--auth_", 0) == 0 || name.rfind("--epic", 0) == 0)
+				throw std::invalid_argument("Unsupported Epic launcher argument; use documented "
+											"-KEY=VALUE fields or -EpicPortal");
+		}
+		result.push_back(argument);
+	}
+	return result;
+}
 Option value(std::string name, std::string type, std::string description, std::string fallback = "",
 			 bool repeat = false, bool required = false)
 {
@@ -801,8 +847,9 @@ std::vector<std::string> Request::all(const std::string &key) const
 	const auto it = options.find(key);
 	return it == options.end() ? std::vector<std::string>{} : it->second;
 }
-Request parse(const std::vector<std::string> &args)
+Request parse(const std::vector<std::string> &arguments)
 {
+	const auto args = withoutEpicLauncherMetadata(arguments);
 	Request r;
 	if (args.empty())
 	{
