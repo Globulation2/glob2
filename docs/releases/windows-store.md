@@ -20,8 +20,10 @@ report as a publicly accessible GitHub Actions artifact. With `upload: true`, it
 creates a submission-encrypted package and sends it with its encryption key blob
 directly to an existing Partner Center branch; neither is retained as a public
 artifact. Keep credentials out of workflow logs and artifacts.
-MakePkg refreshes Submission Validator with `/updatesubval` and treats its failures
-as critical with `/validationcritical`. The workflow also checks the actual XML
+The workflow stages the reviewed Microsoft Submission Validator ZIP after verifying
+its pinned SHA-256, then passes its directory through `/validationpath`. It does
+not rely on `/updatesubval` selecting the expected DLL. Failures are critical with
+`/validationcritical`, and the XML engine version must match the reviewed pin. The workflow also checks the actual XML
 summary and detailed failure counts before allowing an upload. Failed test-package
 reports remain retained for inspection; a successful MakePkg process alone is not
 validation evidence. See [Microsoft’s MakePkg options](https://learn.microsoft.com/en-us/gaming/gdk/docs/features/common/packaging/deployment/makepkg).

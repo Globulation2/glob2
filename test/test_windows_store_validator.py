@@ -2,6 +2,9 @@
 import importlib.util
 import contextlib
 import io
+import hashlib
+from unittest.mock import patch
+from zipfile import ZipFile
 import tempfile
 import unittest
 from pathlib import Path
@@ -11,7 +14,7 @@ spec = importlib.util.spec_from_file_location("validator", SCRIPT)
 validator = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(validator)
 
-PASS = '''<XboxOneSubmissionValidator><ValidationSummary><TotalWarnings>0</TotalWarnings>
+PASS = '''<XboxOneSubmissionValidator><engineversion>2610.309.15000.0</engineversion><ValidationSummary><TotalWarnings>0</TotalWarnings>
 <TotalFailures>0</TotalFailures><Result>Pass</Result></ValidationSummary>
 <testresults><testresult><component>Foreign Files Check</component><filecount>0</filecount>
 </testresult></testresults><validatorrun><result>Pass</result></validatorrun></XboxOneSubmissionValidator>'''
@@ -23,6 +26,39 @@ class StoreValidatorTest(unittest.TestCase):
             report = Path(temporary) / "report.xml"
             report.write_text(text)
             validator.require_passing_report(report)
+
+    def test_stage_validator_checks_digest_before_output(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            archive = root / 'validator.zip'
+            archive.write_bytes(b'not the reviewed Microsoft ZIP')
+            with self.assertRaisesRegex(RuntimeError, 'digest mismatch'):
+                validator.stage_validator(archive, root / 'staged')
+            self.assertFalse((root / 'staged').exists())
+
+    def test_validator_layout_rejects_traversal_and_only_writes_expected_files(self):
+        for extra in (None, '../outside.dll'):
+            with self.subTest(extra=extra), tempfile.TemporaryDirectory() as temporary:
+                root = Path(temporary)
+                archive = root / 'validator.zip'
+                with ZipFile(archive, 'w') as bundle:
+                    for name in validator.VALIDATOR_FILES:
+                        bundle.writestr(name, name.encode())
+                    if extra:
+                        bundle.writestr(extra, b'x')
+                digest = hashlib.sha256(archive.read_bytes()).hexdigest()
+                with patch.object(validator, 'VALIDATOR_SHA256', digest):
+                    if extra:
+                        with self.assertRaisesRegex(RuntimeError, 'layout'):
+                            validator.stage_validator(archive, root / 'staged')
+                        self.assertFalse((root / 'staged').exists())
+                    else:
+                        validator.stage_validator(archive, root / 'staged')
+                        self.assertEqual({p.name for p in (root / 'staged').iterdir()}, validator.VALIDATOR_FILES)
+
+    def test_passing_old_validator_is_not_accepted(self):
+        with self.assertRaisesRegex(RuntimeError, 'version pin'):
+            self.check(PASS.replace('2610.309.15000.0', '2610.307.18000.0'))
 
     def test_complete_passing_report(self):
         self.check(PASS)
