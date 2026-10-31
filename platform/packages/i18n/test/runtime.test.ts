@@ -34,6 +34,11 @@ describe('online locale resolution', () => {
     expect(resolveLocale('zh')).toBe('zh-Hans');
     expect(resolveLocale('sr-RS')).toBe('sr-Cyrl');
     expect(resolveLocale('in-ID')).toBe('id');
+    expect(resolveLocale('bg')).toBe('bg');
+    expect(resolveLocale('bg_BG')).toBe('bg');
+    expect(resolveLocale('bg-Cyrl-BG')).toBe('bg');
+    expect(resolveLocale(['bg-Latn', 'fr'])).toBe('fr');
+    expect(resolveLocale('bg-u-nu-latn')).toBe('bg');
     expect(resolveLocale('xx, fr;q=0.2, de;q=0.8')).toBe('de');
     expect(resolveLocale('fr;q=0, de')).toBe('de');
   });
@@ -55,6 +60,32 @@ describe('online locale resolution', () => {
   it('preserves language and sends no event on unsupported switches', async () => {
     await expect(setLocale('unsupported')).rejects.toThrow();
     expect(getLocale()).toBe('en');
+  });
+});
+describe('Bulgarian presentation', () => {
+  it('uses Bulgarian counted player forms and locale number formatting', async () => {
+    registerCatalog('bg', {
+      '{count} player': { one: '{count} играч', other: '{count} играчи' },
+      'Something went wrong. Please try again.': 'Възникна грешка. Опитайте отново.',
+    });
+    await setLocale('bg');
+    for (const count of [0, 1, 2, 21, 1.5]) {
+      const number = new Intl.NumberFormat('bg').format(count);
+      expect(tp('{count} player', '{count} players', count)).toBe(
+        `${number} ${count === 1 ? 'играч' : 'играчи'}`,
+      );
+    }
+    expect(formatNumber(1234.5)).toBe(new Intl.NumberFormat('bg').format(1234.5));
+    expect(localeFromCookie('glob2_locale=bg')).toBe('bg');
+    for (const source of [
+      'Skin purchases are not available on this instance.',
+      'This creation tool is not available on this instance.',
+      'The skin designer is not available on this instance.',
+    ]) {
+      expect(translateError({ body: { messageKey: source } })).toBe(
+        'Възникна грешка. Опитайте отново.',
+      );
+    }
   });
 });
 describe('message presentation', () => {
@@ -122,10 +153,10 @@ describe('message presentation', () => {
     ).toBe('Salon abc introuvable.');
     expect(translateError(new Error('private diagnostic'))).toBe('Veuillez réessayer.');
   });
-  it('contains 36 unique game catalog mappings', () => {
-    expect(locales).toHaveLength(36);
-    expect(new Set(locales.map((l) => l.gameCode)).size).toBe(36);
-    expect(new Set(locales.map((l) => l.code)).size).toBe(36);
+  it('contains 37 unique game catalog mappings', () => {
+    expect(locales).toHaveLength(37);
+    expect(new Set(locales.map((l) => l.gameCode)).size).toBe(37);
+    expect(new Set(locales.map((l) => l.code)).size).toBe(37);
   });
 });
 

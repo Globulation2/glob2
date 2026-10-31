@@ -72,6 +72,14 @@ fonts, with `LICENSE-Noto.txt`. Container builds copy both the shared stylesheet
 and pinned font files. New script locales select these families before generic
 fallbacks; existing locale font stacks remain unchanged.
 
+Bulgarian uses the existing `browser/assets/sans-core.ttf` through the shared
+stylesheet for body text, headings and its language-picker option. The Latin-only
+design-system fonts cannot provide its Cyrillic glyphs. Vite bundles the font;
+server-rendered pages explicitly serve the same bytes at
+`/signin/assets/sans-core.ttf`, and the standalone launcher packages them under
+`fonts/`. The DejaVu and Droid notices accompany those HTTP assets. This reuses the game
+font without changing other locales' font stacks or the native renderer.
+
 The standalone browser launcher also loads this stylesheet before WebAssembly
 starts. Its build copies the pinned fonts and licence under `fonts/` and rewrites
 the shared stylesheet URLs. Static packages include those files and their gzip

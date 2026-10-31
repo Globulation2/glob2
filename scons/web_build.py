@@ -390,6 +390,7 @@ def build_web(directory, identity, arguments):
     script_font_targets = [str(Path(directory) / 'script-fonts.css'),
                            str(Path(directory) / 'fonts/sans-core.ttf'),
                            str(Path(directory) / 'fonts/LICENSE-DejaVu.txt'),
+                           str(Path(directory) / 'fonts/LICENSE-Droid.txt'),
                            str(Path(directory) / 'fonts/LICENSE-Noto.txt')] + [
         str(Path(directory) / 'fonts' / Path(name).name) for name in script_font_files]
     def launcher_fonts(target, source, env):
@@ -397,7 +398,7 @@ def build_web(directory, identity, arguments):
         return 0
     script_fonts = env.Command(script_font_targets,
         ['platform/packages/i18n/script-fonts.css', 'data/fonts/scripts/manifest.json',
-         'data/fonts/LICENSE-Noto.txt', 'data/fonts/LICENSE-DejaVu.txt',
+         'data/fonts/LICENSE-Noto.txt', 'data/fonts/LICENSE-DejaVu.txt', 'data/fonts/LICENSE-Droid.txt',
          'browser/assets/sans-core.ttf', 'scons/web_assets.py'] + script_font_files,
         Action(launcher_fonts, 'Packaging launcher script fonts'))
     env.Depends(page, [loader, presentation_surface, localization, script_fonts])

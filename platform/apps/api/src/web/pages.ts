@@ -170,7 +170,11 @@ export async function pageAssetRoutes(app: FastifyInstance): Promise<void> {
           body = readFileSync(bulgarianFont);
         } else if (scriptFontNames.has(file)) {
           body = readFileSync(new URL(`scripts/${file}`, scriptFontRoot));
-        } else if (file === 'LICENSE-Noto.txt' || file === 'LICENSE-DejaVu.txt') {
+        } else if (
+          file === 'LICENSE-Noto.txt' ||
+          file === 'LICENSE-DejaVu.txt' ||
+          file === 'LICENSE-Droid.txt'
+        ) {
           body = readFileSync(new URL(file, scriptFontRoot));
         } else {
           if (ext === 'ttf') return reply.status(404).send();

@@ -38,6 +38,8 @@ class WebAssetPlanTests(unittest.TestCase):
                              (ROOT / 'browser/assets/sans-core.ttf').read_bytes())
             self.assertEqual((output / 'fonts/LICENSE-DejaVu.txt').read_bytes(),
                              (ROOT / 'data/fonts/LICENSE-DejaVu.txt').read_bytes())
+            self.assertEqual((output / 'fonts/LICENSE-Droid.txt').read_bytes(),
+                             (ROOT / 'data/fonts/LICENSE-Droid.txt').read_bytes())
             manifest = json.loads((ROOT / 'data/fonts/scripts/manifest.json').read_text())
             for font in manifest['fonts']:
                 name = font['name'] + '-Regular.ttf'

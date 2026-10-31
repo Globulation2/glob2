@@ -131,6 +131,7 @@ COPY data/generators/toolkit.d.ts /app/data/generators/toolkit.d.ts
 COPY data/fonts/scripts /app/data/fonts/scripts
 COPY data/fonts/LICENSE-Noto.txt /app/data/fonts/LICENSE-Noto.txt
 COPY data/fonts/LICENSE-DejaVu.txt /app/data/fonts/LICENSE-DejaVu.txt
+COPY data/fonts/LICENSE-Droid.txt /app/data/fonts/LICENSE-Droid.txt
 COPY browser/assets/sans-core.ttf /app/browser/assets/sans-core.ttf
 # Colony Studio imports the game's material shader raw (materialShader.ts).
 COPY libgag/shaders /app/libgag/shaders
@@ -158,6 +159,7 @@ COPY platform/apps/ai-building-worker apps/ai-building-worker
 COPY data/fonts/scripts /app/data/fonts/scripts
 COPY data/fonts/LICENSE-Noto.txt /app/data/fonts/LICENSE-Noto.txt
 COPY data/fonts/LICENSE-DejaVu.txt /app/data/fonts/LICENSE-DejaVu.txt
+COPY data/fonts/LICENSE-Droid.txt /app/data/fonts/LICENSE-Droid.txt
 COPY browser/assets/sans-core.ttf /app/browser/assets/sans-core.ttf
 # Node strips types at run time; tests and the web sources are not needed.
 RUN rm -rf packages/*/test apps/*/test && \

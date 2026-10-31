@@ -72,6 +72,11 @@ it('serves shared bootstrap, rebased CSS, fonts and notices under the form CSP',
       expect(response.rawPayload.length).toBe(font.bytes);
       expect(createHash('sha256').update(response.rawPayload).digest('hex')).toBe(font.sha256);
     }
+    const droidLicence = await app.inject('/signin/assets/LICENSE-Droid.txt');
+    expect(droidLicence.statusCode).toBe(200);
+    expect(droidLicence.rawPayload).toEqual(
+      readFileSync(new URL('../../../../data/fonts/LICENSE-Droid.txt', import.meta.url)),
+    );
     const licence = await app.inject('/signin/assets/LICENSE-Noto.txt');
     expect(licence.statusCode).toBe(200);
     expect(licence.body).toContain('SIL OPEN FONT LICENSE');
