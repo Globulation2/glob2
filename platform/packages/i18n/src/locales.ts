@@ -90,12 +90,6 @@ export const locales = [
     dir: 'ltr',
   },
   {
-    code: 'nb',
-    gameCode: 'nb',
-    name: 'Norsk bokmål',
-    dir: 'ltr',
-  },
-  {
     code: 'nl',
     gameCode: 'nl',
     name: 'Nederlands',
@@ -219,6 +213,12 @@ export const locales = [
     code: 'sw',
     gameCode: 'sw',
     name: 'Kiswahili',
+    dir: 'ltr',
+  },
+  {
+    code: 'nb',
+    gameCode: 'nb',
+    name: 'Norsk bokmål',
     dir: 'ltr',
   },
 ] as const;

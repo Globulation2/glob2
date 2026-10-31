@@ -13,7 +13,6 @@ data/texts.en.txt
 *data/texts.gr.txt
 *data/texts.hu.txt
 *data/texts.it.txt
-data/texts.nb.txt
 *data/texts.nl.txt
 *data/texts.pl.txt
 *data/texts.pt.txt
@@ -35,3 +34,4 @@ data/texts.nb.txt
 data/texts.hi.txt
 data/texts.ur.txt
 data/texts.sw.txt
+data/texts.nb.txt
