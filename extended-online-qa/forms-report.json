@@ -1,0 +1,413 @@
+[
+  {
+    "mode": "desktop",
+    "route": "/maps/new",
+    "heading": [
+      "Качване на карта"
+    ],
+    "panels": [],
+    "metrics": {
+      "lang": "bg",
+      "overflow": 0,
+      "font": [
+        {
+          "family": "Glob2 Bulgarian",
+          "status": "loaded"
+        }
+      ],
+      "family": "\"Glob2 Bulgarian\", \"DejaVu Sans\", Verdana, sans-serif"
+    },
+    "body": "Към съдържанието\nИгра в браузър\nИГРА\nНачало\nКласация\nИграчи\nМачове\nСЪЗДАВАНЕ\nКарти\nТерен и ресурси\nБиблиотека с ИИ\nСгради\nМузика\nЗа нас и помощ\nЕзик\nالعربية\nPortuguês brasileiro\nCatalà\nČeština\nDeutsch\nDansk\nEnglish\nEspañol\nEsperanto\nEuskara\nفارسی\nFrançais\nΕλληνικά\nMagyar\nItaliano\nNederlands\nPolski\nPortuguês europeu\nRomână\nРусский\nSlovenščina\nSlovenčina\nСрпски\nSuomi\nSvenska\nTürkçe\n繁體中文\n简体中文\nУкраїнська\nBahasa Indonesia\nTiếng Việt\n日本語\n한국어\nहिन्दी\nاردو\nKiswahili\nБългарски\nK\nKestrel\nИзход\nКачване на карта\n\nСподелете карта, която сте създали в редактора или с генератор.\n\nФайл с карта (.map или .map.gz, от играта или нейния редактор на карти)\nЗаглавие\nОписание\nВидимост\nPublic: listed in the catalog\nUnlisted: anyone with the link\nPrivate: only you\nНаправено\nВ редактора на карти\nЧрез генератор на карти\nКачване\n\nСървърът първо зарежда файла чрез играта, за да го провери; страницата на картата се създава само ако зареждането успее. Картите само чрез връзка са достъпни единствено с връзката си; можете да направите картата публична по-късно.",
+    "english": [],
+    "outside": [],
+    "screenshot": "desktop-maps-new.png",
+    "errors": []
+  },
+  {
+    "mode": "desktop",
+    "route": "/ais/new",
+    "heading": [
+      "Споделете вашия ИИ"
+    ],
+    "panels": [
+      "Контролен списък за съвместимост"
+    ],
+    "metrics": {
+      "lang": "bg",
+      "overflow": 0,
+      "font": [
+        {
+          "family": "Glob2 Bulgarian",
+          "status": "loaded"
+        }
+      ],
+      "family": "\"Glob2 Bulgarian\", \"DejaVu Sans\", Verdana, sans-serif"
+    },
+    "body": "Към съдържанието\nИгра в браузър\nИГРА\nНачало\nКласация\nИграчи\nМачове\nСЪЗДАВАНЕ\nКарти\nТерен и ресурси\nБиблиотека с ИИ\nСгради\nМузика\nЗа нас и помощ\nЕзик\nالعربية\nPortuguês brasileiro\nCatalà\nČeština\nDeutsch\nDansk\nEnglish\nEspañol\nEsperanto\nEuskara\nفارسی\nFrançais\nΕλληνικά\nMagyar\nItaliano\nNederlands\nPolski\nPortuguês europeu\nRomână\nРусский\nSlovenščina\nSlovenčina\nСрпски\nSuomi\nSvenska\nTürkçe\n繁體中文\n简体中文\nУкраїнська\nBahasa Indonesia\nTiếng Việt\n日本語\n한국어\nहिन्दी\nاردو\nKiswahili\nБългарски\nK\nKestrel\nИзход\nСподелете вашия ИИ\n\nДайте дом на вашия контролер на колонията. Всяка версия запазва собствен изходен код и история на изтеглянията.\n\nВключен файл JavaScript\nЕдин .js файл · до 128 KiB · профили 1 и 2\nИме\nОписание\n\nИзберете до пет етикета. Те описват стратегията ви, а не проверен рейтинг на силата.\n\nBalanced\nRush\nDefensive\nEconomy\nExpansion\nExperimental\nBeginner-friendly\nВидимост\nПублично — показва се в списъците за всички\nСамо чрез връзка — достъпно по връзка\nЧастно — само вие\nЕтикет на версията\nБележки за изданието\nПубликуване\n\nПубликуването запазва точно тези байтове от изходния код. Промените изискват нова версия.\n\nКонтролен списък за съвместимост\n\nИзберете файл, за да започнете.\n\n○\nFile and API profile\nВ очакване\n○\nSyntax and profile restrictions\nВ очакване\n○\nStartup and callback\nВ очакване\n○\nPersistent state\nВ очакване\n○\nSeeded gameplay\nВ очакване\n○\nRepeatable simulation\nВ очакване\n○\nSave and resume\nВ очакване\n\nКратки игри с фиксирана начална стойност проверяват поведението при изпълнение, повторяемостта и запазването/възобновяването. Успешното преминаване не удостоверява безопасност или игрова сила.\n\nКак работят ИИ\n+\n\nИнсталирайте ИИ от общността за локални игри. Версиите работят офлайн. Изпълнявайте само код от автори, на които имате доверие.\n\nРазбрах",
+    "english": [
+      "Balanced"
+    ],
+    "outside": [],
+    "screenshot": "desktop-ais-new.png",
+    "errors": []
+  },
+  {
+    "mode": "desktop",
+    "route": "/generators/new",
+    "heading": [
+      "Споделете генератор на карти"
+    ],
+    "panels": [],
+    "metrics": {
+      "lang": "bg",
+      "overflow": 0,
+      "font": [
+        {
+          "family": "Glob2 Bulgarian",
+          "status": "loaded"
+        }
+      ],
+      "family": "\"Glob2 Bulgarian\", \"DejaVu Sans\", Verdana, sans-serif"
+    },
+    "body": "Към съдържанието\nИгра в браузър\nИГРА\nНачало\nКласация\nИграчи\nМачове\nСЪЗДАВАНЕ\nКарти\nТерен и ресурси\nБиблиотека с ИИ\nСгради\nМузика\nЗа нас и помощ\nЕзик\nالعربية\nPortuguês brasileiro\nCatalà\nČeština\nDeutsch\nDansk\nEnglish\nEspañol\nEsperanto\nEuskara\nفارسی\nFrançais\nΕλληνικά\nMagyar\nItaliano\nNederlands\nPolski\nPortuguês europeu\nRomână\nРусский\nSlovenščina\nSlovenčina\nСрпски\nSuomi\nSvenska\nTürkçe\n繁體中文\n简体中文\nУкраїнська\nBahasa Indonesia\nTiếng Việt\n日本語\n한국어\nहिन्दी\nاردو\nKiswahili\nБългарски\nK\nKestrel\nИзход\nКарти · Генератори\nСподелете генератор на карти\n\nКачете преносимия JSON, експортиран от Настройки → Генератори на карти. Ръководство за създаване\n\nПакет\nПримерни настройки за генериране\nwidth (log₂ полета)\nheight (log₂ полета)\nteams\nworkers\nНачална стойност\nСтойности за управление на генератора (JSON)\nВалидиране на пакета\nЗаглавие\nОписание\nЕтикет на изданието\nБележки за изданието\nВидимост\nСамо чрез връзка\nЧастен\nПублично\nПубликуване на изданието",
+    "english": [],
+    "outside": [],
+    "screenshot": "desktop-generators-new.png",
+    "errors": []
+  },
+  {
+    "mode": "desktop",
+    "route": "/music/new",
+    "heading": [
+      "Споделете саундтрак"
+    ],
+    "panels": [],
+    "metrics": {
+      "lang": "bg",
+      "overflow": 0,
+      "font": [
+        {
+          "family": "Glob2 Bulgarian",
+          "status": "loaded"
+        }
+      ],
+      "family": "\"Glob2 Bulgarian\", \"DejaVu Sans\", Verdana, sans-serif"
+    },
+    "body": "Към съдържанието\nИгра в браузър\nИГРА\nНачало\nКласация\nИграчи\nМачове\nСЪЗДАВАНЕ\nКарти\nТерен и ресурси\nБиблиотека с ИИ\nСгради\nМузика\nЗа нас и помощ\nЕзик\nالعربية\nPortuguês brasileiro\nCatalà\nČeština\nDeutsch\nDansk\nEnglish\nEspañol\nEsperanto\nEuskara\nفارسی\nFrançais\nΕλληνικά\nMagyar\nItaliano\nNederlands\nPolski\nPortuguês europeu\nRomână\nРусский\nSlovenščina\nSlovenčina\nСрпски\nSuomi\nSvenska\nTürkçe\n繁體中文\n简体中文\nУкраїнська\nBahasa Indonesia\nTiếng Việt\n日本語\n한국어\nहिन्दी\nاردو\nKiswahili\nБългарски\nK\nKestrel\nИзход\nСподелете саундтрак\n\nПодгответе аранжименти „Спокойствие“, „Строителство“ и „Бой“ на една и съща композиция. Всеки трябва да трае от 10 секунди до 15 минути. Оригиналите се изтриват след конвертирането; запазете собствените си изходни файлове.\n\nTitle\nArtist\nDescription\nCredits\nЛиценз\nCC0 1.0\nCC BY 4.0\nCC BY-SA 4.0\nВръзки към източници (по една на ред)\nЕтикети (разделени със запетаи)\nТази музика включва аудио, генерирано от ИИ\nМога да споделям тези записи и произведения на изкуството съгласно избрания лиценз.\nПродължаване към качванията",
+    "english": [
+      "Title",
+      "Description",
+      "Credits"
+    ],
+    "outside": [],
+    "screenshot": "desktop-music-new.png",
+    "errors": []
+  },
+  {
+    "mode": "desktop",
+    "route": "/buildings/6b942dbc-c266-442b-a8e4-ec3f5c012a67",
+    "heading": [
+      "Семейство сгради"
+    ],
+    "panels": [
+      "Community kitchen",
+      "Издания"
+    ],
+    "metrics": {
+      "lang": "bg",
+      "overflow": 0,
+      "font": [
+        {
+          "family": "Glob2 Bulgarian",
+          "status": "loaded"
+        }
+      ],
+      "family": "\"Glob2 Bulgarian\", \"DejaVu Sans\", Verdana, sans-serif"
+    },
+    "body": "Към съдържанието\nИгра в браузър\nИГРА\nНачало\nКласация\nИграчи\nМачове\nСЪЗДАВАНЕ\nКарти\nТерен и ресурси\nБиблиотека с ИИ\nСгради\nМузика\nЗа нас и помощ\nЕзик\nالعربية\nPortuguês brasileiro\nCatalà\nČeština\nDeutsch\nDansk\nEnglish\nEspañol\nEsperanto\nEuskara\nفارسی\nFrançais\nΕλληνικά\nMagyar\nItaliano\nNederlands\nPolski\nPortuguês europeu\nRomână\nРусский\nSlovenščina\nSlovenčina\nСрпски\nSuomi\nSvenska\nTürkçe\n繁體中文\n简体中文\nУкраїнська\nBahasa Indonesia\nTiếng Việt\n日本語\n한국어\nहिन्दी\nاردو\nKiswahili\nБългарски\nK\nKestrel\nИзход\nСемейство сгради\n\nСъздаване на семейство сгради · Разглеждане на библиотеката\n\nИзползване на сгради в играта\nCommunity kitchen\n\nОт Mirelle\n\nВръзка към семейство сгради\n\nПоставете тази връзка в „Връзка или идентификатор на семейство“ в избора на семейства сгради в играта, за да отворите семейството директно.\n\nA portable kitchen family made by players.\n\n0 харесвания · 0 изтегляния\n\nХаресвам\nЛюбим\nИздания\n\nИзберете валидирано издание за версията на симулацията, с която играете. Всяко изтегляне включва графиката му.\n\nОбновяване на валидирането\n\n31.10.2026 г., 18:37:35 ч. · Валиден\n\nСимулация 144-59\nИзтегляне на семейство\nРазклоняване в Студиото\nСъобщаване за проблем\nИзпращане на сигнал",
+    "english": [],
+    "outside": [],
+    "screenshot": "desktop-buildings-6b942dbc-c266-442b-a8e4-ec3f5c012a67.png",
+    "errors": []
+  },
+  {
+    "mode": "desktop",
+    "route": "/j/NOSUCHCODE",
+    "heading": [
+      "Поканата не е намерена"
+    ],
+    "panels": [],
+    "metrics": {
+      "lang": "bg",
+      "overflow": 0,
+      "font": [
+        {
+          "family": "Glob2 Bulgarian",
+          "status": "loaded"
+        }
+      ],
+      "family": "\"Glob2 Bulgarian\", \"DejaVu Sans\", Verdana, sans-serif"
+    },
+    "body": "Поканата не е намерена\n\nТази покана е изтекла или не съществува. Поискайте нов линк.\n\nИгра в браузър\nОтидете на Glob2 Online (test)\n\nGlobulation 2 е свободен софтуер (GPL 3).",
+    "english": [],
+    "outside": [],
+    "screenshot": "desktop-j-NOSUCHCODE.png",
+    "errors": []
+  },
+  {
+    "mode": "desktop",
+    "route": "/matches/00000000-0000-0000-0000-000000000000",
+    "heading": [
+      "Мач не е намерен"
+    ],
+    "panels": [],
+    "metrics": {
+      "lang": "bg",
+      "overflow": 0,
+      "font": [
+        {
+          "family": "Glob2 Bulgarian",
+          "status": "loaded"
+        }
+      ],
+      "family": "\"Glob2 Bulgarian\", \"DejaVu Sans\", Verdana, sans-serif"
+    },
+    "body": "Към съдържанието\nИгра в браузър\nИГРА\nНачало\nКласация\nИграчи\nМачове\nСЪЗДАВАНЕ\nКарти\nТерен и ресурси\nБиблиотека с ИИ\nСгради\nМузика\nЗа нас и помощ\nЕзик\nالعربية\nPortuguês brasileiro\nCatalà\nČeština\nDeutsch\nDansk\nEnglish\nEspañol\nEsperanto\nEuskara\nفارسی\nFrançais\nΕλληνικά\nMagyar\nItaliano\nNederlands\nPolski\nPortuguês europeu\nRomână\nРусский\nSlovenščina\nSlovenčina\nСрпски\nSuomi\nSvenska\nTürkçe\n繁體中文\n简体中文\nУкраїнська\nBahasa Indonesia\nTiếng Việt\n日本語\n한국어\nहिन्दी\nاردو\nKiswahili\nБългарски\nK\nKestrel\nИзход\nМач не е намерен\nНе е намерено. Възможно е да е премахнато или линкът е грешен.\n\nОтидете на началната страница",
+    "english": [],
+    "outside": [],
+    "screenshot": "desktop-matches-00000000-0000-0000-0000-000000000000.png",
+    "errors": []
+  },
+  {
+    "mode": "phone",
+    "route": "/maps/new",
+    "heading": [
+      "Качване на карта"
+    ],
+    "panels": [],
+    "metrics": {
+      "lang": "bg",
+      "overflow": 73,
+      "font": [
+        {
+          "family": "Glob2 Bulgarian",
+          "status": "loaded"
+        }
+      ],
+      "family": "\"Glob2 Bulgarian\", \"DejaVu Sans\", Verdana, sans-serif"
+    },
+    "body": "Към съдържанието\nЗа нас и помощ\nЕзик\nالعربية\nPortuguês brasileiro\nCatalà\nČeština\nDeutsch\nDansk\nEnglish\nEspañol\nEsperanto\nEuskara\nفارسی\nFrançais\nΕλληνικά\nMagyar\nItaliano\nNederlands\nPolski\nPortuguês europeu\nRomână\nРусский\nSlovenščina\nSlovenčina\nСрпски\nSuomi\nSvenska\nTürkçe\n繁體中文\n简体中文\nУкраїнська\nBahasa Indonesia\nTiếng Việt\n日本語\n한국어\nहिन्दी\nاردو\nKiswahili\nБългарски\nИзход\nКачване на карта\n\nСподелете карта, която сте създали в редактора или с генератор.\n\nФайл с карта (.map или .map.gz, от играта или нейния редактор на карти)\nЗаглавие\nОписание\nВидимост\nPublic: listed in the catalog\nUnlisted: anyone with the link\nPrivate: only you\nНаправено\nВ редактора на карти\nЧрез генератор на карти\nКачване\n\nСървърът първо зарежда файла чрез играта, за да го провери; страницата на картата се създава само ако зареждането успее. Картите само чрез връзка са достъпни единствено с връзката си; можете да направите картата публична по-късно.",
+    "english": [],
+    "outside": [
+      {
+        "tag": "INPUT",
+        "text": "",
+        "left": 105,
+        "right": 463
+      }
+    ],
+    "screenshot": "phone-maps-new.png",
+    "errors": []
+  },
+  {
+    "mode": "phone",
+    "route": "/ais/new",
+    "heading": [
+      "Споделете вашия ИИ"
+    ],
+    "panels": [
+      "Контролен списък за съвместимост"
+    ],
+    "metrics": {
+      "lang": "bg",
+      "overflow": 153,
+      "font": [
+        {
+          "family": "Glob2 Bulgarian",
+          "status": "loaded"
+        }
+      ],
+      "family": "\"Glob2 Bulgarian\", \"DejaVu Sans\", Verdana, sans-serif"
+    },
+    "body": "Към съдържанието\nЗа нас и помощ\nЕзик\nالعربية\nPortuguês brasileiro\nCatalà\nČeština\nDeutsch\nDansk\nEnglish\nEspañol\nEsperanto\nEuskara\nفارسی\nFrançais\nΕλληνικά\nMagyar\nItaliano\nNederlands\nPolski\nPortuguês europeu\nRomână\nРусский\nSlovenščina\nSlovenčina\nСрпски\nSuomi\nSvenska\nTürkçe\n繁體中文\n简体中文\nУкраїнська\nBahasa Indonesia\nTiếng Việt\n日本語\n한국어\nहिन्दी\nاردو\nKiswahili\nБългарски\nИзход\nСподелете вашия ИИ\n\nДайте дом на вашия контролер на колонията. Всяка версия запазва собствен изходен код и история на изтеглянията.\n\nВключен файл JavaScript\nЕдин .js файл · до 128 KiB · профили 1 и 2\nИме\nОписание\n\nИзберете до пет етикета. Те описват стратегията ви, а не проверен рейтинг на силата.\n\nBalanced\nRush\nDefensive\nEconomy\nExpansion\nExperimental\nBeginner-friendly\nВидимост\nПублично — показва се в списъците за всички\nСамо чрез връзка — достъпно по връзка\nЧастно — само вие\nЕтикет на версията\nБележки за изданието\nПубликуване\n\nПубликуването запазва точно тези байтове от изходния код. Промените изискват нова версия.\n\nКонтролен списък за съвместимост\n\nИзберете файл, за да започнете.\n\n○\nFile and API profile\nВ очакване\n○\nSyntax and profile restrictions\nВ очакване\n○\nStartup and callback\nВ очакване\n○\nPersistent state\nВ очакване\n○\nSeeded gameplay\nВ очакване\n○\nRepeatable simulation\nВ очакване\n○\nSave and resume\nВ очакване\n\nКратки игри с фиксирана начална стойност проверяват поведението при изпълнение, повторяемостта и запазването/възобновяването. Успешното преминаване не удостоверява безопасност или игрова сила.\n\nКак работят ИИ\n+\n\nИнсталирайте ИИ от общността за локални игри. Версиите работят офлайн. Изпълнявайте само код от автори, на които имате доверие.\n\nРазбрах",
+    "english": [
+      "Balanced"
+    ],
+    "outside": [
+      {
+        "tag": "SELECT",
+        "text": "Публично — показва се в списъците за всичкиСамо чрез връзка — достъпно по връзкаЧастно — с",
+        "left": 105,
+        "right": 543
+      }
+    ],
+    "screenshot": "phone-ais-new.png",
+    "errors": []
+  },
+  {
+    "mode": "phone",
+    "route": "/generators/new",
+    "heading": [
+      "Споделете генератор на карти"
+    ],
+    "panels": [],
+    "metrics": {
+      "lang": "bg",
+      "overflow": 56,
+      "font": [
+        {
+          "family": "Glob2 Bulgarian",
+          "status": "loaded"
+        }
+      ],
+      "family": "\"Glob2 Bulgarian\", \"DejaVu Sans\", Verdana, sans-serif"
+    },
+    "body": "Към съдържанието\nЗа нас и помощ\nЕзик\nالعربية\nPortuguês brasileiro\nCatalà\nČeština\nDeutsch\nDansk\nEnglish\nEspañol\nEsperanto\nEuskara\nفارسی\nFrançais\nΕλληνικά\nMagyar\nItaliano\nNederlands\nPolski\nPortuguês europeu\nRomână\nРусский\nSlovenščina\nSlovenčina\nСрпски\nSuomi\nSvenska\nTürkçe\n繁體中文\n简体中文\nУкраїнська\nBahasa Indonesia\nTiếng Việt\n日本語\n한국어\nहिन्दी\nاردو\nKiswahili\nБългарски\nИзход\nКарти · Генератори\nСподелете генератор на карти\n\nКачете преносимия JSON, експортиран от Настройки → Генератори на карти. Ръководство за създаване\n\nПакет\nПримерни настройки за генериране\nwidth (log₂ полета)\nheight (log₂ полета)\nteams\nworkers\nНачална стойност\nСтойности за управление на генератора (JSON)\nВалидиране на пакета\nЗаглавие\nОписание\nЕтикет на изданието\nБележки за изданието\nВидимост\nСамо чрез връзка\nЧастен\nПублично\nПубликуване на изданието",
+    "english": [],
+    "outside": [
+      {
+        "tag": "INPUT",
+        "text": "",
+        "left": 88,
+        "right": 446
+      }
+    ],
+    "screenshot": "phone-generators-new.png",
+    "errors": []
+  },
+  {
+    "mode": "phone",
+    "route": "/music/new",
+    "heading": [
+      "Споделете саундтрак"
+    ],
+    "panels": [],
+    "metrics": {
+      "lang": "bg",
+      "overflow": 13,
+      "font": [
+        {
+          "family": "Glob2 Bulgarian",
+          "status": "loaded"
+        }
+      ],
+      "family": "\"Glob2 Bulgarian\", \"DejaVu Sans\", Verdana, sans-serif"
+    },
+    "body": "Към съдържанието\nЗа нас и помощ\nЕзик\nالعربية\nPortuguês brasileiro\nCatalà\nČeština\nDeutsch\nDansk\nEnglish\nEspañol\nEsperanto\nEuskara\nفارسی\nFrançais\nΕλληνικά\nMagyar\nItaliano\nNederlands\nPolski\nPortuguês europeu\nRomână\nРусский\nSlovenščina\nSlovenčina\nСрпски\nSuomi\nSvenska\nTürkçe\n繁體中文\n简体中文\nУкраїнська\nBahasa Indonesia\nTiếng Việt\n日本語\n한국어\nहिन्दी\nاردو\nKiswahili\nБългарски\nИзход\nСподелете саундтрак\n\nПодгответе аранжименти „Спокойствие“, „Строителство“ и „Бой“ на една и съща композиция. Всеки трябва да трае от 10 секунди до 15 минути. Оригиналите се изтриват след конвертирането; запазете собствените си изходни файлове.\n\nTitle\nArtist\nDescription\nCredits\nЛиценз\nCC0 1.0\nCC BY 4.0\nCC BY-SA 4.0\nВръзки към източници (по една на ред)\nЕтикети (разделени със запетаи)\nТази музика включва аудио, генерирано от ИИ\nМога да споделям тези записи и произведения на изкуството съгласно избрания лиценз.\nПродължаване към качванията",
+    "english": [
+      "Title",
+      "Description",
+      "Credits"
+    ],
+    "outside": [
+      {
+        "tag": "SELECT",
+        "text": "CC0 1.0CC BY 4.0CC BY-SA 4.0",
+        "left": 102,
+        "right": 403
+      },
+      {
+        "tag": "INPUT",
+        "text": "",
+        "left": 102,
+        "right": 403
+      },
+      {
+        "tag": "BUTTON",
+        "text": "Продължаване към качванията",
+        "left": 102,
+        "right": 403
+      }
+    ],
+    "screenshot": "phone-music-new.png",
+    "errors": []
+  },
+  {
+    "mode": "phone",
+    "route": "/buildings/6b942dbc-c266-442b-a8e4-ec3f5c012a67",
+    "heading": [
+      "Семейство сгради"
+    ],
+    "panels": [
+      "Community kitchen",
+      "Издания"
+    ],
+    "metrics": {
+      "lang": "bg",
+      "overflow": 12,
+      "font": [
+        {
+          "family": "Glob2 Bulgarian",
+          "status": "loaded"
+        }
+      ],
+      "family": "\"Glob2 Bulgarian\", \"DejaVu Sans\", Verdana, sans-serif"
+    },
+    "body": "Към съдържанието\nЗа нас и помощ\nЕзик\nالعربية\nPortuguês brasileiro\nCatalà\nČeština\nDeutsch\nDansk\nEnglish\nEspañol\nEsperanto\nEuskara\nفارسی\nFrançais\nΕλληνικά\nMagyar\nItaliano\nNederlands\nPolski\nPortuguês europeu\nRomână\nРусский\nSlovenščina\nSlovenčina\nСрпски\nSuomi\nSvenska\nTürkçe\n繁體中文\n简体中文\nУкраїнська\nBahasa Indonesia\nTiếng Việt\n日本語\n한국어\nहिन्दी\nاردو\nKiswahili\nБългарски\nИзход\nСемейство сгради\n\nСъздаване на семейство сгради · Разглеждане на библиотеката\n\nИзползване на сгради в играта\nCommunity kitchen\n\nОт Mirelle\n\nВръзка към семейство сгради\n\nПоставете тази връзка в „Връзка или идентификатор на семейство“ в избора на семейства сгради в играта, за да отворите семейството директно.\n\nA portable kitchen family made by players.\n\n0 харесвания · 0 изтегляния\n\nХаресвам\nЛюбим\nИздания\n\nИзберете валидирано издание за версията на симулацията, с която играете. Всяко изтегляне включва графиката му.\n\nОбновяване на валидирането\n\n31.10.2026 г., 18:37:35 ч. · Валиден\n\nСимулация 144-59\nИзтегляне на семейство\nРазклоняване в Студиото\nСъобщаване за проблем\nИзпращане на сигнал",
+    "english": [],
+    "outside": [
+      {
+        "tag": "BUTTON",
+        "text": "Обновяване на валидирането",
+        "left": 112,
+        "right": 396
+      },
+      {
+        "tag": "BUTTON",
+        "text": "Разклоняване в Студиото",
+        "left": 152,
+        "right": 402
+      }
+    ],
+    "screenshot": "phone-buildings-6b942dbc-c266-442b-a8e4-ec3f5c012a67.png",
+    "errors": []
+  },
+  {
+    "mode": "phone",
+    "route": "/j/NOSUCHCODE",
+    "heading": [
+      "Поканата не е намерена"
+    ],
+    "panels": [],
+    "metrics": {
+      "lang": "bg",
+      "overflow": 0,
+      "font": [
+        {
+          "family": "Glob2 Bulgarian",
+          "status": "loaded"
+        }
+      ],
+      "family": "\"Glob2 Bulgarian\", \"DejaVu Sans\", Verdana, sans-serif"
+    },
+    "body": "Поканата не е намерена\n\nТази покана е изтекла или не съществува. Поискайте нов линк.\n\nИгра в браузър\nОтидете на Glob2 Online (test)\n\nGlobulation 2 е свободен софтуер (GPL 3).",
+    "english": [],
+    "outside": [],
+    "screenshot": "phone-j-NOSUCHCODE.png",
+    "errors": []
+  },
+  {
+    "mode": "phone",
+    "route": "/matches/00000000-0000-0000-0000-000000000000",
+    "heading": [
+      "Мач не е намерен"
+    ],
+    "panels": [],
+    "metrics": {
+      "lang": "bg",
+      "overflow": 0,
+      "font": [
+        {
+          "family": "Glob2 Bulgarian",
+          "status": "loaded"
+        }
+      ],
+      "family": "\"Glob2 Bulgarian\", \"DejaVu Sans\", Verdana, sans-serif"
+    },
+    "body": "Към съдържанието\nЗа нас и помощ\nЕзик\nالعربية\nPortuguês brasileiro\nCatalà\nČeština\nDeutsch\nDansk\nEnglish\nEspañol\nEsperanto\nEuskara\nفارسی\nFrançais\nΕλληνικά\nMagyar\nItaliano\nNederlands\nPolski\nPortuguês europeu\nRomână\nРусский\nSlovenščina\nSlovenčina\nСрпски\nSuomi\nSvenska\nTürkçe\n繁體中文\n简体中文\nУкраїнська\nBahasa Indonesia\nTiếng Việt\n日本語\n한국어\nहिन्दी\nاردو\nKiswahili\nБългарски\nИзход\nМач не е намерен\nНе е намерено. Възможно е да е премахнато или линкът е грешен.\n\nОтидете на началната страница",
+    "english": [],
+    "outside": [],
+    "screenshot": "phone-matches-00000000-0000-0000-0000-000000000000.png",
+    "errors": []
+  }
+]

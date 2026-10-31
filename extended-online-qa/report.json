@@ -1,0 +1,1125 @@
+[
+  {
+    "mode": "desktop",
+    "route": "/maps",
+    "heading": [
+      "Карти"
+    ],
+    "panels": [],
+    "metrics": {
+      "lang": "bg",
+      "overflow": 0,
+      "font": [
+        {
+          "family": "Glob2 Bulgarian",
+          "status": "loaded"
+        }
+      ],
+      "family": "\"Glob2 Bulgarian\", \"DejaVu Sans\", Verdana, sans-serif"
+    },
+    "body": "Към съдържанието\nИгра в браузър\nИГРА\nНачало\nКласация\nИграчи\nМачове\nСЪЗДАВАНЕ\nКарти\nТерен и ресурси\nБиблиотека с ИИ\nСгради\nМузика\nЗа нас и помощ\nЕзик\nالعربية\nPortuguês brasileiro\nCatalà\nČeština\nDeutsch\nDansk\nEnglish\nEspañol\nEsperanto\nEuskara\nفارسی\nFrançais\nΕλληνικά\nMagyar\nItaliano\nNederlands\nPolski\nPortuguês europeu\nRomână\nРусский\nSlovenščina\nSlovenčina\nСрпски\nSuomi\nSvenska\nTürkçe\n繁體中文\n简体中文\nУкраїнська\nBahasa Indonesia\nTiếng Việt\n日本語\n한국어\nहिन्दी\nاردو\nKiswahili\nБългарски\nK\nKestrel\nИзход\nКарти\n\nКарти, споделени от играчи. Стаите използват конкретна версия, така че всички зареждат един и същ файл.\n\nКачване на карта\nРазглеждане\nМоите карти\nКарти · Генератори\nТърсене на карти\nОтбори\nВсякакви отбори\n2 отбора\n3 отбора\n4 отбора\n5 отбора\n6 отбора\n8 отбора\n12 отбора\nСортиране\nНай-нови\nНай-харесвани\nMost played\nНай-изтегляни\nОще филтри\n\nРезултати: 7\n\nEven Ground Classic\n128×128 · 2 отбора · ♥ 1\nхаресвания\nIsles of Plenty\n128×128 · 4 отбора · ♥ 14\nхаресвания\nCanal Country\n128×128 · 4 отбора · ♥ 9\nхаресвания\nHoneycomb Isle\n128×128 · 4 отбора · ♥ 6\nхаресвания\nCrater Lakes\n128×128 · 4 отбора · ♥ 4\nхаресвания\nLong River\n128×128 · 4 отбора · ♥ 2\nхаресвания\nSymmetric Arena\n128×128 · 4 отбора · ♥ 0\nхаресвания",
+    "english": [],
+    "outside": [],
+    "screenshot": "desktop-maps.png",
+    "errors": []
+  },
+  {
+    "mode": "desktop",
+    "route": "/sets",
+    "heading": [
+      "Комплекти с терени и ресурси"
+    ],
+    "panels": [],
+    "metrics": {
+      "lang": "bg",
+      "overflow": 0,
+      "font": [
+        {
+          "family": "Glob2 Bulgarian",
+          "status": "loaded"
+        }
+      ],
+      "family": "\"Glob2 Bulgarian\", \"DejaVu Sans\", Verdana, sans-serif"
+    },
+    "body": "Към съдържанието\nИгра в браузър\nИГРА\nНачало\nКласация\nИграчи\nМачове\nСЪЗДАВАНЕ\nКарти\nТерен и ресурси\nБиблиотека с ИИ\nСгради\nМузика\nЗа нас и помощ\nЕзик\nالعربية\nPortuguês brasileiro\nCatalà\nČeština\nDeutsch\nDansk\nEnglish\nEspañol\nEsperanto\nEuskara\nفارسی\nFrançais\nΕλληνικά\nMagyar\nItaliano\nNederlands\nPolski\nPortuguês europeu\nRomână\nРусский\nSlovenščina\nSlovenčina\nСрпски\nSuomi\nSvenska\nTürkçe\n繁體中文\n简体中文\nУкраїнська\nBahasa Indonesia\nTiếng Việt\n日本語\n한국어\nहिन्दी\nاردو\nKiswahili\nБългарски\nK\nKestrel\nИзход\nКомплекти с терени и ресурси\n\nИзградете цялостен свят с персонализирани терени, ресурси и графика.\n\nСъздаване на набор\nРазглеждане\nМоите комплекти\nТърсене\nСъдържание\nВсички комплекти\nТерен\nРесурси\nИ двете\nЛиценз\nВсички лицензи\nCC0\nCC BY\nСортиране\nНай-нови\nНаскоро актуализирано\nНай-харесвани\nНай-изтегляни\nНулиране на филтрите\n\nРезултати: 0\n\nНе са намерени комплекти. Опитайте друго търсене или създайте първия.\nСъздаване на набор",
+    "english": [],
+    "outside": [],
+    "screenshot": "desktop-sets.png",
+    "errors": []
+  },
+  {
+    "mode": "desktop",
+    "route": "/ais",
+    "heading": [
+      "Библиотека с ИИ"
+    ],
+    "panels": [],
+    "metrics": {
+      "lang": "bg",
+      "overflow": 0,
+      "font": [
+        {
+          "family": "Glob2 Bulgarian",
+          "status": "loaded"
+        }
+      ],
+      "family": "\"Glob2 Bulgarian\", \"DejaVu Sans\", Verdana, sans-serif"
+    },
+    "body": "Към съдържанието\nИгра в браузър\nИГРА\nНачало\nКласация\nИграчи\nМачове\nСЪЗДАВАНЕ\nКарти\nТерен и ресурси\nБиблиотека с ИИ\nСгради\nМузика\nЗа нас и помощ\nЕзик\nالعربية\nPortuguês brasileiro\nCatalà\nČeština\nDeutsch\nDansk\nEnglish\nEspañol\nEsperanto\nEuskara\nفارسی\nFrançais\nΕλληνικά\nMagyar\nItaliano\nNederlands\nPolski\nPortuguês europeu\nRomână\nРусский\nSlovenščina\nSlovenčina\nСрпски\nSuomi\nSvenska\nTürkçe\n繁體中文\n简体中文\nУкраїнська\nBahasa Indonesia\nTiếng Việt\n日本語\n한국어\nहिन्दी\nاردو\nKiswahili\nБългарски\nK\nKestrel\nИзход\nБиблиотека с ИИ\n\nОткрийте нов опонент. Намерете нов начин на игра.\n\nСподелете вашия ИИ\nРазглеждане\nЛюбими\nМоите ИИ\nКак работят ИИ\n+\n\nИнсталирайте ИИ от общността за локални игри. Версиите работят офлайн. Изпълнявайте само код от автори, на които имате доверие.\n\nРазбрах\nТърсене на ИИ\nСортиране\nНай-харесвани\nНай-нови\nНаскоро актуализирано\nНай-изтегляни\nНулиране на филтрите\nBalanced\nRush\nDefensive\nEconomy\nExpansion\nExperimental\nBeginner-friendly\n\nРезултати: 0\n\nОформя се нова библиотека. Споделете първия ИИ.\nСподелете вашия ИИ",
+    "english": [
+      "Balanced"
+    ],
+    "outside": [],
+    "screenshot": "desktop-ais.png",
+    "errors": []
+  },
+  {
+    "mode": "desktop",
+    "route": "/buildings",
+    "heading": [
+      "Библиотека със сгради"
+    ],
+    "panels": [
+      "Community kitchen"
+    ],
+    "metrics": {
+      "lang": "bg",
+      "overflow": 0,
+      "font": [
+        {
+          "family": "Glob2 Bulgarian",
+          "status": "loaded"
+        }
+      ],
+      "family": "\"Glob2 Bulgarian\", \"DejaVu Sans\", Verdana, sans-serif"
+    },
+    "body": "Към съдържанието\nИгра в браузър\nИГРА\nНачало\nКласация\nИграчи\nМачове\nСЪЗДАВАНЕ\nКарти\nТерен и ресурси\nБиблиотека с ИИ\nСгради\nМузика\nЗа нас и помощ\nЕзик\nالعربية\nPortuguês brasileiro\nCatalà\nČeština\nDeutsch\nDansk\nEnglish\nEspañol\nEsperanto\nEuskara\nفارسی\nFrançais\nΕλληνικά\nMagyar\nItaliano\nNederlands\nPolski\nPortuguês europeu\nRomână\nРусский\nSlovenščina\nSlovenčina\nСрпски\nSuomi\nSvenska\nTürkçe\n繁體中文\n简体中文\nУкраїнська\nBahasa Indonesia\nTiếng Việt\n日本語\n한국어\nहिन्दी\nاردو\nKiswahili\nБългарски\nK\nKestrel\nИзход\nБиблиотека със сгради\n\nСъздайте сграда или семейство за подобрения с персонализирани графични елементи.\n\nСъздаване на семейство сгради\nРазглеждане\nМоите любими\nМоите семейства\nИзползване на сгради в играта\nТърсене на сгради\nСортиране\nНаскоро актуализирано\nНай-нови\nНай-харесвани\nНай-изтегляни\nНулиране на филтрите\n\nРезултати: 1\n\nCommunity kitchen\n\nОт Mirelle · 0 харесвания · Готово за изтегляне\n\nA portable kitchen family made by players.",
+    "english": [],
+    "outside": [],
+    "screenshot": "desktop-buildings.png",
+    "errors": []
+  },
+  {
+    "mode": "desktop",
+    "route": "/music",
+    "heading": [
+      "Музика за вашата колония"
+    ],
+    "panels": [],
+    "metrics": {
+      "lang": "bg",
+      "overflow": 0,
+      "font": [
+        {
+          "family": "Glob2 Bulgarian",
+          "status": "loaded"
+        }
+      ],
+      "family": "\"Glob2 Bulgarian\", \"DejaVu Sans\", Verdana, sans-serif"
+    },
+    "body": "Към съдържанието\nИгра в браузър\nИГРА\nНачало\nКласация\nИграчи\nМачове\nСЪЗДАВАНЕ\nКарти\nТерен и ресурси\nБиблиотека с ИИ\nСгради\nМузика\nЗа нас и помощ\nЕзик\nالعربية\nPortuguês brasileiro\nCatalà\nČeština\nDeutsch\nDansk\nEnglish\nEspañol\nEsperanto\nEuskara\nفارسی\nFrançais\nΕλληνικά\nMagyar\nItaliano\nNederlands\nPolski\nPortuguês europeu\nRomână\nРусский\nSlovenščina\nSlovenčina\nСрпски\nSuomi\nSvenska\nTürkçe\n繁體中文\n简体中文\nУкраїнська\nBahasa Indonesia\nTiếng Việt\n日本語\n한국어\nहिन्दी\nاردو\nKiswahili\nБългарски\nK\nKestrel\nИзход\nМузика за вашата колония\n\nТри настроения. Един споделен ритъм. Открийте следващия си саундтрак.\n\nСподеляне на музика\nРазглеждане\nМоите издания и качвания\nТърсене\nСортиране\nНай-харесвани\nНай-нови\nНай-изтегляни\nЛиценз\nВсички отворени лицензи\nCC0-1.0\nCC-BY-4.0\nCC-BY-SA-4.0\nНулиране на филтрите\nОще филтри\n\nРезултати: 0\n\nНе е намерена музика. Опитайте различни филтри или споделете първия набор.\nСподеляне на музика",
+    "english": [],
+    "outside": [],
+    "screenshot": "desktop-music.png",
+    "errors": []
+  },
+  {
+    "mode": "desktop",
+    "route": "/generators",
+    "heading": [
+      "Генератори на карти"
+    ],
+    "panels": [],
+    "metrics": {
+      "lang": "bg",
+      "overflow": 0,
+      "font": [
+        {
+          "family": "Glob2 Bulgarian",
+          "status": "loaded"
+        }
+      ],
+      "family": "\"Glob2 Bulgarian\", \"DejaVu Sans\", Verdana, sans-serif"
+    },
+    "body": "Към съдържанието\nИгра в браузър\nИГРА\nНачало\nКласация\nИграчи\nМачове\nСЪЗДАВАНЕ\nКарти\nТерен и ресурси\nБиблиотека с ИИ\nСгради\nМузика\nЗа нас и помощ\nЕзик\nالعربية\nPortuguês brasileiro\nCatalà\nČeština\nDeutsch\nDansk\nEnglish\nEspañol\nEsperanto\nEuskara\nفارسی\nFrançais\nΕλληνικά\nMagyar\nItaliano\nNederlands\nPolski\nPortuguês europeu\nRomână\nРусский\nSlovenščina\nSlovenčina\nСрпски\nSuomi\nSvenska\nTürkçe\n繁體中文\n简体中文\nУкраїнська\nBahasa Indonesia\nTiếng Việt\n日本語\n한국어\nहिन्दी\nاردو\nKiswahili\nБългарски\nK\nKestrel\nИзход\nКарти · Генератори\nГенератори на карти\n\nГенерирайте нови пейзажи от JavaScript пакети на общността. Инсталирайте издание в „Настройки“ → „Генератори на карти“ или го изберете в онлайн стая.\n\nРазглеждане · Моите генератори · Споделете генератор\nТърсене\nЕтикети\nСортиране\nНай-нови\nАктуализирано\nХаресвания\nИзтегляния\nТип\nВсички генератори\nИграемо\nИнструменти за редактора\nВерсия на двигателя\nВсички версии на двигателя\nДвигател 125 · 125-49-ababa\n\nНяма генератори, които да отговарят на тези филтри.",
+    "english": [],
+    "outside": [],
+    "screenshot": "desktop-generators.png",
+    "errors": []
+  },
+  {
+    "mode": "desktop",
+    "route": "/players",
+    "heading": [
+      "Играчи"
+    ],
+    "panels": [],
+    "metrics": {
+      "lang": "bg",
+      "overflow": 0,
+      "font": [
+        {
+          "family": "Glob2 Bulgarian",
+          "status": "loaded"
+        }
+      ],
+      "family": "\"Glob2 Bulgarian\", \"DejaVu Sans\", Verdana, sans-serif"
+    },
+    "body": "Към съдържанието\nИгра в браузър\nИГРА\nНачало\nКласация\nИграчи\nМачове\nСЪЗДАВАНЕ\nКарти\nТерен и ресурси\nБиблиотека с ИИ\nСгради\nМузика\nЗа нас и помощ\nЕзик\nالعربية\nPortuguês brasileiro\nCatalà\nČeština\nDeutsch\nDansk\nEnglish\nEspañol\nEsperanto\nEuskara\nفارسی\nFrançais\nΕλληνικά\nMagyar\nItaliano\nNederlands\nPolski\nPortuguês europeu\nRomână\nРусский\nSlovenščina\nSlovenčina\nСрпски\nSuomi\nSvenska\nTürkçe\n繁體中文\n简体中文\nУкраїнська\nBahasa Indonesia\nTiếng Việt\n日本語\n한국어\nहिन्दी\nاردو\nKiswahili\nБългарски\nK\nKestrel\nИзход\nИграчи\n\nЗапознайте се с колониите. Намерете играч, разгледайте мачовете му или се запознайте със следващия си противник с ИИ.\n\nНамерете играч\nВсички\nХора\nAI\n\n12 играчи на тази страница\n\nA\nAna_M\nПреглед на профила и игрите\n→\nB\nBradley\nПреглед на профила и игрите\n→\nCabino\nРазгледайте рейтингите и мачовете\nИИ\n→\nCastor\nРазгледайте рейтингите и мачовете\nИИ\n→\nCortex\nРазгледайте рейтингите и мачовете\nИИ\n→\nEcono\nРазгледайте рейтингите и мачовете\nИИ\n→\nK\nKestrel\nПреглед на профила и игрите\n→\nMaxima\nРазгледайте рейтингите и мачовете\nИИ\n→\nM\nMirelle\nПреглед на профила и игрите\n→\nNicowar\nРазгледайте рейтингите и мачовете\nИИ\n→\nNumbi\nРазгледайте рейтингите и мачовете\nИИ\n→\nWarrush\nРазгледайте рейтингите и мачовете\nИИ\n→",
+    "english": [
+      "Cabino",
+      "Cortex",
+      "Econo",
+      "Maxima",
+      "Nicowar",
+      "Numbi",
+      "Warrush"
+    ],
+    "outside": [],
+    "screenshot": "desktop-players.png",
+    "errors": []
+  },
+  {
+    "mode": "desktop",
+    "route": "/leaderboard",
+    "heading": [
+      "Класация"
+    ],
+    "panels": [
+      "1 vs 1 ranked"
+    ],
+    "metrics": {
+      "lang": "bg",
+      "overflow": 0,
+      "font": [
+        {
+          "family": "Glob2 Bulgarian",
+          "status": "loaded"
+        }
+      ],
+      "family": "\"Glob2 Bulgarian\", \"DejaVu Sans\", Verdana, sans-serif"
+    },
+    "body": "Към съдържанието\nИгра в браузър\nИГРА\nНачало\nКласация\nИграчи\nМачове\nСЪЗДАВАНЕ\nКарти\nТерен и ресурси\nБиблиотека с ИИ\nСгради\nМузика\nЗа нас и помощ\nЕзик\nالعربية\nPortuguês brasileiro\nCatalà\nČeština\nDeutsch\nDansk\nEnglish\nEspañol\nEsperanto\nEuskara\nفارسی\nFrançais\nΕλληνικά\nMagyar\nItaliano\nNederlands\nPolski\nPortuguês europeu\nRomână\nРусский\nSlovenščina\nSlovenčina\nСрпски\nSuomi\nSvenska\nTürkçe\n繁體中文\n简体中文\nУкраїнська\nBahasa Indonesia\nTiếng Việt\n日本語\n한국어\nहिन्दी\nاردو\nKiswahili\nБългарски\nK\nKestrel\nИзход\nКласация\n\nИграчи и противници с ИИ, подредени по предпазлива оценка на рейтинга: тя се повишава, когато играта стане по-сигурна в уменията ви. Гостите не се класират.\n\n1 vs 1 ranked\n2 vs 2 ranked\nВсички\nХора\nAI\n1 vs 1 ranked\nСкриване на временните рейтинги\nУчастници в класацията\nРАНГ\tИГРАЧ\tРЕЙТИНГ\tИГРИ\tПРОЦЕНТ ПОБЕДИ\n1\t\nK\nKestrel\n1798\t41\t66%\n2\t\nNicowar\nИИ\n125 / 49 · abababab\n1733\t31\t48%\n3\t\nM\nMirelle\n1636\t23\t52%\n4\t\nB\nBradley\n1586\t8\t75%\n5\t\nMaxima\nИИ\n125 / 49 · abababab\n1521\t14\t36%\n6\t\nA\nAna_M\nвременен\n1418\t4\t75%\n\nРейтингите на ИИ са обвързани с версия на играта. Разгледайте профилите на играчите и ИИ, за да видите по-стари версии.",
+    "english": [
+      "Nicowar",
+      "Maxima"
+    ],
+    "outside": [],
+    "screenshot": "desktop-leaderboard.png",
+    "errors": []
+  },
+  {
+    "mode": "desktop",
+    "route": "/matches",
+    "heading": [
+      "Последни мачове"
+    ],
+    "panels": [],
+    "metrics": {
+      "lang": "bg",
+      "overflow": 0,
+      "font": [
+        {
+          "family": "Glob2 Bulgarian",
+          "status": "loaded"
+        }
+      ],
+      "family": "\"Glob2 Bulgarian\", \"DejaVu Sans\", Verdana, sans-serif"
+    },
+    "body": "Към съдържанието\nИгра в браузър\nИГРА\nНачало\nКласация\nИграчи\nМачове\nСЪЗДАВАНЕ\nКарти\nТерен и ресурси\nБиблиотека с ИИ\nСгради\nМузика\nЗа нас и помощ\nЕзик\nالعربية\nPortuguês brasileiro\nCatalà\nČeština\nDeutsch\nDansk\nEnglish\nEspañol\nEsperanto\nEuskara\nفارسی\nFrançais\nΕλληνικά\nMagyar\nItaliano\nNederlands\nPolski\nPortuguês europeu\nRomână\nРусский\nSlovenščina\nSlovenčina\nСрпски\nSuomi\nSvenska\nTürkçe\n繁體中文\n简体中文\nУкраїнська\nBahasa Indonesia\nTiếng Việt\n日本語\n한국어\nहिन्दी\nاردو\nKiswahili\nБългарски\nK\nKestrel\nИзход\nПоследни мачове\n\nБързи мачове и публични стаи, най-новите първо.\n\nВсички мачове\n1 vs 1 ranked\n2 vs 2 ranked\nСтаи\nBradley vs Kestrel\nEven Ground · днес 16:13\n1 vs 1 ranked\n11 мин\nпроверка…\nAna_M vs Guest-4821\nMarchland · вчера\nСтая\n17 мин\n✓ проверено\nBradley vs Mirelle\nEven Ground Classic · онзи ден\n1 vs 1 ranked\n18 мин\n✓ проверено\nKestrel vs Nicowar (AI)\nSymmetric Arena · преди 3 дни\n1 vs 1 ranked\n11 мин\n✓ проверено\nBradley vs Kestrel\nEven Ground Classic · преди 4 дни\n1 vs 1 ranked\n17 мин\n✓ проверено\nBradley vs Mirelle\nEven Ground Classic · преди 6 дни\n1 vs 1 ranked\n16 мин\n✓ проверено\nBradley vs Kestrel\nEven Ground Classic · 23.10.2026 г.\n1 vs 1 ranked\n15 мин\n✓ проверено\nBradley vs Mirelle\nEven Ground Classic · 21.10.2026 г.\n1 vs 1 ranked\n14 мин\n✓ проверено\nBradley vs Kestrel\nEven Ground Classic · 19.10.2026 г.\n1 vs 1 ranked\n12 мин\n✓ проверено\nBradley vs Mirelle\nEven Ground Classic · 17.10.2026 г.\n1 vs 1 ranked\n11 мин\n✓ проверено\nBradley vs Kestrel\nEven Ground Classic · 15.10.2026 г.\n1 vs 1 ranked\n10 мин\n✓ проверено",
+    "english": [],
+    "outside": [],
+    "screenshot": "desktop-matches.png",
+    "errors": []
+  },
+  {
+    "mode": "desktop",
+    "route": "/maps/47be9d50-be6c-490b-8bc0-b1b3e4d8ae95",
+    "heading": [
+      "Even Ground Classic"
+    ],
+    "panels": [
+      "Версии",
+      "Автори на персонализираното съдържание"
+    ],
+    "metrics": {
+      "lang": "bg",
+      "overflow": 0,
+      "font": [
+        {
+          "family": "Glob2 Bulgarian",
+          "status": "loaded"
+        }
+      ],
+      "family": "\"Glob2 Bulgarian\", \"DejaVu Sans\", Verdana, sans-serif"
+    },
+    "body": "Към съдържанието\nИгра в браузър\nИГРА\nНачало\nКласация\nИграчи\nМачове\nСЪЗДАВАНЕ\nКарти\nТерен и ресурси\nБиблиотека с ИИ\nСгради\nМузика\nЗа нас и помощ\nЕзик\nالعربية\nPortuguês brasileiro\nCatalà\nČeština\nDeutsch\nDansk\nEnglish\nEspañol\nEsperanto\nEuskara\nفارسی\nFrançais\nΕλληνικά\nMagyar\nItaliano\nNederlands\nPolski\nPortuguês europeu\nRomână\nРусский\nSlovenščina\nSlovenčina\nСрпски\nSuomi\nSvenska\nTürkçe\n繁體中文\n简体中文\nУкраїнська\nBahasa Indonesia\nTiếng Việt\n日本語\n한국어\nहिन्दी\nاردو\nKiswahili\nБългарски\nK\nKestrel\nИзход\nEven Ground Classic\nот Mirelle · актуализирано 31.10.2026 г. · ръчно изработен\nПлъзнете или използвайте стрелките, за да разгледате картата със свързани краища.\nНулиране на изгледа\nРазмер\n128×128\nОтбори\n2\nИзигравания\n8\nХаресвания\n1\n\nA mirrored 1 vs 1 map with fords in the middle.\n\nИгра на тази карта\nИзтегляне\n♥ Харесано\nСигнал\n\nИзберете локална персонализирана игра или мултиплейър стая с тази карта.\n\nВерсии\nВерсии на Even Ground Classic\nКАЧЕНО\tСТАТУС\tБЕЛЕЖКИ\tФАЙЛ\n31.10.2026 г.\tвалиден\t\tИзтегляне\nтази версия\nАвтори на персонализираното съдържание\nКачена версия на картата 31.10.2026 г.",
+    "english": [],
+    "outside": [],
+    "screenshot": "desktop-maps-47be9d50-be6c-490b-8bc0-b1b3e4d8ae95.png",
+    "errors": []
+  },
+  {
+    "mode": "desktop",
+    "route": "/players/96a83b6d-137d-4228-a72d-fe48c712114f",
+    "heading": [
+      "Kestrel"
+    ],
+    "panels": [
+      "Рейтинг",
+      "Последните 90 дни",
+      "Икономика (мач)",
+      "Мачове"
+    ],
+    "metrics": {
+      "lang": "bg",
+      "overflow": 0,
+      "font": [
+        {
+          "family": "Glob2 Bulgarian",
+          "status": "loaded"
+        }
+      ],
+      "family": "\"Glob2 Bulgarian\", \"DejaVu Sans\", Verdana, sans-serif"
+    },
+    "body": "Към съдържанието\nИгра в браузър\nИГРА\nНачало\nКласация\nИграчи\nМачове\nСЪЗДАВАНЕ\nКарти\nТерен и ресурси\nБиблиотека с ИИ\nСгради\nМузика\nЗа нас и помощ\nЕзик\nالعربية\nPortuguês brasileiro\nCatalà\nČeština\nDeutsch\nDansk\nEnglish\nEspañol\nEsperanto\nEuskara\nفارسی\nFrançais\nΕλληνικά\nMagyar\nItaliano\nNederlands\nPolski\nPortuguês europeu\nRomână\nРусский\nSlovenščina\nSlovenčina\nСрпски\nSuomi\nSvenska\nTürkçe\n繁體中文\n简体中文\nУкраїнська\nBahasa Indonesia\nTiếng Việt\n日本語\n한국어\nहिन्दी\nاردو\nKiswahili\nБългарски\nK\nKestrel\nИзход\nK\nKestrel\nРегистриран играч · играе от 1.09.2026 г.\n1 vs 1 ranked\n1798\n#1\n27 П · 14 З\nПроцент победи, 90 дни\n40%\n2 П · 3 З\nТипична игра\n12 мин\nмедианна продължителност\nНай-добър Карта\nEven Ground Classic\n1 П · 3 З\nРейтинг\nРейтинг след всеки мач с рейтинг\n1670\n1680\n1690\n1700\n16.10.2026 г.\n19.10.2026 г.\n21.10.2026 г.\n23.10.2026 г.\n26.10.2026 г.\nРейтинг след всеки мач с рейтинг\nx\t1 vs 1 ranked\n15.10.2026 г.\t1665\n19.10.2026 г.\t1665\n23.10.2026 г.\t1706\n27.10.2026 г.\t1665\nПоследните 90 дни\nПо опашка\nПроцент победи по опашка\n1 vs 1 ranked\t2–3\t40%\nПо карта\nПроцент победи по карта\nEven Ground Classic\t1–3\t25%\nЧастна или качена карта\t1–0\t100%\nПо генератор\nПроцент победи по генератор\nSymmetric Arena\t1–0\t100%\nИкономика (мач)\nЕдиници: последният проверен мач спрямо средното за последните мачове\n0\n20\n40\n60\n80\n0:00\n5:33\nТози мач\nСредната стойност на Kestrel\nЕдиници: последният проверен мач спрямо средното за последните мачове\nx\tТози мач\tСредната стойност на Kestrel\n0:00\t6\t7\n0:17\t8\t8\n0:34\t10\t10\n0:51\t12\t12\n1:08\t15\t14\n1:25\t17\t15\n1:42\t18\t17\n1:59\t20\t18\n2:17\t21\t18\n2:34\t22\t19\n2:51\t23\t20\n3:08\t24\t22\n3:25\t25\t23\n3:42\t26\t25\n3:59\t27\t27\n4:16\t29\t30\n4:33\t31\t32\n4:50\t33\t35\n5:07\t36\t38\n5:24\t40\t41\n5:41\t43\t43\n5:58\t46\t46\n6:15\t49\t47\n6:33\t52\t48\n6:50\t54\t49\n7:07\t55\t49\n7:24\t56\t49\n7:41\t56\t49\n7:58\t56\t49\n8:15\t55\t49\n8:32\t55\t50\n8:49\t55\t51\n9:06\t55\t53\n9:23\t56\t56\n9:40\t58\t59\n9:57\t61\t63\n10:14\t65\t70\n10:31\t69\t73\n10:49\t74\t77\n11:06\t78\t81\nСгради: последният проверен мач спрямо средното за последните мачове\n0\n5\n10\n15\n20\n0:00\n5:33\nТози мач\nСредната стойност на Kestrel\nСгради: последният проверен мач спрямо средното за последните мачове\nx\tТози мач\tСредната стойност на Kestrel\n0:00\t1\t1\n0:17\t1\t1\n0:34\t2\t2\n0:51\t2\t2\n1:08\t3\t3\n1:25\t3\t3\n1:42\t4\t4\n1:59\t4\t4\n2:17\t5\t5\n2:34\t5\t5\n2:51\t6\t6\n3:08\t6\t6\n3:25\t7\t7\n3:42\t7\t7\n3:59\t8\t8\n4:16\t8\t8\n4:33\t9\t8\n4:50\t9\t9\n5:07\t10\t9\n5:24\t10\t10\n5:41\t11\t10\n5:58\t11\t11\n6:15\t12\t11\n6:33\t12\t11\n6:50\t13\t12\n7:07\t13\t13\n7:24\t14\t13\n7:41\t14\t14\n7:58\t15\t14\n8:15\t15\t15\n8:32\t16\t15\n8:49\t16\t16\n9:06\t17\t16\n9:23\t17\t16\n9:40\t18\t17\n9:57\t18\t17\n10:14\t19\t19\n10:31\t19\t19\n10:49\t20\t19\n11:06\t20\t20\nМачове\nВсички мачове\n1 vs 1 ranked\n2 vs 2 ranked\nСтаи\n–\nсрещу Bradley\nEven Ground · днес 16:13\n1 vs 1 ranked\n11 мин\nпроверка…\nW\n(спечелен)\nсрещу Nicowar (AI)\nSymmetric Arena · преди 3 дни\n1 vs 1 ranked\n11 мин\n✓ проверено\nL\n(изгубен)\nсрещу Bradley\nEven Ground Classic · преди 4 дни\n1 vs 1 ranked\n17 мин\n−12\nW\n(спечелен)\nсрещу Bradley\nEven Ground Classic · 23.10.2026 г.\n1 vs 1 ranked\n15 мин\n+29\nL\n(изгубен)\nсрещу Bradley\nEven Ground Classic · 19.10.2026 г.\n1 vs 1 ranked\n12 мин\n−12\nL\n(изгубен)\nсрещу Bradley\nEven Ground Classic · 15.10.2026 г.\n1 vs 1 ranked\n10 мин\n−12",
+    "english": [],
+    "outside": [],
+    "screenshot": "desktop-players-96a83b6d-137d-4228-a72d-fe48c712114f.png",
+    "errors": []
+  },
+  {
+    "mode": "desktop",
+    "route": "/matches/712b528e-6c96-43a4-b762-29df3d770379",
+    "heading": [
+      "1 vs 1 ranked · Even Ground Classic"
+    ],
+    "panels": [
+      "Повторение",
+      "Облици на колонии",
+      "Хронология",
+      "Икономика спрямо средното за всеки играч",
+      "Крайна статистика",
+      "Проверка ✓ проверено",
+      "Връзка"
+    ],
+    "metrics": {
+      "lang": "bg",
+      "overflow": 0,
+      "font": [
+        {
+          "family": "Glob2 Bulgarian",
+          "status": "loaded"
+        }
+      ],
+      "family": "\"Glob2 Bulgarian\", \"DejaVu Sans\", Verdana, sans-serif"
+    },
+    "body": "Към съдържанието\nИгра в браузър\nИГРА\nНачало\nКласация\nИграчи\nМачове\nСЪЗДАВАНЕ\nКарти\nТерен и ресурси\nБиблиотека с ИИ\nСгради\nМузика\nЗа нас и помощ\nЕзик\nالعربية\nPortuguês brasileiro\nCatalà\nČeština\nDeutsch\nDansk\nEnglish\nEspañol\nEsperanto\nEuskara\nفارسی\nFrançais\nΕλληνικά\nMagyar\nItaliano\nNederlands\nPolski\nPortuguês europeu\nRomână\nРусский\nSlovenščina\nSlovenčina\nСрпски\nSuomi\nSvenska\nTürkçe\n繁體中文\n简体中文\nУкраїнська\nBahasa Indonesia\nTiếng Việt\n日本語\n한국어\nहिन्दी\nاردو\nKiswahili\nБългарски\nK\nKestrel\nИзход\n1 vs 1 ranked · Even Ground Classic\n29.10.2026 г., 17:37 · 18 мин · с рейтинг · 128×128\n✓ проверено\nСтраница на картата\nИЗГУБЕН\nBradley\nПрестиж 61\nПОБЕДИТЕЛ\nMirelle\nПрестиж 215\nПовторение\n\nПровереното повторение на сървъра. Отворете го в играта (Зареждане на играта → Повторения) или го гледайте тук.\n\nГледане в браузър\nИзтегляне на повторение\nИГРАЧ\tРЕЗУЛТАТ\tРЕЙТИНГ\tПРОМЯНА\n Bradley\tИзгубен\t1615 → 1585\t−29\n Mirelle · 1 прекъсване на връзкатаотказани заповеди\tСпечелено\t1677 → 1706\t+29\nОблици на колонии\nКолония 1\nДокладване на облик\n\nХронология\nЕдиници\n0\n50\n100\n150\n0:00\n11:07\nBradley\nMirelle\nЕдиници\nx\tBradley\tMirelle\n0:00\t6\t7\n0:17\t8\t9\n0:34\t10\t12\n0:51\t11\t15\n1:08\t13\t17\n1:25\t15\t19\n1:42\t16\t21\n1:59\t17\t23\n2:17\t18\t24\n2:34\t19\t26\n2:51\t20\t27\n3:08\t21\t29\n3:25\t21\t32\n3:42\t22\t35\n3:59\t23\t38\n4:16\t24\t42\n4:33\t26\t46\n4:50\t28\t50\n5:07\t31\t55\n5:24\t34\t59\n5:41\t36\t62\n5:58\t39\t65\n6:15\t42\t67\n6:33\t44\t68\n6:50\t45\t69\n7:07\t46\t69\n7:24\t47\t68\n7:41\t47\t68\n7:58\t47\t68\n8:15\t46\t69\n8:32\t46\t71\n8:49\t46\t73\n9:06\t46\t77\n9:23\t47\t82\n9:40\t49\t88\n9:57\t51\t94\n10:14\t54\t100\n10:31\t58\t106\n10:49\t61\t111\n11:06\t65\t115\n11:23\t69\t118\n11:40\t72\t119\n11:57\t74\t119\n12:14\t76\t118\n12:31\t77\t116\n12:48\t76\t114\n13:05\t75\t112\n13:22\t74\t111\n13:39\t73\t111\n13:56\t71\t112\n14:13\t70\t116\n14:30\t70\t121\n14:47\t71\t127\n15:05\t73\t134\n15:22\t76\t142\n15:39\t80\t150\n15:56\t85\t158\n16:13\t90\t164\n16:30\t95\t168\n16:47\t99\t170\n17:04\t103\t170\n17:21\t105\t169\n17:38\t106\t166\n17:55\t106\t162\nСгради\n0\n10\n20\n30\n40\n0:00\n11:07\nBradley\nMirelle\nСгради\nx\tBradley\tMirelle\n0:00\t1\t1\n0:17\t1\t2\n0:34\t2\t2\n0:51\t2\t3\n1:08\t3\t4\n1:25\t3\t4\n1:42\t3\t5\n1:59\t4\t6\n2:17\t4\t7\n2:34\t5\t7\n2:51\t5\t8\n3:08\t5\t9\n3:25\t6\t9\n3:42\t6\t10\n3:59\t7\t11\n4:16\t7\t11\n4:33\t7\t12\n4:50\t8\t13\n5:07\t8\t14\n5:24\t9\t14\n5:41\t9\t15\n5:58\t10\t16\n6:15\t10\t16\n6:33\t10\t17\n6:50\t11\t18\n7:07\t11\t18\n7:24\t12\t19\n7:41\t12\t20\n7:58\t12\t21\n8:15\t13\t21\n8:32\t13\t22\n8:49\t14\t23\n9:06\t14\t23\n9:23\t14\t24\n9:40\t15\t25\n9:57\t15\t25\n10:14\t16\t26\n10:31\t16\t27\n10:49\t16\t28\n11:06\t17\t28\n11:23\t17\t29\n11:40\t18\t30\n11:57\t18\t30\n12:14\t18\t31\n12:31\t19\t32\n12:48\t19\t32\n13:05\t20\t33\n13:22\t20\t34\n13:39\t20\t34\n13:56\t21\t35\n14:13\t21\t36\n14:30\t22\t37\n14:47\t22\t37\n15:05\t22\t38\n15:22\t23\t39\n15:39\t23\t39\n15:56\t24\t40\n16:13\t24\t41\n16:30\t24\t41\n16:47\t25\t42\n17:04\t25\t43\n17:21\t26\t44\n17:38\t26\t44\n17:55\t27\t45\nПрестиж\n0\n100\n200\n0:00\n11:07\nBradley\nMirelle\nПрестиж\nx\tBradley\tMirelle\n0:00\t0\t0\n0:17\t0\t0\n0:34\t0\t0\n0:51\t0\t1\n1:08\t1\t1\n1:25\t1\t2\n1:42\t1\t3\n1:59\t2\t3\n2:17\t3\t4\n2:34\t3\t6\n2:51\t4\t7\n3:08\t5\t8\n3:25\t6\t10\n3:42\t7\t12\n3:59\t8\t14\n4:16\t9\t16\n4:33\t10\t18\n4:50\t12\t20\n5:07\t13\t23\n5:24\t15\t25\n5:41\t16\t28\n5:58\t18\t31\n6:15\t20\t34\n6:33\t21\t37\n6:50\t23\t40\n7:07\t25\t44\n7:24\t27\t47\n7:41\t30\t51\n7:58\t32\t55\n8:15\t34\t59\n8:32\t36\t63\n8:49\t39\t67\n9:06\t41\t71\n9:23\t44\t76\n9:40\t47\t81\n9:57\t50\t85\n10:14\t52\t90\n10:31\t55\t95\n10:49\t58\t101\n11:06\t62\t106\n11:23\t65\t112\n11:40\t68\t117\n11:57\t71\t123\n12:14\t75\t129\n12:31\t78\t135\n12:48\t82\t141\n13:05\t86\t148\n13:22\t89\t154\n13:39\t93\t161\n13:56\t97\t167\n14:13\t101\t174\n14:30\t105\t181\n14:47\t110\t189\n15:05\t114\t196\n15:22\t118\t203\n15:39\t123\t211\n15:56\t127\t219\n16:13\t132\t227\n16:30\t136\t235\n16:47\t141\t243\n17:04\t146\t251\n17:21\t151\t260\n17:38\t156\t268\n17:55\t161\t277\nИкономика спрямо средното за всеки играч\nBradley\nMirelle\nBradley: единици в този мач и средно за последните мачове\n0\n50\n100\n0:00\n2:47\n5:33\n8:20\n11:07\n13:53\n16:40\nТози мач\nСредната стойност на Bradley\nBradley: единици в този мач и средно за последните мачове\nx\tТози мач\tСредната стойност на Bradley\n0:00\t6\t6\n0:17\t8\t8\n0:34\t10\t11\n0:51\t11\t13\n1:08\t13\t15\n1:25\t15\t17\n1:42\t16\t19\n1:59\t17\t21\n2:17\t18\t22\n2:34\t19\t23\n2:51\t20\t25\n3:08\t21\t25\n3:25\t21\t26\n3:42\t22\t27\n3:59\t23\t29\n4:16\t24\t30\n4:33\t26\t33\n4:50\t28\t36\n5:07\t31\t39\n5:24\t34\t43\n5:41\t36\t46\n5:58\t39\t50\n6:15\t42\t53\n6:33\t44\t56\n6:50\t45\t58\n7:07\t46\t59\n7:24\t47\t60\n7:41\t47\t60\n7:58\t47\t60\n8:15\t46\t59\n8:32\t46\t59\n8:49\t46\t59\n9:06\t46\t59\n9:23\t47\t61\n9:40\t49\t63\n9:57\t51\t66\n10:14\t54\t69\n10:31\t58\t74\n10:49\t61\t79\n11:06\t65\t84\n11:23\t69\t92\n11:40\t72\t96\n11:57\t74\t99\n12:14\t76\t102\n12:31\t77\t102\n12:48\t76\t101\n13:05\t75\t100\n13:22\t74\t98\n13:39\t73\t94\n13:56\t71\t92\n14:13\t70\t91\n14:30\t70\t91\n14:47\t71\t99\n15:05\t73\t102\n15:22\t76\t106\n15:39\t80\t112\n15:56\t85\t111\n16:13\t90\t118\n16:30\t95\t124\n16:47\t99\t130\n17:04\t103\t103\n17:21\t105\t105\n17:38\t106\t106\n17:55\t106\t106\nКрайна статистика\nСТАТИСТИКА\n\t BRADLEY\t MIRELLE\nПрестиж\t61\t215\nГлобули\t97\t147\nВоини\t80\t30\nСгради\t25\t42\nПодробности за проверка и връзка",
+    "english": [],
+    "outside": [],
+    "screenshot": "desktop-matches-712b528e-6c96-43a4-b762-29df3d770379.png",
+    "errors": []
+  },
+  {
+    "mode": "desktop",
+    "route": "/matches/ea492b99-4ce8-4ab9-98be-f506c33a7768",
+    "heading": [
+      "1 vs 1 ranked · Even Ground"
+    ],
+    "panels": [
+      "Повторение",
+      "Хронология",
+      "Проверка проверка…"
+    ],
+    "metrics": {
+      "lang": "bg",
+      "overflow": 0,
+      "font": [
+        {
+          "family": "Glob2 Bulgarian",
+          "status": "loaded"
+        }
+      ],
+      "family": "\"Glob2 Bulgarian\", \"DejaVu Sans\", Verdana, sans-serif"
+    },
+    "body": "Към съдържанието\nИгра в браузър\nИГРА\nНачало\nКласация\nИграчи\nМачове\nСЪЗДАВАНЕ\nКарти\nТерен и ресурси\nБиблиотека с ИИ\nСгради\nМузика\nЗа нас и помощ\nЕзик\nالعربية\nPortuguês brasileiro\nCatalà\nČeština\nDeutsch\nDansk\nEnglish\nEspañol\nEsperanto\nEuskara\nفارسی\nFrançais\nΕλληνικά\nMagyar\nItaliano\nNederlands\nPolski\nPortuguês europeu\nRomână\nРусский\nSlovenščina\nSlovenčina\nСрпски\nSuomi\nSvenska\nTürkçe\n繁體中文\n简体中文\nУкраїнська\nBahasa Indonesia\nTiếng Việt\n日本語\n한국어\nहिन्दी\nاردو\nKiswahili\nБългарски\nK\nKestrel\nИзход\n1 vs 1 ranked · Even Ground\n31.10.2026 г., 16:13 · 11 мин · с рейтинг\nпроверка…\nОТБОР\nBradley\nОТБОР\nKestrel\nПовторение\n\nПовторението е достъпно, след като сървърът провери мача.\n\nИГРАЧ\tРЕЗУЛТАТ\tРЕЙТИНГ\tПРОМЯНА\n Bradley\t–\t–\t\n Kestrel\t–\t–\t\nХронология\n\nГрафиките се появяват, след като сървърът е преиграл мача.\n\nПодробности за проверка и връзка",
+    "english": [],
+    "outside": [],
+    "screenshot": "desktop-matches-ea492b99-4ce8-4ab9-98be-f506c33a7768.png",
+    "errors": []
+  },
+  {
+    "mode": "desktop",
+    "route": "/account",
+    "heading": [
+      "Вашият акаунт"
+    ],
+    "panels": [
+      "Снимка на профила",
+      "Методи за влизане",
+      "Изтегляне на моите данни",
+      "Изтриване на акаунта ми"
+    ],
+    "metrics": {
+      "lang": "bg",
+      "overflow": 0,
+      "font": [
+        {
+          "family": "Glob2 Bulgarian",
+          "status": "loaded"
+        }
+      ],
+      "family": "\"Glob2 Bulgarian\", \"DejaVu Sans\", Verdana, sans-serif"
+    },
+    "body": "Към съдържанието\nИгра в браузър\nИГРА\nНачало\nКласация\nИграчи\nМачове\nСЪЗДАВАНЕ\nКарти\nТерен и ресурси\nБиблиотека с ИИ\nСгради\nМузика\nЗа нас и помощ\nЕзик\nالعربية\nPortuguês brasileiro\nCatalà\nČeština\nDeutsch\nDansk\nEnglish\nEspañol\nEsperanto\nEuskara\nفارسی\nFrançais\nΕλληνικά\nMagyar\nItaliano\nNederlands\nPolski\nPortuguês europeu\nRomână\nРусский\nSlovenščina\nSlovenčina\nСрпски\nSuomi\nSvenska\nTürkçe\n繁體中文\n简体中文\nУкраїнська\nBahasa Indonesia\nTiếng Việt\n日本語\n한국어\nहिन्दी\nاردو\nKiswahili\nБългарски\nK\nKestrel\nИзход\nВашият акаунт\n\nKestrel · Регистриран от 1.09.2026 г.\n\nВашият профил\nСнимка на профила\nK\nKestrel\n\nGravatar, когато е наличен, в противен случай инициали\n\nИзползвайте снимка от вашето устройство или Gravatar, свързан със свързан имейл адрес. Вашата снимка е публична.\n\nКачване на снимка\nИзползване на Gravatar\nИзползване на инициали\n\nНеподвижна снимка JPEG, PNG или WebP · до 10 MiB и 25 мегапиксела. Избирането на Gravatar или инициали премахва качената снимка.\n\nМетоди за влизане\n\nНяма: този акаунт за гост се намира на устройството, което го е създало.\n\nИзтегляне на моите данни\n\nJSON файл с всичко, което този сървър съхранява за акаунта ви: профил, методи за вход (без пароли или ключове), мачове, рейтинги, стаи и чат, търсене на мачове, карти и записи за модериране.\n\nИзтегляне на моите данни\nИзтриване на акаунта ми\n\nТова не може да бъде отменено. Изтриване на акаунта ви:\n\nпрекратява сесиите ви на всички устройства и премахва методите ви за вход и имейл адреса;\nзамества името ви с „Изтрит играч“ в миналите ви мачове, чата и записите;\nизтрива вашите карти, харесвания, качвания и мястото ви в класациите.\n\nМачовете, които сте играли, остават в историята на другите играчи, а техните файлове с повторения все още съдържат името, което сте имали в играта.\n\nВъведете точно показваното си име, за да потвърдите.\nKestrel\nОкончателно изтриване на акаунта ми",
+    "english": [],
+    "outside": [],
+    "screenshot": "desktop-account.png",
+    "errors": []
+  },
+  {
+    "mode": "desktop",
+    "route": "/sets/new",
+    "heading": [
+      "Untitled set"
+    ],
+    "panels": [
+      "Листове със спрайтове",
+      "Проверка и публикуване",
+      "Публикуване на редакция unsaved"
+    ],
+    "metrics": {
+      "lang": "bg",
+      "overflow": 0,
+      "font": [
+        {
+          "family": "Glob2 Bulgarian",
+          "status": "loaded"
+        }
+      ],
+      "family": "\"Glob2 Bulgarian\", \"DejaVu Sans\", Verdana, sans-serif"
+    },
+    "body": "Към съдържанието\nИгра в браузър\nИГРА\nНачало\nКласация\nИграчи\nМачове\nСЪЗДАВАНЕ\nКарти\nТерен и ресурси\nБиблиотека с ИИ\nСгради\nМузика\nЗа нас и помощ\nЕзик\nالعربية\nPortuguês brasileiro\nCatalà\nČeština\nDeutsch\nDansk\nEnglish\nEspañol\nEsperanto\nEuskara\nفارسی\nFrançais\nΕλληνικά\nMagyar\nItaliano\nNederlands\nPolski\nPortuguês europeu\nRomână\nРусский\nSlovenščina\nSlovenčina\nСрпски\nSuomi\nSvenska\nTürkçe\n繁體中文\n简体中文\nУкраїнська\nBahasa Indonesia\nTiếng Việt\n日本語\n한국어\nहिन्दी\nاردو\nKiswahili\nБългарски\nK\nKestrel\nИзход\nUntitled set\n\nНов комплект · Персонализирани графични елементи и свойства на геймплея\n\nМоите комплекти\nЗаглавие\nОписание\nЕтикети\nЛиценз\nCC BY 4.0 — изисква се посочване на автор\nCC0 — обществено достояние\nПосочване на автора\nДопълнителни приноси и посочване на източника\nТерен\nРесурси\nНачало с готова настройка\nwater\nsand\ngrass\nice\nroad\nboulders\nhedge\nthicket\nridge_rock\noutcrop\ndirt\nclay\ngravel\nflower_meadow\nmud\nmarsh\ndeep_snow\nscree\ndirt_track\nboardwalk\nlava\nember_field\nloam\nmoss\nspring_meadow\ndeep_water\ndark_water\nvoid_hole\nchasm\nДобавяне на terrain\n\nДобавете терен или ресурс, за да започнете. Вградените предварително зададени настройки предоставят свойства, без да копирате техните изображения във вашия комплект.\n\nЛистове със спрайтове\nШирина на кадъра\nВисочина на кадъра\n\nКадрите на терените са 32×32. Кадрите на ресурсите и декора могат да бъдат до 64×64. Качете отново същия PNG с нови размери, за да замените мрежата от кадри; след това проверете съответствията на кадрите.\n\nКачване на PNG\nПреглед на листа\nИзберете лист…\nПреглед на играта\nПреглед на текущите промени\n\nПроверка и публикуване\n\nПроверките валидират свойствата на геймплея, границите на изображенията, съответствията на кадрите и изобразяването чрез игровия двигател. Те не установяват баланс на картата.\n\nЗапазване на чернова\nИзвършване на проверки и предварителен преглед\nПреглед и публикуване\n\nЗапазете и изпълнете проверки на текущата редакция преди публикуване.",
+    "english": [],
+    "outside": [],
+    "screenshot": "desktop-sets-new.png",
+    "errors": []
+  },
+  {
+    "mode": "desktop",
+    "route": "/ai-studio",
+    "heading": [
+      "Не е налично"
+    ],
+    "panels": [],
+    "metrics": {
+      "lang": "bg",
+      "overflow": 0,
+      "font": [
+        {
+          "family": "Glob2 Bulgarian",
+          "status": "loaded"
+        }
+      ],
+      "family": "\"Glob2 Bulgarian\", \"DejaVu Sans\", Verdana, sans-serif"
+    },
+    "body": "Към съдържанието\nИгра в браузър\nИГРА\nНачало\nКласация\nИграчи\nМачове\nСЪЗДАВАНЕ\nКарти\nТерен и ресурси\nБиблиотека с ИИ\nСгради\nМузика\nЗа нас и помощ\nЕзик\nالعربية\nPortuguês brasileiro\nCatalà\nČeština\nDeutsch\nDansk\nEnglish\nEspañol\nEsperanto\nEuskara\nفارسی\nFrançais\nΕλληνικά\nMagyar\nItaliano\nNederlands\nPolski\nPortuguês europeu\nRomână\nРусский\nSlovenščina\nSlovenčina\nСрпски\nSuomi\nSvenska\nTürkçe\n繁體中文\n简体中文\nУкраїнська\nBahasa Indonesia\nTiếng Việt\n日本語\n한국어\nहिन्दी\nاردو\nKiswahili\nБългарски\nK\nKestrel\nИзход\nНе е налично",
+    "english": [],
+    "outside": [],
+    "screenshot": "desktop-ai-studio.png",
+    "errors": []
+  },
+  {
+    "mode": "desktop",
+    "route": "/building-studio",
+    "heading": [
+      "Студио за сгради"
+    ],
+    "panels": [],
+    "metrics": {
+      "lang": "bg",
+      "overflow": 0,
+      "font": [
+        {
+          "family": "Glob2 Bulgarian",
+          "status": "loaded"
+        }
+      ],
+      "family": "\"Glob2 Bulgarian\", \"DejaVu Sans\", Verdana, sans-serif"
+    },
+    "body": "Към съдържанието\nИгра в браузър\nИГРА\nНачало\nКласация\nИграчи\nМачове\nСЪЗДАВАНЕ\nКарти\nТерен и ресурси\nБиблиотека с ИИ\nСгради\nМузика\nЗа нас и помощ\nЕзик\nالعربية\nPortuguês brasileiro\nCatalà\nČeština\nDeutsch\nDansk\nEnglish\nEspañol\nEsperanto\nEuskara\nفارسی\nFrançais\nΕλληνικά\nMagyar\nItaliano\nNederlands\nPolski\nPortuguês europeu\nRomână\nРусский\nSlovenščina\nSlovenčina\nСрпски\nSuomi\nSvenska\nTürkçe\n繁體中文\n简体中文\nУкраїнська\nBahasa Indonesia\nTiếng Việt\n日本語\n한국어\nहिन्दी\nاردو\nKiswahili\nБългарски\nK\nKestrel\nИзход\nСтудио за сгради\n\nСъздайте сграда или семейство за подобрения с персонализирани графични елементи.\n\nЧерновите са частни. Публикувайте запазено семейство, за да го споделите в библиотека със сгради.\n\nСъздайте семейство\nNew building family",
+    "english": [
+      "New building family"
+    ],
+    "outside": [],
+    "screenshot": "desktop-building-studio.png",
+    "errors": []
+  },
+  {
+    "mode": "desktop",
+    "route": "/map-studio",
+    "heading": [
+      "Не е налично"
+    ],
+    "panels": [],
+    "metrics": {
+      "lang": "bg",
+      "overflow": 0,
+      "font": [
+        {
+          "family": "Glob2 Bulgarian",
+          "status": "loaded"
+        }
+      ],
+      "family": "\"Glob2 Bulgarian\", \"DejaVu Sans\", Verdana, sans-serif"
+    },
+    "body": "Към съдържанието\nИгра в браузър\nИГРА\nНачало\nКласация\nИграчи\nМачове\nСЪЗДАВАНЕ\nКарти\nТерен и ресурси\nБиблиотека с ИИ\nСгради\nМузика\nЗа нас и помощ\nЕзик\nالعربية\nPortuguês brasileiro\nCatalà\nČeština\nDeutsch\nDansk\nEnglish\nEspañol\nEsperanto\nEuskara\nفارسی\nFrançais\nΕλληνικά\nMagyar\nItaliano\nNederlands\nPolski\nPortuguês europeu\nRomână\nРусский\nSlovenščina\nSlovenčina\nСрпски\nSuomi\nSvenska\nTürkçe\n繁體中文\n简体中文\nУкраїнська\nBahasa Indonesia\nTiếng Việt\n日本語\n한국어\nहिन्दी\nاردو\nKiswahili\nБългарски\nK\nKestrel\nИзход\nНе е налично",
+    "english": [],
+    "outside": [],
+    "screenshot": "desktop-map-studio.png",
+    "errors": []
+  },
+  {
+    "mode": "desktop",
+    "route": "/music-studio",
+    "heading": [
+      "Не е налично"
+    ],
+    "panels": [],
+    "metrics": {
+      "lang": "bg",
+      "overflow": 0,
+      "font": [
+        {
+          "family": "Glob2 Bulgarian",
+          "status": "loaded"
+        }
+      ],
+      "family": "\"Glob2 Bulgarian\", \"DejaVu Sans\", Verdana, sans-serif"
+    },
+    "body": "Към съдържанието\nИгра в браузър\nИГРА\nНачало\nКласация\nИграчи\nМачове\nСЪЗДАВАНЕ\nКарти\nТерен и ресурси\nБиблиотека с ИИ\nСгради\nМузика\nЗа нас и помощ\nЕзик\nالعربية\nPortuguês brasileiro\nCatalà\nČeština\nDeutsch\nDansk\nEnglish\nEspañol\nEsperanto\nEuskara\nفارسی\nFrançais\nΕλληνικά\nMagyar\nItaliano\nNederlands\nPolski\nPortuguês europeu\nRomână\nРусский\nSlovenščina\nSlovenčina\nСрпски\nSuomi\nSvenska\nTürkçe\n繁體中文\n简体中文\nУкраїнська\nBahasa Indonesia\nTiếng Việt\n日本語\n한국어\nहिन्दी\nاردو\nKiswahili\nБългарски\nK\nKestrel\nИзход\nНе е налично",
+    "english": [],
+    "outside": [],
+    "screenshot": "desktop-music-studio.png",
+    "errors": []
+  },
+  {
+    "mode": "desktop",
+    "route": "/skins",
+    "heading": [
+      "Не е налично"
+    ],
+    "panels": [],
+    "metrics": {
+      "lang": "bg",
+      "overflow": 0,
+      "font": [
+        {
+          "family": "Glob2 Bulgarian",
+          "status": "loaded"
+        }
+      ],
+      "family": "\"Glob2 Bulgarian\", \"DejaVu Sans\", Verdana, sans-serif"
+    },
+    "body": "Към съдържанието\nИгра в браузър\nИГРА\nНачало\nКласация\nИграчи\nМачове\nСЪЗДАВАНЕ\nКарти\nТерен и ресурси\nБиблиотека с ИИ\nСгради\nМузика\nЗа нас и помощ\nЕзик\nالعربية\nPortuguês brasileiro\nCatalà\nČeština\nDeutsch\nDansk\nEnglish\nEspañol\nEsperanto\nEuskara\nفارسی\nFrançais\nΕλληνικά\nMagyar\nItaliano\nNederlands\nPolski\nPortuguês europeu\nRomână\nРусский\nSlovenščina\nSlovenčina\nСрпски\nSuomi\nSvenska\nTürkçe\n繁體中文\n简体中文\nУкраїнська\nBahasa Indonesia\nTiếng Việt\n日本語\n한국어\nहिन्दी\nاردو\nKiswahili\nБългарски\nK\nKestrel\nИзход\nНе е налично",
+    "english": [],
+    "outside": [],
+    "screenshot": "desktop-skins.png",
+    "errors": []
+  },
+  {
+    "mode": "desktop",
+    "route": "/j/GLOBJOIN",
+    "heading": [
+      "Поканени сте"
+    ],
+    "panels": [],
+    "metrics": {
+      "lang": "bg",
+      "overflow": 0,
+      "font": [
+        {
+          "family": "Glob2 Bulgarian",
+          "status": "loaded"
+        }
+      ],
+      "family": "\"Glob2 Bulgarian\", \"DejaVu Sans\", Verdana, sans-serif"
+    },
+    "body": "Поканени сте\n\nПОКАНА ЗА СТАЯ\n\nSaturday night colony\n\nMirelle ви покани в стаята си в Globulation 2 на Glob2 Online (test).\n\nИгра в браузър\nОтваряне в приложението Globulation 2\n\nСамо ако сте инсталирали играта на това устройство. Няма приложение? Игра във вашия браузър; няма нужда от инсталиране.\n\nВече сте в играта? Изберете Игра онлайн, тогава Присъединяване чрез код, и въведете:\n\nGLOBJOIN\n\nGlobulation 2 е свободен софтуер (GPL 3).",
+    "english": [],
+    "outside": [],
+    "screenshot": "desktop-j-GLOBJOIN.png",
+    "errors": []
+  },
+  {
+    "mode": "phone",
+    "route": "/maps",
+    "heading": [
+      "Карти"
+    ],
+    "panels": [],
+    "metrics": {
+      "lang": "bg",
+      "overflow": 0,
+      "font": [
+        {
+          "family": "Glob2 Bulgarian",
+          "status": "loaded"
+        }
+      ],
+      "family": "\"Glob2 Bulgarian\", \"DejaVu Sans\", Verdana, sans-serif"
+    },
+    "body": "Към съдържанието\nЗа нас и помощ\nЕзик\nالعربية\nPortuguês brasileiro\nCatalà\nČeština\nDeutsch\nDansk\nEnglish\nEspañol\nEsperanto\nEuskara\nفارسی\nFrançais\nΕλληνικά\nMagyar\nItaliano\nNederlands\nPolski\nPortuguês europeu\nRomână\nРусский\nSlovenščina\nSlovenčina\nСрпски\nSuomi\nSvenska\nTürkçe\n繁體中文\n简体中文\nУкраїнська\nBahasa Indonesia\nTiếng Việt\n日本語\n한국어\nहिन्दी\nاردو\nKiswahili\nБългарски\nИзход\nКарти\n\nКарти, споделени от играчи. Стаите използват конкретна версия, така че всички зареждат един и същ файл.\n\nКачване на карта\nРазглеждане\nМоите карти\nКарти · Генератори\nТърсене на карти\nОтбори\nВсякакви отбори\n2 отбора\n3 отбора\n4 отбора\n5 отбора\n6 отбора\n8 отбора\n12 отбора\nСортиране\nНай-нови\nНай-харесвани\nMost played\nНай-изтегляни\nОще филтри\n\nРезултати: 7\n\nEven Ground Classic\n128×128 · 2 отбора · ♥ 1\nхаресвания\nIsles of Plenty\n128×128 · 4 отбора · ♥ 14\nхаресвания\nCanal Country\n128×128 · 4 отбора · ♥ 9\nхаресвания\nHoneycomb Isle\n128×128 · 4 отбора · ♥ 6\nхаресвания\nCrater Lakes\n128×128 · 4 отбора · ♥ 4\nхаресвания\nLong River\n128×128 · 4 отбора · ♥ 2\nхаресвания\nSymmetric Arena\n128×128 · 4 отбора · ♥ 0\nхаресвания",
+    "english": [],
+    "outside": [],
+    "screenshot": "phone-maps.png",
+    "errors": []
+  },
+  {
+    "mode": "phone",
+    "route": "/sets",
+    "heading": [
+      "Комплекти с терени и ресурси"
+    ],
+    "panels": [],
+    "metrics": {
+      "lang": "bg",
+      "overflow": 0,
+      "font": [
+        {
+          "family": "Glob2 Bulgarian",
+          "status": "loaded"
+        }
+      ],
+      "family": "\"Glob2 Bulgarian\", \"DejaVu Sans\", Verdana, sans-serif"
+    },
+    "body": "Към съдържанието\nЗа нас и помощ\nЕзик\nالعربية\nPortuguês brasileiro\nCatalà\nČeština\nDeutsch\nDansk\nEnglish\nEspañol\nEsperanto\nEuskara\nفارسی\nFrançais\nΕλληνικά\nMagyar\nItaliano\nNederlands\nPolski\nPortuguês europeu\nRomână\nРусский\nSlovenščina\nSlovenčina\nСрпски\nSuomi\nSvenska\nTürkçe\n繁體中文\n简体中文\nУкраїнська\nBahasa Indonesia\nTiếng Việt\n日本語\n한국어\nहिन्दी\nاردو\nKiswahili\nБългарски\nИзход\nКомплекти с терени и ресурси\n\nИзградете цялостен свят с персонализирани терени, ресурси и графика.\n\nСъздаване на набор\nРазглеждане\nМоите комплекти\nТърсене\nСъдържание\nВсички комплекти\nТерен\nРесурси\nИ двете\nЛиценз\nВсички лицензи\nCC0\nCC BY\nСортиране\nНай-нови\nНаскоро актуализирано\nНай-харесвани\nНай-изтегляни\nНулиране на филтрите\n\nРезултати: 0\n\nНе са намерени комплекти. Опитайте друго търсене или създайте първия.\nСъздаване на набор",
+    "english": [],
+    "outside": [],
+    "screenshot": "phone-sets.png",
+    "errors": []
+  },
+  {
+    "mode": "phone",
+    "route": "/ais",
+    "heading": [
+      "Библиотека с ИИ"
+    ],
+    "panels": [],
+    "metrics": {
+      "lang": "bg",
+      "overflow": 0,
+      "font": [
+        {
+          "family": "Glob2 Bulgarian",
+          "status": "loaded"
+        }
+      ],
+      "family": "\"Glob2 Bulgarian\", \"DejaVu Sans\", Verdana, sans-serif"
+    },
+    "body": "Към съдържанието\nЗа нас и помощ\nЕзик\nالعربية\nPortuguês brasileiro\nCatalà\nČeština\nDeutsch\nDansk\nEnglish\nEspañol\nEsperanto\nEuskara\nفارسی\nFrançais\nΕλληνικά\nMagyar\nItaliano\nNederlands\nPolski\nPortuguês europeu\nRomână\nРусский\nSlovenščina\nSlovenčina\nСрпски\nSuomi\nSvenska\nTürkçe\n繁體中文\n简体中文\nУкраїнська\nBahasa Indonesia\nTiếng Việt\n日本語\n한국어\nहिन्दी\nاردو\nKiswahili\nБългарски\nИзход\nБиблиотека с ИИ\n\nОткрийте нов опонент. Намерете нов начин на игра.\n\nСподелете вашия ИИ\nРазглеждане\nЛюбими\nМоите ИИ\nКак работят ИИ\n+\n\nИнсталирайте ИИ от общността за локални игри. Версиите работят офлайн. Изпълнявайте само код от автори, на които имате доверие.\n\nРазбрах\nТърсене на ИИ\nСортиране\nНай-харесвани\nНай-нови\nНаскоро актуализирано\nНай-изтегляни\nНулиране на филтрите\nBalanced\nRush\nDefensive\nEconomy\nExpansion\nExperimental\nBeginner-friendly\n\nРезултати: 0\n\nОформя се нова библиотека. Споделете първия ИИ.\nСподелете вашия ИИ",
+    "english": [
+      "Balanced"
+    ],
+    "outside": [],
+    "screenshot": "phone-ais.png",
+    "errors": []
+  },
+  {
+    "mode": "phone",
+    "route": "/buildings",
+    "heading": [
+      "Библиотека със сгради"
+    ],
+    "panels": [
+      "Community kitchen"
+    ],
+    "metrics": {
+      "lang": "bg",
+      "overflow": 0,
+      "font": [
+        {
+          "family": "Glob2 Bulgarian",
+          "status": "loaded"
+        }
+      ],
+      "family": "\"Glob2 Bulgarian\", \"DejaVu Sans\", Verdana, sans-serif"
+    },
+    "body": "Към съдържанието\nЗа нас и помощ\nЕзик\nالعربية\nPortuguês brasileiro\nCatalà\nČeština\nDeutsch\nDansk\nEnglish\nEspañol\nEsperanto\nEuskara\nفارسی\nFrançais\nΕλληνικά\nMagyar\nItaliano\nNederlands\nPolski\nPortuguês europeu\nRomână\nРусский\nSlovenščina\nSlovenčina\nСрпски\nSuomi\nSvenska\nTürkçe\n繁體中文\n简体中文\nУкраїнська\nBahasa Indonesia\nTiếng Việt\n日本語\n한국어\nहिन्दी\nاردو\nKiswahili\nБългарски\nИзход\nБиблиотека със сгради\n\nСъздайте сграда или семейство за подобрения с персонализирани графични елементи.\n\nСъздаване на семейство сгради\nРазглеждане\nМоите любими\nМоите семейства\nИзползване на сгради в играта\nТърсене на сгради\nСортиране\nНаскоро актуализирано\nНай-нови\nНай-харесвани\nНай-изтегляни\nНулиране на филтрите\n\nРезултати: 1\n\nCommunity kitchen\n\nОт Mirelle · 0 харесвания · Готово за изтегляне\n\nA portable kitchen family made by players.",
+    "english": [],
+    "outside": [],
+    "screenshot": "phone-buildings.png",
+    "errors": []
+  },
+  {
+    "mode": "phone",
+    "route": "/music",
+    "heading": [
+      "Музика за вашата колония"
+    ],
+    "panels": [],
+    "metrics": {
+      "lang": "bg",
+      "overflow": 0,
+      "font": [
+        {
+          "family": "Glob2 Bulgarian",
+          "status": "loaded"
+        }
+      ],
+      "family": "\"Glob2 Bulgarian\", \"DejaVu Sans\", Verdana, sans-serif"
+    },
+    "body": "Към съдържанието\nЗа нас и помощ\nЕзик\nالعربية\nPortuguês brasileiro\nCatalà\nČeština\nDeutsch\nDansk\nEnglish\nEspañol\nEsperanto\nEuskara\nفارسی\nFrançais\nΕλληνικά\nMagyar\nItaliano\nNederlands\nPolski\nPortuguês europeu\nRomână\nРусский\nSlovenščina\nSlovenčina\nСрпски\nSuomi\nSvenska\nTürkçe\n繁體中文\n简体中文\nУкраїнська\nBahasa Indonesia\nTiếng Việt\n日本語\n한국어\nहिन्दी\nاردو\nKiswahili\nБългарски\nИзход\nМузика за вашата колония\n\nТри настроения. Един споделен ритъм. Открийте следващия си саундтрак.\n\nСподеляне на музика\nРазглеждане\nМоите издания и качвания\nТърсене\nСортиране\nНай-харесвани\nНай-нови\nНай-изтегляни\nЛиценз\nВсички отворени лицензи\nCC0-1.0\nCC-BY-4.0\nCC-BY-SA-4.0\nНулиране на филтрите\nОще филтри\n\nРезултати: 0\n\nНе е намерена музика. Опитайте различни филтри или споделете първия набор.\nСподеляне на музика",
+    "english": [],
+    "outside": [],
+    "screenshot": "phone-music.png",
+    "errors": []
+  },
+  {
+    "mode": "phone",
+    "route": "/generators",
+    "heading": [
+      "Генератори на карти"
+    ],
+    "panels": [],
+    "metrics": {
+      "lang": "bg",
+      "overflow": 0,
+      "font": [
+        {
+          "family": "Glob2 Bulgarian",
+          "status": "loaded"
+        }
+      ],
+      "family": "\"Glob2 Bulgarian\", \"DejaVu Sans\", Verdana, sans-serif"
+    },
+    "body": "Към съдържанието\nЗа нас и помощ\nЕзик\nالعربية\nPortuguês brasileiro\nCatalà\nČeština\nDeutsch\nDansk\nEnglish\nEspañol\nEsperanto\nEuskara\nفارسی\nFrançais\nΕλληνικά\nMagyar\nItaliano\nNederlands\nPolski\nPortuguês europeu\nRomână\nРусский\nSlovenščina\nSlovenčina\nСрпски\nSuomi\nSvenska\nTürkçe\n繁體中文\n简体中文\nУкраїнська\nBahasa Indonesia\nTiếng Việt\n日本語\n한국어\nहिन्दी\nاردو\nKiswahili\nБългарски\nИзход\nКарти · Генератори\nГенератори на карти\n\nГенерирайте нови пейзажи от JavaScript пакети на общността. Инсталирайте издание в „Настройки“ → „Генератори на карти“ или го изберете в онлайн стая.\n\nРазглеждане · Моите генератори · Споделете генератор\nТърсене\nЕтикети\nСортиране\nНай-нови\nАктуализирано\nХаресвания\nИзтегляния\nТип\nВсички генератори\nИграемо\nИнструменти за редактора\nВерсия на двигателя\nВсички версии на двигателя\nДвигател 125 · 125-49-ababa\n\nНяма генератори, които да отговарят на тези филтри.",
+    "english": [],
+    "outside": [],
+    "screenshot": "phone-generators.png",
+    "errors": []
+  },
+  {
+    "mode": "phone",
+    "route": "/players",
+    "heading": [
+      "Играчи"
+    ],
+    "panels": [],
+    "metrics": {
+      "lang": "bg",
+      "overflow": 0,
+      "font": [
+        {
+          "family": "Glob2 Bulgarian",
+          "status": "loaded"
+        }
+      ],
+      "family": "\"Glob2 Bulgarian\", \"DejaVu Sans\", Verdana, sans-serif"
+    },
+    "body": "Към съдържанието\nЗа нас и помощ\nЕзик\nالعربية\nPortuguês brasileiro\nCatalà\nČeština\nDeutsch\nDansk\nEnglish\nEspañol\nEsperanto\nEuskara\nفارسی\nFrançais\nΕλληνικά\nMagyar\nItaliano\nNederlands\nPolski\nPortuguês europeu\nRomână\nРусский\nSlovenščina\nSlovenčina\nСрпски\nSuomi\nSvenska\nTürkçe\n繁體中文\n简体中文\nУкраїнська\nBahasa Indonesia\nTiếng Việt\n日本語\n한국어\nहिन्दी\nاردو\nKiswahili\nБългарски\nИзход\nИграчи\n\nЗапознайте се с колониите. Намерете играч, разгледайте мачовете му или се запознайте със следващия си противник с ИИ.\n\nНамерете играч\nВсички\nХора\nAI\n\n12 играчи на тази страница\n\nA\nAna_M\nПреглед на профила и игрите\n→\nB\nBradley\nПреглед на профила и игрите\n→\nCabino\nРазгледайте рейтингите и мачовете\nИИ\n→\nCastor\nРазгледайте рейтингите и мачовете\nИИ\n→\nCortex\nРазгледайте рейтингите и мачовете\nИИ\n→\nEcono\nРазгледайте рейтингите и мачовете\nИИ\n→\nK\nKestrel\nПреглед на профила и игрите\n→\nMaxima\nРазгледайте рейтингите и мачовете\nИИ\n→\nM\nMirelle\nПреглед на профила и игрите\n→\nNicowar\nРазгледайте рейтингите и мачовете\nИИ\n→\nNumbi\nРазгледайте рейтингите и мачовете\nИИ\n→\nWarrush\nРазгледайте рейтингите и мачовете\nИИ\n→",
+    "english": [
+      "Cabino",
+      "Cortex",
+      "Econo",
+      "Maxima",
+      "Nicowar",
+      "Numbi",
+      "Warrush"
+    ],
+    "outside": [],
+    "screenshot": "phone-players.png",
+    "errors": []
+  },
+  {
+    "mode": "phone",
+    "route": "/leaderboard",
+    "heading": [
+      "Класация"
+    ],
+    "panels": [
+      "1 vs 1 ranked"
+    ],
+    "metrics": {
+      "lang": "bg",
+      "overflow": 0,
+      "font": [
+        {
+          "family": "Glob2 Bulgarian",
+          "status": "loaded"
+        }
+      ],
+      "family": "\"Glob2 Bulgarian\", \"DejaVu Sans\", Verdana, sans-serif"
+    },
+    "body": "Към съдържанието\nЗа нас и помощ\nЕзик\nالعربية\nPortuguês brasileiro\nCatalà\nČeština\nDeutsch\nDansk\nEnglish\nEspañol\nEsperanto\nEuskara\nفارسی\nFrançais\nΕλληνικά\nMagyar\nItaliano\nNederlands\nPolski\nPortuguês europeu\nRomână\nРусский\nSlovenščina\nSlovenčina\nСрпски\nSuomi\nSvenska\nTürkçe\n繁體中文\n简体中文\nУкраїнська\nBahasa Indonesia\nTiếng Việt\n日本語\n한국어\nहिन्दी\nاردو\nKiswahili\nБългарски\nИзход\nКласация\n\nИграчи и противници с ИИ, подредени по предпазлива оценка на рейтинга: тя се повишава, когато играта стане по-сигурна в уменията ви. Гостите не се класират.\n\n1 vs 1 ranked\n2 vs 2 ranked\nВсички\nХора\nAI\n1 vs 1 ranked\nСкриване на временните рейтинги\nУчастници в класацията\nРАНГ\tИГРАЧ\tРЕЙТИНГ\tИГРИ\n1\t\nK\nKestrel\n1798\t41\n2\t\nNicowar\nИИ\n125 / 49 · abababab\n1733\t31\n3\t\nM\nMirelle\n1636\t23\n4\t\nB\nBradley\n1586\t8\n5\t\nMaxima\nИИ\n125 / 49 · abababab\n1521\t14\n6\t\nA\nAna_M\nвременен\n1418\t4\n\nРейтингите на ИИ са обвързани с версия на играта. Разгледайте профилите на играчите и ИИ, за да видите по-стари версии.",
+    "english": [
+      "Nicowar",
+      "Maxima"
+    ],
+    "outside": [],
+    "screenshot": "phone-leaderboard.png",
+    "errors": []
+  },
+  {
+    "mode": "phone",
+    "route": "/matches",
+    "heading": [
+      "Последни мачове"
+    ],
+    "panels": [],
+    "metrics": {
+      "lang": "bg",
+      "overflow": 0,
+      "font": [
+        {
+          "family": "Glob2 Bulgarian",
+          "status": "loaded"
+        }
+      ],
+      "family": "\"Glob2 Bulgarian\", \"DejaVu Sans\", Verdana, sans-serif"
+    },
+    "body": "Към съдържанието\nЗа нас и помощ\nЕзик\nالعربية\nPortuguês brasileiro\nCatalà\nČeština\nDeutsch\nDansk\nEnglish\nEspañol\nEsperanto\nEuskara\nفارسی\nFrançais\nΕλληνικά\nMagyar\nItaliano\nNederlands\nPolski\nPortuguês europeu\nRomână\nРусский\nSlovenščina\nSlovenčina\nСрпски\nSuomi\nSvenska\nTürkçe\n繁體中文\n简体中文\nУкраїнська\nBahasa Indonesia\nTiếng Việt\n日本語\n한국어\nहिन्दी\nاردو\nKiswahili\nБългарски\nИзход\nПоследни мачове\n\nБързи мачове и публични стаи, най-новите първо.\n\nВсички мачове\n1 vs 1 ranked\n2 vs 2 ranked\nСтаи\nBradley vs Kestrel\nEven Ground · днес 16:13\nпроверка…\nAna_M vs Guest-4821\nMarchland · вчера\n✓ проверено\nBradley vs Mirelle\nEven Ground Classic · онзи ден\n✓ проверено\nKestrel vs Nicowar (AI)\nSymmetric Arena · преди 3 дни\n✓ проверено\nBradley vs Kestrel\nEven Ground Classic · преди 4 дни\n✓ проверено\nBradley vs Mirelle\nEven Ground Classic · преди 6 дни\n✓ проверено\nBradley vs Kestrel\nEven Ground Classic · 23.10.2026 г.\n✓ проверено\nBradley vs Mirelle\nEven Ground Classic · 21.10.2026 г.\n✓ проверено\nBradley vs Kestrel\nEven Ground Classic · 19.10.2026 г.\n✓ проверено\nBradley vs Mirelle\nEven Ground Classic · 17.10.2026 г.\n✓ проверено\nBradley vs Kestrel\nEven Ground Classic · 15.10.2026 г.\n✓ проверено",
+    "english": [],
+    "outside": [],
+    "screenshot": "phone-matches.png",
+    "errors": []
+  },
+  {
+    "mode": "phone",
+    "route": "/maps/47be9d50-be6c-490b-8bc0-b1b3e4d8ae95",
+    "heading": [
+      "Even Ground Classic"
+    ],
+    "panels": [
+      "Версии",
+      "Автори на персонализираното съдържание"
+    ],
+    "metrics": {
+      "lang": "bg",
+      "overflow": 21,
+      "font": [
+        {
+          "family": "Glob2 Bulgarian",
+          "status": "loaded"
+        }
+      ],
+      "family": "\"Glob2 Bulgarian\", \"DejaVu Sans\", Verdana, sans-serif"
+    },
+    "body": "Към съдържанието\nЗа нас и помощ\nЕзик\nالعربية\nPortuguês brasileiro\nCatalà\nČeština\nDeutsch\nDansk\nEnglish\nEspañol\nEsperanto\nEuskara\nفارسی\nFrançais\nΕλληνικά\nMagyar\nItaliano\nNederlands\nPolski\nPortuguês europeu\nRomână\nРусский\nSlovenščina\nSlovenčina\nСрпски\nSuomi\nSvenska\nTürkçe\n繁體中文\n简体中文\nУкраїнська\nBahasa Indonesia\nTiếng Việt\n日本語\n한국어\nहिन्दी\nاردو\nKiswahili\nБългарски\nИзход\nEven Ground Classic\nот Mirelle · актуализирано 31.10.2026 г. · ръчно изработен\nПлъзнете или използвайте стрелките, за да разгледате картата със свързани краища.\nНулиране на изгледа\nРазмер\n128×128\nОтбори\n2\nИзигравания\n8\nХаресвания\n1\n\nA mirrored 1 vs 1 map with fords in the middle.\n\nИгра на тази карта\nИзтегляне\n♥ Харесано\nСигнал\n\nИзберете локална персонализирана игра или мултиплейър стая с тази карта.\n\nВерсии\nВерсии на Even Ground Classic\nКАЧЕНО\tСТАТУС\tФАЙЛ\n31.10.2026 г.\tвалиден\tИзтегляне\nтази версия\nАвтори на персонализираното съдържание\nКачена версия на картата 31.10.2026 г.",
+    "english": [],
+    "outside": [
+      {
+        "tag": "BUTTON",
+        "text": "Нулиране на изгледа",
+        "left": 198,
+        "right": 411
+      }
+    ],
+    "screenshot": "phone-maps-47be9d50-be6c-490b-8bc0-b1b3e4d8ae95.png",
+    "errors": []
+  },
+  {
+    "mode": "phone",
+    "route": "/players/96a83b6d-137d-4228-a72d-fe48c712114f",
+    "heading": [
+      "Kestrel"
+    ],
+    "panels": [
+      "Рейтинг",
+      "Последните 90 дни",
+      "Икономика (мач)",
+      "Мачове"
+    ],
+    "metrics": {
+      "lang": "bg",
+      "overflow": 16,
+      "font": [
+        {
+          "family": "Glob2 Bulgarian",
+          "status": "loaded"
+        }
+      ],
+      "family": "\"Glob2 Bulgarian\", \"DejaVu Sans\", Verdana, sans-serif"
+    },
+    "body": "Към съдържанието\nЗа нас и помощ\nЕзик\nالعربية\nPortuguês brasileiro\nCatalà\nČeština\nDeutsch\nDansk\nEnglish\nEspañol\nEsperanto\nEuskara\nفارسی\nFrançais\nΕλληνικά\nMagyar\nItaliano\nNederlands\nPolski\nPortuguês europeu\nRomână\nРусский\nSlovenščina\nSlovenčina\nСрпски\nSuomi\nSvenska\nTürkçe\n繁體中文\n简体中文\nУкраїнська\nBahasa Indonesia\nTiếng Việt\n日本語\n한국어\nहिन्दी\nاردو\nKiswahili\nБългарски\nИзход\nK\nKestrel\nРегистриран играч · играе от 1.09.2026 г.\n1 vs 1 ranked\n1798\n#1\n27 П · 14 З\nПроцент победи, 90 дни\n40%\n2 П · 3 З\nТипична игра\n12 мин\nмедианна продължителност\nНай-добър Карта\nEven Ground Classic\n1 П · 3 З\nРейтинг\nРейтинг след всеки мач с рейтинг\n1670\n1680\n1690\n1700\n26.10.2026 г.\nРейтинг след всеки мач с рейтинг\nx\t1 vs 1 ranked\n15.10.2026 г.\t1665\n19.10.2026 г.\t1665\n23.10.2026 г.\t1706\n27.10.2026 г.\t1665\nПоследните 90 дни\nПо опашка\nПроцент победи по опашка\n1 vs 1 ranked\t2–3\t40%\nПо карта\nПроцент победи по карта\nEven Ground Classic\t1–3\t25%\nЧастна или качена карта\t1–0\t100%\nПо генератор\nПроцент победи по генератор\nSymmetric Arena\t1–0\t100%\nИкономика (мач)\nЕдиници: последният проверен мач спрямо средното за последните мачове\n0\n20\n40\n60\n80\n0:00\n5:33\nТози мач\nСредната стойност на Kestrel\nЕдиници: последният проверен мач спрямо средното за последните мачове\nx\tТози мач\tСредната стойност на Kestrel\n0:00\t6\t7\n0:17\t8\t8\n0:34\t10\t10\n0:51\t12\t12\n1:08\t15\t14\n1:25\t17\t15\n1:42\t18\t17\n1:59\t20\t18\n2:17\t21\t18\n2:34\t22\t19\n2:51\t23\t20\n3:08\t24\t22\n3:25\t25\t23\n3:42\t26\t25\n3:59\t27\t27\n4:16\t29\t30\n4:33\t31\t32\n4:50\t33\t35\n5:07\t36\t38\n5:24\t40\t41\n5:41\t43\t43\n5:58\t46\t46\n6:15\t49\t47\n6:33\t52\t48\n6:50\t54\t49\n7:07\t55\t49\n7:24\t56\t49\n7:41\t56\t49\n7:58\t56\t49\n8:15\t55\t49\n8:32\t55\t50\n8:49\t55\t51\n9:06\t55\t53\n9:23\t56\t56\n9:40\t58\t59\n9:57\t61\t63\n10:14\t65\t70\n10:31\t69\t73\n10:49\t74\t77\n11:06\t78\t81\nСгради: последният проверен мач спрямо средното за последните мачове\n0\n5\n10\n15\n20\n0:00\n5:33\nТози мач\nСредната стойност на Kestrel\nСгради: последният проверен мач спрямо средното за последните мачове\nx\tТози мач\tСредната стойност на Kestrel\n0:00\t1\t1\n0:17\t1\t1\n0:34\t2\t2\n0:51\t2\t2\n1:08\t3\t3\n1:25\t3\t3\n1:42\t4\t4\n1:59\t4\t4\n2:17\t5\t5\n2:34\t5\t5\n2:51\t6\t6\n3:08\t6\t6\n3:25\t7\t7\n3:42\t7\t7\n3:59\t8\t8\n4:16\t8\t8\n4:33\t9\t8\n4:50\t9\t9\n5:07\t10\t9\n5:24\t10\t10\n5:41\t11\t10\n5:58\t11\t11\n6:15\t12\t11\n6:33\t12\t11\n6:50\t13\t12\n7:07\t13\t13\n7:24\t14\t13\n7:41\t14\t14\n7:58\t15\t14\n8:15\t15\t15\n8:32\t16\t15\n8:49\t16\t16\n9:06\t17\t16\n9:23\t17\t16\n9:40\t18\t17\n9:57\t18\t17\n10:14\t19\t19\n10:31\t19\t19\n10:49\t20\t19\n11:06\t20\t20\nМачове\nВсички мачове\n1 vs 1 ranked\n2 vs 2 ranked\nСтаи\n–\nсрещу Bradley\nEven Ground · днес 16:13\nпроверка…\nW\n(спечелен)\nсрещу Nicowar (AI)\nSymmetric Arena · преди 3 дни\n✓ проверено\nL\n(изгубен)\nсрещу Bradley\nEven Ground Classic · преди 4 дни\n−12\nW\n(спечелен)\nсрещу Bradley\nEven Ground Classic · 23.10.2026 г.\n+29\nL\n(изгубен)\nсрещу Bradley\nEven Ground Classic · 19.10.2026 г.\n−12\nL\n(изгубен)\nсрещу Bradley\nEven Ground Classic · 15.10.2026 г.\n−12",
+    "english": [],
+    "outside": [],
+    "screenshot": "phone-players-96a83b6d-137d-4228-a72d-fe48c712114f.png",
+    "errors": []
+  },
+  {
+    "mode": "phone",
+    "route": "/matches/712b528e-6c96-43a4-b762-29df3d770379",
+    "heading": [
+      "1 vs 1 ranked · Even Ground Classic"
+    ],
+    "panels": [
+      "Повторение",
+      "Облици на колонии",
+      "Хронология",
+      "Икономика спрямо средното за всеки играч",
+      "Крайна статистика",
+      "Проверка ✓ проверено",
+      "Връзка"
+    ],
+    "metrics": {
+      "lang": "bg",
+      "overflow": 0,
+      "font": [
+        {
+          "family": "Glob2 Bulgarian",
+          "status": "loaded"
+        }
+      ],
+      "family": "\"Glob2 Bulgarian\", \"DejaVu Sans\", Verdana, sans-serif"
+    },
+    "body": "Към съдържанието\nЗа нас и помощ\nЕзик\nالعربية\nPortuguês brasileiro\nCatalà\nČeština\nDeutsch\nDansk\nEnglish\nEspañol\nEsperanto\nEuskara\nفارسی\nFrançais\nΕλληνικά\nMagyar\nItaliano\nNederlands\nPolski\nPortuguês europeu\nRomână\nРусский\nSlovenščina\nSlovenčina\nСрпски\nSuomi\nSvenska\nTürkçe\n繁體中文\n简体中文\nУкраїнська\nBahasa Indonesia\nTiếng Việt\n日本語\n한국어\nहिन्दी\nاردو\nKiswahili\nБългарски\nИзход\n1 vs 1 ranked · Even Ground Classic\n29.10.2026 г., 17:37 · 18 мин · с рейтинг · 128×128\n✓ проверено\nСтраница на картата\nИЗГУБЕН\nBradley\nПрестиж 61\nПОБЕДИТЕЛ\nMirelle\nПрестиж 215\nПовторение\n\nПровереното повторение на сървъра. Отворете го в играта (Зареждане на играта → Повторения) или го гледайте тук.\n\nГледане в браузър\nИзтегляне на повторение\nИГРАЧ\tРЕЗУЛТАТ\tРЕЙТИНГ\n Bradley\tИзгубен\t1615 → 1585\n Mirelle · 1 прекъсване на връзкатаотказани заповеди\tСпечелено\t1677 → 1706\nОблици на колонии\nКолония 1\nДокладване на облик\n\nХронология\nЕдиници\n0\n50\n100\n150\n0:00\n11:07\nBradley\nMirelle\nЕдиници\nx\tBradley\tMirelle\n0:00\t6\t7\n0:17\t8\t9\n0:34\t10\t12\n0:51\t11\t15\n1:08\t13\t17\n1:25\t15\t19\n1:42\t16\t21\n1:59\t17\t23\n2:17\t18\t24\n2:34\t19\t26\n2:51\t20\t27\n3:08\t21\t29\n3:25\t21\t32\n3:42\t22\t35\n3:59\t23\t38\n4:16\t24\t42\n4:33\t26\t46\n4:50\t28\t50\n5:07\t31\t55\n5:24\t34\t59\n5:41\t36\t62\n5:58\t39\t65\n6:15\t42\t67\n6:33\t44\t68\n6:50\t45\t69\n7:07\t46\t69\n7:24\t47\t68\n7:41\t47\t68\n7:58\t47\t68\n8:15\t46\t69\n8:32\t46\t71\n8:49\t46\t73\n9:06\t46\t77\n9:23\t47\t82\n9:40\t49\t88\n9:57\t51\t94\n10:14\t54\t100\n10:31\t58\t106\n10:49\t61\t111\n11:06\t65\t115\n11:23\t69\t118\n11:40\t72\t119\n11:57\t74\t119\n12:14\t76\t118\n12:31\t77\t116\n12:48\t76\t114\n13:05\t75\t112\n13:22\t74\t111\n13:39\t73\t111\n13:56\t71\t112\n14:13\t70\t116\n14:30\t70\t121\n14:47\t71\t127\n15:05\t73\t134\n15:22\t76\t142\n15:39\t80\t150\n15:56\t85\t158\n16:13\t90\t164\n16:30\t95\t168\n16:47\t99\t170\n17:04\t103\t170\n17:21\t105\t169\n17:38\t106\t166\n17:55\t106\t162\nСгради\n0\n10\n20\n30\n40\n0:00\n11:07\nBradley\nMirelle\nСгради\nx\tBradley\tMirelle\n0:00\t1\t1\n0:17\t1\t2\n0:34\t2\t2\n0:51\t2\t3\n1:08\t3\t4\n1:25\t3\t4\n1:42\t3\t5\n1:59\t4\t6\n2:17\t4\t7\n2:34\t5\t7\n2:51\t5\t8\n3:08\t5\t9\n3:25\t6\t9\n3:42\t6\t10\n3:59\t7\t11\n4:16\t7\t11\n4:33\t7\t12\n4:50\t8\t13\n5:07\t8\t14\n5:24\t9\t14\n5:41\t9\t15\n5:58\t10\t16\n6:15\t10\t16\n6:33\t10\t17\n6:50\t11\t18\n7:07\t11\t18\n7:24\t12\t19\n7:41\t12\t20\n7:58\t12\t21\n8:15\t13\t21\n8:32\t13\t22\n8:49\t14\t23\n9:06\t14\t23\n9:23\t14\t24\n9:40\t15\t25\n9:57\t15\t25\n10:14\t16\t26\n10:31\t16\t27\n10:49\t16\t28\n11:06\t17\t28\n11:23\t17\t29\n11:40\t18\t30\n11:57\t18\t30\n12:14\t18\t31\n12:31\t19\t32\n12:48\t19\t32\n13:05\t20\t33\n13:22\t20\t34\n13:39\t20\t34\n13:56\t21\t35\n14:13\t21\t36\n14:30\t22\t37\n14:47\t22\t37\n15:05\t22\t38\n15:22\t23\t39\n15:39\t23\t39\n15:56\t24\t40\n16:13\t24\t41\n16:30\t24\t41\n16:47\t25\t42\n17:04\t25\t43\n17:21\t26\t44\n17:38\t26\t44\n17:55\t27\t45\nПрестиж\n0\n100\n200\n0:00\n11:07\nBradley\nMirelle\nПрестиж\nx\tBradley\tMirelle\n0:00\t0\t0\n0:17\t0\t0\n0:34\t0\t0\n0:51\t0\t1\n1:08\t1\t1\n1:25\t1\t2\n1:42\t1\t3\n1:59\t2\t3\n2:17\t3\t4\n2:34\t3\t6\n2:51\t4\t7\n3:08\t5\t8\n3:25\t6\t10\n3:42\t7\t12\n3:59\t8\t14\n4:16\t9\t16\n4:33\t10\t18\n4:50\t12\t20\n5:07\t13\t23\n5:24\t15\t25\n5:41\t16\t28\n5:58\t18\t31\n6:15\t20\t34\n6:33\t21\t37\n6:50\t23\t40\n7:07\t25\t44\n7:24\t27\t47\n7:41\t30\t51\n7:58\t32\t55\n8:15\t34\t59\n8:32\t36\t63\n8:49\t39\t67\n9:06\t41\t71\n9:23\t44\t76\n9:40\t47\t81\n9:57\t50\t85\n10:14\t52\t90\n10:31\t55\t95\n10:49\t58\t101\n11:06\t62\t106\n11:23\t65\t112\n11:40\t68\t117\n11:57\t71\t123\n12:14\t75\t129\n12:31\t78\t135\n12:48\t82\t141\n13:05\t86\t148\n13:22\t89\t154\n13:39\t93\t161\n13:56\t97\t167\n14:13\t101\t174\n14:30\t105\t181\n14:47\t110\t189\n15:05\t114\t196\n15:22\t118\t203\n15:39\t123\t211\n15:56\t127\t219\n16:13\t132\t227\n16:30\t136\t235\n16:47\t141\t243\n17:04\t146\t251\n17:21\t151\t260\n17:38\t156\t268\n17:55\t161\t277\nИкономика спрямо средното за всеки играч\nBradley\nMirelle\nBradley: единици в този мач и средно за последните мачове\n0\n50\n100\n0:00\n11:07\nТози мач\nСредната стойност на Bradley\nBradley: единици в този мач и средно за последните мачове\nx\tТози мач\tСредната стойност на Bradley\n0:00\t6\t6\n0:17\t8\t8\n0:34\t10\t11\n0:51\t11\t13\n1:08\t13\t15\n1:25\t15\t17\n1:42\t16\t19\n1:59\t17\t21\n2:17\t18\t22\n2:34\t19\t23\n2:51\t20\t25\n3:08\t21\t25\n3:25\t21\t26\n3:42\t22\t27\n3:59\t23\t29\n4:16\t24\t30\n4:33\t26\t33\n4:50\t28\t36\n5:07\t31\t39\n5:24\t34\t43\n5:41\t36\t46\n5:58\t39\t50\n6:15\t42\t53\n6:33\t44\t56\n6:50\t45\t58\n7:07\t46\t59\n7:24\t47\t60\n7:41\t47\t60\n7:58\t47\t60\n8:15\t46\t59\n8:32\t46\t59\n8:49\t46\t59\n9:06\t46\t59\n9:23\t47\t61\n9:40\t49\t63\n9:57\t51\t66\n10:14\t54\t69\n10:31\t58\t74\n10:49\t61\t79\n11:06\t65\t84\n11:23\t69\t92\n11:40\t72\t96\n11:57\t74\t99\n12:14\t76\t102\n12:31\t77\t102\n12:48\t76\t101\n13:05\t75\t100\n13:22\t74\t98\n13:39\t73\t94\n13:56\t71\t92\n14:13\t70\t91\n14:30\t70\t91\n14:47\t71\t99\n15:05\t73\t102\n15:22\t76\t106\n15:39\t80\t112\n15:56\t85\t111\n16:13\t90\t118\n16:30\t95\t124\n16:47\t99\t130\n17:04\t103\t103\n17:21\t105\t105\n17:38\t106\t106\n17:55\t106\t106\nКрайна статистика\nСТАТИСТИКА\n\t BRADLEY\t MIRELLE\nПрестиж\t61\t215\nГлобули\t97\t147\nВоини\t80\t30\nСгради\t25\t42\nПодробности за проверка и връзка",
+    "english": [],
+    "outside": [],
+    "screenshot": "phone-matches-712b528e-6c96-43a4-b762-29df3d770379.png",
+    "errors": []
+  },
+  {
+    "mode": "phone",
+    "route": "/matches/ea492b99-4ce8-4ab9-98be-f506c33a7768",
+    "heading": [
+      "1 vs 1 ranked · Even Ground"
+    ],
+    "panels": [
+      "Повторение",
+      "Хронология",
+      "Проверка проверка…"
+    ],
+    "metrics": {
+      "lang": "bg",
+      "overflow": 0,
+      "font": [
+        {
+          "family": "Glob2 Bulgarian",
+          "status": "loaded"
+        }
+      ],
+      "family": "\"Glob2 Bulgarian\", \"DejaVu Sans\", Verdana, sans-serif"
+    },
+    "body": "Към съдържанието\nЗа нас и помощ\nЕзик\nالعربية\nPortuguês brasileiro\nCatalà\nČeština\nDeutsch\nDansk\nEnglish\nEspañol\nEsperanto\nEuskara\nفارسی\nFrançais\nΕλληνικά\nMagyar\nItaliano\nNederlands\nPolski\nPortuguês europeu\nRomână\nРусский\nSlovenščina\nSlovenčina\nСрпски\nSuomi\nSvenska\nTürkçe\n繁體中文\n简体中文\nУкраїнська\nBahasa Indonesia\nTiếng Việt\n日本語\n한국어\nहिन्दी\nاردو\nKiswahili\nБългарски\nИзход\n1 vs 1 ranked · Even Ground\n31.10.2026 г., 16:13 · 11 мин · с рейтинг\nпроверка…\nОТБОР\nBradley\nОТБОР\nKestrel\nПовторение\n\nПовторението е достъпно, след като сървърът провери мача.\n\nИГРАЧ\tРЕЗУЛТАТ\tРЕЙТИНГ\n Bradley\t–\t–\n Kestrel\t–\t–\nХронология\n\nГрафиките се появяват, след като сървърът е преиграл мача.\n\nПодробности за проверка и връзка",
+    "english": [],
+    "outside": [],
+    "screenshot": "phone-matches-ea492b99-4ce8-4ab9-98be-f506c33a7768.png",
+    "errors": []
+  },
+  {
+    "mode": "phone",
+    "route": "/account",
+    "heading": [
+      "Вашият акаунт"
+    ],
+    "panels": [
+      "Снимка на профила",
+      "Методи за влизане",
+      "Изтегляне на моите данни",
+      "Изтриване на акаунта ми"
+    ],
+    "metrics": {
+      "lang": "bg",
+      "overflow": 77,
+      "font": [
+        {
+          "family": "Glob2 Bulgarian",
+          "status": "loaded"
+        }
+      ],
+      "family": "\"Glob2 Bulgarian\", \"DejaVu Sans\", Verdana, sans-serif"
+    },
+    "body": "Към съдържанието\nЗа нас и помощ\nЕзик\nالعربية\nPortuguês brasileiro\nCatalà\nČeština\nDeutsch\nDansk\nEnglish\nEspañol\nEsperanto\nEuskara\nفارسی\nFrançais\nΕλληνικά\nMagyar\nItaliano\nNederlands\nPolski\nPortuguês europeu\nRomână\nРусский\nSlovenščina\nSlovenčina\nСрпски\nSuomi\nSvenska\nTürkçe\n繁體中文\n简体中文\nУкраїнська\nBahasa Indonesia\nTiếng Việt\n日本語\n한국어\nहिन्दी\nاردو\nKiswahili\nБългарски\nИзход\nВашият акаунт\n\nKestrel · Регистриран от 1.09.2026 г.\n\nВашият профил\nСнимка на профила\nK\nKestrel\n\nGravatar, когато е наличен, в противен случай инициали\n\nИзползвайте снимка от вашето устройство или Gravatar, свързан със свързан имейл адрес. Вашата снимка е публична.\n\nКачване на снимка\nИзползване на Gravatar\nИзползване на инициали\n\nНеподвижна снимка JPEG, PNG или WebP · до 10 MiB и 25 мегапиксела. Избирането на Gravatar или инициали премахва качената снимка.\n\nМетоди за влизане\n\nНяма: този акаунт за гост се намира на устройството, което го е създало.\n\nИзтегляне на моите данни\n\nJSON файл с всичко, което този сървър съхранява за акаунта ви: профил, методи за вход (без пароли или ключове), мачове, рейтинги, стаи и чат, търсене на мачове, карти и записи за модериране.\n\nИзтегляне на моите данни\nИзтриване на акаунта ми\n\nТова не може да бъде отменено. Изтриване на акаунта ви:\n\nпрекратява сесиите ви на всички устройства и премахва методите ви за вход и имейл адреса;\nзамества името ви с „Изтрит играч“ в миналите ви мачове, чата и записите;\nизтрива вашите карти, харесвания, качвания и мястото ви в класациите.\n\nМачовете, които сте играли, остават в историята на другите играчи, а техните файлове с повторения все още съдържат името, което сте имали в играта.\n\nВъведете точно показваното си име, за да потвърдите.\nKestrel\nОкончателно изтриване на акаунта ми",
+    "english": [],
+    "outside": [
+      {
+        "tag": "BUTTON",
+        "text": "Окончателно изтриване на акаунта ми",
+        "left": 105,
+        "right": 467
+      }
+    ],
+    "screenshot": "phone-account.png",
+    "errors": []
+  },
+  {
+    "mode": "phone",
+    "route": "/sets/new",
+    "heading": [
+      "Untitled set"
+    ],
+    "panels": [
+      "Листове със спрайтове",
+      "Проверка и публикуване",
+      "Публикуване на редакция unsaved"
+    ],
+    "metrics": {
+      "lang": "bg",
+      "overflow": 169,
+      "font": [
+        {
+          "family": "Glob2 Bulgarian",
+          "status": "loaded"
+        }
+      ],
+      "family": "\"Glob2 Bulgarian\", \"DejaVu Sans\", Verdana, sans-serif"
+    },
+    "body": "Към съдържанието\nЗа нас и помощ\nЕзик\nالعربية\nPortuguês brasileiro\nCatalà\nČeština\nDeutsch\nDansk\nEnglish\nEspañol\nEsperanto\nEuskara\nفارسی\nFrançais\nΕλληνικά\nMagyar\nItaliano\nNederlands\nPolski\nPortuguês europeu\nRomână\nРусский\nSlovenščina\nSlovenčina\nСрпски\nSuomi\nSvenska\nTürkçe\n繁體中文\n简体中文\nУкраїнська\nBahasa Indonesia\nTiếng Việt\n日本語\n한국어\nहिन्दी\nاردو\nKiswahili\nБългарски\nИзход\nUntitled set\n\nНов комплект · Персонализирани графични елементи и свойства на геймплея\n\nМоите комплекти\nЗаглавие\nОписание\nЕтикети\nЛиценз\nCC BY 4.0 — изисква се посочване на автор\nCC0 — обществено достояние\nПосочване на автора\nДопълнителни приноси и посочване на източника\nТерен\nРесурси\nНачало с готова настройка\nwater\nsand\ngrass\nice\nroad\nboulders\nhedge\nthicket\nridge_rock\noutcrop\ndirt\nclay\ngravel\nflower_meadow\nmud\nmarsh\ndeep_snow\nscree\ndirt_track\nboardwalk\nlava\nember_field\nloam\nmoss\nspring_meadow\ndeep_water\ndark_water\nvoid_hole\nchasm\nДобавяне на terrain\n\nДобавете терен или ресурс, за да започнете. Вградените предварително зададени настройки предоставят свойства, без да копирате техните изображения във вашия комплект.\n\nЛистове със спрайтове\nШирина на кадъра\nВисочина на кадъра\n\nКадрите на терените са 32×32. Кадрите на ресурсите и декора могат да бъдат до 64×64. Качете отново същия PNG с нови размери, за да замените мрежата от кадри; след това проверете съответствията на кадрите.\n\nКачване на PNG\nПреглед на листа\nИзберете лист…\nПреглед на играта\nПреглед на текущите промени\n\nПроверка и публикуване\n\nПроверките валидират свойствата на геймплея, границите на изображенията, съответствията на кадрите и изобразяването чрез игровия двигател. Те не установяват баланс на картата.\n\nЗапазване на чернова\nИзвършване на проверки и предварителен преглед\nПреглед и публикуване\n\nЗапазете и изпълнете проверки на текущата редакция преди публикуване.",
+    "english": [],
+    "outside": [
+      {
+        "tag": "BUTTON",
+        "text": "Извършване на проверки и предварителен преглед",
+        "left": 88,
+        "right": 559
+      }
+    ],
+    "screenshot": "phone-sets-new.png",
+    "errors": []
+  },
+  {
+    "mode": "phone",
+    "route": "/ai-studio",
+    "heading": [],
+    "panels": [],
+    "metrics": {
+      "lang": "bg",
+      "overflow": 0,
+      "font": [
+        {
+          "family": "Glob2 Bulgarian",
+          "status": "loaded"
+        }
+      ],
+      "family": "\"Glob2 Bulgarian\", \"DejaVu Sans\", Verdana, sans-serif"
+    },
+    "body": "Към съдържанието\nЗа нас и помощ\nЕзик\nالعربية\nPortuguês brasileiro\nCatalà\nČeština\nDeutsch\nDansk\nEnglish\nEspañol\nEsperanto\nEuskara\nفارسی\nFrançais\nΕλληνικά\nMagyar\nItaliano\nNederlands\nPolski\nPortuguês europeu\nRomână\nРусский\nSlovenščina\nSlovenčina\nСрпски\nSuomi\nSvenska\nTürkçe\n繁體中文\n简体中文\nУкраїнська\nBahasa Indonesia\nTiếng Việt\n日本語\n한국어\nहिन्दी\nاردو\nKiswahili\nБългарски\nИзход\nНе е налично",
+    "english": [],
+    "outside": [],
+    "screenshot": "phone-ai-studio.png",
+    "errors": []
+  },
+  {
+    "mode": "phone",
+    "route": "/building-studio",
+    "heading": [
+      "Студио за сгради"
+    ],
+    "panels": [],
+    "metrics": {
+      "lang": "bg",
+      "overflow": 0,
+      "font": [
+        {
+          "family": "Glob2 Bulgarian",
+          "status": "loaded"
+        }
+      ],
+      "family": "\"Glob2 Bulgarian\", \"DejaVu Sans\", Verdana, sans-serif"
+    },
+    "body": "Към съдържанието\nЗа нас и помощ\nЕзик\nالعربية\nPortuguês brasileiro\nCatalà\nČeština\nDeutsch\nDansk\nEnglish\nEspañol\nEsperanto\nEuskara\nفارسی\nFrançais\nΕλληνικά\nMagyar\nItaliano\nNederlands\nPolski\nPortuguês europeu\nRomână\nРусский\nSlovenščina\nSlovenčina\nСрпски\nSuomi\nSvenska\nTürkçe\n繁體中文\n简体中文\nУкраїнська\nBahasa Indonesia\nTiếng Việt\n日本語\n한국어\nहिन्दी\nاردو\nKiswahili\nБългарски\nИзход\nСтудио за сгради\n\nСъздайте сграда или семейство за подобрения с персонализирани графични елементи.\n\nЧерновите са частни. Публикувайте запазено семейство, за да го споделите в библиотека със сгради.\n\nСъздайте семейство\nNew building family",
+    "english": [
+      "New building family"
+    ],
+    "outside": [],
+    "screenshot": "phone-building-studio.png",
+    "errors": []
+  },
+  {
+    "mode": "phone",
+    "route": "/map-studio",
+    "heading": [
+      "Не е налично"
+    ],
+    "panels": [],
+    "metrics": {
+      "lang": "bg",
+      "overflow": 0,
+      "font": [
+        {
+          "family": "Glob2 Bulgarian",
+          "status": "loaded"
+        }
+      ],
+      "family": "\"Glob2 Bulgarian\", \"DejaVu Sans\", Verdana, sans-serif"
+    },
+    "body": "Към съдържанието\nЗа нас и помощ\nЕзик\nالعربية\nPortuguês brasileiro\nCatalà\nČeština\nDeutsch\nDansk\nEnglish\nEspañol\nEsperanto\nEuskara\nفارسی\nFrançais\nΕλληνικά\nMagyar\nItaliano\nNederlands\nPolski\nPortuguês europeu\nRomână\nРусский\nSlovenščina\nSlovenčina\nСрпски\nSuomi\nSvenska\nTürkçe\n繁體中文\n简体中文\nУкраїнська\nBahasa Indonesia\nTiếng Việt\n日本語\n한국어\nहिन्दी\nاردو\nKiswahili\nБългарски\nИзход\nНе е налично",
+    "english": [],
+    "outside": [],
+    "screenshot": "phone-map-studio.png",
+    "errors": []
+  },
+  {
+    "mode": "phone",
+    "route": "/music-studio",
+    "heading": [
+      "Не е налично"
+    ],
+    "panels": [],
+    "metrics": {
+      "lang": "bg",
+      "overflow": 0,
+      "font": [
+        {
+          "family": "Glob2 Bulgarian",
+          "status": "loaded"
+        }
+      ],
+      "family": "\"Glob2 Bulgarian\", \"DejaVu Sans\", Verdana, sans-serif"
+    },
+    "body": "Към съдържанието\nЗа нас и помощ\nЕзик\nالعربية\nPortuguês brasileiro\nCatalà\nČeština\nDeutsch\nDansk\nEnglish\nEspañol\nEsperanto\nEuskara\nفارسی\nFrançais\nΕλληνικά\nMagyar\nItaliano\nNederlands\nPolski\nPortuguês europeu\nRomână\nРусский\nSlovenščina\nSlovenčina\nСрпски\nSuomi\nSvenska\nTürkçe\n繁體中文\n简体中文\nУкраїнська\nBahasa Indonesia\nTiếng Việt\n日本語\n한국어\nहिन्दी\nاردو\nKiswahili\nБългарски\nИзход\nНе е налично",
+    "english": [],
+    "outside": [],
+    "screenshot": "phone-music-studio.png",
+    "errors": []
+  },
+  {
+    "mode": "phone",
+    "route": "/skins",
+    "heading": [
+      "Не е налично"
+    ],
+    "panels": [],
+    "metrics": {
+      "lang": "bg",
+      "overflow": 0,
+      "font": [
+        {
+          "family": "Glob2 Bulgarian",
+          "status": "loaded"
+        }
+      ],
+      "family": "\"Glob2 Bulgarian\", \"DejaVu Sans\", Verdana, sans-serif"
+    },
+    "body": "Към съдържанието\nЗа нас и помощ\nЕзик\nالعربية\nPortuguês brasileiro\nCatalà\nČeština\nDeutsch\nDansk\nEnglish\nEspañol\nEsperanto\nEuskara\nفارسی\nFrançais\nΕλληνικά\nMagyar\nItaliano\nNederlands\nPolski\nPortuguês europeu\nRomână\nРусский\nSlovenščina\nSlovenčina\nСрпски\nSuomi\nSvenska\nTürkçe\n繁體中文\n简体中文\nУкраїнська\nBahasa Indonesia\nTiếng Việt\n日本語\n한국어\nहिन्दी\nاردو\nKiswahili\nБългарски\nИзход\nНе е налично",
+    "english": [],
+    "outside": [],
+    "screenshot": "phone-skins.png",
+    "errors": []
+  },
+  {
+    "mode": "phone",
+    "route": "/j/GLOBJOIN",
+    "heading": [
+      "Поканени сте"
+    ],
+    "panels": [],
+    "metrics": {
+      "lang": "bg",
+      "overflow": 0,
+      "font": [
+        {
+          "family": "Glob2 Bulgarian",
+          "status": "loaded"
+        }
+      ],
+      "family": "\"Glob2 Bulgarian\", \"DejaVu Sans\", Verdana, sans-serif"
+    },
+    "body": "Поканени сте\n\nПОКАНА ЗА СТАЯ\n\nSaturday night colony\n\nMirelle ви покани в стаята си в Globulation 2 на Glob2 Online (test).\n\nИгра в браузър\nОтваряне в приложението Globulation 2\n\nСамо ако сте инсталирали играта на това устройство. Няма приложение? Игра във вашия браузър; няма нужда от инсталиране.\n\nВече сте в играта? Изберете Игра онлайн, тогава Присъединяване чрез код, и въведете:\n\nGLOBJOIN\n\nGlobulation 2 е свободен софтуер (GPL 3).",
+    "english": [],
+    "outside": [],
+    "screenshot": "phone-j-GLOBJOIN.png",
+    "errors": []
+  }
+]

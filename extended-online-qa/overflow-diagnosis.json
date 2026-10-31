@@ -1,0 +1,658 @@
+[
+  {
+    "route": "/players/96a83b6d-137d-4228-a72d-fe48c712114f",
+    "elements": [
+      {
+        "tag": "TR",
+        "class": "",
+        "text": "7:581514",
+        "right": 735.5625,
+        "width": 633.5625,
+        "whiteSpace": "nowrap",
+        "minWidth": "0px",
+        "maxWidth": "none",
+        "display": "table-row"
+      },
+      {
+        "tag": "TD",
+        "class": "",
+        "text": "14",
+        "right": 735.5625,
+        "width": 424.703125,
+        "whiteSpace": "nowrap",
+        "minWidth": "0px",
+        "maxWidth": "none",
+        "display": "table-cell"
+      },
+      {
+        "tag": "TR",
+        "class": "",
+        "text": "8:151515",
+        "right": 735.5625,
+        "width": 633.5625,
+        "whiteSpace": "nowrap",
+        "minWidth": "0px",
+        "maxWidth": "none",
+        "display": "table-row"
+      },
+      {
+        "tag": "TD",
+        "class": "",
+        "text": "15",
+        "right": 735.5625,
+        "width": 424.703125,
+        "whiteSpace": "nowrap",
+        "minWidth": "0px",
+        "maxWidth": "none",
+        "display": "table-cell"
+      },
+      {
+        "tag": "TR",
+        "class": "",
+        "text": "8:321615",
+        "right": 735.5625,
+        "width": 633.5625,
+        "whiteSpace": "nowrap",
+        "minWidth": "0px",
+        "maxWidth": "none",
+        "display": "table-row"
+      },
+      {
+        "tag": "TD",
+        "class": "",
+        "text": "15",
+        "right": 735.5625,
+        "width": 424.703125,
+        "whiteSpace": "nowrap",
+        "minWidth": "0px",
+        "maxWidth": "none",
+        "display": "table-cell"
+      },
+      {
+        "tag": "TR",
+        "class": "",
+        "text": "8:491616",
+        "right": 735.5625,
+        "width": 633.5625,
+        "whiteSpace": "nowrap",
+        "minWidth": "0px",
+        "maxWidth": "none",
+        "display": "table-row"
+      },
+      {
+        "tag": "TD",
+        "class": "",
+        "text": "16",
+        "right": 735.5625,
+        "width": 424.703125,
+        "whiteSpace": "nowrap",
+        "minWidth": "0px",
+        "maxWidth": "none",
+        "display": "table-cell"
+      },
+      {
+        "tag": "TR",
+        "class": "",
+        "text": "9:061716",
+        "right": 735.5625,
+        "width": 633.5625,
+        "whiteSpace": "nowrap",
+        "minWidth": "0px",
+        "maxWidth": "none",
+        "display": "table-row"
+      },
+      {
+        "tag": "TD",
+        "class": "",
+        "text": "16",
+        "right": 735.5625,
+        "width": 424.703125,
+        "whiteSpace": "nowrap",
+        "minWidth": "0px",
+        "maxWidth": "none",
+        "display": "table-cell"
+      },
+      {
+        "tag": "TR",
+        "class": "",
+        "text": "9:231716",
+        "right": 735.5625,
+        "width": 633.5625,
+        "whiteSpace": "nowrap",
+        "minWidth": "0px",
+        "maxWidth": "none",
+        "display": "table-row"
+      },
+      {
+        "tag": "TD",
+        "class": "",
+        "text": "16",
+        "right": 735.5625,
+        "width": 424.703125,
+        "whiteSpace": "nowrap",
+        "minWidth": "0px",
+        "maxWidth": "none",
+        "display": "table-cell"
+      },
+      {
+        "tag": "TR",
+        "class": "",
+        "text": "9:401817",
+        "right": 735.5625,
+        "width": 633.5625,
+        "whiteSpace": "nowrap",
+        "minWidth": "0px",
+        "maxWidth": "none",
+        "display": "table-row"
+      },
+      {
+        "tag": "TD",
+        "class": "",
+        "text": "17",
+        "right": 735.5625,
+        "width": 424.703125,
+        "whiteSpace": "nowrap",
+        "minWidth": "0px",
+        "maxWidth": "none",
+        "display": "table-cell"
+      },
+      {
+        "tag": "TR",
+        "class": "",
+        "text": "9:571817",
+        "right": 735.5625,
+        "width": 633.5625,
+        "whiteSpace": "nowrap",
+        "minWidth": "0px",
+        "maxWidth": "none",
+        "display": "table-row"
+      },
+      {
+        "tag": "TD",
+        "class": "",
+        "text": "17",
+        "right": 735.5625,
+        "width": 424.703125,
+        "whiteSpace": "nowrap",
+        "minWidth": "0px",
+        "maxWidth": "none",
+        "display": "table-cell"
+      },
+      {
+        "tag": "TR",
+        "class": "",
+        "text": "10:141919",
+        "right": 735.5625,
+        "width": 633.5625,
+        "whiteSpace": "nowrap",
+        "minWidth": "0px",
+        "maxWidth": "none",
+        "display": "table-row"
+      },
+      {
+        "tag": "TD",
+        "class": "",
+        "text": "19",
+        "right": 735.5625,
+        "width": 424.703125,
+        "whiteSpace": "nowrap",
+        "minWidth": "0px",
+        "maxWidth": "none",
+        "display": "table-cell"
+      },
+      {
+        "tag": "TR",
+        "class": "",
+        "text": "10:311919",
+        "right": 735.5625,
+        "width": 633.5625,
+        "whiteSpace": "nowrap",
+        "minWidth": "0px",
+        "maxWidth": "none",
+        "display": "table-row"
+      },
+      {
+        "tag": "TD",
+        "class": "",
+        "text": "19",
+        "right": 735.5625,
+        "width": 424.703125,
+        "whiteSpace": "nowrap",
+        "minWidth": "0px",
+        "maxWidth": "none",
+        "display": "table-cell"
+      },
+      {
+        "tag": "TR",
+        "class": "",
+        "text": "10:492019",
+        "right": 735.5625,
+        "width": 633.5625,
+        "whiteSpace": "nowrap",
+        "minWidth": "0px",
+        "maxWidth": "none",
+        "display": "table-row"
+      },
+      {
+        "tag": "TD",
+        "class": "",
+        "text": "19",
+        "right": 735.5625,
+        "width": 424.703125,
+        "whiteSpace": "nowrap",
+        "minWidth": "0px",
+        "maxWidth": "none",
+        "display": "table-cell"
+      },
+      {
+        "tag": "TR",
+        "class": "",
+        "text": "11:062020",
+        "right": 735.5625,
+        "width": 633.5625,
+        "whiteSpace": "nowrap",
+        "minWidth": "0px",
+        "maxWidth": "none",
+        "display": "table-row"
+      },
+      {
+        "tag": "TD",
+        "class": "",
+        "text": "20",
+        "right": 735.5625,
+        "width": 424.703125,
+        "whiteSpace": "nowrap",
+        "minWidth": "0px",
+        "maxWidth": "none",
+        "display": "table-cell"
+      }
+    ]
+  },
+  {
+    "route": "/maps/47be9d50-be6c-490b-8bc0-b1b3e4d8ae95",
+    "elements": [
+      {
+        "tag": "BUTTON",
+        "class": "",
+        "text": "Нулиране на изгледа",
+        "right": 411,
+        "width": 213,
+        "whiteSpace": "nowrap",
+        "minWidth": "auto",
+        "maxWidth": "none",
+        "display": "flex"
+      },
+      {
+        "tag": "TABLE",
+        "class": "data",
+        "text": "Версии на Even Ground ClassicКаченоСтатусБележкиФайл31.10.2026 г.валиденИзтегляне  тази версия",
+        "right": 412,
+        "width": 323,
+        "whiteSpace": "normal",
+        "minWidth": "0px",
+        "maxWidth": "none",
+        "display": "table"
+      },
+      {
+        "tag": "THEAD",
+        "class": "",
+        "text": "КаченоСтатусБележкиФайл",
+        "right": 412,
+        "width": 323,
+        "whiteSpace": "normal",
+        "minWidth": "0px",
+        "maxWidth": "none",
+        "display": "table-header-group"
+      },
+      {
+        "tag": "TR",
+        "class": "",
+        "text": "КаченоСтатусБележкиФайл",
+        "right": 412,
+        "width": 323,
+        "whiteSpace": "normal",
+        "minWidth": "0px",
+        "maxWidth": "none",
+        "display": "table-row"
+      },
+      {
+        "tag": "TH",
+        "class": "num",
+        "text": "Файл",
+        "right": 412,
+        "width": 112,
+        "whiteSpace": "nowrap",
+        "minWidth": "0px",
+        "maxWidth": "none",
+        "display": "table-cell"
+      },
+      {
+        "tag": "TBODY",
+        "class": "",
+        "text": "31.10.2026 г.валиденИзтегляне  тази версия",
+        "right": 412,
+        "width": 323,
+        "whiteSpace": "normal",
+        "minWidth": "0px",
+        "maxWidth": "none",
+        "display": "table-row-group"
+      },
+      {
+        "tag": "TR",
+        "class": "",
+        "text": "31.10.2026 г.валиденИзтегляне  тази версия",
+        "right": 412,
+        "width": 323,
+        "whiteSpace": "normal",
+        "minWidth": "0px",
+        "maxWidth": "none",
+        "display": "table-row"
+      },
+      {
+        "tag": "TD",
+        "class": "num",
+        "text": "Изтегляне  тази версия",
+        "right": 412,
+        "width": 112,
+        "whiteSpace": "nowrap",
+        "minWidth": "0px",
+        "maxWidth": "none",
+        "display": "table-cell"
+      },
+      {
+        "tag": "A",
+        "class": "",
+        "text": "Изтегляне  тази версия",
+        "right": 400,
+        "width": 88,
+        "whiteSpace": "nowrap",
+        "minWidth": "0px",
+        "maxWidth": "none",
+        "display": "inline"
+      },
+      {
+        "tag": "SPAN",
+        "class": "sr-only",
+        "text": "тази версия",
+        "right": 400,
+        "width": 1,
+        "whiteSpace": "nowrap",
+        "minWidth": "0px",
+        "maxWidth": "none",
+        "display": "block"
+      }
+    ]
+  },
+  {
+    "route": "/account",
+    "elements": [
+      {
+        "tag": "BUTTON",
+        "class": "danger",
+        "text": "Окончателно изтриване на акаунта ми",
+        "right": 467,
+        "width": 362,
+        "whiteSpace": "nowrap",
+        "minWidth": "0px",
+        "maxWidth": "none",
+        "display": "inline-flex"
+      }
+    ]
+  },
+  {
+    "route": "/maps/new",
+    "elements": [
+      {
+        "tag": "INPUT",
+        "class": "",
+        "text": "",
+        "right": 463,
+        "width": 358,
+        "whiteSpace": "pre",
+        "minWidth": "auto",
+        "maxWidth": "100%",
+        "display": "block"
+      }
+    ]
+  },
+  {
+    "route": "/ais/new",
+    "elements": [
+      {
+        "tag": "SELECT",
+        "class": "",
+        "text": "Публично — показва се в списъците за всичкиСамо чрез връзка — достъпно по връзкаЧастно — само вие",
+        "right": 543,
+        "width": 438,
+        "whiteSpace": "pre",
+        "minWidth": "auto",
+        "maxWidth": "100%",
+        "display": "block"
+      }
+    ]
+  },
+  {
+    "route": "/generators/new",
+    "elements": [
+      {
+        "tag": "INPUT",
+        "class": "",
+        "text": "",
+        "right": 446,
+        "width": 358,
+        "whiteSpace": "pre",
+        "minWidth": "auto",
+        "maxWidth": "100%",
+        "display": "block"
+      }
+    ]
+  },
+  {
+    "route": "/music/new",
+    "elements": [
+      {
+        "tag": "LABEL",
+        "class": "",
+        "text": "Title",
+        "right": 403,
+        "width": 301,
+        "whiteSpace": "normal",
+        "minWidth": "auto",
+        "maxWidth": "none",
+        "display": "grid"
+      },
+      {
+        "tag": "TEXTAREA",
+        "class": "",
+        "text": "",
+        "right": 403,
+        "width": 301,
+        "whiteSpace": "pre-wrap",
+        "minWidth": "auto",
+        "maxWidth": "100%",
+        "display": "block"
+      },
+      {
+        "tag": "LABEL",
+        "class": "",
+        "text": "Artist",
+        "right": 403,
+        "width": 301,
+        "whiteSpace": "normal",
+        "minWidth": "auto",
+        "maxWidth": "none",
+        "display": "grid"
+      },
+      {
+        "tag": "TEXTAREA",
+        "class": "",
+        "text": "",
+        "right": 403,
+        "width": 301,
+        "whiteSpace": "pre-wrap",
+        "minWidth": "auto",
+        "maxWidth": "100%",
+        "display": "block"
+      },
+      {
+        "tag": "LABEL",
+        "class": "",
+        "text": "Description",
+        "right": 403,
+        "width": 301,
+        "whiteSpace": "normal",
+        "minWidth": "auto",
+        "maxWidth": "none",
+        "display": "grid"
+      },
+      {
+        "tag": "TEXTAREA",
+        "class": "",
+        "text": "",
+        "right": 403,
+        "width": 301,
+        "whiteSpace": "pre-wrap",
+        "minWidth": "auto",
+        "maxWidth": "100%",
+        "display": "block"
+      },
+      {
+        "tag": "LABEL",
+        "class": "",
+        "text": "Credits",
+        "right": 403,
+        "width": 301,
+        "whiteSpace": "normal",
+        "minWidth": "auto",
+        "maxWidth": "none",
+        "display": "grid"
+      },
+      {
+        "tag": "TEXTAREA",
+        "class": "",
+        "text": "",
+        "right": 403,
+        "width": 301,
+        "whiteSpace": "pre-wrap",
+        "minWidth": "auto",
+        "maxWidth": "100%",
+        "display": "block"
+      },
+      {
+        "tag": "LABEL",
+        "class": "",
+        "text": "ЛицензCC0 1.0CC BY 4.0CC BY-SA 4.0",
+        "right": 403,
+        "width": 301,
+        "whiteSpace": "normal",
+        "minWidth": "auto",
+        "maxWidth": "none",
+        "display": "grid"
+      },
+      {
+        "tag": "SELECT",
+        "class": "",
+        "text": "CC0 1.0CC BY 4.0CC BY-SA 4.0",
+        "right": 403,
+        "width": 301,
+        "whiteSpace": "pre",
+        "minWidth": "auto",
+        "maxWidth": "100%",
+        "display": "block"
+      },
+      {
+        "tag": "LABEL",
+        "class": "",
+        "text": "Връзки към източници (по една на ред)",
+        "right": 403,
+        "width": 301,
+        "whiteSpace": "normal",
+        "minWidth": "auto",
+        "maxWidth": "none",
+        "display": "grid"
+      },
+      {
+        "tag": "TEXTAREA",
+        "class": "",
+        "text": "",
+        "right": 403,
+        "width": 301,
+        "whiteSpace": "pre-wrap",
+        "minWidth": "auto",
+        "maxWidth": "100%",
+        "display": "block"
+      },
+      {
+        "tag": "LABEL",
+        "class": "",
+        "text": "Етикети (разделени със запетаи)",
+        "right": 403,
+        "width": 301,
+        "whiteSpace": "normal",
+        "minWidth": "auto",
+        "maxWidth": "none",
+        "display": "grid"
+      },
+      {
+        "tag": "INPUT",
+        "class": "",
+        "text": "",
+        "right": 403,
+        "width": 301,
+        "whiteSpace": "normal",
+        "minWidth": "auto",
+        "maxWidth": "100%",
+        "display": "block"
+      },
+      {
+        "tag": "LABEL",
+        "class": "",
+        "text": "Тази музика включва аудио, генерирано от ИИ",
+        "right": 403,
+        "width": 301,
+        "whiteSpace": "normal",
+        "minWidth": "auto",
+        "maxWidth": "none",
+        "display": "grid"
+      },
+      {
+        "tag": "LABEL",
+        "class": "",
+        "text": "Мога да споделям тези записи и произведения на изкуството съгласно избрания лиценз.",
+        "right": 403,
+        "width": 301,
+        "whiteSpace": "normal",
+        "minWidth": "auto",
+        "maxWidth": "none",
+        "display": "grid"
+      },
+      {
+        "tag": "BUTTON",
+        "class": "",
+        "text": "Продължаване към качванията",
+        "right": 403,
+        "width": 301,
+        "whiteSpace": "nowrap",
+        "minWidth": "auto",
+        "maxWidth": "none",
+        "display": "flex"
+      }
+    ]
+  },
+  {
+    "route": "/building-studio/29bbac61-a0e4-4e04-a6a0-2c6238142bf4",
+    "elements": [
+      {
+        "tag": "BUTTON",
+        "class": "",
+        "text": "Преглед на настройките за издание",
+        "right": 483,
+        "width": 371,
+        "whiteSpace": "nowrap",
+        "minWidth": "0px",
+        "maxWidth": "none",
+        "display": "inline-flex"
+      }
+    ]
+  }
+]

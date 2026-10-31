@@ -1,0 +1,37 @@
+{
+  "revision": "4a2efc85456097489876c2b4947a3fb931ba818c",
+  "dirty": [],
+  "browser": "Playwright Chromium headless",
+  "node": "v24.22.1",
+  "database": "isolated disposable fixture at127.0.0.1:42770",
+  "files": {
+    "data/texts.bg.txt": {
+      "sha256": "ccd9b28467ec8a4e5272d2d3780d6813107eed945e424f8fac1d6ff2656d38ed",
+      "bytes": 317099
+    },
+    "platform/packages/i18n/locales/bg.json": {
+      "sha256": "3597f1d21d3b8e8d55ec79368b7c10d66c88752a411c6c31b24a52e9cc421313",
+      "bytes": 292413
+    },
+    "platform/packages/i18n/locales/en.json": {
+      "sha256": "7ef5053bd3bd867bddd3f1065a50c01a05c91517c9ebe31f0f7176632d66f8a3",
+      "bytes": 194609
+    },
+    "platform/apps/web/dist/index.html": {
+      "sha256": "7bfe65a2503d59aadcbad20f0705160d5ff605bfa0984b613e6cc9fb175a1f7a",
+      "bytes": 2519
+    },
+    "platform/apps/web/dist/assets/index-pmerhjJA.js": {
+      "sha256": "fd6939e5b94ebe8c0567847aeadd515877ee0d52d1bcde5df2b77ea5e4cdcb65",
+      "bytes": 361541
+    },
+    "platform/apps/web/dist/assets/index-pmerhjJA.js.map": {
+      "sha256": "857bfea80077f69f6e6879c7ce35b7d66fc820993813623e8ebe899ea8de4ea7",
+      "bytes": 1439888
+    },
+    "platform/apps/web/dist/assets/index-CY5UgJy-.css": {
+      "sha256": "0308d82ad7205a42eca0c4a423d11781c00cf3c0b23c4b279fd76e73ca10dd5a",
+      "bytes": 94042
+    }
+  }
+}

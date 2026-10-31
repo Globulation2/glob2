@@ -1,0 +1,85 @@
+{
+  "browser": "Playwright Chromium headless; locale bg-BG and explicit glob2_locale=bg cookie",
+  "viewports": [
+    {
+      "width": 1280,
+      "height": 900
+    },
+    {
+      "width": 390,
+      "height": 844
+    }
+  ],
+  "beforeCaptures": 64,
+  "afterCaptures": 58,
+  "allAfterDocumentOverflowZero": true,
+  "allAfterMeasuredControlsWithinViewport": true,
+  "allAfterBulgarianFontLoaded": true,
+  "phoneOverflowChanges": [
+    {
+      "route": "/maps/47be9d50-be6c-490b-8bc0-b1b3e4d8ae95",
+      "viewport": "phone",
+      "beforePixels": 21,
+      "afterPixels": 0
+    },
+    {
+      "route": "/players/96a83b6d-137d-4228-a72d-fe48c712114f",
+      "viewport": "phone",
+      "beforePixels": 16,
+      "afterPixels": 0
+    },
+    {
+      "route": "/account",
+      "viewport": "phone",
+      "beforePixels": 77,
+      "afterPixels": 0
+    },
+    {
+      "route": "/sets/new",
+      "viewport": "phone",
+      "beforePixels": 169,
+      "afterPixels": 0
+    },
+    {
+      "route": "/maps/new",
+      "viewport": "phone",
+      "beforePixels": 73,
+      "afterPixels": 0
+    },
+    {
+      "route": "/ais/new",
+      "viewport": "phone",
+      "beforePixels": 153,
+      "afterPixels": 0
+    },
+    {
+      "route": "/generators/new",
+      "viewport": "phone",
+      "beforePixels": 56,
+      "afterPixels": 0
+    },
+    {
+      "route": "/music/new",
+      "viewport": "phone",
+      "beforePixels": 13,
+      "afterPixels": 0
+    },
+    {
+      "route": "/buildings/6b942dbc-c266-442b-a8e4-ec3f5c012a67",
+      "viewport": "phone",
+      "beforePixels": 12,
+      "afterPixels": 0
+    },
+    {
+      "route": "building-family-editor",
+      "viewport": "phone",
+      "beforePixels": 93,
+      "afterPixels": 0
+    }
+  ],
+  "notes": [
+    "Six populated-gallery before captures use existing libraries.spec.ts list fixtures and are explicitly marked in populated-report.json; remaining before/after views use actual isolated seeded API.",
+    "First CSS build used .card > table.data; final source narrows this to .grid3 > .card > table.data, matching WinRates parent, and needs final root build verification.",
+    "Root is separately fixing raw AI tags, map visibility options and music metadata labels; screenshots in this folder precede that final product build."
+  ]
+}

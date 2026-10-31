@@ -1,0 +1,62 @@
+{
+  "platform/apps/web/dist/index.html": {
+    "sha256": "4dc20b1686b28cc72167393a4573ec7242adcc7a75d260e6ce37ecbdc4e54e79",
+    "bytes": 2519
+  },
+  "platform/apps/web/dist/assets/Account-BY2xzm8t.css": {
+    "sha256": "7e132b12374b4f240d26be3b9107da5755a5f8133a5d7801df33ece9806aee6c",
+    "bytes": 1050
+  },
+  "platform/apps/web/dist/assets/AiBuildingStudio-DcRBDZ1j.css": {
+    "sha256": "d0e750d75f0c725f2cb71d93a3d9e42cb0929a7cd225558ec2a10931ddd2547d",
+    "bytes": 3670
+  },
+  "platform/apps/web/dist/assets/Ais-Cl7SnRIn.css": {
+    "sha256": "442c44bd1ed44f9d25d9f2c863c22985bcd76fad07867029f36ab09711083394",
+    "bytes": 3006
+  },
+  "platform/apps/web/dist/assets/CodingStudio-BxPoZYIn.css": {
+    "sha256": "299d7eaadc3e97835178ec701dc73672d050089b3837fe0e9777dacaf31bdf86",
+    "bytes": 2876
+  },
+  "platform/apps/web/dist/assets/MusicStudio-Bu9vl4DZ.css": {
+    "sha256": "c43842f9362baa460f36c8a013c24ca3ea0a09cf286052df6d0531fa8db1c1e8",
+    "bytes": 7147
+  },
+  "platform/apps/web/dist/assets/Studio-B8AFNURH.css": {
+    "sha256": "b9a2ba2c845a3d515a6247b7c80042d95635cc8d19cb57f5e6314cabf25fbf56",
+    "bytes": 8603
+  },
+  "platform/apps/web/dist/assets/TerrainStudio-BTDnIWOD.css": {
+    "sha256": "d571db2215316064a4a0841680c638d7e0a50cc68b35357916e227ec2a3101ec",
+    "bytes": 1853
+  },
+  "platform/apps/web/dist/assets/buildings-6h6IbQbV.css": {
+    "sha256": "7a39ce6a98fa2f4974704fc6d69b7793be21b9d34bc765ae54904ce0492da006",
+    "bytes": 1686
+  },
+  "platform/apps/web/dist/assets/editor-Br_kD0ds.css": {
+    "sha256": "6eebd659b4bf63fdc64facd7a96cd559dbe85d55e6c648f58ceaa5d554b043a4",
+    "bytes": 145989
+  },
+  "platform/apps/web/dist/assets/index-CjiATtN4.css": {
+    "sha256": "0324e841774e4653d4fd64c90e7653a0b6ce694b7a332402782aabe52cd29bf6",
+    "bytes": 94035
+  },
+  "platform/apps/web/dist/assets/library-C5eXv-Ec.css": {
+    "sha256": "5a2b6bbf77cade94ad83f86433061c6b6238f04cafab730d94f0d6ffbb5cca03",
+    "bytes": 6213
+  },
+  "platform/apps/web/dist/assets/sets-Z-XzXdoP.css": {
+    "sha256": "279f7f23c3854ee190c1f699b1bf27e8eae0e63b305a55db1c87709b77aa966b",
+    "bytes": 2968
+  },
+  "platform/apps/web/dist/assets/studio-CnRZcrxV.css": {
+    "sha256": "6cd7cda61494201d413f9b9068c4721cecb2e442299ab29a294ceec24072ffe4",
+    "bytes": 34648
+  },
+  "platform/apps/web/dist/assets/index-npAq7zY_.js": {
+    "sha256": "06a815c6b7ccaf2a0ce8c8d5fa628b76c19442fd463567f80446292eec529ce0",
+    "bytes": 361546
+  }
+}

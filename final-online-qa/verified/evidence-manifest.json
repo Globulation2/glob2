@@ -1,0 +1,46 @@
+{
+  "checks.json": {
+    "sha256": "7ae0866c5223fa5d767c84d765126a2f16646ec6a679607b857d049ec4889c50",
+    "bytes": 1178
+  },
+  "environment.json": {
+    "sha256": "51a63bbd5dfeb234b650849f8a983720a148ec8308658c620ef628a269f3c505",
+    "bytes": 261
+  },
+  "provenance.json": {
+    "sha256": "e870ee78aaed3bee7f8ae066a408ccd62b0cb012e5e7339185adf2bc66a2cd5e",
+    "bytes": 4883
+  },
+  "screenshots/desktop-building-default.png": {
+    "sha256": "5f5a1435bf9881c15046b2edd23e0d414919ce942977ecbfde5c4d7dc5dc9aee",
+    "bytes": 244963
+  },
+  "screenshots/phone-ai-tags.png": {
+    "sha256": "57537176003df473081f29f1c9bee6b2d38588e1b0e23dd3fe3227f6557515ca",
+    "bytes": 114757
+  },
+  "screenshots/phone-building-default.png": {
+    "sha256": "bacbdeeb6884721e7e295a797e5efcd94ecc052f5eaa2ea0523571ec8301311a",
+    "bytes": 218028
+  },
+  "screenshots/phone-map-visibility.png": {
+    "sha256": "178c60ab9e3646f455d8d170ed64b28ca928651be3c12d885592a0bc9a6bffc6",
+    "bytes": 81070
+  },
+  "screenshots/phone-music-fields.png": {
+    "sha256": "8208b053143bc45921baf35db928f452f44292eb32a20d9c2e361eab2b0639de",
+    "bytes": 90766
+  },
+  "screenshots/phone-set-default.png": {
+    "sha256": "dc262239ed2ce103c5e3ab6bf2100f384c95b75df3a915027fcaeb9a4154def8",
+    "bytes": 151677
+  },
+  "screenshots/report.json": {
+    "sha256": "9c4b318dc8b90bad5e6a7ddb7cd9623f62387b29b816bdad1114b690a101d2b8",
+    "bytes": 3409
+  },
+  "tests.json": {
+    "sha256": "39d48766cbe15df0b26999f9a26a44820870b3b0ceb3ce75c9586a584a1c3abd",
+    "bytes": 5977426
+  }
+}

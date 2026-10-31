@@ -1,0 +1,248 @@
+{
+  "files": {
+    "after/desktop-maps-new.png": {
+      "sha256": "78149f662482a903ff71438bbee5651d9ed6d4e01852d26b20ca1382b54910d1",
+      "bytes": 121974
+    },
+    "after/desktop-ais-new.png": {
+      "sha256": "aa7410d2218fbe384313a748bb34f8d3b7481f703cf0fc3c07853bfb1eda7324",
+      "bytes": 204375
+    },
+    "after/desktop-building-family-editor.png": {
+      "sha256": "e7080bde85ef5f97e5835a5e9e7f6ae741eb9d3b64d42c9c1fde1d939fefae3d",
+      "bytes": 244211
+    },
+    "after/phone-building-family-editor.png": {
+      "sha256": "af8570fcfe8245df12a3a95e4cc1d7b737c416d3005b69227754026ed1a84061",
+      "bytes": 217728
+    },
+    "after/desktop-maps.png": {
+      "sha256": "b36ac4b31b22d82bfe0edc7c865846b43db84006d38432fedbd9438d6d6bc5aa",
+      "bytes": 180985
+    },
+    "after/desktop-generators-new.png": {
+      "sha256": "39406b0595d68139d7d1fd29d0186797bec9f3ef6c78b38c8e82d8debd30c0ee",
+      "bytes": 135990
+    },
+    "after/desktop-sets.png": {
+      "sha256": "6aaad07922e786b96e8b1793fc86ff3358f71ffa2c53bcf821422899579295a4",
+      "bytes": 132467
+    },
+    "after/desktop-music-new.png": {
+      "sha256": "af11de197bf17bd10b8f8cb33c2eacda50565ad50fbdb9336cfde3e7a9982e67",
+      "bytes": 129154
+    },
+    "after/desktop-ais.png": {
+      "sha256": "992331fc292eb641aac68b7e511b8326274b8560c562931626cb0c1d3f547d87",
+      "bytes": 144162
+    },
+    "after/desktop-buildings.png": {
+      "sha256": "6a6f62d3e62308a65c56bb8b3d3f933e8e667ea936518319d0ea03c57da9642e",
+      "bytes": 137502
+    },
+    "after/desktop-buildings-6b942dbc-c266-442b-a8e4-ec3f5c012a67.png": {
+      "sha256": "29396d5a9fe959a009771b6b0d9e7ce6949bc6a22f67224a94c902f8a0175de0",
+      "bytes": 150913
+    },
+    "after/desktop-j-NOSUCHCODE.png": {
+      "sha256": "b36611378a1e58ca58e8d70e9e4aa42bc55fc9afcba8f1066c9345cadf13df37",
+      "bytes": 1321135
+    },
+    "after/desktop-music.png": {
+      "sha256": "b09718df4f348721f7ad35fa08a8e9bbe516a4b7f5abf6e0c9a0ce8c611bc4a0",
+      "bytes": 135971
+    },
+    "after/desktop-matches-00000000-0000-0000-0000-000000000000.png": {
+      "sha256": "b702e78202919bad09a1f3b8fdfd6f6816180d8067efc4f0ccf2cd7bf22c6287",
+      "bytes": 83721
+    },
+    "after/desktop-generators.png": {
+      "sha256": "c944a8e5b7876e5af4e8ab2433345d01ba666d42aec6709b1fabe5237e805edd",
+      "bytes": 113057
+    },
+    "after/phone-maps-new.png": {
+      "sha256": "b751827eb5e3bc56b028a84e99be9d2e0c87d8015d4c6d72b3cd4c15e59ba549",
+      "bytes": 80768
+    },
+    "after/desktop-players.png": {
+      "sha256": "06a5fd83782b76e9690a8f1375cd6a40005a786e06c34f012a0c1f57d733d625",
+      "bytes": 163658
+    },
+    "after/phone-ais-new.png": {
+      "sha256": "623aa3a40b81e8c70d4c98dc5092744e8cb6047e6f91999c753ccbc2b0fca0d6",
+      "bytes": 163054
+    },
+    "after/desktop-leaderboard.png": {
+      "sha256": "6e0e1d5d4ff11a596c7a40c0edeb4a98883b974a24b04dbc52242b24cc7f7933",
+      "bytes": 132512
+    },
+    "after/phone-generators-new.png": {
+      "sha256": "8510186e86640f985584f0762e333c84076fb67ecb4f9b3e892bfb2b080d05a2",
+      "bytes": 94755
+    },
+    "after/phone-music-new.png": {
+      "sha256": "66bbfacbfc5f4d040797a7323168d6ec9ea836cf308ccb1d07ecafc70202baf3",
+      "bytes": 89335
+    },
+    "after/desktop-matches.png": {
+      "sha256": "eb5ef1784aca31ead60ddd24e40bcb176fed0068f5a98b8f3e971041ad40cfad",
+      "bytes": 197505
+    },
+    "after/phone-buildings-6b942dbc-c266-442b-a8e4-ec3f5c012a67.png": {
+      "sha256": "d99cde8aec8de08dd57878a4233514e043b4f57f714fca6427a7412e37862162",
+      "bytes": 110953
+    },
+    "after/desktop-maps-47be9d50-be6c-490b-8bc0-b1b3e4d8ae95.png": {
+      "sha256": "5a3079eb6b4cd5fbef2b3b41f0bc82b674ea0f256d9e710407420056d123c6e6",
+      "bytes": 150181
+    },
+    "after/phone-j-NOSUCHCODE.png": {
+      "sha256": "d3aee31c6dc2a665454144ef169eb2225ad8c07dbf30eeed84a7e84ee70d49db",
+      "bytes": 327851
+    },
+    "after/phone-matches-00000000-0000-0000-0000-000000000000.png": {
+      "sha256": "eee42c96fb64805c358c3885f521e8e89d9a2fe3d8e68bc79551d3af66a46710",
+      "bytes": 43970
+    },
+    "after/desktop-players-96a83b6d-137d-4228-a72d-fe48c712114f.png": {
+      "sha256": "82cf5657bcc8c2aa98f3ae6bec4f46a80d922672cebad1b657b329c1607bd804",
+      "bytes": 261655
+    },
+    "after/desktop-matches-712b528e-6c96-43a4-b762-29df3d770379.png": {
+      "sha256": "27b4a40cb927d5cc6c5f191563f0e2fa889d8a8ad6a8bfbc8c8f09eca51fb7d7",
+      "bytes": 235651
+    },
+    "after/desktop-matches-ea492b99-4ce8-4ab9-98be-f506c33a7768.png": {
+      "sha256": "bcdbca85d338a23d0b85073ede10f92285f52b7e91a4fb87c71b42588e946be2",
+      "bytes": 114510
+    },
+    "after/desktop-account.png": {
+      "sha256": "7e007c4327bb58247072aa830ca68c07e47ad36faa13b55d861fc205ecc74366",
+      "bytes": 185705
+    },
+    "after/desktop-sets-new.png": {
+      "sha256": "ee92cc39325ac38518eba4f59b1c51dcb1b92ecf0ccf1179e71e60cd6b2f0866",
+      "bytes": 200891
+    },
+    "after/desktop-ai-studio.png": {
+      "sha256": "3465a53a0c0b6a95ed942bbb4751c9c3cc7fd6d5f96892a84248b49251e37fe3",
+      "bytes": 76719
+    },
+    "after/desktop-building-studio.png": {
+      "sha256": "f648e1c3084205068128a38c4fc05270c94ae308d9044b602ccdbc4568f62426",
+      "bytes": 96386
+    },
+    "after/desktop-map-studio.png": {
+      "sha256": "3a353da319bf9582eb2c0a2cba721405719059ce33e350025fed7aab747985c0",
+      "bytes": 76637
+    },
+    "after/desktop-music-studio.png": {
+      "sha256": "d39504ea68d6fba680d89eebb7c1b7327ec46fcd3e152ebfe0fa4480d4c7c329",
+      "bytes": 76721
+    },
+    "after/desktop-skins.png": {
+      "sha256": "ca5a84ca7318385a142a9562a9def617658c93c2ea3fff10ebdb0a65a4d27b86",
+      "bytes": 76227
+    },
+    "after/desktop-j-GLOBJOIN.png": {
+      "sha256": "43fef140698f2c973138cdd2d1c3d1530bb3c10582d72caa495a49e1863bb690",
+      "bytes": 1160603
+    },
+    "after/phone-maps.png": {
+      "sha256": "fafd99591a6a89b3dd6bedc84d08e77b7ccb542239c5cf77c151ccf72a67c658",
+      "bytes": 158123
+    },
+    "after/phone-sets.png": {
+      "sha256": "f8344142c2d6151b9434728badebf860e21eee15f3b55e6853673e00192da5ec",
+      "bytes": 100435
+    },
+    "after/phone-ais.png": {
+      "sha256": "672df7d2a31258b1e7579338760ff5c1f0cd7579c02df8ebd12696dcc1a14e57",
+      "bytes": 110021
+    },
+    "after/phone-buildings.png": {
+      "sha256": "9c444c9c8151896b32d0be5a99b1c64e1b0dbfaebea19af153b0f07f4030f605",
+      "bytes": 98791
+    },
+    "after/phone-music.png": {
+      "sha256": "ee67338471bd3982b652742fade3c7621f3554e7b1c10c775a79e7ac89571a5c",
+      "bytes": 100094
+    },
+    "after/phone-generators.png": {
+      "sha256": "7474a997854c8d9de61391c98d1cfb06b126db9ffd94c7c0554901f701561cf9",
+      "bytes": 73631
+    },
+    "after/phone-players.png": {
+      "sha256": "52fc2cbbc1add38c09aeeb094b24f35e8d9ada2cc2d05e97b9b46bd0478e1913",
+      "bytes": 159617
+    },
+    "after/phone-leaderboard.png": {
+      "sha256": "f72c415d91fd5d1e88b71542986bbbfb5d73e9def20f1b8a22d7d8246d9e5f3a",
+      "bytes": 88656
+    },
+    "after/phone-matches.png": {
+      "sha256": "516ef9467355ad92a74a69d9870b59c38ed8b7e52449886690381e721aebc398",
+      "bytes": 113144
+    },
+    "after/phone-maps-47be9d50-be6c-490b-8bc0-b1b3e4d8ae95.png": {
+      "sha256": "8461c5c985afa68e984cafac437fb7e188785d89416c9ea2b7b39d395b7237eb",
+      "bytes": 104294
+    },
+    "after/phone-players-96a83b6d-137d-4228-a72d-fe48c712114f.png": {
+      "sha256": "c88a596ac551b7aa3fb6a6dd229307c1a259b0d4be54b0af3f371b82ae4dc4a0",
+      "bytes": 194221
+    },
+    "after/phone-matches-712b528e-6c96-43a4-b762-29df3d770379.png": {
+      "sha256": "1b81a647da4b6f2ba3eb33a1d9273e9b496b2034d67ae02d0c6f378d13717672",
+      "bytes": 186933
+    },
+    "after/phone-matches-ea492b99-4ce8-4ab9-98be-f506c33a7768.png": {
+      "sha256": "2c9d2d24e6a5eabdb0da2a8a302a85dc0188f13cf0dba1fcf7e76d282bab4a81",
+      "bytes": 75504
+    },
+    "after/phone-account.png": {
+      "sha256": "1eae5fca334ad1f9a1901868ba68949642ab8f90fbefdd3d08019ba7392b4716",
+      "bytes": 154258
+    },
+    "after/phone-sets-new.png": {
+      "sha256": "2909586a5444809e61e30aa2645fe5dfec1e14582dcecffe6708abd2e8f15a59",
+      "bytes": 151354
+    },
+    "after/phone-ai-studio.png": {
+      "sha256": "9294bcb9efe8228639aa947422df0296d51e1ae250fc1bc1419cfaac66b66aa4",
+      "bytes": 36838
+    },
+    "after/phone-building-studio.png": {
+      "sha256": "8af01cd4cca08459af0b86f6041b2b71758bedb5e90f5161e0f88fe87d944c4f",
+      "bytes": 56495
+    },
+    "after/phone-map-studio.png": {
+      "sha256": "ea6c931b36a3e4e1413a5dc6fd1981037aac1cd3e9030ec27ff0f2c397877482",
+      "bytes": 36759
+    },
+    "after/phone-music-studio.png": {
+      "sha256": "a435ef0a764e4bd387223f6a40a712f1d867d2ee9386405dc96dd45938701008",
+      "bytes": 36811
+    },
+    "after/phone-skins.png": {
+      "sha256": "e2cabe8e78977d1885ed7713a46b4a5c99a8add27468083c0bc80cc1d1ee0a75",
+      "bytes": 36405
+    },
+    "after/phone-j-GLOBJOIN.png": {
+      "sha256": "9325f46dc017633606e4614d2dfb19b9a0dcdde3c9b27008ca9c8b74517d6afe",
+      "bytes": 169710
+    },
+    "after/report.json": {
+      "sha256": "0f0650b423d803e379a580efcd9b5bd507b34dec4d32a12f69dda21f501fd623",
+      "bytes": 102394
+    },
+    "after/forms-report.json": {
+      "sha256": "90edfad8879302916e50a04baa6edc1d54fe52ad749e2bd9e4d34be352bfdcfe",
+      "bytes": 29184
+    },
+    "after/editor-report.json": {
+      "sha256": "a65d5024504834079b272d41ca3ac6c3ff5ed33c76349dad933b523b4785c475",
+      "bytes": 6440
+    }
+  }
+}

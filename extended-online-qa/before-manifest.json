@@ -1,0 +1,282 @@
+{
+  "head": "c689f93436aa415e24e6bc1c196a0d73e532a42a",
+  "note": "Before responsive CSS; original captures preserved. App was previously built by root; see root web-app-build-final.log for build asset names.",
+  "files": {
+    "desktop-maps.png": {
+      "sha256": "b36ac4b31b22d82bfe0edc7c865846b43db84006d38432fedbd9438d6d6bc5aa",
+      "bytes": 180985
+    },
+    "desktop-sets.png": {
+      "sha256": "3f32e4a524af3a564fb5c9fa23ca094b045b8235aafc2dda957c804b86a525e9",
+      "bytes": 132470
+    },
+    "desktop-ais.png": {
+      "sha256": "9fd30dcf4343aa636ab0d342c2edbe7e58bd12a24001ca0e3ff2e3455954d5be",
+      "bytes": 144160
+    },
+    "desktop-building-family-editor.png": {
+      "sha256": "e7080bde85ef5f97e5835a5e9e7f6ae741eb9d3b64d42c9c1fde1d939fefae3d",
+      "bytes": 244211
+    },
+    "phone-building-family-editor.png": {
+      "sha256": "9bb30f8664c49f70101d74ee3062196ad3da4efe49335c7551bc845d9eb7bbb7",
+      "bytes": 232669
+    },
+    "desktop-buildings.png": {
+      "sha256": "6a6f62d3e62308a65c56bb8b3d3f933e8e667ea936518319d0ea03c57da9642e",
+      "bytes": 137502
+    },
+    "desktop-music.png": {
+      "sha256": "b09718df4f348721f7ad35fa08a8e9bbe516a4b7f5abf6e0c9a0ce8c611bc4a0",
+      "bytes": 135971
+    },
+    "desktop-sets-populated-fixture.png": {
+      "sha256": "b7aadb15cfaee8c4a290be740534295dc401942d552fdb843b082d78ec93a85c",
+      "bytes": 126291
+    },
+    "desktop-ais-populated-fixture.png": {
+      "sha256": "1c6b26381fec5756c1a41c1f9e0e896c6cbd0f5a75f4bf0c488fe754f8493dc8",
+      "bytes": 145461
+    },
+    "desktop-generators.png": {
+      "sha256": "c944a8e5b7876e5af4e8ab2433345d01ba666d42aec6709b1fabe5237e805edd",
+      "bytes": 113057
+    },
+    "desktop-music-populated-fixture.png": {
+      "sha256": "82ee9fcc84e78d8354974dad3b38b512f7a2f56dd9149ffc829265b15adba049",
+      "bytes": 147307
+    },
+    "desktop-players.png": {
+      "sha256": "06a5fd83782b76e9690a8f1375cd6a40005a786e06c34f012a0c1f57d733d625",
+      "bytes": 163658
+    },
+    "phone-sets-populated-fixture.png": {
+      "sha256": "612826e0f96b9b2df9f97ec300abf15e85b0458f9846d1def379bef0db0c44bd",
+      "bytes": 93300
+    },
+    "desktop-leaderboard.png": {
+      "sha256": "789122e2a24ca7d7ab8818fcb080ecb95d4fafc08c616c0ae84909a03d0c7a42",
+      "bytes": 148585
+    },
+    "phone-ais-populated-fixture.png": {
+      "sha256": "520d3c1261d2c2a043430e09a85443088aac3f886eb0632c33e721ec86fc4939",
+      "bytes": 109764
+    },
+    "phone-music-populated-fixture.png": {
+      "sha256": "4c2d1e9ab951d2ae676ecbea038827a0889b937e8b8c0411c24db064a805f93f",
+      "bytes": 108703
+    },
+    "desktop-matches.png": {
+      "sha256": "eb5ef1784aca31ead60ddd24e40bcb176fed0068f5a98b8f3e971041ad40cfad",
+      "bytes": 197505
+    },
+    "desktop-maps-47be9d50-be6c-490b-8bc0-b1b3e4d8ae95.png": {
+      "sha256": "e5072ff4d11869b589081ff98320c000556fa721a93c749163e1cfd50254fa14",
+      "bytes": 150987
+    },
+    "desktop-players-96a83b6d-137d-4228-a72d-fe48c712114f.png": {
+      "sha256": "82cf5657bcc8c2aa98f3ae6bec4f46a80d922672cebad1b657b329c1607bd804",
+      "bytes": 261655
+    },
+    "desktop-matches-712b528e-6c96-43a4-b762-29df3d770379.png": {
+      "sha256": "27b4a40cb927d5cc6c5f191563f0e2fa889d8a8ad6a8bfbc8c8f09eca51fb7d7",
+      "bytes": 235651
+    },
+    "desktop-matches-ea492b99-4ce8-4ab9-98be-f506c33a7768.png": {
+      "sha256": "bcdbca85d338a23d0b85073ede10f92285f52b7e91a4fb87c71b42588e946be2",
+      "bytes": 114510
+    },
+    "desktop-account.png": {
+      "sha256": "7e007c4327bb58247072aa830ca68c07e47ad36faa13b55d861fc205ecc74366",
+      "bytes": 185705
+    },
+    "desktop-sets-new.png": {
+      "sha256": "ee92cc39325ac38518eba4f59b1c51dcb1b92ecf0ccf1179e71e60cd6b2f0866",
+      "bytes": 200891
+    },
+    "desktop-ai-studio.png": {
+      "sha256": "3465a53a0c0b6a95ed942bbb4751c9c3cc7fd6d5f96892a84248b49251e37fe3",
+      "bytes": 76719
+    },
+    "desktop-building-studio.png": {
+      "sha256": "3c7d10c9ef845618e015f966d7ff2ddb23053b2df35b7b8e66c17b30a12b011f",
+      "bytes": 93805
+    },
+    "desktop-map-studio.png": {
+      "sha256": "3a353da319bf9582eb2c0a2cba721405719059ce33e350025fed7aab747985c0",
+      "bytes": 76637
+    },
+    "desktop-music-studio.png": {
+      "sha256": "d39504ea68d6fba680d89eebb7c1b7327ec46fcd3e152ebfe0fa4480d4c7c329",
+      "bytes": 76721
+    },
+    "desktop-skins.png": {
+      "sha256": "ec7ccd030f5a52d6689511ad9a098039061b2369356e5bb5c80e5b8be442319e",
+      "bytes": 76227
+    },
+    "desktop-j-GLOBJOIN.png": {
+      "sha256": "43fef140698f2c973138cdd2d1c3d1530bb3c10582d72caa495a49e1863bb690",
+      "bytes": 1160603
+    },
+    "phone-maps.png": {
+      "sha256": "fafd99591a6a89b3dd6bedc84d08e77b7ccb542239c5cf77c151ccf72a67c658",
+      "bytes": 158123
+    },
+    "phone-sets.png": {
+      "sha256": "f8344142c2d6151b9434728badebf860e21eee15f3b55e6853673e00192da5ec",
+      "bytes": 100435
+    },
+    "phone-ais.png": {
+      "sha256": "672df7d2a31258b1e7579338760ff5c1f0cd7579c02df8ebd12696dcc1a14e57",
+      "bytes": 110021
+    },
+    "phone-buildings.png": {
+      "sha256": "9c444c9c8151896b32d0be5a99b1c64e1b0dbfaebea19af153b0f07f4030f605",
+      "bytes": 98791
+    },
+    "phone-music.png": {
+      "sha256": "ee67338471bd3982b652742fade3c7621f3554e7b1c10c775a79e7ac89571a5c",
+      "bytes": 100094
+    },
+    "phone-generators.png": {
+      "sha256": "0c12102019a61b2a390bcfe3da281266d7b6c62ad6b0bc8b36df5348a4d974f9",
+      "bytes": 73628
+    },
+    "desktop-maps-new.png": {
+      "sha256": "78149f662482a903ff71438bbee5651d9ed6d4e01852d26b20ca1382b54910d1",
+      "bytes": 121974
+    },
+    "phone-players.png": {
+      "sha256": "52fc2cbbc1add38c09aeeb094b24f35e8d9ada2cc2d05e97b9b46bd0478e1913",
+      "bytes": 159617
+    },
+    "phone-leaderboard.png": {
+      "sha256": "dfb20d9c3bb4c89c0f289a242aff2a0aaa2fa40d2c7a9c840c565eddeda253e6",
+      "bytes": 104454
+    },
+    "desktop-ais-new.png": {
+      "sha256": "aa7410d2218fbe384313a748bb34f8d3b7481f703cf0fc3c07853bfb1eda7324",
+      "bytes": 204375
+    },
+    "desktop-generators-new.png": {
+      "sha256": "39406b0595d68139d7d1fd29d0186797bec9f3ef6c78b38c8e82d8debd30c0ee",
+      "bytes": 135990
+    },
+    "phone-matches.png": {
+      "sha256": "516ef9467355ad92a74a69d9870b59c38ed8b7e52449886690381e721aebc398",
+      "bytes": 113144
+    },
+    "desktop-music-new.png": {
+      "sha256": "af11de197bf17bd10b8f8cb33c2eacda50565ad50fbdb9336cfde3e7a9982e67",
+      "bytes": 129154
+    },
+    "phone-maps-47be9d50-be6c-490b-8bc0-b1b3e4d8ae95.png": {
+      "sha256": "9502dab4fd75ec3ecb71e132117a46b4db6fb239b5151e3b58a1d9740dc16aff",
+      "bytes": 107400
+    },
+    "desktop-buildings-6b942dbc-c266-442b-a8e4-ec3f5c012a67.png": {
+      "sha256": "29396d5a9fe959a009771b6b0d9e7ce6949bc6a22f67224a94c902f8a0175de0",
+      "bytes": 150913
+    },
+    "phone-players-96a83b6d-137d-4228-a72d-fe48c712114f.png": {
+      "sha256": "46d85a236c6afc3e085174b1bbe7b6d01b77ae3e18d0323fe649fef1a2801d75",
+      "bytes": 198611
+    },
+    "desktop-j-NOSUCHCODE.png": {
+      "sha256": "b36611378a1e58ca58e8d70e9e4aa42bc55fc9afcba8f1066c9345cadf13df37",
+      "bytes": 1321135
+    },
+    "desktop-matches-00000000-0000-0000-0000-000000000000.png": {
+      "sha256": "ccc3ac7a090aadbf86d515599e7d051faffbc610d0877bdde5c5de27d48aae21",
+      "bytes": 83717
+    },
+    "phone-matches-712b528e-6c96-43a4-b762-29df3d770379.png": {
+      "sha256": "1b81a647da4b6f2ba3eb33a1d9273e9b496b2034d67ae02d0c6f378d13717672",
+      "bytes": 186933
+    },
+    "phone-matches-ea492b99-4ce8-4ab9-98be-f506c33a7768.png": {
+      "sha256": "2c9d2d24e6a5eabdb0da2a8a302a85dc0188f13cf0dba1fcf7e76d282bab4a81",
+      "bytes": 75504
+    },
+    "phone-maps-new.png": {
+      "sha256": "784ccf98a16e7a74b822b7c59138c750a240ea7837090e683e09e1009f13e1d3",
+      "bytes": 84092
+    },
+    "phone-account.png": {
+      "sha256": "2ee47ded49912548ad914f22ff57b20a82e75df276b02f7dc6f4ad24c65fee75",
+      "bytes": 176341
+    },
+    "phone-ais-new.png": {
+      "sha256": "080a0380d5993ae434888fac5b7179dad5a09f5d2ab0402fc64aa9e92c9524ff",
+      "bytes": 184951
+    },
+    "phone-sets-new.png": {
+      "sha256": "ff3d9351870e1af323cd8670ac42bc3d988326cc0dcb43a19f51f043d90ae28b",
+      "bytes": 174152
+    },
+    "phone-generators-new.png": {
+      "sha256": "165a98ed6e38431af0c588fc1fc570910c9da384c0f8b446c96a6caf6df54dbc",
+      "bytes": 97052
+    },
+    "phone-ai-studio.png": {
+      "sha256": "9294bcb9efe8228639aa947422df0296d51e1ae250fc1bc1419cfaac66b66aa4",
+      "bytes": 36838
+    },
+    "phone-music-new.png": {
+      "sha256": "b7f0720991769ed679168fe4497ee3007191ce1cf751b18f1cfb9a374dc5ccef",
+      "bytes": 87966
+    },
+    "phone-buildings-6b942dbc-c266-442b-a8e4-ec3f5c012a67.png": {
+      "sha256": "f7e75e492fbf53e7da4ee979ded79f20816bd1a07f3eb92a394be4d6c8da5419",
+      "bytes": 110793
+    },
+    "phone-building-studio.png": {
+      "sha256": "6e51cf496113de9551204b7b073931fcae0d70a7f9acff7661f5a196e2801c1c",
+      "bytes": 56225
+    },
+    "phone-j-NOSUCHCODE.png": {
+      "sha256": "d3aee31c6dc2a665454144ef169eb2225ad8c07dbf30eeed84a7e84ee70d49db",
+      "bytes": 327851
+    },
+    "phone-map-studio.png": {
+      "sha256": "ea6c931b36a3e4e1413a5dc6fd1981037aac1cd3e9030ec27ff0f2c397877482",
+      "bytes": 36759
+    },
+    "phone-matches-00000000-0000-0000-0000-000000000000.png": {
+      "sha256": "14e4505350da2b896f0417b36e99cf675f4c23bb14a31f9fdf94780fe09266a9",
+      "bytes": 43970
+    },
+    "phone-music-studio.png": {
+      "sha256": "a435ef0a764e4bd387223f6a40a712f1d867d2ee9386405dc96dd45938701008",
+      "bytes": 36811
+    },
+    "phone-skins.png": {
+      "sha256": "e2cabe8e78977d1885ed7713a46b4a5c99a8add27468083c0bc80cc1d1ee0a75",
+      "bytes": 36405
+    },
+    "phone-j-GLOBJOIN.png": {
+      "sha256": "9325f46dc017633606e4614d2dfb19b9a0dcdde3c9b27008ca9c8b74517d6afe",
+      "bytes": 169710
+    },
+    "report.json": {
+      "sha256": "fcc357be030a4e702715547e4a9eea9b45fea039c0613395abb4b5c03267b886",
+      "bytes": 103243
+    },
+    "forms-report.json": {
+      "sha256": "00913d1f1342750400afd63863317f4a2b9acd556e5b2b9647741c9f8d5d1ef2",
+      "bytes": 30380
+    },
+    "editor-report.json": {
+      "sha256": "285c1b2f8c0ef75b629e4272b84e9e477b7bca5c07dfabc66b2a9aadfe83db45",
+      "bytes": 6441
+    },
+    "populated-report.json": {
+      "sha256": "6287ce95eed82e67593d20a12ce77636580c0b6fa4d61ec30754d90eafc9ba6b",
+      "bytes": 10784
+    },
+    "overflow-diagnosis.json": {
+      "sha256": "40c78685bc3d63ba13693f4ee6027977cdc6a68d22f261e2eb1e7b390222268b",
+      "bytes": 15877
+    }
+  }
+}

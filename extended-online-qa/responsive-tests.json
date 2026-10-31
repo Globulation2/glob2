@@ -1,0 +1,203 @@
+{
+  "config": {
+    "argv": [
+      "/home/bradley/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node",
+      "/home/bradley/.codex/worktrees/5a87/glob2/platform/node_modules/@playwright/test/cli.js",
+      "test",
+      "--config",
+      "artifacts/bulgarian/extended-online-qa/responsive.config.mjs"
+    ],
+    "configFile": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/extended-online-qa/responsive.config.mjs",
+    "rootDir": "/home/bradley/.codex/worktrees/5a87/glob2/platform/apps/web/e2e",
+    "failOnFlakyTests": false,
+    "forbidOnly": false,
+    "fullyParallel": false,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 1
+    },
+    "preserveOutput": "always",
+    "projects": [
+      {
+        "outputDir": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/extended-online-qa/responsive-test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "desktop",
+        "name": "desktop",
+        "testDir": "/home/bradley/.codex/worktrees/5a87/glob2/platform/apps/web/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "localized-layout.spec.ts"
+        ],
+        "timeout": 240000
+      }
+    ],
+    "quiet": false,
+    "reporter": [
+      [
+        "list",
+        null
+      ],
+      [
+        "json",
+        {
+          "outputFile": "/home/bradley/.codex/worktrees/5a87/glob2/artifacts/bulgarian/extended-online-qa/responsive-tests.json"
+        }
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "shard": null,
+    "tags": [],
+    "updateSnapshots": "missing",
+    "updateSourceMethod": "patch",
+    "version": "1.63.0",
+    "workers": 1,
+    "webServer": null
+  },
+  "suites": [
+    {
+      "title": "localized-layout.spec.ts",
+      "file": "localized-layout.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "long localized controls fit phone columns and preserve desktop layout",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 240000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "desktop",
+              "projectName": "desktop",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 100302,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "steps": [
+                    {
+                      "title": "390px /players/96a83b6d-137d-4228-a72d-fe48c712114f",
+                      "duration": 5366
+                    },
+                    {
+                      "title": "390px /maps/47be9d50-be6c-490b-8bc0-b1b3e4d8ae95",
+                      "duration": 4723
+                    },
+                    {
+                      "title": "390px /buildings/6b942dbc-c266-442b-a8e4-ec3f5c012a67",
+                      "duration": 4966
+                    },
+                    {
+                      "title": "390px /account",
+                      "duration": 5543
+                    },
+                    {
+                      "title": "390px /maps/new",
+                      "duration": 4410
+                    },
+                    {
+                      "title": "390px /ais/new",
+                      "duration": 4545
+                    },
+                    {
+                      "title": "390px /generators/new",
+                      "duration": 2092
+                    },
+                    {
+                      "title": "390px /music/new",
+                      "duration": 2248
+                    },
+                    {
+                      "title": "390px /sets/new",
+                      "duration": 4257
+                    },
+                    {
+                      "title": "390px /building-studio/430ed65a-7d99-4ab0-a004-88ea2c207599",
+                      "duration": 8675
+                    },
+                    {
+                      "title": "1280px /players/96a83b6d-137d-4228-a72d-fe48c712114f",
+                      "duration": 6997
+                    },
+                    {
+                      "title": "1280px /maps/47be9d50-be6c-490b-8bc0-b1b3e4d8ae95",
+                      "duration": 4389
+                    },
+                    {
+                      "title": "1280px /buildings/6b942dbc-c266-442b-a8e4-ec3f5c012a67",
+                      "duration": 4064
+                    },
+                    {
+                      "title": "1280px /account",
+                      "duration": 4627
+                    },
+                    {
+                      "title": "1280px /maps/new",
+                      "duration": 5231
+                    },
+                    {
+                      "title": "1280px /ais/new",
+                      "duration": 5665
+                    },
+                    {
+                      "title": "1280px /generators/new",
+                      "duration": 3348
+                    },
+                    {
+                      "title": "1280px /music/new",
+                      "duration": 3261
+                    },
+                    {
+                      "title": "1280px /sets/new",
+                      "duration": 4355
+                    },
+                    {
+                      "title": "1280px /building-studio/430ed65a-7d99-4ab0-a004-88ea2c207599",
+                      "duration": 7104
+                    }
+                  ],
+                  "startTime": "2026-10-31T22:48:47.321Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "f16f9d5c140033279166-a7d4abd6ffb212bd015e",
+          "file": "localized-layout.spec.ts",
+          "line": 8,
+          "column": 1
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-10-31T22:48:40.150Z",
+    "duration": 109222.749,
+    "expected": 1,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  }
+}
