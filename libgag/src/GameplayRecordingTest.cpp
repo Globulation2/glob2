@@ -23,7 +23,7 @@ std::string read(const std::filesystem::path &path)
 std::filesystem::path output(const char *label)
 {
 	return glob2test::artifactDir() /
-		   (std::string(label) + "-" + std::to_string(SDL_GetPerformanceCounter()) + ".mp4");
+		   (std::string(label) + "-" + std::to_string(SDL_GetPerformanceCounter()) + Extension);
 }
 std::optional<CaptureTicket> reserveWhenAvailable(Recorder& recorder)
 {
@@ -287,6 +287,10 @@ TEST_SUITE("GameplayRecording")
 		CHECK_FALSE(recorder.start(output("invalid").string()));
 		CHECK(recorder.status().state == State::Failed);
 		recorder.options.fps = 30;
+		auto wrongExtension = output("wrong-extension");
+		wrongExtension.replace_extension(WebM ? ".mp4" : ".webm");
+		CHECK_FALSE(recorder.start(wrongExtension.string()));
+		CHECK_FALSE(std::filesystem::exists(wrongExtension.string()+".recording"));
 		recorder.options.encoder = EncoderPreference::Software;
 		auto path = output("existing");
 		std::ofstream(path) << "preserve";

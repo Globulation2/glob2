@@ -17,12 +17,15 @@ struct VideoConfiguration
 struct VideoPacket
 {
 	std::vector<unsigned char> bytes;
+	// Some encoders (including AV1) deliver their headers with the first packet.
+	std::vector<unsigned char> extraData;
 	std::int64_t ptsUs = 0, dtsUs = 0, durationUs = 0;
 	bool key = false;
 };
+// Encoder descriptions and packets use the codec selected by this build.
 struct VideoDescription
 {
-	int width = 0, height = 0;
+	int width = 0, height = 0, fps = 30;
 	std::vector<unsigned char> extraData;
 	std::string encoder, fallbackReason;
 };
@@ -66,6 +69,8 @@ class MediaWriter
 	MediaWriter(const MediaWriter &) = delete;
 	MediaWriter &operator=(const MediaWriter &) = delete;
 	void video(const VideoPacket &packet);
+	// AV1 descriptions without sequence headers require the first video packet
+	// before audio, synthetic silence or finalization; early calls throw.
 	// Input timestamps and sample counts are stereo frames, at 48000 Hz.
 	void audio(const std::int16_t *pcm, std::size_t frames, std::int64_t startFrame);
 	void silenceThrough(std::int64_t frame);

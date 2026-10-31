@@ -4,6 +4,10 @@
 #include "../libgag/src/RecordingSession.h"
 #include <nlohmann/json.hpp>
 #include <fstream>
+extern "C"
+{
+#include <libavcodec/avcodec.h>
+}
 
 using namespace GAGCore::Recording;
 using namespace GAGCore::Recording::Detail;
@@ -11,7 +15,7 @@ namespace
 {
 std::string output(const char *name)
 {
-	return (glob2test::artifactDir() / (std::string(name)+"-"+std::to_string(SDL_GetPerformanceCounter())+".mp4")).string();
+	return (glob2test::artifactDir() / (std::string(name)+"-"+std::to_string(SDL_GetPerformanceCounter())+Extension)).string();
 }
 CaptureFrame pixels(std::int64_t time,int width=65,int height=37)
 {
@@ -63,6 +67,41 @@ class FailingHardware final : public VideoEncoder
 }
 TEST_SUITE("RecordingSession")
 {
+	TEST_CASE("selected profile includes only its recording encoders")
+	{
+		CHECK(avcodec_find_encoder_by_name(SoftwareEncoder) != nullptr);
+		CHECK(avcodec_find_encoder_by_name(WebM ? "libopus" : "aac") != nullptr);
+		if (WebM)
+		{
+			CHECK(avcodec_find_encoder(AV_CODEC_ID_H264) == nullptr);
+			CHECK(avcodec_find_encoder(AV_CODEC_ID_AAC) == nullptr);
+			CHECK(avcodec_find_encoder_by_name("libx264") == nullptr);
+		}
+	}
+	TEST_CASE("AV1 writer rejects audio and finalization until its sequence header arrives")
+	{
+		if (std::string(VideoCodec) != "av1") return;
+		auto encoder = createVideoEncoder({64,64,30,23,true});
+		auto description = encoder->description(); description.extraData.clear();
+		const auto path = output("audio-before-video");
+		MediaWriter writer(path,description);
+		std::vector<std::int16_t> samples(960*2,0);
+		CHECK_THROWS_AS(writer.audio(samples.data(),960,0),std::runtime_error);
+		CHECK_THROWS_AS(writer.silenceThrough(960),std::runtime_error);
+		CHECK_THROWS_AS(writer.finish(20000),std::runtime_error);
+		CHECK(std::filesystem::file_size(path)==0);
+
+		// Rejected calls must not consume samples or poison the writer.
+		std::vector<unsigned char> rgba(64*64*4,128);
+		encoder->submit(rgba.data(),64,64,0);
+		VideoPacket packet;
+		REQUIRE(encoder->receive(packet)); REQUIRE_FALSE(packet.extraData.empty());
+		writer.video(packet); writer.audio(samples.data(),960,0);
+		REQUIRE(encoder->finish());
+		while (encoder->receive(packet)) writer.video(packet);
+		writer.finish(20000);
+		CHECK(std::filesystem::file_size(path)>0);
+	}
 	TEST_CASE("session index creation preserves an existing recording")
 	{
 		auto path = output("exclusive") + ".session.json";
@@ -92,10 +131,30 @@ TEST_SUITE("RecordingSession")
 		for (int n=0;n<10 && !session.step(start+1000000);++n) {}
 		REQUIRE(status.state==State::Complete); REQUIRE(status.outputs.size()==2);
 		auto first=manifest(path+".json"),second=manifest(status.outputs.back()+".json");
+		CHECK(first["video_codec"]==VideoCodec); CHECK(first["audio_codec"]==AudioCodec);
+		CHECK(std::filesystem::path(status.outputs.back()).extension()==Extension);
 		CHECK(first["width"]==66); CHECK(first["height"]==38);
 		CHECK(second["width"]==70); CHECK(second["height"]==42);
 		CHECK(second["segment"]==2); CHECK(second["session_start_us"].get<std::int64_t>()>0);
 		CHECK(manifest(path+".session.json")["segments"].size()==2);
+		if (const char *ffmpeg = SDL_getenv("GLOB2_TEST_FFMPEG"))
+		{
+			const auto ffprobe = std::filesystem::path(ffmpeg).parent_path() / "ffprobe";
+			Process probe;
+			probe.launch({ffprobe.string(), "-v", "error", "-show_streams", "-show_chapters",
+				"-of", "json", "-o", path+".probe.json", path}, path+".probe.log", false);
+			REQUIRE(probe.finish()==0);
+			const auto media = manifest(path+".probe.json");
+			REQUIRE(media["streams"].size()>=2);
+			CHECK(media["streams"][0]["codec_name"]==VideoCodec);
+			CHECK(media["streams"][1]["codec_name"]==AudioCodec);
+			CHECK(media["streams"][1]["sample_rate"]=="48000");
+			CHECK(media["chapters"].size()==first["chapters"].size());
+			Process decode;
+			decode.launch({ffmpeg, "-v", "error", "-xerror", "-nostdin", "-i", path,
+				"-f", "null", "-"}, path+".decode.log", false);
+			CHECK(decode.finish()==0);
+		}
 	}
 	TEST_CASE("worker normalizes capture color layout and bottom-up orientation")
 	{
@@ -149,9 +208,9 @@ TEST_SUITE("RecordingSession")
 		for (int n=0;n<20;++n) { auto time=1000000+std::int64_t(n)*1000000/30; session.frame(pixels(time)); session.step(time+50000); }
 		session.stop(1700000); for (int n=0;n<10&&!session.step(1750000);++n) {}
 		REQUIRE(status.state==State::Complete); REQUIRE(status.outputs.size()==2);
-		CHECK(status.encoder=="libx264"); CHECK(status.fallbackReason=="forced asynchronous device loss");
+		CHECK(status.encoder==SoftwareEncoder); CHECK(status.fallbackReason=="forced asynchronous device loss");
 		CHECK(manifest(status.outputs.front()+".json")["encoder"]=="test-hardware");
-		CHECK(manifest(status.outputs.back()+".json")["encoder"]=="libx264");
+		CHECK(manifest(status.outputs.back()+".json")["encoder"]==SoftwareEncoder);
 	}
 	TEST_CASE("hardware flush failure during resize continues with a software segment")
 	{
@@ -160,7 +219,7 @@ TEST_SUITE("RecordingSession")
 		for (int n=0;n<30;++n) { auto time=1000000+std::int64_t(n)*1000000/30; session.frame(pixels(time,n<6?65:69,n<6?37:41)); session.step(time+50000); }
 		session.stop(2000000); for (int n=0;n<10&&!session.step(2050000);++n) {}
 		REQUIRE(status.state==State::Complete); REQUIRE(status.outputs.size()==2);
-		CHECK(status.encoder=="libx264"); CHECK(status.fallbackReason=="forced asynchronous flush failure");
+		CHECK(status.encoder==SoftwareEncoder); CHECK(status.fallbackReason=="forced asynchronous flush failure");
 	}
 	TEST_CASE("capture pressure rejects input within the three-frame budget")
 	{
@@ -183,7 +242,7 @@ TEST_SUITE("RecordingSession")
 			{
 				Session session(path,options,files,[](const Status &) {});
 				for (int n=0;n<120;++n) { auto time=1000000+std::int64_t(n)*1000000/30; session.frame(pixels(time)); session.step(time+50000); }
-				CHECK(std::filesystem::file_size(path+".recording/capture.mp4")>1000);
+				CHECK(std::filesystem::file_size(path+".recording/capture"+Extension)>1000);
 			}
 			if (interruptedMetadata)
 			{ std::ofstream(path+".recording/manifest.json",std::ios::trunc) << "{\"version\":"; }
@@ -198,7 +257,7 @@ TEST_SUITE("RecordingSession")
 		if (!ffmpeg) return;
 		const auto ffprobe = std::filesystem::path(ffmpeg).parent_path() / "ffprobe";
 		if (!std::filesystem::exists(ffprobe)) return;
-		const auto path = output("legacy-audio");
+		const auto path = std::filesystem::path(output("legacy-audio")).replace_extension(".mp4").string();
 		auto files = nativeSessionStorage(); files.reserve(path);
 		Process generate;
 		generate.launch({ffmpeg, "-v", "error", "-nostdin", "-f", "lavfi", "-i",
@@ -225,11 +284,11 @@ TEST_SUITE("RecordingSession")
 	{
 		auto path=output("recover"); auto files=nativeSessionStorage(); files.reserve(path);
 		files.publish=[](const auto &,const auto &) { throw std::runtime_error("forced publication failure"); };
-		Options options; options.encoder=EncoderPreference::Software;
+		Options options; options.encoder=EncoderPreference::Software; options.fps=12;
 		Status status;
 		{
 			Session session(path,options,files,[&](const Status &s) { status=s; });
-			session.frame(pixels(1000000)); session.step(1000000); session.stop(1033333);
+			session.frame(pixels(1000000)); session.step(1000000); session.stop(1083333);
 			try { session.step(1100000); FAIL("Publication failure must be reported"); }
 			catch (const std::exception &e) { session.fail(e.what()); }
 			CHECK(status.state==State::Failed);
@@ -237,6 +296,7 @@ TEST_SUITE("RecordingSession")
 		CHECK_FALSE(manifest(path+".recording/manifest.json")["complete"].get<bool>());
 		recoverRecording(path,nativeSessionStorage());
 		CHECK(manifest(path+".json")["recovered"]==true);
+		CHECK(std::abs(manifest(path+".json")["duration_us"].get<std::int64_t>()-1000000/12)<=1000);
 		CHECK_FALSE(std::filesystem::exists(path+".recording"));
 	}
 }

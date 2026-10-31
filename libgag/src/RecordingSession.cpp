@@ -58,6 +58,7 @@ SessionStorage nativeSessionStorage()
 void recoverRecording(const std::string &path, const SessionStorage &storage)
 {
 	const auto work = path+".recording/";
+	const auto extension = utf8(std::filesystem::u8path(path).extension());
 	// Alternating checkpoints preserve the previous valid metadata when a write
 	// is interrupted or storage fills. Read one bounded candidate at a time.
 	nlohmann::json manifest;
@@ -84,7 +85,7 @@ void recoverRecording(const std::string &path, const SessionStorage &storage)
 	if (manifest.is_null()) throw std::runtime_error("No valid recording recovery metadata remains");
 	if (manifest.at("version") != 1 || manifest.at("video") != utf8(std::filesystem::u8path(path).filename()))
 		throw std::runtime_error("Recording recovery metadata does not match its output");
-	auto duration = MediaWriter::duration(work+"capture.mp4",storage.open);
+	auto duration = MediaWriter::duration(work+"capture"+extension,storage.open);
 	std::vector<MediaChapter> chapters;
 	for (const auto &c : manifest.at("chapters"))
 	{
@@ -94,7 +95,7 @@ void recoverRecording(const std::string &path, const SessionStorage &storage)
 		if (end > start) chapters.push_back({start,end,c.at("title").get<std::string>()});
 	}
 	if (!chapters.empty()) chapters.back().endUs = duration;
-	MediaWriter::finalize(work+"capture.mp4",work+"final.mp4",chapters,storage.open);
+	MediaWriter::finalize(work+"capture"+extension,work+"final"+extension,chapters,storage.open);
 	manifest["duration_us"] = duration; manifest["complete"] = true; manifest["error"] = ""; manifest["recovered"] = true;
 	auto &list = manifest["chapters"];
 	while (!list.empty() && list.back()["start_us"].get<std::int64_t>() >= duration) list.erase(list.size()-1);
@@ -152,7 +153,7 @@ struct Session::Impl
 			<< ",\"width\":" << status.width << ",\"height\":" << status.height
 			<< ",\"crf\":" << options.crf << ",\"encoder\":" << json(status.encoder)
 			<< ",\"fallback_reason\":" << json(status.fallbackReason)
-			<< ",\"video_codec\":\"h264\",\"audio_codec\":\"aac\",\"dropped_frames\":" << status.droppedFrames
+			<< ",\"video_codec\":" << json(VideoCodec) << ",\"audio_codec\":" << json(AudioCodec) << ",\"dropped_frames\":" << status.droppedFrames
 			<< ",\"dropped_audio_samples\":" << status.droppedAudioSamples << ",\"chapters\":[";
 		for (std::size_t i=0; i<chapters.size(); ++i)
 		{
@@ -175,7 +176,7 @@ struct Session::Impl
 		{
 			auto p = std::filesystem::u8path(base); std::ostringstream suffix;
 			suffix << ".part" << std::setw(4) << std::setfill('0') << status.segment;
-			path = utf8(p.parent_path() / (utf8(p.stem()) + suffix.str() + ".mp4"));
+			path = utf8(p.parent_path() / (utf8(p.stem()) + suffix.str() + utf8(p.extension())));
 			storage.reserve(path);
 		}
 		work = path + ".recording/";
@@ -186,7 +187,7 @@ struct Session::Impl
 		const auto &description = encoder->description();
 		status.encoder = description.encoder;
 		if (!description.fallbackReason.empty()) status.fallbackReason = description.fallbackReason;
-		media = std::make_unique<MediaWriter>(work+"capture.mp4",description,storage.open);
+		media = std::make_unique<MediaWriter>(work+"capture"+Extension,description,storage.open);
 		journal = storage.open(work+"events.jsonl",true);
 		latest = std::move(frame); chapters.clear(); packets = 0;
 		status.state = State::Recording; report(status);
@@ -207,7 +208,7 @@ struct Session::Impl
 			try { bool flushed = encoder->finish(); drain(); if (!flushed) return false; }
 			catch (const std::exception &e)
 			{
-				if (status.encoder == "libx264") throw;
+				if (status.encoder == SoftwareEncoder) throw;
 				status.fallbackReason = e.what(); forceSoftware = true; encoderFailed = true;
 			}
 		}
@@ -223,7 +224,7 @@ struct Session::Impl
 		manifest(false,duration);
 		std::vector<MediaChapter> navigation;
 		for (const auto &c : chapters) navigation.push_back({c.start,c.end,c.context.title(options.chapterTicks)});
-		MediaWriter::finalize(work+"capture.mp4",work+"final.mp4",navigation,storage.open);
+		MediaWriter::finalize(work+"capture"+Extension,work+"final"+Extension,navigation,storage.open);
 		manifest(true,duration); journal.reset();
 		storage.publish(work,path);
 		completed.emplace_back(path,segmentStart); status.outputs.push_back(path);
@@ -363,7 +364,7 @@ bool Session::step(std::int64_t time)
 	}
 	catch (const std::exception &e)
 	{
-		if (s.status.encoder == "libx264") throw;
+		if (s.status.encoder == SoftwareEncoder) throw;
 		s.status.fallbackReason = e.what(); s.forceSoftware = true;
 		s.finish(s.next,true); ++s.status.segment;
 		auto frame = std::move(*s.latest); s.latest.reset(); s.begin(std::move(frame),s.next);
