@@ -464,7 +464,7 @@ jobs:
       - name: Resolve only existing linked Ubuntu 22.04 runtime dependencies
         run: |
           sudo apt-get update -qq
-          sudo apt-get install -y --no-upgrade --no-install-recommends libopusfile0 libopus0 libogg0 libspeex1 libfreetype6 libpng16-16 libjpeg-turbo8 libfribidi0 libpcre3 libssl3 zlib1g libepoxy0 libglu1-mesa
+          sudo apt-get install -y --no-upgrade --no-install-recommends libopusfile0 libopus0 libogg0 libspeex1 libfreetype6 libpng16-16 libjpeg-turbo8 libfribidi0 libpcre3 libssl3 zlib1g libepoxy0 libglu1-mesa libva2 libva-drm2
       - name: Stage the released ELF and dependency closure without rebuilding
         env:
           TAG: ${{ inputs.tag }}
