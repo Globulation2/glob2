@@ -11,6 +11,7 @@
 #include "GlobalContainer.h"
 #include <ScreenStack.h>
 #include <Toolkit.h>
+#include <StringTable.h>
 #include <FileManager.h>
 #include <filesystem>
 namespace
@@ -80,6 +81,17 @@ void views(int width, int height)
 } // namespace
 TEST_SUITE("CommunityMusicUI")
 {
+	TEST_CASE("technical errors use localized catalog messages")
+	{
+		glob2test::HeadlessGlobals globals(glob2test::GlobalsOptions{.loadStrings = true});
+		auto *strings = GAGCore::Toolkit::getStringTable();
+		strings->setLang(strings->getLangCode("fr"));
+		const auto fallback = musicText("Music request failed.");
+		CHECK(fallback != "Music request failed.");
+		CHECK(musicError("Invalid music catalogue.") == fallback);
+		CHECK(musicError("Music download checksum failed.") == fallback);
+		CHECK(musicError("Music download failed.") == musicText("Music download failed."));
+	}
 	TEST_CASE("desktop screens [display][artifacts]")
 	{
 		views(1280, 800);

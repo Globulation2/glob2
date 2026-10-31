@@ -166,6 +166,39 @@ checks draft keys and tokens and reports untranslated entries and English matche
 for review; it does not replace the official checks above. Keep unfinished
 catalogs out of the selectable language inventory.
 
+For a Bulgarian Google Cloud draft, prepare a kit with `--locales bg`, then run:
+
+```sh
+python3 tools/localization/translation_program.py machine-draft \
+  --output artifacts/translation-program --locale bg --project YOUR_PROJECT \
+  --max-cost-usd 10 --rate-per-million 20
+```
+
+This development-only command uses `gcloud auth print-access-token` and Cloud
+Translation Advanced v3 NMT. Confirm the current per-million-character price
+before passing `--rate-per-million`; the default is USD 20. It requires POSIX
+file locking. `--only-keys FILE` selects a JSON array of `native:[key]` and
+`online:key` IDs for a representative pilot; `--limit-entries N` bounds the
+number of blank values filled. Establish the pilot before translating the rest.
+Frozen source contracts, protected tokens, validated response caches and raw
+provider responses stay in the kit. Provider drafts are separate from editable
+catalogs, and resuming fills only blank values. Every attempt reserves its full
+estimated cost durably before sending, including retries and ambiguous failures;
+monthly free credits are not assumed. The ledger covers this kit, not unrelated
+project usage. Reuse the same kit when resuming to retain its budget history.
+Damaged protected tokens or invalid responses stop drafting and retain evidence;
+review the affected entry before resuming rather than guessing a repair.
+
+Bulgarian additionally requires an independent adversarial pass over every batch,
+after semantic review and editorial correction. Use standard Bulgarian Cyrillic
+(`bg`, `Български`), polite plural instructions, and concise action labels. Game
+terms include `работник`, `разузнавач`, `воин`, `рояк`, `хан` and `флаг`; read
+actual gameplay usage and Bulgarian dictionary entries before resolving ambiguous
+labels. English controls meaning; other locale catalogs provide comparisons.
+Agents must review every key and final plural variant, record their actual
+coverage and recheck substantive edits. These records establish agent review,
+not native-human certification.
+
 Register finished catalogs in both inventories and their browser loaders, then
 test system-language selection against the installed catalog set. Mapping a
 system tag alone must never enable an unfinished locale. Punjabi scripts use

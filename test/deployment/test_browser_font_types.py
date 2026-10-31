@@ -43,7 +43,8 @@ class BrowserFontTypeTests(unittest.TestCase):
             assets.launcher_script_fonts(ROOT, root)
             (root / 'locales').mkdir()
             (root / 'locales/hi.json').write_bytes('{"Game text field":"खेल में टेक्स्ट दर्ज करने का बॉक्स"}\n'.encode())
-            paths = [('script-fonts.css', 'text/css'), ('locales/hi.json', 'application/json')]
+            paths = [('script-fonts.css', 'text/css'), ('locales/hi.json', 'application/json'),
+                     ('fonts/sans-core.ttf', 'font/ttf'), ('fonts/LICENSE-DejaVu.txt', 'text/plain')]
             paths += [('fonts/' + font['name'] + '-Regular.ttf', 'font/ttf') for font in manifest['fonts']]
             for name, _ in paths:
                 file = root / name
@@ -91,7 +92,9 @@ class BrowserFontTypeTests(unittest.TestCase):
                                             else:
                                                 decoded = gzip.decompress(body) if encoding == 'gzip' else body
                                                 self.assertEqual(decoded, original)
-                                                if name.endswith('.ttf'):
+                                                if name == 'fonts/sans-core.ttf':
+                                                    self.assertEqual(decoded, (ROOT / 'browser/assets/sans-core.ttf').read_bytes())
+                                                elif name.endswith('.ttf'):
                                                     font = next(f for f in manifest['fonts'] if f['name'] + '-Regular.ttf' == Path(name).name)
                                                     self.assertEqual(hashlib.sha256(decoded).hexdigest(), font['sha256'])
                                         finally:

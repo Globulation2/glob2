@@ -52,6 +52,12 @@ TEST_SUITE("SystemLanguage")
 
 	TEST_CASE("regional and script variants pick the matching catalog")
 	{
+		CHECK(code("bg") == "bg");
+		CHECK(code("bg", "BG") == "bg");
+		CHECK(code("bg_BG") == "bg");
+		CHECK(code("bg-Cyrl-BG") == "bg");
+		CHECK(code("bg-Latn").empty());
+		CHECK(code("bg-u-nu-latn") == "bg");
 		CHECK(code("pt", "BR") == "br");
 		CHECK(code("pt_BR") == "br");
 		CHECK(code("pt", "PT") == "pt");

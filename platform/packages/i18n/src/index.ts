@@ -54,7 +54,9 @@ export function resolveLocale(input: string | readonly string[]): Locale {
     // These catalogs cover a specific written form. Unicode extensions and
     // private-use tags may contain script-like words without selecting a script.
     const writtenScript =
-      language === 'hi'
+      language === 'bg'
+        ? 'cyrl'
+        : language === 'hi'
         ? 'deva'
         : language === 'ur'
           ? 'arab'

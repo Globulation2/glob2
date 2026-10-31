@@ -181,5 +181,197 @@ class TranslationProgramTest(unittest.TestCase):
             self.assertEqual(PROGRAM.audit_review(self.manifest, record, paths), [])
 
 
+class MachineDraftTest(TranslationProgramTest):
+    def setUp(self):
+        super().setUp()
+        self.auth = patch.object(PROGRAM.subprocess, 'check_output', return_value='fake-access-token\n')
+        self.auth_mock = self.auth.start()
+        self.addCleanup(self.auth.stop)
+        self.plurals = patch.object(PROGRAM, 'plural_categories', return_value=['one', 'other'])
+        self.plurals.start()
+        self.addCleanup(self.plurals.stop)
+        self.calls = []
+
+    def response(self, request, timeout):
+        from io import BytesIO
+        payload = json.loads(request.data)
+        self.calls.append(payload)
+        self.assertEqual(timeout, 90)
+        self.assertEqual(request.get_header('Authorization'), 'Bearer fake-access-token')
+        self.assertEqual(payload['sourceLanguageCode'], 'en')
+        self.assertEqual(payload['targetLanguageCode'], 'bg')
+        self.assertLessEqual(sum(map(len, payload['contents'])), 5000)
+        return BytesIO(json.dumps({'translations': [{'translatedText': 'БГ ' + text}
+                                                   for text in payload['contents']]}).encode())
+
+    def run_machine(self, **kwargs):
+        return PROGRAM.machine_draft(self.output, 'bg', 'test-project', **kwargs)
+
+    def test_machine_ordering_native_plural_and_authentication(self):
+        with patch.object(PROGRAM.urllib.request, 'urlopen', side_effect=self.response):
+            result = self.run_machine()
+        self.assertEqual(result['filled'], 5)
+        self.auth_mock.assert_called_once_with(['gcloud', 'auth', 'print-access-token'], text=True)
+        paths = PROGRAM.catalog_paths(self.output, 'bg')
+        native, errors = PROGRAM.CHECKER.read_table(paths['native'])
+        self.assertEqual(errors, [])
+        self.assertEqual(native, {'[hello]': 'БГ Hello', '[value %0]': 'БГ Value %0'})
+        online = json.loads(paths['online'].read_text())
+        self.assertEqual(online['{count} items'], {'one': 'БГ {count} item', 'other': 'БГ {count} items'})
+        self.assertEqual(PROGRAM.check_draft(self.output, 'bg')['errors'], [])
+        self.assertEqual(len(list((self.output / 'machine/bg/raw').glob('*.response.bin'))), 1)
+        self.assertEqual(len(json.loads((self.output / 'machine/bg/provider-drafts.json').read_text())), 5)
+
+    def test_protects_tokens_urls_markup_identifiers_unicode_and_invariants(self):
+        original = 'Use %0 {slot0} <b>mapId</b> https://example.org/a?b=c U+1234 params.teams gameSprite Ctrl+Enter me'
+        protected, replacements = PROGRAM.protect_text(original, ['Ctrl+Enter', 'me'])
+        for token in ('%0', '{slot0}', '<b>', '</b>', 'mapId', 'https://example.org/a?b=c',
+                      'U+1234', 'params.teams', 'gameSprite', 'Ctrl+Enter'):
+            self.assertNotIn(token, protected)
+        self.assertEqual(PROGRAM.restore_text('БГ ' + protected, replacements), 'БГ ' + original)
+        marker = next(iter(replacements))
+        for damaged in (protected.replace(marker, ''), protected + marker):
+            with self.assertRaisesRegex(ValueError, 'damaged protected marker'):
+                PROGRAM.restore_text(damaged, replacements)
+
+    def test_machine_resume_preserves_edits_and_uses_cache(self):
+        with patch.object(PROGRAM.urllib.request, 'urlopen', side_effect=self.response) as network:
+            self.run_machine()
+            paths = PROGRAM.catalog_paths(self.output, 'bg')
+            paths['native'].write_text('[hello]\nРъчно\n[value %0]\nБГ Value %0\n')
+            self.assertEqual(self.run_machine()['filled'], 0)
+            self.assertEqual(network.call_count, 1)
+            # Reset all blanks to exactly the original request partition: cache
+            # reuse must work without authentication or any additional spending.
+            paths['native'].write_text('[hello]\n\n[value %0]\n\n')
+            PROGRAM.write_json(paths['online'], {'Hello': '', '{count} items': {'one': '', 'other': ''}})
+            self.assertEqual(self.run_machine()['paid_requests'], 0)
+            self.assertEqual(network.call_count, 1)
+        self.assertEqual(self.auth_mock.call_count, 1)
+        with patch.object(PROGRAM.urllib.request, 'urlopen') as network:
+            paths['native'].write_text('[hello]\nРъчно\n[value %0]\nБГ Value %0\n')
+            self.run_machine()
+            self.assertIn('Ръчно', paths['native'].read_text())
+            network.assert_not_called()
+
+    def test_machine_cap_reserves_before_io_and_retries_failures(self):
+        import urllib.error
+        def fail(request, timeout):
+            ledger = json.loads((self.output / 'machine/spend-ledger.json').read_text())
+            self.assertEqual(ledger['reservations'][-1]['state'], 'reserved')
+            raise urllib.error.URLError('ambiguous transport failure')
+        with patch.object(PROGRAM.time, 'sleep'), patch.object(PROGRAM.urllib.request, 'urlopen', side_effect=fail) as network:
+            with self.assertRaisesRegex(ValueError, 'reservation retained'):
+                self.run_machine(retries=1)
+            self.assertEqual(network.call_count, 2)
+            ledger = json.loads((self.output / 'machine/spend-ledger.json').read_text())
+            self.assertEqual(len(ledger['reservations']), 2)
+            self.assertTrue(all(r['state'] == 'failed-or-ambiguous' for r in ledger['reservations']))
+            spent = sum(PROGRAM.Decimal(r['reserved_usd']) for r in ledger['reservations'])
+            with self.assertRaisesRegex(ValueError, 'Cost cap would be exceeded'):
+                self.run_machine(max_cost_usd=str(spent))
+            self.assertEqual(network.call_count, 2)
+
+    def test_machine_http_error_body_is_preserved_without_retry(self):
+        from io import BytesIO
+        import urllib.error
+        error = urllib.error.HTTPError('https://translation.googleapis.com/', 403, 'forbidden', {}, BytesIO(b'{"error":"denied"}'))
+        with patch.object(PROGRAM.urllib.request, 'urlopen', side_effect=error) as network:
+            with self.assertRaisesRegex(ValueError, 'reservation retained'):
+                self.run_machine()
+            self.assertEqual(network.call_count, 1)
+        responses = list((self.output / 'machine/bg/raw').glob('*.response.bin'))
+        self.assertEqual([p.read_bytes() for p in responses], [b'{"error":"denied"}'])
+        ledger = json.loads((self.output / 'machine/spend-ledger.json').read_text())
+        self.assertEqual(ledger['reservations'][0]['state'], 'failed-or-ambiguous')
+
+    def test_machine_budget_prevents_first_request(self):
+        with patch.object(PROGRAM.urllib.request, 'urlopen') as network:
+            with self.assertRaisesRegex(ValueError, 'Cost cap would be exceeded'):
+                self.run_machine(max_cost_usd='0.0000001')
+            network.assert_not_called()
+
+    def test_machine_malformed_responses_are_saved_but_never_cached(self):
+        from io import BytesIO
+        for payload in (b'not json', b'{}', b'{"translations":[]}',
+                        b'{"translations":[{"translatedText":null}]}'):
+            with patch.object(PROGRAM.urllib.request, 'urlopen', return_value=BytesIO(payload)):
+                with self.assertRaises(ValueError):
+                    self.run_machine()
+        self.assertEqual(len(list((self.output / 'machine/bg/raw').glob('*.response.bin'))), 4)
+        self.assertEqual(list((self.output / 'machine/bg/cache').glob('*')), [])
+        self.assertEqual(len(json.loads((self.output / 'machine/spend-ledger.json').read_text())['reservations']), 4)
+
+    def test_machine_rejects_marker_damage_and_oversize_before_network(self):
+        from io import BytesIO
+        with patch.object(PROGRAM.urllib.request, 'urlopen', return_value=BytesIO(json.dumps({
+                'translations': [{'translatedText': 'БГ'}] * 5}).encode())):
+            with self.assertRaisesRegex(ValueError, 'damaged protected marker'):
+                self.run_machine()
+        output = self.output / 'oversize'
+        (self.root / PROGRAM.SOURCE_PATHS[1]).write_text('[hello]\n' + 'x' * 5001 + '\n[value %0]\nValue %0\n')
+        PROGRAM.prepare(output, root=self.root, locales=('bg',))
+        with patch.object(PROGRAM.urllib.request, 'urlopen') as network:
+            with self.assertRaisesRegex(ValueError, 'exceeds 5000'):
+                PROGRAM.machine_draft(output, 'bg', 'test-project')
+            network.assert_not_called()
+
+    def test_machine_limit_and_source_contract_integrity(self):
+        with patch.object(PROGRAM.urllib.request, 'urlopen', side_effect=self.response):
+            self.assertEqual(self.run_machine(limit_entries=1)['filled'], 1)
+            self.assertEqual(self.run_machine(limit_entries=1)['filled'], 1)
+        (self.output / 'source/invariants.json').write_text('{} ')
+        with patch.object(PROGRAM.urllib.request, 'urlopen') as network:
+            with self.assertRaisesRegex(ValueError, 'Frozen source contract changed'):
+                self.run_machine()
+            network.assert_not_called()
+
+    def test_machine_only_keys_filters_exact_ids_and_checks_unknown_ids(self):
+        with patch.object(PROGRAM.urllib.request, 'urlopen', side_effect=self.response) as network:
+            self.assertEqual(self.run_machine(only_keys=['online:{count} items'])['filled'], 2)
+            self.assertEqual(len(self.calls[0]['contents']), 2)
+            self.assertEqual(network.call_count, 1)
+            with self.assertRaisesRegex(ValueError, 'Unknown only-keys'):
+                self.run_machine(only_keys=['native:missing'])
+            self.assertEqual(network.call_count, 1)
+
+    def test_machine_preserves_edit_made_during_provider_request(self):
+        def edited_response(request, timeout):
+            paths = PROGRAM.catalog_paths(self.output, 'bg')
+            paths['native'].write_text('[hello]\nРъчна редакция\n[value %0]\n\n')
+            return self.response(request, timeout)
+        with patch.object(PROGRAM.urllib.request, 'urlopen', side_effect=edited_response):
+            self.run_machine()
+        self.assertIn('Ръчна редакция', PROGRAM.catalog_paths(self.output, 'bg')['native'].read_text())
+        provider = json.loads((self.output / 'machine/bg/provider-drafts.json').read_text())
+        self.assertTrue(any(item['translation'] == 'БГ Hello' for item in provider.values()))
+
+    def test_windows_keeps_nonmachine_commands_usable(self):
+        with patch.object(PROGRAM, 'fcntl', None):
+            with self.assertRaisesRegex(ValueError, 'POSIX file locking'):
+                self.run_machine()
+            self.assertEqual(PROGRAM.prepare(self.output, 1, self.root), self.manifest)
+
+    def test_machine_auth_failure_and_lock_prevent_requests(self):
+        import subprocess
+        with patch.object(PROGRAM.urllib.request, 'urlopen') as network:
+            self.auth_mock.side_effect = subprocess.CalledProcessError(1, 'gcloud')
+            with self.assertRaises(subprocess.CalledProcessError):
+                self.run_machine()
+            with PROGRAM.machine_lock(self.output):
+                with self.assertRaisesRegex(ValueError, 'holds this kit lock'):
+                    self.run_machine()
+            network.assert_not_called()
+
+    def test_bg_requires_adversarial_review_without_changing_existing_gates(self):
+        record, paths = self.complete_record('bg')
+        issues = PROGRAM.audit_review(self.manifest, record, paths)
+        self.assertTrue(any('independent' in issue for issue in issues))
+        for batch in record['batches']:
+            batch['adversarial_reviewer'] = 'agent-d'
+            batch['adversarial_reviewed_keys'] = batch['reviewed_keys']
+        self.assertEqual(PROGRAM.audit_review(self.manifest, record, paths), [])
+
+
 if __name__ == '__main__':
     unittest.main()
