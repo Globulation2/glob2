@@ -246,8 +246,11 @@ explicitly rather than changing correct text merely to avoid an English match.
 
 ### Cloud Translation drafts
 
-After preparing an unregistered kit, `tools/localization/cloud_draft.py --project
-PROJECT_ID` estimates a Bengali pilot without sending a paid request. Add
+Prepare a Bengali kit with `prepare --locales bn --output
+artifacts/bengali-localization` and `draft --locale bn --output
+artifacts/bengali-localization` using the translation-program tool above. Then
+`python3 tools/localization/cloud_draft.py --project PROJECT_ID` estimates a
+Bengali pilot without sending a paid request. Add
 `--execute` to request the pilot through Translation API v3 using the active
 `gcloud` credentials. Review the pilot before running `--phase bulk
 --pilot-reviewed --execute`. `--output` selects the kit and `--locale` selects its
@@ -256,6 +259,8 @@ language. Existing translations are never overwritten.
 The runner defaults to a US$10 ceiling and accounts conservatively at US$20 per
 million NMT input characters without assuming free credits. Every request attempt
 is reserved before transmission, including retries whose outcome may be unknown.
+Verify the current [NMT tariff](https://cloud.google.com/products/translate/pricing)
+before requesting paid drafts; update the accounting rate if it changes.
 Successful responses are cached and checkpointed. Protected-token failures retain
 the response and block retransmission until a reviewer supplies a correction;
 formatting-only templates bypass translation. Keep the accounting and response

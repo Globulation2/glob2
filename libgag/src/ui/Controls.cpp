@@ -1204,7 +1204,7 @@ class TextEditor : public Node
 					break;
 				}
 				if (value[end] == ' ')
-					lastBreak = end + 1;
+					lastBreak = next;
 				end = next;
 			}
 			lines.push_back({value.substr(start, end - start), start});

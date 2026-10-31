@@ -33,7 +33,10 @@ for (const locale of locales) {
       // Prove that the packaged Bengali face loaded, even on a host that also
       // happens to have a Bengali system font. Screenshots alone can hide that.
       const font = await page.evaluate(async () => {
-        const faces = await document.fonts.load('16px "Glob2 Scripts"', 'ক্ষুদ্র শ্রমিকের প্রস্তুতি ১২');
+        const faces = await document.fonts.load(
+          '16px "Glob2 Scripts"',
+          'ক্ষুদ্র শ্রমিকের প্রস্তুতি ১২',
+        );
         const heading = document.querySelector('#hero-title');
         return {
           loaded: faces.length > 0 && faces.every((face) => face.status === 'loaded'),
@@ -78,7 +81,10 @@ for (const locale of locales) {
 for (const language of ['fr', 'bn']) {
   test(`changing to ${language} updates the page without losing input`, async ({ page }) => {
     await page.route('**/api/v1/accounts/me', (route) =>
-      route.fulfill({ status: 401, json: { code: 'unauthenticated', message: 'Sign in required.' } }),
+      route.fulfill({
+        status: 401,
+        json: { code: 'unauthenticated', message: 'Sign in required.' },
+      }),
     );
     await page.goto('/');
     const code = page.locator('input[name="code"]');

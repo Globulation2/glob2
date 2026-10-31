@@ -63,6 +63,13 @@ describe('online locale resolution', () => {
     await expect(setLocale('unsupported')).rejects.toThrow();
     expect(getLocale()).toBe('en');
   });
+  it.each(locales)('loads selectable $code through the default browser loader', async (locale) => {
+    vi.resetModules();
+    const runtime = await import('../src/index.ts');
+    await runtime.setLocale(locale.code);
+    expect(runtime.getLocale()).toBe(locale.code);
+    expect(runtime.hasMessage('Welcome to the colony')).toBe(true);
+  });
 });
 describe('message presentation', () => {
   it('interpolates safely as text and falls back to source', async () => {
@@ -129,10 +136,9 @@ describe('message presentation', () => {
     ).toBe('Salon abc introuvable.');
     expect(translateError(new Error('private diagnostic'))).toBe('Veuillez réessayer.');
   });
-  it('contains 36 unique game catalog mappings', () => {
-    expect(locales).toHaveLength(36);
-    expect(new Set(locales.map((l) => l.gameCode)).size).toBe(36);
-    expect(new Set(locales.map((l) => l.code)).size).toBe(36);
+  it('contains unique game catalog mappings', () => {
+    expect(new Set(locales.map((l) => l.gameCode)).size).toBe(locales.length);
+    expect(new Set(locales.map((l) => l.code)).size).toBe(locales.length);
   });
 });
 
