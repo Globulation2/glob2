@@ -177,15 +177,21 @@ jobs:
           # submission package and EKB, which must stay out of public artifacts.
           $encryption = if ($env:STORE_UPLOAD -eq 'true') { '/l' } else { '/lt' }
           & $tool.FullName pack /f $layout /d $content /pd $output /pc /nogameos /updatesubval /validationcritical $encryption
-          if ($LASTEXITCODE -ne 0) { throw 'MakePkg pack failed.' }
+          $makePkgExit = $LASTEXITCODE
           $package = Get-ChildItem $output -Filter *.msixvc | Select-Object -First 1
           $ekb = Get-ChildItem $output -Filter *.ekb | Select-Object -First 1
           $validator = Get-ChildItem $output -Filter Validator_*.xml | Select-Object -First 1
-          if (-not $package -or -not $validator -or ($env:STORE_UPLOAD -eq 'true' -and -not $ekb)) {
-            throw 'Expected MSIXVC, validator report and (for upload) EKB in the package directory.'
+          if (-not $validator) {
+            Write-Output "::error::MakePkg produced no Submission Validator XML report (exit $makePkgExit)."
+            throw 'Missing Submission Validator XML report.'
           }
           python .github/scripts/windows_store_validator.py $validator.FullName
-          if ($LASTEXITCODE -ne 0) { throw "Submission Validator XML did not pass." }
+          $validatorExit = $LASTEXITCODE
+          if ($makePkgExit -ne 0) { throw "MakePkg pack failed (exit $makePkgExit); XML was inspected above." }
+          if ($validatorExit -ne 0) { throw 'Submission Validator XML did not pass.' }
+          if (-not $package -or ($env:STORE_UPLOAD -eq 'true' -and -not $ekb)) {
+            throw 'Expected MSIXVC and (for upload) EKB in the package directory.'
+          }
           "package_path=$($package.FullName)" >> $env:GITHUB_OUTPUT
           "ekb_path=$($ekb.FullName)" >> $env:GITHUB_OUTPUT
           "validator_path=$($validator.FullName)" >> $env:GITHUB_OUTPUT
