@@ -1,4 +1,4 @@
-import { mkdirSync, readFileSync } from 'node:fs';
+import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { expect, test } from '@playwright/test';
 import { locales } from '../../../packages/i18n/src/locales.ts';
@@ -64,6 +64,44 @@ for (const locale of locales) {
       () => document.documentElement.scrollWidth - document.documentElement.clientWidth,
     );
     expect(overflow).toBeLessThanOrEqual(1);
+    if (locale.code === 'nb') {
+      const inviteCode = page.locator('input[name="code"]');
+      await expect(inviteCode).toHaveAttribute('placeholder', 'Kode eller lenke');
+      await page.evaluate(() => document.fonts.ready);
+      const metrics = await inviteCode.evaluate((element) => {
+        const input = element as HTMLInputElement;
+        const placeholderStyle = getComputedStyle(input, '::placeholder');
+        const inputStyle = getComputedStyle(input);
+        const canvas = document.createElement('canvas');
+        const drawing = canvas.getContext('2d')!;
+        drawing.font = `${placeholderStyle.fontWeight} ${placeholderStyle.fontSize} ${placeholderStyle.fontFamily}`;
+        const letterSpacing = Number.parseFloat(placeholderStyle.letterSpacing) || 0;
+        return {
+          placeholder: input.placeholder,
+          font: drawing.font,
+          textWidth:
+            drawing.measureText(input.placeholder).width +
+            Math.max(0, input.placeholder.length - 1) * letterSpacing,
+          availableWidth:
+            input.clientWidth -
+            Number.parseFloat(inputStyle.paddingLeft) -
+            Number.parseFloat(inputStyle.paddingRight),
+        };
+      });
+      expect(metrics.textWidth).toBeLessThanOrEqual(metrics.availableWidth);
+      await info.attach('nb-invite-placeholder-metrics', {
+        body: Buffer.from(JSON.stringify(metrics, null, 2)),
+        contentType: 'application/json',
+      });
+      if (process.env.SCREENSHOT_DIR) {
+        const directory = resolve(process.env.SCREENSHOT_DIR, info.project.name);
+        mkdirSync(directory, { recursive: true });
+        writeFileSync(
+          resolve(directory, 'nb-placeholder.json'),
+          JSON.stringify(metrics, null, 2) + '\n',
+        );
+      }
+    }
     let screenshotPath: string | undefined;
     if (process.env.SCREENSHOT_DIR) {
       const directory = resolve(process.env.SCREENSHOT_DIR, info.project.name);
