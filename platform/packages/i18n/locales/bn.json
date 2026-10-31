@@ -2501,7 +2501,7 @@
   "{p0} No app?": "{p0} কোনো অ্যাপ নেই?",
   "{p0} Studio is not enabled on this instance.": "এই ইনস্ট্যান্সে {p0} Studio সক্রিয় করা নেই।",
   "{p0} as": "{p0} হিসাবে",
-  "{p0} invited you to their Globulation 2 room{p1}.": "{p0} আপনাকে তাদের Globulation 2 রুম {p1}-এ আমন্ত্রণ জানিয়েছে।",
+  "{p0} invited you to their Globulation 2 room{p1}.": "{p0} আপনাকে{p1} তাঁদের Globulation 2 রুমে আমন্ত্রণ জানিয়েছেন।",
   "{p0} must be an integer from {p1} to {p2}.": "{p0} অবশ্যই {p1} থেকে {p2} পর্যন্ত একটি পূর্ণসংখ্যা হতে হবে।",
   "{p0} sign-in is unavailable right now.": "{p0} সাইন-ইন এই মুহূর্তে অনুপলব্ধ।",
   "{p0}’s room has closed, so this invite no longer works. Ask them for a new link, or start a game of your own.": "{p0}-এর রুমটি বন্ধ হয়ে গেছে, তাই এই আমন্ত্রণটি আর কাজ করছে না। তাদের কাছে একটি নতুন লিঙ্কের জন্য অনুরোধ করুন, অথবা নিজের একটি গেম শুরু করুন।",
