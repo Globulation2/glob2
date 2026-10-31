@@ -5548,14 +5548,6 @@ AI 生成ではない
 氷
 [road]
 小道
-[experiment ice-terrain]
-氷の地形
-[experiment ice-terrain help]
-マップエディターに氷を追加します。地上ユニットの移動速度は半分になり、氷の上でシミュレーションが32ティック進むごとに体力を1失います。氷には建物や資源を配置できません。
-[experiment road-terrain]
-小道の地形
-[experiment road-terrain help]
-マップエディターに風化した小道を追加します。地上ユニットは2倍の速度で移動します。小道には建物を建てられますが、資源は配置できません。飛行ユニットは影響を受けません。
 [experiment markets-v2]
 市場 V2
 [experiment markets-v2 help]
@@ -5704,42 +5696,6 @@ AI 生成ではない
 深水
 [terrain group void]
 虚空
-[experiment obstacle-terrain]
-障害物地形
-[experiment obstacle-terrain help]
-マップエディターに巨石、生け垣、茂みを追加します。地上ユニットは通れず、飛び道具も遮りますが、飛行ユニットは通過できます。建物や資源は置けません。
-[experiment ridge-terrain]
-岩稜地形
-[experiment ridge-terrain help]
-マップエディターに岩稜と露頭を追加します。地上ユニットは通れませんが、塔の攻撃と飛行ユニットは上を通過できます。建物や資源は置けません。
-[experiment barren-terrain]
-不毛な地面
-[experiment barren-terrain help]
-マップエディターに土、粘土、砂利、花畑を追加します。建物を置けますが、その上や周囲では何も育たず、水際としても扱われません。
-[experiment rough-terrain]
-悪路
-[experiment rough-terrain help]
-マップエディターに泥、湿地、深い雪、岩屑地を追加します。地上ユニットの移動速度は約3分の2になります。建物や資源は置けません。
-[experiment path-terrain]
-道の地形
-[experiment path-terrain help]
-マップエディターに土の道と木道を追加します。小道と同じく地上ユニットは2倍の速度で移動でき、建物も置けますが、何も育ちません。
-[experiment lava-terrain]
-溶岩地形
-[experiment lava-terrain help]
-マップエディターに溶岩と熾火の地を追加します。地上ユニットは進入できず、上を通る飛行ユニットは急速に体力を失います。飛び道具は通過します。
-[experiment fertile-terrain]
-肥沃な地面
-[experiment fertile-terrain help]
-マップエディターに壌土、苔、春の草地を追加します。建物や作物を置け、水よりも強く周囲の土地を潤します。
-[experiment deep-water-terrain]
-深水
-[experiment deep-water-terrain help]
-マップエディターに深水と暗い水を追加します。泳ぐユニットの移動は遅くなり、藻は育ちませんが、近くの畑を潤します。
-[experiment void-terrain]
-虚空地形
-[experiment void-terrain help]
-マップエディターに穴と深淵を追加します。飛行ユニットを含め、何も通過できません。飛び道具はその縁で止まります。
 [terrain group custom]
 カスタム
 [terrain group classic]
@@ -5772,8 +5728,6 @@ AI 生成ではない
 ブラシを選んでください。同じグループの地形は共通のルールを持ち、見た目だけが異なります。
 [terrain rule algae grow]
 藻が育つ
-[terrain palette experiments hint]
-ブラシを選んでください。「設定 > 実験」で有効にすると、地形グループがここに追加されます。
 [brush valid on %0]
 配置可能：%0
 [brush valid nowhere]

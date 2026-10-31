@@ -5548,14 +5548,6 @@ Mugatu marrazketa aplikazio osoan. Balio baxuagoek errendatze-lana murrizten dut
 Izotza
 [road]
 Bidezidorra
-[experiment ice-terrain]
-Izotz-lurzorua
-[experiment ice-terrain help]
-Izotza gehitzen du mapa-editorean. Lurreko unitateak abiadura erdian mugitzen dira eta osasun-puntu bat galtzen dute izotzean igarotako 32 simulazio-urrats bakoitzeko. Izotzean ezin da eraikinik edo baliabiderik egon.
-[experiment road-terrain]
-Bidezidor-lurra
-[experiment road-terrain help]
-Bidezidor higatuak gehitzen ditu mapa-editorean. Lurreko unitateak abiadura bikoitzean mugitzen dira. Bidezidorretan eraikinak jar daitezke, baina baliabiderik ez. Unitate hegalariei ez die eragiten.
 [experiment markets-v2]
 Merkatuak V2
 [experiment markets-v2 help]
@@ -5704,42 +5696,6 @@ Lur emankorra
 Ur sakona
 [terrain group void]
 Hutsa
-[experiment obstacle-terrain]
-Oztopo-lurrak
-[experiment obstacle-terrain help]
-Harkaitz handiak, hesiak eta sastrakadiak gehitzen ditu mapa-editorera. Lurreko unitateek ezin dituzte zeharkatu, eta jaurtigaiak geldiarazten dituzte; unitate hegalariak gainetik igarotzen dira. Ezin da eraikinik edo baliabiderik jarri.
-[experiment ridge-terrain]
-Gandor-lurrak
-[experiment ridge-terrain help]
-Harkaitz-gandorrak eta azaleratzeak gehitzen ditu mapa-editorera. Lurreko unitateek ezin dituzte zeharkatu, baina dorreek gainetik tiro egiten dute eta unitate hegalariak igarotzen dira. Ezin da eraikinik edo baliabiderik jarri.
-[experiment barren-terrain]
-Lur antzua
-[experiment barren-terrain help]
-Lurra, buztina, legarra eta lore-belardiak gehitzen ditu mapa-editorera. Eraikinak jar daitezke, baina ez da ezer hazten bertan edo inguruan, eta ez dira urertzetzat hartzen.
-[experiment rough-terrain]
-Lur malkartsua
-[experiment rough-terrain help]
-Lokatza, padurak, elur sakona eta harrizko maldak gehitzen ditu mapa-editorera. Lurreko unitateak ohiko abiaduraren bi heren inguruan mugitzen dira. Ezin da eraikinik edo baliabiderik jarri.
-[experiment path-terrain]
-Bide-lurrak
-[experiment path-terrain help]
-Lurrezko bideak eta zurezko pasabideak gehitzen ditu mapa-editorera. Bidexketan bezala, lurreko unitateak abiadura bikoitzean mugitzen dira eta eraikinak jar daitezke, baina ez da ezer hazten.
-[experiment lava-terrain]
-Laba-lurrak
-[experiment lava-terrain help]
-Laba eta txingar-eremuak gehitzen ditu mapa-editorera. Lurreko unitateak ezin dira sartu; gainetik igarotzen diren unitate hegalariek osasuna azkar galtzen dute. Jaurtigaiak gainetik igarotzen dira.
-[experiment fertile-terrain]
-Lur emankorra
-[experiment fertile-terrain help]
-Lur frankoa, goroldioa eta udaberriko belardiak gehitzen ditu mapa-editorera. Eraikinak eta laboreak onartzen dituzte, eta inguruko lurrak urak baino indar handiagoz ureztatzen dituzte.
-[experiment deep-water-terrain]
-Ur sakona
-[experiment deep-water-terrain help]
-Ur sakona eta iluna gehitzen ditu mapa-editorera. Igerilariak motelago igarotzen dira, ez da algarik hazten, eta inguruko soroak ureztatzen jarraitzen dute.
-[experiment void-terrain]
-Huts-lurrak
-[experiment void-terrain help]
-Zuloak eta leizeak gehitzen ditu mapa-editorera. Ezerk ezin ditu zeharkatu, ezta unitate hegalariek ere, eta jaurtigaiak ertzean gelditzen dira.
 [terrain group custom]
 Pertsonalizatua
 [terrain group classic]
@@ -5772,8 +5728,6 @@ Hegalariei kalte egiten die
 Aukeratu pintzel bat. Taldeko kideek arau berak dituzte eta itxuran bakarrik desberdintzen dira.
 [terrain rule algae grow]
 Algak hazten dira
-[terrain palette experiments hint]
-Aukeratu pintzel bat. Lur-talde gehiago agertzen dira haien esperimentuak Ezarpenak > Esperimentuak atalean aktibatzean.
 [brush valid on %0]
 Hemen jar daiteke: %0
 [brush valid nowhere]

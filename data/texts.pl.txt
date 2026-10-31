@@ -5548,14 +5548,6 @@ Ogranicza rysowanie w całej aplikacji. Niższe wartości zmniejszają nakład p
 Lód
 [road]
 Ścieżka
-[experiment ice-terrain]
-Teren lodowy
-[experiment ice-terrain help]
-Dodaje lód do edytora map. Jednostki lądowe poruszają się z połową prędkości i tracą jeden punkt zdrowia co 32 kroki symulacji na lodzie. Na lodzie nie mogą znajdować się budynki ani zasoby.
-[experiment road-terrain]
-Teren ścieżki
-[experiment road-terrain help]
-Dodaje wydeptane ścieżki do edytora map. Jednostki lądowe poruszają się z podwójną prędkością. Na ścieżkach można stawiać budynki, ale nie mogą się na nich znajdować surowce. Nie wpływa to na jednostki latające.
 [experiment markets-v2]
 Rynki V2
 [experiment markets-v2 help]
@@ -5704,42 +5696,6 @@ Lawa
 Głęboka woda
 [terrain group void]
 Pustka
-[experiment obstacle-terrain]
-Teren z przeszkodami
-[experiment obstacle-terrain help]
-Dodaje do edytora map głazy, żywopłoty i zarośla. Jednostki lądowe nie mogą ich przekroczyć, a pociski się na nich zatrzymują; jednostki latające przelatują nad nimi. Nie można na nich umieszczać budynków ani surowców.
-[experiment ridge-terrain]
-Skalisty teren
-[experiment ridge-terrain help]
-Dodaje do edytora map skalne grzbiety i wychodnie. Jednostki lądowe nie mogą ich przekroczyć, ale wieże strzelają ponad nimi, a jednostki latające przelatują. Nie można na nich umieszczać budynków ani surowców.
-[experiment barren-terrain]
-Jałowa ziemia
-[experiment barren-terrain help]
-Dodaje do edytora map ziemię, glinę, żwir i łąki kwietne. Można na nich budować, ale na nich ani obok nic nie rośnie i nie są traktowane jako brzeg.
-[experiment rough-terrain]
-Trudny teren
-[experiment rough-terrain help]
-Dodaje do edytora map błoto, mokradła, głęboki śnieg i piarg. Jednostki lądowe poruszają się z około dwiema trzecimi zwykłej prędkości. Nie można tu umieszczać budynków ani surowców.
-[experiment path-terrain]
-Teren drogowy
-[experiment path-terrain help]
-Dodaje do edytora map drogi gruntowe i drewniane chodniki. Jak na ścieżkach, jednostki lądowe poruszają się dwukrotnie szybciej i można budować, ale nic nie rośnie.
-[experiment lava-terrain]
-Teren lawowy
-[experiment lava-terrain help]
-Dodaje do edytora map lawę i pola żaru. Jednostki lądowe nie mogą na nie wejść; przelatujące jednostki szybko tracą zdrowie. Pociski przelatują ponad nimi.
-[experiment fertile-terrain]
-Żyzna ziemia
-[experiment fertile-terrain help]
-Dodaje do edytora map żyzną ziemię, mech i wiosenne łąki. Umożliwiają budowę i uprawę roślin oraz nawadniają okolicę silniej niż woda.
-[experiment deep-water-terrain]
-Głęboka woda
-[experiment deep-water-terrain help]
-Dodaje do edytora map głęboką i ciemną wodę. Pływające jednostki przekraczają ją wolniej, glony w niej nie rosną, ale nadal nawadnia okoliczne pola.
-[experiment void-terrain]
-Pustka
-[experiment void-terrain help]
-Dodaje do edytora map dziury i przepaście. Nic nie może ich przekroczyć, nawet jednostki latające, a pociski zatrzymują się na krawędzi.
 [terrain group custom]
 Niestandardowe
 [terrain group classic]
@@ -5772,8 +5728,6 @@ Rani jednostki latające
 Wybierz pędzel. Grupy mają wspólne zasady; ich elementy różnią się tylko wyglądem.
 [terrain rule algae grow]
 Glony rosną
-[terrain palette experiments hint]
-Wybierz pędzel. Więcej grup terenu pojawi się tutaj po włączeniu ich eksperymentów w Ustawienia > Eksperymenty.
 [brush valid on %0]
 Dozwolone na: %0
 [brush valid nowhere]

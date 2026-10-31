@@ -6,7 +6,6 @@
 #include "MapEdit.h"
 #include "MapEditDialog.h"
 #include "Race.h"
-#include "TerrainExperiments.h"
 #include <nlohmann/json.hpp>
 #include <SDL3/SDL.h>
 #include <algorithm>
@@ -131,8 +130,7 @@ TEST_SUITE("BrushCatalog")
 		CHECK(catalog.front().key == "classic");
 		CHECK(ids(catalog.front()) ==
 			  std::vector<std::string>{"terrain/water", "terrain/sand", "terrain/grass"});
-		// Every selectable built-in type is listed, locked exactly when the editor
-		// would not offer it; all members of an expanded group appear inline.
+		// Every selectable built-in type is immediately available.
 		const auto &registry = editor.game.map.terrainRegistry();
 		for (unsigned id = 0; id < TERRAIN_COUNT; ++id)
 		{
@@ -146,8 +144,8 @@ TEST_SUITE("BrushCatalog")
 			}
 			REQUIRE(entry);
 			CHECK(entry->section == BrushSection::Terrain);
-			CHECK(entry->locked == !terrainBrushOffered(registry, type, [&](const std::string &key)
-														{ return editor.experimentEnabled(key); }));
+			CHECK_FALSE(entry->locked);
+			CHECK(entry->experiment.empty());
 			CHECK(entry->swatch.terrain == type);
 			if (id >= 3)
 				CHECK(entry->group == terrainGroupDefinition(terrainGroup(type)).key);
@@ -157,7 +155,7 @@ TEST_SUITE("BrushCatalog")
 		CHECK(ids(*obstacles) ==
 			  std::vector<std::string>{"terrain/boulders", "terrain/hedge", "terrain/thicket"});
 		CHECK(std::all_of(obstacles->entries.begin(), obstacles->entries.end(),
-						  [](const BrushEntry &e) { return e.locked; }));
+						  [](const BrushEntry &e) { return !e.locked; }));
 		CHECK_FALSE(obstacles->rules.empty());
 
 		// Resources: every registry entry, foundation ones included, with placement
@@ -223,10 +221,9 @@ TEST_SUITE("BrushCatalog")
 		CHECK_FALSE(editor.hasMapBeenModified);
 		CHECK_FALSE(editor.enableExperimentForMap("no-such-experiment"));
 
-		// Terrain groups follow the map header too, not just the player's settings.
+		// Terrain needs no map-local experiment.
 		editor.performAction("select boulders");
-		CHECK(editor.currentBrushId() == "resource/gold-ore"); // still locked: the selection stays
-		CHECK(editor.enableExperimentForMap("obstacle-terrain"));
+		CHECK(editor.currentBrushId() == "terrain/boulders");
 		CHECK_FALSE(editor.findBrush("terrain/hedge")->locked);
 		editor.performAction("select terrain hedge");
 		CHECK(editor.currentBrushId() == "terrain/hedge");

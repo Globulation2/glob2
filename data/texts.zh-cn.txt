@@ -5548,14 +5548,6 @@ AI 生成
 冰
 [road]
 小径
-[experiment ice-terrain]
-冰地形
-[experiment ice-terrain help]
-在地图编辑器中添加冰。地面单位以一半速度移动，在冰上每经过32个模拟步就损失1点生命值。冰上不能放置建筑或资源。
-[experiment road-terrain]
-小径地形
-[experiment road-terrain help]
-在地图编辑器中加入风化的小径。地面单位以两倍速度移动。小径允许建筑，但不允许资源。飞行单位不受影响。
 [experiment markets-v2]
 市场 V2
 [experiment markets-v2 help]
@@ -5704,42 +5696,6 @@ AI 生成
 深水
 [terrain group void]
 虚空
-[experiment obstacle-terrain]
-障碍地形
-[experiment obstacle-terrain help]
-向地图编辑器添加巨石、树篱和灌木丛。地面单位无法穿越，弹射物也会被阻挡；飞行单位可以通过。不能放置建筑或资源。
-[experiment ridge-terrain]
-岩脊地形
-[experiment ridge-terrain help]
-向地图编辑器添加岩脊和岩石露头。地面单位无法穿越，但防御塔的射击和飞行单位可以通过。不能放置建筑或资源。
-[experiment barren-terrain]
-贫瘠地面
-[experiment barren-terrain help]
-向地图编辑器添加泥土、黏土、砾石和花草地。可以放置建筑，但其上及周围不会生长任何东西，也不算作岸边。
-[experiment rough-terrain]
-崎岖地面
-[experiment rough-terrain help]
-向地图编辑器添加泥泞、沼泽、深雪和碎石坡。地面单位的移动速度约为正常速度的三分之二。不能放置建筑或资源。
-[experiment path-terrain]
-路径地形
-[experiment path-terrain help]
-向地图编辑器添加土路和木栈道。与小径一样，地面单位以双倍速度移动，并且可以放置建筑，但不会生长任何东西。
-[experiment lava-terrain]
-熔岩地形
-[experiment lava-terrain help]
-向地图编辑器添加熔岩和余烬地。地面单位无法进入；飞行单位穿越时会迅速损失生命值。弹射物可以通过。
-[experiment fertile-terrain]
-肥沃地面
-[experiment fertile-terrain help]
-向地图编辑器添加壤土、苔藓和春日草地。可以放置建筑并种植作物，对周围土地的灌溉效果比水更强。
-[experiment deep-water-terrain]
-深水
-[experiment deep-water-terrain help]
-向地图编辑器添加深水和暗水。游泳单位通过时较慢，其中不生长藻类，但仍可灌溉附近的田地。
-[experiment void-terrain]
-虚空地形
-[experiment void-terrain help]
-向地图编辑器添加坑洞和深渊。任何单位都无法穿越，包括飞行单位；弹射物会在边缘停止。
 [terrain group custom]
 自定义
 [terrain group classic]
@@ -5772,8 +5728,6 @@ AI 生成
 选择画笔。同组地形的规则相同，只在外观上有所区别。
 [terrain rule algae grow]
 藻类生长
-[terrain palette experiments hint]
-选择画笔。在“设置 > 实验功能”中启用对应实验后，这里会显示更多地形组。
 [brush valid on %0]
 可放置于：%0
 [brush valid nowhere]

@@ -5548,14 +5548,6 @@ Uygulamanın tamamında çizimi sınırlar. Daha düşük değerler çizim işin
 Buz
 [road]
 Patika
-[experiment ice-terrain]
-Buz arazisi
-[experiment ice-terrain help]
-Harita düzenleyicisine buz ekler. Kara birimleri yarı hızda hareket eder ve buz üzerinde geçen her 32 simülasyon adımında bir sağlık puanı kaybeder. Buz üzerinde bina veya kaynak bulunamaz.
-[experiment road-terrain]
-Patika arazisi
-[experiment road-terrain help]
-Harita düzenleyicisine aşınmış patikalar ekler. Kara birimleri iki kat hızla hareket eder. Patikalarda bina bulunabilir, ancak kaynak bulunamaz. Uçan birimler etkilenmez.
 [experiment markets-v2]
 Pazarlar V2
 [experiment markets-v2 help]
@@ -5704,42 +5696,6 @@ Verimli arazi
 Derin su
 [terrain group void]
 Boşluk
-[experiment obstacle-terrain]
-Engel arazisi
-[experiment obstacle-terrain help]
-Harita düzenleyicisine kaya blokları, bitki çitleri ve çalılıklar ekler. Kara birimleri bunları aşamaz ve bunlar mermileri durdurur; uçan birimler üzerinden geçer. Üzerlerinde bina veya kaynak bulunamaz.
-[experiment ridge-terrain]
-Sırt arazisi
-[experiment ridge-terrain help]
-Harita düzenleyicisine kayalık sırtlar ve kaya çıkıntıları ekler. Kara birimleri bunları aşamaz, ancak kuleler üzerlerinden ateş eder ve uçan birimler geçer. Üzerlerinde bina veya kaynak bulunamaz.
-[experiment barren-terrain]
-Çorak arazi
-[experiment barren-terrain help]
-Harita düzenleyicisine toprak, kil, çakıl ve çiçekli çayırlar ekler. Üzerlerine bina kurulabilir; üzerlerinde veya yanlarında hiçbir şey büyümez ve kıyı sayılmazlar.
-[experiment rough-terrain]
-Engebeli arazi
-[experiment rough-terrain help]
-Harita düzenleyicisine çamur, bataklık, derin kar ve taş döküntüsü ekler. Kara birimleri yaklaşık üçte iki hızla ilerler. Engebeli arazide bina veya kaynak bulunamaz.
-[experiment path-terrain]
-Yol arazisi
-[experiment path-terrain help]
-Harita düzenleyicisine toprak ve ahşap yollar ekler. Patikalar gibi, kara birimleri iki kat hızla ilerler ve bina kurulabilir, ancak hiçbir şey büyümez.
-[experiment lava-terrain]
-Lav arazisi
-[experiment lava-terrain help]
-Harita düzenleyicisine lav ve kor alanları ekler. Kara birimleri bunlara giremez; üzerinden geçen uçan birimler hızla sağlık kaybeder. Mermiler üzerinden geçer.
-[experiment fertile-terrain]
-Verimli arazi
-[experiment fertile-terrain help]
-Harita düzenleyicisine verimli toprak, yosun ve bahar çayırları ekler. Binaları ve ekinleri destekler, çevrelerindeki araziyi sudan daha güçlü sularlar.
-[experiment deep-water-terrain]
-Derin su
-[experiment deep-water-terrain help]
-Harita düzenleyicisine derin ve karanlık su ekler. Yüzücüler daha yavaş geçer, içlerinde alg büyümez ve yine de yakındaki tarlaları sularlar.
-[experiment void-terrain]
-Boşluk arazisi
-[experiment void-terrain help]
-Harita düzenleyicisine çukurlar ve uçurumlar ekler. Uçan birimler dâhil hiçbir şey bunları aşamaz ve mermiler kenarlarında durur.
 [terrain group custom]
 Özel
 [terrain group classic]
@@ -5772,8 +5728,6 @@ Uçanlara zarar verir
 Bir fırça seçin. Her grubun arazi türleri aynı kuralları paylaşır ve yalnızca görünüm bakımından farklıdır.
 [terrain rule algae grow]
 Algler büyür
-[terrain palette experiments hint]
-Bir fırça seçin. Ayarlar > Deneyler altında ilgili deneyler etkinleştirildiğinde burada daha fazla arazi grubu görünür.
 [brush valid on %0]
 Geçerli olduğu arazi: %0
 [brush valid nowhere]

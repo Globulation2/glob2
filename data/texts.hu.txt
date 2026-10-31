@@ -5548,14 +5548,6 @@ Korlátozza a rajzolást az egész alkalmazásban. Az alacsonyabb értékek csö
 Jég
 [road]
 Ösvény
-[experiment ice-terrain]
-Jeges terep
-[experiment ice-terrain help]
-Jeget ad a térképszerkesztőhöz. A szárazföldi egységek félsebességgel mozognak, és minden 32 jégen töltött szimulációs lépés után elveszítenek egy életpontot. A jégen nem lehetnek épületek vagy erőforrások.
-[experiment road-terrain]
-Ösvényterep
-[experiment road-terrain help]
-Kitaposott ösvényeket ad a térképszerkesztőhöz. A szárazföldi egységek kétszeres sebességgel mozognak. Az ösvényeken lehet építkezni, de nyersanyagok nem lehetnek rajtuk. A repülő egységeket nem érinti.
 [experiment markets-v2]
 Piacok V2
 [experiment markets-v2 help]
@@ -5704,42 +5696,6 @@ Termékeny talaj
 Mély víz
 [terrain group void]
 Üresség
-[experiment obstacle-terrain]
-Akadályos terep
-[experiment obstacle-terrain help]
-Sziklatömböket, sövényeket és bozótot ad a térképszerkesztőhöz. A földi egységek nem tudnak átkelni rajtuk, és megállítják a lövedékeket; a repülő egységek átrepülnek felettük. Nem lehetnek rajtuk épületek vagy nyersanyagok.
-[experiment ridge-terrain]
-Gerincterep
-[experiment ridge-terrain help]
-Sziklagerinceket és sziklakibúvásokat ad a térképszerkesztőhöz. A földi egységek nem tudnak átkelni rajtuk, de a tornyok átlőnek felettük, és a repülő egységek átrepülnek. Nem lehetnek rajtuk épületek vagy nyersanyagok.
-[experiment barren-terrain]
-Kopár talaj
-[experiment barren-terrain help]
-Földet, agyagot, kavicsot és virágos réteket ad a térképszerkesztőhöz. Épületek állhatnak rajtuk, semmi sem nő rajtuk vagy mellettük, és nem számítanak partnak.
-[experiment rough-terrain]
-Nehéz terep
-[experiment rough-terrain help]
-Sarat, mocsarat, mély havat és kőtörmeléket ad a térképszerkesztőhöz. A földi egységek nagyjából kétharmados sebességgel mozognak. A nehéz terepen nem lehetnek épületek vagy nyersanyagok.
-[experiment path-terrain]
-Útterep
-[experiment path-terrain help]
-Földutakat és pallóutakat ad a térképszerkesztőhöz. Az ösvényekhez hasonlóan a földi egységek kétszeres sebességgel mozognak, és épületek is lehetnek rajtuk, de semmi sem nő.
-[experiment lava-terrain]
-Lávaterep
-[experiment lava-terrain help]
-Lávát és parázsmezőket ad a térképszerkesztőhöz. A földi egységek nem léphetnek rájuk; az átrepülő egységek gyorsan életerőt veszítenek. A lövedékek áthaladnak felettük.
-[experiment fertile-terrain]
-Termékeny talaj
-[experiment fertile-terrain help]
-Termőtalajt, mohát és tavaszi réteket ad a térképszerkesztőhöz. Épületeket és növényeket támogatnak, és a környező földet a víznél erősebben öntözik.
-[experiment deep-water-terrain]
-Mély víz
-[experiment deep-water-terrain help]
-Mély és sötét vizet ad a térképszerkesztőhöz. Az úszók lassabban kelnek át rajtuk, algák nem nőnek bennük, és továbbra is öntözik a közeli mezőket.
-[experiment void-terrain]
-Ürességterep
-[experiment void-terrain help]
-Lyukakat és szakadékokat ad a térképszerkesztőhöz. Semmi sem tud átkelni rajtuk, még a repülő egységek sem, és a lövedékek megállnak a szélükön.
 [terrain group custom]
 Egyéni
 [terrain group classic]
@@ -5772,8 +5728,6 @@ Sebzi a repülőket
 Válasszon ecsetet. Az egy csoportba tartozó terepek azonos szabályokat használnak, és csak megjelenésükben különböznek.
 [terrain rule algae grow]
 Algák nőnek
-[terrain palette experiments hint]
-Válasszon ecsetet. További terepcsoportok jelennek meg itt, ha a Beállítások > Kísérletek alatt bekapcsolja a kísérleteiket.
 [brush valid on %0]
 Érvényes itt: %0
 [brush valid nowhere]

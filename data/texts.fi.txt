@@ -5548,14 +5548,6 @@ Rajoita piirtämistä koko sovelluksessa. Pienemmät arvot vähentävät piirron
 Jää
 [road]
 Polku
-[experiment ice-terrain]
-Jäämaasto
-[experiment ice-terrain help]
-Lisää jäätä karttaeditoriin. Maayksiköt liikkuvat puolella nopeudella ja menettävät yhden terveyspisteen jokaista 32 jäällä vietettyä simulaatioaskelta kohti. Jäälle ei voi sijoittaa rakennuksia tai resursseja.
-[experiment road-terrain]
-Polkumaasto
-[experiment road-terrain help]
-Lisää karttaeditoriin kuluneita polkuja. Maayksiköt liikkuvat kaksinkertaisella nopeudella. Poluille voi rakentaa rakennuksia, mutta niillä ei voi olla resursseja. Lentäviin yksiköihin tämä ei vaikuta.
 [experiment markets-v2]
 Markkinat V2
 [experiment markets-v2 help]
@@ -5704,42 +5696,6 @@ Hedelmällinen maa
 Syvä vesi
 [terrain group void]
 Tyhjyys
-[experiment obstacle-terrain]
-Estemaasto
-[experiment obstacle-terrain help]
-Lisää karttaeditoriin lohkareita, pensasaitoja ja tiheikköjä. Maayksiköt eivät voi ylittää niitä ja ne pysäyttävät ammukset; lentävät yksiköt kulkevat niiden yli. Niillä ei voi olla rakennuksia tai resursseja.
-[experiment ridge-terrain]
-Harjannemaasto
-[experiment ridge-terrain help]
-Lisää karttaeditoriin kallioharjanteita ja kalliopaljastumia. Maayksiköt eivät voi ylittää niitä, mutta tornit ampuvat niiden yli ja lentävät yksiköt voivat ylittää ne. Niillä ei voi olla rakennuksia tai resursseja.
-[experiment barren-terrain]
-Karuton maa
-[experiment barren-terrain help]
-Lisää karttaeditoriin multaa, savea, soraa ja kukkaniittyjä. Niille voi rakentaa, mutta mikään ei kasva niillä tai niiden vieressä eivätkä ne toimi rantana.
-[experiment rough-terrain]
-Vaikeakulkuinen maa
-[experiment rough-terrain help]
-Lisää karttaeditoriin mutaa, soita, syvää lunta ja kivirakkaa. Maayksiköt liikkuvat noin kahden kolmasosan nopeudella. Vaikeakulkuisella maalla ei voi olla rakennuksia tai resursseja.
-[experiment path-terrain]
-Polkumaasto
-[experiment path-terrain help]
-Lisää karttaeditoriin maapolkuja ja pitkospuita. Kuten muillakin poluilla, maayksiköt liikkuvat kaksinkertaisella nopeudella ja rakentaminen on sallittua, mutta mikään ei kasva.
-[experiment lava-terrain]
-Laavamaasto
-[experiment lava-terrain help]
-Lisää karttaeditoriin laavaa ja hiilloskenttiä. Maayksiköt eivät voi mennä niille; niiden yli lentävät yksiköt menettävät nopeasti terveyttä. Ammukset kulkevat yli.
-[experiment fertile-terrain]
-Hedelmällinen maa
-[experiment fertile-terrain help]
-Lisää karttaeditoriin multavaa maata, sammalta ja kevätniittyjä. Niille voi rakentaa ja niillä kasvaa viljaa. Ne kastelevat ympäröivää maata tehokkaammin kuin vesi.
-[experiment deep-water-terrain]
-Syvä vesi
-[experiment deep-water-terrain help]
-Lisää karttaeditoriin syvää ja tummaa vettä. Uimarit ylittävät ne hitaammin, levää ei kasva niissä, ja ne kastelevat silti läheisiä peltoja.
-[experiment void-terrain]
-Tyhjyysmaasto
-[experiment void-terrain help]
-Lisää karttaeditoriin kuoppia ja kuiluja. Mikään ei voi ylittää niitä, eivät edes lentävät yksiköt, ja ammukset pysähtyvät niiden reunaan.
 [terrain group custom]
 Mukautettu
 [terrain group classic]
@@ -5772,8 +5728,6 @@ Vahingoittaa lentäjiä
 Valitse sivellin. Ryhmän jäsenillä on yhteiset säännöt; vain ulkonäkö vaihtelee.
 [terrain rule algae grow]
 Levä kasvaa
-[terrain palette experiments hint]
-Valitse sivellin. Lisää maastoryhmiä ilmestyy tänne, kun niiden kokeilut otetaan käyttöön kohdassa Asetukset > Kokeilut.
 [brush valid on %0]
 Sopii alustalle: %0
 [brush valid nowhere]

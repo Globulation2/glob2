@@ -5548,14 +5548,6 @@ Begränsa ritningen i hela programmet. Lägre värden minskar renderingsarbetet.
 Is
 [road]
 Stig
-[experiment ice-terrain]
-Isterräng
-[experiment ice-terrain help]
-Lägger till is i kartredigeraren. Markenheter rör sig med halva hastigheten och förlorar en hälsopoäng för varje 32 simuleringssteg på isen. Is kan inte innehålla byggnader eller resurser.
-[experiment road-terrain]
-Stigterräng
-[experiment road-terrain help]
-Lägger till slitna stigar i kartredigeraren. Markenheter rör sig med dubbel hastighet. Stigar tillåter byggnader men inga resurser. Flygande enheter påverkas inte.
 [experiment markets-v2]
 Marknader V2
 [experiment markets-v2 help]
@@ -5704,42 +5696,6 @@ Bördig mark
 Djupt vatten
 [terrain group void]
 Tomrum
-[experiment obstacle-terrain]
-Hinderterräng
-[experiment obstacle-terrain help]
-Lägger till stenblock, häckar och snår i kartredigeraren. Markenheter kan inte passera dem och de stoppar projektiler; flygande enheter passerar över. De rymmer varken byggnader eller resurser.
-[experiment ridge-terrain]
-Åsterräng
-[experiment ridge-terrain help]
-Lägger till klippåsar och klippor i kartredigeraren. Markenheter kan inte passera dem, men torn skjuter över dem och flygande enheter passerar. De rymmer varken byggnader eller resurser.
-[experiment barren-terrain]
-Obördig mark
-[experiment barren-terrain help]
-Lägger till jord, lera, grus och blomsterängar i kartredigeraren. Byggnader kan stå på dem, inget växer på eller intill dem och de räknas inte som strand.
-[experiment rough-terrain]
-Svårframkomlig mark
-[experiment rough-terrain help]
-Lägger till gyttja, kärr, djup snö och rasbranter i kartredigeraren. Markenheter rör sig med ungefär två tredjedels hastighet. Svårframkomlig mark rymmer varken byggnader eller resurser.
-[experiment path-terrain]
-Stigterräng
-[experiment path-terrain help]
-Lägger till jordstigar och spänger i kartredigeraren. Precis som på andra stigar rör sig markenheter med dubbel hastighet och byggnader tillåts, men inget växer.
-[experiment lava-terrain]
-Lavaterräng
-[experiment lava-terrain help]
-Lägger till lava och glödfält i kartredigeraren. Markenheter kan inte beträda dem; flygande enheter som passerar förlorar hälsa snabbt. Projektiler passerar över.
-[experiment fertile-terrain]
-Bördig mark
-[experiment fertile-terrain help]
-Lägger till mylla, mossa och vårängar i kartredigeraren. De stöder byggnader och grödor och bevattnar omgivande mark starkare än vatten.
-[experiment deep-water-terrain]
-Djupt vatten
-[experiment deep-water-terrain help]
-Lägger till djupt och mörkt vatten i kartredigeraren. Simmare passerar långsammare, inga alger växer där och de bevattnar fortfarande närliggande fält.
-[experiment void-terrain]
-Tomrumsterräng
-[experiment void-terrain help]
-Lägger till hål och avgrunder i kartredigeraren. Ingenting kan passera dem, inte ens flygande enheter, och projektiler stannar vid kanten.
 [terrain group custom]
 Anpassad
 [terrain group classic]
@@ -5772,8 +5728,6 @@ Skadar flygande
 Välj en pensel. Terrängtyperna inom varje grupp har samma regler och skiljer sig bara i utseende.
 [terrain rule algae grow]
 Alger växer
-[terrain palette experiments hint]
-Välj en pensel. Fler terränggrupper visas här när deras experiment aktiveras under Inställningar > Experiment.
 [brush valid on %0]
 Giltig på: %0
 [brush valid nowhere]

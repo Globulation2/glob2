@@ -5548,14 +5548,6 @@ Limita o desenho em toda a aplicação. Valores mais baixos reduzem o trabalho d
 Gelo
 [road]
 Trilho
-[experiment ice-terrain]
-Terreno de gelo
-[experiment ice-terrain help]
-Adiciona gelo ao editor de mapas. As unidades terrestres movem-se a metade da velocidade e perdem um ponto de vida por cada 32 passos de simulação expostas ao gelo. O gelo não pode conter edifícios nem recursos.
-[experiment road-terrain]
-Terreno de trilho
-[experiment road-terrain help]
-Adiciona trilhos desgastados ao editor de mapas. As unidades terrestres movem-se ao dobro da velocidade. Os trilhos permitem construções, mas não recursos. As unidades voadoras não são afetadas.
 [experiment markets-v2]
 Mercados V2
 [experiment markets-v2 help]
@@ -5704,42 +5696,6 @@ Solo fértil
 Água profunda
 [terrain group void]
 Vazio
-[experiment obstacle-terrain]
-Terreno com obstáculos
-[experiment obstacle-terrain help]
-Adiciona penedos, sebes e matagais ao editor de mapas. As unidades terrestres não podem atravessá-los e eles bloqueiam projéteis; as unidades voadoras passam por cima. Não comportam edifícios nem recursos.
-[experiment ridge-terrain]
-Terreno de cristas
-[experiment ridge-terrain help]
-Adiciona cristas rochosas e afloramentos ao editor de mapas. As unidades terrestres não podem atravessá-los, mas as torres disparam por cima e as unidades voadoras passam. Não comportam edifícios nem recursos.
-[experiment barren-terrain]
-Solo estéril
-[experiment barren-terrain help]
-Adiciona terra, argila, gravilha e prados de flores ao editor de mapas. Podem receber edifícios, nada cresce neles nem ao lado deles, e não contam como margem.
-[experiment rough-terrain]
-Solo acidentado
-[experiment rough-terrain help]
-Adiciona lama, pântanos, neve profunda e cascalheiras ao editor de mapas. As unidades terrestres movem-se a cerca de dois terços da velocidade. O solo acidentado não comporta edifícios nem recursos.
-[experiment path-terrain]
-Terreno de caminhos
-[experiment path-terrain help]
-Adiciona caminhos de terra e passadiços de madeira ao editor de mapas. Como nos trilhos, as unidades terrestres movem-se ao dobro da velocidade e são permitidos edifícios, mas nada cresce.
-[experiment lava-terrain]
-Terreno de lava
-[experiment lava-terrain help]
-Adiciona lava e campos de brasas ao editor de mapas. As unidades terrestres não podem entrar; as unidades voadoras perdem vida rapidamente ao atravessá-los. Os projéteis passam por cima.
-[experiment fertile-terrain]
-Solo fértil
-[experiment fertile-terrain help]
-Adiciona terra fértil, musgo e prados primaveris ao editor de mapas. Permitem edifícios e culturas e irrigam o terreno em redor com mais intensidade do que a água.
-[experiment deep-water-terrain]
-Água profunda
-[experiment deep-water-terrain help]
-Adiciona água profunda e escura ao editor de mapas. Os nadadores atravessam-na mais devagar, não crescem algas nela e continua a irrigar os campos próximos.
-[experiment void-terrain]
-Terreno vazio
-[experiment void-terrain help]
-Adiciona buracos e abismos ao editor de mapas. Nada pode atravessá-los, nem mesmo unidades voadoras, e os projéteis param na margem.
 [terrain group custom]
 Personalizado
 [terrain group classic]
@@ -5772,8 +5728,6 @@ Fere unidades voadoras
 Escolhe um pincel. Os terrenos de cada grupo partilham as mesmas regras e diferem apenas na aparência.
 [terrain rule algae grow]
 Permite algas
-[terrain palette experiments hint]
-Escolhe um pincel. Mais grupos de terreno aparecem aqui quando as respetivas experiências são ativadas em Opções > Experiências.
 [brush valid on %0]
 Válido em: %0
 [brush valid nowhere]

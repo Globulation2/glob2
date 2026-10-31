@@ -5548,14 +5548,6 @@ Giới hạn việc vẽ trong toàn bộ ứng dụng. Giá trị thấp hơn l
 Băng
 [road]
 Đường mòn
-[experiment ice-terrain]
-Địa hình băng
-[experiment ice-terrain help]
-Thêm băng vào trình chỉnh sửa bản đồ. Đơn vị mặt đất di chuyển với một nửa tốc độ và mất một điểm sức khỏe sau mỗi 32 bước mô phỏng trên băng. Không thể đặt công trình hoặc tài nguyên trên băng.
-[experiment road-terrain]
-Địa hình đường mòn
-[experiment road-terrain help]
-Thêm đường mòn phong hóa vào trình chỉnh sửa bản đồ. Đơn vị mặt đất di chuyển với tốc độ gấp đôi. Đường mòn cho phép xây dựng công trình nhưng không có tài nguyên. Đơn vị bay không bị ảnh hưởng.
 [experiment markets-v2]
 Chợ V2
 [experiment markets-v2 help]
@@ -5704,42 +5696,6 @@ Dung nham
 Nước sâu
 [terrain group void]
 Khoảng không
-[experiment obstacle-terrain]
-Địa hình chướng ngại vật
-[experiment obstacle-terrain help]
-Thêm đá tảng, hàng rào cây và bụi rậm vào trình chỉnh sửa bản đồ. Đơn vị mặt đất không thể đi qua và đạn bị chặn; đơn vị bay có thể vượt qua. Không thể đặt công trình hay tài nguyên trên đó.
-[experiment ridge-terrain]
-Địa hình sống đá
-[experiment ridge-terrain help]
-Thêm sống đá và đá lộ thiên vào trình chỉnh sửa bản đồ. Đơn vị mặt đất không thể đi qua, nhưng đạn từ tháp và đơn vị bay có thể vượt qua. Không thể đặt công trình hay tài nguyên trên đó.
-[experiment barren-terrain]
-Đất cằn
-[experiment barren-terrain help]
-Thêm đất, đất sét, sỏi và đồng hoa vào trình chỉnh sửa bản đồ. Có thể đặt công trình, nhưng không có gì mọc trên hoặc cạnh đó, và chúng không được tính là bờ nước.
-[experiment rough-terrain]
-Đất khó đi
-[experiment rough-terrain help]
-Thêm bùn, đầm lầy, tuyết dày và sườn đá vụn vào trình chỉnh sửa bản đồ. Đơn vị mặt đất di chuyển với khoảng hai phần ba tốc độ bình thường. Không thể đặt công trình hay tài nguyên trên đó.
-[experiment path-terrain]
-Địa hình đường
-[experiment path-terrain help]
-Thêm đường đất và lối ván gỗ vào trình chỉnh sửa bản đồ. Giống đường mòn, đơn vị mặt đất đi nhanh gấp đôi và có thể đặt công trình, nhưng không có gì mọc.
-[experiment lava-terrain]
-Địa hình dung nham
-[experiment lava-terrain help]
-Thêm dung nham và bãi than hồng vào trình chỉnh sửa bản đồ. Đơn vị mặt đất không thể vào; đơn vị bay qua sẽ mất máu nhanh. Đạn có thể vượt qua.
-[experiment fertile-terrain]
-Đất màu mỡ
-[experiment fertile-terrain help]
-Thêm đất thịt, rêu và đồng cỏ mùa xuân vào trình chỉnh sửa bản đồ. Chúng hỗ trợ công trình và cây trồng, đồng thời tưới vùng đất xung quanh mạnh hơn nước.
-[experiment deep-water-terrain]
-Nước sâu
-[experiment deep-water-terrain help]
-Thêm nước sâu và nước tối vào trình chỉnh sửa bản đồ. Đơn vị bơi đi qua chậm hơn, tảo không mọc, nhưng vẫn tưới các cánh đồng gần đó.
-[experiment void-terrain]
-Địa hình khoảng không
-[experiment void-terrain help]
-Thêm hố và vực sâu vào trình chỉnh sửa bản đồ. Không gì có thể vượt qua, kể cả đơn vị bay, và đạn dừng ở mép.
 [terrain group custom]
 Tùy chỉnh
 [terrain group classic]
@@ -5772,8 +5728,6 @@ Gây hại cho đơn vị bay
 Chọn cọ. Các địa hình trong cùng nhóm có chung quy tắc và chỉ khác vẻ ngoài.
 [terrain rule algae grow]
 Tảo mọc
-[terrain palette experiments hint]
-Chọn cọ. Các nhóm địa hình khác xuất hiện khi bật thử nghiệm tương ứng trong Cài đặt > Thử nghiệm.
 [brush valid on %0]
 Có thể đặt trên: %0
 [brush valid nowhere]

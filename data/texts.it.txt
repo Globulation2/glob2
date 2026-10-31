@@ -5548,14 +5548,6 @@ Limita il disegno in tutta l’applicazione. Valori inferiori riducono il lavoro
 Ghiaccio
 [road]
 Sentiero
-[experiment ice-terrain]
-Terreno ghiacciato
-[experiment ice-terrain help]
-Aggiunge ghiaccio all’editor delle mappe. Le unità terrestri si muovono a metà velocità e perdono un punto vita ogni 32 passi di simulazione sul ghiaccio. Il ghiaccio non può ospitare edifici o risorse.
-[experiment road-terrain]
-Terreno del sentiero
-[experiment road-terrain help]
-Aggiunge sentieri consumati all’editor di mappe. Le unità terrestri si muovono al doppio della velocità. I sentieri consentono edifici, ma non risorse. Le unità volanti non sono interessate.
 [experiment markets-v2]
 Mercati V2
 [experiment markets-v2 help]
@@ -5704,42 +5696,6 @@ Suolo fertile
 Acqua profonda
 [terrain group void]
 Vuoto
-[experiment obstacle-terrain]
-Terreno con ostacoli
-[experiment obstacle-terrain help]
-Aggiunge massi, siepi e boscaglia all'editor di mappe. Le unità terrestri non possono attraversarli e fermano i proiettili; le unità volanti passano sopra. Non ospitano edifici né risorse.
-[experiment ridge-terrain]
-Terreno di creste
-[experiment ridge-terrain help]
-Aggiunge creste rocciose e affioramenti all'editor di mappe. Le unità terrestri non possono attraversarli, ma le torri sparano sopra e le unità volanti passano. Non ospitano edifici né risorse.
-[experiment barren-terrain]
-Suolo sterile
-[experiment barren-terrain help]
-Aggiunge terra, argilla, ghiaia e prati fioriti all'editor di mappe. Gli edifici possono sorgervi, non cresce nulla sopra o accanto e questi terreni non contano come riva.
-[experiment rough-terrain]
-Suolo accidentato
-[experiment rough-terrain help]
-Aggiunge fango, paludi, neve profonda e ghiaioni all'editor di mappe. Le unità terrestri si muovono a circa due terzi della velocità. Il suolo accidentato non ospita edifici né risorse.
-[experiment path-terrain]
-Terreno di percorsi
-[experiment path-terrain help]
-Aggiunge strade sterrate e passerelle in legno all'editor di mappe. Come sui sentieri, le unità terrestri si muovono a velocità doppia e sono ammessi edifici, ma non cresce nulla.
-[experiment lava-terrain]
-Terreno di lava
-[experiment lava-terrain help]
-Aggiunge lava e campi di braci all'editor di mappe. Le unità terrestri non possono entrarvi; quelle volanti perdono rapidamente salute attraversandoli. I proiettili passano sopra.
-[experiment fertile-terrain]
-Suolo fertile
-[experiment fertile-terrain help]
-Aggiunge terra fertile, muschio e prati primaverili all'editor di mappe. Ospitano edifici e colture e irrigano il terreno vicino più intensamente dell'acqua.
-[experiment deep-water-terrain]
-Acqua profonda
-[experiment deep-water-terrain help]
-Aggiunge acqua profonda e scura all'editor di mappe. I nuotatori la attraversano più lentamente, non vi crescono alghe e continua a irrigare i campi vicini.
-[experiment void-terrain]
-Terreno vuoto
-[experiment void-terrain help]
-Aggiunge buchi e abissi all'editor di mappe. Nulla può attraversarli, neanche le unità volanti, e i proiettili si fermano sul bordo.
 [terrain group custom]
 Personalizzato
 [terrain group classic]
@@ -5772,8 +5728,6 @@ Danneggia le unità volanti
 Scegli un pennello. I terreni di ogni gruppo condividono le stesse regole e differiscono solo nell’aspetto.
 [terrain rule algae grow]
 Le alghe crescono
-[terrain palette experiments hint]
-Scegli un pennello. Qui appaiono altri gruppi di terreno quando i relativi esperimenti sono attivati in Impostazioni > Esperimenti.
 [brush valid on %0]
 Valido su: %0
 [brush valid nowhere]
