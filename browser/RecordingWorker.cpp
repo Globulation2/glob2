@@ -50,7 +50,7 @@ class WebVideo final : public VideoEncoder
 	explicit WebVideo(const VideoConfiguration &c) : id(webOpen(c.width,c.height,c.fps))
 	{
 		if (id < 0) throw std::runtime_error("WebCodecs H.264 configuration unavailable");
-		info.width = c.width; info.height = c.height; info.encoder = "webcodecs";
+		info.width = c.width; info.height = c.height; info.fps = c.fps; info.encoder = "webcodecs";
 		encoders[id] = this;
 	}
 	~WebVideo() override { encoders.erase(id); webClose(id); }

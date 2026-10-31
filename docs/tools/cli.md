@@ -260,11 +260,11 @@ Platform: all.
 | `--window-size` | resolution; pixels | Initial window size in pixels; clamped to at least 640x480. |
 | `--username` | string | Player name. |
 | `--editor-script` | sgsl, usl; default preferences | Map editor script language. |
-| `--record` | file | Record menus and gameplay to MP4; refuses existing files. |
+| `--record` | file | Record menus and gameplay; refuses existing files. |
 | `--videoshot` | string | Record to videoshots/NAME.mp4. |
 | `--record-fps` | integer; default 30; frames/second; 1..240 | Recording frames per second. |
 | `--record-encoder` | auto, software; default auto | Embedded encoder selection. |
-| `--record-crf` | integer; default 23; 0..51 | Software H.264 quality; lower means higher quality. |
+| `--record-crf` | integer; default 23; 0..51 | Software video quality; lower means higher quality. |
 | `--record-chapter-ticks` | integer; default 10000; ticks; 1..1000000000 | Simulation ticks per chapter. |
 | `--data-dir` | directory | Add an asset search directory (in order). Repeatable. |
 | `--generator-package` | file | Load a custom generator package or directory. Repeatable. |
@@ -327,11 +327,11 @@ Platform: all.
 | `--window-size` | resolution; pixels | Initial window size in pixels; clamped to at least 640x480. |
 | `--username` | string | Player name. |
 | `--editor-script` | sgsl, usl; default preferences | Map editor script language. |
-| `--record` | file | Record menus and gameplay to MP4; refuses existing files. |
+| `--record` | file | Record menus and gameplay; refuses existing files. |
 | `--videoshot` | string | Record to videoshots/NAME.mp4. |
 | `--record-fps` | integer; default 30; frames/second; 1..240 | Recording frames per second. |
 | `--record-encoder` | auto, software; default auto | Embedded encoder selection. |
-| `--record-crf` | integer; default 23; 0..51 | Software H.264 quality; lower means higher quality. |
+| `--record-crf` | integer; default 23; 0..51 | Software video quality; lower means higher quality. |
 | `--record-chapter-ticks` | integer; default 10000; ticks; 1..1000000000 | Simulation ticks per chapter. |
 | `--data-dir` | directory | Add an asset search directory (in order). Repeatable. |
 | `--generator-package` | file | Load a custom generator package or directory. Repeatable. |
@@ -785,11 +785,11 @@ Platform: all.
 | `--window-size` | resolution; pixels | Initial window size in pixels; clamped to at least 640x480. |
 | `--username` | string | Player name. |
 | `--editor-script` | sgsl, usl; default preferences | Map editor script language. |
-| `--record` | file | Record menus and gameplay to MP4; refuses existing files. |
+| `--record` | file | Record menus and gameplay; refuses existing files. |
 | `--videoshot` | string | Record to videoshots/NAME.mp4. |
 | `--record-fps` | integer; default 30; frames/second; 1..240 | Recording frames per second. |
 | `--record-encoder` | auto, software; default auto | Embedded encoder selection. |
-| `--record-crf` | integer; default 23; 0..51 | Software H.264 quality; lower means higher quality. |
+| `--record-crf` | integer; default 23; 0..51 | Software video quality; lower means higher quality. |
 | `--record-chapter-ticks` | integer; default 10000; ticks; 1..1000000000 | Simulation ticks per chapter. |
 | `--display` | flag; default false | Render the saved game through the normal presentation loop. |
 | `--compute-threads` | compute; default auto | Shared compute pool; auto prefers physical cores (logical CPU fallback). |
@@ -880,11 +880,11 @@ Platform: all.
 | `--window-size` | resolution; pixels | Initial window size in pixels; clamped to at least 640x480. |
 | `--username` | string | Player name. |
 | `--editor-script` | sgsl, usl; default preferences | Map editor script language. |
-| `--record` | file | Record menus and gameplay to MP4; refuses existing files. |
+| `--record` | file | Record menus and gameplay; refuses existing files. |
 | `--videoshot` | string | Record to videoshots/NAME.mp4. |
 | `--record-fps` | integer; default 30; frames/second; 1..240 | Recording frames per second. |
 | `--record-encoder` | auto, software; default auto | Embedded encoder selection. |
-| `--record-crf` | integer; default 23; 0..51 | Software H.264 quality; lower means higher quality. |
+| `--record-crf` | integer; default 23; 0..51 | Software video quality; lower means higher quality. |
 | `--record-chapter-ticks` | integer; default 10000; ticks; 1..1000000000 | Simulation ticks per chapter. |
 | `--data-dir` | directory | Add an asset search directory (in order). Repeatable. |
 | `--generator-package` | file | Load a custom generator package or directory. Repeatable. |
@@ -948,11 +948,11 @@ Platform: all.
 | `--window-size` | resolution; pixels | Initial window size in pixels; clamped to at least 640x480. |
 | `--username` | string | Player name. |
 | `--editor-script` | sgsl, usl; default preferences | Map editor script language. |
-| `--record` | file | Record menus and gameplay to MP4; refuses existing files. |
+| `--record` | file | Record menus and gameplay; refuses existing files. |
 | `--videoshot` | string | Record to videoshots/NAME.mp4. |
 | `--record-fps` | integer; default 30; frames/second; 1..240 | Recording frames per second. |
 | `--record-encoder` | auto, software; default auto | Embedded encoder selection. |
-| `--record-crf` | integer; default 23; 0..51 | Software H.264 quality; lower means higher quality. |
+| `--record-crf` | integer; default 23; 0..51 | Software video quality; lower means higher quality. |
 | `--record-chapter-ticks` | integer; default 10000; ticks; 1..1000000000 | Simulation ticks per chapter. |
 | `--data-dir` | directory | Add an asset search directory (in order). Repeatable. |
 | `--generator-package` | file | Load a custom generator package or directory. Repeatable. |
@@ -1018,11 +1018,11 @@ Platform: all.
 | `--window-size` | resolution; pixels | Initial window size in pixels; clamped to at least 640x480. |
 | `--username` | string | Player name. |
 | `--editor-script` | sgsl, usl; default preferences | Map editor script language. |
-| `--record` | file | Record menus and gameplay to MP4; refuses existing files. |
+| `--record` | file | Record menus and gameplay; refuses existing files. |
 | `--videoshot` | string | Record to videoshots/NAME.mp4. |
 | `--record-fps` | integer; default 30; frames/second; 1..240 | Recording frames per second. |
 | `--record-encoder` | auto, software; default auto | Embedded encoder selection. |
-| `--record-crf` | integer; default 23; 0..51 | Software H.264 quality; lower means higher quality. |
+| `--record-crf` | integer; default 23; 0..51 | Software video quality; lower means higher quality. |
 | `--record-chapter-ticks` | integer; default 10000; ticks; 1..1000000000 | Simulation ticks per chapter. |
 | `--data-dir` | directory | Add an asset search directory (in order). Repeatable. |
 | `--generator-package` | file | Load a custom generator package or directory. Repeatable. |
@@ -1249,11 +1249,11 @@ Platform: all.
 | `--window-size` | resolution; pixels | Initial window size in pixels; clamped to at least 640x480. |
 | `--username` | string | Player name. |
 | `--editor-script` | sgsl, usl; default preferences | Map editor script language. |
-| `--record` | file | Record menus and gameplay to MP4; refuses existing files. |
+| `--record` | file | Record menus and gameplay; refuses existing files. |
 | `--videoshot` | string | Record to videoshots/NAME.mp4. |
 | `--record-fps` | integer; default 30; frames/second; 1..240 | Recording frames per second. |
 | `--record-encoder` | auto, software; default auto | Embedded encoder selection. |
-| `--record-crf` | integer; default 23; 0..51 | Software H.264 quality; lower means higher quality. |
+| `--record-crf` | integer; default 23; 0..51 | Software video quality; lower means higher quality. |
 | `--record-chapter-ticks` | integer; default 10000; ticks; 1..1000000000 | Simulation ticks per chapter. |
 | `--compute-threads` | compute; default auto | Shared compute pool; auto prefers physical cores (logical CPU fallback). |
 | `--gpu` | on, off | Legacy gradient selection: on=OpenCL, off=CPU automatic; explicit backend takes precedence. |
@@ -1350,11 +1350,11 @@ Platform: all.
 | `--window-size` | resolution; pixels | Initial window size in pixels; clamped to at least 640x480. |
 | `--username` | string | Player name. |
 | `--editor-script` | sgsl, usl; default preferences | Map editor script language. |
-| `--record` | file | Record menus and gameplay to MP4; refuses existing files. |
+| `--record` | file | Record menus and gameplay; refuses existing files. |
 | `--videoshot` | string | Record to videoshots/NAME.mp4. |
 | `--record-fps` | integer; default 30; frames/second; 1..240 | Recording frames per second. |
 | `--record-encoder` | auto, software; default auto | Embedded encoder selection. |
-| `--record-crf` | integer; default 23; 0..51 | Software H.264 quality; lower means higher quality. |
+| `--record-crf` | integer; default 23; 0..51 | Software video quality; lower means higher quality. |
 | `--record-chapter-ticks` | integer; default 10000; ticks; 1..1000000000 | Simulation ticks per chapter. |
 | `--data-dir` | directory | Add an asset search directory (in order). Repeatable. |
 | `--generator-package` | file | Load a custom generator package or directory. Repeatable. |
