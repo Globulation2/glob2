@@ -1,0 +1,13 @@
+{
+  "revision": "60887383753dc130dfdb41621682ac7c1a00c469",
+  "command": [
+    "npm",
+    "--prefix",
+    "platform",
+    "run",
+    "build",
+    "--workspace",
+    "@glob2/web"
+  ],
+  "exit_code": 0
+}

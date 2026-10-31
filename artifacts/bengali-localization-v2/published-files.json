@@ -1,0 +1,602 @@
+[
+  {
+    "path": "artifacts/bengali-localization/adversarial-work/final-native-review.json",
+    "sha256": "a86b1a93f5a3d620af907c28f23941f10ba7554e7b97c0a25919c237bd77bc6a",
+    "bytes": 1043138
+  },
+  {
+    "path": "artifacts/bengali-localization/adversarial-work/final-online-review.json",
+    "sha256": "d63c06958ab1db67d89cf303899e4dd0d442cc74e2d80887df4757fe51cc610b",
+    "bytes": 874587
+  },
+  {
+    "path": "artifacts/bengali-localization/assemble_review.py",
+    "sha256": "ab9a7bf12b09b91b94b4f348514886de53520497723dd92d93921ed540706745",
+    "bytes": 6660
+  },
+  {
+    "path": "artifacts/bengali-localization/author-delta.json",
+    "sha256": "f41ebb77f8624eae00a86108446ae9b1b6c7123c04980978c2189dd68d3284b0",
+    "bytes": 26661
+  },
+  {
+    "path": "artifacts/bengali-localization/author-native-complete.json",
+    "sha256": "debcc49c16a773fe0caba0cfedf54bda8902bd4ca7c7ec0f165b8e4e0aff158b",
+    "bytes": 280582
+  },
+  {
+    "path": "artifacts/bengali-localization/cloud/bn/accounting.json",
+    "sha256": "412d7d9b5dda6c6a7e1f9781de83046a7203b52532ae9ba57071d4614423c373",
+    "bytes": 261049
+  },
+  {
+    "path": "artifacts/bengali-localization/cloud/bn/cache.json",
+    "sha256": "9cc422572a814612a9882d9c4754a899d48018b5cc7266b563ee24bbb4d13178",
+    "bytes": 916272
+  },
+  {
+    "path": "artifacts/bengali-localization/cloud/bn/rejected.json",
+    "sha256": "f73636f5eca7ef5a4bc6e072a1621e95f13f6bd36a303969ef8084bc336302ed",
+    "bytes": 52184
+  },
+  {
+    "path": "artifacts/bengali-localization/drafts/bn/bn.json",
+    "sha256": "137f68d3a933785f6845249f4b73b7cb8c9c928a09877e399f9cc6994785f576",
+    "bytes": 355718
+  },
+  {
+    "path": "artifacts/bengali-localization/drafts/bn/texts.bn.txt",
+    "sha256": "142a264452a5e33f05ac58b921b232704f82d3d5473ea467053c15a4a4d06604",
+    "bytes": 398802
+  },
+  {
+    "path": "artifacts/bengali-localization/editorial-pilot-review.json",
+    "sha256": "068ab30a23b62e7b73db243371c0096ecadcf75ade4551a51ff0553cee87e1c3",
+    "bytes": 6034
+  },
+  {
+    "path": "artifacts/bengali-localization/editorial-work/final-online.json",
+    "sha256": "137f68d3a933785f6845249f4b73b7cb8c9c928a09877e399f9cc6994785f576",
+    "bytes": 355718
+  },
+  {
+    "path": "artifacts/bengali-localization/editorial-work/online-editorial-review.json",
+    "sha256": "8050e5a5c335965a758f2b69cf06cf0d010d437e41d8a4e2534c847fa889d16c",
+    "bytes": 1566828
+  },
+  {
+    "path": "artifacts/bengali-localization/final-native-semantic-review.json",
+    "sha256": "5354a3d62148bcfe3d840c5e15cbc22381acbf0b504f3a3cf692216f2b16c1ef",
+    "bytes": 2971325
+  },
+  {
+    "path": "artifacts/bengali-localization/final-online-semantic-review.json",
+    "sha256": "09f6a18e3733ee9f27a8627b00dfa11372029d9b8f35899ae692fe4e88559f65",
+    "bytes": 2707332
+  },
+  {
+    "path": "artifacts/bengali-localization/font-coverage-bengali.log",
+    "sha256": "9700583d98e8ad52fafc6d9a17e80cd8a36b818d0edaa70168b5a47a09ebe275",
+    "bytes": 98
+  },
+  {
+    "path": "artifacts/bengali-localization/font-http.log",
+    "sha256": "2d771678c02ea972b8101fa39adc68bb0f105abb3870e52d5bc1ef8a896796f9",
+    "bytes": 98
+  },
+  {
+    "path": "artifacts/bengali-localization/i18n-check.log",
+    "sha256": "6674d7827b773a6734b9e486cc713523ff9e6e4ad52536fbc031df793db5d44d",
+    "bytes": 224
+  },
+  {
+    "path": "artifacts/bengali-localization/language-brief.json",
+    "sha256": "233679fda80c94c92500fd52d58dae10445bf20d31dc80398c0df6fc7b6e13ef",
+    "bytes": 8139
+  },
+  {
+    "path": "artifacts/bengali-localization/manifest.json",
+    "sha256": "dec39623393351198ce4f06f4d87ba8ac8f6a76d50a9b35ca83050e249c0c5b9",
+    "bytes": 284522
+  },
+  {
+    "path": "artifacts/bengali-localization/native-editor-work/final-texts.bn.txt",
+    "sha256": "142a264452a5e33f05ac58b921b232704f82d3d5473ea467053c15a4a4d06604",
+    "bytes": 398802
+  },
+  {
+    "path": "artifacts/bengali-localization/native-editorial-review.json",
+    "sha256": "bdb70ae00f6e99e877f462615e0b8fa0e659e47a9f803979fe724804f8e68c9a",
+    "bytes": 792950
+  },
+  {
+    "path": "artifacts/bengali-localization/online-author-review.json",
+    "sha256": "f7c70772967c54c58aa2cfb946b712ce7a7fe95ae6973dbee87599f5b0008a52",
+    "bytes": 553230
+  },
+  {
+    "path": "artifacts/bengali-localization/pinned-fonts.log",
+    "sha256": "b8f4fbc2b06450688b45e37b8188349784db856c2986cc9eb92b7589b24f7d3f",
+    "bytes": 66
+  },
+  {
+    "path": "artifacts/bengali-localization/repaired-pilot-semantic-review.json",
+    "sha256": "933ad76475df637332ba1a344328d71f9767782aaea089482d999c711c2a1f55",
+    "bytes": 26036
+  },
+  {
+    "path": "artifacts/bengali-localization/reviews/bn.json",
+    "sha256": "c8fae5e54ac6ba7761ee09703ec467ef921244e78100c09c82fd9f29a526580e",
+    "bytes": 1197578
+  },
+  {
+    "path": "artifacts/bengali-localization/source/native.json",
+    "sha256": "48a993de84cae8cbadcd7577ce2bf93131299248eb5a93c902f48835e4c471cf",
+    "bytes": 217173
+  },
+  {
+    "path": "artifacts/bengali-localization/source/online.json",
+    "sha256": "63017714064b5a2659aa8e2da27a43af117d3f1e60acbbb44ae5d73d80cd7d69",
+    "bytes": 194411
+  },
+  {
+    "path": "artifacts/bengali-localization/source-based-pilot.json",
+    "sha256": "ad77d64a00f9a00028266b9b3f2aa672defd8b58e10d70075ae609a662bf8107",
+    "bytes": 17959
+  },
+  {
+    "path": "artifacts/bengali-localization/translations-strict.log",
+    "sha256": "50fc0377dfb12eefed79b8fed07f39c8c68aac5ed4c02b05588ea5bc2fb3003f",
+    "bytes": 3160
+  },
+  {
+    "path": "artifacts/bengali-localization/translations-tests.log",
+    "sha256": "b7f924b57023f23c02c8d5afc0150ea5e3970ac1b54de03db631281057dfafd0",
+    "bytes": 107
+  },
+  {
+    "path": "artifacts/bengali-localization/web-font-assets.log",
+    "sha256": "07c10d1d839b305275c57006a032ce11bf523b21160455c4db0559029c9b89fd",
+    "bytes": 559
+  },
+  {
+    "path": "artifacts/bengali-localization-v2/account-room/desktop-authenticated-account.png",
+    "sha256": "63a84522a14cb565560b35698c9c0e2cfecc10fec7910f6c24a2e219ce3acabd",
+    "bytes": 219359
+  },
+  {
+    "path": "artifacts/bengali-localization-v2/account-room/desktop-created-room-invite.png",
+    "sha256": "5385fbe46e5406f9ddc6805a47a258aa1e7757176c8058d4576fe1a9b291ae65",
+    "bytes": 1120715
+  },
+  {
+    "path": "artifacts/bengali-localization-v2/account-room/desktop-guest-home.png",
+    "sha256": "3dce9794d96ad6586cc6f486d34d6ffeabdf9414bb31071eb16a6a17091a0ed5",
+    "bytes": 829928
+  },
+  {
+    "path": "artifacts/bengali-localization-v2/account-room/desktop-registered.png",
+    "sha256": "7cbaa911fd3cb75a977831810726601d55a40226a68aef8e2c65e22e1cae906c",
+    "bytes": 1291817
+  },
+  {
+    "path": "artifacts/bengali-localization-v2/account-room/phone-authenticated-account.png",
+    "sha256": "0fdb482e7a398d15adf42536b9472bd89c9c57e63eac81a92f1297847a6e0818",
+    "bytes": 663508
+  },
+  {
+    "path": "artifacts/bengali-localization-v2/account-room/phone-created-room-invite.png",
+    "sha256": "1be9063be3a00cb4f35a48c8aca46cb40f6add626b479191d78d8ff1915d4e41",
+    "bytes": 859891
+  },
+  {
+    "path": "artifacts/bengali-localization-v2/account-room/phone-guest-home.png",
+    "sha256": "91919e8f32091da3e5c0ca9c1def8ce1d3704c0bdc0d38d402cac613890b9edd",
+    "bytes": 1297689
+  },
+  {
+    "path": "artifacts/bengali-localization-v2/account-room/phone-registered.png",
+    "sha256": "d5a9bada520c27d2aaabdb8b8ee16f7c019c75a2978b9d78521377570748548e",
+    "bytes": 1590319
+  },
+  {
+    "path": "artifacts/bengali-localization-v2/account-room/visual-review.json",
+    "sha256": "80496765cc439895757d303218b9b73523c17491900a0a882d9841357b7ab266",
+    "bytes": 14707
+  },
+  {
+    "path": "artifacts/bengali-localization-v2/adversarial-delta.json",
+    "sha256": "0f918176f472cab8f6a4cefdac515f2c31efe53f7a89e63325f7196ff86df535",
+    "bytes": 3924
+  },
+  {
+    "path": "artifacts/bengali-localization-v2/assemble_review.py",
+    "sha256": "9c14980443b4a1906249cdf0f058b288b6c111638f1c65e0910c356f3a9b5181",
+    "bytes": 12044
+  },
+  {
+    "path": "artifacts/bengali-localization-v2/assembly-audit.json",
+    "sha256": "2e02c40c474e4daaacdefe2cd8fd1dd6c5827d3c90106f613c89a4f368b7e843",
+    "bytes": 1031
+  },
+  {
+    "path": "artifacts/bengali-localization-v2/carry-forward.json",
+    "sha256": "e78bf57da22cabd5ee58f8eb1b2241c23f4788dd9ac06c6c71600addd7a71020",
+    "bytes": 1381335
+  },
+  {
+    "path": "artifacts/bengali-localization-v2/derive-assets.log",
+    "sha256": "1a5f7555a1a2fdc3f15395f0101aab8d8a0197dddbcdadf08776613b57e43a5a",
+    "bytes": 218
+  },
+  {
+    "path": "artifacts/bengali-localization-v2/derived-assets-tests.log",
+    "sha256": "65905486286aaeecca99da6258a69de9f0c93f85a18db78e7917463834ae026c",
+    "bytes": 105
+  },
+  {
+    "path": "artifacts/bengali-localization-v2/drafts/bn/bn.json",
+    "sha256": "5776ba1f7d336c335c408096eb680ab9e551677a100b2f38a991c3ccb7ef1f29",
+    "bytes": 356061
+  },
+  {
+    "path": "artifacts/bengali-localization-v2/drafts/bn/texts.bn.txt",
+    "sha256": "142a264452a5e33f05ac58b921b232704f82d3d5473ea467053c15a4a4d06604",
+    "bytes": 398802
+  },
+  {
+    "path": "artifacts/bengali-localization-v2/editor-delta.json",
+    "sha256": "a5f129fd99d2a25d05a8a8c0729c870dd54f50c9dc31e57200fcf84030fe564c",
+    "bytes": 5822
+  },
+  {
+    "path": "artifacts/bengali-localization-v2/i18n-check.log",
+    "sha256": "1eb19479723f0f0915597b62d175914f0bcec124229564af9a687977cffcad33",
+    "bytes": 224
+  },
+  {
+    "path": "artifacts/bengali-localization-v2/i18n-tests.log",
+    "sha256": "8f47b71053432da3fc339e04da1cccaf9d5411ae379286583ae86f71b577c392",
+    "bytes": 219
+  },
+  {
+    "path": "artifacts/bengali-localization-v2/lint.json",
+    "sha256": "e5089fe86b36cbbb963f801e7f72ba285571f7a4f1f83d5ef8ec81ccf260a0ce",
+    "bytes": 132
+  },
+  {
+    "path": "artifacts/bengali-localization-v2/lint.log",
+    "sha256": "27db8120787d818efa12af0c97d73f156b2ee2cc178a19e247a77222062a2fe9",
+    "bytes": 108
+  },
+  {
+    "path": "artifacts/bengali-localization-v2/manifest.json",
+    "sha256": "8d14a54425f1a1c368531f398ea827c37e74a5c0cdb391fb95dcf2994dc9e05e",
+    "bytes": 284694
+  },
+  {
+    "path": "artifacts/bengali-localization-v2/release-audit-status.json",
+    "sha256": "a0c836762882c51b261a91ca76da7311d432b3fe890aab1fd1543f020634f7ba",
+    "bytes": 396
+  },
+  {
+    "path": "artifacts/bengali-localization-v2/reviews/bn.json",
+    "sha256": "d20b97811c6f6bb48cfd51c110882340d0c67b9d61be0ec084d2d5e7a9f07220",
+    "bytes": 3794903
+  },
+  {
+    "path": "artifacts/bengali-localization-v2/semantic-delta.json",
+    "sha256": "bb6b52d013dff71df8826f8ab4191cb6b80ac615cf1ee477e0f5d059160ee2fa",
+    "bytes": 5535
+  },
+  {
+    "path": "artifacts/bengali-localization-v2/source/native.json",
+    "sha256": "48a993de84cae8cbadcd7577ce2bf93131299248eb5a93c902f48835e4c471cf",
+    "bytes": 217173
+  },
+  {
+    "path": "artifacts/bengali-localization-v2/source/online.json",
+    "sha256": "e91261322cacb21ecaacebdc24a8b2bda9c7d37e321050498f5fff7e5fa31d63",
+    "bytes": 194587
+  },
+  {
+    "path": "artifacts/bengali-localization-v2/structural-current-check-draft.json",
+    "sha256": "70a487c515c2551464b33163bcf7eb5dd37a3d1977c65fc1cce0834930daeb7b",
+    "bytes": 5059
+  },
+  {
+    "path": "artifacts/bengali-localization-v2/translations-strict.log",
+    "sha256": "50fc0377dfb12eefed79b8fed07f39c8c68aac5ed4c02b05588ea5bc2fb3003f",
+    "bytes": 3160
+  },
+  {
+    "path": "artifacts/bengali-localization-v2/translations-tests.log",
+    "sha256": "32b1206ab85a260f96b786d4b98e5a3850b79cce00686b1ce2cb30f23109ae27",
+    "bytes": 107
+  },
+  {
+    "path": "artifacts/bengali-localization-v2/typecheck.json",
+    "sha256": "115ee51aaf59061f692d89b366db24b43072aa852a97898a5c23ba460697a862",
+    "bytes": 137
+  },
+  {
+    "path": "artifacts/bengali-localization-v2/typecheck.log",
+    "sha256": "63f9a087add6fe9823841cf9523048b3f151c9b28ac64452880023a0b86d25cd",
+    "bytes": 107
+  },
+  {
+    "path": "artifacts/bengali-localization-v2/web-build.json",
+    "sha256": "d79ef040c41f215a1ba6da0d24bc389e334ac6fe5bcdee4bce15ae546a5cebb8",
+    "bytes": 202
+  },
+  {
+    "path": "artifacts/bengali-localization-v2/web-build.log",
+    "sha256": "8a520548ac82ec4f28c09ba74f1631aae579e99acaacf3bcd91cf7f827b984d6",
+    "bytes": 23099
+  },
+  {
+    "path": "artifacts/bengali-localization-v2/web-chromium/desktop/bn-account.png",
+    "sha256": "e2aa91e3d4593a87cdbbfb5ec119df99ae92448ea195f458b2903b807983d731",
+    "bytes": 87458
+  },
+  {
+    "path": "artifacts/bengali-localization-v2/web-chromium/desktop/bn-ais.png",
+    "sha256": "2b30b54f3c5db10f0e48744b7140d346a32524f7926a9769636ed1d8463ecb0d",
+    "bytes": 154010
+  },
+  {
+    "path": "artifacts/bengali-localization-v2/web-chromium/desktop/bn-buildings.png",
+    "sha256": "9baeeeb28a67e061626ae4b8674acb2367b9d9c75f4096b2ee98dd49c144b032",
+    "bytes": 137933
+  },
+  {
+    "path": "artifacts/bengali-localization-v2/web-chromium/desktop/bn-home.png",
+    "sha256": "42c7e6d7ec1bc9262e6b4012b1e0a89d753da03b81b4970e4193d786a4020d9a",
+    "bytes": 836862
+  },
+  {
+    "path": "artifacts/bengali-localization-v2/web-chromium/desktop/bn-invite.png",
+    "sha256": "dd528291bfe302fd0581eb7e517a7476eae18d052099e4fde9d282c4996baf2c",
+    "bytes": 1118873
+  },
+  {
+    "path": "artifacts/bengali-localization-v2/web-chromium/desktop/bn-maps.png",
+    "sha256": "c5b8bc6facd75bc2e0cb8ccbddeb2c81c96854721afd19284fc6e168d5f774cd",
+    "bytes": 131001
+  },
+  {
+    "path": "artifacts/bengali-localization-v2/web-chromium/desktop/bn-sets.png",
+    "sha256": "67c8076c7b85ef0193caeb8d3b4b94cd8ac93c32228efcecef4a318760fd589a",
+    "bytes": 122096
+  },
+  {
+    "path": "artifacts/bengali-localization-v2/web-chromium/desktop/bn-signin.png",
+    "sha256": "268abb6b16baef03da02810281af8c7d3d2523e04c72fb820d7d97118e774750",
+    "bytes": 986015
+  },
+  {
+    "path": "artifacts/bengali-localization-v2/web-chromium/phone/bn-account.png",
+    "sha256": "c94fc8673517f08f38b1b77b3fb1096313abc58332ac950c425a08182f5811e5",
+    "bytes": 190039
+  },
+  {
+    "path": "artifacts/bengali-localization-v2/web-chromium/phone/bn-ais.png",
+    "sha256": "e0b6a6a2c2297464cd45e5d4c2953739656e0a3f11a67387ddb37eb8fb2cabbd",
+    "bytes": 457405
+  },
+  {
+    "path": "artifacts/bengali-localization-v2/web-chromium/phone/bn-buildings.png",
+    "sha256": "169f6f6d160e0489f30b4ff6cc17992b501982261a5db8d8e95e0066f499d646",
+    "bytes": 357809
+  },
+  {
+    "path": "artifacts/bengali-localization-v2/web-chromium/phone/bn-home.png",
+    "sha256": "a1327827a0c06a14034c2697225d05ea1d1cdf7c128929909a97d75003c6b0b3",
+    "bytes": 1290109
+  },
+  {
+    "path": "artifacts/bengali-localization-v2/web-chromium/phone/bn-invite.png",
+    "sha256": "10cffae4a93c0b3ff113888e8b004e6c4a32a75af679a3ad58fa11e443bb3ca6",
+    "bytes": 856791
+  },
+  {
+    "path": "artifacts/bengali-localization-v2/web-chromium/phone/bn-maps.png",
+    "sha256": "cfb55bb9dbf281b0922ec2ad3972889ec4d23533f9c4d7a3f2de55e88dfef880",
+    "bytes": 393709
+  },
+  {
+    "path": "artifacts/bengali-localization-v2/web-chromium/phone/bn-sets.png",
+    "sha256": "c5f2a5bc07bc67bae248c2329bcb74009e2063b37f9004485b803bb1011b42af",
+    "bytes": 379992
+  },
+  {
+    "path": "artifacts/bengali-localization-v2/web-chromium/phone/bn-signin.png",
+    "sha256": "afdf70602bda9a8ab2e7dc56d4429b297965801f0a66b6b3f152efe2a44563f6",
+    "bytes": 559936
+  },
+  {
+    "path": "artifacts/bengali-localization-v2/web-chromium.json",
+    "sha256": "3bdfde19e040aa6018ba5bebde3c5e820eb0f3166f1a33924c721f8a0af06371",
+    "bytes": 262
+  },
+  {
+    "path": "artifacts/bengali-localization-v2/web-chromium.log",
+    "sha256": "b60e9968b10906a3b33af68b46912fd31932a30ee9413fb9c087459aef46ae04",
+    "bytes": 1297
+  },
+  {
+    "path": "artifacts/bengali-localization-v2/web-cross/firefox-desktop/bn-account.png",
+    "sha256": "7495da797ab3abb1199cd8c295fd5ad5b3f026dc362f92e5aa93dcfed57f1211",
+    "bytes": 106068
+  },
+  {
+    "path": "artifacts/bengali-localization-v2/web-cross/firefox-desktop/bn-ais.png",
+    "sha256": "c3bcecedeb5276346578bb735d8a03b47b847ead9add39b9eadefa73e6415280",
+    "bytes": 186006
+  },
+  {
+    "path": "artifacts/bengali-localization-v2/web-cross/firefox-desktop/bn-buildings.png",
+    "sha256": "34a22f3b53007298b32a6ef607d56d477ca662c00451ce8dcb5850e5615bd0e0",
+    "bytes": 165675
+  },
+  {
+    "path": "artifacts/bengali-localization-v2/web-cross/firefox-desktop/bn-home.png",
+    "sha256": "2ee3f32bd0adeca497f75214dc9ac8025f317dfda34b51ad76c8e09a87dc900e",
+    "bytes": 1063849
+  },
+  {
+    "path": "artifacts/bengali-localization-v2/web-cross/firefox-desktop/bn-invite.png",
+    "sha256": "2083e085249f842707535d057b256245004cc580368cc773870165f80943db19",
+    "bytes": 1505264
+  },
+  {
+    "path": "artifacts/bengali-localization-v2/web-cross/firefox-desktop/bn-maps.png",
+    "sha256": "847b59dc8370cce78c0e687da467186f14d85477fa860fb067cf4b463be922bb",
+    "bytes": 157348
+  },
+  {
+    "path": "artifacts/bengali-localization-v2/web-cross/firefox-desktop/bn-sets.png",
+    "sha256": "fe428c5d533a665e0fe9214cd72618a9f32d823ac8da0395d5ab2cdf1b0baada",
+    "bytes": 167544
+  },
+  {
+    "path": "artifacts/bengali-localization-v2/web-cross/firefox-desktop/bn-signin.png",
+    "sha256": "f7bfc9b0930c9924a1eac5a28c8e321bf53c62140e38c899732c1119e96fa4da",
+    "bytes": 1604301
+  },
+  {
+    "path": "artifacts/bengali-localization-v2/web-cross/firefox-phone/bn-account.png",
+    "sha256": "0c08904cdae53eab576e44a69da09cd6b11beedec6259b5cc3a50db5facb6d80",
+    "bytes": 160570
+  },
+  {
+    "path": "artifacts/bengali-localization-v2/web-cross/firefox-phone/bn-ais.png",
+    "sha256": "29c3358412ee88d84983a78d6677241315eb9482a447a2dfe32a0fb29f8fb866",
+    "bytes": 357025
+  },
+  {
+    "path": "artifacts/bengali-localization-v2/web-cross/firefox-phone/bn-buildings.png",
+    "sha256": "e302d6320b6e364fc8ce4f6ca11f62ac80679b65161fe0622f7b48356df322a4",
+    "bytes": 317108
+  },
+  {
+    "path": "artifacts/bengali-localization-v2/web-cross/firefox-phone/bn-home.png",
+    "sha256": "e8f7d5b5753fec2f44ec748c0b81c7dfa7bc8081becc197f03d61de44c40e176",
+    "bytes": 1280183
+  },
+  {
+    "path": "artifacts/bengali-localization-v2/web-cross/firefox-phone/bn-invite.png",
+    "sha256": "fa67b64afd249f1ab1fe204323e0983f6680cda607b07f3127bfbbc100e8a0d0",
+    "bytes": 784021
+  },
+  {
+    "path": "artifacts/bengali-localization-v2/web-cross/firefox-phone/bn-maps.png",
+    "sha256": "e35b242af815ec332151419ca2a35f82086360c4bc1c09ad2449b65ebbd60a70",
+    "bytes": 297895
+  },
+  {
+    "path": "artifacts/bengali-localization-v2/web-cross/firefox-phone/bn-sets.png",
+    "sha256": "43378b4b69a14109cf37c81fe62cfe46293f863c26d308b09b4dec7a11d4d27e",
+    "bytes": 330764
+  },
+  {
+    "path": "artifacts/bengali-localization-v2/web-cross/firefox-phone/bn-signin.png",
+    "sha256": "d3d68accdf669a0363c9c83f998afd74f24878db6527d027b37529a7bcea0085",
+    "bytes": 694145
+  },
+  {
+    "path": "artifacts/bengali-localization-v2/web-cross/webkit-desktop/bn-account.png",
+    "sha256": "0224960b10c342a4f651854a3b0af3da722f3fda76dc363dd567912199e96e1a",
+    "bytes": 105048
+  },
+  {
+    "path": "artifacts/bengali-localization-v2/web-cross/webkit-desktop/bn-ais.png",
+    "sha256": "fe6bbf5486e98d615af3433ac0ac363a2500d270032e6d4327d25e2d137dcbad",
+    "bytes": 194967
+  },
+  {
+    "path": "artifacts/bengali-localization-v2/web-cross/webkit-desktop/bn-buildings.png",
+    "sha256": "d9f271eaacb5374d95091e398f0ac27a092f70691d0cca8a2b530ebe3bf1a6e7",
+    "bytes": 160365
+  },
+  {
+    "path": "artifacts/bengali-localization-v2/web-cross/webkit-desktop/bn-home.png",
+    "sha256": "78181428d9bf7c39790ca42a25e1bbad22b21625b6e670099d1125222af68e7c",
+    "bytes": 990323
+  },
+  {
+    "path": "artifacts/bengali-localization-v2/web-cross/webkit-desktop/bn-invite.png",
+    "sha256": "2ff76c05b5e1785caaaf7a42d24c368fdfe185e1122c19ea9531db9dd88a2d25",
+    "bytes": 1231801
+  },
+  {
+    "path": "artifacts/bengali-localization-v2/web-cross/webkit-desktop/bn-maps.png",
+    "sha256": "a5870f355e46ba72d01cb03ec3dd2d4362d89dc74b76dfe6af3c743dba2af791",
+    "bytes": 158147
+  },
+  {
+    "path": "artifacts/bengali-localization-v2/web-cross/webkit-desktop/bn-sets.png",
+    "sha256": "c8204319f434cfb3b3ad1a2cb67293eb78f2fdb159863a222611c12ee5de8727",
+    "bytes": 165495
+  },
+  {
+    "path": "artifacts/bengali-localization-v2/web-cross/webkit-desktop/bn-signin.png",
+    "sha256": "c92ad5daf3a2d30e413fb6ceee4bd9bbb5a62e2bb30d808e3685964a28950c7c",
+    "bytes": 1091067
+  },
+  {
+    "path": "artifacts/bengali-localization-v2/web-cross/webkit-phone/bn-account.png",
+    "sha256": "266fc1a4364f9d23838308692ba93caa78de2d7ac7a09a635451e0661d9d5985",
+    "bytes": 157248
+  },
+  {
+    "path": "artifacts/bengali-localization-v2/web-cross/webkit-phone/bn-ais.png",
+    "sha256": "3981869969d63a347ddbaf0d3701679a2638e1a63741462dd8894855fdc579e7",
+    "bytes": 403390
+  },
+  {
+    "path": "artifacts/bengali-localization-v2/web-cross/webkit-phone/bn-buildings.png",
+    "sha256": "5121a94a0e2eeca011ff59f8be68b9d13111bd03fa1bd3735bc8e3fe5e1cd85a",
+    "bytes": 242167
+  },
+  {
+    "path": "artifacts/bengali-localization-v2/web-cross/webkit-phone/bn-home.png",
+    "sha256": "bb0c885f083a77ecc50b29ab5e59da71b4d199785648e0f0523523d87e8d645b",
+    "bytes": 1140922
+  },
+  {
+    "path": "artifacts/bengali-localization-v2/web-cross/webkit-phone/bn-invite.png",
+    "sha256": "7631e0b54da8ae16975c7b85cf3bedb16ffad8caba8934b771cadb778c5b7756",
+    "bytes": 676706
+  },
+  {
+    "path": "artifacts/bengali-localization-v2/web-cross/webkit-phone/bn-maps.png",
+    "sha256": "48d2031a1ce9c5fb12aa80dfaaa108e1551b8c3b94b5fa3477e7aaf967f166ca",
+    "bytes": 287752
+  },
+  {
+    "path": "artifacts/bengali-localization-v2/web-cross/webkit-phone/bn-sets.png",
+    "sha256": "36c23eae87f7d56455536a731fe4565a69e9d38923d143584e7e573e7305d2f1",
+    "bytes": 309088
+  },
+  {
+    "path": "artifacts/bengali-localization-v2/web-cross/webkit-phone/bn-signin.png",
+    "sha256": "e347723e26262662a79a2b57230bdcf342aab66875dd3e89379cb956eb31bdf3",
+    "bytes": 456569
+  },
+  {
+    "path": "artifacts/bengali-localization-v2/web-cross.json",
+    "sha256": "f5847cfeb59b9cc62d849411dbb0c424e7888d760fbc4c25e7965d251c86d934",
+    "bytes": 262
+  },
+  {
+    "path": "artifacts/bengali-localization-v2/web-cross.log",
+    "sha256": "ae35e32ff44367355fad17b8f6303fa2a6a7dde7cdd66ec13a74d203f1075969",
+    "bytes": 2473
+  },
+  {
+    "path": "artifacts/bengali-localization-v2/web-final-binding.json",
+    "sha256": "b915fed9d5f31f8be2928ab168a397e2311d443b457cf0cfee1cc45592325eb6",
+    "bytes": 1458
+  }
+]

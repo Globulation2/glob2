@@ -1,0 +1,147 @@
+{
+  "locale": "bn",
+  "author": "/root/bengali_author",
+  "source_sha256": "0ac44b4cdfb03e688983d6e3fb1e484cca57589665bff19c5c65388e649b292a",
+  "variety": "Modern standard written Bengali, চলিত register",
+  "script": "Bengali (Beng), Unicode logical order, left-to-right",
+  "region": "Shared Bangladesh and West Bengal audience; no claim to dialect-specific localization",
+  "certification": "Agent-reviewed; not native-human-certified",
+  "sources": [
+    {
+      "url": "https://mozilla-l10n.github.io/styleguides/bn-BD/index.html",
+      "section": "Formality and Tone; Names; Units; Punctuation",
+      "interpretation": "Use modern conversational Bengali, respectful আপনি and করুন imperatives; preserve brands and concise standard technical abbreviations. Avoid archaic সাধু verb endings. Numeric identifiers remain exact; existing Intl formatting owns dynamic locale numbers."
+    },
+    {
+      "url": "https://download.microsoft.com/download/3/a/c/3ac7e8b5-a15c-498e-a73e-c824a82b6347/ben-ind-StyleGuide.pdf",
+      "path": "references/microsoft-bn-IN.pdf",
+      "section": "2.1 Choices that reflect Microsoft voice; 2.1.1 Transliteration; 2.2 Sample voice text",
+      "interpretation": "Translate communicative intent rather than English syntax. Use familiar spoken technical loanwords in Bengali script when forced coinages would obscure meaning. Prefer short, conversational instructions and direct user address. This is bn-IN reference usage, not a demand to regionalize the shared bn catalog."
+    },
+    {
+      "url": "https://download.microsoft.com/download/4/5/b/45b699fe-91a3-4405-ab3e-fdae2d196b32/ben-bgd-StyleGuide.pdf",
+      "path": "references/microsoft-bn-BD.pdf",
+      "section": "2.2.1 Address the user to take action; Pronouns",
+      "interpretation": "Respectful direct address and task-oriented language also fit Bangladesh software usage. Shared catalog avoids dialect vocabulary and follows contemporary চলিত syntax."
+    },
+    {
+      "url": "https://www.accessibledictionary.gov.bd/inc/en-to-bn-home.php",
+      "method": "POST q=worker|warrior|market|explorer|inn|hive|pass|flag&RadioGroup1=en-to-bn",
+      "paths": [
+        "references/dictionary-worker.html",
+        "references/dictionary-warrior.html",
+        "references/dictionary-market.html",
+        "references/dictionary-explorer.html",
+        "references/dictionary-inn.html",
+        "references/dictionary-hive.html",
+        "references/dictionary-pass.html",
+        "references/dictionary-flag.html"
+      ],
+      "interpretation": "Read actual entries: worker includes শ্রমিক; warrior includes যোদ্ধা; market includes বাজার; explorer is a traveler seeking information; inn is lodging; hive is a bee dwelling; flag includes পতাকা. Use game mechanics to disambiguate related nouns."
+    }
+  ],
+  "style": {
+    "address": "আপনি/আপনার; respectful করুন/বেছে নিন/দেখুন imperatives; concise noun labels where a button action is already obvious",
+    "spelling": "Contemporary standard Bengali; avoid archaic সাধু verbs and regional colloquialisms; favor shared forms",
+    "numbers": "Preserve numeric identifiers, shortcuts and formatting tokens; existing runtime Intl formatting owns online display numbers",
+    "technical": "Keep product names, URLs, filenames, API identifiers and keyboard legends exact. Familiar generic loanwords may be transliterated. Do not translate user content.",
+    "punctuation": "Use । for Bengali prose sentences where appropriate; retain required control punctuation and template whitespace",
+    "mechanics": "Flags assign area work/attention; workers autonomously gather/build; supply target is not present-worker count; Inns attract converts and feed units; Markets exchange fruits."
+  },
+  "terminology_rationales": {
+    "Worker": {
+      "bn": "শ্রমিক",
+      "reason": "Gathers and builds; dictionary attests শ্রমিক. Aligns Hindi श्रमिक while remaining ordinary Bengali."
+    },
+    "Explorer": {
+      "bn": "অনুসন্ধানকারী",
+      "reason": "Scouts and uncovers terrain; the information-seeking sense of explorer, not a file-browser application."
+    },
+    "Warrior": {
+      "bn": "যোদ্ধা",
+      "reason": "Dictionary-attested fighter and direct equivalent to gameplay role."
+    },
+    "Swarm (building)": {
+      "bn": "মৌচাক",
+      "reason": "Unit-producing colony building, as Hindi छत्ता/Urdu چھتہ/French Ruche show. Do not render the building as a moving ঝাঁক; use ঝাঁক only for an actual moving swarm."
+    },
+    "Inn": {
+      "bn": "সরাইখানা",
+      "reason": "Food/healing/conversion building; familiar lodging term. Descriptions must state feeding/conversion behavior, never hotel booking."
+    },
+    "Market": {
+      "bn": "বাজার",
+      "reason": "Dictionary-attested familiar noun; building exchanges fruit, not a paid online storefront."
+    },
+    "Flag": {
+      "bn": "পতাকা",
+      "reason": "Marks assigned work/military area; never imply direct control of an individual unit."
+    },
+    "Colony": {
+      "bn": "উপনিবেশ",
+      "reason": "Player settlement/population context; retain consistent noun across game and website."
+    },
+    "Unit": {
+      "bn": "ইউনিট",
+      "reason": "Familiar strategy-game unit noun; avoids ambiguous একক when referring to creatures."
+    },
+    "Assigned workers": {
+      "bn": "নির্ধারিত শ্রমিক",
+      "reason": "Requested assignment target, not workers already present. Explain construction and supply targets separately."
+    },
+    "Terrain pass": {
+      "bn": "গিরিপথ",
+      "reason": "A route through mountains, not passing a test or permission ticket."
+    },
+    "Terrain bank": {
+      "bn": "নদীতীর",
+      "reason": "River-side terrain, not a financial bank."
+    },
+    "Terrain bar": {
+      "bn": "বালুচর",
+      "reason": "Sandbar terrain, not a toolbar or drinking establishment."
+    },
+    "River reach": {
+      "bn": "নদীর বিস্তার",
+      "reason": "Length/extent of river control; use control behavior to distinguish from accessibility."
+    },
+    "Seed": {
+      "bn": "বীজ",
+      "reason": "Map generation randomness seed, retained numeric value."
+    },
+    "Settings": {
+      "bn": "সেটিংস",
+      "reason": "Common Bengali software loanword, shorter and more recognizable than inventing a technical noun."
+    },
+    "Save": {
+      "bn": "সংরক্ষণ করুন",
+      "reason": "Respectful imperative for action; state labels may use সংরক্ষিত."
+    },
+    "Cancel": {
+      "bn": "বাতিল করুন",
+      "reason": "Respectful imperative consistent across surfaces."
+    },
+    "Sign in": {
+      "bn": "সাইন ইন করুন",
+      "reason": "Familiar software term and clear account action; distinguish registration."
+    },
+    "Publish": {
+      "bn": "প্রকাশ করুন",
+      "reason": "Public publication action, not merely local saving."
+    },
+    "Credits (paid balance)": {
+      "bn": "ক্রেডিট",
+      "reason": "Purchased usage balance; distinguish attribution credits as কৃতিত্ব or স্বীকৃতি."
+    },
+    "Replay": {
+      "bn": "রিপ্লে",
+      "reason": "Recorded deterministic game playback, not a generic video recording."
+    }
+  },
+  "unresolved_uncertainty": [],
+  "limitations": [
+    "Not native-human-certified. References guide register and meaning; final catalogs still need independent semantic/editorial/adversarial passes and visual verification.",
+    "Microsoft PDF extraction contains damaged Bengali text; relied on readable English guidance and clear Bengali examples, not OCR-corrupted spelling.",
+    "Did not treat unread Bangla Academy PDF or search snippets as orthographic attestation."
+  ]
+}

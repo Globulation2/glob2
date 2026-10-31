@@ -1,0 +1,83 @@
+{
+  "identity": "/root/bengali_adversary",
+  "role": "independent-adversarial-delta-review",
+  "certification": "Agent-reviewed; not native-human-certified",
+  "old_source_sha256": "0ac44b4cdfb03e688983d6e3fb1e484cca57589665bff19c5c65388e649b292a",
+  "new_source_sha256": "1d2a1e684c8ce57ab915c131f1b42fa16c4a561b77a28a6a769495582c82365a",
+  "native_catalog_sha256": "142a264452a5e33f05ac58b921b232704f82d3d5473ea467053c15a4a4d06604",
+  "online_catalog_sha256": "5776ba1f7d336c335c408096eb680ab9e551677a100b2f38a991c3ccb7ef1f29",
+  "prior_native_review_sha256": "a86b1a93f5a3d620af907c28f23941f10ba7554e7b97c0a25919c237bd77bc6a",
+  "prior_online_review_sha256": "d63c06958ab1db67d89cf303899e4dd0d442cc74e2d80887df4757fe51cc610b",
+  "carry_forward_file": "carry-forward.json",
+  "carry_forward_sha256": "e78bf57da22cabd5ee58f8eb1b2241c23f4788dd9ac06c6c71600addd7a71020",
+  "carry_forward_proof_matches_own_prior_records": true,
+  "mechanically_unchanged_pairs": 6229,
+  "mechanically_checked_native_pairs": 3393,
+  "mechanically_checked_online_pairs": 2836,
+  "unchanged_pair_mismatches": [],
+  "freshly_reviewed_new_pairs": [
+    {
+      "key": "Rush",
+      "source": "Rush",
+      "target": "দ্রুত আক্রমণ",
+      "native_reference_key": "[Rush]",
+      "native_target": "দ্রুত আক্রমণ",
+      "verdict": "pass",
+      "assessment": "Aggressive early-attack strategy, not hurry command; দ্রুত আক্রমণ gives game meaning."
+    },
+    {
+      "key": "Defensive",
+      "source": "Defensive",
+      "target": "প্রতিরক্ষামূলক",
+      "native_reference_key": "[Defensive]",
+      "native_target": "প্রতিরক্ষামূলক",
+      "verdict": "pass",
+      "assessment": "Defence-oriented AI strategy; প্রতিরক্ষামূলক correct adjective."
+    },
+    {
+      "key": "Economy",
+      "source": "Economy",
+      "target": "অর্থনীতি",
+      "native_reference_key": "[Economy]",
+      "native_target": "অর্থনীতি",
+      "verdict": "pass",
+      "assessment": "Economy-oriented strategy; অর্থনীতি correct noun."
+    },
+    {
+      "key": "Expansion",
+      "source": "Expansion",
+      "target": "সম্প্রসারণ",
+      "native_reference_key": "[Expansion]",
+      "native_target": "সম্প্রসারণ",
+      "verdict": "pass",
+      "assessment": "Settlement growth/expansion strategy; সম্প্রসারণ correct."
+    },
+    {
+      "key": "Experimental",
+      "source": "Experimental",
+      "target": "পরীক্ষামূলক",
+      "native_reference_key": "[Experimental]",
+      "native_target": "পরীক্ষামূলক",
+      "verdict": "pass",
+      "assessment": "Experimental AI category; পরীক্ষামূলক correct."
+    },
+    {
+      "key": "Beginner-friendly",
+      "source": "Beginner-friendly",
+      "target": "শিক্ষানবিসদের জন্য সহজ",
+      "native_reference_key": "[Beginner-friendly]",
+      "native_target": "শিক্ষানবিসদের জন্য সহজ",
+      "verdict": "pass",
+      "assessment": "Accessibility of opponent to beginning players; শিক্ষানবিসদের জন্য সহজ correct."
+    }
+  ],
+  "new_pair_count": 6,
+  "context_read": [
+    "platform/packages/protocol/src/ais.ts AI_TAGS7values",
+    "platform/apps/web/src/pages/Ais.tsx Tags visible t(tag), displayed cards t(tag)",
+    "src/ui/settings/SettingsScreenCustomAIs.cpp595 native customAIText(tag) buttons"
+  ],
+  "scope": "Fresh semantic/adversarial reading only of six added Bengali online labels in AI-category context. Existing6229 source/target pairs mechanically verified identical to own prior hash-bound final review, not freshly re-read.",
+  "findings": [],
+  "verdict": "pass"
+}

@@ -1,0 +1,686 @@
+{
+  "identity": "/root/bengali_online_author",
+  "role": "author",
+  "certification": "agent-reviewed; not native-human-certified",
+  "examined_keys": [
+    "online:Rush",
+    "online:Defensive",
+    "online:Economy",
+    "online:Expansion",
+    "online:Experimental",
+    "online:Beginner-friendly"
+  ],
+  "entries": [
+    {
+      "id": "online:Rush",
+      "key": "Rush",
+      "source": "Rush",
+      "target": "দ্রুত আক্রমণ",
+      "native_key": "[Rush]",
+      "cloud_cache_key": "Rush",
+      "cloud_draft": {
+        "translatedText": "রাশ"
+      },
+      "context": "Custom AI library tag: native SettingsScreenCustomAIs.cpp aiTags and translated customAIText(tag) buttons; same protocol AI_TAGS and web Ais.tsx t(tag).",
+      "rationale": "Exact approved native translation transferred for identical AI categorization label."
+    },
+    {
+      "id": "online:Defensive",
+      "key": "Defensive",
+      "source": "Defensive",
+      "target": "প্রতিরক্ষামূলক",
+      "native_key": "[Defensive]",
+      "cloud_cache_key": "Defensive",
+      "cloud_draft": {
+        "translatedText": "প্রতিরক্ষামূলক"
+      },
+      "context": "Custom AI library tag: native SettingsScreenCustomAIs.cpp aiTags and translated customAIText(tag) buttons; same protocol AI_TAGS and web Ais.tsx t(tag).",
+      "rationale": "Exact approved native translation transferred for identical AI categorization label."
+    },
+    {
+      "id": "online:Economy",
+      "key": "Economy",
+      "source": "Economy",
+      "target": "অর্থনীতি",
+      "native_key": "[Economy]",
+      "cloud_cache_key": "Economy",
+      "cloud_draft": {
+        "translatedText": "অর্থনীতি"
+      },
+      "context": "Custom AI library tag: native SettingsScreenCustomAIs.cpp aiTags and translated customAIText(tag) buttons; same protocol AI_TAGS and web Ais.tsx t(tag).",
+      "rationale": "Exact approved native translation transferred for identical AI categorization label."
+    },
+    {
+      "id": "online:Expansion",
+      "key": "Expansion",
+      "source": "Expansion",
+      "target": "সম্প্রসারণ",
+      "native_key": "[Expansion]",
+      "cloud_cache_key": "Expansion",
+      "cloud_draft": {
+        "translatedText": "সম্প্রসারণ"
+      },
+      "context": "Custom AI library tag: native SettingsScreenCustomAIs.cpp aiTags and translated customAIText(tag) buttons; same protocol AI_TAGS and web Ais.tsx t(tag).",
+      "rationale": "Exact approved native translation transferred for identical AI categorization label."
+    },
+    {
+      "id": "online:Experimental",
+      "key": "Experimental",
+      "source": "Experimental",
+      "target": "পরীক্ষামূলক",
+      "native_key": "[Experimental]",
+      "cloud_cache_key": "Experimental",
+      "cloud_draft": {
+        "translatedText": "পরীক্ষামূলক"
+      },
+      "context": "Custom AI library tag: native SettingsScreenCustomAIs.cpp aiTags and translated customAIText(tag) buttons; same protocol AI_TAGS and web Ais.tsx t(tag).",
+      "rationale": "Exact approved native translation transferred for identical AI categorization label."
+    },
+    {
+      "id": "online:Beginner-friendly",
+      "key": "Beginner-friendly",
+      "source": "Beginner-friendly",
+      "target": "শিক্ষানবিসদের জন্য সহজ",
+      "native_key": "[Beginner-friendly]",
+      "cloud_cache_key": "Beginner-friendly",
+      "cloud_draft": {
+        "translatedText": "শিক্ষানবিসদের জন্য সহজ"
+      },
+      "context": "Custom AI library tag: native SettingsScreenCustomAIs.cpp aiTags and translated customAIText(tag) buttons; same protocol AI_TAGS and web Ais.tsx t(tag).",
+      "rationale": "Exact approved native translation transferred for identical AI categorization label."
+    }
+  ],
+  "native_approved_sha256": "142a264452a5e33f05ac58b921b232704f82d3d5473ea467053c15a4a4d06604",
+  "cloud_cache_path": "artifacts/bengali-localization/cloud/bn/cache.json",
+  "cloud_cache_sha256": "9cc422572a814612a9882d9c4754a899d48018b5cc7266b563ee24bbb4d13178",
+  "new_paid_requests": 0,
+  "reserved_cost_usd": 3.77268,
+  "all_locale_transfers": [
+    {
+      "locale": "ar",
+      "gameCode": "ar",
+      "native_catalog_sha256": "5a4024a62cd140c5ba1369b8e48ccb8f4fdaff49ae76f6ce4fd2cbbf056caab8",
+      "online_catalog_sha256": "0791df8ed5ebf21cb3cb84669ecb0a42eca3abe65d8979c1359e7e982a4bd009",
+      "values": {
+        "Rush": "هجوم مبكر",
+        "Defensive": "دفاعي",
+        "Economy": "الاقتصاد",
+        "Expansion": "توسعي",
+        "Experimental": "تجريبي",
+        "Beginner-friendly": "مناسب للمبتدئين"
+      }
+    },
+    {
+      "locale": "pt-BR",
+      "gameCode": "br",
+      "native_catalog_sha256": "a0425045ed4202664b67e1d6fa58ea1e1fbf870f6930620d983c9efb87d95fd3",
+      "online_catalog_sha256": "194570f546a490698a9cc3ed8be5dbe97327fd2143ad724440122e77b4f5b6f5",
+      "values": {
+        "Rush": "Ataque rápido",
+        "Defensive": "Defensiva",
+        "Economy": "Economia",
+        "Expansion": "Expansão",
+        "Experimental": "Experimental",
+        "Beginner-friendly": "Adequada para iniciantes"
+      }
+    },
+    {
+      "locale": "ca",
+      "gameCode": "ca",
+      "native_catalog_sha256": "471b4b783afddb282c4bf6bf3b14f2d8962f8675b54d5d83b99d46670e5a79a9",
+      "online_catalog_sha256": "a64a99a71aeb5cc631bde23efedc2c05e911559c0a23e234fe5d83f9001fb965",
+      "values": {
+        "Rush": "Atac ràpid",
+        "Defensive": "Defensiva",
+        "Economy": "Economia",
+        "Expansion": "Expansió",
+        "Experimental": "Experimental",
+        "Beginner-friendly": "Apta per a principiants"
+      }
+    },
+    {
+      "locale": "cs",
+      "gameCode": "cz",
+      "native_catalog_sha256": "913059a94d5edfe5801ab88185f675b7b4c59bda793785b247f132b909ae1d31",
+      "online_catalog_sha256": "eaa86e97e55e932a1605d0d6c0e2709dfc76e126b63b4a6b9b3f2cdca85ecdff",
+      "values": {
+        "Rush": "Rychlý útok",
+        "Defensive": "Obranná",
+        "Economy": "Ekonomika",
+        "Expansion": "Expanze",
+        "Experimental": "Experimentální",
+        "Beginner-friendly": "Vhodné pro začátečníky"
+      }
+    },
+    {
+      "locale": "de",
+      "gameCode": "de",
+      "native_catalog_sha256": "7d927ded9072f9b97dc1a9a298d3776d4e0973b2a3833d16be83123938f311ec",
+      "online_catalog_sha256": "f0620a5d4ae3943ed4a4beca27d56f72caa5a8e3bed64a9fbd2829c6f2a7740e",
+      "values": {
+        "Rush": "Früher Angriff",
+        "Defensive": "Defensiv",
+        "Economy": "Wirtschaft",
+        "Expansion": "Expansion",
+        "Experimental": "Experimentell",
+        "Beginner-friendly": "Für Anfänger geeignet"
+      }
+    },
+    {
+      "locale": "da",
+      "gameCode": "dk",
+      "native_catalog_sha256": "ff01b838e6df20e2159dcb99f1d4212962ea2240ab0b9eebf28738b6d652bf0a",
+      "online_catalog_sha256": "f08d060b4c7736c155264933b37f06d7017a26d8644c72634b39746287536f71",
+      "values": {
+        "Rush": "Hurtigt angreb",
+        "Defensive": "Defensiv",
+        "Economy": "Økonomi",
+        "Expansion": "Ekspansion",
+        "Experimental": "Eksperimentel",
+        "Beginner-friendly": "Begyndervenlig"
+      }
+    },
+    {
+      "locale": "en",
+      "gameCode": "en",
+      "native_catalog_sha256": "3cff1f3aef1a95ddd874c169b86a11cad9f777cdd2bfac9477127c8709bb8a92",
+      "online_catalog_sha256": "e91261322cacb21ecaacebdc24a8b2bda9c7d37e321050498f5fff7e5fa31d63",
+      "values": {
+        "Rush": "Rush",
+        "Defensive": "Defensive",
+        "Economy": "Economy",
+        "Expansion": "Expansion",
+        "Experimental": "Experimental",
+        "Beginner-friendly": "Beginner-friendly"
+      }
+    },
+    {
+      "locale": "es",
+      "gameCode": "es",
+      "native_catalog_sha256": "66690cc062766ebdabe55518763ea819d135b1771389a4b9a47a586d12d40fa6",
+      "online_catalog_sha256": "b73312a2b947ba52666b47e887d347da5e0e2efc4d2e485a258206b53ee52fce",
+      "values": {
+        "Rush": "Ataque rápido",
+        "Defensive": "Defensiva",
+        "Economy": "Economía",
+        "Expansion": "Expansión",
+        "Experimental": "Experimental",
+        "Beginner-friendly": "Apta para principiantes"
+      }
+    },
+    {
+      "locale": "eo",
+      "gameCode": "eo",
+      "native_catalog_sha256": "2edf0f0e121747d94c48c7463fad6b7abfb3f0ba4334abbffe351edf06aaed77",
+      "online_catalog_sha256": "bce8623802bdfcd034e5420851cc4cbc70068a64fdec797240e89de84aecf8de",
+      "values": {
+        "Rush": "Rapida atako",
+        "Defensive": "Defenda",
+        "Economy": "Ekonomio",
+        "Expansion": "Ekspansio",
+        "Experimental": "Eksperimenta",
+        "Beginner-friendly": "Taŭga por komencantoj"
+      }
+    },
+    {
+      "locale": "eu",
+      "gameCode": "eu",
+      "native_catalog_sha256": "683bbb168e6f1bab80bf2561624447c61863f14f7ef20baaaa4f10736e5630f0",
+      "online_catalog_sha256": "bc9a84eec4a3f38416390477c2ad1929968d1b88da7d0688113db47b497a78d2",
+      "values": {
+        "Rush": "Eraso azkarra",
+        "Defensive": "Defentsiboa",
+        "Economy": "Ekonomia",
+        "Expansion": "Hedapena",
+        "Experimental": "Esperimentala",
+        "Beginner-friendly": "Hasiberrientzat egokia"
+      }
+    },
+    {
+      "locale": "fa",
+      "gameCode": "fa",
+      "native_catalog_sha256": "a664184ef89de8d0a450a33e21161631106c8dbcd8636316f8856e3d9434ee85",
+      "online_catalog_sha256": "c39c7bda4887dd52768dec7dde23749db91a162218125ffe4f9a6cc9848459fa",
+      "values": {
+        "Rush": "یورش سریع",
+        "Defensive": "دفاعی",
+        "Economy": "اقتصاد",
+        "Expansion": "گسترش‌گرا",
+        "Experimental": "آزمایشی",
+        "Beginner-friendly": "مناسب تازه‌کارها"
+      }
+    },
+    {
+      "locale": "fr",
+      "gameCode": "fr",
+      "native_catalog_sha256": "925273bf6cf08eac6095f30d1e539a0781fe307ffb42fe42b28803224b1aed2c",
+      "online_catalog_sha256": "1088120c933adaaf82b4dcb34af668bf55ec2b75c5c3dd6c5154be116d346e79",
+      "values": {
+        "Rush": "Attaque rapide",
+        "Defensive": "Défensive",
+        "Economy": "Économie",
+        "Expansion": "Expansion",
+        "Experimental": "Expérimentale",
+        "Beginner-friendly": "Adaptée aux débutants"
+      }
+    },
+    {
+      "locale": "el",
+      "gameCode": "gr",
+      "native_catalog_sha256": "24a878056792cd976603d809e2b408cdcd218305a4c69ce99979097f12397812",
+      "online_catalog_sha256": "60a0eafc80af396d01f1066626906f1cf2fd4c17e1caf0c6c80c8d5cfeddde3f",
+      "values": {
+        "Rush": "Γρήγορη επίθεση",
+        "Defensive": "Αμυντική",
+        "Economy": "Οικονομία",
+        "Expansion": "Επέκταση",
+        "Experimental": "Πειραματική",
+        "Beginner-friendly": "Κατάλληλη για αρχάριους"
+      }
+    },
+    {
+      "locale": "hu",
+      "gameCode": "hu",
+      "native_catalog_sha256": "ad4d67b79e50211386d3f7352d126ee9c4524e336acc17920ff116861bdeae9f",
+      "online_catalog_sha256": "0689d2dd7e717473f9da4a1f6aeba00ce7d566b3b49d40e62ac0a35513736d87",
+      "values": {
+        "Rush": "Gyors támadás",
+        "Defensive": "Védekező",
+        "Economy": "Gazdaság",
+        "Expansion": "Terjeszkedés",
+        "Experimental": "Kísérleti",
+        "Beginner-friendly": "Kezdőbarát"
+      }
+    },
+    {
+      "locale": "it",
+      "gameCode": "it",
+      "native_catalog_sha256": "7c40726bab7470f67e84b0062e1d09c1d160b8c8658f34fadcc685a50b308225",
+      "online_catalog_sha256": "9949202d58014422da5c4fd42bcbe0521ce2e01fbbb7ead18a4292169b37ec6a",
+      "values": {
+        "Rush": "Attacco rapido",
+        "Defensive": "Difensiva",
+        "Economy": "Economia",
+        "Expansion": "Espansione",
+        "Experimental": "Sperimentale",
+        "Beginner-friendly": "Adatta ai principianti"
+      }
+    },
+    {
+      "locale": "nl",
+      "gameCode": "nl",
+      "native_catalog_sha256": "13b55a97dd2180ca81012f1ad5fcb0ab49bd6797bd813a39b90d9913f9f964db",
+      "online_catalog_sha256": "8ad33f5678c7de9d1349f6c3cd72da0a14cd2b7167da95b32892c1b72423946b",
+      "values": {
+        "Rush": "Snelle aanval",
+        "Defensive": "Verdedigend",
+        "Economy": "Economie",
+        "Expansion": "Uitbreiding",
+        "Experimental": "Experimenteel",
+        "Beginner-friendly": "Geschikt voor beginners"
+      }
+    },
+    {
+      "locale": "pl",
+      "gameCode": "pl",
+      "native_catalog_sha256": "52ab2088189c276cadef9faa5701972bb493b6acbfdcac3e9bcdd4ec6a2c0a51",
+      "online_catalog_sha256": "7b779486d3d1b541b61a6c5755b2624e387e3b08170e8c89cd8c63d3a6f25c61",
+      "values": {
+        "Rush": "Szybki atak",
+        "Defensive": "Obronna",
+        "Economy": "Gospodarka",
+        "Expansion": "Ekspansja",
+        "Experimental": "Eksperymentalna",
+        "Beginner-friendly": "Dla początkujących"
+      }
+    },
+    {
+      "locale": "pt-PT",
+      "gameCode": "pt",
+      "native_catalog_sha256": "e7192b5030f638941f2366f0bbd73251ea6665892d6259a6c1d60edaa8f641a2",
+      "online_catalog_sha256": "788a42130067797517b16496ef788c706c8ade62579c4d6b1994c4e67ee0b60e",
+      "values": {
+        "Rush": "Ataque rápido",
+        "Defensive": "Defensiva",
+        "Economy": "Economia",
+        "Expansion": "Expansão",
+        "Experimental": "Experimental",
+        "Beginner-friendly": "Adequada para principiantes"
+      }
+    },
+    {
+      "locale": "ro",
+      "gameCode": "ro",
+      "native_catalog_sha256": "0b15a62d29f2327c580394c3eb9494cba81118b65ee592af37b3ef2bb2c5e9bc",
+      "online_catalog_sha256": "02c9a7f1f6754dbae860729c19dbcbabb3e54c97e5a17cdc23710c162f9df3d0",
+      "values": {
+        "Rush": "Atac rapid",
+        "Defensive": "Defensivă",
+        "Economy": "Economie",
+        "Expansion": "Expansiune",
+        "Experimental": "Experimentală",
+        "Beginner-friendly": "Potrivită pentru începători"
+      }
+    },
+    {
+      "locale": "ru",
+      "gameCode": "ru",
+      "native_catalog_sha256": "e0541523a17e6f7d8fe452bb159da09ecb2c4fe78cd77faf15b778476caca4c8",
+      "online_catalog_sha256": "0657381ce4251c33a215febbf0342438cd94709596f07c779ff923e8fb2b012f",
+      "values": {
+        "Rush": "Быстрая атака",
+        "Defensive": "Оборонительный",
+        "Economy": "Экономика",
+        "Expansion": "Развитие",
+        "Experimental": "Экспериментальный",
+        "Beginner-friendly": "Для начинающих"
+      }
+    },
+    {
+      "locale": "sl",
+      "gameCode": "si",
+      "native_catalog_sha256": "21e56fa65e1d5f76f55bbbabdaac46941d2680eb16aa45192bfd760c5673e98b",
+      "online_catalog_sha256": "c78e5baa22afdeeb04a5b5fa36f5df36430c6c568b09445830ae12d8e0b310b1",
+      "values": {
+        "Rush": "Hiter napad",
+        "Defensive": "Obrambna",
+        "Economy": "Gospodarstvo",
+        "Expansion": "Širjenje",
+        "Experimental": "Poskusna",
+        "Beginner-friendly": "Primerno za začetnike"
+      }
+    },
+    {
+      "locale": "sk",
+      "gameCode": "sk",
+      "native_catalog_sha256": "0ece1e1efa14d529ccb164a64c0a0e04957403e3657b32ef18ec472c164a276a",
+      "online_catalog_sha256": "8387fd94a9da033a5b06647d85905612052afe2a0924dfab55ee492a619a17ac",
+      "values": {
+        "Rush": "Rýchly útok",
+        "Defensive": "Obranná",
+        "Economy": "Ekonomika",
+        "Expansion": "Expanzia",
+        "Experimental": "Experimentálna",
+        "Beginner-friendly": "Vhodné pre začiatočníkov"
+      }
+    },
+    {
+      "locale": "sr-Cyrl",
+      "gameCode": "sr",
+      "native_catalog_sha256": "1ce8257f7053c4ebfd613c9cb86cc5b15fac934923bda5fda075af832d796bc3",
+      "online_catalog_sha256": "55e34f12b560e7a6bc1e91edfbca2b1a735d59400ada6e13f2ca6ee43686463f",
+      "values": {
+        "Rush": "Брзи напад",
+        "Defensive": "Одбрамбена",
+        "Economy": "Привреда",
+        "Expansion": "Ширење",
+        "Experimental": "Експериментална",
+        "Beginner-friendly": "Погодна за почетнике"
+      }
+    },
+    {
+      "locale": "fi",
+      "gameCode": "fi",
+      "native_catalog_sha256": "1f54f040623055519ec7cca360efea18e73b153160ad9d4c057c400552e84f22",
+      "online_catalog_sha256": "797508682d3f293d824c0eee015d094197a30216d207d5f43eca7bd890de2635",
+      "values": {
+        "Rush": "Rynnäkkö",
+        "Defensive": "Puolustava",
+        "Economy": "Talous",
+        "Expansion": "Laajentuminen",
+        "Experimental": "Kokeellinen",
+        "Beginner-friendly": "Aloittelijaystävällinen"
+      }
+    },
+    {
+      "locale": "sv",
+      "gameCode": "sv",
+      "native_catalog_sha256": "6b68b36080ea7e7dc67b23888a1a447c62fc577492af03b9cb296b4b09ad817a",
+      "online_catalog_sha256": "55f975406497073f573d11ff7d9e95acbebd09372b81a84c1b739a0814e5ba16",
+      "values": {
+        "Rush": "Snabbattack",
+        "Defensive": "Defensiv",
+        "Economy": "Ekonomi",
+        "Expansion": "Expansion",
+        "Experimental": "Experimentell",
+        "Beginner-friendly": "Nybörjarvänlig"
+      }
+    },
+    {
+      "locale": "tr",
+      "gameCode": "tr",
+      "native_catalog_sha256": "b6e7e1a54b79c5499695025ad775ee6fd4a45ed045b7dd2253fb890f5ef72ac8",
+      "online_catalog_sha256": "ea8e6b9ca7b755696af41b514b32fc07b3998bb47dd81aa9681f888f265a6a60",
+      "values": {
+        "Rush": "Hızlı saldırı",
+        "Defensive": "Savunmacı",
+        "Economy": "Ekonomi",
+        "Expansion": "Genişleme",
+        "Experimental": "Deneysel",
+        "Beginner-friendly": "Yeni başlayanlara uygun"
+      }
+    },
+    {
+      "locale": "zh-Hant",
+      "gameCode": "zh-tw",
+      "native_catalog_sha256": "64c2bb86e1246a09be42a8df13d8908ae3f6c8adaffacfcfea483dafe53a9154",
+      "online_catalog_sha256": "fc6ad29d1331dca4edf6009e728698d82665851aba9367204ef1637ac2949457",
+      "values": {
+        "Rush": "速攻型",
+        "Defensive": "防守型",
+        "Economy": "經濟",
+        "Expansion": "擴張型",
+        "Experimental": "實驗性",
+        "Beginner-friendly": "適合新手"
+      }
+    },
+    {
+      "locale": "zh-Hans",
+      "gameCode": "zh-cn",
+      "native_catalog_sha256": "d6d23376c210dd82ae5a78d9f7a595ebf56be5d89c6f0f009a1f5ba230e6f5a6",
+      "online_catalog_sha256": "e86c0321ee947567ec39805380f046b1fc5db9414e1c9e8215af3812024e83c4",
+      "values": {
+        "Rush": "速攻型",
+        "Defensive": "防守型",
+        "Economy": "经济",
+        "Expansion": "扩张型",
+        "Experimental": "实验性",
+        "Beginner-friendly": "适合新手"
+      }
+    },
+    {
+      "locale": "uk",
+      "gameCode": "uk",
+      "native_catalog_sha256": "d90b8b06b8faa080c778874e15549e9bdfa7460ee676039adf562e7711055461",
+      "online_catalog_sha256": "22692f4d6671fda0ce0ced48c58dfdb0be84468425c2342e865322b7a04270c4",
+      "values": {
+        "Rush": "Швидка атака",
+        "Defensive": "Оборонний",
+        "Economy": "Економіка",
+        "Expansion": "Розвиток",
+        "Experimental": "Експериментальний",
+        "Beginner-friendly": "Для початківців"
+      }
+    },
+    {
+      "locale": "id",
+      "gameCode": "id",
+      "native_catalog_sha256": "2e2b9a71160fe6e24f5c451c36a5d0358052d0fdd66ce2fcb142e0b41d7efa9d",
+      "online_catalog_sha256": "8410ddf73bea362c0aaba4de290721d9b4b63ca72d330f3c774a1a6ed1af8770",
+      "values": {
+        "Rush": "Serangan cepat",
+        "Defensive": "Bertahan",
+        "Economy": "Ekonomi",
+        "Expansion": "Ekspansi",
+        "Experimental": "Eksperimental",
+        "Beginner-friendly": "Ramah pemula"
+      }
+    },
+    {
+      "locale": "vi",
+      "gameCode": "vi",
+      "native_catalog_sha256": "dd2b825a6e8344ec47dd9a1ed6e9aa0f9733fe7ea8cfebbecea42c288e08804a",
+      "online_catalog_sha256": "8a3cacc63519851c9e7f52e3bc0369377aa4116199aa445b69a30df9517b60aa",
+      "values": {
+        "Rush": "Tấn công chớp nhoáng",
+        "Defensive": "Phòng thủ",
+        "Economy": "Kinh tế",
+        "Expansion": "Mở rộng",
+        "Experimental": "Thử nghiệm",
+        "Beginner-friendly": "Phù hợp người mới"
+      }
+    },
+    {
+      "locale": "ja",
+      "gameCode": "ja",
+      "native_catalog_sha256": "4a635fd10ebe20d01ce50ec2148a670d958a08f914682f6fa526d64a9590449f",
+      "online_catalog_sha256": "0f11de533a15baf55859544443d216994435132d2d9701b83000a7c87b757227",
+      "values": {
+        "Rush": "速攻",
+        "Defensive": "防御重視",
+        "Economy": "経済",
+        "Expansion": "拡張重視",
+        "Experimental": "実験的",
+        "Beginner-friendly": "初心者向け"
+      }
+    },
+    {
+      "locale": "ko",
+      "gameCode": "ko",
+      "native_catalog_sha256": "e87d7551d10e73fcdecb19198d68ce710d8f48ac1c87653b248e27d9294d0b80",
+      "online_catalog_sha256": "227e7741d2eecb00e6110578ddcd81ec0e9e46867d0805e5d4251f27174e41fb",
+      "values": {
+        "Rush": "속공형",
+        "Defensive": "방어형",
+        "Economy": "경제",
+        "Expansion": "확장형",
+        "Experimental": "실험적",
+        "Beginner-friendly": "초보자에게 적합"
+      }
+    },
+    {
+      "locale": "hi",
+      "gameCode": "hi",
+      "native_catalog_sha256": "849ffdf75d63b127d85a5a305fa0049e99fc33b2a682a1c43d0bfd9ec0ecc6d6",
+      "online_catalog_sha256": "4b8d47d32b8d36bcd32f11d28480ea7b97b3f3084fae992f94fa64e409a76fd8",
+      "values": {
+        "Rush": "शुरुआती धावा",
+        "Defensive": "रक्षात्मक",
+        "Economy": "अर्थव्यवस्था",
+        "Expansion": "विस्तार",
+        "Experimental": "प्रयोगात्मक",
+        "Beginner-friendly": "शुरुआती खिलाड़ियों के लिए"
+      }
+    },
+    {
+      "locale": "ur",
+      "gameCode": "ur",
+      "native_catalog_sha256": "93a27dfdeae71fbd5bd76739be93b69eec1d66f0eb81e2bd664f86b71febd0a1",
+      "online_catalog_sha256": "cec5b8859ff7608ab8c2ece2f3a258e6c3933c71f5cd776cfda3434cb963f8ca",
+      "values": {
+        "Rush": "یلغار",
+        "Defensive": "دفاعی",
+        "Economy": "معیشت",
+        "Expansion": "توسیع",
+        "Experimental": "تجرباتی",
+        "Beginner-friendly": "نئے کھلاڑیوں کے لیے موزوں"
+      }
+    },
+    {
+      "locale": "sw",
+      "gameCode": "sw",
+      "native_catalog_sha256": "c5a1ae26b383c99f67756e2eabf9fb30ac06e637cff6d8bafd39058c7ec352ef",
+      "online_catalog_sha256": "8e3b8b886b399d7356a077c589bebfd46b302a152620d9cfc457126459cbbd74",
+      "values": {
+        "Rush": "Shambulio la mapema",
+        "Defensive": "Ya kujilinda",
+        "Economy": "Uchumi",
+        "Expansion": "Upanuzi",
+        "Experimental": "Ya majaribio",
+        "Beginner-friendly": "Inafaa kwa wanaoanza"
+      }
+    },
+    {
+      "locale": "bn",
+      "gameCode": "bn",
+      "native_catalog_sha256": "142a264452a5e33f05ac58b921b232704f82d3d5473ea467053c15a4a4d06604",
+      "online_catalog_sha256": "5776ba1f7d336c335c408096eb680ab9e551677a100b2f38a991c3ccb7ef1f29",
+      "values": {
+        "Rush": "দ্রুত আক্রমণ",
+        "Defensive": "প্রতিরক্ষামূলক",
+        "Economy": "অর্থনীতি",
+        "Expansion": "সম্প্রসারণ",
+        "Experimental": "পরীক্ষামূলক",
+        "Beginner-friendly": "শিক্ষানবিসদের জন্য সহজ"
+      }
+    }
+  ],
+  "shared_value_exceptions": [
+    {
+      "locale": "pt-BR",
+      "key": "Experimental",
+      "value": "Experimental",
+      "native_file": "data/texts.br.txt",
+      "native_key": "[Experimental]",
+      "native_shared_whitelist": "test/translation_shared_values.json",
+      "rationale": "Same existing native shared spelling for the identical AI-tag concept; copied without alteration."
+    },
+    {
+      "locale": "ca",
+      "key": "Experimental",
+      "value": "Experimental",
+      "native_file": "data/texts.ca.txt",
+      "native_key": "[Experimental]",
+      "native_shared_whitelist": "test/translation_shared_values.json",
+      "rationale": "Same existing native shared spelling for the identical AI-tag concept; copied without alteration."
+    },
+    {
+      "locale": "de",
+      "key": "Expansion",
+      "value": "Expansion",
+      "native_file": "data/texts.de.txt",
+      "native_key": "[Expansion]",
+      "native_shared_whitelist": "test/translation_shared_values.json",
+      "rationale": "Same existing native shared spelling for the identical AI-tag concept; copied without alteration."
+    },
+    {
+      "locale": "es",
+      "key": "Experimental",
+      "value": "Experimental",
+      "native_file": "data/texts.es.txt",
+      "native_key": "[Experimental]",
+      "native_shared_whitelist": "test/translation_shared_values.json",
+      "rationale": "Same existing native shared spelling for the identical AI-tag concept; copied without alteration."
+    },
+    {
+      "locale": "fr",
+      "key": "Expansion",
+      "value": "Expansion",
+      "native_file": "data/texts.fr.txt",
+      "native_key": "[Expansion]",
+      "native_shared_whitelist": "test/translation_shared_values.json",
+      "rationale": "Same existing native shared spelling for the identical AI-tag concept; copied without alteration."
+    },
+    {
+      "locale": "pt-PT",
+      "key": "Experimental",
+      "value": "Experimental",
+      "native_file": "data/texts.pt.txt",
+      "native_key": "[Experimental]",
+      "native_shared_whitelist": "test/translation_shared_values.json",
+      "rationale": "Same existing native shared spelling for the identical AI-tag concept; copied without alteration."
+    },
+    {
+      "locale": "sv",
+      "key": "Expansion",
+      "value": "Expansion",
+      "native_file": "data/texts.sv.txt",
+      "native_key": "[Expansion]",
+      "native_shared_whitelist": "test/translation_shared_values.json",
+      "rationale": "Same existing native shared spelling for the identical AI-tag concept; copied without alteration."
+    }
+  ],
+  "source_sha256": "1d2a1e684c8ce57ab915c131f1b42fa16c4a561b77a28a6a769495582c82365a",
+  "old_source_sha256": "0ac44b4cdfb03e688983d6e3fb1e484cca57589665bff19c5c65388e649b292a",
+  "online_catalog_sha256": "5776ba1f7d336c335c408096eb680ab9e551677a100b2f38a991c3ccb7ef1f29"
+}

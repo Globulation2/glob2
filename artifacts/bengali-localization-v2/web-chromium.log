@@ -1,0 +1,21 @@
+
+> @glob2/web@0.1.0 e2e
+> playwright test -c e2e/playwright.config.ts i18n.spec.ts --grep bn|Bengali
+
+[WebServer] (node:1483660) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 6 tests using 1 worker
+
+(node:1486370) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 [desktop] › e2e/i18n.spec.ts:8:3 › home loads and renders bn (9.8s)
+  ✓  2 [desktop] › e2e/i18n.spec.ts:97:1 › Bengali libraries, account and room invitations fit the viewport (18.8s)
+  ✓  3 [desktop] › e2e/i18n.spec.ts:160:3 › changing to bn updates the page without losing input (4.1s)
+(node:1493261) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  4 [phone] › e2e/i18n.spec.ts:8:3 › home loads and renders bn (12.4s)
+  ✓  5 [phone] › e2e/i18n.spec.ts:97:1 › Bengali libraries, account and room invitations fit the viewport (15.9s)
+  ✓  6 [phone] › e2e/i18n.spec.ts:160:3 › changing to bn updates the page without losing input (4.6s)
+
+  6 passed (1.8m)

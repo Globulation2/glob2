@@ -1,0 +1,12 @@
+{
+  "revision": "60887383753dc130dfdb41621682ac7c1a00c469",
+  "command": [
+    "platform/node_modules/.bin/playwright",
+    "test",
+    "--config",
+    "artifacts/bengali-localization/web-cross.config.cjs",
+    "--grep",
+    "bn|Bengali"
+  ],
+  "exit_code": 0
+}

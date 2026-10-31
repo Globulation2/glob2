@@ -1,0 +1,467 @@
+{
+  "author": "/root/bengali_author",
+  "source_sha256": "0ac44b4cdfb03e688983d6e3fb1e484cca57589665bff19c5c65388e649b292a",
+  "status": "authored; pending independent review",
+  "purpose": "Establish role/building/terrain/tutorial/settings/account-action choices before paid bulk drafting. Initial API pilot output must be compared separately, not represented as this manual source-based pilot.",
+  "entries": [
+    {
+      "id": "native:[language-code]",
+      "key": "[language-code]",
+      "source": "en",
+      "proposed": "bn",
+      "reference_translations": {
+        "hi": "hi",
+        "ur": "ur",
+        "fr": "fr"
+      }
+    },
+    {
+      "id": "native:[language]",
+      "key": "[language]",
+      "source": "English",
+      "proposed": "বাংলা",
+      "reference_translations": {
+        "hi": "हिन्दी",
+        "ur": "اردو",
+        "fr": "Français"
+      }
+    },
+    {
+      "id": "native:[language-tr]",
+      "key": "[language-tr]",
+      "source": "Language",
+      "proposed": "ভাষা",
+      "reference_translations": {
+        "hi": "भाषा",
+        "ur": "زبان",
+        "fr": "Langue"
+      }
+    },
+    {
+      "id": "native:[Worker]",
+      "key": "[Worker]",
+      "source": "Worker",
+      "proposed": "শ্রমিক",
+      "reference_translations": {
+        "hi": "श्रमिक",
+        "ur": "کارکن",
+        "fr": "Ouvrière"
+      }
+    },
+    {
+      "id": "native:[Explorer]",
+      "key": "[Explorer]",
+      "source": "Explorer",
+      "proposed": "অনুসন্ধানকারী",
+      "reference_translations": {
+        "hi": "खोजी",
+        "ur": "کھوجی",
+        "fr": "Exploratrice"
+      }
+    },
+    {
+      "id": "native:[Warrior]",
+      "key": "[Warrior]",
+      "source": "Warrior",
+      "proposed": "যোদ্ধা",
+      "reference_translations": {
+        "hi": "योद्धा",
+        "ur": "جنگجو",
+        "fr": "Guerrière"
+      }
+    },
+    {
+      "id": "native:[swarm]",
+      "key": "[swarm]",
+      "source": "Swarm",
+      "proposed": "মৌচাক",
+      "reference_translations": {
+        "hi": "छत्ता",
+        "ur": "چھتہ",
+        "fr": "Ruche"
+      }
+    },
+    {
+      "id": "native:[inn]",
+      "key": "[inn]",
+      "source": "Inn",
+      "proposed": "সরাইখানা",
+      "reference_translations": {
+        "hi": "सराय",
+        "ur": "سرائے",
+        "fr": "Auberge"
+      }
+    },
+    {
+      "id": "native:[market]",
+      "key": "[market]",
+      "source": "Market",
+      "proposed": "বাজার",
+      "reference_translations": {
+        "hi": "बाज़ार",
+        "ur": "بازار",
+        "fr": "Marché"
+      }
+    },
+    {
+      "id": "native:[fruit]",
+      "key": "[fruit]",
+      "source": "fruit",
+      "proposed": "ফল",
+      "reference_translations": {
+        "hi": "फल",
+        "ur": "پھل",
+        "fr": "Fruit"
+      }
+    },
+    {
+      "id": "native:[wood]",
+      "key": "[wood]",
+      "source": "wood",
+      "proposed": "কাঠ",
+      "reference_translations": {
+        "hi": "लकड़ी",
+        "ur": "لکڑی",
+        "fr": "Forêt"
+      }
+    },
+    {
+      "id": "native:[Flags]",
+      "key": "[Flags]",
+      "source": "Flags",
+      "proposed": "পতাকা",
+      "reference_translations": {
+        "hi": "झंडे",
+        "ur": "جھنڈے",
+        "fr": "Drapeaux"
+      }
+    },
+    {
+      "id": "native:[Buildings]",
+      "key": "[Buildings]",
+      "source": "Buildings",
+      "proposed": "ভবন",
+      "reference_translations": {
+        "hi": "इमारतें",
+        "ur": "عمارتیں",
+        "fr": "Bâtiments"
+      }
+    },
+    {
+      "id": "native:[Passes]",
+      "key": "[Passes]",
+      "source": "Passes",
+      "proposed": "গিরিপথ",
+      "reference_translations": {
+        "hi": "दर्रे",
+        "ur": "درے",
+        "fr": "Cols"
+      }
+    },
+    {
+      "id": "native:[Pass width]",
+      "key": "[Pass width]",
+      "source": "Pass width",
+      "proposed": "গিরিপথের প্রস্থ",
+      "reference_translations": {
+        "hi": "दर्रे की चौड़ाई",
+        "ur": "درے کی چوڑائی",
+        "fr": "Largeur des cols"
+      }
+    },
+    {
+      "id": "native:[River width]",
+      "key": "[River width]",
+      "source": "River width",
+      "proposed": "নদীর প্রস্থ",
+      "reference_translations": {
+        "hi": "नदी की चौड़ाई",
+        "ur": "دریا کی چوڑائی",
+        "fr": "Largeur de la rivière"
+      }
+    },
+    {
+      "id": "native:[Extra open passes]",
+      "key": "[Extra open passes]",
+      "source": "Extra open passes",
+      "proposed": "অতিরিক্ত খোলা গিরিপথ",
+      "reference_translations": {
+        "hi": "अतिरिक्त खुले दर्रे",
+        "ur": "اضافی کھلے درے",
+        "fr": "Cols ouverts supplémentaires"
+      }
+    },
+    {
+      "id": "native:[settings Language]",
+      "key": "[settings Language]",
+      "source": "Language",
+      "proposed": "ভাষা",
+      "reference_translations": {
+        "hi": "भाषा",
+        "ur": "زبان",
+        "fr": "Langue"
+      }
+    },
+    {
+      "id": "native:[settings Text size]",
+      "key": "[settings Text size]",
+      "source": "Text size",
+      "proposed": "লেখার আকার",
+      "reference_translations": {
+        "hi": "टेक्स्ट का आकार",
+        "ur": "متن کی جسامت",
+        "fr": "Taille du texte"
+      }
+    },
+    {
+      "id": "native:[settings Music volume]",
+      "key": "[settings Music volume]",
+      "source": "Music volume",
+      "proposed": "সংগীতের আওয়াজ",
+      "reference_translations": {
+        "hi": "संगीत की आवाज़",
+        "ur": "موسیقی کی آواز",
+        "fr": "Volume (musique)"
+      }
+    },
+    {
+      "id": "native:[settings Edge scrolling]",
+      "key": "[settings Edge scrolling]",
+      "source": "Edge scrolling",
+      "proposed": "প্রান্তে স্ক্রল",
+      "reference_translations": {
+        "hi": "किनारे पर स्क्रॉल करना",
+        "ur": "کنارے پر اسکرول کرنا",
+        "fr": "Défilement aux bords"
+      }
+    },
+    {
+      "id": "native:[settings Move the game and editor maps when the mouse reaches the window edge.]",
+      "key": "[settings Move the game and editor maps when the mouse reaches the window edge.]",
+      "source": "Move the game and editor maps when the mouse reaches the window edge.",
+      "proposed": "মাউস উইন্ডোর প্রান্তে পৌঁছালে খেলা ও সম্পাদকের মানচিত্র সরান।",
+      "reference_translations": {
+        "hi": "माउस के विंडो के किनारे पर पहुँचने पर खेल और संपादक के नक्शों को खिसकाएँ।",
+        "ur": "ماؤس کے ونڈو کے کنارے تک پہنچنے پر کھیل اور ایڈیٹر کے نقشوں کو حرکت دیں۔",
+        "fr": "Déplacer les cartes du jeu et de l'éditeur lorsque la souris atteint le bord de la fenêtre."
+      }
+    },
+    {
+      "id": "native:[settings Language used throughout the interface.]",
+      "key": "[settings Language used throughout the interface.]",
+      "source": "Language used throughout the interface.",
+      "proposed": "পুরো ইন্টারফেসে ব্যবহৃত ভাষা।",
+      "reference_translations": {
+        "hi": "पूरे इंटरफ़ेस में उपयोग की जाने वाली भाषा।",
+        "ur": "پورے انٹرفیس کی زبان۔",
+        "fr": "Langue utilisée dans toute l'interface."
+      }
+    },
+    {
+      "id": "native:[tutorial]",
+      "key": "[tutorial]",
+      "source": "Tutorial",
+      "proposed": "প্রশিক্ষণ",
+      "reference_translations": {
+        "hi": "प्रशिक्षण",
+        "ur": "تربیت",
+        "fr": "Didacticiel"
+      }
+    },
+    {
+      "id": "native:[tutorial lessons]",
+      "key": "[tutorial lessons]",
+      "source": "Tutorial lessons",
+      "proposed": "প্রশিক্ষণের পাঠ",
+      "reference_translations": {
+        "hi": "प्रशिक्षण के पाठ",
+        "ur": "تربیتی اسباق",
+        "fr": ""
+      }
+    },
+    {
+      "id": "native:[tutorial restart]",
+      "key": "[tutorial restart]",
+      "source": "Restart lesson",
+      "proposed": "পাঠ আবার শুরু করুন",
+      "reference_translations": {
+        "hi": "पाठ दोबारा शुरू करें",
+        "ur": "سبق دوبارہ شروع کریں",
+        "fr": ""
+      }
+    },
+    {
+      "id": "native:[tutorial restart body]",
+      "key": "[tutorial restart body]",
+      "source": "Restart this lesson from its prepared colony? Unsaved progress will be lost.",
+      "proposed": "এই পাঠের তৈরি উপনিবেশ থেকে আবার শুরু করবেন? সংরক্ষণ না করা অগ্রগতি হারিয়ে যাবে।",
+      "reference_translations": {
+        "hi": "इस पाठ की पहले से तैयार बस्ती से दोबारा शुरू करें? जो प्रगति सहेजी नहीं गई है, वह खो जाएगी।",
+        "ur": "اس سبق کی تیار شدہ بستی سے دوبارہ شروع کریں؟ غیر محفوظ پیش رفت ضائع ہو جائے گی۔",
+        "fr": ""
+      }
+    },
+    {
+      "id": "native:[tutorial food title]",
+      "key": "[tutorial food title]",
+      "source": "Food supply practice",
+      "proposed": "খাদ্য সরবরাহের অনুশীলন",
+      "reference_translations": {
+        "hi": "भोजन की आपूर्ति का अभ्यास",
+        "ur": "خوراک کی رسد کی مشق",
+        "fr": ""
+      }
+    },
+    {
+      "id": "native:[tutorial food briefing]",
+      "key": "[tutorial food briefing]",
+      "source": "Practice expanding food supply: build another Inn, then assign suppliers and watch wheat arrive.",
+      "proposed": "খাদ্য সরবরাহ বাড়ানোর অনুশীলন করুন: আরেকটি সরাইখানা তৈরি করুন, তারপর সরবরাহের জন্য শ্রমিক নির্ধারণ করুন এবং গম আসতে দেখুন।",
+      "reference_translations": {
+        "hi": "भोजन की आपूर्ति बढ़ाने का अभ्यास करें: एक और सराय बनाएँ, फिर आपूर्ति के लिए श्रमिक लगाएँ और गेहूँ पहुँचते हुए देखें।",
+        "ur": "خوراک کی رسد بڑھانے کی مشق کریں: ایک اور سرائے بنائیں، پھر رسد پہنچانے والے کارکن مقرر کر کے گندم پہنچتے دیکھیں۔",
+        "fr": ""
+      }
+    },
+    {
+      "id": "native:[tutorial food complete]",
+      "key": "[tutorial food complete]",
+      "source": "You built an Inn and supplied it with wheat. Try another lesson or return to the main menu.",
+      "proposed": "আপনি একটি সরাইখানা তৈরি করে তাতে গম সরবরাহ করেছেন। অন্য কোনো পাঠ চেষ্টা করুন অথবা মূল মেনুতে ফিরুন।",
+      "reference_translations": {
+        "hi": "आपने सराय बनाई और उसमें गेहूँ पहुँचाया। कोई दूसरा पाठ आज़माएँ या मुख्य मेनू पर लौटें।",
+        "ur": "آپ نے سرائے بنائی اور اس میں گندم پہنچائی۔ دوسرا سبق آزمائیں یا مرکزی مینو میں واپس جائیں۔",
+        "fr": ""
+      }
+    },
+    {
+      "id": "native:[%0 units can't access building]",
+      "key": "[%0 units can't access building]",
+      "source": "%0 units can't access building",
+      "proposed": "%0টি ইউনিট ভবনে পৌঁছাতে পারছে না",
+      "reference_translations": {
+        "hi": "%0 इकाइयाँ इमारत तक नहीं पहुँच सकतीं",
+        "ur": "%0 یونٹ عمارت تک نہیں پہنچ سکتے",
+        "fr": "%0 unités ne peuvent accéder au bâtiment"
+      }
+    },
+    {
+      "id": "native:[%0 units too far from flag]",
+      "key": "[%0 units too far from flag]",
+      "source": "%0 units too far from flag",
+      "proposed": "%0টি ইউনিট পতাকা থেকে অনেক দূরে",
+      "reference_translations": {
+        "hi": "%0 इकाइयाँ झंडे से बहुत दूर हैं",
+        "ur": "%0 یونٹ جھنڈے سے بہت دور ہیں",
+        "fr": "%0 unités trop loin du drapeau"
+      }
+    },
+    {
+      "id": "native:[hub compare code %0]",
+      "key": "[hub compare code %0]",
+      "source": "If the page asks, check that it shows %0.",
+      "proposed": "পৃষ্ঠায় চাইলে দেখুন সেখানে %0 দেখানো হচ্ছে কি না।",
+      "reference_translations": {
+        "hi": "अगर पेज पर कोड जाँचने को कहा जाए, तो देखें कि वहाँ %0 दिख रहा है।",
+        "ur": "اگر صفحے پر تصدیق کے لیے کہا جائے تو دیکھیں کہ وہاں %0 دکھایا گیا ہے۔",
+        "fr": "Si la page vous le demande, vérifiez qu'elle affiche %0."
+      }
+    },
+    {
+      "id": "native:[hub finish in browser, game continues]",
+      "key": "[hub finish in browser, game continues]",
+      "source": "Finish signing in in your browser. The game continues by itself once you are done.",
+      "proposed": "ব্রাউজারে সাইন ইন সম্পূর্ণ করুন। শেষ হলে খেলা নিজে থেকেই চলতে থাকবে।",
+      "reference_translations": {
+        "hi": "अपने ब्राउज़र में साइन इन पूरा करें। आपके पूरा करते ही खेल अपने आप आगे बढ़ेगा।",
+        "ur": "اپنے براؤزر میں سائن اِن مکمل کریں۔ آپ کے مکمل کرنے کے بعد کھیل خود بخود جاری ہو جائے گا۔",
+        "fr": "Terminez la connexion dans votre navigateur. Le jeu continue automatiquement une fois que vous avez terminé."
+      }
+    },
+    {
+      "id": "online:Sign in",
+      "key": "Sign in",
+      "source": "Sign in",
+      "proposed": "সাইন ইন করুন"
+    },
+    {
+      "id": "online:Sign out",
+      "key": "Sign out",
+      "source": "Sign out",
+      "proposed": "সাইন আউট করুন"
+    },
+    {
+      "id": "online:Password",
+      "key": "Password",
+      "source": "Password",
+      "proposed": "পাসওয়ার্ড"
+    },
+    {
+      "id": "online:Language",
+      "key": "Language",
+      "source": "Language",
+      "proposed": "ভাষা"
+    },
+    {
+      "id": "online:Map library",
+      "key": "Map library",
+      "source": "Map library",
+      "proposed": "মানচিত্রের সংগ্রহ"
+    },
+    {
+      "id": "online:Play in browser",
+      "key": "Play in browser",
+      "source": "Play in browser",
+      "proposed": "ব্রাউজারে খেলুন"
+    },
+    {
+      "id": "online:Save",
+      "key": "Save",
+      "source": "Save",
+      "proposed": "সংরক্ষণ করুন"
+    },
+    {
+      "id": "online:Cancel",
+      "key": "Cancel",
+      "source": "Cancel",
+      "proposed": "বাতিল করুন"
+    },
+    {
+      "id": "online:Publish",
+      "key": "Publish",
+      "source": "Publish",
+      "proposed": "প্রকাশ করুন"
+    },
+    {
+      "id": "online:{count} player on this page",
+      "key": "{count} player on this page",
+      "source": {
+        "one": "{count} player on this page",
+        "other": "{count} players on this page"
+      },
+      "proposed": {
+        "one": "এই পৃষ্ঠায় {count} জন খেলোয়াড়",
+        "other": "এই পৃষ্ঠায় {count} জন খেলোয়াড়"
+      }
+    },
+    {
+      "id": "online:{count} credit",
+      "key": "{count} credit",
+      "source": {
+        "one": "{count} credit",
+        "other": "{count} credits"
+      },
+      "proposed": {
+        "one": "{count} ক্রেডিট",
+        "other": "{count} ক্রেডিট"
+      }
+    }
+  ],
+  "checks": [
+    "All pilot keys exist in frozen source.",
+    "Native placeholders and online named substitutions retained.",
+    "Role/building terminology matches gameplay and existing Hindi/Urdu/French context.",
+    "Tutorials retain IDs/execution and describe supplier assignment rather than present-unit count.",
+    "Bengali invariant plural wording intentionally repeats where grammar needs no distinct inflection."
+  ]
+}

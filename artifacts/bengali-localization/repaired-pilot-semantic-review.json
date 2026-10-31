@@ -1,0 +1,536 @@
+{
+  "reviewer": "/root/rendering_audit",
+  "role": "independent semantic reviewer",
+  "certification": "Agent-reviewed; not native-human-certified",
+  "locale": "bn",
+  "source_sha256": "0ac44b4cdfb03e688983d6e3fb1e484cca57589665bff19c5c65388e649b292a",
+  "catalog_sha256": {
+    "native": "64eab7edadaa34c976b3fcebbe5b845fe00e5f08526ef586765874a14011042d",
+    "online": "e570fe5f269f13e18156d8de9f4bc612da35bcb716adcf6ea425d030b1f707c3"
+  },
+  "input_hashes": {
+    "author-pilot.json": "47a9093d32509bcd976d0cfbff2f3941f50b419c1ad6cd3d60d3bd12d344ba45",
+    "pilot-semantic-review.json": "28652804b963688fd435c2b5d16baa57dd58469005376df6c8a8f4f098102b4b",
+    "language-brief.json": "233679fda80c94c92500fd52d58dae10445bf20d31dc80398c0df6fc7b6e13ef"
+  },
+  "reviewed_keys": [
+    "native:[%0 units can't access building]",
+    "native:[%0 units can't access flag]",
+    "native:[%0 units can't access fruit]",
+    "native:[%0 units too far from flag]",
+    "native:[Buildings]",
+    "native:[concrete islands terrain]",
+    "native:[crater lakes terrain]",
+    "native:[Explorer]",
+    "native:[extra islands]",
+    "native:[fruit]",
+    "native:[music set]",
+    "native:[random music set]",
+    "native:[inn]",
+    "native:[language-code]",
+    "native:[language-tr]",
+    "native:[language]",
+    "native:[market]",
+    "native:[swarm]",
+    "native:[tutorial]",
+    "native:[tutorial text 1]",
+    "native:[tutorial text 2]",
+    "native:[tutorial text 3]",
+    "native:[Warrior]",
+    "native:[wood]",
+    "native:[Worker]",
+    "native:[River width]",
+    "native:[settings Language]",
+    "native:[settings Language used throughout the interface.]",
+    "native:[settings Music volume]",
+    "native:[Pass width]",
+    "native:[Extra open passes]",
+    "native:[Passes]",
+    "native:[Flags]",
+    "native:[settings Text size]",
+    "native:[settings Edge scrolling]",
+    "native:[settings Move the game and editor maps when the mouse reaches the window edge.]",
+    "native:[hub finish in browser, game continues]",
+    "native:[hub browser did not open]",
+    "native:[hub compare code %0]",
+    "native:[settings Finish in your browser. The game continues by itself.]",
+    "native:[tutorial lessons]",
+    "native:[tutorial restart]",
+    "native:[tutorial restart body]",
+    "native:[tutorial food title]",
+    "native:[tutorial food briefing]",
+    "native:[tutorial food complete]",
+    "online: (provisional)",
+    "online: ({slot0})",
+    "online: / {slot0}",
+    "online:Cancel",
+    "online:Language",
+    "online:Map library",
+    "online:Password",
+    "online:Play in browser",
+    "online:Publish",
+    "online:Save",
+    "online:Sign in",
+    "online:Sign out",
+    "online:{count} credit",
+    "online:{count} player on this page"
+  ],
+  "entries": [
+    {
+      "id": "native:[%0 units can't access building]",
+      "source": "%0 units can't access building",
+      "translation": "%0টি ইউনিট ভবনে পৌঁছাতে পারছে না",
+      "verdict": "pass",
+      "reason": "Preserves %0 and inability to reach building, not building ownership or missing permission."
+    },
+    {
+      "id": "native:[%0 units can't access flag]",
+      "source": "%0 units can't access flag",
+      "translation": "%0টি ইউনিট পতাকায় পৌঁছাতে পারছে না",
+      "verdict": "pass",
+      "reason": "Checked actual frozen source and live draft value; action/spatial/technical meaning, respectful register and substitutions retained."
+    },
+    {
+      "id": "native:[%0 units can't access fruit]",
+      "source": "%0 units can't access fruit",
+      "translation": "%0টি ইউনিট ফলের কাছে পৌঁছাতে পারছে না",
+      "verdict": "pass",
+      "reason": "Checked actual frozen source and live draft value; action/spatial/technical meaning, respectful register and substitutions retained."
+    },
+    {
+      "id": "native:[%0 units too far from flag]",
+      "source": "%0 units too far from flag",
+      "translation": "%0টি ইউনিট পতাকা থেকে অনেক দূরে",
+      "verdict": "pass",
+      "reason": "Preserves %0 and spatial distance; no direct unit-control claim."
+    },
+    {
+      "id": "native:[Buildings]",
+      "source": "Buildings",
+      "translation": "ভবন",
+      "verdict": "pass",
+      "reason": "Meaning and grammatical relationships retained; concise contemporary Bengali and respectful action register where applicable; no technical token loss."
+    },
+    {
+      "id": "native:[concrete islands terrain]",
+      "source": "Separate Islands",
+      "translation": "আলাদা দ্বীপ",
+      "verdict": "pass",
+      "reason": "English source is Separate Islands despite internal concrete key; আলাদা দ্বীপ is semantically correct."
+    },
+    {
+      "id": "native:[crater lakes terrain]",
+      "source": "Crater Lakes",
+      "translation": "গহ্বরের হ্রদ",
+      "verdict": "pass",
+      "reason": "Crater/depression lakes retained without inventing volcanic terrain behavior."
+    },
+    {
+      "id": "native:[Explorer]",
+      "source": "Explorer",
+      "translation": "অনুসন্ধানকারী",
+      "verdict": "pass",
+      "reason": "Information-seeking scout sense; avoids software file explorer meaning."
+    },
+    {
+      "id": "native:[extra islands]",
+      "source": "empty islands",
+      "translation": "খালি দ্বীপ",
+      "verdict": "pass",
+      "reason": "English source is empty islands despite internal extra key; খালি দ্বীপ is correct and must not be changed to অতিরিক্ত."
+    },
+    {
+      "id": "native:[fruit]",
+      "source": "fruit",
+      "translation": "ফল",
+      "verdict": "pass",
+      "reason": "Meaning and grammatical relationships retained; concise contemporary Bengali and respectful action register where applicable; no technical token loss."
+    },
+    {
+      "id": "native:[music set]",
+      "source": "Music set",
+      "translation": "সংগীতের সংকলন",
+      "verdict": "pass",
+      "reason": "Checked actual frozen source and live draft value; action/spatial/technical meaning, respectful register and substitutions retained."
+    },
+    {
+      "id": "native:[random music set]",
+      "source": "Random each match",
+      "translation": "প্রতি ম্যাচে দৈব নির্বাচন",
+      "verdict": "pass",
+      "reason": "Explicit random selection each match fixes omitted selection sense in initial machine response."
+    },
+    {
+      "id": "native:[inn]",
+      "source": "Inn",
+      "translation": "সরাইখানা",
+      "verdict": "pass",
+      "reason": "Lodging noun appropriate as established building term; fuller descriptions clarify supply/conversion."
+    },
+    {
+      "id": "native:[language-code]",
+      "source": "en",
+      "translation": "bn",
+      "verdict": "pass",
+      "reason": "Exact installed locale metadata code; intentionally not translated."
+    },
+    {
+      "id": "native:[language-tr]",
+      "source": "Language",
+      "translation": "ভাষা",
+      "verdict": "pass",
+      "reason": "Meaning and grammatical relationships retained; concise contemporary Bengali and respectful action register where applicable; no technical token loss."
+    },
+    {
+      "id": "native:[language]",
+      "source": "English",
+      "translation": "বাংলা",
+      "verdict": "pass",
+      "reason": "Correct Bengali self-name."
+    },
+    {
+      "id": "native:[market]",
+      "source": "Market",
+      "translation": "বাজার",
+      "verdict": "pass",
+      "reason": "Dictionary-attested বাজার; fruit-exchange building context."
+    },
+    {
+      "id": "native:[swarm]",
+      "source": "Swarm",
+      "translation": "মৌচাক",
+      "verdict": "pass",
+      "reason": "Building uses bee-dwelling sense; corroborated by Hindi छत्ता, Urdu چھتہ and French Ruche."
+    },
+    {
+      "id": "native:[tutorial]",
+      "source": "Tutorial",
+      "translation": "প্রশিক্ষণ",
+      "verdict": "pass",
+      "reason": "Meaning and grammatical relationships retained; concise contemporary Bengali and respectful action register where applicable; no technical token loss."
+    },
+    {
+      "id": "native:[tutorial text 1]",
+      "source": "Welcome to the Globulation 2 primary tutorial! This tutorial will cover everything from building inns, exploring zones, and destroying enemies! There is no shortage of useful knowledge here!",
+      "translation": "Globulation 2-এর প্রাথমিক প্রশিক্ষণে স্বাগতম! এই প্রশিক্ষণে সরাইখানা তৈরি, বিভিন্ন এলাকা অনুসন্ধান ও শত্রু ধ্বংস করা পর্যন্ত সবই শিখবেন। এখানে শেখার মতো অনেক দরকারি বিষয় আছে!",
+      "verdict": "pass",
+      "reason": "Brand exact; primary tutorial, Inns, exploration and enemy destruction retained; respectful register."
+    },
+    {
+      "id": "native:[tutorial text 2]",
+      "source": "Now that you have mastered the basics, it's time to get used to other buildings such as Racetracks, Swimming Pools, and Schools.",
+      "translation": "এখন আপনি প্রাথমিক বিষয়গুলো আয়ত্ত করেছেন। এবার দৌড়ের মাঠ, সাঁতারের পুকুর ও বিদ্যালয়ের মতো অন্য ভবনগুলোর সঙ্গে পরিচিত হোন।",
+      "verdict": "pass",
+      "reason": "Basics mastered; other buildings remain racetrack/swimming pool/school; respectful হোন."
+    },
+    {
+      "id": "native:[tutorial text 3]",
+      "source": "You have done well to get this far. Now let's move on to Warriors, Barracks, and Upgrades.",
+      "translation": "এত দূর এসে আপনি ভালোই করেছেন। এবার যোদ্ধা, ব্যারাক ও উন্নয়ন নিয়ে শিখুন।",
+      "verdict": "pass",
+      "reason": "Prior achievement, warriors, barracks and upgrades retained; আপনি/করেছেন fixes former familiar pronoun mismatch."
+    },
+    {
+      "id": "native:[Warrior]",
+      "source": "Warrior",
+      "translation": "যোদ্ধা",
+      "verdict": "pass",
+      "reason": "Dictionary attests যোদ্ধা; matches fighter role."
+    },
+    {
+      "id": "native:[wood]",
+      "source": "wood",
+      "translation": "কাঠ",
+      "verdict": "pass",
+      "reason": "Resource is timber কাঠ; French Forêt is contextual evidence, not an authority to overwrite English resource meaning."
+    },
+    {
+      "id": "native:[Worker]",
+      "source": "Worker",
+      "translation": "শ্রমিক",
+      "verdict": "pass",
+      "reason": "Dictionary attests শ্রমিক; matches gathering/building role and hi/ur context."
+    },
+    {
+      "id": "native:[River width]",
+      "source": "River width",
+      "translation": "নদীর প্রস্থ",
+      "verdict": "pass",
+      "reason": "Meaning and grammatical relationships retained; concise contemporary Bengali and respectful action register where applicable; no technical token loss."
+    },
+    {
+      "id": "native:[settings Language]",
+      "source": "Language",
+      "translation": "ভাষা",
+      "verdict": "pass",
+      "reason": "Meaning and grammatical relationships retained; concise contemporary Bengali and respectful action register where applicable; no technical token loss."
+    },
+    {
+      "id": "native:[settings Language used throughout the interface.]",
+      "source": "Language used throughout the interface.",
+      "translation": "পুরো ইন্টারফেসে ব্যবহৃত ভাষা।",
+      "verdict": "pass",
+      "reason": "Meaning and grammatical relationships retained; concise contemporary Bengali and respectful action register where applicable; no technical token loss."
+    },
+    {
+      "id": "native:[settings Music volume]",
+      "source": "Music volume",
+      "translation": "সংগীতের আওয়াজ",
+      "verdict": "pass",
+      "reason": "Meaning and grammatical relationships retained; concise contemporary Bengali and respectful action register where applicable; no technical token loss."
+    },
+    {
+      "id": "native:[Pass width]",
+      "source": "Pass width",
+      "translation": "গিরিপথের প্রস্থ",
+      "verdict": "pass",
+      "reason": "Correct mountain-route width."
+    },
+    {
+      "id": "native:[Extra open passes]",
+      "source": "Extra open passes",
+      "translation": "অতিরিক্ত খোলা গিরিপথ",
+      "verdict": "pass",
+      "reason": "Correct extra open mountain routes; preserves modifier relationships."
+    },
+    {
+      "id": "native:[Passes]",
+      "source": "Passes",
+      "translation": "গিরিপথ",
+      "verdict": "pass",
+      "reason": "Dictionary mountain-route sense and hi/ur/fr agree; not permissions or test results."
+    },
+    {
+      "id": "native:[Flags]",
+      "source": "Flags",
+      "translation": "পতাকা",
+      "verdict": "pass",
+      "reason": "Meaning and grammatical relationships retained; concise contemporary Bengali and respectful action register where applicable; no technical token loss."
+    },
+    {
+      "id": "native:[settings Text size]",
+      "source": "Text size",
+      "translation": "লেখার আকার",
+      "verdict": "pass",
+      "reason": "Meaning and grammatical relationships retained; concise contemporary Bengali and respectful action register where applicable; no technical token loss."
+    },
+    {
+      "id": "native:[settings Edge scrolling]",
+      "source": "Edge scrolling",
+      "translation": "প্রান্তে স্ক্রল",
+      "verdict": "pass",
+      "reason": "Meaning and grammatical relationships retained; concise contemporary Bengali and respectful action register where applicable; no technical token loss."
+    },
+    {
+      "id": "native:[settings Move the game and editor maps when the mouse reaches the window edge.]",
+      "source": "Move the game and editor maps when the mouse reaches the window edge.",
+      "translation": "মাউস উইন্ডোর প্রান্তে পৌঁছালে খেলা ও সম্পাদকের মানচিত্র সরান।",
+      "verdict": "pass",
+      "reason": "Meaning and grammatical relationships retained; concise contemporary Bengali and respectful action register where applicable; no technical token loss."
+    },
+    {
+      "id": "native:[hub finish in browser, game continues]",
+      "source": "Finish signing in in your browser. The game continues by itself once you are done.",
+      "translation": "ব্রাউজারে সাইন ইন শেষ করুন। শেষ হলে খেলা স্বয়ংক্রিয়ভাবে এগিয়ে যাবে।",
+      "verdict": "pass",
+      "reason": "Automatic continuation follows completed browser sign-in; previous minor wording concern resolved."
+    },
+    {
+      "id": "native:[hub browser did not open]",
+      "source": "Your browser did not open. Open the sign-in page to continue.",
+      "translation": "আপনার ব্রাউজার খোলেনি। এগিয়ে যেতে সাইন ইনের পৃষ্ঠা খুলুন।",
+      "verdict": "pass",
+      "reason": "Checked actual frozen source and live draft value; action/spatial/technical meaning, respectful register and substitutions retained."
+    },
+    {
+      "id": "native:[hub compare code %0]",
+      "source": "If the page asks, check that it shows %0.",
+      "translation": "পৃষ্ঠায় কোড যাচাই করতে বললে দেখুন সেখানে %0 আছে কি না।",
+      "verdict": "pass",
+      "reason": "Explicit code verification now retains %0 and comparison intent without asking user to enter/share it; previous minor resolved."
+    },
+    {
+      "id": "native:[settings Finish in your browser. The game continues by itself.]",
+      "source": "Finish in your browser. The game continues by itself.",
+      "translation": "ব্রাউজারে কাজটি শেষ করুন। খেলা স্বয়ংক্রিয়ভাবে এগিয়ে যাবে।",
+      "verdict": "pass",
+      "reason": "Checked actual frozen source and live draft value; action/spatial/technical meaning, respectful register and substitutions retained."
+    },
+    {
+      "id": "native:[tutorial lessons]",
+      "source": "Tutorial lessons",
+      "translation": "প্রশিক্ষণের পাঠ",
+      "verdict": "pass",
+      "reason": "Meaning and grammatical relationships retained; concise contemporary Bengali and respectful action register where applicable; no technical token loss."
+    },
+    {
+      "id": "native:[tutorial restart]",
+      "source": "Restart lesson",
+      "translation": "পাঠ আবার শুরু করুন",
+      "verdict": "pass",
+      "reason": "Meaning and grammatical relationships retained; concise contemporary Bengali and respectful action register where applicable; no technical token loss."
+    },
+    {
+      "id": "native:[tutorial restart body]",
+      "source": "Restart this lesson from its prepared colony? Unsaved progress will be lost.",
+      "translation": "এই পাঠের তৈরি উপনিবেশ থেকে আবার শুরু করবেন? সংরক্ষণ না করা অগ্রগতি হারিয়ে যাবে।",
+      "verdict": "pass",
+      "reason": "Preserves reset to prepared colony and unsaved-progress loss warning."
+    },
+    {
+      "id": "native:[tutorial food title]",
+      "source": "Food supply practice",
+      "translation": "খাদ্য সরবরাহের অনুশীলন",
+      "verdict": "pass",
+      "reason": "Meaning and grammatical relationships retained; concise contemporary Bengali and respectful action register where applicable; no technical token loss."
+    },
+    {
+      "id": "native:[tutorial food briefing]",
+      "source": "Practice expanding food supply: build another Inn, then assign suppliers and watch wheat arrive.",
+      "translation": "খাদ্য সরবরাহ বাড়ানোর অনুশীলন করুন: আরেকটি সরাইখানা তৈরি করুন, তারপর সরবরাহের জন্য শ্রমিক নির্ধারণ করুন এবং গম আসতে দেখুন।",
+      "verdict": "pass",
+      "reason": "Correct sequence build Inn then assign suppliers and observe wheat arrival; does not claim present-worker count."
+    },
+    {
+      "id": "native:[tutorial food complete]",
+      "source": "You built an Inn and supplied it with wheat. Try another lesson or return to the main menu.",
+      "translation": "আপনি একটি সরাইখানা তৈরি করে তাতে গম সরবরাহ করেছেন। অন্য কোনো পাঠ চেষ্টা করুন অথবা মূল মেনুতে ফিরুন।",
+      "verdict": "pass",
+      "reason": "Correct completed building/supply actions and next navigation choices; respectful instructions."
+    },
+    {
+      "id": "online: (provisional)",
+      "source": " (provisional)",
+      "translation": " (অস্থায়ী)",
+      "verdict": "pass",
+      "reason": "Provisional/temporary status meaning and leading template space retained."
+    },
+    {
+      "id": "online: ({slot0})",
+      "source": " ({slot0})",
+      "translation": " ({slot0})",
+      "verdict": "pass",
+      "reason": "Exact placeholder and surrounding structural whitespace retained; approved English-identical template."
+    },
+    {
+      "id": "online: / {slot0}",
+      "source": " / {slot0}",
+      "translation": " / {slot0}",
+      "verdict": "pass",
+      "reason": "Exact placeholder, delimiter and leading space retained; approved English-identical template."
+    },
+    {
+      "id": "online:Cancel",
+      "source": "Cancel",
+      "translation": "বাতিল করুন",
+      "verdict": "pass",
+      "reason": "Meaning and grammatical relationships retained; concise contemporary Bengali and respectful action register where applicable; no technical token loss."
+    },
+    {
+      "id": "online:Language",
+      "source": "Language",
+      "translation": "ভাষা",
+      "verdict": "pass",
+      "reason": "Meaning and grammatical relationships retained; concise contemporary Bengali and respectful action register where applicable; no technical token loss."
+    },
+    {
+      "id": "online:Map library",
+      "source": "Map library",
+      "translation": "মানচিত্রের সংগ্রহ",
+      "verdict": "pass",
+      "reason": "Meaning and grammatical relationships retained; concise contemporary Bengali and respectful action register where applicable; no technical token loss."
+    },
+    {
+      "id": "online:Password",
+      "source": "Password",
+      "translation": "পাসওয়ার্ড",
+      "verdict": "pass",
+      "reason": "Meaning and grammatical relationships retained; concise contemporary Bengali and respectful action register where applicable; no technical token loss."
+    },
+    {
+      "id": "online:Play in browser",
+      "source": "Play in browser",
+      "translation": "ব্রাউজারে খেলুন",
+      "verdict": "pass",
+      "reason": "Meaning and grammatical relationships retained; concise contemporary Bengali and respectful action register where applicable; no technical token loss."
+    },
+    {
+      "id": "online:Publish",
+      "source": "Publish",
+      "translation": "প্রকাশ করুন",
+      "verdict": "pass",
+      "reason": "Meaning and grammatical relationships retained; concise contemporary Bengali and respectful action register where applicable; no technical token loss."
+    },
+    {
+      "id": "online:Save",
+      "source": "Save",
+      "translation": "সংরক্ষণ করুন",
+      "verdict": "pass",
+      "reason": "Meaning and grammatical relationships retained; concise contemporary Bengali and respectful action register where applicable; no technical token loss."
+    },
+    {
+      "id": "online:Sign in",
+      "source": "Sign in",
+      "translation": "সাইন ইন করুন",
+      "verdict": "pass",
+      "reason": "Meaning and grammatical relationships retained; concise contemporary Bengali and respectful action register where applicable; no technical token loss."
+    },
+    {
+      "id": "online:Sign out",
+      "source": "Sign out",
+      "translation": "সাইন আউট করুন",
+      "verdict": "pass",
+      "reason": "Meaning and grammatical relationships retained; concise contemporary Bengali and respectful action register where applicable; no technical token loss."
+    },
+    {
+      "id": "online:{count} credit",
+      "source": {
+        "one": "{count} credit",
+        "other": "{count} credits"
+      },
+      "translation": {
+        "one": "{count} ক্রেডিট",
+        "other": "{count} ক্রেডিট"
+      },
+      "verdict": "pass",
+      "reason": "Paid usage balance correctly ক্রেডিট, not attribution; named count intact."
+    },
+    {
+      "id": "online:{count} player on this page",
+      "source": {
+        "one": "{count} player on this page",
+        "other": "{count} players on this page"
+      },
+      "translation": {
+        "one": "এই পৃষ্ঠায় {count} জন খেলোয়াড়",
+        "other": "এই পৃষ্ঠায় {count} জন খেলোয়াড়"
+      },
+      "verdict": "pass",
+      "reason": "Named count placeholder intact; Bengali জন classifier and invariant wording across forms valid."
+    }
+  ],
+  "findings": [],
+  "resolved_previous_findings": [
+    "pilot-semantic-001",
+    "pilot-semantic-002",
+    "initial API tutorial respectful-address drift",
+    "initial API terminology drift in tested access messages",
+    "initial API random-music selection omission",
+    "initial API exact-brand preservation",
+    "initial API corrupted placeholder template repaired in actual draft"
+  ],
+  "verification": {
+    "actual_catalog_hashes_match_author_evidence": true,
+    "all_60_evidence_targets_equal_actual_catalog_values": true,
+    "all_60_frozen_source_entries_read": true,
+    "all_45_manual_source_pilot_entries_rechecked": true,
+    "all_18_original_API_positions_compared_to_authored_repairs": true
+  },
+  "verdict": "PASS: semantic pilot approved as basis for paid bulk drafting and subsequent full independent reviews",
+  "blocking_findings": 0,
+  "limits": [
+    "This approves pilot semantics and tested token/template repairs, not final catalog quality or rendering.",
+    "Original API response remains completed-with-rejections in accounting; repaired author draft is distinct from an independently successful new API request. Cloud runner must continue rejecting/repairing altered protected tokens and must not silently accept or omit failed entries.",
+    "Retain pilot edits during bulk resume; all remaining machine translations require author, independent semantic, editorial and adversarial review."
+  ]
+}

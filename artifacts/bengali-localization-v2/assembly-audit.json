@@ -1,0 +1,27 @@
+{
+  "source_sha256": "1d2a1e684c8ce57ab915c131f1b42fa16c4a561b77a28a6a769495582c82365a",
+  "catalog_sha256": {
+    "native": "142a264452a5e33f05ac58b921b232704f82d3d5473ea467053c15a4a4d06604",
+    "online": "5776ba1f7d336c335c408096eb680ab9e551677a100b2f38a991c3ccb7ef1f29"
+  },
+  "coverage": {
+    "complete_keys": 6235,
+    "carried_actual_prior_read_pairs": 6229,
+    "freshly_reviewed_new_pairs": 6,
+    "native_keys": 3393,
+    "online_keys": 2842,
+    "mechanical_rebinding_is_not_fresh_review": true
+  },
+  "accepted_english": 162,
+  "canonical_batches": 43,
+  "check_draft_errors": [],
+  "audit_issues": [
+    "desktop_rendering is pending or lacks evidence",
+    "phone_rendering is pending or lacks evidence",
+    "browser_startup is pending or lacks evidence",
+    "native_platforms is pending or lacks evidence",
+    "browser_platforms is pending or lacks evidence",
+    "mobile_platforms is pending or lacks evidence"
+  ],
+  "status": "Review/structural provenance valid; release blocked by pending execution gates"
+}

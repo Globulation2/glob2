@@ -1,0 +1,27 @@
+[WebServer] (node:1500416) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 12 tests using 1 worker
+
+(node:1503431) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   1 [firefox-desktop] › platform/apps/web/e2e/i18n.spec.ts:8:3 › home loads and renders bn (25.5s)
+  ✓   2 [firefox-desktop] › platform/apps/web/e2e/i18n.spec.ts:97:1 › Bengali libraries, account and room invitations fit the viewport (18.4s)
+  ✓   3 [firefox-desktop] › platform/apps/web/e2e/i18n.spec.ts:160:3 › changing to bn updates the page without losing input (9.6s)
+(node:1510924) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   4 [firefox-phone] › platform/apps/web/e2e/i18n.spec.ts:8:3 › home loads and renders bn (13.7s)
+  ✓   5 [firefox-phone] › platform/apps/web/e2e/i18n.spec.ts:97:1 › Bengali libraries, account and room invitations fit the viewport (20.3s)
+  ✓   6 [firefox-phone] › platform/apps/web/e2e/i18n.spec.ts:160:3 › changing to bn updates the page without losing input (16.1s)
+(node:1516588) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   7 [webkit-desktop] › platform/apps/web/e2e/i18n.spec.ts:8:3 › home loads and renders bn (43.9s)
+  ✓   8 [webkit-desktop] › platform/apps/web/e2e/i18n.spec.ts:97:1 › Bengali libraries, account and room invitations fit the viewport (33.6s)
+  ✓   9 [webkit-desktop] › platform/apps/web/e2e/i18n.spec.ts:160:3 › changing to bn updates the page without losing input (45.5s)
+(node:1527244) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  10 [webkit-phone] › platform/apps/web/e2e/i18n.spec.ts:8:3 › home loads and renders bn (32.4s)
+  ✓  11 [webkit-phone] › platform/apps/web/e2e/i18n.spec.ts:97:1 › Bengali libraries, account and room invitations fit the viewport (30.3s)
+  ✓  12 [webkit-phone] › platform/apps/web/e2e/i18n.spec.ts:160:3 › changing to bn updates the page without losing input (40.0s)
+
+  12 passed (7.3m)

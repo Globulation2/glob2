@@ -1,0 +1,9 @@
+{
+  "revision": "60887383753dc130dfdb41621682ac7c1a00c469",
+  "command": [
+    "npm",
+    "run",
+    "lint"
+  ],
+  "exit_code": 0
+}

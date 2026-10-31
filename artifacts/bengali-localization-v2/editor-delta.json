@@ -1,0 +1,112 @@
+{
+  "identity": "/root/bengali_editor",
+  "role": "independent online editorial reviewer",
+  "certification": "Agent-reviewed; not native-human-certified",
+  "source_sha256": "1d2a1e684c8ce57ab915c131f1b42fa16c4a561b77a28a6a769495582c82365a",
+  "catalog_sha256": {
+    "native": "142a264452a5e33f05ac58b921b232704f82d3d5473ea467053c15a4a4d06604",
+    "online": "5776ba1f7d336c335c408096eb680ab9e551677a100b2f38a991c3ccb7ef1f29"
+  },
+  "input_author_delta_sha256": "f41ebb77f8624eae00a86108446ae9b1b6c7123c04980978c2189dd68d3284b0",
+  "input_carry_forward_sha256": "e78bf57da22cabd5ee58f8eb1b2241c23f4788dd9ac06c6c71600addd7a71020",
+  "examined_keys": [
+    "online:Rush",
+    "online:Defensive",
+    "online:Economy",
+    "online:Expansion",
+    "online:Experimental",
+    "online:Beginner-friendly"
+  ],
+  "entries": [
+    {
+      "id": "online:Rush",
+      "source": "Rush",
+      "examined_target": "দ্রুত আক্রমণ",
+      "final_target": "দ্রুত আক্রমণ",
+      "disposition": "retained after fresh independent editorial examination",
+      "rationale": "Natural compact gaming label for a fast attack strategy; avoids transliterated রাশ (unhelpful/ambiguous).",
+      "matching_native_key": "[Rush]",
+      "matching_native_value": "দ্রুত আক্রমণ"
+    },
+    {
+      "id": "online:Defensive",
+      "source": "Defensive",
+      "examined_target": "প্রতিরক্ষামূলক",
+      "final_target": "প্রতিরক্ষামূলক",
+      "disposition": "retained after fresh independent editorial examination",
+      "rationale": "Natural adjective for a defense-oriented AI style.",
+      "matching_native_key": "[Defensive]",
+      "matching_native_value": "প্রতিরক্ষামূলক"
+    },
+    {
+      "id": "online:Economy",
+      "source": "Economy",
+      "examined_target": "অর্থনীতি",
+      "final_target": "অর্থনীতি",
+      "disposition": "retained after fresh independent editorial examination",
+      "rationale": "Ordinary Bengali strategy-category noun for economy emphasis.",
+      "matching_native_key": "[Economy]",
+      "matching_native_value": "অর্থনীতি"
+    },
+    {
+      "id": "online:Expansion",
+      "source": "Expansion",
+      "examined_target": "সম্প্রসারণ",
+      "final_target": "সম্প্রসারণ",
+      "disposition": "retained after fresh independent editorial examination",
+      "rationale": "Ordinary noun for territorial/colony expansion as a strategic style.",
+      "matching_native_key": "[Expansion]",
+      "matching_native_value": "সম্প্রসারণ"
+    },
+    {
+      "id": "online:Experimental",
+      "source": "Experimental",
+      "examined_target": "পরীক্ষামূলক",
+      "final_target": "পরীক্ষামূলক",
+      "disposition": "retained after fresh independent editorial examination",
+      "rationale": "Natural adjective for an experimental AI style; does not promise validation or skill.",
+      "matching_native_key": "[Experimental]",
+      "matching_native_value": "পরীক্ষামূলক"
+    },
+    {
+      "id": "online:Beginner-friendly",
+      "source": "Beginner-friendly",
+      "examined_target": "শিক্ষানবিসদের জন্য সহজ",
+      "final_target": "শিক্ষানবিসদের জন্য সহজ",
+      "disposition": "retained after fresh independent editorial examination",
+      "rationale": "Natural novice-oriented style label, concise enough as a wrapping tag; source denotes author categorization, not tested difficulty.",
+      "matching_native_key": "[Beginner-friendly]",
+      "matching_native_value": "শিক্ষানবিসদের জন্য সহজ"
+    }
+  ],
+  "findings": [],
+  "context_read": [
+    {
+      "path": "platform/apps/web/src/pages/Ais.tsx:105",
+      "observation": "Tags() maps protocol AI_TAGS to localized t(tag) small filter/toggle buttons; original protocol tag remains selection key."
+    },
+    {
+      "path": "src/ui/settings/SettingsScreenCustomAIs.cpp:235",
+      "observation": "Same seven AI tags, including already-present Balanced; customAIText(tag) supplies button labels at line595 and list metadata at617/642."
+    },
+    {
+      "path": "platform/packages/protocol/src/ais.ts:4",
+      "observation": "AI_TAGS uses identical English tag IDs. This delta adds missing catalog entries, not new strategy behavior."
+    }
+  ],
+  "verdict": "All six added Bengali AI-style labels are natural, concise and consistent with the matching approved native labels. No editorial change required.",
+  "carry_forward_acknowledgment": {
+    "kind": "mechanical equality acknowledgment, not a fresh reading of 6229 old entries",
+    "old_source_sha256": "0ac44b4cdfb03e688983d6e3fb1e484cca57589665bff19c5c65388e649b292a",
+    "new_source_sha256": "1d2a1e684c8ce57ab915c131f1b42fa16c4a561b77a28a6a769495582c82365a",
+    "unchanged_source_target_pairs_verified": 6229,
+    "method": "Independently compared every recorded pair against both old/new frozen source and old/new Bengali target catalogs; all equal. Original independent editorial evidence remains the reading record for old online entries.",
+    "prior_editorial_record": "artifacts/bengali-localization/editorial-work/online-editorial-review.json",
+    "prior_editorial_record_sha256": "8050e5a5c335965a758f2b69cf06cf0d010d437e41d8a4e2534c847fa889d16c"
+  },
+  "limitations": [
+    "Fresh linguistic examination in this delta covers exactly six added online IDs; no new approval inferred for other languages.",
+    "Tag wrapping/font screenshots and final release gates remain separate validation."
+  ],
+  "new_paid_api_requests": 0
+}

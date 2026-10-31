@@ -1,0 +1,99 @@
+{
+  "identity": "/root/rendering_audit",
+  "role": "independent focused semantic delta reviewer",
+  "status": "pass",
+  "source_sha256": "1d2a1e684c8ce57ab915c131f1b42fa16c4a561b77a28a6a769495582c82365a",
+  "old_source_sha256": "0ac44b4cdfb03e688983d6e3fb1e484cca57589665bff19c5c65388e649b292a",
+  "online_catalog_sha256": "5776ba1f7d336c335c408096eb680ab9e551677a100b2f38a991c3ccb7ef1f29",
+  "native_catalog_sha256": "142a264452a5e33f05ac58b921b232704f82d3d5473ea467053c15a4a4d06604",
+  "examined_keys": [
+    "online:Rush",
+    "online:Defensive",
+    "online:Economy",
+    "online:Expansion",
+    "online:Experimental",
+    "online:Beginner-friendly"
+  ],
+  "directly_read_new_online_pairs": 6,
+  "entries": [
+    {
+      "id": "online:Rush",
+      "source": "Rush",
+      "translation": "দ্রুত আক্রমণ",
+      "reviewer": "/root/rendering_audit",
+      "role": "independent semantic reviewer",
+      "verdict": "pass",
+      "rationale": "দ্রুত আক্রমণ correctly names fast offensive AI style; avoids meaningless cloud transliteration রাশ.",
+      "native_reference_id": "native:[Rush]",
+      "context": "AI style display/filter/category labels. Ais.tsx:109–126 renders t(tag); native SettingsScreenCustomAIs.cpp:235,592–595 renders customAIText(tag). Protocol AI_TAGS preserves English identifiers."
+    },
+    {
+      "id": "online:Defensive",
+      "source": "Defensive",
+      "translation": "প্রতিরক্ষামূলক",
+      "reviewer": "/root/rendering_audit",
+      "role": "independent semantic reviewer",
+      "verdict": "pass",
+      "rationale": "প্রতিরক্ষামূলক correctly identifies defense-oriented AI strategy.",
+      "native_reference_id": "native:[Defensive]",
+      "context": "AI style display/filter/category labels. Ais.tsx:109–126 renders t(tag); native SettingsScreenCustomAIs.cpp:235,592–595 renders customAIText(tag). Protocol AI_TAGS preserves English identifiers."
+    },
+    {
+      "id": "online:Economy",
+      "source": "Economy",
+      "translation": "অর্থনীতি",
+      "reviewer": "/root/rendering_audit",
+      "role": "independent semantic reviewer",
+      "verdict": "pass",
+      "rationale": "অর্থনীতি correctly identifies colony economic development focus.",
+      "native_reference_id": "native:[Economy]",
+      "context": "AI style display/filter/category labels. Ais.tsx:109–126 renders t(tag); native SettingsScreenCustomAIs.cpp:235,592–595 renders customAIText(tag). Protocol AI_TAGS preserves English identifiers."
+    },
+    {
+      "id": "online:Expansion",
+      "source": "Expansion",
+      "translation": "সম্প্রসারণ",
+      "reviewer": "/root/rendering_audit",
+      "role": "independent semantic reviewer",
+      "verdict": "pass",
+      "rationale": "সম্প্রসারণ correctly identifies territorial/colony growth strategy.",
+      "native_reference_id": "native:[Expansion]",
+      "context": "AI style display/filter/category labels. Ais.tsx:109–126 renders t(tag); native SettingsScreenCustomAIs.cpp:235,592–595 renders customAIText(tag). Protocol AI_TAGS preserves English identifiers."
+    },
+    {
+      "id": "online:Experimental",
+      "source": "Experimental",
+      "translation": "পরীক্ষামূলক",
+      "reviewer": "/root/rendering_audit",
+      "role": "independent semantic reviewer",
+      "verdict": "pass",
+      "rationale": "পরীক্ষামূলক correctly identifies experimental AI, without promising stability.",
+      "native_reference_id": "native:[Experimental]",
+      "context": "AI style display/filter/category labels. Ais.tsx:109–126 renders t(tag); native SettingsScreenCustomAIs.cpp:235,592–595 renders customAIText(tag). Protocol AI_TAGS preserves English identifiers."
+    },
+    {
+      "id": "online:Beginner-friendly",
+      "source": "Beginner-friendly",
+      "translation": "শিক্ষানবিসদের জন্য সহজ",
+      "reviewer": "/root/rendering_audit",
+      "role": "independent semantic reviewer",
+      "verdict": "pass",
+      "rationale": "শিক্ষানবিসদের জন্য সহজ naturally states suitability/ease for beginner players.",
+      "native_reference_id": "native:[Beginner-friendly]",
+      "context": "AI style display/filter/category labels. Ais.tsx:109–126 renders t(tag); native SettingsScreenCustomAIs.cpp:235,592–595 renders customAIText(tag). Protocol AI_TAGS preserves English identifiers."
+    }
+  ],
+  "findings": [],
+  "carry_forward_acknowledgment": {
+    "unchanged_pairs_mechanically_verified": 6229,
+    "proof_path": "artifacts/bengali-localization-v2/carry-forward.json",
+    "proof_sha256": "e78bf57da22cabd5ee58f8eb1b2241c23f4788dd9ac06c6c71600addd7a71020",
+    "prior_semantic_records": [
+      "artifacts/bengali-localization/final-native-semantic-review.json",
+      "artifacts/bengali-localization/final-online-semantic-review.json"
+    ],
+    "claim": "All 6229 old source/target pairs match prior semantic records and current v2 catalogs exactly. This is equality validation carrying earlier actual reading forward; no claim that 6229 pairs were freshly reread in this delta turn."
+  },
+  "author_delta_sha256": "f41ebb77f8624eae00a86108446ae9b1b6c7123c04980978c2189dd68d3284b0",
+  "scope": "Six Bengali online tags only; native values and source-identical prior pairs remain covered by their earlier independent reviews."
+}

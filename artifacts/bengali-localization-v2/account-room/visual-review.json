@@ -1,0 +1,326 @@
+{
+  "reviewer": "/root/bengali_adversary",
+  "certification": "Agent-reviewed; not native-human-certified",
+  "revision": "31efbe8cd73319cfe2ad4e61acc439b944b55261",
+  "build": {
+    "revision": "60887383753dc130dfdb41621682ac7c1a00c469",
+    "command": [
+      "npm",
+      "--prefix",
+      "platform",
+      "run",
+      "build",
+      "--workspace",
+      "@glob2/web"
+    ],
+    "exit_code": 0
+  },
+  "build_rebuilt_by_reviewer": false,
+  "source_sha256": "1d2a1e684c8ce57ab915c131f1b42fa16c4a561b77a28a6a769495582c82365a",
+  "catalog_sha256": "5776ba1f7d336c335c408096eb680ab9e551677a100b2f38a991c3ccb7ef1f29",
+  "native_catalog_sha256": "142a264452a5e33f05ac58b921b232704f82d3d5473ea467053c15a4a4d06604",
+  "built_assets": [
+    {
+      "path": "platform/apps/web/dist/assets/index-Bc7TAJD3.js",
+      "sha256": "063baa2f7d813d562832221b31d007e1846bc89730cc4923ac076d74be014845"
+    },
+    {
+      "path": "platform/apps/web/dist/assets/NotoSansBengali-Regular-ByHju1oA.ttf",
+      "sha256": "6300c5370cd688b0641343de4c786de6d412bb6c578d129dae75e93a0322dcab"
+    },
+    {
+      "path": "platform/apps/web/dist/assets/index-BcLutPQQ.css",
+      "sha256": "0cd070f6f15e97f7ecf85e92125de7045ac1b2b81eedacb62b179ae154cfc35c"
+    }
+  ],
+  "environment": {
+    "browser": "Playwright Chromium headless;1280×860 desktop and Pixel7 phone",
+    "node": "v24 (bundled runtime)",
+    "server": "http://127.0.0.1:4288",
+    "realtime_direct": "http://127.0.0.1:37537 (same owned e2e server process)",
+    "postgres": "owned local55434, unique seed-test database"
+  },
+  "command": "TEST_DATABASE_URL=postgres://glob2:glob2@127.0.0.1:55434/postgres <bundled Node24> artifacts/bengali-localization-v2/account-room/check.mjs",
+  "final_exit_code": 0,
+  "final_verdict": "passed",
+  "actions": [
+    {
+      "mode": "desktop",
+      "action": "Actual register form submitted successfully",
+      "username": "bnqa_desktop_1793489474825"
+    },
+    {
+      "mode": "desktop",
+      "action": "Actual existing-account sign-in form succeeded"
+    },
+    {
+      "mode": "desktop",
+      "action": "Actual account avatar source edited with Use initials button and saved confirmation"
+    },
+    {
+      "mode": "desktop",
+      "action": "Account display name changed via actual authenticated REST (no web form exists)",
+      "status": 200
+    },
+    {
+      "mode": "desktop",
+      "action": "Refreshed only owned seed engine heartbeat immediately before room lifecycle"
+    },
+    {
+      "mode": "desktop",
+      "action": "Actual realtime host creates Bengali-named room, second local guest joins and readies",
+      "roomName": "বাংলা বন্ধুদের ঘর",
+      "code": "5X8MMLA5K9",
+      "members": 2,
+      "seatsTaken": 2
+    },
+    {
+      "mode": "phone",
+      "action": "Actual register form submitted successfully",
+      "username": "bnqa_phone_1793489490382"
+    },
+    {
+      "mode": "phone",
+      "action": "Actual existing-account sign-in form succeeded"
+    },
+    {
+      "mode": "phone",
+      "action": "Actual account avatar source edited with Use initials button and saved confirmation"
+    },
+    {
+      "mode": "phone",
+      "action": "Account display name changed via actual authenticated REST (no web form exists)",
+      "status": 200
+    },
+    {
+      "mode": "phone",
+      "action": "Refreshed only owned seed engine heartbeat immediately before room lifecycle"
+    },
+    {
+      "mode": "phone",
+      "action": "Actual realtime host creates Bengali-named room, second local guest joins and readies",
+      "roomName": "বাংলা বন্ধুদের ঘর",
+      "code": "NES6EX7NJA",
+      "members": 2,
+      "seatsTaken": 2
+    }
+  ],
+  "assertions": [
+    {
+      "mode": "desktop",
+      "assertion": "Bengali editable confirmation text retained and corresponding action enabled; delete was not submitted"
+    },
+    {
+      "mode": "desktop",
+      "fonts": {
+        "loaded": true,
+        "bundled": true,
+        "horizontalOverflow": 0
+      }
+    },
+    {
+      "mode": "desktop",
+      "inviteDescription": "আপনাকে আমন্ত্রণ জানানো হচ্ছে।\n\nরুমের আমন্ত্রণ\n\nবাংলা বন্ধুদের ঘর\n\nবাংলা৫ আপনাকে Glob2 Online (test)-এ তাঁদের Globulation 2 রুমে আমন্ত্রণ জানিয়েছেন।\n\nব্রাউজারে খেলুন\nGlobulation 2 অ্যাপে খুলুন\n\nশুধুমাত্র যদি আপনি এই ডিভাইসে গেমটি ইনস্টল করে থাকেন। কোনো অ্যাপ নেই? আপনার ব্রাউজারে খেলুন; কিছু ইনস্টল করতে হবে না।\n\nইতিমধ্যে খেলায় আছেন? বেছে নিন অনলাইনে খেলুন, তারপর কোড দিয়ে যোগ দিন, এবং লিখুন:\n\n5X8MMLA5K9"
+    },
+    {
+      "mode": "phone",
+      "assertion": "Bengali editable confirmation text retained and corresponding action enabled; delete was not submitted"
+    },
+    {
+      "mode": "phone",
+      "fonts": {
+        "loaded": true,
+        "bundled": true,
+        "horizontalOverflow": 0
+      }
+    },
+    {
+      "mode": "phone",
+      "inviteDescription": "আপনাকে আমন্ত্রণ জানানো হচ্ছে।\n\nরুমের আমন্ত্রণ\n\nবাংলা বন্ধুদের ঘর\n\nবাংলা৬ আপনাকে Glob2 Online (test)-এ তাঁদের Globulation 2 রুমে আমন্ত্রণ জানিয়েছেন।\n\nব্রাউজারে খেলুন\nGlobulation 2 অ্যাপে খুলুন\n\nশুধুমাত্র যদি আপনি এই ডিভাইসে গেমটি ইনস্টল করে থাকেন। কোনো অ্যাপ নেই? আপনার ব্রাউজারে খেলুন; কিছু ইনস্টল করতে হবে না।\n\nইতিমধ্যে খেলায় আছেন? বেছে নিন অনলাইনে খেলুন, তারপর কোড দিয়ে যোগ দিন, এবং লিখুন:\n\nNES6EX7NJA"
+    }
+  ],
+  "workflow_images": [
+    {
+      "path": "artifacts/bengali-localization-v2/account-room/desktop-authenticated-account.png",
+      "sha256": "63a84522a14cb565560b35698c9c0e2cfecc10fec7910f6c24a2e219ce3acabd",
+      "visually_reviewed_final": true
+    },
+    {
+      "path": "artifacts/bengali-localization-v2/account-room/desktop-created-room-invite.png",
+      "sha256": "5385fbe46e5406f9ddc6805a47a258aa1e7757176c8058d4576fe1a9b291ae65",
+      "visually_reviewed_final": true
+    },
+    {
+      "path": "artifacts/bengali-localization-v2/account-room/desktop-guest-home.png",
+      "sha256": "3dce9794d96ad6586cc6f486d34d6ffeabdf9414bb31071eb16a6a17091a0ed5",
+      "visually_reviewed_final": false
+    },
+    {
+      "path": "artifacts/bengali-localization-v2/account-room/desktop-registered.png",
+      "sha256": "7cbaa911fd3cb75a977831810726601d55a40226a68aef8e2c65e22e1cae906c",
+      "visually_reviewed_final": true
+    },
+    {
+      "path": "artifacts/bengali-localization-v2/account-room/phone-authenticated-account.png",
+      "sha256": "0fdb482e7a398d15adf42536b9472bd89c9c57e63eac81a92f1297847a6e0818",
+      "visually_reviewed_final": true
+    },
+    {
+      "path": "artifacts/bengali-localization-v2/account-room/phone-created-room-invite.png",
+      "sha256": "1be9063be3a00cb4f35a48c8aca46cb40f6add626b479191d78d8ff1915d4e41",
+      "visually_reviewed_final": true
+    },
+    {
+      "path": "artifacts/bengali-localization-v2/account-room/phone-guest-home.png",
+      "sha256": "91919e8f32091da3e5c0ca9c1def8ce1d3704c0bdc0d38d402cac613890b9edd",
+      "visually_reviewed_final": false
+    },
+    {
+      "path": "artifacts/bengali-localization-v2/account-room/phone-registered.png",
+      "sha256": "d5a9bada520c27d2aaabdb8b8ee16f7c019c75a2978b9d78521377570748548e",
+      "visually_reviewed_final": true
+    }
+  ],
+  "final_web_images": [
+    {
+      "path": "artifacts/bengali-localization-v2/web-chromium/desktop/bn-home.png",
+      "sha256": "42c7e6d7ec1bc9262e6b4012b1e0a89d753da03b81b4970e4193d786a4020d9a",
+      "visually_reviewed": true
+    },
+    {
+      "path": "artifacts/bengali-localization-v2/web-chromium/desktop/bn-maps.png",
+      "sha256": "c5b8bc6facd75bc2e0cb8ccbddeb2c81c96854721afd19284fc6e168d5f774cd",
+      "visually_reviewed": true
+    },
+    {
+      "path": "artifacts/bengali-localization-v2/web-chromium/desktop/bn-ais.png",
+      "sha256": "2b30b54f3c5db10f0e48744b7140d346a32524f7926a9769636ed1d8463ecb0d",
+      "visually_reviewed": true
+    },
+    {
+      "path": "artifacts/bengali-localization-v2/web-chromium/desktop/bn-buildings.png",
+      "sha256": "9baeeeb28a67e061626ae4b8674acb2367b9d9c75f4096b2ee98dd49c144b032",
+      "visually_reviewed": true
+    },
+    {
+      "path": "artifacts/bengali-localization-v2/web-chromium/desktop/bn-sets.png",
+      "sha256": "67c8076c7b85ef0193caeb8d3b4b94cd8ac93c32228efcecef4a318760fd589a",
+      "visually_reviewed": true
+    },
+    {
+      "path": "artifacts/bengali-localization-v2/web-chromium/desktop/bn-account.png",
+      "sha256": "e2aa91e3d4593a87cdbbfb5ec119df99ae92448ea195f458b2903b807983d731",
+      "visually_reviewed": true
+    },
+    {
+      "path": "artifacts/bengali-localization-v2/web-chromium/desktop/bn-signin.png",
+      "sha256": "268abb6b16baef03da02810281af8c7d3d2523e04c72fb820d7d97118e774750",
+      "visually_reviewed": true
+    },
+    {
+      "path": "artifacts/bengali-localization-v2/web-chromium/desktop/bn-invite.png",
+      "sha256": "dd528291bfe302fd0581eb7e517a7476eae18d052099e4fde9d282c4996baf2c",
+      "visually_reviewed": true
+    },
+    {
+      "path": "artifacts/bengali-localization-v2/web-chromium/phone/bn-home.png",
+      "sha256": "a1327827a0c06a14034c2697225d05ea1d1cdf7c128929909a97d75003c6b0b3",
+      "visually_reviewed": true
+    },
+    {
+      "path": "artifacts/bengali-localization-v2/web-chromium/phone/bn-maps.png",
+      "sha256": "cfb55bb9dbf281b0922ec2ad3972889ec4d23533f9c4d7a3f2de55e88dfef880",
+      "visually_reviewed": true
+    },
+    {
+      "path": "artifacts/bengali-localization-v2/web-chromium/phone/bn-ais.png",
+      "sha256": "e0b6a6a2c2297464cd45e5d4c2953739656e0a3f11a67387ddb37eb8fb2cabbd",
+      "visually_reviewed": true
+    },
+    {
+      "path": "artifacts/bengali-localization-v2/web-chromium/phone/bn-buildings.png",
+      "sha256": "169f6f6d160e0489f30b4ff6cc17992b501982261a5db8d8e95e0066f499d646",
+      "visually_reviewed": true
+    },
+    {
+      "path": "artifacts/bengali-localization-v2/web-chromium/phone/bn-sets.png",
+      "sha256": "c5f2a5bc07bc67bae248c2329bcb74009e2063b37f9004485b803bb1011b42af",
+      "visually_reviewed": true
+    },
+    {
+      "path": "artifacts/bengali-localization-v2/web-chromium/phone/bn-account.png",
+      "sha256": "c94fc8673517f08f38b1b77b3fb1096313abc58332ac950c425a08182f5811e5",
+      "visually_reviewed": true
+    },
+    {
+      "path": "artifacts/bengali-localization-v2/web-chromium/phone/bn-signin.png",
+      "sha256": "afdf70602bda9a8ab2e7dc56d4429b297965801f0a66b6b3f152efe2a44563f6",
+      "visually_reviewed": true
+    },
+    {
+      "path": "artifacts/bengali-localization-v2/web-chromium/phone/bn-invite.png",
+      "sha256": "10cffae4a93c0b3ff113888e8b004e6c4a32a75af679a3ad58fa11e443bb3ca6",
+      "visually_reviewed": true
+    }
+  ],
+  "final_web_visual_verdict": "pass;16 finalChromiumscreenshots examined, all7AI category labels visibly Bengali and narrow picker hidden. No missingglyphs, brokenBengalimarks or blockingbuttonclipping observed.",
+  "rail_signin_measurement": {
+    "clientHeight": 45,
+    "scrollHeight": 45,
+    "clientWidth": 45,
+    "scrollWidth": 45,
+    "elementRect": {
+      "x": 12,
+      "y": 785,
+      "width": 47,
+      "height": 46.90625,
+      "bottom": 831.90625
+    },
+    "textRect": {
+      "x": 15,
+      "y": 784,
+      "width": 28,
+      "height": 46.9375,
+      "bottom": 830.9375
+    },
+    "overflow": "visible",
+    "whiteSpace": "normal",
+    "fontSize": "12.48px",
+    "lineHeight": "14.976px",
+    "text": "সাইন ইন করুন"
+  },
+  "rail_signin_assessment": "Three lines remain readable; clientHeight=scrollHeight45px. Text-range ink overhang1px at top only; no substantial verticaloverflow. Does not justify layout change.",
+  "findings": [],
+  "limitations": [
+    "Account name change was authenticated REST because website has no display-name editform; actual avatar-source edit was through website button.",
+    "Room create/join/readiness used actual local realtime API and asserted2members/2seats/ready. Rendered website invite verified Bengali host and roomname. Website has no lobbyeditor; no browser-game lobby visual pass claimed.",
+    "Deleteconfirmation typed Bengali and enabled correspondingbutton; delete was not submitted.",
+    "Desktopsets screenshot in finalwebfolder is loading state; only visibleheader/filter/loading text reviewed.",
+    "Home phone and maps verylongPNGs downscaled byimage tool; selected authenticated account/invitecaptured atfullsuppliedsize."
+  ],
+  "earlier_attempts": [
+    {
+      "file": "attempt1-results.json",
+      "outcome": "Displayname বাংলা পরীক্ষক exceeded documented32-byte limit; testinput corrected."
+    },
+    {
+      "file": "attempt2-results.json",
+      "outcome": "Desktopflow passed; phoneselector matched hidden sidebarbdi first. Scopedselector to main."
+    },
+    {
+      "file": "attempt3-results.json",
+      "outcome": "PhoneaccountUI passed; roomcreate failed update_required because seedengineheartbeat expired. Failure preserved; not counted pass."
+    },
+    {
+      "file": "fixture-heartbeat-refresh.json",
+      "outcome": "ExactownedDB andseedengine heartbeat refreshed with existing last_seen_at fixturemechanism. Finalscript refreshes beforeeachroom flow."
+    }
+  ],
+  "evidence_hashes": {
+    "check.mjs": "dbac4936d2725ebc2931e54a984da2dbf2c56ec3998054b61b4debacfb82f742",
+    "results.json": "219b572f54e2ed37112867ccf1bbb7a7e77d40d822532b4bb4f475ba2c8972e2",
+    "final-run.log": "a9555832372691f704e63d7f7648b9607edec2c8944bb52a44c5cddcfbfa4701",
+    "refresh-fixture.mjs": "b4193d19cec4fcc4c0e3784a9d91394f653ffc340c9e93bece0d7feccc3391d1",
+    "fixture-heartbeat-refresh.json": "1cda443770ba9f48c6d6f09e2bcd88b3b7d43fdc0ce944e5734e351330b98a87"
+  }
+}

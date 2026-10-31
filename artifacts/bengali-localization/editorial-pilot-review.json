@@ -1,0 +1,142 @@
+{
+  "editor": "/root/bengali_editor",
+  "role": "independent editorial pilot reviewer",
+  "source_sha256": "0ac44b4cdfb03e688983d6e3fb1e484cca57589665bff19c5c65388e649b292a",
+  "input_author_pilot_sha256": "47a9093d32509bcd976d0cfbff2f3941f50b419c1ad6cd3d60d3bd12d344ba45",
+  "catalog_sha256": {
+    "native": "9c0021f1b9da6804eac88fc452f6dd788785bab12f4a2d993e23d82c0e80bc6d",
+    "online": "dd5537208eeb26f379be695259b9519891da353c937bef71e41b6f79c8ad36a5"
+  },
+  "examined_keys": [
+    "native:[%0 units can't access building]",
+    "native:[%0 units can't access flag]",
+    "native:[%0 units can't access fruit]",
+    "native:[%0 units too far from flag]",
+    "native:[Buildings]",
+    "native:[concrete islands terrain]",
+    "native:[crater lakes terrain]",
+    "native:[Explorer]",
+    "native:[extra islands]",
+    "native:[fruit]",
+    "native:[music set]",
+    "native:[random music set]",
+    "native:[inn]",
+    "native:[language-code]",
+    "native:[language-tr]",
+    "native:[language]",
+    "native:[market]",
+    "native:[swarm]",
+    "native:[tutorial]",
+    "native:[tutorial text 1]",
+    "native:[tutorial text 2]",
+    "native:[tutorial text 3]",
+    "native:[Warrior]",
+    "native:[wood]",
+    "native:[Worker]",
+    "native:[River width]",
+    "native:[settings Language]",
+    "native:[settings Language used throughout the interface.]",
+    "native:[settings Music volume]",
+    "native:[Pass width]",
+    "native:[Extra open passes]",
+    "native:[Passes]",
+    "native:[Flags]",
+    "native:[settings Text size]",
+    "native:[settings Edge scrolling]",
+    "native:[settings Move the game and editor maps when the mouse reaches the window edge.]",
+    "native:[hub finish in browser, game continues]",
+    "native:[hub browser did not open]",
+    "native:[hub compare code %0]",
+    "native:[settings Finish in your browser. The game continues by itself.]",
+    "native:[tutorial lessons]",
+    "native:[tutorial restart]",
+    "native:[tutorial restart body]",
+    "native:[tutorial food title]",
+    "native:[tutorial food briefing]",
+    "native:[tutorial food complete]",
+    "online: (provisional)",
+    "online: ({slot0})",
+    "online: / {slot0}",
+    "online:Cancel",
+    "online:Language",
+    "online:Map library",
+    "online:Password",
+    "online:Play in browser",
+    "online:Publish",
+    "online:Save",
+    "online:Sign in",
+    "online:Sign out",
+    "online:{count} credit",
+    "online:{count} player on this page"
+  ],
+  "findings": [
+    {
+      "key": "native:[tutorial text 3]",
+      "severity": "minor",
+      "state": "open",
+      "reason": "এত দূর এসে আপনি ভালোই করেছেন is understandable but sounds like an appraisal of choosing to come here rather than progress through the tutorial.",
+      "proposed": "এত দূর পর্যন্ত আপনি ভালোভাবে এগিয়েছেন। এবার যোদ্ধা, ব্যারাক ও উন্নয়ন নিয়ে শিখুন।"
+    },
+    {
+      "key": "native:[tutorial restart body]",
+      "severity": "minor",
+      "state": "open",
+      "reason": "এই পাঠের তৈরি উপনিবেশ is a slightly awkward genitive: a lesson does not create the colony. Express prepared-for-this-lesson explicitly.",
+      "proposed": "এই পাঠের জন্য প্রস্তুত উপনিবেশ থেকে আবার শুরু করবেন? সংরক্ষণ না করা অগ্রগতি হারিয়ে যাবে।"
+    },
+    {
+      "key": "native:[tutorial food complete]",
+      "severity": "minor",
+      "state": "open",
+      "reason": "অন্য কোনো পাঠ চেষ্টা করুন directly calques try a lesson. A lesson is more naturally practiced or begun.",
+      "proposed": "আপনি একটি সরাইখানা তৈরি করে তাতে গম সরবরাহ করেছেন। অন্য একটি পাঠ অনুশীলন করুন অথবা মূল মেনুতে ফিরুন।"
+    }
+  ],
+  "verdict": "Pilot terminology/register suitable for bulk drafting. Three minor idiomatic improvements recommended for final editorial pass; no critical/major issue identified in these 60 entries. Catalogs not changed.",
+  "sources_read": [
+    {
+      "url": "https://mozilla-l10n.github.io/styleguides/bn-BD/index.html",
+      "sections": [
+        "Formality and Tone",
+        "Names",
+        "Units",
+        "Punctuation"
+      ],
+      "application": "Respectful আপনি/করুন address, contemporary conversational register, preserve brands and technical abbreviations."
+    },
+    {
+      "path": "references/microsoft-bn-BD.txt",
+      "sections": [
+        "Choices that reflect Microsoft voice",
+        "Address the user to take action",
+        "Pronouns"
+      ],
+      "application": "Short active task-oriented instructions, avoid literal bookish phrasing."
+    },
+    {
+      "path": "references/microsoft-bn-IN.txt",
+      "sections": [
+        "Microsoft voice",
+        "Transliteration"
+      ],
+      "application": "Intent-focused natural Bengali and familiar technical vocabulary for the shared regional audience."
+    },
+    {
+      "paths": [
+        "references/dictionary-worker.html",
+        "references/dictionary-warrior.html",
+        "references/dictionary-market.html",
+        "references/dictionary-explorer.html",
+        "references/dictionary-inn.html",
+        "references/dictionary-hive.html",
+        "references/dictionary-pass.html",
+        "references/dictionary-flag.html"
+      ],
+      "application": "Checked ordinary role/building/terrain noun senses; glossary matches gameplay."
+    }
+  ],
+  "limitations": [
+    "Pilot editorial review covers only the listed 60 keys, not the whole unfinished catalogs.",
+    "Not native-human certification. Visual text-fit verification remains required."
+  ]
+}

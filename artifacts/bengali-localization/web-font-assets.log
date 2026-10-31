@@ -1,0 +1,8 @@
+test_script_fonts_are_available_before_optional_downloads (test_web_assets.WebAssetPlanTests.test_script_fonts_are_available_before_optional_downloads) ... ok
+test_standalone_launcher_has_exact_http_fonts_and_rebased_styles (test_web_assets.WebAssetPlanTests.test_standalone_launcher_has_exact_http_fonts_and_rebased_styles) ... ok
+test_runtime_files_the_menus_need_are_core (test_web_assets.WebAssetPlanTests.test_runtime_files_the_menus_need_are_core) ... ok
+
+----------------------------------------------------------------------
+Ran 3 tests in 9.537s
+
+OK
