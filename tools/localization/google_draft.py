@@ -18,8 +18,22 @@ import uuid
 SPEC = importlib.util.spec_from_file_location('translation_program', Path(__file__).with_name('translation_program.py'))
 PROGRAM = importlib.util.module_from_spec(SPEC)
 SPEC.loader.exec_module(PROGRAM)
+# Standalone routes are executable links too. Exclude slashes within ordinary
+# words/MIME types and within absolute URLs, which have their own protection.
+LINK = re.compile(r'(?<![\w/])www\.[^\s<>]+|(?<![\w:/])/[A-Za-z0-9._~/-]+(?:[?#][^\s<>]*)?')
 # Keep executable substitutions, authored markup, URLs and literal line breaks intact.
-PROTECTED = re.compile(r'https?://[^\s<>]+|<[^>]+>|\{[a-zA-Z][a-zA-Z0-9_]*\}|%[0-9]+|%%|\\[nrt]')
+PROTECTED = re.compile(r'https?://[^\s<>]+|<[^>]+>|\{[a-zA-Z][a-zA-Z0-9_]*\}|%[0-9]+|%%|\\[nrt]|' + LINK.pattern)
+# Validate bare schemes independently: Norwegian can attach a compound suffix,
+# as in "https://-adresse", without creating a URL. Keep outbound protection
+# stable so already-paid exact request payloads remain resumable.
+URL = re.compile(r'https?://[a-zA-Z0-9\[][\S]*?(?=[\s<>]|$)')
+SCHEME = re.compile(r'https?://')
+CONTENT_TOKEN = re.compile(r'<[^>]+>|\{[a-zA-Z][a-zA-Z0-9_]*\}|%[0-9]+|%%|\\[nrt]')
+
+
+def protected_tokens(text):
+    return Counter(CONTENT_TOKEN.findall(text) + URL.findall(text) + SCHEME.findall(text) + LINK.findall(text))
+
 
 
 def fingerprint(value):
@@ -54,7 +68,7 @@ def restore(source, translated):
     prefix = source[:len(source) - len(source.lstrip())]
     suffix = source[len(source.rstrip()):]
     result = prefix + result.strip() + suffix if source.strip() else source
-    if Counter(PROTECTED.findall(source)) != Counter(PROTECTED.findall(result)):
+    if protected_tokens(source) != protected_tokens(result):
         raise ValueError('Translation changed protected tokens')
     if not result.strip() and source.strip():
         raise ValueError('Translation returned empty text')

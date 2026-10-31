@@ -50,6 +50,33 @@ class GoogleDraftTest(unittest.TestCase):
         self.assertEqual(DRAFT.restore(' / ', '/'), ' / ')
         self.assertEqual(DRAFT.restore('', ''), '')
 
+    def test_bare_protocol_allows_norwegian_compound_suffix_without_becoming_url(self):
+        source = 'Enter an https:// address.'
+        self.assertEqual(DRAFT.restore(source, 'Skriv inn en https://-adresse.'),
+                         'Skriv inn en https://-adresse.')
+        # Bare scheme payload is unchanged, preserving previously paid cache keys.
+        self.assertEqual(DRAFT.protect(source), source)
+        with self.assertRaisesRegex(ValueError, 'protected tokens'):
+            DRAFT.restore(source, 'Skriv inn en http://-adresse.')
+        with self.assertRaisesRegex(ValueError, 'protected tokens'):
+            DRAFT.restore('Open https://globulation2.org/help',
+                          'Åpne https://globulation2.org/hjelp')
+        self.assertEqual(DRAFT.restore('Open https://[::1]/help',
+                                      'Åpne https://[::1]/help'), 'Åpne https://[::1]/help')
+
+    def test_relative_routes_and_bare_web_addresses_cannot_be_translated(self):
+        for source, altered in [('/ais/favourites', '/ais/favoritter'),
+                                ('www.globulation2.org', 'www.globulation2.no'),
+                                ('/play/?mode=serial', '/spill/?mode=serial')]:
+            with self.subTest(source=source):
+                protected = DRAFT.protect(source)
+                self.assertIn('translate="no"', protected)
+                self.assertEqual(DRAFT.restore(source, protected), source)
+                with self.assertRaisesRegex(ValueError, 'protected tokens'):
+                    DRAFT.restore(source, altered)
+        self.assertEqual(DRAFT.protect('front/back application/octet-stream'),
+                         'front/back application/octet-stream')
+
     def test_resume_reuses_exact_request_without_touching_editorial_work(self):
         editorial = self.output / 'drafts/nb/texts.nb.txt'
         editorial.parent.mkdir(parents=True)
