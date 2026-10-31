@@ -1,0 +1,8 @@
+PASS IntroductionUI/guidance preserves pointer ownership across map drags and concurrent touches [display] (6.4s)
+PASS IntroductionUI/first-run recommendation can be declined and stays dismissed [display][writes-preferences] (7.2s)
+PASS IntroductionUI/catalog and second lesson use generic guidance and restart navigation [display][artifacts] (9.0s)
+PASS IntroductionUI/guidance adapts to desktop touch and large text without consuming map input [display][artifacts] (32.4s)
+PASS IntroductionUI/expanded lesson catalog and guidance fit both phone orientations [display][artifacts] (56.7s)
+
+5 passed, 0 failed, 0 skipped (111.8s of test time)
+[run_tests] JUnit report: artifacts/training/review-final-ui.xml (5 cases)

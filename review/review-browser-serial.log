@@ -1,0 +1,23 @@
+
+Running 3 tests using 3 workers
+
+(node:107670) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+[1/3] [webkit] › tests/introduction.spec.js:7:3 › data-authored lessons complete and resume in WebAssembly (serial)
+(node:107668) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+(node:107669) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+[2/3] [chromium] › tests/introduction.spec.js:7:3 › data-authored lessons complete and resume in WebAssembly (serial)
+[3/3] [firefox] › tests/introduction.spec.js:7:3 › data-authored lessons complete and resume in WebAssembly (serial)
+  Slow test file: [chromium] › tests/introduction.spec.js (6.8m)
+  Slow test file: [firefox] › tests/introduction.spec.js (6.2m)
+  Slow test file: [webkit] › tests/introduction.spec.js (5.9m)
+  Consider running tests from slow files in parallel. See: https://playwright.dev/docs/test-parallel
+  3 passed (6.9m)

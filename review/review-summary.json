@@ -1,0 +1,53 @@
+{
+  "head": "8ce957bd09894b8a1ecc07763873a1649d9ae8bc",
+  "reviewers": [
+    "scripting/save compatibility",
+    "landscape/content/progression",
+    "onboarding/mobile UI"
+  ],
+  "findings": {
+    "P1": 1,
+    "P2": 4,
+    "fixed": 5
+  },
+  "simulation_revision": 104,
+  "native_checks": 86,
+  "native_junit_cases_including_subcases": 94,
+  "ui_checks": 5,
+  "javascript_unit_tests": 149,
+  "authoring_contracts": 6,
+  "translation_contracts": 10,
+  "native_traces": {
+    "introduction.trace": "388a33ea069e63d4577e5c6884b8962f4721284b89687b6c9a78d92fe58f4775",
+    "expanded.trace": "36e13cb2850fce88d0f541b6797dfb3e826b9b2166624c080de13bebd005994a",
+    "prototype.trace": "745e9a85469af39705a94c489fa4ac17a2f223f982995e88cb0e4ab41b45cbfa",
+    "food-supply.trace": "2f98d041e505379b2e09f0a30d6c5e43271848fe3dc7f98f60ecf6eed7367ad5",
+    "water-access.trace": "876278eaff006698d3a6d470d7458c9f350429ff2ff8ba254a7ba4bddccfc345",
+    "scripted-areas.trace": "c74658c68e7f5138ec62a87b20b7077855beb5d91ec6a3067ed6527cb022c2dd",
+    "legacy-campaign.trace": "69bc506ca58d4dcb72ea77f974ca7594fed7d4ebe14a342149712e04fa932c0d",
+    "diplomacy.trace": "80e2f10e3d778fa7057fa3b145a54c89ee1b94ca5af3af434028f9edeb161146",
+    "sustainability.trace": "2dfe51e22d90d363d44eb6cabe952eec4065a576d2495b1b6f42b3847f48295c"
+  },
+  "limitations": [
+    "Physical Android/iOS not tested",
+    "Native Windows/macOS checksum comparison not run",
+    "No fresh-player usability study or release performance measurement"
+  ],
+  "browser_comparisons": {
+    "exact_matches": 54,
+    "total": 54,
+    "browsers": [
+      "Chromium",
+      "Firefox",
+      "WebKit"
+    ],
+    "variants": [
+      "serial",
+      "threaded"
+    ],
+    "trace_sets": 9
+  },
+  "phone_rotation": "passed",
+  "fetched_master": "0abe90bbb9d83e94841eb0202b1d83ebd0d66eee",
+  "source_tree": "be7af47383d68ef2e70ab38489f7d461e0c024c3"
+}

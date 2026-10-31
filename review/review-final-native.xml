@@ -1,0 +1,96 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="94" failures="0" errors="0" skipped="0"><testsuite name="Introduction"><testcase classname="Introduction" name="expanded lessons complete through player orders and saved continuation" time="75.5708" status="run" />
+  <testcase classname="Introduction" name="guidance accepts only the authored lesson objectives" time="0.000123" status="run" />
+  <testcase classname="Introduction" name="idle time and acknowledgments cannot complete the introduction" time="4.18092" status="run" />
+  <testcase classname="Introduction" name="original tutorial scripts compile and available checkpoints roundtrip" time="12.6962" status="run" />
+  <testcase classname="Introduction" name="packaged lesson maps embed their source and share geography" time="11.8346" status="run" />
+  <testcase classname="Introduction" name="prototype map scripts retain progress and legacy guidance after save load" time="4.38225" status="run" />
+  <testcase classname="Introduction" name="real orders complete scouting construction supply growth and attack" time="41.3835" status="run" />
+  <testcase classname="Introduction" name="recommendation migrates existing profiles and persists an explicit choice" time="0.894742" status="run" />
+  <testcase classname="Introduction" name="scenario area and queued-building orders need no local presentation player" time="2.61586" status="run" />
+  <testcase classname="Introduction" name="scripted diplomacy is atomic and rejects invalid relationships" time="4.35075" status="run" />
+  <testcase classname="Introduction" name="second lesson completes and resumes with the shared runner" time="10.0074" status="run" />
+  <testcase classname="Introduction" name="training algae requires swimming and named regions survive loading" time="12.4814" status="run" />
+  <testcase classname="Introduction" name="training colonies remain supplied while a learner takes time" time="24.2889" status="run" />
+  <testcase classname="Introduction" name="tutorial metadata is validated atomically with scenario effects" time="2.80979" status="run" />
+  <testcase classname="Introduction" name="zone observations and scenario orders preserve map callback validation" time="3.57954" status="run" />
+  </testsuite><testsuite name="MapPreview"><testcase classname="MapPreview" name="generator Studio freezes playable worlds and preserves save continuation" time="11.8688" status="run" />
+  </testsuite><testsuite name="OrderValidation"><testcase classname="OrderValidation" name="built-in ratio orders preserve a producer's explicit custom preferences [orders]" time="2.80313" status="run" />
+  <testcase classname="OrderValidation" name="catalog stage limits independently bound construction and completed staffing [orders]" time="3.0458" status="run" />
+  <testcase classname="OrderValidation" name="construction admission reports rule rejection and repair acceptance" time="3.29692" status="run" />
+  <testcase classname="OrderValidation" name="every order type survives random payloads through decode, check and execution [orders]" time="2.70592" status="run" />
+  <testcase classname="OrderValidation" name="executor reports actual admission for unchanged invalid and deferred commands" time="3.26222" status="run" />
+  <testcase classname="OrderValidation" name="fields outside what the user interface produces are rejected [orders]" time="2.76072" status="run" />
+  <testcase classname="OrderValidation" name="hostile orders do not stop a game that executes them unchecked [orders]" time="3.39233" status="run" />
+  <testcase classname="OrderValidation" name="orders a client builds for its own team and buildings pass [orders]" time="2.9741" status="run" />
+  <testcase classname="OrderValidation" name="orders acting for another team, player or building are rejected [orders]" time="4.04274" status="run" />
+  <testcase classname="OrderValidation" name="orders whose building is no longer in a state they apply to are stale [orders]" time="3.10621" status="run" />
+  <testcase classname="OrderValidation" name="unsupported capability orders are rejected while deleted entities remain harmless [orders]" time="3.08865" status="run" />
+  </testsuite><testsuite name="src/game/orders/OrderValidationTest.cpp"><testcase classname="src/game/orders/OrderValidationTest.cpp" name="OrderValidation/clearing material wire boundary" time="0" status="run" />
+  </testsuite><testsuite name="ScriptGenerator"><testcase classname="ScriptGenerator" name="All named stream consumers share creation limits and accounting" time="0.17211" status="run" />
+  <testcase classname="ScriptGenerator" name="Boolean buffer proxies become JavaScript booleans" time="0.008714" status="run" />
+  <testcase classname="ScriptGenerator" name="By value copies reserve native payloads before allocation" time="0.018075" status="run" />
+  <testcase classname="ScriptGenerator" name="Conversion failures release intermediate QuickJS containers" time="0.020927" status="run" />
+  <testcase classname="ScriptGenerator" name="Custom preferences persist string identity and tolerate missing packages" time="0.03497" status="run" />
+  <testcase classname="ScriptGenerator" name="Every operation registration path shares the handle budget" time="0.164765" status="run" />
+  <testcase classname="ScriptGenerator" name="Fertility binding rejects incomplete fields and mismatched masks" time="0.143874" status="run" />
+  <testcase classname="ScriptGenerator" name="Fertility binding reserves native work and memory before rebuilding" time="1.05945" status="run" />
+  <testcase classname="ScriptGenerator" name="Frozen controls survive package replacement and catalogs are released" time="0.041573" status="run" />
+  <testcase classname="ScriptGenerator" name="Frozen selections retain defaults and rules after package removal" time="0.03654" status="run" />
+  <testcase classname="ScriptGenerator" name="Full toolkit records buffers geometry callbacks and solver" time="1.82745" status="run" />
+  <testcase classname="ScriptGenerator" name="Graph ownership optional callbacks and pointer outputs" time="0.679178" status="run" />
+  <testcase classname="ScriptGenerator" name="Initial training levels determine unit water placement before allocation" time="1.96036" status="run" />
+  <testcase classname="ScriptGenerator" name="Installed generator library writes to a fresh user profile [writes-preferences]" time="0.909693" status="run" />
+  <testcase classname="ScriptGenerator" name="Library mutations retain memory and disk when storage throws" time="0.027332" status="run" />
+  <testcase classname="ScriptGenerator" name="Moved callback arguments retain their converted storage" time="0.014279" status="run" />
+  <testcase classname="ScriptGenerator" name="Native scratch tables respect the allocation budget" time="5.3741" status="run" />
+  <testcase classname="ScriptGenerator" name="Native work and interpreter resource failures are sticky" time="21.7167" status="run" />
+  <testcase classname="ScriptGenerator" name="Nested buffer fills are accounted and returned rows own their data" time="0.019267" status="run" />
+  <testcase classname="ScriptGenerator" name="Nested buffer get fill and set reserve before copying" time="0.027507" status="run" />
+  <testcase classname="ScriptGenerator" name="Online generator installation verifies hashes and persists provenance transactionally" time="0.029698" status="run" />
+  <testcase classname="ScriptGenerator" name="Optional JavaScript examples generate repeatable validated worlds [slow]" time="41.4401" status="run" />
+  <testcase classname="ScriptGenerator" name="Owned classes preserve borrowed context and RNG expiration" time="1.49182" status="run" />
+  <testcase classname="ScriptGenerator" name="Package identity controls modules and installation rollback" time="0.066814" status="run" />
+  <testcase classname="ScriptGenerator" name="Repeated point handles share one owned prototype" time="0.02117" status="run" />
+  <testcase classname="ScriptGenerator" name="Request immutability RNG streams and module isolation" time="0.079364" status="run" />
+  <testcase classname="ScriptGenerator" name="Scenario creation validates options and cannot run in validators" time="1.46745" status="run" />
+  <testcase classname="ScriptGenerator" name="Script control mutations cannot bypass native domain contracts" time="0.11542" status="run" />
+  <testcase classname="ScriptGenerator" name="Script resource placement uses the world catalog and bounded brushes" time="0.941642" status="run" />
+  <testcase classname="ScriptGenerator" name="Script terrain and colonies go through engine world validation" time="5.3483" status="run" />
+  <testcase classname="ScriptGenerator" name="Shared generated worlds continue identically without installed generator code [golden]" time="10.6544" status="run" />
+  <testcase classname="ScriptGenerator" name="Site graphs share distance captures and account repeated graph copies" time="1.49782" status="run" />
+  <testcase classname="ScriptGenerator" name="Toolkit consumers reject empty fertility arguments" time="0.98324" status="run" />
+  </testsuite><testsuite name="TerrainProperties"><testcase classname="TerrainProperties" name="Trail retains legacy identities and terrain behavior" time="0.000113" status="run" />
+  <testcase classname="TerrainProperties" name="constrained explorer flag eligibility applies route accessibility and hunger distance" time="1.85258" status="run" />
+  <testcase classname="TerrainProperties" name="exclusive movement modes and bounded compile-time definitions" time="0" status="run" />
+  <testcase classname="TerrainProperties" name="explorers ignore ice damage and no-permadeath applies to ground hazards" time="1.05076" status="run" />
+  <testcase classname="TerrainProperties" name="health modifiers clip healing and expose units that have found an exit" time="1.59856" status="run" />
+  <testcase classname="TerrainProperties" name="ice exposure includes stationary units and preserves fractional health in saves" time="2.43081" status="run" />
+  <testcase classname="TerrainProperties" name="projectile supercover tests intermediate cells corners and wrapped coordinates" time="0.005055" status="run" />
+  <testcase classname="TerrainProperties" name="required terrain experiments survive tiling and distinguish map headers" time="1.17824" status="run" />
+  <testcase classname="TerrainProperties" name="same-size map replacement and terrain edits refresh ecology" time="0.769897" status="run" />
+  <testcase classname="TerrainProperties" name="terrain edits refresh escape costs after captured routes publish at their fixed deadline" time="1.39646" status="run" />
+  <testcase classname="TerrainProperties" name="terrain health profiles choose independent air and ground rates" time="1.33898" status="run" />
+  <testcase classname="TerrainProperties" name="vertex terrain survives tiling and batches snapshot invalidation" time="1.07714" status="run" />
+  </testsuite><testsuite name="TerrainRuntime"><testcase classname="TerrainRuntime" name="custom capabilities drive map queries health ecology and immutable match definitions" time="1.3064" status="run" />
+  <testcase classname="TerrainRuntime" name="each catalogue type requires exactly its group's experiment and shares the group profile" time="0.964166" status="run" />
+  <testcase classname="TerrainRuntime" name="eager resumed and worker gradients agree on custom slow swimming" time="1.13264" status="run" />
+  <testcase classname="TerrainRuntime" name="embedded registry restores custom state and pending gradients without source files" time="3.90807" status="run" />
+  <testcase classname="TerrainRuntime" name="format-137 saves with custom terrain load with remapped IDs and resave at the current format" time="2.776" status="run" />
+  <testcase classname="TerrainRuntime" name="large embedded registry crosses the stream string limit" time="12.006" status="run" />
+  <testcase classname="TerrainRuntime" name="maps isolate registries and reject failed imports atomically" time="0.686196" status="run" />
+  <testcase classname="TerrainRuntime" name="painted catalogue terrain survives save and reload with its checksum" time="7.25151" status="run" />
+  <testcase classname="TerrainRuntime" name="production pipeline captures custom movement and discards fields after reimport" time="4.28068" status="run" />
+  <testcase classname="TerrainRuntime" name="unused distinct costs do not expand map movement setup" time="1.02239" status="run" />
+  </testsuite><testsuite name="TurnEngineHarness"><testcase classname="TurnEngineHarness" name="the committed match record verifies to the committed checksum trace [network-sim][golden]" time="5.73098" status="run" />
+  </testsuite><testsuite name="MapPaintedAreas"><testcase classname="MapPaintedAreas" name="exact per-team counts follow overlapping paint erase and tile replacement" time="0.033426" status="run" />
+    <testcase classname="MapPaintedAreas" name="bootstrap reconstruction counts masks independently of reachable goals" time="0.034985" status="run" />
+  </testsuite><testsuite name="OrderAlterateArea"><testcase classname="OrderAlterateArea" name="well-formed brush accepted" time="0" status="run" />
+    <testcase classname="OrderAlterateArea" name="undersized header rejected" time="0" status="run" />
+    <testcase classname="OrderAlterateArea" name="negative side rejected" time="0" status="run" />
+    <testcase classname="OrderAlterateArea" name="side over cap rejected" time="0" status="run" />
+    <testcase classname="OrderAlterateArea" name="overflow attack rejected" time="0" status="run" />
+    <testcase classname="OrderAlterateArea" name="payload too short rejected" time="0" status="run" />
+    <testcase classname="OrderAlterateArea" name="payload too long rejected" time="0" status="run" />
+    <testcase classname="OrderAlterateArea" name="explicit-mask order round-trips" time="0" status="run" />
+  </testsuite></testsuites>

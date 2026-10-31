@@ -1,0 +1,5 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="3" failures="0" errors="0" skipped="0"><testsuite name="Introduction"><testcase classname="Introduction" name="scenario area and queued-building orders need no local presentation player" time="1.57143" status="run" />
+  </testsuite><testsuite name="ScriptGenerator"><testcase classname="ScriptGenerator" name="Initial training levels determine unit water placement before allocation" time="0.732815" status="run" />
+  </testsuite><testsuite name="TurnEngineHarness"><testcase classname="TurnEngineHarness" name="the committed match record verifies to the committed checksum trace [network-sim][golden]" time="3.2979" status="run" />
+  </testsuite></testsuites>

@@ -1,0 +1,380 @@
+[
+  {
+    "variant": "serial",
+    "browser": "chromium",
+    "trace": "diplomacy.trace",
+    "match": true,
+    "sha256": "80e2f10e3d778fa7057fa3b145a54c89ee1b94ca5af3af434028f9edeb161146"
+  },
+  {
+    "variant": "serial",
+    "browser": "chromium",
+    "trace": "expanded.trace",
+    "match": true,
+    "sha256": "36e13cb2850fce88d0f541b6797dfb3e826b9b2166624c080de13bebd005994a"
+  },
+  {
+    "variant": "serial",
+    "browser": "chromium",
+    "trace": "food-supply.trace",
+    "match": true,
+    "sha256": "2f98d041e505379b2e09f0a30d6c5e43271848fe3dc7f98f60ecf6eed7367ad5"
+  },
+  {
+    "variant": "serial",
+    "browser": "chromium",
+    "trace": "introduction.trace",
+    "match": true,
+    "sha256": "388a33ea069e63d4577e5c6884b8962f4721284b89687b6c9a78d92fe58f4775"
+  },
+  {
+    "variant": "serial",
+    "browser": "chromium",
+    "trace": "legacy-campaign.trace",
+    "match": true,
+    "sha256": "69bc506ca58d4dcb72ea77f974ca7594fed7d4ebe14a342149712e04fa932c0d"
+  },
+  {
+    "variant": "serial",
+    "browser": "chromium",
+    "trace": "prototype.trace",
+    "match": true,
+    "sha256": "745e9a85469af39705a94c489fa4ac17a2f223f982995e88cb0e4ab41b45cbfa"
+  },
+  {
+    "variant": "serial",
+    "browser": "chromium",
+    "trace": "scripted-areas.trace",
+    "match": true,
+    "sha256": "c74658c68e7f5138ec62a87b20b7077855beb5d91ec6a3067ed6527cb022c2dd"
+  },
+  {
+    "variant": "serial",
+    "browser": "chromium",
+    "trace": "sustainability.trace",
+    "match": true,
+    "sha256": "2dfe51e22d90d363d44eb6cabe952eec4065a576d2495b1b6f42b3847f48295c"
+  },
+  {
+    "variant": "serial",
+    "browser": "chromium",
+    "trace": "water-access.trace",
+    "match": true,
+    "sha256": "876278eaff006698d3a6d470d7458c9f350429ff2ff8ba254a7ba4bddccfc345"
+  },
+  {
+    "variant": "serial",
+    "browser": "firefox",
+    "trace": "diplomacy.trace",
+    "match": true,
+    "sha256": "80e2f10e3d778fa7057fa3b145a54c89ee1b94ca5af3af434028f9edeb161146"
+  },
+  {
+    "variant": "serial",
+    "browser": "firefox",
+    "trace": "expanded.trace",
+    "match": true,
+    "sha256": "36e13cb2850fce88d0f541b6797dfb3e826b9b2166624c080de13bebd005994a"
+  },
+  {
+    "variant": "serial",
+    "browser": "firefox",
+    "trace": "food-supply.trace",
+    "match": true,
+    "sha256": "2f98d041e505379b2e09f0a30d6c5e43271848fe3dc7f98f60ecf6eed7367ad5"
+  },
+  {
+    "variant": "serial",
+    "browser": "firefox",
+    "trace": "introduction.trace",
+    "match": true,
+    "sha256": "388a33ea069e63d4577e5c6884b8962f4721284b89687b6c9a78d92fe58f4775"
+  },
+  {
+    "variant": "serial",
+    "browser": "firefox",
+    "trace": "legacy-campaign.trace",
+    "match": true,
+    "sha256": "69bc506ca58d4dcb72ea77f974ca7594fed7d4ebe14a342149712e04fa932c0d"
+  },
+  {
+    "variant": "serial",
+    "browser": "firefox",
+    "trace": "prototype.trace",
+    "match": true,
+    "sha256": "745e9a85469af39705a94c489fa4ac17a2f223f982995e88cb0e4ab41b45cbfa"
+  },
+  {
+    "variant": "serial",
+    "browser": "firefox",
+    "trace": "scripted-areas.trace",
+    "match": true,
+    "sha256": "c74658c68e7f5138ec62a87b20b7077855beb5d91ec6a3067ed6527cb022c2dd"
+  },
+  {
+    "variant": "serial",
+    "browser": "firefox",
+    "trace": "sustainability.trace",
+    "match": true,
+    "sha256": "2dfe51e22d90d363d44eb6cabe952eec4065a576d2495b1b6f42b3847f48295c"
+  },
+  {
+    "variant": "serial",
+    "browser": "firefox",
+    "trace": "water-access.trace",
+    "match": true,
+    "sha256": "876278eaff006698d3a6d470d7458c9f350429ff2ff8ba254a7ba4bddccfc345"
+  },
+  {
+    "variant": "serial",
+    "browser": "webkit",
+    "trace": "diplomacy.trace",
+    "match": true,
+    "sha256": "80e2f10e3d778fa7057fa3b145a54c89ee1b94ca5af3af434028f9edeb161146"
+  },
+  {
+    "variant": "serial",
+    "browser": "webkit",
+    "trace": "expanded.trace",
+    "match": true,
+    "sha256": "36e13cb2850fce88d0f541b6797dfb3e826b9b2166624c080de13bebd005994a"
+  },
+  {
+    "variant": "serial",
+    "browser": "webkit",
+    "trace": "food-supply.trace",
+    "match": true,
+    "sha256": "2f98d041e505379b2e09f0a30d6c5e43271848fe3dc7f98f60ecf6eed7367ad5"
+  },
+  {
+    "variant": "serial",
+    "browser": "webkit",
+    "trace": "introduction.trace",
+    "match": true,
+    "sha256": "388a33ea069e63d4577e5c6884b8962f4721284b89687b6c9a78d92fe58f4775"
+  },
+  {
+    "variant": "serial",
+    "browser": "webkit",
+    "trace": "legacy-campaign.trace",
+    "match": true,
+    "sha256": "69bc506ca58d4dcb72ea77f974ca7594fed7d4ebe14a342149712e04fa932c0d"
+  },
+  {
+    "variant": "serial",
+    "browser": "webkit",
+    "trace": "prototype.trace",
+    "match": true,
+    "sha256": "745e9a85469af39705a94c489fa4ac17a2f223f982995e88cb0e4ab41b45cbfa"
+  },
+  {
+    "variant": "serial",
+    "browser": "webkit",
+    "trace": "scripted-areas.trace",
+    "match": true,
+    "sha256": "c74658c68e7f5138ec62a87b20b7077855beb5d91ec6a3067ed6527cb022c2dd"
+  },
+  {
+    "variant": "serial",
+    "browser": "webkit",
+    "trace": "sustainability.trace",
+    "match": true,
+    "sha256": "2dfe51e22d90d363d44eb6cabe952eec4065a576d2495b1b6f42b3847f48295c"
+  },
+  {
+    "variant": "serial",
+    "browser": "webkit",
+    "trace": "water-access.trace",
+    "match": true,
+    "sha256": "876278eaff006698d3a6d470d7458c9f350429ff2ff8ba254a7ba4bddccfc345"
+  },
+  {
+    "variant": "threaded",
+    "browser": "chromium",
+    "trace": "diplomacy.trace",
+    "match": true,
+    "sha256": "80e2f10e3d778fa7057fa3b145a54c89ee1b94ca5af3af434028f9edeb161146"
+  },
+  {
+    "variant": "threaded",
+    "browser": "chromium",
+    "trace": "expanded.trace",
+    "match": true,
+    "sha256": "36e13cb2850fce88d0f541b6797dfb3e826b9b2166624c080de13bebd005994a"
+  },
+  {
+    "variant": "threaded",
+    "browser": "chromium",
+    "trace": "food-supply.trace",
+    "match": true,
+    "sha256": "2f98d041e505379b2e09f0a30d6c5e43271848fe3dc7f98f60ecf6eed7367ad5"
+  },
+  {
+    "variant": "threaded",
+    "browser": "chromium",
+    "trace": "introduction.trace",
+    "match": true,
+    "sha256": "388a33ea069e63d4577e5c6884b8962f4721284b89687b6c9a78d92fe58f4775"
+  },
+  {
+    "variant": "threaded",
+    "browser": "chromium",
+    "trace": "legacy-campaign.trace",
+    "match": true,
+    "sha256": "69bc506ca58d4dcb72ea77f974ca7594fed7d4ebe14a342149712e04fa932c0d"
+  },
+  {
+    "variant": "threaded",
+    "browser": "chromium",
+    "trace": "prototype.trace",
+    "match": true,
+    "sha256": "745e9a85469af39705a94c489fa4ac17a2f223f982995e88cb0e4ab41b45cbfa"
+  },
+  {
+    "variant": "threaded",
+    "browser": "chromium",
+    "trace": "scripted-areas.trace",
+    "match": true,
+    "sha256": "c74658c68e7f5138ec62a87b20b7077855beb5d91ec6a3067ed6527cb022c2dd"
+  },
+  {
+    "variant": "threaded",
+    "browser": "chromium",
+    "trace": "sustainability.trace",
+    "match": true,
+    "sha256": "2dfe51e22d90d363d44eb6cabe952eec4065a576d2495b1b6f42b3847f48295c"
+  },
+  {
+    "variant": "threaded",
+    "browser": "chromium",
+    "trace": "water-access.trace",
+    "match": true,
+    "sha256": "876278eaff006698d3a6d470d7458c9f350429ff2ff8ba254a7ba4bddccfc345"
+  },
+  {
+    "variant": "threaded",
+    "browser": "firefox",
+    "trace": "diplomacy.trace",
+    "match": true,
+    "sha256": "80e2f10e3d778fa7057fa3b145a54c89ee1b94ca5af3af434028f9edeb161146"
+  },
+  {
+    "variant": "threaded",
+    "browser": "firefox",
+    "trace": "expanded.trace",
+    "match": true,
+    "sha256": "36e13cb2850fce88d0f541b6797dfb3e826b9b2166624c080de13bebd005994a"
+  },
+  {
+    "variant": "threaded",
+    "browser": "firefox",
+    "trace": "food-supply.trace",
+    "match": true,
+    "sha256": "2f98d041e505379b2e09f0a30d6c5e43271848fe3dc7f98f60ecf6eed7367ad5"
+  },
+  {
+    "variant": "threaded",
+    "browser": "firefox",
+    "trace": "introduction.trace",
+    "match": true,
+    "sha256": "388a33ea069e63d4577e5c6884b8962f4721284b89687b6c9a78d92fe58f4775"
+  },
+  {
+    "variant": "threaded",
+    "browser": "firefox",
+    "trace": "legacy-campaign.trace",
+    "match": true,
+    "sha256": "69bc506ca58d4dcb72ea77f974ca7594fed7d4ebe14a342149712e04fa932c0d"
+  },
+  {
+    "variant": "threaded",
+    "browser": "firefox",
+    "trace": "prototype.trace",
+    "match": true,
+    "sha256": "745e9a85469af39705a94c489fa4ac17a2f223f982995e88cb0e4ab41b45cbfa"
+  },
+  {
+    "variant": "threaded",
+    "browser": "firefox",
+    "trace": "scripted-areas.trace",
+    "match": true,
+    "sha256": "c74658c68e7f5138ec62a87b20b7077855beb5d91ec6a3067ed6527cb022c2dd"
+  },
+  {
+    "variant": "threaded",
+    "browser": "firefox",
+    "trace": "sustainability.trace",
+    "match": true,
+    "sha256": "2dfe51e22d90d363d44eb6cabe952eec4065a576d2495b1b6f42b3847f48295c"
+  },
+  {
+    "variant": "threaded",
+    "browser": "firefox",
+    "trace": "water-access.trace",
+    "match": true,
+    "sha256": "876278eaff006698d3a6d470d7458c9f350429ff2ff8ba254a7ba4bddccfc345"
+  },
+  {
+    "variant": "threaded",
+    "browser": "webkit",
+    "trace": "diplomacy.trace",
+    "match": true,
+    "sha256": "80e2f10e3d778fa7057fa3b145a54c89ee1b94ca5af3af434028f9edeb161146"
+  },
+  {
+    "variant": "threaded",
+    "browser": "webkit",
+    "trace": "expanded.trace",
+    "match": true,
+    "sha256": "36e13cb2850fce88d0f541b6797dfb3e826b9b2166624c080de13bebd005994a"
+  },
+  {
+    "variant": "threaded",
+    "browser": "webkit",
+    "trace": "food-supply.trace",
+    "match": true,
+    "sha256": "2f98d041e505379b2e09f0a30d6c5e43271848fe3dc7f98f60ecf6eed7367ad5"
+  },
+  {
+    "variant": "threaded",
+    "browser": "webkit",
+    "trace": "introduction.trace",
+    "match": true,
+    "sha256": "388a33ea069e63d4577e5c6884b8962f4721284b89687b6c9a78d92fe58f4775"
+  },
+  {
+    "variant": "threaded",
+    "browser": "webkit",
+    "trace": "legacy-campaign.trace",
+    "match": true,
+    "sha256": "69bc506ca58d4dcb72ea77f974ca7594fed7d4ebe14a342149712e04fa932c0d"
+  },
+  {
+    "variant": "threaded",
+    "browser": "webkit",
+    "trace": "prototype.trace",
+    "match": true,
+    "sha256": "745e9a85469af39705a94c489fa4ac17a2f223f982995e88cb0e4ab41b45cbfa"
+  },
+  {
+    "variant": "threaded",
+    "browser": "webkit",
+    "trace": "scripted-areas.trace",
+    "match": true,
+    "sha256": "c74658c68e7f5138ec62a87b20b7077855beb5d91ec6a3067ed6527cb022c2dd"
+  },
+  {
+    "variant": "threaded",
+    "browser": "webkit",
+    "trace": "sustainability.trace",
+    "match": true,
+    "sha256": "2dfe51e22d90d363d44eb6cabe952eec4065a576d2495b1b6f42b3847f48295c"
+  },
+  {
+    "variant": "threaded",
+    "browser": "webkit",
+    "trace": "water-access.trace",
+    "match": true,
+    "sha256": "876278eaff006698d3a6d470d7458c9f350429ff2ff8ba254a7ba4bddccfc345"
+  }
+]

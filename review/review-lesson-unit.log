@@ -1,0 +1,70 @@
+TAP version 13
+# Subtest: moving a named landmark updates both completion and its screen destination
+ok 1 - moving a named landmark updates both completion and its screen destination
+  ---
+  duration_ms: 9.291529
+  type: 'test'
+  ...
+# Subtest: reused entity IDs with a new generation count as new buildings
+ok 2 - reused entity IDs with a new generation count as new buildings
+  ---
+  duration_ms: 4.990881
+  type: 'test'
+  ...
+# Subtest: stable step IDs survive saved runner state without positional UI assumptions
+ok 3 - stable step IDs survive saved runner state without positional UI assumptions
+  ---
+  duration_ms: 9.14357
+  type: 'test'
+  ...
+# Subtest: custom conditions extend the runner without a native callback
+ok 4 - custom conditions extend the runner without a native callback
+  ---
+  duration_ms: 5.609587
+  type: 'test'
+  ...
+# Subtest: bound patient identity persists as health changes and rejects ID reuse
+ok 5 - bound patient identity persists as health changes and rejects ID reuse
+  ---
+  duration_ms: 5.736276
+  type: 'test'
+  ...
+# Subtest: already trained units and idle ticks cannot satisfy improvement goals
+ok 6 - already trained units and idle ticks cannot satisfy improvement goals
+  ---
+  duration_ms: 7.676251
+  type: 'test'
+  ...
+# Subtest: guard encounters issue one ordinary enemy order and stay issued after resume
+ok 7 - guard encounters issue one ordinary enemy order and stay issued after resume
+  ---
+  duration_ms: 6.947126
+  type: 'test'
+  ...
+# Subtest: warrior training accepts learning ahead and replacement warriors
+ok 8 - warrior training accepts learning ahead and replacement warriors
+  ---
+  duration_ms: 7.341014
+  type: 'test'
+  ...
+# Subtest: lost bound patient gives restart guidance after save/load despite ID reuse
+ok 9 - lost bound patient gives restart guidance after save/load despite ID reuse
+  ---
+  duration_ms: 7.060326
+  type: 'test'
+  ...
+# Subtest: losing bound trainees while replacement workers survive offers a restart
+ok 10 - losing bound trainees while replacement workers survive offers a restart
+  ---
+  duration_ms: 19.5863
+  type: 'test'
+  ...
+1..10
+# tests 10
+# suites 0
+# pass 10
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 314.657359

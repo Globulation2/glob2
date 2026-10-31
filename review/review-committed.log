@@ -1,0 +1,6 @@
+PASS ScriptGenerator/Initial training levels determine unit water placement before allocation (0.8s)
+PASS Introduction/scenario area and queued-building orders need no local presentation player (1.6s)
+PASS TurnEngineHarness/the committed match record verifies to the committed checksum trace [network-sim][golden] (3.4s)
+
+3 passed, 0 failed, 0 skipped (5.8s of test time)
+[run_tests] JUnit report: artifacts/training/review-committed.xml (3 cases)
