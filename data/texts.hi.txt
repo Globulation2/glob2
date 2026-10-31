@@ -1,37 +1,5 @@
-[hub finish in browser, game continues]
-अपने ब्राउज़र में साइन इन पूरा करें। आपके पूरा करते ही खेल अपने आप आगे बढ़ेगा।
-[hub browser did not open]
-आपका ब्राउज़र नहीं खुला। आगे बढ़ने के लिए साइन-इन पेज खोलें।
-[hub compare code %0]
-अगर पेज पर कोड जाँचने को कहा जाए, तो देखें कि वहाँ %0 दिख रहा है।
-[hub code copied]
-कोड कॉपी हो गया
-[settings Finish in your browser. The game continues by itself.]
-अपने ब्राउज़र में प्रक्रिया पूरी करें। खेल अपने आप आगे बढ़ेगा।
-[music set]
-संगीत संग्रह
-[random music set]
-हर मैच में यादृच्छिक संग्रह
-[playing music set %0]
-चल रहा है: %0
-[music set failed]
-यह संगीत संग्रह लोड नहीं हो सका।
-[settings Edge scrolling]
-किनारे पर स्क्रॉल करना
-[settings Edge scrolling in fullscreen]
-पूरी स्क्रीन में किनारे पर स्क्रॉल करना
-[settings Edge scrolling in windowed mode]
-विंडो में किनारे पर स्क्रॉल करना
-[settings Move the game and editor maps when the mouse reaches the window edge.]
-माउस के विंडो के किनारे पर पहुँचने पर खेल और संपादक के नक्शों को खिसकाएँ।
 [%0 has left the game]
 %0 खेल से बाहर हो गए हैं।
-[start recording]
-रिकॉर्डिंग शुरू करें
-[stop recording]
-रिकॉर्डिंग रोकें
-[finalizing recording]
-रिकॉर्डिंग तैयार की जा रही है…
 [%0 level %1]
 %0 स्तर %1
 [%0 units can't access building]
@@ -406,6 +374,16 @@ F9
 खेल भर गया है
 [game shortcuts]
 खेल के शॉर्टकट
+[game speed help]
+केवल एकल-खिलाड़ी और रीप्ले के लिए। मल्टीप्लेयर 1x गति पर चलता है।
+[music set]
+संगीत संग्रह
+[random music set]
+हर मैच में यादृच्छिक संग्रह
+[playing music set %0]
+चल रहा है: %0
+[music set failed]
+यह संगीत संग्रह लोड नहीं हो सका।
 [game speed]
 खेल की गति
 [Game]
@@ -556,6 +534,8 @@ hi
 दूसरों के साथ फलों का
 [market]
 बाज़ार
+[maximum game speed]
+अधिकतम
 [medium priority]
 मध्यम
 [meta %0]
@@ -564,6 +544,8 @@ meta-%0
 न्यूनतम ज़रूरी स्तर:
 [Minimum Level To Flag]
 इकाई का न्यूनतम स्तर
+[multiplayer game speed]
+खेल की गति: 1x (मल्टीप्लेयर)
 [Music volume]
 आवाज़ का स्तर (संगीत)
 [Mute]
@@ -704,6 +686,8 @@ Print Screen
 डिफ़ॉल्ट कीबोर्ड शॉर्टकट बहाल करें
 [return to editor]
 संपादक पर लौटें
+[Reroll terrain look]
+भूभाग का रूप बेतरतीब बदलें
 [return to game]
 खेल पर लौटें
 [return to replay]
@@ -728,8 +712,6 @@ Enter
 खेल सहेजें
 [save map]
 नक्शा सहेजें
-[Reroll terrain look]
-भूभाग का रूप बेतरतीब बदलें
 [save replay]
 रीप्ले सहेजें
 [save script]
@@ -1012,6 +994,8 @@ Tab
 कुल प्राप्त प्रतिष्ठा
 [Total]
 कुल
+[tutorial]
+प्रशिक्षण
 [tutorial text 1]
 Globulation 2 के शुरुआती प्रशिक्षण में आपका स्वागत है! इसमें सराय बनाने, क्षेत्रों की खोजबीन करने और दुश्मनों को हराने तक सब सिखाया जाएगा। यहाँ काम की जानकारी की कोई कमी नहीं है!
 [tutorial text 2]
@@ -1020,8 +1004,6 @@ Globulation 2 के शुरुआती प्रशिक्षण में
 यहाँ तक पहुँचकर आपने अच्छा किया। अब योद्धाओं, बैरकों और उन्नयन की ओर बढ़ते हैं।
 [tutorial text 4]
 प्रशिक्षण लगभग पूरा हो गया है। केवल झंडे और हमला करना बाकी है। फिर आप मनचाहे खेल आज़मा सकेंगे और अंत में Globulation 2 के कुछ बेहतरीन खिलाड़ियों से ऑनलाइन खेल सकेंगे।
-[tutorial]
-प्रशिक्षण
 [Uncontrolled]
 अनियंत्रित
 [undo]
@@ -1120,12 +1102,6 @@ YOG मेटासर्वर ने कनेक्शन अस्वीक�
 आपके %0 पर हमला हो रहा है
 [Your unit got converted to %0's team]
 आपकी इकाई %0 की टीम में शामिल हो गई
-[game speed help]
-केवल एकल-खिलाड़ी और रीप्ले के लिए। मल्टीप्लेयर 1x गति पर चलता है।
-[maximum game speed]
-अधिकतम
-[multiplayer game speed]
-खेल की गति: 1x (मल्टीप्लेयर)
 [Units still inside: %0]
 अब भी अंदर: %0
 [Units still working: %0]
@@ -2210,10 +2186,10 @@ Globulation 2 का कर्सर दिखाएँ।
 आँकड़े 1/3  >
 [Stats page two]
 आँकड़े 2/3  >
-[Stats page three]
-आँकड़े 3/3  >
 [Stats next page]
 पेज (P)
+[Stats page three]
+आँकड़े 3/3  >
 [Stats blocked units]
 अवरुद्ध इकाइयाँ S/C
 [Stats blocked buildings]
@@ -2240,12 +2216,12 @@ Globulation 2 का कर्सर दिखाएँ।
 32 टाइल के भीतर वृद्धि
 [Stats low HP 25]
 25% सेहत वाली इकाइयाँ
-[Stats low food 25]
-25% भोजन भंडार वाली इकाइयाँ
 [Stats low HP 50]
 50% सेहत वाली इकाइयाँ
 [Stats low HP 75]
 75% सेहत वाली इकाइयाँ
+[Stats low food 25]
+25% भोजन भंडार वाली इकाइयाँ
 [Stats low food 50]
 50% भोजन भंडार वाली इकाइयाँ
 [Stats low food 75]
@@ -3298,6 +3274,22 @@ AI जोड़ें
 सूची का उछाल
 [Map momentum]
 नक्शे की जड़ता
+[lan pairing field]
+होस्ट की जोड़ने वाली स्ट्रिंग (या विश्वसनीय WSS URL)
+[lan pairing connect]
+जोड़ें और कनेक्ट करें
+[lan discovery instructions]
+होस्ट चुनें, फिर पहचान जाँचने के लिए उसकी जोड़ने वाली स्ट्रिंग चिपकाएँ।
+[lan discovery unavailable]
+स्थानीय नेटवर्क खोज उपलब्ध नहीं है। नेटवर्क की अनुमति जाँचें या होस्ट की जोड़ने वाली स्ट्रिंग चिपकाएँ।
+[lan discovered host %0]
+होस्ट %0 मिला — खेल देखने के लिए जोड़ें
+[lan connection unavailable]
+स्थानीय नेटवर्क होस्ट से संपर्क नहीं हो सका। नेटवर्क की अनुमति और होस्ट की जोड़ने वाली स्ट्रिंग जाँचें।
+[lan connection verification failed %0]
+स्थानीय नेटवर्क होस्ट की पुष्टि या उससे कनेक्ट नहीं हो सका: %0
+[lan lobby endpoint required]
+होस्ट का लॉबी एंडपॉइंट उपयोग करें
 [settings Artwork]
 कलाकृतियाँ
 [settings Original]
@@ -3364,22 +3356,6 @@ OpenGL रेंडरर चाहिए। आपका सहेजा हु
 टेक्स्ट का आकार
 [settings Enlarge interface text without changing the map scale.]
 नक्शे का पैमाना बदले बिना इंटरफ़ेस का टेक्स्ट बड़ा करें।
-[lan pairing field]
-होस्ट की जोड़ने वाली स्ट्रिंग (या विश्वसनीय WSS URL)
-[lan pairing connect]
-जोड़ें और कनेक्ट करें
-[lan discovery instructions]
-होस्ट चुनें, फिर पहचान जाँचने के लिए उसकी जोड़ने वाली स्ट्रिंग चिपकाएँ।
-[lan discovery unavailable]
-स्थानीय नेटवर्क खोज उपलब्ध नहीं है। नेटवर्क की अनुमति जाँचें या होस्ट की जोड़ने वाली स्ट्रिंग चिपकाएँ।
-[lan discovered host %0]
-होस्ट %0 मिला — खेल देखने के लिए जोड़ें
-[lan connection unavailable]
-स्थानीय नेटवर्क होस्ट से संपर्क नहीं हो सका। नेटवर्क की अनुमति और होस्ट की जोड़ने वाली स्ट्रिंग जाँचें।
-[lan connection verification failed %0]
-स्थानीय नेटवर्क होस्ट की पुष्टि या उससे कनेक्ट नहीं हो सका: %0
-[lan lobby endpoint required]
-होस्ट का लॉबी एंडपॉइंट उपयोग करें
 [turn reconnecting]
 होस्ट से कनेक्शन टूट गया। फिर कनेक्ट हो रहा है…
 [turn waiting for players]
@@ -4628,6 +4604,12 @@ Hive Mind
 कमांडर खोलें
 [stop commander]
 कमांडर रोकें
+[start recording]
+रिकॉर्डिंग शुरू करें
+[stop recording]
+रिकॉर्डिंग रोकें
+[finalizing recording]
+रिकॉर्डिंग तैयार की जा रही है…
 [settings Recording]
 रिकॉर्डिंग
 [settings Record your games as MP4 videos with sound. Recording needs FFmpeg with the libx264 and AAC encoders.]
@@ -5308,6 +5290,24 @@ AI टेलीमेट्री
 संगीत संग्रह
 [settings Random each match]
 हर मैच की शुरुआत में साउंडट्रैक अपने आप चुनने के लिए यादृच्छिक चुनें।
+[settings Edge scrolling]
+किनारे पर स्क्रॉल करना
+[settings Edge scrolling in fullscreen]
+पूरी स्क्रीन में किनारे पर स्क्रॉल करना
+[settings Edge scrolling in windowed mode]
+विंडो में किनारे पर स्क्रॉल करना
+[settings Move the game and editor maps when the mouse reaches the window edge.]
+माउस के विंडो के किनारे पर पहुँचने पर खेल और संपादक के नक्शों को खिसकाएँ।
+[hub finish in browser, game continues]
+अपने ब्राउज़र में साइन इन पूरा करें। आपके पूरा करते ही खेल अपने आप आगे बढ़ेगा।
+[hub browser did not open]
+आपका ब्राउज़र नहीं खुला। आगे बढ़ने के लिए साइन-इन पेज खोलें।
+[hub compare code %0]
+अगर पेज पर कोड जाँचने को कहा जाए, तो देखें कि वहाँ %0 दिख रहा है।
+[hub code copied]
+कोड कॉपी हो गया
+[settings Finish in your browser. The game continues by itself.]
+अपने ब्राउज़र में प्रक्रिया पूरी करें। खेल अपने आप आगे बढ़ेगा।
 [AI Library]
 AI संग्रह
 [Authoring guide]
@@ -5548,14 +5548,6 @@ AI से नहीं बना
 बर्फ़
 [road]
 पगडंडी
-[experiment ice-terrain]
-बर्फ़ वाला भूभाग
-[experiment ice-terrain help]
-नक्शा संपादक में बर्फ़ जोड़ता है। ज़मीनी इकाइयाँ आधी गति से चलती हैं और हर 32 टिक खुले में रहने पर एक सेहत अंक खोती हैं। बर्फ़ पर इमारत या संसाधन नहीं रह सकते।
-[experiment road-terrain]
-पगडंडी वाला भूभाग
-[experiment road-terrain help]
-नक्शा संपादक में पुरानी पगडंडियाँ जोड़ता है। ज़मीनी इकाइयाँ दोगुनी गति से चलती हैं। पगडंडियों पर इमारतें रह सकती हैं, संसाधन नहीं। उड़ने वाली इकाइयों पर असर नहीं पड़ता।
 [experiment markets-v2]
 बाज़ार V2
 [experiment markets-v2 help]
@@ -5702,42 +5694,6 @@ AI से नहीं बना
 गहरा पानी
 [terrain group void]
 शून्य
-[experiment obstacle-terrain]
-बाधा वाला भूभाग
-[experiment obstacle-terrain help]
-नक्शा संपादक में बड़े पत्थर, बाड़ और घनी झाड़ियाँ जोड़ता है। ज़मीनी इकाइयाँ इन्हें पार नहीं कर सकतीं और ये प्रक्षेप्य रोकते हैं; उड़ने वाली इकाइयाँ ऊपर से निकलती हैं। इन पर न इमारतें रह सकती हैं न संसाधन।
-[experiment ridge-terrain]
-पथरीली धार वाला भूभाग
-[experiment ridge-terrain help]
-नक्शा संपादक में चट्टानी धारें और उभार जोड़ता है। ज़मीनी इकाइयाँ इन्हें पार नहीं कर सकतीं, लेकिन मीनारें ऊपर से वार कर सकती हैं और उड़ने वाली इकाइयाँ निकल सकती हैं। इन पर न इमारतें रह सकती हैं न संसाधन।
-[experiment barren-terrain]
-बंजर ज़मीन
-[experiment barren-terrain help]
-नक्शा संपादक में मिट्टी, चिकनी मिट्टी, बजरी और फूलों के मैदान जोड़ता है। इन पर इमारतें रह सकती हैं, लेकिन इन पर या पास कुछ नहीं उगता और ये तटरेखा नहीं गिने जाते।
-[experiment rough-terrain]
-ऊबड़-खाबड़ ज़मीन
-[experiment rough-terrain help]
-नक्शा संपादक में कीचड़, दलदल, गहरी बर्फ़ और ढीले पत्थरों वाली ढलान जोड़ता है। ज़मीनी इकाइयाँ लगभग दो तिहाई गति से चलती हैं। यहाँ न इमारतें रह सकती हैं न संसाधन।
-[experiment path-terrain]
-रास्ते वाला भूभाग
-[experiment path-terrain help]
-नक्शा संपादक में कच्चे रास्ते और लकड़ी के पैदल रास्ते जोड़ता है। पगडंडियों की तरह ज़मीनी इकाइयाँ दोगुनी गति से चलती हैं और इमारतें बन सकती हैं, लेकिन कुछ उगता नहीं।
-[experiment lava-terrain]
-लावा वाला भूभाग
-[experiment lava-terrain help]
-नक्शा संपादक में लावा और अंगारों के क्षेत्र जोड़ता है। ज़मीनी इकाइयाँ इनमें नहीं जा सकतीं; ऊपर से उड़ने वाली इकाइयों की सेहत तेज़ी से घटती है। प्रक्षेप्य ऊपर से निकल जाते हैं।
-[experiment fertile-terrain]
-उपजाऊ ज़मीन
-[experiment fertile-terrain help]
-नक्शा संपादक में दोमट, काई और वसंत के मैदान जोड़ता है। इन पर इमारतें और फ़सलें रह सकती हैं और ये आसपास की ज़मीन को पानी से अधिक सींचते हैं।
-[experiment deep-water-terrain]
-गहरा पानी
-[experiment deep-water-terrain help]
-नक्शा संपादक में गहरा और गहरे रंग का पानी जोड़ता है। तैरने वाले यहाँ धीरे चलते हैं, शैवाल नहीं उगता, लेकिन पास के खेत अब भी सिंचित होते हैं।
-[experiment void-terrain]
-शून्य वाला भूभाग
-[experiment void-terrain help]
-नक्शा संपादक में गड्ढे और खाइयाँ जोड़ता है। कुछ भी इन्हें पार नहीं कर सकता, उड़ने वाली इकाइयाँ भी नहीं, और प्रक्षेप्य किनारे पर रुक जाते हैं।
 [terrain group custom]
 कस्टम
 [terrain group classic]
@@ -5770,8 +5726,6 @@ AI से नहीं बना
 ब्रश चुनें। हर समूह के सदस्य समान नियम उपयोग करते हैं; केवल उनका रूप अलग होता है।
 [terrain rule algae grow]
 शैवाल उगता है
-[terrain palette experiments hint]
-ब्रश चुनें। सेटिंग > प्रयोग में चालू करने पर भूभाग के और समूह यहाँ दिखाई देंगे।
 [brush valid on %0]
 इन पर मान्य: %0
 [brush valid nowhere]
@@ -6028,6 +5982,8 @@ Discord खुल गया। आप कभी भी खेल में ल�
 Discord नहीं खुल सका। आमंत्रण लिंक कॉपी करके अपने ब्राउज़र में खोलें।
 [discord link copied]
 आमंत्रण लिंक कॉपी हो गया।
+[discord copy failed]
+लिंक कॉपी नहीं हो सका। हाथ से कॉपी करने के लिए ऊपर आमंत्रण चुनें।
 [settings CPU automatic]
 CPU स्वचालित
 [settings Scalar]
@@ -6100,8 +6056,6 @@ MCP सर्वर चालू करें
 बायाँ हाथ
 [Right hand]
 दायाँ हाथ
-[discord copy failed]
-लिंक कॉपी नहीं हो सका। हाथ से कॉपी करने के लिए ऊपर आमंत्रण चुनें।
 [stat ground movement]
 ज़मीनी चाल
 [stat ground movement about]
@@ -6488,6 +6442,8 @@ MCP सर्वर चालू करें
 गंतव्य दिखाएँ
 [intro scout destination]
 यहाँ खोजबीन करें
+[intro attack destination]
+यहाँ हमला करें
 [intro compact scout]
 झंडे → खोजबीन का झंडा। पत्थरों पर लगाएँ; 1 खोजी लगाएँ।
 [intro compact build]
@@ -6816,8 +6772,6 @@ MCP सर्वर चालू करें
 रक्षा क्षेत्र में डटे रहें। सरायों की आपूर्ति बनाए रखें।
 [lesson defensive-tactics counterattack compact]
 युद्ध का झंडा → दुश्मन का छत्ता। 3 योद्धा माँगें; त्रिज्या ≤4।
-[intro attack destination]
-यहाँ हमला करें
 [Grassland]
 घास का मैदान
 [Kopjes]
@@ -6826,7 +6780,7 @@ MCP सर्वर चालू करें
 वन्य जीवों की पगडंडियाँ
 [Fish amount]
 मछलियों की मात्रा
-[scenario messages]
-संदेश ▸
 [Camp-site amount]
 पड़ावों की मात्रा
+[scenario messages]
+संदेश ▸

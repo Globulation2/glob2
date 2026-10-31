@@ -1,37 +1,5 @@
-[hub finish in browser, game continues]
-اپنے براؤزر میں سائن اِن مکمل کریں۔ آپ کے مکمل کرنے کے بعد کھیل خود بخود جاری ہو جائے گا۔
-[hub browser did not open]
-آپ کا براؤزر نہیں کھلا۔ جاری رکھنے کے لیے سائن اِن کا صفحہ کھولیں۔
-[hub compare code %0]
-اگر صفحے پر تصدیق کے لیے کہا جائے تو دیکھیں کہ وہاں %0 دکھایا گیا ہے۔
-[hub code copied]
-کوڈ کاپی ہو گیا
-[settings Finish in your browser. The game continues by itself.]
-اپنے براؤزر میں کارروائی مکمل کریں۔ کھیل خود چلتا رہتا ہے۔
-[music set]
-موسیقی کا مجموعہ
-[random music set]
-ہر میچ میں بے ترتیب انتخاب
-[playing music set %0]
-چل رہا ہے: %0
-[music set failed]
-موسیقی کا یہ مجموعہ لوڈ نہیں ہو سکا۔
-[settings Edge scrolling]
-کنارے پر اسکرول کرنا
-[settings Edge scrolling in fullscreen]
-پوری اسکرین میں کنارے پر اسکرول کرنا
-[settings Edge scrolling in windowed mode]
-ونڈو میں کنارے پر اسکرول کرنا
-[settings Move the game and editor maps when the mouse reaches the window edge.]
-ماؤس کے ونڈو کے کنارے تک پہنچنے پر کھیل اور ایڈیٹر کے نقشوں کو حرکت دیں۔
 [%0 has left the game]
 %0 کھیل سے نکل گئے ہیں۔
-[start recording]
-ریکارڈنگ شروع کریں
-[stop recording]
-ریکارڈنگ روکیں
-[finalizing recording]
-ریکارڈنگ مکمل کی جا رہی ہے…
 [%0 level %1]
 %0 سطح %1
 [%0 units can't access building]
@@ -406,6 +374,16 @@ F9
 کھیل میں جگہ نہیں ہے
 [game shortcuts]
 کھیل کے شارٹ کٹ
+[game speed help]
+صرف اکیلے کھیل اور ری پلے کے لیے۔ ملٹی پلیئر 1x رفتار پر چلتا ہے۔
+[music set]
+موسیقی کا مجموعہ
+[random music set]
+ہر میچ میں بے ترتیب انتخاب
+[playing music set %0]
+چل رہا ہے: %0
+[music set failed]
+موسیقی کا یہ مجموعہ لوڈ نہیں ہو سکا۔
 [game speed]
 کھیل کی رفتار
 [Game]
@@ -556,6 +534,8 @@ ur
 پھلوں کا
 [market]
 بازار
+[maximum game speed]
+زیادہ سے زیادہ
 [medium priority]
 درمیانی
 [meta %0]
@@ -564,6 +544,8 @@ Meta-%0
 کم از کم مطلوبہ سطح:
 [Minimum Level To Flag]
 یونٹ کی کم از کم سطح
+[multiplayer game speed]
+کھیل کی رفتار: 1x (ملٹی پلیئر)
 [Music volume]
 آواز کی سطح (موسیقی)
 [Mute]
@@ -704,6 +686,8 @@ Print Screen
 کی بورڈ کے طے شدہ شارٹ کٹ بحال کریں
 [return to editor]
 ایڈیٹر پر واپس جائیں
+[Reroll terrain look]
+زمین کی صورت دوبارہ بدلیں
 [return to game]
 کھیل میں واپس جائیں
 [return to replay]
@@ -728,8 +712,6 @@ Enter
 کھیل محفوظ کریں
 [save map]
 نقشہ محفوظ کریں
-[Reroll terrain look]
-زمین کی صورت دوبارہ بدلیں
 [save replay]
 ری پلے محفوظ کریں
 [save script]
@@ -1012,6 +994,8 @@ Tab
 حاصل کردہ کل وقار
 [Total]
 کل
+[tutorial]
+تربیت
 [tutorial text 1]
 Globulation 2 کی ابتدائی تربیت میں خوش آمدید! یہاں سرائے بنانا، علاقوں کی کھوج اور دشمن کو تباہ کرنا سیکھیں گے۔ مفید معلومات کی کوئی کمی نہیں!
 [tutorial text 2]
@@ -1020,8 +1004,6 @@ Globulation 2 کی ابتدائی تربیت میں خوش آمدید! یہاں 
 آپ نے یہاں تک اچھا کام کیا۔ اب جنگجوؤں، بیرکوں اور اپ گریڈ کی طرف چلتے ہیں۔
 [tutorial text 4]
 آپ تقریباً مکمل کر چکے ہیں۔ صرف جھنڈے اور حملہ باقی ہیں۔ پھر آپ اپنی مرضی کے کھیل آزمانے اور آخرکار Globulation 2 کے بہترین کھلاڑیوں سے آن لائن مقابلہ کرنے کے لیے تیار ہوں گے۔
-[tutorial]
-تربیت
 [Uncontrolled]
 بغیر کھلاڑی
 [undo]
@@ -1120,12 +1102,6 @@ YOG میٹا سرور نے رابطہ مسترد کر دیا ہے کیونکہ �
 آپ کے %0 پر حملہ ہو رہا ہے
 [Your unit got converted to %0's team]
 آپ کا یونٹ %0 کی ٹیم میں شامل ہو گیا ہے
-[game speed help]
-صرف اکیلے کھیل اور ری پلے کے لیے۔ ملٹی پلیئر 1x رفتار پر چلتا ہے۔
-[maximum game speed]
-زیادہ سے زیادہ
-[multiplayer game speed]
-کھیل کی رفتار: 1x (ملٹی پلیئر)
 [Units still inside: %0]
 اب بھی اندر: %0
 [Units still working: %0]
@@ -2210,10 +2186,10 @@ Globulation 2 کا کرسر دکھائیں۔
 اعداد و شمار 1/3  >
 [Stats page two]
 اعداد و شمار 2/3  >
-[Stats page three]
-اعداد و شمار 3/3  >
 [Stats next page]
 صفحہ (P)
+[Stats page three]
+اعداد و شمار 3/3  >
 [Stats blocked units]
 پھنسے ہوئے یونٹ S/C
 [Stats blocked buildings]
@@ -2240,12 +2216,12 @@ Globulation 2 کا کرسر دکھائیں۔
 32 خانوں کے اندر افزائش
 [Stats low HP 25]
 25% HP والے یونٹ
-[Stats low food 25]
-25% غذائی ذخیرے والے یونٹ
 [Stats low HP 50]
 50% HP والے یونٹ
 [Stats low HP 75]
 75% HP والے یونٹ
+[Stats low food 25]
+25% غذائی ذخیرے والے یونٹ
 [Stats low food 50]
 50% غذائی ذخیرے والے یونٹ
 [Stats low food 75]
@@ -3298,6 +3274,22 @@ AI شامل کریں
 فہرست کا اچھال
 [Map momentum]
 نقشے کی روانی
+[lan pairing field]
+میزبان کی جوڑنے والی عبارت (یا قابلِ اعتماد WSS URL)
+[lan pairing connect]
+جوڑیں اور رابطہ کریں
+[lan discovery instructions]
+میزبان منتخب کریں، پھر اس کی شناخت کی تصدیق کے لیے اس کی جوڑنے والی عبارت چسپاں کریں۔
+[lan discovery unavailable]
+LAN پر تلاش دستیاب نہیں۔ مقامی نیٹ ورک کی اجازت دیکھیں یا میزبان کی جوڑنے والی عبارت چسپاں کریں۔
+[lan discovered host %0]
+میزبان %0 دریافت ہوا — کھیل دیکھنے کے لیے جوڑیں
+[lan connection unavailable]
+LAN میزبان تک رسائی نہیں ہو سکی۔ مقامی نیٹ ورک کی اجازت اور میزبان کی جوڑنے والی عبارت دیکھیں۔
+[lan connection verification failed %0]
+LAN میزبان کی تصدیق یا اس سے رابطہ نہیں ہو سکا: %0
+[lan lobby endpoint required]
+میزبان کی لابی کا اینڈ پوائنٹ استعمال کریں
 [settings Artwork]
 تصاویر
 [settings Original]
@@ -3364,22 +3356,6 @@ OpenGL رینڈرر درکار ہے۔ آپ کا محفوظ انتخاب برقر
 متن کی جسامت
 [settings Enlarge interface text without changing the map scale.]
 نقشے کا پیمانہ بدلے بغیر انٹرفیس کا متن بڑا کریں۔
-[lan pairing field]
-میزبان کی جوڑنے والی عبارت (یا قابلِ اعتماد WSS URL)
-[lan pairing connect]
-جوڑیں اور رابطہ کریں
-[lan discovery instructions]
-میزبان منتخب کریں، پھر اس کی شناخت کی تصدیق کے لیے اس کی جوڑنے والی عبارت چسپاں کریں۔
-[lan discovery unavailable]
-LAN پر تلاش دستیاب نہیں۔ مقامی نیٹ ورک کی اجازت دیکھیں یا میزبان کی جوڑنے والی عبارت چسپاں کریں۔
-[lan discovered host %0]
-میزبان %0 دریافت ہوا — کھیل دیکھنے کے لیے جوڑیں
-[lan connection unavailable]
-LAN میزبان تک رسائی نہیں ہو سکی۔ مقامی نیٹ ورک کی اجازت اور میزبان کی جوڑنے والی عبارت دیکھیں۔
-[lan connection verification failed %0]
-LAN میزبان کی تصدیق یا اس سے رابطہ نہیں ہو سکا: %0
-[lan lobby endpoint required]
-میزبان کی لابی کا اینڈ پوائنٹ استعمال کریں
 [turn reconnecting]
 میزبان سے رابطہ ٹوٹ گیا۔ دوبارہ رابطہ ہو رہا ہے...
 [turn waiting for players]
@@ -4628,6 +4604,12 @@ Hive Mind
 کمانڈر کھولیں
 [stop commander]
 کمانڈر روکیں
+[start recording]
+ریکارڈنگ شروع کریں
+[stop recording]
+ریکارڈنگ روکیں
+[finalizing recording]
+ریکارڈنگ مکمل کی جا رہی ہے…
 [settings Recording]
 ریکارڈنگ
 [settings Record your games as MP4 videos with sound. Recording needs FFmpeg with the libx264 and AAC encoders.]
@@ -5308,6 +5290,24 @@ HP ختم ہونے پر یونٹ مر جاتے ہیں۔ انہیں 1 HP پر ر�
 موسیقی کا مجموعہ
 [settings Random each match]
 ہر میچ کے آغاز پر صوتی مجموعہ خود چننے کے لیے بے ترتیب منتخب کریں۔
+[settings Edge scrolling]
+کنارے پر اسکرول کرنا
+[settings Edge scrolling in fullscreen]
+پوری اسکرین میں کنارے پر اسکرول کرنا
+[settings Edge scrolling in windowed mode]
+ونڈو میں کنارے پر اسکرول کرنا
+[settings Move the game and editor maps when the mouse reaches the window edge.]
+ماؤس کے ونڈو کے کنارے تک پہنچنے پر کھیل اور ایڈیٹر کے نقشوں کو حرکت دیں۔
+[hub finish in browser, game continues]
+اپنے براؤزر میں سائن اِن مکمل کریں۔ آپ کے مکمل کرنے کے بعد کھیل خود بخود جاری ہو جائے گا۔
+[hub browser did not open]
+آپ کا براؤزر نہیں کھلا۔ جاری رکھنے کے لیے سائن اِن کا صفحہ کھولیں۔
+[hub compare code %0]
+اگر صفحے پر تصدیق کے لیے کہا جائے تو دیکھیں کہ وہاں %0 دکھایا گیا ہے۔
+[hub code copied]
+کوڈ کاپی ہو گیا
+[settings Finish in your browser. The game continues by itself.]
+اپنے براؤزر میں کارروائی مکمل کریں۔ کھیل خود چلتا رہتا ہے۔
 [AI Library]
 AI لائبریری
 [Authoring guide]
@@ -5548,14 +5548,6 @@ AI کی بنائی ہوئی نہیں
 برف
 [road]
 پگڈنڈی
-[experiment ice-terrain]
-برفیلی زمین
-[experiment ice-terrain help]
-نقشہ ایڈیٹر میں برف شامل کرتا ہے۔ زمینی یونٹ آدھی رفتار سے چلتے اور عمارت سے باہر ہر 32 ٹک پر ایک صحت پوائنٹ کھوتے ہیں۔ برف پر عمارتیں یا وسائل نہیں ہوتے۔
-[experiment road-terrain]
-پگڈنڈی کی زمین
-[experiment road-terrain help]
-نقشہ ایڈیٹر میں پرانی پگڈنڈیاں شامل کرتا ہے۔ زمینی یونٹ دوگنی رفتار سے چلتے ہیں۔ عمارتیں بن سکتی ہیں، وسائل نہیں۔ اڑنے والے یونٹ متاثر نہیں ہوتے۔
 [experiment markets-v2]
 بازار V2
 [experiment markets-v2 help]
@@ -5702,42 +5694,6 @@ AI کی بنائی ہوئی نہیں
 گہرا پانی
 [terrain group void]
 خلا
-[experiment obstacle-terrain]
-رکاوٹوں کی زمین
-[experiment obstacle-terrain help]
-نقشہ ایڈیٹر میں بڑے پتھر، باڑیں اور گھنے جھاڑ شامل کرتا ہے۔ زمینی یونٹ پار نہیں جا سکتے اور گولے رک جاتے ہیں؛ اڑنے والے اوپر گزر جاتے ہیں۔ ان پر عمارتیں یا وسائل نہیں ہوتے۔
-[experiment ridge-terrain]
-پہاڑی دھاروں کی زمین
-[experiment ridge-terrain help]
-نقشہ ایڈیٹر میں چٹانی دھاریں اور ابھار شامل کرتا ہے۔ زمینی یونٹ نہیں گزر سکتے، مگر مینار اوپر سے گولے چلاتے اور اڑنے والے پار جاتے ہیں۔ ان پر عمارتیں یا وسائل نہیں ہوتے۔
-[experiment barren-terrain]
-بنجر زمین
-[experiment barren-terrain help]
-نقشہ ایڈیٹر میں مٹی، چکنی مٹی، بجری اور پھولوں کے میدان شامل کرتا ہے۔ عمارتیں بن سکتی ہیں، ان پر یا پاس کچھ نہیں اگتا، اور یہ ساحل شمار نہیں ہوتیں۔
-[experiment rough-terrain]
-ناہموار زمین
-[experiment rough-terrain help]
-نقشہ ایڈیٹر میں کیچڑ، دلدل، گہری برف اور پتھریلی ڈھلوان شامل کرتا ہے۔ زمینی یونٹ تقریباً دو تہائی رفتار سے چلتے ہیں۔ عمارتیں یا وسائل نہیں ہوتے۔
-[experiment path-terrain]
-پگڈنڈی کی زمین
-[experiment path-terrain help]
-نقشہ ایڈیٹر میں کچے اور تختوں والے راستے شامل کرتا ہے۔ پگڈنڈیوں کی طرح زمینی یونٹ دوگنی رفتار سے چلتے اور عمارتیں بن سکتی ہیں، مگر کچھ نہیں اگتا۔
-[experiment lava-terrain]
-لاوا کی زمین
-[experiment lava-terrain help]
-نقشہ ایڈیٹر میں لاوا اور انگاروں کے میدان شامل کرتا ہے۔ زمینی یونٹ داخل نہیں ہو سکتے؛ اڑ کر گزرنے والے یونٹ تیزی سے صحت کھوتے ہیں۔ گولے اوپر سے گزر جاتے ہیں۔
-[experiment fertile-terrain]
-زرخیز زمین
-[experiment fertile-terrain help]
-نقشہ ایڈیٹر میں زرخیز مٹی، کائی اور بہار کے میدان شامل کرتا ہے۔ ان پر عمارتیں اور فصلیں ہو سکتی ہیں اور یہ اردگرد کی زمین کو پانی سے بھی زیادہ سیراب کرتے ہیں۔
-[experiment deep-water-terrain]
-گہرا پانی
-[experiment deep-water-terrain help]
-نقشہ ایڈیٹر میں گہرا اور تاریک پانی شامل کرتا ہے۔ تیراک آہستہ پار کرتے ہیں، اس میں کائی نہیں اگتی، مگر پاس کے کھیت سیراب ہوتے ہیں۔
-[experiment void-terrain]
-خلا کی زمین
-[experiment void-terrain help]
-نقشہ ایڈیٹر میں گڑھے اور کھائیاں شامل کرتا ہے۔ کوئی، حتیٰ کہ اڑنے والے یونٹ بھی، انہیں پار نہیں کر سکتے؛ گولے کنارے پر رک جاتے ہیں۔
 [terrain group custom]
 اپنی مرضی کی
 [terrain group classic]
@@ -5770,8 +5726,6 @@ AI کی بنائی ہوئی نہیں
 برش چنیں۔ ہر گروہ کے قواعد ایک جیسے ہیں؛ اس کے ارکان صرف صورت میں مختلف ہیں۔
 [terrain rule algae grow]
 کائی اگتی ہے
-[terrain palette experiments hint]
-برش چنیں۔ ترتیبات > تجربات میں متعلقہ تجربے چالو کرنے پر مزید زمینی گروہ یہاں آتے ہیں۔
 [brush valid on %0]
 یہاں درست: %0
 [brush valid nowhere]
@@ -6028,6 +5982,8 @@ Discord کھل گیا۔ آپ کسی بھی وقت کھیل میں واپس آ س
 Discord نہیں کھل سکا۔ دعوت کا لنک نقل کر کے اپنے براؤزر میں کھولیں۔
 [discord link copied]
 دعوت کا لنک نقل ہو گیا۔
+[discord copy failed]
+لنک نقل نہیں ہو سکا۔ خود نقل کرنے کے لیے اوپر دعوت منتخب کریں۔
 [settings CPU automatic]
 خودکار CPU
 [settings Scalar]
@@ -6100,8 +6056,6 @@ MCP سرور چالو کریں
 بایاں ہاتھ
 [Right hand]
 دایاں ہاتھ
-[discord copy failed]
-لنک نقل نہیں ہو سکا۔ خود نقل کرنے کے لیے اوپر دعوت منتخب کریں۔
 [stat ground movement]
 زمینی حرکت
 [stat ground movement about]
@@ -6488,6 +6442,8 @@ MCP سرور چالو کریں
 منزل دکھائیں
 [intro scout destination]
 یہاں کھوج لگائیں
+[intro attack destination]
+یہاں حملہ کریں
 [intro compact scout]
 جھنڈے ← کھوج کا جھنڈا۔ پتھروں پر لگائیں؛ 1 کھوجی مقرر کریں۔
 [intro compact build]
@@ -6816,8 +6772,6 @@ MCP سرور چالو کریں
 پہرے کے علاقے کا دفاع کریں۔ سراؤں میں رسد برقرار رکھیں۔
 [lesson defensive-tactics counterattack compact]
 جنگی جھنڈا ← دشمن کا چھتہ۔ 3 جنگجوؤں کی درخواست کریں؛ رداس 4 یا کم۔
-[intro attack destination]
-یہاں حملہ کریں
 [Grassland]
 گھاس کا میدان
 [Kopjes]
@@ -6826,7 +6780,7 @@ MCP سرور چالو کریں
 جنگلی جانوروں کی پگڈنڈیاں
 [Fish amount]
 مچھلی کی مقدار
-[scenario messages]
-پیغامات ▸
 [Camp-site amount]
 خیمہ گاہوں کی تعداد
+[scenario messages]
+پیغامات ▸

@@ -1,37 +1,5 @@
-[hub finish in browser, game continues]
-Kamilisha kuingia katika kivinjari chako. Ukimaliza, mchezo utaendelea wenyewe.
-[hub browser did not open]
-Kivinjari chako hakikufunguka. Fungua ukurasa wa kuingia ili uendelee.
-[hub compare code %0]
-Ukurasa ukiomba, hakikisha unaonyesha %0.
-[hub code copied]
-Msimbo umenakiliwa
-[settings Finish in your browser. The game continues by itself.]
-Malizia katika kivinjari chako. Mchezo utaendelea wenyewe.
-[music set]
-Mkusanyiko wa muziki
-[random music set]
-Chagua bila mpangilio kila mechi
-[playing music set %0]
-Unaochezwa: %0
-[music set failed]
-Imeshindikana kupakia mkusanyiko huu wa muziki.
-[settings Edge scrolling]
-Kusogeza ramani pembeni
-[settings Edge scrolling in fullscreen]
-Kusogeza ramani pembeni kwenye skrini nzima
-[settings Edge scrolling in windowed mode]
-Kusogeza ramani pembeni katika dirisha
-[settings Move the game and editor maps when the mouse reaches the window edge.]
-Sogeza ramani za mchezo na kihariri kishale cha kipanya kinapofika pembeni mwa dirisha.
 [%0 has left the game]
 %0 ameacha mchezo.
-[start recording]
-Anza kurekodi
-[stop recording]
-Acha kurekodi
-[finalizing recording]
-Inakamilisha rekodi…
 [%0 level %1]
 %0 Kiwango cha %1
 [%0 units can't access building]
@@ -406,6 +374,16 @@ Skrini nzima
 Mchezo umejaa
 [game shortcuts]
 Njia za mkato za mchezo
+[game speed help]
+Mchezaji mmoja na marudio pekee. Michezo ya wachezaji wengi hutumia kasi 1x.
+[music set]
+Mkusanyiko wa muziki
+[random music set]
+Chagua bila mpangilio kila mechi
+[playing music set %0]
+Unaochezwa: %0
+[music set failed]
+Imeshindikana kupakia mkusanyiko huu wa muziki.
 [game speed]
 Kasi ya mchezo
 [Game]
@@ -556,6 +534,8 @@ matunda na wengine
 Huwezesha kubadilishana
 [market]
 Soko
+[maximum game speed]
+Kiwango cha juu
 [medium priority]
 wastani
 [meta %0]
@@ -564,6 +544,8 @@ meta-%0
 Kiwango cha chini kinachohitajika:
 [Minimum Level To Flag]
 Kiwango cha chini cha kiumbe
+[multiplayer game speed]
+Kasi ya mchezo: 1x (wachezaji wengi)
 [Music volume]
 Sauti ya muziki
 [Mute]
@@ -704,6 +686,8 @@ Marudio yamekwisha
 Rejesha njia za mkato za awali za kibodi
 [return to editor]
 Rudi kwenye kihariri
+[Reroll terrain look]
+Zalisha mwonekano mwingine wa ardhi
 [return to game]
 Rudi kwenye mchezo
 [return to replay]
@@ -728,8 +712,6 @@ Unataka kuhifadhi kabla ya kutoka?
 Hifadhi mchezo
 [save map]
 Hifadhi ramani
-[Reroll terrain look]
-Zalisha mwonekano mwingine wa ardhi
 [save replay]
 Hifadhi marudio
 [save script]
@@ -1012,6 +994,8 @@ Jumla ya pointi za afya
 Jumla ya heshima iliyofikiwa
 [Total]
 Jumla
+[tutorial]
+Mafunzo
 [tutorial text 1]
 Karibu katika mafunzo ya msingi ya Globulation 2! Utajifunza kujenga nyumba za wageni, kuchunguza maeneo na kuwashinda maadui. Kuna maarifa mengi yenye manufaa hapa!
 [tutorial text 2]
@@ -1020,8 +1004,6 @@ Sasa umeelewa misingi. Ni wakati wa kuzoea majengo mengine kama viwanja vya mbio
 Umefanya vizuri kufika hapa. Sasa tuendelee na mashujaa, kambi za jeshi na uboreshaji.
 [tutorial text 4]
 Unakaribia kumaliza. Zimebaki bendera na mashambulizi tu. Kisha utakuwa na maarifa ya kutosha kujaribu Michezo maalumu, na hatimaye kucheza mtandaoni dhidi ya baadhi ya wachezaji bora wa Globulation 2.
-[tutorial]
-Mafunzo
 [Uncontrolled]
 Bila kidhibiti
 [undo]
@@ -1120,12 +1102,6 @@ Umeondolewa katika mchezo
 %0 yako inashambuliwa
 [Your unit got converted to %0's team]
 Kiumbe wako amejiunga na timu ya %0
-[game speed help]
-Mchezaji mmoja na marudio pekee. Michezo ya wachezaji wengi hutumia kasi 1x.
-[maximum game speed]
-Kiwango cha juu
-[multiplayer game speed]
-Kasi ya mchezo: 1x (wachezaji wengi)
 [Units still inside: %0]
 Bado ndani: %0
 [Units still working: %0]
@@ -2210,10 +2186,10 @@ Lisha / tibu
 Takwimu 1/3  >
 [Stats page two]
 Takwimu 2/3  >
-[Stats page three]
-Takwimu 3/3  >
 [Stats next page]
 Ukurasa (P)
+[Stats page three]
+Takwimu 3/3  >
 [Stats blocked units]
 Viumbe waliokwama S/C
 [Stats blocked buildings]
@@ -2240,12 +2216,12 @@ Ukuaji ndani ya vigae 16
 Ukuaji ndani ya vigae 32
 [Stats low HP 25]
 Viumbe wenye HP 25%
-[Stats low food 25]
-Viumbe wenye akiba ya chakula 25%
 [Stats low HP 50]
 Viumbe wenye HP 50%
 [Stats low HP 75]
 Viumbe wenye HP 75%
+[Stats low food 25]
+Viumbe wenye akiba ya chakula 25%
 [Stats low food 50]
 Viumbe wenye akiba ya chakula 50%
 [Stats low food 75]
@@ -3298,6 +3274,22 @@ Mwendo unaoendelea wa orodha
 Kurudi kwa orodha
 [Map momentum]
 Mwendo unaoendelea wa ramani
+[lan pairing field]
+Mfuatano wa kuoanisha mwenyeji (au URL ya WSS inayoaminika)
+[lan pairing connect]
+Oanisha na uunganishe
+[lan discovery instructions]
+Chagua mwenyeji, kisha bandika mfuatano wake wa kuoanisha uthibitishe utambulisho wake.
+[lan discovery unavailable]
+Ugunduzi wa LAN haupatikani. Kagua ruhusa ya mtandao wa ndani au bandika mfuatano wa kuoanisha mwenyeji.
+[lan discovered host %0]
+Mwenyeji %0 amegunduliwa — oanisha kuona michezo
+[lan connection unavailable]
+Haiwezekani kufikia mwenyeji wa LAN. Kagua ruhusa ya mtandao wa ndani na mfuatano wa kuoanisha mwenyeji.
+[lan connection verification failed %0]
+Haiwezekani kuthibitisha au kuunganisha kwa mwenyeji wa LAN: %0
+[lan lobby endpoint required]
+Tumia anwani ya sehemu ya kusubiri ya mwenyeji
 [settings Artwork]
 Michoro
 [settings Original]
@@ -3364,22 +3356,6 @@ Rahisisha viashiria, kanda, ardhi na viumbe ramani inapopunguzwa, na uviweke vid
 Ukubwa wa maandishi
 [settings Enlarge interface text without changing the map scale.]
 Kuza maandishi ya kiolesura bila kubadili kipimo cha ramani.
-[lan pairing field]
-Mfuatano wa kuoanisha mwenyeji (au URL ya WSS inayoaminika)
-[lan pairing connect]
-Oanisha na uunganishe
-[lan discovery instructions]
-Chagua mwenyeji, kisha bandika mfuatano wake wa kuoanisha uthibitishe utambulisho wake.
-[lan discovery unavailable]
-Ugunduzi wa LAN haupatikani. Kagua ruhusa ya mtandao wa ndani au bandika mfuatano wa kuoanisha mwenyeji.
-[lan discovered host %0]
-Mwenyeji %0 amegunduliwa — oanisha kuona michezo
-[lan connection unavailable]
-Haiwezekani kufikia mwenyeji wa LAN. Kagua ruhusa ya mtandao wa ndani na mfuatano wa kuoanisha mwenyeji.
-[lan connection verification failed %0]
-Haiwezekani kuthibitisha au kuunganisha kwa mwenyeji wa LAN: %0
-[lan lobby endpoint required]
-Tumia anwani ya sehemu ya kusubiri ya mwenyeji
 [turn reconnecting]
 Muunganisho na mwenyeji umepotea. Inaunganisha tena…
 [turn waiting for players]
@@ -4628,6 +4604,12 @@ Simamia krediti na ununuzi katika kivinjari. Msaada wa kamanda unaruhusiwa katik
 Fungua kamanda
 [stop commander]
 Simamisha kamanda
+[start recording]
+Anza kurekodi
+[stop recording]
+Acha kurekodi
+[finalizing recording]
+Inakamilisha rekodi…
 [settings Recording]
 Kurekodi
 [settings Record your games as MP4 videos with sound. Recording needs FFmpeg with the libx264 and AAC encoders.]
@@ -5308,6 +5290,24 @@ Kwa mahali
 Mkusanyiko wa muziki
 [settings Random each match]
 Chagua Bila mpangilio ili kuchagua muziki kila mechi inapoanza.
+[settings Edge scrolling]
+Kusogeza ramani pembeni
+[settings Edge scrolling in fullscreen]
+Kusogeza ramani pembeni kwenye skrini nzima
+[settings Edge scrolling in windowed mode]
+Kusogeza ramani pembeni katika dirisha
+[settings Move the game and editor maps when the mouse reaches the window edge.]
+Sogeza ramani za mchezo na kihariri kishale cha kipanya kinapofika pembeni mwa dirisha.
+[hub finish in browser, game continues]
+Kamilisha kuingia katika kivinjari chako. Ukimaliza, mchezo utaendelea wenyewe.
+[hub browser did not open]
+Kivinjari chako hakikufunguka. Fungua ukurasa wa kuingia ili uendelee.
+[hub compare code %0]
+Ukurasa ukiomba, hakikisha unaonyesha %0.
+[hub code copied]
+Msimbo umenakiliwa
+[settings Finish in your browser. The game continues by itself.]
+Malizia katika kivinjari chako. Mchezo utaendelea wenyewe.
 [AI Library]
 Maktaba ya AI
 [Authoring guide]
@@ -5548,14 +5548,6 @@ Weka kikomo cha kuchora katika programu nzima. Thamani ndogo hupunguza kazi ya k
 Barafu
 [road]
 Njia nyembamba
-[experiment ice-terrain]
-Ardhi ya barafu
-[experiment ice-terrain help]
-Huongeza barafu katika kihariri cha ramani. Viumbe wa ardhini huenda kwa nusu kasi na kupoteza pointi moja ya afya kila hatua 32 wanapobaki humo. Barafu haiwezi kuwa na majengo au rasilimali.
-[experiment road-terrain]
-Ardhi ya vijia
-[experiment road-terrain help]
-Huongeza vijia vilivyochakaa katika kihariri cha ramani. Viumbe wa ardhini huenda kwa kasi mara mbili. Vijia vinaruhusu majengo lakini si rasilimali. Wanaoruka hawaathiriki.
 [experiment markets-v2]
 Masoko V2
 [experiment markets-v2 help]
@@ -5702,42 +5694,6 @@ Ardhi yenye rutuba
 Maji ya kina kirefu
 [terrain group void]
 Pengo
-[experiment obstacle-terrain]
-Ardhi ya vizuizi
-[experiment obstacle-terrain help]
-Huongeza majabali, ua wa mimea na vichaka katika kihariri cha ramani. Viumbe wa ardhini hawawezi kuvivuka na vinazuia makombora; wanaoruka hupita juu. Haviruhusu majengo wala rasilimali.
-[experiment ridge-terrain]
-Ardhi ya miinuko ya miamba
-[experiment ridge-terrain help]
-Huongeza miinuko na miamba inayojitokeza katika kihariri cha ramani. Viumbe wa ardhini hawawezi kuvivuka, lakini minara hurusha risasi juu yake na wanaoruka hupita. Haviruhusu majengo wala rasilimali.
-[experiment barren-terrain]
-Ardhi kame
-[experiment barren-terrain help]
-Huongeza udongo, udongo wa mfinyanzi, kokoto na nyanda za maua katika kihariri cha ramani. Majengo yanaweza kuwekwa humo, hakuna kinachoota juu au kando yake, na haihesabiwi kuwa ufukwe.
-[experiment rough-terrain]
-Ardhi korofi
-[experiment rough-terrain help]
-Huongeza matope, vinamasi, theluji nzito na vifusi vya mawe katika kihariri cha ramani. Viumbe wa ardhini huenda kwa takribani theluthi mbili ya kasi. Ardhi korofi hairuhusu majengo wala rasilimali.
-[experiment path-terrain]
-Ardhi ya njia
-[experiment path-terrain help]
-Huongeza njia za udongo na njia za mbao katika kihariri cha ramani. Kama vijia, viumbe wa ardhini huenda kwa kasi mara mbili na majengo yanaruhusiwa, lakini hakuna kinachoota.
-[experiment lava-terrain]
-Ardhi ya lava
-[experiment lava-terrain help]
-Huongeza lava na maeneo ya makaa yanayowaka katika kihariri cha ramani. Viumbe wa ardhini hawawezi kuingia; wanaoruka wakivuka hupoteza afya haraka. Makombora hupita juu.
-[experiment fertile-terrain]
-Ardhi yenye rutuba
-[experiment fertile-terrain help]
-Huongeza udongo tifutifu, kuvumwani na nyanda za maua ya masika katika kihariri cha ramani. Huruhusu majengo na mazao, na hunyweshea ardhi iliyo karibu zaidi ya maji yanavyofanya.
-[experiment deep-water-terrain]
-Maji ya kina kirefu
-[experiment deep-water-terrain help]
-Huongeza maji marefu na meusi katika kihariri cha ramani. Waogeleaji huyavuka polepole zaidi, mwani hauoti humo, na bado hunyweshea mashamba ya karibu.
-[experiment void-terrain]
-Ardhi ya mapengo
-[experiment void-terrain help]
-Huongeza mashimo na makorongo katika kihariri cha ramani. Hakuna kinachoweza kuyavuka, hata wanaoruka, na makombora hukoma kwenye ukingo wake.
 [terrain group custom]
 Maalumu
 [terrain group classic]
@@ -5770,8 +5726,6 @@ Huumiza wanaoruka
 Chagua brashi. Aina zote katika kila kundi hufuata seti moja ya kanuni na hutofautiana kwa mwonekano tu.
 [terrain rule algae grow]
 Mwani huota
-[terrain palette experiments hint]
-Chagua brashi. Makundi zaidi ya ardhi huonekana hapa majaribio yake yakiwezeshwa katika Mipangilio > Majaribio.
 [brush valid on %0]
 Inafaa kwenye: %0
 [brush valid nowhere]
@@ -6028,6 +5982,8 @@ Discord imefunguliwa. Unaweza kurudi kwenye mchezo wakati wowote.
 Discord haikuweza kufunguliwa. Nakili kiungo cha mwaliko na ukifungue kwenye kivinjari chako.
 [discord link copied]
 Kiungo cha mwaliko kimenakiliwa.
+[discord copy failed]
+Kiungo hakikuweza kunakiliwa. Chagua mwaliko ulio juu ili ukinakili mwenyewe.
 [settings CPU automatic]
 CPU kiotomatiki
 [settings Scalar]
@@ -6100,8 +6056,6 @@ Chaguo lako halikuweza kuhifadhiwa. Tafadhali jaribu tena.
 Mkono wa kushoto
 [Right hand]
 Mkono wa kulia
-[discord copy failed]
-Kiungo hakikuweza kunakiliwa. Chagua mwaliko ulio juu ili ukinakili mwenyewe.
 [stat ground movement]
 Mwendo wa ardhini
 [stat ground movement about]
@@ -6488,6 +6442,8 @@ Fungua Bendera, chagua Bendera ya vita, iweke juu ya Kiota cha adui mashariki mw
 Onyesha eneo lengwa
 [intro scout destination]
 Chunguza hapa
+[intro attack destination]
+Shambulia hapa
 [intro compact scout]
 Bendera → Bendera ya uchunguzi. Weka juu ya mawe; pangia mgunduzi 1.
 [intro compact build]
@@ -6816,8 +6772,6 @@ Bendera → Ulinzi. Paka miraba 4; subiri mashujaa 2 wafike.
 Shikilia eneo la ulinzi. Endelea kupelekea nyumba za wageni mahitaji.
 [lesson defensive-tactics counterattack compact]
 Bendera ya vita → Kiota cha adui. Omba mashujaa 3; nusukipenyo ≤4.
-[intro attack destination]
-Shambulia hapa
 [Grassland]
 Mbuga ya nyasi
 [Kopjes]
@@ -6826,7 +6780,7 @@ Vilima vya miamba
 Njia za wanyama
 [Fish amount]
 Kiasi cha samaki
-[scenario messages]
-Ujumbe ▸
 [Camp-site amount]
 Idadi ya maeneo ya kambi
+[scenario messages]
+Ujumbe ▸
