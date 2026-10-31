@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-#include <doctest/doctest.h>
+#include "doctest.h"
 #include <GameplayRecording.h>
 #include <filesystem>
 
