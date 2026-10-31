@@ -1,0 +1,460 @@
+{
+  "prHead": "9b2162f3bf346cd7f115ab25ba3c1d09d0ad51c7",
+  "baseline": "f3a60235b0afa8bf5df1634b65fb1ee8d83d0ab2",
+  "hostedMergeRevision": "2eac63297eaf63579559a9e6e03fb7949a92f9bf",
+  "hostedMergeTree": "dddc6052403f959c9342dd34cacf8f8e74951ba8",
+  "headTree": "dddc6052403f959c9342dd34cacf8f8e74951ba8",
+  "baselineGateChange": "cbc20d2aabc364f7727439659001d29ffc741c25",
+  "sourceBlobs": {
+    "src/team/IntrusivePopulationSaveTest.cpp": {
+      "head": "49638fa7d8b3fba11e292a0372b68cfc7f1ce996",
+      "baseline": "49638fa7d8b3fba11e292a0372b68cfc7f1ce996"
+    },
+    "src/building/BuildingStockTest.cpp": {
+      "head": "e7343ac21d5f9aa9c0ff436ac050785ea05d921c",
+      "baseline": "e7343ac21d5f9aa9c0ff436ac050785ea05d921c"
+    },
+    "src/team/stats/TeamStatsSaveHarness.cpp": {
+      "head": "72ce163e15b061cf3110a5056bf1660a5b6474a7",
+      "baseline": "72ce163e15b061cf3110a5056bf1660a5b6474a7"
+    },
+    "src/map/TerrainResourcesHarness.cpp": {
+      "head": "2a3145e6d969acf5e516395e8748749539b36732",
+      "baseline": "2a3145e6d969acf5e516395e8748749539b36732"
+    },
+    "test/support/LegacyPopulationOutput.h": {
+      "head": "e997be62338a1112e618a648c5193602c66d9258",
+      "baseline": "e997be62338a1112e618a648c5193602c66d9258"
+    },
+    "test/fixtures/resources/seeded-compositions-units.trace": {
+      "head": "858f0572c35856b24b886d37f9ae47ad59d59a62",
+      "baseline": "858f0572c35856b24b886d37f9ae47ad59d59a62"
+    },
+    "src/app/Version.h": {
+      "head": "d1d608c3c93ccba9265d61bd53dae68c8489f747",
+      "baseline": "d1d608c3c93ccba9265d61bd53dae68c8489f747"
+    },
+    "src/app/FileFormatVersions.h": {
+      "head": "87eb5036531b4dcea94fd38e6674183a966a1d83",
+      "baseline": "87eb5036531b4dcea94fd38e6674183a966a1d83"
+    },
+    "src/map/io/MapHeader.cpp": {
+      "head": "125bb0a45c6eb3e67508899abc0b9416bf8e9465",
+      "baseline": "125bb0a45c6eb3e67508899abc0b9416bf8e9465"
+    },
+    "src/game/Game_io.cpp": {
+      "head": "c080da6b46ab50b9fbb283043bf614dba512fe39",
+      "baseline": "c080da6b46ab50b9fbb283043bf614dba512fe39"
+    },
+    "test/support/EngineFixtures.cpp": {
+      "head": "6d0dc35a72ee80f475db10f0fe46d01ea82ba7e7",
+      "baseline": "6d0dc35a72ee80f475db10f0fe46d01ea82ba7e7"
+    },
+    "src/map/gradient/DelayedGradientPublicationHarness.cpp": {
+      "head": "69d297e16815d75ad4abc7905cb8750a00edb7ff",
+      "baseline": "69d297e16815d75ad4abc7905cb8750a00edb7ff"
+    },
+    "src/scripting/javascript/ScriptCompatibilityTest.cpp": {
+      "head": "0380c5e70fd9bf09c494544fd7bf68f07ca63336",
+      "baseline": "0380c5e70fd9bf09c494544fd7bf68f07ca63336"
+    }
+  },
+  "jobs": {
+    "gcc11-shard1": {
+      "id": "124676613616",
+      "url": "https://github.com/Globulation2/glob2/actions/runs/41244011872/job/124676613616",
+      "cases": 478,
+      "failures": [
+        {
+          "case": {
+            "classname": "IntrusivePopulationSave",
+            "name": "formats164 through166 preserve population encoding and scheduler boundaries",
+            "time": "0.179488",
+            "status": "run"
+          },
+          "message": {
+            "message": "false",
+            "type": "REQUIRE"
+          },
+          "details": "src/team/IntrusivePopulationSaveTest.cpp:127:\nREQUIRE( loadPopulation(restored.game,bytes,false) ) is NOT correct!\n  values: REQUIRE( false )\n  logged: version := 164"
+        },
+        {
+          "case": {
+            "classname": "RuntimeResources",
+            "name": "frozen seeded resource compositions preserve invariants and exact simulation continuation [golden]",
+            "time": "0.760939",
+            "status": "run"
+          },
+          "message": {
+            "message": "golden mismatch against resources/seeded-compositions-units.trace at line 1   expected: 410362371 0 3456291229 b84bf391a9f0665bf93d6a35c0f3079ce5e59e1808239055817c84592b90e9e1   actual:   410362371 0 3464679837 b84bf391a9f0665bf93d6a35c0f3079ce5e59e1808239055817c84592b90e9e1",
+            "type": "FAIL"
+          },
+          "details": "test/support/Glob2Test.cpp:205:\ngolden mismatch against resources/seeded-compositions-units.trace at line 1\n  expected: 410362371 0 3456291229 b84bf391a9f0665bf93d6a35c0f3079ce5e59e1808239055817c84592b90e9e1\n  actual:   410362371 0 3464679837 b84bf391a9f0665bf93d6a35c0f3079ce5e59e1808239055817c84592b90e9e1"
+        },
+        {
+          "case": {
+            "classname": "TeamStatsSave",
+            "name": "32 sampling phases; ring wrap; repeated loads; text streams and corruption controls [save-format]",
+            "time": "5.0132",
+            "status": "run"
+          },
+          "message": {
+            "message": "false",
+            "type": "REQUIRE"
+          },
+          "details": "src/team/stats/TeamStatsSaveHarness.cpp:46:\nREQUIRE( static_cast<bool>(ok) ) is NOT correct!\n  values: REQUIRE( false )\n  logged: integrated simulation uses current replay and network gates"
+        }
+      ],
+      "artifact": {
+        "id": "13060667763",
+        "name": "native-test-results-ubuntu-22.04-1",
+        "size_in_bytes": 105763844,
+        "url": "https://github.com/Globulation2/glob2/actions/runs/41244011872/artifacts/13060667763",
+        "workflow_run": {
+          "id": 41244011872,
+          "repository_id": 230307566,
+          "head_repository_id": 230307566,
+          "head_branch": "codex/recording-webm-codecs",
+          "head_sha": "9b2162f3bf346cd7f115ab25ba3c1d09d0ad51c7"
+        },
+        "bytesFetched": 232227,
+        "members": [
+          "RuntimeResources/frozen_seeded_resource_compositions_preserve_invariants_and_exact_simulation_continuation_golden/seeded-compositions.trace",
+          "engine-junit.xml"
+        ]
+      }
+    },
+    "gcc13-shard3": {
+      "id": "124677136993",
+      "url": "https://github.com/Globulation2/glob2/actions/runs/41244011872/job/124677136993",
+      "cases": 478,
+      "failures": [
+        {
+          "case": {
+            "classname": "BuildingStock",
+            "name": "canceled entering services preserve ground and air occupancy across resave [save-format][artifacts]",
+            "time": "0.149445",
+            "status": "run"
+          },
+          "message": {
+            "message": "false",
+            "type": "REQUIRE"
+          },
+          "details": "src/building/BuildingStockTest.cpp:172:\nREQUIRE( loadGame(resumed.game,saved) ) is NOT correct!\n  values: REQUIRE( false )\n  logged: version := 159\n          unitType := 0"
+        }
+      ],
+      "artifact": {
+        "id": "13060980506",
+        "name": "native-test-results-ubuntu-24.04-3",
+        "size_in_bytes": 233851506,
+        "url": "https://github.com/Globulation2/glob2/actions/runs/41244011872/artifacts/13060980506",
+        "workflow_run": {
+          "id": 41244011872,
+          "repository_id": 230307566,
+          "head_repository_id": 230307566,
+          "head_branch": "codex/recording-webm-codecs",
+          "head_sha": "9b2162f3bf346cd7f115ab25ba3c1d09d0ad51c7"
+        },
+        "bytesFetched": 200121,
+        "members": [
+          "engine-junit.xml"
+        ]
+      }
+    },
+    "gcc11-shard3": {
+      "id": "124676613618",
+      "url": "https://github.com/Globulation2/glob2/actions/runs/41244011872/job/124676613618",
+      "cases": 478,
+      "failures": [
+        {
+          "case": {
+            "classname": "BuildingStock",
+            "name": "canceled entering services preserve ground and air occupancy across resave [save-format][artifacts]",
+            "time": "0.233913",
+            "status": "run"
+          },
+          "message": {
+            "message": "false",
+            "type": "REQUIRE"
+          },
+          "details": "src/building/BuildingStockTest.cpp:172:\nREQUIRE( loadGame(resumed.game,saved) ) is NOT correct!\n  values: REQUIRE( false )\n  logged: version := 159\n          unitType := 0"
+        }
+      ],
+      "artifact": {
+        "id": "13061056003",
+        "name": "native-test-results-ubuntu-22.04-3",
+        "size_in_bytes": 234275428,
+        "url": "https://github.com/Globulation2/glob2/actions/runs/41244011872/artifacts/13061056003",
+        "workflow_run": {
+          "id": 41244011872,
+          "repository_id": 230307566,
+          "head_repository_id": 230307566,
+          "head_branch": "codex/recording-webm-codecs",
+          "head_sha": "9b2162f3bf346cd7f115ab25ba3c1d09d0ad51c7"
+        },
+        "bytesFetched": 200183,
+        "members": [
+          "engine-junit.xml"
+        ]
+      }
+    },
+    "gcc11-shard4": {
+      "id": "124676613604",
+      "url": "https://github.com/Globulation2/glob2/actions/runs/41244011872/job/124676613604",
+      "cases": 478,
+      "failures": [
+        {
+          "case": {
+            "classname": "BuildingStock",
+            "name": "canceled inside services reset their timer and resume terrain and area effects [save-format][artifacts]",
+            "time": "0.289052",
+            "status": "run"
+          },
+          "message": {
+            "message": "false",
+            "type": "REQUIRE"
+          },
+          "details": "src/building/BuildingStockTest.cpp:226:\nREQUIRE( loadGame(resumed.game,saved) ) is NOT correct!\n  values: REQUIRE( false )\n  logged: version := 159\n          unitType := 0"
+        },
+        {
+          "case": {
+            "classname": "DelayedGradientPublication",
+            "name": "private174 migration profile is explicit and does not replace published layouts",
+            "time": "0.000252",
+            "status": "run"
+          },
+          "message": {
+            "message": "exception"
+          },
+          "details": "Incomplete binary field: count: iostream error"
+        },
+        {
+          "case": {
+            "classname": "IntrusivePopulationSave",
+            "name": "format166 pending jobs and append order survive an immediate upgrade before observation",
+            "time": "0.203532",
+            "status": "run"
+          },
+          "message": {
+            "message": "false",
+            "type": "REQUIRE"
+          },
+          "details": "src/team/IntrusivePopulationSaveTest.cpp:203:\nREQUIRE( loadPopulation(direct.game,historical,false) ) is NOT correct!\n  values: REQUIRE( false )\n  logged: workers := 1"
+        },
+        {
+          "case": {
+            "classname": "JavaScriptCompatibility",
+            "name": "Current simulation rejects earlier replays and enforces acceptance boundaries",
+            "time": "0.384098",
+            "status": "run"
+          },
+          "message": {
+            "message": "187 == 186",
+            "type": "CHECK"
+          },
+          "details": "src/scripting/javascript/ScriptCompatibilityTest.cpp:139:\nCHECK( REPLAY_MINIMUM_VERSION_MINOR == 186 ) is NOT correct!\n  values: CHECK( 187 == 186 )"
+        },
+        {
+          "case": {
+            "classname": "JavaScriptCompatibility",
+            "name": "Current simulation rejects earlier replays and enforces acceptance boundaries",
+            "time": "0.384098",
+            "status": "run"
+          },
+          "message": {
+            "message": "187 == 186",
+            "type": "CHECK"
+          },
+          "details": "src/scripting/javascript/ScriptCompatibilityTest.cpp:140:\nCHECK( 187 == 186 ) is NOT correct!\n  values: CHECK( 187 == 186 )"
+        },
+        {
+          "case": {
+            "classname": "JavaScriptCompatibility",
+            "name": "Current simulation rejects earlier replays and enforces acceptance boundaries",
+            "time": "0.384098",
+            "status": "run"
+          },
+          "message": {
+            "message": "73 == 72",
+            "type": "CHECK"
+          },
+          "details": "src/scripting/javascript/ScriptCompatibilityTest.cpp:142:\nCHECK( 73 == 72 ) is NOT correct!\n  values: CHECK( 73 == 72 )"
+        }
+      ],
+      "artifact": {
+        "id": "13061370536",
+        "name": "native-test-results-ubuntu-22.04-4",
+        "size_in_bytes": 129628453,
+        "url": "https://github.com/Globulation2/glob2/actions/runs/41244011872/artifacts/13061370536",
+        "workflow_run": {
+          "id": 41244011872,
+          "repository_id": 230307566,
+          "head_repository_id": 230307566,
+          "head_branch": "codex/recording-webm-codecs",
+          "head_sha": "9b2162f3bf346cd7f115ab25ba3c1d09d0ad51c7"
+        },
+        "bytesFetched": 204800,
+        "members": [
+          "engine-junit.xml",
+          "unit-junit.xml"
+        ]
+      },
+      "unitCases": 1258,
+      "unitFailures": 0,
+      "recordingUnitCases": [
+        {
+          "classname": "GameplayRecording",
+          "name": "capture context restores active match identity after settings [recording]",
+          "time": "0.00122",
+          "status": "run"
+        },
+        {
+          "classname": "GameplayRecording",
+          "name": "asynchronous admission freezes context rejects stale generations and counts cancellation [recording]",
+          "time": "0.000577",
+          "status": "run"
+        },
+        {
+          "classname": "GameplayRecording",
+          "name": "producer failure remains failed and a publication collision preserves foreign files [recording]",
+          "time": "0.024784",
+          "status": "run"
+        },
+        {
+          "classname": "GameplayRecording",
+          "name": "split callback audio survives as consecutive decoded PCM [recording][artifacts]",
+          "time": "0",
+          "status": "run"
+        },
+        {
+          "classname": "GameplayRecording",
+          "name": "recording rejects invalid options and never overwrites output",
+          "time": "0.000273",
+          "status": "run"
+        },
+        {
+          "classname": "GameplayRecording",
+          "name": "recording encodes audio, odd resized frames, and semantic chapters [recording]",
+          "time": "1.37056",
+          "status": "run"
+        },
+        {
+          "classname": "GameplayRecording",
+          "name": "stopping a recording before its first frame completes without hanging",
+          "time": "0.000391",
+          "status": "run"
+        },
+        {
+          "classname": "RecordingSession",
+          "name": "selected profile includes only its recording encoders",
+          "time": "0",
+          "status": "run"
+        },
+        {
+          "classname": "RecordingSession",
+          "name": "AV1 writer rejects audio and finalization until its sequence header arrives",
+          "time": "0",
+          "status": "run"
+        },
+        {
+          "classname": "RecordingSession",
+          "name": "session index creation preserves an existing recording",
+          "time": "0.00022",
+          "status": "run"
+        },
+        {
+          "classname": "RecordingSession",
+          "name": "control events wait for delayed video chapters without changing their timestamps",
+          "time": "0.009797",
+          "status": "run"
+        },
+        {
+          "classname": "RecordingSession",
+          "name": "resize carries future controls to the new segment and journals one transition",
+          "time": "0.010219",
+          "status": "run"
+        },
+        {
+          "classname": "RecordingSession",
+          "name": "stop rejects events beyond the final video interval and retains diagnostics",
+          "time": "0.00347",
+          "status": "run"
+        },
+        {
+          "classname": "RecordingSession",
+          "name": "journal backlog is bounded and failure retains queued diagnostic events",
+          "time": "0.005064",
+          "status": "run"
+        },
+        {
+          "classname": "RecordingSession",
+          "name": "resize coalescing preserves full resolution and numbers completed segments",
+          "time": "0.011843",
+          "status": "run"
+        },
+        {
+          "classname": "RecordingSession",
+          "name": "worker normalizes capture color layout and bottom-up orientation",
+          "time": "0.004029",
+          "status": "run"
+        },
+        {
+          "classname": "RecordingSession",
+          "name": "asynchronous encoder flush is polled before publishing the output",
+          "time": "0.004096",
+          "status": "run"
+        },
+        {
+          "classname": "RecordingSession",
+          "name": "long scheduling gaps preserve time without an encoding catch-up burst",
+          "time": "0.00528",
+          "status": "run"
+        },
+        {
+          "classname": "RecordingSession",
+          "name": "device failure closes its stream and starts a software segment",
+          "time": "0.010678",
+          "status": "run"
+        },
+        {
+          "classname": "RecordingSession",
+          "name": "hardware flush failure during resize continues with a software segment",
+          "time": "0.011769",
+          "status": "run"
+        },
+        {
+          "classname": "RecordingSession",
+          "name": "capture pressure rejects input within the three-frame budget",
+          "time": "0.004413",
+          "status": "run"
+        },
+        {
+          "classname": "RecordingSession",
+          "name": "interrupted fragmented media recovers without a finalized trailer",
+          "time": "0.043161",
+          "status": "run"
+        },
+        {
+          "classname": "RecordingSession",
+          "name": "legacy 44.1 kHz recording recovery preserves its audio rate [recording][artifacts]",
+          "time": "0",
+          "status": "run"
+        },
+        {
+          "classname": "RecordingSession",
+          "name": "publication failure retains media that can be recovered without overwriting",
+          "time": "0.00583",
+          "status": "run"
+        }
+      ]
+    }
+  },
+  "resourceTraceComparison": {
+    "expectedLines": 150,
+    "actualLines": 150,
+    "sameSeedTickAndRngEveryLine": true,
+    "checksumXorValues": [
+      "0x800000"
+    ]
+  }
+}

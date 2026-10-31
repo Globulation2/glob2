@@ -1,0 +1,17 @@
+{
+  "id": "13060980506",
+  "name": "native-test-results-ubuntu-24.04-3",
+  "size_in_bytes": 233851506,
+  "url": "https://github.com/Globulation2/glob2/actions/runs/41244011872/artifacts/13060980506",
+  "workflow_run": {
+    "id": 41244011872,
+    "repository_id": 230307566,
+    "head_repository_id": 230307566,
+    "head_branch": "codex/recording-webm-codecs",
+    "head_sha": "9b2162f3bf346cd7f115ab25ba3c1d09d0ad51c7"
+  },
+  "bytesFetched": 200121,
+  "members": [
+    "engine-junit.xml"
+  ]
+}

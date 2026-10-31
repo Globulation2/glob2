@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+  <testsuite name="/home/runner/work/glob2/glob2/build/linux/client/release/test/glob2-unit-tests" errors="0" failures="0" tests="262" time="0.253927" timestamp="2026-10-31T22:31:36Z" doctest_version="2.4.11">
+    <testcase classname="src/scripting/javascript/ScriptNumericTest.cpp" name="JavaScript shared numeric corpus" time="0.057158" status="run"/>
+    <testcase classname="src/scripting/javascript/ScriptNumericTest.cpp" name="JavaScript shared saved global number corpus" time="0.003798" status="run"/>
+    <testcase classname="src/scripting/javascript/ScriptNumericTest.cpp" name="JavaScript caught host resource failures remain fatal" time="0.001368" status="run"/>
+    <testcase classname="src/scripting/javascript/ScriptNumericTest.cpp" name="JavaScript initialization rejects unsupported rounding mode" time="0" status="run"/>
+    <testcase classname="src/scripting/javascript/ScriptRuntimeTest.cpp" name="JavaScript persistent value encoding and Unicode" time="0.001116" status="run"/>
+    <testcase classname="src/scripting/javascript/ScriptRuntimeTest.cpp" name="JavaScript legacy draft callback argument" time="0.001099" status="run"/>
+    <testcase classname="src/scripting/javascript/ScriptRuntimeTest.cpp" name="JavaScript pinned Math bits and numeric edges" time="0.00118" status="run"/>
+    <testcase classname="src/scripting/javascript/ScriptRuntimeTest.cpp" name="JavaScript restricted capabilities and invalid values" time="0.01742" status="run"/>
+    <testcase classname="src/scripting/javascript/ScriptRuntimeTest.cpp" name="JavaScript generated native work is bounded" time="0.10838" status="run"/>
+    <testcase classname="src/scripting/javascript/ScriptRuntimeTest.cpp" name="JavaScript native tree bounds and parser depth" time="0.029479" status="run"/>
+    <testcase classname="src/scripting/javascript/ScriptRuntimeTest.cpp" name="JavaScript fatal native allocation is sticky" time="0.000239" status="run"/>
+    <testcase classname="src/scripting/javascript/ScriptRuntimeTest.cpp" name="JavaScript unavailable capabilities" time="0.000586" status="run"/>
+    <testcase classname="src/scripting/javascript/ScriptRuntimeTest.cpp" name="JavaScript hypot ARM64 and x86-64 regression" time="0.000582" status="run"/>
+    <testcase classname="src/scripting/javascript/ScriptRuntimeTest.cpp" name="JavaScript globals persist and restore without an explicit state object" time="0.001204" status="run"/>
+    <testcase classname="src/scripting/javascript/ScriptRuntimeTest.cpp" name="JavaScript main restores aliases cycles undefined and numeric globals" time="0.00241" status="run"/>
+    <testcase classname="src/scripting/javascript/ScriptRuntimeTest.cpp" name="JavaScript rejected callbacks roll back global mutations" time="0.001697" status="run"/>
+    <testcase classname="src/scripting/javascript/ScriptRuntimeTest.cpp" name="JavaScript global object descriptors survive save and restore" time="0.001789" status="run"/>
+    <testcase classname="src/scripting/javascript/ScriptRuntimeTest.cpp" name="JavaScript saved NaNs have canonical bits across architectures" time="0.002354" status="run"/>
+    <testcase classname="src/scripting/javascript/ScriptRuntimeTest.cpp" name="JavaScript unsaveable global values fail explicitly" time="0.005005" status="run"/>
+    <testcase classname="src/scripting/javascript/ScriptRuntimeTest.cpp" name="JavaScript persistent contexts can migrate between serial workers" time="0.001262" status="run"/>
+    <testcase classname="src/scripting/javascript/ScriptRuntimeTest.cpp" name="JavaScript malformed automatic global snapshots are rejected" time="0.002185" status="run"/>
+    <testcase classname="src/scripting/javascript/ScriptRuntimeTest.cpp" name="JavaScript profile two metadata and bundled export aliases" time="0.005357" status="run"/>
+    <testcase classname="src/scripting/javascript/ScriptRuntimeTest.cpp" name="JavaScript managed properties coalesce and reject persistent handles" time="0.001246" status="run"/>
+    <testcase classname="src/scripting/javascript/ScriptRuntimeTest.cpp" name="JavaScript metadata cannot mutate game globals" time="0.001657" status="run"/>
+    <testcase classname="src/scripting/javascript/ScriptRuntimeTest.cpp" name="JavaScript repository starter scripts staff capabilities and respect assignment caps" time="0.005356" status="run"/>
+  </testsuite>
+</testsuites>

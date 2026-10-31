@@ -1,0 +1,192 @@
+{
+  "head": "9b2162f3bf346cd7f115ab25ba3c1d09d0ad51c7",
+  "baseline": "e67cba82e7ff1738efdfc65bf3a7c47dc8f7dcd1",
+  "upstreamGateChange": "cbc20d2aab",
+  "matchingSourceBlobs": {
+    "src/scripting/javascript/ScriptCompatibilityTest.cpp": {
+      "head": "0380c5e70fd9bf09c494544fd7bf68f07ca63336",
+      "baseline": "0380c5e70fd9bf09c494544fd7bf68f07ca63336"
+    },
+    "src/app/Version.h": {
+      "head": "d1d608c3c93ccba9265d61bd53dae68c8489f747",
+      "baseline": "d1d608c3c93ccba9265d61bd53dae68c8489f747"
+    },
+    "src/replay/ReplayReader.h": {
+      "head": "9d5dc9995a1c642369ff4e15fc0e9bd3d3b09fea",
+      "baseline": "9d5dc9995a1c642369ff4e15fc0e9bd3d3b09fea"
+    }
+  },
+  "artifacts": {
+    "gcc11": {
+      "id": "13060322347",
+      "url": "https://github.com/Globulation2/glob2/actions/runs/41244011872/artifacts/13060322347",
+      "failures": [
+        {
+          "case": {
+            "classname": "src/scripting/javascript/ScriptCompatibilityTest.cpp",
+            "name": "Current simulation rejects earlier replays and enforces acceptance boundaries",
+            "time": "0.214081",
+            "status": "run"
+          },
+          "message": {
+            "message": "187 == 186",
+            "type": "CHECK"
+          },
+          "details": "src/scripting/javascript/ScriptCompatibilityTest.cpp:139:\nCHECK( REPLAY_MINIMUM_VERSION_MINOR == 186 ) is NOT correct!\n  values: CHECK( 187 == 186 )"
+        },
+        {
+          "case": {
+            "classname": "src/scripting/javascript/ScriptCompatibilityTest.cpp",
+            "name": "Current simulation rejects earlier replays and enforces acceptance boundaries",
+            "time": "0.214081",
+            "status": "run"
+          },
+          "message": {
+            "message": "187 == 186",
+            "type": "CHECK"
+          },
+          "details": "src/scripting/javascript/ScriptCompatibilityTest.cpp:140:\nCHECK( 187 == 186 ) is NOT correct!\n  values: CHECK( 187 == 186 )"
+        },
+        {
+          "case": {
+            "classname": "src/scripting/javascript/ScriptCompatibilityTest.cpp",
+            "name": "Current simulation rejects earlier replays and enforces acceptance boundaries",
+            "time": "0.214081",
+            "status": "run"
+          },
+          "message": {
+            "message": "73 == 72",
+            "type": "CHECK"
+          },
+          "details": "src/scripting/javascript/ScriptCompatibilityTest.cpp:142:\nCHECK( 73 == 72 ) is NOT correct!\n  values: CHECK( 73 == 72 )"
+        }
+      ],
+      "tests": [
+        {
+          "binary": "glob2-unit-tests",
+          "exitCode": 0,
+          "provenanceIssues": []
+        },
+        {
+          "binary": "glob2-engine-tests",
+          "exitCode": 1,
+          "provenanceIssues": []
+        }
+      ]
+    },
+    "clang": {
+      "id": "13059684162",
+      "url": "https://github.com/Globulation2/glob2/actions/runs/41244011872/artifacts/13059684162",
+      "failures": [
+        {
+          "case": {
+            "classname": "src/scripting/javascript/ScriptCompatibilityTest.cpp",
+            "name": "Current simulation rejects earlier replays and enforces acceptance boundaries",
+            "time": "0.22594",
+            "status": "run"
+          },
+          "message": {
+            "message": "187 == 186",
+            "type": "CHECK"
+          },
+          "details": "src/scripting/javascript/ScriptCompatibilityTest.cpp:139:\nCHECK( REPLAY_MINIMUM_VERSION_MINOR == 186 ) is NOT correct!\n  values: CHECK( 187 == 186 )"
+        },
+        {
+          "case": {
+            "classname": "src/scripting/javascript/ScriptCompatibilityTest.cpp",
+            "name": "Current simulation rejects earlier replays and enforces acceptance boundaries",
+            "time": "0.22594",
+            "status": "run"
+          },
+          "message": {
+            "message": "187 == 186",
+            "type": "CHECK"
+          },
+          "details": "src/scripting/javascript/ScriptCompatibilityTest.cpp:140:\nCHECK( 187 == 186 ) is NOT correct!\n  values: CHECK( 187 == 186 )"
+        },
+        {
+          "case": {
+            "classname": "src/scripting/javascript/ScriptCompatibilityTest.cpp",
+            "name": "Current simulation rejects earlier replays and enforces acceptance boundaries",
+            "time": "0.22594",
+            "status": "run"
+          },
+          "message": {
+            "message": "73 == 72",
+            "type": "CHECK"
+          },
+          "details": "src/scripting/javascript/ScriptCompatibilityTest.cpp:142:\nCHECK( 73 == 72 ) is NOT correct!\n  values: CHECK( 73 == 72 )"
+        }
+      ],
+      "tests": [
+        {
+          "binary": "glob2-unit-tests",
+          "exitCode": 0,
+          "provenanceIssues": []
+        },
+        {
+          "binary": "glob2-engine-tests",
+          "exitCode": 1,
+          "provenanceIssues": []
+        }
+      ]
+    },
+    "windows": {
+      "id": "13060825411",
+      "url": "https://github.com/Globulation2/glob2/actions/runs/41244011872/artifacts/13060825411",
+      "failures": [
+        {
+          "case": {
+            "classname": "src/scripting/javascript/ScriptCompatibilityTest.cpp",
+            "name": "Current simulation rejects earlier replays and enforces acceptance boundaries",
+            "time": "0.382467",
+            "status": "run"
+          },
+          "message": {
+            "message": "187 == 186",
+            "type": "CHECK"
+          },
+          "details": "src/scripting/javascript/ScriptCompatibilityTest.cpp:139:\nCHECK( REPLAY_MINIMUM_VERSION_MINOR == 186 ) is NOT correct!\n  values: CHECK( 187 == 186 )"
+        },
+        {
+          "case": {
+            "classname": "src/scripting/javascript/ScriptCompatibilityTest.cpp",
+            "name": "Current simulation rejects earlier replays and enforces acceptance boundaries",
+            "time": "0.382467",
+            "status": "run"
+          },
+          "message": {
+            "message": "187 == 186",
+            "type": "CHECK"
+          },
+          "details": "src/scripting/javascript/ScriptCompatibilityTest.cpp:140:\nCHECK( 187 == 186 ) is NOT correct!\n  values: CHECK( 187 == 186 )"
+        },
+        {
+          "case": {
+            "classname": "src/scripting/javascript/ScriptCompatibilityTest.cpp",
+            "name": "Current simulation rejects earlier replays and enforces acceptance boundaries",
+            "time": "0.382467",
+            "status": "run"
+          },
+          "message": {
+            "message": "73 == 72",
+            "type": "CHECK"
+          },
+          "details": "src/scripting/javascript/ScriptCompatibilityTest.cpp:142:\nCHECK( 73 == 72 ) is NOT correct!\n  values: CHECK( 73 == 72 )"
+        }
+      ],
+      "tests": [
+        {
+          "binary": "glob2-unit-tests",
+          "exitCode": 0,
+          "provenanceIssues": []
+        },
+        {
+          "binary": "glob2-engine-tests",
+          "exitCode": 1,
+          "provenanceIssues": []
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,59 @@
+{
+  "target": "linux",
+  "arch": "x86_64",
+  "video_codec": "h264",
+  "opus": null,
+  "encoders": [
+    "libx264",
+    "aac",
+    "h264_nvenc",
+    "h264_vaapi"
+  ],
+  "hardware": [
+    "--enable-ffnvcodec",
+    "--enable-nvenc",
+    "--enable-vaapi"
+  ],
+  "ffmpeg": [
+    "--disable-autodetect",
+    "--disable-everything",
+    "--disable-programs",
+    "--disable-doc",
+    "--disable-debug",
+    "--disable-network",
+    "--disable-avdevice",
+    "--disable-avfilter",
+    "--enable-static",
+    "--disable-shared",
+    "--enable-pic",
+    "--enable-encoder=libx264,aac,h264_nvenc,h264_vaapi",
+    "--enable-muxer=mp4,webm",
+    "--enable-demuxer=mov,matroska",
+    "--enable-swscale",
+    "--enable-swresample",
+    "--enable-ffnvcodec",
+    "--enable-nvenc",
+    "--enable-vaapi",
+    "--enable-gpl",
+    "--enable-libx264",
+    "--enable-pthreads"
+  ],
+  "x264": [
+    "--enable-static",
+    "--enable-pic",
+    "--disable-cli",
+    "--disable-opencl",
+    "--disable-avs",
+    "--disable-lavf",
+    "--disable-swscale",
+    "--disable-ffms",
+    "--bit-depth=8",
+    "--chroma-format=420"
+  ],
+  "wasm_vectorization": false,
+  "compiler": "cc (Ubuntu 15.2.0-16ubuntu1) 15.2.0",
+  "flags": [
+    [],
+    []
+  ]
+}

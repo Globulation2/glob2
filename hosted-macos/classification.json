@@ -1,0 +1,29 @@
+{
+  "job": 124664682983,
+  "run": 41244011872,
+  "pr_head": "9b2162f3bf346cd7f115ab25ba3c1d09d0ad51c7",
+  "tested_merge": "2eac63297eaf63579559a9e6e03fb7949a92f9bf",
+  "master_base": "e67cba82e7ff1738efdfc65bf3a7c47dc8f7dcd1",
+  "compiled": "passed",
+  "engine": {
+    "passed": 1674,
+    "failed": 12,
+    "skipped": 228
+  },
+  "unit_cases": 1169,
+  "cli_cases": 18,
+  "unchanged_baseline_files": [
+    "src/app/Version.h",
+    "src/replay/ReplayReader.h",
+    "src/app/SystemLanguageTest.cpp",
+    "src/map/io/MapHeader.cpp",
+    "src/scripting/javascript/ScriptCompatibilityTest.cpp",
+    "src/building/BuildingStockTest.cpp",
+    "src/team/IntrusivePopulationSaveTest.cpp",
+    "src/team/stats/TeamStatsSaveHarness.cpp",
+    "src/unit/UnitCustomizationTest.cpp",
+    "src/unit/EntityRandomLifecycleTest.cpp",
+    "test/fixtures/resources/seeded-compositions-units.trace"
+  ],
+  "baseline_comparison_exit": 0
+}

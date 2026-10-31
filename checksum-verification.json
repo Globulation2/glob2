@@ -1,0 +1,41 @@
+{
+  "h264": [
+    {
+      "file": "GameplayRecording.Integration/production_presentation_records_menus_and_gameplay_without_changing_per-tick_state_display_artifacts_recording/per-tick-checksums.csv",
+      "ticks": 60,
+      "allMatch": true
+    },
+    {
+      "baseline": "GameplayRecording.Integration/threaded_scene_recording_preserves_baseline_per-tick_checksums_display_artifacts_recording/threaded-baseline.replay.checksums",
+      "recording": "GameplayRecording.Integration/threaded_scene_recording_preserves_baseline_per-tick_checksums_display_artifacts_recording/threaded-recording.replay.checksums",
+      "identicalBytes": true,
+      "sha256": "2a362d88ad2e3d096a246357498fe8a7259698ce33781ee4d530785a320b2a5d"
+    }
+  ],
+  "vp9": [
+    {
+      "file": "GameplayRecording.Integration/production_presentation_records_menus_and_gameplay_without_changing_per-tick_state_display_artifacts_recording/per-tick-checksums.csv",
+      "ticks": 60,
+      "allMatch": true
+    },
+    {
+      "baseline": "GameplayRecording.Integration/threaded_scene_recording_preserves_baseline_per-tick_checksums_display_artifacts_recording/threaded-baseline.replay.checksums",
+      "recording": "GameplayRecording.Integration/threaded_scene_recording_preserves_baseline_per-tick_checksums_display_artifacts_recording/threaded-recording.replay.checksums",
+      "identicalBytes": true,
+      "sha256": "2a362d88ad2e3d096a246357498fe8a7259698ce33781ee4d530785a320b2a5d"
+    }
+  ],
+  "av1": [
+    {
+      "file": "GameplayRecording.Integration/production_presentation_records_menus_and_gameplay_without_changing_per-tick_state_display_artifacts_recording/per-tick-checksums.csv",
+      "ticks": 60,
+      "allMatch": true
+    },
+    {
+      "baseline": "GameplayRecording.Integration/threaded_scene_recording_preserves_baseline_per-tick_checksums_display_artifacts_recording/threaded-baseline.replay.checksums",
+      "recording": "GameplayRecording.Integration/threaded_scene_recording_preserves_baseline_per-tick_checksums_display_artifacts_recording/threaded-recording.replay.checksums",
+      "identicalBytes": true,
+      "sha256": "2a362d88ad2e3d096a246357498fe8a7259698ce33781ee4d530785a320b2a5d"
+    }
+  ]
+}

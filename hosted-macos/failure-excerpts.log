@@ -1,0 +1,189 @@
+2026-10-31T22:40:08.1180430Z ===== FAIL BuildingStock/canceled entering explorers wait for a free exit before medical rebound [save-format] =====
+2026-10-31T22:40:08.1184830Z GLOB2_TEST_BUILD compiler=Apple LLVM 21.0.0 (clang-2100.1.1.101) platform=macOS pointer_bits=64
+2026-10-31T22:40:08.1191460Z 
+2026-10-31T22:40:08.1191810Z [failure] canceled entering explorers wait for a free exit before medical rebound [save-format]: false
+2026-10-31T22:40:08.1192370Z src/building/BuildingStockTest.cpp:267:
+2026-10-31T22:40:08.1192920Z REQUIRE( loadGame(resumed.game,historicalGame(world.game,1,600,FILE_FORMAT_VERSION_TURRET_TARGETING)) ) is NOT correct!
+2026-10-31T22:40:08.1193540Z   values: REQUIRE( false )
+2026-10-31T22:40:08.1193720Z 
+2026-10-31T22:40:08.1291810Z ##[error]fail
+2026-10-31T22:40:08.1354440Z 
+2026-10-31T22:40:08.1356040Z ===== FAIL BuildingStock/canceled entering services preserve ground and air occupancy across resave [save-format][artifacts] =====
+2026-10-31T22:40:08.1356900Z GLOB2_TEST_BUILD compiler=Apple LLVM 21.0.0 (clang-2100.1.1.101) platform=macOS pointer_bits=64
+2026-10-31T22:40:08.1364160Z 
+2026-10-31T22:40:08.1364440Z [failure] canceled entering services preserve ground and air occupancy across resave [save-format][artifacts]: false
+2026-10-31T22:40:08.1365660Z src/building/BuildingStockTest.cpp:172:
+2026-10-31T22:40:08.1366030Z REQUIRE( loadGame(resumed.game,saved) ) is NOT correct!
+2026-10-31T22:40:08.1366330Z   values: REQUIRE( false )
+2026-10-31T22:40:08.1366870Z   logged: version := 159
+2026-10-31T22:40:08.1367140Z           unitType := 0
+2026-10-31T22:40:08.1369060Z 
+2026-10-31T22:40:08.1370240Z ##[error]fail
+2026-10-31T22:40:08.1370960Z 
+2026-10-31T22:40:08.1371380Z ===== FAIL BuildingStock/canceled inside services reset their timer and resume terrain and area effects [save-format][artifacts] =====
+2026-10-31T22:40:08.1372300Z GLOB2_TEST_BUILD compiler=Apple LLVM 21.0.0 (clang-2100.1.1.101) platform=macOS pointer_bits=64
+2026-10-31T22:40:08.1378490Z 
+2026-10-31T22:40:08.1379480Z [failure] canceled inside services reset their timer and resume terrain and area effects [save-format][artifacts]: false
+2026-10-31T22:40:08.1380000Z src/building/BuildingStockTest.cpp:226:
+2026-10-31T22:40:08.1381140Z REQUIRE( loadGame(resumed.game,saved) ) is NOT correct!
+2026-10-31T22:40:08.1381440Z   values: REQUIRE( false )
+2026-10-31T22:40:08.1381730Z   logged: version := 159
+2026-10-31T22:40:08.1382060Z           unitType := 0
+2026-10-31T22:40:08.1382170Z 
+2026-10-31T22:40:08.1382810Z ##[error]fail
+2026-10-31T22:40:08.1384470Z 
+2026-10-31T22:40:08.1384840Z ===== FAIL DelayedGradientPublication/private174 migration profile is explicit and does not replace published layouts =====
+2026-10-31T22:40:08.1385860Z GLOB2_TEST_BUILD compiler=Apple LLVM 21.0.0 (clang-2100.1.1.101) platform=macOS pointer_bits=64
+2026-10-31T22:40:08.1392840Z 
+2026-10-31T22:40:08.1393240Z [error] private174 migration profile is explicit and does not replace published layouts: exception
+2026-10-31T22:40:08.1393910Z Incomplete binary field: count: unspecified iostream_category error
+2026-10-31T22:40:08.1394200Z 
+2026-10-31T22:40:08.1395290Z ##[error]fail
+2026-10-31T22:40:08.1395940Z 
+2026-10-31T22:40:08.1396400Z ===== FAIL EntityRandomLifecycle/format 150 text area saves retain funded services through current saves [save-format][artifacts] =====
+2026-10-31T22:40:08.1397300Z GLOB2_TEST_BUILD compiler=Apple LLVM 21.0.0 (clang-2100.1.1.101) platform=macOS pointer_bits=64
+2026-10-31T22:40:08.1402810Z TextInputStream::readFromTableToString : no entry named Game.MapHeader.experiments.count
+2026-10-31T22:40:08.1403540Z TextInputStream::readFromTableToString : no entry named Game.MapHeader.experiments.0.key
+2026-10-31T22:40:08.1403890Z 
+2026-10-31T22:40:08.1404150Z [failure] format 150 text area saves retain funded services through current saves [save-format][artifacts]: false
+2026-10-31T22:40:08.1404700Z src/unit/EntityRandomLifecycleTest.cpp:451:
+2026-10-31T22:40:08.1405120Z REQUIRE( load(migrated.game, bytes, true) ) is NOT correct!
+2026-10-31T22:40:08.1406430Z   values: REQUIRE( false )
+2026-10-31T22:40:08.1406730Z 
+2026-10-31T22:40:08.1407520Z ##[error]fail
+2026-10-31T22:40:08.1408330Z 
+2026-10-31T22:40:08.1408760Z ===== FAIL IntrusivePopulationSave/format166 pending jobs and append order survive an immediate upgrade before observation =====
+2026-10-31T22:40:08.1409730Z GLOB2_TEST_BUILD compiler=Apple LLVM 21.0.0 (clang-2100.1.1.101) platform=macOS pointer_bits=64
+2026-10-31T22:40:08.1414670Z 
+2026-10-31T22:40:08.1414980Z [failure] format166 pending jobs and append order survive an immediate upgrade before observation: false
+2026-10-31T22:40:08.1415490Z src/team/IntrusivePopulationSaveTest.cpp:203:
+2026-10-31T22:40:08.1415950Z REQUIRE( loadPopulation(direct.game,historical,false) ) is NOT correct!
+2026-10-31T22:40:08.1416430Z   values: REQUIRE( false )
+2026-10-31T22:40:08.1416710Z   logged: workers := 1
+2026-10-31T22:40:08.1416870Z 
+2026-10-31T22:40:08.1417410Z ##[error]fail
+2026-10-31T22:40:08.1418090Z 
+2026-10-31T22:40:08.1418460Z ===== FAIL IntrusivePopulationSave/formats164 through166 preserve population encoding and scheduler boundaries =====
+2026-10-31T22:40:08.1419130Z GLOB2_TEST_BUILD compiler=Apple LLVM 21.0.0 (clang-2100.1.1.101) platform=macOS pointer_bits=64
+2026-10-31T22:40:08.1424180Z 
+2026-10-31T22:40:08.1424470Z [failure] formats164 through166 preserve population encoding and scheduler boundaries: false
+2026-10-31T22:40:08.1424940Z src/team/IntrusivePopulationSaveTest.cpp:127:
+2026-10-31T22:40:08.1425370Z REQUIRE( loadPopulation(restored.game,bytes,false) ) is NOT correct!
+2026-10-31T22:40:08.1425730Z   values: REQUIRE( false )
+2026-10-31T22:40:08.1426020Z   logged: version := 164
+2026-10-31T22:40:08.1426200Z 
+2026-10-31T22:40:08.1426750Z ##[error]fail
+2026-10-31T22:40:08.1427380Z 
+2026-10-31T22:40:08.1427710Z ===== FAIL JavaScriptCompatibility/Current simulation rejects earlier replays and enforces acceptance boundaries =====
+2026-10-31T22:40:08.1428460Z GLOB2_TEST_BUILD compiler=Apple LLVM 21.0.0 (clang-2100.1.1.101) platform=macOS pointer_bits=64
+2026-10-31T22:40:08.1433690Z Error reading replay: Unsupported replay version: unspecified iostream_category error
+2026-10-31T22:40:08.1434240Z Error reading replay: Unsupported replay version: unspecified iostream_category error
+2026-10-31T22:40:08.1434720Z Error reading replay: Unsupported replay version: unspecified iostream_category error
+2026-10-31T22:40:08.1435200Z Error reading replay: Unsupported replay version: unspecified iostream_category error
+2026-10-31T22:40:08.1435670Z Error reading replay: Unsupported replay version: unspecified iostream_category error
+2026-10-31T22:40:08.1436140Z Error reading replay: Unsupported replay version: unspecified iostream_category error
+2026-10-31T22:40:08.1436670Z Error reading replay: Unsupported replay version: unspecified iostream_category error
+2026-10-31T22:40:08.1437150Z Error reading replay: Unsupported replay version: unspecified iostream_category error
+2026-10-31T22:40:08.1437710Z Error reading replay: Unsupported replay version: unspecified iostream_category error
+2026-10-31T22:40:08.1438160Z Error reading replay: Unsupported replay version: unspecified iostream_category error
+2026-10-31T22:40:08.1438710Z Error reading replay: Unsupported replay version: unspecified iostream_category error
+2026-10-31T22:40:08.1439220Z Error reading replay: Unsupported replay version: unspecified iostream_category error
+2026-10-31T22:40:08.1439740Z Error reading replay: Unsupported replay version: unspecified iostream_category error
+2026-10-31T22:40:08.1440240Z Error reading replay: Unsupported replay version: unspecified iostream_category error
+2026-10-31T22:40:08.1440870Z Error reading replay: Unsupported replay version: unspecified iostream_category error
+2026-10-31T22:40:08.1441440Z Error reading replay: Unsupported replay version: unspecified iostream_category error
+2026-10-31T22:40:08.1441960Z Error reading replay: Unsupported replay version: unspecified iostream_category error
+2026-10-31T22:40:08.1442620Z Error reading replay: Unsupported replay version: unspecified iostream_category error
+2026-10-31T22:40:08.1443130Z Error reading replay: Unsupported replay version: unspecified iostream_category error
+2026-10-31T22:40:08.1443710Z Error reading replay: Unsupported replay version: unspecified iostream_category error
+2026-10-31T22:40:08.1444250Z Error reading replay: Unsupported replay version: unspecified iostream_category error
+2026-10-31T22:40:08.1444860Z Error reading replay: Unsupported replay version: unspecified iostream_category error
+2026-10-31T22:40:08.1445550Z Error reading replay: Unsupported replay version: unspecified iostream_category error
+2026-10-31T22:40:08.1446200Z Error reading replay: Unsupported replay version: unspecified iostream_category error
+2026-10-31T22:40:08.1447070Z Error reading replay: Unsupported replay version: unspecified iostream_category error
+2026-10-31T22:40:08.1447750Z Error reading replay: Unsupported replay version: unspecified iostream_category error
+2026-10-31T22:40:08.1448450Z Error reading replay: Unsupported replay version: unspecified iostream_category error
+2026-10-31T22:40:08.1449030Z Error reading replay: Unsupported replay version: unspecified iostream_category error
+2026-10-31T22:40:08.1449700Z Error reading replay: Unsupported replay version: unspecified iostream_category error
+2026-10-31T22:40:08.1450310Z Error reading replay: Unsupported replay version: unspecified iostream_category error
+2026-10-31T22:40:08.1450970Z Error reading replay: Unsupported replay version: unspecified iostream_category error
+2026-10-31T22:40:08.1451630Z Error reading replay: Unsupported replay version: unspecified iostream_category error
+2026-10-31T22:40:08.1452280Z Error reading replay: Unsupported replay version: unspecified iostream_category error
+2026-10-31T22:40:08.1452940Z Error reading replay: Unsupported replay version: unspecified iostream_category error
+2026-10-31T22:40:08.1453550Z Error reading replay: Unsupported replay version: unspecified iostream_category error
+2026-10-31T22:40:08.1454470Z Error reading replay: Unsupported replay version: unspecified iostream_category error
+2026-10-31T22:40:08.1455100Z Error reading replay: Unsupported replay version: unspecified iostream_category error
+2026-10-31T22:40:08.1455520Z 
+2026-10-31T22:40:08.1455860Z [failure] Current simulation rejects earlier replays and enforces acceptance boundaries: 187 == 186
+2026-10-31T22:40:08.1456490Z src/scripting/javascript/ScriptCompatibilityTest.cpp:139:
+2026-10-31T22:40:08.1456970Z CHECK( REPLAY_MINIMUM_VERSION_MINOR == 186 ) is NOT correct!
+2026-10-31T22:40:08.1457430Z   values: CHECK( 187 == 186 )
+2026-10-31T22:40:08.1480360Z [failure] Current simulation rejects earlier replays and enforces acceptance boundaries: 187 == 186
+2026-10-31T22:40:08.1481090Z src/scripting/javascript/ScriptCompatibilityTest.cpp:140:
+2026-10-31T22:40:08.1482130Z CHECK( 187 == 186 ) is NOT correct!
+2026-10-31T22:40:08.1482780Z   values: CHECK( 187 == 186 )
+2026-10-31T22:40:08.1483990Z [failure] Current simulation rejects earlier replays and enforces acceptance boundaries: 73 == 72
+2026-10-31T22:40:08.1484750Z src/scripting/javascript/ScriptCompatibilityTest.cpp:142:
+2026-10-31T22:40:08.1485600Z CHECK( 73 == 72 ) is NOT correct!
+2026-10-31T22:40:08.1486220Z   values: CHECK( 73 == 72 )
+2026-10-31T22:40:08.1486920Z 
+2026-10-31T22:40:08.1488290Z ##[error]fail
+2026-10-31T22:40:08.1489600Z 
+2026-10-31T22:40:08.1490320Z ===== FAIL RuntimeResources/frozen seeded resource compositions preserve invariants and exact simulation continuation [golden] =====
+2026-10-31T22:40:08.1491560Z GLOB2_TEST_BUILD compiler=Apple LLVM 21.0.0 (clang-2100.1.1.101) platform=macOS pointer_bits=64
+2026-10-31T22:40:08.1497060Z 
+2026-10-31T22:40:08.1498480Z [failure] frozen seeded resource compositions preserve invariants and exact simulation continuation [golden]: golden mismatch against resources/seeded-compositions-units.trace at line 1   expected: 410362371 0 3456291229 b84bf391a9f0665bf93d6a35c0f3079ce5e59e1808239055817c84592b90e9e1   actual:   410362371 0 3464679837 b84bf391a9f0665bf93d6a35c0f3079ce5e59e1808239055817c84592b90e9e1
+2026-10-31T22:40:08.1500240Z test/support/Glob2Test.cpp:207:
+2026-10-31T22:40:08.1500740Z golden mismatch against resources/seeded-compositions-units.trace at line 1
+2026-10-31T22:40:08.1501930Z   expected: 410362371 0 3456291229 b84bf391a9f0665bf93d6a35c0f3079ce5e59e1808239055817c84592b90e9e1
+2026-10-31T22:40:08.1502920Z   actual:   410362371 0 3464679837 b84bf391a9f0665bf93d6a35c0f3079ce5e59e1808239055817c84592b90e9e1
+2026-10-31T22:40:08.1503260Z 
+2026-10-31T22:40:08.1505700Z ##[error]fail
+2026-10-31T22:40:08.1506870Z 
+2026-10-31T22:40:08.1507190Z ===== FAIL SystemLanguage/startup follows the system only when the profile has no usable language =====
+2026-10-31T22:40:08.1508080Z GLOB2_TEST_BUILD compiler=Apple LLVM 21.0.0 (clang-2100.1.1.101) platform=macOS pointer_bits=64
+2026-10-31T22:40:08.1512990Z 
+2026-10-31T22:40:08.1513210Z [failure] startup follows the system only when the profile has no usable language: hi == br
+2026-10-31T22:40:08.1513580Z src/app/SystemLanguageTest.cpp:119:
+2026-10-31T22:40:08.1513840Z CHECK( startupLanguage("") == "br" ) is NOT correct!
+2026-10-31T22:40:08.1514080Z   values: CHECK( hi == br )
+2026-10-31T22:40:08.1514550Z [failure] startup follows the system only when the profile has no usable language: hi == br
+2026-10-31T22:40:08.1514940Z src/app/SystemLanguageTest.cpp:120:
+2026-10-31T22:40:08.1515230Z CHECK( startupLanguage("no-such-language") == "br" ) is NOT correct!
+2026-10-31T22:40:08.1515520Z   values: CHECK( hi == br )
+2026-10-31T22:40:08.1515630Z 
+2026-10-31T22:40:08.1516030Z ##[error]fail
+2026-10-31T22:40:08.1516760Z 
+2026-10-31T22:40:08.1517190Z ===== FAIL TeamStatsSave/32 sampling phases; ring wrap; repeated loads; text streams and corruption controls [save-format] =====
+2026-10-31T22:40:08.1517870Z GLOB2_TEST_BUILD compiler=Apple LLVM 21.0.0 (clang-2100.1.1.101) platform=macOS pointer_bits=64
+2026-10-31T22:40:08.1523110Z AI telemetry schemas, identity, sampling, checksums, replay availability, save continuation and numeric corruption tests passed
+2026-10-31T22:40:08.1523620Z Gameplay measurement engine scenarios passed
+2026-10-31T22:40:08.1524020Z Measurement snapshot memory: 9736 bytes per team/sample
+2026-10-31T22:40:08.1524210Z 
+2026-10-31T22:40:08.1524490Z [failure] 32 sampling phases; ring wrap; repeated loads; text streams and corruption controls [save-format]: false
+2026-10-31T22:40:08.1524930Z src/team/stats/TeamStatsSaveHarness.cpp:46:
+2026-10-31T22:40:08.1525180Z REQUIRE( static_cast<bool>(ok) ) is NOT correct!
+2026-10-31T22:40:08.1525410Z   values: REQUIRE( false )
+2026-10-31T22:40:08.1525680Z   logged: integrated simulation uses current replay and network gates
+2026-10-31T22:40:08.1525900Z 
+2026-10-31T22:40:08.1526430Z ##[error]fail
+2026-10-31T22:40:08.1526980Z 
+2026-10-31T22:40:08.1527250Z ===== FAIL UnitCustomization/shared air routing stress exports a reproducible benchmark setup [artifacts] =====
+2026-10-31T22:40:08.1527860Z GLOB2_TEST_BUILD compiler=Apple LLVM 21.0.0 (clang-2100.1.1.101) platform=macOS pointer_bits=64
+2026-10-31T22:40:08.1533390Z 
+2026-10-31T22:40:08.1533660Z [failure] shared air routing stress exports a reproducible benchmark setup [artifacts]: false
+2026-10-31T22:40:08.1534350Z src/unit/UnitCustomizationTest.cpp:3452:
+2026-10-31T22:40:08.1534690Z REQUIRE( loaded.game.load(&input) ) is NOT correct!
+2026-10-31T22:40:08.1535090Z   values: REQUIRE( false )
+2026-10-31T22:40:08.1535220Z 
+2026-10-31T22:40:08.1536350Z ##[error]fail
+2026-10-31T22:40:08.1537360Z 
+2026-10-31T22:40:08.1537740Z 1674 passed, 12 failed, 228 skipped (1358.2s of test time)
+2026-10-31T22:40:08.1538630Z [run_tests] JUnit report: artifacts/tests/engine-junit.xml (1914 cases)
+2026-10-31T22:40:08.1540260Z ##[endgroup]
+2026-10-31T22:40:08.1541350Z ##[error]macOS regression cases exited 1
+2026-10-31T22:40:40.1321850Z PASS glob2-unit-tests (1169 cases) (31.6s)
+2026-10-31T22:40:59.5521260Z Ran 18 tests in 19.267s
+2026-10-31T22:40:59.5525170Z Failed checks: macOS regression cases (1)
+2026-10-31T22:41:01.9144640Z subprocess.CalledProcessError: Command '['/Users/runner/work/glob2/glob2/build/darwin/client/release/test/glob2-engine-tests', '--test-suite=RuntimeResources', '--test-case=frozen seeded resource compositions*', '--reporters=junit', '--out=/Users/runner/work/glob2/glob2/artifacts/browser-determinism/resources/native/tests.xml']' returned non-zero exit status 1.
+2026-10-31T22:51:17.8616070Z ##[error]No files were found with the provided path: artifacts/javascript-corpus/

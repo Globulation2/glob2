@@ -1,0 +1,44 @@
+{
+  "target": "linux",
+  "arch": "x86_64",
+  "video_codec": "av1",
+  "opus": {
+    "version": "1.6.1",
+    "cflags": "-I/usr/include/opus",
+    "libs": "-lopus",
+    "static_libs": "-lopus -lm"
+  },
+  "encoders": [
+    "libaom-av1",
+    "libopus"
+  ],
+  "hardware": [],
+  "ffmpeg": [
+    "--disable-autodetect",
+    "--disable-everything",
+    "--disable-programs",
+    "--disable-doc",
+    "--disable-debug",
+    "--disable-network",
+    "--disable-avdevice",
+    "--disable-avfilter",
+    "--enable-static",
+    "--disable-shared",
+    "--enable-pic",
+    "--enable-encoder=libaom_av1,libopus",
+    "--enable-muxer=mp4,webm",
+    "--enable-demuxer=mov,matroska",
+    "--enable-swscale",
+    "--enable-swresample",
+    "--enable-libopus",
+    "--enable-libaom",
+    "--enable-pthreads"
+  ],
+  "x264": [],
+  "wasm_vectorization": false,
+  "compiler": "cc (Ubuntu 15.2.0-16ubuntu1) 15.2.0",
+  "flags": [
+    [],
+    []
+  ]
+}

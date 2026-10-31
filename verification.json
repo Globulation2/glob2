@@ -1,0 +1,291 @@
+{
+  "sourceRevision": "9b2162f3bf346cd7f115ab25ba3c1d09d0ad51c7",
+  "recordedBase": "e67cba82e7ff1738efdfc65bf3a7c47dc8f7dcd1",
+  "platform": "Linux-7.0.0-38-generic-x86_64-with-glibc2.43",
+  "compiler": "c++ (Ubuntu 15.2.0-16ubuntu1) 15.2.0",
+  "ffmpeg": "ffmpeg version 8.0.1-3ubuntu2 Copyright (c) 2000-2025 the FFmpeg developers",
+  "results": {
+    "h264": {
+      "unit": {
+        "cases": 24,
+        "skipped": 0
+      },
+      "engine": {
+        "cases": 15,
+        "skipped": 0
+      }
+    },
+    "vp9": {
+      "unit": {
+        "cases": 24,
+        "skipped": 0
+      },
+      "engine": {
+        "cases": 15,
+        "skipped": 0
+      }
+    },
+    "av1": {
+      "unit": {
+        "cases": 24,
+        "skipped": 0
+      },
+      "engine": {
+        "cases": 15,
+        "skipped": 0
+      }
+    }
+  },
+  "receipts": {
+    "h264": {
+      "manifest": {
+        "identity": {
+          "configuration": 3,
+          "video_codec": "h264",
+          "opus": null,
+          "versions": {
+            "ffmpeg": {
+              "url": "https://ffmpeg.org/releases/ffmpeg-8.0.tar.xz",
+              "archive": "ffmpeg-8.0.tar.xz",
+              "directory": "ffmpeg-8.0",
+              "sha256": "b2751fccb6cc4c77708113cd78b561059b6fa904b24162fa0be2d60273d27b8e"
+            },
+            "nv-codec-headers": {
+              "url": "https://codeload.github.com/FFmpeg/nv-codec-headers/tar.gz/refs/tags/n13.0.19.0",
+              "archive": "nv-codec-headers-13.0.19.0.tar.gz",
+              "directory": "nv-codec-headers-n13.0.19.0",
+              "sha256": "86d15d1a7c0ac73a0eafdfc57bebfeba7da8264595bf531cf4d8db1c22940116"
+            },
+            "x264": {
+              "url": "https://codeload.github.com/mirror/x264/tar.gz/0480cb05fa188d37ae87e8f4fd8f1aea3711f7ee",
+              "archive": "x264-0480cb05.tar.gz",
+              "directory": "x264-0480cb05fa188d37ae87e8f4fd8f1aea3711f7ee",
+              "sha256": "d0967a1348c85dfde363bb52610403be898171493100561efa0dd05d5fd1ae50"
+            }
+          },
+          "target": "linux",
+          "arch": "x86_64",
+          "compiler": "cc (Ubuntu 15.2.0-16ubuntu1) 15.2.0\nCopyright (C) 2025 Free Software Foundation, Inc.\nThis is free software; see the source for copying conditions.  There is NO\nwarranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\n",
+          "cc": "cc",
+          "ar": "ar",
+          "flags": [
+            [],
+            []
+          ],
+          "vaapi_api": "1.23.0\n1.23.0",
+          "assembler": "NASM version 3.01",
+          "sdk": null,
+          "environment": {
+            "CFLAGS": "",
+            "CXXFLAGS": "",
+            "CPPFLAGS": "",
+            "LDFLAGS": "",
+            "SDKROOT": "",
+            "MACOSX_DEPLOYMENT_TARGET": "",
+            "DEVELOPER_DIR": ""
+          },
+          "recipe": "4399f09c38b89fd518e5d71ddadcaeda70fd86b94cc2debaebfdf667672d5382"
+        },
+        "archives": {
+          "libavformat.a": "6a555c534f048ddfd33353c98ddf04688775719832e388f41f3523cfd9c41866",
+          "libavcodec.a": "c170e7f6f41744f7b8592747c22167cdbeb731ebcc84da2d4bc947d252c1c25f",
+          "libswscale.a": "a9db532066af9becff7f045b22416490f38632214a740595f03659b096a384e9",
+          "libswresample.a": "16b853b822b721deb1790841fb33fe78ad150f5ef0a0ce6d000a9b10a0cc8f8f",
+          "libavutil.a": "a33db6b8db50d3b46edd96fe722b8bd92f42bb6e41baf172f220a9abbedcd7bd",
+          "libx264.a": "0e5f021c54396d082394c4e2ef0070ea3150f8c47fdd82c908654c99bb3a309a"
+        }
+      },
+      "staticArchiveBytes": {
+        "libx264.a": 1503810,
+        "libavformat.a": 1365606,
+        "libavcodec.a": 1900938,
+        "libswresample.a": 248146,
+        "libswscale.a": 2184360,
+        "libavutil.a": 1583870
+      }
+    },
+    "vp9": {
+      "manifest": {
+        "identity": {
+          "configuration": 3,
+          "video_codec": "vp9",
+          "opus": {
+            "version": "1.6.1",
+            "cflags": "-I/usr/include/opus",
+            "libs": "-lopus",
+            "static_libs": "-lopus -lm"
+          },
+          "versions": {
+            "ffmpeg": {
+              "url": "https://ffmpeg.org/releases/ffmpeg-8.0.tar.xz",
+              "archive": "ffmpeg-8.0.tar.xz",
+              "directory": "ffmpeg-8.0",
+              "sha256": "b2751fccb6cc4c77708113cd78b561059b6fa904b24162fa0be2d60273d27b8e"
+            },
+            "vpx": {
+              "url": "https://codeload.github.com/webmproject/libvpx/tar.gz/refs/tags/v1.17.0",
+              "archive": "libvpx-1.17.0.tar.gz",
+              "directory": "libvpx-1.17.0",
+              "sha256": "1020f184046187baa2985dbde38e0691f49c44088bca7a1842b0236c6081dc0a"
+            }
+          },
+          "target": "linux",
+          "arch": "x86_64",
+          "compiler": "cc (Ubuntu 15.2.0-16ubuntu1) 15.2.0\nCopyright (C) 2025 Free Software Foundation, Inc.\nThis is free software; see the source for copying conditions.  There is NO\nwarranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\n",
+          "cc": "cc",
+          "ar": "ar",
+          "flags": [
+            [],
+            []
+          ],
+          "vaapi_api": null,
+          "assembler": "NASM version 3.01",
+          "sdk": null,
+          "environment": {
+            "CFLAGS": "",
+            "CXXFLAGS": "",
+            "CPPFLAGS": "",
+            "LDFLAGS": "",
+            "SDKROOT": "",
+            "MACOSX_DEPLOYMENT_TARGET": "",
+            "DEVELOPER_DIR": ""
+          },
+          "recipe": "4399f09c38b89fd518e5d71ddadcaeda70fd86b94cc2debaebfdf667672d5382"
+        },
+        "archives": {
+          "libavformat.a": "406097253a9898e28e460f8cdf7ae943d6aaa9fc6e5b1e4583436f34a676a9ef",
+          "libavcodec.a": "87b0cff16561a08b71903da9a730183e28babf39a285024a7636817739120c45",
+          "libswscale.a": "3028b5a5929d791e0dfc2e3fd6b42d1d298bba1e9d58b1cac5b57275338ab48c",
+          "libswresample.a": "b2bf5f3a44543ef32fe068b51b426e84e836e5338f146f1c214cab5f946f83df",
+          "libavutil.a": "3f00baa00a2f6cb467796751225eca662e004569e5f1a32c7e8f17b4c6592d9d",
+          "libvpx.a": "4477901eea35e574e83fa2e289767046a3bf7ac83d4045a3d3df6ee9b2edb6bd"
+        }
+      },
+      "staticArchiveBytes": {
+        "libvpx.a": 2536698,
+        "libavformat.a": 1365566,
+        "libavcodec.a": 769180,
+        "libswresample.a": 248114,
+        "libswscale.a": 2184320,
+        "libavutil.a": 1514018
+      }
+    },
+    "av1": {
+      "manifest": {
+        "identity": {
+          "configuration": 3,
+          "video_codec": "av1",
+          "opus": {
+            "version": "1.6.1",
+            "cflags": "-I/usr/include/opus",
+            "libs": "-lopus",
+            "static_libs": "-lopus -lm"
+          },
+          "versions": {
+            "ffmpeg": {
+              "url": "https://ffmpeg.org/releases/ffmpeg-8.0.tar.xz",
+              "archive": "ffmpeg-8.0.tar.xz",
+              "directory": "ffmpeg-8.0",
+              "sha256": "b2751fccb6cc4c77708113cd78b561059b6fa904b24162fa0be2d60273d27b8e"
+            },
+            "aom": {
+              "url": "https://storage.googleapis.com/aom-releases/libaom-3.15.1.tar.gz",
+              "archive": "libaom-3.15.1.tar.gz",
+              "directory": "libaom-3.15.1",
+              "sha256": "8ca0c52746174603500f0adb6f2a215d69c9ca2aab2acb3caa06fb791d8d01bf"
+            }
+          },
+          "target": "linux",
+          "arch": "x86_64",
+          "compiler": "cc (Ubuntu 15.2.0-16ubuntu1) 15.2.0\nCopyright (C) 2025 Free Software Foundation, Inc.\nThis is free software; see the source for copying conditions.  There is NO\nwarranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\n",
+          "cc": "cc",
+          "ar": "ar",
+          "flags": [
+            [],
+            []
+          ],
+          "vaapi_api": null,
+          "assembler": "NASM version 3.01",
+          "sdk": null,
+          "environment": {
+            "CFLAGS": "",
+            "CXXFLAGS": "",
+            "CPPFLAGS": "",
+            "LDFLAGS": "",
+            "SDKROOT": "",
+            "MACOSX_DEPLOYMENT_TARGET": "",
+            "DEVELOPER_DIR": ""
+          },
+          "recipe": "4399f09c38b89fd518e5d71ddadcaeda70fd86b94cc2debaebfdf667672d5382"
+        },
+        "archives": {
+          "libavformat.a": "4152eae1d77e0ff9ea69d543ce3572537217ac2afd7a4399acdd0bc217b38fdf",
+          "libavcodec.a": "88191785d8aefc6d61e5bceba29a0587b98897a54dda85e40cf2159087d25cd0",
+          "libswscale.a": "4f791c37c85c6cf84b009a529d7ea5cf565431e902b70cb0a41746f589f6412e",
+          "libswresample.a": "f8a173d28549af3fe5b732f9db8f7713b79770c52093ab9b92485d40cab9b254",
+          "libavutil.a": "4f31fe14f599238a13fa62643c1fa22b23a04d4ea07c201570175b37001319a5",
+          "libaom.a": "8cb98e88e4abd99fff53324430ac95c21f367d63074cdd1c05b960ce847aeaa4"
+        }
+      },
+      "staticArchiveBytes": {
+        "libaom.a": 10790490,
+        "libavformat.a": 1365566,
+        "libavcodec.a": 837866,
+        "libswresample.a": 248114,
+        "libswscale.a": 2184320,
+        "libavutil.a": 1514018
+      }
+    }
+  },
+  "sdl": {
+    "configuration": 14,
+    "threaded": false,
+    "versions": {
+      "harfbuzz": {
+        "version": "10.1.0",
+        "url": "https://github.com/harfbuzz/harfbuzz/releases/download/10.1.0/harfbuzz-10.1.0.tar.xz",
+        "sha256": "6ce3520f2d089a33cef0fc48321334b8e0b72141f6a763719aaaecd2779ecb82",
+        "archive": "harfbuzz-10.1.0.tar.xz"
+      },
+      "webp": {
+        "version": "1.6.0",
+        "url": "https://storage.googleapis.com/downloads.webmproject.org/releases/webp/libwebp-1.6.0.tar.gz",
+        "sha256": "e4ab7009bf0629fd11982d4c2aa83964cf244cffba7347ecd39019a9e38c4564",
+        "archive": "libwebp-1.6.0.tar.gz"
+      },
+      "SDL": {
+        "version": "3.4.16",
+        "url": "https://github.com/libsdl-org/SDL/releases/download/release-3.4.16/SDL3-3.4.16.tar.gz",
+        "sha256": "7322236cd12090c3eb40b9728be4d49c76f66ad17d04369584d4ecad5cf77c68",
+        "archive": "SDL3-3.4.16.tar.gz"
+      },
+      "SDL_image": {
+        "version": "3.4.6",
+        "url": "https://github.com/libsdl-org/SDL_image/releases/download/release-3.4.6/SDL3_image-3.4.6.tar.gz",
+        "sha256": "d2e4637ae700f72e5196b8fbd749850ed2e5e1e09c5a5be8d06ff55aaccf3b01",
+        "archive": "SDL3_image-3.4.6.tar.gz"
+      },
+      "SDL_ttf": {
+        "version": "3.2.2",
+        "url": "https://github.com/libsdl-org/SDL_ttf/releases/download/release-3.2.2/SDL3_ttf-3.2.2.tar.gz",
+        "sha256": "63547d58d0185c833213885b635a2c0548201cc8f301e6587c0be1a67e1e045d",
+        "archive": "SDL3_ttf-3.2.2.tar.gz"
+      },
+      "SDL_net": {
+        "version": "3.2.0",
+        "url": "https://github.com/libsdl-org/SDL_net/releases/download/release-3.2.0/SDL3_net-3.2.0.tar.gz",
+        "sha256": "098522fc26d4e302ef9348aee6e76e67fe504dfefd7f596236568f8330570c41",
+        "archive": "SDL3_net-3.2.0.tar.gz"
+      }
+    },
+    "emscripten": null,
+    "platform": "Linux-7.0.0-38-generic-x86_64-with-glibc2.43",
+    "machine": "x86_64",
+    "source_patches": {
+      "x11-reparent-race.patch": "7ebad866971a36c2c833d6d91977d2628f13c82a0eeae11fd917e5ee8f7dcfab",
+      "x11-map-notify.patch": "a7ce2e7bc6773243ccda0282926ea92a9cce3023efa9289c81cc9dad0937f202",
+      "png16-preserve-channels.patch": "cfa402516b9692a8e50394e5f1dc659e5a7443cd99a4cbb59af2ac5d0fc05aee",
+      "kerning-moves-pen.patch": "40885a6f8dd3018cd01721197b263b363bbb26c4b55ef21e0ad919823ac7bd4c"
+    }
+  }
+}
