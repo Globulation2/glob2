@@ -28,7 +28,7 @@ SPEC = importlib.util.spec_from_file_location('translation_program', Path(__file
 PROGRAM = importlib.util.module_from_spec(SPEC)
 SPEC.loader.exec_module(PROGRAM)
 TOKENS = re.compile(r'%[0-9]+|\{[A-Za-z][A-Za-z0-9_]*\}')
-TECHNICAL = re.compile(r'\\n|:|\[[^\]\r\n]+\]|\b(?:Ctrl|Alt|Shift|Meta|Cmd)\+(?:[A-Za-z0-9+]+)|https?://[^\s<>]+|[\w.+-]+@[\w.-]+\.[A-Za-z]+|<[^>]+>|\b(?:Globulation 2|Glob2|JavaScript|JSON|UTF-8|SHA-256|SDL|NUL|CC0-1\.0|CC-BY(?:-SA)?-4\.0)\b')
+TECHNICAL = re.compile(r'\\n|:|\[[^\]\r\n]+\]|\b(?:Ctrl|Alt|Shift|Meta|Cmd)\+(?:[A-Za-z0-9+]+)|https?://[^\s<>]+|(?<![\w])(?:/[A-Za-z0-9_.-]+){2,}|(?<![\w])(?:[A-Za-z0-9_.-]+/)+[A-Za-z0-9_.-]+\.[A-Za-z0-9]+|[\w.+-]+@[\w.-]+\.[A-Za-z]+|<[^>]+>|\b(?:Globulation 2|Glob2|JavaScript|JSON|UTF-8|SHA-256|SDL|NUL|CC0-1\.0|CC-BY(?:-SA)?-4\.0)\b')
 
 
 def atomic_json(path, value):

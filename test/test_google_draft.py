@@ -61,6 +61,15 @@ class ProtectionTest(unittest.TestCase):
                 DRAFT.restore(value, DRAFT.protect('Value'), 'Value')
 
 
+class TechnicalPathTest(unittest.TestCase):
+    def test_relative_routes_and_files_remain_literal_in_drafts(self):
+        source = 'Open /ais/favourites or data/fonts/sans.ttf at https://example.com/a/b.'
+        protection = DRAFT.protect(source)
+        self.assertIn('/ais/favourites', protection[1])
+        self.assertIn('data/fonts/sans.ttf', protection[1])
+        self.assertEqual(DRAFT.restore(protection[0], protection, source), source)
+
+
 class OnlinePercentTest(unittest.TestCase):
     def test_online_percentages_do_not_use_native_stringtable_percent_grammar(self):
         source = '95%: {slot0}'
