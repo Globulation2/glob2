@@ -10,6 +10,7 @@
 #include "Player.h"
 #include "WinningConditions.h"
 #include "ReplayWriter.h"
+#include "Brush.h"
 #include "FertilityCalculator.h"
 #include <BinaryStream.h>
 #include <StreamBackend.h>
@@ -432,6 +433,58 @@ TEST_CASE("zone observations and scenario orders preserve map callback validatio
     zones.step("function step(ctx){const z=ctx.game.map.zones(29,30,2,2,0);if(z.length!==4||z.some(t=>t.guard||t.clear||t.forbidden))throw 'zones';if('guard' in ctx.game.map.tile(29,30))throw 'tile contract changed';}",w.game,w.gui);
     for(const std::string args:{"0,0,-1,2,0","0,0,257,2,0","0,0,2,2,8","0,0,2,2"})
         CHECK_THROWS_AS(zones.step("function step(ctx){ctx.game.map.zones("+args+");}",w.game,w.gui),Script::ScenarioFailure);
+}
+
+TEST_CASE("scenario area and queued-building orders need no local presentation player" * doctest::test_suite("Introduction"))
+{
+    glob2test::HeadlessGlobals globals;
+    glob2test::GameOptions options;
+    options.teams=2;options.loadDefaultRace=true;options.header=true;
+    options.experiments.set(ExperimentId::FarmAreas,true);
+    glob2test::HeadlessGame w(options);
+    for(int y=0;y<w.game.map.getH();++y)
+        for(int x=0;x<4;++x) w.game.map.paintVertexSquare(x,y,WATER,1);
+    for(int team=0;team<2;++team)
+        REQUIRE(w.game.map.incResourceByIndex(8+team*8,7,WHEAT,0));
+    Script::JavaScriptMap zones;
+    zones.step(R"(function step(){
+        const effects=[];
+        for(let team=0;team<2;team++)
+            ['forbidden','guardArea','clearArea','farmArea'].forEach((type,i)=>effects.push({
+                type:'scenarioOrder',team,order:{type,mode:1,x:8+team*8,y:4+i,width:1,height:1,mask:[true]}}));
+        return effects;
+    })",w.game,w.gui);
+    for(int team=0;team<2;++team) {
+        const int x=8+team*8;const auto mask=w.game.teams[team]->me;
+        CHECK(w.game.map.isForbidden(x,4,mask));
+        CHECK(w.game.map.isGuardArea(x,5,mask));
+        CHECK(w.game.map.isClearArea(x,6,mask));
+        CHECK(w.game.map.isFarmArea(x,7,mask));
+        CHECK_FALSE(w.game.map.isForbiddenInDisplayedView(x,4));
+        CHECK_FALSE(w.game.map.isGuardAreaInDisplayedView(x,5));
+        CHECK_FALSE(w.game.map.isClearAreaInDisplayedView(x,6));
+        CHECK_FALSE(w.game.map.isFarmAreaInDisplayedView(x,7));
+        REQUIRE(w.addUnit(WORKER,20,20+team*4,team));
+    }
+    Script::JavaScriptMap projects;
+    projects.step(R"(function step(ctx){
+        const inn=ctx.game.buildingTypes().find(t=>t.name==='inn'&&t.site&&t.level===0);
+        return [0,1].map(team=>({type:'scenarioOrder',team,order:{type:'create',buildingType:inn.id,
+            x:20,y:20+team*4,workers:1,futureWorkers:1}}));
+    })",w.game,w.gui);
+    REQUIRE(w.game.buildProjects.size()==2);
+    for(int team=0;team<2;++team) {
+        CHECK(w.game.map.isForbidden(20,20+team*4,w.game.teams[team]->me));
+        CHECK_FALSE(w.game.map.isForbiddenInDisplayedView(20,20+team*4));
+    }
+    // Ordinary local orders still update their presentation overlay.
+    auto local=std::make_shared<OrderAlterGuardArea>();
+    local->sender=0;local->teamNumber=0;local->type=BrushTool::MODE_ADD;local->centerX=6;local->centerY=6;
+    local->minX=local->minY=0;local->maxX=local->maxY=1;local->mask.resize(1);local->mask.set(0,true);
+    CHECK(w.game.executeOrder(local,0));
+    CHECK(w.game.map.isGuardAreaInDisplayedView(6,6));
+    continuation(w);
+    std::filesystem::rename(glob2test::artifactDir()/"introduction.trace",glob2test::artifactDir()/"scripted-areas.trace");
 }
 
 TEST_CASE("original tutorial scripts compile and available checkpoints roundtrip" * doctest::test_suite("Introduction"))

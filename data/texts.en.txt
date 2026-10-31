@@ -6707,7 +6707,7 @@ Your new Inn or building site has a worker target of 0. Select it and request wo
 [intro hint no war flag]
 No assigned War Flag was found at the enemy base. Place one over the eastern enemy Swarm and request warriors.
 [intro hint retry]
-The colony has lost its Swarm or all workers. You can load an earlier save or restart the introduction from the game menu.
+A unit or building needed for this lesson has been lost. Load an earlier save or restart this lesson from the game menu.
 [intro complete]
 Introduction complete
 [intro complete body]

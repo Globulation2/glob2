@@ -36,8 +36,8 @@ for (const variant of ['serial', 'threaded']) {
     if(result.files?.['tests.xml']) fs.writeFileSync(path.join(evidence,'tests.xml'),result.files['tests.xml']);
     expect(result.error).toBeUndefined(); expect(result.exit).toBe(0);
     expect(result.files['tests.xml']).toContain('testcase');
-    const traces=Object.entries(result.files).filter(([name])=>/\/(introduction|food-supply|prototype|expanded|legacy-campaign|water-access|sustainability|diplomacy)\.trace$/.test(name));
-    expect(traces).toHaveLength(8);
+    const traces=Object.entries(result.files).filter(([name])=>/\/(introduction|food-supply|prototype|expanded|legacy-campaign|water-access|sustainability|diplomacy|scripted-areas)\.trace$/.test(name));
+    expect(traces).toHaveLength(9);
     const native=process.env.GLOB2_INTRODUCTION_NATIVE_TRACE;
     for(const [name,trace] of traces) {
       const filename=path.basename(name);

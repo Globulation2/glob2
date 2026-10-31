@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "PowerOfTwo.h"
 #include "Unit.h"
-#include "UnitTiming.h"
 #include "Building.h"
 #include "BuildingType.h"
 #include "Race.h"
@@ -636,16 +635,11 @@ void Binding::installContextWorld(JSValueConst result)
 		for(const auto &[key,v]:options)
 			if(key=="healthPercent" ? v<1 || v>100 : !abilities.count(key) || v<0 || v>=NB_UNIT_LEVELS)
 				throw TypeMismatch("Invalid initial unit option: "+key);
-		auto *u=game->addUnit(x,y,team,type,level,0,0,0);
+		std::array<int,NB_ABILITY> levels;
+        levels.fill(level);
+        for(const auto &[key,v]:options) if(abilities.count(key)) levels[abilities.at(key)]=v;
+        auto *u=game->addUnit(x,y,team,type,level,0,0,0,&levels);
 		if(!u) throw TypeMismatch("Cannot place initial unit");
-		for(const auto &[key,v]:options) if(abilities.count(key)) {
-			const auto ability=abilities.at(key); u->level[ability]=v;
-			u->setPerformance(ability,u->race->getUnitType(type,v)->performance[ability]);
-			if(ability==BUILD) u->constructionLevel=v;
-		}
-		u->rebindDefinitionForSetup();
-        const auto &terrain=game->map.terrainPropertiesAt(x,y);
-        u->speed=unitTerrainMovementSpeed(u->speed,u->performance[FLY] ? terrain.airSpeedQ8 : terrain.groundSpeedQ8);
 		u->hp=std::max(1,int(Sint64(u->performance[HP])*(options.count("healthPercent") ? options.at("healthPercent") : 100)/100));
 		u->hungry=u->configuredFoodCapacity;
 		return write(int(u->gid));

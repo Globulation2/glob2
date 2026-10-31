@@ -11,7 +11,7 @@ function runner(definition,hook='function tutorialCondition(){return false;}') {
   return {step:ctx=>context.step(ctx),state:()=>JSON.parse(vm.runInContext('JSON.stringify(tutorialState)',context)),context};
 }
 const definition=()=>JSON.parse(read('scripts/tutorials/introduction.json'));
-const areas={landmark:{x:31,y:28,width:7,height:9},enemyOutpost:{x:43,y:27,width:10,height:12},enemyApproach:{x:39,y:0,width:16,height:64}};
+const areas={home:{x:86,y:91,width:4,height:4},lakeShore:{x:83,y:84,width:4,height:4},schoolSite:{x:89,y:97,width:2,height:2},landmark:{x:31,y:28,width:7,height:9},enemyOutpost:{x:43,y:27,width:10,height:12},enemyApproach:{x:39,y:0,width:16,height:64}};
 const game=(buildings=[],units=[])=>({map:{area:name=>areas[name]},buildings:({team})=>buildings.filter(b=>b.team===team),units:({team})=>units.filter(u=>u.team===team)});
 const view=effects=>effects.find(e=>e.type==='tutorial')?.view;
 test('moving a named landmark updates both completion and its screen destination',()=>{
@@ -71,4 +71,49 @@ test('guard encounters issue one ordinary enemy order and stay issued after resu
   const order=effects.find(e=>e.type==='scenarioOrder').order;assert.equal(order.buildingType,40);assert.equal(order.x,34);assert.equal(order.y,32);
   const resumed=runner(d);resumed.context.saved=JSON.stringify(r.state());vm.runInContext('tutorialState=JSON.parse(saved)',resumed.context);
   ctx.tick=2;assert.equal(resumed.step(ctx).filter(e=>e.type==='scenarioOrder').length,0);
+});
+
+test('warrior training accepts learning ahead and replacement warriors',()=>{
+  for(const trainedAhead of [false,true]) {
+    const d=JSON.parse(read('scripts/tutorials/warrior-training.json'));d.confirmTicks=0;
+    const r=runner(d),swarm={id:0,generation:1,team:0,shortType:0};
+    r.step({tick:0,game:game([swarm])});
+    const warrior=id=>({id,generation:1,team:0,type:2,levels:Array.from({length:17},(_,i)=>i===9 && trainedAhead ? 1 : 0)});
+    const units=[warrior(1),warrior(2)],camp={id:3,generation:1,team:0,shortType:5,construction:0};
+    assert.equal(view(r.step({tick:1,game:game([swarm,camp],units)})).stepId,'build');
+    assert.equal(view(r.step({tick:2,game:game([swarm,camp],units)})).stepId,'train');
+    if(!trainedAhead) {
+      r.step({tick:100,game:game([swarm,camp],units)});assert.equal(r.state().stepId,'train');
+      // Both initial warriors may be lost; a newly produced trained warrior counts.
+      units.splice(0,units.length,{...warrior(4),levels:Array.from({length:17},(_,i)=>i===9 ? 1 : 0)});
+    }
+    assert.equal(view(r.step({tick:101,game:game([swarm,camp],units)})).stepId,'complete');
+  }
+});
+
+test('lost bound patient gives restart guidance after save/load despite ID reuse',()=>{
+  const d=JSON.parse(read('scripts/tutorials/healing.json'));d.confirmTicks=0;
+  const r=runner(d),swarm={id:0,generation:1,team:0,shortType:0};
+  const patient={id:1,generation:1,team:0,type:0,hp:25,maxHp:100};
+  r.step({tick:0,game:game([swarm],[patient])});
+  const hospital={id:2,generation:1,team:0,shortType:2,construction:0};
+  assert.equal(view(r.step({tick:1,game:game([swarm,hospital],[patient])})).stepId,'heal');
+  const resumed=runner(d);resumed.context.saved=JSON.stringify(r.state());vm.runInContext('tutorialState=JSON.parse(saved)',resumed.context);
+  const result=view(resumed.step({tick:10000,game:game([swarm,hospital],[{...patient,generation:2,hp:100}])}));
+  assert.equal(result.stepId,'heal');assert.equal(result.hint,'[intro hint retry]');
+});
+
+test('losing bound trainees while replacement workers survive offers a restart',()=>{
+  for(const [name,buildingType] of [['walking-training',3],['swimming',4],['schools',6],['upgrades',3]]) {
+    const d=JSON.parse(read('scripts/tutorials/'+name+'.json'));d.confirmTicks=0;
+    const r=runner(d),swarm={id:0,generation:1,team:0,shortType:0};
+    const worker={id:1,generation:1,team:0,type:0,levels:Array(17).fill(0)};
+    const initial=name==='upgrades' ? [{id:2,generation:1,team:0,shortType:3,construction:0,level:0}] : [];
+    r.step({tick:0,game:game([swarm,...initial],[worker])});
+    const building={id:2,generation:1,team:0,shortType:buildingType,construction:0,level:1};
+    r.step({tick:1,game:game([swarm,building],[worker])});
+    const result=view(r.step({tick:10000,game:game([swarm,building],[{...worker,generation:2}])}));
+    assert.equal(result.hint,'[intro hint retry]',name);
+    assert.notEqual(result.stepId,'complete',name);
+  }
 });

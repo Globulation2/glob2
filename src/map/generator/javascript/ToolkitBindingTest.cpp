@@ -278,3 +278,23 @@ TEST_CASE("Scenario creation validates options and cannot run in validators" * d
         CHECK(world.game.checkSum()==before);
     }
 }
+
+TEST_CASE("Initial training levels determine unit water placement before allocation" * doctest::test_suite("ScriptGenerator"))
+{
+    glob2test::HeadlessGlobals globals;
+    glob2test::HeadlessGame world({.wDec=6,.hDec=6,.terrain=WATER,.teams=2,.loadDefaultRace=true,.header=true});
+    GenerationRequest request;request.wDec=6;request.hDec=6;request.nbTeams=2;
+    GenerationContext context(request);
+    CHECK(JSGen::invoke(*package("c.placeUnit(0,0,0,20,20,{swim:1});"),"generate",request,&world.game,&context).empty());
+    REQUIRE(world.game.teams[0]->liveUnits.size()==1);
+    const auto *unit=*world.game.teams[0]->liveUnits.entries().begin();
+    CHECK(unit->level[SWIM]==1);CHECK(unit->speed==unit->performance[SWIM]);
+    CHECK(unit->performance[SWIM]>0);
+    const auto before=world.game.checkSum();
+    const auto generations=world.game.scriptGenerations;
+    CHECK_THROWS(JSGen::invoke(*package("c.placeUnit(0,0,1,30,30,{swim:0});"),"generate",request,&world.game,&context));
+    CHECK(world.game.checkSum()==before);
+    CHECK(world.game.scriptGenerations==generations);
+    CHECK(world.game.teams[0]->liveUnits.size()==1);
+    CHECK(world.game.map.getGroundUnit(30,30)==NOGUID);
+}

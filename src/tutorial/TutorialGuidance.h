@@ -4,6 +4,7 @@
 #include "TutorialModel.h"
 #include <algorithm>
 #include <functional>
+#include <set>
 
 class GameGUI;
 namespace Tutorial
@@ -15,7 +16,9 @@ class Guidance : public Glob2UI::InGameDialog
     int current = -1;
     std::string recovery;
     std::shared_ptr<const Model> lesson;
-    bool collapsed = false, help = false, captured = false;
+    bool collapsed = false, help = false;
+    std::set<std::pair<SDL_TouchID,SDL_FingerID>> capturedFingers;
+    std::set<std::pair<SDL_MouseID,Uint8>> capturedMouseButtons;
     Glob2UI::Rect mobileArea;
     std::function<void(int)> navigate;
   public:
@@ -92,22 +95,36 @@ class Guidance : public Glob2UI::InGameDialog
         if (e.type==SDL_EVENT_KEY_DOWN && e.key.key==SDLK_ESCAPE && help) {
             help=false; invalidate(); return true;
         }
-        GAGGUI::ui::Point point;
-        bool pointer=false, down=false, up=false;
+        if (e.type==SDL_EVENT_WINDOW_FOCUS_LOST) {
+            capturedFingers.clear(); capturedMouseButtons.clear(); cancelInput(); return false;
+        }
         if (e.type == SDL_EVENT_FINGER_DOWN || e.type == SDL_EVENT_FINGER_MOTION || e.type == SDL_EVENT_FINGER_UP) {
-            point={int(e.tfinger.x*presentation().viewport.w),int(e.tfinger.y*presentation().viewport.h)};
-            pointer=true; down=e.type==SDL_EVENT_FINGER_DOWN; up=e.type==SDL_EVENT_FINGER_UP;
+            const auto key=std::make_pair(e.tfinger.touchID,e.tfinger.fingerID);
+            const GAGGUI::ui::Point point{int(e.tfinger.x*presentation().viewport.w),int(e.tfinger.y*presentation().viewport.h)};
+            if (e.type==SDL_EVENT_FINGER_DOWN && panelBounds().contains(point)) capturedFingers.insert(key);
+            if (!capturedFingers.contains(key)) return false;
+            eventLogical(e);
+            if (e.type==SDL_EVENT_FINGER_UP) capturedFingers.erase(key);
+            return true;
         } else if (e.type == SDL_EVENT_MOUSE_BUTTON_DOWN || e.type == SDL_EVENT_MOUSE_BUTTON_UP) {
-            point={int(e.button.x),int(e.button.y)}; pointer=true;
-            down=e.type==SDL_EVENT_MOUSE_BUTTON_DOWN; up=e.type==SDL_EVENT_MOUSE_BUTTON_UP;
-        } else if (e.type == SDL_EVENT_MOUSE_MOTION) { point={int(e.motion.x),int(e.motion.y)}; pointer=true; }
-        else if (e.type == SDL_EVENT_MOUSE_WHEEL) { point={int(e.wheel.mouse_x),int(e.wheel.mouse_y)}; pointer=true; }
-        if (e.type==SDL_EVENT_WINDOW_FOCUS_LOST) { captured=false; cancelInput(); return false; }
-        if (!pointer || (!captured && !panelBounds().contains(point))) return false;
-        if (down) captured=true;
-        eventLogical(e);
-        if (up) captured=false;
-        return true;
+            const auto key=std::make_pair(e.button.which,e.button.button);
+            const GAGGUI::ui::Point point{int(e.button.x),int(e.button.y)};
+            if (e.type==SDL_EVENT_MOUSE_BUTTON_DOWN && panelBounds().contains(point)) capturedMouseButtons.insert(key);
+            if (!capturedMouseButtons.contains(key)) return false;
+            eventLogical(e);
+            if (e.type==SDL_EVENT_MOUSE_BUTTON_UP) capturedMouseButtons.erase(key);
+            return true;
+        } else if (e.type == SDL_EVENT_MOUSE_MOTION) {
+            const bool captured=std::any_of(capturedMouseButtons.begin(),capturedMouseButtons.end(),
+                [&](const auto &key){return key.first==e.motion.which;});
+            // Hover belongs to the card, but a drag started on the map keeps
+            // its whole sequence even when it crosses the card.
+            if (!captured && (e.motion.state || !panelBounds().contains(GAGGUI::ui::Point{int(e.motion.x),int(e.motion.y)}))) return false;
+            eventLogical(e); return true;
+        } else if (e.type == SDL_EVENT_MOUSE_WHEEL && panelBounds().contains(GAGGUI::ui::Point{int(e.wheel.mouse_x),int(e.wheel.mouse_y)})) {
+            eventLogical(e); return true;
+        }
+        return false;
     }
   protected:
     GAGGUI::ui::Rect available(const Glob2UI::Presentation &p, const GAGGUI::ui::Metrics &m) override

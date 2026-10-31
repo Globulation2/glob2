@@ -129,6 +129,15 @@
             ]
           }
         }
+      ],
+      "recovery": [
+        {
+          "hint": 2,
+          "when": {
+            "type": "none",
+            "target": "trainees"
+          }
+        }
       ]
     }
   ],

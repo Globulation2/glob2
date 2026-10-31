@@ -39,9 +39,14 @@
     },
     "militaryTrainees": {
       "kind": "unit",
-      "team": 0,
-      "type": 2,
-      "bind": "step"
+      "from": "warriors",
+      "filters": [
+        {
+          "field": "levels.9",
+          "op": "gte",
+          "value": 1
+        }
+      ]
     },
     "camp": {
       "kind": "building",
@@ -132,10 +137,8 @@
       "help": "[lesson warrior-training train help]",
       "touchHelp": "[lesson warrior-training train help]",
       "complete": {
-        "type": "increased",
-        "target": "militaryTrainees",
-        "field": "levels.9",
-        "baseline": "step"
+        "type": "exists",
+        "target": "militaryTrainees"
       },
       "activeOnly": true,
       "highlights": [
@@ -145,10 +148,8 @@
       "milestones": [
         {
           "condition": {
-            "type": "increased",
-            "target": "militaryTrainees",
-            "field": "levels.9",
-            "baseline": "step"
+            "type": "exists",
+            "target": "militaryTrainees"
           }
         }
       ]

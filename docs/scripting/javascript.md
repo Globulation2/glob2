@@ -461,6 +461,13 @@ Numeric filters may compare against another field with an optional scale (for
 example, health at least 95% of maximum). No replacement unit can impersonate
 the original entity because comparisons include its generation.
 
+Use `increased` for entities present when its baseline is captured. For units
+produced during a lesson, use the new-entity target plus a trained-level filter
+when learning ahead should count; a step-entry baseline can otherwise require
+an unavailable second upgrade. If a bound patient or all bound trainees can be
+lost, add a missing-target recovery rule with restart guidance. Replacement
+units do not satisfy an improvement condition captured for the originals.
+
 Destinations reference these same targets. Areas use their center; entity markers
 use the selected entity's position plus optional authored offsets. Removing or
 moving a target is reflected in the published view. Coordinates are authored

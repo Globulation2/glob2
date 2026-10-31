@@ -14,6 +14,64 @@
 #include <GraphicContext.h>
 #include <Toolkit.h>
 
+TEST_CASE("guidance preserves pointer ownership across map drags and concurrent touches [display]" * doctest::test_suite("IntroductionUI"))
+{
+    glob2test::ScopedEnvironment mobile("GLOB2_MOBILE_UI","1");
+    glob2test::HeadlessGlobals globals({.display=true,.loadStrings=true,.width=400,.height=800});
+    int destinations=0;
+    Tutorial::Guidance card([&](int destination){if(destination==Tutorial::ShowDestination) ++destinations;});
+    auto model=std::make_shared<Tutorial::Model>();
+    model->lessonId="pointer-test";model->stepId="first";model->count=1;
+    model->title="[intro goal scout]";model->touchInstruction="[intro compact scout]";
+    model->destination=Tutorial::Destination{0,0,""};
+    card.attach(*globals->gfx);card.model(model);card.update(0);
+    const auto target=card.host().bounds("intro/destination");REQUIRE(target.w>0);
+    const GAGGUI::ui::Point inside{target.x+target.w/2,target.y+target.h/2};
+    const GAGGUI::ui::Point outside{399,799};REQUIRE_FALSE(card.panelBounds().contains(outside));
+    const auto finger=[&](Uint32 type,SDL_FingerID id,GAGGUI::ui::Point point) {
+        SDL_Event event{};event.type=type;event.tfinger.touchID=19;event.tfinger.fingerID=id;
+        event.tfinger.x=float(point.x)/400;event.tfinger.y=float(point.y)/800;
+        return event;
+    };
+    // Map ownership survives crossing into the card and lifting there.
+    CHECK_FALSE(card.handle(finger(SDL_EVENT_FINGER_DOWN,1,outside)));
+    CHECK_FALSE(card.handle(finger(SDL_EVENT_FINGER_MOTION,1,inside)));
+    CHECK_FALSE(card.handle(finger(SDL_EVENT_FINGER_UP,1,inside)));
+    CHECK(destinations==0);
+    // A second finger on the card must not steal the map finger's release.
+    CHECK_FALSE(card.handle(finger(SDL_EVENT_FINGER_DOWN,1,outside)));
+    CHECK(card.handle(finger(SDL_EVENT_FINGER_DOWN,2,inside)));
+    CHECK_FALSE(card.handle(finger(SDL_EVENT_FINGER_MOTION,1,inside)));
+    CHECK_FALSE(card.handle(finger(SDL_EVENT_FINGER_UP,1,inside)));
+    CHECK(card.handle(finger(SDL_EVENT_FINGER_UP,2,inside)));
+    card.update(1);CHECK(destinations==1);
+    // The card keeps its own drag until release, even outside its bounds.
+    CHECK(card.handle(finger(SDL_EVENT_FINGER_DOWN,2,inside)));
+    CHECK(card.handle(finger(SDL_EVENT_FINGER_MOTION,2,outside)));
+    CHECK(card.handle(finger(SDL_EVENT_FINGER_UP,2,outside)));
+    card.update(2);CHECK(destinations==1);
+    // Focus loss cancels old ownership, so its delayed UP cannot activate UI.
+    CHECK(card.handle(finger(SDL_EVENT_FINGER_DOWN,2,inside)));
+    SDL_Event focus{};focus.type=SDL_EVENT_WINDOW_FOCUS_LOST;CHECK_FALSE(card.handle(focus));
+    CHECK_FALSE(card.handle(finger(SDL_EVENT_FINGER_UP,2,inside)));
+    card.update(3);CHECK(destinations==1);
+    CHECK(card.handle(finger(SDL_EVENT_FINGER_DOWN,2,inside)));
+    CHECK(card.handle(finger(SDL_EVENT_FINGER_UP,2,inside)));
+    card.update(4);CHECK(destinations==2);
+    // Mouse drags obey the same ownership rule as touch gestures.
+    SDL_Event mouse{};mouse.type=SDL_EVENT_MOUSE_BUTTON_DOWN;mouse.button.button=SDL_BUTTON_LEFT;
+    mouse.button.x=outside.x;mouse.button.y=outside.y;CHECK_FALSE(card.handle(mouse));
+    SDL_Event motion{};motion.type=SDL_EVENT_MOUSE_MOTION;motion.motion.state=SDL_BUTTON_LMASK;
+    motion.motion.x=inside.x;motion.motion.y=inside.y;CHECK_FALSE(card.handle(motion));
+    mouse.type=SDL_EVENT_MOUSE_BUTTON_UP;mouse.button.x=inside.x;mouse.button.y=inside.y;
+    CHECK_FALSE(card.handle(mouse));card.update(5);CHECK(destinations==2);
+    mouse.type=SDL_EVENT_MOUSE_BUTTON_DOWN;CHECK(card.handle(mouse));
+    motion.motion.x=outside.x;motion.motion.y=outside.y;CHECK(card.handle(motion));
+    CHECK_FALSE(card.handle(focus));
+    mouse.type=SDL_EVENT_MOUSE_BUTTON_UP;CHECK_FALSE(card.handle(mouse));
+    card.update(6);CHECK(destinations==2);
+}
+
 TEST_CASE("guidance adapts to desktop touch and large text without consuming map input [display][artifacts]" * doctest::test_suite("IntroductionUI"))
 {
     for (const auto &[width,height,touch,textSize] : {std::tuple{1024,768,false,100},

@@ -277,6 +277,10 @@
           {
             "type": "none",
             "target": "workers"
+          },
+          {
+            "type": "none",
+            "target": "patient"
           }
         ]
       }

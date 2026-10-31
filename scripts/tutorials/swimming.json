@@ -132,6 +132,15 @@
             "baseline": "lesson"
           }
         }
+      ],
+      "recovery": [
+        {
+          "hint": 3,
+          "when": {
+            "type": "none",
+            "target": "trainees"
+          }
+        }
       ]
     },
     {
