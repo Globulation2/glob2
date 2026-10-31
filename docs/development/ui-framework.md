@@ -253,7 +253,7 @@ describe it as agent-reviewed and keep unverified platforms explicit.
 Build `translation-preview-harness` for unregistered catalog captures. Its
 `matrix ROOT INPUT OUTPUT WIDTH HEIGHT` mode uses the actual game font and shared
 wrapper at several authored sizes and raster scales. `screen` adds a screen name
-(`main`, `settings`, `settings-audio`, `lobby` or `lobby-players`); `game` adds
+(`main`, `settings`, `settings-audio`, `lobby`, `lobby-players` or `new-map`); `game` adds
 `gameplay`, `tutorial` (the introduction), or `tutorial:LESSON-ID` and captures
 the real engine and menu dialog. Tutorial IDs must belong to the current shipped
 lesson catalog. When a lesson opens its automatic briefing, the harness saves
@@ -262,7 +262,11 @@ A published tutorial model alone does not prove that its text is visible. Inputs
 `native.json` and `online.json` key/value objects plus `metadata.json` identifying
 the locale. Preserve the original text-catalog hashes in that metadata when
 converting formats. A small pilot is a font diagnostic, not evidence that the
-whole catalog was displayed.
+whole catalog was displayed. `editor ROOT INPUT OUTPUT WIDTH HEIGHT` captures the
+production map editor, terrain controls and menu on a blank map without stepping
+the simulation. It uses the portable SDL renderer; set `GLOB2_MOBILE_UI=1` to
+inspect the phone presentation. These resized desktop captures do not establish
+rendering on an actual mobile device.
 
 Capture evidence includes the executable hash and compiled build provenance,
 as well as current source, catalog and font hashes. Freeze sources during builds
