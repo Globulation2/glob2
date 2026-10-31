@@ -60,6 +60,14 @@ jobs:
         try:
             actual=run('source',['git','rev-parse','HEAD']).strip(); assert actual==summary['source']
             assert run('architecture',['uname','-m']).strip()=='arm64'
+            candidates=[]
+            for candidate in sorted(Path('/Applications').glob('Xcode*.app/Contents/Developer')):
+                version=subprocess.run(['/usr/bin/env','DEVELOPER_DIR='+str(candidate),'xcodebuild','-version'],capture_output=True,text=True,timeout=60)
+                candidates.append({'path':str(candidate),'exit':version.returncode,'version':version.stdout,'stderr':version.stderr})
+            (proof/'xcode-candidates.json').write_text(json.dumps(candidates,indent=2))
+            exact=[c for c in candidates if c['exit']==0 and c['version'].splitlines()[0]=='Xcode 27.0']
+            assert exact,'Pinned Xcode27.0 unavailable; installed candidates retained'
+            os.environ['DEVELOPER_DIR']=exact[0]['path'];summary['developer_dir']=exact[0]['path']
             run('xcode',['xcodebuild','-version']);run('sdks',['xcodebuild','-showsdks'])
             doctor=run('doctor',['python3','mobile/doctor.py','ios','environment=simulator','release=1']);(proof/'toolchain.json').write_text(doctor)
             run('dependencies',['python3','mobile/dependencies.py','--target','ios','--environment','simulator','--release','--jobs','2'],3600)
