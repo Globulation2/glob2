@@ -2,6 +2,7 @@
 """Check bundled font coverage through the game's SDL3_ttf library."""
 import ctypes
 import ctypes.util
+import json
 import os
 from pathlib import Path
 import unittest
@@ -47,6 +48,22 @@ class FontCoverageTest(unittest.TestCase):
                     ord(c) > 0xFFFF or not any(ttf.TTF_FontHasGlyph(font, ord(c)) for font in fonts)))
                 with self.subTest(catalog=path.name):
                     self.assertEqual(missing, [], 'Missing glyphs: ' + repr(missing))
+            # Bulgarian must work with the default font alone, including the
+            # reduced font used before optional browser downloads arrive.
+            native = (ROOT / 'data/texts.bg.txt').read_text(encoding='utf-8').splitlines()[1::2]
+            online = json.loads((ROOT / 'platform/packages/i18n/locales/bg.json').read_text())
+            values = native + [text for value in online.values()
+                               for text in (value.values() if isinstance(value, dict) else [value])]
+            characters = set(''.join(values) + 'ѝЍ„“”’–—…и\u0300И\u0300')
+            core = ttf.TTF_OpenFont(str(ROOT / 'browser/assets/sans-core.ttf').encode(), 13)
+            self.assertTrue(core, 'Could not load browser starter font')
+            fonts.append(core)
+            for name, font in [('native Bulgarian', fonts[0]), ('browser Bulgarian', core)]:
+                missing = sorted(c for c in characters if ord(c) > 32 and
+                                 c not in '\u200c\u200d\u200e\u200f' and
+                                 not ttf.TTF_FontHasGlyph(font, ord(c)))
+                with self.subTest(font=name):
+                    self.assertEqual(missing, [], 'Missing Bulgarian glyphs: ' + repr(missing))
         finally:
             for font in fonts:
                 ttf.TTF_CloseFont(font)
