@@ -1,0 +1,69 @@
+{
+  "revision": "80d63c5ad774a5312a001f5864ccd459947ef657",
+  "fetched_master": "e67cba82e7ff1738efdfc65bf3a7c47dc8f7dcd1",
+  "environment": "Linux-7.0.0-38-generic-x86_64-with-glibc2.43",
+  "scope": {
+    "catalogs_updated": 32,
+    "entries_per_catalog": 209,
+    "translations_added": 6688,
+    "shared_platforms": [
+      "desktop",
+      "mobile",
+      "browser"
+    ],
+    "simulation_changed": false
+  },
+  "validation": {
+    "translation_tests": "passed: 10 tests; translation-tests.log",
+    "tutorial_content_tests": "passed: 11 tests; tutorial-content-tests.log",
+    "translation_program_tests": "passed: 13 tests",
+    "tutorial_build_check": "passed: all 10 generated lessons unchanged",
+    "strict_audit": "passed: 36 catalogs, zero untranslated values, missing/obsolete keys or structural errors; final-audit.json",
+    "catalog_integrity": "passed: key order and existing nonblank values preserved; catalog-integrity.json",
+    "diff_check": "passed"
+  },
+  "limits": [
+    "Rendered tutorial screens were not verified: preview harness build failed because SDL3_ttf, SDL3_image, SDL3_net are unavailable in this environment.",
+    "Translations were authored/reviewed by agents (some initial drafts machine-assisted), not certified by native human speakers.",
+    "No game logic, lesson definitions, serialization, replay/network behavior or runtime dependencies changed."
+  ],
+  "python": "3.14.4",
+  "integration": "PR head directly based on fetched master; mergeable with no conflicts",
+  "commands": [
+    {
+      "command": "python3 data/check_translations.py --strict --json",
+      "exit_status": 0,
+      "result": "36 catalogs; zero missing/untranslated/obsolete keys and structural errors",
+      "evidence": "final-audit.json"
+    },
+    {
+      "command": "python3 test/test_translations.py",
+      "exit_status": 0,
+      "tests": 10,
+      "evidence": "translation-tests.log"
+    },
+    {
+      "command": "python3 test/test_tutorial_content.py",
+      "exit_status": 0,
+      "tests": 11,
+      "evidence": "tutorial-content-tests.log"
+    },
+    {
+      "command": "python3 test/test_translation_program.py",
+      "exit_status": 0,
+      "tests": 13,
+      "evidence": "translation-program-tests.log"
+    },
+    {
+      "command": "python3 tools/tutorials/build.py --check",
+      "exit_status": 0,
+      "result": "10 generated lessons current",
+      "evidence": "tutorial-build-check.log"
+    },
+    {
+      "command": "git diff --check",
+      "exit_status": 0
+    }
+  ],
+  "coverage_rationale": "Shared translation catalogs and coverage regression only: focused checks verify completeness, format, token preservation, fallback prevention and unchanged generated lessons. No simulation code, serialization, network/replay gates or dependencies changed, so sim-version/checksum/save-load tests are not applicable. Shared catalogs cover desktop/mobile/browser assets, but rendered platform layouts are unverified."
+}
