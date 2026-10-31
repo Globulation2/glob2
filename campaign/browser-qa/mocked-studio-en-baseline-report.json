@@ -1,0 +1,827 @@
+{
+  "fixture": "Explicitly mocked map-studio restored conversation/project/account, based on repository e2e/studio.spec.ts. Seeded real local map preview; no provider call/generation or production session.",
+  "captures": [
+    {
+      "device": "desktop",
+      "view": "initial",
+      "file": "desktop-EN-BASELINE-MOCKED-map-studio-initial.png",
+      "lang": "en",
+      "overflow": 0,
+      "untranslatedKnownStudioLiterals": [
+        "Discussion spends no credits; 1 available Map credit is required. Creation requests build automatically · 1 credit on delivery.",
+        "New map"
+      ],
+      "bodyText": "Skip to content\nAbout & help\nLanguage\nالعربية\nPortuguês brasileiro\nCatalà\nČeština\nDeutsch\nDansk\nEnglish\nEspañol\nEsperanto\nEuskara\nفارسی\nFrançais\nΕλληνικά\nMagyar\nItaliano\nNederlands\nPolski\nPortuguês europeu\nRomână\nРусский\nSlovenščina\nSlovenčina\nСрпски\nSuomi\nSvenska\nTürkçe\n繁體中文\n简体中文\nУкраїнська\nBahasa Indonesia\nTiếng Việt\n日本語\n한국어\nहिन्दी\nاردو\nKiswahili\nไทย\nSign out\nAI Map Studio\nอาณานิคมริมแม่น้ำ\n3\nMap credits\n◉\nYou\n07:00 AM\n\nสร้างเกาะที่มีเส้นทางกว้างและแหล่งอาหารใกล้ฐาน\n\nDelivered\n256 × 128 · 4 players\n\nYour map is ready to play.\n\nView map\n✧\nMap designer\n07:00 AM\n\nแผนที่มีพื้นที่ก่อสร้าง แหล่งไม้ และอาหารที่งอกใหม่ได้\n\nDelivered\n256 × 128 · 4 players\n\nYour map is ready to play.\n\nView map\nEditing version 2\nNew map\n256 × 128 · 4 players\n\nEditing version 2\n\nDescribe your map or discuss changes\nEnter to send · Shift + Enter for a new line\nSend\n\nDiscussion spends no credits; 1 available Map credit is required. Creation requests build automatically · 1 credit on delivery.\n\nPane widths\nPreview\nEdit\nHistory\nMap canvas\nInspect version\nVersion 1\nVersion 2\nCompare with version\nCompare…\nVersion 1\nReady for your next adventure\nPLAYABLE MAP\n−\n100%\n＋\nFit\nVersion 2\nDrag to explore when zoomed\nBuild details\nPlay\n↗\nEdit this version\nNew map\nDownload\nMore",
+      "settings": [
+        {
+          "open": false,
+          "bounds": {
+            "x": 401.484375,
+            "y": 568.171875,
+            "width": 137.703125,
+            "height": 44,
+            "top": 568.171875,
+            "right": 539.1875,
+            "bottom": 612.171875,
+            "left": 401.484375
+          },
+          "fieldset": {
+            "x": 401.484375,
+            "y": 612.171875,
+            "width": 137.703125,
+            "height": 85.734375,
+            "top": 612.171875,
+            "right": 539.1875,
+            "bottom": 697.90625,
+            "left": 401.484375
+          },
+          "text": "256 × 128 · 4 players",
+          "controls": [
+            {
+              "value": "256",
+              "bounds": {
+                "x": 456.484375,
+                "y": 646.765625,
+                "width": 28,
+                "height": 34.140625,
+                "top": 646.765625,
+                "right": 484.484375,
+                "bottom": 680.90625,
+                "left": 456.484375
+              },
+              "hitReachable": false
+            },
+            {
+              "value": "128",
+              "bounds": {
+                "x": 534.484375,
+                "y": 646.765625,
+                "width": 28,
+                "height": 34.140625,
+                "top": 646.765625,
+                "right": 562.484375,
+                "bottom": 680.90625,
+                "left": 534.484375
+              },
+              "hitReachable": false
+            },
+            {
+              "value": "4",
+              "bounds": {
+                "x": 616.484375,
+                "y": 646.765625,
+                "width": 28,
+                "height": 34.140625,
+                "top": 646.765625,
+                "right": 644.484375,
+                "bottom": 680.90625,
+                "left": 616.484375
+              },
+              "hitReachable": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "device": "desktop",
+      "view": "chat",
+      "file": "desktop-EN-BASELINE-MOCKED-map-studio-chat.png",
+      "lang": "en",
+      "overflow": 0,
+      "untranslatedKnownStudioLiterals": [
+        "Discussion spends no credits; 1 available Map credit is required. Creation requests build automatically · 1 credit on delivery.",
+        "New map"
+      ],
+      "bodyText": "Skip to content\nAbout & help\nLanguage\nالعربية\nPortuguês brasileiro\nCatalà\nČeština\nDeutsch\nDansk\nEnglish\nEspañol\nEsperanto\nEuskara\nفارسی\nFrançais\nΕλληνικά\nMagyar\nItaliano\nNederlands\nPolski\nPortuguês europeu\nRomână\nРусский\nSlovenščina\nSlovenčina\nСрпски\nSuomi\nSvenska\nTürkçe\n繁體中文\n简体中文\nУкраїнська\nBahasa Indonesia\nTiếng Việt\n日本語\n한국어\nहिन्दी\nاردو\nKiswahili\nไทย\nSign out\nAI Map Studio\nอาณานิคมริมแม่น้ำ\n3\nMap credits\n◉\nYou\n07:00 AM\n\nสร้างเกาะที่มีเส้นทางกว้างและแหล่งอาหารใกล้ฐาน\n\nDelivered\n256 × 128 · 4 players\n\nYour map is ready to play.\n\nView map\n✧\nMap designer\n07:00 AM\n\nแผนที่มีพื้นที่ก่อสร้าง แหล่งไม้ และอาหารที่งอกใหม่ได้\n\nDelivered\n256 × 128 · 4 players\n\nYour map is ready to play.\n\nView map\nEditing version 2\nNew map\n256 × 128 · 4 players\n\nEditing version 2\n\nDescribe your map or discuss changes\nEnter to send · Shift + Enter for a new line\nSend\n\nDiscussion spends no credits; 1 available Map credit is required. Creation requests build automatically · 1 credit on delivery.\n\nPane widths\nPreview\nEdit\nHistory\nMap canvas\nInspect version\nVersion 1\nVersion 2\nCompare with version\nCompare…\nVersion 1\nReady for your next adventure\nPLAYABLE MAP\n−\n100%\n＋\nFit\nVersion 2\nDrag to explore when zoomed\nBuild details\nPlay\n↗\nEdit this version\nNew map\nDownload\nMore",
+      "settings": [
+        {
+          "open": false,
+          "bounds": {
+            "x": 401.484375,
+            "y": 568.171875,
+            "width": 137.703125,
+            "height": 44,
+            "top": 568.171875,
+            "right": 539.1875,
+            "bottom": 612.171875,
+            "left": 401.484375
+          },
+          "fieldset": {
+            "x": 401.484375,
+            "y": 612.171875,
+            "width": 137.703125,
+            "height": 85.734375,
+            "top": 612.171875,
+            "right": 539.1875,
+            "bottom": 697.90625,
+            "left": 401.484375
+          },
+          "text": "256 × 128 · 4 players",
+          "controls": [
+            {
+              "value": "256",
+              "bounds": {
+                "x": 456.484375,
+                "y": 646.765625,
+                "width": 28,
+                "height": 34.140625,
+                "top": 646.765625,
+                "right": 484.484375,
+                "bottom": 680.90625,
+                "left": 456.484375
+              },
+              "hitReachable": false
+            },
+            {
+              "value": "128",
+              "bounds": {
+                "x": 534.484375,
+                "y": 646.765625,
+                "width": 28,
+                "height": 34.140625,
+                "top": 646.765625,
+                "right": 562.484375,
+                "bottom": 680.90625,
+                "left": 534.484375
+              },
+              "hitReachable": false
+            },
+            {
+              "value": "4",
+              "bounds": {
+                "x": 616.484375,
+                "y": 646.765625,
+                "width": 28,
+                "height": 34.140625,
+                "top": 646.765625,
+                "right": 644.484375,
+                "bottom": 680.90625,
+                "left": 616.484375
+              },
+              "hitReachable": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "device": "desktop",
+      "view": "preview",
+      "file": "desktop-EN-BASELINE-MOCKED-map-studio-preview.png",
+      "lang": "en",
+      "overflow": 0,
+      "untranslatedKnownStudioLiterals": [
+        "Discussion spends no credits; 1 available Map credit is required. Creation requests build automatically · 1 credit on delivery.",
+        "New map"
+      ],
+      "bodyText": "Skip to content\nAbout & help\nLanguage\nالعربية\nPortuguês brasileiro\nCatalà\nČeština\nDeutsch\nDansk\nEnglish\nEspañol\nEsperanto\nEuskara\nفارسی\nFrançais\nΕλληνικά\nMagyar\nItaliano\nNederlands\nPolski\nPortuguês europeu\nRomână\nРусский\nSlovenščina\nSlovenčina\nСрпски\nSuomi\nSvenska\nTürkçe\n繁體中文\n简体中文\nУкраїнська\nBahasa Indonesia\nTiếng Việt\n日本語\n한국어\nहिन्दी\nاردو\nKiswahili\nไทย\nSign out\nAI Map Studio\nอาณานิคมริมแม่น้ำ\n3\nMap credits\n◉\nYou\n07:00 AM\n\nสร้างเกาะที่มีเส้นทางกว้างและแหล่งอาหารใกล้ฐาน\n\nDelivered\n256 × 128 · 4 players\n\nYour map is ready to play.\n\nView map\n✧\nMap designer\n07:00 AM\n\nแผนที่มีพื้นที่ก่อสร้าง แหล่งไม้ และอาหารที่งอกใหม่ได้\n\nDelivered\n256 × 128 · 4 players\n\nYour map is ready to play.\n\nView map\nEditing version 2\nNew map\n256 × 128 · 4 players\n\nEditing version 2\n\nDescribe your map or discuss changes\nEnter to send · Shift + Enter for a new line\nSend\n\nDiscussion spends no credits; 1 available Map credit is required. Creation requests build automatically · 1 credit on delivery.\n\nPane widths\nPreview\nEdit\nHistory\nMap canvas\nInspect version\nVersion 1\nVersion 2\nCompare with version\nCompare…\nVersion 1\nReady for your next adventure\nPLAYABLE MAP\n−\n100%\n＋\nFit\nVersion 2\nDrag to explore when zoomed\nBuild details\nPlay\n↗\nEdit this version\nNew map\nDownload\nMore",
+      "settings": [
+        {
+          "open": false,
+          "bounds": {
+            "x": 401.484375,
+            "y": 568.171875,
+            "width": 137.703125,
+            "height": 44,
+            "top": 568.171875,
+            "right": 539.1875,
+            "bottom": 612.171875,
+            "left": 401.484375
+          },
+          "fieldset": {
+            "x": 401.484375,
+            "y": 612.171875,
+            "width": 137.703125,
+            "height": 85.734375,
+            "top": 612.171875,
+            "right": 539.1875,
+            "bottom": 697.90625,
+            "left": 401.484375
+          },
+          "text": "256 × 128 · 4 players",
+          "controls": [
+            {
+              "value": "256",
+              "bounds": {
+                "x": 456.484375,
+                "y": 646.765625,
+                "width": 28,
+                "height": 34.140625,
+                "top": 646.765625,
+                "right": 484.484375,
+                "bottom": 680.90625,
+                "left": 456.484375
+              },
+              "hitReachable": false
+            },
+            {
+              "value": "128",
+              "bounds": {
+                "x": 534.484375,
+                "y": 646.765625,
+                "width": 28,
+                "height": 34.140625,
+                "top": 646.765625,
+                "right": 562.484375,
+                "bottom": 680.90625,
+                "left": 534.484375
+              },
+              "hitReachable": false
+            },
+            {
+              "value": "4",
+              "bounds": {
+                "x": 616.484375,
+                "y": 646.765625,
+                "width": 28,
+                "height": 34.140625,
+                "top": 646.765625,
+                "right": 644.484375,
+                "bottom": 680.90625,
+                "left": 616.484375
+              },
+              "hitReachable": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "device": "desktop",
+      "view": "settings",
+      "file": "desktop-EN-BASELINE-MOCKED-map-studio-settings.png",
+      "lang": "en",
+      "overflow": 0,
+      "untranslatedKnownStudioLiterals": [
+        "Discussion spends no credits; 1 available Map credit is required. Creation requests build automatically · 1 credit on delivery.",
+        "New map"
+      ],
+      "bodyText": "Skip to content\nAbout & help\nLanguage\nالعربية\nPortuguês brasileiro\nCatalà\nČeština\nDeutsch\nDansk\nEnglish\nEspañol\nEsperanto\nEuskara\nفارسی\nFrançais\nΕλληνικά\nMagyar\nItaliano\nNederlands\nPolski\nPortuguês europeu\nRomână\nРусский\nSlovenščina\nSlovenčina\nСрпски\nSuomi\nSvenska\nTürkçe\n繁體中文\n简体中文\nУкраїнська\nBahasa Indonesia\nTiếng Việt\n日本語\n한국어\nहिन्दी\nاردو\nKiswahili\nไทย\nSign out\nAI Map Studio\nอาณานิคมริมแม่น้ำ\n3\nMap credits\n◉\nYou\n07:00 AM\n\nสร้างเกาะที่มีเส้นทางกว้างและแหล่งอาหารใกล้ฐาน\n\nDelivered\n256 × 128 · 4 players\n\nYour map is ready to play.\n\nView map\n✧\nMap designer\n07:00 AM\n\nแผนที่มีพื้นที่ก่อสร้าง แหล่งไม้ และอาหารที่งอกใหม่ได้\n\nDelivered\n256 × 128 · 4 players\n\nYour map is ready to play.\n\nView map\nNew map\n256 × 128 · 4 players\nMap settings\nWidth\n128\n256\n512\nHeight\n128\n256\n512\nPlayers\n2\n3\n4\n5\n6\n7\n8\n\nNew map\n\nDescribe your map or discuss changes\nEnter to send · Shift + Enter for a new line\nSend\n\nDiscussion spends no credits; 1 available Map credit is required. Creation requests build automatically · 1 credit on delivery.\n\nPane widths\nPreview\nEdit\nHistory\nMap canvas\nInspect version\nVersion 1\nVersion 2\nCompare with version\nCompare…\nVersion 1\nReady for your next adventure\nPLAYABLE MAP\n−\n100%\n＋\nFit\nVersion 2\nDrag to explore when zoomed\nBuild details\nPlay\n↗\nEdit this version\nNew map\nDownload\nMore",
+      "settings": [
+        {
+          "open": true,
+          "bounds": {
+            "x": 209.1875,
+            "y": 482.4375,
+            "width": 330,
+            "height": 129.734375,
+            "top": 482.4375,
+            "right": 539.1875,
+            "bottom": 612.171875,
+            "left": 209.1875
+          },
+          "fieldset": {
+            "x": 209.1875,
+            "y": 526.4375,
+            "width": 330,
+            "height": 85.734375,
+            "top": 526.4375,
+            "right": 539.1875,
+            "bottom": 612.171875,
+            "left": 209.1875
+          },
+          "text": "256 × 128 · 4 players\nMap settings\nWidth\n128\n256\n512\nHeight\n128\n256\n512\nPlayers\n2\n3\n4\n5\n6\n7\n8",
+          "controls": [
+            {
+              "value": "256",
+              "bounds": {
+                "x": 264.1875,
+                "y": 561.03125,
+                "width": 54,
+                "height": 34.140625,
+                "top": 561.03125,
+                "right": 318.1875,
+                "bottom": 595.171875,
+                "left": 264.1875
+              },
+              "hitReachable": true
+            },
+            {
+              "value": "128",
+              "bounds": {
+                "x": 368.1875,
+                "y": 561.03125,
+                "width": 52,
+                "height": 34.140625,
+                "top": 561.03125,
+                "right": 420.1875,
+                "bottom": 595.171875,
+                "left": 368.1875
+              },
+              "hitReachable": true
+            },
+            {
+              "value": "4",
+              "bounds": {
+                "x": 474.1875,
+                "y": 561.03125,
+                "width": 48,
+                "height": 34.140625,
+                "top": 561.03125,
+                "right": 522.1875,
+                "bottom": 595.171875,
+                "left": 474.1875
+              },
+              "hitReachable": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "device": "desktop",
+      "view": "eligibility",
+      "file": "desktop-EN-BASELINE-MOCKED-map-studio-eligibility.png",
+      "lang": "en",
+      "overflow": 0,
+      "untranslatedKnownStudioLiterals": [
+        "An available Map credit is needed to chat or build.",
+        "Discussion spends no credits; 1 available Map credit is required. Creation requests build automatically · 1 credit on delivery.",
+        "New map"
+      ],
+      "bodyText": "Skip to content\nAbout & help\nLanguage\nالعربية\nPortuguês brasileiro\nCatalà\nČeština\nDeutsch\nDansk\nEnglish\nEspañol\nEsperanto\nEuskara\nفارسی\nFrançais\nΕλληνικά\nMagyar\nItaliano\nNederlands\nPolski\nPortuguês europeu\nRomână\nРусский\nSlovenščina\nSlovenčina\nСрпски\nSuomi\nSvenska\nTürkçe\n繁體中文\n简体中文\nУкраїнська\nBahasa Indonesia\nTiếng Việt\n日本語\n한국어\nहिन्दी\nاردو\nKiswahili\nไทย\nSign out\nAI Map Studio\nอาณานิคมริมแม่น้ำ\n0\nMap credits\n◉\nYou\n07:00 AM\n\nสร้างเกาะที่มีเส้นทางกว้างและแหล่งอาหารใกล้ฐาน\n\nDelivered\n256 × 128 · 4 players\n\nYour map is ready to play.\n\nView map\n✧\nMap designer\n07:00 AM\n\nแผนที่มีพื้นที่ก่อสร้าง แหล่งไม้ และอาหารที่งอกใหม่ได้\n\nDelivered\n256 × 128 · 4 players\n\nYour map is ready to play.\n\nView map\nNew map\n256 × 128 · 4 players\n\nNew map\n\nDescribe your map or discuss changes\nEnter to send · Shift + Enter for a new line\nSend\n\nDiscussion spends no credits; 1 available Map credit is required. Creation requests build automatically · 1 credit on delivery. An available Map credit is needed to chat or build.\n\nPane widths\nPreview\nEdit\nHistory\nMap canvas\nInspect version\nVersion 1\nVersion 2\nCompare with version\nCompare…\nVersion 1\nReady for your next adventure\nPLAYABLE MAP\n−\n100%\n＋\nFit\nVersion 2\nDrag to explore when zoomed\nBuild details\nPlay\n↗\nEdit this version\nNew map\nDownload\nMore",
+      "settings": [
+        {
+          "open": false,
+          "bounds": {
+            "x": 401.484375,
+            "y": 548.828125,
+            "width": 137.703125,
+            "height": 44,
+            "top": 548.828125,
+            "right": 539.1875,
+            "bottom": 592.828125,
+            "left": 401.484375
+          },
+          "fieldset": {
+            "x": 401.484375,
+            "y": 592.828125,
+            "width": 137.703125,
+            "height": 85.734375,
+            "top": 592.828125,
+            "right": 539.1875,
+            "bottom": 678.5625,
+            "left": 401.484375
+          },
+          "text": "256 × 128 · 4 players",
+          "controls": [
+            {
+              "value": "256",
+              "bounds": {
+                "x": 456.484375,
+                "y": 627.421875,
+                "width": 28,
+                "height": 34.140625,
+                "top": 627.421875,
+                "right": 484.484375,
+                "bottom": 661.5625,
+                "left": 456.484375
+              },
+              "hitReachable": false
+            },
+            {
+              "value": "128",
+              "bounds": {
+                "x": 534.484375,
+                "y": 627.421875,
+                "width": 28,
+                "height": 34.140625,
+                "top": 627.421875,
+                "right": 562.484375,
+                "bottom": 661.5625,
+                "left": 534.484375
+              },
+              "hitReachable": false
+            },
+            {
+              "value": "4",
+              "bounds": {
+                "x": 616.484375,
+                "y": 627.421875,
+                "width": 28,
+                "height": 34.140625,
+                "top": 627.421875,
+                "right": 644.484375,
+                "bottom": 661.5625,
+                "left": 616.484375
+              },
+              "hitReachable": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "device": "phone",
+      "view": "initial",
+      "file": "phone-EN-BASELINE-MOCKED-map-studio-initial.png",
+      "lang": "en",
+      "overflow": 0,
+      "untranslatedKnownStudioLiterals": [
+        "Discussion spends no credits; 1 available Map credit is required. Creation requests build automatically · 1 credit on delivery.",
+        "New map"
+      ],
+      "bodyText": "Skip to content\nAI Map Studio\nอาณานิคมริมแม่น้ำ\n3\nChat\nPreview · Ready\n◉\nYou\n07:00 AM\n\nสร้างเกาะที่มีเส้นทางกว้างและแหล่งอาหารใกล้ฐาน\n\nDelivered\n256 × 128 · 4 players\n\nYour map is ready to play.\n\nView map\n✧\nMap designer\n07:00 AM\n\nแผนที่มีพื้นที่ก่อสร้าง แหล่งไม้ และอาหารที่งอกใหม่ได้\n\nDelivered\n256 × 128 · 4 players\n\nYour map is ready to play.\n\nView map\nEditing version 2\nNew map\n256 × 128 · 4 players\n\nEditing version 2\n\nDescribe your map or discuss changes\nEnter to send · Shift + Enter for a new line\nSend\n\nDiscussion spends no credits; 1 available Map credit is required. Creation requests build automatically · 1 credit on delivery.",
+      "settings": [
+        {
+          "open": false,
+          "bounds": {
+            "x": 262.359375,
+            "y": 527.828125,
+            "width": 133.640625,
+            "height": 44,
+            "top": 527.828125,
+            "right": 396,
+            "bottom": 571.828125,
+            "left": 262.359375
+          },
+          "fieldset": {
+            "x": 262.359375,
+            "y": 571.828125,
+            "width": 133.640625,
+            "height": 85.734375,
+            "top": 571.828125,
+            "right": 396,
+            "bottom": 657.5625,
+            "left": 262.359375
+          },
+          "text": "256 × 128 · 4 players",
+          "controls": [
+            {
+              "value": "256",
+              "bounds": {
+                "x": 313.359375,
+                "y": 606.421875,
+                "width": 28,
+                "height": 34.140625,
+                "top": 606.421875,
+                "right": 341.359375,
+                "bottom": 640.5625,
+                "left": 313.359375
+              },
+              "hitReachable": false
+            },
+            {
+              "value": "128",
+              "bounds": {
+                "x": 387.359375,
+                "y": 606.421875,
+                "width": 28,
+                "height": 34.140625,
+                "top": 606.421875,
+                "right": 415.359375,
+                "bottom": 640.5625,
+                "left": 387.359375
+              },
+              "hitReachable": false
+            },
+            {
+              "value": "4",
+              "bounds": {
+                "x": 465.359375,
+                "y": 606.421875,
+                "width": 28,
+                "height": 34.140625,
+                "top": 606.421875,
+                "right": 493.359375,
+                "bottom": 640.5625,
+                "left": 465.359375
+              },
+              "hitReachable": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "device": "phone",
+      "view": "chat",
+      "file": "phone-EN-BASELINE-MOCKED-map-studio-chat.png",
+      "lang": "en",
+      "overflow": 0,
+      "untranslatedKnownStudioLiterals": [
+        "Discussion spends no credits; 1 available Map credit is required. Creation requests build automatically · 1 credit on delivery.",
+        "New map"
+      ],
+      "bodyText": "Skip to content\nAI Map Studio\nอาณานิคมริมแม่น้ำ\n3\nChat\nPreview · Ready\n◉\nYou\n07:00 AM\n\nสร้างเกาะที่มีเส้นทางกว้างและแหล่งอาหารใกล้ฐาน\n\nDelivered\n256 × 128 · 4 players\n\nYour map is ready to play.\n\nView map\n✧\nMap designer\n07:00 AM\n\nแผนที่มีพื้นที่ก่อสร้าง แหล่งไม้ และอาหารที่งอกใหม่ได้\n\nDelivered\n256 × 128 · 4 players\n\nYour map is ready to play.\n\nView map\nEditing version 2\nNew map\n256 × 128 · 4 players\n\nEditing version 2\n\nDescribe your map or discuss changes\nEnter to send · Shift + Enter for a new line\nSend\n\nDiscussion spends no credits; 1 available Map credit is required. Creation requests build automatically · 1 credit on delivery.",
+      "settings": [
+        {
+          "open": false,
+          "bounds": {
+            "x": 262.359375,
+            "y": 527.828125,
+            "width": 133.640625,
+            "height": 44,
+            "top": 527.828125,
+            "right": 396,
+            "bottom": 571.828125,
+            "left": 262.359375
+          },
+          "fieldset": {
+            "x": 262.359375,
+            "y": 571.828125,
+            "width": 133.640625,
+            "height": 85.734375,
+            "top": 571.828125,
+            "right": 396,
+            "bottom": 657.5625,
+            "left": 262.359375
+          },
+          "text": "256 × 128 · 4 players",
+          "controls": [
+            {
+              "value": "256",
+              "bounds": {
+                "x": 313.359375,
+                "y": 606.421875,
+                "width": 28,
+                "height": 34.140625,
+                "top": 606.421875,
+                "right": 341.359375,
+                "bottom": 640.5625,
+                "left": 313.359375
+              },
+              "hitReachable": false
+            },
+            {
+              "value": "128",
+              "bounds": {
+                "x": 387.359375,
+                "y": 606.421875,
+                "width": 28,
+                "height": 34.140625,
+                "top": 606.421875,
+                "right": 415.359375,
+                "bottom": 640.5625,
+                "left": 387.359375
+              },
+              "hitReachable": false
+            },
+            {
+              "value": "4",
+              "bounds": {
+                "x": 465.359375,
+                "y": 606.421875,
+                "width": 28,
+                "height": 34.140625,
+                "top": 606.421875,
+                "right": 493.359375,
+                "bottom": 640.5625,
+                "left": 465.359375
+              },
+              "hitReachable": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "device": "phone",
+      "view": "preview",
+      "file": "phone-EN-BASELINE-MOCKED-map-studio-preview.png",
+      "lang": "en",
+      "overflow": 0,
+      "untranslatedKnownStudioLiterals": [
+        "New map"
+      ],
+      "bodyText": "Skip to content\nAI Map Studio\nอาณานิคมริมแม่น้ำ\n3\nChat\nPreview\nPreview\nEdit\nHistory\nMap canvas\nInspect version\nVersion 1\nVersion 2\nCompare with version\nCompare…\nVersion 1\nReady for your next adventure\nPLAYABLE MAP\n−\n100%\n＋\nFit\nVersion 2\nBuild details\nPlay\n↗\nEdit this version\nNew map\nDownload\nMore",
+      "settings": [
+        {
+          "open": false,
+          "bounds": {
+            "x": 0,
+            "y": 0,
+            "width": 0,
+            "height": 0,
+            "top": 0,
+            "right": 0,
+            "bottom": 0,
+            "left": 0
+          },
+          "fieldset": {
+            "x": 0,
+            "y": 0,
+            "width": 0,
+            "height": 0,
+            "top": 0,
+            "right": 0,
+            "bottom": 0,
+            "left": 0
+          },
+          "text": "256 × 128 · 4 playersMap settingsWidth128256512Height128256512Players2345678",
+          "controls": [
+            {
+              "value": "256",
+              "bounds": {
+                "x": 0,
+                "y": 0,
+                "width": 0,
+                "height": 0,
+                "top": 0,
+                "right": 0,
+                "bottom": 0,
+                "left": 0
+              },
+              "hitReachable": false
+            },
+            {
+              "value": "128",
+              "bounds": {
+                "x": 0,
+                "y": 0,
+                "width": 0,
+                "height": 0,
+                "top": 0,
+                "right": 0,
+                "bottom": 0,
+                "left": 0
+              },
+              "hitReachable": false
+            },
+            {
+              "value": "4",
+              "bounds": {
+                "x": 0,
+                "y": 0,
+                "width": 0,
+                "height": 0,
+                "top": 0,
+                "right": 0,
+                "bottom": 0,
+                "left": 0
+              },
+              "hitReachable": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "device": "phone",
+      "view": "settings",
+      "file": "phone-EN-BASELINE-MOCKED-map-studio-settings.png",
+      "lang": "en",
+      "overflow": 0,
+      "untranslatedKnownStudioLiterals": [
+        "Discussion spends no credits; 1 available Map credit is required. Creation requests build automatically · 1 credit on delivery.",
+        "New map"
+      ],
+      "bodyText": "Skip to content\nAI Map Studio\nอาณานิคมริมแม่น้ำ\n3\nChat\nPreview\n◉\nYou\n07:00 AM\n\nสร้างเกาะที่มีเส้นทางกว้างและแหล่งอาหารใกล้ฐาน\n\nDelivered\n256 × 128 · 4 players\n\nYour map is ready to play.\n\nView map\n✧\nMap designer\n07:00 AM\n\nแผนที่มีพื้นที่ก่อสร้าง แหล่งไม้ และอาหารที่งอกใหม่ได้\n\nDelivered\n256 × 128 · 4 players\n\nYour map is ready to play.\n\nView map\nNew map\n256 × 128 · 4 players\nMap settings\nWidth\n128\n256\n512\nHeight\n128\n256\n512\nPlayers\n2\n3\n4\n5\n6\n7\n8\n\nNew map\n\nDescribe your map or discuss changes\nEnter to send · Shift + Enter for a new line\nSend\n\nDiscussion spends no credits; 1 available Map credit is required. Creation requests build automatically · 1 credit on delivery.",
+      "settings": [
+        {
+          "open": true,
+          "bounds": {
+            "x": 78,
+            "y": 442.09375,
+            "width": 318,
+            "height": 129.734375,
+            "top": 442.09375,
+            "right": 396,
+            "bottom": 571.828125,
+            "left": 78
+          },
+          "fieldset": {
+            "x": 78,
+            "y": 486.09375,
+            "width": 318,
+            "height": 85.734375,
+            "top": 486.09375,
+            "right": 396,
+            "bottom": 571.828125,
+            "left": 78
+          },
+          "text": "256 × 128 · 4 players\nMap settings\nWidth\n128\n256\n512\nHeight\n128\n256\n512\nPlayers\n2\n3\n4\n5\n6\n7\n8",
+          "controls": [
+            {
+              "value": "256",
+              "bounds": {
+                "x": 129,
+                "y": 520.6875,
+                "width": 54,
+                "height": 34.140625,
+                "top": 520.6875,
+                "right": 183,
+                "bottom": 554.828125,
+                "left": 129
+              },
+              "hitReachable": true
+            },
+            {
+              "value": "128",
+              "bounds": {
+                "x": 229,
+                "y": 520.6875,
+                "width": 52,
+                "height": 34.140625,
+                "top": 520.6875,
+                "right": 281,
+                "bottom": 554.828125,
+                "left": 229
+              },
+              "hitReachable": true
+            },
+            {
+              "value": "4",
+              "bounds": {
+                "x": 331,
+                "y": 520.6875,
+                "width": 48,
+                "height": 34.140625,
+                "top": 520.6875,
+                "right": 379,
+                "bottom": 554.828125,
+                "left": 331
+              },
+              "hitReachable": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "device": "phone",
+      "view": "eligibility",
+      "file": "phone-EN-BASELINE-MOCKED-map-studio-eligibility.png",
+      "lang": "en",
+      "overflow": 0,
+      "untranslatedKnownStudioLiterals": [
+        "An available Map credit is needed to chat or build.",
+        "Discussion spends no credits; 1 available Map credit is required. Creation requests build automatically · 1 credit on delivery.",
+        "New map"
+      ],
+      "bodyText": "Skip to content\nAI Map Studio\nอาณานิคมริมแม่น้ำ\n0\nChat\nPreview · Ready\n◉\nYou\n07:00 AM\n\nสร้างเกาะที่มีเส้นทางกว้างและแหล่งอาหารใกล้ฐาน\n\nDelivered\n256 × 128 · 4 players\n\nYour map is ready to play.\n\nView map\n✧\nMap designer\n07:00 AM\n\nแผนที่มีพื้นที่ก่อสร้าง แหล่งไม้ และอาหารที่งอกใหม่ได้\n\nDelivered\n256 × 128 · 4 players\n\nYour map is ready to play.\n\nView map\nNew map\n256 × 128 · 4 players\n\nNew map\n\nDescribe your map or discuss changes\nEnter to send · Shift + Enter for a new line\nSend\n\nDiscussion spends no credits; 1 available Map credit is required. Creation requests build automatically · 1 credit on delivery. An available Map credit is needed to chat or build.",
+      "settings": [
+        {
+          "open": false,
+          "bounds": {
+            "x": 262.359375,
+            "y": 527.828125,
+            "width": 133.640625,
+            "height": 44,
+            "top": 527.828125,
+            "right": 396,
+            "bottom": 571.828125,
+            "left": 262.359375
+          },
+          "fieldset": {
+            "x": 262.359375,
+            "y": 571.828125,
+            "width": 133.640625,
+            "height": 85.734375,
+            "top": 571.828125,
+            "right": 396,
+            "bottom": 657.5625,
+            "left": 262.359375
+          },
+          "text": "256 × 128 · 4 players",
+          "controls": [
+            {
+              "value": "256",
+              "bounds": {
+                "x": 313.359375,
+                "y": 606.421875,
+                "width": 28,
+                "height": 34.140625,
+                "top": 606.421875,
+                "right": 341.359375,
+                "bottom": 640.5625,
+                "left": 313.359375
+              },
+              "hitReachable": false
+            },
+            {
+              "value": "128",
+              "bounds": {
+                "x": 387.359375,
+                "y": 606.421875,
+                "width": 28,
+                "height": 34.140625,
+                "top": 606.421875,
+                "right": 415.359375,
+                "bottom": 640.5625,
+                "left": 387.359375
+              },
+              "hitReachable": false
+            },
+            {
+              "value": "4",
+              "bounds": {
+                "x": 465.359375,
+                "y": 606.421875,
+                "width": 28,
+                "height": 34.140625,
+                "top": 606.421875,
+                "right": 493.359375,
+                "bottom": 640.5625,
+                "left": 465.359375
+              },
+              "hitReachable": false
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "errors": []
+}

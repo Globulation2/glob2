@@ -1,0 +1,969 @@
+{
+  "id": "native-general-016",
+  "source_sha256": "6deb12f6155d1ee014b77f0908cc670272ebf24935cbc6db31c8ba73c82a9e29",
+  "surface": "native",
+  "domain": "general",
+  "context": "Read neighbouring source entries and inspect usage before translating ambiguous short labels.",
+  "entries": [
+    {
+      "id": "native:[library Release %0]",
+      "key": "[library Release %0]",
+      "source": "Release %0",
+      "target": "รุ่น​เผยแพร่ %0"
+    },
+    {
+      "id": "native:[library Remove %0]",
+      "key": "[library Remove %0]",
+      "source": "Remove %0",
+      "target": "ลบ %0"
+    },
+    {
+      "id": "native:[library Seed: %0]",
+      "key": "[library Seed: %0]",
+      "source": "Seed: %0",
+      "target": "ค่า​สุ่ม: %0"
+    },
+    {
+      "id": "native:[library %0 · revision %1]",
+      "key": "[library %0 · revision %1]",
+      "source": "%0 · revision %1",
+      "target": "%0 · การ​แก้ไข %1"
+    },
+    {
+      "id": "native:[library Fit]",
+      "key": "[library Fit]",
+      "source": "Fit",
+      "target": "พอดี"
+    },
+    {
+      "id": "native:[library GL only]",
+      "key": "[library GL only]",
+      "source": "GL only",
+      "target": "GL เท่านั้น"
+    },
+    {
+      "id": "native:[Sound or silence?]",
+      "key": "[Sound or silence?]",
+      "source": "Sound or silence?",
+      "target": "เสียง​หรือ​ความ​เงียบ?"
+    },
+    {
+      "id": "native:[Silence]",
+      "key": "[Silence]",
+      "source": "Silence",
+      "target": "ความ​เงียบ"
+    },
+    {
+      "id": "native:[Sound]",
+      "key": "[Sound]",
+      "source": "Sound",
+      "target": "เสียง"
+    },
+    {
+      "id": "native:[audio preference explanation]",
+      "key": "[audio preference explanation]",
+      "source": "The game starts quietly. Would you like silence, or music and game audio?",
+      "target": "เกม​จะ​เริ่มต้น​อย่าง​เงียบ ๆ คุณ​ต้องการ​ความ​เงียบ หรือ​เสียงเพลง​และ​เสียง​เกม?"
+    },
+    {
+      "id": "native:[audio preference change later]",
+      "key": "[audio preference change later]",
+      "source": "You can change this anytime in Settings → Audio.",
+      "target": "คุณ​สามารถ​เปลี่ยน​การ​ตั้งค่า​นี้​ได้​ตลอดเวลา​ใน​เมนู การ​ตั้งค่า → เสียง"
+    },
+    {
+      "id": "native:[audio preference save failed]",
+      "key": "[audio preference save failed]",
+      "source": "Your choice could not be saved. Audio is still off. Please try again.",
+      "target": "ไม่​สามารถ​บันทึก​ตัวเลือก​ของ​คุณ​ได้ เสียง​ยังคง​ปิด​อยู่ โปรด​ลอง​อีกครั้ง"
+    },
+    {
+      "id": "native:[audio choices description]",
+      "key": "[audio choices description]",
+      "source": "Silence: a muted speaker. Sound: a speaker with sound waves.",
+      "target": "ความ​เงียบ : ลำโพง​ที่​ปิด​เสียง เสียง : ลำโพง​ที่​ส่ง​คลื่นเสียง"
+    },
+    {
+      "id": "native:[intro menu]",
+      "key": "[intro menu]",
+      "source": "Introduction",
+      "target": "บท​แนะนำ"
+    },
+    {
+      "id": "native:[intro briefing]",
+      "key": "[intro briefing]",
+      "source": "Learn indirect control: scout with a flag, supply your colony, and direct an attack.",
+      "target": "เรียนรู้​การควบคุม​ทางอ้อม : สอดแนม​โดย​ใช้​ธง ส่ง​เสบียง​ให้​อาณานิคม และ​สั่งการ​โจมตี"
+    },
+    {
+      "id": "native:[intro try]",
+      "key": "[intro try]",
+      "source": "Start introduction",
+      "target": "เริ่ม​บทแนะนำ"
+    },
+    {
+      "id": "native:[intro preflight]",
+      "key": "[intro preflight]",
+      "source": "Your globules act on their own. You choose their jobs through buildings and flags. In this short introduction, scout a landmark, expand food supply, grow your workforce, and direct a small attack.",
+      "target": "ยูนิต​ทำงาน​เอง คุณ​กำหนด​หน้าที่​ผ่าน​อาคาร​และ​ธง ใน​บท​แนะนำ​สั้น​ๆ นี้ คุณ​จะ​สำรวจ​จุด​สังเกต เพิ่ม​แหล่ง​อาหาร เพิ่ม​คนงาน และ​สั่ง​การบุก​เล็ก​ๆ"
+    },
+    {
+      "id": "native:[intro preflight save]",
+      "key": "[intro preflight save]",
+      "source": "Allow about 10 minutes. You can save from the game menu and resume through Load game. Normal hunger and combat rules apply. Choose Tutorial lessons from the main menu to practice more skills.",
+      "target": "ใช้เวลา​ประมาณ 10 นาที บันทึก​ได้​จาก​เมนู​ใน​เกม​แล้ว​เล่น​ต่อ​ผ่าน​โหลด​เกม ใช้​กฎ​ความหิว​และ​การ​รบ​ตามปกติ เลือก​บทเรียน​ฝึกสอน​จาก​เมนูหลัก​เพื่อ​ฝึก​ทักษะ​เพิ่ม"
+    },
+    {
+      "id": "native:[intro preference failed]",
+      "key": "[intro preference failed]",
+      "source": "Your choice could not be saved. You can continue playing; this recommendation may appear again next time.",
+      "target": "ไม่​สามารถ​บันทึก​ตัวเลือก​ของ​คุณ​ได้ คุณ​สามารถ​เล่น​ต่อ​ได้ คำแนะนำ​นี้​อาจ​ปรากฏ​ขึ้น​อีกครั้ง​ใน​ครั้ง​ต่อไป"
+    },
+    {
+      "id": "native:[intro goal scout]",
+      "key": "[intro goal scout]",
+      "source": "Scout the stone landmark",
+      "target": "สำรวจ​จุด​สังเกต​ที่​เป็น​หิน"
+    },
+    {
+      "id": "native:[intro goal build]",
+      "key": "[intro goal build]",
+      "source": "Build another Inn",
+      "target": "สร้าง​โรงเตี๊ยม​เพิ่ม"
+    },
+    {
+      "id": "native:[intro goal supply]",
+      "key": "[intro goal supply]",
+      "source": "Supply your new Inn",
+      "target": "ส่ง​เสบียง​ให้​โรงเตี๊ยม​ใหม่"
+    },
+    {
+      "id": "native:[intro goal grow]",
+      "key": "[intro goal grow]",
+      "source": "Grow the workforce",
+      "target": "ขยาย​กำลังแรงงาน"
+    },
+    {
+      "id": "native:[intro goal attack]",
+      "key": "[intro goal attack]",
+      "source": "Destroy the enemy Swarm",
+      "target": "ทำลาย​รัง​ศัตรู"
+    },
+    {
+      "id": "native:[intro instruction scout]",
+      "key": "[intro instruction scout]",
+      "source": "Open Flags and place an Exploration Flag over the stone patch east of your colony. Assign one explorer. Watch it travel to the flag.",
+      "target": "เปิด​เมนู​ธง และ​วาง​ธงสำรวจ​ไว้​บน​กลุ่ม​หิน​ทาง​ทิศตะวันออก​ของ​อาณานิคม​ของ​คุณ มอบหมาย​นักสำรวจ​หนึ่ง​ตัว แล้ว​เฝ้าดู​นักสำรวจ​เดินทาง​ไป​ยัง​ธง​นั้น"
+    },
+    {
+      "id": "native:[intro instruction build]",
+      "key": "[intro instruction build]",
+      "source": "Open Build and place an Inn near wheat. Assign available workers to construct it. Leave your existing Inn supplied.",
+      "target": "เปิด​สร้าง แล้ว​วาง​โรงเตี๊ยม​ใกล้​ข้าวสาลี มอบหมาย​คนงานว่าง​ให้​ก่อสร้าง และ​คง​คนงาน​ส่ง​เสบียง​ให้​โรงเตี๊ยม​เดิม​ไว้"
+    },
+    {
+      "id": "native:[intro instruction supply]",
+      "key": "[intro instruction supply]",
+      "source": "Select your finished new Inn and give it at least one supplier. Wait for a worker to deliver wheat.",
+      "target": "เลือก​โรงเตี๊ยม​ใหม่​ที่​สร้าง​เสร็จ​แล้ว มอบหมาย​คนงาน​ส่ง​เสบียง​อย่าง​น้อย 1 ตัว แล้ว​รอ​ให้​ส่ง​ข้าวสาลี"
+    },
+    {
+      "id": "native:[intro instruction grow]",
+      "key": "[intro instruction grow]",
+      "source": "Select the Swarm. Set its worker target to at least 2, and its production ratios to workers only. Keep both Inns supplied while a new worker is born.",
+      "target": "เลือก​รัง ตั้ง​จำนวน​คนงาน​ที่​มอบหมาย​อย่าง​น้อย 2 และ​ตั้ง​สัดส่วน​ให้​สร้าง​เฉพาะ​คนงาน ส่ง​เสบียง​ให้​โรงเตี๊ยม​ทั้งสอง​แห่ง​ระหว่าง​รอ​คนงาน​ใหม่​เกิด"
+    },
+    {
+      "id": "native:[intro instruction attack]",
+      "key": "[intro instruction attack]",
+      "source": "Find the enemy Swarm farther east. Use a War Flag to direct your warriors against it. Help is available if you need a reminder.",
+      "target": "หา​รัง​ศัตรู​ถัดไป​ทาง​ตะวันออก ใช้​ธงรบ​ชี้​เป้า​ให้​นักรบ​โจมตี เปิด​ช่วยเหลือ​ได้​หาก​ต้อง​การทบทวน"
+    },
+    {
+      "id": "native:[intro help]",
+      "key": "[intro help]",
+      "source": "Help / why?",
+      "target": "ช่วยเหลือ / ทำไม?"
+    },
+    {
+      "id": "native:[intro help scout]",
+      "key": "[intro help scout]",
+      "source": "Use the minimap to move the view east and find the stone patch. Choose Exploration Flag in Flags, place it on the stone, then leave placement with the secondary mouse button. Select the flag and request 1 explorer. Flags request units; they do not move them instantly. Explorers may stop to eat.",
+      "target": "ใช้​แผนที่​ย่อ​เลื่อน​ไป​ตะวันออก​เพื่อ​หา​กอง​หิน เลือก​ธงสำรวจ​ใน​ธง วาง​บน​หิน แล้ว​กดปุ่ม​เมาส์​รอง​เพื่อ​ออกจาก​โหมด​วาง เลือก​ธง​และ​กำหนด​นักสำรวจ 1 ตัว ธง​ร้องขอ​ยูนิต ไม่​ได้​ย้าย​ยูนิต​ทันที นักสำรวจ​อาจ​หยุด​กิน​อาหาร"
+    },
+    {
+      "id": "native:[intro help build]",
+      "key": "[intro help build]",
+      "source": "Construction consumes wood delivered by workers. Choose Inn from the building controls (the building palette), place it in clear ground near wheat, and request 2 builders. A worker target is a request, not a count of workers already present. Keep suppliers at your existing Inn and Swarm. Any valid location counts.",
+      "target": "การ​ก่อสร้าง​ใช้​ไม้​ที่​คนงาน​ขน​มา เลือก​โรงเตี๊ยม​จาก​แผง​เลือก​อาคาร วาง​บน​ที่โล่ง​ใกล้​ข้าวสาลี และ​กำหนด​คนงานก่อสร้าง 2 ตัว จำนวน​เป้าหมาย​คือ​จำนวน​ที่​ร้องขอ ไม่​ใช่​คนงาน​ที่​อยู่แล้ว คง​คนงาน​ส่ง​เสบียง​ให้​โรงเตี๊ยม​เดิม​และ​รัง​ไว้ วาง​ตรงไหน​ที่​ถูกต้อง​ก็​นับ"
+    },
+    {
+      "id": "native:[intro help supply]",
+      "key": "[intro help supply]",
+      "source": "Construction and everyday supply have separate worker targets. Select the finished Inn and increase its operating target. A supplier gathers wheat and carries it here. Hungry globules eat at Inns; a building with no suppliers will eventually run out. Keep the wheat patch accessible.",
+      "target": "งาน​ก่อสร้าง​กับ​งาน​ส่ง​เสบียง​มี​จำนวน​คนงาน​เป้าหมาย​แยกกัน เลือก​โรงเตี๊ยม​ที่​สร้าง​เสร็จ จากนั้น​เพิ่ม​คนงาน​ใช้งาน คนงาน​ส่ง​เสบียง​เก็บ​ข้าวสาลี​มา​ที่นี่ ยูนิต​ที่​หิว​กิน​อาหาร​ที่​โรงเตี๊ยม หาก​ไม่​มี​คนงาน​ส่ง​เสบียง อาหาร​จะ​หมด​ในที่สุด เปิดทาง​ไป​ยัง​แปลง​ข้าวสาลี​ไว้"
+    },
+    {
+      "id": "native:[intro help grow]",
+      "key": "[intro help grow]",
+      "source": "The Swarm consumes wheat to produce units. Set worker production to 1 and explorer and warrior production to 0. Increase the Swarm worker target to 2 or more. More suppliers can deliver wheat faster, but they compete with other jobs. Maintain food supply at both Inns.",
+      "target": "รัง​ใช้​ข้าวสาลี​สร้าง​ยูนิต ตั้ง​สัดส่วน​คนงาน​เป็น 1 นักสำรวจ​และ​นักรบ​เป็น 0 เพิ่ม​คนงาน​ที่​มอบหมาย​ให้​รัง​เป็น 2 ขึ้นไป คนงาน​ส่ง​เสบียง​มากขึ้น​ขน​ข้าวสาลี​ได้​เร็ว​ขึ้น แต่​ดึง​คนงาน​จาก​งาน​อื่น ส่ง​อาหาร​ให้​โรงเตี๊ยม​ทั้งสอง​ต่อไป"
+    },
+    {
+      "id": "native:[intro help attack]",
+      "key": "[intro help attack]",
+      "source": "Open Flags, choose War Flag, and place it over the enemy Swarm east of the stone. Select the flag and request up to 4 warriors. A small radius keeps them concentrated. Leave placement with the secondary mouse button before selecting the flag. If no warriors remain, produce more at the Swarm. Warriors may stop to eat; keep the Inns supplied.",
+      "target": "เปิด​ธง เลือก​ธงรบ แล้ว​วาง​ทับ​รัง​ศัตรู​ทาง​ตะวันออก​ของ​หิน ออกจาก​โหมด​วาง​ด้วย​ปุ่ม​เมาส์​รอง​ก่อน​เลือก​ธง แล้ว​กำหนด​นักรบ​สูงสุด 4 ตัว ใช้​รัศมี​เล็ก​เพื่อ​รวมกำลัง หาก​นักรบ​หมด​ให้​สร้าง​เพิ่ม​ที่​รัง​ของ​คุณ นักรบ​อาจ​หยุด​กิน​อาหาร จึง​ต้อง​ส่ง​เสบียง​ให้​โรงเตี๊ยม​ต่อไป"
+    },
+    {
+      "id": "native:[intro hint scout]",
+      "key": "[intro hint scout]",
+      "source": "Your explorer needs an assigned Exploration Flag at the eastern stone patch. Check its target and explorer count.",
+      "target": "ธงสำรวจ​ตรง​กอง​หิน​ตะวันออก​ต้อง​กำหนด​นักสำรวจ​ไว้ ตรวจ​เป้าหมาย​และ​จำนวน​นักสำรวจ"
+    },
+    {
+      "id": "native:[intro hint build]",
+      "key": "[intro hint build]",
+      "source": "If you removed the new Inn, build another. Otherwise check the construction site and its worker target. Existing supply jobs may occupy your workers; keep food running while making builders available.",
+      "target": "หาก​คุณ​รื้อถอน​โรงเตี๊ยม​ใหม่ ให้​สร้าง​ใหม่ มิเช่นนั้น ให้​ตรวจสอบ​สถานที่ก่อสร้าง​และ​เป้าหมาย​จำนวน​คนงาน งาน​จัดหา​วัสดุ​ที่​มี​อยู่แล้ว​อาจ​ใช้​คนงาน​ของ​คุณ​อยู่ ดังนั้น​ให้​จัด​หาอาหาร​อย่าง​ต่อเนื่อง​ในขณะที่​จัดหา​คนงานก่อสร้าง​ให้​พร้อม​ใช้งาน"
+    },
+    {
+      "id": "native:[intro hint supply]",
+      "key": "[intro hint supply]",
+      "source": "Select the finished new Inn. Check its worker target and watch for wheat deliveries. Workers may need time to travel or eat.",
+      "target": "เลือก​โรงเตี๊ยม​ใหม่​ที่​สร้าง​เสร็จ​แล้ว ตรวจสอบ​เป้าหมาย​จำนวน​คนงาน​และ​คอย​ดู​การ​ส่งมอบ​ข้าวสาลี คนงาน​อาจ​ต้องการ​เวลา​ใน​การ​เดินทาง​หรือ​รับประทาน​อาหาร"
+    },
+    {
+      "id": "native:[intro hint grow]",
+      "key": "[intro hint grow]",
+      "source": "Check Swarm supply and worker-only production. Keep the Inns supplied while waiting for another worker.",
+      "target": "ตรวจ​เสบียง​ของ​รัง​และ​ตั้ง​ให้​สร้าง​เฉพาะ​คนงาน ส่ง​อาหาร​ให้​โรงเตี๊ยม​ต่อไป​ระหว่าง​รอ​คนงาน​ใหม่"
+    },
+    {
+      "id": "native:[intro hint attack]",
+      "key": "[intro hint attack]",
+      "source": "Check your War Flag, requested warrior count, and food supply. Your warriors need time to travel and attack.",
+      "target": "ตรวจสอบ​ธงรบ จำนวน​นักรบ​ที่​ต้องการ และ​เสบียงอาหาร นักรบ​ของ​คุณ​ต้องการ​เวลา​ใน​การ​เดินทาง​และ​โจมตี"
+    },
+    {
+      "id": "native:[intro hint no suppliers]",
+      "key": "[intro hint no suppliers]",
+      "source": "Your new Inn or building site has a worker target of 0. Select it and request workers.",
+      "target": "โรงเตี๊ยม​ใหม่​หรือ​พื้นที่​ก่อสร้าง​มี​จำนวน​คนงาน​เป้าหมาย​เป็น 0 เลือก​อาคาร​แล้ว​กำหนด​คนงาน"
+    },
+    {
+      "id": "native:[intro hint retry]",
+      "key": "[intro hint retry]",
+      "source": "A unit or building needed for this lesson has been lost. Load an earlier save or restart this lesson from the game menu.",
+      "target": "ยูนิต​หรือ​อาคาร​ที่​จำ​เป็นต่อ​บทเรียน​สูญเสีย​ไป โหลด​เซฟ​ก่อนหน้า​หรือ​เริ่ม​บทเรียน​ใหม่​จาก​เมนู​เกม"
+    },
+    {
+      "id": "native:[intro complete]",
+      "key": "[intro complete]",
+      "source": "Introduction complete",
+      "target": "จบ​บทแนะนำ"
+    },
+    {
+      "id": "native:[intro complete body]",
+      "key": "[intro complete body]",
+      "source": "You directed autonomous globules, expanded food supply, grew the colony, and organized an attack. Continue with Tutorial lessons for training, upgrades, and defense, or return to the main menu to start a match.",
+      "target": "คุณ​กำหนด​งาน​ให้​ยูนิต​ที่​ทำงาน​เอง เพิ่ม​อาหาร ขยาย​อาณานิคม และ​จัด​การบุก​แล้ว เรียน​เรื่อง​การ​ฝึก​ทักษะ การ​อัปเกรด และ​การ​ป้องกัน​ต่อ​ใน​บทเรียน​ฝึกสอน หรือ​กลับ​เมนูหลัก​เพื่อ​เริ่ม​แมตช์"
+    },
+    {
+      "id": "native:[intro play again]",
+      "key": "[intro play again]",
+      "source": "Play again",
+      "target": "เล่น​อีกครั้ง"
+    },
+    {
+      "id": "native:[intro restart]",
+      "key": "[intro restart]",
+      "source": "Restart introduction",
+      "target": "เริ่ม​บท​แนะนำ​ใหม่"
+    },
+    {
+      "id": "native:[intro restart body]",
+      "key": "[intro restart body]",
+      "source": "Restart from the prepared colony? Unsaved progress in this introduction will be lost.",
+      "target": "เริ่ม​บทแนะนำ​ใหม่​จาก​อาณานิคม​ที่​เตรียม​ไว้​หรือไม่? ความคืบหน้า​ที่​ยัง​ไม่​บันทึก​จะ​หายไป"
+    },
+    {
+      "id": "native:[intro help touch scout]",
+      "key": "[intro help touch scout]",
+      "source": "Drag empty ground to move the view before placing a flag. Find the stone patch east of the colony. Open Flags, choose Exploration Flag, place it on the stone and confirm. Select the flag and request 1 explorer using its assigned-unit target. Globules travel on their own and may stop to eat.",
+      "target": "ลาก​พื้นที่ว่าง​เพื่อ​เลื่อน​มุมมอง​ก่อน​วาง​ธง หา​กอง​หิน​ทาง​ตะวันออก เปิด​ธง เลือก​ธงสำรวจ วาง​บน​หิน​แล้ว​ยืนยัน เลือก​ธง​แล้ว​ตั้ง​จำนวน​นักสำรวจ 1 ตัว ยูนิต​เดินทาง​เอง​และ​อาจ​หยุด​กิน​อาหาร"
+    },
+    {
+      "id": "native:[intro help touch build]",
+      "key": "[intro help touch build]",
+      "source": "Choose Inn from Build. Place it in clear ground near wheat and confirm. Select the site and request 2 builders. A worker target is a request, not a count of workers already present. Keep the existing Inn and Swarm supplied. Any valid location counts.",
+      "target": "เลือก​โรงเตี๊ยม​จาก​สร้าง วาง​บน​ที่โล่ง​ใกล้​ข้าวสาลี​แล้ว​ยืนยัน เลือก​พื้นที่​ก่อสร้าง​และ​กำหนด​คนงาน 2 ตัว จำนวน​เป้าหมาย​คือ​จำนวน​ที่​ร้องขอ ไม่​ใช่​จำนวน​ที่​มี​อยู่ ส่ง​เสบียง​ให้​โรงเตี๊ยม​เดิม​และ​รัง​ต่อไป วาง​ตรงไหน​ที่​ถูกต้อง​ก็​นับ"
+    },
+    {
+      "id": "native:[intro help touch supply]",
+      "key": "[intro help touch supply]",
+      "source": "Select the finished new Inn and increase its assigned-worker target. Construction and everyday supply have separate targets. A supplier gathers wheat and carries it here. Hungry globules eat at Inns; a building with no suppliers eventually runs out. Keep the wheat accessible.",
+      "target": "เลือก​โรงเตี๊ยม​ใหม่​ที่​เสร็จ​แล้ว​และ​เพิ่ม​จำนวน​คนงาน​ที่​มอบหมาย งาน​ก่อสร้าง​กับ​ส่ง​เสบียง​มี​เป้าหมาย​แยกกัน คนงาน​ส่ง​เสบียง​เก็บ​ข้าวสาลี​มา​ที่นี่ ยูนิต​ที่​หิว​กิน​อาหาร​ที่​โรงเตี๊ยม หาก​ไม่​มี​คนงาน​ส่ง​เสบียง อาหาร​ใน​อาคาร​จะ​หมด​ในที่สุด เปิดทาง​ไป​ยัง​ข้าวสาลี​ไว้"
+    },
+    {
+      "id": "native:[intro help touch grow]",
+      "key": "[intro help touch grow]",
+      "source": "Select the Swarm. Set worker production to 1 and explorer and warrior production to 0. Increase its assigned-worker target to 2 or more. Suppliers bring wheat for new units, but they compete with other jobs. Keep both Inns supplied.",
+      "target": "เลือก​รัง ตั้ง​สัดส่วน​คนงาน​เป็น 1 นักสำรวจ​และ​นักรบ​เป็น 0 เพิ่ม​คนงาน​ที่​มอบหมาย​เป็น 2 ขึ้นไป คนงาน​ส่ง​เสบียง​นำ​ข้าวสาลี​มา​สร้าง​ยูนิต​ใหม่ แต่​ต้อง​แบ่ง​จาก​งาน​อื่น ส่ง​เสบียง​ให้​โรงเตี๊ยม​ทั้งสอง​ต่อไป"
+    },
+    {
+      "id": "native:[intro help touch attack]",
+      "key": "[intro help touch attack]",
+      "source": "Open Flags, choose War Flag, place it over the enemy Swarm east of the stone and confirm. Select the flag and request up to 4 warriors. A small radius concentrates them. If none remain, produce warriors at your Swarm. Warriors may stop to eat; keep the Inns supplied.",
+      "target": "เปิด​ธง เลือก​ธงรบ วาง​ทับ​รัง​ศัตรู​ทาง​ตะวันออก​ของ​หิน​แล้ว​ยืนยัน เลือก​ธง​และ​กำหนด​นักรบ​สูงสุด 4 ตัว ใช้​รัศมี​เล็ก​เพื่อ​รวมกำลัง หาก​ไม่​มี​นักรบ​ให้​สร้าง​ที่​รัง​ของ​คุณ นักรบ​อาจ​หยุด​กิน​อาหาร จึง​ต้อง​ส่ง​เสบียง​ให้​โรงเตี๊ยม​ต่อไป"
+    },
+    {
+      "id": "native:[intro show destination]",
+      "key": "[intro show destination]",
+      "source": "Show destination",
+      "target": "แสดง​ปลายทาง"
+    },
+    {
+      "id": "native:[intro scout destination]",
+      "key": "[intro scout destination]",
+      "source": "Scout here",
+      "target": "สำรวจ​ที่นี่"
+    },
+    {
+      "id": "native:[intro compact scout]",
+      "key": "[intro compact scout]",
+      "source": "Flags → Exploration Flag. Place it on the stone; assign 1 explorer.",
+      "target": "ธง → ธงสำรวจ วาง​ธง​ลง​บน​ก้อนหิน กำหนด​นักสำรวจ 1 ตัว"
+    },
+    {
+      "id": "native:[intro compact build]",
+      "key": "[intro compact build]",
+      "source": "Build → Inn. Place near wheat; assign 2 builders.",
+      "target": "สร้าง → โรงเตี๊ยม วาง​ไว้​ใกล้​ทุ่ง​ข้าวสาลี มอบหมาย​คนงานก่อสร้าง 2 ตัว"
+    },
+    {
+      "id": "native:[intro compact supply]",
+      "key": "[intro compact supply]",
+      "source": "Select your new Inn; assign at least 1 supplier. Wait for wheat.",
+      "target": "เลือก​โรงเตี๊ยม​ใหม่ กำหนด​คนงาน​ส่ง​เสบียง​อย่าง​น้อย 1 ตัว รอ​ข้าวสาลี"
+    },
+    {
+      "id": "native:[intro compact grow]",
+      "key": "[intro compact grow]",
+      "source": "Select the Swarm; assign 2 suppliers. Produce workers only.",
+      "target": "เลือก​รัง กำหนด​คนงาน​ส่ง​เสบียง 2 ตัว สร้าง​เฉพาะ​คนงาน"
+    },
+    {
+      "id": "native:[intro compact attack]",
+      "key": "[intro compact attack]",
+      "source": "Flags → War Flag. Place over the enemy Swarm; assign warriors.",
+      "target": "ธง → ธงรบ วาง​ทับ​รัง​ศัตรู กำหนด​นักรบ"
+    },
+    {
+      "id": "native:[lesson healing title]",
+      "key": "[lesson healing title]",
+      "source": "Hospitals and healing",
+      "target": "โรงพยาบาล​และ​การรักษา"
+    },
+    {
+      "id": "native:[lesson healing briefing]",
+      "key": "[lesson healing briefing]",
+      "source": "Build a Hospital and help a wounded worker recover. The colony starts fed, with one injured worker.",
+      "target": "สร้าง​โรงพยาบาล​และ​ช่วย​คนงาน​บาดเจ็บ​ให้​ฟื้นตัว เมื่อ​เริ่ม ยูนิต​ใน​อาณานิคม​กิน​อาหาร​อิ่ม​แล้ว และ​มี​คนงาน​บาดเจ็บ 1 ตัว"
+    },
+    {
+      "id": "native:[lesson healing complete]",
+      "key": "[lesson healing complete]",
+      "source": "Your Hospital restored an injured globule. Keep Inns supplied: hunger can injure units again.",
+      "target": "โรงพยาบาล​รักษา​ยูนิต​บาดเจ็บ​แล้ว ส่ง​เสบียง​ให้​โรงเตี๊ยม​ต่อไป เพราะ​ความหิว​ทำให้​ยูนิต​บาดเจ็บ​ได้​อีก"
+    },
+    {
+      "id": "native:[lesson healing build hint]",
+      "key": "[lesson healing build hint]",
+      "source": "Build a Hospital in clear ground; assign 2 builders. Leave room for globules to enter and exit. Hospitals heal injuries; Inns supply food. This patient is already fed.",
+      "target": "สร้าง​โรงพยาบาล​บน​พื้นที่โล่ง มอบหมาย​คนงานก่อสร้าง 2 ตัว เว้น​ที่ว่าง​ให้​ยูนิต​เข้า​และ​ออก​ได้ โรงพยาบาล​รักษา​บาดแผล โรงเตี๊ยม​จัด​หาอาหาร ผู้ป่วย​ราย​นี้​ได้รับ​อาหาร​แล้ว"
+    },
+    {
+      "id": "native:[lesson healing build title]",
+      "key": "[lesson healing build title]",
+      "source": "Build a Hospital",
+      "target": "สร้าง​โรงพยาบาล"
+    },
+    {
+      "id": "native:[lesson healing build instruction]",
+      "key": "[lesson healing build instruction]",
+      "source": "Build a Hospital in clear ground; assign 2 builders.",
+      "target": "สร้าง​โรงพยาบาล​บน​พื้นที่โล่ง; มอบหมาย​คนงานก่อสร้าง 2 ตัว"
+    },
+    {
+      "id": "native:[lesson healing build help]",
+      "key": "[lesson healing build help]",
+      "source": "Leave room for globules to enter and exit. Hospitals heal injuries; Inns supply food. This patient is already fed.",
+      "target": "เว้น​ทาง​ให้​ยูนิต​เข้าออก โรงพยาบาล​รักษา​บาดเจ็บ โรงเตี๊ยม​ให้อาหาร ยูนิต​ตัว​นี้​กิน​อิ่ม​แล้ว"
+    },
+    {
+      "id": "native:[lesson healing build marker]",
+      "key": "[lesson healing build marker]",
+      "source": "Build a Hospital",
+      "target": "สร้าง​โรงพยาบาล"
+    },
+    {
+      "id": "native:[lesson healing heal hint]",
+      "key": "[lesson healing heal hint]",
+      "source": "Keep the Hospital accessible. Watch the injured worker recover. Globules seek healing autonomously. Track the injured worker, not a newly born unit. If it dies, restart or load a save.",
+      "target": "รักษา​โรงพยาบาล​ให้​เข้าถึง​ได้​ง่าย คอย​สังเกต​การฟื้นตัว​ของ​คนงาน​ที่​ได้รับบาดเจ็บ ยูนิต​จะ​หาทาง​รักษา​ตัวเอง​โดยอัตโนมัติ ติดตาม​คนงาน​ที่​ได้รับบาดเจ็บ ไม่​ใช่​ยูนิต​ที่​เพิ่ง​เกิด หาก​มัน​ตาย ให้​เริ่มใหม่​หรือ​โหลด​ไฟล์​บันทึก"
+    },
+    {
+      "id": "native:[lesson healing heal title]",
+      "key": "[lesson healing heal title]",
+      "source": "Let the patient recover",
+      "target": "รอ​ให้​ผู้ป่วย​ฟื้นตัว"
+    },
+    {
+      "id": "native:[lesson healing heal instruction]",
+      "key": "[lesson healing heal instruction]",
+      "source": "Keep the Hospital accessible. Watch the injured worker recover.",
+      "target": "เปิดทาง​ให้​เข้า​โรงพยาบาล​ได้ แล้ว​เฝ้าดู​คนงาน​บาดเจ็บ​ฟื้นตัว"
+    },
+    {
+      "id": "native:[lesson healing heal help]",
+      "key": "[lesson healing heal help]",
+      "source": "Globules seek healing autonomously. Track the injured worker, not a newly born unit. If it dies, restart or load a save.",
+      "target": "ยูนิต​จะ​ค้นหา​การรักษา​ตัวเอง​โดยอัตโนมัติ ติดตาม​คนงาน​ที่​ได้รับบาดเจ็บ ไม่​ใช่​ยูนิต​ที่​เพิ่ง​เกิด หาก​มัน​ตาย ให้​เริ่มใหม่​หรือ​โหลด​เซฟ"
+    },
+    {
+      "id": "native:[lesson healing heal marker]",
+      "key": "[lesson healing heal marker]",
+      "source": "Let the patient recover",
+      "target": "รอ​ให้​ผู้ป่วย​ฟื้นตัว"
+    },
+    {
+      "id": "native:[lesson walking-training title]",
+      "key": "[lesson walking-training title]",
+      "source": "Walking training",
+      "target": "การ​ฝึก​เดิน"
+    },
+    {
+      "id": "native:[lesson walking-training briefing]",
+      "key": "[lesson walking-training briefing]",
+      "source": "Build a Racetrack and observe an existing worker learn to walk faster.",
+      "target": "สร้าง​สนามวิ่ง แล้ว​ดู​คนงาน​เดิม​ฝึก​จน​เดิน​เร็ว​ขึ้น"
+    },
+    {
+      "id": "native:[lesson walking-training complete]",
+      "key": "[lesson walking-training complete]",
+      "source": "Your workers learned faster walking. Training improves the workers you have; it does not replace the colony food supply.",
+      "target": "คนงาน​เรียน​ทักษะ​เดิน​เร็ว​ขึ้น​แล้ว การ​ฝึก​พัฒนา​คนงาน​ที่​มี​อยู่ แต่​ยัง​ต้อง​ส่ง​อาหาร​ให้​อาณานิคม"
+    },
+    {
+      "id": "native:[lesson walking-training build hint]",
+      "key": "[lesson walking-training build hint]",
+      "source": "Build a Racetrack in the marked clearing; assign builders. A Racetrack needs wood and stone. Leave a gap around its edges for entry, exit and later expansion.",
+      "target": "สร้าง​สนามวิ่ง​ใน​พื้นที่โล่ง​ที่​ทำเครื่องหมาย​ไว้ มอบหมาย​คนงาน สนามวิ่ง​ต้อง​ใช้​ไม้​และ​หิน เว้น​ช่องว่าง​รอบ​ขอบ​ไว้​สำหรับ​ทางเข้า ทางออก และ​การ​ขยาย​ใน​ภายหลัง"
+    },
+    {
+      "id": "native:[lesson walking-training build title]",
+      "key": "[lesson walking-training build title]",
+      "source": "Build a Racetrack",
+      "target": "สร้าง​สนามวิ่ง"
+    },
+    {
+      "id": "native:[lesson walking-training build instruction]",
+      "key": "[lesson walking-training build instruction]",
+      "source": "Build a Racetrack in the marked clearing; assign builders.",
+      "target": "สร้าง​สนามวิ่ง​ใน​พื้นที่โล่ง​ที่​ทำเครื่องหมาย​ไว้ และ​มอบหมาย​คนงานก่อสร้าง"
+    },
+    {
+      "id": "native:[lesson walking-training build help]",
+      "key": "[lesson walking-training build help]",
+      "source": "A Racetrack needs wood and stone. Leave a gap around its edges for entry, exit and later expansion.",
+      "target": "สนามวิ่ง​ต้อง​ใช้​ไม้​และ​หิน เว้น​ช่องว่าง​รอบ​ขอบ​ไว้​สำหรับ​ทางเข้า ทางออก และ​การ​ขยาย​ในอนาคต"
+    },
+    {
+      "id": "native:[lesson walking-training build marker]",
+      "key": "[lesson walking-training build marker]",
+      "source": "Build a Racetrack",
+      "target": "สร้าง​สนามวิ่ง"
+    },
+    {
+      "id": "native:[lesson walking-training train hint]",
+      "key": "[lesson walking-training train hint]",
+      "source": "Keep the Racetrack accessible and let a worker finish training. Training is automatic for eligible globules. Keep some workers free from supply jobs and keep both Inns stocked.",
+      "target": "เปิด​ทางเข้า​สนามวิ่ง​แล้ว​รอ​ให้​คนงาน​ฝึก​จน​เสร็จ ยูนิต​ที่​มี​คุณสมบัติ​เหมาะสม​ฝึก​เอง เว้น​คนงาน​บางส่วน​จาก​งาน​ส่ง​เสบียง และ​เก็บ​อาหาร​ไว้​ใน​โรงเตี๊ยม​ทั้งสอง​ให้​พอ"
+    },
+    {
+      "id": "native:[lesson walking-training train title]",
+      "key": "[lesson walking-training train title]",
+      "source": "Train an existing worker",
+      "target": "ฝึก​คนงาน​เดิม"
+    },
+    {
+      "id": "native:[lesson walking-training train instruction]",
+      "key": "[lesson walking-training train instruction]",
+      "source": "Keep the Racetrack accessible and let a worker finish training.",
+      "target": "รักษา​พื้นที่​สนามวิ่ง​ให้​สามารถ​เข้าถึง​ได้ และ​ให้​คนงาน​ฝึก​จน​เสร็จสิ้น"
+    },
+    {
+      "id": "native:[lesson walking-training train help]",
+      "key": "[lesson walking-training train help]",
+      "source": "Training is automatic for eligible globules. Keep some workers free from supply jobs and keep both Inns stocked.",
+      "target": "ยูนิต​ที่​มี​คุณสมบัติ​เหมาะสม​ฝึก​เอง เว้น​คนงาน​บางส่วน​จาก​งาน​ส่ง​เสบียง และ​เก็บ​อาหาร​ใน​โรงเตี๊ยม​ทั้งสอง​ให้​พอ"
+    },
+    {
+      "id": "native:[lesson swimming title]",
+      "key": "[lesson swimming title]",
+      "source": "Swimming and water resources",
+      "target": "การ​ว่ายน้ำ​และ​ทรัพยากร​ใน​น้ำ"
+    },
+    {
+      "id": "native:[lesson swimming briefing]",
+      "key": "[lesson swimming briefing]",
+      "source": "Train swimmers, then use algae from the pond to construct a School.",
+      "target": "ฝึก​คนงาน​ให้​ว่ายน้ำ แล้ว​ใช้​สาหร่าย​จาก​บ่อ​สร้าง​โรงเรียน"
+    },
+    {
+      "id": "native:[lesson swimming complete]",
+      "key": "[lesson swimming complete]",
+      "source": "A swimmer delivered water resources for your School. Water access expands the jobs your colony can perform.",
+      "target": "คนงาน​ที่​ว่ายน้ำ​ได้​ขน​ทรัพยากร​ใน​น้ำ​มา​ให้​โรงเรียน การ​เข้าถึง​น้ำ​เพิ่ม​งาน​ที่​อาณานิคม​ทำได้"
+    },
+    {
+      "id": "native:[lesson swimming build hint]",
+      "key": "[lesson swimming build hint]",
+      "source": "Build a Swimming Pool west of the pond; assign builders. Leave space around the pool. A worker cannot gather algae in deep water until it has learned to swim.",
+      "target": "สร้าง​สระว่ายน้ำ​ทาง​ทิศตะวันตก​ของ​สระน้ำ มอบหมาย​คนงาน​ให้​ทำงาน เว้น​พื้นที่​รอบ​สระว่ายน้ำ​ไว้ คนงาน​ไม่​สามารถ​เก็บ​สาหร่าย​ใน​น้ำ​ลึก​ได้​จนกว่า​จะ​เรียนรู้​ที่จะ​ว่ายน้ำ​ได้"
+    },
+    {
+      "id": "native:[lesson swimming build title]",
+      "key": "[lesson swimming build title]",
+      "source": "Build a Swimming Pool",
+      "target": "สร้าง​สระว่ายน้ำ"
+    },
+    {
+      "id": "native:[lesson swimming build instruction]",
+      "key": "[lesson swimming build instruction]",
+      "source": "Build a Swimming Pool west of the pond; assign builders.",
+      "target": "สร้าง​สระว่ายน้ำ​ทาง​ทิศตะวันตก​ของ​สระน้ำ และ​มอบหมาย​คนงานก่อสร้าง"
+    },
+    {
+      "id": "native:[lesson swimming build help]",
+      "key": "[lesson swimming build help]",
+      "source": "Leave space around the pool. A worker cannot gather algae in deep water until it has learned to swim.",
+      "target": "เว้น​ที่ว่าง​รอบ​สระว่ายน้ำ คนงาน​เก็บ​สาหร่าย​ใน​น้ำ​ลึก​ไม่​ได้​จนกว่า​จะ​ว่ายน้ำ​เป็น"
+    },
+    {
+      "id": "native:[lesson swimming build marker]",
+      "key": "[lesson swimming build marker]",
+      "source": "Build a Swimming Pool",
+      "target": "สร้าง​สระว่ายน้ำ"
+    },
+    {
+      "id": "native:[lesson swimming train hint]",
+      "key": "[lesson swimming train hint]",
+      "source": "Let an existing worker finish swimming training. Units choose training automatically. Keep supply running and allow free workers to reach the pool.",
+      "target": "รอ​ให้​คนงาน​เดิม​ฝึก​ว่ายน้ำ​จน​เสร็จ ยูนิต​เลือก​ฝึก​เอง ส่ง​เสบียง​ต่อไป​และ​เปิดทาง​ให้​คนงานว่าง​ไป​ถึง​สระว่ายน้ำ"
+    },
+    {
+      "id": "native:[lesson swimming train title]",
+      "key": "[lesson swimming train title]",
+      "source": "Train a swimmer",
+      "target": "ฝึก​นักว่ายน้ำ"
+    },
+    {
+      "id": "native:[lesson swimming train instruction]",
+      "key": "[lesson swimming train instruction]",
+      "source": "Let an existing worker finish swimming training.",
+      "target": "รอ​ให้​คนงาน​เดิม​ฝึก​ว่ายน้ำ​จน​เสร็จ"
+    },
+    {
+      "id": "native:[lesson swimming train help]",
+      "key": "[lesson swimming train help]",
+      "source": "Units choose training automatically. Keep supply running and allow free workers to reach the pool.",
+      "target": "ยูนิต​เลือก​ฝึก​เอง ส่ง​เสบียง​ต่อไป​และ​เปิดทาง​ให้​คนงานว่าง​ไป​ถึง​สระว่ายน้ำ"
+    },
+    {
+      "id": "native:[lesson swimming water-job hint]",
+      "key": "[lesson swimming water-job hint]",
+      "source": "Build a School near the colony; assign builders to fetch wood and algae. The algae grows in the pond. A trained swimmer must enter water to collect it. Keep the School on open land with access for suppliers.",
+      "target": "สร้าง​โรงเรียน​ใกล้​กับ​อาณานิคม มอบหมาย​ให้​คนงานก่อสร้าง​ไปหา​ไม้​และ​สาหร่าย สาหร่าย​จะ​เจริญเติบโต​ใน​บ่อ นัก​ว่ายน้ำ​ที่​ฝึกฝน​มา​แล้วจะ​ต้อง​ลง​ไป​ใน​น้ำ​เพื่อ​เก็บ​สาหร่าย ตั้ง​โรงเรียน​ไว้​บน​พื้นที่โล่ง​ที่​คนงาน​ส่ง​เสบียง​สามารถ​เข้าถึง​ได้"
+    },
+    {
+      "id": "native:[lesson swimming water-job title]",
+      "key": "[lesson swimming water-job title]",
+      "source": "Use algae from the pond",
+      "target": "ใช้​สาหร่าย​จาก​บ่อ"
+    },
+    {
+      "id": "native:[lesson swimming water-job instruction]",
+      "key": "[lesson swimming water-job instruction]",
+      "source": "Build a School near the colony; assign builders to fetch wood and algae.",
+      "target": "สร้าง​โรงเรียน​ใกล้​กับ​อาณานิคม มอบหมาย​ให้​คนงานก่อสร้าง​ไปหา​ไม้​และ​สาหร่าย"
+    },
+    {
+      "id": "native:[lesson swimming water-job help]",
+      "key": "[lesson swimming water-job help]",
+      "source": "The algae grows in the pond. A trained swimmer must enter water to collect it. Keep the School on open land with access for suppliers.",
+      "target": "สาหร่าย​เจริญเติบโต​ใน​สระน้ำ นักว่ายน้ำ​ที่​ได้รับ​การฝึกฝน​ต้อง​ลง​ไป​ใน​น้ำ​เพื่อ​เก็บ​สาหร่าย ควร​คง​พื้นที่​โรงเรียน​ไว้​บน​พื้นที่โล่ง​ที่​คนงาน​ส่ง​เสบียง​สามารถ​เข้าถึง​ได้"
+    },
+    {
+      "id": "native:[lesson swimming water-job marker]",
+      "key": "[lesson swimming water-job marker]",
+      "source": "Use algae from the pond",
+      "target": "ใช้​สาหร่าย​จาก​บ่อ"
+    },
+    {
+      "id": "native:[lesson schools title]",
+      "key": "[lesson schools title]",
+      "source": "Schools and worker skills",
+      "target": "โรงเรียน​และ​ทักษะ​คนงาน"
+    },
+    {
+      "id": "native:[lesson schools briefing]",
+      "key": "[lesson schools briefing]",
+      "source": "Use the prepared swimmers to build a School, then observe workers learn construction and harvesting.",
+      "target": "ใช้​คนงาน​ที่​ว่ายน้ำ​ได้​ซึ่ง​เตรียม​ไว้​สร้าง​โรงเรียน แล้ว​ดู​คนงาน​ฝึก​ก่อสร้าง​และ​เก็บเกี่ยว"
+    },
+    {
+      "id": "native:[lesson schools complete]",
+      "key": "[lesson schools complete]",
+      "source": "Your School improved worker skills. Skilled builders unlock upgrades; better harvesting helps maintain an expanding economy.",
+      "target": "โรงเรียน​ของ​คุณ​ช่วย​พัฒนา​ทักษะ​แรงงาน คนงานก่อสร้าง​ที่​มีฝีมือ​จะ​ปลดล็อก​การ​อัปเกรด การ​เก็บเกี่ยว​ที่​ดีขึ้น​ช่วย​รักษา​เศรษฐกิจ​ที่​กำลัง​เติบโต"
+    },
+    {
+      "id": "native:[lesson schools build hint]",
+      "key": "[lesson schools build hint]",
+      "source": "Build a School in the clearing; assign builders. The colony already has swimmers for algae. Leave access to wood and water. Fruit trees provide prestige resources; food still comes from wheat.",
+      "target": "สร้าง​โรงเรียน​ใน​ที่โล่ง​แล้ว​มอบหมาย​คนงานก่อสร้าง อาณานิคม​มี​คนงาน​ว่ายน้ำ​ได้​เพื่อ​เก็บ​สาหร่าย​แล้ว เปิดทาง​ไปหา​ไม้​และ​น้ำ​ไว้ ไม้​ผล​ให้​ทรัพยากร​สำหรับ​เกียรติยศ ส่วน​อาหาร​ยัง​มาจาก​ข้าวสาลี"
+    },
+    {
+      "id": "native:[lesson schools build title]",
+      "key": "[lesson schools build title]",
+      "source": "Build a School",
+      "target": "สร้าง​โรงเรียน"
+    },
+    {
+      "id": "native:[lesson schools build instruction]",
+      "key": "[lesson schools build instruction]",
+      "source": "Build a School in the clearing; assign builders.",
+      "target": "สร้าง​โรงเรียน​ใน​พื้นที่​โล่ง แล้ว​มอบหมาย​คนงาน​ก่อสร้าง"
+    },
+    {
+      "id": "native:[lesson schools build help]",
+      "key": "[lesson schools build help]",
+      "source": "The colony already has swimmers for algae. Leave access to wood and water. Fruit trees provide prestige resources; food still comes from wheat.",
+      "target": "อาณานิคม​มี​คนงาน​ว่ายน้ำ​ได้​เพื่อ​เก็บ​สาหร่าย​แล้ว เปิดทาง​ไปหา​ไม้​และ​น้ำ​ไว้ ไม้​ผล​ให้​ทรัพยากร​สำหรับ​เกียรติยศ ส่วน​อาหาร​ยัง​มาจาก​ข้าวสาลี"
+    },
+    {
+      "id": "native:[lesson schools build marker]",
+      "key": "[lesson schools build marker]",
+      "source": "Build a School",
+      "target": "สร้าง​โรงเรียน"
+    },
+    {
+      "id": "native:[lesson schools learn hint]",
+      "key": "[lesson schools learn hint]",
+      "source": "Let an existing worker finish its School training. The School teaches construction and harvesting together. Keep workers available; a construction site alone does not train anyone.",
+      "target": "ให้​คนงาน​ที่​มี​อยู่​เรียนจบ​หลักสูตร​ที่​โรงเรียน โรงเรียน​สอน​ทั้ง​งานก่อสร้าง​และ​งาน​เก็บเกี่ยว​ผลผลิต​ควบคู่กันไป ต้อง​เตรียม​คนงาน​ให้​พร้อม​เสมอ เพราะ​ไซต์​ก่อสร้าง​เพียง​อย่าง​เดียว​ไม่​สามารถ​ฝึก​ใคร​ได้"
+    },
+    {
+      "id": "native:[lesson schools learn title]",
+      "key": "[lesson schools learn title]",
+      "source": "Teach construction and harvesting",
+      "target": "สอน​การ​ก่อสร้าง​และ​การ​เก็บเกี่ยว"
+    },
+    {
+      "id": "native:[lesson schools learn instruction]",
+      "key": "[lesson schools learn instruction]",
+      "source": "Let an existing worker finish its School training.",
+      "target": "รอ​ให้​คนงาน​เดิม​ฝึก​ที่​โรงเรียน​จน​เสร็จ"
+    },
+    {
+      "id": "native:[lesson schools learn help]",
+      "key": "[lesson schools learn help]",
+      "source": "The School teaches construction and harvesting together. Keep workers available; a construction site alone does not train anyone.",
+      "target": "โรงเรียน​แห่ง​นี้​สอน​ทั้ง​งานก่อสร้าง​และ​การ​เก็บเกี่ยว​ไป​พร้อมกัน ควร​มี​คนงาน​พร้อม​ใช้งาน​อยู่​เสมอ เพราะ​สถานที่ก่อสร้าง​เพียง​อย่าง​เดียว​ไม่​สามารถ​ฝึกฝน​ใคร​ได้"
+    },
+    {
+      "id": "native:[lesson upgrades title]",
+      "key": "[lesson upgrades title]",
+      "source": "Upgrading buildings",
+      "target": "การ​อัปเกรด​อาคาร"
+    },
+    {
+      "id": "native:[lesson upgrades briefing]",
+      "key": "[lesson upgrades briefing]",
+      "source": "Use prepared skilled workers to upgrade a Racetrack and train beyond the first level.",
+      "target": "ใช้​คนงาน​ที่​เตรียม​ไว้​และ​มี​ทักษะ​เพื่อ​อัปเกรด​สนามวิ่ง แล้ว​ฝึก​ให้​เกิน​ระดับ​แรก"
+    },
+    {
+      "id": "native:[lesson upgrades complete]",
+      "key": "[lesson upgrades complete]",
+      "source": "You upgraded a building and used its improved training. Further upgrades repeat this cycle with better Schools, skills, materials and space, up to level 3.",
+      "target": "คุณ​อัปเกรด​อาคาร​และ​ใช้​การ​ฝึก​ที่​ดีขึ้น​แล้ว การ​อัปเกรด​ถัดไป​ทำ​วงจร​เดิม​ด้วย​โรงเรียน​ระดับสูง ทักษะ วัสดุ และ​พื้นที่​ที่​เพียงพอ จนถึง​ระดับ 3"
+    },
+    {
+      "id": "native:[lesson upgrades upgrade hint]",
+      "key": "[lesson upgrades upgrade hint]",
+      "source": "Select the Racetrack, choose Upgrade and assign skilled builders. These workers already learned first-level School skills. Upgrades need extra space and materials, and interrupt the building service. Cancelled upgrades do not count.",
+      "target": "เลือก​สนามวิ่ง เลือก \"อัปเกรด\" และ​มอบหมาย​คนงานก่อสร้าง​ที่​มี​ทักษะ คนงาน​เหล่านี้​ได้​เรียนรู้​ทักษะ​ระดับ​แรก​ของ​โรงเรียน​มา​แล้ว การ​อัปเกรด​ต้องการ​พื้นที่​และ​วัสดุ​เพิ่มเติม และ​จะ​ขัดจังหวะ​การ​ให้บริการ​ของ​อาคาร การ​อัปเกรด​ที่​ถูก​ยกเลิก​จะ​ไม่​นับ​รวม"
+    },
+    {
+      "id": "native:[lesson upgrades upgrade title]",
+      "key": "[lesson upgrades upgrade title]",
+      "source": "Upgrade the Racetrack",
+      "target": "อัปเกรด​สนามวิ่ง"
+    },
+    {
+      "id": "native:[lesson upgrades upgrade instruction]",
+      "key": "[lesson upgrades upgrade instruction]",
+      "source": "Select the Racetrack, choose Upgrade and assign skilled builders.",
+      "target": "เลือก​สนามวิ่ง → อัปเกรด แล้ว​มอบหมาย​คนงาน​ก่อสร้าง​ที่​มี​ทักษะ"
+    },
+    {
+      "id": "native:[lesson upgrades upgrade help]",
+      "key": "[lesson upgrades upgrade help]",
+      "source": "These workers already learned first-level School skills. Upgrades need extra space and materials, and interrupt the building service. Cancelled upgrades do not count.",
+      "target": "คนงาน​เหล่านี้​เรียน​ทักษะ​โรงเรียน​ระดับ​แรก​แล้ว การ​อัปเกรด​ต้อง​ใช้​พื้นที่​และ​วัสดุ​เพิ่ม และ​หยุด​บริการ​ของ​อาคาร​ชั่วคราว การ​อัปเกรด​ที่​ยกเลิก​ไม่​นับ"
+    },
+    {
+      "id": "native:[lesson upgrades upgrade marker]",
+      "key": "[lesson upgrades upgrade marker]",
+      "source": "Upgrade the Racetrack",
+      "target": "อัปเกรด​สนามวิ่ง"
+    },
+    {
+      "id": "native:[lesson upgrades train hint]",
+      "key": "[lesson upgrades train hint]",
+      "source": "Let an existing worker learn faster walking at the upgraded Racetrack. A completed upgrade improves available training. Higher building levels need higher construction skills; the level shown to players starts at 1.",
+      "target": "ให้​คนงาน​เดิม​ฝึก​เดิน​ให้​เร็ว​ขึ้น​ที่​สนามวิ่ง​ที่​อัปเกรด​แล้ว การ​อัปเกรด​ที่​เสร็จ​เพิ่ม​ระดับ​การ​ฝึก​ที่​มี อาคาร​ระดับสูง​ต้อง​ใช้​ทักษะ​ก่อสร้าง​สูง​ขึ้น ระดับ​ที่​แสดง​เริ่ม​จาก 1"
+    },
+    {
+      "id": "native:[lesson upgrades train title]",
+      "key": "[lesson upgrades train title]",
+      "source": "Use the upgraded training",
+      "target": "ใช้การ​ฝึก​ที่​ได้รับ​การปรับปรุง​แล้ว"
+    },
+    {
+      "id": "native:[lesson upgrades train instruction]",
+      "key": "[lesson upgrades train instruction]",
+      "source": "Let an existing worker learn faster walking at the upgraded Racetrack.",
+      "target": "ให้​คนงาน​เดิม​ฝึก​เดิน​ให้​เร็ว​ขึ้น​ที่​สนามวิ่ง​ที่​อัปเกรด​แล้ว"
+    },
+    {
+      "id": "native:[lesson upgrades train help]",
+      "key": "[lesson upgrades train help]",
+      "source": "A completed upgrade improves available training. Higher building levels need higher construction skills; the level shown to players starts at 1.",
+      "target": "การ​อัปเกรด​ที่​เสร็จ​สมบูรณ์​จะ​ช่วย​เพิ่ม​ระดับ​การฝึกฝน​ที่​มี​อยู่ ระดับ​อาคาร​ที่สูง​ขึ้น​ต้องการ​ทักษะ​การ​ก่อสร้าง​ที่สูง​ขึ้น โดย​ระดับ​ที่​แสดง​ให้​ผู้เล่น​เห็นจะ​เริ่มต้น​ที่​ระดับ 1"
+    },
+    {
+      "id": "native:[lesson fortifications title]",
+      "key": "[lesson fortifications title]",
+      "source": "Towers and protective walls",
+      "target": "หอคอย​และ​กำแพง​ป้องกัน"
+    },
+    {
+      "id": "native:[lesson fortifications briefing]",
+      "key": "[lesson fortifications briefing]",
+      "source": "Build a supplied tower and protective walls, then test them against one small attack.",
+      "target": "สร้าง​หอคอย​ที่​มี​เสบียง​และ​กำแพง​ป้องกัน แล้ว​ทดสอบ​รับ​การบุก​เล็ก​ๆ หนึ่ง​ครั้ง"
+    },
+    {
+      "id": "native:[lesson fortifications complete]",
+      "key": "[lesson fortifications complete]",
+      "source": "Your supplied defenses stopped the practice attack. Towers need stone and walls need gaps so suppliers can keep reaching them.",
+      "target": "แนว​ป้องกันที่​มี​เสบียง​หยุด​การบุก​ทดสอบ​ได้ หอคอย​ต้อง​มี​หิน และ​กำแพง​ต้อง​เว้น​ช่อง​ให้​คนงาน​ส่ง​เสบียง​เข้าถึง"
+    },
+    {
+      "id": "native:[lesson fortifications tower hint]",
+      "key": "[lesson fortifications tower hint]",
+      "source": "Build a tower in the marked area; assign builders. Place it near the stone quarry and leave supplier access. No attack starts until the preparation goals are complete.",
+      "target": "สร้าง​หอคอย​ใน​พื้นที่​ที่​ทำเครื่องหมาย​แล้ว​มอบหมาย​คนงานก่อสร้าง วาง​ใกล้​เหมือง​หิน​และ​เว้น​ทาง​ให้​คนงาน​ส่ง​เสบียง การบุก​จะ​ไม่​เริ่ม​จนกว่า​เป้าหมาย​เตรียมการ​จะ​ครบ"
+    },
+    {
+      "id": "native:[lesson fortifications tower title]",
+      "key": "[lesson fortifications tower title]",
+      "source": "Build a defense tower",
+      "target": "สร้าง​หอคอย​ป้องกัน"
+    },
+    {
+      "id": "native:[lesson fortifications tower instruction]",
+      "key": "[lesson fortifications tower instruction]",
+      "source": "Build a tower in the marked area; assign builders.",
+      "target": "สร้าง​หอคอย​ใน​พื้นที่​ที่​ทำเครื่องหมาย​ไว้ และ​มอบหมาย​คนงานก่อสร้าง"
+    },
+    {
+      "id": "native:[lesson fortifications tower help]",
+      "key": "[lesson fortifications tower help]",
+      "source": "Place it near the stone quarry and leave supplier access. No attack starts until the preparation goals are complete.",
+      "target": "วาง​ใกล้​เหมือง​หิน​และ​เว้น​ทาง​ให้​คนงาน​ส่ง​เสบียง การบุก​จะ​ไม่​เริ่ม​จนกว่า​เป้าหมาย​เตรียมการ​จะ​ครบ"
+    },
+    {
+      "id": "native:[lesson fortifications tower marker]",
+      "key": "[lesson fortifications tower marker]",
+      "source": "Build a defense tower",
+      "target": "สร้าง​หอคอย​ป้องกัน"
+    },
+    {
+      "id": "native:[lesson fortifications walls hint]",
+      "key": "[lesson fortifications walls hint]",
+      "source": "Build at least 2 wall sections near the tower; keep its west access lane open. Walls use stone and each site requests workers. Do not seal the tower in: suppliers need a route. The marked west lane must remain clear.",
+      "target": "สร้าง​กำแพง​อย่าง​น้อย 2 ส่วน​ใกล้​หอคอย เว้น​ทางเข้า​ตะวันตก​ไว้ กำแพง​ใช้​หิน​และ​ต้อง​กำหนด​คนงาน​ให้​แต่ละ​จุด​ก่อสร้าง อย่า​ล้อม​ปิด​หอคอย เพราะ​คนงาน​ส่ง​เสบียง​ต้อง​มี​ทางเข้า ช่องทาง​ตะวันตก​ที่​ทำเครื่องหมาย​ต้อง​โล่ง"
+    },
+    {
+      "id": "native:[lesson fortifications walls title]",
+      "key": "[lesson fortifications walls title]",
+      "source": "Protect the tower with walls",
+      "target": "ป้องกัน​หอคอย​ด้วย​กำแพง"
+    },
+    {
+      "id": "native:[lesson fortifications walls instruction]",
+      "key": "[lesson fortifications walls instruction]",
+      "source": "Build at least 2 wall sections near the tower; keep its west access lane open.",
+      "target": "สร้างกำแพง​อย่าง​น้อย 2 ส่วน​ใกล้​กับ​หอคอย และ​รักษา​ทางเข้า​ด้าน​ทิศตะวันตก​ให้​เปิด​อยู่​เสมอ"
+    },
+    {
+      "id": "native:[lesson fortifications walls help]",
+      "key": "[lesson fortifications walls help]",
+      "source": "Walls use stone and each site requests workers. Do not seal the tower in: suppliers need a route. The marked west lane must remain clear.",
+      "target": "กำแพง​สร้าง​จาก​หิน และ​แต่ละ​สถานที่​ก็​ต้องการ​คนงาน อย่า​ปิดกั้น​หอคอย : คนงาน​ส่ง​เสบียง​จำเป็นต้อง​มี​เส้นทาง ช่องทาง​ด้าน​ตะวันตก​ที่​ทำเครื่องหมาย​ไว้​ต้อง​คงไว้​ให้​โล่ง"
+    },
+    {
+      "id": "native:[lesson fortifications walls marker]",
+      "key": "[lesson fortifications walls marker]",
+      "source": "Protect the tower with walls",
+      "target": "ป้องกัน​หอคอย​ด้วย​กำแพง"
+    },
+    {
+      "id": "native:[lesson fortifications supply hint]",
+      "key": "[lesson fortifications supply hint]",
+      "source": "Select the tower and request suppliers. Wait for at least 2 stone. A finished tower needs an operating worker target to bring ammunition. This is separate from its construction target.",
+      "target": "เลือก​หอคอย​และ​มอบหมาย​คนงาน​ส่ง​เสบียง รอ​ให้​มี​หิน​อย่าง​น้อย 2 หน่วย หอคอย​ที่​เสร็จ​ต้อง​กำหนด​คนงาน​ใช้งาน​เพื่อ​ขน​กระสุน แยกจาก​จำนวน​คนงานก่อสร้าง"
+    },
+    {
+      "id": "native:[lesson fortifications supply title]",
+      "key": "[lesson fortifications supply title]",
+      "source": "Supply ammunition",
+      "target": "ส่ง​กระสุน"
+    },
+    {
+      "id": "native:[lesson fortifications supply instruction]",
+      "key": "[lesson fortifications supply instruction]",
+      "source": "Select the tower and request suppliers. Wait for at least 2 stone.",
+      "target": "เลือก​หอคอย​และ​มอบหมาย​คนงาน​ส่ง​เสบียง รอ​ให้​มี​หิน​อย่าง​น้อย 2 หน่วย"
+    },
+    {
+      "id": "native:[lesson fortifications supply help]",
+      "key": "[lesson fortifications supply help]",
+      "source": "A finished tower needs an operating worker target to bring ammunition. This is separate from its construction target.",
+      "target": "หอคอย​ที่​สร้าง​เสร็จ​ต้อง​กำหนด​จำนวน​คนงาน​ส่ง​เสบียง​เพื่อ​ขน​กระสุน แยกจาก​จำนวน​คนงาน​ก่อสร้าง"
+    },
+    {
+      "id": "native:[lesson fortifications supply marker]",
+      "key": "[lesson fortifications supply marker]",
+      "source": "Supply ammunition",
+      "target": "ส่ง​กระสุน"
+    },
+    {
+      "id": "native:[lesson fortifications hold hint]",
+      "key": "[lesson fortifications hold hint]",
+      "source": "A practice warrior is approaching. Keep the tower supplied and accessible. Hold until the attacker is defeated or driven back. A wall that blocks suppliers can starve the tower of ammunition. If the colony fails, restart or load an earlier save.",
+      "target": "นักรบ​ทดสอบ​กำลัง​เข้ามา​ใกล้ คอย​ส่ง​เสบียง​ให้​หอคอย​และ​เข้าถึง​ได้​ง่าย ยึด​พื้นที่​ไว้​จนกว่า​ผู้​โจมตี​จะ​พ่ายแพ้​หรือ​ถูก​ขับไล่​กลับ​ไป กำแพง​ที่​ปิดกั้น​การ​ส่ง​เสบียง​อาจ​ทำให้​หอคอย​ขาด​กระสุน​ได้ หาก​อาณานิคม​ล้มเหลว ให้​เริ่มใหม่​หรือ​โหลด​ไฟล์​บันทึก​ก่อนหน้า"
+    },
+    {
+      "id": "native:[lesson fortifications hold title]",
+      "key": "[lesson fortifications hold title]",
+      "source": "Test the fortifications",
+      "target": "ทดสอบ​แนว​ป้องกัน"
+    },
+    {
+      "id": "native:[lesson fortifications hold instruction]",
+      "key": "[lesson fortifications hold instruction]",
+      "source": "A practice warrior is approaching. Keep the tower supplied and accessible.",
+      "target": "นักรบ​ทดสอบ​กำลัง​มา ส่ง​เสบียง​ให้​หอคอย​และ​เปิดทาง​ให้​คนงาน​เข้าถึง"
+    },
+    {
+      "id": "native:[lesson fortifications hold help]",
+      "key": "[lesson fortifications hold help]",
+      "source": "Hold until the attacker is defeated or driven back. A wall that blocks suppliers can starve the tower of ammunition. If the colony fails, restart or load an earlier save.",
+      "target": "ยึด​พื้นที่​ไว้​จนกว่า​ผู้​โจมตี​จะ​พ่ายแพ้​หรือ​ถูก​ขับไล่​กลับ​ไป กำแพง​ที่​ปิดกั้น​เส้นทาง​ลำเลียง​เสบียง​อาจ​ทำให้​หอคอย​ขาดแคลน​กระสุน หาก​อาณานิคม​ล้มเหลว ให้​เริ่มใหม่​หรือ​โหลด​ไฟล์​บันทึก​ก่อนหน้า"
+    },
+    {
+      "id": "native:[lesson fortifications hold marker]",
+      "key": "[lesson fortifications hold marker]",
+      "source": "Test the fortifications",
+      "target": "ทดสอบ​แนว​ป้องกัน"
+    },
+    {
+      "id": "native:[lesson defensive-tactics title]",
+      "key": "[lesson defensive-tactics title]",
+      "source": "Guard zones and flag tactics",
+      "target": "เขต​ป้องกัน​และ​ยุทธวิธี​ธง"
+    },
+    {
+      "id": "native:[lesson defensive-tactics briefing]",
+      "key": "[lesson defensive-tactics briefing]",
+      "source": "Scout the practice enemy, prepare a guard zone, defend, then organize a counterattack.",
+      "target": "สำรวจ​ศัตรู​ทดสอบ เตรียม​เขต​ป้องกัน ตั้งรับ แล้ว​จัดการ​โต้กลับ"
+    },
+    {
+      "id": "native:[lesson defensive-tactics complete]",
+      "key": "[lesson defensive-tactics complete]",
+      "source": "You scouted, defended a guard zone and directed a counterattack. Flag targets request units; radius controls where those units work.",
+      "target": "คุณ​สำรวจ ป้องกัน​เขต และ​สั่ง​โต้กลับ​แล้ว จำนวน​เป้าหมาย​ของ​ธง​ร้องขอ​ยูนิต ส่วน​รัศมี​กำหนด​พื้นที่​ที่​ยูนิต​ทำงาน"
+    },
+    {
+      "id": "native:[lesson defensive-tactics scout hint]",
+      "key": "[lesson defensive-tactics scout hint]",
+      "source": "Place an Exploration Flag at the enemy base; assign 1 explorer. Flags request units autonomously. An explorer reveals current activity through fog of war; it may stop to eat.",
+      "target": "วาง​ธงสำรวจ​ที่​ฐานทัพ​ศัตรู; มอบหมาย​นักสำรวจ 1 ตัว ธง​จะ​ร้องขอ​ยูนิต​โดยอัตโนมัติ นักสำรวจ​จะ​เปิดเผย​ความเคลื่อนไหว​ปัจจุบัน​ผ่าน​หมอก​แห่ง​สงคราม และ​อาจ​หยุดพัก​เพื่อ​รับประทาน​อาหาร"
+    },
+    {
+      "id": "native:[lesson defensive-tactics scout title]",
+      "key": "[lesson defensive-tactics scout title]",
+      "source": "Scout the enemy base",
+      "target": "สอดแนม​ฐานทัพ​ศัตรู"
+    },
+    {
+      "id": "native:[lesson defensive-tactics scout instruction]",
+      "key": "[lesson defensive-tactics scout instruction]",
+      "source": "Place an Exploration Flag at the enemy base; assign 1 explorer.",
+      "target": "ปัก​ธงสำรวจ​ที่​ฐานทัพ​ศัตรู และ​ส่ง​นักสำรวจ 1 ตัว​ไป​ประจำการ"
+    },
+    {
+      "id": "native:[lesson defensive-tactics scout help]",
+      "key": "[lesson defensive-tactics scout help]",
+      "source": "Flags request units autonomously. An explorer reveals current activity through fog of war; it may stop to eat.",
+      "target": "ธง​ร้องขอ​ยูนิต​โดยอัตโนมัติ นักสำรวจ​เปิดเผย​ความเคลื่อนไหว​ผ่าน​หมอกสงคราม​และ​อาจ​หยุด​กิน​อาหาร"
+    },
+    {
+      "id": "native:[lesson defensive-tactics scout marker]",
+      "key": "[lesson defensive-tactics scout marker]",
+      "source": "Scout the enemy base",
+      "target": "สอดแนม​ฐานทัพ​ศัตรู"
+    },
+    {
+      "id": "native:[lesson defensive-tactics guard hint]",
+      "key": "[lesson defensive-tactics guard hint]",
+      "source": "Paint a guard zone in the marked area and let 2 warriors reach it. Open Flags, choose Guard and paint at least 4 tiles inside the area. Guard zones attract idle warriors. Forbidden zones block travel; clearing zones request resource removal.",
+      "target": "ระบาย​เขต​ป้องกัน​ใน​พื้นที่​ที่​ทำเครื่องหมาย แล้ว​รอ​นักรบ 2 ตัว​ไป​ถึง เปิด​ธง เลือก​ป้องกัน แล้ว​ระบาย​อย่างน้อย 4 ช่อง​ใน​พื้นที่ เขต​ป้องกัน​ดึงดูด​นักรบ​ว่าง เขตหวงห้าม​ขวาง​การเดิน ส่วน​เขต​แผ้วถาง​ร้องขอ​การ​กำจัด​ทรัพยากร"
+    },
+    {
+      "id": "native:[lesson defensive-tactics guard title]",
+      "key": "[lesson defensive-tactics guard title]",
+      "source": "Prepare a guard zone",
+      "target": "เตรียม​เขต​ป้องกัน"
+    },
+    {
+      "id": "native:[lesson defensive-tactics guard instruction]",
+      "key": "[lesson defensive-tactics guard instruction]",
+      "source": "Paint a guard zone in the marked area and let 2 warriors reach it.",
+      "target": "วาด​เขต​ป้องกัน​ใน​พื้นที่​ที่​ทำเครื่องหมาย แล้ว​รอ​นักรบ 2 ตัว​เข้าถึง"
+    },
+    {
+      "id": "native:[lesson defensive-tactics guard help]",
+      "key": "[lesson defensive-tactics guard help]",
+      "source": "Open Flags, choose Guard and paint at least 4 tiles inside the area. Guard zones attract idle warriors. Forbidden zones block travel; clearing zones request resource removal.",
+      "target": "เปิด​ธง เลือก​ป้องกัน แล้ว​ระบาย​อย่างน้อย 4 ช่อง​ใน​พื้นที่ เขต​ป้องกัน​ดึงดูด​นักรบ​ว่าง เขตหวงห้าม​ขวาง​การเดิน ส่วน​เขต​แผ้วถาง​ร้องขอ​การ​กำจัด​ทรัพยากร"
+    }
+  ]
+}

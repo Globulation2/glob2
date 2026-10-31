@@ -1,0 +1,65 @@
+{
+  "scope": "Actual final-source fixture probes; only local seeded account, no paid/external calls.",
+  "fontHeaders": [
+    {
+      "url": "http://127.0.0.1:4298/assets/NotoSansThai-Regular-B7bm4NDe.ttf",
+      "status": 200,
+      "contentType": "font/ttf"
+    },
+    {
+      "url": "http://127.0.0.1:4298/signin/assets/NotoSansThai-Regular.ttf",
+      "status": 200,
+      "contentType": "font/ttf"
+    }
+  ],
+  "views": [
+    {
+      "device": "desktop",
+      "view": "actual-heading-font",
+      "fonts": [
+        {
+          "familyName": "Noto Sans Thai",
+          "postScriptName": "NotoSansThai-Regular",
+          "isCustomFont": true,
+          "glyphCount": 23
+        }
+      ]
+    },
+    {
+      "device": "desktop",
+      "view": "actual-running-match",
+      "file": "desktop-running-match.png",
+      "body": "ข้ามไปยังเนื้อหา\nเล่นในเบราว์เซอร์\nเล่น\nหน้าหลัก\nตารางอันดับ\nผู้เล่น\nแมตช์\nสร้าง\nแผนที่\nภูมิประเทศและทรัพยากร\nคลัง AI\nอาคาร\nดนตรี\nเกี่ยวกับเราและความช่วยเหลือ\nภาษา\nالعربية\nPortuguês brasileiro\nCatalà\nČeština\nDeutsch\nDansk\nEnglish\nEspañol\nEsperanto\nEuskara\nفارسی\nFrançais\nΕλληνικά\nMagyar\nItaliano\nNederlands\nPolski\nPortuguês europeu\nRomână\nРусский\nSlovenščina\nSlovenčina\nСрпски\nSuomi\nSvenska\nTürkçe\n繁體中文\n简体中文\nУкраїнська\nBahasa Indonesia\nTiếng Việt\n日本語\n한국어\nहिन्दी\nاردو\nKiswahili\nไทย\nลงชื่อเข้าใช้\n1 vs 1 ranked · Even Ground\n31 ต.ค. 2569 19:04 · – · จัดอันดับ\nสด\nทีม\nMirelle\nทีม\nMaxima (AI)\nรีเพลย์\n\nการแข่งขันนี้ยังคงดำเนินอยู่\n\nผู้เล่น\tผลลัพธ์\tคะแนนประเมิน\tเปลี่ยน\n Mirelle\t–\t–\t\n Maxima AI\t–\t–\t\nไทม์ไลน์\n\nแผนภูมิจะปรากฏขึ้นเมื่อเซิร์ฟเวอร์เล่นแมตช์ซ้ำเสร็จแล้ว\n\nรายละเอียดการตรวจสอบและการเชื่อมต่อ",
+      "overflow": 0
+    },
+    {
+      "device": "phone",
+      "view": "actual-heading-font",
+      "fonts": [
+        {
+          "familyName": "Noto Sans Thai",
+          "postScriptName": "NotoSansThai-Regular",
+          "isCustomFont": true,
+          "glyphCount": 23
+        }
+      ]
+    },
+    {
+      "device": "phone",
+      "view": "actual-running-match",
+      "file": "phone-running-match.png",
+      "body": "ข้ามไปยังเนื้อหา\nเกี่ยวกับเราและความช่วยเหลือ\nภาษา\nالعربية\nPortuguês brasileiro\nCatalà\nČeština\nDeutsch\nDansk\nEnglish\nEspañol\nEsperanto\nEuskara\nفارسی\nFrançais\nΕλληνικά\nMagyar\nItaliano\nNederlands\nPolski\nPortuguês europeu\nRomână\nРусский\nSlovenščina\nSlovenčina\nСрпски\nSuomi\nSvenska\nTürkçe\n繁體中文\n简体中文\nУкраїнська\nBahasa Indonesia\nTiếng Việt\n日本語\n한국어\nहिन्दी\nاردو\nKiswahili\nไทย\nลงชื่อเข้าใช้\n1 vs 1 ranked · Even Ground\n31 ต.ค. 2569 19:04 · – · จัดอันดับ\nสด\nทีม\nMirelle\nทีม\nMaxima (AI)\nรีเพลย์\n\nการแข่งขันนี้ยังคงดำเนินอยู่\n\nผู้เล่น\tผลลัพธ์\tคะแนนประเมิน\n Mirelle\t–\t–\n Maxima AI\t–\t–\nไทม์ไลน์\n\nแผนภูมิจะปรากฏขึ้นเมื่อเซิร์ฟเวอร์เล่นแมตช์ซ้ำเสร็จแล้ว\n\nรายละเอียดการตรวจสอบและการเชื่อมต่อ",
+      "overflow": 0
+    }
+  ],
+  "collapsed": {
+    "expandAria": "- button \"เปิดการนำทาง\"",
+    "languageAria": "- combobox \"ภาษา\":\n  - option \"العربية\"\n  - option \"Português brasileiro\"\n  - option \"Català\"\n  - option \"Čeština\"\n  - option \"Deutsch\"\n  - option \"Dansk\"\n  - option \"English\"\n  - option \"Español\"\n  - option \"Esperanto\"\n  - option \"Euskara\"\n  - option \"فارسی\"\n  - option \"Français\"\n  - option \"Ελληνικά\"\n  - option \"Magyar\"\n  - option \"Italiano\"\n  - option \"Nederlands\"\n  - option \"Polski\"\n  - option \"Português europeu\"\n  - option \"Română\"\n  - option \"Русский\"\n  - option \"Slovenščina\"\n  - option \"Slovenčina\"\n  - option \"Српски\"\n  - option \"Suomi\"\n  - option \"Svenska\"\n  - option \"Türkçe\"\n  - option \"繁體中文\"\n  - option \"简体中文\"\n  - option \"Українська\"\n  - option \"Bahasa Indonesia\"\n  - option \"Tiếng Việt\"\n  - option \"日本語\"\n  - option \"한국어\"\n  - option \"हिन्दी\"\n  - option \"اردو\"\n  - option \"Kiswahili\"\n  - option \"ไทย\" [selected]",
+    "languageValue": "th"
+  },
+  "expanded": {
+    "languageValue": "th",
+    "languageAria": "- combobox \"ภาษา\":\n  - option \"العربية\"\n  - option \"Português brasileiro\"\n  - option \"Català\"\n  - option \"Čeština\"\n  - option \"Deutsch\"\n  - option \"Dansk\"\n  - option \"English\"\n  - option \"Español\"\n  - option \"Esperanto\"\n  - option \"Euskara\"\n  - option \"فارسی\"\n  - option \"Français\"\n  - option \"Ελληνικά\"\n  - option \"Magyar\"\n  - option \"Italiano\"\n  - option \"Nederlands\"\n  - option \"Polski\"\n  - option \"Português europeu\"\n  - option \"Română\"\n  - option \"Русский\"\n  - option \"Slovenščina\"\n  - option \"Slovenčina\"\n  - option \"Српски\"\n  - option \"Suomi\"\n  - option \"Svenska\"\n  - option \"Türkçe\"\n  - option \"繁體中文\"\n  - option \"简体中文\"\n  - option \"Українська\"\n  - option \"Bahasa Indonesia\"\n  - option \"Tiếng Việt\"\n  - option \"日本語\"\n  - option \"한국어\"\n  - option \"हिन्दी\"\n  - option \"اردو\"\n  - option \"Kiswahili\"\n  - option \"ไทย\" [selected]",
+    "switchAndRefresh": true
+  }
+}

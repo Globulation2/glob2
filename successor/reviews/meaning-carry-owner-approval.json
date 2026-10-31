@@ -1,0 +1,10 @@
+{
+  "reviewer": "thai_brief",
+  "source_sha256": "6deb12f6155d1ee014b77f0908cc670272ebf24935cbc6db31c8ba73c82a9e29",
+  "batches_approved": 44,
+  "keys_approved": 6245,
+  "old_main_exact_source_target_carry": 6229,
+  "supplement_prior_fresh_exact_values": 16,
+  "findings": [],
+  "basis": "Independent own-role source/target/membership/hash verification, no fresh entire maincatalog read claimed."
+}

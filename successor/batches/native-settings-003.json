@@ -1,0 +1,603 @@
+{
+  "id": "native-settings-003",
+  "source_sha256": "6deb12f6155d1ee014b77f0908cc670272ebf24935cbc6db31c8ba73c82a9e29",
+  "surface": "native",
+  "domain": "settings",
+  "context": "Labels and help describe settings. Prefer short labels and explain their effect plainly.",
+  "entries": [
+    {
+      "id": "native:[music Most liked]",
+      "key": "[music Most liked]",
+      "source": "Most liked",
+      "target": "ถูกใจ​มาก​ที่สุด"
+    },
+    {
+      "id": "native:[music Music decoding failed.]",
+      "key": "[music Music decoding failed.]",
+      "source": "Music decoding failed.",
+      "target": "การ​ถอดรหัส​เพลง​ล้มเหลว"
+    },
+    {
+      "id": "native:[music Music download failed.]",
+      "key": "[music Music download failed.]",
+      "source": "Music download failed.",
+      "target": "การ​ดาวน์โหลด​เพลง​ล้มเหลว"
+    },
+    {
+      "id": "native:[music Music installed.]",
+      "key": "[music Music installed.]",
+      "source": "Music installed.",
+      "target": "ติดตั้ง​เพลง​เรียบร้อย​แล้ว"
+    },
+    {
+      "id": "native:[music Music installed. It is now available in Audio settings.]",
+      "key": "[music Music installed. It is now available in Audio settings.]",
+      "source": "Music installed. It is now available in Audio settings.",
+      "target": "ติดตั้ง​เพลง​เรียบร้อย​แล้ว สามารถ​ใช้งาน​ได้​ใน​เมนู​การ​ตั้งค่า​เสียง"
+    },
+    {
+      "id": "native:[music Music is not yet saved permanently. Retry saving before leaving.]",
+      "key": "[music Music is not yet saved permanently. Retry saving before leaving.]",
+      "source": "Music is not yet saved permanently. Retry saving before leaving.",
+      "target": "ยัง​ไม่ได้​บันทึก​เพลง​อย่าง​ถาวร โปรด​ลอง​บันทึก​อีกครั้ง​ก่อน​ออก"
+    },
+    {
+      "id": "native:[music Music library]",
+      "key": "[music Music library]",
+      "source": "Music library",
+      "target": "คลัง​เพลง"
+    },
+    {
+      "id": "native:[music Music request failed.]",
+      "key": "[music Music request failed.]",
+      "source": "Music request failed.",
+      "target": "ส่ง​คำขอ​เพลง​ไม่​สำเร็จ"
+    },
+    {
+      "id": "native:[music Newest]",
+      "key": "[music Newest]",
+      "source": "Newest",
+      "target": "ใหม่​ล่าสุด"
+    },
+    {
+      "id": "native:[music No community music installed yet. Import files or browse the online library.]",
+      "key": "[music No community music installed yet. Import files or browse the online library.]",
+      "source": "No community music installed yet. Import files or browse the online library.",
+      "target": "ยัง​ไม่​ได้​ติดตั้ง​เพลง​จาก​ชุมชน กรุณา​นำเข้า​ไฟล์​หรือ​เลือก​ดู​จาก​คลัง​เพลง​ออนไลน์"
+    },
+    {
+      "id": "native:[music No music found.]",
+      "key": "[music No music found.]",
+      "source": "No music found.",
+      "target": "ไม่​พบ​ไฟล์​เพลง"
+    },
+    {
+      "id": "native:[music Not AI-generated]",
+      "key": "[music Not AI-generated]",
+      "source": "Not AI-generated",
+      "target": "ไม่​ได้​สร้าง​โดย AI"
+    },
+    {
+      "id": "native:[music Pause]",
+      "key": "[music Pause]",
+      "source": "Pause",
+      "target": "หยุดชั่วคราว"
+    },
+    {
+      "id": "native:[music Play]",
+      "key": "[music Play]",
+      "source": "Play",
+      "target": "เล่น"
+    },
+    {
+      "id": "native:[music Playback position]",
+      "key": "[music Playback position]",
+      "source": "Playback position",
+      "target": "ตำแหน่ง​การ​เล่น"
+    },
+    {
+      "id": "native:[music Preview]",
+      "key": "[music Preview]",
+      "source": "Preview",
+      "target": "ตัวอย่าง"
+    },
+    {
+      "id": "native:[music Ready to import.]",
+      "key": "[music Ready to import.]",
+      "source": "Ready to import.",
+      "target": "พร้อม​สำหรับ​การ​นำเข้า"
+    },
+    {
+      "id": "native:[music Remove]",
+      "key": "[music Remove]",
+      "source": "Remove",
+      "target": "ลบ"
+    },
+    {
+      "id": "native:[music Reset to game behavior]",
+      "key": "[music Reset to game behavior]",
+      "source": "Reset to game behavior",
+      "target": "กลับ​ไป​เปลี่ยน​เพลง​ตาม​เกม"
+    },
+    {
+      "id": "native:[music Retry saving]",
+      "key": "[music Retry saving]",
+      "source": "Retry saving",
+      "target": "ลอง​บันทึก​อีกครั้ง"
+    },
+    {
+      "id": "native:[music Saved.]",
+      "key": "[music Saved.]",
+      "source": "Saved.",
+      "target": "บันทึก​เรียบร้อย​แล้ว"
+    },
+    {
+      "id": "native:[music Saving music…]",
+      "key": "[music Saving music…]",
+      "source": "Saving music…",
+      "target": "กำลัง​บันทึก​เพลง…"
+    },
+    {
+      "id": "native:[music Search]",
+      "key": "[music Search]",
+      "source": "Search",
+      "target": "ค้นหา"
+    },
+    {
+      "id": "native:[music Search title, artist, description…]",
+      "key": "[music Search title, artist, description…]",
+      "source": "Search title, artist, description…",
+      "target": "ค้นหา​จาก​ชื่อ​เพลง ศิลปิน คำอธิบาย..."
+    },
+    {
+      "id": "native:[music Select for installation]",
+      "key": "[music Select for installation]",
+      "source": "Select for installation",
+      "target": "เลือก​เพื่อ​ติดตั้ง"
+    },
+    {
+      "id": "native:[music Share music on the web]",
+      "key": "[music Share music on the web]",
+      "source": "Share music on the web",
+      "target": "แบ่งปัน​เพลง​บน​เว็บ"
+    },
+    {
+      "id": "native:[music Some catalogue entries could not be read.]",
+      "key": "[music Some catalogue entries could not be read.]",
+      "source": "Some catalogue entries could not be read.",
+      "target": "ไม่​สามารถ​อ่าน​ข้อมูล​ใน​บาง​รายการ​ของ​แคตตาล็อก​ได้"
+    },
+    {
+      "id": "native:[music Storage could not be saved. Retry or export your files before leaving.]",
+      "key": "[music Storage could not be saved. Retry or export your files before leaving.]",
+      "source": "Storage could not be saved. Retry or export your files before leaving.",
+      "target": "บันทึก​ข้อมูล​ไม่​ได้ ลอง​ใหม่​หรือ​ส่งออก​ไฟล์​ก่อน​ออก"
+    },
+    {
+      "id": "native:[music Tag]",
+      "key": "[music Tag]",
+      "source": "Tag",
+      "target": "แท็ก"
+    },
+    {
+      "id": "native:[music Test crossfades]",
+      "key": "[music Test crossfades]",
+      "source": "Test crossfades",
+      "target": "ทดสอบ​ครอสเฟด"
+    },
+    {
+      "id": "native:[music Up to 2 minutes]",
+      "key": "[music Up to 2 minutes]",
+      "source": "Up to 2 minutes",
+      "target": "ไม่​เกิน 2 นาที"
+    },
+    {
+      "id": "native:[music Use this music]",
+      "key": "[music Use this music]",
+      "source": "Use this music",
+      "target": "ใช้​เพลง​นี้"
+    },
+    {
+      "id": "native:[music Validating music…]",
+      "key": "[music Validating music…]",
+      "source": "Validating music…",
+      "target": "กำลัง​ตรวจสอบ​เพลง…"
+    },
+    {
+      "id": "native:[settings Music library · Browse, install and import]",
+      "key": "[settings Music library · Browse, install and import]",
+      "source": "Music library · Browse, install and import",
+      "target": "คลัง​เพลง · เรียก​ดู ติดตั้ง และ​นำเข้า"
+    },
+    {
+      "id": "native:[music Filters]",
+      "key": "[music Filters]",
+      "source": "Filters",
+      "target": "ตัวกรอง"
+    },
+    {
+      "id": "native:[music Leave without saving]",
+      "key": "[music Leave without saving]",
+      "source": "Leave without saving",
+      "target": "ออก​โดย​ไม่​บันทึก"
+    },
+    {
+      "id": "native:[music Import a downloaded music ZIP or the three Opus tracks. Metadata and cover art are read from Calm; no extra files are required.]",
+      "key": "[music Import a downloaded music ZIP or the three Opus tracks. Metadata and cover art are read from Calm; no extra files are required.]",
+      "source": "Import a downloaded music ZIP or the three Opus tracks. Metadata and cover art are read from Calm; no extra files are required.",
+      "target": "นำเข้า ZIP เพลง​ที่​ดาวน์โหลด​หรือ​แทร็ก Opus ทั้ง​สาม อ่าน​ข้อมูล​ประกอบ​และ​ภาพ​ปก​จาก​แทร็ก​สงบ ไม่ต้อง​มี​ไฟล์​อื่น"
+    },
+    {
+      "id": "native:[settings Target render FPS]",
+      "key": "[settings Target render FPS]",
+      "source": "Target render FPS",
+      "target": "เป้าหมาย FPS ใน​การ​แสดงผล"
+    },
+    {
+      "id": "native:[settings Unlimited]",
+      "key": "[settings Unlimited]",
+      "source": "Unlimited",
+      "target": "ไม่​จำกัด"
+    },
+    {
+      "id": "native:[settings Limit drawing across the application. Lower values reduce rendering work. Game speed is unchanged.]",
+      "key": "[settings Limit drawing across the application. Lower values reduce rendering work. Game speed is unchanged.]",
+      "source": "Limit drawing across the application. Lower values reduce rendering work. Game speed is unchanged.",
+      "target": "จำกัด​การ​วาดภาพ​ทั่ว​ทั้ง​แอปพลิเคชัน ค่าที่​ต่ำกว่า​จะ​ช่วย​ลด​ภาระ​การ​เรนเดอร์ ความเร็ว​ของ​เกม​ไม่​เปลี่ยนแปลง"
+    },
+    {
+      "id": "native:[settings Map generators]",
+      "key": "[settings Map generators]",
+      "source": "Map generators",
+      "target": "ตัวสร้าง​แผนที่"
+    },
+    {
+      "id": "native:[settings Import a generator package, then select its landscape when creating a map or game.]",
+      "key": "[settings Import a generator package, then select its landscape when creating a map or game.]",
+      "source": "Import a generator package, then select its landscape when creating a map or game.",
+      "target": "นำเข้า​แพ็กเกจ​ตัวสร้าง​แผนที่ จากนั้น​เลือก​ภูมิประเทศ​จาก​แพ็กเกจ​นั้น​เมื่อ​สร้าง​แผนที่​หรือ​เกม"
+    },
+    {
+      "id": "native:[settings Import map generator]",
+      "key": "[settings Import map generator]",
+      "source": "Import map generator",
+      "target": "นำเข้า​ตัวสร้าง​แผนที่"
+    },
+    {
+      "id": "native:[settings No custom map generators installed.]",
+      "key": "[settings No custom map generators installed.]",
+      "source": "No custom map generators installed.",
+      "target": "ยัง​ไม่ได้​ติดตั้ง​ตัวสร้าง​แผนที่​แบบ​กำหนด​เอง"
+    },
+    {
+      "id": "native:[settings Replace package]",
+      "key": "[settings Replace package]",
+      "source": "Replace package",
+      "target": "แทนที่​แพ็กเกจ"
+    },
+    {
+      "id": "native:[settings Export package]",
+      "key": "[settings Export package]",
+      "source": "Export package",
+      "target": "ส่งออก​แพ็กเกจ"
+    },
+    {
+      "id": "native:[settings Remove generator]",
+      "key": "[settings Remove generator]",
+      "source": "Remove generator",
+      "target": "นำ​ตัวสร้าง​แผนที่​ออก"
+    },
+    {
+      "id": "native:[settings Saving generator library…]",
+      "key": "[settings Saving generator library…]",
+      "source": "Saving generator library…",
+      "target": "กำลัง​บันทึก​คลัง​ตัวสร้าง​แผนที่…"
+    },
+    {
+      "id": "native:[settings Could not read generator package.]",
+      "key": "[settings Could not read generator package.]",
+      "source": "Could not read generator package.",
+      "target": "อ่าน​แพ็กเกจ​ตัวสร้าง​แผนที่​ไม่​ได้"
+    },
+    {
+      "id": "native:[settings Generator library saved.]",
+      "key": "[settings Generator library saved.]",
+      "source": "Generator library saved.",
+      "target": "บันทึก​คลัง​ตัวสร้าง​แผนที่​แล้ว"
+    },
+    {
+      "id": "native:[settings Storage could not be saved. The previous library is retained.]",
+      "key": "[settings Storage could not be saved. The previous library is retained.]",
+      "source": "Storage could not be saved. The previous library is retained.",
+      "target": "บันทึก​ข้อมูล​ไม่​ได้ ยัง​เก็บ​คลัง​เดิม​ไว้"
+    },
+    {
+      "id": "native:[settings Waiting for file selection or storage…]",
+      "key": "[settings Waiting for file selection or storage…]",
+      "source": "Waiting for file selection or storage…",
+      "target": "กำลัง​รอ​การ​เลือก​ไฟล์​หรือ​การ​จัดเก็บ..."
+    },
+    {
+      "id": "native:[settings File selection is unavailable.]",
+      "key": "[settings File selection is unavailable.]",
+      "source": "File selection is unavailable.",
+      "target": "ไม่​สามารถ​เลือก​ไฟล์​ได้"
+    },
+    {
+      "id": "native:[settings Package export is unavailable.]",
+      "key": "[settings Package export is unavailable.]",
+      "source": "Package export is unavailable.",
+      "target": "ไม่​สามารถ​ส่งออก​แพ็กเกจ​ได้"
+    },
+    {
+      "id": "native:[settings CPU automatic]",
+      "key": "[settings CPU automatic]",
+      "source": "CPU automatic",
+      "target": "CPU อัตโนมัติ"
+    },
+    {
+      "id": "native:[settings Scalar]",
+      "key": "[settings Scalar]",
+      "source": "Scalar",
+      "target": "สเกลาร์"
+    },
+    {
+      "id": "native:[settings Unavailable]",
+      "key": "[settings Unavailable]",
+      "source": "Unavailable",
+      "target": "ไม่​พร้อม​ใช้งาน"
+    },
+    {
+      "id": "native:[settings Initializing]",
+      "key": "[settings Initializing]",
+      "source": "Initializing",
+      "target": "กำลัง​เริ่มต้น"
+    },
+    {
+      "id": "native:[settings Gradient backend]",
+      "key": "[settings Gradient backend]",
+      "source": "Gradient backend",
+      "target": "ระบบ​คำนวณ​เกรเดียนต์"
+    },
+    {
+      "id": "native:[settings Applies at the next simulation boundary. Unsupported work uses CPU automatic; rendering is independent.]",
+      "key": "[settings Applies at the next simulation boundary. Unsupported work uses CPU automatic; rendering is independent.]",
+      "source": "Applies at the next simulation boundary. Unsupported work uses CPU automatic; rendering is independent.",
+      "target": "ใช้​เมื่อ​ถึง​จุด​เปลี่ยน​รอบ​จำลอง​ถัดไป งาน​ที่​ไม่​รองรับ​ใช้ CPU อัตโนมัติ ส่วน​การ​เรนเดอร์​แยก​จากกัน"
+    },
+    {
+      "id": "native:[settings Gradient algorithm]",
+      "key": "[settings Gradient algorithm]",
+      "source": "Gradient algorithm",
+      "target": "อัลกอริทึม​เกรเดียนต์"
+    },
+    {
+      "id": "native:[settings All choices compute the same exact field.]",
+      "key": "[settings All choices compute the same exact field.]",
+      "source": "All choices compute the same exact field.",
+      "target": "ทุก​วิธี​ให้​ค่า​ฟิลด์​ตรงกัน​ทุก​จุด"
+    },
+    {
+      "id": "native:[settings Bucket propagation]",
+      "key": "[settings Bucket propagation]",
+      "source": "Bucket propagation",
+      "target": "แพร่​ค่า​แบบ​บักเก็ต"
+    },
+    {
+      "id": "native:[settings Verify gradient results]",
+      "key": "[settings Verify gradient results]",
+      "source": "Verify gradient results",
+      "target": "ตรวจสอบ​ผล​เกรเดียนต์"
+    },
+    {
+      "id": "native:[settings Compare GPU results with scalar CPU before publication. Adds computation and stops the game on a mismatch.]",
+      "key": "[settings Compare GPU results with scalar CPU before publication. Adds computation and stops the game on a mismatch.]",
+      "source": "Compare GPU results with scalar CPU before publication. Adds computation and stops the game on a mismatch.",
+      "target": "เทียบ​ผล GPU กับ CPU แบบ​สเกลาร์​ก่อน​นำไปใช้ เพิ่ม​งาน​คำนวณ​และ​หยุด​เกม​หาก​ไม่​ตรงกัน"
+    },
+    {
+      "id": "native:[settings Gradient computation]",
+      "key": "[settings Gradient computation]",
+      "source": "Gradient computation",
+      "target": "การคำนวณ​เกรเดียนต์"
+    },
+    {
+      "id": "native:[settings CPU fallback]",
+      "key": "[settings CPU fallback]",
+      "source": "CPU fallback",
+      "target": "ใช้ CPU แทน"
+    },
+    {
+      "id": "native:[settings GPU fields]",
+      "key": "[settings GPU fields]",
+      "source": "GPU fields",
+      "target": "ฟิลด์ GPU"
+    },
+    {
+      "id": "native:[settings CPU fallbacks]",
+      "key": "[settings CPU fallbacks]",
+      "source": "CPU fallbacks",
+      "target": "ครั้ง​ที่​ใช้ CPU แทน"
+    },
+    {
+      "id": "native:[settings MCP server]",
+      "key": "[settings MCP server]",
+      "source": "MCP server",
+      "target": "เซิร์ฟเวอร์ MCP"
+    },
+    {
+      "id": "native:[settings Enabling the MCP server permits local clients to see and operate the game.]",
+      "key": "[settings Enabling the MCP server permits local clients to see and operate the game.]",
+      "source": "Enabling the MCP server permits local clients to see and operate the game.",
+      "target": "เปิด​เซิร์ฟเวอร์ MCP เพื่อให้​ไคลเอนต์​บน​เครื่อง​นี้​เข้า​ดู​และ​ควบคุม​เกม​ได้"
+    },
+    {
+      "id": "native:[settings Enable MCP server]",
+      "key": "[settings Enable MCP server]",
+      "source": "Enable MCP server",
+      "target": "เปิด​ใช้งาน​เซิร์ฟเวอร์ MCP"
+    },
+    {
+      "id": "native:[settings Port]",
+      "key": "[settings Port]",
+      "source": "Port",
+      "target": "พอร์ต"
+    },
+    {
+      "id": "native:[settings Current controller: %0]",
+      "key": "[settings Current controller: %0]",
+      "source": "Current controller: %0",
+      "target": "ตัวควบคุม​ปัจจุบัน: %0"
+    },
+    {
+      "id": "native:[settings Copy endpoint]",
+      "key": "[settings Copy endpoint]",
+      "source": "Copy endpoint",
+      "target": "คัดลอก​ที่อยู่​เชื่อมต่อ"
+    },
+    {
+      "id": "native:[settings Retry listener]",
+      "key": "[settings Retry listener]",
+      "source": "Retry listener",
+      "target": "ลอง​เปิดรับ​การ​เชื่อมต่อ​ใหม่"
+    },
+    {
+      "id": "native:[settings Revoke control]",
+      "key": "[settings Revoke control]",
+      "source": "Revoke control",
+      "target": "เพิกถอน​การควบคุม"
+    },
+    {
+      "id": "native:[settings MCP server unavailable in this application]",
+      "key": "[settings MCP server unavailable in this application]",
+      "source": "MCP server unavailable in this application",
+      "target": "เซิร์ฟเวอร์ MCP ไม่​พร้อม​ใช้งาน​ใน​แอปพลิเคชัน​นี้"
+    },
+    {
+      "id": "native:[settings Disabled]",
+      "key": "[settings Disabled]",
+      "source": "Disabled",
+      "target": "ปิด​อยู่"
+    },
+    {
+      "id": "native:[settings Running]",
+      "key": "[settings Running]",
+      "source": "Running",
+      "target": "กำลัง​ทำงาน"
+    },
+    {
+      "id": "native:[settings Error: %0]",
+      "key": "[settings Error: %0]",
+      "source": "Error: %0",
+      "target": "ข้อผิดพลาด: %0"
+    },
+    {
+      "id": "native:[settings None]",
+      "key": "[settings None]",
+      "source": "None",
+      "target": "ไม่​มี"
+    },
+    {
+      "id": "native:[settings Starting]",
+      "key": "[settings Starting]",
+      "source": "Starting",
+      "target": "กำลัง​เริ่ม"
+    },
+    {
+      "id": "native:[settings Browse shared generators]",
+      "key": "[settings Browse shared generators]",
+      "source": "Browse shared generators",
+      "target": "เรียก​ดู​ตัวสร้าง​แผนที่​ที่​แชร์"
+    },
+    {
+      "id": "native:[settings Apply artwork on the next game or editor load.]",
+      "key": "[settings Apply artwork on the next game or editor load.]",
+      "source": "Apply artwork on the next game or editor load.",
+      "target": "ใช้​ภาพประกอบ​ใน​การ​โหลด​เกม​หรือ​ตัวแก้ไข​ครั้ง​ถัดไป"
+    },
+    {
+      "id": "native:[settings Requires a renderer with texture filtering. Your saved choice is retained.]",
+      "key": "[settings Requires a renderer with texture filtering. Your saved choice is retained.]",
+      "source": "Requires a renderer with texture filtering. Your saved choice is retained.",
+      "target": "ต้อง​ใช้​ตัวเรนเดอร์​ที่​มี​การกรอง​พื้นผิว ตัวเลือก​ที่​คุณ​บันทึก​ไว้​จะ​ยัง​คงอยู่"
+    },
+    {
+      "id": "native:[settings Automatically show the torus overview while moving around the map.]",
+      "key": "[settings Automatically show the torus overview while moving around the map.]",
+      "source": "Automatically show the torus overview while moving around the map.",
+      "target": "แสดง​ภาพรวม​ทอรัส​อัตโนมัติ​ขณะ​เลื่อน​แผนที่"
+    },
+    {
+      "id": "native:[settings Requires a renderer with torus support. Your saved choice is retained.]",
+      "key": "[settings Requires a renderer with torus support. Your saved choice is retained.]",
+      "source": "Requires a renderer with torus support. Your saved choice is retained.",
+      "target": "ต้อง​ใช้​ตัวเรนเดอร์​ที่​รองรับ​ทอรัส ตัวเลือก​ที่​คุณ​บันทึก​ไว้​จะ​ยัง​คงอยู่"
+    },
+    {
+      "id": "native:[settings Move and animate units between game ticks.]",
+      "key": "[settings Move and animate units between game ticks.]",
+      "source": "Move and animate units between game ticks.",
+      "target": "แทรก​การ​เคลื่อนที่​และ​ภาพเคลื่อนไหว​ยูนิต​ระหว่าง​ทิก​เกม"
+    },
+    {
+      "id": "native:[settings Renderer unavailable]",
+      "key": "[settings Renderer unavailable]",
+      "source": "Renderer unavailable",
+      "target": "ตัวเรนเดอร์​ไม่​พร้อม​ใช้งาน"
+    },
+    {
+      "id": "native:[settings Apply at the next completed frame. Your game stays running.]",
+      "key": "[settings Apply at the next completed frame. Your game stays running.]",
+      "source": "Apply at the next completed frame. Your game stays running.",
+      "target": "ใช้​ใน​เฟรม​ถัดไป​ที่​เสร็จ​สมบูรณ์ เกม​ของ​คุณ​จะ​ยังคง​ทำงาน​ต่อไป"
+    },
+    {
+      "id": "native:[settings Active renderer: %0]",
+      "key": "[settings Active renderer: %0]",
+      "source": "Active renderer: %0",
+      "target": "ตัวเรนเดอร์​ที่​ใช้งาน: %0"
+    },
+    {
+      "id": "native:[settings Changing renderer…]",
+      "key": "[settings Changing renderer…]",
+      "source": "Changing renderer…",
+      "target": "กำลัง​เปลี่ยน​ตัวเรนเดอร์…"
+    },
+    {
+      "id": "native:[settings Menu scroll wheel enabled]",
+      "key": "[settings Menu scroll wheel enabled]",
+      "source": "Menu scroll wheel enabled",
+      "target": "เปิด​ใช้งาน​ล้อเลื่อน​ใน​เมนู"
+    },
+    {
+      "id": "native:[settings Controls wheel scrolling in menus. The wheel always zooms the game and editor maps.]",
+      "key": "[settings Controls wheel scrolling in menus. The wheel always zooms the game and editor maps.]",
+      "source": "Controls wheel scrolling in menus. The wheel always zooms the game and editor maps.",
+      "target": "ควบคุม​ล้อเลื่อน​ใน​เมนู ล้อ​เมาส์​ใช้​ซูม​แผนที่​ใน​เกม​และ​ตัวแก้ไข​เสมอ"
+    },
+    {
+      "id": "native:[settings Gesture scrolling]",
+      "key": "[settings Gesture scrolling]",
+      "source": "Gesture scrolling",
+      "target": "การ​เลื่อน​ด้วย​ท่าทาง"
+    },
+    {
+      "id": "native:[settings Touch and Mac gesture scrolling. 0 turns an effect off; 50 is the touch default.]",
+      "key": "[settings Touch and Mac gesture scrolling. 0 turns an effect off; 50 is the touch default.]",
+      "source": "Touch and Mac gesture scrolling. 0 turns an effect off; 50 is the touch default.",
+      "target": "การ​เลื่อน​ด้วย​ระบบ​สัมผัส​และ​ท่าทาง​ของ Mac ค่า 0 คือ​การ​ปิด​เอฟเฟกต์ ค่า 50 คือ​ค่า​เริ่มต้น​สำหรับ​การสัมผัส"
+    },
+    {
+      "id": "native:[settings How far lists and panels keep scrolling after a touch flick. Mac gestures use system momentum; zero disables their glide.]",
+      "key": "[settings How far lists and panels keep scrolling after a touch flick. Mac gestures use system momentum; zero disables their glide.]",
+      "source": "How far lists and panels keep scrolling after a touch flick. Mac gestures use system momentum; zero disables their glide.",
+      "target": "ระยะ​ที่​รายการ​และ​แผง​เลื่อน​ต่อ​หลัง​ปัด​นิ้ว ท่าทาง Mac ใช้​แรงเฉื่อย​ของ​ระบบ ค่า 0 ปิด​การ​ไหล​ต่อ"
+    },
+    {
+      "id": "native:[settings How much lists and panels stretch past their ends and spring back. Mac gestures use a gentler stretch.]",
+      "key": "[settings How much lists and panels stretch past their ends and spring back. Mac gestures use a gentler stretch.]",
+      "source": "How much lists and panels stretch past their ends and spring back. Mac gestures use a gentler stretch.",
+      "target": "รายการ​และ​แผง​ต่างๆ ยืด​เลย​ขอบ​แล้ว​เด้ง​กลับ​มาก​น้อย​เพียงใด ท่าทาง​สัมผัส​ของ Mac ยืด​ออก​นุ่มนวล​กว่า"
+    }
+  ]
+}

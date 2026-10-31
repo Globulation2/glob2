@@ -1,0 +1,969 @@
+{
+  "id": "native-general-004",
+  "source_sha256": "6deb12f6155d1ee014b77f0908cc670272ebf24935cbc6db31c8ba73c82a9e29",
+  "surface": "native",
+  "domain": "general",
+  "context": "Read neighbouring source entries and inspect usage before translating ambiguous short labels.",
+  "entries": [
+    {
+      "id": "native:[Gray]",
+      "key": "[Gray]",
+      "source": "Gray",
+      "target": "สีเทา"
+    },
+    {
+      "id": "native:[Green]",
+      "key": "[Green]",
+      "source": "Green",
+      "target": "สี​เขียว"
+    },
+    {
+      "id": "native:[Hard]",
+      "key": "[Hard]",
+      "source": "Hard",
+      "target": "ยาก"
+    },
+    {
+      "id": "native:[Height]",
+      "key": "[Height]",
+      "source": "Height",
+      "target": "ความสูง"
+    },
+    {
+      "id": "native:[Invalid colony count.]",
+      "key": "[Invalid colony count.]",
+      "source": "Invalid colony count.",
+      "target": "จำนวน​อาณานิคม​ไม่​ถูกต้อง"
+    },
+    {
+      "id": "native:[Isles]",
+      "key": "[Isles]",
+      "source": "Isles",
+      "target": "หมู่เกาะ"
+    },
+    {
+      "id": "native:[Landscape]",
+      "key": "[Landscape]",
+      "source": "Landscape",
+      "target": "ภูมิประเทศ"
+    },
+    {
+      "id": "native:[Last colony standing]",
+      "key": "[Last colony standing]",
+      "source": "Last colony standing",
+      "target": "อาณานิคม​สุดท้าย​ที่​ยัง​คงอยู่"
+    },
+    {
+      "id": "native:[Layout]",
+      "key": "[Layout]",
+      "source": "Layout",
+      "target": "เค้าโครง"
+    },
+    {
+      "id": "native:[Magenta]",
+      "key": "[Magenta]",
+      "source": "Magenta",
+      "target": "สีม่วง​แดง"
+    },
+    {
+      "id": "native:[Map]",
+      "key": "[Map]",
+      "source": "Map",
+      "target": "แผนที่"
+    },
+    {
+      "id": "native:[Match finished]",
+      "key": "[Match finished]",
+      "source": "Match finished",
+      "target": "แมตช์​จบ​แล้ว"
+    },
+    {
+      "id": "native:[Medium]",
+      "key": "[Medium]",
+      "source": "Medium",
+      "target": "ปานกลาง"
+    },
+    {
+      "id": "native:[Medium - Experimental]",
+      "key": "[Medium - Experimental]",
+      "source": "Medium - Experimental",
+      "target": "ปานกลาง - ทดลอง"
+    },
+    {
+      "id": "native:[No AI orders]",
+      "key": "[No AI orders]",
+      "source": "No AI orders",
+      "target": "AI ไม่​ออกคำสั่ง"
+    },
+    {
+      "id": "native:[Old random]",
+      "key": "[Old random]",
+      "source": "Shattered Coast",
+      "target": "ชายฝั่ง​ที่​แตกสลาย"
+    },
+    {
+      "id": "native:[Open at least one colony to start a match.]",
+      "key": "[Open at least one colony to start a match.]",
+      "source": "Open at least one colony to start a match.",
+      "target": "เปิด​ใช้​อาณานิคม​อย่าง​น้อย​หนึ่ง​แห่ง​เพื่อ​เริ่ม​แมตช์"
+    },
+    {
+      "id": "native:[Open book]",
+      "key": "[Open book]",
+      "source": "Open book",
+      "target": "เปิดเผย​ภูมิประเทศ"
+    },
+    {
+      "id": "native:[Pink]",
+      "key": "[Pink]",
+      "source": "Pink",
+      "target": "สีชมพู"
+    },
+    {
+      "id": "native:[Play this map]",
+      "key": "[Play this map]",
+      "source": "Play this map",
+      "target": "เล่น​แผนที่​นี้"
+    },
+    {
+      "id": "native:[Players & Teams]",
+      "key": "[Players & Teams]",
+      "source": "Players & Teams",
+      "target": "ผู้เล่น​และ​ทีม"
+    },
+    {
+      "id": "native:[Premade maps]",
+      "key": "[Premade maps]",
+      "source": "Premade maps",
+      "target": "แผนที่​สำเร็จรูป"
+    },
+    {
+      "id": "native:[Preview ready. Start plays this exact map.]",
+      "key": "[Preview ready. Start plays this exact map.]",
+      "source": "Preview ready. Start plays this exact map.",
+      "target": "ตัวอย่าง​พร้อม​แล้ว กด​เริ่ม​เพื่อ​เล่น​แผนที่​นี้​ตรง​ตามที่​แสดง"
+    },
+    {
+      "id": "native:[Regenerate all]",
+      "key": "[Regenerate all]",
+      "source": "Regenerate all",
+      "target": "สร้าง​ใหม่​ทั้งหมด"
+    },
+    {
+      "id": "native:[Generating preview...]",
+      "key": "[Generating preview...]",
+      "source": "Generating preview...",
+      "target": "กำลัง​สร้าง​ตัวอย่าง..."
+    },
+    {
+      "id": "native:[Preview unavailable]",
+      "key": "[Preview unavailable]",
+      "source": "Preview unavailable",
+      "target": "ไม่​สามารถ​ดู​ตัวอย่าง​ได้"
+    },
+    {
+      "id": "native:[Purple]",
+      "key": "[Purple]",
+      "source": "Purple",
+      "target": "สีม่วง"
+    },
+    {
+      "id": "native:[Quick clash]",
+      "key": "[Quick clash]",
+      "source": "Quick clash",
+      "target": "ปะทะ​ด่วน"
+    },
+    {
+      "id": "native:[Random map]",
+      "key": "[Random map]",
+      "source": "Random map",
+      "target": "แผนที่​แบบ​สุ่ม"
+    },
+    {
+      "id": "native:[Red]",
+      "key": "[Red]",
+      "source": "Red",
+      "target": "สีแดง"
+    },
+    {
+      "id": "native:[Repeat landscape]",
+      "key": "[Repeat landscape]",
+      "source": "Repeat landscape",
+      "target": "ทำซ้ำ​ภูมิประเทศ"
+    },
+    {
+      "id": "native:[Resources]",
+      "key": "[Resources]",
+      "source": "Resources",
+      "target": "ทรัพยากร"
+    },
+    {
+      "id": "native:[Sand weight]",
+      "key": "[Sand weight]",
+      "source": "Sand weight",
+      "target": "น้ำหนัก​ทราย"
+    },
+    {
+      "id": "native:[Select a valid map.]",
+      "key": "[Select a valid map.]",
+      "source": "Select a valid map.",
+      "target": "เลือก​แผนที่​ที่​ถูกต้อง"
+    },
+    {
+      "id": "native:[Shared control needs a free controller slot (maximum %0).]",
+      "key": "[Shared control needs a free controller slot (maximum %0).]",
+      "source": "Shared control needs a free controller slot (maximum %0).",
+      "target": "การควบคุม​แบบ​ใช้​ร่วมกัน​ต้องการ​ช่อง​ควบคุม​ว่าง (สูงสุด %0 )"
+    },
+    {
+      "id": "native:[Smoothing]",
+      "key": "[Smoothing]",
+      "source": "Smoothing",
+      "target": "การ​ปรับ​ให้​เรียบ"
+    },
+    {
+      "id": "native:[Standard]",
+      "key": "[Standard]",
+      "source": "Standard",
+      "target": "มาตรฐาน"
+    },
+    {
+      "id": "native:[Start game]",
+      "key": "[Start game]",
+      "source": "Start game",
+      "target": "เริ่ม​เกม"
+    },
+    {
+      "id": "native:[Swamp]",
+      "key": "[Swamp]",
+      "source": "Swamp",
+      "target": "หนองน้ำ"
+    },
+    {
+      "id": "native:[Team]",
+      "key": "[Team]",
+      "source": "Team",
+      "target": "ทีม"
+    },
+    {
+      "id": "native:[Victory]",
+      "key": "[Victory]",
+      "source": "Victory",
+      "target": "ชัยชนะ"
+    },
+    {
+      "id": "native:[Watch game]",
+      "key": "[Watch game]",
+      "source": "Watch game",
+      "target": "ดู​เกม"
+    },
+    {
+      "id": "native:[Water weight]",
+      "key": "[Water weight]",
+      "source": "Water weight",
+      "target": "น้ำหนัก​ของ​น้ำ"
+    },
+    {
+      "id": "native:[White]",
+      "key": "[White]",
+      "source": "White",
+      "target": "สี​ขาว"
+    },
+    {
+      "id": "native:[Width]",
+      "key": "[Width]",
+      "source": "Width",
+      "target": "ความ​กว้าง"
+    },
+    {
+      "id": "native:[Yellow]",
+      "key": "[Yellow]",
+      "source": "Yellow",
+      "target": "สีเหลือง"
+    },
+    {
+      "id": "native:[You]",
+      "key": "[You]",
+      "source": "You",
+      "target": "คุณ"
+    },
+    {
+      "id": "native:[You + AI]",
+      "key": "[You + AI]",
+      "source": "You + AI",
+      "target": "คุณ + AI"
+    },
+    {
+      "id": "native:[You and the AI both issue orders. Uses two controller slots.]",
+      "key": "[You and the AI both issue orders. Uses two controller slots.]",
+      "source": "You and the AI both issue orders. Uses two controller slots.",
+      "target": "ทั้ง​คุณ​และ AI ต่าง​ออกคำสั่ง ใช้​ช่อง​ควบคุม​สอง​ช่อง"
+    },
+    {
+      "id": "native:[You vs all]",
+      "key": "[You vs all]",
+      "source": "You vs all",
+      "target": "คุณ​ปะทะ​ทุกฝ่าย"
+    },
+    {
+      "id": "native:[%0 vs %1]",
+      "key": "[%0 vs %1]",
+      "source": "%0 vs %1",
+      "target": "%0 ปะทะ %1"
+    },
+    {
+      "id": "native:[%0 vs all]",
+      "key": "[%0 vs all]",
+      "source": "%0 vs all",
+      "target": "%0 ปะทะ​ทุกฝ่าย"
+    },
+    {
+      "id": "native:[You will watch this match.]",
+      "key": "[You will watch this match.]",
+      "source": "You will watch this match.",
+      "target": "คุณ​จะ​รับ​ชม​แมตช์​นี้"
+    },
+    {
+      "id": "native:[Your maps]",
+      "key": "[Your maps]",
+      "source": "Your maps",
+      "target": "แผนที่​ของ​คุณ"
+    },
+    {
+      "id": "native:[colonies]",
+      "key": "[colonies]",
+      "source": "colonies",
+      "target": "อาณานิคม"
+    },
+    {
+      "id": "native:[Inactive]",
+      "key": "[Inactive]",
+      "source": "Inactive",
+      "target": "ไม่​ใช้งาน"
+    },
+    {
+      "id": "native:[Changes the pace of the whole simulation.]",
+      "key": "[Changes the pace of the whole simulation.]",
+      "source": "Changes the pace of the whole simulation.",
+      "target": "เปลี่ยน​จังหวะ​ของ​การจำลอง​ทั้งหมด"
+    },
+    {
+      "id": "native:[Choose whether teams can change during the match.]",
+      "key": "[Choose whether teams can change during the match.]",
+      "source": "Choose whether teams can change during the match.",
+      "target": "เลือก​ว่า​จะ​เปลี่ยน​ทีม​ระหว่าง​แมตช์​ได้​หรือไม่"
+    },
+    {
+      "id": "native:[Dimensions and colony count are set above.]",
+      "key": "[Dimensions and colony count are set above.]",
+      "source": "Dimensions and colony count are set above.",
+      "target": "ตั้ง​ขนาด​และ​จำนวน​อาณานิคม​ไว้​ด้านบน"
+    },
+    {
+      "id": "native:[Generate & watch]",
+      "key": "[Generate & watch]",
+      "source": "Generate & watch",
+      "target": "สร้าง​และ​รับ​ชม"
+    },
+    {
+      "id": "native:[Info]",
+      "key": "[Info]",
+      "source": "Info",
+      "target": "ข้อมูล"
+    },
+    {
+      "id": "native:[Map-defined starting units]",
+      "key": "[Map-defined starting units]",
+      "source": "Map-defined starting units",
+      "target": "ยูนิต​เริ่มต้น​ตาม​แผนที่"
+    },
+    {
+      "id": "native:[No maps in this library.]",
+      "key": "[No maps in this library.]",
+      "source": "No maps in this library.",
+      "target": "ไม่​มี​แผนที่​ใน​คลัง​นี้"
+    },
+    {
+      "id": "native:[Premade maps retain their authored starting units.]",
+      "key": "[Premade maps retain their authored starting units.]",
+      "source": "Premade maps retain their authored starting units.",
+      "target": "แผนที่​สำเร็จรูป​คง​ยูนิต​เริ่มต้น​ตามที่​ผู้สร้าง​กำหนด"
+    },
+    {
+      "id": "native:[This colony will not join the match.]",
+      "key": "[This colony will not join the match.]",
+      "source": "This colony will not join the match.",
+      "target": "อาณานิคม​นี้​ไม่​เข้าร่วม​แมตช์"
+    },
+    {
+      "id": "native:[This landscape uses fixed resource placement.]",
+      "key": "[This landscape uses fixed resource placement.]",
+      "source": "This landscape uses fixed resource placement.",
+      "target": "ภูมิประเทศ​นี้​กำหนด​ตำแหน่ง​ทรัพยากร​ตายตัว"
+    },
+    {
+      "id": "native:[Win through conquest]",
+      "key": "[Win through conquest]",
+      "source": "Win through conquest",
+      "target": "ชัยชนะ​ด้วย​การ​พิชิต"
+    },
+    {
+      "id": "native:[You control this colony.]",
+      "key": "[You control this colony.]",
+      "source": "You control this colony.",
+      "target": "คุณ​เป็น​ผู้ควบคุม​อาณานิคม​นี้"
+    },
+    {
+      "id": "native:[controllers]",
+      "key": "[controllers]",
+      "source": "controllers",
+      "target": "ตัวควบคุม"
+    },
+    {
+      "id": "native:[Use]",
+      "key": "[Use]",
+      "source": "Use",
+      "target": "ใช้"
+    },
+    {
+      "id": "native:[Lime]",
+      "key": "[Lime]",
+      "source": "Lime",
+      "target": "สี​เขียว​มะนาว"
+    },
+    {
+      "id": "native:[Teal]",
+      "key": "[Teal]",
+      "source": "Teal",
+      "target": "สี​เขียว​อม​ฟ้า"
+    },
+    {
+      "id": "native:[Azure]",
+      "key": "[Azure]",
+      "source": "Azure",
+      "target": "สี​ฟ้า​สด"
+    },
+    {
+      "id": "native:[automatic torus view]",
+      "key": "[automatic torus view]",
+      "source": "Automatic torus view",
+      "target": "มุมมอง​ทอรัส​อัตโนมัติ"
+    },
+    {
+      "id": "native:[toggle torus view]",
+      "key": "[toggle torus view]",
+      "source": "Toggle 2D / torus view",
+      "target": "สลับ​มุมมอง 2 มิติ / ทอรัส"
+    },
+    {
+      "id": "native:[Alliance]",
+      "key": "[Alliance]",
+      "source": "Alliance",
+      "target": "พันธมิตร"
+    },
+    {
+      "id": "native:[Choose a rule to change it.]",
+      "key": "[Choose a rule to change it.]",
+      "source": "Choose a rule to change it.",
+      "target": "เลือก​กฎ​ข้อ​ใด​ข้อ​หนึ่ง​เพื่อ​เปลี่ยนแปลง​มัน"
+    },
+    {
+      "id": "native:[Control]",
+      "key": "[Control]",
+      "source": "Control",
+      "target": "ควบคุม"
+    },
+    {
+      "id": "native:[Controller]",
+      "key": "[Controller]",
+      "source": "Controller",
+      "target": "ตัวควบคุม"
+    },
+    {
+      "id": "native:[Generate preview]",
+      "key": "[Generate preview]",
+      "source": "Generate preview",
+      "target": "สร้าง​ตัวอย่าง"
+    },
+    {
+      "id": "native:[Map-defined]",
+      "key": "[Map-defined]",
+      "source": "Map-defined",
+      "target": "กำหนด​โดย​แผนที่"
+    },
+    {
+      "id": "native:[Match format]",
+      "key": "[Match format]",
+      "source": "Match format",
+      "target": "รูปแบบ​แมตช์"
+    },
+    {
+      "id": "native:[No current preview]",
+      "key": "[No current preview]",
+      "source": "No current preview",
+      "target": "ไม่​มี​ตัวอย่าง​แสดง​ใน​ขณะนี้"
+    },
+    {
+      "id": "native:[Reroll]",
+      "key": "[Reroll]",
+      "source": "Reroll",
+      "target": "สุ่ม​ใหม่"
+    },
+    {
+      "id": "native:[Randomize]",
+      "key": "[Randomize]",
+      "source": "Randomize",
+      "target": "สุ่ม"
+    },
+    {
+      "id": "native:[Reset to defaults]",
+      "key": "[Reset to defaults]",
+      "source": "Reset to defaults",
+      "target": "รีเซ็ต​เป็นการ​ตั้งค่า​เริ่มต้น"
+    },
+    {
+      "id": "native:[Ruleset]",
+      "key": "[Ruleset]",
+      "source": "Ruleset",
+      "target": "ชุด​กฎ"
+    },
+    {
+      "id": "native:[Unavailable]",
+      "key": "[Unavailable]",
+      "source": "Unavailable",
+      "target": "ไม่​พร้อม​ใช้งาน"
+    },
+    {
+      "id": "native:[Use selection]",
+      "key": "[Use selection]",
+      "source": "Use selection",
+      "target": "ใช้​รายการ​ที่​เลือก"
+    },
+    {
+      "id": "native:[Quick clash on premade maps: only speed changes (2x).]",
+      "key": "[Quick clash on premade maps: only speed changes (2x).]",
+      "source": "Quick clash on premade maps: only speed changes (2x).",
+      "target": "ปะทะ​ด่วน​บน​แผนที่​สำเร็จรูป: เปลี่ยน​เฉพาะ​ความเร็ว​เป็น 2 เท่า"
+    },
+    {
+      "id": "native:[Generate a preview to explore this world.]",
+      "key": "[Generate a preview to explore this world.]",
+      "source": "Generate a preview to explore this world.",
+      "target": "สร้าง​ตัวอย่าง​เพื่อ​สำรวจ​โลก​ใบ​นี้"
+    },
+    {
+      "id": "native:[Channel width]",
+      "key": "[Channel width]",
+      "source": "Channel width",
+      "target": "ความ​กว้าง​ร่องน้ำ"
+    },
+    {
+      "id": "native:[Land bridge width]",
+      "key": "[Land bridge width]",
+      "source": "Land bridge width",
+      "target": "ความ​กว้าง​ของ​สะพาน​แผ่นดิน"
+    },
+    {
+      "id": "native:[Contested commons]",
+      "key": "[Contested commons]",
+      "source": "Contested commons",
+      "target": "พื้นที่​ส่วนกลาง​ที่​ต้อง​แย่งชิง"
+    },
+    {
+      "id": "native:[Maze]",
+      "key": "[Maze]",
+      "source": "Maze",
+      "target": "เขาวงกต"
+    },
+    {
+      "id": "native:[Fjord continent]",
+      "key": "[Fjord continent]",
+      "source": "Fjord continent",
+      "target": "ทวีป​ฟยอร์ด"
+    },
+    {
+      "id": "native:[Cell size]",
+      "key": "[Cell size]",
+      "source": "Cell size",
+      "target": "ขนาด​เซลล์"
+    },
+    {
+      "id": "native:[Loopiness]",
+      "key": "[Loopiness]",
+      "source": "Loopiness",
+      "target": "ความถี่​ทาง​วน"
+    },
+    {
+      "id": "native:[Channels this wide leave too little grass in each cell; use narrower channels or bigger cells.]",
+      "key": "[Channels this wide leave too little grass in each cell; use narrower channels or bigger cells.]",
+      "source": "Channels this wide leave too little grass in each cell; use narrower channels or bigger cells.",
+      "target": "ร่องน้ำ​กว้าง​ขนาด​นี้​ทำให้​แต่ละ​เซลล์​เหลือ​หญ้า​น้อย​เกินไป ใช้​ร่องน้ำ​แคบ​ลง​หรือ​เซลล์​ใหญ่​ขึ้น"
+    },
+    {
+      "id": "native:[Commons size]",
+      "key": "[Commons size]",
+      "source": "Commons size",
+      "target": "ขนาด​พื้นที่​ส่วนกลาง"
+    },
+    {
+      "id": "native:[Moat width]",
+      "key": "[Moat width]",
+      "source": "Moat width",
+      "target": "ความ​กว้าง​ของ​คูเมือง"
+    },
+    {
+      "id": "native:[Bridge count]",
+      "key": "[Bridge count]",
+      "source": "Bridge count",
+      "target": "จำนวน​สะพาน"
+    },
+    {
+      "id": "native:[Continent size]",
+      "key": "[Continent size]",
+      "source": "Continent size",
+      "target": "ขนาด​ทวีป"
+    },
+    {
+      "id": "native:[Coast roughness]",
+      "key": "[Coast roughness]",
+      "source": "Coast roughness",
+      "target": "ความ​ขรุขระ​ของ​ชายฝั่ง"
+    },
+    {
+      "id": "native:[Fjord width]",
+      "key": "[Fjord width]",
+      "source": "Fjord width",
+      "target": "ความ​กว้าง​ฟยอร์ด"
+    },
+    {
+      "id": "native:[Watershed]",
+      "key": "[Watershed]",
+      "source": "Watershed",
+      "target": "ลุ่มน้ำ"
+    },
+    {
+      "id": "native:[Dryness]",
+      "key": "[Dryness]",
+      "source": "Dryness",
+      "target": "ความ​แห้ง"
+    },
+    {
+      "id": "native:[Fords]",
+      "key": "[Fords]",
+      "source": "Fords",
+      "target": "จุด​ข้าม​น้ำ​ตื้น"
+    },
+    {
+      "id": "native:[Stone highlands]",
+      "key": "[Stone highlands]",
+      "source": "Stone highlands",
+      "target": "ที่ราบสูง​หิน"
+    },
+    {
+      "id": "native:[Valley size]",
+      "key": "[Valley size]",
+      "source": "Valley size",
+      "target": "ขนาด​ของ​หุบเขา"
+    },
+    {
+      "id": "native:[Pass width]",
+      "key": "[Pass width]",
+      "source": "Pass width",
+      "target": "ความ​กว้าง​ช่องเขา"
+    },
+    {
+      "id": "native:[Pond size]",
+      "key": "[Pond size]",
+      "source": "Pond size",
+      "target": "ขนาด​บ่อ"
+    },
+    {
+      "id": "native:[Symmetric arena]",
+      "key": "[Symmetric arena]",
+      "source": "Symmetric arena",
+      "target": "สนามประลอง​สมมาตร"
+    },
+    {
+      "id": "native:[Centre size]",
+      "key": "[Centre size]",
+      "source": "Centre size",
+      "target": "ขนาด​ศูนย์กลาง"
+    },
+    {
+      "id": "native:[Causeway width]",
+      "key": "[Causeway width]",
+      "source": "Causeway width",
+      "target": "ความ​กว้าง​ของ​ทาง​เชื่อม"
+    },
+    {
+      "id": "native:[Causeways]",
+      "key": "[Causeways]",
+      "source": "Causeways",
+      "target": "ทาง​เชื่อม"
+    },
+    {
+      "id": "native:[Resource richness]",
+      "key": "[Resource richness]",
+      "source": "Resource richness",
+      "target": "ความอุดมสมบูรณ์​ของ​ทรัพยากร"
+    },
+    {
+      "id": "native:[Symmetric arena needs 2, 4 or 8 colonies.]",
+      "key": "[Symmetric arena needs 2, 4 or 8 colonies.]",
+      "source": "Symmetric arena needs 2, 4 or 8 colonies.",
+      "target": "สนาม​ประลอง​แบบ​สมมาตร​ต้องการ​อาณานิคม 2, 4 หรือ 8 แห่ง"
+    },
+    {
+      "id": "native:[The centre is too small for an orchard on this map; use a bigger centre or a bigger map.]",
+      "key": "[The centre is too small for an orchard on this map; use a bigger centre or a bigger map.]",
+      "source": "The centre is too small for an orchard on this map; use a bigger centre or a bigger map.",
+      "target": "พื้นที่​ตรงกลาง​เล็ก​เกินไป​สำหรับ​สวนผลไม้​ใน​แผนที่​นี้ โปรด​ใช้​พื้นที่​ตรงกลาง​ที่​ใหญ่​กว่า​หรือ​แผนที่​ที่​ใหญ่​กว่า"
+    },
+    {
+      "id": "native:[The arena leaves too little room for every colony; use a bigger map, a smaller centre or a narrower moat.]",
+      "key": "[The arena leaves too little room for every colony; use a bigger map, a smaller centre or a narrower moat.]",
+      "source": "The arena leaves too little room for every colony; use a bigger map, a smaller centre or a narrower moat.",
+      "target": "สนามรบ​มี​พื้นที่​น้อย​เกินไป​สำหรับ​ทุก​อาณานิคม ควร​ใช้​แผนที่​ที่​ใหญ่​กว่า ศูนย์กลาง​ที่​เล็ก​กว่า หรือ​คูเมือง​ที่​แคบ​กว่า"
+    },
+    {
+      "id": "native:[The causeways are too close together; use fewer or narrower causeways, or a bigger centre.]",
+      "key": "[The causeways are too close together; use fewer or narrower causeways, or a bigger centre.]",
+      "source": "The causeways are too close together; use fewer or narrower causeways, or a bigger centre.",
+      "target": "ทาง​เชื่อม​อยู่​ใกล้​กัน​เกินไป ควร​ใช้​ทาง​เชื่อม​ที่​น้อยลง​หรือ​แคบ​ลง หรือ​สร้าง​ศูนย์กลาง​ที่​ใหญ่​กว่า​นี้"
+    },
+    {
+      "id": "native:[Ring world]",
+      "key": "[Ring world]",
+      "source": "Ring world",
+      "target": "โลก​วงแหวน"
+    },
+    {
+      "id": "native:[Belt width]",
+      "key": "[Belt width]",
+      "source": "Belt width",
+      "target": "ความ​กว้าง​แถบ​แผ่นดิน"
+    },
+    {
+      "id": "native:[City states]",
+      "key": "[City states]",
+      "source": "City states",
+      "target": "นครรัฐ"
+    },
+    {
+      "id": "native:[Strait width]",
+      "key": "[Strait width]",
+      "source": "Strait width",
+      "target": "ความ​กว้าง​ของ​ช่องแคบ"
+    },
+    {
+      "id": "native:[Valleys]",
+      "key": "[Valleys]",
+      "source": "Valleys",
+      "target": "หุบเขา"
+    },
+    {
+      "id": "native:[Frontier richness]",
+      "key": "[Frontier richness]",
+      "source": "Frontier richness",
+      "target": "ความอุดมสมบูรณ์​ชายแดน"
+    },
+    {
+      "id": "native:[City states need at least one colony.]",
+      "key": "[City states need at least one colony.]",
+      "source": "City states need at least one colony.",
+      "target": "นครรัฐ​จำเป็นต้อง​มี​อาณานิคม​อย่าง​น้อย​หนึ่ง​แห่ง"
+    },
+    {
+      "id": "native:[Stone walls]",
+      "key": "[Stone walls]",
+      "source": "Stone walls",
+      "target": "กำแพง​หิน"
+    },
+    {
+      "id": "native:[Sand patches]",
+      "key": "[Sand patches]",
+      "source": "Sand patches",
+      "target": "ผืน​ทราย"
+    },
+    {
+      "id": "native:[Tidal flats]",
+      "key": "[Tidal flats]",
+      "source": "Tidal flats",
+      "target": "ที่ราบ​น้ำขึ้น​น้ำลง"
+    },
+    {
+      "id": "native:[Everglades]",
+      "key": "[Everglades]",
+      "source": "Everglades",
+      "target": "เอเวอร์เกลดส์"
+    },
+    {
+      "id": "native:[Pool spacing]",
+      "key": "[Pool spacing]",
+      "source": "Pool spacing",
+      "target": "ระยะห่าง​บ่อน้ำ"
+    },
+    {
+      "id": "native:[Pool size]",
+      "key": "[Pool size]",
+      "source": "Pool size",
+      "target": "ขนาด​บ่อน้ำ"
+    },
+    {
+      "id": "native:[Clearing size]",
+      "key": "[Clearing size]",
+      "source": "Clearing size",
+      "target": "ขนาด​พื้นที่ว่าง"
+    },
+    {
+      "id": "native:[Levee]",
+      "key": "[Levee]",
+      "source": "Levee",
+      "target": "คัน​กั้น​น้ำ"
+    },
+    {
+      "id": "native:[Sloughs]",
+      "key": "[Sloughs]",
+      "source": "Sloughs",
+      "target": "บึง"
+    },
+    {
+      "id": "native:[Everglades need at least one colony.]",
+      "key": "[Everglades need at least one colony.]",
+      "source": "Everglades need at least one colony.",
+      "target": "พื้นที่​เอเวอร์เกลดส์​ต้องการ​อาณานิคม​อย่าง​น้อย​หนึ่ง​แห่ง"
+    },
+    {
+      "id": "native:[Coral]",
+      "key": "[Coral]",
+      "source": "Coral",
+      "target": "ปะการัง"
+    },
+    {
+      "id": "native:[Fork angle]",
+      "key": "[Fork angle]",
+      "source": "Fork angle",
+      "target": "มุม​แตกแขนง"
+    },
+    {
+      "id": "native:[Lean]",
+      "key": "[Lean]",
+      "source": "Lean",
+      "target": "เอียง"
+    },
+    {
+      "id": "native:[Home size]",
+      "key": "[Home size]",
+      "source": "Home size",
+      "target": "ขนาด​พื้นที่​เริ่มต้น"
+    },
+    {
+      "id": "native:[The coral does not fit this map; use a bigger map, narrower straits or fewer colonies.]",
+      "key": "[The coral does not fit this map; use a bigger map, narrower straits or fewer colonies.]",
+      "source": "The coral does not fit this map; use a bigger map, narrower straits or fewer colonies.",
+      "target": "ปะการัง​ใหญ่​เกิน​แผนที่ ให้​ใช้​แผนที่​ใหญ่​ขึ้น ลด​ความ​กว้าง​ช่องแคบ หรือ​ลด​จำนวน​อาณานิคม"
+    },
+    {
+      "id": "native:[Branching]",
+      "key": "[Branching]",
+      "source": "Branching",
+      "target": "การ​แตกแขนง"
+    },
+    {
+      "id": "native:[Branch width]",
+      "key": "[Branch width]",
+      "source": "Branch width",
+      "target": "ความ​กว้าง​แขนง"
+    },
+    {
+      "id": "native:[Coral needs at least one colony.]",
+      "key": "[Coral needs at least one colony.]",
+      "source": "Coral needs at least one colony.",
+      "target": "ปะการัง​ต้อง​มี​อาณานิคม​อย่าง​น้อย​หนึ่ง​แห่ง"
+    },
+    {
+      "id": "native:[Carousel]",
+      "key": "[Carousel]",
+      "source": "Carousel",
+      "target": "ม้าหมุน"
+    },
+    {
+      "id": "native:[Amphitheatre]",
+      "key": "[Amphitheatre]",
+      "source": "Amphitheatre",
+      "target": "อัฒจันทร์"
+    },
+    {
+      "id": "native:[Switchbacks]",
+      "key": "[Switchbacks]",
+      "source": "Switchbacks",
+      "target": "ทาง​โค้ง​หักศอก"
+    },
+    {
+      "id": "native:[Corridor width]",
+      "key": "[Corridor width]",
+      "source": "Corridor width",
+      "target": "ความ​กว้าง​ของ​ทางเดิน"
+    },
+    {
+      "id": "native:[Spoke width]",
+      "key": "[Spoke width]",
+      "source": "Spoke width",
+      "target": "ความ​กว้าง​ของ​ซี่​ล้อ"
+    },
+    {
+      "id": "native:[Court size]",
+      "key": "[Court size]",
+      "source": "Court size",
+      "target": "ขนาด​ลาน"
+    },
+    {
+      "id": "native:[Court wall]",
+      "key": "[Court wall]",
+      "source": "Court wall",
+      "target": "กำแพง​ลาน"
+    },
+    {
+      "id": "native:[Plaza size]",
+      "key": "[Plaza size]",
+      "source": "Plaza size",
+      "target": "ขนาด​ลาน​กลาง"
+    },
+    {
+      "id": "native:[Starting tower level]",
+      "key": "[Starting tower level]",
+      "source": "Starting tower level",
+      "target": "ระดับ​หอคอย​เริ่มต้น"
+    },
+    {
+      "id": "native:[Towers per colony]",
+      "key": "[Towers per colony]",
+      "source": "Towers per colony",
+      "target": "จำนวน​หอคอย​ต่อ​อาณานิคม"
+    },
+    {
+      "id": "native:[Rings]",
+      "key": "[Rings]",
+      "source": "Rings",
+      "target": "วงแหวน"
+    },
+    {
+      "id": "native:[Ramp width]",
+      "key": "[Ramp width]",
+      "source": "Ramp width",
+      "target": "ความ​กว้าง​ของ​ทางลาด"
+    },
+    {
+      "id": "native:[Pit size]",
+      "key": "[Pit size]",
+      "source": "Pit size",
+      "target": "ขนาด​หลุม"
+    },
+    {
+      "id": "native:[Terrace width]",
+      "key": "[Terrace width]",
+      "source": "Terrace width",
+      "target": "ความ​กว้าง​ตะพัก"
+    }
+  ]
+}

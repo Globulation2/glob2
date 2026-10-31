@@ -1,0 +1,969 @@
+{
+  "id": "online-online-013",
+  "source_sha256": "6deb12f6155d1ee014b77f0908cc670272ebf24935cbc6db31c8ba73c82a9e29",
+  "surface": "online",
+  "domain": "online",
+  "context": "Account, multiplayer, upload and browser workflows. Preserve URLs, licences, paths, format tokens and product names.",
+  "entries": [
+    {
+      "id": "online:Take a seat first.",
+      "key": "Take a seat first.",
+      "source": "Take a seat first.",
+      "target": "เลือกที่นั่งก่อน"
+    },
+    {
+      "id": "online:Target ID or type",
+      "key": "Target ID or type",
+      "source": "Target ID or type",
+      "target": "รหัสเป้าหมายหรือประเภท"
+    },
+    {
+      "id": "online:Team",
+      "key": "Team",
+      "source": "Team",
+      "target": "ทีม"
+    },
+    {
+      "id": "online:Team color",
+      "key": "Team color",
+      "source": "Team color",
+      "target": "สีประจำทีม"
+    },
+    {
+      "id": "online:Team color layers must match the base frame dimensions.",
+      "key": "Team color layers must match the base frame dimensions.",
+      "source": "Team color layers must match the base frame dimensions.",
+      "target": "ขนาดเลเยอร์สีทีมต้องตรงกับขนาดเฟรมพื้นฐาน"
+    },
+    {
+      "id": "online:Team {value0}",
+      "key": "Team {value0}",
+      "source": "Team {value0}",
+      "target": "ทีม {value0}"
+    },
+    {
+      "id": "online:Teams",
+      "key": "Teams",
+      "source": "Teams",
+      "target": "ทีม"
+    },
+    {
+      "id": "online:Technical checks do not establish balance or fun.",
+      "key": "Technical checks do not establish balance or fun.",
+      "source": "Technical checks do not establish balance or fun.",
+      "target": "การตรวจสอบทางเทคนิคไม่ได้รับรองความสมดุลหรือความสนุก"
+    },
+    {
+      "id": "online:Technical checks passed",
+      "key": "Technical checks passed",
+      "source": "Technical checks passed",
+      "target": "ผ่านการตรวจสอบทางเทคนิคแล้ว"
+    },
+    {
+      "id": "online:Technical details",
+      "key": "Technical details",
+      "source": "Technical details",
+      "target": "รายละเอียดทางเทคนิค"
+    },
+    {
+      "id": "online:Tell me about the world you want to hear. We’ll shape the melody, instruments and three moods together.",
+      "key": "Tell me about the world you want to hear. We’ll shape the melody, instruments and three moods together.",
+      "source": "Tell me about the world you want to hear. We’ll shape the melody, instruments and three moods together.",
+      "target": "บอกฉันเกี่ยวกับโลกที่คุณอยากฟัง เราจะร่วมกันสร้างสรรค์ทำนอง เครื่องดนตรี และอารมณ์ทั้งสามแบบ"
+    },
+    {
+      "id": "online:Terrain",
+      "key": "Terrain",
+      "source": "Terrain",
+      "target": "ภูมิประเทศ"
+    },
+    {
+      "id": "online:Terrain & resource sets",
+      "key": "Terrain & resource sets",
+      "source": "Terrain & resource sets",
+      "target": "ชุดภูมิประเทศและทรัพยากร"
+    },
+    {
+      "id": "online:Terrain & resources",
+      "key": "Terrain & resources",
+      "source": "Terrain & resources",
+      "target": "ภูมิประเทศและทรัพยากร"
+    },
+    {
+      "id": "online:Terrain Studio",
+      "key": "Terrain Studio",
+      "source": "Terrain Studio",
+      "target": "สตูดิโอภูมิประเทศ"
+    },
+    {
+      "id": "online:Terrain Studio is disabled on this instance. Your saved projects remain available.",
+      "key": "Terrain Studio is disabled on this instance. Your saved projects remain available.",
+      "source": "Terrain Studio is disabled on this instance. Your saved projects remain available.",
+      "target": "Terrain Studio ถูกปิดใช้งานในระบบนี้ โครงการที่คุณบันทึกไว้ยังคงใช้งานได้"
+    },
+    {
+      "id": "online:Terrain Studio is disabled.",
+      "key": "Terrain Studio is disabled.",
+      "source": "Terrain Studio is disabled.",
+      "target": "Terrain Studio ถูกปิดใช้งานแล้ว"
+    },
+    {
+      "id": "online:Terrain design conversation",
+      "key": "Terrain design conversation",
+      "source": "Terrain design conversation",
+      "target": "การสนทนาเกี่ยวกับการออกแบบภูมิประเทศ"
+    },
+    {
+      "id": "online:Terrain frames are 32×32. Resource and decor frames can be up to 64×64. Reupload the same PNG with new dimensions to replace its frame grid; then check its frame mappings.",
+      "key": "Terrain frames are 32×32. Resource and decor frames can be up to 64×64. Reupload the same PNG with new dimensions to replace its frame grid; then check its frame mappings.",
+      "source": "Terrain frames are 32×32. Resource and decor frames can be up to 64×64. Reupload the same PNG with new dimensions to replace its frame grid; then check its frame mappings.",
+      "target": "เฟรมภูมิประเทศมีขนาด 32×32 เฟรมทรัพยากรและของตกแต่งมีขนาดได้ถึง 64×64 อัปโหลด PNG เดิมอีกครั้งโดยระบุขนาดใหม่เพื่อแทนตารางเฟรม แล้วตรวจสอบการจับคู่เฟรม"
+    },
+    {
+      "id": "online:Terrain projects",
+      "key": "Terrain projects",
+      "source": "Terrain projects",
+      "target": "โครงการภูมิประเทศ"
+    },
+    {
+      "id": "online:Terrain-credit sales are not enabled.",
+      "key": "Terrain-credit sales are not enabled.",
+      "source": "Terrain-credit sales are not enabled.",
+      "target": "การขายเครดิตภูมิประเทศยังไม่เปิดใช้งาน"
+    },
+    {
+      "id": "online:Test diagnostics attached.",
+      "key": "Test diagnostics attached.",
+      "source": "Test diagnostics attached.",
+      "target": "ไฟล์ผลการทดสอบแนบมาด้วยแล้ว"
+    },
+    {
+      "id": "online:Test store — real-money checkout is not enabled.",
+      "key": "Test store — real-money checkout is not enabled.",
+      "source": "Test store — real-money checkout is not enabled.",
+      "target": "ร้านค้าทดสอบ — การชำระเงินด้วยเงินจริงยังไม่เปิดใช้งาน"
+    },
+    {
+      "id": "online:That account cannot sign in.",
+      "key": "That account cannot sign in.",
+      "source": "That account cannot sign in.",
+      "target": "บัญชีดังกล่าวไม่สามารถเข้าสู่ระบบได้"
+    },
+    {
+      "id": "online:That display name is taken.",
+      "key": "That display name is taken.",
+      "source": "That display name is taken.",
+      "target": "ชื่อที่แสดงนั้นมีคนใช้แล้ว"
+    },
+    {
+      "id": "online:That password is not right for this username. Try again.",
+      "key": "That password is not right for this username. Try again.",
+      "source": "That password is not right for this username. Try again.",
+      "target": "รหัสผ่านนี้ไม่ถูกต้องสำหรับชื่อผู้ใช้นี้ โปรดลองใหม่อีกครั้ง"
+    },
+    {
+      "id": "online:That player is not in this room.",
+      "key": "That player is not in this room.",
+      "source": "That player is not in this room.",
+      "target": "ผู้เล่นคนนั้นไม่ได้อยู่ในห้องนี้"
+    },
+    {
+      "id": "online:That seat is not open.",
+      "key": "That seat is not open.",
+      "source": "That seat is not open.",
+      "target": "ที่นั่งนั้นไม่ว่าง"
+    },
+    {
+      "id": "online:That username is taken.",
+      "key": "That username is taken.",
+      "source": "That username is taken.",
+      "target": "ชื่อผู้ใช้นั้นมีคนใช้แล้ว"
+    },
+    {
+      "id": "online:The 3D canvas could not start.",
+      "key": "The 3D canvas could not start.",
+      "source": "The 3D canvas could not start.",
+      "target": "ไม่สามารถเริ่มต้นใช้งานผืนผ้าใบ 3 มิติได้"
+    },
+    {
+      "id": "online:The 3D canvas was interrupted. Your painting is safe.",
+      "key": "The 3D canvas was interrupted. Your painting is safe.",
+      "source": "The 3D canvas was interrupted. Your painting is safe.",
+      "target": "การวาดภาพบนผืนผ้าใบสามมิติถูกขัดจังหวะ ภาพวาดของคุณปลอดภัยดี"
+    },
+    {
+      "id": "online:The 3D shader could not compile.",
+      "key": "The 3D shader could not compile.",
+      "source": "The 3D shader could not compile.",
+      "target": "ไม่สามารถคอมไพล์เชเดอร์ 3 มิติได้"
+    },
+    {
+      "id": "online:The JavaScript file must use UTF-8.",
+      "key": "The JavaScript file must use UTF-8.",
+      "source": "The JavaScript file must use UTF-8.",
+      "target": "ไฟล์ JavaScript ต้องเข้ารหัสแบบ UTF-8"
+    },
+    {
+      "id": "online:The access token is invalid.",
+      "key": "The access token is invalid.",
+      "source": "The access token is invalid.",
+      "target": "โทเค็นการเข้าถึงไม่ถูกต้อง"
+    },
+    {
+      "id": "online:The account no longer exists.",
+      "key": "The account no longer exists.",
+      "source": "The account no longer exists.",
+      "target": "บัญชีดังกล่าวไม่มีอยู่แล้ว"
+    },
+    {
+      "id": "online:The app didn’t open.",
+      "key": "The app didn’t open.",
+      "source": "The app didn’t open.",
+      "target": "แอปเปิดไม่ขึ้น"
+    },
+    {
+      "id": "online:The artwork artifact is not available.",
+      "key": "The artwork artifact is not available.",
+      "source": "The artwork artifact is not available.",
+      "target": "งานศิลปะชิ้นนั้นไม่สามารถหาได้แล้ว"
+    },
+    {
+      "id": "online:The browser kept the page from opening.",
+      "key": "The browser kept the page from opening.",
+      "source": "The browser kept the page from opening.",
+      "target": "เบราว์เซอร์ไม่อนุญาตให้เปิดหน้าเว็บ"
+    },
+    {
+      "id": "online:The current draft changed. Close this panel and review the new revision.",
+      "key": "The current draft changed. Close this panel and review the new revision.",
+      "source": "The current draft changed. Close this panel and review the new revision.",
+      "target": "ร่างฉบับปัจจุบันมีการเปลี่ยนแปลง โปรดปิดแผงนี้และตรวจสอบฉบับแก้ไขใหม่"
+    },
+    {
+      "id": "online:The designer reply needs reconciliation. No map build has started.",
+      "key": "The designer reply needs reconciliation. No map build has started.",
+      "source": "The designer reply needs reconciliation. No map build has started.",
+      "target": "คำตอบของผู้ออกแบบต้องได้รับการตรวจสอบสถานะให้ตรงกัน ยังไม่ได้เริ่มสร้างแผนที่"
+    },
+    {
+      "id": "online:The draft changed during publication. Reload it.",
+      "key": "The draft changed during publication. Reload it.",
+      "source": "The draft changed during publication. Reload it.",
+      "target": "ฉบับร่างมีการเปลี่ยนแปลงระหว่างการเผยแพร่ โปรดโหลดใหม่"
+    },
+    {
+      "id": "online:The draft changed elsewhere. Download your local edits before reloading.",
+      "key": "The draft changed elsewhere. Download your local edits before reloading.",
+      "source": "The draft changed elsewhere. Download your local edits before reloading.",
+      "target": "ฉบับร่างถูกแก้ไขจากที่อื่น ดาวน์โหลดการแก้ไขในเครื่องก่อนโหลดใหม่"
+    },
+    {
+      "id": "online:The edit target changed. Choose a saved version in history.",
+      "key": "The edit target changed. Choose a saved version in history.",
+      "source": "The edit target changed. Choose a saved version in history.",
+      "target": "เป้าหมายการแก้ไขเปลี่ยนไปแล้ว โปรดเลือกเวอร์ชันที่บันทึกไว้ในประวัติ"
+    },
+    {
+      "id": "online:The file is missing from storage.",
+      "key": "The file is missing from storage.",
+      "source": "The file is missing from storage.",
+      "target": "ไฟล์หายไปจากที่เก็บข้อมูล"
+    },
+    {
+      "id": "online:The file is missing.",
+      "key": "The file is missing.",
+      "source": "The file is missing.",
+      "target": "ไฟล์หายไป"
+    },
+    {
+      "id": "online:The file must be no larger than 128 KiB.",
+      "key": "The file must be no larger than 128 KiB.",
+      "source": "The file must be no larger than 128 KiB.",
+      "target": "ไฟล์ต้องมีขนาดไม่เกิน 128 KiB"
+    },
+    {
+      "id": "online:The first visit downloads the game once. Later visits start from this device's copy.",
+      "key": "The first visit downloads the game once. Later visits start from this device's copy.",
+      "source": "The first visit downloads the game once. Later visits start from this device's copy.",
+      "target": "การเข้าชมครั้งแรกจะดาวน์โหลดเกมเพียงครั้งเดียว การเข้าชมครั้งต่อๆ ไปจะเริ่มต้นจากสำเนาเกมในอุปกรณ์นี้"
+    },
+    {
+      "id": "online:The game could not be downloaded.",
+      "key": "The game could not be downloaded.",
+      "source": "The game could not be downloaded.",
+      "target": "ไม่สามารถดาวน์โหลดเกมได้"
+    },
+    {
+      "id": "online:The game will switch to",
+      "key": "The game will switch to",
+      "source": "The game will switch to",
+      "target": "เกมจะเปลี่ยนไปที่"
+    },
+    {
+      "id": "online:The generator package must fit the 256 KiB draft limit.",
+      "key": "The generator package must fit the 256 KiB draft limit.",
+      "source": "The generator package must fit the 256 KiB draft limit.",
+      "target": "แพ็กเกจตัวสร้างต้องไม่เกินขีดจำกัดฉบับร่าง 256 KiB"
+    },
+    {
+      "id": "online:The generator package must use UTF-8.",
+      "key": "The generator package must use UTF-8.",
+      "source": "The generator package must use UTF-8.",
+      "target": "แพ็คเกจตัวสร้างต้องใช้ UTF-8"
+    },
+    {
+      "id": "online:The host removed you from this room; try again later.",
+      "key": "The host removed you from this room; try again later.",
+      "source": "The host removed you from this room; try again later.",
+      "target": "โฮสต์ได้นำคุณออกจากห้องนี้แล้ว โปรดลองใหม่อีกครั้งในภายหลัง"
+    },
+    {
+      "id": "online:The job is leased by another engine agent.",
+      "key": "The job is leased by another engine agent.",
+      "source": "The job is leased by another engine agent.",
+      "target": "เอเจนต์เอนจินอื่นครอบครองงานนี้อยู่"
+    },
+    {
+      "id": "online:The lease expired or the job was already reported.",
+      "key": "The lease expired or the job was already reported.",
+      "source": "The lease expired or the job was already reported.",
+      "target": "สิทธิ์ครอบครองงานหมดอายุ หรือรายงานผลของงานไปแล้ว"
+    },
+    {
+      "id": "online:The leased job does not use this blob.",
+      "key": "The leased job does not use this blob.",
+      "source": "The leased job does not use this blob.",
+      "target": "งานที่ได้รับสิทธิ์ครอบครองนี้ไม่ได้ใช้บล็อบข้อมูลนี้"
+    },
+    {
+      "id": "online:The map designer is replying",
+      "key": "The map designer is replying",
+      "source": "The map designer is replying",
+      "target": "ผู้ออกแบบแผนที่กำลังตอบกลับ"
+    },
+    {
+      "id": "online:The map designer is replying…",
+      "key": "The map designer is replying…",
+      "source": "The map designer is replying…",
+      "target": "ผู้ออกแบบแผนที่กำลังตอบกลับ..."
+    },
+    {
+      "id": "online:The map file is missing from storage.",
+      "key": "The map file is missing from storage.",
+      "source": "The map file is missing from storage.",
+      "target": "ไฟล์แผนที่หายไปจากที่เก็บข้อมูล"
+    },
+    {
+      "id": "online:The map is fine. Saving it.",
+      "key": "The map is fine. Saving it.",
+      "source": "The map is fine. Saving it.",
+      "target": "แผนที่ใช้ได้ กำลังบันทึก"
+    },
+    {
+      "id": "online:The map was created but its file did not upload. Upload it again below.",
+      "key": "The map was created but its file did not upload. Upload it again below.",
+      "source": "The map was created but its file did not upload. Upload it again below.",
+      "target": "สร้างแผนที่แล้ว แต่ไฟล์ไม่ถูกอัปโหลด โปรดอัปโหลดอีกครั้งด้านล่าง"
+    },
+    {
+      "id": "online:The match already ended with a different record.",
+      "key": "The match already ended with a different record.",
+      "source": "The match already ended with a different record.",
+      "target": "แมตช์สิ้นสุดแล้วโดยมีบันทึกอื่น"
+    },
+    {
+      "id": "online:The match has not ended yet.",
+      "key": "The match has not ended yet.",
+      "source": "The match has not ended yet.",
+      "target": "การแข่งขันยังไม่จบ"
+    },
+    {
+      "id": "online:The match is placed on another relay.",
+      "key": "The match is placed on another relay.",
+      "source": "The match is placed on another relay.",
+      "target": "แมตช์นี้อยู่บนรีเลย์อื่น"
+    },
+    {
+      "id": "online:The match was played with another game version.",
+      "key": "The match was played with another game version.",
+      "source": "The match was played with another game version.",
+      "target": "การแข่งขันนั้นเล่นโดยใช้เกมเวอร์ชันอื่น"
+    },
+    {
+      "id": "online:The music decoder could not be loaded.",
+      "key": "The music decoder could not be loaded.",
+      "source": "The music decoder could not be loaded.",
+      "target": "ไม่สามารถโหลดตัวถอดรหัสเพลงได้"
+    },
+    {
+      "id": "online:The operation could not finish.",
+      "key": "The operation could not finish.",
+      "source": "The operation could not finish.",
+      "target": "การดำเนินการไม่สามารถเสร็จสิ้นได้"
+    },
+    {
+      "id": "online:The original swarm: spires ringed around an egg.",
+      "key": "The original swarm: spires ringed around an egg.",
+      "source": "The original swarm: spires ringed around an egg.",
+      "target": "รังแบบดั้งเดิม: ยอดแหลมเรียงเป็นวงรอบไข่"
+    },
+    {
+      "id": "online:The platform is unavailable: {slot0}",
+      "key": "The platform is unavailable: {slot0}",
+      "source": "The platform is unavailable: {slot0}",
+      "target": "แพลตฟอร์มไม่พร้อมใช้งาน : {slot0}"
+    },
+    {
+      "id": "online:The preview engine did not finish. Check the game runtime and try again.",
+      "key": "The preview engine did not finish. Check the game runtime and try again.",
+      "source": "The preview engine did not finish. Check the game runtime and try again.",
+      "target": "เอนจินแสดงตัวอย่างทำงานไม่เสร็จ ตรวจสอบระบบรันไทม์ของเกมแล้วลองใหม่"
+    },
+    {
+      "id": "online:The proposal is over.",
+      "key": "The proposal is over.",
+      "source": "The proposal is over.",
+      "target": "ข้อเสนอได้สิ้นสุดลงแล้ว"
+    },
+    {
+      "id": "online:The provider outcome must be reconciled before cancellation.",
+      "key": "The provider outcome must be reconciled before cancellation.",
+      "source": "The provider outcome must be reconciled before cancellation.",
+      "target": "ผลลัพธ์จากผู้ให้บริการจะต้องได้รับการตรวจสอบและยืนยันก่อนการยกเลิก"
+    },
+    {
+      "id": "online:The refresh token is not valid.",
+      "key": "The refresh token is not valid.",
+      "source": "The refresh token is not valid.",
+      "target": "โทเค็นรีเฟรชไม่ถูกต้อง"
+    },
+    {
+      "id": "online:The replay is available once the server has verified the match.",
+      "key": "The replay is available once the server has verified the match.",
+      "source": "The replay is available once the server has verified the match.",
+      "target": "สามารถรับชมรีเพลย์ได้เมื่อเซิร์ฟเวอร์ตรวจสอบการแข่งขันเรียบร้อยแล้ว"
+    },
+    {
+      "id": "online:The request could not be completed.",
+      "key": "The request could not be completed.",
+      "source": "The request could not be completed.",
+      "target": "ไม่สามารถดำเนินการตามคำขอได้"
+    },
+    {
+      "id": "online:The room changed; apply your change to the latest state.",
+      "key": "The room changed; apply your change to the latest state.",
+      "source": "The room changed; apply your change to the latest state.",
+      "target": "ห้องมีการเปลี่ยนแปลง โปรดทำการเปลี่ยนแปลงนั้นกับสถานะล่าสุด"
+    },
+    {
+      "id": "online:The room has no seat {p0}.",
+      "key": "The room has no seat {p0}.",
+      "source": "The room has no seat {p0}.",
+      "target": "ห้องนี้ไม่มีที่นั่ง {p0}"
+    },
+    {
+      "id": "online:The room is already starting.",
+      "key": "The room is already starting.",
+      "source": "The room is already starting.",
+      "target": "ห้องกำลังเริ่มเกมแล้ว"
+    },
+    {
+      "id": "online:The room is full.",
+      "key": "The room is full.",
+      "source": "The room is full.",
+      "target": "ห้องเต็มแล้ว"
+    },
+    {
+      "id": "online:The room is starting a match.",
+      "key": "The room is starting a match.",
+      "source": "The room is starting a match.",
+      "target": "ห้องกำลังเริ่มการแข่งขัน"
+    },
+    {
+      "id": "online:The saved draft could not be restored.",
+      "key": "The saved draft could not be restored.",
+      "source": "The saved draft could not be restored.",
+      "target": "ไม่สามารถกู้คืนไฟล์ร่างที่บันทึกไว้ได้"
+    },
+    {
+      "id": "online:The selected generator release is no longer available for this room.",
+      "key": "The selected generator release is no longer available for this room.",
+      "source": "The selected generator release is no longer available for this room.",
+      "target": "ฉบับเผยแพร่ตัวสร้างที่เลือกไม่พร้อมใช้งานสำหรับห้องนี้แล้ว"
+    },
+    {
+      "id": "online:The server first loads the file with the game to check it; the map page is created only if it loads. Unlisted maps are reachable by link only; you can make a map public later.",
+      "key": "The server first loads the file with the game to check it; the map page is created only if it loads. Unlisted maps are reachable by link only; you can make a map public later.",
+      "source": "The server first loads the file with the game to check it; the map page is created only if it loads. Unlisted maps are reachable by link only; you can make a map public later.",
+      "target": "เซิร์ฟเวอร์จะใช้เกมเปิดไฟล์เพื่อตรวจสอบก่อน และสร้างหน้าแผนที่เมื่อเปิดไฟล์ได้เท่านั้น แผนที่ที่ไม่แสดงในรายการเข้าถึงได้ด้วยลิงก์เท่านั้น คุณทำให้แผนที่เป็นสาธารณะภายหลังได้"
+    },
+    {
+      "id": "online:The server’s verified replay. Open it in the game (Load game → Replays) or watch it here.",
+      "key": "The server’s verified replay. Open it in the game (Load game → Replays) or watch it here.",
+      "source": "The server’s verified replay. Open it in the game (Load game → Replays) or watch it here.",
+      "target": "ไฟล์รีเพลย์ที่ได้รับการยืนยันจากเซิร์ฟเวอร์แล้ว เปิดดูได้ในเกม (โหลดเกม → รีเพลย์) หรือดูได้ที่นี่"
+    },
+    {
+      "id": "online:The session has ended.",
+      "key": "The session has ended.",
+      "source": "The session has ended.",
+      "target": "เซสชันสิ้นสุดแล้ว"
+    },
+    {
+      "id": "online:The sheet must be at most 2048×2048 and fit its frame grid exactly.",
+      "key": "The sheet must be at most 2048×2048 and fit its frame grid exactly.",
+      "source": "The sheet must be at most 2048×2048 and fit its frame grid exactly.",
+      "target": "สไปรต์ชีตต้องมีขนาดไม่เกิน 2048×2048 และพอดีกับตารางเฟรม"
+    },
+    {
+      "id": "online:The sign-in response is missing its state.",
+      "key": "The sign-in response is missing its state.",
+      "source": "The sign-in response is missing its state.",
+      "target": "การตอบสนองการเข้าสู่ระบบขาดสถานะ"
+    },
+    {
+      "id": "online:The single JavaScript file must be at most 128 KiB.",
+      "key": "The single JavaScript file must be at most 128 KiB.",
+      "source": "The single JavaScript file must be at most 128 KiB.",
+      "target": "ไฟล์ JavaScript เพียงไฟล์เดียวต้องมีขนาดไม่เกิน 128 KiB"
+    },
+    {
+      "id": "online:The stage audio is not available.",
+      "key": "The stage audio is not available.",
+      "source": "The stage audio is not available.",
+      "target": "เสียงของขั้นตอนนี้ไม่พร้อมใช้งาน"
+    },
+    {
+      "id": "online:The stage image is not available.",
+      "key": "The stage image is not available.",
+      "source": "The stage image is not available.",
+      "target": "ภาพของขั้นตอนนี้ไม่พร้อมใช้งาน"
+    },
+    {
+      "id": "online:The ticket is no longer waiting.",
+      "key": "The ticket is no longer waiting.",
+      "source": "The ticket is no longer waiting.",
+      "target": "บัตรคิวไม่ได้อยู่ในสถานะรอแล้ว"
+    },
+    {
+      "id": "online:The upload is not ready for this action.",
+      "key": "The upload is not ready for this action.",
+      "source": "The upload is not ready for this action.",
+      "target": "การอัปโหลดยังไม่พร้อมสำหรับการดำเนินการนี้"
+    },
+    {
+      "id": "online:The uploaded file is not usable: {p0}.",
+      "key": "The uploaded file is not usable: {p0}.",
+      "source": "The uploaded file is not usable: {p0}.",
+      "target": "ไฟล์ที่อัปโหลดไม่สามารถใช้งานได้ : {p0}"
+    },
+    {
+      "id": "online:The username {p0} is taken. Choose another one, or sign in above if it is yours.",
+      "key": "The username {p0} is taken. Choose another one, or sign in above if it is yours.",
+      "source": "The username {p0} is taken. Choose another one, or sign in above if it is yours.",
+      "target": "ชื่อผู้ใช้ {p0} ถูกใช้ไปแล้ว กรุณาเลือกชื่อผู้ใช้อื่น หรือลงชื่อเข้าใช้ด้านบนหากเป็นของคุณ"
+    },
+    {
+      "id": "online:The validation receipt expired. Run checks again.",
+      "key": "The validation receipt expired. Run checks again.",
+      "source": "The validation receipt expired. Run checks again.",
+      "target": "ใบเสร็จรับรองการตรวจสอบหมดอายุแล้ว โปรดทำการตรวจสอบอีกครั้ง"
+    },
+    {
+      "id": "online:The workspace is still loading.",
+      "key": "The workspace is still loading.",
+      "source": "The workspace is still loading.",
+      "target": "พื้นที่ทำงานกำลังโหลดอยู่"
+    },
+    {
+      "id": "online:Theme, title or creator",
+      "key": "Theme, title or creator",
+      "source": "Theme, title or creator",
+      "target": "ธีม ชื่อเรื่อง หรือผู้สร้าง"
+    },
+    {
+      "id": "online:Theme: dark (night colony)",
+      "key": "Theme: dark (night colony)",
+      "source": "Theme: dark (night colony)",
+      "target": "ธีม : มืด (อาณานิคมกลางคืน)"
+    },
+    {
+      "id": "online:Theme: light (meadow)",
+      "key": "Theme: light (meadow)",
+      "source": "Theme: light (meadow)",
+      "target": "ธีม: สว่าง (ทุ่งหญ้า)"
+    },
+    {
+      "id": "online:Theme: same as this device",
+      "key": "Theme: same as this device",
+      "source": "Theme: same as this device",
+      "target": "ธีม : เหมือนกับอุปกรณ์นี้"
+    },
+    {
+      "id": "online:There is no account called {p0}.",
+      "key": "There is no account called {p0}.",
+      "source": "There is no account called {p0}.",
+      "target": "ไม่มีบัญชีชื่อ {p0}"
+    },
+    {
+      "id": "online:There is no account called {p0}. Check the spelling{p1}.",
+      "key": "There is no account called {p0}. Check the spelling{p1}.",
+      "source": "There is no account called {p0}. Check the spelling{p1}.",
+      "target": "ไม่มีบัญชีชื่อ {p0} โปรดตรวจสอบการสะกด {p1}"
+    },
+    {
+      "id": "online:These details apply to every release. Changing visibility also changes who can download them. Edit building definitions in your Studio draft and publish a new release.",
+      "key": "These details apply to every release. Changing visibility also changes who can download them. Edit building definitions in your Studio draft and publish a new release.",
+      "source": "These details apply to every release. Changing visibility also changes who can download them. Edit building definitions in your Studio draft and publish a new release.",
+      "target": "รายละเอียดเหล่านี้ใช้กับทุกเวอร์ชัน การเปลี่ยนระดับการมองเห็นจะส่งผลต่อผู้ที่สามารถดาวน์โหลดได้ด้วย แก้ไขคำจำกัดความของอาคารในฉบับร่าง Studio ของคุณ แล้วเผยแพร่เวอร์ชันใหม่"
+    },
+    {
+      "id": "online:They are playing a match right now; you can join the room and wait for the next one.",
+      "key": "They are playing a match right now; you can join the room and wait for the next one.",
+      "source": "They are playing a match right now; you can join the room and wait for the next one.",
+      "target": "ตอนนี้พวกเขากำลังแข่งขันกันอยู่ คุณสามารถเข้าร่วมห้องและรอการแข่งขันครั้งต่อไปได้"
+    },
+    {
+      "id": "online:Thin",
+      "key": "Thin",
+      "source": "Thin",
+      "target": "บาง"
+    },
+    {
+      "id": "online:This AI has reached its version limit.",
+      "key": "This AI has reached its version limit.",
+      "source": "This AI has reached its version limit.",
+      "target": "ระบบ AI นี้ถึงขีดจำกัดเวอร์ชันแล้ว"
+    },
+    {
+      "id": "online:This PNG exceeds the sheet upload limit.",
+      "key": "This PNG exceeds the sheet upload limit.",
+      "source": "This PNG exceeds the sheet upload limit.",
+      "target": "ไฟล์ PNG นี้มีขนาดเกินขีดจำกัดการอัปโหลดไฟล์"
+    },
+    {
+      "id": "online:This account cannot publish generators.",
+      "key": "This account cannot publish generators.",
+      "source": "This account cannot publish generators.",
+      "target": "บัญชีนี้ไม่สามารถเผยแพร่ตัวสร้างแผนที่ได้"
+    },
+    {
+      "id": "online:This account cannot upload generators.",
+      "key": "This account cannot upload generators.",
+      "source": "This account cannot upload generators.",
+      "target": "บัญชีนี้อัปโหลดตัวสร้างไม่ได้"
+    },
+    {
+      "id": "online:This account does not own this colony skin.",
+      "key": "This account does not own this colony skin.",
+      "source": "This account does not own this colony skin.",
+      "target": "บัญชีนี้ไม่ได้เป็นเจ้าของสกินอาณานิคมนี้"
+    },
+    {
+      "id": "online:This account is banned.",
+      "key": "This account is banned.",
+      "source": "This account is banned.",
+      "target": "บัญชีนี้ถูกแบนแล้ว"
+    },
+    {
+      "id": "online:This account was deleted.",
+      "key": "This account was deleted.",
+      "source": "This account was deleted.",
+      "target": "บัญชีนี้ถูกลบไปแล้ว"
+    },
+    {
+      "id": "online:This building uses installed game artwork. Create or revise its appearance to preview custom artwork here.",
+      "key": "This building uses installed game artwork. Create or revise its appearance to preview custom artwork here.",
+      "source": "This building uses installed game artwork. Create or revise its appearance to preview custom artwork here.",
+      "target": "อาคารนี้ใช้ภาพประกอบจากเกมที่ติดตั้งไว้แล้ว คุณสามารถสร้างหรือแก้ไขรูปลักษณ์เพื่อดูตัวอย่างภาพประกอบที่กำหนดเองได้ที่นี่"
+    },
+    {
+      "id": "online:This cannot be undone. Deleting your account:",
+      "key": "This cannot be undone. Deleting your account:",
+      "source": "This cannot be undone. Deleting your account:",
+      "target": "การดำเนินการนี้ไม่สามารถย้อนกลับได้ การลบบัญชีของคุณ :"
+    },
+    {
+      "id": "online:This changes the map’s visibility. Conversation history remains private.",
+      "key": "This changes the map’s visibility. Conversation history remains private.",
+      "source": "This changes the map’s visibility. Conversation history remains private.",
+      "target": "การดำเนินการนี้เปลี่ยนการมองเห็นของแผนที่ ประวัติการสนทนายังคงเป็นส่วนตัว"
+    },
+    {
+      "id": "online:This checkout is already finished.",
+      "key": "This checkout is already finished.",
+      "source": "This checkout is already finished.",
+      "target": "ขั้นตอนการชำระเงินนี้เสร็จสิ้นเรียบร้อยแล้ว"
+    },
+    {
+      "id": "online:This checkout is being recovered. Check your purchase status before trying again.",
+      "key": "This checkout is being recovered. Check your purchase status before trying again.",
+      "source": "This checkout is being recovered. Check your purchase status before trying again.",
+      "target": "กำลังกู้คืนรายการชำระเงินนี้ ตรวจสอบสถานะการซื้อก่อนลองใหม่"
+    },
+    {
+      "id": "online:This checkout request was already used for another product.",
+      "key": "This checkout request was already used for another product.",
+      "source": "This checkout request was already used for another product.",
+      "target": "คำขอชำระเงินนี้เคยถูกใช้สำหรับสินค้าอื่นแล้ว"
+    },
+    {
+      "id": "online:This colony skin is unavailable.",
+      "key": "This colony skin is unavailable.",
+      "source": "This colony skin is unavailable.",
+      "target": "สกินอาณานิคมนี้ไม่พร้อมใช้งาน"
+    },
+    {
+      "id": "online:This custom skin belongs to another account.",
+      "key": "This custom skin belongs to another account.",
+      "source": "This custom skin belongs to another account.",
+      "target": "สกินแบบกำหนดเองนี้เป็นของบัญชีอื่น"
+    },
+    {
+      "id": "online:This device has a recovery copy.",
+      "key": "This device has a recovery copy.",
+      "source": "This device has a recovery copy.",
+      "target": "อุปกรณ์นี้มีสำเนาสำหรับกู้คืนผลงาน"
+    },
+    {
+      "id": "online:This draft already exists. Open it to continue.",
+      "key": "This draft already exists. Open it to continue.",
+      "source": "This draft already exists. Open it to continue.",
+      "target": "เอกสารฉบับร่างนี้มีอยู่แล้ว โปรดเปิดเพื่อดำเนินการต่อ"
+    },
+    {
+      "id": "online:This draft changed or was published. Reload it before saving.",
+      "key": "This draft changed or was published. Reload it before saving.",
+      "source": "This draft changed or was published. Reload it before saving.",
+      "target": "ฉบับร่างนี้มีการเปลี่ยนแปลงหรือเผยแพร่แล้ว โปรดโหลดหน้าเว็บใหม่ก่อนบันทึก"
+    },
+    {
+      "id": "online:This draft changed. Check it again.",
+      "key": "This draft changed. Check it again.",
+      "source": "This draft changed. Check it again.",
+      "target": "ร่างเอกสารนี้ได้รับการแก้ไขแล้ว โปรดตรวจสอบอีกครั้ง"
+    },
+    {
+      "id": "online:This draft changed. Reload it before saving again.",
+      "key": "This draft changed. Reload it before saving again.",
+      "source": "This draft changed. Reload it before saving again.",
+      "target": "ฉบับร่างนี้มีการเปลี่ยนแปลง โปรดโหลดหน้าเว็บใหม่ก่อนบันทึกอีกครั้ง"
+    },
+    {
+      "id": "online:This draft changed. Save and check its current revision.",
+      "key": "This draft changed. Save and check its current revision.",
+      "source": "This draft changed. Save and check its current revision.",
+      "target": "ร่างเอกสารนี้ได้รับการแก้ไขแล้ว โปรดบันทึกและตรวจสอบเวอร์ชันปัจจุบัน"
+    },
+    {
+      "id": "online:This family has 50 releases.",
+      "key": "This family has 50 releases.",
+      "source": "This family has 50 releases.",
+      "target": "ตระกูลอาคารนี้มีฉบับเผยแพร่ 50 ฉบับ"
+    },
+    {
+      "id": "online:This family has been hidden by a moderator.",
+      "key": "This family has been hidden by a moderator.",
+      "source": "This family has been hidden by a moderator.",
+      "target": "ตระกูลอาคารนี้ถูกซ่อนโดยผู้ดูแลเนื้อหา"
+    },
+    {
+      "id": "online:This family uses stock artwork.",
+      "key": "This family uses stock artwork.",
+      "source": "This family uses stock artwork.",
+      "target": "ตระกูลอาคารนี้ใช้ภาพมาตรฐานของเกม"
+    },
+    {
+      "id": "online:This file is too big: uploads are limited to {p0}.",
+      "key": "This file is too big: uploads are limited to {p0}.",
+      "source": "This file is too big: uploads are limited to {p0}.",
+      "target": "ไฟล์นี้มีขนาดใหญ่เกินไป : การอัปโหลดถูกจำกัดไว้ที่ {p0}"
+    },
+    {
+      "id": "online:This game version is not supported here; update the game.",
+      "key": "This game version is not supported here; update the game.",
+      "source": "This game version is not supported here; update the game.",
+      "target": "เกมเวอร์ชันนี้ไม่รองรับที่นี่ โปรดอัปเดตเกม"
+    },
+    {
+      "id": "online:This generator has reached its version limit.",
+      "key": "This generator has reached its version limit.",
+      "source": "This generator has reached its version limit.",
+      "target": "เครื่องมือสร้างนี้ถึงขีดจำกัดเวอร์ชันแล้ว"
+    },
+    {
+      "id": "online:This generator release is unavailable, editor-only, or not validated for this engine.",
+      "key": "This generator release is unavailable, editor-only, or not validated for this engine.",
+      "source": "This generator release is unavailable, editor-only, or not validated for this engine.",
+      "target": "ฉบับเผยแพร่ตัวสร้างนี้ไม่พร้อมใช้งาน ใช้ได้เฉพาะในตัวแก้ไข หรือยังไม่ผ่านการตรวจสอบสำหรับเอนจินนี้"
+    },
+    {
+      "id": "online:This image could not be loaded.",
+      "key": "This image could not be loaded.",
+      "source": "This image could not be loaded.",
+      "target": "ไม่สามารถโหลดรูปภาพนี้ได้"
+    },
+    {
+      "id": "online:This instance",
+      "key": "This instance",
+      "source": "This instance",
+      "target": "อินสแตนซ์นี้"
+    },
+    {
+      "id": "online:This instance cannot validate files of that version.",
+      "key": "This instance cannot validate files of that version.",
+      "source": "This instance cannot validate files of that version.",
+      "target": "ระบบนี้ไม่สามารถตรวจสอบความถูกต้องของไฟล์เวอร์ชันนั้นได้"
+    },
+    {
+      "id": "online:This instance cannot validate maps of that version.",
+      "key": "This instance cannot validate maps of that version.",
+      "source": "This instance cannot validate maps of that version.",
+      "target": "ระบบนี้ไม่สามารถตรวจสอบความถูกต้องของแผนที่เวอร์ชันนั้นได้"
+    },
+    {
+      "id": "online:This instance has no rated queues.",
+      "key": "This instance has no rated queues.",
+      "source": "This instance has no rated queues.",
+      "target": "อินสแตนซ์นี้ไม่มีคิวที่ได้รับการจัดอันดับ"
+    },
+    {
+      "id": "online:This invite has expired or does not exist.",
+      "key": "This invite has expired or does not exist.",
+      "source": "This invite has expired or does not exist.",
+      "target": "คำเชิญนี้หมดอายุแล้วหรือไม่มีอยู่จริง"
+    },
+    {
+      "id": "online:This invite has expired or does not exist. Ask for a new link.",
+      "key": "This invite has expired or does not exist. Ask for a new link.",
+      "source": "This invite has expired or does not exist. Ask for a new link.",
+      "target": "คำเชิญนี้หมดอายุแล้วหรือไม่มีอยู่จริง โปรดขอลิงก์ใหม่"
+    },
+    {
+      "id": "online:This is the last way to sign in to this account; link another method first.",
+      "key": "This is the last way to sign in to this account; link another method first.",
+      "source": "This is the last way to sign in to this account; link another method first.",
+      "target": "นี่เป็นวิธีสุดท้ายในการเข้าสู่ระบบบัญชีนี้ โปรดเชื่อมโยงวิธีการเข้าสู่ระบบอื่นก่อน"
+    },
+    {
+      "id": "online:This key belongs to engine agent {p0}.",
+      "key": "This key belongs to engine agent {p0}.",
+      "source": "This key belongs to engine agent {p0}.",
+      "target": "คีย์นี้เป็นของเอเจนต์เอ็นจิ้น {p0}"
+    },
+    {
+      "id": "online:This key belongs to relay {p0}.",
+      "key": "This key belongs to relay {p0}.",
+      "source": "This key belongs to relay {p0}.",
+      "target": "คีย์นี้เป็นของรีเลย์ {p0}"
+    },
+    {
+      "id": "online:This match is still being played.",
+      "key": "This match is still being played.",
+      "source": "This match is still being played.",
+      "target": "การแข่งขันนี้ยังคงดำเนินอยู่"
+    },
+    {
+      "id": "online:This music includes AI-generated audio",
+      "key": "This music includes AI-generated audio",
+      "source": "This music includes AI-generated audio",
+      "target": "เพลงนี้มีเสียงที่สร้างขึ้นโดยปัญญาประดิษฐ์ (AI)"
+    },
+    {
+      "id": "online:This namespace belongs to another author. Fork the family first.",
+      "key": "This namespace belongs to another author. Fork the family first.",
+      "source": "This namespace belongs to another author. Fork the family first.",
+      "target": "เนมสเปซนี้เป็นของผู้สร้างอื่น ทำสำเนาแยกของตระกูลอาคารก่อน"
+    },
+    {
+      "id": "online:This namespace was claimed by another author. Fork it first.",
+      "key": "This namespace was claimed by another author. Fork it first.",
+      "source": "This namespace was claimed by another author. Fork it first.",
+      "target": "เนมสเปซนี้มีผู้เขียนท่านอื่นจองไว้แล้ว โปรดคัดลอกไปใช้งานก่อน"
+    },
+    {
+      "id": "online:This older generation has limited stage history. Available images are preserved.",
+      "key": "This older generation has limited stage history. Available images are preserved.",
+      "source": "This older generation has limited stage history. Available images are preserved.",
+      "target": "การสร้างรุ่นเก่านี้มีประวัติขั้นตอนจำกัด ภาพที่มีอยู่ยังคงเก็บไว้"
+    },
+    {
+      "id": "online:This package ID is already reserved. Forks need a new ID.",
+      "key": "This package ID is already reserved. Forks need a new ID.",
+      "source": "This package ID is already reserved. Forks need a new ID.",
+      "target": "รหัสแพ็กเกจนี้ถูกจองไว้แล้ว การแยกสาขา (Forks) ต้องใช้รหัสใหม่"
+    },
+    {
+      "id": "online:This page is for moderators.",
+      "key": "This page is for moderators.",
+      "source": "This page is for moderators.",
+      "target": "หน้านี้สำหรับผู้ดูแลเนื้อหา"
+    },
+    {
+      "id": "online:This password is too short: it has {p0} characters, and passwords need at least {p1}.",
+      "key": "This password is too short: it has {p0} characters, and passwords need at least {p1}.",
+      "source": "This password is too short: it has {p0} characters, and passwords need at least {p1}.",
+      "target": "รหัสผ่านนี้สั้นเกินไป : มีอักขระ {p0} ตัว และรหัสผ่านต้องมีอย่างน้อย {p1} ตัว"
+    },
+    {
+      "id": "online:This preview could not be loaded.",
+      "key": "This preview could not be loaded.",
+      "source": "This preview could not be loaded.",
+      "target": "ไม่สามารถโหลดตัวอย่างนี้ได้"
+    },
+    {
+      "id": "online:This product is not available for purchase yet.",
+      "key": "This product is not available for purchase yet.",
+      "source": "This product is not available for purchase yet.",
+      "target": "สินค้าชิ้นนี้ยังไม่พร้อมจำหน่ายในขณะนี้"
+    },
+    {
+      "id": "online:This release label or package is already published.",
+      "key": "This release label or package is already published.",
+      "source": "This release label or package is already published.",
+      "target": "ชื่อฉบับเผยแพร่หรือแพ็กเกจนี้เผยแพร่ไปแล้ว"
+    },
+    {
+      "id": "online:This release no longer accepts uploads.",
+      "key": "This release no longer accepts uploads.",
+      "source": "This release no longer accepts uploads.",
+      "target": "เวอร์ชันนี้ไม่รับการอัปโหลดอีกต่อไปแล้ว"
+    },
+    {
+      "id": "online:This release uses the current saved draft. Unsaved edits are not included.",
+      "key": "This release uses the current saved draft. Unsaved edits are not included.",
+      "source": "This release uses the current saved draft. Unsaved edits are not included.",
+      "target": "เวอร์ชันนี้ใช้ฉบับร่างที่บันทึกไว้ล่าสุด การแก้ไขที่ยังไม่ได้บันทึกจะไม่รวมอยู่ด้วย"
+    },
+    {
+      "id": "online:This room has closed",
+      "key": "This room has closed",
+      "source": "This room has closed",
+      "target": "ห้องนี้ปิดแล้ว"
+    },
+    {
+      "id": "online:This room has closed. Ask the host for a new invite.",
+      "key": "This room has closed. Ask the host for a new invite.",
+      "source": "This room has closed. Ask the host for a new invite.",
+      "target": "ห้องนี้ปิดแล้ว โปรดติดต่อเจ้าของห้องเพื่อขอคำเชิญใหม่"
+    },
+    {
+      "id": "online:This room is for another game version.",
+      "key": "This room is for another game version.",
+      "source": "This room is for another game version.",
+      "target": "ห้องนี้ใช้สำหรับเกมเวอร์ชันอื่น"
+    },
+    {
+      "id": "online:This set has reached its 100-draft limit. Delete unused drafts first.",
+      "key": "This set has reached its 100-draft limit. Delete unused drafts first.",
+      "source": "This set has reached its 100-draft limit. Delete unused drafts first.",
+      "target": "ชุดนี้ได้ถึงขีดจำกัด 100 ฉบับร่างแล้ว โปรดลบฉบับร่างที่ไม่ได้ใช้ก่อน"
+    },
+    {
+      "id": "online:This set has reached its 50-release limit.",
+      "key": "This set has reached its 50-release limit.",
+      "source": "This set has reached its 50-release limit.",
+      "target": "ชุดนี้ถึงขีดจำกัดฉบับเผยแพร่ 50 ฉบับแล้ว"
+    }
+  ]
+}

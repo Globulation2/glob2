@@ -1,9 +1,15 @@
 {
   "project": "bradley-personal-20261027",
-  "requests": 96,
-  "response_received": 96,
-  "reserved_characters": 269359,
-  "conservative_reserved_usd": "5.38718",
+  "requests": 97,
+  "response_received": 97,
+  "reserved_characters": 270353,
+  "conservative_reserved_usd": "5.40706",
   "ceiling_usd": "25",
-  "claim": "Conservative reservation at published rate, not an invoice or actual billing assertion. Includes HTML protected placeholders and supplements."
+  "campaign_base_source_sha256": "0ac44b4cdfb03e688983d6e3fb1e484cca57589665bff19c5c65388e649b292a",
+  "supplements_bound_separately": [
+    "mobile-supplement.json",
+    "macos-shell-supplement.json",
+    "online-supplement-google.json"
+  ],
+  "claim": "Conservative reservation at published rate, not an invoice or actual billing assertion. All retries/ambiguous calls reserve budget; no credential data in cache."
 }

@@ -1,0 +1,138 @@
+{
+  "reviewer": "thai_brief",
+  "role": "independent initial supplemental studio meaning reviewer",
+  "source_sha256": "c056a1c785b7615e52f4da24637aaf3acaa87696778809ca1582c04da503f2d8",
+  "source_values_sha256": "c056a1c785b7615e52f4da24637aaf3acaa87696778809ca1582c04da503f2d8",
+  "target_sha256": "e3f6769a7526fe375f58912b2094309e0dd7e2378faa24a0d9bddd771cfb4f88",
+  "reviewed_keys": [
+    "online:Saving your project…",
+    "online:Generation is unavailable.",
+    "online:Wait for the current request to finish.",
+    "online:Generation is unavailable. Saved projects remain accessible.",
+    "online:Generation is unavailable. Saved music remains accessible.",
+    "online:An available Map credit is needed to chat or build.",
+    "online:An available Music credit is needed to chat or build.",
+    "online:New soundtrack",
+    "online:Finish active work or resolve the revision conflict first.",
+    "online:Choose a valid request cap.",
+    "online: · comparing",
+    "online:The last build did not complete.",
+    "online:Discussion spends no credits; 1 available Map credit is required. Creation requests build automatically · 1 credit on delivery.",
+    "online:Discussion spends no credits; 1 available Music credit is required. Creation requests build automatically · 1 credit on delivery. Includes all three moods.",
+    "online:Discussion spends no credits; 1 available Building credit is required. Creation requests build automatically · 1 credit on delivery.",
+    "online:Discussion spends no credits; 1 available Terrain credit is required. Creation requests build automatically · 1 credit on delivery."
+  ],
+  "approved_keys": [
+    "online:Wait for the current request to finish.",
+    "online:Generation is unavailable. Saved music remains accessible.",
+    "online:New soundtrack",
+    "online:Finish active work or resolve the revision conflict first."
+  ],
+  "findings": [
+    {
+      "id": "online:Saving your project…",
+      "severity": "minor",
+      "state": "open",
+      "original": "กำลังบันทึกโปรเจ็กต์ของคุณ…",
+      "proposed": "กำลังบันทึกโครงการของคุณ…",
+      "reason": "Use concise contemporary project wording โครงการ; preserve ongoing status/ellipsis."
+    },
+    {
+      "id": "online:Generation is unavailable.",
+      "severity": "major",
+      "state": "open",
+      "original": "ไม่สามารถสร้างโมเดลได้",
+      "proposed": "การสร้างผลงานไม่พร้อมใช้งาน",
+      "reason": "Generation unavailable is service functionality across map, music, terrain, building and code studios, not inability to create a model."
+    },
+    {
+      "id": "online:Generation is unavailable. Saved projects remain accessible.",
+      "severity": "minor",
+      "state": "open",
+      "original": "ไม่สามารถสร้างโปรเจ็กต์ได้ โปรเจ็กต์ที่บันทึกไว้ยังคงสามารถเข้าถึงได้",
+      "proposed": "การสร้างผลงานไม่พร้อมใช้งาน โครงการที่บันทึกไว้ยังเข้าถึงได้",
+      "reason": "Distinguish disabled generation capability from project creation itself; retain saved-project access."
+    },
+    {
+      "id": "online:An available Map credit is needed to chat or build.",
+      "severity": "major",
+      "state": "open",
+      "original": "จำเป็นต้องมีเครดิตแผนที่เหลืออยู่เพื่อแชทหรือสร้างสิ่งก่อสร้าง",
+      "proposed": "ต้องมีเครดิตแผนที่เหลืออยู่จึงแชทหรือสร้างแผนที่ได้",
+      "reason": "Build means generate map here, not construct buildings. Available balance requirement retained."
+    },
+    {
+      "id": "online:An available Music credit is needed to chat or build.",
+      "severity": "minor",
+      "state": "open",
+      "original": "จำเป็นต้องมีเครดิตเพลงเพื่อแชทหรือสร้างคอนเทนต์",
+      "proposed": "ต้องมีเครดิตเพลงเหลืออยู่จึงแชทหรือสร้างเพลงได้",
+      "reason": "Specify available credit balance and music creation, matching context and Map/Building/Terrain siblings."
+    },
+    {
+      "id": "online:Choose a valid request cap.",
+      "severity": "minor",
+      "state": "open",
+      "original": "เลือกขีดจำกัดคำขอที่ถูกต้อง",
+      "proposed": "เลือกเพดานเครดิตต่อคำขอที่ถูกต้อง",
+      "reason": "Request cap is credit-spending ceiling per request, not a cap on number of requests; matches existing Request cap terminology."
+    },
+    {
+      "id": "online: · comparing",
+      "severity": "minor",
+      "state": "open",
+      "original": " · การเปรียบเทียบ",
+      "proposed": " · กำลังเปรียบเทียบ",
+      "reason": "Current comparison-state suffix, not generic noun comparison. Retain leading separator space."
+    },
+    {
+      "id": "online:The last build did not complete.",
+      "severity": "major",
+      "state": "open",
+      "original": "การก่อสร้างครั้งล่าสุดไม่สำเร็จ",
+      "proposed": "การสร้างครั้งล่าสุดไม่เสร็จสมบูรณ์",
+      "reason": "Build refers to map generation attempt, not in-game construction; did not complete does not imply a completed negative outcome."
+    },
+    {
+      "id": "online:Discussion spends no credits; 1 available Map credit is required. Creation requests build automatically · 1 credit on delivery.",
+      "severity": "major",
+      "state": "open",
+      "original": "การสนทนาไม่ใช้เครดิตใดๆ ต้องใช้เครดิตแผนที่ 1 หน่วย การสร้างคำขอจะดำเนินการโดยอัตโนมัติ · 1 เครดิตเมื่อส่งมอบ",
+      "proposed": "การสนทนาไม่ใช้เครดิต แต่ต้องมีเครดิตแผนที่เหลืออยู่ 1 เครดิต คำขอสร้างจะเริ่มทำงานโดยอัตโนมัติ · คิด 1 เครดิตเมื่อส่งมอบ",
+      "reason": "Free discussion requires available balance but does not spend it; provider wording suggests spending a credit for discussion and/or reverses creation request into creating a request. Preserve product credit type, automatic start, delivery-only charge."
+    },
+    {
+      "id": "online:Discussion spends no credits; 1 available Music credit is required. Creation requests build automatically · 1 credit on delivery. Includes all three moods.",
+      "severity": "major",
+      "state": "open",
+      "original": "การสนทนาไม่ใช้เครดิตใดๆ ต้องใช้เครดิตเพลง 1 เครดิต การสร้างผลงานจะดำเนินการโดยอัตโนมัติ · ใช้เครดิต 1 เครดิตเมื่อส่งมอบงาน ประกอบด้วยอารมณ์ทั้งสามแบบ",
+      "proposed": "การสนทนาไม่ใช้เครดิต แต่ต้องมีเครดิตเพลงเหลืออยู่ 1 เครดิต คำขอสร้างจะเริ่มทำงานโดยอัตโนมัติ · คิด 1 เครดิตเมื่อส่งมอบ รวมเพลงทั้งสามอารมณ์",
+      "reason": "Free discussion requires available balance but does not spend it; provider wording suggests spending a credit for discussion and/or reverses creation request into creating a request. Preserve product credit type, automatic start, delivery-only charge and all three moods."
+    },
+    {
+      "id": "online:Discussion spends no credits; 1 available Building credit is required. Creation requests build automatically · 1 credit on delivery.",
+      "severity": "major",
+      "state": "open",
+      "original": "การสนทนาไม่ใช้เครดิตใดๆ ต้องใช้เครดิตการสร้าง 1 หน่วย การสร้างคำขอจะสร้างโดยอัตโนมัติ · ใช้ 1 เครดิตเมื่อส่งมอบ",
+      "proposed": "การสนทนาไม่ใช้เครดิต แต่ต้องมีเครดิตอาคารเหลืออยู่ 1 เครดิต คำขอสร้างจะเริ่มทำงานโดยอัตโนมัติ · คิด 1 เครดิตเมื่อส่งมอบ",
+      "reason": "Free discussion requires available balance but does not spend it; provider wording suggests spending a credit for discussion and/or reverses creation request into creating a request. Preserve product credit type, automatic start, delivery-only charge."
+    },
+    {
+      "id": "online:Discussion spends no credits; 1 available Terrain credit is required. Creation requests build automatically · 1 credit on delivery.",
+      "severity": "major",
+      "state": "open",
+      "original": "การสนทนาไม่ใช้เครดิตใดๆ ต้องใช้เครดิตภูมิประเทศ 1 หน่วย การสร้างคำขอจะสร้างโดยอัตโนมัติ · ใช้เครดิต 1 หน่วยเมื่อส่งมอบ",
+      "proposed": "การสนทนาไม่ใช้เครดิต แต่ต้องมีเครดิตภูมิประเทศเหลืออยู่ 1 เครดิต คำขอสร้างจะเริ่มทำงานโดยอัตโนมัติ · คิด 1 เครดิตเมื่อส่งมอบ",
+      "reason": "Free discussion requires available balance but does not spend it; provider wording suggests spending a credit for discussion and/or reverses creation request into creating a request. Preserve product credit type, automatic start, delivery-only charge."
+    }
+  ],
+  "source_callsite_hashes": {
+    "platform/apps/web/src/pages/AiBuildingStudio.tsx": "20091767502b60da9f59605e05ff87f3a05d8d55bc0a54d178b9e12d81fed562",
+    "platform/apps/web/src/pages/TerrainStudio.tsx": "cfa3955a72b80c13e8c7d2513a9e713fbda8754871b2f667d895841ad64a48bb",
+    "platform/apps/web/src/pages/CodingStudio.tsx": "300befca0b02a2613ac234db38efbcad6145193830e524b1b34c14705d1ce3f9",
+    "platform/apps/web/src/pages/studio/StudioWorkspace.tsx": "3c8546aeeed7041bbaf7c98e092bd7d6e73e9010b758b169688f616656d3c768",
+    "platform/apps/web/src/pages/music-studio/Workspace.tsx": "98456844dfd883701f7a49e118ad7f631d55e42851ac9e4f2d259c01114f3944"
+  },
+  "context": "Every16source/provider pair read. Actual studio composer usage/credit controls audited in same repository. Price text must distinguish required available balance from billed spend; requestcap is maximum credits. No editor findings consulted before save.",
+  "certification": "Independent agent review, no native-human certification; final actual edits require recheck. Main6229 historical signoffs and3shellstrings unchanged."
+}

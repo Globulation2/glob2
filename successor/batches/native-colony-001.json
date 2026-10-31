@@ -1,0 +1,969 @@
+{
+  "id": "native-colony-001",
+  "source_sha256": "6deb12f6155d1ee014b77f0908cc670272ebf24935cbc6db31c8ba73c82a9e29",
+  "surface": "native",
+  "domain": "colony",
+  "context": "Workers autonomously gather/build; explorers scout; warriors fight. Flags assign work or military attention, not direct unit movement.",
+  "entries": [
+    {
+      "id": "native:[%0 units can't access building]",
+      "key": "[%0 units can't access building]",
+      "source": "%0 units can't access building",
+      "target": "ยูนิต %0 ตัว​เข้าถึง​อาคาร​ไม่ได้"
+    },
+    {
+      "id": "native:[%0 units can't access flag]",
+      "key": "[%0 units can't access flag]",
+      "source": "%0 units can't access flag",
+      "target": "ยูนิต %0 ตัว​เข้าถึง​ธง​ไม่​ได้"
+    },
+    {
+      "id": "native:[%0 units can't access fruit]",
+      "key": "[%0 units can't access fruit]",
+      "source": "%0 units can't access fruit",
+      "target": "ยูนิต %0 ตัว​เข้าถึง​ผลไม้​ไม่​ได้"
+    },
+    {
+      "id": "native:[%0 units too far from building]",
+      "key": "[%0 units too far from building]",
+      "source": "%0 units too far from building",
+      "target": "ยูนิต %0 ตัว​อยู่​ไกล​จาก​อาคาร​เกินไป"
+    },
+    {
+      "id": "native:[%0 units too far from flag]",
+      "key": "[%0 units too far from flag]",
+      "source": "%0 units too far from flag",
+      "target": "ยูนิต %0 ตัว​อยู่​ไกล​จาก​ธง​เกินไป"
+    },
+    {
+      "id": "native:[%0 units too far from fruit]",
+      "key": "[%0 units too far from fruit]",
+      "source": "%0 units too far from fruit",
+      "target": "ยูนิต %0 ตัว​อยู่​ไกล​จาก​ผลไม้​เกินไป"
+    },
+    {
+      "id": "native:[any explorer]",
+      "key": "[any explorer]",
+      "source": "any explorer",
+      "target": "นักสำรวจ​ใดๆ"
+    },
+    {
+      "id": "native:[Building Defaults]",
+      "key": "[Building Defaults]",
+      "source": "Building Defaults",
+      "target": "ค่า​เริ่มต้น​ของ​อาคาร"
+    },
+    {
+      "id": "native:[building settings]",
+      "key": "[building settings]",
+      "source": "Building Settings",
+      "target": "การ​ตั้งค่า​อาคาร"
+    },
+    {
+      "id": "native:[building site]",
+      "key": "[building site]",
+      "source": "construction site",
+      "target": "สถานที่ก่อสร้าง"
+    },
+    {
+      "id": "native:[Building Tool Box Explanation]",
+      "key": "[Building Tool Box Explanation]",
+      "source": "Shift + Drag = Box",
+      "target": "Shift + ลาก = กรอบ​สี่เหลี่ยม"
+    },
+    {
+      "id": "native:[Building Tool Line Explanation]",
+      "key": "[Building Tool Line Explanation]",
+      "source": "Ctrl + Drag = Line",
+      "target": "Ctrl + ลาก = เส้น"
+    },
+    {
+      "id": "native:[Buildings]",
+      "key": "[Buildings]",
+      "source": "Buildings",
+      "target": "อาคาร"
+    },
+    {
+      "id": "native:[clearingflag explanation 2]",
+      "key": "[clearingflag explanation 2]",
+      "source": "",
+      "target": ""
+    },
+    {
+      "id": "native:[clearingflag explanation]",
+      "key": "[clearingflag explanation]",
+      "source": "Clears resources",
+      "target": "แผ้วถาง​ทรัพยากร"
+    },
+    {
+      "id": "native:[clearingflag]",
+      "key": "[clearingflag]",
+      "source": "Clearing Flag",
+      "target": "ธงแผ้วถาง"
+    },
+    {
+      "id": "native:[destroy building]",
+      "key": "[destroy building]",
+      "source": "Destroy Selected Building",
+      "target": "ทำลาย​อาคาร​ที่​เลือก"
+    },
+    {
+      "id": "native:[explorationflag explanation 2]",
+      "key": "[explorationflag explanation 2]",
+      "source": "",
+      "target": ""
+    },
+    {
+      "id": "native:[explorationflag explanation]",
+      "key": "[explorationflag explanation]",
+      "source": "Attracts explorers",
+      "target": "ดึงดูด​นักสำรวจ"
+    },
+    {
+      "id": "native:[explorationflag]",
+      "key": "[explorationflag]",
+      "source": "Exploration Flag",
+      "target": "ธงสำรวจ"
+    },
+    {
+      "id": "native:[Explorer Ratio]",
+      "key": "[Explorer Ratio]",
+      "source": "Explorer Ratio",
+      "target": "อัตราส่วน​นักสำรวจ"
+    },
+    {
+      "id": "native:[Explorer]",
+      "key": "[Explorer]",
+      "source": "Explorer",
+      "target": "นักสำรวจ"
+    },
+    {
+      "id": "native:[explorers]",
+      "key": "[explorers]",
+      "source": "explorers",
+      "target": "นักสำรวจ"
+    },
+    {
+      "id": "native:[Flag Defaults]",
+      "key": "[Flag Defaults]",
+      "source": "Flag Defaults",
+      "target": "ค่า​เริ่มต้น​ของ​ธง"
+    },
+    {
+      "id": "native:[fruit]",
+      "key": "[fruit]",
+      "source": "fruit",
+      "target": "ผลไม้"
+    },
+    {
+      "id": "native:[inn explanation 2]",
+      "key": "[inn explanation 2]",
+      "source": "",
+      "target": ""
+    },
+    {
+      "id": "native:[inn explanation]",
+      "key": "[inn explanation]",
+      "source": "Feeds your units",
+      "target": "ให้อาหาร​ยูนิต​ของ​คุณ"
+    },
+    {
+      "id": "native:[market explanation 2]",
+      "key": "[market explanation 2]",
+      "source": "fruits with others",
+      "target": "กับ​ผู้อื่น"
+    },
+    {
+      "id": "native:[market explanation]",
+      "key": "[market explanation]",
+      "source": "Allows the exchange of",
+      "target": "ใช้​แลกเปลี่ยน​ผลไม้"
+    },
+    {
+      "id": "native:[market]",
+      "key": "[market]",
+      "source": "Market",
+      "target": "ตลาด"
+    },
+    {
+      "id": "native:[Minimum Level To Flag]",
+      "key": "[Minimum Level To Flag]",
+      "source": "Min. unit level",
+      "target": "ระดับ​ยูนิต​ขั้นต่ำ"
+    },
+    {
+      "id": "native:[Number Of Buildings]",
+      "key": "[Number Of Buildings]",
+      "source": "Number Of Buildings",
+      "target": "จำนวน​อาคาร"
+    },
+    {
+      "id": "native:[repair building]",
+      "key": "[repair building]",
+      "source": "Start/Stop Repair",
+      "target": "เริ่ม/หยุด​ซ่อมแซม"
+    },
+    {
+      "id": "native:[select barracks building]",
+      "key": "[select barracks building]",
+      "source": "Select Barracks",
+      "target": "เลือก​ค่ายฝึก"
+    },
+    {
+      "id": "native:[select clearingflag]",
+      "key": "[select clearingflag]",
+      "source": "Select Clearing Flag",
+      "target": "เลือก​ธงแผ้วถาง"
+    },
+    {
+      "id": "native:[select construct market]",
+      "key": "[select construct market]",
+      "source": "Select Construct Market",
+      "target": "เลือก​สร้าง​ตลาด"
+    },
+    {
+      "id": "native:[select construct swarm]",
+      "key": "[select construct swarm]",
+      "source": "Select Construct Swarm",
+      "target": "เลือก​สร้าง​รัง"
+    },
+    {
+      "id": "native:[select explorationflag]",
+      "key": "[select explorationflag]",
+      "source": "Select Exploration Flag",
+      "target": "เลือก​ธงสำรวจ"
+    },
+    {
+      "id": "native:[select hospital building]",
+      "key": "[select hospital building]",
+      "source": "Select Hospital",
+      "target": "เลือก​โรงพยาบาล"
+    },
+    {
+      "id": "native:[select inn building]",
+      "key": "[select inn building]",
+      "source": "Select Inn",
+      "target": "เลือก​โรงเตี๊ยม"
+    },
+    {
+      "id": "native:[select market building]",
+      "key": "[select market building]",
+      "source": "Select Market",
+      "target": "เลือก​ตลาด"
+    },
+    {
+      "id": "native:[select place clearingflag]",
+      "key": "[select place clearingflag]",
+      "source": "Select Place Clearing Flag",
+      "target": "เลือก​วาง​ธงแผ้วถาง"
+    },
+    {
+      "id": "native:[select place explorationflag]",
+      "key": "[select place explorationflag]",
+      "source": "Select Place Exploration Flag",
+      "target": "เลือก​วาง​ธงสำรวจ"
+    },
+    {
+      "id": "native:[select place warflag]",
+      "key": "[select place warflag]",
+      "source": "Select Place War Flag",
+      "target": "เลือก​วาง​ธงรบ"
+    },
+    {
+      "id": "native:[select racetrack building]",
+      "key": "[select racetrack building]",
+      "source": "Select Racetrack",
+      "target": "เลือก​สนามวิ่ง"
+    },
+    {
+      "id": "native:[select school building]",
+      "key": "[select school building]",
+      "source": "Select School",
+      "target": "เลือก​โรงเรียน"
+    },
+    {
+      "id": "native:[select swarm building]",
+      "key": "[select swarm building]",
+      "source": "Select Swarm",
+      "target": "เลือก​รัง"
+    },
+    {
+      "id": "native:[select swimmingpool building]",
+      "key": "[select swimmingpool building]",
+      "source": "Select Swimming Pool",
+      "target": "เลือก​สระว่ายน้ำ"
+    },
+    {
+      "id": "native:[select tower building]",
+      "key": "[select tower building]",
+      "source": "Select Defense Tower",
+      "target": "เลือก​หอคอย​ป้องกัน"
+    },
+    {
+      "id": "native:[select wall building]",
+      "key": "[select wall building]",
+      "source": "Select Wall",
+      "target": "เลือก​กำแพง"
+    },
+    {
+      "id": "native:[select warflag]",
+      "key": "[select warflag]",
+      "source": "Select War Flag",
+      "target": "เลือก​ธงรบ"
+    },
+    {
+      "id": "native:[show flags]",
+      "key": "[show flags]",
+      "source": "Show flags",
+      "target": "แสดง​ธง"
+    },
+    {
+      "id": "native:[swarm explanation 2]",
+      "key": "[swarm explanation 2]",
+      "source": "",
+      "target": ""
+    },
+    {
+      "id": "native:[swarm explanation]",
+      "key": "[swarm explanation]",
+      "source": "Creates new units",
+      "target": "สร้าง​ยูนิต​ใหม่"
+    },
+    {
+      "id": "native:[swarm]",
+      "key": "[swarm]",
+      "source": "Swarm",
+      "target": "รัง"
+    },
+    {
+      "id": "native:[switch to building view]",
+      "key": "[switch to building view]",
+      "source": "Switch To Building view",
+      "target": "เปลี่ยนไป​ที่​มุมมอง​อาคาร"
+    },
+    {
+      "id": "native:[switch to flag view]",
+      "key": "[switch to flag view]",
+      "source": "Switch to Flags view",
+      "target": "เปลี่ยนไป​ใช้​มุมมอง​ธง"
+    },
+    {
+      "id": "native:[the building is finished]",
+      "key": "[the building is finished]",
+      "source": "The building is finished.",
+      "target": "อาคาร​สร้าง​เสร็จ​แล้ว"
+    },
+    {
+      "id": "native:[the building is under attack]",
+      "key": "[the building is under attack]",
+      "source": "The building is under attack.",
+      "target": "อาคาร​หลัง​นี้​กำลัง​ถูก​โจมตี"
+    },
+    {
+      "id": "native:[the clearingflag is finished]",
+      "key": "[the clearingflag is finished]",
+      "source": "Clearing flag placed.",
+      "target": "วาง​ธงแผ้วถาง​แล้ว"
+    },
+    {
+      "id": "native:[the clearingflag is under attack]",
+      "key": "[the clearingflag is under attack]",
+      "source": "Clearing flag is under attack.",
+      "target": "ธงแผ้วถาง​กำลัง​ถูก​โจมตี"
+    },
+    {
+      "id": "native:[the explorationflag is finished]",
+      "key": "[the explorationflag is finished]",
+      "source": "Exploration flag placed.",
+      "target": "ปัก​ธงสำรวจ​แล้ว"
+    },
+    {
+      "id": "native:[the explorationflag is under attack]",
+      "key": "[the explorationflag is under attack]",
+      "source": "Exploration flag is under attack.",
+      "target": "ธงสำรวจ​กำลัง​ถูก​โจมตี"
+    },
+    {
+      "id": "native:[the inn is finished]",
+      "key": "[the inn is finished]",
+      "source": "The Inn is finished.",
+      "target": "โรงเตี๊ยม​สร้าง​เสร็จ​แล้ว"
+    },
+    {
+      "id": "native:[the inn is under attack]",
+      "key": "[the inn is under attack]",
+      "source": "The Inn is under attack.",
+      "target": "โรงเตี๊ยม​กำลัง​ถูก​โจมตี"
+    },
+    {
+      "id": "native:[the market is finished]",
+      "key": "[the market is finished]",
+      "source": "The market is finished.",
+      "target": "ตลาด​สร้าง​เสร็จ​แล้ว"
+    },
+    {
+      "id": "native:[the market is under attack]",
+      "key": "[the market is under attack]",
+      "source": "The market is under attack.",
+      "target": "ตลาด​กำลัง​ถูก​โจมตี"
+    },
+    {
+      "id": "native:[the swarm is finished]",
+      "key": "[the swarm is finished]",
+      "source": "The swarm is finished.",
+      "target": "รัง​สร้าง​เสร็จ​แล้ว"
+    },
+    {
+      "id": "native:[the swarm is under attack]",
+      "key": "[the swarm is under attack]",
+      "source": "The swarm is under attack.",
+      "target": "รัง​กำลัง​ถูก​โจมตี"
+    },
+    {
+      "id": "native:[the warflag is finished]",
+      "key": "[the warflag is finished]",
+      "source": "War flag placed.",
+      "target": "วาง​ธงรบ​แล้ว"
+    },
+    {
+      "id": "native:[the warflag is under attack]",
+      "key": "[the warflag is under attack]",
+      "source": "War flag is under attack.",
+      "target": "ธงรบ​กำลัง​ถูก​โจมตี"
+    },
+    {
+      "id": "native:[upgrade building]",
+      "key": "[upgrade building]",
+      "source": "Start/Stop Upgrade",
+      "target": "เริ่ม/หยุด​อัปเกรด"
+    },
+    {
+      "id": "native:[warflag explanation 2]",
+      "key": "[warflag explanation 2]",
+      "source": "",
+      "target": ""
+    },
+    {
+      "id": "native:[warflag explanation]",
+      "key": "[warflag explanation]",
+      "source": "Attracts warriors",
+      "target": "ดึงดูด​นักรบ"
+    },
+    {
+      "id": "native:[warflag]",
+      "key": "[warflag]",
+      "source": "War Flag",
+      "target": "ธงรบ"
+    },
+    {
+      "id": "native:[Warrior Ratio]",
+      "key": "[Warrior Ratio]",
+      "source": "Warrior Ratio",
+      "target": "อัตราส่วน​นักรบ"
+    },
+    {
+      "id": "native:[Warrior]",
+      "key": "[Warrior]",
+      "source": "Warrior",
+      "target": "นักรบ"
+    },
+    {
+      "id": "native:[warriors]",
+      "key": "[warriors]",
+      "source": "warriors",
+      "target": "นักรบ"
+    },
+    {
+      "id": "native:[Worker Ratio]",
+      "key": "[Worker Ratio]",
+      "source": "Worker Ratio",
+      "target": "อัตราส่วน​คนงาน"
+    },
+    {
+      "id": "native:[Worker]",
+      "key": "[Worker]",
+      "source": "Worker",
+      "target": "คนงาน"
+    },
+    {
+      "id": "native:[workers]",
+      "key": "[workers]",
+      "source": "workers",
+      "target": "คนงาน"
+    },
+    {
+      "id": "native:[Fruit]",
+      "key": "[Fruit]",
+      "source": "Fruit",
+      "target": "ผลไม้"
+    },
+    {
+      "id": "native:[Starting workers]",
+      "key": "[Starting workers]",
+      "source": "Starting workers",
+      "target": "คนงาน​เริ่มต้น"
+    },
+    {
+      "id": "native:[Starting workers: Game Rules tab.]",
+      "key": "[Starting workers: Game Rules tab.]",
+      "source": "Starting workers: Game Rules tab.",
+      "target": "คนงาน​เริ่มต้น: แท็บ​กฎ​ของ​เกม"
+    },
+    {
+      "id": "native:[8 workers / 2x speed]",
+      "key": "[8 workers / 2x speed]",
+      "source": "8 workers / 2x speed",
+      "target": "คนงาน 8 ตัว / ความเร็ว 2 เท่า"
+    },
+    {
+      "id": "native:[Classic colony building]",
+      "key": "[Classic colony building]",
+      "source": "Classic colony building",
+      "target": "สร้าง​อาณานิคม​แบบ​คลาสสิก"
+    },
+    {
+      "id": "native:[Quick clash: 2x speed; generated maps start with 8 workers.]",
+      "key": "[Quick clash: 2x speed; generated maps start with 8 workers.]",
+      "source": "Quick clash: 2x speed; generated maps start with 8 workers.",
+      "target": "ปะทะ​ด่วน: ความเร็ว 2 เท่า แผนที่​ที่​สร้าง​ขึ้น​เริ่ม​ด้วย​คนงาน 8 ตัว"
+    },
+    {
+      "id": "native:[Starting workers affects generated maps only.]",
+      "key": "[Starting workers affects generated maps only.]",
+      "source": "Starting workers affects generated maps only.",
+      "target": "จำนวน​คนงาน​เริ่มต้น​มีผล​เฉพาะ​แผนที่​ที่​สร้าง​ขึ้น​เท่านั้น"
+    },
+    {
+      "id": "native:[More workers jump-start colony growth. Changes the generated map.]",
+      "key": "[More workers jump-start colony growth. Changes the generated map.]",
+      "source": "More workers jump-start colony growth. Changes the generated map.",
+      "target": "การ​เพิ่มจำนวน​คนงาน​จะ​ช่วย​เร่ง​การ​เติบโต​ของ​อาณานิคม และ​เปลี่ยนแปลง​แผนที่​ที่​สร้าง​ขึ้น"
+    },
+    {
+      "id": "native:[No warriors]",
+      "key": "[No warriors]",
+      "source": "No warriors",
+      "target": "ไม่​มี​นักรบ"
+    },
+    {
+      "id": "native:[Farm building plots]",
+      "key": "[Farm building plots]",
+      "source": "Farm building plots",
+      "target": "พื้นที่​ก่อสร้าง​ใน​ไร่"
+    },
+    {
+      "id": "native:[Fruit amount]",
+      "key": "[Fruit amount]",
+      "source": "Fruit amount",
+      "target": "ปริมาณ​ผลไม้"
+    },
+    {
+      "id": "native:[Fruit in home valleys]",
+      "key": "[Fruit in home valleys]",
+      "source": "Fruit in home valleys",
+      "target": "ผลไม้​ใน​หุบเขา​บ้านเกิด"
+    },
+    {
+      "id": "native:[Building sites complete immediately, skipping delivery.]",
+      "key": "[Building sites complete immediately, skipping delivery.]",
+      "source": "Building sites complete immediately, skipping delivery.",
+      "target": "ก่อสร้าง​เสร็จ​ทันที​โดย​ข้าม​การขนส่ง​วัสดุ"
+    },
+    {
+      "id": "native:[Higher tiers give every building much more HP.]",
+      "key": "[Higher tiers give every building much more HP.]",
+      "source": "Higher tiers give every building much more HP.",
+      "target": "ระดับ​ที่สูง​ขึ้น​จะ​เพิ่ม​พลังชีวิต (HP) ให้​กับ​สิ่งก่อสร้าง​ทุกอย่าง​มากขึ้น"
+    },
+    {
+      "id": "native:[Stats new buildings]",
+      "key": "[Stats new buildings]",
+      "source": "New buildings",
+      "target": "อาคาร​ใหม่"
+    },
+    {
+      "id": "native:[Stats blocked buildings]",
+      "key": "[Stats blocked buildings]",
+      "source": "Buildings blocked S/C",
+      "target": "อาคาร​ถูก​ปิดกั้น S/C"
+    },
+    {
+      "id": "native:[Stats blocked buildings swim]",
+      "key": "[Stats blocked buildings swim]",
+      "source": "Swim exits S/C",
+      "target": "ทางออก​ว่ายน้ำ S/C"
+    },
+    {
+      "id": "native:[Stats current blocked buildings]",
+      "key": "[Stats current blocked buildings]",
+      "source": "Currently blocked buildings",
+      "target": "อาคาร​ที่​ถูก​ปิดกั้น​ใน​ปัจจุบัน"
+    },
+    {
+      "id": "native:[Stats structural buildings]",
+      "key": "[Stats structural buildings]",
+      "source": "Structurally blocked buildings",
+      "target": "อาคาร​ที่​ทางเข้า​ถูก​กีดขวางเชิง​โครงสร้าง"
+    },
+    {
+      "id": "native:[A colony's homeland has no room for a swarm; use a bigger map, fewer colonies or a narrower march.]",
+      "key": "[A colony's homeland has no room for a swarm; use a bigger map, fewer colonies or a narrower march.]",
+      "source": "A colony's homeland has no room for a swarm; use a bigger map, fewer colonies or a narrower march.",
+      "target": "พื้นที่​เริ่มต้น​ของ​อาณานิคม​มี​ที่ว่าง​ไม่​พอ​สำหรับ​รัง ให้​ใช้​แผนที่​ใหญ่​ขึ้น ลด​จำนวน​อาณานิคม หรือ​ทำ​แนว​ชายแดน​ให้​แคบ​ลง"
+    },
+    {
+      "id": "native:[A city neighbourhood lacks reachable crops or building room.]",
+      "key": "[A city neighbourhood lacks reachable crops or building room.]",
+      "source": "A city neighbourhood lacks reachable crops or building room.",
+      "target": "ย่าน​ใน​เมือง​บางแห่ง​ขาดแคลน​พื้นที่เพาะปลูก​หรือ​พื้นที่​ก่อสร้าง​ที่​เข้าถึง​ได้"
+    },
+    {
+      "id": "native:[Each colony's start is measured on the finished map: the walk to wheat and to wood, how well its ground regrows, the deposits and building sites within reach, and its distance from rivals. Every factor scores from 0 to 1 against a fixed bar, the total weighs them, fairness is the worst colony's total over the best, and the score is the worst total times the fairness.]",
+      "key": "[Each colony's start is measured on the finished map: the walk to wheat and to wood, how well its ground regrows, the deposits and building sites within reach, and its distance from rivals. Every factor scores from 0 to 1 against a fixed bar, the total weighs them, fairness is the worst colony's total over the best, and the score is the worst total times the fairness.]",
+      "source": "Each colony's start is measured on the finished map: the walk to food and wood sources, how well its ground regrows, the deposits and building sites within reach, and its distance from rivals. Every factor scores from 0 to 1 against a fixed bar, the total weighs them, fairness is the worst colony's total over the best, and the score is the worst total times the fairness.",
+      "target": "จุดเริ่มต้น​ของ​แต่ละ​อาณานิคม​วัด​จาก​แผนที่​ที่​สร้าง​เสร็จ​แล้ว ได้แก่ ระยะ​เดิน​ไป​ยัง​แหล่ง​อาหาร​และ​ไม้ การฟื้นตัว​ของ​พื้นที่ แหล่ง​ทรัพยากร​และ​พื้นที่​ก่อสร้าง​ที่​เข้าถึง​ได้ และ​ระยะห่าง​จาก​คู่แข่ง แต่ละ​ปัจจัย​ได้​คะแนน 0 ถึง 1 เทียบ​กับ​เกณฑ์​คงที่ แล้ว​รวม​คะแนน​แบบ​ถ่วง​น้ำหนัก ความเป็นธรรม​คือ​คะแนน​รวม​ต่ำสุด​หาร​ด้วย​คะแนน​รวม​สูงสุด และ​คะแนน​สุดท้าย​คือ​คะแนน​รวม​ต่ำสุด​คูณ​ความเป็นธรรม"
+    },
+    {
+      "id": "native:[Building gradients]",
+      "key": "[Building gradients]",
+      "source": "Building gradients...",
+      "target": "กำลัง​คำนวณ​เกรเดียนต์…"
+    },
+    {
+      "id": "native:[Loading buildings]",
+      "key": "[Loading buildings]",
+      "source": "Loading buildings...",
+      "target": "กำลัง​โหลด​ข้อมูล​อาคาร…"
+    },
+    {
+      "id": "native:[Flags]",
+      "key": "[Flags]",
+      "source": "Flags",
+      "target": "ธง"
+    },
+    {
+      "id": "native:[Buildings: %0]",
+      "key": "[Buildings: %0]",
+      "source": "Buildings: %0",
+      "target": "อาคาร : %0"
+    },
+    {
+      "id": "native:[Read-only building]",
+      "key": "[Read-only building]",
+      "source": "Read-only building",
+      "target": "อาคาร​แบบ​อ่าน​อย่าง​เดียว"
+    },
+    {
+      "id": "native:[Share market vision]",
+      "key": "[Share market vision]",
+      "source": "Share market vision",
+      "target": "แบ่งปัน​การ​มองเห็น​จาก​ตลาด"
+    },
+    {
+      "id": "native:[match tip flags]",
+      "key": "[match tip flags]",
+      "source": "Tip: exploration flags send explorers to reveal the map; war flags gather your warriors.",
+      "target": "คำแนะนำ: ธงสำรวจ​ส่ง​นักสำรวจ​ไป​เปิดเผย​แผนที่ ส่วน​ธงรบ​รวบรวม​นักรบ​ของ​คุณ"
+    },
+    {
+      "id": "native:[stat group buildings]",
+      "key": "[stat group buildings]",
+      "source": "Buildings",
+      "target": "อาคาร"
+    },
+    {
+      "id": "native:[stat buildings]",
+      "key": "[stat buildings]",
+      "source": "Buildings standing",
+      "target": "อาคาร​ที่​ยังคง​ตั้งอยู่"
+    },
+    {
+      "id": "native:[stat buildings about]",
+      "key": "[stat buildings about]",
+      "source": "Finished buildings the colony had. Split it to see each kind of building.",
+      "target": "จำนวน​อาคาร​ที่​สร้าง​เสร็จ​แล้ว​ของ​อาณานิคม แยก​กราฟ​เพื่อ​ดู​อาคาร​แต่ละ​ประเภท"
+    },
+    {
+      "id": "native:[stat buildings lost]",
+      "key": "[stat buildings lost]",
+      "source": "Buildings lost",
+      "target": "อาคาร​ที่​สูญเสีย"
+    },
+    {
+      "id": "native:[stat buildings lost about]",
+      "key": "[stat buildings lost about]",
+      "source": "Buildings destroyed by enemies or demolished by the colony itself.",
+      "target": "สิ่งก่อสร้าง​ที่​ถูก​ทำลาย​โดย​ศัตรู​หรือ​ถูก​รื้อถอน​โดย​อาณานิคม​เอง"
+    },
+    {
+      "id": "native:[stat blocked buildings]",
+      "key": "[stat blocked buildings]",
+      "source": "Buildings with no way in",
+      "target": "อาคาร​ที่​ไม่​มี​ทางเข้า"
+    },
+    {
+      "id": "native:[stat blocked buildings about]",
+      "key": "[stat blocked buildings about]",
+      "source": "Buildings whose entrances were blocked, so units could not get in or out.",
+      "target": "อาคาร​ที่​ทางเข้า​ถูก​ปิดกั้น​จน​ยูนิต​เข้าออก​ไม่​ได้"
+    },
+    {
+      "id": "native:[stat unit buildings]",
+      "key": "[stat unit buildings]",
+      "source": "buildings",
+      "target": "อาคาร"
+    },
+    {
+      "id": "native:[stat column buildings lost]",
+      "key": "[stat column buildings lost]",
+      "source": "Buildings lost",
+      "target": "อาคาร​ที่​สูญเสีย"
+    },
+    {
+      "id": "native:[stat marker first building destroyed]",
+      "key": "[stat marker first building destroyed]",
+      "source": "first building destroyed",
+      "target": "อาคาร​หลัง​แรก​ถูก​ทำลาย"
+    },
+    {
+      "id": "native:[stat band workers]",
+      "key": "[stat band workers]",
+      "source": "Workers",
+      "target": "คนงาน"
+    },
+    {
+      "id": "native:[stat band explorers]",
+      "key": "[stat band explorers]",
+      "source": "Explorers",
+      "target": "นักสำรวจ"
+    },
+    {
+      "id": "native:[stat band warriors]",
+      "key": "[stat band warriors]",
+      "source": "Warriors",
+      "target": "นักรบ"
+    },
+    {
+      "id": "native:[stat view by building]",
+      "key": "[stat view by building]",
+      "source": "By building",
+      "target": "แยก​ตาม​อาคาร"
+    },
+    {
+      "id": "native:[Building strength]",
+      "key": "[Building strength]",
+      "source": "Building strength",
+      "target": "ความทนทาน​ของ​อาคาร"
+    },
+    {
+      "id": "native:[Units gain levels at training buildings and buildings can be upgraded. Repairs remain available when off.]",
+      "key": "[Units gain levels at training buildings and buildings can be upgraded. Repairs remain available when off.]",
+      "source": "Units gain levels at training buildings and buildings can be upgraded. Repairs remain available when off.",
+      "target": "ยูนิต​เพิ่ม​ระดับ​ได้ที่​อาคาร​ฝึกฝน และ​อาคาร​อัปเกรด​ได้ เมื่อ​ปิด​ตัวเลือก​นี้​ยัง​ซ่อมแซม​ได้"
+    },
+    {
+      "id": "native:[stat worker time]",
+      "key": "[stat worker time]",
+      "source": "How workers spent their time",
+      "target": "คนงาน​ใช้เวลา​อย่างไร"
+    },
+    {
+      "id": "native:[stat worker time about]",
+      "key": "[stat worker time about]",
+      "source": "What the colony's workers were doing, moment by moment: working for a building, working at a flag, training, eating, healing, waiting hungry or hurt with no inn or hospital free, or idle with nothing to do. A healthy colony keeps most of its workers working, few idle and none waiting.",
+      "target": "กิจกรรม​ของ​คนงาน​ใน​แต่ละ​ช่วงเวลา ได้แก่ ทำงาน​ให้​อาคาร ทำงาน​ที่​ธง ฝึกฝน กิน​อาหาร รักษาตัว รอ​เพราะ​หิว​หรือ​บาดเจ็บ​แต่​ไม่​มี​โรงเตี๊ยม​หรือ​โรงพยาบาล​ว่าง หรือ​อยู่​เฉย​ๆ เพราะ​ไม่​มี​งาน อาณานิคม​ที่​แข็งแรง​มี​คนงาน​ส่วนใหญ่​ทำงาน มี​คนงานว่าง​น้อย และ​ไม่​มี​ใคร​ต้อง​รอ"
+    },
+    {
+      "id": "native:[stat idle workers]",
+      "key": "[stat idle workers]",
+      "source": "Idle workers",
+      "target": "คนงาน​ว่างงาน"
+    },
+    {
+      "id": "native:[stat idle workers about]",
+      "key": "[stat idle workers about]",
+      "source": "The share of workers' time spent with nothing to do. High values mean more workers than work; near zero means every worker is busy and jobs may be waiting.",
+      "target": "สัดส่วน​เวลา​ที่​คนงาน​ไม่​มี​งาน​ทำ ค่า​สูง​แปลว่า​คนงาน​มากกว่า​งาน ค่า​ใกล้​ศูนย์​แปลว่า​ทุก​ตัว​มี​งาน​และ​อาจ​มี​งาน​รอ"
+    },
+    {
+      "id": "native:[stat inn distance]",
+      "key": "[stat inn distance]",
+      "source": "Distance from the inn",
+      "target": "ระยะห่าง​จาก​โรงเตี๊ยม"
+    },
+    {
+      "id": "native:[stat inn distance about]",
+      "key": "[stat inn distance about]",
+      "source": "How far hungry workers were, on average over their walk, from the inn they were heading for, in map squares in a straight line. A whole trip is roughly twice this. High values mean inns are far from where workers work.",
+      "target": "ระยะห่าง​เฉลี่ย​ระหว่าง​คนงาน​ที่​หิว​กับ​โรงเตี๊ยม​ที่​กำลัง​เดิน​ไปหา โดยเฉลี่ย​ตลอด​การ​เดินทาง​และ​วัด​เป็น​ช่อง​แผนที่​ตาม​แนว​เส้นตรง ระยะ​เดินทาง​ทั้งหมด​ประมาณ​สองเท่า​ของ​ค่า​นี้ ค่า​สูง​แสดงว่า​โรงเตี๊ยม​อยู่​ไกล​จาก​จุด​ทำงาน"
+    },
+    {
+      "id": "native:[stat warriors]",
+      "key": "[stat warriors]",
+      "source": "Warriors",
+      "target": "นักรบ"
+    },
+    {
+      "id": "native:[stat warriors about]",
+      "key": "[stat warriors about]",
+      "source": "How many warriors the colony had. Split it to see how many were near home, near an enemy colony, or in open ground. Ground close to both colonies counts as home.",
+      "target": "จำนวน​นักรบ​ของ​อาณานิคม แยก​กราฟ​เพื่อ​ดู​ว่า​กี่​ตัว​อยู่​ใกล้​ฐาน ใกล้​อาณานิคม​ศัตรู หรือ​ใน​พื้นที่​โล่ง พื้นที่​ใกล้​ทั้งสอง​ฝ่าย​นับ​เป็น​ใกล้​ฐาน"
+    },
+    {
+      "id": "native:[stat warrior level]",
+      "key": "[stat warrior level]",
+      "source": "Average warrior attack level",
+      "target": "ระดับ​การ​โจมตี​เฉลี่ย​ของ​นักรบ"
+    },
+    {
+      "id": "native:[stat warrior level about]",
+      "key": "[stat warrior level about]",
+      "source": "The average attack level of the colony's warriors, counting attack speed and attack strength equally, on the 1 to 4 scale the game shows. Barracks raise it; new untrained warriors pull it down.",
+      "target": "ระดับ​โจมตี​เฉลี่ย​ของ​นักรบ​ใน​อาณานิคม โดย​ให้​น้ำหนัก​ความเร็ว​โจมตี​และ​พลัง​โจมตี​เท่ากัน ใช้​มาตรา 1 ถึง 4 ตามที่​เกม​แสดง การ​ฝึก​ที่​ค่ายฝึก​เพิ่ม​ค่า​นี้ ส่วน​นักรบ​ใหม่​ที่​ยัง​ไม่​ฝึก​ทำให้​ค่าเฉลี่ย​ลดลง"
+    },
+    {
+      "id": "native:[stat warrior duties]",
+      "key": "[stat warrior duties]",
+      "source": "What warriors were doing",
+      "target": "นักรบ​เหล่านั้น​กำลัง​ทำ​อะไร​อยู่"
+    },
+    {
+      "id": "native:[stat warrior duties about]",
+      "key": "[stat warrior duties about]",
+      "source": "How the colony's warriors divided between those sent to a war flag, those hurt badly enough to leave the fight for a hospital (including those being healed), and those free.",
+      "target": "สัดส่วน​นักรบ​ที่​ประจำ​ธงรบ บาดเจ็บ​จน​ต้อง​ออกจาก​การต่อสู้​ไป​โรงพยาบาล (รวม​ผู้​ที่​กำลัง​รักษา) และ​ว่าง​จาก​หน้าที่"
+    },
+    {
+      "id": "native:[stat band flag work]",
+      "key": "[stat band flag work]",
+      "source": "At a flag",
+      "target": "ที่​ธง"
+    },
+    {
+      "id": "native:[stat band swarms]",
+      "key": "[stat band swarms]",
+      "source": "Swarms",
+      "target": "รัง"
+    },
+    {
+      "id": "native:[stat band other buildings]",
+      "key": "[stat band other buildings]",
+      "source": "Other buildings",
+      "target": "อาคาร​อื่นๆ"
+    },
+    {
+      "id": "native:[stat band war flag]",
+      "key": "[stat band war flag]",
+      "source": "On a war flag",
+      "target": "ประจำ​ธงรบ"
+    },
+    {
+      "id": "native:[stat unit workers]",
+      "key": "[stat unit workers]",
+      "source": "workers",
+      "target": "คนงาน"
+    },
+    {
+      "id": "native:[stat unit worker time]",
+      "key": "[stat unit worker time]",
+      "source": "workers' time",
+      "target": "เวลา​ของ​คนงาน"
+    },
+    {
+      "id": "native:[stat unit working workers]",
+      "key": "[stat unit working workers]",
+      "source": "workers supplying buildings",
+      "target": "คนงาน​ที่​ส่ง​วัสดุ​ให้​อาคาร"
+    },
+    {
+      "id": "native:[stat unit warriors]",
+      "key": "[stat unit warriors]",
+      "source": "warriors",
+      "target": "นักรบ"
+    },
+    {
+      "id": "native:[stat unit enemy warriors]",
+      "key": "[stat unit enemy warriors]",
+      "source": "enemy warriors",
+      "target": "นักรบ​ฝ่าย​ศัตรู"
+    },
+    {
+      "id": "native:[experiment markets-v2]",
+      "key": "[experiment markets-v2]",
+      "source": "Markets V2",
+      "target": "ตลาด V2"
+    },
+    {
+      "id": "native:[experiment markets-v2 help]",
+      "key": "[experiment markets-v2 help]",
+      "source": "Workers can fetch supplies from shared market stock. Markets can upgrade to store food and wood, then every material. Trading between teams remains fruit-only. Applies to new games; saves keep their original setting.",
+      "target": "คนงาน​หยิบ​วัสดุ​จาก​คลัง​ร่วม​ของตลาด​ได้ ตลาด​อัปเกรด​เพื่อ​เก็บ​อาหาร​และ​ไม้ และ​ต่อมา​เก็บ​วัสดุ​ทุกชนิด​ได้ การค้า​ระหว่าง​ทีม​ยัง​แลกเปลี่ยน​ได้​เฉพาะ​ผลไม้ ใช้กับ​เกม​ใหม่ ส่วน​เกม​ที่​บันทึก​ไว้​คง​การ​ตั้งค่า​เดิม"
+    },
+    {
+      "id": "native:[dock flags and units]",
+      "key": "[dock flags and units]",
+      "source": "Flags & units",
+      "target": "ธง​และ​ยูนิต"
+    },
+    {
+      "id": "native:[dock building level]",
+      "key": "[dock building level]",
+      "source": "Level",
+      "target": "ระดับ"
+    },
+    {
+      "id": "native:[Destroy this building?]",
+      "key": "[Destroy this building?]",
+      "source": "Destroy this building?",
+      "target": "ทำลาย​อาคาร​นี้?"
+    },
+    {
+      "id": "native:[library Building families]",
+      "key": "[library Building families]",
+      "source": "Building families",
+      "target": "ตระกูล​อาคาร"
+    },
+    {
+      "id": "native:[library Building library]",
+      "key": "[library Building library]",
+      "source": "Building library",
+      "target": "คลัง​อาคาร"
+    },
+    {
+      "id": "native:[library Checking building release]",
+      "key": "[library Checking building release]",
+      "source": "Checking building release",
+      "target": "กำลัง​ตรวจสอบ​รุ่น​เผยแพร่​ของ​อาคาร"
+    },
+    {
+      "id": "native:[library Create in Building Studio]",
+      "key": "[library Create in Building Studio]",
+      "source": "Create in Building Studio",
+      "target": "สร้างสรรค์​ใน Building Studio"
+    },
+    {
+      "id": "native:[library Enter a building family ID or a link to its family page.]",
+      "key": "[library Enter a building family ID or a link to its family page.]",
+      "source": "Enter a building family ID or a link to its family page.",
+      "target": "ป้อน ID ตระกูล​อาคาร​หรือ​ลิงก์​ไป​ยัง​หน้า​ตระกูล​นั้น"
+    },
+    {
+      "id": "native:[library Install individual buildings or upgrade families alongside the stock buildings. Selection applies only to newly generated maps.]",
+      "key": "[library Install individual buildings or upgrade families alongside the stock buildings. Selection applies only to newly generated maps.]",
+      "source": "Install individual buildings or upgrade families alongside the stock buildings. Selection applies only to newly generated maps.",
+      "target": "ติดตั้ง​อาคาร​เดี่ยว​หรือ​ตระกูล​อาคาร​ที่​มี​หลาย​ระดับ​ร่วมกับ​อาคาร​มาตรฐาน การ​เลือก​มีผล​เฉพาะ​แผนที่​ที่​สร้าง​ขึ้น​ใหม่"
+    },
+    {
+      "id": "native:[library Invalid building family ID.]",
+      "key": "[library Invalid building family ID.]",
+      "source": "Invalid building family ID.",
+      "target": "ID ตระกูล​อาคาร​ไม่​ถูกต้อง"
+    },
+    {
+      "id": "native:[library Invalid building library response]",
+      "key": "[library Invalid building library response]",
+      "source": "Invalid building library response",
+      "target": "ข้อมูล​ตอบกลับ​จาก​คลัง​อาคาร​ไม่​ถูกต้อง"
+    }
+  ]
+}

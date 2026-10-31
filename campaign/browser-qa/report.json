@@ -1,0 +1,1101 @@
+{
+  "scope": "Actual built web app against repository seeded local E2E API; studios inspected without generation or paid provider requests. Fixture accounts/maps/rooms are test data.",
+  "base": "http://127.0.0.1:4298",
+  "started": "2026-10-31T23:12:50.650Z",
+  "pages": [
+    {
+      "device": "desktop",
+      "name": "home",
+      "url": "/",
+      "screenshot": "desktop-home.png",
+      "lang": "th",
+      "dir": "ltr",
+      "title": "Glob2 Online (test)",
+      "headings": [
+        "ยินดีต้อนรับสู่อาณานิคม",
+        "แมตช์ล่าสุด",
+        "แผนที่ที่ผู้เล่นชื่นชอบ",
+        "ตารางอันดับ"
+      ],
+      "horizontalOverflow": 0,
+      "thaiFontFaces": [
+        {
+          "family": "Glob2 Scripts",
+          "status": "loaded",
+          "unicodeRange": "U+E00-E7F"
+        }
+      ],
+      "thaiTextPresent": true,
+      "overflowElements": [],
+      "axeViolations": [],
+      "thaiInput": "ผู้เล่นทดสอบ",
+      "thaiRefresh": true
+    },
+    {
+      "device": "desktop",
+      "name": "signin",
+      "url": "/signin",
+      "screenshot": "desktop-signin.png",
+      "lang": "th",
+      "dir": "ltr",
+      "title": "ลงชื่อเข้าใช้ · Globulation 2",
+      "headings": [
+        "ลงชื่อเข้าใช้",
+        "ลงชื่อเข้าใช้",
+        "เพิ่งมาใหม่ใช่ไหม? สร้างบัญชีผู้ใช้"
+      ],
+      "horizontalOverflow": 0,
+      "thaiFontFaces": [
+        {
+          "family": "Glob2 Scripts",
+          "status": "loaded",
+          "unicodeRange": "U+E00-E7F"
+        }
+      ],
+      "thaiTextPresent": true,
+      "overflowElements": [],
+      "axeViolations": []
+    },
+    {
+      "device": "desktop",
+      "name": "invite",
+      "url": "/j/GLOBJOIN",
+      "screenshot": "desktop-invite.png",
+      "lang": "th",
+      "dir": "ltr",
+      "title": "คุณได้รับเชิญ · Globulation 2",
+      "headings": [
+        "คุณได้รับเชิญ"
+      ],
+      "horizontalOverflow": 0,
+      "thaiFontFaces": [
+        {
+          "family": "Glob2 Scripts",
+          "status": "loaded",
+          "unicodeRange": "U+E00-E7F"
+        }
+      ],
+      "thaiTextPresent": true,
+      "overflowElements": [],
+      "axeViolations": []
+    },
+    {
+      "device": "desktop",
+      "name": "invite-missing",
+      "url": "/j/NOSUCHCODE",
+      "screenshot": "desktop-invite-missing.png",
+      "lang": "th",
+      "dir": "ltr",
+      "title": "ไม่พบคำเชิญ · Globulation 2",
+      "headings": [
+        "ไม่พบคำเชิญ"
+      ],
+      "horizontalOverflow": 0,
+      "thaiFontFaces": [
+        {
+          "family": "Glob2 Scripts",
+          "status": "loaded",
+          "unicodeRange": "U+E00-E7F"
+        }
+      ],
+      "thaiTextPresent": true,
+      "overflowElements": [],
+      "axeViolations": []
+    },
+    {
+      "device": "desktop",
+      "name": "maps",
+      "url": "/maps",
+      "screenshot": "desktop-maps.png",
+      "lang": "th",
+      "dir": "ltr",
+      "title": "แผนที่ · Glob2 Online (test)",
+      "headings": [
+        "แผนที่"
+      ],
+      "horizontalOverflow": 0,
+      "thaiFontFaces": [
+        {
+          "family": "Glob2 Scripts",
+          "status": "loaded",
+          "unicodeRange": "U+E00-E7F"
+        }
+      ],
+      "thaiTextPresent": true,
+      "overflowElements": [],
+      "axeViolations": []
+    },
+    {
+      "device": "desktop",
+      "name": "ais",
+      "url": "/ais",
+      "screenshot": "desktop-ais.png",
+      "lang": "th",
+      "dir": "ltr",
+      "title": "คลัง AI · Glob2 Online (test)",
+      "headings": [
+        "คลัง AI"
+      ],
+      "horizontalOverflow": 0,
+      "thaiFontFaces": [
+        {
+          "family": "Glob2 Scripts",
+          "status": "loaded",
+          "unicodeRange": "U+E00-E7F"
+        }
+      ],
+      "thaiTextPresent": true,
+      "overflowElements": [],
+      "axeViolations": []
+    },
+    {
+      "device": "desktop",
+      "name": "sets",
+      "url": "/sets",
+      "screenshot": "desktop-sets.png",
+      "lang": "th",
+      "dir": "ltr",
+      "title": "ชุดภูมิประเทศและทรัพยากร · Glob2 Online (test)",
+      "headings": [
+        "ชุดภูมิประเทศและทรัพยากร"
+      ],
+      "horizontalOverflow": 0,
+      "thaiFontFaces": [
+        {
+          "family": "Glob2 Scripts",
+          "status": "loaded",
+          "unicodeRange": "U+E00-E7F"
+        }
+      ],
+      "thaiTextPresent": true,
+      "overflowElements": [],
+      "axeViolations": []
+    },
+    {
+      "device": "desktop",
+      "name": "music",
+      "url": "/music",
+      "screenshot": "desktop-music.png",
+      "lang": "th",
+      "dir": "ltr",
+      "title": "ดนตรี · Glob2 Online (test)",
+      "headings": [
+        "ดนตรีสำหรับอาณานิคมของคุณ"
+      ],
+      "horizontalOverflow": 0,
+      "thaiFontFaces": [
+        {
+          "family": "Glob2 Scripts",
+          "status": "loaded",
+          "unicodeRange": "U+E00-E7F"
+        }
+      ],
+      "thaiTextPresent": true,
+      "overflowElements": [],
+      "axeViolations": []
+    },
+    {
+      "device": "desktop",
+      "name": "account",
+      "url": "/account",
+      "screenshot": "desktop-account.png",
+      "lang": "th",
+      "dir": "ltr",
+      "title": "บัญชีของคุณ · Glob2 Online (test)",
+      "headings": [
+        "บัญชีของคุณ",
+        "รูปโปรไฟล์",
+        "วิธีการลงชื่อเข้าใช้",
+        "ดาวน์โหลดข้อมูลของฉัน",
+        "ลบบัญชีของฉัน"
+      ],
+      "horizontalOverflow": 0,
+      "thaiFontFaces": [
+        {
+          "family": "Glob2 Scripts",
+          "status": "loaded",
+          "unicodeRange": "U+E00-E7F"
+        }
+      ],
+      "thaiTextPresent": true,
+      "overflowElements": [],
+      "axeViolations": []
+    },
+    {
+      "device": "desktop",
+      "name": "commander",
+      "url": "/commander",
+      "screenshot": "desktop-commander.png",
+      "lang": "th",
+      "dir": "ltr",
+      "title": "Hive Mind · Glob2 Online (test)",
+      "headings": [
+        "ไม่พร้อมใช้งาน"
+      ],
+      "horizontalOverflow": 0,
+      "thaiFontFaces": [
+        {
+          "family": "Glob2 Scripts",
+          "status": "loaded",
+          "unicodeRange": "U+E00-E7F"
+        }
+      ],
+      "thaiTextPresent": true,
+      "overflowElements": [],
+      "axeViolations": []
+    },
+    {
+      "device": "desktop",
+      "name": "ai-studio",
+      "url": "/ai-studio",
+      "screenshot": "desktop-ai-studio.png",
+      "lang": "th",
+      "dir": "ltr",
+      "title": "สตูดิโอ AI · Glob2 Online (test)",
+      "headings": [
+        "ไม่พร้อมใช้งาน"
+      ],
+      "horizontalOverflow": 0,
+      "thaiFontFaces": [
+        {
+          "family": "Glob2 Scripts",
+          "status": "loaded",
+          "unicodeRange": "U+E00-E7F"
+        }
+      ],
+      "thaiTextPresent": true,
+      "overflowElements": [],
+      "axeViolations": []
+    },
+    {
+      "device": "desktop",
+      "name": "terrain-studio",
+      "url": "/terrain-studio",
+      "screenshot": "desktop-terrain-studio.png",
+      "lang": "th",
+      "dir": "ltr",
+      "title": "สตูดิโอภูมิประเทศ AI · Glob2 Online (test)",
+      "headings": [
+        "ไม่พร้อมใช้งาน"
+      ],
+      "horizontalOverflow": 0,
+      "thaiFontFaces": [
+        {
+          "family": "Glob2 Scripts",
+          "status": "loaded",
+          "unicodeRange": "U+E00-E7F"
+        }
+      ],
+      "thaiTextPresent": true,
+      "overflowElements": [],
+      "axeViolations": []
+    },
+    {
+      "device": "desktop",
+      "name": "music-studio",
+      "url": "/music-studio",
+      "screenshot": "desktop-music-studio.png",
+      "lang": "th",
+      "dir": "ltr",
+      "title": "สตูดิโอเพลง AI · Glob2 Online (test)",
+      "headings": [
+        "ไม่พร้อมใช้งาน"
+      ],
+      "horizontalOverflow": 0,
+      "thaiFontFaces": [
+        {
+          "family": "Glob2 Scripts",
+          "status": "loaded",
+          "unicodeRange": "U+E00-E7F"
+        }
+      ],
+      "thaiTextPresent": true,
+      "overflowElements": [],
+      "axeViolations": []
+    },
+    {
+      "device": "desktop",
+      "name": "building-studio",
+      "url": "/building-studio",
+      "screenshot": "desktop-building-studio.png",
+      "lang": "th",
+      "dir": "ltr",
+      "title": "สตูดิโออาคาร · Glob2 Online (test)",
+      "headings": [
+        "สตูดิโออาคาร"
+      ],
+      "horizontalOverflow": 0,
+      "thaiFontFaces": [
+        {
+          "family": "Glob2 Scripts",
+          "status": "loaded",
+          "unicodeRange": "U+E00-E7F"
+        }
+      ],
+      "thaiTextPresent": true,
+      "overflowElements": [],
+      "axeViolations": []
+    },
+    {
+      "device": "phone",
+      "name": "home",
+      "url": "/",
+      "screenshot": "phone-home.png",
+      "lang": "th",
+      "dir": "ltr",
+      "title": "Glob2 Online (test)",
+      "headings": [
+        "ยินดีต้อนรับสู่อาณานิคม",
+        "แมตช์ล่าสุด",
+        "แผนที่ที่ผู้เล่นชื่นชอบ",
+        "ตารางอันดับ"
+      ],
+      "horizontalOverflow": 0,
+      "thaiFontFaces": [
+        {
+          "family": "Glob2 Scripts",
+          "status": "loaded",
+          "unicodeRange": "U+E00-E7F"
+        }
+      ],
+      "thaiTextPresent": true,
+      "overflowElements": [],
+      "axeViolations": [],
+      "thaiInput": "ผู้เล่นทดสอบ",
+      "thaiRefresh": true
+    },
+    {
+      "device": "phone",
+      "name": "signin",
+      "url": "/signin",
+      "screenshot": "phone-signin.png",
+      "lang": "th",
+      "dir": "ltr",
+      "title": "ลงชื่อเข้าใช้ · Globulation 2",
+      "headings": [
+        "ลงชื่อเข้าใช้",
+        "ลงชื่อเข้าใช้",
+        "เพิ่งมาใหม่ใช่ไหม? สร้างบัญชีผู้ใช้"
+      ],
+      "horizontalOverflow": 0,
+      "thaiFontFaces": [
+        {
+          "family": "Glob2 Scripts",
+          "status": "loaded",
+          "unicodeRange": "U+E00-E7F"
+        }
+      ],
+      "thaiTextPresent": true,
+      "overflowElements": [],
+      "axeViolations": []
+    },
+    {
+      "device": "phone",
+      "name": "invite",
+      "url": "/j/GLOBJOIN",
+      "screenshot": "phone-invite.png",
+      "lang": "th",
+      "dir": "ltr",
+      "title": "คุณได้รับเชิญ · Globulation 2",
+      "headings": [
+        "คุณได้รับเชิญ"
+      ],
+      "horizontalOverflow": 0,
+      "thaiFontFaces": [
+        {
+          "family": "Glob2 Scripts",
+          "status": "loaded",
+          "unicodeRange": "U+E00-E7F"
+        }
+      ],
+      "thaiTextPresent": true,
+      "overflowElements": [],
+      "axeViolations": []
+    },
+    {
+      "device": "phone",
+      "name": "invite-missing",
+      "url": "/j/NOSUCHCODE",
+      "screenshot": "phone-invite-missing.png",
+      "lang": "th",
+      "dir": "ltr",
+      "title": "ไม่พบคำเชิญ · Globulation 2",
+      "headings": [
+        "ไม่พบคำเชิญ"
+      ],
+      "horizontalOverflow": 0,
+      "thaiFontFaces": [
+        {
+          "family": "Glob2 Scripts",
+          "status": "loaded",
+          "unicodeRange": "U+E00-E7F"
+        }
+      ],
+      "thaiTextPresent": true,
+      "overflowElements": [],
+      "axeViolations": []
+    },
+    {
+      "device": "phone",
+      "name": "maps",
+      "url": "/maps",
+      "screenshot": "phone-maps.png",
+      "lang": "th",
+      "dir": "ltr",
+      "title": "แผนที่ · Glob2 Online (test)",
+      "headings": [
+        "แผนที่"
+      ],
+      "horizontalOverflow": 0,
+      "thaiFontFaces": [
+        {
+          "family": "Glob2 Scripts",
+          "status": "loaded",
+          "unicodeRange": "U+E00-E7F"
+        }
+      ],
+      "thaiTextPresent": true,
+      "overflowElements": [],
+      "axeViolations": []
+    },
+    {
+      "device": "phone",
+      "name": "ais",
+      "url": "/ais",
+      "screenshot": "phone-ais.png",
+      "lang": "th",
+      "dir": "ltr",
+      "title": "คลัง AI · Glob2 Online (test)",
+      "headings": [
+        "คลัง AI"
+      ],
+      "horizontalOverflow": 0,
+      "thaiFontFaces": [
+        {
+          "family": "Glob2 Scripts",
+          "status": "loaded",
+          "unicodeRange": "U+E00-E7F"
+        }
+      ],
+      "thaiTextPresent": true,
+      "overflowElements": [],
+      "axeViolations": []
+    },
+    {
+      "device": "phone",
+      "name": "sets",
+      "url": "/sets",
+      "screenshot": "phone-sets.png",
+      "lang": "th",
+      "dir": "ltr",
+      "title": "ชุดภูมิประเทศและทรัพยากร · Glob2 Online (test)",
+      "headings": [
+        "ชุดภูมิประเทศและทรัพยากร"
+      ],
+      "horizontalOverflow": 0,
+      "thaiFontFaces": [
+        {
+          "family": "Glob2 Scripts",
+          "status": "loaded",
+          "unicodeRange": "U+E00-E7F"
+        }
+      ],
+      "thaiTextPresent": true,
+      "overflowElements": [],
+      "axeViolations": []
+    },
+    {
+      "device": "phone",
+      "name": "music",
+      "url": "/music",
+      "screenshot": "phone-music.png",
+      "lang": "th",
+      "dir": "ltr",
+      "title": "ดนตรี · Glob2 Online (test)",
+      "headings": [
+        "ดนตรีสำหรับอาณานิคมของคุณ"
+      ],
+      "horizontalOverflow": 0,
+      "thaiFontFaces": [
+        {
+          "family": "Glob2 Scripts",
+          "status": "loaded",
+          "unicodeRange": "U+E00-E7F"
+        }
+      ],
+      "thaiTextPresent": true,
+      "overflowElements": [],
+      "axeViolations": []
+    },
+    {
+      "device": "phone",
+      "name": "account",
+      "url": "/account",
+      "screenshot": "phone-account.png",
+      "lang": "th",
+      "dir": "ltr",
+      "title": "บัญชีของคุณ · Glob2 Online (test)",
+      "headings": [
+        "บัญชีของคุณ",
+        "รูปโปรไฟล์",
+        "วิธีการลงชื่อเข้าใช้",
+        "ดาวน์โหลดข้อมูลของฉัน",
+        "ลบบัญชีของฉัน"
+      ],
+      "horizontalOverflow": 0,
+      "thaiFontFaces": [
+        {
+          "family": "Glob2 Scripts",
+          "status": "loaded",
+          "unicodeRange": "U+E00-E7F"
+        }
+      ],
+      "thaiTextPresent": true,
+      "overflowElements": [],
+      "axeViolations": []
+    },
+    {
+      "device": "phone",
+      "name": "commander",
+      "url": "/commander",
+      "screenshot": "phone-commander.png",
+      "lang": "th",
+      "dir": "ltr",
+      "title": "Hive Mind · Glob2 Online (test)",
+      "headings": [
+        "ไม่พร้อมใช้งาน"
+      ],
+      "horizontalOverflow": 0,
+      "thaiFontFaces": [
+        {
+          "family": "Glob2 Scripts",
+          "status": "loaded",
+          "unicodeRange": "U+E00-E7F"
+        }
+      ],
+      "thaiTextPresent": true,
+      "overflowElements": [],
+      "axeViolations": []
+    },
+    {
+      "device": "phone",
+      "name": "ai-studio",
+      "url": "/ai-studio",
+      "screenshot": "phone-ai-studio.png",
+      "lang": "th",
+      "dir": "ltr",
+      "title": "สตูดิโอ AI · Glob2 Online (test)",
+      "headings": [
+        "ไม่พร้อมใช้งาน"
+      ],
+      "horizontalOverflow": 0,
+      "thaiFontFaces": [
+        {
+          "family": "Glob2 Scripts",
+          "status": "loaded",
+          "unicodeRange": "U+E00-E7F"
+        }
+      ],
+      "thaiTextPresent": true,
+      "overflowElements": [],
+      "axeViolations": []
+    },
+    {
+      "device": "phone",
+      "name": "terrain-studio",
+      "url": "/terrain-studio",
+      "screenshot": "phone-terrain-studio.png",
+      "lang": "th",
+      "dir": "ltr",
+      "title": "สตูดิโอภูมิประเทศ AI · Glob2 Online (test)",
+      "headings": [
+        "ไม่พร้อมใช้งาน"
+      ],
+      "horizontalOverflow": 0,
+      "thaiFontFaces": [
+        {
+          "family": "Glob2 Scripts",
+          "status": "loaded",
+          "unicodeRange": "U+E00-E7F"
+        }
+      ],
+      "thaiTextPresent": true,
+      "overflowElements": [],
+      "axeViolations": []
+    },
+    {
+      "device": "phone",
+      "name": "music-studio",
+      "url": "/music-studio",
+      "screenshot": "phone-music-studio.png",
+      "lang": "th",
+      "dir": "ltr",
+      "title": "สตูดิโอเพลง AI · Glob2 Online (test)",
+      "headings": [
+        "ไม่พร้อมใช้งาน"
+      ],
+      "horizontalOverflow": 0,
+      "thaiFontFaces": [
+        {
+          "family": "Glob2 Scripts",
+          "status": "loaded",
+          "unicodeRange": "U+E00-E7F"
+        }
+      ],
+      "thaiTextPresent": true,
+      "overflowElements": [],
+      "axeViolations": []
+    },
+    {
+      "device": "phone",
+      "name": "building-studio",
+      "url": "/building-studio",
+      "screenshot": "phone-building-studio.png",
+      "lang": "th",
+      "dir": "ltr",
+      "title": "สตูดิโออาคาร · Glob2 Online (test)",
+      "headings": [
+        "สตูดิโออาคาร"
+      ],
+      "horizontalOverflow": 0,
+      "thaiFontFaces": [
+        {
+          "family": "Glob2 Scripts",
+          "status": "loaded",
+          "unicodeRange": "U+E00-E7F"
+        }
+      ],
+      "thaiTextPresent": true,
+      "overflowElements": [],
+      "axeViolations": []
+    }
+  ],
+  "fontResources": [
+    {
+      "device": "desktop",
+      "url": "http://127.0.0.1:4298/assets/NotoSansThai-Regular-B7bm4NDe.ttf",
+      "status": 200,
+      "headers": {
+        "connection": "keep-alive",
+        "content-security-policy": "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self'; frame-src 'self'; media-src 'self'; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'self'; frame-ancestors 'none'",
+        "date": "Sat, 31 Oct 2026 23:12:53 GMT",
+        "keep-alive": "timeout=5",
+        "transfer-encoding": "chunked",
+        "cache-control": "no-cache",
+        "content-type": "application/octet-stream"
+      }
+    },
+    {
+      "device": "desktop",
+      "url": "http://127.0.0.1:4298/assets/NotoSansThai-Regular-B7bm4NDe.ttf",
+      "status": 200,
+      "headers": {
+        "connection": "keep-alive",
+        "content-security-policy": "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self'; frame-src 'self'; media-src 'self'; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'self'; frame-ancestors 'none'",
+        "date": "Sat, 31 Oct 2026 23:13:02 GMT",
+        "keep-alive": "timeout=5",
+        "transfer-encoding": "chunked",
+        "cache-control": "no-cache",
+        "content-type": "application/octet-stream"
+      }
+    },
+    {
+      "device": "desktop",
+      "url": "http://127.0.0.1:4298/signin/assets/NotoSansThai-Regular.ttf",
+      "status": 200,
+      "headers": {
+        "cache-control": "public, max-age=0, must-revalidate",
+        "connection": "keep-alive",
+        "content-length": "37752",
+        "content-type": "font/ttf",
+        "date": "Sat, 31 Oct 2026 23:13:03 GMT",
+        "keep-alive": "timeout=72",
+        "x-content-type-options": "nosniff",
+        "x-ratelimit-limit": "10000",
+        "x-ratelimit-remaining": "9969",
+        "x-ratelimit-reset": "37"
+      }
+    },
+    {
+      "device": "desktop",
+      "url": "http://127.0.0.1:4298/signin/assets/NotoSansThai-Regular.ttf",
+      "status": 200,
+      "headers": {
+        "cache-control": "public, max-age=0, must-revalidate",
+        "connection": "keep-alive",
+        "content-length": "37752",
+        "content-type": "font/ttf",
+        "date": "Sat, 31 Oct 2026 23:13:08 GMT",
+        "keep-alive": "timeout=72",
+        "x-content-type-options": "nosniff",
+        "x-ratelimit-limit": "10000",
+        "x-ratelimit-remaining": "9955",
+        "x-ratelimit-reset": "32"
+      }
+    },
+    {
+      "device": "desktop",
+      "url": "http://127.0.0.1:4298/signin/assets/NotoSansThai-Regular.ttf",
+      "status": 200,
+      "headers": {
+        "cache-control": "public, max-age=0, must-revalidate",
+        "connection": "keep-alive",
+        "content-length": "37752",
+        "content-type": "font/ttf",
+        "date": "Sat, 31 Oct 2026 23:13:12 GMT",
+        "keep-alive": "timeout=72",
+        "x-content-type-options": "nosniff",
+        "x-ratelimit-limit": "10000",
+        "x-ratelimit-remaining": "9939",
+        "x-ratelimit-reset": "28"
+      }
+    },
+    {
+      "device": "desktop",
+      "url": "http://127.0.0.1:4298/assets/NotoSansThai-Regular-B7bm4NDe.ttf",
+      "status": 200,
+      "headers": {
+        "connection": "keep-alive",
+        "content-security-policy": "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self'; frame-src 'self'; media-src 'self'; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'self'; frame-ancestors 'none'",
+        "date": "Sat, 31 Oct 2026 23:13:16 GMT",
+        "keep-alive": "timeout=5",
+        "transfer-encoding": "chunked",
+        "cache-control": "no-cache",
+        "content-type": "application/octet-stream"
+      }
+    },
+    {
+      "device": "desktop",
+      "url": "http://127.0.0.1:4298/assets/NotoSansThai-Regular-B7bm4NDe.ttf",
+      "status": 200,
+      "headers": {
+        "connection": "keep-alive",
+        "content-security-policy": "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self'; frame-src 'self'; media-src 'self'; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'self'; frame-ancestors 'none'",
+        "date": "Sat, 31 Oct 2026 23:13:26 GMT",
+        "keep-alive": "timeout=5",
+        "transfer-encoding": "chunked",
+        "cache-control": "no-cache",
+        "content-type": "application/octet-stream"
+      }
+    },
+    {
+      "device": "desktop",
+      "url": "http://127.0.0.1:4298/assets/NotoSansThai-Regular-B7bm4NDe.ttf",
+      "status": 200,
+      "headers": {
+        "connection": "keep-alive",
+        "content-security-policy": "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self'; frame-src 'self'; media-src 'self'; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'self'; frame-ancestors 'none'",
+        "date": "Sat, 31 Oct 2026 23:13:34 GMT",
+        "keep-alive": "timeout=5",
+        "transfer-encoding": "chunked",
+        "cache-control": "no-cache",
+        "content-type": "application/octet-stream"
+      }
+    },
+    {
+      "device": "desktop",
+      "url": "http://127.0.0.1:4298/assets/NotoSansThai-Regular-B7bm4NDe.ttf",
+      "status": 200,
+      "headers": {
+        "connection": "keep-alive",
+        "content-security-policy": "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self'; frame-src 'self'; media-src 'self'; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'self'; frame-ancestors 'none'",
+        "date": "Sat, 31 Oct 2026 23:13:42 GMT",
+        "keep-alive": "timeout=5",
+        "transfer-encoding": "chunked",
+        "cache-control": "no-cache",
+        "content-type": "application/octet-stream"
+      }
+    },
+    {
+      "device": "desktop",
+      "url": "http://127.0.0.1:4298/assets/NotoSansThai-Regular-B7bm4NDe.ttf",
+      "status": 200,
+      "headers": {
+        "connection": "keep-alive",
+        "content-security-policy": "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self'; frame-src 'self'; media-src 'self'; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'self'; frame-ancestors 'none'",
+        "date": "Sat, 31 Oct 2026 23:13:50 GMT",
+        "keep-alive": "timeout=5",
+        "transfer-encoding": "chunked",
+        "cache-control": "no-cache",
+        "content-type": "application/octet-stream"
+      }
+    },
+    {
+      "device": "desktop",
+      "url": "http://127.0.0.1:4298/assets/NotoSansThai-Regular-B7bm4NDe.ttf",
+      "status": 200,
+      "headers": {
+        "connection": "keep-alive",
+        "content-security-policy": "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self'; frame-src 'self'; media-src 'self'; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'self'; frame-ancestors 'none'",
+        "date": "Sat, 31 Oct 2026 23:13:54 GMT",
+        "keep-alive": "timeout=5",
+        "transfer-encoding": "chunked",
+        "cache-control": "no-cache",
+        "content-type": "application/octet-stream"
+      }
+    },
+    {
+      "device": "desktop",
+      "url": "http://127.0.0.1:4298/assets/NotoSansThai-Regular-B7bm4NDe.ttf",
+      "status": 200,
+      "headers": {
+        "connection": "keep-alive",
+        "content-security-policy": "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self'; frame-src 'self'; media-src 'self'; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'self'; frame-ancestors 'none'",
+        "date": "Sat, 31 Oct 2026 23:13:57 GMT",
+        "keep-alive": "timeout=5",
+        "transfer-encoding": "chunked",
+        "cache-control": "no-cache",
+        "content-type": "application/octet-stream"
+      }
+    },
+    {
+      "device": "desktop",
+      "url": "http://127.0.0.1:4298/assets/NotoSansThai-Regular-B7bm4NDe.ttf",
+      "status": 200,
+      "headers": {
+        "connection": "keep-alive",
+        "content-security-policy": "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self'; frame-src 'self'; media-src 'self'; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'self'; frame-ancestors 'none'",
+        "date": "Sat, 31 Oct 2026 23:14:01 GMT",
+        "keep-alive": "timeout=5",
+        "transfer-encoding": "chunked",
+        "cache-control": "no-cache",
+        "content-type": "application/octet-stream"
+      }
+    },
+    {
+      "device": "desktop",
+      "url": "http://127.0.0.1:4298/assets/NotoSansThai-Regular-B7bm4NDe.ttf",
+      "status": 200,
+      "headers": {
+        "connection": "keep-alive",
+        "content-security-policy": "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self'; frame-src 'self'; media-src 'self'; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'self'; frame-ancestors 'none'",
+        "date": "Sat, 31 Oct 2026 23:14:05 GMT",
+        "keep-alive": "timeout=5",
+        "transfer-encoding": "chunked",
+        "cache-control": "no-cache",
+        "content-type": "application/octet-stream"
+      }
+    },
+    {
+      "device": "desktop",
+      "url": "http://127.0.0.1:4298/assets/NotoSansThai-Regular-B7bm4NDe.ttf",
+      "status": 200,
+      "headers": {
+        "connection": "keep-alive",
+        "content-security-policy": "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self'; frame-src 'self'; media-src 'self'; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'self'; frame-ancestors 'none'",
+        "date": "Sat, 31 Oct 2026 23:14:07 GMT",
+        "keep-alive": "timeout=5",
+        "transfer-encoding": "chunked",
+        "cache-control": "no-cache",
+        "content-type": "application/octet-stream"
+      }
+    },
+    {
+      "device": "phone",
+      "url": "http://127.0.0.1:4298/assets/NotoSansThai-Regular-B7bm4NDe.ttf",
+      "status": 200,
+      "headers": {
+        "connection": "keep-alive",
+        "content-security-policy": "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self'; frame-src 'self'; media-src 'self'; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'self'; frame-ancestors 'none'",
+        "date": "Sat, 31 Oct 2026 23:14:11 GMT",
+        "keep-alive": "timeout=5",
+        "transfer-encoding": "chunked",
+        "cache-control": "no-cache",
+        "content-type": "application/octet-stream"
+      }
+    },
+    {
+      "device": "phone",
+      "url": "http://127.0.0.1:4298/signin/assets/NotoSansThai-Regular.ttf",
+      "status": 200,
+      "headers": {
+        "cache-control": "public, max-age=0, must-revalidate",
+        "connection": "keep-alive",
+        "content-length": "37752",
+        "content-type": "font/ttf",
+        "date": "Sat, 31 Oct 2026 23:14:18 GMT",
+        "keep-alive": "timeout=72",
+        "x-content-type-options": "nosniff",
+        "x-ratelimit-limit": "10000",
+        "x-ratelimit-remaining": "9913",
+        "x-ratelimit-reset": "23"
+      }
+    },
+    {
+      "device": "phone",
+      "url": "http://127.0.0.1:4298/signin/assets/NotoSansThai-Regular.ttf",
+      "status": 200,
+      "headers": {
+        "cache-control": "public, max-age=0, must-revalidate",
+        "connection": "keep-alive",
+        "content-length": "37752",
+        "content-type": "font/ttf",
+        "date": "Sat, 31 Oct 2026 23:14:21 GMT",
+        "keep-alive": "timeout=72",
+        "x-content-type-options": "nosniff",
+        "x-ratelimit-limit": "10000",
+        "x-ratelimit-remaining": "9900",
+        "x-ratelimit-reset": "20"
+      }
+    },
+    {
+      "device": "phone",
+      "url": "http://127.0.0.1:4298/signin/assets/NotoSansThai-Regular.ttf",
+      "status": 200,
+      "headers": {
+        "cache-control": "public, max-age=0, must-revalidate",
+        "connection": "keep-alive",
+        "content-length": "37752",
+        "content-type": "font/ttf",
+        "date": "Sat, 31 Oct 2026 23:14:25 GMT",
+        "keep-alive": "timeout=72",
+        "x-content-type-options": "nosniff",
+        "x-ratelimit-limit": "10000",
+        "x-ratelimit-remaining": "9885",
+        "x-ratelimit-reset": "16"
+      }
+    },
+    {
+      "device": "phone",
+      "url": "http://127.0.0.1:4298/assets/NotoSansThai-Regular-B7bm4NDe.ttf",
+      "status": 200,
+      "headers": {
+        "connection": "keep-alive",
+        "content-security-policy": "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self'; frame-src 'self'; media-src 'self'; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'self'; frame-ancestors 'none'",
+        "date": "Sat, 31 Oct 2026 23:14:28 GMT",
+        "keep-alive": "timeout=5",
+        "transfer-encoding": "chunked",
+        "cache-control": "no-cache",
+        "content-type": "application/octet-stream"
+      }
+    },
+    {
+      "device": "phone",
+      "url": "http://127.0.0.1:4298/assets/NotoSansThai-Regular-B7bm4NDe.ttf",
+      "status": 200,
+      "headers": {
+        "connection": "keep-alive",
+        "content-security-policy": "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self'; frame-src 'self'; media-src 'self'; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'self'; frame-ancestors 'none'",
+        "date": "Sat, 31 Oct 2026 23:14:33 GMT",
+        "keep-alive": "timeout=5",
+        "transfer-encoding": "chunked",
+        "cache-control": "no-cache",
+        "content-type": "application/octet-stream"
+      }
+    },
+    {
+      "device": "phone",
+      "url": "http://127.0.0.1:4298/assets/NotoSansThai-Regular-B7bm4NDe.ttf",
+      "status": 200,
+      "headers": {
+        "connection": "keep-alive",
+        "content-security-policy": "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self'; frame-src 'self'; media-src 'self'; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'self'; frame-ancestors 'none'",
+        "date": "Sat, 31 Oct 2026 23:14:37 GMT",
+        "keep-alive": "timeout=5",
+        "transfer-encoding": "chunked",
+        "cache-control": "no-cache",
+        "content-type": "application/octet-stream"
+      }
+    },
+    {
+      "device": "phone",
+      "url": "http://127.0.0.1:4298/assets/NotoSansThai-Regular-B7bm4NDe.ttf",
+      "status": 200,
+      "headers": {
+        "connection": "keep-alive",
+        "content-security-policy": "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self'; frame-src 'self'; media-src 'self'; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'self'; frame-ancestors 'none'",
+        "date": "Sat, 31 Oct 2026 23:14:41 GMT",
+        "keep-alive": "timeout=5",
+        "transfer-encoding": "chunked",
+        "cache-control": "no-cache",
+        "content-type": "application/octet-stream"
+      }
+    },
+    {
+      "device": "phone",
+      "url": "http://127.0.0.1:4298/assets/NotoSansThai-Regular-B7bm4NDe.ttf",
+      "status": 200,
+      "headers": {
+        "connection": "keep-alive",
+        "content-security-policy": "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self'; frame-src 'self'; media-src 'self'; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'self'; frame-ancestors 'none'",
+        "date": "Sat, 31 Oct 2026 23:14:45 GMT",
+        "keep-alive": "timeout=5",
+        "transfer-encoding": "chunked",
+        "cache-control": "no-cache",
+        "content-type": "application/octet-stream"
+      }
+    },
+    {
+      "device": "phone",
+      "url": "http://127.0.0.1:4298/assets/NotoSansThai-Regular-B7bm4NDe.ttf",
+      "status": 200,
+      "headers": {
+        "connection": "keep-alive",
+        "content-security-policy": "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self'; frame-src 'self'; media-src 'self'; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'self'; frame-ancestors 'none'",
+        "date": "Sat, 31 Oct 2026 23:14:51 GMT",
+        "keep-alive": "timeout=5",
+        "transfer-encoding": "chunked",
+        "cache-control": "no-cache",
+        "content-type": "application/octet-stream"
+      }
+    },
+    {
+      "device": "phone",
+      "url": "http://127.0.0.1:4298/assets/NotoSansThai-Regular-B7bm4NDe.ttf",
+      "status": 200,
+      "headers": {
+        "connection": "keep-alive",
+        "content-security-policy": "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self'; frame-src 'self'; media-src 'self'; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'self'; frame-ancestors 'none'",
+        "date": "Sat, 31 Oct 2026 23:14:55 GMT",
+        "keep-alive": "timeout=5",
+        "transfer-encoding": "chunked",
+        "cache-control": "no-cache",
+        "content-type": "application/octet-stream"
+      }
+    },
+    {
+      "device": "phone",
+      "url": "http://127.0.0.1:4298/assets/NotoSansThai-Regular-B7bm4NDe.ttf",
+      "status": 200,
+      "headers": {
+        "connection": "keep-alive",
+        "content-security-policy": "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self'; frame-src 'self'; media-src 'self'; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'self'; frame-ancestors 'none'",
+        "date": "Sat, 31 Oct 2026 23:14:59 GMT",
+        "keep-alive": "timeout=5",
+        "transfer-encoding": "chunked",
+        "cache-control": "no-cache",
+        "content-type": "application/octet-stream"
+      }
+    },
+    {
+      "device": "phone",
+      "url": "http://127.0.0.1:4298/assets/NotoSansThai-Regular-B7bm4NDe.ttf",
+      "status": 200,
+      "headers": {
+        "connection": "keep-alive",
+        "content-security-policy": "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self'; frame-src 'self'; media-src 'self'; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'self'; frame-ancestors 'none'",
+        "date": "Sat, 31 Oct 2026 23:15:02 GMT",
+        "keep-alive": "timeout=5",
+        "transfer-encoding": "chunked",
+        "cache-control": "no-cache",
+        "content-type": "application/octet-stream"
+      }
+    },
+    {
+      "device": "phone",
+      "url": "http://127.0.0.1:4298/assets/NotoSansThai-Regular-B7bm4NDe.ttf",
+      "status": 200,
+      "headers": {
+        "connection": "keep-alive",
+        "content-security-policy": "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self'; frame-src 'self'; media-src 'self'; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'self'; frame-ancestors 'none'",
+        "date": "Sat, 31 Oct 2026 23:15:04 GMT",
+        "keep-alive": "timeout=5",
+        "transfer-encoding": "chunked",
+        "cache-control": "no-cache",
+        "content-type": "application/octet-stream"
+      }
+    }
+  ],
+  "failures": [],
+  "finished": "2026-10-31T23:15:07.802Z"
+}

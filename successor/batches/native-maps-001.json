@@ -1,0 +1,969 @@
+{
+  "id": "native-maps-001",
+  "source_sha256": "6deb12f6155d1ee014b77f0908cc670272ebf24935cbc6db31c8ba73c82a9e29",
+  "surface": "native",
+  "domain": "maps",
+  "context": "Procedural terrain controls: passes are mountain routes, reach is stream length, and banks/bars are terrain, not finance/weapons.",
+  "entries": [
+    {
+      "id": "native:[concrete islands terrain]",
+      "key": "[concrete islands terrain]",
+      "source": "Separate Islands",
+      "target": "เกาะ​แยก​ต่างหาก"
+    },
+    {
+      "id": "native:[crater lakes terrain]",
+      "key": "[crater lakes terrain]",
+      "source": "Crater Lakes",
+      "target": "ทะเลสาบ​ปล่องภูเขาไฟ"
+    },
+    {
+      "id": "native:[extra islands]",
+      "key": "[extra islands]",
+      "source": "empty islands",
+      "target": "เกาะ​ร้าง"
+    },
+    {
+      "id": "native:[islands size]",
+      "key": "[islands size]",
+      "source": "island size",
+      "target": "ขนาด​เกาะ"
+    },
+    {
+      "id": "native:[islands terrain]",
+      "key": "[islands terrain]",
+      "source": "Islands",
+      "target": "เกาะ​ต่างๆ"
+    },
+    {
+      "id": "native:[isles terrain]",
+      "key": "[isles terrain]",
+      "source": "Isles",
+      "target": "หมู่เกาะ"
+    },
+    {
+      "id": "native:[map description]",
+      "key": "[map description]",
+      "source": "Description",
+      "target": "คำอธิบาย"
+    },
+    {
+      "id": "native:[Map Discovered]",
+      "key": "[Map Discovered]",
+      "source": "Map Discovered",
+      "target": "เปิดเผย​แผนที่"
+    },
+    {
+      "id": "native:[map name]",
+      "key": "[map name]",
+      "source": "Name",
+      "target": "ชื่อ"
+    },
+    {
+      "id": "native:[map script]",
+      "key": "[map script]",
+      "source": "Map Script",
+      "target": "สคริปต์​แผนที่"
+    },
+    {
+      "id": "native:[map size x]",
+      "key": "[map size x]",
+      "source": "Map width",
+      "target": "ความ​กว้าง​ของ​แผนที่"
+    },
+    {
+      "id": "native:[map size y]",
+      "key": "[map size y]",
+      "source": "Map height",
+      "target": "ความสูง​ของ​แผนที่"
+    },
+    {
+      "id": "native:[old islands terrain]",
+      "key": "[old islands terrain]",
+      "source": "Rugged Archipelago",
+      "target": "หมู่เกาะ​ขรุขระ"
+    },
+    {
+      "id": "native:[old random terrain]",
+      "key": "[old random terrain]",
+      "source": "Shattered Coast",
+      "target": "ชายฝั่ง​ที่​แตกสลาย"
+    },
+    {
+      "id": "native:[river diameter]",
+      "key": "[river diameter]",
+      "source": "width of river",
+      "target": "ความ​กว้าง​ของ​แม่น้ำ"
+    },
+    {
+      "id": "native:[river terrain]",
+      "key": "[river terrain]",
+      "source": "River",
+      "target": "แม่น้ำ"
+    },
+    {
+      "id": "native:[Reroll terrain look]",
+      "key": "[Reroll terrain look]",
+      "source": "Reroll terrain look",
+      "target": "สุ่ม​ลักษณะ​ภูมิประเทศ​ใหม่"
+    },
+    {
+      "id": "native:[swamp terrain]",
+      "key": "[swamp terrain]",
+      "source": "Swamp",
+      "target": "หนองน้ำ"
+    },
+    {
+      "id": "native:[switch to terrain view]",
+      "key": "[switch to terrain view]",
+      "source": "Switch to Terrain view",
+      "target": "เปลี่ยนไป​ใช้​มุมมอง​ภูมิประเทศ"
+    },
+    {
+      "id": "native:[uniform terrain]",
+      "key": "[uniform terrain]",
+      "source": "Uniform terrain",
+      "target": "ภูมิประเทศ​ชนิด​เดียว"
+    },
+    {
+      "id": "native:[Concrete islands]",
+      "key": "[Concrete islands]",
+      "source": "Concrete islands",
+      "target": "เกาะ​แยก​ต่างหาก"
+    },
+    {
+      "id": "native:[Could not load this map. Choose another map or retry.]",
+      "key": "[Could not load this map. Choose another map or retry.]",
+      "source": "Could not load this map. Choose another map or retry.",
+      "target": "ไม่​สามารถ​โหลด​แผนที่​นี้​ได้ โปรด​เลือก​แผนที่อื่น​หรือ​ลอง​ใหม่​อีกครั้ง"
+    },
+    {
+      "id": "native:[Crater lakes]",
+      "key": "[Crater lakes]",
+      "source": "Crater lakes",
+      "target": "ทะเลสาบ​ปล่องภูเขาไฟ"
+    },
+    {
+      "id": "native:[Extra islands]",
+      "key": "[Extra islands]",
+      "source": "Extra islands",
+      "target": "เกาะ​เพิ่มเติม"
+    },
+    {
+      "id": "native:[Give at least one terrain type a nonzero weight.]",
+      "key": "[Give at least one terrain type a nonzero weight.]",
+      "source": "Give at least one terrain type a nonzero weight.",
+      "target": "กำหนด​น้ำหนัก​ที่​ไม่​เป็น​ศูนย์​ให้​ภูมิประเทศ​อย่าง​น้อย​หนึ่ง​ประเภท"
+    },
+    {
+      "id": "native:[Island size]",
+      "key": "[Island size]",
+      "source": "Island size",
+      "target": "ขนาด​เกาะ"
+    },
+    {
+      "id": "native:[Islands]",
+      "key": "[Islands]",
+      "source": "Islands",
+      "target": "เกาะ​ต่างๆ"
+    },
+    {
+      "id": "native:[Lake density]",
+      "key": "[Lake density]",
+      "source": "Lake density",
+      "target": "ความหนาแน่น​ของ​ทะเลสาบ"
+    },
+    {
+      "id": "native:[Old islands]",
+      "key": "[Old islands]",
+      "source": "Rugged Archipelago",
+      "target": "หมู่เกาะ​ขรุขระ"
+    },
+    {
+      "id": "native:[Each landscape is shown as a real map at your current size and colony count. Use one to play the map shown.]",
+      "key": "[Each landscape is shown as a real map at your current size and colony count. Use one to play the map shown.]",
+      "source": "Each landscape is shown as a real map at your current size and colony count. Use one to play the map shown.",
+      "target": "แต่ละ​ภูมิประเทศ​แสดง​เป็น​แผนที่​จริง​ตาม​ขนาด​และ​จำนวน​อาณานิคม​ปัจจุบัน เลือก​ใช้​เพื่อ​เล่น​แผนที่​ที่​แสดง"
+    },
+    {
+      "id": "native:[River]",
+      "key": "[River]",
+      "source": "River",
+      "target": "แม่น้ำ"
+    },
+    {
+      "id": "native:[River width]",
+      "key": "[River width]",
+      "source": "River width",
+      "target": "ความ​กว้าง​ของ​แม่น้ำ"
+    },
+    {
+      "id": "native:[Terrain]",
+      "key": "[Terrain]",
+      "source": "Terrain",
+      "target": "ภูมิประเทศ"
+    },
+    {
+      "id": "native:[Start with terrain known]",
+      "key": "[Start with terrain known]",
+      "source": "Start with terrain known",
+      "target": "เริ่ม​โดย​รู้​ภูมิประเทศ​ทั้งหมด"
+    },
+    {
+      "id": "native:[This landscape uses a fixed terrain recipe.]",
+      "key": "[This landscape uses a fixed terrain recipe.]",
+      "source": "This landscape uses a fixed terrain recipe.",
+      "target": "ภูมิประเทศ​นี้​ใช้​สูตร​การ​สร้าง​ภูมิประเทศ​แบบ​ตายตัว"
+    },
+    {
+      "id": "native:[Updating map preview...]",
+      "key": "[Updating map preview...]",
+      "source": "Updating map preview...",
+      "target": "กำลัง​อัปเดต​ตัวอย่าง​แผนที่..."
+    },
+    {
+      "id": "native:[Conquest only removes prestige victory; map scripts still apply.]",
+      "key": "[Conquest only removes prestige victory; map scripts still apply.]",
+      "source": "Conquest only removes prestige victory; map scripts still apply.",
+      "target": "โหมด​พิชิต​อย่าง​เดียว​ปิด​เฉพาะ​ชัยชนะ​ด้วย​เกียรติยศ สคริปต์​แผนที่​ยัง​มีผล"
+    },
+    {
+      "id": "native:[Map source]",
+      "key": "[Map source]",
+      "source": "Map source",
+      "target": "แหล่งที่มา​ของ​แผนที่"
+    },
+    {
+      "id": "native:[Select a map from the library.]",
+      "key": "[Select a map from the library.]",
+      "source": "Select a map from the library.",
+      "target": "เลือก​แผนที่​จาก​คลัง​แผนที่"
+    },
+    {
+      "id": "native:[Lake size]",
+      "key": "[Lake size]",
+      "source": "Lake size",
+      "target": "ขนาด​ทะเลสาบ"
+    },
+    {
+      "id": "native:[The maze needs at least two cells across and down; use a bigger map or smaller cells.]",
+      "key": "[The maze needs at least two cells across and down; use a bigger map or smaller cells.]",
+      "source": "The maze needs at least two cells across and down; use a bigger map or smaller cells.",
+      "target": "เขาวงกต​ต้อง​มี​อย่างน้อย​สอง​เซลล์​ทั้ง​แนวนอน​และ​แนวตั้ง ใช้​แผนที่​ใหญ่​ขึ้น​หรือ​เซลล์​เล็ก​ลง"
+    },
+    {
+      "id": "native:[The maze has too few cul-de-sacs for this many colonies; use a bigger map or smaller cells.]",
+      "key": "[The maze has too few cul-de-sacs for this many colonies; use a bigger map or smaller cells.]",
+      "source": "The maze has too few cul-de-sacs for this many colonies; use a bigger map or smaller cells.",
+      "target": "เขาวงกต​มี​ทางตัน​น้อย​เกินไป​สำหรับ​จำนวน​อาณานิคม​ขนาด​นี้ ควร​ใช้​แผนที่​ที่​ใหญ่​กว่า​หรือ​เซลล์​ที่​เล็ก​กว่า"
+    },
+    {
+      "id": "native:[Home island size]",
+      "key": "[Home island size]",
+      "source": "Home island size",
+      "target": "ขนาด​เกาะ​ตั้งต้น"
+    },
+    {
+      "id": "native:[Lake connects to fjords]",
+      "key": "[Lake connects to fjords]",
+      "source": "Lake connects to fjords",
+      "target": "ทะเลสาบ​เชื่อม​กับ​ฟยอร์ด"
+    },
+    {
+      "id": "native:[Resource islands]",
+      "key": "[Resource islands]",
+      "source": "Resource islands",
+      "target": "เกาะ​ทรัพยากร"
+    },
+    {
+      "id": "native:[River density]",
+      "key": "[River density]",
+      "source": "River density",
+      "target": "ความหนาแน่น​ของ​แม่น้ำ"
+    },
+    {
+      "id": "native:[The watershed has too little floodplain for this many colonies; use a bigger map or fewer colonies.]",
+      "key": "[The watershed has too little floodplain for this many colonies; use a bigger map or fewer colonies.]",
+      "source": "The watershed has too little floodplain for this many colonies; use a bigger map or fewer colonies.",
+      "target": "พื้นที่​ลุ่มน้ำ​มี​ที่ราบ​น้ำท่วม​ถึง​น้อย​เกินไป​สำหรับ​จำนวน​อาณานิคม​เท่านี้ ควร​ใช้​แผนที่​ขนาดใหญ่​กว่า​หรือ​ลด​จำนวน​อาณานิคม​ลง"
+    },
+    {
+      "id": "native:[These valleys are too big for the map; use a bigger map or smaller valleys.]",
+      "key": "[These valleys are too big for the map; use a bigger map or smaller valleys.]",
+      "source": "These valleys are too big for the map; use a bigger map or smaller valleys.",
+      "target": "หุบเขา​ใหญ่​เกินขนาด​แผนที่ ให้​ใช้​แผนที่​ใหญ่​ขึ้น​หรือ​ลด​ขนาด​หุบเขา"
+    },
+    {
+      "id": "native:[The highlands have too little room for this many colonies; use a bigger map or fewer colonies.]",
+      "key": "[The highlands have too little room for this many colonies; use a bigger map or fewer colonies.]",
+      "source": "The highlands have too little room for this many colonies; use a bigger map or fewer colonies.",
+      "target": "พื้นที่สูง​มีจำกัด​เกินไป​สำหรับ​อาณานิคม​จำนวนมาก​ขนาด​นี้ ควร​ใช้​แผนที่​ที่​ใหญ่​กว่า​หรือ​ลด​จำนวน​อาณานิคม​ลง"
+    },
+    {
+      "id": "native:[Lakes]",
+      "key": "[Lakes]",
+      "source": "Lakes",
+      "target": "ทะเลสาบ"
+    },
+    {
+      "id": "native:[Eight colonies need a square map in the symmetric arena.]",
+      "key": "[Eight colonies need a square map in the symmetric arena.]",
+      "source": "Eight colonies need a square map in the symmetric arena.",
+      "target": "อาณานิคม​แปด​แห่ง​ต้อง​ใช้​แผนที่​สี่เหลี่ยมจัตุรัส​ใน​สนามประลอง​สมมาตร"
+    },
+    {
+      "id": "native:[The belt is too short for this many colonies; use a longer map or fewer colonies.]",
+      "key": "[The belt is too short for this many colonies; use a longer map or fewer colonies.]",
+      "source": "The belt is too short for this many colonies; use a longer map or fewer colonies.",
+      "target": "แถบ​แผนที่​สั้น​เกินไป​สำหรับ​อาณานิคม​จำนวนมาก​ขนาด​นี้ ควร​ใช้​แผนที่​ที่​ยาว​กว่า​หรือ​ลด​จำนวน​อาณานิคม​ลง"
+    },
+    {
+      "id": "native:[Too many colonies for this map; use a bigger map or fewer colonies.]",
+      "key": "[Too many colonies for this map; use a bigger map or fewer colonies.]",
+      "source": "Too many colonies for this map; use a bigger map or fewer colonies.",
+      "target": "มี​อาณานิคม​มากเกินไป​สำหรับ​แผนที่​นี้ โปรด​ใช้​แผนที่​ขนาดใหญ่​กว่า​หรือ​ลด​จำนวน​อาณานิคม​ลง"
+    },
+    {
+      "id": "native:[Coral needs a map at least 128 tiles across.]",
+      "key": "[Coral needs a map at least 128 tiles across.]",
+      "source": "Coral needs a map at least 128 tiles across.",
+      "target": "ปะการัง​ต้อง​ใช้​แผนที่​กว้าง​อย่าง​น้อย 128 ช่อง"
+    },
+    {
+      "id": "native:[Sandbars]",
+      "key": "[Sandbars]",
+      "source": "Sandbars",
+      "target": "สันดอน​ทราย"
+    },
+    {
+      "id": "native:[Central island]",
+      "key": "[Central island]",
+      "source": "Central island",
+      "target": "เกาะ​กลาง"
+    },
+    {
+      "id": "native:[The home islands do not fit on this map; use a bigger map, fewer colonies or smaller islands.]",
+      "key": "[The home islands do not fit on this map; use a bigger map, fewer colonies or smaller islands.]",
+      "source": "The home islands do not fit on this map; use a bigger map, fewer colonies or smaller islands.",
+      "target": "หมู่เกาะ​หลัก​ไม่​พอดี​กับ​แผนที่​นี้ โปรด​ใช้​แผนที่​ขนาดใหญ่​กว่า จำนวน​อาณานิคม​น้อยลง หรือ​เกาะ​ขนาดเล็ก​กว่า"
+    },
+    {
+      "id": "native:[Winding river]",
+      "key": "[Winding river]",
+      "source": "Winding river",
+      "target": "แม่น้ำ​ที่​คดเคี้ยว"
+    },
+    {
+      "id": "native:[Sandy lake shore]",
+      "key": "[Sandy lake shore]",
+      "source": "Sandy lake shore",
+      "target": "ชายฝั่ง​ทะเลสาบ​ที่​เป็น​ทราย"
+    },
+    {
+      "id": "native:[River delta]",
+      "key": "[River delta]",
+      "source": "River delta",
+      "target": "สามเหลี่ยม​ปากแม่น้ำ"
+    },
+    {
+      "id": "native:[Meandering rivers]",
+      "key": "[Meandering rivers]",
+      "source": "Meandering rivers",
+      "target": "แม่น้ำ​ที่​คดเคี้ยว"
+    },
+    {
+      "id": "native:[Inland lakes]",
+      "key": "[Inland lakes]",
+      "source": "Inland lakes",
+      "target": "ทะเลสาบ​ใน​แผ่นดิน"
+    },
+    {
+      "id": "native:[Map preview controls]",
+      "key": "[Map preview controls]",
+      "source": "Drag to wrap. Wheel to zoom. Right-click or double-click to reset.",
+      "target": "ลาก​เพื่อ​เลื่อน​วน​แผนที่ หมุน​ล้อ​เมาส์​เพื่อ​ซูม คลิก​ขวา​หรือ​ดับเบิลคลิก​เพื่อ​รีเซ็ต"
+    },
+    {
+      "id": "native:[Map preview drag help]",
+      "key": "[Map preview drag help]",
+      "source": "Drag to wrap; wheel to zoom.",
+      "target": "ลาก​เพื่อ​เลื่อน​วน​แผนที่ หมุน​ล้อ​เมาส์​เพื่อ​ซูม"
+    },
+    {
+      "id": "native:[Map preview loading]",
+      "key": "[Map preview loading]",
+      "source": "Loading...",
+      "target": "กำลัง​โหลด..."
+    },
+    {
+      "id": "native:[Map preview failed]",
+      "key": "[Map preview failed]",
+      "source": "Preview failed",
+      "target": "การแสดง​ตัวอย่าง​ล้มเหลว"
+    },
+    {
+      "id": "native:[Map preview retry]",
+      "key": "[Map preview retry]",
+      "source": "Click to retry",
+      "target": "คลิก​เพื่อ​ลอง​ใหม่​อีกครั้ง"
+    },
+    {
+      "id": "native:[Map preview please wait]",
+      "key": "[Map preview please wait]",
+      "source": "Please wait",
+      "target": "โปรด​รอ"
+    },
+    {
+      "id": "native:[Map preview choose another]",
+      "key": "[Map preview choose another]",
+      "source": "Choose a map",
+      "target": "เลือก​แผนที่"
+    },
+    {
+      "id": "native:[Emoji terrain]",
+      "key": "[Emoji terrain]",
+      "source": "Emoji terrain",
+      "target": "ภูมิประเทศ​อีโมจิ"
+    },
+    {
+      "id": "native:[A fort cannot reach its ford; use a bigger map or fewer colonies.]",
+      "key": "[A fort cannot reach its ford; use a bigger map or fewer colonies.]",
+      "source": "A fort cannot reach its ford; use a bigger map or fewer colonies.",
+      "target": "ป้อม​เข้าถึง​จุด​ข้าม​น้ำ​ตื้น​ไม่​ได้ ให้​ใช้​แผนที่​ใหญ่​ขึ้น​หรือ​ลด​จำนวน​อาณานิคม"
+    },
+    {
+      "id": "native:[Braided river]",
+      "key": "[Braided river]",
+      "source": "Braided river",
+      "target": "แม่น้ำ​ที่​แตกแขนง"
+    },
+    {
+      "id": "native:[The braid leaves too little terrace for the homes; use a bigger map or a narrower braid.]",
+      "key": "[The braid leaves too little terrace for the homes; use a bigger map or a narrower braid.]",
+      "source": "The braid leaves too little terrace for the homes; use a bigger map or a narrower braid.",
+      "target": "แม่น้ำ​หลาย​สาย​ทำให้​เหลือ​ลาน​ตะพัก​สำหรับ​ฐาน​น้อย​เกินไป ให้​ใช้​แผนที่​ใหญ่​ขึ้น​หรือ​ลด​ความ​กว้าง​แนว​แม่น้ำ"
+    },
+    {
+      "id": "native:[The map is too narrow across for a braid; use a bigger map.]",
+      "key": "[The map is too narrow across for a braid; use a bigger map.]",
+      "source": "The map is too narrow across for a braid; use a bigger map.",
+      "target": "แผนที่​แคบ​เกินไป​สำหรับ​แม่น้ำ​หลาย​สาย ให้​ใช้​แผนที่​ใหญ่​ขึ้น"
+    },
+    {
+      "id": "native:[Mountain ranges]",
+      "key": "[Mountain ranges]",
+      "source": "Mountain ranges",
+      "target": "เทือกเขา"
+    },
+    {
+      "id": "native:[Great rivers]",
+      "key": "[Great rivers]",
+      "source": "Great rivers",
+      "target": "แม่น้ำ​สาย​ใหญ่"
+    },
+    {
+      "id": "native:[The map is too small to hold a continent.]",
+      "key": "[The map is too small to hold a continent.]",
+      "source": "The map is too small to hold a continent.",
+      "target": "แผนที่​เล็ก​เกิน​กว่า​จะ​วาง​ทวีป​ได้"
+    },
+    {
+      "id": "native:[This continent has no room for that many colonies at this map size; use a bigger map or fewer colonies.]",
+      "key": "[This continent has no room for that many colonies at this map size; use a bigger map or fewer colonies.]",
+      "source": "This continent has no room for that many colonies at this map size; use a bigger map or fewer colonies.",
+      "target": "ทวีป​นี้​ไม่​มี​พื้นที่​เพียงพอ​สำหรับ​อาณานิคม​จำนวนมาก​ขนาด​นี้​ใน​แผนที่​ขนาด​นี้ ควร​ใช้​แผนที่​ขนาดใหญ่​กว่า​หรือ​ลด​จำนวน​อาณานิคม​ลง"
+    },
+    {
+      "id": "native:[Valley river]",
+      "key": "[Valley river]",
+      "source": "Valley river",
+      "target": "แม่น้ำ​หุบเขา"
+    },
+    {
+      "id": "native:[Islands per colony]",
+      "key": "[Islands per colony]",
+      "source": "Islands per colony",
+      "target": "เกาะ​ต่อ​อาณานิคม"
+    },
+    {
+      "id": "native:[The islands are too small for their plots; use a bigger map, a smaller plot or fewer colonies.]",
+      "key": "[The islands are too small for their plots; use a bigger map, a smaller plot or fewer colonies.]",
+      "source": "The islands are too small for their plots; use a bigger map, a smaller plot or fewer colonies.",
+      "target": "เกาะ​เล็ก​เกิน​แปลง​ที่​กำหนด ให้​ใช้​แผนที่​ใหญ่​ขึ้น ลด​ขนาด​แปลง หรือ​ลด​จำนวน​อาณานิคม"
+    },
+    {
+      "id": "native:[Hilbert River]",
+      "key": "[Hilbert River]",
+      "source": "Hilbert River",
+      "target": "แม่น้ำ​ฮิลเบิร์ต"
+    },
+    {
+      "id": "native:[The rivers found no way between the homes; use a bigger map or fewer colonies.]",
+      "key": "[The rivers found no way between the homes; use a bigger map or fewer colonies.]",
+      "source": "The rivers found no way between the homes; use a bigger map or fewer colonies.",
+      "target": "ไม่​พบ​ทาง​ให้​แม่น้ำ​ไหล​ระหว่าง​ฐาน ให้​ใช้​แผนที่​ใหญ่​ขึ้น​หรือ​ลด​จำนวน​อาณานิคม"
+    },
+    {
+      "id": "native:[River meander]",
+      "key": "[River meander]",
+      "source": "River meander",
+      "target": "แม่น้ำ​คดเคี้ยว"
+    },
+    {
+      "id": "native:[The lake does not fit this map; use a smaller lake or a bigger map.]",
+      "key": "[The lake does not fit this map; use a smaller lake or a bigger map.]",
+      "source": "The lake does not fit this map; use a smaller lake or a bigger map.",
+      "target": "ทะเลสาบ​ใหญ่​เกิน​แผนที่ ให้​ลด​ขนาด​ทะเลสาบ​หรือ​ใช้​แผนที่​ใหญ่​ขึ้น"
+    },
+    {
+      "id": "native:[A sand bar did not reach the island.]",
+      "key": "[A sand bar did not reach the island.]",
+      "source": "A sand bar did not reach the island.",
+      "target": "สันดอน​ทราย​ไม่​ได้​ทอด​ยาว​ไป​ถึง​เกาะ"
+    },
+    {
+      "id": "native:[This map has no room for that many colonies; use a bigger map or fewer colonies.]",
+      "key": "[This map has no room for that many colonies; use a bigger map or fewer colonies.]",
+      "source": "This map has no room for that many colonies; use a bigger map or fewer colonies.",
+      "target": "แผนที่​นี้​ไม่​มี​พื้นที่​เพียงพอ​สำหรับ​อาณานิคม​จำนวนมาก โปรด​ใช้​แผนที่​ที่​ใหญ่​กว่า​หรือ​ลด​จำนวน​อาณานิคม​ลง"
+    },
+    {
+      "id": "native:[The island has no room for its quarry; use a bigger island.]",
+      "key": "[The island has no room for its quarry; use a bigger island.]",
+      "source": "The island has no room for its quarry; use a bigger island.",
+      "target": "เกาะ​นี้​ไม่​มี​พื้นที่​เพียงพอ​สำหรับ​เหมือง​หิน ควร​ใช้​เกาะ​ที่​ใหญ่​กว่า​นี้"
+    },
+    {
+      "id": "native:[The massif does not fit this map; use a bigger map or fewer colonies.]",
+      "key": "[The massif does not fit this map; use a bigger map or fewer colonies.]",
+      "source": "The massif does not fit this map; use a bigger map or fewer colonies.",
+      "target": "มวลเขา​ใหญ่​เกิน​แผนที่ ให้​ใช้​แผนที่​ใหญ่​ขึ้น​หรือ​ลด​จำนวน​อาณานิคม"
+    },
+    {
+      "id": "native:[This map is too small to solve on; use a bigger map.]",
+      "key": "[This map is too small to solve on; use a bigger map.]",
+      "source": "This map is too small to solve on; use a bigger map.",
+      "target": "แผนที่​นี้​เล็ก​เกินไป​ที่จะ​ใช้​แก้ปัญหา​ได้ โปรด​ใช้​แผนที่​ขนาดใหญ่​กว่า"
+    },
+    {
+      "id": "native:[Too many colonies to balance on a map this size; use a bigger map or fewer colonies.]",
+      "key": "[Too many colonies to balance on a map this size; use a bigger map or fewer colonies.]",
+      "source": "Too many colonies to balance on a map this size; use a bigger map or fewer colonies.",
+      "target": "มี​อาณานิคม​มากเกินไป​ที่จะ​จัดวาง​ให้​สมดุล​บน​แผนที่​ขนาด​นี้ ควร​ใช้​แผนที่​ขนาดใหญ่​กว่า​หรือ​ลด​จำนวน​อาณานิคม​ลง"
+    },
+    {
+      "id": "native:[Too many colonies for this map to give each a homeland; use a bigger map or fewer colonies.]",
+      "key": "[Too many colonies for this map to give each a homeland; use a bigger map or fewer colonies.]",
+      "source": "Too many colonies for this map to give each a homeland; use a bigger map or fewer colonies.",
+      "target": "มี​อาณานิคม​มากเกินไป​ใน​แผนที่​นี้ ทำให้​แต่ละ​อาณานิคม​ไม่​มี​ดินแดน​เป็น​ของ​ตนเอง ควร​ใช้​แผนที่​ที่​ใหญ่​กว่า​หรือ​ลด​จำนวน​อาณานิคม​ลง"
+    },
+    {
+      "id": "native:[This map has no room to spread the colonies out; use a bigger map or fewer colonies.]",
+      "key": "[This map has no room to spread the colonies out; use a bigger map or fewer colonies.]",
+      "source": "This map has no room to spread the colonies out; use a bigger map or fewer colonies.",
+      "target": "แผนที่​ไม่​มี​ที่​พอ​กระจาย​อาณานิคม ให้​ใช้​แผนที่​ใหญ่​ขึ้น​หรือ​ลด​จำนวน​อาณานิคม"
+    },
+    {
+      "id": "native:[A colony's homeland has no way out onto the march; use a bigger map or a narrower march.]",
+      "key": "[A colony's homeland has no way out onto the march; use a bigger map or a narrower march.]",
+      "source": "A colony's homeland has no way out onto the march; use a bigger map or a narrower march.",
+      "target": "พื้นที่​เริ่มต้น​ของ​อาณานิคม​ไม่​มี​ทางออก​สู่​แนว​ชายแดน ให้​ใช้​แผนที่​ใหญ่​ขึ้น​หรือ​ทำ​แนว​ชายแดน​ให้​แคบ​ลง"
+    },
+    {
+      "id": "native:[The Gauntlet needs a larger map or fewer colonies to fit its two guarded fronts.]",
+      "key": "[The Gauntlet needs a larger map or fewer colonies to fit its two guarded fronts.]",
+      "source": "The Gauntlet needs a larger map or fewer colonies to fit its two guarded fronts.",
+      "target": "ด่าน​ทดสอบ​ต้อง​ใช้​แผนที่​ใหญ่​ขึ้น​หรือ​ลด​อาณานิคม​เพื่อให้​พอดี​กับ​แนว​เฝ้า​ระวัง​สอง​ด้าน"
+    },
+    {
+      "id": "native:[Portage Lakes]",
+      "key": "[Portage Lakes]",
+      "source": "Portage Lakes",
+      "target": "ทะเลสาบ​พอร์เทจ"
+    },
+    {
+      "id": "native:[Lake elongation]",
+      "key": "[Lake elongation]",
+      "source": "Lake elongation",
+      "target": "การ​ยืดตัว​ของ​ทะเลสาบ"
+    },
+    {
+      "id": "native:[Portage Lakes needs sides between 64 and 512 tiles.]",
+      "key": "[Portage Lakes needs sides between 64 and 512 tiles.]",
+      "source": "Portage Lakes needs sides between 64 and 512 tiles.",
+      "target": "ทะเลสาบ​พอร์เทจ​ต้อง​ใช้​แผนที่​ที่​แต่ละ​ด้าน​ยาว 64 ถึง 512 ช่อง"
+    },
+    {
+      "id": "native:[Portage Lakes cannot fit shoreline settlements on this seed.]",
+      "key": "[Portage Lakes cannot fit shoreline settlements on this seed.]",
+      "source": "Portage Lakes cannot fit shoreline settlements on this seed.",
+      "target": "ค่า​สุ่ม​นี้​วาง​ฐาน​ริมฝั่ง​ของ​ทะเลสาบ​พอร์เทจ​ไม่​ได้"
+    },
+    {
+      "id": "native:[Portage Lakes cannot fit renewable shore fields beside every settlement.]",
+      "key": "[Portage Lakes cannot fit renewable shore fields beside every settlement.]",
+      "source": "Portage Lakes cannot fit renewable shore fields beside every settlement.",
+      "target": "ทะเลสาบ​พอร์เทจ​วาง​แปลง​ริมฝั่ง​ที่​ฟื้นตัว​ได้​ข้าง​ทุก​ฐาน​ไม่​ได้"
+    },
+    {
+      "id": "native:[Portage Lakes cannot connect its shoreline trails.]",
+      "key": "[Portage Lakes cannot connect its shoreline trails.]",
+      "source": "Portage Lakes cannot connect its shoreline trails.",
+      "target": "ทะเลสาบ​พอร์เทจ​เชื่อม​ทางเดิน​ริมฝั่ง​ไม่​ได้"
+    },
+    {
+      "id": "native:[Portage Lakes needs separate swimming lakes on this seed.]",
+      "key": "[Portage Lakes needs separate swimming lakes on this seed.]",
+      "source": "Portage Lakes needs separate swimming lakes on this seed.",
+      "target": "ค่า​สุ่ม​นี้​แยก​ทะเลสาบ​สำหรับ​ว่ายน้ำ​ของ​ทะเลสาบ​พอร์เทจ​ไม่​ได้"
+    },
+    {
+      "id": "native:[Sandbar connections]",
+      "key": "[Sandbar connections]",
+      "source": "Sandbar connections",
+      "target": "การ​เชื่อมต่อ​สันดอน​ทราย"
+    },
+    {
+      "id": "native:[Outlying islands]",
+      "key": "[Outlying islands]",
+      "source": "Outlying islands",
+      "target": "หมู่เกาะ​รอบนอก"
+    },
+    {
+      "id": "native:[Loading terrain]",
+      "key": "[Loading terrain]",
+      "source": "Loading terrain...",
+      "target": "กำลัง​โหลด​ภูมิประเทศ..."
+    },
+    {
+      "id": "native:[Map settings]",
+      "key": "[Map settings]",
+      "source": "Map settings",
+      "target": "การ​ตั้งค่า​แผนที่"
+    },
+    {
+      "id": "native:[Release on valid terrain to place]",
+      "key": "[Release on valid terrain to place]",
+      "source": "Release on valid terrain to place",
+      "target": "ปล่อย​เพื่อ​วาง​บน​พื้นที่​ที่​ถูกต้อง"
+    },
+    {
+      "id": "native:[Mark map for allies]",
+      "key": "[Mark map for allies]",
+      "source": "Mark map for allies",
+      "target": "ทำเครื่องหมาย​บน​แผนที่​สำหรับ​พันธมิตร"
+    },
+    {
+      "id": "native:[Tap to write the map script]",
+      "key": "[Tap to write the map script]",
+      "source": "Tap to write the map script",
+      "target": "แตะ​เพื่อ​เขียน​สคริปต์​แผนที่"
+    },
+    {
+      "id": "native:[Starting terrain]",
+      "key": "[Starting terrain]",
+      "source": "Starting terrain",
+      "target": "ภูมิประเทศ​เริ่มต้น"
+    },
+    {
+      "id": "native:[Map momentum]",
+      "key": "[Map momentum]",
+      "source": "Map momentum",
+      "target": "แรงเฉื่อย​ขณะ​เลื่อน​แผนที่"
+    },
+    {
+      "id": "native:[match downloading map %0]",
+      "key": "[match downloading map %0]",
+      "source": "Downloading map %0",
+      "target": "กำลัง​ดาวน์โหลด​แผนที่ %0"
+    },
+    {
+      "id": "native:[match map cached]",
+      "key": "[match map cached]",
+      "source": "already on this device",
+      "target": "อยู่​ใน​อุปกรณ์​นี้​แล้ว"
+    },
+    {
+      "id": "native:[room map changed %0]",
+      "key": "[room map changed %0]",
+      "source": "The map changed to %0.",
+      "target": "แผนที่​เปลี่ยนเป็น %0 แล้ว"
+    },
+    {
+      "id": "native:[room map failed]",
+      "key": "[room map failed]",
+      "source": "The map could not be prepared",
+      "target": "ไม่​สามารถ​จัดทำ​แผนที่​ได้"
+    },
+    {
+      "id": "native:[maps map page]",
+      "key": "[maps map page]",
+      "source": "Map page",
+      "target": "หน้า​แผนที่"
+    },
+    {
+      "id": "native:[maps upload a map title]",
+      "key": "[maps upload a map title]",
+      "source": "Upload a map",
+      "target": "อัปโหลด​แผนที่"
+    },
+    {
+      "id": "native:[maps update map title]",
+      "key": "[maps update map title]",
+      "source": "Update a map",
+      "target": "อัปเดต​แผนที่"
+    },
+    {
+      "id": "native:[room map read failed]",
+      "key": "[room map read failed]",
+      "source": "This map file could not be read.",
+      "target": "ไม่​สามารถ​อ่าน​ไฟล์​แผนที่​นี้​ได้"
+    },
+    {
+      "id": "native:[room map upload failed]",
+      "key": "[room map upload failed]",
+      "source": "The map could not be shared with the room.",
+      "target": "ไม่​สามารถ​แชร์​แผนที่​ให้​กับ​ทุกคน​ใน​ห้อง​ได้"
+    },
+    {
+      "id": "native:[room map upload failed %0]",
+      "key": "[room map upload failed %0]",
+      "source": "The map could not be shared with the room: %0",
+      "target": "ไม่​สามารถ​แชร์​แผนที่​กับ​ห้อง​ได้ : %0"
+    },
+    {
+      "id": "native:[room premade map shared]",
+      "key": "[room premade map shared]",
+      "source": "Everyone in the room plays this map file; it downloads before the match.",
+      "target": "ทุกคน​ใน​ห้อง​ใช้​ไฟล์​แผนที่​นี้ โดย​ดาวน์โหลด​ก่อน​เริ่ม​แมตช์"
+    },
+    {
+      "id": "native:[room map ready title %0]",
+      "key": "[room map ready title %0]",
+      "source": "Play %0",
+      "target": "เล่น %0"
+    },
+    {
+      "id": "native:[room map ready unnamed]",
+      "key": "[room map ready unnamed]",
+      "source": "this map",
+      "target": "แผนที่​นี้"
+    },
+    {
+      "id": "native:[room map ready body]",
+      "key": "[room map ready body]",
+      "source": "Create a room and invite your friends: the room plays this map.",
+      "target": "สร้าง​ห้อง​และ​เชิญ​เพื่อน​ของ​คุณ​เข้าร่วม : ห้อง​นั้น​จะ​เล่น​แผนที่​นี้"
+    },
+    {
+      "id": "native:[Map repetition failed]",
+      "key": "[Map repetition failed]",
+      "source": "Cannot repeat this map. Use an unscripted starting map, or reduce the repeats and bases.",
+      "target": "ไม่​สามารถ​ทำซ้ำ​แผนที่​นี้​ได้ โปรด​ใช้​แผนที่​เริ่มต้น​ที่​ไม่​มี​สคริปต์ หรือ​ลด​จำนวน​การ​ทำซ้ำ​และ​ฐาน​ลง"
+    },
+    {
+      "id": "native:[repeat map horizontally]",
+      "key": "[repeat map horizontally]",
+      "source": "Repeat map horizontally",
+      "target": "ทำซ้ำ​แผนที่​ใน​แนวนอน"
+    },
+    {
+      "id": "native:[repeat map vertically]",
+      "key": "[repeat map vertically]",
+      "source": "Repeat map vertically",
+      "target": "ทำซ้ำ​แผนที่​ใน​แนวตั้ง"
+    },
+    {
+      "id": "native:[stat growth map about]",
+      "key": "[stat growth map about]",
+      "source": "How much material stock grew in resources anywhere on the map, in growth points rather than harvested loads. This is the same for every colony.",
+      "target": "ปริมาณ​วัสดุ​ที่​งอก​เพิ่ม​ใน​แหล่ง​ทรัพยากร​ทั่ว​แผนที่ วัด​เป็น​แต้ม​การ​เติบโต ไม่​ใช่​หน่วย​วัสดุ​ที่​เก็บเกี่ยว ค่า​นี้​เท่ากัน​ทุก​อาณานิคม"
+    },
+    {
+      "id": "native:[Reveal terrain]",
+      "key": "[Reveal terrain]",
+      "source": "Reveal terrain",
+      "target": "เปิดเผย​ภูมิประเทศ"
+    },
+    {
+      "id": "native:[Players see the map's terrain from the start; enemy units stay hidden.]",
+      "key": "[Players see the map's terrain from the start; enemy units stay hidden.]",
+      "source": "Players see the map's terrain from the start; enemy units stay hidden.",
+      "target": "ผู้เล่น​เห็น​ภูมิประเทศ​ตั้งแต่​เริ่ม แต่​ยูนิต​ศัตรู​ยัง​ถูก​ซ่อน​อยู่"
+    },
+    {
+      "id": "native:[Import Terrain Definitions]",
+      "key": "[Import Terrain Definitions]",
+      "source": "Import Terrain Definitions",
+      "target": "นำเข้า​ข้อกำหนด​ภูมิประเทศ"
+    },
+    {
+      "id": "native:[Terrain palette]",
+      "key": "[Terrain palette]",
+      "source": "Terrain palette",
+      "target": "แผง​เลือก​ภูมิประเทศ"
+    },
+    {
+      "id": "native:[terrain group water]",
+      "key": "[terrain group water]",
+      "source": "Water",
+      "target": "น้ำ"
+    },
+    {
+      "id": "native:[terrain group sand]",
+      "key": "[terrain group sand]",
+      "source": "Sand",
+      "target": "ทราย"
+    },
+    {
+      "id": "native:[terrain group grass]",
+      "key": "[terrain group grass]",
+      "source": "Grass",
+      "target": "หญ้า"
+    },
+    {
+      "id": "native:[terrain group ice]",
+      "key": "[terrain group ice]",
+      "source": "Ice",
+      "target": "น้ำแข็ง"
+    },
+    {
+      "id": "native:[terrain group paths]",
+      "key": "[terrain group paths]",
+      "source": "Paths",
+      "target": "เส้นทาง"
+    },
+    {
+      "id": "native:[terrain group obstacles]",
+      "key": "[terrain group obstacles]",
+      "source": "Obstacles",
+      "target": "อุปสรรค"
+    },
+    {
+      "id": "native:[terrain group ridges]",
+      "key": "[terrain group ridges]",
+      "source": "Ridges",
+      "target": "สันเขา"
+    },
+    {
+      "id": "native:[terrain group barren]",
+      "key": "[terrain group barren]",
+      "source": "Barren ground",
+      "target": "พื้นที่​แห้งแล้ง"
+    },
+    {
+      "id": "native:[terrain group rough]",
+      "key": "[terrain group rough]",
+      "source": "Rough ground",
+      "target": "พื้นดิน​ขรุขระ"
+    },
+    {
+      "id": "native:[terrain group lava]",
+      "key": "[terrain group lava]",
+      "source": "Lava",
+      "target": "ลาวา"
+    },
+    {
+      "id": "native:[terrain group fertile]",
+      "key": "[terrain group fertile]",
+      "source": "Fertile ground",
+      "target": "ดิน​ที่​อุดมสมบูรณ์"
+    },
+    {
+      "id": "native:[terrain group deep-water]",
+      "key": "[terrain group deep-water]",
+      "source": "Deep water",
+      "target": "น้ำ​ลึก"
+    },
+    {
+      "id": "native:[terrain group void]",
+      "key": "[terrain group void]",
+      "source": "Void",
+      "target": "ว่างเปล่า"
+    },
+    {
+      "id": "native:[terrain group custom]",
+      "key": "[terrain group custom]",
+      "source": "Custom",
+      "target": "กำหนด​เอง"
+    },
+    {
+      "id": "native:[terrain group classic]",
+      "key": "[terrain group classic]",
+      "source": "Classic ground",
+      "target": "พื้นดิน​แบบ​คลาสสิก"
+    },
+    {
+      "id": "native:[terrain rule walkable]",
+      "key": "[terrain rule walkable]",
+      "source": "Walkable",
+      "target": "เดินผ่าน​ได้"
+    },
+    {
+      "id": "native:[terrain rule swimmable]",
+      "key": "[terrain rule swimmable]",
+      "source": "Swimmable",
+      "target": "ว่ายน้ำ​ได้"
+    },
+    {
+      "id": "native:[terrain rule impassable]",
+      "key": "[terrain rule impassable]",
+      "source": "Impassable",
+      "target": "ผ่าน​ไม่​ได้"
+    },
+    {
+      "id": "native:[terrain rule no flying]",
+      "key": "[terrain rule no flying]",
+      "source": "No flying",
+      "target": "ห้าม​บิน"
+    },
+    {
+      "id": "native:[terrain rule buildable]",
+      "key": "[terrain rule buildable]",
+      "source": "Buildable",
+      "target": "สร้าง​อาคาร​ได้"
+    },
+    {
+      "id": "native:[terrain rule speed %0]",
+      "key": "[terrain rule speed %0]",
+      "source": "Speed %0%",
+      "target": "ความเร็ว %0%"
+    },
+    {
+      "id": "native:[terrain rule crops grow]",
+      "key": "[terrain rule crops grow]",
+      "source": "Crops grow",
+      "target": "พืชผล​เจริญเติบโต"
+    },
+    {
+      "id": "native:[terrain rule irrigates]",
+      "key": "[terrain rule irrigates]",
+      "source": "Irrigates nearby land",
+      "target": "เพิ่ม​ความชุ่มชื้น​ให้​พื้นที่​ใกล้เคียง"
+    },
+    {
+      "id": "native:[terrain rule stops nearby growth]",
+      "key": "[terrain rule stops nearby growth]",
+      "source": "Stops nearby growth",
+      "target": "ยับยั้ง​การเจริญเติบโต​ใน​บริเวณ​ใกล้เคียง"
+    },
+    {
+      "id": "native:[terrain rule blocks shots]",
+      "key": "[terrain rule blocks shots]",
+      "source": "Blocks shots",
+      "target": "กั้น​การ​ยิง"
+    },
+    {
+      "id": "native:[terrain rule hurts walkers]",
+      "key": "[terrain rule hurts walkers]",
+      "source": "Hurts walkers",
+      "target": "ทำอันตราย​ยูนิต​ที่​เดิน"
+    },
+    {
+      "id": "native:[terrain rule hurts fliers]",
+      "key": "[terrain rule hurts fliers]",
+      "source": "Hurts fliers",
+      "target": "ทำอันตราย​ยูนิต​ที่​บิน"
+    }
+  ]
+}

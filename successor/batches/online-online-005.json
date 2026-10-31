@@ -1,0 +1,969 @@
+{
+  "id": "online-online-005",
+  "source_sha256": "6deb12f6155d1ee014b77f0908cc670272ebf24935cbc6db31c8ba73c82a9e29",
+  "surface": "online",
+  "domain": "online",
+  "context": "Account, multiplayer, upload and browser workflows. Preserve URLs, licences, paths, format tokens and product names.",
+  "entries": [
+    {
+      "id": "online:Download the game",
+      "key": "Download the game",
+      "source": "Download the game",
+      "target": "ดาวน์โหลดเกม"
+    },
+    {
+      "id": "online:Download this release",
+      "key": "Download this release",
+      "source": "Download this release",
+      "target": "ดาวน์โหลดเวอร์ชันนี้"
+    },
+    {
+      "id": "online:Download {slot0}",
+      "key": "Download {slot0}",
+      "source": "Download {slot0}",
+      "target": "ดาวน์โหลด {slot0}"
+    },
+    {
+      "id": "online:Downloading replay…",
+      "key": "Downloading replay…",
+      "source": "Downloading replay…",
+      "target": "กำลังดาวน์โหลดรีเพลย์…"
+    },
+    {
+      "id": "online:Downloading the game…",
+      "key": "Downloading the game…",
+      "source": "Downloading the game…",
+      "target": "กำลังดาวน์โหลดเกม…"
+    },
+    {
+      "id": "online:Downloads",
+      "key": "Downloads",
+      "source": "Downloads",
+      "target": "ดาวน์โหลด"
+    },
+    {
+      "id": "online:Download{slot0}",
+      "key": "Download{slot0}",
+      "source": "Download{slot0}",
+      "target": "ดาวน์โหลด {slot0}"
+    },
+    {
+      "id": "online:Draft",
+      "key": "Draft",
+      "source": "Draft",
+      "target": "ร่าง"
+    },
+    {
+      "id": "online:Draft identities cannot change.",
+      "key": "Draft identities cannot change.",
+      "source": "Draft identities cannot change.",
+      "target": "ตัวระบุของฉบับร่างเปลี่ยนไม่ได้"
+    },
+    {
+      "id": "online:Draft is temporarily empty. Add source to save.",
+      "key": "Draft is temporarily empty. Add source to save.",
+      "source": "Draft is temporarily empty. Add source to save.",
+      "target": "ฉบับร่างว่างชั่วคราว เพิ่มซอร์สโค้ดเพื่อบันทึก"
+    },
+    {
+      "id": "online:Draft not found.",
+      "key": "Draft not found.",
+      "source": "Draft not found.",
+      "target": "ไม่พบฉบับร่าง"
+    },
+    {
+      "id": "online:Draft recovery failed",
+      "key": "Draft recovery failed",
+      "source": "Draft recovery failed",
+      "target": "การกู้คืนร่างล้มเหลว"
+    },
+    {
+      "id": "online:Draft recovery failed.",
+      "key": "Draft recovery failed.",
+      "source": "Draft recovery failed.",
+      "target": "การกู้คืนร่างล้มเหลว"
+    },
+    {
+      "id": "online:Draft saved",
+      "key": "Draft saved",
+      "source": "Draft saved",
+      "target": "บันทึกฉบับร่างแล้ว"
+    },
+    {
+      "id": "online:Draft saved.",
+      "key": "Draft saved.",
+      "source": "Draft saved.",
+      "target": "บันทึกฉบับร่างแล้ว"
+    },
+    {
+      "id": "online:Drafts",
+      "key": "Drafts",
+      "source": "Drafts",
+      "target": "ร่าง"
+    },
+    {
+      "id": "online:Drafts are private. Publish a saved family to share it in the {slot0}.",
+      "key": "Drafts are private. Publish a saved family to share it in the {slot0}.",
+      "source": "Drafts are private. Publish a saved family to share it in the {slot0}.",
+      "target": "ฉบับร่างเป็นส่วนตัว เผยแพร่ตระกูลอาคารที่บันทึกไว้เพื่อแบ่งปันใน {slot0}"
+    },
+    {
+      "id": "online:Drag or use arrow keys to explore the wraparound map.",
+      "key": "Drag or use arrow keys to explore the wraparound map.",
+      "source": "Drag or use arrow keys to explore the wraparound map.",
+      "target": "ลากหรือใช้ปุ่มลูกศรเพื่อสำรวจแผนที่แบบวนรอบ"
+    },
+    {
+      "id": "online:Drag the playhead to explore",
+      "key": "Drag the playhead to explore",
+      "source": "Drag the playhead to explore",
+      "target": "ลากตัวชี้เวลาเพื่อสำรวจ"
+    },
+    {
+      "id": "online:Drag to choose your {slot0} angle",
+      "key": "Drag to choose your {slot0} angle",
+      "source": "Drag to choose your {slot0} angle",
+      "target": "ลากเพื่อเลือกมุม {slot0} ของคุณ"
+    },
+    {
+      "id": "online:Drag to explore when zoomed",
+      "key": "Drag to explore when zoomed",
+      "source": "Drag to explore when zoomed",
+      "target": "ลากเพื่อสำรวจเมื่อซูมเข้า"
+    },
+    {
+      "id": "online:Drag to paint · Rotate tool to turn · scroll or pinch to zoom",
+      "key": "Drag to paint · Rotate tool to turn · scroll or pinch to zoom",
+      "source": "Drag to paint · Rotate tool to turn · scroll or pinch to zoom",
+      "target": "ลากเพื่อระบายสี · ใช้เครื่องมือหมุนเพื่อหมุนโมเดล · เลื่อนหรือบีบนิ้วเพื่อซูม"
+    },
+    {
+      "id": "online:Drag to position. Use arrow keys to move and the slider to zoom.",
+      "key": "Drag to position. Use arrow keys to move and the slider to zoom.",
+      "source": "Drag to position. Use arrow keys to move and the slider to zoom.",
+      "target": "ลากเพื่อจัดตำแหน่ง ใช้ปุ่มลูกศรเพื่อเลื่อน และแถบเลื่อนเพื่อซูม"
+    },
+    {
+      "id": "online:Drag to rotate and tilt · scroll or pinch to zoom",
+      "key": "Drag to rotate and tilt · scroll or pinch to zoom",
+      "source": "Drag to rotate and tilt · scroll or pinch to zoom",
+      "target": "ลากเพื่อหมุนและเอียง · เลื่อนหรือบีบนิ้วเพื่อซูม"
+    },
+    {
+      "id": "online:Drag to turn · fixed height and scale",
+      "key": "Drag to turn · fixed height and scale",
+      "source": "Drag to turn · fixed height and scale",
+      "target": "ลากเพื่อหมุน · ความสูงและขนาดคงที่"
+    },
+    {
+      "id": "online:Draw",
+      "key": "Draw",
+      "source": "Draw",
+      "target": "เสมอ"
+    },
+    {
+      "id": "online:Duplicate",
+      "key": "Duplicate",
+      "source": "Duplicate",
+      "target": "ทำซ้ำ"
+    },
+    {
+      "id": "online:Duplicate rig clip",
+      "key": "Duplicate rig clip",
+      "source": "Duplicate rig clip",
+      "target": "ทำสำเนาคลิปโครงกระดูก"
+    },
+    {
+      "id": "online:Duplicate shape clip",
+      "key": "Duplicate shape clip",
+      "source": "Duplicate shape clip",
+      "target": "ทำสำเนาคลิปรูปร่าง"
+    },
+    {
+      "id": "online:Duration (steps)",
+      "key": "Duration (steps)",
+      "source": "Duration (steps)",
+      "target": "ระยะเวลา (ขั้นเวลา)"
+    },
+    {
+      "id": "online:Each point is a recorded UTC day. Gaps have no recorded measurement and are not interpolated or treated as zero. Hover or touch a point for its value; the daily table below provides the same values.",
+      "key": "Each point is a recorded UTC day. Gaps have no recorded measurement and are not interpolated or treated as zero. Hover or touch a point for its value; the daily table below provides the same values.",
+      "source": "Each point is a recorded UTC day. Gaps have no recorded measurement and are not interpolated or treated as zero. Hover or touch a point for its value; the daily table below provides the same values.",
+      "target": "แต่ละจุดคือค่าที่บันทึกไว้ในแต่ละวันตามเวลา UTC ช่องว่างไม่มีการบันทึกค่า และจะไม่ถูกประมาณค่าหรือถือว่าเป็นศูนย์ วางเมาส์หรือแตะที่จุดเพื่อดูค่า ตารางรายวันด้านล่างแสดงค่าเดียวกัน"
+    },
+    {
+      "id": "online:Each product has its own credit unit. Flows cover the current selected range across all payment modes. Usage/refund ledger entries are signed; reserved balances are current snapshots.",
+      "key": "Each product has its own credit unit. Flows cover the current selected range across all payment modes. Usage/refund ledger entries are signed; reserved balances are current snapshots.",
+      "source": "Each product has its own credit unit. Flows cover the current selected range across all payment modes. Usage/refund ledger entries are signed; reserved balances are current snapshots.",
+      "target": "แต่ละผลิตภัณฑ์มีหน่วยเครดิตของตนเอง ความเคลื่อนไหวครอบคลุมช่วงที่เลือกในทุกรูปแบบการชำระเงิน รายการใช้/คืนเครดิตมีเครื่องหมายบวกหรือลบ ยอดที่กันไว้เป็นข้อมูล ณ ปัจจุบัน"
+    },
+    {
+      "id": "online:Each shape shares the swarm paint area. Check the result after switching.",
+      "key": "Each shape shares the swarm paint area. Check the result after switching.",
+      "source": "Each shape shares the swarm paint area. Check the result after switching.",
+      "target": "ทุกรูปทรงใช้พื้นที่ลงสีของรังร่วมกัน ตรวจสอบผลหลังสลับรูปทรง"
+    },
+    {
+      "id": "online:Econo",
+      "key": "Econo",
+      "source": "Econo",
+      "target": "Econo"
+    },
+    {
+      "id": "online:Economy against each player’s average",
+      "key": "Economy against each player’s average",
+      "source": "Economy against each player’s average",
+      "target": "เศรษฐกิจเมื่อเทียบกับค่าเฉลี่ยของผู้เล่นแต่ละคน"
+    },
+    {
+      "id": "online:Economy {slot0}",
+      "key": "Economy {slot0}",
+      "source": "Economy {slot0}",
+      "target": "เศรษฐกิจ {slot0}"
+    },
+    {
+      "id": "online:Edit",
+      "key": "Edit",
+      "source": "Edit",
+      "target": "แก้ไข"
+    },
+    {
+      "id": "online:Edit AI details",
+      "key": "Edit AI details",
+      "source": "Edit AI details",
+      "target": "แก้ไขรายละเอียด AI"
+    },
+    {
+      "id": "online:Edit details",
+      "key": "Edit details",
+      "source": "Edit details",
+      "target": "แก้ไขรายละเอียด"
+    },
+    {
+      "id": "online:Edit in AI Studio",
+      "key": "Edit in AI Studio",
+      "source": "Edit in AI Studio",
+      "target": "แก้ไขใน AI Studio"
+    },
+    {
+      "id": "online:Edit in Generator Studio",
+      "key": "Edit in Generator Studio",
+      "source": "Edit in Generator Studio",
+      "target": "แก้ไขใน Generator Studio"
+    },
+    {
+      "id": "online:Edit this saved draft",
+      "key": "Edit this saved draft",
+      "source": "Edit this saved draft",
+      "target": "แก้ไขฉบับร่างที่บันทึกไว้"
+    },
+    {
+      "id": "online:Edit this version",
+      "key": "Edit this version",
+      "source": "Edit this version",
+      "target": "แก้ไขเวอร์ชันนี้"
+    },
+    {
+      "id": "online:Edit this version in chat",
+      "key": "Edit this version in chat",
+      "source": "Edit this version in chat",
+      "target": "แก้ไขเวอร์ชันนี้ในแชท"
+    },
+    {
+      "id": "online:Edit with AI",
+      "key": "Edit with AI",
+      "source": "Edit with AI",
+      "target": "แก้ไขด้วย AI"
+    },
+    {
+      "id": "online:Edit your map",
+      "key": "Edit your map",
+      "source": "Edit your map",
+      "target": "แก้ไขแผนที่ของคุณ"
+    },
+    {
+      "id": "online:Edit your soundtrack",
+      "key": "Edit your soundtrack",
+      "source": "Edit your soundtrack",
+      "target": "แก้ไขเพลงประกอบของคุณ"
+    },
+    {
+      "id": "online:Edit {value0}",
+      "key": "Edit {value0}",
+      "source": "Edit {value0}",
+      "target": "แก้ไข {value0}"
+    },
+    {
+      "id": "online:Editing current saved draft · {slot0}",
+      "key": "Editing current saved draft · {slot0}",
+      "source": "Editing current saved draft · {slot0}",
+      "target": "กำลังแก้ไขฉบับร่างที่บันทึกไว้ปัจจุบัน · {slot0}"
+    },
+    {
+      "id": "online:Editing version {value0}",
+      "key": "Editing version {value0}",
+      "source": "Editing version {value0}",
+      "target": "กำลังแก้ไขเวอร์ชัน {value0}"
+    },
+    {
+      "id": "online:Editing {slot0}",
+      "key": "Editing {slot0}",
+      "source": "Editing {slot0}",
+      "target": "กำลังแก้ไข {slot0}"
+    },
+    {
+      "id": "online:Editor tool",
+      "key": "Editor tool",
+      "source": "Editor tool",
+      "target": "เครื่องมือแก้ไข"
+    },
+    {
+      "id": "online:Editor tools",
+      "key": "Editor tools",
+      "source": "Editor tools",
+      "target": "เครื่องมือแก้ไข"
+    },
+    {
+      "id": "online:Editor-only terrain cannot launch a colony game.",
+      "key": "Editor-only terrain cannot launch a colony game.",
+      "source": "Editor-only terrain cannot launch a colony game.",
+      "target": "ภูมิประเทศที่ใช้ได้เฉพาะในตัวแก้ไขไม่สามารถเริ่มเกมอาณานิคมได้"
+    },
+    {
+      "id": "online:Empty the seat before locking it.",
+      "key": "Empty the seat before locking it.",
+      "source": "Empty the seat before locking it.",
+      "target": "นำผู้เล่นออกจากที่นั่งก่อนล็อก"
+    },
+    {
+      "id": "online:Empty the seat before putting an AI in it.",
+      "key": "Empty the seat before putting an AI in it.",
+      "source": "Empty the seat before putting an AI in it.",
+      "target": "นำผู้เล่นออกจากที่นั่งก่อนใส่ AI"
+    },
+    {
+      "id": "online:Ended",
+      "key": "Ended",
+      "source": "Ended",
+      "target": "สิ้นสุดแล้ว"
+    },
+    {
+      "id": "online:Engine agent key required.",
+      "key": "Engine agent key required.",
+      "source": "Engine agent key required.",
+      "target": "ต้องใช้คีย์เอเจนต์เอนจิน"
+    },
+    {
+      "id": "online:Engine agents",
+      "key": "Engine agents",
+      "source": "Engine agents",
+      "target": "เอเจนต์เอนจิน"
+    },
+    {
+      "id": "online:Engine jobs",
+      "key": "Engine jobs",
+      "source": "Engine jobs",
+      "target": "งานเอนจิน"
+    },
+    {
+      "id": "online:Engine launch timed out. Stop and retry the preview.",
+      "key": "Engine launch timed out. Stop and retry the preview.",
+      "source": "Engine launch timed out. Stop and retry the preview.",
+      "target": "การเริ่มต้นใช้งานเอนจิ้นหมดเวลา โปรดหยุดและลองดูตัวอย่างอีกครั้ง"
+    },
+    {
+      "id": "online:Engine version",
+      "key": "Engine version",
+      "source": "Engine version",
+      "target": "เวอร์ชันเอนจิน"
+    },
+    {
+      "id": "online:Engine {slot0} · suite {slot1}",
+      "key": "Engine {slot0} · suite {slot1}",
+      "source": "Engine {slot0} · suite {slot1}",
+      "target": "เอนจิน {slot0} · ชุดทดสอบ {slot1}"
+    },
+    {
+      "id": "online:Engine {slot0} · {slot1}",
+      "key": "Engine {slot0} · {slot1}",
+      "source": "Engine {slot0} · {slot1}",
+      "target": "เอนจิน {slot0} · {slot1}"
+    },
+    {
+      "id": "online:Enlarged 3×",
+      "key": "Enlarged 3×",
+      "source": "Enlarged 3×",
+      "target": "ขยาย 3 เท่า"
+    },
+    {
+      "id": "online:Enter a JSON array.",
+      "key": "Enter a JSON array.",
+      "source": "Enter a JSON array.",
+      "target": "ป้อนอาร์เรย์ JSON"
+    },
+    {
+      "id": "online:Enter a username.",
+      "key": "Enter a username.",
+      "source": "Enter a username.",
+      "target": "ป้อนชื่อผู้ใช้"
+    },
+    {
+      "id": "online:Enter to send · Shift + Enter for a new line",
+      "key": "Enter to send · Shift + Enter for a new line",
+      "source": "Enter to send · Shift + Enter for a new line",
+      "target": "กด Enter เพื่อส่ง · กด Shift + Enter เพื่อขึ้นบรรทัดใหม่"
+    },
+    {
+      "id": "online:Enter to send · Shift + Enter for a new line. Creation requests build automatically · 1 credit on delivery.",
+      "key": "Enter to send · Shift + Enter for a new line. Creation requests build automatically · 1 credit on delivery.",
+      "source": "Enter to send · Shift + Enter for a new line. Creation requests build automatically · 1 credit on delivery.",
+      "target": "Enter เพื่อส่ง · Shift + Enter เพื่อขึ้นบรรทัดใหม่ คำขอสร้างเริ่มทำงานโดยอัตโนมัติ · คิด 1 เครดิตเมื่อส่งมอบ"
+    },
+    {
+      "id": "online:Enter valid JSON.",
+      "key": "Enter valid JSON.",
+      "source": "Enter valid JSON.",
+      "target": "ป้อน JSON ที่ถูกต้อง"
+    },
+    {
+      "id": "online:Enter your password.",
+      "key": "Enter your password.",
+      "source": "Enter your password.",
+      "target": "ป้อนรหัสผ่านของคุณ"
+    },
+    {
+      "id": "online:Eraser",
+      "key": "Eraser",
+      "source": "Eraser",
+      "target": "ยางลบ"
+    },
+    {
+      "id": "online:Error",
+      "key": "Error",
+      "source": "Error",
+      "target": "ข้อผิดพลาด"
+    },
+    {
+      "id": "online:Estimated provider costs",
+      "key": "Estimated provider costs",
+      "source": "Estimated provider costs",
+      "target": "ค่าใช้จ่ายโดยประมาณของผู้ให้บริการ"
+    },
+    {
+      "id": "online:Estimates use measured usage and configured, versioned monetary rates. Missing usage/pricing remains unavailable. An estimate covers priced attempts only; it is a partial subtotal whenever any attempt has unavailable cost.",
+      "key": "Estimates use measured usage and configured, versioned monetary rates. Missing usage/pricing remains unavailable. An estimate covers priced attempts only; it is a partial subtotal whenever any attempt has unavailable cost.",
+      "source": "Estimates use measured usage and configured, versioned monetary rates. Missing usage/pricing remains unavailable. An estimate covers priced attempts only; it is a partial subtotal whenever any attempt has unavailable cost.",
+      "target": "ค่าประมาณใช้ข้อมูลการใช้งานที่วัดได้และอัตราค่าบริการที่กำหนดไว้พร้อมเวอร์ชัน หากขาดข้อมูลการใช้งานหรือราคาจะแสดงว่าไม่มีข้อมูล ค่าประมาณครอบคลุมเฉพาะครั้งที่มีข้อมูลราคาพร้อมคำนวณ หากครั้งใดไม่มีข้อมูลค่าใช้จ่าย ยอดนี้จะเป็นยอดรวมย่อยเพียงบางส่วน"
+    },
+    {
+      "id": "online:Event",
+      "key": "Event",
+      "source": "Event",
+      "target": "เหตุการณ์"
+    },
+    {
+      "id": "online:Every member needs generator sharing support.",
+      "key": "Every member needs generator sharing support.",
+      "source": "Every member needs generator sharing support.",
+      "target": "สมาชิกทุกคนต้องรองรับการแบ่งปันตัวสร้าง"
+    },
+    {
+      "id": "online:Every room member must update before using a shared generator.",
+      "key": "Every room member must update before using a shared generator.",
+      "source": "Every room member must update before using a shared generator.",
+      "target": "สมาชิกทุกคนในห้องต้องอัปเดตเกมก่อนใช้ตัวสร้างที่แบ่งปัน"
+    },
+    {
+      "id": "online:Every seated player must be ready.",
+      "key": "Every seated player must be ready.",
+      "source": "Every seated player must be ready.",
+      "target": "ผู้เล่นทุกคนที่นั่งอยู่จะต้องพร้อม"
+    },
+    {
+      "id": "online:Example generation settings",
+      "key": "Example generation settings",
+      "source": "Example generation settings",
+      "target": "ตัวอย่างการตั้งค่าการสร้าง"
+    },
+    {
+      "id": "online:Explore custom blends and fades. Restore game settings for the in-game transition.",
+      "key": "Explore custom blends and fades. Restore game settings for the in-game transition.",
+      "source": "Explore custom blends and fades. Restore game settings for the in-game transition.",
+      "target": "ลองการผสมเสียงและการเฟดแบบกำหนดเอง คืนค่าการตั้งค่าเกมเพื่อฟังการเปลี่ยนเพลงแบบในเกม"
+    },
+    {
+      "id": "online:Explore player and AI profiles",
+      "key": "Explore player and AI profiles",
+      "source": "Explore player and AI profiles",
+      "target": "สำรวจโปรไฟล์ของผู้เล่นและ AI"
+    },
+    {
+      "id": "online:Explore ratings and games",
+      "key": "Explore ratings and games",
+      "source": "Explore ratings and games",
+      "target": "สำรวจเรตติ้งและเกมต่างๆ"
+    },
+    {
+      "id": "online:Explorers",
+      "key": "Explorers",
+      "source": "Explorers",
+      "target": "นักสำรวจ"
+    },
+    {
+      "id": "online:Export activity CSV",
+      "key": "Export activity CSV",
+      "source": "Export activity CSV",
+      "target": "ส่งออกกิจกรรม CSV"
+    },
+    {
+      "id": "online:Export cash CSV",
+      "key": "Export cash CSV",
+      "source": "Export cash CSV",
+      "target": "ส่งออกข้อมูลเงินสดในรูปแบบ CSV"
+    },
+    {
+      "id": "online:Export credits CSV",
+      "key": "Export credits CSV",
+      "source": "Export credits CSV",
+      "target": "ส่งออกเครดิตเป็นไฟล์ CSV"
+    },
+    {
+      "id": "online:Export provider costs CSV",
+      "key": "Export provider costs CSV",
+      "source": "Export provider costs CSV",
+      "target": "ส่งออกค่าใช้จ่ายผู้ให้บริการเป็น CSV"
+    },
+    {
+      "id": "online:Export saved package",
+      "key": "Export saved package",
+      "source": "Export saved package",
+      "target": "ส่งออกแพ็กเกจที่บันทึกไว้"
+    },
+    {
+      "id": "online:Export viewed revision",
+      "key": "Export viewed revision",
+      "source": "Export viewed revision",
+      "target": "ส่งออกเวอร์ชันที่ดูแล้ว"
+    },
+    {
+      "id": "online:Eyedropper",
+      "key": "Eyedropper",
+      "source": "Eyedropper",
+      "target": "เครื่องมือดูดสี"
+    },
+    {
+      "id": "online:FINAL VIEW",
+      "key": "FINAL VIEW",
+      "source": "FINAL VIEW",
+      "target": "มุมมองสุดท้าย"
+    },
+    {
+      "id": "online:Fade duration: ",
+      "key": "Fade duration: ",
+      "source": "Fade duration: ",
+      "target": "ระยะเวลาเฟด : "
+    },
+    {
+      "id": "online:Failed",
+      "key": "Failed",
+      "source": "Failed",
+      "target": "ล้มเหลว"
+    },
+    {
+      "id": "online:Family experiments",
+      "key": "Family experiments",
+      "source": "Family experiments",
+      "target": "การทดลองตระกูลอาคาร"
+    },
+    {
+      "id": "online:Family experiments JSON",
+      "key": "Family experiments JSON",
+      "source": "Family experiments JSON",
+      "target": "JSON การทดลองตระกูลอาคาร"
+    },
+    {
+      "id": "online:Family link",
+      "key": "Family link",
+      "source": "Family link",
+      "target": "ลิงก์ตระกูลอาคาร"
+    },
+    {
+      "id": "online:Family name",
+      "key": "Family name",
+      "source": "Family name",
+      "target": "ชื่อตระกูลอาคาร"
+    },
+    {
+      "id": "online:Favourite",
+      "key": "Favourite",
+      "source": "Favourite",
+      "target": "ที่ชื่นชอบ"
+    },
+    {
+      "id": "online:Favourite AIs",
+      "key": "Favourite AIs",
+      "source": "Favourite AIs",
+      "target": "AI ที่ชื่นชอบ"
+    },
+    {
+      "id": "online:Favourite an AI to keep it close.",
+      "key": "Favourite an AI to keep it close.",
+      "source": "Favourite an AI to keep it close.",
+      "target": "เลือก AI ตัวใดตัวหนึ่งเป็นรายการโปรด เพื่อให้ติดตามได้ง่าย"
+    },
+    {
+      "id": "online:Favourited",
+      "key": "Favourited",
+      "source": "Favourited",
+      "target": "เพิ่มในรายการโปรดแล้ว"
+    },
+    {
+      "id": "online:Favourites",
+      "key": "Favourites",
+      "source": "Favourites",
+      "target": "รายการโปรด"
+    },
+    {
+      "id": "online:Fields",
+      "key": "Fields",
+      "source": "Fields",
+      "target": "ฟิลด์"
+    },
+    {
+      "id": "online:File",
+      "key": "File",
+      "source": "File",
+      "target": "ไฟล์"
+    },
+    {
+      "id": "online:File unavailable.",
+      "key": "File unavailable.",
+      "source": "File unavailable.",
+      "target": "ไฟล์ไม่พร้อมใช้งาน"
+    },
+    {
+      "id": "online:Fills repeat across the model’s matching surfaces.",
+      "key": "Fills repeat across the model’s matching surfaces.",
+      "source": "Fills repeat across the model’s matching surfaces.",
+      "target": "การเติมสีจะทำซ้ำในส่วนต่างๆ ของโมเดลที่ตรงกัน"
+    },
+    {
+      "id": "online:Filter",
+      "key": "Filter",
+      "source": "Filter",
+      "target": "กรอง"
+    },
+    {
+      "id": "online:Final game view · {slot0}°",
+      "key": "Final game view · {slot0}°",
+      "source": "Final game view · {slot0}°",
+      "target": "มุมมองเกมสุดท้าย · {slot0} °"
+    },
+    {
+      "id": "online:Final statistics",
+      "key": "Final statistics",
+      "source": "Final statistics",
+      "target": "สถิติสุดท้าย"
+    },
+    {
+      "id": "online:Find a player",
+      "key": "Find a player",
+      "source": "Find a player",
+      "target": "ค้นหาผู้เล่น"
+    },
+    {
+      "id": "online:Find content",
+      "key": "Find content",
+      "source": "Find content",
+      "target": "ค้นหาเนื้อหา"
+    },
+    {
+      "id": "online:Finding players…",
+      "key": "Finding players…",
+      "source": "Finding players…",
+      "target": "กำลังหาผู้เล่น…"
+    },
+    {
+      "id": "online:Finish or cancel an existing upload first (maximum three active uploads).",
+      "key": "Finish or cancel an existing upload first (maximum three active uploads).",
+      "source": "Finish or cancel an existing upload first (maximum three active uploads).",
+      "target": "โปรดดำเนินการอัปโหลดที่กำลังดำเนินการอยู่ให้เสร็จสิ้นหรือยกเลิกก่อน (สามารถอัปโหลดได้ไม่เกินสามรายการ)"
+    },
+    {
+      "id": "online:Finished",
+      "key": "Finished",
+      "source": "Finished",
+      "target": "เสร็จสิ้น"
+    },
+    {
+      "id": "online:Finished buildings",
+      "key": "Finished buildings",
+      "source": "Finished buildings",
+      "target": "อาคารที่สร้างเสร็จแล้ว"
+    },
+    {
+      "id": "online:Finished: {value0}",
+      "key": "Finished: {value0}",
+      "source": "Finished: {value0}",
+      "target": "เสร็จสิ้น : {value0}"
+    },
+    {
+      "id": "online:First page",
+      "key": "First page",
+      "source": "First page",
+      "target": "หน้าแรก"
+    },
+    {
+      "id": "online:Fit",
+      "key": "Fit",
+      "source": "Fit",
+      "target": "พอดี"
+    },
+    {
+      "id": "online:Fit model",
+      "key": "Fit model",
+      "source": "Fit model",
+      "target": "ปรับให้เห็นทั้งโมเดล"
+    },
+    {
+      "id": "online:Fit model · F",
+      "key": "Fit model · F",
+      "source": "Fit model · F",
+      "target": "ปรับให้เห็นทั้งโมเดล · F"
+    },
+    {
+      "id": "online:Fitted {value0} unavailable, using the baked clip:",
+      "key": "Fitted {value0} unavailable, using the baked clip:",
+      "source": "Fitted {value0} unavailable, using the baked clip:",
+      "target": "ไม่มี {value0} ที่ปรับเข้ากับโมเดล จึงใช้คลิปที่ประมวลผลไว้:"
+    },
+    {
+      "id": "online:Fix the failed checks and choose your updated file.",
+      "key": "Fix the failed checks and choose your updated file.",
+      "source": "Fix the failed checks and choose your updated file.",
+      "target": "แก้ไขการตรวจสอบที่ล้มเหลวและเลือกไฟล์ที่อัปเดตแล้วของคุณ"
+    },
+    {
+      "id": "online:Flow",
+      "key": "Flow",
+      "source": "Flow",
+      "target": "ไหล"
+    },
+    {
+      "id": "online:Follow latest",
+      "key": "Follow latest",
+      "source": "Follow latest",
+      "target": "ติดตามเวอร์ชันล่าสุด"
+    },
+    {
+      "id": "online:Follow progress on the canvas.",
+      "key": "Follow progress on the canvas.",
+      "source": "Follow progress on the canvas.",
+      "target": "ติดตามความคืบหน้าบนผืนผ้าใบ"
+    },
+    {
+      "id": "online:Follow the composition, hear each candidate, and see what the checks find.",
+      "key": "Follow the composition, hear each candidate, and see what the checks find.",
+      "source": "Follow the composition, hear each candidate, and see what the checks find.",
+      "target": "ติดตามการแต่งเพลง ฟังเพลงแต่ละฉบับที่เสนอ และดูผลการตรวจสอบ"
+    },
+    {
+      "id": "online:Food in inns",
+      "key": "Food in inns",
+      "source": "Food in inns",
+      "target": "อาหารในโรงเตี๊ยม"
+    },
+    {
+      "id": "online:Footprint height (tiles)",
+      "key": "Footprint height (tiles)",
+      "source": "Footprint height (tiles)",
+      "target": "ความสูงของพื้นที่อาคาร (ช่อง)"
+    },
+    {
+      "id": "online:For an unlisted family, copy its page link and paste it into Family link or ID in the game’s Building families picker, then choose Open family. Use the same online instance where the family was published. Private families also require signing in as their owner.",
+      "key": "For an unlisted family, copy its page link and paste it into Family link or ID in the game’s Building families picker, then choose Open family. Use the same online instance where the family was published. Private families also require signing in as their owner.",
+      "source": "For an unlisted family, copy its page link and paste it into Family link or ID in the game’s Building families picker, then choose Open family. Use the same online instance where the family was published. Private families also require signing in as their owner.",
+      "target": "สำหรับตระกูลอาคารที่ไม่แสดงในรายการ ให้คัดลอกลิงก์หน้าของตระกูลแล้ววางในช่องลิงก์หรือ ID ของตระกูล ในตัวเลือกตระกูลอาคารของเกม จากนั้นเลือกเปิดตระกูล ใช้ระบบออนไลน์เดียวกับที่เผยแพร่ตระกูลนั้น สำหรับตระกูลส่วนตัวต้องลงชื่อเข้าใช้ด้วยบัญชีเจ้าของด้วย"
+    },
+    {
+      "id": "online:Force re-verification",
+      "key": "Force re-verification",
+      "source": "Force re-verification",
+      "target": "บังคับยืนยันซ้ำ"
+    },
+    {
+      "id": "online:Force re-verification of {value0}?",
+      "key": "Force re-verification of {value0}?",
+      "source": "Force re-verification of {value0}?",
+      "target": "บังคับให้ตรวจสอบค่า {value0} อีกครั้งหรือไม่?"
+    },
+    {
+      "id": "online:Fork into Studio",
+      "key": "Fork into Studio",
+      "source": "Fork into Studio",
+      "target": "ทำสำเนาเข้า Studio"
+    },
+    {
+      "id": "online:Frame",
+      "key": "Frame",
+      "source": "Frame",
+      "target": "เฟรม"
+    },
+    {
+      "id": "online:Frame dimensions must be whole numbers between 1 and 64.",
+      "key": "Frame dimensions must be whole numbers between 1 and 64.",
+      "source": "Frame dimensions must be whole numbers between 1 and 64.",
+      "target": "ขนาดเฟรมต้องเป็นจำนวนเต็มระหว่าง 1 ถึง 64"
+    },
+    {
+      "id": "online:Frame height",
+      "key": "Frame height",
+      "source": "Frame height",
+      "target": "ความสูงเฟรม"
+    },
+    {
+      "id": "online:Frame width",
+      "key": "Frame width",
+      "source": "Frame width",
+      "target": "ความกว้างเฟรม"
+    },
+    {
+      "id": "online:Frames run left to right, then top to bottom.",
+      "key": "Frames run left to right, then top to bottom.",
+      "source": "Frames run left to right, then top to bottom.",
+      "target": "เฟรมภาพเรียงจากซ้ายไปขวา แล้วจากบนลงล่าง"
+    },
+    {
+      "id": "online:Friends share a code or a link from their room.",
+      "key": "Friends share a code or a link from their room.",
+      "source": "Friends share a code or a link from their room.",
+      "target": "เพื่อนๆ แชร์รหัสหรือลิงก์จากห้องของตนเอง"
+    },
+    {
+      "id": "online:From (UTC)",
+      "key": "From (UTC)",
+      "source": "From (UTC)",
+      "target": "จาก (UTC)"
+    },
+    {
+      "id": "online:From this view",
+      "key": "From this view",
+      "source": "From this view",
+      "target": "จากมุมมองนี้"
+    },
+    {
+      "id": "online:Full compatibility key: {slot0}",
+      "key": "Full compatibility key: {slot0}",
+      "source": "Full compatibility key: {slot0}",
+      "target": "รหัสความเข้ากันได้เต็มรูปแบบ : {slot0}"
+    },
+    {
+      "id": "online:Full definition and frame mappings",
+      "key": "Full definition and frame mappings",
+      "source": "Full definition and frame mappings",
+      "target": "นิยามทั้งหมดและการจับคู่เฟรม"
+    },
+    {
+      "id": "online:Full leaderboard",
+      "key": "Full leaderboard",
+      "source": "Full leaderboard",
+      "target": "ตารางคะแนนเต็ม"
+    },
+    {
+      "id": "online:Game preview",
+      "key": "Game preview",
+      "source": "Game preview",
+      "target": "ตัวอย่างเกม"
+    },
+    {
+      "id": "online:Game scale",
+      "key": "Game scale",
+      "source": "Game scale",
+      "target": "มาตราส่วนเกม"
+    },
+    {
+      "id": "online:Game version",
+      "key": "Game version",
+      "source": "Game version",
+      "target": "เวอร์ชั่นเกม"
+    },
+    {
+      "id": "online:Game versions",
+      "key": "Game versions",
+      "source": "Game versions",
+      "target": "เวอร์ชันเกม"
+    },
+    {
+      "id": "online:Game-engine preview of the checked set",
+      "key": "Game-engine preview of the checked set",
+      "source": "Game-engine preview of the checked set",
+      "target": "การแสดงตัวอย่างเอนจิ้นเกมของชุดที่ตรวจสอบแล้ว"
+    },
+    {
+      "id": "online:Game-size reference",
+      "key": "Game-size reference",
+      "source": "Game-size reference",
+      "target": "ข้อมูลอ้างอิงขนาดเกม"
+    },
+    {
+      "id": "online:Gameplay preset",
+      "key": "Gameplay preset",
+      "source": "Gameplay preset",
+      "target": "การตั้งค่าเกมล่วงหน้า"
+    },
+    {
+      "id": "online:Gameplay preset: {slot0}",
+      "key": "Gameplay preset: {slot0}",
+      "source": "Gameplay preset: {slot0}",
+      "target": "การตั้งค่าเกมล่วงหน้า : {slot0}"
+    },
+    {
+      "id": "online:Games",
+      "key": "Games",
+      "source": "Games",
+      "target": "เกม"
+    },
+    {
+      "id": "online:Generate",
+      "key": "Generate",
+      "source": "Generate",
+      "target": "สร้าง"
+    },
+    {
+      "id": "online:Generate a map to inspect its terrain and starting colonies, then watch AI colonies play.",
+      "key": "Generate a map to inspect its terrain and starting colonies, then watch AI colonies play.",
+      "source": "Generate a map to inspect its terrain and starting colonies, then watch AI colonies play.",
+      "target": "สร้างแผนที่เพื่อตรวจสอบภูมิประเทศและอาณานิคมเริ่มต้น จากนั้นดูอาณานิคมที่ควบคุมโดย AI เล่น"
+    },
+    {
+      "id": "online:Generate new landscapes from community JavaScript packages. Install a release in Settings → Map generators, or select it in an online room.",
+      "key": "Generate new landscapes from community JavaScript packages. Install a release in Settings → Map generators, or select it in an online room.",
+      "source": "Generate new landscapes from community JavaScript packages. Install a release in Settings → Map generators, or select it in an online room.",
+      "target": "สร้างภูมิประเทศใหม่จากแพ็กเกจ JavaScript ของชุมชน ติดตั้งฉบับเผยแพร่ใน การตั้งค่า → ตัวสร้างแผนที่ หรือเลือกในห้องออนไลน์"
+    },
+    {
+      "id": "online:Generated",
+      "key": "Generated",
+      "source": "Generated",
+      "target": "สร้างขึ้น"
+    },
+    {
+      "id": "online:Generated by",
+      "key": "Generated by",
+      "source": "Generated by",
+      "target": "สร้างโดย"
+    },
+    {
+      "id": "online:Generated edits applied to revision {slot0}.",
+      "key": "Generated edits applied to revision {slot0}.",
+      "source": "Generated edits applied to revision {slot0}.",
+      "target": "นำการแก้ไขที่สร้างขึ้นไปใช้กับฉบับแก้ไข {slot0} แล้ว"
+    },
+    {
+      "id": "online:Generated example map",
+      "key": "Generated example map",
+      "source": "Generated example map",
+      "target": "แผนที่ตัวอย่างที่สร้างขึ้น"
+    }
+  ]
+}
