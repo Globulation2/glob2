@@ -14,6 +14,10 @@ test('Malay persists across app navigation and server-rendered pages', async ({
   const routes = [
     ['home', '/'],
     ['maps', '/maps'],
+    ['generators', '/generators'],
+    ['ais', '/ais'],
+    ['buildings', '/buildings'],
+    ['music', '/music'],
     ['matches', '/matches'],
     ['leaderboard', '/leaderboard/ranked-1v1'],
     ['account', '/account'],
@@ -33,6 +37,19 @@ test('Malay persists across app navigation and server-rendered pages', async ({
         page.getByRole('link', { name: malay['Open in the Globulation 2 app'] }),
       ).toBeVisible();
     await page.evaluate('document.fonts.ready');
+    if (name === 'maps') {
+      const clippedOption = await page.evaluate(`(() => {
+        const select = document.querySelector('.library-filter-row select');
+        const style = getComputedStyle(select);
+        const context = document.createElement('canvas').getContext('2d');
+        context.font = style.fontWeight + ' ' + style.fontSize + ' ' + style.fontFamily;
+        const text = select.selectedOptions[0].textContent;
+        const spacing = (parseFloat(style.letterSpacing) || 0) * Math.max(0, text.length - 1);
+        return context.measureText(text).width + spacing
+          - (select.clientWidth - parseFloat(style.paddingLeft) - parseFloat(style.paddingRight));
+      })()`);
+      expect(clippedOption, 'The selected team-count option should fit').toBeLessThanOrEqual(1);
+    }
     expect(
       await page.evaluate(
         'document.documentElement.scrollWidth - document.documentElement.clientWidth',
