@@ -1,0 +1,27 @@
+{
+  "final_commit": "a047e691dfe6d3527f93034abbfbc5dd149e52d6",
+  "production_identical_parent": "a8147d843de2f961049ee438afb6844a43c3fcab",
+  "integrated_master": "e7613e93b08234dbf785ceef3bd9b884cbb73221",
+  "current_master": "de1d2ff6c87cb8b4d6edb7d3de9b1c2ea7a7a650",
+  "platform": "Linux-7.0.0-38-generic-x86_64-with-glibc2.39",
+  "architecture": "x86_64",
+  "python": "3.12.3",
+  "compiler": "g++ (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0",
+  "glslang_pin": "1062752a891c95b2bfeed9e356562d88f9df84ac (15.1.0)",
+  "build_flags": "tools/dev_build.py engine-tests unit-tests; dev_fast=1, -O0 -g1, linker=auto; pinned SDL3 prefix and offline Vulkan shaders",
+  "engine_unique_cases_across_run_and_rerun": 153,
+  "parent_unit_cases": 1249,
+  "final_introduction_cases": 15,
+  "final_experimental_features_cases": 11,
+  "final_golden_cases": 1,
+  "limitations": [
+    "Windows/macOS/browser checksum equivalence not run",
+    "release-build qualification not run",
+    "manual human gameplay not performed",
+    "hosted CI pending; not used as local qualification"
+  ],
+  "final_binary_sha256": {
+    "glob2-engine-tests": "7be539e0e409f47f1fcc043b549371ebfe8e68543711732f7f0dd3c5e07b3ff1",
+    "glob2-unit-tests": "8a15b2599976c4b03ea2eef7def5ba74c3fd1ae93b1bfc3bed4329d5d466e9f8"
+  }
+}
