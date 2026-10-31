@@ -129,8 +129,8 @@ for (const variant of ['serial', 'threaded']) {
     await screen(page, 'MainMenuScreen');
     for (const name of ['music', 'music-sets'])
       await expect.poll(async () => (await snapshot(page)).assets[name], {timeout:120000}).toBe('ready');
-    const sets = ['original', 'apple-cider', 'bramble-jig', 'curious-critters', 'fennel-mist',
-      'glass-garden', 'moss-lanterns', 'thistle-waltz', 'woodland'];
+    const sets = ['original', 'bramble-jig', 'fennel-mist',
+      'glass-garden', 'moss-lanterns', 'thistle-waltz'];
     const inventory = await page.evaluate(sets => sets.map(set => ({set,
       files:FS.readdir(`/data/zik/${set}`).filter(file => /\.(opus|ogg)$/.test(file)).sort()
     })), sets);

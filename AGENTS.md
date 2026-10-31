@@ -47,6 +47,15 @@ working notes or PR narratives. Use these ignored local directories instead:
 - `docs/.work/` for temporary Markdown notes, validation narratives and draft PR
   material.
 
+Broad AI experiments must use the storage controls in `tools.tournaments` (see
+[experiment storage](docs/tools/tournaments.md#experiment-storage)); standalone
+runners must enforce equivalent per-attempt, campaign and free-space limits.
+Default to results, seeds, frozen inputs and compact telemetry. Select a bounded
+set of games for replays/saves, and use exhaustive per-object checksum dumps only
+for focused diagnostics with explicit byte allowances. Compress logs while
+capturing them; do not accumulate raw output until the end of each match. Never
+silently truncate a measurement or count storage failures as successful games.
+
 Before committing a documentation file, remove transient command output, local
 paths, dated status reports and redundant screenshots. Attach evidence needed for
 review to the pull request or keep it on a dedicated evidence branch. Summarize

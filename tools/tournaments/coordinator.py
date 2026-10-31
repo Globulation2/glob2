@@ -16,10 +16,12 @@ from .model import DEFAULTS, validate_experiment
 from .resources import plan_from_record, validate_frozen_attempt, validate_game_participants
 from .transfer import receive_file, send_file
 from .transport import Transport, worker_archive
+from .storage import directory_bytes
 
 INFRASTRUCTURE = {'transport_failure', 'interrupted', 'disk_pressure', 'artifact_failure', 'invalid_result'}
 PROCESS_FAILURES = {'crash', 'timeout', 'process_failure'}
 TERMINAL_RESULTS = {'success', 'invalid_request', 'generation_failed'}
+LIMIT_FAILURES = {'storage_limit'}
 
 
 class Coordinator:
@@ -149,6 +151,9 @@ class Coordinator:
                                 (now + self.settings['lease_seconds'], attempt['id'], attempt['token'], host, now))
 
     def _retry_or_fail(self, job_id, category):
+        if category in LIMIT_FAILURES:
+            self.db.execute("UPDATE jobs SET state='failed',active=NULL WHERE id=? AND accepted IS NULL AND state!='cancelled'", (job_id,))
+            return  # A fixed recording allowance is not healed by replaying it.
         family = INFRASTRUCTURE if category in INFRASTRUCTURE else PROCESS_FAILURES
         limit = self.settings['infrastructure_attempts'] if category in INFRASTRUCTURE else self.settings['process_attempts']
         count = sum(1 for row in self.db.execute("SELECT category FROM attempts WHERE job_id=? AND state!='manual_retry_history'", (job_id,)) if row['category'] in family)
@@ -213,7 +218,7 @@ class Coordinator:
     def dispatch(self, host, status, now=None):
         now = time.time() if now is None else now
         self.expire(now)
-        if self.mode != 'running' or not status['accepting']:
+        if self.mode != 'running' or not status['accepting'] or not self.storage_status()['accepting']:
             return []
         plan = plan_from_record(status['resource_plan']) if status.get('resource_plan') is not None else None
         if plan is None and self.settings.get('caller_allocation_plan') is not None:
@@ -331,7 +336,7 @@ class Coordinator:
     def accept(self, record, now=None):
         now = time.time() if now is None else now
         identifier(record['id'])
-        if record.get('schema_version') != 1 or record.get('category') not in INFRASTRUCTURE | PROCESS_FAILURES | TERMINAL_RESULTS:
+        if record.get('schema_version') != 1 or record.get('category') not in INFRASTRUCTURE | PROCESS_FAILURES | TERMINAL_RESULTS | LIMIT_FAILURES:
             raise ValueError('invalid attempt schema or failure category')
         row = self.db.execute('SELECT * FROM attempts WHERE id=?', (record['id'],)).fetchone()
         if not row or row['token'] != record['token'] or row['host'] != record['host']:
@@ -395,7 +400,7 @@ class Coordinator:
             item['peak_rss_bytes'] = max(item['peak_rss_bytes'],(record.get('resource_usage') or {}).get('peak_rss_bytes',0))
         for item in measurements.values():
             item['ticks_per_process_second'] = item['simulation_ticks']/item['process_seconds'] if item['process_seconds'] else None
-        return {'experiment': self.manifest['id'], 'mode': self.mode, 'measurements': measurements,
+        return {'experiment': self.manifest['id'], 'mode': self.mode, 'storage': self.storage_status(), 'measurements': measurements,
                 'jobs': dict(self.db.execute('SELECT state,count(*) FROM jobs GROUP BY state').fetchall()),
                 'attempts': dict(self.db.execute('SELECT state,count(*) FROM attempts GROUP BY state').fetchall()),
                 'failures': [dict(row) for row in self.db.execute('SELECT host,category,count(*) AS count FROM attempts WHERE category IS NOT NULL AND category!=\'success\' GROUP BY host,category')],
@@ -449,13 +454,65 @@ class Coordinator:
         if self.mode != 'running': return False
         return transport.rpc('enqueue', attempt=attempt)['enqueued']
 
+    def storage_status(self):
+        used = directory_bytes(self.root / 'artifacts') + directory_bytes(self.root / 'transfers')
+        path = self.root / 'transfers' / 'storage-reservations.json'
+        reservations = read_json(path) if path.exists() else {}
+        reserved = 0
+        for identity, size in reservations.items():
+            target = self.root / 'artifacts' / identity
+            partial = target.with_name(identity + '.part')
+            present = target.stat().st_size if target.exists() else partial.stat().st_size if partial.exists() else 0
+            reserved += max(0, size - present)
+        free = shutil.disk_usage(self.root).free
+        budget = self.settings['artifact_budget_bytes']
+        return {'used_bytes': used, 'reserved_bytes': reserved, 'budget_bytes': budget,
+                'free_bytes': free, 'disk_reserve_bytes': self.settings['disk_reserve_bytes'],
+                'accepting': used + reserved < budget and free - reserved > self.settings['disk_reserve_bytes']}
+
+    def receive_artifact(self, transport, artifact):
+        identity, size = hash_id(artifact['sha256']), artifact['bytes']
+        if type(size) is not int or size < 0:
+            raise ValueError('invalid artifact byte size')
+        # Reserve the full remaining transfer before releasing this short lock.
+        # Network I/O stays parallel; distinct lanes cannot each spend the same
+        # free space. Reservations survive resumable transfers and restarts.
+        with lock(self.root / 'transfers' / 'storage.lock', blocking=True):
+            path = self.root / 'transfers' / 'storage-reservations.json'
+            reservations = read_json(path) if path.exists() else {}
+            if identity in reservations and reservations[identity] != size:
+                raise ValueError('artifact size changed during transfer')
+            target = self.root / 'artifacts' / identity
+            partial = target.with_name(identity + '.part')
+            # Other applications may consume disk after a reservation. A resumed
+            # transfer must honor the reserve before each bounded chunk batch.
+            state = self.storage_status()
+            if not target.exists() and state['free_bytes'] - state['reserved_bytes'] < state['disk_reserve_bytes']:
+                return False
+            if not target.exists() and identity not in reservations:
+                remaining = size - (partial.stat().st_size if partial.exists() else 0)
+                proposed = dict(reservations, **{identity: size})
+                metadata_growth = max(0, len(canonical(proposed)) + 1 - (path.stat().st_size if path.exists() else 0))
+                if (state['used_bytes'] + state['reserved_bytes'] + remaining + metadata_growth > state['budget_bytes']
+                        or state['free_bytes'] - state['reserved_bytes'] - remaining - metadata_growth < state['disk_reserve_bytes']):
+                    return False
+                reservations[identity] = size
+                atomic_json(path, reservations)
+        complete = receive_file(transport, self.root / 'artifacts', identity, size, budget=8)
+        if complete:
+            with lock(self.root / 'transfers' / 'storage.lock', blocking=True):
+                reservations = read_json(path) if path.exists() else {}
+                reservations.pop(identity, None)
+                atomic_json(path, reservations)
+        return complete
+
     def collect_attempt(self, transport, item):
         record = transport.rpc('record', identity=item['id'])
         for artifact in record['artifacts']:
             # Two attempts may share the same artifact. Coordinate resumable offsets
             # across all collection lanes, including distinct hosts.
             with lock(self.root / 'transfers' / (artifact['sha256'] + '.receive.lock'), blocking=True):
-                if not receive_file(transport, self.root / 'artifacts', artifact['sha256'], artifact['bytes'], budget=8):
+                if not self.receive_artifact(transport, artifact):
                     return False
         self.accept(record)
         transport.rpc('ack', identity=item['id'], token=item['token'])
@@ -476,7 +533,7 @@ class Coordinator:
             record = transport.rpc('record', identity=item['id'])
             ready = True
             for artifact in record['artifacts']:
-                if not receive_file(transport, self.root / 'artifacts', artifact['sha256'], artifact['bytes'], budget=8):
+                if not self.receive_artifact(transport, artifact):
                     ready = False
                     break
             if ready:

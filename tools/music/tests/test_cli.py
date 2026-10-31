@@ -1,8 +1,7 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 """Command-line helpers: LICENSE.txt generation, target resolution, install, check
-arguments, waiver reporting, Ogg stream parsing and the ACE-Step hash gate."""
+arguments, waiver reporting and Ogg stream parsing."""
 import contextlib
-import hashlib
 import io
 from pathlib import Path
 import sys
@@ -16,7 +15,6 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from glob2music import cli  # noqa: E402
 from glob2music.audio import AudioFormatError, ogg_streams, write_opus  # noqa: E402
-from glob2music.genai import acestep  # noqa: E402
 from glob2music.manifest import ManifestError, parse_manifest  # noqa: E402
 from glob2music.qa import CHECK_NAMES  # noqa: E402
 from glob2music.qa.calibrate import spec_and_waivers  # noqa: E402
@@ -31,7 +29,7 @@ SConscript("original/SConscript")'''
 
 
 def manifest(**overrides):
-    data = {'title': 'Test Set', 'method': 'adapted', 'license': 'CC-BY-4.0', 'shipped': True,
+    data = {'title': 'Test Set', 'method': 'symbolic-acoustic', 'license': 'CC-BY-4.0', 'shipped': True,
             'credits': ['"Tune" by Someone, CC BY 4.0, https://example.org/tune'],
             'description': 'Changes made:\n- Looped and remixed.'}
     data.update(overrides)
@@ -70,18 +68,18 @@ class ResolveTest(unittest.TestCase):
             (plain / 'a1.opus').write_bytes(b'')
             self.assertEqual(cli._resolve(str(plain)), (plain, None))
             out, repo = tmp / 'out', tmp / 'repo'
-            (repo / 'data' / 'zik' / 'woodland').mkdir(parents=True)
+            (repo / 'data' / 'zik' / 'moss-lanterns').mkdir(parents=True)
             with mock.patch.object(cli, 'OUT_DIR', out), mock.patch.object(cli, 'REPO_ROOT', repo):
                 # Reference sets are always the shipped files.
                 self.assertEqual(cli._resolve('original')[0], repo / 'data' / 'zik' / 'original')
                 # A shipped set not built locally falls back to data/zik only when installed.
-                self.assertEqual(cli._resolve('woodland')[0], out / 'woodland')
-                (repo / 'data' / 'zik' / 'woodland' / 'a1.opus').write_bytes(b'')
-                directory, m = cli._resolve('woodland')
-                self.assertEqual((directory, m.set_id), (repo / 'data' / 'zik' / 'woodland', 'woodland'))
-                (out / 'woodland').mkdir(parents=True)
-                (out / 'woodland' / 'a1.opus').write_bytes(b'')
-                self.assertEqual(cli._resolve('woodland')[0], out / 'woodland')
+                self.assertEqual(cli._resolve('moss-lanterns')[0], out / 'moss-lanterns')
+                (repo / 'data' / 'zik' / 'moss-lanterns' / 'a1.opus').write_bytes(b'')
+                directory, m = cli._resolve('moss-lanterns')
+                self.assertEqual((directory, m.set_id), (repo / 'data' / 'zik' / 'moss-lanterns', 'moss-lanterns'))
+                (out / 'moss-lanterns').mkdir(parents=True)
+                (out / 'moss-lanterns' / 'a1.opus').write_bytes(b'')
+                self.assertEqual(cli._resolve('moss-lanterns')[0], out / 'moss-lanterns')
             with self.assertRaises(FileNotFoundError):
                 cli._resolve(str(tmp / 'no-such-set'))
 
@@ -97,23 +95,23 @@ class RegisterAndInstallTest(unittest.TestCase):
     def test_register_set_is_idempotent_and_keeps_original_first(self):
         with tempfile.TemporaryDirectory() as tmp:
             zik = self.zik(tmp)
-            cli._register_set(zik, 'woodland')
+            cli._register_set(zik, 'test-zither')
             first = (zik / 'SConscript').read_text()
-            self.assertTrue(first.startswith('import os\n\nImport("env")\n\nfor music_set in ("original", "woodland"):'))
-            (zik / 'woodland').mkdir()
-            (zik / 'woodland' / 'SConscript').write_text('')
-            cli._register_set(zik, 'woodland')
+            self.assertTrue(first.startswith('import os\n\nImport("env")\n\nfor music_set in ("original", "test-zither"):'))
+            (zik / 'test-zither').mkdir()
+            (zik / 'test-zither' / 'SConscript').write_text('')
+            cli._register_set(zik, 'test-zither')
             self.assertEqual((zik / 'SConscript').read_text(), first)
-            cli._register_set(zik, 'apple-cider')
-            self.assertIn('("original", "apple-cider", "woodland")', (zik / 'SConscript').read_text())
+            cli._register_set(zik, 'test-bells')
+            self.assertIn('("original", "test-bells", "test-zither")', (zik / 'SConscript').read_text())
 
     def test_register_set_refuses_an_unexpected_sconscript(self):
         with tempfile.TemporaryDirectory() as tmp:
             zik = self.zik(tmp, 'print("hand written")\n')
             with self.assertRaises(ManifestError):
-                cli._register_set(zik, 'woodland')
+                cli._register_set(zik, 'test-zither')
             with self.assertRaises(ManifestError):
-                cli._register_set(Path(tmp) / 'missing', 'woodland')
+                cli._register_set(Path(tmp) / 'missing', 'test-zither')
 
     def test_recursive_discovery_needs_no_registration_edit(self):
         with tempfile.TemporaryDirectory() as tmp:
@@ -126,7 +124,7 @@ class RegisterAndInstallTest(unittest.TestCase):
         set_dir = Path(tmp) / 'sets' / 'test-set'
         set_dir.mkdir(parents=True)
         (set_dir / 'set.toml').write_text(
-            'title = "Test Set"\nmethod = "adapted"\nlicense = "CC0-1.0"\n'
+            'title = "Test Set"\nmethod = "symbolic-acoustic"\nlicense = "CC0-1.0"\n'
             f'shipped = {"true" if shipped else "false"}\ndescription = "A test."\n')
         out = Path(tmp) / 'out'
         (out / 'test-set').mkdir(parents=True)
@@ -183,8 +181,6 @@ class CheckArgumentsTest(unittest.TestCase):
     def test_calibrate_checks_sets_with_their_own_manifest(self):
         spec, waivers = spec_and_waivers('original')
         self.assertIn('loudness.ladder', waivers)
-        spec, _ = spec_and_waivers('curious-critters')
-        self.assertEqual(spec.target_lufs['calm'], DEFAULT_SPEC.target_lufs['calm'] - 1.0)
         self.assertEqual(spec_and_waivers('codex-seedling'), (DEFAULT_SPEC, {}))
 
 
@@ -210,28 +206,6 @@ class OggStreamsTest(unittest.TestCase):
             empty.write_bytes(b'')
             with self.assertRaises(AudioFormatError):
                 ogg_streams(empty)
-
-
-class AceStepHashGateTest(unittest.TestCase):
-    REQUEST = acestep.Request(caption='test', bpm=96, keyscale='C major', duration=10, seed=1)
-
-    def test_mismatch_is_an_error_unless_regeneration_is_allowed(self):
-        with tempfile.TemporaryDirectory() as tmp:
-            path = acestep.cache_path(self.REQUEST, tmp)
-            path.parent.mkdir(parents=True)
-            path.write_bytes(b'a generation')
-            good = hashlib.sha256(b'a generation').hexdigest()
-            self.assertEqual(acestep.generate(self.REQUEST, tmp, expected_sha256=good), path)
-            with self.assertRaises(acestep.GenerationMismatch):
-                acestep.generate(self.REQUEST, tmp, expected_sha256='0' * 64)
-            with self.assertLogs('glob2music.genai.acestep', 'WARNING'):
-                self.assertEqual(acestep.generate(self.REQUEST, tmp, expected_sha256='0' * 64,
-                                                  allow_mismatch=True), path)
-
-    def test_cache_miss_does_not_regenerate_without_opt_in(self):
-        with tempfile.TemporaryDirectory() as tmp:
-            with self.assertRaisesRegex(acestep.GenAIUnavailable, 'allow-regenerate'):
-                acestep.generate(self.REQUEST, tmp, expected_sha256='0' * 64, checkout=tmp)
 
 
 if __name__ == '__main__':

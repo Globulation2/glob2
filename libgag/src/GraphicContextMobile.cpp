@@ -41,7 +41,7 @@ namespace GAGCore {
         for (int i = 0; i < touchCount; ++i)
             input.touch = input.touch || SDL_GetTouchDeviceType(touches[i]) == SDL_TOUCH_DEVICE_DIRECT;
         SDL_free(touches);
-#if defined(__ANDROID__) || defined(__IPHONEOS__)
+#if defined(__ANDROID__) || defined(SDL_PLATFORM_IOS)
         input.touch=true;input.pointer=mobilePointerAvailable();input.hover=input.pointer;
 #endif
         ApplicationHost::presentationMetrics(metrics,input);

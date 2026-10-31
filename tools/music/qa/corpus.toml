@@ -24,18 +24,6 @@ path = "data/zik/original"
 why = "The shipped 2000s soundtrack; the benchmark for feel."
 
 [[set]]
-id = "woodland"
-verdict = "good"
-path = "data/zik/woodland"
-why = "Approved (ships as woodland)."
-
-[[set]]
-id = "apple-cider"
-verdict = "good"
-path = "data/zik/apple-cider"
-why = "Approved (ships as apple-cider)."
-
-[[set]]
 id = "moss-lanterns"
 verdict = "good"
 path = "data/zik/moss-lanterns"
@@ -92,9 +80,3 @@ id = "bramble-jig"
 verdict = "good"
 path = "data/zik/bramble-jig"
 why = "Approved: great, the right feel."
-
-[[set]]
-id = "curious-critters"
-verdict = "good"
-path = "data/zik/curious-critters"
-why = "Approved (ships): reworked for more mood contrast after an earlier adaptation was judged too uniform."
