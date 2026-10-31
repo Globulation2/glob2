@@ -1,0 +1,17 @@
+{
+  "source_bytes": 226370428,
+  "retained_probability_records": 504,
+  "compressed_bytes": 5715,
+  "all_probability_records_preserved": true,
+  "capture": {
+    "encoding": "gzip",
+    "raw_bytes": 62321,
+    "raw_sha256": "52ebecfde15d18960c1ae90952a0dce6dc4479363d2f31792bccf9fd82978f56",
+    "received_bytes": 226370428,
+    "mode": "win-probability",
+    "complete": true,
+    "error": null
+  },
+  "source_artifact": "retained Maxima recovery pilot/stdout.log",
+  "source_sha256": "52395358ffcab600840f54232f055bad57c8f9e1ab09b9965ebdd5edcacb049c"
+}

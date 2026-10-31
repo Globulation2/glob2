@@ -1,0 +1,58 @@
+{
+  "tested_commit": "8fc4b9e415c74f6c465c429a411472c7ec8f56ca",
+  "base_commit": "6a16670c6daafa34f1f86a47014f23e0d05fd4e3",
+  "platform": "Linux-7.0.0-38-generic-x86_64-with-glibc2.39",
+  "python": "3.12.3 (main, Aug 31 2026, 10:18:26) [GCC 13.3.0]",
+  "checks": [
+    {
+      "name": "tournaments",
+      "command": [
+        "/usr/bin/python3",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "test",
+        "-p",
+        "test_tournament*.py"
+      ],
+      "exit_code": 0,
+      "seconds": 46.355233708000014,
+      "log": "tournaments-final.log",
+      "log_sha256": "3caf453c7676261a98dd5968816dbc38502534a0e66f14c11be2f5586c3b87e2"
+    },
+    {
+      "name": "ci_policy",
+      "command": [
+        "/usr/bin/python3",
+        "test/build_system/test_ci_policy.py"
+      ],
+      "exit_code": 0,
+      "seconds": 0.9373724180004501,
+      "log": "ci_policy-final.log",
+      "log_sha256": "6dc4b70d9bbe27c6e8686fc3cdb07d78912ecc3c62bd30d008945f177a0d3db8"
+    },
+    {
+      "name": "game_telemetry",
+      "command": [
+        "/usr/bin/python3",
+        "test/test_distributed_game_telemetry.py"
+      ],
+      "exit_code": 0,
+      "seconds": 0.1505176949995075,
+      "log": "game_telemetry-final.log",
+      "log_sha256": "d3cb31c0dd90ec3a1d21bb5dfe377f481960b528a9a09cc1385c3e7ab6bcb53c"
+    },
+    {
+      "name": "map_telemetry",
+      "command": [
+        "/usr/bin/python3",
+        "test/test_distributed_map_telemetry.py"
+      ],
+      "exit_code": 0,
+      "seconds": 0.11388731999977608,
+      "log": "map_telemetry-final.log",
+      "log_sha256": "dec5673ee7ead0e86a249ea046dba60aab31a8206a43fedeb035ab8449b4e26d"
+    }
+  ]
+}
