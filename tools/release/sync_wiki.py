@@ -19,10 +19,29 @@ PAGES = ('Download and Install', 'Changes', 'Older Releases')
 BEGIN = '<!-- glob2-release-sync:begin -->'
 END = '<!-- glob2-release-sync:end -->'
 TAG = re.compile(r'v?[0-9]+(?:\.[0-9]+){2,3}\Z')
+CAPTCHA_ANSWERS = {
+    'what are the vowels in "globulation"? (in order)': 'ouaio',
+    'what letters are not consonants "globulation"? (in order)': 'ouaio',
+    'what letters are neither vowels or b in "globulation"? (in order)': 'glltn',
+}
 
 
 class SyncError(RuntimeError):
     pass
+
+
+def captcha_answer(challenge):
+    if not isinstance(challenge, dict) or challenge.get('type') != 'question':
+        raise SyncError('Unrecognized wiki CAPTCHA; manual review required')
+    question = challenge.get('question')
+    identifier = challenge.get('id')
+    if not isinstance(question, str) or not isinstance(identifier, (str, int)) or not str(identifier):
+        raise SyncError('Incomplete wiki CAPTCHA; manual review required')
+    normalized = ' '.join(question.replace('“', '"').replace('”', '"').casefold().split())
+    answer = CAPTCHA_ANSWERS.get(normalized)
+    if answer is None:
+        raise SyncError('Unrecognized wiki CAPTCHA question; manual review required')
+    return str(identifier), answer
 
 
 class NoRedirect(urllib.request.HTTPRedirectHandler):
@@ -86,7 +105,8 @@ def render(title, inventory, latest):
                  '[https://glob2.online/ Current website and downloads] · '
                  '[https://app.glob2.online/ Play in your browser]',
                  'See the linked release for its available packages and notes. Platform availability varies by release.',
-                 'Source code: [[Git|current repository and build instructions]].',
+                 'Source code: [[Git|current repository and build instructions]] · '
+                 f'[{REPO}/tree/{latest} source for {latest}].',
                  '=== Public previews ===']
         lines += [entry(r) for r in previews] or ['No public versioned previews are currently listed.']
         lines += ['See [[Changes]] and [[Older Releases]] for release history.']
@@ -157,13 +177,19 @@ class Wiki:
                 page['actions'].get('edit', False) in ('', True)}
 
     def save(self, page, content, token):
-        result = self.call(action='edit', title=page['title'], text=content, token=token,
-                           baserevid=page['revid'], basetimestamp=page['timestamp'],
-                           starttimestamp=page['start'], assert_='user', nocreate=1,
-                           summary='Synchronize public stable and preview releases from GitHub')
+        params = dict(action='edit', title=page['title'], text=content, token=token,
+                      baserevid=page['revid'], basetimestamp=page['timestamp'],
+                      starttimestamp=page['start'], assert_='user', nocreate=1,
+                      summary='Synchronize public stable and preview releases from GitHub')
+        result = self.call(**params)
         edit = result.get('edit', {})
+        if 'captcha' in edit:
+            identifier, answer = captcha_answer(edit['captcha'])
+            result = self.call(**params, captchaid=identifier, captchaword=answer)
+            edit = result.get('edit', {})
+            print('Answered a recognized wiki CAPTCHA once:', page['title'])
         if edit.get('result') != 'Success' or 'captcha' in edit:
-            raise SyncError('Wiki edit failed or requires CAPTCHA; no automatic retry')
+            raise SyncError('Wiki edit failed or CAPTCHA persists; no further automatic retry')
         return edit.get('newrevid', page['revid'])
 
 

@@ -230,9 +230,14 @@ permissions and publish a real update successfully. New-account external-link
 CAPTCHAs block initial edits and new version links on this wiki. Its ordinary
 `user` and `autoconfirmed` groups lack `skipcaptcha`; the `bot` and `sysop`
 groups have it. A bot password does not grant its parent account extra rights.
-An appropriate CAPTCHA-exempt publishing account is the supported unattended
-setup for this tool. CAPTCHA responses are not implemented: a challenge stops
-publication and requires operator attention. The publisher rejects HTTP redirects, API
+The publisher can answer the three observed English QuestyCaptcha questions
+about the vowels in "Globulation", letters that are not consonants, and letters
+that are neither vowels nor `b`. It matches only these known questions (ignoring
+case, whitespace and curly quotation marks), and retries the same edit once with
+the returned challenge ID. Revision guards and the edit payload stay unchanged.
+Unknown questions, other CAPTCHA types, missing identifiers or a second challenge
+stop publication for operator attention. Login challenges are not answered.
+A CAPTCHA-exempt account remains an optional alternative. The publisher rejects HTTP redirects, API
 errors, missing permissions, malformed markers and revision conflicts. If wiki
 reauthentication redirects to another host or plain HTTP, stop and have the wiki
 administrator correct the route before entering credentials. Do not claim
