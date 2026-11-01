@@ -160,15 +160,10 @@ for (const device of [
     await page.screenshot({path: path.join(evidence, 'ai-profile-bottom.png')});
     await clickControl(page, 'profile/back');
     await screen(page, 'CustomGameScreen');
-    // Touch setup is a wizard: Back first returns to its preceding step.
-    for (let step = 0; step < 3; ++step) {
-      const beforeBack = await snapshot(page);
-      if (beforeBack.controls['menu/1']) break;
-      const previousKeys = Object.keys(beforeBack.controls).sort().join('\n');
-      await clickControl(page, 'back');
-      await expect.poll(async () => Object.keys((await snapshot(page)).controls).sort().join('\n'),
-        {message: 'Back did not change the published screen controls'}).not.toBe(previousKeys);
-    }
+    // Back exits from the first setup step on both touch and desktop.
+    await clickControl(page, 'tab/0');
+    await control(page, 'map/mode/0');
+    await clickControl(page, 'back');
     await screen(page, 'MainMenuScreen');
 
     if (device.name === 'desktop') {
