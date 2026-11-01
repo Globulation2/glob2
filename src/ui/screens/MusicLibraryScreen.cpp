@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
+#include "ui/ApiErrorText.h"
 #include "app/ClientFeatures.h"
 #include "MusicUI.h"
 #include "MusicLibraryScreen.h"
@@ -231,6 +232,14 @@ void MusicLibraryScreen::onTimer(Uint32)
 		if (response.status < 200 || response.status >= 300)
 		{
 			auto json = Json::parse(response.body, nullptr, false);
+			if (onlineErrorLocale() == "bg")
+			{
+				const auto problem = Online::errorFromJson(json, "http_" + std::to_string(response.status));
+				std::clog << "Music library API: " << problem.message << '\n';
+				notice = apiErrorText(problem);
+				invalidate();
+				return;
+			}
 			throw std::runtime_error(json.is_object()
 										 ? json.value("message", "Music request failed.")
 										 : "Music request failed.");

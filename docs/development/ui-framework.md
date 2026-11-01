@@ -144,6 +144,38 @@ width and text-size inputs. Drawing, scroll limits and hit areas share the same
 measured footer and collapsed-label bounds. Test both expanded instructions and
 the collapsed control when changing fonts or text-size behavior.
 
+### Native API error presentation
+
+`Online::ApiError` retains raw code, message and details for diagnostics and
+control flow, and decodes optional source `messageKey` and scalar
+`messageParams` separately. At a player-facing boundary use
+`Glob2UI::apiErrorText` before converting a typed error into a notice or exception.
+The wrapper reads the current StringTable language code. Do not rewrite
+PlatformClient diagnostics or translate script/JSON exception text with it.
+
+Bulgarian initially uses the already reviewed English/Bulgarian online catalogs.
+`tools/localization/build_online_error_catalog.py` generates the embedded resource
+with exact input SHA-256 identities. The shared `scons/online_error_catalog.py`
+rule is called independently by native, serial/threaded browser, Android and iOS
+builders, including test and unit-production consumers. It generates under each
+builder’s existing `include/generated` directory, with explicit consumer
+prerequisites and no global include-path/compile-signature change. Its
+ASCII-escaped JSON is split into portable string chunks. On the first Bulgarian error it joins and parses
+the resource once into a process-static lookup; other locales return before that
+work. Startup/first-error cost on target devices must be profiled separately.
+Plural objects are excluded because ErrorBody has no plural selector. Add other
+locales only with reviewed catalog and size coverage.
+
+The pure `Online::presentApiError` handles known source keys and substitutes
+scalar parameters once as literal text. Legacy raw messages match only an exact
+English source literal. Unknown or malformed messages use the existing reviewed
+“Something went wrong. Please try again.” summary in Bulgarian; other locales
+retain their original message. `onlineProblemText` applies that safe boundary to
+plain transport diagnostics while keeping raw model/log details intact. Existing
+specialized cooldown, version and conflict branches remain authoritative.
+Generator tests live in `test/test_online_error_catalog.py`; decoder/presentation
+cases live in `src/online/ApiErrorTextTest.cpp` and the ordinary protocol suite.
+
 ### Preparing independently reviewed locales
 
 Use `python3 tools/localization/translation_program.py prepare` to freeze the
@@ -260,7 +292,12 @@ manifest and uses the same wrapping and rasterization. `screen` adds a screen na
 `settings-player`, desktop-only `settings-controls`, `lobby`, `lobby-players` or
 `new-map`). The AI library capture uses its real buttons and an unavailable
 loopback server, so it verifies local labels without remote account or provider
-actions. `game` adds
+actions. For controlled API-error captures, `settings-ais` also accepts
+`GLOB2_TRANSLATION_PREVIEW_HTTP_ORIGIN=http://127.0.0.1:PORT` together with
+`GLOB2_TRANSLATION_PREVIEW_EXPECT_NOTICE`. It pumps the production client and
+requires that exact notice in the screen's accessible text before capturing.
+Record the local fixture response and request receipts separately; these captures
+do not verify a production server. `game` adds
 `gameplay`, `tutorial` (the introduction), or `tutorial:LESSON-ID` and captures
 the real engine and menu dialog. Tutorial IDs must belong to the current shipped
 lesson catalog. When a lesson opens its automatic briefing, the harness saves

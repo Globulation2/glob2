@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
+#include "ui/ApiErrorText.h"
 #include "app/ClientFeatures.h"
 #include "SettingsScreen.h"
 #include "ScriptLibrary.h"
@@ -328,7 +329,7 @@ void SettingsScreen::fetchCustomAIs(bool more)
 					  try
 					  {
 						  if (!r.ok)
-							  s.notice = r.error.message;
+							  s.notice = apiErrorText(r.error);
 						  else
 						  {
 							  const auto &items = r.result.at("items");
@@ -381,7 +382,7 @@ void SettingsScreen::selectOnlineAI(const std::string &id)
 				s.version = selected == versions.end() ? 0 : int(selected - versions.begin());
 			}
 			else
-				s.notice = r.ok ? customAIText("Invalid AI catalogue response") : r.error.message;
+				s.notice = r.ok ? customAIText("Invalid AI catalogue response") : apiErrorText(r.error);
 			invalidate();
 		});
 	invalidate();
@@ -406,7 +407,7 @@ void SettingsScreen::socialOnlineAI(bool favourite)
 			auto &s = *customAIs;
 			s.socialPending.erase(pendingKey);
 			if (!r.ok)
-				s.notice = r.error.message;
+				s.notice = apiErrorText(r.error);
 			else if (!r.result.is_object() || !r.result.contains("active") ||
 					 !r.result["active"].is_boolean() || !Online::validAiCount(r.result, "likes"))
 				s.notice = customAIText("Invalid AI catalogue response");
@@ -466,7 +467,7 @@ void SettingsScreen::installOnlineAI()
 			try
 			{
 				if (!r.ok)
-					throw std::runtime_error(r.error.message);
+					throw std::runtime_error(apiErrorText(r.error));
 				if (origin != s.calls->client().origin())
 					throw std::runtime_error("The online server changed during download");
 				std::string replace;

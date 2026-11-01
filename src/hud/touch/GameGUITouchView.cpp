@@ -502,10 +502,30 @@ void GameGUITouch::drawHUD()
         }
         if(guided) gfx->drawRect(int(x+2*unit),int(ui.actions.y+2*unit),int(width-4*unit),int(ui.actions.h-4*unit),Color(255,220,80));
 		drawNavigationIcon(icon, {x + width / 2, ui.actions.y + 17 * unit}, selected);
-		const auto rect = navigationLabelRect(ui, i);
+		auto rect = navigationLabelRect(ui, i);
 		const auto text = navigationLabel(i);
-		drawPointLabel(rect, text, .86, false,
-			navigationLabelLineHeight(pointLines(text, rect.w, .86)));
+		double textScale = .86;
+		// Keep natural single-word captions whole when they only just exceed
+		// a slot. Borrow one point from each label inset, leaving hit areas,
+		// icons and the existing accessible navigation height unchanged.
+		if (text.find_first_of(" \t\r\n") == std::string::npos)
+		{
+			auto *font = globalContainer->standardFont;
+			InGameTouchTheme::TextStyle style(font);
+			const double advance = font->getStringWidth(text) + 8;
+			if (advance * textScale * gfx->textUnitsPerPoint() > rect.w)
+			{
+				rect.x -= unit;
+				rect.w += 2 * unit;
+				// standard is authored at 13px (GlobalContainer::loadGameFonts).
+				// Retain at least 10px and the player's text-size multiplier;
+				// words that still cannot fit keep production cluster wrapping.
+				textScale = std::clamp((rect.w - .25 * unit) / (advance * gfx->textUnitsPerPoint()),
+					10.0 / 13.0, .86);
+			}
+		}
+		drawPointLabel(rect, text, textScale, false,
+			navigationLabelLineHeight(pointLines(text, rect.w, textScale)));
 	}
 
 }

@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
+#include "ui/ApiErrorText.h"
 #include "ui/LibraryText.h"
 #include "app/ClientFeatures.h"
 #include "BuildingLibraryScreen.h"
@@ -81,7 +82,7 @@ void BuildingLibraryScreen::reload(bool more)
 			try
 			{
 				if (!response.ok)
-					throw std::runtime_error(response.error.message);
+					throw std::runtime_error(apiErrorText(response.error));
 				const auto &rows = response.result.at("items");
 				if (!rows.is_array() || rows.size() > 24)
 					throw std::runtime_error(Glob2UI::libraryText("Invalid building library response"));
@@ -138,7 +139,7 @@ void BuildingLibraryScreen::openFamily()
 							   throw std::runtime_error(
 								   Glob2UI::libraryText("Family unavailable. Private families require signing in "
 								   "through Online with an account that can access them."));
-						   throw std::runtime_error(response.error.message);
+						   throw std::runtime_error(apiErrorText(response.error));
 					   }
 					   if (!response.result.is_object() || response.result.at("id") != id)
 						   throw std::runtime_error(Glob2UI::libraryText("The server returned a different family."));
@@ -184,7 +185,7 @@ void BuildingLibraryScreen::install(const Json &family, const Json &release)
 			try
 			{
 				if (!response.ok)
-					throw std::runtime_error(response.error.message);
+					throw std::runtime_error(apiErrorText(response.error));
 				const auto manifest = response.result;
 				if (manifest.at("archiveHash") != release.at("archiveHash") ||
 					manifest.at("baseHash") != release.at("baseHash"))
@@ -204,7 +205,7 @@ void BuildingLibraryScreen::install(const Json &family, const Json &release)
 						try
 						{
 							if (!artwork.ok)
-								throw std::runtime_error(artwork.error.message);
+								throw std::runtime_error(apiErrorText(artwork.error));
 							library.install(manifest, artwork.body);
 							status = Glob2UI::libraryText("Installed. Enable the family below for new maps.");
 						}

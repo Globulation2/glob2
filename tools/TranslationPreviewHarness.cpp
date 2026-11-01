@@ -155,7 +155,9 @@ Json evidenceIdentity(const fs::path &root, const fs::path &pilot)
              "src/map/editor/MapEditDraw.cpp", "src/map/editor/EditorDock.cpp",
              "src/map/editor/PhoneEditor.cpp", "src/ui/settings/SettingsScreenGeneral.cpp",
              "src/ui/settings/SettingsScreenCustomAIs.cpp", "src/ui/settings/SettingsScreenOnline.cpp",
-             "src/ui/settings/SettingsScreenKeyboard.cpp",
+             "src/ui/settings/SettingsScreenKeyboard.cpp", "src/online/PlatformClient.cpp",
+             "src/online/PlatformProtocol.cpp", "src/online/PlatformProtocol.h",
+             "src/online/ApiErrorText.cpp", "src/online/ApiErrorText.h", "src/ui/ApiErrorText.h",
              "tools/TranslationPreviewHarness.cpp"})
         result["source_sha256"][name] = sha256(root / name);
     for (const auto *surface : {"native", "online"})
@@ -332,6 +334,15 @@ public:
     bool hasControl(const std::string &key) {
         return this->GAGGUI::ui::UIScreen::host().find(key) != nullptr;
     }
+    bool containsText(const std::string &expected) {
+        const auto visit = [&](const auto &self, GAGGUI::ui::Node *node) -> bool {
+            if (!node) return false;
+            if (node->accessibleText() == expected) return true;
+            for (const auto &child : node->children) if (self(self, child.get())) return true;
+            return false;
+        };
+        return visit(visit, this->GAGGUI::ui::UIScreen::host().root());
+    }
     void redraw() {
         this->paintFrame(SDL_GetTicks());
         this->paintFrame(SDL_GetTicks());
@@ -407,7 +418,23 @@ void screenPreview(const fs::path &root, const fs::path &pilot, const fs::path &
     // Real client and real library controls, with no external account/provider
     // requests: loopback port 1 is deliberately unavailable in this capture.
     Online::ServicesOwner services;
-    if (onlineSettings) services.get().client.start("http://127.0.0.1:1");
+    const auto *fixtureOrigin = SDL_getenv("GLOB2_TRANSLATION_PREVIEW_HTTP_ORIGIN");
+    const auto *fixtureNotice = SDL_getenv("GLOB2_TRANSLATION_PREVIEW_EXPECT_NOTICE");
+    const bool httpFixture = fixtureOrigin && *fixtureOrigin;
+    std::string origin = "http://127.0.0.1:1";
+    if (httpFixture) {
+        require(screen == "settings-ais" && fixtureNotice && *fixtureNotice,
+            "HTTP fixture is only available in the AI Settings CLI preview with expected notice");
+        origin = fixtureOrigin;
+        const std::string prefix = "http://127.0.0.1:";
+        require(origin.starts_with(prefix), "HTTP preview fixture requires IPv4 loopback");
+        const auto port = origin.substr(prefix.size());
+        require(!port.empty() && port.size() <= 5 &&
+            std::all_of(port.begin(), port.end(), [](char c) { return c >= '0' && c <= '9'; }) &&
+            std::stoi(port) > 0 && std::stoi(port) <= 65535,
+            "HTTP preview fixture requires a numeric loopback port");
+    }
+    if (onlineSettings) services.get().client.start(origin);
     Json controls, actions = Json::array();
     {
         FrontendTheme theme;
@@ -431,7 +458,7 @@ void screenPreview(const fs::path &root, const fs::path &pilot, const fs::path &
                 require(preview.hasControl("ai.browse"), "Community AI Library is available in this build");
                 preview.activateSetting("ai.browse");
                 preview.redraw();
-                actions.push_back("Opened AI Library through its production button; client uses unavailable loopback origin.");
+                actions.push_back(httpFixture ? "Opened AI Library through its production button; controlled localhost HTTP fixture." : "Opened AI Library through its production button; client uses unavailable loopback origin.");
                 if (preview.hasControl("ais/gotit")) {
                     preview.activateSetting("ais/gotit");
                     preview.redraw();
@@ -439,6 +466,18 @@ void screenPreview(const fs::path &root, const fs::path &pilot, const fs::path &
                 }
                 for (const auto *tag : {"Balanced", "Rush", "Defensive", "Economy", "Expansion", "Experimental", "Beginner-friendly"})
                     require(preview.hasControl(std::string("ais/tag/") + tag), "Production AI tag control: " + std::string(tag));
+                if (httpFixture) {
+                    const Uint64 deadline = SDL_GetTicks() + 15000;
+                    do {
+                        Online::pump();
+                        preview.redraw();
+                        if (preview.containsText(fixtureNotice)) break;
+                        SDL_Delay(10);
+                    } while (SDL_GetTicks() < deadline);
+                    require(preview.containsText(fixtureNotice),
+                        "Real HTTP decoder and AI Settings callback produced the expected notice");
+                    actions.push_back("Observed expected notice through production HTTP decoder and AI Settings callback; controlled localhost fixture only.");
+                }
             }
             controls = preview.bounds();
         } else if (screen == "lobby" || screen == "lobby-players") {
@@ -456,7 +495,9 @@ void screenPreview(const fs::path &root, const fs::path &pilot, const fs::path &
     writeJson(output / (screen + ".json"), {{"kind", "production-screen-draft-overlay"}, {"screen", screen},
         {"pilot", pilot.string()}, {"evidence_identity", evidenceIdentity(root, pilot)}, {"native_keys_overridden", localized}, {"width", width}, {"height", height},
         {"controls", controls}, {"screen_actions", actions},
-        {"online_environment", onlineSettings ? "Unavailable loopback origin; no remote account/provider action or online-flow verification." : "Not exercised."}, {"limits", {"Only supplied draft keys are translated; native_keys_overridden records their count. Missing draft keys use English.",
+        {"http_fixture_origin", httpFixture ? Json(origin) : Json(nullptr)},
+        {"expected_notice", httpFixture ? Json(fixtureNotice) : Json(nullptr)},
+        {"online_environment", onlineSettings ? "CLI preview uses controlled localhost fixture or unavailable loopback; no production server, remote account/provider or physical-device verification." : "Not exercised."}, {"limits", {"Only supplied draft keys are translated; native_keys_overridden records their count. Missing draft keys use English.",
             "Control bounds include scrollable content and do not independently prove text fitting.",
             "Does not verify gameplay HUD, tutorial, dialogs, browser, mobile platform, or full locale."}}});
     globalContainer = nullptr;

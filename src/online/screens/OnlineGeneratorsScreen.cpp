@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
+#include "ui/ApiErrorText.h"
 #include "ui/LibraryText.h"
 #include "app/ClientFeatures.h"
 #include "OnlineGeneratorsScreen.h"
@@ -76,7 +77,7 @@ void OnlineGeneratorsScreen::fetch(bool more)
 				   try
 				   {
 					   if (!r.ok)
-						   throw std::runtime_error(r.error.message);
+						   throw std::runtime_error(apiErrorText(r.error));
 					   for (const auto &v : r.result.at("items"))
 						   catalogue.push_back(v);
 					   cursor = r.result.value("nextCursor", "");
@@ -105,7 +106,7 @@ void OnlineGeneratorsScreen::select(const std::string &id)
 				   try
 				   {
 					   if (!r.ok)
-						   throw std::runtime_error(r.error.message);
+						   throw std::runtime_error(apiErrorText(r.error));
 					   detail = r.result;
 					   selectRelease(0);
 				   }
@@ -166,7 +167,7 @@ void OnlineGeneratorsScreen::install()
 			try
 			{
 				if (!r.ok)
-					throw std::runtime_error(r.error.message);
+					throw std::runtime_error(apiErrorText(r.error));
 				if (calls.client().origin() != origin)
 					throw std::runtime_error(Glob2UI::libraryText("Online server changed during download"));
 				if (Online::Sha256::hex(r.body) != fileHash)

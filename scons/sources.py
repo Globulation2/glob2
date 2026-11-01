@@ -629,6 +629,7 @@ CLIENT_SOURCES = (
     'online/PlatformClient.cpp',
     'online/PlatformClientNative.cpp',
     'online/PlatformProtocol.cpp',
+    'online/ApiErrorText.cpp',
     'online/PlatformRoom.cpp',
     'online/RelayTransport.cpp',
     'online/QuickMatch.cpp',
