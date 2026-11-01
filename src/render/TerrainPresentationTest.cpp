@@ -261,6 +261,10 @@ std::filesystem::path highResolutionFixture()
 	frames << "GLOB2_HIGHRES 1\n";
 	for (int variant = 0; variant < 16; ++variant)
 		frames << "terrain" << variant << " 32 32 4 grass.webp -\n";
+	// Catalogue grass, sand and ice draw from their own 8x8-block banks.
+	for (const char *bank : {"terrain-grass", "terrain-sand", "terrain-ice"})
+		for (int variant = 0; variant < 256; ++variant)
+			frames << bank << variant << " 32 32 4 grass.webp -\n";
 	return directory;
 }
 
@@ -307,6 +311,18 @@ void layeredCache(bool gpu, bool hd = false)
 	bool memoryRecorded = false;
 	const auto compare = [&]
 	{
+		// Each path declares its visible HD window on a draw; stream it, then
+		// draw once more so both have adopted the published frames before the
+		// measured draws (the game path adopts them a frame later).
+		const auto drawBoth = [&]
+		{
+			clear();
+			game.drawMapTerrain(0, 0, 19, 14, 29, 30, 0, Game::DRAW_WHOLE_MAP, scene);
+			cache.prepare(scene, *globals->terrain, 0, 0, 19, 14, 29, 30, fixture.team->me, true);
+		};
+		drawBoth();
+		GAGCore::Sprite::finishHighResolution();
+		drawBoth();
 		clear();
 		game.drawMapTerrain(0, 0, 19, 14, 29, 30, 0, Game::DRAW_WHOLE_MAP, scene);
 		const auto expected = terrainPixels(gpu);
@@ -1031,6 +1047,9 @@ TEST_SUITE("TerrainPresentation")
 		glob2test::observeMap(fixture.game.map,scene);
 		// An independently sized strip fits HD pages, unlike its whole capture.
 		SoftwareTerrainCache independent;
+		// Interactive pages show native art until the declared HD window streams.
+		independent.prepare(scene, *globals->terrain, 0, 0, 6, 63, 0, 0, fixture.team->me, true);
+		GAGCore::Sprite::finishHighResolution();
 		REQUIRE(independent.prepare(scene, *globals->terrain, 0, 0, 6, 63, 0, 0, fixture.team->me,
 									true));
 		CHECK(globals->terrainCompositor().scale() == 4);
@@ -1072,6 +1091,8 @@ TEST_SUITE("TerrainPresentation")
 			backend.largestTexture = 0;
 			CHECK(globals->gfx->maximumTextureSize() == limit);
 			SoftwareTerrainCache cache;
+			cache.prepare(scene, *globals->terrain, 0, 0, 7, 7, 0, 0, fixture.team->me, true);
+			GAGCore::Sprite::finishHighResolution();
 			const bool admitted =
 				cache.prepare(scene, *globals->terrain, 0, 0, 7, 7, 0, 0, fixture.team->me, true);
 			CHECK(globals->terrainCompositor().scale() == 4);

@@ -4,26 +4,30 @@ Companion to [terrain materials](terrain-materials.md).
 
 ## Material production
 
-The twenty-four catalogue materials (`boulders`, `hedge`, `thicket`, `ridge_rock`,
-`outcrop`, `dirt`, `clay`, `gravel`, `flower_meadow`, `mud`, `marsh`, `deep_snow`,
-`scree`, `dirt_track`, `boardwalk`, `lava`, `ember_field`, `loam`, `moss`,
-`spring_meadow`, `deep_water`, `dark_water`, `void_hole`, `chasm`) ship as
-`data/gfx/terrain-<name>0..15.png`, sixteen 32×32 RGBA variants per material, with
-a provenance record in `datasrc/gfx/<name>/provenance.json`. Two production
-methods share the tile code in `tools/artwork/material_tiles.py` (sheet cutting,
-perimeter sharing on premultiplied RGBA, pixel hashing, style statistics), so a
-material can move from one method to the other without changing its contract.
-Run the tools with the pinned asset encoder interpreter, since Pillow's
-resampling kernels are a determinism input:
+All 29 built-in materials, including grass, sand, road, ice and regular water,
+are produced by `tools/artwork/terrain_synth.py`. Static materials have four
+interchangeable 8×8 layouts (256 variants); lava and ember field have one 8×8
+layout and water and deep water one 4×4 layout, keeping their animated banks
+at 256 frames each. Frames are stored as
+`data/gfx/terrain-<name>N.png` at 32×32 RGBA and
+`data/highres/v1/terrain-<name>N.png` at 128×128 RGBA. Each has a provenance record
+in `datasrc/gfx/<name>/provenance.json`. The shared tile code in
+`tools/artwork/material_tiles.py` provides sheet cutting, pixel hashing and style
+statistics. The original legacy artwork remains available as style references;
+new terrain frames use their own `terrain-` prefixes and do not overwrite it.
+Use an isolated environment with the pinned asset-tool dependencies, including
+NumPy and SciPy for exact indexed full-block Worley fields. Pillow's resampling kernels are a determinism
+input:
 
 ```sh
-ENC="$(python3 tools/package_assets.py --encoder-python)"
+uv venv artifacts/asset-tools/venv
+uv pip install --python artifacts/asset-tools/venv/bin/python -r tools/artwork/requirements.txt
+ENC=artifacts/asset-tools/venv/bin/python
 "$ENC" tools/artwork/terrain_synth.py                       # write all procedural frames
 "$ENC" tools/artwork/terrain_synth.py --material mud --contact-sheet artifacts/terrain/mud.png
 "$ENC" tools/artwork/terrain_synth.py --check               # reproduce and compare
 "$ENC" tools/artwork/terrain_synth.py --emit-catalog        # material blocks and colour initialisers
 "$ENC" tools/artwork/terrain_synth.py --write-catalog       # merge them into tileset.json
-"$ENC" tools/artwork/export_material.py --name boulders     # image-generated material
 "$ENC" tools/artwork/validate_material.py --all
 "$ENC" -m unittest discover -s tools/artwork -p 'test_*material*.py'
 "$ENC" -m unittest discover -s tools/artwork -p test_terrain_synth.py
@@ -34,40 +38,50 @@ ENC="$(python3 tools/package_assets.py --encoder-python)"
 `tools/artwork/terrain_synth.py` synthesises ground-like materials from scratch:
 periodic value noise (a random lattice tiled 3×3 and resized bicubically, so the
 field wraps by construction), fractal sums, domain warps, Worley cells (F1 and
-F2−F1, Euclidean and Chebyshev), scattered stamps and palette ramps. Every random
-value comes from `random.Random(seed).random()` with
-`seed = fnv1a32("<material>:<variant>:<phase>")`, so the sixteen variants are
-independent syntheses and the output is byte-identical across runs. Existing tiles
-are never read into an output; the native grass, sand, trail, ice and water tiles
-are only measured (luma mean and spread, wrapped neighbour grain, saturation) for
-the style targets that keep the new art low-contrast and painterly beside them:
+F2−F1, Euclidean and Chebyshev), scattered stamps and palette ramps. Named
+geometry and animation random streams use deterministic `fnv1a32` seeds derived
+from the material, layout and phase. The pinned production environment reproduces
+the output byte for byte. Each layout renders a continuous field whose boundary geometry is
+shared with the other layouts; its interior uses a separate seed. Existing tiles
+are never read into an output; the original grass, sand, trail, ice and water
+tiles are measured (luma mean and spread, wrapped neighbour grain, saturation)
+for the style targets that preserve their low-contrast, painterly character:
 ground materials aim at a luma spread of 6–14 and a grain of 3–10 at 32 px.
 
-Each recipe renders at 128×128, is area-averaged to 32×32 and pulled toward its
-luma targets by one affine transform computed from the pooled statistics of all
-sixteen variants, so all variants of a material share one tone. Periodic and grid
-materials (below) skip the border preparation and none of the perimeter treatment
-in this paragraph applies to them. Joins work with the runtime's border preparation
-rather than against it: `seamless_sources` (and `TerrainCompositor::prepare`)
-blend the outer four native pixels of every variant toward variant 0's
-*reflected* pixel (`min(x, 31 - x)`, `min(y, 31 - y)`) with weights 1, 3/4, 1/2
-and 1/4, so whatever variant 0 carries on its perimeter is repeated on every
-tile. The synthesiser therefore makes that perimeter ordinary rather than
-special: the render with the quietest perimeter (lowest luma spread in the
-outer four native pixels) takes frame 0, stamped features (stones, twigs,
-blooms, embers) stay at least three native pixels from every edge, and
-`neutral_band` pulls only the very low frequencies (a radius-10 box blur at
-render scale) of the outer two to three native pixels toward the tile mean,
-tapering to zero inward, so no light or dark blotch sits on an edge while grain,
-chips and colour variation remain for the runtime blend to land on. Replacing
-the edge texture with a flat tone was tried and rejected: it reads as a frame
-around every tile. `share_perimeter` then copies ring 0 from tile 0 (opposite
-edges read the same coordinates, so a tile also joins itself across the torus
-seam) and blends ring 1. The contact sheet shows a 3x3 field of random variants
-at 1x and 2x after the runtime blend for every material; materials with hard
-structure (hedge, scree, chasm, lava's placeholder) still show a faint seam at
-2x, which is the cost of the runtime contract. Group readability is part of the
-recipes: obstacles are lit from the top left and cast onto grass, hazards warm
+Ground recipes render periodic blocks and slice them into 128×128 frames,
+area-averaged to 32×32 for classic rendering. Every block is 8×8 tiles
+(1024×1024 HD pixels), with four interchangeable layouts. Automatic synthesis
+uses at most two workers to bound the temporary field buffers; `--jobs` explicitly
+overrides that limit. Noise frequency,
+stone counts and stamp counts scale with block size so feature sizes and density
+stay at their native scale. Stamps can cross any cell edge and wrap around the
+whole block. Shading and domain warps sample the whole block, including its
+wrapped boundary, before it is sliced. One affine luma transform, computed from
+the pooled native statistics, gives every frame the same tone.
+
+All built-in recipes declare `periodic=True` and a `grid`; static recipes use
+`grid=8, blocks=4`, lava and ember field `grid=8`, and the waters `grid=4`:
+cell position selects the corresponding frame within one seeded layout, and
+runtime and compiled packs skip border preparation. This includes object-based
+grounds such as gravel, flower meadow and marsh as well as the legacy bindings.
+The legacy materials retain their established palettes and material identities;
+water keeps its violet-blue palette, and ice keeps its frozen-ground profile.
+
+The fallback for nonperiodic sources blends the outer four native pixels toward
+frame 0's reflected border, with weights 1, 3/4, 1/2 and 1/4. Matching pixel values
+this way does not preserve the contours or shading of independent source tiles:
+it can produce a visible square frame even on soft surfaces such as mud and snow.
+The procedural ground recipes therefore no longer use `neutral_band`,
+`share_perimeter` or the runtime's reflected-border blend. Contact sheets use
+positional neighbours for grid materials, including the block wrap, rather than
+randomly shuffling their frames. The generator and material validator compare
+boundary contrast with the upper range of interior line contrast at both native
+and HD resolution. This covers the sampling phases of bicubic noise and
+intentional boardwalk plank gaps without mistaking them for tile seams. A
+synthetic block contract also verifies that slicing leaves every HD pixel
+unchanged and that native frames equal downsampling the unsliced block.
+
+Group readability is part of the recipes: obstacles are lit from the top left and cast onto grass, hazards warm
 and saturated, fertile ground warm and saturated (umber loam, moss, meadow),
 barren ground muted warm neutrals, rough ground cool and desaturated, paths warm
 and light, void near black with a cast onto every neighbour.
@@ -115,21 +129,15 @@ the simulation ignore it.
 
 ### Periodic edges
 
-The runtime blend above ghosts any texture built from discrete objects (pebbles,
-flower heads, tussocks): within four native pixels of every edge two unrelated
-layouts are averaged. Materials whose look depends on such objects instead set
-`"edges": "periodic"` (recipe flag `periodic=True`). Their variants share one
-periodic outer band, so variant A's right edge continues into variant B's left
-edge exactly as a single tile wraps onto itself, and both the compiler and
-`TerrainCompositor::prepare` skip the border blend for them. In the synthesiser,
-`object_field` places round objects in two sets. Objects that touch the outer
-band come from the material's shared `base_rng`, are identical in every variant
-and wrap across the edge. Each variant adds its own objects entirely inside the
-interior. The shared quota follows the band's share of the tile area, so the
-band is no denser or sparser than the interior and draws no grid.
-`force_periodic_band` copies variant 0's outer four render pixels into every
-variant as a guard. `neutral_band` and `share_perimeter` are skipped. Stamps and
-domes wrap across the canvas edge. Gravel, flower meadow and marsh use this mode.
+The runtime blend above ghosts textures built from discrete objects (pebbles,
+flower heads, tussocks). All built-in materials instead set
+`"edges": "periodic"` (recipe flag `periodic=True`) and render complete blocks.
+Within a block, objects can cross cell edges freely. Across interchangeable
+block boundaries, recipes preserve shared periodic object geometry and vary the
+interior. Object fields, stamps and domes wrap across the complete canvas, and
+shared scalar fields supply continuous ground, shadows and lighting. Gravel,
+flower meadow and marsh use this approach too, rather than repeating a shared
+object band around every individual tile.
 Their recipes follow reference photographs of pebble beds, wildflower meadows and
 tussock bogs:
 
@@ -142,45 +150,114 @@ tussock bogs:
 
 The photographs are only looked at; nothing from them is read into an output.
 
-Lava and ember field are animated: four phases per variant, frame
-`variant + 16 * phase` (frames 0–63), catalogued with `animation_frames 4`,
-`animation_stride 16` and `animation_ticks 8`. The crust layout is shared by the
+Lava and ember field are animated: one 8×8 layout with four phases, frame
+`variant + 64 * phase` (frames 0–255), catalogued with `animation_frames 4`,
+`animation_stride 64` and `animation_ticks 8`. The crust layout is shared by the
 phases; only the glow ramp moves.
 
 ### Positional variants
 
 `"variant_grid": G` (a power of two up to 16, with `"edges": "periodic"` and
-exactly G×G variants) picks a cell's variant from its position instead of the
+G×G variants per layout) picks a cell's variant from its position instead of the
 hash: cell (x, y) shows variant `(y mod G) * G + (x mod G)`, and variant
 weights are ignored. The variants are then one periodic block G cells across
 that repeats over the map; map sizes are powers of two no smaller than G, so the
-block also wraps across the torus seams. The map seed does not move the block. Each variant only ever meets its block neighbours, so its
+block also wraps across the torus seams. The map seed does not move the cell
+grid. With a single layout, each variant meets only its block neighbours, so its
 edges continue theirs rather than a shared band, and the border blend is skipped
 as for periodic edges. Use it for a field that must be larger than one cell, such
 as travelling waves. Map artwork bundles do not accept the key, so maps that
 carry custom art still load in older clients.
 
+#### Interchangeable blocks
+
+Every static built-in material uses four interchangeable 8×8 blocks with
+`"variant_blocks": 4` alongside `"variant_grid": 8`. Each layout has 64 cells,
+so the material contains 256 variants in block-major, row-major order:
+`cell + 64 * block`. The renderer hashes the canonical map block coordinates
+with the material and map-seed salts for each 8×8 block. Every cell in that block
+uses the same layout, preserving
+its interior joins; different seeds produce different arrangements. A missing
+`variant_blocks` retains the original single-block selection. The compiler and
+runtime require a complete grid for each declared block. Custom map artwork
+bundles continue to exclude these positional keys.
+
+The layouts share actual periodic boundary geometry. Mud and snow interpolate
+scalar height, grain and pool/sparkle fields toward independent interiors, with
+one common normalization range. Scree retains boundary stones and replaces only
+interior Voronoi points. Its shared-stone guard is derived from the maximum
+second-nearest boundary distance and the angular metric’s Euclidean lower
+bound, so a changed interior stone cannot influence a shared edge. Unrelated
+RGB rock images are never cross-faded.
+Interior variation begins beyond 32 HD pixels from the block perimeter and
+reaches full strength at 96 pixels. Lighting uses a common reference gradient
+scale, and the final style transform pools every layout, so neither shading nor
+normalization changes the common boundary colors. The validator checks identical
+outer strips across all layouts at native and HD resolution, distinct interiors,
+and continuity inside each block. Matching strips guarantee every ordered block
+pair and four-block junction uses the same continuous boundary, including map
+wraparound. The source bank contains four complete layouts, while runtime
+preparation loads only variants needed by the visible cells; see
+[Visible material preparation](#visible-material-preparation). The 8×8 size delays
+repetition of the shared edge motifs while retaining the same tile dimensions
+and feature density. Shared boundary motifs can still become recognizable;
+judge repetition in mixed-block previews.
+
 Regular water (`terrain_synth.py` recipe `water`, sprite `data/gfx/terrain-water`)
 keeps the violet-blue of the retired scrolling ocean image (about (69, 52, 200)).
-Water and deep water are `variant_grid 4` materials with sixteen phases
-(`animation_ticks 6`, the same 96-tick loop as the four-phase water before). The
-recipe renders one 512×512 periodic block, a sum of plane waves whose wave
-numbers are whole cycles per block and whose phases advance a whole number of
-cycles per loop (at most four, a quarter wavelength per phase, so fine chop
-moves rather than flickers), and slices it into the sixteen variants. Every cell animates
-locally on the shared clock and the field is continuous across all cell edges,
-so the swell's crests roll toward the lower right across open water, and finer
-cross chop breaks them into moving glints. Deep water reads the same field in a
-darker value with less chop, so crests carry on across the shallow/deep blend.
-The visible pattern repeats every four cells instead of every cell. Dark water
-is static. All three are opaque and blend through the ordinary soft profile.
-Marsh pools are opaque too.
+Water and deep water use one 4×4 layout with sixteen phases
+(`animation_ticks 6`, preserving the 96-tick loop). Each phase renders 512×512
+periodic fields from plane waves whose wave numbers and animation cycles are
+integers (`WAVE_GRID` sets the block size; wave numbers scale with it).
+Every cell animates locally on the shared clock, so swell crests roll toward the
+lower right and finer cross chop breaks them into moving glints. Deep water
+reads the same geometry with its darker palette and less chop.
 
-Each sixteen-phase material is 256 native and 256 HD frames. Animated materials
-crossfade on every visual tick and recompose the terrain pages that show them at
-that cadence; see [Caches and compatibility](terrain-rendering.md#caches-and-compatibility) for the
-kept coverage that avoids resampling boundaries, and check the terrain cache cost
-when adding animation over larger areas.
+Both depths read the same wave geometry and timing on the same position grid,
+so crests continue across the shallow/deep blend. Animated materials stay on a
+single layout because every layout multiplies by the phase count: four 8×8
+layouts at sixteen phases would be 4096 frames per water, which doubled frame
+time and kept HD fallback visible in measurement. `"variant_block_group"`
+remains available for materials that share block selection. Dark water remains static. All three waters and marsh pools are opaque and use
+the ordinary material composition path.
+
+Each sixteen-phase water has 256 native and 256 HD frames, indexed as
+`cell + 16 * phase`; its catalog animation stride is 16. Animated
+materials crossfade on every visual tick and recompose the terrain pages that
+show them at that cadence; see
+[Caches and compatibility](terrain-rendering.md#caches-and-compatibility) for the
+kept coverage that avoids resampling boundaries.
+
+#### Visible material preparation
+
+The source bank's full frame count does not determine the active decoded pixel
+set. These terrain banks retain CPU source images and upload a standalone source
+texture only if it is drawn directly; composed pages own their drawing textures.
+HD sprite frames load individually when requested, without preparing unused
+source mip chains. Only materials with more than one layout defer their HD
+frames this way (`Sprite::deferHighResolution`); single-layout materials,
+including the animated ones, load HD with their sprite. Loading every block
+material eagerly instead cost about 3 s of load time and 800 MB of memory on
+a 256×256 map. Visible terrain
+preparation gathers the material/variant combinations needed by the viewport,
+including its composition boundary coverage, and prepares those combinations.
+`Compositor::prepareVisible` derives this set from a scene and visible cell
+bounds; `prepareForRecipes` accepts an explicit recipe set for callers that
+already have it. Animated selections prepare the current and next phase for
+interpolation. Unused variants, phases and HD sources are retired as the
+selection changes; offscreen materials do not advance their prepared revisions
+merely because the visual clock changes.
+
+Published CPU material snapshots own their RGBA pixels. Retiring a source or
+changing the active selection therefore leaves a retained snapshot usable by
+an in-flight composition batch. CPU jobs snapshot only the recipes in each
+bounded group, reducing the group size when necessary to stay within the existing
+4 MiB in-flight reservation. Reloading unchanged native sources after eviction
+does not invalidate already composed pages. Compiled-pack data and catalog metadata remain
+part of the compositor's memory accounting, separately from the selected pixel
+payload. This is a resource-lifetime contract, not a performance guarantee;
+viewport size, sampling resolution and the number of visible material variants
+still determine preparation work and live pixel storage.
 
 `--check` re-synthesises every material and compares the pixel hashes with the
 committed PNGs and with `provenance.json`; it also requires the recorded
@@ -203,26 +280,16 @@ overrides them for legibility (void, hazards, deep water).
 
 ### Image-generated materials
 
-Silhouette-heavy materials (boulders, hedge, thicket, lava, ember field, flower
-meadow, outcrop) are produced with an external image generator from the prompts
-in `MATERIAL_PROMPTS` in `tools/artwork/export_material.py`
-(`--name <name> --prompt` prints one). The prompts share a header (seamless
-top-down material for sixteen 32×32 tiles, painterly pastel-earthy low contrast,
-flat lighting, no borders or directional shapes, readable after downscaling, the
-four reference images grass, sand, trail and inn) and a body per material. Save
-the selected image as `datasrc/gfx/<name>/material.png` (square, at least 512 px)
-and run `export_material.py --name <name>`: it area-averages the image to the
-128×128 sheet, cuts sixteen tiles, shares the perimeter and writes the frames
-with `method: "image-generator"` provenance (prompt, reference and source hashes,
-runtime pixel hashes, and a `replaces` record naming the procedural provenance it
-supersedes). Lava and ember field must be exported with `--animate-glow`: it
-keeps the generated crust and channel layout and applies the recipe's glow ramp
-to the warm pixels for four phases (`method: "hybrid"`); exporting an animated
-recipe without it, or a static one with it, is refused so the catalog's
-`animation_frames` never points at stale frames. Then mark the recipe
-`placeholder_only=True` in `terrain_synth.py` and run
-`validate_material.py --name <name>`, which also checks that the recorded phase
-count matches the recipe for every method.
+The shipped built-in terrain uses procedural recipes. The older image-generated
+workflow remains in `tools/artwork/export_material.py` for separately authored
+materials: its prompts and provenance identify the reference images, generated
+source and exporter, and `--animate-glow` preserves a generated crust while
+varying its glow ramp. Its original sixteen-tile sheet workflow is not a
+replacement for the built-in four-layout contract. Adopting external artwork for
+a built-in material requires producing all declared layouts and phases,
+preserving shared boundary geometry and updating its provenance and catalog
+consistently. Inspect both native and HD block joins before shipping such a
+replacement.
 
 ### Provenance layout
 
@@ -248,7 +315,8 @@ existing artwork.
 | `crisp` | 96 / 256 / 128 / 0 / 256 | 24 × 9 | void_hole, boardwalk |
 | `brush` | 320 / 768 / 320 / 384 / 512 | 48 × 17 | hedge, thicket, flower_meadow, spring_meadow |
 | `sand` (existing) | 256 / 1024 / 320 / 512 / 512 | 61 × 17, traced | water, sand, grass, dirt_track |
-| `fractured` (existing) | 320 / 768 / 320 / 128 / 256 | 32 × 9 | ice, lava, ember_field |
+| `fractured` (existing) | 320 / 768 / 320 / 128 / 256 | 32 × 9 | lava, ember_field |
+| `frozen` | 320 / 768 / 320 / 128 / 256 | 32 × 9 | ice |
 | `cobblestone` (existing) | 256 / 640 / 224 / 320 / 384 | 24 × 9 | road |
 | `shore` | 256 / 832 / 320 / 384 / 704 | 48 × 33, lobed with ripple | pair treatments only |
 | `liquid` | 256 / 1024 / 448 / 128 / 640 | 40 × 33, broad and smooth | pair treatments only |
