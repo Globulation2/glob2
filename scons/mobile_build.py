@@ -9,7 +9,7 @@ from build_layout import PACKAGE_VERSION, write_if_changed, prepare_directory
 import ccache
 from build_timing import record
 from mobile_toolchain import discover, LOCK
-from mobile_artifacts import verify_android_library, archive_object_name
+from mobile_artifacts import verify_android_library, archive_object_name, stage_recording_notices
 from javascript import javascript_objects, numeric_guard, strict_numeric_source, guarded_numeric_source
 import official_instance
 from sources import CLIENT_SOURCES, GAG_SOURCES, USL_SOURCES, INCLUDE_DIRECTORIES
@@ -92,6 +92,7 @@ def build_mobile(directory, identity, arguments):
         target=identity['target'], arch=identity['arch'], cflags=toolchain['cflags'],
         ldflags=toolchain['ldflags'], environment=environment)
     attach_recording(env, recording_prefix, identity['target'])
+    recording_notices = stage_recording_notices(env, recording_prefix, output) if identity['target'] == 'android' else []
     if any(target in COMMAND_LINE_TARGETS for target in ('android-tests', 'ios-tests', 'web-tests')):
         from test_provenance import register_test_provenance
         provenance_header = register_test_provenance(env, output)
@@ -217,5 +218,5 @@ def build_mobile(directory, identity, arguments):
     env.Depends(objects, [str(config), str(LOCK), str(manifest)])
     database = env.CompilationDatabase(str(output / 'compile_commands.json'))
     env.Alias('compile_commands.json', database)
-    Default(program, database)
+    Default(program, database, recording_notices)
     write_if_changed(output / 'toolchain.json', json.dumps(toolchain, indent=2, sort_keys=True) + '\n')
