@@ -182,7 +182,7 @@ TEST_SUITE("FontKerning")
 		std::ofstream(files.path / "probe.keys.txt") << "[language-code]\n";
 		std::ofstream listing(files.path / "probe.list.txt");
 		listing << "probe.keys.txt\n";
-		for (const char *code : {"en", "hi", "bn", "ur", "sw", "ta", "nb", "ms", "gu", "pa-guru", "th", "ar", "fa", "mr", "te"})
+		for (const char *code : {"en", "hi", "bn", "ur", "sw", "ta", "nb", "ms", "gu", "pa-guru", "th", "ar", "fa", "mr", "te", "fil"})
 		{
 			listing << "probe." << code << ".txt\n";
 			std::ofstream(files.path / (std::string("probe.") + code + ".txt")) << "[language-code]\n" << code << '\n';
@@ -197,7 +197,7 @@ TEST_SUITE("FontKerning")
 			const int originalHeight = font.getStringHeight("");
 			auto original = font.rasterizeString("Menu", 1.f);
 			REQUIRE(original);
-			for (const char *code : {"hi", "bn", "ur", "sw", "ta", "nb", "ms", "gu", "pa-guru", "th", "hi", "mr", "hi", "te"})
+			for (const char *code : {"hi", "bn", "ur", "sw", "ta", "nb", "ms", "gu", "pa-guru", "th", "hi", "mr", "hi", "te", "fil"})
 			{
 				strings->setLang(strings->getLangCode(code));
 				const int lineHeight = font.getStringHeight("");
@@ -217,6 +217,7 @@ TEST_SUITE("FontKerning")
 					std::string(code) == "th" ? "ผู้เล่นกำลังก่อสร้าง 12 / 100" :
 					std::string(code) == "pa-guru" ? "ਪੰਜਾਬੀ ਖਿਡਾਰੀ" :
 					std::string(code) == "nb" ? "Det gjennomsnittlige angrepsnivået til koloniens krigere, der angrepshastighet og angrepsstyrke teller likt, på skalaen fra 1" :
+					std::string(code) == "fil" ? "Nagtatayo at nagsasanay habang pinapanatili ang paglago na nakatali sa" :
 					std::string(code) == "sw" ? "Nina haki ya kushiriki rekodi hizi na michoro hii kwa leseni iliyochaguliwa." : "کھلاڑی 12 / 100";
 				CHECK(font.getStringHeight(sample) <= lineHeight);
 				// Include a Latin-only label in a script locale: it uses the same

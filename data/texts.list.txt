@@ -41,4 +41,5 @@ data/texts.ms.txt
 data/texts.bn.txt
 data/texts.mr.txt
 data/texts.te.txt
+data/texts.fil.txt
 data/texts.th.txt

@@ -210,6 +210,8 @@ def request_api(project, payload):
 
 def assert_backend_budget(output, mode):
     """Do not silently reset accounting by switching paid cache formats."""
+    if any(p.stat().st_size for p in (output / 'google').glob('*/attempts.jsonl')):
+        raise ValueError('This kit has a paid editorial ledger for the other protection mode; retain --mode editorial. Ledgers are never merged or reset.')
     segmented_ledger = output / 'google-budget.json'
     if segmented_ledger.exists() and json.loads(segmented_ledger.read_text()).get('attempts'):
         raise ValueError('This kit has a paid ledger for the other protection mode; retain the original segmented backend. Ledgers are never merged or reset.')
@@ -572,6 +574,15 @@ def translate_html(plan, output, client, target, max_characters, retries=2, retr
     return run
 
 
+
+def run(*args, **kwargs):
+    """Compatibility entry for established editorial/segmented Python callers."""
+    spec = importlib.util.spec_from_file_location('google_draft_segmented', Path(__file__).with_name('google_draft_segmented.py'))
+    backend = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(backend)
+    return backend.run(*args, **kwargs)
+
+
 def main():
     # Keep paid campaign formats explicit: the segmented upstream workflow has
     # its own shared ledger/cache and never migrates an existing Tamil campaign.
@@ -590,7 +601,8 @@ def main():
             position = sys.argv.index('--mode')
             del sys.argv[position:position + 2]
         return backend.main()
-    if mode in ('plan', 'blank-fill') or any(value.split('=', 1)[0] in segmented_flags for value in arguments):
+    legacy_editorial_flags = ('--max-usd', '--batch-characters')
+    if mode in ('plan', 'blank-fill', 'editorial') or any(value.split('=', 1)[0] in segmented_flags + legacy_editorial_flags for value in arguments):
         spec = importlib.util.spec_from_file_location('google_draft_segmented', Path(__file__).with_name('google_draft_segmented.py'))
         backend = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(backend)

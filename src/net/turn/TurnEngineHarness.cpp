@@ -2023,6 +2023,52 @@ TEST_SUITE("TurnEngineHarness")
             CHECK(reader.loadReplay((output / "match.replay").string()));
         }
     }
+    GLOB2_TEST_CASE("Filipino registration rejects earlier match identities without changing replay file floors",
+                    "[network-sim][artifacts]")
+    {
+        glob2test::HeadlessGlobals globals(harnessGlobals());
+        Online::SimVersion before;
+        // Exact upstream revision-113 golden identity, before Filipino registration.
+        REQUIRE(Online::SimVersion::parseKey(
+            "191-73-289bec536583fdb3508350732d433c2aab519de883507b9af486b120b1cea81d", before));
+        const auto current = Online::currentSimVersion();
+        REQUIRE(before != current);
+        const auto committed = Turn::MatchRecord::readFile(
+            glob2test::fixture("multiplayer/FourSquares1.g2mr").string());
+        REQUIRE(committed.simVersion == current.key());
+        const auto committedSetup = Online::MatchSetup::parse(committed.setupJson);
+        REQUIRE(committedSetup.simVersion == current);
+        for (int boundary = 0; boundary < 3; ++boundary)
+        {
+            CAPTURE(boundary);
+            auto record = committed;
+            auto setup = committedSetup;
+            if (boundary == 1)
+            {
+                setup.simVersion = before;
+                record.setupJson = setup.toJson().dump();
+            }
+            if (boundary == 2) record.simVersion = before.key();
+            const auto output = glob2test::artifactDir() / ("fil-registration-version-" + std::to_string(boundary));
+            fs::create_directories(output);
+            const auto verdict = MatchVerifier::verify(record, setup, mapPath("FourSquares1"), output);
+            REQUIRE(verdict.checksums.size() == size_t(record.endTick) + 1);
+            CHECK(verdict.compared == record.reports.size());
+            if (boundary == 0) CHECK(verdict.verdict == "verified");
+            else
+            {
+                CHECK(verdict.verdict == "unverifiable");
+                CHECK(verdict.reason.find(before.key()) != std::string::npos);
+                CHECK(verdict.reason.find(boundary == 1 ? "match ran sim version" : "record names sim version")
+                      != std::string::npos);
+            }
+            // SIM_REVISION partitions online execution; it does not change the
+            // standalone replay container format. Every actual generated replay
+            // remains readable at the current supported file-format version.
+            ReplayReader reader;
+            CHECK(reader.loadReplay((output / "match.replay").string()));
+        }
+    }
 
     GLOB2_TEST_CASE("Thai registration rejects earlier match identities without changing replay file floors",
                     "[network-sim][artifacts]")
@@ -2098,6 +2144,54 @@ TEST_SUITE("TurnEngineHarness")
             }
             if (boundary == 2) record.simVersion = before.key();
             const auto output = glob2test::artifactDir() / ("registration-version-" + std::to_string(boundary));
+            fs::create_directories(output);
+            const auto verdict = MatchVerifier::verify(record, setup, mapPath("FourSquares1"), output);
+            REQUIRE(verdict.checksums.size() == size_t(record.endTick) + 1);
+            CHECK(verdict.compared == record.reports.size());
+            if (boundary == 0) CHECK(verdict.verdict == "verified");
+            else
+            {
+                CHECK(verdict.verdict == "unverifiable");
+                CHECK(verdict.reason.find(before.key()) != std::string::npos);
+                CHECK(verdict.reason.find(boundary == 1 ? "match ran sim version" : "record names sim version")
+                      != std::string::npos);
+            }
+            // SIM_REVISION partitions online execution; it does not change the
+            // standalone replay container format. Every actual generated replay
+            // remains readable at the current supported file-format version.
+            ReplayReader reader;
+            CHECK(reader.loadReplay((output / "match.replay").string()));
+        }
+    }
+
+    GLOB2_TEST_CASE("combined Thai and Filipino registration rejects shared revision 114 without changing replay file floors",
+                    "[network-sim][artifacts]")
+    {
+        glob2test::HeadlessGlobals globals(harnessGlobals());
+        Online::SimVersion before;
+        // Exact released revision-114 identity, shared by the independent
+        // Thai and Filipino branches before this combined registration.
+        REQUIRE(Online::SimVersion::parseKey(
+            "191-73-cb71317a961766ae7d249e039c3f6ea8fcc6fb3b6d620e1cb69ae0cbae014e7a", before));
+        const auto current = Online::currentSimVersion();
+        REQUIRE(before != current);
+        const auto committed = Turn::MatchRecord::readFile(
+            glob2test::fixture("multiplayer/FourSquares1.g2mr").string());
+        REQUIRE(committed.simVersion == current.key());
+        const auto committedSetup = Online::MatchSetup::parse(committed.setupJson);
+        REQUIRE(committedSetup.simVersion == current);
+        for (int boundary = 0; boundary < 3; ++boundary)
+        {
+            CAPTURE(boundary);
+            auto record = committed;
+            auto setup = committedSetup;
+            if (boundary == 1)
+            {
+                setup.simVersion = before;
+                record.setupJson = setup.toJson().dump();
+            }
+            if (boundary == 2) record.simVersion = before.key();
+            const auto output = glob2test::artifactDir() / ("combined-registration-version-" + std::to_string(boundary));
             fs::create_directories(output);
             const auto verdict = MatchVerifier::verify(record, setup, mapPath("FourSquares1"), output);
             REQUIRE(verdict.checksums.size() == size_t(record.endTick) + 1);

@@ -10,6 +10,7 @@ import {
   t,
   tp,
   formatNumber,
+  formatDate,
   subscribe,
   translateError,
 } from '../src/index.ts';
@@ -92,6 +93,23 @@ describe('online locale resolution', () => {
     expect(resolveLocale('sw-Latn-KE')).toBe('sw');
     expect(resolveLocale(['sw-Arab', 'de'])).toBe('de');
   });
+  it('resolves Filipino and Tagalog aliases only for the Latin script', () => {
+    for (const tag of ['fil', 'fil-PH', 'tl', 'tl-PH', 'TL_ph', 'fil-Latn-PH', 'tl-Latn'])
+      expect(resolveLocale(tag)).toBe('fil');
+    for (const tag of [
+      'fil-Tglg-PH',
+      'tl-Tglg',
+      'fil-Arab',
+      'tl-Cyrl',
+      'fil-Latn-Tglg',
+      'tl-Latn-Arab',
+    ])
+      expect(resolveLocale([tag, 'fr'])).toBe('fr');
+    expect(resolveLocale('fil-u-nu-latn')).toBe('fil');
+    expect(resolveLocale('tl-x-arab')).toBe('fil');
+    expect(resolveLocale('en-PH')).toBe('en');
+    expect(resolveLocale(['ceb-PH', 'de'])).toBe('de');
+  });
   it('resolves Bengali regions and script without claiming Latin transliteration', () => {
     for (const tag of ['bn', 'bn-BD', 'bn-IN', 'bn-Beng-BD', 'bn_Beng_IN', 'bn-u-nu-latn'])
       expect(resolveLocale(tag)).toBe('bn');
@@ -166,6 +184,22 @@ describe('message presentation', () => {
       `many ${new Intl.NumberFormat('ar').format(11)}`,
     );
   });
+  it('uses Filipino plural branches and locale formatting', async () => {
+    registerCatalog('fil', {
+      '{count} item': { one: 'one {count}', other: 'other {count}' },
+    });
+    await setLocale('fil');
+    for (const count of [0, 1, 2, 4, 6, 9, 10, 14, 0.5]) {
+      const branch = new Intl.PluralRules('fil').select(count);
+      expect(tp('{count} item', '{count} items', count)).toBe(
+        `${branch} ${new Intl.NumberFormat('fil').format(count)}`,
+      );
+    }
+    expect(formatNumber(1234.5)).toBe(new Intl.NumberFormat('fil').format(1234.5));
+    const date = new Date('2026-10-31T00:00:00Z');
+    const options = { dateStyle: 'long', timeZone: 'UTC' } as const;
+    expect(formatDate(date, options)).toBe(new Intl.DateTimeFormat('fil', options).format(date));
+  });
   it('uses Marathi plural categories and localized counts', async () => {
     registerCatalog('mr', {
       '{count} item': { one: '{count} एक', other: '{count} अनेक' },
@@ -204,8 +238,8 @@ describe('message presentation', () => {
     ).toBe('Salon abc introuvable.');
     expect(translateError(new Error('private diagnostic'))).toBe('Veuillez réessayer.');
   });
-  it('contains 43 unique game catalog mappings including Thai, Tamil, Bengali, Malay, Marathi and Telugu', () => {
-    expect(locales).toHaveLength(43);
+  it('contains 44 unique game catalog mappings including Thai, Filipino, Tamil, Bengali, Malay, Marathi and Telugu', () => {
+    expect(locales).toHaveLength(44);
     expect(locales).toContainEqual({ code: 'ta', gameCode: 'ta', name: 'தமிழ்', dir: 'ltr' });
     expect(locales).toContainEqual({
       code: 'nb',
@@ -217,6 +251,7 @@ describe('message presentation', () => {
     expect(new Set(locales.map((l) => l.code)).size).toBe(locales.length);
     for (const [code, name] of [
       ['th', 'ไทย'],
+      ['fil', 'Filipino'],
       ['te', 'తెలుగు'],
       ['mr', 'मराठी'],
       ['bn', 'বাংলা'],
@@ -260,6 +295,17 @@ describe('startup loading and presentation', () => {
     expect(browserScope.document.cookie).toBe('other_cookie=1');
     await runtime.setLocale('fr');
     expect(browserScope.document.cookie).toContain('glob2_locale=fr');
+  });
+  it('persists an explicit Filipino choice and restores it before browser preferences', async () => {
+    const runtime = await fresh('glob2_locale=fil');
+    vi.stubGlobal('navigator', { languages: ['de'] });
+    runtime.configureCatalogLoader(async () => ({ Language: 'Wika' }));
+    await runtime.initialize();
+    expect(runtime.getLocale()).toBe('fil');
+    expect(browserScope.document.documentElement).toEqual({ lang: 'fil', dir: 'ltr' });
+    expect(runtime.t('Language')).toBe('Wika');
+    await runtime.setLocale('fil');
+    expect(browserScope.document.cookie).toContain('glob2_locale=fil');
   });
   it('restores Telugu and persists an explicit selection', async () => {
     const runtime = await fresh('glob2_locale=te');
