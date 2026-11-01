@@ -204,6 +204,7 @@ CLIENT_SOURCES = (
     'map/editor/PhoneEditorTray.cpp',
     'hud/GameGUIDefaultAssignManager.cpp',
     'hud/GameGUIDialog.cpp',
+    'hud/InGameStatistics.cpp',
     'hud/draw/GameGUIDraw.cpp',
     'hud/draw/GameGUIDrawChoice.cpp',
     'hud/draw/GameGUIDrawUnitInfos.cpp',

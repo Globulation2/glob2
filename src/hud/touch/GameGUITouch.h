@@ -36,6 +36,8 @@ class GameGUITouch
 {
   public:
     bool needsStatisticsHistory() const { return statsOpen; }
+    void closeStatistics() { statsOpen = false; }
+    GAGCore::ViewRect statisticsContentRect() const { return statsLayout().body; }
 	explicit GameGUITouch(GameGUI &gui);
 	~GameGUITouch();
 	bool process(SDL_Event &event);
@@ -179,15 +181,13 @@ class GameGUITouch
 	std::vector<GAGCore::ViewRect> peekButtons() const; // Done, zoom out, zoom in (thumb side last).
 	void navigatePeek(GAGCore::ViewPoint point);
 	void drawPeek();
-	// Compact statistics: a bottom sheet with the team's history chart (the
-	// end-game chart, own team only), a metric switcher and current counters.
+	// Statistics uses the same topics and metric list as the desktop sidebar.
+	// The header owns dismissal; the embedded host owns body scrolling.
 	bool statsOpen = false;
-	int statsMetric = 0;
-	std::vector<Stats::Metric> statsCatalog;
 	double statsDrag = 0;
 	struct StatsLayout
 	{
-		GAGCore::ViewRect sheet, close, previous, next, title, counters, chart;
+		GAGCore::ViewRect sheet, close, title, body;
 	};
 	StatsLayout statsLayout() const;
 	void drawStats();

@@ -4884,6 +4884,30 @@ Ujete enote brez prostega polja, na katerega bi lahko stopile.
 Odstranjene surovine
 [stat cleared about]
 Surovine, ki so jih delavci odstranili na območjih čiščenja, da so naredili prostor.
+[stats topic overview]
+
+[stats topic economy]
+
+[stats topic world]
+
+[stats work construction]
+
+[stats defence]
+
+[stats history]
+
+[stats waiting]
+
+[stats unit details]
+
+[stats map overlays]
+
+[stats topic]
+
+[stats full history]
+
+[stats missing readings]
+
 [stat win probability]
 
 [stat win probability about]
