@@ -58,7 +58,7 @@ async function readColour(src: string) {
 export function useSkinDocument(accountId: string | undefined) {
   const [canvas] = useState(() => paintCanvas());
   const [initial] = useState<SkinData>(() => ({
-    name: 'My colony',
+    name: t('My colony'),
     building: '#ed9252',
     swarmMesh: 'classic',
     swarmViewAngle: 0,

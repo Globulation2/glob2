@@ -1,6 +1,7 @@
 // @vitest-environment jsdom
 import { afterEach, beforeEach, expect, it, vi } from 'vitest';
 import { act, cleanup, renderHook, waitFor } from '@testing-library/react';
+import { registerCatalog, setLocale } from '../../../packages/i18n/src/index.ts';
 import type * as ApiModule from '../src/api.ts';
 import { ApiError, request } from '../src/api.ts';
 import { useSkinDocument } from '../src/skins/useSkinDocument.ts';
@@ -195,4 +196,24 @@ it('paints the current document after a same-event gesture cancellation', async 
   act(() => result.current.history(true));
   expect(result.current.data.colour[1]).toBe(255);
   expect(result.current.canUndo).toBe(false);
+});
+
+it('localizes only a fresh guest name and restores authored guest names unchanged', async () => {
+  registerCatalog('bg', { 'My colony': 'Моята колония' });
+  await setLocale('bg');
+  try {
+    const first = renderHook(() => useSkinDocument(undefined));
+    await waitFor(() => expect(first.result.current.hydrated).toBe(true));
+    expect(first.result.current.data.name).toBe('Моята колония');
+    act(() => first.result.current.edit({ name: 'My colony / авторски избор' }));
+    act(() => first.result.current.saveLocal());
+    first.unmount();
+    await setLocale('en');
+    const restored = renderHook(() => useSkinDocument(undefined));
+    await waitFor(() => expect(restored.result.current.hydrated).toBe(true));
+    expect(restored.result.current.data.name).toBe('My colony / авторски избор');
+    expect(request).not.toHaveBeenCalled();
+  } finally {
+    await setLocale('en');
+  }
 });
