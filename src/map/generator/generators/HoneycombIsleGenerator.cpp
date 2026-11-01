@@ -49,8 +49,9 @@ using namespace MapGeneration;
 // THE TERRAIN. The layout is drawn with one terrain per mechanic (grass, sand, water, deep water,
 // road, gravel, scree, loam, boulders, ridge rock), so every measurement of the design (pure tiles,
 // crop growth) sees exactly the rules the game will; a last pass paints the looks that share each
-// mechanic (moss, spring meadow, clay, dirt, flower meadow, marsh, mud, deep snow, thicket, hedge,
-// outcrop, boardwalk, dirt track, dark water, lush and dry grass, pale and dune sand).
+// mechanic (moss, spring meadow, clay, flower meadow, mud, deep snow, thicket, hedge,
+// outcrop, boardwalk, dirt track, dark water, lush and dry grass, pale and dune sand). One look per
+// kind of ground: one sand on every shore, solid fields, solid clay hills.
 //
 // HOW IT GOT HERE. Revisions 1-4 (2026-09-16, built with the maintainer over one session) began as
 // "Rubble city", an urban-combat map of bombed square blocks, and became a honeycomb city of
@@ -115,21 +116,17 @@ constexpr double kRiverWander = 0.35, kHomeRiverMargin = 3.0;
 // The sea deepens this many vertices from land, and darkens (the same deep water, another look)
 // further out.
 constexpr int kDeepFromShore = 8, kDarkFromShore = 18;
-// Field furrows: this many loam vertex rows in every period, the rest grass. Two rows make one row
-// of pure loam tiles, which irrigates the field (a mixed tile irrigates nothing); three in six
-// irrigate the field about as a pond in it did.
-constexpr int kFurrowPeriod = 6, kFurrowLoam = 3;
 
 enum class Block : unsigned char
 {
 	Outside,
 	Home,
 	Annex,
-	Field,    // wheat on loam furrows
+	Field,    // wheat on loam
 	Bank,     // the river takes a fifth of it or more: a water meadow of wheat on its banks
 	Forest,   // trees on moss round a thicket
 	Pasture,  // open grass and flower meadow, a hedgerow across it
-	Hills,    // clay and dirt with outcrop knolls
+	Hills,    // clay with outcrop knolls
 	Mountain, // a ridge-rock massif with a snow cap, scree and boulders, stone at its foot
 	Lake,     // a pond with a dark middle and a garden round it, mud on its rim
 	Landmark  // the desert oasis and its orchard
@@ -782,7 +779,7 @@ Layout layout(const GenerationRequest &request, GenerationContext &context, int 
 	const std::vector<int> drift = periodicNoise(t.w, t.h, 5, context.stream("honeycomb-isle-drifts"));
 	const std::vector<int> grain = periodicNoise(t.w, t.h, 3, context.stream("honeycomb-isle-grain"));
 	int lakes = 0, mountains = 0, hills = 0, pastures = 0, forests = 0, fields = 0, hedges = 0;
-	std::vector<unsigned char> quarry(n, 0), forestGround(n, 0);
+	std::vector<unsigned char> quarry(n, 0), forestGround(n, 0), lakeDeep(n, 0);
 	for (int c = 0; c < cells; ++c)
 	{
 		const Block kind = L.kind[c];
@@ -800,21 +797,16 @@ Layout layout(const GenerationRequest &request, GenerationContext &context, int 
 		case Block::Field:
 		case Block::Bank:
 		{
-			// Furrows of loam across the field on a heading of its own, grass between them. A bank
-			// hex is a water meadow: its furrows are spring meadow, the same crop land.
-			const double heading = context.bounded("honeycomb-isle-fields", 3600) * kPi / 3600;
-			const double ux = std::cos(heading), uy = std::sin(heading);
+			// The whole field is loam, which waters it; a bank hex is a water meadow, the same crop
+			// land in spring meadow. Earlier furrows of loam and grass read as too busy (maintainer
+			// playtest, 2026-11-01).
 			std::vector<int> corners;
 			for (int i : tilesOf[c])
 			{
 				if (!interior[i] || L.river[i])
 					continue;
 				corners.push_back(i);
-				double dx, dy;
-				offset(i, centre, dx, dy);
-				const int row = int(std::floor(dx * -uy + dy * ux + 1000.0));
-				if (row % kFurrowPeriod < kFurrowLoam)
-					setVertex(L, look, i, LOAM, kind == Block::Bank ? SPRING_MEADOW : LOAM);
+				setVertex(L, look, i, LOAM, kind == Block::Bank ? SPRING_MEADOW : LOAM);
 			}
 			Plot p{corners, 0, 0, 0, 0, 100};
 			for (int i : p.tiles)
@@ -872,12 +864,11 @@ Layout layout(const GenerationRequest &request, GenerationContext &context, int 
 		}
 		case Block::Hills:
 		{
-			// Clay and dirt (gravel on the crests), with two or three outcrop knolls; one knoll
-			// keeps a pocket of grass at its foot for its stone.
+			// Clay, with two or three outcrop knolls; one knoll keeps a pocket of grass at its foot
+			// for its stone.
 			for (int i : tilesOf[c])
 				if (inside(i))
-					setVertex(L, look, i, GRAVEL,
-							  grain[i] > 65536 * 80 / 100 ? GRAVEL : drift[i] > 65536 / 2 ? CLAY : DIRT);
+					setVertex(L, look, i, GRAVEL, CLAY);
 			const int knolls = 2 + int(context.bounded("honeycomb-isle-hills", 2));
 			for (int k = 0; k < knolls; ++k)
 			{
@@ -968,7 +959,7 @@ Layout layout(const GenerationRequest &request, GenerationContext &context, int 
 				offset(i, at, dx, dy);
 				const double r = std::hypot(dx, dy);
 				if (r <= lake - 2.0 && L.terrain[i] == WATER)
-					setVertex(L, look, i, DEEP_WATER, DARK_WATER);
+					lakeDeep[i] = 1; // drawn after the beaches, which take any other terrain for land
 				else if (r >= lake + ring + 1.0 && r <= lake + ring + 2.2 && L.plotOf[i] < 0)
 					setVertex(L, look, i, SCREE, MUD);
 			}
@@ -990,7 +981,7 @@ Layout layout(const GenerationRequest &request, GenerationContext &context, int 
 				offset(i, centre, dx, dy);
 				const double r = std::hypot(dx, dy);
 				if (r > meadow && depth[i] > 1)
-					setVertex(L, look, i, SAND, drift[i] > 65536 * 70 / 100 ? PALE_SAND : DUNE_SAND);
+					setVertex(L, look, i, SAND, DUNE_SAND);
 				else
 					look[i] = r > meadow - 1.5 ? DRY_GRASS : LUSH_GRASS;
 				if (r <= orchardRadius && r >= 2.0)
@@ -1075,27 +1066,11 @@ Layout layout(const GenerationRequest &request, GenerationContext &context, int 
 
 	layBeaches(L.terrain, t);
 	for (int i = 0; i < n; ++i)
+		if (lakeDeep[i] && L.terrain[i] == WATER)
+			setVertex(L, look, i, DEEP_WATER, DARK_WATER);
+	for (int i = 0; i < n; ++i)
 		if (deck[i])
 			setVertex(L, look, i, TRAIL, BOARDWALK);
-	// Reeds: stretches of the river's banks are marsh instead of sand, away from the bridges.
-	const std::vector<int> reeds = periodicNoise(t.w, t.h, 7, context.stream("honeycomb-isle-reeds"));
-	int marsh = 0;
-	for (int i = 0; i < n; ++i)
-	{
-		if (L.terrain[i] != SAND || !inCity[i] || landing[i] || deck[i] || L.homeOf[i] >= 0 ||
-			reeds[i] < 65536 * 45 / 100)
-			continue;
-		bool river = false;
-		const int x = t.remainderX(i), y = i / t.w;
-		for (const auto &s : kCardinalSteps)
-			river |= L.river[t.at(x + s[0], y + s[1])] != 0;
-		if (river)
-		{
-			setVertex(L, look, i, SCREE, MARSH);
-			++marsh;
-		}
-	}
-	L.telemetry.measure("honeycomb-isle.marsh", marsh);
 	// The sea deepens away from the shore. A tile mixing shallow and deep corners is neither
 	// walkable nor swimmable, so the deep sea is a barrier; it is drawn only outside the island,
 	// never in the river.
@@ -1209,11 +1184,10 @@ Layout layout(const GenerationRequest &request, GenerationContext &context, int 
 	L.telemetry.measure("honeycomb-isle.forest.regrowing", regrowing);
 	L.telemetry.measure("honeycomb-isle.plots", L.plots.size());
 
-	// The looks. Grass is lush where it is watered or tended (homes, forests, water meadows, the
-	// oasis) and dry where nothing would grow; beaches facing the sea are pale sand, with dunes on
-	// the windward stretches; everything else keeps the look it was drawn with.
+	// The looks. Grass is lush where it is tended (homes, forests, water meadows, the oasis) and
+	// plain elsewhere: shading it by its growth chance blotched pastures and hillsides. Every beach
+	// is pale sand and the desert dune sand; everything else keeps the look it was drawn with.
 	L.paint = L.terrain;
-	const std::vector<int> tint = periodicNoise(t.w, t.h, 6, context.stream("honeycomb-isle-tint"));
 	for (int i = 0; i < n; ++i)
 	{
 		const TerrainType mechanic = TerrainType(L.terrain[i]);
@@ -1223,30 +1197,13 @@ Layout layout(const GenerationRequest &request, GenerationContext &context, int 
 			L.paint[i] = chosen;
 			continue;
 		}
-		const int x = t.remainderX(i), y = i / t.w;
 		const Block b = L.kind[L.cell[i]];
-		if (mechanic == GRASS)
-		{
-			const std::uint64_t wet = std::uint64_t(fertility.at(x, y)) * 100;
-			const std::uint64_t scale = std::uint64_t(Fertility::kScale);
-			const int jitter = tint[i] * 20 / 65536;
-			if (L.homeOf[i] >= 0 || b == Block::Forest || b == Block::Bank)
-				L.paint[i] = LUSH_GRASS;
-			else if (wet >= scale * std::uint64_t(30 + jitter))
-				L.paint[i] = LUSH_GRASS;
-			else if (wet <= scale * std::uint64_t(jitter / 4))
-				L.paint[i] = DRY_GRASS;
-		}
-		else if (mechanic == SAND && !inCity[i] && b == Block::Outside)
-			L.paint[i] = tint[i] > 65536 * 68 / 100 ? DUNE_SAND : PALE_SAND;
-		else if (mechanic == SAND && b != Block::Landmark)
-		{
-			bool sea = false;
-			for (const auto &s : kCardinalSteps)
-				sea |= L.kind[L.cell[t.at(x + s[0], y + s[1])]] == Block::Outside;
-			if (sea)
-				L.paint[i] = tint[i] > 65536 * 68 / 100 ? DUNE_SAND : PALE_SAND;
-		}
+		if (mechanic == GRASS && (L.homeOf[i] >= 0 || b == Block::Forest || b == Block::Bank))
+			L.paint[i] = LUSH_GRASS;
+		else if (mechanic == SAND)
+			// One beach sand everywhere (three sands on one shore looked wrong; maintainer playtest,
+			// 2026-11-01); the desert keeps its dunes.
+			L.paint[i] = b == Block::Landmark ? DUNE_SAND : PALE_SAND;
 	}
 	return L;
 }

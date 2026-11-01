@@ -28,16 +28,16 @@ its own.
 | Hex | Terrain | Use |
 | --- | --- | --- |
 | Home (two per colony) | Lush grass, a cistern pond and garden | Swarm, starter crops, the first buildings |
-| Field | Loam furrows (three vertex rows in six) under wheat | Food. The loam irrigates the field as the pond of earlier revisions did |
-| Water meadow (the river takes a fifth of it) | Spring-meadow furrows under wheat | Food, watered by the river too |
+| Field | Solid loam under wheat | Food. The loam irrigates the field as the pond of earlier revisions did |
+| Water meadow (the river takes a fifth of it) | Spring meadow under wheat | Food, watered by the river too |
 | Forest | Trees on lush grass round a heart of moss and a thicket that never clears | Wood; the moss keeps it growing |
 | Pasture | Grass with drifts of flower meadow, and a hedgerow across it with a gap | Building room; the hedge stops arrows |
-| Hills | Clay and dirt with gravel crests, two or three outcrop knolls, a grass pocket | Building room and two stone |
+| Hills | Clay with two or three outcrop knolls and a grass pocket | Building room and two stone |
 | Mountain | A ridge-rock and outcrop massif with a deep-snow cap, a scree and boulder skirt | Eight stone at its foot; rock towers shoot over, boulders stop arrows |
 | Lake | A pond with a dark deep middle, a garden round it, a mud rim | Food and wood between the homes |
 | Oasis (the middle; two on maps of more than four colonies) | Dune and pale sand round a pond, lush grass and the orchard | The fruit prize |
 
-The sea's beaches are pale sand with stretches of dunes; stretches of the river's banks are marsh;
+Every beach is pale sand (the desert alone has dunes);
 bridges are boardwalk with dirt-track causeways on to the nearest road.
 
 ## How it is built
