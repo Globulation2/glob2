@@ -161,6 +161,14 @@ template<class A> void fields(A& a, DevelopmentIntent& value)
 	a("requiredResourceType",value.requiredMaterialType);
 	a("emergency",value.emergency);
 	a("replacesBuildingId",value.replacesBuildingId);
+    if(a.version()>=FILE_FORMAT_VERSION_MAXIMA_FORWARD_SUPPORT)
+    {
+        a("supportX",value.supportX);a("supportY",value.supportY);
+        a("supportDistance",value.supportDistance);
+    }
+    if(value.purpose==ForwardSupport && (value.supportX<0 || value.supportY<0
+        || value.supportDistance<12 || value.supportDistance>64))
+        throw std::runtime_error("Invalid Maxima forward-support constraints");
 }
 
 template<class A> void fields(A& a, DevelopmentLimits& value)
