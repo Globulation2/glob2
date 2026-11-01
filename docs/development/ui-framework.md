@@ -48,6 +48,9 @@ as matches and the editor; see [render pacing](../architecture/rendering.md#targ
    not use raw pixel constants. The framework sizes text from the player's
    text size (in points on touch hosts), so a screen never scales fonts itself
    (see [Text size](#text-size)).
+   Use `p.textPt()` for widths that must grow with text, such as touch action
+   grids. Settings places its save-status note above the actions when the
+   available width cannot hold both comfortably at the chosen text size.
 6. **Text wraps or ellipsizes; it is never clipped silently.** Use
    `paragraph()` for wrapping text and `label()` for single lines that
    ellipsize. Controls shrink or wrap their labels within the framework's
@@ -271,6 +274,10 @@ recognizable technical loanwords rather than awkward literal translations.
 Follow the [KWF orthography guide](https://kwfdiksiyonaryo.ph/gabay) for retained
 foreign spellings and affixes; ordinary UI text does not need dictionary stress
 marks.
+
+Filipino uses the existing Latin font with authored drawing advances, so larger
+raster sizes retain the widths used for wrapping. Check both ordinary and
+high-density rendering when changing its font configuration.
 
 Use **manggagawa** for gathering/building workers, **mandirigma** for warriors,
 **tagapaggalugad** for explorers, **Pugad** for the unit-producing Swarm building,

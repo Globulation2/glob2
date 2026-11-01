@@ -745,7 +745,14 @@ Element SettingsScreen::build(const Presentation &p)
 			buttons.push_back({"cancel", tr("continue"), [this] { abandon(); }});
 		buttons.push_back({"done", tr(modal == Modal::None ? "Done" : "Cancel"), [this] { dismiss(); }, true});
 	}
-	auto footerRow = row({expanded(paragraph(status, {FontRole::Support, true})), actions(std::move(buttons), p)}, {-1, CrossAlign::Center});
+	auto footerRow = adaptive([status, buttons = std::move(buttons)](const LayoutContext &ctx, Size available)
+	{
+		auto note = paragraph(status, {FontRole::Support, true});
+		auto controls = actions(buttons, ctx.presentation);
+		if (available.w < 2 * ctx.presentation.textPt(150) + ctx.metrics.gap)
+			return column({note, align(Alignment::Right, controls)});
+		return row({expanded(note), controls}, {-1, CrossAlign::Center});
+	});
 
 	// The rail only when the body keeps its room beside it (760 points at 100% text).
 	const bool sidebar = modal == Modal::None && !p.compact() && p.safe.w >= p.pt(584) + p.textPt(176);

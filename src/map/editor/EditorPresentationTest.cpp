@@ -38,6 +38,7 @@ struct PresentationScope
 	GAGCore::InputCapabilities input = GAGCore::presentationInput;
 	GAGCore::ResolvedPresentation state = GAGCore::presentationState;
 	PresentationPreference preference = GAGCore::presentationPreference;
+	double textScale = GAGCore::userTextScale;
 	std::optional<std::string> mobile;
 	PresentationScope()
 	{
@@ -56,6 +57,7 @@ struct PresentationScope
 		GAGCore::presentationInput = input;
 		GAGCore::presentationState = state;
 		GAGCore::presentationPreference = preference;
+		GAGCore::userTextScale = textScale;
 	}
 	static void host(double width, double height, bool touch)
 	{
@@ -96,6 +98,57 @@ void blank(MapEdit &editor)
 
 TEST_SUITE("EditorPresentation")
 {
+	TEST_CASE("software phones retain the tray with enlarged Filipino text [display][artifacts]")
+	{
+		PresentationScope scope;
+		glob2test::setEnv("GLOB2_MOBILE_UI", "1");
+		glob2test::GlobalsOptions options{.display = true, .loadStrings = true,
+			.width = 390, .height = 844, .screenFlags = 0};
+		options.beforeLoad = [](GlobalContainer &globals) {
+			globals.settings.language = "fil";
+			globals.settings.setTextSizePercent(150);
+		};
+		glob2test::HeadlessGlobals globals(options);
+		auto *gfx = globalContainer->gfx;
+		REQUIRE(gfx->backendSwitchStatus().active == GAGCore::RendererBackend::Software);
+		REQUIRE_FALSE(gfx->hasPortableRenderer());
+		PresentationScope::host(390, 844, true);
+		MapEdit editor;
+		blank(editor);
+		editor.beginEditing();
+		REQUIRE(editor.usesPhone());
+		CHECK(editor.dockWidth() == 0);
+		auto &phone = *editor.phone;
+		phone.chooseMode(0);
+		phone.prepare();
+		const int grass = phone.rowOf("terrain/grass");
+		REQUIRE(grass >= 0);
+		const auto card = phone.rows[grass].rect;
+		for (Uint32 type : {SDL_EVENT_MOUSE_BUTTON_DOWN, SDL_EVENT_MOUSE_BUTTON_UP})
+		{
+			SDL_Event event{};
+			event.type = type;
+			event.button.button = SDL_BUTTON_LEFT;
+			event.button.which = 1;
+			event.button.x = float(card.x + card.w / 2);
+			event.button.y = float(card.y + card.h / 2);
+			editor.advanceEditing({event}, 0);
+		}
+		CHECK(editor.currentBrushId() == "terrain/grass");
+		gfx->setClipRect();
+		editor.drawEditing();
+		phone.peekOpen = true;
+		editor.drawEditing();
+		phone.peekOpen = false;
+		editor.drawEditing();
+		int x, y, width, height;
+		gfx->getClipRect(&x, &y, &width, &height);
+		CHECK(x == 0); CHECK(y == 0);
+		CHECK(width == gfx->getW()); CHECK(height == gfx->getH());
+		gfx->printScreen(glob2test::artifactDirFromWorkingDirectory() + "/filipino-software-editor-large.bmp");
+		editor.drawEditing();
+	}
+
 	TEST_CASE("the editor presentation table follows room and overrides")
 	{
 		struct Case

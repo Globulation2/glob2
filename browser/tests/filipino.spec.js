@@ -43,6 +43,8 @@ for (const mode of ['serial', 'threaded']) for (const phone of [false, true]) {
       await screen(page, 'SettingsScreen');
       await clickControl(page, 'display.textsize');
       await clickControl(page, 'popup/2'); // Exercise the player's 150% text setting.
+      await expect.poll(async () => (await control(page, 'display.textsize')).label).toMatch(/150\s*%/);
+      await expect.poll(async () => Boolean((await snapshot(page)).controls['popup/2'])).toBe(false);
       await page.screenshot({path: info.outputPath('fil-settings-large-text.png')});
       if ((await snapshot(page)).controls['nav.current']) {
         await clickControl(page, 'nav.current');
@@ -64,6 +66,7 @@ for (const mode of ['serial', 'threaded']) for (const phone of [false, true]) {
       await page.screenshot({path: info.outputPath('fil-new-map.png')});
       await clickCreateMap(page);
       await screen(page, 'MapEditorScreen');
+      if (phone) await control(page, 'tray/mode/2');
       await page.screenshot({path: info.outputPath('fil-editor.png')});
       expect(await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth))
         .toBeLessThanOrEqual(1);
