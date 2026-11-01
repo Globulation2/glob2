@@ -230,3 +230,43 @@ it.each([false, true])(
     }
   },
 );
+
+it.each([false, true])(
+  'uses the translated Bulgarian Like/Unlike verb in the actual catalog card aria label, liked=%s',
+  async (liked) => {
+    const previousLocale = getLocale();
+    registerCatalog('bg', bg);
+    const release = { ...ownerDraft, status: 'published' as const, likes: 2, liked };
+    const metadata = { ...release.metadata };
+    vi.spyOn(api, 'request').mockResolvedValue({ items: [release], next: null });
+    try {
+      await setLocale('bg');
+      render(
+        <LocaleProvider>
+          <RouterProvider>
+            <MusicLibrary />
+          </RouterProvider>
+        </LocaleProvider>,
+      );
+      const expected = bg['{value0} {value1} · {value2} likes']
+        .replace('{value0}', liked ? bg.Unlike : bg.Like)
+        .replace('{value1}', release.metadata.title)
+        .replace('{value2}', '2');
+      const button = await screen.findByRole('button', { name: expected });
+      expect(button.getAttribute('aria-label')).toBe(expected);
+      expect(button.getAttribute('aria-label')).not.toMatch(/Unlike|Like/);
+      expect(button.getAttribute('aria-pressed')).toBe(String(liked));
+      expect(button.textContent).toContain('2');
+      await act(() => setLocale('en'));
+      expect(button.getAttribute('aria-label')).toBe(
+        `${liked ? 'Unlike' : 'Like'} Authored title · 2 likes`,
+      );
+      expect(release.metadata).toEqual(metadata);
+      expect(release.liked).toBe(liked);
+      expect(release.likes).toBe(2);
+    } finally {
+      cleanup();
+      await setLocale(previousLocale);
+    }
+  },
+);

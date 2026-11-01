@@ -70,6 +70,8 @@ SDL GPU differential cases; the compiler is not part of the program archive.
 Browser CI and development archives include launcher-relative scripts, including
 `presentation-surface.js`, and the serial/threaded shader preload packages.
 Downstream browser and packaging jobs consume this complete runtime closure.
+The WebAssembly build job allows up to 120 minutes for the complete client and
+test builds; reaching the deadline still fails verification.
 
 Chromium renderer-switch checks run separately from the five general browser
 shards. Serial cases use three shards with one worker per shard; per-test

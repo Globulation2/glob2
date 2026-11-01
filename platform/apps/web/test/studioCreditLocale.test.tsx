@@ -5,6 +5,7 @@ import { registerCatalog, setLocale } from '../../../packages/i18n/src/index.ts'
 import { LocaleProvider } from '../src/i18n.tsx';
 import bg from '../../../packages/i18n/locales/bg.json';
 import type { ReactNode } from 'react';
+import { MusicStudio } from '../src/pages/MusicStudio.tsx';
 import { MapStudio } from '../src/pages/MapStudio.tsx';
 import { request } from '../src/api.ts';
 import { CreditPanel } from '../src/components/studio/Studio.tsx';
@@ -20,6 +21,7 @@ vi.mock('../src/router.tsx', () => ({
 }));
 // The actual MapStudio header/dialog render; the unrelated map preview stays out of this fixture.
 vi.mock('../src/pages/studio/StudioWorkspace.tsx', () => ({ StudioWorkspace: () => null }));
+vi.mock('../src/pages/music-studio/Workspace.tsx', () => ({ MusicWorkspace: () => null }));
 vi.mock('../src/api.ts', async (importOriginal) => ({
   ...(await importOriginal<object>()),
   request: vi.fn(async (_method: string, path: string) => {
@@ -101,11 +103,7 @@ it.each([0, 1, 2])(
   'renders the map-wallet balance %i in Bulgarian visibly and accessibly while keeping its dialog category distinct',
   async (available) => {
     walletFixture.available = available;
-    registerCatalog('bg', {
-      ...bg,
-      'Map credits': 'Кредити за карти',
-      '{value0} Map credits': 'Кредити за карти: {value0}',
-    });
+    registerCatalog('bg', bg);
     await setLocale('bg');
     render(
       <LocaleProvider>
@@ -125,6 +123,35 @@ it.each([0, 1, 2])(
     expect(wallet.textContent?.trim()).toBe(`${available} Map credits`);
     expect(wallet.getAttribute('aria-label')).toBe(`${available} Map credits`);
     expect(screen.getByRole('dialog', { name: 'Map credits' })).toBeTruthy();
+    expect(vi.mocked(request).mock.calls.every(([method]) => method === 'GET')).toBe(true);
+  },
+);
+
+it.each([0, 1, 2])(
+  'renders the music-wallet balance %i using the approved actual catalog for visible text and aria',
+  async (available) => {
+    walletFixture.available = available;
+    registerCatalog('bg', bg);
+    await setLocale('bg');
+    render(
+      <LocaleProvider>
+        <MusicStudio />
+      </LocaleProvider>,
+    );
+    const expected = `Музикални кредити: ${available}`;
+    const wallet = await screen.findByRole('button', { name: expected });
+    expect(wallet.textContent?.trim()).toBe(expected);
+    expect(wallet.getAttribute('aria-label')).toBe(expected);
+    expect(wallet.getAttribute('aria-expanded')).toBe('false');
+    expect(screen.getByText('Authored map title', { exact: true })).toBeTruthy();
+    fireEvent.click(wallet);
+    expect(wallet.getAttribute('aria-expanded')).toBe('true');
+    expect(screen.getByRole('dialog', { name: 'Музикални кредити' })).toBeTruthy();
+    expect(screen.getByRole('heading', { name: 'Музикални кредити' })).toBeTruthy();
+    await act(() => setLocale('en'));
+    expect(wallet.textContent?.trim()).toBe(`${available} Music credits`);
+    expect(wallet.getAttribute('aria-label')).toBe(`${available} Music credits`);
+    expect(screen.getByRole('dialog', { name: 'Music credits' })).toBeTruthy();
     expect(vi.mocked(request).mock.calls.every(([method]) => method === 'GET')).toBe(true);
   },
 );

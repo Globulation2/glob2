@@ -319,7 +319,7 @@ export function MusicLibrary() {
                       <button
                         disabled={account?.kind !== 'registered' || release.status !== 'published'}
                         aria-label={t('{value0} {value1} · {value2} likes', {
-                          value0: release.liked ? 'Unlike' : 'Like',
+                          value0: release.liked ? t('Unlike') : t('Like'),
                           value1: release.metadata.title,
                           value2: release.likes,
                         })}

@@ -34,8 +34,8 @@ def strings(path):
 
 class AppleLocalizationTests(unittest.TestCase):
     def fixture(self, root):
-        directories = [root / 'en.lproj', root / 'mr.lproj', root / 'ta.lproj', root / 'bg.lproj']
-        for directory, value in zip(directories, ('English purpose.', 'मराठी चाचणी.', 'தமிழ் சோதனை.', 'Българска цел.')):
+        directories = [root / 'en.lproj', root / 'mr.lproj', root / 'ta.lproj', root / 'te.lproj', root / 'bg.lproj']
+        for directory, value in zip(directories, ('English purpose.', 'मराठी चाचणी.', 'தமிழ் சோதனை.', 'తెలుగు పరీక్ష.', 'Българска цел.')):
             directory.mkdir(parents=True)
             (directory / 'InfoPlist.strings').write_text(
                 '"NSLocalNetworkUsageDescription" = ' + json.dumps(value, ensure_ascii=False) + ';\n', encoding='utf-8')
@@ -113,7 +113,8 @@ class AppleLocalizationTests(unittest.TestCase):
             self.assertEqual((root / '0.txt').read_text(), 'Resources/en.lproj')
             self.assertEqual((root / '1.txt').read_text(), 'Resources/mr.lproj')
             self.assertEqual((root / '2.txt').read_text(), 'Resources/ta.lproj')
-            self.assertEqual((root / '3.txt').read_text(), 'Resources/bg.lproj')
+            self.assertEqual((root / '3.txt').read_text(), 'Resources/te.lproj')
+            self.assertEqual((root / '4.txt').read_text(), 'Resources/bg.lproj')
             self.assertEqual(set((root / 'sources.txt').read_text().split(';')),
                              {str(directory / 'InfoPlist.strings') for directory in directories})
 
@@ -126,7 +127,7 @@ class AppleLocalizationTests(unittest.TestCase):
                 for keyword in node.keywords:
                     if keyword.arg == 'BUNDLE_RESOURCEDIRS':
                         declared.extend(ast.literal_eval(keyword.value))
-        self.assertTrue({'darwin/en.lproj', 'darwin/mr.lproj', 'darwin/ta.lproj', 'darwin/bg.lproj'} <= set(declared))
+        self.assertTrue({'darwin/en.lproj', 'darwin/mr.lproj', 'darwin/ta.lproj', 'darwin/te.lproj', 'darwin/bg.lproj'} <= set(declared))
         for base, plist_path in ((ROOT / 'darwin', ROOT / 'darwin/Info.plist'),
                                  (ROOT / 'mobile/ios', ROOT / 'mobile/ios/Info.plist.in')):
             with self.subTest(platform=base):
@@ -135,6 +136,11 @@ class AppleLocalizationTests(unittest.TestCase):
                 english = strings(base / 'en.lproj/InfoPlist.strings')
                 marathi = strings(base / 'mr.lproj/InfoPlist.strings')
                 tamil = strings(base / 'ta.lproj/InfoPlist.strings')
+                telugu = strings(base / 'te.lproj/InfoPlist.strings')
+                self.assertEqual(set(telugu), set(english))
+                self.assertRegex(telugu['NSLocalNetworkUsageDescription'], r'[\u0c00-\u0c7f]')
+                self.assertIn('Globulation 2', telugu['NSLocalNetworkUsageDescription'])
+                self.assertNotEqual(telugu, english)
                 self.assertEqual(set(english), {'NSLocalNetworkUsageDescription'})
                 self.assertEqual(set(marathi), set(english))
                 self.assertEqual(set(tamil), set(english))

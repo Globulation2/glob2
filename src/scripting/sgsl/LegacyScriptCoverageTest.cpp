@@ -49,7 +49,7 @@ std::string save(MapScriptSGSL& script, Game& game)
     return bytes->takeContents();
 }
 
-void loadLanguageInventory(const std::filesystem::path& listing, const std::string& excludedLanguage = {})
+void loadLanguageInventory(const std::filesystem::path& listing, const std::string& excludedLanguage = {}, bool publishedWithoutTelugu = false)
 {
     std::istringstream entries(glob2test::readFile(glob2test::sourceRoot() / "data/texts.list.txt"));
     std::string contents, entry;
@@ -57,6 +57,8 @@ void loadLanguageInventory(const std::filesystem::path& listing, const std::stri
     {
         if (!entry.empty() && entry.back() == '\r') entry.pop_back();
         if (entry.empty() || (!excludedLanguage.empty() && entry == "data/texts." + excludedLanguage + ".txt")) continue;
+        // Marathi was published before this PR; omit its later Telugu addition in that historical fixture.
+        if (publishedWithoutTelugu && (entry == "data/texts.te.txt" || entry == "data/texts.bg.txt")) continue;
         contents += (glob2test::sourceRoot() / entry).string() + "\n";
     }
     glob2test::writeFile(listing, contents);
@@ -129,150 +131,285 @@ std::string saveBeforePrivateRandom(MapScriptSGSL& script, Game& game)
     out.flush();
     return bytes->takeContents();
 }
+void checkCatalogLanguageTokens(const std::string& language, const std::string& message)
+{
+    glob2test::HeadlessGlobals globals(glob2test::GlobalsOptions{.loadStrings=true});
+    RestoreLanguageInventory restoreInventory(globals.globals);
+    glob2test::TempDir temporary("sgsl-languages");
+    const auto listing = temporary.path / "texts.list.txt";
+    World w;
+    loadLanguageInventory(listing, language);
+    CHECK_FALSE(GAGCore::Toolkit::getStringTable()->hasLanguage(language));
+    StringAcquisition withoutCatalog(w.script.functions);
+    withoutCatalog.open(language);
+    withoutCatalog.nextToken();
+    CHECK(withoutCatalog.getToken()->type == SGSLToken::NIL);
+    CHECK(w.compile("show(\"" + message + "\"," + language + ")").type == ErrorReport::ET_NOT_VALID_LANG_ID);
+
+    loadLanguageInventory(listing);
+    REQUIRE(GAGCore::Toolkit::getStringTable()->hasLanguage(language));
+    StringAcquisition withCatalog(w.script.functions);
+    withCatalog.open(language);
+    withCatalog.nextToken();
+    CHECK(withCatalog.getToken()->type == SGSLToken::LANG);
+    CHECK(withCatalog.getToken()->msg == language);
+    CHECK(withCatalog.getToken()->value == GAGCore::Toolkit::getStringTable()->getLangCode(language));
+    CHECK(w.compile("show(\"" + message + "\"," + language + ")").type == ErrorReport::ET_OK);
+}
+
+void checkCatalogLanguageDisplay(const std::string& language, const std::string& message)
+{
+    glob2test::HeadlessGlobals globals(glob2test::GlobalsOptions{.loadStrings=true});
+    RestoreLanguageInventory restoreInventory(globals.globals);
+    for (const auto& [selectedLanguage, expected] : {
+        std::pair{language, message}, std::pair{std::string("en"), std::string("English message")},
+        std::pair{std::string("fr"), std::string("Authored fallback")}})
+    {
+        CAPTURE(selectedLanguage);
+        globals.globals.settings.language = selectedLanguage;
+        World w;
+        REQUIRE(w.compile("show(\"Authored fallback\") show(\"English message\",en) "
+                          "show(\"" + message + "\"," + language + ") wait(2)").type == ErrorReport::ET_OK);
+        w.step();
+        CHECK(w.script.isTextShown);
+        CHECK(w.script.textShown == expected);
+    }
+}
+
+void checkCatalogLanguageSavedContinuation(const std::string& language)
+{
+    glob2test::HeadlessGlobals globals(glob2test::GlobalsOptions{.loadStrings=true});
+    RestoreLanguageInventory restoreInventory(globals.globals);
+    glob2test::TempDir temporary("sgsl-save-languages");
+    const auto listing = temporary.path / "texts.list.txt";
+    const std::string source =
+        "# Released script bytes \xC3\xA9\n"
+        "show(\"English message\",en) show(\"French message\",fr) wait(3) "
+        "show(\"Authored continuation\") win(0)\n";
+    for (const int format : {MINIMUM_VERSION_MINOR, VERSION_MINOR})
+    {
+        CAPTURE(format);
+        loadLanguageInventory(listing, language);
+        globals.globals.settings.language = "en";
+        World w;
+        w.world.game.mapHeader.versionMinor = format;
+        REQUIRE(w.world.game.mapHeader.loadingVersion() == format);
+        REQUIRE(w.compile(source).type == ErrorReport::ET_OK);
+        w.step();
+        REQUIRE(w.script.stories.size() == 1);
+        const auto tokens = w.script.stories.front().line;
+        const int pc = w.script.stories.front().lineSelector;
+        const int timer = w.script.stories.front().internTimer;
+        REQUIRE(timer > 0);
+        const bool historical = format < FILE_FORMAT_VERSION_PRIVATE_RANDOM;
+        const auto encode = [&](MapScriptSGSL& script) {
+            return historical ? saveBeforePrivateRandom(script, w.world.game)
+                              : save(script, w.world.game);
+        };
+        const auto bytes = encode(w.script);
+
+        loadLanguageInventory(listing);
+        globals.globals.settings.language = language;
+        MapScriptSGSL restored;
+        GAGCore::BinaryInputStream input(new GAGCore::MemoryStreamBackend(bytes.data(), bytes.size()));
+        input.seekFromStart(0);
+        REQUIRE(restored.load(&input, &w.world.game));
+        CHECK(input.getPosition() == bytes.size());
+        CHECK(restored.sourceCode == source);
+        REQUIRE(restored.stories.size() == 1);
+        CHECK(restored.stories.front().lineSelector == pc);
+        CHECK(restored.stories.front().internTimer == timer);
+        REQUIRE(restored.stories.front().line.size() == tokens.size());
+        for (size_t i = 0; i < tokens.size(); ++i)
+        {
+            CHECK(restored.stories.front().line[i].type == tokens[i].type);
+            CHECK(restored.stories.front().line[i].value == tokens[i].value);
+            CHECK(restored.stories.front().line[i].msg == tokens[i].msg);
+        }
+        CHECK(encode(restored) == bytes);
+        for (int tick = 0; tick < 5; ++tick)
+        {
+            w.step();
+            restored.syncStep(w.world.game, w.world.gui, w.world.gui.clientRequests);
+            CHECK(w.script.checkSum() == restored.checkSum());
+            CHECK(encode(w.script) == encode(restored));
+        }
+        CHECK(restored.hasTeamWon(0));
+        CHECK(restored.textShown == "Authored continuation");
+    }
+}
+
 }
 
 TEST_SUITE("LegacyScriptCoverage")
 {
-    TEST_CASE("Malay, Marathi and Bulgarian SGSL language tokens require their installed catalogs")
+    TEST_CASE("Bulgarian SGSL language tokens require the installed catalog")
     {
-        glob2test::HeadlessGlobals globals(glob2test::GlobalsOptions{.loadStrings=true});
-        RestoreLanguageInventory restoreLanguage(globals.globals);
-        glob2test::TempDir temporary("sgsl-languages");
-        const auto listing = temporary.path / "texts.list.txt";
-        for (const std::string language : {"ms", "mr", "bg"})
-        {
-            CAPTURE(language);
-            World w;
-            const std::string source = "show(\"Localized message\"," + language + ")";
-            loadLanguageInventory(listing, language);
-            CHECK_FALSE(GAGCore::Toolkit::getStringTable()->hasLanguage(language));
-            StringAcquisition withoutLanguage(w.script.functions);
-            withoutLanguage.open(language);
-            withoutLanguage.nextToken();
-            CHECK(withoutLanguage.getToken()->type == SGSLToken::NIL);
-            CHECK(w.compile(source).type == ErrorReport::ET_NOT_VALID_LANG_ID);
-
-            auto* strings = GAGCore::Toolkit::getStringTable();
-            std::vector<std::string> oldCodes;
-            for (int i = 0; i < strings->getNumberOfLanguage(); ++i)
-                oldCodes.push_back(strings->getStringInLang("[language-code]", i));
-            loadLanguageInventory(listing);
-            REQUIRE(strings->getNumberOfLanguage() == int(oldCodes.size()) + 1);
-            if (language == "mr" || language == "bg")
-                for (size_t i = 0; i < oldCodes.size(); ++i)
-                {
-                    // Bulgarian follows released Marathi; its earlier index is not a released contract.
-                    if (oldCodes[i] == "bg") continue;
-                    CAPTURE(oldCodes[i]);
-                    CHECK(strings->getLangCode(oldCodes[i]) == int(i));
-                }
-            REQUIRE(GAGCore::Toolkit::getStringTable()->hasLanguage(language));
-            StringAcquisition withLanguage(w.script.functions);
-            withLanguage.open(language);
-            withLanguage.nextToken();
-            CHECK(withLanguage.getToken()->type == SGSLToken::LANG);
-            CHECK(withLanguage.getToken()->msg == language);
-            CHECK(withLanguage.getToken()->value == GAGCore::Toolkit::getStringTable()->getLangCode(language));
-            CHECK(w.compile(source).type == ErrorReport::ET_OK);
-        }
+        checkCatalogLanguageTokens("bg", "Българско съобщение");
+    }
+    TEST_CASE("Bulgarian SGSL selects its message and retains an authored default")
+    {
+        checkCatalogLanguageDisplay("bg", "Българско съобщение");
+    }
+    TEST_CASE("adding Bulgarian preserves legacy SGSL source bytes and saved program counters")
+    {
+        checkCatalogLanguageSavedContinuation("bg");
     }
 
-    TEST_CASE("Malay, Marathi and Bulgarian SGSL select their messages and retain an authored default")
+    TEST_CASE("Malay SGSL language tokens require the installed catalog")
+    {
+        checkCatalogLanguageTokens("ms", "Mesej Melayu");
+    }
+
+    TEST_CASE("Malay SGSL selects its message and retains an authored default for other locales")
+    {
+        checkCatalogLanguageDisplay("ms", "Mesej Melayu");
+    }
+
+    TEST_CASE("adding Malay preserves legacy SGSL source bytes and saved program counters")
+    {
+        checkCatalogLanguageSavedContinuation("ms");
+    }
+
+    TEST_CASE("Telugu SGSL language tokens require the installed catalog")
+    {
+        checkCatalogLanguageTokens("te", "తెలుగు సందేశం");
+    }
+
+    TEST_CASE("Telugu SGSL selects its message and retains an authored default for other locales")
+    {
+        checkCatalogLanguageDisplay("te", "తెలుగు సందేశం");
+    }
+
+    TEST_CASE("adding Telugu preserves legacy SGSL source bytes and saved program counters")
+    {
+        checkCatalogLanguageSavedContinuation("te");
+    }
+
+    TEST_CASE("Marathi SGSL language tokens require the installed catalog")
     {
         glob2test::HeadlessGlobals globals(glob2test::GlobalsOptions{.loadStrings=true});
-        RestoreLanguageInventory restoreLanguage(globals.globals);
+        RestoreLanguageInventory restoreInventory(globals.globals);
+        glob2test::TempDir temporary("sgsl-languages");
+        const auto listing = temporary.path / "texts.list.txt";
+        World w;
+        loadLanguageInventory(listing, "mr", true);
+        CHECK_FALSE(GAGCore::Toolkit::getStringTable()->hasLanguage("mr"));
+        StringAcquisition withoutMarathi(w.script.functions);
+        withoutMarathi.open("mr");
+        withoutMarathi.nextToken();
+        CHECK(withoutMarathi.getToken()->type == SGSLToken::NIL);
+        CHECK(w.compile("show(\"मराठी संदेश\",mr)").type == ErrorReport::ET_NOT_VALID_LANG_ID);
+        auto* strings = GAGCore::Toolkit::getStringTable();
+        std::vector<std::string> oldCodes;
+        for (int i = 0; i < strings->getNumberOfLanguage(); ++i)
+            oldCodes.push_back(strings->getStringInLang("[language-code]", i));
+        REQUIRE(strings->hasLanguage("ms"));
+
+        loadLanguageInventory(listing, {}, true);
+        REQUIRE(strings->getNumberOfLanguage() == int(oldCodes.size()) + 1);
+        for (size_t i = 0; i < oldCodes.size(); ++i)
+        {
+            CAPTURE(oldCodes[i]);
+            CHECK(strings->getLangCode(oldCodes[i]) == int(i));
+        }
+        REQUIRE(GAGCore::Toolkit::getStringTable()->hasLanguage("mr"));
+        StringAcquisition withMarathi(w.script.functions);
+        withMarathi.open("mr");
+        withMarathi.nextToken();
+        CHECK(withMarathi.getToken()->type == SGSLToken::LANG);
+        CHECK(withMarathi.getToken()->msg == "mr");
+        CHECK(withMarathi.getToken()->value == GAGCore::Toolkit::getStringTable()->getLangCode("mr"));
+        CHECK(w.compile("show(\"मराठी संदेश\",mr)").type == ErrorReport::ET_OK);
+    }
+
+    TEST_CASE("Marathi SGSL selects its message and retains an authored default for other locales")
+    {
+        glob2test::HeadlessGlobals globals(glob2test::GlobalsOptions{.loadStrings=true});
+        RestoreLanguageInventory restoreInventory(globals.globals);
         for (const auto& [language, expected] : {
-            std::pair{"ms", "Mesej Melayu"}, std::pair{"mr", "मराठी संदेश"},
-            std::pair{"bg", "Българско съобщение"},
-            std::pair{"en", "English message"},
+            std::pair{"mr", "मराठी संदेश"}, std::pair{"en", "English message"},
             std::pair{"fr", "Authored fallback"}})
         {
             CAPTURE(language);
             globals.globals.settings.language = language;
             World w;
             REQUIRE(w.compile("show(\"Authored fallback\") show(\"English message\",en) "
-                              "show(\"Mesej Melayu\",ms) show(\"मराठी संदेश\",mr) "
-                              "show(\"Българско съобщение\",bg) wait(2)").type == ErrorReport::ET_OK);
+                              "show(\"मराठी संदेश\",mr) wait(2)").type == ErrorReport::ET_OK);
             w.step();
             CHECK(w.script.isTextShown);
             CHECK(w.script.textShown == expected);
         }
     }
 
-    TEST_CASE("adding Malay, Marathi or Bulgarian preserves legacy SGSL source bytes and saved program counters")
+    TEST_CASE("adding Marathi preserves legacy SGSL source bytes and saved program counters")
     {
         glob2test::HeadlessGlobals globals(glob2test::GlobalsOptions{.loadStrings=true});
-        RestoreLanguageInventory restoreLanguage(globals.globals);
+        RestoreLanguageInventory restoreInventory(globals.globals);
         glob2test::TempDir temporary("sgsl-save-languages");
         const auto listing = temporary.path / "texts.list.txt";
-        for (const std::string language : {"ms", "mr", "bg"})
+        const std::string source =
+            "# Released script bytes \xC3\xA9\n"
+            "show(\"English message\",en) show(\"French message\",fr) "
+            "show(\"Mesej Melayu\",ms) wait(3) "
+            "show(\"Authored continuation\") win(0)\n";
+        for (const int format : {MINIMUM_VERSION_MINOR, VERSION_MINOR})
         {
-            CAPTURE(language);
-            const std::string source =
-                "# Released script bytes \xC3\xA9\n"
-                "show(\"English message\",en) show(\"French message\",fr) "
-                // Released locale token indices must remain stable when another catalog is appended.
-                + std::string(language != "ms" ? "show(\"Mesej Melayu\",ms) " : "")
-                + std::string(language == "bg" ? "show(\"मराठी संदेश\",mr) show(\"தமிழ் செய்தி\",ta) " : "")
-                + "wait(3) "
-                "show(\"Authored continuation\") win(0)\n";
-            for (const int format : {MINIMUM_VERSION_MINOR, VERSION_MINOR})
-            {
-                CAPTURE(format);
-                loadLanguageInventory(listing, language);
-                globals.globals.settings.language = "en";
-                World w;
-                w.world.game.mapHeader.versionMinor = format;
-                REQUIRE(w.world.game.mapHeader.loadingVersion() == format);
-                REQUIRE(w.compile(source).type == ErrorReport::ET_OK);
-                w.step();
-                REQUIRE(w.script.stories.size() == 1);
-                const auto tokens = w.script.stories.front().line;
-                const int pc = w.script.stories.front().lineSelector;
-                const int timer = w.script.stories.front().internTimer;
-                REQUIRE(timer > 0);
-                const bool historical = format < FILE_FORMAT_VERSION_PRIVATE_RANDOM;
-                const auto encode = [&](MapScriptSGSL& script) {
-                    return historical ? saveBeforePrivateRandom(script, w.world.game)
-                                      : save(script, w.world.game);
-                };
-                const auto bytes = encode(w.script);
+            CAPTURE(format);
+            loadLanguageInventory(listing, "mr", true);
+            globals.globals.settings.language = "en";
+            World w;
+            w.world.game.mapHeader.versionMinor = format;
+            REQUIRE(w.world.game.mapHeader.loadingVersion() == format);
+            REQUIRE(w.compile(source).type == ErrorReport::ET_OK);
+            w.step();
+            REQUIRE(w.script.stories.size() == 1);
+            const auto tokens = w.script.stories.front().line;
+            const int pc = w.script.stories.front().lineSelector;
+            const int timer = w.script.stories.front().internTimer;
+            REQUIRE(timer > 0);
+            const bool historical = format < FILE_FORMAT_VERSION_PRIVATE_RANDOM;
+            const auto encode = [&](MapScriptSGSL& script) {
+                return historical ? saveBeforePrivateRandom(script, w.world.game)
+                                  : save(script, w.world.game);
+            };
+            const auto bytes = encode(w.script);
 
-                loadLanguageInventory(listing);
-                globals.globals.settings.language = language;
-                MapScriptSGSL restored;
-                GAGCore::BinaryInputStream input(new GAGCore::MemoryStreamBackend(bytes.data(), bytes.size()));
-                input.seekFromStart(0);
-                REQUIRE(restored.load(&input, &w.world.game));
-                CHECK(input.getPosition() == bytes.size());
-                CHECK(restored.sourceCode == source);
-                REQUIRE(restored.stories.size() == 1);
-                CHECK(restored.stories.front().lineSelector == pc);
-                CHECK(restored.stories.front().internTimer == timer);
-                REQUIRE(restored.stories.front().line.size() == tokens.size());
-                for (size_t i = 0; i < tokens.size(); ++i)
-                {
-                    CHECK(restored.stories.front().line[i].type == tokens[i].type);
-                    CHECK(restored.stories.front().line[i].value == tokens[i].value);
-                    CHECK(restored.stories.front().line[i].msg == tokens[i].msg);
-                }
-                CHECK(encode(restored) == bytes);
-                for (int tick = 0; tick < 5; ++tick)
-                {
-                    w.step();
-                    restored.syncStep(w.world.game, w.world.gui, w.world.gui.clientRequests);
-                    CHECK(w.script.checkSum() == restored.checkSum());
-                    CHECK(encode(w.script) == encode(restored));
-                }
-                CHECK(restored.hasTeamWon(0));
-                CHECK(restored.textShown == "Authored continuation");
+            loadLanguageInventory(listing, {}, true);
+            globals.globals.settings.language = "mr";
+            MapScriptSGSL restored;
+            GAGCore::BinaryInputStream input(new GAGCore::MemoryStreamBackend(bytes.data(), bytes.size()));
+            input.seekFromStart(0);
+            REQUIRE(restored.load(&input, &w.world.game));
+            CHECK(input.getPosition() == bytes.size());
+            CHECK(restored.sourceCode == source);
+            REQUIRE(restored.stories.size() == 1);
+            CHECK(restored.stories.front().lineSelector == pc);
+            CHECK(restored.stories.front().internTimer == timer);
+            REQUIRE(restored.stories.front().line.size() == tokens.size());
+            for (size_t i = 0; i < tokens.size(); ++i)
+            {
+                CHECK(restored.stories.front().line[i].type == tokens[i].type);
+                CHECK(restored.stories.front().line[i].value == tokens[i].value);
+                CHECK(restored.stories.front().line[i].msg == tokens[i].msg);
             }
+            CHECK(encode(restored) == bytes);
+            for (int tick = 0; tick < 5; ++tick)
+            {
+                w.step();
+                restored.syncStep(w.world.game, w.world.gui, w.world.gui.clientRequests);
+                CHECK(w.script.checkSum() == restored.checkSum());
+                CHECK(encode(w.script) == encode(restored));
+            }
+            CHECK(restored.hasTeamWon(0));
+            CHECK(restored.textShown == "Authored continuation");
         }
     }
 
     TEST_CASE("catalog languages and quoted locale names preserve suspended story continuation")
     {
         glob2test::HeadlessGlobals globals(glob2test::GlobalsOptions{.loadStrings=true});
+        RestoreLanguageInventory restoreInventory(globals.globals);
         auto* strings=GAGCore::Toolkit::getStringTable();
         struct RestoreLanguage
         {
@@ -282,84 +419,115 @@ TEST_SUITE("LegacyScriptCoverage")
             int index;
             ~RestoreLanguage() { globals.settings.language=language; strings.setLang(index); }
         } restoreLanguage{*globals,*strings,globals->settings.language,strings->getLang()};
-        for (const bool includeNorwegian : {false, true})
+        for (const std::string catalogLanguage : {"nb", "te"})
         {
-            CAPTURE(includeNorwegian);
-            // The first source was valid before Norwegian was registered. The
-            // second also exercises the newly supported presentation language.
-            const std::string source=
-                std::string("setArea(\"nb\",10,10,4) label(\"nb\") show(\"ancien\",fr) ") +
-                (includeNorwegian ? "show(\"ny\",nb) " : "") +
-                "wait(3) summonUnits(\"nb\",2,Worker,0,0) win(0)";
-            std::vector<Uint32> firstChecksums;
-            std::vector<Uint32> firstGameChecksums;
-            std::vector<std::string> firstSaves;
-            for (const std::string language : {"fr", "nb"})
+            CAPTURE(catalogLanguage);
+            std::vector<Uint32> inventoryScriptChecksums, inventoryGameChecksums;
+            std::vector<std::string> inventorySaves;
+            for (const bool excludeCatalog : {false, true})
             {
-                CAPTURE(language);
-                globals->settings.language=language;
-                strings->setLang(strings->getLangCode(language));
-                REQUIRE(std::string(strings->getString("[language-code]")) == language);
-                World original, restored;
-                REQUIRE(original.compile(source).type == ErrorReport::ET_OK);
-                CHECK(original.script.stories.front().labels.count("nb") == 1);
-                int languageTokens=0;
-                for (const auto& token : original.script.stories.front().line)
-                    if (token.type == SGSLToken::LANG)
-                    {
-                        CHECK(token.value == strings->getLangCode(token.msg));
-                        ++languageTokens;
-                    }
-                CHECK(languageTokens == (includeNorwegian ? 2 : 1));
-                original.step();
-                CHECK(original.script.isTextShown == (language == "fr" || includeNorwegian));
-                if (original.script.isTextShown)
-                    CHECK(original.script.textShown == (language == "fr" ? "ancien" : "ny"));
-                else
-                    CHECK(original.script.textShown.empty());
-                REQUIRE(original.script.stories.front().internTimer > 0);
-                const auto bytes=save(original.script,original.world.game);
-                auto* gameBackend=new GAGCore::MemoryStreamBackend;
-                GAGCore::BinaryOutputStream gameOutput(gameBackend);
-                original.world.game.save(&gameOutput,false,"localized story continuation");
-                gameOutput.flush();
-                const auto gameBytes=gameBackend->takeContents();
-                GAGCore::BinaryInputStream gameInput(new GAGCore::MemoryStreamBackend(gameBytes.data(),gameBytes.size()));
-                gameInput.seekFromStart(0);
-                REQUIRE(restored.world.game.load(&gameInput));
-                GAGCore::BinaryInputStream input(new GAGCore::MemoryStreamBackend(bytes.data(),bytes.size()));
-                input.seekFromStart(0);
-                REQUIRE(restored.script.load(&input,&restored.world.game));
-                for (unsigned tick=0;tick<6;++tick)
+                CAPTURE(excludeCatalog);
+                for (const bool includeCatalogLanguage : {false, true})
                 {
-                    CAPTURE(tick);
-                    CHECK(original.script.stories.front().lineSelector == restored.script.stories.front().lineSelector);
-                    CHECK(original.script.stories.front().random == restored.script.stories.front().random);
-                    CHECK(original.script.checkSum() == restored.script.checkSum());
-                    CHECK(original.world.game.checkSum() == restored.world.game.checkSum());
-                    const auto saved=save(original.script,original.world.game);
-                    CHECK(saved == save(restored.script,restored.world.game));
-                    if (language == "fr")
+                    CAPTURE(includeCatalogLanguage);
+                    if (excludeCatalog && includeCatalogLanguage) continue;
+                    glob2test::TempDir temporary("sgsl-continuation-inventory");
+                    loadLanguageInventory(temporary.path / "texts.list.txt", excludeCatalog ? catalogLanguage : std::string());
+                    // Quoted labels/area names remain data even when the same spelling
+                    // is an installed language token. Exercise both old and localized sources.
+                    const std::string source=
+                    std::string("setArea(\"") + catalogLanguage + "\",10,10,4) label(\"" + catalogLanguage + "\") show(\"ancien\",fr) " +
+                    (includeCatalogLanguage ? "show(\"ny\"," + catalogLanguage + ") " : "") +
+                    "wait(3) summonUnits(\"" + catalogLanguage + "\",2,Worker,0,0) win(0)";
+                    std::vector<Uint32> firstChecksums;
+                    std::vector<Uint32> firstGameChecksums;
+                    std::vector<std::string> firstSaves;
+                    for (const std::string language : {std::string("fr"), excludeCatalog ? std::string("en") : catalogLanguage})
                     {
-                        firstChecksums.push_back(original.script.checkSum());
-                        firstGameChecksums.push_back(original.world.game.checkSum());
-                        firstSaves.push_back(saved);
+                        CAPTURE(language);
+                        globals->settings.language=language;
+                        strings->setLang(strings->getLangCode(language));
+                        REQUIRE(std::string(strings->getString("[language-code]")) == language);
+                        World original, restored;
+                        REQUIRE(original.compile(source).type == ErrorReport::ET_OK);
+                        CHECK(original.script.stories.front().labels.count(catalogLanguage) == 1);
+                        int languageTokens=0;
+                        for (const auto& token : original.script.stories.front().line)
+                        if (token.type == SGSLToken::LANG)
+                        {
+                            CHECK(token.value == strings->getLangCode(token.msg));
+                            ++languageTokens;
+                        }
+                        CHECK(languageTokens == (includeCatalogLanguage ? 2 : 1));
+                        original.step();
+                        CHECK(original.script.isTextShown == (language == "fr" || includeCatalogLanguage));
+                        if (original.script.isTextShown)
+                        CHECK(original.script.textShown == (language == "fr" ? "ancien" : "ny"));
+                        else
+                        CHECK(original.script.textShown.empty());
+                        REQUIRE(original.script.stories.front().internTimer > 0);
+                        const auto bytes=save(original.script,original.world.game);
+                        auto* gameBackend=new GAGCore::MemoryStreamBackend;
+                        GAGCore::BinaryOutputStream gameOutput(gameBackend);
+                        original.world.game.save(&gameOutput,false,"localized story continuation");
+                        gameOutput.flush();
+                        const auto gameBytes=gameBackend->takeContents();
+                        GAGCore::BinaryInputStream gameInput(new GAGCore::MemoryStreamBackend(gameBytes.data(),gameBytes.size()));
+                        gameInput.seekFromStart(0);
+                        REQUIRE(restored.world.game.load(&gameInput));
+                        GAGCore::BinaryInputStream input(new GAGCore::MemoryStreamBackend(bytes.data(),bytes.size()));
+                        input.seekFromStart(0);
+                        REQUIRE(restored.script.load(&input,&restored.world.game));
+                        for (unsigned tick=0;tick<6;++tick)
+                        {
+                            CAPTURE(tick);
+                            CHECK(original.script.stories.front().lineSelector == restored.script.stories.front().lineSelector);
+                            CHECK(original.script.stories.front().random == restored.script.stories.front().random);
+                            CHECK(original.script.checkSum() == restored.script.checkSum());
+                            CHECK(original.world.game.checkSum() == restored.world.game.checkSum());
+                            const auto saved=save(original.script,original.world.game);
+                            CHECK(saved == save(restored.script,restored.world.game));
+                            if (!includeCatalogLanguage && language == "fr")
+                            {
+                                if (!excludeCatalog)
+                                {
+                                    inventoryScriptChecksums.push_back(original.script.checkSum());
+                                    inventoryGameChecksums.push_back(original.world.game.checkSum());
+                                    inventorySaves.push_back(saved);
+                                }
+                                else
+                                {
+                                    REQUIRE(inventorySaves.size() == 6);
+                                    CHECK(original.script.checkSum() == inventoryScriptChecksums[tick]);
+                                    CHECK(original.world.game.checkSum() == inventoryGameChecksums[tick]);
+                                    CHECK(saved == inventorySaves[tick]);
+                                }
+                            }
+                            if (language == "fr")
+                            {
+                                firstChecksums.push_back(original.script.checkSum());
+                                firstGameChecksums.push_back(original.world.game.checkSum());
+                                firstSaves.push_back(saved);
+                            }
+                            else
+                            {
+                                CHECK(original.script.checkSum() == firstChecksums[tick]);
+                                CHECK(original.world.game.checkSum() == firstGameChecksums[tick]);
+                                CHECK(saved == firstSaves[tick]);
+                            }
+                            original.step();
+                            restored.step();
+                        }
+                        CHECK(original.script.hasTeamWon(0));
+                        CHECK(restored.script.hasTeamWon(0));
+                        CHECK(units(original.world.game.teams[0]) == 2);
+                        CHECK(units(restored.world.game.teams[0]) == 2);
                     }
-                    else
-                    {
-                        CHECK(original.script.checkSum() == firstChecksums[tick]);
-                        CHECK(original.world.game.checkSum() == firstGameChecksums[tick]);
-                        CHECK(saved == firstSaves[tick]);
-                    }
-                    original.step();
-                    restored.step();
                 }
-                CHECK(original.script.hasTeamWon(0));
-                CHECK(restored.script.hasTeamWon(0));
-                CHECK(units(original.world.game.teams[0]) == 2);
-                CHECK(units(restored.world.game.teams[0]) == 2);
             }
         }
+        glob2test::TempDir restoredInventory("sgsl-restored-inventory");
+        loadLanguageInventory(restoredInventory.path / "texts.list.txt");
     }
 
     TEST_CASE("random legacy summons preserve story progress through full continuation")
