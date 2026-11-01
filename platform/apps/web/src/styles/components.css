@@ -338,3 +338,29 @@
   white-space: nowrap;
   font-variant-numeric: tabular-nums;
 }
+
+/* Native select options do not wrap; preserve the whole selected payment mode
+   beside the bounded phone control without duplicating its accessible value. */
+.admin-finances .toolbar > label {
+  min-inline-size: 0;
+  max-inline-size: 100%;
+}
+.admin-finances .toolbar select {
+  max-inline-size: 100%;
+  min-inline-size: 0;
+}
+.admin-payment-mode-caption {
+  display: none;
+}
+@media (max-width: 600px) {
+  .admin-finances .toolbar > label {
+    display: grid;
+    gap: var(--sp-1);
+  }
+  .admin-payment-mode-caption {
+    display: block;
+    white-space: normal;
+    overflow-wrap: anywhere;
+    line-height: 1.5;
+  }
+}

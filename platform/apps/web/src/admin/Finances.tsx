@@ -22,7 +22,7 @@ export function Finances() {
     [JSON.stringify(values)],
   );
   return (
-    <section>
+    <section className="admin-finances">
       <h2>{t('Revenue and costs')}</h2>
       <div className="toolbar">
         <label>
@@ -49,6 +49,9 @@ export function Finances() {
               </option>
             ))}
           </select>
+          <span className="admin-payment-mode-caption" aria-hidden="true">
+            {paymentModeName(values['mode'] ?? 'live')}
+          </span>
         </label>
         <button onClick={load.reload}>{t('Refresh')}</button>
       </div>
