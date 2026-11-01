@@ -1,0 +1,79 @@
+{
+  "identity": "/root",
+  "status": "passed affected integration with exact immutable earlier component carry",
+  "final_revision": "d588e65df050f039a4ad306652425bb30d0cce6b",
+  "integrated_master": "f36de73aea50901a93d0c931bdd0fdb64c9d864c",
+  "source_sha256": "013211b6f2bee9da8f4e9bb990d49fb18c99fedec710ed23603d12875f0960c5",
+  "catalog_sha256": {
+    "native": "287f03d772739957b96fc86ddc7fcc7073e4580436dd63fd2078ab1137d42827",
+    "online": "8e2b56f7bb554f51981f724f4f19636f887af5da63dac3c2ae16c3c776a467c9"
+  },
+  "source_target_pairs_unchanged": 6390,
+  "google_requests": 66,
+  "google_attempted_characters": 236231,
+  "google_estimated_usd_before_credits": 4.72462,
+  "simulation_revision": 114,
+  "current_catalogs": 43,
+  "current_online_keys": 2978,
+  "current_native_focused_cases": 31,
+  "current_i18n_cases": 81,
+  "mobile_files_per_platform": 24287,
+  "mobile_bytes_per_platform": 199249503,
+  "references": [
+    {
+      "path": "compatibility-fil114/native-compatibility-final-B.json",
+      "sha256": "6cd264ab37fb38ec2e1de245aede72e9b69625c853b79c325d12a611f24289cb"
+    },
+    {
+      "path": "compatibility-fil114/matrix-scoped-carry-preflight.json",
+      "sha256": "717dbf721a54e8cd994bf7941409ee311adcd04e8f94c5ec741ab8e12ddcf82a"
+    },
+    {
+      "path": "integration-telugu/contracts.json",
+      "sha256": "8ac7ea670d6f6e6db4fd2bea677ccf5434a4945da4443ccab8dfa228be9fa775"
+    },
+    {
+      "path": "integration-telugu/font-environment-resolution.json",
+      "sha256": "9a23f4c8a09e424176d5c6abe3afec2265c6798323998f57d84bad467a22a94f"
+    },
+    {
+      "path": "integration-telugu/native-independent-visual-review.json",
+      "sha256": "93d18c0dd2ac775aa1759d7b35186ba2782c30ba6f21e8d89b96b760a9a9bce5"
+    },
+    {
+      "path": "integration-telugu/browser-independent-visual-review.json",
+      "sha256": "6379cbedaa183cccb988f7fbd2e5ebf7b5ca4612ad315231b216753b691f68cd"
+    },
+    {
+      "path": "final-web-te/integration-refresh-summary.json",
+      "sha256": "bf5c1cd4940ce21136818e05c2e23ae98fd50cab423413207820eddd563f57ff"
+    },
+    {
+      "path": "final-web-te/independent-visual-review.json",
+      "sha256": "659fbd155e09a9c2187ba17aaef06766a7676d9a915a3cfe51784bce82e7eca0"
+    },
+    {
+      "path": "mobile-te-final/export-results.json",
+      "sha256": "bdcd55f267a78d191f5819ca7922aa1a334de64eace7b097e1f4980d2281244a"
+    },
+    {
+      "path": "mobile-te-final/audit.json",
+      "sha256": "b1ef2f9aa7ee2e8f3a4d5daa33047e3b725a641fe91206eb3f8adf0ef9ca0f89"
+    },
+    {
+      "path": "browser-telugu-B-final-build-provenance.json",
+      "sha256": "c1c0d43d6720fdb710106b38d1c46903269d57df3dca3a07a0294ee04c128dfe"
+    },
+    {
+      "path": "browser-v4/telugu-appendix-d588e65d-c1d2f1bae1cf/browser-final-appendix.json",
+      "sha256": "f003f27b9c482b6c4514e10c833fef9b66d76b28e6e40300b0174431a937af3a"
+    }
+  ],
+  "scope": "Current native A827 and final Bfixture-only source separation explicit. All6390 reviewed source/target values and matrix samples/fontMatrix functions, font files and shaping inputs unchanged from published C35 validation. Current map-pane/modal changes have15 independently viewed native captures; current siteCSS has24 independently viewed studio captures. FinalB release has2normalFil flows/10independently viewed PNGs,2actualSIM114match verifications,43catalog packaging/130gzip/84HTTP; currentnative31,relay,113/114Turnacceptance,golden pass. Initial font check lacked existingSDL3_ttf path before assertions; corrected environment passed, originalnegative retained. No newtranslations/APIrequests/fullmatrixrerender claimed.",
+  "prior_immutable_evidence": "https://github.com/Globulation2/glob2/tree/47afe4217153815afb8196eb93a5f3caa767e9bd",
+  "limits": [
+    "Linux/Chromium and asset-only mobile exports; no physical mobile or nativeWindows/macOS execution.",
+    "Existing168passing/3fixturefailing browser units reproduce on frozenf36; oldsourcefullsuite/typecheck outcomes retain actual producers.",
+    "C35 wallet-caption wording remains a known minor limitation; new skinCSS wraps secondarygesture hint correctly."
+  ]
+}

@@ -1,0 +1,539 @@
+{
+  "actual_clean_final_revision": "d588e65df050f039a4ad306652425bb30d0cce6b",
+  "baseline_published_commit": "47afe4217153815afb8196eb93a5f3caa767e9bd",
+  "independently_verified_matrix_input_sha256": {
+    "data/texts.fil.txt": "287f03d772739957b96fc86ddc7fcc7073e4580436dd63fd2078ab1137d42827",
+    "data/texts.en.txt": "e165c5672decb42ec6091e24a0c9a2d93a6e74c66f9461f40ed3b31d5d503932",
+    "platform/packages/i18n/locales/fil.json": "8e2b56f7bb554f51981f724f4f19636f887af5da63dac3c2ae16c3c776a467c9",
+    "platform/packages/i18n/locales/en.json": "11802a413fee542f2ac8f5d6dd01c918bef31ce6e0ed306d6831b0ffa297d6c2",
+    "data/fonts/sans.ttf": "5701af44225833421b6f59a7ecaadf93c0f2630dbbdfc4ac59c794f5c5d889c1",
+    "libgag/src/TrueTypeFont.cpp": "e4ca6c453b817f2ec0196bf12e3f6be97cc1aa92174e7b3de55bcba963a80bb0",
+    "libgag/include/TrueTypeFont.h": "3493258a24d4021ef978310aea26f3a832842ff57dd7185d9ff1ecf15854246c",
+    "libgag/include/TouchText.h": "71eb059abd12e090a6c0674cec761a7041339e89dcfadfdae8904f570c6d97cb",
+    "libgag/include/ui/TextLayout.h": "368911fefee1b9aecbab5054fac9a5f651c5f7d590268475ec81c7248604fa8f",
+    "libgag/src/ui/TextLayout.cpp": "8f8d35fc61c84aa1623735d63b7d053a9438cd50bcaaf96c4e4aec553b7241c0",
+    "libgag/src/DrawableSurfaceCompound.cpp": "a6174d18c8b0a62d8ca3a65c606b57cf0e1962408cd5e47642b8fdabd27b8810"
+  },
+  "independently_compared_matrix_functions": {
+    "samples": {
+      "byte_identical_c35_to_final": true,
+      "sha256": "13e0e03bbe480837b124055c9ec54d3f5a58e4a100f9313309af1d6f81ae0cd1",
+      "bytes": 873
+    },
+    "fontMatrix": {
+      "byte_identical_c35_to_final": true,
+      "sha256": "4cbc665a356aacca22624c5083abf72dd2de852ed2e3de910b6a643f71130e0d",
+      "bytes": 5877
+    }
+  },
+  "included_current_png_counts": {
+    "rendering/native-final-v9-screens": 15,
+    "final-web-te": 24,
+    "browser-v4/telugu-appendix-d588e65d-c1d2f1bae1cf": 10
+  },
+  "gate_count": 9,
+  "passed_gates": 9,
+  "gate_references_checked": 75,
+  "gate_references": [
+    {
+      "gate": "language_brief",
+      "path": "final-kit6/master-delta6/independent-aggregate-audit.json",
+      "sha256": "dac54eab2ecb2f94a6fb8fd6003f51f2de07b1c5a629361ebfc90262c2228930",
+      "in_appendix": false
+    },
+    {
+      "gate": "language_brief",
+      "path": "final-kit6/master-delta6/source-target-carry.json",
+      "sha256": "51b10b2c917723c4228a9665f46d50b02b7e0787e1e13ecaea9a73fad923a49e",
+      "in_appendix": false
+    },
+    {
+      "gate": "language_brief",
+      "path": "final-kit6/linguistic/meaning-brief.json",
+      "sha256": "bb606aeac89d5887f5899cbabc24c52475f8ed449eae3142f29d61164270ade0",
+      "in_appendix": false
+    },
+    {
+      "gate": "language_brief",
+      "path": "final-kit6/reviews/fil-provenance.json",
+      "sha256": "d9c4f51bada7e184562c57835d3a7db63b53b01b52cc05ba94692f20317da0e4",
+      "in_appendix": false
+    },
+    {
+      "gate": "language_brief",
+      "path": "master-delta6/editor-review.json",
+      "sha256": "9d3c5065e80f2cfbc2cff08251f20fce207e533993fad19645ede4050d8f12ad",
+      "in_appendix": false
+    },
+    {
+      "gate": "language_brief",
+      "path": "master-delta6/meaning-final-review.json",
+      "sha256": "5c73d6adeb8e3eda8ab1adb36b005bd8199abac5a8f77bd3fe7ff19d708f4345",
+      "in_appendix": false
+    },
+    {
+      "gate": "language_brief",
+      "path": "master-delta6/adversarial-review.json",
+      "sha256": "4f1f105611e98079c8e896242710ea547af46cc5ff5c28db213619d5603732a8",
+      "in_appendix": false
+    },
+    {
+      "gate": "language_brief",
+      "path": "integration-telugu/final-component-summary.json",
+      "sha256": "aa31e4a5a7ef04e00e6a9ca6aad1cb943ea1ac68f695324ed288ba42b9012ffc",
+      "in_appendix": true
+    },
+    {
+      "gate": "source_based_pilot",
+      "path": "final-kit6/master-delta6/independent-aggregate-audit.json",
+      "sha256": "dac54eab2ecb2f94a6fb8fd6003f51f2de07b1c5a629361ebfc90262c2228930",
+      "in_appendix": false
+    },
+    {
+      "gate": "source_based_pilot",
+      "path": "final-kit6/master-delta6/source-target-carry.json",
+      "sha256": "51b10b2c917723c4228a9665f46d50b02b7e0787e1e13ecaea9a73fad923a49e",
+      "in_appendix": false
+    },
+    {
+      "gate": "source_based_pilot",
+      "path": "final-kit6/linguistic/pilot-meaning-review.json",
+      "sha256": "35cacd00b968b5558e1c7c8419d9abb31f7c5b264863d635c48e90fa63335607",
+      "in_appendix": false
+    },
+    {
+      "gate": "source_based_pilot",
+      "path": "final-kit6/google/fil/summary.json",
+      "sha256": "df5a61df3f0b0282e98023983bf26cb6e8a157bf28b539127aee1364c58ec818",
+      "in_appendix": false
+    },
+    {
+      "gate": "source_based_pilot",
+      "path": "final-kit6/google/fil/attempts.jsonl",
+      "sha256": "6f78a15a08c6db8f2d910d651d265dc8119933b36ee6ff764dd7da4dfb392362",
+      "in_appendix": false
+    },
+    {
+      "gate": "source_based_pilot",
+      "path": "master-delta6/google-total.json",
+      "sha256": "1f120218cee068d797ea03487b686a5fb03356c337dfb435460bf4c180144428",
+      "in_appendix": false
+    },
+    {
+      "gate": "source_based_pilot",
+      "path": "master-delta6/google-kit/google/fil/summary.json",
+      "sha256": "5cc36d877ae3f432bebc5591b18bcf22c8bbceedad58756c3372c5b7ca474951",
+      "in_appendix": false
+    },
+    {
+      "gate": "source_based_pilot",
+      "path": "integration-telugu/final-component-summary.json",
+      "sha256": "aa31e4a5a7ef04e00e6a9ca6aad1cb943ea1ac68f695324ed288ba42b9012ffc",
+      "in_appendix": true
+    },
+    {
+      "gate": "structural",
+      "path": "final-kit6/master-delta6/independent-aggregate-audit.json",
+      "sha256": "dac54eab2ecb2f94a6fb8fd6003f51f2de07b1c5a629361ebfc90262c2228930",
+      "in_appendix": false
+    },
+    {
+      "gate": "structural",
+      "path": "final-kit6/master-delta6/source-target-carry.json",
+      "sha256": "51b10b2c917723c4228a9665f46d50b02b7e0787e1e13ecaea9a73fad923a49e",
+      "in_appendix": false
+    },
+    {
+      "gate": "structural",
+      "path": "data-v8/final-data-assets-report.json",
+      "sha256": "0af6cf02dd12da5187ed592ccbe1175c3a10903099cc3d6207f51cb99a3a62ed",
+      "in_appendix": false
+    },
+    {
+      "gate": "structural",
+      "path": "data-v8/results.json",
+      "sha256": "ce977389f14f4c76459c345ecafc465b2e103738fa82489d53a5826622c76c9e",
+      "in_appendix": false
+    },
+    {
+      "gate": "structural",
+      "path": "data-v8/platform-results.json",
+      "sha256": "1b0249774803126067dac7a075711a19e55fcc4464b0852010e5dad5e7b77d1c",
+      "in_appendix": false
+    },
+    {
+      "gate": "structural",
+      "path": "data-v8/eslint-baseline-comparison.json",
+      "sha256": "d60defe5b23990ea30d390bd6d32aaa58e97d601c935d1e92281dda74a642dce",
+      "in_appendix": false
+    },
+    {
+      "gate": "structural",
+      "path": "integration-telugu/final-component-summary.json",
+      "sha256": "aa31e4a5a7ef04e00e6a9ca6aad1cb943ea1ac68f695324ed288ba42b9012ffc",
+      "in_appendix": true
+    },
+    {
+      "gate": "desktop_rendering",
+      "path": "final-kit6/master-delta6/independent-aggregate-audit.json",
+      "sha256": "dac54eab2ecb2f94a6fb8fd6003f51f2de07b1c5a629361ebfc90262c2228930",
+      "in_appendix": false
+    },
+    {
+      "gate": "desktop_rendering",
+      "path": "final-kit6/master-delta6/source-target-carry.json",
+      "sha256": "51b10b2c917723c4228a9665f46d50b02b7e0787e1e13ecaea9a73fad923a49e",
+      "in_appendix": false
+    },
+    {
+      "gate": "desktop_rendering",
+      "path": "master-delta6/native-v8-final-closure.json",
+      "sha256": "2fe75b73a205f888b8c52fcf438208e3e6a3f0e2122fd5fe1558946942d665be",
+      "in_appendix": false
+    },
+    {
+      "gate": "desktop_rendering",
+      "path": "rendering/native-final-v8-full-matrix/current-matrix-proof.json",
+      "sha256": "7eb4d39315c1287e63d291b757418f66db22e5432fcc4764ca78730e6e6b6aa1",
+      "in_appendix": false
+    },
+    {
+      "gate": "desktop_rendering",
+      "path": "rendering/native-final-v8-full-matrix/catalog-source-binding.json",
+      "sha256": "ad7ac1284891f9b094decdc6ffbdff3e9106bf0b24e44b685458999742581f95",
+      "in_appendix": false
+    },
+    {
+      "gate": "desktop_rendering",
+      "path": "visual/native-final-v8-screens-review.json",
+      "sha256": "0cbec7352b370f785fb9a5d0eeab865193451eb2389abcca38935d622f00f5f2",
+      "in_appendix": false
+    },
+    {
+      "gate": "desktop_rendering",
+      "path": "visual/native-final-v8-matrix-review.json",
+      "sha256": "b053e91cf3946b4e1b0a8d428b55961e896cc7545c9e4048d36ba4c56535c910",
+      "in_appendix": false
+    },
+    {
+      "gate": "desktop_rendering",
+      "path": "final-web-v8/results.json",
+      "sha256": "bf2de85caa489aa6e69b2210e3c5f23cbff51ad064e6857b0ce9d3407b165235",
+      "in_appendix": false
+    },
+    {
+      "gate": "desktop_rendering",
+      "path": "final-web-v8/independent-visual-review.json",
+      "sha256": "9e96b67d417408aa39271db158fb6c3f8326d36582520450d0d5aef5e481c4b2",
+      "in_appendix": false
+    },
+    {
+      "gate": "desktop_rendering",
+      "path": "visual/final-v8-minor-dispositions.json",
+      "sha256": "8e88041b842d6df83079916e002d8d3f781715cccb0bb134b33825c9b6db93fc",
+      "in_appendix": false
+    },
+    {
+      "gate": "desktop_rendering",
+      "path": "integration-telugu/final-component-summary.json",
+      "sha256": "aa31e4a5a7ef04e00e6a9ca6aad1cb943ea1ac68f695324ed288ba42b9012ffc",
+      "in_appendix": true
+    },
+    {
+      "gate": "phone_rendering",
+      "path": "final-kit6/master-delta6/independent-aggregate-audit.json",
+      "sha256": "dac54eab2ecb2f94a6fb8fd6003f51f2de07b1c5a629361ebfc90262c2228930",
+      "in_appendix": false
+    },
+    {
+      "gate": "phone_rendering",
+      "path": "final-kit6/master-delta6/source-target-carry.json",
+      "sha256": "51b10b2c917723c4228a9665f46d50b02b7e0787e1e13ecaea9a73fad923a49e",
+      "in_appendix": false
+    },
+    {
+      "gate": "phone_rendering",
+      "path": "master-delta6/native-v8-final-closure.json",
+      "sha256": "2fe75b73a205f888b8c52fcf438208e3e6a3f0e2122fd5fe1558946942d665be",
+      "in_appendix": false
+    },
+    {
+      "gate": "phone_rendering",
+      "path": "rendering/native-final-v8-full-matrix/current-matrix-proof.json",
+      "sha256": "7eb4d39315c1287e63d291b757418f66db22e5432fcc4764ca78730e6e6b6aa1",
+      "in_appendix": false
+    },
+    {
+      "gate": "phone_rendering",
+      "path": "rendering/native-final-v8-full-matrix/catalog-source-binding.json",
+      "sha256": "ad7ac1284891f9b094decdc6ffbdff3e9106bf0b24e44b685458999742581f95",
+      "in_appendix": false
+    },
+    {
+      "gate": "phone_rendering",
+      "path": "visual/native-final-v8-screens-review.json",
+      "sha256": "0cbec7352b370f785fb9a5d0eeab865193451eb2389abcca38935d622f00f5f2",
+      "in_appendix": false
+    },
+    {
+      "gate": "phone_rendering",
+      "path": "visual/native-final-v8-matrix-review.json",
+      "sha256": "b053e91cf3946b4e1b0a8d428b55961e896cc7545c9e4048d36ba4c56535c910",
+      "in_appendix": false
+    },
+    {
+      "gate": "phone_rendering",
+      "path": "final-web-v8/results.json",
+      "sha256": "bf2de85caa489aa6e69b2210e3c5f23cbff51ad064e6857b0ce9d3407b165235",
+      "in_appendix": false
+    },
+    {
+      "gate": "phone_rendering",
+      "path": "final-web-v8/independent-visual-review.json",
+      "sha256": "9e96b67d417408aa39271db158fb6c3f8326d36582520450d0d5aef5e481c4b2",
+      "in_appendix": false
+    },
+    {
+      "gate": "phone_rendering",
+      "path": "visual/final-v8-minor-dispositions.json",
+      "sha256": "8e88041b842d6df83079916e002d8d3f781715cccb0bb134b33825c9b6db93fc",
+      "in_appendix": false
+    },
+    {
+      "gate": "phone_rendering",
+      "path": "visual/browser-v8-hud-independent-review.json",
+      "sha256": "00db9509cc969ba7b337503f0c2d5427a9443187336e1dacc568075e3f64a606",
+      "in_appendix": false
+    },
+    {
+      "gate": "phone_rendering",
+      "path": "visual/browser-v8-tracked-independent-review.json",
+      "sha256": "ff89c34818ec0c0d1bdf23e2075994790f46f3de0092c5dea051459fce8db50b",
+      "in_appendix": false
+    },
+    {
+      "gate": "phone_rendering",
+      "path": "integration-telugu/final-component-summary.json",
+      "sha256": "aa31e4a5a7ef04e00e6a9ca6aad1cb943ea1ac68f695324ed288ba42b9012ffc",
+      "in_appendix": true
+    },
+    {
+      "gate": "browser_startup",
+      "path": "final-kit6/master-delta6/independent-aggregate-audit.json",
+      "sha256": "dac54eab2ecb2f94a6fb8fd6003f51f2de07b1c5a629361ebfc90262c2228930",
+      "in_appendix": false
+    },
+    {
+      "gate": "browser_startup",
+      "path": "final-kit6/master-delta6/source-target-carry.json",
+      "sha256": "51b10b2c917723c4228a9665f46d50b02b7e0787e1e13ecaea9a73fad923a49e",
+      "in_appendix": false
+    },
+    {
+      "gate": "browser_startup",
+      "path": "browser-kit6-final-build-provenance.json",
+      "sha256": "0015bd6c70e9b83ed8f8c2f7854388b6ae030df5e2d61b2864a9518f2bcb3872",
+      "in_appendix": false
+    },
+    {
+      "gate": "browser_startup",
+      "path": "browser-v4/browser-final-validation-c35.json",
+      "sha256": "d2731d72e8ee4c959f1bca9aded171f3975c5f73e2b04ae1f4a5aca0d9081382",
+      "in_appendix": false
+    },
+    {
+      "gate": "browser_startup",
+      "path": "visual/browser-v8-tracked-independent-review.json",
+      "sha256": "ff89c34818ec0c0d1bdf23e2075994790f46f3de0092c5dea051459fce8db50b",
+      "in_appendix": false
+    },
+    {
+      "gate": "browser_startup",
+      "path": "visual/browser-v8-hud-independent-review.json",
+      "sha256": "00db9509cc969ba7b337503f0c2d5427a9443187336e1dacc568075e3f64a606",
+      "in_appendix": false
+    },
+    {
+      "gate": "browser_startup",
+      "path": "visual/browser-v8-desktop-statistics-independent-review.json",
+      "sha256": "d67d726a3c4e519a75ecc615f07b2130583f390201400e07f6e949cc67d36e72",
+      "in_appendix": false
+    },
+    {
+      "gate": "browser_startup",
+      "path": "integration-telugu/final-component-summary.json",
+      "sha256": "aa31e4a5a7ef04e00e6a9ca6aad1cb943ea1ac68f695324ed288ba42b9012ffc",
+      "in_appendix": true
+    },
+    {
+      "gate": "native_platforms",
+      "path": "final-kit6/master-delta6/independent-aggregate-audit.json",
+      "sha256": "dac54eab2ecb2f94a6fb8fd6003f51f2de07b1c5a629361ebfc90262c2228930",
+      "in_appendix": false
+    },
+    {
+      "gate": "native_platforms",
+      "path": "final-kit6/master-delta6/source-target-carry.json",
+      "sha256": "51b10b2c917723c4228a9665f46d50b02b7e0787e1e13ecaea9a73fad923a49e",
+      "in_appendix": false
+    },
+    {
+      "gate": "native_platforms",
+      "path": "master-delta6/native-v8-final-closure.json",
+      "sha256": "2fe75b73a205f888b8c52fcf438208e3e6a3f0e2122fd5fe1558946942d665be",
+      "in_appendix": false
+    },
+    {
+      "gate": "native_platforms",
+      "path": "compatibility-fil113/native-compatibility-final-B.json",
+      "sha256": "0278facb24dfcecb402325d02a4083d01724b15f1d78e5ca1a2a6c3d26b5f63f",
+      "in_appendix": false
+    },
+    {
+      "gate": "native_platforms",
+      "path": "compatibility-fil113/independent-source-review.json",
+      "sha256": "2e27d5ad22454f94e99a99243b91722f295bb73c3567c31f70fbb8805e163d86",
+      "in_appendix": false
+    },
+    {
+      "gate": "native_platforms",
+      "path": "integration-telugu/final-component-summary.json",
+      "sha256": "aa31e4a5a7ef04e00e6a9ca6aad1cb943ea1ac68f695324ed288ba42b9012ffc",
+      "in_appendix": true
+    },
+    {
+      "gate": "browser_platforms",
+      "path": "final-kit6/master-delta6/independent-aggregate-audit.json",
+      "sha256": "dac54eab2ecb2f94a6fb8fd6003f51f2de07b1c5a629361ebfc90262c2228930",
+      "in_appendix": false
+    },
+    {
+      "gate": "browser_platforms",
+      "path": "final-kit6/master-delta6/source-target-carry.json",
+      "sha256": "51b10b2c917723c4228a9665f46d50b02b7e0787e1e13ecaea9a73fad923a49e",
+      "in_appendix": false
+    },
+    {
+      "gate": "browser_platforms",
+      "path": "browser-kit6-final-build-provenance.json",
+      "sha256": "0015bd6c70e9b83ed8f8c2f7854388b6ae030df5e2d61b2864a9518f2bcb3872",
+      "in_appendix": false
+    },
+    {
+      "gate": "browser_platforms",
+      "path": "browser-v4/browser-final-validation-c35.json",
+      "sha256": "d2731d72e8ee4c959f1bca9aded171f3975c5f73e2b04ae1f4a5aca0d9081382",
+      "in_appendix": false
+    },
+    {
+      "gate": "browser_platforms",
+      "path": "visual/browser-v8-tracked-independent-review.json",
+      "sha256": "ff89c34818ec0c0d1bdf23e2075994790f46f3de0092c5dea051459fce8db50b",
+      "in_appendix": false
+    },
+    {
+      "gate": "browser_platforms",
+      "path": "visual/browser-v8-hud-independent-review.json",
+      "sha256": "00db9509cc969ba7b337503f0c2d5427a9443187336e1dacc568075e3f64a606",
+      "in_appendix": false
+    },
+    {
+      "gate": "browser_platforms",
+      "path": "visual/browser-v8-desktop-statistics-independent-review.json",
+      "sha256": "d67d726a3c4e519a75ecc615f07b2130583f390201400e07f6e949cc67d36e72",
+      "in_appendix": false
+    },
+    {
+      "gate": "browser_platforms",
+      "path": "integration-telugu/final-component-summary.json",
+      "sha256": "aa31e4a5a7ef04e00e6a9ca6aad1cb943ea1ac68f695324ed288ba42b9012ffc",
+      "in_appendix": true
+    },
+    {
+      "gate": "mobile_platforms",
+      "path": "final-kit6/master-delta6/independent-aggregate-audit.json",
+      "sha256": "dac54eab2ecb2f94a6fb8fd6003f51f2de07b1c5a629361ebfc90262c2228930",
+      "in_appendix": false
+    },
+    {
+      "gate": "mobile_platforms",
+      "path": "final-kit6/master-delta6/source-target-carry.json",
+      "sha256": "51b10b2c917723c4228a9665f46d50b02b7e0787e1e13ecaea9a73fad923a49e",
+      "in_appendix": false
+    },
+    {
+      "gate": "mobile_platforms",
+      "path": "mobile-v8/export-results.json",
+      "sha256": "3815ad2992fff2ee004ab357beb054748995ba7f46dca804aae458fb1de29e57",
+      "in_appendix": false
+    },
+    {
+      "gate": "mobile_platforms",
+      "path": "mobile-v8/audit.json",
+      "sha256": "d130da0dbc99935753910a3c4ff3b9892b8b4a7de8f35c4d37b5aa3d01121cf1",
+      "in_appendix": false
+    },
+    {
+      "gate": "mobile_platforms",
+      "path": "data-v8/final-data-assets-report.json",
+      "sha256": "0af6cf02dd12da5187ed592ccbe1175c3a10903099cc3d6207f51cb99a3a62ed",
+      "in_appendix": false
+    },
+    {
+      "gate": "mobile_platforms",
+      "path": "integration-telugu/final-component-summary.json",
+      "sha256": "aa31e4a5a7ef04e00e6a9ca6aad1cb943ea1ac68f695324ed288ba42b9012ffc",
+      "in_appendix": true
+    }
+  ],
+  "issues": [],
+  "scope": "New integration validation and exact historical matrix/source carry; no fresh full linguistic reread or matrix rerender claim.",
+  "status": "passed",
+  "privacy": {
+    "concrete_secret_matches": 0,
+    "verified_binary_png_attachment_strings": 24,
+    "limits": "Concrete access-token/private-key patterns, not arbitrary secret classification."
+  },
+  "omitted_payload_policy": [
+    {
+      "path": "mobile-te-final/android-assets/",
+      "reason": "Excluded whole runtime asset, profile/cache, trace, or build tree; inventories/provenance retained"
+    },
+    {
+      "path": "mobile-te-final/ios-assets/",
+      "reason": "Excluded whole runtime asset, profile/cache, trace, or build tree; inventories/provenance retained"
+    },
+    {
+      "path": "rendering/native-final-v9-screens/desktop-lobby/profile/",
+      "reason": "Excluded whole runtime asset, profile/cache, trace, or build tree; inventories/provenance retained"
+    },
+    {
+      "path": "rendering/native-final-v9-screens/desktop-tutorial-swimming/profile/",
+      "reason": "Excluded whole runtime asset, profile/cache, trace, or build tree; inventories/provenance retained"
+    },
+    {
+      "path": "rendering/native-final-v9-screens/phone-tutorial-introduction/profile/",
+      "reason": "Excluded whole runtime asset, profile/cache, trace, or build tree; inventories/provenance retained"
+    },
+    {
+      "path": "browser-v4/telugu-appendix-d588e65d-c1d2f1bae1cf/static-release/",
+      "reason": "Excluded whole runtime asset, profile/cache, trace, or build tree; inventories/provenance retained"
+    },
+    {
+      "path": "browser-v4/telugu-appendix-d588e65d-c1d2f1bae1cf/packaging/Caddyfile",
+      "reason": "Unsupported payload format; provenance retained"
+    },
+    {
+      "path": "browser-v4/telugu-appendix-d588e65d-c1d2f1bae1cf/packaging/caddy-data/caddy/instance.uuid",
+      "reason": "Unsupported payload format; provenance retained"
+    },
+    {
+      "path": "native-v6-focused-builder/producer-827a22d2a865/build/",
+      "reason": "Excluded whole runtime asset, profile/cache, trace, or build tree; inventories/provenance retained"
+    },
+    {
+      "path": "browser-v4/unit-telugu-A-827a22d2/baseline-telugu-master/",
+      "reason": "Excluded whole runtime asset, profile/cache, trace, or build tree; inventories/provenance retained"
+    }
+  ]
+}

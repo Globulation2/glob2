@@ -1,0 +1,11 @@
+# Final Filipino integration appendix
+
+This appendix refreshes affected integration evidence at final source `d588e65df050f039a4ad306652425bb30d0cce6b`, integrating Telugu master `f36de73aea50901a93d0c931bdd0fdb64c9d864c` with Filipino SIM114. All 6,390 English/Filipino source and target pairs are unchanged from the [published baseline](https://github.com/Globulation2/glob2/tree/47afe4217153815afb8196eb93a5f3caa767e9bd).
+
+Download [filipino-telugu-integration-appendix.tar.gz](filipino-telugu-integration-appendix.tar.gz) and extract into the same kit directory as the baseline archives. The appendix contains 183 paths, 31,697,388 compressed bytes; SHA256 `222ec5a22f8c824ee3e489c1a8fe4bdcf54592dc1d6317ced2632da9b7e4555b`. Every member passed streamed SHA256 and size verification. The [manifest](telugu-integration-appendix-manifest.json) identifies every included path, exclusion and baseline reference.
+
+The refreshed evidence includes 31 focused native cases, relay, golden regeneration and compatibility acceptance; two final browser flows and two deterministic Wasm match verifications; 43 catalogs, 130 gzip sidecars and 84 HTTP checks; 81 locale cases; asset-only Android/iOS exports with 24,287 files and zero mismatches each. All 15 fresh native, 24 website/studio and 10 browser screenshots are included with independent reviews. Existing browser unit fixture failures and the corrected font environment setup failure remain visible.
+
+The native executable actually ran at `827a22d2a8659e265d877962c1d64913aff88f44`; final d588 differs only in the regenerated golden fixture. The 57,753 matrix samples retain their actual earlier producer and data revision. Exact unchanged catalog/font/drawing inputs and matrix-function bytes establish scoped carry; the matrix was not rerendered for this appendix.
+
+All nine final gates and their evidence hashes passed the [independent readiness audit](telugu-integration-readiness-audit.json). The [supplemental closure](telugu-integration-reference-closure.json) checks all twelve new component references and the frozen current status. Concrete credential/private-key scanning found zero matches. No fresh complete linguistic reread is claimed. Coverage is Linux/Chromium with phone viewports and mobile assets; physical mobile and native Windows/macOS execution remain unavailable.
