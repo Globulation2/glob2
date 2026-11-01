@@ -86,6 +86,41 @@ for (const locale of locales) {
     expect(
       await signIn.evaluate((element) => element.scrollWidth - element.clientWidth),
     ).toBeLessThanOrEqual(1);
+    if (locale.code === 'bn' && (page.viewportSize()?.width ?? 1280) < 1100) {
+      // The narrow rail must use an icon, while retaining the full translated
+      // action name for assistive technology and expanded navigation.
+      const signInLabel = catalog['Sign in'];
+      if (!signInLabel) throw new Error('Missing Bengali sign-in label');
+      await expect(signIn).toHaveAccessibleName(signInLabel);
+      const icon = signIn.locator('.sidebar-auth-icon');
+      await expect(icon).toBeVisible();
+      await expect(signIn.locator('.sidebar-auth-label')).toBeHidden();
+      const buttonBounds = await signIn.boundingBox();
+      const iconBounds = await icon.boundingBox();
+      expect(buttonBounds).not.toBeNull();
+      expect(iconBounds).not.toBeNull();
+      if (!buttonBounds || !iconBounds) throw new Error('Missing sign-in icon geometry');
+      expect(buttonBounds.width).toBeGreaterThanOrEqual(44);
+      expect(buttonBounds.height).toBeGreaterThanOrEqual(44);
+      expect(iconBounds.x).toBeGreaterThanOrEqual(buttonBounds.x + 4);
+      expect(iconBounds.y).toBeGreaterThanOrEqual(buttonBounds.y + 4);
+      expect(iconBounds.x + iconBounds.width).toBeLessThanOrEqual(
+        buttonBounds.x + buttonBounds.width - 4,
+      );
+      expect(iconBounds.y + iconBounds.height).toBeLessThanOrEqual(
+        buttonBounds.y + buttonBounds.height - 4,
+      );
+      await page.locator('.rail-expand').click();
+      const navigation = page.locator('.navigation-drawer');
+      await expect(navigation).toBeVisible();
+      const expanded = navigation.locator('.sidebar-account a[href="/signin"]');
+      await expect(expanded).toHaveAccessibleName(signInLabel);
+      await expect(expanded.locator('.sidebar-auth-label')).toHaveText(signInLabel);
+      await expect(expanded.locator('.sidebar-auth-label')).toBeVisible();
+      await expect(expanded.locator('.sidebar-auth-icon')).toBeHidden();
+      await page.keyboard.press('Escape');
+      await expect(navigation).not.toBeVisible();
+    }
     // Long translations and RTL layout must fit the viewport on phones as well as desktops.
     const overflow = await page.evaluate(
       () => document.documentElement.scrollWidth - document.documentElement.clientWidth,

@@ -927,8 +927,10 @@ void GameGUI::drawAll(int team)
 
 	}
     if (touch) { touch->drawControls();touch->drawKeyboardFocus(); }
-    if (!activeDialog()) Tutorial::drawDestination(*this);
-    if (tutorialGuidance && !activeDialog() && !typingInputScreen) tutorialGuidance->draw(SDL_GetTicks());
+    const bool statisticsSheet = touch && touch->usesHUD() && touch->needsStatisticsHistory();
+    if (!activeDialog() && !statisticsSheet) Tutorial::drawDestination(*this);
+    if (tutorialGuidance && !activeDialog() && !typingInputScreen && !statisticsSheet)
+        tutorialGuidance->draw(SDL_GetTicks());
 }
 
 void GameGUI::drawButton(int x, int y, std::string caption, int r, int g, int b, bool doLanguageLookup)

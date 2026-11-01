@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "InGameStatistics.h"
+#include "TutorialGuidance.h"
 #include <Environment.h>
 #include "EngineFixtures.h"
 #include "ScopedEnvironment.h"
@@ -5395,6 +5396,74 @@ class GameGUITouchHarness
 		gui.processEvent(&event);
 		REQUIRE(std::string(static_cast<LoadSaveDialog *>(dialog)->getName()) == "Scaled2");
 	}
+    static void compactTutorialStatistics()
+    {
+        glob2test::ScopedEnvironment mobile("GLOB2_MOBILE_UI", "1");
+        glob2test::HeadlessGlobals globals({.display=true, .loadStrings=true, .width=320, .height=640,
+            .screenFlags=GAGCore::GraphicContext::PORTABLEGPU});
+        auto *strings=GAGCore::Toolkit::getStringTable();
+        const int previousLanguage=strings->getLang();
+        struct RestoreLanguage { GAGCore::StringTable *strings; int value;
+            ~RestoreLanguage(){strings->setLang(value);} } restore{strings,previousLanguage};
+        strings->setLang(strings->getLangCode("bn"));
+        globals->settings.setTextSizePercent(150);
+        Engine engine;
+        REQUIRE(engine.initCampaignTask((glob2test::sourceRoot()/Tutorial::IntroductionMap).string()).run());
+        engine.prepareRun(); engine.beginSession(0); engine.gui.game.setWaitingOnMask(0);
+        for(int tick=0;tick<64;++tick)engine.gui.game.step(0);
+        auto &gui=engine.gui;
+        glob2test::drawGUI(gui,0);
+        auto *card=gui.tutorialGuidance.get(); REQUIRE(card);
+        const auto lesson=Tutorial::view(gui.drawnScene().panels.hud.state()); REQUIRE(lesson);
+        const auto tap=[&](GAGGUI::ui::Rect r) {
+            SDL_Event e{};e.type=SDL_EVENT_MOUSE_BUTTON_DOWN;e.button.button=SDL_BUTTON_LEFT;
+            e.button.x=r.x+r.w/2;e.button.y=r.y+r.h/2;gui.processEvent(&e);
+            e.type=SDL_EVENT_MOUSE_BUTTON_UP;gui.processEvent(&e);
+        };
+        tap(card->host().bounds("intro/collapse")); glob2test::drawGUI(gui,0);
+        CHECK_FALSE(card->host().find("intro/instruction"));
+        const auto compact=card->panelBounds();
+        REQUIRE(card->host().find("intro/title"));
+        CHECK(card->host().bounds("intro/title").h<=card->host().bounds("intro/collapse").h);
+        CHECK(compact.h<100);
+        card->host().focus("intro/help",true);
+        gui.touch->menuAction(3); glob2test::drawGUI(gui,0);
+        REQUIRE(gui.touch->statsOpen);
+        CHECK_FALSE(card->host().keyboardFocused());
+        const auto sheet=gui.touch->statsLayout();
+        const auto mini=gui.touch->minimapRect();
+        const GAGCore::ViewPoint overlap{mini.x+mini.w-3, std::min(mini.y+mini.h-3,sheet.title.y+sheet.title.h-2)};
+        REQUIRE(mini.contains(overlap)); REQUIRE(sheet.sheet.contains(overlap));
+        CHECK(gui.touch->interfaceRegion(overlap)==48);
+        const auto cameraX=gui.viewportX,cameraY=gui.viewportY;
+        gui.touch->interfaceTap(overlap);
+        CHECK(gui.viewportX==cameraX); CHECK(gui.viewportY==cameraY);
+        auto *gfx=globalContainer->gfx;
+        gfx->nextFrame();
+        Uint8 r=0,g=0,b=0,a=0;
+        REQUIRE(SDL_ReadSurfacePixel(gfx->completedFrame(),int(overlap.x),int(overlap.y),&r,&g,&b,&a));
+        const auto paper=InGameTouchTheme::readout();
+        const int tolerance=257-paper.a;
+        CHECK(std::abs(int(r)-int(paper.r))<=tolerance);
+        CHECK(std::abs(int(g)-int(paper.g))<=tolerance);
+        CHECK(std::abs(int(b)-int(paper.b))<=tolerance);
+        REQUIRE(SDL_SaveBMP(gfx->completedFrame(),(glob2test::artifactDir()/"compact-bn-statistics.bmp").string().c_str()));
+        auto &panel=gui.statistics();
+        for(int topic=0;topic<5;++topic) {
+            tap(panel.host().bounds("stats/topic/"+std::to_string(topic)));
+            glob2test::drawGUI(gui,0);
+            CHECK(panel.topic()==InGameStatisticsPanel::Topic(topic));
+        }
+        gui.touch->closeStatistics();glob2test::drawGUI(gui,0);
+        REQUIRE(gui.tutorialGuidance.get()==card);
+        CHECK_FALSE(card->host().find("intro/instruction"));
+        CHECK(card->panelBounds()==compact);
+        CHECK(Tutorial::view(gui.drawnScene().panels.hud.state())==lesson);
+        tap(card->host().bounds("intro/collapse"));glob2test::drawGUI(gui,0);
+        CHECK(card->host().find("intro/instruction"));
+        auto title=card->host().find("intro/title");REQUIRE(title);
+        CHECK(title->accessibleText()==std::to_string(lesson->index+1)+" / "+std::to_string(lesson->count)+"  "+Glob2UI::tr(lesson->title));
+    }
 	static void liveStatisticsProbability()
     {
         glob2test::HeadlessGlobals globals({.display=true, .loadStrings=true, .width=360, .height=720,
@@ -5445,6 +5514,10 @@ class GameGUITouchHarness
 };
 TEST_SUITE("GameGUITouch")
 {
+    GLOB2_TEST_CASE("compact Bengali tutorial yields to statistics and covers the minimap", "[display][artifacts]")
+    {
+        GameGUITouchHarness::compactTutorialStatistics();
+    }
     GLOB2_TEST_CASE("live statistics hide post-game probability across topics", "[display][artifacts]")
     {
         GameGUITouchHarness::liveStatisticsProbability();
