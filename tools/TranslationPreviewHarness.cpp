@@ -8,6 +8,9 @@
 #include "MainMenuScreen.h"
 #include "SettingsScreen.h"
 #include "CustomGameScreen.h"
+#include "CampaignEditor.h"
+#include "MapHeader.h"
+#include <TextBreaks.h>
 #include "FrontendTheme.h"
 #include "MenuColony.h"
 #include "Sha256.h"
@@ -129,7 +132,8 @@ Json evidenceIdentity(const fs::path &root, const fs::path &pilot)
              "libgag/include/TouchText.h", "libgag/include/TextBreaks.h", "libgag/include/TrueTypeFont.h",
              "libgag/include/ui/TextLayout.h", "libgag/src/DrawableSurfaceCompound.cpp",
              "src/game/screens/CustomGameScreen.cpp", "src/render/overlay/MapZoomControls.h",
-             "tools/TranslationPreviewHarness.cpp"})
+             "tools/TranslationPreviewHarness.cpp", "src/campaign/Campaign.cpp", "src/campaign/Campaign.h",
+             "src/campaign/screens/CampaignEditor.cpp", "src/campaign/screens/CampaignEditor.h"})
         result["source_sha256"][name] = sha256(root / name);
     for (const auto *surface : {"native", "online"})
         result["catalog_sha256"][surface] = sha256(pilot / (std::string(surface) + ".json"));
@@ -299,6 +303,20 @@ public:
         this->paintFrame(SDL_GetTicks());
         this->paintFrame(SDL_GetTicks());
     }
+    std::string value(const std::string &key) {
+        for (auto *node : this->GAGGUI::ui::UIScreen::host().interactiveNodes())
+            if (node->key == key) return node->accessibleText();
+        throw std::runtime_error("Missing preview control: " + key);
+    }
+    std::vector<std::string> subLabels(const std::string &key) {
+        for (auto *node : this->GAGGUI::ui::UIScreen::host().interactiveNodes()) {
+            if (node->key != key) continue;
+            std::vector<std::string> result;
+            for (const auto &part : node->subTargets()) result.push_back(part.label);
+            return result;
+        }
+        throw std::runtime_error("Missing preview list: " + key);
+    }
     Json bounds() {
         Json result = Json::array();
         for (auto *node : this->GAGGUI::ui::UIScreen::host().interactiveNodes()) {
@@ -364,7 +382,7 @@ void screenPreview(const fs::path &root, const fs::path &pilot, const fs::path &
     globals.load();
     const auto localized = installDraftOverlay(root, pilot, output);
     globals.settings.language = pilotLocale(pilot);
-    Json controls;
+    Json controls, campaignIdentity;
     {
         FrontendTheme theme;
         require(theme.colony->load(), "Load bundled menu colony");
@@ -380,11 +398,66 @@ void screenPreview(const fs::path &root, const fs::path &pilot, const fs::path &
             Preview<CustomGameScreen> preview(stack);
             if (screen == "lobby-players") preview.selectTab(1);
             preview.render(); controls = preview.bounds();
+        } else if (screen == "campaign-editor-new" || screen == "campaign-editor-loaded") {
+            const bool loaded = screen == "campaign-editor-loaded";
+            const std::string authoredName = "Author Campaign QA";
+            const std::string expected = loaded ? authoredName : GAGCore::withoutSoftWordBreaks(
+                GAGCore::Toolkit::getStringTable()->getString("[new campaign]"));
+            std::string filename, fixtureHash;
+            fs::path fixturePath;
+            if (loaded) {
+                const auto profile = fs::absolute(globals.fileManager->getDir(0));
+                const auto relative = fs::relative(profile, root / "artifacts");
+                require(!relative.empty() && !relative.is_absolute() && *relative.begin() != "..",
+                        "Campaign fixture requires an ignored artifacts profile");
+                fs::create_directories(profile / "campaigns");
+                Campaign fixture;
+                fixture.setName(authoredName);
+                fixture.setDescription("Author supplied campaign description.");
+                CampaignMapEntry first("Mission Alpha QA", "campaigns/introduction.map.gz");
+                first.setDescription("Author supplied first mission.");
+                CampaignMapEntry second("Mission Beta QA", "campaigns/swimming.map.gz");
+                second.getUnlockedByMaps().push_back(first.getMapName());
+                second.lockMap();
+                fixture.appendMap(first);
+                fixture.appendMap(second);
+                require(fixture.save(), "Save real authored campaign fixture");
+                filename = glob2NameToFilename("campaigns", authoredName, "txt");
+                fixturePath = profile / filename;
+                require(fs::exists(fixturePath), "Campaign fixture saved only in ignored profile");
+                fixtureHash = sha256(fixturePath);
+                Campaign roundTrip;
+                require(roundTrip.load(filename), "Load real authored campaign fixture");
+                require(roundTrip.getName() == authoredName &&
+                        roundTrip.getDescription() == fixture.getDescription() &&
+                        roundTrip.getMap(0).getDescription() == first.getDescription() &&
+                        roundTrip.exportProgress() == fixture.exportProgress(),
+                        "Campaign names, mission/map/prerequisite IDs and progress round trip unchanged");
+                fs::copy_file(fixturePath, output / "authored-campaign-fixture.txt", fs::copy_options::overwrite_existing);
+            }
+            Preview<CampaignEditor> preview(filename, stack);
+            preview.render();
+            const auto actual = preview.value("name");
+            require(actual == expected, "Actual campaign editor shows expected localized or authored title");
+            require(actual.find(GAGCore::softWordBreak) == std::string::npos,
+                    "Editable campaign name contains no presentation hints");
+            if (loaded) {
+                require(preview.subLabels("maps") == std::vector<std::string>{"Mission Alpha QA", "Mission Beta QA"},
+                        "Actual loaded editor preserves authored mission names");
+                require(sha256(fixturePath) == fixtureHash, "Opening editor leaves authored fixture bytes unchanged");
+            }
+            controls = preview.bounds();
+            campaignIdentity = {{"kind", "production-campaign-editor-identity"}, {"loaded", loaded},
+                {"expected_name", expected}, {"actual_name", actual}, {"no_soft_breaks_in_name", true},
+                {"loaded_identity_preserved", loaded}, {"fixture_sha256", fixtureHash},
+                {"mission_labels", preview.subLabels("maps")},
+                {"scope", "Actual production editor; authored fixture uses real Campaign save/load only under ignored profile. Existing campaign/mission/map/prerequisite identities preserved."}};
         } else throw std::runtime_error("Unknown screen: " + screen);
         GAGCore::DrawableSurface image(globals.gfx->getW(), globals.gfx->getH());
         image.drawSurface(0, 0, globals.gfx);
         require(IMG_SavePNG(image.getSDLSurface(), (output / (screen + ".png")).string().c_str()), "Save production screen");
     }
+    if (!campaignIdentity.is_null()) writeJson(output / (screen + "-identity.json"), campaignIdentity);
     writeJson(output / (screen + ".json"), {{"kind", "production-screen-draft-overlay"}, {"screen", screen},
         {"pilot", pilot.string()}, {"evidence_identity", evidenceIdentity(root, pilot)}, {"native_keys_overridden", localized}, {"width", width}, {"height", height},
         {"controls", controls}, {"limits", {"Only supplied draft keys are translated; native_keys_overridden records their count. Missing draft keys use English.",

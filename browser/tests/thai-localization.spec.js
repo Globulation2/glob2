@@ -2,7 +2,7 @@ const {test, expect} = require('@playwright/test');
 const {createHash} = require('node:crypto');
 const fs = require('node:fs');
 const path = require('node:path');
-const {waitForMainMenu, gameURL, clickMainMenu, clickControl, clickSettingsDone, tapControl, clickByLabel, readBrowserFile} = require('./main-menu');
+const {waitForMainMenu, gameURL, clickMainMenu, clickControl, clickSettingsDone, tapControl, clickByLabel, readBrowserFile, clickListRow} = require('./main-menu');
 const thai = require('../../platform/packages/i18n/locales/th.json');
 
 test.use({locale: 'th-TH'});
@@ -14,6 +14,63 @@ async function expectShippedThaiAssets(page) {
     const actual = await readBrowserFile(page, '/' + relative);
     expect(sha256(actual), relative).toBe(sha256(fs.readFileSync(path.resolve(__dirname, '../..', relative))));
   }
+}
+
+
+// Exercise actual CampaignEditor and Campaign save/load, without a shipped fixture.
+async function expectThaiCampaignEditor(page, info, variant, touch) {
+  if (touch) {
+    await page.setViewportSize({width: 390, height: 844});
+    await expect.poll(() => page.evaluate(() => [Module.presentationMetrics.width, Module.presentationMetrics.height]))
+      .toEqual([390, 844]);
+  }
+  const screen = name => expect.poll(() => page.evaluate(() => glob2Diagnostics.snapshot().screen)).toContain(name);
+  const activate = key => touch ? tapControl(page, key) : clickControl(page, key);
+  const lines = fs.readFileSync(path.resolve(__dirname, '../../data/texts.th.txt'), 'utf8').split(/\r?\n/);
+  const index = lines.indexOf('[new campaign]');
+  expect(index).toBeGreaterThanOrEqual(0);
+  const expected = lines[index + 1].replace(/\u200b/g, '');
+  await clickMainMenu(page, 'editor');
+  await screen('EditorMainMenu');
+  await activate('new-campaign');
+  await screen('CampaignEditor');
+  await expect.poll(() => page.evaluate(() => glob2Diagnostics.snapshot().controls.name?.label)).toBe(expected);
+  await page.screenshot({path: info.outputPath(`${variant}-thai-${touch ? 'touch-phone' : 'desktop'}-campaign-new.png`)});
+  await activate('name');
+  const field = page.locator('input[data-i18n-aria="Game text field"]');
+  await expect(field).toHaveValue(expected);
+  expect(await field.inputValue()).not.toContain('\u200b');
+  const authored = 'Author Campaign QA';
+  if (touch) await field.tap(); else await field.click();
+  await field.press('ControlOrMeta+A');
+  await field.press('Delete');
+  await field.pressSequentially(authored);
+  await expect(field).toHaveValue(authored);
+  await activate('ok');
+  await screen('EditorMainMenu');
+  const digest = () => page.evaluate(() => glob2Diagnostics.campaignDefinitionDigest('Author_Campaign_QA.txt'));
+  const before = await digest();
+  expect(before?.size).toBeGreaterThan(0);
+  await activate('load-campaign');
+  await screen('CampaignSelectorScreen');
+  await clickListRow(page, 'campaigns', 'Author_Campaign_QA');
+  await activate('ok');
+  await screen('CampaignEditor');
+  await expect.poll(() => page.evaluate(() => glob2Diagnostics.snapshot().controls.name?.label)).toBe(authored);
+  await activate('name');
+  await expect(field).toHaveValue(authored);
+  await page.screenshot({path: info.outputPath(`${variant}-thai-${touch ? 'touch-phone' : 'desktop'}-campaign-loaded.png`)});
+  const after = await digest();
+  expect(after).toEqual(before);
+  await info.attach(`${variant}-campaign-name-preservation`, {
+    body: Buffer.from(JSON.stringify({freshTitle: expected, authoredTitle: authored, noSoftHints: true,
+      before, after, scope: 'Real UI authoring/save/load in isolated browser profile. Authored ASCII title remains raw; no fixture or provider request shipped.'}, null, 2)),
+    contentType: 'application/json',
+  });
+  await activate('cancel');
+  await screen('EditorMainMenu');
+  await page.locator('#canvas').press('Escape');
+  await waitForMainMenu(page);
 }
 
 for (const variant of ['serial', 'threaded']) {
@@ -84,6 +141,7 @@ for (const variant of ['serial', 'threaded']) {
     expect(await page.evaluate(() => FS.readFile('/home/web_user/.glob2/preferences.txt', {encoding: 'utf8'}))).toContain('username=ผู้เล่น 123');
     expect(await page.evaluate(() => FS.readFile('/home/web_user/.glob2/preferences.txt', {encoding: 'utf8'}))).toMatch(/^language=th$/m);
     await expect(page.locator('html')).toHaveAttribute('lang', 'th');
+    await expectThaiCampaignEditor(page, info, variant, false);
   });
 }
 
@@ -162,6 +220,7 @@ test.describe('Thai touch phones', () => {
         .some(control => /[\u0e00-\u0e7f]/.test(control.label)))).toBe(true);
       expect(await page.evaluate(() => FS.readFile('/home/web_user/.glob2/preferences.txt', {encoding: 'utf8'})))
         .toContain('username=ผู้เล่น 123');
+      await expectThaiCampaignEditor(page, info, variant, true);
     });
   }
 });

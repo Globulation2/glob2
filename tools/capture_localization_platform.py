@@ -50,7 +50,8 @@ def main():
                   'platform/packages/i18n/locales/en.json','platform/packages/i18n/locales/th.json',
                   'data/fonts/scripts/NotoSansThai-Regular.ttf','libgag/src/TrueTypeFont.cpp',
                   'libgag/include/TextBreaks.h','libgag/src/ui/TextLayout.cpp',
-                  'tools/TranslationPreviewHarness.cpp']
+                  'tools/TranslationPreviewHarness.cpp','src/campaign/Campaign.cpp','src/campaign/Campaign.h',
+                  'src/campaign/screens/CampaignEditor.cpp','src/campaign/screens/CampaignEditor.h']
     committed_hashes={name:hashlib.sha256(subprocess.check_output(['git','show',revision+':'+name],cwd=root)).hexdigest() for name in source_paths}
     checkout_hashes={name:sha(root/name) for name in source_paths}
     metadata={'locale':'th','revision':revision,'committed_source_file_sha256':committed_hashes,'checkout_source_file_sha256':checkout_hashes,'kind':'Exact registered catalogs, not a draft/pilot translation claim',
@@ -90,6 +91,9 @@ def main():
     for width,height in [(1280,800),(390,844)]:
         jobs += [('screen',full,width,height,name) for name in ['main','settings','lobby','lobby-players']]
         jobs += [('game',full,width,height,name) for name in ['gameplay','tutorial']]
+    # Preserve the original13 jobs and their order, then append four bounded editor views.
+    for width,height in [(1280,800),(390,844)]:
+        jobs += [('screen',full,width,height,name) for name in ['campaign-editor-new','campaign-editor-loaded']]
     try:
         for index,(mode,pilot,width,height,name) in enumerate(jobs):
             dest=output/(f'{width}x{height}-'+(name or 'matrix'));dest.mkdir()
@@ -99,6 +103,12 @@ def main():
             report['commands'].append(command)
             execute_capture(command,root,env,dest/'capture.log')
             if not list(dest.glob('*.png')):raise ValueError('Successful preview produced no PNG: '+str(dest))
+            if mode=='screen' and name.startswith('campaign-editor-'):
+                identity=json.loads((dest/(name+'-identity.json')).read_text(encoding='utf-8'))
+                if identity['actual_name']!=identity['expected_name'] or not identity['no_soft_breaks_in_name']:
+                    raise ValueError('Actual campaign editor name differs from expected clean title')
+                if name=='campaign-editor-loaded' and not identity['loaded_identity_preserved']:
+                    raise ValueError('Loaded authored campaign identity was not preserved')
             if mode=='matrix':
                 result=json.loads((dest/'font-matrix.json').read_text(encoding='utf-8'))
                 if any(not row['has_glyphs'] for row in result['samples']):raise ValueError('Thai sample glyph coverage failed')
