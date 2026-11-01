@@ -5696,6 +5696,14 @@ Mørkt vann
 Hull
 [chasm]
 Kløft
+[lush_grass]
+
+[dry_grass]
+
+[dune_sand]
+
+[pale_sand]
+
 [terrain group water]
 Vann
 [terrain group sand]

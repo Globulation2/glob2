@@ -5696,6 +5696,14 @@ AI کی بنائی ہوئی نہیں
 سوراخ
 [chasm]
 گہری کھائی
+[lush_grass]
+
+[dry_grass]
+
+[dune_sand]
+
+[pale_sand]
+
 [terrain group water]
 پانی
 [terrain group sand]

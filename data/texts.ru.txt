@@ -5696,6 +5696,14 @@ FFmpeg недоступен, поэтому запись отключена. У�
 Провал
 [chasm]
 Пропасть
+[lush_grass]
+
+[dry_grass]
+
+[dune_sand]
+
+[pale_sand]
+
 [terrain group water]
 Вода
 [terrain group sand]

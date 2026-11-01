@@ -5696,6 +5696,14 @@ Temna voda
 Luknja
 [chasm]
 Prepad
+[lush_grass]
+
+[dry_grass]
+
+[dune_sand]
+
+[pale_sand]
+
 [terrain group water]
 Voda
 [terrain group sand]

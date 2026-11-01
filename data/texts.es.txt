@@ -5696,6 +5696,14 @@ Agua oscura
 Agujero
 [chasm]
 Abismo
+[lush_grass]
+
+[dry_grass]
+
+[dune_sand]
+
+[pale_sand]
+
 [terrain group water]
 Agua
 [terrain group sand]

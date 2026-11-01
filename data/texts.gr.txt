@@ -5696,6 +5696,14 @@ CPU %0%
 Τρύπα
 [chasm]
 Χάσμα
+[lush_grass]
+
+[dry_grass]
+
+[dune_sand]
+
+[pale_sand]
+
 [terrain group water]
 Νερό
 [terrain group sand]

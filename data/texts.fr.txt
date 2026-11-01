@@ -5696,6 +5696,14 @@ Eau sombre
 Trou
 [chasm]
 Gouffre
+[lush_grass]
+
+[dry_grass]
+
+[dune_sand]
+
+[pale_sand]
+
 [terrain group water]
 Eau
 [terrain group sand]

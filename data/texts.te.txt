@@ -5672,6 +5672,14 @@ AI ద్వారా రూపొందించబడలేదు
 రంధ్రం
 [chasm]
 అగాధం
+[lush_grass]
+దట్టమైన గడ్డి
+[dry_grass]
+ఎండిన గడ్డి
+[dune_sand]
+దిబ్బల ఇసుక
+[pale_sand]
+లేత రంగు ఇసుక
 [terrain group water]
 నీరు
 [terrain group sand]

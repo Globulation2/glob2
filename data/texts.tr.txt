@@ -5696,6 +5696,14 @@ Karanlık su
 Çukur
 [chasm]
 Uçurum
+[lush_grass]
+
+[dry_grass]
+
+[dune_sand]
+
+[pale_sand]
+
 [terrain group water]
 Su
 [terrain group sand]

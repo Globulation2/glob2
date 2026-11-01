@@ -5696,6 +5696,14 @@ AI 生成ではない
 穴
 [chasm]
 深淵
+[lush_grass]
+
+[dry_grass]
+
+[dune_sand]
+
+[pale_sand]
+
 [terrain group water]
 水
 [terrain group sand]

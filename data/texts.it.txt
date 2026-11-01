@@ -5696,6 +5696,14 @@ Acqua scura
 Buco
 [chasm]
 Abisso
+[lush_grass]
+
+[dry_grass]
+
+[dune_sand]
+
+[pale_sand]
+
 [terrain group water]
 Acqua
 [terrain group sand]

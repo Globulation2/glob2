@@ -5696,6 +5696,14 @@ Apă întunecată
 Groapă
 [chasm]
 Prăpastie
+[lush_grass]
+
+[dry_grass]
+
+[dune_sand]
+
+[pale_sand]
+
 [terrain group water]
 Apă
 [terrain group sand]

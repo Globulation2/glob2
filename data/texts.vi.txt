@@ -5696,6 +5696,14 @@ Nước tối
 Hố
 [chasm]
 Vực sâu
+[lush_grass]
+
+[dry_grass]
+
+[dune_sand]
+
+[pale_sand]
+
 [terrain group water]
 Nước
 [terrain group sand]

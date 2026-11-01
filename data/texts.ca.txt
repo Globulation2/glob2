@@ -5696,6 +5696,14 @@ Aigua fosca
 Forat
 [chasm]
 Avenc
+[lush_grass]
+
+[dry_grass]
+
+[dune_sand]
+
+[pale_sand]
+
 [terrain group water]
 Aigua
 [terrain group sand]

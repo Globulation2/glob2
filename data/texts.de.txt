@@ -5696,6 +5696,14 @@ Dunkles Wasser
 Loch
 [chasm]
 Abgrund
+[lush_grass]
+
+[dry_grass]
+
+[dune_sand]
+
+[pale_sand]
+
 [terrain group water]
 Wasser
 [terrain group sand]

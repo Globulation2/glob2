@@ -5696,6 +5696,14 @@ Tumma vesi
 Kuoppa
 [chasm]
 Kuilu
+[lush_grass]
+
+[dry_grass]
+
+[dune_sand]
+
+[pale_sand]
+
 [terrain group water]
 Vesi
 [terrain group sand]

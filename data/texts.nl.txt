@@ -5696,6 +5696,14 @@ Donker water
 Gat
 [chasm]
 Kloof
+[lush_grass]
+
+[dry_grass]
+
+[dune_sand]
+
+[pale_sand]
+
 [terrain group water]
 Water
 [terrain group sand]

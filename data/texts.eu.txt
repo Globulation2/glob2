@@ -5696,6 +5696,14 @@ Ur iluna
 Zuloa
 [chasm]
 Leizea
+[lush_grass]
+
+[dry_grass]
+
+[dune_sand]
+
+[pale_sand]
+
 [terrain group water]
 Ura
 [terrain group sand]

@@ -5696,6 +5696,14 @@ AI से नहीं बना
 गड्ढा
 [chasm]
 खाई
+[lush_grass]
+
+[dry_grass]
+
+[dune_sand]
+
+[pale_sand]
+
 [terrain group water]
 पानी
 [terrain group sand]

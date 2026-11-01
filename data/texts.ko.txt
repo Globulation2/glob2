@@ -5696,6 +5696,14 @@ AI 생성 아님
 구멍
 [chasm]
 깊은 틈
+[lush_grass]
+
+[dry_grass]
+
+[dune_sand]
+
+[pale_sand]
+
 [terrain group water]
 물
 [terrain group sand]

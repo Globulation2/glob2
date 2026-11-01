@@ -5696,6 +5696,14 @@ Maji meusi
 Shimo
 [chasm]
 Korongo
+[lush_grass]
+
+[dry_grass]
+
+[dune_sand]
+
+[pale_sand]
+
 [terrain group water]
 Maji
 [terrain group sand]

@@ -5696,6 +5696,14 @@ Ciemna woda
 Dziura
 [chasm]
 Przepaść
+[lush_grass]
+
+[dry_grass]
+
+[dune_sand]
+
+[pale_sand]
+
 [terrain group water]
 Woda
 [terrain group sand]
