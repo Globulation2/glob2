@@ -326,6 +326,11 @@ Explain unit conversion as joining another team. Distinguish credits acknowledgi
 contributors from spendable studio credits, and computing workers from colony
 units. Consult gameplay context when these terms occur in other senses.
 
+For classic terrain looks, use **Mayabong na damo**, **Tuyong damo**,
+**Buhangin ng burol**, and **Maputlang buhangin**. The dune label follows the
+existing **Burol ng buhangin** theme name; these looks retain ordinary grass or
+sand rules and do not imply an elevation mechanic.
+
 Review complete sentences and assembled browser fragments. Preserve necessary
 boundary spaces, but avoid spaces introduced around protected placeholders before
 punctuation. Numeric counts usually take an unchanged noun; do not mechanically

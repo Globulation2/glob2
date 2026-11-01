@@ -6812,3 +6812,11 @@ Dami ng isda
 Mga Mensahe ▸
 [Camp-site amount]
 Dami ng lugar ng kampo
+[lush_grass]
+Mayabong na damo
+[dry_grass]
+Tuyong damo
+[dune_sand]
+Buhangin ng burol
+[pale_sand]
+Maputlang buhangin
