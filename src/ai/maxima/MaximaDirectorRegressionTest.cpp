@@ -436,9 +436,10 @@ static void unifiedHospitalCapacity() {
 static void proactiveClearingRespectsWoodQuota() {
     Fixture f; f.building(10,10,0);auto& a=*f.ai;auto& c=a.context;c.initialize();
     for(int y=0;y<64;++y)f.game.map.paintCell(0, y, WATER);
-    f.game.map.setResourceByIndex(3,11,WOOD,5);f.game.map.setResourceByIndex(4,11,WOOD,5);f.game.map.setResourceByIndex(5,11,WOOD,5);
-    const int reserveIndex=35*64+1;
-    f.game.map.setResourceByIndex(1,35,WOOD,5);
+    // The remote grass donor is aligned; campaign wood is off the seed lattice.
+    for(int x:{4,6,8}) f.game.map.setResourceByIndex(x,11,WOOD,5);
+    const int reserveIndex=35*64+3;
+    f.game.map.setResourceByIndex(3,35,WOOD,5);
     REQUIRE(f.game.addUnit(4,30,0,WORKER,0,0,0,0));
     a.budget.farming_management_radius=0;
     a.timer=5000;a.budget.farming_enabled=true;a.budget.farming_protection_enabled=true;
@@ -462,7 +463,7 @@ static void proactiveClearingRespectsWoodQuota() {
     // The reserve is outside the campaign; its donor is never released. Wood
     // outside the quota already starts harvestable, with no old pattern to undo.
     REQUIRE(released==0);
-    REQUIRE(f.game.map.isForbidden(1,35,f.player.team->me));
+    REQUIRE(f.game.map.isForbidden(3,35,f.player.team->me));
     c.managementOrders.clear();a.timer+=64;a.update_farming(c);
     int openWood=0;
     for(int i=0;i<4096;++i) if(f.game.map.getTile(i%64,i/64).resource.type==WOOD
