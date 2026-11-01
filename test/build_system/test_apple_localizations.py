@@ -5,6 +5,7 @@ Apple's language selection or permission UI.
 """
 import contextlib
 import ast
+import importlib.util
 import json
 from pathlib import Path
 import plistlib
@@ -22,9 +23,7 @@ sys.path.insert(0, str(ROOT))
 sys.path.insert(0, str(ROOT / 'mobile'))
 sys.path.insert(0, str(ROOT / 'scons'))
 import ios
-import bundle
 from apple_localizations import localization_files
-from SCons.Script import Environment
 
 
 def strings(path):
@@ -43,6 +42,10 @@ class AppleLocalizationTests(unittest.TestCase):
         return directories
 
     def test_macos_bundle_copies_declared_localizations_and_tracks_them(self):
+        if importlib.util.find_spec('SCons') is None:
+            self.skipTest('SCons is required for the macOS bundle-copy contract')
+        import bundle
+        from SCons.Script import Environment
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
             directories = self.fixture(root)
