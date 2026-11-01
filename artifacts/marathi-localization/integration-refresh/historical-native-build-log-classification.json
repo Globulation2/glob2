@@ -1,0 +1,15 @@
+{
+  "path": "artifacts/marathi-localization/native-build.log",
+  "sha256": "d3dabbd9978d25dba94f6a6303be7952dc536a5712cd4867effdd8950bde6dbb",
+  "bytes": 256261,
+  "NUL_intervals": [
+    {
+      "start_zero_based": 563,
+      "end_exclusive": 254776,
+      "bytes": 254213
+    }
+  ],
+  "classification": "Historical sparse/corrupted failed-attempt log: surviving text records initial build-lock failure and interrupted-warning tail. NOT a successful compile or current producer proof.",
+  "disposition": "Exact raw bytes retained; no normalization/truncation. Successful historical671 and currentffbd producers have distinct command/provenance/build logs.",
+  "independent_content_review": "/root/locale_integration inspected actual preparede2c5 tree; no executable/secret payload found."
+}

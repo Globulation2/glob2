@@ -1,0 +1,265 @@
+{
+  "auditor": "/root/locale_integration",
+  "evidence_commit": "e2c5f87070f86fb938109119a973ced4c795bfa2",
+  "result": "content and scoped current claims accepted; earlier-status label correction awaits amended checkpoint audit",
+  "exact_tree_files": 1163,
+  "exact_total_bytes": 214192070,
+  "inventory_and_every_payload_hash_verified": true,
+  "publication_limit_bytes": 536870912,
+  "source_revision": "ffbd2aa743dad5f6b9b71bd8cc64f5c6d94d73c4",
+  "active_kit": "integration-refresh/kit",
+  "current_passed_gates": [
+    "language_brief",
+    "mobile_platforms",
+    "source_based_pilot",
+    "structural"
+  ],
+  "current_pending_gates": [
+    "browser_platforms",
+    "browser_startup",
+    "desktop_rendering",
+    "native_platforms",
+    "phone_rendering"
+  ],
+  "passed_gate_published_refs_verified": [
+    {
+      "gate": "language_brief",
+      "path": "artifacts/marathi-localization/semantic-review/language-brief.json",
+      "sha256": "851a5c87403aa2fa5c1f3000616b01449f2b613a7b01beea2f396a83f6621927"
+    },
+    {
+      "gate": "language_brief",
+      "path": "artifacts/marathi-localization/integration-refresh/source-target-carry.json",
+      "sha256": "8b43091c797b531a9df698bbeb10e3d7378fe120fb8b7be49cb1ffa1322f1151"
+    },
+    {
+      "gate": "language_brief",
+      "path": "artifacts/marathi-localization/integration-refresh/semantic-final.json",
+      "sha256": "e6583f67fd1ad8730719dfb1b04652a2e07c3ef2f6d325861c32e3aedf11a12e"
+    },
+    {
+      "gate": "language_brief",
+      "path": "artifacts/marathi-localization/integration-refresh/editorial-final.json",
+      "sha256": "15d585c2fa57afc9c72c969e4533d3c55a9a18043eed8db3e150ad0e1f2f8de5"
+    },
+    {
+      "gate": "language_brief",
+      "path": "artifacts/marathi-localization/integration-refresh/adversarial-final.json",
+      "sha256": "2c9697e8cb0e2e13d45e9d8e494c942926ffb850f5c989545f903cbfafa59899"
+    },
+    {
+      "gate": "source_based_pilot",
+      "path": "artifacts/marathi-localization/semantic-review/pilot-review.json",
+      "sha256": "2e80c5fba49b3da417415a1cbf0b53551c8e6c10a240578ca10ffd92d45d6c85"
+    },
+    {
+      "gate": "source_based_pilot",
+      "path": "artifacts/marathi-localization/editorial-review/pilot-review.json",
+      "sha256": "dca65a8ed8cf904ddabc3199144bef85a278b7cb331e3e57caf44f4941433864"
+    },
+    {
+      "gate": "source_based_pilot",
+      "path": "artifacts/marathi-localization/adversarial-review/pilot.json",
+      "sha256": "2511a3894fc8905a0d5984f853fdaa3a2208126ff4ed1785153a0e8c75c3a3f6"
+    },
+    {
+      "gate": "source_based_pilot",
+      "path": "artifacts/marathi-localization/integration-refresh/source-target-carry.json",
+      "sha256": "8b43091c797b531a9df698bbeb10e3d7378fe120fb8b7be49cb1ffa1322f1151"
+    },
+    {
+      "gate": "source_based_pilot",
+      "path": "artifacts/marathi-localization/integration-refresh/semantic-final.json",
+      "sha256": "e6583f67fd1ad8730719dfb1b04652a2e07c3ef2f6d325861c32e3aedf11a12e"
+    },
+    {
+      "gate": "source_based_pilot",
+      "path": "artifacts/marathi-localization/integration-refresh/editorial-final.json",
+      "sha256": "15d585c2fa57afc9c72c969e4533d3c55a9a18043eed8db3e150ad0e1f2f8de5"
+    },
+    {
+      "gate": "source_based_pilot",
+      "path": "artifacts/marathi-localization/integration-refresh/adversarial-final.json",
+      "sha256": "2c9697e8cb0e2e13d45e9d8e494c942926ffb850f5c989545f903cbfafa59899"
+    },
+    {
+      "gate": "structural",
+      "path": "artifacts/marathi-localization/integration-refresh/draft-contracts.json",
+      "sha256": "dc1051d1db6569792dbae31096b622b1c4843b880513de3af53253d4603ae6c7"
+    },
+    {
+      "gate": "structural",
+      "path": "artifacts/marathi-localization/integration-refresh/native-strict.log",
+      "sha256": "72cd0ee099baa4a51929888dd77397a0ef9d42353e2e5ef9e5c952686a7ea0ae"
+    },
+    {
+      "gate": "structural",
+      "path": "artifacts/marathi-localization/integration-refresh/online-contracts-corrected.log",
+      "sha256": "6674d7827b773a6734b9e486cc713523ff9e6e4ad52536fbc031df793db5d44d"
+    },
+    {
+      "gate": "structural",
+      "path": "artifacts/marathi-localization/integration-refresh/source-target-carry.json",
+      "sha256": "8b43091c797b531a9df698bbeb10e3d7378fe120fb8b7be49cb1ffa1322f1151"
+    },
+    {
+      "gate": "mobile_platforms",
+      "path": "artifacts/marathi-localization/integration-refresh/android/gate-recommendation.json",
+      "sha256": "ddc053df9936c513132b7b145a5234fd225f4391f051a5a1ba3d2ada88b0c777"
+    },
+    {
+      "gate": "mobile_platforms",
+      "path": "artifacts/marathi-localization/integration-refresh/android/producer-provenance.json",
+      "sha256": "4bc36a3a94c73282b345134f9f038cd2459c9e99603335e7d536f3849bac4cbd"
+    },
+    {
+      "gate": "mobile_platforms",
+      "path": "artifacts/marathi-localization/integration-refresh/android/rendering/apk-and-install.json",
+      "sha256": "50073a7dc344f493df922dadb5ec4d43f0eabf587cfe190fc622e601172052f9"
+    },
+    {
+      "gate": "mobile_platforms",
+      "path": "artifacts/marathi-localization/integration-refresh/android/visual-review.json",
+      "sha256": "1c39f9f7855129ba4e43ac268421d46145cd262633f21be5b7b7e410ae05a0c0"
+    },
+    {
+      "gate": "mobile_platforms",
+      "path": "artifacts/marathi-localization/integration-refresh/android/hud/visual-review.json",
+      "sha256": "604294ffbee28fcb04e967639c01a255d3092eb1567d41cbdd37947e3753aa84"
+    },
+    {
+      "gate": "mobile_platforms",
+      "path": "artifacts/marathi-localization/integration-refresh/android/rendering/root-overlay-visual-review.json",
+      "sha256": "73c616bdfb83075980c677b5ef86cf27c696815ac8eaf3ceadaf946fa26bd458"
+    },
+    {
+      "gate": "mobile_platforms",
+      "path": "artifacts/marathi-localization/integration-refresh/android/rendering/root-native-menu-visual-review.json",
+      "sha256": "143268cc652853de0abacf291fcda26a8d37afb341a5d2a9486cf8be9d3218f4"
+    },
+    {
+      "gate": "mobile_platforms",
+      "path": "artifacts/marathi-localization/integration-refresh/android/hud/root-visual-review.json",
+      "sha256": "f0982342f2e37e2673f6cee695fd1ebf1d7413b7e201828f79a5f4ec0649cddf"
+    },
+    {
+      "gate": "mobile_platforms",
+      "path": "artifacts/marathi-localization/integration-refresh/android/runtime-cleanup.json",
+      "sha256": "e5949213b40eb0a496f6974b49d08265eb250461eae47993670c5a2313f68aad"
+    },
+    {
+      "gate": "mobile_platforms",
+      "path": "artifacts/marathi-localization/integration-refresh/apple-contracts.log",
+      "sha256": "b16c895cc9112090c3d3bc2b2529b307525f8915f106c0a8149c68d3d3643a18"
+    }
+  ],
+  "final_stable_evidence_refs_verified": 14,
+  "online_source_dependency_inventory_independently_compared": {
+    "671894f2a43a677e15a71cb4d45c81b758943f1a\u2192ffbd2aa743dad5f6b9b71bd8cc64f5c6d94d73c4": {
+      "entire_platform_tracked_inventory_exact": true,
+      "listing_sha256": "fd10f0d50c5df2488f56471ae99ec8dbfd00a214845c334ec59fe13c399ddc0e"
+    },
+    "c9d772635398c57582069b58208eb337cee2787b\u2192ffbd2aa743dad5f6b9b71bd8cc64f5c6d94d73c4": {
+      "entire_platform_tracked_inventory_exact": true,
+      "listing_sha256": "fd10f0d50c5df2488f56471ae99ec8dbfd00a214845c334ec59fe13c399ddc0e"
+    }
+  },
+  "native_review_carry": {
+    "old_source_sha256": "0ac44b4cdfb03e688983d6e3fb1e484cca57589665bff19c5c65388e649b292a",
+    "new_source_sha256": "bc991eb1ba24f28d201f75fa68af1d6e49832512b814466100c394fa79c37549",
+    "new_source_reference": "0d54ef3a99384059e68e78f03f774e062031a3ca",
+    "old_native_target_sha256": "8b3f9e4972ee0eb1c3433110a7f0e83c9dc2fb7ea5f494b6925afa373c4fef97",
+    "new_native_target_sha256": "f07047de9dffb569d4223c55d02a2397d3ebb82cc12242f54e87f68d1fb2c6bf",
+    "unchanged_native_source_and_target_keys": 3393,
+    "unchanged_online_source_and_target_keys": 2836,
+    "added_native_keys": [
+      "[stat win probability about]",
+      "[stat win probability]"
+    ],
+    "removed_or_modified_old_keys": [],
+    "source_reference_blobs": {
+      "data/texts.keys.txt": "dced6619c89b3ef966135bf8cab28967e169381b",
+      "data/texts.en.txt": "de7bf160d15c5a60f438ef5554cf0e1f434860f0",
+      "platform/packages/i18n/locales/en.json": "4e93d5de67515f96d10220c511184bb9bc2687e6",
+      "platform/packages/i18n/plural-sources.json": "ed9015a390d0fbbd56f262328f046377d9b15956",
+      "platform/packages/i18n/invariants.json": "bf64a954ea956a44ad40246d714c81fcf1cbffa8"
+    },
+    "scope": "Explicit per-key value equality; prior reviews are carried for unchanged source/target pairs, not described as a new full reread. New2 keys require separate final semantic/editorial/adversarial signoffs."
+  },
+  "android_scope": "Current ffbd official release, exact MR3395/font/resource/licenses and installedAPK identity, actual startup/lifecycle/HUD accepted. Old ba890/671 producers retain old identities and old3393 scope. Native updated rendering and WASM/runtime remain explicitly pending.",
+  "binary_dispositions": {
+    "COPYING": "Exact current-source GPL license text; legitimate top-level license exception.",
+    "playwright_trace_archives": "Three bounded failed-run ZIPs explicitly retained; all nested CRC/text/JSONL/image/TTF parsing audits pass; only local4587 requests/glob2_locale cookie and no Authorization headers. Fonts/images are repro trace assets, no native executable/APK/SDK. WOFF2 signatures recognized but Brotli decode unavailable and not claimed.",
+    "canonical_ttf_trace_members": [
+      {
+        "member": "resources/37601f68cb430df744a4410035261cdf99404c88.bin",
+        "canonical_source": "data/fonts/scripts/NotoSansDevanagari-Regular.ttf",
+        "sha256": "385e78e6359a9d88a0f243d53b1209d7548361ba2194e2b9ec779bcaa7e8949d"
+      },
+      {
+        "member": "resources/eebc12ac1d82d785d706b3274d30314b9bdc3545.bin",
+        "canonical_source": "data/fonts/scripts/NotoSansArabic-Regular.ttf",
+        "sha256": "ceea25b464a656dc3b26849bab9356740401af62aedf1bfa8b7f0d9b75925b1b"
+      },
+      {
+        "member": "resources/37601f68cb430df744a4410035261cdf99404c88.bin",
+        "canonical_source": "data/fonts/scripts/NotoSansDevanagari-Regular.ttf",
+        "sha256": "385e78e6359a9d88a0f243d53b1209d7548361ba2194e2b9ec779bcaa7e8949d"
+      },
+      {
+        "member": "resources/eebc12ac1d82d785d706b3274d30314b9bdc3545.bin",
+        "canonical_source": "data/fonts/scripts/NotoSansArabic-Regular.ttf",
+        "sha256": "ceea25b464a656dc3b26849bab9356740401af62aedf1bfa8b7f0d9b75925b1b"
+      },
+      {
+        "member": "resources/37601f68cb430df744a4410035261cdf99404c88.bin",
+        "canonical_source": "data/fonts/scripts/NotoSansDevanagari-Regular.ttf",
+        "sha256": "385e78e6359a9d88a0f243d53b1209d7548361ba2194e2b9ec779bcaa7e8949d"
+      },
+      {
+        "member": "resources/eebc12ac1d82d785d706b3274d30314b9bdc3545.bin",
+        "canonical_source": "data/fonts/scripts/NotoSansArabic-Regular.ttf",
+        "sha256": "ceea25b464a656dc3b26849bab9356740401af62aedf1bfa8b7f0d9b75925b1b"
+      }
+    ],
+    "native-build.log": {
+      "sha256": "d3dabbd9978d25dba94f6a6303be7952dc536a5712cd4867effdd8950bde6dbb",
+      "bytes": 256261,
+      "nul_gap_inclusive": [
+        563,
+        254775
+      ],
+      "nul_bytes": 254213,
+      "classification": "Sparse/corrupt historical initial lock-failure + interrupted warning-tail; no native/executable/secret payload; retain exact raw bytes with explicit classification, never success evidence."
+    }
+  },
+  "credential_audit": "Zero configured credential-pattern findings across full evidence text and all nested trace text. Request metadata has no Authorization headers or account/session cookie; this is bounded pattern/content audit, not exhaustive secret certification.",
+  "limits": [
+    "Two JSON matrix reports29/32MiB checked as strict UTF8/hash streams without JSON parsing in initial generic scan",
+    "WOFF2 trace fonts recognized by signature/CRC, not decoded due unavailable Brotli extension",
+    "Initial generic audit retains unadjudicated candidate flags for transparent lineage; this manual record resolves approved license/trace/sparse-log exceptions",
+    "Historical-before-mobile status rename and its explicit label require exact amended-tree audit"
+  ],
+  "main_source_mutated": false,
+  "actual_published_old_new_pair_comparison": {
+    "native_unchanged_source_values": 3393,
+    "native_unchanged_target_values": 3393,
+    "new_native_keys": [
+      "[stat win probability about]",
+      "[stat win probability]"
+    ],
+    "online_unchanged_source_values": 2836,
+    "online_target_bytes_old_new_and_actual_ffbd_exact": true,
+    "native_target_bytes_current_kit_and_actual_ffbd_exact": true,
+    "method": "Read exact prepared evidence Git blobs from old/current frozen kits; parsed native tables and compared every old source/target value, exact online dictionaries and target bytes; compared current catalog raw bytes to canonical ffbd Git blobs.",
+    "native_source_mapping_current_kit_and_actual_ffbd_exact": true,
+    "online_source_mapping_current_kit_and_actual_ffbd_exact": true
+  },
+  "budget_arithmetic_verified": {
+    "reserved_codepoints": 193865,
+    "documented_rate_usd_per_million": "20",
+    "computed_conservative_usd": "3.8773",
+    "under_user_10_usd_target": true,
+    "rate_scope": "Arithmetic of published documented rate, not an invoice or independent new pricing lookup."
+  }
+}
