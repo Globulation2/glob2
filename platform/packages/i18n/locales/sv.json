@@ -2931,5 +2931,22 @@
   "Accounts per day": "Konton per dag",
   "Matches per day": "Matcher per dag",
   "Guest accounts": "Gästkonton",
-  "Registered accounts": "Registrerade konton"
+  "Registered accounts": "Registrerade konton",
+  "New soundtrack": "Nytt soundtrack",
+  "Wait for the current request to finish.": "Vänta tills den aktuella begäran är klar.",
+  "Generation is unavailable. Saved music remains accessible.": "Generering är inte tillgänglig. Sparad musik förblir tillgänglig.",
+  "An available Music credit is needed to chat or build.": "En tillgänglig musikkredit krävs för att chatta eller skapa innehåll.",
+  "Discussion spends no credits; 1 available Music credit is required. Creation requests build automatically · 1 credit on delivery. Includes all three moods.": "Samtal förbrukar inga krediter; 1 tillgänglig musikkredit krävs. Skapandeförfrågningar startar genereringen automatiskt; 1 kredit dras när resultatet levereras. Innehåller alla tre stämningarna.",
+  "Moss & morning light": "Mossa och morgonljus",
+  "A warm woodland piece with flute, harp and gentle pizzicato. Let the melody wander and return; combat adds quiet drums and a bassoon counterline.": "Ett varmt musikstycke med skogskänsla, flöjt, harpa och mjukt pizzicato. Låt melodin vandra och återvända; i strid tillkommer lågmälda trummor och en fagottmotmelodi.",
+  "Little clockwork garden": "Liten urverksträdgård",
+  "Soft glass bells and rounded synth pads, curious and unhurried. A playful answering melody, with a deeper pulse as the colony grows.": "Mjuka glasklockor och rundade synthpads, nyfikna och avslappnade. En lekfull svarsmelodi, med en djupare puls allt eftersom kolonin växer.",
+  "A waltz for the rain": "En vals för regnet",
+  "A cozy folk waltz with recorder and kalimba. Sparse, breathing phrases for calm, a lilting rhythm for building, and warm low strings for combat.": "En mysig folkvals med blockflöjt och kalimba. Glesa fraser med andrum för lugn, en gungande rytm för byggande och varma, låga stråkar för strid.",
+  "Generation is unavailable. Saved projects remain accessible.": "Generering är inte tillgänglig. Sparade projekt förblir tillgängliga.",
+  "An available Map credit is needed to chat or build.": "En tillgänglig kartkredit krävs för att chatta eller skapa innehåll.",
+  "Discussion spends no credits; 1 available Map credit is required. Creation requests build automatically · 1 credit on delivery.": "Samtal förbrukar inga krediter; 1 tillgänglig kartkredit krävs. Skapandeförfrågningar startar genereringen automatiskt; 1 kredit dras när resultatet levereras.",
+  "Saving your project…": "Sparar ditt projekt…",
+  "Generation is unavailable.": "Generering är inte tillgänglig.",
+  "Discussion spends no credits; 1 available Terrain credit is required. Creation requests build automatically · 1 credit on delivery.": "Samtal förbrukar inga krediter; 1 tillgänglig terrängkredit krävs. Skapandeförfrågningar startar genereringen automatiskt; 1 kredit dras när resultatet levereras."
 }

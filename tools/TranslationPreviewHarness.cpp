@@ -223,6 +223,7 @@ void fontMatrix(const fs::path &root, const fs::path &pilot, const fs::path &out
     // Fonts and surfaces are destroyed before TTF/Toolkit teardown.
     Json manifest = {{"kind", "production-font-matrix"}, {"pilot", pilot.string()},
         {"logical_width", width}, {"logical_height", height}, {"samples", Json::array()},
+        {"authored_sizes", {10, 13, 20}}, {"raster_scales", {1.0, 1.5, 2.0}},
         {"limits", {"Draft overlay only; no language registered or locale finalized.",
                     "Uses production TrueTypeFont and shared UI wrapText, not a game screen.",
                     "Raw raster fits_width/height remain diagnostic; drawn_fits_width/height use the production draw destination, preserving the whole bitmap.",
@@ -235,7 +236,12 @@ void fontMatrix(const fs::path &root, const fs::path &pilot, const fs::path &out
     manifest["harfbuzz"] = {hb, hbMinor, hbMicro};
     {
         const auto rows = samples(pilot);
-        for (unsigned size : {10u, 13u, 20u}) for (int scale : {1, 2}) {
+        for (unsigned size : {10u, 13u, 20u}) for (float scale : {1.0f, 1.5f, 2.0f}) {
+            const char *scaleName = scale == 1.0f ? "1" : scale == 1.5f ? "1.5" : "2";
+            const int pixelWidth = int(std::lround(width * scale));
+            const int pixelHeight = int(std::lround(height * scale));
+            const int pixelInset = int(std::lround(12 * scale));
+            const int availablePixelWidth = pixelWidth - 2 * pixelInset;
             GAGCore::TrueTypeFont font;
             require(font.load("data/fonts/sans.ttf", size), "Load production font");
             font.setStyle(GAGCore::Font::Style(GAGCore::Font::STYLE_NORMAL, 245, 238, 214));
@@ -249,9 +255,9 @@ void fontMatrix(const fs::path &root, const fs::path &pilot, const fs::path &out
             };
             auto freshPage = [&] {
                 save();
-                filename = "font-" + std::to_string(size) + "-scale-" + std::to_string(scale) +
+                filename = "font-" + std::to_string(size) + "-scale-" + scaleName +
                     "-page-" + numbered(++pageNumber) + ".png";
-                page.reset(SDL_CreateSurface(width * scale, height * scale, SDL_PIXELFORMAT_RGBA32));
+                page.reset(SDL_CreateSurface(pixelWidth, pixelHeight, SDL_PIXELFORMAT_RGBA32));
                 require(bool(page), "Allocate matrix page");
                 require(SDL_FillSurfaceRect(page.get(), nullptr, SDL_MapSurfaceRGBA(page.get(), 28, 24, 35, 255)), "Fill page");
                 y = 12;
@@ -271,19 +277,20 @@ void fontMatrix(const fs::path &root, const fs::path &pilot, const fs::path &out
                     const auto drawn = font.getStringDrawSize(line.empty() ? " " : line, float(scale));
                     const int drawnWidth = std::lround(drawn.first * scale);
                     const int drawnHeight = std::lround(drawn.second * scale);
-                    const int logicalHeight = (drawnHeight + scale - 1) / scale;
+                    const int logicalHeight = int(std::ceil(drawnHeight / scale));
                     if (y + logicalHeight + 12 > height) freshPage();
-                    SDL_Rect destination{12 * scale, y * scale, drawnWidth, drawnHeight};
+                    SDL_Rect destination{pixelInset, int(std::lround(y * scale)), drawnWidth, drawnHeight};
                     require(SDL_BlitSurfaceScaled(bitmap->getSDLSurface(), nullptr, page.get(), &destination,
                         SDL_SCALEMODE_LINEAR), "Compose raster at production destination size");
                     sample["lines"].push_back({{"text", line}, {"png", filename}, {"x", 12}, {"y", y},
+                        {"pixel_x", destination.x}, {"pixel_y", destination.y},
                         {"raster_width", bitmap->getW()}, {"raster_height", bitmap->getH()},
-                        {"fits_width", bitmap->getW() <= (width - 24) * scale},
-                        {"fits_height", y + (bitmap->getH() + scale - 1) / scale <= height},
+                        {"fits_width", bitmap->getW() <= availablePixelWidth},
+                        {"fits_height", destination.y + bitmap->getH() <= pixelHeight},
                         {"destination_width", drawn.first}, {"destination_height", drawn.second},
                         {"drawn_width", drawnWidth}, {"drawn_height", drawnHeight},
-                        {"drawn_fits_width", drawnWidth <= (width - 24) * scale},
-                        {"drawn_fits_height", y + logicalHeight <= height}});
+                        {"drawn_fits_width", drawnWidth <= availablePixelWidth},
+                        {"drawn_fits_height", destination.y + drawnHeight <= pixelHeight}});
                     y += logicalHeight + 3;
                 }
                 y += 8;

@@ -367,17 +367,19 @@ function TerrainWorkspace({ id }: { id?: string }) {
           onSend={() => void action(create)}
           disabledReason={
             busy
-              ? 'Saving your project…'
+              ? t('Saving your project…')
               : !wallet?.enabled
-                ? 'Generation is unavailable.'
+                ? t('Generation is unavailable.')
                 : !wallet.available
-                  ? 'An available Terrain credit is needed to chat or build.'
+                  ? t('An available Terrain credit is needed to chat or build.')
                   : undefined
           }
           onBlocked={
             !busy && wallet?.enabled && !wallet.available ? () => setCreditsOpen(true) : undefined
           }
-          pricing="Discussion spends no credits; 1 available Terrain credit is required. Creation requests build automatically · 1 credit on delivery."
+          pricing={t(
+            'Discussion spends no credits; 1 available Terrain credit is required. Creation requests build automatically · 1 credit on delivery.',
+          )}
           projects={
             <nav aria-label={t('Terrain projects')}>
               {projects.map((p) => (
@@ -643,8 +645,8 @@ function TerrainWorkspace({ id }: { id?: string }) {
                 <div className="ts-preview">
                   <h2>{t('Your set')}</h2>
                   <RevisionControls
-                    viewed={viewedRevision?.title ?? 'current saved draft'}
-                    target="current saved draft"
+                    viewed={viewedRevision?.title ?? t('Current saved draft')}
+                    target={t('Current saved draft')}
                     follow={inspected ? () => setInspected('') : undefined}
                   />
                   {inspected && !shownDraft && (

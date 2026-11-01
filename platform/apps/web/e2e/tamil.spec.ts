@@ -43,6 +43,25 @@ async function capture(
     `clipped labels at ${path}`,
   ).toEqual([]);
   expect(
+    await page
+      .locator(
+        '.ms-prompt-ideas button, .mu-prompt, .ms-credit-button, .mu-inspector-heading button, .studio-compose-actions button',
+      )
+      .evaluateAll((elements) =>
+        elements.flatMap((element) => {
+          const bounds = element.getBoundingClientRect();
+          if (bounds.width === 0 || bounds.height === 0) return [];
+          const pane = element.closest('.studio-conversation')?.getBoundingClientRect();
+          return element.scrollWidth > element.clientWidth + 1 ||
+            bounds.right > document.documentElement.clientWidth + 1 ||
+            (pane && (bounds.left < pane.left - 1 || bounds.right > pane.right + 1))
+            ? [element.textContent]
+            : [];
+        }),
+      ),
+    `clipped studio controls at ${path}`,
+  ).toEqual([]);
+  expect(
     await page.getByTestId('language-selector').evaluateAll((selects) =>
       selects.flatMap((element) => {
         if (element.getBoundingClientRect().width === 0) return [];
@@ -184,10 +203,12 @@ test('Tamil studio initial interfaces render with deterministic enabled fixtures
   const unexpected: string[] = [];
   const mockedReads: string[] = [];
   // Keep the seeded instance contract, explicitly enabling only these fixture features.
-  await page.route('**/api/v1/instance', async (route) => {
-    const response = await route.fetch();
-    await route.fulfill({ json: { ...(await response.json()), features } });
-  });
+  const instanceResponse = await page.request.get('/api/v1/instance');
+  expect(instanceResponse.ok()).toBe(true);
+  const instance = await instanceResponse.json();
+  await page.route('**/api/v1/instance', (route) =>
+    route.fulfill({ json: { ...instance, features } }),
+  );
   await page.route('**/api/v1/accounts/me', (route) =>
     localSkinDesigner
       ? route.fulfill({ status: 401, json: { message: 'Sign in required.' } })
@@ -230,6 +251,20 @@ test('Tamil studio initial interfaces render with deterministic enabled fixtures
     unexpected.push(`${route.request().method()} building-drafts`);
     return route.fulfill({ status: 405, json: { message: 'Fixture is read-only.' } });
   });
+  const pricingMessages = new Map<string, string>([
+    [
+      '/map-studio',
+      'Discussion spends no credits; 1 available Map credit is required. Creation requests build automatically · 1 credit on delivery.',
+    ],
+    [
+      '/music-studio',
+      'Discussion spends no credits; 1 available Music credit is required. Creation requests build automatically · 1 credit on delivery. Includes all three moods.',
+    ],
+    [
+      '/terrain-studio',
+      'Discussion spends no credits; 1 available Terrain credit is required. Creation requests build automatically · 1 credit on delivery.',
+    ],
+  ]);
   for (const [path, heading, input] of [
     ['/map-studio', 'AI Map Studio', 'Describe your map or discuss changes'],
     ['/music-studio', 'AI Music Studio', 'Your idea or next change'],
@@ -255,6 +290,19 @@ test('Tamil studio initial interfaces render with deterministic enabled fixtures
       await expect(page.locator('.studio-compose-help')).not.toContainText(
         'Generation is unavailable',
       );
+      const pricing = pricingMessages.get(path);
+      if (pricing) await expect(page.locator('.studio-compose-help')).toContainText(text(pricing));
+      if (path === '/map-studio')
+        await expect(page.locator('.studio-edit-target')).toContainText(text('New map'));
+      if (path === '/music-studio') {
+        await expect(page.locator('.studio-edit-target')).toContainText(text('New soundtrack'));
+        for (const title of [
+          'Moss & morning light',
+          'Little clockwork garden',
+          'A waltz for the rain',
+        ])
+          await expect(page.locator('.mu-prompt').filter({ hasText: text(title) })).toBeVisible();
+      }
       expect(mockedReads).toContain(`/api/v1${path}/account`);
     });
   }

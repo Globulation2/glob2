@@ -2931,5 +2931,22 @@
   "Accounts per day": "Konten pro Tag",
   "Matches per day": "Spiele pro Tag",
   "Guest accounts": "Gastkonten",
-  "Registered accounts": "Registrierte Konten"
+  "Registered accounts": "Registrierte Konten",
+  "New soundtrack": "Neuer Soundtrack",
+  "Wait for the current request to finish.": "Warten Sie, bis die aktuelle Anfrage abgeschlossen ist.",
+  "Generation is unavailable. Saved music remains accessible.": "Die Generierung ist nicht verfügbar. Gespeicherte Musik bleibt zugänglich.",
+  "An available Music credit is needed to chat or build.": "Zum Chatten oder Erstellen ist ein verfügbarer Musik-Credit erforderlich.",
+  "Discussion spends no credits; 1 available Music credit is required. Creation requests build automatically · 1 credit on delivery. Includes all three moods.": "Diskussionen verbrauchen keine Credits; 1 verfügbarer Musik-Credit ist erforderlich. Erstellungsanfragen starten die Generierung automatisch; bei Lieferung des Ergebnisses wird 1 Credit abgebucht. Enthält alle drei Stimmungen.",
+  "Moss & morning light": "Moos und Morgenlicht",
+  "A warm woodland piece with flute, harp and gentle pizzicato. Let the melody wander and return; combat adds quiet drums and a bassoon counterline.": "Ein warmes Musikstück mit Waldstimmung, Flöte, Harfe und sanftem Pizzicato. Die Melodie soll umherschweifen und zurückkehren; im Kampf kommen leise Trommeln und eine Fagott-Gegenmelodie hinzu.",
+  "Little clockwork garden": "Kleiner Uhrwerkgarten",
+  "Soft glass bells and rounded synth pads, curious and unhurried. A playful answering melody, with a deeper pulse as the colony grows.": "Sanfte Glasglocken und runde Synthesizer-Klänge, neugierig und gemächlich. Eine verspielte Antwortmelodie, deren Puls mit dem Wachstum der Kolonie tiefer wird.",
+  "A waltz for the rain": "Ein Walzer für den Regen",
+  "A cozy folk waltz with recorder and kalimba. Sparse, breathing phrases for calm, a lilting rhythm for building, and warm low strings for combat.": "Ein gemütlicher Volkswalzer mit Blockflöte und Kalimba. Sparsame, atmende Phrasen für Ruhe, ein beschwingter Rhythmus für den Bau und warme tiefe Streicher für den Kampf.",
+  "Generation is unavailable. Saved projects remain accessible.": "Die Generierung ist nicht verfügbar. Gespeicherte Projekte bleiben zugänglich.",
+  "An available Map credit is needed to chat or build.": "Zum Chatten oder Erstellen ist ein verfügbarer Karten-Credit erforderlich.",
+  "Discussion spends no credits; 1 available Map credit is required. Creation requests build automatically · 1 credit on delivery.": "Diskussionen verbrauchen keine Credits; 1 verfügbarer Karten-Credit ist erforderlich. Erstellungsanfragen starten die Generierung automatisch; bei Lieferung des Ergebnisses wird 1 Credit abgebucht.",
+  "Saving your project…": "Ihr Projekt wird gespeichert…",
+  "Generation is unavailable.": "Die Generierung ist nicht verfügbar.",
+  "Discussion spends no credits; 1 available Terrain credit is required. Creation requests build automatically · 1 credit on delivery.": "Diskussionen verbrauchen keine Credits; 1 verfügbarer Terrain-Credit ist erforderlich. Erstellungsanfragen starten die Generierung automatisch; bei Lieferung des Ergebnisses wird 1 Credit abgebucht."
 }

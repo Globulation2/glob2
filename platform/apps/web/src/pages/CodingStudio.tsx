@@ -583,9 +583,9 @@ function CodingWorkspace({ id, generator }: { id?: string; generator: boolean })
           onSend={() => void create()}
           disabledReason={
             busy
-              ? 'Saving your project…'
+              ? t('Saving your project…')
               : !wallet?.enabled
-                ? 'Generation is unavailable.'
+                ? t('Generation is unavailable.')
                 : !wallet.available
                   ? t('An available {value0} credit is needed.', { value0: creditName })
                   : undefined
@@ -922,7 +922,7 @@ function CodingWorkspace({ id, generator }: { id?: string; generator: boolean })
                         : locked
                           ? 'Finish active work or resolve the revision conflict first.'
                           : !wallet?.enabled
-                            ? 'Generation is unavailable.'
+                            ? t('Generation is unavailable.')
                             : !wallet.available
                               ? t('An available {value0} credit is needed.', { value0: creditName })
                               : !Number.isInteger(budget) ||

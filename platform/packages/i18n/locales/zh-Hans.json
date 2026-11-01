@@ -2904,5 +2904,22 @@
   "Accounts per day": "每日账户数",
   "Matches per day": "每日比赛场次",
   "Guest accounts": "访客账户",
-  "Registered accounts": "注册账户"
+  "Registered accounts": "注册账户",
+  "New soundtrack": "新配乐",
+  "Wait for the current request to finish.": "等待当前请求完成。",
+  "Generation is unavailable. Saved music remains accessible.": "生成功能不可用。已保存的音乐仍然可以访问。",
+  "An available Music credit is needed to chat or build.": "聊天或生成内容需要1个可用的音乐积分。",
+  "Discussion spends no credits; 1 available Music credit is required. Creation requests build automatically · 1 credit on delivery. Includes all three moods.": "讨论不消耗积分，但需要有1个可用的音乐积分。提交创作请求后会自动生成内容，内容交付时扣除1个积分。包含所有三种音乐情绪。",
+  "Moss & morning light": "苔藓与晨光",
+  "A warm woodland piece with flute, harp and gentle pizzicato. Let the melody wander and return; combat adds quiet drums and a bassoon counterline.": "一首温暖的林间小曲，配以长笛、竖琴和轻柔的拨弦声。让旋律游走后再次回归；战斗配乐中加入轻柔的鼓点和巴松管的辅助旋律。",
+  "Little clockwork garden": "小发条花园",
+  "Soft glass bells and rounded synth pads, curious and unhurried. A playful answering melody, with a deeper pulse as the colony grows.": "柔和的玻璃铃声和圆润的合成器音垫，充满好奇，悠然自得。一段俏皮的回应旋律，随着殖民地成长，脉动也逐渐加深。",
+  "A waltz for the rain": "献给雨的华尔兹",
+  "A cozy folk waltz with recorder and kalimba. Sparse, breathing phrases for calm, a lilting rhythm for building, and warm low strings for combat.": "一首温馨的民谣华尔兹，配以竖笛和卡林巴琴。平静时使用稀疏、留有呼吸空间的乐句，建造时使用轻快摇曳的节奏，战斗时使用温暖的低音弦乐。",
+  "Generation is unavailable. Saved projects remain accessible.": "生成功能不可用。已保存的项目仍然可以访问。",
+  "An available Map credit is needed to chat or build.": "聊天或生成内容需要1个可用的地图积分。",
+  "Discussion spends no credits; 1 available Map credit is required. Creation requests build automatically · 1 credit on delivery.": "讨论不消耗积分，但需要有1个可用的地图积分。提交创作请求后会自动生成内容，内容交付时扣除1个积分。",
+  "Saving your project…": "正在保存您的项目……",
+  "Generation is unavailable.": "生成功能不可用。",
+  "Discussion spends no credits; 1 available Terrain credit is required. Creation requests build automatically · 1 credit on delivery.": "讨论不消耗积分，但需要有1个可用的地形积分。提交创作请求后会自动生成内容，内容交付时扣除1个积分。"
 }

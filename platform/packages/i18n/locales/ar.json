@@ -3039,5 +3039,22 @@
   "Accounts per day": "عدد الحسابات في اليوم",
   "Matches per day": "عدد المباريات في اليوم",
   "Guest accounts": "حسابات الضيوف",
-  "Registered accounts": "الحسابات المسجلة"
+  "Registered accounts": "الحسابات المسجلة",
+  "New soundtrack": "موسيقى تصويرية جديدة",
+  "Wait for the current request to finish.": "انتظر حتى ينتهي الطلب الحالي.",
+  "Generation is unavailable. Saved music remains accessible.": "الإنشاء غير متاح. تظل الموسيقى المحفوظة متاحة.",
+  "An available Music credit is needed to chat or build.": "يلزم توفر وحدة من رصيد الموسيقى للدردشة أو إنشاء المحتوى.",
+  "Discussion spends no credits; 1 available Music credit is required. Creation requests build automatically · 1 credit on delivery. Includes all three moods.": "لا يستهلك النقاش أي رصيد؛ يلزم توفر وحدة واحدة متاحة من رصيد الموسيقى. تُنفّذ طلبات الإنشاء تلقائيًا، وتُخصم وحدة رصيد واحدة عند تسليم النتيجة. يشمل جميع الحالات المزاجية الثلاث.",
+  "Moss & morning light": "الحزازيات وضوء الصباح",
+  "A warm woodland piece with flute, harp and gentle pizzicato. Let the melody wander and return; combat adds quiet drums and a bassoon counterline.": "مقطوعة موسيقية دافئة مستوحاة من أجواء الغابات، مصحوبة بالفلوت والقيثارة وعزف البيزيكاتو الرقيق. دع اللحن يتجول ويعود؛ يضيف القتال طبولاً هادئة وخطاً موسيقياً مكملاً من آلة الباسون.",
+  "Little clockwork garden": "حديقة صغيرة بآلية ساعة",
+  "Soft glass bells and rounded synth pads, curious and unhurried. A playful answering melody, with a deeper pulse as the colony grows.": "أجراس زجاجية ناعمة وأصوات سينث ممتدة ومستديرة النبرة، بفضول ودون عجلة. لحن مرح يجيب، مع نبض أعمق كلما نمت المستعمرة.",
+  "A waltz for the rain": "رقصة الفالس للمطر",
+  "A cozy folk waltz with recorder and kalimba. Sparse, breathing phrases for calm, a lilting rhythm for building, and warm low strings for combat.": "فالس شعبي دافئ بمزمار الريكوردر والكاليمبا. عبارات موسيقية متباعدة تترك مجالًا للتنفس للهدوء، وإيقاع متمايل للبناء، وأوتار دافئة منخفضة النبرة للقتال.",
+  "Generation is unavailable. Saved projects remain accessible.": "التوليد غير متاح. تظل المشاريع المحفوظة متاحة.",
+  "An available Map credit is needed to chat or build.": "يلزم توفر وحدة من رصيد الخرائط للدردشة أو إنشاء المحتوى.",
+  "Discussion spends no credits; 1 available Map credit is required. Creation requests build automatically · 1 credit on delivery.": "لا يستهلك النقاش أي رصيد؛ يلزم توفر وحدة واحدة متاحة من رصيد الخرائط. تُنفّذ طلبات الإنشاء تلقائيًا، وتُخصم وحدة رصيد واحدة عند تسليم النتيجة.",
+  "Saving your project…": "جارٍ حفظ مشروعك...",
+  "Generation is unavailable.": "الإنشاء غير متاح.",
+  "Discussion spends no credits; 1 available Terrain credit is required. Creation requests build automatically · 1 credit on delivery.": "لا يستهلك النقاش أي رصيد؛ يلزم توفر وحدة واحدة متاحة من رصيد التضاريس. تُنفّذ طلبات الإنشاء تلقائيًا، وتُخصم وحدة رصيد واحدة عند تسليم النتيجة."
 }

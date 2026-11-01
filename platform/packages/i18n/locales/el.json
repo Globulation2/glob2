@@ -2931,5 +2931,22 @@
   "Accounts per day": "Λογαριασμοί ανά ημέρα",
   "Matches per day": "Αγώνες ανά ημέρα",
   "Guest accounts": "Λογαριασμοί επισκεπτών",
-  "Registered accounts": "Εγγεγραμμένοι λογαριασμοί"
+  "Registered accounts": "Εγγεγραμμένοι λογαριασμοί",
+  "New soundtrack": "Νέο soundtrack",
+  "Wait for the current request to finish.": "Περιμένετε να ολοκληρωθεί το τρέχον αίτημα.",
+  "Generation is unavailable. Saved music remains accessible.": "Η δημιουργία δεν είναι διαθέσιμη. Η αποθηκευμένη μουσική παραμένει προσβάσιμη.",
+  "An available Music credit is needed to chat or build.": "Απαιτείται μια διαθέσιμη μουσική πίστωση για συνομιλία ή δημιουργία.",
+  "Discussion spends no credits; 1 available Music credit is required. Creation requests build automatically · 1 credit on delivery. Includes all three moods.": "Η συζήτηση δεν καταναλώνει μονάδες· απαιτείται 1 διαθέσιμη μονάδα Μουσικής. Τα αιτήματα δημιουργίας εκτελούνται αυτόματα· κατά την παράδοση του αποτελέσματος χρεώνεται 1 μονάδα. Περιλαμβάνει και τις τρεις διαθέσεις.",
+  "Moss & morning light": "Βρύα & πρωινό φως",
+  "A warm woodland piece with flute, harp and gentle pizzicato. Let the melody wander and return; combat adds quiet drums and a bassoon counterline.": "Ένα ζεστό κομμάτι του δάσους με φλάουτο, άρπα και απαλό πιτσικάτο. Αφήστε τη μελωδία να περιπλανηθεί και να επιστρέψει. Η μάχη προσθέτει ήσυχα τύμπανα και αντίστιξη φαγκότου.",
+  "Little clockwork garden": "Μικρός κουρδιστός κήπος",
+  "Soft glass bells and rounded synth pads, curious and unhurried. A playful answering melody, with a deeper pulse as the colony grows.": "Απαλά γυάλινα κουδουνάκια και στρογγυλεμένα συνθεσάιζερ pads, περίεργα και χωρίς βιασύνη. Μια παιχνιδιάρικη μελωδία απάντησης, με έναν βαθύτερο παλμό καθώς η αποικία μεγαλώνει.",
+  "A waltz for the rain": "Ένα βαλς για τη βροχή",
+  "A cozy folk waltz with recorder and kalimba. Sparse, breathing phrases for calm, a lilting rhythm for building, and warm low strings for combat.": "Ένα ζεστό λαϊκό βαλς με φλογέρα και καλίμπα. Αραιές φράσεις με χώρο για ανάσα για την ηρεμία, ένας λικνιστικός ρυθμός για την οικοδόμηση και ζεστά χαμηλά έγχορδα για τη μάχη.",
+  "Generation is unavailable. Saved projects remain accessible.": "Η δημιουργία δεν είναι διαθέσιμη. Τα αποθηκευμένα έργα παραμένουν προσβάσιμα.",
+  "An available Map credit is needed to chat or build.": "Απαιτείται μια διαθέσιμη πίστωση χάρτη για συνομιλία ή δημιουργία.",
+  "Discussion spends no credits; 1 available Map credit is required. Creation requests build automatically · 1 credit on delivery.": "Η συζήτηση δεν καταναλώνει μονάδες· απαιτείται 1 διαθέσιμη μονάδα Χάρτη. Τα αιτήματα δημιουργίας εκτελούνται αυτόματα· κατά την παράδοση του αποτελέσματος χρεώνεται 1 μονάδα.",
+  "Saving your project…": "Αποθήκευση του έργου σας…",
+  "Generation is unavailable.": "Η δημιουργία δεν είναι διαθέσιμη.",
+  "Discussion spends no credits; 1 available Terrain credit is required. Creation requests build automatically · 1 credit on delivery.": "Η συζήτηση δεν καταναλώνει μονάδες· απαιτείται 1 διαθέσιμη μονάδα Εδάφους. Τα αιτήματα δημιουργίας εκτελούνται αυτόματα· κατά την παράδοση του αποτελέσματος χρεώνεται 1 μονάδα."
 }

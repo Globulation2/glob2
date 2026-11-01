@@ -142,6 +142,12 @@ capitalizing the IDs. This includes skin views and poses, music metadata fields,
 and chart axes and legends. Preserve the IDs themselves: the swarm's empty pose
 ID is valid and needs a localized static-pose caption.
 
+Translate display text before passing it into shared component props, including
+composer pricing, edit targets and disabled reasons. The extractor does not
+discover an untranslated string merely because a component renders that prop.
+Resolve example labels and their inserted prompts at render time so language
+switching updates both; retain stable identifiers separately from those labels.
+
 Legacy scenario-message panels use the active font’s measured line height. Desktop messages
 retain a 20-pixel minimum advance; touch instructions use the shared cluster-aware
 wrapper and a 24-point minimum advance. The touch cache includes language, font,
@@ -259,8 +265,9 @@ wrapper at several authored sizes and raster scales. `screen` adds a screen name
 (`main`, `settings`, `settings-audio`, `lobby` or `lobby-players`); `game` adds
 `gameplay`, `tutorial` (the introduction), or `tutorial:LESSON-ID` and captures
 the real engine and menu dialog. Tutorial IDs must belong to the current shipped
-lesson catalog. When a lesson opens its automatic briefing, the harness saves
-that state separately, dismisses it and captures the uncovered guidance panel.
+lesson catalog. The harness captures the actual briefing tab, opening it explicitly
+when the automatic briefing is absent, then dismisses it and captures the uncovered
+guidance panel. Its metadata distinguishes automatic and explicit opening.
 A published tutorial model alone does not prove that its text is visible. Inputs are
 `native.json` and `online.json` key/value objects plus `metadata.json` identifying
 the locale. Preserve the original text-catalog hashes in that metadata when

@@ -2931,5 +2931,22 @@
   "Accounts per day": "Günlük hesap sayısı",
   "Matches per day": "Günlük maç sayısı",
   "Guest accounts": "Misafir hesapları",
-  "Registered accounts": "Kayıtlı hesaplar"
+  "Registered accounts": "Kayıtlı hesaplar",
+  "New soundtrack": "Yeni arka plan müziği",
+  "Wait for the current request to finish.": "Mevcut isteğin tamamlanmasını bekleyin.",
+  "Generation is unavailable. Saved music remains accessible.": "Yeni içerik oluşturulamıyor. Kaydedilen müziklere erişim devam ediyor.",
+  "An available Music credit is needed to chat or build.": "Sohbet etmek veya içerik oluşturmak için kullanılabilir bir Müzik kredisi gerekir.",
+  "Discussion spends no credits; 1 available Music credit is required. Creation requests build automatically · 1 credit on delivery. Includes all three moods.": "Sohbet kredi harcamaz; kullanılabilir 1 Müzik kredisi gerekir. Oluşturma istekleri üretimi otomatik olarak başlatır; sonuç teslim edildiğinde 1 kredi düşülür. Üç ruh halini de içerir.",
+  "Moss & morning light": "Yosun ve sabah ışığı",
+  "A warm woodland piece with flute, harp and gentle pizzicato. Let the melody wander and return; combat adds quiet drums and a bassoon counterline.": "Ormanı andıran, flüt, arp ve yumuşak pizzicato eşliğinde sıcak bir parça. Melodinin dolaşmasına ve geri dönmesine izin verin; savaş sırasında hafif davullar ve fagotun karşı ezgisi eklenir.",
+  "Little clockwork garden": "Küçük saat mekanizmalı bahçe",
+  "Soft glass bells and rounded synth pads, curious and unhurried. A playful answering melody, with a deeper pulse as the colony grows.": "Yumuşak cam çan sesleri ve dolgun sentezleyici arka plan sesleri, meraklı ve telaşsız. Koloni büyüdükçe derinleşen bir vuruşla, neşeli bir karşılık melodisi.",
+  "A waltz for the rain": "Yağmur için bir vals",
+  "A cozy folk waltz with recorder and kalimba. Sparse, breathing phrases for calm, a lilting rhythm for building, and warm low strings for combat.": "Blokflüt ve kalimba eşliğinde sıcak bir halk valsi. Sakinlik için nefes alacak boşlukları olan seyrek cümleler, inşa için salınan bir ritim ve savaş için sıcak, pes yaylı sesler.",
+  "Generation is unavailable. Saved projects remain accessible.": "Üretim yapılamıyor. Kaydedilen projelere erişim devam ediyor.",
+  "An available Map credit is needed to chat or build.": "Sohbet etmek veya içerik oluşturmak için kullanılabilir bir Harita kredisi gerekir.",
+  "Discussion spends no credits; 1 available Map credit is required. Creation requests build automatically · 1 credit on delivery.": "Sohbet kredi harcamaz; kullanılabilir 1 Harita kredisi gerekir. Oluşturma istekleri üretimi otomatik olarak başlatır; sonuç teslim edildiğinde 1 kredi düşülür.",
+  "Saving your project…": "Projeniz kaydediliyor…",
+  "Generation is unavailable.": "Üretim yapılamıyor.",
+  "Discussion spends no credits; 1 available Terrain credit is required. Creation requests build automatically · 1 credit on delivery.": "Sohbet kredi harcamaz; kullanılabilir 1 Arazi kredisi gerekir. Oluşturma istekleri üretimi otomatik olarak başlatır; sonuç teslim edildiğinde 1 kredi düşülür."
 }

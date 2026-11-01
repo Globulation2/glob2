@@ -2931,5 +2931,22 @@
   "Accounts per day": "Fiókok naponta",
   "Matches per day": "Meccsek naponta",
   "Guest accounts": "Vendégfiókok",
-  "Registered accounts": "Regisztrált fiókok"
+  "Registered accounts": "Regisztrált fiókok",
+  "New soundtrack": "Új háttérzene",
+  "Wait for the current request to finish.": "Várja meg, amíg a jelenlegi kérés befejeződik.",
+  "Generation is unavailable. Saved music remains accessible.": "A generálás nem érhető el. A mentett zenék továbbra is elérhetők.",
+  "An available Music credit is needed to chat or build.": "A csevegéshez vagy tartalomkészítéshez egy elérhető zenei kredit szükséges.",
+  "Discussion spends no credits; 1 available Music credit is required. Creation requests build automatically · 1 credit on delivery. Includes all three moods.": "A beszélgetés nem fogyaszt kreditet; 1 elérhető zenei kredit szükséges. A létrehozási kérelmek automatikusan elindítják a generálást; az eredmény átadásakor 1 kreditet vonunk le. Mindhárom hangulatot tartalmazza.",
+  "Moss & morning light": "Moha és reggeli fény",
+  "A warm woodland piece with flute, harp and gentle pizzicato. Let the melody wander and return; combat adds quiet drums and a bassoon counterline.": "Meleg hangzású, erdei hangulatú darab fuvolával, hárfával és lágy pizzicatóval. Hagyd, hogy a dallam elkalandozzon és visszatérjen; harc közben halk dobok és egy fagott-ellenszólam egészítik ki a darabot.",
+  "Little clockwork garden": "Kis óraműkert",
+  "Soft glass bells and rounded synth pads, curious and unhurried. A playful answering melody, with a deeper pulse as the colony grows.": "Puha üvegcsengők és lekerekített szintetizátorpadok, kíváncsiak és lassúak. Játékos válaszdallam, mélyebb lüktetéssel, ahogy a kolónia növekszik.",
+  "A waltz for the rain": "Keringő az esőért",
+  "A cozy folk waltz with recorder and kalimba. Sparse, breathing phrases for calm, a lilting rhythm for building, and warm low strings for combat.": "Meghitt népi keringő furulyával és kalimbával. Szellős, szünetekkel tagolt frázisok a nyugalomhoz, ringató ritmus az építkezéshez és meleg, mély vonósok a harchoz.",
+  "Generation is unavailable. Saved projects remain accessible.": "A generálás nem érhető el. A mentett projektek továbbra is elérhetők.",
+  "An available Map credit is needed to chat or build.": "A csevegéshez vagy tartalomkészítéshez egy elérhető térképkredit szükséges.",
+  "Discussion spends no credits; 1 available Map credit is required. Creation requests build automatically · 1 credit on delivery.": "A beszélgetés nem fogyaszt kreditet; 1 elérhető térképkredit szükséges. A létrehozási kérelmek automatikusan elindítják a generálást; az eredmény átadásakor 1 kreditet vonunk le.",
+  "Saving your project…": "A projekt mentése…",
+  "Generation is unavailable.": "A generálás nem érhető el.",
+  "Discussion spends no credits; 1 available Terrain credit is required. Creation requests build automatically · 1 credit on delivery.": "A beszélgetés nem fogyaszt kreditet; 1 elérhető terepkredit szükséges. A létrehozási kérelmek automatikusan elindítják a generálást; az eredmény átadásakor 1 kreditet vonunk le."
 }

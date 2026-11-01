@@ -2931,5 +2931,22 @@
   "Accounts per day": "நாள்தோறும் கணக்குகள்",
   "Matches per day": "நாள்தோறும் ஆட்டங்கள்",
   "Guest accounts": "விருந்தினர் கணக்குகள்",
-  "Registered accounts": "பதிவு செய்யப்பட்ட கணக்குகள்"
+  "Registered accounts": "பதிவு செய்யப்பட்ட கணக்குகள்",
+  "New soundtrack": "புதிய பின்னணி இசை",
+  "Wait for the current request to finish.": "தற்போதைய கோரிக்கை முடிவடையும் வரை காத்திருக்கவும்.",
+  "Generation is unavailable. Saved music remains accessible.": "உருவாக்க வசதி கிடைக்கவில்லை. சேமித்த இசையைத் தொடர்ந்து அணுகலாம்.",
+  "An available Music credit is needed to chat or build.": "அரட்டையாடவோ உருவாக்கவோ பயன்படுத்தக்கூடிய ஓர் இசை வரவு தேவை.",
+  "Discussion spends no credits; 1 available Music credit is required. Creation requests build automatically · 1 credit on delivery. Includes all three moods.": "கலந்துரையாடலுக்கு வரவுகள் செலவாகாது; பயன்படுத்தக்கூடிய 1 இசை வரவு தேவை. உருவாக்கக் கோரிக்கைகள் தாமாகவே தொடங்கும்; உருவாக்கிய உள்ளடக்கம் கிடைத்ததும் 1 வரவு செலவாகும். மூன்று இசை மனநிலைகளும் அடங்கும்.",
+  "Moss & morning light": "பாசியும் காலை ஒளியும்",
+  "A warm woodland piece with flute, harp and gentle pizzicato. Let the melody wander and return; combat adds quiet drums and a bassoon counterline.": "புல்லாங்குழல், யாழ், மென்மையாக மீட்டும் தந்தியிசை ஆகியவற்றுடன் இதமான வனச் சூழலுக்கான இசை. மெட்டு அலைந்து மீண்டும் திரும்பட்டும்; போரின்போது மென்மையான முரசுத் தாளமும் பசூனின் துணை மெட்டும் சேரட்டும்.",
+  "Little clockwork garden": "சிறு கடிகாரப் பொறித் தோட்டம்",
+  "Soft glass bells and rounded synth pads, curious and unhurried. A playful answering melody, with a deeper pulse as the colony grows.": "மென்மையான கண்ணாடி மணியொலிகளும் மிருதுவான மின்னிசைப் பின்னணியும், ஆர்வத்துடனும் நிதானத்துடனும் ஒலிக்கட்டும். குடியிருப்பு வளர வளர ஆழமடையும் தாளத்துடன், விளையாட்டுத்தனமாகப் பதிலளிக்கும் மெட்டு.",
+  "A waltz for the rain": "மழைக்கான வால்ட்ஸ்",
+  "A cozy folk waltz with recorder and kalimba. Sparse, breathing phrases for calm, a lilting rhythm for building, and warm low strings for combat.": "ரெக்கார்டர் குழலும் கலிம்பாவும் கொண்ட இதமான நாட்டுப்புற வால்ட்ஸ் இசை. அமைதிக்கு இடைவெளியுள்ள இசைத் தொடர்கள், கட்டுமானத்திற்குத் துள்ளலான தாளம், போருக்கு இதமான தாழ்சுரத் தந்தியிசை.",
+  "Generation is unavailable. Saved projects remain accessible.": "உருவாக்க வசதி கிடைக்கவில்லை. சேமித்த திட்டங்களைத் தொடர்ந்து அணுகலாம்.",
+  "An available Map credit is needed to chat or build.": "அரட்டையாடவோ உருவாக்கவோ பயன்படுத்தக்கூடிய ஒரு வரைபட வரவு தேவை.",
+  "Discussion spends no credits; 1 available Map credit is required. Creation requests build automatically · 1 credit on delivery.": "கலந்துரையாடலுக்கு வரவுகள் செலவாகாது; பயன்படுத்தக்கூடிய 1 வரைபட வரவு தேவை. உருவாக்கக் கோரிக்கைகள் தாமாகவே தொடங்கும்; உருவாக்கிய உள்ளடக்கம் கிடைத்ததும் 1 வரவு செலவாகும்.",
+  "Saving your project…": "உங்கள் திட்டம் சேமிக்கப்படுகிறது…",
+  "Generation is unavailable.": "உருவாக்க வசதி கிடைக்கவில்லை.",
+  "Discussion spends no credits; 1 available Terrain credit is required. Creation requests build automatically · 1 credit on delivery.": "கலந்துரையாடலுக்கு வரவுகள் செலவாகாது; பயன்படுத்தக்கூடிய 1 நிலப்பரப்பு வரவு தேவை. உருவாக்கக் கோரிக்கைகள் தாமாகவே தொடங்கும்; உருவாக்கிய உள்ளடக்கம் கிடைத்ததும் 1 வரவு செலவாகும்."
 }

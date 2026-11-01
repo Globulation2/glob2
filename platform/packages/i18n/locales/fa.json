@@ -2931,5 +2931,22 @@
   "Accounts per day": "حساب‌ها در هر روز",
   "Matches per day": "مسابقات در هر روز",
   "Guest accounts": "حساب‌های مهمان",
-  "Registered accounts": "حساب‌های ثبت‌شده"
+  "Registered accounts": "حساب‌های ثبت‌شده",
+  "New soundtrack": "موسیقی متن جدید",
+  "Wait for the current request to finish.": "منتظر بمانید تا درخواست فعلی تمام شود.",
+  "Generation is unavailable. Saved music remains accessible.": "تولید در دسترس نیست. موسیقی ذخیره‌شده همچنان قابل دسترسی است.",
+  "An available Music credit is needed to chat or build.": "برای گفت‌وگو یا ایجاد محتوا، یک اعتبار موسیقی قابل استفاده لازم است.",
+  "Discussion spends no credits; 1 available Music credit is required. Creation requests build automatically · 1 credit on delivery. Includes all three moods.": "گفت‌وگو اعتباری مصرف نمی‌کند؛ ۱ اعتبار قابل استفاده برای موسیقی لازم است. درخواست ایجاد، تولید را خودکار آغاز می‌کند؛ هنگام تحویل نتیجه، ۱ اعتبار کسر می‌شود. هر سه حال‌وهوا را شامل می‌شود.",
+  "Moss & morning light": "خزه و نور صبحگاهی",
+  "A warm woodland piece with flute, harp and gentle pizzicato. Let the melody wander and return; combat adds quiet drums and a bassoon counterline.": "قطعه‌ای گرم با حال‌وهوای جنگل، فلوت، چنگ و پیتزیکاتوی ملایم. بگذارید ملودی پرسه بزند و بازگردد؛ در بخش نبرد، طبل‌های آرام و ملودی همراهِ فاگوت اضافه شوند.",
+  "Little clockwork garden": "باغ کوچک با سازوکار ساعت",
+  "Soft glass bells and rounded synth pads, curious and unhurried. A playful answering melody, with a deeper pulse as the colony grows.": "زنگوله‌های شیشه‌ای نرم و پدهای سینتی‌سایزر گرد، کنجکاو و بی‌شتاب. ملودی پاسخ‌دهنده‌ی بازیگوشانه، با ضربانی عمیق‌تر با رشد کلونی.",
+  "A waltz for the rain": "والسی برای باران",
+  "A cozy folk waltz with recorder and kalimba. Sparse, breathing phrases for calm, a lilting rhythm for building, and warm low strings for combat.": "والسی محلی و دلنشین با فلوت ریکوردر و کالیمبا. عبارت‌های کم‌تراکم با جای نفس‌کشیدن برای آرامش، ریتمی تاب‌دار برای ساخت‌وساز و سازهای زهی گرم و بم برای نبرد.",
+  "Generation is unavailable. Saved projects remain accessible.": "تولید در دسترس نیست. پروژه‌های ذخیره شده همچنان قابل دسترسی هستند.",
+  "An available Map credit is needed to chat or build.": "برای گفت‌وگو یا ایجاد محتوا، یک اعتبار نقشه قابل استفاده لازم است.",
+  "Discussion spends no credits; 1 available Map credit is required. Creation requests build automatically · 1 credit on delivery.": "گفت‌وگو اعتباری مصرف نمی‌کند؛ ۱ اعتبار قابل استفاده برای نقشه لازم است. درخواست ایجاد، تولید را خودکار آغاز می‌کند؛ هنگام تحویل نتیجه، ۱ اعتبار کسر می‌شود.",
+  "Saving your project…": "ذخیره پروژه شما…",
+  "Generation is unavailable.": "تولید در دسترس نیست.",
+  "Discussion spends no credits; 1 available Terrain credit is required. Creation requests build automatically · 1 credit on delivery.": "گفت‌وگو اعتباری مصرف نمی‌کند؛ ۱ اعتبار قابل استفاده برای زمین لازم است. درخواست ایجاد، تولید را خودکار آغاز می‌کند؛ هنگام تحویل نتیجه، ۱ اعتبار کسر می‌شود."
 }
