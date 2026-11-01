@@ -197,16 +197,27 @@ class WebAssetPlanTests(unittest.TestCase):
 
     def test_core_has_english_and_every_language_name(self):
         self.assertEqual(self.owner['data/texts.en.txt'], 'core')
-        self.assertIn('data/texts.ja.txt', self.packages['translations'])
         self.assertNotIn('data/texts.en.txt', self.packages['translations'])
-        stub = web_assets.contents(ROOT, 'core', 'data/texts.ja.txt', {}).decode()
-        lines = stub.split('\n')
-        pairs = dict(zip(lines[0::2], lines[1::2]))
-        self.assertEqual(pairs['[language-code]'], 'ja')
-        self.assertEqual(pairs['[language]'], '日本語')
-        self.assertEqual(set(pairs) - {''}, set(web_assets.STUB_KEYS))
-        full = web_assets.contents(ROOT, 'translations', 'data/texts.ja.txt', {})
-        self.assertEqual(full, (ROOT / 'data/texts.ja.txt').read_bytes())
+        # Every selectable catalog must be discoverable before optional downloads,
+        # then arrive intact in translations. Exercise the installed inventory so
+        # newly registered languages cannot silently miss either package.
+        catalogs = (ROOT / 'data/texts.list.txt').read_text().splitlines()[1:]
+        for path in catalogs:
+            if path == 'data/texts.en.txt':
+                continue
+            with self.subTest(catalog=path):
+                self.assertIn(path, self.packages['core'])
+                self.assertIn(path, self.packages['translations'])
+                stub = web_assets.contents(ROOT, 'core', path, {}).decode()
+                lines = stub.split('\n')
+                pairs = dict(zip(lines[0::2], lines[1::2]))
+                source = (ROOT / path).read_text().split('\n')
+                original = dict(zip(source[0::2], source[1::2]))
+                self.assertEqual(set(pairs) - {''}, set(web_assets.STUB_KEYS))
+                self.assertEqual({key: pairs[key] for key in web_assets.STUB_KEYS},
+                                 {key: original[key] for key in web_assets.STUB_KEYS})
+                full = web_assets.contents(ROOT, 'translations', path, {})
+                self.assertEqual(full, (ROOT / path).read_bytes())
 
     def test_music_and_artwork_the_game_reloads_per_match_are_optional(self):
         self.assertEqual(self.owner['data/zik/intro.opus'], 'menu-music')

@@ -5672,6 +5672,14 @@ ZIP অথবা তিনটি ট্র্যাক ইম্পোর্ট 
 গর্ত
 [chasm]
 খাদ
+[lush_grass]
+ঘন সবুজ ঘাস
+[dry_grass]
+শুকনো ঘাস
+[dune_sand]
+বালিয়াড়ির বালি
+[pale_sand]
+ফ্যাকাশে বালি
 [terrain group water]
 জল
 [terrain group sand]
@@ -6788,3 +6796,27 @@ MCP সার্ভার চালু করুন
 শিবিরস্থলের পরিমাণ
 [scenario messages]
 বার্তা ▸
+[stats topic overview]
+সংক্ষিপ্ত বিবরণ
+[stats topic economy]
+অর্থনীতি
+[stats topic world]
+বিশ্ব
+[stats work construction]
+কাজ ও নির্মাণ
+[stats defence]
+প্রতিরক্ষা
+[stats history]
+ইতিহাস দেখুন
+[stats waiting]
+পরিসংখ্যানের অপেক্ষায়…
+[stats unit details]
+ইউনিটের বিবরণ
+[stats map overlays]
+মানচিত্রের ওভারলে
+[stats topic]
+বিষয়
+[stats full history]
+সম্পূর্ণ ইতিহাস খুলুন
+[stats missing readings]
+— এখনো কোনো পরিমাপ রেকর্ড হয়নি। বিস্তারিত দেখতে একটি পরিসংখ্যান বেছে নিন।

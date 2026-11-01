@@ -4876,6 +4876,30 @@ AI کی قابلِ رسائی ٹیلی میٹری نہیں۔
 صاف کیے گئے وسائل
 [stat cleared about]
 جگہ بنانے کے لیے کارکنوں کے صفائی کے علاقوں میں ہٹائے ہوئے وسائل۔
+[stats topic overview]
+
+[stats topic economy]
+
+[stats topic world]
+
+[stats work construction]
+
+[stats defence]
+
+[stats history]
+
+[stats waiting]
+
+[stats unit details]
+
+[stats map overlays]
+
+[stats topic]
+
+[stats full history]
+
+[stats missing readings]
+
 [stat win probability]
 
 [stat win probability about]
@@ -6786,5 +6810,13 @@ MCP سرور چالو کریں
 مچھلی کی مقدار
 [Camp-site amount]
 خیمہ گاہوں کی تعداد
+[lush_grass]
+
+[dry_grass]
+
+[dune_sand]
+
+[pale_sand]
+
 [scenario messages]
 پیغامات ▸

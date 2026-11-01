@@ -4884,6 +4884,30 @@ Jednotky uzavreté bez voľného políčka, na ktoré by mohli vstúpiť.
 Vyčistené suroviny
 [stat cleared about]
 Suroviny, ktoré robotníci odstránili v oblastiach čistenia, aby uvoľnili miesto.
+[stats topic overview]
+
+[stats topic economy]
+
+[stats topic world]
+
+[stats work construction]
+
+[stats defence]
+
+[stats history]
+
+[stats waiting]
+
+[stats unit details]
+
+[stats map overlays]
+
+[stats topic]
+
+[stats full history]
+
+[stats missing readings]
+
 [stat win probability]
 
 [stat win probability about]
@@ -5672,6 +5696,14 @@ Tmavá voda
 Diera
 [chasm]
 Priepasť
+[lush_grass]
+Sviežia tráva
+[dry_grass]
+Suchá tráva
+[dune_sand]
+Dunový piesok
+[pale_sand]
+Svetlý piesok
 [terrain group water]
 Voda
 [terrain group sand]

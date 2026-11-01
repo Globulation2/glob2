@@ -24,7 +24,7 @@ export function ThemeToggle() {
   return (
     <SharedThemeToggle
       data-testid="theme-toggle"
-      aria-label={t(`${labels[preference]}. Change theme`)}
+      aria-label={t('{value0}. Change theme', { value0: labels[preference] })}
       labels={{ ...labels, change: '' }}
     />
   );

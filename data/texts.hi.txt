@@ -4876,6 +4876,30 @@ AI टेलीमेट्री
 हटाए गए संसाधन
 [stat cleared about]
 जगह बनाने के लिए सफ़ाई क्षेत्रों में श्रमिकों द्वारा हटाए गए संसाधन।
+[stats topic overview]
+
+[stats topic economy]
+
+[stats topic world]
+
+[stats work construction]
+
+[stats defence]
+
+[stats history]
+
+[stats waiting]
+
+[stats unit details]
+
+[stats map overlays]
+
+[stats topic]
+
+[stats full history]
+
+[stats missing readings]
+
 [stat win probability]
 
 [stat win probability about]
@@ -6786,5 +6810,13 @@ MCP सर्वर चालू करें
 मछलियों की मात्रा
 [Camp-site amount]
 पड़ावों की मात्रा
+[lush_grass]
+
+[dry_grass]
+
+[dune_sand]
+
+[pale_sand]
+
 [scenario messages]
 संदेश ▸
