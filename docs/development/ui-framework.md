@@ -144,7 +144,13 @@ retain a 20-pixel minimum advance; touch instructions use the shared cluster-awa
 wrapper and a 24-point minimum advance. The touch cache includes language, font,
 width and text-size inputs. Drawing, scroll limits and hit areas share the same
 measured footer and collapsed-label bounds. Test both expanded instructions and
-the collapsed control when changing fonts or text-size behavior.
+the collapsed control when changing fonts or text-size behavior. The collapsed
+mobile tutorial uses cluster-safe title ellipsis; expanding it restores the full
+wrapped title. Mobile statistics, the Tools strip and map peek temporarily own
+foreground painting and input. They cancel tutorial pointer and keyboard focus
+without changing its lesson or collapsed state; statistics paint above the minimap.
+Collapsed browser account actions retain their complete translated accessible
+names and show an icon in a 44-pixel target.
 
 ### Preparing independently reviewed locales
 

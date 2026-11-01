@@ -927,9 +927,9 @@ void GameGUI::drawAll(int team)
 
 	}
     if (touch) { touch->drawControls();touch->drawKeyboardFocus(); }
-    const bool statisticsSheet = touch && touch->usesHUD() && touch->needsStatisticsHistory();
-    if (!activeDialog() && !statisticsSheet) Tutorial::drawDestination(*this);
-    if (tutorialGuidance && !activeDialog() && !typingInputScreen && !statisticsSheet)
+    const bool foregroundTools = touch && touch->obscuresTutorial();
+    if (!activeDialog() && !foregroundTools) Tutorial::drawDestination(*this);
+    if (tutorialGuidance && !activeDialog() && !typingInputScreen && !foregroundTools)
         tutorialGuidance->draw(SDL_GetTicks());
 }
 

@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "InGameStatistics.h"
-#include "TutorialGuidance.h"
+#include "tutorial/TutorialGuidance.h"
 #include <Environment.h>
 #include "EngineFixtures.h"
 #include "ScopedEnvironment.h"
@@ -5407,11 +5407,23 @@ class GameGUITouchHarness
             ~RestoreLanguage(){strings->setLang(value);} } restore{strings,previousLanguage};
         strings->setLang(strings->getLangCode("bn"));
         globals->settings.setTextSizePercent(150);
-        Engine engine;
-        REQUIRE(engine.initCampaignTask((glob2test::sourceRoot()/Tutorial::IntroductionMap).string()).run());
-        engine.prepareRun(); engine.beginSession(0); engine.gui.game.setWaitingOnMask(0);
-        for(int tick=0;tick<64;++tick)engine.gui.game.step(0);
-        auto &gui=engine.gui;
+        // Use the public fixture loader with the packaged lesson's authored
+        // players, team associations and AI configuration, as campaign init does.
+        GameGUI gui;
+        const auto source=(glob2test::sourceRoot()/Tutorial::IntroductionMap).string();
+        auto map=Engine::loadMapHeader(source);
+        auto players=Engine::loadGameHeader(source);
+        REQUIRE(map.getNumberOfTeams()==2);
+        REQUIRE(players.getNumberOfPlayers()==2);
+        REQUIRE(players.getBasePlayer(0).name=="Your colony");
+        REQUIRE(players.getBasePlayer(1).name=="Practice colony");
+        // Missions and the tutorial play as authored: never with experiments.
+        if (!map.getIsSavedGame()) players.getExperiments().clear();
+        REQUIRE(gui.loadFromHeaders(map,players,true,true,false,source));
+        gui.localPlayer=0; gui.localTeamNo=players.getBasePlayer(0).teamNumber;
+        gui.adjustLocalTeam();
+        gui.game.setWaitingOnMask(0);
+        for(int tick=0;tick<64;++tick)gui.game.step(0);
         glob2test::drawGUI(gui,0);
         auto *card=gui.tutorialGuidance.get(); REQUIRE(card);
         const auto lesson=Tutorial::view(gui.drawnScene().panels.hud.state()); REQUIRE(lesson);
@@ -5426,6 +5438,15 @@ class GameGUITouchHarness
         REQUIRE(card->host().find("intro/title"));
         CHECK(card->host().bounds("intro/title").h<=card->host().bounds("intro/collapse").h);
         CHECK(compact.h<100);
+        card->host().focus("intro/help",true);
+        gui.touch->lensOpen=true;
+        gui.selectionMode=GameGUI::NO_SELECTION; gui.displayMode=GameGUI::STAT_TEXT_VIEW;
+        glob2test::drawGUI(gui,0);
+        REQUIRE(gui.touch->lensVisible()); CHECK(gui.touch->obscuresTutorial());
+        CHECK_FALSE(card->host().keyboardFocused());
+        gui.touch->lensOpen=false; gui.touch->peekOpen=true;
+        glob2test::drawGUI(gui,0); CHECK(gui.touch->obscuresTutorial());
+        gui.touch->peekOpen=false; CHECK_FALSE(gui.touch->obscuresTutorial());
         card->host().focus("intro/help",true);
         gui.touch->menuAction(3); glob2test::drawGUI(gui,0);
         REQUIRE(gui.touch->statsOpen);

@@ -67,9 +67,9 @@ void GameGUI::updateTutorial()
                 std::max(0,int(hud.actions.y-notice.y-6*globalContainer->gfx->logicalUnitsPerPoint()))});
         }
         tutorialGuidance->model(lesson);
-        // The statistics sheet temporarily owns the mobile foreground. Cancel
+        // The mobile tools temporarily own the foreground. Cancel
         // pointer/focus ownership without changing the lesson or collapsed state.
-        if (touch->usesHUD() && touch->needsStatisticsHistory())
+        if (touch->obscuresTutorial())
             tutorialGuidance->cancelInteraction();
         tutorialGuidance->update(Uint32(SDL_GetTicks()));
     }
