@@ -9,6 +9,8 @@
 #include "SettingsScreen.h"
 #include "CustomGameScreen.h"
 #include "EndGameScreen.h"
+#include "InGameStatistics.h"
+#include "GameGUITouch.h"
 #include "FrontendTheme.h"
 #include "MenuColony.h"
 #include "Sha256.h"
@@ -54,6 +56,24 @@ struct TranslationPreviewAccess
     static void closeMenu(GameGUI &gui) { gui.closeDialog(); }
     static bool initialBriefingOpen(const GameGUI &gui) { return gui.inGameMenu == GameGUI::IGM_OBJECTIVES; }
     static bool dialogOpen(const GameGUI &gui) { return gui.inGameMenu != GameGUI::IGM_NONE || gui.activeDialog() != nullptr; }
+    static void openLiveStatistics(GameGUI &gui, InGameStatisticsPanel::Topic topic) {
+        gui.clearSelection();
+        gui.displayMode = GameGUI::STAT_TEXT_VIEW;
+        gui.replayDisplayMode = GameGUI::RDM_STAT_TEXT_VIEW;
+        if (gui.touch && gui.touch->usesHUD()) gui.touch->menuAction(3);
+        gui.statistics().selectTopic(topic);
+    }
+    static InGameStatisticsPanel &statistics(GameGUI &gui) { return gui.statistics(); }
+    static bool liveStatisticsVisible(const GameGUI &gui) { return gui.statisticsVisible(); }
+    static bool statisticsHistoryOpen(const GameGUI &gui) {
+        return gui.inGameMenu == GameGUI::IGM_STATISTICS && gui.activeDialog();
+    }
+    static GAGGUI::ui::UIDialog *dialog(GameGUI &gui) { return gui.activeDialog(); }
+    static void openMapOverlays(GameGUI &gui) {
+        gui.clearSelection();
+        gui.displayMode = GameGUI::STAT_GRAPH_VIEW;
+        gui.replayDisplayMode = GameGUI::RDM_STAT_GRAPH_VIEW;
+    }
     static void rebaseViewport(GameGUI &gui) {
         gui.torusView.rebaseViewport(gui.viewportX, gui.viewportY);
     }
@@ -288,6 +308,17 @@ void fontMatrix(const fs::path &root, const fs::path &pilot, const fs::path &out
     TTF_Quit();
 }
 
+Json controlBounds(GAGGUI::ui::Host &host)
+{
+    Json result = Json::array();
+    for (auto *node : host.interactiveNodes()) {
+        const auto r = node->bounds;
+        result.push_back({{"key", node->key}, {"x", r.x}, {"y", r.y}, {"width", r.w}, {"height", r.h},
+            {"within_viewport", r.x >= 0 && r.y >= 0 && r.x + r.w <= globalContainer->gfx->getW() &&
+                r.y + r.h <= globalContainer->gfx->getH()}});
+    }
+    return result;
+}
 template<class T> class Preview : public T
 {
 public:
@@ -301,14 +332,7 @@ public:
         this->paintFrame(SDL_GetTicks());
     }
     Json bounds() {
-        Json result = Json::array();
-        for (auto *node : this->GAGGUI::ui::UIScreen::host().interactiveNodes()) {
-            const auto r = node->bounds;
-            result.push_back({{"key", node->key}, {"x", r.x}, {"y", r.y}, {"width", r.w}, {"height", r.h},
-                {"within_viewport", r.x >= 0 && r.y >= 0 && r.x + r.w <= globalContainer->gfx->getW() &&
-                    r.y + r.h <= globalContainer->gfx->getH()}});
-        }
-        return result;
+        return controlBounds(this->GAGGUI::ui::UIScreen::host());
     }
 };
 unsigned installDraftOverlay(const fs::path &root, const fs::path &pilot, const fs::path &output)
@@ -398,7 +422,20 @@ void gameplayPreview(const fs::path &root, const fs::path &pilot, const fs::path
                      const std::string &kind, int width, int height)
 {
     const bool tutorial = kind == "tutorial" || kind.starts_with("tutorial:");
-    require(kind == "gameplay" || kind == "statistics" || tutorial, "Unknown game preview kind");
+    const std::string livePrefix = "ingame-statistics:";
+    const bool history = kind == "ingame-statistics-history";
+    const bool liveStatistics = history || kind.starts_with(livePrefix);
+    const bool mapOverlays = kind == "map-overlays";
+    const std::string topicName = history ? "overview" : (liveStatistics ? kind.substr(livePrefix.size()) : "");
+    auto topic = InGameStatisticsPanel::Topic::Overview;
+    if (liveStatistics) {
+        if (topicName == "colony") topic = InGameStatisticsPanel::Topic::Colony;
+        else if (topicName == "economy") topic = InGameStatisticsPanel::Topic::Economy;
+        else if (topicName == "military") topic = InGameStatisticsPanel::Topic::Military;
+        else if (topicName == "world") topic = InGameStatisticsPanel::Topic::World;
+        else require(topicName == "overview", "Known production statistics topic");
+    }
+    require(kind == "gameplay" || kind == "statistics" || tutorial || liveStatistics || mapOverlays, "Unknown game preview kind");
     const std::string lesson = kind == "tutorial" ? "introduction" : (tutorial ? kind.substr(9) : "");
     if (tutorial) {
         const auto catalog = readJson(root / "scripts/tutorials/catalog.json");
@@ -407,7 +444,8 @@ void gameplayPreview(const fs::path &root, const fs::path &pilot, const fs::path
             if (readJson(root / entry["definition"].get<std::string>())["id"] == lesson) found = true;
         require(found, "Known production tutorial lesson");
     }
-    const std::string captureKind = tutorial ? "tutorial-" + lesson : kind;
+    std::string captureKind = tutorial ? "tutorial-" + lesson : kind;
+    std::replace(captureKind.begin(), captureKind.end(), ':', '-');
     require(SDL_setenv_unsafe("GLOB2_SIM_THREAD", "0", 1) == 0, "Use serial scripted preview execution");
     GlobalContainer globals("glob2-translation-game-preview");
     globalContainer = &globals;
@@ -445,10 +483,19 @@ void gameplayPreview(const fs::path &root, const fs::path &pilot, const fs::path
         engine.prepareRun();
         Uint64 now = 1000;
         engine.beginSession(now);
+        if (liveStatistics) TranslationPreviewAccess::openLiveStatistics(gui, topic);
+        if (mapOverlays) TranslationPreviewAccess::openMapOverlays(gui);
+        bool briefingDismissed = false;
         for (int step = 0; step < 20; ++step) {
             require(engine.stepSession(now, {}), "Preview session running");
             result["simulation_steps"].push_back({{"tick", gui.game.stepCounter},
                 {"checksum", gui.game.checkSum()}});
+            if ((liveStatistics || mapOverlays) && TranslationPreviewAccess::initialBriefingOpen(gui)) {
+                const auto before = gui.game.checkSum();
+                TranslationPreviewAccess::closeMenu(gui);
+                require(before == gui.game.checkSum(), "Dismissing briefing preserves statistics preview state");
+                briefingDismissed = true;
+            }
             if (globals.gfx->beginRenderFrame()) engine.drawSession(true);
             now += 40;
             SDL_Delay(1);
@@ -463,7 +510,8 @@ void gameplayPreview(const fs::path &root, const fs::path &pilot, const fs::path
             draw();
             const auto &scene = gui.drawnScene();
             if (scene.world.session && scene.tick == gui.game.stepCounter &&
-                (!tutorial || bool(scene.panels.hud.state().tutorial))) break;
+                (!tutorial || bool(scene.panels.hud.state().tutorial)) &&
+                (!liveStatistics || bool(scene.world.history))) break;
             // A final fast simulation tick may overlap a pending scene job.
             // Follow ordinary owner admission until that current world has a
             // presentation request, then keep simulation frozen for capture.
@@ -481,6 +529,10 @@ void gameplayPreview(const fs::path &root, const fs::path &pilot, const fs::path
         require(scene.world.session && scene.tick == gui.game.stepCounter, "Latest gameplay scene published");
         if (tutorial)
             require(bool(scene.panels.hud.state().tutorial), "Actual tutorial instruction published");
+        if (liveStatistics) {
+            require(TranslationPreviewAccess::liveStatisticsVisible(gui), "Actual live statistics navigation is open");
+            require(bool(scene.world.history), "Actual published statistics history is available");
+        }
         result["published_tick"] = scene.tick;
         result["capture_simulation_tick"] = gui.game.stepCounter;
         result["tutorial_instruction_shown"] = bool(scene.panels.hud.state().tutorial);
@@ -539,6 +591,24 @@ void gameplayPreview(const fs::path &root, const fs::path &pilot, const fs::path
                 {"checksum_after_draw", after}, {"image_width", image.getW()}, {"image_height", image.getH()}});
             result["limits"].push_back("The real results screen displays the current local map's selected metric; this is not a completed-match or prediction-accuracy claim.");
         }
+        if (liveStatistics) {
+            require(!TranslationPreviewAccess::dialogOpen(gui), "Live statistics capture begins without an unrelated dialog");
+            auto &panel = TranslationPreviewAccess::statistics(gui);
+            require(panel.topic() == topic, "Requested production statistics topic selected");
+            require(std::none_of(panel.metrics().begin(), panel.metrics().end(), [](const auto &metric) {
+                return metric.winProbability;
+            }), "Live statistics must not expose post-game probability");
+            if (history) {
+                const auto before = gui.game.checkSum();
+                panel.openMetric("population");
+                require(TranslationPreviewAccess::statisticsHistoryOpen(gui), "Actual production history dialog opened");
+                require(before == gui.game.checkSum(), "Opening history must preserve simulation checksum");
+            }
+            result["live_statistics"] = {{"topic", topicName}, {"history_dialog", history},
+                {"published_history", true}, {"post_game_probability_hidden", true},
+                {"automatic_briefing_dismissed", briefingDismissed}};
+            result["limits"].push_back("Live statistics use the actual HUD/sidebar or compact sheet and published local-game history; no bounds or values are substituted. Sparse initial history is not a completed-match or prediction-accuracy claim.");
+        }
         if (tutorial) {
             // A tick-12 automatic briefing can cover the current lesson model.
             // Preserve that real opening state, then expose the actual guidance.
@@ -552,6 +622,17 @@ void gameplayPreview(const fs::path &root, const fs::path &pilot, const fs::path
             result["tutorial_capture_dialog_free"] = true;
         }
         if (kind != "statistics") capture(captureKind);
+        if (liveStatistics) {
+            auto &panel = TranslationPreviewAccess::statistics(gui);
+            result["live_statistics"]["selected_metric"] = panel.selectedMetric();
+            result["live_statistics"]["controls"] = controlBounds(panel.host());
+            if (history) {
+                require(TranslationPreviewAccess::statisticsHistoryOpen(gui), "Production history remains open after capture");
+                result["live_statistics"]["dialog_controls"] = controlBounds(TranslationPreviewAccess::dialog(gui)->host());
+            }
+        }
+        if (mapOverlays) result["map_overlays"] = {{"actual_desktop_display_mode", true},
+            {"automatic_briefing_dismissed", briefingDismissed}};
         if (kind == "gameplay" && !GAGCore::phonePresentationRequested()) {
             const auto originalCamera = gui.camera;
             const int originalViewportX = gui.viewportX, originalViewportY = gui.viewportY;
@@ -593,7 +674,7 @@ void gameplayPreview(const fs::path &root, const fs::path &pilot, const fs::path
             gui.viewportY = originalViewportY;
             TranslationPreviewAccess::rebaseViewport(gui);
         }
-        if (kind != "statistics") {
+        if (kind != "statistics" && !liveStatistics && !mapOverlays) {
             TranslationPreviewAccess::openMenu(gui);
             capture(captureKind + "-dialog");
             TranslationPreviewAccess::closeMenu(gui);
@@ -610,7 +691,7 @@ void gameplayPreview(const fs::path &root, const fs::path &pilot, const fs::path
 int main(int argc, char **argv)
 {
     try {
-        require(argc >= 7, "usage: TranslationPreviewHarness matrix ROOT DRAFT OUTPUT W H | screen ROOT DRAFT OUTPUT W H SCREEN | game ROOT DRAFT OUTPUT W H gameplay|statistics|tutorial[:LESSON-ID]");
+        require(argc >= 7, "usage: TranslationPreviewHarness matrix ROOT DRAFT OUTPUT W H | screen ROOT DRAFT OUTPUT W H SCREEN | game ROOT DRAFT OUTPUT W H gameplay|statistics|ingame-statistics:TOPIC|ingame-statistics-history|map-overlays|tutorial[:LESSON-ID]");
         executablePath = fs::absolute(argv[0]);
         const std::string mode = argv[1];
         const auto root = fs::absolute(argv[2]), pilot = fs::absolute(argv[3]), output = fs::absolute(argv[4]);

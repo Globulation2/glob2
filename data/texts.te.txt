@@ -6788,3 +6788,27 @@ GL మాత్రమే
 శిబిర-స్థలం మొత్తం
 [scenario messages]
 సందేశాలు ▸
+[stats topic overview]
+అవలోకనం
+[stats topic economy]
+ఆర్థిక వ్యవస్థ
+[stats topic world]
+ప్రపంచం
+[stats work construction]
+పని మరియు నిర్మాణం
+[stats defence]
+రక్షణ
+[stats history]
+చరిత్రను వీక్షించండి
+[stats waiting]
+గణాంకాల కోసం వేచి ఉంది…
+[stats unit details]
+యూనిట్ల వివరాలు
+[stats map overlays]
+మ్యాప్ ఓవర్‌లేలు
+[stats topic]
+అంశం
+[stats full history]
+పూర్తి చరిత్రను తెరవండి
+[stats missing readings]
+— ఇంకా విలువ నమోదు కాలేదు. వివరాల కోసం ఒక గణాంకాన్ని ఎంచుకోండి.

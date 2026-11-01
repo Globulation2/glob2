@@ -69,6 +69,7 @@ class GameGUITouch
   private:
 	friend class GameGUITouchHarness;
 	friend class MobileGalleryGameplay;
+	friend struct TranslationPreviewAccess;
 	GameGUI &gui;
 	TouchDial::Painter dialPainter;
 	// The dialog GameGUI is showing (menu, chat composer or history); the HUD

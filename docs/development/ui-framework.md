@@ -255,7 +255,13 @@ wrapper at several authored sizes and raster scales. `screen` adds a screen name
 `gameplay`, `tutorial` (the introduction), or `tutorial:LESSON-ID` and captures
 the real engine and menu dialog. `statistics` selects the win-probability metric
 on the real results screen for the current local map; it does not represent a
-completed match or validate prediction accuracy. Tutorial IDs must belong to the current shipped
+completed match or validate prediction accuracy. `ingame-statistics:TOPIC` captures
+the actual live sidebar or compact sheet for `overview`, `colony`, `economy`,
+`military` or `world`, with published local-game history.
+`ingame-statistics-history` opens the real population-history dialog;
+`map-overlays` captures the desktop overlay-tools view. These modes use ordinary
+presentation navigation and preserve the simulation checksum while drawing.
+Tutorial IDs must belong to the current shipped
 lesson catalog. When a lesson opens its automatic briefing, the harness saves
 that state separately, dismisses it and captures the uncovered guidance panel.
 A published tutorial model alone does not prove that its text is visible. Inputs are
