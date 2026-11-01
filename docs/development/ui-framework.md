@@ -253,7 +253,9 @@ Build `translation-preview-harness` for unregistered catalog captures. Its
 wrapper at several authored sizes and raster scales. `screen` adds a screen name
 (`main`, `settings`, `settings-audio`, `lobby` or `lobby-players`); `game` adds
 `gameplay`, `tutorial` (the introduction), or `tutorial:LESSON-ID` and captures
-the real engine and menu dialog. Tutorial IDs must belong to the current shipped
+the real engine and menu dialog. `statistics` selects the win-probability metric
+on the real results screen for the current local map; it does not represent a
+completed match or validate prediction accuracy. Tutorial IDs must belong to the current shipped
 lesson catalog. When a lesson opens its automatic briefing, the harness saves
 that state separately, dismisses it and captures the uncovered guidance panel.
 A published tutorial model alone does not prove that its text is visible. Inputs are

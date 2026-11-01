@@ -8,6 +8,7 @@
 #include "MainMenuScreen.h"
 #include "SettingsScreen.h"
 #include "CustomGameScreen.h"
+#include "EndGameScreen.h"
 #include "FrontendTheme.h"
 #include "MenuColony.h"
 #include "Sha256.h"
@@ -397,7 +398,7 @@ void gameplayPreview(const fs::path &root, const fs::path &pilot, const fs::path
                      const std::string &kind, int width, int height)
 {
     const bool tutorial = kind == "tutorial" || kind.starts_with("tutorial:");
-    require(kind == "gameplay" || tutorial, "Unknown game preview kind");
+    require(kind == "gameplay" || kind == "statistics" || tutorial, "Unknown game preview kind");
     const std::string lesson = kind == "tutorial" ? "introduction" : (tutorial ? kind.substr(9) : "");
     if (tutorial) {
         const auto catalog = readJson(root / "scripts/tutorials/catalog.json");
@@ -513,6 +514,31 @@ void gameplayPreview(const fs::path &root, const fs::path &pilot, const fs::path
                 {"checksum_after_draw", after}, {"image_width", image->w}, {"image_height", image->h}});
         };
 
+        if (kind == "statistics") {
+            const auto before = gui.game.checkSum();
+            const auto metrics = Stats::catalogForBuildings(gui.game.buildingsTypes);
+            const auto metric = std::find_if(metrics.begin(), metrics.end(), [](const auto &entry) {
+                return entry.id == "win probability";
+            });
+            require(metric != metrics.end(), "Production win probability metric exists");
+            FrontendTheme theme;
+            require(theme.colony->load(), "Load bundled results background");
+            FrontendScope frontend;
+            Preview<EndGameScreen> preview(&gui);
+            preview.selectMetric(int(std::distance(metrics.begin(), metric)));
+            preview.render();
+            GAGCore::DrawableSurface image(globals.gfx->getW(), globals.gfx->getH());
+            image.drawSurface(0, 0, globals.gfx);
+            require(IMG_SavePNG(image.getSDLSurface(), (output / "statistics.png").string().c_str()),
+                "Save production statistics screen");
+            const auto after = gui.game.checkSum();
+            require(before == after, "Statistics presentation must preserve simulation checksum");
+            result["statistics"] = {{"metric", metric->id}, {"title", TeamStatChart::title(*metric)},
+                {"about", TeamStatChart::about(*metric)}, {"controls", preview.bounds()}};
+            result["captures"].push_back({{"name", "statistics"}, {"checksum_before_draw", before},
+                {"checksum_after_draw", after}, {"image_width", image.getW()}, {"image_height", image.getH()}});
+            result["limits"].push_back("The real results screen displays the current local map's selected metric; this is not a completed-match or prediction-accuracy claim.");
+        }
         if (tutorial) {
             // A tick-12 automatic briefing can cover the current lesson model.
             // Preserve that real opening state, then expose the actual guidance.
@@ -525,7 +551,7 @@ void gameplayPreview(const fs::path &root, const fs::path &pilot, const fs::path
             result["automatic_briefing_dismissed"] = briefing;
             result["tutorial_capture_dialog_free"] = true;
         }
-        capture(captureKind);
+        if (kind != "statistics") capture(captureKind);
         if (kind == "gameplay" && !GAGCore::phonePresentationRequested()) {
             const auto originalCamera = gui.camera;
             const int originalViewportX = gui.viewportX, originalViewportY = gui.viewportY;
@@ -567,9 +593,11 @@ void gameplayPreview(const fs::path &root, const fs::path &pilot, const fs::path
             gui.viewportY = originalViewportY;
             TranslationPreviewAccess::rebaseViewport(gui);
         }
-        TranslationPreviewAccess::openMenu(gui);
-        capture(captureKind + "-dialog");
-        TranslationPreviewAccess::closeMenu(gui);
+        if (kind != "statistics") {
+            TranslationPreviewAccess::openMenu(gui);
+            capture(captureKind + "-dialog");
+            TranslationPreviewAccess::closeMenu(gui);
+        }
         gui.isRunning = false;
         engine.finishSession();
         abort.active = false;
@@ -582,7 +610,7 @@ void gameplayPreview(const fs::path &root, const fs::path &pilot, const fs::path
 int main(int argc, char **argv)
 {
     try {
-        require(argc >= 7, "usage: TranslationPreviewHarness matrix ROOT DRAFT OUTPUT W H | screen ROOT DRAFT OUTPUT W H SCREEN | game ROOT DRAFT OUTPUT W H gameplay|tutorial[:LESSON-ID]");
+        require(argc >= 7, "usage: TranslationPreviewHarness matrix ROOT DRAFT OUTPUT W H | screen ROOT DRAFT OUTPUT W H SCREEN | game ROOT DRAFT OUTPUT W H gameplay|statistics|tutorial[:LESSON-ID]");
         executablePath = fs::absolute(argv[0]);
         const std::string mode = argv[1];
         const auto root = fs::absolute(argv[2]), pilot = fs::absolute(argv[3]), output = fs::absolute(argv[4]);

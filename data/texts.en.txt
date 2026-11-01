@@ -4894,6 +4894,10 @@ Units boxed in with no free square to step onto.
 Resources cleared
 [stat cleared about]
 Resources removed by workers in clearing areas to make room.
+[stat win probability]
+Win probability
+[stat win probability about]
+Estimated chance of your alliance winning, sampled throughout the match. Allies share one probability. This model was trained on AI games; estimates do not account for position or planned moves. Older saves may have incomplete history.
 [stat prestige]
 Prestige
 [stat prestige about]

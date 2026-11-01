@@ -4884,6 +4884,10 @@ FFmpeg غير متاح، لذا التسجيل معطّل. ثبّت FFmpeg وت�
 الموارد المُزالة
 [stat cleared about]
 موارد أزالها العمال في مناطق التصفية لإفساح المجال.
+[stat win probability]
+
+[stat win probability about]
+
 [stat prestige]
 الهيبة
 [stat prestige about]

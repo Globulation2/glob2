@@ -54,7 +54,7 @@ The executable is built from `src/ai/maxima/MaximaStrategyDump.cpp` by the
 | `food`, `farming` | Renewable supply, capacity claims and clearing |
 | `military`, `postures`, `emergencies` | Army demand, service capacity and strategic priorities |
 | `placement`, `scoring` | Sites, routes, candidate utility and switching margins |
-| `defense`, `tactics`, `assault`, `raiding` | Defensive response and attack execution |
+| `defense`, `tactics`, `assault`, `raiding`, `forward_support` | Defensive response, attack execution and optional forward services |
 | `recon`, `explorer_campaign`, `fruit` | Observation, explorer missions and fruit supply |
 | `scheduling` | Review intervals, phases and cooldowns |
 
@@ -64,3 +64,14 @@ files. `GLOB2_MAXIMA_TELEMETRY=1` emits `MAXIMA_TELEMETRY` decision records;
 [AI telemetry](../telemetry.md) describes the common telemetry interface.
 
 Related: [AI documentation](../README.md).
+
+New games enable a dedicated forward-service pathway with a preferred 40-tile
+geometric standoff, a 40-tile existing-service coverage threshold, a same-enemy
+score preference and 4,000 ticks of bounded arrival grace. The ordinary colony
+placement criteria are unchanged. These controls can be disabled independently;
+older supported saves keep their stored policy. See [combat](combat.md#forward-support).
+
+`tactics.flag_proximity_weight` defaults to 4 score points per geometric tile
+from the existing offensive flag, capped at 32 tiles. It independently favors
+nearby follow-up objectives; zero disables it. Strategies saved before format 189
+restore zero when this key is absent, including format 188 ring40 saves.

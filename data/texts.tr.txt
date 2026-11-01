@@ -4884,6 +4884,10 @@ Adım atacak boş karesi olmadan sıkışmış birimler.
 Temizlenen kaynaklar
 [stat cleared about]
 İşçilerin yer açmak için temizlik bölgelerinde kaldırdığı kaynaklar.
+[stat win probability]
+
+[stat win probability about]
+
 [stat prestige]
 Prestij
 [stat prestige about]

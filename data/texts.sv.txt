@@ -4884,6 +4884,10 @@ Inringade enheter utan någon ledig ruta att kliva till.
 Röjda resurser
 [stat cleared about]
 Resurser som arbetare tagit bort i röjningsområden för att skapa utrymme.
+[stat win probability]
+
+[stat win probability about]
+
 [stat prestige]
 Prestigevärde
 [stat prestige about]
