@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "Glob2Test.h"
 #include "ApiErrorText.h"
+#include "ui/PresentedError.h"
 #include "generated/OnlineErrorCatalog.h"
 using namespace Online;
 namespace {
@@ -100,4 +101,33 @@ TEST_SUITE("ApiErrorText")
 		CHECK(ErrorCatalogData::ExcludedPluralCount > 0);
 		for (auto chunk : ErrorCatalogData::Chunks) CHECK(chunk.size() <= 8192);
 	}
+}
+
+TEST_CASE("UI exception boundary preserves intentional messages and legacy diagnostics" * doctest::test_suite("ApiErrorText"))
+{
+	const std::runtime_error raw("Invalid managed AI path /exact/path");
+	for (auto locale : {"bg", "bg-BG"})
+	{
+		CHECK_EQ(Glob2UI::presentException(raw, locale, Generic), Generic);
+		const Glob2UI::PresentedError typed("Конкретна грешка {p0}", "raw provider diagnostic");
+		const std::exception &base = typed;
+		CHECK_EQ(Glob2UI::presentException(base, locale, Generic), "Конкретна грешка {p0}");
+		CHECK_EQ(typed.diagnostic, "raw provider diagnostic");
+		CHECK_EQ(std::string(typed.what()), "Конкретна грешка {p0}");
+		const Glob2UI::PresentedError native("Невалиден отговор", "Invalid AI catalogue entry");
+		CHECK_EQ(Glob2UI::presentException(native, locale, Generic), "Невалиден отговор");
+	}
+	for (auto locale : {"en", "fr", "", "bg-XX"})
+	{
+		CHECK_EQ(Glob2UI::presentException(raw, locale, Generic), raw.what());
+		const Glob2UI::PresentedError native("Невалиден отговор", "Invalid AI catalogue entry");
+		CHECK_EQ(Glob2UI::presentException(native, locale, Generic), "Invalid AI catalogue entry");
+		const Glob2UI::PresentedError previous("ancien message localisé");
+		CHECK_EQ(Glob2UI::presentException(previous, locale, Generic), previous.what());
+	}
+	const auto api = errorFromJson(Json{{"code", "unauthenticated"}, {"message", "raw auth"},
+		{"messageKey", "Sign in first (session.authenticate)."}}, "fallback");
+	const Glob2UI::PresentedError marked(presentApiError(api, "bg"), api.message);
+	CHECK_EQ(Glob2UI::presentException(marked, "bg", Generic), presentApiError(api, "bg"));
+	CHECK_NE(Glob2UI::presentException(marked, "bg", Generic), Generic);
 }

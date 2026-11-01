@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "ui/ApiErrorText.h"
+#include "ui/LibraryText.h"
 #include "app/ClientFeatures.h"
 #include "SettingsScreen.h"
 #include "ScriptLibrary.h"
@@ -103,7 +104,7 @@ void SettingsScreen::pollCustomAIs()
 	}
 	catch (const std::exception &e)
 	{
-		s.notice = e.what();
+		s.notice = Glob2UI::exceptionText(e);
 		invalidate();
 	}
 }
@@ -117,7 +118,7 @@ void SettingsScreen::buildCustomAIs()
 	}
 	catch (const std::exception &e)
 	{
-		info(e.what());
+		info(Glob2UI::exceptionText(e));
 		return;
 	}
 	auto &s = *customAIs;
@@ -193,8 +194,8 @@ void SettingsScreen::buildCustomAIs()
 				   }
 				   catch (const std::exception &e)
 				   {
-					   customAIs->notice = e.what();
-					   customAIs->errors[id] = e.what();
+					   customAIs->notice = Glob2UI::exceptionText(e);
+					   customAIs->errors[id] = customAIs->notice;
 				   }
 				   invalidate();
 			   });
@@ -211,8 +212,8 @@ void SettingsScreen::buildCustomAIs()
 				   }
 				   catch (const std::exception &e)
 				   {
-					   customAIs->notice = e.what();
-					   customAIs->errors[id] = e.what();
+					   customAIs->notice = Glob2UI::exceptionText(e);
+					   customAIs->errors[id] = customAIs->notice;
 				   }
 				   invalidate();
 			   });
@@ -334,10 +335,10 @@ void SettingsScreen::fetchCustomAIs(bool more)
 						  {
 							  const auto &items = r.result.at("items");
 							  if (!items.is_array() || items.size() > 100)
-								  throw std::runtime_error("Invalid AI catalogue response");
+								  throw Glob2UI::PresentedError(customAIText("Invalid AI catalogue response"), "Invalid AI catalogue response");
 							  for (const auto &item : items)
 								  if (!Online::validAiSummary(item))
-									  throw std::runtime_error("Invalid AI catalogue entry");
+									  throw Glob2UI::PresentedError(customAIText("Invalid AI catalogue response"), "Invalid AI catalogue entry");
 							  for (const auto &item : items)
 								  s.catalogue.push_back(item);
 							  s.cursor = r.result.value("nextCursor", "");
@@ -345,7 +346,7 @@ void SettingsScreen::fetchCustomAIs(bool more)
 					  }
 					  catch (const std::exception &e)
 					  {
-						  s.notice = e.what();
+						  s.notice = Glob2UI::exceptionText(e, customAIText("Invalid AI catalogue response"));
 					  }
 					  invalidate();
 				  });
@@ -467,9 +468,9 @@ void SettingsScreen::installOnlineAI()
 			try
 			{
 				if (!r.ok)
-					throw std::runtime_error(Glob2UI::apiErrorText(r.error));
+					throw Glob2UI::PresentedError(Glob2UI::apiErrorText(r.error), r.error.message);
 				if (origin != s.calls->client().origin())
-					throw std::runtime_error("The online server changed during download");
+					throw Glob2UI::PresentedError(Glob2UI::libraryText("Online server changed during download"), "The online server changed during download");
 				std::string replace;
 				for (const auto &entry : s.library.entries())
 					if (entry.online && entry.online->origin == origin && entry.online->aiId == id)
@@ -486,7 +487,7 @@ void SettingsScreen::installOnlineAI()
 			}
 			catch (const std::exception &e)
 			{
-				s.notice = e.what();
+				s.notice = Glob2UI::exceptionText(e);
 			}
 			invalidate();
 		},

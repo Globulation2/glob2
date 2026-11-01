@@ -153,6 +153,14 @@ control flow, and decodes optional source `messageKey` and scalar
 The wrapper reads the current StringTable language code. Do not rewrite
 PlatformClient diagnostics or translate script/JSON exception text with it.
 
+Local library and storage failures use `Glob2UI::exceptionText` at the UI catch
+boundary. Bulgarian shows an existing reviewed summary and logs the original
+diagnostic; other locales retain their previous message. Throw UI-only
+`PresentedError` for deliberately localized API or native messages so a catch
+preserves their specific wording. Its optional original diagnostic preserves
+logging and prior non-Bulgarian behavior. Keep this marker out of models,
+protocols, storage and CLI code, and retain cleanup and rollback handling.
+
 Bulgarian initially uses the already reviewed English/Bulgarian online catalogs.
 `tools/localization/build_online_error_catalog.py` generates the embedded resource
 with exact input SHA-256 identities. The shared `scons/online_error_catalog.py`
