@@ -1,0 +1,9 @@
+{
+  "revision": "6407c586e78ac49e83fd1bc38ed9bcbf858f10a5",
+  "binarySha256": "66996df1154a9a24541e67c7fa052382093f55dfe1f871fba87a3d7273327f08",
+  "checkpointSha256": "7187bc9afbc6c4dd910a6081357f0f9f39187f7540a0aff089091daef64b1ba3",
+  "traceSha256": "455c982ad46351d215c713960122b2bbd8b99cd1c43fe01f2fb7cc49fcd7c3b4",
+  "workers": 4,
+  "updatedFixtures": false,
+  "continuationChecksumAdjustment": "MapHeader format-version contribution only"
+}
