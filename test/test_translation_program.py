@@ -380,11 +380,12 @@ class MachineDraftTest(TranslationProgramTest):
         self.assertEqual(PROGRAM.LOCALES, (
             'hi', 'bn', 'ur', 'mr', 'te', 'sw', 'ha', 'ta', 'fil', 'th', 'gu',
             'pa-Guru', 'pa-Arab', 'kn', 'am', 'yo', 'my', 'jv', 'ne', 'om',
-            'pcm', 'ps', 'bho', 'fuc-Latn', 'ln', 'uz', 'ml', 'or', 'sd', 'ig', 'su', 'bg', 'nb'))
+            'pcm', 'ps', 'bho', 'fuc-Latn', 'ln', 'uz', 'ml', 'or', 'sd', 'ig', 'su', 'bg', 'nb', 'ms'))
+        self.assertEqual(len(PROGRAM.LOCALES), 34)
         self.assertEqual(self.manifest['locales'], list(PROGRAM.LOCALES))
         selected = PROGRAM.prepare(self.output / 'legacy', 1, self.root, locales=('cs', 'pt-PT', 'sr-Cyrl'))
         self.assertEqual(selected['locales'], ['cs', 'pt-PT', 'sr-Cyrl'])
-        self.assertEqual(set(PROGRAM.NMT_TARGETS), set(PROGRAM.LEGACY_NATIVE_LOCALES) | {'bg'})
+        self.assertEqual(set(PROGRAM.NMT_TARGETS), set(PROGRAM.LEGACY_NATIVE_LOCALES) | {'bg', 'ms'})
         # Game filenames are aliases, not canonical Intl/manifest language choices.
         for invalid in ('br', 'cz', 'dk', 'gr', 'si', 'sr', 'pt', 'zh-cn', 'zh-tw'):
             with self.subTest(invalid=invalid), self.assertRaisesRegex(ValueError, 'supported draft locales'):
@@ -394,7 +395,7 @@ class MachineDraftTest(TranslationProgramTest):
         cases = {'cs': ('cz', 'cs'), 'da': ('dk', 'da'), 'el': ('gr', 'el'),
                  'sl': ('si', 'sl'), 'sr-Cyrl': ('sr', 'sr'),
                  'zh-Hans': ('zh-cn', 'zh-CN'), 'zh-Hant': ('zh-tw', 'zh-TW'),
-                 'pt-PT': ('pt', 'pt-PT'), 'pt-BR': ('br', 'pt-BR')}
+                 'pt-PT': ('pt', 'pt-PT'), 'pt-BR': ('br', 'pt-BR'), 'ms': ('ms', 'ms')}
         output = self.output / 'aliases'
         PROGRAM.prepare(output, 1, self.root, locales=tuple(cases))
         for locale, (native, target) in cases.items():
@@ -431,7 +432,7 @@ class MachineDraftTest(TranslationProgramTest):
     def test_unreviewed_script_targets_fail_before_auth_or_network(self):
         self.auth_mock.reset_mock()
         with patch.object(PROGRAM.urllib.request, 'urlopen') as request:
-            for locale in ('br', 'pa-Arab', 'pa-Guru', 'sr-Latn', 'pt', 'zh', 'fuc-Latn'):
+            for locale in ('br', 'pa-Arab', 'pa-Guru', 'sr-Latn', 'pt', 'zh', 'fuc-Latn', 'ms-Arab'):
                 with self.subTest(locale=locale), self.assertRaisesRegex(ValueError, 'No reviewed Google NMT target'):
                     PROGRAM.machine_draft(self.output, locale, 'test-project')
             request.assert_not_called()

@@ -3,10 +3,12 @@
 #include "SGSL.h"
 #include <BinaryStream.h>
 #include <StreamBackend.h>
-#include <array>
-#include <vector>
 #include <StringTable.h>
 #include <Toolkit.h>
+#include "Version.h"
+#include <array>
+#include <sstream>
+#include <vector>
 #include "AI.h"
 #include "Player.h"
 #include <nlohmann/json.hpp>
@@ -46,10 +48,211 @@ std::string save(MapScriptSGSL& script, Game& game)
     out.flush();
     return bytes->takeContents();
 }
+
+void loadLanguageInventory(const std::filesystem::path& listing, const std::string& excludedLanguage = {})
+{
+    std::istringstream entries(glob2test::readFile(glob2test::sourceRoot() / "data/texts.list.txt"));
+    std::string contents, entry;
+    while (std::getline(entries, entry))
+    {
+        if (!entry.empty() && entry.back() == '\r') entry.pop_back();
+        if (entry.empty() || (!excludedLanguage.empty() && entry == "data/texts." + excludedLanguage + ".txt")) continue;
+        contents += (glob2test::sourceRoot() / entry).string() + "\n";
+    }
+    glob2test::writeFile(listing, contents);
+    auto* strings = GAGCore::Toolkit::getStringTable();
+    REQUIRE(strings->load(listing.string()));
+    REQUIRE(strings->hasLanguage("en"));
+    strings->setDefaultLang(strings->getLangCode("en"));
+    strings->setLang(strings->getLangCode("en"));
+}
+
+// Toolkit's string table survives HeadlessGlobals; restore it even when a REQUIRE aborts.
+struct RestoreLanguageInventory
+{
+    GlobalContainer& globals;
+    std::string settingsLanguage;
+    std::string tableLanguage;
+    explicit RestoreLanguageInventory(GlobalContainer& container)
+        : globals(container), settingsLanguage(container.settings.language),
+          tableLanguage(GAGCore::Toolkit::getStringTable()->getString("[language-code]")) {}
+    ~RestoreLanguageInventory()
+    {
+        globals.settings.language = settingsLanguage;
+        auto* strings = GAGCore::Toolkit::getStringTable();
+        const bool loaded = strings->load((glob2test::sourceRoot() / "data/texts.list.txt").string());
+        CHECK(loaded);
+        if (loaded)
+        {
+            strings->setDefaultLang(strings->getLangCode("en"));
+            strings->setLang(strings->getLangCode(tableLanguage));
+        }
+    }
+};
+
+// The released pre-152 SGSL layout has no per-story private RNG fields.
+// Keep this historical input independent of the current writer.
+std::string saveBeforePrivateRandom(MapScriptSGSL& script, Game& game)
+{
+    REQUIRE(script.areas.empty());
+    REQUIRE(script.flags.empty());
+    auto* bytes = new GAGCore::MemoryStreamBackend;
+    GAGCore::BinaryOutputStream out(bytes);
+    out.writeEnterSection("SGSL");
+    out.writeText(script.sourceCode, "sourceCode");
+    out.writeSint32(script.mainTimer, "mainTimer");
+    out.writeEnterSection("victoryConditions");
+    for (int team = 0; team < game.mapHeader.getNumberOfTeams(); ++team)
+    {
+        out.writeEnterSection(team);
+        out.writeSint32(script.hasTeamWon(team), "hasWon");
+        out.writeSint32(script.hasTeamLost(team), "hasLost");
+        out.writeLeaveSection();
+    }
+    out.writeLeaveSection();
+    out.writeEnterSection("stories");
+    for (unsigned story = 0; story < script.stories.size(); ++story)
+    {
+        out.writeEnterSection(story);
+        out.writeSint32(script.stories[story].lineSelector, "ProgramCounter");
+        out.writeSint32(script.stories[story].internTimer, "internTimer");
+        out.writeLeaveSection();
+    }
+    out.writeLeaveSection();
+    out.writeEnterSection("areas");
+    out.writeUint32(0, "areasCount");
+    out.writeLeaveSection();
+    out.writeEnterSection("flags");
+    out.writeUint32(0, "flagsCount");
+    out.writeLeaveSection();
+    out.writeLeaveSection();
+    out.flush();
+    return bytes->takeContents();
+}
 }
 
 TEST_SUITE("LegacyScriptCoverage")
 {
+    TEST_CASE("Malay and Bulgarian SGSL language tokens require their installed catalogs")
+    {
+        glob2test::HeadlessGlobals globals(glob2test::GlobalsOptions{.loadStrings=true});
+        RestoreLanguageInventory restoreLanguage(globals.globals);
+        glob2test::TempDir temporary("sgsl-languages");
+        const auto listing = temporary.path / "texts.list.txt";
+        for (const std::string language : {"ms", "bg"})
+        {
+            CAPTURE(language);
+            World w;
+            const std::string source = "show(\"Localized message\"," + language + ")";
+            loadLanguageInventory(listing, language);
+            CHECK_FALSE(GAGCore::Toolkit::getStringTable()->hasLanguage(language));
+            StringAcquisition withoutLanguage(w.script.functions);
+            withoutLanguage.open(language);
+            withoutLanguage.nextToken();
+            CHECK(withoutLanguage.getToken()->type == SGSLToken::NIL);
+            CHECK(w.compile(source).type == ErrorReport::ET_NOT_VALID_LANG_ID);
+
+            loadLanguageInventory(listing);
+            REQUIRE(GAGCore::Toolkit::getStringTable()->hasLanguage(language));
+            StringAcquisition withLanguage(w.script.functions);
+            withLanguage.open(language);
+            withLanguage.nextToken();
+            CHECK(withLanguage.getToken()->type == SGSLToken::LANG);
+            CHECK(withLanguage.getToken()->msg == language);
+            CHECK(withLanguage.getToken()->value == GAGCore::Toolkit::getStringTable()->getLangCode(language));
+            CHECK(w.compile(source).type == ErrorReport::ET_OK);
+        }
+    }
+
+    TEST_CASE("Malay and Bulgarian SGSL select their messages and retain an authored default")
+    {
+        glob2test::HeadlessGlobals globals(glob2test::GlobalsOptions{.loadStrings=true});
+        RestoreLanguageInventory restoreLanguage(globals.globals);
+        for (const auto& [language, expected] : {
+            std::pair{"ms", "Mesej Melayu"}, std::pair{"bg", "Българско съобщение"},
+            std::pair{"en", "English message"},
+            std::pair{"fr", "Authored fallback"}})
+        {
+            CAPTURE(language);
+            globals.globals.settings.language = language;
+            World w;
+            REQUIRE(w.compile("show(\"Authored fallback\") show(\"English message\",en) "
+                              "show(\"Mesej Melayu\",ms) show(\"Българско съобщение\",bg) wait(2)").type == ErrorReport::ET_OK);
+            w.step();
+            CHECK(w.script.isTextShown);
+            CHECK(w.script.textShown == expected);
+        }
+    }
+
+    TEST_CASE("adding Malay or Bulgarian preserves legacy SGSL source bytes and saved program counters")
+    {
+        glob2test::HeadlessGlobals globals(glob2test::GlobalsOptions{.loadStrings=true});
+        RestoreLanguageInventory restoreLanguage(globals.globals);
+        glob2test::TempDir temporary("sgsl-save-languages");
+        const auto listing = temporary.path / "texts.list.txt";
+        for (const std::string language : {"ms", "bg"})
+        {
+            CAPTURE(language);
+            const std::string source =
+                "# Released script bytes \xC3\xA9\n"
+                "show(\"English message\",en) show(\"French message\",fr) "
+                // Malay is already released when Bulgarian is appended: its token index must remain stable.
+                + std::string(language == "bg" ? "show(\"Mesej Melayu\",ms) " : "") + "wait(3) "
+                "show(\"Authored continuation\") win(0)\n";
+            for (const int format : {MINIMUM_VERSION_MINOR, VERSION_MINOR})
+            {
+                CAPTURE(format);
+                loadLanguageInventory(listing, language);
+                globals.globals.settings.language = "en";
+                World w;
+                w.world.game.mapHeader.versionMinor = format;
+                REQUIRE(w.world.game.mapHeader.loadingVersion() == format);
+                REQUIRE(w.compile(source).type == ErrorReport::ET_OK);
+                w.step();
+                REQUIRE(w.script.stories.size() == 1);
+                const auto tokens = w.script.stories.front().line;
+                const int pc = w.script.stories.front().lineSelector;
+                const int timer = w.script.stories.front().internTimer;
+                REQUIRE(timer > 0);
+                const bool historical = format < FILE_FORMAT_VERSION_PRIVATE_RANDOM;
+                const auto encode = [&](MapScriptSGSL& script) {
+                    return historical ? saveBeforePrivateRandom(script, w.world.game)
+                                      : save(script, w.world.game);
+                };
+                const auto bytes = encode(w.script);
+
+                loadLanguageInventory(listing);
+                globals.globals.settings.language = language;
+                MapScriptSGSL restored;
+                GAGCore::BinaryInputStream input(new GAGCore::MemoryStreamBackend(bytes.data(), bytes.size()));
+                input.seekFromStart(0);
+                REQUIRE(restored.load(&input, &w.world.game));
+                CHECK(input.getPosition() == bytes.size());
+                CHECK(restored.sourceCode == source);
+                REQUIRE(restored.stories.size() == 1);
+                CHECK(restored.stories.front().lineSelector == pc);
+                CHECK(restored.stories.front().internTimer == timer);
+                REQUIRE(restored.stories.front().line.size() == tokens.size());
+                for (size_t i = 0; i < tokens.size(); ++i)
+                {
+                    CHECK(restored.stories.front().line[i].type == tokens[i].type);
+                    CHECK(restored.stories.front().line[i].value == tokens[i].value);
+                    CHECK(restored.stories.front().line[i].msg == tokens[i].msg);
+                }
+                CHECK(encode(restored) == bytes);
+                for (int tick = 0; tick < 5; ++tick)
+                {
+                    w.step();
+                    restored.syncStep(w.world.game, w.world.gui, w.world.gui.clientRequests);
+                    CHECK(w.script.checkSum() == restored.checkSum());
+                    CHECK(encode(w.script) == encode(restored));
+                }
+                CHECK(restored.hasTeamWon(0));
+                CHECK(restored.textShown == "Authored continuation");
+            }
+        }
+    }
+
     TEST_CASE("catalog languages and quoted locale names preserve suspended story continuation")
     {
         glob2test::HeadlessGlobals globals(glob2test::GlobalsOptions{.loadStrings=true});

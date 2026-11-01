@@ -10,6 +10,7 @@
 #include "Order.h"
 #include "GameGUIKeyActions.h"
 #include "GameGUIDialog.h"
+#include "UIRecordingCanvas.h"
 #include "EndGameScreen.h"
 #include <StringTable.h>
 #include <Toolkit.h>
@@ -963,6 +964,29 @@ TEST_CASE("statistics topics history and overlays preserve gameplay state [displ
         CHECK(node->bounds.x>=panel.host().rootBounds().x);
         CHECK(node->bounds.right()<=panel.host().rootBounds().right());
     }
+    strings->setLang(strings->getLangCode("ms"));
+    CHECK(std::string(strings->getString("[language-code]"))=="ms");
+    panel.selectTopic(InGameStatisticsPanel::Topic::Overview);
+    panel.invalidate();draw("statistics-desktop-large-malay.bmp");
+    const auto *overview=panel.host().find("stats/topic/0");
+    REQUIRE(overview);
+    const auto &presentation=panel.host().presentation();
+    GAGGUI::ui::ToolkitTextMeasurer measurer(panel.host().theme(),presentation.touch,presentation.textUnit);
+    glob2test::RecordingCanvas canvas(presentation.viewport.size(),measurer);
+    panel.host().paint(canvas,0);
+    std::string paintedOverview;
+    for(const auto &[at,line]:canvas.texts) {
+        if(!overview->bounds.contains(at))continue;
+        if(!paintedOverview.empty())paintedOverview+=' ';
+        paintedOverview+=line;
+        CHECK(overview->bounds.contains(GAGGUI::ui::Rect{
+            at.x,at.y,measurer.width(GAGGUI::ui::FontRole::Support,line),
+            measurer.lineHeight(GAGGUI::ui::FontRole::Support)}));
+    }
+    // Joining the actually painted lines with spaces must preserve whole words;
+    // the narrow half-width button split "Gambaran keseluruhan" inside both words.
+    CHECK(paintedOverview==overview->accessibleText());
+    CHECK(world.game.checkSum()==checksum);
     strings->setLang(language);GAGCore::userTextScale=textScale;
     gui.setPublishedScene(nullptr);
     gui.init(); CHECK_FALSE(gui.statisticsPanel);

@@ -22,6 +22,12 @@ import {
   useLibrarySearch,
 } from '../components/library.tsx';
 import { Cover } from './Cover.tsx';
+const UPLOADS = [
+  ['calm', 'Calm'],
+  ['building', 'Building'],
+  ['combat', 'Combat'],
+  ['cover', 'Cover'],
+] as const;
 type MusicNotice = { kind: 'success'; source: 'Saved' } | { kind: 'error'; error: unknown } | null;
 function musicErrorText(error: unknown): string {
   if (getLocale() !== 'bg') return error instanceof Error ? error.message : String(error);
@@ -526,17 +532,16 @@ export function MusicDetail({ id }: { id: string }) {
       {owner && !release.generated && ['draft', 'inspected'].includes(release.status) && (
         <section className="music-upload">
           <h2>{t('Prepare this release')}</h2>
-          {[...MOODS, 'Cover'].map((mood, i) => (
-            <label key={mood}>
-              {musicMoodLabel(mood)}{' '}
-              {release.uploaded.includes(mood.toLowerCase()) ? t('✓ uploaded') : ''}
+          {UPLOADS.map(([kind, label]) => (
+            <label key={kind}>
+              {musicMoodLabel(label)} {release.uploaded.includes(kind) ? t('✓ uploaded') : ''}
               <input
                 type="file"
                 disabled={busy}
-                accept={i === 3 ? 'image/*' : 'audio/*'}
+                accept={kind === 'cover' ? 'image/*' : 'audio/*'}
                 onChange={(e) => {
                   const file = e.target.files?.[0];
-                  if (file) void action('PUT', `/uploads/${mood.toLowerCase()}`, file);
+                  if (file) void action('PUT', `/uploads/${kind}`, file);
                 }}
               />
             </label>

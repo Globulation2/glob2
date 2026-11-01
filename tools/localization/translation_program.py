@@ -29,9 +29,9 @@ CHECKER = importlib.util.module_from_spec(SPEC)
 SPEC.loader.exec_module(CHECKER)
 LOCALES = ('hi', 'bn', 'ur', 'mr', 'te', 'sw', 'ha', 'ta', 'fil', 'th', 'gu',
            'pa-Guru', 'pa-Arab', 'kn', 'am', 'yo', 'my', 'jv', 'ne', 'om',
-           'pcm', 'ps', 'bho', 'fuc-Latn', 'ln', 'uz', 'ml', 'or', 'sd', 'ig', 'su', 'bg', 'nb')
+           'pcm', 'ps', 'bho', 'fuc-Latn', 'ln', 'uz', 'ml', 'or', 'sd', 'ig', 'su', 'bg', 'nb', 'ms')
 # Existing registered native languages are opt-in compatibility drafting scopes.
-# LOCALES and prepare()'s default retain the original translation-program scope.
+# LOCALES and prepare()'s default retain the registered translation-program scope.
 LEGACY_NATIVE_LOCALES = (
     'ar', 'pt-BR', 'ca', 'cs', 'da', 'de', 'eo', 'es', 'eu', 'fa', 'fi', 'fr',
     'el', 'hi', 'hu', 'id', 'it', 'ja', 'ko', 'nl', 'pl', 'pt-PT', 'ro', 'ru',
@@ -48,8 +48,9 @@ NATIVE_GAME_CODES = {
 # Serbian sr is the NMT target for native Cyrillic; Chinese uses API region codes.
 # Native br is Brazilian Portuguese (not Breton); native pt is European Portuguese.
 # Both Portuguese variants deliberately use their reviewed regional API targets.
+# Malay uses the documented Latin-script NMT target ms, not Jawi ms-Arab.
 NMT_TARGETS = {
-    'bg': 'bg', 'ar': 'ar', 'pt-BR': 'pt-BR', 'ca': 'ca', 'cs': 'cs', 'da': 'da',
+    'bg': 'bg', 'ms': 'ms', 'ar': 'ar', 'pt-BR': 'pt-BR', 'ca': 'ca', 'cs': 'cs', 'da': 'da',
     'de': 'de', 'eo': 'eo', 'es': 'es', 'eu': 'eu', 'fa': 'fa', 'fi': 'fi',
     'fr': 'fr', 'el': 'el', 'hi': 'hi', 'hu': 'hu', 'id': 'id', 'it': 'it',
     'ja': 'ja', 'ko': 'ko', 'nl': 'nl', 'pl': 'pl', 'pt-PT': 'pt-PT',

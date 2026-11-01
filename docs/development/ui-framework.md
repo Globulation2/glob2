@@ -127,8 +127,11 @@ The JSON tutorial inventory distinguishes legacy language blocks from current
 `display_catalog_gaps`. Generator/building/resource names and keyboard names
 built from runtime data and unregistered wrappers still need contextual review.
 Run `npm run i18n:check` from `platform/` for online catalogs and browser launcher
-bindings, and render representative screens in each language to check font
-coverage, text fitting and layout. The legacy Arabic/Persian route in
+bindings. It also requires catalog keys for fixed UI metadata: AI tags and compatibility
+captions, connection-quality terms, route/admin/map labels, match verdicts, music
+moods/check guidance and skin model/material/shape/pose captions. Translate their displayed labels while preserving canonical protocol
+values in filters and requests. Render representative screens in each language to
+check font coverage, text fitting and layout. The legacy Arabic/Persian route in
 `TrueTypeFont` shapes text into visual order before rasterization and uses an
 explicit left-to-right SDL_ttf direction to prevent a second reordering pass.
 Complex script fonts retain their shaping tables and use logical directional
@@ -223,6 +226,37 @@ plural forms. Drafts never overwrite existing work. `check-draft --locale hi`
 checks draft keys and tokens and reports untranslated entries and English matches
 for review; it does not replace the official checks above. Keep unfinished
 catalogs out of the selectable language inventory.
+
+For a gcloud-authenticated machine draft, use the same frozen kit:
+
+```sh
+python3 tools/localization/cloud_draft.py --output artifacts/localization-release \
+  --locale ms --project YOUR_PROJECT_ID --dry-run
+python3 tools/localization/cloud_draft.py --output artifacts/localization-release \
+  --locale ms --project YOUR_PROJECT_ID --keys-file artifacts/localization-release/pilot-keys.json
+```
+
+The project must already have billing and Cloud Translation API access. The
+runner obtains an access token through `gcloud auth print-access-token`, uses
+Advanced v3 `general/nmt` with explicit English source, and never changes the
+global gcloud project. The keys file is a JSON array of exact `native:[key]` and
+`online:key` source IDs; use it for a representative pilot, or `--limit N` for
+the first N pending values. After reviewing the pilot, omit the selection flags
+to draft the remaining blank values. Existing nonblank translations are retained.
+`--dry-run` reports pending values and source character counts without API calls.
+
+Requests contain at most 4,500 protected HTML code points and 1,000 entries.
+Oversized messages split at safe word boundaries. Nontranslated spans protect
+placeholders, line breaks, markup and online invariant literals; changed tokens
+or malformed response cardinality stop the run. Raw provider responses and
+request identities are cached under the kit's `cloud/LOCALE/` directory before
+drafts are checkpointed. A restart reuses cached identical requests. Temporary
+network/server errors retry with bounded backoff; ambiguous transport failures
+can still incur duplicate provider charges. Inspect any rejected cached response
+before explicitly removing it to retry. Machine output and a successful runner
+are not linguistic approval. Review every entry through the independent passes
+below; do not publish the kit's cache, credentials or review working files.
+Run `python3 test/test_cloud_draft.py` when changing this runner.
 
 For Google Cloud machine drafts, prepare a scoped kit (for example,
 `prepare --locales nb --output artifacts/norwegian/kit`), then estimate work without
@@ -328,6 +362,15 @@ The Latin-script Pulaar catalog uses game code `fuc` and online tag `fuc-Latn`.
 Generic Fula tags resolve to it only for Senegal or Mauritania; Adlam and other
 Fula varieties must not be silently advertised as covered.
 
+The installed native catalog list also defines the language tokens accepted by
+the legacy SGSL lexer, including bare codes in `show("text", ms)`. Registering a
+new code therefore expands map/script acceptance even when no renderer or game
+rule changes. Bump `SIM_REVISION` and regenerate the golden match record/trace in
+the same change. Keep existing catalog order stable, verify saved SGSL source
+bytes and program counters across registration, and test the affected replay and
+network acceptance boundaries. This does not by itself change the save format or
+justify moving its minimum supported version.
+
 Each language needs a brief identifying its actual variety, script and region,
 with cited orthography, grammar and dictionary sources and terminology rationales.
 Unresolved uncertainty blocks finalization. Establish a source-based pilot before
@@ -389,8 +432,7 @@ do not verify a production server. `game` adds
 the real engine and menu dialog. Statistics captures navigate the real Overview, Economy and World topics and available metric history/details. They retain live-player visibility rules and never synthesize history or expose hidden win probabilities. Tutorial IDs must belong to the current shipped
 lesson catalog. When a lesson opens its automatic briefing, the harness saves
 that state separately, dismisses it and captures the uncovered guidance panel.
-The gameplay preview also captures the win-probability statistics screen and its
-metric explanation, checking that drawing leaves the simulation checksum intact.
+Each gameplay capture checks that drawing leaves the simulation checksum intact.
 A published tutorial model alone does not prove that its text is visible. Inputs are
 `native.json` and `online.json` key/value objects plus `metadata.json` identifying
 the locale. Preserve the original text-catalog hashes in that metadata when
@@ -426,6 +468,29 @@ widths, retaining their control IDs and minimum hit areas. Empty statistics-char
 notices wrap within the chart using the same font and shaping boundaries as the
 rest of the chart. Review legitimate names and loanwords
 explicitly rather than changing correct text merely to avoid an English match.
+
+### Malay terminology
+
+The `ms` catalog uses standard Malaysian Malay in Latin/Rumi script, displayed
+as **Bahasa Melayu**. Explicit Jawi/Arabic-script locale preferences do not select
+this catalog. Use contemporary Malaysian software terms: **Tetapan**, **fail**,
+**akaun**, **kata laluan**, **pelayar web**, **muat turun** and **muat naik**.
+Indonesian translations can clarify game concepts, but are not Malaysian wording
+authorities. Consult [DBP's dictionary and terminology](https://prpm.dbp.gov.my/)
+for disputed words and review each term in its actual gameplay context.
+
+| Concept | Malay (`ms`) |
+| --- | --- |
+| Worker / Explorer / Warrior | Pekerja / Penjelajah / Pahlawan |
+| Inn / Swarm / Market | Penginapan / Sarang / Pasar |
+| Racetrack | Litar Larian (unit training, not horse racing) |
+| Room / Match | Bilik / Perlawanan |
+| Map generator / Terrain | Penjana peta / Rupa bumi |
+| Stream reach / Sand bar | Panjang anak sungai / Beting pasir |
+
+Keep building names consistent in lessons and HUD text. The Inn supplies food,
+the Swarm produces units, and flags assign work or military attention. Music
+playback uses **Sedang dimainkan**, rather than the verb for playing a game.
 
 ### Hindi, Urdu and Swahili terminology
 
@@ -650,10 +715,11 @@ Bulgarian opts into authored logical draw advances alongside other new locales,
 keeping the complete high-resolution raster within measured widths while
 preserving existing locale geometry.
 
-Script-layout locales, Swahili and Norwegian Bokmål draw high-DPI text at the
-authored width used by wrapping and hit testing. The complete high-resolution
-bitmap is resampled into that destination: font hinting at a larger raster size
-must not make a fitted line overflow its layout.
+Script-layout locales, Swahili, Norwegian Bokmål and Malay draw high-DPI text
+at the authored width used by wrapping and hit testing. The complete
+high-resolution bitmap is resampled into that destination; font hinting at a
+larger raster size must not make a fitted line overflow its layout. Legacy
+Latin locales retain their existing geometry.
 
 Offscreen text that will be transformed must use `Font::rasterizeString` with an
 explicit physical scale; ordinary offscreen `drawString` retains the authored
