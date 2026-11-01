@@ -6812,3 +6812,11 @@ Kiasi cha samaki
 Idadi ya maeneo ya kambi
 [scenario messages]
 Ujumbe ▸
+[lush_grass]
+
+[dry_grass]
+
+[dune_sand]
+
+[pale_sand]
+

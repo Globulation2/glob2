@@ -6812,3 +6812,11 @@ MCP سرور چالو کریں
 خیمہ گاہوں کی تعداد
 [scenario messages]
 پیغامات ▸
+[lush_grass]
+
+[dry_grass]
+
+[dune_sand]
+
+[pale_sand]
+
