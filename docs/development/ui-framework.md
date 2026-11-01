@@ -300,8 +300,10 @@ the actual live sidebar or compact sheet for `overview`, `colony`, `economy`,
 `map-overlays` captures the desktop overlay-tools view. These modes use ordinary
 presentation navigation and preserve the simulation checksum while drawing.
 Tutorial IDs must belong to the current shipped
-lesson catalog. When a lesson opens its automatic briefing, the harness saves
-that state separately, dismisses it and captures the uncovered guidance panel.
+lesson catalog. For a nonempty current mission briefing, the harness captures
+the real dialog separately, opening it for preview if scene admission skipped
+the automatic opening. It records preview-opened and automatic origins separately,
+then dismisses the dialog and captures the uncovered guidance panel.
 Legacy tutorial highlight arrows wait while a modal is open, then resume after
 dismissal so they cannot cover briefing text. The desktop `tutorial:swimming`
 preview at 800×600 also toggles a real highlight and compares the actual modal's

@@ -11,6 +11,7 @@
 #include "EndGameScreen.h"
 #include "InGameStatistics.h"
 #include "GameGUITouch.h"
+#include "GameGUIDialog.h"
 #include "FrontendTheme.h"
 #include "MenuColony.h"
 #include "Sha256.h"
@@ -58,6 +59,9 @@ struct TranslationPreviewAccess
     static void openMenu(GameGUI &gui) { gui.openMainMenu(); }
     static void closeMenu(GameGUI &gui) { gui.closeDialog(); }
     static bool initialBriefingOpen(const GameGUI &gui) { return gui.inGameMenu == GameGUI::IGM_OBJECTIVES; }
+    static void openBriefing(GameGUI &gui) {
+        gui.openDialog(GameGUI::IGM_OBJECTIVES, std::make_unique<InGameObjectivesScreen>(&gui, true));
+    }
     static bool dialogOpen(const GameGUI &gui) { return gui.inGameMenu != GameGUI::IGM_NONE || gui.activeDialog() != nullptr; }
     static void openLiveStatistics(GameGUI &gui, InGameStatisticsPanel::Topic topic) {
         gui.clearSelection();
@@ -624,9 +628,25 @@ void gameplayPreview(const fs::path &root, const fs::path &pilot, const fs::path
             result["limits"].push_back("Live statistics use the actual HUD/sidebar or compact sheet and published local-game history; no bounds or values are substituted. Sparse initial history is not a completed-match or prediction-accuracy claim.");
         }
         if (tutorial) {
-            // A tick-12 automatic briefing can cover the current lesson model.
-            // Preserve that real opening state, then expose the actual guidance.
+            // Scene admission can skip the displayed tick-12 automatic-open
+            // moment. Capture each actual nonempty briefing deterministically,
+            // without inventing text or changing the tutorial/simulation model.
+            const bool automaticBriefing = TranslationPreviewAccess::initialBriefingOpen(gui);
+            const bool briefingAvailable = scene.world.session->missionBriefing &&
+                !scene.world.session->missionBriefing->empty();
+            bool previewOpenedBriefing = false;
+            if (!automaticBriefing && briefingAvailable) {
+                require(!TranslationPreviewAccess::dialogOpen(gui), "Briefing preview starts without an unrelated dialog");
+                const auto before = gui.game.checkSum();
+                TranslationPreviewAccess::openBriefing(gui);
+                require(TranslationPreviewAccess::initialBriefingOpen(gui) && TranslationPreviewAccess::dialog(gui),
+                        "Actual production mission briefing opens for preview");
+                require(before == gui.game.checkSum(), "Opening real briefing preserves simulation state");
+                previewOpenedBriefing = true;
+            }
             const bool briefing = TranslationPreviewAccess::initialBriefingOpen(gui);
+            result["tutorial_briefing_available"] = briefingAvailable;
+            result["preview_briefing_opened"] = previewOpenedBriefing;
             if (briefing) {
                 auto baseline = capture(captureKind + "-briefing");
                 if (lesson == "swimming" && width == 800 && height == 600 &&
@@ -711,7 +731,8 @@ void gameplayPreview(const fs::path &root, const fs::path &pilot, const fs::path
             if (briefing) TranslationPreviewAccess::closeMenu(gui);
             require(!TranslationPreviewAccess::dialogOpen(gui), "Tutorial guidance capture must be dialog-free");
             require(before == gui.game.checkSum(), "Dismissing briefing must preserve simulation state");
-            result["automatic_briefing_dismissed"] = briefing;
+            result["automatic_briefing_dismissed"] = automaticBriefing;
+            result["briefing_dismissed"] = briefing;
             result["tutorial_capture_dialog_free"] = true;
         }
         if (kind != "statistics") capture(captureKind);
