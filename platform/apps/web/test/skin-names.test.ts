@@ -23,6 +23,7 @@ it('keeps emoji graphemes whole and includes RTL isolation in the length budget'
   await setLocale('ar');
   const family = '👨‍👩‍👧‍👦';
   const result = skinCopyName(family.repeat(9));
+  expect(result.length).toBeLessThanOrEqual(64);
   expect(Array.from(result).length).toBeLessThanOrEqual(64);
   expect(result.replaceAll(family, '')).not.toMatch(/[👨👩👧👦\u200d]/u);
   expect(result).toContain(family);
