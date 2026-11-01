@@ -62,9 +62,11 @@ export function resolveLocale(input: string | readonly string[]): Locale {
             ? 'arab'
             : language === 'sw' || language === 'ms'
               ? 'latn'
-              : language === 'ta'
-                ? 'taml'
-                : undefined;
+              : language === 'te'
+                ? 'telu'
+                : language === 'ta'
+                  ? 'taml'
+                  : undefined;
     if (writtenScript) {
       const extension = parts.findIndex((part) => part.length === 1);
       const subtags = extension < 0 ? parts : parts.slice(0, extension);
@@ -122,6 +124,7 @@ const loaders: Record<string, () => Promise<{ default: Catalog }>> = {
   ms: () => import('../locales/ms.json', { with: { type: 'json' } }),
   hi: () => import('../locales/hi.json', { with: { type: 'json' } }),
   mr: () => import('../locales/mr.json', { with: { type: 'json' } }),
+  te: () => import('../locales/te.json', { with: { type: 'json' } }),
   ur: () => import('../locales/ur.json', { with: { type: 'json' } }),
   sw: () => import('../locales/sw.json', { with: { type: 'json' } }),
   ta: () => import('../locales/ta.json', { with: { type: 'json' } }),

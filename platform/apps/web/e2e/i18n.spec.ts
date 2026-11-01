@@ -3,6 +3,8 @@ import { resolve } from 'node:path';
 import { expect, test } from '@playwright/test';
 import { AI_TAGS } from '@glob2/protocol';
 import { locales } from '../../../packages/i18n/src/locales.ts';
+import type { SeededHistory } from '../../api/test/historySeed.ts';
+import { INVITE_CODE } from './showcase.ts';
 
 for (const locale of locales) {
   test(`home loads and renders ${locale.code}`, async ({ page, context }, info) => {
@@ -69,6 +71,39 @@ for (const locale of locales) {
     const heading = catalog['Welcome to the colony'] ?? 'Welcome to the colony';
     if (locale.code !== 'en') expect(heading).not.toBe('Welcome to the colony');
     await expect(page.locator('#hero-title')).toHaveText(heading);
+    if (locale.code === 'te') {
+      const font = await page.locator('#hero-title').evaluate(async (element) => {
+        const loaded = await document.fonts.load('24px "Glob2 Scripts"', 'తెలుగు');
+        await document.fonts.ready;
+        return {
+          family: getComputedStyle(element).fontFamily,
+          faces: loaded.map((face) => ({ family: face.family, status: face.status })),
+        };
+      });
+      expect(font.family).toContain('Glob2 Scripts');
+      expect(font.faces).toEqual(
+        expect.arrayContaining([expect.objectContaining({ status: 'loaded' })]),
+      );
+      if ((page.viewportSize()?.width ?? 1280) < 1100) {
+        await expect(page.locator('.app-sidebar .language-preference')).toBeHidden();
+        await page.locator('.rail-expand').click();
+        const selector = page.locator('.drawer-content [data-testid="language-selector"]');
+        await selector.scrollIntoViewIfNeeded();
+        await expect(selector).toBeVisible();
+        await expect(selector.locator('option:checked')).toHaveText(locale.name);
+        expect((await selector.boundingBox())?.width ?? 0).toBeGreaterThan(180);
+        const directory = process.env.SCREENSHOT_DIR;
+        const path = directory
+          ? resolve(directory, info.project.name, 'te-language-drawer.png')
+          : undefined;
+        if (directory) mkdirSync(resolve(directory, info.project.name), { recursive: true });
+        await info.attach('te-language-drawer', {
+          body: await page.screenshot({ path }),
+          contentType: 'image/png',
+        });
+        await page.locator('.sidebar-close').click();
+      }
+    }
     await page.evaluate(() => document.fonts.ready);
     if (locale.code === 'bn') {
       // Prove that the packaged Bengali face loaded, even on a host that also
@@ -93,24 +128,25 @@ for (const locale of locales) {
     }
     await expect(page.getByRole('link', { name: /Isles of Plenty/ })).toBeVisible();
     await expect(page.locator('.app-sidebar .nav a[href="/maps"]')).toBeVisible();
-    // Core navigation must survive locale changes regardless of optional capabilities.
+    // The maintained fixture enables the skin designer with sales disabled.
+    // The guest still has no moderation role.
+    // Assert destinations so a missing translated navigation item cannot pass.
     expect(
       await page
         .locator('.app-sidebar .nav a')
         .evaluateAll((links) => links.map((link) => link.getAttribute('href'))),
-    ).toEqual(
-      expect.arrayContaining([
-        '/',
-        '/leaderboard',
-        '/players',
-        '/matches',
-        '/maps',
-        '/sets',
-        '/ais',
-        '/buildings',
-        '/music',
-      ]),
-    );
+    ).toEqual([
+      '/',
+      '/leaderboard',
+      '/players',
+      '/matches',
+      '/maps',
+      '/sets',
+      '/ais',
+      '/buildings',
+      '/music',
+      '/skins',
+    ]);
     const themeChangeLabel = catalog['{value0}. Change theme'];
     const defaultThemeLabel = catalog['Theme: same as this device'];
     if (!themeChangeLabel || !defaultThemeLabel) {
@@ -403,6 +439,137 @@ for (const language of ['fr', 'bn']) {
     await expect(page.locator('html')).toHaveAttribute('lang', language);
   });
 }
+
+test('changing to Telugu and back preserves input', async ({ page }) => {
+  await page.route('**/api/v1/accounts/me', (route) =>
+    route.fulfill({ status: 401, json: { code: 'unauthenticated', message: 'Sign in required.' } }),
+  );
+  await page.goto('/');
+  const code = page.locator('input[name="code"]');
+  await code.fill('ABCD');
+  if (!(await page.getByTestId('language-selector').first().isVisible()))
+    await page.locator('.rail-expand').click();
+  const selector = page.locator('[data-testid="language-selector"]:visible').first();
+  for (const language of ['fr', 'te', 'en']) {
+    await selector.selectOption(language);
+    await expect(page.locator('html')).toHaveAttribute('lang', language);
+    await expect(code).toHaveValue('ABCD');
+    await expect(page.locator('.app-sidebar .nav a[href="/maps"]')).toBeVisible();
+  }
+});
+
+test('Telugu renders shared online pages, authentication, invites and errors', async ({
+  page,
+  context,
+  request,
+}, info) => {
+  const base = String(info.project.use.baseURL ?? 'http://127.0.0.1:4280');
+  const seed = (await (await request.get('/__seed')).json()) as SeededHistory;
+  await context.addCookies([{ name: 'glob2_locale', value: 'te', url: base }]);
+  await page.route('glob2://**', (route) => route.abort());
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  const catalog = JSON.parse(
+    readFileSync(new URL('../../../packages/i18n/locales/te.json', import.meta.url), 'utf8'),
+  ) as Record<string, string>;
+  const capture = async (path: string, name: string, heading?: string) => {
+    const response = await page.goto(path);
+    expect(response?.status()).toBeLessThan(500);
+    await expect(page.locator('html')).toHaveAttribute('lang', 'te');
+    if (heading) {
+      const translated = catalog[heading];
+      expect(translated).toBeTruthy();
+      await expect(page.getByRole('heading', { level: 1 })).toHaveText(translated ?? '');
+    }
+    const loaded = await page.evaluate(async () => {
+      const faces = await document.fonts.load('20px "Glob2 Scripts"', 'తెలుగు');
+      await document.fonts.ready;
+      return faces.some((face) => face.status === 'loaded');
+    });
+    expect(loaded).toBe(true);
+    expect(
+      await page.evaluate(
+        () => document.documentElement.scrollWidth - document.documentElement.clientWidth,
+      ),
+      path,
+    ).toBeLessThanOrEqual(1);
+    const directory = process.env.SCREENSHOT_DIR;
+    const screenshotPath = directory
+      ? resolve(directory, info.project.name, `te-${name}.png`)
+      : undefined;
+    if (directory) mkdirSync(resolve(directory, info.project.name), { recursive: true });
+    await info.attach(`te-${name}`, {
+      body: await page.screenshot({ fullPage: true, path: screenshotPath }),
+      contentType: 'image/png',
+    });
+  };
+  await capture('/signin', 'signin');
+  await expect(page.locator('#signin-username')).toBeVisible();
+  await capture(`/j/${INVITE_CODE}`, 'invite');
+  await expect(page.locator('.room')).toHaveText('Saturday night colony');
+  await capture('/j/NOSUCHCODE', 'invite-error', 'Invite not found');
+  await capture('/maps', 'maps');
+  await expect(page.getByTestId('map-card').first()).toBeVisible();
+  await context.addCookies([{ name: 'glob2_session', value: seed.userSession, url: base }]);
+  await capture('/account', 'account', 'Your account');
+  await expect(page.locator('main')).toContainText('Kestrel');
+  await capture('/maps/new', 'upload', 'Upload a map');
+  const visibility = catalog['Unlisted: anyone with the link'];
+  expect(visibility).toBeTruthy();
+  await expect(page.locator('.upload-form option[value="unlisted"]')).toHaveText(visibility ?? '');
+
+  // Exercise the actual long instruction after opening a real, locally enabled
+  // designer. Checking text ranges catches clipping hidden by stage overflow.
+  await page.goto('/skins');
+  await page.getByRole('button', { name: catalog['New skin'] ?? '', exact: true }).click();
+  const hint = page.locator('.skin-stage-hint');
+  await hint.waitFor({ state: 'visible' });
+  await expect(hint).toHaveText(
+    catalog['Drag to paint · Rotate tool to turn · scroll or pinch to zoom'] ?? '',
+  );
+  await page.evaluate(() => document.fonts.ready);
+  const bounds = await hint.evaluate((element) => {
+    const stage = element.closest('.skin-stage');
+    const pose = stage?.querySelector('.skin-pose-strip');
+    if (!stage || !pose)
+      throw new Error('The actual designer stage and pose controls are required');
+    const rectangle = (r: DOMRect) => ({
+      left: r.left,
+      right: r.right,
+      top: r.top,
+      bottom: r.bottom,
+    });
+    const stageBox = stage.getBoundingClientRect();
+    const hintBox = element.getBoundingClientRect();
+    const poseBox = pose.getBoundingClientRect();
+    const range = document.createRange();
+    range.selectNodeContents(element);
+    return {
+      stage: rectangle(stageBox),
+      text: [...range.getClientRects()].map(rectangle),
+      fontSize: parseFloat(getComputedStyle(element).fontSize),
+      overlap:
+        Math.max(0, Math.min(hintBox.right, poseBox.right) - Math.max(hintBox.left, poseBox.left)) *
+        Math.max(0, Math.min(hintBox.bottom, poseBox.bottom) - Math.max(hintBox.top, poseBox.top)),
+    };
+  });
+  expect(bounds.text.length).toBeGreaterThan(0);
+  expect(bounds.fontSize).toBeGreaterThanOrEqual(10);
+  expect(bounds.overlap, 'The full hint must stay separate from pose controls').toBe(0);
+  for (const row of bounds.text) {
+    expect(row.left).toBeGreaterThanOrEqual(bounds.stage.left - 1);
+    expect(row.right).toBeLessThanOrEqual(bounds.stage.right + 1);
+    expect(row.top).toBeGreaterThanOrEqual(bounds.stage.top - 1);
+    expect(row.bottom).toBeLessThanOrEqual(bounds.stage.bottom + 1);
+  }
+  const directory = process.env.SCREENSHOT_DIR;
+  await info.attach('te-skin-hint', {
+    body: await page.screenshot({
+      fullPage: true,
+      path: directory ? resolve(directory, info.project.name, 'te-skin-hint.png') : undefined,
+    }),
+    contentType: 'image/png',
+  });
+});
 
 // Exercise script-font loading and an explicit saved choice, beyond inventory smoke tests.
 test('Marathi switching restores LTR, loads the bundled font and keeps the chosen locale', async ({

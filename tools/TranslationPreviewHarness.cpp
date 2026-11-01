@@ -9,10 +9,10 @@
 #include "MainMenuScreen.h"
 #include "SettingsScreen.h"
 #include "CustomGameScreen.h"
-#include "GameGUIDialog.h"
 #include "EndGameScreen.h"
 #include "InGameStatistics.h"
 #include "GameGUITouch.h"
+#include "GameGUIDialog.h"
 #include "FrontendTheme.h"
 #include "MenuColony.h"
 #include "Sha256.h"
@@ -32,7 +32,10 @@
 #include <SDL3_net/SDL_net.h>
 #include <nlohmann/json.hpp>
 #include <algorithm>
+#include <array>
 #include <cmath>
+#include <cstring>
+#include <set>
 #include <filesystem>
 #include <fstream>
 #include <iomanip>
@@ -61,11 +64,37 @@ struct TranslationPreviewAccess
     static void openBriefing(GameGUI &gui) {
         gui.openDialog(GameGUI::IGM_OBJECTIVES, std::make_unique<InGameObjectivesScreen>(&gui, true));
     }
+    static bool dialogOpen(const GameGUI &gui) { return gui.inGameMenu != GameGUI::IGM_NONE || gui.activeDialog() != nullptr; }
+    static void openLiveStatistics(GameGUI &gui, InGameStatisticsPanel::Topic topic) {
+        gui.clearSelection();
+        gui.displayMode = GameGUI::STAT_TEXT_VIEW;
+        gui.replayDisplayMode = GameGUI::RDM_STAT_TEXT_VIEW;
+        if (gui.touch && gui.touch->usesHUD()) gui.touch->menuAction(3);
+        gui.statistics().selectTopic(topic);
+    }
+    static InGameStatisticsPanel &statistics(GameGUI &gui) { return gui.statistics(); }
+    static GAGGUI::ui::Host &statisticsHost(GameGUI &gui) { return gui.statisticsHost(); }
+    static bool liveStatisticsVisible(const GameGUI &gui) { return gui.statisticsVisible(); }
+    static bool statisticsHistoryOpen(const GameGUI &gui) {
+        return gui.inGameMenu == GameGUI::IGM_STATISTICS && gui.activeDialog();
+    }
+    static GAGGUI::ui::UIDialog *dialog(GameGUI &gui) { return gui.activeDialog(); }
+    static std::set<int> &highlights(GameGUI &gui) { return gui.highlights; }
+    static int modalProbeHighlight() { return GameGUI::HighlightRightSidePanel; }
+    static std::vector<std::array<int, 3>> highlightArrows(const GameGUI &gui) {
+        std::vector<std::array<int, 3>> result;
+        for (const auto &arrow : gui.arrowPositions) result.push_back({arrow.x, arrow.y, arrow.sprite});
+        return result;
+    }
+    static void openMapOverlays(GameGUI &gui) {
+        gui.clearSelection();
+        gui.displayMode = GameGUI::STAT_GRAPH_VIEW;
+        gui.replayDisplayMode = GameGUI::RDM_STAT_GRAPH_VIEW;
+    }
     static bool briefingTabShown(const GameGUI &gui) {
         const auto *dialog = dynamic_cast<const InGameObjectivesScreen *>(gui.gameMenuScreen.get());
         return dialog && dialog->tab() == InGameObjectivesScreen::BRIEFING;
     }
-    static bool dialogOpen(const GameGUI &gui) { return gui.inGameMenu != GameGUI::IGM_NONE || gui.activeDialog() != nullptr; }
     static Tutorial::Guidance *guidance(GameGUI &gui) { return gui.tutorialGuidance.get(); }
     static bool openLiveStatistics(GameGUI &gui) {
         gui.clearSelection();
@@ -170,7 +199,14 @@ Json evidenceIdentity(const fs::path &root, const fs::path &pilot)
              "src/hud/touch/GameGUITouch.cpp", "src/hud/touch/GameGUITouch.h",
              "libgag/include/TouchText.h", "libgag/include/TrueTypeFont.h",
              "libgag/include/ui/TextLayout.h", "libgag/src/DrawableSurfaceCompound.cpp",
+             "libgag/include/ui/Inspection.h", "libgag/include/ui/PositionedControls.h",
+             "libgag/include/ui/Controls.h", "libgag/src/ui/Controls.cpp",
+             "src/hud/GameGUIControls.cpp", "src/hud/touch/GameGUITouchInspection.cpp",
+             "browser/shell.html", "browser/ApplicationHost.cpp",
              "src/game/screens/CustomGameScreen.cpp", "src/render/overlay/MapZoomControls.h",
+             "src/game/screens/EndGameScreen.cpp", "src/team/stats/TeamStatChart.cpp",
+             "src/team/stats/MetricCatalog.cpp", "src/hud/InGameStatistics.cpp",
+             "src/hud/InGameStatistics.h", "src/app/SystemLanguage.cpp", "src/app/Settings.cpp",
              "tools/TranslationPreviewHarness.cpp"})
         result["source_sha256"][name] = sha256(root / name);
     for (const auto *surface : {"native", "online"})
@@ -336,6 +372,17 @@ void fontMatrix(const fs::path &root, const fs::path &pilot, const fs::path &out
     TTF_Quit();
 }
 
+Json controlBounds(GAGGUI::ui::Host &host)
+{
+    Json result = Json::array();
+    for (auto *node : host.interactiveNodes()) {
+        const auto r = node->bounds;
+        result.push_back({{"key", node->key}, {"x", r.x}, {"y", r.y}, {"width", r.w}, {"height", r.h},
+            {"within_viewport", r.x >= 0 && r.y >= 0 && r.x + r.w <= globalContainer->gfx->getW() &&
+                r.y + r.h <= globalContainer->gfx->getH()}});
+    }
+    return result;
+}
 template<class T> class Preview : public T
 {
 public:
@@ -349,14 +396,7 @@ public:
         this->paintFrame(SDL_GetTicks());
     }
     Json bounds() {
-        Json result = Json::array();
-        for (auto *node : this->GAGGUI::ui::UIScreen::host().interactiveNodes()) {
-            const auto r = node->bounds;
-            result.push_back({{"key", node->key}, {"x", r.x}, {"y", r.y}, {"width", r.w}, {"height", r.h},
-                {"within_viewport", r.x >= 0 && r.y >= 0 && r.x + r.w <= globalContainer->gfx->getW() &&
-                    r.y + r.h <= globalContainer->gfx->getH()}});
-        }
-        return result;
+        return controlBounds(this->GAGGUI::ui::UIScreen::host());
     }
 };
 unsigned installDraftOverlay(const fs::path &root, const fs::path &pilot, const fs::path &output)
@@ -447,7 +487,20 @@ void gameplayPreview(const fs::path &root, const fs::path &pilot, const fs::path
                      const std::string &kind, int width, int height)
 {
     const bool tutorial = kind == "tutorial" || kind.starts_with("tutorial:");
-    require(kind == "gameplay" || tutorial, "Unknown game preview kind");
+    const std::string livePrefix = "ingame-statistics:";
+    const bool history = kind == "ingame-statistics-history";
+    const bool liveStatistics = history || kind.starts_with(livePrefix);
+    const bool mapOverlays = kind == "map-overlays";
+    const std::string topicName = history ? "overview" : (liveStatistics ? kind.substr(livePrefix.size()) : "");
+    auto topic = InGameStatisticsPanel::Topic::Overview;
+    if (liveStatistics) {
+        if (topicName == "colony") topic = InGameStatisticsPanel::Topic::Colony;
+        else if (topicName == "economy") topic = InGameStatisticsPanel::Topic::Economy;
+        else if (topicName == "military") topic = InGameStatisticsPanel::Topic::Military;
+        else if (topicName == "world") topic = InGameStatisticsPanel::Topic::World;
+        else require(topicName == "overview", "Known production statistics topic");
+    }
+    require(kind == "gameplay" || kind == "statistics" || tutorial || liveStatistics || mapOverlays, "Unknown game preview kind");
     const std::string lesson = kind == "tutorial" ? "introduction" : (tutorial ? kind.substr(9) : "");
     if (tutorial) {
         const auto catalog = readJson(root / "scripts/tutorials/catalog.json");
@@ -456,7 +509,8 @@ void gameplayPreview(const fs::path &root, const fs::path &pilot, const fs::path
             if (readJson(root / entry["definition"].get<std::string>())["id"] == lesson) found = true;
         require(found, "Known production tutorial lesson");
     }
-    const std::string captureKind = tutorial ? "tutorial-" + lesson : kind;
+    std::string captureKind = tutorial ? "tutorial-" + lesson : kind;
+    std::replace(captureKind.begin(), captureKind.end(), ':', '-');
     require(SDL_setenv_unsafe("GLOB2_SIM_THREAD", "0", 1) == 0, "Use serial scripted preview execution");
     GlobalContainer globals("glob2-translation-game-preview");
     globalContainer = &globals;
@@ -494,10 +548,19 @@ void gameplayPreview(const fs::path &root, const fs::path &pilot, const fs::path
         engine.prepareRun();
         Uint64 now = 1000;
         engine.beginSession(now);
+        if (liveStatistics) TranslationPreviewAccess::openLiveStatistics(gui, topic);
+        if (mapOverlays) TranslationPreviewAccess::openMapOverlays(gui);
+        bool briefingDismissed = false;
         for (int step = 0; step < 20; ++step) {
             require(engine.stepSession(now, {}), "Preview session running");
             result["simulation_steps"].push_back({{"tick", gui.game.stepCounter},
                 {"checksum", gui.game.checkSum()}});
+            if ((liveStatistics || mapOverlays) && TranslationPreviewAccess::initialBriefingOpen(gui)) {
+                const auto before = gui.game.checkSum();
+                TranslationPreviewAccess::closeMenu(gui);
+                require(before == gui.game.checkSum(), "Dismissing briefing preserves statistics preview state");
+                briefingDismissed = true;
+            }
             if (globals.gfx->beginRenderFrame()) engine.drawSession(true);
             now += 40;
             SDL_Delay(1);
@@ -512,7 +575,8 @@ void gameplayPreview(const fs::path &root, const fs::path &pilot, const fs::path
             draw();
             const auto &scene = gui.drawnScene();
             if (scene.world.session && scene.tick == gui.game.stepCounter &&
-                (!tutorial || bool(scene.panels.hud.state().tutorial))) break;
+                (!tutorial || bool(scene.panels.hud.state().tutorial)) &&
+                (!liveStatistics || bool(scene.world.history))) break;
             // A final fast simulation tick may overlap a pending scene job.
             // Follow ordinary owner admission until that current world has a
             // presentation request, then keep simulation frozen for capture.
@@ -530,6 +594,10 @@ void gameplayPreview(const fs::path &root, const fs::path &pilot, const fs::path
         require(scene.world.session && scene.tick == gui.game.stepCounter, "Latest gameplay scene published");
         if (tutorial)
             require(bool(scene.panels.hud.state().tutorial), "Actual tutorial instruction published");
+        if (liveStatistics) {
+            require(TranslationPreviewAccess::liveStatisticsVisible(gui), "Actual live statistics navigation is open");
+            require(bool(scene.world.history), "Actual published statistics history is available");
+        }
         result["published_tick"] = scene.tick;
         result["capture_simulation_tick"] = gui.game.stepCounter;
         result["tutorial_instruction_shown"] = bool(scene.panels.hud.state().tutorial);
@@ -561,26 +629,172 @@ void gameplayPreview(const fs::path &root, const fs::path &pilot, const fs::path
             require(before == after, "Drawing must preserve simulation checksum");
             result["captures"].push_back({{"name", name}, {"checksum_before_draw", before},
                 {"checksum_after_draw", after}, {"image_width", image->w}, {"image_height", image->h}});
+            return image;
         };
 
-        if (tutorial) {
-            // A tick-12 automatic briefing can cover the current lesson model.
-            // Preserve that real opening state. Other lessons still need their
-            // actual briefing tab captured before exposing the guidance.
-            const bool briefing = TranslationPreviewAccess::initialBriefingOpen(gui);
+        if (kind == "statistics") {
             const auto before = gui.game.checkSum();
-            if (!briefing) TranslationPreviewAccess::openBriefing(gui);
-            require(TranslationPreviewAccess::briefingTabShown(gui), "Actual tutorial briefing tab available");
-            require(before == gui.game.checkSum(), "Opening briefing must preserve simulation state");
-            capture(captureKind + "-briefing");
-            TranslationPreviewAccess::closeMenu(gui);
+            const auto metrics = Stats::catalogForBuildings(gui.game.buildingsTypes);
+            const auto metric = std::find_if(metrics.begin(), metrics.end(), [](const auto &entry) {
+                return entry.id == "win probability";
+            });
+            require(metric != metrics.end(), "Production win probability metric exists");
+            FrontendTheme theme;
+            require(theme.colony->load(), "Load bundled results background");
+            FrontendScope frontend;
+            Preview<EndGameScreen> preview(&gui);
+            preview.selectMetric(int(std::distance(metrics.begin(), metric)));
+            preview.render();
+            GAGCore::DrawableSurface image(globals.gfx->getW(), globals.gfx->getH());
+            image.drawSurface(0, 0, globals.gfx);
+            require(IMG_SavePNG(image.getSDLSurface(), (output / "statistics.png").string().c_str()),
+                "Save production statistics screen");
+            const auto after = gui.game.checkSum();
+            require(before == after, "Statistics presentation must preserve simulation checksum");
+            result["statistics"] = {{"metric", metric->id}, {"title", TeamStatChart::title(*metric)},
+                {"about", TeamStatChart::about(*metric)}, {"controls", preview.bounds()}};
+            result["captures"].push_back({{"name", "statistics"}, {"checksum_before_draw", before},
+                {"checksum_after_draw", after}, {"image_width", image.getW()}, {"image_height", image.getH()}});
+            result["limits"].push_back("The real results screen displays the current local map's selected metric; this is not a completed-match or prediction-accuracy claim.");
+        }
+        if (liveStatistics) {
+            require(!TranslationPreviewAccess::dialogOpen(gui), "Live statistics capture begins without an unrelated dialog");
+            auto &panel = TranslationPreviewAccess::statistics(gui);
+            require(panel.topic() == topic, "Requested production statistics topic selected");
+            require(std::none_of(panel.metrics().begin(), panel.metrics().end(), [](const auto &metric) {
+                return metric.winProbability;
+            }), "Live statistics must not expose post-game probability");
+            if (history) {
+                const auto before = gui.game.checkSum();
+                panel.openMetric("population");
+                require(TranslationPreviewAccess::statisticsHistoryOpen(gui), "Actual production history dialog opened");
+                require(before == gui.game.checkSum(), "Opening history must preserve simulation checksum");
+            }
+            result["live_statistics"] = {{"topic", topicName}, {"history_dialog", history},
+                {"published_history", true}, {"post_game_probability_hidden", true},
+                {"automatic_briefing_dismissed", briefingDismissed}};
+            result["limits"].push_back("Live statistics use the actual HUD/sidebar or compact sheet and published local-game history; no bounds or values are substituted. Sparse initial history is not a completed-match or prediction-accuracy claim.");
+        }
+        if (tutorial) {
+            // Scene admission can skip the displayed tick-12 automatic-open
+            // moment. Capture each actual nonempty briefing deterministically,
+            // without inventing text or changing the tutorial/simulation model.
+            const bool automaticBriefing = TranslationPreviewAccess::initialBriefingOpen(gui);
+            const bool briefingAvailable = scene.world.session->missionBriefing &&
+                !scene.world.session->missionBriefing->empty();
+            bool previewOpenedBriefing = false;
+            if (!automaticBriefing && briefingAvailable) {
+                require(!TranslationPreviewAccess::dialogOpen(gui), "Briefing preview starts without an unrelated dialog");
+                const auto before = gui.game.checkSum();
+                TranslationPreviewAccess::openBriefing(gui);
+                require(TranslationPreviewAccess::initialBriefingOpen(gui) && TranslationPreviewAccess::dialog(gui),
+                        "Actual production mission briefing opens for preview");
+                require(before == gui.game.checkSum(), "Opening real briefing preserves simulation state");
+                previewOpenedBriefing = true;
+            }
+            const bool briefing = TranslationPreviewAccess::initialBriefingOpen(gui);
+            result["tutorial_briefing_available"] = briefingAvailable;
+            result["preview_briefing_opened"] = previewOpenedBriefing;
+            if (briefing) {
+                const bool modalProbe = lesson == "swimming" && width == 800 && height == 600 &&
+                    !GAGCore::phonePresentationRequested();
+                // Preserve the first presented frame, then require two unchanged
+                // baseline frames before perturbing the real tutorial highlight.
+                if (modalProbe) capture(captureKind + "-briefing-initial-frame");
+                auto baseline = capture(captureKind + "-briefing");
+                if (modalProbe) {
+                    auto stableBaseline = capture(captureKind + "-briefing-baseline-stability");
+                    // Toggle one real legacy highlight without replacing the
+                    // tutorial model or its actual briefing. updateTutorial()
+                    // re-adds lesson highlights, but does not manage this ID.
+                    const auto before = gui.game.checkSum();
+                    const auto saved = TranslationPreviewAccess::highlights(gui);
+                    const int highlight = TranslationPreviewAccess::modalProbeHighlight();
+                    require(!saved.contains(highlight), "Modal probe highlight starts absent");
+                    const auto originalArrows = TranslationPreviewAccess::highlightArrows(gui);
+                    const auto panel = TranslationPreviewAccess::dialog(gui)->panelBounds();
+                    TranslationPreviewAccess::highlights(gui).insert(highlight);
+                    auto probe = capture(captureKind + "-briefing-highlight-probe");
+                    const auto probeArrows = TranslationPreviewAccess::highlightArrows(gui);
+                    TranslationPreviewAccess::highlights(gui) = saved;
+                    auto restored = capture(captureKind + "-briefing-highlight-restored");
+                    require(TranslationPreviewAccess::highlights(gui) == saved,
+                            "Modal probe restores original UI highlights");
+                    require(probeArrows.size() == originalArrows.size() + 1,
+                            "Modal probe adds one actual legacy arrow");
+                    std::array<int, 3> added{};
+                    unsigned addedCount = 0;
+                    for (const auto &arrow : probeArrows)
+                        if (std::find(originalArrows.begin(), originalArrows.end(), arrow) == originalArrows.end()) {
+                            added = arrow; ++addedCount;
+                        }
+                    require(addedCount == 1, "Modal probe identifies the added production arrow");
+                    const GAGGUI::ui::Rect arrow{added[0], added[1],
+                        globals.gamegui->getW(added[2]), globals.gamegui->getH(added[2])};
+                    require(panel.intersects(arrow), "Real legacy arrow intersects actual briefing panel");
+                    Surface first(SDL_ConvertSurface(baseline.get(), SDL_PIXELFORMAT_RGBA32), SDL_DestroySurface);
+                    Surface second(SDL_ConvertSurface(probe.get(), SDL_PIXELFORMAT_RGBA32), SDL_DestroySurface);
+                    Surface last(SDL_ConvertSurface(restored.get(), SDL_PIXELFORMAT_RGBA32), SDL_DestroySurface);
+                    Surface stable(SDL_ConvertSurface(stableBaseline.get(), SDL_PIXELFORMAT_RGBA32), SDL_DestroySurface);
+                    require(bool(first) && bool(second) && bool(last) && bool(stable), "Convert modal pixel comparisons");
+                    require(first->w == second->w && first->h == second->h &&
+                            first->w == last->w && first->h == last->h &&
+                            first->w == stable->w && first->h == stable->h, "Stable modal screenshot dimensions");
+                    const double scaleX = double(first->w) / globals.gfx->getW();
+                    const double scaleY = double(first->h) / globals.gfx->getH();
+                    const int left = std::clamp(int(std::ceil((panel.x + 2) * scaleX)), 0, first->w);
+                    const int top = std::clamp(int(std::ceil((panel.y + 2) * scaleY)), 0, first->h);
+                    const int right = std::clamp(int(std::floor((panel.right() - 2) * scaleX)), left, first->w);
+                    const int bottom = std::clamp(int(std::floor((panel.bottom() - 2) * scaleY)), top, first->h);
+                    require(right > left && bottom > top, "Nonempty actual modal interior ROI");
+                    require(SDL_LockSurface(first.get()) && SDL_LockSurface(second.get()) &&
+                            SDL_LockSurface(last.get()) && SDL_LockSurface(stable.get()), "Lock modal pixel comparisons");
+                    size_t differing = 0, restorationDifferences = 0, baselineDifferences = 0;
+                    Online::Sha256 baselineHash, probeHash, restoredHash;
+                    for (int y = top; y < bottom; ++y) {
+                        const auto *a = static_cast<const Uint8 *>(first->pixels) + y * first->pitch + left * 4;
+                        const auto *b = static_cast<const Uint8 *>(second->pixels) + y * second->pitch + left * 4;
+                        const auto *c = static_cast<const Uint8 *>(last->pixels) + y * last->pitch + left * 4;
+                        const auto *d = static_cast<const Uint8 *>(stable->pixels) + y * stable->pitch + left * 4;
+                        baselineHash.update(a, size_t(right - left) * 4);
+                        probeHash.update(b, size_t(right - left) * 4);
+                        restoredHash.update(c, size_t(right - left) * 4);
+                        for (int x = 0; x < right - left; ++x) {
+                            differing += std::memcmp(a + x * 4, b + x * 4, 4) != 0;
+                            restorationDifferences += std::memcmp(a + x * 4, c + x * 4, 4) != 0;
+                            baselineDifferences += std::memcmp(a + x * 4, d + x * 4, 4) != 0;
+                        }
+                    }
+                    SDL_UnlockSurface(stable.get());
+                    SDL_UnlockSurface(first.get()); SDL_UnlockSurface(second.get()); SDL_UnlockSurface(last.get());
+                    require(before == gui.game.checkSum(), "Modal pixel probe preserves simulation checksum");
+                    result["modal_highlight_comparison"] = {
+                        {"panel", {panel.x, panel.y, panel.w, panel.h}},
+                        {"roi_pixels", {left, top, right - left, bottom - top}},
+                        {"added_actual_arrow", {arrow.x, arrow.y, arrow.w, arrow.h}},
+                        {"baseline_arrow_count", originalArrows.size()}, {"probe_arrow_count", probeArrows.size()},
+                        {"baseline_stability_differing_pixels", baselineDifferences},
+                        {"differing_pixels", differing}, {"restoration_differing_pixels", restorationDifferences},
+                        {"baseline_roi_sha256", Online::Sha256::toHex(baselineHash.finish())},
+                        {"probe_roi_sha256", Online::Sha256::toHex(probeHash.finish())},
+                        {"restored_roi_sha256", Online::Sha256::toHex(restoredHash.finish())},
+                        {"checksum_before", before}, {"checksum_after", gui.game.checkSum()}};
+                    // Preserve actual failing pixels and measurements before
+                    // reporting the regression, including on the unfixed code.
+                    writeJson(output / (captureKind + ".json"), result);
+                    require(baselineDifferences == 0 && differing == 0 && restorationDifferences == 0,
+                            "Modal briefing pixels must be independent of legacy highlights");
+                }
+            }
+            const auto before = gui.game.checkSum();
+            if (briefing) TranslationPreviewAccess::closeMenu(gui);
             require(!TranslationPreviewAccess::dialogOpen(gui), "Tutorial guidance capture must be dialog-free");
             require(before == gui.game.checkSum(), "Dismissing briefing must preserve simulation state");
-            result["automatic_briefing_dismissed"] = briefing;
-            result["briefing_explicitly_opened"] = !briefing;
+            result["automatic_briefing_dismissed"] = automaticBriefing;
+            result["briefing_dismissed"] = briefing;
             result["tutorial_capture_dialog_free"] = true;
         }
-        capture(captureKind);
+        if (kind != "statistics") capture(captureKind);
         if (tutorial) {
             auto *card = TranslationPreviewAccess::guidance(gui);
             require(card != nullptr, "Actual tutorial guidance card available");
@@ -622,6 +836,17 @@ void gameplayPreview(const fs::path &root, const fs::path &pilot, const fs::path
                 {"checksum_before_ui", before}, {"checksum_after_ui", gui.game.checkSum()},
                 {"limits", "Uses actual guidance hit bounds and public event handling; does not represent physical input hardware."}};
         }
+        if (liveStatistics) {
+            auto &panel = TranslationPreviewAccess::statistics(gui);
+            result["live_statistics"]["selected_metric"] = panel.selectedMetric();
+            result["live_statistics"]["controls"] = controlBounds(TranslationPreviewAccess::statisticsHost(gui));
+            if (history) {
+                require(TranslationPreviewAccess::statisticsHistoryOpen(gui), "Production history remains open after capture");
+                result["live_statistics"]["dialog_controls"] = controlBounds(TranslationPreviewAccess::dialog(gui)->host());
+            }
+        }
+        if (mapOverlays) result["map_overlays"] = {{"actual_desktop_display_mode", true},
+            {"automatic_briefing_dismissed", briefingDismissed}};
         if (kind == "gameplay" && !GAGCore::phonePresentationRequested()) {
             const auto originalCamera = gui.camera;
             const int originalViewportX = gui.viewportX, originalViewportY = gui.viewportY;
@@ -663,9 +888,11 @@ void gameplayPreview(const fs::path &root, const fs::path &pilot, const fs::path
             gui.viewportY = originalViewportY;
             TranslationPreviewAccess::rebaseViewport(gui);
         }
-        TranslationPreviewAccess::openMenu(gui);
-        capture(captureKind + "-dialog");
-        TranslationPreviewAccess::closeMenu(gui);
+        if (kind != "statistics" && !liveStatistics && !mapOverlays) {
+            TranslationPreviewAccess::openMenu(gui);
+            capture(captureKind + "-dialog");
+            TranslationPreviewAccess::closeMenu(gui);
+        }
         if (kind == "gameplay") {
             // Use the real statistics screen and its public metric-picker action:
             // compact layouts explain the selected metric in that picker.
@@ -803,7 +1030,7 @@ void gameplayPreview(const fs::path &root, const fs::path &pilot, const fs::path
 int main(int argc, char **argv)
 {
     try {
-        require(argc >= 7, "usage: TranslationPreviewHarness matrix ROOT DRAFT OUTPUT W H | screen ROOT DRAFT OUTPUT W H SCREEN | game ROOT DRAFT OUTPUT W H gameplay|tutorial[:LESSON-ID]");
+        require(argc >= 7, "usage: TranslationPreviewHarness matrix ROOT DRAFT OUTPUT W H | screen ROOT DRAFT OUTPUT W H SCREEN | game ROOT DRAFT OUTPUT W H gameplay|statistics|ingame-statistics:TOPIC|ingame-statistics-history|map-overlays|tutorial[:LESSON-ID]");
         executablePath = fs::absolute(argv[0]);
         const std::string mode = argv[1];
         const auto root = fs::absolute(argv[2]), pilot = fs::absolute(argv[3]), output = fs::absolute(argv[4]);

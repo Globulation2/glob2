@@ -108,3 +108,16 @@ def verify_android_archive_symbols(archive_path, library, member, readelf):
         if identifiers[0] != identifiers[1]:
             raise ValueError('Packaged Android library and retained debug symbols have different build IDs')
         return identifiers[0]
+
+
+def stage_recording_notices(env, prefix, output):
+    """Stage notices from the same resolved prefix used by the native linker."""
+    source = Path(prefix) / 'share/licenses/recording'
+    files = sorted(source.glob('*'))
+    if not files or any(not path.is_file() for path in files):
+        raise ValueError('Resolved recording prefix contains no complete recording notices: ' + str(source))
+    staged = env.Install(str(Path(output) / 'licenses/recording'), [str(path) for path in files])
+    # Install targets otherwise ignore changed destination bytes. Refresh these
+    # small notices each invocation without making them native link inputs.
+    env.AlwaysBuild(staged)
+    return staged

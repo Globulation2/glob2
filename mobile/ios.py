@@ -27,7 +27,7 @@ def cmake_quote(value):
 
 def localized_resource_lines(resource_root):
     lines = []
-    directories = [Path(resource_root) / (locale + '.lproj') for locale in ('en', 'mr', 'ta')]
+    directories = [Path(resource_root) / (locale + '.lproj') for locale in ('en', 'mr', 'ta', 'te')]
     for resource in localization_files(directories):
         lines += ['target_sources(Glob2 PRIVATE ' + cmake_quote(resource) + ')',
                   'set_source_files_properties(' + cmake_quote(resource) +
