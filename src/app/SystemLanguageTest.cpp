@@ -138,9 +138,9 @@ TEST_SUITE("SystemLanguage")
 
 	TEST_CASE("startup follows the system only when the profile has no usable language")
 	{
-		PreferredLocales locales("hi_IN,pt_BR,en_US");
-		CHECK(startupLanguage("") == "br");
-		CHECK(startupLanguage("no-such-language") == "br");
+		PreferredLocales locales("tl_PH,pt_BR,en_US");
+		CHECK(startupLanguage("") == "fil");
+		CHECK(startupLanguage("no-such-language") == "fil");
 		CHECK(startupLanguage("fr") == "fr");
 	}
 }
