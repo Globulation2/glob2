@@ -28,3 +28,7 @@ Only3/96 adaptive setups selected more than one pipeline; none selected4. The in
 SHA256: `f522f3d213717af0368342ce4239e0c3393219362a070c3ab9cee838590d9cb1`.
 
 The archive contains complete288 committed result records/configurations/histories, the frozen experiment, all96 transported map objects, six retained replays, one retained terminal save, five selected capacity/cancellation logs, source overlays, native/Python/build logs, checksums and the current active-Prepare save. Objects preserve their transport hashes and encoding metadata. The remaining full telemetry stays local; complete aggregate audits and hashes are included, with that limitation explicit. Generated artifacts are hosted on this dedicated evidence branch, not committed into the feature branch.
+
+## Scoring update at PR head3c59e1a019
+
+The PR now includes outcome-aware log-time scoring. [Scoring verification and adjusted cohort results](scoring/scoring-verification.md) supersede the historical linear-score interpretation.67 tournament tests pass; all960 full/compact scores and two actual saved continuations match. Gameplay source and its prior native validation are unchanged.

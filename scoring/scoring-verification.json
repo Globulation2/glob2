@@ -1,0 +1,71 @@
+{
+  "metric": "log_time_outcome_v1",
+  "coefficient": 2,
+  "horizon": 90000,
+  "raw_and_compact_scores_matching": 960,
+  "actual_saved_continuation_cases": 2,
+  "games": 288,
+  "cohort_sim_revision": 117,
+  "new_scoring_commit": "3c59e1a019a10c0a8f450bef698d66236fb90bdb",
+  "effects": {
+    "1v1": {
+      "adaptive_minus_baseline": {
+        "mean": 0.016264221951934894,
+        "interval95": [
+          -0.015679923956780792,
+          0.04890687011916962
+        ],
+        "pairs": 32,
+        "blocks": 16
+      },
+      "single_minus_baseline": {
+        "mean": 0.016264221951934894,
+        "interval95": [
+          -0.015679923956780792,
+          0.04890687011916962
+        ],
+        "pairs": 32,
+        "blocks": 16
+      },
+      "adaptive_minus_single": {
+        "mean": 0.0,
+        "interval95": [
+          0.0,
+          0.0
+        ],
+        "pairs": 32,
+        "blocks": 16
+      }
+    },
+    "ffa": {
+      "adaptive_minus_baseline": {
+        "mean": 0.00617730347099462,
+        "interval95": [
+          -0.007720752116600775,
+          0.018650888726087004
+        ],
+        "pairs": 64,
+        "blocks": 16
+      },
+      "single_minus_baseline": {
+        "mean": 0.0022946307498749054,
+        "interval95": [
+          -0.013003542705209556,
+          0.016274900098326238
+        ],
+        "pairs": 64,
+        "blocks": 16
+      },
+      "adaptive_minus_single": {
+        "mean": 0.0038826727211197154,
+        "interval95": [
+          0.0,
+          0.011580218466796695
+        ],
+        "pairs": 64,
+        "blocks": 16
+      }
+    }
+  },
+  "scope": "Re-scored retained full histories; no new games or tuning. Dataset predates final farming integration. All original pairs retained."
+}
