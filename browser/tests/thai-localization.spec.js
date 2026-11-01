@@ -4,6 +4,8 @@ const thai = require('../../platform/packages/i18n/locales/th.json');
 
 test.use({locale: 'th-TH'});
 
+// The Thai name fixture includes stacked marks and stays within Settings' existing 32-byte UTF-8 limit.
+
 for (const variant of ['serial', 'threaded']) {
   test(`${variant} Thai startup, composed input and refresh use the shipped catalog`, async ({page, context}, info) => {
     test.setTimeout(180000);
@@ -40,13 +42,13 @@ for (const variant of ['serial', 'threaded']) {
     await expect(field).toHaveAttribute('aria-label', thai['Game text field']);
     await field.evaluate(element => {
       element.dispatchEvent(new CompositionEvent('compositionstart', {bubbles: true}));
-      element.value = 'ผู้เล่นไทย 123';
+      element.value = 'ผู้เล่น 123';
       element.dispatchEvent(new InputEvent('input', {bubbles: true, data: element.value, isComposing: true}));
       element.dispatchEvent(new CompositionEvent('compositionend', {bubbles: true, data: element.value}));
       element.dispatchEvent(new InputEvent('input', {bubbles: true, data: element.value}));
     });
-    await expect(field).toHaveValue('ผู้เล่นไทย 123');
-    await expect.poll(() => page.evaluate(() => FS.readFile('/home/web_user/.glob2/preferences.txt', {encoding: 'utf8'}))).toContain('username=ผู้เล่นไทย 123');
+    await expect(field).toHaveValue('ผู้เล่น 123');
+    await expect.poll(() => page.evaluate(() => FS.readFile('/home/web_user/.glob2/preferences.txt', {encoding: 'utf8'}))).toContain('username=ผู้เล่น 123');
     await page.screenshot({path: info.outputPath(`${variant}-thai-player-input.png`)});
     await clickControl(page, 'player.language');
     await clickByLabel(page, /^popup\/\d+$/, 'English');
@@ -71,7 +73,7 @@ for (const variant of ['serial', 'threaded']) {
     await waitForMainMenu(page);
     await expect.poll(() => page.evaluate(() => glob2Diagnostics.snapshot().controls['menu/6']?.label.replace(/\u200b/g, '')))
       .toBe('การตั้งค่า');
-    expect(await page.evaluate(() => FS.readFile('/home/web_user/.glob2/preferences.txt', {encoding: 'utf8'}))).toContain('username=ผู้เล่นไทย 123');
+    expect(await page.evaluate(() => FS.readFile('/home/web_user/.glob2/preferences.txt', {encoding: 'utf8'}))).toContain('username=ผู้เล่น 123');
     expect(await page.evaluate(() => FS.readFile('/home/web_user/.glob2/preferences.txt', {encoding: 'utf8'}))).toMatch(/^language=th$/m);
     await expect(page.locator('html')).toHaveAttribute('lang', 'th');
   });
@@ -121,10 +123,10 @@ test.describe('Thai touch phones', () => {
       await tapControl(page, 'player.name');
       const field = page.locator('input[data-i18n-aria="Game text field"]');
       await expect(field).toHaveAttribute('aria-label', thai['Game text field']);
-      await field.fill('ผู้เล่นไทย 123');
-      await expect(field).toHaveValue('ผู้เล่นไทย 123');
+      await field.fill('ผู้เล่น 123');
+      await expect(field).toHaveValue('ผู้เล่น 123');
       await expect.poll(() => page.evaluate(() => FS.readFile('/home/web_user/.glob2/preferences.txt', {encoding: 'utf8'})))
-        .toContain('username=ผู้เล่นไทย 123');
+        .toContain('username=ผู้เล่น 123');
       await page.screenshot({path: info.outputPath(`${variant}-thai-touch-phone-input.png`)});
       await page.setViewportSize({width: 844, height: 390});
       await expect.poll(() => page.evaluate(() => {
@@ -133,7 +135,7 @@ test.describe('Thai touch phones', () => {
       })).toEqual([1688, 780]);
       expect(await page.evaluate(() => [Module.presentationMetrics.width, Module.presentationMetrics.height]))
         .toEqual([844, 390]);
-      await expect(field).toHaveValue('ผู้เล่นไทย 123');
+      await expect(field).toHaveValue('ผู้เล่น 123');
       await expect.poll(async () => {
         const box = await field.boundingBox();
         return Boolean(box && box.x >= 0 && box.y >= 0 && box.x + box.width <= 844.5 && box.y + box.height <= 390.5);
@@ -150,7 +152,7 @@ test.describe('Thai touch phones', () => {
       expect(await page.evaluate(() => Object.values(glob2Diagnostics.snapshot().controls)
         .some(control => /[\u0e00-\u0e7f]/.test(control.label)))).toBe(true);
       expect(await page.evaluate(() => FS.readFile('/home/web_user/.glob2/preferences.txt', {encoding: 'utf8'})))
-        .toContain('username=ผู้เล่นไทย 123');
+        .toContain('username=ผู้เล่น 123');
     });
   }
 });
