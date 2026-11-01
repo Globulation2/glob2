@@ -126,9 +126,22 @@ TEST_SUITE("SystemLanguage")
 		CHECK(SystemLanguage::choose({{"de", ""}, {"fr", ""}}, [](const std::string &c) { return c == "fr"; }) == "fr");
 	}
 
+	TEST_CASE("Bengali startup respects the system and saved language")
+	{
+		{
+			PreferredLocales locales("bn_BD,fr_FR,en_US");
+			CHECK(startupLanguage("") == "bn");
+			CHECK(startupLanguage("fr") == "fr");
+		}
+		{
+			PreferredLocales locales("fr_FR,en_US");
+			CHECK(startupLanguage("bn") == "bn");
+		}
+	}
+
 	TEST_CASE("startup follows the system only when the profile has no usable language")
 	{
-		PreferredLocales locales("hi_IN,pt_BR,en_US");
+		PreferredLocales locales("xx_XX,pt_BR,en_US");
 		CHECK(startupLanguage("") == "br");
 		CHECK(startupLanguage("no-such-language") == "br");
 		CHECK(startupLanguage("fr") == "fr");
