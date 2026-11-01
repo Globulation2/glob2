@@ -1,8 +1,7 @@
-import { message as sourceMessage } from '../messages.ts';
-import { statusLabel } from '../i18n.tsx';
+import { message as sourceMessage, skinActionLabel } from '../messages.ts';
+import { statusLabel, translateError } from '../i18n.tsx';
 import { t, useLocale, RichMessage } from '../i18n.tsx';
 /* DOM nodes are present during pointer events; model catalogs are nonempty. */
-/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { useContext, useEffect, useRef, useState } from 'react';
 import {
   SWARM_MESHES,
@@ -13,9 +12,9 @@ import {
 import { request } from '../api.ts';
 import { useLoad, useSession } from '../state.tsx';
 import { MeshPreview, type SceneView, type Tool } from '../skins/MeshPreview.tsx';
-import { ACTIONS, ACTION_LABELS, DEFAULT_CAMERA, type Camera } from '../skins/geometry.ts';
+import { ACTIONS, DEFAULT_CAMERA, type Camera } from '../skins/geometry.ts';
 import { MODELS, type Model } from '../skins/atlas.ts';
-import { SWARM_SHAPES, swarmModel } from '../skins/swarmShapes.ts';
+import { swarmModel } from '../skins/swarmShapes.ts';
 import { SkinStore } from '../skins/Store.tsx';
 import { StudioDialog, StudioIcon, MaterialSwatches } from '../skins/StudioControls.tsx';
 import { PatternDialog } from '../skins/PatternDialog.tsx';
@@ -26,6 +25,12 @@ import { SkinWorkspaceContext } from '../skins/workspace.ts';
 import { SkinLibrary } from '../skins/SkinLibrary.tsx';
 import { ColorPicker } from '../skins/ColorPicker.tsx';
 import { CopyPaintDialog } from '../skins/CopyPaintDialog.tsx';
+import {
+  skinModelLabel,
+  skinShapeLabel,
+  skinShapeDescription,
+  skinCopyName,
+} from '../skins/labels.ts';
 
 export function Skins() {
   useLocale();
@@ -259,7 +264,7 @@ function SkinStudio() {
       {library ? (
         <SkinLibrary
           collection={collection}
-          error={catalog.status === 'error' ? catalog.error.message : undefined}
+          error={catalog.status === 'error' ? translateError(catalog.error) : undefined}
           busy={disabled}
           onOpen={(skin) => {
             void doc.openDesign(skin).then((opened) => {
@@ -268,9 +273,7 @@ function SkinStudio() {
           }}
           onUse={(skin) => void applySelection(skin)}
           onNew={() => void create()}
-          onDuplicate={(id, name) =>
-            void create(t('{value0} copy', { value0: name.slice(0, 59) }), id)
-          }
+          onDuplicate={(id, name) => void create(skinCopyName(name), id)}
           onDelete={(skin) => {
             setDeleting(skin);
             showDialog('delete');
@@ -310,7 +313,7 @@ function SkinStudio() {
                 disabled={disabled}
                 onChange={(e) => doc.edit({ name: e.target.value })}
                 onBlur={(e) => {
-                  const name = e.target.value.trim() || 'Untitled skin';
+                  const name = e.target.value.trim() || t('Untitled skin');
                   if (name !== d.name) doc.edit({ name });
                 }}
               />
@@ -415,13 +418,13 @@ function SkinStudio() {
                   onClick={() => chooseModel(m)}
                 >
                   <img src={`/skins/thumbs/${m.mesh}.png`} alt="" />
-                  <span>{t(m.name)}</span>
+                  <span>{skinModelLabel(m.id)}</span>
                 </button>
               ))}
             </div>
             {model.id === 'swarm' && (
               <button className="skin-shape-button skin-panel" onClick={() => showDialog('shapes')}>
-                {t(SWARM_SHAPES[d.swarmMesh].name)}
+                {skinShapeLabel(d.swarmMesh)}
                 <span>{t('Change shape ⌄')}</span>
               </button>
             )}
@@ -633,9 +636,16 @@ function SkinStudio() {
                       <option value="zoom-in">{t('Zoom in (+)')}</option>
                       <option value="zoom-out">{t('Zoom out (−)')}</option>
                     </optgroup>
-                    {['front', 'back', 'left', 'right'].map((v) => (
+                    {(['front', 'back', 'left', 'right'] as const).map((v) => (
                       <option key={v} value={v}>
-                        {v[0]!.toUpperCase() + v.slice(1)}
+                        {
+                          {
+                            front: t('Front view'),
+                            back: t('Back view'),
+                            left: t('Left view'),
+                            right: t('Right view'),
+                          }[v]
+                        }
                       </option>
                     ))}
                   </select>
@@ -770,7 +780,7 @@ function SkinStudio() {
                           }}
                         >
                           <img src={`/skins/thumbs/${model.id}-${a}.png`} alt="" />
-                          <span>{t(ACTION_LABELS[a] ?? a)}</span>
+                          <span>{skinActionLabel(a)}</span>
                         </button>
                       ))}
                     </div>
@@ -920,8 +930,8 @@ function SkinStudio() {
                 onClick={() => selectShape(shape)}
               >
                 <img src={`/skins/thumbs/${swarmModel(shape)}.png`} alt="" />
-                <strong>{t(SWARM_SHAPES[shape].name)}</strong>
-                <small>{t(SWARM_SHAPES[shape].description)}</small>
+                <strong>{skinShapeLabel(shape)}</strong>
+                <small>{skinShapeDescription(shape)}</small>
               </button>
             ))}
           </div>

@@ -1,3 +1,4 @@
+import { skinPresetLabel } from './labels.ts';
 import { displayMessage } from '../i18n.tsx';
 import { t, useLocale, RichMessage } from '../i18n.tsx';
 import type { SkinCollection, SkinDesign } from '@glob2/protocol';
@@ -160,7 +161,7 @@ export function SkinLibrary({
                 .map((s) => (
                   <LibraryCard key={s.skinId}>
                     <SkinThumbnail skin={{ ...s, kind: 'preset', entitlement: '' }} />
-                    <h2>{s.name}</h2>
+                    <h2>{skinPresetLabel(s.name)}</h2>
                     <p className="skin-card-state">
                       {collection.activeSkinId === s.skinId ? t('In use') : t('Owned')}
                     </p>
@@ -172,7 +173,10 @@ export function SkinLibrary({
                       >
                         {collection.equippedVersionId === s.id ? t('In use') : t('Use in game')}
                       </button>
-                      <button disabled={busy} onClick={() => onDuplicate(s.skinId, s.name)}>
+                      <button
+                        disabled={busy}
+                        onClick={() => onDuplicate(s.skinId, skinPresetLabel(s.name))}
+                      >
                         {t('Customize')}
                       </button>
                     </div>
@@ -314,7 +318,9 @@ function SkinThumbnail({ skin }: { skin: Skin }) {
           action=""
           phase={0}
           interactive={false}
-          label={t('{value0} rendered preview', { value0: skin.name })}
+          label={t('{value0} rendered preview', {
+            value0: skin.kind === 'preset' ? skinPresetLabel(skin.name) : skin.name,
+          })}
         />
       ) : (
         <span>{error ? t('Preview unavailable') : t('Loading preview…')}</span>

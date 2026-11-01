@@ -692,7 +692,14 @@ export function MusicCreate() {
       >
         {(['title', 'artist', 'description', 'credits'] as const).map((key) => (
           <label key={key}>
-            {key.charAt(0).toUpperCase() + key.slice(1)}
+            {
+              {
+                title: t('Title'),
+                artist: t('Artist'),
+                description: t('Description'),
+                credits: t('Credits & sources'),
+              }[key]
+            }
             <textarea
               required={key === 'title' || key === 'artist'}
               maxLength={key === 'title' || key === 'artist' ? 128 : 4000}

@@ -34,8 +34,8 @@ def strings(path):
 
 class AppleLocalizationTests(unittest.TestCase):
     def fixture(self, root):
-        directories = [root / 'en.lproj', root / 'mr.lproj']
-        for directory, value in zip(directories, ('English purpose.', 'मराठी चाचणी.')):
+        directories = [root / 'en.lproj', root / 'mr.lproj', root / 'ta.lproj']
+        for directory, value in zip(directories, ('English purpose.', 'मराठी चाचणी.', 'தமிழ் சோதனை.')):
             directory.mkdir(parents=True)
             (directory / 'InfoPlist.strings').write_text(
                 '"NSLocalNetworkUsageDescription" = ' + json.dumps(value, ensure_ascii=False) + ';\n', encoding='utf-8')
@@ -112,6 +112,7 @@ class AppleLocalizationTests(unittest.TestCase):
                            check=True, capture_output=True, text=True)
             self.assertEqual((root / '0.txt').read_text(), 'Resources/en.lproj')
             self.assertEqual((root / '1.txt').read_text(), 'Resources/mr.lproj')
+            self.assertEqual((root / '2.txt').read_text(), 'Resources/ta.lproj')
             self.assertEqual(set((root / 'sources.txt').read_text().split(';')),
                              {str(directory / 'InfoPlist.strings') for directory in directories})
 
@@ -124,7 +125,7 @@ class AppleLocalizationTests(unittest.TestCase):
                 for keyword in node.keywords:
                     if keyword.arg == 'BUNDLE_RESOURCEDIRS':
                         declared.extend(ast.literal_eval(keyword.value))
-        self.assertTrue({'darwin/en.lproj', 'darwin/mr.lproj'} <= set(declared))
+        self.assertTrue({'darwin/en.lproj', 'darwin/mr.lproj', 'darwin/ta.lproj'} <= set(declared))
         for base, plist_path in ((ROOT / 'darwin', ROOT / 'darwin/Info.plist'),
                                  (ROOT / 'mobile/ios', ROOT / 'mobile/ios/Info.plist.in')):
             with self.subTest(platform=base):
@@ -132,12 +133,17 @@ class AppleLocalizationTests(unittest.TestCase):
                 self.assertEqual(info['CFBundleDevelopmentRegion'], 'en')
                 english = strings(base / 'en.lproj/InfoPlist.strings')
                 marathi = strings(base / 'mr.lproj/InfoPlist.strings')
+                tamil = strings(base / 'ta.lproj/InfoPlist.strings')
                 self.assertEqual(set(english), {'NSLocalNetworkUsageDescription'})
                 self.assertEqual(set(marathi), set(english))
+                self.assertEqual(set(tamil), set(english))
                 self.assertEqual(english['NSLocalNetworkUsageDescription'], info['NSLocalNetworkUsageDescription'])
                 self.assertRegex(marathi['NSLocalNetworkUsageDescription'], r'[\u0900-\u097f]')
                 self.assertIn('Globulation 2', marathi['NSLocalNetworkUsageDescription'])
                 self.assertNotEqual(marathi, english)
+                self.assertRegex(tamil['NSLocalNetworkUsageDescription'], r'[\u0b80-\u0bff]')
+                self.assertIn('Globulation 2', tamil['NSLocalNetworkUsageDescription'])
+                self.assertNotEqual(tamil, english)
 
 
 if __name__ == '__main__':

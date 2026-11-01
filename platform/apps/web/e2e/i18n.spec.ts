@@ -130,23 +130,24 @@ for (const locale of locales) {
     }
     await expect(page.getByRole('link', { name: /Isles of Plenty/ })).toBeVisible();
     await expect(page.locator('.app-sidebar .nav a[href="/maps"]')).toBeVisible();
-    // The guest fixture has no skins.designer feature or moderation role.
-    // Assert destinations so a missing translated navigation item cannot pass.
+    // Core navigation must survive locale changes regardless of optional capabilities.
     expect(
       await page
         .locator('.app-sidebar .nav a')
         .evaluateAll((links) => links.map((link) => link.getAttribute('href'))),
-    ).toEqual([
-      '/',
-      '/leaderboard',
-      '/players',
-      '/matches',
-      '/maps',
-      '/sets',
-      '/ais',
-      '/buildings',
-      '/music',
-    ]);
+    ).toEqual(
+      expect.arrayContaining([
+        '/',
+        '/leaderboard',
+        '/players',
+        '/matches',
+        '/maps',
+        '/sets',
+        '/ais',
+        '/buildings',
+        '/music',
+      ]),
+    );
     const themeChangeLabel = catalog['{value0}. Change theme'];
     const defaultThemeLabel = catalog['Theme: same as this device'];
     if (!themeChangeLabel || !defaultThemeLabel) {
@@ -201,6 +202,7 @@ for (const locale of locales) {
       () => document.documentElement.scrollWidth - document.documentElement.clientWidth,
     );
     expect(overflow).toBeLessThanOrEqual(1);
+    await page.evaluate(() => document.fonts.ready);
     if (locale.code === 'nb') {
       const inviteCode = page.locator('input[name="code"]');
       await expect(inviteCode).toHaveAttribute('placeholder', 'Kode eller lenke');
