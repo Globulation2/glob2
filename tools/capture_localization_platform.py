@@ -53,7 +53,8 @@ def main():
                   'tools/TranslationPreviewHarness.cpp','src/campaign/Campaign.cpp','src/campaign/Campaign.h',
                   'src/campaign/screens/CampaignEditor.cpp','src/campaign/screens/CampaignEditor.h',
                   'src/hud/InGameStatistics.cpp','src/hud/InGameStatistics.h',
-                  'src/scripting/map/ScriptEditorScreen.cpp','src/scripting/map/ScriptEditorScreen.h']
+                  'src/scripting/map/ScriptEditorScreen.cpp','src/scripting/map/ScriptEditorScreen.h',
+                  'src/game/screens/EndGameScreen.cpp','src/game/screens/EndGameScreen.h']
     committed_hashes={name:hashlib.sha256(subprocess.check_output(['git','show',revision+':'+name],cwd=root)).hexdigest() for name in source_paths}
     checkout_hashes={name:sha(root/name) for name in source_paths}
     metadata={'locale':'th','revision':revision,'committed_source_file_sha256':committed_hashes,'checkout_source_file_sha256':checkout_hashes,'kind':'Exact registered catalogs, not a draft/pilot translation claim',
@@ -69,6 +70,7 @@ def main():
              '[Sound or silence?]','[Sound]','[settings Resolution]','[settings High-resolution artwork]',
              '[settings High resolution]','[settings Missing font]','[play online]','[quit]']
     samples += ['[stats topic overview]', '[stats topic economy]', '[stats topic world]', '[stats work construction]', '[stats defence]', '[stats history]', '[stats waiting]', '[stats unit details]', '[stats map overlays]', '[stats topic]', '[stats full history]', '[stats missing readings]', '[stat win probability]', '[stat win probability about]', '[script compile success]', '[script error at %0:%1: %2]', '[script compile failure %0:%1:(%2):%3]', '[script load failed %0]', '[script save failed %0]', '[script cursor %0 %1]']
+    samples += ['[lush_grass]', '[dry_grass]', '[dune_sand]', '[pale_sand]']
     web_samples=['Saving your project…','Generation is unavailable.','Wait for the current request to finish.',
                  'Generation is unavailable. Saved projects remain accessible.',
                  'Generation is unavailable. Saved music remains accessible.',
@@ -77,7 +79,7 @@ def main():
                  'Choose a valid request cap.',' · comparing','The last build did not complete.',
                  'Project title','Current saved draft','New map','Request cap']
     web_samples+=sorted(k for k in online if k.startswith('Discussion spends no credits; 1 available ') and 'Creation requests build automatically' in k)
-    if len(samples)!=60 or len(web_samples)!=20:raise ValueError('Update the explicitly bounded representative sample inventory')
+    if len(samples)!=64 or len(web_samples)!=20:raise ValueError('Update the explicitly bounded representative sample inventory')
     for folder,values,web in [(full,native,online),(matrix,{k:native[k] for k in samples},{k:online[k] for k in web_samples})]:
         folder.mkdir();(folder/'native.json').write_text(json.dumps(values,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
         (folder/'online.json').write_text(json.dumps(web,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')

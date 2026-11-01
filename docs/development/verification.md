@@ -133,7 +133,7 @@ diagnostic payloads remain unchanged. Gameplay captures cover all five statistic
 topics and their actual history dialogs. Phone statistics panels are explicitly
 marked component-only: they use the real session data and production bounds but
 do not demonstrate navigation through the touch lens. Captures include a bounded
-60-native/20-online (480 measured cases) sample matrix at 10, 13 and 20 pixels at 1×/2× raster scale.
+64-native/20-online (504 measured cases) sample matrix at 10, 13 and 20 pixels at 1×/2× raster scale.
 Review the actual PNGs before accepting visual quality. These are native-platform
 CPU/HarfBuzz/software-SDL captures, not physical-screen, GPU or mobile-OS tests.
 The same helper can capture a separately built Linux release harness; keep each

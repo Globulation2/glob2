@@ -154,7 +154,8 @@ Json evidenceIdentity(const fs::path &root, const fs::path &pilot)
              "tools/TranslationPreviewHarness.cpp", "src/campaign/Campaign.cpp", "src/campaign/Campaign.h",
              "src/campaign/screens/CampaignEditor.cpp", "src/campaign/screens/CampaignEditor.h",
              "src/hud/InGameStatistics.cpp", "src/hud/InGameStatistics.h",
-             "src/scripting/map/ScriptEditorScreen.cpp", "src/scripting/map/ScriptEditorScreen.h"})
+             "src/scripting/map/ScriptEditorScreen.cpp", "src/scripting/map/ScriptEditorScreen.h",
+             "src/game/screens/EndGameScreen.cpp", "src/game/screens/EndGameScreen.h"})
         result["source_sha256"][name] = sha256(root / name);
     for (const auto *surface : {"native", "online"})
         result["catalog_sha256"][surface] = sha256(pilot / (std::string(surface) + ".json"));

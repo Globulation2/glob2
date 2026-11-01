@@ -5672,6 +5672,14 @@ AI ทำงาน​อย่างไร
 หลุม
 [chasm]
 เหว
+[lush_grass]
+หญ้า​เขียวชอุ่ม
+[dry_grass]
+หญ้า​แห้ง
+[dune_sand]
+ทราย​แบบ​เนินทราย
+[pale_sand]
+ทราย​สีอ่อน
 [terrain group water]
 น้ำ
 [terrain group sand]
