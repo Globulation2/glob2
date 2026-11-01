@@ -36,6 +36,8 @@ class GameGUITouch
 {
   public:
     bool needsStatisticsHistory() const { return statsOpen; }
+    // Foreground tools temporarily own painting and input above the world.
+    bool obscuresTutorial() const { return usesHUD() && (statsOpen || lensVisible() || peekOpen); }
     void closeStatistics() { statsOpen = false; }
     GAGCore::ViewRect statisticsContentRect() const { return statsLayout().body; }
 	explicit GameGUITouch(GameGUI &gui);

@@ -122,6 +122,25 @@ describe('localized server pages', () => {
     expect(arabic.body()).toContain('<html lang="ar" dir="rtl">');
     expect(french.body()).toContain('<html lang="fr" dir="ltr">');
   });
+  it.each([
+    ['Globulation 2', ''],
+    ['Globulation 2 Online', ''],
+    ['Glob2 Online (test)', ' Glob2 Online (test)-এ'],
+    ['বাংলা বন্ধুদের সার্ভার', ' বাংলা বন্ধুদের সার্ভার-এ'],
+  ])('composes Bengali invitations on %s without repeating the locative', (instance, suffix) => {
+    const { reply } = response();
+    setPageLocale({ headers: { cookie: 'glob2_locale=bn' } } as FastifyRequest, reply);
+    const onInstance = /^Globulation 2\b/.test(instance)
+      ? ''
+      : pageText(reply, ' on {p0}', { p0: instance });
+    expect(onInstance).toBe(suffix);
+    expect(
+      pageText(reply, '{p0} invited you to their Globulation 2 room{p1}.', {
+        p0: 'Mirelle',
+        p1: onInstance,
+      }),
+    ).toBe(`Mirelle আপনাকে${suffix} তাঁদের Globulation 2 রুমে আমন্ত্রণ জানিয়েছেন।`);
+  });
   it('escapes values, preserves rich slots and entities, and leaves scripts alone', () => {
     const { reply } = response();
     const attacker = '<script>alert(1)</script>';

@@ -9,6 +9,7 @@
 #include "render/scene/Scene.h"
 #include "GlobalContainer.h"
 #include "Player.h"
+#include "Order.h"
 #include "SoundMixer.h"
 #include "StringTable.h"
 #include "Toolkit.h"
@@ -668,8 +669,14 @@ Element InGameTextInput::build(const Presentation &p)
 {
 	fe::TextFieldOptions options;
 	options.maxLength = commander ? 2000 : 256;
+	// The legacy order's 8-bit length includes the terminator: at most254
+	// text bytes round-trip. Reject whole edits before serialization can cut
+	// a shaping cluster or overflow that length.
+	options.maxBytes = commander ? 0 : ORDER_TEXT_MESSAGE_MAX_LEN - 2;
 	options.autoFocus = true;
-	options.placeholder = commander ? "Command your colony… Enter to send · Esc to close" : fe::tr("[Chat · recipients selected in Teams]");
+	options.placeholder = commander
+		? fe::tr("[settings Command your colony without opening a menu.]") + " Enter: " + fe::tr("[Send]") + " · Esc: " + fe::tr("[Close]")
+		: fe::tr("[Chat · recipients selected in Teams]");
 	options.submit = [this](const std::string &) { finish(0); };
 	auto entry = fe::textField("chat", text, [this](const std::string &value) { text = value; }, options);
 	fe::ButtonOptions sendOptions;

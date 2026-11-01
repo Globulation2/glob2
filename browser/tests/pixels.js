@@ -87,3 +87,33 @@ async function hasClassicButton(page, clip) {
   }, png.toString('base64'));
 }
 module.exports.hasClassicButton = hasClassicButton;
+
+// Compare screenshots after presentation; reading a WebGL drawing buffer can
+// race its non-preserved contents, especially in the application worker.
+async function comparePresentedRGB(page, firstPNG, secondPNG) {
+  return page.evaluate(async images => {
+    const read = async base64 => {
+      const bitmap = await createImageBitmap(await (await fetch('data:image/png;base64,' + base64)).blob());
+      const canvas = document.createElement('canvas');
+      canvas.width = bitmap.width; canvas.height = bitmap.height;
+      const context = canvas.getContext('2d');
+      context.drawImage(bitmap, 0, 0); bitmap.close();
+      return context.getImageData(0, 0, canvas.width, canvas.height);
+    };
+    const [first, second] = await Promise.all(images.map(read));
+    if (first.width !== second.width || first.height !== second.height)
+      throw new Error('Presented screenshot dimensions changed');
+    let maximumChannelDifference = 0, affectedPixels = 0;
+    for (let i = 0; i < first.data.length; i += 4) {
+      let affected = false;
+      for (let channel = 0; channel < 3; ++channel) {
+        const difference = Math.abs(first.data[i + channel] - second.data[i + channel]);
+        maximumChannelDifference = Math.max(maximumChannelDifference, difference);
+        affected ||= difference > 2;
+      }
+      if (affected) ++affectedPixels;
+    }
+    return {maximumChannelDifference, affectedPixels};
+  }, [firstPNG.toString('base64'), secondPNG.toString('base64')]);
+}
+module.exports.comparePresentedRGB = comparePresentedRGB;

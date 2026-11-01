@@ -50,6 +50,26 @@ TEST_SUITE("InviteLink")
 		takePendingMapPlay();
 	}
 
+	TEST_CASE("Bengali map titles survive URL and CLI handoff past ASCII byte limits")
+	{
+		std::string title;
+		for (int i = 0; i < 43; ++i) title += "ক";
+		REQUIRE(title.size() == 129);
+		const std::string mapId = "5f6a7b8c-9d0e-4f1a-8b2c-3d4e5f6a7b8c";
+		const std::string hash(64, 'a');
+		auto request = Cli::parse({"online", "play-map", mapId, "--hash", hash, "--title", title});
+		acceptLaunchRequest(request);
+		REQUIRE(pendingMapPlay());
+		CHECK(pendingMapPlay()->map.title == title);
+		takePendingMapPlay();
+		std::string encoded;
+		for (int i = 0; i < 43; ++i) encoded += "%E0%A6%95";
+		REQUIRE(acceptMapPlayText("https://play.example.org/play/?map=" + mapId + "&version=" + hash + "&title=" + encoded));
+		REQUIRE(pendingMapPlay());
+		CHECK(pendingMapPlay()->map.title == title);
+		takePendingMapPlay();
+	}
+
 	TEST_CASE("the latest invite or map launch replaces the older destination")
 	{
 		setPendingJoin({"https://play.example.org", "ABCDEF"});
