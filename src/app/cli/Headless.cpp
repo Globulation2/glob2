@@ -16,6 +16,7 @@
 #include "Engine.h"
 #include "sim/snapshot/SnapshotChecksum.h"
 #include "GameDiagnostics.h"
+#include "WarriorTacticsTrace.h"
 #include "GlobalContainer.h"
 #include "BuildingArtwork.h"
 #include "Sha256.h"
@@ -518,16 +519,19 @@ struct HeadlessRunner
 			throw std::invalid_argument("--replay must be true or false");
 		const std::string replay=(output/"game.replay").string();
 		setHeadlessEnvironment("GLOB2_REPLAY_PATH", replay.c_str());
+		bool traceWarriors=false;
 		for(const auto &telemetry : many(options,"--telemetry"))
 		{
 			if(telemetry=="checksums") setHeadlessEnvironment("GLOB2_CHECKSUM_SIDECAR", "1");
 			else if(telemetry=="team-timeline") setHeadlessEnvironment("GLOB2_TEAM_TIMELINE", "1");
 			else if(telemetry=="maxima") setHeadlessEnvironment("GLOB2_MAXIMA_TELEMETRY", "1");
+            else if(telemetry=="warrior-tactics") traceWarriors=true;
 			else throw std::invalid_argument("unknown telemetry: " + telemetry);
 		}
 		globals.load();
 		Engine engine;
 		engine.headlessOutput=output.string();
+        if(traceWarriors) engine.warriorTactics=std::make_unique<GameDiagnostics::WarriorTacticsTrace>(output.string());
 		bool initial=false, final=false;
 		for(const auto &save : many(options,"--save"))
 		{
@@ -795,6 +799,7 @@ struct HeadlessRunner
         if (!engine.latestChecksum) throw std::runtime_error("Missing terminal snapshot checksum");
         const auto initialChecksum=initialSamples.front().sample.value;
         if (engine.diagnostics) engine.diagnostics->finish();
+        if (engine.warriorTactics) engine.warriorTactics->finish();
         const auto runEnd = std::chrono::steady_clock::now();
 		const auto saveCpuStart=benchmark?processCpuNs():0;
 		if(final) engine.saveInitialGameStateOrExit((output/"final.game").string(),"final",engine.gui.game.mapHeader.getMapName());
@@ -1102,7 +1107,7 @@ int runHeadlessCommand(const Cli::Request &request)
 			GlobalContainer globals("glob2-tournament-catalog");
 			globalContainer=&globals;for(const auto &directory:request.all("--data-dir"))globals.fileManager->addDir(directory);globals.runNoX=true;
 			std::cout << "{\"schema_version\":1,\"save_version\":" << VERSION_MINOR << ",\"protocol_version\":" << NET_PROTOCOL_VERSION
-				<< ",\"building_catalog_hash\":" << quote(globals.buildingsTypes.fingerprint()) << ",\"map_report_version\":2,\"generation_telemetry_version\":1,\"gameplay_telemetry_version\":2,\"ai_telemetry_version\":1,\"performance_telemetry_version\":1,\"commands\":[\"game\",\"generate_map\",\"verify_match\",\"sim_version\",\"compose_buildings\",\"validate_set\"],\"sim_version\":" << Online::currentSimVersion().toJson().dump() << ",\"verify_match_version\":1,\"telemetry\":[\"checksums\",\"team-timeline\",\"maxima\"],\"ais\":[";
+				<< ",\"building_catalog_hash\":" << quote(globals.buildingsTypes.fingerprint()) << ",\"map_report_version\":2,\"generation_telemetry_version\":1,\"gameplay_telemetry_version\":2,\"ai_telemetry_version\":1,\"performance_telemetry_version\":1,\"commands\":[\"game\",\"generate_map\",\"verify_match\",\"sim_version\",\"compose_buildings\",\"validate_set\"],\"sim_version\":" << Online::currentSimVersion().toJson().dump() << ",\"verify_match_version\":1,\"telemetry\":[\"checksums\",\"team-timeline\",\"maxima\",\"warrior-tactics\"],\"ais\":[";
 
 			bool comma=false;
 			for(int ai:AINames::selectionOrder())

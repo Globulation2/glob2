@@ -151,7 +151,7 @@ Game options:
 | `--compute-threads auto\|N` | Shared executor participants including the owner; native `auto` prefers eligible physical cores, falling back to logical CPUs then one; browser auto uses logical CPUs capped at eight; explicit N is a positive unsigned integer |
 | `--write-replay` | Boolean switch; absent by default; writes `game.replay` when present |
 | `--save initial/final/every:N` | Repeatable opt-in saves; checkpoints are diagnostics, not automatic recovery |
-| `--telemetry NAME` | Repeatable checksums, team-timeline, maxima; default none |
+| `--telemetry NAME` | Repeatable checksums, team-timeline, maxima, warrior-tactics; default none. See [warrior travel and contact](../ai/telemetry.md#warrior-travel-and-contact) |
 | `--profile NAME` | Optional isolated profile name |
 
 GUI autosaving defaults off for tournament/headless runs, independently of the

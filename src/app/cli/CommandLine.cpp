@@ -551,7 +551,7 @@ const std::vector<Command> &commands()
 			 integer("--ai-order-delay", "AI order delay in ticks", 0, 8),
 			 value("--save", "string", "Snapshot: initial, final, or every:N", "", true),
 			 choice("--telemetry", "Additional telemetry",
-					{"checksums", "team-timeline", "maxima"}, "", true),
+					{"checksums", "team-timeline", "maxima", "warrior-tactics"}, "", true),
 			 flag("--write-replay", "Write game.replay"),
 			 integer("--benchmark-warmup", "Ticks excluded from benchmark counters", 0, 2147483647),
 			 flag("--benchmark-tick-profile", "Export tick timings and the 1024 slowest ticks' phase/wait attribution; requires benchmark-warmup"),

@@ -206,7 +206,7 @@ The end-game metric picker includes **Win probability**, on a fixed 0–100% axi
 Its history is sampled every 512 ticks and includes a final partial interval.
 Allies share one prediction. An early victory retains the probability that
 triggered the rule, rather than showing a manufactured 100% after its losses are
-assigned. Saved games preserve the trace; saves predating format 188 show only
+assigned. Saved games preserve the trace; saves predating format 190 show only
 the newly observed portion after loading.
 
 Headless results automatically include the trace and an exact integer
