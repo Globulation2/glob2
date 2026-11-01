@@ -95,8 +95,8 @@ translation preview harness to the existing primary Linux, Mac and Windows relea
 uploads their native PNG/JSON evidence. `ci-macos.yml` accepts the same optional
 input for a Mac-only run. All defaults are false; normal native targets,
 regression cases and the full master inventory remain unchanged. Dependencies
-and game objects use the existing compiler/cache paths; only the extra harness
-and captures are requested in this mode.
+and game objects use the existing compiler/cache paths. This mode adds the
+harness and captures, plus the actual macOS app package described below.
 
 `tools/capture_localization_platform.py` derives its full screen input from the
 registered Thai game/online catalogs and retains source, executable, font and
@@ -108,6 +108,13 @@ CPU/HarfBuzz/software-SDL captures, not physical-screen, GPU or mobile-OS tests.
 The same helper can capture a separately built Linux release harness; keep each
 platform and build configuration's evidence distinct. Fixture profiles remain
 under the output's `profiles/` and must not be published as review evidence.
+
+The optional macOS localization mode builds the existing ad hoc `bundle`
+target in the initial SCons invocation. Its package check verifies actual Thai
+and English catalogs, font files and notices, the localized permission purpose,
+the signature seal, and packaged CLI startup without inherited build-library
+paths. It uses no Apple credentials or notarization. The package report
+accompanies the localization captures.
 
 ## Reviewed native shard timing profiles
 
