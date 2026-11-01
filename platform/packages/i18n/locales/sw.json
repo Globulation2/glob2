@@ -3010,5 +3010,21 @@
   "Swim": "Kuogelea",
   "Harvest": "Kuvuna",
   "Fight": "Kupigana",
-  "Fly": "Kuruka"
+  "Fly": "Kuruka",
+  "Live payments": "Malipo ya pesa halisi",
+  "Test payments": "Malipo ya majaribio",
+  "Unclassified payments": "Malipo yasiyoainishwa",
+  "Current period": "Kipindi cha sasa",
+  "Previous period": "Kipindi kilichopita",
+  "Credit grant": "Ugawaji wa salio",
+  "Returned credits": "Salio lililorejeshwa",
+  "Dispute": "Mzozo",
+  "Dispute closed": "Mzozo umefungwa",
+  "Matches started": "Mechi zilizoanza",
+  "Matches completed": "Mechi zilizokamilika",
+  "Matches cancelled": "Mechi zilizofutwa",
+  "{value0} publications": "Machapisho: {value0}",
+  "{value0} recorded downloads": "Vipakuliwa vilivyosajiliwa: {value0}",
+  "{value0} completion time (seconds)": "Muda wa kukamilisha {value0} (sekunde)",
+  "{value0} completion samples": "Sampuli za kukamilisha {value0}"
 }

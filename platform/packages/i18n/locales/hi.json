@@ -3010,5 +3010,21 @@
   "Swim": "तैरना",
   "Harvest": "संग्रह करना",
   "Fight": "लड़ना",
-  "Fly": "उड़ना"
+  "Fly": "उड़ना",
+  "Live payments": "वास्तविक भुगतान",
+  "Test payments": "परीक्षण भुगतान",
+  "Unclassified payments": "अवर्गीकृत भुगतान",
+  "Current period": "वर्तमान अवधि",
+  "Previous period": "पिछली अवधि",
+  "Credit grant": "क्रेडिट आवंटन",
+  "Returned credits": "लौटाए गए क्रेडिट",
+  "Dispute": "विवाद",
+  "Dispute closed": "विवाद समाप्त",
+  "Matches started": "शुरू हुए मैच",
+  "Matches completed": "पूरे हुए मैच",
+  "Matches cancelled": "रद्द हुए मैच",
+  "{value0} publications": "प्रकाशन: {value0}",
+  "{value0} recorded downloads": "दर्ज डाउनलोड: {value0}",
+  "{value0} completion time (seconds)": "पूरा होने में लगा समय: {value0} (सेकंड)",
+  "{value0} completion samples": "पूर्णता के मापन नमूने: {value0}"
 }

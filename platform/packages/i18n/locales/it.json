@@ -3037,5 +3037,21 @@
   "Swim": "Nuotare",
   "Harvest": "Raccogliere",
   "Fight": "Combattere",
-  "Fly": "Volare"
+  "Fly": "Volare",
+  "Live payments": "Pagamenti reali",
+  "Test payments": "Pagamenti di prova",
+  "Unclassified payments": "Pagamenti non classificati",
+  "Current period": "Periodo attuale",
+  "Previous period": "Periodo precedente",
+  "Credit grant": "Assegnazione di crediti",
+  "Returned credits": "Crediti restituiti",
+  "Dispute": "Controversia",
+  "Dispute closed": "Controversia chiusa",
+  "Matches started": "Partite iniziate",
+  "Matches completed": "Partite completate",
+  "Matches cancelled": "Partite annullate",
+  "{value0} publications": "Pubblicazioni: {value0}",
+  "{value0} recorded downloads": "Download registrati: {value0}",
+  "{value0} completion time (seconds)": "Tempo di completamento di {value0} (secondi)",
+  "{value0} completion samples": "Campioni di completamento: {value0}"
 }

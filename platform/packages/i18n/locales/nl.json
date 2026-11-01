@@ -3010,5 +3010,21 @@
   "Swim": "Zwemmen",
   "Harvest": "Oogsten",
   "Fight": "Vechten",
-  "Fly": "Vliegen"
+  "Fly": "Vliegen",
+  "Live payments": "Echte betalingen",
+  "Test payments": "Testbetalingen",
+  "Unclassified payments": "Niet-geclassificeerde betalingen",
+  "Current period": "Huidige periode",
+  "Previous period": "Vorige periode",
+  "Credit grant": "Toekenning van credits",
+  "Returned credits": "Teruggegeven credits",
+  "Dispute": "Geschil",
+  "Dispute closed": "Geschil gesloten",
+  "Matches started": "Gestarte wedstrijden",
+  "Matches completed": "Voltooide wedstrijden",
+  "Matches cancelled": "Geannuleerde wedstrijden",
+  "{value0} publications": "Publicaties: {value0}",
+  "{value0} recorded downloads": "Geregistreerde downloads: {value0}",
+  "{value0} completion time (seconds)": "Voltooiingstijd: {value0} (seconden)",
+  "{value0} completion samples": "Voltooiingsmetingen: {value0}"
 }

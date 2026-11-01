@@ -3118,5 +3118,21 @@
   "Swim": "سباحة",
   "Harvest": "حصاد",
   "Fight": "قتال",
-  "Fly": "طيران"
+  "Fly": "طيران",
+  "Live payments": "مدفوعات حقيقية",
+  "Test payments": "دفعات تجريبية",
+  "Unclassified payments": "المدفوعات غير المصنفة",
+  "Current period": "الفترة الحالية",
+  "Previous period": "الفترة السابقة",
+  "Credit grant": "منح رصيد",
+  "Returned credits": "الرصيد المُعاد",
+  "Dispute": "نزاع",
+  "Dispute closed": "تم إغلاق النزاع",
+  "Matches started": "المباريات التي بدأت",
+  "Matches completed": "المباريات المكتملة",
+  "Matches cancelled": "المباريات الملغاة",
+  "{value0} publications": "منشورات {value0}",
+  "{value0} recorded downloads": "عمليات التنزيل المسجلة: {value0}",
+  "{value0} completion time (seconds)": "وقت اكتمال {value0} (بالثواني)",
+  "{value0} completion samples": "عينات اكتمال {value0}"
 }

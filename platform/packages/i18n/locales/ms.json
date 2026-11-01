@@ -2983,5 +2983,21 @@
   "Swim": "Berenang",
   "Harvest": "Menuai",
   "Fight": "Bertempur",
-  "Fly": "Terbang"
+  "Fly": "Terbang",
+  "Live payments": "Pembayaran sebenar",
+  "Test payments": "Pembayaran ujian",
+  "Unclassified payments": "Pembayaran tidak dikelaskan",
+  "Current period": "Tempoh semasa",
+  "Previous period": "Tempoh sebelumnya",
+  "Credit grant": "Pemberian kredit",
+  "Returned credits": "Kredit dikembalikan",
+  "Dispute": "Pertikaian",
+  "Dispute closed": "Pertikaian ditutup",
+  "Matches started": "Perlawanan dimulakan",
+  "Matches completed": "Perlawanan selesai",
+  "Matches cancelled": "Perlawanan dibatalkan",
+  "{value0} publications": "Penerbitan {value0}",
+  "{value0} recorded downloads": "Muat turun {value0} yang direkodkan",
+  "{value0} completion time (seconds)": "Masa penyiapan {value0} (saat)",
+  "{value0} completion samples": "Sampel penyiapan {value0}"
 }

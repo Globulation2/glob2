@@ -3064,5 +3064,21 @@
   "Swim": "Плавать",
   "Harvest": "Собирать",
   "Fight": "Драться",
-  "Fly": "Летать"
+  "Fly": "Летать",
+  "Live payments": "Реальные платежи",
+  "Test payments": "Тестовые платежи",
+  "Unclassified payments": "Неклассифицированные платежи",
+  "Current period": "Текущий период",
+  "Previous period": "Предыдущий период",
+  "Credit grant": "Начисление кредитов",
+  "Returned credits": "Возвращённые кредиты",
+  "Dispute": "Спор",
+  "Dispute closed": "Спор закрыт",
+  "Matches started": "Начатые матчи",
+  "Matches completed": "Завершённые матчи",
+  "Matches cancelled": "Отменённые матчи",
+  "{value0} publications": "Публикации: {value0}",
+  "{value0} recorded downloads": "Зарегистрированные загрузки: {value0}",
+  "{value0} completion time (seconds)": "Время завершения: {value0} (секунды)",
+  "{value0} completion samples": "Замеры завершения: {value0}"
 }

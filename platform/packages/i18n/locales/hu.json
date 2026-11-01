@@ -3010,5 +3010,21 @@
   "Swim": "Úszás",
   "Harvest": "Aratás",
   "Fight": "Harc",
-  "Fly": "Repülés"
+  "Fly": "Repülés",
+  "Live payments": "Valódi pénzes fizetések",
+  "Test payments": "Tesztfizetések",
+  "Unclassified payments": "Nem besorolt fizetések",
+  "Current period": "Aktuális időszak",
+  "Previous period": "Előző időszak",
+  "Credit grant": "Kreditek kiosztása",
+  "Returned credits": "Visszaadott kreditek",
+  "Dispute": "Vita",
+  "Dispute closed": "A vita lezárva",
+  "Matches started": "Megkezdett mérkőzések",
+  "Matches completed": "Befejezett mérkőzések",
+  "Matches cancelled": "Törölt mérkőzések",
+  "{value0} publications": "Közzétételek: {value0}",
+  "{value0} recorded downloads": "Rögzített letöltések: {value0}",
+  "{value0} completion time (seconds)": "Befejezési idő: {value0} (másodperc)",
+  "{value0} completion samples": "Befejezési mérések: {value0}"
 }

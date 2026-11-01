@@ -3010,5 +3010,21 @@
   "Swim": "Simma",
   "Harvest": "Skörda",
   "Fight": "Strida",
-  "Fly": "Flyga"
+  "Fly": "Flyga",
+  "Live payments": "Betalningar med riktiga pengar",
+  "Test payments": "Testbetalningar",
+  "Unclassified payments": "Oklassificerade betalningar",
+  "Current period": "Nuvarande period",
+  "Previous period": "Föregående period",
+  "Credit grant": "Tilldelning av krediter",
+  "Returned credits": "Återlämnade krediter",
+  "Dispute": "Tvist",
+  "Dispute closed": "Tvist avslutad",
+  "Matches started": "Startade matcher",
+  "Matches completed": "Avslutade matcher",
+  "Matches cancelled": "Inställda matcher",
+  "{value0} publications": "Publiceringar: {value0}",
+  "{value0} recorded downloads": "Registrerade nedladdningar: {value0}",
+  "{value0} completion time (seconds)": "Slutförandetid: {value0} (sekunder)",
+  "{value0} completion samples": "Slutförandemätningar: {value0}"
 }

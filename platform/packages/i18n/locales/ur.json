@@ -3010,5 +3010,21 @@
   "Swim": "تیرنا",
   "Harvest": "جمع کرنا",
   "Fight": "لڑنا",
-  "Fly": "اڑنا"
+  "Fly": "اڑنا",
+  "Live payments": "حقیقی ادائیگیاں",
+  "Test payments": "آزمائشی ادائیگیاں",
+  "Unclassified payments": "غیر درجہ بند ادائیگیاں",
+  "Current period": "موجودہ مدت",
+  "Previous period": "پچھلی مدت",
+  "Credit grant": "کریڈٹ کی فراہمی",
+  "Returned credits": "واپس کیے گئے کریڈٹ",
+  "Dispute": "تنازعہ",
+  "Dispute closed": "تنازعہ بند",
+  "Matches started": "شروع ہوئے میچ",
+  "Matches completed": "مکمل ہوئے میچ",
+  "Matches cancelled": "منسوخ ہوئے میچ",
+  "{value0} publications": "اشاعتیں: {value0}",
+  "{value0} recorded downloads": "درج شدہ ڈاؤن لوڈز: {value0}",
+  "{value0} completion time (seconds)": "تکمیل کا وقت: {value0} (سیکنڈ)",
+  "{value0} completion samples": "تکمیل کے پیمائشی نمونے: {value0}"
 }

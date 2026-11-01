@@ -3037,5 +3037,21 @@
   "Swim": "Înot",
   "Harvest": "Recoltare",
   "Fight": "Luptă",
-  "Fly": "Zbor"
+  "Fly": "Zbor",
+  "Live payments": "Plăți reale",
+  "Test payments": "Plăți de testare",
+  "Unclassified payments": "Plăți neclasificate",
+  "Current period": "Perioada curentă",
+  "Previous period": "Perioada anterioară",
+  "Credit grant": "Acordare de credite",
+  "Returned credits": "Credite returnate",
+  "Dispute": "Contestație",
+  "Dispute closed": "Contestație închisă",
+  "Matches started": "Meciuri începute",
+  "Matches completed": "Meciuri finalizate",
+  "Matches cancelled": "Meciuri anulate",
+  "{value0} publications": "Publicații: {value0}",
+  "{value0} recorded downloads": "Descărcări înregistrate: {value0}",
+  "{value0} completion time (seconds)": "Timp de finalizare: {value0} (secunde)",
+  "{value0} completion samples": "Eșantioane de finalizare: {value0}"
 }

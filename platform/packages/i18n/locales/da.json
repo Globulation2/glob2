@@ -3010,5 +3010,21 @@
   "Swim": "Svømme",
   "Harvest": "Høste",
   "Fight": "Kæmpe",
-  "Fly": "Flyve"
+  "Fly": "Flyve",
+  "Live payments": "Betalinger med rigtige penge",
+  "Test payments": "Testbetalinger",
+  "Unclassified payments": "Uklassificerede betalinger",
+  "Current period": "Nuværende periode",
+  "Previous period": "Forrige periode",
+  "Credit grant": "Tildeling af kreditter",
+  "Returned credits": "Returnerede kreditter",
+  "Dispute": "Tvist",
+  "Dispute closed": "Tvist lukket",
+  "Matches started": "Kampe startet",
+  "Matches completed": "Afsluttede kampe",
+  "Matches cancelled": "Kampe aflyst",
+  "{value0} publications": "Udgivelser: {value0}",
+  "{value0} recorded downloads": "Registrerede downloads: {value0}",
+  "{value0} completion time (seconds)": "Gennemførelsestid: {value0} (sekunder)",
+  "{value0} completion samples": "Målinger af gennemførelser: {value0}"
 }

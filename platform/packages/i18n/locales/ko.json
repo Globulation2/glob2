@@ -2983,5 +2983,21 @@
   "Swim": "수영",
   "Harvest": "수확",
   "Fight": "전투",
-  "Fly": "비행"
+  "Fly": "비행",
+  "Live payments": "실제 결제",
+  "Test payments": "테스트 결제",
+  "Unclassified payments": "미분류 결제",
+  "Current period": "현재 기간",
+  "Previous period": "이전 기간",
+  "Credit grant": "크레딧 지급",
+  "Returned credits": "반환된 크레딧",
+  "Dispute": "결제 이의 제기",
+  "Dispute closed": "결제 이의 제기 종료",
+  "Matches started": "시작된 경기",
+  "Matches completed": "완료된 경기",
+  "Matches cancelled": "취소된 경기",
+  "{value0} publications": "{value0} 게시 수",
+  "{value0} recorded downloads": "기록된 다운로드: {value0}",
+  "{value0} completion time (seconds)": "완료 소요 시간: {value0}(초)",
+  "{value0} completion samples": "{value0} 완료 표본 수"
 }

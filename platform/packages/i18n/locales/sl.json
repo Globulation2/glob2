@@ -3064,5 +3064,21 @@
   "Swim": "Plavanje",
   "Harvest": "Žetev",
   "Fight": "Boj",
-  "Fly": "Letenje"
+  "Fly": "Letenje",
+  "Live payments": "Plačila s pravim denarjem",
+  "Test payments": "Testna plačila",
+  "Unclassified payments": "Nerazvrščena plačila",
+  "Current period": "Trenutno obdobje",
+  "Previous period": "Prejšnje obdobje",
+  "Credit grant": "Dodelitev kreditov",
+  "Returned credits": "Vrnjeni krediti",
+  "Dispute": "Spor",
+  "Dispute closed": "Spor zaključen",
+  "Matches started": "Začete tekme",
+  "Matches completed": "Zaključene tekme",
+  "Matches cancelled": "Odpovedane tekme",
+  "{value0} publications": "Objave: {value0}",
+  "{value0} recorded downloads": "Zabeleženi prenosi: {value0}",
+  "{value0} completion time (seconds)": "Čas dokončanja: {value0} (sekunde)",
+  "{value0} completion samples": "Vzorci dokončanja: {value0}"
 }

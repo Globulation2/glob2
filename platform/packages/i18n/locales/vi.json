@@ -2983,5 +2983,21 @@
   "Swim": "Bơi",
   "Harvest": "Thu hoạch",
   "Fight": "Chiến đấu",
-  "Fly": "Bay"
+  "Fly": "Bay",
+  "Live payments": "Thanh toán thực",
+  "Test payments": "Thanh toán thử nghiệm",
+  "Unclassified payments": "Các khoản thanh toán chưa được phân loại",
+  "Current period": "Kỳ hiện tại",
+  "Previous period": "Kỳ trước",
+  "Credit grant": "Cấp tín dụng",
+  "Returned credits": "Tín dụng được trả lại",
+  "Dispute": "Tranh chấp",
+  "Dispute closed": "Tranh chấp đã kết thúc",
+  "Matches started": "Các trận đấu đã bắt đầu",
+  "Matches completed": "Các trận đấu đã hoàn thành",
+  "Matches cancelled": "Các trận đấu bị hủy bỏ",
+  "{value0} publications": "Các mục đã xuất bản: {value0}",
+  "{value0} recorded downloads": "Lượt tải xuống đã ghi nhận: {value0}",
+  "{value0} completion time (seconds)": "Thời gian hoàn thành: {value0} (giây)",
+  "{value0} completion samples": "Mẫu hoàn thành: {value0}"
 }

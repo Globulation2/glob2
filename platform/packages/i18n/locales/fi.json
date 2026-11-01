@@ -3010,5 +3010,21 @@
   "Swim": "Uida",
   "Harvest": "Korjata satoa",
   "Fight": "Taistella",
-  "Fly": "Lentää"
+  "Fly": "Lentää",
+  "Live payments": "Oikean rahan maksut",
+  "Test payments": "Testimaksut",
+  "Unclassified payments": "Luokittelemattomat maksut",
+  "Current period": "Nykyinen ajanjakso",
+  "Previous period": "Edellinen ajanjakso",
+  "Credit grant": "Krediittien myöntäminen",
+  "Returned credits": "Palautetut krediitit",
+  "Dispute": "Kiista",
+  "Dispute closed": "Kiista suljettu",
+  "Matches started": "Aloitetut ottelut",
+  "Matches completed": "Päättyneet ottelut",
+  "Matches cancelled": "Perutut ottelut",
+  "{value0} publications": "Julkaisut: {value0}",
+  "{value0} recorded downloads": "Kirjatut lataukset: {value0}",
+  "{value0} completion time (seconds)": "Valmistumisaika: {value0} (sekunnit)",
+  "{value0} completion samples": "Valmistumismittaukset: {value0}"
 }

@@ -3064,5 +3064,21 @@
   "Swim": "Плавання",
   "Harvest": "Збирання",
   "Fight": "Бій",
-  "Fly": "Політ"
+  "Fly": "Політ",
+  "Live payments": "Реальні платежі",
+  "Test payments": "Тестові платежі",
+  "Unclassified payments": "Некласифіковані платежі",
+  "Current period": "Поточний період",
+  "Previous period": "Попередній період",
+  "Credit grant": "Нарахування кредитів",
+  "Returned credits": "Повернені кредити",
+  "Dispute": "Спір",
+  "Dispute closed": "Спір закрито",
+  "Matches started": "Розпочаті матчі",
+  "Matches completed": "Завершені матчі",
+  "Matches cancelled": "Скасовані матчі",
+  "{value0} publications": "Публікації: {value0}",
+  "{value0} recorded downloads": "Зареєстровані завантаження: {value0}",
+  "{value0} completion time (seconds)": "Час завершення: {value0} (секунди)",
+  "{value0} completion samples": "Виміри завершення: {value0}"
 }

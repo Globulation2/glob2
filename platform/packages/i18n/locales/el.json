@@ -3010,5 +3010,21 @@
   "Swim": "Κολύμπι",
   "Harvest": "Συγκομιδή",
   "Fight": "Μάχη",
-  "Fly": "Πτήση"
+  "Fly": "Πτήση",
+  "Live payments": "Πραγματικές πληρωμές",
+  "Test payments": "Δοκιμαστικές πληρωμές",
+  "Unclassified payments": "Μη ταξινομημένες πληρωμές",
+  "Current period": "Τρέχουσα περίοδος",
+  "Previous period": "Προηγούμενη περίοδος",
+  "Credit grant": "Χορήγηση πιστώσεων",
+  "Returned credits": "Πιστώσεις που επιστράφηκαν",
+  "Dispute": "Αμφισβήτηση",
+  "Dispute closed": "Κλειστή αμφισβήτηση",
+  "Matches started": "Αγώνες που ξεκίνησαν",
+  "Matches completed": "Ολοκληρωμένοι αγώνες",
+  "Matches cancelled": "Αγώνες που ακυρώθηκαν",
+  "{value0} publications": "Δημοσιεύσεις: {value0}",
+  "{value0} recorded downloads": "Καταγεγραμμένες λήψεις: {value0}",
+  "{value0} completion time (seconds)": "Χρόνος ολοκλήρωσης: {value0} (δευτερόλεπτα)",
+  "{value0} completion samples": "Δείγματα ολοκλήρωσης: {value0}"
 }

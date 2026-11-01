@@ -3010,5 +3010,21 @@
   "Swim": "شنا",
   "Harvest": "برداشت",
   "Fight": "مبارزه",
-  "Fly": "پرواز"
+  "Fly": "پرواز",
+  "Live payments": "پرداخت‌های واقعی",
+  "Test payments": "پرداخت‌های آزمایشی",
+  "Unclassified payments": "پرداخت‌های طبقه‌بندی نشده",
+  "Current period": "دوره فعلی",
+  "Previous period": "دوره قبلی",
+  "Credit grant": "تخصیص اعتبار",
+  "Returned credits": "اعتبارات بازگردانده شده",
+  "Dispute": "اختلاف",
+  "Dispute closed": "اختلاف بسته شد",
+  "Matches started": "مسابقات آغازشده",
+  "Matches completed": "مسابقات تکمیل‌شده",
+  "Matches cancelled": "مسابقات لغو شده",
+  "{value0} publications": "موارد منتشرشده: {value0}",
+  "{value0} recorded downloads": "دانلودهای ثبت شده {value0}",
+  "{value0} completion time (seconds)": "زمان تکمیل {value0} (ثانیه)",
+  "{value0} completion samples": "نمونه‌های تکمیل {value0}"
 }

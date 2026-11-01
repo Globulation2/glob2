@@ -3010,5 +3010,21 @@
   "Swim": "Igeri egin",
   "Harvest": "Bildu",
   "Fight": "Borrokatu",
-  "Fly": "Hegan egin"
+  "Fly": "Hegan egin",
+  "Live payments": "Benetako ordainketak",
+  "Test payments": "Proba-ordainketak",
+  "Unclassified payments": "Sailkatu gabeko ordainketak",
+  "Current period": "Uneko aldia",
+  "Previous period": "Aurreko aldia",
+  "Credit grant": "Kreditu-esleipena",
+  "Returned credits": "Itzulitako kredituak",
+  "Dispute": "Gatazka",
+  "Dispute closed": "Gatazka itxita",
+  "Matches started": "Hasitako partidak",
+  "Matches completed": "Osatutako partidak",
+  "Matches cancelled": "Bertan behera utzitako partidak",
+  "{value0} publications": "Argitalpenak: {value0}",
+  "{value0} recorded downloads": "Erregistratutako deskargak: {value0}",
+  "{value0} completion time (seconds)": "Osatze-denbora: {value0} (segundoak)",
+  "{value0} completion samples": "Osatze-laginak: {value0}"
 }

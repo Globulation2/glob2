@@ -3037,5 +3037,21 @@
   "Swim": "Пливање",
   "Harvest": "Жетва",
   "Fight": "Борба",
-  "Fly": "Летење"
+  "Fly": "Летење",
+  "Live payments": "Плаћања правим новцем",
+  "Test payments": "Тест плаћања",
+  "Unclassified payments": "Некласификована плаћања",
+  "Current period": "Тренутни период",
+  "Previous period": "Претходни период",
+  "Credit grant": "Додела кредита",
+  "Returned credits": "Враћени кредити",
+  "Dispute": "Спор",
+  "Dispute closed": "Спор је затворен",
+  "Matches started": "Започети мечеви",
+  "Matches completed": "Завршени мечеви",
+  "Matches cancelled": "Отказани мечеви",
+  "{value0} publications": "Објаве: {value0}",
+  "{value0} recorded downloads": "Забележена преузимања: {value0}",
+  "{value0} completion time (seconds)": "Време завршетка: {value0} (секунде)",
+  "{value0} completion samples": "Мерења завршетка: {value0}"
 }

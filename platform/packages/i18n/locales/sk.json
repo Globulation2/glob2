@@ -3064,5 +3064,21 @@
   "Swim": "Plávanie",
   "Harvest": "Žatva",
   "Fight": "Boj",
-  "Fly": "Lietanie"
+  "Fly": "Lietanie",
+  "Live payments": "Platby skutočnými peniazmi",
+  "Test payments": "Testovacie platby",
+  "Unclassified payments": "Neklasifikované platby",
+  "Current period": "Aktuálne obdobie",
+  "Previous period": "Predchádzajúce obdobie",
+  "Credit grant": "Pridelenie kreditov",
+  "Returned credits": "Vrátené kredity",
+  "Dispute": "Spor",
+  "Dispute closed": "Spor uzavretý",
+  "Matches started": "Začaté zápasy",
+  "Matches completed": "Dokončené zápasy",
+  "Matches cancelled": "Zrušené zápasy",
+  "{value0} publications": "Publikácie: {value0}",
+  "{value0} recorded downloads": "Zaznamenané stiahnutia: {value0}",
+  "{value0} completion time (seconds)": "Čas dokončenia: {value0} (sekundy)",
+  "{value0} completion samples": "Vzorky dokončenia: {value0}"
 }

@@ -3010,5 +3010,21 @@
   "Swim": "Naĝi",
   "Harvest": "Rikolti",
   "Fight": "Batali",
-  "Fly": "Flugi"
+  "Fly": "Flugi",
+  "Live payments": "Pagoj per vera mono",
+  "Test payments": "Testaj pagoj",
+  "Unclassified payments": "Neklasifikitaj pagoj",
+  "Current period": "Aktuala periodo",
+  "Previous period": "Antaŭa periodo",
+  "Credit grant": "Kredita atribuo",
+  "Returned credits": "Resenditaj kreditoj",
+  "Dispute": "Disputo",
+  "Dispute closed": "Disputo fermita",
+  "Matches started": "Komencitaj matĉoj",
+  "Matches completed": "Matĉoj finitaj",
+  "Matches cancelled": "Matĉoj nuligitaj",
+  "{value0} publications": "Publikaĵoj: {value0}",
+  "{value0} recorded downloads": "Registritaj elŝutoj: {value0}",
+  "{value0} completion time (seconds)": "Kompletiga tempo de {value0} (sekundoj)",
+  "{value0} completion samples": "Mezuritaj kompletigoj: {value0}"
 }

@@ -2983,5 +2983,21 @@
   "Swim": "游泳",
   "Harvest": "採集",
   "Fight": "戰鬥",
-  "Fly": "飛行"
+  "Fly": "飛行",
+  "Live payments": "實際付款",
+  "Test payments": "測試付款",
+  "Unclassified payments": "未分類付款",
+  "Current period": "本期",
+  "Previous period": "上期",
+  "Credit grant": "發放點數",
+  "Returned credits": "退還點數",
+  "Dispute": "爭議",
+  "Dispute closed": "爭議已關閉",
+  "Matches started": "已開始對局",
+  "Matches completed": "已完成對局",
+  "Matches cancelled": "已取消對局",
+  "{value0} publications": "{value0}發布數",
+  "{value0} recorded downloads": "{value0}已記錄下載次數",
+  "{value0} completion time (seconds)": "完成耗時：{value0}（秒）",
+  "{value0} completion samples": "{value0}完成樣本數"
 }

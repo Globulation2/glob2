@@ -2983,5 +2983,21 @@
   "Swim": "泳ぐ",
   "Harvest": "収穫",
   "Fight": "戦う",
-  "Fly": "飛ぶ"
+  "Fly": "飛ぶ",
+  "Live payments": "本番決済",
+  "Test payments": "テスト決済",
+  "Unclassified payments": "未分類の決済",
+  "Current period": "当期",
+  "Previous period": "前期",
+  "Credit grant": "クレジット付与",
+  "Returned credits": "返還されたクレジット",
+  "Dispute": "異議申し立て",
+  "Dispute closed": "異議申し立て終了",
+  "Matches started": "開始した試合",
+  "Matches completed": "完了した試合",
+  "Matches cancelled": "中止された試合",
+  "{value0} publications": "{value0}の公開数",
+  "{value0} recorded downloads": "{value0}の記録済みダウンロード数",
+  "{value0} completion time (seconds)": "完了所要時間：{value0}（秒）",
+  "{value0} completion samples": "{value0}の完了サンプル数"
 }

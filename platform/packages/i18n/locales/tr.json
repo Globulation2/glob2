@@ -3010,5 +3010,21 @@
   "Swim": "Yüzmek",
   "Harvest": "Hasat etmek",
   "Fight": "Savaşmak",
-  "Fly": "Uçmak"
+  "Fly": "Uçmak",
+  "Live payments": "Gerçek ödemeler",
+  "Test payments": "Test ödemeleri",
+  "Unclassified payments": "Sınıflandırılmamış ödemeler",
+  "Current period": "Mevcut dönem",
+  "Previous period": "Önceki dönem",
+  "Credit grant": "Kredi tahsisi",
+  "Returned credits": "İade edilen krediler",
+  "Dispute": "Anlaşmazlık",
+  "Dispute closed": "Anlaşmazlık kapatıldı",
+  "Matches started": "Başlatılan maçlar",
+  "Matches completed": "Tamamlanan maçlar",
+  "Matches cancelled": "İptal edilen maçlar",
+  "{value0} publications": "Yayınlar: {value0}",
+  "{value0} recorded downloads": "Kaydedilen indirmeler: {value0}",
+  "{value0} completion time (seconds)": "Tamamlanma süresi: {value0} (saniye)",
+  "{value0} completion samples": "Tamamlanma ölçümleri: {value0}"
 }

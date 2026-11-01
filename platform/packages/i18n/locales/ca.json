@@ -3037,5 +3037,21 @@
   "Swim": "Nedar",
   "Harvest": "Collir",
   "Fight": "Lluitar",
-  "Fly": "Volar"
+  "Fly": "Volar",
+  "Live payments": "Pagaments reals",
+  "Test payments": "Pagaments de prova",
+  "Unclassified payments": "Pagaments sense classificar",
+  "Current period": "Període actual",
+  "Previous period": "Període anterior",
+  "Credit grant": "Concessió de crèdits",
+  "Returned credits": "Crèdits retornats",
+  "Dispute": "Disputa",
+  "Dispute closed": "Disputa tancada",
+  "Matches started": "Partides iniciades",
+  "Matches completed": "Partides completades",
+  "Matches cancelled": "Partides cancel·lades",
+  "{value0} publications": "Publicacions: {value0}",
+  "{value0} recorded downloads": "Descàrregues enregistrades de {value0}",
+  "{value0} completion time (seconds)": "Temps de finalització: {value0} (segons)",
+  "{value0} completion samples": "Mostres de finalització de {value0}"
 }
