@@ -1,0 +1,25 @@
+{
+  "tested_commit": "b92b7b59333c242298a67c876c0547df6b2c2b9e",
+  "tested_tree": "1e943e13c1d4d8d1c2e2d2467a3344f447a65ebd",
+  "base": "0d54ef3a99384059e68e78f03f774e062031a3ca",
+  "integration": "PR head tested; merge-tree is conflict free. Base adds only unrelated HUD code.",
+  "environment": "Linux-7.0.0-38-generic-x86_64-with-glibc2.39",
+  "compiler": "g++ (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0",
+  "python": "3.12.3",
+  "configuration": "native Linux x86_64; dev_fast=1; -O0 -g1; default supported client features; SDL3 prefix /home/bradley/torus-deps/sdl3",
+  "commands": [
+    "GLOB2_SDL3_PREFIX=/home/bradley/torus-deps/sdl3 python3 tools/dev_build.py engine-tests -j12",
+    "GLOB2_SDL3_PREFIX=/home/bradley/torus-deps/sdl3 python3 test/run_tests.py --build-dir build/linux/client/debug/dev-dev_fast-true-linker-auto --binary engine --filter Maxima*/* --timeout 600 --junit artifacts/worker-priorities/final-maxima.xml -j4",
+    "GLOB2_SDL3_PREFIX=/home/bradley/torus-deps/sdl3 python3 test/run_tests.py --build-dir build/linux/client/debug/dev-dev_fast-true-linker-auto --binary engine --filter 'TurnEngineHarness/the committed*' --junit artifacts/worker-priorities/final-golden.xml",
+    "python3 -m unittest discover -s src/ai/maxima -p *Test.py",
+    "python3 test/check_sim_revision.py --base origin/master"
+  ],
+  "results": {
+    "native_maxima": "179 passed, exit 0",
+    "golden": "1 passed, exit 0; checksum trace unchanged",
+    "python": "59 passed, 2 skipped, exit 0",
+    "sim_version": "passed, exit 0",
+    "independent_regression": "1 passed"
+  },
+  "limits": "No cross-platform checksum comparison, release performance, gameplay-strength tournament or human playtest. Initial 120-second economy timeout passed on final full run with 600-second timeout. No save fields or replay acceptance floors changed."
+}

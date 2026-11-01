@@ -1,0 +1,4 @@
+PASS Maxima.Economy/observed hunger expands feeding for an opening colony mix beyond nominal forecasts (103.8s)
+
+1 passed, 0 failed, 0 skipped (103.8s of test time)
+[run_tests] JUnit report: artifacts/worker-priorities/economy.xml (1 cases)

@@ -1,0 +1,7 @@
+Independent subagent review of the worker-priority changes:
+
+No actionable findings. The implementation matches the agreed simple policy, preserves upgrade priority, uses deterministic ties, and avoids new saved state.
+
+The reviewer independently reran the new regression: 1 passed. See independent-review.xml.
+
+No refactor is needed before merge. Existing limits remain: cross-platform determinism and gameplay effectiveness were not evaluated.

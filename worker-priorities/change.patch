@@ -1,0 +1,199 @@
+diff --git a/docs/ai/maxima/economy.md b/docs/ai/maxima/economy.md
+index 00d73e4e6..1cce2bd15 100644
+--- a/docs/ai/maxima/economy.md
++++ b/docs/ai/maxima/economy.md
+@@ -69,6 +69,14 @@ with `staffing.new_inn_workers` or `staffing.new_swarm_workers`, then follow
+ the same loop. Swarm allowances remain bounded by the colony labour plan.
+ Controller state belongs to the building's lifetime and is saved with Maxima.
+ 
++At each food-ledger review, completed inns and swarms are ranked separately by
++existing wheat-route quality (average supply distance, including the penalty for
++unreachable wheat). The worst half, rounded down, receive low worker priority;
++the rest receive normal priority. Equal scores are ordered by building ID.
++Construction sites and upgrades are excluded from this ranking. Ordinary inn
++construction receives high priority during a food emergency and normal priority
++otherwise. These priority reviews require the food ledger to be enabled.
++
+ ## Development
+ 
+ Schools retain their early population and technology gates. Once the higher
+diff --git a/src/ai/maxima/AIMaxima.cpp b/src/ai/maxima/AIMaxima.cpp
+index b0df80a83..3fec5f88b 100644
+--- a/src/ai/maxima/AIMaxima.cpp
++++ b/src/ai/maxima/AIMaxima.cpp
+@@ -5454,6 +5454,49 @@ void Maxima::development_cycle(Context& runtime)
+ 				std::chrono::duration_cast<std::chrono::microseconds>(
+ 					std::chrono::steady_clock::now()-profileStarted).count()));
+ }
++
++
++// The ledger already measures wheat-route quality; larger distances are worse.
++// Rank completed inns and swarms separately and leave the odd building normal.
++void Maxima::update_worker_priorities(Context& runtime,
++    const AIMaximaPlacement::WorldState& world,
++    const AIMaximaFoodLedger::Result& ledger)
++{
++    auto ownerObservation=runtime.scopeOwnerObservation();
++    std::vector<const AIMaximaFoodLedger::ConsumerResult*> groups[2];
++    for(const auto& value:ledger.consumers)
++    {
++        const auto* building=world.building(value.key);
++        if(!building || building->site || building->upgrading)continue;
++        if(profile_serves(building->buildingType,AIMaximaBuildings::Feeding,building->level))
++            groups[0].push_back(&value);
++        else if(profile_serves(building->buildingType,AIMaximaBuildings::Production,building->level))
++            groups[1].push_back(&value);
++    }
++    auto setPriority=[&](int id,int priority)
++    {
++        const auto* building=runtime.get_building_register().get_building(id);
++        if(building && building->priority!=priority)
++            runtime.add_management_order(new ChangePriority(priority,id));
++    };
++    for(auto& group:groups)
++    {
++        std::sort(group.begin(),group.end(),[](const auto* a,const auto* b)
++        {
++            return a->quality!=b->quality ? a->quality>b->quality : a->key<b->key;
++        });
++        for(size_t i=0;i<group.size();++i)
++            setPriority(group[i]->key,i<group.size()/2 ? -1 : 0);
++    }
++    // Upgrades keep their existing high-priority lifecycle. Ordinary inn sites
++    // recruit first only while the current director budget reports a food crisis.
++    for(const auto& building:world.buildings)
++        if(building.site && !building.upgrading
++           && profile_serves(building.buildingType,AIMaximaBuildings::Feeding,building.level))
++            setPriority(building.id,budget.food_emergency ? 1 : 0);
++}
++
++
+ void Maxima::update_food_retirement(Context& runtime,
+ 	const AIMaximaPlacement::WorldState& world)
+ {
+@@ -5463,6 +5506,7 @@ void Maxima::update_food_retirement(Context& runtime,
+ 		development_planner.evaluateFoodLedger(world);
+ 	const AIMaximaPlacement::PlacementPolicy& policy=development_planner.policy();
+ 	food_ledger_valid=true;
++    update_worker_priorities(runtime,world,ledger);
+ 
+ 	const std::set<int> establishing=establishing_colony_buildings();
+ 
+diff --git a/src/ai/maxima/AIMaxima.h b/src/ai/maxima/AIMaxima.h
+index 98497189a..039a8f5ca 100644
+--- a/src/ai/maxima/AIMaxima.h
++++ b/src/ai/maxima/AIMaxima.h
+@@ -728,6 +728,9 @@ private:
+ 	int food_supported_swarms;
+     int food_birth_crop_rate=0; // recurring wheat packets/tick, FoodLedger RateScale
+ 	bool food_ledger_valid;
++	void update_worker_priorities(AIMaximaRuntime::Context& runtime,
++		const AIMaximaPlacement::WorldState& world,
++		const AIMaximaFoodLedger::Result& ledger);
+ 	void update_food_retirement(AIMaximaRuntime::Context& runtime,
+ 		const AIMaximaPlacement::WorldState& world);
+ 	///Neighbouring cells a protected stack's growth can actually spread into.
+diff --git a/src/ai/maxima/MaximaImplementationIntegrationTest.cpp b/src/ai/maxima/MaximaImplementationIntegrationTest.cpp
+index df1a931b1..bba1b42d5 100644
+--- a/src/ai/maxima/MaximaImplementationIntegrationTest.cpp
++++ b/src/ai/maxima/MaximaImplementationIntegrationTest.cpp
+@@ -1972,3 +1972,78 @@ TEST_CASE("prepared resource obstacles match scalar entity gradients" * doctest:
+         CHECK(actual.values==expected);
+     }
+ }
++
++TEST_CASE("economic worker priorities rank each role and boost emergency inn sites" * doctest::test_suite("Maxima.Implementation"))
++{
++    glob2test::HeadlessGlobals globals;
++    Game game(nullptr);
++    game.map.setSize(6,6,GRASS);game.map.setGame(&game);
++    game.addTeam();game.teams[0]->race.loadDefault();
++    Player player;player.setTeam(game.teams[0]);
++    std::vector<Building*> buildings;
++    for(int i=0;i<9;++i)
++    {
++        const char* name=i==8 ? "hospital" : i>=3 && i<6 ? "swarm" : "inn";
++        auto* b=game.addBuilding(5+(i%4)*12,5+(i/4)*20,
++            globalContainer->buildingsTypes.getTypeNum(name,0,false),0);
++        REQUIRE(b);buildings.push_back(b);
++    }
++    AIMaxima::Maxima ai(&player);Context& c=ai.context;
++    c.initialize();c.activeAI=&ai;
++    glob2test::withMaximaObservation(c,[&]{ai.configure_development_planner();});
++    auto world=ai.collect_development_world(c);
++    REQUIRE(world.buildings.size()==9);
++    AIMaximaFoodLedger::Result ledger;
++    std::map<int,int> expected;
++    for(auto& b:world.buildings)
++    {
++        const auto it=std::find_if(buildings.begin(),buildings.end(),
++            [&](const auto* live){return live->gid==b.gid;});
++        REQUIRE(it!=buildings.end());
++        const int index=int(it-buildings.begin());
++        AIMaximaFoodLedger::ConsumerResult value;
++        value.key=b.id;
++        value.kind=index>=3 && index<6 ? AIMaximaFoodLedger::SwarmConsumer : AIMaximaFoodLedger::InnConsumer;
++        // Inn scores tie (ID breaks the tie); the last swarm has the worst route.
++        value.quality=index>=3 && index<6 ? index*100 : 100;
++        if(index==6 || index==7)b.site=true;
++        if(index==7)b.upgrading=true;
++        ledger.consumers.push_back(value);
++        expected[b.id]=index==5 ? -1 : index==6 ? 1 : 0;
++    }
++    int lowestInn=std::numeric_limits<int>::max();
++    for(const auto& value:ledger.consumers)
++        if(value.kind==AIMaximaFoodLedger::InnConsumer && !world.building(value.key)->site
++           && world.building(value.key)->gid!=buildings[8]->gid)
++            lowestInn=std::min(lowestInn,value.key);
++    expected[lowestInn]=-1;
++    // An upgrade's existing high priority must survive the economic review.
++    buildings[7]->priority=1;
++    for(const auto& b:world.buildings)if(b.gid==buildings[7]->gid)expected[b.id]=1;
++    ai.budget.food_emergency=true;
++    auto review=[&]
++    {
++        c.orders.clear();
++        ai.update_worker_priorities(c,world,ledger);
++        c.update_management_orders();
++        for(const auto& order:c.orders)
++            if(const auto change=std::dynamic_pointer_cast<OrderChangePriority>(order))
++                for(auto* b:buildings)if(b->gid==change->gid)b->priority=change->priority;
++        for(const auto& b:world.buildings)
++            for(const auto* live:buildings)if(live->gid==b.gid)
++                CHECK(live->priority==expected.at(b.id));
++    };
++    review();
++    // A settled review emits no redundant priority orders.
++    review();
++    for(const auto& order:c.orders)CHECK(!std::dynamic_pointer_cast<OrderChangePriority>(order));
++    ai.budget.food_emergency=false;
++    for(const auto& b:world.buildings)if(b.gid==buildings[6]->gid)expected[b.id]=0;
++    review();
++    // A lone completed building remains normal, even if it used to rank low.
++    auto lone=world;
++    lone.buildings.erase(std::remove_if(lone.buildings.begin(),lone.buildings.end(),
++        [&](const auto& b){return b.id!=lowestInn;}),lone.buildings.end());
++    world=std::move(lone);expected[lowestInn]=0;
++    review();
++}
+diff --git a/src/game/SimRevision.h b/src/game/SimRevision.h
+index 5f953db77..5d0a317b0 100644
+--- a/src/game/SimRevision.h
++++ b/src/game/SimRevision.h
+@@ -16,4 +16,4 @@
+ //
+ // Kept apart from Version.h so a bump recompiles only the sim version code.
+ // deploy/sim_version.py reads this line.
+-#define SIM_REVISION 109
++#define SIM_REVISION 110
+diff --git a/test/fixtures/multiplayer/FourSquares1.g2mr b/test/fixtures/multiplayer/FourSquares1.g2mr
+index 2225800be0064dda23e0578ac9cc14ac03a96b98..6122034e14b3d298cbbdd6e60638a95ff1183c3c 100644
+GIT binary patch
+delta 148
+zcmcaFb6;kHp?!)`T5?i~u|cwdxv`;%iJ6f}a+-m;X`)GLnrWhWlDVacfvGtVni-`T
+pCz+U7BqgRASfr*I8YHEerzIP1EbwEd)Qru4nd7)v1Y)lI1OR}tD~<pF
+
+delta 148
+zcmcaFb6;kHp}l3AQL?dtsinDPig}ueS*nGJNvdU<X{v!ynvuDINs3`|lA)<(s)bpq
+qsX>Z)l7*3hv4yFbL7JI?nSnu~!NvkVW=hT2{Fgb7i>3M3?CAgrHYxG|
+
