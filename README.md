@@ -1,9 +1,9 @@
 # Maxima renewable wood capacity verification
 
-Tested PR head: `68f671be7a686218b104de971cb9d198f3b48d72`. Base: `985b78d7d434aff8dbabd89035f273819e96df6c`. PR: https://github.com/Globulation2/glob2/pull/1338
+Final tested PR head: `6185769c4fd567bc8fb10fb18a687fca59ff8440`. Refreshed integration base: `8d5293c436c1a65e8ad47459e738152644fcf137`. PR: https://github.com/Globulation2/glob2/pull/1338
 
-The final clean Linux/GCC fast build passed 73 focused engine cases and 75 Python tests (one standalone-client CLI test skipped). Broader native coverage validates 184 unique current cases across identical production source: the earlier broad run passed 181 cases, the corrected clearing fixture passes at final head, and both long feeding fixtures passed isolated 600-second-budget runs in 86.171 and 101.15 seconds. The original failures/timeouts are retained, not counted as passes. Only the clearing test file changed after reviewed production commit `0562d2286d`.
+Final integrated validation: **82 engine cases passed**, **75 Python tests passed, one CLI-only test skipped**, and the revision119 golden record/simulation gate passes. The final merge resolution was independently reviewed with no unresolved findings. See `integration-verification.json` for exact commands, inventory, clean source/binary provenance and limitations; `integration-review.md` for the final audit. `integrated-current-match-*` retains a verified replay and per-tick checksums.
 
-`accepted-verification.json` records exact commands, source/binary provenance, case inventory, coverage and limitations. `independent-review.md` records the review findings and final audit. The JUnit files retain each selected case; `current-match-*` retains a verified replay and per-tick checksums. Full build logs are compressed. Reproducer scripts and exact argv receipts are included.
+Earlier files remain as clearly versioned **pre-integration supplemental evidence**: `accepted-verification.json` identifies its older head/base, the broader native runs retain original failures/timeouts, both isolated feeding fixtures passed, and review-driven fixture corrections were validated. These earlier results are not represented as final-base qualification.
 
-Cross-platform Maxima checksum comparisons, release performance, comparative AI effectiveness and human gameplay remain unverified. Hosted predictive checks are tracked on the PR independently of this local evidence.
+Limits: native Linux/GCC fast development only; no cross-platform Maxima checksum comparison, release performance qualification, comparative effectiveness tournament or human playtest. Hosted predictive CI is tracked independently on the PR.
