@@ -4876,6 +4876,10 @@ Mga yunit na napapaligiran ng sagabal at walang bakanteng parisukat na malipatan
 Na-clear na ang mga mapagkukunan
 [stat cleared about]
 Mga materyales na inalis ng mga manggagawa sa mga lugar ng paglilinis para magbigay ng espasyo.
+[stat win probability]
+Tsansang manalo
+[stat win probability about]
+Tinatayang tsansang manalo ang iyong alyansa, na pana-panahong sinusukat habang nagpapatuloy ang laban. Iisa ang tsansang ipinapakita para sa magkakaalyado. Sinanay ang modelong ito sa mga laban ng AI; hindi nito isinasaalang-alang ang posisyon sa mapa o mga planong galaw. Maaaring hindi kumpleto ang kasaysayan sa mga lumang save.
 [stat prestige]
 Prestihiyo
 [stat prestige about]
