@@ -6822,10 +6822,10 @@ Buhangin ng burol
 Maputlang buhangin
 [AI for all computer colonies]
 AI para sa lahat ng kolonyang kontrolado ng computer
-[script compilation success]
-Matagumpay ang pag-compile
 [script error at %0:%1: %2]
 Error sa linyang %0, kolum %1: %2
+[script compilation success]
+Matagumpay ang pag-compile
 [script compilation failure %0:%1:(%2):%3]
 Nabigo ang pag-compile: %0:%1:(%2):%3
 [script compilation failed %0]

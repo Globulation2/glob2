@@ -798,9 +798,9 @@ function CodingWorkspace({ id, generator }: { id?: string; generator: boolean })
               onArtifactHidden={generator ? hidePreview : undefined}
               attention={
                 pending?.status === 'uncertain'
-                  ? 'Needs reconciliation'
+                  ? t('Needs attention')
                   : pending
-                    ? 'Working'
+                    ? t('Working…')
                     : undefined
               }
               result={
@@ -825,7 +825,9 @@ function CodingWorkspace({ id, generator }: { id?: string; generator: boolean })
                   }
                 >
                   <ConversationPane
-                    label={generator ? 'Generator coding conversation' : 'AI coding conversation'}
+                    label={
+                      generator ? t('Generator coding conversation') : t('AI coding conversation')
+                    }
                     count={project.requests.length}
                     firstMessageId={conversation[0]?.id}
                     completion={
@@ -833,9 +835,7 @@ function CodingWorkspace({ id, generator }: { id?: string; generator: boolean })
                         ? {
                             id: `${terminal.id}:${terminal.status}`,
                             text:
-                              terminal.status === 'completed'
-                                ? 'AI response ready.'
-                                : 'AI request needs attention.',
+                              terminal.status === 'completed' ? t('Ready') : t('Needs attention'),
                           }
                         : undefined
                     }
@@ -877,12 +877,10 @@ function CodingWorkspace({ id, generator }: { id?: string; generator: boolean })
                         <p className="as-response">
                           {r.response ||
                             ({
-                              queued: 'Waiting to start…',
-                              running: generator
-                                ? 'Working on your landscape…'
-                                : 'Working on your AI…',
+                              queued: t('Queued'),
+                              running: t('Working…'),
                             }[r.status] ??
-                              r.status)}
+                              statusLabel(r.status))}
                         </p>
                         {r.error && <p role="status">{r.error}</p>}
                         <small>
@@ -920,7 +918,7 @@ function CodingWorkspace({ id, generator }: { id?: string; generator: boolean })
                             { value0: creditName },
                           )
                         : locked
-                          ? 'Finish active work or resolve the revision conflict first.'
+                          ? t('Finish active work or resolve the revision conflict first.')
                           : !wallet?.enabled
                             ? t('Generation is unavailable.')
                             : !wallet.available
@@ -928,7 +926,7 @@ function CodingWorkspace({ id, generator }: { id?: string; generator: boolean })
                               : !Number.isInteger(budget) ||
                                   budget < 1 ||
                                   budget > wallet.maxRequestCredits
-                                ? 'Choose a valid request cap.'
+                                ? t('Choose a valid request cap.')
                                 : undefined
                     }
                     onBlocked={
@@ -1132,8 +1130,8 @@ function CodingWorkspace({ id, generator }: { id?: string; generator: boolean })
                               if (file.size > (generator ? 262144 : 131072))
                                 throw Error(
                                   generator
-                                    ? 'Maximum package size is 256 KiB.'
-                                    : 'Maximum source size is 128 KiB.',
+                                    ? t('The generator package must fit the 256 KiB draft limit.')
+                                    : t('The single JavaScript file must be at most 128 KiB.'),
                                 );
                               await save();
                               let source = new TextDecoder('utf-8', { fatal: true }).decode(
@@ -1462,7 +1460,7 @@ function CodingWorkspace({ id, generator }: { id?: string; generator: boolean })
                 disabled={locked}
                 onClick={() =>
                   void action(async () => {
-                    if (!window.confirm('Delete this private project and its history?')) return;
+                    if (!window.confirm(t('Delete this private project and its history?'))) return;
                     await request('DELETE', url);
                     navigate('/' + route);
                   })

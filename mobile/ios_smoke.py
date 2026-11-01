@@ -32,21 +32,34 @@ def main():
     if not 30 <= args.command_timeout <= 300: raise ValueError('Command timeout must be between 30 and 300 seconds')
     command = ['xcrun', 'simctl', '--set', str(device_set)]
     commands = []
+    output.mkdir(parents=True, exist_ok=True)
     def run(*arguments, timeout=None):
         began = time.monotonic()
         success = False
+        captured = ''
+        item = {'arguments': list(arguments), 'output_file': 'command-%03d-output.txt' % len(commands)}
         print('simctl ' + ' '.join(arguments), flush=True)
         try:
             result = subprocess.check_output(command + list(arguments), text=True, stderr=subprocess.STDOUT, timeout=args.command_timeout if timeout is None else timeout)
+            captured = result
+            item['returncode'] = 0
             success = True
             return result
+        except (subprocess.CalledProcessError, subprocess.TimeoutExpired) as failure:
+            captured = failure.output or ''
+            if isinstance(captured, bytes): captured = captured.decode('utf-8', errors='replace')
+            item['returncode'] = getattr(failure, 'returncode', None)
+            item['timed_out'] = isinstance(failure, subprocess.TimeoutExpired)
+            raise
         finally:
-            commands.append({'arguments': list(arguments), 'seconds': round(time.monotonic() - began, 3), 'success': success})
+            (output/item['output_file']).write_text(captured)
+            item.update(seconds=round(time.monotonic() - began, 3), success=success)
+            commands.append(item)
+            (output/'commands.json').write_text(json.dumps(commands, indent=2)+'\n')
     devices = json.loads(run('list', 'devices', '--json'))['devices']
     selected = [device for group in devices.values() for device in group if device['udid'] == args.device]
     if len(selected) != 1 or selected[0]['name'] != 'Glob2-Mobile' or selected[0]['state'] != 'Booted':
         raise ValueError('Select the booted Glob2-Mobile simulator in the isolated device set')
-    output.mkdir(parents=True, exist_ok=True)
     for label in ('startup', 'resumed', 'relaunched'):
         for channel in ('stdout', 'stderr'):
             (output/(label+'-'+channel+'.txt')).unlink(missing_ok=True)
@@ -80,7 +93,19 @@ def main():
                 next_system_check = time.monotonic() + 5
             time.sleep(1)
         raise RuntimeError('Native main menu did not become ready')
-    def screenshot(label, timeout=None): run('io', args.device, 'screenshot', str(output/(label+'.png')), timeout=timeout)
+    display_diagnostics_recorded = False
+    def screenshot(label, timeout=None):
+        nonlocal display_diagnostics_recorded
+        if not display_diagnostics_recorded:
+            display_diagnostics_recorded = True
+            # Preserve the actual runner's display inventory and supported I/O
+            # options before capturing; never guess a display ID or waive a PNG.
+            for name, arguments in (('display-io-help.txt', ('help', 'io')),
+                                    ('display-io-enumerate.txt', ('io', args.device, 'enumerate'))):
+                try: (output/name).write_text(run(*arguments, timeout=30))
+                except Exception as failure:
+                    summary.setdefault('display_diagnostic_errors', []).append(name+': '+str(failure))
+        run('io', args.device, 'screenshot', str(output/(label+'.png')), timeout=timeout)
     try:
         # Fresh simulators have no app process. Avoid asking simctl to
         # terminate an absent process (some hosted CoreSimulator versions hang).

@@ -1,3 +1,4 @@
+import { skinLabel } from '../skins/labels.ts';
 import { message as sourceMessage, skinActionLabel } from '../messages.ts';
 import { statusLabel, translateError } from '../i18n.tsx';
 import { t, useLocale, RichMessage } from '../i18n.tsx';
@@ -313,7 +314,7 @@ function SkinStudio() {
                 disabled={disabled}
                 onChange={(e) => doc.edit({ name: e.target.value })}
                 onBlur={(e) => {
-                  const name = e.target.value.trim() || t('Untitled skin');
+                  const name = e.target.value.trim() || t('New skin');
                   if (name !== d.name) doc.edit({ name });
                 }}
               />
@@ -638,14 +639,7 @@ function SkinStudio() {
                     </optgroup>
                     {(['front', 'back', 'left', 'right'] as const).map((v) => (
                       <option key={v} value={v}>
-                        {
-                          {
-                            front: t('Front view'),
-                            back: t('Back view'),
-                            left: t('Left view'),
-                            right: t('Right view'),
-                          }[v]
-                        }
+                        {skinLabel(v.charAt(0).toUpperCase() + v.slice(1))}
                       </option>
                     ))}
                   </select>

@@ -399,7 +399,7 @@ function TerrainWorkspace({ id }: { id?: string }) {
       ) : (
         <StudioWorkspace
           focusChat={focusChat}
-          attention={pending ? 'Working' : undefined}
+          attention={pending ? t('Working…') : undefined}
           result={
             !pending &&
             latestGeneration &&
@@ -407,10 +407,6 @@ function TerrainWorkspace({ id }: { id?: string }) {
               ? {
                   id: `${latestGeneration.id}:${latestGeneration.status}`,
                   status: latestGeneration.status,
-                  text:
-                    latestGeneration.status === 'ready'
-                      ? 'Terrain creation ready in Preview.'
-                      : 'Terrain creation needs attention in Preview.',
                 }
               : undefined
           }
@@ -625,7 +621,7 @@ function TerrainWorkspace({ id }: { id?: string }) {
                   if (
                     dirty &&
                     next !== 'edit' &&
-                    !window.confirm('Leave the editor with unsaved changes?')
+                    !window.confirm(t('Leave the editor with unsaved changes?'))
                   )
                     return;
                   setView(next);
@@ -849,7 +845,9 @@ function TerrainWorkspace({ id }: { id?: string }) {
                             if (
                               !draft ||
                               !window.confirm(
-                                'Restore this saved draft? The current draft will remain in history.',
+                                t(
+                                  'Restore this saved draft? The current draft will remain in history.',
+                                ),
                               )
                             )
                               return;
@@ -904,7 +902,9 @@ function TerrainWorkspace({ id }: { id?: string }) {
                               void action(async () => {
                                 if (
                                   !window.confirm(
-                                    'Restore this version as the current draft? The current draft stays in history.',
+                                    t(
+                                      'Restore this version as the current draft? The current draft stays in history.',
+                                    ),
                                   )
                                 )
                                   return;

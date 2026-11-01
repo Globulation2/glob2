@@ -61,7 +61,7 @@ export function Matches() {
       <Loaded load={load}>
         {(page) => (
           <>
-            <MatchListView matches={page.items} empty="No matches found." />
+            <MatchListView matches={page.items} empty={t('No matches found.')} />
             {account?.role === 'admin' &&
               page.items
                 .filter((m) => m.status === 'ended')

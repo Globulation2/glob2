@@ -6,17 +6,21 @@
 
 namespace Glob2UI
 {
-inline bool bulgarianErrorLocale()
+inline bool localizedErrorLocale()
 {
 	const auto locale = onlineErrorLocale();
-	return locale == "bg" || locale == "bg-BG";
+	return locale == "bg" || locale == "bg-BG" || locale == "th" || locale == "th-TH";
 }
+// Compatibility for existing UI callsites introduced with Bulgarian.
+inline bool bulgarianErrorLocale() { return localizedErrorLocale(); }
 // Exact native source binding with an explicit English fallback when a key is
 // unavailable. Data parameters are substituted literally in one pass below.
 inline std::string nativeSurfaceText(const std::string &key, const std::string &english)
 {
 	auto *strings = GAGCore::Toolkit::getStringTable();
-	return strings && strings->doesStringExist(key) ? strings->getString(key) : english;
+	if (!strings || !strings->doesStringExist(key)) return english;
+	const auto value = strings->getStringInLang(key, strings->getLang());
+	return value.empty() ? english : value;
 }
 inline std::string literalSurfaceFormat(std::string_view text,
 	std::initializer_list<std::string_view> values)
@@ -57,12 +61,11 @@ class DiagnosticText
 	{
 		if (raw.empty()) { hasValue = false; return {}; }
 		std::string summary;
-		if (bulgarianErrorLocale())
+		if (localizedErrorLocale())
 		{
-			auto *strings = GAGCore::Toolkit::getStringTable();
 			const auto key = "[" + raw + "]";
-			summary = strings && strings->doesStringExist(key)
-				? strings->getString(key) : onlineProblemText(raw);
+			summary = nativeSurfaceText(key, {});
+			if (summary.empty()) summary = onlineProblemText(raw);
 		}
 		return exception(std::runtime_error(raw), summary);
 	}

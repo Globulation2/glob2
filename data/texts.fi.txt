@@ -6818,12 +6818,12 @@ Eläinpolut
 Kalojen määrä
 [scenario messages]
 Viestit ▸
+[script error at %0:%1: %2]
+Virhe kohdassa %0:%1: %2
 [Camp-site amount]
 Leiripaikkojen määrä
 [script compilation success]
 Käännös onnistui
-[script error at %0:%1: %2]
-Virhe kohdassa %0:%1: %2
 [script compilation failure %0:%1:(%2):%3]
 Käännösvirhe: %0:%1:(%2):%3
 [script compilation failed %0]

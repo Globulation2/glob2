@@ -6818,12 +6818,12 @@ Jalur satwa
 Jumlah ikan
 [scenario messages]
 Pesan ▸
+[script error at %0:%1: %2]
+Kesalahan pada %0:%1: %2
 [Camp-site amount]
 Jumlah perkemahan
 [script compilation success]
 Kompilasi berhasil
-[script error at %0:%1: %2]
-Kesalahan pada %0:%1: %2
 [script compilation failure %0:%1:(%2):%3]
 Kegagalan kompilasi: %0:%1:(%2):%3
 [script compilation failed %0]

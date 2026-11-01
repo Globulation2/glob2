@@ -168,15 +168,11 @@ export function MusicWorkspace(p: Props) {
           ? {
               id: `${latestGeneration.id}:${latestGeneration.status}`,
               status: latestGeneration.status,
-              text:
-                latestGeneration.status === 'ready'
-                  ? 'Music creation ready in Preview.'
-                  : 'Music creation needs attention in Preview.',
             }
           : undefined
       }
       attention={
-        active ? 'Working' : inspected?.status === 'failed' ? 'Needs attention' : undefined
+        active ? t('Working…') : inspected?.status === 'failed' ? t('Needs attention') : undefined
       }
       conversation={
         <>
@@ -398,7 +394,7 @@ export function MusicWorkspace(p: Props) {
                   {inspected
                     ? t('Version {value0}{value1}', {
                         value0: generations.indexOf(inspected) + 1,
-                        value1: compare ? ' · comparing' : '',
+                        value1: compare ? t(' · comparing') : '',
                       })
                     : t('Your music takes shape here')}
                 </h2>

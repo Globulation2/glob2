@@ -1,4 +1,4 @@
-import { message as sourceMessage } from '../../i18n.tsx';
+import { sourceMessage, statusText, type StatusMessage } from '../../messages.ts';
 import { t, useLocale, RichMessage } from '../../i18n.tsx';
 import { useEffect, useRef, useState } from 'react';
 export interface Run {
@@ -21,7 +21,7 @@ export default function Playtest({
   useEffect(() => {
     callback.current = onResult;
   }, [onResult]);
-  const [status, setStatus] = useState(t('Loading game…')),
+  const [status, setStatus] = useState<StatusMessage>(sourceMessage('Loading game…')),
     [diagnostics, setDiagnostics] = useState<string[]>([]);
   useEffect(() => {
     const abort = new AbortController();
@@ -38,6 +38,7 @@ export default function Playtest({
         text?: unknown;
         diagnostic?: unknown;
       },
+      fixedReason?: string,
     ) => {
       if (done) return;
       done = true;
@@ -53,20 +54,23 @@ export default function Playtest({
       }).slice(0, 16000);
       setStatus(
         type === 'error'
-          ? 'Playtest failed: ' + String(value.text ?? value.result).slice(0, 2000)
-          : t('Finished: {value0}', { value0: String(value.result).slice(0, 2000) }),
+          ? sourceMessage('Playtest failed: {value0}', () => ({
+              value0: fixedReason
+                ? t(fixedReason)
+                : String(value.text ?? value.result).slice(0, 2000),
+            }))
+          : sourceMessage('Finished: {value0}', { value0: String(value.result).slice(0, 2000) }),
       );
       callback.current(text);
     };
     const waitForLaunch = () => {
       clearTimeout(timeout);
-      timeout = setTimeout(
-        () =>
-          finish('error', {
-            text: 'The game did not start in time. Check browser support or restart the playtest.',
-          }),
-        90000,
-      );
+      timeout = setTimeout(() => {
+        const reason = sourceMessage(
+          'The game did not start in time. Check browser support or restart the playtest.',
+        );
+        finish('error', { text: reason.source }, reason.source);
+      }, 90000);
     };
     waitForLaunch();
     const listener = async (event: MessageEvent) => {
@@ -109,7 +113,7 @@ export default function Playtest({
       if (m.type === 'progress' && !done) {
         clearTimeout(timeout);
         setStatus(
-          t('Revision {value0} · tick {value1} · live', {
+          sourceMessage('Revision {value0} · tick {value1} · live', {
             value0: run.revision,
             value1: Number(m.tick) || 0,
           }),
@@ -140,7 +144,7 @@ export default function Playtest({
   }, [run]);
   return (
     <div className="as-playtest">
-      <p role="status">{status}</p>
+      <p role="status">{statusText(status)}</p>
       <iframe
         ref={frame}
         title={t('Live AI playtest revision {value0}', { value0: run.revision })}

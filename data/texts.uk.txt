@@ -6818,12 +6818,12 @@ Discord відкрито. Ви можете повернутися до гри �
 Кількість риби
 [scenario messages]
 Повідомлення ▸
+[script error at %0:%1: %2]
+Помилка в %0:%1: %2
 [Camp-site amount]
 Кількість стоянок
 [script compilation success]
 Успішна компіляція
-[script error at %0:%1: %2]
-Помилка в %0:%1: %2
 [script compilation failure %0:%1:(%2):%3]
 Помилка компіляції: %0:%1:(%2):%3
 [script compilation failed %0]

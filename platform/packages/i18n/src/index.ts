@@ -56,6 +56,7 @@ export function resolveLocale(input: string | readonly string[]): Locale {
     const writtenScript = (
       {
         bg: 'cyrl',
+        th: 'thai',
         hi: 'deva',
         mr: 'deva',
         bn: 'beng',
@@ -122,6 +123,7 @@ export function hasMessage(source: string, locale = selected): boolean {
   return !!catalog && Object.hasOwn(catalog, source);
 }
 const loaders: Record<string, () => Promise<{ default: Catalog }>> = {
+  th: () => import('../locales/th.json', { with: { type: 'json' } }),
   bg: () => import('../locales/bg.json', { with: { type: 'json' } }),
   fil: () => import('../locales/fil.json', { with: { type: 'json' } }),
   bn: () => import('../locales/bn.json', { with: { type: 'json' } }),

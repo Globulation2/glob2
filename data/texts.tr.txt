@@ -6818,12 +6818,12 @@ Hayvan patikaları
 Balık miktarı
 [scenario messages]
 İletiler ▸
+[script error at %0:%1: %2]
+%0. satır, %1. sütunda hata: %2
 [Camp-site amount]
 Kamp yeri sayısı
 [script compilation success]
 Derleme başarılı
-[script error at %0:%1: %2]
-%0. satır, %1. sütunda hata: %2
 [script compilation failure %0:%1:(%2):%3]
 Derleme hatası: %0:%1:(%2):%3
 [script compilation failed %0]

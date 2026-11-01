@@ -31,6 +31,16 @@
   flex-direction: column;
   gap: 0.35rem;
 }
+.set-workspace button {
+  max-width: 100%;
+  white-space: normal;
+}
+/* Keep a closed select's value inside its control. WebKit otherwise includes
+   the anonymous value box in the label's scroll area on narrow layouts. */
+.set-workspace select {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
 .set-workspace input,
 .set-workspace select,
 .set-workspace textarea,

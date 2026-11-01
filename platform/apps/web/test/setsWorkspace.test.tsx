@@ -83,12 +83,12 @@ it('adds terrain and resource entries to their canonical package collections', a
   open();
   fireEvent.click(await screen.findByRole('button', { name: 'Add Terrain' }));
   const terrainName = screen.getByLabelText('Name', { exact: true }) as HTMLInputElement;
-  expect(terrainName.value).toBe('Terrain: grass');
+  expect(terrainName.value).toBe('Terrain 1');
   fireEvent.change(terrainName, { target: { value: 'Authored terrain' } });
   fireEvent.click(screen.getByRole('button', { name: 'Resources' }));
   fireEvent.click(screen.getByRole('button', { name: 'Add Resource' }));
   const resourceName = screen.getByLabelText('Name', { exact: true }) as HTMLInputElement;
-  expect(resourceName.value).toBe('Resource: trees');
+  expect(resourceName.value).toBe('Resource 1');
   fireEvent.change(resourceName, { target: { value: 'Authored resource' } });
   fireEvent.click(screen.getByRole('button', { name: 'Save draft' }));
   await waitFor(() => expect(draft?.package.terrains).toHaveLength(1));
@@ -105,12 +105,13 @@ it('does not reuse a remaining terrain key after deletion and addition', async (
   const add = await screen.findByRole('button', { name: 'Add Terrain' });
   fireEvent.click(add);
   fireEvent.click(add);
-  fireEvent.click(screen.getAllByRole('button', { name: 'Terrain: grass' })[0]!);
+  fireEvent.click(screen.getAllByRole('button', { name: 'Terrain 1' })[0]!);
   fireEvent.click(screen.getByRole('button', { name: 'Remove entry' }));
   fireEvent.click(add);
   fireEvent.click(screen.getByRole('button', { name: 'Save draft' }));
   await waitFor(() => expect(draft?.package.terrains).toHaveLength(2));
   expect(new Set(draft!.package.terrains.map((entry) => entry['key'])).size).toBe(2);
+  expect(new Set(draft!.package.terrains.map((entry) => entry['name'])).size).toBe(2);
 });
 it('keeps a typed comma while entering multiple tags', async () => {
   open();

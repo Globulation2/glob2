@@ -6818,12 +6818,12 @@ Senderos de animales
 Cantidad de peces
 [scenario messages]
 Mensajes ▸
+[script error at %0:%1: %2]
+Error en %0:%1: %2
 [Camp-site amount]
 Número de campamentos
 [script compilation success]
 Compilación correcta
-[script error at %0:%1: %2]
-Error en %0:%1: %2
 [script compilation failure %0:%1:(%2):%3]
 Error de compilación: %0:%1:(%2):%3
 [script compilation failed %0]

@@ -355,6 +355,24 @@ void checkShapingClusterWrapping()
                 canvas.texts[3].second == "y",
                 "multiline editor keeps shaping clusters and explicit newlines intact");
     }
+    FixedTextMeasurer fixed;
+    const std::string annotated = "ab\u200bcd\u200bef";
+    require(wrapText(fixed, FontRole::Body, annotated, 32) == std::vector<std::string>{"abcd", "ef"},
+            "soft boundaries prefer whole words without adding spaces");
+    require(wrapText(fixed, FontRole::Body, annotated, 24) == std::vector<std::string>{"ab", "cd", "ef"},
+            "a Thai-style word wraps before it exceeds the remaining line");
+    require(wrapText(fixed, FontRole::Body, "ab\u200bcdefg", 24) == std::vector<std::string>{"ab", "cde", "fg"},
+            "oversized annotated words retain emergency cluster wrapping");
+    require(wrapText(fixed, FontRole::Body, "\u200bab \u200bcd\u200b\u200b\nef\u200b", 80) ==
+            std::vector<std::string>{"ab cd", "ef"},
+            "leading consecutive and trailing hints preserve real spaces and newlines");
+    require(ellipsize(fixed, FontRole::Body, annotated, 32) == "abc…",
+            "ellipsis neither measures nor emits soft boundary markers");
+    require(ellipsize(fixed, FontRole::Body, annotated, 80) == "abcdef",
+            "untruncated labels omit soft boundary markers too");
+    ClusterFixture thai("ก้");
+    require(wrapText(thai, FontRole::Body, "ก้\u200bx", 8) == std::vector<std::string>{"ก้", "x"},
+            "a soft boundary never separates a Thai base and tone mark");
     struct InvalidBoundaries : FixedTextMeasurer
     {
         std::vector<std::size_t> clusterEnds(FontRole, const std::string &) const override
@@ -1389,6 +1407,8 @@ TEST_CASE("semantic text values retain draft commit and cancel" * doctest::test_
 		{
 			TextFieldOptions options;
 			options.commitOnSubmit = true;
+			options.maxLength = 32;
+			options.maxBytes = 32;
 			return column({textField(
 							   "draft", model,
 							   [&](const std::string &v)
@@ -1401,6 +1421,16 @@ TEST_CASE("semantic text values retain draft commit and cancel" * doctest::test_
 		},
 		400, 200);
 	std::string error;
+	const auto originalDraft = f.host.state("draft").text;
+	const auto originalEditing = f.host.editing();
+	const std::string oversized = std::string(27, 'a') + "ก้";
+	REQUIRE(oversized.size() == 33);
+	CHECK_FALSE(f.host.act("draft", {ActionKind::SetValue, oversized}, error));
+	CHECK(f.host.state("draft").text == originalDraft);
+	CHECK(f.host.focused() == "draft"); // Host actions focus their requested control before value validation.
+	CHECK(f.host.editing() == originalEditing);
+	CHECK(model == "original");
+	CHECK(commits == 0);
 	CHECK(f.host.act("draft", {ActionKind::SetValue, std::string("cancelled")}, error));
 	CHECK(model == "original");
 	CHECK(commits == 0);

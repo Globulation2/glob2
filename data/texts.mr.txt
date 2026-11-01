@@ -6822,10 +6822,10 @@ MCP सर्व्हर सक्षम करा
 फिकट वाळू
 [AI for all computer colonies]
 सर्व संगणकनियंत्रित वसाहतींसाठी एआय
-[script compilation success]
-संकलन यशस्वी
 [script error at %0:%1: %2]
 ओळ %0, स्तंभ %1 येथे त्रुटी: %2
+[script compilation success]
+संकलन यशस्वी
 [script compilation failure %0:%1:(%2):%3]
 संकलन अयशस्वी: %0:%1:(%2):%3
 [script compilation failed %0]

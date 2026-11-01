@@ -6818,12 +6818,12 @@ Wildwechsel
 Fischmenge
 [scenario messages]
 Nachrichten ▸
+[script error at %0:%1: %2]
+Fehler bei %0:%1: %2
 [Camp-site amount]
 Anzahl der Lagerplätze
 [script compilation success]
 Kompilierung erfolgreich
-[script error at %0:%1: %2]
-Fehler bei %0:%1: %2
 [script compilation failure %0:%1:(%2):%3]
 Kompilierungsfehler: %0:%1:(%2):%3
 [script compilation failed %0]
