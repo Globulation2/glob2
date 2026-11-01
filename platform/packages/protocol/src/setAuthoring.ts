@@ -30,6 +30,10 @@ export const TERRAIN_PRESETS = [
   'dark_water',
   'void_hole',
   'chasm',
+  'lush_grass',
+  'dry_grass',
+  'dune_sand',
+  'pale_sand',
 ];
 export const MATERIALS = [
   'wood',

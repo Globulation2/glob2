@@ -326,7 +326,7 @@ test('Telugu renders shared online pages, authentication, invites and errors', a
   await capture('/account', 'account', 'Your account');
   await expect(page.locator('main')).toContainText('Kestrel');
   await capture('/maps/new', 'upload', 'Upload a map');
-  const visibility = catalog['Unlisted — accessible by link'];
+  const visibility = catalog['Unlisted: anyone with the link'];
   expect(visibility).toBeTruthy();
   await expect(page.locator('.upload-form option[value="unlisted"]')).toHaveText(visibility ?? '');
 });
