@@ -6029,7 +6029,7 @@
     {
       "key": "hedge",
       "sprite": "data/gfx/terrain-hedge",
-      "profile": "brush",
+      "profile": "canopy",
       "preview": [39, 67, 41],
       "variants": [
         {
@@ -7078,7 +7078,7 @@
     {
       "key": "thicket",
       "sprite": "data/gfx/terrain-thicket",
-      "profile": "brush",
+      "profile": "canopy",
       "preview": [60, 77, 35],
       "variants": [
         {
