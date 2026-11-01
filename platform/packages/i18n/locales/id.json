@@ -2887,5 +2887,6 @@
   "More filters": "Filter lainnya",
   "Clear filters": "Hapus filter",
   "No results match these filters.": "Tidak ada hasil yang cocok dengan filter ini.",
-  "Results: {value0}": "Hasil: {value0}"
+  "Results: {value0}": "Hasil: {value0}",
+  "Game text field": "Kolom teks dalam permainan"
 }

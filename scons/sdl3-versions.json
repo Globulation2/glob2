@@ -1,4 +1,10 @@
 {
+  "harfbuzz": {
+    "version": "10.1.0",
+    "url": "https://github.com/harfbuzz/harfbuzz/releases/download/10.1.0/harfbuzz-10.1.0.tar.xz",
+    "sha256": "6ce3520f2d089a33cef0fc48321334b8e0b72141f6a763719aaaecd2779ecb82",
+    "archive": "harfbuzz-10.1.0.tar.xz"
+  },
   "webp": {
     "version": "1.6.0",
     "url": "https://storage.googleapis.com/downloads.webmproject.org/releases/webp/libwebp-1.6.0.tar.gz",

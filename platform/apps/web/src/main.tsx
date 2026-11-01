@@ -7,6 +7,7 @@ import '@glob2/design-system/css/fonts.css';
 import '@glob2/design-system/css/base.css';
 import '@glob2/design-system/css/components.css';
 import '@glob2/design-system/css/brand.css';
+import './styles/script-fonts.css';
 import './styles/base.css';
 import './styles/components.css';
 import './styles/layout.css';

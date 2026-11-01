@@ -38,15 +38,17 @@ using std::shared_ptr;
 
 /// Engine is the backend of the game. It is responsible for loading and setting up games and players,
 /// and its run function is meant to run the game that has been loaded.
-namespace GameDiagnostics { class Session; }
+namespace GameDiagnostics { class Session; class WarriorTacticsTrace; }
 class Engine
 {
+	friend struct TranslationPreviewAccess;
 	friend struct CustomGameSetupHarness;
 	friend struct HeadlessRunner;
 	friend class SimulationRunner;
 	friend struct MatchVerifier;
 	friend struct TurnClient;
 	std::shared_ptr<GameDiagnostics::Session> diagnostics;
+    std::unique_ptr<GameDiagnostics::WarriorTacticsTrace> warriorTactics;
 	bool headlessDiagnosticsPending() const;
 	std::string headlessOutput;
 	std::string initializationDiagnostic;
@@ -91,6 +93,7 @@ public:
     GAGCore::CooperativeTask loadReplayTask(std::string filename);
     void cancelInitialization();
     const std::string& getInitializationDiagnostic() const { return initializationDiagnostic; }
+    int tutorialNavigation() const { return gui.tutorialDestination; }
     bool takeSettingsRequest() { return gui.takeSettingsRequest(); }
     void suspendInput() { cancelInputDispatches(); gui.suspendInput(); }
     void viewportResized(int oldWidth, int oldHeight, int width, int height) { gui.viewportResized(oldWidth, oldHeight, width, height); }
@@ -218,7 +221,7 @@ public:
     // Called on the main thread with the simulation parked. GUI timing uses
     // the SDL clock, independently of the host/session simulation clock.
     void clientStep(const std::vector<SDL_Event>& events);
-    struct PendingLoad { std::string filename; bool replay; };
+    struct PendingLoad { std::string filename; bool replay; bool campaign=false; };
     // Finalize without loading another game or entering a UI loop. The host
     // schedules a returned request, or presents the end screen when absent.
     std::optional<PendingLoad> finishSessionForHost();

@@ -1,0 +1,23 @@
+versionMinor = 79;
+campaignName = "Browser Test Campaign";
+playerName = "";
+maps
+{
+ mapNum = 2;
+ 0 { CampaignMap {
+  mapName = "First mission";
+  mapFileName = "maps/SmallForTwo.map";
+  isLocked = 0;
+  unlockedBy { size = 0; }
+  description = "First mission";
+  completed = 0;
+ } }
+ 1 { CampaignMap {
+  mapName = "Second mission";
+  mapFileName = "maps/SmallForTwo.map";
+  isLocked = 1;
+  unlockedBy { size = 1; 0 { unlockedBy = "First mission"; } }
+  description = "Second mission";
+  completed = 0;
+ } }
+}

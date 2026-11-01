@@ -45,8 +45,7 @@ corners and kept off every tile that must stay pure grass: towns, ramparts,
 service courts, landing fields and lanes. The sea is shallow water throughout
 and deep water is deliberately absent: a tile whose corners are shallow and
 deep water is neither walkable nor swimmable, so a deep ring would seal every
-island from swimmers. A generated map declares the path, barren, fertile and
-ridge terrain experiments in its header.
+island from swimmers.
 
 ### A colony's own plantations stay grass
 

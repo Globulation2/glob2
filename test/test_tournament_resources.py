@@ -1,5 +1,6 @@
 """Frozen CPU shares and dispatch/worker admission, without host CPU discovery."""
 import copy
+import io
 import os
 from pathlib import Path
 import sys
@@ -155,6 +156,7 @@ class FrozenAdmission(unittest.TestCase):
         attempt = self.coordinator.dispatch('host', self.worker.status(), now=1)[0]
         self.worker.enqueue(attempt)
         process = Mock(); process.poll.return_value = 0; process.wait.return_value = 0
+        process.stdout = io.BytesIO(); process.stderr = io.BytesIO()
         def launch(args, **kwargs):
             self.assertEqual(self.mask, {3, 4})
             self.assertEqual(args[-2:], ['--compute-threads', '2'])

@@ -1,0 +1,16 @@
+Bâtissez une colonie prospère sur un territoire disputé.
+
+Globulation 2 est un jeu de stratégie en temps réel où la nourriture, la main-d’œuvre et l’espace déterminent votre expansion. Développez une vaste colonie, équilibrez ses besoins concurrents et disputez territoire et ressources à vos rivaux. Vos créatures agissent de façon autonome : vous guidez la colonie dans son ensemble.
+
+Développez une économie à la hauteur de vos ambitions.
+La nourriture, la construction et l’entraînement se disputent votre main-d’œuvre. Décidez où les ouvriers sont nécessaires et conciliez vos nouvelles ambitions avec les besoins de la colonie existante.
+
+Intégrez la carte à votre stratégie.
+Chaque carte appelle une stratégie différente. Adaptez votre expansion au terrain, choisissez ce qu’il faut défendre et trouvez les voies et les ressources nécessaires à votre colonie.
+
+Défendez ce que vous avez bâti.
+Votre économie soutient la croissance comme la défense. Équilibrez les besoins de votre colonie tandis que vos rivaux convoitent territoire et ressources, et préparez-vous aux conflits qui peuvent décider de l’issue de la partie.
+
+Globulation 2 est gratuit et open source.
+
+Cette édition Android adapte le jeu de bureau classique aux écrans tactiles.

@@ -3102,8 +3102,6 @@ Radera
 Släpp på giltig terräng för att placera
 [Paint on the map; two fingers move]
 Måla på kartan; flytta med två fingrar
-[Tutorial ▸]
-Handledning ▸
 [Back to tools]
 Tillbaka till verktyg
 [Starvation overlay]
@@ -4886,6 +4884,34 @@ Inringade enheter utan någon ledig ruta att kliva till.
 Röjda resurser
 [stat cleared about]
 Resurser som arbetare tagit bort i röjningsområden för att skapa utrymme.
+[stats topic overview]
+
+[stats topic economy]
+
+[stats topic world]
+
+[stats work construction]
+
+[stats defence]
+
+[stats history]
+
+[stats waiting]
+
+[stats unit details]
+
+[stats map overlays]
+
+[stats topic]
+
+[stats full history]
+
+[stats missing readings]
+
+[stat win probability]
+
+[stat win probability about]
+
 [stat prestige]
 Prestigevärde
 [stat prestige about]
@@ -5548,14 +5574,6 @@ Begränsa ritningen i hela programmet. Lägre värden minskar renderingsarbetet.
 Is
 [road]
 Stig
-[experiment ice-terrain]
-Isterräng
-[experiment ice-terrain help]
-Lägger till is i kartredigeraren. Markenheter rör sig med halva hastigheten och förlorar en hälsopoäng för varje 32 simuleringssteg på isen. Is kan inte innehålla byggnader eller resurser.
-[experiment road-terrain]
-Stigterräng
-[experiment road-terrain help]
-Lägger till slitna stigar i kartredigeraren. Markenheter rör sig med dubbel hastighet. Stigar tillåter byggnader men inga resurser. Flygande enheter påverkas inte.
 [experiment markets-v2]
 Marknader V2
 [experiment markets-v2 help]
@@ -5712,42 +5730,6 @@ Bördig mark
 Djupt vatten
 [terrain group void]
 Tomrum
-[experiment obstacle-terrain]
-Hinderterräng
-[experiment obstacle-terrain help]
-Lägger till stenblock, häckar och snår i kartredigeraren. Markenheter kan inte passera dem och de stoppar projektiler; flygande enheter passerar över. De rymmer varken byggnader eller resurser.
-[experiment ridge-terrain]
-Åsterräng
-[experiment ridge-terrain help]
-Lägger till klippåsar och klippor i kartredigeraren. Markenheter kan inte passera dem, men torn skjuter över dem och flygande enheter passerar. De rymmer varken byggnader eller resurser.
-[experiment barren-terrain]
-Obördig mark
-[experiment barren-terrain help]
-Lägger till jord, lera, grus och blomsterängar i kartredigeraren. Byggnader kan stå på dem, inget växer på eller intill dem och de räknas inte som strand.
-[experiment rough-terrain]
-Svårframkomlig mark
-[experiment rough-terrain help]
-Lägger till gyttja, kärr, djup snö och rasbranter i kartredigeraren. Markenheter rör sig med ungefär två tredjedels hastighet. Svårframkomlig mark rymmer varken byggnader eller resurser.
-[experiment path-terrain]
-Stigterräng
-[experiment path-terrain help]
-Lägger till jordstigar och spänger i kartredigeraren. Precis som på andra stigar rör sig markenheter med dubbel hastighet och byggnader tillåts, men inget växer.
-[experiment lava-terrain]
-Lavaterräng
-[experiment lava-terrain help]
-Lägger till lava och glödfält i kartredigeraren. Markenheter kan inte beträda dem; flygande enheter som passerar förlorar hälsa snabbt. Projektiler passerar över.
-[experiment fertile-terrain]
-Bördig mark
-[experiment fertile-terrain help]
-Lägger till mylla, mossa och vårängar i kartredigeraren. De stöder byggnader och grödor och bevattnar omgivande mark starkare än vatten.
-[experiment deep-water-terrain]
-Djupt vatten
-[experiment deep-water-terrain help]
-Lägger till djupt och mörkt vatten i kartredigeraren. Simmare passerar långsammare, inga alger växer där och de bevattnar fortfarande närliggande fält.
-[experiment void-terrain]
-Tomrumsterräng
-[experiment void-terrain help]
-Lägger till hål och avgrunder i kartredigeraren. Ingenting kan passera dem, inte ens flygande enheter, och projektiler stannar vid kanten.
 [terrain group custom]
 Anpassad
 [terrain group classic]
@@ -5780,8 +5762,6 @@ Skadar flygande
 Välj en pensel. Terrängtyperna inom varje grupp har samma regler och skiljer sig bara i utseende.
 [terrain rule algae grow]
 Alger växer
-[terrain palette experiments hint]
-Välj en pensel. Fler terränggrupper visas här när deras experiment aktiveras under Inställningar > Experiment.
 [brush valid on %0]
 Giltig på: %0
 [brush valid nowhere]
@@ -6218,246 +6198,6 @@ Det gick inte att exportera inspelningen.
 Ta bort inspelning
 [recording refresh]
 Uppdatera
-[tutorial part1 message 1]
-Välkommen till Globulation 2! Fyra uppdrag lär dig sköta en koloni. Spara i spelmenyn och läs in senare från huvudmenyn. Fortsätt med mellanslag eller OK på pekskärm. Vissa meddelanden försvinner när du fortsätter; läs dem igen i meddelandehistoriken.
-[tutorial part1 message 2]
-Du börjar med en svärm och en arbetare. Vi ska se hur de samarbetar.
-[tutorial part1 message 3]
-Arbetaren skördar vete och bär det till svärmen. Svärmen använder vete för att producera nya enheter och är därför viktig för kolonin.
-[tutorial part1 message 4]
-Välj din globul, den rörliga enheten, med vänsterklick eller ett tryck.
-[tutorial part1 message 5]
-Enhetsinformationen visar att matnivån sjunker med tiden. Globulen blir hungrig. När matstaplar visas anger den blå stapeln under enheten hur mycket mat som återstår.
-[tutorial part1 message 6]
-Globuler äter på värdshus. Avmarkera med högerklick eller tryck på tom mark på pekskärm.
-[tutorial part1 message 7]
-Öppna byggkontrollerna, välj Värdshus och placera det nära vete. Följ arbetarens skörderutt om du inte hittar vetet. På pekskärm använder du Bygg och bekräftar en giltig plats. Avsluta med högerklick eller pekskärmens Avbryt.
-[tutorial part1 message 8]
-Bra! Värdshusets byggplats är utplacerad.
-[tutorial part1 message 9]
-En arbetare från svärmen kan nu bygga värdshuset. Arbetaren samlar trä från närliggande träd och bär det till platsen. Vänta tills bygget är klart.
-[tutorial part1 message 10]
-Det färdiga värdshuset behöver vete. En tilldelad arbetare samlar det, precis som vid försörjningen av svärmen.
-[tutorial part1 message 11]
-Värdshusets gula resursstapel växer när vete kommer fram. Den visar lagrat vete.
-[tutorial part1 message 12]
-Nu lär vi oss fördela arbete.
-[tutorial part1 message 13]
-En arbetare försörjer svärmen och en annan värdshuset. Båda kan ta en matpaus på värdshuset. Det är normalt.
-[tutorial part1 message 14]
-Välj svärmen och hitta arbetartilldelningen. På dator heter den Arbetar; på pekskärm används tilldelade arbetare och mål. Målet anger hur många arbetare du vill ha vid byggnaden.
-[tutorial part1 message 15]
-Sätt svärmens arbetarmål till 0. Välj sedan värdshuset och sätt även dess mål till 0.
-[tutorial part1 message 16]
-Arbetarna är lediga men behöver fortfarande mat. Ett värdshus utan arbetare får så småningom slut på vete.
-[tutorial part1 message 17]
-En globul utan mat förlorar hälsa och kan dö. Ett sjukhus kan läka skador, men värdshusen måste också försörjas.
-[tutorial part1 message 18]
-Bygg ett sjukhus via byggkontrollerna. Det behöver inte vete, så placera det nära trä eller centralt nära svärmen.
-[tutorial part1 message 19]
-Välj sjukhusets byggplats och sätt arbetarmålet till 2. Två arbetare blir klara snabbare.
-[tutorial part1 message 20]
-Sjukhuset är klart. Skadade globuler kan nu besöka det och återfå hälsa.
-[tutorial part1 message 21]
-Svarta områden är outforskade. Enheter avslöjar närliggande mark när de rör sig. Arbetare följer sina jobb och är svåra att använda för spaning. Utforskare är avsedda för uppgiften.
-[tutorial part1 message 22]
-Välj svärmen och hitta produktionsandelarna för arbetare, utforskare och krigare. Höj utforskarnas andel till 1.
-[tutorial part1 message 23]
-Med både arbetar- och utforskarandel på 1 producerar svärmen lika många av varje över tid. Sätt arbetarandelen till 0 för att bara producera utforskare just nu.
-[tutorial part1 message 24]
-Återställ svärmens arbetarmål till 1 så att en arbetare kan leverera vete.
-[tutorial part1 message 25]
-Välj värdshuset och sätt även dess arbetarmål till 1. En växande koloni behöver jämn matförsörjning.
-[tutorial part1 message 26]
-Vänta nu på att svärmen producerar en utforskare.
-[tutorial part1 message 27]
-Utforskaren flyger runt kolonin och avslöjar mer mark. Låt svärmen producera en andra utforskare innan du fortsätter.
-[tutorial part1 message 28]
-Välj svärmen igen. Sätt utforskarandelen till 0 och arbetarandelen till 1 för att återuppta arbetarproduktionen.
-[tutorial part2 message 1]
-Öster om basen finns sten. Kom ihåg platsen; stenen behövs senare.
-[tutorial part2 message 2]
-Träden söder om stenen är apelsinträd. Välj dem för att se resursinformationen. Vi återkommer till frukt; fokusera nu på svärmen.
-[tutorial part2 message 3]
-Låt svärmen enbart producera arbetare: arbetarandel 1, utforskar- och krigarandel 0.
-[tutorial part2 message 4]
-Vi skyndar på tillväxten. Välj svärmen och sätt arbetarmålet till 6. Du kanske inte har sex arbetare än, men nya kan fylla jobben när de blir tillgängliga.
-[tutorial part2 message 5]
-Nästa uppgifter börjar när du har 8 arbetare. Håll svärmen och värdshuset försörjda medan befolkningen växer.
-[tutorial part2 message 6]
-Flera arbetare försörjer nu svärmen. Fler veteleveranser ger snabbare enhetsproduktion.
-[tutorial part2 message 7]
-En ny arbetare kostar 5 vete. Transport från avlägsna åkrar tar tid, så svärmen behöver ofta fler leverantörer än ett värdshus. Placera matberoende byggnader nära vete när det går.
-[tutorial part2 message 8]
-Du har minst 8 arbetare. Välj svärmen och sänk arbetarmålet till 1 för att bromsa tillväxten medan vi bygger.
-[tutorial part2 message 9]
-Kolonin behöver fler matplatser. Bygg ett andra värdshus norr om det befintliga.
-[tutorial part2 message 10]
-Tilldela lediga arbetare till den nya byggplatsen. Bara 3 trä behövs, så fler än 3 byggare gör liten nytta.
-[tutorial part2 message 11]
-Det färdiga värdshuset återgår till sitt driftsmål, normalt 1 arbetare. Byggande och daglig försörjning använder separata mål.
-[tutorial part2 message 12]
-Arbetare kan lära sig röra sig snabbare. Löparbanan ger den träningen.
-[tutorial part2 message 13]
-Öppna byggkontrollerna och hitta Löparbana. På dator kan du hålla pekaren över ikonen för beskrivning och kostnad. På pekskärm väljer du den i Bygg för att förbereda placering. Placera den inte ännu.
-[tutorial part2 message 14]
-En löparbana kräver mycket trä och lite sten. Välj en central plats som enheterna lätt når.
-[tutorial part2 message 15]
-Bygg en löparbana, kanske söder om svärmen. Lämna fri mark runt den: träningsbyggnader behöver expansionsutrymme vid uppgradering.
-[tutorial part2 message 16]
-Sätt byggplatsens arbetarmål mellan 5 och 7. Totalt behövs 7 byggmaterial.
-[tutorial part2 message 17]
-En färdig löparbana tränar besökande enheter utan fortsatta leveranser av byggmaterial eller vete.
-[tutorial part2 message 18]
-Globuler går in på löparbanan för att träna. Efteråt kan de springa snabbare.
-[tutorial part2 message 19]
-Välj löparbanan för att se träningen. Förloppsvisarna visar hur nära enheterna där inne är att bli klara.
-[tutorial part2 message 20]
-Tränade arbetare färdas snabbare och levererar resurser tidigare. Bevaka matlagren när kolonin växer; snabbare leveranser hjälper bara om tillräckligt många värdshus försörjs.
-[tutorial part2 message 21]
-Hitta arbetarräknaren i spelvyn. Totalen visar befolkningen; tillgängliga arbetare hjälper dig upptäcka ledig personal eller obesatta jobb. Använd lediga arbetare utan att tilldela fler jobb än kolonin klarar.
-[tutorial part2 message 22]
-Spelvyn visar också utforskare och krigare. Kontrollera antalen när du planerar produktion eller tilldelar enheter till flaggor.
-[tutorial part2 message 23]
-Du har 2 värdshus. Varje grundvärdshus matar 4 enheter samtidigt, totalt 8 matplatser. Fler än 8 kan bli hungriga, så lämna kapacitet för köer.
-[tutorial part2 message 24]
-Två värdshus räcker inte för en växande koloni för alltid. Utöka matkapaciteten innan brist blir svält.
-[tutorial part2 message 25]
-Bygg ytterligare 3 värdshus nära vete. Hungriga arbetare slutar arbeta och långvarig svält dödar dem. Tilldela lediga arbetare till byggen utan att avbryta befintlig matförsörjning.
-[tutorial part2 message 26]
-Bygg klart 3 nya värdshus, så att du har totalt 5.
-[tutorial part2 message 27]
-Nya värdshus använder driftsmålet efter bygget, normalt 1 arbetare vardera. Kontrollera leverantörer och tillräckligt med vete.
-[tutorial part2 message 28]
-Löparbanan förbättrade resorna på land. Nu ska kolonin lära sig simma.
-[tutorial part2 message 29]
-En simbassäng lär enheter simma och kräver trä att bygga. Placera den i den stora gläntan nordost om basen, norr om stenen. Lämna utrymme för uppgraderingar och växande resurser och tilldela lediga arbetare till bygget.
-[tutorial part2 message 30]
-En simbassäng lär enheter simma och kräver trä att bygga. Placera den i den stora gläntan nordost om basen, norr om stenen. Lämna utrymme för uppgraderingar och växande resurser och tilldela lediga arbetare till bygget.
-[tutorial part2 message 31]
-Simbassängen är klar. Globuler kan gå in och lära sig simma.
-[tutorial part2 message 32]
-Välj simbassängen för att se träningen. En grundbassäng tränar 2 globuler åt gången, liksom en grundlöparbana.
-[tutorial part2 message 33]
-Tränade globuler kan nu simma. Snart får de ett jobb där de måste korsa vatten.
-[tutorial part2 message 34]
-Det finns mer att lära. Behöver du paus kan du spara via spelmenyn och återvända senare.
-[tutorial part2 message 35]
-Kolonin har mat och fysisk träning. En skola lär arbetarna färdigheter för bättre byggnader.
-[tutorial part2 message 36]
-Skolan förbättrar skörde- och byggfärdigheter. Bygget kräver alger som växer i vatten. Simkunniga arbetare kan samla dem.
-[tutorial part2 message 37]
-Skydda viktiga träningsbyggnader. Skolan behöver inte ligga vid vatten; en skyddad plats inåt land kan vara säkrare mot angrepp.
-[tutorial part2 message 38]
-Bygg skolan skyddat, till exempel bakom bassängen eller sydväst om svärmen intill löparbanan. Tilldela lediga arbetare till bygget.
-[tutorial part2 message 39]
-Välj en byggnad för att se tilldelade arbetare. På dator kan den konfigurerbara åtgärden för att växla enhetsvägar visa linjer till enheternas mål; se Inställningar, Spelkontroller för aktuell tangent. Vänta tills skolan är klar.
-[tutorial part3 message 1]
-Kolonin har nu värdshus, sjukhus, löparbana, simbassäng och skola. Dags att förbereda försvaret.
-[tutorial part3 message 2]
-Vi har inte producerat krigare än. Utan dem är kolonin dåligt skyddad mot angrepp.
-[tutorial part3 message 3]
-Välj svärmen och sätt krigarandelen till 2. Låt arbetarandelen vara 1 så att fler arbetare produceras också.
-[tutorial part3 message 4]
-Svärmen producerar nu ungefär 2 krigare per arbetare. Tilldela fler arbetare till försörjningen om du vill öka produktionen.
-[tutorial part3 message 5]
-Första krigaren är klar och börjar träna. Vänta på den andra innan du fortsätter.
-[tutorial part3 message 6]
-Krigare använder också löparbanan och simbassängen. De kan dessutom träna anfall i kasernen.
-[tutorial part3 message 7]
-Kasernen förbättrar anfallsstyrka och anfallshastighet. Styrka ökar skadan per träff och hastighet ökar anfallsfrekvensen. Vältränade krigare kan besegra mycket större otränade grupper.
-[tutorial part3 message 8]
-Bygg en kasern nära trä, som behövs för bygget.
-[tutorial part3 message 9]
-Tilldela lediga arbetare till kasernens byggplats. Behåll tillräckligt många på matförsörjningen och skapa inte fler jobb än de kan fylla.
-[tutorial part3 message 10]
-Kasernen är klar. Krigare kan nu träna sina anfallsfärdigheter där.
-[tutorial part3 message 11]
-Byggnadsuppgraderingar gör kolonin starkare.
-[tutorial part3 message 12]
-Skoltränade arbetare kan bygga uppgraderingar. Välj en lämplig byggnad och hitta Uppgradera i byggkontrollerna. Skadade byggnader kan behöva Reparera först.
-[tutorial part3 message 13]
-Vi väljer första uppgraderingen. Värdshusen har ledig kapacitet och kan vänta.
-[tutorial part3 message 14]
-Sjukhuset har också plats. Vi kan fokusera på skolan, löparbanan, simbassängen eller kasernen.
-[tutorial part3 message 15]
-Uppgradera löparbanan först så att enheterna kan lära sig röra sig ännu snabbare.
-[tutorial part3 message 16]
-Välj löparbanan och Uppgradera i byggkontrollerna. Enheterna där inne måste gå ut innan bygget börjar, så ändringen kan dröja.
-[tutorial part3 message 17]
-Tilldela lediga arbetare till uppgraderingen. Bara arbetare med rätt skolträning kan bygga på en byggplats för nivå 2.
-[tutorial part3 message 18]
-Vänta tills löparbanan är uppgraderad. Högre byggnadsnivåer kräver mer resurser och byggtid.
-[tutorial part3 message 19]
-Löparbanan på nivå 2 är klar. Den upptar mer mark än tidigare, därför lämnade vi en lucka. Utan expansionsutrymme går det inte att uppgradera.
-[tutorial part3 message 20]
-Uppgradera nu kasernen och simbassängen till nivå 2. Vi fortsätter när båda är klara.
-[tutorial part3 message 21]
-Uppgraderade byggnader kan oftast ta emot fler globuler eller ge bättre träning. Ett värdshus på nivå 2 har exempelvis 7 matplatser och matar snabbare än ett grundvärdshus.
-[tutorial part3 message 22]
-Fienden är nära. Vi förbereder oss för ett angrepp.
-[tutorial part3 message 23]
-Torn skjuter på fiender inom räckhåll och murar skyddar tornen. Vi använder båda för att försvara en smal väg in till kolonin.
-[tutorial part3 message 24]
-Placera tornen parvis om det finns plats. Murar kan skydda tre sidor, men lämna en väg för arbetarnas stenammunition.
-[tutorial part3 message 25]
-Titta öster om bassängen, norr om de andra fruktträden. En smal passage leder till en annan ö och passar att försvara.
-[tutorial part3 message 26]
-Planera plats för 2 torn mellan träden och stranden. Lämna tillfart bakom dem för sten och utrymme för murar på övriga sidor. Stäng inte ute arbetarna.
-[tutorial part3 message 27]
-Bygg 2 torn där. Tilldela 2 eller 3 arbetare per byggplats beroende på tillgängliga arbetare i spelvyn.
-[tutorial part3 message 28]
-Använd byggkontrollerna för muravsnitt runt tornens tre utåtvända sidor. Håll sidan mot kolonin öppen för arbetarna.
-[tutorial part3 message 29]
-Varje muravsnitt skapar ett byggjobb och kräver 1 sten. Om alla jobb inte kan fyllas samtidigt kan arbetarna färdigställa dem i turordning.
-[tutorial part3 message 30]
-Vänta tills båda tornen och flera muravsnitt är klara. Tornen behöver också stenammunition; stenbrottet ligger långt bort och leveranser tar tid. Höj arbetarmålen om du har lediga arbetare.
-[tutorial part4 message 1]
-Kolonin har mat, träning och försvar. Byggnader kan uppgraderas ännu en gång till nivå 3 för bättre träning och större kapacitet. Fortsätt förbättra när resurser och arbetarnas färdigheter tillåter.
-[tutorial part4 message 2]
-Leta nordväst om basen efter fiendekolonin. Flytta vyn dit nu.
-[tutorial part4 message 3]
-Utforskad mark kan fortfarande döljas av krigsdimma. För att se fiendens aktuella aktivitet behövs en utforskare i närheten.
-[tutorial part4 message 4]
-Öppna Flaggor. Med flaggor och zoner styr du enheterna utan att kontrollera varje globul enskilt.
-[tutorial part4 message 5]
-Välj utforskningsflaggan med draksymbol. Flaggor kan placeras på land, vatten, resurser och outforskad mark.
-[tutorial part4 message 6]
-Placera en utforskningsflagga över den misstänkta fiendebasen. En ungefärlig plats räcker för att börja spana. Avsluta placeringen med högerklick eller pekkontrollerna.
-[tutorial part4 message 7]
-Konturen runt flaggan visar arbetsradien. En tilldelad utforskare spanar där. Kommer ingen, kontrollera antalet utforskare och producera en till vid behov. Tryck mellanslag eller OK när utforskaren når området.
-[tutorial part4 message 8]
-Fienden har många arbetare och en samlad armé. Förbered försvaret innan den anfaller.
-[tutorial part4 message 9]
-Öppna Flaggor och välj det blå vaktområdet. Använd läget för att lägga till mark, inte ta bort. På pekskärm väljer du Måla i stället för Radera.
-[tutorial part4 message 10]
-Välj penselform och storlek. Den stora kvadraten passar för ett samlat försvarsområde.
-[tutorial part4 message 11]
-Måla ett vaktområde strax bakom tornen, där fienden sannolikt kommer. Klicka eller tryck för en punkt, eller dra över mer mark. På pekskärm använder du Panorera för att flytta vyn medan du målar.
-[tutorial part4 message 12]
-Lediga krigare går till vaktområdet. Gör det stort nog för försvararna men litet nog för att hålla dem samlade vid passagen. Vänta nu på anfallet.
-[tutorial part4 message 13]
-Fienden närmar sig passagen!
-[tutorial part4 message 14]
-Vi blir anfallna. Se hur tränade krigare och torn försvarar platsen.
-[tutorial part4 message 15]
-Du överlevde! Öppna Flaggor och välj den spetsiga krigsflaggan. Placera den på fiendens svärm för att rikta anfallet dit.
-[tutorial part4 message 16]
-Lämna placeringsläget och välj krigsflaggan. Tilldela fler än 1 krigare och minska radien för att samla anfallet runt fiendens svärm. Vänta på krigarna.
-[tutorial part4 message 17]
-Anfallet har börjat. Krigarna måste ta sig förbi fiendetornen för att nå svärmen.
-[tutorial part4 message 18]
-Krigarna har nått fiendebasen. Fortsätt rikta anfallet mot svärmen.
-[tutorial part4 message 19]
-Du förstörde fiendens svärm. Grattis! Du har avslutat handledningen och lärt dig grunderna i matförsörjning, tilldelning, träning, uppgraderingar, spaning och strid.
-[tutorial mission basics]
-Introduktion och grunder
-[tutorial mission development]
-Byggnader och skolor
-[tutorial mission training]
-Krigare, träning och uppgraderingar
-[tutorial mission flags]
-Flaggor och avslutning
 [library  Could not restore the previous library: %0]
  Kunde inte återställa föregående bibliotek: %0
 [library  The previous library is retained.]
@@ -6650,6 +6390,422 @@ Du kan ändra detta när som helst under Inställningar → Ljud.
 Ditt val kunde inte sparas. Ljudet är fortfarande avstängt. Försök igen.
 [audio choices description]
 Tystnad: en tystad högtalare. Ljud: en högtalare med ljudvågor.
+[intro menu]
+Introduktion
+[intro briefing]
+Lär dig indirekt styrning: spana med en flagga, försörj kolonin och led ett anfall.
+[intro try]
+Starta introduktionen
+[intro preflight]
+Dina globuler agerar självständigt. Du väljer deras uppgifter genom byggnader och flaggor. I denna korta introduktion spanar du vid ett landmärke, utökar matförsörjningen, ökar arbetsstyrkan och leder ett mindre anfall.
+[intro preflight save]
+Räkna med cirka 10 minuter. Du kan spara via spelmenyn och fortsätta med Ladda spel. Vanliga hunger- och stridsregler gäller. Välj Handledningslektioner i huvudmenyn för att öva fler färdigheter.
+[intro preference failed]
+Ditt val kunde inte sparas. Du kan fortsätta spela; rekommendationen kan visas igen nästa gång.
+[intro goal scout]
+Spana vid stenlandmärket
+[intro goal build]
+Bygg ännu ett värdshus
+[intro goal supply]
+Försörj ditt nya värdshus
+[intro goal grow]
+Utöka arbetsstyrkan
+[intro goal attack]
+Förstör fiendens svärm
+[intro instruction scout]
+Öppna Flaggor och placera en utforskningsflagga på stenfältet öster om kolonin. Tilldela en utforskare. Se hur den tar sig till flaggan.
+[intro instruction build]
+Öppna Bygg och placera ett värdshus nära vete. Tilldela lediga arbetare att bygga det. Fortsätt försörja det befintliga värdshuset.
+[intro instruction supply]
+Välj ditt färdiga nya värdshus och tilldela minst en leverantör. Vänta på att en arbetare levererar vete.
+[intro instruction grow]
+Välj svärmen. Sätt arbetarmålet till minst 2 och produktionsförhållandet till enbart arbetare. Håll båda värdshusen försörjda medan en ny arbetare föds.
+[intro instruction attack]
+Hitta fiendens svärm längre österut. Använd en krigsflagga för att leda dina krigare mot den. Hjälp finns om du behöver en påminnelse.
+[intro help]
+Hjälp / varför?
+[intro help scout]
+Flytta vyn österut med minikartan och hitta stenfältet. Välj Utforskningsflagga under Flaggor, placera den på stenen och avsluta placeringen med den sekundära musknappen. Välj flaggan och begär 1 utforskare. Flaggor begär enheter; de flyttar dem inte omedelbart. Utforskare kan stanna för att äta.
+[intro help build]
+Byggandet förbrukar trä som arbetare levererar. Välj Värdshus i byggpaletten, placera det på öppen mark nära vete och begär 2 byggare. Ett arbetarmål är en begäran, inte antalet arbetare som redan är där. Behåll leverantörer vid ditt befintliga värdshus och din svärm. Alla giltiga platser räknas.
+[intro help supply]
+Byggande och löpande försörjning har separata arbetarmål. Välj det färdiga värdshuset och höj dess driftsmål. En leverantör samlar vete och bär hit det. Hungriga globuler äter på värdshus; utan leverantörer tar förråden så småningom slut. Håll vägen till vetet öppen.
+[intro help grow]
+Svärmen förbrukar vete för att skapa enheter. Sätt arbetarproduktionen till 1 och utforskar- och krigarproduktionen till 0. Höj svärmens arbetarmål till minst 2. Fler leverantörer kan leverera vete snabbare men konkurrerar med andra uppgifter. Försörj båda värdshusen.
+[intro help attack]
+Öppna Flaggor, välj Krigsflagga och placera den över fiendens svärm öster om stenen. Välj flaggan och begär upp till 4 krigare. En liten radie håller dem samlade. Avsluta placeringen med den sekundära musknappen innan du väljer flaggan. Om inga krigare finns kvar, skapa fler vid svärmen. Krigare kan stanna för att äta; försörj värdshusen.
+[intro hint scout]
+Din utforskare behöver en bemannad utforskningsflagga på det östra stenfältet. Kontrollera dess mål och antal utforskare.
+[intro hint build]
+Om du tog bort det nya värdshuset, bygg ett till. Kontrollera annars byggplatsen och dess arbetarmål. Befintliga leveransuppgifter kan sysselsätta dina arbetare; håll maten igång och frigör byggare.
+[intro hint supply]
+Välj det färdiga nya värdshuset. Kontrollera arbetarmålet och se efter veteleveranser. Arbetare kan behöva tid för att resa eller äta.
+[intro hint grow]
+Kontrollera svärmens försörjning och att bara arbetare produceras. Försörj värdshusen medan du väntar på en ny arbetare.
+[intro hint attack]
+Kontrollera krigsflaggan, begärt antal krigare och matförsörjningen. Krigarna behöver tid för att resa och anfalla.
+[intro hint no scout flag]
+Ingen bemannad utforskningsflagga hittades. Placera en på stenen öster om basen och begär 1 utforskare.
+[intro hint no suppliers]
+Ditt nya värdshus eller din byggplats har arbetarmålet 0. Välj det och begär arbetare.
+[intro hint no war flag]
+Ingen bemannad krigsflagga hittades vid fiendens bas. Placera en över fiendens östra svärm och begär krigare.
+[intro hint retry]
+En enhet eller byggnad som behövs för lektionen har gått förlorad. Ladda en tidigare sparning eller starta om lektionen via spelmenyn.
+[intro complete]
+Introduktionen klar
+[intro complete body]
+Du styrde självständiga globuler, utökade matförsörjningen, växte kolonin och organiserade ett anfall. Fortsätt med handledningslektioner om träning, uppgraderingar och försvar eller återgå till huvudmenyn för att starta en match.
+[intro play again]
+Spela igen
+[intro restart]
+Starta om introduktionen
+[intro restart body]
+Starta om från den förberedda kolonin? Osparade framsteg i introduktionen går förlorade.
+[intro help touch scout]
+Dra på tom mark för att flytta vyn innan du placerar en flagga. Hitta stenfältet öster om kolonin. Öppna Flaggor, välj Utforskningsflagga, placera den på stenen och bekräfta. Välj flaggan och begär 1 utforskare med dess enhetsmål. Globuler reser självständigt och kan stanna för att äta.
+[intro help touch build]
+Välj Värdshus under Bygg. Placera det på öppen mark nära vete och bekräfta. Välj byggplatsen och begär 2 byggare. Ett arbetarmål är en begäran, inte antalet arbetare som redan är där. Försörj det befintliga värdshuset och svärmen. Alla giltiga platser räknas.
+[intro help touch supply]
+Välj det färdiga nya värdshuset och höj dess arbetarmål. Byggande och löpande försörjning har separata mål. En leverantör samlar vete och bär hit det. Hungriga globuler äter på värdshus; utan leverantörer tar förråden slut. Håll vetet tillgängligt.
+[intro help touch grow]
+Välj svärmen. Sätt arbetarproduktionen till 1 och utforskar- och krigarproduktionen till 0. Höj arbetarmålet till minst 2. Leverantörer hämtar vete för nya enheter men konkurrerar med andra uppgifter. Försörj båda värdshusen.
+[intro help touch attack]
+Öppna Flaggor, välj Krigsflagga, placera den över fiendens svärm öster om stenen och bekräfta. Välj flaggan och begär upp till 4 krigare. En liten radie samlar dem. Om inga finns kvar, skapa krigare vid svärmen. Krigare kan stanna för att äta; försörj värdshusen.
+[intro show destination]
+Visa mål
+[intro scout destination]
+Spana här
+[intro attack destination]
+Anfall här
+[intro compact scout]
+Flaggor → Utforskningsflagga. Placera på stenen; tilldela 1 utforskare.
+[intro compact build]
+Bygg → Värdshus. Placera nära vete; tilldela 2 byggare.
+[intro compact supply]
+Välj ditt nya värdshus; tilldela minst 1 leverantör. Vänta på vete.
+[intro compact grow]
+Välj svärmen; tilldela 2 leverantörer. Skapa bara arbetare.
+[intro compact attack]
+Flaggor → Krigsflagga. Placera över fiendens svärm; tilldela krigare.
+[tutorial lessons]
+Handledningslektioner
+[tutorial restart]
+Starta om lektionen
+[tutorial restart body]
+Starta om lektionen från den förberedda kolonin? Osparade framsteg går förlorade.
+[tutorial complete]
+Lektionen klar
+[tutorial food title]
+Öva matförsörjning
+[tutorial food briefing]
+Öva på att utöka matförsörjningen: bygg ett värdshus till, tilldela leverantörer och se vetet anlända.
+[tutorial food complete]
+Du byggde ett värdshus och försörjde det med vete. Prova en annan lektion eller återgå till huvudmenyn.
+[tutorial unavailable]
+Handledningslektionerna kunde inte läsas in.
+[lesson healing title]
+Sjukhus och läkning
+[lesson healing briefing]
+Bygg ett sjukhus och hjälp en skadad arbetare att återhämta sig. Kolonin börjar mätt, med en skadad arbetare.
+[lesson healing complete]
+Ditt sjukhus läkte en skadad globul. Försörj värdshusen: hunger kan skada enheterna igen.
+[lesson healing build hint]
+Bygg ett sjukhus på öppen mark; tilldela 2 byggare. Lämna utrymme för globuler att gå in och ut. Sjukhus läker skador; värdshus ger mat. Patienten är redan mätt.
+[lesson healing build title]
+Bygg ett sjukhus
+[lesson healing build instruction]
+Bygg ett sjukhus på öppen mark; tilldela 2 byggare.
+[lesson healing build help]
+Lämna utrymme för globuler att gå in och ut. Sjukhus läker skador; värdshus ger mat. Patienten är redan mätt.
+[lesson healing build marker]
+Bygg ett sjukhus
+[lesson healing heal hint]
+Håll sjukhuset tillgängligt. Se den skadade arbetaren återhämta sig. Globuler söker vård självständigt. Följ den skadade arbetaren, inte en nyfödd enhet. Om den dör, starta om eller ladda en sparning.
+[lesson healing heal title]
+Låt patienten återhämta sig
+[lesson healing heal instruction]
+Håll sjukhuset tillgängligt. Se den skadade arbetaren återhämta sig.
+[lesson healing heal help]
+Globuler söker vård självständigt. Följ den skadade arbetaren, inte en nyfödd enhet. Om den dör, starta om eller ladda en sparning.
+[lesson healing heal marker]
+Låt patienten återhämta sig
+[lesson walking-training title]
+Gångträning
+[lesson walking-training briefing]
+Bygg en löparbana och se en befintlig arbetare lära sig att gå snabbare.
+[lesson walking-training complete]
+Dina arbetare lärde sig att gå snabbare. Träning förbättrar befintliga arbetare; den ersätter inte kolonins matförsörjning.
+[lesson walking-training build hint]
+Bygg en löparbana på den markerade gläntan; tilldela byggare. En löparbana behöver trä och sten. Lämna plats runt kanterna för in- och utgång samt senare utbyggnad.
+[lesson walking-training build title]
+Bygg en löparbana
+[lesson walking-training build instruction]
+Bygg en löparbana på den markerade gläntan; tilldela byggare.
+[lesson walking-training build help]
+En löparbana behöver trä och sten. Lämna plats runt kanterna för in- och utgång samt senare utbyggnad.
+[lesson walking-training build marker]
+Bygg en löparbana
+[lesson walking-training train hint]
+Håll löparbanan tillgänglig och låt en arbetare slutföra träningen. Lämpliga globuler tränar automatiskt. Håll några arbetare fria från leveranser och båda värdshusen välfyllda.
+[lesson walking-training train title]
+Träna en befintlig arbetare
+[lesson walking-training train instruction]
+Håll löparbanan tillgänglig och låt en arbetare slutföra träningen.
+[lesson walking-training train help]
+Lämpliga globuler tränar automatiskt. Håll några arbetare fria från leveranser och båda värdshusen välfyllda.
+[lesson swimming title]
+Simning och vattenresurser
+[lesson swimming briefing]
+Träna simmare och använd sedan alger från dammen för att bygga en skola.
+[lesson swimming complete]
+En simmare levererade vattenresurser till din skola. Tillgång till vatten utökar kolonins möjliga uppgifter.
+[lesson swimming build hint]
+Bygg en simbassäng väster om dammen; tilldela byggare. Lämna plats runt bassängen. En arbetare kan inte samla alger på djupt vatten förrän den lärt sig simma.
+[lesson swimming build title]
+Bygg en simbassäng
+[lesson swimming build instruction]
+Bygg en simbassäng väster om dammen; tilldela byggare.
+[lesson swimming build help]
+Lämna plats runt bassängen. En arbetare kan inte samla alger på djupt vatten förrän den lärt sig simma.
+[lesson swimming build marker]
+Bygg en simbassäng
+[lesson swimming train hint]
+Låt en befintlig arbetare slutföra simträningen. Enheter väljer träning automatiskt. Håll försörjningen igång och låt lediga arbetare nå bassängen.
+[lesson swimming train title]
+Träna en simmare
+[lesson swimming train instruction]
+Låt en befintlig arbetare slutföra simträningen.
+[lesson swimming train help]
+Enheter väljer träning automatiskt. Håll försörjningen igång och låt lediga arbetare nå bassängen.
+[lesson swimming water-job hint]
+Bygg en skola nära kolonin; tilldela byggare att hämta trä och alger. Algerna växer i dammen. En tränad simmare måste gå ut i vattnet för att samla dem. Placera skolan på öppen mark med tillgång för leverantörer.
+[lesson swimming water-job title]
+Använd dammens alger
+[lesson swimming water-job instruction]
+Bygg en skola nära kolonin; tilldela byggare att hämta trä och alger.
+[lesson swimming water-job help]
+Algerna växer i dammen. En tränad simmare måste gå ut i vattnet för att samla dem. Placera skolan på öppen mark med tillgång för leverantörer.
+[lesson swimming water-job marker]
+Använd dammens alger
+[lesson schools title]
+Skolor och arbetarfärdigheter
+[lesson schools briefing]
+Använd de förberedda simmarna för att bygga en skola och se arbetarna lära sig byggande och skörd.
+[lesson schools complete]
+Din skola förbättrade arbetarnas färdigheter. Skickliga byggare möjliggör uppgraderingar; bättre skörd stöder en växande ekonomi.
+[lesson schools build hint]
+Bygg en skola i gläntan; tilldela byggare. Kolonin har redan simmare för alger. Håll vägar till trä och vatten öppna. Fruktträd ger prestigeresurser; maten kommer fortfarande från vete.
+[lesson schools build title]
+Bygg en skola
+[lesson schools build instruction]
+Bygg en skola i gläntan; tilldela byggare.
+[lesson schools build help]
+Kolonin har redan simmare för alger. Håll vägar till trä och vatten öppna. Fruktträd ger prestigeresurser; maten kommer fortfarande från vete.
+[lesson schools build marker]
+Bygg en skola
+[lesson schools learn hint]
+Låt en befintlig arbetare slutföra skolans utbildning. Skolan lär ut byggande och skörd tillsammans. Håll arbetare tillgängliga; en byggplats ensam utbildar ingen.
+[lesson schools learn title]
+Lär ut byggande och skörd
+[lesson schools learn instruction]
+Låt en befintlig arbetare slutföra skolans utbildning.
+[lesson schools learn help]
+Skolan lär ut byggande och skörd tillsammans. Håll arbetare tillgängliga; en byggplats ensam utbildar ingen.
+[lesson upgrades title]
+Uppgradera byggnader
+[lesson upgrades briefing]
+Använd de förberedda skickliga arbetarna för att uppgradera en löparbana och träna över första nivån.
+[lesson upgrades complete]
+Du uppgraderade en byggnad och använde dess förbättrade träning. Fler uppgraderingar upprepar cykeln med bättre skolor, färdigheter, material och utrymme, upp till nivå 3.
+[lesson upgrades upgrade hint]
+Välj löparbanan, välj Uppgradera och tilldela skickliga byggare. Arbetarna har redan lärt sig skolans färdigheter på första nivån. Uppgraderingar kräver mer plats och material och avbryter byggnadens tjänst. Avbrutna uppgraderingar räknas inte.
+[lesson upgrades upgrade title]
+Uppgradera löparbanan
+[lesson upgrades upgrade instruction]
+Välj löparbanan, välj Uppgradera och tilldela skickliga byggare.
+[lesson upgrades upgrade help]
+Arbetarna har redan lärt sig skolans färdigheter på första nivån. Uppgraderingar kräver mer plats och material och avbryter byggnadens tjänst. Avbrutna uppgraderingar räknas inte.
+[lesson upgrades upgrade marker]
+Uppgradera löparbanan
+[lesson upgrades train hint]
+Låt en befintlig arbetare lära sig snabbare gång på den uppgraderade löparbanan. En färdig uppgradering förbättrar tillgänglig träning. Högre byggnadsnivåer kräver bättre byggfärdigheter; nivån som visas för spelare börjar på 1.
+[lesson upgrades train title]
+Använd den uppgraderade träningen
+[lesson upgrades train instruction]
+Låt en befintlig arbetare lära sig snabbare gång på den uppgraderade löparbanan.
+[lesson upgrades train help]
+En färdig uppgradering förbättrar tillgänglig träning. Högre byggnadsnivåer kräver bättre byggfärdigheter; nivån som visas för spelare börjar på 1.
+[lesson warrior-training title]
+Skapa och träna krigare
+[lesson warrior-training briefing]
+Skapa krigare vid svärmen och träna dem sedan i en kasern.
+[lesson warrior-training complete]
+Du styrde militärproduktionen och tränade krigare. Håll matförsörjningen igång; stridsenheter behöver också äta.
+[lesson warrior-training produce hint]
+Ställ svärmen på enbart krigare; tilldela leverantörer och vänta på 2 krigare. Sätt arbetar- och utforskarförhållandet till 0 och krigarförhållandet till 1. Svärmen förbrukar vete vid födslar. Förhållandena väljer vad som skapas; leverantörerna avgör om produktionen kan gå.
+[lesson warrior-training produce title]
+Skapa två krigare
+[lesson warrior-training produce instruction]
+Ställ svärmen på enbart krigare; tilldela leverantörer och vänta på 2 krigare.
+[lesson warrior-training produce help]
+Sätt arbetar- och utforskarförhållandet till 0 och krigarförhållandet till 1. Svärmen förbrukar vete vid födslar. Förhållandena väljer vad som skapas; leverantörerna avgör om produktionen kan gå.
+[lesson warrior-training produce marker]
+Skapa två krigare
+[lesson warrior-training build hint]
+Bygg en kasern i gläntan; tilldela byggare. Stoppa eller minska krigarproduktionen när du har tillräckligt många. Kaserner lär ut stridsfärdigheter och behöver fritt utrymme runt kanterna.
+[lesson warrior-training build title]
+Bygg en kasern
+[lesson warrior-training build instruction]
+Bygg en kasern i gläntan; tilldela byggare.
+[lesson warrior-training build help]
+Stoppa eller minska krigarproduktionen när du har tillräckligt många. Kaserner lär ut stridsfärdigheter och behöver fritt utrymme runt kanterna.
+[lesson warrior-training build marker]
+Bygg en kasern
+[lesson warrior-training train hint]
+Låt en krigare slutföra kasernens övning. Krigare söker träning automatiskt. Försörj värdshusen och håll kasernen tillgänglig. Att bara bygga en kasern är inte ett slutfört träningspass.
+[lesson warrior-training train title]
+Träna dina krigare
+[lesson warrior-training train instruction]
+Låt en krigare slutföra kasernens övning.
+[lesson warrior-training train help]
+Krigare söker träning automatiskt. Försörj värdshusen och håll kasernen tillgänglig. Att bara bygga en kasern är inte ett slutfört träningspass.
+[lesson fortifications title]
+Torn och skyddsmurar
+[lesson fortifications briefing]
+Bygg ett försörjt torn och skyddsmurar och pröva dem sedan mot ett mindre anfall.
+[lesson fortifications complete]
+Ditt försörjda försvar stoppade övningsanfallet. Torn behöver sten och murar behöver öppningar så att leverantörer kan nå fram.
+[lesson fortifications tower hint]
+Bygg ett torn i det markerade området; tilldela byggare. Placera det nära stenbrottet och lämna väg för leverantörer. Inget anfall börjar förrän förberedelsemålen är klara.
+[lesson fortifications tower title]
+Bygg ett försvarstorn
+[lesson fortifications tower instruction]
+Bygg ett torn i det markerade området; tilldela byggare.
+[lesson fortifications tower help]
+Placera det nära stenbrottet och lämna väg för leverantörer. Inget anfall börjar förrän förberedelsemålen är klara.
+[lesson fortifications tower marker]
+Bygg ett försvarstorn
+[lesson fortifications walls hint]
+Bygg minst 2 murdelar nära tornet; håll den västra tillfartsvägen öppen. Murar använder sten och varje byggplats begär arbetare. Stäng inte in tornet: leverantörer behöver en väg. Den markerade västra vägen måste förbli fri.
+[lesson fortifications walls title]
+Skydda tornet med murar
+[lesson fortifications walls instruction]
+Bygg minst 2 murdelar nära tornet; håll den västra tillfartsvägen öppen.
+[lesson fortifications walls help]
+Murar använder sten och varje byggplats begär arbetare. Stäng inte in tornet: leverantörer behöver en väg. Den markerade västra vägen måste förbli fri.
+[lesson fortifications walls marker]
+Skydda tornet med murar
+[lesson fortifications supply hint]
+Välj tornet och begär leverantörer. Vänta på minst 2 sten. Ett färdigt torn behöver ett arbetarmål för driften för att få ammunition. Det är skilt från byggmålet.
+[lesson fortifications supply title]
+Leverera ammunition
+[lesson fortifications supply instruction]
+Välj tornet och begär leverantörer. Vänta på minst 2 sten.
+[lesson fortifications supply help]
+Ett färdigt torn behöver ett arbetarmål för driften för att få ammunition. Det är skilt från byggmålet.
+[lesson fortifications supply marker]
+Leverera ammunition
+[lesson fortifications hold hint]
+En övningskrigare närmar sig. Håll tornet försörjt och tillgängligt. Håll ut tills angriparen besegras eller drivs tillbaka. En mur som blockerar leverantörer kan lämna tornet utan ammunition. Om kolonin faller, starta om eller ladda en tidigare sparning.
+[lesson fortifications hold title]
+Pröva befästningarna
+[lesson fortifications hold instruction]
+En övningskrigare närmar sig. Håll tornet försörjt och tillgängligt.
+[lesson fortifications hold help]
+Håll ut tills angriparen besegras eller drivs tillbaka. En mur som blockerar leverantörer kan lämna tornet utan ammunition. Om kolonin faller, starta om eller ladda en tidigare sparning.
+[lesson fortifications hold marker]
+Pröva befästningarna
+[lesson defensive-tactics title]
+Vaktzoner och flaggtaktik
+[lesson defensive-tactics briefing]
+Spana på övningsfienden, förbered en vaktzon, försvara och ordna sedan ett motanfall.
+[lesson defensive-tactics complete]
+Du spanade, försvarade en vaktzon och ledde ett motanfall. Flaggmål begär enheter; radien styr var de arbetar.
+[lesson defensive-tactics scout hint]
+Placera en utforskningsflagga vid fiendens bas; tilldela 1 utforskare. Flaggor begär enheter självständigt. En utforskare avslöjar aktuell aktivitet genom krigsdimman; den kan stanna för att äta.
+[lesson defensive-tactics scout title]
+Spana på fiendens bas
+[lesson defensive-tactics scout instruction]
+Placera en utforskningsflagga vid fiendens bas; tilldela 1 utforskare.
+[lesson defensive-tactics scout help]
+Flaggor begär enheter självständigt. En utforskare avslöjar aktuell aktivitet genom krigsdimman; den kan stanna för att äta.
+[lesson defensive-tactics scout marker]
+Spana på fiendens bas
+[lesson defensive-tactics guard hint]
+Måla en vaktzon i det markerade området och låt 2 krigare nå den. Öppna Flaggor, välj Vakt och måla minst 4 rutor inom området. Vaktzoner drar till sig lediga krigare. Förbjudna zoner hindrar passage; röjningszoner begär att resurser tas bort.
+[lesson defensive-tactics guard title]
+Förbered en vaktzon
+[lesson defensive-tactics guard instruction]
+Måla en vaktzon i det markerade området och låt 2 krigare nå den.
+[lesson defensive-tactics guard help]
+Öppna Flaggor, välj Vakt och måla minst 4 rutor inom området. Vaktzoner drar till sig lediga krigare. Förbjudna zoner hindrar passage; röjningszoner begär att resurser tas bort.
+[lesson defensive-tactics guard marker]
+Förbered en vaktzon
+[lesson defensive-tactics repel hint]
+Fienden anfaller. Håll vaktzonen bemannad och värdshusen försörjda. Det lilla anfallet börjar efter förberedelserna. Besegra eller driv tillbaka båda angriparna; skadade fiender kan retirera. Krigare kan lämna tillfälligt för att äta. Om försvaret misslyckas, ladda en tidigare sparning eller starta om.
+[lesson defensive-tactics repel title]
+Slå tillbaka övningsanfallet
+[lesson defensive-tactics repel instruction]
+Fienden anfaller. Håll vaktzonen bemannad och värdshusen försörjda.
+[lesson defensive-tactics repel help]
+Det lilla anfallet börjar efter förberedelserna. Besegra eller driv tillbaka båda angriparna; skadade fiender kan retirera. Krigare kan lämna tillfälligt för att äta. Om försvaret misslyckas, ladda en tidigare sparning eller starta om.
+[lesson defensive-tactics repel marker]
+Slå tillbaka övningsanfallet
+[lesson defensive-tactics counterattack hint]
+Placera en krigsflagga över fiendens svärm; begär 3 krigare och använd radie 4 eller mindre. Vaktzoner och krigsflaggor konkurrerar om krigare. Ta bort vaktrutor om de håller armén tillbaka. Ha mat tillgänglig medan krigarna reser och anfaller.
+[lesson defensive-tactics counterattack title]
+Led ett samlat motanfall
+[lesson defensive-tactics counterattack instruction]
+Placera en krigsflagga över fiendens svärm; begär 3 krigare och använd radie 4 eller mindre.
+[lesson defensive-tactics counterattack help]
+Vaktzoner och krigsflaggor konkurrerar om krigare. Ta bort vaktrutor om de håller armén tillbaka. Ha mat tillgänglig medan krigarna reser och anfaller.
+[lesson defensive-tactics counterattack marker]
+Led ett samlat motanfall
+[lesson healing build compact]
+Bygg → Sjukhus. Lämna tillgång; tilldela byggare.
+[lesson healing heal compact]
+Låt den skadade arbetaren läka på sjukhuset.
+[lesson walking-training build compact]
+Bygg → Löparbana. Lämna plats runt kanterna.
+[lesson walking-training train compact]
+Låt en arbetare slutföra löparbanans träning.
+[lesson swimming build compact]
+Bygg → Simbassäng, väster om dammen.
+[lesson swimming train compact]
+Låt en arbetare lära sig simma.
+[lesson swimming water-job compact]
+Bygg → Skola. Tilldela byggare för trä och alger.
+[lesson schools build compact]
+Bygg → Skola. Tilldela byggare för trä och alger.
+[lesson schools learn compact]
+Låt en arbetare slutföra skolans utbildning.
+[lesson upgrades upgrade compact]
+Välj löparbana → Uppgradera. Tilldela skickliga byggare.
+[lesson upgrades train compact]
+Låt en arbetare träna på den uppgraderade löparbanan.
+[lesson warrior-training produce compact]
+Svärm → Bara krigare. Leverera vete till 2 krigare.
+[lesson warrior-training build compact]
+Bygg → Kasern. Lämna plats runt kanterna.
+[lesson warrior-training train compact]
+Låt en krigare slutföra kasernens övning.
+[lesson fortifications tower compact]
+Bygg → Torn. Placera i det markerade området.
+[lesson fortifications walls compact]
+Bygg 2 murar. Håll tornets västra väg öppen.
+[lesson fortifications supply compact]
+Välj torn → Leverantörer. Vänta på 2 sten.
+[lesson fortifications hold compact]
+Håll tornet försörjt mot angriparen.
+[lesson defensive-tactics scout compact]
+Flaggor → Utforskning. Placera vid fienden; tilldela 1 utforskare.
+[lesson defensive-tactics guard compact]
+Flaggor → Vakt. Måla 4 rutor; låt 2 krigare anlända.
+[lesson defensive-tactics repel compact]
+Håll vaktzonen. Försörj värdshusen.
+[lesson defensive-tactics counterattack compact]
+Krigsflagga → Fiendens svärm. Begär 3 krigare; radie ≤4.
 [library GL only]
 Bara GL
 [Grassland]
@@ -6660,5 +6816,7 @@ Klippkullar
 Djurstigar
 [Fish amount]
 Mängd fisk
+[scenario messages]
+Meddelanden ▸
 [Camp-site amount]
 Antal lägerplatser

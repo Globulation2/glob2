@@ -281,19 +281,6 @@ static constexpr int AI_NICOWAR_EXPLORER_ATTACK_FLAG_SIZE = 6;
 // ---------------------------------------------------------------------------
 // Farming (Farming.cpp::update_farming, ::update_fruit_flags).
 // ---------------------------------------------------------------------------
-// Maximum distance (in water-gradient steps) from water at which the AI
-// will permit a wood-farm spot.
-static constexpr int AI_NICOWAR_FARM_WOOD_WATER_DIST = 6;
-
-// Maximum distance (in water-gradient steps) from water at which the AI
-// will permit a wheat-farm spot.
-static constexpr int AI_NICOWAR_FARM_WHEAT_WATER_DIST = 10;
-
-// Stride of the checkerboard farming pattern: permanent farm spots are at
-// every (x % N == 1 && y % N == 1); horizontal expansion at (0, 1) and
-// vertical expansion at (1, 0). Single shared stride.
-static constexpr int AI_NICOWAR_FARM_PATTERN_STRIDE = 2;
-
 // Workers ordered onto each fruit-tree exploration flag (cherry, orange,
 // prune). One BuildingOrder per fruit type.
 static constexpr int AI_NICOWAR_FRUIT_FLAG_WORKERS = 2;

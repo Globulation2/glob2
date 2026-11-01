@@ -235,8 +235,8 @@ checksum adapter remains available for diagnostic fixtures.
   changes must not change saved state or simulation RNG use.
 - Built-in terrain is table-driven. `TerrainGroup.h` defines one property profile per
   gameplay group; `TerrainTypeTable.h` lists every `TerrainType` with its group, external
-  name, string-table label and semantic colours, and the `TerrainProperties.h`,
-  `TerrainPresentation.h` and `TerrainExperiments.h` tables derive from it. Members of a group are byte-identical
+  name, string-table label and semantic colours, and the `TerrainProperties.h` and
+  `TerrainPresentation.h` tables derive from it. Members of a group are byte-identical
   profiles, so the registry deduplicates them into one property index; use
   `terrainGroup(type)` for palette and reporting buckets, never for simulation rules.
   Adding a type is one enumerator, one row, one label and one material binding;
@@ -263,15 +263,11 @@ checksum adapter remains available for diagnostic fixtures.
   to the same material without scanning custom definitions. Render caches bind the
   registry snapshot and actual asset revisions. Saved custom colors remain
   authoritative for previews and minimaps; built-ins use catalog palettes.
-  Experimental authoring gates live in `TerrainExperiments.h`; maps carry required
-  experiments into matches, while saves retain them independently of user settings.
-  A runtime definition whose properties equal a gated built-in group's profile
-  requires that group's experiment too (`Map::requiredTerrainExperiments` compares
-  property indices); a definition with its own profile stays ungated.
-- Trail retains stable terrain ID `4` (`TRAIL`) and experiment position `3`
-  (`TrailTerrain`). Its external name, translation keys and serialized experiment
-  key remain `road` / `road-terrain` for scripting, reports, editor actions and
-  existing files. The material catalog chooses the detailed appearance for that ID.
+  All terrains are available to map authors without experiment flags. Terrain
+  properties apply unconditionally, including imported definitions.
+- Trail retains stable terrain ID `4` (`TRAIL`). Its external name and translation
+  keys remain `road` for scripting, reports, editor actions and existing files.
+  The material catalog chooses the detailed appearance for that ID.
 - Ecology caches terrain-only land and aquatic fields for the map's lifetime.
   Normal growth, harvesting, unit movement and building placement do not rebuild
   them. Map replacement invalidates them; terrain edits invalidate them only when

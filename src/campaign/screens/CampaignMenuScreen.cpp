@@ -1,6 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2006 Bradley Arsenault
-#include "ui/TutorialText.h"
 #include "CampaignMenuScreen.h"
 #include "Engine.h"
 #include "GUIMapPreview.h"
@@ -49,9 +48,7 @@ Element CampaignMenuScreen::build(const Presentation &p)
 	listOptions.activate = [this](int) { startMission(); };
 	listOptions.visibleRows = 8;
 	listOptions.emptyText = tr("[No items]");
-	auto missionLabels = missionNames;
-	for (auto &name : missionLabels) name = tutorialText(name, campaign.getName() == "Tutorial Campaign");
-	auto missions = listView("missions", missionLabels, selectedMission, [this](int i) { selectMission(i); }, listOptions);
+	auto missions = listView("missions", missionNames, selectedMission, [this](int i) { selectMission(i); }, listOptions);
 	auto side = column({Glob2UI::mapPreview("preview", *this->mapPreview, 160),
 						field(tr("[player name]"), textField("player", playerName,
 															[this](const std::string &v)
@@ -81,7 +78,7 @@ Element CampaignMenuScreen::build(const Presentation &p)
 			return column({statusLine, expanded(row({expanded(missions), width(ctx.presentation.pt(260), side)}, {-1, CrossAlign::Stretch})),
 						   height(ctx.presentation.pt(120), text), toolRow});
 		});
-	return page(tutorialText(campaign.getName(), campaign.getName() == "Tutorial Campaign"), body,
+	return page(campaign.getName(), body,
 				actions({{"start", tr("[start mission]"), [this] { startMission(); }, true, SDLK_RETURN, selectedMission >= 0 && !busy},
 						 {"exit", tr(saveFailed ? "[leave without saving]" : "[goto main menu]"), [this] { leave(); }, false, SDLK_ESCAPE}},
 						p),

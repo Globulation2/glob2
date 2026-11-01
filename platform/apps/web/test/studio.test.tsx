@@ -271,7 +271,12 @@ it('persists revision settings through a reload and resets the parent when size 
   view.unmount();
   render(<MapStudio id={id} />);
   await screen.findAllByText(/Editing version 1/);
-  fireEvent.click(screen.getByText(/256 × 128 · 4 players/, { selector: 'summary' }));
+  fireEvent.click(
+    screen.getByText(
+      (_content, element) =>
+        element?.tagName === 'SUMMARY' && /256 × 128 · 4 players/.test(element.textContent ?? ''),
+    ),
+  );
   expect((screen.getByLabelText('Height') as HTMLSelectElement).value).toBe('128');
   fireEvent.change(screen.getByLabelText('Players'), { target: { value: '6' } });
   expect(screen.queryByText(/Editing version 1/)).toBeNull();

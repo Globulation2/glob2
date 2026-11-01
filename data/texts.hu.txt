@@ -3102,8 +3102,6 @@ Törlés
 Elhelyezéshez engedd el megfelelő terep felett
 [Paint on the map; two fingers move]
 Fess a térképre; két ujjal mozgathatod
-[Tutorial ▸]
-Oktatás ▸
 [Back to tools]
 Vissza az eszközökhöz
 [Starvation overlay]
@@ -4886,6 +4884,34 @@ Bekerített egységek, amelyeknek nincs szabad mező, ahová léphetnének.
 Eltakarított nyersanyagok
 [stat cleared about]
 A dolgozók által a tisztítási területeken helycsinálás céljából eltávolított nyersanyagok.
+[stats topic overview]
+
+[stats topic economy]
+
+[stats topic world]
+
+[stats work construction]
+
+[stats defence]
+
+[stats history]
+
+[stats waiting]
+
+[stats unit details]
+
+[stats map overlays]
+
+[stats topic]
+
+[stats full history]
+
+[stats missing readings]
+
+[stat win probability]
+
+[stat win probability about]
+
 [stat prestige]
 Presztízs
 [stat prestige about]
@@ -5548,14 +5574,6 @@ Korlátozza a rajzolást az egész alkalmazásban. Az alacsonyabb értékek csö
 Jég
 [road]
 Ösvény
-[experiment ice-terrain]
-Jeges terep
-[experiment ice-terrain help]
-Jeget ad a térképszerkesztőhöz. A szárazföldi egységek félsebességgel mozognak, és minden 32 jégen töltött szimulációs lépés után elveszítenek egy életpontot. A jégen nem lehetnek épületek vagy erőforrások.
-[experiment road-terrain]
-Ösvényterep
-[experiment road-terrain help]
-Kitaposott ösvényeket ad a térképszerkesztőhöz. A szárazföldi egységek kétszeres sebességgel mozognak. Az ösvényeken lehet építkezni, de nyersanyagok nem lehetnek rajtuk. A repülő egységeket nem érinti.
 [experiment markets-v2]
 Piacok V2
 [experiment markets-v2 help]
@@ -5712,42 +5730,6 @@ Termékeny talaj
 Mély víz
 [terrain group void]
 Üresség
-[experiment obstacle-terrain]
-Akadályos terep
-[experiment obstacle-terrain help]
-Sziklatömböket, sövényeket és bozótot ad a térképszerkesztőhöz. A földi egységek nem tudnak átkelni rajtuk, és megállítják a lövedékeket; a repülő egységek átrepülnek felettük. Nem lehetnek rajtuk épületek vagy nyersanyagok.
-[experiment ridge-terrain]
-Gerincterep
-[experiment ridge-terrain help]
-Sziklagerinceket és sziklakibúvásokat ad a térképszerkesztőhöz. A földi egységek nem tudnak átkelni rajtuk, de a tornyok átlőnek felettük, és a repülő egységek átrepülnek. Nem lehetnek rajtuk épületek vagy nyersanyagok.
-[experiment barren-terrain]
-Kopár talaj
-[experiment barren-terrain help]
-Földet, agyagot, kavicsot és virágos réteket ad a térképszerkesztőhöz. Épületek állhatnak rajtuk, semmi sem nő rajtuk vagy mellettük, és nem számítanak partnak.
-[experiment rough-terrain]
-Nehéz terep
-[experiment rough-terrain help]
-Sarat, mocsarat, mély havat és kőtörmeléket ad a térképszerkesztőhöz. A földi egységek nagyjából kétharmados sebességgel mozognak. A nehéz terepen nem lehetnek épületek vagy nyersanyagok.
-[experiment path-terrain]
-Útterep
-[experiment path-terrain help]
-Földutakat és pallóutakat ad a térképszerkesztőhöz. Az ösvényekhez hasonlóan a földi egységek kétszeres sebességgel mozognak, és épületek is lehetnek rajtuk, de semmi sem nő.
-[experiment lava-terrain]
-Lávaterep
-[experiment lava-terrain help]
-Lávát és parázsmezőket ad a térképszerkesztőhöz. A földi egységek nem léphetnek rájuk; az átrepülő egységek gyorsan életerőt veszítenek. A lövedékek áthaladnak felettük.
-[experiment fertile-terrain]
-Termékeny talaj
-[experiment fertile-terrain help]
-Termőtalajt, mohát és tavaszi réteket ad a térképszerkesztőhöz. Épületeket és növényeket támogatnak, és a környező földet a víznél erősebben öntözik.
-[experiment deep-water-terrain]
-Mély víz
-[experiment deep-water-terrain help]
-Mély és sötét vizet ad a térképszerkesztőhöz. Az úszók lassabban kelnek át rajtuk, algák nem nőnek bennük, és továbbra is öntözik a közeli mezőket.
-[experiment void-terrain]
-Ürességterep
-[experiment void-terrain help]
-Lyukakat és szakadékokat ad a térképszerkesztőhöz. Semmi sem tud átkelni rajtuk, még a repülő egységek sem, és a lövedékek megállnak a szélükön.
 [terrain group custom]
 Egyéni
 [terrain group classic]
@@ -5780,8 +5762,6 @@ Sebzi a repülőket
 Válasszon ecsetet. Az egy csoportba tartozó terepek azonos szabályokat használnak, és csak megjelenésükben különböznek.
 [terrain rule algae grow]
 Algák nőnek
-[terrain palette experiments hint]
-Válasszon ecsetet. További terepcsoportok jelennek meg itt, ha a Beállítások > Kísérletek alatt bekapcsolja a kísérleteiket.
 [brush valid on %0]
 Érvényes itt: %0
 [brush valid nowhere]
@@ -6218,246 +6198,6 @@ Nem sikerült exportálni a felvételt.
 Felvétel törlése
 [recording refresh]
 Frissítés
-[tutorial part1 message 1]
-Üdv a Globulation 2-ben! Ez az oktatás négy küldetésben tanítja meg a kolónia irányítását. A játék menüjében menthetsz, majd a főmenüből betöltheted az állást. A folytatáshoz nyomd meg a Szóközt, érintőképernyőn a Rendben gombot. Néhány üzenet ezután eltűnik; az üzenetelőzményekben újra elolvashatod őket.
-[tutorial part1 message 2]
-Egy Rajjal és egy dolgozóval kezdesz. Nézzük meg, hogyan dolgoznak együtt.
-[tutorial part1 message 3]
-A dolgozó búzát arat és a Rajba viszi. A Raj búzából hoz létre új egységeket, ezért létfontosságú a kolóniának.
-[tutorial part1 message 4]
-Bal kattintással vagy érintéssel jelöld ki a glóbodat, a mozgó egységet.
-[tutorial part1 message 5]
-Az egység adatai mutatják, hogy tápláléka idővel fogy. A glób éhezni kezd. Ha láthatók az élelmiszercsíkok, az egység alatti kék csík mutatja a maradékot.
-[tutorial part1 message 6]
-A glóbok az Étkezdékben esznek. Jobb kattintással szüntesd meg a kijelölést, érintőképernyőn pedig érints üres talajt.
-[tutorial part1 message 7]
-Nyisd meg az építési vezérlőket, válaszd az Étkezdét, és helyezd búza közelébe. Ha nem találod a búzát, kövesd a dolgozó útját. Érintőképernyőn az Építés alatt erősíts meg egy érvényes helyet. Ezután jobb kattintással vagy a Mégse érintőgombbal lépj ki az elhelyezésből.
-[tutorial part1 message 8]
-Jó! Az Étkezde építési helye elkészült.
-[tutorial part1 message 9]
-A Raj egyik dolgozója most felépítheti az Étkezdét. Fát gyűjt a közeli fákról és az építkezésre viszi. Várd meg a befejezést.
-[tutorial part1 message 10]
-A kész Étkezdének búza kell. Egy hozzárendelt dolgozó gyűjti majd, ahogyan a Rajt is ellátja.
-[tutorial part1 message 11]
-Az Étkezde sárga erőforráscsíkja a búzaszállítmányokkal emelkedik. A készleten lévő búzát mutatja.
-[tutorial part1 message 12]
-Most tanuljuk meg a munka kiosztását.
-[tutorial part1 message 13]
-Egy dolgozó a Rajt, egy másik az Étkezdét látja el. Bármelyik megállhat enni az Étkezdében. Ez természetes.
-[tutorial part1 message 14]
-Jelöld ki a Rajt, és keresd a dolgozók hozzárendelését. Számítógépen Dolgozik a felirata; érintőképernyőn a hozzárendelt dolgozók és a cél vezérlőjét használd. A cél az épületnél kívánt dolgozólétszám.
-[tutorial part1 message 15]
-Állítsd a Rajhoz rendelt dolgozók kívánt számát 0-ra. Utána jelöld ki az Étkezdét, és ott is állítsd 0-ra.
-[tutorial part1 message 16]
-A dolgozók most tétlenek, de továbbra is enniük kell. A dolgozó nélküli Étkezdéből idővel elfogy a búza.
-[tutorial part1 message 17]
-Az élelmet nem találó glób veszít az életerejéből és meghalhat. A Kórház gyógyítja a sérülteket, de az Étkezdék ellátását is biztosítanod kell.
-[tutorial part1 message 18]
-Építs Kórházat az építési vezérlőkkel. Nem kell neki búza, így fa közelébe vagy a Raj melletti központi helyre tedd.
-[tutorial part1 message 19]
-Jelöld ki a Kórház építési helyét, és állítsd a dolgozók kívánt számát 2-re. Két dolgozó gyorsabban végezhet.
-[tutorial part1 message 20]
-A Kórház kész. A sérült glóbok most már betérhetnek gyógyulni.
-[tutorial part1 message 21]
-A fekete területek felderítetlenek. A mozgó egységek feltárják a közeli talajt. A dolgozók a munkájukat követik, ezért nehezen használhatók felderítésre. Erre a felderítők valók.
-[tutorial part1 message 22]
-Jelöld ki a Rajt, és keresd a dolgozók, felderítők és harcosok termelési arányát. Emeld a felderítők arányát 1-re.
-[tutorial part1 message 23]
-Ha mindkét arány 1, a Raj idővel azonos számú dolgozót és felderítőt termel. Állítsd a dolgozókat 0-ra, hogy egyelőre csak felderítőket készítsen.
-[tutorial part1 message 24]
-Állítsd vissza a Rajhoz rendelt dolgozók célját 1-re, hogy egy dolgozó búzát szállíthasson.
-[tutorial part1 message 25]
-Jelöld ki az Étkezdét, és ott is állítsd 1-re a célt. A növekvő kolóniának állandó élelmiszer-ellátás kell.
-[tutorial part1 message 26]
-Most várd meg, amíg a Raj létrehoz egy felderítőt.
-[tutorial part1 message 27]
-A felderítő körberepüli a kolóniát, és új talajt tár fel. A folytatás előtt várj egy második felderítőre.
-[tutorial part1 message 28]
-Ismét jelöld ki a Rajt. Állítsd a felderítők arányát 0-ra, a dolgozókét 1-re, hogy újra dolgozókat termeljen.
-[tutorial part2 message 1]
-A bázistól keletre kő van. Jegyezd meg a helyét, később szükség lesz rá.
-[tutorial part2 message 2]
-A kőtől délre narancsfák állnak. Jelöld ki őket az erőforrásadatokhoz. A gyümölcsökre később térünk vissza; most a Rajra figyelj.
-[tutorial part2 message 3]
-Állítsd a Rajt csak dolgozók termelésére: dolgozók 1, felderítők és harcosok 0.
-[tutorial part2 message 4]
-Gyorsítsuk fel a kolónia növekedését. Jelöld ki a Rajt, és állítsd a dolgozók kívánt számát 6-ra. Lehet, hogy még nincs hat dolgozód; az újak majd betöltik a szabad helyeket.
-[tutorial part2 message 5]
-A következő feladatok 8 dolgozónál kezdődnek. Tartsd ellátva a Rajt és az Étkezdét, amíg nő a népesség.
-[tutorial part2 message 6]
-Már több dolgozó látja el a Rajt. Több búza érkezése gyorsabb egységtermelést tesz lehetővé.
-[tutorial part2 message 7]
-Egy új dolgozó ára 5 búza. A távoli mezőről való szállítás időigényes, ezért a Rajnak gyakran több szállító kell, mint az Étkezdének. Az élelmiszerfüggő épületeket lehetőleg búza közelébe helyezd.
-[tutorial part2 message 8]
-Már legalább 8 dolgozód van. Jelöld ki a Rajt, és csökkentsd a dolgozók kívánt számát 1-re, hogy építkezés közben lassuljon a népesség növekedése.
-[tutorial part2 message 9]
-A kolóniának több étkezőhely kell. Építs második Étkezdét a meglévőtől északra.
-[tutorial part2 message 10]
-Rendelj szabad dolgozókat az új építkezéshez. Csak 3 fa kell, ezért 3-nál több építő kevésbé hasznos.
-[tutorial part2 message 11]
-A kész Étkezde visszatér a működéshez beállított dolgozólétszámhoz, amely általában 1. Az építéshez és a mindennapi ellátáshoz kívánt létszám külön állítható.
-[tutorial part2 message 12]
-A dolgozók megtanulhatnak gyorsabban mozogni. Ehhez a Versenypálya biztosít képzést.
-[tutorial part2 message 13]
-Az építési vezérlőknél keresd a Versenypályát. Számítógépen az ikon fölé húzott mutatóval látod leírását és árát. Érintőképernyőn válaszd az Építés alatt az elhelyezés előkészítéséhez. Még ne tedd le.
-[tutorial part2 message 14]
-A Versenypályához sok fa és kevés kő kell. Válassz központi, könnyen elérhető helyet.
-[tutorial part2 message 15]
-Építs Versenypályát, például a Rajtól délre. Hagyj helyet körülötte: a képzőépületek a fejlesztéskor terjeszkednek.
-[tutorial part2 message 16]
-A Versenypálya építkezésén állítsd a dolgozók kívánt számát 5 és 7 közé. Összesen 7 egység építőanyag kell.
-[tutorial part2 message 17]
-A kész Versenypálya folyamatos építőanyag- vagy búzaellátás nélkül képzi a betérő egységeket.
-[tutorial part2 message 18]
-A glóbok belépnek a Versenypályára edzeni. Utána gyorsabban futnak.
-[tutorial part2 message 19]
-Jelöld ki a Versenypályát a képzés ellenőrzéséhez. A jelzők mutatják, mennyi van hátra a bent lévő egységeknek.
-[tutorial part2 message 20]
-A képzett dolgozók gyorsabban utaznak és szállítanak. Növekedés közben figyeld az élelmiszerkészletet: a gyors szállítás csak elegendő ellátott Étkezde mellett segít.
-[tutorial part2 message 21]
-Keresd meg a dolgozók számlálóját a játékképernyőn. Az összeg a népességet mutatja; az elérhető dolgozók száma segít felismerni a szabad munkaerőt vagy betöltetlen feladatokat. Ne ossz ki több munkát, mint amennyit a kolónia elbír.
-[tutorial part2 message 22]
-A felület a felderítők és harcosok számát is mutatja. Termelés tervezésekor és zászlókhoz rendeléskor figyeld ezeket.
-[tutorial part2 message 23]
-2 Étkezdéd van. Egy alap Étkezde egyszerre 4 egységet etet, így együtt 8 helyük van. Több mint 8 egység is megéhezhet, ezért maradjon kapacitás a sorokra.
-[tutorial part2 message 24]
-Két Étkezde nem tart el örökké egy növekvő kolóniát. Még az éhezés előtt bővítsd az étkezőkapacitást.
-[tutorial part2 message 25]
-Építs még 3 Étkezdét a búza közelében. Az éhes dolgozók leállnak, a tartós éhezés pedig megöli őket. Szabad dolgozókkal építkezz, de a meglévő ellátás maradjon működőképes.
-[tutorial part2 message 26]
-Fejezz be még 3 Étkezdét, hogy összesen 5 legyen.
-[tutorial part2 message 27]
-Az új Étkezdék az építés után a működéshez beállított létszámot használják, általában 1 dolgozót. Ellenőrizd, hogy van-e szállítójuk és elegendő búzájuk.
-[tutorial part2 message 28]
-A Versenypálya javította a szárazföldi közlekedést. Most tanítsuk meg a kolóniát úszni.
-[tutorial part2 message 29]
-Az Úszómedence úszni tanítja az egységeket, és fából épül. Helyezd a bázistól északkeletre lévő nagy tisztásra, a kőtől északra. Hagyj helyet fejlesztésre és az erőforrások növekedésére, majd rendelj elérhető dolgozókat az építéshez.
-[tutorial part2 message 30]
-Az Úszómedence úszni tanítja az egységeket, és fából épül. Helyezd a bázistól északkeletre lévő nagy tisztásra, a kőtől északra. Hagyj helyet fejlesztésre és az erőforrások növekedésére, majd rendelj elérhető dolgozókat az építéshez.
-[tutorial part2 message 31]
-Az Úszómedence kész. A glóbok beléphetnek úszni tanulni.
-[tutorial part2 message 32]
-Jelöld ki az Úszómedencét a képzés ellenőrzéséhez. Az alap Úszómedence egyszerre 2 glóbot képez, akárcsak az alap Versenypálya.
-[tutorial part2 message 33]
-A képzett glóbok már tudnak úszni. Hamarosan vízi átkelést igénylő munkát kapnak.
-[tutorial part2 message 34]
-Még sok a tanulnivaló. Ha pihenni szeretnél, ments a játék menüjében, és térj vissza később.
-[tutorial part2 message 35]
-A kolóniának van élelme és testi képzése. Az Iskola megtanítja a jobb épületekhez szükséges munkásismereteket.
-[tutorial part2 message 36]
-Az Iskola fejleszti a dolgozók betakarítási és építési tudását. Felépítéséhez vízben növő alga kell. Az úszni tudó dolgozók begyűjthetik.
-[tutorial part2 message 37]
-Védd a fontos képzőépületeket. Az Iskolának nem kell víz mellett állnia; egy védett belső hely biztonságosabb lehet támadáskor.
-[tutorial part2 message 38]
-Építs Iskolát védett helyre, például az Úszómedence mögé vagy a Rajtól délnyugatra, a Versenypálya mellé. Rendelj hozzá elérhető dolgozókat.
-[tutorial part2 message 39]
-Egy épület kijelölésével láthatod a hozzárendelt dolgozókat. Számítógépen a beállítható Egységútvonalak megjelenítése művelet vonalakat is mutat a célokig; aktuális billentyűjét a Beállítások, Vezérlés alatt találod. Várd meg az Iskolát.
-[tutorial part3 message 1]
-A kolóniának már vannak Étkezdéi, Kórháza, Versenypályája, Úszómedencéje és Iskolája. Ideje felkészíteni a védelmét.
-[tutorial part3 message 2]
-Még nem termeltünk harcosokat. Nélkülük a kolónia alig védett a támadásoktól.
-[tutorial part3 message 3]
-Jelöld ki a Rajt, és állítsd a harcosok arányát 2-re. A dolgozókét hagyd 1-en, hogy továbbra is készüljenek.
-[tutorial part3 message 4]
-A Raj most nagyjából 2 harcost termel minden dolgozóra. Gyorsabb termeléshez rendelj több dolgozót az ellátáshoz.
-[tutorial part3 message 5]
-Az első harcos elkészült és edzeni kezd. A folytatás előtt várj a másodikra.
-[tutorial part3 message 6]
-A harcosok is használják a Versenypályát és az Úszómedencét. Támadásukat a Laktanyában is képezhetik.
-[tutorial part3 message 7]
-A Laktanya javítja a támadóerőt és a támadási sebességet. Az erő az ütésenkénti sebzést, a sebesség az ütések gyakoriságát növeli. Jól képzett harcosok sokkal nagyobb képzetlen ellenséges csoportokat is legyőzhetnek.
-[tutorial part3 message 8]
-Építs Laktanyát az építéshez szükséges fa közelébe.
-[tutorial part3 message 9]
-Rendelj elérhető dolgozókat a Laktanya építéséhez. Maradjon elég dolgozó az élelemellátásnál, és ne hozz létre több munkát, mint amennyit betölthetnek.
-[tutorial part3 message 10]
-A Laktanya kész. A harcosok már fejleszthetik ott támadásukat.
-[tutorial part3 message 11]
-A kolónia épületfejlesztéssel is erősödhet.
-[tutorial part3 message 12]
-Az Iskolában képzett dolgozók készíthetnek fejlesztéseket. Jelölj ki megfelelő épületet, és keresd a Fejlesztés lehetőséget. Sérült épületnél előbb Javítás kellhet.
-[tutorial part3 message 13]
-Döntsük el, mit fejlesszünk először. Az Étkezdékben még van hely, így várhatnak.
-[tutorial part3 message 14]
-A Kórházban is van hely. Az Iskolára, Versenypályára, Úszómedencére vagy Laktanyára összpontosíthatunk.
-[tutorial part3 message 15]
-Először a Versenypályát fejleszd, hogy az egységek még gyorsabban mozoghassanak.
-[tutorial part3 message 16]
-Jelöld ki a Versenypályát, és válaszd a Fejlesztést. A bent lévő egységeknek előbb ki kell menniük, így az építés nem feltétlenül indul azonnal.
-[tutorial part3 message 17]
-Rendelj elérhető dolgozókat a Versenypálya fejlesztéséhez. A 2. szintű építkezésen csak megfelelő iskolai képzettségű dolgozók építhetnek.
-[tutorial part3 message 18]
-Várd meg a Versenypálya fejlesztését. A magasabb szintű épületek több erőforrást és időt igényelnek.
-[tutorial part3 message 19]
-A 2. szintű Versenypálya kész. Több talajt foglal el, ezért hagytunk rést. Elegendő bővítési hely nélkül nem fejleszthető az épület.
-[tutorial part3 message 20]
-Most fejleszd a Laktanyát és az Úszómedencét 2. szintre. Ha mindkettő kész, folytatjuk.
-[tutorial part3 message 21]
-A fejlesztett épületek általában több glóbot szolgálnak ki vagy jobb képzést adnak. A 2. szintű Étkezdének például 7 helye van, és gyorsabban etet az alapnál.
-[tutorial part3 message 22]
-Az ellenség közel van. Készüljünk támadásra.
-[tutorial part3 message 23]
-A Tornyok a hatótávon belüli ellenségre lőnek. A Falak védik őket. Mindkettőt használjuk a kolóniához vezető szűk út védelmére.
-[tutorial part3 message 24]
-Ha van hely, párosával építs Tornyokat. A Falak három oldalt védhetnek, de maradjon út a kőlőszert szállító dolgozóknak.
-[tutorial part3 message 25]
-Nézz az Úszómedencétől keletre, a többi gyümölcsfától északra. Szűk átkelő vezet egy másik szigetre. Jól védhető hely.
-[tutorial part3 message 26]
-Tervezz helyet 2 Toronynak a fák és a part közé. Hátul maradjon út a kőszállításnak, más oldalaikon hely a Falaknak. Ne zárd ki a dolgozókat.
-[tutorial part3 message 27]
-Építs oda 2 Tornyot. Mindkét építéshez 2 vagy 3 dolgozót rendelj a képernyő számlálóiban látható elérhető létszám szerint.
-[tutorial part3 message 28]
-Az építési vezérlőkkel helyezz Falszakaszokat a Tornyok három külső oldala köré. A kolónia felőli oldal maradjon nyitva a dolgozóknak.
-[tutorial part3 message 29]
-Minden Falszakasz építési feladatot hoz létre és 1 követ igényel. Ha nem jut egyszerre minden feladatra dolgozó, sorban is befejezhetik őket.
-[tutorial part3 message 30]
-Várd meg mindkét Torony és néhány Falszakasz elkészültét. A Tornyoknak kőlőszer is kell; a távoli kőfejtő lassítja a szállítást. Ha vannak szabad dolgozóid, növeld a Tornyokhoz rendelt dolgozók kívánt számát.
-[tutorial part4 message 1]
-A kolóniának van élelme, képzése és védelme. Az épületek még egyszer, 3. szintre fejleszthetők, jobb képzéssel és nagyobb kapacitással. Fejleszd őket tovább, ahogy az erőforrások és a dolgozók tudása engedi.
-[tutorial part4 message 2]
-Keresd az ellenség kolóniáját a bázistól északnyugatra. Mozgasd oda a nézetet.
-[tutorial part4 message 3]
-A feltárt területet is takarhatja a háború köde. Ahhoz, hogy lássuk az ellenség aktuális tevékenységét, egy közeli felderítőre van szükség.
-[tutorial part4 message 4]
-Nyisd meg a Zászlókat. A zászlók és zónák irányítják az egységeket, így nem kell minden glóbot külön vezérelned.
-[tutorial part4 message 5]
-Válaszd a sárkány alakú jelű Felderítő zászlót. Zászlót talajra, vízre, erőforrásra és feltáratlan területre is tehetsz.
-[tutorial part4 message 6]
-Tegyél Felderítő zászlót az ellenség feltételezett bázisára. A kezdéshez elég egy hozzávetőleges hely. Jobb kattintással lépj ki, vagy az érintővezérlőkkel fejezd be az elhelyezést.
-[tutorial part4 message 7]
-A zászló körvonala a munkasugarat mutatja. Egy hozzárendelt felderítő felderíti a területet. Ha nem jön, ellenőrizd a felderítők számát, és szükség esetén termelj újat a Rajban. Érkezésekor nyomj Szóközt vagy érintsd meg a Rendben gombot.
-[tutorial part4 message 8]
-Az ellenségnek sok dolgozója és összegyűlt serege van. Készítsük elő a védelmet, mielőtt támad.
-[tutorial part4 message 9]
-A Zászlók alatt válaszd a kék Őrzóna lehetőséget. A terület hozzáadásának módját használd, ne a törlést. Érintőképernyőn Festést válassz Törlés helyett.
-[tutorial part4 message 10]
-Válassz ecsetformát és méretet. A nagy négyzet jó a tömör védelmi terület festésére.
-[tutorial part4 message 11]
-Fess Őrzónát közvetlenül a Tornyok mögé, az ellenség várható útjára. Kattintás vagy érintés egy pontot fest, húzás nagyobb területet. Érintőképernyőn a Mozgatás segítségével mozgathatod a nézetet festés közben.
-[tutorial part4 message 12]
-Az elérhető harcosok az Őrzónába vonulnak. Legyen elég nagy a védőknek, de elég kicsi, hogy az átkelőnél összpontosuljanak. Most várd a támadást.
-[tutorial part4 message 13]
-Az ellenség az átkelőhöz közeledik!
-[tutorial part4 message 14]
-Megtámadtak minket. Figyeld, hogyan védenek a képzett harcosok és a Tornyok.
-[tutorial part4 message 15]
-Túlélted! Nyisd meg a Zászlókat, és válaszd a tüskés Hadizászlót. Tedd az ellenséges Rajra, hogy oda irányítsd a támadást.
-[tutorial part4 message 16]
-Lépj ki az elhelyezésből, és jelöld ki a Hadizászlót. Rendelj hozzá 1-nél több harcost, majd csökkentsd a sugarát az ellenséges Raj körüli összpontosításhoz. Várd meg a harcosokat.
-[tutorial part4 message 17]
-A támadás elkezdődött. Harcosaidnak át kell jutniuk az ellenséges Tornyok mellett, hogy elérjék a Rajt.
-[tutorial part4 message 18]
-Harcosaid elérték az ellenséges bázist. A támadás maradjon a Rajra összpontosítva.
-[tutorial part4 message 19]
-Elpusztítottad az ellenséges Rajt. Gratulálunk! Befejezted az oktatást, és megtanultad az élelemellátás, hozzárendelések, képzés, fejlesztés, felderítés és harc alapjait.
-[tutorial mission basics]
-Bevezetés és alapok
-[tutorial mission development]
-Épületek és iskolák
-[tutorial mission training]
-Harcosok, képzés és fejlesztések
-[tutorial mission flags]
-Zászlók és befejezés
 [library  Could not restore the previous library: %0]
  Az előző könyvtárat nem sikerült visszaállítani: %0
 [library  The previous library is retained.]
@@ -6650,6 +6390,422 @@ Ezt bármikor módosíthatod a Beállítások → Hang menüben.
 Nem sikerült menteni a választásodat. A hang továbbra is ki van kapcsolva. Próbáld újra.
 [audio choices description]
 Csend: némított hangszóró. Hang: hangszóró hanghullámokkal.
+[intro menu]
+Bevezetés
+[intro briefing]
+Ismerje meg a közvetett irányítást: derítsen fel zászlóval, lássa el a telepet, és irányítson egy támadást.
+[intro try]
+Bevezetés indítása
+[intro preflight]
+A golyócskák önállóan cselekszenek. Feladataikat épületekkel és zászlókkal jelölheti ki. Ebben a rövid bevezetőben felderít egy kőlelőhelyet, bővíti az élelmiszerellátást, növeli a munkások számát, és irányít egy kisebb támadást.
+[intro preflight save]
+Szánjon rá körülbelül 10 percet. A játék menüjében menthet, majd a Játék betöltése menüponttal folytathatja. A szokásos éhezési és harci szabályok érvényesek. További készségek gyakorlásához válassza az Oktatóleckék menüpontot a főmenüben.
+[intro preference failed]
+Választását nem sikerült elmenteni. Folytathatja a játékot; ez az ajánlás legközelebb újra megjelenhet.
+[intro goal scout]
+Derítse fel a kőlelőhelyet
+[intro goal build]
+Építsen még egy Étkezdét
+[intro goal supply]
+Lássa el az új Étkezdét
+[intro goal grow]
+Növelje a munkások számát
+[intro goal attack]
+Pusztítsa el az ellenséges Rajt
+[intro instruction scout]
+Nyissa meg a Zászlók menüt, és helyezzen Felderítő zászlót a teleptől keletre lévő kőlelőhelyre. Rendeljen hozzá egy felderítőt, és figyelje meg, ahogy a zászlóhoz megy.
+[intro instruction build]
+Nyissa meg az Építés menüt, és helyezzen el egy Étkezdét a búza közelében. Rendeljen szabad munkásokat az építéshez. A meglévő Étkezde ellátását tartsa fenn.
+[intro instruction supply]
+Jelölje ki az elkészült új Étkezdét, és rendeljen hozzá legalább egy ellátót. Várja meg, amíg egy munkás búzát szállít oda.
+[intro instruction grow]
+Jelölje ki a Rajt. Kérjen legalább 2 munkást az ellátásához, és állítsa a termelést kizárólag munkásokra. Tartsa mindkét Étkezdét ellátva, amíg új munkás születik.
+[intro instruction attack]
+Keresse meg az ellenséges Rajt keletebbre. Hadizászlóval irányítsa ellene a harcosait. Ha emlékeztetőre van szüksége, nyissa meg a súgót.
+[intro help]
+Segítség / miért?
+[intro help scout]
+A minitérképen mozgassa a nézetet keletre, és keresse meg a kőlelőhelyet. A Zászlók menüben válassza a Felderítő zászlót, és helyezze a kőre. A másodlagos egérgombbal fejezze be az elhelyezést. Jelölje ki a zászlót, és kérjen 1 felderítőt. A zászlók egységeket kérnek; nem mozgatják őket azonnal. A felderítők megállhatnak enni.
+[intro help build]
+Az építkezéshez a munkások által szállított fa szükséges. Válassza az Étkezdét az épületpalettán, helyezze szabad területre a búza közelében, és kérjen 2 építőt. A kért munkáslétszám nem a már jelenlévő munkások száma. Tartson ellátókat a meglévő Étkezdénél és a Rajnál. Bármely érvényes hely megfelel.
+[intro help supply]
+Az építkezéshez és a napi ellátáshoz külön munkáslétszámot kell beállítani. Jelölje ki az elkészült Étkezdét, és növelje az ellátók számát. Az ellátó búzát gyűjt és idehozza. Az éhes golyócskák az Étkezdékben esznek; ellátók nélkül az épület készlete kifogy. Hagyjon szabad utat a búzához.
+[intro help grow]
+A Raj búzát fogyaszt az egységek létrehozásához. A munkástermelést állítsa 1-re, a felderítők és harcosok termelését pedig 0-ra. A Rajhoz kért munkások számát növelje legalább 2-re. Több ellátó gyorsabban szállít búzát, de így kevesebb munkás marad más feladatokra. Tartsa mindkét Étkezdét ellátva.
+[intro help attack]
+Nyissa meg a Zászlók menüt, válassza a Hadizászlót, és helyezze a kőtől keletre lévő ellenséges Raj fölé. Jelölje ki a zászlót, és kérjen legfeljebb 4 harcost. Kis sugárral együtt tarthatja őket. A zászló kijelölése előtt a másodlagos egérgombbal fejezze be az elhelyezést. Ha nem maradt harcos, termeljen többet a Rajban. A harcosok megállhatnak enni; tartsa az Étkezdéket ellátva.
+[intro hint scout]
+A felderítőnek a keleti kőlelőhelyre tett Felderítő zászlóra van szüksége, amelyhez egységet rendelt. Ellenőrizze a helyét és a kért felderítők számát.
+[intro hint build]
+Ha eltávolította az új Étkezdét, építsen másikat. Egyébként ellenőrizze az építkezést és a kért munkáslétszámot. Az ellátási feladatok leköthetik a munkásokat; tartsa fenn az élelmiszerellátást, miközben építőket szabadít fel.
+[intro hint supply]
+Jelölje ki az elkészült új Étkezdét. Ellenőrizze a kért munkáslétszámot, és figyelje a búzaszállításokat. A munkásoknak idő kell a mozgáshoz és az evéshez.
+[intro hint grow]
+Ellenőrizze a Raj búzaellátását és azt, hogy csak munkásokat termel-e. Tartsa az Étkezdéket ellátva, amíg új munkásra vár.
+[intro hint attack]
+Ellenőrizze a Hadizászlót, a kért harcosok számát és az élelmiszerellátást. A harcosoknak idő kell a mozgáshoz és a támadáshoz.
+[intro hint no scout flag]
+Nem található egységgel ellátott Felderítő zászló. Helyezzen egyet a bázistól keletre lévő kőre, és kérjen 1 felderítőt.
+[intro hint no suppliers]
+Az új Étkezdéhez vagy építkezéshez kért munkások száma 0. Jelölje ki, és kérjen munkásokat.
+[intro hint no war flag]
+Nem található egységgel ellátott Hadizászló az ellenséges bázison. Helyezzen egyet a keleti ellenséges Raj fölé, és kérjen harcosokat.
+[intro hint retry]
+A leckéhez szükséges egység vagy épület elveszett. Töltsön be egy korábbi mentést, vagy indítsa újra ezt a leckét a játék menüjéből.
+[intro complete]
+Bevezetés kész
+[intro complete body]
+Önálló golyócskákat irányított, bővítette az élelmiszerellátást, növelte a telepet, és támadást szervezett. Az Oktatóleckékben gyakorolhatja a képzést, a fejlesztést és a védekezést, vagy visszatérhet a főmenübe új mérkőzést indítani.
+[intro play again]
+Újrajátszás
+[intro restart]
+Indítsa újra a bevezetést
+[intro restart body]
+Újraindítás az előkészített telepről? A bevezetés nem mentett előrehaladása elvész.
+[intro help touch scout]
+A zászló elhelyezése előtt húzza az üres terepet a nézet mozgatásához. Keresse meg a teleptől keletre lévő kőlelőhelyet. Nyissa meg a Zászlók menüt, válassza a Felderítő zászlót, helyezze a kőre, és erősítse meg. Jelölje ki a zászlót, és a kért egységek számát állítsa 1 felderítőre. A golyócskák önállóan közlekednek, és megállhatnak enni.
+[intro help touch build]
+Az Építés menüben válassza az Étkezdét. Helyezze szabad területre a búza közelében, és erősítse meg. Jelölje ki az építkezést, és kérjen 2 építőt. Ez a kért munkáslétszám, nem a már ott lévő munkások száma. Tartsa ellátva a meglévő Étkezdét és Rajt. Minden érvényes hely megfelel.
+[intro help touch supply]
+Jelölje ki az elkészült új Étkezdét, és növelje a kért munkáslétszámot. Az építkezéshez és a napi ellátáshoz külön számot kell megadni. Az ellátó búzát gyűjt és idehozza. Az éhes golyócskák az Étkezdékben esznek; ellátók nélkül a készlet kifogy. Hagyjon szabad utat a búzához.
+[intro help touch grow]
+Jelölje ki a Rajt. Állítsa a munkástermelést 1-re, a felderítők és harcosok termelését pedig 0-ra. A kért munkáslétszámot növelje legalább 2-re. Az ellátók búzát hoznak az új egységekhez, de így kevesebb munkás marad más feladatokra. Tartsa mindkét Étkezdét ellátva.
+[intro help touch attack]
+Nyissa meg a Zászlók menüt, válassza a Hadizászlót, helyezze a kőtől keletre lévő ellenséges Raj fölé, és erősítse meg. Jelölje ki a zászlót, és kérjen legfeljebb 4 harcost. Kis sugárral együtt tarthatja őket. Ha nem maradt harcos, termeljen többet a Rajban. A harcosok megállhatnak enni; tartsa az Étkezdéket ellátva.
+[intro show destination]
+Úticél megjelenítése
+[intro scout destination]
+Felderítés itt
+[intro attack destination]
+Támadás itt
+[intro compact scout]
+Zászlók → Felderítő zászló. Helyezze a kőre; rendeljen hozzá 1 felderítőt.
+[intro compact build]
+Építés → Étkezde. Helyezze búza közelébe; rendeljen hozzá 2 építőt.
+[intro compact supply]
+Jelölje ki az új Étkezdét; rendeljen hozzá legalább 1 ellátót. Várja meg a búzát.
+[intro compact grow]
+Jelölje ki a Rajt; rendeljen hozzá 2 ellátót. Csak munkásokat termeljen.
+[intro compact attack]
+Zászlók → Hadizászló. Helyezze az ellenséges Raj fölé; rendeljen hozzá harcosokat.
+[tutorial lessons]
+Oktatóleckék
+[tutorial restart]
+Lecke újraindítása
+[tutorial restart body]
+Újraindítja ezt a leckét az előkészített telepről? A nem mentett haladás elveszik.
+[tutorial complete]
+A lecke befejeződött
+[tutorial food title]
+Élelmiszerellátási gyakorlat
+[tutorial food briefing]
+Gyakorolja az élelmiszerellátás bővítését: építsen még egy Étkezdét, rendeljen hozzá ellátókat, és figyelje a búza érkezését.
+[tutorial food complete]
+Épített egy étkezdét, és ellátta búzával. Próbáljon ki egy másik leckét, vagy térjen vissza a főmenübe.
+[tutorial unavailable]
+Az oktatóleckéket nem sikerült betölteni.
+[lesson healing title]
+Kórházak és gyógyítás
+[lesson healing briefing]
+Építsen Kórházat, és segítsen egy sebesült munkásnak felépülni. A telep jóllakottan indul, egy sérült munkással.
+[lesson healing complete]
+A Kórház meggyógyított egy sérült golyócskát. Tartsa az Étkezdéket ellátva: az éhség ismét megsebesítheti az egységeket.
+[lesson healing build hint]
+Építsen Kórházat szabad területen; rendeljen hozzá 2 építőt. Hagyjon helyet a golyócskák be- és kijutásához. A Kórházak a sérüléseket gyógyítják, az Étkezdék élelmet adnak. Ez a beteg már jóllakott.
+[lesson healing build title]
+Építsen Kórházat
+[lesson healing build instruction]
+Építsen Kórházat szabad területen; rendeljen hozzá 2 építőt.
+[lesson healing build help]
+Hagyjon helyet a golyócskák be- és kijutásához. A Kórházak a sérüléseket gyógyítják, az Étkezdék élelmet adnak. Ez a beteg már jóllakott.
+[lesson healing build marker]
+Építsen Kórházat
+[lesson healing heal hint]
+Tartsa a Kórházat megközelíthetően. Figyelje a sérült munkás felépülését. A golyócskák önállóan keresik a gyógyulást. A sérült munkást kövesse, ne egy újonnan született egységet. Ha meghal, indítsa újra a leckét, vagy töltsön be egy mentést.
+[lesson healing heal title]
+Hagyja, hogy a beteg felépüljön
+[lesson healing heal instruction]
+Tartsa a Kórházat megközelíthetően. Figyelje a sérült munkás felépülését.
+[lesson healing heal help]
+A golyócskák önállóan keresik a gyógyulást. A sérült munkást kövesse, ne egy újonnan született egységet. Ha meghal, indítsa újra a leckét, vagy töltsön be egy mentést.
+[lesson healing heal marker]
+Hagyja, hogy a beteg felépüljön
+[lesson walking-training title]
+Edzés a gyorsabb gyaloglásért
+[lesson walking-training briefing]
+Építsen Versenypályát, és figyelje meg, ahogy egy meglévő munkás megtanul gyorsabban járni.
+[lesson walking-training complete]
+A munkásai megtanultak gyorsabban járni. A képzés a meglévő munkásokat fejleszti; nem helyettesíti a telep élelmiszerellátását.
+[lesson walking-training build hint]
+Építsen Versenypályát a megjelölt tisztáson; rendeljen hozzá építőket. A Versenypályához fa és kő kell. Hagyjon helyet a szélei körül a be- és kijutáshoz, valamint a későbbi bővítéshez.
+[lesson walking-training build title]
+Építsen Versenypályát
+[lesson walking-training build instruction]
+Építsen Versenypályát a megjelölt tisztáson; rendeljen hozzá építőket.
+[lesson walking-training build help]
+A Versenypályához fa és kő kell. Hagyjon helyet a szélei körül a be- és kijutáshoz, valamint a későbbi bővítéshez.
+[lesson walking-training build marker]
+Építsen Versenypályát
+[lesson walking-training train hint]
+Tartsa a Versenypályát megközelíthetően, és várja meg, amíg egy munkás befejezi a képzést. A megfelelő golyócskák képzése automatikus. Hagyjon néhány munkást szabadon az ellátási feladatoktól, és tartsa mindkét Étkezdét feltöltve.
+[lesson walking-training train title]
+Képezzen egy meglévő munkást
+[lesson walking-training train instruction]
+Tartsa a Versenypályát megközelíthetően, és várja meg, amíg egy munkás befejezi a képzést.
+[lesson walking-training train help]
+A megfelelő golyócskák képzése automatikus. Hagyjon néhány munkást szabadon az ellátási feladatoktól, és tartsa mindkét Étkezdét feltöltve.
+[lesson swimming title]
+Úszás és erőforrások a vízben
+[lesson swimming briefing]
+Képezzen úszókat, majd a tó algáit felhasználva építsen Iskolát.
+[lesson swimming complete]
+Egy úszó vízi nyersanyagot szállított az Iskolához. A vízhez való hozzáférés új feladatokat tesz lehetővé a telep számára.
+[lesson swimming build hint]
+Építsen Úszómedencét a tótól nyugatra; rendeljen hozzá építőket. Hagyjon helyet a medence körül. A munkás nem gyűjthet algát mély vízben, amíg meg nem tanult úszni.
+[lesson swimming build title]
+Építsen Úszómedencét
+[lesson swimming build instruction]
+Építsen Úszómedencét a tótól nyugatra; rendeljen hozzá építőket.
+[lesson swimming build help]
+Hagyjon helyet a medence körül. A munkás nem gyűjthet algát mély vízben, amíg meg nem tanult úszni.
+[lesson swimming build marker]
+Építsen Úszómedencét
+[lesson swimming train hint]
+Várja meg, amíg egy meglévő munkás befejezi az úszóképzést. Az egységek automatikusan választják a képzést. Tartsa fenn az ellátást, és hagyja, hogy a szabad munkások eljussanak a medencéhez.
+[lesson swimming train title]
+Képezzen úszót
+[lesson swimming train instruction]
+Várja meg, amíg egy meglévő munkás befejezi az úszóképzést.
+[lesson swimming train help]
+Az egységek automatikusan választják a képzést. Tartsa fenn az ellátást, és hagyja, hogy a szabad munkások eljussanak a medencéhez.
+[lesson swimming water-job hint]
+Építsen Iskolát a telep közelében; bízzon meg építőket a fa és az alga összegyűjtésével. Az alga a tóban nő. Egy képzett úszónak vízbe kell mennie érte. Az Iskolát nyílt szárazföldre helyezze, ahová az ellátók is eljutnak.
+[lesson swimming water-job title]
+Használjon algát a tóból
+[lesson swimming water-job instruction]
+Építsen Iskolát a telep közelében; bízzon meg építőket a fa és az alga összegyűjtésével.
+[lesson swimming water-job help]
+Az alga a tóban nő. Egy képzett úszónak vízbe kell mennie érte. Az Iskolát nyílt szárazföldre helyezze, ahová az ellátók is eljutnak.
+[lesson swimming water-job marker]
+Használjon algát a tóból
+[lesson schools title]
+Iskolák és a munkások készségei
+[lesson schools briefing]
+A már úszni tudó munkásokkal építsen Iskolát, majd figyelje, ahogy a munkások építést és nyersanyaggyűjtést tanulnak.
+[lesson schools complete]
+Az Iskola fejlesztette a munkások készségeit. A képzett építők lehetővé teszik a fejlesztéseket; a jobb nyersanyaggyűjtés támogatja a növekvő gazdaságot.
+[lesson schools build hint]
+Építsen Iskolát a tisztáson; rendeljen hozzá építőket. A telepen már vannak úszni tudó munkások az algagyűjtéshez. Hagyjon szabad utat a fához és a vízhez. A gyümölcsfák tekintélyt növelő nyersanyagot adnak; az élelem továbbra is búzából készül.
+[lesson schools build title]
+Építsen Iskolát
+[lesson schools build instruction]
+Építsen Iskolát a tisztáson; rendeljen hozzá építőket.
+[lesson schools build help]
+A telepen már vannak úszni tudó munkások az algagyűjtéshez. Hagyjon szabad utat a fához és a vízhez. A gyümölcsfák tekintélyt növelő nyersanyagot adnak; az élelem továbbra is búzából készül.
+[lesson schools build marker]
+Építsen Iskolát
+[lesson schools learn hint]
+Várja meg, amíg egy meglévő munkás befejezi az iskolai képzést. Az Iskola együtt tanítja az építést és a nyersanyaggyűjtést. Hagyjon szabad munkásokat; az építkezés önmagában senkit sem képez ki.
+[lesson schools learn title]
+Tanítson építést és nyersanyaggyűjtést
+[lesson schools learn instruction]
+Várja meg, amíg egy meglévő munkás befejezi az iskolai képzést.
+[lesson schools learn help]
+Az Iskola együtt tanítja az építést és a nyersanyaggyűjtést. Hagyjon szabad munkásokat; az építkezés önmagában senkit sem képez ki.
+[lesson upgrades title]
+Épületek fejlesztése
+[lesson upgrades briefing]
+A már képzett munkásokkal fejlesszen egy Versenypályát, és lépjen túl az első szintű képzésen.
+[lesson upgrades complete]
+Korszerűsített egy épületet, és használta annak továbbfejlesztett képzését. A további fejlesztések megismétlik ezt a ciklust jobb iskolákkal, készségekkel, anyagokkal és térrel, egészen a 3. szintig.
+[lesson upgrades upgrade hint]
+Válassza a Versenypályát, majd a Fejlesztés lehetőséget, és rendeljen hozzá képzett építőket. Ezek a munkások már elsajátították az első szintű Iskola készségeit. A fejlesztéshez több hely és anyag kell, és közben szünetel az épület működése. A visszavont fejlesztés nem számít.
+[lesson upgrades upgrade title]
+Fejlessze a Versenypályát
+[lesson upgrades upgrade instruction]
+Válassza a Versenypályát, majd a Fejlesztés lehetőséget, és rendeljen hozzá képzett építőket.
+[lesson upgrades upgrade help]
+Ezek a munkások már elsajátították az első szintű Iskola készségeit. A fejlesztéshez több hely és anyag kell, és közben szünetel az épület működése. A visszavont fejlesztés nem számít.
+[lesson upgrades upgrade marker]
+Fejlessze a Versenypályát
+[lesson upgrades train hint]
+Várja meg, amíg egy meglévő munkás gyorsabb járást tanul a fejlesztett Versenypályán. A befejezett fejlesztés jobb képzést tesz elérhetővé. A magasabb épületszintekhez magasabb építési készség kell; a játékosoknak jelzett szint 1-től indul.
+[lesson upgrades train title]
+Használja a továbbfejlesztett képzést
+[lesson upgrades train instruction]
+Várja meg, amíg egy meglévő munkás gyorsabb járást tanul a fejlesztett Versenypályán.
+[lesson upgrades train help]
+A befejezett fejlesztés jobb képzést tesz elérhetővé. A magasabb épületszintekhez magasabb építési készség kell; a játékosoknak jelzett szint 1-től indul.
+[lesson warrior-training title]
+Harcosok előállítása és kiképzése
+[lesson warrior-training briefing]
+Termeljen harcosokat a Rajban, majd képezze őket a Laktanyában.
+[lesson warrior-training complete]
+Irányította a katonai termelést és harcosokat képzett. Tartsa fenn az élelmiszerellátást; a harci egységeknek is enniük kell.
+[lesson warrior-training produce hint]
+Állítsa a Rajt csak harcosok termelésére; rendeljen hozzá ellátókat, és várjon 2 harcosra. Állítsa a munkások és felderítők arányát 0-ra, a harcosokét pedig 1-re. A Raj búzát fogyaszt az új egységek születéséhez. Az arányok határozzák meg, mi születik; az ellátóktól függ, működhet-e a termelés.
+[lesson warrior-training produce title]
+Termeljen két harcost
+[lesson warrior-training produce instruction]
+Állítsa a Rajt csak harcosok termelésére; rendeljen hozzá ellátókat, és várjon 2 harcosra.
+[lesson warrior-training produce help]
+Állítsa a munkások és felderítők arányát 0-ra, a harcosokét pedig 1-re. A Raj búzát fogyaszt az új egységek születéséhez. Az arányok határozzák meg, mi születik; az ellátóktól függ, működhet-e a termelés.
+[lesson warrior-training produce marker]
+Termeljen két harcost
+[lesson warrior-training build hint]
+Építsen Laktanyát a tisztáson; rendeljen hozzá építőket. Ha már elég harcosa van, állítsa le vagy csökkentse a termelésüket. A Laktanyák harci készségeket tanítanak; hagyjon szabad helyet körülöttük.
+[lesson warrior-training build title]
+Építsen Laktanyát
+[lesson warrior-training build instruction]
+Építsen Laktanyát a tisztáson; rendeljen hozzá építőket.
+[lesson warrior-training build help]
+Ha már elég harcosa van, állítsa le vagy csökkentse a termelésüket. A Laktanyák harci készségeket tanítanak; hagyjon szabad helyet körülöttük.
+[lesson warrior-training build marker]
+Építsen Laktanyát
+[lesson warrior-training train hint]
+Várja meg, amíg egy harcos befejezi a képzést a Laktanyában. A harcosok önállóan keresik a képzést. Tartsa az Étkezdéket ellátva és a Laktanyát hozzáférhetően. A Laktanya felépítése nem elég: egy harcosnak ott be kell fejeznie a képzést.
+[lesson warrior-training train title]
+Képezze ki a harcosait
+[lesson warrior-training train instruction]
+Várja meg, amíg egy harcos befejezi a képzést a Laktanyában.
+[lesson warrior-training train help]
+A harcosok önállóan keresik a képzést. Tartsa az Étkezdéket ellátva és a Laktanyát hozzáférhetően. A Laktanya felépítése nem elég: egy harcosnak ott be kell fejeznie a képzést.
+[lesson fortifications title]
+Tornyok és védőfalak
+[lesson fortifications briefing]
+Építsen ellátott tornyot és védőfalakat, majd próbálja ki őket egy kis támadással szemben.
+[lesson fortifications complete]
+Az ellátott védművek megállították a gyakorló támadást. A tornyokhoz kő kell; a falakon hagyjon réseket, hogy az ellátók eljussanak hozzájuk.
+[lesson fortifications tower hint]
+Építsen tornyot a megjelölt területen; rendeljen hozzá építőket. Helyezze a kőlelőhely közelébe, és hagyjon szabad utat az ellátóknak. A támadás csak az előkészületi célok teljesítése után indul.
+[lesson fortifications tower title]
+Építsen Védőtornyot
+[lesson fortifications tower instruction]
+Építsen tornyot a megjelölt területen; rendeljen hozzá építőket.
+[lesson fortifications tower help]
+Helyezze a kőlelőhely közelébe, és hagyjon szabad utat az ellátóknak. A támadás csak az előkészületi célok teljesítése után indul.
+[lesson fortifications tower marker]
+Építsen Védőtornyot
+[lesson fortifications walls hint]
+Építsen legalább 2 falrészt a torony közelében; tartsa nyitva a nyugati bekötősávját. A falakhoz kő kell, és minden építkezés munkásokat kér. Ne zárja körbe a tornyot: az ellátóknak út kell. A megjelölt nyugati sáv maradjon szabad.
+[lesson fortifications walls title]
+Védje meg a tornyot falakkal
+[lesson fortifications walls instruction]
+Építsen legalább 2 falrészt a torony közelében; tartsa nyitva a nyugati bekötősávját.
+[lesson fortifications walls help]
+A falakhoz kő kell, és minden építkezés munkásokat kér. Ne zárja körbe a tornyot: az ellátóknak út kell. A megjelölt nyugati sáv maradjon szabad.
+[lesson fortifications walls marker]
+Védje meg a tornyot falakkal
+[lesson fortifications supply hint]
+Jelölje ki a tornyot, és kérjen ellátókat. Várja meg, amíg legalább 2 egység kő érkezik. A kész toronyhoz külön munkáslétszámot kell beállítani a lőszerszállításhoz. Ez nem azonos az építkezéshez kért létszámmal.
+[lesson fortifications supply title]
+Szállítson lőszert
+[lesson fortifications supply instruction]
+Jelölje ki a tornyot, és kérjen ellátókat. Várja meg, amíg legalább 2 egység kő érkezik.
+[lesson fortifications supply help]
+A kész toronyhoz külön munkáslétszámot kell beállítani a lőszerszállításhoz. Ez nem azonos az építkezéshez kért létszámmal.
+[lesson fortifications supply marker]
+Szállítson lőszert
+[lesson fortifications hold hint]
+Közeledik egy gyakorló ellenséges harcos. Tartsa a tornyot ellátva és megközelíthetően. Tartson ki, amíg a támadót legyőzi vagy visszaveri. Az ellátók útját elzáró fal miatt a toronyból kifogyhat a lőszer. Ha a telep elbukik, indítsa újra a leckét, vagy töltsön be egy korábbi mentést.
+[lesson fortifications hold title]
+Tesztelje az erődítményeket
+[lesson fortifications hold instruction]
+Közeledik egy gyakorló ellenséges harcos. Tartsa a tornyot ellátva és megközelíthetően.
+[lesson fortifications hold help]
+Tartson ki, amíg a támadót legyőzi vagy visszaveri. Az ellátók útját elzáró fal miatt a toronyból kifogyhat a lőszer. Ha a telep elbukik, indítsa újra a leckét, vagy töltsön be egy korábbi mentést.
+[lesson fortifications hold marker]
+Tesztelje az erődítményeket
+[lesson defensive-tactics title]
+Őrzónák és zászlótaktikák
+[lesson defensive-tactics briefing]
+Derítse fel a gyakorló ellenséget, készítsen elő egy őrzónát, védekezzen, majd szervezzen ellentámadást.
+[lesson defensive-tactics complete]
+Felderítette az ellenséget, megvédett egy őrzónát és ellentámadást irányított. A zászló célértéke határozza meg a kért egységek számát; a sugár azt szabályozza, hol dolgoznak.
+[lesson defensive-tactics scout hint]
+Helyezzen Felderítő zászlót az ellenséges bázisra; rendeljen hozzá 1 felderítőt. A zászlók automatikusan egységeket kérnek. A felderítő láthatóvá teszi a háború ködébe rejtett aktuális tevékenységet; megállhat enni.
+[lesson defensive-tactics scout title]
+Derítse fel az ellenséges bázist
+[lesson defensive-tactics scout instruction]
+Helyezzen Felderítő zászlót az ellenséges bázisra; rendeljen hozzá 1 felderítőt.
+[lesson defensive-tactics scout help]
+A zászlók automatikusan egységeket kérnek. A felderítő láthatóvá teszi a háború ködébe rejtett aktuális tevékenységet; megállhat enni.
+[lesson defensive-tactics scout marker]
+Derítse fel az ellenséges bázist
+[lesson defensive-tactics guard hint]
+Fessen őrzónát a megjelölt területre, és várja meg, amíg 2 harcos odaér. Nyissa meg a Zászlók menüt, válassza az Őrzés lehetőséget, és fessen be legalább 4 mezőt a területen belül. Az őrzónák szabad harcosokat vonzanak. A tiltott zónák akadályozzák az áthaladást; a tisztítási zónák nyersanyagok eltávolítását kérik.
+[lesson defensive-tactics guard title]
+Készítsen elő egy őrzónát
+[lesson defensive-tactics guard instruction]
+Fessen őrzónát a megjelölt területre, és várja meg, amíg 2 harcos odaér.
+[lesson defensive-tactics guard help]
+Nyissa meg a Zászlók menüt, válassza az Őrzés lehetőséget, és fessen be legalább 4 mezőt a területen belül. Az őrzónák szabad harcosokat vonzanak. A tiltott zónák akadályozzák az áthaladást; a tisztítási zónák nyersanyagok eltávolítását kérik.
+[lesson defensive-tactics guard marker]
+Készítsen elő egy őrzónát
+[lesson defensive-tactics repel hint]
+Az ellenség támad. Tartson harcosokat az őrzónában, és lássa el az Étkezdéket élelemmel. A kis támadás az előkészületek után indul. Győzze le vagy verje vissza mindkét támadót; a sérült ellenség visszavonulhat. A harcosok átmenetileg elmehetnek enni. Ha a védelem elbukik, töltsön be korábbi mentést, vagy indítsa újra a leckét.
+[lesson defensive-tactics repel title]
+Verje vissza a gyakorló támadást
+[lesson defensive-tactics repel instruction]
+Az ellenség támad. Tartson harcosokat az őrzónában, és lássa el az Étkezdéket élelemmel.
+[lesson defensive-tactics repel help]
+A kis támadás az előkészületek után indul. Győzze le vagy verje vissza mindkét támadót; a sérült ellenség visszavonulhat. A harcosok átmenetileg elmehetnek enni. Ha a védelem elbukik, töltsön be korábbi mentést, vagy indítsa újra a leckét.
+[lesson defensive-tactics repel marker]
+Verje vissza a gyakorló támadást
+[lesson defensive-tactics counterattack hint]
+Helyezzen Hadizászlót az ellenséges Raj fölé; kérjen 3 harcost, és legfeljebb 4-es sugarat használjon. Az őrzónák és a Hadizászlók ugyanazokért a harcosokért versenyeznek. Törölje az őrzőmezőket, ha visszatartják a seregét. A harcosok mozgása és támadása közben is legyen élelem.
+[lesson defensive-tactics counterattack title]
+Irányítson összpontosított ellentámadást
+[lesson defensive-tactics counterattack instruction]
+Helyezzen Hadizászlót az ellenséges Raj fölé; kérjen 3 harcost, és legfeljebb 4-es sugarat használjon.
+[lesson defensive-tactics counterattack help]
+Az őrzónák és a Hadizászlók ugyanazokért a harcosokért versenyeznek. Törölje az őrzőmezőket, ha visszatartják a seregét. A harcosok mozgása és támadása közben is legyen élelem.
+[lesson defensive-tactics counterattack marker]
+Irányítson összpontosított ellentámadást
+[lesson healing build compact]
+Építés → Kórház. Hagyjon szabad bejáratot; rendeljen hozzá építőket.
+[lesson healing heal compact]
+Hagyja, hogy a sebesült munkás meggyógyuljon a kórházban.
+[lesson walking-training build compact]
+Építés → Versenypálya. Hagyjon helyet a szélei körül.
+[lesson walking-training train compact]
+Hagyja, hogy egy dolgozó befejezze a képzést a versenypályán.
+[lesson swimming build compact]
+Építés → Úszómedence, a tótól nyugatra.
+[lesson swimming train compact]
+Tanuljon meg egy munkás úszni.
+[lesson swimming water-job compact]
+Építés → Iskola. Rendeljen építőket a fa és az alga begyűjtéséhez.
+[lesson schools build compact]
+Építés → Iskola. Rendeljen építőket a fa és az alga begyűjtéséhez.
+[lesson schools learn compact]
+Hagyja, hogy egy dolgozó befejezze a képzést az Iskolában.
+[lesson upgrades upgrade compact]
+Versenypálya → Fejlesztés. Rendeljen hozzá képzett építőket.
+[lesson upgrades train compact]
+Várja meg, amíg egy munkás képzést kap a fejlesztett Versenypályán.
+[lesson warrior-training produce compact]
+Raj → csak harcosok. Szállítson búzát 2 harcos termeléséhez.
+[lesson warrior-training build compact]
+Építés → Laktanya. Hagyjon szabad helyet a szélei körül.
+[lesson warrior-training train compact]
+Várja meg, amíg egy harcos befejezi a laktanyai képzést.
+[lesson fortifications tower compact]
+Építés → Torony. Helyezze a megjelölt területre.
+[lesson fortifications walls compact]
+Építsen 2 falat. Tartsa szabadon a torony nyugati útját.
+[lesson fortifications supply compact]
+Torony → ellátók. Várjon 2 egység kőre.
+[lesson fortifications hold compact]
+Tartsa a tornyot lőszerrel ellátva a támadó ellen.
+[lesson defensive-tactics scout compact]
+Zászlók → Felderítés. Helyezze az ellenséghez; rendeljen hozzá 1 felderítőt.
+[lesson defensive-tactics guard compact]
+Zászlók → Őrzés. Fessen be 4 mezőt; várja meg, amíg 2 harcos megérkezik.
+[lesson defensive-tactics repel compact]
+Tartsa az őrzónát. Az Étkezdéket lássa el élelemmel.
+[lesson defensive-tactics counterattack compact]
+Hadizászló → ellenséges Raj. Kérjen 3 harcost; sugár ≤4.
 [library GL only]
 Csak GL
 [Grassland]
@@ -6660,5 +6816,7 @@ Sziklás dombok
 Vadcsapások
 [Fish amount]
 Halak mennyisége
+[scenario messages]
+Üzenetek ▸
 [Camp-site amount]
 Táborhelyek száma

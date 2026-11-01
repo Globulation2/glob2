@@ -26,6 +26,8 @@ ENGINE_SUPPORT = [
 
 # glob2-engine-tests: every client object except the entry point, plus these.
 ENGINE_TESTS = [
+    '#src/tutorial/IntroductionTest.cpp',
+    ('#src/tutorial/IntroductionUITest.cpp', dict(cxxflags=['-fno-access-control'])),
     ('#src/map/gradient/GradientLegacyQueueHarness.cpp', dict(cxxflags=['-fno-access-control'])),
     ('#src/map/gradient/GradientMarketTurnoverHarness.cpp', dict(cxxflags=['-fno-access-control'])),
     ('#src/map/gradient/GradientBackendSwitchTest.cpp', dict(cxxflags=['-fno-access-control'])),
@@ -113,6 +115,7 @@ ENGINE_TESTS = [
     '#src/hud/GameGUISelectionHarness.cpp',
     '#src/render/scene/SceneExtractTest.cpp',
     '#src/game/diagnostics/GameDiagnosticsTest.cpp',
+    '#src/game/diagnostics/WarriorTacticsTraceTest.cpp',
     ('#src/team/stats/WinProbabilityTest.cpp', dict(cxxflags=['-fno-access-control'])),
     ('#src/engine/sim/ClientChannelsTest.cpp', dict(cxxflags=['-fno-access-control'])),
     '#src/building/HiringBucketHarness.cpp',
@@ -531,6 +534,7 @@ PROGRAMS = [
     ('MapReportHarness', '#src/map/tools/MapReportHarness.cpp', 'map-report-test', 'test'),
     ('MaximaStrategyDump', '#src/ai/maxima/MaximaStrategyDump.cpp', 'maxima-strategy-dump', 'tools'),
     ('MenuColonyHarness', '#tools/MenuColonyHarness.cpp', 'menu-colony-harness', 'test'),
+    ('TranslationPreviewHarness', '#tools/TranslationPreviewHarness.cpp', 'translation-preview-harness', 'tools'),
     ('AssetLoadingBenchmark', '#tools/AssetLoadingBenchmark.cpp', 'asset-loading-benchmark', 'tools'),
     ('SoftwareRenderBenchmark', '#src/render/SoftwareRenderBenchmark.cpp', 'software-render-benchmark', 'tools'),
     ('torus-render-benchmark', '#src/render/torus/TorusRenderBenchmark.cpp', 'torus-render-benchmark', 'tools'),
@@ -613,7 +617,7 @@ def scripting_entries():
     cases. Its unrelated registered cases are excluded by the JavaScript* suite
     filter. Both desktop binaries and Android use the full registry above.
     """
-    selected = {'#src/map/generator/javascript/ScriptGeneratorTest.cpp', '#src/scripting/javascript/ScriptCompatibilityTest.cpp', '#src/scripting/javascript/ScriptIntegrationTest.cpp', '#src/scripting/javascript/ScriptPresentationTest.cpp',
+    selected = {'#src/tutorial/IntroductionTest.cpp', '#src/map/generator/javascript/ScriptGeneratorTest.cpp', '#src/scripting/javascript/ScriptCompatibilityTest.cpp', '#src/scripting/javascript/ScriptIntegrationTest.cpp', '#src/scripting/javascript/ScriptPresentationTest.cpp',
                 '#src/scripting/javascript/ScriptRealisticTest.cpp', '#src/scripting/javascript/ScriptSessionTest.cpp', '#src/scripting/javascript/ScriptSimulationTest.cpp',
                 '#src/team/stats/TeamStatsSaveHarness.cpp', '#src/scripting/javascript/ScriptRuntimeTest.cpp', '#src/scripting/javascript/ScriptNumericTest.cpp', '#libgag/src/ImageAssetTest.cpp'}
     return [entry for entry in ENGINE_TESTS + UNIT_TESTS

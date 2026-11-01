@@ -1,8 +1,9 @@
+const {waitForMainMenu}=require('./main-menu');
 const {test,expect}=require('@playwright/test');
 const {clickMainMenu,gameURL,clickSettingsDone,clickControl,controlBox,rootBox}=require('./main-menu');
 const {preferences,lowPreferences}=require('./settings-preferences');
 const state=page=>page.evaluate(()=>glob2Diagnostics.snapshot());
-const screen=(page,name)=>expect.poll(async()=>(await state(page)).screen).toContain(name);
+const screen=(page,name)=>name==='MainMenuScreen' ? waitForMainMenu(page) : expect.poll(async()=>(await state(page)).screen).toContain(name);
 
 async function start(page){
   await page.goto(gameURL()); await screen(page,'MainMenuScreen');

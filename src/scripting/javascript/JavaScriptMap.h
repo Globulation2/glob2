@@ -2,6 +2,7 @@
 #pragma once
 #include "ScriptRuntime.h"
 #include "MersenneTwister.h"
+namespace Tutorial { struct Model; }
 class Game;
 class ClientCommandSink;
 namespace GAGCore
@@ -13,6 +14,7 @@ namespace Script
 {
 class JavaScriptMap
 {
+	std::shared_ptr<const Tutorial::Model> tutorial;
 	Value state = Value::object(), presentation = Value::object();
 	bool initialized = false, seeded = false;
 	MersenneTwister random;
@@ -22,6 +24,7 @@ class JavaScriptMap
 	// Apply saved interface state without invoking JavaScript or changing simulation state.
 	void present(ClientCommandSink &client, bool publishHistory = true) const;
 	void reset();
+    const std::shared_ptr<const Tutorial::Model> &tutorialView() const { return tutorial; }
 	void validate(const std::string &source) { runtime->validate(source); }
 	void step(const std::string &source, Game &game, ClientCommandSink &client);
 	void save(GAGCore::OutputStream *stream) const;

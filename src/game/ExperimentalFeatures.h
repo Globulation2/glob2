@@ -7,7 +7,7 @@
 // Settings > Experiments, and baked into every new game's GameHeader so a save,
 // replay or multiplayer peer plays exactly the set the game was started with.
 //
-// Built-in engine experiments retain fixed bits. Building catalogs declare
+// Built-in engine experiments use local bits. Building catalogs declare
 // additional stable keys and English labels/help without extending the enum.
 // Register installed catalog definitions before loading settings; embedded
 // catalogs supply their own allowed keys when reading a game's set, without
@@ -40,20 +40,7 @@ enum class ExperimentId : Uint8
 	// A fourth painted area: a harvest inside it draws from the ripest tile of
 	// the connected field and keeps one grain on every tile as seed.
 	FarmAreas = 1,
-	IceTerrain = 2,
-	TrailTerrain = 3, // Legacy serialized key: road-terrain.
-	MarketsV2 = 4,
-	// Terrain catalogue groups (src/map/TerrainGroup.h): one switch per mechanic,
-	// shared by every visual variant in the group.
-	ObstacleTerrain = 5,
-	RidgeTerrain = 6,
-	BarrenTerrain = 7,
-	RoughTerrain = 8,
-	PathTerrain = 9,
-	LavaTerrain = 10,
-	FertileTerrain = 11,
-	DeepWaterTerrain = 12,
-	VoidTerrain = 13,
+	MarketsV2 = 2,
 	Count
 };
 

@@ -3102,8 +3102,6 @@ Effacer
 Relâchez sur un terrain valide pour placer
 [Paint on the map; two fingers move]
 Peignez sur la carte ; déplacez avec deux doigts
-[Tutorial ▸]
-Tutoriel ▸
 [Back to tools]
 Retour aux outils
 [Starvation overlay]
@@ -4886,6 +4884,34 @@ Unités coincées sans aucune case libre où avancer.
 Ressources défrichées
 [stat cleared about]
 Ressources retirées par les ouvrières dans les zones de défrichage pour faire de la place.
+[stats topic overview]
+
+[stats topic economy]
+
+[stats topic world]
+
+[stats work construction]
+
+[stats defence]
+
+[stats history]
+
+[stats waiting]
+
+[stats unit details]
+
+[stats map overlays]
+
+[stats topic]
+
+[stats full history]
+
+[stats missing readings]
+
+[stat win probability]
+
+[stat win probability about]
+
 [stat prestige]
 Prestige
 [stat prestige about]
@@ -5548,14 +5574,6 @@ Limite le dessin dans toute l’application. Des valeurs plus faibles réduisent
 Glace
 [road]
 Sentier
-[experiment ice-terrain]
-Terrain de glace
-[experiment ice-terrain help]
-Ajoute de la glace à l’éditeur de cartes. Les unités terrestres avancent à mi-vitesse et perdent un point de vie tous les 32 pas de simulation passés sur la glace. La glace ne peut accueillir ni bâtiments ni ressources.
-[experiment road-terrain]
-Terrain de sentier
-[experiment road-terrain help]
-Ajoute des sentiers usés à l’éditeur de cartes. Les unités terrestres se déplacent deux fois plus vite. Les sentiers permettent les bâtiments, mais pas les ressources. Les unités volantes ne sont pas affectées.
 [experiment markets-v2]
 Marchés V2
 [experiment markets-v2 help]
@@ -5712,42 +5730,6 @@ Sol fertile
 Eau profonde
 [terrain group void]
 Vide
-[experiment obstacle-terrain]
-Terrain à obstacles
-[experiment obstacle-terrain help]
-Ajoute des blocs rocheux, des haies et des fourrés à l'éditeur de cartes. Les unités terrestres ne peuvent pas les traverser et ils arrêtent les projectiles ; les unités volantes les survolent. Ils n'accueillent ni bâtiments ni ressources.
-[experiment ridge-terrain]
-Terrain de crêtes
-[experiment ridge-terrain help]
-Ajoute des crêtes rocheuses et des affleurements à l'éditeur de cartes. Les unités terrestres ne peuvent pas les traverser, mais les tours tirent par-dessus et les unités volantes passent. Ils n'accueillent ni bâtiments ni ressources.
-[experiment barren-terrain]
-Sol stérile
-[experiment barren-terrain help]
-Ajoute de la terre, de l'argile, du gravier et des prairies fleuries à l'éditeur de cartes. Les bâtiments peuvent s'y tenir, rien n'y pousse ni à côté et ces terrains ne comptent pas comme rivage.
-[experiment rough-terrain]
-Sol accidenté
-[experiment rough-terrain help]
-Ajoute de la boue, des marais, de la neige profonde et des éboulis à l'éditeur de cartes. Les unités terrestres se déplacent à environ deux tiers de leur vitesse. Ces terrains n'accueillent ni bâtiments ni ressources.
-[experiment path-terrain]
-Terrain de chemins
-[experiment path-terrain help]
-Ajoute des chemins de terre et des passerelles en bois à l'éditeur de cartes. Comme sur les sentiers, les unités terrestres avancent deux fois plus vite et les bâtiments sont autorisés, mais rien ne pousse.
-[experiment lava-terrain]
-Terrain de lave
-[experiment lava-terrain help]
-Ajoute de la lave et des champs de braises à l'éditeur de cartes. Les unités terrestres ne peuvent pas y entrer ; les unités volantes qui les traversent perdent rapidement de la santé. Les projectiles passent par-dessus.
-[experiment fertile-terrain]
-Sol fertile
-[experiment fertile-terrain help]
-Ajoute de la terre franche, de la mousse et des prairies printanières à l'éditeur de cartes. Ces terrains accueillent bâtiments et cultures et irriguent les terres voisines plus fortement que l'eau.
-[experiment deep-water-terrain]
-Eau profonde
-[experiment deep-water-terrain help]
-Ajoute de l'eau profonde et sombre à l'éditeur de cartes. Les nageurs la traversent plus lentement, aucune algue n'y pousse et elle irrigue toujours les champs voisins.
-[experiment void-terrain]
-Terrain de vide
-[experiment void-terrain help]
-Ajoute des trous et des gouffres à l'éditeur de cartes. Rien ne peut les traverser, même les unités volantes, et les projectiles s'arrêtent à leur bord.
 [terrain group custom]
 Personnalisé
 [terrain group classic]
@@ -5780,8 +5762,6 @@ Blesse les unités volantes
 Choisissez un pinceau. Les terrains d’un même groupe partagent les mêmes règles et ne diffèrent que par leur aspect.
 [terrain rule algae grow]
 Les algues poussent
-[terrain palette experiments hint]
-Choisissez un pinceau. D’autres groupes de terrain apparaissent ici quand leurs expérimentations sont activées dans Paramètres > Expérimentations.
 [brush valid on %0]
 Valable sur : %0
 [brush valid nowhere]
@@ -6218,246 +6198,6 @@ Impossible d’exporter l’enregistrement.
 Supprimer l’enregistrement
 [recording refresh]
 Actualiser
-[tutorial part1 message 1]
-Bienvenue dans Globulation 2 ! Ces quatre missions vous apprennent à gérer une colonie. Enregistrez votre progression dans le menu du jeu pour la reprendre depuis le menu principal. Appuyez sur Espace, ou touchez OK, pour continuer. Retrouvez les messages disparus dans l’historique des messages.
-[tutorial part1 message 2]
-Vous commencez avec une Ruche et une ouvrière. Observons leur travail.
-[tutorial part1 message 3]
-L’ouvrière récolte du blé et l’apporte à la Ruche, qui le consomme pour produire de nouvelles unités. La Ruche est essentielle à votre colonie.
-[tutorial part1 message 4]
-Sélectionnez votre globule, l’unité mobile, d’un clic gauche ou d’un toucher.
-[tutorial part1 message 5]
-Les informations de l’unité montrent sa réserve de nourriture diminuer : elle a faim. Lorsque les barres de nourriture sont visibles, la barre bleue sous l’unité indique sa réserve.
-[tutorial part1 message 6]
-Les globules mangent dans les Auberges. Désélectionnez l’unité par un clic droit, ou touchez un terrain vide sur écran tactile.
-[tutorial part1 message 7]
-Ouvrez les commandes de construction et placez une Auberge près du blé. Suivez le trajet de votre ouvrière pour le trouver. Sur écran tactile, ouvrez Construire et confirmez un emplacement valide. Quittez le placement par un clic droit ou le bouton tactile Annuler.
-[tutorial part1 message 8]
-Bien ! Le chantier de l’Auberge est en place.
-[tutorial part1 message 9]
-Une ouvrière de la Ruche peut construire l’Auberge. Elle récolte du bois dans les arbres voisins et l’apporte au chantier. Attendez la fin des travaux.
-[tutorial part1 message 10]
-L’Auberge terminée a besoin de blé. Une ouvrière affectée le récolte, comme pour la Ruche.
-[tutorial part1 message 11]
-La barre jaune de l’Auberge monte avec les livraisons : elle indique le stock de blé.
-[tutorial part1 message 12]
-Apprenons maintenant à répartir le travail.
-[tutorial part1 message 13]
-Une ouvrière approvisionne la Ruche, une autre l’Auberge. Elles peuvent interrompre leur travail pour manger. C’est normal.
-[tutorial part1 message 14]
-Sélectionnez la Ruche et trouvez le réglage d’affectation des ouvrières : Au travail sur ordinateur, nombre affecté et cible sur écran tactile. La cible indique le nombre d’ouvrières souhaité.
-[tutorial part1 message 15]
-Réglez la cible d’ouvrières de la Ruche sur 0. Sélectionnez ensuite l’Auberge et faites de même.
-[tutorial part1 message 16]
-Vos ouvrières sont inactives, mais mangent toujours. Sans ouvrière affectée, l’Auberge finira par manquer de blé.
-[tutorial part1 message 17]
-Un globule privé de nourriture perd de la santé et peut mourir. Un Hôpital soigne les blessures, mais il faut aussi approvisionner les Auberges.
-[tutorial part1 message 18]
-Construisez un Hôpital. Il ne consomme pas de blé : placez-le près du bois ou au centre, près de la Ruche.
-[tutorial part1 message 19]
-Sélectionnez le chantier de l’Hôpital et réglez sa cible sur 2 ouvrières pour accélérer les travaux.
-[tutorial part1 message 20]
-L’Hôpital est prêt. Les globules blessés peuvent maintenant s’y soigner.
-[tutorial part1 message 21]
-Les zones noires sont inexplorées. Les unités révèlent le terrain voisin en se déplaçant. Les ouvrières suivent leur travail ; les exploratrices sont mieux adaptées à la reconnaissance.
-[tutorial part1 message 22]
-Sélectionnez la Ruche et trouvez les proportions de production des ouvrières, exploratrices et guerrières. Montez celle des exploratrices à 1.
-[tutorial part1 message 23]
-Avec les proportions ouvrières et exploratrices à 1, la Ruche produit autant des unes que des autres. Réglez les ouvrières sur 0 pour ne produire que des exploratrices.
-[tutorial part1 message 24]
-Ramenez la cible d’ouvrières affectées à la Ruche à 1 pour l’approvisionner en blé.
-[tutorial part1 message 25]
-Réglez aussi la cible de l’Auberge sur 1 ouvrière. La colonie a besoin d’une alimentation régulière.
-[tutorial part1 message 26]
-Attendez que la Ruche produise une exploratrice.
-[tutorial part1 message 27]
-Votre exploratrice survole la colonie et révèle le terrain. Laissez la Ruche en produire une deuxième avant de continuer.
-[tutorial part1 message 28]
-Sélectionnez la Ruche. Réglez la proportion d’exploratrices sur 0 et celle des ouvrières sur 1 pour reprendre leur production.
-[tutorial part2 message 1]
-De la pierre se trouve à l’est de votre base. Retenez cet emplacement pour plus tard.
-[tutorial part2 message 2]
-Les arbres au sud de la pierre sont des orangers. Sélectionnez-les pour afficher leurs ressources. Nous reviendrons aux fruits ; concentrons-nous sur la Ruche.
-[tutorial part2 message 3]
-Réglez la Ruche pour produire uniquement des ouvrières : ouvrières 1, exploratrices et guerrières 0.
-[tutorial part2 message 4]
-Accélérons la croissance. Réglez la cible d’ouvrières de la Ruche sur 6. Les nouvelles ouvrières prendront les postes libres à mesure de leur arrivée.
-[tutorial part2 message 5]
-Nous passerons aux tâches suivantes à 8 ouvrières. Maintenez l’approvisionnement de la Ruche et de l’Auberge en attendant.
-[tutorial part2 message 6]
-Plusieurs ouvrières approvisionnent maintenant la Ruche. Davantage de blé permet de produire des unités plus vite.
-[tutorial part2 message 7]
-Une ouvrière coûte 5 unités de blé. Un champ éloigné ralentit les livraisons : la Ruche a souvent besoin de plus d’ouvrières qu’une Auberge. Construisez près du blé si possible.
-[tutorial part2 message 8]
-Vous avez au moins 8 ouvrières. Ramenez la cible de la Ruche à 1 pour ralentir la croissance pendant les constructions.
-[tutorial part2 message 9]
-Il faut davantage de places pour manger. Construisez une deuxième Auberge au nord de la première.
-[tutorial part2 message 10]
-Affectez des ouvrières libres au chantier. Il ne faut que 3 unités de bois : plus de 3 bâtisseuses aideraient peu.
-[tutorial part2 message 11]
-L’Auberge terminée reprend sa cible de fonctionnement, normalement 1 ouvrière. Les cibles de construction et d’approvisionnement sont distinctes.
-[tutorial part2 message 12]
-Les ouvrières peuvent apprendre à courir plus vite à la Piste de course.
-[tutorial part2 message 13]
-Trouvez la Piste de course dans les commandes de construction. Sur ordinateur, survolez son icône pour lire sa description et son coût. Sur écran tactile, sélectionnez-la dans Construire. Ne la placez pas encore.
-[tutorial part2 message 14]
-La Piste de course demande beaucoup de bois et un peu de pierre. Choisissez un emplacement central, facile à rejoindre.
-[tutorial part2 message 15]
-Construisez une Piste de course, par exemple au sud de la Ruche. Laissez de l’espace autour pour ses futurs agrandissements.
-[tutorial part2 message 16]
-Affectez entre 5 et 7 ouvrières au chantier de la Piste de course. Il demande 7 matériaux au total.
-[tutorial part2 message 17]
-Une fois construite, la Piste de course entraîne les unités sans apport continu de matériaux ou de blé.
-[tutorial part2 message 18]
-Des globules entrent à la Piste de course. Ils courront plus vite après leur entraînement.
-[tutorial part2 message 19]
-Sélectionnez la Piste de course pour suivre l’entraînement. Les indicateurs montrent quand les unités termineront.
-[tutorial part2 message 20]
-Vos ouvrières entraînées livrent les ressources plus vite. Surveillez toujours les stocks de nourriture et gardez assez d’Auberges approvisionnées.
-[tutorial part2 message 21]
-Trouvez le compteur d’ouvrières dans l’interface. Le total indique la population ; la disponibilité révèle les ouvrières libres ou les postes vacants. Évitez de créer plus de travail que la colonie peut en assurer.
-[tutorial part2 message 22]
-L’interface indique aussi les exploratrices et guerrières. Consultez ces compteurs pour régler la production et les affectations aux drapeaux.
-[tutorial part2 message 23]
-Vos 2 Auberges de base ont chacune 4 places, soit 8 au total. Plus de 8 unités peuvent avoir faim : prévoyez de la capacité pour les files d’attente.
-[tutorial part2 message 24]
-Deux Auberges ne suffiront pas indéfiniment. Augmentez les capacités avant que les pénuries ne deviennent une famine.
-[tutorial part2 message 25]
-Construisez 3 autres Auberges près du blé. Les ouvrières affamées cessent de travailler et finissent par mourir. Construisez tout en maintenant l’approvisionnement existant.
-[tutorial part2 message 26]
-Terminez 3 Auberges supplémentaires pour en avoir 5.
-[tutorial part2 message 27]
-Les nouvelles Auberges reprennent leurs cibles de fonctionnement, normalement 1 ouvrière chacune. Vérifiez leur approvisionnement et leurs stocks de blé.
-[tutorial part2 message 28]
-La Piste de course facilite les déplacements terrestres. Apprenons maintenant à nager.
-[tutorial part2 message 29]
-Une Piscine apprend aux unités à nager et demande du bois. Construisez-en une dans la grande clairière au nord-est, au nord de la pierre. Gardez de l’espace pour les améliorations et la croissance des ressources ; affectez des ouvrières libres au chantier.
-[tutorial part2 message 30]
-Une Piscine apprend aux unités à nager et demande du bois. Construisez-en une dans la grande clairière au nord-est, au nord de la pierre. Gardez de l’espace pour les améliorations et la croissance des ressources ; affectez des ouvrières libres au chantier.
-[tutorial part2 message 31]
-La Piscine est prête. Les globules peuvent y apprendre à nager.
-[tutorial part2 message 32]
-Sélectionnez la Piscine pour suivre l’entraînement. Une Piscine de base entraîne 2 globules à la fois, comme une Piste de course de base.
-[tutorial part2 message 33]
-Les globules entraînés savent maintenant nager. Nous leur donnerons bientôt une tâche qui demande de traverser l’eau.
-[tutorial part2 message 34]
-Il reste des choses à apprendre. Pour faire une pause, enregistrez votre progression dans le menu du jeu.
-[tutorial part2 message 35]
-Votre colonie dispose de nourriture et d’entraînement physique. L’École apprendra aux ouvrières à construire de meilleurs bâtiments.
-[tutorial part2 message 36]
-L’École améliore la récolte et la construction. Elle nécessite des algues, qui poussent dans l’eau. Les ouvrières sachant nager peuvent les récolter.
-[tutorial part2 message 37]
-Protégez vos bâtiments d’entraînement. L’École n’a pas besoin d’être au bord de l’eau ; un emplacement abrité à l’intérieur des terres est plus sûr.
-[tutorial part2 message 38]
-Construisez l’École dans un lieu protégé, derrière la Piscine ou au sud-ouest de la Ruche, près de la Piste de course. Affectez-y des ouvrières disponibles.
-[tutorial part2 message 39]
-Sélectionnez un bâtiment pour voir ses ouvrières. Sur ordinateur, l’action configurable d’affichage des trajets relie les unités à leurs destinations ; consultez son raccourci dans Paramètres, Commandes. Attendez la fin de l’École.
-[tutorial part3 message 1]
-Vous disposez d’Auberges, d’un Hôpital, d’une Piste de course, d’une Piscine et d’une École. Préparons maintenant les défenses.
-[tutorial part3 message 2]
-Nous n’avons pas encore produit de guerrières. La colonie est donc peu protégée contre une attaque.
-[tutorial part3 message 3]
-Sélectionnez la Ruche et réglez la proportion de guerrières sur 2. Gardez celle des ouvrières à 1 pour continuer à en produire.
-[tutorial part3 message 4]
-La Ruche produira environ 2 guerrières pour chaque ouvrière. Affectez davantage d’ouvrières à son approvisionnement pour accélérer la production.
-[tutorial part3 message 5]
-Votre première guerrière est prête et va s’entraîner. Attendez une deuxième guerrière avant de continuer.
-[tutorial part3 message 6]
-Les guerrières utilisent aussi la Piste de course et la Piscine. Les Camps d’entraînement leur enseignent en plus le combat.
-[tutorial part3 message 7]
-Les Camps d’entraînement améliorent la force et la vitesse d’attaque : dégâts par coup et fréquence des coups. Des guerrières entraînées peuvent vaincre des groupes non entraînés bien plus nombreux.
-[tutorial part3 message 8]
-Construisez un Camp d’entraînement près du bois nécessaire à sa construction.
-[tutorial part3 message 9]
-Affectez des ouvrières disponibles au chantier du Camp d’entraînement, sans négliger la nourriture ni créer trop de postes.
-[tutorial part3 message 10]
-Le Camp d’entraînement est prêt. Les guerrières peuvent y améliorer leurs attaques.
-[tutorial part3 message 11]
-Améliorer les bâtiments renforce aussi la colonie.
-[tutorial part3 message 12]
-Les ouvrières formées à l’École peuvent réaliser les améliorations. Sélectionnez un bâtiment admissible et choisissez Améliorer. S’il est endommagé, une réparation peut être nécessaire d’abord.
-[tutorial part3 message 13]
-Que faut-il améliorer en premier ? Nos Auberges ont encore de la place : elles peuvent attendre.
-[tutorial part3 message 14]
-L’Hôpital aussi a de la place. Concentrons-nous sur l’École, la Piste de course, la Piscine ou le Camp d’entraînement.
-[tutorial part3 message 15]
-Améliorez la Piste de course en premier pour apprendre aux unités à courir encore plus vite.
-[tutorial part3 message 16]
-Sélectionnez la Piste de course et choisissez Améliorer. Les unités présentes doivent sortir avant le début des travaux : le changement peut attendre un instant.
-[tutorial part3 message 17]
-Affectez des ouvrières disponibles à l’amélioration de la Piste de course. Seules celles ayant la formation scolaire requise peuvent travailler sur un chantier de niveau 2.
-[tutorial part3 message 18]
-Attendez la fin de l’amélioration. Les bâtiments avancés demandent davantage de ressources et de temps.
-[tutorial part3 message 19]
-La Piste de course de niveau 2 est terminée. Elle est plus grande, d’où l’espace réservé. Sans place pour s’agrandir, un bâtiment ne peut pas être amélioré.
-[tutorial part3 message 20]
-Améliorez maintenant le Camp d’entraînement et la Piscine au niveau 2. Nous continuerons une fois les deux terminés.
-[tutorial part3 message 21]
-Les bâtiments améliorés accueillent généralement plus de globules ou offrent un meilleur entraînement. Une Auberge de niveau 2 possède 7 places et sert les repas plus vite.
-[tutorial part3 message 22]
-L’ennemi est proche. Préparons-nous à l’attaque.
-[tutorial part3 message 23]
-Les Tourelles tirent sur les ennemis à portée. Les Murs les protègent. Combinons-les pour défendre un passage étroit.
-[tutorial part3 message 24]
-Placez deux Tourelles si possible. Protégez trois côtés par des Murs, mais gardez un accès pour les livraisons de munitions en pierre.
-[tutorial part3 message 25]
-À l’est de la Piscine, au nord des autres arbres fruitiers, un passage étroit mène à une autre île. Défendez cet endroit.
-[tutorial part3 message 26]
-Prévoyez 2 Tourelles entre les arbres et la rive. Gardez un accès derrière pour la pierre et de la place ailleurs pour les Murs. Ne bloquez pas les ouvrières.
-[tutorial part3 message 27]
-Construisez 2 Tourelles à cet endroit. Affectez 2 ou 3 ouvrières à chaque chantier selon les disponibilités affichées.
-[tutorial part3 message 28]
-Placez des Murs sur les trois côtés extérieurs des Tourelles. Laissez ouvert le côté tourné vers la colonie.
-[tutorial part3 message 29]
-Chaque section de Mur crée un travail et demande 1 pierre. Les ouvrières peuvent terminer les sections successivement si elles ne sont pas assez nombreuses.
-[tutorial part3 message 30]
-Attendez la fin des deux Tourelles et de plusieurs Murs. Les Tourelles consomment de la pierre comme munitions, livrée lentement depuis la carrière éloignée. Augmentez leurs cibles si des ouvrières sont libres.
-[tutorial part4 message 1]
-Votre colonie dispose de nourriture, d’entraînement et de défenses. Les bâtiments peuvent encore atteindre le niveau 3 pour gagner en capacité et en entraînement. Poursuivez les améliorations selon vos ressources et compétences.
-[tutorial part4 message 2]
-Cherchez la colonie ennemie au nord-ouest de votre base. Déplacez-y la vue.
-[tutorial part4 message 3]
-Le terrain exploré peut rester caché par le brouillard de guerre. Pour observer l’activité actuelle de l’ennemi, il faut une exploratrice à proximité.
-[tutorial part4 message 4]
-Ouvrez Drapeaux. Les drapeaux et les zones dirigent les unités sans contrôler chaque globule individuellement.
-[tutorial part4 message 5]
-Choisissez le Drapeau d’exploration, au symbole de cerf-volant. Il se place sur la terre, l’eau, les ressources et les terrains inexplorés.
-[tutorial part4 message 6]
-Placez-le à l’emplacement supposé de la base ennemie. Une position approximative suffit. Quittez le placement par un clic droit ou les commandes tactiles.
-[tutorial part4 message 7]
-Le contour indique le rayon d’action du drapeau. Une exploratrice affectée viendra reconnaître la zone. Vérifiez leur nombre si personne n’arrive et produisez-en une à la Ruche au besoin. Appuyez sur Espace ou touchez OK à son arrivée.
-[tutorial part4 message 8]
-L’ennemi a beaucoup d’ouvrières et une armée rassemblée. Préparons nos défenses.
-[tutorial part4 message 9]
-Ouvrez Drapeaux et choisissez la zone de Garde bleue. Utilisez le mode d’ajout, pas de suppression. Sur écran tactile, choisissez Peindre plutôt qu’Effacer.
-[tutorial part4 message 10]
-Choisissez une forme et une taille de pinceau. Le grand carré convient à une défense compacte.
-[tutorial part4 message 11]
-Peignez une zone de Garde derrière les Tourelles, sur l’axe d’approche ennemi. Cliquez ou touchez un point, ou faites glisser pour couvrir plus de terrain. Sur écran tactile, utilisez Déplacer pour déplacer la vue pendant ce travail.
-[tutorial part4 message 12]
-Les guerrières disponibles rejoignent la zone. Prévoyez assez de place, mais gardez les défenseuses regroupées au passage. Attendez l’attaque.
-[tutorial part4 message 13]
-L’ennemi approche du passage !
-[tutorial part4 message 14]
-Nous sommes attaqués. Observez comment les guerrières entraînées et les Tourelles défendent la position.
-[tutorial part4 message 15]
-Vous avez survécu ! Ouvrez Drapeaux et choisissez le Drapeau de guerre hérissé de pointes. Placez-le sur la Ruche ennemie pour y diriger l’attaque.
-[tutorial part4 message 16]
-Quittez le placement et sélectionnez le Drapeau de guerre. Affectez plus d’une guerrière et réduisez le rayon pour concentrer l’attaque sur la Ruche. Attendez leur arrivée.
-[tutorial part4 message 17]
-L’attaque a commencé. Vos guerrières doivent passer les Tourelles ennemies pour atteindre la Ruche.
-[tutorial part4 message 18]
-Vos guerrières ont atteint la base ennemie. Maintenez l’attaque sur la Ruche.
-[tutorial part4 message 19]
-Vous avez détruit la Ruche ennemie ! Le didacticiel est terminé. Vous connaissez les bases de l’alimentation, des affectations, de l’entraînement, des améliorations, de la reconnaissance et du combat.
-[tutorial mission basics]
-Introduction et bases
-[tutorial mission development]
-Bâtiments et écoles
-[tutorial mission training]
-Guerrières, entraînement et améliorations
-[tutorial mission flags]
-Drapeaux et conclusion
 [library  Could not restore the previous library: %0]
  Impossible de restaurer la bibliothèque précédente : %0
 [library  The previous library is retained.]
@@ -6650,6 +6390,422 @@ Vous pouvez modifier ce choix à tout moment dans Paramètres → Audio.
 Votre choix n’a pas pu être enregistré. Le son reste désactivé. Veuillez réessayer.
 [audio choices description]
 Silence : un haut-parleur muet. Son : un haut-parleur avec des ondes sonores.
+[intro menu]
+Introduction
+[intro briefing]
+Découvrez le contrôle indirect : explorez avec un drapeau, approvisionnez votre colonie et dirigez une attaque.
+[intro try]
+Commencer l’introduction
+[intro preflight]
+Vos globules agissent seuls. Vous choisissez leurs tâches avec les bâtiments et les drapeaux. Dans cette courte introduction, explorez un repère, développez l’approvisionnement, augmentez les effectifs et dirigez une petite attaque.
+[intro preflight save]
+Prévoyez environ 10 minutes. Sauvegardez depuis le menu de jeu et reprenez avec Charger une partie. Les règles habituelles de faim et de combat s’appliquent. Choisissez les leçons du didacticiel dans le menu principal pour pratiquer d’autres compétences.
+[intro preference failed]
+Votre choix n’a pas pu être enregistré. Vous pouvez continuer à jouer ; cette recommandation pourra réapparaître la prochaine fois.
+[intro goal scout]
+Explorer le repère de pierre
+[intro goal build]
+Construire une autre Auberge
+[intro goal supply]
+Approvisionner la nouvelle Auberge
+[intro goal grow]
+Augmenter les effectifs
+[intro goal attack]
+Détruire la Ruche ennemie
+[intro instruction scout]
+Ouvrez les drapeaux et placez un Drapeau d’exploration sur les pierres à l’est de la colonie. Affectez une exploratrice. Regardez-la rejoindre le drapeau.
+[intro instruction build]
+Ouvrez les constructions et placez une Auberge près du blé. Affectez des ouvrières disponibles à sa construction. Maintenez l’approvisionnement de l’Auberge existante.
+[intro instruction supply]
+Sélectionnez la nouvelle Auberge terminée et affectez-lui au moins une ravitailleuse. Attendez qu’une ouvrière apporte du blé.
+[intro instruction grow]
+Sélectionnez la Ruche. Demandez au moins 2 ouvrières et réglez les proportions de production sur les ouvrières uniquement. Approvisionnez les deux Auberges pendant la naissance d’une nouvelle ouvrière.
+[intro instruction attack]
+Trouvez la Ruche ennemie plus à l’est. Dirigez vos guerrières contre elle avec un Drapeau de guerre. Consultez l’aide si nécessaire.
+[intro help]
+Aide / pourquoi ?
+[intro help scout]
+Déplacez la vue vers l’est avec la minicarte pour trouver les pierres. Dans les drapeaux, choisissez Drapeau d’exploration et placez-le sur les pierres. Quittez le placement avec le bouton secondaire de la souris, puis sélectionnez le drapeau et demandez 1 exploratrice. Les drapeaux demandent des unités sans les déplacer instantanément. Les exploratrices peuvent s’arrêter pour manger.
+[intro help build]
+La construction consomme du bois apporté par les ouvrières. Dans la palette des bâtiments, choisissez Auberge, placez-la sur un terrain libre près du blé et demandez 2 bâtisseuses. L’effectif demandé n’est pas le nombre d’ouvrières déjà présentes. Gardez des ravitailleuses à l’Auberge existante et à la Ruche. Tout emplacement valide convient.
+[intro help supply]
+La construction et l’approvisionnement ont des effectifs demandés distincts. Sélectionnez l’Auberge terminée et augmentez son effectif de fonctionnement. Un ravitailleuse récolte du blé et l’apporte ici. Les globules affamés mangent aux Auberges ; sans ravitailleuses, leurs réserves finissent par s’épuiser. Gardez l’accès au blé libre.
+[intro help grow]
+La Ruche consomme du blé pour produire des unités. Réglez la production d’ouvrières sur 1 et celles d’exploratrices et de guerrières sur 0. Demandez au moins 2 ouvrières à la Ruche. Davantage de ravitailleuses apportent le blé plus vite, mais concurrencent les autres tâches. Approvisionnez les deux Auberges.
+[intro help attack]
+Dans les drapeaux, choisissez Drapeau de guerre et placez-le sur la Ruche ennemie à l’est des pierres. Sélectionnez-le et demandez jusqu’à 4 guerrières. Un petit rayon les concentre. Quittez le placement avec le bouton secondaire avant de sélectionner le drapeau. S’il ne reste aucune guerrière, produisez-en à la Ruche. Elles peuvent s’arrêter pour manger ; approvisionnez les Auberges.
+[intro hint scout]
+Votre exploratrice a besoin d’un Drapeau d’exploration avec affectation sur les pierres à l’est. Vérifiez sa destination et l’effectif d’exploratrices demandé.
+[intro hint build]
+Si vous avez supprimé la nouvelle Auberge, reconstruisez-en une. Sinon, vérifiez le chantier et son effectif demandé. Les tâches d’approvisionnement occupent peut-être les ouvrières ; maintenez la nourriture tout en libérant des bâtisseuses.
+[intro hint supply]
+Sélectionnez la nouvelle Auberge terminée. Vérifiez son effectif demandé et les livraisons de blé. Les ouvrières peuvent avoir besoin de temps pour se déplacer ou manger.
+[intro hint grow]
+Vérifiez l’approvisionnement de la Ruche et la production exclusive d’ouvrières. Approvisionnez les Auberges en attendant une nouvelle ouvrière.
+[intro hint attack]
+Vérifiez le Drapeau de guerre, l’effectif de guerrières demandé et la nourriture. Les guerrières ont besoin de temps pour se déplacer et attaquer.
+[intro hint no scout flag]
+Aucun Drapeau d’exploration avec affectation n’a été trouvé. Placez-en un sur les pierres à l’est de la base et demandez 1 exploratrice.
+[intro hint no suppliers]
+La nouvelle Auberge ou son chantier demande 0 ouvrière. Sélectionnez-la et demandez des ouvrières.
+[intro hint no war flag]
+Aucun Drapeau de guerre avec affectation n’a été trouvé à la base ennemie. Placez-en un sur la Ruche ennemie à l’est et demandez des guerrières.
+[intro hint retry]
+Une unité ou un bâtiment nécessaire à cette leçon a été perdu. Chargez une sauvegarde antérieure ou recommencez la leçon depuis le menu de jeu.
+[intro complete]
+Introduction terminée
+[intro complete body]
+Vous avez dirigé des globules autonomes, développé l’approvisionnement et la colonie, puis organisé une attaque. Poursuivez les leçons du didacticiel pour apprendre l’entraînement, les améliorations et la défense, ou revenez au menu principal pour lancer une partie.
+[intro play again]
+Rejouer
+[intro restart]
+Recommencer l’introduction
+[intro restart body]
+Repartir de la colonie préparée ? La progression non sauvegardée de cette introduction sera perdue.
+[intro help touch scout]
+Avant de placer un drapeau, faites glisser le terrain vide pour déplacer la vue. Repérez les pierres à l’est de la colonie. Ouvrez les drapeaux, choisissez Drapeau d’exploration, placez-le sur les pierres et confirmez. Sélectionnez-le et demandez 1 exploratrice avec son réglage d’unités affectées. Les globules se déplacent seuls et peuvent s’arrêter pour manger.
+[intro help touch build]
+Dans les constructions, choisissez Auberge. Placez-la sur un terrain libre près du blé et confirmez. Sélectionnez le chantier et demandez 2 bâtisseuses. L’effectif demandé n’est pas le nombre d’ouvrières déjà présentes. Approvisionnez l’Auberge existante et la Ruche. Tout emplacement valide convient.
+[intro help touch supply]
+Sélectionnez la nouvelle Auberge terminée et augmentez l’effectif demandé. La construction et l’approvisionnement ont des réglages distincts. Un ravitailleuse récolte du blé et l’apporte ici. Les globules affamés mangent aux Auberges ; sans ravitailleuses, leurs réserves s’épuisent. Gardez l’accès au blé libre.
+[intro help touch grow]
+Sélectionnez la Ruche. Réglez la production d’ouvrières sur 1 et celles d’exploratrices et de guerrières sur 0. Demandez au moins 2 ouvrières. Les ravitailleuses apportent le blé pour les nouvelles unités, mais concurrencent les autres tâches. Approvisionnez les deux Auberges.
+[intro help touch attack]
+Ouvrez les drapeaux, choisissez Drapeau de guerre, placez-le sur la Ruche ennemie à l’est des pierres et confirmez. Sélectionnez-le et demandez jusqu’à 4 guerrières. Un petit rayon les concentre. S’il n’en reste aucune, produisez-en à votre Ruche. Elles peuvent s’arrêter pour manger ; approvisionnez les Auberges.
+[intro show destination]
+Afficher la destination
+[intro scout destination]
+Explorer ici
+[intro attack destination]
+Attaquer ici
+[intro compact scout]
+Drapeaux → Drapeau d’exploration. Placez-le sur les pierres ; affectez 1 exploratrice.
+[intro compact build]
+Construire → Auberge. Placez-la près du blé ; affectez 2 bâtisseuses.
+[intro compact supply]
+Sélectionnez la nouvelle Auberge ; affectez au moins 1 ravitailleuse. Attendez le blé.
+[intro compact grow]
+Sélectionnez la Ruche ; affectez 2 ravitailleuses. Produisez uniquement des ouvrières.
+[intro compact attack]
+Drapeaux → Drapeau de guerre. Placez-le sur la Ruche ennemie ; affectez des guerrières.
+[tutorial lessons]
+Leçons du didacticiel
+[tutorial restart]
+Recommencer la leçon
+[tutorial restart body]
+Repartir de la colonie préparée pour cette leçon ? La progression non sauvegardée sera perdue.
+[tutorial complete]
+Leçon terminée
+[tutorial food title]
+Exercice d’approvisionnement
+[tutorial food briefing]
+Développez l’approvisionnement : construisez une autre Auberge, affectez des ravitailleuses et observez l’arrivée du blé.
+[tutorial food complete]
+Vous avez construit une Auberge et l’avez approvisionnée en blé. Essayez une autre leçon ou revenez au menu principal.
+[tutorial unavailable]
+Impossible de charger les leçons du didacticiel.
+[lesson healing title]
+Hôpitaux et soins
+[lesson healing briefing]
+Construisez un Hôpital pour soigner une ouvrière blessée. La colonie commence rassasiée, avec une ouvrière blessée.
+[lesson healing complete]
+Votre Hôpital a soigné un globule blessé. Approvisionnez les Auberges : la faim peut blesser à nouveau les unités.
+[lesson healing build hint]
+Construisez un Hôpital sur un terrain libre ; affectez 2 bâtisseuses. Laissez de la place pour les entrées et sorties. Les Hôpitaux soignent ; les Auberges nourrissent. Cette patiente a déjà mangé.
+[lesson healing build title]
+Construire un Hôpital
+[lesson healing build instruction]
+Construisez un Hôpital sur un terrain libre ; affectez 2 bâtisseuses.
+[lesson healing build help]
+Laissez de la place pour les entrées et sorties. Les Hôpitaux soignent ; les Auberges nourrissent. Cette patiente a déjà mangé.
+[lesson healing build marker]
+Construire un Hôpital
+[lesson healing heal hint]
+Gardez l’Hôpital accessible. Observez la guérison de l’ouvrière blessée. Les globules cherchent des soins seuls. Suivez l’ouvrière blessée, pas une unité nouvellement née. Si elle meurt, recommencez ou chargez une sauvegarde.
+[lesson healing heal title]
+Laisser la patiente guérir
+[lesson healing heal instruction]
+Gardez l’Hôpital accessible. Observez la guérison de l’ouvrière blessée.
+[lesson healing heal help]
+Les globules cherchent des soins seuls. Suivez l’ouvrière blessée, pas une unité nouvellement née. Si elle meurt, recommencez ou chargez une sauvegarde.
+[lesson healing heal marker]
+Laisser la patiente guérir
+[lesson walking-training title]
+Entraînement à la marche
+[lesson walking-training briefing]
+Construisez une Piste de course et observez une ouvrière existante apprendre à marcher plus vite.
+[lesson walking-training complete]
+Vos ouvrières ont appris à marcher plus vite. L’entraînement améliore les ouvrières existantes ; il ne remplace pas l’approvisionnement de la colonie.
+[lesson walking-training build hint]
+Construisez une Piste de course dans la clairière indiquée ; affectez des bâtisseuses. Une Piste de course demande du bois et de la pierre. Laissez un passage autour pour entrer, sortir et agrandir plus tard.
+[lesson walking-training build title]
+Construire une Piste de course
+[lesson walking-training build instruction]
+Construisez une Piste de course dans la clairière indiquée ; affectez des bâtisseuses.
+[lesson walking-training build help]
+Une Piste de course demande du bois et de la pierre. Laissez un passage autour pour entrer, sortir et agrandir plus tard.
+[lesson walking-training build marker]
+Construire une Piste de course
+[lesson walking-training train hint]
+Gardez la Piste de course accessible et laissez une ouvrière terminer son entraînement. L’entraînement est automatique pour les globules aptes. Libérez quelques ouvrières des tâches d’approvisionnement et gardez les deux Auberges approvisionnées.
+[lesson walking-training train title]
+Entraîner une ouvrière existante
+[lesson walking-training train instruction]
+Gardez la Piste de course accessible et laissez une ouvrière terminer son entraînement.
+[lesson walking-training train help]
+L’entraînement est automatique pour les globules aptes. Libérez quelques ouvrières des tâches d’approvisionnement et gardez les deux Auberges approvisionnées.
+[lesson swimming title]
+Natation et ressources aquatiques
+[lesson swimming briefing]
+Formez des nageuses, puis utilisez les algues de l’étang pour construire une École.
+[lesson swimming complete]
+Un nageur a livré des ressources aquatiques pour votre École. L’accès à l’eau élargit les tâches possibles de la colonie.
+[lesson swimming build hint]
+Construisez une Piscine à l’ouest de l’étang ; affectez des bâtisseuses. Laissez de la place autour de la Piscine. Une ouvrière doit savoir nager pour récolter des algues en eau profonde.
+[lesson swimming build title]
+Construire une Piscine
+[lesson swimming build instruction]
+Construisez une Piscine à l’ouest de l’étang ; affectez des bâtisseuses.
+[lesson swimming build help]
+Laissez de la place autour de la Piscine. Une ouvrière doit savoir nager pour récolter des algues en eau profonde.
+[lesson swimming build marker]
+Construire une Piscine
+[lesson swimming train hint]
+Laissez une ouvrière existante terminer son apprentissage de la natation. Les unités choisissent leur entraînement seules. Maintenez l’approvisionnement et laissez les ouvrières libres accéder à la Piscine.
+[lesson swimming train title]
+Former une nageuse
+[lesson swimming train instruction]
+Laissez une ouvrière existante terminer son apprentissage de la natation.
+[lesson swimming train help]
+Les unités choisissent leur entraînement seules. Maintenez l’approvisionnement et laissez les ouvrières libres accéder à la Piscine.
+[lesson swimming water-job hint]
+Construisez une École près de la colonie ; affectez des bâtisseuses pour apporter bois et algues. Les algues poussent dans l’étang. Une nageuse formée doit entrer dans l’eau pour les récolter. Placez l’École sur un terrain dégagé accessible aux ravitailleuses.
+[lesson swimming water-job title]
+Utiliser les algues de l’étang
+[lesson swimming water-job instruction]
+Construisez une École près de la colonie ; affectez des bâtisseuses pour apporter bois et algues.
+[lesson swimming water-job help]
+Les algues poussent dans l’étang. Une nageuse formée doit entrer dans l’eau pour les récolter. Placez l’École sur un terrain dégagé accessible aux ravitailleuses.
+[lesson swimming water-job marker]
+Utiliser les algues de l’étang
+[lesson schools title]
+Écoles et compétences des ouvrières
+[lesson schools briefing]
+Utilisez les nageuses préparées pour construire une École, puis observez les ouvrières apprendre à construire et récolter.
+[lesson schools complete]
+Votre École a amélioré les compétences des ouvrières. Les bâtisseuses qualifiées permettent les améliorations ; une meilleure récolte soutient une économie en expansion.
+[lesson schools build hint]
+Construisez une École dans la clairière ; affectez des bâtisseuses. La colonie dispose déjà de nageuses pour les algues. Gardez l’accès au bois et à l’eau libre. Les arbres fruitiers fournissent du prestige ; le blé reste la nourriture.
+[lesson schools build title]
+Construire une École
+[lesson schools build instruction]
+Construisez une École dans la clairière ; affectez des bâtisseuses.
+[lesson schools build help]
+La colonie dispose déjà de nageuses pour les algues. Gardez l’accès au bois et à l’eau libre. Les arbres fruitiers fournissent du prestige ; le blé reste la nourriture.
+[lesson schools build marker]
+Construire une École
+[lesson schools learn hint]
+Laissez une ouvrière existante terminer sa formation à l’École. L’École enseigne construction et récolte ensemble. Gardez des ouvrières disponibles ; un chantier seul ne forme personne.
+[lesson schools learn title]
+Enseigner construction et récolte
+[lesson schools learn instruction]
+Laissez une ouvrière existante terminer sa formation à l’École.
+[lesson schools learn help]
+L’École enseigne construction et récolte ensemble. Gardez des ouvrières disponibles ; un chantier seul ne forme personne.
+[lesson upgrades title]
+Amélioration des bâtiments
+[lesson upgrades briefing]
+Utilisez les ouvrières qualifiées préparées pour améliorer une Piste de course et dépasser le premier niveau d’entraînement.
+[lesson upgrades complete]
+Vous avez amélioré un bâtiment et profité de son entraînement supérieur. Répétez ce cycle avec de meilleures Écoles, compétences, matériaux et davantage d’espace, jusqu’au niveau 3.
+[lesson upgrades upgrade hint]
+Sélectionnez la Piste de course, choisissez Améliorer et affectez des bâtisseuses qualifiées. Ces ouvrières ont déjà acquis les compétences de l’École de premier niveau. Les améliorations demandent plus d’espace et de matériaux et interrompent le service du bâtiment. Les améliorations annulées ne comptent pas.
+[lesson upgrades upgrade title]
+Améliorer la Piste de course
+[lesson upgrades upgrade instruction]
+Sélectionnez la Piste de course, choisissez Améliorer et affectez des bâtisseuses qualifiées.
+[lesson upgrades upgrade help]
+Ces ouvrières ont déjà acquis les compétences de l’École de premier niveau. Les améliorations demandent plus d’espace et de matériaux et interrompent le service du bâtiment. Les améliorations annulées ne comptent pas.
+[lesson upgrades upgrade marker]
+Améliorer la Piste de course
+[lesson upgrades train hint]
+Laissez une ouvrière existante apprendre à marcher plus vite à la Piste de course améliorée. Une amélioration terminée enrichit l’entraînement disponible. Les niveaux supérieurs demandent de meilleures compétences de construction ; le niveau affiché commence à 1.
+[lesson upgrades train title]
+Utiliser l’entraînement amélioré
+[lesson upgrades train instruction]
+Laissez une ouvrière existante apprendre à marcher plus vite à la Piste de course améliorée.
+[lesson upgrades train help]
+Une amélioration terminée enrichit l’entraînement disponible. Les niveaux supérieurs demandent de meilleures compétences de construction ; le niveau affiché commence à 1.
+[lesson warrior-training title]
+Production et entraînement des guerrières
+[lesson warrior-training briefing]
+Produisez des guerrières à la Ruche, puis entraînez-les dans un Camp d’entraînement.
+[lesson warrior-training complete]
+Vous avez contrôlé la production militaire et entraîné des guerrières. Maintenez leur approvisionnement : les unités de combat doivent aussi manger.
+[lesson warrior-training produce hint]
+Réglez la Ruche sur les guerrières uniquement ; affectez des ravitailleuses et attendez 2 guerrières. Réglez les proportions d’ouvrières et d’exploratrices sur 0, celle des guerrières sur 1. La Ruche consomme du blé pour les naissances. Les proportions choisissent la production ; les ravitailleuses permettent son fonctionnement.
+[lesson warrior-training produce title]
+Produire deux guerrières
+[lesson warrior-training produce instruction]
+Réglez la Ruche sur les guerrières uniquement ; affectez des ravitailleuses et attendez 2 guerrières.
+[lesson warrior-training produce help]
+Réglez les proportions d’ouvrières et d’exploratrices sur 0, celle des guerrières sur 1. La Ruche consomme du blé pour les naissances. Les proportions choisissent la production ; les ravitailleuses permettent son fonctionnement.
+[lesson warrior-training produce marker]
+Produire deux guerrières
+[lesson warrior-training build hint]
+Construisez un Camp d’entraînement dans la clairière ; affectez des bâtisseuses. Arrêtez ou réduisez la production de guerrières quand vous en avez assez. Les Camps d’entraînement enseignent le combat ; laissez de l’espace autour.
+[lesson warrior-training build title]
+Construire un Camp d’entraînement
+[lesson warrior-training build instruction]
+Construisez un Camp d’entraînement dans la clairière ; affectez des bâtisseuses.
+[lesson warrior-training build help]
+Arrêtez ou réduisez la production de guerrières quand vous en avez assez. Les Camps d’entraînement enseignent le combat ; laissez de l’espace autour.
+[lesson warrior-training build marker]
+Construire un Camp d’entraînement
+[lesson warrior-training train hint]
+Laissez une guerrière terminer un exercice au Camp d’entraînement. Les guerrières cherchent à s’entraîner seules. Approvisionnez les Auberges et gardez le Camp accessible. Construire un Camp ne suffit pas à terminer un entraînement.
+[lesson warrior-training train title]
+Entraîner vos guerrières
+[lesson warrior-training train instruction]
+Laissez une guerrière terminer un exercice au Camp d’entraînement.
+[lesson warrior-training train help]
+Les guerrières cherchent à s’entraîner seules. Approvisionnez les Auberges et gardez le Camp accessible. Construire un Camp ne suffit pas à terminer un entraînement.
+[lesson fortifications title]
+Tourelles et murs protecteurs
+[lesson fortifications briefing]
+Construisez une Tourelle approvisionnée et des murs protecteurs, puis testez-les contre une petite attaque.
+[lesson fortifications complete]
+Vos défenses approvisionnées ont arrêté l’attaque d’exercice. Les Tourelles ont besoin de pierre et les murs de passages pour les ravitailleuses.
+[lesson fortifications tower hint]
+Construisez une Tourelle dans la zone indiquée ; affectez des bâtisseuses. Placez-la près des pierres et laissez l’accès aux ravitailleuses. Aucune attaque ne commence avant la fin des préparatifs.
+[lesson fortifications tower title]
+Construire une Tourelle
+[lesson fortifications tower instruction]
+Construisez une Tourelle dans la zone indiquée ; affectez des bâtisseuses.
+[lesson fortifications tower help]
+Placez-la près des pierres et laissez l’accès aux ravitailleuses. Aucune attaque ne commence avant la fin des préparatifs.
+[lesson fortifications tower marker]
+Construire une Tourelle
+[lesson fortifications walls hint]
+Construisez au moins 2 sections de mur près de la Tourelle ; gardez son accès ouest ouvert. Les murs consomment de la pierre et chaque chantier demande des ouvrières. N’enfermez pas la Tourelle : les ravitailleuses ont besoin d’un chemin. Le passage ouest indiqué doit rester libre.
+[lesson fortifications walls title]
+Protéger la Tourelle avec des murs
+[lesson fortifications walls instruction]
+Construisez au moins 2 sections de mur près de la Tourelle ; gardez son accès ouest ouvert.
+[lesson fortifications walls help]
+Les murs consomment de la pierre et chaque chantier demande des ouvrières. N’enfermez pas la Tourelle : les ravitailleuses ont besoin d’un chemin. Le passage ouest indiqué doit rester libre.
+[lesson fortifications walls marker]
+Protéger la Tourelle avec des murs
+[lesson fortifications supply hint]
+Sélectionnez la Tourelle et demandez des ravitailleuses. Attendez au moins 2 pierres. Une Tourelle terminée a besoin d’ouvrières affectées à son fonctionnement pour apporter les munitions. Ce réglage est distinct de celui de la construction.
+[lesson fortifications supply title]
+Fournir des munitions
+[lesson fortifications supply instruction]
+Sélectionnez la Tourelle et demandez des ravitailleuses. Attendez au moins 2 pierres.
+[lesson fortifications supply help]
+Une Tourelle terminée a besoin d’ouvrières affectées à son fonctionnement pour apporter les munitions. Ce réglage est distinct de celui de la construction.
+[lesson fortifications supply marker]
+Fournir des munitions
+[lesson fortifications hold hint]
+Une guerrière d’exercice approche. Gardez la Tourelle approvisionnée et accessible. Tenez jusqu’à la défaite ou la retraite de l’attaquant. Un mur bloquant les ravitailleuses peut priver la Tourelle de munitions. Si la colonie échoue, recommencez ou chargez une sauvegarde antérieure.
+[lesson fortifications hold title]
+Tester les fortifications
+[lesson fortifications hold instruction]
+Une guerrière d’exercice approche. Gardez la Tourelle approvisionnée et accessible.
+[lesson fortifications hold help]
+Tenez jusqu’à la défaite ou la retraite de l’attaquant. Un mur bloquant les ravitailleuses peut priver la Tourelle de munitions. Si la colonie échoue, recommencez ou chargez une sauvegarde antérieure.
+[lesson fortifications hold marker]
+Tester les fortifications
+[lesson defensive-tactics title]
+Zones de garde et tactiques de drapeaux
+[lesson defensive-tactics briefing]
+Explorez l’ennemi d’exercice, préparez une zone de garde, défendez-vous puis organisez une contre-attaque.
+[lesson defensive-tactics complete]
+Vous avez exploré, défendu une zone de garde et dirigé une contre-attaque. Les effectifs des drapeaux demandent des unités ; leur rayon détermine où elles travaillent.
+[lesson defensive-tactics scout hint]
+Placez un Drapeau d’exploration à la base ennemie ; affectez 1 exploratrice. Les drapeaux demandent automatiquement des unités. Une exploratrice révèle l’activité actuelle à travers le brouillard de guerre ; elle peut s’arrêter pour manger.
+[lesson defensive-tactics scout title]
+Explorer la base ennemie
+[lesson defensive-tactics scout instruction]
+Placez un Drapeau d’exploration à la base ennemie ; affectez 1 exploratrice.
+[lesson defensive-tactics scout help]
+Les drapeaux demandent automatiquement des unités. Une exploratrice révèle l’activité actuelle à travers le brouillard de guerre ; elle peut s’arrêter pour manger.
+[lesson defensive-tactics scout marker]
+Explorer la base ennemie
+[lesson defensive-tactics guard hint]
+Peignez une zone de garde dans la zone indiquée et laissez 2 guerrières la rejoindre. Ouvrez les drapeaux, choisissez Garde et peignez au moins 4 cases dans la zone. Les zones de garde attirent les guerrières inoccupées. Les zones interdites bloquent les déplacements ; les zones de défrichage demandent le retrait des ressources.
+[lesson defensive-tactics guard title]
+Préparer une zone de garde
+[lesson defensive-tactics guard instruction]
+Peignez une zone de garde dans la zone indiquée et laissez 2 guerrières la rejoindre.
+[lesson defensive-tactics guard help]
+Ouvrez les drapeaux, choisissez Garde et peignez au moins 4 cases dans la zone. Les zones de garde attirent les guerrières inoccupées. Les zones interdites bloquent les déplacements ; les zones de défrichage demandent le retrait des ressources.
+[lesson defensive-tactics guard marker]
+Préparer une zone de garde
+[lesson defensive-tactics repel hint]
+L’ennemi attaque. Maintenez des guerrières dans la zone de garde et les Auberges approvisionnées. La petite attaque commence après vos préparatifs. Battez ou repoussez les deux assaillants ; les ennemis blessés peuvent battre en retraite. Les guerrières peuvent partir manger temporairement. Si la défense échoue, chargez une sauvegarde antérieure ou recommencez.
+[lesson defensive-tactics repel title]
+Repousser l’attaque d’exercice
+[lesson defensive-tactics repel instruction]
+L’ennemi attaque. Maintenez des guerrières dans la zone de garde et les Auberges approvisionnées.
+[lesson defensive-tactics repel help]
+La petite attaque commence après vos préparatifs. Battez ou repoussez les deux assaillants ; les ennemis blessés peuvent battre en retraite. Les guerrières peuvent partir manger temporairement. Si la défense échoue, chargez une sauvegarde antérieure ou recommencez.
+[lesson defensive-tactics repel marker]
+Repousser l’attaque d’exercice
+[lesson defensive-tactics counterattack hint]
+Placez un Drapeau de guerre sur la Ruche ennemie ; demandez 3 guerrières avec un rayon de 4 ou moins. Les zones de garde et les Drapeaux de guerre se disputent les guerrières. Effacez les cases de garde si elles retiennent votre armée. Maintenez la nourriture pendant les déplacements et les attaques.
+[lesson defensive-tactics counterattack title]
+Diriger une contre-attaque concentrée
+[lesson defensive-tactics counterattack instruction]
+Placez un Drapeau de guerre sur la Ruche ennemie ; demandez 3 guerrières avec un rayon de 4 ou moins.
+[lesson defensive-tactics counterattack help]
+Les zones de garde et les Drapeaux de guerre se disputent les guerrières. Effacez les cases de garde si elles retiennent votre armée. Maintenez la nourriture pendant les déplacements et les attaques.
+[lesson defensive-tactics counterattack marker]
+Diriger une contre-attaque concentrée
+[lesson healing build compact]
+Construire → Hôpital. Laissez un accès ; affectez des bâtisseuses.
+[lesson healing heal compact]
+Laissez l’ouvrière blessée guérir à l’Hôpital.
+[lesson walking-training build compact]
+Construire → Piste de course. Laissez de l’espace autour.
+[lesson walking-training train compact]
+Laissez une ouvrière terminer son entraînement à la Piste de course.
+[lesson swimming build compact]
+Construire → Piscine, à l’ouest de l’étang.
+[lesson swimming train compact]
+Laissez une ouvrière apprendre à nager.
+[lesson swimming water-job compact]
+Construire → École. Affectez des bâtisseuses pour le bois et les algues.
+[lesson schools build compact]
+Construire → École. Affectez des bâtisseuses pour le bois et les algues.
+[lesson schools learn compact]
+Laissez une ouvrière terminer sa formation à l’École.
+[lesson upgrades upgrade compact]
+Piste de course → Améliorer. Affectez des bâtisseuses qualifiées.
+[lesson upgrades train compact]
+Laissez une ouvrière s’entraîner à la Piste de course améliorée.
+[lesson warrior-training produce compact]
+Ruche → guerrières uniquement. Fournissez du blé pour 2 guerrières.
+[lesson warrior-training build compact]
+Construire → Camp d’entraînement. Laissez de l’espace autour.
+[lesson warrior-training train compact]
+Laissez une guerrière terminer un exercice au Camp d’entraînement.
+[lesson fortifications tower compact]
+Construire → Tourelle. Placez-la dans la zone indiquée.
+[lesson fortifications walls compact]
+Construisez 2 murs. Gardez l’accès ouest de la Tourelle libre.
+[lesson fortifications supply compact]
+Tourelle → ravitailleuses. Attendez 2 pierres.
+[lesson fortifications hold compact]
+Gardez la Tourelle approvisionnée face à l’attaquant.
+[lesson defensive-tactics scout compact]
+Drapeaux → Exploration. Placez-le chez l’ennemi ; affectez 1 exploratrice.
+[lesson defensive-tactics guard compact]
+Drapeaux → Garde. Peignez 4 cases ; laissez arriver 2 guerrières.
+[lesson defensive-tactics repel compact]
+Tenez la zone de garde. Approvisionnez les Auberges.
+[lesson defensive-tactics counterattack compact]
+Drapeau de guerre → Ruche ennemie. Demandez 3 guerrières ; rayon ≤4.
 [library GL only]
 GL uniquement
 [Grassland]
@@ -6660,5 +6816,7 @@ Collines rocheuses
 Pistes d’animaux
 [Fish amount]
 Quantité de poissons
+[scenario messages]
+Messages ▸
 [Camp-site amount]
 Nombre de campements

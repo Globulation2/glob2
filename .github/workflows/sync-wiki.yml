@@ -1,0 +1,47 @@
+name: Synchronize public wiki releases
+
+on:
+  schedule:
+    - cron: '23 13 * * 1'
+  workflow_dispatch:
+    inputs:
+      publish:
+        description: Publish wiki updates using the configured wiki credentials
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+concurrency:
+  group: wiki-release-sync
+  cancel-in-progress: false
+
+jobs:
+  synchronize:
+    if: >-
+      github.repository == 'genixpro/glob2-release' &&
+      github.repository_id == 1397722696 &&
+      github.ref == 'refs/heads/master' &&
+      ((github.event_name == 'schedule' && github.actor_id == 6193625) ||
+       (github.event_name == 'workflow_dispatch' && github.actor_id == 6193625 && github.triggering_actor == 'genixpro'))
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    environment: wiki-publication
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+      - name: Check wiki release sections without publishing
+        if: >-
+          (github.event_name == 'schedule' && vars.WIKI_PUBLISH_ENABLED != 'true') ||
+          (github.event_name == 'workflow_dispatch' && !inputs.publish)
+        run: python3 tools/release/sync_wiki.py
+      - name: Synchronize bounded release sections
+        if: >-
+          (github.event_name == 'schedule' && vars.WIKI_PUBLISH_ENABLED == 'true') ||
+          (github.event_name == 'workflow_dispatch' && inputs.publish)
+        env:
+          WIKI_USERNAME: ${{ secrets.WIKI_USERNAME }}
+          WIKI_PASSWORD: ${{ secrets.WIKI_PASSWORD }}
+        run: python3 tools/release/sync_wiki.py --publish

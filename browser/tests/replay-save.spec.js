@@ -1,8 +1,9 @@
+const {waitForMainMenu}=require('./main-menu');
 const {editTextField,readBrowserFile,clickControl,clickListRow}=require('./main-menu');
 const {test,expect}=require('@playwright/test');
 const {clickMainMenu,gameURL,clickCustomGameStart,clickResultsSave}=require('./main-menu');
 const state=page=>page.evaluate(()=>glob2Diagnostics.snapshot());
-const screen=(page,name)=>expect.poll(async()=>(await state(page)).screen).toContain(name);
+const screen=(page,name)=>name==='MainMenuScreen' ? waitForMainMenu(page) : expect.poll(async()=>(await state(page)).screen).toContain(name);
 const digest=page=>page.evaluate(()=>glob2Diagnostics.replayDigest('AAA_review_replay.replay'));
 
 async function endMatch(page) {

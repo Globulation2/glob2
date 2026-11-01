@@ -19,7 +19,7 @@ static constexpr const char* QueryNames[] = {
     "teams", "units", "buildings", "unit", "building", "tile", "region",
     "objectives", "hints", "interface", "buildingTypes", "wakeAgent",
     "experiments", "rules", "terrainTypes", "resourceTypes", "materialTypes",
-    "unitTypes", "unitBehavior"
+    "unitTypes", "unitBehavior", "zones", "area"
 };
 static constexpr int WakeAgentQuery = 11;
 static_assert(std::string_view(QueryNames[WakeAgentQuery]) == "wakeAgent");
@@ -458,10 +458,10 @@ struct Environment
 			std::vector<Value> args;
 			for (int i = 0; i < argc; ++i)
 				args.push_back(e.fromJS(argv[i]));
-			if (magic == 6)
+			if (magic == 6 || std::string_view(names[magic])=="zones")
 			{
-				if (args.size() != 4)
-					throw std::runtime_error("region requires x, y, width, height");
+				if (args.size() != (magic==6 ? 4u : 5u))
+                    throw std::runtime_error("Region query requires x, y, width, height and zones also requires team");
 				auto dimensions = Value::object().set("w", args[2]).set("h", args[3]);
 				auto w = dimensions.integer("w", 0, 256), h = dimensions.integer("h", 0, 256);
 				e.charge(std::size_t(w) * h * 128);
@@ -515,7 +515,7 @@ struct Environment
 		set(context.get(), "random", JS_NewCFunction(ctx, random, "random", 0));
 		static constexpr auto& names = QueryNames;
 		for (int i = 0; i < int(std::size(names)); ++i)
-			if (!host->commander || i < 7 || i == 10 || i == 12 || i >= 13) set(i == 5 || i == 6 ? map.get() : game.get(), names[i],
+			if (!host->commander || i < 7 || i == 10 || i == 12 || i >= 13) set(i == 5 || i == 6 || (std::string_view(names[i])=="zones" || std::string_view(names[i])=="area") ? map.get() : game.get(), names[i],
 				JS_NewCFunctionMagic(ctx, query, names[i], 0, JS_CFUNC_generic_magic, i));
 		if (host->commander)
 			set(context.get(), "wakeAgent", JS_NewCFunctionMagic(ctx, query, "wakeAgent", 1, JS_CFUNC_generic_magic, WakeAgentQuery));

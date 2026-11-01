@@ -6,9 +6,8 @@
 #include <cstdint>
 
 // One row per built-in TerrainType: its group (and therefore its simulation
-// profile and experiment), external name, string-table label and semantic
-// colours. TerrainProperties.h, TerrainPresentation.h and TerrainExperiments.h
-// all derive from this table, so
+// profile), external name, string-table label and semantic colours.
+// TerrainProperties.h and TerrainPresentation.h derive from this table, so
 // adding a look is one enumerator in TerrainType.h, one row here, one string-table
 // label and one material binding in data/terrain/tileset.json, plus a file-format
 // gate, since custom terrain IDs follow the built-ins (TerrainRegistry::currentTerrainId).

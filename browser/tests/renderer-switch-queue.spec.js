@@ -1,8 +1,9 @@
+const {waitForMainMenu}=require('./main-menu');
 // SPDX-License-Identifier: GPL-3.0-or-later
 const {test,expect}=require('@playwright/test');
 const {gameURL,clickMainMenu,clickControl,clickByLabel,clickCustomGameStart,clickSettingsDone}=require('./main-menu');
 const state=page=>page.evaluate(()=>glob2Diagnostics.snapshot());
-const screen=(page,name)=>expect.poll(async()=>{const value=await state(page);return value.screen+' '+value.screenClass;},{timeout:120000}).toContain(name);
+const screen=(page,name)=>name==='MainMenuScreen' ? waitForMainMenu(page) : expect.poll(async()=>{const value=await state(page);return value.screen+' '+value.screenClass;},{timeout:120000}).toContain(name);
 const surface=page=>page.evaluate(()=>({generation:Module.glob2PresentationSurface.generation,events:globalThis.rendererQueueSurface.events}));
 // Sleeping Emscripten asset workers can block DevTools evaluation indefinitely.
 // Match the existing application pthread identity; asset workers also contain

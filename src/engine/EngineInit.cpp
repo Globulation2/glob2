@@ -78,8 +78,6 @@ void Engine::applyLocalExperiments(GameHeader& header, const MapHeader& map)
             if (parseExperimentKey(key) || std::find(allowed.begin(), allowed.end(), key) != allowed.end())
                 enabled.set(key, true, allowed);
         header.setExperiments(enabled);
-        for (const auto& definition : experimentDefinitions())
-            if (map.requiredTerrainExperiments.has(definition.id)) header.getExperiments().set(definition.id);
 		for (const auto& key : map.requiredResourceExperiments.keys()) header.getExperiments().set(key, true, allowed);
     }
 }

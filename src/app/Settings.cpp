@@ -123,6 +123,7 @@ void Settings::load(std::string filename)
     gradientBackend.reset();gradientAlgorithm=gradient_kernel::Algorithm::Frozen8;
     thumbSideChosen = false;
     audioPreferenceChosen = false;
+    introductionOffered = false;
     rendererBackend = GAGCore::RendererBackend::Auto;
     targetRenderFps = 60;
 #ifdef __EMSCRIPTEN__
@@ -142,6 +143,8 @@ void Settings::load(std::string filename)
 	}
 	else
 	{
+		// Existing installations are not new players. An explicit saved choice overrides this.
+        introductionOffered = true;
 		// load and parse file
 		char *dest, *varname, *token;
 		char buffer[256];
@@ -160,6 +163,8 @@ void Settings::load(std::string filename)
 
 		// read values
 		READ_PARSED_STRING(username);
+        if (const auto value=parsed.find("introductionOffered"); value!=parsed.end())
+            introductionOffered=value->second=="1";
 		// "password" (the YOG lobby's remembered password) is no longer read, and
 		// the next save drops it from the file.
 		READ_PARSED_INT(screenWidth);
@@ -379,6 +384,7 @@ bool Settings::save(std::string filename)
 		Utilities::streamprintf(stream, "musicSet=%s\n", musicSet.c_str());
 		Utilities::streamprintf(stream, "voiceVolume=%d\n", voiceVolume);
 		Utilities::streamprintf(stream, "mute=%d\n", mute);
+		Utilities::streamprintf(stream, "introductionOffered=%d\n", introductionOffered);
 		Utilities::streamprintf(stream, "audioPreferenceChosen=%d\n", audioPreferenceChosen);
 		Utilities::streamprintf(stream, "rememberUnit=%d\n", rememberUnit);
 		Utilities::streamprintf(stream, "scrollWheelEnabled=%d\n", scrollWheelEnabled);

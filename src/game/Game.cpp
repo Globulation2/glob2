@@ -452,8 +452,6 @@ void Game::setGameHeader(const GameHeader& newGameHeader, bool saveAI)
 			resolvedHeader.setAIConfig(p,
 				AIMaxima::StrategyResolver::canonicalValues(strategy.values));
 		}
-	for (const auto& definition : experimentDefinitions())
-		if (mapHeader.requiredTerrainExperiments.has(definition.id)) resolvedHeader.getExperiments().set(definition.id);
 	for (const auto& key : map.requiredResourceExperiments().keys())
 		resolvedHeader.getExperiments().set(key, true, resolvedHeader.catalogExperimentKeys());
 	gameHeader = resolvedHeader;

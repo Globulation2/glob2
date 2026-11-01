@@ -19,6 +19,7 @@ from glob2music.audio import Trio, write_opus, write_trio  # noqa: E402
 from glob2music.qa import run_checks  # noqa: E402
 from glob2music.qa.analysis import MoodAudio, TrioAudio  # noqa: E402
 import synthetic  # noqa: E402
+from glob2music.qa import transition  # noqa: E402
 
 warnings.filterwarnings('ignore', category=UserWarning)
 SR = synthetic.SR
@@ -149,6 +150,34 @@ class FormatTest(unittest.TestCase):
         st = statuses(run_checks(audio, only={'format'}), 'format')
         self.assertEqual(st['format.calm.rate'], 'fail')
         self.assertEqual(st['format.length'], 'fail')
+
+
+class TransitionTest(unittest.TestCase):
+    def test_local_levels_wrap_across_loop(self):
+        # At 0.9 s: one sample at power 1, three wrapped samples at power 0.01.
+        samples = np.repeat(np.array([0.1] * 5 + [1.0] * 5)[:, None], 2, axis=1)
+        levels = transition.local_levels(samples, 10, window_s=0.4, step_s=0.1)
+        self.assertAlmostEqual(levels[-1], 10 * np.log10(0.2575))
+
+    def test_spectral_shape_ignores_uniform_gain(self):
+        a = np.array([[-20., -30.], [-40., -10.], [-50., -25.]])
+        self.assertAlmostEqual(transition.spectral_distance(a, a + 12), 0)
+        self.assertGreater(transition.spectral_distance(a, a[::-1]), 0.1)
+
+    def test_local_change_warns_despite_equal_whole_file_energy(self):
+        # Equal overall energy, opposite quiet passages: global matching misses it.
+        a = np.repeat(np.array([0.01] * SR + [0.1] * SR)[:, None], 2, axis=1)
+        b = a[::-1].copy()
+        report = run_checks(Trio(calm=a, building=b, combat=b), only={'transition'})
+        self.assertEqual(statuses(report, 'transition')['transition.calm_building.level_p95'], 'warn')
+        self.assertFalse(report.failed)
+
+    def test_identical_and_silent_moods_do_not_warn(self):
+        for amplitude in (0., 0.1):
+            samples = np.full((SR, 2), amplitude)
+            report = run_checks(Trio(calm=samples, building=samples, combat=samples), only={'transition'})
+            self.assertFalse(report.failed)
+            self.assertNotIn('warn', statuses(report, 'transition').values())
 
 
 class WaiverTest(unittest.TestCase):

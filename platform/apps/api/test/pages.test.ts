@@ -1,9 +1,12 @@
 import { registerCatalog } from '@glob2/i18n/server';
+import { createHash } from 'node:crypto';
+import { readFileSync } from 'node:fs';
 import Fastify from 'fastify';
 import type { FastifyReply, FastifyRequest } from 'fastify';
 import { describe, expect, it } from 'vitest';
 import {
   html,
+  isolateNumericRanges,
   pageHtml,
   pageText,
   setPageLocale,
@@ -19,6 +22,7 @@ it('serves shared bootstrap, rebased CSS, fonts and notices under the form CSP',
     const page = await app.inject('/form');
     expect(page.body).toContain('<script src="/signin/assets/bootstrap.js"></script>');
     expect(page.body).toContain('class="g2-ui"');
+    expect(page.body).toContain('href="/signin/assets/script-fonts.css"');
     expect(page.headers['content-security-policy']).toContain("script-src 'self'");
     expect(page.headers['content-security-policy']).not.toContain("script-src 'unsafe-inline'");
     for (const [file, type] of [
@@ -34,6 +38,28 @@ it('serves shared bootstrap, rebased CSS, fonts and notices under the form CSP',
     const fonts = await app.inject('/signin/assets/fonts.css');
     expect(fonts.body).toContain('/signin/assets/glob2-sans.woff2');
     expect(fonts.body).not.toContain('../../assets/');
+    const scriptCss = await app.inject('/signin/assets/script-fonts.css');
+    expect(scriptCss.statusCode).toBe(200);
+    expect(scriptCss.body).not.toContain('../../../data/');
+    const manifest = JSON.parse(
+      readFileSync(
+        new URL('../../../../data/fonts/scripts/manifest.json', import.meta.url),
+        'utf8',
+      ),
+    ) as { fonts: { name: string; sha256: string; bytes: number }[] };
+    for (const font of manifest.fonts) {
+      const file = `${font.name}-Regular.ttf`;
+      expect(scriptCss.body).toContain(`/signin/assets/${file}`);
+      const response = await app.inject(`/signin/assets/${file}`);
+      expect(response.statusCode, file).toBe(200);
+      expect(response.headers['content-type']).toContain('font/ttf');
+      expect(response.rawPayload.length).toBe(font.bytes);
+      expect(createHash('sha256').update(response.rawPayload).digest('hex')).toBe(font.sha256);
+    }
+    const licence = await app.inject('/signin/assets/LICENSE-Noto.txt');
+    expect(licence.statusCode).toBe(200);
+    expect(licence.body).toContain('SIL OPEN FONT LICENSE');
+    expect((await app.inject('/signin/assets/unapproved.ttf')).statusCode).toBe(404);
     expect((await app.inject('/signin/assets/%2e%2e%2fpackage.json')).statusCode).toBe(404);
   } finally {
     await app.close();
@@ -122,5 +148,11 @@ it('reorders rich translation slots without exposing markup from text values', (
   const label = html`<a href="/signin">link</a>`;
   expect(pageHtml(reply)`<p>Greeting ${'<script>x</script>'} and ${label}</p>`.value).toBe(
     '<p>Bonjour <a href="/signin">link</a>, &#60;script&#62;x&#60;/script&#62;.</p>',
+  );
+});
+
+it('isolates numeric ranges without trusting surrounding text as markup', () => {
+  expect(isolateNumericRanges('اردو (0–9) <script> & ۳ / ۹').value).toBe(
+    'اردو (<bdi dir="ltr">0–9</bdi>) &#60;script&#62; &#38; <bdi dir="ltr">۳ / ۹</bdi>',
   );
 });

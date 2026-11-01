@@ -109,14 +109,6 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 				setSelection(TOOL_SELECTION, (void*)flagsChoiceName[*id].c_str());
 		}
 	}
-	else if (selectionMode == NO_SELECTION &&
-			 ((!globalContainer->isViewingGame() && displayMode == STAT_TEXT_VIEW) ||
-			  (globalContainer->isViewingGame() && replayDisplayMode == RDM_STAT_TEXT_VIEW)))
-	{
-		const int y = YPOS_BASE_STAT + (globalContainer->isViewingGame() ? 15 : 0);
-		if (my >= y && my < y + 16)
-			measurementPage = (measurementPage + 1) % statisticsPages();
-	}
 	else if ((displayMode==STAT_GRAPH_VIEW && !globalContainer->isViewingGame()) || (replayDisplayMode==RDM_STAT_GRAPH_VIEW && globalContainer->isViewingGame()))
 	{
 		if(mx > 8 && mx < 24)
@@ -127,7 +119,7 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 			if (globalContainer->isViewingGame()) inc = 15;
 			else inc = 0;
 
-			if(my > YPOS_BASE_STAT+140+inc+64 && my < YPOS_BASE_STAT+140+inc+80)
+			if(my > YPOS_BASE_STAT+28+inc && my < YPOS_BASE_STAT+44+inc)
 			{
 				showDamagedMap=false;
 				showDefenseMap=false;
@@ -135,7 +127,7 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 				showStarvingMap=!showStarvingMap;
 			}
 
-			if(my > YPOS_BASE_STAT+140+inc+88 && my < YPOS_BASE_STAT+140+inc+104)
+			if(my > YPOS_BASE_STAT+52+inc && my < YPOS_BASE_STAT+68+inc)
 			{
 				showDamagedMap=!showDamagedMap;
 				showStarvingMap=false;
@@ -143,7 +135,7 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 				showFertilityMap=false;
 			}
 
-			if(my > YPOS_BASE_STAT+140+inc+112 && my < YPOS_BASE_STAT+140+inc+128)
+			if(my > YPOS_BASE_STAT+76+inc && my < YPOS_BASE_STAT+92+inc)
 			{
 				showDefenseMap=!showDefenseMap;
 				showStarvingMap=false;
@@ -151,7 +143,7 @@ void GameGUI::handleMenuClick(int mx, int my, int button)
 				showFertilityMap=false;
 			}
 
-			if(my > YPOS_BASE_STAT+140+inc+136 && my < YPOS_BASE_STAT+140+inc+152)
+			if(my > YPOS_BASE_STAT+100+inc && my < YPOS_BASE_STAT+116+inc)
 			{
 				showFertilityMap=!showFertilityMap;
 				showDefenseMap=false;

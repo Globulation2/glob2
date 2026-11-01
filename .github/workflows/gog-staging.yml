@@ -14,6 +14,12 @@ on:
         type: choice
         options: [build, stage]
 
+      reuse_released_payload:
+        description: Build-only repackaging of reviewed immutable public release assets
+        required: true
+        default: false
+        type: boolean
+
       platforms:
         description: Build-only platform selection; staging requires all
         required: true
@@ -59,8 +65,13 @@ jobs:
           RELEASE_TAG: ${{ inputs.tag }}
           RELEASE_MODE: ${{ inputs.mode }}
           BUILD_PLATFORMS: ${{ inputs.platforms }}
+          REUSE_RELEASED: ${{ inputs.reuse_released_payload }}
         run: |
           set -euo pipefail
+          if [[ "$REUSE_RELEASED" == true && "$RELEASE_MODE" != build ]]; then
+            echo "Released-payload candidates are build-only; GOG delivery mapping and access are unverified" >&2
+            exit 1
+          fi
           case "$BUILD_PLATFORMS" in all|windows|linux|macos|windows-linux) ;; *) exit 1 ;; esac
           if [[ "$RELEASE_MODE" == stage && "$BUILD_PLATFORMS" != all ]]; then
             echo "GOG staging requires all platform depots" >&2
@@ -77,12 +88,14 @@ jobs:
           else
             echo 'cli_version=1' >> "$GITHUB_OUTPUT"
           fi
-          python3 tools/gog_release.py preflight --source-root "$source" --tag "$RELEASE_TAG" \
+          reuse_args=()
+          if [[ "$REUSE_RELEASED" == true ]]; then reuse_args=(--reuse-released --mode "$RELEASE_MODE"); fi
+          python3 tools/gog_release.py preflight "${reuse_args[@]}" --source-root "$source" --tag "$RELEASE_TAG" \
             --upstream-ref "refs/gog-upstream/$RELEASE_TAG" \
             --github-output "$GITHUB_OUTPUT"
 
   windows:
-    if: inputs.platforms == 'all' || inputs.platforms == 'windows' || inputs.platforms == 'windows-linux'
+    if: ${{ !inputs.reuse_released_payload && (inputs.platforms == 'all' || inputs.platforms == 'windows' || inputs.platforms == 'windows-linux') }}
     needs: preflight
     runs-on: windows-2022
     defaults:
@@ -195,7 +208,7 @@ jobs:
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 
   linux:
-    if: inputs.platforms == 'all' || inputs.platforms == 'linux' || inputs.platforms == 'windows-linux'
+    if: ${{ !inputs.reuse_released_payload && (inputs.platforms == 'all' || inputs.platforms == 'linux' || inputs.platforms == 'windows-linux') }}
     needs: preflight
     runs-on: ubuntu-22.04
     steps:
@@ -259,7 +272,7 @@ jobs:
           if-no-files-found: error
 
   macos:
-    if: inputs.platforms == 'all' || inputs.platforms == 'macos'
+    if: ${{ !inputs.reuse_released_payload && (inputs.platforms == 'all' || inputs.platforms == 'macos') }}
     needs: preflight
     runs-on: macos-15
     steps:
@@ -321,6 +334,7 @@ jobs:
 
   upload-staging:
     if: >-
+      !inputs.reuse_released_payload &&
       inputs.mode == 'stage' &&
       github.repository_id == 1397722696 &&
       github.actor_id == 6193625 &&
@@ -385,3 +399,194 @@ jobs:
               --builder "$RUNNER_TEMP/GOGGalaxyPipelineBuilder" --upload-staging
           done
           echo "Uploaded $build_version to GOG Staging. Install and test each platform, then promote the exact build IDs in the Developer Portal." >> "$GITHUB_STEP_SUMMARY"
+
+  released-windows:
+    timeout-minutes: 20
+    if: inputs.reuse_released_payload && (inputs.platforms == 'all' || inputs.platforms == 'windows' || inputs.platforms == 'windows-linux')
+    needs: preflight
+    runs-on: windows-2022
+    steps:
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          path: driver
+          persist-credentials: false
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          repository: Globulation2/glob2
+          ref: ${{ needs.preflight.outputs.source_commit }}
+          path: source
+          persist-credentials: false
+      - name: Preserve and smoke-test the exact released Windows payload
+        shell: pwsh
+        env:
+          TAG: ${{ inputs.tag }}
+          VERSION: ${{ needs.preflight.outputs.version }}
+          SOURCE: ${{ needs.preflight.outputs.source_commit }}
+        run: |
+          python driver/tools/gog_release.py stage-released --tag "$env:TAG" --platform windows --architecture x86_64 --source-root source --output artifacts/gog/windows --version "$env:VERSION" --source-commit "$env:SOURCE" --workflow-commit "$env:GITHUB_SHA"
+          if ($LASTEXITCODE -ne 0) { throw 'Released payload staging failed' }
+          $env:GLOB2_ASSET_DIR = (Resolve-Path artifacts/gog/windows).Path
+          $env:GLOB2_USER_DATA_DIR = Join-Path $env:RUNNER_TEMP 'gog-released-profile'
+          python -c "import subprocess; subprocess.run(['artifacts/gog/windows/glob2.exe','game','repeat','source/games/cross-replay.game.gz','--ticks','10','--runs','1'],check=True,timeout=90)"
+          if ($LASTEXITCODE -ne 0) { throw 'Released Windows smoke failed' }
+          tar -C artifacts/gog/windows -czf artifacts/gog/windows.tar.gz .
+          if ($LASTEXITCODE -ne 0) { throw 'Depot archive failed' }
+          python driver/tools/gog_release.py extract --archive artifacts/gog/windows.tar.gz --platform windows --depot artifacts/roundtrip/windows
+          if ($LASTEXITCODE -ne 0) { throw 'Released Windows roundtrip verification failed' }
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: gog-released-windows-x86_64
+          path: artifacts/gog/windows.tar.gz
+          if-no-files-found: error
+
+  released-linux:
+    timeout-minutes: 20
+    if: inputs.reuse_released_payload && (inputs.platforms == 'all' || inputs.platforms == 'linux' || inputs.platforms == 'windows-linux')
+    needs: preflight
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          path: driver
+          persist-credentials: false
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          repository: Globulation2/glob2
+          ref: ${{ needs.preflight.outputs.source_commit }}
+          path: source
+          persist-credentials: false
+      - name: Resolve only existing linked Ubuntu 22.04 runtime dependencies
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-upgrade --no-install-recommends libopusfile0 libopus0 libogg0 libspeex1 libfreetype6 libpng16-16 libjpeg-turbo8 libfribidi0 libpcre3 libssl3 zlib1g libepoxy0 libglu1-mesa libva2 libva-drm2
+      - name: Stage the released ELF and dependency closure without rebuilding
+        env:
+          TAG: ${{ inputs.tag }}
+          VERSION: ${{ needs.preflight.outputs.version }}
+          SOURCE: ${{ needs.preflight.outputs.source_commit }}
+        run: |
+          python driver/tools/gog_release.py stage-released --tag "$TAG" --platform linux --architecture x86_64 --source-root source --output artifacts/gog/linux --version "$VERSION" --source-commit "$SOURCE" --workflow-commit "$GITHUB_SHA"
+          tar -C artifacts/gog/linux -czf artifacts/gog/linux.tar.gz .
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: gog-released-linux-x86_64
+          path: artifacts/gog/linux.tar.gz
+          if-no-files-found: error
+
+  released-linux-smoke:
+    timeout-minutes: 20
+    needs: [preflight, released-linux]
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          path: driver
+          persist-credentials: false
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          repository: Globulation2/glob2
+          ref: ${{ needs.preflight.outputs.source_commit }}
+          path: source
+          sparse-checkout: games/cross-replay.game.gz
+          sparse-checkout-cone-mode: false
+          persist-credentials: false
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: gog-released-linux-x86_64
+          path: artifacts/gog
+      - name: Launch the depot in a fresh pinned Ubuntu 22.04 container
+        run: |
+          python driver/tools/gog_release.py extract --archive artifacts/gog/linux.tar.gz --platform linux --depot artifacts/gog/linux
+          # A fresh Ubuntu desktop-runtime baseline, without codecs/TLS/game libs or compilers.
+          cat > "$RUNNER_TEMP/GogSmoke.Dockerfile" <<'DOCKERFILE'
+          FROM ubuntu:22.04@sha256:076e7bf82319619f28dd0aa9c02ab34b055ad37100395b4f49a2ffba04fb5e11
+          RUN apt-get update -qq && apt-get install -y --no-upgrade --no-install-recommends libgl1 libglu1-mesa libx11-6 libxext6 libxcursor1 libxi6 libxrandr2 libxss1 libxtst6 libxkbcommon0 libwayland-client0 libwayland-cursor0 libwayland-egl1 libudev1 libasound2 libpulse0 libdbus-1-3 && rm -rf /var/lib/apt/lists/*
+          DOCKERFILE
+          docker build -t glob2-gog-smoke - < "$RUNNER_TEMP/GogSmoke.Dockerfile"
+          docker run --rm --network none -v "$PWD/artifacts/gog/linux:/game:ro" -v "$PWD/source/games:/fixtures:ro" glob2-gog-smoke /bin/sh -ec '
+            export LD_LIBRARY_PATH=/game/lib GLOB2_ASSET_DIR=/game/share/glob2 GLOB2_USER_DATA_DIR=/tmp/gog-profile
+            ldd /game/bin/glob2 > /tmp/linked.txt
+            cat /tmp/linked.txt
+            ! grep -q "not found" /tmp/linked.txt
+            while read -r name arrow resolved rest; do
+              test "$arrow" = "=>" || continue
+              case "$name" in libc.so*|libm.so*|libpthread.so*|libdl.so*|librt.so*|libresolv.so*|libnss_*|libanl.so*|libutil.so*|libGL*|libEGL*|libX*|libxcb*|libwayland*|libdrm*|libvulkan*|libxkb*|libudev*|libpulse*|libasound*|libdbus*) continue ;; esac
+              case "$resolved" in /game/lib/*) ;; *) echo "Unbundled non-system dependency: $name" >&2; exit 1 ;; esac
+            done < /tmp/linked.txt
+            timeout 90 /game/start.sh game repeat /fixtures/cross-replay.game.gz --ticks 10 --runs 1
+          '
+
+  released-macos:
+    timeout-minutes: 20
+    if: inputs.reuse_released_payload && (inputs.platforms == 'all' || inputs.platforms == 'macos')
+    needs: preflight
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - runner: macos-15
+            architecture: arm64
+          - runner: macos-15-intel
+            architecture: x86_64
+    runs-on: ${{ matrix.runner }}
+    steps:
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          path: driver
+          persist-credentials: false
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          repository: Globulation2/glob2
+          ref: ${{ needs.preflight.outputs.source_commit }}
+          path: source
+          persist-credentials: false
+      - name: Preserve, package and natively smoke-test the signed released app
+        env:
+          TAG: ${{ inputs.tag }}
+          ARCH: ${{ matrix.architecture }}
+          VERSION: ${{ needs.preflight.outputs.version }}
+          SOURCE: ${{ needs.preflight.outputs.source_commit }}
+        run: |
+          test "$(uname -m)" = "$ARCH"
+          depot="$PWD/artifacts/gog/macos-$ARCH"
+          python3 driver/tools/gog_release.py stage-released --tag "$TAG" --platform macos --architecture "$ARCH" --source-root source --output "$depot" --version "$VERSION" --source-commit "$SOURCE" --workflow-commit "$GITHUB_SHA"
+          # ditto's ZIP transport preserves extended attributes and resource forks.
+          ditto -c -k --sequesterRsrc --keepParent "$depot" "$depot.zip"
+          ditto -x -k "$depot.zip" artifacts/roundtrip
+          export DEPOT="$depot" RESTORED="$PWD/artifacts/roundtrip/macos-$ARCH"
+          python3 - <<'PYTHON'
+          import os, sys
+          from pathlib import Path
+          sys.path.insert(0, 'driver/tools')
+          from gog_release import assert_preserved, verify_manifest
+          assert_preserved(Path(os.environ['DEPOT'])/'Glob2.app', Path(os.environ['RESTORED'])/'Glob2.app')
+          verify_manifest(Path(os.environ['RESTORED']), 'macos')
+          PYTHON
+          codesign --verify --deep --strict "$RESTORED/Glob2.app"
+          xcrun stapler validate "$RESTORED/Glob2.app"
+          spctl --assess --type execute "$RESTORED/Glob2.app"
+          export GLOB2_USER_DATA_DIR="$RUNNER_TEMP/gog-released-profile"
+          python3 - <<'PYTHON'
+          import os, subprocess
+          from pathlib import Path
+          app=Path(os.environ['RESTORED'])/'Glob2.app'
+          fixture=Path('source/games/cross-replay.game.gz').resolve()
+          subprocess.run([str(app/'Contents/MacOS/glob2'),'game','repeat',str(fixture),'--ticks','10','--runs','1'],cwd=app,check=True,timeout=90)
+          PYTHON
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: gog-released-macos-${{ matrix.architecture }}
+          path: artifacts/gog/macos-${{ matrix.architecture }}.zip
+          if-no-files-found: error

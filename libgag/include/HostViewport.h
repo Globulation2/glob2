@@ -9,7 +9,7 @@
 #include <SDL3/SDL_system.h>
 #include <jni.h>
 #endif
-#if defined(__IPHONEOS__)
+#if defined(SDL_PLATFORM_IOS)
 #include "mobile/ios/SafeArea.h"
 #endif
 namespace GAGCore {
@@ -22,7 +22,7 @@ inline std::optional<SafeInsets> mobileSafeInsetsForTesting;
 inline SafeInsets mobileSafeInsets(GraphicContext* gfx) {
     if (mobileSafeInsetsForTesting) return *mobileSafeInsetsForTesting;
     SafeInsets insets;
-#if defined(__IPHONEOS__)
+#if defined(SDL_PLATFORM_IOS)
     insets=iosGameSafeInsets(SDL_GetWindowFromID(gfx->windowID()));
 #endif
 #ifdef __ANDROID__
@@ -51,7 +51,7 @@ inline SafeInsets mobileSafeInsets(GraphicContext* gfx) {
     return insets;
 }
 inline double mobileKeyboardInset(GraphicContext* gfx) {
-#if defined(__IPHONEOS__)
+#if defined(SDL_PLATFORM_IOS)
     return iosGameKeyboardInset(SDL_GetWindowFromID(gfx->windowID()));
 #elif defined(__ANDROID__)
     auto* env=static_cast<JNIEnv*>(SDL_GetAndroidJNIEnv());
@@ -104,7 +104,7 @@ inline void hostGestureExclusion([[maybe_unused]] GraphicContext* gfx,
 }
 
 inline bool mobilePointerAvailable() {
-#if defined(__IPHONEOS__)
+#if defined(SDL_PLATFORM_IOS)
     return iosGameHasPointer();
 #elif defined(__ANDROID__)
     auto* env=static_cast<JNIEnv*>(SDL_GetAndroidJNIEnv());

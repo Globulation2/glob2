@@ -183,7 +183,7 @@ export function LineChart({
                 y1={sy(y)}
                 y2={sy(y)}
               />
-              <text x={PAD.left - 6} y={sy(y) + 4} textAnchor="end">
+              <text x={PAD.left - 6} y={sy(y) + 4} textAnchor="end" direction="ltr">
                 {yFormat(y)}
               </text>
             </g>
@@ -277,7 +277,7 @@ export function LineChart({
           <div>{xFormat(hover.x)}</div>
           {hovered.map(({ s, point }) => (
             <div key={s.name}>
-              <span className="sw" style={{ background: s.color }} /> {s.name}
+              <span className="sw" style={{ background: s.color }} /> <bdi dir="auto">{s.name}</bdi>
               {t(': ')}
               {yFormat(point.y)}
             </div>
@@ -289,7 +289,7 @@ export function LineChart({
           {series.map((s) => (
             <span className="key" key={s.name}>
               <span className={`line${s.dashed ? ' dash' : ''}`} style={{ color: s.color }} />
-              {s.name}
+              <bdi dir="auto">{s.name}</bdi>
             </span>
           ))}
         </div>
@@ -302,7 +302,9 @@ export function LineChart({
             <tr>
               <th>{xLabel}</th>
               {series.map((s) => (
-                <th key={s.name}>{s.name}</th>
+                <th key={s.name}>
+                  <bdi dir="auto">{s.name}</bdi>
+                </th>
               ))}
             </tr>
           </thead>

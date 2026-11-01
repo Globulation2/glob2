@@ -7,7 +7,6 @@
 #include "FileFormatVersions.h"
 #include "TerrainProperties.h"
 #include "TerrainPresentation.h"
-#include "TerrainExperiments.h"
 #include "LegacyTerrainFrames.h"
 #include "Game.h"
 #include "GameRuleOverrides.h"
@@ -29,7 +28,8 @@ Observations::ObservationScope::ObservationScope(const Observations& o)
 {
     if (!previous)
     {
-        owned = AIEngine::AIWorldView::capture(o.game, AIEngine::AIWorldView::captureCatalog(o.game));
+        owned = std::make_shared<AIEngine::AIWorldView>(SimulationSnapshot::capture(o.game, AIEngine::AIWorldView::captureCatalog(o.game),
+            SimulationSnapshot::Simulation | (o.team<0 ? SimulationSnapshot::bit(SimulationSnapshot::Component::Annotations) : 0)));
         observations.view = owned.get();
     }
 }
@@ -403,7 +403,6 @@ Value Observations::query(const std::string &name, const std::vector<Value> &arg
 					const auto type = static_cast<TerrainType>(id);
 					const auto &p = world().terrain->properties(type);
 					const auto &presentation = world().terrain->presentation(type);
-					const auto experiment = terrainExperiment(type);
 					Value resources = Value::array();
 					for (unsigned resource = 0; resource < world().resourceRegistry->size(); ++resource)
 						if (MapState::terrainSupportsResourceType(world().state(), type, static_cast<ResourceId>(resource)))
@@ -415,9 +414,6 @@ Value Observations::query(const std::string &name, const std::vector<Value> &arg
 							.set("group", id < TERRAIN_COUNT
 											 ? Value(terrainGroupDefinition(terrainGroup(type)).key)
 											 : Value())
-							.set("experiment", experiment
-												   ? Value(experimentDefinition(*experiment).key)
-												   : Value())
 							.set("editorSelectable", presentation.editorSelectable)
 							.set("walkable", p.walkable)
 							.set("swimmable", p.swimmable)
@@ -544,6 +540,42 @@ Value Observations::query(const std::string &name, const std::vector<Value> &arg
 		charge(64);
 		return tile(arg(args, 0, -32768, 32767), arg(args, 1, -32768, 32767));
 	}
+    if (name == "area")
+    {
+        if(team>=0 || args.size()!=1 || args[0].kind!=Value::String) throw std::runtime_error("area(name) requires a map script");
+        const auto &annotations=world().components().annotations;
+        if(!annotations) throw std::runtime_error("Missing map annotations");
+        const auto &names=annotations->areaNames;
+        const auto found=std::find(names.begin(),names.end(),args[0].text);
+        if(found==names.end()) return Value();
+        const unsigned mask=1u<<std::distance(names.begin(),found);
+        int x0=world().width,y0=world().height,x1=-1,y1=-1;
+        for(int y=0;y<world().height;++y) for(int x=0;x<world().width;++x) {
+            charge(1);
+            if(annotations->scriptAreas[world().tileIndex(x,y)]&mask) {
+                x0=std::min(x0,x);y0=std::min(y0,y);x1=std::max(x1,x);y1=std::max(y1,y);
+            }
+        }
+        if(x1<0) return Value();
+        return Value::object().set("x",x0).set("y",y0).set("width",x1-x0+1).set("height",y1-y0+1);
+    }
+
+    if (name == "zones")
+    {
+        if(args.size()!=5) throw std::runtime_error("zones requires x, y, width, height, team");
+        const int x=arg(args,0,-32768,32767),y=arg(args,1,-32768,32767),
+            w=arg(args,2,0,256),h=arg(args,3,0,256),owner=arg(args,4,0,int(world().teams.size())-1);
+        if(team>=0 && team!=owner) throw std::runtime_error("Zones require the observing team's ownership");
+        Value out=Value::array();
+        const Uint32 mask=world().teams[owner].mask;
+        for(int yy=0;yy<h;++yy) for(int xx=0;xx<w;++xx) {
+            charge(16);
+            const auto &areas=world().areasAt(world().tileIndex(x+xx,y+yy));
+            out.items.push_back(Value::object().set("guard",bool(areas.guard&mask))
+                .set("forbidden",bool(areas.forbidden&mask)).set("clear",bool(areas.clear&mask)));
+        }
+        return out;
+    }
 	if (name == "region")
 	{
 		int x = arg(args, 0, -32768, 32767), y = arg(args, 1, -32768, 32767),

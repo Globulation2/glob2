@@ -22,9 +22,11 @@ from .diagnostics import postmortem
 from .model import PROTOCOL_VERSION, validate_job
 from .transfer import get_chunk, offset, put_chunk
 from .resources import plan_allocations, plan_from_record, validate_frozen_attempt, validate_game_participants
+from .storage import CompressedLog, DEFAULT_ATTEMPT_BYTES, DEFAULT_LOG_BYTES
 
 HOST_DEFAULTS = {'slots': max(1, (os.cpu_count() or 1) - 1), 'collect_slots': 2, 'result_backlog_limit': 128,
-                 'disk_reserve_bytes': 1024**3, 'spool_budget_bytes': 10 * 1024**3,
+                 'disk_reserve_bytes': 5 * 1024**3, 'spool_budget_bytes': 10 * 1024**3,
+                 'attempt_budget_bytes': DEFAULT_ATTEMPT_BYTES, 'log_budget_bytes': DEFAULT_LOG_BYTES,
                  'cache_budget_bytes': 20 * 1024**3, 'builds': [], 'memory_mb': None,
                  'cpu_ids': None, 'participants_per_game': None}
 
@@ -73,12 +75,15 @@ def installed_bundle(path):
 def outcome_only(result):
     """Retain the authoritative outcome and every supported adjudication field."""
     team_fields = ('team', 'alliance', 'outcome', 'alive', 'eliminated_tick',
-                   'prestige', 'units', 'buildings', 'warrior_attack', 'warrior_hp', 'warriors')
+                   'prestige', 'units', 'buildings', 'warrior_attack', 'warrior_hp', 'warriors',
+                   'win_probability')
     player_fields = ('player', 'team', 'ai')
-    return {key: result[key] for key in ('schema_version', 'status', 'ticks', 'termination', 'winning_teams')
+    return {key: result[key] for key in ('schema_version', 'status', 'ticks', 'termination', 'winning_teams', 'win_probability_permille')
             if key in result} | {
         'teams': [{key: team[key] for key in team_fields if key in team} for team in result.get('teams', [])],
         'players': [{key: player[key] for key in player_fields if key in player} for player in result.get('players', [])],
+        **({'win_probability_permille': result['resolved']['rules']['winProbabilityPermille']}
+           if 'winProbabilityPermille' in result.get('resolved', {}).get('rules', {}) else {}),
         **{key: result[key] for key in ('compute_threads', 'compute_resolved_threads',
                                        'compute_requested_threads', 'gpu_requested', 'resource_plan') if key in result},
     }
@@ -117,7 +122,7 @@ class Worker:
         if unknown:
             raise ValueError('unknown host fields: ' + ','.join(sorted(unknown)))
         config = HOST_DEFAULTS | values
-        for key in ('slots', 'collect_slots', 'result_backlog_limit', 'spool_budget_bytes', 'cache_budget_bytes'):
+        for key in ('slots', 'collect_slots', 'result_backlog_limit', 'spool_budget_bytes', 'cache_budget_bytes', 'attempt_budget_bytes', 'log_budget_bytes'):
             if type(config[key]) is not int or config[key] < 1:
                 raise ValueError(key + ' must be a positive integer')
         if config['disk_reserve_bytes'] < 0:
@@ -403,30 +408,56 @@ def execute(root, identity):
                 import resource
                 if memory:
                     resource.setrlimit(resource.RLIMIT_AS, (int(memory * 1024**2), int(memory * 1024**2)))
+                resource.setrlimit(resource.RLIMIT_FSIZE, (file_limit, file_limit))
                 if job['outputs'].get('core'):
                     soft, hard = resource.getrlimit(resource.RLIMIT_CORE)
                     resource.setrlimit(resource.RLIMIT_CORE, (hard, hard))
-            with (directory / 'stdout.log').open('wb') as stdout, (directory / 'stderr.log').open('wb') as stderr:
-                process = subprocess.Popen(args, cwd=bundle['directory'], env=env, stdout=stdout, stderr=stderr,
-                                           preexec_fn=resource_limits, pass_fds=(guard.fileno(),))
-                timeout = job['limits'].get('timeout_seconds', 3600)
-                deadline = time.monotonic() + timeout
-                while process.poll() is None:
-                    if time.monotonic() >= deadline:
-                        record['category'] = 'timeout'
-                        process.kill()
-                        break
-                    if shutil.disk_usage(directory).free < worker.config['disk_reserve_bytes'] // 2:
-                        record['category'] = 'disk_pressure'
-                        process.kill()
-                        break
-                    time.sleep(0.2)
-                record['exit_code'] = process.wait()
-                import resource
-                measured = resource.getrusage(resource.RUSAGE_CHILDREN)
-                record['resource_usage'] = {'user_seconds': measured.ru_utime, 'system_seconds': measured.ru_stime,
-                                             'peak_rss_bytes': measured.ru_maxrss * (1 if sys.platform == 'darwin' else 1024)}
-            if record['category'] not in ('timeout', 'disk_pressure'):
+            attempt_limit = min(job['limits'].get('artifact_bytes', worker.config['attempt_budget_bytes']),
+                                worker.config['attempt_budget_bytes'])
+            log_limit = min(job['limits'].get('log_bytes', worker.config['log_budget_bytes']),
+                            worker.config['log_budget_bytes'])
+            import resource
+            inherited_hard = resource.getrlimit(resource.RLIMIT_FSIZE)[1]
+            file_limit = attempt_limit if inherited_hard == resource.RLIM_INFINITY else min(attempt_limit, inherited_hard)
+            record['storage_limits'] = {'artifact_bytes': attempt_limit, 'log_bytes': log_limit,
+                                        'file_bytes': file_limit}
+            # A tighter inherited hard limit is preserved. Child-written saves,
+            # replay and detailed traces cannot exceed this per-file ceiling.
+            process = subprocess.Popen(args, cwd=bundle['directory'], env=env,
+                                       stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+                                       preexec_fn=resource_limits, pass_fds=(guard.fileno(),))
+            stdout = CompressedLog(process.stdout, directory / 'stdout.log.gz', log_limit,
+                                   job['outputs'].get('log_mode', 'full'))
+            stderr = CompressedLog(process.stderr, directory / 'stderr.log.gz', log_limit)
+            deadline = time.monotonic() + job['limits'].get('timeout_seconds', 3600)
+            while process.poll() is None:
+                if time.monotonic() >= deadline:
+                    record['category'] = 'timeout'
+                    process.kill()
+                    break
+                if stdout.error or stderr.error or usage(directory) > attempt_limit:
+                    record['category'] = 'storage_limit'
+                    process.kill()
+                    break
+                if (shutil.disk_usage(directory).free < worker.config['disk_reserve_bytes']
+                        or usage(worker.root / 'attempts') + usage(worker.root / 'spool') > worker.config['spool_budget_bytes']):
+                    record['category'] = 'disk_pressure'
+                    process.kill()
+                    break
+                time.sleep(0.2)
+            record['exit_code'] = process.wait()
+            record['streamed_logs'] = {'stdout.log.gz': stdout.finish(), 'stderr.log.gz': stderr.finish()}
+            if any(log['error'] for log in record['streamed_logs'].values()) or usage(directory) > attempt_limit:
+                record['category'] = 'storage_limit'
+            if (record['exit_code'] == -getattr(signal, 'SIGXFSZ', 25)
+                    or record['exit_code'] != 0 and any(p.is_file() and not p.is_symlink() and p.stat().st_size >= file_limit
+                                                       for p in out.rglob('*'))):
+                record['category'] = 'storage_limit'
+            import resource
+            measured = resource.getrusage(resource.RUSAGE_CHILDREN)
+            record['resource_usage'] = {'user_seconds': measured.ru_utime, 'system_seconds': measured.ru_stime,
+                                         'peak_rss_bytes': measured.ru_maxrss * (1 if sys.platform == 'darwin' else 1024)}
+            if record['category'] not in ('timeout', 'disk_pressure', 'storage_limit'):
                 code = record['exit_code']
                 record['category'] = 'crash' if code < 0 else 'invalid_request' if code == 2 else 'process_failure' if code else 'success'
                 try:
@@ -491,15 +522,21 @@ def pack(root, identity):
                              execution['category'] != 'success' or
                              bool(artifact_outputs))
         artifacts = []
+        packed_sources = []
         if retain_incidental:
             for path in sorted(directory.rglob('*')):
                 relative = path.relative_to(directory).as_posix()
                 if not path.is_file() or path.is_symlink() or (relative.startswith(('home/', 'inputs/', 'output/profile/')) or relative.split('/')[0].startswith('packing-')) or '/profile/' in relative or relative in ('attempt.json', 'execution.json', 'record.json') or path.suffix == '.lock':
                     continue
                 # A packing restart replaces objects atomically with identical bytes.
-                meta = store_artifact(path, staging, compress=path.stat().st_size > 4096 and path.suffix not in ('.json',))
+                streamed = execution.get('streamed_logs', {}).get(relative)
+                meta = store_artifact(path, staging, compress=(not streamed and path.stat().st_size > 4096 and path.suffix != '.json'))
                 meta['path'] = relative[7:] if relative.startswith('output/') else relative
+                if streamed and streamed['complete']:
+                    meta.update({key: streamed[key] for key in ('encoding', 'raw_sha256', 'raw_bytes')})
+                    meta['path'] = relative.removesuffix('.gz')
                 artifacts.append(meta)
+                packed_sources.append(path)
 
         present = {a['path'] for a in artifacts}
         requested = list(attempt['job']['outputs'].get('required', []))
@@ -530,6 +567,11 @@ def pack(root, identity):
             from .common import fsync_directory
             fsync_directory(worker.root / 'spool')
             atomic_json(directory / 'record.json', record)
+            # The spool is now authoritative and hash verified. Keeping these
+            # sources until acknowledgement would duplicate every large output.
+            for source in packed_sources:
+                if source.is_file() and not source.is_symlink():
+                    source.unlink()
     worker.close()
 
 

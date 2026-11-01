@@ -5,6 +5,8 @@ Sources of files not created by the Globulation 2 project:
 Font :
 sans.ttf : Glob2 Sans, based on DejaVu Sans 2.26 from Ubuntu, with Droid Sans Fallback CJK outlines. See data/fonts/README.md and accompanying font licenses.
 
+data/fonts/scripts/ : Noto script fonts, pinned to noto-fonts commit ffebf8c1ee449e544955a7e813c54f9b73848eac, under SIL Open Font License 1.1. Their shaping tables are retained; see data/fonts/LICENSE-Noto.txt and data/fonts/README.md.
+
 Web font (platform web app and sign-in pages only, not the game) :
 Nunito, copyright 2014 The Nunito Project Authors, SIL Open Font License 1.1 (licence in platform/apps/web/public/fonts/LICENSE-Nunito.txt), from @fontsource-variable/nunito. See platform/apps/web/art/README.md.
 
@@ -56,9 +58,6 @@ GPL-3.0-or-later like the rest of the project.
 
 Music (data/zik/; each set directory also holds a LICENSE.txt with full details):
 - `original`: Jacques-Paul Grivaz, original Globulation 2 soundtrack.
-- `woodland`: adapted from "Woodland Music - Vol 1" (Level theme) by JC Sounds, CC BY 4.0, https://opengameart.org/content/woodland-music-vol-1. Remixed from the author's stems into calm/building/combat arrangements.
-- `apple-cider`: adapted from "Apple Cider" by Zane Little Music, CC0 1.0, https://opengameart.org/content/apple-cider.
-- `curious-critters`: adapted from "Curious Critters" by Matthew Pablo, CC BY 3.0, https://opengameart.org/content/curious-critters. Rearranged, with added original percussion.
 - `moss-lanterns`, `thistle-waltz`, `bramble-jig`, `fennel-mist`: original scores rendered with VSCO 2 Community Edition and VCSL samples (Versilian Studios, CC0 1.0).
 - `glass-garden`: original score with sounds designed in Surge XT (GPL-3.0).
 How these sets are built is described in [the music pipeline guide](music-pipeline.md).

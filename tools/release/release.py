@@ -10,6 +10,7 @@ import tempfile
 import re
 import struct
 import subprocess
+import sys
 import tarfile
 import urllib.error
 import urllib.request
@@ -18,6 +19,9 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(ROOT / 'tools'))
+from tutorials.content import packaged_assets, reject_retired_assets
+
 VERSION_FILE = ROOT / "scons" / "build_layout.py"
 
 
@@ -143,9 +147,13 @@ def verify_install(stage):
         "usr/share/glob2/data/usl/Language/Runtime/Control.usl",
         "usr/share/glob2/data/gfx/ressource0.png",
         "usr/share/glob2/maps/SmallForTwo.map.gz",
-        "usr/share/glob2/campaigns/Tutorial_Campaign.txt",
-        "usr/share/glob2/scripts/tutorial_part1.sgsl",
     )
+    required += tuple("usr/share/glob2/" + path for path in packaged_assets(ROOT))
+    assets = stage / "usr/share/glob2"
+    try:
+        reject_retired_assets(assets)
+    except ValueError as error:
+        raise SystemExit(str(error)) from None
     missing = [name for name in required if not (stage / name).is_file()
                and not (name.startswith('usr/share/glob2/data/') and name.endswith('.png')
                         and (stage / Path(name).with_suffix('.webp')).is_file())]

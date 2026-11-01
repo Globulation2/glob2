@@ -1,6 +1,7 @@
 import importlib.util
 import gzip
 import hashlib
+import json
 import os
 import re
 import stat
@@ -30,8 +31,27 @@ class BrowserPackageTests(unittest.TestCase):
                 self.assertEqual(len(matches), 1)
                 paths = {line.strip() for line in matches[0].splitlines()}
                 for name in (*module.MUSIC_FILES, "generator-studio.html", "loader.js",
-                             "index.data", "threaded/index.data", *relative_scripts):
+                             "index.data", "threaded/index.data", "script-fonts.css", "fonts/", *relative_scripts):
                     self.assertIn("build/emscripten/client/release/" + name, paths)
+
+    def test_standalone_launcher_font_closure_is_pinned_and_packaged(self):
+        import sys
+        sys.path.insert(0, str(module.ROOT / 'scons'))
+        import web_assets
+        self.localized_source()
+        with (self.source / 'index.html').open('a') as stream:
+            stream.write('<link rel="stylesheet" href="script-fonts.css">')
+        web_assets.launcher_script_fonts(module.ROOT, self.source)
+        module.package(self.source, self.output)
+        module.verify(self.output)
+        manifest = json.loads((module.ROOT / 'data/fonts/scripts/manifest.json').read_text())
+        for font in manifest['fonts']:
+            name = 'fonts/' + font['name'] + '-Regular.ttf'
+            self.assertEqual(hashlib.sha256((self.output / name).read_bytes()).hexdigest(), font['sha256'])
+        first = self.source / 'fonts' / (manifest['fonts'][0]['name'] + '-Regular.ttf')
+        first.write_bytes(b'wrong font')
+        with self.assertRaisesRegex(ValueError, 'Launcher font checksum mismatch'):
+            module.package(self.source, self.output)
 
     @unittest.skipIf(os.name == "nt", "POSIX web-server permissions")
     def test_threaded_package_is_public_readable_under_private_build_umask(self):

@@ -14,6 +14,7 @@
 #include "MainMenuScreen.h"
 #include "HandPreferenceScreen.h"
 #include "AudioPreferenceScreen.h"
+#include "IntroductionOfferScreen.h"
 #include "CustomGameScreen.h"
 #include "MessageScreen.h"
 #include "CampaignMainMenu.h"
@@ -202,6 +203,12 @@ void Application::mainMenu()
 			[this](GAGGUI::Screen &, int) { mainMenu(); });
 		return;
 	}
+    if (!globalContainer->settings.introductionOffered && !GAGCore::ApplicationHost::storageRestoreFailed())
+    {
+        screens.push(std::make_unique<IntroductionOfferScreen>(),
+            [this](GAGGUI::Screen &,int result) { mainMenu(); if (result==1) singlePlayer.introduction(); });
+        return;
+    }
 	// Rebuild translated labels after returning from settings.
 	screens.push(std::make_unique<MainMenuScreen>(),
 				 [this](GAGGUI::Screen &, int choice) { choose(choice); });
@@ -214,17 +221,9 @@ void Application::choose(int choice)
 	case MainMenuScreen::CAMPAIGN:
 		screens.push(std::make_unique<CampaignMainMenu>(screens));
 		break;
-	case MainMenuScreen::TUTORIAL:
-	{
-		Campaign campaign;
-		const bool saved = campaign.load("games/Tutorial_Campaign.txt");
-		auto menu = std::make_unique<CampaignMenuScreen>(
-			saved ? "games/Tutorial_Campaign.txt" : "campaigns/Tutorial_Campaign.txt", screens);
-		if (!saved)
-			menu->setNewCampaign();
-		screens.push(std::move(menu));
-		break;
-	}
+    case MainMenuScreen::TUTORIAL:
+        singlePlayer.lessons();
+        break;
 	case MainMenuScreen::CUSTOM:
 		singlePlayer.custom();
 		break;
