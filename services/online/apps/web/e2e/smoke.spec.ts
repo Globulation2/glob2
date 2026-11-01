@@ -545,7 +545,7 @@ test('phones: no sideways scrolling at 320 and 430 px, 44 px touch targets', asy
 test('watch in browser opens the replay in the browser game', async ({ page }, info) => {
   const game =
     process.env['GLOB2_WEB_CLIENT_DIR'] ??
-    join(import.meta.dirname, '../../../../build/emscripten/client/release');
+    join(import.meta.dirname, '../../../../../build/emscripten/client/release');
   test.skip(!existsSync(join(game, 'index.html')), 'no browser game build');
   test.skip(info.project.name !== 'desktop', 'one browser run is enough');
   test.setTimeout(180_000);

@@ -23,7 +23,7 @@ def require_translation_catalogs(names):
     """A localized launcher must ship every supported locale, without aliases."""
     canonical = {
         "locales/" + path.name
-        for path in (ROOT / "platform/packages/i18n/locales").glob("*.json")
+        for path in (ROOT / "services/online/packages/i18n/locales").glob("*.json")
     }
     if not canonical:
         raise ValueError("Missing canonical browser translation catalog inventory")

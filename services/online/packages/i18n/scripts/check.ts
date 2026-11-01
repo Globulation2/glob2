@@ -32,7 +32,7 @@ const errors: string[] = [
   ...fixedLabelErrors(english, AI_TAGS, 'AI tags'),
   ...fixedMetadataSourceErrors(english),
 ];
-const game = readFileSync(new URL('../../../../data/texts.list.txt', import.meta.url), 'utf8')
+const game = readFileSync(new URL('../../../../../data/texts.list.txt', import.meta.url), 'utf8')
   .trim()
   .split(/\s+/)
   .filter((p) => !p.endsWith('keys.txt'))

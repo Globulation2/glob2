@@ -126,7 +126,7 @@ explicit line breaks.
 The JSON tutorial inventory distinguishes legacy language blocks from current
 `display_catalog_gaps`. Generator/building/resource names and keyboard names
 built from runtime data and unregistered wrappers still need contextual review.
-Run `npm run i18n:check` from `platform/` for online catalogs and browser launcher
+Run `npm run i18n:check` from `services/online/` for online catalogs and browser launcher
 bindings. It also requires catalog keys for fixed UI metadata: AI tags and compatibility
 captions, connection-quality terms, route/admin/map labels, match verdicts, music
 moods/check guidance and skin model/material/shape/pose captions. Translate their displayed labels while preserving canonical protocol
@@ -861,10 +861,10 @@ The exporter verifies source hashes and writes 20- and 24-point icons at 1×, 2�
 and 3×. Add new assets deliberately to the manifest and semantic bindings, retain
 upstream notices, and capture desktop and phone views when introducing them.
 
-The online web app (`platform/apps/web/src/icons.tsx`) imports the same SVGs for its
+The online web app (`services/online/apps/web/src/icons.tsx`) imports the same SVGs for its
 navigation and other interface glyphs, so the game and the website share one icon set.
 A web-only icon still goes through this manifest; do not add a separate web icon
-library. Game sprites remain the web app's decorative art (`platform/apps/web/art/README.md`).
+library. Game sprites remain the web app's decorative art (`services/online/apps/web/art/README.md`).
 
 ### Hosting a dialog
 

@@ -290,7 +290,7 @@ under `build/browser-test-results`. WebKit automation does not substitute for
 release testing in actual Safari, nor Chromium for Edge.
 
 The colony-skin replay integration test needs the seeded platform e2e server
-(`platform/apps/web/e2e/server.ts`) serving the current browser build. Set
+(`services/online/apps/web/e2e/server.ts`) serving the current browser build. Set
 `GLOB2_TEST_URL` to that server's origin and `GLOB2_SKIN_REPLAY_API=1`, then run
 `replay-skins.spec.js`. It opens the match's actual replay route and requires
 fresh appearance, JWKS and texture requests plus live mesh draws. It does not
@@ -487,4 +487,4 @@ game interface; the online selection supplies SDL's initial preferred locale onl
 when the game profile has no saved language. The browser build installs `i18n.js`
 and `locales/*.json`, and the static packager includes them and their gzip sidecars
 in the release checksums and identity. Regenerate those assets with the platform
-translation tooling (`cd platform && npm run i18n:browser`) when catalogs change.
+translation tooling (`cd services/online && npm run i18n:browser`) when catalogs change.

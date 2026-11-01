@@ -42,7 +42,7 @@ SDL_VIDEODRIVER=dummy SDL_AUDIODRIVER=dummy GLOB2_CHECKSUM_SIDECAR=1 \
   --player numbi --ticks 1024 --write-replay --telemetry checksums \
   --save initial --save final --output-dir "$PWD/artifacts/studio-reference/result"
 sha256sum examples/javascript/studio-starter.js \
-  platform/apps/engine-agent/fixtures/ais/two.map.gz \
+  services/online/apps/engine-agent/fixtures/ais/two.map.gz \
   artifacts/studio-reference/result/game.replay.checksums
 wc -c artifacts/studio-reference/result/game.replay.checksums
 ```

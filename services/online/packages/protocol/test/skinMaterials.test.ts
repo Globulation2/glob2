@@ -10,10 +10,10 @@ import {
 } from '../src/skins.ts';
 
 // The game builds its material table from libs/gag/shaders/skin-materials.json;
-// the platform ships a copy because its runtime images hold only platform/.
+// the platform ships a copy because its runtime images hold only services/online/.
 const registry = join(
   dirname(fileURLToPath(import.meta.url)),
-  '../../../../libs/gag/shaders/skin-materials.json',
+  '../../../../../libs/gag/shaders/skin-materials.json',
 );
 
 describe('colony skin materials', () => {

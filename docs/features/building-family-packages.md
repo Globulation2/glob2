@@ -4,7 +4,7 @@ Companion to [building catalogs](building-catalogs.md).
 
 ## Portable building families
 
-The `BuildingPackage` contract in `platform/packages/protocol/src/buildings.ts`
+The `BuildingPackage` contract in `services/online/packages/protocol/src/buildings.ts`
 represents an additive family, including its construction, repair and upgrade
 variants. A package has `schemaVersion: 1`, a lowercase UUID `namespace`, and
 `variants`, `experiments` and `sprites` arrays. Variant, experiment and connection

@@ -4,7 +4,7 @@
 // Contract tests for MatchSetup -> GameHeader and the simulation version.
 //
 // The fixtures are the JSON contract of the platform's protocol package
-// (platform/packages/protocol/fixtures, the source of truth). test/fixtures/protocol
+// (services/online/packages/protocol/fixtures, the source of truth). test/fixtures/protocol
 // holds a copy of the MatchSetup and SimVersion entries so these tests run before the
 // platform workspace is on this branch; once it is, the tests read the source and
 // also check that the copy has not drifted from it.
@@ -46,7 +46,7 @@ namespace
 {
 fs::path fixtureRoot()
 {
-	const fs::path source = glob2test::sourceRoot() / "platform/packages/protocol/fixtures";
+	const fs::path source = glob2test::sourceRoot() / "services/online/packages/protocol/fixtures";
 	if (fs::exists(source / "manifest.json"))
 		return source;
 	return glob2test::fixture("protocol");
@@ -463,7 +463,7 @@ TEST_SUITE("MatchSetup")
 
 	TEST_CASE("the vendored fixtures match the protocol package when it is present")
 	{
-		const fs::path source = glob2test::sourceRoot() / "platform/packages/protocol/fixtures";
+		const fs::path source = glob2test::sourceRoot() / "services/online/packages/protocol/fixtures";
 		if (!fs::exists(source / "manifest.json"))
 			return; // the platform workspace is not on this branch yet
 		const fs::path copy = glob2test::fixture("protocol");

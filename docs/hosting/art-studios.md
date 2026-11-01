@@ -29,7 +29,7 @@ The `ai-terrain-worker` image shares the matching
 native engine, includes the artwork converter and pins Pillow through
 `tools/asset-requirements.txt`. Local workers additionally require `ENGINE_BINARY`,
 `GLOB2_SOURCE_DIR`, and `TERRAIN_PYTHON`; use the pinned asset encoder interpreter.
-Start with `npm run start --workspace @glob2/ai-terrain-worker` in `platform/`.
+Start with `npm run start --workspace @glob2/ai-terrain-worker` in `services/online/`.
 
 Terrain credits have independent wallets. Configure `packs`, enable
 `salesEnabled`, and set `TERRAIN_STRIPE_SECRET_KEY` and
@@ -106,7 +106,7 @@ reconciliation; never redispatch an ambiguous paid call automatically.
 Validate a configured provider before enabling sales. The opt-in worker test
 requires a disposable PostgreSQL test database, `BUILDING_OPENAI_API_KEY`,
 `BUILDING_LIVE_TEXT_MODEL`, `BUILDING_LIVE_IMAGE_MODEL` and
-`BUILDING_NATIVE_BINARY` pointing to this revision's built engine. From `platform/`,
+`BUILDING_NATIVE_BINARY` pointing to this revision's built engine. From `services/online/`,
 run:
 
 ```sh

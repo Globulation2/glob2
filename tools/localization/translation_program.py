@@ -21,9 +21,9 @@ LOCALES = ('hi', 'bn', 'ur', 'mr', 'te', 'sw', 'ha', 'ta', 'fil', 'th', 'gu',
            'pa-Guru', 'pa-Arab', 'kn', 'am', 'yo', 'my', 'jv', 'ne', 'om',
            'pcm', 'ps', 'bho', 'fuc-Latn', 'ln', 'uz', 'ml', 'or', 'sd', 'ig', 'su', 'nb', 'ms')
 SOURCE_PATHS = ('data/texts.keys.txt', 'data/texts.en.txt',
-                'platform/packages/i18n/locales/en.json',
-                'platform/packages/i18n/plural-sources.json',
-                'platform/packages/i18n/invariants.json')
+                'services/online/packages/i18n/locales/en.json',
+                'services/online/packages/i18n/plural-sources.json',
+                'services/online/packages/i18n/invariants.json')
 LOW_RESOURCE = {'ha', 'am', 'yo', 'my', 'jv', 'om', 'pcm', 'ps', 'bho', 'fuc-Latn',
                 'ln', 'uz', 'sd', 'ig', 'su'}
 GATES = ('language_brief', 'source_based_pilot', 'structural', 'desktop_rendering', 'phone_rendering', 'browser_startup',

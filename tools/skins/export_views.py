@@ -36,7 +36,7 @@ def write(name, projection, rotation, pivot=None):
     record = dict(version=1, meshSha256=hashlib.sha256(data).hexdigest(),
                   clipToModel=inverse.flatten().tolist(), modelToClip=projection.flatten().tolist(),
                   normalToModel=rotation.T.flatten().tolist(), pivot=list(pivot), radius=radius)
-    for folder in ('data/skins/colony-v1', 'platform/apps/web/public/skins/models'):
+    for folder in ('data/skins/colony-v1', 'services/online/apps/web/public/skins/models'):
         (ROOT / folder / (name + '.view.json')).write_text(json.dumps(record, indent=2) + '\n')
     return record
 

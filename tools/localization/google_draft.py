@@ -113,8 +113,8 @@ def entries(output, locale):
     manifest = json.loads((output / 'manifest.json').read_text(encoding='utf-8'))
     if locale not in manifest['locales']:
         raise ValueError('Locale is not in the frozen kit')
-    invariants_path = PROGRAM.ROOT / 'platform/packages/i18n/invariants.json'
-    if PROGRAM.digest(invariants_path.read_bytes()) != manifest['source_files']['platform/packages/i18n/invariants.json']:
+    invariants_path = PROGRAM.ROOT / 'services/online/packages/i18n/invariants.json'
+    if PROGRAM.digest(invariants_path.read_bytes()) != manifest['source_files']['services/online/packages/i18n/invariants.json']:
         raise ValueError('Invariant contract changed since the kit was frozen')
     invariants = json.loads(invariants_path.read_text(encoding='utf-8'))
     paths = PROGRAM.catalog_paths(output, locale)

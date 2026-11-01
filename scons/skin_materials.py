@@ -4,7 +4,7 @@
 libs/gag/shaders/skin-materials.json names the material ids and the fur shell
 count; libs/gag/shaders/skin-material.glsl shades them. The native builds compile
 both into include/glob2/SkinMaterials.h; the web studio imports the GLSL raw and
-the platform mirrors the id list (platform/packages/protocol/src/skins.ts).
+the platform mirrors the id list (services/online/packages/protocol/src/skins.ts).
 """
 import json
 from pathlib import Path

@@ -9,7 +9,7 @@ import { createGeneratorExecutor } from '../src/generatorValidation.ts';
 import { DEFAULT_LIMITS } from '../src/engine.ts';
 const binary = process.env.GLOB2_BINARY,
   scratch = process.env.GLOB2_GENERATOR_SCRATCH;
-const workdir = resolve(import.meta.dirname, '../../../..');
+const workdir = resolve(import.meta.dirname, '../../../../..');
 describe.runIf(binary && scratch)('real isolated generator packages', () => {
   it(
     'probes, canonicalizes, samples, reloads and generates the exact package',

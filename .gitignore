@@ -53,8 +53,8 @@ gha-creds-*.json
 /deploy/compose.override.yaml
 
 # Generated website music decoder (tools/music/build_web.py).
-/platform/apps/web/public/music/decoder.js
-/platform/apps/web/public/music/decoder.wasm
+/services/online/apps/web/public/music/decoder.js
+/services/online/apps/web/public/music/decoder.wasm
 
 # Browser development copies of the canonical online translation catalogs.
 /platforms/web/locales/

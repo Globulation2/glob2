@@ -17,7 +17,7 @@ if not (cc / "em++").exists():
 prefix = build(
     root / "build/music-web/opus", root / "build/music-web/sources", cc, jobs=4
 )
-out = root / "platform/apps/web/public/music"
+out = root / "services/online/apps/web/public/music"
 out.mkdir(parents=True, exist_ok=True)
 subprocess.run(
     [

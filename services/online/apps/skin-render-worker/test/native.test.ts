@@ -20,7 +20,7 @@ it.skipIf(!process.env['GLOB2_SKIN_RENDER_TEST_BINARY'])(
   'the deployed renderer adapter bakes and atomically stores a real skin',
   async () => {
     const binary = process.env['GLOB2_SKIN_RENDER_TEST_BINARY']!;
-    const cwd = fileURLToPath(new URL('../../../../', import.meta.url));
+    const cwd = fileURLToPath(new URL('../../../../../', import.meta.url));
     const description = await runProcess({
       binary,
       cwd,
@@ -139,7 +139,7 @@ it.skipIf(!process.env['GLOB2_SKIN_RENDER_TEST_BINARY'])(
   'CLI validation and partial-output cleanup preserve existing directories',
   async () => {
     const binary = process.env['GLOB2_SKIN_RENDER_TEST_BINARY']!;
-    const cwd = fileURLToPath(new URL('../../../../', import.meta.url));
+    const cwd = fileURLToPath(new URL('../../../../../', import.meta.url));
     const fixture = JSON.parse(
       await readFile(join(cwd, 'test/fixtures/skins/authorization.json'), 'utf8'),
     ) as {

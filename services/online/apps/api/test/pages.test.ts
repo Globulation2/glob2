@@ -43,7 +43,7 @@ it('serves shared bootstrap, rebased CSS, fonts and notices under the form CSP',
     expect(scriptCss.body).not.toContain('../../../data/');
     const manifest = JSON.parse(
       readFileSync(
-        new URL('../../../../data/fonts/scripts/manifest.json', import.meta.url),
+        new URL('../../../../../data/fonts/scripts/manifest.json', import.meta.url),
         'utf8',
       ),
     ) as { fonts: { name: string; sha256: string; bytes: number }[] };

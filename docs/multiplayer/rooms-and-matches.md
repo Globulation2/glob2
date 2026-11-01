@@ -9,9 +9,9 @@ run in. The relay itself is documented in `docs/multiplayer/relay.md`, which the
 relay work adds. Queues and ratings are covered in
 [ratings and matchmaking](ratings-and-matchmaking.md).
 
-Code: `platform/apps/api/src/play/` (rooms, tickets, realtime delivery),
-`platform/apps/api/src/routes/{play,internal,invite}.ts`, and
-`platform/packages/play/src/play/` (start sequence, relay placement, map sources,
+Code: `services/online/apps/api/src/play/` (rooms, tickets, realtime delivery),
+`services/online/apps/api/src/routes/{play,internal,invite}.ts`, and
+`services/online/packages/play/src/play/` (start sequence, relay placement, map sources,
 match-end intake), which both the API and the worker use. Data: migration
 `0005_rooms_matches.sql`.
 
@@ -40,7 +40,7 @@ instance does not serve gets it from `room.create` and `room.join`. Joining an
 account to a room makes it leave any other room it is in.
 
 **Permissions.** These defaults came from the mock-ups and are provisional. They
-are collected in `ROOM_RULES` in `platform/apps/api/src/play/rooms.ts`, so they
+are collected in `ROOM_RULES` in `services/online/apps/api/src/play/rooms.ts`, so they
 are easy to change:
 
 | Rule | Default |
@@ -162,7 +162,7 @@ team per queue seat, as on-demand maps are. When the pool is empty or turned off
 ## Start sequence
 
 Rooms (`room.start`, in the API) and queues (`PlatformMatchStarter`, in the worker)
-share one sequence, `createMatch()` in `platform/packages/play/src/play/start.ts`:
+share one sequence, `createMatch()` in `services/online/packages/play/src/play/start.ts`:
 
 1. **AccessPolicy.** For rooms, the host is checked with `canHost`, and every
    other seated human with `canJoin`, again at start. For queues, every human is

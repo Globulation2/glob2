@@ -3,7 +3,7 @@
 The platform keeps what the verifier and rating updater record (plan section G):
 matches, participants, rating history, per-team statistics and 512-tick
 timelines, and the replay of every verified match. This page describes the
-read-only REST API over that history and the web app built on it (`platform/apps/web`).
+read-only REST API over that history and the web app built on it (`services/online/apps/web`).
 The writers are described in [ratings and matchmaking](ratings-and-matchmaking.md)
 and [architecture](engine-agents.md#engine-agents).
 
@@ -13,7 +13,7 @@ Directory search uses PostgreSQL’s trusted `pg_trgm` extension, installed by m
 0036 alongside the name and substring-search indexes. Deploy migrations and the API
 before deploying the web app that consumes the additive endpoints.
 
-All shapes are in `platform/packages/protocol/src/history.ts` (with JSON Schema
+All shapes are in `services/online/packages/protocol/src/history.ts` (with JSON Schema
 and fixtures under `fixtures/`). Lists are newest first and page with an opaque
 `cursor`; `limit` is optional.
 
@@ -85,7 +85,7 @@ whose relay sent no summary.
 
 ## Web app
 
-`platform/apps/web` is a React single-page app served by Caddy for every path
+`services/online/apps/web` is a React single-page app served by Caddy for every path
 that is not routed to the API or the browser client, and lays out for phone
 width (320 px up).
 
@@ -297,7 +297,7 @@ reports `watchReplay` (`none`, `downloading`, `ready` or `failed`).
 ## Tests
 
 ```sh
-cd platform
+cd services/online
 npx vitest run apps/api/test/history.test.ts   # REST against Postgres
 npx vitest run apps/web                        # page components (jsdom)
 npm run build -w @glob2/web && npm run e2e -w @glob2/web

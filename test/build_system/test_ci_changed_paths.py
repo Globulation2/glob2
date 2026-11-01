@@ -18,7 +18,7 @@ SPEC.loader.exec_module(ci_changed_paths)
 
 class ChangedPathsTest(unittest.TestCase):
     def assert_jobs(self, paths, platform=None, platform_stack=None, music=None, **expected):
-        # The TypeScript platform job runs on platform/ changes and with full CI.
+        # The TypeScript platform job runs on services/online/ changes and with full CI.
         if platform is None:
             platform = all(expected.values())
         # The self-hosted stack smoke test runs on its own paths and with full CI.
@@ -60,7 +60,7 @@ class ChangedPathsTest(unittest.TestCase):
             deployment=False, cross_platform=False, platform_stack=True,
         )
         self.assert_jobs(
-            ["platform/packages/db/migrations/0005_rooms.sql"], native=False, browser=False,
+            ["services/online/packages/db/migrations/0005_rooms.sql"], native=False, browser=False,
             map_generators=False, deployment=False, cross_platform=False, platform=True,
             platform_stack=True,
         )
@@ -72,7 +72,7 @@ class ChangedPathsTest(unittest.TestCase):
 
     def test_platform_only(self):
         self.assert_jobs(
-            ["platform/apps/api/src/app.ts", "platform/package-lock.json"],
+            ["services/online/apps/api/src/app.ts", "services/online/package-lock.json"],
             native=False, browser=False, map_generators=False,
             deployment=False, cross_platform=False, platform=True,
             # Dependency changes also rebuild the stack's images.
@@ -81,14 +81,14 @@ class ChangedPathsTest(unittest.TestCase):
 
     def test_platform_docs_only(self):
         self.assert_jobs(
-            ["platform/README.md", "docs/multiplayer/architecture.md"],
+            ["services/online/README.md", "docs/multiplayer/architecture.md"],
             native=False, browser=False, map_generators=False,
             deployment=False, cross_platform=False, platform=False,
         )
 
     def test_protocol_fixtures_run_platform_and_native_contract_tests(self):
         self.assert_jobs(
-            ["platform/packages/protocol/fixtures/valid/MatchSetup/catalog-1v1.json"],
+            ["services/online/packages/protocol/fixtures/valid/MatchSetup/catalog-1v1.json"],
             native=True, browser=False, map_generators=False,
             deployment=False, cross_platform=False, platform=True,
         )

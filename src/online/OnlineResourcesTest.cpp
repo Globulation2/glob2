@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // The typed views of queue events, match history and the map catalog read
-// every protocol fixture of their schema (platform/packages/protocol/fixtures),
+// every protocol fixture of their schema (services/online/packages/protocol/fixtures),
 // and the profile figures are computed from match history.
 
 #include "Glob2Test.h"
@@ -16,7 +16,7 @@ namespace
 {
 fs::path fixtureRoot()
 {
-	return glob2test::sourceRoot() / "platform/packages/protocol/fixtures";
+	return glob2test::sourceRoot() / "services/online/packages/protocol/fixtures";
 }
 
 std::vector<std::pair<std::string, Json>> fixtures(const std::string &schema, bool valid = true)

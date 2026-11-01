@@ -38,7 +38,7 @@ class SkinMaterialsTest(unittest.TestCase):
             self.assertIn("'%s'" % path.as_posix(), text, '%s must feed SKIN_RENDER_REVISION' % path)
 
     def test_web_studio_imports_the_shader(self):
-        module = (ROOT / 'platform/apps/web/src/skins/materialShader.ts').read_text()
+        module = (ROOT / 'services/online/apps/web/src/skins/materialShader.ts').read_text()
         self.assertIn("libs/gag/shaders/skin-material.glsl?raw'", module)
         self.assertIn('COPY libs/gag/shaders', (ROOT / 'deploy/Dockerfile').read_text())
 
@@ -46,7 +46,7 @@ class SkinMaterialsTest(unittest.TestCase):
         """The platform ships a copy of the registry; its vitest pins equality,
         this guards the copy from drifting in checkouts without node."""
         registry = json.loads((ROOT / skin_materials.REGISTRY).read_text())
-        text = (ROOT / 'platform/packages/protocol/src/skins.ts').read_text()
+        text = (ROOT / 'services/online/packages/protocol/src/skins.ts').read_text()
         for material in registry['materials']:
             self.assertRegex(text, r"\{ id: %d, key: '%s', name: '%s', group: '%s', shells: %s \}" % (
                 material['id'], material['key'], re.escape(material['name']), material['group'],

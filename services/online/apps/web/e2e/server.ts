@@ -22,7 +22,7 @@ import { simVersionKey, type GeneratorSettings } from '@glob2/protocol';
 import { SET_CREDITS_FIXTURE } from '../../api/test/setCreditsFixture.ts';
 
 const here = import.meta.dirname;
-const repo = resolve(here, '../../../..');
+const repo = resolve(here, '../../../../..');
 const dist = resolve(here, '../dist');
 const port = Number(process.env['PORT'] ?? 4280);
 const origin = `http://127.0.0.1:${port}`;

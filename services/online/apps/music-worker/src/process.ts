@@ -12,7 +12,7 @@ import type { ConversionResult } from '@glob2/music';
 
 class TerminalMusicError extends Error {}
 
-const root = resolve(fileURLToPath(new URL('../../../..', import.meta.url)));
+const root = resolve(fileURLToPath(new URL('../../../../..', import.meta.url)));
 async function python(
   request: string,
   output: string,

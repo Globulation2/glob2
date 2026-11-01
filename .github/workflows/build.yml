@@ -1394,7 +1394,7 @@ jobs:
           path: artifacts/ci-observation/
           if-no-files-found: ignore
 
-  # The TypeScript platform (platform/): lint, type checks, the web build, and
+  # The TypeScript platform (services/online/): lint, type checks, the web build, and
   # unit and integration tests against a real Postgres.
   platform:
     name: platform (TypeScript)
@@ -1420,7 +1420,7 @@ jobs:
       TERRAIN_PYTHON: /usr/bin/python3
     defaults:
       run:
-        working-directory: platform
+        working-directory: services/online
     steps:
       - uses: actions/checkout@v4
         id: actions_checkout_v4_1
@@ -1431,7 +1431,7 @@ jobs:
         with:
           node-version: '22'
           cache: npm
-          cache-dependency-path: platform/package-lock.json
+          cache-dependency-path: services/online/package-lock.json
       - name: Install music and terrain artwork processing tools
         id: install_music_upload_processing_tools
         run: |

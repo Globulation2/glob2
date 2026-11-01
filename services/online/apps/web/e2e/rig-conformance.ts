@@ -8,7 +8,7 @@ import { expect, test } from '@playwright/test';
 import ts from 'typescript';
 import type * as RigEvaluator from '../src/skins/rig.ts';
 
-const root = new URL('../../../../', import.meta.url);
+const root = new URL('../../../../../', import.meta.url);
 const read = (path: string) => readFileSync(new URL(path, root));
 // Transpile the production evaluator and its helpers for the browser, without
 // maintaining a browser-only copy: each module becomes a data URL and relative
@@ -27,7 +27,7 @@ function browserModule(path: string, modules: Map<string, string>): string {
   modules.set(path, url);
   return url;
 }
-const evaluator = browserModule('platform/apps/web/src/skins/rig.ts', new Map());
+const evaluator = browserModule('services/online/apps/web/src/skins/rig.ts', new Map());
 const shader = read('libs/gag/include/SkinDeformation.h')
   .toString()
   .match(/R"GLSL\(([\s\S]*?)\)GLSL"/u)?.[1];

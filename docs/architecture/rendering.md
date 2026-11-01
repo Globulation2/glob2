@@ -104,12 +104,12 @@ normal; their shader sets `alpha` to 0 where a shell carries no strand. Tiles
 are cached per pose, so no material can animate over time.
 
 To add a material: append it to the JSON, add `skinMaterial_<key>` and its
-dispatch line to the GLSL, mirror the entry in `platform/packages/protocol/src/skins.ts`,
+dispatch line to the GLSL, mirror the entry in `services/online/packages/protocol/src/skins.ts`,
 then run `test/build_system/test_skin_materials.py`, the `SkinMesh` display
 suite with `GLOB2_UPDATE_SKIN_FINGERPRINTS=1` once (it rewrites
 `test/fixtures/skins/material-fingerprints.json` and writes contact sheets under
 `artifacts/skins/materials/`) and review the sheets. While iterating on the
-GLSL, `tools/skins/material_spheres.mjs` (run from `platform/apps/web`) renders
+GLSL, `tools/skins/material_spheres.mjs` (run from `services/online/apps/web`) renders
 every material on a sphere through headless Chromium in seconds, and the
 `skins-materials.spec.ts` e2e captures each material on the worker at studio
 resolution. Any shader edit changes the

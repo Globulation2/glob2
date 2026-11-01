@@ -25,7 +25,7 @@ Builds:
       - .github/ci/model.json.gz
       - test/fixtures
       - test/maxima/fixtures
-      - platform/apps/engine-agent/fixtures/ais
+      - services/online/apps/engine-agent/fixtures/ais
       - datasrc
       - games
     prebuild: sdkmanager 'platforms;android-36' 'build-tools;35.0.0' 'platform-tools'
@@ -52,7 +52,7 @@ Builds:
       - .github/ci/model.json.gz
       - test/fixtures
       - test/maxima/fixtures
-      - platform/apps/engine-agent/fixtures/ais
+      - services/online/apps/engine-agent/fixtures/ais
       - datasrc
       - games
     prebuild: sdkmanager 'platforms;android-36' 'build-tools;35.0.0' 'platform-tools'
@@ -79,7 +79,7 @@ Builds:
       - .github/ci/model.json.gz
       - test/fixtures
       - test/maxima/fixtures
-      - platform/apps/engine-agent/fixtures/ais
+      - services/online/apps/engine-agent/fixtures/ais
       - datasrc
       - games
     prebuild: sdkmanager 'platforms;android-36' 'build-tools;35.0.0' 'platform-tools'

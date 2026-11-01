@@ -174,7 +174,7 @@ class BrowserPackageTests(unittest.TestCase):
         (self.source / "i18n.js").write_text('/* translation runtime */')
         catalogs = self.source / "locales"
         catalogs.mkdir()
-        for canonical in (module.ROOT / "platform/packages/i18n/locales").glob("*.json"):
+        for canonical in (module.ROOT / "services/online/packages/i18n/locales").glob("*.json"):
             (catalogs / canonical.name).write_text('{"Loading game…":"Fixture translation"}')
 
     def refresh_checksums(self):

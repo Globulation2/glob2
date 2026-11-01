@@ -378,7 +378,7 @@ class InstallWebClientTests(unittest.TestCase):
                      'threaded/index.js', 'threaded/index.wasm', 'i18n.js'):
             (release / name).write_text('new ' + name)
         (release / 'index.html').write_text('<script src="i18n.js"></script>')
-        for catalog in (ROOT / 'platform/packages/i18n/locales').glob('*.json'):
+        for catalog in (ROOT / 'services/online/packages/i18n/locales').glob('*.json'):
             (release / 'locales' / catalog.name).write_bytes(catalog.read_bytes())
         return release
 

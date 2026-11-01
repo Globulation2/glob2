@@ -7,7 +7,10 @@ it('ships precisely the executable examples used by the native contract tests', 
   ) as Record<string, string>;
   for (const [name, source] of Object.entries(examples))
     expect(source).toBe(
-      readFileSync(new URL(`../../../../examples/hive-mind/${name}.js`, import.meta.url), 'utf8'),
+      readFileSync(
+        new URL(`../../../../../examples/hive-mind/${name}.js`, import.meta.url),
+        'utf8',
+      ),
     );
 });
 it('rejects fractional or sub-25-tick standing orders at the protocol boundary', () => {
@@ -25,7 +28,7 @@ it('rejects fractional or sub-25-tick standing orders at the protocol boundary',
 });
 it('the agent contract contains no scenario mutation or omniscient declarations', () => {
   const types = readFileSync(
-    new URL('../../../../examples/hive-mind/hive.d.ts', import.meta.url),
+    new URL('../../../../../examples/hive-mind/hive.d.ts', import.meta.url),
     'utf8',
   );
   const prompt = readFileSync(new URL('../src/commander-api.txt', import.meta.url), 'utf8');

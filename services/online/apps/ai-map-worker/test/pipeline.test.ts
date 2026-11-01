@@ -20,7 +20,7 @@ import { createRunner, type RunnerHarness } from '../../engine-agent/test/suppor
 import { AgentBlobs } from '@glob2/engine/blobs';
 import { Pipeline } from '../src/pipeline.ts';
 import type { MapProvider } from '../src/provider.ts';
-const repo = fileURLToPath(new URL('../../../../', import.meta.url));
+const repo = fileURLToPath(new URL('../../../../../', import.meta.url));
 const binary = process.env['GLOB2_BINARY'] ? resolve(repo, process.env['GLOB2_BINARY']) : undefined;
 describe.runIf(binary)('native AI map delivery', () => {
   let database: TestDatabase, h: RunnerHarness, studio: Studio, pipeline: Pipeline;

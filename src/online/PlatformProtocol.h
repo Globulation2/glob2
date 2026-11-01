@@ -11,14 +11,14 @@
 #include <string_view>
 
 // JSON shapes of the platform's realtime socket and REST API, as defined by
-// platform/packages/protocol (realtime.ts, resources.ts, common.ts). Only the
+// services/online/packages/protocol (realtime.ts, resources.ts, common.ts). Only the
 // fields the client acts on are typed here; everything else stays available as
 // raw JSON so screens can read new fields without a client change.
 namespace Online
 {
 using Json = nlohmann::json;
 
-// REALTIME_PROTOCOL_VERSION in platform/packages/protocol/src/realtime.ts.
+// REALTIME_PROTOCOL_VERSION in services/online/packages/protocol/src/realtime.ts.
 inline constexpr int REALTIME_PROTOCOL_VERSION = 1;
 // The server closes sockets that send larger frames (MAX_FRAME_BYTES).
 inline constexpr std::size_t REALTIME_FRAME_LIMIT = 64 * 1024;

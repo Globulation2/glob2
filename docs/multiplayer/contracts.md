@@ -4,7 +4,7 @@ Reference for JSON contracts, stored state and cross-replica coordination. Read 
 
 ## Contracts: the protocol package
 
-`platform/packages/protocol` is the single source of truth for every JSON
+`services/online/packages/protocol` is the single source of truth for every JSON
 document that crosses a process boundary. Schemas are TypeBox objects (plain JSON
 Schema 2020-12), so TypeScript gets static types and validators, and every other
 consumer gets the same schema as a file.
@@ -26,7 +26,7 @@ passes both.
 | REST | accounts and auth, `InstanceInfo`, rooms, matches, maps, leaderboards, `ErrorBody` |
 | Engine jobs | `EngineJob`, `EngineJobResult`, and per kind payload and result |
 
-**Fixtures for other languages.** `platform/packages/protocol/fixtures/` holds:
+**Fixtures for other languages.** `services/online/packages/protocol/fixtures/` holds:
 
 - `schemas/<Name>.schema.json`: one self-contained JSON Schema per registered name;
 - `valid/<Name>/<case>.json` and `invalid/<Name>/<case>.json`: documents every
@@ -38,7 +38,7 @@ passes both.
   verification time in the manifest.
 
 The fixtures are generated: edit `scripts/fixtureCases.ts` (or a schema) and run
-`npm run fixtures` in `platform/`. A test fails when the committed files are out
+`npm run fixtures` in `services/online/`. A test fails when the committed files are out
 of date, and another validates every fixture with an independent JSON Schema
 validator. C++ contract tests read the manifest and must reach the same verdicts.
 
@@ -86,7 +86,7 @@ Implemented: the envelope, `session.*` and `auth.handoff.*` (see
 `match.reconnect` (see [rooms and matches](rooms-and-matches.md)). Each replica
 indexes its sockets by account, sign-in and pending handoff, and listens on one
 NOTIFY channel (`realtime`). Anything addressed to a socket is published there and
-delivered by the replica holding it (`platform/apps/api/src/realtime/hub.ts`):
+delivered by the replica holding it (`services/online/apps/api/src/realtime/hub.ts`):
 `{t: "event", to: {account | family | connection}, …}`, `{t: "handoff", attemptId}`,
 and the room and match messages `{t: "room" | "roomChat" | "roomClosed" |
 "matchStart", …}`, which carry ids only. Replicas also listen on `queue_events`
@@ -98,7 +98,7 @@ response with the schema issues in `details`.
 
 ## AccessPolicy
 
-`AccessPolicy` (`platform/packages/core/src/accessPolicy.ts`) has three checks,
+`AccessPolicy` (`services/online/packages/core/src/accessPolicy.ts`) has three checks,
 `canHost`, `canJoin` and `canQueue`, each returning allowed or a denial with a
 reason (mapped to the `access_denied` error code). The only implementation is
 `allow-all`, selected in `instance.yaml`. The `entitlements` table records product
@@ -109,7 +109,7 @@ belong to the feature that owns them, not to the policy.
 
 ## Data model
 
-Migrations are forward-only plain SQL in `platform/packages/db/migrations/`,
+Migrations are forward-only plain SQL in `services/online/packages/db/migrations/`,
 applied in order by `glob2-migrate` (`npm run migrate -- latest`); the Kysely
 types in `src/schema.ts` are checked column for column against the migrated
 database in tests.
@@ -134,7 +134,7 @@ Document-shaped columns (`matches.setup` and `end_report`, `engine_jobs.result`,
 `rooms.settings`, `region_rtts`, `match_proposals.map`, generator descriptors and
 map facts) are validated against the protocol schemas when they are written, and
 decoded again when they are read: `readStored(format, value)` in
-`platform/packages/play/src/stored.ts`. Rows outlive the code that wrote them, so
+`services/online/packages/play/src/stored.ts`. Rows outlive the code that wrote them, so
 a read
 
 1. takes the document's version from `schemaVersion` (a document without one is
@@ -155,7 +155,7 @@ the current MatchSetup version.
 To change a stored shape incompatibly, bump the format's version (for MatchSetup,
 `MATCH_SETUP_SCHEMA_VERSION`, which writers stamp into the document), add an
 `upgrades[old]` step, and add a frozen document of the old version under
-`platform/packages/play/test/fixtures/stored/`. That test decodes every frozen
+`services/online/packages/play/test/fixtures/stored/`. That test decodes every frozen
 document of every version, so an old row can never silently stop reading.
 
 

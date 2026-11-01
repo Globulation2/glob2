@@ -2,11 +2,11 @@ import { build } from 'esbuild';
 import { readFile, mkdir, copyFile, writeFile, access } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import { locales } from '../src/locales.ts';
-const root = fileURLToPath(new URL('../../../../', import.meta.url));
+const root = fileURLToPath(new URL('../../../../../', import.meta.url));
 const browser = `${root}/platforms/web`;
 const output = await build({
   stdin: {
-    contents: `import * as i18n from './platform/packages/i18n/src/index.ts';
+    contents: `import * as i18n from './services/online/packages/i18n/src/index.ts';
       const base = new URL('.', document.currentScript.src);
       i18n.configureCatalogLoader(async locale => {
         const response = await fetch(new URL('locales/' + locale + '.json', base));

@@ -129,15 +129,15 @@ class PolicyTest(unittest.TestCase):
                      'tools/encode_music.py']:
             selected = self.select([path])
             self.assertTrue(selected['music'] and selected['platform'] and selected['platform_stack'])
-        self.assertTrue(self.select(['platform/apps/music-worker/src/process.ts'])['platform_stack'])
-        self.assertTrue(self.select(['platform/apps/ai-music-worker/src/runner.ts'])['platform_stack'])
+        self.assertTrue(self.select(['services/online/apps/music-worker/src/process.ts'])['platform_stack'])
+        self.assertTrue(self.select(['services/online/apps/ai-music-worker/src/runner.ts'])['platform_stack'])
 
     def test_platform_stack_smoke_follows_the_stack_inputs(self):
         for path in ['deploy/compose.yaml', 'deploy/Dockerfile', 'test/deployment/platform_stack_smoke.py',
-                     'src/relay/RelayServer.cpp', 'platform/packages/db/migrations/0006_room_kicks_lost_relays.sql',
-                     'platform/apps/worker/src/main.ts', 'platform/package-lock.json']:
+                     'src/relay/RelayServer.cpp', 'services/online/packages/db/migrations/0006_room_kicks_lost_relays.sql',
+                     'services/online/apps/worker/src/main.ts', 'services/online/package-lock.json']:
             self.assertTrue(self.select([path])['platform_stack'], path)
-        for path in ['deploy/README.md', 'platform/apps/api/src/play/rooms.ts', 'src/ai/Maxima.cpp',
+        for path in ['deploy/README.md', 'services/online/apps/api/src/play/rooms.ts', 'src/ai/Maxima.cpp',
                      'src/hud/input/GameGUIInput.cpp', 'platforms/web/shell.html']:
             self.assertFalse(self.select([path])['platform_stack'], path)
 

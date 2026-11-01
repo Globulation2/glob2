@@ -215,7 +215,7 @@ and a local hide control before this provides complete in-match moderation.
 
 Stripe-hosted checkout uses three server-defined products: `designer`, `stripes`,
 and `spots`. The API seeds two immutable presets (colour atlas and material map
-from `platform/apps/api/assets/skins/`) with stable IDs;
+from `services/online/apps/api/assets/skins/`) with stable IDs;
 existing versions and moderation decisions are never overwritten at startup.
 The web designer includes the store, account purchase history, and explicit
 payment reconciliation after returning from Checkout. Configure `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`, and the

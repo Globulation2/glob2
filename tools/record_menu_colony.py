@@ -31,7 +31,7 @@ def main():
         if not args.harness:
             parser.error('--harness is required unless --encode-only is supplied')
         run(args.harness.resolve(), 'record-colony', frames, (args.seconds + 2) * 25, 1600, 900)
-    art = ROOT / 'platform/apps/web/src/art'
+    art = ROOT / 'services/online/apps/web/src/art'
     run(args.ffmpeg, '-y', '-framerate', 25, '-i', frames / '%04d.bmp',
         '-filter_complex',
         f'[0:v]split=3[mid][tail][head];'

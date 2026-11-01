@@ -18,7 +18,7 @@ import { DEFAULT_LIMITS } from '../../engine-agent/src/engine.ts';
 import { REAL_GENERATOR_PACKAGE } from '../../engine-agent/test/generatorFixture.ts';
 import { createHarness, RealtimeClient } from './support.ts';
 import { registeredPlayer, serveSim, roomState, registerRelay, RELAY_KEY } from './playSupport.ts';
-const root = resolve(import.meta.dirname, '../../../..');
+const root = resolve(import.meta.dirname, '../../../../..');
 const binary = process.env.GLOB2_BINARY,
   scratch = process.env.GLOB2_GENERATOR_SCRATCH;
 describe.runIf(binary && scratch)('real shared generator publication and room flow', () => {

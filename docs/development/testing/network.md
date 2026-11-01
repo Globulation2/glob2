@@ -42,7 +42,7 @@ platform stack is exercised by `test/deployment/platform_stack_smoke.py` (see
 
 The online client's integration test, `test/online_service/test_platform_client.py`,
 drives `platform-client-probe` (also built by `transport-test`) against a real
-platform API; it needs a `platform/` checkout and a Postgres role that may
+platform API; it needs a `services/online/` checkout and a Postgres role that may
 create databases, and is skipped otherwise (see `docs/multiplayer/client.md`).
 
 From the repository root:

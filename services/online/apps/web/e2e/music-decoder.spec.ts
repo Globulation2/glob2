@@ -7,7 +7,7 @@ test('production CSP permits worker Opus decoding while document evaluation stay
 }) => {
   // The existing trimmed fixture contains 4813 stereo frames of audible tones.
   const bytes = readFileSync(
-    new URL('../../../../test/fixtures/audio/trimmed.opus', import.meta.url),
+    new URL('../../../../../test/fixtures/audio/trimmed.opus', import.meta.url),
   );
   const sha256 = createHash('sha256').update(bytes).digest('hex');
   await page

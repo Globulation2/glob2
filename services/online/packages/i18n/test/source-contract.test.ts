@@ -139,9 +139,9 @@ it('collects future metadata from declarations without requiring schema document
     for (const file of new Set(fixedMetadataSources().map((entry) => entry.file))) {
       const target = join(root, file);
       mkdirSync(dirname(target), { recursive: true });
-      writeFileSync(target, readFileSync(new URL('../../../../' + file, import.meta.url)));
+      writeFileSync(target, readFileSync(new URL('../../../../../' + file, import.meta.url)));
     }
-    const path = join(root, 'platform/packages/protocol/src/ais.ts');
+    const path = join(root, 'services/online/packages/protocol/src/ais.ts');
     writeFileSync(
       path,
       readFileSync(path, 'utf8').replace("'Balanced',", "'Balanced', 'Future display label',") +

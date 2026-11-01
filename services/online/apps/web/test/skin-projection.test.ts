@@ -19,7 +19,7 @@ import {
   DEFAULT_PATTERN,
   patternValue,
 } from '../src/skins/projection.ts';
-const root = resolve(import.meta.dirname, '../../../..');
+const root = resolve(import.meta.dirname, '../../../../..');
 function asset(name: string) {
   const b = readFileSync(resolve(root, `data/skins/colony-v1/${name}.gsk`));
   return {

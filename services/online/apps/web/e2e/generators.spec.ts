@@ -47,7 +47,7 @@ test('generator catalogue, exact release evidence and staged publication', async
   );
   const output = resolve(
     import.meta.dirname,
-    '../../../../artifacts/generator-library/screenshots',
+    '../../../../../artifacts/generator-library/screenshots',
   );
   mkdirSync(output, { recursive: true });
   await page.goto('/generators');

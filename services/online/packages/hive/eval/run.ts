@@ -19,7 +19,7 @@ if (process.env['HIVE_EVAL_REASONINGCANVAS'] === '1')
   loadEnvFile(join(homedir(), 'reasoningcanvas/server/.env.local'));
 const key = process.env['HIVE_OPENAI_API_KEY'] ?? process.env['OPENAI_API_KEY'];
 if (!key) throw new Error('An explicitly enabled development credential is required.');
-const root = resolve(import.meta.dirname, '../../../..');
+const root = resolve(import.meta.dirname, '../../../../..');
 const outputDir = resolve(process.env['HIVE_EVAL_OUTPUT'] ?? join(root, 'artifacts/hive/eval'));
 mkdirSync(outputDir, { recursive: true });
 const binary = resolve(

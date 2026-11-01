@@ -9,7 +9,7 @@ const port = Number(process.env['PORT'] ?? 4280);
 export default defineConfig({
   testDir: '.',
   testMatch: '*.spec.ts',
-  outputDir: '../../../../artifacts/web-app/test-results',
+  outputDir: '../../../../../artifacts/web-app/test-results',
   timeout: 120_000,
   workers: 1,
   retries: 0,

@@ -13,7 +13,7 @@ from unittest.mock import patch
 
 ROOT = Path(__file__).resolve().parents[2]
 FOLDER = ROOT / 'data/skins/colony-v1'
-DESIGNER = ROOT / 'platform/apps/web/public/skins/models'
+DESIGNER = ROOT / 'services/online/apps/web/public/skins/models'
 # Which fitted format animates each unit clip by default, and its header size.
 UNIT_FORMATS = {
     'worker-walk': ('shapes', 'GSB1', 32), 'worker-swim': ('shapes', 'GSB1', 32),

@@ -25,7 +25,7 @@ placeholders.
 git clone https://github.com/Globulation2/glob2.git glob2
 cd glob2/deploy
 cp .env.example .env
-cp ../platform/instance.example.yaml instance.yaml
+cp ../services/online/instance.example.yaml instance.yaml
 ```
 
 1. Edit `.env`. At least:

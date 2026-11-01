@@ -1,7 +1,7 @@
 {
   "source": "examples/javascript/studio-starter.js",
   "sourceSha256": "f5f099760dc5085746c4112a3a91a3aad7075457895d44cfb5f8e949a7253d80",
-  "map": "platform/apps/engine-agent/fixtures/ais/two.map.gz",
+  "map": "services/online/apps/engine-agent/fixtures/ais/two.map.gz",
   "mapSha256": "b3cba13a66f18eb2680df431c4e5b0b7bf594b9ada759283af981f3cc15f4a39",
   "seed": 19,
   "opponent": "numbi",

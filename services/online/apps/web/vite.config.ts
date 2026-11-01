@@ -7,7 +7,7 @@ import { syncDesignSystem, stageDesignAssets } from '../../scripts/design-system
 const designSystem = syncDesignSystem();
 stageDesignAssets(fileURLToPath(new URL('./public', import.meta.url)), designSystem, false);
 copyFileSync(
-  fileURLToPath(new URL('../../../data/fonts/LICENSE-Noto.txt', import.meta.url)),
+  fileURLToPath(new URL('../../../../data/fonts/LICENSE-Noto.txt', import.meta.url)),
   fileURLToPath(new URL('./public/fonts/LICENSE-Noto.txt', import.meta.url)),
 );
 
@@ -18,9 +18,9 @@ export default defineConfig({
       // Share native shader and icon sources without exposing the rest of the checkout.
       allow: [
         searchForWorkspaceRoot(fileURLToPath(new URL('.', import.meta.url))),
-        fileURLToPath(new URL('../../../libs/gag/shaders', import.meta.url)),
-        fileURLToPath(new URL('../../../datasrc/icons/tabler', import.meta.url)),
-        fileURLToPath(new URL('../../../data/fonts/scripts', import.meta.url)),
+        fileURLToPath(new URL('../../../../libs/gag/shaders', import.meta.url)),
+        fileURLToPath(new URL('../../../../datasrc/icons/tabler', import.meta.url)),
+        fileURLToPath(new URL('../../../../data/fonts/scripts', import.meta.url)),
       ],
     },
     headers: {

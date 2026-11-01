@@ -108,7 +108,7 @@ changing the protocol or the record: see [network telemetry](../development/netw
 ### MatchSetup to GameHeader
 
 `src/online/MatchSetup.{h,cpp}` turns the platform's MatchSetup JSON
-(`platform/packages/protocol`, `src/matchSetup.ts`, is the source of truth) into the
+(`services/online/packages/protocol`, `src/matchSetup.ts`, is the source of truth) into the
 `GameHeader` that every client and the verifier run:
 
 1. `MatchSetup::parse` checks the JSON Schema rules (every field required, no unknown
@@ -147,7 +147,7 @@ lost and never stands in the way of the opponents-defeated victory. A `closed` s
 (`{seat, kind: "closed", team}`) says so explicitly. Closed seats are not players and
 create no `BasePlayer`; they are numbered after every human and AI seat so players
 keep the numbers `0..p-1`. Rooms send each empty or locked room seat this way
-(`roomMatchSeats` in `platform/apps/api/src/play/rooms.ts`): the taken room seats become
+(`roomMatchSeats` in `services/online/apps/api/src/play/rooms.ts`): the taken room seats become
 match seats `0..p-1` in room seat order on their own map teams, and the empty ones
 follow as closed seats. A match seat therefore equals its room seat only while no empty
 room seat comes before it. LAN rooms list no seat at all for a team nobody took, which

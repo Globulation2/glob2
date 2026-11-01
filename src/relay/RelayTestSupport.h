@@ -5,7 +5,7 @@
 
 // Helpers for the relay tests: fixture files, and the protocol package's deterministic
 // TEST-ONLY Ed25519 key (SHA-256 of "glob2 protocol fixture key, TEST ONLY", see
-// platform/packages/protocol/scripts/fixtureFiles.ts) to sign tickets of our own.
+// services/online/packages/protocol/scripts/fixtureFiles.ts) to sign tickets of our own.
 
 #include <nlohmann/json.hpp>
 #include <openssl/evp.h>

@@ -4,7 +4,7 @@ How versioned engine jobs validate content, verify matches and maintain the shar
 
 ## Engine agents
 
-An engine agent (`platform/apps/engine-agent`) wraps one glob2 binary and runs
+An engine agent (`services/online/apps/engine-agent`) wraps one glob2 binary and runs
 the jobs that need the engine. It runs each job as a separate headless process
 with a stripped environment. Because that process loads uploaded maps, saves and
 match records with the legacy C++ loader, the agent holds no database or blob-store

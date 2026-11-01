@@ -142,7 +142,7 @@ const TYPES: Record<string, string> = {
 const ASSET_NAME = /^[a-zA-Z0-9-]+\.(webp|png|jpg|woff2|ttf|js|css|txt)$/;
 
 // Serve the same pinned script fonts as the app; never accept arbitrary paths.
-const scriptFontRoot = new URL('../../../../../data/fonts/', import.meta.url);
+const scriptFontRoot = new URL('../../../../../../data/fonts/', import.meta.url);
 const scriptFontManifest = JSON.parse(
   readFileSync(new URL('scripts/manifest.json', scriptFontRoot), 'utf8'),
 ) as { fonts: { name: string }[] };

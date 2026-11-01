@@ -131,7 +131,7 @@ export function sourceErrors(
 /** The pre-game browser launcher uses the same catalogs as the online app. */
 export function browserSourceErrors(
   english: Record<string, unknown>,
-  html = readFileSync(new URL('../../../../platforms/web/shell.html', import.meta.url), 'utf8'),
+  html = readFileSync(new URL('../../../../../platforms/web/shell.html', import.meta.url), 'utf8'),
 ): string[] {
   const errors: string[] = [];
   const requireKey = (text: string, offset: number) => {
@@ -197,38 +197,38 @@ export function browserSourceErrors(
 
 /** Fixed UI registries; exclude canonical IDs and developer-only schema documentation. */
 const FIXED_METADATA = [
-  ['platform/packages/protocol/src/ais.ts', 'AI_TAGS', []],
-  ['platform/packages/protocol/src/ais.ts', 'AI_CHECK_LABELS', []],
-  ['platform/packages/protocol/src/connectionQuality.ts', 'CONNECTION_RATING_LABELS', []],
+  ['services/online/packages/protocol/src/ais.ts', 'AI_TAGS', []],
+  ['services/online/packages/protocol/src/ais.ts', 'AI_CHECK_LABELS', []],
+  ['services/online/packages/protocol/src/connectionQuality.ts', 'CONNECTION_RATING_LABELS', []],
   [
-    'platform/packages/protocol/src/connectionQuality.ts',
+    'services/online/packages/protocol/src/connectionQuality.ts',
     'CONNECTION_METRICS',
     ['label', 'description'],
   ],
-  ['platform/packages/protocol/src/skins.ts', 'COLONY_SKIN_MATERIALS', ['name', 'group']],
-  ['platform/apps/web/src/App.tsx', 'ROUTES', ['title']],
-  ['platform/apps/web/src/admin/Admin.tsx', 'TABS', ['name']],
-  ['platform/apps/web/src/admin/Accounts.tsx', 'MUTES', ['name']],
-  ['platform/apps/web/src/admin/presentation.ts', 'PRODUCT_NAMES', []],
-  ['platform/apps/web/src/admin/presentation.ts', 'PAYMENT_MODE_NAMES', []],
-  ['platform/apps/web/src/admin/presentation.ts', 'REPORTING_PERIOD_NAMES', []],
-  ['platform/apps/web/src/admin/presentation.ts', 'FINANCE_KIND_NAMES', []],
-  ['platform/apps/web/src/admin/presentation.ts', 'MATCH_METRIC_NAMES', []],
-  ['platform/apps/web/src/admin/presentation.ts', 'COMPLETION_METRIC_NAMES', []],
-  ['platform/apps/web/src/pages/Maps.tsx', 'SORTS', ['name']],
-  ['platform/apps/web/src/music/Validation.tsx', 'CATEGORIES', ['label', 'guidance']],
-  ['platform/apps/web/src/skins/atlas.ts', 'MODELS', ['name']],
-  ['platform/apps/web/src/skins/swarmShapes.ts', 'SWARM_SHAPES', ['name', 'description']],
-  ['platform/apps/web/src/pages/Maps.tsx', 'VISIBILITY_TEXT', []],
-  ['platform/apps/web/src/pages/Match.tsx', 'VERDICT_TEXT', []],
-  ['platform/apps/web/src/skins/geometry.ts', 'ACTION_LABELS', []],
-  ['platform/apps/web/src/messages.ts', 'STATUS_LABELS', []],
-  ['platform/apps/web/src/music/Player.tsx', 'MOODS', []],
-  ['platform/apps/web/src/music/Player.tsx', 'MOOD_DESCRIPTIONS', []],
+  ['services/online/packages/protocol/src/skins.ts', 'COLONY_SKIN_MATERIALS', ['name', 'group']],
+  ['services/online/apps/web/src/App.tsx', 'ROUTES', ['title']],
+  ['services/online/apps/web/src/admin/Admin.tsx', 'TABS', ['name']],
+  ['services/online/apps/web/src/admin/Accounts.tsx', 'MUTES', ['name']],
+  ['services/online/apps/web/src/admin/presentation.ts', 'PRODUCT_NAMES', []],
+  ['services/online/apps/web/src/admin/presentation.ts', 'PAYMENT_MODE_NAMES', []],
+  ['services/online/apps/web/src/admin/presentation.ts', 'REPORTING_PERIOD_NAMES', []],
+  ['services/online/apps/web/src/admin/presentation.ts', 'FINANCE_KIND_NAMES', []],
+  ['services/online/apps/web/src/admin/presentation.ts', 'MATCH_METRIC_NAMES', []],
+  ['services/online/apps/web/src/admin/presentation.ts', 'COMPLETION_METRIC_NAMES', []],
+  ['services/online/apps/web/src/pages/Maps.tsx', 'SORTS', ['name']],
+  ['services/online/apps/web/src/music/Validation.tsx', 'CATEGORIES', ['label', 'guidance']],
+  ['services/online/apps/web/src/skins/atlas.ts', 'MODELS', ['name']],
+  ['services/online/apps/web/src/skins/swarmShapes.ts', 'SWARM_SHAPES', ['name', 'description']],
+  ['services/online/apps/web/src/pages/Maps.tsx', 'VISIBILITY_TEXT', []],
+  ['services/online/apps/web/src/pages/Match.tsx', 'VERDICT_TEXT', []],
+  ['services/online/apps/web/src/skins/geometry.ts', 'ACTION_LABELS', []],
+  ['services/online/apps/web/src/messages.ts', 'STATUS_LABELS', []],
+  ['services/online/apps/web/src/music/Player.tsx', 'MOODS', []],
+  ['services/online/apps/web/src/music/Player.tsx', 'MOOD_DESCRIPTIONS', []],
 ] as const;
 
 export function fixedMetadataSources(
-  root = fileURLToPath(new URL('../../../../', import.meta.url)),
+  root = fileURLToPath(new URL('../../../../../', import.meta.url)),
 ): { source: string; file: string; line: number }[] {
   const sources: { source: string; file: string; line: number }[] = [];
   for (const [file, variable, fields] of FIXED_METADATA) {

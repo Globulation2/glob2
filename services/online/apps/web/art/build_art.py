@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 # SPDX-License-Identifier: GPL-3.0-or-later
 """Builds the web app's artwork from the game's own data (GPL-3.0, see
-docs/assets/source-attribution.md and platform/apps/web/art/README.md).
+docs/assets/source-attribution.md and services/online/apps/web/art/README.md).
 
-    python3 platform/apps/web/art/build_art.py --design-system ../glob2-design-system
+    python3 services/online/apps/web/art/build_art.py --design-system ../glob2-design-system
 
 Writes compressed WebP/PNG files to the shared design-system assets directory.
 Consumers import the package rather than keeping independent copies. Needs Pillow.
@@ -22,7 +22,7 @@ from pathlib import Path
 
 from PIL import Image, ImageFilter
 
-REPO = Path(__file__).resolve().parents[4]
+REPO = Path(__file__).resolve().parents[5]
 GFX = REPO / "data/gfx"
 HIGHRES = REPO / "data/highres/v1"
 OUT = STATIC = PUBLIC = Path()  # assigned only after an explicit destination
@@ -215,13 +215,13 @@ def main() -> None:
     # Glob2 Sans is retained in the theme checkout; font regeneration is a separate asset change.
     if not (STATIC / "glob2-sans.woff2").exists():
         raise FileNotFoundError("theme checkout must contain assets/glob2-sans.woff2")
-    nunito = REPO / "platform/node_modules/@fontsource-variable/nunito/files/nunito-latin-wght-normal.woff2"
+    nunito = REPO / "services/online/node_modules/@fontsource-variable/nunito/files/nunito-latin-wght-normal.woff2"
     if nunito.exists():
         shutil.copy(nunito, STATIC / "nunito.woff2")
         shutil.copy(nunito.parents[1] / "LICENSE", STATIC / "LICENSE-Nunito.txt")
 
     else:
-        print("note: run npm ci in platform/ to copy the Nunito font")
+        print("note: run npm ci in services/online/ to copy the Nunito font")
 
     provenance = STATIC / "provenance.json"
     info = json.loads(provenance.read_text()) if provenance.exists() else {}

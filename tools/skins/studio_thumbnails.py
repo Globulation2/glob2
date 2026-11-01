@@ -72,7 +72,7 @@ def from_legacy(output):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--sprite-bundle', type=Path)
-    parser.add_argument('--output', type=Path, default=ROOT / 'platform/apps/web/public/skins/thumbs')
+    parser.add_argument('--output', type=Path, default=ROOT / 'services/online/apps/web/public/skins/thumbs')
     parser.add_argument('--clip', choices=CLIPS, action='append')
     args = parser.parse_args()
     if args.sprite_bundle:

@@ -17,7 +17,7 @@ import { contentKey, defaultMapPool } from '@glob2/core';
 import { engineJobs, schemaIssues, type EngineJob, type EngineJobKind } from '@glob2/protocol';
 import { createRunner, SIM, type RunnerHarness } from './support.ts';
 
-const REPO = fileURLToPath(new URL('../../../../', import.meta.url));
+const REPO = fileURLToPath(new URL('../../../../../', import.meta.url));
 const binary = process.env['GLOB2_BINARY'] ? resolve(REPO, process.env['GLOB2_BINARY']) : undefined;
 const workdir = resolve(REPO, process.env['GLOB2_WORKDIR'] ?? '.');
 const GENERATORS = ['symmetric-arena', 'even-ground', 'marchland'];

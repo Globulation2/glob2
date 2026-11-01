@@ -49,10 +49,10 @@ THREAD_FILES = {'src/map/ResourceGrowth.cpp', 'src/map/ResourceGrowth.h', 'src/g
 # do not otherwise select every check skip it rather than adding a second
 # client build to every PR.
 PLATFORM_STACK_PATHS = (
-    'deploy/', 'test/deployment/', 'src/relay/', 'platform/package-lock.json',
-    'platform/packages/db/migrations/', 'platform/apps/api/src/main.ts',
-    'platform/apps/worker/src/main.ts', 'platform/apps/engine-agent/src/main.ts',
-    'platform/apps/music-worker/', 'platform/apps/ai-music-worker/',
+    'deploy/', 'test/deployment/', 'src/relay/', 'services/online/package-lock.json',
+    'services/online/packages/db/migrations/', 'services/online/apps/api/src/main.ts',
+    'services/online/apps/worker/src/main.ts', 'services/online/apps/engine-agent/src/main.ts',
+    'services/online/apps/music-worker/', 'services/online/apps/ai-music-worker/',
 )
 TRANSPORT_HARNESSES = {'NetConnectionHarness.cpp', 'NativeMultiplayerPeer.cpp', 'WssTransportHarness.cpp',
                        'WssListenerHarness.cpp', 'LANDiscoveryHarness.cpp', 'run-network-transport-tests.py'}
@@ -126,10 +126,10 @@ def select(paths, labels=(), known=False):
     for path in paths:
         if cheap_path(path):
             continue
-        if path.startswith('platform/'):
+        if path.startswith('services/online/'):
             # The TypeScript platform has its own job. Generated contract fixtures
             # are also consumed by the C++ contract tests.
-            if path.startswith('platform/packages/protocol/fixtures/'):
+            if path.startswith('services/online/packages/protocol/fixtures/'):
                 add(path, 'native', 'platform')
             else:
                 add(path, 'platform')

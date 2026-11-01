@@ -58,11 +58,11 @@ def classify(paths):
             continue
         if path.startswith("docs/") or path.endswith(".md"):
             continue
-        if path.startswith("platform/"):
+        if path.startswith("services/online/"):
             # Selected by ci_policy's platform flag; protocol fixtures also feed
             # the C++ contract tests.
             platform = True
-            native = native or path.startswith("platform/packages/protocol/fixtures/")
+            native = native or path.startswith("services/online/packages/protocol/fixtures/")
             continue
         if path.startswith(MUSIC_TOOL_PATHS):
             music = True

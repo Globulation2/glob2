@@ -1,5 +1,5 @@
 import type { SetPackage } from './sets.ts';
-import registry from '../../../../data/resources/registry.json' with { type: 'json' };
+import registry from '../../../../../data/resources/registry.json' with { type: 'json' };
 export const TERRAIN_PRESETS = [
   'water',
   'sand',

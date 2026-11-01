@@ -1,7 +1,7 @@
 import { t, useLocale, RichMessage } from '../../i18n.tsx';
 import { lazy, Suspense, useMemo, useState } from 'react';
 import { decodeGeneratorDraft, encodeGeneratorDraft } from '@glob2/protocol';
-import toolkit from '../../../../../../data/generators/toolkit.d.ts?raw';
+import toolkit from '../../../../../../../data/generators/toolkit.d.ts?raw';
 const CodeEditor = lazy(() => import('../../components/studio/CodeEditor.tsx'));
 export default function Editor({
   source,

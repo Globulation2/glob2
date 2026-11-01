@@ -5,7 +5,7 @@ import { COLONY_SKIN_MATERIALS } from '@glob2/protocol';
 
 // Review evidence for the material catalogue at studio resolution: the swatch
 // strips and the worker filled with every material, written under artifacts/.
-const output = resolve(import.meta.dirname, '../../../../artifacts/skins/materials');
+const output = resolve(import.meta.dirname, '../../../../../artifacts/skins/materials');
 
 async function fillMaterial(page: Page, name: string) {
   await page.getByRole('button', { name: 'Patterns', exact: true }).click();

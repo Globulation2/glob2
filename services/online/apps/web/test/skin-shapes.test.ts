@@ -7,7 +7,7 @@ import { projectPose, shapeGeometry, unitClipFormat } from '../src/skins/geometr
 import { buildFillChart } from '../src/skins/projection.ts';
 
 const fixture = JSON.parse(
-  readFileSync(new URL('../../../../test/fixtures/skins/shapes.json', import.meta.url), 'utf8'),
+  readFileSync(new URL('../../../../../test/fixtures/skins/shapes.json', import.meta.url), 'utf8'),
 ) as {
   hex: string;
   header: Record<string, number>;

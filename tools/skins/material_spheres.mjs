@@ -4,7 +4,7 @@
 // shared GLSL under WebGL2 in headless Chromium, for quick iteration on
 // libs/gag/shaders/skin-material.glsl before a native build.
 //
-//   cd platform/apps/web && node ../../../tools/skins/material_spheres.mjs out.png [RRGGBB]
+//   cd services/online/apps/web && node ../../../tools/skins/material_spheres.mjs out.png [RRGGBB]
 //
 // Runs from the web app so Playwright's Chromium resolves; software WebGL
 // (swiftshader) keeps the result independent of the host GPU.

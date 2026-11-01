@@ -6,7 +6,7 @@ import { rigGeometry, projectPose } from '../src/skins/geometry.ts';
 import { buildFillChart } from '../src/skins/projection.ts';
 import { decodeRig, evaluateRig, paletteAtTime } from '../src/skins/rig.ts';
 const fixture = JSON.parse(
-  readFileSync(new URL('../../../../test/fixtures/skins/rig.json', import.meta.url), 'utf8'),
+  readFileSync(new URL('../../../../../test/fixtures/skins/rig.json', import.meta.url), 'utf8'),
 ) as {
   hex: string;
   expected: number[][];

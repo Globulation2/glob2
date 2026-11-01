@@ -61,7 +61,7 @@ def launcher_script_fonts(root, output):
             raise ValueError('Launcher font checksum mismatch: ' + name)
         shutil.copyfile(source, destination / name)
     shutil.copyfile(font_root / 'LICENSE-Noto.txt', destination / 'LICENSE-Noto.txt')
-    css = (root / 'platform/packages/i18n/script-fonts.css').read_text()
+    css = (root / 'services/online/packages/i18n/script-fonts.css').read_text()
     (output / 'script-fonts.css').write_text(css.replace('../../../data/fonts/scripts/', 'fonts/'))
 # Never read by the game: build and packaging files, documentation, store metadata,
 # desktop icons, release screenshots and files no code path refers to.

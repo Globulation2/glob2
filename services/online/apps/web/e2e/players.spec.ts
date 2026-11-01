@@ -23,7 +23,7 @@ for (const theme of ['light', 'dark'] as const) {
         .analyze()
     ).violations;
     expect(violations).toEqual([]);
-    const dir = resolve(import.meta.dirname, '../../../../artifacts/web-app/players');
+    const dir = resolve(import.meta.dirname, '../../../../../artifacts/web-app/players');
     mkdirSync(dir, { recursive: true });
     await page.screenshot({
       path: resolve(dir, `${info.project.name}-${theme}-directory.png`),

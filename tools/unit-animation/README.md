@@ -475,14 +475,14 @@ in the generator, then regenerate and install every shape with Blender 3.6.23:
 ```sh
 blender --background --factory-startup -t 1 --python-exit-code 1 \
   --python tools/skins/generate_swarms.py -- --output data/skins/colony-v1
-cp data/skins/colony-v1/swarm-*.gsk platform/apps/web/public/skins/models/
+cp data/skins/colony-v1/swarm-*.gsk services/online/apps/web/public/skins/models/
 ```
 
 `-t 1` is required: metaball surfacing is only byte-reproducible on one thread.
 The generator writes `swarm-<id>.gsk` and records its hashes, design, coverage
 and volume in `manifest.json`; `test_skin_assets.py` fails if the generator, its
 helpers or a mesh change without regeneration, or if the designer's copies in
-`platform/apps/web/public/skins/models` differ. A new shape also needs its id in
+`services/online/apps/web/public/skins/models` differ. A new shape also needs its id in
 `src/online/SwarmMeshCatalog.h` and the protocol's `SwarmMesh`, in the same
 order as `DESIGNS` (the asset test checks the three agree), and a name and
 description in the designer's `SWARM_SHAPES`. Ids are part of signed skins, so
@@ -667,7 +667,7 @@ output-directory arguments, then extract the selectors:
 
 ```sh
 python3 tools/skins/studio_thumbnails.py --sprite-bundle artifacts/rig/sprites \
-  --clip worker-walk --output platform/apps/web/public/skins/thumbs
+  --clip worker-walk --output services/online/apps/web/public/skins/thumbs
 ```
 
 This path requires Pillow, validates the page hash and dimensions, and crops
@@ -693,7 +693,7 @@ A GSB1 frame is `mean + sum(c_k * shape_k)` for positions and, separately,
 normals, turned about model Z by the heading and taken through the camera.
 Native rendering evaluates it on the CPU (`SkinShapeModel`) into the baked
 per-pose upload path, cached per atlas tile like a baked pose; Studio evaluates
-the displayed pose the same way (`platform/apps/web/src/skins/shapes.ts`).
+the displayed pose the same way (`services/online/apps/web/src/skins/shapes.ts`).
 
 A GSR1 frame maps to a time `((floor(f/32) % groups)*32 + f%32)/32` seconds
 in a `samples/32` second cycle, where `groups` is `samples/32`: a 64-sample
@@ -712,7 +712,7 @@ once per model and context and skins it on the GPU with the shader in
 same pose; the context keeps at most 16 uploaded rest models beside the
 bounded pose atlas, and failed shader compilation or capability checks use the
 CPU evaluator (`SkinModel::evaluate`). Studio uses the same contract in
-`platform/apps/web/src/skins/rig.ts`.
+`services/online/apps/web/src/skins/rig.ts`.
 
 `SkinMesh` adapts all three formats for the renderer. `fromShapes` and
 `fromModel` present one clip of a model as 256 frames without owning pose
@@ -771,7 +771,7 @@ publishes a new immutable model only after all checks pass; failures leave an
 existing mesh untouched.
 
 C++ and TypeScript validate decoded float32 values using binary64 arithmetic
-(`libs/gag/src/SkinAssetReader.h`, `platform/apps/web/src/skins/binaryAsset.ts`).
+(`libs/gag/src/SkinAssetReader.h`, `services/online/apps/web/src/skins/binaryAsset.ts`).
 Inclusive scale and duration lower bounds and heading bounds use their
 serialized float32 endpoints; norm and weight-sum tolerance is binary64
 `0.0001`. Accepted quaternions and weights normalize into float32 storage in
@@ -818,7 +818,7 @@ in every browser, so they have no shader to check here. The suite has no API
 or built-app dependency; install the repository's Playwright browsers first:
 
 ```sh
-npm exec --prefix platform -- playwright test -c platform/apps/web/e2e/rig.config.ts
+npm exec --prefix platform -- playwright test -c services/online/apps/web/e2e/rig.config.ts
 ```
 
 All three engine projects (Chromium, Firefox and WebKit) must pass; unavailable

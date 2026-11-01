@@ -20,14 +20,14 @@ it('browser check rejects stale copies without rewriting or creating development
   const packageRoot = fileURLToPath(new URL('../', import.meta.url));
   const fixture = mkdtempSync(join(tmpdir(), 'glob2-i18n-build-'));
   try {
-    const pkg = join(fixture, 'platform/packages/i18n');
+    const pkg = join(fixture, 'services/online/packages/i18n');
     mkdirSync(join(pkg, 'scripts'), { recursive: true });
     mkdirSync(join(pkg, 'src'), { recursive: true });
     mkdirSync(join(pkg, 'locales'), { recursive: true });
     mkdirSync(join(fixture, 'platforms/web'), { recursive: true });
     symlinkSync(
       join(packageRoot, '../../node_modules'),
-      join(fixture, 'platform/node_modules'),
+      join(fixture, 'services/online/node_modules'),
       'dir',
     );
     for (const file of ['scripts/build-browser.ts', 'src/index.ts', 'src/locales.ts']) {

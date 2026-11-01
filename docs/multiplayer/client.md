@@ -510,7 +510,7 @@ process that never initialized the Toolkit file system (some unit tests) reports
   `session.hello`, request correlation and errors, REST, a dropped connection,
   a scheduled refresh, `auth.handoff.begin`/`cancel`, a returning launch,
   refresh-token reuse revoking the sign-in with fallback to the device
-  credential, and sign-out. It needs `GLOB2_PLATFORM_DIR` (a `platform/`
+  credential, and sign-out. It needs `GLOB2_PLATFORM_DIR` (a `services/online/`
   checkout with dependencies installed) and `GLOB2_PLATFORM_DATABASE_URL` (a
   Postgres role that may create databases); see the file's docstring.
 

@@ -45,7 +45,7 @@ class CloudDraftTest(unittest.TestCase):
             path.write_text('{}', encoding='utf-8')
         (self.root / 'data/texts.keys.txt').write_text('[hello]\n[value %0]\n', encoding='utf-8')
         (self.root / 'data/texts.en.txt').write_text('[hello]\nHello\n[value %0]\nValue %0\n', encoding='utf-8')
-        (self.root / 'platform/packages/i18n/locales/en.json').write_text(json.dumps({
+        (self.root / 'services/online/packages/i18n/locales/en.json').write_text(json.dumps({
             'Hello': 'Hello', '{count} items': {'one': '{count} item', 'other': '{count} items'}}))
         with patch.object(CLOUD.program.subprocess, 'check_output', return_value='revision'):
             CLOUD.program.prepare(self.output, root=self.root, locales=('bn',))

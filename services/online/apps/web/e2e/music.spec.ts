@@ -10,7 +10,7 @@ test.beforeAll(() => {
   directory = process.env['MUSIC_FIXTURE_DIR'] ?? mkdtempSync(join(tmpdir(), 'glob2-music-web-'));
   if (!process.env['MUSIC_FIXTURE_DIR'])
     execFileSync('python3', [
-      resolve(import.meta.dirname, '../../../../tools/music/tests/make_community_fixture.py'),
+      resolve(import.meta.dirname, '../../../../../tools/music/tests/make_community_fixture.py'),
       directory,
     ]);
   const metadata = JSON.parse(
@@ -179,7 +179,7 @@ test('upload → worker conversion → audition → publish → like → bulk ZI
   await page.getByRole('button', { name: 'Download selected' }).click();
   const file = await download;
   await file.saveAs(testInfo.outputPath('downloaded-music.zip'));
-  const output = resolve(import.meta.dirname, '../../../../artifacts/music');
+  const output = resolve(import.meta.dirname, '../../../../../artifacts/music');
   mkdirSync(output, { recursive: true });
   copyFileSync(testInfo.outputPath('downloaded-music.zip'), join(output, 'web-release.zip'));
 });

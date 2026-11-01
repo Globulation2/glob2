@@ -6,7 +6,7 @@
 namespace Online
 {
 // Swarm meshes a colony skin can choose. The id is part of the signed skin
-// manifest and the platform contract (platform/packages/protocol/src/skins.ts);
+// manifest and the platform contract (services/online/packages/protocol/src/skins.ts);
 // the file ships in data/skins/colony-v1. Index 0 is the classic swarm, which
 // every skin published before mesh choice uses.
 struct SwarmMesh

@@ -383,7 +383,7 @@ def build_web(directory, identity, arguments):
     loader = env.Install(directory, 'platforms/web/loader.js')
     presentation_surface = env.Install(directory, 'platforms/web/presentation-surface.js')
     localization = env.Install(directory, 'platforms/web/i18n.js')
-    localization += env.Install(str(Path(directory) / 'locales'), [str(path) for path in sorted(Path('platform/packages/i18n/locales').glob('*.json'))])
+    localization += env.Install(str(Path(directory) / 'locales'), [str(path) for path in sorted(Path('services/online/packages/i18n/locales').glob('*.json'))])
     # The pre-Wasm HTML launcher cannot use fonts inside Emscripten's VFS.
     # Keep its same-origin, lazy HTTP font faces available on standalone hosts.
     script_font_manifest = json.loads(Path('data/fonts/scripts/manifest.json').read_text())
@@ -396,7 +396,7 @@ def build_web(directory, identity, arguments):
         web_assets.launcher_script_fonts(Path.cwd(), directory)
         return 0
     script_fonts = env.Command(script_font_targets,
-        ['platform/packages/i18n/script-fonts.css', 'data/fonts/scripts/manifest.json',
+        ['services/online/packages/i18n/script-fonts.css', 'data/fonts/scripts/manifest.json',
          'data/fonts/LICENSE-Noto.txt', 'scons/web_assets.py'] + script_font_files,
         Action(launcher_fonts, 'Packaging launcher script fonts'))
     env.Depends(page, [loader, presentation_surface, localization, script_fonts])

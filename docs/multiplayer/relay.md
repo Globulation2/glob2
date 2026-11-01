@@ -180,7 +180,7 @@ Compare the same workload/build inputs and retain profiler traces under
 
 ## Tickets
 
-Tickets are EdDSA (Ed25519) JWTs defined in `platform/packages/protocol/src/ticket.ts`.
+Tickets are EdDSA (Ed25519) JWTs defined in `services/online/packages/protocol/src/ticket.ts`.
 `TicketVerifier` makes the same checks, in the same order, with the same reason
 names as the platform's `verifyJwt`:
 
@@ -228,7 +228,7 @@ or fails with the manifest's reason.
 ## Platform calls
 
 When `GLOB2_RELAY_PLATFORM_URL` is set, the relay calls the platform's internal API.
-The shapes are defined in `platform/packages/protocol/src/relay.ts`. Every call
+The shapes are defined in `services/online/packages/protocol/src/relay.ts`. Every call
 carries `Authorization: Bearer <GLOB2_RELAY_KEY>`.
 
 | Call | When |

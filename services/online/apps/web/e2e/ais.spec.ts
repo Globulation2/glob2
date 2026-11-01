@@ -136,7 +136,7 @@ test('AI discovery, version details, social actions and gated publishing', async
   await page.goto('/ais');
   await expect(page.getByRole('heading', { name: 'AI Library', exact: true })).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Patient Gardener' })).toBeVisible();
-  const output = resolve(import.meta.dirname, '../../../../artifacts/ai-library/screenshots');
+  const output = resolve(import.meta.dirname, '../../../../../artifacts/ai-library/screenshots');
   mkdirSync(output, { recursive: true });
   for (const theme of ['light', 'dark']) {
     await page.evaluate(`document.documentElement.dataset.theme = '${theme}'`);

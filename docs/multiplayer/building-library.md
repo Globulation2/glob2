@@ -4,7 +4,7 @@ Authoring, validation and release contracts for building families.
 
 ## Building-family authoring and releases
 
-`platform/apps/api/src/buildings/` owns private drafts, normalized still WebP
+`services/online/apps/api/src/buildings/` owns private drafts, normalized still WebP
 frames, publication and public library access. `BuildingPackage` in the protocol
 package describes namespaced, additive definitions; the native engine remains
 the authority for catalog semantics. Draft edits use revision UUIDs for
@@ -31,9 +31,9 @@ and artwork remain self-contained. See [building catalogs](../features/building-
 for the author workflow and format contract, and [rollout](../hosting/content-validation.md#building-family-library-rollout)
 for deployment order.
 
-AI Building Studio uses `platform/packages/building-studio/` for private
+AI Building Studio uses `services/online/packages/building-studio/` for private
 conversations, immutable candidates, revision UUID checks and building-credit
-reservations. `platform/apps/ai-building-worker/` journals text/image provider
+reservations. `services/online/apps/ai-building-worker/` journals text/image provider
 calls, assembles normalized frames, and validates complete archives through
 native building composition. `/api/v1/ai-building-studio` exposes owned projects,
 turns, references, progress/events, candidate downloads and explicit adoption.
