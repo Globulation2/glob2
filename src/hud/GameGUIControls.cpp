@@ -14,6 +14,8 @@
 #include "ConnectionOverlay.h"
 #include "tutorial/TutorialGuidance.h"
 #include <ui/Host.h>
+#include <Toolkit.h>
+#include <StringTable.h>
 #include <algorithm>
 #include <limits>
 
@@ -235,6 +237,7 @@ std::vector<PositionedControl> GameGUI::describeHudControls()
 	};
 	const int width = globalContainer->gfx->getW(), height = globalContainer->gfx->getH();
 	const int left = width - RIGHT_MENU_WIDTH, content = width - RIGHT_MENU_RIGHT_OFFSET;
+	auto tr = [](const char *key) { return Toolkit::getStringTable()->getString(key); };
 	auto button = [&](std::string key, std::string label, Rect bounds, std::function<void()> action,
 					  bool enabled = true, bool selected = false)
 	{
@@ -296,14 +299,14 @@ std::vector<PositionedControl> GameGUI::describeHudControls()
 		c.enabled = c.enabled && (torusView.enabled() || !torusView.active());
 	controls.insert(controls.end(), std::make_move_iterator(zoom.begin()),
 					std::make_move_iterator(zoom.end()));
-	button("game/menu", "Game menu",
+	button("game/menu", tr("[Menu]"),
 		   {left - IGM_ICON_HEIGHT / 2, IGM_MAIN_MENU_ICON_Y, IGM_ICON_HEIGHT, IGM_ICON_HEIGHT},
 		   [this] { openMainMenu(); });
 	if (!(hiddenGUIElements & HIDABLE_ALLIANCE))
-		button("game/alliance", "Alliance",
+		button("game/alliance", tr("[Alliance]"),
 			   {left - IGM_ICON_HEIGHT / 2, IGM_ALLIANCE_ICON_Y, IGM_ICON_HEIGHT, IGM_ICON_HEIGHT},
 			   [this] { openDialog(IGM_ALLIANCE, std::make_unique<InGameAllianceScreen>(this)); });
-	button("game/objectives", "Objectives",
+	button("game/objectives", tr("[Objectives]"),
 		   {left - IGM_ICON_HEIGHT / 2, IGM_OBJECTIVES_ICON_Y, IGM_ICON_HEIGHT, IGM_ICON_HEIGHT},
 		   [this]
 		   { openDialog(IGM_OBJECTIVES, std::make_unique<InGameObjectivesScreen>(this, false)); });
@@ -625,19 +628,19 @@ std::vector<PositionedControl> GameGUI::describeHudControls()
 		{
 			std::string primary;
 			if (b->state().constructionResultState == Building::REPAIR)
-				primary = "Cancel repair";
+				primary = tr("[cancel repair]");
 			else if (b->state().constructionResultState == Building::UPGRADE)
-				primary = "Cancel upgrade";
+				primary = tr("[cancel upgrade]");
 			else if (b->state().constructionResultState == Building::NO_CONSTRUCTION &&
 					 b->state().buildingState == Building::ALIVE && !type->isBuildingSite)
 			{
 				if (b->state().hp < b->state().maxHp)
 				{
 					if (type->semantics.repairable && b->hardSpaceForRepair)
-						primary = "Repair";
+						primary = tr("[repair]");
 				}
 				else if (type->nextLevel != -1 && b->hardSpaceForUpgrade)
-					primary = "Upgrade";
+					primary = tr("[upgrade]");
 			}
 			if (!primary.empty())
 				button(
@@ -653,7 +656,7 @@ std::vector<PositionedControl> GameGUI::describeHudControls()
 				b->state().buildingState == Building::WAITING_FOR_DESTRUCTION)
 				button(
 					prefix + "destroy",
-					b->state().buildingState == Building::ALIVE ? "Destroy" : "Cancel destroy",
+					tr(b->state().buildingState == Building::ALIVE ? "[destroy]" : "[cancel destroy]"),
 					{content, height - BOTTOM_BUTTON_SECONDARY_YOFFSET, 128, BOTTOM_BUTTON_HEIGHT},
 					[this, current]
 					{
