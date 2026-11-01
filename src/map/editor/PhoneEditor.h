@@ -74,6 +74,8 @@ class PhoneEditor
 	bool tools = true, pan = false, onMap = false;
 	// Terrain, resources, buildings, flags/units, teams.
 	static constexpr int modeCount = 5;
+	int modeColumns = modeCount;
+	GAGCore::ViewRect modeRect(int index) const;
 	// Points: the card strip, and the group chips above it in Terrain and Resources.
 	static constexpr double cardHeight = 68, chipHeight = 36;
 	int paletteMode = 2;
@@ -182,6 +184,7 @@ class PhoneEditor
 	bool peekOpen = false;
 	std::unique_ptr<Minimap> peekMinimap;
 	bool showsMapButton() const;
+	std::vector<std::string> headerCaptions() const;
 	GAGCore::ViewRect mapButton() const;
 	GAGCore::ViewRect peekRect() const;
 	std::vector<GAGCore::ViewRect> peekButtons() const; // Done, zoom out, zoom in.

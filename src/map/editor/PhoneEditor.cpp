@@ -16,6 +16,7 @@
 #include <cmath>
 #include <cstdio>
 #include <set>
+#include <sstream>
 using namespace GAGCore;
 namespace
 {
@@ -99,17 +100,43 @@ void PhoneEditor::prepare()
 	// Short landscape phones keep more of the map: the strips tighten.
 	const bool tight = safe.h < 480 * unit;
 	double modes = tight ? 38 : modeHeight;
+	modeColumns = modeCount;
 	if (tools && !inspecting())
+	{
+		// Every word must fit a cell before wrapping the caption. A balanced
+		// three-plus-two grid keeps enlarged text readable without tiny type.
+		double wordWidth = 1;
+		for (const auto *key : modeCaptionKeys)
+		{
+			std::istringstream words(Toolkit::getStringTable()->getString(key));
+			for (std::string word; words >> word;)
+				wordWidth = std::max(wordWidth,
+					double(globalContainer->standardFont->getStringWidth(word)) * gfx->textUnitsPerPoint());
+		}
+		modeColumns = std::clamp(int(safe.w / (wordWidth + 9 * unit)), 1, modeCount);
+		if (modeColumns == 4)
+			modeColumns = 3;
+		const int rows = (modeCount + modeColumns - 1) / modeColumns;
 		for (int i = 0; i < modeCount; ++i)
 		{
-			const auto lines = modeCaptionLines(i, safe.w / modeCount - unit);
+			const int cells = std::min(modeColumns, modeCount - (i / modeColumns) * modeColumns);
+			const auto lines = modeCaptionLines(i, safe.w / cells - unit);
 			modes = std::max(modes, modeCaptionLineHeight(lines) * lines.size() / unit + 8);
 		}
+		modes *= rows;
+	}
 	const double cardsHeight = tight ? cardHeight - 6 : cardHeight;
 	const double chipsHeight = cards && chips.size() > 1 ? (tight ? chipHeight - 4 : chipHeight) : 0;
 	const double dock = (modes + (tools ? cardsHeight + chipsHeight : 0)) * unit;
-	content = {safe.x, safe.y + headerHeight * unit, safe.w,
-			   std::max(0., safe.h - headerHeight * unit - dock)};
+	double header = headerHeight * unit;
+	for (const auto &caption : headerCaptions())
+	{
+		const auto lines = wrapTouchText(globalContainer->standardFont, caption,
+			std::max(1., (safe.w / 4 - 9 * unit) / gfx->textUnitsPerPoint()));
+		header = std::max(header, modeCaptionLineHeight(lines) * lines.size() + 8 * unit);
+	}
+	content = {safe.x, safe.y + header, safe.w,
+			   std::max(0., safe.h - header - dock)};
 	modeBar = {safe.x, safe.y + safe.h - dock, safe.w, modes * unit};
 	tray = {safe.x, modeBar.y + modeBar.h, safe.w, tools ? (cardsHeight + chipsHeight) * unit : 0};
 	chipBar = {tray.x, tray.y, tray.w, chipsHeight * unit};
@@ -121,6 +148,14 @@ void PhoneEditor::prepare()
 	}
 	if (cards)
 		prepareTray(unit);
+}
+ViewRect PhoneEditor::modeRect(int index) const
+{
+	const int row = index / modeColumns;
+	const int cells = std::min(modeColumns, modeCount - row * modeColumns);
+	const int rows = (modeCount + modeColumns - 1) / modeColumns;
+	return {modeBar.x + (index % modeColumns) * modeBar.w / cells,
+		modeBar.y + row * modeBar.h / rows, modeBar.w / cells, modeBar.h / rows};
 }
 void PhoneEditor::syncTray()
 {
@@ -245,12 +280,14 @@ int PhoneEditor::hit(ViewPoint p) const
 	}
 	if (editor.panelMode == MapEdit::Teams && tray.contains(p))
 		return -21;
-	if (p.y < safe.y + headerHeight * unit)
+	if (p.y < content.y)
 		return -2 - std::clamp(int((p.x - safe.x) * 4 / safe.w), 0, 3);
 	if (!tools && modeBar.contains(p))
 		return -6;
 	if (tools && modeBar.contains(p))
-		return -10 - std::clamp(int((p.x - modeBar.x) * modeCount / modeBar.w), 0, modeCount - 1);
+		for (int i = 0; i < modeCount; ++i)
+			if (modeRect(i).contains(p))
+				return -10 - i;
 	if (tools && chipBar.contains(p))
 	{
 		for (size_t i = 0; i < chips.size(); ++i)
@@ -1007,28 +1044,10 @@ void PhoneEditor::centredLabel(ViewRect r, const std::string &text)
 	gfx->setClipRect();
 	font->popStyle();
 }
-void PhoneEditor::draw()
+std::vector<std::string> PhoneEditor::headerCaptions() const
 {
-	if (deferred && SDL_GetTicks() - deferred->ticks >= InGameTouchTheme::doubleTapWindowMs)
-		commitDeferred();
-	if (editor.hasDialog())
-	{
-		publishControls(false);
-		editor.drawDialog();
-		return;
-	}
-	prepare();
-	publishControls(tools && !inspecting());
-	if (inspecting())
-	{
-		drawInspector();
-		drawZoomReadout();
-		return;
-	}
-	auto *gfx = globalContainer->gfx;
-	const double unit = gfx->logicalUnitsPerPoint();
 	const bool objects = paletteMode >= 2;
-	std::string labels[] = {
+	std::vector<std::string> labels = {
 		GAGCore::Toolkit::getStringTable()->getString("[Menu]"),
 		objects
 			? GAGCore::FormattableString(GAGCore::Toolkit::getStringTable()->getString("[Team %0]"))
@@ -1069,11 +1088,48 @@ void PhoneEditor::draw()
 						: GAGCore::Toolkit::getStringTable()->getString("[Paint]");
 		labels[3] = GAGCore::Toolkit::getStringTable()->getString("[Done]");
 	}
+	return labels;
+}
+void PhoneEditor::draw()
+{
+	if (deferred && SDL_GetTicks() - deferred->ticks >= InGameTouchTheme::doubleTapWindowMs)
+		commitDeferred();
+	if (editor.hasDialog())
+	{
+		publishControls(false);
+		editor.drawDialog();
+		return;
+	}
+	prepare();
+	publishControls(tools && !inspecting());
+	if (inspecting())
+	{
+		drawInspector();
+		drawZoomReadout();
+		return;
+	}
+	auto *gfx = globalContainer->gfx;
+	const double unit = gfx->logicalUnitsPerPoint();
+	const bool objects = paletteMode >= 2;
+	const auto labels = headerCaptions();
 	for (int i = 0; i < 4; ++i)
 	{
-		ViewRect r{safe.x + i * safe.w / 4, safe.y, safe.w / 4 - unit, 44 * unit};
+		ViewRect r{safe.x + i * safe.w / 4, safe.y, safe.w / 4 - unit, content.y - safe.y - 4 * unit};
 		gfx->drawFilledRect(int(r.x), int(r.y), int(r.w), int(r.h), InGameTouchTheme::paper());
-		label(r, labels[i]);
+		const auto lines = wrapTouchText(globalContainer->standardFont, labels[i],
+			std::max(1., (r.w - 8 * unit) / gfx->textUnitsPerPoint()));
+		if (lines.size() == 1)
+			label(r, labels[i]); // Preserve the authored one-line header alignment.
+		else
+		{
+			const double lineHeight = modeCaptionLineHeight(lines);
+			double y = r.y + (r.h - lineHeight * lines.size()) / 2;
+			for (const auto &line : lines)
+			{
+				centredLabel({r.x, y, r.w, lineHeight}, line);
+				y += lineHeight;
+			}
+		}
 		if (i == 1 && objects)
 			gfx->drawFilledRect(int(r.x + 4 * unit), int(r.y + r.h - 5 * unit), int(r.w - 8 * unit),
 								int(3 * unit), presentationColor(editor.view.scene->entities.teams[editor.team].color));
@@ -1110,7 +1166,8 @@ void PhoneEditor::draw()
 	gfx->drawFilledRect(int(modeBar.x), int(modeBar.y), int(modeBar.w), int(modeBar.h + tray.h), backdrop);
 	for (int i = 0; i < modeCount; ++i)
 	{
-		ViewRect r{modeBar.x + i * modeBar.w / modeCount, modeBar.y, modeBar.w / modeCount - unit, modeBar.h};
+		auto r = modeRect(i);
+		r.w -= unit;
 		if (i == paletteMode)
 			gfx->drawFilledRect(int(r.x), int(r.y), int(r.w), int(r.h), InGameTouchTheme::selected());
 		const auto lines = modeCaptionLines(i, r.w);

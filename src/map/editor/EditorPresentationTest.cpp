@@ -121,17 +121,33 @@ TEST_SUITE("EditorPresentation")
 		auto &phone = *editor.phone;
 		phone.chooseMode(0);
 		phone.prepare();
-		// Resources needs three whole-word lines: Mga / likas na / yaman.
-		// Reserve their text height rather than clipping a caption prefix.
+		// Four narrow columns still split Koponan: balance three buttons above two.
 		const double lineHeight = globalContainer->standardFont->getStringHeight("Ag") * gfx->textUnitsPerPoint();
-		CHECK(phone.modeBar.h >= 3 * lineHeight);
-		const double captionWidth = phone.modeBar.w / 5 - 9 * gfx->logicalUnitsPerPoint();
-		for (const char *word : {"Mga", "likas", "na", "yaman", "Gusali", "Bandila", "Koponan"})
-			CHECK(globalContainer->standardFont->getStringWidth(word) * gfx->textUnitsPerPoint() <= captionWidth);
+		CHECK(phone.modeColumns == 3);
+		CHECK(phone.modeBar.h >= 4 * lineHeight);
+		const std::vector<std::vector<const char *>> words{{"Lupain"}, {"Mga", "likas", "na", "yaman"},
+			{"Mga", "Gusali"}, {"Mga", "Bandila"}, {"Mga", "Koponan"}};
+		for (int i = 0; i < 5; ++i)
+		{
+			const auto rect = phone.modeRect(i);
+			for (const auto *word : words[i])
+				CHECK(globalContainer->standardFont->getStringWidth(word) * gfx->textUnitsPerPoint() <= rect.w - 9 * gfx->logicalUnitsPerPoint());
+			CHECK(phone.hit({rect.x + rect.w / 2, rect.y + rect.h / 2}) == -10 - i);
+		}
+		CHECK(phone.modeRect(3).w == phone.modeBar.w / 2);
+		CHECK(phone.modeRect(4).x + phone.modeRect(4).w == phone.modeBar.x + phone.modeBar.w);
+		CHECK(phone.content.y - phone.safe.y >= 2 * lineHeight + 8 * gfx->logicalUnitsPerPoint());
 		CHECK(phone.cardBar.y >= phone.modeBar.y + phone.modeBar.h);
 		CHECK(phone.content.y + phone.content.h <= phone.modeBar.y);
 		CHECK(phone.mapButton().w >= globalContainer->standardFont->getStringWidth("Minimap") *
 			gfx->textUnitsPerPoint() + 8 * gfx->logicalUnitsPerPoint());
+		globalContainer->settings.setTextSizePercent(100);
+		phone.prepare();
+		CHECK(phone.modeColumns == 5);
+		CHECK(phone.modeBar.h == 44 * gfx->logicalUnitsPerPoint());
+		CHECK(phone.content.y - phone.safe.y == 48 * gfx->logicalUnitsPerPoint());
+		globalContainer->settings.setTextSizePercent(150);
+		phone.prepare();
 		const int grass = phone.rowOf("terrain/grass");
 		REQUIRE(grass >= 0);
 		const auto card = phone.rows[grass].rect;
