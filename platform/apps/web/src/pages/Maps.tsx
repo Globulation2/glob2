@@ -483,7 +483,7 @@ function OwnerTools({ detail, reload }: { detail: MapDetailDoc; reload: () => vo
     }
   };
   return (
-    <div className="grid2" style={{ marginTop: 12 }}>
+    <div className="grid2 map-owner-tools" style={{ marginTop: 12 }}>
       <form
         className="card"
         onSubmit={(e) => {

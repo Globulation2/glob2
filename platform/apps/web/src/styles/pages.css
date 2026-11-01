@@ -163,6 +163,13 @@
   max-width: 640px;
 }
 
+.map-owner-tools input,
+.map-owner-tools select,
+.map-owner-tools textarea {
+  min-width: 0;
+  max-width: 100%;
+}
+
 /* ------------------------------------------------------------- moderation */
 
 .admin-row {
