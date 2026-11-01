@@ -17,4 +17,4 @@
 //
 // Kept apart from Version.h so a bump recompiles only the sim version code.
 // deploy/sim_version.py reads this line.
-#define SIM_REVISION 117
+#define SIM_REVISION 120

@@ -1,4 +1,4 @@
-import { translateError } from '../i18n.tsx';
+import { displayMessage } from '../i18n.tsx';
 import { MessageError } from '../i18n.tsx';
 import { message as sourceMessage } from '../i18n.tsx';
 import { t, useLocale } from '../i18n.tsx';
@@ -379,7 +379,9 @@ export function MeshPreview(props: ViewportProps) {
         ref={canvas}
         aria-label={
           props.label ??
-          t('Paint directly on the 3D {value0} model', { value0: modelSentenceName(props.model) })
+          t('Paint directly on the 3D {value0} model', {
+            value0: modelSentenceName(props.model),
+          })
         }
         onContextMenu={(e) => e.preventDefault()}
         onPointerDown={(e) => {
@@ -485,15 +487,7 @@ export function MeshPreview(props: ViewportProps) {
       )}
       {error && (
         <div className="skin-canvas-message" role="alert">
-          <p>
-            {props.interactive === false
-              ? t('Preview unavailable')
-              : typeof error === 'string'
-                ? t(error)
-                : error instanceof MessageError
-                  ? translateError(error)
-                  : error.message}
-          </p>
+          <p>{props.interactive === false ? t('Preview unavailable') : displayMessage(error)}</p>
           {props.interactive !== false && (
             <button onClick={() => setAttempt((n) => n + 1)}>{t('Retry 3D canvas')}</button>
           )}

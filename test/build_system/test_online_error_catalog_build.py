@@ -93,7 +93,8 @@ class OnlineErrorBuildTest(unittest.TestCase):
         self.assertNotIn(header, unrelated.depends)
         sources = [source.abspath.replace('\\', '/') for source in header.sources]
         for suffix in ('tools/localization/build_online_error_catalog.py',
-                       'platform/packages/i18n/locales/en.json', 'platform/packages/i18n/locales/bg.json'):
+                       'platform/packages/i18n/locales/en.json', 'platform/packages/i18n/locales/bg.json',
+                       'platform/packages/i18n/locales/th.json'):
             self.assertTrue(any(name.endswith('/' + suffix) for name in sources), suffix)
         return env, catalog, mapping
 
@@ -183,7 +184,8 @@ class OnlineErrorBuildTest(unittest.TestCase):
         env = self.env()
         catalog = configure(env, self.output / 'action/include')
         source = [env.File(str(ROOT / name)) for name in ('tools/localization/build_online_error_catalog.py',
-                  'platform/packages/i18n/locales/en.json', 'platform/packages/i18n/locales/bg.json')]
+                  'platform/packages/i18n/locales/en.json', 'platform/packages/i18n/locales/bg.json',
+                  'platform/packages/i18n/locales/th.json')]
         self.assertFalse(Path(catalog[0].abspath).exists())
         self.assertEqual(_generate(catalog, source, env), 0)
         self.assertTrue(Path(catalog[0].abspath).read_bytes().isascii())

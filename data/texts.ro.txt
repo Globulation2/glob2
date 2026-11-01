@@ -6818,12 +6818,12 @@ Poteci de animale
 Cantitate de pește
 [scenario messages]
 Mesaje ▸
+[script error at %0:%1: %2]
+Eroare la %0:%1: %2
 [Camp-site amount]
 Număr de tabere
 [script compilation success]
 Compilare reușită
-[script error at %0:%1: %2]
-Eroare la %0:%1: %2
 [script compilation failure %0:%1:(%2):%3]
 Eroare de compilare: %0:%1:(%2):%3
 [script compilation failed %0]

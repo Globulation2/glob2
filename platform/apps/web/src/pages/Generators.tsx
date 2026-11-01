@@ -416,7 +416,9 @@ export function GeneratorPage({ id }: { id: string }) {
                   onClick={() => {
                     if (
                       window.confirm(
-                        'Remove this generator from the library? Existing matches retain their maps.',
+                        t(
+                          'Remove this generator from the library? Existing matches retain their maps.',
+                        ),
                       )
                     )
                       void generatorApi

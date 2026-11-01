@@ -26,12 +26,16 @@ def cmake_quote(value):
 
 
 def localized_resource_lines(resource_root):
+    # Xcode retains a source's .lproj directory automatically. Adding it to
+    # PACKAGE_LOCATION produces th.lproj/th.lproj in the actual app bundle.
+    directories = sorted(Path(resource_root).glob('*.lproj'))
+    if not directories:
+        raise ValueError('Missing Apple localization: ' + str(resource_root))
     lines = []
-    directories = [Path(resource_root) / (locale + '.lproj') for locale in ('en', 'mr', 'ta', 'te', 'bg')]
     for resource in localization_files(directories):
         lines += ['target_sources(Glob2 PRIVATE ' + cmake_quote(resource) + ')',
                   'set_source_files_properties(' + cmake_quote(resource) +
-                  ' PROPERTIES MACOSX_PACKAGE_LOCATION ' + cmake_quote('Resources/' + resource.parent.name) + ')']
+                  ' PROPERTIES MACOSX_PACKAGE_LOCATION Resources)']
     return lines
 
 
@@ -101,6 +105,7 @@ def main():
     info['CFBundleName']='Glob2 Script Tests' if args.script_tests else info['CFBundleName']
     info['CFBundleVersion']=args.build_number
     info['CFBundleShortVersionString']=release_marketing_version
+    info.setdefault('CFBundleDevelopmentRegion', 'en')
     if args.china:
         # The China edition builds without online play, so it claims no invite links.
         info.pop('CFBundleURLTypes',None)

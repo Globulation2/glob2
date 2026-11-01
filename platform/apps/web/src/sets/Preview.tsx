@@ -1,4 +1,4 @@
-import { message as sourceMessage } from '../i18n.tsx';
+import { sourceMessage, statusText, type StatusMessage } from '../messages.ts';
 import { t, useLocale } from '../i18n.tsx';
 import { useEffect, useRef, useState } from 'react';
 import type { SetPackage } from '@glob2/protocol';
@@ -10,7 +10,7 @@ export function SetPreview({ pack, gallery = false }: { pack: SetPackage; galler
     [variant, setVariant] = useState(0);
   const [run, setRun] = useState<{ id: string; source: string } | null>(null),
     [image, setImage] = useState(''),
-    [status, setStatus] = useState('');
+    [status, setStatus] = useState<StatusMessage>('');
   useEffect(() => {
     if (!run) return;
     const timer = setTimeout(
@@ -65,7 +65,12 @@ export function SetPreview({ pack, gallery = false }: { pack: SetPackage; galler
               'Rendered by the browser game engine. Run publishing checks to validate the saved revision.',
             ),
           );
-        } else setStatus(String(m.report?.reason ?? 'Preview failed.').slice(0, 2000));
+        } else
+          setStatus(
+            m.report?.reason == null
+              ? sourceMessage('Preview failed.')
+              : String(m.report.reason).slice(0, 2000),
+          );
       }
     };
     window.addEventListener('message', receive);
@@ -86,7 +91,7 @@ export function SetPreview({ pack, gallery = false }: { pack: SetPackage; galler
               value={phase}
               onChange={(e) => {
                 setImage('');
-                if (run) setStatus('Loading browser renderer…');
+                if (run) setStatus(sourceMessage('Loading browser renderer…'));
                 setRun((previous) => previous && { ...previous, id: crypto.randomUUID() });
                 setPhase(Number(e.target.value));
               }}
@@ -104,7 +109,7 @@ export function SetPreview({ pack, gallery = false }: { pack: SetPackage; galler
               value={variant}
               onChange={(e) => {
                 setImage('');
-                if (run) setStatus('Loading browser renderer…');
+                if (run) setStatus(sourceMessage('Loading browser renderer…'));
                 setRun((previous) => previous && { ...previous, id: crypto.randomUUID() });
                 setVariant(Number(e.target.value));
               }}
@@ -121,14 +126,14 @@ export function SetPreview({ pack, gallery = false }: { pack: SetPackage; galler
       <button
         type="button"
         onClick={() => {
-          setStatus('Loading browser renderer…');
+          setStatus(sourceMessage('Loading browser renderer…'));
           setImage('');
           setRun({ id: crypto.randomUUID(), source: JSON.stringify(pack) });
         }}
       >
         {t('Preview current changes')}
       </button>
-      <p role="status">{status}</p>
+      <p role="status">{statusText(status)}</p>
       {run && (
         <iframe
           key={run.id}

@@ -6818,12 +6818,12 @@ Skalnati griči
 Količina rib
 [scenario messages]
 Sporočila ▸
+[script error at %0:%1: %2]
+Napaka pri %0:%1: %2
 [Camp-site amount]
 Število taborišč
 [script compilation success]
 Prevajanje je uspelo
-[script error at %0:%1: %2]
-Napaka pri %0:%1: %2
 [script compilation failure %0:%1:(%2):%3]
 Napaka pri prevajanju: %0:%1:(%2):%3
 [script compilation failed %0]

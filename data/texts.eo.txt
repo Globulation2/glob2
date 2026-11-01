@@ -6818,12 +6818,12 @@ Bestaj padoj
 Kvanto da fiŝoj
 [scenario messages]
 Mesaĝoj ▸
+[script error at %0:%1: %2]
+Eraro ĉe %0:%1: %2
 [Camp-site amount]
 Nombro de kampadejoj
 [script compilation success]
 Kompilo sukcesis
-[script error at %0:%1: %2]
-Eraro ĉe %0:%1: %2
 [script compilation failure %0:%1:(%2):%3]
 Kompila malsukceso: %0:%1:(%2):%3
 [script compilation failed %0]

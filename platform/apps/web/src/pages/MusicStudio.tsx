@@ -294,7 +294,9 @@ function RegisteredStudio({ id, accountId }: { id?: string; accountId: string })
                 onClick={() => {
                   if (
                     !window.confirm(
-                      'Delete this conversation and its source history? Finished music remains in your library.',
+                      t(
+                        'Delete this conversation and its source history? Finished music remains in your library.',
+                      ),
                     )
                   )
                     return;

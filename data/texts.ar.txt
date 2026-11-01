@@ -6818,12 +6818,12 @@ GL فقط
 كمية الأسماك
 [scenario messages]
 الرسائل ▸
+[script error at %0:%1: %2]
+خطأ في %0:%1: %2
 [Camp-site amount]
 عدد المخيمات
 [script compilation success]
 نجاح تصريف النص البرمجي
-[script error at %0:%1: %2]
-خطأ في %0:%1: %2
 [script compilation failure %0:%1:(%2):%3]
 فشل التصريف: %0:%1:(%2):%3
 [script compilation failed %0]

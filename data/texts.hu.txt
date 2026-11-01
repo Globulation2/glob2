@@ -6818,12 +6818,12 @@ Vadcsapások
 Halak mennyisége
 [scenario messages]
 Üzenetek ▸
+[script error at %0:%1: %2]
+Hiba a(z) %0. sor %1. oszlopában: %2
 [Camp-site amount]
 Táborhelyek száma
 [script compilation success]
 Sikeres fordítás
-[script error at %0:%1: %2]
-Hiba a(z) %0. sor %1. oszlopában: %2
 [script compilation failure %0:%1:(%2):%3]
 Fordítási hiba: %0:%1:(%2):%3
 [script compilation failed %0]

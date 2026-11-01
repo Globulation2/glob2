@@ -86,12 +86,22 @@ async function controlOnScreen(page, key, options) {
       bounds = again;
       continue;
     }
-    // Popup rows share the window's root bounds; wheel inside the popup,
-    // rather than over an unrelated control at the window's horizontal center.
-    const root = css(page, bounds, {x: key.startsWith('popup/') ? bounds.x + bounds.w / 2 : bounds.root.x + bounds.root.w / 2,
-      y: bounds.root.y + bounds.root.h / 2});
+    let anchor = {x: bounds.root.x + bounds.root.w / 2, y: bounds.root.y + bounds.root.h / 2};
+    // Popup controls report the host surface as their root, while their narrow
+    // scroll panel can sit at an edge. Wheel over an exposed sibling row so
+    // the actual popup receives the gesture, in either scroll direction.
+    if (/^popup\/\d+$/.test(key)) {
+      const rows = await page.evaluate(() => Object.entries(glob2Diagnostics.snapshot().controls)
+        .filter(([key, row]) => /^popup\/\d+$/.test(key) && row.visible?.w > 0 && row.visible?.h > 0)
+        .map(([, row]) => row.visible).sort((a, b) => a.y - b.y));
+      if (rows.length) {
+        const row = rows[Math.floor(rows.length / 2)];
+        anchor = {x: row.x + row.w / 2, y: row.y + row.h / 2};
+      }
+    }
+    const root = css(page, bounds, anchor);
     await page.mouse.move(root.x, root.y);
-    const distance = bounds.y + bounds.h / 2 - (bounds.root.y + bounds.root.h / 2);
+    const distance = bounds.y + bounds.h / 2 - anchor.y;
     // SDL's browser wheel converts 100 CSS pixels into one scroll step. A
     // single notch moves only about one row, so use a bounded multi-notch
     // gesture for distant controls and re-read the real layout after each.

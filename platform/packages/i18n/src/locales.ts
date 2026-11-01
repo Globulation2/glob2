@@ -251,6 +251,7 @@ export const locales = [
     name: 'Bahasa Melayu',
     dir: 'ltr',
   },
+  { code: 'th', gameCode: 'th', name: 'ไทย', dir: 'ltr' },
   {
     code: 'bg',
     gameCode: 'bg',

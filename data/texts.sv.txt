@@ -6818,12 +6818,12 @@ Djurstigar
 Mängd fisk
 [scenario messages]
 Meddelanden ▸
+[script error at %0:%1: %2]
+Fel vid %0:%1: %2
 [Camp-site amount]
 Antal lägerplatser
 [script compilation success]
 Kompileringen lyckades
-[script error at %0:%1: %2]
-Fel vid %0:%1: %2
 [script compilation failure %0:%1:(%2):%3]
 Kompileringsfel: %0:%1:(%2):%3
 [script compilation failed %0]

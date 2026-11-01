@@ -6818,12 +6818,12 @@ Pistes d’animaux
 Quantité de poissons
 [scenario messages]
 Messages ▸
+[script error at %0:%1: %2]
+Erreur à %0:%1 : %2
 [Camp-site amount]
 Nombre de campements
 [script compilation success]
 Compilation réussie
-[script error at %0:%1: %2]
-Erreur à %0:%1 : %2
 [script compilation failure %0:%1:(%2):%3]
 Échec de la compilation : %0:%1:(%2):%3
 [script compilation failed %0]

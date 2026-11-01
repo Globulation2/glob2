@@ -6818,12 +6818,12 @@ GL のみ
 魚の量
 [scenario messages]
 メッセージ ▸
+[script error at %0:%1: %2]
+%0:%1 でエラーが発生しました: %2
 [Camp-site amount]
 野営地の数
 [script compilation success]
 コンパイル成功
-[script error at %0:%1: %2]
-%0:%1 でエラーが発生しました: %2
 [script compilation failure %0:%1:(%2):%3]
 コンパイルエラー: %0:%1:(%2):%3
 [script compilation failed %0]

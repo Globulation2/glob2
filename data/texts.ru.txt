@@ -6818,12 +6818,12 @@ Discord открыт. Вы можете вернуться в игру в люб
 Количество рыбы
 [scenario messages]
 Сообщения ▸
+[script error at %0:%1: %2]
+Ошибка в %0:%1: %2
 [Camp-site amount]
 Количество стоянок
 [script compilation success]
 Успешная компиляция
-[script error at %0:%1: %2]
-Ошибка в %0:%1: %2
 [script compilation failure %0:%1:(%2):%3]
 Ошибка компиляции: %0:%1:(%2):%3
 [script compilation failed %0]

@@ -8,8 +8,17 @@ namespace Online
 namespace
 {
 constexpr const char *Generic = "Something went wrong. Please try again.";
-const Json &catalog()
+const Json &catalog(std::string_view locale)
 {
+	if (locale == "th" || locale == "th-TH")
+	{
+		static const Json value = []() {
+			std::string text;
+			for (auto chunk : ThaiErrorCatalogData::Chunks) text.append(chunk.data(), chunk.size());
+			return Json::parse(text);
+		}();
+		return value;
+	}
 	static const Json value = []() {
 		std::string text;
 		for (auto chunk : ErrorCatalogData::Chunks) text.append(chunk.data(), chunk.size());
@@ -57,8 +66,8 @@ std::optional<std::string> interpolate(const std::string &text, const Json &para
 
 std::string presentApiError(const ApiError &error, std::string_view locale)
 {
-	if (locale != "bg" && locale != "bg-BG") return error.message;
-	const auto &messages = catalog().at("messages");
+	if (locale != "bg" && locale != "bg-BG" && locale != "th" && locale != "th-TH") return error.message;
+	const auto &messages = catalog(locale).at("messages");
 	const auto generic = [&]() { return messages.at(Generic).get<std::string>(); };
 	if (error.invalidLocalization || !validParams(error.messageParams)) return generic();
 	auto translated = messages.end();
@@ -69,13 +78,14 @@ std::string presentApiError(const ApiError &error, std::string_view locale)
 	}
 	if (translated == messages.end())
 	{
+		if (catalog(locale).at("ambiguousLiterals").contains(error.message)) return generic();
 		// Legacy servers/transport errors may supply just the exact English
 		// source literal. Never reverse parameter substitution or fuzzy-match.
 		translated = messages.find(error.message);
-		if (catalog().at("nonliteralKeys").contains(error.message)) translated = messages.end();
+		if (catalog(locale).at("nonliteralKeys").contains(error.message)) translated = messages.end();
 		if (translated == messages.end())
 		{
-			const auto &aliases = catalog().at("literals");
+			const auto &aliases = catalog(locale).at("literals");
 			const auto alias = aliases.find(error.message);
 			if (alias != aliases.end()) translated = messages.find(alias->get<std::string>());
 		}

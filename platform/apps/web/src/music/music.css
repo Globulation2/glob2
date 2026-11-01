@@ -587,6 +587,24 @@
   max-width: 720px;
   margin: 24px 0;
 }
+.music-upload {
+  grid-template-columns: minmax(0, 1fr);
+}
+.music-upload input,
+.music-upload select {
+  min-width: 0;
+  max-width: 100%;
+}
+.music-upload select {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.music-game-preview > button {
+  white-space: normal;
+}
+.music-detail-heading h1 {
+  overflow-wrap: anywhere;
+}
 .music-create textarea {
   min-height: 70px;
 }

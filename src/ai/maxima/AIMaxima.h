@@ -844,10 +844,15 @@ private:
 		// 1: live protected seed, 2: unprotected growing/harvesting cell.
 		std::vector<Uint8> cells;
 		int seeds;
+		// Offspring potential with the common eight-direction denominator retained.
+		Uint64 wheatCapacity=0, woodCapacity=0, targetWoodCapacity=0;
 		explicit WoodReserve(int size): cells(size,0), seeds(0) {}
 	};
+	struct FarmTerrainInputs;
+	/// Read-only query shared by placement, clearing and farming.
+	WoodReserve select_wood_reserve(AIMaximaRuntime::Context& runtime) const;
 	WoodReserve select_wood_reserve(AIMaximaRuntime::Context& runtime,
-        const std::vector<Uint8>* seedEligibility=nullptr) const;
+		const std::vector<Uint8>& protectedWheat, const FarmTerrainInputs& terrain) const;
 	bool wheat_invasion_clearing_required(AIMaximaRuntime::Context& runtime,
 		int index, const std::vector<Uint8>& protected_wheat,
 		const WoodReserve& wood_reserve) const;
@@ -855,8 +860,9 @@ private:
 	void resolve_wheat_invasion_clearing(AIMaximaRuntime::Context& runtime,
 		FarmProtectionPlan& plan);
 	void release_farming_protection(AIMaximaRuntime::Context& runtime);
-	FarmProtectionPlan build_farming_protection_plan(
-		AIMaximaRuntime::Context& runtime);
+	FarmProtectionPlan build_wheat_protection_plan(AIMaximaRuntime::Context& runtime,
+		const FarmTerrainInputs& terrain) const;
+	FarmProtectionPlan build_farming_protection_plan(AIMaximaRuntime::Context& runtime) const;
 	void apply_farming_protection(AIMaximaRuntime::Context& runtime,
 		const FarmProtectionPlan& plan, int& added, int& removed);
 	Farming::ExactFertilityCache fertility_cache;

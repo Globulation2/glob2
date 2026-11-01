@@ -6818,12 +6818,12 @@ Skaliste wzgórza
 Ilość ryb
 [scenario messages]
 Wiadomości ▸
+[script error at %0:%1: %2]
+Błąd w %0:%1: %2
 [Camp-site amount]
 Liczba obozowisk
 [script compilation success]
 Kompilacja zakończona sukcesem
-[script error at %0:%1: %2]
-Błąd w %0:%1: %2
 [script compilation failure %0:%1:(%2):%3]
 Błąd kompilacji: %0:%1:(%2):%3
 [script compilation failed %0]
